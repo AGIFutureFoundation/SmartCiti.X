@@ -8,6 +8,7 @@ its own era, which are wrong everywhere else.
 | File | What it is | Why it is here |
 |---|---|---|
 | `archive/map_union_states_33hall.json` | Per-union module-state counts from the 33-hall era (33 entries, 1,089 modules per union, summing to the superseded lesson total) | It was the campus map's data file before the map began computing state from the pack's own position function. Nothing reads it now — a second copy of a truth is a defect even while it agrees (v2.6 defect 12) — but it documents the scale the network grew from. |
+| `archive/bac_yard_stations.json` | The 25-station BAC (Bricklayers & Allied Craftworkers) masonry training-yard curriculum — checklists, doctrine, interactive actions, machine-gradable quizzes, yard layout — recovered from the pre-rebrand yard app, where a complete single-file Three.js application sits committed as the repository's README | Genuine orphaned Academy content from before the rebrand, surfaced by the sibling-repository review ([Upgrade-Candidates](Upgrade-Candidates.md)). Its stations map onto the masonry-family halls (`bricklayers`, `masonry-restore`, `stone-carvers`, `tilesetters`, `terrazzo`, `refractory` and more) whose registry slots are currently skeleton-only; folding it in as authored content is roadmap work, so it is preserved here as data first. Pre-rebrand product naming is omitted per `brand/identity.mjs`. |
 
 The 33-hall pack's union indices are preserved verbatim as the first 33
 entries of the current roster (`unions/unions111.py`), so every module ID

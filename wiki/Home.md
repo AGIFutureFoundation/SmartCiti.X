@@ -64,6 +64,8 @@ flowchart LR
 - [`ROADMAP.md`](../ROADMAP.md) — the phased plan from v3.2 forward
 - [`SmartCitiX_TradeCraft_Academy_Spec.md`](../SmartCitiX_TradeCraft_Academy_Spec.md) — the ACP protocol suite, v3.2
 - [Provenance](Provenance.md) — superseded data kept in `archive/`, and why
+- [Upgrade-Candidates](Upgrade-Candidates.md) — what the sibling repositories
+  offer the Academy, from a reviewed survey
 
 ## Honesty
 

@@ -83,7 +83,11 @@ content, hall by hall, and let the label retreat only where the work landed.
    Ironworkers, Electrical Workers, Welding Trades, Crane Operators. Journey-
    level practitioners author against the existing skeleton (levels, strands,
    tiers); the manifest's honesty block becomes per-hall, so a verified hall
-   stops carrying the caveat and an unverified one keeps it.
+   stops carrying the caveat and an unverified one keeps it. The masonry
+   family has a head start: the recovered pre-rebrand yard curriculum
+   (`archive/bac_yard_stations.json`, 25 machine-gradable stations — see
+   `wiki/Upgrade-Candidates.md`) seeds `bricklayers` and its neighbouring
+   halls once practitioners have reviewed it.
 2. **Local-standards mapping (§24.3).** The texture and environment values
    ship as general good practice with the absence of code references
    asserted. This workstream adds a jurisdiction overlay format: a deployment

@@ -13,5 +13,6 @@ wrong everywhere else.
 | File | Provenance |
 |---|---|
 | `map_union_states_33hall.json` | The campus map's per-union module-state data from the 33-hall era, orphaned when the map began computing state from the pack's own position function. Its 33 entries and per-union counts are the superseded scale, preserved verbatim. |
+| `bac_yard_stations.json` | The 25-station BAC masonry training-yard curriculum recovered from the pre-rebrand yard app (`AGIFutureFoundation/stonebyte-vr-bac-yard-`, where a complete single-file Three.js application sits committed as its README). Checklists, doctrine lines, interactive actions, machine-gradable quizzes and the yard prop layout — content that maps onto the masonry-family halls, preserved as data with the pre-rebrand product naming omitted per `brand/identity.mjs`. |
 
 See `wiki/Provenance.md` for the full story.
