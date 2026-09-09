@@ -190,9 +190,17 @@ python3 web/build_3d.py               # the 3D hall environment
 puts four toggleable layers over the same registries: district hue, pipeline
 state, module layers (each hall's census as a stacked bar), and training
 stations. Clicking a hall opens its floor plan with the recovered stations
-drawn inside the rooms their strands own, its skill lattice, and
-machine-gradable scenario checks — the whole surface rendered in any of the
+drawn inside the rooms their strands own, its skill lattice, machine-gradable
+scenario checks, and the module registry folded per strand — real generated
+lesson rows with their difficulty and pipeline state, from the pack's own
+position rule (the JS mirror of that rule is asserted against the pack at
+build time in `web/mapdata.py`). The whole surface renders in any of the
 shipped locales, direction-aware.
+
+The 3D environment (`web/trade_craft_3d.html`) goes one level deeper: rooms
+are clickable, each opening its purpose, the trade's own fixtures (also
+standing in the scene as benched props), and the same per-strand module
+rows; safety rooms carry a hazard-stripe threshold at the doorway.
 
 ## Upgrade candidates
 

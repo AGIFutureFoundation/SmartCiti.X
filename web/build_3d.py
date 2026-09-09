@@ -39,6 +39,7 @@ def _pack_root():
 ROOT = _pack_root()
 sys.path.insert(0, str(ROOT / 'web'))
 from interiors import build as build_interiors  # noqa: E402
+from mapdata import strand_modules, PIPELINE_JS  # noqa: E402
 
 manifest = json.load(open(ROOT / 'pack/manifest.json'))
 L = manifest['ledger']
@@ -65,6 +66,7 @@ plans = build_interiors(halls_json, lambda i: {
     k: v * per_level for k, v in census[halls_json[i]['slug']].items()})
 
 district_of = {slug: k for k, d in districts_reg.items() for slug in d['halls']}
+
 stations_by_hall = {}
 for s in stations_reg['stations']:
     stations_by_hall.setdefault(s['hall'], []).append(s['station_id'])
@@ -73,6 +75,7 @@ HALLS = [{
     'slug': h['slug'], 'name': h['name'], 'focus': h['focus'],
     'index': h['index'], 'district': district_of[h['slug']],
     'rooms': [{'strand': r['strand'], 'label': r['label'],
+               'purpose': r['purpose'], 'fixtures': r['fixtures'],
                'x': r['x'], 'y': r['y'], 'w': r['w'], 'h': r['h']}
               for r in plans[h['slug']]['rooms']],
     'depth': plans[h['slug']]['envelope']['d'],
@@ -88,9 +91,10 @@ for f in sorted((ROOT / 'i18n/locales').glob('*.json')):
         'strings': {k: s[k] for k in (
             'nav.campus', 'language.select', 'hall.rooms', 'hall.stations',
             'station.checklist', 'station.quiz', 'ui.close',
+            'map.layer.modules', 'figures.modules', 'figures.lessons',
             'honesty.taxonomy', 'honesty.content')},
         'districts': {k: v['name'] for k, v in c['districts'].items()},
-        'strands': c['strands'], 'tiers': c['tiers'],
+        'strands': c['strands'], 'tiers': c['tiers'], 'states': c['states'],
     }
 
 DATA = json.dumps({
@@ -102,6 +106,7 @@ DATA = json.dumps({
         'lesson', 'checklist', 'doctrine', 'quiz')}
         for s in stations_reg['stations']},
     'yard': yard,
+    'strandmods': strand_modules(),
     'i18n': I18N,
 }, ensure_ascii=False, separators=(',', ':'))
 
@@ -324,12 +329,12 @@ const PROPS = {
 };
 
 /* ---------------------------------------------------------- the hall ---- */
-let hallGroup = null, beacons = [];
+let hallGroup = null, beacons = [], floors = [];
 
 function buildHall(sg) {
   if (hallGroup) { scene.remove(hallGroup); hallGroup.traverse(o => {
     o.geometry?.dispose(); }); }
-  hallGroup = new THREE.Group(); beacons = [];
+  hallGroup = new THREE.Group(); beacons = []; floors = [];
   const h = D.halls.find(x => x.slug === sg);
   const hue = D.districts[h.district].hue;
   const W = 12 * U, DEP = h.depth * U;
@@ -358,7 +363,25 @@ function buildHall(sg) {
       new THREE.MeshStandardMaterial({
         color: new THREE.Color().setHSL(hue/360, .18, .16), roughness: .95 }));
     floor.position.set(rx, .38, rz); floor.receiveShadow = true;
-    hallGroup.add(floor);
+    floor.userData.room = r.label;
+    hallGroup.add(floor); floors.push(floor);
+    // safety rooms carry a hazard-stripe threshold at the doorway
+    if (r.strand === 'safety') {
+      const stripe = new THREE.Mesh(new THREE.BoxGeometry(Math.min(rw-.6,2.4), .07, .5),
+        mat.post);
+      stripe.position.set(rx, .42, rz + rd/2 - .4); hallGroup.add(stripe);
+    }
+    // the trade's own fixtures, benched along the back of the room
+    (r.fixtures || []).slice(0, 3).forEach((fx, fi) => {
+      const bx = rx - rw/2 + (fi + 1) * rw / ((r.fixtures.length||1) + 1);
+      const bz = rz - rd/2 + .8;
+      box(1.3, .12, .7, mat.steel, bx, .95, bz, hallGroup);
+      box(.12, .5, .6, mat.part, bx - .5, .62, bz, hallGroup);
+      box(.12, .5, .6, mat.part, bx + .5, .62, bz, hallGroup);
+      box(.5, .35, .35, mat.metal, bx, 1.25, bz, hallGroup);
+      const fl = label(fx, null, .34);
+      fl.position.set(bx, 1.85, bz); hallGroup.add(fl);
+    });
     box(rw, 1.1, .12, mat.part, rx, .9, rz - rd/2, hallGroup);
     box(rw, 1.1, .12, mat.part, rx, .9, rz + rd/2, hallGroup);
     box(.12, 1.1, rd, mat.part, rx - rw/2, .9, rz, hallGroup);
@@ -418,7 +441,8 @@ function renderChrome() {
   lang.setAttribute('aria-label', t('language.select'));
   lang.innerHTML = Object.entries(D.i18n).map(([c, v]) =>
     `<option value="${c}" ${c===loc?'selected':''}>${v.language}</option>`).join('');
-  document.getElementById('hint').textContent = t('hall.stations') + ' — ● · ' + t('hall.rooms');
+  document.getElementById('hint').textContent =
+    '● ' + t('hall.stations') + ' · ' + t('hall.rooms') + ' → ' + t('map.layer.modules');
   document.getElementById('honesty').textContent =
     t('honesty.taxonomy') + ' ' + t('honesty.content');
   document.getElementById('pclose').textContent = t('ui.close');
@@ -436,12 +460,46 @@ function openStation(id) {
   document.body.classList.add('open');
 }
 
+__PIPELINE_JS__
+
+function openRoom(roomLabel) {
+  const h = D.halls.find(x => x.slug === slug);
+  const r = h.rooms.find(x => x.label === roomLabel);
+  const i = D.i18n[loc];
+  const sm = D.strandmods[r.strand];
+  const F = (n) => n.toLocaleString('en-US');
+  const rows = sm.samples.map(x => {
+    const id = 'u' + String(h.index).padStart(3, '0') + '.' + x.suffix;
+    const st = pipeline(h.index, x.level);
+    return `
+    <tr><td style="font-family:'IBM Plex Mono',monospace;font-size:12px">${id}</td>
+    <td>${i.tiers[x.tier]}</td><td>${x.form}</td>
+    <td style="text-align:end">${x.d}</td><td>${i.states[st]}</td></tr>`; }).join('');
+  document.getElementById('pbody').innerHTML = `
+    <h2>${r.label}</h2>
+    <span class="chip">${i.strands[r.strand]}</span>
+    <span class="chip">${r.w*3}×${r.h*3} m</span>
+    <p style="color:var(--muted)">${r.purpose}</p>
+    ${r.fixtures?.length ? `<ul>${r.fixtures.map(f=>`<li>${f}</li>`).join('')}</ul>` : ''}
+    <h3>${t('map.layer.modules')}</h3>
+    <p style="color:var(--muted);font-size:13px">
+      ${t('figures.lessons').replace('{n}', F(sm.lessons))} ·
+      ${t('figures.modules').replace('{n}', F(sm.modules))} ·
+      θ ${sm.d_from}–${sm.d_to}</p>
+    <table style="width:100%;border-collapse:collapse;font-size:13px">
+      <tbody>${rows}</tbody></table>
+    <style>#pbody td{border-top:1px solid var(--rule);padding:6px 8px;color:var(--muted)}</style>`;
+  document.body.classList.add('open');
+}
+
 const ray = new THREE.Raycaster(), ptr = new THREE.Vector2();
 renderer.domElement.addEventListener('pointerdown', (e) => {
   ptr.set(e.clientX/innerWidth*2-1, -(e.clientY/innerHeight)*2+1);
   ray.setFromCamera(ptr, camera);
   const hit = ray.intersectObjects(beacons, false)[0];
-  if (hit?.object.userData.station) openStation(hit.object.userData.station);
+  if (hit?.object.userData.station) return openStation(hit.object.userData.station);
+  const fhit = ray.intersectObjects(floors, false)[0];
+  if (fhit?.object.userData.room) openRoom(fhit.object.userData.room);
 });
 document.addEventListener('click', (e) => {
   if (e.target.closest('#pclose') || e.target.id === 'ov')
@@ -480,7 +538,7 @@ renderer.setAnimationLoop(() => {
 </html>
 '''
 
-page = page.replace('__DATA__', DATA)
+page = page.replace('__DATA__', DATA).replace('__PIPELINE_JS__', PIPELINE_JS)
 out = HERE / 'trade_craft_3d.html'
 out.write_text(page)
 print(f"written: {len(page):,} bytes | {len(HALLS)} halls | "
