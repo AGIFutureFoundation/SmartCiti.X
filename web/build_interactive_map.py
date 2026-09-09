@@ -34,6 +34,7 @@ def _pack_root():
 ROOT = _pack_root()
 sys.path.insert(0, str(ROOT / 'web'))
 from interiors import build as build_interiors  # noqa: E402
+from mapdata import strand_modules, PIPELINE_JS  # noqa: E402
 
 manifest = json.load(open(ROOT / 'pack/manifest.json'))
 L = manifest['ledger']
@@ -99,6 +100,7 @@ DATA = json.dumps({
     'districts': DISTRICTS,
     'halls': HALLS,
     'stations': {s['station_id']: s for s in stations_reg['stations']},
+    'strandmods': strand_modules(),
     'i18n': I18N,
 }, ensure_ascii=False, separators=(',', ':'))
 
@@ -266,6 +268,24 @@ function render(){
   document.getElementById('close').textContent = t('ui.close');
 }
 
+__PIPELINE_JS__
+
+function modTable(h){
+  const i = D.i18n[loc];
+  const rows = Object.entries(D.strandmods).map(([sk, sm]) => {
+    const x = sm.samples[0];
+    const id = 'u' + String(h.index).padStart(3,'0') + '.' + x.suffix;
+    return `<tr><td>${i.strands[sk]}</td>
+      <td style="font-family:'IBM Plex Mono',monospace;font-size:11.5px">${id}</td>
+      <td style="text-align:end">${sm.d_from}–${sm.d_to}</td>
+      <td style="text-align:end">${F(sm.modules)}</td>
+      <td>${i.states[pipeline(h.index, x.level)]}</td></tr>`;
+  }).join('');
+  return `<table style="width:100%;border-collapse:collapse;font-size:12.5px">
+    <tbody>${rows}</tbody></table>
+    <style>#pbody td{border-top:1px solid var(--rule);padding:5px 7px;color:var(--muted)}</style>`;
+}
+
 function applyFilter(){
   const q = query.trim().toLowerCase();
   document.querySelectorAll('.hall').forEach(el => {
@@ -287,6 +307,7 @@ function planSVG(h){
       `<circle cx="${r.x*U + (j+1)*(r.w*U)/(list.length+1)}" cy="${(r.y+r.h/2)*U + 6}" r="5.5" fill="var(--mark)"><title>${s.name}</title></circle>`).join('');
     return `<g><rect x="${r.x*U+1}" y="${r.y*U+1}" width="${r.w*U-2}" height="${r.h*U-2}" rx="3"
       fill="hsl(${dh} 25% 16%)" stroke="hsl(${dh} 30% 32%)"/>
+      <title>${r.purpose}</title>
       <text x="${r.x*U+7}" y="${r.y*U+16}" font-size="10.5" fill="var(--ink)">${r.label}</text>
       <text x="${r.x*U+7}" y="${r.y*U+29}" font-size="9" fill="var(--muted)">${D.i18n[loc].strands[r.strand]}</text>${dot}</g>`;
   }).join('');
@@ -324,7 +345,8 @@ function openHall(slug){
     <h3>${t('map.layer.pipeline')}</h3><div class="cbar">${cbar}</div><div class="ckey">${ckey}</div>
     <h3>${t('hall.rooms')}</h3>${planSVG(h)}
     ${stns ? `<h3>${t('hall.stations')} (${h.stations.length})</h3>${stns}` : ''}
-    <h3>${t('hall.skills')}</h3>${lat}`;
+    <h3>${t('hall.skills')}</h3>${lat}
+    <h3>${t('map.layer.modules')}</h3>${modTable(h)}`;
   document.body.classList.add('open');
 }
 
@@ -355,7 +377,7 @@ if (params.get('hall') && D.halls.some(h => h.slug === params.get('hall')))
 </html>
 '''
 
-page = page.replace('__DATA__', DATA)
+page = page.replace('__DATA__', DATA).replace('__PIPELINE_JS__', PIPELINE_JS)
 out = HERE / 'trade_craft_interactive.html'
 out.write_text(page)
 n_st = stations_reg['count']
