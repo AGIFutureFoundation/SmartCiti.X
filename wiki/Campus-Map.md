@@ -64,6 +64,7 @@ python3 pack/build.py                 # if the skeleton changed
 python3 stations/build.py             # if the station content changed
 python3 web/build_map.py              # the campus plan
 python3 web/build_interactive_map.py  # the interactive layered map
+python3 web/build_3d.py               # the 3D hall environment
 ```
 
 ## The interactive layer

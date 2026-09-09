@@ -34,7 +34,9 @@
   "hall.skills": "Retícula de habilidades",
   "station.checklist": "Lista de verificação",
   "station.quiz": "Cenário de verificação",
-  "ui.close": "Fechar"
+  "ui.close": "Fechar",
+  "ui.search": "Buscar salões",
+  "hall.enter3d": "Abrir ambiente 3D"
  },
  "districts": {
   "structural": {

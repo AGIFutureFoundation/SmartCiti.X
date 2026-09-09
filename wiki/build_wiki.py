@@ -85,7 +85,8 @@ content graph and details:
 
 | Map | What it shows | Page |
 |---|---|---|
-| **Interactive map** (`web/trade_craft_interactive.html`) | All {L["halls"]} halls with toggleable layers — districts, pipeline, module layers, training stations — hall floor plans and quizzes, in every locale | [Campus-Map](Campus-Map.md) |
+| **Interactive map** (`web/trade_craft_interactive.html`) | All {L["halls"]} halls with toggleable layers — districts, pipeline, module layers, training stations — hall floor plans and quizzes, in every locale, searchable and deep-linkable | [Campus-Map](Campus-Map.md) |
+| **3D environment** (`web/trade_craft_3d.html`) | Any hall's floor plan extruded into a Three.js scene: rooms, district fascia, yard props, stations as clickable beacons | [Campus-Map](Campus-Map.md) |
 | Campus map (`web/trade_craft_map.html`) | All {L["halls"]} halls in {len(districts)} districts, with pipeline state | [Campus-Map](Campus-Map.md) |
 | Hall floor plans (inside the campus map) | A generated interior for every hall — {L["halls"]} plans, 11 rooms each | [Interiors-Map](Interiors-Map.md) |
 | Skill graph (`pack/registry/skills.json`) | {F(len(skills))} skills and the edges that sequence practice | [Skill-Graph](Skill-Graph.md) |
@@ -180,6 +181,7 @@ python3 pack/build.py                 # if the skeleton changed
 python3 stations/build.py             # if the station content changed
 python3 web/build_map.py              # the campus plan
 python3 web/build_interactive_map.py  # the interactive layered map
+python3 web/build_3d.py               # the 3D hall environment
 ```
 
 ## The interactive layer

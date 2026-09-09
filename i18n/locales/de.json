@@ -34,7 +34,9 @@
   "hall.skills": "Fähigkeitsgitter",
   "station.checklist": "Checkliste",
   "station.quiz": "Szenarioprüfung",
-  "ui.close": "Schließen"
+  "ui.close": "Schließen",
+  "ui.search": "Hallen durchsuchen",
+  "hall.enter3d": "3D-Umgebung öffnen"
  },
  "districts": {
   "structural": {

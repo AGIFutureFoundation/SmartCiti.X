@@ -34,7 +34,9 @@
   "hall.skills": "技能格栅",
   "station.checklist": "检查清单",
   "station.quiz": "情景考核",
-  "ui.close": "关闭"
+  "ui.close": "关闭",
+  "ui.search": "搜索培训馆",
+  "hall.enter3d": "打开 3D 环境"
  },
  "districts": {
   "structural": {

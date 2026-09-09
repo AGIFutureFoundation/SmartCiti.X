@@ -14,7 +14,8 @@ content graph and details:
 
 | Map | What it shows | Page |
 |---|---|---|
-| **Interactive map** (`web/trade_craft_interactive.html`) | All 111 halls with toggleable layers — districts, pipeline, module layers, training stations — hall floor plans and quizzes, in every locale | [Campus-Map](Campus-Map.md) |
+| **Interactive map** (`web/trade_craft_interactive.html`) | All 111 halls with toggleable layers — districts, pipeline, module layers, training stations — hall floor plans and quizzes, in every locale, searchable and deep-linkable | [Campus-Map](Campus-Map.md) |
+| **3D environment** (`web/trade_craft_3d.html`) | Any hall's floor plan extruded into a Three.js scene: rooms, district fascia, yard props, stations as clickable beacons | [Campus-Map](Campus-Map.md) |
 | Campus map (`web/trade_craft_map.html`) | All 111 halls in 8 districts, with pipeline state | [Campus-Map](Campus-Map.md) |
 | Hall floor plans (inside the campus map) | A generated interior for every hall — 111 plans, 11 rooms each | [Interiors-Map](Interiors-Map.md) |
 | Skill graph (`pack/registry/skills.json`) | 3,663 skills and the edges that sequence practice | [Skill-Graph](Skill-Graph.md) |
