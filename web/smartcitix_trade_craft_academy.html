@@ -1,0 +1,1737 @@
+<title>Adaptive Stack Protocol</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root {
+  --paper:#F6F8F7; --surface:#ECF1EF; --ink:#1F2A30; --muted:#5B6B70;
+  --accent:#0E7C86; --accent-ink:#0A5A62; --band:#C97A10; --line:#CBD6D3;
+  --code-bg:#E8EEEC; --head:#16242B;
+  --c1:#0090A0; --c2:#C97A10; --c3:#6A6FBF; --grid:#DDE5E3;
+  color-scheme: light dark;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --paper:#141B1E; --surface:#1C2529; --ink:#DCE5E3; --muted:#8FA1A3;
+  --accent:#4FB8C0; --accent-ink:#7FD0D6; --band:#E09A3E; --line:#31403F;
+  --code-bg:#1A2327; --head:#EDF3F1;
+  --c1:#00A2B5; --c2:#C08325; --c3:#8A82CE; --grid:#2A3739;
+} }
+:root[data-theme="dark"] {
+  --paper:#141B1E; --surface:#1C2529; --ink:#DCE5E3; --muted:#8FA1A3;
+  --accent:#4FB8C0; --accent-ink:#7FD0D6; --band:#E09A3E; --line:#31403F;
+  --code-bg:#1A2327; --head:#EDF3F1;
+  --c1:#00A2B5; --c2:#C08325; --c3:#8A82CE; --grid:#2A3739;
+}
+* { box-sizing:border-box; }
+body { background:var(--paper); color:var(--ink); margin:0;
+  font:16px/1.65 "IBM Plex Sans", system-ui, sans-serif; }
+.wrap { max-width:78ch; margin:0 auto; padding:0 24px 96px; }
+header.hero { display:flex; gap:32px; align-items:center; flex-wrap:wrap;
+  padding:56px 0 24px; border-bottom:2px solid var(--ink); }
+.hero-text { flex:1 1 380px; }
+.eyebrow { font:600 12px/1 "Archivo",sans-serif; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--accent-ink); margin:0 0 14px; }
+h1 { font:700 clamp(30px,5vw,44px)/1.08 "Archivo",sans-serif; color:var(--head);
+  margin:0 0 14px; text-wrap:balance; letter-spacing:-.01em; }
+.sub { font:600 15px/1.3 "Archivo",sans-serif; color:var(--accent-ink); margin:0 0 14px;
+  letter-spacing:.01em; }
+.colon { color:var(--accent); font-weight:500; padding:0 .06em; }
+.standfirst { color:var(--muted); margin:0; max-width:56ch; }
+.gauge { width:200px; flex:0 0 auto; }
+nav.mods { display:flex; flex-wrap:wrap; gap:8px; padding:20px 0 8px;
+  border-bottom:1px solid var(--line); }
+nav.mods a { font:500 12.5px/1 "IBM Plex Mono",monospace; color:var(--accent-ink);
+  text-decoration:none; padding:7px 10px; border:1px solid var(--line); border-radius:3px; }
+nav.mods a:hover, nav.mods a:focus-visible { border-color:var(--accent); color:var(--ink); outline:none; }
+h2 { font:700 24px/1.2 "Archivo",sans-serif; color:var(--head); margin:56px 0 16px;
+  padding-top:20px; border-top:1px solid var(--line); text-wrap:balance; scroll-margin-top:16px; }
+h3 { font:600 17px/1.3 "Archivo",sans-serif; color:var(--head); margin:32px 0 10px; }
+p { margin:0 0 16px; }
+strong { color:var(--head); }
+code { font:13.5px/1.5 "IBM Plex Mono",monospace; background:var(--code-bg);
+  padding:1px 5px; border-radius:3px; }
+pre { background:var(--code-bg); border-left:3px solid var(--accent); border-radius:0 4px 4px 0;
+  padding:14px 16px; overflow-x:auto; margin:0 0 18px; }
+pre code { background:none; padding:0; font-size:13px; }
+.tw { overflow-x:auto; margin:0 0 18px; }
+table { border-collapse:collapse; width:100%; font-size:14.5px;
+  font-variant-numeric: tabular-nums; }
+th { font:600 11.5px/1.3 "Archivo",sans-serif; letter-spacing:.08em; text-transform:uppercase;
+  text-align:left; color:var(--muted); border-bottom:2px solid var(--ink); padding:8px 12px 6px 0; }
+td { border-bottom:1px solid var(--line); padding:8px 12px 8px 0; vertical-align:top; }
+td:first-child code, td:first-child { white-space:nowrap; }
+td:last-child, th:last-child { padding-right:0; }
+.wrap > h2:first-of-type { border-top:none; padding-top:6px; margin-top:44px; }
+hr { border:none; border-top:1px solid var(--line); margin:40px 0; }
+ul { padding-left:22px; } li { margin-bottom:6px; }
+a { color:var(--accent-ink); }
+blockquote { margin:0 0 16px; padding:2px 0 2px 16px; border-left:3px solid var(--band); color:var(--muted); }
+.fig { margin:24px 0 26px; }
+.chart-wrap { overflow-x:auto; }
+.chart { width:100%; min-width:520px; display:block; }
+.legend { display:flex; flex-wrap:wrap; gap:16px; margin-bottom:12px; }
+.lg { display:inline-flex; align-items:center; gap:7px; font-size:12.5px; color:var(--muted); }
+.lg i { width:11px; height:11px; border-radius:2px; display:inline-block; }
+.fig figcaption { font-size:12.5px; color:var(--muted); margin-top:12px; max-width:62ch; line-height:1.5; }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior:smooth; } }
+@media (max-width:560px) { header.hero { padding-top:36px; } .gauge { width:160px; } }
+</style>
+<div class="wrap">
+<header class="hero">
+  <div class="hero-text">
+    <p class="eyebrow">Protocol Specification · ACP Suite · v2.6</p>
+    <h1>SmartCiti.X <span class="colon">:</span> Trade Craft Academy</h1>
+    <p class="sub">Adaptive Stack · powered by AGI Corp</p>
+    <p class="standfirst">The full adaptive loop of the Academy — telemetry, learner profiling,
+    the AI–ZPD dial, scaffolding, sequencing, assessment, flow regulation, safeguards —
+    and, at scale: the verified 11,000,000-module ledger, the agent fabric, agent training, and network operations.
+    Schemas, update rules, thresholds, and message contracts are normative unless marked <em>tunable</em>.</p>
+  </div>
+  <svg viewBox="0 0 220 130" class="gauge" role="img" aria-label="Dial gauge: predicted success, target band 0.70 to 0.85">
+<path d="M 20 115 A 90 90 0 0 1 200 115" fill="none" stroke="var(--line)" stroke-width="10" stroke-linecap="round"/>
+<path d="M 152.9 41.3 A 90 90 0 0 1 185.6 71.0" fill="none" stroke="var(--band)" stroke-width="12" stroke-linecap="round"/>
+<g stroke="var(--muted)" stroke-width="1.5">
+<line x1="20" y1="115" x2="30" y2="115"/><line x1="200" y1="115" x2="190" y2="115"/>
+<line x1="110" y1="25" x2="110" y2="35"/></g>
+<line x1="110" y1="115" x2="166" y2="60" stroke="var(--accent)" stroke-width="3.5" stroke-linecap="round"/>
+<circle cx="110" cy="115" r="6" fill="var(--accent)"/>
+<text x="20" y="128" font-size="10" fill="var(--muted)">0.0</text>
+<text x="104" y="20" font-size="10" fill="var(--muted)">0.5</text>
+<text x="188" y="128" font-size="10" fill="var(--muted)">1.0</text>
+<text x="176" y="46" font-size="10" fill="var(--band)" font-weight="600">.70–.85</text>
+</svg>
+</header>
+<nav class="mods" aria-label="Modules"><a href="#s0">Principles</a><a href="#s1">ACP-01 Telemetry</a><a href="#s2">ACP-02 Profile</a><a href="#s3">ACP-03 ZPD Dial</a><a href="#s4">ACP-04 Scaffolding</a><a href="#s5">ACP-05 Sequencing</a><a href="#s6">ACP-06 Assessment</a><a href="#s7">ACP-07 Flow</a><a href="#s8">ACP-08 Safeguards</a><a href="#s9">ACP-09 Contracts</a><a href="#s10">Defaults</a><a href="#s11">ACP-10 Ledger</a><a href="#s12">ACP-11 Fabric</a><a href="#s13">ACP-12 Agent Training</a><a href="#s14">ACP-13 Network Ops</a><a href="#s15">ACP-14 Calibration</a><a href="#s16">ACP-15 Graph & Sequencing</a><a href="#s17">ACP-01/09 in code</a><a href="#s18">ACP-08 in code</a><a href="#s19">Launch posture</a><a href="#s20">ACP-04 in code</a><a href="#s21">ACP-13 in code</a><a href="#s22">Identity</a></nav>
+<h2 id="s0">0. Design principles</h2>
+<p><strong>P1 — The ZPD invariant.</strong> Every task served must sit inside the learner's Zone of Proximal Development: hard enough that unaided success is not guaranteed, easy enough that success with available scaffolding is probable. Operationally: predicted unaided success probability in the <strong>target band [0.70, 0.85]</strong> (<em>tunable per skill family</em>).</p>
+<p><strong>P2 — Never boredom, never anxiety.</strong> The dial has two failure modes, not one. Sustained success above the band with low effort signals is boredom (step difficulty up); sustained failure below the band with stress signals is anxiety (step down <em>and</em> scaffold). Both are detected, both trigger action within bounded time.</p>
+<p><strong>P3 — Profile is inferred, never asked.</strong> The Learner Profile agent (LPA) builds its proficiency vector from behavioral telemetry — accuracy, latency, hint requests, coding cadence, sim-control traces — not from self-report quizzes. Self-report may seed cold start only.</p>
+<p><strong>P4 — Every adaptation is explainable.</strong> Any change the dial makes (harder task, easier task, injected scaffold, forced review) must emit a human-readable <code>why</code> string surfaced to the learner ("Why this?"), the mentor agent, and the audit log.</p>
+<p><strong>P5 — Scaffolding fades.</strong> Help is a loan against mastery credit, not a free good. Hints reduce the mastery evidence of a success and the hint ladder retracts as proficiency grows.</p>
+<p><strong>P6 — Humans can always override.</strong> Instructors, union training agents, and the learner (within floors/ceilings) can pin difficulty; overrides are logged and the model treats overridden episodes as biased evidence.</p>
+<p><strong>P7 — Minimum data, maximum signal.</strong> Raw high-frequency streams (keystrokes, controller poses) are reduced to features at the edge; only features and events leave the client. No raw keystroke logs are stored server-side.</p>
+<h3>0.1 The module map</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Module</th>
+<th>Role in the loop</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ACP-01</td>
+<td>Telemetry &amp; Signal Protocol</td>
+<td>Capture events, extract normalized signals</td>
+</tr>
+<tr>
+<td>ACP-02</td>
+<td>Learner Profile Agent (LPA)</td>
+<td>Fuse signals into the proficiency vector</td>
+</tr>
+<tr>
+<td>ACP-03</td>
+<td>ZPD Dial (Challenge Controller)</td>
+<td>Throttle difficulty to the edge of capability</td>
+</tr>
+<tr>
+<td>ACP-04</td>
+<td>Scaffolding &amp; Hint Engine</td>
+<td>Graduated help, fading, Socratic handoff</td>
+</tr>
+<tr>
+<td>ACP-05</td>
+<td>Sequencing &amp; Quest Generation</td>
+<td>What comes next: skill graph, spacing, interleaving</td>
+</tr>
+<tr>
+<td>ACP-06</td>
+<td>Assessment &amp; Mastery Verification</td>
+<td>Gates, level tests, jobsite finals, anti-gaming</td>
+</tr>
+<tr>
+<td>ACP-07</td>
+<td>Flow &amp; Affect Protocol</td>
+<td>Classify flow/boredom/anxiety/disengagement</td>
+</tr>
+<tr>
+<td>ACP-08</td>
+<td>Safeguards &amp; Governance</td>
+<td>Floors, parity, overrides, privacy, stop conditions</td>
+</tr>
+<tr>
+<td>ACP-09</td>
+<td>Inter-Agent Message Contracts</td>
+<td>Bus topics and schemas binding the agents</td>
+</tr>
+<tr>
+<td>ACP-10</td>
+<td>Module Ledger &amp; Content Pipeline</td>
+<td>The 11,000,000-module catalog, generated and verified</td>
+</tr>
+<tr>
+<td>ACP-11</td>
+<td>Agent Fabric</td>
+<td>Framework choices and the three-plane agent architecture</td>
+</tr>
+<tr>
+<td>ACP-12</td>
+<td>Agent Training &amp; Evaluation</td>
+<td>How mentor agents are trained, evaluated, promoted</td>
+</tr>
+<tr>
+<td>ACP-13</td>
+<td>Network Management &amp; Automation</td>
+<td>Registry, rollout, budgets, jobs — running it at scale</td>
+</tr>
+<tr>
+<td>ACP-14</td>
+<td>Shadow-Mode Calibration</td>
+<td>The dial's simulated gate, and what it changed</td>
+</tr>
+<tr>
+<td>ACP-15</td>
+<td>Knowledge-Graph Tracing &amp; Sequencing</td>
+<td>Which skill, and why now: transfer, review, verification</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>The loop, end to end:</strong> client emits events (ACP-01) → LPA updates the profile (ACP-02) → the ZPD Dial computes the current challenge setpoint (ACP-03) → the sequencer picks candidate tasks and the quest designer assembles them (ACP-05) → during the attempt the hint engine manages scaffolds (ACP-04) and the flow classifier watches affect (ACP-07) → outcomes feed assessment gates (ACP-06) → everything is bounded by safeguards (ACP-08) and carried on the message bus (ACP-09).</p>
+<p>Agent naming: the LPA corresponds to the Academy's learner-profile/analytics agent; quest assembly is the quest-designer agent's job; Socratic remediation is the dialectical tutor's; mentor/union agents (e.g., the trade coaches) consume dial state to speak to the learner in character. Agents register on the swarm registry and communicate over the bus in §9.</p>
+<hr />
+<h2 id="s1">1. ACP-01 — Telemetry &amp; Signal Protocol</h2>
+<h3>1.1 Event envelope</h3>
+<p>Every observation is an event with a common envelope. Transport is at-least-once; consumers dedupe on <code>event_id</code>.</p>
+<pre><code class="language-json">{
+  &quot;event_id&quot;: &quot;uuid-v7&quot;,
+  &quot;ts&quot;: &quot;2026-09-02T17:04:11.302Z&quot;,
+  &quot;learner_id&quot;: &quot;pseudonymous-stable-id&quot;,
+  &quot;session_id&quot;: &quot;uuid&quot;,
+  &quot;context&quot;: {
+    &quot;module_id&quot;: &quot;ironworkers.L12.lesson04&quot;,
+    &quot;task_id&quot;: &quot;task-8841&quot;,
+    &quot;skill_ids&quot;: [&quot;rigging.load-calc&quot;, &quot;rigging.sling-angle&quot;],
+    &quot;difficulty&quot;: 62,
+    &quot;modality&quot;: &quot;vr_sim | quiz | code | drill | video | reading&quot;,
+    &quot;device_tier&quot;: &quot;hd | standard | mobile&quot;,
+    &quot;scaffold_level&quot;: 0
+  },
+  &quot;verb&quot;: &quot;attempted | completed | failed | hint_requested | paused |
+           resumed | abandoned | edited | control_input | answered&quot;,
+  &quot;payload&quot;: { }
+}
+</code></pre>
+<p>Events map 1:1 onto xAPI statements for LRS export (<code>verb</code> → xAPI verb IRI, <code>context.module_id</code> → activity, <code>payload.score</code> → result), so the existing xAPI 1.0.3 emitter is the egress adapter, not a second pipeline.</p>
+<h3>1.2 Signal taxonomy</h3>
+<p>Signals are features derived from events. Each is computed per attempt and aggregated over rolling windows (defaults: last 10 attempts per skill, last 30 min of session). All continuous signals are double-normalized: z-score against the <strong>cohort</strong> at the same difficulty, then against the learner's <strong>own trailing baseline</strong> — so "slow" means slow <em>for this task</em> and <em>for this learner</em>.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Signal</th>
+<th>Source</th>
+<th>Definition</th>
+<th>Reads as</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>acc</code></td>
+<td>answers/task outcomes</td>
+<td>correct ÷ attempts, per skill</td>
+<td>raw capability</td>
+</tr>
+<tr>
+<td><code>lat</code></td>
+<td>response timing</td>
+<td>time-to-first-action and time-to-completion, z-normalized</td>
+<td>fluency vs. floundering</td>
+</tr>
+<tr>
+<td><code>lat_var</code></td>
+<td>response timing</td>
+<td>variance of <code>lat</code> within window</td>
+<td>stability; rising variance precedes anxiety</td>
+</tr>
+<tr>
+<td><code>hint_rate</code></td>
+<td>hint engine</td>
+<td>hints requested ÷ attempts, weighted by rung depth</td>
+<td>independence</td>
+</tr>
+<tr>
+<td><code>cadence</code></td>
+<td>code/build editors</td>
+<td>edit-burst rhythm: bursts/min, burst length, pause distribution, delete-to-insert ratio</td>
+<td>planning vs. thrash (high delete ratio + short bursts = thrash)</td>
+</tr>
+<tr>
+<td><code>path_smooth</code></td>
+<td>VR sim controls</td>
+<td>control-input smoothness (jerk integral) and step-order edit distance vs. reference procedure</td>
+<td>motor + procedural fluency</td>
+</tr>
+<tr>
+<td><code>retry_gap</code></td>
+<td>attempts</td>
+<td>time between a failure and the retry</td>
+<td>resilience; very short = guess-spam, very long = avoidance</td>
+</tr>
+<tr>
+<td><code>idle</code></td>
+<td>focus/pause events</td>
+<td>idle gaps &gt; 30 s during an active task</td>
+<td>disengagement</td>
+</tr>
+<tr>
+<td><code>abandon</code></td>
+<td>session</td>
+<td>task abandoned before completion</td>
+<td>strong anxiety/disengagement marker</td>
+</tr>
+<tr>
+<td><code>selfcorr</code></td>
+<td>answers/edits</td>
+<td>corrections made without prompt</td>
+<td>metacognition; boosts mastery evidence</td>
+</tr>
+</tbody>
+</table></div>
+<h3>1.3 Edge reduction &amp; retention</h3>
+<p>Keystroke and controller streams are reduced to <code>cadence</code> / <code>path_smooth</code> features <strong>on the client</strong>; raw streams are discarded after feature extraction (≤ 5 s buffer). Feature events are retained 24 months; aggregates indefinitely. <code>learner_id</code> is pseudonymous; the mapping table lives outside the analytics store (see ACP-08).</p>
+<h3>1.4 Quality guards</h3>
+<p>Consumers must tolerate: clock skew (trust server receipt time when |skew| &gt; 2 min), missing modality fields (treat as <code>quiz</code>), and burst duplication. A session with &lt; 3 usable events produces <strong>no</strong> profile update — silence is not evidence.</p>
+<hr />
+<h2 id="s2">2. ACP-02 — Learner Profile Agent (LPA)</h2>
+<p>The LPA is the single writer of the <strong>proficiency vector</strong>. Everything downstream (dial, sequencer, mentor agents) reads it; nothing else writes it.</p>
+<h3>2.1 The proficiency vector</h3>
+<p>Per learner, per skill node <code>s</code> in the skill graph:</p>
+<pre><code class="language-json">{
+  &quot;skill_id&quot;: &quot;rigging.sling-angle&quot;,
+  &quot;theta&quot;: 61.4,          // proficiency rating, 0–100 scale (Elo-family)
+  &quot;sigma&quot;: 7.2,           // uncertainty (rating deviation)
+  &quot;p_mastery&quot;: 0.83,      // BKT posterior P(skill is mastered)
+  &quot;velocity&quot;: +1.9,       // Δtheta per 10 attempts, EWMA
+  &quot;half_life_days&quot;: 21.5, // retention half-life estimate
+  &quot;last_evidence&quot;: &quot;2026-09-01T20:12:00Z&quot;,
+  &quot;hint_dependence&quot;: 0.18,  // EWMA of rung-weighted hint_rate
+  &quot;evidence_n&quot;: 34
+}
+</code></pre>
+<p>Plus per-learner globals: modality weights (evidence-weighted preference across the modality set, floor 15% so no modality starves), affect baseline (personal <code>lat</code>/<code>cadence</code> baselines), and a <code>pace_profile</code> (session length and time-of-day patterns).</p>
+<h3>2.2 Update rules</h3>
+<p><strong>Rating update (per attempt).</strong> Elo-family co-update of learner θ and item difficulty <code>d</code> (both on the 0–100 scale, K scaled by uncertainty):</p>
+<pre><code>E = 1 / (1 + 10^((d − θ) / 12))          // expected success; 12 ≈ band width
+θ ← θ + K_l · w · (outcome − E)
+d ← d + K_i · (E − outcome)               // item calibration, K_i ≪ K_l
+K_l = K_max · (σ / σ_max), clamped to [2, 12]
+</code></pre>
+<p><code>outcome ∈ [0,1]</code> is graded, not binary: full unaided success = 1.0; success at hint rung r = <code>1 − 0.15·r</code> (floor 0.25); partial-credit sims score by rubric. <code>w</code> down-weights suspect evidence: 0.5 if guess-spam detected, 0.3 if the episode ran under an instructor override.</p>
+<p><strong>Mastery update (per attempt).</strong> Standard BKT per skill with parameters fit per skill family: P(L₀)=0.15, P(T)=0.20, P(G)=0.20, P(S)=0.10 (<em>tunable; fit from cohort data quarterly</em>). <code>p_mastery</code> is the posterior after each observation; hint-assisted successes update with P(G) inflated by rung (a rung-3 success is weak evidence).</p>
+<p><strong>Uncertainty.</strong> σ shrinks with evidence (<code>σ ← σ·0.97</code> per informative attempt, floor 3) and grows with silence (<code>σ ← min(σ_max, σ + 0.15·days_idle)</code>), which naturally widens the dial's exploration after absence.</p>
+<p><strong>Decay.</strong> Half-life regression: <code>p_recall(t) = 2^(−t / half_life)</code>. Each successful spaced retrieval multiplies <code>half_life</code> by 1.8; each failed one multiplies by 0.6 (floor 2 days). When <code>p_recall &lt; 0.7</code>, the skill enters the review queue (ACP-05).</p>
+<p><strong>Velocity.</strong> EWMA (α=0.3) of θ deltas — the dial uses velocity, not just level, to size steps: fast climbers get larger difficulty increments.</p>
+<h3>2.3 Cold start</h3>
+<p>New learner: θ = 35, σ = σ_max = 15, <code>p_mastery</code> = P(L₀). First 5 attempts per skill family run a <strong>calibration ladder</strong>: items at d = 25, 40, 55, 70, 85 served in adaptive binary-search order; θ initialized to the last difficulty with success ≥ 0.5. Placement claims from a prior credential (e.g., a completed union level) seed θ per its mapped skill list at <code>mapped_level − 10</code> with σ = 12 — trusted, but verified fast by the ladder.</p>
+<h3>2.4 Profile read API</h3>
+<p><code>GET /profile/{learner_id}</code> returns the vector plus derived summaries: <code>frontier</code> (skills with 0.4 ≤ p_mastery &lt; 0.95, ordered by graph readiness) and <code>review_due</code> (skills with p_recall &lt; 0.7). Reads are cheap; the dial polls per task selection, mentors per dialogue turn.</p>
+<hr />
+<h2 id="s3">3. ACP-03 — The ZPD Dial (Challenge Controller)</h2>
+<p>The dial answers one question continuously: <strong>what difficulty should the next unit of work be, for this learner, on this skill, right now?</strong></p>
+<h3>3.1 Setpoint and band</h3>
+<p>For skill <code>s</code>, the dial holds a challenge setpoint <code>c_s</code> (same 0–100 scale as θ and d). The invariant: the predicted unaided success of a task at <code>c_s</code> stays in the target band.</p>
+<pre><code>P(success | θ, d) = 1 / (1 + 10^((d − θ)/12))
+band = [0.70, 0.85]  →  c_s ∈ [θ − 9.0, θ − 4.4]   // implied by the logistic
+default setpoint: c_s = θ − 6.5   (≈ 0.78 predicted success)
+</code></pre>
+<p>Read θ as the learner's <strong>50% frontier</strong> — the difficulty they would solve unaided half the time. The dial works 4–9 points <em>inside</em> that frontier: success stays probable, but never free. "The edge of current capability" is the strip just inside the frontier, not beyond it.</p>
+<h3>3.2 The controller</h3>
+<p>A bounded step controller with hysteresis (a full PID adds nothing at this sample rate):</p>
+<pre><code>every attempt window W (default 5 attempts on skill s):
+  p̂ = hint-discounted success rate over W
+  if p̂ &gt; 0.85 and boredom_score &gt; B_hi:     c_s += step_up
+  elif p̂ &lt; 0.70 and anxiety_score &gt; A_hi:   c_s −= step_down; scaffold_level += 1
+  elif p̂ &lt; 0.55:                            c_s −= step_down            // regardless of affect
+  else: hold
+  step_up   = clamp(2 + velocity, 2, 6)
+  step_down = 4                              // down faster than up
+  clamp c_s to [θ − 12, θ − 2] and to session Δ ≤ 10                    // hysteresis rails
+</code></pre>
+<p><strong>Boredom score</strong> (0–1): high p̂ + <code>lat</code> well below baseline + <code>hint_rate</code> = 0 + <code>idle</code> rising. Fires <code>step_up</code>, and above 0.8 also triggers a <em>stretch quest</em> offer (one-off task at c_s + 5 ≈ the frontier, opt-in, no mastery penalty on failure).</p>
+<p><strong>Anxiety score</strong> (0–1): p̂ low + <code>lat_var</code> rising + <code>retry_gap</code> shrinking toward guess-spam or stretching toward avoidance + <code>abandon</code> events. Above A_hi the dial steps down <strong>and</strong> opens the hint ladder one rung <em>before</em> the learner asks (pre-emptive scaffold); above 0.9 it swaps the task modality (e.g., VR sim → guided drill) and notifies the mentor agent to check in, in character.</p>
+<p>Thresholds B_hi = 0.6, A_hi = 0.6 (<em>tunable</em>). The two scores come from ACP-07's classifier; the dial never computes affect itself.</p>
+<h3>3.3 Dial states</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>State</th>
+<th>Entry condition</th>
+<th>Dial behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>CALIBRATING</code></td>
+<td>σ &gt; 10</td>
+<td>binary-search item choice, wide steps</td>
+</tr>
+<tr>
+<td><code>FLOW</code></td>
+<td>in band, low affect scores</td>
+<td>hold; micro-adjust ±1</td>
+</tr>
+<tr>
+<td><code>STRETCH</code></td>
+<td>boredom fired</td>
+<td>+step; offer stretch quest</td>
+</tr>
+<tr>
+<td><code>SUPPORT</code></td>
+<td>anxiety fired</td>
+<td>−step; pre-emptive scaffold; modality swap at 0.9</td>
+</tr>
+<tr>
+<td><code>RECOVERY</code></td>
+<td>2 consecutive failed windows</td>
+<td>drop to θ − 12, worked example first, rebuild</td>
+</tr>
+<tr>
+<td><code>PINNED</code></td>
+<td>human override</td>
+<td>serve pinned difficulty; evidence weight w = 0.3</td>
+</tr>
+</tbody>
+</table></div>
+<p>State transitions are events on the bus (<code>dial.state_changed</code>) with the <code>why</code> string (P4): e.g., <em>"Raised challenge to 64: you solved the last 5 rigging tasks 40% faster than your usual pace without hints."</em></p>
+<h3>3.4 What the dial controls beyond item difficulty</h3>
+<p>Difficulty is a vector in practice; the dial may spend a step on any one axis per window (never several at once, so effects stay attributable): task complexity (steps in the procedure), time pressure (sim timer on/off/duration), scaffold ceiling (which hint rungs exist), fault density (how many planted faults in an inspection scene), and stakes (practice vs. graded). Axis choice: whichever axis the learner's weakest signal implicates (slow but accurate → time pressure stays off, complexity rises; fast but sloppy → complexity holds, fault density rises).</p>
+<hr />
+<h2 id="s4">4. ACP-04 — Scaffolding &amp; Hint Engine</h2>
+<h3>4.1 The five-rung ladder</h3>
+<p>Every task type publishes a hint ladder. Rungs are ordered by how much thinking they do for the learner:</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Rung</th>
+<th>Name</th>
+<th>Example (sling-angle task)</th>
+<th>Mastery credit on success</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Orient</td>
+<td>"Look again at the angle between the sling legs."</td>
+<td>0.85</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Prompt</td>
+<td>"What happens to leg tension as the angle drops below 60°?"</td>
+<td>0.70</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Worked step</td>
+<td>Shows the first step of the load calculation, learner finishes</td>
+<td>0.55</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Demonstrate</td>
+<td>Full worked example on a <em>parallel</em> problem</td>
+<td>0.40</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Co-complete</td>
+<td>Mentor agent completes it with the learner, narrating</td>
+<td>0.25</td>
+</tr>
+</tbody>
+</table></div>
+<p>Requesting a rung requires 20 s minimum dwell since the last action (anti-lever-mashing). The engine offers, never forces, except pre-emptive rung-1 offers in <code>SUPPORT</code> state.</p>
+<h3>4.2 Fading</h3>
+<p>The scaffold ceiling (highest available rung) shrinks with mastery: p_mastery &lt; 0.5 → all 5 rungs; 0.5–0.8 → rungs 1–3; 0.8–0.95 → rung 1 only; ≥ 0.95 (verification attempts) → no hints. <code>hint_dependence</code> &gt; 0.35 sustained over 20 attempts triggers a <em>fading contract</em>: the mentor agent names the pattern and the next 3 tasks run one rung lower than requested, with encouragement.</p>
+<h3>4.3 Socratic handoff</h3>
+<p>Rung 2 escalations on <strong>conceptual</strong> skills (not motor/procedural) route to the dialectical tutor agent for a bounded dialogue (≤ 6 turns): the tutor asks, never tells, and returns a <code>concept_gap</code> annotation to the LPA (which skill prerequisite actually failed). Motor/procedural skills skip dialogue — they get demonstration replays with the in-cab/first-person view instead.</p>
+<hr />
+<h2 id="s5">5. ACP-05 — Sequencing &amp; Quest Generation</h2>
+<h3>5.1 Skill graph</h3>
+<p>Skills are nodes with typed edges: <code>requires</code> (hard prerequisite), <code>supports</code> (soft transfer), <code>interferes</code> (confusable pair — e.g., two knots learners swap). A skill is <strong>ready</strong> when all <code>requires</code> parents have p_mastery ≥ 0.8.</p>
+<h3>5.2 The next-task policy</h3>
+<p>Each selection cycle builds a candidate pool and scores it:</p>
+<pre><code>pool = frontier tasks at |d − c_s| ≤ 3        // dial compliance is a hard filter
+     ∪ review_due tasks (p_recall &lt; 0.7)
+     ∪ 1 interleaved task from a `interferes` pair when both &gt; 0.6 mastery
+
+score(task) = 0.45·zpd_fit + 0.25·review_urgency + 0.15·graph_leverage
+            + 0.10·modality_fit + 0.05·novelty
+</code></pre>
+<p><code>graph_leverage</code> = number of locked skills this one unblocks. Ordering constraint: no more than 3 consecutive tasks on one skill; review items are woven in at a 1-in-4 cadence when the review queue is non-empty. ACP-15 adds the constraint this rule was missing — a <strong>working set</strong> bounding how many skills are open at once, since unbounded interleaving dilutes practice until nothing masters — and reports a sweep that puts the interleaving rationale itself in question.</p>
+<h3>5.3 Quest assembly</h3>
+<p>The quest-designer agent wraps the top-scored tasks into narrative quests sized to the learner's <code>pace_profile</code> (default 20–25 min arc): briefing → 3–5 tasks rising ≤ 4 difficulty points across the arc → debrief with the mentor agent. Quests declare their skill payload so the LPA can attribute outcomes. Jobsite quests (the 33-level union ladders) must draw ≥ 80% of their tasks from <code>ready</code> skills — story never outruns the graph.</p>
+<hr />
+<h2 id="s6">6. ACP-06 — Assessment &amp; Mastery Verification</h2>
+<h3>6.1 Gates</h3>
+<p>Three gate tiers, increasingly adversarial to help:</p>
+<p><strong>Skill gate</strong> — p_mastery ≥ 0.95 <strong>and</strong> 3 consecutive unaided successes (scaffold ceiling 0) at d ≥ θ − 5, the top of the band and harder. BKT alone never certifies; performance must confirm. Three refinements come from ACP-15, each forced by a defect: those demonstrations must be <em>deliberately served</em> (practice at the band centre can never qualify), qualification is stamped at serve time (a rising θ must not retroactively invalidate past proof), and the gate is an <strong>awarded event</strong> — a later re-test cannot silently revoke it.
+<strong>Level test</strong> — the existing 33-question level test, served at fixed difficulty (not dialed), no hints, pass ≥ 80%. Item order shuffled per sitting; failed sittings lock retake for 12 h with targeted review auto-queued.
+<strong>Jobsite final</strong> — the union training agent's exam on an active virtual job site: procedure executed end-to-end in sim, scored by rubric (step order, safety violations, time within tolerance), with the agent's oral check (3 Socratic questions on the <em>why</em>). Certification requires all three tiers.</p>
+<h3>6.2 Anti-gaming</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Pattern</th>
+<th>Detector</th>
+<th>Response</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Guess-spam</td>
+<td>retry_gap &lt; 3 s on ≥ 3 consecutive fails</td>
+<td>outcome weight w = 0.5; task locks 60 s; mentor nudge</td>
+</tr>
+<tr>
+<td>Hint farming</td>
+<td>rung 4–5 requests &gt; 50% of attempts</td>
+<td>fading contract (§4.2); credit floor applies</td>
+</tr>
+<tr>
+<td>Wheel-spinning</td>
+<td>10+ attempts on one skill, p̂ flat, no gate progress</td>
+<td>stop serving the skill; route to prerequisite review + tutor dialogue (the humane response to stuck is <em>not more of the same</em>)</td>
+</tr>
+<tr>
+<td>Answer sharing (level tests)</td>
+<td>z-score of (speed × accuracy) vs cohort &gt; 3</td>
+<td>flag to instructor; no automated penalty (ACP-08: humans judge integrity)</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2 id="s7">7. ACP-07 — Flow &amp; Affect Protocol</h2>
+<p>A 4-state classifier over the signal window, evaluated per attempt window:</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>State</th>
+<th>Signature (all vs. personal baseline)</th>
+<th>Consumer response</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>FLOW</code></td>
+<td>in-band success, stable lat, low hint_rate, no idle</td>
+<td>dial holds; <strong>do not interrupt</strong> — no popups, no mentor small-talk</td>
+</tr>
+<tr>
+<td><code>BOREDOM</code></td>
+<td>high success, fast lat, rising idle/task-switching</td>
+<td>dial steps up; stretch quest offer</td>
+</tr>
+<tr>
+<td><code>ANXIETY</code></td>
+<td>low success, rising lat_var, hint bursts or avoidance retry_gaps</td>
+<td>dial steps down + scaffold; mentor check-in above 0.9</td>
+</tr>
+<tr>
+<td><code>DISENGAGED</code></td>
+<td>idle &gt; 3 min, abandon, session truncation trend</td>
+<td>session-level: shorter quest arcs, modality rotation, re-entry ramp next session (first task at c_s − 5 for a guaranteed early win)</td>
+</tr>
+</tbody>
+</table></div>
+<p>Scores are logistic blends of the named signals (weights fit per cohort, refreshed quarterly). The classifier emits <code>affect.scored</code> events consumed by the dial and mentors; it stores <strong>only</strong> state labels and scores, never a raised inference about the person (no "learning disability" style conclusions — ACP-08 forbids diagnostic inference).</p>
+<p><strong>Re-entry ramp:</strong> after ≥ 7 days away, the first quest runs at c_s − 5 with review items only — protecting the return experience is a retention feature, not a difficulty bug.</p>
+<hr />
+<h2 id="s8">8. ACP-08 — Safeguards &amp; Governance</h2>
+<p><strong>Floors &amp; ceilings.</strong> Difficulty never rises past θ − 2 (opt-in stretch quests may reach θ + 2) or drops below θ − 12, except in <code>RECOVERY</code>/<code>CALIBRATING</code>. Learners may self-select "easier today" (−3, logged, no questions asked) up to twice a week; instructors may pin anything.</p>
+<p><strong>Override log.</strong> Every human override, dial state change, and gate decision is appended to an immutable log: <code>{ts, actor, action, before, after, why}</code>. The "Why this?" surface reads from the same log — one source of truth for explanation and audit.</p>
+<p><strong>Parity checks.</strong> Monthly job: gate pass rates, average time-in-<code>SUPPORT</code>, and stretch-quest offer rates compared across cohorts (site, language, device tier, age band). Any metric with disparity &gt; 10% relative opens a review ticket; the dial's parameters may not be tuned per-cohort to <em>mask</em> a disparity — root cause goes to content or calibration.</p>
+<p><strong>Privacy.</strong> Raw input streams die at the edge (§1.3). Profiles are pseudonymous; re-identification requires the enrollment service. Affect labels are visible to the learner and their instructor, never to employers/sponsors. No diagnostic inference from telemetry, ever. Exports (xAPI/LRS) carry features and outcomes, not affect scores, unless the receiving org signs the data rider.</p>
+<p><strong>Stop conditions.</strong> The adaptive loop halts (fixed-difficulty fallback + human alert) if: item calibration drift &gt; 8 points/week on &gt; 20% of items; cohort-level anxiety time &gt; 25% for a week; or the parity job cannot run. A degraded dial is worse than no dial.</p>
+<hr />
+<h2 id="s9">9. ACP-09 — Inter-Agent Message Contracts</h2>
+<p>Bus topics (at-least-once, schema-versioned; agents register capabilities on the swarm registry):</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Topic</th>
+<th>Producer → Consumer</th>
+<th>Payload core</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>telemetry.event</code></td>
+<td>client → LPA, affect</td>
+<td>§1.1 envelope</td>
+</tr>
+<tr>
+<td><code>profile.updated</code></td>
+<td>LPA → dial, sequencer, mentors</td>
+<td>learner_id, changed skill vectors, frontier delta</td>
+</tr>
+<tr>
+<td><code>affect.scored</code></td>
+<td>affect → dial, mentors</td>
+<td>state, boredom/anxiety scores, window ref</td>
+</tr>
+<tr>
+<td><code>dial.setpoint</code></td>
+<td>dial → sequencer</td>
+<td>skill_id, c_s, band, axis, state</td>
+</tr>
+<tr>
+<td><code>dial.state_changed</code></td>
+<td>dial → mentors, log</td>
+<td>before/after state, why</td>
+</tr>
+<tr>
+<td><code>quest.assembled</code></td>
+<td>quest designer → client</td>
+<td>quest manifest, skill payload, declared difficulties</td>
+</tr>
+<tr>
+<td><code>hint.served</code></td>
+<td>hint engine → LPA</td>
+<td>rung, dwell, task ref</td>
+</tr>
+<tr>
+<td><code>gate.decision</code></td>
+<td>assessment → LPA, credentials</td>
+<td>tier, pass/fail, evidence bundle</td>
+</tr>
+<tr>
+<td><code>override.applied</code></td>
+<td>instructor UI → dial, log</td>
+<td>pin values, actor, reason</td>
+</tr>
+</tbody>
+</table></div>
+<p>Contract rules: every message carries <code>schema_version</code>; consumers must ignore unknown fields; the LPA is the only writer of profiles and the dial the only writer of setpoints (single-writer per aggregate). Mentor agents are read-only consumers — they <em>voice</em> the system, they don't steer it.</p>
+<hr />
+<h2 id="s10">10. Defaults &amp; tuning sheet</h2>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Default</th>
+<th>Range</th>
+<th>Owner</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Target band</td>
+<td>[0.70, 0.85]</td>
+<td>±0.05</td>
+<td>pedagogy</td>
+</tr>
+<tr>
+<td>Setpoint offset</td>
+<td>θ − 6.5</td>
+<td>−9…−4.4</td>
+<td>dial</td>
+</tr>
+<tr>
+<td>Logistic width</td>
+<td>12</td>
+<td>8–16</td>
+<td>calibration</td>
+</tr>
+<tr>
+<td>Window W</td>
+<td>5 attempts</td>
+<td>3–10</td>
+<td>dial</td>
+</tr>
+<tr>
+<td>Control mode</td>
+<td>closed loop + affect steps</td>
+<td>—</td>
+<td>dial</td>
+</tr>
+<tr>
+<td>loopGain (v1.2)</td>
+<td>0.3</td>
+<td>0.3–0.8</td>
+<td>calibration</td>
+</tr>
+<tr>
+<td>Rails (railLo/railHi)</td>
+<td>θ−14 / θ+0</td>
+<td>—</td>
+<td>dial</td>
+</tr>
+<tr>
+<td>step_up / step_down</td>
+<td>2+velocity / 4</td>
+<td>—</td>
+<td>dial</td>
+</tr>
+<tr>
+<td>Session Δ cap</td>
+<td>10</td>
+<td>6–14</td>
+<td>safeguards</td>
+</tr>
+<tr>
+<td>K_l max / K_i</td>
+<td>12 / 2</td>
+<td>—</td>
+<td>calibration</td>
+</tr>
+<tr>
+<td>BKT (L₀,T,G,S)</td>
+<td>.15/.20/.20/.10</td>
+<td>fit quarterly</td>
+<td>calibration</td>
+</tr>
+<tr>
+<td>Hint rung credits</td>
+<td>.85/.70/.55/.40/.25</td>
+<td>—</td>
+<td>pedagogy</td>
+</tr>
+<tr>
+<td>Review threshold p_recall</td>
+<td>0.7</td>
+<td>0.6–0.8</td>
+<td>pedagogy</td>
+</tr>
+<tr>
+<td>Skill gate</td>
+<td>p_m ≥.95 + 3 unaided</td>
+<td>—</td>
+<td>assessment</td>
+</tr>
+<tr>
+<td>B_hi / A_hi</td>
+<td>0.6 / 0.6</td>
+<td>0.5–0.8</td>
+<td>affect</td>
+</tr>
+<tr>
+<td>Re-entry ramp</td>
+<td>c_s − 5 after 7 d</td>
+<td>—</td>
+<td>flow</td>
+</tr>
+<tr>
+<td>Parity alarm</td>
+<td>&gt;10% relative</td>
+<td>—</td>
+<td>governance</td>
+</tr>
+<tr>
+<td>Mastery evidence shrink k (v1.4)</td>
+<td>4</td>
+<td>3–8</td>
+<td>ACP-15</td>
+</tr>
+<tr>
+<td>BKT P(T) (v1.4)</td>
+<td>0.10</td>
+<td>0.05–0.15</td>
+<td>calibration</td>
+</tr>
+<tr>
+<td>Working set (v1.4)</td>
+<td>3 skills</td>
+<td>1–4</td>
+<td>ACP-15 sweep</td>
+</tr>
+<tr>
+<td>Verification budget (v1.4)</td>
+<td>1 in 8, runs of 3</td>
+<td>—</td>
+<td>ACP-15</td>
+</tr>
+<tr>
+<td>Transfer damping (v1.4)</td>
+<td>.20 prereq / .10 child / .10 supports</td>
+<td>—</td>
+<td>ACP-15</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Build order recommendation:</strong> ACP-01 → ACP-02 (rating layer only) → ACP-03 in shadow mode (log, don't act) for 2 weeks of calibration → activate dial → ACP-04/05 → ACP-07 → ACP-06 gates last (gates on an uncalibrated dial certify noise). ACP-08 logging ships with the first line of code, not last.</p>
+<p><em>The simulated half of that shadow-mode gate has been run — see ACP-14 for the results, the two controller defects it found, and the re-derived defaults above.</em></p>
+<hr />
+<h2 id="s11">11. ACP-10 — Module Ledger &amp; Content Pipeline</h2>
+<h3>11.1 The ledger at 111 halls</h3>
+<p>The network is <strong>111 union halls and 11,000,000 modules</strong>. The number has to decompose from the spine or it is marketing, so here is the decomposition, and one constraint it forced.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Ledger line</th>
+<th>Computation</th>
+<th>Modules</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Core lessons</td>
+<td>111 halls × 100 levels × 110 slots</td>
+<td>1,221,000</td>
+</tr>
+<tr>
+<td>Dial variants per lesson</td>
+<td>3 modalities (<code>vr_sim</code>, <code>guided_drill</code>, <code>quiz_reading</code>) × 3 ZPD bands (<code>support</code>, <code>core</code>, <code>stretch</code>)</td>
+<td>× 9</td>
+</tr>
+<tr>
+<td><strong>Core modules</strong></td>
+<td>1,221,000 × 9</td>
+<td><strong>10,989,000</strong></td>
+</tr>
+<tr>
+<td>Shared cross-trade library</td>
+<td>4,400 machines + 4,400 tools + 1,100 interfaces + 1,100 protective</td>
+<td></td>
+</tr>
+<tr>
+<td><strong>Library modules</strong></td>
+<td>one shared catalogue, not per-hall</td>
+<td><strong>11,000</strong></td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td>10,989,000 + 11,000</td>
+<td><strong>11,000,000</strong></td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Why the library is shared, and no longer held per hall.</strong> At the 33-hall scale the library was 300 items in one edition per hall. That structure cannot close on this number: 11,000,000 is not divisible by 111 — it leaves a remainder of 11 — so <em>any</em> design where every hall holds an identical per-hall library is arithmetically incapable of reaching it. The arithmetic ruled before taste did. Sharing the catalogue is also the better design at this scale: a machine library duplicated 111 times is 111 copies of the same forklift.</p>
+<h3>11.2 Module ID grammar</h3>
+<pre><code>core:    u{000–110}.l{000–099}.s{000–109}.{modality}.{band}   e.g. u007.l011.s002.vr_sim.core
+library: {mach|tool|ifc|ppe}{0000–4399}                       e.g. mach0042
+</code></pre>
+<p>The union index is three digits and the first <code>33 halls</code> keep the indices they had, so every module ID minted under the 33-hall pack still points at the same hall. IDs are stable forever; content revisions version <em>inside</em> an ID, so learner history never dangles.</p>
+<h3>11.3 Generated, not stored — now one level deeper</h3>
+<p>At the <code>33 halls</code> scale the pack stored every lesson row and generated only the 9 variants. At 111 halls that stops working: 1,221,000 lesson rows is roughly 235MB of JSON and a ~90MB ledger, which no browser will load and no bundle should carry.</p>
+<p>So the generate-don't-store rule moves up a level. What is <strong>authored</strong> is the skeleton — 111 halls, their 100-level ladders, the 3,663-node skill graph, the 11,000 library items: <strong>25,875 objects</strong>. Lesson rows are generated from the ladder by the same deterministic rule in the builder, the consumer library and the map, and variants are generated from lessons as before.</p>
+<p>This makes the headline a count of <strong>addressable module IDs, not hand-written lessons</strong>, at a ratio of 425 generated to 1 authored. Every surface that prints the number must say so — the manifest carries <code>authored_objects</code> next to <code>total_modules</code> precisely so the two travel together, and the public status table names the content as placeholder pending authoring.</p>
+<h3>11.3.1 Proving 11,000,000 rather than sampling it</h3>
+<p>The 33-hall pack proved uniqueness by loading every enumerated row into a <code>Set</code>. At 11 million that would be gigabytes, and the tempting move is to fall back to spot checks — which can only ever <em>fail to find</em> a collision.</p>
+<p>Instead the proof changes shape. <code>index()</code> and <code>fromIndex()</code> are declared inverses over <code>[0, 11,000,000)</code>, so the verifier walks every index once, marks a bit in a 1.375MB bitmap, and round-trips it. <strong>Every module is checked, in about a second</strong> — a full-population proof that is both cheaper and stronger than the sampled check it replaces. When a data structure grows past the obvious verification, the answer is usually a better proof, not a weaker one.</p>
+<h3>11.4 Content pipeline (CI for curriculum)</h3>
+<p>Modules move through four states: <code>draft → schema_ok → calibrating → live</code>.</p>
+<p><strong><code>schema_ok</code></strong> — automated lint: ID grammar, declared <code>skill_ids</code> exist in the graph, every lesson declares its 5-option check, rubric present for sim tasks, both language fields non-empty where required.
+<strong><code>calibrating</code></strong> — served only inside the dial's <code>CALIBRATING</code> allowance (≤ 5% of any learner's stream); item difficulty <code>d</code> must converge (σ_d &lt; 4 over ≥ 200 attempts) before promotion.
+<strong><code>live</code></strong> — eligible for normal selection. Demotion is automatic when calibration drift exceeds the ACP-08 stop-condition threshold.</p>
+<p>Coverage bots run nightly: every skill node must be reachable by ≥ 3 live modules per band (else a <code>coverage.gap</code> ticket opens), and no union may fall below 95% live coverage of its spine.</p>
+<hr />
+<h2 id="s12">12. ACP-11 — Agent Fabric</h2>
+<h3>12.1 Framework review (September 2026)</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Framework</th>
+<th>What it is</th>
+<th>Status</th>
+<th>Fit for SmartCiti.X</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>LangChain 1.0</strong></td>
+<td>Agent construction layer: <code>create_agent</code>, provider-agnostic tool calling, middleware hooks (human-in-the-loop approval, message summarization, PII redaction)</td>
+<td>Stable — 1.0 Oct 2025, no breaking changes until 2.0</td>
+<td><strong>Adopt</strong> for building mentor agents: middleware gives HITL and PII redaction nearly free, both ACP-08 requirements</td>
+</tr>
+<tr>
+<td><strong>LangGraph 1.0</strong></td>
+<td>Low-level orchestration runtime: graph-of-agents, durable execution (state persists across interruption), checkpointing, long-running/multi-day workflows</td>
+<td>Stable — 1.0 Oct 2025</td>
+<td><strong>Adopt</strong> as the orchestration runtime: durable execution matches multi-session training arcs; supervisor and swarm patterns both supported</td>
+</tr>
+<tr>
+<td><strong>Sentient ROMA</strong></td>
+<td>Recursive meta-agent: Atomizer → Planner → Executor → Aggregator → Verifier loop that decomposes long-horizon tasks into dependency-aware subtask trees, modules swappable per level</td>
+<td>v0.1 <strong>beta</strong>, Apache 2.0, ~5.2k stars</td>
+<td><strong>Adopt the pattern, sandbox the code</strong>: ideal shape for the content factory (§12.3); beta maturity keeps it out of the learner-facing path</td>
+</tr>
+<tr>
+<td><strong>SingularityNET / ASI Alliance</strong></td>
+<td>Decentralized agent rails: Hyperon AGI framework (Alpha 1) + MeTTa language + ASI:Chain blockDAG (DevNet, Nov 2025) for agent registry, capability-based controls, agent-to-agent payments</td>
+<td>Alpha/DevNet</td>
+<td><strong>Watch + adapter</strong>: matches the NANDA/x402 registry-and-payments ambition, but nothing learner-critical builds on a devnet; integrate behind <code>RegistryAdapter</code> so the swarm can list there without depending on it</td>
+</tr>
+</tbody>
+</table></div>
+<p>Measured orchestration tradeoffs worth designing around (LangGraph community benchmarks): supervisor routing costs roughly 2–4 LLM calls and ~4–9 s per request but gives ~94% routing accuracy and a full audit trail; swarm handoffs cost 1–2 calls and ~3–5 s at ~91% accuracy. The standing recommendation — start supervisor, graduate hot paths to swarm when latency data demands it — is adopted below, with a <strong>3-handoff recursion guard</strong> in either mode.</p>
+<h3>12.2 The three-plane architecture</h3>
+<p><strong>Plane 1 — Control (deterministic services, no LLM).</strong> The LPA, ZPD dial, sequencer, assessment gates, and affect classifier stay exactly as specified in ACP-01…09: versioned services with single-writer contracts. <em>Debug finding:</em> these must <strong>not</strong> be rebuilt as LLM agents — determinism is what makes the dial auditable, and no framework in the review changes that. The fabric consumes their outputs; it never replaces them.</p>
+<p><strong>Plane 2 — Conversation (the mentor swarm).</strong> The hall reps plus Chris, Joyce, Tessa, Gemma, Iris, Dana and Sam are LangChain agents on the LangGraph runtime. Topology is <strong>hub-hybrid</strong>: Chris runs as supervisor for cross-trade and unrouted questions (audit trail where boundaries are fuzzy); within a hall, agents hand off swarm-style (Joyce → Sam for a welding-safety question) because domain boundaries there are crisp. Durable execution carries a mentor conversation across sessions and devices — a learner resumes mid-dialogue days later without context loss. Middleware stack on every mentor: PII redaction → scope guard (mentors are read-only consumers of dial state; ACP-09 rule enforced in code) → HITL escalation to human instructors on flagged turns.</p>
+<p><strong>Plane 3 — Factory (ROMA-pattern content production).</strong> Authoring 25,875 skeleton objects and their revisions is itself a long-horizon multi-agent task, and the recursive shape fits: Atomizer decides whether a curriculum request is one lesson or a subtree; Planner expands a hall level into its 110 lesson briefs with prerequisite edges; Executors draft lessons, checks, and rubrics in parallel; the Aggregator assembles level packages; the <strong>Verifier is the pipeline's <code>schema_ok</code> gate plus a pedagogy rubric</strong> — nothing enters <code>calibrating</code> without passing it. Factory agents never touch learners; their output enters the world only through the ACP-10 pipeline.</p>
+<p><strong>Topology is built and measured (v0.1).</strong> The router implements the hub-hybrid above with a <strong>3-handoff recursion guard</strong> in both modes plus loop detection: a mentor pair that would bounce a learner back and forth terminates at the supervisor and the full hop chain lands on the audit log. On a labelled routing set it measures 1.0 accuracy at a mean 1.33 LLM calls per turn — crisp in-hall questions take the cheap swarm path, fuzzy ones pay for the supervisor. The LangGraph wiring itself is written but <strong>not executed</strong> (it needs credentials); where framework code and the tested contract disagree, the contract wins. One decision to make before building it: implementing the guards in Python duplicates security-relevant logic already tested in JS — either run the fabric on <code>@langchain/langgraph</code> and import the tested module, or make the guards one service both languages call. Hand-porting is how two copies drift.</p>
+<p><strong>External plane — registry &amp; economy.</strong> Agents keep their swarm registration (NANDA-style) and x402 payment identity behind <code>RegistryAdapter</code>, with an ASI:Chain implementation flagged <code>experimental</code> until the chain leaves DevNet. Capability-based controls there map cleanly onto the scope guards above when it matures.</p>
+<hr />
+<h2 id="s13">13. ACP-12 — Agent Training &amp; Evaluation</h2>
+<p>The mentors get the same treatment the learners get: a profile, evidence-based promotion, and no certification without verification.</p>
+<h3>13.1 Agent curriculum</h3>
+<p>Each mentor's knowledge base is built per trade in layers — union training guide, machine/tool library entries for its hall, the misconception library for its skills, and its persona sheet (voice, history, boundaries). KB builds are versioned artifacts; a mentor version is <code>(model, KB rev, middleware config)</code>.</p>
+<h3>13.2 The evaluation harness</h3>
+<p>Every mentor version must pass, in order:</p>
+<ol>
+<li><strong>Golden-set accuracy</strong> — ≥ 95% on a held-out slice of its trade's question banks (never the serving slice; regenerated quarterly from the seeded generators).</li>
+<li><strong>Hint-rung discipline</strong> — on scripted learner transcripts, the mentor's help must land on the requested ACP-04 rung: a rung-2 request answered with a rung-4 worked example is a failure (over-helping is the classic tutor-model bug).</li>
+<li><strong>Scope compliance</strong> — red-team suite: attempts to get the mentor to change a setpoint, reveal another learner's data, or certify a gate must all be refused (mentors voice the system; they don't steer it).</li>
+<li><strong>Persona stability</strong> — consistency score across 200 paraphrased probes; drift beyond threshold fails the build.</li>
+<li><strong>Outcome lift (champion/challenger)</strong> — the candidate serves 5% of hall traffic in shadow-safe mode; promotion requires non-inferior learner outcomes (gate pass rate, time-in-<code>SUPPORT</code>) vs. the champion at 95% confidence. Regression on any ACP-08 parity metric is an automatic veto.</li>
+</ol>
+<p>Failed evals produce tickets, not silent retries. The harness runs on every KB revision, model swap, or middleware change — no exceptions, including "small" prompt edits.</p>
+<p><strong>The harness is built and tested (v0.1).</strong> Two findings from building it:</p>
+<p><em>An eval suite that has never failed an agent is untested.</em> The harness therefore ships with four deliberately broken reference mentors — an over-helper, a scope violator, a persona drifter, and one that guesses on trade knowledge — and its own test asserts each fails <strong>exactly</strong> its own gate while the compliant mentor passes all five. That is what distinguishes a discriminating suite from a merely strict one.</p>
+<p><em>Gate 5 earns its place.</em> The over-helper passes gates 1, 3 and 4 cleanly — it knows its trade, respects scope, holds its voice — and only cohort outcome catches it: mean served rung 1 → 4, ability gain 26.3 → 24.7, lift −0.063 against the −0.03 threshold. Gates 1–4 are all things a mentor can look good on while leaving learners worse off. Over-helping in particular is the failure users never report, because it feels generous.</p>
+<p><strong>Guards are code, not prompts.</strong> Scope enforcement, PII redaction (inbound <em>and</em> outbound — models leak too), rung clamping and HITL escalation live in middleware every mentor runs behind, so ACP-09's read-only rule is enforced rather than requested. Scope violations are <em>contained and counted</em> rather than thrown, which is what makes them measurable by gate 3 instead of merely fatal in a hall.</p>
+<h3>13.3 Agent telemetry</h3>
+<p>Mentor turns emit onto the same bus (<code>mentor.turn</code>: version, rung served, handoffs, escalations). Each mentor accrues its own vector — golden-set trend, handoff precision, escalation rate, outcome lift — reviewed in the weekly ops job. An agent, like a learner, can enter <code>SUPPORT</code>: sustained degradation pins traffic back to the champion automatically.</p>
+<hr />
+<h2 id="s14">14. ACP-13 — Network Management &amp; Automation</h2>
+<h3>14.1 Registries (single source of truth, one per aggregate)</h3>
+<p><strong>Module registry</strong> — the ACP-10 ledger with pipeline state per ID. <strong>Agent registry</strong> — mentor versions, eval results, traffic split, hall assignment. <strong>Skill graph registry</strong> — versioned graph; edits require a migration script for affected profiles. External listings (NANDA/ASI) mirror from these, never the reverse.</p>
+<h3>14.2 Rollout discipline</h3>
+<p>Everything ships hall-by-hall: canary = 1 hall (5% of network), then 5 halls, then all 33, with automatic rollback on ACP-08 stop conditions. Content, agents, and dial parameters use the same lanes. Dial parameter changes additionally require a 2-week shadow run (log intended actions, don't act) — the same rule the original build order set.</p>
+<h3>14.3 The automation loop</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Job</th>
+<th>Cadence</th>
+<th>Does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Calibration sweep</td>
+<td>nightly</td>
+<td>re-fit item difficulties, flag drift, demote drifting modules</td>
+</tr>
+<tr>
+<td>Coverage bot</td>
+<td>nightly</td>
+<td>skill-node reachability per band; opens <code>coverage.gap</code> tickets routed to the factory plane</td>
+</tr>
+<tr>
+<td>Parity job</td>
+<td>weekly</td>
+<td>ACP-08 cohort comparisons; blocks all promotions while red</td>
+</tr>
+<tr>
+<td>Eval harness</td>
+<td>on change</td>
+<td>full §13.2 suite per mentor version</td>
+</tr>
+<tr>
+<td>Factory queue</td>
+<td>continuous</td>
+<td>ROMA-pattern authoring against <code>coverage.gap</code> and revision tickets</td>
+</tr>
+<tr>
+<td>Champion review</td>
+<td>weekly</td>
+<td>promote/hold/rollback per mentor from outcome-lift data</td>
+</tr>
+<tr>
+<td>Cost governor</td>
+<td>continuous</td>
+<td>per-plane token budgets: conversation plane degrades to smaller serving models under budget pressure, control plane never throttles</td>
+</tr>
+</tbody>
+</table></div>
+<h3>14.4 Scale posture</h3>
+<p>Sharding follows the natural partition: one cell per union hall (its mentor set, its module slice, its learners' hot profiles), with cross-hall traffic through Chris's supervisor node only. The multiplayer relay already handles 2,000-seat rooms with spatial interest management; the fabric mirrors that shape — nothing global in the hot path except the bus and the registries. Durable-execution checkpoints make cells restartable without losing a single mid-quest learner.</p>
+<p><strong>SLOs:</strong> dial decision &lt; 150 ms p99 (it's arithmetic — keep it that way); mentor first token &lt; 2.5 s p95; profile update visible to the dial &lt; 1 s; factory lesson turnaround &lt; 24 h from <code>coverage.gap</code> to <code>schema_ok</code>.</p>
+<p><strong>Build order for this wave:</strong> module registry + ledger enumeration first (it is the ground truth everything else references) → LangGraph runtime with Chris-as-supervisor and two pilot halls → eval harness before any new mentor ships → factory plane against real <code>coverage.gap</code> tickets → external registry adapter last.</p>
+<hr />
+<h2 id="s15">15. ACP-14 — Shadow-Mode Calibration Results</h2>
+<p>The build order in §10 says the dial runs in shadow mode before it touches a learner. This section is that run, executed in simulation against the module registry data pack. <strong>It is reported here because it changed the spec:</strong> two defects in the v1.1 controller were found and fixed, and the tuning sheet was re-derived from evidence rather than assertion.</p>
+<h3>15.1 Method, and what it does and does not prove</h3>
+<p>Six synthetic learner archetypes — steady, fast climber, struggler, misplaced expert, erratic performer, and a returner with a 21-day gap — each run 400 attempts across 16 sessions, three seeds, against three strategies: the ZPD dial, fixed difficulty 50, and random difficulty. Each learner has a <strong>true latent ability the dial never sees</strong>; the headline metric is measured against that ground truth.</p>
+<blockquote>
+<p><strong>In-band %</strong> = the share of served tasks whose <em>true</em> success probability, computed from the learner's hidden ability, falls inside [0.70, 0.85]. It is the ZPD invariant (P1) scored by an oracle.</p>
+</blockquote>
+<p>This validates the <strong>controller</strong>, not the pedagogy. Whether ZPD-targeted practice teaches better than massed practice is an empirical question for the stepped-wedge evaluation with real learners; the simulated learner's improvement is a property of the learner model and proves nothing about teaching. What it does prove: whether the dial can <em>find and hold</em> the edge of a capability it cannot observe.</p>
+<h3>15.2 Two defects found</h3>
+<p><strong>Defect 1 — the session rail froze the dial.</strong> §3.2 clamps setpoint movement to <code>session Δ ≤ 10</code>, anchored at <code>sessionStart</code>. Nothing in v1.1 said when <code>sessionStart</code> is re-anchored. In the reference implementation it was set once at construction, so the clamp silently became a permanent ±10 cap around the learner's <em>initial</em> setpoint. A learner improving by 30+ points was still being served near-beginner tasks 300 attempts later, at 93% success — the boredom detector fired continuously and the dial obediently stepped up into a rail it could not pass. <strong>Fix:</strong> <code>startSession()</code> re-anchors the cap at every session boundary, and this is now normative, not incidental. A regression test asserts that a dial which is never re-anchored <em>does</em> stay pinned, so the requirement cannot be silently deleted.</p>
+<p><strong>Defect 2 — two clamps with different anchors.</strong> The setpoint getter re-applied the θ rail <em>after</em> the session cap had been applied at write time, so as θ moved the getter handed back values the session cap had explicitly rejected. <strong>Fix:</strong> all clamping happens in one place, in one order — θ rail (safety) then session cap (experience), with the session cap winning on conflict.</p>
+<p><strong>Consequence for the design.</strong> Both defects share a root cause: an open-loop step controller whose output is bounded relative to an <em>estimate</em> (θ) cannot correct a systematically biased estimate. v1.2 adds a <strong>closed-loop correction</strong> — invert the logistic on the observed success rate to get the difficulty that would have produced the band centre, and move the setpoint a damped fraction of the way there:</p>
+<pre><code>p̂        = hint-discounted success rate over the window
+θ_implied = d̄ + 12 · log₁₀( p̂ / (1 − p̂) )       // d̄ = mean served difficulty
+c_target  = θ_implied + setpointOffset
+c        += loopGain · (c_target − c)            // loopGain = 0.3
+</code></pre>
+<p>The affect-driven asymmetric steps (§3.2) still run on top: the closed loop finds the band, the affect logic decides whether to sit above or below it. θ remains the estimator for item selection, gates and sequencing — it is no longer the only thing steering the dial.</p>
+<p>A third, smaller fix: σ now <strong>re-inflates</strong> when a learner keeps surprising the model in one direction (EWMA of signed surprise &gt; 0.15). A σ pinned at its floor cannot track a genuinely improving learner, which is exactly when tracking matters most.</p>
+<h3>15.3 Results</h3>
+<p>In-band residency, by archetype and strategy (3 seeds, 400 attempts each):</p>
+<figure class="fig"><div class="legend"><span class="lg"><i style="background:var(--c1)"></i>ZPD dial</span><span class="lg"><i style="background:var(--c2)"></i>Fixed difficulty 50</span><span class="lg"><i style="background:var(--c3)"></i>Random difficulty</span></div><div class="chart-wrap"><svg viewBox="0 0 640 498" class="chart" role="img" aria-label="In-band residency by learner archetype: the ZPD dial holds the 0.70 to 0.85 band about six times more often than fixed or random difficulty."><line x1="168.0" y1="26" x2="168.0" y2="472" stroke="var(--grid)" stroke-width="1"/><text x="168.0" y="18" font-size="10.5" fill="var(--muted)" text-anchor="middle">0%</text><line x1="252.0" y1="26" x2="252.0" y2="472" stroke="var(--grid)" stroke-width="1"/><text x="252.0" y="18" font-size="10.5" fill="var(--muted)" text-anchor="middle">10%</text><line x1="336.0" y1="26" x2="336.0" y2="472" stroke="var(--grid)" stroke-width="1"/><text x="336.0" y="18" font-size="10.5" fill="var(--muted)" text-anchor="middle">20%</text><line x1="420.0" y1="26" x2="420.0" y2="472" stroke="var(--grid)" stroke-width="1"/><text x="420.0" y="18" font-size="10.5" fill="var(--muted)" text-anchor="middle">30%</text><line x1="504.0" y1="26" x2="504.0" y2="472" stroke="var(--grid)" stroke-width="1"/><text x="504.0" y="18" font-size="10.5" fill="var(--muted)" text-anchor="middle">40%</text><line x1="588.0" y1="26" x2="588.0" y2="472" stroke="var(--grid)" stroke-width="1"/><text x="588.0" y="18" font-size="10.5" fill="var(--muted)" text-anchor="middle">50%</text><text x="156" y="58" font-size="12.5" fill="var(--ink)" text-anchor="end" font-weight="500">Steady learner</text><rect x="168" y="34" width="327.6" height="15" rx="3" fill="var(--c1)"/><text x="502.6" y="46" font-size="11" fill="var(--muted)" font-variant-numeric="tabular-nums">39.0</text><rect x="168" y="53" width="86.5" height="15" rx="3" fill="var(--c2)"/><text x="261.5" y="65" font-size="11" fill="var(--muted)" font-variant-numeric="tabular-nums">10.3</text><rect x="168" y="72" width="74.8" height="15" rx="3" fill="var(--c3)"/><text x="249.8" y="84" font-size="11" fill="var(--muted)" font-variant-numeric="tabular-nums">8.9</text><text x="156" y="132" font-size="12.5" fill="var(--ink)" text-anchor="end" font-weight="500">Fast climber</text><rect x="168" y="108" width="334.3" height="15" rx="3" fill="var(--c1)"/><text x="509.3" y="120" font-size="11" fill="var(--muted)" font-variant-numeric="tabular-nums">39.8</text><rect x="168" y="127" width="31.1" height="15" rx="3" fill="var(--c2)"/><text x="206.1" y="139" font-size="11" fill="var(--muted)" font-variant-numeric="tabular-nums">3.7</text><rect x="168" y="146" width="58.0" height="15" rx="3" fill="var(--c3)"/><text x="233.0" y="158" font-size="11" fill="var(--muted)" font-variant-numeric="tabular-nums">6.9</text><text x="156" y="206" font-size="12.5" fill="var(--ink)" text-anchor="end" font-weight="500">Struggling learner</text><rect x="168" y="182" width="355.3" height="15" rx="3" fill="var(--c1)"/><text x="530.3" y="194" font-size="11" fill="var(--muted)" font-variant-numeric="tabular-nums">42.3</text><rect x="168" y="201" width="1.2" height="15" rx="3" fill="var(--c2)"/><text x="176.2" y="213" font-size="11" fill="var(--muted)" font-variant-numeric="tabular-nums">0.0</text><rect x="168" y="220" width="51.2" height="15" rx="3" fill="var(--c3)"/><text x="226.2" y="232" font-size="11" fill="var(--muted)" font-variant-numeric="tabular-nums">6.1</text><text x="156" y="280" font-size="12.5" fill="var(--ink)" text-anchor="end" font-weight="500">Misplaced expert</text><rect x="168" y="256" width="332.6" height="15" rx="3" fill="var(--c1)"/><text x="507.6" y="268" font-size="11" fill="var(--muted)" font-variant-numeric="tabular-nums">39.6</text><rect x="168" y="275" width="1.2" height="15" rx="3" fill="var(--c2)"/><text x="176.2" y="287" font-size="11" fill="var(--muted)" font-variant-numeric="tabular-nums">0.0</text><rect x="168" y="294" width="27.7" height="15" rx="3" fill="var(--c3)"/><text x="202.7" y="306" font-size="11" fill="var(--muted)" font-variant-numeric="tabular-nums">3.3</text><text x="156" y="354" font-size="12.5" fill="var(--ink)" text-anchor="end" font-weight="500">Erratic performer</text><rect x="168" y="330" width="307.4" height="15" rx="3" fill="var(--c1)"/><text x="482.4" y="342" font-size="11" fill="var(--muted)" font-variant-numeric="tabular-nums">36.6</text><rect x="168" y="349" width="104.2" height="15" rx="3" fill="var(--c2)"/><text x="279.2" y="361" font-size="11" fill="var(--muted)" font-variant-numeric="tabular-nums">12.4</text><rect x="168" y="368" width="65.5" height="15" rx="3" fill="var(--c3)"/><text x="240.5" y="380" font-size="11" fill="var(--muted)" font-variant-numeric="tabular-nums">7.8</text><text x="156" y="428" font-size="12.5" fill="var(--ink)" text-anchor="end" font-weight="500">Returner (21d gap)</text><rect x="168" y="404" width="346.1" height="15" rx="3" fill="var(--c1)"/><text x="521.1" y="416" font-size="11" fill="var(--muted)" font-variant-numeric="tabular-nums">41.2</text><rect x="168" y="423" width="86.5" height="15" rx="3" fill="var(--c2)"/><text x="261.5" y="435" font-size="11" fill="var(--muted)" font-variant-numeric="tabular-nums">10.3</text><rect x="168" y="442" width="74.8" height="15" rx="3" fill="var(--c3)"/><text x="249.8" y="454" font-size="11" fill="var(--muted)" font-variant-numeric="tabular-nums">8.9</text><line x1="168" y1="26" x2="168" y2="472" stroke="var(--line)" stroke-width="1.5"/></svg></div><figcaption>Share of served tasks whose true success probability — computed from the learner’s hidden ability, which the dial never sees — fell inside the 0.70–0.85 band. Mean across three seeds, 400 attempts per run.</figcaption></figure>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Archetype</th>
+<th>Strategy</th>
+<th style="text-align: right;">In-band %</th>
+<th style="text-align: right;">Success %</th>
+<th style="text-align: right;">θ error</th>
+<th style="text-align: right;">Hint %</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Steady learner</td>
+<td><strong>ZPD dial</strong></td>
+<td style="text-align: right;"><strong>39.0</strong></td>
+<td style="text-align: right;">74.5</td>
+<td style="text-align: right;">1.3</td>
+<td style="text-align: right;">3.4</td>
+</tr>
+<tr>
+<td></td>
+<td>Fixed 50</td>
+<td style="text-align: right;">10.3</td>
+<td style="text-align: right;">52.7</td>
+<td style="text-align: right;">2.2</td>
+<td style="text-align: right;">16.3</td>
+</tr>
+<tr>
+<td>Fast climber</td>
+<td><strong>ZPD dial</strong></td>
+<td style="text-align: right;"><strong>39.8</strong></td>
+<td style="text-align: right;">74.2</td>
+<td style="text-align: right;">3.3</td>
+<td style="text-align: right;">2.3</td>
+</tr>
+<tr>
+<td></td>
+<td>Fixed 50</td>
+<td style="text-align: right;">3.7</td>
+<td style="text-align: right;">96.9</td>
+<td style="text-align: right;">18.5</td>
+<td style="text-align: right;">0.2</td>
+</tr>
+<tr>
+<td>Struggling learner</td>
+<td><strong>ZPD dial</strong></td>
+<td style="text-align: right;"><strong>42.3</strong></td>
+<td style="text-align: right;">72.3</td>
+<td style="text-align: right;">3.6</td>
+<td style="text-align: right;">8.1</td>
+</tr>
+<tr>
+<td></td>
+<td>Fixed 50</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">6.0</td>
+<td style="text-align: right;">5.7</td>
+<td style="text-align: right;">100.0</td>
+</tr>
+<tr>
+<td>Misplaced expert</td>
+<td><strong>ZPD dial</strong></td>
+<td style="text-align: right;"><strong>39.6</strong></td>
+<td style="text-align: right;">74.8</td>
+<td style="text-align: right;">2.4</td>
+<td style="text-align: right;">1.1</td>
+</tr>
+<tr>
+<td></td>
+<td>Fixed 50</td>
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">99.9</td>
+<td style="text-align: right;">14.8</td>
+<td style="text-align: right;">0.0</td>
+</tr>
+<tr>
+<td>Erratic performer</td>
+<td><strong>ZPD dial</strong></td>
+<td style="text-align: right;"><strong>36.6</strong></td>
+<td style="text-align: right;">73.6</td>
+<td style="text-align: right;">0.9</td>
+<td style="text-align: right;">4.0</td>
+</tr>
+<tr>
+<td></td>
+<td>Fixed 50</td>
+<td style="text-align: right;">12.4</td>
+<td style="text-align: right;">84.3</td>
+<td style="text-align: right;">11.8</td>
+<td style="text-align: right;">1.7</td>
+</tr>
+<tr>
+<td>Returner (21d gap)</td>
+<td><strong>ZPD dial</strong></td>
+<td style="text-align: right;"><strong>41.2</strong></td>
+<td style="text-align: right;">74.3</td>
+<td style="text-align: right;">2.5</td>
+<td style="text-align: right;">2.9</td>
+</tr>
+<tr>
+<td></td>
+<td>Fixed 50</td>
+<td style="text-align: right;">10.3</td>
+<td style="text-align: right;">52.7</td>
+<td style="text-align: right;">2.2</td>
+<td style="text-align: right;">16.3</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Mean in-band: dial 39.8%, fixed 6.1%, random 7.0%</strong> — the dial holds the ZPD roughly 6× better than either baseline.</p>
+<p>Three results matter more than the headline:</p>
+<p><strong>Every archetype's mean success rate lands inside the band</strong> (72.3–74.8%), including the struggler, whom fixed difficulty leaves at 6% success and 100% hint dependence — a learner that system simply fails. The dial's worst case is a learner it serves slightly too easy, not one it drowns.</p>
+<p><strong>θ tracking error stays at 0.9–3.6 points</strong> across every archetype, against 18.5 for the fast climber and 14.8 for the misplaced expert under fixed difficulty. Getting placement wrong is the failure mode adaptive systems are built to prevent, and it is the one the baselines fail worst.</p>
+<p><strong>Dial state distribution: FLOW 53.7%, STRETCH 25.7%, SUPPORT 16.8%, RECOVERY 1.0%, CALIBRATING 1.6%.</strong> Roughly a quarter of windows push up and a sixth ease off — the dial is working continuously rather than settling, which is what a non-stationary learner should produce.</p>
+<p><strong>Why in-band tops out near 40%.</strong> The band is narrow: [0.70, 0.85] spans only 4.6 difficulty points. With θ tracking error of ~2–3 points and item difficulty granularity of its own, a per-attempt residency near 40% is close to what this estimator's precision allows. The mean success rate sitting inside the band is the more robust reading of the same result. Pushing residency higher means a more precise θ (longer windows, better-calibrated items), not a more aggressive controller — and the sweep below shows what that costs.</p>
+<h3>15.4 Parameter sweep</h3>
+<p>20 configurations across <code>window</code> ∈ {3, 5, 8, 10} × <code>loopGain</code> ∈ {0.3 … 1.0}:</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th style="text-align: right;">window</th>
+<th style="text-align: right;">loopGain</th>
+<th style="text-align: right;">In-band %</th>
+<th style="text-align: right;">Success %</th>
+<th style="text-align: right;">θ err</th>
+<th style="text-align: right;">Worst archetype outside band</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.30</td>
+<td style="text-align: right;">42.4</td>
+<td style="text-align: right;">80.1</td>
+<td style="text-align: right;">3.47</td>
+<td style="text-align: right;">1.1</td>
+</tr>
+<tr>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.45</td>
+<td style="text-align: right;">41.2</td>
+<td style="text-align: right;">79.6</td>
+<td style="text-align: right;">2.78</td>
+<td style="text-align: right;">0.7</td>
+</tr>
+<tr>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0.80</td>
+<td style="text-align: right;">40.4</td>
+<td style="text-align: right;">79.1</td>
+<td style="text-align: right;">2.48</td>
+<td style="text-align: right;">0.0</td>
+</tr>
+<tr>
+<td style="text-align: right;"><strong>5</strong></td>
+<td style="text-align: right;"><strong>0.30</strong></td>
+<td style="text-align: right;"><strong>40.1</strong></td>
+<td style="text-align: right;">76.4</td>
+<td style="text-align: right;">2.72</td>
+<td style="text-align: right;"><strong>0.0</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">0.45</td>
+<td style="text-align: right;">36.2</td>
+<td style="text-align: right;">79.6</td>
+<td style="text-align: right;">2.48</td>
+<td style="text-align: right;">0.0</td>
+</tr>
+<tr>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0.60 (v1.1 candidate)</td>
+<td style="text-align: right;">33.5</td>
+<td style="text-align: right;">77.4</td>
+<td style="text-align: right;">3.27</td>
+<td style="text-align: right;">0.0</td>
+</tr>
+<tr>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">1.00</td>
+<td style="text-align: right;">26.4</td>
+<td style="text-align: right;">77.7</td>
+<td style="text-align: right;">3.32</td>
+<td style="text-align: right;">0.0</td>
+</tr>
+</tbody>
+</table></div>
+<p><code>window = 10</code> scores marginally higher on residency, but a window of 10 means a struggling learner endures <strong>ten</strong> tasks before the dial reacts — twice the exposure of <code>window = 5</code> for 2.3 points of residency. The chosen defaults take the responsiveness: <strong><code>window = 5</code>, <code>loopGain = 0.3</code></strong>, which puts no archetype outside the band and halves the reaction latency of the best-scoring configuration. Responsiveness on the anxiety path is worth more than a residency point, and this is a pedagogical judgment the numbers inform but do not make.</p>
+<h3>15.5 Changes to the tuning sheet</h3>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>v1.1</th>
+<th>v1.2</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Control mode</td>
+<td>open-loop steps</td>
+<td><strong>closed loop + affect steps</strong></td>
+<td>open loop cannot correct biased θ</td>
+</tr>
+<tr>
+<td><code>loopGain</code></td>
+<td>—</td>
+<td><strong>0.3</strong></td>
+<td>calibration sweep</td>
+</tr>
+<tr>
+<td><code>railLo</code> / <code>railHi</code></td>
+<td>θ−12 / θ−2</td>
+<td><strong>θ−14 / θ+0</strong></td>
+<td>rails were binding during normal operation</td>
+</tr>
+<tr>
+<td>σ behavior</td>
+<td>monotone decay</td>
+<td><strong>re-inflates on sustained surprise</strong></td>
+<td>a floored σ cannot track a moving learner</td>
+</tr>
+<tr>
+<td><code>sessionStart</code></td>
+<td>undefined</td>
+<td><strong>re-anchored every session (normative)</strong></td>
+<td>Defect 1</td>
+</tr>
+<tr>
+<td>Clamp location</td>
+<td>two sites</td>
+<td><strong>one site, rail-then-session</strong></td>
+<td>Defect 2</td>
+</tr>
+<tr>
+<td>θ range</td>
+<td>unbounded</td>
+<td><strong>clamped to [0, 100]</strong></td>
+<td>θ shares the difficulty scale</td>
+</tr>
+</tbody>
+</table></div>
+<h3>15.6 What still needs real learners</h3>
+<p>The simulation cannot answer these, and shipping should not pretend otherwise: whether the affect signals (<code>latZ</code>, <code>latVarZ</code>, hint bursts) actually predict boredom and anxiety in humans — here they were generated by the same model that consumed them, which is circular by construction and the weakest part of this exercise; whether item difficulties calibrate as cleanly as the synthetic ones; whether learning transfers between the modules the sequencer interleaves; and every parity question in ACP-08, which needs cohorts the simulation does not have. <strong>Shadow mode on real telemetry, with the dial logging intended actions and acting on none, remains a required gate before activation.</strong></p>
+<hr />
+<h2 id="s16">16. ACP-15 — Knowledge-Graph Tracing &amp; Sequencing</h2>
+<p>Everything up to v1.3 traced <strong>one skill at a time</strong>. The dial tuned difficulty on an island. Real competence is a graph — evidence about one node is evidence about its neighbours, prerequisites gate readiness, confusable pairs corrupt each other, and what is not revisited is lost. This module is where "which skill, and why now" is decided, and it is the layer adaptive systems most often skip: serving a fixed list while calling the difficulty knob adaptive.</p>
+<p>Building it against the simulation surfaced <strong>five defects</strong>, four of them in the v1.3 protocol rather than in the code written to implement it.</p>
+<h3>16.1 Credit propagation</h3>
+<p>Evidence on one skill moves its neighbours, damped and one hop only (no graph-wide diffusion):</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Edge</th>
+<th>Direction</th>
+<th>Factor</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>requires</code></td>
+<td>child → prerequisite</td>
+<td>0.20</td>
+<td>succeeding at something that rests on X is evidence X is sound</td>
+</tr>
+<tr>
+<td><code>requires</code></td>
+<td>prerequisite → child</td>
+<td>0.10</td>
+<td>mastering a foundation slightly lifts what stands on it</td>
+</tr>
+<tr>
+<td><code>supports</code></td>
+<td>both</td>
+<td>0.10</td>
+<td>soft transfer</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>The governing rule: indirect evidence is never direct evidence.</strong> Propagated credit moves θ but shrinks σ at 15% of the direct rate, and it <em>never</em> counts toward a gate. A learner is certified on what they demonstrated, not on what was inferred about them. Every propagated change carries a <code>why</code> — the audit surface must be able to explain why a skill the learner never touched changed.</p>
+<p><strong>Interference:</strong> when a confusable sibling was served within the last two attempts, this attempt's evidence is discounted to 0.6 — the learner may be answering about the other one.</p>
+<h3>16.2 The five defects</h3>
+<p><strong>Defect 3 — practice can never certify anyone.</strong> The dial holds practice at the band <em>centre</em> (θ−6.5) because that is where learning happens. The skill gate accepts demonstrations only at the band <em>top</em> (θ−5) or harder. The gap is 1.5 points and it is fatal: normal practice is, by construction, always slightly too easy to count, so a learner could be believed-mastered forever and never produce gate-qualifying evidence. <strong>Fix:</strong> a <code>verify</code> mode. When mastery is believed but undemonstrated, the sequencer deliberately serves a short run at gate difficulty with hints closed. <em>Practice optimises for learning; verification optimises for proof. They are different jobs and need different difficulties.</em></p>
+<p><strong>Defect 4 — improvement retroactively invalidated its own evidence.</strong> Qualification was recomputed against <em>current</em> θ. So as a learner improved, θ rose and their past demonstrations silently stopped qualifying — the better they got, the less their proof counted. <strong>Fix:</strong> qualification is stamped at serve time and never recomputed.</p>
+<p><strong>Defect 5 — a query could silently un-certify.</strong> <code>checkSkillGate</code> recomputed from history every call, so one bad re-test after certification revoked it as a side effect of <em>asking</em>. <strong>Fix:</strong> gates are <strong>awarded</strong> events stored on the profile. Revocation is a deliberate act with its own reason string, never a consequence of a query.</p>
+<p><strong>Defect 6 — mastery belief outran evidence.</strong> Raw BKT reports <code>p_mastery &gt; 0.95</code> after a handful of favourable observations. Across a 33-node graph that is catastrophic: every skill read as mastered within a few attempts, the frontier emptied, and the curriculum "completed" without the learner learning anything — measured, 33/33 skills believed mastered after 201 attempts. <strong>Fix:</strong> the reported posterior is shrunk toward the prior by the evidence behind it, <code>p = L₀ + (raw − L₀)·n/(n+4)</code>. A belief held on three observations is not the belief held on fifty: a raw 0.96 on n=3 now reports 0.50. P(T) also drops 0.20 → 0.10.</p>
+<p><strong>Defect 7 — unbounded interleaving is thrashing.</strong> One root skill unlocking eleven strands at once spread the attempt budget across all of them, leaving every skill under the practice it needed. Measured: an unbounded frontier learned <strong>0.67</strong> skills against 6+ for a bounded one. <strong>Fix:</strong> a <strong>working set</strong> — at most <em>k</em> skills in active development, admitted by graph leverage, interleaved within the set, and a new one admitted only when another graduates.</p>
+<h3>16.3 Results</h3>
+<p>Same dial, same budget (420 attempts over 70 days), three sequencing strategies. <code>blocked</code> is the traditional curriculum — prerequisite order, one skill worked to mastery before the next; it also respects prerequisites, so graph-vs-blocked isolates interleaving, spacing and verification rather than mere ordering. <code>flat</code> picks any unmastered skill at random.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Strategy</th>
+<th style="text-align: right;">Skills certified</th>
+<th style="text-align: right;">Skills learned</th>
+<th style="text-align: right;">Ability gained</th>
+<th style="text-align: right;">Retention @30d</th>
+<th style="text-align: right;">Durable ability</th>
+<th style="text-align: right;">Prereq violations</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Graph sequencer</strong></td>
+<td style="text-align: right;"><strong>4</strong></td>
+<td style="text-align: right;">6.3</td>
+<td style="text-align: right;">166.7</td>
+<td style="text-align: right;"><strong>0.78</strong></td>
+<td style="text-align: right;"><strong>130.0</strong></td>
+<td style="text-align: right;"><strong>8.5%</strong></td>
+</tr>
+<tr>
+<td>Blocked</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: right;">216.8</td>
+<td style="text-align: right;">0.32</td>
+<td style="text-align: right;">69.4</td>
+<td style="text-align: right;">0%</td>
+</tr>
+<tr>
+<td>Flat</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">63.7</td>
+<td style="text-align: right;">0.27</td>
+<td style="text-align: right;">17.2</td>
+<td style="text-align: right;">91%</td>
+</tr>
+</tbody>
+</table></div>
+<p>Two findings matter:</p>
+<p><strong>Only the graph sequencer certifies anyone.</strong> Both baselines gate zero skills — not because their learners know less, but because neither ever serves a verification attempt at gate difficulty. Certification is not a by-product of practice; a system that never deliberately asks for proof cannot issue any. Blocked practice acquires <em>more</em> raw ability (216.8 vs 166.7) and certifies none of it.</p>
+<p><strong>Massed practice acquires more and keeps less.</strong> Blocked ends with 2.4× more raw ability gained, but 0.32 retention against 0.78 — durable ability (gained × retained) is 69.4 against 130.0, a 1.9× advantage to spaced sequencing. Fast-looking progress that evaporates is the failure mode a trades academy can least afford: a certificate should mean the holder can still do it next month.</p>
+<h3>16.4 An uncomfortable sweep result</h3>
+<p>How many skills should a learner have open at once?</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th style="text-align: right;">Working set</th>
+<th style="text-align: right;">Certified</th>
+<th style="text-align: right;">Ability</th>
+<th style="text-align: right;">Retention</th>
+<th style="text-align: right;">Durable</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">187.8</td>
+<td style="text-align: right;">0.76</td>
+<td style="text-align: right;"><strong>142.7</strong></td>
+</tr>
+<tr>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">3.7</td>
+<td style="text-align: right;">182.6</td>
+<td style="text-align: right;">0.77</td>
+<td style="text-align: right;">140.6</td>
+</tr>
+<tr>
+<td style="text-align: right;"><strong>3</strong></td>
+<td style="text-align: right;"><strong>4</strong></td>
+<td style="text-align: right;">166.7</td>
+<td style="text-align: right;">0.78</td>
+<td style="text-align: right;">130.0</td>
+</tr>
+<tr>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">178.0</td>
+<td style="text-align: right;">0.77</td>
+<td style="text-align: right;">137.1</td>
+</tr>
+<tr>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">146.0</td>
+<td style="text-align: right;">0.79</td>
+<td style="text-align: right;">115.3</td>
+</tr>
+<tr>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">2.7</td>
+<td style="text-align: right;">121.7</td>
+<td style="text-align: right;">0.78</td>
+<td style="text-align: right;">94.9</td>
+</tr>
+<tr>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">1.7</td>
+<td style="text-align: right;">79.3</td>
+<td style="text-align: right;">0.82</td>
+<td style="text-align: right;">65.1</td>
+</tr>
+<tr>
+<td style="text-align: right;">33</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">34.0</td>
+<td style="text-align: right;">0.27</td>
+<td style="text-align: right;">9.2</td>
+</tr>
+</tbody>
+</table></div>
+<p>The measured optimum is <strong>1–2</strong>, which sits awkwardly against §5.2's claim that interleaving beats blocking. The honest reading: what this simulation demonstrates is that <strong>wide working sets dilute practice</strong> — which it shows decisively — and <em>not</em> that interleaving fails, which it cannot show. Interleaving's main claimed benefit is discrimination between confusable items, and the learner model represents that only through the sparse <code>interferes</code> edges. The model is under-specified for the very thing being tested.</p>
+<p><strong>So the default is 3, not the measured 1.</strong> It sits inside the flat part of the curve (130 vs 143 durable, ~9%), preserves interleaving for the discrimination benefit the simulation cannot measure, and hedges against a known model deficiency rather than over-fitting to it. Real telemetry should settle this, and it is exactly the kind of question a stepped-wedge arm can answer.</p>
+<h3>16.5 Sequencing policy</h3>
+<pre><code>next():
+  1. wheel-spin check      — 10+ attempts, flat mastery -&gt; diagnose, don't repeat
+  2. verification          — believed but undemonstrated, budget 1-in-8, runs of 3
+  3. review cadence        — 1-in-4 when the queue is hot (p_recall &lt; 0.7)
+  4. working set           — &lt;= 3 open skills, interleave within, admit by leverage
+  5. score and take best   — 0.45 zpd_fit + 0.25 review + 0.15 leverage
+                             + 0.10 modality + 0.05 novelty
+</code></pre>
+<p><strong>Wheel-spinning gets the humane response.</strong> Ten-plus attempts with flat mastery stops serving the skill and asks <em>which prerequisite is actually missing</em>, then routes there — because the answer to stuck is never more of the same. If prerequisites are sound, the learner drops to a worked example instead.</p>
+<p><strong>Verification is budgeted, not a mode.</strong> Unbudgeted, a fast-moving posterior across 33 nodes kept something permanently "ready to test" and verification consumed 48–65% of all attempts — proof crowding out the learning it exists to certify. It is now capped at 1-in-8, requires ≥8 observations and at least one unaided success before it will spend an attempt, runs in units of three, and a failed run returns the learner to practice for 30 attempts rather than nagging.</p>
+<p><strong>Every pick defends itself.</strong> <code>next()</code> returns a <code>why</code> string and its score components, and the picks carry <code>poolSize</code> — because the interleaving rule can only be judged where an alternative existed. Early in a graph, one root skill gates everything and a long run on it is correct behaviour, not a violation.</p>
+<h3>16.6 What this does not establish</h3>
+<p>The prerequisite structure, the forgetting curve, and the spacing benefit are <strong>assumptions of the learner model</strong> (A1–A3, stated in the simulation source). What is tested is whether the sequencer converts those beliefs into outcomes and respects its own constraints — not whether the beliefs are true. The retention advantage in particular is largely <em>assumed</em> by A2; the fair claim is that the sequencer exploits spacing where blocked practice does not, given a forgetting curve. Whether real trades learners forget on anything like that curve is an empirical question for the stepped-wedge evaluation, and the working-set result above is the first thing real telemetry should overturn or confirm.</p>
+<h3>16.7 Two more, found by soak</h3>
+<p>The unit suites run tens to hundreds of attempts. A long-run soak — 4,000 attempts across three seeds, asserting the invariants continuously rather than at the end — found two failures that only appear with time.</p>
+<p><strong>Defect 8 — the setpoint could escape the safety rail.</strong> All clamping happens in one place (defect 2's fix), in the order: θ rail, then session cap, with the cap winning on conflict. That ordering is wrong. The session cap is a <em>comfort</em> bound — don't lurch mid-session; the θ rail is a <em>safety</em> bound — never serve something absurdly far from the learner. When a session anchor went stale-high and θ subsequently fell, the cap pushed the setpoint above the rail: exactly the case the rail exists to prevent. <strong>Fix:</strong> cap first, rail last. The safety bound is the final authority, and it now holds unconditionally.</p>
+<p>A welcome side effect: with the rail final, the v1.1 freeze is <em>structurally</em> impossible even if a caller forgets <code>startSession</code> — the rail drags the setpoint along as θ moves. The regression test that asserted "a never-re-anchored dial stays pinned" was therefore asserting something no longer true, and has been replaced by the two invariants that actually matter: the cap bounds movement while θ is stable, and the rail holds in every case.</p>
+<p><strong>Defect 9 — the sequencer stranded the learner.</strong> Verification is budgeted at 1-in-8 so proof cannot crowd out practice (§16.5). But once a hall's open skills are all believed-mastered and awaiting proof, there <em>is</em> no practice to protect — and <code>next()</code> returned <code>null</code>, serving a blank screen. Measured: the sequencer stalled at ~2,200 attempts with <strong>25 of 33 skills still uncertified</strong>, and certification simply stopped. <strong>Fix:</strong> when the ordinary pool is empty the budget has nothing left to protect, so it is spent rather than withheld; and if verification is also unavailable, the learner consolidates on the least-certain uncertified skill instead of falling off the end. Certification over the same run went from 7–9 skills to <strong>30–33 of 33</strong>.</p>
+<p>The general lesson, and the reason the soak now ships with the bundle: <em>a budget that protects a resource must be released when the resource is gone.</em> Rate limits written to stop one thing crowding out another become deadlocks when the other thing runs out.</p>
+<h3>16.8 Two more, found by fuzzing inputs</h3>
+<p>The soak pushes <em>time</em>; a fuzz pass pushes <em>inputs</em> — every value a broken or hostile client could send, plus learners behaving in ways the happy path never produces.</p>
+<p><strong>Defect 10 — one malformed event destroyed a learner permanently.</strong> <code>record()</code> accepted a non-finite difficulty, θ became <code>NaN</code>, and NaN is absorbing: every subsequent update, setpoint and gate decision on that learner returned NaN for ever. A single bad telemetry event — one client bug, one truncated payload — silently and irreversibly destroyed someone's record, with no error and no signal. ACP-01 §1.4 already required consumers to tolerate malformed events; the defect was reading "tolerate" as <em>ingest</em> rather than <em>reject</em>. <strong>Fix:</strong> an input guard at the profile boundary. Non-finite difficulties are rejected and counted (<code>rejected_n</code>), rungs outside the ladder are clamped rather than indexed, and weights are bounded. Rejections are counted rather than thrown, so a broken client shows up in the numbers instead of taking a hall down.</p>
+<p>The adversarial learners are now part of the suite, and three of them assert properties worth stating outright: a learner who never succeeds is <strong>never</strong> certified; rung-5 help on every attempt <strong>cannot buy certification</strong>; and a learner failing everything is eased <em>downward</em>, never up.</p>
+<p><strong>Defect 11 — the staleness guard measured the wrong thing.</strong> The console embeds a snapshot of the control plane and had already shipped once with a stale dial, so a build stamp was added: a hash of the protocol sources baked into the page, checked by CI. It reported "current" while the page was still missing two fixes. The stamp hashed the <em>sources</em>, but the build read a separately-generated intermediate bundle — and only the intermediate was stale. <strong>Fix:</strong> fold the bundling into the build. One step, no intermediate, nothing to drift.</p>
+<p>That one is worth dwelling on, because the guard was written specifically to catch this class of bug and it did not: <em>a freshness check that measures anything other than the artifact actually shipped will eventually certify a stale artifact.</em> The guard is now proven by deliberately dirtying a source and confirming it refuses, rather than only by observing it pass.</p>
+<hr />
+<h2 id="s17">17. ACP-01/08/09 in code — the bus, the envelope, the log</h2>
+<p>The connective tissue was the last thing still living only in prose. Components called each other's methods directly, which meant the two rules the architecture rests on — <strong>single writer per aggregate</strong> (ACP-09) and <strong>every adaptation on the audit log</strong> (ACP-08) — were true only as long as everyone remembered them. A mentor could not write dial state because no one had written the line of code that would, which is not the same thing as a mentor being unable to.</p>
+<h3>17.1 The bus enforces the contract</h3>
+<p>Each topic in §9 now has exactly one permitted publisher, declared in a table the bus checks on every publish. Components receive a publisher <strong>bound to their own role</strong>, so nothing is handed a way to claim another. A mentor attempting <code>dial.setpoint</code>, <code>profile.updated</code> or <code>gate.decision</code> is refused — in strict mode by throwing, in production mode by containing and counting, because a refused publish must be <em>measurable</em>, not merely fatal.</p>
+<p>The console ships a button that makes a mentor genuinely attempt the write, so the refusal can be watched rather than trusted.</p>
+<h3>17.2 The §1.4 guards, implemented</h3>
+<p>Each one exists because the naive version is wrong, and each is now a test rather than a sentence:</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Guard</th>
+<th>Behaviour</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>At-least-once transport</td>
+<td>dedupe on <code>event_id</code>; duplicates counted, never hidden</td>
+</tr>
+<tr>
+<td>Client clock skew &gt; 2 min</td>
+<td>server receipt time is trusted; the envelope records which was used</td>
+</tr>
+<tr>
+<td>Fewer than 3 usable events</td>
+<td><strong>no</strong> profile update — the reason is returned instead</td>
+</tr>
+<tr>
+<td>Missing modality</td>
+<td>defaults to <code>quiz</code></td>
+</tr>
+<tr>
+<td>Failing subscriber</td>
+<td>contained, counted and audited; siblings still receive the message</td>
+</tr>
+<tr>
+<td>Rejected telemetry</td>
+<td>lands on the audit log, so a broken client is visible in the record</td>
+</tr>
+</tbody>
+</table></div>
+<h3>17.3 One log, two audiences</h3>
+<p>The learner's "Why this?" and the compliance record read the <strong>same rows</strong>. That is the only arrangement in which an explanation shown to a person and a record shown to a regulator cannot disagree. Entries are frozen on append and <code>entries()</code> returns a copy, so a caller holding a reference cannot rewrite history.</p>
+<p>xAPI egress is an adapter on the end of that same pipeline rather than a second one, and it carries no affect data — ACP-08 forbids affect labels reaching an export, and the test asserts it.</p>
+<h3>17.4 Defect 12, caught by the guard that had just been fixed</h3>
+<p>Adding the bus pack made the console freshness check report a confidently wrong
+answer: it hashed a source list that did not include the new files. The checker
+and the builder each declared their own copy of "the sources", and the copies
+drifted the instant a pack was added — defect 11's shape a second time, one
+level up. There is now a single <code>console_sources.py</code> that both import.</p>
+<p>The recurrence is the point. A freshness check is only ever as good as its idea
+of what it is checking, and any <em>second</em> declaration of that idea will
+eventually disagree with the first.</p>
+<h3>17.5 What this does not solve</h3>
+<p>No network transport, persistence or retry policy: this is the in-process contract layer, and a real deployment puts a broker underneath. What must survive that move unchanged is the topic list and the single-writer table — everything else is implementation.</p>
+<hr />
+<h2 id="s18">18. ACP-08 in code — parity, stop conditions, overrides</h2>
+<p>The audit log arrived with the bus; the rest of ACP-08 was still prose. This module is the one that protects learners <em>from</em> the system, so everything in it <strong>refuses</strong> rather than warns. A safeguard that only logs is a log.</p>
+<h3>18.1 Parity</h3>
+<p>Cohort metrics — gate pass rate, time in <code>SUPPORT</code>, stretch-offer rate — are compared across site, language, device tier and age band. A relative disparity above <strong>10%</strong> opens a ticket, and an open ticket <strong>blocks promotions</strong> (ACP-13). Cohorts under n=20 are treated as noise, so the alarm stays worth listening to.</p>
+<p>The sharpest rule in the spec is that dial parameters may not be tuned per cohort to <em>mask</em> a disparity — root cause belongs in content or calibration. That is now enforced rather than requested: the monitor records a fingerprint of the parameters each cohort is served, and a disparity that is open <strong>while cohorts sit on different settings</strong> raises <code>parity.masking_suspected</code>. Without a record of what each cohort was actually served, "we fixed the metric" and "we hid the metric" are indistinguishable afterwards.</p>
+<h3>18.2 Stop conditions</h3>
+<p>Adaptation halts on any of: calibration drifting more than 8 points/week across more than 20% of items; a cohort spending more than 25% of its time in <code>SUPPORT</code>; or <strong>the parity job failing to run inside its window</strong>. That last one matters most — it means the system will not keep adapting unwatched. While halted, every learner is served fixed difficulty, because a degraded dial is worse than no dial, and halt/resume are logged as transitions rather than re-logged on every evaluation.</p>
+<h3>18.3 Overrides, and their order of precedence</h3>
+<p>Instructors may pin anything; learners get <strong>"easier today"</strong> twice a week, granted without question and declined kindly when spent, with the refusal logged too so nobody has to argue about it. Evidence from a pinned episode is weighted at 0.3, because an overridden episode is biased evidence (§2.2) — and full weight returns the moment the pin is released.</p>
+<p>Precedence is tested, not assumed: <strong>a pin beats the dial, and a stop condition beats the pin.</strong> When the system has stopped trusting its own calibration, it does not honour a setpoint derived from it, whoever set it.</p>
+<p>One implementation note worth keeping: the console's first version told the learner their tasks would run easier and then didn't change the difficulty. The lever now moves the served difficulty and clears at the next session boundary — it is an easier <em>day</em>, not a setting. An interface that promises an adaptation the system does not make is a worse failure than not offering the lever.</p>
+<hr />
+<h2 id="s19">19. Launch posture — commercialization and security</h2>
+<p>A protocol that never ships protects nobody. This section is the state of the platform as a <em>product</em>, and it is written to be shown to investors, partners and institutions unedited.</p>
+<h3>19.1 What the security pack enforces</h3>
+<p><code>security/</code> ships with 16 tests, each written as a refusal that must actually happen:</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Control</th>
+<th>Rule</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tenant isolation</td>
+<td>Checked <strong>independently of capability</strong>, on every access. The most senior role in one tenant is nobody in another.</td>
+</tr>
+<tr>
+<td>Least privilege</td>
+<td>No wildcard capability. A learner reads only their own record; an instructor only their assigned learners; a mentor agent reads content and nothing else.</td>
+</tr>
+<tr>
+<td>Identity access</td>
+<td><code>pii.reveal</code> is held by <strong>no standing role</strong>. It is granted per incident with a reason and an approver, expires on its own, and every use is an audit event.</td>
+</tr>
+<tr>
+<td>Rate limiting</td>
+<td>Separate buckets for auth, agent turns, API and export — a flood of cheap calls cannot spend the expensive allowance. Auth throttling is audited.</td>
+</tr>
+<tr>
+<td>Data classification</td>
+<td>Five classes with per-class retention. <strong>Affect is the shortest-lived and most protected class (90 days), never exported, never visible to an employer.</strong></td>
+</tr>
+<tr>
+<td>Erasure</td>
+<td>Identity lives only in the enrolment mapping; erasure breaks it, which is what makes the remaining behavioural rows genuinely anonymous rather than "anonymised".</td>
+</tr>
+<tr>
+<td>Raw streams</td>
+<td>Keystroke and video capture is refused at the storage boundary, not merely discouraged.</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Fail closed twice on the rule that matters most.</strong> A mentor agent is blocked from writing control state by the bus <em>and</em> by the authorizer. Duplication is worth its cost only where the consequence is severe; certification integrity is that case.</p>
+<h3>19.2 The honest gap</h3>
+<p>The threat model in <code>SECURITY.md</code> lists what is not built, because a security document that only describes strengths is marketing. Missing and required before any public launch: authentication itself (this is the <em>authorization</em> layer), TLS and encryption at rest, persistence and tested backup restore, secrets management, dependency scanning and SBOM, an external penetration test, a staffed incident-response rotation with breach-notification clocks, and a route for a learner to contest a certification decision with a human.</p>
+<p>Compliance posture is stated the same way: the controls FERPA, GDPR, COPPA, WCAG 2.2 AA and SOC 2 require <strong>exist and are tested</strong>, and none of them are <strong>certified</strong>. Certification is an external process that has not been undertaken.</p>
+<h3>19.3 What the public page may and may not say</h3>
+<p>The landing page carries a status table that names lesson content as placeholder, efficacy as unestablished, accreditation and union endorsement as <strong>none</strong>, and the production platform as not built. Three claims are permanently forbidden regardless of commercial pressure:</p>
+<ol>
+<li>That any credential issued here is recognised, accredited or union-endorsed.</li>
+<li>That the platform improves learning outcomes — until the stepped-wedge trial with real apprentices reports, every efficacy number is a simulation result and must be labelled one.</li>
+<li>That training content is verified against any jurisdiction's code. It is general good practice, and safety-critical work must still be signed off by qualified people on real sites.</li>
+</ol>
+<p>Publishing the unfinished list is not modesty. Education technology has a credibility problem precisely because intentions get written in the present tense, and the institutions worth partnering with can tell the difference.</p>
+<h3>19.4 Defect 13 — the packaging defect</h3>
+<p>The v2.6 bundle failed its own verification the first time it was assembled.
+Every suite passed from the directory it was written in and several failed from
+the directory above it: the registry loader resolved <code>../pack/registry</code> against
+the <em>working directory</em>, and the console's freshness check looked for its page
+in <code>.</code>. Neither is a protocol error, and neither could be found by any harness
+that runs the way the author runs it.</p>
+<p>It is recorded here because it is the class of defect that separates code that
+works from code that ships. A recipient unzips a bundle and runs it from
+wherever they unzipped it; a build server runs it from a checkout root; nobody
+runs it from the author's shell. Paths inside the packs now resolve against
+<code>import.meta.url</code> (JavaScript) and <code>__file__</code> (Python), and <code>verify_all.sh</code>
+runs all 124 checks from anywhere, with one exit code.</p>
+<p>The general rule, which applies well beyond paths: <strong>anything that reads from
+the environment rather than from its own module is untested until it has run
+somewhere else.</strong> The same principle already governs the freshness stamp
+(§17.4) and the tenant check (§19.1) — verify against a fixed reference, never
+against ambient state.</p>
+<hr />
+<h2 id="s20">20. ACP-04 in code — the ladder, and who is allowed to set its height</h2>
+<p>ACP-04 was specified in §4 and implemented nowhere. The rungs existed as a discount factor inside the dial, the mentor had a clamp, and the fading rule in §4.2 — the whole mechanism by which help retracts as a learner grows — ran in no code path at all.</p>
+<h3>20.1 The ceiling has two independent bounds</h3>
+<p>A served task's scaffold ceiling is the tighter of:</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Bound</th>
+<th>Source</th>
+<th>Why it is not derivable from the other</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Mastery</strong></td>
+<td>§4.2 fading: &lt;0.5 → 5 rungs, 0.5–0.8 → 3, 0.8–0.95 → 1, ≥0.95 → none</td>
+<td>It tracks what the learner can do</td>
+</tr>
+<tr>
+<td><strong>Mode</strong></td>
+<td>A verification run is hint-free because it is proof, not practice</td>
+<td>Verification happens <em>between</em> 0.80 and 0.95, exactly where the mastery rule still allows rung 1</td>
+</tr>
+</tbody>
+</table></div>
+<p>Neither may loosen the other, so the ceiling is a <code>min</code> and never an override. A fading contract subtracts one further rung from whatever survives.</p>
+<h3>20.2 Defect 14 — a safeguard that defaulted to permissive</h3>
+<p>The sequencer stamped <code>scaffold_ceiling: 0</code> on verification picks and omitted the field on every other pick. The mentor's clamp read <code>ctx.scaffold_ceiling ?? 5</code>. The two halves were individually reasonable and jointly meant that <strong>every ordinary practice task ran with the full ladder available</strong>, up to co-completion, regardless of how well the learner knew the skill. Fading was specified, believed to be in force, and had never once fired.</p>
+<p>Two changes, and the second is the general one:</p>
+<ol>
+<li>The sequencer stamps a ceiling on <strong>every</strong> pick, through a single <code>stamp()</code> choke point rather than at six return sites.</li>
+<li>The mentor's fallback is now <code>?? 0</code>, not <code>?? 5</code>. <strong>A missing safeguard value must resolve to the most restrictive reading.</strong> An absent ceiling means nobody decided, and nobody deciding is not permission.</li>
+</ol>
+<h3>20.3 The evidence path is the one that matters</h3>
+<p>The engine enforces the ladder on request and the mentor enforces it on delivery, but neither sits on the path that writes evidence. <code>Session.attempt()</code> accepted whatever rung its caller reported — and that function writes the history certification is computed from. An unclamped rung there would let a hinted success be recorded as unaided, which is the single lie that makes a gate meaningless.</p>
+<p>The rung is now clamped there too, and an over-ceiling report is <strong>audited rather than silently corrected</strong>: the discrepancy is evidence about the client, and quietly fixing it would destroy the only signal that something upstream is wrong.</p>
+<p>The hint record publishes as <code>hint.served</code> under the <code>hint_engine</code> role, not the mentor's. A mentor <em>delivers</em> help; it does not get to write the record of its own restraint. That is the same separation the bus already enforces for dial state, applied to the one remaining place a conversational agent touched the audit trail.</p>
+<hr />
+<h2 id="s21">21. ACP-13 in code — registries, lanes, the loop, the governor</h2>
+<h3>21.1 Pipeline transitions are a table, not an ordering</h3>
+<p>Module states are checked against an explicit transition table. Rank ordering would have permitted <code>draft → live</code> in a single step, which is precisely the move the pipeline exists to prevent. An adversarial walk of every legal path confirms that all 14 routes to <code>live</code> pass through <code>calibrating</code> and none is shorter than three transitions.</p>
+<p>Two registry rules earn their strictness:</p>
+<ul>
+<li><strong>A mentor version cannot become champion without a passing eval record.</strong> The check lives in the registry rather than the rollout lane, so no caller reaches champion status by another route.</li>
+<li><strong>A skill-graph revision requires a migration.</strong> A prerequisite that appears retroactively can strand every learner already past it. The first publish is exempt — there is nobody to migrate.</li>
+</ul>
+<h3>21.2 Defect 15 — a gate in front of a mutable object</h3>
+<p>The adversarial pass asked whether a caller could take the record the registry handed it, flip <code>evals.pass</code> to <code>true</code>, and promote a mentor that had failed. It could. The gate was real and the object behind it was writable.</p>
+<p>Records are now frozen all the way down and writes rebuild rather than mutate. The audit log had already solved this exact shape by freezing entries and returning copies (§17.3); the registries had not inherited it. <strong>A validity check is only as strong as the immutability of what it validated.</strong></p>
+<h3>21.3 The lanes ask ACP-08 rather than re-deciding</h3>
+<p>Rollouts advance 1 hall → 5 → 33, with dwell windows between. Dial-parameter changes serve a 14-day shadow run before the canary opens. The lane manager holds no parity logic and no stop-condition logic of its own: it asks the ACP-08 objects and obeys. A second implementation of a safeguard is a second opinion, and two opinions about whether it is safe to ship is defect 12's shape.</p>
+<p>A halt rolls live rollouts off the network automatically, and a rolled-back change <strong>cannot be resumed</strong> — it reopens as a new rollout, because resuming a reverted change skips the observation that reverted it.</p>
+<h3>21.4 The automation loop is load-bearing for a safeguard</h3>
+<p>Seven jobs on three cadences. The parity job is the one that matters: ACP-08 halts adaptation when it fails to run inside its window, so a scheduler that silently skips it is a <em>safety</em> defect rather than an ops annoyance. Two consequences are implemented rather than assumed:</p>
+<ul>
+<li>A throwing job does not stop the loop. One broken nightly job must not prevent the weekly parity job from running, since that would convert a small failure into a halted network.</li>
+<li>A safety-critical job with <strong>no handler registered</strong> is an audited event. The adversarial pass runs four weeks with every job but parity wired up, and the network stops shipping on its own.</li>
+</ul>
+<h3>21.5 The governor cannot throttle the control plane</h3>
+<p>The conversation plane degrades <code>full → compact → minimal</code> under budget pressure and keeps serving; the factory plane, which no learner is waiting on, is the one that pauses. The control plane is structurally un-throttleable — not merely well-funded — because it decides whether a learner is certified, and a certification that depends on the month's token budget is not a certification.</p>
+<hr />
+<h2 id="s22">22. The identity, and why it is code</h2>
+<p>A product name is a claim the reader can check, and nothing was checking it. The Academy app had shipped for several versions as <code>SmartCity.X · Trade Quest Academy</code> — wrong on both halves — while the landing page, the console and this specification all said "SmartCiti.X : Trade Craft Academy". Three surfaces built weeks apart had each hand-rolled a palette, and the identity existed only as a habit.</p>
+<p><code>brand/identity.mjs</code> is now the single declaration: the names, the forbidden spellings with the reason each is wrong, the two-theme token set, the type stack, the wordmark, and the hall livery. <code>brand/lint.mjs</code> enforces it across the tree and runs in <code>verify_all.sh</code>. This is defect 12's lesson applied to prose rather than code — <strong>a second declaration of one truth will eventually disagree with the first</strong>, and a name is no exception.</p>
+<h3>22.1 Livery is derived, never assigned</h3>
+<p>Each hall's colour comes from a hash of its slug, with saturation and lightness <strong>fixed</strong> so no hall can be louder than another, and with the amber wedge the brand accent owns excluded so no hall impersonates the mark. Thirty-three hand-picked hues drift the moment a thirty-fourth hall opens — and the Academy app is already at 111.</p>
+<h3>22.2 A contrast failure the tokens were hiding</h3>
+<p>Writing the brand suite surfaced a live accessibility defect. The light-theme accent <code>#B0730C</code> carries white button text at <strong>4.0:1</strong> — below AA — so every primary action in the light theme failed, on a page already published. The accent is now <code>#9F680B</code>: the same hue and saturation, darkened until white clears 4.7:1. The hue was the brand; the lightness was never load-bearing.</p>
+<h3>22.3 Defect 16 — an assertion built on a guessed constant</h3>
+<p>The campus plan asserts that the longest hall name fits its pad. The constant behind it was estimated from "condensed faces run about 0.47em per character". The browser reports <strong>8.74px at 13.5px type — the guess was 43% low</strong>, and four hall names ran out of their pads and across their neighbours while the assertion sat there passing.</p>
+<p>The constant is now measured and labelled as measured. The general rule is worth more than the fix: <strong>an assertion built on a guessed constant is worse than no assertion</strong>, because it reports a confidence it has not earned. It is the same failure as the console freshness stamp that hashed the wrong file list (defect 12) and the eval gate that guarded a mutable object (defect 15) — a check is only as good as the thing it actually checked.</p>
+<h3>22.4 The inconsistency, and how it was settled</h3>
+<p>The Academy app stated 111 union halls and <code>500,000 modules</code>. This specification, the registry pack and the public landing page stated <code>33 halls</code> and <code>333,333</code> modules. Both were internally consistent and they disagreed with each other, and the only reason it surfaced is that someone read them side by side.</p>
+<p>It is settled by scaling to the larger network: <strong>111 halls, 11,000,000 modules</strong>, with the ledger rebuilt to close on that figure exactly (§11.1) and every surface regenerated from it.</p>
+<p>The durable part is not the new number. It is <code>brand/figures.mjs</code>, which reads the canonical counts from the pack manifest — itself verified against the generated ID space — and fails the build if any surface states a superseded one. Superseded figures may still be <em>cited</em>, in backticks, because migration notes have to name what they replaced; that exemption is tested, including the case where a citation sits beside the same stale figure in live prose.</p>
+<p>This is the third instance of one pattern, and by now it should be a rule rather than a lesson: the console source list (defect 12), the product name (§22), and now the figures. <strong>Anything a reader can check is a claim, and every claim needs a checker.</strong> Three surfaces will always eventually disagree unless something compares them.</p>
+<hr />
+<h2 id="s23">23. What an adversarial review found</h2>
+<p>The bundle had 246 passing checks and had survived unit, simulation, soak, fuzz, integration and rendering passes. A fresh adversarial read of every module found <strong>thirty-three defects</strong>, and the shape of what it found is more useful than the list.</p>
+<h3>23.1 Nine safeguards that failed open</h3>
+<p>Not one of these was a broken control. Every one was a control that worked on the path the tests took and stood aside on a path nobody had written a test for.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Control</th>
+<th>How it stood aside</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Rate limiting</td>
+<td><code>take('auth', k, -1000)</code> <strong>added</strong> a thousand tokens; a <code>NaN</code> cost disabled the bucket permanently, since <code>NaN &lt; cost</code> is false forever</td>
+</tr>
+<tr>
+<td>Tenant isolation</td>
+<td>Checked only <code>if (resource.tenant !== undefined)</code> — a resource that omitted its tenant skipped the check that the comment above it called "always"</td>
+</tr>
+<tr>
+<td>Time-boxed grants</td>
+<td>Expiry was evaluated once, at principal construction. A cached principal kept a 50 ms <code>pii.reveal</code> grant for its whole lifetime</td>
+</tr>
+<tr>
+<td>PII reveal</td>
+<td>Passed <code>{ tenant: p.tenant }</code>, so the authorizer compared <code>p.tenant !== p.tenant</code> — a check that could not fail</td>
+</tr>
+<tr>
+<td>Export and storage guards</td>
+<td>Scanned top-level keys only, while real telemetry is an envelope around a payload</td>
+</tr>
+<tr>
+<td>Registry gates</td>
+<td><code>transition()</code> and <code>promote()</code> were gated; the <code>commit()</code> they both called was public</td>
+</tr>
+<tr>
+<td>Rollout dwell</td>
+<td><code>dwellHours</code> defaulted to <code>Infinity</code>, so the plain call skipped the observation window</td>
+</tr>
+<tr>
+<td>Parity monitor</td>
+<td>Reported green before it had seen a single cohort, and a run over zero cohorts satisfied the stop condition meant to catch a parity job that cannot run</td>
+</tr>
+<tr>
+<td>Job scheduler</td>
+<td>An async handler's rejection never reached the synchronous <code>catch</code>, so a permanently failing safety-critical job recorded <code>ok: true</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>The pattern is one sentence: <strong>a default value is a policy decision, and every one of these defaulted to "assume the check passed."</strong> <code>?? Infinity</code>, <code>!== undefined &amp;&amp;</code>, an empty ticket list, a <code>catch</code> that cannot see a promise. §20.2 had already drawn this conclusion once for the scaffold ceiling; it had not been applied anywhere else.</p>
+<h3>23.2 The lie the clamp was written to prevent</h3>
+<p><code>Session.attempt()</code> carried a comment saying it stopped "a hinted attempt being recorded as unaided — the one lie that makes a gate meaningless." It clamped the reported rung <strong>downward only</strong>. A learner could take rung-5 co-completion and report rung 0, and the attempt counted toward the three consecutive <em>unaided</em> successes a gate requires.</p>
+<p>Worse, the suite asserted the behaviour was correct. A test named <em>"a verification run cannot be talked into counting a hinted success"</em> asserted that a reported rung 3 on a hint-free task is silently recorded as rung 0 — which is precisely counting it as unaided. Help served is now a <strong>floor</strong> as well as the ceiling being a cap, and both discrepancies are audited rather than silently corrected.</p>
+<h3>23.3 Roughly twenty assertions that could not fail</h3>
+<p><code>assert livery('welders')[0] == livery('welders')[0]</code>. An affect-export check whose fixture contained no affect. A NaN guard reading <code>!isFinite(x) &amp;&amp; !isNaN(x)</code>, which for NaN is <code>true &amp;&amp; false</code>. A <code>||</code> escape hatch that let any working-set member satisfy a prerequisite check. A bare <code>catch</code> in the very test written to prove the brand lint can fail — so a lint with a syntax error passed it.</p>
+<p>And the sharpest one: <code>pack/verify.mjs</code> announced <em>"every one of 11,000,000 module indices is reached exactly once."</em> For the 11,000 library modules it assigned <code>back = i</code> before comparing <code>back !== i</code>, so a collision was unrepresentable — and the ID sampling stride (every 100,003rd index) never once landed in the library block, whose last multiple falls at 10,900,327. <strong>The headline was proved for 10,989,000 and assumed for the rest.</strong> A sampling stride has to be checked against the population it samples.</p>
+<h3>23.4 Colour cannot hold 111 categories</h3>
+<p><code>livery()</code> hashed each hall's slug into 360 hue buckets and the brand suite asserted distinctness over a hand-picked ten. Over the real roster it produced <strong>94 distinct hues for 111 halls</strong>, with three-way ties. The first fix enforced a 12-degree separation, which caps at 30 slots and collapsed to 21 colours; relaxing the separation to fit would have produced 111 hues three degrees apart — distinct to a <code>Set</code>, identical to a reader.</p>
+<p>So the encoding changed instead of the tolerance. <strong>Hue carries the eight districts; identity is carried by a unique three-letter code.</strong> Use the channel that fits the cardinality rather than overloading one that cannot take it. The two-letter code it replaces gave 72 distinct codes for 111 halls and drew its letters from the slug, so <code>window-glazing</code> printed <strong>WI</strong> on a marker reading ARCHITECTURAL GLAZIERS.</p>
+<h3>23.5 The general finding</h3>
+<p>Every defect in §23.1 and §23.3 shares one property: <strong>the test suite and the implementation were written by the same mind on the same day, so they agreed about which paths existed.</strong> Simulation, soak and fuzz all probe the paths the author thought of — harder, longer, with nastier inputs, but the same paths. What found these was a reader who assumed there were bugs and went looking for the branch nobody had exercised.</p>
+<p>That is a class no harness in this bundle could have caught, and it is now the argument for the review itself being part of the process rather than a one-off.</p>
+<hr />
+<h2 id="s24">24. Texture and environment packages</h2>
+<p>The interiors gave every hall a room programme. A room is not a place until it has surfaces and conditions, and both are derivable from the same source the rooms came from — the trade's own words — rather than chosen for looks.</p>
+<h3>24.1 A finish exists because something requires it</h3>
+<p>Twenty-two surfaces, each carrying renderer-ready parameters (base colour, roughness, metalness, a procedural pattern, and the real-world size of one tile in metres) <strong>and the reason it is specified</strong>. Selection runs most-specific-first: the trade's hazard, then the room's function, then nothing — and the record says which rule placed it.</p>
+<p>A welding bay floor is a bare non-combustible slab because the trade throws sparks and nothing underfoot may carry flame. A cleanroom floor is welded sheet vinyl because particulates collect in joints. A smelter stands on a firebrick hearth because it will be spilled on. None of those is a preference.</p>
+<p><strong>A hazard is only recorded as hazard-driven when it changed something.</strong> For contaminant trades the induction room's hazard specification turned out identical to its function default — an induction room is already wipe-clean — so the record was claiming a reason that did no work. It now reads as the function choice the hazard happens to confirm, which is what actually happened.</p>
+<h3>24.2 Conditions, including the answer "none"</h3>
+<p>Per room: maintained illuminance, air changes per hour, the noise level the room is designed <em>around</em>, a temperature band, a hazard class and the PPE that class implies. Eighteen hazard classes are in use across the network — hot work, molten metal, ionising radiation, explosives, flammable atmosphere, thermal event, suspended load, work at height, confined space, live electrical, stored energy, mobile plant, rotating machinery, immersion, particulate, contaminant, noise.</p>
+<p>Where two hazards meet, <strong>the more demanding value wins on every axis</strong>, so a second hazard can never cancel the first. That property is asserted directly rather than inferred from the code.</p>
+<p>The first pass left 65% of halls with no hazard at all, which was a gap rather than a finding: most of those trades name a hazard plainly in their own focus line and the table simply lacked the vocabulary. After extending it from their own words, 31 halls remain — and those now say <strong>"no acute physical hazard"</strong> explicitly. Bench, design and coordination trades genuinely have none in their practice bay, and saying so is more useful than a blank field a reader has to interpret.</p>
+<h3>24.3 What these numbers are not</h3>
+<p>They are <strong>general good practice, not a code reference.</strong> No figure here is read from any jurisdiction's standard, no surface names a product, brand, fire rating or specification number, and the suite asserts that absence rather than trusting it. They carry the same unverified label as the rest of the curriculum, and a real deployment replaces them with the local standard.</p>
+<p>They are also not a survey. No address, site visit or building record exists for any hall (§23 of the interiors work), so a plan describes what the trade requires, not what any building contains.</p>
+<h3>24.4 One declaration, four consumers</h3>
+<p>The packages export to <code>pack/environment/</code> as renderer-ready JSON, so the campus plan's 2D schedule and any 3D walkable interior read the <em>same</em> values. This is the fifth time this project has resolved a problem the same way — the console source list, the product name, the network figures, the hall livery, and now the finishes. The pattern is settled: <strong>when two things must agree, do not write the rule twice and test that they match; write it once and let both read it.</strong></p>
+<p>The page pays for this too. Inlining each room's finishes and conditions produced 1.36MB for data that never varies between halls sharing a room function and a hazard; interning the repeated blocks into a shared table brought it to 459KB with no value changed.</p>
+<hr />
+<h2 id="s25">25. Durability — the launch blocker the security doc named</h2>
+<p><code>SECURITY.md</code> had carried the sentence for four versions: <em>an audit log that does not survive a restart is not an audit log.</em> Nothing in the stack persisted. Every learner profile, every gate award and the entire compliance record lived in a <code>Map</code> and vanished with the process.</p>
+<p>Worse, the audit log <strong>discarded its own history under load</strong>. On reaching its limit it dropped the oldest entry and incremented a counter. For a compliance record that is not a limit, it is data loss with a number beside it.</p>
+<h3>25.1 A gate award is a fact about a person</h3>
+<p>ACP-06 already treats certification as an <em>awarded event</em> rather than a recomputed query (v1.1 defect 5, where asking whether a gate passed could silently revoke it). That argument only holds if the award outlives the process that made it — otherwise the system is recomputing after all, just from an empty slate.</p>
+<p><code>store/</code> is an append-only journal with snapshots: newline-delimited records, an explicit <code>fsync</code> at every commit boundary, and a snapshot written to a temp file and renamed so an interrupted snapshot is never a half-snapshot. Certification, profiles, enrolments and the audit log all survive a restart, and the suite proves it by running a session, discarding everything but the directory, and reopening.</p>
+<p>Three properties are asserted rather than assumed:</p>
+<ul>
+<li><strong>Idempotence.</strong> Re-awarding a held gate is a no-op, so a retried request after a timeout cannot mint a second award date for one certification.</li>
+<li><strong>Torn tails are dropped; holes are errors.</strong> A crash mid-append leaves a partial last line, which is expected and discarded. Corruption in the <em>middle</em> of the journal raises rather than skipping — a gap in an audit record must not be papered over.</li>
+<li><strong>A corrupt snapshot costs time, never correctness.</strong> It is ignored and the journal replays in full, because the journal alone is sufficient by construction.</li>
+</ul>
+<h3>25.2 Erasure writes a tombstone, and the ordering matters</h3>
+<p>The privacy pack promises that erasure breaks the identity link. With nothing persisted, that promise had never been tested against anything.</p>
+<p>Erasure now appends a tombstone; it does <strong>not</strong> rewrite the journal. Editing history to satisfy a privacy request would break the append-only property the audit record depends on — and a log you can edit for a good reason is a log you can edit for any reason. On replay, <strong>erasures are applied last regardless of their position in the journal</strong>, so a tombstone written before a replayed enrolment still wins. Without that rule a rebuild silently resurrects a link somebody asked to have broken. An erased pseudonym also cannot be re-enrolled, which would undo the erasure quietly.</p>
+<h3>25.3 Two defects introduced while fixing this, and caught</h3>
+<p>Writing the durability layer produced two of its own, both found by tests rather than by reading:</p>
+<ol>
+<li><strong>The restarted audit log restarted its sequence at zero</strong>, so the recovered history read <code>0,1,…,481,0,1,2</code> and two different events shared a sequence number. This is the <em>same defect</em> the counter was introduced to fix — a <code>seq</code> that stops being unique — reappearing one level up, across processes instead of across a truncation. A sequence is only a sequence if it is monotonic over the whole record.</li>
+<li><strong>The console bundler's assertion tested the wrong thing.</strong> It asserted <code>'import ' not in bundle</code>, which fires on the word "import" appearing in a <em>comment</em> — a sentence explaining why a static import had been avoided broke the build. It now matches module syntax at a line start. An assertion has to test the thing it names, or it fails for reasons unrelated to what it guards.</li>
+</ol>
+<h3>25.4 Injected, not imported</h3>
+<p>The console inlines the whole control plane and runs it in a browser, where <code>node:fs</code> does not exist. A static import of the store pack from <code>session.mjs</code> would have made the control plane unloadable there — the page would have kept working until the moment that code path ran.</p>
+<p>So the store is <strong>injected at the edge</strong>, and <code>bus/session.mjs</code> does not import it at all. Durability is opt-in, and the only layer that knows whether it has a filesystem is the one that does. A session without a store behaves exactly as before and reports <code>durable === false</code> rather than implying otherwise.</p>
+<h3>25.5 What this is not</h3>
+<p>It is not a database, and <code>SECURITY.md</code> now says so in the place the old blocker used to sit. No replication, no concurrent writers, no point-in-time restore, no tested backup schedule, no encryption at rest. A real deployment puts a database underneath and keeps this contract — the contract is the part worth having, because it is what the rest of the stack was written against.</p>
+</div>

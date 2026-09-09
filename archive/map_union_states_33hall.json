@@ -1,0 +1,338 @@
+{
+"boilermakers": {
+"name": "Boilermakers",
+"focus": "Pressure vessels, tanks, tubes and code welding",
+"n": 1089,
+"states": {
+"live": 957,
+"calibrating": 66,
+"schema_ok": 66
+}
+},
+"bricklayers": {
+"name": "Bricklayers & Allied Craft",
+"focus": "Masonry, refractory, tile and stone",
+"n": 1089,
+"states": {
+"live": 957,
+"calibrating": 66,
+"schema_ok": 66
+}
+},
+"carpenters": {
+"name": "Carpenters",
+"focus": "Framing, formwork, finish and layout",
+"n": 1089,
+"states": {
+"live": 957,
+"calibrating": 66,
+"schema_ok": 66
+}
+},
+"cement-masons": {
+"name": "Cement Masons",
+"focus": "Placement, finishing, curing and decorative concrete",
+"n": 1089,
+"states": {
+"live": 957,
+"calibrating": 66,
+"schema_ok": 66
+}
+},
+"crane-ops": {
+"name": "Crane Operators",
+"focus": "Mobile, tower and overhead lifting operations",
+"n": 1089,
+"states": {
+"live": 759,
+"calibrating": 165,
+"schema_ok": 165
+}
+},
+"demolition": {
+"name": "Demolition Workers",
+"focus": "Selective demo, structural takedown and debris control",
+"n": 1089,
+"states": {
+"live": 528,
+"calibrating": 231,
+"schema_ok": 165,
+"draft": 165
+}
+},
+"drywall": {
+"name": "Drywall Finishers",
+"focus": "Board, level of finish, texture and acoustic assemblies",
+"n": 1089,
+"states": {
+"live": 759,
+"calibrating": 165,
+"schema_ok": 165
+}
+},
+"electricians": {
+"name": "Electrical Workers",
+"focus": "Power, control, low-voltage and code compliance",
+"n": 1089,
+"states": {
+"live": 957,
+"calibrating": 66,
+"schema_ok": 66
+}
+},
+"elevator": {
+"name": "Elevator Constructors",
+"focus": "Traction and hydraulic install, controls and testing",
+"n": 1089,
+"states": {
+"live": 957,
+"calibrating": 66,
+"schema_ok": 66
+}
+},
+"fire-sprinkler": {
+"name": "Fire Sprinkler Fitters",
+"focus": "Hydraulics, hangers, heads, testing and inspection",
+"n": 1089,
+"states": {
+"live": 528,
+"calibrating": 231,
+"schema_ok": 165,
+"draft": 165
+}
+},
+"flooring": {
+"name": "Floor Coverers",
+"focus": "Substrate prep, resilient, carpet, terrazzo and epoxy",
+"n": 1089,
+"states": {
+"live": 759,
+"calibrating": 165,
+"schema_ok": 165
+}
+},
+"glaziers": {
+"name": "Glaziers",
+"focus": "Curtain wall, storefront, glazing and sealants",
+"n": 1089,
+"states": {
+"live": 957,
+"calibrating": 66,
+"schema_ok": 66
+}
+},
+"grounds": {
+"name": "Grounds & Landscape",
+"focus": "Mowing, trimming, irrigation, arbor and turf care",
+"n": 1089,
+"states": {
+"live": 759,
+"calibrating": 165,
+"schema_ok": 165
+}
+},
+"hazmat": {
+"name": "Hazmat & Environmental",
+"focus": "Containment, decon, monitoring and disposal",
+"n": 1089,
+"states": {
+"live": 528,
+"calibrating": 231,
+"schema_ok": 165,
+"draft": 165
+}
+},
+"heavy-equip": {
+"name": "Heavy Equipment Technicians",
+"focus": "Diagnostics, hydraulics, drivetrain and field service",
+"n": 1089,
+"states": {
+"live": 759,
+"calibrating": 165,
+"schema_ok": 165
+}
+},
+"hvacr": {
+"name": "HVAC/R Technicians",
+"focus": "Refrigeration, air systems, controls and commissioning",
+"n": 1089,
+"states": {
+"live": 759,
+"calibrating": 165,
+"schema_ok": 165
+}
+},
+"insulators": {
+"name": "Heat & Frost Insulators",
+"focus": "Mechanical insulation, abatement and firestopping",
+"n": 1089,
+"states": {
+"live": 957,
+"calibrating": 66,
+"schema_ok": 66
+}
+},
+"ironworkers": {
+"name": "Ironworkers",
+"focus": "Structural steel, rebar, rigging and connecting",
+"n": 1089,
+"states": {
+"live": 957,
+"calibrating": 66,
+"schema_ok": 66
+}
+},
+"laborers": {
+"name": "Laborers",
+"focus": "Site prep, materials, excavation support and cleanup",
+"n": 1089,
+"states": {
+"live": 957,
+"calibrating": 66,
+"schema_ok": 66
+}
+},
+"line-workers": {
+"name": "Utility Line Workers",
+"focus": "Distribution, transmission, switching and storm work",
+"n": 1089,
+"states": {
+"live": 759,
+"calibrating": 165,
+"schema_ok": 165
+}
+},
+"millwrights": {
+"name": "Millwrights",
+"focus": "Precision alignment, machinery install and vibration",
+"n": 1089,
+"states": {
+"live": 957,
+"calibrating": 66,
+"schema_ok": 66
+}
+},
+"operating-eng": {
+"name": "Operating Engineers",
+"focus": "Earthmoving, lifting and heavy plant operation",
+"n": 1089,
+"states": {
+"live": 957,
+"calibrating": 66,
+"schema_ok": 66
+}
+},
+"painters": {
+"name": "Painters & Allied Trades",
+"focus": "Coatings, containment, industrial and decorative finish",
+"n": 1089,
+"states": {
+"live": 957,
+"calibrating": 66,
+"schema_ok": 66
+}
+},
+"pipefitters": {
+"name": "Plumbers & Pipefitters",
+"focus": "Process piping, drainage, medical gas and hydronics",
+"n": 1089,
+"states": {
+"live": 957,
+"calibrating": 66,
+"schema_ok": 66
+}
+},
+"riggers": {
+"name": "Riggers & Signalpersons",
+"focus": "Load calculation, rigging hardware and signals",
+"n": 1089,
+"states": {
+"live": 759,
+"calibrating": 165,
+"schema_ok": 165
+}
+},
+"roofers": {
+"name": "Roofers & Waterproofers",
+"focus": "Low-slope, steep-slope, membranes and moisture control",
+"n": 1089,
+"states": {
+"live": 957,
+"calibrating": 66,
+"schema_ok": 66
+}
+},
+"scaffold": {
+"name": "Scaffold Erectors",
+"focus": "System scaffold, shoring, suspended access and tags",
+"n": 1089,
+"states": {
+"live": 528,
+"calibrating": 231,
+"schema_ok": 165,
+"draft": 165
+}
+},
+"sheetmetal": {
+"name": "Sheet Metal Workers",
+"focus": "Duct fabrication, architectural metal and balancing",
+"n": 1089,
+"states": {
+"live": 957,
+"calibrating": 66,
+"schema_ok": 66
+}
+},
+"solar": {
+"name": "Solar Installers",
+"focus": "PV array, racking, inverters and interconnection",
+"n": 1089,
+"states": {
+"live": 759,
+"calibrating": 165,
+"schema_ok": 165
+}
+},
+"surveyors": {
+"name": "Construction Surveyors",
+"focus": "Layout, control networks, GNSS and as-builts",
+"n": 1089,
+"states": {
+"live": 528,
+"calibrating": 231,
+"schema_ok": 165,
+"draft": 165
+}
+},
+"teamsters": {
+"name": "Teamsters",
+"focus": "Haul, delivery, logistics and vehicle compliance",
+"n": 1089,
+"states": {
+"live": 957,
+"calibrating": 66,
+"schema_ok": 66
+}
+},
+"welders": {
+"name": "Welding Trades",
+"focus": "SMAW, GMAW, GTAW, FCAW, procedure and qualification",
+"n": 1089,
+"states": {
+"live": 957,
+"calibrating": 66,
+"schema_ok": 66
+}
+},
+"wind": {
+"name": "Wind Turbine Technicians",
+"focus": "Nacelle systems, blades, climb rescue and torque",
+"n": 1089,
+"states": {
+"live": 528,
+"calibrating": 231,
+"schema_ok": 165,
+"draft": 165
+}
+}
+}
