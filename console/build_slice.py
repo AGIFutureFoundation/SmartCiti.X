@@ -9,7 +9,20 @@ console that quotes its own numbers is one more surface that can disagree.
 """
 import json, pathlib, sys
 
-ROOT = pathlib.Path(__file__).resolve().parent
+
+def _pack_root():
+    """Walk up to the directory that holds the pack, rather than assuming a
+    layout — the fixed `ROOT / 'pack'` only resolved in the pre-packaging
+    tree (the v2.6 defect-13 shape)."""
+    here = pathlib.Path(__file__).resolve().parent
+    for cand in (here, *here.parents):
+        if (cand / 'pack' / 'registry' / 'halls.json').exists():
+            return cand
+    raise FileNotFoundError('cannot locate the pack from ' + str(here))
+
+
+HERE = pathlib.Path(__file__).resolve().parent
+ROOT = _pack_root()
 sys.path.insert(0, str(ROOT / 'pack'))
 from build import pipeline_state, lesson_of, STRANDS, TIERS, FORMS, SLOTS, LEVELS  # noqa: E402
 
@@ -47,6 +60,6 @@ out = {
     'lessons': sample,
     'shape': {'levels': LEVELS, 'slots': SLOTS},
 }
-json.dump(out, open(ROOT / 'app_slice.json', 'w'), separators=(',', ':'))
+json.dump(out, open(HERE / 'app_slice.json', 'w'), separators=(',', ':'))
 print(f"slice: {len(picked)} halls, {len(slice_skills)} skills, "
       f"{sum(h['modules'] for h in picked):,} modules addressable in-console")

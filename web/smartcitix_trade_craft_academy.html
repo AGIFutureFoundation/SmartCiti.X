@@ -1626,4 +1626,112 @@ against ambient state.</p>
 <p>It is settled by scaling to the larger network: <strong>111 halls, 11,000,000 modules</strong>, with the ledger rebuilt to close on that figure exactly (§11.1) and every surface regenerated from it.</p>
 <p>The durable part is not the new number. It is <code>brand/figures.mjs</code>, which reads the canonical counts from the pack manifest — itself verified against the generated ID space — and fails the build if any surface states a superseded one. Superseded figures may still be <em>cited</em>, in backticks, because migration notes have to name what they replaced; that exemption is tested, including the case where a citation sits beside the same stale figure in live prose.</p>
 <p>This is the third instance of one pattern, and by now it should be a rule rather than a lesson: the console source list (defect 12), the product name (§22), and now the figures. <strong>Anything a reader can check is a claim, and every claim needs a checker.</strong> Three surfaces will always eventually disagree unless something compares them.</p>
+<hr />
+<h2 id="s23">23. What an adversarial review found</h2>
+<p>The bundle had 246 passing checks and had survived unit, simulation, soak, fuzz, integration and rendering passes. A fresh adversarial read of every module found <strong>thirty-three defects</strong>, and the shape of what it found is more useful than the list.</p>
+<h3>23.1 Nine safeguards that failed open</h3>
+<p>Not one of these was a broken control. Every one was a control that worked on the path the tests took and stood aside on a path nobody had written a test for.</p>
+<div class="tw"><table>
+<thead>
+<tr>
+<th>Control</th>
+<th>How it stood aside</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Rate limiting</td>
+<td><code>take('auth', k, -1000)</code> <strong>added</strong> a thousand tokens; a <code>NaN</code> cost disabled the bucket permanently, since <code>NaN &lt; cost</code> is false forever</td>
+</tr>
+<tr>
+<td>Tenant isolation</td>
+<td>Checked only <code>if (resource.tenant !== undefined)</code> — a resource that omitted its tenant skipped the check that the comment above it called "always"</td>
+</tr>
+<tr>
+<td>Time-boxed grants</td>
+<td>Expiry was evaluated once, at principal construction. A cached principal kept a 50 ms <code>pii.reveal</code> grant for its whole lifetime</td>
+</tr>
+<tr>
+<td>PII reveal</td>
+<td>Passed <code>{ tenant: p.tenant }</code>, so the authorizer compared <code>p.tenant !== p.tenant</code> — a check that could not fail</td>
+</tr>
+<tr>
+<td>Export and storage guards</td>
+<td>Scanned top-level keys only, while real telemetry is an envelope around a payload</td>
+</tr>
+<tr>
+<td>Registry gates</td>
+<td><code>transition()</code> and <code>promote()</code> were gated; the <code>commit()</code> they both called was public</td>
+</tr>
+<tr>
+<td>Rollout dwell</td>
+<td><code>dwellHours</code> defaulted to <code>Infinity</code>, so the plain call skipped the observation window</td>
+</tr>
+<tr>
+<td>Parity monitor</td>
+<td>Reported green before it had seen a single cohort, and a run over zero cohorts satisfied the stop condition meant to catch a parity job that cannot run</td>
+</tr>
+<tr>
+<td>Job scheduler</td>
+<td>An async handler's rejection never reached the synchronous <code>catch</code>, so a permanently failing safety-critical job recorded <code>ok: true</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>The pattern is one sentence: <strong>a default value is a policy decision, and every one of these defaulted to "assume the check passed."</strong> <code>?? Infinity</code>, <code>!== undefined &amp;&amp;</code>, an empty ticket list, a <code>catch</code> that cannot see a promise. §20.2 had already drawn this conclusion once for the scaffold ceiling; it had not been applied anywhere else.</p>
+<h3>23.2 The lie the clamp was written to prevent</h3>
+<p><code>Session.attempt()</code> carried a comment saying it stopped "a hinted attempt being recorded as unaided — the one lie that makes a gate meaningless." It clamped the reported rung <strong>downward only</strong>. A learner could take rung-5 co-completion and report rung 0, and the attempt counted toward the three consecutive <em>unaided</em> successes a gate requires.</p>
+<p>Worse, the suite asserted the behaviour was correct. A test named <em>"a verification run cannot be talked into counting a hinted success"</em> asserted that a reported rung 3 on a hint-free task is silently recorded as rung 0 — which is precisely counting it as unaided. Help served is now a <strong>floor</strong> as well as the ceiling being a cap, and both discrepancies are audited rather than silently corrected.</p>
+<h3>23.3 Roughly twenty assertions that could not fail</h3>
+<p><code>assert livery('welders')[0] == livery('welders')[0]</code>. An affect-export check whose fixture contained no affect. A NaN guard reading <code>!isFinite(x) &amp;&amp; !isNaN(x)</code>, which for NaN is <code>true &amp;&amp; false</code>. A <code>||</code> escape hatch that let any working-set member satisfy a prerequisite check. A bare <code>catch</code> in the very test written to prove the brand lint can fail — so a lint with a syntax error passed it.</p>
+<p>And the sharpest one: <code>pack/verify.mjs</code> announced <em>"every one of 11,000,000 module indices is reached exactly once."</em> For the 11,000 library modules it assigned <code>back = i</code> before comparing <code>back !== i</code>, so a collision was unrepresentable — and the ID sampling stride (every 100,003rd index) never once landed in the library block, whose last multiple falls at 10,900,327. <strong>The headline was proved for 10,989,000 and assumed for the rest.</strong> A sampling stride has to be checked against the population it samples.</p>
+<h3>23.4 Colour cannot hold 111 categories</h3>
+<p><code>livery()</code> hashed each hall's slug into 360 hue buckets and the brand suite asserted distinctness over a hand-picked ten. Over the real roster it produced <strong>94 distinct hues for 111 halls</strong>, with three-way ties. The first fix enforced a 12-degree separation, which caps at 30 slots and collapsed to 21 colours; relaxing the separation to fit would have produced 111 hues three degrees apart — distinct to a <code>Set</code>, identical to a reader.</p>
+<p>So the encoding changed instead of the tolerance. <strong>Hue carries the eight districts; identity is carried by a unique three-letter code.</strong> Use the channel that fits the cardinality rather than overloading one that cannot take it. The two-letter code it replaces gave 72 distinct codes for 111 halls and drew its letters from the slug, so <code>window-glazing</code> printed <strong>WI</strong> on a marker reading ARCHITECTURAL GLAZIERS.</p>
+<h3>23.5 The general finding</h3>
+<p>Every defect in §23.1 and §23.3 shares one property: <strong>the test suite and the implementation were written by the same mind on the same day, so they agreed about which paths existed.</strong> Simulation, soak and fuzz all probe the paths the author thought of — harder, longer, with nastier inputs, but the same paths. What found these was a reader who assumed there were bugs and went looking for the branch nobody had exercised.</p>
+<p>That is a class no harness in this bundle could have caught, and it is now the argument for the review itself being part of the process rather than a one-off.</p>
+<hr />
+<h2 id="s24">24. Texture and environment packages</h2>
+<p>The interiors gave every hall a room programme. A room is not a place until it has surfaces and conditions, and both are derivable from the same source the rooms came from — the trade's own words — rather than chosen for looks.</p>
+<h3>24.1 A finish exists because something requires it</h3>
+<p>Twenty-two surfaces, each carrying renderer-ready parameters (base colour, roughness, metalness, a procedural pattern, and the real-world size of one tile in metres) <strong>and the reason it is specified</strong>. Selection runs most-specific-first: the trade's hazard, then the room's function, then nothing — and the record says which rule placed it.</p>
+<p>A welding bay floor is a bare non-combustible slab because the trade throws sparks and nothing underfoot may carry flame. A cleanroom floor is welded sheet vinyl because particulates collect in joints. A smelter stands on a firebrick hearth because it will be spilled on. None of those is a preference.</p>
+<p><strong>A hazard is only recorded as hazard-driven when it changed something.</strong> For contaminant trades the induction room's hazard specification turned out identical to its function default — an induction room is already wipe-clean — so the record was claiming a reason that did no work. It now reads as the function choice the hazard happens to confirm, which is what actually happened.</p>
+<h3>24.2 Conditions, including the answer "none"</h3>
+<p>Per room: maintained illuminance, air changes per hour, the noise level the room is designed <em>around</em>, a temperature band, a hazard class and the PPE that class implies. Eighteen hazard classes are in use across the network — hot work, molten metal, ionising radiation, explosives, flammable atmosphere, thermal event, suspended load, work at height, confined space, live electrical, stored energy, mobile plant, rotating machinery, immersion, particulate, contaminant, noise.</p>
+<p>Where two hazards meet, <strong>the more demanding value wins on every axis</strong>, so a second hazard can never cancel the first. That property is asserted directly rather than inferred from the code.</p>
+<p>The first pass left 65% of halls with no hazard at all, which was a gap rather than a finding: most of those trades name a hazard plainly in their own focus line and the table simply lacked the vocabulary. After extending it from their own words, 31 halls remain — and those now say <strong>"no acute physical hazard"</strong> explicitly. Bench, design and coordination trades genuinely have none in their practice bay, and saying so is more useful than a blank field a reader has to interpret.</p>
+<h3>24.3 What these numbers are not</h3>
+<p>They are <strong>general good practice, not a code reference.</strong> No figure here is read from any jurisdiction's standard, no surface names a product, brand, fire rating or specification number, and the suite asserts that absence rather than trusting it. They carry the same unverified label as the rest of the curriculum, and a real deployment replaces them with the local standard.</p>
+<p>They are also not a survey. No address, site visit or building record exists for any hall (§23 of the interiors work), so a plan describes what the trade requires, not what any building contains.</p>
+<h3>24.4 One declaration, four consumers</h3>
+<p>The packages export to <code>pack/environment/</code> as renderer-ready JSON, so the campus plan's 2D schedule and any 3D walkable interior read the <em>same</em> values. This is the fifth time this project has resolved a problem the same way — the console source list, the product name, the network figures, the hall livery, and now the finishes. The pattern is settled: <strong>when two things must agree, do not write the rule twice and test that they match; write it once and let both read it.</strong></p>
+<p>The page pays for this too. Inlining each room's finishes and conditions produced 1.36MB for data that never varies between halls sharing a room function and a hazard; interning the repeated blocks into a shared table brought it to 459KB with no value changed.</p>
+<hr />
+<h2 id="s25">25. Durability — the launch blocker the security doc named</h2>
+<p><code>SECURITY.md</code> had carried the sentence for four versions: <em>an audit log that does not survive a restart is not an audit log.</em> Nothing in the stack persisted. Every learner profile, every gate award and the entire compliance record lived in a <code>Map</code> and vanished with the process.</p>
+<p>Worse, the audit log <strong>discarded its own history under load</strong>. On reaching its limit it dropped the oldest entry and incremented a counter. For a compliance record that is not a limit, it is data loss with a number beside it.</p>
+<h3>25.1 A gate award is a fact about a person</h3>
+<p>ACP-06 already treats certification as an <em>awarded event</em> rather than a recomputed query (v1.1 defect 5, where asking whether a gate passed could silently revoke it). That argument only holds if the award outlives the process that made it — otherwise the system is recomputing after all, just from an empty slate.</p>
+<p><code>store/</code> is an append-only journal with snapshots: newline-delimited records, an explicit <code>fsync</code> at every commit boundary, and a snapshot written to a temp file and renamed so an interrupted snapshot is never a half-snapshot. Certification, profiles, enrolments and the audit log all survive a restart, and the suite proves it by running a session, discarding everything but the directory, and reopening.</p>
+<p>Three properties are asserted rather than assumed:</p>
+<ul>
+<li><strong>Idempotence.</strong> Re-awarding a held gate is a no-op, so a retried request after a timeout cannot mint a second award date for one certification.</li>
+<li><strong>Torn tails are dropped; holes are errors.</strong> A crash mid-append leaves a partial last line, which is expected and discarded. Corruption in the <em>middle</em> of the journal raises rather than skipping — a gap in an audit record must not be papered over.</li>
+<li><strong>A corrupt snapshot costs time, never correctness.</strong> It is ignored and the journal replays in full, because the journal alone is sufficient by construction.</li>
+</ul>
+<h3>25.2 Erasure writes a tombstone, and the ordering matters</h3>
+<p>The privacy pack promises that erasure breaks the identity link. With nothing persisted, that promise had never been tested against anything.</p>
+<p>Erasure now appends a tombstone; it does <strong>not</strong> rewrite the journal. Editing history to satisfy a privacy request would break the append-only property the audit record depends on — and a log you can edit for a good reason is a log you can edit for any reason. On replay, <strong>erasures are applied last regardless of their position in the journal</strong>, so a tombstone written before a replayed enrolment still wins. Without that rule a rebuild silently resurrects a link somebody asked to have broken. An erased pseudonym also cannot be re-enrolled, which would undo the erasure quietly.</p>
+<h3>25.3 Two defects introduced while fixing this, and caught</h3>
+<p>Writing the durability layer produced two of its own, both found by tests rather than by reading:</p>
+<ol>
+<li><strong>The restarted audit log restarted its sequence at zero</strong>, so the recovered history read <code>0,1,…,481,0,1,2</code> and two different events shared a sequence number. This is the <em>same defect</em> the counter was introduced to fix — a <code>seq</code> that stops being unique — reappearing one level up, across processes instead of across a truncation. A sequence is only a sequence if it is monotonic over the whole record.</li>
+<li><strong>The console bundler's assertion tested the wrong thing.</strong> It asserted <code>'import ' not in bundle</code>, which fires on the word "import" appearing in a <em>comment</em> — a sentence explaining why a static import had been avoided broke the build. It now matches module syntax at a line start. An assertion has to test the thing it names, or it fails for reasons unrelated to what it guards.</li>
+</ol>
+<h3>25.4 Injected, not imported</h3>
+<p>The console inlines the whole control plane and runs it in a browser, where <code>node:fs</code> does not exist. A static import of the store pack from <code>session.mjs</code> would have made the control plane unloadable there — the page would have kept working until the moment that code path ran.</p>
+<p>So the store is <strong>injected at the edge</strong>, and <code>bus/session.mjs</code> does not import it at all. Durability is opt-in, and the only layer that knows whether it has a filesystem is the one that does. A session without a store behaves exactly as before and reports <code>durable === false</code> rather than implying otherwise.</p>
+<h3>25.5 What this is not</h3>
+<p>It is not a database, and <code>SECURITY.md</code> now says so in the place the old blocker used to sit. No replication, no concurrent writers, no point-in-time restore, no tested backup schedule, no encryption at rest. A real deployment puts a database underneath and keeps this contract — the contract is the part worth having, because it is what the rest of the stack was written against.</p>
 </div>

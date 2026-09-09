@@ -10,18 +10,35 @@ import json, pathlib, html, sys
 
 ROOT = pathlib.Path(__file__).resolve().parent
 
+
+def _pack_root():
+    """The directory that holds the packs, found by walking up rather than
+    trusting the working directory or a fixed layout — the earlier fixed
+    `ROOT / 'pack'` only resolved in the pre-packaging tree (defect 13's
+    shape), so the packaged bundle could not rebuild its own map."""
+    for cand in (ROOT, *ROOT.parents):
+        if (cand / 'pack').is_dir() and (cand / 'unions').is_dir():
+            return cand
+    raise RuntimeError('cannot locate the packs from ' + str(ROOT))
+
+
+PACKS = _pack_root()
+
 # ---------------------------------------------------------------- data ----
-# Halls, districts and pipeline state all come from the 111-hall pack. The map
-# holds no roster of its own: a second list of halls is a second thing to keep
-# in step, which is how the surfaces disagreed in the first place.
-sys.path.insert(0, str(ROOT / 'pack'))
-from unions111 import DISTRICTS as DISTRICT_MAP          # noqa: E402
+# Halls and pipeline state come from the module pack; districts come from the
+# union registry, which is now its own pack. The map holds no roster of its
+# own: a second list of halls is a second thing to keep in step, which is how
+# the surfaces disagreed in the first place.
 sys.path.insert(0, str(ROOT))
 from interiors import build as build_interiors, ROOMS as ROOM_PROGRAMME  # noqa: E402
 
-halls_json = json.load(open(ROOT / 'pack/registry/halls.json'))['halls']
+_districts_json = json.load(open(PACKS / 'unions/registry/districts.json'))['districts']
+DISTRICT_MAP = {k: (d['name'], d['tagline'], d['halls'])
+                for k, d in _districts_json.items()}
+
+halls_json = json.load(open(PACKS / 'pack/registry/halls.json'))['halls']
 unions = {u['slug']: u for u in halls_json}
-manifest = json.load(open(ROOT / 'pack/manifest.json'))
+manifest = json.load(open(PACKS / 'pack/manifest.json'))
 SHAPE = manifest['ledger']
 
 CODES = None   # filled after make_codes is defined

@@ -1,0 +1,905 @@
+{
+ "pack": "smartcitix-trade-craft-academy-union-registry",
+ "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
+ "pack_version": "3.2.0",
+ "built": "2026-09-09",
+ "source_stamp": "5437e56a78b01377",
+ "count": 111,
+ "cohorts": {
+  "existing-33": 33,
+  "new-78": 78
+ },
+ "honesty": {
+  "taxonomy": "a taxonomy of skilled trades, not a roster of chartered locals; no union has reviewed or endorsed it"
+ },
+ "unions": [
+  {
+   "index": 0,
+   "slug": "ironworkers",
+   "name": "Ironworkers",
+   "focus": "Structural steel, rebar, rigging and connecting",
+   "district": "structural",
+   "cohort": "existing-33"
+  },
+  {
+   "index": 1,
+   "slug": "electricians",
+   "name": "Electrical Workers",
+   "focus": "Power, control, low-voltage and code compliance",
+   "district": "systems",
+   "cohort": "existing-33"
+  },
+  {
+   "index": 2,
+   "slug": "pipefitters",
+   "name": "Plumbers & Pipefitters",
+   "focus": "Process piping, drainage, medical gas and hydronics",
+   "district": "systems",
+   "cohort": "existing-33"
+  },
+  {
+   "index": 3,
+   "slug": "carpenters",
+   "name": "Carpenters",
+   "focus": "Framing, formwork, finish and layout",
+   "district": "envelope",
+   "cohort": "existing-33"
+  },
+  {
+   "index": 4,
+   "slug": "operating-eng",
+   "name": "Operating Engineers",
+   "focus": "Earthmoving, lifting and heavy plant operation",
+   "district": "earthworks",
+   "cohort": "existing-33"
+  },
+  {
+   "index": 5,
+   "slug": "laborers",
+   "name": "Laborers",
+   "focus": "Site prep, materials, excavation support and cleanup",
+   "district": "earthworks",
+   "cohort": "existing-33"
+  },
+  {
+   "index": 6,
+   "slug": "sheetmetal",
+   "name": "Sheet Metal Workers",
+   "focus": "Duct fabrication, architectural metal and balancing",
+   "district": "systems",
+   "cohort": "existing-33"
+  },
+  {
+   "index": 7,
+   "slug": "bricklayers",
+   "name": "Bricklayers & Allied Craft",
+   "focus": "Masonry, refractory, tile and stone",
+   "district": "envelope",
+   "cohort": "existing-33"
+  },
+  {
+   "index": 8,
+   "slug": "cement-masons",
+   "name": "Cement Masons",
+   "focus": "Placement, finishing, curing and decorative concrete",
+   "district": "envelope",
+   "cohort": "existing-33"
+  },
+  {
+   "index": 9,
+   "slug": "roofers",
+   "name": "Roofers & Waterproofers",
+   "focus": "Low-slope, steep-slope, membranes and moisture control",
+   "district": "envelope",
+   "cohort": "existing-33"
+  },
+  {
+   "index": 10,
+   "slug": "painters",
+   "name": "Painters & Allied Trades",
+   "focus": "Coatings, containment, industrial and decorative finish",
+   "district": "envelope",
+   "cohort": "existing-33"
+  },
+  {
+   "index": 11,
+   "slug": "glaziers",
+   "name": "Glaziers",
+   "focus": "Curtain wall, storefront, glazing and sealants",
+   "district": "envelope",
+   "cohort": "existing-33"
+  },
+  {
+   "index": 12,
+   "slug": "insulators",
+   "name": "Heat & Frost Insulators",
+   "focus": "Mechanical insulation, abatement and firestopping",
+   "district": "envelope",
+   "cohort": "existing-33"
+  },
+  {
+   "index": 13,
+   "slug": "millwrights",
+   "name": "Millwrights",
+   "focus": "Precision alignment, machinery install and vibration",
+   "district": "structural",
+   "cohort": "existing-33"
+  },
+  {
+   "index": 14,
+   "slug": "boilermakers",
+   "name": "Boilermakers",
+   "focus": "Pressure vessels, tanks, tubes and code welding",
+   "district": "structural",
+   "cohort": "existing-33"
+  },
+  {
+   "index": 15,
+   "slug": "elevator",
+   "name": "Elevator Constructors",
+   "focus": "Traction and hydraulic install, controls and testing",
+   "district": "systems",
+   "cohort": "existing-33"
+  },
+  {
+   "index": 16,
+   "slug": "teamsters",
+   "name": "Teamsters",
+   "focus": "Haul, delivery, logistics and vehicle compliance",
+   "district": "earthworks",
+   "cohort": "existing-33"
+  },
+  {
+   "index": 17,
+   "slug": "welders",
+   "name": "Welding Trades",
+   "focus": "SMAW, GMAW, GTAW, FCAW, procedure and qualification",
+   "district": "structural",
+   "cohort": "existing-33"
+  },
+  {
+   "index": 18,
+   "slug": "hvacr",
+   "name": "HVAC/R Technicians",
+   "focus": "Refrigeration, air systems, controls and commissioning",
+   "district": "systems",
+   "cohort": "existing-33"
+  },
+  {
+   "index": 19,
+   "slug": "crane-ops",
+   "name": "Crane Operators",
+   "focus": "Mobile, tower and overhead lifting operations",
+   "district": "structural",
+   "cohort": "existing-33"
+  },
+  {
+   "index": 20,
+   "slug": "riggers",
+   "name": "Riggers & Signalpersons",
+   "focus": "Load calculation, rigging hardware and signals",
+   "district": "structural",
+   "cohort": "existing-33"
+  },
+  {
+   "index": 21,
+   "slug": "heavy-equip",
+   "name": "Heavy Equipment Technicians",
+   "focus": "Diagnostics, hydraulics, drivetrain and field service",
+   "district": "earthworks",
+   "cohort": "existing-33"
+  },
+  {
+   "index": 22,
+   "slug": "drywall",
+   "name": "Drywall Finishers",
+   "focus": "Board, level of finish, texture and acoustic assemblies",
+   "district": "envelope",
+   "cohort": "existing-33"
+  },
+  {
+   "index": 23,
+   "slug": "flooring",
+   "name": "Floor Coverers",
+   "focus": "Substrate prep, resilient, carpet, terrazzo and epoxy",
+   "district": "envelope",
+   "cohort": "existing-33"
+  },
+  {
+   "index": 24,
+   "slug": "grounds",
+   "name": "Grounds & Landscape",
+   "focus": "Mowing, trimming, irrigation, arbor and turf care",
+   "district": "earthworks",
+   "cohort": "existing-33"
+  },
+  {
+   "index": 25,
+   "slug": "line-workers",
+   "name": "Utility Line Workers",
+   "focus": "Distribution, transmission, switching and storm work",
+   "district": "energy",
+   "cohort": "existing-33"
+  },
+  {
+   "index": 26,
+   "slug": "solar",
+   "name": "Solar Installers",
+   "focus": "PV array, racking, inverters and interconnection",
+   "district": "energy",
+   "cohort": "existing-33"
+  },
+  {
+   "index": 27,
+   "slug": "wind",
+   "name": "Wind Turbine Technicians",
+   "focus": "Nacelle systems, blades, climb rescue and torque",
+   "district": "energy",
+   "cohort": "existing-33"
+  },
+  {
+   "index": 28,
+   "slug": "demolition",
+   "name": "Demolition Workers",
+   "focus": "Selective demo, structural takedown and debris control",
+   "district": "earthworks",
+   "cohort": "existing-33"
+  },
+  {
+   "index": 29,
+   "slug": "scaffold",
+   "name": "Scaffold Erectors",
+   "focus": "System scaffold, shoring, suspended access and tags",
+   "district": "earthworks",
+   "cohort": "existing-33"
+  },
+  {
+   "index": 30,
+   "slug": "surveyors",
+   "name": "Construction Surveyors",
+   "focus": "Layout, control networks, GNSS and as-builts",
+   "district": "control",
+   "cohort": "existing-33"
+  },
+  {
+   "index": 31,
+   "slug": "fire-sprinkler",
+   "name": "Fire Sprinkler Fitters",
+   "focus": "Hydraulics, hangers, heads, testing and inspection",
+   "district": "systems",
+   "cohort": "existing-33"
+  },
+  {
+   "index": 32,
+   "slug": "hazmat",
+   "name": "Hazmat & Environmental",
+   "focus": "Containment, decon, monitoring and disposal",
+   "district": "control",
+   "cohort": "existing-33"
+  },
+  {
+   "index": 33,
+   "slug": "refractory",
+   "name": "Refractory Masons",
+   "focus": "Furnace linings, castables, gunning and dryout",
+   "district": "industry",
+   "cohort": "new-78"
+  },
+  {
+   "index": 34,
+   "slug": "pipeline",
+   "name": "Pipeline Trades",
+   "focus": "Mainline welding, coating, tie-ins and integrity digs",
+   "district": "industry",
+   "cohort": "new-78"
+  },
+  {
+   "index": 35,
+   "slug": "tank-erectors",
+   "name": "Tank Erectors",
+   "focus": "Field-erected storage, floating roofs and hydrotest",
+   "district": "industry",
+   "cohort": "new-78"
+  },
+  {
+   "index": 36,
+   "slug": "shipfitters",
+   "name": "Shipfitters",
+   "focus": "Hull sections, tack and fit, alignment and launch",
+   "district": "structural",
+   "cohort": "new-78"
+  },
+  {
+   "index": 37,
+   "slug": "marine-pipe",
+   "name": "Marine Pipefitters",
+   "focus": "Shipboard systems, sea valves and pressure test",
+   "district": "industry",
+   "cohort": "new-78"
+  },
+  {
+   "index": 38,
+   "slug": "divers",
+   "name": "Commercial Divers",
+   "focus": "Underwater cutting, welding, inspection and lift bags",
+   "district": "industry",
+   "cohort": "new-78"
+  },
+  {
+   "index": 39,
+   "slug": "blasters",
+   "name": "Drillers & Blasters",
+   "focus": "Shot design, loading, initiation and vibration control",
+   "district": "earthworks",
+   "cohort": "new-78"
+  },
+  {
+   "index": 40,
+   "slug": "miners",
+   "name": "Underground Miners",
+   "focus": "Ground support, ventilation, haulage and rescue",
+   "district": "earthworks",
+   "cohort": "new-78"
+  },
+  {
+   "index": 41,
+   "slug": "smelter",
+   "name": "Smelter Operators",
+   "focus": "Furnace tapping, molten handling and pot lines",
+   "district": "industry",
+   "cohort": "new-78"
+  },
+  {
+   "index": 42,
+   "slug": "foundry",
+   "name": "Foundry Workers",
+   "focus": "Moulding, pouring, shakeout and heat treatment",
+   "district": "industry",
+   "cohort": "new-78"
+  },
+  {
+   "index": 43,
+   "slug": "machinists",
+   "name": "Machinists",
+   "focus": "Turning, milling, CNC setup, metrology and fits",
+   "district": "industry",
+   "cohort": "new-78"
+  },
+  {
+   "index": 44,
+   "slug": "toolmakers",
+   "name": "Tool & Die Makers",
+   "focus": "Die build, jig and fixture, grinding and tryout",
+   "district": "industry",
+   "cohort": "new-78"
+  },
+  {
+   "index": 45,
+   "slug": "fabricators",
+   "name": "Structural Fabricators",
+   "focus": "Layout, cut, fit and weld-out in the shop",
+   "district": "structural",
+   "cohort": "new-78"
+  },
+  {
+   "index": 46,
+   "slug": "platers",
+   "name": "Platers & Coaters",
+   "focus": "Surface prep, electroplating, anodising and waste",
+   "district": "industry",
+   "cohort": "new-78"
+  },
+  {
+   "index": 47,
+   "slug": "substation",
+   "name": "Substation Technicians",
+   "focus": "Relays, breakers, transformers and switching orders",
+   "district": "energy",
+   "cohort": "new-78"
+  },
+  {
+   "index": 48,
+   "slug": "cable-splicers",
+   "name": "Cable Splicers",
+   "focus": "MV/HV terminations, splices and cable fault work",
+   "district": "energy",
+   "cohort": "new-78"
+  },
+  {
+   "index": 49,
+   "slug": "meter-techs",
+   "name": "Meter Technicians",
+   "focus": "Metering, CT/PT, revenue accuracy and sealing",
+   "district": "energy",
+   "cohort": "new-78"
+  },
+  {
+   "index": 50,
+   "slug": "gas-distrib",
+   "name": "Gas Distribution Fitters",
+   "focus": "Mains, services, fusion, purging and leak survey",
+   "district": "energy",
+   "cohort": "new-78"
+  },
+  {
+   "index": 51,
+   "slug": "water-distrib",
+   "name": "Water Distribution Fitters",
+   "focus": "Mains, valves, hydrants, chlorination and tapping",
+   "district": "energy",
+   "cohort": "new-78"
+  },
+  {
+   "index": 52,
+   "slug": "wastewater",
+   "name": "Wastewater Operators",
+   "focus": "Treatment trains, blowers, sludge and permit limits",
+   "district": "energy",
+   "cohort": "new-78"
+  },
+  {
+   "index": 53,
+   "slug": "nuclear",
+   "name": "Nuclear Plant Trades",
+   "focus": "Rad-controlled work, ALARA, containment and outage",
+   "district": "energy",
+   "cohort": "new-78"
+  },
+  {
+   "index": 54,
+   "slug": "hydro",
+   "name": "Hydro Plant Trades",
+   "focus": "Turbines, wickets, gates, penstocks and governors",
+   "district": "energy",
+   "cohort": "new-78"
+  },
+  {
+   "index": 55,
+   "slug": "geothermal",
+   "name": "Geothermal Technicians",
+   "focus": "Wellhead, brine handling, scaling and binary cycle",
+   "district": "energy",
+   "cohort": "new-78"
+  },
+  {
+   "index": 56,
+   "slug": "battery-storage",
+   "name": "Battery Storage Technicians",
+   "focus": "Racks, BMS, thermal runaway response and commissioning",
+   "district": "energy",
+   "cohort": "new-78"
+  },
+  {
+   "index": 57,
+   "slug": "ev-charging",
+   "name": "EV Charging Installers",
+   "focus": "Service upgrades, DCFC, networking and commissioning",
+   "district": "energy",
+   "cohort": "new-78"
+  },
+  {
+   "index": 58,
+   "slug": "hydrogen",
+   "name": "Hydrogen Systems Trades",
+   "focus": "Electrolysers, compression, purity and leak detection",
+   "district": "energy",
+   "cohort": "new-78"
+  },
+  {
+   "index": 59,
+   "slug": "transmission",
+   "name": "Transmission Linemen",
+   "focus": "EHV structures, conductor stringing and live-line work",
+   "district": "energy",
+   "cohort": "new-78"
+  },
+  {
+   "index": 60,
+   "slug": "district-energy",
+   "name": "District Energy Operators",
+   "focus": "Steam and chilled loops, vaults and metering",
+   "district": "energy",
+   "cohort": "new-78"
+  },
+  {
+   "index": 61,
+   "slug": "masonry-restore",
+   "name": "Masonry Restoration",
+   "focus": "Repointing, consolidation, Dutchman and cleaning",
+   "district": "envelope",
+   "cohort": "new-78"
+  },
+  {
+   "index": 62,
+   "slug": "stone-carvers",
+   "name": "Stone Carvers",
+   "focus": "Banker work, lettering, tracery and matching",
+   "district": "envelope",
+   "cohort": "new-78"
+  },
+  {
+   "index": 63,
+   "slug": "plasterers",
+   "name": "Plasterers",
+   "focus": "Three-coat, veneer, ornamental run and repair",
+   "district": "envelope",
+   "cohort": "new-78"
+  },
+  {
+   "index": 64,
+   "slug": "terrazzo",
+   "name": "Terrazzo Workers",
+   "focus": "Divider strips, pours, grinding and sealing",
+   "district": "envelope",
+   "cohort": "new-78"
+  },
+  {
+   "index": 65,
+   "slug": "tilesetters",
+   "name": "Tile Setters",
+   "focus": "Substrates, waterproofing, large format and grout",
+   "district": "envelope",
+   "cohort": "new-78"
+  },
+  {
+   "index": 66,
+   "slug": "lathers",
+   "name": "Lathers & Metal Framers",
+   "focus": "Metal stud, furring, ceiling grid and backing",
+   "district": "envelope",
+   "cohort": "new-78"
+  },
+  {
+   "index": 67,
+   "slug": "curtainwall",
+   "name": "Curtain Wall Erectors",
+   "focus": "Unitised panels, anchors, sequencing and water test",
+   "district": "envelope",
+   "cohort": "new-78"
+  },
+  {
+   "index": 68,
+   "slug": "waterproofers",
+   "name": "Below-Grade Waterproofers",
+   "focus": "Membranes, injection, drainage and blindside",
+   "district": "envelope",
+   "cohort": "new-78"
+  },
+  {
+   "index": 69,
+   "slug": "firestop",
+   "name": "Firestop Installers",
+   "focus": "Penetrations, joints, listed systems and inspection",
+   "district": "envelope",
+   "cohort": "new-78"
+  },
+  {
+   "index": 70,
+   "slug": "acoustic",
+   "name": "Acoustic Specialists",
+   "focus": "Isolation, mass-loaded assemblies and STC testing",
+   "district": "envelope",
+   "cohort": "new-78"
+  },
+  {
+   "index": 71,
+   "slug": "cladding",
+   "name": "Rainscreen Cladding Fitters",
+   "focus": "Substructure, panels, cavity drainage and tolerance",
+   "district": "envelope",
+   "cohort": "new-78"
+  },
+  {
+   "index": 72,
+   "slug": "shoring",
+   "name": "Shoring & Underpinning",
+   "focus": "Needle beams, jacking, monitoring and sequencing",
+   "district": "earthworks",
+   "cohort": "new-78"
+  },
+  {
+   "index": 73,
+   "slug": "piling",
+   "name": "Piling Crews",
+   "focus": "Driven, bored, sheet piles, refusal and integrity",
+   "district": "structural",
+   "cohort": "new-78"
+  },
+  {
+   "index": 74,
+   "slug": "concrete-pump",
+   "name": "Concrete Pump Operators",
+   "focus": "Boom setup, ground bearing, line safety and cleanout",
+   "district": "earthworks",
+   "cohort": "new-78"
+  },
+  {
+   "index": 75,
+   "slug": "post-tension",
+   "name": "Post-Tension Technicians",
+   "focus": "Tendon layout, stressing, elongation and grouting",
+   "district": "earthworks",
+   "cohort": "new-78"
+  },
+  {
+   "index": 76,
+   "slug": "precast",
+   "name": "Precast Erectors",
+   "focus": "Yard to crane, connections, grouting and tolerance",
+   "district": "structural",
+   "cohort": "new-78"
+  },
+  {
+   "index": 77,
+   "slug": "steel-erectors",
+   "name": "Steel Erectors",
+   "focus": "Detailing, plumbing up, bolting and connection safety",
+   "district": "structural",
+   "cohort": "new-78"
+  },
+  {
+   "index": 78,
+   "slug": "decking",
+   "name": "Metal Deck Installers",
+   "focus": "Layout, puddle welds, shear studs and edge form",
+   "district": "structural",
+   "cohort": "new-78"
+  },
+  {
+   "index": 79,
+   "slug": "window-glazing",
+   "name": "Architectural Glaziers",
+   "focus": "Structural silicone, blast glazing and heritage sash",
+   "district": "envelope",
+   "cohort": "new-78"
+  },
+  {
+   "index": 80,
+   "slug": "bas-controls",
+   "name": "Building Automation Techs",
+   "focus": "DDC, BACnet, sequences of operation and tuning",
+   "district": "systems",
+   "cohort": "new-78"
+  },
+  {
+   "index": 81,
+   "slug": "fire-alarm",
+   "name": "Fire Alarm Technicians",
+   "focus": "Initiating and notification circuits, cause and effect",
+   "district": "systems",
+   "cohort": "new-78"
+  },
+  {
+   "index": 82,
+   "slug": "security-sys",
+   "name": "Security Systems Installers",
+   "focus": "Access control, CCTV, intrusion and cabling standards",
+   "district": "systems",
+   "cohort": "new-78"
+  },
+  {
+   "index": 83,
+   "slug": "network-cabling",
+   "name": "Structured Cabling Techs",
+   "focus": "Copper and fibre, testing, labelling and pathways",
+   "district": "systems",
+   "cohort": "new-78"
+  },
+  {
+   "index": 84,
+   "slug": "fiber-splicers",
+   "name": "Fiber Splicers",
+   "focus": "Fusion splicing, OTDR, loss budgets and closures",
+   "district": "systems",
+   "cohort": "new-78"
+  },
+  {
+   "index": 85,
+   "slug": "data-center",
+   "name": "Data Centre Technicians",
+   "focus": "White space, busway, CRAC/CRAH and change control",
+   "district": "systems",
+   "cohort": "new-78"
+  },
+  {
+   "index": 86,
+   "slug": "instrumentation",
+   "name": "Instrumentation Technicians",
+   "focus": "Loop checks, calibration, transmitters and control valves",
+   "district": "systems",
+   "cohort": "new-78"
+  },
+  {
+   "index": 87,
+   "slug": "plc-techs",
+   "name": "PLC & Controls Technicians",
+   "focus": "Ladder logic, I/O, safety relays and commissioning",
+   "district": "systems",
+   "cohort": "new-78"
+  },
+  {
+   "index": 88,
+   "slug": "robotics",
+   "name": "Industrial Robotics Techs",
+   "focus": "Cells, teach pendants, safeguarding and payload",
+   "district": "systems",
+   "cohort": "new-78"
+  },
+  {
+   "index": 89,
+   "slug": "automation-int",
+   "name": "Automation Integrators",
+   "focus": "SCADA, historians, protocols and cutover planning",
+   "district": "systems",
+   "cohort": "new-78"
+  },
+  {
+   "index": 90,
+   "slug": "cleanroom",
+   "name": "Cleanroom Trades",
+   "focus": "Classification, gowning, laminar flow and validation",
+   "district": "systems",
+   "cohort": "new-78"
+  },
+  {
+   "index": 91,
+   "slug": "medical-gas",
+   "name": "Medical Gas Installers",
+   "focus": "Brazing, purity, zone valves and verification",
+   "district": "systems",
+   "cohort": "new-78"
+  },
+  {
+   "index": 92,
+   "slug": "rail-track",
+   "name": "Rail Track Workers",
+   "focus": "Ballast, ties, rail laying, welds and geometry",
+   "district": "transport",
+   "cohort": "new-78"
+  },
+  {
+   "index": 93,
+   "slug": "rail-signals",
+   "name": "Rail Signal Technicians",
+   "focus": "Interlockings, track circuits, crossings and testing",
+   "district": "transport",
+   "cohort": "new-78"
+  },
+  {
+   "index": 94,
+   "slug": "catenary",
+   "name": "Overhead Catenary Linemen",
+   "focus": "Contact wire, tensioning, isolation and clearances",
+   "district": "transport",
+   "cohort": "new-78"
+  },
+  {
+   "index": 95,
+   "slug": "transit-vehicle",
+   "name": "Transit Vehicle Technicians",
+   "focus": "Propulsion, brakes, doors and inspection cycles",
+   "district": "transport",
+   "cohort": "new-78"
+  },
+  {
+   "index": 96,
+   "slug": "aviation-ground",
+   "name": "Aviation Ground Support",
+   "focus": "GSE, ramp safety, de-icing and turnaround",
+   "district": "transport",
+   "cohort": "new-78"
+  },
+  {
+   "index": 97,
+   "slug": "airfield",
+   "name": "Airfield Trades",
+   "focus": "Lighting, markings, pavement and airside escort",
+   "district": "transport",
+   "cohort": "new-78"
+  },
+  {
+   "index": 98,
+   "slug": "port-crane",
+   "name": "Port Crane Technicians",
+   "focus": "STS and RTG cranes, spreaders, ropes and drives",
+   "district": "transport",
+   "cohort": "new-78"
+  },
+  {
+   "index": 99,
+   "slug": "marine-terminal",
+   "name": "Marine Terminal Operators",
+   "focus": "Mooring, loading arms, spill response and manifests",
+   "district": "transport",
+   "cohort": "new-78"
+  },
+  {
+   "index": 100,
+   "slug": "fleet-diesel",
+   "name": "Fleet Diesel Technicians",
+   "focus": "Aftertreatment, electrical, hydraulics and DOT checks",
+   "district": "transport",
+   "cohort": "new-78"
+  },
+  {
+   "index": 101,
+   "slug": "bridge-inspect",
+   "name": "Bridge Inspection Crews",
+   "focus": "Access, NDT, fracture-critical members and reporting",
+   "district": "transport",
+   "cohort": "new-78"
+  },
+  {
+   "index": 102,
+   "slug": "asbestos",
+   "name": "Asbestos Abatement Workers",
+   "focus": "Enclosures, negative air, wet removal and clearance",
+   "district": "control",
+   "cohort": "new-78"
+  },
+  {
+   "index": 103,
+   "slug": "lead-abatement",
+   "name": "Lead Abatement Workers",
+   "focus": "Containment, HEPA, waste characterisation and clearance",
+   "district": "control",
+   "cohort": "new-78"
+  },
+  {
+   "index": 104,
+   "slug": "mold-remediation",
+   "name": "Mould Remediation Techs",
+   "focus": "Moisture mapping, containment, drying and verification",
+   "district": "control",
+   "cohort": "new-78"
+  },
+  {
+   "index": 105,
+   "slug": "spill-response",
+   "name": "Spill Response Technicians",
+   "focus": "Booming, recovery, decon and incident command",
+   "district": "control",
+   "cohort": "new-78"
+  },
+  {
+   "index": 106,
+   "slug": "confined-space",
+   "name": "Confined Space Rescue",
+   "focus": "Atmospheric testing, retrieval, patient packaging",
+   "district": "control",
+   "cohort": "new-78"
+  },
+  {
+   "index": 107,
+   "slug": "high-angle",
+   "name": "High-Angle Rescue",
+   "focus": "Rope systems, anchors, edge management and litter work",
+   "district": "control",
+   "cohort": "new-78"
+  },
+  {
+   "index": 108,
+   "slug": "site-safety",
+   "name": "Site Safety Coordinators",
+   "focus": "Permits, JHAs, audits, incident investigation",
+   "district": "control",
+   "cohort": "new-78"
+  },
+  {
+   "index": 109,
+   "slug": "industrial-clean",
+   "name": "Industrial Cleaning Crews",
+   "focus": "Hydroblasting, vacuum trucks, tank entry and decon",
+   "district": "control",
+   "cohort": "new-78"
+  },
+  {
+   "index": 110,
+   "slug": "survey-drone",
+   "name": "Aerial Survey Operators",
+   "focus": "Flight planning, photogrammetry, airspace and accuracy",
+   "district": "control",
+   "cohort": "new-78"
+  }
+ ]
+}

@@ -1,0 +1,168 @@
+{
+ "pack": "smartcitix-trade-craft-academy-union-registry",
+ "pack_version": "3.2.0",
+ "built": "2026-09-09",
+ "source_stamp": "5437e56a78b01377",
+ "count": 8,
+ "districts": {
+  "structural": {
+   "name": "Structural",
+   "tagline": "Steel, welds, lifts and the loads they carry",
+   "halls": [
+    "ironworkers",
+    "welders",
+    "boilermakers",
+    "millwrights",
+    "riggers",
+    "crane-ops",
+    "steel-erectors",
+    "fabricators",
+    "shipfitters",
+    "decking",
+    "precast",
+    "piling"
+   ]
+  },
+  "envelope": {
+   "name": "Envelope & Finish",
+   "tagline": "Everything between the frame and the weather",
+   "halls": [
+    "carpenters",
+    "drywall",
+    "glaziers",
+    "roofers",
+    "bricklayers",
+    "cement-masons",
+    "flooring",
+    "painters",
+    "insulators",
+    "plasterers",
+    "terrazzo",
+    "tilesetters",
+    "lathers",
+    "curtainwall",
+    "waterproofers",
+    "firestop",
+    "acoustic",
+    "cladding",
+    "masonry-restore",
+    "stone-carvers",
+    "window-glazing"
+   ]
+  },
+  "systems": {
+   "name": "Building Systems",
+   "tagline": "Power, process, air, controls and data",
+   "halls": [
+    "electricians",
+    "pipefitters",
+    "hvacr",
+    "sheetmetal",
+    "fire-sprinkler",
+    "elevator",
+    "bas-controls",
+    "fire-alarm",
+    "security-sys",
+    "network-cabling",
+    "fiber-splicers",
+    "data-center",
+    "instrumentation",
+    "plc-techs",
+    "robotics",
+    "automation-int",
+    "cleanroom",
+    "medical-gas"
+   ]
+  },
+  "energy": {
+   "name": "Energy & Utilities",
+   "tagline": "Generation, distribution, water and storm work",
+   "halls": [
+    "line-workers",
+    "solar",
+    "wind",
+    "substation",
+    "cable-splicers",
+    "meter-techs",
+    "gas-distrib",
+    "water-distrib",
+    "wastewater",
+    "nuclear",
+    "hydro",
+    "geothermal",
+    "battery-storage",
+    "ev-charging",
+    "hydrogen",
+    "transmission",
+    "district-energy"
+   ]
+  },
+  "earthworks": {
+   "name": "Earthworks & Plant",
+   "tagline": "Ground, machines, access and haul",
+   "halls": [
+    "operating-eng",
+    "heavy-equip",
+    "laborers",
+    "demolition",
+    "teamsters",
+    "scaffold",
+    "grounds",
+    "shoring",
+    "concrete-pump",
+    "post-tension",
+    "blasters",
+    "miners"
+   ]
+  },
+  "industry": {
+   "name": "Heavy Industry",
+   "tagline": "Process plant, marine, metal and machine shops",
+   "halls": [
+    "refractory",
+    "pipeline",
+    "tank-erectors",
+    "marine-pipe",
+    "divers",
+    "smelter",
+    "foundry",
+    "machinists",
+    "toolmakers",
+    "platers"
+   ]
+  },
+  "transport": {
+   "name": "Transport & Mobility",
+   "tagline": "Rail, air, port and fleet",
+   "halls": [
+    "rail-track",
+    "rail-signals",
+    "catenary",
+    "transit-vehicle",
+    "aviation-ground",
+    "airfield",
+    "port-crane",
+    "marine-terminal",
+    "fleet-diesel",
+    "bridge-inspect"
+   ]
+  },
+  "control": {
+   "name": "Survey, Safety & Environment",
+   "tagline": "Where work is set out, made safe and made clean",
+   "halls": [
+    "surveyors",
+    "hazmat",
+    "asbestos",
+    "lead-abatement",
+    "mold-remediation",
+    "spill-response",
+    "confined-space",
+    "high-angle",
+    "site-safety",
+    "industrial-clean",
+    "survey-drone"
+   ]
+  }
+ }
+}

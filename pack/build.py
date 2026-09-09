@@ -28,16 +28,21 @@ hand-written lessons, and every surface has to say so. The manifest carries
 """
 import json, pathlib, collections, sys
 
-sys.path.insert(0, str(pathlib.Path(__file__).parent))
-from unions111 import UNIONS_111
-
 ROOT = pathlib.Path(__file__).resolve().parent
+
+# The roster is the unions pack's truth, not this pack's: the module skeleton
+# consumes the built union registry rather than carrying its own copy of the
+# taxonomy. unions/verify.mjs proves the two packs agree after every build.
+_roster = json.load(open(ROOT.parent / "unions" / "registry" / "unions.json"))
+UNIONS_111 = [(u["slug"], u["name"], u["focus"]) for u in _roster["unions"]]
+assert len(UNIONS_111) == 111
+
 OUT = ROOT / "registry"
 (OUT / "halls").mkdir(parents=True, exist_ok=True)
 
-PACK_VERSION = "3.0.0"
-SPEC = "ACP-10 / Adaptive Stack v2.9"
-BUILT = "2026-09-05"
+PACK_VERSION = "3.2.0"
+SPEC = "ACP-10 / Adaptive Stack v3.2"
+BUILT = "2026-09-09"
 SEED = 20260905
 
 HALLS = 111

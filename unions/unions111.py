@@ -1,4 +1,11 @@
-"""The 111-hall taxonomy.
+"""The 111-hall taxonomy — the source of the unions pack.
+
+This file used to live inside the module pack, which coupled two different
+truths: WHO the trades are (this roster and its districts) and WHAT the
+Academy generates for them (the module skeleton). They are now separate
+packs: `unions/` owns the roster and emits `unions/registry/`, and the
+module pack in `pack/` consumes that registry rather than carrying its own
+copy of the taxonomy. `unions/verify.mjs` proves the two agree.
 
 The first 33 are the existing halls, unchanged and in their original order, so
 every module ID minted under the 33-hall pack keeps its union index. The 78

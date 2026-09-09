@@ -1,6 +1,19 @@
 import markdown, re, pathlib
 
-md = pathlib.Path("SmartCitiX_TradeCraft_Academy_Spec.md").read_text()
+HERE = pathlib.Path(__file__).resolve().parent
+
+
+def _spec_path():
+    """The spec lives at the tree root; this builder lives in web/. Resolve by
+    walking up rather than trusting the working directory (defect 13's shape)."""
+    for cand in (HERE, *HERE.parents):
+        p = cand / "SmartCitiX_TradeCraft_Academy_Spec.md"
+        if p.exists():
+            return p
+    raise FileNotFoundError("SmartCitiX_TradeCraft_Academy_Spec.md not found above " + str(HERE))
+
+
+md = _spec_path().read_text()
 # Drop the md H1 + meta lines (the HTML header replaces them)
 md = md.split("---", 1)[1].lstrip("-\n")  # everything after first hr
 body = markdown.markdown(md, extensions=["tables", "fenced_code"])
@@ -179,5 +192,5 @@ blockquote {{ margin:0 0 16px; padding:2px 0 2px 16px; border-left:3px solid var
 {body}
 </div>
 """
-pathlib.Path("smartcitix_trade_craft_academy.html").write_text(page)
+(HERE / "smartcitix_trade_craft_academy.html").write_text(page)
 print("ok", len(page), "bytes;", "h2 ids:", list(slugs))

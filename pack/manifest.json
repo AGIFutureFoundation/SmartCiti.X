@@ -1,9 +1,9 @@
 {
   "pack": "smartcitix-trade-craft-academy-module-registry",
   "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
-  "pack_version": "3.0.0",
-  "spec": "ACP-10 / Adaptive Stack v2.9",
-  "built": "2026-09-05",
+  "pack_version": "3.2.0",
+  "spec": "ACP-10 / Adaptive Stack v3.2",
+  "built": "2026-09-09",
   "deterministic_seed": 20260905,
   "ledger": {
     "halls": 111,
