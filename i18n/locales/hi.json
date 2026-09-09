@@ -34,7 +34,9 @@
   "hall.skills": "कौशल जाल",
   "station.checklist": "जाँच सूची",
   "station.quiz": "परिदृश्य जाँच",
-  "ui.close": "बंद करें"
+  "ui.close": "बंद करें",
+  "ui.search": "हॉल खोजें",
+  "hall.enter3d": "3D परिवेश खोलें"
  },
  "districts": {
   "structural": {

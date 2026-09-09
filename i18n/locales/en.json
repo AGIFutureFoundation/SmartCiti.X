@@ -34,7 +34,9 @@
   "hall.skills": "Skill lattice",
   "station.checklist": "Checklist",
   "station.quiz": "Scenario check",
-  "ui.close": "Close"
+  "ui.close": "Close",
+  "ui.search": "Search halls",
+  "hall.enter3d": "Open 3D environment"
  },
  "districts": {
   "structural": {

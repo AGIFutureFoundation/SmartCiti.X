@@ -34,7 +34,9 @@
   "hall.skills": "شبكة المهارات",
   "station.checklist": "قائمة التحقق",
   "station.quiz": "اختبار السيناريو",
-  "ui.close": "إغلاق"
+  "ui.close": "إغلاق",
+  "ui.search": "البحث في القاعات",
+  "hall.enter3d": "فتح البيئة ثلاثية الأبعاد"
  },
  "districts": {
   "structural": {

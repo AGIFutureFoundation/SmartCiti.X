@@ -47,7 +47,7 @@ python3 wiki/build_wiki.py --check # fails if the wiki is behind the registries
 | `fabric/` | ACP-11/12 | Mentor contract and middleware, the five-gate eval harness with adversarial stubs, supervisor/swarm router |
 | `security/` | — | Deny-by-default authorization with tenant isolation, rate limiting, data classification, retention and erasure; plus `SECURITY.md` with the threat model and an honest launch checklist |
 | `ops/` | ACP-13 | The three registries with a pipeline transition table, hall-by-hall rollout lanes that ask ACP-08 rather than re-deciding, the seven-job automation loop, and the cost governor that cannot throttle the control plane |
-| `web/` | — | The published pages and their builders: landing page, rendered protocol spec, the languages page, the campus plan with a generated floor plan for every hall, and the **interactive layered map** (districts, pipeline, module layers, training stations, all locales) |
+| `web/` | — | The published pages and their builders: landing page, rendered protocol spec, the languages page, the campus plan with a generated floor plan for every hall, the **interactive layered map** (districts, pipeline, module layers, training stations, all locales, searchable and deep-linkable) and the **3D hall environment** (every floor plan extruded in Three.js with stations as clickable beacons) |
 | `brand/` | — | The canonical identity: names and forbidden spellings with reasons, the two-theme token set, the wordmark, hall livery, and a lint that fails the build on drift |
 | `bus/` | ACP-01/08/09 | The message bus with single-writer enforcement, the telemetry envelope and its quality guards, the append-only audit log, the parity/stop-condition/override safeguards, and the whole loop assembled over them |
 | `console/` | — | **The Adaptive Console**: a single-file web app running the real protocol on the real pack, with the builder and its staleness guard |
@@ -193,4 +193,7 @@ any free static host, no build step required:
 - **Netlify** — drag the repository folder onto the drop zone, or connect
   the repo with no build command.
 - **Locally** — `python3 -m http.server` from the repository root and open
-  `http://localhost:8000/`.
+  `http://localhost:8000/`. (The 3D environment needs an HTTP origin —
+  browsers refuse ES-module imports from `file://` — so use the local
+  server rather than double-clicking the file. Three.js 0.160.0 is
+  vendored under `web/vendor/`, so every page works offline.)

@@ -34,7 +34,9 @@
   "hall.skills": "Treillis de compétences",
   "station.checklist": "Liste de contrôle",
   "station.quiz": "Mise en situation",
-  "ui.close": "Fermer"
+  "ui.close": "Fermer",
+  "ui.search": "Rechercher une salle",
+  "hall.enter3d": "Ouvrir l'environnement 3D"
  },
  "districts": {
   "structural": {

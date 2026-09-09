@@ -213,9 +213,11 @@ footer{color:var(--muted);font-size:12.5px;margin-top:26px;border-top:1px solid 
 <script id="data" type="application/json">__DATA__</script>
 <script>
 const D = JSON.parse(document.getElementById('data').textContent);
+const params = new URLSearchParams(location.search);
 const STATE_COLORS = {live:'var(--good)', calibrating:'var(--steel)', schema_ok:'var(--warn)', draft:'var(--rule)'};
 const STATES = ['live','calibrating','schema_ok','draft'];
-let loc = 'en';
+let loc = D.i18n[params.get('lang')] ? params.get('lang') : 'en';
+let query = '';
 const t = (k) => D.i18n[loc].strings[k] ?? D.i18n.en.strings[k] ?? k;
 const fmt = (s, v) => s.replace(/\\{(\\w+)\\}/g, (m,k) => k in v ? v[k] : m);
 const F = (n) => n.toLocaleString('en-US');
@@ -238,7 +240,9 @@ function render(){
     `<span class="lbl">${t('map.layers')}:</span>` +
     LAYERS.map(([k,lk]) => `<label class="tgl"><input type="checkbox" data-l="${k}" ${document.body.classList.contains('L-'+k)?'checked':''}>${t(lk)}</label>`).join('') +
     `<select id="lang" aria-label="${t('language.select')}">` +
-    Object.entries(D.i18n).map(([c,v]) => `<option value="${c}" ${c===loc?'selected':''}>${v.language}</option>`).join('') + `</select>`;
+    Object.entries(D.i18n).map(([c,v]) => `<option value="${c}" ${c===loc?'selected':''}>${v.language}</option>`).join('') + `</select>` +
+    `<input id="q" type="search" value="${query.replace(/"/g,'&quot;')}" placeholder="${t('ui.search')}" aria-label="${t('ui.search')}"
+      style="background:var(--panel);color:var(--ink);border:1px solid var(--rule);border-radius:999px;padding:6px 13px;font:inherit;font-size:13px;width:170px">`;
   document.getElementById('legend').innerHTML =
     STATES.map(s => `<span><span class="sw" style="background:${STATE_COLORS[s]}"></span>${i.states[s]}</span>`).join('') +
     `<span><span class="sw" style="background:var(--mark);border-radius:50%"></span>${t('map.layer.stations')}</span>`;
@@ -256,9 +260,18 @@ function render(){
         const badge = h.stations.length ? `<span class="badge">${h.stations.length}</span>` : '';
         return `<button class="hall" data-slug="${slug}" style="${bg};${bd}">${badge}<span class="nm">${h.name}</span><span class="stbar">${bar}</span></button>`;
       }).join('') + `</div></section>`).join('');
+  applyFilter();
   document.getElementById('honesty').textContent =
     t('honesty.taxonomy') + ' ' + t('honesty.modules') + ' ' + t('honesty.content');
   document.getElementById('close').textContent = t('ui.close');
+}
+
+function applyFilter(){
+  const q = query.trim().toLowerCase();
+  document.querySelectorAll('.hall').forEach(el => {
+    const h = D.halls.find(x=>x.slug===el.dataset.slug);
+    el.style.display = (!q || (h.name+' '+h.focus+' '+h.slug).toLowerCase().includes(q)) ? '' : 'none';
+  });
 }
 
 function planSVG(h){
@@ -301,11 +314,13 @@ function openHall(slug){
       ['fundamentals','applied','mastery'].map(tier => {
         const seeded = h.stations.some(id => D.stations[id].strand===sk && D.stations[id].tier===tier);
         return `<div class="${seeded?'on':''}">${seeded?'●':'·'}</div>`; }).join('')).join('');
+  history.replaceState(null, '', `?hall=${slug}&lang=${loc}`);
   document.getElementById('pbody').innerHTML = `
     <h2>${h.name}</h2><p class="focus">${h.focus}</p>
     <span class="chip">${dname(h.district)}</span>
     <span class="chip">${F(h.lessons)} · ${fmt(t('figures.lessons'),{n:''}).trim()}</span>
     <span class="chip">${fmt(t('figures.modules'),{n:F(h.modules)})}</span>
+    <a class="chip" id="to3d" href="trade_craft_3d.html?hall=${h.slug}&lang=${loc}" style="color:var(--steel);border-color:var(--steel)">⬡ ${t('hall.enter3d')}</a>
     <h3>${t('map.layer.pipeline')}</h3><div class="cbar">${cbar}</div><div class="ckey">${ckey}</div>
     <h3>${t('hall.rooms')}</h3>${planSVG(h)}
     ${stns ? `<h3>${t('hall.stations')} (${h.stations.length})</h3>${stns}` : ''}
@@ -327,9 +342,14 @@ document.addEventListener('click', (e) => {
 });
 document.addEventListener('change', (e) => {
   if (e.target.dataset?.l) { document.body.classList.toggle('L-'+e.target.dataset.l, e.target.checked); render(); }
-  if (e.target.id === 'lang') { loc = e.target.value; render(); }
+  if (e.target.id === 'lang') { loc = e.target.value; history.replaceState(null, '', `?lang=${loc}`); render(); }
+});
+document.addEventListener('input', (e) => {
+  if (e.target.id === 'q') { query = e.target.value; applyFilter(); }
 });
 render();
+if (params.get('hall') && D.halls.some(h => h.slug === params.get('hall')))
+  openHall(params.get('hall'));
 </script>
 </body>
 </html>
