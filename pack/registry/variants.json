@@ -1,0 +1,1 @@
+{"modalities":["vr_sim","guided_drill","quiz_reading"],"bands":["support","core","stretch"],"band_offset":{"support":-5,"core":0,"stretch":5},"band_scaffold_ceiling":{"support":5,"core":3,"stretch":1},"variants_per_lesson":9}
