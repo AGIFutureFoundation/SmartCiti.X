@@ -7,7 +7,7 @@ The Adaptive Stack: the packs implementing the ACP protocol suite (v3.2) —
 counted, like everything else here, by the table below rather than by a
 number that can drift from it.
 
-**276 checks, all passing from inside this bundle**, with no model credentials
+**289 checks, all passing from inside this bundle**, with no model credentials
 required.
 
 ```bash
@@ -32,6 +32,7 @@ node ops/fuzz.mjs                  #  9 — side doors around the promotion gate
 node brand/test.mjs                # 30 — naming, tokens, contrast, livery, the lint itself
 node brand/lint.mjs .              # fails on any forbidden spelling anywhere in the tree
 node i18n/test.mjs                 # 16 — locale parity, placeholders, pack agreement
+node stations/test.mjs             # 13 — recovered stations vs roster, skills, rooms
 node control/fuzz.mjs              # 21 — hostile inputs and adversarial learners
 node control/soak.mjs              # long-run invariants, 4,000 attempts x 3 seeds
 python3 console/check_console.py   # fails if the console is behind its sources
@@ -46,12 +47,13 @@ python3 wiki/build_wiki.py --check # fails if the wiki is behind the registries
 | `fabric/` | ACP-11/12 | Mentor contract and middleware, the five-gate eval harness with adversarial stubs, supervisor/swarm router |
 | `security/` | — | Deny-by-default authorization with tenant isolation, rate limiting, data classification, retention and erasure; plus `SECURITY.md` with the threat model and an honest launch checklist |
 | `ops/` | ACP-13 | The three registries with a pipeline transition table, hall-by-hall rollout lanes that ask ACP-08 rather than re-deciding, the seven-job automation loop, and the cost governor that cannot throttle the control plane |
-| `web/` | — | The published pages and their builders: landing page, rendered protocol spec, the languages page, and the campus plan with a generated floor plan for every hall |
+| `web/` | — | The published pages and their builders: landing page, rendered protocol spec, the languages page, the campus plan with a generated floor plan for every hall, and the **interactive layered map** (districts, pipeline, module layers, training stations, all locales) |
 | `brand/` | — | The canonical identity: names and forbidden spellings with reasons, the two-theme token set, the wordmark, hall livery, and a lint that fails the build on drift |
 | `bus/` | ACP-01/08/09 | The message bus with single-writer enforcement, the telemetry envelope and its quality guards, the append-only audit log, the parity/stop-condition/override safeguards, and the whole loop assembled over them |
 | `console/` | — | **The Adaptive Console**: a single-file web app running the real protocol on the real pack, with the builder and its staleness guard |
 | `i18n/` | — | **The locale catalogs**: the Academy's vocabulary in 8 languages with structural-parity and pack-agreement checks; hall names deliberately untranslated pending native review |
 | `wiki/` | — | **The wiki**, generated from the registries: a page per map (campus, interiors, skill graph, languages) and a page per district, with Mermaid content graphs and a staleness guard |
+| `stations/` | — | **The station registry**: the recovered pre-rebrand yard curriculum rebranded onto the live structure — 25 machine-gradable stations assigned to halls, skills and floor-plan rooms, verified against all three |
 | `archive/` | — | Superseded working data kept for provenance, consumed by nothing and skipped by the figures lint |
 
 Alongside the packs: [`ROADMAP.md`](ROADMAP.md) — the phased plan from v3.2
@@ -177,3 +179,18 @@ All checks pass against the regenerated data.
   the pack root. The duplicate `web/build_slice.py` was removed, and the
   orphaned 33-hall-era map data moved to `archive/` with its provenance
   recorded in `wiki/Provenance.md`.
+
+## Running it as an app
+
+The bundle is a static site: `index.html` at the root is the hub, and every
+surface under `web/` and `console/` is a self-contained page. Deploy it on
+any free static host, no build step required:
+
+- **Vercel** — import the GitHub repository (framework preset: *Other*, no
+  build command, output directory: repository root). `vercel.json` is
+  already configured.
+- **GitHub Pages** — Settings → Pages → deploy from branch, `main`, `/ (root)`.
+- **Netlify** — drag the repository folder onto the drop zone, or connect
+  the repo with no build command.
+- **Locally** — `python3 -m http.server` from the repository root and open
+  `http://localhost:8000/`.

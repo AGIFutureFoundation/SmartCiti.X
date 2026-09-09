@@ -23,19 +23,65 @@
   "honesty.taxonomy": "Isto é uma taxonomia de ofícios qualificados, não um cadastro de sindicatos constituídos. Nenhum sindicato a revisou e nenhuma seção local é nomeada.",
   "honesty.modules": "As contagens de módulos são IDs endereçáveis gerados de um esqueleto redigido, não lições escritas à mão.",
   "honesty.content": "O conteúdo das lições é prática geral não verificada, aguardando redação por profissionais de ofício.",
-  "honesty.translation": "Os nomes dos salões permanecem em inglês até haver traduções revisadas dos nomes dos ofícios."
+  "honesty.translation": "Os nomes dos salões permanecem em inglês até haver traduções revisadas dos nomes dos ofícios.",
+  "map.layers": "Camadas",
+  "map.layer.districts": "Distritos",
+  "map.layer.pipeline": "Estado do pipeline",
+  "map.layer.modules": "Camadas de módulos",
+  "map.layer.stations": "Estações de treinamento",
+  "hall.rooms": "Planta baixa",
+  "hall.stations": "Estações neste salão",
+  "hall.skills": "Retícula de habilidades",
+  "station.checklist": "Lista de verificação",
+  "station.quiz": "Cenário de verificação",
+  "ui.close": "Fechar"
  },
  "districts": {
-  "structural": {"name": "Estrutural", "tagline": "Aço, soldas, içamentos e as cargas que eles carregam"},
-  "envelope": {"name": "Envoltória e Acabamento", "tagline": "Tudo entre a estrutura e o tempo"},
-  "systems": {"name": "Sistemas Prediais", "tagline": "Energia, processos, ar, controles e dados"},
-  "energy": {"name": "Energia e Utilidades", "tagline": "Geração, distribuição, água e trabalho de tempestade"},
-  "earthworks": {"name": "Terraplenagem e Equipamentos", "tagline": "Solo, máquinas, acessos e transporte"},
-  "industry": {"name": "Indústria Pesada", "tagline": "Plantas de processo, marinha, metal e oficinas mecânicas"},
-  "transport": {"name": "Transporte e Mobilidade", "tagline": "Ferrovia, ar, porto e frota"},
-  "control": {"name": "Topografia, Segurança e Meio Ambiente", "tagline": "Onde o trabalho é locado, protegido e limpo"}
+  "structural": {
+   "name": "Estrutural",
+   "tagline": "Aço, soldas, içamentos e as cargas que eles carregam"
+  },
+  "envelope": {
+   "name": "Envoltória e Acabamento",
+   "tagline": "Tudo entre a estrutura e o tempo"
+  },
+  "systems": {
+   "name": "Sistemas Prediais",
+   "tagline": "Energia, processos, ar, controles e dados"
+  },
+  "energy": {
+   "name": "Energia e Utilidades",
+   "tagline": "Geração, distribuição, água e trabalho de tempestade"
+  },
+  "earthworks": {
+   "name": "Terraplenagem e Equipamentos",
+   "tagline": "Solo, máquinas, acessos e transporte"
+  },
+  "industry": {
+   "name": "Indústria Pesada",
+   "tagline": "Plantas de processo, marinha, metal e oficinas mecânicas"
+  },
+  "transport": {
+   "name": "Transporte e Mobilidade",
+   "tagline": "Ferrovia, ar, porto e frota"
+  },
+  "control": {
+   "name": "Topografia, Segurança e Meio Ambiente",
+   "tagline": "Onde o trabalho é locado, protegido e limpo"
+  }
  },
- "tracks": ["Orientação", "Pré-aprendiz", "Aprendiz I", "Aprendiz II", "Aprendiz III", "Oficial", "Oficial Avançado", "Especialista", "Mestre", "Instrutor"],
+ "tracks": [
+  "Orientação",
+  "Pré-aprendiz",
+  "Aprendiz I",
+  "Aprendiz II",
+  "Aprendiz III",
+  "Oficial",
+  "Oficial Avançado",
+  "Especialista",
+  "Mestre",
+  "Instrutor"
+ ],
  "strands": {
   "safety": "Segurança",
   "layout": "Locação",
@@ -49,8 +95,25 @@
   "troubleshooting": "Diagnóstico de falhas",
   "leadership": "Liderança"
  },
- "tiers": {"fundamentals": "Fundamentos", "applied": "Aplicado", "mastery": "Maestria"},
- "bands": {"support": "Apoio", "core": "Núcleo", "stretch": "Desafio"},
- "modalities": {"vr_sim": "Simulação VR", "guided_drill": "Exercício guiado", "quiz_reading": "Questionário e leitura"},
- "states": {"draft": "Rascunho", "schema_ok": "Esquema OK", "calibrating": "Calibrando", "live": "Em produção"}
+ "tiers": {
+  "fundamentals": "Fundamentos",
+  "applied": "Aplicado",
+  "mastery": "Maestria"
+ },
+ "bands": {
+  "support": "Apoio",
+  "core": "Núcleo",
+  "stretch": "Desafio"
+ },
+ "modalities": {
+  "vr_sim": "Simulação VR",
+  "guided_drill": "Exercício guiado",
+  "quiz_reading": "Questionário e leitura"
+ },
+ "states": {
+  "draft": "Rascunho",
+  "schema_ok": "Esquema OK",
+  "calibrating": "Calibrando",
+  "live": "Em produção"
+ }
 }

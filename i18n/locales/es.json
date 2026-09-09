@@ -23,19 +23,65 @@
   "honesty.taxonomy": "Esto es una taxonomía de oficios cualificados, no un registro de sindicatos constituidos. Ningún sindicato la ha revisado y no se nombra ningún local.",
   "honesty.modules": "Los recuentos de módulos son identificadores direccionables generados a partir de un esqueleto redactado, no lecciones escritas a mano.",
   "honesty.content": "El contenido de las lecciones es práctica general sin verificar, pendiente de redacción por profesionales de oficio.",
-  "honesty.translation": "Los nombres de las salas se mantienen en inglés a la espera de traducciones revisadas de los nombres de oficios."
+  "honesty.translation": "Los nombres de las salas se mantienen en inglés a la espera de traducciones revisadas de los nombres de oficios.",
+  "map.layers": "Capas",
+  "map.layer.districts": "Distritos",
+  "map.layer.pipeline": "Estado del proceso",
+  "map.layer.modules": "Capas de módulos",
+  "map.layer.stations": "Estaciones de formación",
+  "hall.rooms": "Plano de planta",
+  "hall.stations": "Estaciones en esta sala",
+  "hall.skills": "Retícula de habilidades",
+  "station.checklist": "Lista de verificación",
+  "station.quiz": "Escenario de comprobación",
+  "ui.close": "Cerrar"
  },
  "districts": {
-  "structural": {"name": "Estructural", "tagline": "Acero, soldaduras, izajes y las cargas que soportan"},
-  "envelope": {"name": "Envolvente y Acabados", "tagline": "Todo lo que hay entre la estructura y la intemperie"},
-  "systems": {"name": "Sistemas del Edificio", "tagline": "Energía, procesos, aire, controles y datos"},
-  "energy": {"name": "Energía y Servicios", "tagline": "Generación, distribución, agua y trabajo de tormenta"},
-  "earthworks": {"name": "Movimiento de Tierras y Maquinaria", "tagline": "Terreno, máquinas, accesos y acarreo"},
-  "industry": {"name": "Industria Pesada", "tagline": "Plantas de proceso, marina, metal y talleres mecánicos"},
-  "transport": {"name": "Transporte y Movilidad", "tagline": "Ferrocarril, aire, puerto y flota"},
-  "control": {"name": "Topografía, Seguridad y Medio Ambiente", "tagline": "Donde el trabajo se replantea, se asegura y se limpia"}
+  "structural": {
+   "name": "Estructural",
+   "tagline": "Acero, soldaduras, izajes y las cargas que soportan"
+  },
+  "envelope": {
+   "name": "Envolvente y Acabados",
+   "tagline": "Todo lo que hay entre la estructura y la intemperie"
+  },
+  "systems": {
+   "name": "Sistemas del Edificio",
+   "tagline": "Energía, procesos, aire, controles y datos"
+  },
+  "energy": {
+   "name": "Energía y Servicios",
+   "tagline": "Generación, distribución, agua y trabajo de tormenta"
+  },
+  "earthworks": {
+   "name": "Movimiento de Tierras y Maquinaria",
+   "tagline": "Terreno, máquinas, accesos y acarreo"
+  },
+  "industry": {
+   "name": "Industria Pesada",
+   "tagline": "Plantas de proceso, marina, metal y talleres mecánicos"
+  },
+  "transport": {
+   "name": "Transporte y Movilidad",
+   "tagline": "Ferrocarril, aire, puerto y flota"
+  },
+  "control": {
+   "name": "Topografía, Seguridad y Medio Ambiente",
+   "tagline": "Donde el trabajo se replantea, se asegura y se limpia"
+  }
  },
- "tracks": ["Orientación", "Preaprendiz", "Aprendiz I", "Aprendiz II", "Aprendiz III", "Oficial", "Oficial Avanzado", "Especialista", "Maestro", "Instructor"],
+ "tracks": [
+  "Orientación",
+  "Preaprendiz",
+  "Aprendiz I",
+  "Aprendiz II",
+  "Aprendiz III",
+  "Oficial",
+  "Oficial Avanzado",
+  "Especialista",
+  "Maestro",
+  "Instructor"
+ ],
  "strands": {
   "safety": "Seguridad",
   "layout": "Replanteo",
@@ -49,8 +95,25 @@
   "troubleshooting": "Diagnóstico de fallos",
   "leadership": "Liderazgo"
  },
- "tiers": {"fundamentals": "Fundamentos", "applied": "Aplicado", "mastery": "Maestría"},
- "bands": {"support": "Apoyo", "core": "Núcleo", "stretch": "Reto"},
- "modalities": {"vr_sim": "Simulación VR", "guided_drill": "Ejercicio guiado", "quiz_reading": "Cuestionario y lectura"},
- "states": {"draft": "Borrador", "schema_ok": "Esquema OK", "calibrating": "Calibrando", "live": "En producción"}
+ "tiers": {
+  "fundamentals": "Fundamentos",
+  "applied": "Aplicado",
+  "mastery": "Maestría"
+ },
+ "bands": {
+  "support": "Apoyo",
+  "core": "Núcleo",
+  "stretch": "Reto"
+ },
+ "modalities": {
+  "vr_sim": "Simulación VR",
+  "guided_drill": "Ejercicio guiado",
+  "quiz_reading": "Cuestionario y lectura"
+ },
+ "states": {
+  "draft": "Borrador",
+  "schema_ok": "Esquema OK",
+  "calibrating": "Calibrando",
+  "live": "En producción"
+ }
 }

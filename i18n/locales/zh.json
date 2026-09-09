@@ -23,19 +23,65 @@
   "honesty.taxonomy": "这是一份技术工种的分类体系，并非注册工会名册。没有任何工会审阅过它，也未指名任何地方分会。",
   "honesty.modules": "模块数量是由已编写骨架生成的可寻址模块 ID，而非手写课程。",
   "honesty.content": "课程内容为未经验证的通行做法，尚待熟练技工编写确认。",
-  "honesty.translation": "培训馆名称暂保留英文，待工种名称的审校译名确定后更新。"
+  "honesty.translation": "培训馆名称暂保留英文，待工种名称的审校译名确定后更新。",
+  "map.layers": "图层",
+  "map.layer.districts": "分区",
+  "map.layer.pipeline": "流水线状态",
+  "map.layer.modules": "模块图层",
+  "map.layer.stations": "训练工位",
+  "hall.rooms": "平面图",
+  "hall.stations": "本馆工位",
+  "hall.skills": "技能格栅",
+  "station.checklist": "检查清单",
+  "station.quiz": "情景考核",
+  "ui.close": "关闭"
  },
  "districts": {
-  "structural": {"name": "结构", "tagline": "钢结构、焊缝、吊装及其承载的荷载"},
-  "envelope": {"name": "围护与装修", "tagline": "骨架与风雨之间的一切"},
-  "systems": {"name": "建筑系统", "tagline": "电力、工艺、空气、控制与数据"},
-  "energy": {"name": "能源与公用事业", "tagline": "发电、配电、供水与抢修作业"},
-  "earthworks": {"name": "土方与机械", "tagline": "土地、机械、通道与运输"},
-  "industry": {"name": "重工业", "tagline": "流程工厂、船舶、金属与机加工车间"},
-  "transport": {"name": "交通与出行", "tagline": "铁路、航空、港口与车队"},
-  "control": {"name": "测量、安全与环境", "tagline": "放线定位、安全防护与清洁治理之所"}
+  "structural": {
+   "name": "结构",
+   "tagline": "钢结构、焊缝、吊装及其承载的荷载"
+  },
+  "envelope": {
+   "name": "围护与装修",
+   "tagline": "骨架与风雨之间的一切"
+  },
+  "systems": {
+   "name": "建筑系统",
+   "tagline": "电力、工艺、空气、控制与数据"
+  },
+  "energy": {
+   "name": "能源与公用事业",
+   "tagline": "发电、配电、供水与抢修作业"
+  },
+  "earthworks": {
+   "name": "土方与机械",
+   "tagline": "土地、机械、通道与运输"
+  },
+  "industry": {
+   "name": "重工业",
+   "tagline": "流程工厂、船舶、金属与机加工车间"
+  },
+  "transport": {
+   "name": "交通与出行",
+   "tagline": "铁路、航空、港口与车队"
+  },
+  "control": {
+   "name": "测量、安全与环境",
+   "tagline": "放线定位、安全防护与清洁治理之所"
+  }
  },
- "tracks": ["入门", "预备学徒", "学徒一级", "学徒二级", "学徒三级", "技工", "高级技工", "专家", "大师", "教员"],
+ "tracks": [
+  "入门",
+  "预备学徒",
+  "学徒一级",
+  "学徒二级",
+  "学徒三级",
+  "技工",
+  "高级技工",
+  "专家",
+  "大师",
+  "教员"
+ ],
  "strands": {
   "safety": "安全",
   "layout": "放线",
@@ -49,8 +95,25 @@
   "troubleshooting": "故障排查",
   "leadership": "带班领导"
  },
- "tiers": {"fundamentals": "基础", "applied": "应用", "mastery": "精通"},
- "bands": {"support": "扶助", "core": "核心", "stretch": "挑战"},
- "modalities": {"vr_sim": "VR 模拟", "guided_drill": "引导练习", "quiz_reading": "测验与阅读"},
- "states": {"draft": "草稿", "schema_ok": "结构合格", "calibrating": "校准中", "live": "已上线"}
+ "tiers": {
+  "fundamentals": "基础",
+  "applied": "应用",
+  "mastery": "精通"
+ },
+ "bands": {
+  "support": "扶助",
+  "core": "核心",
+  "stretch": "挑战"
+ },
+ "modalities": {
+  "vr_sim": "VR 模拟",
+  "guided_drill": "引导练习",
+  "quiz_reading": "测验与阅读"
+ },
+ "states": {
+  "draft": "草稿",
+  "schema_ok": "结构合格",
+  "calibrating": "校准中",
+  "live": "已上线"
+ }
 }

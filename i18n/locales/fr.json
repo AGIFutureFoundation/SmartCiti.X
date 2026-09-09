@@ -23,19 +23,65 @@
   "honesty.taxonomy": "Ceci est une taxonomie de métiers qualifiés, non un registre de sections syndicales constituées. Aucun syndicat ne l'a examinée et aucune section locale n'est nommée.",
   "honesty.modules": "Les comptes de modules sont des identifiants adressables générés depuis un squelette rédigé, non des leçons écrites à la main.",
   "honesty.content": "Le contenu des leçons est de la pratique générale non vérifiée, en attente de rédaction par des compagnons de métier.",
-  "honesty.translation": "Les noms des salles restent en anglais en attendant des traductions revues des noms de métiers."
+  "honesty.translation": "Les noms des salles restent en anglais en attendant des traductions revues des noms de métiers.",
+  "map.layers": "Couches",
+  "map.layer.districts": "Districts",
+  "map.layer.pipeline": "État du pipeline",
+  "map.layer.modules": "Couches de modules",
+  "map.layer.stations": "Stations de formation",
+  "hall.rooms": "Plan d'étage",
+  "hall.stations": "Stations dans cette salle",
+  "hall.skills": "Treillis de compétences",
+  "station.checklist": "Liste de contrôle",
+  "station.quiz": "Mise en situation",
+  "ui.close": "Fermer"
  },
  "districts": {
-  "structural": {"name": "Structure", "tagline": "Acier, soudures, levages et les charges qu'ils portent"},
-  "envelope": {"name": "Enveloppe et Finitions", "tagline": "Tout ce qui sépare l'ossature des intempéries"},
-  "systems": {"name": "Systèmes du Bâtiment", "tagline": "Énergie, procédés, air, contrôles et données"},
-  "energy": {"name": "Énergie et Réseaux", "tagline": "Production, distribution, eau et interventions d'urgence"},
-  "earthworks": {"name": "Terrassement et Engins", "tagline": "Sol, machines, accès et transport"},
-  "industry": {"name": "Industrie Lourde", "tagline": "Usines de procédé, marine, métal et ateliers d'usinage"},
-  "transport": {"name": "Transport et Mobilité", "tagline": "Rail, air, port et flotte"},
-  "control": {"name": "Topographie, Sécurité et Environnement", "tagline": "Où le travail est implanté, sécurisé et assaini"}
+  "structural": {
+   "name": "Structure",
+   "tagline": "Acier, soudures, levages et les charges qu'ils portent"
+  },
+  "envelope": {
+   "name": "Enveloppe et Finitions",
+   "tagline": "Tout ce qui sépare l'ossature des intempéries"
+  },
+  "systems": {
+   "name": "Systèmes du Bâtiment",
+   "tagline": "Énergie, procédés, air, contrôles et données"
+  },
+  "energy": {
+   "name": "Énergie et Réseaux",
+   "tagline": "Production, distribution, eau et interventions d'urgence"
+  },
+  "earthworks": {
+   "name": "Terrassement et Engins",
+   "tagline": "Sol, machines, accès et transport"
+  },
+  "industry": {
+   "name": "Industrie Lourde",
+   "tagline": "Usines de procédé, marine, métal et ateliers d'usinage"
+  },
+  "transport": {
+   "name": "Transport et Mobilité",
+   "tagline": "Rail, air, port et flotte"
+  },
+  "control": {
+   "name": "Topographie, Sécurité et Environnement",
+   "tagline": "Où le travail est implanté, sécurisé et assaini"
+  }
  },
- "tracks": ["Orientation", "Pré-apprenti", "Apprenti I", "Apprenti II", "Apprenti III", "Compagnon", "Compagnon confirmé", "Spécialiste", "Maître", "Instructeur"],
+ "tracks": [
+  "Orientation",
+  "Pré-apprenti",
+  "Apprenti I",
+  "Apprenti II",
+  "Apprenti III",
+  "Compagnon",
+  "Compagnon confirmé",
+  "Spécialiste",
+  "Maître",
+  "Instructeur"
+ ],
  "strands": {
   "safety": "Sécurité",
   "layout": "Implantation",
@@ -49,8 +95,25 @@
   "troubleshooting": "Dépannage",
   "leadership": "Encadrement"
  },
- "tiers": {"fundamentals": "Fondamentaux", "applied": "Appliqué", "mastery": "Maîtrise"},
- "bands": {"support": "Soutien", "core": "Tronc commun", "stretch": "Dépassement"},
- "modalities": {"vr_sim": "Simulation VR", "guided_drill": "Exercice guidé", "quiz_reading": "Quiz et lecture"},
- "states": {"draft": "Brouillon", "schema_ok": "Schéma OK", "calibrating": "En calibrage", "live": "En production"}
+ "tiers": {
+  "fundamentals": "Fondamentaux",
+  "applied": "Appliqué",
+  "mastery": "Maîtrise"
+ },
+ "bands": {
+  "support": "Soutien",
+  "core": "Tronc commun",
+  "stretch": "Dépassement"
+ },
+ "modalities": {
+  "vr_sim": "Simulation VR",
+  "guided_drill": "Exercice guidé",
+  "quiz_reading": "Quiz et lecture"
+ },
+ "states": {
+  "draft": "Brouillon",
+  "schema_ok": "Schéma OK",
+  "calibrating": "En calibrage",
+  "live": "En production"
+ }
 }

@@ -23,19 +23,65 @@
   "honesty.taxonomy": "This is a taxonomy of skilled trades, not a roster of chartered locals. No union has reviewed it and no local is named.",
   "honesty.modules": "Module counts are addressable module IDs generated from an authored skeleton, not hand-written lessons.",
   "honesty.content": "Lesson content is unverified general practice pending authoring by journey-level practitioners.",
-  "honesty.translation": "Hall names are kept in English pending reviewed trade-name translations."
+  "honesty.translation": "Hall names are kept in English pending reviewed trade-name translations.",
+  "map.layers": "Layers",
+  "map.layer.districts": "Districts",
+  "map.layer.pipeline": "Pipeline state",
+  "map.layer.modules": "Module layers",
+  "map.layer.stations": "Training stations",
+  "hall.rooms": "Floor plan",
+  "hall.stations": "Stations in this hall",
+  "hall.skills": "Skill lattice",
+  "station.checklist": "Checklist",
+  "station.quiz": "Scenario check",
+  "ui.close": "Close"
  },
  "districts": {
-  "structural": {"name": "Structural", "tagline": "Steel, welds, lifts and the loads they carry"},
-  "envelope": {"name": "Envelope & Finish", "tagline": "Everything between the frame and the weather"},
-  "systems": {"name": "Building Systems", "tagline": "Power, process, air, controls and data"},
-  "energy": {"name": "Energy & Utilities", "tagline": "Generation, distribution, water and storm work"},
-  "earthworks": {"name": "Earthworks & Plant", "tagline": "Ground, machines, access and haul"},
-  "industry": {"name": "Heavy Industry", "tagline": "Process plant, marine, metal and machine shops"},
-  "transport": {"name": "Transport & Mobility", "tagline": "Rail, air, port and fleet"},
-  "control": {"name": "Survey, Safety & Environment", "tagline": "Where work is set out, made safe and made clean"}
+  "structural": {
+   "name": "Structural",
+   "tagline": "Steel, welds, lifts and the loads they carry"
+  },
+  "envelope": {
+   "name": "Envelope & Finish",
+   "tagline": "Everything between the frame and the weather"
+  },
+  "systems": {
+   "name": "Building Systems",
+   "tagline": "Power, process, air, controls and data"
+  },
+  "energy": {
+   "name": "Energy & Utilities",
+   "tagline": "Generation, distribution, water and storm work"
+  },
+  "earthworks": {
+   "name": "Earthworks & Plant",
+   "tagline": "Ground, machines, access and haul"
+  },
+  "industry": {
+   "name": "Heavy Industry",
+   "tagline": "Process plant, marine, metal and machine shops"
+  },
+  "transport": {
+   "name": "Transport & Mobility",
+   "tagline": "Rail, air, port and fleet"
+  },
+  "control": {
+   "name": "Survey, Safety & Environment",
+   "tagline": "Where work is set out, made safe and made clean"
+  }
  },
- "tracks": ["Orientation", "Pre-Apprentice", "Apprentice I", "Apprentice II", "Apprentice III", "Journey", "Journey Advanced", "Specialist", "Master", "Instructor"],
+ "tracks": [
+  "Orientation",
+  "Pre-Apprentice",
+  "Apprentice I",
+  "Apprentice II",
+  "Apprentice III",
+  "Journey",
+  "Journey Advanced",
+  "Specialist",
+  "Master",
+  "Instructor"
+ ],
  "strands": {
   "safety": "Safety",
   "layout": "Layout",
@@ -49,8 +95,25 @@
   "troubleshooting": "Troubleshooting",
   "leadership": "Leadership"
  },
- "tiers": {"fundamentals": "Fundamentals", "applied": "Applied", "mastery": "Mastery"},
- "bands": {"support": "Support", "core": "Core", "stretch": "Stretch"},
- "modalities": {"vr_sim": "VR simulation", "guided_drill": "Guided drill", "quiz_reading": "Quiz & reading"},
- "states": {"draft": "Draft", "schema_ok": "Schema OK", "calibrating": "Calibrating", "live": "Live"}
+ "tiers": {
+  "fundamentals": "Fundamentals",
+  "applied": "Applied",
+  "mastery": "Mastery"
+ },
+ "bands": {
+  "support": "Support",
+  "core": "Core",
+  "stretch": "Stretch"
+ },
+ "modalities": {
+  "vr_sim": "VR simulation",
+  "guided_drill": "Guided drill",
+  "quiz_reading": "Quiz & reading"
+ },
+ "states": {
+  "draft": "Draft",
+  "schema_ok": "Schema OK",
+  "calibrating": "Calibrating",
+  "live": "Live"
+ }
 }

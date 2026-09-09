@@ -1,0 +1,1527 @@
+{
+ "pack": "smartcitix-trade-craft-academy-station-registry",
+ "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
+ "pack_version": "3.2.0",
+ "built": "2026-09-09",
+ "source_stamp": "9ebe1bb2b6f6d671",
+ "count": 25,
+ "halls_seeded": [
+  "bricklayers",
+  "cement-masons",
+  "lathers",
+  "masonry-restore",
+  "refractory",
+  "riggers",
+  "scaffold",
+  "site-safety",
+  "stone-carvers",
+  "tilesetters",
+  "waterproofers"
+ ],
+ "honesty": {
+  "content": "recovered pre-rebrand yard curriculum, machine-gradable but unverified general practice pending review by journey-level practitioners",
+  "assignment": "hall/strand/tier assignment is authored curation; everything derived from it is computed from the registries and verified by stations/test.mjs"
+ },
+ "stations": [
+  {
+   "station_id": "st000",
+   "name": "PPE & Readiness",
+   "hall": "bricklayers",
+   "district": "envelope",
+   "skill_id": "bricklayers.safety.fundamentals",
+   "strand": "safety",
+   "tier": "fundamentals",
+   "room": "Induction & PPE",
+   "lesson": "PPE is the first line of defense on a BAC jobsite.",
+   "checklist": [
+    "Hard hat (ANSI Z89.1)",
+    "Safety glasses for cutting",
+    "Cut-resistant gloves",
+    "Steel-toe boots",
+    "Hi-vis vest",
+    "Inspect each shift",
+    "Keep spares in gang box"
+   ],
+   "doctrine": "Rule: protect yourself first.",
+   "actions": [
+    {
+     "label": "Hard hat",
+     "prop": "hardHat"
+    },
+    {
+     "label": "Glasses",
+     "prop": "goggles"
+    },
+    {
+     "label": "Gloves",
+     "prop": "gloves"
+    },
+    {
+     "label": "Hi-vis vest",
+     "prop": "hiVisVest"
+    }
+   ],
+   "quiz": {
+    "question": "Grinding indoors, no dust collection. Which PPE?",
+    "options": [
+     {
+      "label": "Hat only",
+      "prop": "figHardHatOnly",
+      "correct": false
+     },
+     {
+      "label": "Full PPE",
+      "prop": "figFullPPE",
+      "correct": true
+     },
+     {
+      "label": "Muffs",
+      "prop": "figEarMuffs",
+      "correct": false
+     }
+    ]
+   },
+   "color": "#e8a33d"
+  },
+  {
+   "station_id": "st001",
+   "name": "Mortar & Material Prep",
+   "hall": "bricklayers",
+   "district": "envelope",
+   "skill_id": "bricklayers.materials.fundamentals",
+   "strand": "materials",
+   "tier": "fundamentals",
+   "room": "Materials Store",
+   "lesson": "Mortar is structural \u2014 mix ratio and working time affect strength.",
+   "checklist": [
+    "Know type: N, S, or M",
+    "Batch by volume",
+    "Discard past 2.5 hrs",
+    "Keep dry and off ground",
+    "Wear dust mask",
+    "Pre-dampen in hot weather",
+    "Record batch tickets"
+   ],
+   "doctrine": "Safety: wet cement burns skin.",
+   "actions": [
+    {
+     "label": "Batch by volume",
+     "prop": "cementBag"
+    },
+    {
+     "label": "Check working time",
+     "prop": "mortarTubFresh"
+    },
+    {
+     "label": "Keep dry off ground",
+     "prop": "palletDry"
+    },
+    {
+     "label": "Check water ratio",
+     "prop": "waterBucket"
+    }
+   ],
+   "quiz": {
+    "question": "Type S stiffening after 3 hrs. What?",
+    "options": [
+     {
+      "label": "Add water",
+      "prop": "mortarTubWet",
+      "correct": false
+     },
+     {
+      "label": "Discard and mix fresh",
+      "prop": "mortarTubStiff",
+      "correct": true
+     },
+     {
+      "label": "Use anyway",
+      "prop": "mortarTubFresh",
+      "correct": false
+     }
+    ]
+   },
+   "color": "#8b8680"
+  },
+  {
+   "station_id": "st002",
+   "name": "Bricklaying Technique",
+   "hall": "bricklayers",
+   "district": "envelope",
+   "skill_id": "bricklayers.procedure.fundamentals",
+   "strand": "procedure",
+   "tier": "fundamentals",
+   "room": "Practice Bays",
+   "lesson": "Precision: bond patterns, plumb, level, tooled joints.",
+   "checklist": [
+    "Check plumb continuously",
+    "Match bond pattern",
+    "Butter joints fully",
+    "Tool when thumbprint-hard",
+    "Clean before cure",
+    "Use story pole",
+    "Lay to mason's line"
+   ],
+   "doctrine": "Tip: story pole beats eyeballing.",
+   "actions": [
+    {
+     "label": "Check with level",
+     "prop": "spiritLevel"
+    },
+    {
+     "label": "Butter joint",
+     "prop": "trowel"
+    },
+    {
+     "label": "Tool joint",
+     "prop": "jointer"
+    },
+    {
+     "label": "Lay to line",
+     "prop": "masonLine"
+    }
+   ],
+   "quiz": {
+    "question": "Which course is plumb and ready?",
+    "options": [
+     {
+      "label": "Leaning",
+      "prop": "wallLeaning",
+      "correct": false
+     },
+     {
+      "label": "Straight and level",
+      "prop": "wallPlumb",
+      "correct": true
+     },
+     {
+      "label": "Crooked",
+      "prop": "wallCrooked",
+      "correct": false
+     }
+    ]
+   },
+   "color": "#b3462f"
+  },
+  {
+   "station_id": "st003",
+   "name": "Scaffold & Fall Protection",
+   "hall": "scaffold",
+   "district": "earthworks",
+   "skill_id": "scaffold.safety.applied",
+   "strand": "safety",
+   "tier": "applied",
+   "room": "Induction & PPE",
+   "lesson": "Scaffold falls are a leading cause of serious injury.",
+   "checklist": [
+    "Fall protection at 6+ ft",
+    "Inspect tags before mounting",
+    "Guardrails and toe boards",
+    "Planks fully decked",
+    "Tie off to anchor",
+    "Competent person inspects",
+    "Never climb cross-bracing"
+   ],
+   "doctrine": "Non-negotiable: never modify a scaffold citation.",
+   "actions": [
+    {
+     "label": "Check scaffold tag",
+     "prop": "scaffoldTag"
+    },
+    {
+     "label": "Confirm guardrails",
+     "prop": "guardrail"
+    },
+    {
+     "label": "Clip lanyard",
+     "prop": "lanyard"
+    },
+    {
+     "label": "Deck the planks",
+     "prop": "plankDeck"
+    }
+   ],
+   "quiz": {
+    "question": "Which scaffold is safe to mount?",
+    "options": [
+     {
+      "label": "Red tag, no rails",
+      "prop": "scaffoldRed",
+      "correct": false
+     },
+     {
+      "label": "Green tag, full rails",
+      "prop": "scaffoldGreen",
+      "correct": true
+     },
+     {
+      "label": "No tag",
+      "prop": "scaffoldUntagged",
+      "correct": false
+     }
+    ]
+   },
+   "color": "#3a5a78"
+  },
+  {
+   "station_id": "st004",
+   "name": "Silica Dust & Respiratory",
+   "hall": "bricklayers",
+   "district": "envelope",
+   "skill_id": "bricklayers.safety.applied",
+   "strand": "safety",
+   "tier": "applied",
+   "room": "Induction & PPE",
+   "lesson": "Silica dust causes irreversible silicosis \u2014 Table 1 controls prevent exposure.",
+   "checklist": [
+    "Wet-cut or HEPA vacuum",
+    "Wear fit-tested respirator",
+    "Never dry-sweep",
+    "Rotate high-dust tasks",
+    "Know exposure plan",
+    "Annual fit-test",
+    "Post Table 1 at operations"
+   ],
+   "doctrine": "Long game: silicosis is irreversible.",
+   "actions": [
+    {
+     "label": "Hook up wet-cut line",
+     "prop": "waterHose"
+    },
+    {
+     "label": "Fit-check respirator",
+     "prop": "respirator"
+    },
+    {
+     "label": "Vacuum don't sweep",
+     "prop": "hepaVac"
+    },
+    {
+     "label": "Post Table 1 card",
+     "prop": "tableCard"
+    }
+   ],
+   "quiz": {
+    "question": "Which saw is compliant?",
+    "options": [
+     {
+      "label": "Dry saw",
+      "prop": "sawDry",
+      "correct": false
+     },
+     {
+      "label": "Wet saw with water",
+      "prop": "sawWet",
+      "correct": true
+     },
+     {
+      "label": "Dry + broom",
+      "prop": "sawBroom",
+      "correct": false
+     }
+    ]
+   },
+   "color": "#a89f8e"
+  },
+  {
+   "station_id": "st005",
+   "name": "Rigging & Material Handling",
+   "hall": "riggers",
+   "district": "structural",
+   "skill_id": "riggers.procedure.fundamentals",
+   "strand": "procedure",
+   "tier": "fundamentals",
+   "room": "Practice Bays",
+   "lesson": "Improper rigging is a crush and struck-by hazard.",
+   "checklist": [
+    "Only qualified riggers",
+    "Confirm hand signals",
+    "Respect load limits",
+    "Band pallets securely",
+    "Keep swing radius clear",
+    "Inspect slings each shift",
+    "Dedicated signaler only"
+   ],
+   "doctrine": "Reminder: no shortcut on rigging.",
+   "actions": [
+    {
+     "label": "Confirm hand signal",
+     "prop": "handSignal"
+    },
+    {
+     "label": "Check load limit",
+     "prop": "loadPlate"
+    },
+    {
+     "label": "Clear swing radius",
+     "prop": "swingCone"
+    },
+    {
+     "label": "Inspect the sling",
+     "prop": "sling"
+    }
+   ],
+   "quiz": {
+    "question": "Operator hasn't confirmed signal. What?",
+    "options": [
+     {
+      "label": "Proceed",
+      "prop": "rigUnsafe",
+      "correct": false
+     },
+     {
+      "label": "Wait for confirm",
+      "prop": "rigSafe",
+      "correct": true
+     },
+     {
+      "label": "Guess",
+      "prop": "rigOverload",
+      "correct": false
+     }
+    ]
+   },
+   "color": "#d9b46a"
+  },
+  {
+   "station_id": "st006",
+   "name": "Blueprint & Layout Reading",
+   "hall": "bricklayers",
+   "district": "envelope",
+   "skill_id": "bricklayers.layout.fundamentals",
+   "strand": "layout",
+   "tier": "fundamentals",
+   "room": "Layout Floor",
+   "lesson": "A wall is only as accurate as its layout.",
+   "checklist": [
+    "Identify wall type and bond",
+    "Verify control lines",
+    "Cross-check openings",
+    "Use story pole",
+    "Flag conflicts early",
+    "Confirm benchmarks",
+    "Note reveals"
+   ],
+   "doctrine": "Habit: measure twice before second course.",
+   "actions": [
+    {
+     "label": "Verify control line",
+     "prop": "controlStake"
+    },
+    {
+     "label": "Cross-check dimensions",
+     "prop": "tapeMeasure"
+    },
+    {
+     "label": "Read story pole",
+     "prop": "storyPole"
+    },
+    {
+     "label": "Verify benchmark",
+     "prop": "benchmark"
+    }
+   ],
+   "quiz": {
+    "question": "Which drawing matches running bond?",
+    "options": [
+     {
+      "label": "Stack bond",
+      "prop": "drawStack",
+      "correct": false
+     },
+     {
+      "label": "Running bond",
+      "prop": "drawRunning",
+      "correct": true
+     },
+     {
+      "label": "Random",
+      "prop": "drawRandom",
+      "correct": false
+     }
+    ]
+   },
+   "color": "#5b7a5a"
+  },
+  {
+   "station_id": "st007",
+   "name": "Apprenticeship & Union Pathway",
+   "hall": "bricklayers",
+   "district": "envelope",
+   "skill_id": "bricklayers.documentation.fundamentals",
+   "strand": "documentation",
+   "tier": "fundamentals",
+   "room": "Records",
+   "lesson": "BAC apprentices progress through JATC OJT plus classroom instruction.",
+   "checklist": [
+    "Log OJT hours accurately",
+    "Attend related instruction",
+    "Track competencies",
+    "Know JATC contact",
+    "Understand wage progression",
+    "Keep logbook signed",
+    "Monthly check-ins"
+   ],
+   "doctrine": "Pathway: apprentice \u2192 journey-level.",
+   "actions": [
+    {
+     "label": "Log OJT hours",
+     "prop": "logbook"
+    },
+    {
+     "label": "Check schedule",
+     "prop": "scheduleBoard"
+    },
+    {
+     "label": "Note JATC contact",
+     "prop": "jatcCard"
+    },
+    {
+     "label": "Review wages",
+     "prop": "wageCard"
+    }
+   ],
+   "quiz": {
+    "question": "Forgot to log overtime. What's correct?",
+    "options": [
+     {
+      "label": "Skip logging",
+      "prop": "pathSkip",
+      "correct": false
+     },
+     {
+      "label": "Report and log",
+      "prop": "pathLog",
+      "correct": true
+     },
+     {
+      "label": "Estimate later",
+      "prop": "pathEstimate",
+      "correct": false
+     }
+    ]
+   },
+   "color": "#c9a66b"
+  },
+  {
+   "station_id": "st008",
+   "name": "Curing & Weather Protection",
+   "hall": "cement-masons",
+   "district": "envelope",
+   "skill_id": "cement-masons.materials.applied",
+   "strand": "materials",
+   "tier": "applied",
+   "room": "Materials Store",
+   "lesson": "Freezing or rain in 72 hrs compromises the wall permanently.",
+   "checklist": [
+    "Protect from rain 24 hrs",
+    "Maintain 40\u00b0F+",
+    "Use insulating blankets",
+    "Mist in hot/dry weather",
+    "Don't load until set",
+    "28-day strength per C39",
+    "Document temps"
+   ],
+   "doctrine": "Climate: 3 days decides the wall's life.",
+   "actions": [
+    {
+     "label": "Lay plastic sheeting",
+     "prop": "plasticSheet"
+    },
+    {
+     "label": "Install freeze blanket",
+     "prop": "freezeBlanket"
+    },
+    {
+     "label": "Mist the wall",
+     "prop": "mistBottle"
+    },
+    {
+     "label": "Document daily log",
+     "prop": "dailyLog"
+    }
+   ],
+   "quiz": {
+    "question": "Hard freeze tonight. What to do?",
+    "options": [
+     {
+      "label": "Leave uncovered",
+      "prop": "wallBare",
+      "correct": false
+     },
+     {
+      "label": "Cover with blanket",
+      "prop": "wallBlanket",
+      "correct": true
+     },
+     {
+      "label": "Spray with water",
+      "prop": "wallMist",
+      "correct": false
+     }
+    ]
+   },
+   "color": "#6a8caf"
+  },
+  {
+   "station_id": "st009",
+   "name": "Restoration & Tuckpointing",
+   "hall": "masonry-restore",
+   "district": "envelope",
+   "skill_id": "masonry-restore.procedure.applied",
+   "strand": "procedure",
+   "tier": "applied",
+   "room": "Practice Bays",
+   "lesson": "Historic restoration: match mortar, use hand tools, color-match pointing.",
+   "checklist": [
+    "Match mortar composition",
+    "Hand tools only on historic",
+    "Clean joints 2\u00d7 depth",
+    "Pre-wet joints",
+    "Match sand color",
+    "Tool to match profile",
+    "Document conditions"
+   ],
+   "doctrine": "Ethic: invisible integration.",
+   "actions": [
+    {
+     "label": "Match mortar",
+     "prop": "mortarPick"
+    },
+    {
+     "label": "Use correct tool",
+     "prop": "jointBrush"
+    },
+    {
+     "label": "Pre-wet joints",
+     "prop": "mistBottle"
+    },
+    {
+     "label": "Match joint profile",
+     "prop": "jointProfile"
+    }
+   ],
+   "quiz": {
+    "question": "Which tool for 100-yr-old brick joints?",
+    "options": [
+     {
+      "label": "Angle grinder",
+      "prop": "angleGrinder",
+      "correct": false
+     },
+     {
+      "label": "Hand mortar pick",
+      "prop": "mortarPickLarge",
+      "correct": true
+     },
+     {
+      "label": "Pneumatic breaker",
+      "prop": "pneumaticBreaker",
+      "correct": false
+     }
+    ]
+   },
+   "color": "#b89968"
+  },
+  {
+   "station_id": "st010",
+   "name": "Reinforced Masonry & Grouting",
+   "hall": "bricklayers",
+   "district": "envelope",
+   "skill_id": "bricklayers.procedure.applied",
+   "strand": "procedure",
+   "tier": "applied",
+   "room": "Practice Bays",
+   "lesson": "CMU + rebar + grout: consolidation and pour sequencing are critical.",
+   "checklist": [
+    "Place rebar before laying",
+    "Use cleanout openings",
+    "Consolidate each lift",
+    "Limit lifts to 5 ft",
+    "Verify grout psi",
+    "Inspect rebar before grout",
+    "Wait for mortar set"
+   ],
+   "doctrine": "Critical: voids = no bond = no tensile capacity.",
+   "actions": [
+    {
+     "label": "Place rebar",
+     "prop": "rebarCell"
+    },
+    {
+     "label": "Pour grout",
+     "prop": "groutBucket"
+    },
+    {
+     "label": "Install cleanout",
+     "prop": "cleanoutBase"
+    },
+    {
+     "label": "Verify lap length",
+     "prop": "lapGauge"
+    }
+   ],
+   "quiz": {
+    "question": "Correct grout sequence for 12-ft wall?",
+    "options": [
+     {
+      "label": "Single pour",
+      "prop": "groutPourHigh",
+      "correct": false
+     },
+     {
+      "label": "Lift in increments",
+      "prop": "groutPourLift",
+      "correct": true
+     },
+     {
+      "label": "Top pour only",
+      "prop": "groutPourTop",
+      "correct": false
+     }
+    ]
+   },
+   "color": "#6a7a8a"
+  },
+  {
+   "station_id": "st011",
+   "name": "Stone Veneer & Anchored Stone",
+   "hall": "stone-carvers",
+   "district": "envelope",
+   "skill_id": "stone-carvers.materials.applied",
+   "strand": "materials",
+   "tier": "applied",
+   "room": "Materials Store",
+   "lesson": "Anchored veneer: corrosion-resistant anchors, scratch coat, air cavity.",
+   "checklist": [
+    "Verify anchor type",
+    "Space 12-18 in o.c. (BIA)",
+    "Apply scratch coat",
+    "Maintain 1-in air cavity",
+    "Stagger joints",
+    "Flash and weep",
+    "Check for hollow units"
+   ],
+   "doctrine": "Truth: anchors keep stone on for 50 yrs.",
+   "actions": [
+    {
+     "label": "Set stone anchor",
+     "prop": "stoneAnchor"
+    },
+    {
+     "label": "Apply scratch coat",
+     "prop": "scratchBoard"
+    },
+    {
+     "label": "Set veneer stone",
+     "prop": "veneerStone"
+    },
+    {
+     "label": "Check air cavity",
+     "prop": "cavityGauge"
+    }
+   ],
+   "quiz": {
+    "question": "Correct anchor spacing per BIA?",
+    "options": [
+     {
+      "label": "24 in o.c.",
+      "prop": "anchorWide",
+      "correct": false
+     },
+     {
+      "label": "12-18 in both",
+      "prop": "anchorCorrect",
+      "correct": true
+     },
+     {
+      "label": "36 in both",
+      "prop": "anchorNarrow",
+      "correct": false
+     }
+    ]
+   },
+   "color": "#8a7a6a"
+  },
+  {
+   "station_id": "st012",
+   "name": "Estimating & Bidding",
+   "hall": "bricklayers",
+   "district": "envelope",
+   "skill_id": "bricklayers.coordination.mastery",
+   "strand": "coordination",
+   "tier": "mastery",
+   "room": "Briefing Room",
+   "lesson": "Accurate estimates win profitable work.",
+   "checklist": [
+    "Count from drawings",
+    "Apply BAC labor units",
+    "Include all materials",
+    "Add 5% waste",
+    "Separate scaffold line",
+    "Submit on time",
+    "Back-check after job"
+   ],
+   "doctrine": "Bid rule: low bidder forgot something.",
+   "actions": [
+    {
+     "label": "Count from drawing",
+     "prop": "countSheet"
+    },
+    {
+     "label": "Apply labor unit",
+     "prop": "laborTable"
+    },
+    {
+     "label": "Submit bid",
+     "prop": "bidEnvelope"
+    },
+    {
+     "label": "Add waste factor",
+     "prop": "wasteCalc"
+    }
+   ],
+   "quiz": {
+    "question": "Most accurate takeoff for 100 SF?",
+    "options": [
+     {
+      "label": "Eyeball",
+      "prop": "takeoffEye",
+      "correct": false
+     },
+     {
+      "label": "Count + 5% waste",
+      "prop": "takeoffCount",
+      "correct": true
+     },
+     {
+      "label": "From last job",
+      "prop": "takeoffEstimate",
+      "correct": false
+     }
+    ]
+   },
+   "color": "#5a8a6a"
+  },
+  {
+   "station_id": "st013",
+   "name": "Jobsite Safety Culture",
+   "hall": "site-safety",
+   "district": "control",
+   "skill_id": "site-safety.leadership.applied",
+   "strand": "leadership",
+   "tier": "applied",
+   "room": "Classroom",
+   "lesson": "Safety is daily decisions \u2014 toolbox talks, near-miss, stop-work.",
+   "checklist": [
+    "Daily toolbox talk",
+    "Report near-misses",
+    "Exercise stop-work",
+    "Know the chain",
+    "Verify utilities (811)",
+    "Keep walkways clear",
+    "360 walk-around"
+   ],
+   "doctrine": "Culture: apprentices feel safe saying 'stop.'",
+   "actions": [
+    {
+     "label": "Lead toolbox talk",
+     "prop": "toolboxTalk"
+    },
+    {
+     "label": "Report near-miss",
+     "prop": "nearMissForm"
+    },
+    {
+     "label": "Exercise stop-work",
+     "prop": "stopTag"
+    },
+    {
+     "label": "360 walk-around",
+     "prop": "walkAround"
+    }
+   ],
+   "quiz": {
+    "question": "Unsafe condition. Right action?",
+    "options": [
+     {
+      "label": "Ignore",
+      "prop": "safetyIgnore",
+      "correct": false
+     },
+     {
+      "label": "Stop and report",
+      "prop": "safetyStop",
+      "correct": true
+     },
+     {
+      "label": "Tell coworker",
+      "prop": "safetyTell",
+      "correct": false
+     }
+    ]
+   },
+   "color": "#c9885a"
+  },
+  {
+   "station_id": "st014",
+   "name": "Cleaning & Sealing Masonry",
+   "hall": "masonry-restore",
+   "district": "envelope",
+   "skill_id": "masonry-restore.materials.fundamentals",
+   "strand": "materials",
+   "tier": "fundamentals",
+   "room": "Materials Store",
+   "lesson": "Wrong chemical or pressure destroys brick face in seconds.",
+   "checklist": [
+    "Test clean small area",
+    "Gentlest method first",
+    "Never acid on historic",
+    "Under 400 psi, 40\u00b0 tip",
+    "Rinse thoroughly",
+    "Breathable sealer at 28+ days",
+    "Document method"
+   ],
+   "doctrine": "Irreversible: etched face can't be fixed.",
+   "actions": [
+    {
+     "label": "Select cleaner",
+     "prop": "cleanerBottle"
+    },
+    {
+     "label": "Test clean area",
+     "prop": "testPatch"
+    },
+    {
+     "label": "Apply sealer",
+     "prop": "sealerCan"
+    },
+    {
+     "label": "Rinse thoroughly",
+     "prop": "rinseHose"
+    }
+   ],
+   "quiz": {
+    "question": "Safest cleaning for historic brick?",
+    "options": [
+     {
+      "label": "Muriatic acid",
+      "prop": "cleanAcid",
+      "correct": false
+     },
+     {
+      "label": "Gentle water rinse",
+      "prop": "cleanGentle",
+      "correct": true
+     },
+     {
+      "label": "Sandblasting",
+      "prop": "cleanBlast",
+      "correct": false
+     }
+    ]
+   },
+   "color": "#7a9a8a"
+  },
+  {
+   "station_id": "st015",
+   "name": "Refractory Masonry",
+   "hall": "refractory",
+   "district": "industry",
+   "skill_id": "refractory.procedure.applied",
+   "strand": "procedure",
+   "tier": "applied",
+   "room": "Practice Bays",
+   "lesson": "Refractory masonry lines kilns, furnaces, and incinerators.",
+   "checklist": [
+    "Match refractory to service temp",
+    "Use air-setting mortar",
+    "Leave expansion joints",
+    "Stagger all joints",
+    "Dry out slowly",
+    "Use SS anchors",
+    "Preheat before service"
+   ],
+   "doctrine": "Thermal shock: wrong brick cracks.",
+   "actions": [
+    {
+     "label": "Set firebrick",
+     "prop": "firebrick"
+    },
+    {
+     "label": "Mix refractory mortar",
+     "prop": "refractoryMortar"
+    },
+    {
+     "label": "Leave expansion joint",
+     "prop": "expansionJoint"
+    },
+    {
+     "label": "Brush the kiln",
+     "prop": "kilnBrush"
+    }
+   ],
+   "quiz": {
+    "question": "Which prevents thermal shock in kiln lining?",
+    "options": [
+     {
+      "label": "No expansion joints",
+      "prop": "qWrong",
+      "correct": false
+     },
+     {
+      "label": "Stagger + expansion gaps",
+      "prop": "qRight",
+      "correct": true
+     },
+     {
+      "label": "Pack joints solid",
+      "prop": "qWrong2",
+      "correct": false
+     }
+    ]
+   },
+   "color": "#9a5a3a"
+  },
+  {
+   "station_id": "st016",
+   "name": "Historic Preservation Standards",
+   "hall": "masonry-restore",
+   "district": "envelope",
+   "skill_id": "masonry-restore.documentation.applied",
+   "strand": "documentation",
+   "tier": "applied",
+   "room": "Records",
+   "lesson": "Secretary of the Interior's Standards govern treatment of historic masonry.",
+   "checklist": [
+    "Match Standards treatment",
+    "Document conditions first",
+    "Repair don't replace",
+    "Match historic mortar",
+    "Gentlest cleaning",
+    "Don't damage fabric",
+    "Record interventions"
+   ],
+   "doctrine": "Standard: repair \u2014 not replace.",
+   "actions": [
+    {
+     "label": "Review standards",
+     "prop": "standardsCard"
+    },
+    {
+     "label": "Survey conditions",
+     "prop": "conditionSurvey"
+    },
+    {
+     "label": "Analyze mortar",
+     "prop": "mortarAnalysis"
+    },
+    {
+     "label": "Match the tool",
+     "prop": "matchTool"
+    }
+   ],
+   "quiz": {
+    "question": "Damaged historic brick. Which approach?",
+    "options": [
+     {
+      "label": "Replace with new",
+      "prop": "qWrong",
+      "correct": false
+     },
+     {
+      "label": "Repair in place",
+      "prop": "qRight",
+      "correct": true
+     },
+     {
+      "label": "Paint to hide",
+      "prop": "qWrong2",
+      "correct": false
+     }
+    ]
+   },
+   "color": "#8a7a5a"
+  },
+  {
+   "station_id": "st017",
+   "name": "Pointing & Joint Finishes",
+   "hall": "masonry-restore",
+   "district": "envelope",
+   "skill_id": "masonry-restore.tools.fundamentals",
+   "strand": "tools",
+   "tier": "fundamentals",
+   "room": "Tool Crib",
+   "lesson": "Joint finish affects weather resistance \u2014 concave sheds water.",
+   "checklist": [
+    "Match specified profile",
+    "Tool when thumbprint-hard",
+    "Concave for exterior",
+    "Flush for interior",
+    "Weathered for slope",
+    "Raked for texture only",
+    "Consistent depth"
+   ],
+   "doctrine": "Concave tooling is most weather-resistant.",
+   "actions": [
+    {
+     "label": "Concave tool",
+     "prop": "concaveTool"
+    },
+    {
+     "label": "Flush tool",
+     "prop": "flushTool"
+    },
+    {
+     "label": "Weathered tool",
+     "prop": "weatheredTool"
+    },
+    {
+     "label": "Raked tool",
+     "prop": "rakedTool"
+    }
+   ],
+   "quiz": {
+    "question": "Which profile sheds water best on exterior?",
+    "options": [
+     {
+      "label": "Raked joint",
+      "prop": "qWrong",
+      "correct": false
+     },
+     {
+      "label": "Concave joint",
+      "prop": "qRight",
+      "correct": true
+     },
+     {
+      "label": "Flush joint",
+      "prop": "qWrong2",
+      "correct": false
+     }
+    ]
+   },
+   "color": "#6a8a6a"
+  },
+  {
+   "station_id": "st018",
+   "name": "Masonry Anchorage & Ties",
+   "hall": "bricklayers",
+   "district": "envelope",
+   "skill_id": "bricklayers.inspection.applied",
+   "strand": "inspection",
+   "tier": "applied",
+   "room": "Inspection Bench",
+   "lesson": "Ties connect masonry to backing \u2014 type, spacing, embedment prevent failure.",
+   "checklist": [
+    "Verify tie type per spec",
+    "Space per BIA",
+    "Embed fully in mortar",
+    "Use corrosion-resistant",
+    "Check for missing ties",
+    "Don't reuse bent ties",
+    "Match to backing type"
+   ],
+   "doctrine": "Missing ties = delamination.",
+   "actions": [
+    {
+     "label": "Corrugated tie",
+     "prop": "corrugatedTie"
+    },
+    {
+     "label": "Wire tie",
+     "prop": "wireTie"
+    },
+    {
+     "label": "Anchor screw",
+     "prop": "anchorScrew"
+    },
+    {
+     "label": "Veneer tie",
+     "prop": "veneerTie"
+    }
+   ],
+   "quiz": {
+    "question": "Which tie for brick veneer on wood stud?",
+    "options": [
+     {
+      "label": "Heavy wire",
+      "prop": "qWrong",
+      "correct": false
+     },
+     {
+      "label": "Corrugated sheet",
+      "prop": "qRight",
+      "correct": true
+     },
+     {
+      "label": "Screw anchor",
+      "prop": "qWrong2",
+      "correct": false
+     }
+    ]
+   },
+   "color": "#5a6a8a"
+  },
+  {
+   "station_id": "st019",
+   "name": "Flashing & Moisture Control",
+   "hall": "waterproofers",
+   "district": "envelope",
+   "skill_id": "waterproofers.procedure.applied",
+   "strand": "procedure",
+   "tier": "applied",
+   "room": "Practice Bays",
+   "lesson": "Flashing directs water out \u2014 without it, water pools and spalls.",
+   "checklist": [
+    "Install at all breaks",
+    "Extend to weather face",
+    "Turn up with end dams",
+    "Provide weeps below",
+    "Lap 6 in min",
+    "Don't puncture",
+    "Seal penetrations"
+   ],
+   "doctrine": "No flashing = trapped water = spalling.",
+   "actions": [
+    {
+     "label": "Through-wall flashing",
+     "prop": "throughFlashing"
+    },
+    {
+     "label": "Install weep tube",
+     "prop": "weepTube"
+    },
+    {
+     "label": "Build end dam",
+     "prop": "endDam"
+    },
+    {
+     "label": "Install drip edge",
+     "prop": "dripEdge"
+    }
+   ],
+   "quiz": {
+    "question": "Correct flashing at base of cavity wall?",
+    "options": [
+     {
+      "label": "Flat, no weeps",
+      "prop": "qWrong",
+      "correct": false
+     },
+     {
+      "label": "Flash + weeps + dams + drip",
+      "prop": "qRight",
+      "correct": true
+     },
+     {
+      "label": "Punctured for drain",
+      "prop": "qWrong2",
+      "correct": false
+     }
+    ]
+   },
+   "color": "#4a7a9a"
+  },
+  {
+   "station_id": "st020",
+   "name": "Concrete Masonry Units (CMU)",
+   "hall": "bricklayers",
+   "district": "envelope",
+   "skill_id": "bricklayers.materials.applied",
+   "strand": "materials",
+   "tier": "applied",
+   "room": "Materials Store",
+   "lesson": "CMU walls need proper layout, bond, and joint reinforcement.",
+   "checklist": [
+    "Lay in running or stack bond",
+    "Maintain 3/8 in joints",
+    "Install joint reinforcement",
+    "Grout reinforced cells",
+    "Provide control joints",
+    "Stagger vertical bars",
+    "Tool joints concave"
+   ],
+   "doctrine": "CMU without reinforcement cracks at openings.",
+   "actions": [
+    {
+     "label": "Lay CMU block",
+     "prop": "cmuBlock"
+    },
+    {
+     "label": "Build pilaster",
+     "prop": "pilaster"
+    },
+    {
+     "label": "Install bond beam",
+     "prop": "bondBeam"
+    },
+    {
+     "label": "Place control joint",
+     "prop": "controlJoint"
+    }
+   ],
+   "quiz": {
+    "question": "Correct CMU pattern for load-bearing wall?",
+    "options": [
+     {
+      "label": "Stack, no reinforcement",
+      "prop": "qWrong",
+      "correct": false
+     },
+     {
+      "label": "Running + reinforcement",
+      "prop": "qRight",
+      "correct": true
+     },
+     {
+      "label": "Random pattern",
+      "prop": "qWrong2",
+      "correct": false
+     }
+    ]
+   },
+   "color": "#7a8a7a"
+  },
+  {
+   "station_id": "st021",
+   "name": "Natural Stone Setting",
+   "hall": "stone-carvers",
+   "district": "envelope",
+   "skill_id": "stone-carvers.procedure.applied",
+   "strand": "procedure",
+   "tier": "applied",
+   "room": "Practice Bays",
+   "lesson": "Natural stone: careful handling, anchoring, and color matching.",
+   "checklist": [
+    "Match color and grain",
+    "Full mortar bed",
+    "Anchor each piece",
+    "Shim for level and plumb",
+    "Tool joints to match",
+    "Clean immediately",
+    "Seal if specified"
+   ],
+   "doctrine": "Stone is unforgiving \u2014 wrong cut wastes $200.",
+   "actions": [
+    {
+     "label": "Set granite piece",
+     "prop": "granitePiece"
+    },
+    {
+     "label": "Install stone pin",
+     "prop": "stonePin"
+    },
+    {
+     "label": "Place shim",
+     "prop": "stoneShim"
+    },
+    {
+     "label": "Use stone handler",
+     "prop": "stoneHandler"
+    }
+   ],
+   "quiz": {
+    "question": "Anchoring for 2-in granite on high-rise?",
+    "options": [
+     {
+      "label": "Mortar only",
+      "prop": "qWrong",
+      "correct": false
+     },
+     {
+      "label": "Stainless pin anchors",
+      "prop": "qRight",
+      "correct": true
+     },
+     {
+      "label": "Adhesive only",
+      "prop": "qWrong2",
+      "correct": false
+     }
+    ]
+   },
+   "color": "#8a6a4a"
+  },
+  {
+   "station_id": "st022",
+   "name": "Tile & Terrazzo",
+   "hall": "tilesetters",
+   "district": "envelope",
+   "skill_id": "tilesetters.procedure.fundamentals",
+   "strand": "procedure",
+   "tier": "fundamentals",
+   "room": "Practice Bays",
+   "lesson": "Tile and terrazzo are allied BAC trades \u2014 thinset coverage prevents failure.",
+   "checklist": [
+    "Verify thinset type",
+    "Back-butter large tile",
+    "95% coverage minimum",
+    "Correct notch trowel",
+    "Consistent grout joints",
+    "Clean before grout sets",
+    "Seal natural stone"
+   ],
+   "doctrine": "Hollow tile = insufficient thinset = failure.",
+   "actions": [
+    {
+     "label": "Notched trowel",
+     "prop": "tileTrowel"
+    },
+    {
+     "label": "Grout float",
+     "prop": "groutFloat"
+    },
+    {
+     "label": "Place spacer",
+     "prop": "tileSpacer"
+    },
+    {
+     "label": "Apply sealer",
+     "prop": "tileSealer"
+    }
+   ],
+   "quiz": {
+    "question": "Thinset coverage for wet-area tile?",
+    "options": [
+     {
+      "label": "50%",
+      "prop": "qWrong",
+      "correct": false
+     },
+     {
+      "label": "95% minimum",
+      "prop": "qRight",
+      "correct": true
+     },
+     {
+      "label": "75%",
+      "prop": "qWrong2",
+      "correct": false
+     }
+    ]
+   },
+   "color": "#6a9a8a"
+  },
+  {
+   "station_id": "st023",
+   "name": "Welding & Metal Stud Framing",
+   "hall": "lathers",
+   "district": "envelope",
+   "skill_id": "lathers.procedure.fundamentals",
+   "strand": "procedure",
+   "tier": "fundamentals",
+   "room": "Practice Bays",
+   "lesson": "Metal stud framing and welding are allied BAC trades.",
+   "checklist": [
+    "Verify stud gauge and spacing",
+    "Snap layout lines",
+    "Check plumb of each stud",
+    "Weld per WPS",
+    "Inspect welds visually",
+    "Install bracing",
+    "Check openings"
+   ],
+   "doctrine": "Skipped weld = failed inspection = rework.",
+   "actions": [
+    {
+     "label": "Set up welder",
+     "prop": "welder"
+    },
+    {
+     "label": "Install stud track",
+     "prop": "studTrack"
+    },
+    {
+     "label": "Drive screws",
+     "prop": "screwGun"
+    },
+    {
+     "label": "Check level",
+     "prop": "metalLevel"
+    }
+   ],
+   "quiz": {
+    "question": "Which weld result requires rework?",
+    "options": [
+     {
+      "label": "Minor porosity",
+      "prop": "qWrong",
+      "correct": false
+     },
+     {
+      "label": "Crack in weld",
+      "prop": "qRight",
+      "correct": true
+     },
+     {
+      "label": "Slight undercut",
+      "prop": "qWrong2",
+      "correct": false
+     }
+    ]
+   },
+   "color": "#9a7a5a"
+  },
+  {
+   "station_id": "st024",
+   "name": "Caulking & Sealants",
+   "hall": "waterproofers",
+   "district": "envelope",
+   "skill_id": "waterproofers.materials.fundamentals",
+   "strand": "materials",
+   "tier": "fundamentals",
+   "room": "Materials Store",
+   "lesson": "Caulking and sealants are allied BAC trades.",
+   "checklist": [
+    "Size backer rod 25% wider",
+    "Prime if required",
+    "Fill without voids",
+    "Tool to concave profile",
+    "Don't stretch sealant",
+    "Clean substrate first",
+    "Mask for clean lines"
+   ],
+   "doctrine": "No backer rod = 3-way adhesion = failure.",
+   "actions": [
+    {
+     "label": "Load caulk gun",
+     "prop": "caulkGun"
+    },
+    {
+     "label": "Insert backer rod",
+     "prop": "backerRod"
+    },
+    {
+     "label": "Apply primer",
+     "prop": "primer"
+    },
+    {
+     "label": "Tool with spatula",
+     "prop": "spatula"
+    }
+   ],
+   "quiz": {
+    "question": "Correct width-to-depth ratio for silicone?",
+    "options": [
+     {
+      "label": "1:1",
+      "prop": "qWrong",
+      "correct": false
+     },
+     {
+      "label": "2:1",
+      "prop": "qRight",
+      "correct": true
+     },
+     {
+      "label": "3:1",
+      "prop": "qWrong2",
+      "correct": false
+     }
+    ]
+   },
+   "color": "#8a8a6a"
+  }
+ ]
+}

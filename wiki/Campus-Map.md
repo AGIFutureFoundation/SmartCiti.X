@@ -59,10 +59,22 @@ library = 11,000,000.
 ## Rebuilding
 
 ```bash
-python3 unions/build.py      # if the roster changed
-python3 pack/build.py        # if the skeleton changed
-python3 web/build_map.py     # the map itself
+python3 unions/build.py               # if the roster changed
+python3 pack/build.py                 # if the skeleton changed
+python3 stations/build.py             # if the station content changed
+python3 web/build_map.py              # the campus plan
+python3 web/build_interactive_map.py  # the interactive layered map
 ```
+
+## The interactive layer
+
+`web/trade_craft_interactive.html` (built by `web/build_interactive_map.py`)
+puts four toggleable layers over the same registries: district hue, pipeline
+state, module layers (each hall's census as a stacked bar), and training
+stations. Clicking a hall opens its floor plan with the recovered stations
+drawn inside the rooms their strands own, its skill lattice, and
+machine-gradable scenario checks — the whole surface rendered in any of the
+shipped locales, direction-aware.
 
 ## Upgrade candidates
 
