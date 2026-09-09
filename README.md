@@ -1,10 +1,13 @@
-# SmartCiti.X : Trade Craft Academy — implementation bundle v2.9
+# SmartCiti.X : Trade Craft Academy — implementation bundle v3.2
 
 *powered by AGI Corp*
 
-The Adaptive Stack: eight packs implementing the ACP protocol suite.
+Gamified training to enhance robotic and human integrations.
+The Adaptive Stack: the packs implementing the ACP protocol suite (v3.2) —
+counted, like everything else here, by the table below rather than by a
+number that can drift from it.
 
-**246 checks, all passing from inside this bundle**, with no model credentials
+**276 checks, all passing from inside this bundle**, with no model credentials
 required.
 
 ```bash
@@ -15,35 +18,44 @@ Or individually — every path inside a pack resolves against its own module
 location, so these run from any working directory (v2.6 defect 13):
 
 ```bash
-node pack/verify.mjs              # 19 — the registry, and all 11,000,000 IDs
+node unions/verify.mjs             # 14 — the roster, districts, and pack agreement
+node pack/verify.mjs               # 19 — the registry, and all 11,000,000 IDs
 node control/test.mjs              # 12 — learner profile, ZPD dial, affect
 node control/test_graph.mjs        # 20 — skill graph, sequencer, gates
 node control/test_hints.mjs        # 21 — the hint ladder, fading, the ceiling contract
 node fabric/test.mjs               # 16 — mentor guards, eval harness, router
-node bus/test.mjs                  # 12 — bus contracts, telemetry guards, audit
+node bus/test.mjs                  # 15 — bus contracts, telemetry guards, audit
 node bus/test_safeguards.mjs       # 15 — parity, stop conditions, overrides
 node security/test.mjs             # 16 — authz, tenancy, rate limits, privacy
 node ops/test.mjs                  # 41 — registries, rollout lanes, jobs, cost governor
 node ops/fuzz.mjs                  #  9 — side doors around the promotion gates
 node brand/test.mjs                # 30 — naming, tokens, contrast, livery, the lint itself
 node brand/lint.mjs .              # fails on any forbidden spelling anywhere in the tree
+node i18n/test.mjs                 # 16 — locale parity, placeholders, pack agreement
 node control/fuzz.mjs              # 21 — hostile inputs and adversarial learners
 node control/soak.mjs              # long-run invariants, 4,000 attempts x 3 seeds
 python3 console/check_console.py   # fails if the console is behind its sources
+python3 wiki/build_wiki.py --check # fails if the wiki is behind the registries
 ```
 
 | Pack | Spec | What it is |
 |---|---|---|
-| `pack/` | ACP-10 | Module registry at 111-hall scale: 25,875 authored skeleton objects, a consumer library that generates all 11,000,000 module IDs from them, and a verifier that proves uniqueness over the whole population rather than a sample |
+| `unions/` | — | **The union registry**, separated from the module pack: the 111-hall taxonomy and its eight districts, a builder with a source stamp, and a verifier that proves the module pack still agrees with the roster |
+| `pack/` | ACP-10 | Module registry at 111-hall scale: 25,875 authored skeleton objects (consuming the union roster), a consumer library that generates all 11,000,000 module IDs from them, and a verifier that proves uniqueness over the whole population rather than a sample |
 | `control/` | ACP-02/03/04/05/06/07/15 | The deterministic control plane — profile, dial, affect, hint ladder, skill graph, sequencer, assessment gates — with two simulation harnesses |
 | `fabric/` | ACP-11/12 | Mentor contract and middleware, the five-gate eval harness with adversarial stubs, supervisor/swarm router |
 | `security/` | — | Deny-by-default authorization with tenant isolation, rate limiting, data classification, retention and erasure; plus `SECURITY.md` with the threat model and an honest launch checklist |
 | `ops/` | ACP-13 | The three registries with a pipeline transition table, hall-by-hall rollout lanes that ask ACP-08 rather than re-deciding, the seven-job automation loop, and the cost governor that cannot throttle the control plane |
-| `web/` | — | The published pages and their builders: landing page, protocol spec, and the campus plan with a generated floor plan for every hall |
+| `web/` | — | The published pages and their builders: landing page, rendered protocol spec, the languages page, and the campus plan with a generated floor plan for every hall |
 | `brand/` | — | The canonical identity: names and forbidden spellings with reasons, the two-theme token set, the wordmark, hall livery, and a lint that fails the build on drift |
 | `bus/` | ACP-01/08/09 | The message bus with single-writer enforcement, the telemetry envelope and its quality guards, the append-only audit log, the parity/stop-condition/override safeguards, and the whole loop assembled over them |
 | `console/` | — | **The Adaptive Console**: a single-file web app running the real protocol on the real pack, with the builder and its staleness guard |
-| `web/` | — | The published pages and their builders: the landing page and the rendered protocol spec |
+| `i18n/` | — | **The locale catalogs**: the Academy's vocabulary in 8 languages with structural-parity and pack-agreement checks; hall names deliberately untranslated pending native review |
+| `wiki/` | — | **The wiki**, generated from the registries: a page per map (campus, interiors, skill graph, languages) and a page per district, with Mermaid content graphs and a staleness guard |
+| `archive/` | — | Superseded working data kept for provenance, consumed by nothing and skipped by the figures lint |
+
+Alongside the packs: [`ROADMAP.md`](ROADMAP.md) — the phased plan from v3.2
+forward — and [`wiki/Home.md`](wiki/Home.md), the index of every map's page.
 
 ### Simulation harnesses
 
@@ -138,3 +150,30 @@ Optimization pass in the same regeneration:
 - Superseded bundle copies and scratch files dropped from the tree.
 
 All checks pass against the regenerated data.
+
+## v3.2 changes
+
+- **Spec updated to v3.2** — §23 (what an adversarial review found: thirty-three
+  defects, nine fail-open safeguards, the general finding that author-written
+  tests agree with author-written code) and §24 (texture and environment
+  packages) — and the version unified across the manifest, the registry and
+  every generated surface.
+- **Unions separated from modules.** The taxonomy now lives in `unions/` with
+  its own registry, builder and source stamp; `pack/` consumes the built
+  roster, and `unions/verify.mjs` proves the two packs agree instead of
+  letting one directory imply it.
+- **Eight languages.** `i18n/` carries the locale catalogs (English source +
+  Spanish, French, German, Portuguese, Chinese, Hindi, Arabic), each held to
+  structural parity and pack agreement by `i18n/test.mjs`, rendered
+  direction-aware by `web/trade_craft_languages.html`. Hall names are
+  deliberately untranslated pending native review, and every catalog says so.
+- **A wiki and a roadmap.** `wiki/` is generated from the registries — a page
+  per map with Mermaid content graphs, a page per district with every hall's
+  figures — with a staleness guard in `verify_all.sh`. `ROADMAP.md` schedules
+  v3.3 → v4.0 with harness-checkable exit criteria.
+- **Packaged-layout path defects fixed.** `web/build_map.py`,
+  `web/build_page.py` and the console slice builder resolved paths that only
+  worked in the pre-packaging tree (defect 13's shape); all now walk up to
+  the pack root. The duplicate `web/build_slice.py` was removed, and the
+  orphaned 33-hall-era map data moved to `archive/` with its provenance
+  recorded in `wiki/Provenance.md`.

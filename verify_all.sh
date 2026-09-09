@@ -20,6 +20,7 @@ for t in control/test.mjs control/test_graph.mjs control/test_hints.mjs \
   fi
 done
 python3 console/check_console.py || fail=$((fail + 1))
+python3 wiki/build_wiki.py --check || fail=$((fail + 1))
 iout=$(python3 web/test_interiors.py 2>&1) || fail=$((fail + 1))
 printf '%s\n' "$iout" | tail -1
 total=$((total + $(printf '%s\n' "$iout" | grep -c '^  ok ')))
