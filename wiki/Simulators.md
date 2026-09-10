@@ -1,6 +1,6 @@
 # The simulators
 
-3 operable training machines live inside the
+4 operable training machines live inside the
 [3D environment](Campus-Map.md): open a bound hall and press **▶** (a hall
 bound to more than one machine offers the choice). The
 physics are schematic — built for practising control discipline (smooth
@@ -115,6 +115,41 @@ environment varies, the rubric never does:
 | Treasure Island Campus | **Island yard run** | The training yard lane - four gates and a full-width dock bay to land the pallet in. |
 | Oakland Waterfront Campus | **Terminal container lane** | A fifth gate threads the container rows - longer lane, same clean-run law. |
 | Crescent Works Campus | **Wharf dock set** | The wharf dock is narrow - four gates, then a set-down with little room to be wrong. |
+## Weld Bead Run (process)
+
+Strike the arc and run one clean bead down the marked seam — hold the gap inside the band and keep the torch travelling; linger on a segment and the plate burns through.
+
+Trains at: **Welding Trades**, **Boilermakers**, **Shipfitters**, **Structural Fabricators**, **Pipeline Trades** — each run exercises that hall's
+`machines.applied` skill.
+
+| Control | Action |
+|---|---|
+| `W / S` | travel the torch along the seam |
+| `Q / E` | raise / lower the torch (arc gap) |
+| `Space` | strike / break the arc |
+
+| Rubric axis | Measured | Pass |
+|---|---|---|
+| fusion | seam segments fused end to end | `== all` |
+| band | share of fused segments laid with the gap inside the band (%) | `>= 90` |
+| burns | burn-throughs from lingering heat | `== 0` |
+| time | seconds first strike to last fuse | `informational` |
+
+**Cockpit.** A live dash of 6 gauges — `Gap mm` (warns at 5.2), `Heat %` (warns at 85), `Seam`, `Band %`, `Burns` (warns at 1), `T s` — with the
+warn thresholds drawn from this registry, not hard-coded in the page.
+View modes: `orbit` / `visor`. Audio is a
+`arc` engine plus `burn-alarm`, `arc-pop`, `result-chime` —
+synthesized in-page (WebAudio); no recordings shipped. Haptic cues (burn, finish) fire on
+gamepad rumble and the vibration API where the platform offers them.
+
+**Regional scenarios.** The campus you train at picks the yard — the
+environment varies, the rubric never does:
+
+| Region | Scenario | The yard |
+|---|---|---|
+| Treasure Island Campus | **Deck plate seam** | A flat deck seam on the fabrication floor - the forgiving band to learn the rhythm in. |
+| Oakland Waterfront Campus | **Pipe flange bead** | A longer run at a tighter gap - the plant inspector reads every millimetre of it. |
+| Crescent Works Campus | **Tank shell seam** | Storage-tank shell plate in Gulf humidity - a slightly higher band, the same clean-bead law. |
 
 ## What a simulator run is not
 

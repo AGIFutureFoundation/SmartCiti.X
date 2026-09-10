@@ -57,7 +57,7 @@ MODEL = {
          'what': 'simulator seat time with the regional scenario of the '
                  'campus - live dash, synthesized sound, deterministic '
                  'rubric; results and best times persist device-locally',
-         'implemented_by': 'sims/ (3 simulators, regional scenarios)',
+         'implemented_by': 'sims/ (4 simulators, regional scenarios)',
          'gamified': 'pass/retry chips, best-time records, cockpit views'},
         {'stage': 'gate', 'title': 'Verify unaided',
          'what': 'assessment gates certify only unaided work; no home '

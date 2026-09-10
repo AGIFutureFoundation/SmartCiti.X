@@ -1,0 +1,1449 @@
+{
+ "pack": "smartcitix-trade-craft-academy-toolroom-registry",
+ "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
+ "pack_version": "3.2.0",
+ "built": "2026-09-10",
+ "source_stamp": "4957cc44e6a13d1d",
+ "drill": {
+  "name": "Crib check",
+  "picks": 5,
+  "contract": "deterministic: a pick is right or wrong against the crib record; the option order is index arithmetic, not chance; nothing narrative can change a score"
+ },
+ "honesty": {
+  "status": "a schematic training aid for tool identification and tool-crib discipline - not an inventory of any real toolroom, not tool competency certification, and no manufacturer or brand is named or drawn."
+ },
+ "cribs": {
+  "structural": {
+   "name": "Structural tool crib",
+   "tools": [
+    {
+     "id": "spud-wrench",
+     "name": "Spud wrench",
+     "glyph": "🔧",
+     "shape": "wrench",
+     "hue": 28,
+     "use": "aligns bolt holes and pins the steel connection"
+    },
+    {
+     "id": "sleever-bar",
+     "name": "Sleever bar",
+     "glyph": "⚒️",
+     "shape": "bar",
+     "hue": 210,
+     "use": "levers heavy steel the last inch into place"
+    },
+    {
+     "id": "bull-pin",
+     "name": "Bull pin",
+     "glyph": "📍",
+     "shape": "cyl",
+     "hue": 12,
+     "use": "holds two aligned holes while the bolts go in"
+    },
+    {
+     "id": "torque-wrench",
+     "name": "Torque wrench",
+     "glyph": "🔩",
+     "shape": "wrench",
+     "hue": 200,
+     "use": "tightens a bolt to its specified torque, no further"
+    },
+    {
+     "id": "shackle",
+     "name": "Rigging shackle",
+     "glyph": "⛓️",
+     "shape": "hook",
+     "hue": 45,
+     "use": "closes the load path between sling and pick point"
+    },
+    {
+     "id": "wire-sling",
+     "name": "Wire-rope sling",
+     "glyph": "➰",
+     "shape": "coil",
+     "hue": 100,
+     "use": "wraps the load and carries it to the hook"
+    },
+    {
+     "id": "lever-hoist",
+     "name": "Lever hoist",
+     "glyph": "⚙️",
+     "shape": "case",
+     "hue": 350,
+     "use": "pulls a load in tight where no crane can reach"
+    },
+    {
+     "id": "beam-clamp",
+     "name": "Beam clamp",
+     "glyph": "🗜️",
+     "shape": "hook",
+     "hue": 260,
+     "use": "grips a flange to make a temporary pick point"
+    },
+    {
+     "id": "plumb-bob",
+     "name": "Plumb bob",
+     "glyph": "📏",
+     "shape": "cone",
+     "hue": 182,
+     "use": "drops a true vertical line off a point above"
+    },
+    {
+     "id": "center-punch",
+     "name": "Center punch",
+     "glyph": "✒️",
+     "shape": "cyl",
+     "hue": 300,
+     "use": "dimples the layout mark so the drill cannot wander"
+    },
+    {
+     "id": "bolt-gauge",
+     "name": "Bolt gauge",
+     "glyph": "📐",
+     "shape": "blade",
+     "hue": 150,
+     "use": "reads a bolt diameter and thread in one check"
+    },
+    {
+     "id": "impact-wrench",
+     "name": "Impact wrench",
+     "glyph": "🛠️",
+     "shape": "case",
+     "hue": 20,
+     "use": "runs structural bolts down fast before the torque pass"
+    }
+   ]
+  },
+  "envelope": {
+   "name": "Envelope & finish tool crib",
+   "tools": [
+    {
+     "id": "utility-knife",
+     "name": "Utility knife",
+     "glyph": "🔪",
+     "shape": "blade",
+     "hue": 12,
+     "use": "scores and cuts sheet goods to the line"
+    },
+    {
+     "id": "taping-knife",
+     "name": "Taping knife",
+     "glyph": "🎨",
+     "shape": "blade",
+     "hue": 200,
+     "use": "lays and feathers joint compound over the seam"
+    },
+    {
+     "id": "brick-trowel",
+     "name": "Brick trowel",
+     "glyph": "🧱",
+     "shape": "blade",
+     "hue": 28,
+     "use": "butters and beds the mortar under each course"
+    },
+    {
+     "id": "jointer",
+     "name": "Brick jointer",
+     "glyph": "〰️",
+     "shape": "bar",
+     "hue": 45,
+     "use": "strikes the mortar joint to a weathertight profile"
+    },
+    {
+     "id": "grout-float",
+     "name": "Grout float",
+     "glyph": "⬜",
+     "shape": "case",
+     "hue": 100,
+     "use": "presses grout into tile joints and pulls the excess"
+    },
+    {
+     "id": "suction-cup",
+     "name": "Glass suction cup",
+     "glyph": "🪟",
+     "shape": "cyl",
+     "hue": 182,
+     "use": "grips a glass lite so it can be walked and set"
+    },
+    {
+     "id": "caulk-gun",
+     "name": "Caulking gun",
+     "glyph": "🧴",
+     "shape": "cyl",
+     "hue": 260,
+     "use": "drives a steady sealant bead along the joint"
+    },
+    {
+     "id": "chalk-line",
+     "name": "Chalk line",
+     "glyph": "📏",
+     "shape": "case",
+     "hue": 350,
+     "use": "snaps a straight layout line across the field"
+    },
+    {
+     "id": "framing-square",
+     "name": "Framing square",
+     "glyph": "📐",
+     "shape": "blade",
+     "hue": 210,
+     "use": "checks and lays out a true right angle"
+    },
+    {
+     "id": "block-plane",
+     "name": "Block plane",
+     "glyph": "🪵",
+     "shape": "case",
+     "hue": 30,
+     "use": "shaves a door or trim edge to the exact fit"
+    },
+    {
+     "id": "putty-knife",
+     "name": "Putty knife",
+     "glyph": "🖌️",
+     "shape": "blade",
+     "hue": 150,
+     "use": "presses filler into small defects before paint"
+    },
+    {
+     "id": "seam-roller",
+     "name": "Seam roller",
+     "glyph": "🎯",
+     "shape": "cyl",
+     "hue": 300,
+     "use": "sets a membrane seam with even rolling pressure"
+    }
+   ]
+  },
+  "systems": {
+   "name": "Building-systems tool crib",
+   "tools": [
+    {
+     "id": "multimeter",
+     "name": "Multimeter",
+     "glyph": "🔋",
+     "shape": "meter",
+     "hue": 48,
+     "use": "reads voltage, current and resistance in one instrument"
+    },
+    {
+     "id": "wire-strippers",
+     "name": "Wire strippers",
+     "glyph": "✂️",
+     "shape": "wrench",
+     "hue": 12,
+     "use": "strips insulation to length without nicking the conductor"
+    },
+    {
+     "id": "fish-tape",
+     "name": "Fish tape",
+     "glyph": "🎣",
+     "shape": "coil",
+     "hue": 200,
+     "use": "pulls conductors through a finished conduit run"
+    },
+    {
+     "id": "conduit-bender",
+     "name": "Conduit bender",
+     "glyph": "📐",
+     "shape": "bar",
+     "hue": 28,
+     "use": "sweeps a conduit offset to the marked angle"
+    },
+    {
+     "id": "tubing-cutter",
+     "name": "Tubing cutter",
+     "glyph": "⚙️",
+     "shape": "hook",
+     "hue": 182,
+     "use": "cuts copper tube square with a rolled wheel"
+    },
+    {
+     "id": "pipe-wrench",
+     "name": "Pipe wrench",
+     "glyph": "🔧",
+     "shape": "wrench",
+     "hue": 350,
+     "use": "grips and turns threaded pipe by its jaw bite"
+    },
+    {
+     "id": "crimper",
+     "name": "Crimping tool",
+     "glyph": "🧲",
+     "shape": "wrench",
+     "hue": 260,
+     "use": "closes a connector onto its conductor gas-tight"
+    },
+    {
+     "id": "manifold-gauge",
+     "name": "Manifold gauge set",
+     "glyph": "🌡️",
+     "shape": "meter",
+     "hue": 100,
+     "use": "reads both sides of a refrigeration circuit at once"
+    },
+    {
+     "id": "torpedo-level",
+     "name": "Torpedo level",
+     "glyph": "📏",
+     "shape": "bar",
+     "hue": 45,
+     "use": "levels short runs where a full level cannot fit"
+    },
+    {
+     "id": "voltage-tester",
+     "name": "Non-contact tester",
+     "glyph": "⚡",
+     "shape": "cyl",
+     "hue": 55,
+     "use": "proves a circuit dead before any hand touches it"
+    },
+    {
+     "id": "channel-locks",
+     "name": "Tongue-and-groove pliers",
+     "glyph": "🦀",
+     "shape": "wrench",
+     "hue": 210,
+     "use": "adjusts its jaw span to grip what the job presents"
+    },
+    {
+     "id": "nut-driver",
+     "name": "Nut driver set",
+     "glyph": "🔩",
+     "shape": "cyl",
+     "hue": 300,
+     "use": "seats panel screws and small hex hardware cleanly"
+    }
+   ]
+  },
+  "energy": {
+   "name": "Energy & utilities tool crib",
+   "tools": [
+    {
+     "id": "lineman-pliers",
+     "name": "Lineman pliers",
+     "glyph": "🦷",
+     "shape": "wrench",
+     "hue": 48,
+     "use": "cuts, twists and pulls conductor in one grip"
+    },
+    {
+     "id": "hot-stick",
+     "name": "Hot stick",
+     "glyph": "🦯",
+     "shape": "bar",
+     "hue": 12,
+     "use": "operates energized gear from an insulated distance"
+    },
+    {
+     "id": "cable-cutter",
+     "name": "Cable cutter",
+     "glyph": "✂️",
+     "shape": "wrench",
+     "hue": 200,
+     "use": "shears large cable clean without crushing the strands"
+    },
+    {
+     "id": "clamp-meter",
+     "name": "Clamp meter",
+     "glyph": "🧲",
+     "shape": "meter",
+     "hue": 182,
+     "use": "reads current through a conductor without breaking it"
+    },
+    {
+     "id": "megohmmeter",
+     "name": "Insulation tester",
+     "glyph": "🔋",
+     "shape": "meter",
+     "hue": 260,
+     "use": "proves insulation resistance before energizing"
+    },
+    {
+     "id": "gas-detector",
+     "name": "Gas detector",
+     "glyph": "🚨",
+     "shape": "meter",
+     "hue": 350,
+     "use": "sniffs the trench and vault air before entry"
+    },
+    {
+     "id": "valve-key",
+     "name": "Valve key",
+     "glyph": "🔑",
+     "shape": "bar",
+     "hue": 100,
+     "use": "reaches and turns a buried curb valve from grade"
+    },
+    {
+     "id": "pipe-locator",
+     "name": "Line locator",
+     "glyph": "📡",
+     "shape": "meter",
+     "hue": 28,
+     "use": "traces the buried line before the first dig"
+    },
+    {
+     "id": "torque-screwdriver",
+     "name": "Torque screwdriver",
+     "glyph": "🔩",
+     "shape": "cyl",
+     "hue": 45,
+     "use": "lands terminal screws at their exact rating"
+    },
+    {
+     "id": "splice-shell",
+     "name": "Splice shell set",
+     "glyph": "🧰",
+     "shape": "case",
+     "hue": 210,
+     "use": "rebuilds and seals a cable joint against water"
+    },
+    {
+     "id": "sharpshooter",
+     "name": "Sharpshooter spade",
+     "glyph": "⛏️",
+     "shape": "blade",
+     "hue": 30,
+     "use": "opens a narrow potholing cut over a marked line"
+    },
+    {
+     "id": "grounding-set",
+     "name": "Grounding cluster",
+     "glyph": "⛓️",
+     "shape": "coil",
+     "hue": 150,
+     "use": "bonds the dead line to earth before work begins"
+    }
+   ]
+  },
+  "earthworks": {
+   "name": "Earthworks & plant tool crib",
+   "tools": [
+    {
+     "id": "grade-rod",
+     "name": "Grade rod",
+     "glyph": "📏",
+     "shape": "bar",
+     "hue": 100,
+     "use": "reads cut and fill against the laser plane"
+    },
+    {
+     "id": "laser-level",
+     "name": "Rotary laser",
+     "glyph": "🔦",
+     "shape": "meter",
+     "hue": 12,
+     "use": "spins one level datum across the whole site"
+    },
+    {
+     "id": "mattock",
+     "name": "Pick mattock",
+     "glyph": "⛏️",
+     "shape": "wrench",
+     "hue": 28,
+     "use": "breaks hard ground the shovel cannot start"
+    },
+    {
+     "id": "round-shovel",
+     "name": "Round-point shovel",
+     "glyph": "🧹",
+     "shape": "blade",
+     "hue": 45,
+     "use": "moves loose spoil and shapes the cut by hand"
+    },
+    {
+     "id": "grease-gun",
+     "name": "Grease gun",
+     "glyph": "🧴",
+     "shape": "cyl",
+     "hue": 200,
+     "use": "feeds every zerk on the machine its daily grease"
+    },
+    {
+     "id": "pry-bar",
+     "name": "Pry bar",
+     "glyph": "🦴",
+     "shape": "bar",
+     "hue": 260,
+     "use": "levers pins, plates and stubborn iron apart"
+    },
+    {
+     "id": "plate-tamper",
+     "name": "Hand tamper",
+     "glyph": "🔨",
+     "shape": "bar",
+     "hue": 350,
+     "use": "compacts backfill in lifts where plate compactors cannot go"
+    },
+    {
+     "id": "string-line",
+     "name": "String line",
+     "glyph": "🧵",
+     "shape": "coil",
+     "hue": 182,
+     "use": "carries line and grade between the offset stakes"
+    },
+    {
+     "id": "marking-wand",
+     "name": "Marking wand",
+     "glyph": "🖌️",
+     "shape": "cyl",
+     "hue": 55,
+     "use": "paints the locate colors onto the ground"
+    },
+    {
+     "id": "socket-set",
+     "name": "Socket set",
+     "glyph": "🧰",
+     "shape": "case",
+     "hue": 210,
+     "use": "services the plant with the right drive size"
+    },
+    {
+     "id": "pin-punch",
+     "name": "Pin punch",
+     "glyph": "✒️",
+     "shape": "cyl",
+     "hue": 300,
+     "use": "drives track and bucket pins in and out true"
+    },
+    {
+     "id": "tire-gauge",
+     "name": "Tire pressure gauge",
+     "glyph": "🌡️",
+     "shape": "meter",
+     "hue": 150,
+     "use": "checks plant tires to the loading chart"
+    }
+   ]
+  },
+  "industry": {
+   "name": "Heavy-industry tool crib",
+   "tools": [
+    {
+     "id": "chipping-hammer",
+     "name": "Chipping hammer",
+     "glyph": "⚒️",
+     "shape": "wrench",
+     "hue": 12,
+     "use": "knocks slag off the cooled weld for inspection"
+    },
+    {
+     "id": "flange-spreader",
+     "name": "Flange spreader",
+     "glyph": "🔩",
+     "shape": "wrench",
+     "hue": 28,
+     "use": "opens a bolted flange safely against its spring"
+    },
+    {
+     "id": "alignment-pins",
+     "name": "Flange alignment pins",
+     "glyph": "📍",
+     "shape": "cyl",
+     "hue": 45,
+     "use": "draw two flanges into bolt-hole alignment"
+    },
+    {
+     "id": "feeler-gauge",
+     "name": "Feeler gauge",
+     "glyph": "📐",
+     "shape": "blade",
+     "hue": 200,
+     "use": "measures the gap a caliper cannot enter"
+    },
+    {
+     "id": "micrometer",
+     "name": "Micrometer",
+     "glyph": "⚙️",
+     "shape": "hook",
+     "hue": 182,
+     "use": "reads a machined diameter to the thousandth"
+    },
+    {
+     "id": "file-set",
+     "name": "File set",
+     "glyph": "🧰",
+     "shape": "case",
+     "hue": 100,
+     "use": "dresses an edge or fit by controlled strokes"
+    },
+    {
+     "id": "deburring-tool",
+     "name": "Deburring tool",
+     "glyph": "✒️",
+     "shape": "cyl",
+     "hue": 260,
+     "use": "breaks the sharp edge every cut leaves behind"
+    },
+    {
+     "id": "dial-indicator",
+     "name": "Dial indicator",
+     "glyph": "🌡️",
+     "shape": "meter",
+     "hue": 350,
+     "use": "reads runout and lift as the shaft turns"
+    },
+    {
+     "id": "bearing-puller",
+     "name": "Bearing puller",
+     "glyph": "🧲",
+     "shape": "hook",
+     "hue": 210,
+     "use": "draws a bearing off its seat without damage"
+    },
+    {
+     "id": "soapstone",
+     "name": "Soapstone holder",
+     "glyph": "🖌️",
+     "shape": "bar",
+     "hue": 55,
+     "use": "marks hot steel where ink and chalk fail"
+    },
+    {
+     "id": "weld-gauge",
+     "name": "Fillet weld gauge",
+     "glyph": "📏",
+     "shape": "blade",
+     "hue": 300,
+     "use": "measures a finished weld against its called size"
+    },
+    {
+     "id": "pipe-stand-wrench",
+     "name": "Chain tongs",
+     "glyph": "⛓️",
+     "shape": "wrench",
+     "hue": 150,
+     "use": "turns large pipe by wrapping it, not biting it"
+    }
+   ]
+  },
+  "transport": {
+   "name": "Transport & mobility tool crib",
+   "tools": [
+    {
+     "id": "track-wrench",
+     "name": "Track wrench",
+     "glyph": "🔧",
+     "shape": "wrench",
+     "hue": 262,
+     "use": "runs rail bolts down through the joint bars"
+    },
+    {
+     "id": "spike-puller",
+     "name": "Spike puller",
+     "glyph": "🦴",
+     "shape": "bar",
+     "hue": 12,
+     "use": "draws a rail spike without splitting the tie"
+    },
+    {
+     "id": "rail-gauge",
+     "name": "Track gauge",
+     "glyph": "📏",
+     "shape": "blade",
+     "hue": 200,
+     "use": "holds the rails at their exact set apart"
+    },
+    {
+     "id": "torque-multiplier",
+     "name": "Torque multiplier",
+     "glyph": "⚙️",
+     "shape": "case",
+     "hue": 28,
+     "use": "multiplies hand torque for the largest fasteners"
+    },
+    {
+     "id": "compression-tester",
+     "name": "Compression tester",
+     "glyph": "🌡️",
+     "shape": "meter",
+     "hue": 45,
+     "use": "reads each diesel cylinder against its siblings"
+    },
+    {
+     "id": "brake-tool",
+     "name": "Brake spring tool",
+     "glyph": "🧲",
+     "shape": "wrench",
+     "hue": 100,
+     "use": "seats and releases brake springs under control"
+    },
+    {
+     "id": "wheel-chock",
+     "name": "Wheel chock pair",
+     "glyph": "⛔",
+     "shape": "case",
+     "hue": 350,
+     "use": "holds the vehicle still before anyone goes under"
+    },
+    {
+     "id": "signal-tester",
+     "name": "Signal test set",
+     "glyph": "📡",
+     "shape": "meter",
+     "hue": 182,
+     "use": "proves the circuit sees the aspect it should"
+    },
+    {
+     "id": "alignment-bar",
+     "name": "Alignment bar",
+     "glyph": "📍",
+     "shape": "bar",
+     "hue": 210,
+     "use": "walks bolt holes into line on heavy assemblies"
+    },
+    {
+     "id": "impact-gun",
+     "name": "Impact gun",
+     "glyph": "🛠️",
+     "shape": "case",
+     "hue": 20,
+     "use": "breaks and runs lug and frame hardware fast"
+    },
+    {
+     "id": "creeper-light",
+     "name": "Inspection lamp",
+     "glyph": "🔦",
+     "shape": "cyl",
+     "hue": 55,
+     "use": "lights the underside where the fault hides"
+    },
+    {
+     "id": "cable-height-stick",
+     "name": "Height stick",
+     "glyph": "🦯",
+     "shape": "bar",
+     "hue": 300,
+     "use": "measures wire height above the rail head safely"
+    }
+   ]
+  },
+  "control": {
+   "name": "Survey, safety & environment tool crib",
+   "tools": [
+    {
+     "id": "prism-pole",
+     "name": "Prism pole",
+     "glyph": "📍",
+     "shape": "bar",
+     "hue": 148,
+     "use": "holds the survey prism plumb over the point"
+    },
+    {
+     "id": "auto-level",
+     "name": "Auto level",
+     "glyph": "🔭",
+     "shape": "meter",
+     "hue": 12,
+     "use": "reads elevation differences through a leveled scope"
+    },
+    {
+     "id": "field-tripod",
+     "name": "Field tripod",
+     "glyph": "📐",
+     "shape": "bar",
+     "hue": 28,
+     "use": "plants the instrument rigid over the station"
+    },
+    {
+     "id": "gas-monitor",
+     "name": "Four-gas monitor",
+     "glyph": "🚨",
+     "shape": "meter",
+     "hue": 350,
+     "use": "watches the air for the four killers continuously"
+    },
+    {
+     "id": "sampling-pump",
+     "name": "Air sampling pump",
+     "glyph": "🌬️",
+     "shape": "case",
+     "hue": 200,
+     "use": "draws a metered air volume through the media"
+    },
+    {
+     "id": "decon-sprayer",
+     "name": "Decon sprayer",
+     "glyph": "🧴",
+     "shape": "cyl",
+     "hue": 100,
+     "use": "washes contamination down at the exit line"
+    },
+    {
+     "id": "hepa-vac",
+     "name": "HEPA vacuum",
+     "glyph": "🌪️",
+     "shape": "case",
+     "hue": 260,
+     "use": "captures fine hazard dust instead of scattering it"
+    },
+    {
+     "id": "anemometer",
+     "name": "Anemometer",
+     "glyph": "💨",
+     "shape": "meter",
+     "hue": 182,
+     "use": "reads air speed across the containment face"
+    },
+    {
+     "id": "sound-meter",
+     "name": "Sound level meter",
+     "glyph": "🔊",
+     "shape": "meter",
+     "hue": 45,
+     "use": "measures noise dose where hearing is on the line"
+    },
+    {
+     "id": "lux-meter",
+     "name": "Light meter",
+     "glyph": "🔦",
+     "shape": "meter",
+     "hue": 55,
+     "use": "proves the task lighting meets its required lux"
+    },
+    {
+     "id": "moisture-meter",
+     "name": "Moisture meter",
+     "glyph": "💧",
+     "shape": "meter",
+     "hue": 210,
+     "use": "finds the wet wall behind the dry paint"
+    },
+    {
+     "id": "rope-grab",
+     "name": "Rope grab",
+     "glyph": "⛓️",
+     "shape": "hook",
+     "hue": 300,
+     "use": "arrests a fall on the lifeline the moment it starts"
+    }
+   ]
+  }
+ },
+ "drills": {
+  "structural": [
+   {
+    "ask": "Pick the tool that holds two aligned holes while the bolts go in",
+    "tool": "bull-pin"
+   },
+   {
+    "ask": "Pick the tool that grips a flange to make a temporary pick point",
+    "tool": "beam-clamp"
+   },
+   {
+    "ask": "Pick the tool that aligns bolt holes and pins the steel connection",
+    "tool": "spud-wrench"
+   },
+   {
+    "ask": "Pick the tool that wraps the load and carries it to the hook",
+    "tool": "wire-sling"
+   },
+   {
+    "ask": "Pick the tool that reads a bolt diameter and thread in one check",
+    "tool": "bolt-gauge"
+   }
+  ],
+  "envelope": [
+   {
+    "ask": "Pick the tool that butters and beds the mortar under each course",
+    "tool": "brick-trowel"
+   },
+   {
+    "ask": "Pick the tool that snaps a straight layout line across the field",
+    "tool": "chalk-line"
+   },
+   {
+    "ask": "Pick the tool that scores and cuts sheet goods to the line",
+    "tool": "utility-knife"
+   },
+   {
+    "ask": "Pick the tool that grips a glass lite so it can be walked and set",
+    "tool": "suction-cup"
+   },
+   {
+    "ask": "Pick the tool that presses filler into small defects before paint",
+    "tool": "putty-knife"
+   }
+  ],
+  "systems": [
+   {
+    "ask": "Pick the tool that pulls conductors through a finished conduit run",
+    "tool": "fish-tape"
+   },
+   {
+    "ask": "Pick the tool that reads both sides of a refrigeration circuit at once",
+    "tool": "manifold-gauge"
+   },
+   {
+    "ask": "Pick the tool that reads voltage, current and resistance in one instrument",
+    "tool": "multimeter"
+   },
+   {
+    "ask": "Pick the tool that grips and turns threaded pipe by its jaw bite",
+    "tool": "pipe-wrench"
+   },
+   {
+    "ask": "Pick the tool that adjusts its jaw span to grip what the job presents",
+    "tool": "channel-locks"
+   }
+  ],
+  "energy": [
+   {
+    "ask": "Pick the tool that shears large cable clean without crushing the strands",
+    "tool": "cable-cutter"
+   },
+   {
+    "ask": "Pick the tool that traces the buried line before the first dig",
+    "tool": "pipe-locator"
+   },
+   {
+    "ask": "Pick the tool that cuts, twists and pulls conductor in one grip",
+    "tool": "lineman-pliers"
+   },
+   {
+    "ask": "Pick the tool that sniffs the trench and vault air before entry",
+    "tool": "gas-detector"
+   },
+   {
+    "ask": "Pick the tool that opens a narrow potholing cut over a marked line",
+    "tool": "sharpshooter"
+   }
+  ],
+  "earthworks": [
+   {
+    "ask": "Pick the tool that breaks hard ground the shovel cannot start",
+    "tool": "mattock"
+   },
+   {
+    "ask": "Pick the tool that carries line and grade between the offset stakes",
+    "tool": "string-line"
+   },
+   {
+    "ask": "Pick the tool that reads cut and fill against the laser plane",
+    "tool": "grade-rod"
+   },
+   {
+    "ask": "Pick the tool that levers pins, plates and stubborn iron apart",
+    "tool": "pry-bar"
+   },
+   {
+    "ask": "Pick the tool that drives track and bucket pins in and out true",
+    "tool": "pin-punch"
+   }
+  ],
+  "industry": [
+   {
+    "ask": "Pick the tool that draw two flanges into bolt-hole alignment",
+    "tool": "alignment-pins"
+   },
+   {
+    "ask": "Pick the tool that reads runout and lift as the shaft turns",
+    "tool": "dial-indicator"
+   },
+   {
+    "ask": "Pick the tool that knocks slag off the cooled weld for inspection",
+    "tool": "chipping-hammer"
+   },
+   {
+    "ask": "Pick the tool that dresses an edge or fit by controlled strokes",
+    "tool": "file-set"
+   },
+   {
+    "ask": "Pick the tool that measures a finished weld against its called size",
+    "tool": "weld-gauge"
+   }
+  ],
+  "transport": [
+   {
+    "ask": "Pick the tool that holds the rails at their exact set apart",
+    "tool": "rail-gauge"
+   },
+   {
+    "ask": "Pick the tool that proves the circuit sees the aspect it should",
+    "tool": "signal-tester"
+   },
+   {
+    "ask": "Pick the tool that runs rail bolts down through the joint bars",
+    "tool": "track-wrench"
+   },
+   {
+    "ask": "Pick the tool that seats and releases brake springs under control",
+    "tool": "brake-tool"
+   },
+   {
+    "ask": "Pick the tool that lights the underside where the fault hides",
+    "tool": "creeper-light"
+   }
+  ],
+  "control": [
+   {
+    "ask": "Pick the tool that plants the instrument rigid over the station",
+    "tool": "field-tripod"
+   },
+   {
+    "ask": "Pick the tool that reads air speed across the containment face",
+    "tool": "anemometer"
+   },
+   {
+    "ask": "Pick the tool that holds the survey prism plumb over the point",
+    "tool": "prism-pole"
+   },
+   {
+    "ask": "Pick the tool that washes contamination down at the exit line",
+    "tool": "decon-sprayer"
+   },
+   {
+    "ask": "Pick the tool that finds the wet wall behind the dry paint",
+    "tool": "moisture-meter"
+   }
+  ]
+ },
+ "hall_bindings": {
+  "ironworkers": {
+   "district": "structural",
+   "skill_id": "ironworkers.tools.applied"
+  },
+  "electricians": {
+   "district": "systems",
+   "skill_id": "electricians.tools.applied"
+  },
+  "pipefitters": {
+   "district": "systems",
+   "skill_id": "pipefitters.tools.applied"
+  },
+  "carpenters": {
+   "district": "envelope",
+   "skill_id": "carpenters.tools.applied"
+  },
+  "operating-eng": {
+   "district": "earthworks",
+   "skill_id": "operating-eng.tools.applied"
+  },
+  "laborers": {
+   "district": "earthworks",
+   "skill_id": "laborers.tools.applied"
+  },
+  "sheetmetal": {
+   "district": "systems",
+   "skill_id": "sheetmetal.tools.applied"
+  },
+  "bricklayers": {
+   "district": "envelope",
+   "skill_id": "bricklayers.tools.applied"
+  },
+  "cement-masons": {
+   "district": "envelope",
+   "skill_id": "cement-masons.tools.applied"
+  },
+  "roofers": {
+   "district": "envelope",
+   "skill_id": "roofers.tools.applied"
+  },
+  "painters": {
+   "district": "envelope",
+   "skill_id": "painters.tools.applied"
+  },
+  "glaziers": {
+   "district": "envelope",
+   "skill_id": "glaziers.tools.applied"
+  },
+  "insulators": {
+   "district": "envelope",
+   "skill_id": "insulators.tools.applied"
+  },
+  "millwrights": {
+   "district": "structural",
+   "skill_id": "millwrights.tools.applied"
+  },
+  "boilermakers": {
+   "district": "structural",
+   "skill_id": "boilermakers.tools.applied"
+  },
+  "elevator": {
+   "district": "systems",
+   "skill_id": "elevator.tools.applied"
+  },
+  "teamsters": {
+   "district": "earthworks",
+   "skill_id": "teamsters.tools.applied"
+  },
+  "welders": {
+   "district": "structural",
+   "skill_id": "welders.tools.applied"
+  },
+  "hvacr": {
+   "district": "systems",
+   "skill_id": "hvacr.tools.applied"
+  },
+  "crane-ops": {
+   "district": "structural",
+   "skill_id": "crane-ops.tools.applied"
+  },
+  "riggers": {
+   "district": "structural",
+   "skill_id": "riggers.tools.applied"
+  },
+  "heavy-equip": {
+   "district": "earthworks",
+   "skill_id": "heavy-equip.tools.applied"
+  },
+  "drywall": {
+   "district": "envelope",
+   "skill_id": "drywall.tools.applied"
+  },
+  "flooring": {
+   "district": "envelope",
+   "skill_id": "flooring.tools.applied"
+  },
+  "grounds": {
+   "district": "earthworks",
+   "skill_id": "grounds.tools.applied"
+  },
+  "line-workers": {
+   "district": "energy",
+   "skill_id": "line-workers.tools.applied"
+  },
+  "solar": {
+   "district": "energy",
+   "skill_id": "solar.tools.applied"
+  },
+  "wind": {
+   "district": "energy",
+   "skill_id": "wind.tools.applied"
+  },
+  "demolition": {
+   "district": "earthworks",
+   "skill_id": "demolition.tools.applied"
+  },
+  "scaffold": {
+   "district": "earthworks",
+   "skill_id": "scaffold.tools.applied"
+  },
+  "surveyors": {
+   "district": "control",
+   "skill_id": "surveyors.tools.applied"
+  },
+  "fire-sprinkler": {
+   "district": "systems",
+   "skill_id": "fire-sprinkler.tools.applied"
+  },
+  "hazmat": {
+   "district": "control",
+   "skill_id": "hazmat.tools.applied"
+  },
+  "refractory": {
+   "district": "industry",
+   "skill_id": "refractory.tools.applied"
+  },
+  "pipeline": {
+   "district": "industry",
+   "skill_id": "pipeline.tools.applied"
+  },
+  "tank-erectors": {
+   "district": "industry",
+   "skill_id": "tank-erectors.tools.applied"
+  },
+  "shipfitters": {
+   "district": "structural",
+   "skill_id": "shipfitters.tools.applied"
+  },
+  "marine-pipe": {
+   "district": "industry",
+   "skill_id": "marine-pipe.tools.applied"
+  },
+  "divers": {
+   "district": "industry",
+   "skill_id": "divers.tools.applied"
+  },
+  "blasters": {
+   "district": "earthworks",
+   "skill_id": "blasters.tools.applied"
+  },
+  "miners": {
+   "district": "earthworks",
+   "skill_id": "miners.tools.applied"
+  },
+  "smelter": {
+   "district": "industry",
+   "skill_id": "smelter.tools.applied"
+  },
+  "foundry": {
+   "district": "industry",
+   "skill_id": "foundry.tools.applied"
+  },
+  "machinists": {
+   "district": "industry",
+   "skill_id": "machinists.tools.applied"
+  },
+  "toolmakers": {
+   "district": "industry",
+   "skill_id": "toolmakers.tools.applied"
+  },
+  "fabricators": {
+   "district": "structural",
+   "skill_id": "fabricators.tools.applied"
+  },
+  "platers": {
+   "district": "industry",
+   "skill_id": "platers.tools.applied"
+  },
+  "substation": {
+   "district": "energy",
+   "skill_id": "substation.tools.applied"
+  },
+  "cable-splicers": {
+   "district": "energy",
+   "skill_id": "cable-splicers.tools.applied"
+  },
+  "meter-techs": {
+   "district": "energy",
+   "skill_id": "meter-techs.tools.applied"
+  },
+  "gas-distrib": {
+   "district": "energy",
+   "skill_id": "gas-distrib.tools.applied"
+  },
+  "water-distrib": {
+   "district": "energy",
+   "skill_id": "water-distrib.tools.applied"
+  },
+  "wastewater": {
+   "district": "energy",
+   "skill_id": "wastewater.tools.applied"
+  },
+  "nuclear": {
+   "district": "energy",
+   "skill_id": "nuclear.tools.applied"
+  },
+  "hydro": {
+   "district": "energy",
+   "skill_id": "hydro.tools.applied"
+  },
+  "geothermal": {
+   "district": "energy",
+   "skill_id": "geothermal.tools.applied"
+  },
+  "battery-storage": {
+   "district": "energy",
+   "skill_id": "battery-storage.tools.applied"
+  },
+  "ev-charging": {
+   "district": "energy",
+   "skill_id": "ev-charging.tools.applied"
+  },
+  "hydrogen": {
+   "district": "energy",
+   "skill_id": "hydrogen.tools.applied"
+  },
+  "transmission": {
+   "district": "energy",
+   "skill_id": "transmission.tools.applied"
+  },
+  "district-energy": {
+   "district": "energy",
+   "skill_id": "district-energy.tools.applied"
+  },
+  "masonry-restore": {
+   "district": "envelope",
+   "skill_id": "masonry-restore.tools.applied"
+  },
+  "stone-carvers": {
+   "district": "envelope",
+   "skill_id": "stone-carvers.tools.applied"
+  },
+  "plasterers": {
+   "district": "envelope",
+   "skill_id": "plasterers.tools.applied"
+  },
+  "terrazzo": {
+   "district": "envelope",
+   "skill_id": "terrazzo.tools.applied"
+  },
+  "tilesetters": {
+   "district": "envelope",
+   "skill_id": "tilesetters.tools.applied"
+  },
+  "lathers": {
+   "district": "envelope",
+   "skill_id": "lathers.tools.applied"
+  },
+  "curtainwall": {
+   "district": "envelope",
+   "skill_id": "curtainwall.tools.applied"
+  },
+  "waterproofers": {
+   "district": "envelope",
+   "skill_id": "waterproofers.tools.applied"
+  },
+  "firestop": {
+   "district": "envelope",
+   "skill_id": "firestop.tools.applied"
+  },
+  "acoustic": {
+   "district": "envelope",
+   "skill_id": "acoustic.tools.applied"
+  },
+  "cladding": {
+   "district": "envelope",
+   "skill_id": "cladding.tools.applied"
+  },
+  "shoring": {
+   "district": "earthworks",
+   "skill_id": "shoring.tools.applied"
+  },
+  "piling": {
+   "district": "structural",
+   "skill_id": "piling.tools.applied"
+  },
+  "concrete-pump": {
+   "district": "earthworks",
+   "skill_id": "concrete-pump.tools.applied"
+  },
+  "post-tension": {
+   "district": "earthworks",
+   "skill_id": "post-tension.tools.applied"
+  },
+  "precast": {
+   "district": "structural",
+   "skill_id": "precast.tools.applied"
+  },
+  "steel-erectors": {
+   "district": "structural",
+   "skill_id": "steel-erectors.tools.applied"
+  },
+  "decking": {
+   "district": "structural",
+   "skill_id": "decking.tools.applied"
+  },
+  "window-glazing": {
+   "district": "envelope",
+   "skill_id": "window-glazing.tools.applied"
+  },
+  "bas-controls": {
+   "district": "systems",
+   "skill_id": "bas-controls.tools.applied"
+  },
+  "fire-alarm": {
+   "district": "systems",
+   "skill_id": "fire-alarm.tools.applied"
+  },
+  "security-sys": {
+   "district": "systems",
+   "skill_id": "security-sys.tools.applied"
+  },
+  "network-cabling": {
+   "district": "systems",
+   "skill_id": "network-cabling.tools.applied"
+  },
+  "fiber-splicers": {
+   "district": "systems",
+   "skill_id": "fiber-splicers.tools.applied"
+  },
+  "data-center": {
+   "district": "systems",
+   "skill_id": "data-center.tools.applied"
+  },
+  "instrumentation": {
+   "district": "systems",
+   "skill_id": "instrumentation.tools.applied"
+  },
+  "plc-techs": {
+   "district": "systems",
+   "skill_id": "plc-techs.tools.applied"
+  },
+  "robotics": {
+   "district": "systems",
+   "skill_id": "robotics.tools.applied"
+  },
+  "automation-int": {
+   "district": "systems",
+   "skill_id": "automation-int.tools.applied"
+  },
+  "cleanroom": {
+   "district": "systems",
+   "skill_id": "cleanroom.tools.applied"
+  },
+  "medical-gas": {
+   "district": "systems",
+   "skill_id": "medical-gas.tools.applied"
+  },
+  "rail-track": {
+   "district": "transport",
+   "skill_id": "rail-track.tools.applied"
+  },
+  "rail-signals": {
+   "district": "transport",
+   "skill_id": "rail-signals.tools.applied"
+  },
+  "catenary": {
+   "district": "transport",
+   "skill_id": "catenary.tools.applied"
+  },
+  "transit-vehicle": {
+   "district": "transport",
+   "skill_id": "transit-vehicle.tools.applied"
+  },
+  "aviation-ground": {
+   "district": "transport",
+   "skill_id": "aviation-ground.tools.applied"
+  },
+  "airfield": {
+   "district": "transport",
+   "skill_id": "airfield.tools.applied"
+  },
+  "port-crane": {
+   "district": "transport",
+   "skill_id": "port-crane.tools.applied"
+  },
+  "marine-terminal": {
+   "district": "transport",
+   "skill_id": "marine-terminal.tools.applied"
+  },
+  "fleet-diesel": {
+   "district": "transport",
+   "skill_id": "fleet-diesel.tools.applied"
+  },
+  "bridge-inspect": {
+   "district": "transport",
+   "skill_id": "bridge-inspect.tools.applied"
+  },
+  "asbestos": {
+   "district": "control",
+   "skill_id": "asbestos.tools.applied"
+  },
+  "lead-abatement": {
+   "district": "control",
+   "skill_id": "lead-abatement.tools.applied"
+  },
+  "mold-remediation": {
+   "district": "control",
+   "skill_id": "mold-remediation.tools.applied"
+  },
+  "spill-response": {
+   "district": "control",
+   "skill_id": "spill-response.tools.applied"
+  },
+  "confined-space": {
+   "district": "control",
+   "skill_id": "confined-space.tools.applied"
+  },
+  "high-angle": {
+   "district": "control",
+   "skill_id": "high-angle.tools.applied"
+  },
+  "site-safety": {
+   "district": "control",
+   "skill_id": "site-safety.tools.applied"
+  },
+  "industrial-clean": {
+   "district": "control",
+   "skill_id": "industrial-clean.tools.applied"
+  },
+  "survey-drone": {
+   "district": "control",
+   "skill_id": "survey-drone.tools.applied"
+  }
+ }
+}

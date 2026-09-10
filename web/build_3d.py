@@ -52,6 +52,7 @@ geo_reg = json.load(open(ROOT / 'geo/registry/campuses_geo.json'))
 avatars_reg = json.load(open(ROOT / 'avatars/registry/avatars.json'))
 chapters_reg = json.load(open(ROOT / 'unions/registry/chapters.json'))
 sims_reg = json.load(open(ROOT / 'sims/registry/sims.json'))
+tools_reg = json.load(open(ROOT / 'tools/registry/toolcribs.json'))
 stations_reg = json.load(open(ROOT / 'stations/registry/stations.json'))
 yard = json.load(open(ROOT / 'archive/bac_yard_stations.json'))['yard_placements']
 
@@ -149,6 +150,9 @@ DATA = json.dumps({
     'yard': yard,
     'sims': {'sims': sims_reg['sims'], 'bindings': sims_reg['hall_bindings'],
              'honesty': sims_reg['honesty']['status']},
+    'tools': {'cribs': tools_reg['cribs'], 'drills': tools_reg['drills'],
+              'drill': tools_reg['drill'],
+              'honesty': tools_reg['honesty']['status']},
     'avatars': {'sections': avatars_reg['sections'],
                 'defaults': avatars_reg['defaults'],
                 'characters': avatars_reg['characters'],
@@ -185,6 +189,16 @@ function acEnsure() {
   if (ac.state === 'suspended') ac.resume();
 }
 function engineStart(kind) {
+  if (kind === 'arc') {
+    // the welding arc: looped noise through a highpass - silent until struck
+    const src = ac.createBufferSource(), f = ac.createBiquadFilter(), g = ac.createGain();
+    src.buffer = noiseBuf(1.3); src.loop = true;
+    f.type = 'highpass'; f.frequency.value = 1500;
+    g.gain.value = 0;
+    src.connect(f); f.connect(g); g.connect(master); src.start();
+    engine = { osc: src, g, kind };
+    return;
+  }
   const osc = ac.createOscillator(), g = ac.createGain(), f = ac.createBiquadFilter();
   osc.type = kind === 'diesel' ? 'sawtooth' : 'triangle';
   osc.frequency.value = kind === 'diesel' ? 42 : 95;
@@ -193,8 +207,12 @@ function engineStart(kind) {
   osc.connect(f); f.connect(g); g.connect(master); osc.start();
   engine = { osc, g, kind };
 }
-function engineSet(load) {  // 0..1 - throttle / hoist activity
+function engineSet(load) {  // 0..1 - throttle / hoist activity / arc heat
   if (!engine) return;
+  if (engine.kind === 'arc') {
+    engine.g.gain.setTargetAtTime(load * .17, ac.currentTime, .03);
+    return;
+  }
   const base = engine.kind === 'diesel' ? 42 : 95;
   engine.osc.frequency.setTargetAtTime(base * (1 + load * 1.6), ac.currentTime, .08);
   engine.g.gain.setTargetAtTime(.05 + load * .13, ac.currentTime, .1);
@@ -279,8 +297,10 @@ function setSimView(mode) {
     '\\u25a6 ' + t('sim.view') + ': ' + mode;
   controls.enabled = mode === 'orbit';
   if (mode === 'orbit') {
-    camera.position.set(36, 28, 42);
-    controls.target.set(0, 11, 0);
+    // a sim may declare its own orbit frame (a bench sits closer than a tower)
+    const oc = sim?.orbitCam;
+    camera.position.set(...(oc?.pos ?? [36, 28, 42]));
+    controls.target.set(...(oc?.tgt ?? [0, 11, 0]));
     controls.update();
   }
 }
@@ -318,7 +338,8 @@ function startSim(simId) {
   curScenario = sc;
   const P = sc?.params ?? {};
   sim = simId === 'crane-lift' ? craneSim(P)
-    : simId === 'excavator-trench' ? excavatorSim(P) : forkliftSim(P);
+    : simId === 'excavator-trench' ? excavatorSim(P)
+    : simId === 'weld-bead' ? weldSim(P) : forkliftSim(P);
   scene.add(sim.group);
   // your avatar takes the seat the sim declares - the learner is IN the yard
   if (sim.mount) {
@@ -335,7 +356,8 @@ function startSim(simId) {
   }
   controls.autoRotate = false;
   setSimView(def.view_modes[0]);
-  acEnsure(); engineStart(def.audio.engine === 'diesel' ? 'diesel' : 'hoist');
+  acEnsure(); engineStart(def.audio.engine === 'diesel' ? 'diesel'
+    : def.audio.engine === 'arc' ? 'arc' : 'hoist');
   if (def.audio.alerts.includes('reverse-beeper')) beeperEnsure();
   initDash(def);
   document.getElementById('hname').textContent =
@@ -838,6 +860,136 @@ function forkliftSim(P = {}) {
       cones: { v: st.hits, txt: String(st.hits) },
       time: { v: 0, txt: st.t0 ? ((performance.now() - st.t0) / 1000).toFixed(0) : '\\u2013' },
     }),
+  };
+}
+
+/* ------------------------------------------------------ weld bead run ---- */
+function weldSim(P = {}) {
+  const SEGS = P.segs ?? 10, BAND = P.band ?? [2, 5];
+  const SEG_W = .45, FUSE = .42, BURN = 1.5, TRAVEL = .5;
+  const seamL = SEGS * SEG_W, x0 = -seamL / 2;
+  const g = new THREE.Group();
+  simYard(g, 16, 12);
+  // the bench: two plates meeting at the marked seam, welding screens behind
+  const topY = 1.02;
+  box(seamL + 1.6, .1, 2.2, mat.steel, 0, topY - .05, 0, g);
+  for (const lx of [-seamL / 2 - .5, seamL / 2 + .5])
+    for (const lz of [-.8, .8]) box(.14, .95, .14, mat.part, lx, .48, lz, g);
+  box(seamL + 1.2, .05, .9, mat.metal, 0, topY + .02, -.6, g);   // plates
+  box(seamL + 1.2, .05, .9, mat.metal, 0, topY + .02, .6, g);
+  box(seamL, .02, .1, mat.paint, 0, topY + .05, 0, g, false);    // seam mark
+  for (const sx of [-seamL / 2 - 2.2, seamL / 2 + 2.2]) {        // screens
+    const scr = new THREE.Mesh(new THREE.BoxGeometry(.08, 1.9, 3.2),
+      new THREE.MeshStandardMaterial({ color: 0x5a3021, roughness: .7,
+        transparent: true, opacity: .85 }));
+    scr.position.set(sx, 1.3, 0); g.add(scr);
+  }
+  // the seam, segment by segment: dark until fused, amber in band,
+  // pale out of band, a scorched hole where it burned through
+  const segs = Array.from({ length: SEGS }, (_, i) => {
+    const m = new THREE.Mesh(new THREE.BoxGeometry(SEG_W - .04, .05, .16),
+      new THREE.MeshStandardMaterial({ color: 0x22282b, roughness: .8 }));
+    m.position.set(x0 + (i + .5) * SEG_W, topY + .06, 0); g.add(m);
+    return { x: x0 + (i + .5) * SEG_W, heat: 0, good: 0,
+             fused: false, burned: false, inBand: null, mesh: m };
+  });
+  // the torch, and the arc that lives under it
+  const torch = new THREE.Group(); g.add(torch);
+  const noz = new THREE.Mesh(new THREE.CylinderGeometry(.05, .08, .5, 10), mat.part);
+  noz.rotation.z = .5; noz.position.y = .3; torch.add(noz);
+  box(.07, .3, .07, mat.post, .22, .62, 0, torch, false);
+  const arcGlow = new THREE.Mesh(new THREE.SphereGeometry(.09, 10, 10),
+    new THREE.MeshStandardMaterial({ color: 0xffffff,
+      emissive: 0xbfe8ff, emissiveIntensity: 2.4 }));
+  arcGlow.visible = false; torch.add(arcGlow);
+  const st = { x: x0 - .3, gap: 3.5, arc: false, done: false,
+               burns: 0, t0: null };
+  const segAt = () => {
+    const i = Math.floor((st.x - x0) / SEG_W);
+    return i >= 0 && i < SEGS ? segs[i] : null;
+  };
+  const inBand = () => st.gap >= BAND[0] && st.gap <= BAND[1];
+  function paint(s) {
+    s.mesh.material.color.setHex(
+      s.burned ? 0x0c0e0f : s.inBand ? 0xE8A33D : 0xb9c2c6);
+    if (s.burned) s.mesh.scale.y = .4;
+  }
+  function bandPct() {
+    const fused = segs.filter((s) => s.fused);
+    return fused.length
+      ? Math.round(100 * fused.filter((s) => s.inBand).length / fused.length) : 0;
+  }
+  function finish() {
+    st.done = true; st.arc = false; arcGlow.visible = false; engineSet(0);
+    const fused = segs.filter((s) => s.fused).length;
+    const pct = bandPct();
+    const time = st.t0 ? ((performance.now() - st.t0) / 1000) : 0;
+    const rows = [
+      { axis: 'fusion', value: fused + '/' + SEGS, ok: fused === SEGS },
+      { axis: 'band', value: pct + '%', ok: pct >= 90 },
+      { axis: 'burns', value: String(st.burns), ok: st.burns === 0 },
+      { axis: 'time', value: time.toFixed(1) + ' s', ok: null },
+    ];
+    simResults('weld-bead', rows, fused === SEGS && pct >= 90 && st.burns === 0);
+  }
+  return {
+    group: g, orbit: true,
+    orbitCam: { pos: [5.5, 4.5, 8], tgt: [0, 1, 0] },
+    mount: { parent: g, pos: [-1.4, 0, 1.7], yaw: Math.PI },
+    action() {
+      if (st.done) return;
+      if (!st.arc) {
+        if (st.gap <= 6) {
+          st.arc = true;
+          if (!st.t0) st.t0 = performance.now();
+          blip(1400, 2600, .12, 'square', .08);           // strike
+        }
+      } else { st.arc = false; blip(900, 300, .1, 'square', .05); }
+    },
+    update(dt) {
+      if (st.done) return;
+      if (keys.KeyW) st.x = Math.min(x0 + seamL + .4, st.x + TRAVEL * dt);
+      if (keys.KeyS) st.x = Math.max(x0 - .4, st.x - TRAVEL * dt);
+      if (keys.KeyQ) st.gap = Math.min(7.5, st.gap + 4 * dt);
+      if (keys.KeyE) st.gap = Math.max(.5, st.gap - 4 * dt);
+      if (st.arc && st.gap > 6.2) {                       // too long: the arc pops out
+        st.arc = false; blip(2200, 400, .2, 'square', .1);
+      }
+      const s = st.arc ? segAt() : null;
+      if (s && !s.burned) {
+        s.heat += dt;
+        if (inBand()) s.good += dt;
+        if (!s.fused && s.heat >= FUSE) {
+          s.fused = true; s.inBand = s.good / s.heat >= .75; paint(s);
+          if (segs.every((x) => x.fused || x.burned)) return finish();
+        }
+        if (s.heat >= BURN) {                             // lingered: burn-through
+          s.burned = true; s.fused = false; s.inBand = null; st.burns++;
+          paint(s); blip(240, 60, .5, 'sawtooth', .22); buzz(300, .9);
+          if (segs.every((x) => x.fused || x.burned)) return finish();
+        }
+      }
+      torch.position.set(st.x, topY + .12 + st.gap * .022, 0);
+      arcGlow.visible = st.arc;
+      if (st.arc) arcGlow.scale.setScalar(.8 + .5 * Math.abs(Math.sin(performance.now() / 37)));
+      arcGlow.position.y = -.02 - st.gap * .02;
+      engineSet(st.arc ? .55 + .25 * Math.random() : 0);  // crackle drive (audio only)
+      if (simView === 'visor') {
+        camera.position.set(st.x - .7, topY + 1.15, 1.45);
+        camera.lookAt(st.x + .2, topY + .05, 0);
+      }
+    },
+    gauges: () => {
+      const s = segAt();
+      return {
+        gap: st.gap,
+        heat: Math.min(100, ((s && !s.burned ? s.heat : 0) / BURN) * 100),
+        seam: { v: 0, txt: segs.filter((x) => x.fused).length + '/' + SEGS },
+        band: { v: 0, txt: bandPct() + '%' },
+        burns: { v: st.burns, txt: String(st.burns) },
+        time: { v: 0, txt: st.t0 ? ((performance.now() - st.t0) / 1000).toFixed(0) : '\\u2013' },
+      };
+    },
   };
 }"""
 
@@ -2317,11 +2469,71 @@ const PROPS = {
 
 /* ---------------------------------------------------------- the hall ---- */
 let hallGroup = null, beacons = [], floors = [], roomRects = [], curRoom = null;
+let cribCount = 0;
+
+/* ------------------------------------------------------- the tool crib --- */
+// The toolroom registry hangs a district's twelve tools on a pegboard in
+// every hall's tools room. Shapes are schematic render kinds the registry
+// declares; clicking the board opens the crib and its deterministic drill.
+function toolMesh(tl) {
+  const m = new THREE.MeshStandardMaterial({
+    color: new THREE.Color().setHSL(tl.hue / 360, .5, .55),
+    roughness: .45, metalness: .35 });
+  let geo;
+  switch (tl.shape) {
+    case 'bar': geo = new THREE.BoxGeometry(.05, .46, .05); break;
+    case 'blade': geo = new THREE.BoxGeometry(.02, .34, .16); break;
+    case 'cyl': geo = new THREE.CylinderGeometry(.035, .035, .4, 8); break;
+    case 'cone': geo = new THREE.ConeGeometry(.07, .3, 8); break;
+    case 'meter': geo = new THREE.BoxGeometry(.09, .26, .18); break;
+    case 'case': geo = new THREE.BoxGeometry(.12, .2, .3); break;
+    case 'coil': geo = new THREE.TorusGeometry(.13, .035, 8, 14); break;
+    case 'hook': geo = new THREE.TorusGeometry(.1, .04, 8, 12, Math.PI * 1.5); break;
+    default: {                                   // wrench: shaft + open head
+      const grp = new THREE.Group();
+      const bar = new THREE.Mesh(new THREE.BoxGeometry(.045, .38, .045), m);
+      const head = new THREE.Mesh(new THREE.BoxGeometry(.05, .09, .14), m);
+      head.position.y = .21; grp.add(bar, head);
+      grp.traverse((o) => { if (o.isMesh) o.castShadow = true; });
+      return grp;
+    }
+  }
+  const mesh = new THREE.Mesh(geo, m); mesh.castShadow = true;
+  return mesh;
+}
+function buildCrib(h, rx, rz, rw, rd) {
+  const dk = h.district, crib = D.tools.cribs[dk];
+  const bw = Math.max(2.4, Math.min(rd - 1.2, 4.2));
+  const bx = rx + rw / 2 - .32;
+  const board = box(.1, 1.7, bw, mat.part, bx, 1.5, rz, hallGroup);
+  board.userData.crib = dk;
+  beacons.push(board);
+  box(.06, .08, bw, mat.post, bx - .06, 2.38, rz, hallGroup, false);  // rail
+  crib.tools.forEach((tl, i) => {
+    const row = i % 2, col = (i - row) / 2;
+    const tm = toolMesh(tl);
+    tm.position.set(bx - .16, row ? 1.02 : 1.9,
+      rz - bw / 2 + (col + .5) * bw / 6);
+    tm.rotation.x = .1;
+    hallGroup.add(tm);
+  });
+  // the crib chest below the board, and its check-out counter
+  const chest = box(.8, .62, 1.1,
+    new THREE.MeshStandardMaterial({ color: 0x8a2f22, roughness: .6 }),
+    bx - .6, .69, rz - bw / 2 - .2, hallGroup);
+  chest.userData.crib = dk;
+  beacons.push(chest);
+  box(.84, .03, 1.14, mat.metal, bx - .6, 1.02, rz - bw / 2 - .2, hallGroup, false);
+  const lab = label(crib.name, D.tools.drill.name + ' · ' + crib.tools.length, .5);
+  lab.position.set(bx - .6, 2.85, rz); hallGroup.add(lab);
+  cribCount++;
+}
 
 function buildHall(sg) {
   if (hallGroup) { scene.remove(hallGroup); hallGroup.traverse(o => {
     o.geometry?.dispose(); }); }
   hallGroup = new THREE.Group(); beacons = []; floors = []; roomRects = []; curRoom = null;
+  cribCount = 0;
   const h = D.halls.find(x => x.slug === sg);
   const hue = D.districts[h.district].hue;
   const W = 12 * U, DEP = h.depth * U;
@@ -2406,6 +2618,9 @@ function buildHall(sg) {
       post.userData.station = s.station_id;
       hallGroup.add(post, gem); beacons.push(gem, post);
     });
+
+    // the district's tool crib hangs in the tools room
+    if (r.strand === 'tools') buildCrib(h, rx, rz, rw, rd);
   }
 
   // the apron: recovered yard layout for seeded halls, a light deterministic
@@ -3274,6 +3489,7 @@ function saveProg() {
 const prog = loadProg();
 const doneStations = new Set(Array.isArray(prog.stations) ? prog.stations : []);
 prog.sims = typeof prog.sims === 'object' && prog.sims ? prog.sims : {};
+prog.tools = typeof prog.tools === 'object' && prog.tools ? prog.tools : {};
 let curStation = null;
 function scoreChip() {
   const h = D.halls.find(x => x.slug === slug);
@@ -3324,6 +3540,7 @@ function openRoom(roomLabel) {
     <span class="chip">${r.w*3}×${r.h*3} m</span>
     <p style="color:var(--muted)">${r.purpose}</p>
     ${r.fixtures?.length ? `<ul>${r.fixtures.map(f=>`<li>${f}</li>`).join('')}</ul>` : ''}
+    ${r.strand === 'tools' ? `<p><button class="barbtn" data-crib="${h.district}">🧰 ${D.tools.cribs[h.district].name}</button></p>` : ''}
     ${(() => { const pf = D.finishes[h.slug][r.strand];
       const fin = D.finCat[pf.surface];
       return `<h3>${t('room.finish')}</h3>
@@ -3346,6 +3563,73 @@ function openRoom(roomLabel) {
       <tbody>${rows}</tbody></table>
     <style>#pbody td{border-top:1px solid var(--rule);padding:6px 8px;color:var(--muted)}</style>`;
   document.body.classList.add('open');
+}
+
+/* -------------------------------------------------- the crib + drill ---- */
+// The crib drill keeps the registry's own contract: a pick is right or
+// wrong against the crib record, the option order is index arithmetic,
+// not chance, and the result lands in the same device-local record.
+let curCrib = null, drill = null;
+function openCrib(dk) {
+  curCrib = dk; curStation = null; drill = null;
+  const c = D.tools.cribs[dk];
+  const rec = prog.tools[dk];
+  document.getElementById('pbody').innerHTML = `
+    <h2>${c.name}</h2>
+    <span class="chip">${D.i18n[loc].districts[dk]}</span>
+    <span class="chip">${c.tools.length}</span>
+    ${rec?.passed ? `<span class="chip" style="border-color:var(--good);color:var(--good)">✓ ${D.tools.drill.name}</span>` : ''}
+    <ul style="list-style:none;padding:0">${c.tools.map((tl) =>
+      `<li style="margin:7px 0">${tl.glyph} <b>${tl.name}</b><br>
+       <span style="color:var(--muted);font-size:12.5px">${tl.use}</span></li>`).join('')}</ul>
+    <p><button class="barbtn" id="drillGo">▶ ${D.tools.drill.name}</button></p>
+    <p style="color:var(--muted);font-size:12px">${D.tools.honesty} ${t('progress.local')}</p>`;
+  document.body.classList.add('open');
+}
+function drillStart() {
+  drill = { i: 0, right: 0, t0: performance.now() };
+  drillQ();
+}
+function drillQ() {
+  const tasks = D.tools.drills[curCrib];
+  if (drill.i >= tasks.length) return drillEnd();
+  const c = D.tools.cribs[curCrib], task = tasks[drill.i];
+  const ti = c.tools.findIndex((x) => x.id === task.tool);
+  // options by index arithmetic - the registry's own contract, no chance
+  const picks = [0, 3, 6, 9].map((o) => c.tools[(ti + o) % c.tools.length]);
+  const rot = drill.i % 4;
+  const order = picks.map((_, j) => picks[(j + rot) % 4]);
+  document.getElementById('pbody').innerHTML = `
+    <h2>${c.name}</h2>
+    <span class="chip">${D.tools.drill.name} ${drill.i + 1}/${tasks.length}</span>
+    <div class="q"><p>${task.ask}.</p>
+    ${order.map((x) => `<button class="opt" data-drill="1" data-ok="${x.id === task.tool ? 1 : 0}">${x.glyph} ${x.name}</button>`).join('')}</div>`;
+}
+function drillEnd() {
+  const tasks = D.tools.drills[curCrib];
+  const secs = (performance.now() - drill.t0) / 1000;
+  const passed = drill.right === tasks.length;
+  const rec = prog.tools[curCrib] ?? {};
+  rec.runs = (rec.runs ?? 0) + 1;
+  if (passed) { rec.passed = true; rec.best = Math.min(rec.best ?? Infinity, secs); }
+  prog.tools[curCrib] = rec; saveProg();
+  chime(passed); buzz(passed ? 160 : 80, .5);
+  document.getElementById('pbody').innerHTML = `
+    <h2>${D.tools.cribs[curCrib].name}</h2>
+    <span class="chip" style="${passed ? 'border-color:var(--good);color:var(--good)' : 'border-color:var(--crit);color:var(--crit)'}">
+      ${passed ? t('sim.pass') : t('sim.retry')}</span>
+    <h3>${t('sim.results')}</h3>
+    <table style="width:100%;border-collapse:collapse;font-size:13.5px"><tbody>
+      <tr><td>picks</td><td style="text-align:end;font-family:'IBM Plex Mono',monospace">${drill.right}/${tasks.length}</td>
+        <td style="text-align:end">${passed ? '✓' : '✗'}</td></tr>
+      <tr><td>time</td><td style="text-align:end;font-family:'IBM Plex Mono',monospace">${secs.toFixed(1)} s</td><td></td></tr>
+    </tbody></table>
+    ${rec.passed && isFinite(rec.best) ? `<p style="color:var(--muted);font-size:12.5px">✓ ${rec.runs}× · best ${rec.best.toFixed(1)} s</p>` : ''}
+    <p style="color:var(--muted);font-size:12px;margin-top:12px">${D.tools.honesty} ${t('progress.local')}</p>
+    <p><button class="barbtn" id="drillRetry">↻ ${t('sim.retry')}</button>
+       <button class="barbtn" id="drillExit">${t('ui.close')}</button></p>
+    <style>#pbody td{border-top:1px solid var(--rule);padding:6px 8px;color:var(--muted)}</style>`;
+  drill = null;
 }
 
 const ray = new THREE.Raycaster(), ptr = new THREE.Vector2();
@@ -3377,6 +3661,10 @@ renderer.domElement.addEventListener('pointerdown', (e) => {
   if (hit?.object.userData.station) {
     if (walkActive) plc.unlock();
     return openStation(hit.object.userData.station);
+  }
+  if (hit?.object.userData.crib) {
+    if (walkActive) plc.unlock();
+    return openCrib(hit.object.userData.crib);
   }
   if (walkActive) return;
   const fhit = ray.intersectObjects(floors, false)[0];
@@ -3434,6 +3722,23 @@ document.addEventListener('click', (e) => {
   if (e.target.id === 'simExit') {
     document.body.classList.remove('open'); exitSim(); return;
   }
+  const cb = e.target.closest('[data-crib]');
+  if (cb) return openCrib(cb.dataset.crib);
+  if (e.target.id === 'drillGo' || e.target.id === 'drillRetry')
+    return drillStart();
+  if (e.target.id === 'drillExit') {
+    document.body.classList.remove('open'); return;
+  }
+  const dp = e.target.closest('.opt[data-drill]');
+  if (dp && drill) {
+    dp.parentElement.querySelectorAll('.opt').forEach((o) => {
+      o.classList.toggle('ok', o.dataset.ok === '1'); o.disabled = true; });
+    if (dp.dataset.ok === '1') drill.right++;
+    else dp.classList.add('bad');
+    drill.i++;
+    setTimeout(drillQ, 500);
+    return;
+  }
   const opt = e.target.closest('.opt');
   if (opt) { opt.parentElement.querySelectorAll('.opt').forEach(o =>
       o.classList.toggle('ok', o.dataset.ok === '1'));
@@ -3486,7 +3791,13 @@ renderChrome();
 if (D.halls.some(h => h.slug === params.get('hall'))) showHall(params.get('hall'));
 else if (D.campuses[params.get('campus')]) showCampus(params.get('campus'));
 else showRegion();
-// test hook: lets the harness assert scene state without poking internals
+// test hooks: state for assertions, and the two panel openers the toolroom
+// harness drives (module scope hides them from the page's own globals)
+window.__tc3dDo = (fn, arg) => {
+  if (fn === 'room') openRoom(arg ?? D.halls.find((x) => x.slug === slug)
+    .rooms.find((r) => r.strand === 'tools').label);
+  else if (fn === 'crib') openCrib(arg);
+};
 window.__tc3d = () => ({ view, buildings: buildings.length, plates: plates.length,
   beacons: beacons.length, floors: floors.length, slug, campusKey, loc, walkActive,
   sim: curSimId && sim ? curSimId : null, roadFaults, roadCount,
@@ -3500,8 +3811,11 @@ window.__tc3d = () => ({ view, buildings: buildings.length, plates: plates.lengt
   banks: fogBanks.length, mmN: mmInfo.n,
   mmVis: document.getElementById('mm').style.display !== 'none',
   simRider: !!simRider, ambN: ambNodes.length,
+  cribs: cribCount, curCrib, drillN: drill ? drill.i : null,
+  gau: sim?.gauges ? sim.gauges() : null,
   wheel: document.querySelectorAll('#wheel path').length,
-  progress: { stations: doneStations.size, sims: Object.keys(prog.sims).length },
+  progress: { stations: doneStations.size, sims: Object.keys(prog.sims).length,
+    tools: Object.keys(prog.tools).length },
   dash: document.querySelectorAll('#dash .g').length,
   cam: camera.position.toArray().map((v) => Math.round(v * 10) / 10),
   probe: (() => { const r = new THREE.Raycaster();
@@ -3528,7 +3842,9 @@ renderer.setAnimationLoop(() => {
   }
   if (view === 'campus') mmDraw();
   if (walkActive) (isTouch ? touchWalkStep : walkStep)(dt);
-  else controls.update();
+  // in a sim's operator view the sim owns the camera - the orbit controls
+  // must not re-clamp it to their own distance limits
+  else if (!sim || controls.enabled) controls.update();
   renderer.render(scene, camera);
 });
 </script>
