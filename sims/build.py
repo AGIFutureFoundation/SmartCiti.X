@@ -448,6 +448,100 @@ SIMS = {
     },
 }
 
+# The pre-shift walkaround: five looks per machine, the habit that finds
+# the fault before the shift does. DELIBERATELY NOT A GATE - the honesty
+# note below says so and the suite asserts it: no seat is locked behind
+# the walkaround and completing it changes no score.
+WALKAROUNDS = {
+    'crane-lift': [
+        {'id': 'rope', 'point': 'Hoist rope and hook',
+         'check': 'no broken wires or kinks, and the safety latch closes'},
+        {'id': 'slew-ring', 'point': 'Slew ring and bolts',
+         'check': 'no missing or backed-off bolts at the ring'},
+        {'id': 'counterweight', 'point': 'Counterweight',
+         'check': 'seated and pinned exactly as configured'},
+        {'id': 'limits', 'point': 'Limit switches',
+         'check': 'hoist and trolley limits trip before the steel does'},
+        {'id': 'base', 'point': 'Base and ballast',
+         'check': 'bearing is even, no washout or standing water'},
+    ],
+    'excavator-trench': [
+        {'id': 'tracks', 'point': 'Tracks and rollers',
+         'check': 'tension right, no cut pads or leaking rollers'},
+        {'id': 'bucket', 'point': 'Bucket teeth and pins',
+         'check': 'teeth tight, pins keepered, no cracks at the ears'},
+        {'id': 'hoses', 'point': 'Boom hydraulics',
+         'check': 'no weeping hoses or chafed lines on the boom'},
+        {'id': 'slew-brake', 'point': 'Slew brake',
+         'check': 'holds the house still on the test swing'},
+        {'id': 'edge', 'point': 'The trench edge',
+         'check': 'spoil set back, no load surcharging the cut'},
+    ],
+    'forklift-run': [
+        {'id': 'tires', 'point': 'Tires and wheel nuts',
+         'check': 'no chunking or cords, every nut marked and tight'},
+        {'id': 'forks', 'point': 'Fork heels and locks',
+         'check': 'no heel wear past the line, both locks seat'},
+        {'id': 'mast', 'point': 'Mast chains',
+         'check': 'even tension, no kinked or rusted links'},
+        {'id': 'horn', 'point': 'Horn and beeper',
+         'check': 'horn sounds, the reverse beeper sounds louder'},
+        {'id': 'guard', 'point': 'Seatbelt and overhead guard',
+         'check': 'belt latches, guard unbent and pinned'},
+    ],
+    'weld-bead': [
+        {'id': 'leads', 'point': 'Leads and clamps',
+         'check': 'insulation whole end to end, ground clamp bites clean metal'},
+        {'id': 'gas', 'point': 'Gas and regulator',
+         'check': 'no leaks at the test pressure, flow set to the procedure'},
+        {'id': 'screens', 'point': 'Welding screens',
+         'check': 'standing and closed - nobody flashes off your arc'},
+        {'id': 'extraction', 'point': 'Fume extraction',
+         'check': 'running and pulling at the work, not past your face'},
+        {'id': 'firewatch', 'point': 'Fire watch kit',
+         'check': 'extinguisher charged and in reach, combustibles cleared'},
+    ],
+    'scaffold-bay': [
+        {'id': 'sills', 'point': 'Sills and bearing',
+         'check': 'full bearing on grade, no blocks or debris packing'},
+        {'id': 'plumb', 'point': 'Frames plumb and level',
+         'check': 'plumb both ways, level across the bay'},
+        {'id': 'brace-pins', 'point': 'Brace pins',
+         'check': 'every brace pinned home, none sprung'},
+        {'id': 'planks', 'point': 'Plank condition',
+         'check': 'no cracks, full bearing, cleats where the spec asks'},
+        {'id': 'tag', 'point': 'The scaffold tag',
+         'check': 'current, signed, and matching what is built'},
+    ],
+    'rigging-signals': [
+        {'id': 'sightline', 'point': 'Line of sight',
+         'check': 'the operator can read your hands from every planned position'},
+        {'id': 'radio', 'point': 'Radio and whistle',
+         'check': 'checked both ways before the first pick'},
+        {'id': 'slings', 'point': 'Slings and shackles',
+         'check': 'tags legible and in date, pins moused where required'},
+        {'id': 'path', 'point': 'The load path',
+         'check': 'walked end to end, nothing and nobody under it'},
+        {'id': 'zone', 'point': 'Exclusion zone',
+         'check': 'barriers set and everyone briefed before the lift'},
+    ],
+    'load-chart': [
+        {'id': 'chart', 'point': 'The chart itself',
+         'check': "legible, this machine's own configuration, not another's"},
+        {'id': 'radius-marks', 'point': 'Radius markers',
+         'check': 'set out and measured, not paced off'},
+        {'id': 'bearing', 'point': 'Ground bearing',
+         'check': 'pads sized for the worst pick on the list'},
+        {'id': 'wind', 'point': 'Wind check',
+         'check': 'inside the chart notes for the largest sail area'},
+        {'id': 'hook', 'point': 'Hook block',
+         'check': 'latch closes, swivel free, sheaves turning true'},
+    ],
+}
+for sim_id, wa in WALKAROUNDS.items():
+    SIMS[sim_id]['walkaround'] = wa
+assert set(WALKAROUNDS) == set(SIMS), 'every seat gets its walkaround'
+
 unions = json.load(open(ROOT / 'unions/registry/unions.json'))['unions']
 skills = {s['skill_id'] for s in
           json.load(open(ROOT / 'pack/registry/skills.json'))['skills']}
@@ -478,6 +572,9 @@ doc = {
                   'equipment certification; no seat time here counts toward '
                   'one, and the assessment gates still demand unaided '
                   'verification runs.',
+        'walkaround': 'a habit-builder, not a gate: no seat is locked '
+                      'behind the walkaround, completing it changes no '
+                      'score, and it is not an equipment inspection record.',
     },
     'sims': SIMS,
     'hall_bindings': bindings,

@@ -149,7 +149,8 @@ DATA = json.dumps({
         for s in stations_reg['stations']},
     'yard': yard,
     'sims': {'sims': sims_reg['sims'], 'bindings': sims_reg['hall_bindings'],
-             'honesty': sims_reg['honesty']['status']},
+             'honesty': sims_reg['honesty']['status'],
+             'walkHonesty': sims_reg['honesty']['walkaround']},
     'tools': {'cribs': tools_reg['cribs'], 'drills': tools_reg['drills'],
               'drill': tools_reg['drill'],
               'honesty': tools_reg['honesty']['status']},
@@ -174,6 +175,7 @@ SIM_JS = """/* ------------------------------------------------------- simulator
 // deterministic - every rubric axis is computed from measured state.
 let sim = null, curSimId = null, simView = null, curScenario = null;
 let simRider = null;
+let waBeacons = [], waDone = new Set(), waTotal = 0;
 
 /* Sound is synthesized in-page (WebAudio) - the registry says so and no
    recording is shipped. The context is created on the sim-start click, the
@@ -310,6 +312,7 @@ function teardownSim() {
   scene.remove(sim.group);
   sim.group.traverse((o) => o.geometry?.dispose());
   sim = null; simView = null; curScenario = null; simRider = null;
+  waBeacons = []; waDone = new Set(); waTotal = 0;
   controls.enabled = true;
   engineStop();
   const dash = document.getElementById('dash');
@@ -360,6 +363,26 @@ function startSim(simId) {
       simRider.userData.arms.armR.rotation.x = -2.7;
     }
     sim.mount.parent.add(simRider);
+  }
+  // the pre-shift walkaround: five clipboards ringing the machine. A
+  // habit-builder, not a gate - the registry says so: nothing is locked
+  // behind them and marking them changes no score.
+  waBeacons = []; waDone = new Set(); waTotal = 0;
+  if (def.walkaround) {
+    waTotal = def.walkaround.length;
+    const wb = new THREE.Box3().setFromObject(sim.group);
+    const wr = Math.min(16, Math.max(7,
+      Math.max(wb.max.x - wb.min.x, wb.max.z - wb.min.z) / 2 + 3));
+    const wcx = (wb.min.x + wb.max.x) / 2, wcz = (wb.min.z + wb.max.z) / 2;
+    def.walkaround.forEach((w, i) => {
+      const ang = i * Math.PI * 2 / waTotal + .35;
+      const px = wcx + Math.cos(ang) * wr, pz = wcz + Math.sin(ang) * wr;
+      box(.06, 1.05, .06, mat.part, px, .55, pz, sim.group);
+      const clip = box(.36, .46, .05, mat.paint, px, 1.25, pz, sim.group);
+      clip.lookAt(wcx, 1.25, wcz);
+      clip.userData.wapt = i;
+      waBeacons.push(clip);
+    });
   }
   controls.autoRotate = false;
   setSimView(def.view_modes[0]);
@@ -2621,15 +2644,16 @@ const DEF_ATMOS = {
   hemi: { sky: 0xaec2cb, ground: 0x241d16, i: 1.05 },
   amb: { wind: .2 },
 };
-let atmosKey = null, fogMul = 1, fogBanks = [], night = false;
+let atmosKey = null, fogMul = 1, fogBanks = [], wx = 'day', night = false;
 const darkHex = (hex, f) => '#' + [1, 3, 5].map((i) =>
   Math.round(parseInt(hex.slice(i, i + 2), 16) * f)
     .toString(16).padStart(2, '0')).join('');
 function applyAtmos(k) {
   const a = ATMOS[k] ?? DEF_ATMOS;
   atmosKey = ATMOS[k] ? k : null;
-  fogMul = a.fog.mul * (night ? 1.12 : 1);
-  if (night) {
+  night = wx === 'night';
+  fogMul = a.fog.mul * (wx === 'night' ? 1.12 : wx === 'storm' ? 1.3 : 1);
+  if (wx === 'night') {
     // the same atmosphere record, after dark: the sky crushed toward
     // black, the sun swapped for cool moonlight, the windows turned up
     setSky(a.sky.map((h) => darkHex(h, .32)));
@@ -2639,6 +2663,16 @@ function applyAtmos(k) {
     hemi.groundColor.setHex(0x0d0c0a);
     hemi.intensity = a.hemi.i * .45;
     mat.win.emissiveIntensity = 1.15;
+  } else if (wx === 'storm') {
+    // and the same record under weather: sky and sun greyed hard, the
+    // wind up, thunder in every bed, rain falling in the loop below
+    setSky(a.sky.map((h) => darkHex(h, .55)));
+    scene.fog.color.setHex(a.fog.color).multiplyScalar(.55);
+    key.color.setHex(0x8a949c); key.intensity = a.sun.i * .5;
+    hemi.color.setHex(0x5c6a74);
+    hemi.groundColor.setHex(0x1a1a18);
+    hemi.intensity = a.hemi.i * .65;
+    mat.win.emissiveIntensity = .9;
   } else {
     setSky(a.sky);
     scene.fog.color.setHex(a.fog.color);
@@ -2648,7 +2682,40 @@ function applyAtmos(k) {
     hemi.intensity = a.hemi.i;
     mat.win.emissiveIntensity = .5;
   }
-  ambSync(a.amb);
+  rain.visible = wx === 'storm' && !reduced;
+  ambSync(wx === 'storm'
+    ? { ...a.amb, wind: (a.amb.wind ?? .2) + .5, thunder: true }
+    : a.amb);
+}
+// the rain: one Points cloud recycled over the camera target in storms
+const rain = (() => {
+  const N = 900, pos = new Float32Array(N * 3);
+  for (let i = 0; i < N; i++) {
+    pos[i * 3] = (Math.random() - .5) * 220;
+    pos[i * 3 + 1] = Math.random() * 90;
+    pos[i * 3 + 2] = (Math.random() - .5) * 220;
+  }
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  const pts = new THREE.Points(geo, new THREE.PointsMaterial({
+    color: 0xaac2d2, size: .8, transparent: true, opacity: .6 }));
+  pts.visible = false; pts.frustumCulled = false;
+  return pts;
+})();
+scene.add(rain);
+function rainStep(dt) {
+  if (!rain.visible) return;
+  const p = rain.geometry.attributes.position.array;
+  const cx2 = controls.target.x, cz2 = controls.target.z;
+  for (let i = 0; i < p.length; i += 3) {
+    p[i + 1] -= 55 * dt;
+    if (p[i + 1] < 0) {
+      p[i + 1] = 80 + Math.random() * 10;
+      p[i] = cx2 + (Math.random() - .5) * 220;
+      p[i + 2] = cz2 + (Math.random() - .5) * 220;
+    }
+  }
+  rain.geometry.attributes.position.needsUpdate = true;
 }
 // re-apply the current view's atmosphere and fog band (the night toggle)
 function reAtmos() {
@@ -3918,6 +3985,7 @@ const prog = loadProg();
 const doneStations = new Set(Array.isArray(prog.stations) ? prog.stations : []);
 prog.sims = typeof prog.sims === 'object' && prog.sims ? prog.sims : {};
 prog.tools = typeof prog.tools === 'object' && prog.tools ? prog.tools : {};
+prog.walk = typeof prog.walk === 'object' && prog.walk ? prog.walk : {};
 let curStation = null;
 function scoreChip() {
   const h = D.halls.find(x => x.slug === slug);
@@ -4006,6 +4074,24 @@ function openRoom(roomLabel) {
 // The crib drill keeps the registry's own contract: a pick is right or
 // wrong against the crib record, the option order is index arithmetic,
 // not chance, and the result lands in the same device-local record.
+/* The walkaround panel: one clipboard, the whole card's state, and the
+   mark. Non-gating by registry rule - nothing reads waDone but the HUD. */
+function openWa(i) {
+  const def = D.sims.sims[curSimId];
+  const w = def.walkaround[i];
+  document.getElementById('pbody').innerHTML = `
+    <h2>📋 ${w.point}</h2>
+    <span class="chip">${def.name}</span>
+    <span class="chip">${waDone.size}/${waTotal}</span>
+    <p>${w.check}.</p>
+    ${waDone.has(i) ? `<p style="color:var(--good)">✓</p>`
+      : `<p><button class="barbtn" data-wa="${i}">✓ ${w.point}</button></p>`}
+    <ul style="color:var(--muted);font-size:12.5px">${def.walkaround.map((x, j) =>
+      `<li>${waDone.has(j) ? '✓' : '·'} ${x.point}</li>`).join('')}</ul>
+    <p style="color:var(--muted);font-size:12px">${D.sims.walkHonesty}</p>`;
+  document.body.classList.add('open');
+}
+
 let curCrib = null, drill = null;
 function openCrib(dk) {
   curCrib = dk; curStation = null; drill = null;
@@ -4096,6 +4182,11 @@ renderer.domElement.addEventListener('pointerdown', (e) => {
     if (bhit?.object.userData.slug) showHall(bhit.object.userData.slug);
     return;
   }
+  if (view === 'sim' && waBeacons.length) {
+    const wh = ray.intersectObjects(waBeacons, false)[0];
+    if (wh?.object.userData.wapt !== undefined)
+      return openWa(wh.object.userData.wapt);
+  }
   const hit = ray.intersectObjects(beacons, false)[0];
   if (hit?.object.userData.station) {
     if (walkActive) plc.unlock();
@@ -4161,6 +4252,21 @@ document.addEventListener('click', (e) => {
   if (e.target.id === 'simExit') {
     document.body.classList.remove('open'); exitSim(); return;
   }
+  if (e.target.id === 'cardBtn') return drawCard();
+  const wa = e.target.closest('[data-wa]');
+  if (wa && sim) {
+    const i = +wa.dataset.wa;
+    waDone.add(i);
+    waBeacons[i].material = mat.steel;
+    blip(900, 1300, .1, 'triangle', .1);
+    if (waDone.size === waTotal) {
+      chime(true);
+      prog.walk[curSimId] = (prog.walk[curSimId] ?? 0) + 1;
+      saveProg();
+    }
+    openWa(i);
+    return;
+  }
   const cb = e.target.closest('[data-crib]');
   if (cb) return openCrib(cb.dataset.crib);
   if (e.target.id === 'drillGo' || e.target.id === 'drillRetry')
@@ -4191,8 +4297,10 @@ document.getElementById('hall').addEventListener('change', (e) => {
   showHall(e.target.value);
 });
 document.getElementById('dnBtn').addEventListener('click', () => {
-  night = !night;
-  document.getElementById('dnBtn').textContent = night ? '☀️' : '🌙';
+  // the sky cycle: day, night, storm - each derived from the one record
+  wx = wx === 'day' ? 'night' : wx === 'night' ? 'storm' : 'day';
+  document.getElementById('dnBtn').textContent =
+    wx === 'day' ? '🌙' : wx === 'night' ? '🌧️' : '☀️';
   reAtmos();
 });
 // the records panel: every seat and drill from the device-local record
@@ -4209,6 +4317,7 @@ function openRecords() {
     <span class="chip">✓ ${doneStations.size}/${Object.keys(D.stations).length}</span>
     <span class="chip">▶ ${Object.values(prog.sims).filter((r) => r.passed).length}/${Object.keys(D.sims.sims).length}</span>
     <span class="chip">\U0001f9f0 ${Object.values(prog.tools).filter((r) => r.passed).length}/${Object.keys(D.tools.cribs).length}</span>
+    <span class="chip">📋 ${Object.values(prog.walk).reduce((a, b) => a + b, 0)}</span>
     <h3>${t('sim.start')}</h3>
     <table style="width:100%;border-collapse:collapse;font-size:13px"><tbody>
       ${head}${Object.entries(D.sims.sims).map(([id, def]) => row(def.name, prog.sims[id])).join('')}
@@ -4217,9 +4326,55 @@ function openRecords() {
     <table style="width:100%;border-collapse:collapse;font-size:13px"><tbody>
       ${head}${Object.entries(D.tools.cribs).map(([dk, c]) => row(c.name, prog.tools[dk])).join('')}
     </tbody></table>
+    <p><button class="barbtn" id="cardBtn">🪪 ${t('sim.results')}</button></p>
+    <div id="cardBox"></div>
     <p style="color:var(--muted);font-size:12px;margin-top:12px">${t('progress.local')} ${D.sims.honesty}</p>
     <style>#pbody td,#pbody th{border-top:1px solid var(--rule);padding:5px 8px;color:var(--muted);font-weight:400}</style>`;
   document.body.classList.add('open');
+}
+/* The progress card: the record drawn as one image the learner can save
+   (long-press / right-click - the page never uploads it anywhere). */
+function drawCard() {
+  const c = document.createElement('canvas');
+  c.width = 640; c.height = 460; c.id = 'pcard';
+  c.style.cssText = 'width:100%;border:1px solid var(--rule);border-radius:10px;margin-top:8px';
+  const g2 = c.getContext('2d');
+  g2.fillStyle = '#12181B'; g2.fillRect(0, 0, 640, 460);
+  g2.fillStyle = '#E8A33D'; g2.fillRect(0, 0, 640, 5);
+  g2.fillStyle = '#E8EDEC'; g2.font = '700 30px "Barlow Condensed", sans-serif';
+  g2.fillText('SmartCiti.X : Trade Craft Academy', 28, 48);
+  g2.fillStyle = '#93A3A6'; g2.font = '15px "IBM Plex Sans", sans-serif';
+  g2.fillText('Training record · ' + new Date().toISOString().slice(0, 10), 28, 74);
+  const chips = [
+    ['✓', doneStations.size + '/' + Object.keys(D.stations).length + ' stations'],
+    ['▶', Object.values(prog.sims).filter((r) => r.passed).length + '/'
+      + Object.keys(D.sims.sims).length + ' seats'],
+    ['\U0001f9f0', Object.values(prog.tools).filter((r) => r.passed).length + '/'
+      + Object.keys(D.tools.cribs).length + ' cribs'],
+    ['📋', Object.values(prog.walk).reduce((a, b) => a + b, 0) + ' walkarounds'],
+  ];
+  chips.forEach(([ic, txt], i) => {
+    const x = 28 + i * 150;
+    g2.strokeStyle = '#28353A'; g2.lineWidth = 1.5;
+    g2.beginPath(); g2.roundRect(x, 92, 140, 34, 17); g2.stroke();
+    g2.fillStyle = '#E8EDEC'; g2.font = '14px "IBM Plex Sans", sans-serif';
+    g2.fillText(ic + ' ' + txt, x + 12, 114);
+  });
+  g2.font = '15px "IBM Plex Mono", monospace';
+  Object.entries(D.sims.sims).forEach(([id, def], i) => {
+    const y = 168 + i * 32, r = prog.sims[id];
+    g2.fillStyle = '#93A3A6'; g2.fillText(def.name, 28, y);
+    g2.fillStyle = r?.passed ? '#5CB584' : '#41505a';
+    g2.fillText(r?.passed ? '✓' : '·', 420, y);
+    g2.fillStyle = '#E8EDEC';
+    g2.fillText(isFinite(r?.best) ? r.best.toFixed(1) + ' s' : '\\u2013', 470, y);
+  });
+  g2.fillStyle = '#68787c'; g2.font = '12px "IBM Plex Sans", sans-serif';
+  g2.fillText('Device-local record · cosmetic only · not equipment certification', 28, 436);
+  const bx = document.getElementById('cardBox');
+  bx.innerHTML = '<p style="color:var(--muted);font-size:11.5px;margin:8px 0 0">'
+    + t('progress.local') + '</p>';
+  bx.prepend(c);
 }
 document.getElementById('recBtn').addEventListener('click', () => {
   if (walkActive) plc.unlock();
@@ -4271,6 +4426,7 @@ window.__tc3dDo = (fn, arg) => {
   if (fn === 'room') openRoom(arg ?? D.halls.find((x) => x.slug === slug)
     .rooms.find((r) => r.strand === 'tools').label);
   else if (fn === 'crib') openCrib(arg);
+  else if (fn === 'wa') openWa(arg);
 };
 window.__tc3d = () => ({ view, buildings: buildings.length, plates: plates.length,
   beacons: beacons.length, floors: floors.length, slug, campusKey, loc, walkActive,
@@ -4288,7 +4444,8 @@ window.__tc3d = () => ({ view, buildings: buildings.length, plates: plates.lengt
   cribs: cribCount, curCrib, drillN: drill ? drill.i : null,
   gau: sim?.gauges ? sim.gauges() : null,
   rollup: view === 'campus' ? campusRollup(campusKey) : null,
-  mmDone: mmInfo.done ?? 0, night,
+  mmDone: mmInfo.done ?? 0, night, wx, rain: rain.visible,
+  wa: waTotal ? { done: waDone.size, total: waTotal } : null,
   wheel: document.querySelectorAll('#wheel path').length,
   progress: { stations: doneStations.size, sims: Object.keys(prog.sims).length,
     tools: Object.keys(prog.tools).length },
@@ -4316,6 +4473,7 @@ renderer.setAnimationLoop(() => {
     b.m.position.x = Math.cos(b.ang) * b.rad;
     b.m.position.z = Math.sin(b.ang) * b.rad;
   }
+  rainStep(dt);
   if (view === 'campus') mmDraw();
   if (walkActive) (isTouch ? touchWalkStep : walkStep)(dt);
   // in a sim's operator view the sim owns the camera - the orbit controls
