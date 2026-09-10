@@ -1,6 +1,6 @@
 # The simulators
 
-6 operable training machines live inside the
+7 operable training machines live inside the
 [3D environment](Campus-Map.md): open a bound hall and press **▶** (a hall
 bound to more than one machine offers the choice). The
 physics are schematic — built for practising control discipline (smooth
@@ -219,6 +219,40 @@ environment varies, the rubric never does:
 | Treasure Island Campus | **First lift card** | The training card: five calls, one direction change, the stop to finish - learn the hands. |
 | Oakland Waterfront Campus | **Blind terminal pick** | The operator cannot see this load - six calls thread it out of the container shadow. |
 | Crescent Works Campus | **River-wind card** | The river breeze wants the load moving - six calls with two swings hold the line to the set. |
+## Load Chart Judgment (process)
+
+Work the pick list against the chart on the board: at each radius the crane has one honest number. Hook the picks the chart allows and refuse the ones it does not — an overweight pick accepted is the failure that matters.
+
+Trains at: **Crane Operators**, **Riggers & Signalpersons**, **Port Crane Technicians**, **Heavy Equipment Technicians**, **Operating Engineers** — each run exercises that hall's
+`machines.applied` skill.
+
+| Control | Action |
+|---|---|
+| `Space` | accept the pick - hook it |
+| `X` | refuse the pick - over the chart |
+| `Q / E` | walk the chart rows |
+
+| Rubric axis | Measured | Pass |
+|---|---|---|
+| judgments | picks judged with the chart | `== all` |
+| overloads | overweight picks accepted | `== 0` |
+| time | seconds first judgment to last | `informational` |
+
+**Cockpit.** A live dash of 6 gauges — `Pick`, `Load t`, `Radius m`, `Chart t`, `Errors` (warns at 1), `T s` — with the
+warn thresholds drawn from this registry, not hard-coded in the page.
+View modes: `orbit` / `chart`. Audio is a
+`hoist` engine plus `overload-alarm`, `hook-click`, `result-chime` —
+synthesized in-page (WebAudio); no recordings shipped. Haptic cues (overload, finish) fire on
+gamepad rumble and the vibration API where the platform offers them.
+
+**Regional scenarios.** The campus you train at picks the yard — the
+environment varies, the rubric never does:
+
+| Region | Scenario | The yard |
+|---|---|---|
+| Treasure Island Campus | **Yard pick list** | Five picks off the training pad - one of them is over the chart, and the chart wins. |
+| Oakland Waterfront Campus | **Terminal heavy list** | Six terminal picks, two of them over - the foreman will push, the chart will not. |
+| Crescent Works Campus | **Barge transfer list** | Five barge picks with two over the chart - the river will not forgive the one you talk into. |
 
 ## What a simulator run is not
 

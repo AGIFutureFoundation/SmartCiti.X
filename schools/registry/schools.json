@@ -147,6 +147,7 @@
    "class_drill": "structural",
    "floor_sims": [
     "crane-lift",
+    "load-chart",
     "rigging-signals"
    ],
    "gate": "unaided verification run (ACP-04); no sim hour counts"
@@ -177,7 +178,8 @@
    "class_stations": [],
    "class_drill": "earthworks",
    "floor_sims": [
-    "forklift-run"
+    "forklift-run",
+    "load-chart"
    ],
    "gate": "unaided verification run (ACP-04); no sim hour counts"
   },
@@ -220,7 +222,8 @@
    "class_drill": "earthworks",
    "floor_sims": [
     "excavator-trench",
-    "forklift-run"
+    "forklift-run",
+    "load-chart"
    ],
    "gate": "unaided verification run (ACP-04); no sim hour counts"
   },
@@ -251,6 +254,7 @@
    "class_drill": "transport",
    "floor_sims": [
     "crane-lift",
+    "load-chart",
     "rigging-signals"
    ],
    "gate": "unaided verification run (ACP-04); no sim hour counts"
@@ -264,6 +268,7 @@
    "class_drill": "structural",
    "floor_sims": [
     "crane-lift",
+    "load-chart",
     "rigging-signals"
    ],
    "gate": "unaided verification run (ACP-04); no sim hour counts"

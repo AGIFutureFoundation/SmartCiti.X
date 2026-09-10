@@ -19,11 +19,11 @@ const skills = new Set(JSON.parse(readFileSync(
 const slugs = new Set(unions.unions.map((u) => u.slug));
 
 const sims = reg.sims;
-ok('six simulators ship: lifting and earthmoving machines, a driving seat, three process benches',
-  Object.keys(sims).length === 6
+ok('seven simulators ship: lifting and earthmoving machines, a driving seat, four process benches',
+  Object.keys(sims).length === 7
   && Object.values(sims).filter((s) => s.kind === 'machine').length === 2
   && Object.values(sims).filter((s) => s.kind === 'driving').length === 1
-  && Object.values(sims).filter((s) => s.kind === 'process').length === 3);
+  && Object.values(sims).filter((s) => s.kind === 'process').length === 4);
 ok('every sim carries a task, controls with keys and actions, and 3+ rubric axes',
   Object.values(sims).every((s) => s.task.length > 20
     && s.controls.length >= 3 && s.controls.every((c) => c.keys && c.action)
@@ -68,6 +68,18 @@ ok('the signal call pairs the crew: riggers call the crane hall\'s machine, stop
   && sims['rigging-signals'].rubric.some((r) => r.axis === 'wrong' && r.pass === '== 0')
   && sims['rigging-signals'].scenarios.every((x) =>
       x.params.seq[x.params.seq.length - 1] === 'stop'));
+ok('the chart is honest and the pick lists respect it: capacity falls with radius, every pick radius on the chart, every list carries an overload to refuse',
+  (() => {
+    const c = sims['load-chart'].chart;
+    const cap = Object.fromEntries(c);
+    return c.every(([r, t], i) => i === 0
+        || (r > c[i - 1][0] && t < c[i - 1][1]))
+      && sims['load-chart'].scenarios.every((x) =>
+          x.params.picks.every((p) => p.r in cap)
+          && x.params.picks.some((p) => p.w > cap[p.r]))
+      && sims['load-chart'].rubric.some((r) =>
+          r.axis === 'overloads' && r.pass === '== 0');
+  })());
 ok('the trench task teaches utility discipline: a pass demands zero strikes',
   /utility/.test(sims['excavator-trench'].task)
   && sims['excavator-trench'].rubric.some((r) =>
@@ -92,7 +104,8 @@ ok('every sim offers an operator-seat view mode alongside the external one',
   && sims['forklift-run'].view_modes.includes('driver')
   && sims['weld-bead'].view_modes.includes('visor')
   && sims['scaffold-bay'].view_modes.includes('deck')
-  && sims['rigging-signals'].view_modes.includes('signal'));
+  && sims['rigging-signals'].view_modes.includes('signal')
+  && sims['load-chart'].view_modes.includes('chart'));
 
 const campusKeys = new Set(Object.keys(JSON.parse(readFileSync(
   new URL('../unions/registry/campuses.json', import.meta.url))).campuses));
@@ -103,7 +116,7 @@ ok('every sim trains regionally: one scenario per campus, unique ids, real brief
         && x.id && x.name && x.brief.length > 30
         && typeof x.params === 'object'))
   && new Set(Object.values(sims).flatMap((s) => s.scenarios.map((x) => x.id)))
-      .size === 18);
+      .size === 21);
 ok('scenarios vary the environment, never the rubric: no scenario carries pass rules',
   Object.values(sims).every((s) =>
     s.scenarios.every((x) => !('rubric' in x.params) && !('pass' in x.params))));

@@ -382,6 +382,70 @@ SIMS = {
                                 'stop']}},
         ],
     },
+    'load-chart': {
+        'name': 'Load Chart Judgment',
+        'kind': 'process',
+        'task': 'Work the pick list against the chart on the board: at '
+                'each radius the crane has one honest number. Hook the '
+                'picks the chart allows and refuse the ones it does not — '
+                'an overweight pick accepted is the failure that matters.',
+        'controls': [
+            {'keys': 'Space', 'action': 'accept the pick - hook it'},
+            {'keys': 'X', 'action': 'refuse the pick - over the chart'},
+            {'keys': 'Q / E', 'action': 'walk the chart rows'},
+        ],
+        'rubric': [
+            {'axis': 'judgments', 'measure': 'picks judged with the chart',
+             'pass': '== all'},
+            {'axis': 'overloads', 'measure': 'overweight picks accepted',
+             'pass': '== 0'},
+            {'axis': 'time', 'measure': 'seconds first judgment to last',
+             'pass': 'informational'},
+        ],
+        'halls': ['crane-ops', 'riggers', 'port-crane', 'heavy-equip',
+                  'operating-eng'],
+        'skill_strand': 'machines',
+        'skill_tier': 'applied',
+        # The machine's one honest chart: capacity falls as radius grows.
+        # Scenarios vary the pick list only; the chart is the machine's.
+        'chart': [[4, 8.0], [6, 5.2], [8, 3.6], [10, 2.4], [12, 1.6]],
+        'dash': [
+            {'id': 'pick', 'label': 'Pick', 'unit': ''},
+            {'id': 'load', 'label': 'Load', 'unit': 't'},
+            {'id': 'radius', 'label': 'Radius', 'unit': 'm'},
+            {'id': 'chart', 'label': 'Chart', 'unit': 't'},
+            {'id': 'errors', 'label': 'Errors', 'unit': '', 'warn_at': 1},
+            {'id': 'time', 'label': 'T', 'unit': 's'},
+        ],
+        'audio': {'engine': 'hoist',
+                  'alerts': ['overload-alarm', 'hook-click', 'result-chime'],
+                  'note': 'synthesized in-page (WebAudio); no recordings shipped'},
+        'haptics': ['overload', 'finish'],
+        'view_modes': ['orbit', 'chart'],
+        'scenarios': [
+            {'id': 'bay-pick-list', 'campus': 'treasure-island',
+             'name': 'Yard pick list',
+             'brief': 'Five picks off the training pad - one of them is '
+                      'over the chart, and the chart wins.',
+             'params': {'picks': [
+                 {'w': 3.0, 'r': 4}, {'w': 4.8, 'r': 6}, {'w': 4.1, 'r': 8},
+                 {'w': 2.0, 'r': 10}, {'w': 1.2, 'r': 12}]}},
+            {'id': 'oak-heavy-list', 'campus': 'oakland',
+             'name': 'Terminal heavy list',
+             'brief': 'Six terminal picks, two of them over - the '
+                      'foreman will push, the chart will not.',
+             'params': {'picks': [
+                 {'w': 7.5, 'r': 4}, {'w': 6.0, 'r': 6}, {'w': 3.6, 'r': 8},
+                 {'w': 3.0, 'r': 10}, {'w': 1.5, 'r': 12}, {'w': 5.0, 'r': 6}]}},
+            {'id': 'nola-barge-list', 'campus': 'new-orleans',
+             'name': 'Barge transfer list',
+             'brief': 'Five barge picks with two over the chart - the '
+                      'river will not forgive the one you talk into.',
+             'params': {'picks': [
+                 {'w': 8.0, 'r': 4}, {'w': 5.8, 'r': 6}, {'w': 2.4, 'r': 10},
+                 {'w': 4.0, 'r': 8}, {'w': 1.5, 'r': 12}]}},
+        ],
+    },
 }
 
 unions = json.load(open(ROOT / 'unions/registry/unions.json'))['unions']
