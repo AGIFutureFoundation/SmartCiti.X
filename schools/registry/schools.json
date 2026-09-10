@@ -1,0 +1,206 @@
+{
+ "pack": "smartcitix-trade-craft-academy-schools",
+ "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
+ "pack_version": "3.2.0",
+ "built": "2026-09-10",
+ "source_stamp": "8dda6719e6dd3587",
+ "honesty": {
+  "districts": "district names are public-record identities only; every record is a PROPOSED partner - no district has reviewed or agreed, and no agreement exists",
+  "certification": "nothing in the school program certifies equipment operation; the assessment gates demand unaided verification and simulator hours never count toward certification"
+ },
+ "model": {
+  "name": "gamified flipped classroom",
+  "loop": "explore at home, build and practice in class, verify unaided; the teacher circulates instead of lecturing",
+  "stages": [
+   {
+    "stage": "home",
+    "title": "Explore at home",
+    "what": "the lesson positions of the module pack, sequenced by the skill graph with the ZPD difficulty dial, in any of the eight shipped languages",
+    "implemented_by": "pack/ (modules, skill graph) + i18n/",
+    "gamified": "module layers and pipeline states are the map the learner explores; progress is visible per hall"
+   },
+   {
+    "stage": "class",
+    "title": "Build in class",
+    "what": "station bench work - checklists, doctrine lines and machine-gradable quizzes at the hall stations, with the teacher moving bench to bench",
+    "implemented_by": "stations/ (25 recovered yard stations)",
+    "gamified": "station beacons in the 3D hall; completion marks accumulate on the hall roster"
+   },
+   {
+    "stage": "floor",
+    "title": "Practice on the floor",
+    "what": "simulator seat time with the regional scenario of the campus - live dash, synthesized sound, deterministic rubric; results and best times persist device-locally",
+    "implemented_by": "sims/ (3 simulators, regional scenarios)",
+    "gamified": "pass/retry chips, best-time records, cockpit views"
+   },
+   {
+    "stage": "gate",
+    "title": "Verify unaided",
+    "what": "assessment gates certify only unaided work; no home exploration, class bench or simulator hour substitutes for the unaided verification run",
+    "implemented_by": "the assessment-gate protocol (ACP-04) and the sims registry honesty note",
+    "gamified": "nothing - the gate is deliberately ungamified, and the model says so"
+   }
+  ]
+ },
+ "bands": [
+  {
+   "band": "K-5",
+   "level": "Explorer",
+   "tier": null,
+   "offer": "awareness only: the campus maps, the walkable halls and the city layers; no machine seats and no station quizzes"
+  },
+  {
+   "band": "6-8",
+   "level": "Builder",
+   "tier": "fundamentals",
+   "offer": "home modules at fundamentals tier plus class station work"
+  },
+  {
+   "band": "9-10",
+   "level": "Practitioner",
+   "tier": "applied",
+   "offer": "applied-tier modules, stations, and simulator floor time with the regional scenario"
+  },
+  {
+   "band": "11-12",
+   "level": "Lead",
+   "tier": "mastery",
+   "offer": "mastery-tier modules, full flipped loop, and the unaided verification gate"
+  }
+ ],
+ "districts": [
+  {
+   "district": "San Francisco Unified School District",
+   "campus": "treasure-island",
+   "city": "San Francisco",
+   "provenance": "authored from public record (name only)",
+   "status": "proposed partner - no district has reviewed or agreed to this program, and no agreement exists"
+  },
+  {
+   "district": "Oakland Unified School District",
+   "campus": "oakland",
+   "city": "Oakland",
+   "provenance": "authored from public record (name only)",
+   "status": "proposed partner - no district has reviewed or agreed to this program, and no agreement exists"
+  },
+  {
+   "district": "NOLA Public Schools",
+   "campus": "new-orleans",
+   "city": "New Orleans",
+   "provenance": "authored from public record (name only)",
+   "status": "proposed partner - no district has reviewed or agreed to this program, and no agreement exists"
+  },
+  {
+   "district": "Jefferson Parish Schools",
+   "campus": "new-orleans",
+   "city": "Jefferson Parish",
+   "provenance": "authored from public record (name only)",
+   "status": "proposed partner - no district has reviewed or agreed to this program, and no agreement exists"
+  }
+ ],
+ "units": [
+  {
+   "hall": "crane-ops",
+   "home": "module pack lesson positions, machines strand",
+   "class_stations": [],
+   "floor_sims": [
+    "crane-lift"
+   ],
+   "gate": "unaided verification run (ACP-04); no sim hour counts"
+  },
+  {
+   "hall": "demolition",
+   "home": "module pack lesson positions, machines strand",
+   "class_stations": [],
+   "floor_sims": [
+    "excavator-trench"
+   ],
+   "gate": "unaided verification run (ACP-04); no sim hour counts"
+  },
+  {
+   "hall": "heavy-equip",
+   "home": "module pack lesson positions, machines strand",
+   "class_stations": [],
+   "floor_sims": [
+    "forklift-run"
+   ],
+   "gate": "unaided verification run (ACP-04); no sim hour counts"
+  },
+  {
+   "hall": "laborers",
+   "home": "module pack lesson positions, machines strand",
+   "class_stations": [],
+   "floor_sims": [
+    "excavator-trench",
+    "forklift-run"
+   ],
+   "gate": "unaided verification run (ACP-04); no sim hour counts"
+  },
+  {
+   "hall": "marine-terminal",
+   "home": "module pack lesson positions, machines strand",
+   "class_stations": [],
+   "floor_sims": [
+    "forklift-run"
+   ],
+   "gate": "unaided verification run (ACP-04); no sim hour counts"
+  },
+  {
+   "hall": "operating-eng",
+   "home": "module pack lesson positions, machines strand",
+   "class_stations": [],
+   "floor_sims": [
+    "excavator-trench",
+    "forklift-run"
+   ],
+   "gate": "unaided verification run (ACP-04); no sim hour counts"
+  },
+  {
+   "hall": "port-crane",
+   "home": "module pack lesson positions, machines strand",
+   "class_stations": [],
+   "floor_sims": [
+    "crane-lift"
+   ],
+   "gate": "unaided verification run (ACP-04); no sim hour counts"
+  },
+  {
+   "hall": "riggers",
+   "home": "module pack lesson positions, machines strand",
+   "class_stations": [
+    "st005"
+   ],
+   "floor_sims": [
+    "crane-lift"
+   ],
+   "gate": "unaided verification run (ACP-04); no sim hour counts"
+  },
+  {
+   "hall": "shoring",
+   "home": "module pack lesson positions, machines strand",
+   "class_stations": [],
+   "floor_sims": [
+    "excavator-trench"
+   ],
+   "gate": "unaided verification run (ACP-04); no sim hour counts"
+  },
+  {
+   "hall": "steel-erectors",
+   "home": "module pack lesson positions, machines strand",
+   "class_stations": [],
+   "floor_sims": [
+    "crane-lift"
+   ],
+   "gate": "unaided verification run (ACP-04); no sim hour counts"
+  },
+  {
+   "hall": "teamsters",
+   "home": "module pack lesson positions, machines strand",
+   "class_stations": [],
+   "floor_sims": [
+    "forklift-run"
+   ],
+   "gate": "unaided verification run (ACP-04); no sim hour counts"
+  }
+ ]
+}

@@ -109,8 +109,59 @@ campuses_doc = {
     },
 }
 
+# ---------------------------------------------------------- chapters -------
+# The regional chapter network: every hall keeps its HOME campus (where its
+# district lives) and holds a regional chapter at each of the other two, so
+# all 111 trades train in all three regions. This is the Academy's own
+# regional structure - a design decision about planned campuses, NOT a claim
+# about any real union's locals, chapters or jurisdictions; the taxonomy
+# honesty note governs here too, and no local is named.
+REGION_ABBR = {"treasure-island": "SF", "oakland": "OAK", "new-orleans": "NOLA"}
+
+chapters = {}
+for u in unions:
+    home = campus_of[u["district"]]
+    chapters[u["slug"]] = {
+        "home": home,
+        "home_code": f'{u["slug"]}@{REGION_ABBR[home]}',
+        "regional": {
+            ck: {"code": f'{u["slug"]}@{REGION_ABBR[ck]}',
+                 "role": "regional chapter"}
+            for ck in CAMPUSES if ck != home
+        },
+    }
+
+hosted = {ck: sum(1 for c in chapters.values() if ck in c["regional"])
+          for ck in CAMPUSES}
+for ck, camp in campuses_doc["campuses"].items():
+    assert hosted[ck] == len(unions) - len(camp["halls"]), \
+        f"hosted count mismatch at {ck}"
+
+chapters_doc = {
+    "pack": "smartcitix-trade-craft-academy-union-registry",
+    "pack_version": PACK_VERSION,
+    "built": BUILT,
+    "source_stamp": stamp,
+    "count": sum(1 + len(c["regional"]) for c in chapters.values()),
+    "regions": {ck: {"abbr": REGION_ABBR[ck],
+                     "name": CAMPUSES[ck][0], "city": CAMPUSES[ck][1]}
+                for ck in CAMPUSES},
+    "hosted": hosted,
+    "honesty": {
+        "chapters": "the Academy's own regional training structure across "
+                    "its planned campuses - not a claim about any real "
+                    "union's locals, chapters or jurisdictions; no local "
+                    "is named",
+    },
+    "chapters": chapters,
+}
+
 (OUT / "unions.json").write_text(json.dumps(unions_doc, indent=1) + "\n")
 (OUT / "districts.json").write_text(json.dumps(districts_doc, indent=1) + "\n")
 (OUT / "campuses.json").write_text(json.dumps(campuses_doc, indent=1) + "\n")
+(OUT / "chapters.json").write_text(json.dumps(chapters_doc, indent=1) + "\n")
 print(f"unions registry: {len(unions)} unions in {len(DISTRICTS)} districts "
-      f"across {len(CAMPUSES)} campuses (source stamp {stamp})")
+      f"across {len(CAMPUSES)} campuses; {chapters_doc['count']} chapter "
+      f"seats ({len(unions)} homes + "
+      f"{chapters_doc['count'] - len(unions)} regional) "
+      f"(source stamp {stamp})")

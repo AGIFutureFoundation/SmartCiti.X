@@ -74,6 +74,23 @@ ok('every sim offers an operator-seat view mode alongside the external one',
   && sims['excavator-trench'].view_modes.includes('cab')
   && sims['forklift-run'].view_modes.includes('driver'));
 
+const campusKeys = new Set(Object.keys(JSON.parse(readFileSync(
+  new URL('../unions/registry/campuses.json', import.meta.url))).campuses));
+ok('every sim trains regionally: one scenario per campus, unique ids, real briefs',
+  Object.values(sims).every((s) => s.scenarios?.length === 3
+    && new Set(s.scenarios.map((x) => x.campus)).size === 3
+    && s.scenarios.every((x) => campusKeys.has(x.campus)
+        && x.id && x.name && x.brief.length > 30
+        && typeof x.params === 'object'))
+  && new Set(Object.values(sims).flatMap((s) => s.scenarios.map((x) => x.id)))
+      .size === 9);
+ok('scenarios vary the environment, never the rubric: no scenario carries pass rules',
+  Object.values(sims).every((s) =>
+    s.scenarios.every((x) => !('rubric' in x.params) && !('pass' in x.params))));
+ok('the trench scenarios keep at least one flagged utility each, at a shallow stop',
+  sims['excavator-trench'].scenarios.every((x) =>
+    x.params.cells.some((c) => c.util && c.d <= 0.5)));
+
 const src = readFileSync(new URL('./build.py', import.meta.url));
 ok('the registry was built from the current builder source (stamp check)',
   reg.source_stamp === createHash('sha256').update(src).digest('hex').slice(0, 16));

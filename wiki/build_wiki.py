@@ -39,6 +39,8 @@ campuses = json.load(open(ROOT / 'unions/registry/campuses.json'))['campuses']
 geo = json.load(open(ROOT / 'geo/registry/campuses_geo.json'))
 finishes = json.load(open(ROOT / 'surfaces/registry/finishes.json'))
 sims = json.load(open(ROOT / 'sims/registry/sims.json'))
+schools = json.load(open(ROOT / 'schools/registry/schools.json'))
+chapters = json.load(open(ROOT / 'unions/registry/chapters.json'))
 skills = json.load(open(ROOT / 'pack/registry/skills.json'))['skills']
 by_slug = {h['slug']: h for h in halls}
 
@@ -157,6 +159,17 @@ The avenues, the Mississippi crescent and Lake Pontchartrain are
 SCHEMATIC, and the in-page labels say which is which — institutions
 RECORDED, everything drawn between them schematic.
 
+### The regional chapter network
+
+Every hall keeps its **home campus** — where its district trains — and
+holds a **regional chapter** at each of the other two, so all 111 trades
+train in all three regions: **{chapters["count"]} chapter seats** in
+total, and each campus plaza carries a Regional Chapter Hall listing the
+{"/".join(str(v) for v in chapters["hosted"].values())} unions it hosts
+from elsewhere. This is the Academy's own regional structure across its
+planned campuses, not a claim about any real union's locals or
+jurisdictions — no local is named.
+
 ### The New Orleans Trades Edition
 
 The Crescent Works campus and its city layer also ship as their own
@@ -186,6 +199,8 @@ phrased against the learner's own parish.
 - [`ROADMAP.md`](../ROADMAP.md) — the phased plan from v3.2 forward
 - [`SmartCitiX_TradeCraft_Academy_Spec.md`](../SmartCitiX_TradeCraft_Academy_Spec.md) — the ACP protocol suite, v3.2
 - [Provenance](Provenance.md) — superseded data kept in `archive/`, and why
+- [Flipped-Classroom](Flipped-Classroom.md) — the gamified school program:
+  the four-stage flipped loop, grade bands, proposed districts and live units
 - [Upgrade-Candidates](Upgrade-Candidates.md) — what the sibling repositories
   offer the Academy, from a reviewed survey
 
@@ -428,6 +443,7 @@ Every strand appears in every hall; the room programme of the
 
 # ------------------------------------------------------------- Simulators ---
 def page_sims():
+    by_campus_name = {k: c['name'] for k, c in campuses.items()}
     blocks = []
     for sid, sm in sims['sims'].items():
         controls = '\n'.join(f'| `{c["keys"]}` | {c["action"]} |'
@@ -459,7 +475,14 @@ warn thresholds drawn from this registry, not hard-coded in the page.
 View modes: {" / ".join(f"`{v}`" for v in sm["view_modes"])}. Audio is a
 `{sm["audio"]["engine"]}` engine plus {", ".join(f"`{a}`" for a in sm["audio"]["alerts"])} —
 {sm["audio"]["note"]}. Haptic cues ({", ".join(sm["haptics"])}) fire on
-gamepad rumble and the vibration API where the platform offers them.''')
+gamepad rumble and the vibration API where the platform offers them.
+
+**Regional scenarios.** The campus you train at picks the yard — the
+environment varies, the rubric never does:
+
+| Region | Scenario | The yard |
+|---|---|---|
+{chr(10).join(f'| {by_campus_name[x["campus"]]} | **{x["name"]}** | {x["brief"]} |' for x in sm["scenarios"])}''')
     return f'''# The simulators
 
 {len(sims["sims"])} operable training machines live inside the
@@ -571,6 +594,69 @@ strands ([interiors map](Interiors-Map.md)).
 {FOOTER}'''
 
 
+def page_schools():
+    stages = '\n'.join(
+        f'| **{s["title"]}** | {s["what"]} | `{s["implemented_by"]}` | {s["gamified"]} |'
+        for s in schools['model']['stages'])
+    bands = '\n'.join(
+        f'| {b["band"]} | {b["level"]} | {b["tier"] or "—"} | {b["offer"]} |'
+        for b in schools['bands'])
+    dists = '\n'.join(
+        f'| {d["district"]} | {d["city"]} | {campuses[d["campus"]]["name"]} '
+        f'| {d["status"]} |'
+        for d in schools['districts'])
+    units = '\n'.join(
+        f'| **{by_slug[u["hall"]]["name"]}** '
+        f'| {", ".join(f"`{s}`" for s in u["floor_sims"])} '
+        f'| {len(u["class_stations"]) or "—"} | {u["gate"]} |'
+        for u in schools['units'])
+    return f'''# The flipped classroom
+
+How the Academy's machinery becomes a school program: **{schools["model"]["loop"]}.**
+Every stage below names the subsystem that already implements it, and
+`schools/test.mjs` proves those references against the packs that own
+them — a program that overclaims fails its build.
+
+| Stage | What happens | Implemented by | The gamified layer |
+|---|---|---|---|
+{stages}
+
+## Grade bands
+
+Aligned with the Cognition.X band vocabulary (Explorer / Builder /
+Practitioner / Lead), so the two platforms' materials sit in one
+classroom. Explorer (K–5) is deliberately awareness-only.
+
+| Grades | Band | Academy tier | The offer |
+|---|---|---|---|
+{bands}
+
+## School districts, honestly
+
+The names below are **public-record identities only** — no address,
+enrolment figure or policy is recorded — and every record carries the
+same status, asserted by the suite:
+
+| District | City | Nearest campus | Status |
+|---|---|---|---|
+{dists}
+
+## Flipped units live today
+
+One unit per simulator-bound hall — the halls where the full loop can run
+now. The floor stage runs the **regional scenario** of whichever campus
+the class trains at ([Simulators](Simulators.md)).
+
+| Hall | Floor sims | Class stations | The gate |
+|---|---|---|---|
+{units}
+
+## What this is not
+
+{schools["honesty"]["districts"]} {schools["honesty"]["certification"]}
+{FOOTER}'''
+
+
 PAGES = {
     'Home.md': page_home,
     'Campus-Map.md': page_campus,
@@ -578,6 +664,7 @@ PAGES = {
     'Skill-Graph.md': page_skills,
     'Languages.md': page_languages,
     'Simulators.md': page_sims,
+    'Flipped-Classroom.md': page_schools,
     'Provenance.md': page_provenance,
     **{f'District-{k}.md': (lambda k=k, d=d: page_district(k, d))
        for k, d in districts.items()},

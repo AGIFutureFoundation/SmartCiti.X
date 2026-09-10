@@ -79,15 +79,43 @@ ok('the campus hall lists cover the whole roster exactly once',
 ok('the campus registry declares its siting honesty (planned, not surveyed)',
   /planned/.test(campuses.honesty.siting) && /no site has been surveyed/.test(campuses.honesty.siting));
 
+/* ------------------------------------------------------------- chapters --- */
+const chapters = JSON.parse(readFileSync(new URL('./registry/chapters.json', import.meta.url)));
+ok('every union holds a home seat plus a regional chapter at each other campus',
+  Object.keys(chapters.chapters).length === 111
+  && chapters.count === 111 * 3
+  && Object.values(chapters.chapters).every((c) =>
+      Object.keys(c.regional).length === 2 && !(c.home in c.regional)));
+ok("each union's home campus is where its district actually trains",
+  unions.unions.every((u) => {
+    const camp = Object.entries(campuses.campuses)
+      .find(([, c]) => c.districts.includes(u.district))[0];
+    return chapters.chapters[u.slug].home === camp;
+  }));
+ok('chapter codes are unique across the whole network',
+  (() => {
+    const codes = Object.values(chapters.chapters).flatMap((c) =>
+      [c.home_code, ...Object.values(c.regional).map((r) => r.code)]);
+    return codes.length === 333 && new Set(codes).size === 333;
+  })());
+ok('hosted counts balance: a campus hosts every union it does not home',
+  Object.entries(chapters.hosted).every(([ck, nHosted]) =>
+    nHosted === 111 - campuses.campuses[ck].halls.length));
+ok('the chapter honesty stands: an Academy structure, no local named',
+  /not a claim/.test(chapters.honesty.chapters)
+  && /no local\s+is named/.test(chapters.honesty.chapters));
+
 /* ------------------------------------------------------------ freshness --- */
 const src = readFileSync(new URL('./unions111.py', import.meta.url));
 const stamp = createHash('sha256').update(src).digest('hex').slice(0, 16);
 ok(`the registry was built from the current taxonomy (source stamp ${stamp})`,
   unions.source_stamp === stamp && districts.source_stamp === stamp
-  && campuses.source_stamp === stamp);
-ok('all three registry files came from the same build',
+  && campuses.source_stamp === stamp && chapters.source_stamp === stamp);
+ok('all four registry files came from the same build',
   unions.pack_version === districts.pack_version && unions.built === districts.built
-  && campuses.pack_version === unions.pack_version && campuses.built === unions.built);
+  && campuses.pack_version === unions.pack_version && campuses.built === unions.built
+  && chapters.pack_version === unions.pack_version && chapters.built === unions.built);
 
 console.log(`unions/verify: ${n} checks passed — ${unions.count} unions, `
-  + `${districts.count} districts, ${campuses.count} campuses`);
+  + `${districts.count} districts, ${campuses.count} campuses, `
+  + `${chapters.count} chapter seats`);
