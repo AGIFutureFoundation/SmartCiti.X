@@ -36,6 +36,7 @@ halls = json.load(open(ROOT / 'pack/registry/halls.json'))['halls']
 unions = json.load(open(ROOT / 'unions/registry/unions.json'))
 districts = json.load(open(ROOT / 'unions/registry/districts.json'))['districts']
 campuses = json.load(open(ROOT / 'unions/registry/campuses.json'))['campuses']
+geo = json.load(open(ROOT / 'geo/registry/campuses_geo.json'))
 finishes = json.load(open(ROOT / 'surfaces/registry/finishes.json'))
 skills = json.load(open(ROOT / 'pack/registry/skills.json'))['skills']
 by_slug = {h['slug']: h for h in halls}
@@ -63,6 +64,10 @@ def mermaid_id(slug):
 
 # ------------------------------------------------------------------ Home ---
 def page_home():
+    route_rows = '\n'.join(
+        f'| {campuses[r["from"]]["city"]} ↔ {campuses[r["to"]]["city"]} '
+        f'| {r["km"]:,} km |'
+        for r in geo['routes_km'])
     campus_rows = '\n'.join(
         f'| **{c["name"]}** | {c["city"]}, {c["region"]} | {c["tagline"]} '
         f'| {", ".join(districts[d]["name"] for d in c["districts"])} '
@@ -115,6 +120,23 @@ no site surveyed and no address recorded:
 | Campus | Where | Trains | Districts | Halls |
 |---|---|---|---|---|
 {campus_rows}
+
+### Real geography
+
+The geo registry anchors each campus to a real WGS84 coordinate — Oakland's
+is RECORDED verbatim from the Locator.X city table (Apache-2.0), the others
+are DERIVED place centroids, and every distance below is recomputed from
+the coordinates by the suite rather than trusted. A coordinate anchors a
+map; it does not claim a parcel.
+
+| Route | Great-circle distance |
+|---|---|
+{route_rows}
+
+The registry also ships `geo/registry/campuses.geojson` — standard GeoJSON,
+directly consumable by any Mapbox/MapLibre-compatible stack. The 3D network
+view places its campus plates by these true bearings, with the real
+kilometres on the route labels.
 
 ## The districts
 

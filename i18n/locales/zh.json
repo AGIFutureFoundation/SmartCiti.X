@@ -43,7 +43,8 @@
   "hint.walk": "WASD 移动 · Esc 退出",
   "view.region": "网络视图",
   "figures.campuses": "{n} 个园区",
-  "room.finish": "地面饰面"
+  "room.finish": "地面饰面",
+  "geo.note": "方位为真实值；距离经压缩——标注为真实公里数"
  },
  "districts": {
   "structural": {

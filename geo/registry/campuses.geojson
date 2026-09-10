@@ -1,0 +1,65 @@
+{
+ "type": "FeatureCollection",
+ "features": [
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.3705,
+     37.8235
+    ]
+   },
+   "properties": {
+    "slug": "treasure-island",
+    "name": "Treasure Island Campus",
+    "city": "San Francisco",
+    "region": "California",
+    "districts": 3,
+    "halls": 51,
+    "provenance": "DERIVED",
+    "source": "Treasure Island centroid, authored (WGS84)"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.2712,
+     37.8044
+    ]
+   },
+   "properties": {
+    "slug": "oakland",
+    "name": "Oakland Waterfront Campus",
+    "city": "Oakland",
+    "region": "California",
+    "districts": 3,
+    "halls": 32,
+    "provenance": "RECORDED",
+    "source": "Locator.X city table (src/app.js CITIES), Apache-2.0"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -90.0715,
+     29.9511
+    ]
+   },
+   "properties": {
+    "slug": "new-orleans",
+    "name": "Crescent Works Campus",
+    "city": "New Orleans",
+    "region": "Louisiana",
+    "districts": 2,
+    "halls": 28,
+    "provenance": "DERIVED",
+    "source": "New Orleans centroid, authored (WGS84)"
+   }
+  }
+ ]
+}

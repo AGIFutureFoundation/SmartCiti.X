@@ -285,6 +285,12 @@
   "wind"
  ],
  "hazard_placed_finishes": 71,
+ "provenance": {
+  "geometry": "SCHEMATIC",
+  "finish": "DERIVED",
+  "conditions": "DERIVED",
+  "discipline": "RECORDED/DERIVED/SCHEMATIC tagging after the Locator.X rooms module (Apache-2.0)"
+ },
  "base_conditions": {
   "safety": {
    "lux": 300,

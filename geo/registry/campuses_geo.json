@@ -1,0 +1,59 @@
+{
+ "pack": "smartcitix-trade-craft-academy-geo-registry",
+ "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
+ "pack_version": "3.2.0",
+ "built": "2026-09-10",
+ "source_stamp": "0917927ecdeef792",
+ "crs": "WGS84 (EPSG:4326)",
+ "recorded_check": "cross-checked against the Locator.X checkout",
+ "honesty": {
+  "siting": "a coordinate anchors a map; it does not claim a parcel. The campuses remain planned locations per the union registry, and no address is recorded.",
+  "provenance": "RECORDED / DERIVED / SCHEMATIC discipline after the Locator.X rooms module (Apache-2.0): nothing is stated that the source does not support."
+ },
+ "campuses": {
+  "treasure-island": {
+   "lat": 37.8235,
+   "lng": -122.3705,
+   "provenance": "DERIVED",
+   "source": "Treasure Island centroid, authored (WGS84)",
+   "city": "San Francisco",
+   "region": "California"
+  },
+  "oakland": {
+   "lat": 37.8044,
+   "lng": -122.2712,
+   "provenance": "RECORDED",
+   "source": "Locator.X city table (src/app.js CITIES), Apache-2.0",
+   "city": "Oakland",
+   "region": "California"
+  },
+  "new-orleans": {
+   "lat": 29.9511,
+   "lng": -90.0715,
+   "provenance": "DERIVED",
+   "source": "New Orleans centroid, authored (WGS84)",
+   "city": "New Orleans",
+   "region": "Louisiana"
+  }
+ },
+ "routes_km": [
+  {
+   "from": "treasure-island",
+   "to": "oakland",
+   "km": 9.0,
+   "bearing_deg": 103.7
+  },
+  {
+   "from": "treasure-island",
+   "to": "new-orleans",
+   "km": 3089.9,
+   "bearing_deg": 96.7
+  },
+  {
+   "from": "oakland",
+   "to": "new-orleans",
+   "km": 3081.0,
+   "bearing_deg": 96.8
+  }
+ ]
+}

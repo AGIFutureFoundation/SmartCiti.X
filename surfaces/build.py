@@ -84,6 +84,16 @@ doc = {
     # exactly what was tested rather than more.
     'no_finish_driving_hazard': sorted(s for s, h in halls.items() if not h['hazard']),
     'hazard_placed_finishes': hazard_count,
+    # RECORDED / DERIVED / SCHEMATIC, after the Locator.X rooms module
+    # (Apache-2.0, the same foundation): nothing is stated that the source
+    # does not support. No room here is RECORDED - nothing was surveyed.
+    'provenance': {
+        'geometry': 'SCHEMATIC',
+        'finish': 'DERIVED',
+        'conditions': 'DERIVED',
+        'discipline': 'RECORDED/DERIVED/SCHEMATIC tagging after the '
+                      'Locator.X rooms module (Apache-2.0)',
+    },
     'base_conditions': {k: {'lux': v[0], 'ach': v[1], 'noise_db': v[2],
                             'temp_c': list(v[3]), 'ppe': list(v[4])}
                         for k, v in BASE_CONDITIONS.items()},

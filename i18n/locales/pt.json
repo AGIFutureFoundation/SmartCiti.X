@@ -43,7 +43,8 @@
   "hint.walk": "WASD para mover · Esc para sair",
   "view.region": "Vista da rede",
   "figures.campuses": "{n} campi",
-  "room.finish": "Acabamento do piso"
+  "room.finish": "Acabamento do piso",
+  "geo.note": "Rumos reais; distâncias comprimidas — os rótulos trazem km reais"
  },
  "districts": {
   "structural": {
