@@ -43,7 +43,8 @@
   "hint.walk": "WASD zum Bewegen · Esc zum Beenden",
   "view.region": "Netzwerkansicht",
   "figures.campuses": "{n} Standorte",
-  "room.finish": "Bodenbelag"
+  "room.finish": "Bodenbelag",
+  "geo.note": "Echte Peilungen; Entfernungen gestaucht — die Beschriftungen tragen echte km"
  },
  "districts": {
   "structural": {

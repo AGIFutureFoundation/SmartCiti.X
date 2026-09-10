@@ -47,6 +47,7 @@ halls_json = json.load(open(ROOT / 'pack/registry/halls.json'))['halls']
 districts_reg = json.load(open(ROOT / 'unions/registry/districts.json'))['districts']
 campuses_reg = json.load(open(ROOT / 'unions/registry/campuses.json'))['campuses']
 finishes_reg = json.load(open(ROOT / 'surfaces/registry/finishes.json'))
+geo_reg = json.load(open(ROOT / 'geo/registry/campuses_geo.json'))
 stations_reg = json.load(open(ROOT / 'stations/registry/stations.json'))
 yard = json.load(open(ROOT / 'archive/bac_yard_stations.json'))['yard_placements']
 
@@ -96,7 +97,7 @@ for f in sorted((ROOT / 'i18n/locales').glob('*.json')):
             'map.layer.modules', 'figures.modules', 'figures.lessons', 'room.finish',
             'figures.halls', 'figures.districts', 'figures.campuses',
             'view.campus', 'view.region', 'ui.walk',
-            'hint.campus', 'hint.walk',
+            'hint.campus', 'hint.walk', 'geo.note',
             'honesty.taxonomy', 'honesty.content')},
         'districts': {k: v['name'] for k, v in c['districts'].items()},
         'strands': c['strands'], 'tiers': c['tiers'], 'states': c['states'],
@@ -106,6 +107,9 @@ DATA = json.dumps({
     'districts': {k: {'name': d['name'], 'halls': d['halls'], 'hue': HUES[k]}
                   for k, d in districts_reg.items()},
     'campuses': campuses_reg,
+    'geo': {'campuses': {k: {'lat': v['lat'], 'lng': v['lng']}
+                         for k, v in geo_reg['campuses'].items()},
+            'routes': geo_reg['routes_km']},
     'finishes': {sl: h['rooms'] for sl, h in finishes_reg['halls'].items()},
     'finCat': finishes_reg['catalogue'],
     'baseCond': finishes_reg['base_conditions'],
@@ -661,8 +665,23 @@ function buildCampus(key) {
 }
 
 /* ---------------------------------------------------------- region view --- */
-const PLATE_POS = { 'treasure-island': [-130, -55], 'oakland': [125, -85],
-                    'new-orleans': [55, 150] };
+// Plate positions from the geo registry: TRUE bearings between the real
+// coordinates; distances log-compressed so 9 km of bay and 3,000 km of
+// gulf share one board. The route labels carry the real kilometres.
+const PLATE_POS = (() => {
+  const range = (km) => 34 + 50 * Math.log10(1 + km);
+  const pos = { 'treasure-island': [0, 0] };
+  for (const r of D.geo.routes) {
+    if (r.from !== 'treasure-island') continue;
+    const b = r.bearing_deg * Math.PI / 180, d = range(r.km);
+    pos[r.to] = [Math.sin(b) * d, -Math.cos(b) * d];
+  }
+  const ks = Object.keys(pos);
+  const cx = ks.reduce((a, k) => a + pos[k][0], 0) / ks.length;
+  const cz = ks.reduce((a, k) => a + pos[k][1], 0) / ks.length;
+  for (const k of ks) { pos[k][0] -= cx; pos[k][1] -= cz; }
+  return pos;
+})();
 
 function buildRegion() {
   if (regionGroup) scene.remove(regionGroup);
@@ -675,7 +694,7 @@ function buildRegion() {
   for (const [key, camp] of Object.entries(D.campuses)) {
     const [px, pz] = PLATE_POS[key];
     centers[key] = new THREE.Vector3(px, 0, pz);
-    const plate = new THREE.Mesh(new THREE.CylinderGeometry(48, 52, 2.2, 48), mat.land);
+    const plate = new THREE.Mesh(new THREE.CylinderGeometry(36, 40, 2.2, 48), mat.land);
     plate.position.set(px, 1.1, pz); plate.receiveShadow = plate.castShadow = true;
     plate.userData.campus = key;
     regionGroup.add(plate); plates.push(plate);
@@ -683,9 +702,9 @@ function buildRegion() {
     camp.districts.forEach((dkey, i) => {
       const d = D.districts[dkey];
       const ang = i / camp.districts.length * Math.PI * 2;
-      const bx = px + Math.cos(ang) * 24, bz = pz + Math.sin(ang) * 24;
+      const bx = px + Math.cos(ang) * 19, bz = pz + Math.sin(ang) * 19;
       const hgt = 4 + d.halls.length * .55;
-      const blk = box(13, hgt, 13, new THREE.MeshStandardMaterial({
+      const blk = box(11, hgt, 11, new THREE.MeshStandardMaterial({
         color: new THREE.Color().setHSL(d.hue / 360, .45, .4), roughness: .7 }),
         bx, 2.2 + hgt / 2, bz, regionGroup);
       blk.userData.campus = key; plates.push(blk);
@@ -706,6 +725,13 @@ function buildRegion() {
       pa.clone().setY(3), mid, pb.clone().setY(3));
     const geo = new THREE.BufferGeometry().setFromPoints(curve.getPoints(40));
     regionGroup.add(new THREE.Line(geo, lineMat));
+    const km = D.geo.routes.find((r) =>
+      (r.from === a && r.to === b) || (r.from === b && r.to === a))?.km;
+    if (km !== undefined) {
+      const kl = label(`${km.toLocaleString('en-US')} km`, null, 2.2);
+      kl.position.copy(mid).setY(mid.y + 5);
+      regionGroup.add(kl);
+    }
   }
   const sign = label('SmartCiti.X : Trade Craft Academy', 'powered by AGI Corp', 3.6);
   sign.position.set(0, 44, 10); regionGroup.add(sign);
@@ -721,13 +747,14 @@ function showRegion() {
   buildRegion();
   scene.fog.near = 380; scene.fog.far = 1300;
   controls.maxDistance = 700; controls.minDistance = 60;
-  camera.position.set(0, 330, 330); controls.target.set(20, 0, 10);
+  camera.position.set(0, 225, 235); controls.target.set(10, 0, 0);
   document.getElementById('hname').textContent = t('view.region');
   document.getElementById('hfocus').textContent =
     t('figures.campuses').replace('{n}', Object.keys(D.campuses).length) + ' · ' +
     t('figures.halls').replace('{n}', D.halls.length) + ' · ' +
     t('figures.districts').replace('{n}', Object.keys(D.districts).length);
-  document.getElementById('hint').textContent = t('hint.campus');
+  document.getElementById('hint').textContent =
+    t('hint.campus') + ' \u00b7 ' + t('geo.note');
   document.getElementById('walkBtn').style.display = 'none';
   document.getElementById('campusBtn').style.display = 'none';
   syncURL();
@@ -958,7 +985,8 @@ function openRoom(roomLabel) {
           return `<p style="color:var(--muted);font-size:13px">${condLine(c)}` +
             (c.hazards?.length
               ? '<br>' + c.hazards.map(z=>`<span class="chip">${z}</span>`).join(' ')
-              : '') + `</p>`; })(); })()}
+              : '') + `</p>
+            <p style="font-size:11px;color:var(--muted);opacity:.8">geometry: SCHEMATIC \u00b7 finish: DERIVED \u00b7 conditions: DERIVED</p>`; })(); })()}
     <h3>${t('map.layer.modules')}</h3>
     <p style="color:var(--muted);font-size:13px">
       ${t('figures.lessons').replace('{n}', F(sm.lessons))} ·

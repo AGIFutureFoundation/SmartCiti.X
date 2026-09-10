@@ -43,7 +43,8 @@
   "hint.walk": "WASD pour se déplacer · Échap pour quitter",
   "view.region": "Vue du réseau",
   "figures.campuses": "{n} campus",
-  "room.finish": "Revêtement de sol"
+  "room.finish": "Revêtement de sol",
+  "geo.note": "Caps réels ; distances compressées — les étiquettes portent les km réels"
  },
  "districts": {
   "structural": {

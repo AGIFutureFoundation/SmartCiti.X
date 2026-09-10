@@ -43,7 +43,8 @@
   "hint.walk": "चलने के लिए WASD · बाहर निकलने के लिए Esc",
   "view.region": "नेटवर्क दृश्य",
   "figures.campuses": "{n} परिसर",
-  "room.finish": "फ़र्श की फिनिश"
+  "room.finish": "फ़र्श की फिनिश",
+  "geo.note": "दिशाएँ वास्तविक; दूरियाँ संपीड़ित — लेबल वास्तविक किमी दिखाते हैं"
  },
  "districts": {
   "structural": {

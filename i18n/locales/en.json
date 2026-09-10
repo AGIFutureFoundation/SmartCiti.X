@@ -43,7 +43,8 @@
   "hint.walk": "WASD to move · Esc to exit",
   "view.region": "Network view",
   "figures.campuses": "{n} campuses",
-  "room.finish": "Floor finish"
+  "room.finish": "Floor finish",
+  "geo.note": "True bearings; distances compressed — labels carry real km"
  },
  "districts": {
   "structural": {

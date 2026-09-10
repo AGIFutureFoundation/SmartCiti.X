@@ -145,5 +145,13 @@ ok('the registry declares §24.3 honesty: practice, not a code reference',
   /not a code reference/.test(reg.honesty.status)
   && /local standard/.test(reg.honesty.status));
 
+ok('provenance is tagged and honest: SCHEMATIC geometry, DERIVED finish '
+  + 'and conditions, nothing RECORDED (nothing was surveyed)',
+  reg.provenance.geometry === 'SCHEMATIC'
+  && reg.provenance.finish === 'DERIVED'
+  && reg.provenance.conditions === 'DERIVED'
+  && /Locator\.X/.test(reg.provenance.discipline)
+  && !Object.values(reg.provenance).includes('RECORDED'));
+
 console.log(`surfaces/test: ${n} checks passed — ${Object.keys(cat).length} finishes, `
   + `${Object.keys(halls).length} halls, ${reg.hazards_in_use.length} hazard classes`);

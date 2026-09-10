@@ -43,7 +43,8 @@
   "hint.walk": "‏WASD للتحرك · Esc للخروج",
   "view.region": "عرض الشبكة",
   "figures.campuses": "{n} فروع",
-  "room.finish": "تشطيب الأرضية"
+  "room.finish": "تشطيب الأرضية",
+  "geo.note": "الاتجاهات حقيقية؛ المسافات مضغوطة — والملصقات تحمل الكيلومترات الحقيقية"
  },
  "districts": {
   "structural": {

@@ -43,7 +43,8 @@
   "hint.walk": "WASD para moverte · Esc para salir",
   "view.region": "Vista de la red",
   "figures.campuses": "{n} campus",
-  "room.finish": "Acabado del suelo"
+  "room.finish": "Acabado del suelo",
+  "geo.note": "Rumbos reales; distancias comprimidas — las etiquetas llevan km reales"
  },
  "districts": {
   "structural": {

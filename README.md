@@ -7,7 +7,7 @@ The Adaptive Stack: the packs implementing the ACP protocol suite (v3.2) —
 counted, like everything else here, by the table below rather than by a
 number that can drift from it.
 
-**317 checks, all passing from inside this bundle**, with no model credentials
+**330 checks, all passing from inside this bundle**, with no model credentials
 required.
 
 ```bash
@@ -33,7 +33,8 @@ node brand/test.mjs                # 30 — naming, tokens, contrast, livery, th
 node brand/lint.mjs .              # fails on any forbidden spelling anywhere in the tree
 node i18n/test.mjs                 # 16 — locale parity, placeholders, pack agreement
 node stations/test.mjs             # 13 — recovered stations vs roster, skills, rooms
-node surfaces/test.mjs             # 23 — finishes, conditions, more-demanding-wins, honesty
+node surfaces/test.mjs             # 24 — finishes, conditions, more-demanding-wins, honesty
+node geo/test.mjs                  # 12 — real coordinates, recomputed distances, GeoJSON
 node control/fuzz.mjs              # 21 — hostile inputs and adversarial learners
 node control/soak.mjs              # long-run invariants, 4,000 attempts x 3 seeds
 python3 console/check_console.py   # fails if the console is behind its sources
@@ -56,6 +57,7 @@ python3 wiki/build_wiki.py --check # fails if the wiki is behind the registries
 | `wiki/` | — | **The wiki**, generated from the registries: a page per map (campus, interiors, skill graph, languages) and a page per district, with Mermaid content graphs and a staleness guard |
 | `stations/` | — | **The station registry**: the recovered pre-rebrand yard curriculum rebranded onto the live structure — 25 machine-gradable stations assigned to halls, skills and floor-plan rooms, verified against all three |
 | `surfaces/` | §24 | **The surface registry**: 22 floor finishes with renderer-ready parameters and the reason each exists, resolved per room hazard-first with §24.1's discipline, plus per-room conditions (illuminance, air changes, design noise, temperature band, PPE) merged more-demanding-wins across every governing hazard — rendered as the 3D room floors and read out live in walk mode |
+| `geo/` | — | **The geo registry**: real WGS84 coordinates per campus (Oakland's RECORDED from the Locator.X city table, cross-checked on build), recomputed great-circle distances and bearings, and Mapbox-ready GeoJSON — the 3D network view places its plates by these true bearings |
 | `archive/` | — | Superseded working data kept for provenance, consumed by nothing and skipped by the figures lint |
 
 Alongside the packs: [`ROADMAP.md`](ROADMAP.md) — the phased plan from v3.2

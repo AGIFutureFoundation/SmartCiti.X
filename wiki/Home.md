@@ -55,6 +55,25 @@ no site surveyed and no address recorded:
 | **Oakland Waterfront Campus** | Oakland, California | Port, plant and heavy industry on the working estuary | Heavy Industry, Transport & Mobility, Earthworks & Plant | 32 |
 | **Crescent Works Campus** | New Orleans, Louisiana | Energy, water and environmental response on the Gulf | Energy & Utilities, Survey, Safety & Environment | 28 |
 
+### Real geography
+
+The geo registry anchors each campus to a real WGS84 coordinate — Oakland's
+is RECORDED verbatim from the Locator.X city table (Apache-2.0), the others
+are DERIVED place centroids, and every distance below is recomputed from
+the coordinates by the suite rather than trusted. A coordinate anchors a
+map; it does not claim a parcel.
+
+| Route | Great-circle distance |
+|---|---|
+| San Francisco ↔ Oakland | 9.0 km |
+| San Francisco ↔ New Orleans | 3,089.9 km |
+| Oakland ↔ New Orleans | 3,081.0 km |
+
+The registry also ships `geo/registry/campuses.geojson` — standard GeoJSON,
+directly consumable by any Mapbox/MapLibre-compatible stack. The 3D network
+view places its campus plates by these true bearings, with the real
+kilometres on the route labels.
+
 ## The districts
 
 | District | Tagline | Halls |
