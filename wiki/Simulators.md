@@ -1,6 +1,6 @@
 # The simulators
 
-4 operable training machines live inside the
+5 operable training machines live inside the
 [3D environment](Campus-Map.md): open a bound hall and press **▶** (a hall
 bound to more than one machine offers the choice). The
 physics are schematic — built for practising control discipline (smooth
@@ -150,6 +150,40 @@ environment varies, the rubric never does:
 | Treasure Island Campus | **Deck plate seam** | A flat deck seam on the fabrication floor - the forgiving band to learn the rhythm in. |
 | Oakland Waterfront Campus | **Pipe flange bead** | A longer run at a tighter gap - the plant inspector reads every millimetre of it. |
 | Crescent Works Campus | **Tank shell seam** | Storage-tank shell plate in Gulf humidity - a slightly higher band, the same clean-bead law. |
+## Scaffold Bay Build (process)
+
+Erect one bay in the legal order — sills, frames, braces, planks, then guardrails. The rack refuses a part whose stage has not come, every refusal counts, and the bay is not done until the rails are on.
+
+Trains at: **Scaffold Erectors**, **Carpenters**, **Laborers**, **Bricklayers & Allied Craft**, **Painters & Allied Trades** — each run exercises that hall's
+`machines.applied` skill.
+
+| Control | Action |
+|---|---|
+| `A / D` | choose the part rack |
+| `Space` | place the next part |
+| `R` | jump the rack to the legal stage |
+
+| Rubric axis | Measured | Pass |
+|---|---|---|
+| sequence | placements refused for coming before their stage | `== 0` |
+| complete | parts of the bay placed, rails last | `== all` |
+| time | seconds first sill to last rail | `informational` |
+
+**Cockpit.** A live dash of 5 gauges — `Rack`, `Stage`, `Parts`, `Refused` (warns at 1), `T s` — with the
+warn thresholds drawn from this registry, not hard-coded in the page.
+View modes: `orbit` / `deck`. Audio is a
+`site` engine plus `refusal-buzz`, `lock-click`, `result-chime` —
+synthesized in-page (WebAudio); no recordings shipped. Haptic cues (refusal, finish) fire on
+gamepad rumble and the vibration API where the platform offers them.
+
+**Regional scenarios.** The campus you train at picks the yard — the
+environment varies, the rubric never does:
+
+| Region | Scenario | The yard |
+|---|---|---|
+| Treasure Island Campus | **Yard training bay** | One lift in the training yard - three planks, two rails, the order to learn by heart. |
+| Oakland Waterfront Campus | **Plant maintenance bay** | A wider bay against the plant wall - four planks to deck before anyone stands the lift. |
+| Crescent Works Campus | **Storm-hardening bay** | Hurricane-season work - a third rail goes on, and the same legal order holds in the wind. |
 
 ## What a simulator run is not
 

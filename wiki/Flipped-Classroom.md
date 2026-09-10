@@ -47,16 +47,20 @@ the class trains at ([Simulators](Simulators.md)).
 | Hall | Floor sims | Class stations | The gate |
 |---|---|---|---|
 | **Boilermakers** | `weld-bead` | — | unaided verification run (ACP-04); no sim hour counts |
+| **Bricklayers & Allied Craft** | `scaffold-bay` | 10 | unaided verification run (ACP-04); no sim hour counts |
+| **Carpenters** | `scaffold-bay` | — | unaided verification run (ACP-04); no sim hour counts |
 | **Crane Operators** | `crane-lift` | — | unaided verification run (ACP-04); no sim hour counts |
 | **Demolition Workers** | `excavator-trench` | — | unaided verification run (ACP-04); no sim hour counts |
 | **Structural Fabricators** | `weld-bead` | — | unaided verification run (ACP-04); no sim hour counts |
 | **Heavy Equipment Technicians** | `forklift-run` | — | unaided verification run (ACP-04); no sim hour counts |
-| **Laborers** | `excavator-trench`, `forklift-run` | — | unaided verification run (ACP-04); no sim hour counts |
+| **Laborers** | `excavator-trench`, `forklift-run`, `scaffold-bay` | — | unaided verification run (ACP-04); no sim hour counts |
 | **Marine Terminal Operators** | `forklift-run` | — | unaided verification run (ACP-04); no sim hour counts |
 | **Operating Engineers** | `excavator-trench`, `forklift-run` | — | unaided verification run (ACP-04); no sim hour counts |
+| **Painters & Allied Trades** | `scaffold-bay` | — | unaided verification run (ACP-04); no sim hour counts |
 | **Pipeline Trades** | `weld-bead` | — | unaided verification run (ACP-04); no sim hour counts |
 | **Port Crane Technicians** | `crane-lift` | — | unaided verification run (ACP-04); no sim hour counts |
 | **Riggers & Signalpersons** | `crane-lift` | 1 | unaided verification run (ACP-04); no sim hour counts |
+| **Scaffold Erectors** | `scaffold-bay` | 1 | unaided verification run (ACP-04); no sim hour counts |
 | **Shipfitters** | `weld-bead` | — | unaided verification run (ACP-04); no sim hour counts |
 | **Shoring & Underpinning** | `excavator-trench` | — | unaided verification run (ACP-04); no sim hour counts |
 | **Steel Erectors** | `crane-lift` | — | unaided verification run (ACP-04); no sim hour counts |
