@@ -134,6 +134,74 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
+     -122.3477,
+     37.9358
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Richmond",
+    "near": "treasure-island",
+    "provenance": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.5311,
+     37.9735
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "San Rafael",
+    "near": "treasure-island",
+    "provenance": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.4077,
+     37.6547
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "South San Francisco",
+    "near": "treasure-island",
+    "provenance": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.3255,
+     37.563
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "San Mateo",
+    "near": "treasure-island",
+    "provenance": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
      -122.2727,
      37.8716
     ]

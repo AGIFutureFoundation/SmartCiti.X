@@ -53,7 +53,7 @@
   "sim.view": "View",
   "sim.choose": "Choose a simulator",
   "progress.local": "Progress is saved on this device only.",
-  "city.note": "City layer: institutions RECORDED from Locator.X; streets and river schematic",
+  "city.note": "City layer: places RECORDED from Locator.X; streets, bridges and water schematic",
   "chapters.hall": "Regional chapter hall",
   "avatar.title": "Avatar"
  },

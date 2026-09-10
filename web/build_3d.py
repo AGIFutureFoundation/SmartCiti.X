@@ -1885,30 +1885,55 @@ function openCityPoi(name) {
 }
 window.__tc3dPoi = openCityPoi;   // test hook
 
+// Two placement modes, both labelled with REAL kilometres: a compact city
+// (New Orleans) lays its places at true linear offsets; a bay-scale region
+// (the SF Bay, cities out to ~29 km) compresses distance the same way the
+// network view does - true bearings, log-eased range - because a linear
+// board that far would not be walkable. The i18n geo note states the deal.
+let cityLog = false;
+function cityPos(p) {
+  const km = Math.hypot(p.e, p.n) || .001;
+  if (!cityLog) return [p.e * CITY_S, -p.n * CITY_S];
+  const r = 96 + 95 * Math.log10(1 + p.km);
+  return [p.e / km * r, -p.n / km * r];
+}
 function buildCity(g, R) {
   const pois = D.geo.cityPois?.[campusKey] ?? [];
   if (!pois.length) return;
+  cityLog = pois.some((p) => p.km > 15);
   const grass = new THREE.MeshStandardMaterial({ color: 0x3d5238, roughness: .95 });
   const hues = [42, 152, 205, 268, 20, 96, 330];
+  const ferryMat = new THREE.LineBasicMaterial({
+    color: 0x41C4D4, transparent: true, opacity: .55 });
   pois.forEach((p, i) => {
-    const x = p.e * CITY_S, z = -p.n * CITY_S;
+    const [x, z] = cityPos(p);
     const len = Math.hypot(x, z), ux = x / len, uz = z / len;
-    // the avenue: ring road out to the institution's block
-    const r0 = R - 22, aLen = len - r0 - 9;
-    const av = box(aLen, .06, 3.6, mat.road, 0, .03, 0, g, false);
-    av.position.set((r0 + aLen / 2) * ux, .03, (r0 + aLen / 2) * uz);
-    av.rotation.y = -Math.atan2(uz, ux);
-    for (let d = r0 + 4; d < len - 10; d += 7)
-      box(1.7, .02, .16, mat.paint, d * ux, .08, d * uz, g, false)
-        .rotation.y = -Math.atan2(uz, ux);
-    // the institution: green, main hall, tower, and its name with real km
-    box(15, .12, 15, grass, x, .06, z, g, false);
+    if (!cityLog) {
+      // the avenue: ring road out to the place's block
+      const r0 = R - 22, aLen = len - r0 - 9;
+      const av = box(aLen, .06, 3.6, mat.road, 0, .03, 0, g, false);
+      av.position.set((r0 + aLen / 2) * ux, .03, (r0 + aLen / 2) * uz);
+      av.rotation.y = -Math.atan2(uz, ux);
+      for (let d = r0 + 4; d < len - 10; d += 7)
+        box(1.7, .02, .16, mat.paint, d * ux, .08, d * uz, g, false)
+          .rotation.y = -Math.atan2(uz, ux);
+    } else {
+      // across open water: a schematic ferry line, not a road
+      const geoL = new THREE.BufferGeometry().setFromPoints([
+        new THREE.Vector3((R + 42) * ux, .5, (R + 42) * uz),
+        new THREE.Vector3((len - 14) * ux, .5, (len - 14) * uz)]);
+      g.add(new THREE.Line(geoL, ferryMat));
+      // and its own ground: a shoreline pad in the bay
+      box(24, .14, 24, mat.land, x, .07, z, g, false);
+    }
+    // the place: green, main block, tower, and its name with real km
+    box(15, .12, 15, grass, x, .13, z, g, false);
     const hgt = 7 + (i % 3) * 2.5;
     const bmat = new THREE.MeshStandardMaterial({
       color: new THREE.Color().setHSL(hues[i % hues.length] / 360, .34, .42),
       roughness: .75 });
-    const bld = box(8, hgt, 6.5, bmat, x - 2, .12 + hgt / 2, z + 1.5, g);
-    const twr = box(2.6, hgt + 5, 2.6, bmat, x + 4, .12 + (hgt + 5) / 2, z - 3.5, g);
+    const bld = box(8, hgt, 6.5, bmat, x - 2, .15 + hgt / 2, z + 1.5, g);
+    const twr = box(2.6, hgt + 5, 2.6, bmat, x + 4, .15 + (hgt + 5) / 2, z - 3.5, g);
     box(3, .5, 3, mat.slab, x + 4, hgt + 5.4, z - 3.5, g, false);
     bld.userData.poi = twr.userData.poi = p.name;
     cityHits.push(bld, twr);
@@ -1916,20 +1941,64 @@ function buildCity(g, R) {
     pl.position.set(x, hgt + 10, z); g.add(pl);
     cityPois++;
   });
-  // the crescent: a schematic Mississippi south of the uptown institutions
-  const river = new THREE.Mesh(new THREE.TubeGeometry(
-    new THREE.QuadraticBezierCurve3(
-      new THREE.Vector3(-150, 0, 92), new THREE.Vector3(-15, 0, 70),
-      new THREE.Vector3(110, 0, 24)), 48, 10, 8), mat.water);
-  river.scale.y = .012; river.position.y = .09; g.add(river);
-  const rl = label('Mississippi River', 'SCHEMATIC', 1.6);
-  rl.position.set(-30, 7, 76); g.add(rl);
-  // and the lake north of UNO/SUNO
-  const lake = new THREE.Mesh(new THREE.PlaneGeometry(340, 70), mat.water);
-  lake.rotation.x = -Math.PI / 2; lake.position.set(10, .08, -168);
-  g.add(lake);
-  const ll = label('Lake Pontchartrain', 'SCHEMATIC', 1.6);
-  ll.position.set(10, 7, -150); g.add(ll);
+  cityWater(g, campusKey, R, pois);
+}
+
+/* Schematic water and crossings per city - drawn, labelled SCHEMATIC. */
+function cityWater(g, key, R, pois) {
+  const tag = (name, x, z) => {
+    const l = label(name, 'SCHEMATIC', 1.6);
+    l.position.set(x, 7, z); g.add(l);
+  };
+  if (key === 'new-orleans') {
+    // the crescent south of the uptown institutions, the lake north
+    const river = new THREE.Mesh(new THREE.TubeGeometry(
+      new THREE.QuadraticBezierCurve3(
+        new THREE.Vector3(-150, 0, 92), new THREE.Vector3(-15, 0, 70),
+        new THREE.Vector3(110, 0, 24)), 48, 10, 8), mat.water);
+    river.scale.y = .012; river.position.y = .09; g.add(river);
+    tag('Mississippi River', -30, 76);
+    const lake = new THREE.Mesh(new THREE.PlaneGeometry(340, 70), mat.water);
+    lake.rotation.x = -Math.PI / 2; lake.position.set(10, .08, -168);
+    g.add(lake);
+    tag('Lake Pontchartrain', 10, -150);
+    return;
+  }
+  if (key === 'treasure-island') {
+    // the campus is an island: the Bay all around, spans east and west
+    const bay = new THREE.Mesh(
+      new THREE.RingGeometry(R + 52, 430, 72), mat.water);
+    bay.rotation.x = -Math.PI / 2; bay.position.y = .06; g.add(bay);
+    tag('San Francisco Bay', 0, -(R + 110));
+    const sf = pois.find((p) => p.name === 'San Francisco');
+    const spans = [];
+    if (sf) {
+      const [sx, sz] = cityPos(sf), sl = Math.hypot(sx, sz);
+      spans.push([sx / sl, sz / sl]);              // the west span, to SF
+    }
+    const rte = D.geo.routes.find((r) =>
+      r.from === 'treasure-island' && r.to === 'oakland');
+    if (rte) {
+      const b = rte.bearing_deg * Math.PI / 180;
+      spans.push([Math.sin(b), -Math.cos(b)]);     // the east span
+    }
+    for (const [ux, uz] of spans) {
+      const r0 = R + 42, r1 = 205, mid = (r0 + r1) / 2, len = r1 - r0;
+      const deck = box(len, .5, 5, mat.road, mid * ux, 2.6, mid * uz, g, false);
+      deck.rotation.y = -Math.atan2(uz, ux);
+      for (let d = r0 + 10; d < r1; d += 26)
+        box(1, 2.6, 1, mat.metal, d * ux, 1.3, d * uz, g, false);
+    }
+    tag('Bay Bridge', spans.length ? 160 * spans[0][0] : 0, 8);
+    return;
+  }
+  if (key === 'oakland') {
+    // the waterfront: the Bay west of the campus grounds
+    const bay = new THREE.Mesh(new THREE.PlaneGeometry(240, 560), mat.water);
+    bay.rotation.x = -Math.PI / 2;
+    bay.position.set(-(R + 60) - 120, .06, 0); g.add(bay);
+    tag('San Francisco Bay', -(R + 90), 0);
+  }
 }
 
 function buildCampus(key) {
@@ -2031,7 +2100,7 @@ function buildCampus(key) {
   dressCampus(key, campusGroup, R + 42);
   buildChapterHall(campusGroup, key);
   buildCity(campusGroup, R);
-  walkLim = cityPois ? 162 : campusR + 85;
+  walkLim = cityPois ? (cityLog ? 268 : 175) : campusR + 85;
   scene.add(campusGroup);
 }
 
