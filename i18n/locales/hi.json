@@ -36,7 +36,11 @@
   "station.quiz": "परिदृश्य जाँच",
   "ui.close": "बंद करें",
   "ui.search": "हॉल खोजें",
-  "hall.enter3d": "3D परिवेश खोलें"
+  "hall.enter3d": "3D परिवेश खोलें",
+  "view.campus": "परिसर दृश्य",
+  "ui.walk": "चलें",
+  "hint.campus": "प्रवेश के लिए किसी हॉल पर क्लिक करें",
+  "hint.walk": "चलने के लिए WASD · बाहर निकलने के लिए Esc"
  },
  "districts": {
   "structural": {

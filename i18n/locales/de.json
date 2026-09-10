@@ -36,7 +36,11 @@
   "station.quiz": "Szenarioprüfung",
   "ui.close": "Schließen",
   "ui.search": "Hallen durchsuchen",
-  "hall.enter3d": "3D-Umgebung öffnen"
+  "hall.enter3d": "3D-Umgebung öffnen",
+  "view.campus": "Campusansicht",
+  "ui.walk": "Begehen",
+  "hint.campus": "Halle anklicken, um sie zu betreten",
+  "hint.walk": "WASD zum Bewegen · Esc zum Beenden"
  },
  "districts": {
   "structural": {

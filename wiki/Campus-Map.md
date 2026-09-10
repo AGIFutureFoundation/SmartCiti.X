@@ -80,10 +80,14 @@ position rule (the JS mirror of that rule is asserted against the pack at
 build time in `web/mapdata.py`). The whole surface renders in any of the
 shipped locales, direction-aware.
 
-The 3D environment (`web/trade_craft_3d.html`) goes one level deeper: rooms
-are clickable, each opening its purpose, the trade's own fixtures (also
-standing in the scene as benched props), and the same per-strand module
-rows; safety rooms carry a hazard-stripe threshold at the doorway.
+The 3D environment (`web/trade_craft_3d.html`) goes one level deeper. It
+opens on the **campus view** — all 111 buildings ringed by district
+around a central plaza, hue-banded, with beacons on station-seeded halls;
+click a building to enter its hall. Inside, rooms are clickable, each
+opening its purpose, the trade's own fixtures (also standing in the scene
+as benched props), and the same per-strand module rows; safety rooms carry
+a hazard-stripe threshold at the doorway, and **walk mode** drops to first
+person (WASD, pointer lock) for a floor-level pass through the building.
 
 ## Upgrade candidates
 

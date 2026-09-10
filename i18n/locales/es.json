@@ -36,7 +36,11 @@
   "station.quiz": "Escenario de comprobación",
   "ui.close": "Cerrar",
   "ui.search": "Buscar salas",
-  "hall.enter3d": "Abrir entorno 3D"
+  "hall.enter3d": "Abrir entorno 3D",
+  "view.campus": "Vista del campus",
+  "ui.walk": "Caminar",
+  "hint.campus": "Haz clic en una sala para entrar",
+  "hint.walk": "WASD para moverte · Esc para salir"
  },
  "districts": {
   "structural": {
