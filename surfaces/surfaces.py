@@ -127,3 +127,80 @@ def hazard_of(name, focus):
         if any(w in text for w in words):
             return key, rooms
     return None, {}
+
+
+# ------------------------------------------------------- conditions (§24.2) --
+# Per room: maintained illuminance (lux), air changes per hour, the noise
+# level the room is DESIGNED AROUND (dB), a temperature band (°C), and the
+# PPE the work implies. The empty PPE list is the answer "none", stated
+# explicitly — a briefing room genuinely requires none in ordinary use, and
+# saying so is more useful than a blank a reader has to interpret.
+#
+# These are general good practice, not a code reference (§24.3): no figure
+# is read from any jurisdiction's standard.
+BASE_CONDITIONS = {
+    #                 lux  ach  dB   temp°C      base PPE
+    'safety':          (300,  6, 55, (18, 24), ('safety boots', 'hi-vis')),
+    'procedure':       (500,  8, 80, (12, 30), ('hard hat', 'safety glasses',
+                                                'safety boots', 'gloves', 'hi-vis')),
+    'machines':        (500, 10, 85, (12, 28), ('hard hat', 'safety glasses',
+                                                'safety boots', 'gloves', 'hi-vis',
+                                                'hearing protection')),
+    'tools':           (500,  4, 65, (16, 26), ('safety glasses', 'safety boots')),
+    'materials':       (200,  4, 70, (5, 30),  ('hard hat', 'safety boots',
+                                                'hi-vis', 'gloves')),
+    'layout':          (750,  4, 60, (16, 26), ('safety boots',)),
+    'inspection':      (1000, 6, 60, (18, 24), ('safety glasses',)),
+    'troubleshooting': (750,  6, 70, (16, 26), ('safety glasses', 'safety boots')),
+    'coordination':    (300,  4, 50, (19, 25), ()),
+    'documentation':   (400,  4, 45, (19, 25), ()),
+    'leadership':      (300,  4, 40, (19, 25), ()),
+}
+
+# What each hazard demands on top, in the rooms it governs. Where two
+# hazards meet, the MORE DEMANDING value wins on every axis (§24.2): lux,
+# air changes and design noise take the maximum, the temperature band
+# narrows to the tightest demand, and PPE is the union — a second hazard
+# can never cancel the first, and the suite asserts that property directly.
+#                    lux   ach  dB   temp°C      added PPE
+HAZARD_CONDITIONS = {
+    'molten-metal':   (500, 20, 90, (10, 40), ('face shield', 'flame-resistant clothing')),
+    'hot-work':       (500, 15, 85, (12, 35), ('welding hood', 'flame-resistant clothing')),
+    'corrosive':      (500, 15, 80, (14, 28), ('chemical gloves', 'face shield', 'apron')),
+    'contaminant':    (500, 12, 80, (14, 28), ('respirator', 'coveralls')),
+    'particulate':    (750, 30, 60, (19, 23), ('coveralls', 'gowning')),
+    'live-electrical':(750,  8, 70, (16, 26), ('dielectric gloves', 'arc-flash face shield')),
+    'stored-energy':  (500, 12, 70, (15, 27), ('face shield',)),
+    'immersion':      (500,  8, 75, (8, 32),  ('immersion suit',)),
+    'wet-process':    (500, 10, 80, (10, 30), ('waterproof boots', 'face shield')),
+    'mobile-plant':   (500,  8, 90, (5, 35),  ('hearing protection', 'hi-vis')),
+    'timber-trade':   (500,  8, 85, (12, 30), ('hearing protection', 'dust mask')),
+}
+assert set(HAZARD_CONDITIONS) == {h[0] for h in HAZARDS}, \
+    'every hazard class carries its condition demands'
+
+
+def hazards_of(name, focus):
+    """ALL the trade's matching hazards, in specificity order. Finishes take
+    the first (most specific); conditions merge every one, more-demanding-
+    wins, so a second hazard can never cancel the first."""
+    text = (name + ' ' + focus).lower()
+    out = []
+    for key, words, rooms in HAZARDS:
+        if any(w in text for w in words):
+            out.append((key, rooms))
+    return out
+
+
+def merge_conditions(strand, hazard_keys):
+    """The room's conditions after every governing hazard has had its say."""
+    lux, ach, db, (tlo, thi), ppe = BASE_CONDITIONS[strand]
+    ppe = set(ppe)
+    for hz in hazard_keys:
+        hlux, hach, hdb, (hlo, hhi), hppe = HAZARD_CONDITIONS[hz]
+        lux = max(lux, hlux); ach = max(ach, hach); db = max(db, hdb)
+        tlo = max(tlo, hlo); thi = min(thi, hhi)
+        ppe |= set(hppe)
+    assert tlo < thi, f'temperature band collapsed for {strand} + {hazard_keys}'
+    return {'lux': lux, 'ach': ach, 'noise_db': db, 'temp_c': [tlo, thi],
+            'ppe': sorted(ppe), 'hazards': sorted(hazard_keys)}

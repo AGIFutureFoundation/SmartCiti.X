@@ -21,7 +21,9 @@ HERE = pathlib.Path(__file__).resolve().parent
 ROOT = HERE.parent
 sys.path.insert(0, str(HERE))
 sys.path.insert(0, str(ROOT / 'web'))
-from surfaces import SURFACES, FUNCTION_DEFAULT, HAZARDS, hazard_of  # noqa: E402
+from surfaces import (SURFACES, FUNCTION_DEFAULT, HAZARDS, hazard_of,  # noqa: E402
+                      BASE_CONDITIONS, HAZARD_CONDITIONS, hazards_of,
+                      merge_conditions)
 from interiors import ROOMS  # noqa: E402
 
 PACK_VERSION = "3.2.0"
@@ -35,7 +37,9 @@ halls = {}
 hazard_count = 0
 for u in unions:
     hz, hz_rooms = hazard_of(u['name'], u['focus'])
+    all_hz = hazards_of(u['name'], u['focus'])
     rooms = {}
+    conditions = {}
     for strand in room_strands:
         func = FUNCTION_DEFAULT[strand]
         want = hz_rooms.get(strand)
@@ -46,7 +50,11 @@ for u in unions:
             # the function choice — which the hazard, where present, happens
             # to confirm rather than change (§24.1)
             rooms[strand] = {'surface': func, 'placed_by': 'function'}
-    halls[u['slug']] = {'hazard': hz, 'rooms': rooms}
+        # §24.2: every governing hazard has its say, more demanding wins
+        governing = [k for k, hrooms in all_hz if strand in hrooms]
+        conditions[strand] = merge_conditions(strand, governing)
+    halls[u['slug']] = {'hazard': hz, 'hazards': [k for k, _ in all_hz],
+                        'rooms': rooms, 'conditions': conditions}
 
 stamp = hashlib.sha256((HERE / 'surfaces.py').read_bytes()).hexdigest()[:16]
 
@@ -76,6 +84,12 @@ doc = {
     # exactly what was tested rather than more.
     'no_finish_driving_hazard': sorted(s for s, h in halls.items() if not h['hazard']),
     'hazard_placed_finishes': hazard_count,
+    'base_conditions': {k: {'lux': v[0], 'ach': v[1], 'noise_db': v[2],
+                            'temp_c': list(v[3]), 'ppe': list(v[4])}
+                        for k, v in BASE_CONDITIONS.items()},
+    'hazard_conditions': {k: {'lux': v[0], 'ach': v[1], 'noise_db': v[2],
+                              'temp_c': list(v[3]), 'ppe': list(v[4])}
+                          for k, v in HAZARD_CONDITIONS.items()},
     'halls': halls,
 }
 
