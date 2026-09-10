@@ -65,6 +65,7 @@ def mermaid_id(slug):
 
 # ------------------------------------------------------------------ Home ---
 def page_home():
+    n_anchors = sum(len(v) for v in geo['anchors'].values())
     route_rows = '\n'.join(
         f'| {campuses[r["from"]]["city"]} ↔ {campuses[r["to"]]["city"]} '
         f'| {r["km"]:,} km |'
@@ -139,6 +140,13 @@ The registry also ships `geo/registry/campuses.geojson` — standard GeoJSON,
 directly consumable by any Mapbox/MapLibre-compatible stack. The 3D network
 view places its campus plates by these true bearings, with the real
 kilometres on the route labels.
+
+Around each campus sit **{n_anchors} RECORDED anchors** — real cities and
+institutions copied verbatim from Locator.X's committed tables (the Bay
+Area city table and the New Orleans POI table, Apache-2.0) and
+cross-checked against those files at build time. The network view marks
+each at its true bearing on the campus plate rim, real kilometres on the
+label.
 
 ## The districts
 
@@ -404,6 +412,10 @@ def page_sims():
         rubric = '\n'.join(f'| {r["axis"]} | {r["measure"]} | `{r["pass"]}` |'
                            for r in sm['rubric'])
         hall_rows = ', '.join(f'**{by_slug[h]["name"]}**' for h in sm['halls'])
+        dash = ', '.join(
+            f'`{g["label"]}{" " + g["unit"] if g["unit"] else ""}`'
+            + (f' (warns at {g["warn_at"]})' if 'warn_at' in g else '')
+            for g in sm['dash'])
         blocks.append(f'''## {sm["name"]} ({sm["kind"]})
 
 {sm["task"]}
@@ -417,7 +429,14 @@ Trains at: {hall_rows} — each run exercises that hall's
 
 | Rubric axis | Measured | Pass |
 |---|---|---|
-{rubric}''')
+{rubric}
+
+**Cockpit.** A live dash of {len(sm["dash"])} gauges — {dash} — with the
+warn thresholds drawn from this registry, not hard-coded in the page.
+View modes: {" / ".join(f"`{v}`" for v in sm["view_modes"])}. Audio is a
+`{sm["audio"]["engine"]}` engine plus {", ".join(f"`{a}`" for a in sm["audio"]["alerts"])} —
+{sm["audio"]["note"]}. Haptic cues ({", ".join(sm["haptics"])}) fire on
+gamepad rumble and the vibration API where the platform offers them.''')
     return f'''# The simulators
 
 Two operable training machines live inside the

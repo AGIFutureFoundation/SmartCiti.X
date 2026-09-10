@@ -59,6 +59,46 @@ if locx.exists():
 else:
     checked = 'Locator.X checkout not present; citation not re-checked this build'
 
+# City and institution anchors near each campus — ALL RECORDED, copied
+# verbatim from Locator.X's committed tables (Apache-2.0, this foundation):
+# the Bay Area city table (src/app.js CITIES) and the New Orleans POI table
+# (build_data_nola.py). Cross-checked against the cited files when the
+# checkout is present, like the Oakland campus pair above.
+ANCHORS = {
+    'treasure-island': [
+        ('San Francisco', 37.7749, -122.4194, 'src/app.js CITIES'),
+        ('Sausalito', 37.859, -122.4853, 'src/app.js CITIES'),
+        ('Alameda', 37.7652, -122.2416, 'src/app.js CITIES'),
+        ('Daly City', 37.6879, -122.4702, 'src/app.js CITIES'),
+    ],
+    'oakland': [
+        ('Berkeley', 37.8716, -122.2727, 'src/app.js CITIES'),
+        ('Emeryville', 37.8313, -122.2852, 'src/app.js CITIES'),
+        ('Alameda', 37.7652, -122.2416, 'src/app.js CITIES'),
+        ('San Leandro', 37.7249, -122.1561, 'src/app.js CITIES'),
+    ],
+    'new-orleans': [
+        ('Tulane University', 29.9404, -90.1207, 'build_data_nola.py pois'),
+        ('Xavier University', 29.9649, -90.1073, 'build_data_nola.py pois'),
+        ('University of New Orleans', 30.0288, -90.0664, 'build_data_nola.py pois'),
+        ('Delgado Community College', 29.9814, -90.1050, 'build_data_nola.py pois'),
+    ],
+}
+
+if locx.exists():
+    _lx = locx.read_text()
+    _nola = (ROOT.parent / 'locator.x' / 'build_data_nola.py').read_text()
+    for _ck, _list in ANCHORS.items():
+        for _name, _lat, _lng, _src in _list:
+            if 'CITIES' in _src:
+                _pat = f"['{_name}',{_lat}"
+                assert _pat in _lx, f'anchor drifted from CITIES: {_name}'
+            else:
+                _pairs = {(float(a), float(b)) for a, b in
+                          re.findall(r'\((-9\d\.\d+),(\d\d\.\d+)\)', _nola)}
+                assert (_lng, _lat) in _pairs, \
+                    f'anchor drifted from the NOLA POI table: {_name}'
+
 campuses = json.load(open(ROOT / 'unions/registry/campuses.json'))['campuses']
 assert set(GEO) == set(campuses), 'a coordinate per campus, exactly'
 
@@ -115,6 +155,14 @@ doc = {
         for k, (lat, lng, prov, src) in GEO.items()
     },
     'routes_km': routes,
+    'anchors': {
+        ck: [{'name': n, 'lat': lat, 'lng': lng, 'provenance': 'RECORDED',
+              'source': f'Locator.X {src}, Apache-2.0',
+              'km': round(haversine_km(GEO[ck][:2], (lat, lng)), 1),
+              'bearing_deg': round(bearing_deg(GEO[ck][:2], (lat, lng)), 1)}
+             for n, lat, lng, src in lst]
+        for ck, lst in ANCHORS.items()
+    },
 }
 
 geojson = {
@@ -130,6 +178,13 @@ geojson = {
              'provenance': prov, 'source': src,
          }}
         for k, (lat, lng, prov, src) in GEO.items()
+    ] + [
+        {'type': 'Feature',
+         'geometry': {'type': 'Point', 'coordinates': [lng, lat]},
+         'properties': {'kind': 'anchor', 'name': n, 'near': ck,
+                        'provenance': 'RECORDED',
+                        'source': f'Locator.X {src}, Apache-2.0'}}
+        for ck, lst in ANCHORS.items() for n, lat, lng, src in lst
     ],
 }
 
@@ -139,5 +194,7 @@ OUT.mkdir(exist_ok=True)
 (OUT / 'campuses.geojson').write_text(json.dumps(geojson, indent=1) + '\n')
 route_txt = ', '.join('{}-{} {} km'.format(r['from'], r['to'], r['km'])
                       for r in routes)
+n_anchor = sum(len(v) for v in ANCHORS.values())
 print(f"geo registry: {len(GEO)} campuses, {len(routes)} routes "
-      f"({route_txt}); {checked} (source stamp {stamp})")
+      f"({route_txt}), {n_anchor} RECORDED anchors; {checked} "
+      f"(source stamp {stamp})")

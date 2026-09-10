@@ -48,7 +48,9 @@
   "sim.start": "Start simulator",
   "sim.results": "Run results",
   "sim.pass": "Passed",
-  "sim.retry": "Try again"
+  "sim.retry": "Try again",
+  "sim.sound": "Sound",
+  "sim.view": "View"
  },
  "districts": {
   "structural": {

@@ -48,7 +48,9 @@
   "sim.start": "Iniciar simulador",
   "sim.results": "Resultados",
   "sim.pass": "Aprobado",
-  "sim.retry": "Intentar de nuevo"
+  "sim.retry": "Intentar de nuevo",
+  "sim.sound": "Sonido",
+  "sim.view": "Vista"
  },
  "districts": {
   "structural": {

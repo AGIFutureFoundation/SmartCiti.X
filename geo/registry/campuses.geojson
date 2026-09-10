@@ -60,6 +60,210 @@
     "provenance": "DERIVED",
     "source": "New Orleans centroid, authored (WGS84)"
    }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.4194,
+     37.7749
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "San Francisco",
+    "near": "treasure-island",
+    "provenance": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.4853,
+     37.859
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Sausalito",
+    "near": "treasure-island",
+    "provenance": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.2416,
+     37.7652
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Alameda",
+    "near": "treasure-island",
+    "provenance": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.4702,
+     37.6879
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Daly City",
+    "near": "treasure-island",
+    "provenance": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.2727,
+     37.8716
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Berkeley",
+    "near": "oakland",
+    "provenance": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.2852,
+     37.8313
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Emeryville",
+    "near": "oakland",
+    "provenance": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.2416,
+     37.7652
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Alameda",
+    "near": "oakland",
+    "provenance": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -122.1561,
+     37.7249
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "San Leandro",
+    "near": "oakland",
+    "provenance": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -90.1207,
+     29.9404
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Tulane University",
+    "near": "new-orleans",
+    "provenance": "RECORDED",
+    "source": "Locator.X build_data_nola.py pois, Apache-2.0"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -90.1073,
+     29.9649
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Xavier University",
+    "near": "new-orleans",
+    "provenance": "RECORDED",
+    "source": "Locator.X build_data_nola.py pois, Apache-2.0"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -90.0664,
+     30.0288
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "University of New Orleans",
+    "near": "new-orleans",
+    "provenance": "RECORDED",
+    "source": "Locator.X build_data_nola.py pois, Apache-2.0"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -90.105,
+     29.9814
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Delgado Community College",
+    "near": "new-orleans",
+    "provenance": "RECORDED",
+    "source": "Locator.X build_data_nola.py pois, Apache-2.0"
+   }
   }
  ]
 }

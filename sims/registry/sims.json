@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-10",
- "source_stamp": "d204ae102660dbb0",
+ "source_stamp": "c4bc2ce18975349c",
  "scoring_contract": "deterministic: every rubric axis is computed from measured state; nothing narrative can change a score",
  "honesty": {
   "status": "schematic physics for practising control discipline - smooth inputs, swing management, ordered procedure. Not equipment certification; no seat time here counts toward one, and the assessment gates still demand unaided verification runs."
@@ -60,7 +60,58 @@
     "port-crane"
    ],
    "skill_strand": "machines",
-   "skill_tier": "applied"
+   "skill_tier": "applied",
+   "dash": [
+    {
+     "id": "slew",
+     "label": "Slew",
+     "unit": "\u00b0"
+    },
+    {
+     "id": "radius",
+     "label": "Radius",
+     "unit": "m"
+    },
+    {
+     "id": "hook",
+     "label": "Hook",
+     "unit": "m"
+    },
+    {
+     "id": "swing",
+     "label": "Swing",
+     "unit": "m",
+     "warn_at": 1.6
+    },
+    {
+     "id": "strikes",
+     "label": "Strikes",
+     "unit": "",
+     "warn_at": 1
+    },
+    {
+     "id": "time",
+     "label": "T",
+     "unit": "s"
+    }
+   ],
+   "audio": {
+    "engine": "hoist-motor",
+    "alerts": [
+     "overswing-chirp",
+     "strike-thud",
+     "result-chime"
+    ],
+    "note": "synthesized in-page (WebAudio); no recordings shipped"
+   },
+   "haptics": [
+    "strike",
+    "finish"
+   ],
+   "view_modes": [
+    "orbit",
+    "cab"
+   ]
   },
   "forklift-run": {
    "name": "Forklift Yard Run",
@@ -110,7 +161,58 @@
     "marine-terminal"
    ],
    "skill_strand": "machines",
-   "skill_tier": "applied"
+   "skill_tier": "applied",
+   "dash": [
+    {
+     "id": "speed",
+     "label": "Speed",
+     "unit": "km/h"
+    },
+    {
+     "id": "steer",
+     "label": "Steer",
+     "unit": "\u00b0"
+    },
+    {
+     "id": "load",
+     "label": "Load",
+     "unit": ""
+    },
+    {
+     "id": "gates",
+     "label": "Gates",
+     "unit": ""
+    },
+    {
+     "id": "cones",
+     "label": "Cones",
+     "unit": "",
+     "warn_at": 1
+    },
+    {
+     "id": "time",
+     "label": "T",
+     "unit": "s"
+    }
+   ],
+   "audio": {
+    "engine": "diesel",
+    "alerts": [
+     "reverse-beeper",
+     "cone-thud",
+     "result-chime"
+    ],
+    "note": "synthesized in-page (WebAudio); no recordings shipped"
+   },
+   "haptics": [
+    "cone",
+    "gate",
+    "finish"
+   ],
+   "view_modes": [
+    "chase",
+    "driver"
+   ]
   }
  },
  "hall_bindings": {

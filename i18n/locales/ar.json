@@ -48,7 +48,9 @@
   "sim.start": "تشغيل المحاكي",
   "sim.results": "النتائج",
   "sim.pass": "ناجح",
-  "sim.retry": "حاول مجدداً"
+  "sim.retry": "حاول مجدداً",
+  "sim.sound": "الصوت",
+  "sim.view": "العرض"
  },
  "districts": {
   "structural": {

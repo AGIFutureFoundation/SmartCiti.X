@@ -48,7 +48,9 @@
   "sim.start": "सिम्युलेटर शुरू करें",
   "sim.results": "परिणाम",
   "sim.pass": "उत्तीर्ण",
-  "sim.retry": "फिर से प्रयास करें"
+  "sim.retry": "फिर से प्रयास करें",
+  "sim.sound": "ध्वनि",
+  "sim.view": "दृश्य"
  },
  "districts": {
   "structural": {

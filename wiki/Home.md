@@ -75,6 +75,13 @@ directly consumable by any Mapbox/MapLibre-compatible stack. The 3D network
 view places its campus plates by these true bearings, with the real
 kilometres on the route labels.
 
+Around each campus sit **12 RECORDED anchors** — real cities and
+institutions copied verbatim from Locator.X's committed tables (the Bay
+Area city table and the New Orleans POI table, Apache-2.0) and
+cross-checked against those files at build time. The network view marks
+each at its true bearing on the campus plate rim, real kilometres on the
+label.
+
 ## The districts
 
 | District | Tagline | Halls |

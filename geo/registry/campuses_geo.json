@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-10",
- "source_stamp": "0917927ecdeef792",
+ "source_stamp": "d042bb67804f5650",
  "crs": "WGS84 (EPSG:4326)",
  "recorded_check": "cross-checked against the Locator.X checkout",
  "honesty": {
@@ -55,5 +55,121 @@
    "km": 3081.0,
    "bearing_deg": 96.8
   }
- ]
+ ],
+ "anchors": {
+  "treasure-island": [
+   {
+    "name": "San Francisco",
+    "lat": 37.7749,
+    "lng": -122.4194,
+    "provenance": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "km": 6.9,
+    "bearing_deg": 218.5
+   },
+   {
+    "name": "Sausalito",
+    "lat": 37.859,
+    "lng": -122.4853,
+    "provenance": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "km": 10.8,
+    "bearing_deg": 291.4
+   },
+   {
+    "name": "Alameda",
+    "lat": 37.7652,
+    "lng": -122.2416,
+    "provenance": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "km": 13.1,
+    "bearing_deg": 119.7
+   },
+   {
+    "name": "Daly City",
+    "lat": 37.6879,
+    "lng": -122.4702,
+    "provenance": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "km": 17.4,
+    "bearing_deg": 210.2
+   }
+  ],
+  "oakland": [
+   {
+    "name": "Berkeley",
+    "lat": 37.8716,
+    "lng": -122.2727,
+    "provenance": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "km": 7.5,
+    "bearing_deg": 359.0
+   },
+   {
+    "name": "Emeryville",
+    "lat": 37.8313,
+    "lng": -122.2852,
+    "provenance": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "km": 3.2,
+    "bearing_deg": 337.7
+   },
+   {
+    "name": "Alameda",
+    "lat": 37.7652,
+    "lng": -122.2416,
+    "provenance": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "km": 5.1,
+    "bearing_deg": 149.2
+   },
+   {
+    "name": "San Leandro",
+    "lat": 37.7249,
+    "lng": -122.1561,
+    "provenance": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "km": 13.4,
+    "bearing_deg": 131.1
+   }
+  ],
+  "new-orleans": [
+   {
+    "name": "Tulane University",
+    "lat": 29.9404,
+    "lng": -90.1207,
+    "provenance": "RECORDED",
+    "source": "Locator.X build_data_nola.py pois, Apache-2.0",
+    "km": 4.9,
+    "bearing_deg": 255.9
+   },
+   {
+    "name": "Xavier University",
+    "lat": 29.9649,
+    "lng": -90.1073,
+    "provenance": "RECORDED",
+    "source": "Locator.X build_data_nola.py pois, Apache-2.0",
+    "km": 3.8,
+    "bearing_deg": 294.0
+   },
+   {
+    "name": "University of New Orleans",
+    "lat": 30.0288,
+    "lng": -90.0664,
+    "provenance": "RECORDED",
+    "source": "Locator.X build_data_nola.py pois, Apache-2.0",
+    "km": 8.7,
+    "bearing_deg": 3.3
+   },
+   {
+    "name": "Delgado Community College",
+    "lat": 29.9814,
+    "lng": -90.105,
+    "provenance": "RECORDED",
+    "source": "Locator.X build_data_nola.py pois, Apache-2.0",
+    "km": 4.7,
+    "bearing_deg": 316.2
+   }
+  ]
+ }
 }

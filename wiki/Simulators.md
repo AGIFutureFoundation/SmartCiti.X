@@ -27,6 +27,13 @@ Trains at: **Crane Operators**, **Riggers & Signalpersons**, **Steel Erectors**,
 | swing | peak load swing during carry (m) | `<= 2.0` |
 | strikes | load or hook contacts with the stacks | `== 0` |
 | time | seconds from hook to release | `informational` |
+
+**Cockpit.** A live dash of 6 gauges — `Slew °`, `Radius m`, `Hook m`, `Swing m` (warns at 1.6), `Strikes` (warns at 1), `T s` — with the
+warn thresholds drawn from this registry, not hard-coded in the page.
+View modes: `orbit` / `cab`. Audio is a
+`hoist-motor` engine plus `overswing-chirp`, `strike-thud`, `result-chime` —
+synthesized in-page (WebAudio); no recordings shipped. Haptic cues (strike, finish) fire on
+gamepad rumble and the vibration API where the platform offers them.
 ## Forklift Yard Run (driving)
 
 Thread the cone lane, pick the pallet square on the forks, and set it down inside the dock bay — without disturbing a cone.
@@ -46,6 +53,13 @@ Trains at: **Teamsters**, **Heavy Equipment Technicians**, **Operating Engineers
 | cones | cones struck | `== 0` |
 | docking | pallet inside the dock bay at set-down | `required` |
 | time | seconds start to set-down | `informational` |
+
+**Cockpit.** A live dash of 6 gauges — `Speed km/h`, `Steer °`, `Load`, `Gates`, `Cones` (warns at 1), `T s` — with the
+warn thresholds drawn from this registry, not hard-coded in the page.
+View modes: `chase` / `driver`. Audio is a
+`diesel` engine plus `reverse-beeper`, `cone-thud`, `result-chime` —
+synthesized in-page (WebAudio); no recordings shipped. Haptic cues (cone, gate, finish) fire on
+gamepad rumble and the vibration API where the platform offers them.
 
 ## What a simulator run is not
 
