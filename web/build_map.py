@@ -31,6 +31,7 @@ PACKS = _pack_root()
 # the surfaces disagreed in the first place.
 sys.path.insert(0, str(ROOT))
 from interiors import build as build_interiors, ROOMS as ROOM_PROGRAMME  # noqa: E402
+from mapdata import make_codes, HUES as SHARED_HUES  # noqa: E402
 
 _districts_json = json.load(open(PACKS / 'unions/registry/districts.json'))['districts']
 DISTRICT_MAP = {k: (d['name'], d['tagline'], d['halls'])
@@ -89,44 +90,6 @@ assert livery('ironworkers')[0] == 141, 'livery hash drifted from the brand pack
 assert livery('welders')[0] == livery('welders')[0]
 
 
-def make_codes(halls):
-    """Three-letter hall codes, derived from the NAME and proven unique.
-
-    Two letters was fine at the 33-hall scale. At 111 it collides — Steel Erectors and
-    Stone Carvers are both "ST" — and the old rule took its letters from the
-    slug, so "window-glazing" printed WI on a pad reading ARCHITECTURAL
-    GLAZIERS. A code that does not match the name it sits under is worse than
-    no code.
-
-    Initials first (ARCHITECTURAL GLAZIERS -> ARG), then a consonant walk, then
-    a numeric tail. The assertion at the end is the part that matters: at this
-    scale uniqueness has to be checked, not assumed.
-    """
-    out, used = {}, set()
-    for slug, name in halls:
-        words = [w for w in ''.join(c if c.isalnum() or c == ' ' else ' ' for c in name).split() if w]
-        cands = []
-        if len(words) >= 3:
-            cands.append(''.join(w[0] for w in words[:3]))
-        if len(words) >= 2:
-            cands.append(words[0][:2] + words[1][0])
-            cands.append(words[0][0] + words[1][:2])
-        base = words[0]
-        cands.append(base[:3])
-        cons = base[0] + ''.join(c for c in base[1:] if c.lower() not in 'aeiou')
-        cands.append((cons + base)[:3])
-        for i in range(10):
-            cands.append(base[:2] + str(i))
-        for c in cands:
-            c = c.upper()
-            if len(c) == 3 and c not in used:
-                out[slug] = c
-                used.add(c)
-                break
-        else:
-            raise AssertionError(f'no free code for {name}')
-    assert len(used) == len(halls), 'hall codes must be unique'
-    return out
 
 
 # ------------------------------------------------------------ geometry ----
