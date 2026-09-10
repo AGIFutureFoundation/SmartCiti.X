@@ -3,8 +3,9 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-10",
- "source_stamp": "d86cd40bb6286fb5",
+ "source_stamp": "85c6d8c3217901e5",
  "guarantee": "cosmetic only: every option is free and unlocked, and no avatar choice affects scoring, access, progression or anything the rubrics measure",
+ "marks": "crew marks are the Academy’s own insignia - the roster’s three-letter hall codes on a shield in the district hue, the same codes the campus map prints. They are not, and do not imitate, any real union’s logo or emblem; no local is named and none is drawn.",
  "sections": [
   {
    "id": "build",
@@ -13,39 +14,147 @@
    "kind": "style",
    "options": [
     {
-     "id": "compact",
-     "glyph": "S",
+     "id": "short-slim",
+     "glyph": "Ss",
      "scale": [
-      0.92,
-      0.92,
-      0.92
+      0.88,
+      0.9,
+      0.84
      ]
     },
     {
-     "id": "standard",
-     "glyph": "M",
+     "id": "short-standard",
+     "glyph": "Sm",
+     "scale": [
+      1.0,
+      0.9,
+      0.96
+     ]
+    },
+    {
+     "id": "short-broad",
+     "glyph": "Sb",
+     "scale": [
+      1.12,
+      0.9,
+      1.08
+     ]
+    },
+    {
+     "id": "short-heavy",
+     "glyph": "Sh",
+     "scale": [
+      1.24,
+      0.9,
+      1.19
+     ]
+    },
+    {
+     "id": "average-slim",
+     "glyph": "As",
+     "scale": [
+      0.88,
+      1.0,
+      0.84
+     ]
+    },
+    {
+     "id": "average-standard",
+     "glyph": "Am",
      "scale": [
       1.0,
       1.0,
-      1.0
+      0.96
      ]
     },
     {
-     "id": "tall",
-     "glyph": "T",
-     "scale": [
-      0.97,
-      1.1,
-      0.97
-     ]
-    },
-    {
-     "id": "broad",
-     "glyph": "B",
+     "id": "average-broad",
+     "glyph": "Ab",
      "scale": [
       1.12,
       1.0,
       1.08
+     ]
+    },
+    {
+     "id": "average-heavy",
+     "glyph": "Ah",
+     "scale": [
+      1.24,
+      1.0,
+      1.19
+     ]
+    },
+    {
+     "id": "tall-slim",
+     "glyph": "Ts",
+     "scale": [
+      0.88,
+      1.08,
+      0.84
+     ]
+    },
+    {
+     "id": "tall-standard",
+     "glyph": "Tm",
+     "scale": [
+      1.0,
+      1.08,
+      0.96
+     ]
+    },
+    {
+     "id": "tall-broad",
+     "glyph": "Tb",
+     "scale": [
+      1.12,
+      1.08,
+      1.08
+     ]
+    },
+    {
+     "id": "tall-heavy",
+     "glyph": "Th",
+     "scale": [
+      1.24,
+      1.08,
+      1.19
+     ]
+    },
+    {
+     "id": "towering-slim",
+     "glyph": "Xs",
+     "scale": [
+      0.88,
+      1.16,
+      0.84
+     ]
+    },
+    {
+     "id": "towering-standard",
+     "glyph": "Xm",
+     "scale": [
+      1.0,
+      1.16,
+      0.96
+     ]
+    },
+    {
+     "id": "towering-broad",
+     "glyph": "Xb",
+     "scale": [
+      1.12,
+      1.16,
+      1.08
+     ]
+    },
+    {
+     "id": "towering-heavy",
+     "glyph": "Xh",
+     "scale": [
+      1.24,
+      1.16,
+      1.19
      ]
     }
    ]
@@ -57,35 +166,435 @@
    "kind": "color",
    "options": [
     {
-     "id": "porcelain",
-     "value": "#f3d7c2"
+     "id": "tone-01",
+     "value": "#f6ddc8"
     },
     {
-     "id": "sand",
-     "value": "#e8bc95"
+     "id": "tone-02",
+     "value": "#f0d3ba"
     },
     {
-     "id": "honey",
-     "value": "#c68f5f"
+     "id": "tone-03",
+     "value": "#ebc9ad"
     },
     {
-     "id": "bronze",
-     "value": "#9c6b43"
+     "id": "tone-04",
+     "value": "#e5bfa0"
     },
     {
-     "id": "umber",
-     "value": "#6f4a2f"
+     "id": "tone-05",
+     "value": "#e0b592"
     },
     {
-     "id": "ebony",
-     "value": "#4a3223"
+     "id": "tone-06",
+     "value": "#daab84"
+    },
+    {
+     "id": "tone-07",
+     "value": "#d4a177"
+    },
+    {
+     "id": "tone-08",
+     "value": "#cf976a"
+    },
+    {
+     "id": "tone-09",
+     "value": "#c98d5c"
+    },
+    {
+     "id": "tone-10",
+     "value": "#b97a4b"
+    },
+    {
+     "id": "tone-11",
+     "value": "#a97045"
+    },
+    {
+     "id": "tone-12",
+     "value": "#9a6640"
+    },
+    {
+     "id": "tone-13",
+     "value": "#8a5c3a"
+    },
+    {
+     "id": "tone-14",
+     "value": "#7a5234"
+    },
+    {
+     "id": "tone-15",
+     "value": "#6b482f"
+    },
+    {
+     "id": "tone-16",
+     "value": "#5b3e29"
+    },
+    {
+     "id": "tone-17",
+     "value": "#4c3424"
+    },
+    {
+     "id": "tone-18",
+     "value": "#3c2a1e"
     }
    ]
   },
   {
-   "id": "workwear",
-   "emoji": "👕",
-   "label": "Workwear",
+   "id": "hair",
+   "emoji": "💇",
+   "label": "Hair",
+   "kind": "style",
+   "options": [
+    {
+     "id": "bald",
+     "glyph": "–"
+    },
+    {
+     "id": "buzz",
+     "glyph": "bz"
+    },
+    {
+     "id": "crew",
+     "glyph": "cr"
+    },
+    {
+     "id": "short",
+     "glyph": "sh"
+    },
+    {
+     "id": "side-part",
+     "glyph": "sp"
+    },
+    {
+     "id": "waves",
+     "glyph": "wv"
+    },
+    {
+     "id": "curls",
+     "glyph": "cu"
+    },
+    {
+     "id": "afro",
+     "glyph": "af"
+    },
+    {
+     "id": "bob",
+     "glyph": "bo"
+    },
+    {
+     "id": "bun",
+     "glyph": "bn"
+    },
+    {
+     "id": "ponytail",
+     "glyph": "pt"
+    },
+    {
+     "id": "braids",
+     "glyph": "br"
+    },
+    {
+     "id": "locs",
+     "glyph": "lc"
+    },
+    {
+     "id": "mohawk",
+     "glyph": "mo"
+    },
+    {
+     "id": "long",
+     "glyph": "lg"
+    },
+    {
+     "id": "undercut",
+     "glyph": "uc"
+    }
+   ]
+  },
+  {
+   "id": "haircolor",
+   "emoji": "🎨",
+   "label": "Hair colour",
+   "kind": "color",
+   "options": [
+    {
+     "id": "black",
+     "value": "#141210"
+    },
+    {
+     "id": "soft-black",
+     "value": "#241f1c"
+    },
+    {
+     "id": "dark-brown",
+     "value": "#3a2a1c"
+    },
+    {
+     "id": "brown",
+     "value": "#553b24"
+    },
+    {
+     "id": "chestnut",
+     "value": "#6c4a2b"
+    },
+    {
+     "id": "auburn",
+     "value": "#7a3b22"
+    },
+    {
+     "id": "red",
+     "value": "#933a24"
+    },
+    {
+     "id": "ginger",
+     "value": "#b55a2c"
+    },
+    {
+     "id": "dark-blond",
+     "value": "#8a6b3e"
+    },
+    {
+     "id": "blond",
+     "value": "#c2a05e"
+    },
+    {
+     "id": "platinum",
+     "value": "#ddd0b0"
+    },
+    {
+     "id": "grey",
+     "value": "#8d8d8d"
+    },
+    {
+     "id": "silver",
+     "value": "#b9bcbe"
+    },
+    {
+     "id": "white",
+     "value": "#e8e8e6"
+    },
+    {
+     "id": "dyed-blue",
+     "value": "#2e5f8a"
+    },
+    {
+     "id": "dyed-green",
+     "value": "#2f6b4a"
+    }
+   ]
+  },
+  {
+   "id": "eyes",
+   "emoji": "👁",
+   "label": "Eyes",
+   "kind": "color",
+   "options": [
+    {
+     "id": "dark-brown",
+     "value": "#3a2417"
+    },
+    {
+     "id": "brown",
+     "value": "#5b3a22"
+    },
+    {
+     "id": "light-brown",
+     "value": "#7a512e"
+    },
+    {
+     "id": "amber",
+     "value": "#9c6b2e"
+    },
+    {
+     "id": "hazel",
+     "value": "#7a6a35"
+    },
+    {
+     "id": "olive-green",
+     "value": "#5f6b3a"
+    },
+    {
+     "id": "green",
+     "value": "#3f7048"
+    },
+    {
+     "id": "emerald",
+     "value": "#2e7a5a"
+    },
+    {
+     "id": "grey-green",
+     "value": "#5f7a6a"
+    },
+    {
+     "id": "grey",
+     "value": "#6f7a80"
+    },
+    {
+     "id": "blue-grey",
+     "value": "#5a7086"
+    },
+    {
+     "id": "blue",
+     "value": "#3f6690"
+    },
+    {
+     "id": "deep-blue",
+     "value": "#2e4f7e"
+    },
+    {
+     "id": "violet-grey",
+     "value": "#6a5f7e"
+    },
+    {
+     "id": "near-black",
+     "value": "#241a12"
+    }
+   ]
+  },
+  {
+   "id": "facialhair",
+   "emoji": "🧔",
+   "label": "Facial hair",
+   "kind": "style",
+   "options": [
+    {
+     "id": "none",
+     "glyph": "–"
+    },
+    {
+     "id": "stubble",
+     "glyph": "st"
+    },
+    {
+     "id": "light-mustache",
+     "glyph": "lm"
+    },
+    {
+     "id": "mustache",
+     "glyph": "mu"
+    },
+    {
+     "id": "handlebar",
+     "glyph": "hb"
+    },
+    {
+     "id": "chin-strap",
+     "glyph": "cs"
+    },
+    {
+     "id": "soul-patch",
+     "glyph": "sp"
+    },
+    {
+     "id": "goatee",
+     "glyph": "go"
+    },
+    {
+     "id": "circle-beard",
+     "glyph": "cb"
+    },
+    {
+     "id": "short-beard",
+     "glyph": "sb"
+    },
+    {
+     "id": "full-beard",
+     "glyph": "fb"
+    },
+    {
+     "id": "long-beard",
+     "glyph": "lb"
+    },
+    {
+     "id": "mutton-chops",
+     "glyph": "mc"
+    },
+    {
+     "id": "walrus",
+     "glyph": "wa"
+    },
+    {
+     "id": "garibaldi",
+     "glyph": "ga"
+    }
+   ]
+  },
+  {
+   "id": "headwear",
+   "emoji": "⛑",
+   "label": "Headwear",
+   "kind": "style",
+   "options": [
+    {
+     "id": "none",
+     "glyph": "–"
+    },
+    {
+     "id": "hard-cap",
+     "glyph": "hc"
+    },
+    {
+     "id": "full-brim",
+     "glyph": "fu"
+    },
+    {
+     "id": "climbing",
+     "glyph": "cl"
+    },
+    {
+     "id": "vintage",
+     "glyph": "vi"
+    },
+    {
+     "id": "carbon",
+     "glyph": "ca"
+    },
+    {
+     "id": "ball-cap",
+     "glyph": "bc"
+    },
+    {
+     "id": "ball-cap-back",
+     "glyph": "bb"
+    },
+    {
+     "id": "flat-cap",
+     "glyph": "fc"
+    },
+    {
+     "id": "beanie",
+     "glyph": "be"
+    },
+    {
+     "id": "bucket",
+     "glyph": "bu"
+    },
+    {
+     "id": "welding-cap",
+     "glyph": "we"
+    },
+    {
+     "id": "visor",
+     "glyph": "vs"
+    },
+    {
+     "id": "headband",
+     "glyph": "hb"
+    },
+    {
+     "id": "bandana",
+     "glyph": "ba"
+    },
+    {
+     "id": "winter-liner",
+     "glyph": "wl"
+    }
+   ]
+  },
+  {
+   "id": "headcolor",
+   "emoji": "🟡",
+   "label": "Headwear colour",
    "kind": "color",
    "options": [
     {
@@ -97,76 +606,212 @@
      "value": "#d9c22e"
     },
     {
+     "id": "safety-green",
+     "value": "#7ac142"
+    },
+    {
      "id": "forest",
      "value": "#3c6b45"
+    },
+    {
+     "id": "olive",
+     "value": "#5b6238"
     },
     {
      "id": "slate",
      "value": "#4a5a64"
     },
     {
-     "id": "crimson",
-     "value": "#a03a34"
+     "id": "navy",
+     "value": "#2c3e5a"
     },
     {
      "id": "royal",
      "value": "#2f4d8a"
+    },
+    {
+     "id": "steel-blue",
+     "value": "#4a7a96"
+    },
+    {
+     "id": "teal",
+     "value": "#2f6f6a"
+    },
+    {
+     "id": "crimson",
+     "value": "#a03a34"
+    },
+    {
+     "id": "rust",
+     "value": "#9c5a30"
+    },
+    {
+     "id": "duck-brown",
+     "value": "#a5793f"
+    },
+    {
+     "id": "sand",
+     "value": "#c2a878"
+    },
+    {
+     "id": "charcoal",
+     "value": "#33363a"
+    },
+    {
+     "id": "grey",
+     "value": "#6c7276"
     }
    ]
   },
   {
-   "id": "hardhat",
-   "emoji": "⛑",
-   "label": "Hard hat",
+   "id": "top",
+   "emoji": "👕",
+   "label": "Top",
    "kind": "style",
    "options": [
     {
-     "id": "cap-brim",
-     "glyph": "C"
+     "id": "tee",
+     "glyph": "te"
     },
     {
-     "id": "full-brim",
-     "glyph": "F"
+     "id": "long-sleeve",
+     "glyph": "ls"
     },
     {
-     "id": "climbing",
-     "glyph": "K"
+     "id": "henley",
+     "glyph": "he"
     },
     {
-     "id": "vintage",
-     "glyph": "V"
+     "id": "polo",
+     "glyph": "po"
+    },
+    {
+     "id": "flannel",
+     "glyph": "fl"
+    },
+    {
+     "id": "hoodie",
+     "glyph": "ho"
+    },
+    {
+     "id": "sweatshirt",
+     "glyph": "sw"
+    },
+    {
+     "id": "denim-jacket",
+     "glyph": "dj"
+    },
+    {
+     "id": "chore-coat",
+     "glyph": "cc"
+    },
+    {
+     "id": "coveralls",
+     "glyph": "co"
+    },
+    {
+     "id": "hi-vis-tee",
+     "glyph": "hv"
+    },
+    {
+     "id": "tank",
+     "glyph": "ta"
+    },
+    {
+     "id": "thermal",
+     "glyph": "th"
+    },
+    {
+     "id": "rain-shell",
+     "glyph": "ra"
+    },
+    {
+     "id": "fleece",
+     "glyph": "fe"
+    },
+    {
+     "id": "work-shirt",
+     "glyph": "ws"
     }
    ]
   },
   {
-   "id": "hatcolor",
-   "emoji": "🎨",
-   "label": "Hat colour",
+   "id": "topcolor",
+   "emoji": "🧵",
+   "label": "Top colour",
    "kind": "color",
    "options": [
     {
-     "id": "safety-white",
-     "value": "#e9ecec"
+     "id": "hi-vis-orange",
+     "value": "#e8722a"
     },
     {
-     "id": "safety-yellow",
-     "value": "#e6c62d"
-    },
-    {
-     "id": "safety-orange",
-     "value": "#e07425"
-    },
-    {
-     "id": "safety-blue",
-     "value": "#2f5f9e"
+     "id": "hi-vis-yellow",
+     "value": "#d9c22e"
     },
     {
      "id": "safety-green",
-     "value": "#3b7d4f"
+     "value": "#7ac142"
     },
     {
-     "id": "safety-red",
-     "value": "#b03a30"
+     "id": "forest",
+     "value": "#3c6b45"
+    },
+    {
+     "id": "olive",
+     "value": "#5b6238"
+    },
+    {
+     "id": "slate",
+     "value": "#4a5a64"
+    },
+    {
+     "id": "navy",
+     "value": "#2c3e5a"
+    },
+    {
+     "id": "royal",
+     "value": "#2f4d8a"
+    },
+    {
+     "id": "steel-blue",
+     "value": "#4a7a96"
+    },
+    {
+     "id": "teal",
+     "value": "#2f6f6a"
+    },
+    {
+     "id": "crimson",
+     "value": "#a03a34"
+    },
+    {
+     "id": "rust",
+     "value": "#9c5a30"
+    },
+    {
+     "id": "duck-brown",
+     "value": "#a5793f"
+    },
+    {
+     "id": "sand",
+     "value": "#c2a878"
+    },
+    {
+     "id": "charcoal",
+     "value": "#33363a"
+    },
+    {
+     "id": "grey",
+     "value": "#6c7276"
+    },
+    {
+     "id": "stone",
+     "value": "#9a978c"
+    },
+    {
+     "id": "white",
+     "value": "#e6e6e2"
     }
    ]
   },
@@ -181,40 +826,272 @@
      "glyph": "–"
     },
     {
-     "id": "stripe",
-     "glyph": "||"
+     "id": "hi-vis-2",
+     "glyph": "v2"
+    },
+    {
+     "id": "hi-vis-3",
+     "glyph": "v3"
     },
     {
      "id": "surveyor",
-     "glyph": "X"
+     "glyph": "su"
     },
     {
      "id": "harness",
-     "glyph": "H"
+     "glyph": "ha"
+    },
+    {
+     "id": "tool-vest",
+     "glyph": "to"
+    },
+    {
+     "id": "mesh",
+     "glyph": "me"
+    },
+    {
+     "id": "insulated",
+     "glyph": "in"
+    },
+    {
+     "id": "fire-resist",
+     "glyph": "fr"
+    },
+    {
+     "id": "crew-shell",
+     "glyph": "cs"
+    },
+    {
+     "id": "rain-vest",
+     "glyph": "rv"
+    },
+    {
+     "id": "lead-apron",
+     "glyph": "la"
+    },
+    {
+     "id": "life-vest",
+     "glyph": "lv"
+    },
+    {
+     "id": "back-support",
+     "glyph": "bs"
+    },
+    {
+     "id": "parka-vest",
+     "glyph": "pv"
     }
    ]
   },
   {
-   "id": "boots",
-   "emoji": "🥾",
-   "label": "Boots",
+   "id": "pants",
+   "emoji": "👖",
+   "label": "Trousers",
+   "kind": "style",
+   "options": [
+    {
+     "id": "jeans",
+     "glyph": "je"
+    },
+    {
+     "id": "duck-canvas",
+     "glyph": "du"
+    },
+    {
+     "id": "cargo",
+     "glyph": "ca"
+    },
+    {
+     "id": "carpenter",
+     "glyph": "cp"
+    },
+    {
+     "id": "bib-overalls",
+     "glyph": "bi"
+    },
+    {
+     "id": "chinos",
+     "glyph": "ch"
+    },
+    {
+     "id": "shorts",
+     "glyph": "sh"
+    },
+    {
+     "id": "insulated",
+     "glyph": "in"
+    },
+    {
+     "id": "rain-pants",
+     "glyph": "ra"
+    },
+    {
+     "id": "hi-vis",
+     "glyph": "hv"
+    },
+    {
+     "id": "painter-white",
+     "glyph": "pw"
+    },
+    {
+     "id": "fr-pants",
+     "glyph": "fr"
+    },
+    {
+     "id": "khaki-work",
+     "glyph": "kh"
+    },
+    {
+     "id": "black-denim",
+     "glyph": "bd"
+    },
+    {
+     "id": "grey-work",
+     "glyph": "gw"
+    },
+    {
+     "id": "olive-work",
+     "glyph": "ol"
+    }
+   ]
+  },
+  {
+   "id": "pantscolor",
+   "emoji": "🌂",
+   "label": "Trouser colour",
    "kind": "color",
    "options": [
     {
-     "id": "tan",
-     "value": "#9a6f43"
+     "id": "safety-green",
+     "value": "#7ac142"
     },
     {
-     "id": "brown",
-     "value": "#5d4127"
+     "id": "forest",
+     "value": "#3c6b45"
     },
     {
-     "id": "black",
-     "value": "#26262a"
+     "id": "olive",
+     "value": "#5b6238"
+    },
+    {
+     "id": "slate",
+     "value": "#4a5a64"
+    },
+    {
+     "id": "navy",
+     "value": "#2c3e5a"
+    },
+    {
+     "id": "royal",
+     "value": "#2f4d8a"
+    },
+    {
+     "id": "steel-blue",
+     "value": "#4a7a96"
+    },
+    {
+     "id": "teal",
+     "value": "#2f6f6a"
+    },
+    {
+     "id": "crimson",
+     "value": "#a03a34"
+    },
+    {
+     "id": "rust",
+     "value": "#9c5a30"
+    },
+    {
+     "id": "duck-brown",
+     "value": "#a5793f"
+    },
+    {
+     "id": "sand",
+     "value": "#c2a878"
+    },
+    {
+     "id": "charcoal",
+     "value": "#33363a"
     },
     {
      "id": "grey",
      "value": "#6c7276"
+    },
+    {
+     "id": "stone",
+     "value": "#9a978c"
+    }
+   ]
+  },
+  {
+   "id": "shoes",
+   "emoji": "🥾",
+   "label": "Footwear",
+   "kind": "style",
+   "options": [
+    {
+     "id": "steel-toe-brown",
+     "glyph": "sb"
+    },
+    {
+     "id": "steel-toe-black",
+     "glyph": "sk"
+    },
+    {
+     "id": "steel-toe-tan",
+     "glyph": "st"
+    },
+    {
+     "id": "comp-toe-grey",
+     "glyph": "cg"
+    },
+    {
+     "id": "logger",
+     "glyph": "lo"
+    },
+    {
+     "id": "wellington",
+     "glyph": "we"
+    },
+    {
+     "id": "hiker",
+     "glyph": "hi"
+    },
+    {
+     "id": "rubber-yellow",
+     "glyph": "ry"
+    },
+    {
+     "id": "rubber-green",
+     "glyph": "rg"
+    },
+    {
+     "id": "sneaker-white",
+     "glyph": "sw"
+    },
+    {
+     "id": "sneaker-black",
+     "glyph": "sn"
+    },
+    {
+     "id": "sneaker-red",
+     "glyph": "sr"
+    },
+    {
+     "id": "sneaker-blue",
+     "glyph": "su"
+    },
+    {
+     "id": "high-top",
+     "glyph": "ht"
+    },
+    {
+     "id": "slip-on",
+     "glyph": "so"
+    },
+    {
+     "id": "lineman",
+     "glyph": "li"
     }
    ]
   },
@@ -230,28 +1107,865 @@
     },
     {
      "id": "basic",
-     "glyph": "b"
+     "glyph": "ba"
     },
     {
      "id": "framing",
-     "glyph": "f"
+     "glyph": "fr"
     },
     {
      "id": "electric",
-     "glyph": "e"
+     "glyph": "el"
+    },
+    {
+     "id": "plumber",
+     "glyph": "pl"
+    },
+    {
+     "id": "mason",
+     "glyph": "ma"
+    },
+    {
+     "id": "welder",
+     "glyph": "we"
+    },
+    {
+     "id": "surveyor",
+     "glyph": "su"
+    },
+    {
+     "id": "drywall",
+     "glyph": "dr"
+    },
+    {
+     "id": "hvac",
+     "glyph": "hv"
+    },
+    {
+     "id": "glazier",
+     "glyph": "gl"
+    },
+    {
+     "id": "roofer",
+     "glyph": "ro"
+    },
+    {
+     "id": "concrete",
+     "glyph": "co"
+    },
+    {
+     "id": "rigger",
+     "glyph": "ri"
+    },
+    {
+     "id": "finisher",
+     "glyph": "fi"
+    }
+   ]
+  },
+  {
+   "id": "crew",
+   "emoji": "🪵",
+   "label": "Crew",
+   "kind": "crew",
+   "options": [
+    {
+     "id": "ironworkers",
+     "glyph": "IRO",
+     "hue": 210,
+     "district": "structural",
+     "name": "Ironworkers"
+    },
+    {
+     "id": "electricians",
+     "glyph": "ELW",
+     "hue": 182,
+     "district": "systems",
+     "name": "Electrical Workers"
+    },
+    {
+     "id": "pipefitters",
+     "glyph": "PLP",
+     "hue": 182,
+     "district": "systems",
+     "name": "Plumbers & Pipefitters"
+    },
+    {
+     "id": "carpenters",
+     "glyph": "CAR",
+     "hue": 28,
+     "district": "envelope",
+     "name": "Carpenters"
+    },
+    {
+     "id": "operating-eng",
+     "glyph": "OPE",
+     "hue": 100,
+     "district": "earthworks",
+     "name": "Operating Engineers"
+    },
+    {
+     "id": "laborers",
+     "glyph": "LAB",
+     "hue": 100,
+     "district": "earthworks",
+     "name": "Laborers"
+    },
+    {
+     "id": "sheetmetal",
+     "glyph": "SMW",
+     "hue": 182,
+     "district": "systems",
+     "name": "Sheet Metal Workers"
+    },
+    {
+     "id": "bricklayers",
+     "glyph": "BAC",
+     "hue": 28,
+     "district": "envelope",
+     "name": "Bricklayers & Allied Craft"
+    },
+    {
+     "id": "cement-masons",
+     "glyph": "CEM",
+     "hue": 28,
+     "district": "envelope",
+     "name": "Cement Masons"
+    },
+    {
+     "id": "roofers",
+     "glyph": "ROW",
+     "hue": 28,
+     "district": "envelope",
+     "name": "Roofers & Waterproofers"
+    },
+    {
+     "id": "painters",
+     "glyph": "PAT",
+     "hue": 28,
+     "district": "envelope",
+     "name": "Painters & Allied Trades"
+    },
+    {
+     "id": "glaziers",
+     "glyph": "GLA",
+     "hue": 28,
+     "district": "envelope",
+     "name": "Glaziers"
+    },
+    {
+     "id": "insulators",
+     "glyph": "HFI",
+     "hue": 28,
+     "district": "envelope",
+     "name": "Heat & Frost Insulators"
+    },
+    {
+     "id": "millwrights",
+     "glyph": "MIL",
+     "hue": 210,
+     "district": "structural",
+     "name": "Millwrights"
+    },
+    {
+     "id": "boilermakers",
+     "glyph": "BOI",
+     "hue": 210,
+     "district": "structural",
+     "name": "Boilermakers"
+    },
+    {
+     "id": "elevator",
+     "glyph": "ELC",
+     "hue": 182,
+     "district": "systems",
+     "name": "Elevator Constructors"
+    },
+    {
+     "id": "teamsters",
+     "glyph": "TEA",
+     "hue": 100,
+     "district": "earthworks",
+     "name": "Teamsters"
+    },
+    {
+     "id": "welders",
+     "glyph": "WET",
+     "hue": 210,
+     "district": "structural",
+     "name": "Welding Trades"
+    },
+    {
+     "id": "hvacr",
+     "glyph": "HRT",
+     "hue": 182,
+     "district": "systems",
+     "name": "HVAC/R Technicians"
+    },
+    {
+     "id": "crane-ops",
+     "glyph": "CRO",
+     "hue": 210,
+     "district": "structural",
+     "name": "Crane Operators"
+    },
+    {
+     "id": "riggers",
+     "glyph": "RIS",
+     "hue": 210,
+     "district": "structural",
+     "name": "Riggers & Signalpersons"
+    },
+    {
+     "id": "heavy-equip",
+     "glyph": "HET",
+     "hue": 100,
+     "district": "earthworks",
+     "name": "Heavy Equipment Technicians"
+    },
+    {
+     "id": "drywall",
+     "glyph": "DRF",
+     "hue": 28,
+     "district": "envelope",
+     "name": "Drywall Finishers"
+    },
+    {
+     "id": "flooring",
+     "glyph": "FLC",
+     "hue": 28,
+     "district": "envelope",
+     "name": "Floor Coverers"
+    },
+    {
+     "id": "grounds",
+     "glyph": "GRL",
+     "hue": 100,
+     "district": "earthworks",
+     "name": "Grounds & Landscape"
+    },
+    {
+     "id": "line-workers",
+     "glyph": "ULW",
+     "hue": 48,
+     "district": "energy",
+     "name": "Utility Line Workers"
+    },
+    {
+     "id": "solar",
+     "glyph": "SOI",
+     "hue": 48,
+     "district": "energy",
+     "name": "Solar Installers"
+    },
+    {
+     "id": "wind",
+     "glyph": "WTT",
+     "hue": 48,
+     "district": "energy",
+     "name": "Wind Turbine Technicians"
+    },
+    {
+     "id": "demolition",
+     "glyph": "DEW",
+     "hue": 100,
+     "district": "earthworks",
+     "name": "Demolition Workers"
+    },
+    {
+     "id": "scaffold",
+     "glyph": "SCE",
+     "hue": 100,
+     "district": "earthworks",
+     "name": "Scaffold Erectors"
+    },
+    {
+     "id": "surveyors",
+     "glyph": "COS",
+     "hue": 148,
+     "district": "control",
+     "name": "Construction Surveyors"
+    },
+    {
+     "id": "fire-sprinkler",
+     "glyph": "FSF",
+     "hue": 182,
+     "district": "systems",
+     "name": "Fire Sprinkler Fitters"
+    },
+    {
+     "id": "hazmat",
+     "glyph": "HAE",
+     "hue": 148,
+     "district": "control",
+     "name": "Hazmat & Environmental"
+    },
+    {
+     "id": "refractory",
+     "glyph": "REM",
+     "hue": 348,
+     "district": "industry",
+     "name": "Refractory Masons"
+    },
+    {
+     "id": "pipeline",
+     "glyph": "PIT",
+     "hue": 348,
+     "district": "industry",
+     "name": "Pipeline Trades"
+    },
+    {
+     "id": "tank-erectors",
+     "glyph": "TAE",
+     "hue": 348,
+     "district": "industry",
+     "name": "Tank Erectors"
+    },
+    {
+     "id": "shipfitters",
+     "glyph": "SHI",
+     "hue": 210,
+     "district": "structural",
+     "name": "Shipfitters"
+    },
+    {
+     "id": "marine-pipe",
+     "glyph": "MAP",
+     "hue": 348,
+     "district": "industry",
+     "name": "Marine Pipefitters"
+    },
+    {
+     "id": "divers",
+     "glyph": "COD",
+     "hue": 348,
+     "district": "industry",
+     "name": "Commercial Divers"
+    },
+    {
+     "id": "blasters",
+     "glyph": "DRB",
+     "hue": 100,
+     "district": "earthworks",
+     "name": "Drillers & Blasters"
+    },
+    {
+     "id": "miners",
+     "glyph": "UNM",
+     "hue": 100,
+     "district": "earthworks",
+     "name": "Underground Miners"
+    },
+    {
+     "id": "smelter",
+     "glyph": "SMO",
+     "hue": 348,
+     "district": "industry",
+     "name": "Smelter Operators"
+    },
+    {
+     "id": "foundry",
+     "glyph": "FOW",
+     "hue": 348,
+     "district": "industry",
+     "name": "Foundry Workers"
+    },
+    {
+     "id": "machinists",
+     "glyph": "MAC",
+     "hue": 348,
+     "district": "industry",
+     "name": "Machinists"
+    },
+    {
+     "id": "toolmakers",
+     "glyph": "TDM",
+     "hue": 348,
+     "district": "industry",
+     "name": "Tool & Die Makers"
+    },
+    {
+     "id": "fabricators",
+     "glyph": "STF",
+     "hue": 210,
+     "district": "structural",
+     "name": "Structural Fabricators"
+    },
+    {
+     "id": "platers",
+     "glyph": "PLC",
+     "hue": 348,
+     "district": "industry",
+     "name": "Platers & Coaters"
+    },
+    {
+     "id": "substation",
+     "glyph": "SUT",
+     "hue": 48,
+     "district": "energy",
+     "name": "Substation Technicians"
+    },
+    {
+     "id": "cable-splicers",
+     "glyph": "CAS",
+     "hue": 48,
+     "district": "energy",
+     "name": "Cable Splicers"
+    },
+    {
+     "id": "meter-techs",
+     "glyph": "MET",
+     "hue": 48,
+     "district": "energy",
+     "name": "Meter Technicians"
+    },
+    {
+     "id": "gas-distrib",
+     "glyph": "GDF",
+     "hue": 48,
+     "district": "energy",
+     "name": "Gas Distribution Fitters"
+    },
+    {
+     "id": "water-distrib",
+     "glyph": "WDF",
+     "hue": 48,
+     "district": "energy",
+     "name": "Water Distribution Fitters"
+    },
+    {
+     "id": "wastewater",
+     "glyph": "WAO",
+     "hue": 48,
+     "district": "energy",
+     "name": "Wastewater Operators"
+    },
+    {
+     "id": "nuclear",
+     "glyph": "NPT",
+     "hue": 48,
+     "district": "energy",
+     "name": "Nuclear Plant Trades"
+    },
+    {
+     "id": "hydro",
+     "glyph": "HPT",
+     "hue": 48,
+     "district": "energy",
+     "name": "Hydro Plant Trades"
+    },
+    {
+     "id": "geothermal",
+     "glyph": "GET",
+     "hue": 48,
+     "district": "energy",
+     "name": "Geothermal Technicians"
+    },
+    {
+     "id": "battery-storage",
+     "glyph": "BST",
+     "hue": 48,
+     "district": "energy",
+     "name": "Battery Storage Technicians"
+    },
+    {
+     "id": "ev-charging",
+     "glyph": "ECI",
+     "hue": 48,
+     "district": "energy",
+     "name": "EV Charging Installers"
+    },
+    {
+     "id": "hydrogen",
+     "glyph": "HST",
+     "hue": 48,
+     "district": "energy",
+     "name": "Hydrogen Systems Trades"
+    },
+    {
+     "id": "transmission",
+     "glyph": "TRL",
+     "hue": 48,
+     "district": "energy",
+     "name": "Transmission Linemen"
+    },
+    {
+     "id": "district-energy",
+     "glyph": "DEO",
+     "hue": 48,
+     "district": "energy",
+     "name": "District Energy Operators"
+    },
+    {
+     "id": "masonry-restore",
+     "glyph": "MAR",
+     "hue": 28,
+     "district": "envelope",
+     "name": "Masonry Restoration"
+    },
+    {
+     "id": "stone-carvers",
+     "glyph": "STC",
+     "hue": 28,
+     "district": "envelope",
+     "name": "Stone Carvers"
+    },
+    {
+     "id": "plasterers",
+     "glyph": "PLA",
+     "hue": 28,
+     "district": "envelope",
+     "name": "Plasterers"
+    },
+    {
+     "id": "terrazzo",
+     "glyph": "TEW",
+     "hue": 28,
+     "district": "envelope",
+     "name": "Terrazzo Workers"
+    },
+    {
+     "id": "tilesetters",
+     "glyph": "TIS",
+     "hue": 28,
+     "district": "envelope",
+     "name": "Tile Setters"
+    },
+    {
+     "id": "lathers",
+     "glyph": "LMF",
+     "hue": 28,
+     "district": "envelope",
+     "name": "Lathers & Metal Framers"
+    },
+    {
+     "id": "curtainwall",
+     "glyph": "CWE",
+     "hue": 28,
+     "district": "envelope",
+     "name": "Curtain Wall Erectors"
+    },
+    {
+     "id": "waterproofers",
+     "glyph": "BGW",
+     "hue": 28,
+     "district": "envelope",
+     "name": "Below-Grade Waterproofers"
+    },
+    {
+     "id": "firestop",
+     "glyph": "FII",
+     "hue": 28,
+     "district": "envelope",
+     "name": "Firestop Installers"
+    },
+    {
+     "id": "acoustic",
+     "glyph": "ACS",
+     "hue": 28,
+     "district": "envelope",
+     "name": "Acoustic Specialists"
+    },
+    {
+     "id": "cladding",
+     "glyph": "RCF",
+     "hue": 28,
+     "district": "envelope",
+     "name": "Rainscreen Cladding Fitters"
+    },
+    {
+     "id": "shoring",
+     "glyph": "SHU",
+     "hue": 100,
+     "district": "earthworks",
+     "name": "Shoring & Underpinning"
+    },
+    {
+     "id": "piling",
+     "glyph": "PIC",
+     "hue": 210,
+     "district": "structural",
+     "name": "Piling Crews"
+    },
+    {
+     "id": "concrete-pump",
+     "glyph": "CPO",
+     "hue": 100,
+     "district": "earthworks",
+     "name": "Concrete Pump Operators"
+    },
+    {
+     "id": "post-tension",
+     "glyph": "PTT",
+     "hue": 100,
+     "district": "earthworks",
+     "name": "Post-Tension Technicians"
+    },
+    {
+     "id": "precast",
+     "glyph": "PRE",
+     "hue": 210,
+     "district": "structural",
+     "name": "Precast Erectors"
+    },
+    {
+     "id": "steel-erectors",
+     "glyph": "STE",
+     "hue": 210,
+     "district": "structural",
+     "name": "Steel Erectors"
+    },
+    {
+     "id": "decking",
+     "glyph": "MDI",
+     "hue": 210,
+     "district": "structural",
+     "name": "Metal Deck Installers"
+    },
+    {
+     "id": "window-glazing",
+     "glyph": "ARG",
+     "hue": 28,
+     "district": "envelope",
+     "name": "Architectural Glaziers"
+    },
+    {
+     "id": "bas-controls",
+     "glyph": "BAT",
+     "hue": 182,
+     "district": "systems",
+     "name": "Building Automation Techs"
+    },
+    {
+     "id": "fire-alarm",
+     "glyph": "FAT",
+     "hue": 182,
+     "district": "systems",
+     "name": "Fire Alarm Technicians"
+    },
+    {
+     "id": "security-sys",
+     "glyph": "SSI",
+     "hue": 182,
+     "district": "systems",
+     "name": "Security Systems Installers"
+    },
+    {
+     "id": "network-cabling",
+     "glyph": "SCT",
+     "hue": 182,
+     "district": "systems",
+     "name": "Structured Cabling Techs"
+    },
+    {
+     "id": "fiber-splicers",
+     "glyph": "FIS",
+     "hue": 182,
+     "district": "systems",
+     "name": "Fiber Splicers"
+    },
+    {
+     "id": "data-center",
+     "glyph": "DCT",
+     "hue": 182,
+     "district": "systems",
+     "name": "Data Centre Technicians"
+    },
+    {
+     "id": "instrumentation",
+     "glyph": "INT",
+     "hue": 182,
+     "district": "systems",
+     "name": "Instrumentation Technicians"
+    },
+    {
+     "id": "plc-techs",
+     "glyph": "PCT",
+     "hue": 182,
+     "district": "systems",
+     "name": "PLC & Controls Technicians"
+    },
+    {
+     "id": "robotics",
+     "glyph": "IRT",
+     "hue": 182,
+     "district": "systems",
+     "name": "Industrial Robotics Techs"
+    },
+    {
+     "id": "automation-int",
+     "glyph": "AUI",
+     "hue": 182,
+     "district": "systems",
+     "name": "Automation Integrators"
+    },
+    {
+     "id": "cleanroom",
+     "glyph": "CLT",
+     "hue": 182,
+     "district": "systems",
+     "name": "Cleanroom Trades"
+    },
+    {
+     "id": "medical-gas",
+     "glyph": "MGI",
+     "hue": 182,
+     "district": "systems",
+     "name": "Medical Gas Installers"
+    },
+    {
+     "id": "rail-track",
+     "glyph": "RTW",
+     "hue": 262,
+     "district": "transport",
+     "name": "Rail Track Workers"
+    },
+    {
+     "id": "rail-signals",
+     "glyph": "RST",
+     "hue": 262,
+     "district": "transport",
+     "name": "Rail Signal Technicians"
+    },
+    {
+     "id": "catenary",
+     "glyph": "OCL",
+     "hue": 262,
+     "district": "transport",
+     "name": "Overhead Catenary Linemen"
+    },
+    {
+     "id": "transit-vehicle",
+     "glyph": "TVT",
+     "hue": 262,
+     "district": "transport",
+     "name": "Transit Vehicle Technicians"
+    },
+    {
+     "id": "aviation-ground",
+     "glyph": "AGS",
+     "hue": 262,
+     "district": "transport",
+     "name": "Aviation Ground Support"
+    },
+    {
+     "id": "airfield",
+     "glyph": "AIT",
+     "hue": 262,
+     "district": "transport",
+     "name": "Airfield Trades"
+    },
+    {
+     "id": "port-crane",
+     "glyph": "POC",
+     "hue": 262,
+     "district": "transport",
+     "name": "Port Crane Technicians"
+    },
+    {
+     "id": "marine-terminal",
+     "glyph": "MTO",
+     "hue": 262,
+     "district": "transport",
+     "name": "Marine Terminal Operators"
+    },
+    {
+     "id": "fleet-diesel",
+     "glyph": "FDT",
+     "hue": 262,
+     "district": "transport",
+     "name": "Fleet Diesel Technicians"
+    },
+    {
+     "id": "bridge-inspect",
+     "glyph": "BIC",
+     "hue": 262,
+     "district": "transport",
+     "name": "Bridge Inspection Crews"
+    },
+    {
+     "id": "asbestos",
+     "glyph": "AAW",
+     "hue": 148,
+     "district": "control",
+     "name": "Asbestos Abatement Workers"
+    },
+    {
+     "id": "lead-abatement",
+     "glyph": "LAW",
+     "hue": 148,
+     "district": "control",
+     "name": "Lead Abatement Workers"
+    },
+    {
+     "id": "mold-remediation",
+     "glyph": "MRT",
+     "hue": 148,
+     "district": "control",
+     "name": "Mould Remediation Techs"
+    },
+    {
+     "id": "spill-response",
+     "glyph": "SRT",
+     "hue": 148,
+     "district": "control",
+     "name": "Spill Response Technicians"
+    },
+    {
+     "id": "confined-space",
+     "glyph": "CSR",
+     "hue": 148,
+     "district": "control",
+     "name": "Confined Space Rescue"
+    },
+    {
+     "id": "high-angle",
+     "glyph": "HAR",
+     "hue": 148,
+     "district": "control",
+     "name": "High-Angle Rescue"
+    },
+    {
+     "id": "site-safety",
+     "glyph": "SSC",
+     "hue": 148,
+     "district": "control",
+     "name": "Site Safety Coordinators"
+    },
+    {
+     "id": "industrial-clean",
+     "glyph": "ICC",
+     "hue": 148,
+     "district": "control",
+     "name": "Industrial Cleaning Crews"
+    },
+    {
+     "id": "survey-drone",
+     "glyph": "ASO",
+     "hue": 148,
+     "district": "control",
+     "name": "Aerial Survey Operators"
     }
    ]
   }
  ],
  "defaults": {
-  "build": "standard",
-  "skin": "honey",
-  "workwear": "hi-vis-orange",
-  "hardhat": "cap-brim",
-  "hatcolor": "safety-yellow",
-  "vest": "stripe",
-  "boots": "tan",
-  "tools": "basic"
+  "build": "average-standard",
+  "skin": "tone-08",
+  "hair": "short",
+  "haircolor": "dark-brown",
+  "eyes": "brown",
+  "facialhair": "none",
+  "headwear": "hard-cap",
+  "headcolor": "hi-vis-yellow",
+  "top": "tee",
+  "topcolor": "hi-vis-orange",
+  "vest": "hi-vis-2",
+  "pants": "duck-canvas",
+  "pantscolor": "duck-brown",
+  "shoes": "steel-toe-brown",
+  "tools": "basic",
+  "crew": "ironworkers"
  },
  "emotes": [
   {

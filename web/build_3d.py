@@ -40,7 +40,7 @@ def _pack_root():
 ROOT = _pack_root()
 sys.path.insert(0, str(ROOT / 'web'))
 from interiors import build as build_interiors  # noqa: E402
-from mapdata import strand_modules, PIPELINE_JS  # noqa: E402
+from mapdata import strand_modules, PIPELINE_JS, HUES, make_codes  # noqa: E402
 
 manifest = json.load(open(ROOT / 'pack/manifest.json'))
 L = manifest['ledger']
@@ -55,8 +55,6 @@ sims_reg = json.load(open(ROOT / 'sims/registry/sims.json'))
 stations_reg = json.load(open(ROOT / 'stations/registry/stations.json'))
 yard = json.load(open(ROOT / 'archive/bac_yard_stations.json'))['yard_placements']
 
-HUES = {'structural': 210, 'envelope': 28, 'systems': 182, 'energy': 48,
-        'earthworks': 100, 'industry': 348, 'transport': 262, 'control': 148}
 
 
 def hall_level_states(slug):
@@ -831,6 +829,7 @@ let avatarGroup = null, avatarMesh = null, walkAvatar = null;
 let avatarCfg = null, lastEmote = null;
 let emo = null;                       // {move, t} while an emote plays
 let wheelSection = 0;                 // index into sections; length = emotes tab
+let crewDistrict = null;              // the crew wheel's first level
 
 function cfgInit() {
   const base = { ...D.avatars.defaults };
@@ -848,66 +847,267 @@ function optOf(sectionId) {
   return s.options.find((o) => o.id === avatarCfg[sectionId]) ?? s.options[0];
 }
 
-/* A procedural worker, ~1.75 units tall, built from the cfg. Parts are
-   named for the emote moves: shoulders pivot, the hat lifts, the whole
-   body spins or hops. */
+/* The humanoid: capsule body, real facial features, hair by style, the
+   full wardrobe, and the crew mark - the hall's three-letter code on a
+   shield in its district hue - stamped on vest, shirt and headwear.
+   Parts are named for the emote moves: shoulders pivot, the hat lifts,
+   the whole body spins or hops. The marks are the Academy's own insignia
+   (the registry says so); no real union's logo is drawn. */
+const crewTexCache = {};
+function crewMarkTex(crewId) {
+  if (crewTexCache[crewId]) return crewTexCache[crewId];
+  const o = D.avatars.sections.find((s) => s.kind === 'crew')
+    .options.find((x) => x.id === crewId);
+  const c = document.createElement('canvas'); c.width = c.height = 128;
+  const g2 = c.getContext('2d');
+  g2.clearRect(0, 0, 128, 128);
+  const hue = o?.hue ?? 40;
+  // the shield
+  g2.beginPath();
+  g2.moveTo(14, 18); g2.lineTo(114, 18); g2.lineTo(114, 72);
+  g2.quadraticCurveTo(114, 104, 64, 122);
+  g2.quadraticCurveTo(14, 104, 14, 72); g2.closePath();
+  g2.fillStyle = `hsl(${hue},52%,36%)`; g2.fill();
+  g2.lineWidth = 6; g2.strokeStyle = `hsl(${hue},60%,68%)`; g2.stroke();
+  g2.fillStyle = '#f2f4f2';
+  g2.font = '700 44px "Barlow Condensed", system-ui, sans-serif';
+  g2.textAlign = 'center'; g2.textBaseline = 'middle';
+  g2.fillText(o?.glyph ?? '', 64, 62);
+  g2.font = '600 15px "IBM Plex Sans", sans-serif';
+  g2.fillText('TCA', 64, 96);
+  const tex = new THREE.CanvasTexture(c);
+  crewTexCache[crewId] = tex;
+  return tex;
+}
+function markPlane(w, h, crewId) {
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h),
+    new THREE.MeshBasicMaterial({ map: crewMarkTex(crewId), transparent: true }));
+  return m;
+}
+
+function capsule(r, len, m, x, y, z, parent) {
+  const c = new THREE.Mesh(new THREE.CapsuleGeometry(r, len, 4, 10), m);
+  c.position.set(x, y, z); c.castShadow = true; parent.add(c);
+  return c;
+}
+function sphere(r, m, x, y, z, parent, sx = 1, sy = 1, sz = 1) {
+  const o = new THREE.Mesh(new THREE.SphereGeometry(r, 18, 14), m);
+  o.position.set(x, y, z); o.scale.set(sx, sy, sz);
+  o.castShadow = true; parent.add(o);
+  return o;
+}
+
 function buildAvatarMesh(cfg) {
   const g = new THREE.Group();
-  const skin = new THREE.MeshStandardMaterial({
-    color: optOf('skin').value, roughness: .75 });
-  const wear = new THREE.MeshStandardMaterial({
-    color: optOf('workwear').value, roughness: .85 });
-  const boot = new THREE.MeshStandardMaterial({
-    color: optOf('boots').value, roughness: .9 });
-  const hatM = new THREE.MeshStandardMaterial({
-    color: optOf('hatcolor').value, roughness: .5 });
+  const M = (hex, rough = .8) => new THREE.MeshStandardMaterial({
+    color: hex, roughness: rough });
+  const skin = M(optOf('skin').value, .65);
+  const hairM = M(optOf('haircolor').value, .85);
+  const eyeM = M(optOf('eyes').value, .3);
+  const topM = M(optOf('topcolor').value, .85);
+  const pantsM = M(optOf('pantscolor').value, .9);
+  const hatM = M(optOf('headcolor').value, .5);
   const hiviz = new THREE.MeshStandardMaterial({
-    color: 0xd9c22e, emissive: 0x5a5010, roughness: .6 });
-  // legs + boots
+    color: 0xd9c22e, emissive: 0x4a4208, roughness: .6 });
+  const reflect = new THREE.MeshStandardMaterial({
+    color: 0xe8ecec, emissive: 0x555b5b, roughness: .35 });
+  const dark = M('#26262a', .85);
+  const shoeHex = { 'steel-toe-brown': '#6a4a2a', 'steel-toe-black': '#26262a',
+    'steel-toe-tan': '#a5793f', 'comp-toe-grey': '#6c7276', logger: '#4a3320',
+    wellington: '#2e4d3a', hiker: '#7a5a34', 'rubber-yellow': '#d9c22e',
+    'rubber-green': '#3c6b45', 'sneaker-white': '#e6e6e2',
+    'sneaker-black': '#26262a', 'sneaker-red': '#a03a34',
+    'sneaker-blue': '#2f4d8a', 'high-top': '#33363a', 'slip-on': '#5d4127',
+    lineman: '#3a2a1c' }[cfg.shoes] ?? '#6a4a2a';
+  const shoeM = M(shoeHex, .7);
+  const crewId = cfg.crew;
+
+  const shorts = cfg.pants === 'shorts';
+  const coveralls = cfg.top === 'coveralls';
+  const legM = coveralls ? topM : pantsM;
+
+  // legs: thigh + calf capsules, boots with a toe
   for (const sx of [-1, 1]) {
-    box(.16, .52, .2, wear, sx * .12, .56, 0, g);
-    box(.2, .3, .3, boot, sx * .12, .15, .03, g);
+    capsule(.095, .3, legM, sx * .13, .82, 0, g);
+    capsule(.08, .26, shorts ? skin : legM, sx * .13, .42, 0, g);
+    const b = box(.17, .13, .3, shoeM, sx * .13, .1, .03, g);
+    sphere(.085, shoeM, sx * .13, .09, .17, g, 1, .8, 1);
+    b.castShadow = true;
   }
-  // torso
-  box(.5, .55, .3, wear, 0, 1.08, 0, g);
-  const vest = cfg.vest;
-  if (vest !== 'none') {
-    box(.54, vest === 'harness' ? .2 : .4, .33, hiviz, 0,
-      vest === 'harness' ? 1.24 : 1.1, 0, g);
-    if (vest === 'surveyor' || vest === 'harness')
-      box(.1, .5, .34, hiviz, 0, 1.08, 0, g);
+  // hips and torso
+  box(.4, .16, .26, coveralls ? topM : pantsM, 0, 1.0, 0, g);
+  capsule(.2, .38, topM, 0, 1.32, 0, g);
+  if (cfg.top === 'flannel' || cfg.top === 'work-shirt') {
+    box(.05, .5, .27, M('#2a2523', .9), 0, 1.32, 0, g);   // placket line
+  }
+  if (cfg.top === 'hoodie') {
+    const hood = new THREE.Mesh(new THREE.TorusGeometry(.14, .05, 8, 14), topM);
+    hood.position.set(0, 1.56, -.1); hood.rotation.x = .5; g.add(hood);
+  }
+  if (cfg.pants === 'bib-overalls') {
+    box(.26, .3, .04, pantsM, 0, 1.38, .2, g);
+    for (const sx of [-1, 1]) box(.05, .3, .03, pantsM, sx * .1, 1.55, .16, g);
+  }
+  // the shirt mark
+  const chest = markPlane(.14, .16, crewId);
+  chest.position.set(.1, 1.4, .215); g.add(chest);
+
+  // vest over it
+  if (cfg.vest !== 'none') {
+    const vm = ['hi-vis-2', 'hi-vis-3', 'mesh'].includes(cfg.vest) ? hiviz
+      : cfg.vest === 'fire-resist' ? M('#a03a34', .7)
+      : cfg.vest === 'life-vest' ? M('#e8722a', .6)
+      : cfg.vest === 'tool-vest' ? M('#5d4127', .85)
+      : M('#4a5a64', .8);
+    box(.46, .42, .05, vm, 0, 1.34, .2, g);
+    box(.46, .42, .05, vm, 0, 1.34, -.2, g);
+    for (const sx of [-1, 1]) box(.1, .06, .44, vm, sx * .17, 1.56, 0, g);
+    if (cfg.vest !== 'tool-vest') {
+      box(.46, .05, .055, reflect, 0, 1.24, .2, g, false);
+      box(.46, .05, .055, reflect, 0, 1.24, -.2, g, false);
+      if (cfg.vest === 'hi-vis-3' || cfg.vest === 'surveyor')
+        for (const sx of [-1, 1])
+          box(.06, .4, .055, reflect, sx * .12, 1.34, .2, g, false);
+    }
+    const back = markPlane(.2, .24, crewId);
+    back.position.set(0, 1.36, -.228); back.rotation.y = Math.PI; g.add(back);
   }
   // tool belt
   if (cfg.tools !== 'none') {
-    box(.56, .1, .34, boot, 0, .84, 0, g);
-    const n = cfg.tools === 'basic' ? 1 : cfg.tools === 'framing' ? 3 : 2;
+    box(.44, .09, .3, dark, 0, .95, 0, g);
+    const n = { basic: 1, framing: 3, electric: 2, plumber: 2, mason: 2,
+      welder: 2, surveyor: 1, drywall: 2, hvac: 2, glazier: 1, roofer: 3,
+      concrete: 2, rigger: 3, finisher: 2 }[cfg.tools] ?? 1;
     for (let i = 0; i < n; i++)
-      box(.12, .16, .08, mat.part, -.2 + i * .2, .74, .19, g);
+      box(.11, .16, .07, M('#5d4127', .9), -.16 + i * .16, .84, .18, g);
   }
+
   // arms on shoulder pivots
+  const sleeves = ['long-sleeve', 'flannel', 'hoodie', 'sweatshirt',
+    'denim-jacket', 'chore-coat', 'coveralls', 'thermal', 'rain-shell',
+    'fleece', 'work-shirt'].includes(cfg.top);
+  const tank = cfg.top === 'tank';
   const arms = {};
   for (const [nm, sx] of [['armL', -1], ['armR', 1]]) {
-    const p = new THREE.Group(); p.position.set(sx * .32, 1.32, 0); g.add(p);
-    box(.14, .3, .18, wear, 0, -.15, 0, p);
-    box(.12, .26, .16, skin, 0, -.42, 0, p);
+    const p = new THREE.Group(); p.position.set(sx * .3, 1.52, 0); g.add(p);
+    capsule(.07, .2, tank ? skin : topM, 0, -.14, 0, p);
+    capsule(.06, .18, sleeves ? topM : skin, 0, -.42, 0, p);
+    sphere(.06, skin, 0, -.58, 0, p);
     arms[nm] = p;
   }
-  // head + hat
-  const head = new THREE.Group(); head.position.y = 1.4; g.add(head);
-  box(.28, .3, .26, skin, 0, .15, 0, head);
-  const hat = new THREE.Group(); hat.position.y = .32; head.add(hat);
-  const dome = new THREE.Mesh(new THREE.CylinderGeometry(
-    cfg.hardhat === 'vintage' ? .17 : .19, .21,
-    cfg.hardhat === 'vintage' ? .2 : .14, 12), hatM);
-  dome.position.y = .05; dome.castShadow = true; hat.add(dome);
-  if (cfg.hardhat === 'full-brim') {
-    const brim = new THREE.Mesh(new THREE.CylinderGeometry(.3, .32, .03, 14), hatM);
-    hat.add(brim);
-  } else if (cfg.hardhat === 'cap-brim') {
-    box(.2, .03, .16, hatM, 0, 0, .24, hat, false);
-  } else if (cfg.hardhat === 'climbing') {
-    box(.06, .1, .3, hatM, 0, .02, 0, hat, false);   // ridge, strap look
+
+  // neck + head with the face
+  capsule(.06, .06, skin, 0, 1.6, 0, g);
+  const head = new THREE.Group(); head.position.y = 1.78; g.add(head);
+  sphere(.145, skin, 0, 0, 0, head, 1, 1.08, 1);
+  for (const sx of [-1, 1]) {
+    sphere(.032, M('#f2f2ee', .4), sx * .052, .02, .118, head, 1, 1, .5);
+    sphere(.016, eyeM, sx * .052, .02, .138, head);
+    box(.05, .012, .02, hairM, sx * .052, .065, .125, head, false);
   }
+  sphere(.028, skin, 0, -.01, .145, head, .8, 1.1, .9);           // nose
+  box(.05, .012, .015, M('#8a5a4a', .6), 0, -.062, .132, head, false); // mouth
+  for (const sx of [-1, 1]) sphere(.03, skin, sx * .14, 0, 0, head, .5, 1, .8);
+
+  // facial hair, from the hair colour
+  const fh = cfg.facialhair;
+  if (fh !== 'none') {
+    const fhM = new THREE.MeshStandardMaterial({
+      color: optOf('haircolor').value, roughness: .95,
+      transparent: fh === 'stubble', opacity: fh === 'stubble' ? .35 : 1 });
+    const mo = () => box(.085, .02, .03, fhM, 0, -.035, .132, head, false);
+    if (['light-mustache', 'mustache', 'handlebar', 'walrus'].includes(fh)) mo();
+    if (fh === 'handlebar') for (const sx of [-1, 1])
+      box(.02, .04, .025, fhM, sx * .05, -.05, .128, head, false);
+    if (fh === 'walrus') box(.1, .035, .035, fhM, 0, -.05, .13, head, false);
+    if (['goatee', 'circle-beard', 'soul-patch'].includes(fh))
+      box(.05, .05, .03, fhM, 0, -.105, .11, head, false);
+    if (fh === 'circle-beard') mo();
+    if (['stubble', 'short-beard', 'full-beard', 'long-beard',
+         'garibaldi'].includes(fh))
+      sphere(.148, fhM, 0, -.045, 0, head, .95, .8, .95);
+    if (['full-beard', 'long-beard', 'garibaldi'].includes(fh)) mo();
+    if (fh === 'long-beard') capsule(.05, .1, fhM, 0, -.2, .06, head);
+    if (fh === 'garibaldi') sphere(.09, fhM, 0, -.15, .05, head, 1, .9, .8);
+    if (['chin-strap', 'mutton-chops'].includes(fh)) {
+      for (const sx of [-1, 1])
+        box(.03, .1, .06, fhM, sx * .125, -.04, .04, head, false);
+      if (fh === 'chin-strap') box(.08, .03, .03, fhM, 0, -.125, .09, head, false);
+    }
+  }
+
+  // hair, unless a full hat hides it anyway
+  const hs = cfg.hair;
+  if (hs !== 'bald') {
+    const shell = (sy, y) => sphere(.152, hairM, 0, y, -.01, head, 1, sy, 1);
+    if (['buzz', 'crew', 'undercut'].includes(hs)) shell(.62, .05);
+    else if (['short', 'side-part', 'waves', 'curls'].includes(hs)) shell(.75, .045);
+    else if (hs === 'afro') sphere(.2, hairM, 0, .07, -.01, head);
+    else if (hs === 'bob') { shell(.85, .03); sphere(.15, hairM, 0, -.03, -.05, head, 1, .9, .8); }
+    else if (hs === 'bun') { shell(.7, .045); sphere(.055, hairM, 0, .1, -.15, head); }
+    else if (hs === 'ponytail') { shell(.7, .045); capsule(.04, .16, hairM, 0, -.06, -.16, head); }
+    else if (hs === 'braids') { shell(.7, .045);
+      for (const sx of [-1, 0, 1]) capsule(.025, .16, hairM, sx * .07, -.08, -.13, head); }
+    else if (hs === 'locs') { shell(.75, .05);
+      for (const sx of [-2, -1, 0, 1, 2]) capsule(.022, .12, hairM, sx * .05, -.05, -.12, head); }
+    else if (hs === 'mohawk') box(.035, .09, .24, hairM, 0, .12, -.01, head);
+    else if (hs === 'long') { shell(.8, .04);
+      box(.2, .3, .05, hairM, 0, -.12, -.12, head, false); }
+    if (hs === 'curls') sphere(.16, hairM, 0, .06, -.01, head, 1, .7, 1);
+  }
+
+  // headwear, on its own group so the hat-tip emote can lift it
+  const hat = new THREE.Group(); hat.position.y = .13; head.add(hat);
+  const hw = cfg.headwear;
+  const markFront = () => {
+    const mk = markPlane(.09, .1, crewId);
+    mk.position.set(0, .035, .135); mk.rotation.x = -.15; hat.add(mk);
+  };
+  if (['hard-cap', 'full-brim', 'climbing', 'vintage', 'carbon'].includes(hw)) {
+    const dome = new THREE.Mesh(new THREE.CylinderGeometry(
+      hw === 'vintage' ? .12 : .135, .15,
+      hw === 'vintage' ? .13 : .09, 14),
+      hw === 'carbon' ? M('#2a2d31', .35) : hatM);
+    dome.position.y = .06; dome.castShadow = true; hat.add(dome);
+    if (hw === 'full-brim') {
+      const brim = new THREE.Mesh(new THREE.CylinderGeometry(.21, .225, .02, 16),
+        hw === 'carbon' ? M('#2a2d31', .35) : hatM);
+      brim.position.y = .015; hat.add(brim);
+    } else if (hw !== 'climbing') box(.14, .02, .1, hatM, 0, .015, .17, hat, false);
+    if (hw === 'climbing') box(.04, .06, .2, hatM, 0, .05, 0, hat, false);
+    markFront();
+  } else if (hw === 'ball-cap' || hw === 'ball-cap-back') {
+    sphere(.15, hatM, 0, .03, 0, hat, 1, .68, 1);
+    const brim = box(.13, .015, .12, hatM, 0, .02, hw === 'ball-cap' ? .19 : -.19, hat, false);
+    if (hw === 'ball-cap') markFront();
+  } else if (hw === 'flat-cap') {
+    sphere(.15, hatM, 0, .025, -.02, hat, 1, .5, 1.05);
+    box(.12, .012, .08, hatM, 0, .01, .16, hat, false);
+  } else if (hw === 'beanie' || hw === 'winter-liner') {
+    sphere(.152, hatM, 0, .03, 0, hat, 1, .8, 1);
+    if (hw === 'winter-liner') for (const sx of [-1, 1])
+      box(.03, .1, .08, hatM, sx * .14, -.05, .01, hat, false);
+  } else if (hw === 'bucket') {
+    const dm = new THREE.Mesh(new THREE.CylinderGeometry(.13, .14, .1, 14), hatM);
+    dm.position.y = .05; hat.add(dm);
+    const br = new THREE.Mesh(new THREE.CylinderGeometry(.19, .2, .015, 16), hatM);
+    br.position.y = 0; hat.add(br);
+  } else if (hw === 'welding-cap') {
+    const dm = new THREE.Mesh(new THREE.CylinderGeometry(.135, .14, .09, 12), hatM);
+    dm.position.y = .045; hat.add(dm);
+    box(.1, .012, .07, hatM, 0, .005, .16, hat, false);
+  } else if (hw === 'visor') {
+    const band = new THREE.Mesh(new THREE.TorusGeometry(.145, .022, 8, 18), hatM);
+    band.rotation.x = Math.PI / 2; band.position.y = .02; hat.add(band);
+    box(.13, .014, .11, hatM, 0, .02, .18, hat, false);
+  } else if (hw === 'headband') {
+    const band = new THREE.Mesh(new THREE.TorusGeometry(.148, .02, 8, 18), hatM);
+    band.rotation.x = Math.PI / 2; band.position.y = .015; hat.add(band);
+  } else if (hw === 'bandana') {
+    sphere(.152, hatM, 0, .02, 0, hat, 1, .55, 1);
+    box(.05, .06, .02, hatM, 0, -.02, -.15, hat, false);
+  }
+
   const sc = optOf('build').scale ?? [1, 1, 1];
   g.scale.set(sc[0], sc[1], sc[2]);
   g.traverse((o) => { if (o.isMesh) o.castShadow = true; });
@@ -948,7 +1148,7 @@ function stepEmote(dt) {
   for (const av of targets) {
     const { arms, head, hat } = av.userData;
     arms.armL.rotation.set(0, 0, 0); arms.armR.rotation.set(0, 0, 0);
-    hat.position.y = .32; av.position.y = av.userData.baseY ?? av.position.y;
+    hat.position.y = .13; av.position.y = av.userData.baseY ?? av.position.y;
     switch (emo.move) {
       case 'arm-wave':
         arms.armR.rotation.z = -2.6 * s;
@@ -957,7 +1157,7 @@ function stepEmote(dt) {
       case 'arm-point': arms.armR.rotation.x = -1.55 * s; break;
       case 'hat-tip':
         arms.armR.rotation.x = -2.4 * s;
-        hat.position.y = .32 + .18 * s; hat.rotation.z = .35 * s; break;
+        hat.position.y = .13 + .14 * s; hat.rotation.z = .35 * s; break;
       case 'clap':
         arms.armL.rotation.x = arms.armR.rotation.x = -1.4;
         arms.armL.rotation.z = .5 * Math.abs(Math.sin(emo.t * 12));
@@ -972,7 +1172,7 @@ function stepEmote(dt) {
     }
     if (k >= 1) {
       arms.armL.rotation.set(0, 0, 0); arms.armR.rotation.set(0, 0, 0);
-      hat.position.y = .32; hat.rotation.z = 0;
+      hat.position.y = .13; hat.rotation.z = 0;
       if (av.userData.baseY !== undefined) av.position.y = av.userData.baseY;
     }
   }
@@ -993,9 +1193,25 @@ function renderWheel() {
     + `<button class="wtab ${isEmotes ? 'on' : ''}" data-tab="${sections.length}"
         title="Emotes">\\ud83d\\ude00</button>`;
   const svg = document.getElementById('wheel');
-  const items = isEmotes ? D.avatars.emotes
-    : sections[wheelSection].options;
-  const cur = isEmotes ? lastEmote : avatarCfg[sections[wheelSection].id];
+  const sec = isEmotes ? null : sections[wheelSection];
+  const isCrew = sec?.kind === 'crew';
+  // the crew wheel is two levels deep: pick a district, then a hall
+  let items, pickAttr = 'data-pick', hubGlyph;
+  if (isEmotes) { items = D.avatars.emotes; hubGlyph = '\\ud83d\\ude00'; }
+  else if (isCrew && !crewDistrict) {
+    const seen = new Map();
+    for (const o of sec.options)
+      if (!seen.has(o.district)) seen.set(o.district, o.hue);
+    items = [...seen].map(([d, hue]) => ({
+      id: d, glyph: d.slice(0, 2).toUpperCase(), hue,
+      value: `hsl(${hue},45%,34%)` }));
+    pickAttr = 'data-crewdist'; hubGlyph = sec.emoji;
+  } else if (isCrew) {
+    items = sec.options.filter((o) => o.district === crewDistrict)
+      .map((o) => ({ ...o, value: `hsl(${o.hue},45%,34%)` }));
+    pickAttr = 'data-pick'; hubGlyph = '\u2190';
+  } else { items = sec.options; hubGlyph = sec.emoji; }
+  const cur = isEmotes ? lastEmote : avatarCfg[sec.id];
   const N = items.length, R = 92, r0 = 34, cx = 100, cy = 100;
   const wedge = (i) => {
     const a0 = (i / N) * Math.PI * 2 - Math.PI / 2 + .015;
@@ -1008,24 +1224,26 @@ function renderWheel() {
     const a = ((i + .5) / N) * Math.PI * 2 - Math.PI / 2;
     return [cx + Math.cos(a) * rr, cy + Math.sin(a) * rr];
   };
+  const fsz = N > 14 ? 11 : 15;
   svg.innerHTML = items.map((o, i) => {
-    const sel = (isEmotes ? o.id === cur : o.id === cur);
+    const sel = o.id === cur;
     const fill = isEmotes ? 'var(--panel)'
-      : sections[wheelSection].kind === 'color' ? o.value : 'var(--panel)';
+      : (sec.kind === 'color' || isCrew) ? o.value : 'var(--panel)';
     const [tx, ty] = mid(i, (r0 + R) / 2);
     const glyph = isEmotes ? o.emoji
-      : sections[wheelSection].kind === 'color' ? '' : o.glyph;
+      : sec.kind === 'color' ? '' : o.glyph;
     return `<path d="${wedge(i)}" fill="${fill}"
         stroke="${sel ? 'var(--mark)' : 'var(--rule)'}"
-        stroke-width="${sel ? 3 : 1}" data-pick="${o.id}"/>`
+        stroke-width="${sel ? 3 : 1}" ${pickAttr}="${o.id}"/>`
       + (glyph ? `<text x="${tx}" y="${ty}" text-anchor="middle"
-          dominant-baseline="central" font-size="17"
+          dominant-baseline="central" font-size="${isEmotes ? 17 : fsz}"
           fill="var(--ink)" pointer-events="none">${glyph}</text>` : '');
   }).join('')
     + `<circle cx="${cx}" cy="${cy}" r="${r0 - 6}" fill="var(--sunk)"
-        stroke="var(--rule)"/>`
+        stroke="var(--rule)" ${isCrew && crewDistrict ? 'data-crewback="1"' : ''}
+        style="${isCrew && crewDistrict ? 'cursor:pointer' : ''}"/>`
     + `<text x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="central"
-        font-size="20" pointer-events="none">${isEmotes ? '\\ud83d\\ude00' : sections[wheelSection].emoji}</text>`;
+        font-size="20" pointer-events="none">${hubGlyph}</text>`;
 }
 function wheelShow(on) {
   document.getElementById('wheelWrap').style.display = on ? '' : 'none';
@@ -1033,7 +1251,10 @@ function wheelShow(on) {
 }
 document.getElementById('wheelWrap').addEventListener('click', (e) => {
   const tab = e.target.closest('[data-tab]');
-  if (tab) { wheelSection = +tab.dataset.tab; renderWheel(); return; }
+  if (tab) { wheelSection = +tab.dataset.tab; crewDistrict = null; renderWheel(); return; }
+  const dist = e.target.closest('[data-crewdist]');
+  if (dist) { crewDistrict = dist.dataset.crewdist; renderWheel(); return; }
+  if (e.target.closest('[data-crewback]')) { crewDistrict = null; renderWheel(); return; }
   const pick = e.target.closest('[data-pick]');
   if (!pick) return;
   const sections = D.avatars.sections;

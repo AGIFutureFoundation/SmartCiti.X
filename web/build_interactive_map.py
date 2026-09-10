@@ -34,7 +34,7 @@ def _pack_root():
 ROOT = _pack_root()
 sys.path.insert(0, str(ROOT / 'web'))
 from interiors import build as build_interiors  # noqa: E402
-from mapdata import strand_modules, PIPELINE_JS  # noqa: E402
+from mapdata import strand_modules, PIPELINE_JS, HUES, make_codes  # noqa: E402
 
 manifest = json.load(open(ROOT / 'pack/manifest.json'))
 L = manifest['ledger']
@@ -44,8 +44,6 @@ campuses_reg = json.load(open(ROOT / 'unions/registry/campuses.json'))['campuses
 stations_reg = json.load(open(ROOT / 'stations/registry/stations.json'))
 
 # District hues: eight values far enough apart to read as categories.
-HUES = {'structural': 210, 'envelope': 28, 'systems': 182, 'energy': 48,
-        'earthworks': 100, 'industry': 348, 'transport': 262, 'control': 148}
 assert set(HUES) == set(districts_reg), 'every district needs a hue'
 
 
