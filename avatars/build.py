@@ -164,6 +164,29 @@ SECTIONS = [
          ('welder', 'we'), ('surveyor', 'su'), ('drywall', 'dr'),
          ('hvac', 'hv'), ('glazier', 'gl'), ('roofer', 'ro'),
          ('concrete', 'co'), ('rigger', 'ri'), ('finisher', 'fi')])},
+    {'id': 'outer', 'emoji': '\U0001f9e5', 'label': 'Outerwear', 'kind': 'style',
+     'options': styleopts([
+         ('none', '–'), ('parka', 'pa'), ('rain-slicker', 'rs'),
+         ('welding-jacket', 'wj'), ('bomber', 'bo'), ('duster', 'du'),
+         ('windbreaker', 'wb'), ('lined-flannel', 'lf'),
+         ('hi-vis-parka', 'hp'), ('softshell', 'ss'), ('chore-canvas', 'cc'),
+         ('puffer', 'pu'), ('anorak', 'an'), ('varsity', 'va'),
+         ('trench', 'tr')])},
+    {'id': 'extras', 'emoji': '\U0001f97d', 'label': 'Extras', 'kind': 'style',
+     'options': styleopts([
+         ('none', '–'), ('safety-glasses', 'sg'), ('sunglasses', 'su'),
+         ('ear-muffs', 'em'), ('respirator', 're'), ('dust-mask', 'dm'),
+         ('face-shield', 'fs'), ('welding-shield', 'ws'),
+         ('knee-pads', 'kp'), ('elbow-pads', 'ep'), ('tool-lanyard', 'tl'),
+         ('radio', 'ra'), ('headlamp', 'hl'), ('id-badge', 'id'),
+         ('gloves', 'gl')])},
+    {'id': 'costume', 'emoji': '\U0001f3ad', 'label': 'Costume', 'kind': 'style',
+     'options': styleopts([
+         ('none', '–'), ('krewe', 'kr'), ('foundry', 'fo'), ('diver', 'di'),
+         ('vintage-33', 'vi'), ('storm-rider', 'st'), ('gold-journey', 'go'),
+         ('hazmat', 'hz'), ('arc-guard', 'ar'), ('tunnel', 'tu'),
+         ('parade', 'pd'), ('night-reflective', 'ni'), ('mascot', 'ms'),
+         ('frost', 'fr'), ('gala', 'ga')])},
 ]
 
 # ------------------------------------------------------------- the crew ---
@@ -190,8 +213,87 @@ DEFAULTS = {
     'headwear': 'hard-cap', 'headcolor': 'hi-vis-yellow', 'top': 'tee',
     'topcolor': 'hi-vis-orange', 'vest': 'hi-vis-2', 'pants': 'duck-canvas',
     'pantscolor': 'duck-brown', 'shoes': 'steel-toe-brown', 'tools': 'basic',
+    'outer': 'none', 'extras': 'none', 'costume': 'none',
     'crew': 'ironworkers',
 }
+
+# ---------------------------------------------------------- characters ----
+# One-tap personas: a full locker configuration with a name and a line of
+# story. Applying one simply sets the sections - characters are made OF the
+# locker, not an extra system, so every id is validated against it below.
+
+
+def char(cid, emoji, name, blurb, **over):
+    cfg = dict(DEFAULTS)
+    cfg.update(over)
+    return {'id': cid, 'emoji': emoji, 'name': name, 'blurb': blurb,
+            'glyph': emoji, 'cfg': cfg}
+
+
+CHARACTERS = [
+    char('high-steel', '\U0001f3d7', 'The High-Steel Walker',
+         'Connects iron forty storeys up and never hurries.',
+         build='tall-slim', crew='ironworkers', headwear='climbing',
+         vest='harness', top='long-sleeve', topcolor='slate',
+         tools='rigger', extras='tool-lanyard', shoes='lineman'),
+    char('wharf-boss', '⚓', 'The Wharf Operator',
+         'Reads the river, the wind, and the manifest before coffee.',
+         crew='port-crane', headwear='ball-cap', headcolor='navy',
+         outer='rain-slicker', top='work-shirt', topcolor='steel-blue',
+         shoes='rubber-yellow', extras='radio'),
+    char('night-shift', '\U0001f319', 'Night Shift',
+         'The city sleeps; the reflective crew does not.',
+         costume='night-reflective', crew='laborers', headwear='hard-cap',
+         headcolor='hi-vis-yellow', extras='headlamp',
+         pantscolor='charcoal'),
+    char('line-of-sight', '\U0001f4d0', 'The Line of Sight',
+         'A surveyor’s patience: measure twice, argue never.',
+         crew='surveyors', vest='surveyor', headwear='bucket',
+         top='polo', topcolor='teal', tools='surveyor',
+         extras='safety-glasses'),
+    char('sparks', '⚡', 'Sparks',
+         'Finds the fault before the fault finds anyone.',
+         crew='electricians', headwear='welding-cap', headcolor='crimson',
+         top='henley', topcolor='charcoal', tools='electric',
+         extras='gloves', shoes='comp-toe-grey'),
+    char('krewe-royalty', '\U0001f3ad', 'Krewe Royalty',
+         'Second line in front, toolbox in back - laissez les bons temps.',
+         costume='krewe', crew='laborers', hair='locs',
+         facialhair='goatee'),
+    char('foundry-heat', '\U0001f525', 'Foundry Heat',
+         'Walks the pour line where the air itself glows.',
+         costume='foundry', crew='welders', facialhair='full-beard'),
+    char('deep-diver', '\U0001f93f', 'The Deep Diver',
+         'Inspects the pilings nobody else will ever see.',
+         costume='diver', crew='marine-terminal'),
+    char('crew-of-33', '\U0001f570', "The '33 Crew",
+         'Dressed like the bridge-raisers in the old photographs.',
+         costume='vintage-33', crew='bricklayers', headwear='flat-cap',
+         facialhair='mustache'),
+    char('storm-rider', '\U0001f300', 'Storm Rider',
+         'First truck in after the wind, last one out.',
+         costume='storm-rider', crew='teamsters', extras='radio'),
+    char('golden-journey', '\U0001f3c5', 'The Golden Journey',
+         'Fifty years on the tools, and the hat to prove it.',
+         costume='gold-journey', crew='operating-eng',
+         facialhair='walrus', haircolor='silver', hair='short'),
+    char('clean-sweep', '\U0001f9ea', 'Clean Sweep',
+         'Hazmat-calm in places with warning signs on the doors.',
+         costume='hazmat', crew='laborers'),
+    char('arc-guard', '\U0001f6e1', 'Arc Guard',
+         'Suited for the flash that must never happen.',
+         costume='arc-guard', crew='welders', extras='face-shield'),
+    char('tunnel-runner', '\U0001f687', 'The Tunnel Runner',
+         'Knows the bore by sound alone, headlamp always on.',
+         costume='tunnel', crew='miners', extras='headlamp'),
+    char('parade-marshal', '\U0001f3ba', 'Parade Marshal',
+         'Leads the apprentice class down Canal Street once a year.',
+         costume='parade', crew='carpenters', headwear='none'),
+    char('day-one', '\U0001f331', 'Day One',
+         'New boots, clean gloves, and every question worth asking.',
+         crew='scaffold', extras='gloves', shoes='steel-toe-tan',
+         top='tee', topcolor='white'),
+]
 
 EMOTES = [
     {'id': 'wave', 'emoji': '\U0001f44b', 'label': 'Wave', 'move': 'arm-wave'},
@@ -213,6 +315,15 @@ for s in SECTIONS:
         assert 15 <= len(ids) <= 20, f"{s['id']}: {len(ids)} options"
     assert DEFAULTS[s['id']] in ids, s['id']
 
+# Every character is made of the locker: each cfg key is a section and
+# each value one of its options - an invented id fails the build.
+_valid = {s['id']: {o['id'] for o in s['options']} for s in SECTIONS}
+assert len({c['id'] for c in CHARACTERS}) == len(CHARACTERS)
+for c in CHARACTERS:
+    assert set(c['cfg']) == set(_valid), c['id']
+    for k, v in c['cfg'].items():
+        assert v in _valid[k], f"{c['id']}: {k}={v}"
+
 stamp = hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest()[:16]
 
 doc = {
@@ -231,6 +342,7 @@ doc = {
              'and none is drawn.',
     'sections': SECTIONS,
     'defaults': DEFAULTS,
+    'characters': CHARACTERS,
     'emotes': EMOTES,
 }
 
@@ -240,5 +352,5 @@ OUT.mkdir(exist_ok=True)
     json.dumps(doc, ensure_ascii=False, indent=1) + '\n')
 n_std = sum(len(s['options']) for s in SECTIONS if s['kind'] != 'crew')
 print(f"avatar pack: {len(SECTIONS)} locker sections "
-      f"({n_std} options + 111 crews), {len(EMOTES)} emotes "
-      f"(source stamp {stamp})")
+      f"({n_std} options + 111 crews), {len(CHARACTERS)} characters, "
+      f"{len(EMOTES)} emotes (source stamp {stamp})")

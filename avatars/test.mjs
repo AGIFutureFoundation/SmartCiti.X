@@ -37,12 +37,31 @@ ok('the body is a real range: 16 build combinations, 18 skin tones, 16 hairstyle
   && reg.sections.find((s) => s.id === 'hair').options.length === 16
   && reg.sections.find((s) => s.id === 'eyes').options.length === 15
   && reg.sections.find((s) => s.id === 'facialhair').options.length === 15);
-ok('the wardrobe is complete: headwear (hard hats AND ball caps), tops, vest, trousers, footwear, tools',
+ok('the wardrobe is complete: headwear (hard hats AND ball caps), tops, vest, trousers, footwear, tools, outerwear, extras, costumes',
   ['headwear', 'headcolor', 'top', 'topcolor', 'vest', 'pants',
-   'pantscolor', 'shoes', 'tools'].every((id) =>
+   'pantscolor', 'shoes', 'tools', 'outer', 'extras', 'costume'].every((id) =>
     reg.sections.some((s) => s.id === id))
   && ['hard-cap', 'full-brim', 'ball-cap', 'ball-cap-back'].every((id) =>
     reg.sections.find((s) => s.id === 'headwear').options.some((o) => o.id === id)));
+ok('everyday work stays the default: outerwear, extras and costume all open on none',
+  ['outer', 'extras', 'costume'].every((id) => reg.defaults[id] === 'none'
+    && reg.sections.find((s) => s.id === id).options.some((o) => o.id === 'none')));
+
+/* ----------------------------------------------------------- characters --- */
+const secIds = Object.fromEntries(
+  reg.sections.map((s) => [s.id, new Set(s.options.map((o) => o.id))]));
+ok('sixteen one-tap characters, each with a name, an emoji and a line of story',
+  reg.characters.length === 16
+  && new Set(reg.characters.map((c) => c.id)).size === 16
+  && reg.characters.every((c) => c.name && c.emoji && c.blurb?.length > 20));
+ok('every character is made of the locker: each cfg value resolves to a real option',
+  reg.characters.every((c) =>
+    Object.keys(c.cfg).length === reg.sections.length
+    && Object.entries(c.cfg).every(([k, v]) => secIds[k]?.has(v))));
+ok('the costumes range from the krewe to the foundry, and characters wear them',
+  ['krewe', 'foundry', 'diver', 'vintage-33', 'gold-journey'].every((id) =>
+    secIds.costume.has(id))
+  && reg.characters.filter((c) => c.cfg.costume !== 'none').length >= 8);
 
 /* ----------------------------------------------------------------- crew --- */
 ok('the crew section seats the whole roster: one option per hall, exactly',
