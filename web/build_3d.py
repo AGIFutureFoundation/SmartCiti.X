@@ -49,6 +49,7 @@ districts_reg = json.load(open(ROOT / 'unions/registry/districts.json'))['distri
 campuses_reg = json.load(open(ROOT / 'unions/registry/campuses.json'))['campuses']
 finishes_reg = json.load(open(ROOT / 'surfaces/registry/finishes.json'))
 geo_reg = json.load(open(ROOT / 'geo/registry/campuses_geo.json'))
+avatars_reg = json.load(open(ROOT / 'avatars/registry/avatars.json'))
 chapters_reg = json.load(open(ROOT / 'unions/registry/chapters.json'))
 sims_reg = json.load(open(ROOT / 'sims/registry/sims.json'))
 stations_reg = json.load(open(ROOT / 'stations/registry/stations.json'))
@@ -103,7 +104,7 @@ for f in sorted((ROOT / 'i18n/locales').glob('*.json')):
             'hint.campus', 'hint.walk', 'geo.note',
             'sim.start', 'sim.results', 'sim.pass', 'sim.retry',
             'sim.sound', 'sim.view', 'sim.choose', 'progress.local',
-            'city.note',
+            'city.note', 'avatar.title',
             'honesty.taxonomy', 'honesty.content')},
         'districts': {k: v['name'] for k, v in c['districts'].items()},
         'strands': c['strands'], 'tiers': c['tiers'], 'states': c['states'],
@@ -150,6 +151,10 @@ DATA = json.dumps({
     'yard': yard,
     'sims': {'sims': sims_reg['sims'], 'bindings': sims_reg['hall_bindings'],
              'honesty': sims_reg['honesty']['status']},
+    'avatars': {'sections': avatars_reg['sections'],
+                'defaults': avatars_reg['defaults'],
+                'emotes': avatars_reg['emotes'],
+                'guarantee': avatars_reg['guarantee']},
     'chapters': {'of': {slug: c['home']
                         for slug, c in chapters_reg['chapters'].items()},
                  'regions': {k: v['abbr']
@@ -325,6 +330,9 @@ function startSim(simId) {
     def.controls.map(c => c.keys + ' ' + c.action).join(' \\u00b7 ') + ' \\u00b7 Esc';
   document.getElementById('simBtn').style.display = 'none';
   document.getElementById('walkBtn').style.display = 'none';
+  document.getElementById('avaBtn').style.display = 'none';
+  wheelShow(false);
+  if (avatarGroup) avatarGroup.visible = false;
   document.getElementById('camBtn').style.display = '';
   const sb = document.getElementById('sndBtn');
   sb.style.display = '';
@@ -814,6 +822,392 @@ function forkliftSim(P = {}) {
   };
 }"""
 
+AVATAR_JS = """/* --------------------------------------------- avatar + mobile layer ---- */
+// The locker is data (avatars registry): sections, options, emotes. The
+// avatar is COSMETIC ONLY - the registry guarantee, asserted by its suite:
+// nothing here is read by any grader.
+const isTouch = 'ontouchstart' in window;
+let avatarGroup = null, avatarMesh = null, walkAvatar = null;
+let avatarCfg = null, lastEmote = null;
+let emo = null;                       // {move, t} while an emote plays
+let wheelSection = 0;                 // index into sections; length = emotes tab
+
+function cfgInit() {
+  const base = { ...D.avatars.defaults };
+  const saved = prog.avatar;
+  if (saved && typeof saved === 'object') {
+    for (const s of D.avatars.sections) {
+      if (s.options.some((o) => o.id === saved[s.id])) base[s.id] = saved[s.id];
+    }
+  }
+  avatarCfg = base;
+}
+
+function optOf(sectionId) {
+  const s = D.avatars.sections.find((x) => x.id === sectionId);
+  return s.options.find((o) => o.id === avatarCfg[sectionId]) ?? s.options[0];
+}
+
+/* A procedural worker, ~1.75 units tall, built from the cfg. Parts are
+   named for the emote moves: shoulders pivot, the hat lifts, the whole
+   body spins or hops. */
+function buildAvatarMesh(cfg) {
+  const g = new THREE.Group();
+  const skin = new THREE.MeshStandardMaterial({
+    color: optOf('skin').value, roughness: .75 });
+  const wear = new THREE.MeshStandardMaterial({
+    color: optOf('workwear').value, roughness: .85 });
+  const boot = new THREE.MeshStandardMaterial({
+    color: optOf('boots').value, roughness: .9 });
+  const hatM = new THREE.MeshStandardMaterial({
+    color: optOf('hatcolor').value, roughness: .5 });
+  const hiviz = new THREE.MeshStandardMaterial({
+    color: 0xd9c22e, emissive: 0x5a5010, roughness: .6 });
+  // legs + boots
+  for (const sx of [-1, 1]) {
+    box(.16, .52, .2, wear, sx * .12, .56, 0, g);
+    box(.2, .3, .3, boot, sx * .12, .15, .03, g);
+  }
+  // torso
+  box(.5, .55, .3, wear, 0, 1.08, 0, g);
+  const vest = cfg.vest;
+  if (vest !== 'none') {
+    box(.54, vest === 'harness' ? .2 : .4, .33, hiviz, 0,
+      vest === 'harness' ? 1.24 : 1.1, 0, g);
+    if (vest === 'surveyor' || vest === 'harness')
+      box(.1, .5, .34, hiviz, 0, 1.08, 0, g);
+  }
+  // tool belt
+  if (cfg.tools !== 'none') {
+    box(.56, .1, .34, boot, 0, .84, 0, g);
+    const n = cfg.tools === 'basic' ? 1 : cfg.tools === 'framing' ? 3 : 2;
+    for (let i = 0; i < n; i++)
+      box(.12, .16, .08, mat.part, -.2 + i * .2, .74, .19, g);
+  }
+  // arms on shoulder pivots
+  const arms = {};
+  for (const [nm, sx] of [['armL', -1], ['armR', 1]]) {
+    const p = new THREE.Group(); p.position.set(sx * .32, 1.32, 0); g.add(p);
+    box(.14, .3, .18, wear, 0, -.15, 0, p);
+    box(.12, .26, .16, skin, 0, -.42, 0, p);
+    arms[nm] = p;
+  }
+  // head + hat
+  const head = new THREE.Group(); head.position.y = 1.52; g.add(head);
+  box(.28, .3, .26, skin, 0, .15, 0, head);
+  const hat = new THREE.Group(); hat.position.y = .32; head.add(hat);
+  const dome = new THREE.Mesh(new THREE.CylinderGeometry(
+    cfg.hardhat === 'vintage' ? .17 : .19, .21,
+    cfg.hardhat === 'vintage' ? .2 : .14, 12), hatM);
+  dome.position.y = .05; dome.castShadow = true; hat.add(dome);
+  if (cfg.hardhat === 'full-brim') {
+    const brim = new THREE.Mesh(new THREE.CylinderGeometry(.3, .32, .03, 14), hatM);
+    hat.add(brim);
+  } else if (cfg.hardhat === 'cap-brim') {
+    box(.2, .03, .16, hatM, 0, 0, .24, hat, false);
+  } else if (cfg.hardhat === 'climbing') {
+    box(.06, .1, .3, hatM, 0, .02, 0, hat, false);   // ridge, strap look
+  }
+  const sc = optOf('build').scale ?? [1, 1, 1];
+  g.scale.set(sc[0], sc[1], sc[2]);
+  g.traverse((o) => { if (o.isMesh) o.castShadow = true; });
+  g.userData = { arms, head, hat };
+  return g;
+}
+
+function refreshAvatarMeshes() {
+  if (avatarMesh) {
+    const parent = avatarMesh.parent;
+    parent.remove(avatarMesh);
+    avatarMesh.traverse((o) => o.geometry?.dispose());
+    avatarMesh = buildAvatarMesh(avatarCfg);
+    parent.add(avatarMesh);
+  }
+  if (walkAvatar) {
+    const pos = walkAvatar.position.clone(), rot = walkAvatar.rotation.y;
+    scene.remove(walkAvatar);
+    walkAvatar = buildAvatarMesh(avatarCfg);
+    walkAvatar.position.copy(pos); walkAvatar.rotation.y = rot;
+    scene.add(walkAvatar);
+  }
+}
+
+/* ------------------------------------------------------ emote engine ---- */
+function playEmote(id) {
+  const e = D.avatars.emotes.find((x) => x.id === id);
+  if (!e) return;
+  lastEmote = id; emo = { move: e.move, t: 0 };
+  buzz(30, .2);
+}
+function stepEmote(dt) {
+  if (!emo) return;
+  emo.t += dt;
+  const T = 1.3, k = Math.min(1, emo.t / T);
+  const s = Math.sin(k * Math.PI);            // rise and settle
+  const targets = [avatarMesh, walkAvatar].filter(Boolean);
+  for (const av of targets) {
+    const { arms, head, hat } = av.userData;
+    arms.armL.rotation.set(0, 0, 0); arms.armR.rotation.set(0, 0, 0);
+    hat.position.y = .32; av.position.y = av.userData.baseY ?? av.position.y;
+    switch (emo.move) {
+      case 'arm-wave':
+        arms.armR.rotation.z = -2.6 * s;
+        arms.armR.rotation.x = Math.sin(emo.t * 14) * .5 * s; break;
+      case 'arm-up': arms.armR.rotation.x = -2.9 * s; break;
+      case 'arm-point': arms.armR.rotation.x = -1.55 * s; break;
+      case 'hat-tip':
+        arms.armR.rotation.x = -2.4 * s;
+        hat.position.y = .32 + .18 * s; hat.rotation.z = .35 * s; break;
+      case 'clap':
+        arms.armL.rotation.x = arms.armR.rotation.x = -1.4;
+        arms.armL.rotation.z = .5 * Math.abs(Math.sin(emo.t * 12));
+        arms.armR.rotation.z = -.5 * Math.abs(Math.sin(emo.t * 12)); break;
+      case 'flex':
+        arms.armL.rotation.z = 2.2 * s; arms.armR.rotation.z = -2.2 * s; break;
+      case 'spin': av.rotation.y += dt * 10 * s; break;
+      case 'jump':
+        av.userData.baseY ??= av.position.y;
+        av.position.y = av.userData.baseY + Math.abs(Math.sin(emo.t * 9)) * .35 * s;
+        break;
+    }
+    if (k >= 1) {
+      arms.armL.rotation.set(0, 0, 0); arms.armR.rotation.set(0, 0, 0);
+      hat.position.y = .32; hat.rotation.z = 0;
+      if (av.userData.baseY !== undefined) av.position.y = av.userData.baseY;
+    }
+  }
+  if (k >= 1) emo = null;
+}
+
+/* ------------------------------------------------- the thumb wheel ------ */
+// One radial control, sized for a thumb: wedges are the current locker
+// section's options (colour or glyph), or the emote emojis on the last
+// tab. Tap a wedge to apply or play.
+function renderWheel() {
+  const tabs = document.getElementById('wheelTabs');
+  const sections = D.avatars.sections;
+  const isEmotes = wheelSection === sections.length;
+  tabs.innerHTML = sections.map((s, i) =>
+    `<button class="wtab ${i === wheelSection ? 'on' : ''}" data-tab="${i}"
+       title="${s.label}">${s.emoji}</button>`).join('')
+    + `<button class="wtab ${isEmotes ? 'on' : ''}" data-tab="${sections.length}"
+        title="Emotes">\\ud83d\\ude00</button>`;
+  const svg = document.getElementById('wheel');
+  const items = isEmotes ? D.avatars.emotes
+    : sections[wheelSection].options;
+  const cur = isEmotes ? lastEmote : avatarCfg[sections[wheelSection].id];
+  const N = items.length, R = 92, r0 = 34, cx = 100, cy = 100;
+  const wedge = (i) => {
+    const a0 = (i / N) * Math.PI * 2 - Math.PI / 2 + .015;
+    const a1 = ((i + 1) / N) * Math.PI * 2 - Math.PI / 2 - .015;
+    const p = (a, rr) => `${cx + Math.cos(a) * rr},${cy + Math.sin(a) * rr}`;
+    return `M ${p(a0, r0)} L ${p(a0, R)} A ${R} ${R} 0 0 1 ${p(a1, R)} `
+      + `L ${p(a1, r0)} A ${r0} ${r0} 0 0 0 ${p(a0, r0)} Z`;
+  };
+  const mid = (i, rr) => {
+    const a = ((i + .5) / N) * Math.PI * 2 - Math.PI / 2;
+    return [cx + Math.cos(a) * rr, cy + Math.sin(a) * rr];
+  };
+  svg.innerHTML = items.map((o, i) => {
+    const sel = (isEmotes ? o.id === cur : o.id === cur);
+    const fill = isEmotes ? 'var(--panel)'
+      : sections[wheelSection].kind === 'color' ? o.value : 'var(--panel)';
+    const [tx, ty] = mid(i, (r0 + R) / 2);
+    const glyph = isEmotes ? o.emoji
+      : sections[wheelSection].kind === 'color' ? '' : o.glyph;
+    return `<path d="${wedge(i)}" fill="${fill}"
+        stroke="${sel ? 'var(--mark)' : 'var(--rule)'}"
+        stroke-width="${sel ? 3 : 1}" data-pick="${o.id}"/>`
+      + (glyph ? `<text x="${tx}" y="${ty}" text-anchor="middle"
+          dominant-baseline="central" font-size="17"
+          fill="var(--ink)" pointer-events="none">${glyph}</text>` : '');
+  }).join('')
+    + `<circle cx="${cx}" cy="${cy}" r="${r0 - 6}" fill="var(--sunk)"
+        stroke="var(--rule)"/>`
+    + `<text x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="central"
+        font-size="20" pointer-events="none">${isEmotes ? '\\ud83d\\ude00' : sections[wheelSection].emoji}</text>`;
+}
+function wheelShow(on) {
+  document.getElementById('wheelWrap').style.display = on ? '' : 'none';
+  if (on) renderWheel();
+}
+document.getElementById('wheelWrap').addEventListener('click', (e) => {
+  const tab = e.target.closest('[data-tab]');
+  if (tab) { wheelSection = +tab.dataset.tab; renderWheel(); return; }
+  const pick = e.target.closest('[data-pick]');
+  if (!pick) return;
+  const sections = D.avatars.sections;
+  if (wheelSection === sections.length) { playEmote(pick.dataset.pick); return; }
+  avatarCfg[sections[wheelSection].id] = pick.dataset.pick;
+  prog.avatar = avatarCfg; saveProg();
+  refreshAvatarMeshes(); renderWheel();
+});
+
+/* ---------------------------------------------------- the locker view --- */
+function showAvatar() {
+  if (sim) teardownSim();
+  if (walkActive) exitWalkMode();
+  view = 'avatar';
+  if (hallGroup) hallGroup.visible = false;
+  if (campusGroup) campusGroup.visible = false;
+  if (regionGroup) regionGroup.visible = false;
+  ground.visible = grid.visible = true;
+  scene.fog.near = 40; scene.fog.far = 140;
+  if (!avatarGroup) {
+    avatarGroup = new THREE.Group();
+    const ped = new THREE.Mesh(new THREE.CylinderGeometry(1.6, 1.9, .35, 24),
+      mat.slab);
+    ped.position.y = .17; ped.receiveShadow = true; avatarGroup.add(ped);
+    avatarMesh = buildAvatarMesh(avatarCfg);
+    avatarMesh.position.y = .35; avatarGroup.add(avatarMesh);
+    scene.add(avatarGroup);
+  }
+  avatarGroup.visible = true;
+  controls.enabled = true; controls.autoRotate = !reduced;
+  controls.minDistance = 2.5; controls.maxDistance = 14;
+  camera.position.set(3.1, 2.5, 5.2); controls.target.set(0, 1.1, 0);
+  document.getElementById('hname').textContent = t('avatar.title');
+  document.getElementById('hfocus').textContent = D.avatars.guarantee;
+  document.getElementById('hint').textContent = '';
+  for (const id of ['walkBtn', 'simBtn', 'campusBtn', 'camBtn', 'sndBtn'])
+    document.getElementById(id).style.display = 'none';
+  wheelShow(true);
+}
+document.getElementById('avaBtn').addEventListener('click', showAvatar);
+
+/* --------------------------------------------- touch walk (3rd person) -- */
+// On touch devices walk mode is third-person: a left thumb-stick moves the
+// avatar, a right-side drag turns the view, and the emote wheel rides the
+// right thumb. Desktop keeps first-person pointer lock.
+let tYaw = 0, tPitch = .28, joyVec = { x: 0, y: 0 };
+function enterTouchWalk() {
+  walkActive = true;
+  controls.enabled = false; controls.autoRotate = false;
+  cfgInit(); // ensure cfg
+  if (!walkAvatar) {
+    walkAvatar = buildAvatarMesh(avatarCfg);
+    scene.add(walkAvatar);
+  }
+  walkAvatar.visible = true;
+  const spawn = view === 'hall'
+    ? new THREE.Vector3(0, 0, -(D.halls.find(x => x.slug === slug).depth * U) / 2 - 8)
+    : new THREE.Vector3(0, 0, 30);
+  walkAvatar.position.copy(spawn);
+  walkAvatar.userData.baseY = spawn.y;
+  tYaw = Math.PI; tPitch = .28;
+  document.getElementById('joy').style.display = '';
+  document.getElementById('emoBtn').style.display = '';
+  document.getElementById('hint').textContent = '';
+}
+function exitWalkMode() {
+  if (!isTouch && walkActive) { plc.unlock(); return; }
+  walkActive = false;
+  if (walkAvatar) walkAvatar.visible = false;
+  document.getElementById('joy').style.display = 'none';
+  document.getElementById('emoBtn').style.display = 'none';
+  document.getElementById('actBtn').style.display = 'none';
+  wheelShow(false);
+  controls.enabled = true;
+  nearSlug = null; nearPoi = null;
+}
+function touchWalkStep(dt) {
+  const sp = 5.2 * dt;
+  const f = new THREE.Vector3(Math.sin(tYaw), 0, Math.cos(tYaw));
+  const r = new THREE.Vector3(f.z, 0, -f.x);
+  walkAvatar.position.addScaledVector(f, -joyVec.y * sp);
+  walkAvatar.position.addScaledVector(r, -joyVec.x * sp);
+  if (Math.hypot(joyVec.x, joyVec.y) > .1)
+    walkAvatar.rotation.y = tYaw + Math.PI + Math.atan2(-joyVec.x, -joyVec.y);
+  // stay on the grounds (campus) or in the hall envelope
+  if (view === 'campus') {
+    const len = Math.hypot(walkAvatar.position.x, walkAvatar.position.z);
+    if (len > walkLim) walkAvatar.position.multiplyScalar(walkLim / len);
+  } else if (view === 'hall') {
+    const h = D.halls.find(x => x.slug === slug);
+    const DEP = h.depth * U;
+    walkAvatar.position.x = Math.min(21, Math.max(-21, walkAvatar.position.x));
+    walkAvatar.position.z = Math.min(DEP / 2 - .8,
+      Math.max(-DEP / 2 - 26, walkAvatar.position.z));
+  }
+  // third-person camera
+  const back = new THREE.Vector3(Math.sin(tYaw), 0, Math.cos(tYaw));
+  const eye = walkAvatar.position.clone()
+    .addScaledVector(back, 5.6).setY(walkAvatar.position.y + 2.2 + tPitch * 4);
+  camera.position.lerp(eye, Math.min(1, 8 * dt));
+  camera.lookAt(walkAvatar.position.x, walkAvatar.position.y + 1.4,
+    walkAvatar.position.z);
+  // nearest door / institution for the action button
+  if (view === 'campus') {
+    let best = null, bd = 1e9, bp = null, pd = 1e9;
+    const wp = new THREE.Vector3();
+    for (const b of buildings) {
+      b.getWorldPosition(wp);
+      const d = Math.hypot(wp.x - walkAvatar.position.x, wp.z - walkAvatar.position.z);
+      if (d < bd) { bd = d; best = b; }
+    }
+    for (const b of cityHits) {
+      b.getWorldPosition(wp);
+      const d = Math.hypot(wp.x - walkAvatar.position.x, wp.z - walkAvatar.position.z);
+      if (d < pd) { pd = d; bp = b; }
+    }
+    const act = document.getElementById('actBtn');
+    if (best && bd < 12) {
+      nearSlug = best.userData.slug; nearPoi = null;
+      act.style.display = '';
+      act.textContent = '\\u23ce ' + D.halls.find(x => x.slug === nearSlug).name;
+    } else if (bp && pd < 15) {
+      nearPoi = bp.userData.poi; nearSlug = null;
+      act.style.display = ''; act.textContent = '\\u23ce ' + nearPoi;
+    } else { nearSlug = nearPoi = null; act.style.display = 'none'; }
+  }
+}
+document.getElementById('actBtn').addEventListener('click', () => {
+  if (nearSlug) { showHall(nearSlug); enterTouchWalk(); }
+  else if (nearPoi) openCityPoi(nearPoi);
+});
+document.getElementById('emoBtn').addEventListener('click', () => {
+  wheelSection = D.avatars.sections.length;   // the emote tab
+  const w = document.getElementById('wheelWrap');
+  wheelShow(w.style.display === 'none');
+});
+
+// left thumb-stick
+(() => {
+  const joy = document.getElementById('joy'), knob = document.getElementById('knob');
+  let pid = null, cx = 0, cy = 0;
+  joy.addEventListener('pointerdown', (e) => {
+    pid = e.pointerId;
+    try { joy.setPointerCapture(pid); } catch (err) { /* pointer already gone */ }
+    const r = joy.getBoundingClientRect();
+    cx = r.left + r.width / 2; cy = r.top + r.height / 2;
+  });
+  joy.addEventListener('pointermove', (e) => {
+    if (e.pointerId !== pid) return;
+    const dx = (e.clientX - cx) / 46, dy = (e.clientY - cy) / 46;
+    const len = Math.hypot(dx, dy) || 1, cl = Math.min(1, len);
+    joyVec.x = dx / len * cl; joyVec.y = dy / len * cl;
+    knob.style.transform = `translate(${joyVec.x * 34}px, ${joyVec.y * 34}px)`;
+  });
+  const end = (e) => {
+    if (e.pointerId !== pid) return;
+    pid = null; joyVec.x = joyVec.y = 0;
+    knob.style.transform = '';
+  };
+  joy.addEventListener('pointerup', end);
+  joy.addEventListener('pointercancel', end);
+})();
+
+// right-side look drag
+renderer.domElement.addEventListener('pointermove', (e) => {
+  if (!(walkActive && isTouch)) return;
+  if (e.buttons === 0 && e.pointerType === 'mouse') return;
+  if (e.clientX < innerWidth * .45) return;   // left half is the stick's
+  tYaw -= e.movementX * .006;
+  tPitch = Math.min(1.1, Math.max(-.2, tPitch + e.movementY * .004));
+});
+
+"""
+
 page = '''<!doctype html>
 <html lang="en">
 <head>
@@ -867,6 +1261,36 @@ select{background:var(--panel);color:var(--ink);border:1px solid var(--rule);
 #dash .g.warn .gv{color:var(--crit)}
 /* warning is shape AND colour, never colour alone (colourblind-safe) */
 #dash .g.warn .gl::before{content:"\\25b2  ";color:var(--crit)}
+/* the thumb wheel: radial options sized for a phone thumb */
+#wheelWrap{position:fixed;left:50%;bottom:10px;transform:translateX(-50%);
+  z-index:7;display:flex;flex-direction:column;align-items:center;gap:6px}
+#wheelTabs{display:flex;gap:4px;flex-wrap:wrap;justify-content:center;
+  max-width:min(92vw,360px)}
+.wtab{background:var(--panel);border:1px solid var(--rule);border-radius:999px;
+  min-width:40px;min-height:40px;font-size:18px;cursor:pointer;padding:2px}
+.wtab.on{border-color:var(--mark);box-shadow:0 0 0 1px var(--mark)}
+#wheel{width:min(64vw,250px);height:min(64vw,250px);
+  filter:drop-shadow(0 4px 14px rgba(0,0,0,.5))}
+#wheel path{cursor:pointer}
+/* touch-walk controls */
+#joy{position:fixed;left:18px;bottom:22px;z-index:7;width:112px;height:112px;
+  border-radius:50%;background:color-mix(in oklab, var(--panel) 70%, transparent);
+  border:1px solid var(--rule);touch-action:none}
+#knob{position:absolute;left:50%;top:50%;width:52px;height:52px;margin:-26px;
+  border-radius:50%;background:var(--panel);border:2px solid var(--mark)}
+.fab{position:fixed;right:18px;bottom:22px;z-index:7;min-width:56px;
+  min-height:56px;border-radius:999px;background:var(--panel);color:var(--ink);
+  border:1px solid var(--rule);font:inherit;font-size:24px;cursor:pointer}
+.fab.wide{right:18px;bottom:90px;font-size:14px;padding:0 16px;max-width:60vw;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media(pointer:coarse){
+  .barbtn,select{min-height:42px}
+  #hud{max-width:min(300px,72vw);padding:8px 11px}
+  #hud h2{font-size:17px}
+  #honesty{display:none}
+  /* keep the wheel clear of the thumb-stick while walking */
+  #wheelWrap{left:auto;right:10px;transform:none;bottom:150px}
+}
 canvas{display:block}
 #nogl{display:none;position:fixed;inset:0;place-content:center;text-align:center;
   color:var(--muted);padding:40px}
@@ -907,10 +1331,18 @@ body.open #panel{transform:none}
   <button id="campusBtn" class="barbtn"></button>
   <button id="walkBtn" class="barbtn"></button>
   <button id="simBtn" class="barbtn"></button>
+  <button id="avaBtn" class="barbtn"></button>
   <button id="camBtn" class="barbtn" style="display:none"></button>
   <button id="sndBtn" class="barbtn" style="display:none"></button>
   <select id="lang"></select>
 </div>
+<div id="wheelWrap" style="display:none">
+  <div id="wheelTabs"></div>
+  <svg id="wheel" viewBox="0 0 200 200" role="listbox" aria-label="options"></svg>
+</div>
+<div id="joy" style="display:none"><div id="knob"></div></div>
+<button id="emoBtn" class="fab" style="display:none">😀</button>
+<button id="actBtn" class="fab wide" style="display:none"></button>
 <div id="hud"><h2 id="hname"></h2><p class="focus" id="hfocus"></p><p class="hint" id="hint"></p></div>
 <div id="dash"></div>
 <div id="honesty"></div>
@@ -950,9 +1382,11 @@ try {
     'The interactive map carries the same content in 2D.';
   throw e;
 }
-renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+// mobile budget: cap the pixel ratio and drop shadow maps on touch GPUs
+renderer.setPixelRatio(Math.min(devicePixelRatio,
+  ('ontouchstart' in window) ? 1.5 : 2));
 renderer.setSize(innerWidth, innerHeight);
-renderer.shadowMap.enabled = true;
+renderer.shadowMap.enabled = !('ontouchstart' in window);
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.12;
@@ -1695,7 +2129,9 @@ function buildRegion() {
 function showRegion() {
   if (sim) teardownSim();
   view = 'region';
-  if (walkActive) plc.unlock();
+  if (walkActive) (isTouch ? exitWalkMode() : plc.unlock());
+  if (avatarGroup) avatarGroup.visible = false;
+  wheelShow(false);
   if (hallGroup) hallGroup.visible = false;
   if (campusGroup) campusGroup.visible = false;
   ground.visible = grid.visible = false;
@@ -1711,6 +2147,7 @@ function showRegion() {
   document.getElementById('hint').textContent =
     t('hint.campus') + ' \u00b7 ' + t('geo.note');
   document.getElementById('walkBtn').style.display = 'none';
+  document.getElementById('avaBtn').style.display = '';
   document.getElementById('campusBtn').style.display = 'none';
   document.getElementById('simBtn').style.display = 'none';
   syncURL();
@@ -1719,7 +2156,9 @@ function showRegion() {
 function showCampus(key) {
   if (sim) teardownSim();
   campusKey = key; view = 'campus';
-  if (walkActive) plc.unlock();
+  if (walkActive) (isTouch ? exitWalkMode() : plc.unlock());
+  if (avatarGroup) avatarGroup.visible = false;
+  wheelShow(false);
   if (hallGroup) hallGroup.visible = false;
   if (regionGroup) regionGroup.visible = false;
   ground.visible = grid.visible = true;
@@ -1733,8 +2172,8 @@ function showCampus(key) {
     camp.city + ', ' + camp.region + ' — ' + camp.tagline
     + (D.geo.cityPois?.[key] ? ' · ' + t('city.note') : '');
   document.getElementById('hint').textContent = t('hint.campus');
-  document.getElementById('walkBtn').style.display =
-    ('ontouchstart' in window) ? 'none' : '';
+  document.getElementById('walkBtn').style.display = '';
+  document.getElementById('avaBtn').style.display = '';
   document.getElementById('campusBtn').style.display = 'none';
   document.getElementById('simBtn').style.display = 'none';
   syncURL();
@@ -1743,6 +2182,8 @@ function showCampus(key) {
 function showHall(sg) {
   if (sim) teardownSim();
   slug = sg; view = 'hall'; campusKey = campusOfHall(sg);
+  if (avatarGroup) avatarGroup.visible = false;
+  if (!(isTouch && walkActive)) wheelShow(false);
   if (regionGroup) regionGroup.visible = false;
   if (campusGroup) campusGroup.visible = false;
   ground.visible = grid.visible = true;
@@ -1752,8 +2193,8 @@ function showHall(sg) {
   camera.position.set(30, 26, 42); controls.target.set(0, 2, 0);
   document.getElementById('hint').textContent =
     '\u25cf ' + t('hall.stations') + ' \u00b7 ' + t('hall.rooms') + ' \u2192 ' + t('map.layer.modules');
-  document.getElementById('walkBtn').style.display =
-    ('ontouchstart' in window) ? 'none' : '';
+  document.getElementById('walkBtn').style.display = '';
+  document.getElementById('avaBtn').style.display = '';
   const cb = document.getElementById('campusBtn');
   cb.style.display = ''; cb.textContent = '\u2191 ' + D.campuses[campusKey].name;
   document.getElementById('simBtn').style.display =
@@ -1781,7 +2222,11 @@ document.addEventListener('keyup', (e) => { keys[e.code] = false; });
 
 let campusR = 84, nearSlug = null, nearPoi = null;
 function enterWalk() {
-  if (view === 'region') return;
+  if (view === 'region' || view === 'avatar') return;
+  if (isTouch) {
+    if (walkActive) return exitWalkMode();
+    return enterTouchWalk();
+  }
   controls.autoRotate = false; controls.enabled = false;
   if (view === 'hall') {
     const h = D.halls.find(x => x.slug === slug);
@@ -1886,6 +2331,8 @@ function walkStep(dt) {
 
 __SIM_JS__
 
+__AVATAR_JS__
+
 /* ---------------------------------------------------------------- UI ---- */
 function renderChrome() {
   const i = D.i18n[loc];
@@ -1907,6 +2354,7 @@ function renderChrome() {
   document.getElementById('regionBtn').textContent = '⌂ ' + t('view.region');
   document.getElementById('walkBtn').textContent = '⤞ ' + t('ui.walk');
   document.getElementById('simBtn').textContent = '▶ ' + t('sim.start');
+  document.getElementById('avaBtn').textContent = '👤 ' + t('avatar.title');
   document.getElementById('honesty').textContent =
     t('honesty.taxonomy') + ' ' + t('honesty.content') + ' ' + t('progress.local');
   document.getElementById('pclose').textContent = t('ui.close');
@@ -2120,7 +2568,8 @@ document.getElementById('simBtn').addEventListener('click', () => {
 });
 document.getElementById('lang').addEventListener('change', (e) => {
   loc = e.target.value; renderChrome();
-  if (view === 'region') showRegion();
+  if (view === 'avatar') showAvatar();
+  else if (view === 'region') showRegion();
   else if (view === 'campus') showCampus(campusKey);
   else showHall(slug);
 });
@@ -2134,6 +2583,7 @@ addEventListener('resize', () => {
   renderer.setSize(innerWidth, innerHeight);
 });
 
+cfgInit();
 renderChrome();
 if (D.halls.some(h => h.slug === params.get('hall'))) showHall(params.get('hall'));
 else if (D.campuses[params.get('campus')]) showCampus(params.get('campus'));
@@ -2145,6 +2595,9 @@ window.__tc3d = () => ({ view, buildings: buildings.length, plates: plates.lengt
   anchors: anchorPins, simCam: simView, audio: !!ac, city: cityPois,
   scenario: curScenario?.id ?? null,
   chHosted: D.chapters.hosted[campusKey] ?? null,
+  isTouch, shadows: renderer.shadowMap.enabled,
+  avatar: avatarCfg ? { ...avatarCfg } : null, emote: lastEmote,
+  wheel: document.querySelectorAll('#wheel path').length,
   progress: { stations: doneStations.size, sims: Object.keys(prog.sims).length },
   dash: document.querySelectorAll('#dash .g').length,
   cam: camera.position.toArray().map((v) => Math.round(v * 10) / 10),
@@ -2164,7 +2617,8 @@ renderer.setAnimationLoop(() => {
     sim.update(dt);
     if (sim.gauges) setDash(D.sims.sims[curSimId], sim.gauges());
   }
-  if (walkActive) walkStep(dt);
+  stepEmote(dt);
+  if (walkActive) (isTouch ? touchWalkStep : walkStep)(dt);
   else controls.update();
   renderer.render(scene, camera);
 });
@@ -2175,6 +2629,7 @@ renderer.setAnimationLoop(() => {
 
 page = page.replace('__DATA__', DATA).replace('__PIPELINE_JS__', PIPELINE_JS)
 page = page.replace('__SIM_JS__', SIM_JS)
+page = page.replace('__AVATAR_JS__', AVATAR_JS)
 out = HERE / 'trade_craft_3d.html'
 out.write_text(page)
 print(f"written: {len(page):,} bytes | {len(HALLS)} halls | "

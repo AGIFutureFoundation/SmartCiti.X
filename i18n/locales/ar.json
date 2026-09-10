@@ -54,7 +54,8 @@
   "sim.choose": "اختر جهاز محاكاة",
   "progress.local": "يُحفظ التقدم على هذا الجهاز فقط.",
   "city.note": "طبقة المدينة: المؤسسات مسجلة من Locator.X؛ الشوارع والنهر تخطيطيان",
-  "chapters.hall": "قاعة الفروع الإقليمية"
+  "chapters.hall": "قاعة الفروع الإقليمية",
+  "avatar.title": "الصورة الرمزية"
  },
  "districts": {
   "structural": {

@@ -54,7 +54,8 @@
   "sim.choose": "Elige un simulador",
   "progress.local": "El progreso se guarda solo en este dispositivo.",
   "city.note": "Capa urbana: instituciones REGISTRADAS de Locator.X; calles y río esquemáticos",
-  "chapters.hall": "Sede regional de secciones"
+  "chapters.hall": "Sede regional de secciones",
+  "avatar.title": "Avatar"
  },
  "districts": {
   "structural": {
