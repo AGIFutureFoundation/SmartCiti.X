@@ -341,7 +341,8 @@ function startSim(simId) {
     : simId === 'excavator-trench' ? excavatorSim(P)
     : simId === 'weld-bead' ? weldSim(P)
     : simId === 'scaffold-bay' ? scaffoldSim(P)
-    : simId === 'rigging-signals' ? riggingSim(P) : forkliftSim(P);
+    : simId === 'rigging-signals' ? riggingSim(P)
+    : simId === 'load-chart' ? loadChartSim(P) : forkliftSim(P);
   scene.add(sim.group);
   // your avatar takes the seat the sim declares - the learner is IN the yard
   if (sim.mount) {
@@ -1220,6 +1221,135 @@ function riggingSim(P = {}) {
       wrong: { v: st.wrong, txt: String(st.wrong) },
       time: { v: 0, txt: st.t0 ? ((performance.now() - st.t0) / 1000).toFixed(0) : '\\u2013' },
     }),
+  };
+}
+
+/* ------------------------------------------------- load chart judgment --- */
+function loadChartSim(P = {}) {
+  const CHART = D.sims.sims['load-chart'].chart;
+  const cap = Object.fromEntries(CHART);
+  const PICKS = P.picks ?? [{ w: 3, r: 4 }, { w: 4.8, r: 6 }, { w: 4.1, r: 8 }];
+  const g = new THREE.Group();
+  simYard(g, 18, 14);
+  // the crane whose chart it is: mast and a fixed boom over the pick line
+  const MAST = 9;
+  box(.8, MAST, .8, mat.metal, -6, MAST / 2, -4, g);
+  box(14, .5, .6, mat.post, 1, MAST, -4, g);
+  // the pick line: a painted tick at every chart radius
+  for (const [r] of CHART) {
+    box(.18, .04, 1.2, mat.paint, -6 + r, .06, -4, g, false);
+  }
+  // the chart board - one honest number per radius, drawn as data
+  const cc = document.createElement('canvas'); cc.width = 256; cc.height = 320;
+  const cx2 = cc.getContext('2d');
+  const ctex = new THREE.CanvasTexture(cc);
+  function drawChart(hi) {
+    cx2.fillStyle = '#0C1113'; cx2.fillRect(0, 0, 256, 320);
+    cx2.strokeStyle = '#E8A33D'; cx2.lineWidth = 6; cx2.strokeRect(3, 3, 250, 314);
+    cx2.fillStyle = '#E8EDEC'; cx2.font = '700 30px "Barlow Condensed", sans-serif';
+    cx2.fillText('LOAD CHART', 42, 44);
+    cx2.font = '26px "IBM Plex Mono", monospace';
+    CHART.forEach(([r, t2], i) => {
+      const y = 92 + i * 44;
+      if (i === hi) { cx2.fillStyle = 'rgba(232,163,61,.28)'; cx2.fillRect(10, y - 30, 236, 40); }
+      cx2.fillStyle = i === hi ? '#E8A33D' : '#93A3A6';
+      cx2.fillText(String(r).padStart(2) + ' m', 26, y);
+      cx2.fillStyle = '#E8EDEC';
+      cx2.fillText(t2.toFixed(1) + ' t', 140, y);
+    });
+    ctex.needsUpdate = true;
+  }
+  drawChart(-1);
+  const board = new THREE.Mesh(new THREE.PlaneGeometry(2.6, 3.25),
+    new THREE.MeshBasicMaterial({ map: ctex }));
+  board.position.set(4, 2.1, 3); board.rotation.y = -.5; g.add(board);
+  box(.14, 2.2, .14, mat.part, 3.2, 1.1, 3.4, g);
+  box(.14, 2.2, .14, mat.part, 4.8, 1.1, 2.6, g);
+  const st = { i: 0, errs: 0, over: 0, t0: null, done: false, hi: -1,
+               lq: false, le: false, lx: false };
+  let loadMesh = null, loadLab = null;
+  const anims = [];
+  function spawn() {
+    if (st.done) return;
+    if (st.i >= PICKS.length) return finish();
+    const p = PICKS[st.i];
+    const s2 = .7 + p.w * .13;
+    loadMesh = box(s2, s2 * .8, s2, mat.brick, -6 + p.r, s2 * .4, -4, g);
+    loadLab = label(p.w.toFixed(1) + ' t', p.r + ' m radius', .55);
+    loadLab.position.set(-6 + p.r, s2 * .8 + 1.2, -4); g.add(loadLab);
+  }
+  spawn();
+  function finish() {
+    st.done = true;
+    const time = st.t0 ? ((performance.now() - st.t0) / 1000) : 0;
+    const rows = [
+      { axis: 'judgments', value: (PICKS.length - st.errs) + '/' + PICKS.length,
+        ok: st.errs === 0 },
+      { axis: 'overloads', value: String(st.over), ok: st.over === 0 },
+      { axis: 'time', value: time.toFixed(1) + ' s', ok: null },
+    ];
+    simResults('load-chart', rows, st.errs === 0);
+  }
+  function judge(accept) {
+    if (st.done || !loadMesh) return;
+    const p = PICKS[st.i];
+    const legal = p.w <= cap[p.r];
+    if (!st.t0) st.t0 = performance.now();
+    const m = loadMesh, lb = loadLab;
+    loadMesh = null; loadLab = null;
+    if (accept === legal) {
+      if (accept) { blip(1100, 1500, .12, 'triangle', .12); anims.push({ m, lb, up: true }); }
+      else { blip(700, 500, .15, 'triangle', .1); anims.push({ m, lb, up: false }); }
+    } else {
+      st.errs++;
+      anims.push({ m, lb, up: false });
+      if (accept) {                          // an overweight pick accepted
+        st.over++;
+        blip(240, 90, .6, 'sawtooth', .22); buzz(320, .9);
+      } else { blip(300, 200, .3, 'square', .12); buzz(120, .4); }
+    }
+    st.i++;
+    setTimeout(spawn, 650);
+  }
+  return {
+    group: g, orbit: true,
+    orbitCam: { pos: [10, 7, 13], tgt: [0, 2.5, 0] },
+    mount: { parent: g, pos: [2.4, 0, 4.6], yaw: 2.5 },
+    action() { judge(true); },
+    update(dt) {
+      if (!st.done) {
+        if (keys.KeyX && !st.lx) judge(false);
+        st.lx = !!keys.KeyX;
+        if (keys.KeyQ && !st.lq) { st.hi = (st.hi + CHART.length) % CHART.length; drawChart(st.hi); }
+        if (keys.KeyE && !st.le) { st.hi = (st.hi + 1) % CHART.length; drawChart(st.hi); }
+        st.lq = !!keys.KeyQ; st.le = !!keys.KeyE;
+        engineSet(anims.some((a) => a.up) ? .5 : .1);
+      }
+      for (let i = anims.length - 1; i >= 0; i--) {
+        const a = anims[i];
+        if (a.up) a.m.position.y += 2.6 * dt;
+        else a.m.position.z -= 2.6 * dt;
+        a.lb.position.copy(a.m.position).y += 1.4;
+        if (a.m.position.y > 6.5 || a.m.position.z < -9) {
+          g.remove(a.m); g.remove(a.lb); anims.splice(i, 1);
+        }
+      }
+      if (simView === 'chart') {
+        camera.position.set(2.7, 2.15, 4.9);
+        camera.lookAt(board.position.x, board.position.y, board.position.z);
+      }
+    },
+    gauges: () => {
+      const p = PICKS[Math.min(st.i, PICKS.length - 1)];
+      return {
+        pick: { v: 0, txt: Math.min(st.i, PICKS.length) + '/' + PICKS.length },
+        load: p.w,
+        radius: p.r,
+        chart: cap[p.r],
+        errors: { v: st.errs, txt: String(st.errs) },
+        time: { v: 0, txt: st.t0 ? ((performance.now() - st.t0) / 1000).toFixed(0) : '\\u2013' },
+      };
+    },
   };
 }"""
 
@@ -2339,6 +2469,8 @@ body.open #panel{transform:none}
   <button id="avaBtn" class="barbtn"></button>
   <button id="camBtn" class="barbtn" style="display:none"></button>
   <button id="sndBtn" class="barbtn" style="display:none"></button>
+  <button id="dnBtn" class="barbtn" aria-label="day / night">🌙</button>
+  <button id="recBtn" class="barbtn" aria-label="records">⏱</button>
   <select id="lang"></select>
 </div>
 <div id="wheelWrap" style="display:none">
@@ -2489,18 +2621,47 @@ const DEF_ATMOS = {
   hemi: { sky: 0xaec2cb, ground: 0x241d16, i: 1.05 },
   amb: { wind: .2 },
 };
-let atmosKey = null, fogMul = 1, fogBanks = [];
+let atmosKey = null, fogMul = 1, fogBanks = [], night = false;
+const darkHex = (hex, f) => '#' + [1, 3, 5].map((i) =>
+  Math.round(parseInt(hex.slice(i, i + 2), 16) * f)
+    .toString(16).padStart(2, '0')).join('');
 function applyAtmos(k) {
   const a = ATMOS[k] ?? DEF_ATMOS;
   atmosKey = ATMOS[k] ? k : null;
-  fogMul = a.fog.mul;
-  setSky(a.sky);
-  scene.fog.color.setHex(a.fog.color);
-  key.color.setHex(a.sun.color); key.intensity = a.sun.i;
-  hemi.color.setHex(a.hemi.sky);
-  hemi.groundColor.setHex(a.hemi.ground);
-  hemi.intensity = a.hemi.i;
+  fogMul = a.fog.mul * (night ? 1.12 : 1);
+  if (night) {
+    // the same atmosphere record, after dark: the sky crushed toward
+    // black, the sun swapped for cool moonlight, the windows turned up
+    setSky(a.sky.map((h) => darkHex(h, .32)));
+    scene.fog.color.setHex(a.fog.color).multiplyScalar(.32);
+    key.color.setHex(0x9db4d8); key.intensity = a.sun.i * .3;
+    hemi.color.setHex(0x35455c);
+    hemi.groundColor.setHex(0x0d0c0a);
+    hemi.intensity = a.hemi.i * .45;
+    mat.win.emissiveIntensity = 1.15;
+  } else {
+    setSky(a.sky);
+    scene.fog.color.setHex(a.fog.color);
+    key.color.setHex(a.sun.color); key.intensity = a.sun.i;
+    hemi.color.setHex(a.hemi.sky);
+    hemi.groundColor.setHex(a.hemi.ground);
+    hemi.intensity = a.hemi.i;
+    mat.win.emissiveIntensity = .5;
+  }
   ambSync(a.amb);
+}
+// re-apply the current view's atmosphere and fog band (the night toggle)
+function reAtmos() {
+  if (view === 'campus') {
+    applyAtmos(campusKey);
+    scene.fog.near = 160 * fogMul; scene.fog.far = 640 * fogMul;
+  } else if (view === 'hall') {
+    applyAtmos(campusKey);
+    scene.fog.near = 70 * fogMul; scene.fog.far = 170 * fogMul;
+  } else if (view === 'sim') {
+    applyAtmos(campusKey);
+    scene.fog.near = 90 * fogMul; scene.fog.far = 260 * fogMul;
+  } else applyAtmos(null);
 }
 
 /* Ambient sound beds - synthesized like everything else (no recordings):
@@ -4029,6 +4190,41 @@ document.addEventListener('click', (e) => {
 document.getElementById('hall').addEventListener('change', (e) => {
   showHall(e.target.value);
 });
+document.getElementById('dnBtn').addEventListener('click', () => {
+  night = !night;
+  document.getElementById('dnBtn').textContent = night ? '☀️' : '🌙';
+  reAtmos();
+});
+// the records panel: every seat and drill from the device-local record
+function openRecords() {
+  const td = "style=\\"text-align:end\\"";
+  const mono = "style=\\"text-align:end;font-family:'IBM Plex Mono',monospace\\"";
+  const row = (name, r) => `<tr><td>${name}</td>
+    <td ${td}>${r?.runs ?? 0}</td>
+    <td ${td}>${r?.passed ? '✓' : '·'}</td>
+    <td ${mono}>${isFinite(r?.best) ? r.best.toFixed(1) + ' s' : '\\u2013'}</td></tr>`;
+  const head = `<tr><th></th><th ${td}>\\u00d7</th><th ${td}>✓</th><th ${td}>best</th></tr>`;
+  document.getElementById('pbody').innerHTML = `
+    <h2>⏱ ${t('sim.results')}</h2>
+    <span class="chip">✓ ${doneStations.size}/${Object.keys(D.stations).length}</span>
+    <span class="chip">▶ ${Object.values(prog.sims).filter((r) => r.passed).length}/${Object.keys(D.sims.sims).length}</span>
+    <span class="chip">\U0001f9f0 ${Object.values(prog.tools).filter((r) => r.passed).length}/${Object.keys(D.tools.cribs).length}</span>
+    <h3>${t('sim.start')}</h3>
+    <table style="width:100%;border-collapse:collapse;font-size:13px"><tbody>
+      ${head}${Object.entries(D.sims.sims).map(([id, def]) => row(def.name, prog.sims[id])).join('')}
+    </tbody></table>
+    <h3>${D.tools.drill.name}</h3>
+    <table style="width:100%;border-collapse:collapse;font-size:13px"><tbody>
+      ${head}${Object.entries(D.tools.cribs).map(([dk, c]) => row(c.name, prog.tools[dk])).join('')}
+    </tbody></table>
+    <p style="color:var(--muted);font-size:12px;margin-top:12px">${t('progress.local')} ${D.sims.honesty}</p>
+    <style>#pbody td,#pbody th{border-top:1px solid var(--rule);padding:5px 8px;color:var(--muted);font-weight:400}</style>`;
+  document.body.classList.add('open');
+}
+document.getElementById('recBtn').addEventListener('click', () => {
+  if (walkActive) plc.unlock();
+  openRecords();
+});
 document.getElementById('regionBtn').addEventListener('click', showRegion);
 document.getElementById('campusBtn').addEventListener('click',
   () => showCampus(campusKey));
@@ -4092,7 +4288,7 @@ window.__tc3d = () => ({ view, buildings: buildings.length, plates: plates.lengt
   cribs: cribCount, curCrib, drillN: drill ? drill.i : null,
   gau: sim?.gauges ? sim.gauges() : null,
   rollup: view === 'campus' ? campusRollup(campusKey) : null,
-  mmDone: mmInfo.done ?? 0,
+  mmDone: mmInfo.done ?? 0, night,
   wheel: document.querySelectorAll('#wheel path').length,
   progress: { stations: doneStations.size, sims: Object.keys(prog.sims).length,
     tools: Object.keys(prog.tools).length },
