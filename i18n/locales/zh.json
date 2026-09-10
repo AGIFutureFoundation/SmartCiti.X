@@ -50,7 +50,9 @@
   "sim.pass": "通过",
   "sim.retry": "再试一次",
   "sim.sound": "声音",
-  "sim.view": "视角"
+  "sim.view": "视角",
+  "sim.choose": "选择模拟器",
+  "progress.local": "进度仅保存在此设备上。"
  },
  "districts": {
   "structural": {

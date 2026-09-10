@@ -439,8 +439,9 @@ View modes: {" / ".join(f"`{v}`" for v in sm["view_modes"])}. Audio is a
 gamepad rumble and the vibration API where the platform offers them.''')
     return f'''# The simulators
 
-Two operable training machines live inside the
-[3D environment](Campus-Map.md): open a bound hall and press **▶**. The
+{len(sims["sims"])} operable training machines live inside the
+[3D environment](Campus-Map.md): open a bound hall and press **▶** (a hall
+bound to more than one machine offers the choice). The
 physics are schematic — built for practising control discipline (smooth
 inputs, swing management, ordered procedure) — and the scoring contract is
 the same shape the mentor fabric enforces: **deterministic**. Every rubric

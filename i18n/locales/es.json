@@ -50,7 +50,9 @@
   "sim.pass": "Aprobado",
   "sim.retry": "Intentar de nuevo",
   "sim.sound": "Sonido",
-  "sim.view": "Vista"
+  "sim.view": "Vista",
+  "sim.choose": "Elige un simulador",
+  "progress.local": "El progreso se guarda solo en este dispositivo."
  },
  "districts": {
   "structural": {

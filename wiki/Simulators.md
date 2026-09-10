@@ -1,7 +1,8 @@
 # The simulators
 
-Two operable training machines live inside the
-[3D environment](Campus-Map.md): open a bound hall and press **▶**. The
+3 operable training machines live inside the
+[3D environment](Campus-Map.md): open a bound hall and press **▶** (a hall
+bound to more than one machine offers the choice). The
 physics are schematic — built for practising control discipline (smooth
 inputs, swing management, ordered procedure) — and the scoring contract is
 the same shape the mentor fabric enforces: **deterministic**. Every rubric
@@ -33,6 +34,33 @@ warn thresholds drawn from this registry, not hard-coded in the page.
 View modes: `orbit` / `cab`. Audio is a
 `hoist-motor` engine plus `overswing-chirp`, `strike-thud`, `result-chime` —
 synthesized in-page (WebAudio); no recordings shipped. Haptic cues (strike, finish) fire on
+gamepad rumble and the vibration API where the platform offers them.
+## Excavator Trench Cut (machine)
+
+Cut the marked trench to grade cell by cell and land every bucket in the spoil zone — the flagged cell holds a live utility at half depth, so it stops shallow.
+
+Trains at: **Operating Engineers**, **Shoring & Underpinning**, **Laborers**, **Demolition Workers** — each run exercises that hall's
+`machines.applied` skill.
+
+| Control | Action |
+|---|---|
+| `A / D` | slew the house |
+| `W / S` | reach out / in |
+| `Q / E` | bucket up / down |
+| `Space` | dig / dump the bucket |
+
+| Rubric axis | Measured | Pass |
+|---|---|---|
+| grade | trench cells finished at their marked depth | `== all` |
+| utility | strikes on the flagged utility | `== 0` |
+| spoil | buckets landed inside the spoil zone | `== all` |
+| time | seconds first dig to last dump | `informational` |
+
+**Cockpit.** A live dash of 6 gauges — `Reach m`, `Bucket m`, `Grade`, `Spoil`, `Utility` (warns at 1), `T s` — with the
+warn thresholds drawn from this registry, not hard-coded in the page.
+View modes: `orbit` / `cab`. Audio is a
+`diesel` engine plus `utility-alarm`, `dump-thud`, `result-chime` —
+synthesized in-page (WebAudio); no recordings shipped. Haptic cues (utility, dump, finish) fire on
 gamepad rumble and the vibration API where the platform offers them.
 ## Forklift Yard Run (driving)
 

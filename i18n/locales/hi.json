@@ -50,7 +50,9 @@
   "sim.pass": "उत्तीर्ण",
   "sim.retry": "फिर से प्रयास करें",
   "sim.sound": "ध्वनि",
-  "sim.view": "दृश्य"
+  "sim.view": "दृश्य",
+  "sim.choose": "सिम्युलेटर चुनें",
+  "progress.local": "प्रगति केवल इसी डिवाइस पर सहेजी जाती है।"
  },
  "districts": {
   "structural": {

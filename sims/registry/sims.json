@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-10",
- "source_stamp": "c4bc2ce18975349c",
+ "source_stamp": "1eb2f3665e885bd9",
  "scoring_contract": "deterministic: every rubric axis is computed from measured state; nothing narrative can change a score",
  "honesty": {
   "status": "schematic physics for practising control discipline - smooth inputs, swing management, ordered procedure. Not equipment certification; no seat time here counts toward one, and the assessment gates still demand unaided verification runs."
@@ -106,6 +106,110 @@
    },
    "haptics": [
     "strike",
+    "finish"
+   ],
+   "view_modes": [
+    "orbit",
+    "cab"
+   ]
+  },
+  "excavator-trench": {
+   "name": "Excavator Trench Cut",
+   "kind": "machine",
+   "task": "Cut the marked trench to grade cell by cell and land every bucket in the spoil zone \u2014 the flagged cell holds a live utility at half depth, so it stops shallow.",
+   "controls": [
+    {
+     "keys": "A / D",
+     "action": "slew the house"
+    },
+    {
+     "keys": "W / S",
+     "action": "reach out / in"
+    },
+    {
+     "keys": "Q / E",
+     "action": "bucket up / down"
+    },
+    {
+     "keys": "Space",
+     "action": "dig / dump the bucket"
+    }
+   ],
+   "rubric": [
+    {
+     "axis": "grade",
+     "measure": "trench cells finished at their marked depth",
+     "pass": "== all"
+    },
+    {
+     "axis": "utility",
+     "measure": "strikes on the flagged utility",
+     "pass": "== 0"
+    },
+    {
+     "axis": "spoil",
+     "measure": "buckets landed inside the spoil zone",
+     "pass": "== all"
+    },
+    {
+     "axis": "time",
+     "measure": "seconds first dig to last dump",
+     "pass": "informational"
+    }
+   ],
+   "halls": [
+    "operating-eng",
+    "shoring",
+    "laborers",
+    "demolition"
+   ],
+   "skill_strand": "machines",
+   "skill_tier": "applied",
+   "dash": [
+    {
+     "id": "reach",
+     "label": "Reach",
+     "unit": "m"
+    },
+    {
+     "id": "depth",
+     "label": "Bucket",
+     "unit": "m"
+    },
+    {
+     "id": "grade",
+     "label": "Grade",
+     "unit": ""
+    },
+    {
+     "id": "spoil",
+     "label": "Spoil",
+     "unit": ""
+    },
+    {
+     "id": "utility",
+     "label": "Utility",
+     "unit": "",
+     "warn_at": 1
+    },
+    {
+     "id": "time",
+     "label": "T",
+     "unit": "s"
+    }
+   ],
+   "audio": {
+    "engine": "diesel",
+    "alerts": [
+     "utility-alarm",
+     "dump-thud",
+     "result-chime"
+    ],
+    "note": "synthesized in-page (WebAudio); no recordings shipped"
+   },
+   "haptics": [
+    "utility",
+    "dump",
     "finish"
    ],
    "view_modes": [
@@ -240,6 +344,38 @@
     "skill_id": "port-crane.machines.applied"
    }
   ],
+  "operating-eng": [
+   {
+    "sim": "excavator-trench",
+    "skill_id": "operating-eng.machines.applied"
+   },
+   {
+    "sim": "forklift-run",
+    "skill_id": "operating-eng.machines.applied"
+   }
+  ],
+  "shoring": [
+   {
+    "sim": "excavator-trench",
+    "skill_id": "shoring.machines.applied"
+   }
+  ],
+  "laborers": [
+   {
+    "sim": "excavator-trench",
+    "skill_id": "laborers.machines.applied"
+   },
+   {
+    "sim": "forklift-run",
+    "skill_id": "laborers.machines.applied"
+   }
+  ],
+  "demolition": [
+   {
+    "sim": "excavator-trench",
+    "skill_id": "demolition.machines.applied"
+   }
+  ],
   "teamsters": [
    {
     "sim": "forklift-run",
@@ -250,18 +386,6 @@
    {
     "sim": "forklift-run",
     "skill_id": "heavy-equip.machines.applied"
-   }
-  ],
-  "operating-eng": [
-   {
-    "sim": "forklift-run",
-    "skill_id": "operating-eng.machines.applied"
-   }
-  ],
-  "laborers": [
-   {
-    "sim": "forklift-run",
-    "skill_id": "laborers.machines.applied"
    }
   ],
   "marine-terminal": [
