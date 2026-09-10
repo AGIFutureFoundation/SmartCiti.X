@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-10",
- "source_stamp": "8dda6719e6dd3587",
+ "source_stamp": "28d852850c62047e",
  "honesty": {
   "districts": "district names are public-record identities only; every record is a PROPOSED partner - no district has reviewed or agreed, and no agreement exists",
   "certification": "nothing in the school program certifies equipment operation; the assessment gates demand unaided verification and simulator hours never count toward certification"
@@ -30,7 +30,7 @@
     "stage": "floor",
     "title": "Practice on the floor",
     "what": "simulator seat time with the regional scenario of the campus - live dash, synthesized sound, deterministic rubric; results and best times persist device-locally",
-    "implemented_by": "sims/ (3 simulators, regional scenarios)",
+    "implemented_by": "sims/ (4 simulators, regional scenarios)",
     "gamified": "pass/retry chips, best-time records, cockpit views"
    },
    {
@@ -100,6 +100,15 @@
  ],
  "units": [
   {
+   "hall": "boilermakers",
+   "home": "module pack lesson positions, machines strand",
+   "class_stations": [],
+   "floor_sims": [
+    "weld-bead"
+   ],
+   "gate": "unaided verification run (ACP-04); no sim hour counts"
+  },
+  {
    "hall": "crane-ops",
    "home": "module pack lesson positions, machines strand",
    "class_stations": [],
@@ -114,6 +123,15 @@
    "class_stations": [],
    "floor_sims": [
     "excavator-trench"
+   ],
+   "gate": "unaided verification run (ACP-04); no sim hour counts"
+  },
+  {
+   "hall": "fabricators",
+   "home": "module pack lesson positions, machines strand",
+   "class_stations": [],
+   "floor_sims": [
+    "weld-bead"
    ],
    "gate": "unaided verification run (ACP-04); no sim hour counts"
   },
@@ -156,6 +174,15 @@
    "gate": "unaided verification run (ACP-04); no sim hour counts"
   },
   {
+   "hall": "pipeline",
+   "home": "module pack lesson positions, machines strand",
+   "class_stations": [],
+   "floor_sims": [
+    "weld-bead"
+   ],
+   "gate": "unaided verification run (ACP-04); no sim hour counts"
+  },
+  {
    "hall": "port-crane",
    "home": "module pack lesson positions, machines strand",
    "class_stations": [],
@@ -172,6 +199,15 @@
    ],
    "floor_sims": [
     "crane-lift"
+   ],
+   "gate": "unaided verification run (ACP-04); no sim hour counts"
+  },
+  {
+   "hall": "shipfitters",
+   "home": "module pack lesson positions, machines strand",
+   "class_stations": [],
+   "floor_sims": [
+    "weld-bead"
    ],
    "gate": "unaided verification run (ACP-04); no sim hour counts"
   },
@@ -199,6 +235,15 @@
    "class_stations": [],
    "floor_sims": [
     "forklift-run"
+   ],
+   "gate": "unaided verification run (ACP-04); no sim hour counts"
+  },
+  {
+   "hall": "welders",
+   "home": "module pack lesson positions, machines strand",
+   "class_stations": [],
+   "floor_sims": [
+    "weld-bead"
    ],
    "gate": "unaided verification run (ACP-04); no sim hour counts"
   }

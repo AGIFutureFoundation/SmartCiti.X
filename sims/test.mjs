@@ -19,10 +19,11 @@ const skills = new Set(JSON.parse(readFileSync(
 const slugs = new Set(unions.unions.map((u) => u.slug));
 
 const sims = reg.sims;
-ok('three simulators ship: lifting and earthmoving machines, one driving seat',
-  Object.keys(sims).length === 3
+ok('four simulators ship: lifting and earthmoving machines, a driving seat, a process bench',
+  Object.keys(sims).length === 4
   && Object.values(sims).filter((s) => s.kind === 'machine').length === 2
-  && Object.values(sims).filter((s) => s.kind === 'driving').length === 1);
+  && Object.values(sims).filter((s) => s.kind === 'driving').length === 1
+  && Object.values(sims).filter((s) => s.kind === 'process').length === 1);
 ok('every sim carries a task, controls with keys and actions, and 3+ rubric axes',
   Object.values(sims).every((s) => s.task.length > 20
     && s.controls.length >= 3 && s.controls.every((c) => c.keys && c.action)
@@ -47,10 +48,15 @@ ok('the bindings table is exactly the sims\' hall lists, inverted',
           JSON.stringify(ids.sort()) === JSON.stringify(
             reg.hall_bindings[h].map((b) => b.sim).sort()));
   })());
-ok('the operator seats train where they belong: crane hall lifts, teamsters drive, shoring digs',
+ok('the operator seats train where they belong: crane hall lifts, teamsters drive, shoring digs, welders weld',
   sims['crane-lift'].halls.includes('crane-ops')
   && sims['forklift-run'].halls.includes('teamsters')
-  && sims['excavator-trench'].halls.includes('shoring'));
+  && sims['excavator-trench'].halls.includes('shoring')
+  && sims['weld-bead'].halls.includes('welders'));
+ok('the bead task teaches heat discipline: a pass demands zero burn-throughs, in band',
+  /burns through/.test(sims['weld-bead'].task)
+  && sims['weld-bead'].rubric.some((r) => r.axis === 'burns' && r.pass === '== 0')
+  && sims['weld-bead'].rubric.some((r) => r.axis === 'band' && r.pass === '>= 90'));
 ok('the trench task teaches utility discipline: a pass demands zero strikes',
   /utility/.test(sims['excavator-trench'].task)
   && sims['excavator-trench'].rubric.some((r) =>
@@ -72,7 +78,8 @@ ok('every sim offers an operator-seat view mode alongside the external one',
   Object.values(sims).every((s) => s.view_modes?.length >= 2)
   && sims['crane-lift'].view_modes.includes('cab')
   && sims['excavator-trench'].view_modes.includes('cab')
-  && sims['forklift-run'].view_modes.includes('driver'));
+  && sims['forklift-run'].view_modes.includes('driver')
+  && sims['weld-bead'].view_modes.includes('visor'));
 
 const campusKeys = new Set(Object.keys(JSON.parse(readFileSync(
   new URL('../unions/registry/campuses.json', import.meta.url))).campuses));
@@ -83,7 +90,7 @@ ok('every sim trains regionally: one scenario per campus, unique ids, real brief
         && x.id && x.name && x.brief.length > 30
         && typeof x.params === 'object'))
   && new Set(Object.values(sims).flatMap((s) => s.scenarios.map((x) => x.id)))
-      .size === 9);
+      .size === 12);
 ok('scenarios vary the environment, never the rubric: no scenario carries pass rules',
   Object.values(sims).every((s) =>
     s.scenarios.every((x) => !('rubric' in x.params) && !('pass' in x.params))));

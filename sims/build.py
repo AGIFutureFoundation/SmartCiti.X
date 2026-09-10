@@ -2,7 +2,7 @@
 """
 SmartCiti.X : Trade Craft Academy — the simulator registry builder.
 
-Two operable training simulators, defined as data: what machine, which
+The operable training simulators, defined as data: what machine, which
 halls train on it, which skill each run exercises, and the deterministic
 rubric that scores it. The 3D environment implements the physics and the
 controls; this registry owns the curriculum claims, so the sim and the
@@ -204,6 +204,66 @@ SIMS = {
              'brief': 'The wharf dock is narrow - four gates, then a '
                       'set-down with little room to be wrong.',
              'params': {'gates': 4, 'dock_w': 1.5}},
+        ],
+    },
+    'weld-bead': {
+        'name': 'Weld Bead Run',
+        'kind': 'process',
+        'task': 'Strike the arc and run one clean bead down the marked '
+                'seam — hold the gap inside the band and keep the torch '
+                'travelling; linger on a segment and the plate burns '
+                'through.',
+        'controls': [
+            {'keys': 'W / S', 'action': 'travel the torch along the seam'},
+            {'keys': 'Q / E', 'action': 'raise / lower the torch (arc gap)'},
+            {'keys': 'Space', 'action': 'strike / break the arc'},
+        ],
+        'rubric': [
+            {'axis': 'fusion', 'measure': 'seam segments fused end to end',
+             'pass': '== all'},
+            {'axis': 'band', 'measure': 'share of fused segments laid with the '
+                                        'gap inside the band (%)',
+             'pass': '>= 90'},
+            {'axis': 'burns', 'measure': 'burn-throughs from lingering heat',
+             'pass': '== 0'},
+            {'axis': 'time', 'measure': 'seconds first strike to last fuse',
+             'pass': 'informational'},
+        ],
+        'halls': ['welders', 'boilermakers', 'shipfitters', 'fabricators',
+                  'pipeline'],
+        'skill_strand': 'machines',
+        'skill_tier': 'applied',
+        'dash': [
+            {'id': 'gap', 'label': 'Gap', 'unit': 'mm', 'warn_at': 5.2},
+            {'id': 'heat', 'label': 'Heat', 'unit': '%', 'warn_at': 85},
+            {'id': 'seam', 'label': 'Seam', 'unit': ''},
+            {'id': 'band', 'label': 'Band', 'unit': '%'},
+            {'id': 'burns', 'label': 'Burns', 'unit': '', 'warn_at': 1},
+            {'id': 'time', 'label': 'T', 'unit': 's'},
+        ],
+        'audio': {'engine': 'arc',
+                  'alerts': ['burn-alarm', 'arc-pop', 'result-chime'],
+                  'note': 'synthesized in-page (WebAudio); no recordings shipped'},
+        'haptics': ['burn', 'finish'],
+        'view_modes': ['orbit', 'visor'],
+        # Regional scenarios: seam length and gap band are the yard's own;
+        # "full fusion, in band, zero burns" stays the law everywhere.
+        'scenarios': [
+            {'id': 'bay-deck-seam', 'campus': 'treasure-island',
+             'name': 'Deck plate seam',
+             'brief': 'A flat deck seam on the fabrication floor - the '
+                      'forgiving band to learn the rhythm in.',
+             'params': {'segs': 10, 'band': [2.0, 5.0]}},
+            {'id': 'oak-flange-bead', 'campus': 'oakland',
+             'name': 'Pipe flange bead',
+             'brief': 'A longer run at a tighter gap - the plant '
+                      'inspector reads every millimetre of it.',
+             'params': {'segs': 12, 'band': [2.0, 4.5]}},
+            {'id': 'nola-tank-seam', 'campus': 'new-orleans',
+             'name': 'Tank shell seam',
+             'brief': 'Storage-tank shell plate in Gulf humidity - a '
+                      'slightly higher band, the same clean-bead law.',
+             'params': {'segs': 10, 'band': [2.5, 5.5]}},
         ],
     },
 }
