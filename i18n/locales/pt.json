@@ -52,7 +52,8 @@
   "sim.sound": "Som",
   "sim.view": "Vista",
   "sim.choose": "Escolha um simulador",
-  "progress.local": "O progresso é salvo somente neste dispositivo."
+  "progress.local": "O progresso é salvo somente neste dispositivo.",
+  "city.note": "Camada urbana: instituições REGISTRADAS do Locator.X; ruas e rio esquemáticos"
  },
  "districts": {
   "structural": {

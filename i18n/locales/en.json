@@ -52,7 +52,8 @@
   "sim.sound": "Sound",
   "sim.view": "View",
   "sim.choose": "Choose a simulator",
-  "progress.local": "Progress is saved on this device only."
+  "progress.local": "Progress is saved on this device only.",
+  "city.note": "City layer: institutions RECORDED from Locator.X; streets and river schematic"
  },
  "districts": {
   "structural": {

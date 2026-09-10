@@ -82,7 +82,24 @@ ANCHORS = {
         ('Xavier University', 29.9649, -90.1073, 'build_data_nola.py pois'),
         ('University of New Orleans', 30.0288, -90.0664, 'build_data_nola.py pois'),
         ('Delgado Community College', 29.9814, -90.1050, 'build_data_nola.py pois'),
+        ('Loyola University', 29.9351, -90.1223, 'build_data_nola.py pois'),
+        ('Dillard University', 29.9903, -90.0517, 'build_data_nola.py pois'),
+        ('SUNO', 30.0421, -90.0330, 'build_data_nola.py pois'),
     ],
+}
+
+# The New Orleans CITY record - the region frame Locator.X's NOLA map
+# ships: its centre and view bounds, RECORDED verbatim from the same
+# builder. This is what lets a city layer claim a real frame rather than
+# an invented one; the streets and river drawn inside it stay SCHEMATIC
+# and are labelled so wherever they render.
+CITY = {
+    'new-orleans': {
+        'center': {'lat': 29.975, 'lng': -90.09},
+        'bounds': {'w': -90.65, 's': 29.5, 'e': -89.45, 'n': 30.35},
+        'provenance': 'RECORDED',
+        'source': 'Locator.X build_data_nola.py region, Apache-2.0',
+    },
 }
 
 if locx.exists():
@@ -98,6 +115,12 @@ if locx.exists():
                           re.findall(r'\((-9\d\.\d+),(\d\d\.\d+)\)', _nola)}
                 assert (_lng, _lat) in _pairs, \
                     f'anchor drifted from the NOLA POI table: {_name}'
+    _c = CITY['new-orleans']
+    assert f"center=[{_c['center']['lng']},{_c['center']['lat']}]" in _nola, \
+        'NOLA city centre drifted from the region record'
+    _b = _c['bounds']
+    assert (f"maxBounds=[[{_b['w']},{_b['s']}],[{_b['e']},{_b['n']}]]"
+            in _nola), 'NOLA city bounds drifted from the region record'
 
 campuses = json.load(open(ROOT / 'unions/registry/campuses.json'))['campuses']
 assert set(GEO) == set(campuses), 'a coordinate per campus, exactly'
@@ -155,6 +178,7 @@ doc = {
         for k, (lat, lng, prov, src) in GEO.items()
     },
     'routes_km': routes,
+    'city': CITY,
     'anchors': {
         ck: [{'name': n, 'lat': lat, 'lng': lng, 'provenance': 'RECORDED',
               'source': f'Locator.X {src}, Apache-2.0',

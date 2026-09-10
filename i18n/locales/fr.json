@@ -52,7 +52,8 @@
   "sim.sound": "Son",
   "sim.view": "Vue",
   "sim.choose": "Choisissez un simulateur",
-  "progress.local": "La progression est enregistrée uniquement sur cet appareil."
+  "progress.local": "La progression est enregistrée uniquement sur cet appareil.",
+  "city.note": "Couche urbaine : institutions ENREGISTRÉES depuis Locator.X ; rues et fleuve schématiques"
  },
  "districts": {
   "structural": {

@@ -52,7 +52,8 @@
   "sim.sound": "الصوت",
   "sim.view": "العرض",
   "sim.choose": "اختر جهاز محاكاة",
-  "progress.local": "يُحفظ التقدم على هذا الجهاز فقط."
+  "progress.local": "يُحفظ التقدم على هذا الجهاز فقط.",
+  "city.note": "طبقة المدينة: المؤسسات مسجلة من Locator.X؛ الشوارع والنهر تخطيطيان"
  },
  "districts": {
   "structural": {

@@ -82,17 +82,28 @@ ok('the registry says what a coordinate is not: an anchor, not a parcel claim',
   /does not claim a parcel/.test(reg.honesty.siting)
   && /planned locations/.test(reg.honesty.siting));
 /* -------------------------------------------------------------- anchors --- */
-ok('every campus carries four RECORDED anchors citing their Locator.X table',
+ok('every campus carries RECORDED anchors citing their Locator.X table — the full NOLA POI table, seven strong',
   Object.keys(reg.anchors).length === 3
-  && Object.values(reg.anchors).every((l) => l.length === 4
-    && l.every((a) => a.provenance === 'RECORDED' && /Locator\.X/.test(a.source))));
+  && reg.anchors['treasure-island'].length === 4
+  && reg.anchors['oakland'].length === 4
+  && reg.anchors['new-orleans'].length === 7
+  && Object.values(reg.anchors).every((l) =>
+    l.every((a) => a.provenance === 'RECORDED' && /Locator\.X/.test(a.source))));
 ok('every anchor sits within 60 km of its campus, distances recomputed',
   Object.entries(reg.anchors).every(([ck, l]) => l.every((a) =>
     Math.abs(haversineKm(pts[ck], a) - a.km) < 0.1 && a.km < 60)));
 ok('the GeoJSON carries the anchors as tagged features, [lng, lat]',
-  gj.features.filter((f) => f.properties.kind === 'anchor').length === 12
+  gj.features.filter((f) => f.properties.kind === 'anchor').length === 15
   && gj.features.filter((f) => f.properties.kind === 'anchor')
       .every((f) => Math.abs(f.geometry.coordinates[0]) > Math.abs(f.geometry.coordinates[1])));
+ok('the New Orleans city frame is RECORDED, plausible, and inside its own bounds',
+  reg.city['new-orleans'].provenance === 'RECORDED'
+  && /Locator\.X/.test(reg.city['new-orleans'].source)
+  && (() => { const c = reg.city['new-orleans'];
+    return c.center.lng > c.bounds.w && c.center.lng < c.bounds.e
+      && c.center.lat > c.bounds.s && c.center.lat < c.bounds.n
+      && haversineKm(pts['new-orleans'],
+        { lat: c.center.lat, lng: c.center.lng }) < 6; })());
 
 const src = readFileSync(new URL('./build.py', import.meta.url));
 ok('the registry was built from the current builder source (stamp check)',
