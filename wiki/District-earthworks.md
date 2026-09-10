@@ -1,6 +1,6 @@
 # District: Earthworks & Plant
 
-*Ground, machines, access and haul*
+*Ground, machines, access and haul* — trains at **Oakland Waterfront Campus**, Oakland, California.
 
 **12 halls** · 132,000 lessons ·
 1,188,000 core modules. Part of the [campus map](Campus-Map.md).

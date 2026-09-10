@@ -40,7 +40,9 @@
   "view.campus": "عرض الحرم",
   "ui.walk": "تجوّل",
   "hint.campus": "انقر على قاعة للدخول إليها",
-  "hint.walk": "‏WASD للتحرك · Esc للخروج"
+  "hint.walk": "‏WASD للتحرك · Esc للخروج",
+  "view.region": "عرض الشبكة",
+  "figures.campuses": "{n} فروع"
  },
  "districts": {
   "structural": {

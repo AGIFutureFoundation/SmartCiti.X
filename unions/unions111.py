@@ -178,3 +178,32 @@ _assigned = [s for _, _, v in DISTRICTS.values() for s in v]
 assert len(_assigned) == 111, f'districts cover {len(_assigned)} halls, need 111'
 assert set(_assigned) == set(slugs), 'district map must match the taxonomy exactly'
 assert len(set(_assigned)) == 111, 'a hall may belong to exactly one district'
+
+
+# ---------------------------------------------------------------- campuses --
+# The network's three planned campuses. Districts are assigned whole — a
+# district trains where its trades cluster: structural, systems and finish
+# work at the flagship island campus; heavy industry, port and plant on the
+# Oakland waterfront; energy, water and environmental response on the Gulf.
+#
+# HONESTY, same rule as the taxonomy: these are PLANNED locations named for
+# real cities. No site has been surveyed, no address is recorded, and no
+# figure here comes from any city's records.
+CAMPUSES = {
+    'treasure-island': ('Treasure Island Campus', 'San Francisco', 'California',
+        'The flagship: structure, systems and finish on the bay',
+        ['structural', 'systems', 'envelope']),
+    'oakland': ('Oakland Waterfront Campus', 'Oakland', 'California',
+        'Port, plant and heavy industry on the working estuary',
+        ['industry', 'transport', 'earthworks']),
+    'new-orleans': ('Crescent Works Campus', 'New Orleans', 'Louisiana',
+        'Energy, water and environmental response on the Gulf',
+        ['energy', 'control']),
+}
+
+_hosted = [d for _, _, _, _, ds in CAMPUSES.values() for d in ds]
+assert len(_hosted) == len(DISTRICTS), 'campuses must host every district'
+assert set(_hosted) == set(DISTRICTS), 'campus map must match the districts exactly'
+assert len(set(_hosted)) == len(_hosted), 'a district trains at exactly one campus'
+_campus_halls = sum(len(DISTRICTS[d][2]) for d in _hosted)
+assert _campus_halls == 111, f'campuses host {_campus_halls} halls, need 111'

@@ -15,7 +15,7 @@ content graph and details:
 | Map | What it shows | Page |
 |---|---|---|
 | **Interactive map** (`web/trade_craft_interactive.html`) | All 111 halls with toggleable layers — districts, pipeline, module layers, training stations — hall floor plans and quizzes, in every locale, searchable and deep-linkable | [Campus-Map](Campus-Map.md) |
-| **3D environment** (`web/trade_craft_3d.html`) | The whole campus as a 3D city — all 111 buildings ringed by district, click one to enter its hall: rooms, fixtures, yard props, station beacons, and first-person walk mode | [Campus-Map](Campus-Map.md) |
+| **3D environment** (`web/trade_craft_3d.html`) | The whole network in 3D — three city campuses on one board, each campus a ringed district city of buildings, each building an enterable hall with rooms, fixtures, station beacons and first-person walk mode | [Campus-Map](Campus-Map.md) |
 | Campus map (`web/trade_craft_map.html`) | All 111 halls in 8 districts, with pipeline state | [Campus-Map](Campus-Map.md) |
 | Hall floor plans (inside the campus map) | A generated interior for every hall — 111 plans, 11 rooms each | [Interiors-Map](Interiors-Map.md) |
 | Skill graph (`pack/registry/skills.json`) | 3,663 skills and the edges that sequence practice | [Skill-Graph](Skill-Graph.md) |
@@ -43,6 +43,17 @@ flowchart LR
   campus --> control["Survey, Safety & Environment<br/>11 halls"]
   click control "District-control.md"
 ```
+
+## The campuses
+
+The network trains in three planned locations — named for real cities, with
+no site surveyed and no address recorded:
+
+| Campus | Where | Trains | Districts | Halls |
+|---|---|---|---|---|
+| **Treasure Island Campus** | San Francisco, California | The flagship: structure, systems and finish on the bay | Structural, Building Systems, Envelope & Finish | 51 |
+| **Oakland Waterfront Campus** | Oakland, California | Port, plant and heavy industry on the working estuary | Heavy Industry, Transport & Mobility, Earthworks & Plant | 32 |
+| **Crescent Works Campus** | New Orleans, Louisiana | Energy, water and environmental response on the Gulf | Energy & Utilities, Survey, Safety & Environment | 28 |
 
 ## The districts
 

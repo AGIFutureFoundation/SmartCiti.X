@@ -1,6 +1,6 @@
 # District: Heavy Industry
 
-*Process plant, marine, metal and machine shops*
+*Process plant, marine, metal and machine shops* — trains at **Oakland Waterfront Campus**, Oakland, California.
 
 **10 halls** · 110,000 lessons ·
 990,000 core modules. Part of the [campus map](Campus-Map.md).

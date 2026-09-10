@@ -45,6 +45,7 @@ manifest = json.load(open(ROOT / 'pack/manifest.json'))
 L = manifest['ledger']
 halls_json = json.load(open(ROOT / 'pack/registry/halls.json'))['halls']
 districts_reg = json.load(open(ROOT / 'unions/registry/districts.json'))['districts']
+campuses_reg = json.load(open(ROOT / 'unions/registry/campuses.json'))['campuses']
 stations_reg = json.load(open(ROOT / 'stations/registry/stations.json'))
 yard = json.load(open(ROOT / 'archive/bac_yard_stations.json'))['yard_placements']
 
@@ -92,7 +93,8 @@ for f in sorted((ROOT / 'i18n/locales').glob('*.json')):
             'nav.campus', 'language.select', 'hall.rooms', 'hall.stations',
             'station.checklist', 'station.quiz', 'ui.close',
             'map.layer.modules', 'figures.modules', 'figures.lessons',
-            'figures.halls', 'figures.districts', 'view.campus', 'ui.walk',
+            'figures.halls', 'figures.districts', 'figures.campuses',
+            'view.campus', 'view.region', 'ui.walk',
             'hint.campus', 'hint.walk',
             'honesty.taxonomy', 'honesty.content')},
         'districts': {k: v['name'] for k, v in c['districts'].items()},
@@ -102,6 +104,7 @@ for f in sorted((ROOT / 'i18n/locales').glob('*.json')):
 DATA = json.dumps({
     'districts': {k: {'name': d['name'], 'halls': d['halls'], 'hue': HUES[k]}
                   for k, d in districts_reg.items()},
+    'campuses': campuses_reg,
     'halls': HALLS,
     'stations': {s['station_id']: {k: s[k] for k in (
         'station_id', 'name', 'hall', 'room', 'strand', 'tier',
@@ -188,6 +191,7 @@ body.open #panel{transform:none}
   <span class="brand">SmartCiti<span class="x">.X</span> : Trade Craft Academy</span>
   <a href="trade_craft_interactive.html" id="back"></a>
   <select id="hall" aria-label="hall"></select>
+  <button id="regionBtn" class="barbtn"></button>
   <button id="campusBtn" class="barbtn"></button>
   <button id="walkBtn" class="barbtn"></button>
   <select id="lang"></select>
@@ -214,7 +218,7 @@ const D = JSON.parse(document.getElementById('data').textContent);
 const params = new URLSearchParams(location.search);
 let loc = D.i18n[params.get('lang')] ? params.get('lang') : 'en';
 let slug = D.halls.some(h => h.slug === params.get('hall')) ? params.get('hall') : 'bricklayers';
-let view = D.halls.some(h => h.slug === params.get('hall')) ? 'hall' : 'campus';
+let view = 'region';
 const t = (k) => D.i18n[loc].strings[k] ?? D.i18n.en.strings[k] ?? k;
 const U = 3;                       // metres per grid unit
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -234,11 +238,41 @@ renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 renderer.setSize(innerWidth, innerHeight);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.12;
 document.body.appendChild(renderer.domElement);
 
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x12181B);
-scene.fog = new THREE.Fog(0x12181B, 70, 170);
+// dusk sky: a vertical gradient the fog can sink into
+{
+  const c = document.createElement('canvas'); c.width = 2; c.height = 256;
+  const g = c.getContext('2d');
+  const gr = g.createLinearGradient(0, 0, 0, 256);
+  gr.addColorStop(0, '#0c141c'); gr.addColorStop(.55, '#1a2a36');
+  gr.addColorStop(.8, '#33404a'); gr.addColorStop(1, '#463a2a');
+  g.fillStyle = gr; g.fillRect(0, 0, 2, 256);
+  scene.background = new THREE.CanvasTexture(c);
+}
+scene.fog = new THREE.Fog(0x1a2229, 70, 170);
+
+function noiseTex(base, grain, n = 1400, size = 256) {
+  const c = document.createElement('canvas'); c.width = c.height = size;
+  const g = c.getContext('2d');
+  g.fillStyle = base; g.fillRect(0, 0, size, size);
+  for (let i = 0; i < n; i++) {
+    g.fillStyle = `rgba(${grain},${.05 + Math.random() * .1})`;
+    const r = Math.random() * 2.2;
+    g.fillRect(Math.random() * size, Math.random() * size, r, r);
+  }
+  const t = new THREE.CanvasTexture(c);
+  t.wrapS = t.wrapT = THREE.RepeatWrapping;
+  t.anisotropy = 4;
+  return t;
+}
+const asphaltTex = noiseTex('#191f22', '220,225,225');
+asphaltTex.repeat.set(34, 34);
+const concreteTex = noiseTex('#262e31', '235,238,238', 1000);
+concreteTex.repeat.set(9, 9);
 
 const camera = new THREE.PerspectiveCamera(50, innerWidth/innerHeight, .1, 900);
 camera.position.set(30, 26, 42);
@@ -250,7 +284,7 @@ controls.autoRotate = !reduced;
 controls.autoRotateSpeed = .45;
 controls.addEventListener('start', () => { controls.autoRotate = false; });
 
-scene.add(new THREE.HemisphereLight(0x9fb4bd, 0x1a1512, .85));
+scene.add(new THREE.HemisphereLight(0xaec2cb, 0x241d16, 1.05));
 const key = new THREE.DirectionalLight(0xffe0b0, 1.6);
 key.position.set(35, 48, 20);
 key.castShadow = true;
@@ -265,14 +299,20 @@ scene.add(fill);
 // ground: dark apron with a faint work grid
 const ground = new THREE.Mesh(
   new THREE.CircleGeometry(260, 64),
-  new THREE.MeshStandardMaterial({ color: 0x0e1416, roughness: .96 }));
+  new THREE.MeshStandardMaterial({ map: asphaltTex, color: 0x8f9698, roughness: .96 }));
 ground.rotation.x = -Math.PI/2; ground.receiveShadow = true;
 scene.add(ground);
 const grid = new THREE.GridHelper(520, 130, 0x28353A, 0x1b2427);
 grid.position.y = .02; scene.add(grid);
 
 const mat = {
-  slab:  new THREE.MeshStandardMaterial({ color: 0x232b2e, roughness: .9 }),
+  slab:  new THREE.MeshStandardMaterial({ map: concreteTex, color: 0xb8bdbd, roughness: .9 }),
+  win:   new THREE.MeshStandardMaterial({ color: 0x0b0f11,
+           emissive: 0xffc27a, emissiveIntensity: .5, roughness: .4 }),
+  water: new THREE.MeshStandardMaterial({ color: 0x14283a, roughness: .3,
+           metalness: .3 }),
+  land:  new THREE.MeshStandardMaterial({ map: asphaltTex, color: 0xcdd2d3,
+           roughness: .95 }),
   wall:  new THREE.MeshStandardMaterial({ color: 0x39454a, roughness: .85 }),
   part:  new THREE.MeshStandardMaterial({ color: 0x2c3639, roughness: .85 }),
   post:  new THREE.MeshStandardMaterial({ color: 0xE8A33D, roughness: .45,
@@ -367,6 +407,17 @@ function buildHall(sg) {
   const sign = label(h.name, D.i18n[loc].districts[h.district], 1.35);
   sign.position.set(0, 5.1, cz(0)); hallGroup.add(sign);
 
+  // roof trusses across the span, and lit strips along the side walls
+  for (let tz = 4; tz < DEP - 1; tz += 6) {
+    box(W - .6, .18, .5, mat.metal, 0, 3.05, cz(tz), hallGroup, false);
+    const lamp = new THREE.Mesh(new THREE.BoxGeometry(1.6, .1, .5), mat.win);
+    lamp.position.set(0, 2.9, cz(tz)); hallGroup.add(lamp);
+  }
+  for (const wx of [cx(0) + .18, cx(W) - .18]) {
+    const strip = new THREE.Mesh(new THREE.BoxGeometry(.06, .55, DEP * .8), mat.win);
+    strip.position.set(wx, 2.55, 0); hallGroup.add(strip);
+  }
+
   // rooms: tinted floor + low partitions + label
   const stns = h.stations.map(id => D.stations[id]);
   for (const r of h.rooms) {
@@ -440,75 +491,229 @@ function buildHall(sg) {
 
 /* -------------------------------------------------------- campus view --- */
 let campusGroup = null, buildings = [], campusSpin = [];
+let regionGroup = null, plates = [];
+let campusKey = D.halls.some(h => h.slug === params.get('hall'))
+  ? Object.keys(D.campuses).find(k =>
+      D.campuses[k].halls.includes(params.get('hall')))
+  : (D.campuses[params.get('campus')] ? params.get('campus') : 'treasure-island');
 
-function buildCampus() {
+const campusOfHall = (sg) =>
+  Object.keys(D.campuses).find(k => D.campuses[k].halls.includes(sg));
+
+/* -------- higher-detail buildings, shared by campus and region views ---- */
+function building(h, bx, bz, g, scale = 1) {
+  const dep = Math.max(h.depth, 5) * scale, wid = 12 * scale;
+  const hgt = (6 + (h.depth % 3) * .7) * scale;
+  const hue = D.districts[h.district].hue;
+  const bld = box(wid, hgt, dep, mat.wall, bx, hgt / 2, bz, g);
+  bld.userData.slug = h.slug;
+  const band = new THREE.Mesh(new THREE.BoxGeometry(wid + .4 * scale, .9 * scale, dep + .4 * scale),
+    new THREE.MeshStandardMaterial({
+      color: new THREE.Color().setHSL(hue / 360, .5, .45), roughness: .6 }));
+  band.position.set(bx, hgt - .2 * scale, bz); g.add(band);
+  // lit window strips front and back, and a door
+  for (const zz of [bz - dep / 2 - .03, bz + dep / 2 + .03]) {
+    const strip = new THREE.Mesh(
+      new THREE.BoxGeometry(wid * .78, .7 * scale, .06), mat.win);
+    strip.position.set(bx, hgt * .55, zz); g.add(strip);
+  }
+  box(1.6 * scale, 2.4 * scale, .1, mat.part, bx, 1.2 * scale, bz - dep / 2 - .06, g, false);
+  // rooftop unit
+  box(1.6 * scale, .8 * scale, 1.2 * scale, mat.metal,
+      bx + wid * .22, hgt + .4 * scale, bz + dep * .15, g);
+  if (h.stations.length) {
+    const bcn = new THREE.Mesh(new THREE.OctahedronGeometry(.9 * scale), mat.post);
+    bcn.position.set(bx, hgt + 2 * scale, bz);
+    g.add(bcn); campusSpin.push(bcn);
+  }
+  return bld;
+}
+
+/* ------------------------------ campus dressing, keyed by campus slug --- */
+function dressCampus(key, g, R) {
+  if (key === 'treasure-island') {
+    // the island: a bay ring beyond the ground's edge and a flag over the plaza
+    const bay = new THREE.Mesh(new THREE.RingGeometry(258, 640, 64), mat.water);
+    bay.rotation.x = -Math.PI / 2; bay.position.y = -.08; g.add(bay);
+    box(.14, 15, .14, mat.metal, 0, 7.5, -30, g);
+    const flag = new THREE.Mesh(new THREE.PlaneGeometry(4.6, 2.6),
+      new THREE.MeshStandardMaterial({ color: 0xE8A33D, side: THREE.DoubleSide }));
+    flag.position.set(2.4, 13.4, -30); g.add(flag);
+  }
+  if (key === 'oakland') {
+    // container rows and a gantry crane on the estuary edge
+    const cols = [0xB3462F, 0x3A5A78, 0x5B7A5A, 0x8a6a42, 0x41626b];
+    for (let i = 0; i < 14; i++) {
+      const cx = -46 + (i % 7) * 15, cz = R + 34 + Math.floor(i / 7) * 6;
+      const stack = 1 + (i * 7) % 3;
+      for (let sN = 0; sN < stack; sN++) {
+        const c = box(12, 2.6, 2.5, new THREE.MeshStandardMaterial({
+          color: cols[(i + sN) % cols.length], roughness: .8 }),
+          cx, 1.3 + sN * 2.6, cz, g);
+        c.castShadow = true;
+      }
+    }
+    for (const lx of [-14, 14]) {
+      box(1.2, 26, 1.2, mat.metal, lx, 13, R + 46, g);
+      box(1.2, 26, 1.2, mat.metal, lx, 13, R + 52, g);
+    }
+    box(34, 1.6, 2, mat.post, 0, 26, R + 49, g);
+    const quay = new THREE.Mesh(new THREE.PlaneGeometry(400, 160), mat.water);
+    quay.rotation.x = -Math.PI / 2; quay.position.set(0, -.06, R + 140); g.add(quay);
+  }
+  if (key === 'new-orleans') {
+    // the river: a broad channel, pilings, and a working barge
+    const river = new THREE.Mesh(new THREE.PlaneGeometry(560, 130), mat.water);
+    river.rotation.x = -Math.PI / 2; river.position.set(0, -.06, R + 105); g.add(river);
+    box(440, 2.4, 5, mat.slab, 0, 1.2, R + 38, g);      // the levee
+    for (let i = 0; i < 12; i++)
+      box(.8, 3.6, .8, mat.wood, -110 + i * 20, 1.2, R + 50, g);
+    box(30, 2, 10, mat.part, 26, .9, R + 78, g);        // barge hull
+    box(6, 3, 4, mat.metal, 36, 3.4, R + 78, g);        // wheelhouse
+  }
+}
+
+function buildCampus(key) {
   if (campusGroup) scene.remove(campusGroup);
   campusGroup = new THREE.Group(); buildings = []; campusSpin = [];
-  const dkeys = Object.keys(D.districts);
-  dkeys.forEach((k, di) => {
+  const camp = D.campuses[key];
+  const dk = camp.districts;
+  const R = dk.length === 2 ? 62 : 84;
+  dk.forEach((k, di) => {
     const d = D.districts[k];
-    const ang = di / dkeys.length * Math.PI * 2;
+    const ang = di / dk.length * Math.PI * 2 - Math.PI / 2;
     const rad = new THREE.Vector2(Math.cos(ang), Math.sin(ang));
     const lat = new THREE.Vector2(-rad.y, rad.x);
-    const cx = rad.x * 108, cz = rad.y * 108;
+    const cx = rad.x * R, cz = rad.y * R;
     const cols = Math.ceil(Math.sqrt(d.halls.length * 1.7));
     d.halls.forEach((sg, i) => {
       const h = D.halls.find(x => x.slug === sg);
       const gx = (i % cols) - (cols - 1) / 2, gz = Math.floor(i / cols);
       const bx = cx + lat.x * gx * 16 + rad.x * gz * 15;
       const bz = cz + lat.y * gx * 16 + rad.y * gz * 15;
-      const dep = Math.max(h.depth, 5);
-      const bld = box(12, 6.5, dep, mat.wall, bx, 3.25, bz, campusGroup);
-      bld.userData.slug = sg; buildings.push(bld);
-      const band = new THREE.Mesh(new THREE.BoxGeometry(12.4, .9, dep + .4),
-        new THREE.MeshStandardMaterial({
-          color: new THREE.Color().setHSL(d.hue/360, .5, .45), roughness: .6 }));
-      band.position.set(bx, 6.2, bz); campusGroup.add(band);
-      if (h.stations.length) {
-        const bcn = new THREE.Mesh(new THREE.OctahedronGeometry(.9), mat.post);
-        bcn.position.set(bx, 8.6, bz); campusGroup.add(bcn); campusSpin.push(bcn);
-      }
+      buildings.push(building(h, bx, bz, campusGroup));
     });
     const dl = label(D.i18n[loc].districts[k], null, 3);
     dl.position.set(cx - rad.x * 14, 15, cz - rad.y * 14);
     campusGroup.add(dl);
   });
-  const plaza = new THREE.Mesh(new THREE.CylinderGeometry(26, 26, .3, 48),
-    new THREE.MeshStandardMaterial({ color: 0x1c2427, roughness: .95 }));
+  const plaza = new THREE.Mesh(new THREE.CylinderGeometry(24, 24, .3, 48),
+    new THREE.MeshStandardMaterial({ map: concreteTex, color: 0xb8bdbd, roughness: .95 }));
   plaza.position.y = .15; plaza.receiveShadow = true; campusGroup.add(plaza);
-  const sign = label('SmartCiti.X : Trade Craft Academy', 'powered by AGI Corp', 3.4);
+  const sign = label(camp.name, camp.city + ', ' + camp.region, 3.2);
   sign.position.set(0, 18, 0); campusGroup.add(sign);
+  dressCampus(key, campusGroup, R + 42);
   scene.add(campusGroup);
 }
 
-function showCampus() {
-  view = 'campus';
+/* ---------------------------------------------------------- region view --- */
+const PLATE_POS = { 'treasure-island': [-130, -55], 'oakland': [125, -85],
+                    'new-orleans': [55, 150] };
+
+function buildRegion() {
+  if (regionGroup) scene.remove(regionGroup);
+  regionGroup = new THREE.Group(); plates = [];
+  // the gulf-to-bay board: water underneath everything
+  const sea = new THREE.Mesh(new THREE.PlaneGeometry(1600, 1600), mat.water);
+  sea.rotation.x = -Math.PI / 2; sea.position.y = -.12; sea.receiveShadow = true;
+  regionGroup.add(sea);
+  const centers = {};
+  for (const [key, camp] of Object.entries(D.campuses)) {
+    const [px, pz] = PLATE_POS[key];
+    centers[key] = new THREE.Vector3(px, 0, pz);
+    const plate = new THREE.Mesh(new THREE.CylinderGeometry(48, 52, 2.2, 48), mat.land);
+    plate.position.set(px, 1.1, pz); plate.receiveShadow = plate.castShadow = true;
+    plate.userData.campus = key;
+    regionGroup.add(plate); plates.push(plate);
+    // one block per hosted district, sized by its hall count
+    camp.districts.forEach((dkey, i) => {
+      const d = D.districts[dkey];
+      const ang = i / camp.districts.length * Math.PI * 2;
+      const bx = px + Math.cos(ang) * 24, bz = pz + Math.sin(ang) * 24;
+      const hgt = 4 + d.halls.length * .55;
+      const blk = box(13, hgt, 13, new THREE.MeshStandardMaterial({
+        color: new THREE.Color().setHSL(d.hue / 360, .45, .4), roughness: .7 }),
+        bx, 2.2 + hgt / 2, bz, regionGroup);
+      blk.userData.campus = key; plates.push(blk);
+      const cl = label(String(d.halls.length), null, 1.4);
+      cl.position.set(bx, hgt + 6, bz); regionGroup.add(cl);
+    });
+    const pl = label(camp.name, camp.city + ', ' + camp.region, 3.4);
+    pl.position.set(px, 30, pz); regionGroup.add(pl);
+  }
+  // glowing routes between the campuses
+  const lineMat = new THREE.LineBasicMaterial({ color: 0xE8A33D, transparent: true, opacity: .65 });
+  const pairs = [['treasure-island', 'oakland'], ['oakland', 'new-orleans'],
+                 ['treasure-island', 'new-orleans']];
+  for (const [a, b] of pairs) {
+    const pa = centers[a], pb = centers[b];
+    const mid = pa.clone().add(pb).multiplyScalar(.5); mid.y = 26;
+    const curve = new THREE.QuadraticBezierCurve3(
+      pa.clone().setY(3), mid, pb.clone().setY(3));
+    const geo = new THREE.BufferGeometry().setFromPoints(curve.getPoints(40));
+    regionGroup.add(new THREE.Line(geo, lineMat));
+  }
+  const sign = label('SmartCiti.X : Trade Craft Academy', 'powered by AGI Corp', 3.6);
+  sign.position.set(0, 44, 10); regionGroup.add(sign);
+  scene.add(regionGroup);
+}
+
+function showRegion() {
+  view = 'region';
   if (walkActive) plc.unlock();
   if (hallGroup) hallGroup.visible = false;
-  buildCampus();
-  scene.fog.near = 160; scene.fog.far = 640;
-  controls.maxDistance = 420; controls.minDistance = 20;
-  camera.position.set(0, 175, 205); controls.target.set(0, 0, 0);
-  document.getElementById('hname').textContent = t('view.campus');
+  if (campusGroup) campusGroup.visible = false;
+  ground.visible = grid.visible = false;
+  buildRegion();
+  scene.fog.near = 380; scene.fog.far = 1300;
+  controls.maxDistance = 700; controls.minDistance = 60;
+  camera.position.set(0, 330, 330); controls.target.set(20, 0, 10);
+  document.getElementById('hname').textContent = t('view.region');
   document.getElementById('hfocus').textContent =
+    t('figures.campuses').replace('{n}', Object.keys(D.campuses).length) + ' · ' +
     t('figures.halls').replace('{n}', D.halls.length) + ' · ' +
     t('figures.districts').replace('{n}', Object.keys(D.districts).length);
   document.getElementById('hint').textContent = t('hint.campus');
   document.getElementById('walkBtn').style.display = 'none';
+  document.getElementById('campusBtn').style.display = 'none';
+  syncURL();
+}
+
+function showCampus(key) {
+  campusKey = key; view = 'campus';
+  if (walkActive) plc.unlock();
+  if (hallGroup) hallGroup.visible = false;
+  if (regionGroup) regionGroup.visible = false;
+  ground.visible = grid.visible = true;
+  buildCampus(key);
+  scene.fog.near = 160; scene.fog.far = 640;
+  controls.maxDistance = 420; controls.minDistance = 20;
+  camera.position.set(0, 165, 195); controls.target.set(0, 0, 0);
+  const camp = D.campuses[key];
+  document.getElementById('hname').textContent = camp.name;
+  document.getElementById('hfocus').textContent =
+    camp.city + ', ' + camp.region + ' — ' + camp.tagline;
+  document.getElementById('hint').textContent = t('hint.campus');
+  document.getElementById('walkBtn').style.display = 'none';
+  document.getElementById('campusBtn').style.display = 'none';
   syncURL();
 }
 
 function showHall(sg) {
-  slug = sg; view = 'hall';
+  slug = sg; view = 'hall'; campusKey = campusOfHall(sg);
+  if (regionGroup) regionGroup.visible = false;
   if (campusGroup) campusGroup.visible = false;
+  ground.visible = grid.visible = true;
   buildHall(sg);
   scene.fog.near = 70; scene.fog.far = 170;
   controls.maxDistance = 120; controls.minDistance = 8;
   camera.position.set(30, 26, 42); controls.target.set(0, 2, 0);
   document.getElementById('hint').textContent =
-    '● ' + t('hall.stations') + ' · ' + t('hall.rooms') + ' → ' + t('map.layer.modules');
+    '\u25cf ' + t('hall.stations') + ' \u00b7 ' + t('hall.rooms') + ' \u2192 ' + t('map.layer.modules');
   document.getElementById('walkBtn').style.display =
     ('ontouchstart' in window) ? 'none' : '';
+  const cb = document.getElementById('campusBtn');
+  cb.style.display = ''; cb.textContent = '\u2191 ' + D.campuses[campusKey].name;
   syncURL();
 }
 
@@ -571,7 +776,7 @@ function renderChrome() {
   lang.setAttribute('aria-label', t('language.select'));
   lang.innerHTML = Object.entries(D.i18n).map(([c, v]) =>
     `<option value="${c}" ${c===loc?'selected':''}>${v.language}</option>`).join('');
-  document.getElementById('campusBtn').textContent = '⌂ ' + t('view.campus');
+  document.getElementById('regionBtn').textContent = '⌂ ' + t('view.region');
   document.getElementById('walkBtn').textContent = '⤞ ' + t('ui.walk');
   document.getElementById('honesty').textContent =
     t('honesty.taxonomy') + ' ' + t('honesty.content');
@@ -627,6 +832,11 @@ renderer.domElement.addEventListener('pointerdown', (e) => {
   if (walkActive) ptr.set(0, 0);
   else ptr.set(e.clientX/innerWidth*2-1, -(e.clientY/innerHeight)*2+1);
   ray.setFromCamera(ptr, camera);
+  if (view === 'region') {
+    const phit = ray.intersectObjects(plates, false)[0];
+    if (phit?.object.userData.campus) showCampus(phit.object.userData.campus);
+    return;
+  }
   if (view === 'campus') {
     const bhit = ray.intersectObjects(buildings, false)[0];
     if (bhit?.object.userData.slug) showHall(bhit.object.userData.slug);
@@ -643,20 +853,29 @@ renderer.domElement.addEventListener('pointerdown', (e) => {
 });
 let hoverPending = false;
 renderer.domElement.addEventListener('pointermove', (e) => {
-  if (view !== 'campus' || hoverPending) return;
+  if (view === 'hall' || hoverPending) return;
   hoverPending = true;
   requestAnimationFrame(() => {
     hoverPending = false;
     ptr.set(e.clientX/innerWidth*2-1, -(e.clientY/innerHeight)*2+1);
     ray.setFromCamera(ptr, camera);
-    const bhit = ray.intersectObjects(buildings, false)[0];
-    if (bhit?.object.userData.slug) {
-      const h = D.halls.find(x => x.slug === bhit.object.userData.slug);
-      document.getElementById('hname').textContent = h.name;
-      document.getElementById('hfocus').textContent = h.focus;
-      renderer.domElement.style.cursor = 'pointer';
+    if (view === 'campus') {
+      const bhit = ray.intersectObjects(buildings, false)[0];
+      if (bhit?.object.userData.slug) {
+        const h = D.halls.find(x => x.slug === bhit.object.userData.slug);
+        document.getElementById('hname').textContent = h.name;
+        document.getElementById('hfocus').textContent = h.focus;
+        renderer.domElement.style.cursor = 'pointer';
+      } else renderer.domElement.style.cursor = '';
     } else {
-      renderer.domElement.style.cursor = '';
+      const phit = ray.intersectObjects(plates, false)[0];
+      if (phit?.object.userData.campus) {
+        const c = D.campuses[phit.object.userData.campus];
+        document.getElementById('hname').textContent = c.name;
+        document.getElementById('hfocus').textContent =
+          c.city + ', ' + c.region + ' — ' + c.tagline;
+        renderer.domElement.style.cursor = 'pointer';
+      } else renderer.domElement.style.cursor = '';
     }
   });
 });
@@ -671,15 +890,20 @@ document.addEventListener('click', (e) => {
 document.getElementById('hall').addEventListener('change', (e) => {
   showHall(e.target.value);
 });
-document.getElementById('campusBtn').addEventListener('click', showCampus);
+document.getElementById('regionBtn').addEventListener('click', showRegion);
+document.getElementById('campusBtn').addEventListener('click',
+  () => showCampus(campusKey));
 document.getElementById('walkBtn').addEventListener('click', enterWalk);
 document.getElementById('lang').addEventListener('change', (e) => {
   loc = e.target.value; renderChrome();
-  if (view === 'campus') showCampus(); else showHall(slug);
+  if (view === 'region') showRegion();
+  else if (view === 'campus') showCampus(campusKey);
+  else showHall(slug);
 });
 function syncURL() {
-  history.replaceState(null, '', view === 'campus'
-    ? `?lang=${loc}` : `?hall=${slug}&lang=${loc}`);
+  history.replaceState(null, '', view === 'region' ? `?lang=${loc}`
+    : view === 'campus' ? `?campus=${campusKey}&lang=${loc}`
+    : `?hall=${slug}&lang=${loc}`);
 }
 addEventListener('resize', () => {
   camera.aspect = innerWidth/innerHeight; camera.updateProjectionMatrix();
@@ -687,10 +911,12 @@ addEventListener('resize', () => {
 });
 
 renderChrome();
-if (view === 'hall') showHall(slug); else showCampus();
+if (D.halls.some(h => h.slug === params.get('hall'))) showHall(params.get('hall'));
+else if (D.campuses[params.get('campus')]) showCampus(params.get('campus'));
+else showRegion();
 // test hook: lets the harness assert scene state without poking internals
-window.__tc3d = () => ({ view, buildings: buildings.length,
-  beacons: beacons.length, floors: floors.length, slug, loc, walkActive });
+window.__tc3d = () => ({ view, buildings: buildings.length, plates: plates.length,
+  beacons: beacons.length, floors: floors.length, slug, campusKey, loc, walkActive });
 const clock = new THREE.Clock();
 renderer.setAnimationLoop(() => {
   const dt = clock.getDelta();

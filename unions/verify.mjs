@@ -16,6 +16,7 @@ const ok = (m, c) => { if (!c) { console.error('FAIL', m); process.exit(1); } n+
 
 const unions = JSON.parse(readFileSync(new URL('./registry/unions.json', import.meta.url)));
 const districts = JSON.parse(readFileSync(new URL('./registry/districts.json', import.meta.url)));
+const campuses = JSON.parse(readFileSync(new URL('./registry/campuses.json', import.meta.url)));
 const halls = JSON.parse(readFileSync(new URL('../pack/registry/halls.json', import.meta.url)));
 const manifest = JSON.parse(readFileSync(new URL('../pack/manifest.json', import.meta.url)));
 
@@ -56,12 +57,37 @@ ok('hall names and focus lines match the roster exactly',
 ok('the module manifest ledger agrees on the hall count',
   manifest.ledger.halls === unions.count);
 
+/* ---------------------------------------------------------- the campuses --- */
+const clists = Object.values(campuses.campuses);
+ok('three campuses, each with a name, city, region and tagline',
+  campuses.count === 3 && clists.length === 3
+  && clists.every((c) => c.name && c.city && c.region && c.tagline));
+ok('the campuses partition the districts: every district trains at exactly one',
+  (() => {
+    const hosted = clists.flatMap((c) => c.districts);
+    return hosted.length === districts.count && new Set(hosted).size === hosted.length
+      && hosted.every((d) => districts.districts[d]);
+  })());
+ok("each campus's hall list is exactly its districts' halls, in district order",
+  clists.every((c) => JSON.stringify(c.halls)
+    === JSON.stringify(c.districts.flatMap((d) => districts.districts[d].halls))));
+ok('the campus hall lists cover the whole roster exactly once',
+  (() => {
+    const all = clists.flatMap((c) => c.halls);
+    return all.length === 111 && new Set(all).size === 111;
+  })());
+ok('the campus registry declares its siting honesty (planned, not surveyed)',
+  /planned/.test(campuses.honesty.siting) && /no site has been surveyed/.test(campuses.honesty.siting));
+
 /* ------------------------------------------------------------ freshness --- */
 const src = readFileSync(new URL('./unions111.py', import.meta.url));
 const stamp = createHash('sha256').update(src).digest('hex').slice(0, 16);
 ok(`the registry was built from the current taxonomy (source stamp ${stamp})`,
-  unions.source_stamp === stamp && districts.source_stamp === stamp);
-ok('both registry files came from the same build',
-  unions.pack_version === districts.pack_version && unions.built === districts.built);
+  unions.source_stamp === stamp && districts.source_stamp === stamp
+  && campuses.source_stamp === stamp);
+ok('all three registry files came from the same build',
+  unions.pack_version === districts.pack_version && unions.built === districts.built
+  && campuses.pack_version === unions.pack_version && campuses.built === unions.built);
 
-console.log(`unions/verify: ${n} checks passed — ${unions.count} unions, ${districts.count} districts`);
+console.log(`unions/verify: ${n} checks passed — ${unions.count} unions, `
+  + `${districts.count} districts, ${campuses.count} campuses`);

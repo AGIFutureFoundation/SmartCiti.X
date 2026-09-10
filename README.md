@@ -7,7 +7,7 @@ The Adaptive Stack: the packs implementing the ACP protocol suite (v3.2) —
 counted, like everything else here, by the table below rather than by a
 number that can drift from it.
 
-**289 checks, all passing from inside this bundle**, with no model credentials
+**294 checks, all passing from inside this bundle**, with no model credentials
 required.
 
 ```bash
@@ -18,7 +18,7 @@ Or individually — every path inside a pack resolves against its own module
 location, so these run from any working directory (v2.6 defect 13):
 
 ```bash
-node unions/verify.mjs             # 14 — the roster, districts, and pack agreement
+node unions/verify.mjs             # 19 — roster, districts, campuses, pack agreement
 node pack/verify.mjs               # 19 — the registry, and all 11,000,000 IDs
 node control/test.mjs              # 12 — learner profile, ZPD dial, affect
 node control/test_graph.mjs        # 20 — skill graph, sequencer, gates
@@ -41,13 +41,13 @@ python3 wiki/build_wiki.py --check # fails if the wiki is behind the registries
 
 | Pack | Spec | What it is |
 |---|---|---|
-| `unions/` | — | **The union registry**, separated from the module pack: the 111-hall taxonomy and its eight districts, a builder with a source stamp, and a verifier that proves the module pack still agrees with the roster |
+| `unions/` | — | **The union registry**, separated from the module pack: the 111-hall taxonomy, its eight districts and the three-campus network (Treasure Island–San Francisco, Oakland, New Orleans), a builder with a source stamp, and a verifier that proves the module pack still agrees with the roster |
 | `pack/` | ACP-10 | Module registry at 111-hall scale: 25,875 authored skeleton objects (consuming the union roster), a consumer library that generates all 11,000,000 module IDs from them, and a verifier that proves uniqueness over the whole population rather than a sample |
 | `control/` | ACP-02/03/04/05/06/07/15 | The deterministic control plane — profile, dial, affect, hint ladder, skill graph, sequencer, assessment gates — with two simulation harnesses |
 | `fabric/` | ACP-11/12 | Mentor contract and middleware, the five-gate eval harness with adversarial stubs, supervisor/swarm router |
 | `security/` | — | Deny-by-default authorization with tenant isolation, rate limiting, data classification, retention and erasure; plus `SECURITY.md` with the threat model and an honest launch checklist |
 | `ops/` | ACP-13 | The three registries with a pipeline transition table, hall-by-hall rollout lanes that ask ACP-08 rather than re-deciding, the seven-job automation loop, and the cost governor that cannot throttle the control plane |
-| `web/` | — | The published pages and their builders: landing page, rendered protocol spec, the languages page, the campus plan with a generated floor plan for every hall, the **interactive layered map** (districts, pipeline, module layers, training stations, all locales, searchable and deep-linkable) and the **3D environment** (the campus as a 3D city ringed by district — enter any hall for its extruded floor plan, fixtures, station beacons and first-person walk mode) |
+| `web/` | — | The published pages and their builders: landing page, rendered protocol spec, the languages page, the campus plan with a generated floor plan for every hall, the **interactive layered map** (districts, pipeline, module layers, training stations, all locales, searchable and deep-linkable) and the **3D environment** (the three-campus network as a 3D board — enter a campus city, then any hall for its extruded floor plan, fixtures, station beacons and first-person walk mode) |
 | `brand/` | — | The canonical identity: names and forbidden spellings with reasons, the two-theme token set, the wordmark, hall livery, and a lint that fails the build on drift |
 | `bus/` | ACP-01/08/09 | The message bus with single-writer enforcement, the telemetry envelope and its quality guards, the append-only audit log, the parity/stop-condition/override safeguards, and the whole loop assembled over them |
 | `console/` | — | **The Adaptive Console**: a single-file web app running the real protocol on the real pack, with the builder and its staleness guard |

@@ -40,7 +40,9 @@
   "view.campus": "Campusansicht",
   "ui.walk": "Begehen",
   "hint.campus": "Halle anklicken, um sie zu betreten",
-  "hint.walk": "WASD zum Bewegen · Esc zum Beenden"
+  "hint.walk": "WASD zum Bewegen · Esc zum Beenden",
+  "view.region": "Netzwerkansicht",
+  "figures.campuses": "{n} Standorte"
  },
  "districts": {
   "structural": {

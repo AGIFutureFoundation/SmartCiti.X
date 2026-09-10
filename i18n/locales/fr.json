@@ -40,7 +40,9 @@
   "view.campus": "Vue du campus",
   "ui.walk": "Marcher",
   "hint.campus": "Cliquez sur une salle pour y entrer",
-  "hint.walk": "WASD pour se déplacer · Échap pour quitter"
+  "hint.walk": "WASD pour se déplacer · Échap pour quitter",
+  "view.region": "Vue du réseau",
+  "figures.campuses": "{n} campus"
  },
  "districts": {
   "structural": {

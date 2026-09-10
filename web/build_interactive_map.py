@@ -40,6 +40,7 @@ manifest = json.load(open(ROOT / 'pack/manifest.json'))
 L = manifest['ledger']
 halls_json = json.load(open(ROOT / 'pack/registry/halls.json'))['halls']
 districts_reg = json.load(open(ROOT / 'unions/registry/districts.json'))['districts']
+campuses_reg = json.load(open(ROOT / 'unions/registry/campuses.json'))['campuses']
 stations_reg = json.load(open(ROOT / 'stations/registry/stations.json'))
 
 # District hues: eight values far enough apart to read as categories.
@@ -98,6 +99,7 @@ DATA = json.dumps({
                'districts': len(DISTRICTS)},
     'per_level': per_level,
     'districts': DISTRICTS,
+    'campuses': campuses_reg,
     'halls': HALLS,
     'stations': {s['station_id']: s for s in stations_reg['stations']},
     'strandmods': strand_modules(),
@@ -137,7 +139,12 @@ select{background:var(--panel);color:var(--ink);border:1px solid var(--rule);
   border-radius:6px;padding:6px 10px;font:inherit;margin-inline-start:auto}
 .legend{display:flex;gap:14px;flex-wrap:wrap;color:var(--muted);font-size:12px;margin:2px 0 14px}
 .legend .sw{display:inline-block;width:10px;height:10px;border-radius:2px;margin-inline-end:5px;vertical-align:-1px}
-.campus{display:grid;grid-template-columns:repeat(auto-fill,minmax(430px,1fr));gap:18px}
+.campus{display:flex;flex-direction:column;gap:26px}
+.campushdr{font:600 22px "Barlow Condensed",sans-serif;margin:0 0 10px;
+  border-bottom:2px solid var(--mark);padding-bottom:6px;
+  display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline}
+.campushdr em{color:var(--muted);font:400 13px "IBM Plex Sans",sans-serif}
+.campusbody{display:grid;grid-template-columns:repeat(auto-fill,minmax(430px,1fr));gap:18px}
 @media(max-width:480px){.campus{grid-template-columns:1fr}}
 .district{background:var(--panel);border:1px solid var(--rule);border-radius:10px;padding:14px 16px}
 .district h2{font:600 19px "Barlow Condensed",sans-serif;margin:0;
@@ -248,7 +255,12 @@ function render(){
   document.getElementById('legend').innerHTML =
     STATES.map(s => `<span><span class="sw" style="background:${STATE_COLORS[s]}"></span>${i.states[s]}</span>`).join('') +
     `<span><span class="sw" style="background:var(--mark);border-radius:50%"></span>${t('map.layer.stations')}</span>`;
-  document.getElementById('campus').innerHTML = Object.entries(D.districts).map(([k,d]) => `
+  document.getElementById('campus').innerHTML = Object.entries(D.campuses).map(([ck, camp]) => `
+    <div class="campusgrp">
+      <h2 class="campushdr"><span>${camp.name}</span>
+        <em>${camp.city}, ${camp.region} · ${camp.halls.length} · ${camp.tagline}</em></h2>
+      <div class="campusbody">` +
+    camp.districts.map(k => { const d = D.districts[k]; return `
     <section class="district" style="--hue:${d.hue}">
       <h2 style="border-color:hsl(${d.hue} 62% 58%)">${dname(k)} · ${d.halls.length}</h2>
       <p class="tag">${dtag(k)}</p>
@@ -261,7 +273,8 @@ function render(){
         const bar = STATES.map(s => `<i style="width:${100*h.census[s]/100}%;background:${STATE_COLORS[s]}"></i>`).join('');
         const badge = h.stations.length ? `<span class="badge">${h.stations.length}</span>` : '';
         return `<button class="hall" data-slug="${slug}" style="${bg};${bd}">${badge}<span class="nm">${h.name}</span><span class="stbar">${bar}</span></button>`;
-      }).join('') + `</div></section>`).join('');
+      }).join('') + `</div></section>`; }).join('') +
+    `</div></div>`).join('');
   applyFilter();
   document.getElementById('honesty').textContent =
     t('honesty.taxonomy') + ' ' + t('honesty.modules') + ' ' + t('honesty.content');
@@ -339,6 +352,7 @@ function openHall(slug){
   document.getElementById('pbody').innerHTML = `
     <h2>${h.name}</h2><p class="focus">${h.focus}</p>
     <span class="chip">${dname(h.district)}</span>
+    <span class="chip">${Object.values(D.campuses).find(c=>c.halls.includes(h.slug)).city}</span>
     <span class="chip">${F(h.lessons)} · ${fmt(t('figures.lessons'),{n:''}).trim()}</span>
     <span class="chip">${fmt(t('figures.modules'),{n:F(h.modules)})}</span>
     <a class="chip" id="to3d" href="trade_craft_3d.html?hall=${h.slug}&lang=${loc}" style="color:var(--steel);border-color:var(--steel)">⬡ ${t('hall.enter3d')}</a>
