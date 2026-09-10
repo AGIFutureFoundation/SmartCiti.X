@@ -339,7 +339,8 @@ function startSim(simId) {
   const P = sc?.params ?? {};
   sim = simId === 'crane-lift' ? craneSim(P)
     : simId === 'excavator-trench' ? excavatorSim(P)
-    : simId === 'weld-bead' ? weldSim(P) : forkliftSim(P);
+    : simId === 'weld-bead' ? weldSim(P)
+    : simId === 'scaffold-bay' ? scaffoldSim(P) : forkliftSim(P);
   scene.add(sim.group);
   // your avatar takes the seat the sim declares - the learner is IN the yard
   if (sim.mount) {
@@ -401,7 +402,7 @@ function simResults(simId, rows, passed) {
     const tv = parseFloat(rows.find((r) => r.axis === 'time')?.value);
     if (isFinite(tv)) rec.best = Math.min(rec.best ?? Infinity, tv);
   }
-  prog.sims[simId] = rec; saveProg();
+  prog.sims[simId] = rec; saveProg(); renderChrome();
   const recLine = rec.passed && isFinite(rec.best)
     ? `<p style="color:var(--muted);font-size:12.5px">\\u2713 ${rec.runs}\\u00d7 \\u00b7 best ${rec.best.toFixed(1)} s</p>`
     : '';
@@ -990,6 +991,127 @@ function weldSim(P = {}) {
         time: { v: 0, txt: st.t0 ? ((performance.now() - st.t0) / 1000).toFixed(0) : '\\u2013' },
       };
     },
+  };
+}
+
+/* --------------------------------------------------- scaffold bay build --- */
+function scaffoldSim(P = {}) {
+  const PLANKS = P.planks ?? 3, RAILS = P.rails ?? 2;
+  const g = new THREE.Group();
+  simYard(g, 13, 10);
+  const railMat = new THREE.MeshStandardMaterial({ color: 0xd8a13a, roughness: .5 });
+  const alu = new THREE.MeshStandardMaterial({ color: 0xa8b4b8,
+    roughness: .45, metalness: .5 });
+  const mk = (geo, m, x, y, z) => {
+    const mesh = new THREE.Mesh(geo, m);
+    mesh.position.set(x, y, z); mesh.castShadow = true;
+    mesh.visible = false; g.add(mesh);
+    return mesh;
+  };
+  // the bay's parts, all prebuilt and hidden - placing a part reveals it.
+  // STAGE LAW: sills, frames, braces, planks, then rails, and the rack
+  // refuses anything out of order.
+  const parts = [];
+  for (const [sx, sz] of [[-1.6, -.75], [-1.6, .75], [1.6, -.75], [1.6, .75]])
+    parts.push({ stage: 0,
+      mesh: mk(new THREE.BoxGeometry(.5, .1, .5), mat.wood, sx, .1, sz) });
+  for (const fx of [-1.6, 1.6]) {
+    const fg = new THREE.Group(); fg.position.set(fx, 0, 0);
+    fg.visible = false; g.add(fg);
+    for (const pz of [-.75, .75]) {
+      const post = new THREE.Mesh(new THREE.CylinderGeometry(.05, .05, 2.3, 8), alu);
+      post.position.set(0, 1.3, pz); post.castShadow = true; fg.add(post);
+    }
+    for (const ry of [.6, 2]) {
+      const rung = new THREE.Mesh(new THREE.CylinderGeometry(.04, .04, 1.5, 8), alu);
+      rung.rotation.x = Math.PI / 2; rung.position.set(0, ry, 0); fg.add(rung);
+    }
+    parts.push({ stage: 1, mesh: fg });
+  }
+  for (const bz of [-.8, .8]) {
+    const br = new THREE.Mesh(new THREE.CylinderGeometry(.035, .035, 3.7, 8), alu);
+    br.rotation.z = Math.PI / 2 - .55; br.position.set(0, 1.3, bz);
+    br.castShadow = true; br.visible = false; g.add(br);
+    parts.push({ stage: 2, mesh: br });
+  }
+  for (let i = 0; i < PLANKS; i++) {
+    const pz = -((PLANKS - 1) / 2) * .55 + i * .55;
+    parts.push({ stage: 3,
+      mesh: mk(new THREE.BoxGeometry(3.4, .08, .5), mat.wood, 0, 2.14, pz) });
+  }
+  for (let i = 0; i < RAILS; i++) {
+    const side = i % 2 ? .85 : -.85, ry = 2.65 + Math.floor(i / 2) * .4;
+    parts.push({ stage: 4,
+      mesh: mk(new THREE.BoxGeometry(3.4, .07, .07), railMat, 0, ry, side) });
+  }
+  const STAGES = ['sills', 'frames', 'braces', 'planks', 'rails'];
+  // the ghost previews where the selected rack's next part will land
+  const ghost = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1),
+    new THREE.MeshBasicMaterial({ color: 0x41C4D4, transparent: true,
+      opacity: .28, depthWrite: false }));
+  ghost.visible = false; g.add(ghost);
+  const gBox = new THREE.Box3(), gSize = new THREE.Vector3(), gMid = new THREE.Vector3();
+  const st = { rack: 0, faults: 0, t0: null, done: false, la: false, ld: false, lr: false };
+  const nextOf = (stage) => parts.find((p) => p.stage === stage && !p.mesh.visible);
+  const legal = () => { for (let i = 0; i < 5; i++) if (nextOf(i)) return i; return -1; };
+  function finish() {
+    st.done = true; ghost.visible = false;
+    const time = st.t0 ? ((performance.now() - st.t0) / 1000) : 0;
+    const rows = [
+      { axis: 'sequence', value: String(st.faults), ok: st.faults === 0 },
+      { axis: 'complete', value: parts.length + '/' + parts.length, ok: true },
+      { axis: 'time', value: time.toFixed(1) + ' s', ok: null },
+    ];
+    simResults('scaffold-bay', rows, st.faults === 0);
+  }
+  return {
+    group: g, orbit: true,
+    orbitCam: { pos: [6, 4.5, 8.5], tgt: [0, 1.6, 0] },
+    mount: { parent: g, pos: [2.4, 0, 1.8], yaw: -2.4 },
+    action() {
+      if (st.done) return;
+      const lg = legal();
+      if (lg < 0) return;
+      if (st.rack !== lg) {                       // out of order: refused
+        st.faults++;
+        blip(150, 75, .32, 'square', .18); buzz(220, .8);
+        return;
+      }
+      const p = nextOf(lg);
+      p.mesh.visible = true;
+      if (!st.t0) st.t0 = performance.now();
+      blip(1250, 720, .07, 'triangle', .1);       // lock click
+      if (!parts.some((x) => !x.mesh.visible)) finish();
+    },
+    update(dt) {
+      if (st.done) return;
+      // rack selection steps on the key edge, not the hold
+      if (keys.KeyA && !st.la) st.rack = (st.rack + 4) % 5;
+      if (keys.KeyD && !st.ld) st.rack = (st.rack + 1) % 5;
+      if (keys.KeyR && !st.lr && legal() >= 0) st.rack = legal();
+      st.la = !!keys.KeyA; st.ld = !!keys.KeyD; st.lr = !!keys.KeyR;
+      engineSet(.06);
+      const nx = nextOf(st.rack);
+      if (nx) {
+        gBox.setFromObject(nx.mesh);
+        gBox.getSize(gSize); gBox.getCenter(gMid);
+        ghost.position.copy(gMid);
+        ghost.scale.set(Math.max(.12, gSize.x), Math.max(.12, gSize.y),
+          Math.max(.12, gSize.z));
+        ghost.visible = true;
+      } else ghost.visible = false;
+      if (simView === 'deck') {
+        camera.position.set(2.7, 3.05, 0);
+        camera.lookAt(-1.6, 2.1, 0);
+      }
+    },
+    gauges: () => ({
+      rack: { v: 0, txt: STAGES[st.rack] },
+      stage: { v: 0, txt: legal() < 0 ? '\\u2013' : STAGES[legal()] },
+      placed: { v: 0, txt: parts.filter((p) => p.mesh.visible).length + '/' + parts.length },
+      faults: { v: st.faults, txt: String(st.faults) },
+      time: { v: 0, txt: st.t0 ? ((performance.now() - st.t0) / 1000).toFixed(0) : '\\u2013' },
+    }),
   };
 }"""
 
@@ -2641,7 +2763,7 @@ function buildHall(sg) {
   }
   scene.add(hallGroup);
 
-  document.getElementById('hname').textContent = h.name;
+  document.getElementById('hname').textContent = h.name + scoreChip();
   // the regional chapter line: home region marked, chapters at the rest
   const home = D.chapters.of[h.slug];
   document.getElementById('hfocus').textContent = h.focus + ' \\u00b7 '
@@ -3453,8 +3575,15 @@ function renderChrome() {
   document.documentElement.dir = i.dir;
   document.getElementById('back').textContent = '← ' + t('nav.campus');
   const hall = document.getElementById('hall');
-  const mark = (h) => !h.stations.length ? ''
-    : h.stations.every((id) => doneStations.has(id)) ? ' ✓' : ' ●';
+  // ✓ stations complete · ▶ every bound seat passed · 🧰 district crib passed
+  const mark = (h) => {
+    let m = !h.stations.length ? ''
+      : h.stations.every((id) => doneStations.has(id)) ? ' ✓' : ' ●';
+    const bound = D.sims.bindings[h.slug] ?? [];
+    if (bound.length && bound.every((b) => prog.sims[b.sim]?.passed)) m += ' ▶';
+    if (prog.tools[h.district]?.passed) m += ' \U0001f9f0';
+    return m;
+  };
   hall.innerHTML = Object.entries(D.districts).map(([k, d]) =>
     `<optgroup label="${i.districts[k]}">` +
     d.halls.map(sg => `<option value="${sg}" ${sg===slug?'selected':''}>` +
@@ -3493,9 +3622,18 @@ prog.tools = typeof prog.tools === 'object' && prog.tools ? prog.tools : {};
 let curStation = null;
 function scoreChip() {
   const h = D.halls.find(x => x.slug === slug);
-  if (view !== 'hall' || !h.stations.length) return '';
-  const d = h.stations.filter((id) => doneStations.has(id)).length;
-  return ` \u2713 ${d}/${h.stations.length}`;
+  if (view !== 'hall' || !h) return '';
+  // the hall's whole training loop reads out here: stations, seats, crib
+  const parts = [];
+  if (h.stations.length) {
+    const d = h.stations.filter((id) => doneStations.has(id)).length;
+    parts.push(`\u2713 ${d}/${h.stations.length}`);
+  }
+  const bound = D.sims.bindings[slug] ?? [];
+  if (bound.length)
+    parts.push(`\u25b6 ${bound.filter((b) => prog.sims[b.sim]?.passed).length}/${bound.length}`);
+  if (prog.tools[h.district]?.passed) parts.push('\U0001f9f0 \u2713');
+  return parts.length ? '  ' + parts.join(' \u00b7 ') : '';
 }
 function openStation(id) {
   curStation = id;
@@ -3612,7 +3750,9 @@ function drillEnd() {
   const rec = prog.tools[curCrib] ?? {};
   rec.runs = (rec.runs ?? 0) + 1;
   if (passed) { rec.passed = true; rec.best = Math.min(rec.best ?? Infinity, secs); }
-  prog.tools[curCrib] = rec; saveProg();
+  prog.tools[curCrib] = rec; saveProg(); renderChrome();
+  if (view === 'hall') document.getElementById('hname').textContent =
+    D.halls.find((x) => x.slug === slug).name + scoreChip();
   chime(passed); buzz(passed ? 160 : 80, .5);
   document.getElementById('pbody').innerHTML = `
     <h2>${D.tools.cribs[curCrib].name}</h2>

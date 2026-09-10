@@ -266,6 +266,63 @@ SIMS = {
              'params': {'segs': 10, 'band': [2.5, 5.5]}},
         ],
     },
+    'scaffold-bay': {
+        'name': 'Scaffold Bay Build',
+        'kind': 'process',
+        'task': 'Erect one bay in the legal order — sills, frames, braces, '
+                'planks, then guardrails. The rack refuses a part whose '
+                'stage has not come, every refusal counts, and the bay is '
+                'not done until the rails are on.',
+        'controls': [
+            {'keys': 'A / D', 'action': 'choose the part rack'},
+            {'keys': 'Space', 'action': 'place the next part'},
+            {'keys': 'R', 'action': 'jump the rack to the legal stage'},
+        ],
+        'rubric': [
+            {'axis': 'sequence', 'measure': 'placements refused for coming '
+                                            'before their stage',
+             'pass': '== 0'},
+            {'axis': 'complete', 'measure': 'parts of the bay placed, rails last',
+             'pass': '== all'},
+            {'axis': 'time', 'measure': 'seconds first sill to last rail',
+             'pass': 'informational'},
+        ],
+        'halls': ['scaffold', 'carpenters', 'laborers', 'bricklayers',
+                  'painters'],
+        'skill_strand': 'machines',
+        'skill_tier': 'applied',
+        'dash': [
+            {'id': 'rack', 'label': 'Rack', 'unit': ''},
+            {'id': 'stage', 'label': 'Stage', 'unit': ''},
+            {'id': 'placed', 'label': 'Parts', 'unit': ''},
+            {'id': 'faults', 'label': 'Refused', 'unit': '', 'warn_at': 1},
+            {'id': 'time', 'label': 'T', 'unit': 's'},
+        ],
+        'audio': {'engine': 'site',
+                  'alerts': ['refusal-buzz', 'lock-click', 'result-chime'],
+                  'note': 'synthesized in-page (WebAudio); no recordings shipped'},
+        'haptics': ['refusal', 'finish'],
+        'view_modes': ['orbit', 'deck'],
+        # Regional scenarios: the bay is the region's own - plank count and
+        # rail count vary; "legal order, zero refusals" stays the law.
+        'scenarios': [
+            {'id': 'bay-training-bay', 'campus': 'treasure-island',
+             'name': 'Yard training bay',
+             'brief': 'One lift in the training yard - three planks, two '
+                      'rails, the order to learn by heart.',
+             'params': {'planks': 3, 'rails': 2}},
+            {'id': 'oak-plant-bay', 'campus': 'oakland',
+             'name': 'Plant maintenance bay',
+             'brief': 'A wider bay against the plant wall - four planks '
+                      'to deck before anyone stands the lift.',
+             'params': {'planks': 4, 'rails': 2}},
+            {'id': 'nola-storm-bay', 'campus': 'new-orleans',
+             'name': 'Storm-hardening bay',
+             'brief': 'Hurricane-season work - a third rail goes on, and '
+                      'the same legal order holds in the wind.',
+             'params': {'planks': 3, 'rails': 3}},
+        ],
+    },
 }
 
 unions = json.load(open(ROOT / 'unions/registry/unions.json'))['unions']

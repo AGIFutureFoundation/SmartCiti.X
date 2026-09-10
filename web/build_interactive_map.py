@@ -42,6 +42,7 @@ halls_json = json.load(open(ROOT / 'pack/registry/halls.json'))['halls']
 districts_reg = json.load(open(ROOT / 'unions/registry/districts.json'))['districts']
 campuses_reg = json.load(open(ROOT / 'unions/registry/campuses.json'))['campuses']
 stations_reg = json.load(open(ROOT / 'stations/registry/stations.json'))
+tools_reg = json.load(open(ROOT / 'tools/registry/toolcribs.json'))
 
 # District hues: eight values far enough apart to read as categories.
 assert set(HUES) == set(districts_reg), 'every district needs a hue'
@@ -100,6 +101,9 @@ DATA = json.dumps({
     'campuses': campuses_reg,
     'halls': HALLS,
     'stations': {s['station_id']: s for s in stations_reg['stations']},
+    'tools': {'cribs': tools_reg['cribs'],
+              'drill': tools_reg['drill']['name'],
+              'honesty': tools_reg['honesty']['status']},
     'strandmods': strand_modules(),
     'i18n': I18N,
 }, ensure_ascii=False, separators=(',', ':'))
@@ -316,11 +320,16 @@ function planSVG(h){
     const list = byRoom[r.label] ?? [];
     const dot = list.map((s,j) =>
       `<circle cx="${r.x*U + (j+1)*(r.w*U)/(list.length+1)}" cy="${(r.y+r.h/2)*U + 6}" r="5.5" fill="var(--mark)"><title>${s.name}</title></circle>`).join('');
+    // the tools room carries its district crib: the pegboard drawn in place
+    const crib = r.strand === 'tools'
+      ? `<rect x="${(r.x+r.w)*U-9}" y="${r.y*U+5}" width="5" height="${r.h*U-10}" rx="1.5"
+          fill="var(--mark)" opacity=".8"><title>${D.tools.cribs[h.district].name} · ${D.tools.cribs[h.district].tools.length}</title></rect>`
+      : '';
     return `<g><rect x="${r.x*U+1}" y="${r.y*U+1}" width="${r.w*U-2}" height="${r.h*U-2}" rx="3"
       fill="hsl(${dh} 25% 16%)" stroke="hsl(${dh} 30% 32%)"/>
       <title>${r.purpose}</title>
       <text x="${r.x*U+7}" y="${r.y*U+16}" font-size="10.5" fill="var(--ink)">${r.label}</text>
-      <text x="${r.x*U+7}" y="${r.y*U+29}" font-size="9" fill="var(--muted)">${D.i18n[loc].strands[r.strand]}</text>${dot}</g>`;
+      <text x="${r.x*U+7}" y="${r.y*U+29}" font-size="9" fill="var(--muted)">${D.i18n[loc].strands[r.strand]}</text>${crib}${dot}</g>`;
   }).join('');
   return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;background:var(--sunk);border-radius:8px">${rects}</svg>`;
 }
@@ -356,6 +365,10 @@ function openHall(slug){
     <a class="chip" id="to3d" href="trade_craft_3d.html?hall=${h.slug}&lang=${loc}" style="color:var(--steel);border-color:var(--steel)">⬡ ${t('hall.enter3d')}</a>
     <h3>${t('map.layer.pipeline')}</h3><div class="cbar">${cbar}</div><div class="ckey">${ckey}</div>
     <h3>${t('hall.rooms')}</h3>${planSVG(h)}
+    <h3>🧰 ${D.tools.cribs[h.district].name}</h3>
+    <div>${D.tools.cribs[h.district].tools.map(tl =>
+      `<span class="chip" title="${tl.use}">${tl.glyph} ${tl.name}</span>`).join(' ')}</div>
+    <p style="color:var(--muted);font-size:11.5px;margin-top:6px">${D.tools.drill} · ${D.tools.honesty}</p>
     ${stns ? `<h3>${t('hall.stations')} (${h.stations.length})</h3>${stns}` : ''}
     <h3>${t('hall.skills')}</h3>${lat}
     <h3>${t('map.layer.modules')}</h3>${modTable(h)}`;
