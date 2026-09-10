@@ -50,7 +50,9 @@
   "sim.pass": "ناجح",
   "sim.retry": "حاول مجدداً",
   "sim.sound": "الصوت",
-  "sim.view": "العرض"
+  "sim.view": "العرض",
+  "sim.choose": "اختر جهاز محاكاة",
+  "progress.local": "يُحفظ التقدم على هذا الجهاز فقط."
  },
  "districts": {
   "structural": {

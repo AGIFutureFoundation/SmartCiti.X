@@ -100,7 +100,7 @@ for f in sorted((ROOT / 'i18n/locales').glob('*.json')):
             'view.campus', 'view.region', 'ui.walk',
             'hint.campus', 'hint.walk', 'geo.note',
             'sim.start', 'sim.results', 'sim.pass', 'sim.retry',
-            'sim.sound', 'sim.view',
+            'sim.sound', 'sim.view', 'sim.choose', 'progress.local',
             'honesty.taxonomy', 'honesty.content')},
         'districts': {k: v['name'] for k, v in c['districts'].items()},
         'strands': c['strands'], 'tiers': c['tiers'], 'states': c['states'],
@@ -279,7 +279,8 @@ function startSim(simId) {
   ground.visible = grid.visible = true;
   scene.fog.near = 90; scene.fog.far = 260;
   const def = D.sims.sims[simId];
-  sim = simId === 'crane-lift' ? craneSim() : forkliftSim();
+  sim = simId === 'crane-lift' ? craneSim()
+    : simId === 'excavator-trench' ? excavatorSim() : forkliftSim();
   scene.add(sim.group);
   controls.autoRotate = false;
   setSimView(def.view_modes[0]);
@@ -315,6 +316,18 @@ function simResults(simId, rows, passed) {
   const def = D.sims.sims[simId];
   const i = D.i18n[loc];
   chime(passed); buzz(passed ? 180 : 90, .5);
+  // the run lands in the device-local record: runs, passes, best time
+  const rec = prog.sims[simId] ?? {};
+  rec.runs = (rec.runs ?? 0) + 1;
+  if (passed) {
+    rec.passed = true;
+    const tv = parseFloat(rows.find((r) => r.axis === 'time')?.value);
+    if (isFinite(tv)) rec.best = Math.min(rec.best ?? Infinity, tv);
+  }
+  prog.sims[simId] = rec; saveProg();
+  const recLine = rec.passed && isFinite(rec.best)
+    ? `<p style="color:var(--muted);font-size:12.5px">\\u2713 ${rec.runs}\\u00d7 \\u00b7 best ${rec.best.toFixed(1)} s</p>`
+    : '';
   document.getElementById('pbody').innerHTML = `
     <h2>${def.name}</h2>
     <span class="chip" style="${passed ? 'border-color:var(--good);color:var(--good)' : 'border-color:var(--crit);color:var(--crit)'}">
@@ -325,7 +338,8 @@ function simResults(simId, rows, passed) {
         <td style="text-align:end;font-family:'IBM Plex Mono',monospace">${r.value}</td>
         <td style="text-align:end">${r.ok === null ? '' : r.ok ? '\\u2713' : '\\u2717'}</td></tr>`).join('')}
     </tbody></table>
-    <p style="color:var(--muted);font-size:12px;margin-top:12px">${D.sims.honesty}</p>
+    ${recLine}
+    <p style="color:var(--muted);font-size:12px;margin-top:12px">${D.sims.honesty} ${t('progress.local')}</p>
     <p><button class="barbtn" id="simRetry">\\u21bb ${t('sim.retry')}</button>
        <button class="barbtn" id="simExit">${t('ui.close')}</button></p>
     <style>#pbody td{border-top:1px solid var(--rule);padding:6px 8px;color:var(--muted)}</style>`;
@@ -482,6 +496,147 @@ function craneSim() {
       hook: st.h,
       swing: st.swingNow,
       strikes: { v: st.strikes, txt: String(st.strikes) },
+      time: { v: 0, txt: st.t0 ? ((performance.now() - st.t0) / 1000).toFixed(0) : '\\u2013' },
+    }),
+  };
+}
+
+/* ------------------------------------------------ excavator trench cut --- */
+function excavatorSim() {
+  const g = new THREE.Group();
+  simYard(g, 26, 20);
+  // the machine: tracks fixed, house slews, boom+stick reach by 2-link IK
+  const L1 = 5, L2 = 4.2, PIV_Y = 1.9;
+  box(1.1, .7, 4.2, mat.part, -.95, .35, 0, g);
+  box(1.1, .7, 4.2, mat.part, .95, .35, 0, g);
+  const hg = new THREE.Group(); hg.position.y = .7; g.add(hg);
+  box(2.2, 1.3, 2.6, mat.post, 0, .75, -.3, hg);        // house
+  box(1.4, 1, 1, mat.part, 0, .8, -1.6, hg);            // counterweight
+  box(.9, 1, .9, mat.win, .8, 1.6, .4, hg);             // cab
+  const boomG = new THREE.Group();
+  boomG.position.set(0, PIV_Y - .7, .2); hg.add(boomG);
+  box(L1, .5, .4, mat.metal, L1 / 2, 0, 0, boomG);
+  const stickG = new THREE.Group();
+  stickG.position.set(L1, 0, 0); boomG.add(stickG);
+  box(L2, .32, .3, mat.metal, L2 / 2, 0, 0, stickG);
+  const bucket = box(.9, .7, .95, mat.part, L2, -.3, 0, stickG);
+  const spoilInBucket = box(.7, .4, .75, mat.wood, L2, .15, 0, stickG, false);
+  spoilInBucket.visible = false;
+  // the trench: marked cells, one flagged for a live utility at half depth
+  const CELLS = [[-3, 6, 1.5], [-1, 6, 1.5], [1, 6, .5], [3, 6, 1.5]];
+  const UTIL_I = 2;
+  const cells = CELLS.map(([cx, cz, target], i) => {
+    const m = new THREE.Mesh(new THREE.BoxGeometry(1.8, .1, 1.8),
+      new THREE.MeshStandardMaterial({ color: 0x53575a, roughness: .95 }));
+    m.position.set(cx, .05, cz); m.receiveShadow = true; g.add(m);
+    return { x: cx, z: cz, target, d: 0, util: i === UTIL_I, struck: false, mesh: m };
+  });
+  box(9.2, .04, .28, mat.paint, 0, .11, 4.9, g, false);   // trench edge marks
+  box(9.2, .04, .28, mat.paint, 0, .11, 7.1, g, false);
+  // utility flagging: locate posts + a painted crossing stripe
+  const flagMat = new THREE.MeshStandardMaterial({
+    color: 0xf2c744, emissive: 0x6b5410, roughness: .5 });
+  box(.1, 1.1, .1, flagMat, CELLS[UTIL_I][0] - 1.1, .55, CELLS[UTIL_I][1], g);
+  box(.1, 1.1, .1, flagMat, CELLS[UTIL_I][0] + 1.1, .55, CELLS[UTIL_I][1], g);
+  box(.3, .04, 2.4, flagMat, CELLS[UTIL_I][0], .12, CELLS[UTIL_I][1], g, false);
+  // spoil zone and its growing pile
+  const PAD = { x: -5, z: -4 };
+  const pad = new THREE.Mesh(new THREE.CylinderGeometry(1.9, 1.9, .08, 28),
+    new THREE.MeshBasicMaterial({ color: 0x8a6a42, transparent: true, opacity: .4 }));
+  pad.position.set(PAD.x, .05, PAD.z); g.add(pad);
+  const pile = new THREE.Mesh(new THREE.ConeGeometry(1.3, 1.1, 16), mat.wood);
+  pile.position.set(PAD.x, .1, PAD.z); pile.scale.setScalar(.01);
+  pile.castShadow = true; g.add(pile);
+  const st = { slew: .35, r: 5.5, bh: 1.4, act: 0, carrying: false, done: false,
+               strikes: 0, spoilIn: 0, spoilOut: 0, t0: null };
+  const tipPos = () => new THREE.Vector3(
+    Math.cos(st.slew) * st.r, st.bh, Math.sin(st.slew) * st.r);
+  function cellShade(c) {
+    const over = c.d > c.target + .01;
+    const shade = Math.min(1, c.d / c.target);
+    c.mesh.material.color.setHSL(over ? .02 : .58, over ? .45 : .2,
+      .33 - .2 * shade);
+  }
+  function finish() {
+    st.done = true;
+    const atGrade = cells.filter((c) => Math.abs(c.d - c.target) < .01).length;
+    const dumps = st.spoilIn + st.spoilOut;
+    const time = st.t0 ? ((performance.now() - st.t0) / 1000) : 0;
+    const rows = [
+      { axis: 'grade', value: atGrade + '/' + cells.length, ok: atGrade === cells.length },
+      { axis: 'utility', value: String(st.strikes), ok: st.strikes === 0 },
+      { axis: 'spoil', value: st.spoilIn + '/' + dumps, ok: st.spoilOut === 0 },
+      { axis: 'time', value: time.toFixed(1) + ' s', ok: null },
+    ];
+    simResults('excavator-trench', rows,
+      atGrade === cells.length && st.strikes === 0 && st.spoilOut === 0);
+  }
+  return {
+    group: g, orbit: true,
+    action() {
+      if (st.done) return;
+      const tip = tipPos();
+      if (!st.carrying) {
+        const cell = cells.find((c) =>
+          Math.hypot(tip.x - c.x, tip.z - c.z) < 1.1);
+        if (cell && tip.y < .6 && cell.d < 2.5) {
+          if (!st.t0) st.t0 = performance.now();
+          cell.d += .5; st.carrying = true; spoilInBucket.visible = true;
+          cellShade(cell);
+          blip(180, 90, .18, 'sawtooth', .18);      // bite
+          if (cell.util && cell.d > cell.target + .01 && !cell.struck) {
+            cell.struck = true; st.strikes++;
+            blip(980, 490, .6, 'square', .2);        // utility alarm
+            buzz(320, .9);
+          }
+        }
+      } else {
+        st.carrying = false; spoilInBucket.visible = false;
+        if (Math.hypot(tip.x - PAD.x, tip.z - PAD.z) < 1.9) st.spoilIn++;
+        else st.spoilOut++;
+        thud(); buzz(70, .3);
+        pile.scale.setScalar(Math.min(1.6, .2 + st.spoilIn * .16));
+        if (cells.every((c) => c.d >= c.target)) finish();
+      }
+    },
+    update(dt) {
+      if (st.done) return;
+      const sr = .5, rr = 3.4, hr = 2.6;
+      if (keys.KeyA) st.slew -= sr * dt;
+      if (keys.KeyD) st.slew += sr * dt;
+      if (keys.KeyW) st.r = Math.min(L1 + L2 - .6, st.r + rr * dt);
+      if (keys.KeyS) st.r = Math.max(2.6, st.r - rr * dt);
+      if (keys.KeyQ) st.bh = Math.min(3.2, st.bh + hr * dt);
+      if (keys.KeyE) st.bh = Math.max(-2.4, st.bh - hr * dt);
+      const moving = (keys.KeyA || keys.KeyD ? .4 : 0)
+        + (keys.KeyW || keys.KeyS ? .4 : 0) + (keys.KeyQ || keys.KeyE ? .5 : 0);
+      st.act += (Math.min(1, moving) - st.act) * Math.min(1, 5 * dt);
+      engineSet(.15 + st.act * .85);
+      hg.rotation.y = -st.slew;
+      // 2-link IK in the boom plane: reach r out, bucket height bh
+      const py = PIV_Y;
+      const dx = st.r, dy = st.bh - py;
+      const d = Math.min(L1 + L2 - .05, Math.max(1.4, Math.hypot(dx, dy)));
+      const base = Math.atan2(dy, dx);
+      const cosA = Math.min(1, Math.max(-1,
+        (L1 * L1 + d * d - L2 * L2) / (2 * L1 * d)));
+      const cosB = Math.min(1, Math.max(-1,
+        (L1 * L1 + L2 * L2 - d * d) / (2 * L1 * L2)));
+      boomG.rotation.z = base + Math.acos(cosA);
+      stickG.rotation.z = -(Math.PI - Math.acos(cosB));
+      if (simView === 'cab') {
+        const eye = hg.localToWorld(new THREE.Vector3(.8, 2.5, 1));
+        camera.position.copy(eye);
+        const tip = tipPos();
+        camera.lookAt(tip.x, Math.min(tip.y, .8), tip.z);
+      }
+    },
+    gauges: () => ({
+      reach: st.r,
+      depth: st.bh,
+      grade: { v: 0, txt: cells.filter((c) => Math.abs(c.d - c.target) < .01).length + '/' + cells.length },
+      spoil: { v: st.spoilOut, txt: st.spoilIn + '/' + (st.spoilIn + st.spoilOut) },
+      utility: { v: st.strikes, txt: String(st.strikes) },
       time: { v: 0, txt: st.t0 ? ((performance.now() - st.t0) / 1000).toFixed(0) : '\\u2013' },
     }),
   };
@@ -668,6 +823,8 @@ select{background:var(--panel);color:var(--ink);border:1px solid var(--rule);
 #dash .gl{display:block;color:var(--muted);font-size:10px;letter-spacing:.06em;
   text-transform:uppercase;margin-top:2px}
 #dash .g.warn .gv{color:var(--crit)}
+/* warning is shape AND colour, never colour alone (colourblind-safe) */
+#dash .g.warn .gl::before{content:"\\25b2  ";color:var(--crit)}
 canvas{display:block}
 #nogl{display:none;position:fixed;inset:0;place-content:center;text-align:center;
   color:var(--muted);padding:40px}
@@ -1549,10 +1706,12 @@ function renderChrome() {
   document.documentElement.dir = i.dir;
   document.getElementById('back').textContent = '← ' + t('nav.campus');
   const hall = document.getElementById('hall');
+  const mark = (h) => !h.stations.length ? ''
+    : h.stations.every((id) => doneStations.has(id)) ? ' ✓' : ' ●';
   hall.innerHTML = Object.entries(D.districts).map(([k, d]) =>
     `<optgroup label="${i.districts[k]}">` +
     d.halls.map(sg => `<option value="${sg}" ${sg===slug?'selected':''}>` +
-      `${D.halls.find(x=>x.slug===sg).name}${D.halls.find(x=>x.slug===sg).stations.length?' ●':''}</option>`).join('') +
+      `${D.halls.find(x=>x.slug===sg).name}${mark(D.halls.find(x=>x.slug===sg))}</option>`).join('') +
     `</optgroup>`).join('');
   const lang = document.getElementById('lang');
   lang.setAttribute('aria-label', t('language.select'));
@@ -1562,11 +1721,26 @@ function renderChrome() {
   document.getElementById('walkBtn').textContent = '⤞ ' + t('ui.walk');
   document.getElementById('simBtn').textContent = '▶ ' + t('sim.start');
   document.getElementById('honesty').textContent =
-    t('honesty.taxonomy') + ' ' + t('honesty.content');
+    t('honesty.taxonomy') + ' ' + t('honesty.content') + ' ' + t('progress.local');
   document.getElementById('pclose').textContent = t('ui.close');
 }
 
-const doneStations = new Set();
+/* The learner record is device-local only - localStorage, every access
+   wrapped so a blocked store never breaks the page - and the honesty line
+   in the corner says exactly that. Not a transcript, not certification. */
+const PROG_KEY = 'tc-progress';
+function loadProg() {
+  try { return JSON.parse(localStorage.getItem(PROG_KEY)) ?? {}; }
+  catch (e) { return {}; }
+}
+function saveProg() {
+  prog.stations = [...doneStations];
+  try { localStorage.setItem(PROG_KEY, JSON.stringify(prog)); }
+  catch (e) { /* private mode / blocked store: session-only progress */ }
+}
+const prog = loadProg();
+const doneStations = new Set(Array.isArray(prog.stations) ? prog.stations : []);
+prog.sims = typeof prog.sims === 'object' && prog.sims ? prog.sims : {};
 let curStation = null;
 function scoreChip() {
   const h = D.halls.find(x => x.slug === slug);
@@ -1696,6 +1870,11 @@ renderer.domElement.addEventListener('pointermove', (e) => {
 document.addEventListener('click', (e) => {
   if (e.target.closest('#pclose') || e.target.id === 'ov')
     document.body.classList.remove('open');
+  const ss = e.target.closest('[data-sim-start]');
+  if (ss) {
+    document.body.classList.remove('open');
+    startSim(ss.dataset.simStart); return;
+  }
   if (e.target.id === 'simRetry') {
     document.body.classList.remove('open');
     const id = curSimId; teardownSim(); view = 'hall'; startSim(id); return;
@@ -1707,7 +1886,7 @@ document.addEventListener('click', (e) => {
   if (opt) { opt.parentElement.querySelectorAll('.opt').forEach(o =>
       o.classList.toggle('ok', o.dataset.ok === '1'));
     if (opt.dataset.ok !== '1') opt.classList.add('bad');
-    else if (curStation) { doneStations.add(curStation);
+    else if (curStation) { doneStations.add(curStation); saveProg();
       const el = document.getElementById('hname');
       const h = D.halls.find(x => x.slug === slug);
       if (view === 'hall') el.textContent = h.name + scoreChip(); } }
@@ -1721,7 +1900,17 @@ document.getElementById('campusBtn').addEventListener('click',
 document.getElementById('walkBtn').addEventListener('click', enterWalk);
 document.getElementById('simBtn').addEventListener('click', () => {
   const b = D.sims.bindings[slug];
-  if (b?.length) startSim(b[0].sim);
+  if (!b?.length) return;
+  if (b.length === 1) return startSim(b[0].sim);
+  // more than one machine trains here: the learner picks the seat
+  document.getElementById('pbody').innerHTML = `<h2>${t('sim.choose')}</h2>`
+    + b.map((x) => {
+      const d = D.sims.sims[x.sim];
+      const done = prog.sims[x.sim]?.passed ? ' ✓' : '';
+      return `<p><button class="barbtn" data-sim-start="${x.sim}">▶ ${d.name}${done}</button><br>
+        <span style="color:var(--muted);font-size:12.5px">${d.task}</span></p>`;
+    }).join('');
+  document.body.classList.add('open');
 });
 document.getElementById('lang').addEventListener('change', (e) => {
   loc = e.target.value; renderChrome();
@@ -1748,6 +1937,7 @@ window.__tc3d = () => ({ view, buildings: buildings.length, plates: plates.lengt
   beacons: beacons.length, floors: floors.length, slug, campusKey, loc, walkActive,
   sim: curSimId && sim ? curSimId : null, roadFaults, roadCount,
   anchors: anchorPins, simCam: simView, audio: !!ac,
+  progress: { stations: doneStations.size, sims: Object.keys(prog.sims).length },
   dash: document.querySelectorAll('#dash .g').length,
   cam: camera.position.toArray().map((v) => Math.round(v * 10) / 10),
   probe: (() => { const r = new THREE.Raycaster();

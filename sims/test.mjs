@@ -19,10 +19,10 @@ const skills = new Set(JSON.parse(readFileSync(
 const slugs = new Set(unions.unions.map((u) => u.slug));
 
 const sims = reg.sims;
-ok('two simulators ship: one machine, one driving',
-  Object.keys(sims).length === 2
-  && Object.values(sims).some((s) => s.kind === 'machine')
-  && Object.values(sims).some((s) => s.kind === 'driving'));
+ok('three simulators ship: lifting and earthmoving machines, one driving seat',
+  Object.keys(sims).length === 3
+  && Object.values(sims).filter((s) => s.kind === 'machine').length === 2
+  && Object.values(sims).filter((s) => s.kind === 'driving').length === 1);
 ok('every sim carries a task, controls with keys and actions, and 3+ rubric axes',
   Object.values(sims).every((s) => s.task.length > 20
     && s.controls.length >= 3 && s.controls.every((c) => c.keys && c.action)
@@ -47,9 +47,14 @@ ok('the bindings table is exactly the sims\' hall lists, inverted',
           JSON.stringify(ids.sort()) === JSON.stringify(
             reg.hall_bindings[h].map((b) => b.sim).sort()));
   })());
-ok('the operator seats train where they belong: crane hall lifts, teamsters drive',
+ok('the operator seats train where they belong: crane hall lifts, teamsters drive, shoring digs',
   sims['crane-lift'].halls.includes('crane-ops')
-  && sims['forklift-run'].halls.includes('teamsters'));
+  && sims['forklift-run'].halls.includes('teamsters')
+  && sims['excavator-trench'].halls.includes('shoring'));
+ok('the trench task teaches utility discipline: a pass demands zero strikes',
+  /utility/.test(sims['excavator-trench'].task)
+  && sims['excavator-trench'].rubric.some((r) =>
+      r.axis === 'utility' && r.pass === '== 0'));
 ok('the scoring contract is deterministic, stated in the record',
   /deterministic/.test(reg.scoring_contract)
   && /nothing narrative/.test(reg.scoring_contract));
@@ -66,6 +71,7 @@ ok('audio is declared honestly: a named engine, alerts, and the synthesized note
 ok('every sim offers an operator-seat view mode alongside the external one',
   Object.values(sims).every((s) => s.view_modes?.length >= 2)
   && sims['crane-lift'].view_modes.includes('cab')
+  && sims['excavator-trench'].view_modes.includes('cab')
   && sims['forklift-run'].view_modes.includes('driver'));
 
 const src = readFileSync(new URL('./build.py', import.meta.url));
