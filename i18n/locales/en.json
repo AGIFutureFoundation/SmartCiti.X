@@ -54,7 +54,8 @@
   "sim.choose": "Choose a simulator",
   "progress.local": "Progress is saved on this device only.",
   "city.note": "City layer: institutions RECORDED from Locator.X; streets and river schematic",
-  "chapters.hall": "Regional chapter hall"
+  "chapters.hall": "Regional chapter hall",
+  "avatar.title": "Avatar"
  },
  "districts": {
   "structural": {

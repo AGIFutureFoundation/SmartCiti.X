@@ -54,7 +54,8 @@
   "sim.choose": "选择模拟器",
   "progress.local": "进度仅保存在此设备上。",
   "city.note": "城市图层：机构位置记录自 Locator.X；街道与河流为示意",
-  "chapters.hall": "地区分会大厅"
+  "chapters.hall": "地区分会大厅",
+  "avatar.title": "角色"
  },
  "districts": {
   "structural": {

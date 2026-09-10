@@ -54,7 +54,8 @@
   "sim.choose": "सिम्युलेटर चुनें",
   "progress.local": "प्रगति केवल इसी डिवाइस पर सहेजी जाती है।",
   "city.note": "शहर परत: संस्थान Locator.X से दर्ज; सड़कें और नदी योजनाबद्ध",
-  "chapters.hall": "क्षेत्रीय चैप्टर भवन"
+  "chapters.hall": "क्षेत्रीय चैप्टर भवन",
+  "avatar.title": "अवतार"
  },
  "districts": {
   "structural": {

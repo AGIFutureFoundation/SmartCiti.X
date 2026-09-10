@@ -7,7 +7,7 @@ The Adaptive Stack: the packs implementing the ACP protocol suite (v3.2) —
 counted, like everything else here, by the table below rather than by a
 number that can drift from it.
 
-**371 checks, all passing from inside this bundle**, with no model credentials
+**380 checks, all passing from inside this bundle**, with no model credentials
 required.
 
 ```bash
@@ -37,6 +37,7 @@ node surfaces/test.mjs             # 24 — finishes, conditions, more-demanding
 node geo/test.mjs                  # 17 — real coordinates + RECORDED anchors, recomputed distances, GeoJSON
 node sims/test.mjs                 # 17 — simulator bindings, rubrics, cockpit + scoring + regional scenarios
 node schools/test.mjs              # 14 — flipped-classroom model, proposed districts, live units
+node avatars/test.mjs              #  9 — locker sections, emotes, the cosmetic-only guarantee
 node control/fuzz.mjs              # 21 — hostile inputs and adversarial learners
 node control/soak.mjs              # long-run invariants, 4,000 attempts x 3 seeds
 python3 console/check_console.py   # fails if the console is behind its sources
@@ -62,6 +63,7 @@ python3 wiki/build_wiki.py --check # fails if the wiki is behind the registries
 | `geo/` | — | **The geo registry**: real WGS84 coordinates per campus (Oakland's RECORDED from the Locator.X city table, cross-checked on build), recomputed great-circle distances and bearings, 15 RECORDED city/institution anchors and the RECORDED New Orleans city frame, copied from Locator.X's committed tables (cross-checked on build), and Mapbox-ready GeoJSON — the 3D network view places its plates by these true bearings and marks each anchor on the campus rim, and the New Orleans campus grows a walkable city layer with every institution at its true offset (streets and river schematic, labelled so) |
 | `sims/` | — | **The simulator registry**: three operable training machines (tower-crane lift, excavator trench cut, forklift yard run) with schematic physics in the 3D environment, deterministic rubrics, skill bindings proven against the roster and the graph, and a declared cockpit per machine — dash gauges with warn thresholds, synthesized audio (WebAudio, no recordings), haptic cues, an operator-seat view mode, and per-region training scenarios (the campus picks the yard; the rubric never varies) — not equipment certification, and the registry says so |
 | `schools/` | — | **The schools pack**: the gamified flipped-classroom model (explore at home, build and practice in class, verify unaided — the teacher circulates), grade bands aligned with the Cognition.X vocabulary, proposed school-district records for all three regions (public-record names only; every record states that no district has reviewed or agreed), and one live flipped unit per simulator-bound hall — every reference proven against the packs that own it |
+| `avatars/` | — | **The avatar pack**: locker sections (build, skin, workwear, hard hat + colour, vest, boots, tool belt — 38 options) and 8 emotes with emoji and procedural moves, rendered in-page on a procedural worker with a thumb-sized radial wheel; **cosmetic only** — every option free and unlocked, none read by any grader, and the suite asserts it |
 | `archive/` | — | Superseded working data kept for provenance, consumed by nothing and skipped by the figures lint |
 
 Alongside the packs: [`ROADMAP.md`](ROADMAP.md) — the phased plan from v3.2

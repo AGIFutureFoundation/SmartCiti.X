@@ -1,0 +1,306 @@
+{
+ "pack": "smartcitix-trade-craft-academy-avatars",
+ "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
+ "pack_version": "3.2.0",
+ "built": "2026-09-10",
+ "source_stamp": "d86cd40bb6286fb5",
+ "guarantee": "cosmetic only: every option is free and unlocked, and no avatar choice affects scoring, access, progression or anything the rubrics measure",
+ "sections": [
+  {
+   "id": "build",
+   "emoji": "🧍",
+   "label": "Build",
+   "kind": "style",
+   "options": [
+    {
+     "id": "compact",
+     "glyph": "S",
+     "scale": [
+      0.92,
+      0.92,
+      0.92
+     ]
+    },
+    {
+     "id": "standard",
+     "glyph": "M",
+     "scale": [
+      1.0,
+      1.0,
+      1.0
+     ]
+    },
+    {
+     "id": "tall",
+     "glyph": "T",
+     "scale": [
+      0.97,
+      1.1,
+      0.97
+     ]
+    },
+    {
+     "id": "broad",
+     "glyph": "B",
+     "scale": [
+      1.12,
+      1.0,
+      1.08
+     ]
+    }
+   ]
+  },
+  {
+   "id": "skin",
+   "emoji": "✋",
+   "label": "Skin",
+   "kind": "color",
+   "options": [
+    {
+     "id": "porcelain",
+     "value": "#f3d7c2"
+    },
+    {
+     "id": "sand",
+     "value": "#e8bc95"
+    },
+    {
+     "id": "honey",
+     "value": "#c68f5f"
+    },
+    {
+     "id": "bronze",
+     "value": "#9c6b43"
+    },
+    {
+     "id": "umber",
+     "value": "#6f4a2f"
+    },
+    {
+     "id": "ebony",
+     "value": "#4a3223"
+    }
+   ]
+  },
+  {
+   "id": "workwear",
+   "emoji": "👕",
+   "label": "Workwear",
+   "kind": "color",
+   "options": [
+    {
+     "id": "hi-vis-orange",
+     "value": "#e8722a"
+    },
+    {
+     "id": "hi-vis-yellow",
+     "value": "#d9c22e"
+    },
+    {
+     "id": "forest",
+     "value": "#3c6b45"
+    },
+    {
+     "id": "slate",
+     "value": "#4a5a64"
+    },
+    {
+     "id": "crimson",
+     "value": "#a03a34"
+    },
+    {
+     "id": "royal",
+     "value": "#2f4d8a"
+    }
+   ]
+  },
+  {
+   "id": "hardhat",
+   "emoji": "⛑",
+   "label": "Hard hat",
+   "kind": "style",
+   "options": [
+    {
+     "id": "cap-brim",
+     "glyph": "C"
+    },
+    {
+     "id": "full-brim",
+     "glyph": "F"
+    },
+    {
+     "id": "climbing",
+     "glyph": "K"
+    },
+    {
+     "id": "vintage",
+     "glyph": "V"
+    }
+   ]
+  },
+  {
+   "id": "hatcolor",
+   "emoji": "🎨",
+   "label": "Hat colour",
+   "kind": "color",
+   "options": [
+    {
+     "id": "safety-white",
+     "value": "#e9ecec"
+    },
+    {
+     "id": "safety-yellow",
+     "value": "#e6c62d"
+    },
+    {
+     "id": "safety-orange",
+     "value": "#e07425"
+    },
+    {
+     "id": "safety-blue",
+     "value": "#2f5f9e"
+    },
+    {
+     "id": "safety-green",
+     "value": "#3b7d4f"
+    },
+    {
+     "id": "safety-red",
+     "value": "#b03a30"
+    }
+   ]
+  },
+  {
+   "id": "vest",
+   "emoji": "🦺",
+   "label": "Vest",
+   "kind": "style",
+   "options": [
+    {
+     "id": "none",
+     "glyph": "–"
+    },
+    {
+     "id": "stripe",
+     "glyph": "||"
+    },
+    {
+     "id": "surveyor",
+     "glyph": "X"
+    },
+    {
+     "id": "harness",
+     "glyph": "H"
+    }
+   ]
+  },
+  {
+   "id": "boots",
+   "emoji": "🥾",
+   "label": "Boots",
+   "kind": "color",
+   "options": [
+    {
+     "id": "tan",
+     "value": "#9a6f43"
+    },
+    {
+     "id": "brown",
+     "value": "#5d4127"
+    },
+    {
+     "id": "black",
+     "value": "#26262a"
+    },
+    {
+     "id": "grey",
+     "value": "#6c7276"
+    }
+   ]
+  },
+  {
+   "id": "tools",
+   "emoji": "🧰",
+   "label": "Tool belt",
+   "kind": "style",
+   "options": [
+    {
+     "id": "none",
+     "glyph": "–"
+    },
+    {
+     "id": "basic",
+     "glyph": "b"
+    },
+    {
+     "id": "framing",
+     "glyph": "f"
+    },
+    {
+     "id": "electric",
+     "glyph": "e"
+    }
+   ]
+  }
+ ],
+ "defaults": {
+  "build": "standard",
+  "skin": "honey",
+  "workwear": "hi-vis-orange",
+  "hardhat": "cap-brim",
+  "hatcolor": "safety-yellow",
+  "vest": "stripe",
+  "boots": "tan",
+  "tools": "basic"
+ },
+ "emotes": [
+  {
+   "id": "wave",
+   "emoji": "👋",
+   "label": "Wave",
+   "move": "arm-wave"
+  },
+  {
+   "id": "thumbs",
+   "emoji": "👍",
+   "label": "Thumbs up",
+   "move": "arm-up"
+  },
+  {
+   "id": "point",
+   "emoji": "👉",
+   "label": "Point",
+   "move": "arm-point"
+  },
+  {
+   "id": "tip",
+   "emoji": "👷",
+   "label": "Hat tip",
+   "move": "hat-tip"
+  },
+  {
+   "id": "clap",
+   "emoji": "👏",
+   "label": "Clap",
+   "move": "clap"
+  },
+  {
+   "id": "flex",
+   "emoji": "💪",
+   "label": "Flex",
+   "move": "flex"
+  },
+  {
+   "id": "spin",
+   "emoji": "🌀",
+   "label": "Spin",
+   "move": "spin"
+  },
+  {
+   "id": "check",
+   "emoji": "✅",
+   "label": "Safety check",
+   "move": "jump"
+  }
+ ]
+}

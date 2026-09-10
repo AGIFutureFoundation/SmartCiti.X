@@ -54,7 +54,8 @@
   "sim.choose": "Simulator wählen",
   "progress.local": "Der Fortschritt wird nur auf diesem Gerät gespeichert.",
   "city.note": "Stadtebene: Institutionen aus Locator.X ÜBERNOMMEN; Straßen und Fluss schematisch",
-  "chapters.hall": "Regionales Kapitelhaus"
+  "chapters.hall": "Regionales Kapitelhaus",
+  "avatar.title": "Avatar"
  },
  "districts": {
   "structural": {
