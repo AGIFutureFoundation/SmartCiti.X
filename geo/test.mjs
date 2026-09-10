@@ -82,9 +82,9 @@ ok('the registry says what a coordinate is not: an anchor, not a parcel claim',
   /does not claim a parcel/.test(reg.honesty.siting)
   && /planned locations/.test(reg.honesty.siting));
 /* -------------------------------------------------------------- anchors --- */
-ok('every campus carries RECORDED anchors citing their Locator.X table — the full NOLA POI table, seven strong',
+ok('every campus carries RECORDED anchors citing their Locator.X table — eight Bay cities, seven NOLA institutions',
   Object.keys(reg.anchors).length === 3
-  && reg.anchors['treasure-island'].length === 4
+  && reg.anchors['treasure-island'].length === 8
   && reg.anchors['oakland'].length === 4
   && reg.anchors['new-orleans'].length === 7
   && Object.values(reg.anchors).every((l) =>
@@ -93,12 +93,12 @@ ok('every anchor sits within 60 km of its campus, distances recomputed',
   Object.entries(reg.anchors).every(([ck, l]) => l.every((a) =>
     Math.abs(haversineKm(pts[ck], a) - a.km) < 0.1 && a.km < 60)));
 ok('the GeoJSON carries the anchors as tagged features, [lng, lat]',
-  gj.features.filter((f) => f.properties.kind === 'anchor').length === 15
+  gj.features.filter((f) => f.properties.kind === 'anchor').length === 19
   && gj.features.filter((f) => f.properties.kind === 'anchor')
       .every((f) => Math.abs(f.geometry.coordinates[0]) > Math.abs(f.geometry.coordinates[1])));
-ok('every New Orleans institution carries an authored blurb that says it is not the RECORDED table',
-  reg.anchors['new-orleans'].every((a) => a.blurb?.length > 40
-    && /authored/.test(a.blurb_provenance)));
+ok('every anchor, Bay city and NOLA institution alike, carries an authored blurb that says it is not the RECORDED table',
+  Object.values(reg.anchors).every((l) => l.every((a) => a.blurb?.length > 40
+    && /authored/.test(a.blurb_provenance))));
 ok('the New Orleans city frame is RECORDED, plausible, and inside its own bounds',
   reg.city['new-orleans'].provenance === 'RECORDED'
   && /Locator\.X/.test(reg.city['new-orleans'].source)
@@ -107,6 +107,16 @@ ok('the New Orleans city frame is RECORDED, plausible, and inside its own bounds
       && c.center.lat > c.bounds.s && c.center.lat < c.bounds.n
       && haversineKm(pts['new-orleans'],
         { lat: c.center.lat, lng: c.center.lng }) < 6; })());
+ok('every city frame is RECORDED from Locator.X and actually frames its campus',
+  Object.entries(reg.city).every(([ck, c]) =>
+    c.provenance === 'RECORDED' && /Locator\.X/.test(c.source)
+    && c.center.lng > c.bounds.w && c.center.lng < c.bounds.e
+    && c.center.lat > c.bounds.s && c.center.lat < c.bounds.n
+    && pts[ck].lng > c.bounds.w && pts[ck].lng < c.bounds.e
+    && pts[ck].lat > c.bounds.s && pts[ck].lat < c.bounds.n));
+ok('both Bay campuses share the one committed Bay frame',
+  JSON.stringify(reg.city['treasure-island'])
+    === JSON.stringify(reg.city['oakland']));
 
 const src = readFileSync(new URL('./build.py', import.meta.url));
 ok('the registry was built from the current builder source (stamp check)',

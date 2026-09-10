@@ -70,6 +70,10 @@ ANCHORS = {
         ('Sausalito', 37.859, -122.4853, 'src/app.js CITIES'),
         ('Alameda', 37.7652, -122.2416, 'src/app.js CITIES'),
         ('Daly City', 37.6879, -122.4702, 'src/app.js CITIES'),
+        ('Richmond', 37.9358, -122.3477, 'src/app.js CITIES'),
+        ('San Rafael', 37.9735, -122.5311, 'src/app.js CITIES'),
+        ('South San Francisco', 37.6547, -122.4077, 'src/app.js CITIES'),
+        ('San Mateo', 37.5630, -122.3255, 'src/app.js CITIES'),
     ],
     'oakland': [
         ('Berkeley', 37.8716, -122.2727, 'src/app.js CITIES'),
@@ -93,6 +97,36 @@ ANCHORS = {
 # Locator.X, the sentence about the place is not from that table and does
 # not claim to be. Kept to widely-verifiable identity facts only.
 BLURBS = {
+    'San Francisco':
+        'The peninsula city at the Golden Gate - the Bay Area’s '
+        'historic urban core, west across the bay from the campus island.',
+    'Sausalito':
+        'Waterfront town just inside the Golden Gate, on Richardson Bay '
+        'under the Marin Headlands.',
+    'Alameda':
+        'Island city in San Francisco Bay beside Oakland, on the grounds '
+        'of the former naval air station.',
+    'Daly City':
+        'The gateway city where the San Francisco peninsula meets '
+        'San Mateo County.',
+    'Richmond':
+        'East Bay port city on San Pablo Bay, home of the wartime '
+        'Kaiser shipyards.',
+    'San Rafael':
+        'Marin County’s seat, north of the bay along the 101 corridor.',
+    'South San Francisco':
+        'The industrial city - its hillside sign says so - between '
+        'San Francisco and the airport.',
+    'San Mateo':
+        'Peninsula city midway between San Francisco and Silicon Valley.',
+    'Berkeley':
+        'East Bay city, home of the University of California’s '
+        'founding campus.',
+    'Emeryville':
+        'Compact industrial-turned-tech city at the foot of the '
+        'Bay Bridge approach.',
+    'San Leandro':
+        'East Bay manufacturing city directly south of Oakland.',
     'Tulane University':
         'Private research university Uptown on St. Charles Avenue, '
         'founded 1834; engineering and architecture among its schools.',
@@ -116,11 +150,18 @@ BLURBS = {
         'university in Pontchartrain Park.',
 }
 
-# The New Orleans CITY record - the region frame Locator.X's NOLA map
-# ships: its centre and view bounds, RECORDED verbatim from the same
-# builder. This is what lets a city layer claim a real frame rather than
-# an invented one; the streets and river drawn inside it stay SCHEMATIC
-# and are labelled so wherever they render.
+# CITY records - the region frames Locator.X's own maps ship, RECORDED
+# verbatim: the NOLA map's region record, and the Bay Area map's committed
+# frame (src/app.js), which covers both Bay campuses. A city layer may
+# claim only a real frame, never an invented one; the streets, bridges and
+# water drawn inside it stay SCHEMATIC and are labelled so wherever they
+# render.
+BAY_FRAME = {
+    'center': {'lat': 37.72, 'lng': -122.27},
+    'bounds': {'w': -124.2, 's': 36.2, 'e': -120.2, 'n': 39.2},
+    'provenance': 'RECORDED',
+    'source': 'Locator.X src/app.js map frame, Apache-2.0',
+}
 CITY = {
     'new-orleans': {
         'center': {'lat': 29.975, 'lng': -90.09},
@@ -128,6 +169,8 @@ CITY = {
         'provenance': 'RECORDED',
         'source': 'Locator.X build_data_nola.py region, Apache-2.0',
     },
+    'treasure-island': dict(BAY_FRAME),
+    'oakland': dict(BAY_FRAME),
 }
 
 if locx.exists():
@@ -149,6 +192,12 @@ if locx.exists():
     _b = _c['bounds']
     assert (f"maxBounds=[[{_b['w']},{_b['s']}],[{_b['e']},{_b['n']}]]"
             in _nola), 'NOLA city bounds drifted from the region record'
+    _bf = CITY['treasure-island']
+    assert (f"center:[{_bf['center']['lng']},{_bf['center']['lat']}]" in _lx), \
+        'Bay frame centre drifted from the app source'
+    _bb = _bf['bounds']
+    assert (f"maxBounds:[[{_bb['w']},{_bb['s']}],[{_bb['e']},{_bb['n']}]]"
+            in _lx), 'Bay frame bounds drifted from the app source'
 
 campuses = json.load(open(ROOT / 'unions/registry/campuses.json'))['campuses']
 assert set(GEO) == set(campuses), 'a coordinate per campus, exactly'

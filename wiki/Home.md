@@ -75,21 +75,26 @@ directly consumable by any Mapbox/MapLibre-compatible stack. The 3D network
 view places its campus plates by these true bearings, with the real
 kilometres on the route labels.
 
-Around each campus sit **15 RECORDED anchors** — real cities and
+Around each campus sit **19 RECORDED anchors** — real cities and
 institutions copied verbatim from Locator.X's committed tables (the Bay
 Area city table and the New Orleans POI table, Apache-2.0) and
 cross-checked against those files at build time. The network view marks
 each at its true bearing on the campus plate rim, real kilometres on the
 label.
 
-New Orleans additionally carries a **RECORDED city frame** — the centre
-and view bounds of Locator.X's own NOLA map, cross-checked the same way —
-which is what lets the Crescent Works campus grow a **walkable city
-layer** in 3D: all seven institutions stand at their true east/north
-offsets (13 units per real kilometre), joined to the ring road by avenues.
-The avenues, the Mississippi crescent and Lake Pontchartrain are
-SCHEMATIC, and the in-page labels say which is which — institutions
-RECORDED, everything drawn between them schematic.
+Every campus now carries a **RECORDED city frame** — the centre and view
+bounds of Locator.X's own maps (the NOLA region record for New Orleans;
+the Bay Area map's committed frame, shared by both Bay campuses),
+cross-checked the same way — which is what lets each campus grow a
+**walkable city layer** in 3D. New Orleans lays its seven institutions
+at true east/north offsets (13 units per real kilometre) joined to the
+ring road by avenues; Treasure Island sits as an **island in the Bay**,
+its eight RECORDED cities reached by schematic ferry lines and the two
+Bay Bridge spans at true bearings with distance log-eased the way the
+network view does it (real kilometres stay on every label); Oakland
+keeps its waterfront. The avenues, ferries, bridges and water are
+SCHEMATIC, and the in-page labels say which is which — places RECORDED,
+everything drawn between them schematic.
 
 ### The regional chapter network
 
