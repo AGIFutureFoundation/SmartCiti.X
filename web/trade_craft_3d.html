@@ -1383,9 +1383,9 @@ function forkliftSim() {
       }
       if (simView === 'driver') {
         // the seat: eye height over the chassis, sight line past the mast
-        const eye = fl.position.clone().addScaledVector(dir, .1).setY(2.05);
+        const eye = fl.position.clone().addScaledVector(dir, .5).setY(2.25);
         camera.position.copy(eye);
-        camera.lookAt(eye.clone().addScaledVector(dir, 9).setY(1.4));
+        camera.lookAt(eye.clone().addScaledVector(dir, 10).setY(1.7));
       } else {
         const camTo = fl.position.clone().addScaledVector(dir, -8.5).setY(5.2);
         camera.position.lerp(camTo, Math.min(1, 5 * dt));
