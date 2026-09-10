@@ -7,7 +7,7 @@ The Adaptive Stack: the packs implementing the ACP protocol suite (v3.2) —
 counted, like everything else here, by the table below rather than by a
 number that can drift from it.
 
-**349 checks, all passing from inside this bundle**, with no model credentials
+**371 checks, all passing from inside this bundle**, with no model credentials
 required.
 
 ```bash
@@ -18,7 +18,7 @@ Or individually — every path inside a pack resolves against its own module
 location, so these run from any working directory (v2.6 defect 13):
 
 ```bash
-node unions/verify.mjs             # 19 — roster, districts, campuses, pack agreement
+node unions/verify.mjs             # 24 — roster, districts, campuses, chapters, pack agreement
 node pack/verify.mjs               # 19 — the registry, and all 11,000,000 IDs
 node control/test.mjs              # 12 — learner profile, ZPD dial, affect
 node control/test_graph.mjs        # 20 — skill graph, sequencer, gates
@@ -35,7 +35,8 @@ node i18n/test.mjs                 # 16 — locale parity, placeholders, pack ag
 node stations/test.mjs             # 13 — recovered stations vs roster, skills, rooms
 node surfaces/test.mjs             # 24 — finishes, conditions, more-demanding-wins, honesty
 node geo/test.mjs                  # 17 — real coordinates + RECORDED anchors, recomputed distances, GeoJSON
-node sims/test.mjs                 # 14 — simulator bindings, rubrics, cockpit + scoring contracts
+node sims/test.mjs                 # 17 — simulator bindings, rubrics, cockpit + scoring + regional scenarios
+node schools/test.mjs              # 14 — flipped-classroom model, proposed districts, live units
 node control/fuzz.mjs              # 21 — hostile inputs and adversarial learners
 node control/soak.mjs              # long-run invariants, 4,000 attempts x 3 seeds
 python3 console/check_console.py   # fails if the console is behind its sources
@@ -59,7 +60,8 @@ python3 wiki/build_wiki.py --check # fails if the wiki is behind the registries
 | `stations/` | — | **The station registry**: the recovered pre-rebrand yard curriculum rebranded onto the live structure — 25 machine-gradable stations assigned to halls, skills and floor-plan rooms, verified against all three |
 | `surfaces/` | §24 | **The surface registry**: 22 floor finishes with renderer-ready parameters and the reason each exists, resolved per room hazard-first with §24.1's discipline, plus per-room conditions (illuminance, air changes, design noise, temperature band, PPE) merged more-demanding-wins across every governing hazard — rendered as the 3D room floors and read out live in walk mode |
 | `geo/` | — | **The geo registry**: real WGS84 coordinates per campus (Oakland's RECORDED from the Locator.X city table, cross-checked on build), recomputed great-circle distances and bearings, 15 RECORDED city/institution anchors and the RECORDED New Orleans city frame, copied from Locator.X's committed tables (cross-checked on build), and Mapbox-ready GeoJSON — the 3D network view places its plates by these true bearings and marks each anchor on the campus rim, and the New Orleans campus grows a walkable city layer with every institution at its true offset (streets and river schematic, labelled so) |
-| `sims/` | — | **The simulator registry**: three operable training machines (tower-crane lift, excavator trench cut, forklift yard run) with schematic physics in the 3D environment, deterministic rubrics, skill bindings proven against the roster and the graph, and a declared cockpit per machine — dash gauges with warn thresholds, synthesized audio (WebAudio, no recordings), haptic cues, and an operator-seat view mode — not equipment certification, and the registry says so |
+| `sims/` | — | **The simulator registry**: three operable training machines (tower-crane lift, excavator trench cut, forklift yard run) with schematic physics in the 3D environment, deterministic rubrics, skill bindings proven against the roster and the graph, and a declared cockpit per machine — dash gauges with warn thresholds, synthesized audio (WebAudio, no recordings), haptic cues, an operator-seat view mode, and per-region training scenarios (the campus picks the yard; the rubric never varies) — not equipment certification, and the registry says so |
+| `schools/` | — | **The schools pack**: the gamified flipped-classroom model (explore at home, build and practice in class, verify unaided — the teacher circulates), grade bands aligned with the Cognition.X vocabulary, proposed school-district records for all three regions (public-record names only; every record states that no district has reviewed or agreed), and one live flipped unit per simulator-bound hall — every reference proven against the packs that own it |
 | `archive/` | — | Superseded working data kept for provenance, consumed by nothing and skipped by the figures lint |
 
 Alongside the packs: [`ROADMAP.md`](ROADMAP.md) — the phased plan from v3.2

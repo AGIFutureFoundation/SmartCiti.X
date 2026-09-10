@@ -1,0 +1,1588 @@
+{
+ "pack": "smartcitix-trade-craft-academy-union-registry",
+ "pack_version": "3.2.0",
+ "built": "2026-09-09",
+ "source_stamp": "8760dc671a8854b8",
+ "count": 333,
+ "regions": {
+  "treasure-island": {
+   "abbr": "SF",
+   "name": "Treasure Island Campus",
+   "city": "San Francisco"
+  },
+  "oakland": {
+   "abbr": "OAK",
+   "name": "Oakland Waterfront Campus",
+   "city": "Oakland"
+  },
+  "new-orleans": {
+   "abbr": "NOLA",
+   "name": "Crescent Works Campus",
+   "city": "New Orleans"
+  }
+ },
+ "hosted": {
+  "treasure-island": 60,
+  "oakland": 79,
+  "new-orleans": 83
+ },
+ "honesty": {
+  "chapters": "the Academy's own regional training structure across its planned campuses - not a claim about any real union's locals, chapters or jurisdictions; no local is named"
+ },
+ "chapters": {
+  "ironworkers": {
+   "home": "treasure-island",
+   "home_code": "ironworkers@SF",
+   "regional": {
+    "oakland": {
+     "code": "ironworkers@OAK",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "ironworkers@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "electricians": {
+   "home": "treasure-island",
+   "home_code": "electricians@SF",
+   "regional": {
+    "oakland": {
+     "code": "electricians@OAK",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "electricians@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "pipefitters": {
+   "home": "treasure-island",
+   "home_code": "pipefitters@SF",
+   "regional": {
+    "oakland": {
+     "code": "pipefitters@OAK",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "pipefitters@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "carpenters": {
+   "home": "treasure-island",
+   "home_code": "carpenters@SF",
+   "regional": {
+    "oakland": {
+     "code": "carpenters@OAK",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "carpenters@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "operating-eng": {
+   "home": "oakland",
+   "home_code": "operating-eng@OAK",
+   "regional": {
+    "treasure-island": {
+     "code": "operating-eng@SF",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "operating-eng@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "laborers": {
+   "home": "oakland",
+   "home_code": "laborers@OAK",
+   "regional": {
+    "treasure-island": {
+     "code": "laborers@SF",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "laborers@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "sheetmetal": {
+   "home": "treasure-island",
+   "home_code": "sheetmetal@SF",
+   "regional": {
+    "oakland": {
+     "code": "sheetmetal@OAK",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "sheetmetal@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "bricklayers": {
+   "home": "treasure-island",
+   "home_code": "bricklayers@SF",
+   "regional": {
+    "oakland": {
+     "code": "bricklayers@OAK",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "bricklayers@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "cement-masons": {
+   "home": "treasure-island",
+   "home_code": "cement-masons@SF",
+   "regional": {
+    "oakland": {
+     "code": "cement-masons@OAK",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "cement-masons@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "roofers": {
+   "home": "treasure-island",
+   "home_code": "roofers@SF",
+   "regional": {
+    "oakland": {
+     "code": "roofers@OAK",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "roofers@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "painters": {
+   "home": "treasure-island",
+   "home_code": "painters@SF",
+   "regional": {
+    "oakland": {
+     "code": "painters@OAK",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "painters@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "glaziers": {
+   "home": "treasure-island",
+   "home_code": "glaziers@SF",
+   "regional": {
+    "oakland": {
+     "code": "glaziers@OAK",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "glaziers@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "insulators": {
+   "home": "treasure-island",
+   "home_code": "insulators@SF",
+   "regional": {
+    "oakland": {
+     "code": "insulators@OAK",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "insulators@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "millwrights": {
+   "home": "treasure-island",
+   "home_code": "millwrights@SF",
+   "regional": {
+    "oakland": {
+     "code": "millwrights@OAK",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "millwrights@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "boilermakers": {
+   "home": "treasure-island",
+   "home_code": "boilermakers@SF",
+   "regional": {
+    "oakland": {
+     "code": "boilermakers@OAK",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "boilermakers@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "elevator": {
+   "home": "treasure-island",
+   "home_code": "elevator@SF",
+   "regional": {
+    "oakland": {
+     "code": "elevator@OAK",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "elevator@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "teamsters": {
+   "home": "oakland",
+   "home_code": "teamsters@OAK",
+   "regional": {
+    "treasure-island": {
+     "code": "teamsters@SF",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "teamsters@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "welders": {
+   "home": "treasure-island",
+   "home_code": "welders@SF",
+   "regional": {
+    "oakland": {
+     "code": "welders@OAK",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "welders@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "hvacr": {
+   "home": "treasure-island",
+   "home_code": "hvacr@SF",
+   "regional": {
+    "oakland": {
+     "code": "hvacr@OAK",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "hvacr@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "crane-ops": {
+   "home": "treasure-island",
+   "home_code": "crane-ops@SF",
+   "regional": {
+    "oakland": {
+     "code": "crane-ops@OAK",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "crane-ops@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "riggers": {
+   "home": "treasure-island",
+   "home_code": "riggers@SF",
+   "regional": {
+    "oakland": {
+     "code": "riggers@OAK",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "riggers@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "heavy-equip": {
+   "home": "oakland",
+   "home_code": "heavy-equip@OAK",
+   "regional": {
+    "treasure-island": {
+     "code": "heavy-equip@SF",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "heavy-equip@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "drywall": {
+   "home": "treasure-island",
+   "home_code": "drywall@SF",
+   "regional": {
+    "oakland": {
+     "code": "drywall@OAK",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "drywall@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "flooring": {
+   "home": "treasure-island",
+   "home_code": "flooring@SF",
+   "regional": {
+    "oakland": {
+     "code": "flooring@OAK",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "flooring@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "grounds": {
+   "home": "oakland",
+   "home_code": "grounds@OAK",
+   "regional": {
+    "treasure-island": {
+     "code": "grounds@SF",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "grounds@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "line-workers": {
+   "home": "new-orleans",
+   "home_code": "line-workers@NOLA",
+   "regional": {
+    "treasure-island": {
+     "code": "line-workers@SF",
+     "role": "regional chapter"
+    },
+    "oakland": {
+     "code": "line-workers@OAK",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "solar": {
+   "home": "new-orleans",
+   "home_code": "solar@NOLA",
+   "regional": {
+    "treasure-island": {
+     "code": "solar@SF",
+     "role": "regional chapter"
+    },
+    "oakland": {
+     "code": "solar@OAK",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "wind": {
+   "home": "new-orleans",
+   "home_code": "wind@NOLA",
+   "regional": {
+    "treasure-island": {
+     "code": "wind@SF",
+     "role": "regional chapter"
+    },
+    "oakland": {
+     "code": "wind@OAK",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "demolition": {
+   "home": "oakland",
+   "home_code": "demolition@OAK",
+   "regional": {
+    "treasure-island": {
+     "code": "demolition@SF",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "demolition@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "scaffold": {
+   "home": "oakland",
+   "home_code": "scaffold@OAK",
+   "regional": {
+    "treasure-island": {
+     "code": "scaffold@SF",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "scaffold@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "surveyors": {
+   "home": "new-orleans",
+   "home_code": "surveyors@NOLA",
+   "regional": {
+    "treasure-island": {
+     "code": "surveyors@SF",
+     "role": "regional chapter"
+    },
+    "oakland": {
+     "code": "surveyors@OAK",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "fire-sprinkler": {
+   "home": "treasure-island",
+   "home_code": "fire-sprinkler@SF",
+   "regional": {
+    "oakland": {
+     "code": "fire-sprinkler@OAK",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "fire-sprinkler@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "hazmat": {
+   "home": "new-orleans",
+   "home_code": "hazmat@NOLA",
+   "regional": {
+    "treasure-island": {
+     "code": "hazmat@SF",
+     "role": "regional chapter"
+    },
+    "oakland": {
+     "code": "hazmat@OAK",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "refractory": {
+   "home": "oakland",
+   "home_code": "refractory@OAK",
+   "regional": {
+    "treasure-island": {
+     "code": "refractory@SF",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "refractory@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "pipeline": {
+   "home": "oakland",
+   "home_code": "pipeline@OAK",
+   "regional": {
+    "treasure-island": {
+     "code": "pipeline@SF",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "pipeline@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "tank-erectors": {
+   "home": "oakland",
+   "home_code": "tank-erectors@OAK",
+   "regional": {
+    "treasure-island": {
+     "code": "tank-erectors@SF",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "tank-erectors@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "shipfitters": {
+   "home": "treasure-island",
+   "home_code": "shipfitters@SF",
+   "regional": {
+    "oakland": {
+     "code": "shipfitters@OAK",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "shipfitters@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "marine-pipe": {
+   "home": "oakland",
+   "home_code": "marine-pipe@OAK",
+   "regional": {
+    "treasure-island": {
+     "code": "marine-pipe@SF",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "marine-pipe@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "divers": {
+   "home": "oakland",
+   "home_code": "divers@OAK",
+   "regional": {
+    "treasure-island": {
+     "code": "divers@SF",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "divers@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "blasters": {
+   "home": "oakland",
+   "home_code": "blasters@OAK",
+   "regional": {
+    "treasure-island": {
+     "code": "blasters@SF",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "blasters@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "miners": {
+   "home": "oakland",
+   "home_code": "miners@OAK",
+   "regional": {
+    "treasure-island": {
+     "code": "miners@SF",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "miners@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "smelter": {
+   "home": "oakland",
+   "home_code": "smelter@OAK",
+   "regional": {
+    "treasure-island": {
+     "code": "smelter@SF",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "smelter@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "foundry": {
+   "home": "oakland",
+   "home_code": "foundry@OAK",
+   "regional": {
+    "treasure-island": {
+     "code": "foundry@SF",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "foundry@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "machinists": {
+   "home": "oakland",
+   "home_code": "machinists@OAK",
+   "regional": {
+    "treasure-island": {
+     "code": "machinists@SF",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "machinists@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "toolmakers": {
+   "home": "oakland",
+   "home_code": "toolmakers@OAK",
+   "regional": {
+    "treasure-island": {
+     "code": "toolmakers@SF",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "toolmakers@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "fabricators": {
+   "home": "treasure-island",
+   "home_code": "fabricators@SF",
+   "regional": {
+    "oakland": {
+     "code": "fabricators@OAK",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "fabricators@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "platers": {
+   "home": "oakland",
+   "home_code": "platers@OAK",
+   "regional": {
+    "treasure-island": {
+     "code": "platers@SF",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "platers@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "substation": {
+   "home": "new-orleans",
+   "home_code": "substation@NOLA",
+   "regional": {
+    "treasure-island": {
+     "code": "substation@SF",
+     "role": "regional chapter"
+    },
+    "oakland": {
+     "code": "substation@OAK",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "cable-splicers": {
+   "home": "new-orleans",
+   "home_code": "cable-splicers@NOLA",
+   "regional": {
+    "treasure-island": {
+     "code": "cable-splicers@SF",
+     "role": "regional chapter"
+    },
+    "oakland": {
+     "code": "cable-splicers@OAK",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "meter-techs": {
+   "home": "new-orleans",
+   "home_code": "meter-techs@NOLA",
+   "regional": {
+    "treasure-island": {
+     "code": "meter-techs@SF",
+     "role": "regional chapter"
+    },
+    "oakland": {
+     "code": "meter-techs@OAK",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "gas-distrib": {
+   "home": "new-orleans",
+   "home_code": "gas-distrib@NOLA",
+   "regional": {
+    "treasure-island": {
+     "code": "gas-distrib@SF",
+     "role": "regional chapter"
+    },
+    "oakland": {
+     "code": "gas-distrib@OAK",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "water-distrib": {
+   "home": "new-orleans",
+   "home_code": "water-distrib@NOLA",
+   "regional": {
+    "treasure-island": {
+     "code": "water-distrib@SF",
+     "role": "regional chapter"
+    },
+    "oakland": {
+     "code": "water-distrib@OAK",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "wastewater": {
+   "home": "new-orleans",
+   "home_code": "wastewater@NOLA",
+   "regional": {
+    "treasure-island": {
+     "code": "wastewater@SF",
+     "role": "regional chapter"
+    },
+    "oakland": {
+     "code": "wastewater@OAK",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "nuclear": {
+   "home": "new-orleans",
+   "home_code": "nuclear@NOLA",
+   "regional": {
+    "treasure-island": {
+     "code": "nuclear@SF",
+     "role": "regional chapter"
+    },
+    "oakland": {
+     "code": "nuclear@OAK",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "hydro": {
+   "home": "new-orleans",
+   "home_code": "hydro@NOLA",
+   "regional": {
+    "treasure-island": {
+     "code": "hydro@SF",
+     "role": "regional chapter"
+    },
+    "oakland": {
+     "code": "hydro@OAK",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "geothermal": {
+   "home": "new-orleans",
+   "home_code": "geothermal@NOLA",
+   "regional": {
+    "treasure-island": {
+     "code": "geothermal@SF",
+     "role": "regional chapter"
+    },
+    "oakland": {
+     "code": "geothermal@OAK",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "battery-storage": {
+   "home": "new-orleans",
+   "home_code": "battery-storage@NOLA",
+   "regional": {
+    "treasure-island": {
+     "code": "battery-storage@SF",
+     "role": "regional chapter"
+    },
+    "oakland": {
+     "code": "battery-storage@OAK",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "ev-charging": {
+   "home": "new-orleans",
+   "home_code": "ev-charging@NOLA",
+   "regional": {
+    "treasure-island": {
+     "code": "ev-charging@SF",
+     "role": "regional chapter"
+    },
+    "oakland": {
+     "code": "ev-charging@OAK",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "hydrogen": {
+   "home": "new-orleans",
+   "home_code": "hydrogen@NOLA",
+   "regional": {
+    "treasure-island": {
+     "code": "hydrogen@SF",
+     "role": "regional chapter"
+    },
+    "oakland": {
+     "code": "hydrogen@OAK",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "transmission": {
+   "home": "new-orleans",
+   "home_code": "transmission@NOLA",
+   "regional": {
+    "treasure-island": {
+     "code": "transmission@SF",
+     "role": "regional chapter"
+    },
+    "oakland": {
+     "code": "transmission@OAK",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "district-energy": {
+   "home": "new-orleans",
+   "home_code": "district-energy@NOLA",
+   "regional": {
+    "treasure-island": {
+     "code": "district-energy@SF",
+     "role": "regional chapter"
+    },
+    "oakland": {
+     "code": "district-energy@OAK",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "masonry-restore": {
+   "home": "treasure-island",
+   "home_code": "masonry-restore@SF",
+   "regional": {
+    "oakland": {
+     "code": "masonry-restore@OAK",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "masonry-restore@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "stone-carvers": {
+   "home": "treasure-island",
+   "home_code": "stone-carvers@SF",
+   "regional": {
+    "oakland": {
+     "code": "stone-carvers@OAK",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "stone-carvers@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "plasterers": {
+   "home": "treasure-island",
+   "home_code": "plasterers@SF",
+   "regional": {
+    "oakland": {
+     "code": "plasterers@OAK",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "plasterers@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "terrazzo": {
+   "home": "treasure-island",
+   "home_code": "terrazzo@SF",
+   "regional": {
+    "oakland": {
+     "code": "terrazzo@OAK",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "terrazzo@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "tilesetters": {
+   "home": "treasure-island",
+   "home_code": "tilesetters@SF",
+   "regional": {
+    "oakland": {
+     "code": "tilesetters@OAK",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "tilesetters@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "lathers": {
+   "home": "treasure-island",
+   "home_code": "lathers@SF",
+   "regional": {
+    "oakland": {
+     "code": "lathers@OAK",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "lathers@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "curtainwall": {
+   "home": "treasure-island",
+   "home_code": "curtainwall@SF",
+   "regional": {
+    "oakland": {
+     "code": "curtainwall@OAK",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "curtainwall@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "waterproofers": {
+   "home": "treasure-island",
+   "home_code": "waterproofers@SF",
+   "regional": {
+    "oakland": {
+     "code": "waterproofers@OAK",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "waterproofers@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "firestop": {
+   "home": "treasure-island",
+   "home_code": "firestop@SF",
+   "regional": {
+    "oakland": {
+     "code": "firestop@OAK",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "firestop@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "acoustic": {
+   "home": "treasure-island",
+   "home_code": "acoustic@SF",
+   "regional": {
+    "oakland": {
+     "code": "acoustic@OAK",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "acoustic@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "cladding": {
+   "home": "treasure-island",
+   "home_code": "cladding@SF",
+   "regional": {
+    "oakland": {
+     "code": "cladding@OAK",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "cladding@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "shoring": {
+   "home": "oakland",
+   "home_code": "shoring@OAK",
+   "regional": {
+    "treasure-island": {
+     "code": "shoring@SF",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "shoring@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "piling": {
+   "home": "treasure-island",
+   "home_code": "piling@SF",
+   "regional": {
+    "oakland": {
+     "code": "piling@OAK",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "piling@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "concrete-pump": {
+   "home": "oakland",
+   "home_code": "concrete-pump@OAK",
+   "regional": {
+    "treasure-island": {
+     "code": "concrete-pump@SF",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "concrete-pump@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "post-tension": {
+   "home": "oakland",
+   "home_code": "post-tension@OAK",
+   "regional": {
+    "treasure-island": {
+     "code": "post-tension@SF",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "post-tension@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "precast": {
+   "home": "treasure-island",
+   "home_code": "precast@SF",
+   "regional": {
+    "oakland": {
+     "code": "precast@OAK",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "precast@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "steel-erectors": {
+   "home": "treasure-island",
+   "home_code": "steel-erectors@SF",
+   "regional": {
+    "oakland": {
+     "code": "steel-erectors@OAK",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "steel-erectors@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "decking": {
+   "home": "treasure-island",
+   "home_code": "decking@SF",
+   "regional": {
+    "oakland": {
+     "code": "decking@OAK",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "decking@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "window-glazing": {
+   "home": "treasure-island",
+   "home_code": "window-glazing@SF",
+   "regional": {
+    "oakland": {
+     "code": "window-glazing@OAK",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "window-glazing@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "bas-controls": {
+   "home": "treasure-island",
+   "home_code": "bas-controls@SF",
+   "regional": {
+    "oakland": {
+     "code": "bas-controls@OAK",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "bas-controls@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "fire-alarm": {
+   "home": "treasure-island",
+   "home_code": "fire-alarm@SF",
+   "regional": {
+    "oakland": {
+     "code": "fire-alarm@OAK",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "fire-alarm@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "security-sys": {
+   "home": "treasure-island",
+   "home_code": "security-sys@SF",
+   "regional": {
+    "oakland": {
+     "code": "security-sys@OAK",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "security-sys@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "network-cabling": {
+   "home": "treasure-island",
+   "home_code": "network-cabling@SF",
+   "regional": {
+    "oakland": {
+     "code": "network-cabling@OAK",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "network-cabling@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "fiber-splicers": {
+   "home": "treasure-island",
+   "home_code": "fiber-splicers@SF",
+   "regional": {
+    "oakland": {
+     "code": "fiber-splicers@OAK",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "fiber-splicers@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "data-center": {
+   "home": "treasure-island",
+   "home_code": "data-center@SF",
+   "regional": {
+    "oakland": {
+     "code": "data-center@OAK",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "data-center@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "instrumentation": {
+   "home": "treasure-island",
+   "home_code": "instrumentation@SF",
+   "regional": {
+    "oakland": {
+     "code": "instrumentation@OAK",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "instrumentation@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "plc-techs": {
+   "home": "treasure-island",
+   "home_code": "plc-techs@SF",
+   "regional": {
+    "oakland": {
+     "code": "plc-techs@OAK",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "plc-techs@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "robotics": {
+   "home": "treasure-island",
+   "home_code": "robotics@SF",
+   "regional": {
+    "oakland": {
+     "code": "robotics@OAK",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "robotics@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "automation-int": {
+   "home": "treasure-island",
+   "home_code": "automation-int@SF",
+   "regional": {
+    "oakland": {
+     "code": "automation-int@OAK",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "automation-int@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "cleanroom": {
+   "home": "treasure-island",
+   "home_code": "cleanroom@SF",
+   "regional": {
+    "oakland": {
+     "code": "cleanroom@OAK",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "cleanroom@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "medical-gas": {
+   "home": "treasure-island",
+   "home_code": "medical-gas@SF",
+   "regional": {
+    "oakland": {
+     "code": "medical-gas@OAK",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "medical-gas@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "rail-track": {
+   "home": "oakland",
+   "home_code": "rail-track@OAK",
+   "regional": {
+    "treasure-island": {
+     "code": "rail-track@SF",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "rail-track@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "rail-signals": {
+   "home": "oakland",
+   "home_code": "rail-signals@OAK",
+   "regional": {
+    "treasure-island": {
+     "code": "rail-signals@SF",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "rail-signals@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "catenary": {
+   "home": "oakland",
+   "home_code": "catenary@OAK",
+   "regional": {
+    "treasure-island": {
+     "code": "catenary@SF",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "catenary@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "transit-vehicle": {
+   "home": "oakland",
+   "home_code": "transit-vehicle@OAK",
+   "regional": {
+    "treasure-island": {
+     "code": "transit-vehicle@SF",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "transit-vehicle@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "aviation-ground": {
+   "home": "oakland",
+   "home_code": "aviation-ground@OAK",
+   "regional": {
+    "treasure-island": {
+     "code": "aviation-ground@SF",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "aviation-ground@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "airfield": {
+   "home": "oakland",
+   "home_code": "airfield@OAK",
+   "regional": {
+    "treasure-island": {
+     "code": "airfield@SF",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "airfield@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "port-crane": {
+   "home": "oakland",
+   "home_code": "port-crane@OAK",
+   "regional": {
+    "treasure-island": {
+     "code": "port-crane@SF",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "port-crane@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "marine-terminal": {
+   "home": "oakland",
+   "home_code": "marine-terminal@OAK",
+   "regional": {
+    "treasure-island": {
+     "code": "marine-terminal@SF",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "marine-terminal@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "fleet-diesel": {
+   "home": "oakland",
+   "home_code": "fleet-diesel@OAK",
+   "regional": {
+    "treasure-island": {
+     "code": "fleet-diesel@SF",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "fleet-diesel@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "bridge-inspect": {
+   "home": "oakland",
+   "home_code": "bridge-inspect@OAK",
+   "regional": {
+    "treasure-island": {
+     "code": "bridge-inspect@SF",
+     "role": "regional chapter"
+    },
+    "new-orleans": {
+     "code": "bridge-inspect@NOLA",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "asbestos": {
+   "home": "new-orleans",
+   "home_code": "asbestos@NOLA",
+   "regional": {
+    "treasure-island": {
+     "code": "asbestos@SF",
+     "role": "regional chapter"
+    },
+    "oakland": {
+     "code": "asbestos@OAK",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "lead-abatement": {
+   "home": "new-orleans",
+   "home_code": "lead-abatement@NOLA",
+   "regional": {
+    "treasure-island": {
+     "code": "lead-abatement@SF",
+     "role": "regional chapter"
+    },
+    "oakland": {
+     "code": "lead-abatement@OAK",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "mold-remediation": {
+   "home": "new-orleans",
+   "home_code": "mold-remediation@NOLA",
+   "regional": {
+    "treasure-island": {
+     "code": "mold-remediation@SF",
+     "role": "regional chapter"
+    },
+    "oakland": {
+     "code": "mold-remediation@OAK",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "spill-response": {
+   "home": "new-orleans",
+   "home_code": "spill-response@NOLA",
+   "regional": {
+    "treasure-island": {
+     "code": "spill-response@SF",
+     "role": "regional chapter"
+    },
+    "oakland": {
+     "code": "spill-response@OAK",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "confined-space": {
+   "home": "new-orleans",
+   "home_code": "confined-space@NOLA",
+   "regional": {
+    "treasure-island": {
+     "code": "confined-space@SF",
+     "role": "regional chapter"
+    },
+    "oakland": {
+     "code": "confined-space@OAK",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "high-angle": {
+   "home": "new-orleans",
+   "home_code": "high-angle@NOLA",
+   "regional": {
+    "treasure-island": {
+     "code": "high-angle@SF",
+     "role": "regional chapter"
+    },
+    "oakland": {
+     "code": "high-angle@OAK",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "site-safety": {
+   "home": "new-orleans",
+   "home_code": "site-safety@NOLA",
+   "regional": {
+    "treasure-island": {
+     "code": "site-safety@SF",
+     "role": "regional chapter"
+    },
+    "oakland": {
+     "code": "site-safety@OAK",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "industrial-clean": {
+   "home": "new-orleans",
+   "home_code": "industrial-clean@NOLA",
+   "regional": {
+    "treasure-island": {
+     "code": "industrial-clean@SF",
+     "role": "regional chapter"
+    },
+    "oakland": {
+     "code": "industrial-clean@OAK",
+     "role": "regional chapter"
+    }
+   }
+  },
+  "survey-drone": {
+   "home": "new-orleans",
+   "home_code": "survey-drone@NOLA",
+   "regional": {
+    "treasure-island": {
+     "code": "survey-drone@SF",
+     "role": "regional chapter"
+    },
+    "oakland": {
+     "code": "survey-drone@OAK",
+     "role": "regional chapter"
+    }
+   }
+  }
+ }
+}

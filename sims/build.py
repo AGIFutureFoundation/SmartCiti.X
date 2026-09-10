@@ -67,6 +67,25 @@ SIMS = {
                   'note': 'synthesized in-page (WebAudio); no recordings shipped'},
         'haptics': ['strike', 'finish'],
         'view_modes': ['orbit', 'cab'],
+        # Regional scenarios: the campus you train at picks the yard. The
+        # ENVIRONMENT varies; the rubric contract above never does.
+        'scenarios': [
+            {'id': 'bay-steel', 'campus': 'treasure-island',
+             'name': 'Bay high-steel lift',
+             'brief': 'Tower steel over the bay on a still morning - a '
+                      'clean yard, nothing between you and your own swing.',
+             'params': {'stack_h': 1.0, 'drift': 0.0}},
+            {'id': 'oak-terminal', 'campus': 'oakland',
+             'name': 'Oakland terminal lift',
+             'brief': 'Container stacks crowd the swing path - carry high '
+                      'and slow, the corridors are tight.',
+             'params': {'stack_h': 1.5, 'drift': 0.0}},
+            {'id': 'nola-wharf', 'campus': 'new-orleans',
+             'name': 'Crescent wharf lift',
+             'brief': 'A steady river breeze leans on the load the whole '
+                      'carry - trim your swing against it.',
+             'params': {'stack_h': 1.0, 'drift': 0.5}},
+        ],
     },
     'excavator-trench': {
         'name': 'Excavator Trench Cut',
@@ -106,6 +125,28 @@ SIMS = {
                   'note': 'synthesized in-page (WebAudio); no recordings shipped'},
         'haptics': ['utility', 'dump', 'finish'],
         'view_modes': ['orbit', 'cab'],
+        # Regional scenarios: the trench profile is the region's own -
+        # cells carry their marked depth and flagged utilities as data.
+        'scenarios': [
+            {'id': 'bay-retrofit', 'campus': 'treasure-island',
+             'name': 'Seismic retrofit cut',
+             'brief': 'Deep footing cells beside a braced frame - long '
+                      'careful digs, one flagged conduit crossing.',
+             'params': {'cells': [{'d': 2.0}, {'d': 2.0},
+                                  {'d': 0.5, 'util': True}, {'d': 1.5}]}},
+            {'id': 'oak-fill', 'campus': 'oakland',
+             'name': 'Old-fill utility cut',
+             'brief': 'Waterfront fill ground, crowded with legacy lines - '
+                      'two flagged cells stop shallow.',
+             'params': {'cells': [{'d': 1.5}, {'d': 0.5, 'util': True},
+                                  {'d': 1.5}, {'d': 0.5, 'util': True}]}},
+            {'id': 'nola-below-sea', 'campus': 'new-orleans',
+             'name': 'Below-sea trench',
+             'brief': 'High water table, one live utility at half depth - '
+                      'the flagged cell stops shallow.',
+             'params': {'cells': [{'d': 1.5}, {'d': 1.5},
+                                  {'d': 0.5, 'util': True}, {'d': 1.5}]}},
+        ],
     },
     'forklift-run': {
         'name': 'Forklift Yard Run',
@@ -145,6 +186,25 @@ SIMS = {
                   'note': 'synthesized in-page (WebAudio); no recordings shipped'},
         'haptics': ['cone', 'gate', 'finish'],
         'view_modes': ['chase', 'driver'],
+        # Regional scenarios: gate count and dock tolerance are the
+        # region's lane, declared here; "all gates, no cones" stays the law.
+        'scenarios': [
+            {'id': 'bay-yard', 'campus': 'treasure-island',
+             'name': 'Island yard run',
+             'brief': 'The training yard lane - four gates and a full-width '
+                      'dock bay to land the pallet in.',
+             'params': {'gates': 4, 'dock_w': 2.2}},
+            {'id': 'oak-lane', 'campus': 'oakland',
+             'name': 'Terminal container lane',
+             'brief': 'A fifth gate threads the container rows - longer '
+                      'lane, same clean-run law.',
+             'params': {'gates': 5, 'dock_w': 2.2}},
+            {'id': 'nola-dock', 'campus': 'new-orleans',
+             'name': 'Wharf dock set',
+             'brief': 'The wharf dock is narrow - four gates, then a '
+                      'set-down with little room to be wrong.',
+             'params': {'gates': 4, 'dock_w': 1.5}},
+        ],
     },
 }
 

@@ -91,6 +91,17 @@ The avenues, the Mississippi crescent and Lake Pontchartrain are
 SCHEMATIC, and the in-page labels say which is which — institutions
 RECORDED, everything drawn between them schematic.
 
+### The regional chapter network
+
+Every hall keeps its **home campus** — where its district trains — and
+holds a **regional chapter** at each of the other two, so all 111 trades
+train in all three regions: **333 chapter seats** in
+total, and each campus plaza carries a Regional Chapter Hall listing the
+60/79/83 unions it hosts
+from elsewhere. This is the Academy's own regional structure across its
+planned campuses, not a claim about any real union's locals or
+jurisdictions — no local is named.
+
 ### The New Orleans Trades Edition
 
 The Crescent Works campus and its city layer also ship as their own
@@ -127,6 +138,8 @@ phrased against the learner's own parish.
 - [`ROADMAP.md`](../ROADMAP.md) — the phased plan from v3.2 forward
 - [`SmartCitiX_TradeCraft_Academy_Spec.md`](../SmartCitiX_TradeCraft_Academy_Spec.md) — the ACP protocol suite, v3.2
 - [Provenance](Provenance.md) — superseded data kept in `archive/`, and why
+- [Flipped-Classroom](Flipped-Classroom.md) — the gamified school program:
+  the four-stage flipped loop, grade bands, proposed districts and live units
 - [Upgrade-Candidates](Upgrade-Candidates.md) — what the sibling repositories
   offer the Academy, from a reviewed survey
 

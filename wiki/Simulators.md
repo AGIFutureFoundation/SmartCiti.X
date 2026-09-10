@@ -35,6 +35,15 @@ View modes: `orbit` / `cab`. Audio is a
 `hoist-motor` engine plus `overswing-chirp`, `strike-thud`, `result-chime` —
 synthesized in-page (WebAudio); no recordings shipped. Haptic cues (strike, finish) fire on
 gamepad rumble and the vibration API where the platform offers them.
+
+**Regional scenarios.** The campus you train at picks the yard — the
+environment varies, the rubric never does:
+
+| Region | Scenario | The yard |
+|---|---|---|
+| Treasure Island Campus | **Bay high-steel lift** | Tower steel over the bay on a still morning - a clean yard, nothing between you and your own swing. |
+| Oakland Waterfront Campus | **Oakland terminal lift** | Container stacks crowd the swing path - carry high and slow, the corridors are tight. |
+| Crescent Works Campus | **Crescent wharf lift** | A steady river breeze leans on the load the whole carry - trim your swing against it. |
 ## Excavator Trench Cut (machine)
 
 Cut the marked trench to grade cell by cell and land every bucket in the spoil zone — the flagged cell holds a live utility at half depth, so it stops shallow.
@@ -62,6 +71,15 @@ View modes: `orbit` / `cab`. Audio is a
 `diesel` engine plus `utility-alarm`, `dump-thud`, `result-chime` —
 synthesized in-page (WebAudio); no recordings shipped. Haptic cues (utility, dump, finish) fire on
 gamepad rumble and the vibration API where the platform offers them.
+
+**Regional scenarios.** The campus you train at picks the yard — the
+environment varies, the rubric never does:
+
+| Region | Scenario | The yard |
+|---|---|---|
+| Treasure Island Campus | **Seismic retrofit cut** | Deep footing cells beside a braced frame - long careful digs, one flagged conduit crossing. |
+| Oakland Waterfront Campus | **Old-fill utility cut** | Waterfront fill ground, crowded with legacy lines - two flagged cells stop shallow. |
+| Crescent Works Campus | **Below-sea trench** | High water table, one live utility at half depth - the flagged cell stops shallow. |
 ## Forklift Yard Run (driving)
 
 Thread the cone lane, pick the pallet square on the forks, and set it down inside the dock bay — without disturbing a cone.
@@ -88,6 +106,15 @@ View modes: `chase` / `driver`. Audio is a
 `diesel` engine plus `reverse-beeper`, `cone-thud`, `result-chime` —
 synthesized in-page (WebAudio); no recordings shipped. Haptic cues (cone, gate, finish) fire on
 gamepad rumble and the vibration API where the platform offers them.
+
+**Regional scenarios.** The campus you train at picks the yard — the
+environment varies, the rubric never does:
+
+| Region | Scenario | The yard |
+|---|---|---|
+| Treasure Island Campus | **Island yard run** | The training yard lane - four gates and a full-width dock bay to land the pallet in. |
+| Oakland Waterfront Campus | **Terminal container lane** | A fifth gate threads the container rows - longer lane, same clean-run law. |
+| Crescent Works Campus | **Wharf dock set** | The wharf dock is narrow - four gates, then a set-down with little room to be wrong. |
 
 ## What a simulator run is not
 

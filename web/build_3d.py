@@ -49,6 +49,7 @@ districts_reg = json.load(open(ROOT / 'unions/registry/districts.json'))['distri
 campuses_reg = json.load(open(ROOT / 'unions/registry/campuses.json'))['campuses']
 finishes_reg = json.load(open(ROOT / 'surfaces/registry/finishes.json'))
 geo_reg = json.load(open(ROOT / 'geo/registry/campuses_geo.json'))
+chapters_reg = json.load(open(ROOT / 'unions/registry/chapters.json'))
 sims_reg = json.load(open(ROOT / 'sims/registry/sims.json'))
 stations_reg = json.load(open(ROOT / 'stations/registry/stations.json'))
 yard = json.load(open(ROOT / 'archive/bac_yard_stations.json'))['yard_placements']
@@ -149,6 +150,12 @@ DATA = json.dumps({
     'yard': yard,
     'sims': {'sims': sims_reg['sims'], 'bindings': sims_reg['hall_bindings'],
              'honesty': sims_reg['honesty']['status']},
+    'chapters': {'of': {slug: c['home']
+                        for slug, c in chapters_reg['chapters'].items()},
+                 'regions': {k: v['abbr']
+                             for k, v in chapters_reg['regions'].items()},
+                 'hosted': chapters_reg['hosted'],
+                 'honesty': chapters_reg['honesty']['chapters']},
     'strandmods': strand_modules(),
     'i18n': I18N,
 }, ensure_ascii=False, separators=(',', ':'))
@@ -156,7 +163,7 @@ DATA = json.dumps({
 SIM_JS = """/* ------------------------------------------------------- simulators ----- */
 // Schematic physics for practising control discipline; the graders are
 // deterministic - every rubric axis is computed from measured state.
-let sim = null, curSimId = null, simView = null;
+let sim = null, curSimId = null, simView = null, curScenario = null;
 
 /* Sound is synthesized in-page (WebAudio) - the registry says so and no
    recording is shipped. The context is created on the sim-start click, the
@@ -276,7 +283,7 @@ function teardownSim() {
   if (!sim) return;
   scene.remove(sim.group);
   sim.group.traverse((o) => o.geometry?.dispose());
-  sim = null; simView = null;
+  sim = null; simView = null; curScenario = null;
   controls.enabled = true;
   engineStop();
   const dash = document.getElementById('dash');
@@ -297,8 +304,13 @@ function startSim(simId) {
   ground.visible = grid.visible = true;
   scene.fog.near = 90; scene.fog.far = 260;
   const def = D.sims.sims[simId];
-  sim = simId === 'crane-lift' ? craneSim()
-    : simId === 'excavator-trench' ? excavatorSim() : forkliftSim();
+  // the campus you train at picks the regional scenario; the rubric never varies
+  const sc = def.scenarios?.find((s) => s.campus === campusKey)
+    ?? def.scenarios?.[0] ?? null;
+  curScenario = sc;
+  const P = sc?.params ?? {};
+  sim = simId === 'crane-lift' ? craneSim(P)
+    : simId === 'excavator-trench' ? excavatorSim(P) : forkliftSim(P);
   scene.add(sim.group);
   controls.autoRotate = false;
   setSimView(def.view_modes[0]);
@@ -307,7 +319,8 @@ function startSim(simId) {
   initDash(def);
   document.getElementById('hname').textContent =
     def.name + ' \\u2014 ' + D.halls.find(x => x.slug === slug).name;
-  document.getElementById('hfocus').textContent = def.task;
+  document.getElementById('hfocus').textContent =
+    (sc ? sc.name + ' \\u2014 ' + sc.brief + ' ' : '') + def.task;
   document.getElementById('hint').textContent =
     def.controls.map(c => c.keys + ' ' + c.action).join(' \\u00b7 ') + ' \\u00b7 Esc';
   document.getElementById('simBtn').style.display = 'none';
@@ -392,7 +405,8 @@ function simYard(g, hw, hd, cx = 0, cz = 0) {
 }
 
 /* --------------------------------------------------- tower crane lift ---- */
-function craneSim() {
+function craneSim(P = {}) {
+  const sh = P.stack_h ?? 1, drift = P.drift ?? 0;
   const g = new THREE.Group();
   simYard(g, 33, 30);
   const MAST_H = 24, JIB = 28;
@@ -415,8 +429,8 @@ function craneSim() {
   const target = new THREE.Mesh(new THREE.RingGeometry(1.6, 2.6, 32),
     new THREE.MeshBasicMaterial({ color: 0x5CB584, side: THREE.DoubleSide }));
   target.rotation.x = -Math.PI / 2; target.position.set(-13, .12, -9); g.add(target);
-  const stacks = [box(5, 6, 3, mat.wall, 2, 3, -12, g),
-                  box(4, 8, 3, mat.wall, -3, 4, 4, g)];
+  const stacks = [box(5, 6 * sh, 3, mat.wall, 2, 3 * sh, -12, g),
+                  box(4, 8 * sh, 3, mat.wall, -3, 4 * sh, 4, g)];
   const st = { slew: .6, r: 14.5, h: 6, vslew: 0, attached: false, done: false,
                loadV: new THREE.Vector2(), swingPeak: 0, swingNow: 0, strikes: 0,
                inStrike: false, t0: null, act: 0, chirped: false };
@@ -468,7 +482,9 @@ function craneSim() {
       trolley.position.x = st.r;
       const hp = hookPos();
       if (st.attached) {
-        // pendulum: the load chases the hook in the plan, and it shows
+        // pendulum: the load chases the hook in the plan, and it shows;
+        // a scenario's river breeze is a constant, deterministic lean
+        st.loadV.x += drift * 1.5 * dt;
         const k = 4.5, damp = 1.6;
         const ax = (hp.x - load.position.x) * k - st.loadV.x * damp;
         const az = (hp.z - load.position.z) * k - st.loadV.y * damp;
@@ -520,7 +536,7 @@ function craneSim() {
 }
 
 /* ------------------------------------------------ excavator trench cut --- */
-function excavatorSim() {
+function excavatorSim(P = {}) {
   const g = new THREE.Group();
   simYard(g, 26, 20);
   // the machine: tracks fixed, house slews, boom+stick reach by 2-link IK
@@ -540,23 +556,27 @@ function excavatorSim() {
   const bucket = box(.9, .7, .95, mat.part, L2, -.3, 0, stickG);
   const spoilInBucket = box(.7, .4, .75, mat.wood, L2, .15, 0, stickG, false);
   spoilInBucket.visible = false;
-  // the trench: marked cells, one flagged for a live utility at half depth
-  const CELLS = [[-3, 6, 1.5], [-1, 6, 1.5], [1, 6, .5], [3, 6, 1.5]];
-  const UTIL_I = 2;
-  const cells = CELLS.map(([cx, cz, target], i) => {
+  // the trench: cells and flagged utilities come from the regional scenario
+  const SPEC = P.cells ?? [{ d: 1.5 }, { d: 1.5 }, { d: .5, util: true }, { d: 1.5 }];
+  const CZ = 6, span = SPEC.length - 1;
+  const cells = SPEC.map((c, i) => {
+    const cx = (i - span / 2) * 2;
     const m = new THREE.Mesh(new THREE.BoxGeometry(1.8, .1, 1.8),
       new THREE.MeshStandardMaterial({ color: 0x53575a, roughness: .95 }));
-    m.position.set(cx, .05, cz); m.receiveShadow = true; g.add(m);
-    return { x: cx, z: cz, target, d: 0, util: i === UTIL_I, struck: false, mesh: m };
+    m.position.set(cx, .05, CZ); m.receiveShadow = true; g.add(m);
+    return { x: cx, z: CZ, target: c.d, d: 0, util: !!c.util, struck: false, mesh: m };
   });
-  box(9.2, .04, .28, mat.paint, 0, .11, 4.9, g, false);   // trench edge marks
-  box(9.2, .04, .28, mat.paint, 0, .11, 7.1, g, false);
-  // utility flagging: locate posts + a painted crossing stripe
+  const markW = SPEC.length * 2 + 1.2;
+  box(markW, .04, .28, mat.paint, 0, .11, CZ - 1.1, g, false);  // trench edge marks
+  box(markW, .04, .28, mat.paint, 0, .11, CZ + 1.1, g, false);
+  // utility flagging: locate posts + a painted crossing stripe per flagged cell
   const flagMat = new THREE.MeshStandardMaterial({
     color: 0xf2c744, emissive: 0x6b5410, roughness: .5 });
-  box(.1, 1.1, .1, flagMat, CELLS[UTIL_I][0] - 1.1, .55, CELLS[UTIL_I][1], g);
-  box(.1, 1.1, .1, flagMat, CELLS[UTIL_I][0] + 1.1, .55, CELLS[UTIL_I][1], g);
-  box(.3, .04, 2.4, flagMat, CELLS[UTIL_I][0], .12, CELLS[UTIL_I][1], g, false);
+  for (const c of cells.filter((x) => x.util)) {
+    box(.1, 1.1, .1, flagMat, c.x - 1.1, .55, c.z, g);
+    box(.1, 1.1, .1, flagMat, c.x + 1.1, .55, c.z, g);
+    box(.3, .04, 2.4, flagMat, c.x, .12, c.z, g, false);
+  }
   // spoil zone and its growing pile
   const PAD = { x: -5, z: -4 };
   const pad = new THREE.Mesh(new THREE.CylinderGeometry(1.9, 1.9, .08, 28),
@@ -661,9 +681,12 @@ function excavatorSim() {
 }
 
 /* --------------------------------------------------- forklift yard run --- */
-function forkliftSim() {
+function forkliftSim(P = {}) {
+  const nGates = P.gates ?? 4, dockW = P.dock_w ?? 2.2;
+  const laneEnd = 14 + 10 * nGates;           // the pallet waits past the last gate
+  const yardHD = (laneEnd + 26) / 2;
   const g = new THREE.Group();
-  simYard(g, 32, 40, 0, -24);
+  simYard(g, 32, yardHD, 0, 16 - yardHD);
   const fl = new THREE.Group(); g.add(fl);
   box(1.6, 1.1, 2.6, mat.post, 0, .8, 0, fl);
   box(1.2, .9, 1.2, mat.win, 0, 1.75, -.3, fl);
@@ -677,8 +700,9 @@ function forkliftSim() {
     w.rotation.z = Math.PI / 2; w.position.set(wx, .4, wz);
     w.castShadow = true; fl.add(w);
   }
-  // course: cone gates, pallet, dock
-  const GATES = [[-6, -14, 0], [6, -24, 0], [-6, -34, 0], [6, -44, 0]];
+  // course: cone gates, pallet, dock — the gate count is the scenario's
+  const GATES = Array.from({ length: nGates }, (_, i) =>
+    [i % 2 === 0 ? -6 : 6, -14 - 10 * i, 0]);
   const cones = [], gates = [];
   GATES.forEach(([gx, gz], gi) => {
     const pair = [];
@@ -692,8 +716,8 @@ function forkliftSim() {
   const pallet = new THREE.Group(); g.add(pallet);
   box(1.2, .14, 1.2, mat.wood, 0, .07, 0, pallet);
   box(1, .7, 1, mat.brick, 0, .52, 0, pallet);
-  pallet.position.set(0, 0, -54);
-  const dock = new THREE.Mesh(new THREE.PlaneGeometry(5, 5),
+  pallet.position.set(0, 0, -laneEnd);
+  const dock = new THREE.Mesh(new THREE.PlaneGeometry(dockW * 2 + .6, dockW * 2 + .6),
     new THREE.MeshBasicMaterial({ color: 0x41C4D4, transparent: true, opacity: .28 }));
   dock.rotation.x = -Math.PI / 2; dock.position.set(14, .06, -10); g.add(dock);
   const st = { v: 0, steer: 0, phi: Math.PI, carrying: false, done: false,
@@ -724,8 +748,8 @@ function forkliftSim() {
       } else {
         st.carrying = false;
         pallet.position.set(tip.x, 0, tip.z);
-        const inDock = Math.abs(pallet.position.x - dock.position.x) < 2.2
-          && Math.abs(pallet.position.z - dock.position.z) < 2.2;
+        const inDock = Math.abs(pallet.position.x - dock.position.x) < dockW
+          && Math.abs(pallet.position.z - dock.position.z) < dockW;
         finish(inDock);
       }
     },
@@ -748,7 +772,7 @@ function forkliftSim() {
       const dir = new THREE.Vector3(Math.sin(st.phi), 0, Math.cos(st.phi));
       fl.position.addScaledVector(dir, st.v * dt);
       fl.position.x = Math.max(-30, Math.min(30, fl.position.x));
-      fl.position.z = Math.max(-62, Math.min(14, fl.position.z));
+      fl.position.z = Math.max(-(laneEnd + 8), Math.min(14, fl.position.z));
       fl.rotation.y = st.phi;
       if (st.carrying)
         pallet.position.copy(fl.position.clone().addScaledVector(dir, 2.4).setY(.35));
@@ -1228,7 +1252,12 @@ function buildHall(sg) {
   scene.add(hallGroup);
 
   document.getElementById('hname').textContent = h.name;
-  document.getElementById('hfocus').textContent = h.focus;
+  // the regional chapter line: home region marked, chapters at the rest
+  const home = D.chapters.of[h.slug];
+  document.getElementById('hfocus').textContent = h.focus + ' \\u00b7 '
+    + Object.entries(D.chapters.regions)
+        .map(([ck, ab]) => ab + (ck === home ? ' \\u2302' : ''))
+        .join(' \\u00b7 ');
 }
 
 /* -------------------------------------------------------- campus view --- */
@@ -1358,7 +1387,42 @@ function dressCampus(key, g, R) {
 // the POI table stands at its true east/north offset (13 units per km,
 // walkable), joined to the ring road by SCHEMATIC avenues; the river and
 // lake bands are schematic too, and the labels say which is which.
-let cityPois = 0, walkLim = 169, cityHits = [];
+let cityPois = 0, walkLim = 169, cityHits = [], chapterHit = [];
+
+/* The regional chapter hall: one pavilion on each plaza carrying every
+   union homed elsewhere - the 111-trade network made visible per campus.
+   An Academy structure only; the panel repeats the no-local-named honesty. */
+function openChapters() {
+  const hosted = D.halls.filter((h) => D.chapters.of[h.slug] !== campusKey);
+  const byHome = {};
+  for (const h of hosted) (byHome[D.chapters.of[h.slug]] ??= []).push(h.name);
+  document.getElementById('pbody').innerHTML = `
+    <h2>${t('chapters.hall')}</h2>
+    <span class="chip">${D.campuses[campusKey].name}</span>
+    <span class="chip">${hosted.length} / 111</span>
+    ${Object.entries(byHome).map(([ck, names]) => `
+      <h3>${D.campuses[ck].name} · ${D.chapters.regions[ck]}</h3>
+      <p style="color:var(--muted);font-size:13px;line-height:1.7">${names.join(' · ')}</p>`).join('')}
+    <p style="color:var(--muted);font-size:12px">${D.chapters.honesty}</p>`;
+  document.body.classList.add('open');
+}
+window.__tc3dChapters = openChapters;
+
+function buildChapterHall(g, key) {
+  const pav = new THREE.Group(); g.add(pav);
+  const base = new THREE.Mesh(new THREE.CylinderGeometry(7, 7.6, .9, 8), mat.slab);
+  base.position.y = .45; base.receiveShadow = true; pav.add(base);
+  const walls = new THREE.Mesh(new THREE.CylinderGeometry(5.6, 6, 4.2, 8), mat.wall);
+  walls.position.y = 3; walls.castShadow = walls.receiveShadow = true; pav.add(walls);
+  const band = new THREE.Mesh(new THREE.CylinderGeometry(5.75, 5.75, .5, 8), mat.post);
+  band.position.y = 4.6; pav.add(band);
+  const roof = new THREE.Mesh(new THREE.ConeGeometry(7.2, 2.6, 8), mat.part);
+  roof.position.y = 6.5; roof.castShadow = true; pav.add(roof);
+  walls.userData.chapters = true;
+  chapterHit = [walls];
+  const cl = label(t('chapters.hall'), '+' + D.chapters.hosted[key], 2);
+  cl.position.y = 12; pav.add(cl);
+}
 const CITY_S = 13;   // units per real kilometre in the city layer
 
 /* An institution's panel: the RECORDED coordinate with a live-map link
@@ -1531,6 +1595,7 @@ function buildCampus(key) {
   const sign = label(camp.name, camp.city + ', ' + camp.region, 3.2);
   sign.position.set(0, 18, 0); campusGroup.add(sign);
   dressCampus(key, campusGroup, R + 42);
+  buildChapterHall(campusGroup, key);
   buildCity(campusGroup, R);
   walkLim = cityPois ? 162 : campusR + 85;
   scene.add(campusGroup);
@@ -1583,7 +1648,8 @@ function buildRegion() {
       const cl = label(String(d.halls.length), null, 1.4);
       cl.position.set(bx, hgt + 6, bz); regionGroup.add(cl);
     });
-    const pl = label(camp.name, camp.city + ', ' + camp.region, 3.4);
+    const pl = label(camp.name,
+      camp.city + ', ' + camp.region + ' · +' + D.chapters.hosted[key], 3.4);
     pl.position.set(px, 30, pz); regionGroup.add(pl);
     // RECORDED anchors from the geo registry: real cities and institutions
     // around each campus, marked at their true bearing on the plate rim.
@@ -1947,6 +2013,11 @@ renderer.domElement.addEventListener('pointerdown', (e) => {
     return;
   }
   if (view === 'campus') {
+    const phit = ray.intersectObjects(chapterHit, false)[0];
+    if (phit?.object.userData.chapters) {
+      if (walkActive) plc.unlock();
+      return openChapters();
+    }
     const chit = ray.intersectObjects(cityHits, false)[0];
     if (chit?.object.userData.poi) {
       if (walkActive) plc.unlock();
@@ -2072,6 +2143,8 @@ window.__tc3d = () => ({ view, buildings: buildings.length, plates: plates.lengt
   beacons: beacons.length, floors: floors.length, slug, campusKey, loc, walkActive,
   sim: curSimId && sim ? curSimId : null, roadFaults, roadCount,
   anchors: anchorPins, simCam: simView, audio: !!ac, city: cityPois,
+  scenario: curScenario?.id ?? null,
+  chHosted: D.chapters.hosted[campusKey] ?? null,
   progress: { stations: doneStations.size, sims: Object.keys(prog.sims).length },
   dash: document.querySelectorAll('#dash .g').length,
   cam: camera.position.toArray().map((v) => Math.round(v * 10) / 10),
