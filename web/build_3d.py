@@ -23,6 +23,7 @@ tree over HTTP (python3 -m http.server) — browsers refuse module imports
 from file:// URLs. The page holds no data of its own.
 """
 import json
+import math
 import pathlib
 import sys
 
@@ -101,6 +102,7 @@ for f in sorted((ROOT / 'i18n/locales').glob('*.json')):
             'hint.campus', 'hint.walk', 'geo.note',
             'sim.start', 'sim.results', 'sim.pass', 'sim.retry',
             'sim.sound', 'sim.view', 'sim.choose', 'progress.local',
+            'city.note',
             'honesty.taxonomy', 'honesty.content')},
         'districts': {k: v['name'] for k, v in c['districts'].items()},
         'strands': c['strands'], 'tiers': c['tiers'], 'states': c['states'],
@@ -115,7 +117,19 @@ DATA = json.dumps({
             'routes': geo_reg['routes_km'],
             'anchors': {k: [{'name': a['name'], 'km': a['km'],
                              'bearing_deg': a['bearing_deg']} for a in lst]
-                        for k, lst in geo_reg['anchors'].items()}},
+                        for k, lst in geo_reg['anchors'].items()},
+            # city-layer placements: true east/north km offsets from the
+            # campus point, equirectangular at the campus latitude
+            'cityPois': {
+                ck: [{'name': a['name'],
+                      'e': round((a['lng'] - geo_reg['campuses'][ck]['lng'])
+                                 * 111.32 * math.cos(math.radians(
+                                     geo_reg['campuses'][ck]['lat'])), 2),
+                      'n': round((a['lat'] - geo_reg['campuses'][ck]['lat'])
+                                 * 110.574, 2),
+                      'km': a['km']}
+                     for a in geo_reg['anchors'][ck]]
+                for ck in geo_reg.get('city', {})}},
     'finishes': {sl: h['rooms'] for sl, h in finishes_reg['halls'].items()},
     'finCat': finishes_reg['catalogue'],
     'baseCond': finishes_reg['base_conditions'],
@@ -1334,10 +1348,63 @@ function dressCampus(key, g, R) {
   }
 }
 
+/* ------------------------------------------------- the city layer -------- */
+// A campus with a RECORDED city frame (New Orleans, from Locator.X's
+// region record) grows into its real surroundings: each institution from
+// the POI table stands at its true east/north offset (13 units per km,
+// walkable), joined to the ring road by SCHEMATIC avenues; the river and
+// lake bands are schematic too, and the labels say which is which.
+let cityPois = 0, walkLim = 169;
+const CITY_S = 13;   // units per real kilometre in the city layer
+function buildCity(g, R) {
+  const pois = D.geo.cityPois?.[campusKey] ?? [];
+  if (!pois.length) return;
+  const grass = new THREE.MeshStandardMaterial({ color: 0x3d5238, roughness: .95 });
+  const hues = [42, 152, 205, 268, 20, 96, 330];
+  pois.forEach((p, i) => {
+    const x = p.e * CITY_S, z = -p.n * CITY_S;
+    const len = Math.hypot(x, z), ux = x / len, uz = z / len;
+    // the avenue: ring road out to the institution's block
+    const r0 = R - 22, aLen = len - r0 - 9;
+    const av = box(aLen, .06, 3.6, mat.road, 0, .03, 0, g, false);
+    av.position.set((r0 + aLen / 2) * ux, .03, (r0 + aLen / 2) * uz);
+    av.rotation.y = -Math.atan2(uz, ux);
+    for (let d = r0 + 4; d < len - 10; d += 7)
+      box(1.7, .02, .16, mat.paint, d * ux, .08, d * uz, g, false)
+        .rotation.y = -Math.atan2(uz, ux);
+    // the institution: green, main hall, tower, and its name with real km
+    box(15, .12, 15, grass, x, .06, z, g, false);
+    const hgt = 7 + (i % 3) * 2.5;
+    const bmat = new THREE.MeshStandardMaterial({
+      color: new THREE.Color().setHSL(hues[i % hues.length] / 360, .34, .42),
+      roughness: .75 });
+    const bld = box(8, hgt, 6.5, bmat, x - 2, .12 + hgt / 2, z + 1.5, g);
+    box(2.6, hgt + 5, 2.6, bmat, x + 4, .12 + (hgt + 5) / 2, z - 3.5, g);
+    box(3, .5, 3, mat.slab, x + 4, hgt + 5.4, z - 3.5, g, false);
+    const pl = label(p.name, p.km + ' km \\u00b7 RECORDED', 1.7);
+    pl.position.set(x, hgt + 10, z); g.add(pl);
+    cityPois++;
+  });
+  // the crescent: a schematic Mississippi south of the uptown institutions
+  const river = new THREE.Mesh(new THREE.TubeGeometry(
+    new THREE.QuadraticBezierCurve3(
+      new THREE.Vector3(-150, 0, 92), new THREE.Vector3(-15, 0, 70),
+      new THREE.Vector3(110, 0, 24)), 48, 10, 8), mat.water);
+  river.scale.y = .012; river.position.y = .09; g.add(river);
+  const rl = label('Mississippi River', 'SCHEMATIC', 1.6);
+  rl.position.set(-30, 7, 76); g.add(rl);
+  // and the lake north of UNO/SUNO
+  const lake = new THREE.Mesh(new THREE.PlaneGeometry(340, 70), mat.water);
+  lake.rotation.x = -Math.PI / 2; lake.position.set(10, .08, -168);
+  g.add(lake);
+  const ll = label('Lake Pontchartrain', 'SCHEMATIC', 1.6);
+  ll.position.set(10, 7, -150); g.add(ll);
+}
+
 function buildCampus(key) {
   if (campusGroup) scene.remove(campusGroup);
   campusGroup = new THREE.Group(); buildings = []; campusSpin = [];
-  roadFaults = 0; roadCount = 0;
+  roadFaults = 0; roadCount = 0; cityPois = 0;
   const camp = D.campuses[key];
   const dk = camp.districts;
   const R = dk.length === 2 ? 62 : 84;
@@ -1431,6 +1498,8 @@ function buildCampus(key) {
   const sign = label(camp.name, camp.city + ', ' + camp.region, 3.2);
   sign.position.set(0, 18, 0); campusGroup.add(sign);
   dressCampus(key, campusGroup, R + 42);
+  buildCity(campusGroup, R);
+  walkLim = cityPois ? 162 : campusR + 85;
   scene.add(campusGroup);
 }
 
@@ -1562,7 +1631,8 @@ function showCampus(key) {
   const camp = D.campuses[key];
   document.getElementById('hname').textContent = camp.name;
   document.getElementById('hfocus').textContent =
-    camp.city + ', ' + camp.region + ' — ' + camp.tagline;
+    camp.city + ', ' + camp.region + ' — ' + camp.tagline
+    + (D.geo.cityPois?.[key] ? ' · ' + t('city.note') : '');
   document.getElementById('hint').textContent = t('hint.campus');
   document.getElementById('walkBtn').style.display =
     ('ontouchstart' in window) ? 'none' : '';
@@ -1676,7 +1746,7 @@ function walkStep(dt) {
   }
   // campus stroll: stay on the grounds, and offer the nearest door
   const len = Math.hypot(camera.position.x, camera.position.z);
-  const lim = campusR + 85;
+  const lim = walkLim;
   if (len > lim) {
     camera.position.x *= lim / len; camera.position.z *= lim / len;
   }
@@ -1936,7 +2006,7 @@ else showRegion();
 window.__tc3d = () => ({ view, buildings: buildings.length, plates: plates.length,
   beacons: beacons.length, floors: floors.length, slug, campusKey, loc, walkActive,
   sim: curSimId && sim ? curSimId : null, roadFaults, roadCount,
-  anchors: anchorPins, simCam: simView, audio: !!ac,
+  anchors: anchorPins, simCam: simView, audio: !!ac, city: cityPois,
   progress: { stations: doneStations.size, sims: Object.keys(prog.sims).length },
   dash: document.querySelectorAll('#dash .g').length,
   cam: camera.position.toArray().map((v) => Math.round(v * 10) / 10),

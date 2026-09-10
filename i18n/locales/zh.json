@@ -52,7 +52,8 @@
   "sim.sound": "声音",
   "sim.view": "视角",
   "sim.choose": "选择模拟器",
-  "progress.local": "进度仅保存在此设备上。"
+  "progress.local": "进度仅保存在此设备上。",
+  "city.note": "城市图层：机构位置记录自 Locator.X；街道与河流为示意"
  },
  "districts": {
   "structural": {

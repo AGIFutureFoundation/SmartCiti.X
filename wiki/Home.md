@@ -75,12 +75,35 @@ directly consumable by any Mapbox/MapLibre-compatible stack. The 3D network
 view places its campus plates by these true bearings, with the real
 kilometres on the route labels.
 
-Around each campus sit **12 RECORDED anchors** — real cities and
+Around each campus sit **15 RECORDED anchors** — real cities and
 institutions copied verbatim from Locator.X's committed tables (the Bay
 Area city table and the New Orleans POI table, Apache-2.0) and
 cross-checked against those files at build time. The network view marks
 each at its true bearing on the campus plate rim, real kilometres on the
 label.
+
+New Orleans additionally carries a **RECORDED city frame** — the centre
+and view bounds of Locator.X's own NOLA map, cross-checked the same way —
+which is what lets the Crescent Works campus grow a **walkable city
+layer** in 3D: all seven institutions stand at their true east/north
+offsets (13 units per real kilometre), joined to the ring road by avenues.
+The avenues, the Mississippi crescent and Lake Pontchartrain are
+SCHEMATIC, and the in-page labels say which is which — institutions
+RECORDED, everything drawn between them schematic.
+
+### The New Orleans Trades Edition
+
+The Crescent Works campus and its city layer also ship as their own
+artifact — the **SmartCiti.X New Orleans Trades Edition**, booting
+straight into the walkable New Orleans map. On the Cognition.X platform
+(this foundation's block-based curriculum system), the edition is
+supplemented by the **SmartCiti.X : New Orleans Trades** community pack
+alongside the Louisiana OS edition: five tracks — the port and its
+cranes, safe ground below sea level, drainage and the storm, restoration
+after the wind, and the craft pathway itself — authored from this
+repository's registries (the simulators' control discipline, the surface
+and conditions doctrine, the RECORDED geography), with transfer checks
+phrased against the learner's own parish.
 
 ## The districts
 

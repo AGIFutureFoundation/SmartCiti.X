@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-10",
- "source_stamp": "d042bb67804f5650",
+ "source_stamp": "d07de0ca93a78f16",
  "crs": "WGS84 (EPSG:4326)",
  "recorded_check": "cross-checked against the Locator.X checkout",
  "honesty": {
@@ -56,6 +56,22 @@
    "bearing_deg": 96.8
   }
  ],
+ "city": {
+  "new-orleans": {
+   "center": {
+    "lat": 29.975,
+    "lng": -90.09
+   },
+   "bounds": {
+    "w": -90.65,
+    "s": 29.5,
+    "e": -89.45,
+    "n": 30.35
+   },
+   "provenance": "RECORDED",
+   "source": "Locator.X build_data_nola.py region, Apache-2.0"
+  }
+ },
  "anchors": {
   "treasure-island": [
    {
@@ -169,6 +185,33 @@
     "source": "Locator.X build_data_nola.py pois, Apache-2.0",
     "km": 4.7,
     "bearing_deg": 316.2
+   },
+   {
+    "name": "Loyola University",
+    "lat": 29.9351,
+    "lng": -90.1223,
+    "provenance": "RECORDED",
+    "source": "Locator.X build_data_nola.py pois, Apache-2.0",
+    "km": 5.2,
+    "bearing_deg": 250.0
+   },
+   {
+    "name": "Dillard University",
+    "lat": 29.9903,
+    "lng": -90.0517,
+    "provenance": "RECORDED",
+    "source": "Locator.X build_data_nola.py pois, Apache-2.0",
+    "km": 4.8,
+    "bearing_deg": 23.6
+   },
+   {
+    "name": "SUNO",
+    "lat": 30.0421,
+    "lng": -90.033,
+    "provenance": "RECORDED",
+    "source": "Locator.X build_data_nola.py pois, Apache-2.0",
+    "km": 10.8,
+    "bearing_deg": 20.1
    }
   ]
  }

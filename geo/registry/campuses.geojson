@@ -264,6 +264,57 @@
     "provenance": "RECORDED",
     "source": "Locator.X build_data_nola.py pois, Apache-2.0"
    }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -90.1223,
+     29.9351
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Loyola University",
+    "near": "new-orleans",
+    "provenance": "RECORDED",
+    "source": "Locator.X build_data_nola.py pois, Apache-2.0"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -90.0517,
+     29.9903
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Dillard University",
+    "near": "new-orleans",
+    "provenance": "RECORDED",
+    "source": "Locator.X build_data_nola.py pois, Apache-2.0"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -90.033,
+     30.0421
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "SUNO",
+    "near": "new-orleans",
+    "provenance": "RECORDED",
+    "source": "Locator.X build_data_nola.py pois, Apache-2.0"
+   }
   }
  ]
 }
