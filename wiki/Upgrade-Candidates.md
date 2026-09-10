@@ -1,7 +1,8 @@
 # Upgrade candidates — the sibling repositories
 
-A reviewed survey (2026-09-09) of three AGI Future Foundation repositories
-for assets the Academy could adopt. This page is hand-maintained survey
+A reviewed survey (2026-09-09, extended 2026-09-10) of AGI Future
+Foundation repositories — and a search for external 3D city worlds — for
+assets the Academy could adopt. This page is hand-maintained survey
 material, not generated from the registries; treat each row as a candidate
 to be verified before adoption, per the roadmap's standing rules.
 
@@ -72,15 +73,60 @@ machinery in the same engineering dialect as this bundle:
   `SCHEMATIC` on every line) that would strengthen the generated hall floor
   plans — and a no-library WebXR entry point with a graceful fallback.
 
+**Adopted since the survey:** Locator.X's committed geographic tables now
+feed the geo pack — the Oakland campus coordinate and 12 city/institution
+anchors (Bay Area `CITIES` table, New Orleans POI table) are RECORDED in
+`geo/registry/campuses_geo.json`, cross-checked against the cited files at
+build time, and rendered in the 3D network view. Its RECORDED/DERIVED/
+SCHEMATIC provenance discipline is adopted across the geo pack and the
+generated interiors.
+
+## 4. `game-world-focus` — TradesQuest Learning Suite (surveyed 2026-09-10)
+
+A React Three Fiber trades-education workspace: ~19 hand-authored 3D field
+jobs (electrical, plumbing, HVAC, carpentry), EN/ES bilingual, with a
+declarative facility-signals model and headless per-scene validation
+scripts. Surveyed as a source for machine sims and city geometry — **it has
+neither**: no crane/forklift/vehicle simulation, no city or campus-scale
+maps (largest scene ≈ 32 × 18 m), no GLTF asset library (two self-generated
+character exports only), no geodata, no haptics, no numeric 3D scoring.
+
+What it does offer is independent confirmation of this repository's own
+approaches — procedural canvas textures instead of shipped assets, WebAudio
+synthesis instead of recordings, headless per-scene smoke tests — plus two
+patterns worth stealing when the time comes: shape-*and*-colour status
+indicators (colourblind-accessible) and a compile-time-checked bilingual
+dictionary type.
+
+**Blocker on any code reuse:** the repository ships **no LICENSE file**;
+only the private root `package.json` claims MIT and no child package
+declares a license at all. Until the foundation adds license text, nothing
+is copied — patterns are learned from, code is not.
+
+## 5. External 3D city worlds — searched, not adopted
+
+The search for existing San Francisco / Oakland / New Orleans 3D city maps
+or gaming worlds ended in refusals, each for a stated reason:
+
+- **Game-derived city recreations** (GTA San Andreas reversals and Unity
+  loaders): the code may be open, but the city *assets* are proprietary
+  Rockstar IP — unusable in this product regardless of engine.
+- **OpenStreetMap / Overpass extracts**: unreachable from this build
+  environment (network egress policy), so nothing could be fetched,
+  verified, or attributed — and unverifiable data does not enter the packs.
+- What *was* reachable and licensed — Locator.X's committed coordinate
+  tables (Apache-2.0, this foundation) — was adopted instead, as above.
+
 ## Disposition
 
-Nothing on this page changes the packs today. The recovered yard data sits
-in `archive/` with its [provenance](Provenance.md) recorded; everything else
-is scheduled through [`ROADMAP.md`](../ROADMAP.md) (v3.4 authoring, v4.0
+The recovered yard data sits in `archive/` with its
+[provenance](Provenance.md) recorded; the Locator.X geographic tables and
+provenance discipline are adopted and verifier-backed; everything else is
+scheduled through [`ROADMAP.md`](../ROADMAP.md) (v3.4 authoring, v4.0
 `vr_sim` pilot) so each adoption arrives with its own verifier, as the
 standing rules require.
 
 ---
 
-*Hand-maintained; reviewed 2026-09-09. The generated wiki pages carry the
-registry truths — this page carries candidates only.*
+*Hand-maintained; reviewed 2026-09-09, extended 2026-09-10. The generated
+wiki pages carry the registry truths — this page carries candidates only.*

@@ -48,7 +48,9 @@
   "sim.start": "启动模拟器",
   "sim.results": "成绩",
   "sim.pass": "通过",
-  "sim.retry": "再试一次"
+  "sim.retry": "再试一次",
+  "sim.sound": "声音",
+  "sim.view": "视角"
  },
  "districts": {
   "structural": {

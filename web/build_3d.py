@@ -100,6 +100,7 @@ for f in sorted((ROOT / 'i18n/locales').glob('*.json')):
             'view.campus', 'view.region', 'ui.walk',
             'hint.campus', 'hint.walk', 'geo.note',
             'sim.start', 'sim.results', 'sim.pass', 'sim.retry',
+            'sim.sound', 'sim.view',
             'honesty.taxonomy', 'honesty.content')},
         'districts': {k: v['name'] for k, v in c['districts'].items()},
         'strands': c['strands'], 'tiers': c['tiers'], 'states': c['states'],
@@ -111,7 +112,10 @@ DATA = json.dumps({
     'campuses': campuses_reg,
     'geo': {'campuses': {k: {'lat': v['lat'], 'lng': v['lng']}
                          for k, v in geo_reg['campuses'].items()},
-            'routes': geo_reg['routes_km']},
+            'routes': geo_reg['routes_km'],
+            'anchors': {k: [{'name': a['name'], 'km': a['km'],
+                             'bearing_deg': a['bearing_deg']} for a in lst]
+                        for k, lst in geo_reg['anchors'].items()}},
     'finishes': {sl: h['rooms'] for sl, h in finishes_reg['halls'].items()},
     'finCat': finishes_reg['catalogue'],
     'baseCond': finishes_reg['base_conditions'],
@@ -134,13 +138,133 @@ DATA = json.dumps({
 SIM_JS = """/* ------------------------------------------------------- simulators ----- */
 // Schematic physics for practising control discipline; the graders are
 // deterministic - every rubric axis is computed from measured state.
-let sim = null, curSimId = null;
+let sim = null, curSimId = null, simView = null;
+
+/* Sound is synthesized in-page (WebAudio) - the registry says so and no
+   recording is shipped. The context is created on the sim-start click, the
+   one place a user gesture is guaranteed. */
+let ac = null, master = null, engine = null, beeper = null, audioOn = true;
+function acEnsure() {
+  if (!ac) {
+    ac = new (window.AudioContext || window.webkitAudioContext)();
+    master = ac.createGain();
+    master.gain.value = audioOn ? .9 : 0;
+    master.connect(ac.destination);
+  }
+  if (ac.state === 'suspended') ac.resume();
+}
+function engineStart(kind) {
+  const osc = ac.createOscillator(), g = ac.createGain(), f = ac.createBiquadFilter();
+  osc.type = kind === 'diesel' ? 'sawtooth' : 'triangle';
+  osc.frequency.value = kind === 'diesel' ? 42 : 95;
+  f.type = 'lowpass'; f.frequency.value = kind === 'diesel' ? 320 : 900;
+  g.gain.value = 0;
+  osc.connect(f); f.connect(g); g.connect(master); osc.start();
+  engine = { osc, g, kind };
+}
+function engineSet(load) {  // 0..1 - throttle / hoist activity
+  if (!engine) return;
+  const base = engine.kind === 'diesel' ? 42 : 95;
+  engine.osc.frequency.setTargetAtTime(base * (1 + load * 1.6), ac.currentTime, .08);
+  engine.g.gain.setTargetAtTime(.05 + load * .13, ac.currentTime, .1);
+}
+function engineStop() {
+  if (engine) { engine.osc.stop(); engine = null; }
+  if (beeper) { beeper.o.stop(); beeper = null; }
+}
+function beeperEnsure() {
+  if (beeper) return;
+  const o = ac.createOscillator(), g = ac.createGain();
+  o.type = 'square'; o.frequency.value = 950; g.gain.value = 0;
+  o.connect(g); g.connect(master); o.start();
+  beeper = { o, g };
+}
+function beeperSet(on) {  // the pulsing reverse beeper, gated per frame
+  if (!beeper) return;
+  const t = ac.currentTime;
+  beeper.g.gain.setTargetAtTime(
+    on && Math.floor(t * 2.5) % 2 === 0 ? .05 : 0, t, .012);
+}
+function blip(f0, f1, dur, type = 'sine', vol = .14) {
+  if (!ac) return;
+  const o = ac.createOscillator(), g = ac.createGain(), t = ac.currentTime;
+  o.type = type; o.frequency.setValueAtTime(f0, t);
+  if (f1) o.frequency.exponentialRampToValueAtTime(f1, t + dur);
+  g.gain.setValueAtTime(vol, t);
+  g.gain.exponentialRampToValueAtTime(.001, t + dur);
+  o.connect(g); g.connect(master); o.start(t); o.stop(t + dur + .02);
+}
+function thud() {  // filtered noise burst: a cone clipped, a stack struck
+  if (!ac) return;
+  const n = Math.floor(ac.sampleRate * .12), buf = ac.createBuffer(1, n, ac.sampleRate);
+  const d = buf.getChannelData(0);
+  for (let i = 0; i < n; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / n);
+  const s = ac.createBufferSource(), f = ac.createBiquadFilter(), g = ac.createGain();
+  s.buffer = buf; f.type = 'lowpass'; f.frequency.value = 220; g.gain.value = .5;
+  s.connect(f); f.connect(g); g.connect(master); s.start();
+}
+function chime(good) {
+  (good ? [660, 880, 1320] : [440, 330]).forEach((f, i) =>
+    setTimeout(() => blip(f, null, .3, 'triangle', .12), i * 120));
+}
+
+/* Haptics, where the platform offers them: gamepad rumble and the vibration
+   API. Both are best-effort - absence is silent, never an error. */
+function buzz(ms, mag = .6) {
+  try { navigator.vibrate?.(ms); } catch (e) { /* unsupported */ }
+  try {
+    for (const gp of navigator.getGamepads?.() ?? []) {
+      gp?.vibrationActuator?.playEffect?.('dual-rumble',
+        { duration: ms, strongMagnitude: mag, weakMagnitude: mag * .6 });
+    }
+  } catch (e) { /* unsupported */ }
+}
+
+/* The dash is data-driven: the sims registry declares every gauge (id,
+   label, unit, warn threshold), and each sim only supplies live values. */
+function initDash(def) {
+  const el = document.getElementById('dash');
+  el.innerHTML = def.dash.map((g) =>
+    `<div class="g" id="g-${g.id}"><span class="gv">\\u2013</span>` +
+    `<span class="gl">${g.label}${g.unit ? ' ' + g.unit : ''}</span></div>`).join('');
+  el.style.display = 'flex';
+}
+function setDash(def, vals) {
+  for (const g of def.dash) {
+    const cell = document.getElementById('g-' + g.id);
+    const x = vals[g.id];
+    if (!cell || x === undefined) continue;
+    const v = typeof x === 'object' ? x.v : x;
+    cell.querySelector('.gv').textContent =
+      typeof x === 'object' && x.txt !== undefined ? x.txt
+        : Math.abs(v) >= 100 ? String(Math.round(v)) : (Math.round(v * 10) / 10).toFixed(1);
+    cell.classList.toggle('warn', g.warn_at !== undefined && v >= g.warn_at);
+  }
+}
+
+function setSimView(mode) {
+  simView = mode;
+  document.getElementById('camBtn').textContent =
+    '\\u25a6 ' + t('sim.view') + ': ' + mode;
+  controls.enabled = mode === 'orbit';
+  if (mode === 'orbit') {
+    camera.position.set(36, 28, 42);
+    controls.target.set(0, 11, 0);
+    controls.update();
+  }
+}
 
 function teardownSim() {
   if (!sim) return;
   scene.remove(sim.group);
   sim.group.traverse((o) => o.geometry?.dispose());
-  sim = null;
+  sim = null; simView = null;
+  controls.enabled = true;
+  engineStop();
+  const dash = document.getElementById('dash');
+  dash.style.display = 'none'; dash.innerHTML = '';
+  document.getElementById('camBtn').style.display = 'none';
+  document.getElementById('sndBtn').style.display = 'none';
 }
 
 function exitSim() { teardownSim(); showHall(slug); }
@@ -157,8 +281,11 @@ function startSim(simId) {
   const def = D.sims.sims[simId];
   sim = simId === 'crane-lift' ? craneSim() : forkliftSim();
   scene.add(sim.group);
-  controls.enabled = sim.orbit; controls.autoRotate = false;
-  if (sim.orbit) { camera.position.set(36, 28, 42); controls.target.set(0, 11, 0); }
+  controls.autoRotate = false;
+  setSimView(def.view_modes[0]);
+  acEnsure(); engineStart(def.audio.engine === 'diesel' ? 'diesel' : 'hoist');
+  if (def.audio.alerts.includes('reverse-beeper')) beeperEnsure();
+  initDash(def);
   document.getElementById('hname').textContent =
     def.name + ' \\u2014 ' + D.halls.find(x => x.slug === slug).name;
   document.getElementById('hfocus').textContent = def.task;
@@ -166,11 +293,28 @@ function startSim(simId) {
     def.controls.map(c => c.keys + ' ' + c.action).join(' \\u00b7 ') + ' \\u00b7 Esc';
   document.getElementById('simBtn').style.display = 'none';
   document.getElementById('walkBtn').style.display = 'none';
+  document.getElementById('camBtn').style.display = '';
+  const sb = document.getElementById('sndBtn');
+  sb.style.display = '';
+  sb.textContent = '\\u266a ' + t('sim.sound') + (audioOn ? '' : ' \\u2717');
 }
+
+document.getElementById('camBtn').addEventListener('click', () => {
+  if (!sim) return;
+  const modes = D.sims.sims[curSimId].view_modes;
+  setSimView(modes[(modes.indexOf(simView) + 1) % modes.length]);
+});
+document.getElementById('sndBtn').addEventListener('click', () => {
+  audioOn = !audioOn;
+  if (master) master.gain.value = audioOn ? .9 : 0;
+  document.getElementById('sndBtn').textContent =
+    '\\u266a ' + t('sim.sound') + (audioOn ? '' : ' \\u2717');
+});
 
 function simResults(simId, rows, passed) {
   const def = D.sims.sims[simId];
   const i = D.i18n[loc];
+  chime(passed); buzz(passed ? 180 : 90, .5);
   document.getElementById('pbody').innerHTML = `
     <h2>${def.name}</h2>
     <span class="chip" style="${passed ? 'border-color:var(--good);color:var(--good)' : 'border-color:var(--crit);color:var(--crit)'}">
@@ -188,9 +332,37 @@ function simResults(simId, rows, passed) {
   document.body.classList.add('open');
 }
 
+/* A fenced training yard, so a sim reads as a place on the campus rather
+   than a void: perimeter fence, corner light masts, painted apron border. */
+function simYard(g, hw, hd, cx = 0, cz = 0) {
+  const fence = new THREE.MeshStandardMaterial({ color: 0x5a6468, roughness: .6 });
+  const lamp = new THREE.MeshStandardMaterial({
+    color: 0xfff2cf, emissive: 0xffdf9a, emissiveIntensity: .9 });
+  for (let x = -hw; x <= hw; x += 6) {
+    box(.14, 1.9, .14, fence, cx + x, .95, cz - hd, g);
+    box(.14, 1.9, .14, fence, cx + x, .95, cz + hd, g);
+  }
+  for (let z = -hd + 6; z <= hd - 6; z += 6) {
+    box(.14, 1.9, .14, fence, cx - hw, .95, cz + z, g);
+    box(.14, 1.9, .14, fence, cx + hw, .95, cz + z, g);
+  }
+  box(hw * 2, .08, .06, fence, cx, 1.55, cz - hd, g, false);
+  box(hw * 2, .08, .06, fence, cx, 1.55, cz + hd, g, false);
+  box(.06, .08, hd * 2, fence, cx - hw, 1.55, cz, g, false);
+  box(.06, .08, hd * 2, fence, cx + hw, 1.55, cz, g, false);
+  box(hw * 2, .04, .5, mat.paint, cx, .03, cz - hd + 1.2, g, false);
+  box(hw * 2, .04, .5, mat.paint, cx, .03, cz + hd - 1.2, g, false);
+  for (const [sx, sz] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) {
+    const mx = cx + sx * (hw - 1.4), mz = cz + sz * (hd - 1.4);
+    box(.3, 9, .3, mat.metal, mx, 4.5, mz, g);
+    box(1.5, .35, .55, lamp, mx, 9.15, mz, g, false);
+  }
+}
+
 /* --------------------------------------------------- tower crane lift ---- */
 function craneSim() {
   const g = new THREE.Group();
+  simYard(g, 33, 30);
   const MAST_H = 24, JIB = 28;
   box(1.4, MAST_H, 1.4, mat.metal, 0, MAST_H / 2, 0, g);
   const slewG = new THREE.Group(); slewG.position.y = MAST_H; g.add(slewG);
@@ -214,8 +386,8 @@ function craneSim() {
   const stacks = [box(5, 6, 3, mat.wall, 2, 3, -12, g),
                   box(4, 8, 3, mat.wall, -3, 4, 4, g)];
   const st = { slew: .6, r: 14.5, h: 6, vslew: 0, attached: false, done: false,
-               loadV: new THREE.Vector2(), swingPeak: 0, strikes: 0,
-               inStrike: false, t0: null };
+               loadV: new THREE.Vector2(), swingPeak: 0, swingNow: 0, strikes: 0,
+               inStrike: false, t0: null, act: 0, chirped: false };
   // start the hook over open ground
   function hookPos() {
     return new THREE.Vector3(Math.cos(st.slew) * st.r, st.h,
@@ -256,6 +428,10 @@ function craneSim() {
       if (keys.KeyS) st.r = Math.max(4, st.r - tr * dt);
       if (keys.KeyQ) st.h = Math.min(22, st.h + hr * dt);
       if (keys.KeyE) st.h = Math.max(1.2, st.h - hr * dt);
+      const moving = (keys.KeyA || keys.KeyD ? .4 : 0)
+        + (keys.KeyW || keys.KeyS ? .3 : 0) + (keys.KeyQ || keys.KeyE ? .5 : 0);
+      st.act += (Math.min(1, moving) - st.act) * Math.min(1, 5 * dt);
+      engineSet(st.act);
       slewG.rotation.y = -st.slew;
       trolley.position.x = st.r;
       const hp = hookPos();
@@ -269,7 +445,10 @@ function craneSim() {
         load.position.z += st.loadV.y * dt;
         load.position.y = Math.max(.8, hp.y - 2.2);
         const swing = Math.hypot(hp.x - load.position.x, hp.z - load.position.z);
+        st.swingNow = swing;
         st.swingPeak = Math.max(st.swingPeak, swing);
+        if (swing > 1.6 && !st.chirped) { st.chirped = true; blip(600, 1200, .25); }
+        if (swing < 1.2) st.chirped = false;
         // strikes against the stacks
         let hit = false;
         for (const b of stacks) {
@@ -278,9 +457,9 @@ function craneSim() {
             && Math.abs(load.position.z - b.position.z) < bb.depth / 2 + 1.2
             && load.position.y - .8 < b.position.y + bb.height / 2) hit = true;
         }
-        if (hit && !st.inStrike) { st.strikes++; st.inStrike = true; }
+        if (hit && !st.inStrike) { st.strikes++; st.inStrike = true; thud(); buzz(140); }
         if (!hit) st.inStrike = false;
-      }
+      } else st.swingNow = 0;
       hook.position.copy(st.attached
         ? new THREE.Vector3(load.position.x, load.position.y + 1.6, load.position.z)
         : hp.clone().setY(Math.max(1.4, hp.y - 1)));
@@ -289,13 +468,29 @@ function craneSim() {
       pts[0] = tp.x; pts[1] = tp.y; pts[2] = tp.z;
       pts[3] = hook.position.x; pts[4] = hook.position.y; pts[5] = hook.position.z;
       cableGeo.attributes.position.needsUpdate = true;
+      if (simView === 'cab') {
+        // the operator's cab hangs BELOW the jib (sight to the hook must
+        // clear it - the hook always rides directly under the jib line)
+        camera.position.copy(slewG.localToWorld(new THREE.Vector3(3.8, -.6, 1.4)));
+        // aim between the hook and the horizon so the yard stays in frame
+        camera.lookAt(hook.position.x, hook.position.y + 8, hook.position.z);
+      }
     },
+    gauges: () => ({
+      slew: ((st.slew * 180 / Math.PI) % 360 + 360) % 360,
+      radius: st.r,
+      hook: st.h,
+      swing: st.swingNow,
+      strikes: { v: st.strikes, txt: String(st.strikes) },
+      time: { v: 0, txt: st.t0 ? ((performance.now() - st.t0) / 1000).toFixed(0) : '\\u2013' },
+    }),
   };
 }
 
 /* --------------------------------------------------- forklift yard run --- */
 function forkliftSim() {
   const g = new THREE.Group();
+  simYard(g, 32, 40, 0, -24);
   const fl = new THREE.Group(); g.add(fl);
   box(1.6, 1.1, 2.6, mat.post, 0, .8, 0, fl);
   box(1.2, .9, 1.2, mat.win, 0, 1.75, -.3, fl);
@@ -375,6 +570,8 @@ function forkliftSim() {
         if (!st.t0) st.t0 = performance.now();
         st.phi += st.v / 2.2 * Math.tan(st.steer) * dt;
       }
+      engineSet(Math.abs(st.v) / vmax);
+      beeperSet(st.v < -.3);
       const dir = new THREE.Vector3(Math.sin(st.phi), 0, Math.cos(st.phi));
       fl.position.addScaledVector(dir, st.v * dt);
       fl.position.x = Math.max(-30, Math.min(30, fl.position.x));
@@ -386,6 +583,7 @@ function forkliftSim() {
       for (const c of cones) {
         if (!c.userData.hit && c.position.distanceTo(fl.position) < 1.3) {
           c.userData.hit = true; c.rotation.z = 1.2; st.hits++;
+          thud(); buzz(140);
         }
       }
       for (let gi = 0; gi < gates.length; gi++) {
@@ -394,13 +592,28 @@ function forkliftSim() {
           && Math.hypot(fl.position.x - gt.x, fl.position.z - gt.z) < 2.4) {
           gt.taken = true;
           gt.pair.forEach((c) => { c.material = mat.steel; });
+          blip(880, 1320, .18); buzz(60, .3);
         }
       }
-      // chase camera
-      const camTo = fl.position.clone().addScaledVector(dir, -8.5).setY(5.2);
-      camera.position.lerp(camTo, Math.min(1, 5 * dt));
-      camera.lookAt(fl.position.clone().addScaledVector(dir, 4).setY(1.2));
+      if (simView === 'driver') {
+        // the seat: eye height over the chassis, sight line past the mast
+        const eye = fl.position.clone().addScaledVector(dir, .1).setY(2.05);
+        camera.position.copy(eye);
+        camera.lookAt(eye.clone().addScaledVector(dir, 9).setY(1.4));
+      } else {
+        const camTo = fl.position.clone().addScaledVector(dir, -8.5).setY(5.2);
+        camera.position.lerp(camTo, Math.min(1, 5 * dt));
+        camera.lookAt(fl.position.clone().addScaledVector(dir, 4).setY(1.2));
+      }
     },
+    gauges: () => ({
+      speed: Math.abs(st.v) * 3.6,
+      steer: st.steer * 180 / Math.PI,
+      load: { v: st.carrying ? 1 : 0, txt: st.carrying ? '\\u25a0' : '\\u2013' },
+      gates: { v: 0, txt: gates.filter(x => x.taken).length + '/' + gates.length },
+      cones: { v: st.hits, txt: String(st.hits) },
+      time: { v: 0, txt: st.t0 ? ((performance.now() - st.t0) / 1000).toFixed(0) : '\\u2013' },
+    }),
   };
 }"""
 
@@ -444,6 +657,17 @@ select{background:var(--panel);color:var(--ink);border:1px solid var(--rule);
 #hud .hint{color:var(--muted);font-size:11.5px;margin:6px 0 0}
 #honesty{position:fixed;right:16px;bottom:14px;z-index:5;max-width:300px;
   color:var(--muted);font-size:10.5px;text-align:end;opacity:.85}
+#dash{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:6;
+  display:none;gap:2px;background:color-mix(in oklab, var(--sunk) 90%, transparent);
+  border:1px solid var(--rule);border-radius:10px;padding:8px 14px;
+  backdrop-filter:blur(6px)}
+#dash .g{min-width:66px;text-align:center;border-inline-start:1px solid var(--rule);
+  padding:0 9px}
+#dash .g:first-child{border-inline-start:none}
+#dash .gv{display:block;font:600 21px/1.2 "IBM Plex Mono",monospace}
+#dash .gl{display:block;color:var(--muted);font-size:10px;letter-spacing:.06em;
+  text-transform:uppercase;margin-top:2px}
+#dash .g.warn .gv{color:var(--crit)}
 canvas{display:block}
 #nogl{display:none;position:fixed;inset:0;place-content:center;text-align:center;
   color:var(--muted);padding:40px}
@@ -484,9 +708,12 @@ body.open #panel{transform:none}
   <button id="campusBtn" class="barbtn"></button>
   <button id="walkBtn" class="barbtn"></button>
   <button id="simBtn" class="barbtn"></button>
+  <button id="camBtn" class="barbtn" style="display:none"></button>
+  <button id="sndBtn" class="barbtn" style="display:none"></button>
   <select id="lang"></select>
 </div>
 <div id="hud"><h2 id="hname"></h2><p class="focus" id="hfocus"></p><p class="hint" id="hint"></p></div>
+<div id="dash"></div>
 <div id="honesty"></div>
 <div id="nogl"></div>
 <div id="cross">+</div>
@@ -831,7 +1058,7 @@ function buildHall(sg) {
 
 /* -------------------------------------------------------- campus view --- */
 let campusGroup = null, buildings = [], campusSpin = [];
-let regionGroup = null, plates = [];
+let regionGroup = null, plates = [], anchorPins = 0;
 let campusKey = D.halls.some(h => h.slug === params.get('hall'))
   ? Object.keys(D.campuses).find(k =>
       D.campuses[k].halls.includes(params.get('hall')))
@@ -1071,7 +1298,7 @@ const PLATE_POS = (() => {
 
 function buildRegion() {
   if (regionGroup) scene.remove(regionGroup);
-  regionGroup = new THREE.Group(); plates = [];
+  regionGroup = new THREE.Group(); plates = []; anchorPins = 0;
   // the gulf-to-bay board: water underneath everything
   const sea = new THREE.Mesh(new THREE.PlaneGeometry(1600, 1600), mat.water);
   sea.rotation.x = -Math.PI / 2; sea.position.y = -.12; sea.receiveShadow = true;
@@ -1099,6 +1326,22 @@ function buildRegion() {
     });
     const pl = label(camp.name, camp.city + ', ' + camp.region, 3.4);
     pl.position.set(px, 30, pz); regionGroup.add(pl);
+    // RECORDED anchors from the geo registry: real cities and institutions
+    // around each campus, marked at their true bearing on the plate rim.
+    // The rim radius is log-eased so a 4 km and a 40 km anchor both read;
+    // the label carries the real kilometres, like the route labels do.
+    for (const a of (D.geo.anchors[key] ?? [])) {
+      const b = a.bearing_deg * Math.PI / 180;
+      const rr = 28 + 8 * Math.log10(1 + a.km);
+      const ax = px + Math.sin(b) * rr, az = pz - Math.cos(b) * rr;
+      const pin = new THREE.Mesh(new THREE.CylinderGeometry(.55, .9, 4.6, 10),
+        new THREE.MeshStandardMaterial({ color: 0xE8A33D, roughness: .5,
+          emissive: 0x7a4d08 }));
+      pin.position.set(ax, 3.4, az); regionGroup.add(pin);
+      anchorPins++;
+      const al = label(a.name, a.km + ' km', 1.15);
+      al.position.set(ax, 9.6, az); regionGroup.add(al);
+    }
   }
   // glowing routes between the campuses
   const lineMat = new THREE.LineBasicMaterial({ color: 0xE8A33D, transparent: true, opacity: .65 });
@@ -1172,6 +1415,7 @@ function showCampus(key) {
 }
 
 function showHall(sg) {
+  if (sim) teardownSim();
   slug = sg; view = 'hall'; campusKey = campusOfHall(sg);
   if (regionGroup) regionGroup.visible = false;
   if (campusGroup) campusGroup.visible = false;
@@ -1502,7 +1746,15 @@ else showRegion();
 // test hook: lets the harness assert scene state without poking internals
 window.__tc3d = () => ({ view, buildings: buildings.length, plates: plates.length,
   beacons: beacons.length, floors: floors.length, slug, campusKey, loc, walkActive,
-  sim: curSimId && sim ? curSimId : null, roadFaults, roadCount });
+  sim: curSimId && sim ? curSimId : null, roadFaults, roadCount,
+  anchors: anchorPins, simCam: simView, audio: !!ac,
+  dash: document.querySelectorAll('#dash .g').length,
+  cam: camera.position.toArray().map((v) => Math.round(v * 10) / 10),
+  probe: (() => { const r = new THREE.Raycaster();
+    r.setFromCamera(new THREE.Vector2(-.4, .4), camera);
+    const h = r.intersectObjects(scene.children, true)[0];
+    return h ? [h.object.material?.color?.getHexString?.(),
+      Math.round(h.distance * 10) / 10, h.object.geometry?.type] : null; })() });
 const clock = new THREE.Clock();
 renderer.setAnimationLoop(() => {
   const dt = clock.getDelta();
@@ -1510,7 +1762,10 @@ renderer.setAnimationLoop(() => {
     for (const b of beacons) if (b.userData.spin) b.rotation.y += dt * 1.4;
     for (const b of campusSpin) b.rotation.y += dt * 1.1;
   }
-  if (sim) sim.update(dt);
+  if (sim) {
+    sim.update(dt);
+    if (sim.gauges) setDash(D.sims.sims[curSimId], sim.gauges());
+  }
   if (walkActive) walkStep(dt);
   else controls.update();
   renderer.render(scene, camera);

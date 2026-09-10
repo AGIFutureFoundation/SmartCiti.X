@@ -56,6 +56,18 @@ ok('the scoring contract is deterministic, stated in the record',
 ok('the honesty note refuses certification claims',
   /Not equipment certification/i.test(reg.honesty.status)
   && /unaided verification/.test(reg.honesty.status));
+ok('every sim carries a data-driven dash: unique gauge ids with labels',
+  Object.values(sims).every((s) => s.dash?.length >= 5
+    && new Set(s.dash.map((g) => g.id)).size === s.dash.length
+    && s.dash.every((g) => g.label !== undefined && g.unit !== undefined)));
+ok('audio is declared honestly: a named engine, alerts, and the synthesized note',
+  Object.values(sims).every((s) => s.audio?.engine && s.audio.alerts?.length >= 2
+    && /synthesized/.test(s.audio.note) && /no recordings/.test(s.audio.note)));
+ok('every sim offers an operator-seat view mode alongside the external one',
+  Object.values(sims).every((s) => s.view_modes?.length >= 2)
+  && sims['crane-lift'].view_modes.includes('cab')
+  && sims['forklift-run'].view_modes.includes('driver'));
+
 const src = readFileSync(new URL('./build.py', import.meta.url));
 ok('the registry was built from the current builder source (stamp check)',
   reg.source_stamp === createHash('sha256').update(src).digest('hex').slice(0, 16));

@@ -62,24 +62,38 @@ ok('the bay pair is a short hop and the Gulf runs are long hauls — sane scale'
       .every((r) => r.km > 2900 && r.km < 3300));
 
 /* -------------------------------------------------------------- GeoJSON --- */
-ok('the GeoJSON is a FeatureCollection of one Point per campus',
-  gj.type === 'FeatureCollection' && gj.features.length === 3
+const campusFeats = gj.features.filter((f) => f.properties.kind !== 'anchor');
+ok('the GeoJSON is a FeatureCollection with one campus Point per campus',
+  gj.type === 'FeatureCollection' && campusFeats.length === 3
   && gj.features.every((f) => f.type === 'Feature'
     && f.geometry.type === 'Point'));
 ok('GeoJSON coordinates are [lng, lat] — the order the spec demands',
-  gj.features.every((f) => {
+  campusFeats.every((f) => {
     const [lng, lat] = f.geometry.coordinates;
     const p = pts[f.properties.slug];
     return lng === p.lng && lat === p.lat && Math.abs(lng) > Math.abs(lat);
   }));
 ok('GeoJSON properties carry the campus figures from the union registry',
-  gj.features.every((f) => f.properties.halls === campuses[f.properties.slug].halls.length
+  campusFeats.every((f) => f.properties.halls === campuses[f.properties.slug].halls.length
     && f.properties.districts === campuses[f.properties.slug].districts.length));
 
 /* -------------------------------------------------------------- honesty --- */
 ok('the registry says what a coordinate is not: an anchor, not a parcel claim',
   /does not claim a parcel/.test(reg.honesty.siting)
   && /planned locations/.test(reg.honesty.siting));
+/* -------------------------------------------------------------- anchors --- */
+ok('every campus carries four RECORDED anchors citing their Locator.X table',
+  Object.keys(reg.anchors).length === 3
+  && Object.values(reg.anchors).every((l) => l.length === 4
+    && l.every((a) => a.provenance === 'RECORDED' && /Locator\.X/.test(a.source))));
+ok('every anchor sits within 60 km of its campus, distances recomputed',
+  Object.entries(reg.anchors).every(([ck, l]) => l.every((a) =>
+    Math.abs(haversineKm(pts[ck], a) - a.km) < 0.1 && a.km < 60)));
+ok('the GeoJSON carries the anchors as tagged features, [lng, lat]',
+  gj.features.filter((f) => f.properties.kind === 'anchor').length === 12
+  && gj.features.filter((f) => f.properties.kind === 'anchor')
+      .every((f) => Math.abs(f.geometry.coordinates[0]) > Math.abs(f.geometry.coordinates[1])));
+
 const src = readFileSync(new URL('./build.py', import.meta.url));
 ok('the registry was built from the current builder source (stamp check)',
   reg.source_stamp === createHash('sha256').update(src).digest('hex').slice(0, 16));
