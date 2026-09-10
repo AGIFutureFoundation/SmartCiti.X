@@ -102,7 +102,7 @@ for f in sorted((ROOT / 'i18n/locales').glob('*.json')):
             'hint.campus', 'hint.walk', 'geo.note',
             'sim.start', 'sim.results', 'sim.pass', 'sim.retry',
             'sim.sound', 'sim.view', 'sim.choose', 'progress.local',
-            'city.note', 'avatar.title',
+            'city.note', 'avatar.title', 'chapters.hall',
             'honesty.taxonomy', 'honesty.content')},
         'districts': {k: v['name'] for k, v in c['districts'].items()},
         'strands': c['strands'], 'tiers': c['tiers'], 'states': c['states'],
@@ -169,6 +169,7 @@ SIM_JS = """/* ------------------------------------------------------- simulator
 // Schematic physics for practising control discipline; the graders are
 // deterministic - every rubric axis is computed from measured state.
 let sim = null, curSimId = null, simView = null, curScenario = null;
+let simRider = null;
 
 /* Sound is synthesized in-page (WebAudio) - the registry says so and no
    recording is shipped. The context is created on the sim-start click, the
@@ -288,7 +289,7 @@ function teardownSim() {
   if (!sim) return;
   scene.remove(sim.group);
   sim.group.traverse((o) => o.geometry?.dispose());
-  sim = null; simView = null; curScenario = null;
+  sim = null; simView = null; curScenario = null; simRider = null;
   controls.enabled = true;
   engineStop();
   const dash = document.getElementById('dash');
@@ -307,7 +308,9 @@ function startSim(simId) {
   if (campusGroup) campusGroup.visible = false;
   if (regionGroup) regionGroup.visible = false;
   ground.visible = grid.visible = true;
-  scene.fog.near = 90; scene.fog.far = 260;
+  applyAtmos(campusKey);
+  scene.fog.near = 90 * fogMul; scene.fog.far = 260 * fogMul;
+  document.getElementById('mm').style.display = 'none';
   const def = D.sims.sims[simId];
   // the campus you train at picks the regional scenario; the rubric never varies
   const sc = def.scenarios?.find((s) => s.campus === campusKey)
@@ -317,6 +320,19 @@ function startSim(simId) {
   sim = simId === 'crane-lift' ? craneSim(P)
     : simId === 'excavator-trench' ? excavatorSim(P) : forkliftSim(P);
   scene.add(sim.group);
+  // your avatar takes the seat the sim declares - the learner is IN the yard
+  if (sim.mount) {
+    cfgInit();
+    simRider = buildAvatarMesh(avatarCfg);
+    simRider.scale.multiplyScalar(.92);
+    simRider.position.set(...sim.mount.pos);
+    simRider.rotation.y = sim.mount.yaw;
+    if (sim.mount.seated) {
+      const { arms } = simRider.userData;
+      arms.armL.rotation.x = arms.armR.rotation.x = -1.05;
+    }
+    sim.mount.parent.add(simRider);
+  }
   controls.autoRotate = false;
   setSimView(def.view_modes[0]);
   acEnsure(); engineStart(def.audio.engine === 'diesel' ? 'diesel' : 'hoist');
@@ -462,6 +478,7 @@ function craneSim(P = {}) {
   }
   return {
     group: g, orbit: true,
+    mount: { parent: g, pos: [4.4, 0, 2.6], yaw: -.6 },
     action() {
       if (st.done) return;
       const hp = hookPos();
@@ -619,6 +636,7 @@ function excavatorSim(P = {}) {
   }
   return {
     group: g, orbit: true,
+    mount: { parent: g, pos: [3.2, 0, 3.4], yaw: -.7 },
     action() {
       if (st.done) return;
       const tip = tipPos();
@@ -746,6 +764,7 @@ function forkliftSim(P = {}) {
   }
   return {
     group: g, orbit: false,
+    mount: { parent: fl, pos: [0, .58, -.34], yaw: 0, seated: true },
     action() {
       if (st.done) return;
       const dir = new THREE.Vector3(Math.sin(st.phi), 0, Math.cos(st.phi));
@@ -1650,7 +1669,9 @@ function showAvatar() {
   if (campusGroup) campusGroup.visible = false;
   if (regionGroup) regionGroup.visible = false;
   ground.visible = grid.visible = true;
+  applyAtmos(null);
   scene.fog.near = 40; scene.fog.far = 140;
+  document.getElementById('mm').style.display = 'none';
   if (!avatarGroup) {
     avatarGroup = new THREE.Group();
     const ped = new THREE.Mesh(new THREE.CylinderGeometry(1.6, 1.9, .35, 24),
@@ -1859,6 +1880,10 @@ select{background:var(--panel);color:var(--ink);border:1px solid var(--rule);
 #dash .g.warn .gv{color:var(--crit)}
 /* warning is shape AND colour, never colour alone (colourblind-safe) */
 #dash .g.warn .gl::before{content:"\\25b2  ";color:var(--crit)}
+/* the minimap: the campus from above, you as the amber arrow */
+#mm{position:fixed;right:14px;top:62px;z-index:5;border:1px solid var(--rule);
+  border-radius:9px;width:150px;height:150px}
+@media(pointer:coarse){#mm{width:110px;height:110px;top:auto;bottom:200px}}
 /* the thumb wheel: radial options sized for a phone thumb */
 #wheelWrap{position:fixed;left:50%;bottom:10px;transform:translateX(-50%);
   z-index:7;display:flex;flex-direction:column;align-items:center;gap:6px}
@@ -1942,6 +1967,7 @@ body.open #panel{transform:none}
 <button id="emoBtn" class="fab" style="display:none">😀</button>
 <button id="actBtn" class="fab wide" style="display:none"></button>
 <div id="hud"><h2 id="hname"></h2><p class="focus" id="hfocus"></p><p class="hint" id="hint"></p></div>
+<canvas id="mm" width="150" height="150" style="display:none"></canvas>
 <div id="dash"></div>
 <div id="honesty"></div>
 <div id="nogl"></div>
@@ -1991,16 +2017,18 @@ renderer.toneMappingExposure = 1.12;
 document.body.appendChild(renderer.domElement);
 
 const scene = new THREE.Scene();
-// dusk sky: a vertical gradient the fog can sink into
-{
+// the sky: a vertical gradient the fog can sink into, per atmosphere
+function setSky(stops) {
   const c = document.createElement('canvas'); c.width = 2; c.height = 256;
   const g = c.getContext('2d');
   const gr = g.createLinearGradient(0, 0, 0, 256);
-  gr.addColorStop(0, '#0c141c'); gr.addColorStop(.55, '#1a2a36');
-  gr.addColorStop(.8, '#33404a'); gr.addColorStop(1, '#463a2a');
+  gr.addColorStop(0, stops[0]); gr.addColorStop(.55, stops[1]);
+  gr.addColorStop(.8, stops[2]); gr.addColorStop(1, stops[3]);
   g.fillStyle = gr; g.fillRect(0, 0, 2, 256);
+  scene.background?.dispose?.();
   scene.background = new THREE.CanvasTexture(c);
 }
+setSky(['#0c141c', '#1a2a36', '#33404a', '#463a2a']);
 scene.fog = new THREE.Fog(0x1a2229, 70, 170);
 
 function noiseTex(base, grain, n = 1400, size = 256) {
@@ -2032,7 +2060,8 @@ controls.autoRotate = !reduced;
 controls.autoRotateSpeed = .45;
 controls.addEventListener('start', () => { controls.autoRotate = false; });
 
-scene.add(new THREE.HemisphereLight(0xaec2cb, 0x241d16, 1.05));
+const hemi = new THREE.HemisphereLight(0xaec2cb, 0x241d16, 1.05);
+scene.add(hemi);
 const key = new THREE.DirectionalLight(0xffe0b0, 1.6);
 key.position.set(35, 48, 20);
 key.castShadow = true;
@@ -2043,6 +2072,120 @@ scene.add(key);
 const fill = new THREE.DirectionalLight(0x41C4D4, .25);
 fill.position.set(-30, 20, -30);
 scene.add(fill);
+
+/* ------------------------------------------------------- atmosphere ----- */
+// Authored ambience per campus, schematic like the water layers: the fog
+// is San Francisco's and the haze is New Orleans's by reputation, not by
+// any weather record - nothing here claims a measurement.
+const ATMOS = {
+  'treasure-island': {
+    sky: ['#0b141d', '#22323e', '#48575f', '#5e646a'],
+    fog: { color: 0x2b3a42, mul: .62 }, banks: 6,
+    sun: { color: 0xd8e2e8, i: 1.15 },
+    hemi: { sky: 0x9fb4c0, ground: 0x24211c, i: 1.15 },
+    amb: { wind: .8, gulls: true, harbor: true },
+  },
+  oakland: {
+    sky: ['#0c141c', '#1a2a36', '#33404a', '#5a4426'],
+    fog: { color: 0x1f2820, mul: 1 }, banks: 0,
+    sun: { color: 0xffd9a0, i: 1.7 },
+    hemi: { sky: 0xaec2cb, ground: 0x241d16, i: 1.05 },
+    amb: { wind: .45, gulls: true, harbor: true },
+  },
+  'new-orleans': {
+    sky: ['#101318', '#26272e', '#4a4238', '#6e4c30'],
+    fog: { color: 0x2e2b26, mul: .8 }, banks: 0,
+    sun: { color: 0xffc98a, i: 1.45 },
+    hemi: { sky: 0xb8ac9c, ground: 0x2a2018, i: 1.1 },
+    amb: { wind: .3, insects: true, thunder: true },
+  },
+};
+const DEF_ATMOS = {
+  sky: ['#0c141c', '#1a2a36', '#33404a', '#463a2a'],
+  fog: { color: 0x1a2229, mul: 1 }, banks: 0,
+  sun: { color: 0xffe0b0, i: 1.6 },
+  hemi: { sky: 0xaec2cb, ground: 0x241d16, i: 1.05 },
+  amb: { wind: .2 },
+};
+let atmosKey = null, fogMul = 1, fogBanks = [];
+function applyAtmos(k) {
+  const a = ATMOS[k] ?? DEF_ATMOS;
+  atmosKey = ATMOS[k] ? k : null;
+  fogMul = a.fog.mul;
+  setSky(a.sky);
+  scene.fog.color.setHex(a.fog.color);
+  key.color.setHex(a.sun.color); key.intensity = a.sun.i;
+  hemi.color.setHex(a.hemi.sky);
+  hemi.groundColor.setHex(a.hemi.ground);
+  hemi.intensity = a.hemi.i;
+  ambSync(a.amb);
+}
+
+/* Ambient sound beds - synthesized like everything else (no recordings):
+   looped filtered noise for the wind, sparse gull chirps, a rare harbor
+   horn, the NOLA insect shimmer and far thunder. All ride the master
+   gain, so the one mute silences the world too. */
+let ambNodes = [], ambTimers = [], ambCfg = null;
+function ambStop() {
+  for (const t of ambTimers) clearTimeout(t);
+  for (const n of ambNodes) { try { n.stop?.(); } catch (e) {} n.disconnect?.(); }
+  ambTimers = []; ambNodes = [];
+}
+function noiseBuf(secs = 2) {
+  const n = Math.floor(ac.sampleRate * secs);
+  const buf = ac.createBuffer(1, n, ac.sampleRate);
+  const d = buf.getChannelData(0);
+  for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
+  return buf;
+}
+function ambLoop(fn, lo, hi) {
+  const tick = () => { fn(); ambTimers.push(setTimeout(tick,
+    (lo + Math.random() * (hi - lo)) * 1000)); };
+  ambTimers.push(setTimeout(tick, (lo + Math.random() * (hi - lo)) * 500));
+}
+function ambSync(cfg) {
+  ambCfg = cfg ?? ambCfg;
+  if (!ac || !ambCfg) return;
+  ambStop();
+  const a = ambCfg;
+  if (a.wind) {
+    const src = ac.createBufferSource(); src.buffer = noiseBuf(); src.loop = true;
+    const f = ac.createBiquadFilter(); f.type = 'lowpass';
+    f.frequency.value = 240 + 360 * a.wind;
+    const g = ac.createGain(); g.gain.value = .012 + .04 * a.wind;
+    src.connect(f); f.connect(g); g.connect(master); src.start();
+    ambNodes.push(src, f, g);
+  }
+  if (a.insects) {
+    const src = ac.createBufferSource(); src.buffer = noiseBuf(); src.loop = true;
+    const f = ac.createBiquadFilter(); f.type = 'bandpass';
+    f.frequency.value = 4800; f.Q.value = 9;
+    const g = ac.createGain(); g.gain.value = .011;
+    const lfo = ac.createOscillator(), lg = ac.createGain();
+    lfo.frequency.value = .6; lg.gain.value = .006;
+    lfo.connect(lg); lg.connect(g.gain); lfo.start();
+    src.connect(f); f.connect(g); g.connect(master); src.start();
+    ambNodes.push(src, f, g, lfo, lg);
+  }
+  if (a.gulls) ambLoop(() => {
+    const n = 2 + Math.floor(Math.random() * 2);
+    for (let i = 0; i < n; i++)
+      setTimeout(() => blip(1500 - i * 160, 950, .22, 'triangle', .04), i * 260);
+  }, 8, 18);
+  if (a.harbor) ambLoop(() => blip(98, 94, 1.6, 'square', .035), 28, 55);
+  if (a.thunder) ambLoop(() => {
+    const nb = ac.createBufferSource(); nb.buffer = noiseBuf(3);
+    const f = ac.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 110;
+    const g = ac.createGain(); g.gain.setValueAtTime(.12, ac.currentTime);
+    g.gain.exponentialRampToValueAtTime(.001, ac.currentTime + 2.8);
+    nb.connect(f); f.connect(g); g.connect(master); nb.start();
+    ambNodes.push(nb, f, g);
+  }, 35, 75);
+}
+// the world gets its voice on the first gesture the browser allows
+renderer.domElement.addEventListener('pointerdown', () => {
+  acEnsure(); ambSync(ambCfg);
+}, { once: true });
 
 // ground: dark apron with a faint work grid
 const ground = new THREE.Mesh(
@@ -2699,7 +2842,89 @@ function buildCampus(key) {
   buildChapterHall(campusGroup, key);
   buildCity(campusGroup, R);
   walkLim = cityPois ? (cityLog ? 268 : 175) : campusR + 85;
+  // fog banks: the island's weather, drifting flat haze sheets
+  fogBanks = [];
+  const nb = ATMOS[key]?.banks ?? 0;
+  for (let i = 0; i < nb; i++) {
+    const m = new THREE.Mesh(new THREE.PlaneGeometry(150 + i * 22, 34),
+      new THREE.MeshBasicMaterial({ color: 0xcfd8dc, transparent: true,
+        opacity: .09 + (i % 3) * .025, depthWrite: false }));
+    m.rotation.x = -Math.PI / 2;
+    const ang = i / nb * Math.PI * 2, rad = 70 + (i % 3) * 45;
+    m.position.set(Math.cos(ang) * rad, 7 + (i % 4) * 5, Math.sin(ang) * rad);
+    campusGroup.add(m);
+    fogBanks.push({ m, ang, rad, sp: .015 + (i % 3) * .008 });
+  }
   scene.add(campusGroup);
+  buildMinimap(key, R);
+}
+
+/* ------------------------------------------------------------ minimap --- */
+// The walkable campus, from above: roads, buildings in district hues,
+// the city places, and you. Drawn once per campus; the player arrow
+// rides the render loop.
+let mmBase = null, mmInfo = { n: 0, s: 1 };
+function buildMinimap(key, R) {
+  const ext = Math.max(walkLim, R + 60);
+  const S2 = 66 / ext;
+  mmInfo = { n: 0, s: S2 };
+  const c = document.createElement('canvas'); c.width = c.height = 150;
+  const g2 = c.getContext('2d');
+  g2.fillStyle = 'rgba(12,17,19,.88)'; g2.fillRect(0, 0, 150, 150);
+  const X = (x) => 75 + x * S2, Y = (z) => 75 + z * S2;
+  // water backdrop where the city layers put it
+  if (key === 'treasure-island') {
+    g2.fillStyle = 'rgba(20,40,58,.8)'; g2.fillRect(0, 0, 150, 150);
+    g2.fillStyle = 'rgba(12,17,19,.95)';
+    g2.beginPath(); g2.arc(75, 75, (R + 52) * S2, 0, 7); g2.fill();
+  } else if (key === 'oakland') {
+    g2.fillStyle = 'rgba(20,40,58,.8)';
+    g2.fillRect(0, 0, X(-(R + 60)), 150);
+  }
+  // the ring road
+  g2.strokeStyle = '#565c60'; g2.lineWidth = 3;
+  g2.beginPath(); g2.arc(75, 75, (R - 24) * S2, 0, 7); g2.stroke();
+  // buildings, axis-aligned, in their district hue
+  const bb = new THREE.Box3();
+  for (const b of buildings) {
+    bb.setFromObject(b);
+    const h = D.halls.find((x) => x.slug === b.userData.slug);
+    const hue = D.districts[h.district].hue;
+    g2.fillStyle = `hsl(${hue},45%,52%)`;
+    g2.fillRect(X(bb.min.x), Y(bb.min.z),
+      Math.max(2, (bb.max.x - bb.min.x) * S2),
+      Math.max(2, (bb.max.z - bb.min.z) * S2));
+    mmInfo.n++;
+  }
+  // the chapter hall and the city places
+  g2.fillStyle = '#E8A33D';
+  g2.beginPath(); g2.arc(75, 75, 3, 0, 7); g2.fill();
+  g2.fillStyle = '#41C4D4';
+  for (const p of (D.geo.cityPois?.[key] ?? [])) {
+    const [px, pz] = cityPos(p);
+    g2.beginPath(); g2.arc(X(px), Y(pz), 2.5, 0, 7); g2.fill();
+  }
+  mmBase = c;
+}
+function mmDraw() {
+  const cv = document.getElementById('mm');
+  if (!mmBase || cv.style.display === 'none') return;
+  const g2 = cv.getContext('2d');
+  g2.clearRect(0, 0, 150, 150);
+  g2.drawImage(mmBase, 0, 0);
+  if (walkActive) {
+    const px = isTouch ? walkAvatar.position.x : camera.position.x;
+    const pz = isTouch ? walkAvatar.position.z : camera.position.z;
+    let yaw;
+    if (isTouch) yaw = tYaw + Math.PI;
+    else { const d = new THREE.Vector3(); camera.getWorldDirection(d);
+      yaw = Math.atan2(d.x, d.z); }
+    const x = 75 + px * mmInfo.s, y = 75 + pz * mmInfo.s;
+    g2.save(); g2.translate(x, y); g2.rotate(yaw + Math.PI);
+    g2.fillStyle = '#E8A33D';
+    g2.beginPath(); g2.moveTo(0, -6); g2.lineTo(4, 5); g2.lineTo(-4, 5);
+    g2.closePath(); g2.fill(); g2.restore();
+  }
 }
 
 /* ---------------------------------------------------------- region view --- */
@@ -2802,8 +3027,10 @@ function showRegion() {
   if (hallGroup) hallGroup.visible = false;
   if (campusGroup) campusGroup.visible = false;
   ground.visible = grid.visible = false;
+  applyAtmos(null);
   buildRegion();
   scene.fog.near = 380; scene.fog.far = 1300;
+  document.getElementById('mm').style.display = 'none';
   controls.maxDistance = 700; controls.minDistance = 60;
   camera.position.set(0, 225, 235); controls.target.set(10, 0, 0);
   document.getElementById('hname').textContent = t('view.region');
@@ -2829,8 +3056,10 @@ function showCampus(key) {
   if (hallGroup) hallGroup.visible = false;
   if (regionGroup) regionGroup.visible = false;
   ground.visible = grid.visible = true;
+  applyAtmos(key);
   buildCampus(key);
-  scene.fog.near = 160; scene.fog.far = 640;
+  scene.fog.near = 160 * fogMul; scene.fog.far = 640 * fogMul;
+  document.getElementById('mm').style.display = '';
   controls.maxDistance = 420; controls.minDistance = 20;
   camera.position.set(0, 165, 195); controls.target.set(0, 0, 0);
   const camp = D.campuses[key];
@@ -2854,8 +3083,10 @@ function showHall(sg) {
   if (regionGroup) regionGroup.visible = false;
   if (campusGroup) campusGroup.visible = false;
   ground.visible = grid.visible = true;
+  applyAtmos(campusKey);
   buildHall(sg);
-  scene.fog.near = 70; scene.fog.far = 170;
+  scene.fog.near = 70 * fogMul; scene.fog.far = 170 * fogMul;
+  document.getElementById('mm').style.display = 'none';
   controls.maxDistance = 120; controls.minDistance = 8;
   camera.position.set(30, 26, 42); controls.target.set(0, 2, 0);
   document.getElementById('hint').textContent =
@@ -3265,6 +3496,10 @@ window.__tc3d = () => ({ view, buildings: buildings.length, plates: plates.lengt
   isTouch, shadows: renderer.shadowMap.enabled,
   avatar: avatarCfg ? { ...avatarCfg } : null, emote: lastEmote,
   apeSpan: (avatarMesh ?? walkAvatar)?.userData?.apeSpanRatio ?? null,
+  atmos: atmosKey, fogNear: Math.round(scene.fog.near),
+  banks: fogBanks.length, mmN: mmInfo.n,
+  mmVis: document.getElementById('mm').style.display !== 'none',
+  simRider: !!simRider, ambN: ambNodes.length,
   wheel: document.querySelectorAll('#wheel path').length,
   progress: { stations: doneStations.size, sims: Object.keys(prog.sims).length },
   dash: document.querySelectorAll('#dash .g').length,
@@ -3286,6 +3521,12 @@ renderer.setAnimationLoop(() => {
     if (sim.gauges) setDash(D.sims.sims[curSimId], sim.gauges());
   }
   stepEmote(dt);
+  if (!reduced) for (const b of fogBanks) {
+    b.ang += dt * b.sp;
+    b.m.position.x = Math.cos(b.ang) * b.rad;
+    b.m.position.z = Math.sin(b.ang) * b.rad;
+  }
+  if (view === 'campus') mmDraw();
   if (walkActive) (isTouch ? touchWalkStep : walkStep)(dt);
   else controls.update();
   renderer.render(scene, camera);
