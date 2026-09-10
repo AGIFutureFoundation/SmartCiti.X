@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-10",
- "source_stamp": "85c6d8c3217901e5",
+ "source_stamp": "35801f9aa70816d8",
  "guarantee": "cosmetic only: every option is free and unlocked, and no avatar choice affects scoring, access, progression or anything the rubrics measure",
  "marks": "crew marks are the Academy’s own insignia - the roster’s three-letter hall codes on a shield in the district hue, the same codes the campus map prints. They are not, and do not imitate, any real union’s logo or emblem; no local is named and none is drawn.",
  "sections": [
@@ -1164,6 +1164,210 @@
    ]
   },
   {
+   "id": "outer",
+   "emoji": "🧥",
+   "label": "Outerwear",
+   "kind": "style",
+   "options": [
+    {
+     "id": "none",
+     "glyph": "–"
+    },
+    {
+     "id": "parka",
+     "glyph": "pa"
+    },
+    {
+     "id": "rain-slicker",
+     "glyph": "rs"
+    },
+    {
+     "id": "welding-jacket",
+     "glyph": "wj"
+    },
+    {
+     "id": "bomber",
+     "glyph": "bo"
+    },
+    {
+     "id": "duster",
+     "glyph": "du"
+    },
+    {
+     "id": "windbreaker",
+     "glyph": "wb"
+    },
+    {
+     "id": "lined-flannel",
+     "glyph": "lf"
+    },
+    {
+     "id": "hi-vis-parka",
+     "glyph": "hp"
+    },
+    {
+     "id": "softshell",
+     "glyph": "ss"
+    },
+    {
+     "id": "chore-canvas",
+     "glyph": "cc"
+    },
+    {
+     "id": "puffer",
+     "glyph": "pu"
+    },
+    {
+     "id": "anorak",
+     "glyph": "an"
+    },
+    {
+     "id": "varsity",
+     "glyph": "va"
+    },
+    {
+     "id": "trench",
+     "glyph": "tr"
+    }
+   ]
+  },
+  {
+   "id": "extras",
+   "emoji": "🥽",
+   "label": "Extras",
+   "kind": "style",
+   "options": [
+    {
+     "id": "none",
+     "glyph": "–"
+    },
+    {
+     "id": "safety-glasses",
+     "glyph": "sg"
+    },
+    {
+     "id": "sunglasses",
+     "glyph": "su"
+    },
+    {
+     "id": "ear-muffs",
+     "glyph": "em"
+    },
+    {
+     "id": "respirator",
+     "glyph": "re"
+    },
+    {
+     "id": "dust-mask",
+     "glyph": "dm"
+    },
+    {
+     "id": "face-shield",
+     "glyph": "fs"
+    },
+    {
+     "id": "welding-shield",
+     "glyph": "ws"
+    },
+    {
+     "id": "knee-pads",
+     "glyph": "kp"
+    },
+    {
+     "id": "elbow-pads",
+     "glyph": "ep"
+    },
+    {
+     "id": "tool-lanyard",
+     "glyph": "tl"
+    },
+    {
+     "id": "radio",
+     "glyph": "ra"
+    },
+    {
+     "id": "headlamp",
+     "glyph": "hl"
+    },
+    {
+     "id": "id-badge",
+     "glyph": "id"
+    },
+    {
+     "id": "gloves",
+     "glyph": "gl"
+    }
+   ]
+  },
+  {
+   "id": "costume",
+   "emoji": "🎭",
+   "label": "Costume",
+   "kind": "style",
+   "options": [
+    {
+     "id": "none",
+     "glyph": "–"
+    },
+    {
+     "id": "krewe",
+     "glyph": "kr"
+    },
+    {
+     "id": "foundry",
+     "glyph": "fo"
+    },
+    {
+     "id": "diver",
+     "glyph": "di"
+    },
+    {
+     "id": "vintage-33",
+     "glyph": "vi"
+    },
+    {
+     "id": "storm-rider",
+     "glyph": "st"
+    },
+    {
+     "id": "gold-journey",
+     "glyph": "go"
+    },
+    {
+     "id": "hazmat",
+     "glyph": "hz"
+    },
+    {
+     "id": "arc-guard",
+     "glyph": "ar"
+    },
+    {
+     "id": "tunnel",
+     "glyph": "tu"
+    },
+    {
+     "id": "parade",
+     "glyph": "pd"
+    },
+    {
+     "id": "night-reflective",
+     "glyph": "ni"
+    },
+    {
+     "id": "mascot",
+     "glyph": "ms"
+    },
+    {
+     "id": "frost",
+     "glyph": "fr"
+    },
+    {
+     "id": "gala",
+     "glyph": "ga"
+    }
+   ]
+  },
+  {
    "id": "crew",
    "emoji": "🪵",
    "label": "Crew",
@@ -1965,8 +2169,461 @@
   "pantscolor": "duck-brown",
   "shoes": "steel-toe-brown",
   "tools": "basic",
+  "outer": "none",
+  "extras": "none",
+  "costume": "none",
   "crew": "ironworkers"
  },
+ "characters": [
+  {
+   "id": "high-steel",
+   "emoji": "🏗",
+   "name": "The High-Steel Walker",
+   "blurb": "Connects iron forty storeys up and never hurries.",
+   "glyph": "🏗",
+   "cfg": {
+    "build": "tall-slim",
+    "skin": "tone-08",
+    "hair": "short",
+    "haircolor": "dark-brown",
+    "eyes": "brown",
+    "facialhair": "none",
+    "headwear": "climbing",
+    "headcolor": "hi-vis-yellow",
+    "top": "long-sleeve",
+    "topcolor": "slate",
+    "vest": "harness",
+    "pants": "duck-canvas",
+    "pantscolor": "duck-brown",
+    "shoes": "lineman",
+    "tools": "rigger",
+    "outer": "none",
+    "extras": "tool-lanyard",
+    "costume": "none",
+    "crew": "ironworkers"
+   }
+  },
+  {
+   "id": "wharf-boss",
+   "emoji": "⚓",
+   "name": "The Wharf Operator",
+   "blurb": "Reads the river, the wind, and the manifest before coffee.",
+   "glyph": "⚓",
+   "cfg": {
+    "build": "average-standard",
+    "skin": "tone-08",
+    "hair": "short",
+    "haircolor": "dark-brown",
+    "eyes": "brown",
+    "facialhair": "none",
+    "headwear": "ball-cap",
+    "headcolor": "navy",
+    "top": "work-shirt",
+    "topcolor": "steel-blue",
+    "vest": "hi-vis-2",
+    "pants": "duck-canvas",
+    "pantscolor": "duck-brown",
+    "shoes": "rubber-yellow",
+    "tools": "basic",
+    "outer": "rain-slicker",
+    "extras": "radio",
+    "costume": "none",
+    "crew": "port-crane"
+   }
+  },
+  {
+   "id": "night-shift",
+   "emoji": "🌙",
+   "name": "Night Shift",
+   "blurb": "The city sleeps; the reflective crew does not.",
+   "glyph": "🌙",
+   "cfg": {
+    "build": "average-standard",
+    "skin": "tone-08",
+    "hair": "short",
+    "haircolor": "dark-brown",
+    "eyes": "brown",
+    "facialhair": "none",
+    "headwear": "hard-cap",
+    "headcolor": "hi-vis-yellow",
+    "top": "tee",
+    "topcolor": "hi-vis-orange",
+    "vest": "hi-vis-2",
+    "pants": "duck-canvas",
+    "pantscolor": "charcoal",
+    "shoes": "steel-toe-brown",
+    "tools": "basic",
+    "outer": "none",
+    "extras": "headlamp",
+    "costume": "night-reflective",
+    "crew": "laborers"
+   }
+  },
+  {
+   "id": "line-of-sight",
+   "emoji": "📐",
+   "name": "The Line of Sight",
+   "blurb": "A surveyor’s patience: measure twice, argue never.",
+   "glyph": "📐",
+   "cfg": {
+    "build": "average-standard",
+    "skin": "tone-08",
+    "hair": "short",
+    "haircolor": "dark-brown",
+    "eyes": "brown",
+    "facialhair": "none",
+    "headwear": "bucket",
+    "headcolor": "hi-vis-yellow",
+    "top": "polo",
+    "topcolor": "teal",
+    "vest": "surveyor",
+    "pants": "duck-canvas",
+    "pantscolor": "duck-brown",
+    "shoes": "steel-toe-brown",
+    "tools": "surveyor",
+    "outer": "none",
+    "extras": "safety-glasses",
+    "costume": "none",
+    "crew": "surveyors"
+   }
+  },
+  {
+   "id": "sparks",
+   "emoji": "⚡",
+   "name": "Sparks",
+   "blurb": "Finds the fault before the fault finds anyone.",
+   "glyph": "⚡",
+   "cfg": {
+    "build": "average-standard",
+    "skin": "tone-08",
+    "hair": "short",
+    "haircolor": "dark-brown",
+    "eyes": "brown",
+    "facialhair": "none",
+    "headwear": "welding-cap",
+    "headcolor": "crimson",
+    "top": "henley",
+    "topcolor": "charcoal",
+    "vest": "hi-vis-2",
+    "pants": "duck-canvas",
+    "pantscolor": "duck-brown",
+    "shoes": "comp-toe-grey",
+    "tools": "electric",
+    "outer": "none",
+    "extras": "gloves",
+    "costume": "none",
+    "crew": "electricians"
+   }
+  },
+  {
+   "id": "krewe-royalty",
+   "emoji": "🎭",
+   "name": "Krewe Royalty",
+   "blurb": "Second line in front, toolbox in back - laissez les bons temps.",
+   "glyph": "🎭",
+   "cfg": {
+    "build": "average-standard",
+    "skin": "tone-08",
+    "hair": "locs",
+    "haircolor": "dark-brown",
+    "eyes": "brown",
+    "facialhair": "goatee",
+    "headwear": "hard-cap",
+    "headcolor": "hi-vis-yellow",
+    "top": "tee",
+    "topcolor": "hi-vis-orange",
+    "vest": "hi-vis-2",
+    "pants": "duck-canvas",
+    "pantscolor": "duck-brown",
+    "shoes": "steel-toe-brown",
+    "tools": "basic",
+    "outer": "none",
+    "extras": "none",
+    "costume": "krewe",
+    "crew": "laborers"
+   }
+  },
+  {
+   "id": "foundry-heat",
+   "emoji": "🔥",
+   "name": "Foundry Heat",
+   "blurb": "Walks the pour line where the air itself glows.",
+   "glyph": "🔥",
+   "cfg": {
+    "build": "average-standard",
+    "skin": "tone-08",
+    "hair": "short",
+    "haircolor": "dark-brown",
+    "eyes": "brown",
+    "facialhair": "full-beard",
+    "headwear": "hard-cap",
+    "headcolor": "hi-vis-yellow",
+    "top": "tee",
+    "topcolor": "hi-vis-orange",
+    "vest": "hi-vis-2",
+    "pants": "duck-canvas",
+    "pantscolor": "duck-brown",
+    "shoes": "steel-toe-brown",
+    "tools": "basic",
+    "outer": "none",
+    "extras": "none",
+    "costume": "foundry",
+    "crew": "welders"
+   }
+  },
+  {
+   "id": "deep-diver",
+   "emoji": "🤿",
+   "name": "The Deep Diver",
+   "blurb": "Inspects the pilings nobody else will ever see.",
+   "glyph": "🤿",
+   "cfg": {
+    "build": "average-standard",
+    "skin": "tone-08",
+    "hair": "short",
+    "haircolor": "dark-brown",
+    "eyes": "brown",
+    "facialhair": "none",
+    "headwear": "hard-cap",
+    "headcolor": "hi-vis-yellow",
+    "top": "tee",
+    "topcolor": "hi-vis-orange",
+    "vest": "hi-vis-2",
+    "pants": "duck-canvas",
+    "pantscolor": "duck-brown",
+    "shoes": "steel-toe-brown",
+    "tools": "basic",
+    "outer": "none",
+    "extras": "none",
+    "costume": "diver",
+    "crew": "marine-terminal"
+   }
+  },
+  {
+   "id": "crew-of-33",
+   "emoji": "🕰",
+   "name": "The '33 Crew",
+   "blurb": "Dressed like the bridge-raisers in the old photographs.",
+   "glyph": "🕰",
+   "cfg": {
+    "build": "average-standard",
+    "skin": "tone-08",
+    "hair": "short",
+    "haircolor": "dark-brown",
+    "eyes": "brown",
+    "facialhair": "mustache",
+    "headwear": "flat-cap",
+    "headcolor": "hi-vis-yellow",
+    "top": "tee",
+    "topcolor": "hi-vis-orange",
+    "vest": "hi-vis-2",
+    "pants": "duck-canvas",
+    "pantscolor": "duck-brown",
+    "shoes": "steel-toe-brown",
+    "tools": "basic",
+    "outer": "none",
+    "extras": "none",
+    "costume": "vintage-33",
+    "crew": "bricklayers"
+   }
+  },
+  {
+   "id": "storm-rider",
+   "emoji": "🌀",
+   "name": "Storm Rider",
+   "blurb": "First truck in after the wind, last one out.",
+   "glyph": "🌀",
+   "cfg": {
+    "build": "average-standard",
+    "skin": "tone-08",
+    "hair": "short",
+    "haircolor": "dark-brown",
+    "eyes": "brown",
+    "facialhair": "none",
+    "headwear": "hard-cap",
+    "headcolor": "hi-vis-yellow",
+    "top": "tee",
+    "topcolor": "hi-vis-orange",
+    "vest": "hi-vis-2",
+    "pants": "duck-canvas",
+    "pantscolor": "duck-brown",
+    "shoes": "steel-toe-brown",
+    "tools": "basic",
+    "outer": "none",
+    "extras": "radio",
+    "costume": "storm-rider",
+    "crew": "teamsters"
+   }
+  },
+  {
+   "id": "golden-journey",
+   "emoji": "🏅",
+   "name": "The Golden Journey",
+   "blurb": "Fifty years on the tools, and the hat to prove it.",
+   "glyph": "🏅",
+   "cfg": {
+    "build": "average-standard",
+    "skin": "tone-08",
+    "hair": "short",
+    "haircolor": "silver",
+    "eyes": "brown",
+    "facialhair": "walrus",
+    "headwear": "hard-cap",
+    "headcolor": "hi-vis-yellow",
+    "top": "tee",
+    "topcolor": "hi-vis-orange",
+    "vest": "hi-vis-2",
+    "pants": "duck-canvas",
+    "pantscolor": "duck-brown",
+    "shoes": "steel-toe-brown",
+    "tools": "basic",
+    "outer": "none",
+    "extras": "none",
+    "costume": "gold-journey",
+    "crew": "operating-eng"
+   }
+  },
+  {
+   "id": "clean-sweep",
+   "emoji": "🧪",
+   "name": "Clean Sweep",
+   "blurb": "Hazmat-calm in places with warning signs on the doors.",
+   "glyph": "🧪",
+   "cfg": {
+    "build": "average-standard",
+    "skin": "tone-08",
+    "hair": "short",
+    "haircolor": "dark-brown",
+    "eyes": "brown",
+    "facialhair": "none",
+    "headwear": "hard-cap",
+    "headcolor": "hi-vis-yellow",
+    "top": "tee",
+    "topcolor": "hi-vis-orange",
+    "vest": "hi-vis-2",
+    "pants": "duck-canvas",
+    "pantscolor": "duck-brown",
+    "shoes": "steel-toe-brown",
+    "tools": "basic",
+    "outer": "none",
+    "extras": "none",
+    "costume": "hazmat",
+    "crew": "laborers"
+   }
+  },
+  {
+   "id": "arc-guard",
+   "emoji": "🛡",
+   "name": "Arc Guard",
+   "blurb": "Suited for the flash that must never happen.",
+   "glyph": "🛡",
+   "cfg": {
+    "build": "average-standard",
+    "skin": "tone-08",
+    "hair": "short",
+    "haircolor": "dark-brown",
+    "eyes": "brown",
+    "facialhair": "none",
+    "headwear": "hard-cap",
+    "headcolor": "hi-vis-yellow",
+    "top": "tee",
+    "topcolor": "hi-vis-orange",
+    "vest": "hi-vis-2",
+    "pants": "duck-canvas",
+    "pantscolor": "duck-brown",
+    "shoes": "steel-toe-brown",
+    "tools": "basic",
+    "outer": "none",
+    "extras": "face-shield",
+    "costume": "arc-guard",
+    "crew": "welders"
+   }
+  },
+  {
+   "id": "tunnel-runner",
+   "emoji": "🚇",
+   "name": "The Tunnel Runner",
+   "blurb": "Knows the bore by sound alone, headlamp always on.",
+   "glyph": "🚇",
+   "cfg": {
+    "build": "average-standard",
+    "skin": "tone-08",
+    "hair": "short",
+    "haircolor": "dark-brown",
+    "eyes": "brown",
+    "facialhair": "none",
+    "headwear": "hard-cap",
+    "headcolor": "hi-vis-yellow",
+    "top": "tee",
+    "topcolor": "hi-vis-orange",
+    "vest": "hi-vis-2",
+    "pants": "duck-canvas",
+    "pantscolor": "duck-brown",
+    "shoes": "steel-toe-brown",
+    "tools": "basic",
+    "outer": "none",
+    "extras": "headlamp",
+    "costume": "tunnel",
+    "crew": "miners"
+   }
+  },
+  {
+   "id": "parade-marshal",
+   "emoji": "🎺",
+   "name": "Parade Marshal",
+   "blurb": "Leads the apprentice class down Canal Street once a year.",
+   "glyph": "🎺",
+   "cfg": {
+    "build": "average-standard",
+    "skin": "tone-08",
+    "hair": "short",
+    "haircolor": "dark-brown",
+    "eyes": "brown",
+    "facialhair": "none",
+    "headwear": "none",
+    "headcolor": "hi-vis-yellow",
+    "top": "tee",
+    "topcolor": "hi-vis-orange",
+    "vest": "hi-vis-2",
+    "pants": "duck-canvas",
+    "pantscolor": "duck-brown",
+    "shoes": "steel-toe-brown",
+    "tools": "basic",
+    "outer": "none",
+    "extras": "none",
+    "costume": "parade",
+    "crew": "carpenters"
+   }
+  },
+  {
+   "id": "day-one",
+   "emoji": "🌱",
+   "name": "Day One",
+   "blurb": "New boots, clean gloves, and every question worth asking.",
+   "glyph": "🌱",
+   "cfg": {
+    "build": "average-standard",
+    "skin": "tone-08",
+    "hair": "short",
+    "haircolor": "dark-brown",
+    "eyes": "brown",
+    "facialhair": "none",
+    "headwear": "hard-cap",
+    "headcolor": "hi-vis-yellow",
+    "top": "tee",
+    "topcolor": "white",
+    "vest": "hi-vis-2",
+    "pants": "duck-canvas",
+    "pantscolor": "duck-brown",
+    "shoes": "steel-toe-tan",
+    "tools": "basic",
+    "outer": "none",
+    "extras": "gloves",
+    "costume": "none",
+    "crew": "scaffold"
+   }
+  }
+ ],
  "emotes": [
   {
    "id": "wave",
