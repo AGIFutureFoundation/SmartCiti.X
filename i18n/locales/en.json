@@ -36,7 +36,11 @@
   "station.quiz": "Scenario check",
   "ui.close": "Close",
   "ui.search": "Search halls",
-  "hall.enter3d": "Open 3D environment"
+  "hall.enter3d": "Open 3D environment",
+  "view.campus": "Campus view",
+  "ui.walk": "Walk",
+  "hint.campus": "Click a hall to enter it",
+  "hint.walk": "WASD to move · Esc to exit"
  },
  "districts": {
   "structural": {

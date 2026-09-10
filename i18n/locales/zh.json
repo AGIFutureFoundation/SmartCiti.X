@@ -36,7 +36,11 @@
   "station.quiz": "情景考核",
   "ui.close": "关闭",
   "ui.search": "搜索培训馆",
-  "hall.enter3d": "打开 3D 环境"
+  "hall.enter3d": "打开 3D 环境",
+  "view.campus": "园区视图",
+  "ui.walk": "步行",
+  "hint.campus": "点击场馆进入",
+  "hint.walk": "WASD 移动 · Esc 退出"
  },
  "districts": {
   "structural": {

@@ -36,7 +36,11 @@
   "station.quiz": "Mise en situation",
   "ui.close": "Fermer",
   "ui.search": "Rechercher une salle",
-  "hall.enter3d": "Ouvrir l'environnement 3D"
+  "hall.enter3d": "Ouvrir l'environnement 3D",
+  "view.campus": "Vue du campus",
+  "ui.walk": "Marcher",
+  "hint.campus": "Cliquez sur une salle pour y entrer",
+  "hint.walk": "WASD pour se déplacer · Échap pour quitter"
  },
  "districts": {
   "structural": {
