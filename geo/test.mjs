@@ -96,6 +96,9 @@ ok('the GeoJSON carries the anchors as tagged features, [lng, lat]',
   gj.features.filter((f) => f.properties.kind === 'anchor').length === 15
   && gj.features.filter((f) => f.properties.kind === 'anchor')
       .every((f) => Math.abs(f.geometry.coordinates[0]) > Math.abs(f.geometry.coordinates[1])));
+ok('every New Orleans institution carries an authored blurb that says it is not the RECORDED table',
+  reg.anchors['new-orleans'].every((a) => a.blurb?.length > 40
+    && /authored/.test(a.blurb_provenance)));
 ok('the New Orleans city frame is RECORDED, plausible, and inside its own bounds',
   reg.city['new-orleans'].provenance === 'RECORDED'
   && /Locator\.X/.test(reg.city['new-orleans'].source)

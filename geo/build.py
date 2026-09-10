@@ -88,6 +88,34 @@ ANCHORS = {
     ],
 }
 
+# One-line descriptions for the New Orleans institutions — AUTHORED from
+# public record, and labelled so: the coordinate is RECORDED from
+# Locator.X, the sentence about the place is not from that table and does
+# not claim to be. Kept to widely-verifiable identity facts only.
+BLURBS = {
+    'Tulane University':
+        'Private research university Uptown on St. Charles Avenue, '
+        'founded 1834; engineering and architecture among its schools.',
+    'Xavier University':
+        'Xavier University of Louisiana - the nation’s only '
+        'historically Black and Catholic university.',
+    'University of New Orleans':
+        'Public research university on the Lake Pontchartrain shore; '
+        'home to naval architecture and marine engineering.',
+    'Delgado Community College':
+        'Louisiana’s largest community college, City Park campus - '
+        'the region’s major technical and trades educator.',
+    'Loyola University':
+        'Jesuit university on St. Charles Avenue, directly beside '
+        'Tulane at Audubon Park.',
+    'Dillard University':
+        'Historically Black university on Gentilly Boulevard, known '
+        'for its oak-lined Avenue of the Oaks.',
+    'SUNO':
+        'Southern University at New Orleans - public historically Black '
+        'university in Pontchartrain Park.',
+}
+
 # The New Orleans CITY record - the region frame Locator.X's NOLA map
 # ships: its centre and view bounds, RECORDED verbatim from the same
 # builder. This is what lets a city layer claim a real frame rather than
@@ -180,10 +208,13 @@ doc = {
     'routes_km': routes,
     'city': CITY,
     'anchors': {
-        ck: [{'name': n, 'lat': lat, 'lng': lng, 'provenance': 'RECORDED',
-              'source': f'Locator.X {src}, Apache-2.0',
-              'km': round(haversine_km(GEO[ck][:2], (lat, lng)), 1),
-              'bearing_deg': round(bearing_deg(GEO[ck][:2], (lat, lng)), 1)}
+        ck: [dict({'name': n, 'lat': lat, 'lng': lng, 'provenance': 'RECORDED',
+                   'source': f'Locator.X {src}, Apache-2.0',
+                   'km': round(haversine_km(GEO[ck][:2], (lat, lng)), 1),
+                   'bearing_deg': round(bearing_deg(GEO[ck][:2], (lat, lng)), 1)},
+                  **({'blurb': BLURBS[n],
+                      'blurb_provenance': 'authored from public record'}
+                     if n in BLURBS else {}))
              for n, lat, lng, src in lst]
         for ck, lst in ANCHORS.items()
     },

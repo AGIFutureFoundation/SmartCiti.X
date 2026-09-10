@@ -127,7 +127,11 @@ DATA = json.dumps({
                                      geo_reg['campuses'][ck]['lat'])), 2),
                       'n': round((a['lat'] - geo_reg['campuses'][ck]['lat'])
                                  * 110.574, 2),
-                      'km': a['km']}
+                      'km': a['km'], 'bearing': a['bearing_deg'],
+                      'lat': a['lat'], 'lng': a['lng'],
+                      'src': a['source'],
+                      'blurb': a.get('blurb', ''),
+                      'bp': a.get('blurb_provenance', '')}
                      for a in geo_reg['anchors'][ck]]
                 for ck in geo_reg.get('city', {})}},
     'finishes': {sl: h['rooms'] for sl, h in finishes_reg['halls'].items()},
@@ -1354,8 +1358,35 @@ function dressCampus(key, g, R) {
 // the POI table stands at its true east/north offset (13 units per km,
 // walkable), joined to the ring road by SCHEMATIC avenues; the river and
 // lake bands are schematic too, and the labels say which is which.
-let cityPois = 0, walkLim = 169;
+let cityPois = 0, walkLim = 169, cityHits = [];
 const CITY_S = 13;   // units per real kilometre in the city layer
+
+/* An institution's panel: the RECORDED coordinate with a live-map link
+   built from it, the authored blurb labelled as authored, and the union
+   honesty line - hall addresses are not recorded, no local is named. */
+function openCityPoi(name) {
+  const p = (D.geo.cityPois?.[campusKey] ?? []).find((x) => x.name === name);
+  if (!p) return;
+  const osm = `https://www.openstreetmap.org/?mlat=${p.lat}&mlon=${p.lng}`
+    + `#map=16/${p.lat}/${p.lng}`;
+  document.getElementById('pbody').innerHTML = `
+    <h2>${p.name}</h2>
+    <span class="chip" style="border-color:var(--good);color:var(--good)">RECORDED</span>
+    <span class="chip">${p.km} km · ${p.bearing}°</span>
+    ${p.blurb ? `<p>${p.blurb}</p>` : ''}
+    <p style="font-family:'IBM Plex Mono',monospace;font-size:13.5px">
+      ${p.lat.toFixed(4)}, ${p.lng.toFixed(4)}
+      <span style="color:var(--muted)">WGS84</span></p>
+    <p><a href="${osm}" target="_blank" rel="noopener"
+      style="color:var(--steel)">↗ OpenStreetMap</a>
+      <span style="color:var(--muted)">· live map from the RECORDED coordinate</span></p>
+    <p style="color:var(--muted);font-size:12px">coordinate: ${p.src}${
+      p.bp ? `<br>description: ${p.bp}` : ''}</p>
+    <p style="color:var(--muted);font-size:12px">${t('honesty.taxonomy')}</p>`;
+  document.body.classList.add('open');
+}
+window.__tc3dPoi = openCityPoi;   // test hook
+
 function buildCity(g, R) {
   const pois = D.geo.cityPois?.[campusKey] ?? [];
   if (!pois.length) return;
@@ -1379,8 +1410,10 @@ function buildCity(g, R) {
       color: new THREE.Color().setHSL(hues[i % hues.length] / 360, .34, .42),
       roughness: .75 });
     const bld = box(8, hgt, 6.5, bmat, x - 2, .12 + hgt / 2, z + 1.5, g);
-    box(2.6, hgt + 5, 2.6, bmat, x + 4, .12 + (hgt + 5) / 2, z - 3.5, g);
+    const twr = box(2.6, hgt + 5, 2.6, bmat, x + 4, .12 + (hgt + 5) / 2, z - 3.5, g);
     box(3, .5, 3, mat.slab, x + 4, hgt + 5.4, z - 3.5, g, false);
+    bld.userData.poi = twr.userData.poi = p.name;
+    cityHits.push(bld, twr);
     const pl = label(p.name, p.km + ' km \\u00b7 RECORDED', 1.7);
     pl.position.set(x, hgt + 10, z); g.add(pl);
     cityPois++;
@@ -1404,7 +1437,7 @@ function buildCity(g, R) {
 function buildCampus(key) {
   if (campusGroup) scene.remove(campusGroup);
   campusGroup = new THREE.Group(); buildings = []; campusSpin = [];
-  roadFaults = 0; roadCount = 0; cityPois = 0;
+  roadFaults = 0; roadCount = 0; cityPois = 0; cityHits = [];
   const camp = D.campuses[key];
   const dk = camp.districts;
   const R = dk.length === 2 ? 62 : 84;
@@ -1673,10 +1706,14 @@ document.addEventListener('keydown', (e) => {
   if (sim && e.code === 'Space') { e.preventDefault(); sim.action?.(); }
   if (walkActive && view === 'campus' && nearSlug
       && (e.code === 'Enter' || e.code === 'KeyE')) enterHallWalking(nearSlug);
+  if (walkActive && view === 'campus' && nearPoi
+      && (e.code === 'Enter' || e.code === 'KeyE')) {
+    plc.unlock(); openCityPoi(nearPoi);
+  }
 });
 document.addEventListener('keyup', (e) => { keys[e.code] = false; });
 
-let campusR = 84, nearSlug = null;
+let campusR = 84, nearSlug = null, nearPoi = null;
 function enterWalk() {
   if (view === 'region') return;
   controls.autoRotate = false; controls.enabled = false;
@@ -1758,11 +1795,25 @@ function walkStep(dt) {
     if (d < bd) { bd = d; best = b; }
   }
   if (best && bd < 11) {
+    if (nearPoi) nearPoi = null;
     nearSlug = best.userData.slug;
     const h = D.halls.find(x => x.slug === nearSlug);
     document.getElementById('hint').textContent = '\u23ce ' + h.name;
-  } else if (nearSlug) {
+    return;
+  }
+  // strolling the city layer: the nearest institution offers its panel
+  let pbest = null, pd = 1e9;
+  for (const b of cityHits) {
+    b.getWorldPosition(wp);
+    const d = Math.hypot(wp.x - camera.position.x, wp.z - camera.position.z);
+    if (d < pd) { pd = d; pbest = b; }
+  }
+  if (pbest && pd < 14) {
     nearSlug = null;
+    nearPoi = pbest.userData.poi;
+    document.getElementById('hint').textContent = '\u23ce ' + nearPoi;
+  } else if (nearSlug || nearPoi) {
+    nearSlug = null; nearPoi = null;
     document.getElementById('hint').textContent = t('hint.walk');
   }
 }
@@ -1896,6 +1947,11 @@ renderer.domElement.addEventListener('pointerdown', (e) => {
     return;
   }
   if (view === 'campus') {
+    const chit = ray.intersectObjects(cityHits, false)[0];
+    if (chit?.object.userData.poi) {
+      if (walkActive) plc.unlock();
+      return openCityPoi(chit.object.userData.poi);
+    }
     const bhit = ray.intersectObjects(buildings, false)[0];
     if (bhit?.object.userData.slug) showHall(bhit.object.userData.slug);
     return;
@@ -1918,6 +1974,15 @@ renderer.domElement.addEventListener('pointermove', (e) => {
     ptr.set(e.clientX/innerWidth*2-1, -(e.clientY/innerHeight)*2+1);
     ray.setFromCamera(ptr, camera);
     if (view === 'campus') {
+      const chit = ray.intersectObjects(cityHits, false)[0];
+      if (chit?.object.userData.poi) {
+        const p = D.geo.cityPois[campusKey].find((x) => x.name === chit.object.userData.poi);
+        document.getElementById('hname').textContent = p.name;
+        document.getElementById('hfocus').textContent =
+          p.km + ' km · RECORDED — ' + (p.blurb || '');
+        renderer.domElement.style.cursor = 'pointer';
+        return;
+      }
       const bhit = ray.intersectObjects(buildings, false)[0];
       if (bhit?.object.userData.slug) {
         const h = D.halls.find(x => x.slug === bhit.object.userData.slug);

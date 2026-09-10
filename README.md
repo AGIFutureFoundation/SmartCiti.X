@@ -7,7 +7,7 @@ The Adaptive Stack: the packs implementing the ACP protocol suite (v3.2) —
 counted, like everything else here, by the table below rather than by a
 number that can drift from it.
 
-**348 checks, all passing from inside this bundle**, with no model credentials
+**349 checks, all passing from inside this bundle**, with no model credentials
 required.
 
 ```bash
@@ -34,7 +34,7 @@ node brand/lint.mjs .              # fails on any forbidden spelling anywhere in
 node i18n/test.mjs                 # 16 — locale parity, placeholders, pack agreement
 node stations/test.mjs             # 13 — recovered stations vs roster, skills, rooms
 node surfaces/test.mjs             # 24 — finishes, conditions, more-demanding-wins, honesty
-node geo/test.mjs                  # 16 — real coordinates + RECORDED anchors, recomputed distances, GeoJSON
+node geo/test.mjs                  # 17 — real coordinates + RECORDED anchors, recomputed distances, GeoJSON
 node sims/test.mjs                 # 14 — simulator bindings, rubrics, cockpit + scoring contracts
 node control/fuzz.mjs              # 21 — hostile inputs and adversarial learners
 node control/soak.mjs              # long-run invariants, 4,000 attempts x 3 seeds

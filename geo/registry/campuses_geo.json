@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-10",
- "source_stamp": "d07de0ca93a78f16",
+ "source_stamp": "c7596c75e41cb916",
  "crs": "WGS84 (EPSG:4326)",
  "recorded_check": "cross-checked against the Locator.X checkout",
  "honesty": {
@@ -157,7 +157,9 @@
     "provenance": "RECORDED",
     "source": "Locator.X build_data_nola.py pois, Apache-2.0",
     "km": 4.9,
-    "bearing_deg": 255.9
+    "bearing_deg": 255.9,
+    "blurb": "Private research university Uptown on St. Charles Avenue, founded 1834; engineering and architecture among its schools.",
+    "blurb_provenance": "authored from public record"
    },
    {
     "name": "Xavier University",
@@ -166,7 +168,9 @@
     "provenance": "RECORDED",
     "source": "Locator.X build_data_nola.py pois, Apache-2.0",
     "km": 3.8,
-    "bearing_deg": 294.0
+    "bearing_deg": 294.0,
+    "blurb": "Xavier University of Louisiana - the nation\u2019s only historically Black and Catholic university.",
+    "blurb_provenance": "authored from public record"
    },
    {
     "name": "University of New Orleans",
@@ -175,7 +179,9 @@
     "provenance": "RECORDED",
     "source": "Locator.X build_data_nola.py pois, Apache-2.0",
     "km": 8.7,
-    "bearing_deg": 3.3
+    "bearing_deg": 3.3,
+    "blurb": "Public research university on the Lake Pontchartrain shore; home to naval architecture and marine engineering.",
+    "blurb_provenance": "authored from public record"
    },
    {
     "name": "Delgado Community College",
@@ -184,7 +190,9 @@
     "provenance": "RECORDED",
     "source": "Locator.X build_data_nola.py pois, Apache-2.0",
     "km": 4.7,
-    "bearing_deg": 316.2
+    "bearing_deg": 316.2,
+    "blurb": "Louisiana\u2019s largest community college, City Park campus - the region\u2019s major technical and trades educator.",
+    "blurb_provenance": "authored from public record"
    },
    {
     "name": "Loyola University",
@@ -193,7 +201,9 @@
     "provenance": "RECORDED",
     "source": "Locator.X build_data_nola.py pois, Apache-2.0",
     "km": 5.2,
-    "bearing_deg": 250.0
+    "bearing_deg": 250.0,
+    "blurb": "Jesuit university on St. Charles Avenue, directly beside Tulane at Audubon Park.",
+    "blurb_provenance": "authored from public record"
    },
    {
     "name": "Dillard University",
@@ -202,7 +212,9 @@
     "provenance": "RECORDED",
     "source": "Locator.X build_data_nola.py pois, Apache-2.0",
     "km": 4.8,
-    "bearing_deg": 23.6
+    "bearing_deg": 23.6,
+    "blurb": "Historically Black university on Gentilly Boulevard, known for its oak-lined Avenue of the Oaks.",
+    "blurb_provenance": "authored from public record"
    },
    {
     "name": "SUNO",
@@ -211,7 +223,9 @@
     "provenance": "RECORDED",
     "source": "Locator.X build_data_nola.py pois, Apache-2.0",
     "km": 10.8,
-    "bearing_deg": 20.1
+    "bearing_deg": 20.1,
+    "blurb": "Southern University at New Orleans - public historically Black university in Pontchartrain Park.",
+    "blurb_provenance": "authored from public record"
    }
   ]
  }
