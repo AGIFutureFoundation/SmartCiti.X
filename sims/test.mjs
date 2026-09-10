@@ -19,11 +19,11 @@ const skills = new Set(JSON.parse(readFileSync(
 const slugs = new Set(unions.unions.map((u) => u.slug));
 
 const sims = reg.sims;
-ok('five simulators ship: lifting and earthmoving machines, a driving seat, two process benches',
-  Object.keys(sims).length === 5
+ok('six simulators ship: lifting and earthmoving machines, a driving seat, three process benches',
+  Object.keys(sims).length === 6
   && Object.values(sims).filter((s) => s.kind === 'machine').length === 2
   && Object.values(sims).filter((s) => s.kind === 'driving').length === 1
-  && Object.values(sims).filter((s) => s.kind === 'process').length === 2);
+  && Object.values(sims).filter((s) => s.kind === 'process').length === 3);
 ok('every sim carries a task, controls with keys and actions, and 3+ rubric axes',
   Object.values(sims).every((s) => s.task.length > 20
     && s.controls.length >= 3 && s.controls.every((c) => c.keys && c.action)
@@ -62,6 +62,12 @@ ok('the bay task teaches sequence discipline: scaffold hall builds it, zero refu
   && /legal order/.test(sims['scaffold-bay'].task)
   && sims['scaffold-bay'].rubric.some((r) =>
       r.axis === 'sequence' && r.pass === '== 0'));
+ok('the signal call pairs the crew: riggers call the crane hall\'s machine, stop ends every card',
+  sims['rigging-signals'].halls.includes('riggers')
+  && sims['rigging-signals'].halls.includes('crane-ops')
+  && sims['rigging-signals'].rubric.some((r) => r.axis === 'wrong' && r.pass === '== 0')
+  && sims['rigging-signals'].scenarios.every((x) =>
+      x.params.seq[x.params.seq.length - 1] === 'stop'));
 ok('the trench task teaches utility discipline: a pass demands zero strikes',
   /utility/.test(sims['excavator-trench'].task)
   && sims['excavator-trench'].rubric.some((r) =>
@@ -85,7 +91,8 @@ ok('every sim offers an operator-seat view mode alongside the external one',
   && sims['excavator-trench'].view_modes.includes('cab')
   && sims['forklift-run'].view_modes.includes('driver')
   && sims['weld-bead'].view_modes.includes('visor')
-  && sims['scaffold-bay'].view_modes.includes('deck'));
+  && sims['scaffold-bay'].view_modes.includes('deck')
+  && sims['rigging-signals'].view_modes.includes('signal'));
 
 const campusKeys = new Set(Object.keys(JSON.parse(readFileSync(
   new URL('../unions/registry/campuses.json', import.meta.url))).campuses));
@@ -96,7 +103,7 @@ ok('every sim trains regionally: one scenario per campus, unique ids, real brief
         && x.id && x.name && x.brief.length > 30
         && typeof x.params === 'object'))
   && new Set(Object.values(sims).flatMap((s) => s.scenarios.map((x) => x.id)))
-      .size === 15);
+      .size === 18);
 ok('scenarios vary the environment, never the rubric: no scenario carries pass rules',
   Object.values(sims).every((s) =>
     s.scenarios.every((x) => !('rubric' in x.params) && !('pass' in x.params))));

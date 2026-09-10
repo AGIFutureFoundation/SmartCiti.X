@@ -22,6 +22,8 @@ const stations = new Set(JSON.parse(readFileSync(
   new URL('../stations/registry/stations.json', import.meta.url))).stations.map((s) => s.station_id));
 const slugs = new Set(JSON.parse(readFileSync(
   new URL('../unions/registry/unions.json', import.meta.url))).unions.map((u) => u.slug));
+const tools = JSON.parse(readFileSync(
+  new URL('../tools/registry/toolcribs.json', import.meta.url)));
 
 /* ---------------------------------------------------------------- model --- */
 ok('the flipped loop has its four stages in teaching order: home, class, floor, gate',
@@ -69,6 +71,10 @@ ok('every unit floor sim resolves in the sims registry and binds that hall',
       && sims.hall_bindings[u.hall].some((b) => b.sim === id))));
 ok('every unit class station resolves in the stations registry',
   reg.units.every((u) => u.class_stations.every((id) => stations.has(id))));
+ok("the class stage carries the crib drill, and every unit's drill is its own district's",
+  /crib drill/.test(reg.model.stages.find((s) => s.stage === 'class').what)
+  && reg.units.every((u) => u.class_drill === tools.hall_bindings[u.hall].district
+      && u.class_drill in tools.cribs));
 ok('every unit gate demands the unaided run',
   reg.units.every((u) => /unaided/.test(u.gate) && /no sim hour counts/.test(u.gate)));
 

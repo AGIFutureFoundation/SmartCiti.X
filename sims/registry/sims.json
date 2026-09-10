@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-10",
- "source_stamp": "40618211791e206d",
+ "source_stamp": "c95659fb8c93cec6",
  "scoring_contract": "deterministic: every rubric axis is computed from measured state; nothing narrative can change a score",
  "honesty": {
   "status": "schematic physics for practising control discipline - smooth inputs, swing management, ordered procedure. Not equipment certification; no seat time here counts toward one, and the assessment gates still demand unaided verification runs."
@@ -718,6 +718,149 @@
      }
     }
    ]
+  },
+  "rigging-signals": {
+   "name": "Rigging Signal Call",
+   "kind": "process",
+   "task": "You are the signalperson: the lift card calls the moves, and the crane follows YOUR hands. Give each called signal in order \u2014 a wrong signal counts against you and the crane holds \u2014 and finish the lift with the stop signal.",
+   "controls": [
+    {
+     "keys": "Q / E",
+     "action": "signal hoist up / hoist down"
+    },
+    {
+     "keys": "A / D",
+     "action": "signal swing left / swing right"
+    },
+    {
+     "keys": "W / S",
+     "action": "signal trolley out / trolley in"
+    },
+    {
+     "keys": "Space",
+     "action": "signal STOP"
+    }
+   ],
+   "rubric": [
+    {
+     "axis": "calls",
+     "measure": "called signals given, in order",
+     "pass": "== all"
+    },
+    {
+     "axis": "wrong",
+     "measure": "signals given out of turn",
+     "pass": "== 0"
+    },
+    {
+     "axis": "time",
+     "measure": "seconds first signal to stop",
+     "pass": "informational"
+    }
+   ],
+   "halls": [
+    "riggers",
+    "crane-ops",
+    "steel-erectors",
+    "port-crane",
+    "millwrights"
+   ],
+   "skill_strand": "machines",
+   "skill_tier": "applied",
+   "dash": [
+    {
+     "id": "step",
+     "label": "Step",
+     "unit": ""
+    },
+    {
+     "id": "called",
+     "label": "Called",
+     "unit": ""
+    },
+    {
+     "id": "given",
+     "label": "Given",
+     "unit": ""
+    },
+    {
+     "id": "wrong",
+     "label": "Wrong",
+     "unit": "",
+     "warn_at": 1
+    },
+    {
+     "id": "time",
+     "label": "T",
+     "unit": "s"
+    }
+   ],
+   "audio": {
+    "engine": "hoist",
+    "alerts": [
+     "signal-whistle",
+     "wrong-buzz",
+     "result-chime"
+    ],
+    "note": "synthesized in-page (WebAudio); no recordings shipped"
+   },
+   "haptics": [
+    "wrong",
+    "finish"
+   ],
+   "view_modes": [
+    "orbit",
+    "signal"
+   ],
+   "scenarios": [
+    {
+     "id": "bay-first-card",
+     "campus": "treasure-island",
+     "name": "First lift card",
+     "brief": "The training card: five calls, one direction change, the stop to finish - learn the hands.",
+     "params": {
+      "seq": [
+       "up",
+       "swing-r",
+       "out",
+       "down",
+       "stop"
+      ]
+     }
+    },
+    {
+     "id": "oak-blind-pick",
+     "campus": "oakland",
+     "name": "Blind terminal pick",
+     "brief": "The operator cannot see this load - six calls thread it out of the container shadow.",
+     "params": {
+      "seq": [
+       "up",
+       "in",
+       "swing-l",
+       "out",
+       "down",
+       "stop"
+      ]
+     }
+    },
+    {
+     "id": "nola-wind-card",
+     "campus": "new-orleans",
+     "name": "River-wind card",
+     "brief": "The river breeze wants the load moving - six calls with two swings hold the line to the set.",
+     "params": {
+      "seq": [
+       "up",
+       "swing-r",
+       "out",
+       "swing-l",
+       "down",
+       "stop"
+      ]
+     }
+    }
+   ]
   }
  },
  "hall_bindings": {
@@ -725,11 +868,19 @@
    {
     "sim": "crane-lift",
     "skill_id": "crane-ops.machines.applied"
+   },
+   {
+    "sim": "rigging-signals",
+    "skill_id": "crane-ops.machines.applied"
    }
   ],
   "riggers": [
    {
     "sim": "crane-lift",
+    "skill_id": "riggers.machines.applied"
+   },
+   {
+    "sim": "rigging-signals",
     "skill_id": "riggers.machines.applied"
    }
   ],
@@ -737,11 +888,19 @@
    {
     "sim": "crane-lift",
     "skill_id": "steel-erectors.machines.applied"
+   },
+   {
+    "sim": "rigging-signals",
+    "skill_id": "steel-erectors.machines.applied"
    }
   ],
   "port-crane": [
    {
     "sim": "crane-lift",
+    "skill_id": "port-crane.machines.applied"
+   },
+   {
+    "sim": "rigging-signals",
     "skill_id": "port-crane.machines.applied"
    }
   ],
@@ -851,6 +1010,12 @@
    {
     "sim": "scaffold-bay",
     "skill_id": "painters.machines.applied"
+   }
+  ],
+  "millwrights": [
+   {
+    "sim": "rigging-signals",
+    "skill_id": "millwrights.machines.applied"
    }
   ]
  }

@@ -48,11 +48,14 @@ MODEL = {
                      'learner explores; progress is visible per hall'},
         {'stage': 'class', 'title': 'Build in class',
          'what': 'station bench work - checklists, doctrine lines and '
-                 'machine-gradable quizzes at the hall stations, with the '
+                 'machine-gradable quizzes at the hall stations - plus the '
+                 'district crib drill at the tools-room pegboard (match '
+                 'the job to the tool, graded deterministically), with the '
                  'teacher moving bench to bench',
-         'implemented_by': 'stations/ (25 recovered yard stations)',
-         'gamified': 'station beacons in the 3D hall; completion marks '
-                     'accumulate on the hall roster'},
+         'implemented_by': 'stations/ (25 recovered yard stations) + '
+                           'tools/ (8 district cribs, the crib drill)',
+         'gamified': 'station beacons and the crib pegboard in the 3D '
+                     'hall; completion marks accumulate on the hall roster'},
         {'stage': 'floor', 'title': 'Practice on the floor',
          'what': 'simulator seat time with the regional scenario of the '
                  'campus - live dash, synthesized sound, deterministic '
@@ -103,6 +106,7 @@ DISTRICTS = [
 campuses = json.load(open(ROOT / 'unions/registry/campuses.json'))['campuses']
 sims_reg = json.load(open(ROOT / 'sims/registry/sims.json'))
 stations_reg = json.load(open(ROOT / 'stations/registry/stations.json'))
+tools_reg = json.load(open(ROOT / 'tools/registry/toolcribs.json'))
 unions = json.load(open(ROOT / 'unions/registry/unions.json'))['unions']
 
 slugs = {u['slug'] for u in unions}
@@ -121,10 +125,14 @@ for d in DISTRICTS:
 units = []
 for hall, bindings in sorted(sims_reg['hall_bindings'].items()):
     assert hall in slugs, f'unit references unknown hall {hall}'
+    tb = tools_reg['hall_bindings'][hall]
+    assert tb['district'] in tools_reg['cribs'], \
+        f'unit {hall}: no crib for district {tb["district"]}'
     units.append({
         'hall': hall,
         'home': 'module pack lesson positions, machines strand',
         'class_stations': stations_by_hall.get(hall, []),
+        'class_drill': tb['district'],
         'floor_sims': sorted({b['sim'] for b in bindings}),
         'gate': 'unaided verification run (ACP-04); no sim hour counts',
     })

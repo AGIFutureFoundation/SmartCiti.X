@@ -8,7 +8,7 @@ them — a program that overclaims fails its build.
 | Stage | What happens | Implemented by | The gamified layer |
 |---|---|---|---|
 | **Explore at home** | the lesson positions of the module pack, sequenced by the skill graph with the ZPD difficulty dial, in any of the eight shipped languages | `pack/ (modules, skill graph) + i18n/` | module layers and pipeline states are the map the learner explores; progress is visible per hall |
-| **Build in class** | station bench work - checklists, doctrine lines and machine-gradable quizzes at the hall stations, with the teacher moving bench to bench | `stations/ (25 recovered yard stations)` | station beacons in the 3D hall; completion marks accumulate on the hall roster |
+| **Build in class** | station bench work - checklists, doctrine lines and machine-gradable quizzes at the hall stations - plus the district crib drill at the tools-room pegboard (match the job to the tool, graded deterministically), with the teacher moving bench to bench | `stations/ (25 recovered yard stations) + tools/ (8 district cribs, the crib drill)` | station beacons and the crib pegboard in the 3D hall; completion marks accumulate on the hall roster |
 | **Practice on the floor** | simulator seat time with the regional scenario of the campus - live dash, synthesized sound, deterministic rubric; results and best times persist device-locally | `sims/ (4 simulators, regional scenarios)` | pass/retry chips, best-time records, cockpit views |
 | **Verify unaided** | assessment gates certify only unaided work; no home exploration, class bench or simulator hour substitutes for the unaided verification run | `the assessment-gate protocol (ACP-04) and the sims registry honesty note` | nothing - the gate is deliberately ungamified, and the model says so |
 
@@ -49,21 +49,22 @@ the class trains at ([Simulators](Simulators.md)).
 | **Boilermakers** | `weld-bead` | — | unaided verification run (ACP-04); no sim hour counts |
 | **Bricklayers & Allied Craft** | `scaffold-bay` | 10 | unaided verification run (ACP-04); no sim hour counts |
 | **Carpenters** | `scaffold-bay` | — | unaided verification run (ACP-04); no sim hour counts |
-| **Crane Operators** | `crane-lift` | — | unaided verification run (ACP-04); no sim hour counts |
+| **Crane Operators** | `crane-lift`, `rigging-signals` | — | unaided verification run (ACP-04); no sim hour counts |
 | **Demolition Workers** | `excavator-trench` | — | unaided verification run (ACP-04); no sim hour counts |
 | **Structural Fabricators** | `weld-bead` | — | unaided verification run (ACP-04); no sim hour counts |
 | **Heavy Equipment Technicians** | `forklift-run` | — | unaided verification run (ACP-04); no sim hour counts |
 | **Laborers** | `excavator-trench`, `forklift-run`, `scaffold-bay` | — | unaided verification run (ACP-04); no sim hour counts |
 | **Marine Terminal Operators** | `forklift-run` | — | unaided verification run (ACP-04); no sim hour counts |
+| **Millwrights** | `rigging-signals` | — | unaided verification run (ACP-04); no sim hour counts |
 | **Operating Engineers** | `excavator-trench`, `forklift-run` | — | unaided verification run (ACP-04); no sim hour counts |
 | **Painters & Allied Trades** | `scaffold-bay` | — | unaided verification run (ACP-04); no sim hour counts |
 | **Pipeline Trades** | `weld-bead` | — | unaided verification run (ACP-04); no sim hour counts |
-| **Port Crane Technicians** | `crane-lift` | — | unaided verification run (ACP-04); no sim hour counts |
-| **Riggers & Signalpersons** | `crane-lift` | 1 | unaided verification run (ACP-04); no sim hour counts |
+| **Port Crane Technicians** | `crane-lift`, `rigging-signals` | — | unaided verification run (ACP-04); no sim hour counts |
+| **Riggers & Signalpersons** | `crane-lift`, `rigging-signals` | 1 | unaided verification run (ACP-04); no sim hour counts |
 | **Scaffold Erectors** | `scaffold-bay` | 1 | unaided verification run (ACP-04); no sim hour counts |
 | **Shipfitters** | `weld-bead` | — | unaided verification run (ACP-04); no sim hour counts |
 | **Shoring & Underpinning** | `excavator-trench` | — | unaided verification run (ACP-04); no sim hour counts |
-| **Steel Erectors** | `crane-lift` | — | unaided verification run (ACP-04); no sim hour counts |
+| **Steel Erectors** | `crane-lift`, `rigging-signals` | — | unaided verification run (ACP-04); no sim hour counts |
 | **Teamsters** | `forklift-run` | — | unaided verification run (ACP-04); no sim hour counts |
 | **Welding Trades** | `weld-bead` | — | unaided verification run (ACP-04); no sim hour counts |
 

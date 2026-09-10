@@ -1,6 +1,6 @@
 # The simulators
 
-5 operable training machines live inside the
+6 operable training machines live inside the
 [3D environment](Campus-Map.md): open a bound hall and press **▶** (a hall
 bound to more than one machine offers the choice). The
 physics are schematic — built for practising control discipline (smooth
@@ -184,6 +184,41 @@ environment varies, the rubric never does:
 | Treasure Island Campus | **Yard training bay** | One lift in the training yard - three planks, two rails, the order to learn by heart. |
 | Oakland Waterfront Campus | **Plant maintenance bay** | A wider bay against the plant wall - four planks to deck before anyone stands the lift. |
 | Crescent Works Campus | **Storm-hardening bay** | Hurricane-season work - a third rail goes on, and the same legal order holds in the wind. |
+## Rigging Signal Call (process)
+
+You are the signalperson: the lift card calls the moves, and the crane follows YOUR hands. Give each called signal in order — a wrong signal counts against you and the crane holds — and finish the lift with the stop signal.
+
+Trains at: **Riggers & Signalpersons**, **Crane Operators**, **Steel Erectors**, **Port Crane Technicians**, **Millwrights** — each run exercises that hall's
+`machines.applied` skill.
+
+| Control | Action |
+|---|---|
+| `Q / E` | signal hoist up / hoist down |
+| `A / D` | signal swing left / swing right |
+| `W / S` | signal trolley out / trolley in |
+| `Space` | signal STOP |
+
+| Rubric axis | Measured | Pass |
+|---|---|---|
+| calls | called signals given, in order | `== all` |
+| wrong | signals given out of turn | `== 0` |
+| time | seconds first signal to stop | `informational` |
+
+**Cockpit.** A live dash of 5 gauges — `Step`, `Called`, `Given`, `Wrong` (warns at 1), `T s` — with the
+warn thresholds drawn from this registry, not hard-coded in the page.
+View modes: `orbit` / `signal`. Audio is a
+`hoist` engine plus `signal-whistle`, `wrong-buzz`, `result-chime` —
+synthesized in-page (WebAudio); no recordings shipped. Haptic cues (wrong, finish) fire on
+gamepad rumble and the vibration API where the platform offers them.
+
+**Regional scenarios.** The campus you train at picks the yard — the
+environment varies, the rubric never does:
+
+| Region | Scenario | The yard |
+|---|---|---|
+| Treasure Island Campus | **First lift card** | The training card: five calls, one direction change, the stop to finish - learn the hands. |
+| Oakland Waterfront Campus | **Blind terminal pick** | The operator cannot see this load - six calls thread it out of the container shadow. |
+| Crescent Works Campus | **River-wind card** | The river breeze wants the load moving - six calls with two swings hold the line to the set. |
 
 ## What a simulator run is not
 
