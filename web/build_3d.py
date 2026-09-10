@@ -152,6 +152,7 @@ DATA = json.dumps({
     'avatars': {'sections': avatars_reg['sections'],
                 'defaults': avatars_reg['defaults'],
                 'characters': avatars_reg['characters'],
+                'tradeapes': avatars_reg['tradeapes'],
                 'emotes': avatars_reg['emotes'],
                 'guarantee': avatars_reg['guarantee']},
     'chapters': {'of': {slug: c['home']
@@ -925,7 +926,7 @@ function buildAvatarMesh(cfg) {
 
   // costume recipes: a themed re-dress plus a few props; the everyday
   // locker stays stored untouched underneath (costume 'none')
-  const CS = {
+  let CS = {
     krewe: { top: '#5a2d82', pants: '#2f6b45', hat: '#c9a227', noVest: true },
     foundry: { top: '#9aa1a6', pants: '#7d848a', hat: '#b9bcbe',
       metal: true, noVest: true },
@@ -944,7 +945,18 @@ function buildAvatarMesh(cfg) {
     mascot: { top: '#2f4d8a', pants: '#d9c22e', hat: '#e8722a' },
     frost: { top: '#bcd4e6', pants: '#9cb8cc', hat: '#e6eef4', noVest: true },
     gala: { top: '#1d1f24', pants: '#1d1f24', hat: '#1d1f24', noVest: true },
+    'ape-mascot': { top: '#3a2f28', pants: '#3a2f28', hat: '#3a2f28' },
+    'pelican-mascot': { top: '#e8e6de', pants: '#e8e6de', hat: '#e8e6de' },
+    'bear-mascot': { top: '#5d4127', pants: '#5d4127', hat: '#5d4127' },
+    'gator-mascot': { top: '#3c6b45', pants: '#3c6b45', hat: '#3c6b45' },
+    'ox-mascot': { top: '#6b5341', pants: '#6b5341', hat: '#6b5341' },
   }[cfg.costume];
+  // an animal mascot costume swaps the whole head for an original
+  // Academy animal; its fur takes the topcolor pick, so the TradeApes
+  // (and any dressed mascot) vary coat by coat
+  const ANIMAL = /-mascot$/.test(cfg.costume) ? cfg.costume : null;
+  if (ANIMAL) CS = { ...CS, top: optOf('topcolor').value,
+    pants: optOf('topcolor').value };
   if (CS) {
     topM.color.set(CS.top); pantsM.color.set(CS.pants); hatM.color.set(CS.hat);
     if (CS.metal) { topM.metalness = .55; topM.roughness = .35; }
@@ -1082,6 +1094,7 @@ function buildAvatarMesh(cfg) {
   const tank = cfg.top === 'tank';
   const arms = {};
   const handM = cfg.extras === 'gloves' ? M('#e8722a', .7)
+    : ANIMAL ? M(CS.top, .95)
     : cfg.costume === 'parade' || cfg.costume === 'mascot' ? M('#e6e6e2', .6)
     : skin;
   for (const [nm, sx] of [['armL', -1], ['armR', 1]]) {
@@ -1098,6 +1111,63 @@ function buildAvatarMesh(cfg) {
   // neck + head with the face
   capsule(.06, .06, skin, 0, 1.6, 0, g);
   const head = new THREE.Group(); head.position.y = 1.78; g.add(head);
+  if (ANIMAL) {
+    const fur = M(CS.top, .95);
+    const eyePair = (ex, ey, ez, r = .018) => {
+      for (const sx of [-1, 1]) {
+        sphere(r * 1.7, M('#f2f2ee', .4), sx * ex, ey, ez, head, 1, 1, .55);
+        sphere(r, eyeM, sx * ex, ey, ez + .02, head);
+      }
+    };
+    if (ANIMAL === 'ape-mascot') {
+      const face = M('#c9a180', .7);
+      sphere(.16, fur, 0, .01, -.01, head, 1, 1.05, 1);
+      sphere(.11, face, 0, -.005, .085, head, 1, 1.02, .6);
+      sphere(.075, face, 0, -.07, .115, head, 1.25, .8, .9);
+      box(.055, .015, .02, M('#241f1c', .6), 0, -.095, .18, head, false);
+      for (const sx of [-1, 1]) {
+        sphere(.012, M('#241f1c', .5), sx * .02, -.05, .175, head);
+        sphere(.05, fur, sx * .17, .02, -.02, head, .5, 1, .9);
+        sphere(.028, face, sx * .17, .02, .01, head, .35, .7, .6);
+      }
+      box(.13, .028, .03, fur, 0, .075, .115, head, false);
+      eyePair(.05, .035, .115);
+    } else if (ANIMAL === 'pelican-mascot') {
+      sphere(.15, fur, 0, .02, -.01, head, 1, 1.05, 1);
+      const beak = M('#e08a2a', .55);
+      box(.07, .025, .26, beak, 0, -.02, .22, head, false);
+      box(.06, .02, .22, beak, 0, -.05, .2, head, false);
+      sphere(.05, M('#e8b25a', .6), 0, -.085, .16, head, 1, 1.1, .9);
+      eyePair(.055, .05, .11, .015);
+    } else if (ANIMAL === 'bear-mascot') {
+      sphere(.155, fur, 0, .01, 0, head, 1, 1, 1);
+      const muz = M('#c9a180', .7);
+      sphere(.07, muz, 0, -.045, .12, head, 1.1, .85, .9);
+      sphere(.026, M('#241f1c', .4), 0, -.02, .19, head);
+      for (const sx of [-1, 1]) sphere(.05, fur, sx * .11, .13, -.01, head);
+      eyePair(.055, .04, .12);
+    } else if (ANIMAL === 'gator-mascot') {
+      sphere(.15, fur, 0, .02, -.02, head, 1, .9, 1);
+      box(.13, .045, .22, fur, 0, -.03, .18, head);
+      box(.12, .03, .2, M('#5b8a5f', .8), 0, -.065, .17, head, false);
+      box(.11, .012, .18, M('#e6e6e2', .6), 0, -.048, .18, head, false);
+      for (const sx of [-1, 1]) sphere(.035, fur, sx * .06, .1, .04, head);
+      eyePair(.06, .095, .06, .016);
+    } else if (ANIMAL === 'ox-mascot') {
+      sphere(.155, fur, 0, .01, 0, head, 1.05, 1, 1);
+      const muz = M('#cbb8a2', .7);
+      sphere(.085, muz, 0, -.06, .11, head, 1.15, .8, .9);
+      for (const sx of [-1, 1]) {
+        sphere(.014, M('#241f1c', .5), sx * .03, -.06, .185, head);
+        const horn = new THREE.Mesh(new THREE.ConeGeometry(.025, .12, 8),
+          M('#e3d9c2', .5));
+        horn.position.set(sx * .13, .14, 0);
+        horn.rotation.z = sx * -.7; head.add(horn);
+        sphere(.04, fur, sx * .15, .04, -.02, head, .5, .8, .9);
+      }
+      eyePair(.06, .04, .12);
+    }
+  } else {
   sphere(.145, skin, 0, 0, 0, head, 1, 1.08, 1);
   for (const sx of [-1, 1]) {
     sphere(.032, M('#f2f2ee', .4), sx * .052, .02, .118, head, 1, 1, .5);
@@ -1107,9 +1177,10 @@ function buildAvatarMesh(cfg) {
   sphere(.028, skin, 0, -.01, .145, head, .8, 1.1, .9);           // nose
   box(.05, .012, .015, M('#8a5a4a', .6), 0, -.062, .132, head, false); // mouth
   for (const sx of [-1, 1]) sphere(.03, skin, sx * .14, 0, 0, head, .5, 1, .8);
+  }
 
   // facial hair, from the hair colour
-  const fh = cfg.facialhair;
+  const fh = ANIMAL ? 'none' : cfg.facialhair;
   if (fh !== 'none') {
     const fhM = new THREE.MeshStandardMaterial({
       color: optOf('haircolor').value, roughness: .95,
@@ -1136,7 +1207,7 @@ function buildAvatarMesh(cfg) {
   }
 
   // hair, unless a full hat hides it anyway
-  const hs = cfg.hair;
+  const hs = ANIMAL ? 'bald' : cfg.hair;
   if (hs !== 'bald') {
     const shell = (sy, y) => sphere(.152, hairM, 0, y, -.01, head, 1, sy, 1);
     if (['buzz', 'crew', 'undercut'].includes(hs)) shell(.62, .05);
@@ -1156,8 +1227,9 @@ function buildAvatarMesh(cfg) {
   }
 
   // headwear, on its own group so the hat-tip emote can lift it
-  const hat = new THREE.Group(); hat.position.y = .13; head.add(hat);
-  const hw = cfg.headwear;
+  const hat = new THREE.Group(); hat.position.y = ANIMAL ? .17 : .13;
+  head.add(hat);
+  const hw = ANIMAL ? 'none' : cfg.headwear;
   const markFront = () => {
     const mk = markPlane(.09, .1, crewId);
     mk.position.set(0, .035, .135); mk.rotation.x = -.15; hat.add(mk);
@@ -1414,15 +1486,18 @@ function renderWheel() {
   const sections = D.avatars.sections;
   const isChars = wheelSection === sections.length;
   const isEmotes = wheelSection === sections.length + 1;
+  const isApes = wheelSection === sections.length + 2;
   tabs.innerHTML = sections.map((s, i) =>
     `<button class="wtab ${i === wheelSection ? 'on' : ''}" data-tab="${i}"
        title="${s.label}">${s.emoji}</button>`).join('')
     + `<button class="wtab ${isChars ? 'on' : ''}" data-tab="${sections.length}"
         title="Characters">\\ud83c\\udfaa</button>`
     + `<button class="wtab ${isEmotes ? 'on' : ''}" data-tab="${sections.length + 1}"
-        title="Emotes">\\ud83d\\ude00</button>`;
+        title="Emotes">\\ud83d\\ude00</button>`
+    + `<button class="wtab ${isApes ? 'on' : ''}" data-tab="${sections.length + 2}"
+        title="${D.avatars.tradeapes.collection}">\\ud83e\\udd8d</button>`;
   const svg = document.getElementById('wheel');
-  const sec = (isEmotes || isChars) ? null : sections[wheelSection];
+  const sec = sections[wheelSection] ?? null;
   const isCrew = sec?.kind === 'crew';
   // the crew wheel is two levels deep: pick a district, then a hall
   let items, pickAttr = 'data-pick', hubGlyph;
@@ -1431,20 +1506,30 @@ function renderWheel() {
     items = D.avatars.characters.map((c) => ({ id: c.id, emoji: c.emoji }));
     pickAttr = 'data-charpick'; hubGlyph = '\\ud83c\\udfaa';
   }
-  else if (isCrew && !crewDistrict) {
+  else if ((isCrew || isApes) && !crewDistrict) {
+    const crewSec = sections.find((x) => x.kind === 'crew');
     const seen = new Map();
-    for (const o of sec.options)
+    for (const o of crewSec.options)
       if (!seen.has(o.district)) seen.set(o.district, o.hue);
     items = [...seen].map(([d, hue]) => ({
       id: d, glyph: d.slice(0, 2).toUpperCase(), hue,
       value: `hsl(${hue},45%,34%)` }));
-    pickAttr = 'data-crewdist'; hubGlyph = sec.emoji;
+    pickAttr = 'data-crewdist';
+    hubGlyph = isApes ? '\\ud83e\\udd8d' : sec.emoji;
+  } else if (isApes) {
+    items = D.avatars.tradeapes.apes
+      .filter((t) => t.district === crewDistrict)
+      .map((t) => ({ id: t.hall, glyph: t.code,
+        value: `hsl(${t.hue},45%,34%)` }));
+    pickAttr = 'data-apepick'; hubGlyph = '\\u2190';
   } else if (isCrew) {
     items = sec.options.filter((o) => o.district === crewDistrict)
       .map((o) => ({ ...o, value: `hsl(${o.hue},45%,34%)` }));
     pickAttr = 'data-pick'; hubGlyph = '\u2190';
   } else { items = sec.options; hubGlyph = sec.emoji; }
-  const cur = isEmotes ? lastEmote : sec ? avatarCfg[sec.id] : null;
+  const cur = isEmotes ? lastEmote
+    : isApes ? (avatarCfg.costume === 'ape-mascot' ? avatarCfg.crew : null)
+    : sec ? avatarCfg[sec.id] : null;
   const N = items.length, R = 92, r0 = 34, cx = 100, cy = 100;
   const wedge = (i) => {
     const a0 = (i / N) * Math.PI * 2 - Math.PI / 2 + .015;
@@ -1461,10 +1546,9 @@ function renderWheel() {
   svg.innerHTML = items.map((o, i) => {
     const sel = o.id === cur;
     const fill = (isEmotes || isChars) ? 'var(--panel)'
-      : (sec.kind === 'color' || isCrew) ? o.value : 'var(--panel)';
+      : o.value ?? 'var(--panel)';
     const [tx, ty] = mid(i, (r0 + R) / 2);
-    const glyph = (isEmotes || isChars) ? o.emoji
-      : sec.kind === 'color' ? '' : o.glyph;
+    const glyph = (isEmotes || isChars) ? o.emoji : o.glyph ?? '';
     return `<path d="${wedge(i)}" fill="${fill}"
         stroke="${sel ? 'var(--mark)' : 'var(--rule)'}"
         stroke-width="${sel ? 3 : 1}" ${pickAttr}="${o.id}"/>`
@@ -1473,8 +1557,8 @@ function renderWheel() {
           fill="var(--ink)" pointer-events="none">${glyph}</text>` : '');
   }).join('')
     + `<circle cx="${cx}" cy="${cy}" r="${r0 - 6}" fill="var(--sunk)"
-        stroke="var(--rule)" ${isCrew && crewDistrict ? 'data-crewback="1"' : ''}
-        style="${isCrew && crewDistrict ? 'cursor:pointer' : ''}"/>`
+        stroke="var(--rule)" ${(isCrew || isApes) && crewDistrict ? 'data-crewback="1"' : ''}
+        style="${(isCrew || isApes) && crewDistrict ? 'cursor:pointer' : ''}"/>`
     + `<text x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="central"
         font-size="20" pointer-events="none">${hubGlyph}</text>`;
 }
@@ -1488,6 +1572,22 @@ document.getElementById('wheelWrap').addEventListener('click', (e) => {
   const dist = e.target.closest('[data-crewdist]');
   if (dist) { crewDistrict = dist.dataset.crewdist; renderWheel(); return; }
   if (e.target.closest('[data-crewback]')) { crewDistrict = null; renderWheel(); return; }
+  const ap = e.target.closest('[data-apepick]');
+  if (ap) {
+    const t = D.avatars.tradeapes.apes.find((x) => x.hall === ap.dataset.apepick);
+    if (t) {
+      avatarCfg = { ...t.cfg };
+      prog.avatar = avatarCfg; saveProg();
+      refreshAvatarMeshes(); renderWheel();
+      if (view === 'avatar') {
+        document.getElementById('hname').textContent = t.name;
+        document.getElementById('hfocus').textContent =
+          D.halls.find((h) => h.slug === t.hall).name + ' \\u00b7 '
+          + D.avatars.tradeapes.honesty;
+      }
+    }
+    return;
+  }
   const chp = e.target.closest('[data-charpick]');
   if (chp) {
     const ch = D.avatars.characters.find((c) => c.id === chp.dataset.charpick);

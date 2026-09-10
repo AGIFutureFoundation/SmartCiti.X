@@ -186,7 +186,11 @@ SECTIONS = [
          ('vintage-33', 'vi'), ('storm-rider', 'st'), ('gold-journey', 'go'),
          ('hazmat', 'hz'), ('arc-guard', 'ar'), ('tunnel', 'tu'),
          ('parade', 'pd'), ('night-reflective', 'ni'), ('mascot', 'ms'),
-         ('frost', 'fr'), ('gala', 'ga')])},
+         ('frost', 'fr'), ('gala', 'ga'),
+         # the crew mascots: original Academy animals, drawn from scratch
+         ('ape-mascot', '\U0001f98d'), ('pelican-mascot', '\U0001f426'),
+         ('bear-mascot', '\U0001f43b'), ('gator-mascot', '\U0001f40a'),
+         ('ox-mascot', '\U0001f402')])},
 ]
 
 # ------------------------------------------------------------- the crew ---
@@ -293,6 +297,11 @@ CHARACTERS = [
          'New boots, clean gloves, and every question worth asking.',
          crew='scaffold', extras='gloves', shoes='steel-toe-tan',
          top='tee', topcolor='white'),
+    char('wrench', '\U0001f98d', 'Wrench',
+         'The workshop ape - an original Academy mascot who tightens '
+         'everything twice.',
+         costume='ape-mascot', crew='millwrights', tools='basic',
+         vest='hi-vis-2'),
 ]
 
 EMOTES = [
@@ -315,6 +324,39 @@ for s in SECTIONS:
         assert 15 <= len(ids) <= 20, f"{s['id']}: {len(ids)} options"
     assert DEFAULTS[s['id']] in ids, s['id']
 
+# -------------------------------------------------------- TradeApes -------
+# SmartCiti.X TradeApes: an ORIGINAL Academy collection - one ape per hall,
+# 111 in all, every one generated deterministically from the roster itself
+# (fur, build, eyes, vest and kit walk the locker by hall index; the chest
+# and vest carry the hall's own three-letter mark). Free and cosmetic only,
+# like everything in the locker. NOT tokens: nothing here is an NFT, nothing
+# is for sale, and no blockchain is involved. And original: drawn from
+# scratch in this page's primitive style, imitating no third-party ape
+# artwork, collection or brand.
+_opt_ids = {s['id']: [o['id'] for o in s['options']] for s in SECTIONS}
+TRADEAPES = []
+for u in unions:
+    i = u['index']
+    _cfg = dict(DEFAULTS)
+    _cfg.update({
+        'costume': 'ape-mascot', 'crew': u['slug'], 'outer': 'none',
+        'build': _opt_ids['build'][i % 16],
+        'eyes': _opt_ids['eyes'][i % 15],
+        'headcolor': _opt_ids['headcolor'][i % 16],
+        'topcolor': _opt_ids['topcolor'][i % 18],       # the fur
+        'pantscolor': _opt_ids['pantscolor'][i % 15],
+        'shoes': _opt_ids['shoes'][i % 16],
+        'vest': ['hi-vis-2', 'hi-vis-3', 'surveyor', 'tool-vest'][i % 4],
+        'tools': _opt_ids['tools'][1 + i % 14],
+        'extras': _opt_ids['extras'][i % 15],
+    })
+    TRADEAPES.append({
+        'hall': u['slug'], 'code': codes[u['slug']],
+        'name': f'TradeApe {codes[u["slug"]]}',
+        'district': u['district'], 'hue': HUES[u['district']],
+        'cfg': _cfg,
+    })
+
 # Every character is made of the locker: each cfg key is a section and
 # each value one of its options - an invented id fails the build.
 _valid = {s['id']: {o['id'] for o in s['options']} for s in SECTIONS}
@@ -323,6 +365,11 @@ for c in CHARACTERS:
     assert set(c['cfg']) == set(_valid), c['id']
     for k, v in c['cfg'].items():
         assert v in _valid[k], f"{c['id']}: {k}={v}"
+assert len(TRADEAPES) == 111
+for t in TRADEAPES:
+    assert set(t['cfg']) == set(_valid), t['hall']
+    for k, v in t['cfg'].items():
+        assert v in _valid[k], f"{t['hall']}: {k}={v}"
 
 stamp = hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest()[:16]
 
@@ -339,7 +386,21 @@ doc = {
              'three-letter hall codes on a shield in the district hue, the '
              'same codes the campus map prints. They are not, and do not '
              'imitate, any real union’s logo or emblem; no local is named '
-             'and none is drawn.',
+             'and none is drawn. The animal mascots are original Academy '
+             'characters drawn from scratch in this page’s own primitive '
+             'style; they are not, and do not imitate, any third-party '
+             'character, collection or brand - no Bored Ape or other NFT '
+             'artwork is reproduced or derived from.',
+    'tradeapes': {
+        'collection': 'SmartCiti.X TradeApes',
+        'honesty': 'an original Academy collection, generated from the '
+                   'roster itself - one ape per hall, free and cosmetic '
+                   'only. Not tokens: nothing is an NFT, nothing is for '
+                   'sale, and no blockchain is involved. Original art: '
+                   'no third-party ape artwork, collection or brand is '
+                   'imitated.',
+        'apes': TRADEAPES,
+    },
     'sections': SECTIONS,
     'defaults': DEFAULTS,
     'characters': CHARACTERS,

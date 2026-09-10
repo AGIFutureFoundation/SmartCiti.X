@@ -50,9 +50,9 @@ ok('everyday work stays the default: outerwear, extras and costume all open on n
 /* ----------------------------------------------------------- characters --- */
 const secIds = Object.fromEntries(
   reg.sections.map((s) => [s.id, new Set(s.options.map((o) => o.id))]));
-ok('sixteen one-tap characters, each with a name, an emoji and a line of story',
-  reg.characters.length === 16
-  && new Set(reg.characters.map((c) => c.id)).size === 16
+ok('seventeen one-tap characters, each with a name, an emoji and a line of story',
+  reg.characters.length === 17
+  && new Set(reg.characters.map((c) => c.id)).size === 17
   && reg.characters.every((c) => c.name && c.emoji && c.blurb?.length > 20));
 ok('every character is made of the locker: each cfg value resolves to a real option',
   reg.characters.every((c) =>
@@ -62,6 +62,29 @@ ok('the costumes range from the krewe to the foundry, and characters wear them',
   ['krewe', 'foundry', 'diver', 'vintage-33', 'gold-journey'].every((id) =>
     secIds.costume.has(id))
   && reg.characters.filter((c) => c.cfg.costume !== 'none').length >= 8);
+ok('five original animal mascots join the costume rack, the workshop ape among them',
+  ['ape-mascot', 'pelican-mascot', 'bear-mascot', 'gator-mascot',
+   'ox-mascot'].every((id) => secIds.costume.has(id))
+  && reg.characters.some((c) => c.cfg.costume === 'ape-mascot'));
+ok('the TradeApes: 111 originals, one per hall, generated from the roster',
+  reg.tradeapes.apes.length === 111
+  && JSON.stringify(reg.tradeapes.apes.map((t) => t.hall).sort())
+    === JSON.stringify(unions.map((u) => u.slug).sort())
+  && reg.tradeapes.apes.every((t) => t.name === 'TradeApe ' + t.code
+    && t.cfg.costume === 'ape-mascot' && t.cfg.crew === t.hall
+    && Object.entries(t.cfg).every(([k, v]) => secIds[k]?.has(v))));
+ok('the TradeApes vary: many furs, builds and vests across the collection',
+  new Set(reg.tradeapes.apes.map((t) => t.cfg.topcolor)).size >= 15
+  && new Set(reg.tradeapes.apes.map((t) => t.cfg.build)).size === 16
+  && new Set(reg.tradeapes.apes.map((t) => t.cfg.vest)).size === 4);
+ok('the TradeApes honesty: free, cosmetic, NOT tokens, imitating nobody',
+  /free and cosmetic/.test(reg.tradeapes.honesty)
+  && /Not tokens/.test(reg.tradeapes.honesty)
+  && /no blockchain/.test(reg.tradeapes.honesty)
+  && /no third-party ape artwork/.test(reg.tradeapes.honesty));
+ok('the mascot policy is stated: original characters, no third-party collection imitated',
+  /original Academy/.test(reg.marks) && /third-party/.test(reg.marks)
+  && /not.*reproduced or derived/.test(reg.marks.replace(/\n/g, ' ')));
 
 /* ----------------------------------------------------------------- crew --- */
 ok('the crew section seats the whole roster: one option per hall, exactly',
