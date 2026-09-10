@@ -893,7 +893,7 @@ function buildAvatarMesh(cfg) {
     arms[nm] = p;
   }
   // head + hat
-  const head = new THREE.Group(); head.position.y = 1.52; g.add(head);
+  const head = new THREE.Group(); head.position.y = 1.4; g.add(head);
   box(.28, .3, .26, skin, 0, .15, 0, head);
   const hat = new THREE.Group(); hat.position.y = .32; head.add(hat);
   const dome = new THREE.Mesh(new THREE.CylinderGeometry(
