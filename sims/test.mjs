@@ -80,6 +80,13 @@ ok('the chart is honest and the pick lists respect it: capacity falls with radiu
       && sims['load-chart'].rubric.some((r) =>
           r.axis === 'overloads' && r.pass === '== 0');
   })());
+ok('every seat carries its five-point walkaround, and the walkaround is honestly NOT a gate',
+  Object.values(sims).every((s) => s.walkaround?.length === 5
+    && new Set(s.walkaround.map((w) => w.id)).size === 5
+    && s.walkaround.every((w) => w.point && w.check.length > 15))
+  && /not a gate/.test(reg.honesty.walkaround)
+  && /changes no score/.test(reg.honesty.walkaround)
+  && /not an equipment inspection record/.test(reg.honesty.walkaround));
 ok('the trench task teaches utility discipline: a pass demands zero strikes',
   /utility/.test(sims['excavator-trench'].task)
   && sims['excavator-trench'].rubric.some((r) =>
