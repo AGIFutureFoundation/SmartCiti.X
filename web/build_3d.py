@@ -957,6 +957,12 @@ function buildAvatarMesh(cfg) {
   const ANIMAL = /-mascot$/.test(cfg.costume) ? cfg.costume : null;
   if (ANIMAL) CS = { ...CS, top: optOf('topcolor').value,
     pants: optOf('topcolor').value };
+  // the ape is a TRUE ape, proportioned to the measured reference in the
+  // registry (span ~ height, deep hunch): long arms, wide shoulders,
+  // heavy haunches, low-poly flat shading
+  const APE = ANIMAL === 'ape-mascot';
+  const APR = D.avatars.tradeapes.ape_reference;
+  const APE_ARM = 1.12, APE_SHX = 1.06;
   if (CS) {
     topM.color.set(CS.top); pantsM.color.set(CS.pants); hatM.color.set(CS.hat);
     if (CS.metal) { topM.metalness = .55; topM.roughness = .35; }
@@ -997,6 +1003,18 @@ function buildAvatarMesh(cfg) {
   // hips and torso
   box(.4, .16, .26, coveralls ? topM : pantsM, 0, 1.0, 0, g);
   capsule(.2, .38, topM, 0, 1.32, 0, g);
+  if (APE) {
+    const furB = new THREE.MeshStandardMaterial({
+      color: CS.top, roughness: .95, flatShading: true });
+    capsule(.235, .28, furB, 0, 1.28, .04, g);           // barrel chest
+    sphere(.19, furB, 0, 1.02, .05, g, 1, .85, 1);       // the belly
+    for (const sx of [-1, 1])
+      sphere(.135, furB, sx * .17, .78, .02, g, 1, 1.1, 1);  // haunches
+    // span/height ratio, recorded for the harness to hold against the
+    // registry's measured reference
+    g.userData.apeSpanRatio =
+      (2 * .3 * APE_SHX + 2 * .64 * APE_ARM + .12) / 1.93;
+  }
   if (cfg.top === 'flannel' || cfg.top === 'work-shirt') {
     box(.05, .5, .27, M('#2a2523', .9), 0, 1.32, 0, g);   // placket line
   }
@@ -1097,14 +1115,16 @@ function buildAvatarMesh(cfg) {
     : ANIMAL ? M(CS.top, .95)
     : cfg.costume === 'parade' || cfg.costume === 'mascot' ? M('#e6e6e2', .6)
     : skin;
+  if (APE) handM.flatShading = true;
   for (const [nm, sx] of [['armL', -1], ['armR', 1]]) {
     const p = new THREE.Group(); p.position.set(sx * .3, 1.52, 0); g.add(p);
     capsule(.07, .2, tank ? skin : topM, 0, -.14, 0, p);
     capsule(.06, .18, sleeves ? topM : skin, 0, -.42, 0, p);
-    sphere(cfg.costume === 'mascot' ? .085 : .06, handM, 0, -.58, 0, p);
+    sphere(APE ? .082 : cfg.costume === 'mascot' ? .085 : .06, handM, 0, -.58, 0, p);
     if (cfg.extras === 'elbow-pads') box(.1, .1, .09, dark, 0, -.3, .05, p, false);
     if (cfg.costume === 'night-reflective' || cfg.costume === 'tunnel')
       box(.15, .035, .15, reflect, 0, -.24, 0, p, false);
+    if (APE) { p.scale.y = APE_ARM; p.position.x *= APE_SHX; }
     arms[nm] = p;
   }
 
@@ -1120,18 +1140,27 @@ function buildAvatarMesh(cfg) {
       }
     };
     if (ANIMAL === 'ape-mascot') {
-      const face = M('#c9a180', .7);
-      sphere(.16, fur, 0, .01, -.01, head, 1, 1.05, 1);
-      sphere(.11, face, 0, -.005, .085, head, 1, 1.02, .6);
-      sphere(.075, face, 0, -.07, .115, head, 1.25, .8, .9);
-      box(.055, .015, .02, M('#241f1c', .6), 0, -.095, .18, head, false);
+      fur.flatShading = true;
+      const face = new THREE.MeshStandardMaterial({
+        color: '#c9a180', roughness: .7, flatShading: true });
+      const lid = M('#a5794f', .75);
+      sphere(.165, fur, 0, .015, -.01, head, 1, 1.05, 1);
+      sphere(.115, face, 0, -.005, .085, head, 1, 1.04, .6);
+      sphere(.08, face, 0, -.075, .115, head, 1.3, .8, .95);
+      box(.06, .016, .02, M('#241f1c', .6), 0, -.1, .185, head, false);
       for (const sx of [-1, 1]) {
-        sphere(.012, M('#241f1c', .5), sx * .02, -.05, .175, head);
-        sphere(.05, fur, sx * .17, .02, -.02, head, .5, 1, .9);
-        sphere(.028, face, sx * .17, .02, .01, head, .35, .7, .6);
+        sphere(.013, M('#241f1c', .5), sx * .022, -.052, .18, head);
+        sphere(.052, fur, sx * .175, .02, -.02, head, .5, 1, .9);
+        sphere(.03, face, sx * .175, .02, .01, head, .35, .7, .6);
+        // the layered eye: lid band, sclera, iris, pupil
+        sphere(.03, lid, sx * .052, .052, .112, head, 1.1, .55, .55);
       }
-      box(.13, .028, .03, fur, 0, .075, .115, head, false);
-      eyePair(.05, .035, .115);
+      box(.135, .03, .032, fur, 0, .082, .112, head, false);
+      eyePair(.052, .033, .118);
+      for (const sx of [-1, 1])
+        sphere(.008, M('#0a0a0c', .3), sx * .052, .033, .152, head);
+      head.scale.setScalar(1.12);
+      head.position.y -= .06; head.position.z += .07;
     } else if (ANIMAL === 'pelican-mascot') {
       sphere(.15, fur, 0, .02, -.01, head, 1, 1.05, 1);
       const beak = M('#e08a2a', .55);
@@ -1409,7 +1438,7 @@ function buildAvatarMesh(cfg) {
   const sc = optOf('build').scale ?? [1, 1, 1];
   g.scale.set(sc[0], sc[1], sc[2]);
   g.traverse((o) => { if (o.isMesh) o.castShadow = true; });
-  g.userData = { arms, head, hat };
+  g.userData = { ...g.userData, arms, head, hat };
   return g;
 }
 
@@ -3235,6 +3264,7 @@ window.__tc3d = () => ({ view, buildings: buildings.length, plates: plates.lengt
   chHosted: D.chapters.hosted[campusKey] ?? null,
   isTouch, shadows: renderer.shadowMap.enabled,
   avatar: avatarCfg ? { ...avatarCfg } : null, emote: lastEmote,
+  apeSpan: (avatarMesh ?? walkAvatar)?.userData?.apeSpanRatio ?? null,
   wheel: document.querySelectorAll('#wheel path').length,
   progress: { stations: doneStations.size, sims: Object.keys(prog.sims).length },
   dash: document.querySelectorAll('#dash .g').length,

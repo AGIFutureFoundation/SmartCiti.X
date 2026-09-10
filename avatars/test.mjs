@@ -77,6 +77,13 @@ ok('the TradeApes vary: many furs, builds and vests across the collection',
   new Set(reg.tradeapes.apes.map((t) => t.cfg.topcolor)).size >= 15
   && new Set(reg.tradeapes.apes.map((t) => t.cfg.build)).size === 16
   && new Set(reg.tradeapes.apes.map((t) => t.cfg.vest)).size === 4);
+ok('the ape reference is measurements-only, and says so',
+  (() => { const r = reg.tradeapes.ape_reference;
+    return Math.abs(r.span_to_height - r.span / r.height) < .01
+      && Math.abs(r.depth_to_height - r.depth / r.height) < .01
+      && /measurements\s+only/.test(r.provenance)
+      && /not shipped/.test(r.provenance)
+      && /no third-party artwork/.test(r.provenance); })());
 ok('the TradeApes honesty: free, cosmetic, NOT tokens, imitating nobody',
   /free and cosmetic/.test(reg.tradeapes.honesty)
   && /Not tokens/.test(reg.tradeapes.honesty)

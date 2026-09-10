@@ -3,11 +3,28 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-10",
- "source_stamp": "15ea5d3ead8e3876",
+ "source_stamp": "6d04878a02515b8e",
  "guarantee": "cosmetic only: every option is free and unlocked, and no avatar choice affects scoring, access, progression or anything the rubrics measure",
  "marks": "crew marks are the Academy’s own insignia - the roster’s three-letter hall codes on a shield in the district hue, the same codes the campus map prints. They are not, and do not imitate, any real union’s logo or emblem; no local is named and none is drawn. The animal mascots are original Academy characters drawn from scratch in this page’s own primitive style; they are not, and do not imitate, any third-party character, collection or brand - no Bored Ape or other NFT artwork is reproduced or derived from.",
  "tradeapes": {
   "collection": "SmartCiti.X TradeApes",
+  "ape_reference": {
+   "height": 23.64,
+   "span": 24.24,
+   "depth": 13.73,
+   "span_to_height": 1.03,
+   "depth_to_height": 0.58,
+   "material_roles": [
+    "fur",
+    "face",
+    "eyelids",
+    "iris",
+    "sclera",
+    "pupil",
+    "black"
+   ],
+   "provenance": "measured from a user-supplied GLB; measurements only - the mesh is not shipped, no geometry or texture is copied, and no third-party artwork is derived from"
+  },
   "honesty": "an original Academy collection, generated from the roster itself - one ape per hall, free and cosmetic only. Not tokens: nothing is an NFT, nothing is for sale, and no blockchain is involved. Original art: no third-party ape artwork, collection or brand is imitated.",
   "apes": [
    {

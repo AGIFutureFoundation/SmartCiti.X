@@ -393,6 +393,24 @@ doc = {
              'artwork is reproduced or derived from.',
     'tradeapes': {
         'collection': 'SmartCiti.X TradeApes',
+        # Ape anatomy reference, MEASURED from a user-supplied low-poly ape
+        # GLB (Khronos glTF Blender I/O v1.6.16). Measurements only: the
+        # mesh itself is NOT shipped or copied - its license is unknown and
+        # its filename references a third-party collection, so the numbers
+        # below are the whole of what was taken. Generic ape anatomy
+        # (span~height, hunched depth, dark fur over a tan face, layered
+        # eyes) is nobody's property; the TradeApes remain original
+        # primitives built to these proportions.
+        'ape_reference': {
+            'height': 23.64, 'span': 24.24, 'depth': 13.73,
+            'span_to_height': 1.03, 'depth_to_height': 0.58,
+            'material_roles': ['fur', 'face', 'eyelids', 'iris', 'sclera',
+                               'pupil', 'black'],
+            'provenance': 'measured from a user-supplied GLB; measurements '
+                          'only - the mesh is not shipped, no geometry or '
+                          'texture is copied, and no third-party artwork '
+                          'is derived from',
+        },
         'honesty': 'an original Academy collection, generated from the '
                    'roster itself - one ape per hall, free and cosmetic '
                    'only. Not tokens: nothing is an NFT, nothing is for '
