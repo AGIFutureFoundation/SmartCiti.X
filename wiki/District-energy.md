@@ -1,6 +1,6 @@
 # District: Energy & Utilities
 
-*Generation, distribution, water and storm work*
+*Generation, distribution, water and storm work* — trains at **Crescent Works Campus**, New Orleans, Louisiana.
 
 **17 halls** · 187,000 lessons ·
 1,683,000 core modules. Part of the [campus map](Campus-Map.md).

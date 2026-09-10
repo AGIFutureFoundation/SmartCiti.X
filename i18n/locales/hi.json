@@ -40,7 +40,9 @@
   "view.campus": "परिसर दृश्य",
   "ui.walk": "चलें",
   "hint.campus": "प्रवेश के लिए किसी हॉल पर क्लिक करें",
-  "hint.walk": "चलने के लिए WASD · बाहर निकलने के लिए Esc"
+  "hint.walk": "चलने के लिए WASD · बाहर निकलने के लिए Esc",
+  "view.region": "नेटवर्क दृश्य",
+  "figures.campuses": "{n} परिसर"
  },
  "districts": {
   "structural": {

@@ -1,6 +1,6 @@
 # District: Survey, Safety & Environment
 
-*Where work is set out, made safe and made clean*
+*Where work is set out, made safe and made clean* — trains at **Crescent Works Campus**, New Orleans, Louisiana.
 
 **11 halls** · 121,000 lessons ·
 1,089,000 core modules. Part of the [campus map](Campus-Map.md).

@@ -40,7 +40,9 @@
   "view.campus": "园区视图",
   "ui.walk": "步行",
   "hint.campus": "点击场馆进入",
-  "hint.walk": "WASD 移动 · Esc 退出"
+  "hint.walk": "WASD 移动 · Esc 退出",
+  "view.region": "网络视图",
+  "figures.campuses": "{n} 个园区"
  },
  "districts": {
   "structural": {

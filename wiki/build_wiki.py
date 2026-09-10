@@ -35,6 +35,7 @@ L = manifest['ledger']
 halls = json.load(open(ROOT / 'pack/registry/halls.json'))['halls']
 unions = json.load(open(ROOT / 'unions/registry/unions.json'))
 districts = json.load(open(ROOT / 'unions/registry/districts.json'))['districts']
+campuses = json.load(open(ROOT / 'unions/registry/campuses.json'))['campuses']
 skills = json.load(open(ROOT / 'pack/registry/skills.json'))['skills']
 by_slug = {h['slug']: h for h in halls}
 
@@ -61,6 +62,11 @@ def mermaid_id(slug):
 
 # ------------------------------------------------------------------ Home ---
 def page_home():
+    campus_rows = '\n'.join(
+        f'| **{c["name"]}** | {c["city"]}, {c["region"]} | {c["tagline"]} '
+        f'| {", ".join(districts[d]["name"] for d in c["districts"])} '
+        f'| {len(c["halls"])} |'
+        for c in campuses.values())
     dist_rows = '\n'.join(
         f'| [{d["name"]}](District-{k}.md) | {d["tagline"]} | {len(d["halls"])} |'
         for k, d in districts.items())
@@ -86,7 +92,7 @@ content graph and details:
 | Map | What it shows | Page |
 |---|---|---|
 | **Interactive map** (`web/trade_craft_interactive.html`) | All {L["halls"]} halls with toggleable layers — districts, pipeline, module layers, training stations — hall floor plans and quizzes, in every locale, searchable and deep-linkable | [Campus-Map](Campus-Map.md) |
-| **3D environment** (`web/trade_craft_3d.html`) | The whole campus as a 3D city — all {L["halls"]} buildings ringed by district, click one to enter its hall: rooms, fixtures, yard props, station beacons, and first-person walk mode | [Campus-Map](Campus-Map.md) |
+| **3D environment** (`web/trade_craft_3d.html`) | The whole network in 3D — three city campuses on one board, each campus a ringed district city of buildings, each building an enterable hall with rooms, fixtures, station beacons and first-person walk mode | [Campus-Map](Campus-Map.md) |
 | Campus map (`web/trade_craft_map.html`) | All {L["halls"]} halls in {len(districts)} districts, with pipeline state | [Campus-Map](Campus-Map.md) |
 | Hall floor plans (inside the campus map) | A generated interior for every hall — {L["halls"]} plans, 11 rooms each | [Interiors-Map](Interiors-Map.md) |
 | Skill graph (`pack/registry/skills.json`) | {F(len(skills))} skills and the edges that sequence practice | [Skill-Graph](Skill-Graph.md) |
@@ -99,6 +105,15 @@ flowchart LR
   campus(("Treasure Island<br/>campus"))
 {graph_edges}
 ```
+
+## The campuses
+
+The network trains in three planned locations — named for real cities, with
+no site surveyed and no address recorded:
+
+| Campus | Where | Trains | Districts | Halls |
+|---|---|---|---|---|
+{campus_rows}
 
 ## The districts
 
@@ -390,9 +405,10 @@ def page_district(key, d):
         f'  {mermaid_id(key)} --> {mermaid_id(h["slug"])}["{h["name"]}"]'
         for h in members)
     total_modules = sum(h['modules'] for h in members)
+    ckey, camp = next((ck, c) for ck, c in campuses.items() if key in c['districts'])
     return f'''# District: {d["name"]}
 
-*{d["tagline"]}*
+*{d["tagline"]}* — trains at **{camp["name"]}**, {camp["city"]}, {camp["region"]}.
 
 **{len(members)} halls** · {F(sum(h["lessons"] for h in members))} lessons ·
 {F(total_modules)} core modules. Part of the [campus map](Campus-Map.md).

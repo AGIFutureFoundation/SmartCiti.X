@@ -40,7 +40,9 @@
   "view.campus": "Campus view",
   "ui.walk": "Walk",
   "hint.campus": "Click a hall to enter it",
-  "hint.walk": "WASD to move · Esc to exit"
+  "hint.walk": "WASD to move · Esc to exit",
+  "view.region": "Network view",
+  "figures.campuses": "{n} campuses"
  },
  "districts": {
   "structural": {

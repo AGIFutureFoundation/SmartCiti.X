@@ -24,7 +24,7 @@ import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
-from unions111 import UNIONS_111, EXISTING_33, DISTRICTS  # noqa: E402
+from unions111 import UNIONS_111, EXISTING_33, DISTRICTS, CAMPUSES  # noqa: E402
 
 PACK_VERSION = "3.2.0"
 BUILT = "2026-09-09"
@@ -85,7 +85,32 @@ districts_doc = {
     },
 }
 
+campus_of = {}
+for ckey, (_n, _city, _region, _tag, dists) in CAMPUSES.items():
+    for d in dists:
+        campus_of[d] = ckey
+
+campuses_doc = {
+    "pack": "smartcitix-trade-craft-academy-union-registry",
+    "pack_version": PACK_VERSION,
+    "built": BUILT,
+    "source_stamp": stamp,
+    "count": len(CAMPUSES),
+    "honesty": {
+        "siting": "planned locations named for real cities; no site has been "
+                  "surveyed, no address is recorded, and no figure comes "
+                  "from any city's records",
+    },
+    "campuses": {
+        ckey: {"name": n, "city": city, "region": region, "tagline": tag,
+               "districts": dists,
+               "halls": [s for d in dists for s in DISTRICTS[d][2]]}
+        for ckey, (n, city, region, tag, dists) in CAMPUSES.items()
+    },
+}
+
 (OUT / "unions.json").write_text(json.dumps(unions_doc, indent=1) + "\n")
 (OUT / "districts.json").write_text(json.dumps(districts_doc, indent=1) + "\n")
+(OUT / "campuses.json").write_text(json.dumps(campuses_doc, indent=1) + "\n")
 print(f"unions registry: {len(unions)} unions in {len(DISTRICTS)} districts "
-      f"(source stamp {stamp})")
+      f"across {len(CAMPUSES)} campuses (source stamp {stamp})")
