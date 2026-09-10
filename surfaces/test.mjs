@@ -92,6 +92,51 @@ ok('halls with no finish-driving hazard say so explicitly, and the list is real'
   && Object.entries(halls).every(([s, h]) =>
       (h.hazard === null) === reg.no_finish_driving_hazard.includes(s)));
 
+/* ---------------------------------------------------- conditions (§24.2) --- */
+const BASE = reg.base_conditions, HAZC = reg.hazard_conditions;
+ok('every hall carries conditions for all 11 rooms, in sane ranges',
+  Object.values(halls).every((h) => ROOM_STRANDS.every((st) => {
+    const c = h.conditions[st];
+    return c && c.lux >= 100 && c.lux <= 1500 && c.ach >= 2 && c.ach <= 40
+      && c.noise_db >= 35 && c.noise_db <= 100
+      && c.temp_c[0] < c.temp_c[1] && Array.isArray(c.ppe)
+      && Array.isArray(c.hazards);
+  })));
+ok('§24.2 holds: the more demanding value wins on every axis, so a second '
+  + 'hazard can never cancel the first',
+  Object.values(halls).every((h) => ROOM_STRANDS.every((st) => {
+    const c = h.conditions[st], b = BASE[st];
+    const parts = [b, ...c.hazards.map((k) => HAZC[k])];
+    return parts.every((p) => c.lux >= p.lux && c.ach >= p.ach
+      && c.noise_db >= p.noise_db
+      && c.temp_c[0] >= (p === b ? b.temp_c[0] : p.temp_c[0]) - 1e9  // lower bound rises
+      && c.temp_c[0] >= b.temp_c[0] && c.temp_c[1] <= b.temp_c[1])
+      && c.hazards.every((k) => c.temp_c[0] >= HAZC[k].temp_c[0]
+        && c.temp_c[1] <= HAZC[k].temp_c[1])
+      && parts.every((p) => p.ppe.every((x) =>
+        p === b || !c.hazards.length ? true : c.ppe.includes(x)))
+      && c.hazards.every((k) => HAZC[k].ppe.every((x) => c.ppe.includes(x)))
+      && b.ppe.every((x) => c.ppe.includes(x));
+  })));
+ok('multi-hazard trades exist and merge every governing hazard (divers: '
+  + 'hot work + immersion)',
+  halls.divers.conditions.procedure.hazards.length >= 2
+  && halls.divers.conditions.procedure.ppe.includes('welding hood')
+  && halls.divers.conditions.procedure.ppe.includes('immersion suit'));
+ok('the answer "none" is explicit: unhazarded office rooms carry an empty '
+  + 'PPE list, not a blank',
+  Object.values(halls).every((h) =>
+    ['coordination', 'documentation', 'leadership'].every((st) =>
+      Array.isArray(h.conditions[st].ppe)))
+  && halls.surveyors.conditions.coordination.ppe.length === 0);
+ok('the hazards list is consistent with the finish provenance (first match)',
+  Object.values(halls).every((h) =>
+    (h.hazard === null && h.hazards.length === 0)
+    || h.hazards[0] === h.hazard));
+ok('§24.3 still holds over the conditions: no standard or spec number',
+  !/\b(ASTM|ANSI|ISO|EN|DIN|UL|NFPA)[\s-]?\d|®|™/i
+    .test(JSON.stringify({ b: BASE, h: HAZC })));
+
 /* ------------------------------------------------------------ freshness --- */
 const src = readFileSync(new URL('./surfaces.py', import.meta.url));
 ok('the registry was built from the current catalogue source (stamp check)',

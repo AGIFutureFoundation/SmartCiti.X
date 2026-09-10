@@ -108,6 +108,11 @@ DATA = json.dumps({
     'campuses': campuses_reg,
     'finishes': {sl: h['rooms'] for sl, h in finishes_reg['halls'].items()},
     'finCat': finishes_reg['catalogue'],
+    'baseCond': finishes_reg['base_conditions'],
+    'condOver': {sl: {st: c for st, c in h['conditions'].items()
+                      if c['hazards']}
+                 for sl, h in finishes_reg['halls'].items()
+                 if any(c['hazards'] for c in h['conditions'].values())},
     'halls': HALLS,
     'stations': {s['station_id']: {k: s[k] for k in (
         'station_id', 'name', 'hall', 'room', 'strand', 'tier',
@@ -423,12 +428,12 @@ const PROPS = {
 };
 
 /* ---------------------------------------------------------- the hall ---- */
-let hallGroup = null, beacons = [], floors = [];
+let hallGroup = null, beacons = [], floors = [], roomRects = [], curRoom = null;
 
 function buildHall(sg) {
   if (hallGroup) { scene.remove(hallGroup); hallGroup.traverse(o => {
     o.geometry?.dispose(); }); }
-  hallGroup = new THREE.Group(); beacons = []; floors = [];
+  hallGroup = new THREE.Group(); beacons = []; floors = []; roomRects = []; curRoom = null;
   const h = D.halls.find(x => x.slug === sg);
   const hue = D.districts[h.district].hue;
   const W = 12 * U, DEP = h.depth * U;
@@ -474,6 +479,9 @@ function buildHall(sg) {
     floor.position.set(rx, .38, rz); floor.receiveShadow = true;
     floor.userData.room = r.label;
     hallGroup.add(floor); floors.push(floor);
+    roomRects.push({ x0: r.x * U - W/2, x1: r.x * U - W/2 + rw,
+                     z0: r.y * U - DEP/2, z1: r.y * U - DEP/2 + rd,
+                     label: r.label, strand: r.strand });
     // safety rooms carry a hazard-stripe threshold at the doorway
     if (r.strand === 'safety') {
       const stripe = new THREE.Mesh(new THREE.BoxGeometry(Math.min(rw-.6,2.4), .07, .5),
@@ -824,6 +832,23 @@ function walkStep(dt) {
     const DEP = h.depth * U;
     camera.position.x = Math.min(21, Math.max(-21, camera.position.x));
     camera.position.z = Math.min(DEP/2 - .8, Math.max(-DEP/2 - 26, camera.position.z));
+    const px = camera.position.x, pz = camera.position.z;
+    const room = roomRects.find((r) =>
+      px >= r.x0 && px <= r.x1 && pz >= r.z0 && pz <= r.z1) ?? null;
+    if (room !== curRoom) {
+      curRoom = room;
+      if (room) {
+        const fin = D.finCat[D.finishes[slug][room.strand].surface];
+        document.getElementById('hfocus').textContent =
+          room.label + ' \u2014 ' + fin.name;
+        document.getElementById('hint').textContent =
+          condLine(condOf(slug, room.strand));
+      } else {
+        document.getElementById('hfocus').textContent =
+          D.halls.find(x => x.slug === slug).focus;
+        document.getElementById('hint').textContent = t('hint.walk');
+      }
+    }
     return;
   }
   // campus stroll: stay on the grounds, and offer the nearest door
@@ -871,7 +896,16 @@ function renderChrome() {
   document.getElementById('pclose').textContent = t('ui.close');
 }
 
+const doneStations = new Set();
+let curStation = null;
+function scoreChip() {
+  const h = D.halls.find(x => x.slug === slug);
+  if (view !== 'hall' || !h.stations.length) return '';
+  const d = h.stations.filter((id) => doneStations.has(id)).length;
+  return ` \u2713 ${d}/${h.stations.length}`;
+}
 function openStation(id) {
+  curStation = id;
   const s = D.stations[id]; const i = D.i18n[loc];
   document.getElementById('pbody').innerHTML = `
     <h2>${s.name}</h2>
@@ -884,6 +918,15 @@ function openStation(id) {
 }
 
 __PIPELINE_JS__
+
+function condOf(hallSlug, strand) {
+  return D.condOver[hallSlug]?.[strand] ?? D.baseCond[strand];
+}
+function condLine(c) {
+  return `${c.lux} lx \u00b7 ${c.ach} ACH \u00b7 ${c.noise_db} dB \u00b7 `
+    + `${c.temp_c[0]}\u2013${c.temp_c[1]} \u00b0C \u00b7 PPE: `
+    + (c.ppe.length ? c.ppe.join(', ') : '\u2014');
+}
 
 function openRoom(roomLabel) {
   const h = D.halls.find(x => x.slug === slug);
@@ -910,7 +953,12 @@ function openRoom(roomLabel) {
         <p><b>${fin.name}</b>` +
         (pf.placed_by === 'hazard'
           ? ` <span class="chip">${pf.hazard}</span>` : '') +
-        `<br><span style="color:var(--muted)">${fin.why}.</span></p>`; })()}
+        `<br><span style="color:var(--muted)">${fin.why}.</span></p>` +
+        (() => { const c = condOf(h.slug, r.strand);
+          return `<p style="color:var(--muted);font-size:13px">${condLine(c)}` +
+            (c.hazards?.length
+              ? '<br>' + c.hazards.map(z=>`<span class="chip">${z}</span>`).join(' ')
+              : '') + `</p>`; })(); })()}
     <h3>${t('map.layer.modules')}</h3>
     <p style="color:var(--muted);font-size:13px">
       ${t('figures.lessons').replace('{n}', F(sm.lessons))} ·
@@ -980,7 +1028,11 @@ document.addEventListener('click', (e) => {
   const opt = e.target.closest('.opt');
   if (opt) { opt.parentElement.querySelectorAll('.opt').forEach(o =>
       o.classList.toggle('ok', o.dataset.ok === '1'));
-    if (opt.dataset.ok !== '1') opt.classList.add('bad'); }
+    if (opt.dataset.ok !== '1') opt.classList.add('bad');
+    else if (curStation) { doneStations.add(curStation);
+      const el = document.getElementById('hname');
+      const h = D.halls.find(x => x.slug === slug);
+      if (view === 'hall') el.textContent = h.name + scoreChip(); } }
 });
 document.getElementById('hall').addEventListener('change', (e) => {
   showHall(e.target.value);
