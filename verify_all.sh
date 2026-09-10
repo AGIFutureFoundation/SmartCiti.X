@@ -10,7 +10,7 @@ for t in control/test.mjs control/test_graph.mjs control/test_hints.mjs \
          bus/test.mjs bus/test_safeguards.mjs security/test.mjs \
          ops/test.mjs ops/fuzz.mjs brand/test.mjs unions/verify.mjs \
          pack/verify.mjs i18n/test.mjs stations/test.mjs surfaces/test.mjs \
-         geo/test.mjs; do
+         geo/test.mjs sims/test.mjs; do
   out=$(node "$t" 2>&1); rc=$?
   n=$(printf '%s\n' "$out" | grep -c '^  ok ')
   total=$((total + n))

@@ -44,7 +44,11 @@
   "view.region": "Network view",
   "figures.campuses": "{n} campuses",
   "room.finish": "Floor finish",
-  "geo.note": "True bearings; distances compressed — labels carry real km"
+  "geo.note": "True bearings; distances compressed — labels carry real km",
+  "sim.start": "Start simulator",
+  "sim.results": "Run results",
+  "sim.pass": "Passed",
+  "sim.retry": "Try again"
  },
  "districts": {
   "structural": {

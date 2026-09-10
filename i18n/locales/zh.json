@@ -44,7 +44,11 @@
   "view.region": "网络视图",
   "figures.campuses": "{n} 个园区",
   "room.finish": "地面饰面",
-  "geo.note": "方位为真实值；距离经压缩——标注为真实公里数"
+  "geo.note": "方位为真实值；距离经压缩——标注为真实公里数",
+  "sim.start": "启动模拟器",
+  "sim.results": "成绩",
+  "sim.pass": "通过",
+  "sim.retry": "再试一次"
  },
  "districts": {
   "structural": {

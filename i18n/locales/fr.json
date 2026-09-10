@@ -44,7 +44,11 @@
   "view.region": "Vue du réseau",
   "figures.campuses": "{n} campus",
   "room.finish": "Revêtement de sol",
-  "geo.note": "Caps réels ; distances compressées — les étiquettes portent les km réels"
+  "geo.note": "Caps réels ; distances compressées — les étiquettes portent les km réels",
+  "sim.start": "Lancer le simulateur",
+  "sim.results": "Résultats",
+  "sim.pass": "Réussi",
+  "sim.retry": "Réessayer"
  },
  "districts": {
   "structural": {

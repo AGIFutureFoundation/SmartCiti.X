@@ -32,6 +32,11 @@ The consolidation release: one repository, one version, one truth per fact.
 | Wiki generated from the registries — a page per map, a page per district | `wiki/` |
 | Spec v3.2 adopted: §23 adversarial review findings, §24 texture and environment packages | `SmartCitiX_TradeCraft_Academy_Spec.md` |
 | Version unified to Adaptive Stack v3.2 / pack 3.2.0 across every surface | manifest, README, generated pages |
+| Three-campus network (Treasure Island–SF, Oakland, New Orleans) with real WGS84 anchors, recomputed great-circle distances and Mapbox-ready GeoJSON | `unions/`, `geo/` |
+| Recovered station curriculum rebranded onto halls, skills and rooms, machine-gradable | `stations/`, `archive/` |
+| §24 realized: 22 floor finishes resolved hazard-first, per-room conditions merged more-demanding-wins, provenance-tagged (RECORDED/DERIVED/SCHEMATIC) | `surfaces/` |
+| The interactive layered map and the four-level 3D environment (network → campus → hall → walk) with live condition readouts | `web/` |
+| Two operable training simulators — tower-crane lift and forklift yard run — schematic physics, deterministic rubrics, bound to real skills | `sims/` |
 | Path defects of the packaged layout fixed (builders resolve by walking up) | `web/build_page.py`, `web/build_map.py`, `console/build_slice.py` |
 | Stale second truths removed (duplicate slice builder, 33-hall-era map data) | — |
 
@@ -129,9 +134,13 @@ gates doing their job on real halls.
    rate limiting re-verified against the §23.1 fail-open classes.
 3. **Tenancy GA.** Multi-tenant deployments with the erasure and retention
    guarantees the privacy pack asserts; per-tenant locale defaults.
-4. **VR sim modality pilot.** The `vr_sim` variant band graduates from
-   addressable to deliverable in the flagship halls; the interiors and §24
-   texture packages become the sim environments' source of truth.
+4. **VR sim modality pilot.** The browser simulator layer (`sims/` —
+   crane lift and forklift run, deterministic rubrics, skill-bound) is the
+   shipped precursor; this milestone ports it to headsets, widens the
+   machine roster (excavator, boom lift, overhead crane), and the
+   interiors and §24 packages remain the sim environments' source of
+   truth. Simulator results stay formative until the assessment gates'
+   unaided verification contract says otherwise.
 
 ### Exit criteria
 

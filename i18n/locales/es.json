@@ -44,7 +44,11 @@
   "view.region": "Vista de la red",
   "figures.campuses": "{n} campus",
   "room.finish": "Acabado del suelo",
-  "geo.note": "Rumbos reales; distancias comprimidas — las etiquetas llevan km reales"
+  "geo.note": "Rumbos reales; distancias comprimidas — las etiquetas llevan km reales",
+  "sim.start": "Iniciar simulador",
+  "sim.results": "Resultados",
+  "sim.pass": "Aprobado",
+  "sim.retry": "Intentar de nuevo"
  },
  "districts": {
   "structural": {

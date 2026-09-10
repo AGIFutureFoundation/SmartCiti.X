@@ -44,7 +44,11 @@
   "view.region": "Netzwerkansicht",
   "figures.campuses": "{n} Standorte",
   "room.finish": "Bodenbelag",
-  "geo.note": "Echte Peilungen; Entfernungen gestaucht — die Beschriftungen tragen echte km"
+  "geo.note": "Echte Peilungen; Entfernungen gestaucht — die Beschriftungen tragen echte km",
+  "sim.start": "Simulator starten",
+  "sim.results": "Ergebnisse",
+  "sim.pass": "Bestanden",
+  "sim.retry": "Erneut versuchen"
  },
  "districts": {
   "structural": {
