@@ -38,6 +38,7 @@ districts = json.load(open(ROOT / 'unions/registry/districts.json'))['districts'
 campuses = json.load(open(ROOT / 'unions/registry/campuses.json'))['campuses']
 geo = json.load(open(ROOT / 'geo/registry/campuses_geo.json'))
 finishes = json.load(open(ROOT / 'surfaces/registry/finishes.json'))
+sims = json.load(open(ROOT / 'sims/registry/sims.json'))
 skills = json.load(open(ROOT / 'pack/registry/skills.json'))['skills']
 by_slug = {h['slug']: h for h in halls}
 
@@ -103,6 +104,7 @@ content graph and details:
 | Hall floor plans (inside the campus map) | A generated interior for every hall — {L["halls"]} plans, 11 rooms each | [Interiors-Map](Interiors-Map.md) |
 | Skill graph (`pack/registry/skills.json`) | {F(len(skills))} skills and the edges that sequence practice | [Skill-Graph](Skill-Graph.md) |
 | Languages (`web/trade_craft_languages.html`) | The Academy overview in {len(LOCALES)} languages | [Languages](Languages.md) |
+| **Simulators** (inside the 3D environment) | {len(sims["sims"])} operable machines — schematic physics, deterministic rubrics, bound to real skills in {len(sims["hall_bindings"])} halls | [Simulators](Simulators.md) |
 
 ## The campus at a glance
 
@@ -383,6 +385,46 @@ Every strand appears in every hall; the room programme of the
 {FOOTER}'''
 
 
+# ------------------------------------------------------------- Simulators ---
+def page_sims():
+    blocks = []
+    for sid, sm in sims['sims'].items():
+        controls = '\n'.join(f'| `{c["keys"]}` | {c["action"]} |'
+                             for c in sm['controls'])
+        rubric = '\n'.join(f'| {r["axis"]} | {r["measure"]} | `{r["pass"]}` |'
+                           for r in sm['rubric'])
+        hall_rows = ', '.join(f'**{by_slug[h]["name"]}**' for h in sm['halls'])
+        blocks.append(f'''## {sm["name"]} ({sm["kind"]})
+
+{sm["task"]}
+
+Trains at: {hall_rows} — each run exercises that hall's
+`{sm["skill_strand"]}.{sm["skill_tier"]}` skill.
+
+| Control | Action |
+|---|---|
+{controls}
+
+| Rubric axis | Measured | Pass |
+|---|---|---|
+{rubric}''')
+    return f'''# The simulators
+
+Two operable training machines live inside the
+[3D environment](Campus-Map.md): open a bound hall and press **▶**. The
+physics are schematic — built for practising control discipline (smooth
+inputs, swing management, ordered procedure) — and the scoring contract is
+the same shape the mentor fabric enforces: **deterministic**. Every rubric
+axis is computed from measured state; nothing narrative can change a score.
+
+{chr(10).join(blocks)}
+
+## What a simulator run is not
+
+{sims["honesty"]["status"]}
+{FOOTER}'''
+
+
 # -------------------------------------------------------------- Languages ---
 def page_languages():
     rows = '\n'.join(
@@ -482,6 +524,7 @@ PAGES = {
     'Interiors-Map.md': page_interiors,
     'Skill-Graph.md': page_skills,
     'Languages.md': page_languages,
+    'Simulators.md': page_sims,
     'Provenance.md': page_provenance,
     **{f'District-{k}.md': (lambda k=k, d=d: page_district(k, d))
        for k, d in districts.items()},

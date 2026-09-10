@@ -1,0 +1,172 @@
+{
+ "pack": "smartcitix-trade-craft-academy-sim-registry",
+ "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
+ "pack_version": "3.2.0",
+ "built": "2026-09-10",
+ "source_stamp": "d204ae102660dbb0",
+ "scoring_contract": "deterministic: every rubric axis is computed from measured state; nothing narrative can change a score",
+ "honesty": {
+  "status": "schematic physics for practising control discipline - smooth inputs, swing management, ordered procedure. Not equipment certification; no seat time here counts toward one, and the assessment gates still demand unaided verification runs."
+ },
+ "sims": {
+  "crane-lift": {
+   "name": "Tower Crane Lift",
+   "kind": "machine",
+   "task": "Pick the load from the supply pad, carry it over the stacks and set it inside the target ring \u2014 swing under control the whole way.",
+   "controls": [
+    {
+     "keys": "A / D",
+     "action": "slew the jib"
+    },
+    {
+     "keys": "W / S",
+     "action": "trolley out / in"
+    },
+    {
+     "keys": "Q / E",
+     "action": "hoist up / down"
+    },
+    {
+     "keys": "Space",
+     "action": "hook / release the load"
+    }
+   ],
+   "rubric": [
+    {
+     "axis": "placement",
+     "measure": "distance from target centre at release (m)",
+     "pass": "<= 1.2"
+    },
+    {
+     "axis": "swing",
+     "measure": "peak load swing during carry (m)",
+     "pass": "<= 2.0"
+    },
+    {
+     "axis": "strikes",
+     "measure": "load or hook contacts with the stacks",
+     "pass": "== 0"
+    },
+    {
+     "axis": "time",
+     "measure": "seconds from hook to release",
+     "pass": "informational"
+    }
+   ],
+   "halls": [
+    "crane-ops",
+    "riggers",
+    "steel-erectors",
+    "port-crane"
+   ],
+   "skill_strand": "machines",
+   "skill_tier": "applied"
+  },
+  "forklift-run": {
+   "name": "Forklift Yard Run",
+   "kind": "driving",
+   "task": "Thread the cone lane, pick the pallet square on the forks, and set it down inside the dock bay \u2014 without disturbing a cone.",
+   "controls": [
+    {
+     "keys": "W / S",
+     "action": "drive / reverse"
+    },
+    {
+     "keys": "A / D",
+     "action": "steer"
+    },
+    {
+     "keys": "Space",
+     "action": "lift / set the pallet"
+    }
+   ],
+   "rubric": [
+    {
+     "axis": "gates",
+     "measure": "cone gates taken in order",
+     "pass": "== all"
+    },
+    {
+     "axis": "cones",
+     "measure": "cones struck",
+     "pass": "== 0"
+    },
+    {
+     "axis": "docking",
+     "measure": "pallet inside the dock bay at set-down",
+     "pass": "required"
+    },
+    {
+     "axis": "time",
+     "measure": "seconds start to set-down",
+     "pass": "informational"
+    }
+   ],
+   "halls": [
+    "teamsters",
+    "heavy-equip",
+    "operating-eng",
+    "laborers",
+    "marine-terminal"
+   ],
+   "skill_strand": "machines",
+   "skill_tier": "applied"
+  }
+ },
+ "hall_bindings": {
+  "crane-ops": [
+   {
+    "sim": "crane-lift",
+    "skill_id": "crane-ops.machines.applied"
+   }
+  ],
+  "riggers": [
+   {
+    "sim": "crane-lift",
+    "skill_id": "riggers.machines.applied"
+   }
+  ],
+  "steel-erectors": [
+   {
+    "sim": "crane-lift",
+    "skill_id": "steel-erectors.machines.applied"
+   }
+  ],
+  "port-crane": [
+   {
+    "sim": "crane-lift",
+    "skill_id": "port-crane.machines.applied"
+   }
+  ],
+  "teamsters": [
+   {
+    "sim": "forklift-run",
+    "skill_id": "teamsters.machines.applied"
+   }
+  ],
+  "heavy-equip": [
+   {
+    "sim": "forklift-run",
+    "skill_id": "heavy-equip.machines.applied"
+   }
+  ],
+  "operating-eng": [
+   {
+    "sim": "forklift-run",
+    "skill_id": "operating-eng.machines.applied"
+   }
+  ],
+  "laborers": [
+   {
+    "sim": "forklift-run",
+    "skill_id": "laborers.machines.applied"
+   }
+  ],
+  "marine-terminal": [
+   {
+    "sim": "forklift-run",
+    "skill_id": "marine-terminal.machines.applied"
+   }
+  ]
+ }
+}

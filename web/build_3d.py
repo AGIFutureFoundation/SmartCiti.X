@@ -48,6 +48,7 @@ districts_reg = json.load(open(ROOT / 'unions/registry/districts.json'))['distri
 campuses_reg = json.load(open(ROOT / 'unions/registry/campuses.json'))['campuses']
 finishes_reg = json.load(open(ROOT / 'surfaces/registry/finishes.json'))
 geo_reg = json.load(open(ROOT / 'geo/registry/campuses_geo.json'))
+sims_reg = json.load(open(ROOT / 'sims/registry/sims.json'))
 stations_reg = json.load(open(ROOT / 'stations/registry/stations.json'))
 yard = json.load(open(ROOT / 'archive/bac_yard_stations.json'))['yard_placements']
 
@@ -98,6 +99,7 @@ for f in sorted((ROOT / 'i18n/locales').glob('*.json')):
             'figures.halls', 'figures.districts', 'figures.campuses',
             'view.campus', 'view.region', 'ui.walk',
             'hint.campus', 'hint.walk', 'geo.note',
+            'sim.start', 'sim.results', 'sim.pass', 'sim.retry',
             'honesty.taxonomy', 'honesty.content')},
         'districts': {k: v['name'] for k, v in c['districts'].items()},
         'strands': c['strands'], 'tiers': c['tiers'], 'states': c['states'],
@@ -123,9 +125,284 @@ DATA = json.dumps({
         'lesson', 'checklist', 'doctrine', 'quiz')}
         for s in stations_reg['stations']},
     'yard': yard,
+    'sims': {'sims': sims_reg['sims'], 'bindings': sims_reg['hall_bindings'],
+             'honesty': sims_reg['honesty']['status']},
     'strandmods': strand_modules(),
     'i18n': I18N,
 }, ensure_ascii=False, separators=(',', ':'))
+
+SIM_JS = """/* ------------------------------------------------------- simulators ----- */
+// Schematic physics for practising control discipline; the graders are
+// deterministic - every rubric axis is computed from measured state.
+let sim = null, curSimId = null;
+
+function teardownSim() {
+  if (!sim) return;
+  scene.remove(sim.group);
+  sim.group.traverse((o) => o.geometry?.dispose());
+  sim = null;
+}
+
+function exitSim() { teardownSim(); showHall(slug); }
+
+function startSim(simId) {
+  if (walkActive) plc.unlock();
+  if (sim) teardownSim();
+  curSimId = simId; view = 'sim';
+  if (hallGroup) hallGroup.visible = false;
+  if (campusGroup) campusGroup.visible = false;
+  if (regionGroup) regionGroup.visible = false;
+  ground.visible = grid.visible = true;
+  scene.fog.near = 90; scene.fog.far = 260;
+  const def = D.sims.sims[simId];
+  sim = simId === 'crane-lift' ? craneSim() : forkliftSim();
+  scene.add(sim.group);
+  controls.enabled = sim.orbit; controls.autoRotate = false;
+  if (sim.orbit) { camera.position.set(36, 28, 42); controls.target.set(0, 11, 0); }
+  document.getElementById('hname').textContent =
+    def.name + ' \\u2014 ' + D.halls.find(x => x.slug === slug).name;
+  document.getElementById('hfocus').textContent = def.task;
+  document.getElementById('hint').textContent =
+    def.controls.map(c => c.keys + ' ' + c.action).join(' \\u00b7 ') + ' \\u00b7 Esc';
+  document.getElementById('simBtn').style.display = 'none';
+  document.getElementById('walkBtn').style.display = 'none';
+}
+
+function simResults(simId, rows, passed) {
+  const def = D.sims.sims[simId];
+  const i = D.i18n[loc];
+  document.getElementById('pbody').innerHTML = `
+    <h2>${def.name}</h2>
+    <span class="chip" style="${passed ? 'border-color:var(--good);color:var(--good)' : 'border-color:var(--crit);color:var(--crit)'}">
+      ${passed ? t('sim.pass') : t('sim.retry')}</span>
+    <h3>${t('sim.results')}</h3>
+    <table style="width:100%;border-collapse:collapse;font-size:13.5px"><tbody>
+      ${rows.map(r => `<tr><td>${r.axis}</td>
+        <td style="text-align:end;font-family:'IBM Plex Mono',monospace">${r.value}</td>
+        <td style="text-align:end">${r.ok === null ? '' : r.ok ? '\\u2713' : '\\u2717'}</td></tr>`).join('')}
+    </tbody></table>
+    <p style="color:var(--muted);font-size:12px;margin-top:12px">${D.sims.honesty}</p>
+    <p><button class="barbtn" id="simRetry">\\u21bb ${t('sim.retry')}</button>
+       <button class="barbtn" id="simExit">${t('ui.close')}</button></p>
+    <style>#pbody td{border-top:1px solid var(--rule);padding:6px 8px;color:var(--muted)}</style>`;
+  document.body.classList.add('open');
+}
+
+/* --------------------------------------------------- tower crane lift ---- */
+function craneSim() {
+  const g = new THREE.Group();
+  const MAST_H = 24, JIB = 28;
+  box(1.4, MAST_H, 1.4, mat.metal, 0, MAST_H / 2, 0, g);
+  const slewG = new THREE.Group(); slewG.position.y = MAST_H; g.add(slewG);
+  box(JIB, .9, 1.1, mat.post, JIB / 2 - 3, .8, 0, slewG);
+  box(7, .9, 1.1, mat.metal, -6.5, .8, 0, slewG);
+  box(2.2, 2.2, 2.2, mat.part, -8.5, -.4, 0, slewG);   // counterweight
+  box(1.8, 1.8, 1.8, mat.win, 1.6, -1, 1.4, slewG);    // cab
+  const trolley = box(1.2, .6, 1.2, mat.steel, 10, .1, 0, slewG);
+  const cableMat = new THREE.LineBasicMaterial({ color: 0xd8dde0 });
+  const cableGeo = new THREE.BufferGeometry().setFromPoints(
+    [new THREE.Vector3(), new THREE.Vector3()]);
+  g.add(new THREE.Line(cableGeo, cableMat));
+  const hook = new THREE.Mesh(new THREE.OctahedronGeometry(.45), mat.post);
+  hook.castShadow = true; g.add(hook);
+  const load = box(2.4, 1.6, 2.4, mat.brick, 14, .8, 10, g);
+  // pads and obstacles
+  const supply = box(4, .2, 4, mat.slab, 14, .1, 10, g, false);
+  const target = new THREE.Mesh(new THREE.RingGeometry(1.6, 2.6, 32),
+    new THREE.MeshBasicMaterial({ color: 0x5CB584, side: THREE.DoubleSide }));
+  target.rotation.x = -Math.PI / 2; target.position.set(-13, .12, -9); g.add(target);
+  const stacks = [box(5, 6, 3, mat.wall, 2, 3, -12, g),
+                  box(4, 8, 3, mat.wall, -3, 4, 4, g)];
+  const st = { slew: .6, r: 14.5, h: 6, vslew: 0, attached: false, done: false,
+               loadV: new THREE.Vector2(), swingPeak: 0, strikes: 0,
+               inStrike: false, t0: null };
+  // start the hook over open ground
+  function hookPos() {
+    return new THREE.Vector3(Math.cos(st.slew) * st.r, st.h,
+                             Math.sin(st.slew) * st.r);
+  }
+  function finish() {
+    st.done = true;
+    const d = Math.hypot(load.position.x - target.position.x,
+                         load.position.z - target.position.z);
+    const time = st.t0 ? ((performance.now() - st.t0) / 1000) : 0;
+    const rows = [
+      { axis: 'placement', value: d.toFixed(2) + ' m', ok: d <= 1.2 },
+      { axis: 'swing', value: st.swingPeak.toFixed(2) + ' m', ok: st.swingPeak <= 2.0 },
+      { axis: 'strikes', value: String(st.strikes), ok: st.strikes === 0 },
+      { axis: 'time', value: time.toFixed(1) + ' s', ok: null },
+    ];
+    simResults('crane-lift', rows, d <= 1.2 && st.swingPeak <= 2 && st.strikes === 0);
+  }
+  return {
+    group: g, orbit: true,
+    action() {
+      if (st.done) return;
+      const hp = hookPos();
+      if (!st.attached) {
+        const d = Math.hypot(hp.x - load.position.x, hp.z - load.position.z);
+        if (d < 1.6 && hp.y < 4.5) {
+          st.attached = true; st.t0 = performance.now();
+          st.loadV.set(0, 0);
+        }
+      } else { st.attached = false; load.position.y = .8; finish(); }
+    },
+    update(dt) {
+      if (st.done) return;
+      const sr = 0.55, tr = 6, hr = 5;
+      if (keys.KeyA) st.slew -= sr * dt;
+      if (keys.KeyD) st.slew += sr * dt;
+      if (keys.KeyW) st.r = Math.min(26, st.r + tr * dt);
+      if (keys.KeyS) st.r = Math.max(4, st.r - tr * dt);
+      if (keys.KeyQ) st.h = Math.min(22, st.h + hr * dt);
+      if (keys.KeyE) st.h = Math.max(1.2, st.h - hr * dt);
+      slewG.rotation.y = -st.slew;
+      trolley.position.x = st.r;
+      const hp = hookPos();
+      if (st.attached) {
+        // pendulum: the load chases the hook in the plan, and it shows
+        const k = 4.5, damp = 1.6;
+        const ax = (hp.x - load.position.x) * k - st.loadV.x * damp;
+        const az = (hp.z - load.position.z) * k - st.loadV.y * damp;
+        st.loadV.x += ax * dt; st.loadV.y += az * dt;
+        load.position.x += st.loadV.x * dt;
+        load.position.z += st.loadV.y * dt;
+        load.position.y = Math.max(.8, hp.y - 2.2);
+        const swing = Math.hypot(hp.x - load.position.x, hp.z - load.position.z);
+        st.swingPeak = Math.max(st.swingPeak, swing);
+        // strikes against the stacks
+        let hit = false;
+        for (const b of stacks) {
+          const bb = b.geometry.parameters;
+          if (Math.abs(load.position.x - b.position.x) < bb.width / 2 + 1.2
+            && Math.abs(load.position.z - b.position.z) < bb.depth / 2 + 1.2
+            && load.position.y - .8 < b.position.y + bb.height / 2) hit = true;
+        }
+        if (hit && !st.inStrike) { st.strikes++; st.inStrike = true; }
+        if (!hit) st.inStrike = false;
+      }
+      hook.position.copy(st.attached
+        ? new THREE.Vector3(load.position.x, load.position.y + 1.6, load.position.z)
+        : hp.clone().setY(Math.max(1.4, hp.y - 1)));
+      const pts = cableGeo.attributes.position.array;
+      const tp = new THREE.Vector3(Math.cos(st.slew) * st.r, MAST_H, Math.sin(st.slew) * st.r);
+      pts[0] = tp.x; pts[1] = tp.y; pts[2] = tp.z;
+      pts[3] = hook.position.x; pts[4] = hook.position.y; pts[5] = hook.position.z;
+      cableGeo.attributes.position.needsUpdate = true;
+    },
+  };
+}
+
+/* --------------------------------------------------- forklift yard run --- */
+function forkliftSim() {
+  const g = new THREE.Group();
+  const fl = new THREE.Group(); g.add(fl);
+  box(1.6, 1.1, 2.6, mat.post, 0, .8, 0, fl);
+  box(1.2, .9, 1.2, mat.win, 0, 1.75, -.3, fl);
+  box(.15, 2.4, .15, mat.metal, -.55, 1.2, 1.4, fl);
+  box(.15, 2.4, .15, mat.metal, .55, 1.2, 1.4, fl);
+  const forks = new THREE.Group(); fl.add(forks);
+  box(.18, .1, 1.5, mat.metal, -.4, .18, 2.2, forks);
+  box(.18, .1, 1.5, mat.metal, .4, .18, 2.2, forks);
+  for (const [wx, wz] of [[-.8, .9], [.8, .9], [-.8, -.9], [.8, -.9]]) {
+    const w = new THREE.Mesh(new THREE.CylinderGeometry(.4, .4, .3, 14), mat.part);
+    w.rotation.z = Math.PI / 2; w.position.set(wx, .4, wz);
+    w.castShadow = true; fl.add(w);
+  }
+  // course: cone gates, pallet, dock
+  const GATES = [[-6, -14, 0], [6, -24, 0], [-6, -34, 0], [6, -44, 0]];
+  const cones = [], gates = [];
+  GATES.forEach(([gx, gz], gi) => {
+    const pair = [];
+    for (const off of [-2.6, 2.6]) {
+      const c = new THREE.Mesh(new THREE.ConeGeometry(.32, .8, 12), mat.cone);
+      c.position.set(gx + off, .4, gz); c.castShadow = true;
+      g.add(c); cones.push(c); pair.push(c);
+    }
+    gates.push({ x: gx, z: gz, taken: false, pair });
+  });
+  const pallet = new THREE.Group(); g.add(pallet);
+  box(1.2, .14, 1.2, mat.wood, 0, .07, 0, pallet);
+  box(1, .7, 1, mat.brick, 0, .52, 0, pallet);
+  pallet.position.set(0, 0, -54);
+  const dock = new THREE.Mesh(new THREE.PlaneGeometry(5, 5),
+    new THREE.MeshBasicMaterial({ color: 0x41C4D4, transparent: true, opacity: .28 }));
+  dock.rotation.x = -Math.PI / 2; dock.position.set(14, .06, -10); g.add(dock);
+  const st = { v: 0, steer: 0, phi: Math.PI, carrying: false, done: false,
+               hits: 0, t0: null, placed: false };
+  fl.position.set(0, 0, -2); fl.rotation.y = st.phi;
+  function finish(docked) {
+    st.done = true;
+    const taken = gates.filter(x => x.taken).length;
+    const time = st.t0 ? ((performance.now() - st.t0) / 1000) : 0;
+    const rows = [
+      { axis: 'gates', value: taken + '/' + gates.length, ok: taken === gates.length },
+      { axis: 'cones', value: String(st.hits), ok: st.hits === 0 },
+      { axis: 'docking', value: docked ? 'in the bay' : 'missed', ok: docked },
+      { axis: 'time', value: time.toFixed(1) + ' s', ok: null },
+    ];
+    simResults('forklift-run', rows,
+      taken === gates.length && st.hits === 0 && docked);
+  }
+  return {
+    group: g, orbit: false,
+    action() {
+      if (st.done) return;
+      const dir = new THREE.Vector3(Math.sin(st.phi), 0, Math.cos(st.phi));
+      const tip = fl.position.clone().addScaledVector(dir, 2.4);
+      if (!st.carrying) {
+        if (Math.abs(st.v) < 1
+          && tip.distanceTo(pallet.position) < 1.7) st.carrying = true;
+      } else {
+        st.carrying = false;
+        pallet.position.set(tip.x, 0, tip.z);
+        const inDock = Math.abs(pallet.position.x - dock.position.x) < 2.2
+          && Math.abs(pallet.position.z - dock.position.z) < 2.2;
+        finish(inDock);
+      }
+    },
+    update(dt) {
+      if (st.done) return;
+      const acc = 5.5, drag = 1.6, vmax = 6;
+      if (keys.KeyW || keys.ArrowUp) st.v += acc * dt;
+      else if (keys.KeyS || keys.ArrowDown) st.v -= acc * dt;
+      else st.v -= st.v * drag * dt;
+      st.v = Math.max(-vmax / 2, Math.min(vmax, st.v));
+      const target = (keys.KeyA || keys.ArrowLeft) ? .55
+        : (keys.KeyD || keys.ArrowRight) ? -.55 : 0;
+      st.steer += (target - st.steer) * Math.min(1, 8 * dt);
+      if (Math.abs(st.v) > .05) {
+        if (!st.t0) st.t0 = performance.now();
+        st.phi += st.v / 2.2 * Math.tan(st.steer) * dt;
+      }
+      const dir = new THREE.Vector3(Math.sin(st.phi), 0, Math.cos(st.phi));
+      fl.position.addScaledVector(dir, st.v * dt);
+      fl.position.x = Math.max(-30, Math.min(30, fl.position.x));
+      fl.position.z = Math.max(-62, Math.min(14, fl.position.z));
+      fl.rotation.y = st.phi;
+      if (st.carrying)
+        pallet.position.copy(fl.position.clone().addScaledVector(dir, 2.4).setY(.35));
+      // cones and gates
+      for (const c of cones) {
+        if (!c.userData.hit && c.position.distanceTo(fl.position) < 1.3) {
+          c.userData.hit = true; c.rotation.z = 1.2; st.hits++;
+        }
+      }
+      for (let gi = 0; gi < gates.length; gi++) {
+        const gt = gates[gi];
+        if (!gt.taken && (gi === 0 || gates[gi - 1].taken)
+          && Math.hypot(fl.position.x - gt.x, fl.position.z - gt.z) < 2.4) {
+          gt.taken = true;
+          gt.pair.forEach((c) => { c.material = mat.steel; });
+        }
+      }
+      // chase camera
+      const camTo = fl.position.clone().addScaledVector(dir, -8.5).setY(5.2);
+      camera.position.lerp(camTo, Math.min(1, 5 * dt));
+      camera.lookAt(fl.position.clone().addScaledVector(dir, 4).setY(1.2));
+    },
+  };
+}"""
 
 page = '''<!doctype html>
 <html lang="en">
@@ -206,6 +483,7 @@ body.open #panel{transform:none}
   <button id="regionBtn" class="barbtn"></button>
   <button id="campusBtn" class="barbtn"></button>
   <button id="walkBtn" class="barbtn"></button>
+  <button id="simBtn" class="barbtn"></button>
   <select id="lang"></select>
 </div>
 <div id="hud"><h2 id="hname"></h2><p class="focus" id="hfocus"></p><p class="hint" id="hint"></p></div>
@@ -739,6 +1017,7 @@ function buildRegion() {
 }
 
 function showRegion() {
+  if (sim) teardownSim();
   view = 'region';
   if (walkActive) plc.unlock();
   if (hallGroup) hallGroup.visible = false;
@@ -757,10 +1036,12 @@ function showRegion() {
     t('hint.campus') + ' \u00b7 ' + t('geo.note');
   document.getElementById('walkBtn').style.display = 'none';
   document.getElementById('campusBtn').style.display = 'none';
+  document.getElementById('simBtn').style.display = 'none';
   syncURL();
 }
 
 function showCampus(key) {
+  if (sim) teardownSim();
   campusKey = key; view = 'campus';
   if (walkActive) plc.unlock();
   if (hallGroup) hallGroup.visible = false;
@@ -778,6 +1059,7 @@ function showCampus(key) {
   document.getElementById('walkBtn').style.display =
     ('ontouchstart' in window) ? 'none' : '';
   document.getElementById('campusBtn').style.display = 'none';
+  document.getElementById('simBtn').style.display = 'none';
   syncURL();
 }
 
@@ -796,6 +1078,8 @@ function showHall(sg) {
     ('ontouchstart' in window) ? 'none' : '';
   const cb = document.getElementById('campusBtn');
   cb.style.display = ''; cb.textContent = '\u2191 ' + D.campuses[campusKey].name;
+  document.getElementById('simBtn').style.display =
+    (D.sims.bindings[sg] && !('ontouchstart' in window)) ? '' : 'none';
   syncURL();
 }
 
@@ -805,6 +1089,9 @@ let walkActive = false;
 const keys = {};
 document.addEventListener('keydown', (e) => {
   keys[e.code] = true;
+  if (sim && e.code === 'Escape' && !document.body.classList.contains('open'))
+    exitSim();
+  if (sim && e.code === 'Space') { e.preventDefault(); sim.action?.(); }
   if (walkActive && view === 'campus' && nearSlug
       && (e.code === 'Enter' || e.code === 'KeyE')) enterHallWalking(nearSlug);
 });
@@ -900,6 +1187,8 @@ function walkStep(dt) {
   }
 }
 
+__SIM_JS__
+
 /* ---------------------------------------------------------------- UI ---- */
 function renderChrome() {
   const i = D.i18n[loc];
@@ -918,6 +1207,7 @@ function renderChrome() {
     `<option value="${c}" ${c===loc?'selected':''}>${v.language}</option>`).join('');
   document.getElementById('regionBtn').textContent = '⌂ ' + t('view.region');
   document.getElementById('walkBtn').textContent = '⤞ ' + t('ui.walk');
+  document.getElementById('simBtn').textContent = '▶ ' + t('sim.start');
   document.getElementById('honesty').textContent =
     t('honesty.taxonomy') + ' ' + t('honesty.content');
   document.getElementById('pclose').textContent = t('ui.close');
@@ -1053,6 +1343,13 @@ renderer.domElement.addEventListener('pointermove', (e) => {
 document.addEventListener('click', (e) => {
   if (e.target.closest('#pclose') || e.target.id === 'ov')
     document.body.classList.remove('open');
+  if (e.target.id === 'simRetry') {
+    document.body.classList.remove('open');
+    const id = curSimId; teardownSim(); view = 'hall'; startSim(id); return;
+  }
+  if (e.target.id === 'simExit') {
+    document.body.classList.remove('open'); exitSim(); return;
+  }
   const opt = e.target.closest('.opt');
   if (opt) { opt.parentElement.querySelectorAll('.opt').forEach(o =>
       o.classList.toggle('ok', o.dataset.ok === '1'));
@@ -1069,6 +1366,10 @@ document.getElementById('regionBtn').addEventListener('click', showRegion);
 document.getElementById('campusBtn').addEventListener('click',
   () => showCampus(campusKey));
 document.getElementById('walkBtn').addEventListener('click', enterWalk);
+document.getElementById('simBtn').addEventListener('click', () => {
+  const b = D.sims.bindings[slug];
+  if (b?.length) startSim(b[0].sim);
+});
 document.getElementById('lang').addEventListener('change', (e) => {
   loc = e.target.value; renderChrome();
   if (view === 'region') showRegion();
@@ -1091,7 +1392,8 @@ else if (D.campuses[params.get('campus')]) showCampus(params.get('campus'));
 else showRegion();
 // test hook: lets the harness assert scene state without poking internals
 window.__tc3d = () => ({ view, buildings: buildings.length, plates: plates.length,
-  beacons: beacons.length, floors: floors.length, slug, campusKey, loc, walkActive });
+  beacons: beacons.length, floors: floors.length, slug, campusKey, loc, walkActive,
+  sim: curSimId && sim ? curSimId : null });
 const clock = new THREE.Clock();
 renderer.setAnimationLoop(() => {
   const dt = clock.getDelta();
@@ -1099,6 +1401,7 @@ renderer.setAnimationLoop(() => {
     for (const b of beacons) if (b.userData.spin) b.rotation.y += dt * 1.4;
     for (const b of campusSpin) b.rotation.y += dt * 1.1;
   }
+  if (sim) sim.update(dt);
   if (walkActive) walkStep(dt);
   else controls.update();
   renderer.render(scene, camera);
@@ -1109,6 +1412,7 @@ renderer.setAnimationLoop(() => {
 '''
 
 page = page.replace('__DATA__', DATA).replace('__PIPELINE_JS__', PIPELINE_JS)
+page = page.replace('__SIM_JS__', SIM_JS)
 out = HERE / 'trade_craft_3d.html'
 out.write_text(page)
 print(f"written: {len(page):,} bytes | {len(HALLS)} halls | "

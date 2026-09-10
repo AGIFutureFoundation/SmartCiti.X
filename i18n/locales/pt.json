@@ -44,7 +44,11 @@
   "view.region": "Vista da rede",
   "figures.campuses": "{n} campi",
   "room.finish": "Acabamento do piso",
-  "geo.note": "Rumos reais; distâncias comprimidas — os rótulos trazem km reais"
+  "geo.note": "Rumos reais; distâncias comprimidas — os rótulos trazem km reais",
+  "sim.start": "Iniciar simulador",
+  "sim.results": "Resultados",
+  "sim.pass": "Aprovado",
+  "sim.retry": "Tentar novamente"
  },
  "districts": {
   "structural": {
