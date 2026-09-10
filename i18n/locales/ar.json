@@ -42,7 +42,8 @@
   "hint.campus": "انقر على قاعة للدخول إليها",
   "hint.walk": "‏WASD للتحرك · Esc للخروج",
   "view.region": "عرض الشبكة",
-  "figures.campuses": "{n} فروع"
+  "figures.campuses": "{n} فروع",
+  "room.finish": "تشطيب الأرضية"
  },
  "districts": {
   "structural": {

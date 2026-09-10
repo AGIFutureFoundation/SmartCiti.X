@@ -42,7 +42,8 @@
   "hint.campus": "प्रवेश के लिए किसी हॉल पर क्लिक करें",
   "hint.walk": "चलने के लिए WASD · बाहर निकलने के लिए Esc",
   "view.region": "नेटवर्क दृश्य",
-  "figures.campuses": "{n} परिसर"
+  "figures.campuses": "{n} परिसर",
+  "room.finish": "फ़र्श की फिनिश"
  },
  "districts": {
   "structural": {

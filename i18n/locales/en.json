@@ -42,7 +42,8 @@
   "hint.campus": "Click a hall to enter it",
   "hint.walk": "WASD to move · Esc to exit",
   "view.region": "Network view",
-  "figures.campuses": "{n} campuses"
+  "figures.campuses": "{n} campuses",
+  "room.finish": "Floor finish"
  },
  "districts": {
   "structural": {

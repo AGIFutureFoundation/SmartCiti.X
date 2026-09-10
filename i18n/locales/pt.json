@@ -42,7 +42,8 @@
   "hint.campus": "Clique em um salão para entrar",
   "hint.walk": "WASD para mover · Esc para sair",
   "view.region": "Vista da rede",
-  "figures.campuses": "{n} campi"
+  "figures.campuses": "{n} campi",
+  "room.finish": "Acabamento do piso"
  },
  "districts": {
   "structural": {
