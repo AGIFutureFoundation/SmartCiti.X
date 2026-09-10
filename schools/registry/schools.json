@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-10",
- "source_stamp": "28d852850c62047e",
+ "source_stamp": "f9fb88c1de3254f7",
  "honesty": {
   "districts": "district names are public-record identities only; every record is a PROPOSED partner - no district has reviewed or agreed, and no agreement exists",
   "certification": "nothing in the school program certifies equipment operation; the assessment gates demand unaided verification and simulator hours never count toward certification"
@@ -22,9 +22,9 @@
    {
     "stage": "class",
     "title": "Build in class",
-    "what": "station bench work - checklists, doctrine lines and machine-gradable quizzes at the hall stations, with the teacher moving bench to bench",
-    "implemented_by": "stations/ (25 recovered yard stations)",
-    "gamified": "station beacons in the 3D hall; completion marks accumulate on the hall roster"
+    "what": "station bench work - checklists, doctrine lines and machine-gradable quizzes at the hall stations - plus the district crib drill at the tools-room pegboard (match the job to the tool, graded deterministically), with the teacher moving bench to bench",
+    "implemented_by": "stations/ (25 recovered yard stations) + tools/ (8 district cribs, the crib drill)",
+    "gamified": "station beacons and the crib pegboard in the 3D hall; completion marks accumulate on the hall roster"
    },
    {
     "stage": "floor",
@@ -103,6 +103,7 @@
    "hall": "boilermakers",
    "home": "module pack lesson positions, machines strand",
    "class_stations": [],
+   "class_drill": "structural",
    "floor_sims": [
     "weld-bead"
    ],
@@ -123,6 +124,7 @@
     "st018",
     "st020"
    ],
+   "class_drill": "envelope",
    "floor_sims": [
     "scaffold-bay"
    ],
@@ -132,6 +134,7 @@
    "hall": "carpenters",
    "home": "module pack lesson positions, machines strand",
    "class_stations": [],
+   "class_drill": "envelope",
    "floor_sims": [
     "scaffold-bay"
    ],
@@ -141,8 +144,10 @@
    "hall": "crane-ops",
    "home": "module pack lesson positions, machines strand",
    "class_stations": [],
+   "class_drill": "structural",
    "floor_sims": [
-    "crane-lift"
+    "crane-lift",
+    "rigging-signals"
    ],
    "gate": "unaided verification run (ACP-04); no sim hour counts"
   },
@@ -150,6 +155,7 @@
    "hall": "demolition",
    "home": "module pack lesson positions, machines strand",
    "class_stations": [],
+   "class_drill": "earthworks",
    "floor_sims": [
     "excavator-trench"
    ],
@@ -159,6 +165,7 @@
    "hall": "fabricators",
    "home": "module pack lesson positions, machines strand",
    "class_stations": [],
+   "class_drill": "structural",
    "floor_sims": [
     "weld-bead"
    ],
@@ -168,6 +175,7 @@
    "hall": "heavy-equip",
    "home": "module pack lesson positions, machines strand",
    "class_stations": [],
+   "class_drill": "earthworks",
    "floor_sims": [
     "forklift-run"
    ],
@@ -177,6 +185,7 @@
    "hall": "laborers",
    "home": "module pack lesson positions, machines strand",
    "class_stations": [],
+   "class_drill": "earthworks",
    "floor_sims": [
     "excavator-trench",
     "forklift-run",
@@ -188,8 +197,19 @@
    "hall": "marine-terminal",
    "home": "module pack lesson positions, machines strand",
    "class_stations": [],
+   "class_drill": "transport",
    "floor_sims": [
     "forklift-run"
+   ],
+   "gate": "unaided verification run (ACP-04); no sim hour counts"
+  },
+  {
+   "hall": "millwrights",
+   "home": "module pack lesson positions, machines strand",
+   "class_stations": [],
+   "class_drill": "structural",
+   "floor_sims": [
+    "rigging-signals"
    ],
    "gate": "unaided verification run (ACP-04); no sim hour counts"
   },
@@ -197,6 +217,7 @@
    "hall": "operating-eng",
    "home": "module pack lesson positions, machines strand",
    "class_stations": [],
+   "class_drill": "earthworks",
    "floor_sims": [
     "excavator-trench",
     "forklift-run"
@@ -207,6 +228,7 @@
    "hall": "painters",
    "home": "module pack lesson positions, machines strand",
    "class_stations": [],
+   "class_drill": "envelope",
    "floor_sims": [
     "scaffold-bay"
    ],
@@ -216,6 +238,7 @@
    "hall": "pipeline",
    "home": "module pack lesson positions, machines strand",
    "class_stations": [],
+   "class_drill": "industry",
    "floor_sims": [
     "weld-bead"
    ],
@@ -225,8 +248,10 @@
    "hall": "port-crane",
    "home": "module pack lesson positions, machines strand",
    "class_stations": [],
+   "class_drill": "transport",
    "floor_sims": [
-    "crane-lift"
+    "crane-lift",
+    "rigging-signals"
    ],
    "gate": "unaided verification run (ACP-04); no sim hour counts"
   },
@@ -236,8 +261,10 @@
    "class_stations": [
     "st005"
    ],
+   "class_drill": "structural",
    "floor_sims": [
-    "crane-lift"
+    "crane-lift",
+    "rigging-signals"
    ],
    "gate": "unaided verification run (ACP-04); no sim hour counts"
   },
@@ -247,6 +274,7 @@
    "class_stations": [
     "st003"
    ],
+   "class_drill": "earthworks",
    "floor_sims": [
     "scaffold-bay"
    ],
@@ -256,6 +284,7 @@
    "hall": "shipfitters",
    "home": "module pack lesson positions, machines strand",
    "class_stations": [],
+   "class_drill": "structural",
    "floor_sims": [
     "weld-bead"
    ],
@@ -265,6 +294,7 @@
    "hall": "shoring",
    "home": "module pack lesson positions, machines strand",
    "class_stations": [],
+   "class_drill": "earthworks",
    "floor_sims": [
     "excavator-trench"
    ],
@@ -274,8 +304,10 @@
    "hall": "steel-erectors",
    "home": "module pack lesson positions, machines strand",
    "class_stations": [],
+   "class_drill": "structural",
    "floor_sims": [
-    "crane-lift"
+    "crane-lift",
+    "rigging-signals"
    ],
    "gate": "unaided verification run (ACP-04); no sim hour counts"
   },
@@ -283,6 +315,7 @@
    "hall": "teamsters",
    "home": "module pack lesson positions, machines strand",
    "class_stations": [],
+   "class_drill": "earthworks",
    "floor_sims": [
     "forklift-run"
    ],
@@ -292,6 +325,7 @@
    "hall": "welders",
    "home": "module pack lesson positions, machines strand",
    "class_stations": [],
+   "class_drill": "structural",
    "floor_sims": [
     "weld-bead"
    ],

@@ -323,6 +323,65 @@ SIMS = {
              'params': {'planks': 3, 'rails': 3}},
         ],
     },
+    'rigging-signals': {
+        'name': 'Rigging Signal Call',
+        'kind': 'process',
+        'task': 'You are the signalperson: the lift card calls the moves, '
+                'and the crane follows YOUR hands. Give each called signal '
+                'in order — a wrong signal counts against you and the '
+                'crane holds — and finish the lift with the stop signal.',
+        'controls': [
+            {'keys': 'Q / E', 'action': 'signal hoist up / hoist down'},
+            {'keys': 'A / D', 'action': 'signal swing left / swing right'},
+            {'keys': 'W / S', 'action': 'signal trolley out / trolley in'},
+            {'keys': 'Space', 'action': 'signal STOP'},
+        ],
+        'rubric': [
+            {'axis': 'calls', 'measure': 'called signals given, in order',
+             'pass': '== all'},
+            {'axis': 'wrong', 'measure': 'signals given out of turn',
+             'pass': '== 0'},
+            {'axis': 'time', 'measure': 'seconds first signal to stop',
+             'pass': 'informational'},
+        ],
+        'halls': ['riggers', 'crane-ops', 'steel-erectors', 'port-crane',
+                  'millwrights'],
+        'skill_strand': 'machines',
+        'skill_tier': 'applied',
+        'dash': [
+            {'id': 'step', 'label': 'Step', 'unit': ''},
+            {'id': 'called', 'label': 'Called', 'unit': ''},
+            {'id': 'given', 'label': 'Given', 'unit': ''},
+            {'id': 'wrong', 'label': 'Wrong', 'unit': '', 'warn_at': 1},
+            {'id': 'time', 'label': 'T', 'unit': 's'},
+        ],
+        'audio': {'engine': 'hoist',
+                  'alerts': ['signal-whistle', 'wrong-buzz', 'result-chime'],
+                  'note': 'synthesized in-page (WebAudio); no recordings shipped'},
+        'haptics': ['wrong', 'finish'],
+        'view_modes': ['orbit', 'signal'],
+        # Regional scenarios: the lift card is the yard's own - longer
+        # sequences, more direction changes; the call law never varies.
+        'scenarios': [
+            {'id': 'bay-first-card', 'campus': 'treasure-island',
+             'name': 'First lift card',
+             'brief': 'The training card: five calls, one direction '
+                      'change, the stop to finish - learn the hands.',
+             'params': {'seq': ['up', 'swing-r', 'out', 'down', 'stop']}},
+            {'id': 'oak-blind-pick', 'campus': 'oakland',
+             'name': 'Blind terminal pick',
+             'brief': 'The operator cannot see this load - six calls '
+                      'thread it out of the container shadow.',
+             'params': {'seq': ['up', 'in', 'swing-l', 'out', 'down',
+                                'stop']}},
+            {'id': 'nola-wind-card', 'campus': 'new-orleans',
+             'name': 'River-wind card',
+             'brief': 'The river breeze wants the load moving - six '
+                      'calls with two swings hold the line to the set.',
+             'params': {'seq': ['up', 'swing-r', 'out', 'swing-l', 'down',
+                                'stop']}},
+        ],
+    },
 }
 
 unions = json.load(open(ROOT / 'unions/registry/unions.json'))['unions']

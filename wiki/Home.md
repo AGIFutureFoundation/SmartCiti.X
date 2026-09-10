@@ -20,7 +20,7 @@ content graph and details:
 | Hall floor plans (inside the campus map) | A generated interior for every hall — 111 plans, 11 rooms each | [Interiors-Map](Interiors-Map.md) |
 | Skill graph (`pack/registry/skills.json`) | 3,663 skills and the edges that sequence practice | [Skill-Graph](Skill-Graph.md) |
 | Languages (`web/trade_craft_languages.html`) | The Academy overview in 8 languages | [Languages](Languages.md) |
-| **Simulators** (inside the 3D environment) | 5 operable machines — schematic physics, deterministic rubrics, bound to real skills in 20 halls | [Simulators](Simulators.md) |
+| **Simulators** (inside the 3D environment) | 6 operable machines — schematic physics, deterministic rubrics, bound to real skills in 21 halls | [Simulators](Simulators.md) |
 
 ## The campus at a glance
 

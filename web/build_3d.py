@@ -340,7 +340,8 @@ function startSim(simId) {
   sim = simId === 'crane-lift' ? craneSim(P)
     : simId === 'excavator-trench' ? excavatorSim(P)
     : simId === 'weld-bead' ? weldSim(P)
-    : simId === 'scaffold-bay' ? scaffoldSim(P) : forkliftSim(P);
+    : simId === 'scaffold-bay' ? scaffoldSim(P)
+    : simId === 'rigging-signals' ? riggingSim(P) : forkliftSim(P);
   scene.add(sim.group);
   // your avatar takes the seat the sim declares - the learner is IN the yard
   if (sim.mount) {
@@ -352,6 +353,10 @@ function startSim(simId) {
     if (sim.mount.seated) {
       const { arms } = simRider.userData;
       arms.armL.rotation.x = arms.armR.rotation.x = -1.05;
+    }
+    if (sim.mount.armUp) {
+      // the signalperson: one hand high where the operator can read it
+      simRider.userData.arms.armR.rotation.x = -2.7;
     }
     sim.mount.parent.add(simRider);
   }
@@ -1110,6 +1115,109 @@ function scaffoldSim(P = {}) {
       stage: { v: 0, txt: legal() < 0 ? '\\u2013' : STAGES[legal()] },
       placed: { v: 0, txt: parts.filter((p) => p.mesh.visible).length + '/' + parts.length },
       faults: { v: st.faults, txt: String(st.faults) },
+      time: { v: 0, txt: st.t0 ? ((performance.now() - st.t0) / 1000).toFixed(0) : '\\u2013' },
+    }),
+  };
+}
+
+/* ------------------------------------------------- rigging signal call --- */
+function riggingSim(P = {}) {
+  const SEQ = P.seq ?? ['up', 'swing-r', 'out', 'down', 'stop'];
+  const g = new THREE.Group();
+  simYard(g, 18, 14);
+  // a yard derrick: mast, slewing boom, trolley line, hook and load -
+  // it moves ONLY on a correct call from the signalperson
+  const MAST = 9;
+  box(.8, MAST, .8, mat.metal, -4, MAST / 2, -3, g);
+  const slewG = new THREE.Group(); slewG.position.set(-4, MAST, -3); g.add(slewG);
+  box(10, .5, .6, mat.post, 5, 0, 0, slewG);
+  box(3, .5, .6, mat.metal, -1.5, 0, 0, slewG);
+  const cableGeo = new THREE.BufferGeometry().setFromPoints(
+    [new THREE.Vector3(), new THREE.Vector3()]);
+  g.add(new THREE.Line(cableGeo, new THREE.LineBasicMaterial({ color: 0xd8dde0 })));
+  const load = box(1.6, 1.2, 1.6, mat.brick, 0, .6, 0, g);
+  // the signal pad, painted where the operator can see the hands
+  const pad = new THREE.Mesh(new THREE.CylinderGeometry(1.1, 1.1, .08, 24),
+    new THREE.MeshBasicMaterial({ color: 0xE8A33D, transparent: true, opacity: .35 }));
+  pad.position.set(4.5, .06, 6.2); g.add(pad);
+  const st = { i: 0, wrong: 0, t0: null, done: false, given: '\\u2013',
+               slew: .55, r: 5.5, h: 3.2, latch: {},
+               tgt: null };
+  const hookPos = () => {
+    const tip = slewG.localToWorld(new THREE.Vector3(st.r, 0, 0));
+    return new THREE.Vector3(tip.x, st.h, tip.z);
+  };
+  function finish() {
+    st.done = true;
+    const time = st.t0 ? ((performance.now() - st.t0) / 1000) : 0;
+    const rows = [
+      { axis: 'calls', value: st.i + '/' + SEQ.length, ok: st.i === SEQ.length },
+      { axis: 'wrong', value: String(st.wrong), ok: st.wrong === 0 },
+      { axis: 'time', value: time.toFixed(1) + ' s', ok: null },
+    ];
+    simResults('rigging-signals', rows, st.i === SEQ.length && st.wrong === 0);
+  }
+  function give(sig) {
+    if (st.done || st.tgt) return;         // the crane is still moving: hold
+    st.given = sig;
+    if (sig === SEQ[st.i]) {
+      if (!st.t0) st.t0 = performance.now();
+      blip(1450, 1900, .1, 'sine', .12);   // the whistle: call acknowledged
+      setTimeout(() => blip(1450, 1900, .1, 'sine', .12), 140);
+      st.i++;
+      if (sig === 'stop') return finish();
+      st.tgt = {
+        'up': { h: st.h + 2.4 }, 'down': { h: Math.max(1.2, st.h - 2.4) },
+        'swing-l': { slew: st.slew - .55 }, 'swing-r': { slew: st.slew + .55 },
+        'out': { r: Math.min(9, st.r + 2.2) }, 'in': { r: Math.max(2.5, st.r - 2.2) },
+      }[sig];
+    } else {                               // out of turn: the crane holds
+      st.wrong++;
+      blip(220, 110, .35, 'square', .16); buzz(200, .7);
+    }
+  }
+  return {
+    group: g, orbit: true,
+    orbitCam: { pos: [12, 9, 15], tgt: [0, 4, 0] },
+    mount: { parent: g, pos: [4.5, .1, 6.2], yaw: -2.55, armUp: true },
+    action() { give('stop'); },
+    update(dt) {
+      if (!st.done) {
+        const SIGS = { KeyQ: 'up', KeyE: 'down', KeyA: 'swing-l',
+                       KeyD: 'swing-r', KeyW: 'out', KeyS: 'in' };
+        for (const [k, sig] of Object.entries(SIGS)) {
+          if (keys[k] && !st.latch[k]) give(sig);
+          st.latch[k] = !!keys[k];
+        }
+        if (st.tgt) {                      // one smooth move per call
+          let close = true;
+          for (const [prop, want] of Object.entries(st.tgt)) {
+            st[prop] += (want - st[prop]) * Math.min(1, 3.2 * dt);
+            if (Math.abs(want - st[prop]) > .04) close = false;
+          }
+          if (close) { Object.assign(st, st.tgt); st.tgt = null; }
+        }
+        engineSet(st.tgt ? .6 : .12);
+      }
+      slewG.rotation.y = -st.slew;
+      const hp = hookPos();
+      load.position.set(hp.x, Math.max(.6, hp.y - 1.4), hp.z);
+      const pts = cableGeo.attributes.position.array;
+      const tip = slewG.localToWorld(new THREE.Vector3(st.r, 0, 0));
+      pts[0] = tip.x; pts[1] = tip.y; pts[2] = tip.z;
+      pts[3] = load.position.x; pts[4] = load.position.y + .6; pts[5] = load.position.z;
+      cableGeo.attributes.position.needsUpdate = true;
+      if (simView === 'signal') {
+        // the signalperson's eye: on the pad, watching the load
+        camera.position.set(4.5, 1.75, 7.1);
+        camera.lookAt(load.position.x, load.position.y + 1, load.position.z);
+      }
+    },
+    gauges: () => ({
+      step: { v: 0, txt: st.i + '/' + SEQ.length },
+      called: { v: 0, txt: st.done ? '\\u2013' : (SEQ[st.i] ?? '\\u2013') },
+      given: { v: 0, txt: st.given },
+      wrong: { v: st.wrong, txt: String(st.wrong) },
       time: { v: 0, txt: st.t0 ? ((performance.now() - st.t0) / 1000).toFixed(0) : '\\u2013' },
     }),
   };
@@ -3204,7 +3312,7 @@ let mmBase = null, mmInfo = { n: 0, s: 1 };
 function buildMinimap(key, R) {
   const ext = Math.max(walkLim, R + 60);
   const S2 = 66 / ext;
-  mmInfo = { n: 0, s: S2 };
+  mmInfo = { n: 0, s: S2, done: 0 };
   const c = document.createElement('canvas'); c.width = c.height = 150;
   const g2 = c.getContext('2d');
   g2.fillStyle = 'rgba(12,17,19,.88)'; g2.fillRect(0, 0, 150, 150);
@@ -3232,6 +3340,18 @@ function buildMinimap(key, R) {
       Math.max(2, (bb.max.x - bb.min.x) * S2),
       Math.max(2, (bb.max.z - bb.min.z) * S2));
     mmInfo.n++;
+    // a fully-worked hall (stations done, every bound seat passed) rings amber
+    const bound = D.sims.bindings[h.slug] ?? [];
+    if ((h.stations.length || bound.length)
+      && h.stations.every((id) => doneStations.has(id))
+      && bound.every((x) => prog.sims[x.sim]?.passed)) {
+      g2.strokeStyle = '#E8A33D'; g2.lineWidth = 1.5;
+      g2.beginPath();
+      g2.arc(X((bb.min.x + bb.max.x) / 2), Y((bb.min.z + bb.max.z) / 2),
+        Math.max(4, (bb.max.x - bb.min.x) * S2), 0, 7);
+      g2.stroke();
+      mmInfo.done++;
+    }
   }
   // the chapter hall and the city places
   g2.fillStyle = '#E8A33D';
@@ -3384,6 +3504,23 @@ function showRegion() {
   syncURL();
 }
 
+// the campus rollup: the whole training loop summed over the campus's
+// halls - stations, bound seats, and the districts' crib checks
+function campusRollup(key) {
+  const halls = D.campuses[key].halls.map((sg) => D.halls.find((x) => x.slug === sg));
+  let sd = 0, stot = 0, sp = 0, sb = 0;
+  for (const h of halls) {
+    stot += h.stations.length;
+    sd += h.stations.filter((id) => doneStations.has(id)).length;
+    const b = D.sims.bindings[h.slug] ?? [];
+    sb += b.length;
+    sp += b.filter((x) => prog.sims[x.sim]?.passed).length;
+  }
+  const dists = D.campuses[key].districts;
+  const cd = dists.filter((dk) => prog.tools[dk]?.passed).length;
+  return `✓ ${sd}/${stot} · ▶ ${sp}/${sb} · \U0001f9f0 ${cd}/${dists.length}`;
+}
+
 function showCampus(key) {
   if (sim) teardownSim();
   campusKey = key; view = 'campus';
@@ -3400,7 +3537,8 @@ function showCampus(key) {
   controls.maxDistance = 420; controls.minDistance = 20;
   camera.position.set(0, 165, 195); controls.target.set(0, 0, 0);
   const camp = D.campuses[key];
-  document.getElementById('hname').textContent = camp.name;
+  document.getElementById('hname').textContent =
+    camp.name + '  ' + campusRollup(key);
   document.getElementById('hfocus').textContent =
     camp.city + ', ' + camp.region + ' — ' + camp.tagline
     + (D.geo.cityPois?.[key] ? ' · ' + t('city.note') : '');
@@ -3953,6 +4091,8 @@ window.__tc3d = () => ({ view, buildings: buildings.length, plates: plates.lengt
   simRider: !!simRider, ambN: ambNodes.length,
   cribs: cribCount, curCrib, drillN: drill ? drill.i : null,
   gau: sim?.gauges ? sim.gauges() : null,
+  rollup: view === 'campus' ? campusRollup(campusKey) : null,
+  mmDone: mmInfo.done ?? 0,
   wheel: document.querySelectorAll('#wheel path').length,
   progress: { stations: doneStations.size, sims: Object.keys(prog.sims).length,
     tools: Object.keys(prog.tools).length },
