@@ -89,6 +89,16 @@ as benched props), and the same per-strand module rows; safety rooms carry
 a hazard-stripe threshold at the doorway, and **walk mode** drops to first
 person (WASD, pointer lock) for a floor-level pass through the building.
 
+Each campus carries a typed **roadway network** — a dashed ring road, a
+radial spur from the plaza, a street along every building row, a driveway
+to every door, and an alley tying the rows back to the ring. Roads and
+buildings are laid out in one cluster-local frame with a depth-aware row
+pitch, and the build checks itself: any road rectangle overlapping any
+building rectangle counts as a fault, and the headless harness asserts
+zero across all three campuses. Building rooflines are typed by district
+(sawtooth for the industrial districts, gabled for the finish trades,
+flat with rooftop plant elsewhere), with corner trims in the district hue.
+
 ## Upgrade candidates
 
 Reviewed and held for future releases (see [`ROADMAP.md`](../ROADMAP.md)):

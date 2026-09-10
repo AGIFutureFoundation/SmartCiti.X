@@ -603,6 +603,11 @@ const mat = {
            metalness: .3 }),
   land:  new THREE.MeshStandardMaterial({ map: asphaltTex, color: 0xcdd2d3,
            roughness: .95 }),
+  road:  new THREE.MeshStandardMaterial({ color: 0x565c60, roughness: .95 }),
+  drive: new THREE.MeshStandardMaterial({ color: 0x777d81, roughness: .9 }),
+  walkway: new THREE.MeshStandardMaterial({ map: concreteTex, color: 0xcdd2d0,
+           roughness: .95 }),
+  paint: new THREE.MeshStandardMaterial({ color: 0xd8dcd8, roughness: .5 }),
   wall:  new THREE.MeshStandardMaterial({ color: 0x39454a, roughness: .85 }),
   part:  new THREE.MeshStandardMaterial({ color: 0x2c3639, roughness: .85 }),
   post:  new THREE.MeshStandardMaterial({ color: 0xE8A33D, roughness: .45,
@@ -835,33 +840,70 @@ let campusKey = D.halls.some(h => h.slug === params.get('hall'))
 const campusOfHall = (sg) =>
   Object.keys(D.campuses).find(k => D.campuses[k].halls.includes(sg));
 
-/* -------- higher-detail buildings, shared by campus and region views ---- */
-function building(h, bx, bz, g, scale = 1) {
-  const dep = Math.max(h.depth, 5) * scale, wid = 12 * scale;
-  const hgt = (6 + (h.depth % 3) * .7) * scale;
+/* ---- buildings, campus roads, and the cluster frame --------------------- */
+// Buildings and roads share one cluster-local frame (u lateral, v radial),
+// so "roads never intersect buildings" is a rectangle test the build runs
+// on itself: any overlap counts in roadFaults, and the harness asserts 0.
+let roadFaults = 0, roadCount = 0;
+
+const STYLE_OF = { industry: 'saw', transport: 'saw', earthworks: 'saw',
+                   envelope: 'gable', control: 'gable',
+                   structural: 'flat', systems: 'flat', energy: 'flat' };
+
+function building(h, style, g) {   // built at the local origin, door toward -z
+  const dep = Math.max(h.depth, 5), wid = 12;
+  const hgt = 6 + (h.depth % 3) * .7;
   const hue = D.districts[h.district].hue;
-  const bld = box(wid, hgt, dep, mat.wall, bx, hgt / 2, bz, g);
+  const bld = box(wid, hgt, dep, mat.wall, 0, hgt / 2, 0, g);
   bld.userData.slug = h.slug;
-  const band = new THREE.Mesh(new THREE.BoxGeometry(wid + .4 * scale, .9 * scale, dep + .4 * scale),
-    new THREE.MeshStandardMaterial({
-      color: new THREE.Color().setHSL(hue / 360, .5, .45), roughness: .6 }));
-  band.position.set(bx, hgt - .2 * scale, bz); g.add(band);
-  // lit window strips front and back, and a door
-  for (const zz of [bz - dep / 2 - .03, bz + dep / 2 + .03]) {
-    const strip = new THREE.Mesh(
-      new THREE.BoxGeometry(wid * .78, .7 * scale, .06), mat.win);
-    strip.position.set(bx, hgt * .55, zz); g.add(strip);
+  const hueMat = new THREE.MeshStandardMaterial({
+    color: new THREE.Color().setHSL(hue / 360, .5, .45), roughness: .6 });
+  const band = new THREE.Mesh(new THREE.BoxGeometry(wid + .4, .9, dep + .4), hueMat);
+  band.position.set(0, hgt - .2, 0); g.add(band);
+  for (const [tx, tz] of [[-wid/2, -dep/2], [wid/2, -dep/2],
+                          [-wid/2, dep/2], [wid/2, dep/2]]) {
+    const trim = new THREE.Mesh(new THREE.BoxGeometry(.5, hgt, .5), hueMat);
+    trim.position.set(tx, hgt / 2, tz); g.add(trim);
   }
-  box(1.6 * scale, 2.4 * scale, .1, mat.part, bx, 1.2 * scale, bz - dep / 2 - .06, g, false);
-  // rooftop unit
-  box(1.6 * scale, .8 * scale, 1.2 * scale, mat.metal,
-      bx + wid * .22, hgt + .4 * scale, bz + dep * .15, g);
+  for (const zz of [-dep/2 - .03, dep/2 + .03]) {
+    const strip = new THREE.Mesh(new THREE.BoxGeometry(wid * .78, .7, .06), mat.win);
+    strip.position.set(0, hgt * .55, zz); g.add(strip);
+  }
+  box(1.6, 2.4, .1, mat.part, 0, 1.2, -dep/2 - .06, g, false);
+  if (style === 'saw') {              // industrial sawtooth roofline
+    for (let sx = -wid/2 + 2; sx < wid/2 - .5; sx += 4) {
+      const w = box(3.2, 1.5, dep - .6, mat.metal, sx, hgt + .55, 0, g);
+      w.rotation.z = .42;
+    }
+  } else if (style === 'gable') {     // pitched pair
+    const r1 = box(wid * .6, .5, dep + .3, mat.part, -wid * .24, hgt + 1.1, 0, g);
+    r1.rotation.z = .48;
+    const r2 = box(wid * .6, .5, dep + .3, mat.part, wid * .24, hgt + 1.1, 0, g);
+    r2.rotation.z = -.48;
+  } else {                            // flat: parapet already, rooftop unit
+    box(1.6, .8, 1.2, mat.metal, wid * .22, hgt + .4, dep * .15, g);
+  }
   if (h.stations.length) {
-    const bcn = new THREE.Mesh(new THREE.OctahedronGeometry(.9 * scale), mat.post);
-    bcn.position.set(bx, hgt + 2 * scale, bz);
-    g.add(bcn); campusSpin.push(bcn);
+    const bcn = new THREE.Mesh(new THREE.OctahedronGeometry(.9), mat.post);
+    bcn.position.set(0, hgt + 2, 0); g.add(bcn); campusSpin.push(bcn);
   }
-  return bld;
+  return { mesh: bld, w: wid, d: dep };
+}
+
+function roadRect(u, v, w, len, m, g, y = .05) {
+  const r = new THREE.Mesh(new THREE.PlaneGeometry(w, len), m);
+  r.rotation.x = -Math.PI / 2; r.position.set(u, y, v);
+  r.receiveShadow = true; g.add(r);
+  return { u, v, w, h: len };
+}
+
+function dashesU(u0, u1, v, g) {
+  for (let u = u0 + 2; u < u1 - 2; u += 4)
+    box(1.6, .02, .16, mat.paint, u, .09, v, g, false);
+}
+function dashesV(v0, v1, u, g) {
+  for (let v = v0 + 2; v < v1 - 2; v += 4)
+    box(.16, .02, 1.6, mat.paint, u, .09, v, g, false);
 }
 
 /* ------------------------------ campus dressing, keyed by campus slug --- */
@@ -911,26 +953,92 @@ function dressCampus(key, g, R) {
 function buildCampus(key) {
   if (campusGroup) scene.remove(campusGroup);
   campusGroup = new THREE.Group(); buildings = []; campusSpin = [];
+  roadFaults = 0; roadCount = 0;
   const camp = D.campuses[key];
   const dk = camp.districts;
   const R = dk.length === 2 ? 62 : 84;
   campusR = R;
+  const rr = R - 24;
+  // the ring road, dashed, and the plaza walkway
+  const ring = new THREE.Mesh(new THREE.RingGeometry(rr - 2.4, rr + 2.4, 96), mat.road);
+  ring.rotation.x = -Math.PI / 2; ring.position.y = .05;
+  ring.receiveShadow = true; campusGroup.add(ring); roadCount++;
+  for (let a = 0; a < 64; a++) {
+    const th = a / 64 * Math.PI * 2;
+    const dsh = box(.16, .02, 1.6, mat.paint,
+      Math.cos(th) * rr, .09, Math.sin(th) * rr, campusGroup, false);
+    dsh.rotation.y = -th;
+  }
+  const wlk = new THREE.Mesh(new THREE.RingGeometry(24, 27, 64), mat.walkway);
+  wlk.rotation.x = -Math.PI / 2; wlk.position.y = .04;
+  wlk.receiveShadow = true; campusGroup.add(wlk);
+
   dk.forEach((k, di) => {
     const d = D.districts[k];
     const ang = di / dk.length * Math.PI * 2 - Math.PI / 2;
     const rad = new THREE.Vector2(Math.cos(ang), Math.sin(ang));
-    const lat = new THREE.Vector2(-rad.y, rad.x);
-    const cx = rad.x * R, cz = rad.y * R;
+    const psi = Math.atan2(rad.x, rad.y);
+    const cg = new THREE.Group();
+    cg.position.set(rad.x * R, 0, rad.y * R);
+    cg.rotation.y = psi;               // local +z = outward, doors face the plaza
+    campusGroup.add(cg);
     const cols = Math.ceil(Math.sqrt(d.halls.length * 1.7));
+    const style = STYLE_OF[k] ?? 'flat';
+    // row pitch sized to the district's deepest building, so a street
+    // always fits between rows with clearance on both sides
+    const maxDep = Math.max(...d.halls.map((sg) =>
+      Math.max(D.halls.find(x => x.slug === sg).depth, 5)));
+    const pitch = maxDep + 8;
+    const rows = {}, rects = [], roads = [];
     d.halls.forEach((sg, i) => {
       const h = D.halls.find(x => x.slug === sg);
       const gx = (i % cols) - (cols - 1) / 2, gz = Math.floor(i / cols);
-      const bx = cx + lat.x * gx * 16 + rad.x * gz * 15;
-      const bz = cz + lat.y * gx * 16 + rad.y * gz * 15;
-      buildings.push(building(h, bx, bz, campusGroup));
+      const bg = new THREE.Group();
+      bg.position.set(gx * 16, 0, gz * pitch);
+      cg.add(bg);
+      const b = building(h, style, bg);
+      buildings.push(b.mesh);
+      (rows[gz] ??= []).push({ u: gx * 16, v: gz * pitch, halfD: b.d / 2 });
+      rects.push({ u: gx * 16, v: gz * pitch, hw: b.w / 2 + .2, hd: b.d / 2 + .2 });
     });
+    // roads, cluster-local: a street along each row's frontage, a driveway
+    // to every door, the alley to the ring, and the spur to the plaza
+    for (const members of Object.values(rows)) {
+      const rv = members[0].v;
+      const u0 = Math.min(...members.map(m => m.u)) - 8;
+      const u1 = Math.max(...members.map(m => m.u)) + 8;
+      const maxHalfD = Math.max(...members.map(m => m.halfD));
+      const sv = rv - maxHalfD - 2.6;
+      roads.push(roadRect((u0 + u1) / 2, sv, u1 - u0, 3.6, mat.road, cg));
+      dashesU(u0, u1, sv, cg);
+      for (const m of members) {
+        const top = rv - m.halfD - .45, bot = sv + 1.8;
+        if (top - bot > .1)
+          roads.push(roadRect(m.u, (top + bot) / 2, 2.4, top - bot, mat.drive, cg, .045));
+      }
+      roadCount += 1 + members.length;
+    }
+    const lastV = Math.max(...Object.values(rows).map(m => m[0].v));
+    // the alley runs up a real gap between columns: even grids have a
+    // building at u=8 and their free lane at u=0, odd grids the reverse
+    const alleyU = (cols % 2 === 0) ? 0 : 8;
+    roads.push(roadRect(alleyU, ((rr - R) + (lastV - 2.6)) / 2, 3.2,
+      (lastV - 2.6) - (rr - R), mat.road, cg));
+    dashesV(rr - R, lastV - 2.6, alleyU, cg);
+    roads.push(roadRect(0, ((27 - R) + (rr - R)) / 2, 4.2,
+      (rr - R) - (27 - R), mat.road, cg));
+    dashesV(27 - R, rr - R, 0, cg);
+    roadCount += 2;
+    // the guarantee: no road rectangle overlaps a building rectangle
+    for (const r of roads) for (const b of rects) {
+      if (Math.abs(r.u - b.u) < r.w / 2 + b.hw
+        && Math.abs(r.v - b.v) < r.h / 2 + b.hd) {
+        roadFaults++;
+        (window.__faults ??= []).push({ r, b });
+      }
+    }
     const dl = label(D.i18n[loc].districts[k], null, 3);
-    dl.position.set(cx - rad.x * 14, 15, cz - rad.y * 14);
+    dl.position.set(rad.x * (R - 14), 15, rad.y * (R - 14));
     campusGroup.add(dl);
   });
   const plaza = new THREE.Mesh(new THREE.CylinderGeometry(24, 24, .3, 48),
@@ -1172,9 +1280,10 @@ function walkStep(dt) {
     camera.position.x *= lim / len; camera.position.z *= lim / len;
   }
   let best = null, bd = 1e9;
+  const wp = new THREE.Vector3();
   for (const b of buildings) {
-    const d = Math.hypot(b.position.x - camera.position.x,
-                         b.position.z - camera.position.z);
+    b.getWorldPosition(wp);
+    const d = Math.hypot(wp.x - camera.position.x, wp.z - camera.position.z);
     if (d < bd) { bd = d; best = b; }
   }
   if (best && bd < 11) {
@@ -1393,7 +1502,7 @@ else showRegion();
 // test hook: lets the harness assert scene state without poking internals
 window.__tc3d = () => ({ view, buildings: buildings.length, plates: plates.length,
   beacons: beacons.length, floors: floors.length, slug, campusKey, loc, walkActive,
-  sim: curSimId && sim ? curSimId : null });
+  sim: curSimId && sim ? curSimId : null, roadFaults, roadCount });
 const clock = new THREE.Clock();
 renderer.setAnimationLoop(() => {
   const dt = clock.getDelta();
