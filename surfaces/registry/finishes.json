@@ -1,0 +1,5800 @@
+{
+ "pack": "smartcitix-trade-craft-academy-surface-registry",
+ "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
+ "pack_version": "3.2.0",
+ "built": "2026-09-10",
+ "source_stamp": "9218b5debf5fc1cb",
+ "spec": "section 24 of the ACP suite",
+ "honesty": {
+  "status": "general good practice, not a code reference; no figure is read from any jurisdiction's standard and no surface names a product, brand, fire rating or specification number. A real deployment replaces these with the local standard."
+ },
+ "catalogue": {
+  "bare-slab": {
+   "name": "Power-floated bare slab",
+   "color": "#8e9294",
+   "roughness": 0.92,
+   "metalness": 0.02,
+   "pattern": "slab",
+   "tile_m": 3.0,
+   "why": "non-combustible with nothing underfoot to carry flame or spark"
+  },
+  "sealed-slab": {
+   "name": "Sealed concrete slab",
+   "color": "#9aa0a0",
+   "roughness": 0.75,
+   "metalness": 0.03,
+   "pattern": "slab",
+   "tile_m": 3.0,
+   "why": "dust-proofed general working floor that survives point loads"
+  },
+  "broom-concrete": {
+   "name": "Broom-finish concrete",
+   "color": "#94999a",
+   "roughness": 0.97,
+   "metalness": 0.02,
+   "pattern": "broom",
+   "tile_m": 3.0,
+   "why": "traction outdoors and on wash-down ramps"
+  },
+  "epoxy-smooth": {
+   "name": "Smooth epoxy resin",
+   "color": "#b8bfc2",
+   "roughness": 0.35,
+   "metalness": 0.05,
+   "pattern": "smooth",
+   "tile_m": 2.4,
+   "why": "wipe-clean and chemical-resistant for controlled rooms"
+  },
+  "epoxy-quartz": {
+   "name": "Quartz-broadcast epoxy",
+   "color": "#a8adad",
+   "roughness": 0.6,
+   "metalness": 0.04,
+   "pattern": "speckle",
+   "tile_m": 2.4,
+   "why": "keeps grip when the process runs wet or oily"
+  },
+  "spill-berm": {
+   "name": "Bermed epoxy with coved edge",
+   "color": "#aab4b0",
+   "roughness": 0.45,
+   "metalness": 0.04,
+   "pattern": "smooth",
+   "tile_m": 2.4,
+   "why": "contains a spill at the room boundary until it is recovered"
+  },
+  "welded-vinyl": {
+   "name": "Welded sheet vinyl",
+   "color": "#cfd4d6",
+   "roughness": 0.3,
+   "metalness": 0.02,
+   "pattern": "smooth",
+   "tile_m": 1.8,
+   "why": "particulates collect in joints, so the floor has none"
+  },
+  "esd-vinyl": {
+   "name": "Static-dissipative vinyl",
+   "color": "#a9b3b8",
+   "roughness": 0.4,
+   "metalness": 0.06,
+   "pattern": "tile",
+   "tile_m": 0.6,
+   "why": "bleeds charge to ground before it can find a spark path"
+  },
+  "rubber-dielectric": {
+   "name": "Dielectric rubber matting",
+   "color": "#2e3335",
+   "roughness": 0.9,
+   "metalness": 0.0,
+   "pattern": "smooth",
+   "tile_m": 1.0,
+   "why": "insulates the person standing at live equipment"
+  },
+  "anti-fatigue": {
+   "name": "Anti-fatigue matting",
+   "color": "#3c4245",
+   "roughness": 0.92,
+   "metalness": 0.0,
+   "pattern": "smooth",
+   "tile_m": 1.0,
+   "why": "long standing bench work punishes joints on hard floor"
+  },
+  "firebrick-hearth": {
+   "name": "Firebrick hearth",
+   "color": "#7a4a3a",
+   "roughness": 0.95,
+   "metalness": 0.02,
+   "pattern": "brick",
+   "tile_m": 0.23,
+   "why": "it will be spilled on, and must take molten metal"
+  },
+  "acid-brick": {
+   "name": "Acid-resistant brick",
+   "color": "#8a5a4a",
+   "roughness": 0.8,
+   "metalness": 0.02,
+   "pattern": "brick",
+   "tile_m": 0.23,
+   "why": "shrugs off the chemistry a plating or wash-down bay throws"
+  },
+  "steel-checker": {
+   "name": "Checkerplate steel",
+   "color": "#6f7678",
+   "roughness": 0.45,
+   "metalness": 0.85,
+   "pattern": "checker",
+   "tile_m": 0.3,
+   "why": "grip where machines drip oil, and it can be hosed"
+  },
+  "steel-grate": {
+   "name": "Open steel grating",
+   "color": "#5f6668",
+   "roughness": 0.5,
+   "metalness": 0.8,
+   "pattern": "grate",
+   "tile_m": 0.3,
+   "why": "the floor drains itself where water is the work"
+  },
+  "marine-deck": {
+   "name": "Non-skid marine deck",
+   "color": "#55606a",
+   "roughness": 0.85,
+   "metalness": 0.3,
+   "pattern": "speckle",
+   "tile_m": 1.2,
+   "why": "grip that survives immersion and salt"
+  },
+  "end-grain-block": {
+   "name": "End-grain wood block",
+   "color": "#7d5f41",
+   "roughness": 0.85,
+   "metalness": 0.0,
+   "pattern": "block",
+   "tile_m": 0.1,
+   "why": "kind to a dropped edge tool, and quiet underfoot"
+  },
+  "timber-plank": {
+   "name": "Heavy timber planking",
+   "color": "#8a6a48",
+   "roughness": 0.9,
+   "metalness": 0.0,
+   "pattern": "plank",
+   "tile_m": 0.14,
+   "why": "the substrate formwork and carpentry actually fasten into"
+  },
+  "raised-access": {
+   "name": "Raised access floor",
+   "color": "#b4b9bb",
+   "roughness": 0.5,
+   "metalness": 0.15,
+   "pattern": "tile",
+   "tile_m": 0.6,
+   "why": "the services run under the floor, not across it"
+  },
+  "terrazzo-ground": {
+   "name": "Ground terrazzo",
+   "color": "#b9b3a8",
+   "roughness": 0.4,
+   "metalness": 0.03,
+   "pattern": "speckle",
+   "tile_m": 1.2,
+   "why": "a finish trade shows its own craft where people gather"
+  },
+  "porcelain-tile": {
+   "name": "Porcelain tile",
+   "color": "#c4c8c8",
+   "roughness": 0.35,
+   "metalness": 0.02,
+   "pattern": "tile",
+   "tile_m": 0.6,
+   "why": "hard, flat and truthful under a straightedge"
+  },
+  "crushed-stone": {
+   "name": "Compacted crushed stone",
+   "color": "#9d9689",
+   "roughness": 0.98,
+   "metalness": 0.0,
+   "pattern": "speckle",
+   "tile_m": 1.5,
+   "why": "the ground plant actually digs, piles and tracks on"
+  },
+  "asphalt-apron": {
+   "name": "Asphalt apron",
+   "color": "#3a3f42",
+   "roughness": 0.96,
+   "metalness": 0.02,
+   "pattern": "speckle",
+   "tile_m": 3.0,
+   "why": "the yard running surface between door and stockpile"
+  }
+ },
+ "hazards_in_use": [
+  "contaminant",
+  "corrosive",
+  "hot-work",
+  "immersion",
+  "live-electrical",
+  "mobile-plant",
+  "molten-metal",
+  "particulate",
+  "stored-energy",
+  "timber-trade",
+  "wet-process"
+ ],
+ "no_finish_driving_hazard": [
+  "acoustic",
+  "airfield",
+  "automation-int",
+  "aviation-ground",
+  "bas-controls",
+  "bridge-inspect",
+  "catenary",
+  "cement-masons",
+  "cladding",
+  "concrete-pump",
+  "confined-space",
+  "crane-ops",
+  "curtainwall",
+  "data-center",
+  "demolition",
+  "district-energy",
+  "drywall",
+  "elevator",
+  "ev-charging",
+  "fiber-splicers",
+  "fire-alarm",
+  "fire-sprinkler",
+  "firestop",
+  "fleet-diesel",
+  "flooring",
+  "gas-distrib",
+  "glaziers",
+  "heavy-equip",
+  "high-angle",
+  "hvacr",
+  "hydro",
+  "instrumentation",
+  "ironworkers",
+  "lathers",
+  "machinists",
+  "masonry-restore",
+  "meter-techs",
+  "millwrights",
+  "network-cabling",
+  "pipefitters",
+  "plasterers",
+  "port-crane",
+  "post-tension",
+  "precast",
+  "rail-signals",
+  "riggers",
+  "robotics",
+  "roofers",
+  "security-sys",
+  "sheetmetal",
+  "site-safety",
+  "solar",
+  "steel-erectors",
+  "stone-carvers",
+  "survey-drone",
+  "surveyors",
+  "tilesetters",
+  "toolmakers",
+  "transit-vehicle",
+  "waterproofers",
+  "wind"
+ ],
+ "hazard_placed_finishes": 71,
+ "halls": {
+  "ironworkers": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "electricians": {
+   "hazard": "live-electrical",
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "rubber-dielectric",
+     "placed_by": "hazard",
+     "hazard": "live-electrical"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "rubber-dielectric",
+     "placed_by": "hazard",
+     "hazard": "live-electrical"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "pipefitters": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "carpenters": {
+   "hazard": "timber-trade",
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "timber-plank",
+     "placed_by": "hazard",
+     "hazard": "timber-trade"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "operating-eng": {
+   "hazard": "mobile-plant",
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "crushed-stone",
+     "placed_by": "hazard",
+     "hazard": "mobile-plant"
+    },
+    "machines": {
+     "surface": "broom-concrete",
+     "placed_by": "hazard",
+     "hazard": "mobile-plant"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "laborers": {
+   "hazard": "mobile-plant",
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "crushed-stone",
+     "placed_by": "hazard",
+     "hazard": "mobile-plant"
+    },
+    "machines": {
+     "surface": "broom-concrete",
+     "placed_by": "hazard",
+     "hazard": "mobile-plant"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "sheetmetal": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "bricklayers": {
+   "hazard": "molten-metal",
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "firebrick-hearth",
+     "placed_by": "hazard",
+     "hazard": "molten-metal"
+    },
+    "machines": {
+     "surface": "firebrick-hearth",
+     "placed_by": "hazard",
+     "hazard": "molten-metal"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "cement-masons": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "roofers": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "painters": {
+   "hazard": "corrosive",
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "acid-brick",
+     "placed_by": "hazard",
+     "hazard": "corrosive"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "glaziers": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "insulators": {
+   "hazard": "contaminant",
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "spill-berm",
+     "placed_by": "hazard",
+     "hazard": "contaminant"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "millwrights": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "boilermakers": {
+   "hazard": "hot-work",
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "bare-slab",
+     "placed_by": "hazard",
+     "hazard": "hot-work"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "elevator": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "teamsters": {
+   "hazard": "mobile-plant",
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "crushed-stone",
+     "placed_by": "hazard",
+     "hazard": "mobile-plant"
+    },
+    "machines": {
+     "surface": "broom-concrete",
+     "placed_by": "hazard",
+     "hazard": "mobile-plant"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "welders": {
+   "hazard": "hot-work",
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "bare-slab",
+     "placed_by": "hazard",
+     "hazard": "hot-work"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "hvacr": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "crane-ops": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "riggers": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "heavy-equip": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "drywall": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "flooring": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "grounds": {
+   "hazard": "mobile-plant",
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "crushed-stone",
+     "placed_by": "hazard",
+     "hazard": "mobile-plant"
+    },
+    "machines": {
+     "surface": "broom-concrete",
+     "placed_by": "hazard",
+     "hazard": "mobile-plant"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "line-workers": {
+   "hazard": "live-electrical",
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "rubber-dielectric",
+     "placed_by": "hazard",
+     "hazard": "live-electrical"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "rubber-dielectric",
+     "placed_by": "hazard",
+     "hazard": "live-electrical"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "solar": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "wind": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "demolition": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "scaffold": {
+   "hazard": "timber-trade",
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "timber-plank",
+     "placed_by": "hazard",
+     "hazard": "timber-trade"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "surveyors": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "fire-sprinkler": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "hazmat": {
+   "hazard": "corrosive",
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "acid-brick",
+     "placed_by": "hazard",
+     "hazard": "corrosive"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "refractory": {
+   "hazard": "molten-metal",
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "firebrick-hearth",
+     "placed_by": "hazard",
+     "hazard": "molten-metal"
+    },
+    "machines": {
+     "surface": "firebrick-hearth",
+     "placed_by": "hazard",
+     "hazard": "molten-metal"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "pipeline": {
+   "hazard": "hot-work",
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "bare-slab",
+     "placed_by": "hazard",
+     "hazard": "hot-work"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "tank-erectors": {
+   "hazard": "wet-process",
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "steel-grate",
+     "placed_by": "hazard",
+     "hazard": "wet-process"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "shipfitters": {
+   "hazard": "immersion",
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "marine-deck",
+     "placed_by": "hazard",
+     "hazard": "immersion"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "marine-pipe": {
+   "hazard": "immersion",
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "marine-deck",
+     "placed_by": "hazard",
+     "hazard": "immersion"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "divers": {
+   "hazard": "hot-work",
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "bare-slab",
+     "placed_by": "hazard",
+     "hazard": "hot-work"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "blasters": {
+   "hazard": "mobile-plant",
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "crushed-stone",
+     "placed_by": "hazard",
+     "hazard": "mobile-plant"
+    },
+    "machines": {
+     "surface": "broom-concrete",
+     "placed_by": "hazard",
+     "hazard": "mobile-plant"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "miners": {
+   "hazard": "mobile-plant",
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "crushed-stone",
+     "placed_by": "hazard",
+     "hazard": "mobile-plant"
+    },
+    "machines": {
+     "surface": "broom-concrete",
+     "placed_by": "hazard",
+     "hazard": "mobile-plant"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "smelter": {
+   "hazard": "molten-metal",
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "firebrick-hearth",
+     "placed_by": "hazard",
+     "hazard": "molten-metal"
+    },
+    "machines": {
+     "surface": "firebrick-hearth",
+     "placed_by": "hazard",
+     "hazard": "molten-metal"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "foundry": {
+   "hazard": "molten-metal",
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "firebrick-hearth",
+     "placed_by": "hazard",
+     "hazard": "molten-metal"
+    },
+    "machines": {
+     "surface": "firebrick-hearth",
+     "placed_by": "hazard",
+     "hazard": "molten-metal"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "machinists": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "toolmakers": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "fabricators": {
+   "hazard": "hot-work",
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "bare-slab",
+     "placed_by": "hazard",
+     "hazard": "hot-work"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "platers": {
+   "hazard": "corrosive",
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "acid-brick",
+     "placed_by": "hazard",
+     "hazard": "corrosive"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "substation": {
+   "hazard": "live-electrical",
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "rubber-dielectric",
+     "placed_by": "hazard",
+     "hazard": "live-electrical"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "rubber-dielectric",
+     "placed_by": "hazard",
+     "hazard": "live-electrical"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "cable-splicers": {
+   "hazard": "live-electrical",
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "rubber-dielectric",
+     "placed_by": "hazard",
+     "hazard": "live-electrical"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "rubber-dielectric",
+     "placed_by": "hazard",
+     "hazard": "live-electrical"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "meter-techs": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "gas-distrib": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "water-distrib": {
+   "hazard": "molten-metal",
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "firebrick-hearth",
+     "placed_by": "hazard",
+     "hazard": "molten-metal"
+    },
+    "machines": {
+     "surface": "firebrick-hearth",
+     "placed_by": "hazard",
+     "hazard": "molten-metal"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "wastewater": {
+   "hazard": "wet-process",
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "steel-grate",
+     "placed_by": "hazard",
+     "hazard": "wet-process"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "nuclear": {
+   "hazard": "contaminant",
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "spill-berm",
+     "placed_by": "hazard",
+     "hazard": "contaminant"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "hydro": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "geothermal": {
+   "hazard": "wet-process",
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "steel-grate",
+     "placed_by": "hazard",
+     "hazard": "wet-process"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "battery-storage": {
+   "hazard": "stored-energy",
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "esd-vinyl",
+     "placed_by": "hazard",
+     "hazard": "stored-energy"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "ev-charging": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "hydrogen": {
+   "hazard": "stored-energy",
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "esd-vinyl",
+     "placed_by": "hazard",
+     "hazard": "stored-energy"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "transmission": {
+   "hazard": "live-electrical",
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "rubber-dielectric",
+     "placed_by": "hazard",
+     "hazard": "live-electrical"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "rubber-dielectric",
+     "placed_by": "hazard",
+     "hazard": "live-electrical"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "district-energy": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "masonry-restore": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "stone-carvers": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "plasterers": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "terrazzo": {
+   "hazard": "molten-metal",
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "firebrick-hearth",
+     "placed_by": "hazard",
+     "hazard": "molten-metal"
+    },
+    "machines": {
+     "surface": "firebrick-hearth",
+     "placed_by": "hazard",
+     "hazard": "molten-metal"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "tilesetters": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "lathers": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "curtainwall": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "waterproofers": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "firestop": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "acoustic": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "cladding": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "shoring": {
+   "hazard": "timber-trade",
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "timber-plank",
+     "placed_by": "hazard",
+     "hazard": "timber-trade"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "piling": {
+   "hazard": "mobile-plant",
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "crushed-stone",
+     "placed_by": "hazard",
+     "hazard": "mobile-plant"
+    },
+    "machines": {
+     "surface": "broom-concrete",
+     "placed_by": "hazard",
+     "hazard": "mobile-plant"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "concrete-pump": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "post-tension": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "precast": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "steel-erectors": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "decking": {
+   "hazard": "hot-work",
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "bare-slab",
+     "placed_by": "hazard",
+     "hazard": "hot-work"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "window-glazing": {
+   "hazard": "mobile-plant",
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "crushed-stone",
+     "placed_by": "hazard",
+     "hazard": "mobile-plant"
+    },
+    "machines": {
+     "surface": "broom-concrete",
+     "placed_by": "hazard",
+     "hazard": "mobile-plant"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "bas-controls": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "fire-alarm": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "security-sys": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "network-cabling": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "fiber-splicers": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "data-center": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "instrumentation": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "plc-techs": {
+   "hazard": "live-electrical",
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "rubber-dielectric",
+     "placed_by": "hazard",
+     "hazard": "live-electrical"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "rubber-dielectric",
+     "placed_by": "hazard",
+     "hazard": "live-electrical"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "robotics": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "automation-int": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "cleanroom": {
+   "hazard": "particulate",
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "welded-vinyl",
+     "placed_by": "hazard",
+     "hazard": "particulate"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "welded-vinyl",
+     "placed_by": "hazard",
+     "hazard": "particulate"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "medical-gas": {
+   "hazard": "hot-work",
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "bare-slab",
+     "placed_by": "hazard",
+     "hazard": "hot-work"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "rail-track": {
+   "hazard": "hot-work",
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "bare-slab",
+     "placed_by": "hazard",
+     "hazard": "hot-work"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "rail-signals": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "catenary": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "transit-vehicle": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "aviation-ground": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "airfield": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "port-crane": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "marine-terminal": {
+   "hazard": "immersion",
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "marine-deck",
+     "placed_by": "hazard",
+     "hazard": "immersion"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "fleet-diesel": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "bridge-inspect": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "asbestos": {
+   "hazard": "contaminant",
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "spill-berm",
+     "placed_by": "hazard",
+     "hazard": "contaminant"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "lead-abatement": {
+   "hazard": "contaminant",
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "spill-berm",
+     "placed_by": "hazard",
+     "hazard": "contaminant"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "mold-remediation": {
+   "hazard": "contaminant",
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "spill-berm",
+     "placed_by": "hazard",
+     "hazard": "contaminant"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "spill-response": {
+   "hazard": "corrosive",
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "acid-brick",
+     "placed_by": "hazard",
+     "hazard": "corrosive"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "confined-space": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "high-angle": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "site-safety": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "industrial-clean": {
+   "hazard": "corrosive",
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "acid-brick",
+     "placed_by": "hazard",
+     "hazard": "corrosive"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  },
+  "survey-drone": {
+   "hazard": null,
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "machines": {
+     "surface": "steel-checker",
+     "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "sealed-slab",
+     "placed_by": "function"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   }
+  }
+ }
+}

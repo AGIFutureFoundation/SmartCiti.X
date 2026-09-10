@@ -46,6 +46,7 @@ L = manifest['ledger']
 halls_json = json.load(open(ROOT / 'pack/registry/halls.json'))['halls']
 districts_reg = json.load(open(ROOT / 'unions/registry/districts.json'))['districts']
 campuses_reg = json.load(open(ROOT / 'unions/registry/campuses.json'))['campuses']
+finishes_reg = json.load(open(ROOT / 'surfaces/registry/finishes.json'))
 stations_reg = json.load(open(ROOT / 'stations/registry/stations.json'))
 yard = json.load(open(ROOT / 'archive/bac_yard_stations.json'))['yard_placements']
 
@@ -92,7 +93,7 @@ for f in sorted((ROOT / 'i18n/locales').glob('*.json')):
         'strings': {k: s[k] for k in (
             'nav.campus', 'language.select', 'hall.rooms', 'hall.stations',
             'station.checklist', 'station.quiz', 'ui.close',
-            'map.layer.modules', 'figures.modules', 'figures.lessons',
+            'map.layer.modules', 'figures.modules', 'figures.lessons', 'room.finish',
             'figures.halls', 'figures.districts', 'figures.campuses',
             'view.campus', 'view.region', 'ui.walk',
             'hint.campus', 'hint.walk',
@@ -105,6 +106,8 @@ DATA = json.dumps({
     'districts': {k: {'name': d['name'], 'halls': d['halls'], 'hue': HUES[k]}
                   for k, d in districts_reg.items()},
     'campuses': campuses_reg,
+    'finishes': {sl: h['rooms'] for sl, h in finishes_reg['halls'].items()},
+    'finCat': finishes_reg['catalogue'],
     'halls': HALLS,
     'stations': {s['station_id']: {k: s[k] for k in (
         'station_id', 'name', 'hall', 'room', 'strand', 'tier',
@@ -345,6 +348,44 @@ function label(text, sub, scale = 1) {
   return sp;
 }
 
+const finTexCache = new Map();
+function finishTex(fin) {
+  const key = fin.pattern + fin.color;
+  if (finTexCache.has(key)) return finTexCache.get(key);
+  const c = document.createElement('canvas'); c.width = c.height = 128;
+  const g = c.getContext('2d');
+  g.fillStyle = fin.color; g.fillRect(0, 0, 128, 128);
+  for (let i = 0; i < 260; i++) { g.fillStyle = `rgba(255,255,255,${Math.random()*.05})`;
+    g.fillRect(Math.random()*128, Math.random()*128, 1.6, 1.6); }
+  for (let i = 0; i < 260; i++) { g.fillStyle = `rgba(0,0,0,${Math.random()*.07})`;
+    g.fillRect(Math.random()*128, Math.random()*128, 1.6, 1.6); }
+  g.strokeStyle = 'rgba(0,0,0,.28)'; g.lineWidth = 2;
+  const line = (x1,y1,x2,y2) => { g.beginPath(); g.moveTo(x1,y1); g.lineTo(x2,y2); g.stroke(); };
+  switch (fin.pattern) {
+    case 'slab': g.strokeRect(1, 1, 126, 126); break;
+    case 'tile': for (let i = 0; i <= 128; i += 32) { line(i,0,i,128); line(0,i,128,i); } break;
+    case 'brick': for (let y = 0; y < 128; y += 16) { line(0,y,128,y);
+      for (let x = ((y/16)%2)*16; x < 128; x += 32) line(x,y,x,y+16); } break;
+    case 'plank': for (let x = 0; x <= 128; x += 16) line(x,0,x,128); break;
+    case 'block': for (let i = 0; i <= 128; i += 10) { line(i,0,i,128); line(0,i,128,i); } break;
+    case 'checker': g.fillStyle = 'rgba(255,255,255,.16)';
+      for (let y = 8; y < 128; y += 16) for (let x = 8; x < 128; x += 16) {
+        g.save(); g.translate(x,y); g.rotate(.785); g.fillRect(-4,-1.4,8,2.8); g.restore(); }
+      break;
+    case 'grate': g.fillStyle = 'rgba(0,0,0,.5)';
+      for (let y = 2; y < 128; y += 10) g.fillRect(0,y,128,4); break;
+    case 'broom': for (let x = 0; x < 128; x += 3) {
+      g.strokeStyle = `rgba(0,0,0,${.04+Math.random()*.06})`; g.lineWidth = 1;
+      line(x,0,x,128); } break;
+    default: for (let i = 0; i < 700; i++) {
+      g.fillStyle = `rgba(${Math.random()>.5?'255,255,255':'0,0,0'},${.06+Math.random()*.1})`;
+      g.fillRect(Math.random()*128, Math.random()*128, 2, 2); }
+  }
+  const t = new THREE.CanvasTexture(c);
+  t.wrapS = t.wrapT = THREE.RepeatWrapping; t.anisotropy = 4;
+  finTexCache.set(key, t); return t;
+}
+
 function box(w, h, d, m, x, y, z, group, shadow = true) {
   const b = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), m);
   b.position.set(x, y, z);
@@ -423,9 +464,13 @@ function buildHall(sg) {
   for (const r of h.rooms) {
     const rw = r.w * U, rd = r.h * U;
     const rx = cx(r.x * U + rw/2), rz = cz(r.y * U + rd/2);
+    const fin = D.finCat[D.finishes[h.slug][r.strand].surface];
+    const ftex = finishTex(fin).clone(); ftex.needsUpdate = true;
+    ftex.repeat.set(Math.max(1, (rw - .3) / fin.tile_m),
+                    Math.max(1, (rd - .3) / fin.tile_m));
     const floor = new THREE.Mesh(new THREE.BoxGeometry(rw - .3, .06, rd - .3),
-      new THREE.MeshStandardMaterial({
-        color: new THREE.Color().setHSL(hue/360, .18, .16), roughness: .95 }));
+      new THREE.MeshStandardMaterial({ map: ftex,
+        roughness: fin.roughness, metalness: fin.metalness }));
     floor.position.set(rx, .38, rz); floor.receiveShadow = true;
     floor.userData.room = r.label;
     hallGroup.add(floor); floors.push(floor);
@@ -579,6 +624,7 @@ function buildCampus(key) {
   const camp = D.campuses[key];
   const dk = camp.districts;
   const R = dk.length === 2 ? 62 : 84;
+  campusR = R;
   dk.forEach((k, di) => {
     const d = D.districts[k];
     const ang = di / dk.length * Math.PI * 2 - Math.PI / 2;
@@ -694,7 +740,8 @@ function showCampus(key) {
   document.getElementById('hfocus').textContent =
     camp.city + ', ' + camp.region + ' — ' + camp.tagline;
   document.getElementById('hint').textContent = t('hint.campus');
-  document.getElementById('walkBtn').style.display = 'none';
+  document.getElementById('walkBtn').style.display =
+    ('ontouchstart' in window) ? 'none' : '';
   document.getElementById('campusBtn').style.display = 'none';
   syncURL();
 }
@@ -721,16 +768,32 @@ function showHall(sg) {
 const plc = new PointerLockControls(camera, renderer.domElement);
 let walkActive = false;
 const keys = {};
-document.addEventListener('keydown', (e) => { keys[e.code] = true; });
+document.addEventListener('keydown', (e) => {
+  keys[e.code] = true;
+  if (walkActive && view === 'campus' && nearSlug
+      && (e.code === 'Enter' || e.code === 'KeyE')) enterHallWalking(nearSlug);
+});
 document.addEventListener('keyup', (e) => { keys[e.code] = false; });
 
+let campusR = 84, nearSlug = null;
 function enterWalk() {
-  if (view !== 'hall') return;
-  const h = D.halls.find(x => x.slug === slug);
+  if (view === 'region') return;
   controls.autoRotate = false; controls.enabled = false;
-  camera.position.set(0, 1.7, -(h.depth * U) / 2 - 8);
+  if (view === 'hall') {
+    const h = D.halls.find(x => x.slug === slug);
+    camera.position.set(0, 1.7, -(h.depth * U) / 2 - 8);
+  } else {
+    camera.position.set(0, 1.7, 30);
+  }
   camera.lookAt(0, 1.7, 0);
   plc.lock();
+}
+
+function enterHallWalking(sg) {
+  showHall(sg);
+  const h = D.halls.find(x => x.slug === sg);
+  camera.position.set(0, 1.7, -(h.depth * U) / 2 - 8);
+  document.getElementById('hint').textContent = t('hint.walk');
 }
 plc.addEventListener('lock', () => {
   walkActive = true;
@@ -745,19 +808,44 @@ plc.addEventListener('unlock', () => {
   controls.target.copy(camera.position).addScaledVector(fwd, 6);
   if (view === 'hall') document.getElementById('hint').textContent =
     '● ' + t('hall.stations') + ' · ' + t('hall.rooms') + ' → ' + t('map.layer.modules');
+  else if (view === 'campus') document.getElementById('hint').textContent = t('hint.campus');
+  nearSlug = null;
 });
 
 function walkStep(dt) {
-  const h = D.halls.find(x => x.slug === slug);
   const sp = (keys.ShiftLeft || keys.ShiftRight ? 10 : 5) * dt;
   if (keys.KeyW || keys.ArrowUp) plc.moveForward(sp);
   if (keys.KeyS || keys.ArrowDown) plc.moveForward(-sp);
   if (keys.KeyA || keys.ArrowLeft) plc.moveRight(-sp);
   if (keys.KeyD || keys.ArrowRight) plc.moveRight(sp);
-  const DEP = h.depth * U;
-  camera.position.x = Math.min(21, Math.max(-21, camera.position.x));
-  camera.position.z = Math.min(DEP/2 - .8, Math.max(-DEP/2 - 26, camera.position.z));
   camera.position.y = 1.7;
+  if (view === 'hall') {
+    const h = D.halls.find(x => x.slug === slug);
+    const DEP = h.depth * U;
+    camera.position.x = Math.min(21, Math.max(-21, camera.position.x));
+    camera.position.z = Math.min(DEP/2 - .8, Math.max(-DEP/2 - 26, camera.position.z));
+    return;
+  }
+  // campus stroll: stay on the grounds, and offer the nearest door
+  const len = Math.hypot(camera.position.x, camera.position.z);
+  const lim = campusR + 85;
+  if (len > lim) {
+    camera.position.x *= lim / len; camera.position.z *= lim / len;
+  }
+  let best = null, bd = 1e9;
+  for (const b of buildings) {
+    const d = Math.hypot(b.position.x - camera.position.x,
+                         b.position.z - camera.position.z);
+    if (d < bd) { bd = d; best = b; }
+  }
+  if (best && bd < 11) {
+    nearSlug = best.userData.slug;
+    const h = D.halls.find(x => x.slug === nearSlug);
+    document.getElementById('hint').textContent = '\u23ce ' + h.name;
+  } else if (nearSlug) {
+    nearSlug = null;
+    document.getElementById('hint').textContent = t('hint.walk');
+  }
 }
 
 /* ---------------------------------------------------------------- UI ---- */
@@ -816,6 +904,13 @@ function openRoom(roomLabel) {
     <span class="chip">${r.w*3}×${r.h*3} m</span>
     <p style="color:var(--muted)">${r.purpose}</p>
     ${r.fixtures?.length ? `<ul>${r.fixtures.map(f=>`<li>${f}</li>`).join('')}</ul>` : ''}
+    ${(() => { const pf = D.finishes[h.slug][r.strand];
+      const fin = D.finCat[pf.surface];
+      return `<h3>${t('room.finish')}</h3>
+        <p><b>${fin.name}</b>` +
+        (pf.placed_by === 'hazard'
+          ? ` <span class="chip">${pf.hazard}</span>` : '') +
+        `<br><span style="color:var(--muted)">${fin.why}.</span></p>`; })()}
     <h3>${t('map.layer.modules')}</h3>
     <p style="color:var(--muted);font-size:13px">
       ${t('figures.lessons').replace('{n}', F(sm.lessons))} ·

@@ -36,6 +36,7 @@ halls = json.load(open(ROOT / 'pack/registry/halls.json'))['halls']
 unions = json.load(open(ROOT / 'unions/registry/unions.json'))
 districts = json.load(open(ROOT / 'unions/registry/districts.json'))['districts']
 campuses = json.load(open(ROOT / 'unions/registry/campuses.json'))['campuses']
+finishes = json.load(open(ROOT / 'surfaces/registry/finishes.json'))
 skills = json.load(open(ROOT / 'pack/registry/skills.json'))['skills']
 by_slug = {h['slug']: h for h in halls}
 
@@ -278,13 +279,29 @@ flowchart TB
 *(Edges show the induction-to-certification flow, not adjacency; the plan
 packs rooms per hall by its own focus line and fixtures.)*
 
+## Floor finishes (spec §24, as code)
+
+Every room's floor finish is resolved by `surfaces/build.py` —
+**{len(finishes["catalogue"])} finishes** in the catalogue, each carrying
+renderer-ready parameters and the reason it exists. Selection runs
+most-specific-first: the trade's hazard, then the room's function, and the
+record says which rule placed it. {finishes["hazard_placed_finishes"]}
+finishes across the network are hazard-placed
+({len(finishes["hazards_in_use"])} hazard classes in use); a hazard is
+recorded only where it **changed** the outcome, and the
+{len(finishes["no_finish_driving_hazard"])} halls whose trade names no
+finish-driving hazard say so explicitly rather than leaving a blank. The 3D
+environment renders these finishes as the room floors, pattern and all.
+
 ## Fixtures and honesty
 
 A fixture is placed only when the hall's own focus line names it — no hall
-gets equipment it has no stated use for. Surfaces and room conditions come
-from the §24 texture and environment packages: general good practice, not a
-code reference, and each floor plan records that **no address data has been
-collected** — the plan is a functional programme, not a building survey.
+gets equipment it has no stated use for. Surfaces and room conditions are
+**general good practice, not a code reference** — no figure is read from any
+jurisdiction's standard, no surface names a product or specification number
+(the suite asserts that absence), and each floor plan records that **no
+address data has been collected** — the plan is a functional programme, not
+a building survey.
 {FOOTER}'''
 
 

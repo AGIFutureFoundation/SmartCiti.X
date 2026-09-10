@@ -42,7 +42,8 @@
   "hint.campus": "Cliquez sur une salle pour y entrer",
   "hint.walk": "WASD pour se déplacer · Échap pour quitter",
   "view.region": "Vue du réseau",
-  "figures.campuses": "{n} campus"
+  "figures.campuses": "{n} campus",
+  "room.finish": "Revêtement de sol"
  },
  "districts": {
   "structural": {

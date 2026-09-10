@@ -42,7 +42,8 @@
   "hint.campus": "点击场馆进入",
   "hint.walk": "WASD 移动 · Esc 退出",
   "view.region": "网络视图",
-  "figures.campuses": "{n} 个园区"
+  "figures.campuses": "{n} 个园区",
+  "room.finish": "地面饰面"
  },
  "districts": {
   "structural": {
