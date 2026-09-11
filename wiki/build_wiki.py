@@ -46,6 +46,7 @@ meta = json.load(open(ROOT / 'meta/registry/metaverse.json'))
 parcels = json.load(open(ROOT / 'parcels/registry/parcels.json'))
 advisors = json.load(open(ROOT / 'agents/registry/advisors.json'))
 world = json.load(open(ROOT / 'world/registry/world.json'))
+labels = json.load(open(ROOT / 'labels/registry/labels.json'))
 skills = json.load(open(ROOT / 'pack/registry/skills.json'))['skills']
 by_slug = {h['slug']: h for h in halls}
 
@@ -116,6 +117,7 @@ content graph and details:
 | **Toolrooms** (inside the 3D + interactive maps) | {len(tools["cribs"])} district tool cribs — {sum(len(c["tools"]) for c in tools["cribs"].values())} tools with the deterministic crib drill | [Toolrooms](Toolrooms.md) |
 | **Advisors** (in the rooms and on the green) | {len(advisors["advisors"])} scripted guides answering {advisors["counts"]["topics"]} fixed questions — {advisors["counts"]["read_bindings"]} of them read straight from the registry that holds the fact | [Advisors](Advisors.md) |
 | **The world** (sky, weather, ground, animals) | {world["counts"]["weather"]} weather states over per-campus atmospheres, {world["counts"]["ground"]} generated ground surfaces and {world["counts"]["animals"]} animals — and not one texture file anywhere | [World](World.md) |
+| **The signs** (every word in the 3D world) | {labels["counts"]["kinds"]} kinds over {labels["counts"]["shapes"]} shapes — shape carries the category, colour the provenance, type the rank, and every sign reacts to where you are looking | [Signs](Signs.md) |
 | **Metaverse layer** (`meta/registry/metaverse.json`) | The interchange contract: {len(meta["baseline"]["standards"])} open standards claimed (glTF 2.0, WebXR, GeoJSON), {len(meta["baseline"]["not_claimed"])} honestly not, avatar and hall .glb export, learner-local import | [Metaverse-Layer](Metaverse-Layer.md) |
 | **City records** (`parcels/registry/parcels.json`) | The source contract for the three campus regions\' own parcel and building-footprint authorities ({sum(set(s["records"] for s in parcels["sources"].values())):,} records published upstream), plus the public-domain federal orthoimagery both maps draw | [City-Records](City-Records.md) |
 | **Network geomap** (`web/trade_craft_geomap.html`) | The geo registry on a real WGS84 map (MapLibre, no basemap tiles): campuses, {n_anchors} RECORDED anchors, great-circle routes, RECORDED city frames | [Campus-Map](Campus-Map.md) |
@@ -1017,6 +1019,66 @@ Viewers who ask for reduced motion get a still yard: no animals, no rain.
 {FOOTER}"""
 
 
+def page_signs():
+    krows = '\n'.join(
+        f"| **{kid}** | `{k['shape']}` | {labels['shapes'][k['shape']]['reads_as']} "
+        f"| {k['accent']} | {k['face']} | {k['what']} |"
+        for kid, k in labels['kinds'].items())
+    srows = '\n'.join(
+        f"| `{sid}` | {sh['draws']} | {sh['reads_as']} |"
+        for sid, sh in labels['shapes'].items())
+    f = labels['focus']
+    c = labels['counts']
+    return f"""# The signs
+
+Every word in the 3D world is on a sign, and a sign should be readable
+**before** it is read. {c['kinds']} kinds over {c['shapes']} shapes, all
+declared in `labels/registry/labels.json` and never in the page.
+
+## Shape carries the category
+
+| Shape | What is drawn | What it reads as |
+|---|---|---|
+{srows}
+
+## Colour carries provenance and district
+
+A hall wears its district's own hue — the same hue the map and the crew
+mark use, so one colour means one thing everywhere in the bundle. A
+**RECORDED** place wears a solid accent. A **SCHEMATIC** one is drawn with
+a dashed outline and says so on its face.
+
+{labels['honesty']['provenance']}
+
+## Type carries rank
+
+{labels['type']['note']}
+
+## The whole legend
+
+| Kind | Shape | Reads as | Accent | Face | What it marks |
+|---|---|---|---|---|---|
+{krows}
+
+## A sign reads the view
+
+{f['contract']}
+
+{f['focus_rule']}
+
+- Focus cone: **{f['cone_deg']}°**
+- Full brightness out to **{f['fade_from_rel']}×** the view distance, gone by **{f['fade_to_rel']}×**
+- On screen a sign is clamped between **{f['screen']['min_frac'] * 100:.1f}%** and **{f['screen']['max_frac'] * 100:.1f}%** of the viewport's height, so it stays readable however close or far you stand
+
+## What a label is not
+
+- **Not a standard.** {labels['honesty']['convention']}
+- **Not a score.** {labels['honesty']['presentation_only']}
+- **Not a claim.** {labels['honesty']['provenance']}
+- **Reduced motion.** {labels['honesty']['reduced_motion']}
+{FOOTER}"""
+
+
 PAGES = {
     'Home.md': page_home,
     'Campus-Map.md': page_campus,
@@ -1029,6 +1091,7 @@ PAGES = {
     'City-Records.md': page_records,
     'Advisors.md': page_advisors,
     'World.md': page_world,
+    'Signs.md': page_signs,
     'Flipped-Classroom.md': page_schools,
     'Provenance.md': page_provenance,
     **{f'District-{k}.md': (lambda k=k, d=d: page_district(k, d))

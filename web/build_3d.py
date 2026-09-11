@@ -57,6 +57,25 @@ tools_reg = json.load(open(ROOT / 'tools/registry/toolcribs.json'))
 stations_reg = json.load(open(ROOT / 'stations/registry/stations.json'))
 agents_reg = json.load(open(ROOT / 'agents/registry/advisors.json'))
 world_reg = json.load(open(ROOT / 'world/registry/world.json'))
+labels_reg = json.load(open(ROOT / 'labels/registry/labels.json'))
+
+def trim(rows, *drop):
+    """Ship what is drawn, not what is explained.
+
+    Every registry carries the prose that makes its records checkable by a
+    person - what a surface is for, why an animal is in the yard, what a
+    sign reads as. None of that is rendered by the page, and a byte
+    shipped to every learner should be one they can see, so it is dropped
+    on the way in. The registry keeps the whole truth; the wiki prints it.
+    """
+    if not isinstance(rows, dict):
+        return rows
+    if rows and all(isinstance(v, dict) for v in rows.values()):
+        return {k: {kk: vv for kk, vv in v.items() if kk not in drop}
+                for k, v in rows.items()}
+    return {k: v for k, v in rows.items() if k not in drop}
+
+
 yard = json.load(open(ROOT / 'archive/bac_yard_stations.json'))['yard_placements']
 
 
@@ -227,10 +246,22 @@ DATA = json.dumps({
     # only a binding - the page resolves it against the record that already
     # holds the fact, so nothing here is a second copy of one
     # the sky, the weather it is seen under, the ground it stands on and
-    # the animals moving through it - every texture a recipe, never a file
-    'world': {'sky': world_reg['sky'], 'weather': world_reg['weather'],
-              'ground': world_reg['ground'], 'fauna': world_reg['fauna'],
-              'atmos': world_reg['atmos'], 'honesty': world_reg['honesty']},
+    # the animals moving through it - every texture a recipe, never a file.
+    # The page carries only what it RENDERS; the prose that explains each
+    # record stays in the registry and reaches people through the wiki,
+    # because a byte shipped to every learner should be one they can see
+    'world': {'sky': trim(world_reg['sky'], 'note', 'placement', 'projection'),
+              'weather': world_reg['weather'],
+              'ground': trim(world_reg['ground'], 'where', 'name'),
+              'fauna': trim(world_reg['fauna'], 'why', 'name', 'glyph'),
+              'atmos': trim(world_reg['atmos'], 'character')},
+    # every sign in the world: its shape, its palette, its type and how it
+    # reacts to being looked at - again, only the parts that are drawn
+    'labels': {'shapes': trim(labels_reg['shapes'], 'draws', 'reads_as'),
+               'palette': labels_reg['palette'],
+               'type': trim(labels_reg['type'], 'note'),
+               'kinds': trim(labels_reg['kinds'], 'what', 'provenance'),
+               'focus': trim(labels_reg['focus'], 'contract', 'focus_rule')},
     'advisors': {'who': agents_reg['advisors'],
                  'honesty': agents_reg['honesty'],
                  'walk': geo_reg['walk']},
@@ -1367,7 +1398,8 @@ function loadChartSim(P = {}) {
     const p = PICKS[st.i];
     const s2 = .7 + p.w * .13;
     loadMesh = box(s2, s2 * .8, s2, mat.brick, -6 + p.r, s2 * .4, -4, g);
-    loadLab = label(p.w.toFixed(1) + ' t', p.r + ' m radius', .55);
+    loadLab = label(p.w.toFixed(1) + ' t', p.r + ' m radius', .55,
+      { kind: 'readout' });
     loadLab.position.set(-6 + p.r, s2 * .8 + 1.2, -4); g.add(loadLab);
   }
   spawn();
@@ -2748,8 +2780,9 @@ function placeAdvisor(aid, parent, x, z, crewSlug) {
   g.rotation.y = Math.atan2(-x, -z);          // face the middle of the room
   g.scale.setScalar(.98);
   g.userData = { advisor: aid, body, proxy };
-  const plate = label(a.glyph + '  ' + a.name, a.role, .44);
-  plate.position.set(0, 2.3, 0);
+  const plate = label(a.glyph + '  ' + a.name, a.role, .44,
+    { kind: 'advisor' });
+  plate.position.set(0, 2.72, 0);
   g.add(plate);
   parent.add(g); advisorMeshes.push(g);
   return g;
@@ -3900,23 +3933,251 @@ const mat = {
   cone:  new THREE.MeshStandardMaterial({ color: 0xE07C48, roughness: .6 }),
 };
 
-function label(text, sub, scale = 1) {
+/* ------------------------------------------------------- the signs -----
+   Every word in this world is on a sign, and a sign should be readable
+   before it is read. Its SHAPE says what kind of thing it marks - a
+   speech bubble is somebody who will talk to you, a tab with a pointer is
+   a place you can enter, a pin on a stem is somewhere real out there, a
+   chip is something you can open, a readout is a number a machine
+   measured. Its COLOUR says whose it is and where it came from: a hall
+   wears its district's own hue, a RECORDED place wears a solid accent, a
+   SCHEMATIC one is drawn dashed and says so. Its TYPE says rank: display
+   for names, sans for the line under them, mono for anything measured.
+
+   All of that is declared in the label registry, never here. */
+const LBL = D.labels;
+const LKIND = LBL.kinds, LPAL = LBL.palette, LTYPE = LBL.type;
+const LFOCUS = LBL.focus;
+let labelSet = [];
+
+const lblFace = (f) => LTYPE[f] ?? LTYPE.display;
+const lblAccent = (kind, hue) => kind.accent === 'district'
+  ? (hue == null ? LPAL.mark : `hsl(${hue} 58% 62%)`)
+  : (LPAL[kind.accent] ?? LPAL.mark);
+
+// the ten plates, drawn on the 2D context; `case` per shape so the
+// registry and the page cannot drift apart without the build noticing
+function labelShape(g, shape, w, h, accent, dashed) {
+  const S = LBL.shapes[shape] ?? LBL.shapes.plate;
+  const r = Math.min(S.radius, h / 2);
+  const body = h - (S.tail ? 14 : 0) - (S.stem ? 22 : 0);
+  g.save();
+  g.shadowColor = 'rgba(0,0,0,.55)'; g.shadowBlur = 10; g.shadowOffsetY = 3;
+  g.fillStyle = LPAL.plate;
+  switch (shape) {
+    case 'speech':
+      g.beginPath(); g.roundRect(0, 0, w, body, r); g.fill();
+      g.beginPath();                       // the tail, off to the left
+      g.moveTo(26, body - 1); g.lineTo(44, body - 1); g.lineTo(30, body + 14);
+      g.closePath(); g.fill();
+      break;
+    case 'tab':
+      g.beginPath(); g.roundRect(0, 0, w, body, r); g.fill();
+      g.beginPath();                       // the pointer, centred
+      g.moveTo(w / 2 - 11, body - 1); g.lineTo(w / 2 + 11, body - 1);
+      g.lineTo(w / 2, body + 14); g.closePath(); g.fill();
+      break;
+    case 'chip':
+      g.beginPath(); g.roundRect(0, 0, w, body, body / 2); g.fill();
+      break;
+    case 'plate':
+      g.beginPath(); g.roundRect(0, 0, w, body, r); g.fill();
+      break;
+    case 'pin':
+      g.beginPath(); g.roundRect(0, 0, w, body, r); g.fill();
+      g.shadowBlur = 0;
+      g.strokeStyle = accent; g.lineWidth = 3;
+      g.beginPath(); g.moveTo(w / 2, body); g.lineTo(w / 2, body + 15);
+      g.stroke();
+      g.fillStyle = accent;
+      g.beginPath(); g.arc(w / 2, body + 18, 5, 0, 7); g.fill();
+      break;
+    case 'banner':
+      g.beginPath(); g.roundRect(0, 0, w, body, r); g.fill();
+      break;
+    case 'marquee':
+      g.beginPath(); g.roundRect(0, 0, w, body, r); g.fill();
+      g.shadowBlur = 0;
+      g.fillStyle = accent; g.fillRect(18, 12, w - 36, 3);
+      break;
+    case 'ribbon':
+      g.beginPath();
+      g.moveTo(14, 0); g.lineTo(w, 0); g.lineTo(w - 14, body); g.lineTo(0, body);
+      g.closePath(); g.fill();
+      break;
+    case 'ghost':
+      break;                               // no plate at all, by design
+    case 'readout':
+      g.fillStyle = 'rgba(6,10,12,.9)';
+      g.beginPath(); g.roundRect(0, 0, w, body, r); g.fill();
+      g.shadowBlur = 0;
+      g.strokeStyle = accent; g.lineWidth = 2;
+      g.beginPath(); g.roundRect(1, 1, w - 2, body - 2, r); g.stroke();
+      break;
+  }
+  g.restore();
+  // the accent: a stripe for the wide shapes, a dashed outline where the
+  // registry says the thing behind the sign is SCHEMATIC
+  if (shape === 'banner' || shape === 'plate') {
+    g.fillStyle = accent;
+    g.fillRect(0, 0, shape === 'banner' ? 8 : 5, body);
+  }
+  if (dashed) {
+    g.save();
+    g.setLineDash([9, 7]); g.strokeStyle = accent; g.lineWidth = 2;
+    g.beginPath(); g.roundRect(1, 1, w - 2, body - 2, r); g.stroke();
+    g.restore();
+  }
+  return body;
+}
+
+/* label(text, sub, scale, opts)
+   opts: { kind, hue, badge }  - kind names a row of the label registry;
+   hue is the district's, for the kinds whose accent is 'district'. */
+function label(text, sub, scale = 1, opts = {}) {
+  const kindId = opts.kind && LKIND[opts.kind] ? opts.kind : 'room';
+  const kind = LKIND[kindId];
+  const shape = kind.shape;
+  const accent = lblAccent(kind, opts.hue);
+  const marquee = shape === 'marquee';
+  const dpr = Math.min(2, devicePixelRatio || 1);
+
   const c = document.createElement('canvas');
-  const ctx = c.getContext('2d');
-  ctx.font = '600 44px "Barlow Condensed", sans-serif';
-  const w = Math.max(ctx.measureText(text).width, 120) + 40;
-  c.width = w; c.height = sub ? 110 : 72;
-  ctx.fillStyle = 'rgba(12,17,19,.82)';
-  ctx.beginPath(); ctx.roundRect(0, 0, c.width, c.height, 14); ctx.fill();
-  ctx.fillStyle = '#E8EDEC';
-  ctx.font = '600 44px "Barlow Condensed", sans-serif';
-  ctx.fillText(text, 20, 50);
-  if (sub) { ctx.fillStyle = '#93A3A6'; ctx.font = '28px "IBM Plex Sans", sans-serif';
-             ctx.fillText(sub, 20, 90); }
+  const g = c.getContext('2d');
+  const titlePx = marquee ? LTYPE.title_px + 4
+    : shape === 'chip' ? LTYPE.chip_px : LTYPE.title_px;
+  const titleFont = (kind.face === 'mono' ? '600 ' : '600 ')
+    + titlePx + 'px ' + lblFace(kind.face);
+  g.font = titleFont;
+  const title = marquee ? text.toUpperCase() : text;
+  const track = marquee ? LTYPE.tracking_marquee : 0;
+  const tw = g.measureText(title).width + track * title.length;
+  let sw = 0;
+  if (sub) {
+    g.font = LTYPE.sub_px + 'px ' + lblFace(kind.face === 'mono' ? 'mono' : 'body');
+    sw = g.measureText(sub).width;
+  }
+  const padX = shape === 'chip' ? 26 : shape === 'ghost' ? 6 : 22;
+  const w = Math.max(tw, sw, shape === 'chip' ? 48 : 110) + padX * 2
+    + (shape === 'plate' || shape === 'banner' ? 10 : 0);
+  const bodyH = (sub ? 104 : shape === 'chip' ? 54 : 68)
+    + (marquee ? 14 : 0);
+  const h = bodyH + (LBL.shapes[shape].tail ? 14 : 0)
+    + (LBL.shapes[shape].stem ? 22 : 0);
+
+  c.width = Math.ceil(w * dpr); c.height = Math.ceil(h * dpr);
+  g.scale(dpr, dpr);
+  const body = labelShape(g, shape, w, h, accent, !!kind.dashed);
+
+  const left = padX + (shape === 'plate' ? 5 : shape === 'banner' ? 8 : 0);
+  const baseline = sub ? (marquee ? 62 : 52) : body / 2 + titlePx * .35;
+  g.save();
+  g.shadowColor = 'rgba(0,0,0,.75)'; g.shadowBlur = 6;
+  g.fillStyle = shape === 'readout' ? accent : LPAL.ink;
+  g.font = titleFont;
+  if (track) {                              // letter-spaced caps, by hand
+    let x = left;
+    for (const ch of title) { g.fillText(ch, x, baseline);
+      x += g.measureText(ch).width + track; }
+  } else g.fillText(title, left, baseline);
+  if (sub) {
+    g.fillStyle = shape === 'ghost' ? LPAL.ink : LPAL.muted;
+    g.font = LTYPE.sub_px + 'px '
+      + lblFace(kind.face === 'mono' ? 'mono' : 'body');
+    g.fillText(sub, left, baseline + 36);
+  }
+  g.restore();
+
+  const tex = new THREE.CanvasTexture(c);
+  tex.colorSpace = THREE.SRGBColorSpace;
   const sp = new THREE.Sprite(new THREE.SpriteMaterial({
-    map: new THREE.CanvasTexture(c), transparent: true, depthTest: false }));
-  sp.scale.set(c.width/90*scale, c.height/90*scale, 1);
+    map: tex, transparent: true, depthTest: false }));
+  sp.scale.set(w / 90 * scale, h / 90 * scale, 1);
+  sp.userData.lbl = { kind: kindId, base: sp.scale.clone(), baseY: null,
+                      accent, focus: 0, hide: kind.hide_beyond_m || 0,
+                      floor: kind.min_focus };
+  labelSet.push(sp);
   return sp;
+}
+
+/* ---- and how a sign reads the view ------------------------------------
+   Each frame every live label is scored on the angle between the view
+   direction and the label (inside the declared cone) and again on
+   distance; the two multiply. The score drives opacity, size and tint,
+   eased rather than snapped so nothing flickers as the head turns. The
+   single most centred label within reach is the FOCUS: it takes the
+   accent tint and lifts, so a learner can see what they are about to act
+   on without a cursor - which is what makes this work in a headset, where
+   there is no cursor to have.
+
+   This is presentation and nothing else: no label is a score, none gates
+   anything, and no grader reads any of it. */
+let labelFocus = null;
+const _lblFwd = new THREE.Vector3(), _lblTo = new THREE.Vector3();
+const _lblPos = new THREE.Vector3();
+function labelStep(dt) {
+  if (!labelSet.length) return;
+  let live = 0, best = null, bestScore = 0;
+  camera.getWorldDirection(_lblFwd);
+  const cos = Math.cos(LFOCUS.cone_deg * Math.PI / 180);
+  const ease = reduced ? 1 : Math.min(1, (dt || .016) * LFOCUS.ease);
+  const ref = Math.max(LFOCUS.near_full_m,
+    camera.position.distanceTo(controls.target));
+  const tanHalfFov = Math.tan(camera.fov * Math.PI / 360);
+  for (const sp of labelSet) {
+    if (!sp.parent) continue;               // its group was disposed
+    labelSet[live++] = sp;
+    const u = sp.userData.lbl;
+    sp.getWorldPosition(_lblPos);
+    const dist = _lblPos.distanceTo(camera.position);
+    if (u.hide && dist > u.hide) { sp.visible = false; continue; }
+    _lblTo.copy(_lblPos).sub(camera.position).normalize();
+    const dot = _lblTo.dot(_lblFwd);
+    // angle: 1 dead ahead, 0 at the edge of the cone and beyond
+    const ang = dot <= cos ? 0 : (dot - cos) / (1 - cos);
+    // distance, judged RELATIVE to how far out the view is: a sign 200 m
+    // off is far when you are walking and near when you are looking at
+    // the whole campus from above, so the reference is the camera's own
+    // distance to what it is looking at
+    const rel = dist / ref;
+    const near = rel <= LFOCUS.fade_from_rel ? 1
+      : rel >= LFOCUS.fade_to_rel ? 0
+      : 1 - (rel - LFOCUS.fade_from_rel)
+          / (LFOCUS.fade_to_rel - LFOCUS.fade_from_rel);
+    const want = ang * near;
+    u.focus += (want - u.focus) * ease;
+    const lit = Math.max(u.floor, LFOCUS.floor) ;
+    sp.visible = near > .01;
+    sp.material.opacity = reduced ? 1
+      : Math.min(1, lit + (1 - lit) * u.focus) * (.25 + .75 * near);
+    // A world-space sign grows without limit as you walk up to it. Clamp
+    // what the eye actually gets: never more than max_frac of the
+    // viewport's height, never less than min_frac while it is in range.
+    const grow = 1 + LFOCUS.grow * u.focus;
+    let h = u.base.y * grow;
+    const span = 2 * dist * tanHalfFov;           // world height of the view
+    const lo = span * LFOCUS.screen.min_frac, hi = span * LFOCUS.screen.max_frac;
+    const k2 = h > hi ? hi / h : h < lo ? lo / h : 1;
+    sp.scale.set(u.base.x * grow * k2, h * k2, 1);
+    if (want > bestScore && rel < LFOCUS.fade_from_rel) {
+      bestScore = want; best = sp;
+    }
+  }
+  labelSet.length = live;
+  if (best !== labelFocus) {
+    if (labelFocus) {
+      labelFocus.material.color.setHex(0xffffff);
+      const u = labelFocus.userData.lbl;
+      if (u.baseY !== null) { labelFocus.position.y = u.baseY; u.baseY = null; }
+    }
+    labelFocus = best;
+    if (best) {
+      best.material.color.set(LPAL.mark);
+      const u = best.userData.lbl;
+      u.baseY = best.position.y;
+      best.position.y += LFOCUS.lift_m;
+    }
+  }
 }
 
 const finTexCache = new Map();
@@ -4070,7 +4331,8 @@ function buildCrib(h, rx, rz, rw, rd) {
   chest.userData.crib = dk;
   beacons.push(chest);
   box(.84, .03, 1.14, mat.metal, bx - .6, 1.02, rz - bw / 2 - .2, hallGroup, false);
-  const lab = label(crib.name, D.tools.drill.name + ' · ' + crib.tools.length, .5);
+  const lab = label(crib.name, D.tools.drill.name + ' · ' + crib.tools.length,
+    .5, { kind: 'crib' });
   lab.position.set(bx - .6, 2.85, rz); hallGroup.add(lab);
   cribCount++;
 }
@@ -4096,7 +4358,8 @@ function buildHall(sg) {
       color: new THREE.Color().setHSL(hue/360, .55, .5), roughness: .5 }));
   fascia.position.set(0, 3.6, cz(0)); fascia.castShadow = true;
   hallGroup.add(fascia);
-  const sign = label(h.name, D.i18n[loc].districts[h.district], 1.35);
+  const sign = label(h.name, D.i18n[loc].districts[h.district], 1.35,
+    { kind: 'hall', hue: D.districts[h.district].hue });
   sign.position.set(0, 5.1, cz(0)); hallGroup.add(sign);
 
   // roof trusses across the span, and lit strips along the side walls
@@ -4143,14 +4406,15 @@ function buildHall(sg) {
       box(.12, .5, .6, mat.part, bx - .5, .62, bz, hallGroup);
       box(.12, .5, .6, mat.part, bx + .5, .62, bz, hallGroup);
       box(.5, .35, .35, mat.metal, bx, 1.25, bz, hallGroup);
-      const fl = label(fx, null, .34);
+      const fl = label(fx, null, .34, { kind: 'fixture' });
       fl.position.set(bx, 1.85, bz); hallGroup.add(fl);
     });
     box(rw, 1.1, .12, mat.part, rx, .9, rz - rd/2, hallGroup);
     box(rw, 1.1, .12, mat.part, rx, .9, rz + rd/2, hallGroup);
     box(.12, 1.1, rd, mat.part, rx - rw/2, .9, rz, hallGroup);
     box(.12, 1.1, rd, mat.part, rx + rw/2, .9, rz, hallGroup);
-    const lab = label(r.label, D.i18n[loc].strands[r.strand], .55);
+    const lab = label(r.label, D.i18n[loc].strands[r.strand], .55,
+      { kind: 'room' });
     lab.position.set(rx, 2.2, rz); hallGroup.add(lab);
 
     // stations standing in this room
@@ -4394,7 +4658,8 @@ function buildChapterHall(g, key) {
   roof.position.y = 6.5; roof.castShadow = true; pav.add(roof);
   walls.userData.chapters = true;
   chapterHit = [walls];
-  const cl = label(t('chapters.hall'), '+' + D.chapters.hosted[key], 2);
+  const cl = label(t('chapters.hall'), '+' + D.chapters.hosted[key], 2,
+    { kind: 'district' });
   cl.position.y = 12; pav.add(cl);
 }
 const CITY_S = 13;   // units per real kilometre in the city layer
@@ -4558,7 +4823,8 @@ function buildCity(g, R) {
     box(3, .5, 3, mat.slab, x + 4, hgt + 5.4, z - 3.5, g, false);
     bld.userData.poi = twr.userData.poi = p.name;
     cityHits.push(bld, twr);
-    const pl = label(p.name, p.km + ' km \\u00b7 RECORDED', 1.7);
+    const pl = label(p.name, p.km + ' km \\u00b7 RECORDED', 1.7,
+      { kind: 'anchor' });
     pl.position.set(x, hgt + 10, z); g.add(pl);
     cityPois++;
   });
@@ -4568,7 +4834,7 @@ function buildCity(g, R) {
 /* Schematic water and crossings per city - drawn, labelled SCHEMATIC. */
 function cityWater(g, key, R, pois) {
   const tag = (name, x, z) => {
-    const l = label(name, 'SCHEMATIC', 1.6);
+    const l = label(name, 'SCHEMATIC', 1.6, { kind: 'schematic' });
     l.position.set(x, 7, z); g.add(l);
   };
   if (key === 'new-orleans') {
@@ -4716,14 +4982,16 @@ function buildCampus(key) {
         (window.__faults ??= []).push({ r, b });
       }
     }
-    const dl = label(D.i18n[loc].districts[k], null, 3);
+    const dl = label(D.i18n[loc].districts[k], null, 3,
+      { kind: 'district', hue: d.hue });
     dl.position.set(rad.x * (R - 14), 15, rad.y * (R - 14));
     campusGroup.add(dl);
   });
   const plaza = new THREE.Mesh(new THREE.CylinderGeometry(24, 24, .3, 48),
     new THREE.MeshStandardMaterial({ map: concreteTex, color: 0xb8bdbd, roughness: .95 }));
   plaza.position.y = .15; plaza.receiveShadow = true; campusGroup.add(plaza);
-  const sign = label(camp.name, camp.city + ', ' + camp.region, 3.2);
+  const sign = label(camp.name, camp.city + ', ' + camp.region, 3.2,
+    { kind: 'campus' });
   sign.position.set(0, 18, 0); campusGroup.add(sign);
   dressCampus(key, campusGroup, R + 42);
   buildChapterHall(campusGroup, key);
@@ -4875,11 +5143,13 @@ function buildRegion() {
         color: new THREE.Color().setHSL(d.hue / 360, .45, .4), roughness: .7 }),
         bx, 2.2 + hgt / 2, bz, regionGroup);
       blk.userData.campus = key; plates.push(blk);
-      const cl = label(String(d.halls.length), null, 1.4);
+      const cl = label(String(d.halls.length), null, 1.4,
+        { kind: 'station', hue: d.hue });
       cl.position.set(bx, hgt + 6, bz); regionGroup.add(cl);
     });
     const pl = label(camp.name,
-      camp.city + ', ' + camp.region + ' · +' + D.chapters.hosted[key], 3.4);
+      camp.city + ', ' + camp.region + ' · +' + D.chapters.hosted[key], 3.4,
+      { kind: 'campus' });
     pl.position.set(px, 30, pz); regionGroup.add(pl);
     // RECORDED anchors from the geo registry: real cities and institutions
     // around each campus, marked at their true bearing on the plate rim.
@@ -4894,7 +5164,7 @@ function buildRegion() {
           emissive: 0x7a4d08 }));
       pin.position.set(ax, 3.4, az); regionGroup.add(pin);
       anchorPins++;
-      const al = label(a.name, a.km + ' km', 1.15);
+      const al = label(a.name, a.km + ' km', 1.15, { kind: 'anchor' });
       al.position.set(ax, 9.6, az); regionGroup.add(al);
     }
   }
@@ -4912,12 +5182,14 @@ function buildRegion() {
     const km = D.geo.routes.find((r) =>
       (r.from === a && r.to === b) || (r.from === b && r.to === a))?.km;
     if (km !== undefined) {
-      const kl = label(`${km.toLocaleString('en-US')} km`, null, 2.2);
+      const kl = label(`${km.toLocaleString('en-US')} km`, null, 2.2,
+      { kind: 'route' });
       kl.position.copy(mid).setY(mid.y + 5);
       regionGroup.add(kl);
     }
   }
-  const sign = label('SmartCiti.X : Trade Craft Academy', 'powered by AGI Corp', 3.6);
+  const sign = label('SmartCiti.X : Trade Craft Academy', 'powered by AGI Corp',
+    3.6, { kind: 'brand' });
   sign.position.set(0, 44, 10); regionGroup.add(sign);
   scene.add(regionGroup);
 }
@@ -5762,6 +6034,29 @@ window.__tc3d = () => ({ view, buildings: buildings.length, plates: plates.lengt
   quality: qLevel, px: renderer.getPixelRatio(),
   advisors: { here: advisorMeshes.map((m) => m.userData.advisor),
               near: nearAdvisor, open: curAdvisor, topic: curTopic },
+  labels: { live: labelSet.filter((x) => x.parent).length,
+            kinds: [...new Set(labelSet.filter((x) => x.parent)
+              .map((x) => x.userData.lbl.kind))].sort(),
+            shown: labelSet.filter((x) => x.parent && x.visible).length,
+            focus: labelFocus ? { kind: labelFocus.userData.lbl.kind,
+              at: labelFocus.getWorldPosition(new THREE.Vector3())
+                .toArray().map((v) => Math.round(v)) } : null,
+            lit: labelSet.filter((x) => x.parent)
+              .map((x) => Math.round(x.userData.lbl.focus * 100)),
+            // what the eye actually gets: each visible sign's height as a
+            // fraction of the viewport, and its opacity - the two numbers
+            // the design makes a promise about
+            frac: (() => {
+              const tan = Math.tan(camera.fov * Math.PI / 360);
+              const v = new THREE.Vector3();
+              return labelSet.filter((x) => x.parent && x.visible).map((x) => {
+                const d = x.getWorldPosition(v).distanceTo(camera.position);
+                return Math.round(x.scale.y / (2 * d * tan) * 1000) / 1000;
+              }).filter((r) => isFinite(r) && r > 0);
+            })(),
+            op: labelSet.filter((x) => x.parent && x.visible)
+              .map((x) => Math.round(x.material.opacity * 100)),
+            band: LFOCUS.screen },
   world: { wx, cycle: WX_CYCLE, rain: rainRate,
            fauna: faunaBodies.map((b) => b.userData.kind),
            // rounded so a harness can watch them move without floating noise
@@ -5844,6 +6139,7 @@ renderer.setAnimationLoop(() => {
   else if (!sim || controls.enabled) controls.update();
   advisorProximity(dt);
   faunaStep(clock.elapsedTime, dt);
+  labelStep(dt);
   renderer.render(scene, camera);
 });
 </script>

@@ -24,6 +24,7 @@ content graph and details:
 | **Toolrooms** (inside the 3D + interactive maps) | 8 district tool cribs — 96 tools with the deterministic crib drill | [Toolrooms](Toolrooms.md) |
 | **Advisors** (in the rooms and on the green) | 8 scripted guides answering 28 fixed questions — 14 of them read straight from the registry that holds the fact | [Advisors](Advisors.md) |
 | **The world** (sky, weather, ground, animals) | 6 weather states over per-campus atmospheres, 6 generated ground surfaces and 36 animals — and not one texture file anywhere | [World](World.md) |
+| **The signs** (every word in the 3D world) | 13 kinds over 10 shapes — shape carries the category, colour the provenance, type the rank, and every sign reacts to where you are looking | [Signs](Signs.md) |
 | **Metaverse layer** (`meta/registry/metaverse.json`) | The interchange contract: 3 open standards claimed (glTF 2.0, WebXR, GeoJSON), 3 honestly not, avatar and hall .glb export, learner-local import | [Metaverse-Layer](Metaverse-Layer.md) |
 | **City records** (`parcels/registry/parcels.json`) | The source contract for the three campus regions' own parcel and building-footprint authorities (254,122 records published upstream), plus the public-domain federal orthoimagery both maps draw | [City-Records](City-Records.md) |
 | **Network geomap** (`web/trade_craft_geomap.html`) | The geo registry on a real WGS84 map (MapLibre, no basemap tiles): campuses, 19 RECORDED anchors, great-circle routes, RECORDED city frames | [Campus-Map](Campus-Map.md) |
