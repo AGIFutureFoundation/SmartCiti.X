@@ -45,6 +45,7 @@ tools = json.load(open(ROOT / 'tools/registry/toolcribs.json'))
 meta = json.load(open(ROOT / 'meta/registry/metaverse.json'))
 parcels = json.load(open(ROOT / 'parcels/registry/parcels.json'))
 advisors = json.load(open(ROOT / 'agents/registry/advisors.json'))
+world = json.load(open(ROOT / 'world/registry/world.json'))
 skills = json.load(open(ROOT / 'pack/registry/skills.json'))['skills']
 by_slug = {h['slug']: h for h in halls}
 
@@ -114,6 +115,7 @@ content graph and details:
 | **Simulators** (inside the 3D environment) | {len(sims["sims"])} operable seats — schematic physics, deterministic rubrics, pre-shift walkarounds, bound to real skills in {len(sims["hall_bindings"])} halls | [Simulators](Simulators.md) |
 | **Toolrooms** (inside the 3D + interactive maps) | {len(tools["cribs"])} district tool cribs — {sum(len(c["tools"]) for c in tools["cribs"].values())} tools with the deterministic crib drill | [Toolrooms](Toolrooms.md) |
 | **Advisors** (in the rooms and on the green) | {len(advisors["advisors"])} scripted guides answering {advisors["counts"]["topics"]} fixed questions — {advisors["counts"]["read_bindings"]} of them read straight from the registry that holds the fact | [Advisors](Advisors.md) |
+| **The world** (sky, weather, ground, animals) | {world["counts"]["weather"]} weather states over per-campus atmospheres, {world["counts"]["ground"]} generated ground surfaces and {world["counts"]["animals"]} animals — and not one texture file anywhere | [World](World.md) |
 | **Metaverse layer** (`meta/registry/metaverse.json`) | The interchange contract: {len(meta["baseline"]["standards"])} open standards claimed (glTF 2.0, WebXR, GeoJSON), {len(meta["baseline"]["not_claimed"])} honestly not, avatar and hall .glb export, learner-local import | [Metaverse-Layer](Metaverse-Layer.md) |
 | **City records** (`parcels/registry/parcels.json`) | The source contract for the three campus regions\' own parcel and building-footprint authorities ({sum(set(s["records"] for s in parcels["sources"].values())):,} records published upstream), plus the public-domain federal orthoimagery both maps draw | [City-Records](City-Records.md) |
 | **Network geomap** (`web/trade_craft_geomap.html`) | The geo registry on a real WGS84 map (MapLibre, no basemap tiles): campuses, {n_anchors} RECORDED anchors, great-circle routes, RECORDED city frames | [Campus-Map](Campus-Map.md) |
@@ -931,6 +933,90 @@ The caveats travel with them too, because without them the number lies:
 {FOOTER}"""
 
 
+def page_world():
+    wx = sorted(world['weather'].items(), key=lambda kv: kv[1]['order'])
+    wrows = '\n'.join(
+        f"| {w['glyph']} **{w['name']}** | {w['sky_mul']}x | {w['sun_mul']}x "
+        f"| {w['cloud']:.2f} | {w['rain']:.2f} | {w['blurb']} |"
+        for _, w in wx)
+    grows = '\n'.join(
+        f"| **{g['name']}** | `{g['base']}` | {g['octaves']} | {g['relief']} "
+        f"| {g['where']} |" for g in world['ground'].values())
+    frows = '\n'.join(
+        f"| {f['glyph']} **{f['name']}** | {f['flock']} | {f['span_m']} m "
+        f"| {', '.join(f['campuses'])} | {f['why']} |"
+        for f in world['fauna'].values())
+    arows = '\n'.join(
+        f"| **{campuses[k]['name']}** | `{a['ground']}` / `{a['verge']}` "
+        f"| {a['character']} |" for k, a in world['atmos'].items())
+    c = world['counts']
+    return f"""# The world
+
+Everything the environment is made of that is not a building: the sky, the
+weather it is seen under, the ground it stands on, and the animals moving
+through it.
+
+## There is no texture file
+
+{world['honesty']['textures']}
+
+That is the strongest thing this bundle can say about its own look, and it
+is machine-checked: the suite reads the built page and fails if it so much
+as mentions a texture loader or an image extension.
+
+| Surface | Base | Octaves | Relief | Where it is laid |
+|---|---|---|---|---|
+{grows}
+
+## The sky
+
+{world['honesty']['sky']}
+
+An equirectangular dome, drawn to a {world['sky']['projection'].split('a ')[-1]}:
+four gradient bands from the campus's own atmosphere, a disc, a cloud band
+of value noise, and after dark {world['sky']['stars']['count']} stars.
+{world['sky']['disc']['placement'].capitalize()}.
+
+## The weather
+
+{c['weather']} states on one button, in this order. A state is a set of
+**multipliers over whichever campus atmosphere is loaded** — never a look of
+its own — so a campus keeps its character in the rain instead of every
+campus looking alike under it.
+
+| State | Sky | Sun | Cloud | Rain | Why it is worth standing in |
+|---|---|---|---|---|---|
+{wrows}
+
+{world['honesty']['weather']}
+
+## The campus atmospheres
+
+| Campus | Ground / verge | Character |
+|---|---|---|
+{arows}
+
+## The animals
+
+{c['fauna']} kinds, {c['animals']} placed across the three campuses. They are
+the only moving thing on an idle campus, and they give the scene the one
+thing the buildings cannot: a sense of scale a learner reads without being
+told.
+
+| Animal | Flock | Span | Campuses | Why it is in the yard |
+|---|---|---|---|---|
+{frows}
+
+{world['honesty']['fauna']}
+
+Viewers who ask for reduced motion get a still yard: no animals, no rain.
+
+## And the ground it all stands on
+
+{world['honesty']['ground']}
+{FOOTER}"""
+
+
 PAGES = {
     'Home.md': page_home,
     'Campus-Map.md': page_campus,
@@ -942,6 +1028,7 @@ PAGES = {
     'Metaverse-Layer.md': page_meta,
     'City-Records.md': page_records,
     'Advisors.md': page_advisors,
+    'World.md': page_world,
     'Flipped-Classroom.md': page_schools,
     'Provenance.md': page_provenance,
     **{f'District-{k}.md': (lambda k=k, d=d: page_district(k, d))
