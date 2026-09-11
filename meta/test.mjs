@@ -38,6 +38,10 @@ ok('conventions are complete: .glb, metres, +Y up, a named rig, named scenes',
   && /tc-hall-<slug>/.test(reg.conventions.scene_naming));
 ok('every declared rig node is actually named in the page source',
   reg.conventions.avatar_rig.every((node) => page.includes(`'${node}'`)));
+ok('the host-mediated save door is declared and implemented: a confirmed .zip carrying the unchanged .glb',
+  /\.zip/.test(reg.conventions.host_mediated_save)
+  && /unchanged/.test(reg.conventions.host_mediated_save)
+  && /zipOne/.test(page) && /downloads/.test(page));
 ok('the export stripper is declared and implemented: sprites, lines, points never ship',
   ['Sprite', 'Line', 'Points'].every((k) =>
     reg.conventions.stripped_on_export.includes(k))

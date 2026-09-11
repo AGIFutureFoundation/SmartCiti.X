@@ -3658,23 +3658,79 @@ function exportable(root) {
   rm.forEach((o) => o.parent?.remove(o));
   return c;
 }
+/* A minimal STORE-method zip around one file: where a host mediates
+   saves (the published artifact) the allowlist takes .zip, so the .glb
+   travels inside one, unchanged. */
+const crcTable = (() => {
+  const t = new Uint32Array(256);
+  for (let i = 0; i < 256; i++) {
+    let c = i;
+    for (let k = 0; k < 8; k++) c = c & 1 ? 0xEDB88320 ^ (c >>> 1) : c >>> 1;
+    t[i] = c >>> 0;
+  }
+  return t;
+})();
+function zipOne(name, u8) {
+  let crc = 0xFFFFFFFF;
+  for (let i = 0; i < u8.length; i++)
+    crc = crcTable[(crc ^ u8[i]) & 0xFF] ^ (crc >>> 8);
+  crc = (crc ^ 0xFFFFFFFF) >>> 0;
+  const nm = new TextEncoder().encode(name);
+  const out = new Uint8Array(30 + nm.length + u8.length + 46 + nm.length + 22);
+  const dv = new DataView(out.buffer);
+  const put = (off, bytes) => out.set(bytes, off);
+  // local file header
+  dv.setUint32(0, 0x04034b50, true); dv.setUint16(4, 20, true);
+  dv.setUint32(14, crc, true);
+  dv.setUint32(18, u8.length, true); dv.setUint32(22, u8.length, true);
+  dv.setUint16(26, nm.length, true);
+  put(30, nm); put(30 + nm.length, u8);
+  // central directory
+  const cd = 30 + nm.length + u8.length;
+  dv.setUint32(cd, 0x02014b50, true); dv.setUint16(cd + 4, 20, true);
+  dv.setUint16(cd + 6, 20, true);
+  dv.setUint32(cd + 16, crc, true);
+  dv.setUint32(cd + 20, u8.length, true); dv.setUint32(cd + 24, u8.length, true);
+  dv.setUint16(cd + 28, nm.length, true);
+  put(cd + 46, nm);
+  // end of central directory
+  const eo = cd + 46 + nm.length;
+  dv.setUint32(eo, 0x06054b50, true);
+  dv.setUint16(eo + 8, 1, true); dv.setUint16(eo + 10, 1, true);
+  dv.setUint32(eo + 12, 46 + nm.length, true); dv.setUint32(eo + 16, cd, true);
+  return out;
+}
 async function exportGlb(root, name) {
   try {
     const { GLTFExporter } = await import('three/addons/gltf/GLTFExporter.js');
     const bin = await new Promise((res, rej) =>
       new GLTFExporter().parse(exportable(root), res, rej, { binary: true }));
     lastExport = { name, bytes: bin.byteLength };
+    const kb = (bin.byteLength / 1024).toFixed(0);
+    // where the host mediates saves, offer the confirmed .zip door first
+    const dlc = window.claude?.use ? await claude.use('downloads') : null;
+    if (dlc) {
+      try {
+        await dlc.save({ filename: name + '.zip',
+          data: new Blob([zipOne(name, new Uint8Array(bin))]) });
+        document.getElementById('hint').textContent = name + '.zip · ' + kb
+          + ' KB — unzip for the .glb (glTF 2.0, Unity / Sketchfab / Blender ready)';
+      } catch (err) {
+        document.getElementById('hint').textContent = err?.code === 'declined'
+          ? 'save declined' : 'save unavailable — ' + (err?.message ?? err);
+      }
+      return;
+    }
     const a = document.createElement('a');
     a.href = URL.createObjectURL(new Blob([bin], { type: 'model/gltf-binary' }));
     a.download = name;
     a.click();
     setTimeout(() => URL.revokeObjectURL(a.href), 4000);
-    document.getElementById('hint').textContent = name + ' · '
-      + (bin.byteLength / 1024).toFixed(0)
+    document.getElementById('hint').textContent = name + ' · ' + kb
       + ' KB · glTF 2.0 — Unity / Sketchfab / Blender ready';
   } catch (e) {
     document.getElementById('hint').textContent =
-      'glTF export needs the repository or Pages build — ' + (e?.message ?? e);
+      'glTF export unavailable here — ' + (e?.message ?? e);
   }
 }
 async function importGlb(file) {

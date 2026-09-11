@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-11",
- "source_stamp": "792441b0562b45a1",
+ "source_stamp": "23e4374fde1715ad",
  "baseline": {
   "note": "built to the open interchange baseline. No private \"metaverse standard\" is referenced or claimed: what is listed under standards is implemented and tested, and what is listed under not_claimed is honestly not.",
   "standards": [
@@ -61,7 +61,8 @@
    "Sprite",
    "Line",
    "Points"
-  ]
+  ],
+  "host_mediated_save": "where the hosting page mediates file saves (the published artifact), the export is offered as <file>.zip (STORE method, the .glb inside unchanged) through a viewer confirmation - .zip is on the host allowlist, .glb is not"
  },
  "exports": [
   {
@@ -89,6 +90,6 @@
   "recorded_check": "cross-checked against the ml-agents checkout"
  },
  "honesty": {
-  "status": "a metaverse layer is file formats and honesty, not a place: exports are plain Khronos glTF of this bundle's own original meshes; imports never leave the device; no service, account, token or blockchain is involved, nothing here is an NFT, and where module resolution is unavailable (the single-file artifact build) the buttons degrade to a HUD line instead of failing."
+  "status": "a metaverse layer is file formats and honesty, not a place: exports are plain Khronos glTF of this bundle's own original meshes; imports never leave the device; no service, account, token or blockchain is involved, nothing here is an NFT. The single-file artifact build carries the exporter and loader inline and delivers exports as a viewer-confirmed .zip; only where neither door exists do the buttons degrade to a HUD line instead of failing."
  }
 }
