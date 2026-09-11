@@ -118,11 +118,55 @@ IMAGERY = {
                          'when it does not answer.',
 }
 
+# Elevation: real ground height at a real coordinate, from the same federal
+# survey that publishes the imagery above - the USGS Elevation Point Query
+# Service. RECORDED from Locator.X's own elevation lookup (src/sources.js,
+# Apache-2.0), which this bundle adopts point-for-point: ONE COORDINATE AT
+# A TIME, on demand, never a bulk pull, because a records service is not a
+# bulk endpoint and this platform does not treat one as such. That
+# discipline is why an anchor gets its elevation and a whole campus does
+# not: 19 RECORDED anchors is a reasonable number of single-point asks: a
+# few hundred thousand ground-sample points under a schematic campus is
+# not, and would misrepresent a courtesy service as infrastructure.
+ELEVATION = {
+    'id': 'usgs-epqs',
+    'name': 'USGS Elevation Point Query Service (3DEP)',
+    'authority': 'United States Geological Survey',
+    'licence': 'public domain (work of the U.S. federal government)',
+    'endpoint': 'https://epqs.nationalmap.gov/v1/json',
+    'query': {'x': '{lng}', 'y': '{lat}', 'units': 'Feet', 'wkid': '4326',
+              'includeDate': 'true'},
+    'scope': 'one coordinate per request - a RECORDED anchor or a campus '
+             'siting point, fetched when its card is opened, cached for '
+             'the session, never pre-fetched and never bulk',
+    'cite': 'https://epqs.nationalmap.gov/v1/json',
+    'cite_file': 'src/sources.js',
+    'provenance': 'RECORDED - the published service of the cited authority',
+    'verified_from_build': False,
+    'verification_note': 'the build sandbox reaches no host outside GitHub '
+                         'and the package registries, so this endpoint is '
+                         'declared from its authority rather than probed '
+                         'here; the page requests it in the learner\'s own '
+                         'browser, on demand, and shows the number it gets '
+                         'back or says plainly that the lookup failed - '
+                         'never a placeholder standing in for a real one.',
+    'traps_guarded': [
+        'the value is inconsistently typed - Feet returns a number, '
+        'Meters a string - so the page always coerces it',
+        'a point off the DEM returns HTTP 200 with a non-JSON body, so '
+        'the page reads the response as text and guards the parse rather '
+        'than assuming a 200 means valid JSON',
+        'the acquisition date can be malformed and is kept as a string, '
+        'never parsed into a Date',
+    ],
+}
+
 CONTRACT = (
-    'source contract, not a data copy: no parcel or imagery record is '
-    'stored in this repository. The maps request them from the authority '
-    'in the learner\'s own browser at view time, render what comes back, '
-    'and fall back to the SCHEMATIC layers when the request fails.'
+    'source contract, not a data copy: no parcel, imagery or elevation '
+    'record is stored in this repository. The maps request them from the '
+    'authority in the learner\'s own browser at view time, render what '
+    'comes back, and fall back to the SCHEMATIC layers - or say the '
+    'lookup failed - when the request fails.'
 )
 
 HONESTY = {
@@ -174,6 +218,7 @@ doc = {
     'honesty': HONESTY,
     'sources': SOURCES,
     'imagery': IMAGERY,
+    'elevation': ELEVATION,
 }
 
 OUT = HERE / 'registry'
@@ -181,5 +226,5 @@ OUT.mkdir(exist_ok=True)
 (OUT / 'parcels.json').write_text(json.dumps(doc, indent=1) + '\n')
 tot = sum({s['records'] for s in SOURCES.values()})
 print(f"city records: {len(SOURCES)} authorities ({tot:,} records published "
-      f"upstream), 1 public-domain imagery service; {checked} "
-      f"(source stamp {stamp})")
+      f"upstream), 1 public-domain imagery service, 1 elevation service "
+      f"(single-point, on demand); {checked} (source stamp {stamp})")

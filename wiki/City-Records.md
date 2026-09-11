@@ -4,7 +4,7 @@ To mimic a city you need the city's own records. This pack is the
 **source contract** for reaching them — and deliberately not a copy of
 them.
 
-source contract, not a data copy: no parcel or imagery record is stored in this repository. The maps request them from the authority in the learner's own browser at view time, render what comes back, and fall back to the SCHEMATIC layers when the request fails.
+source contract, not a data copy: no parcel, imagery or elevation record is stored in this repository. The maps request them from the authority in the learner's own browser at view time, render what comes back, and fall back to the SCHEMATIC layers - or say the lookup failed - when the request fails.
 
 ## The authorities
 
@@ -33,6 +33,25 @@ picture and the points agree. The [network geomap](Campus-Map.md) offers
 it as a basemap and extrudes the fetched footprints over it.
 
 The build sandbox reaches no host outside github and the package registries, so this endpoint is declared from its authority rather than probed here; the maps request it in the learner's browser and fall back to the schematic ground when it does not answer.
+
+## The elevation
+
+**USGS Elevation Point Query Service (3DEP)** — United States Geological Survey,
+public domain (work of the U.S. federal government). Adopted point-for-point from
+Locator.X's own lookup (`src/sources.js`,
+Apache-2.0): one coordinate at a time, on demand, never a bulk pull —
+one coordinate per request - a RECORDED anchor or a campus siting point, fetched when its card is opened, cached for the session, never pre-fetched and never bulk.
+
+Open any RECORDED anchor's card on a campus board and a button offers
+the real USGS 3DEP ground elevation at that exact coordinate, fetched in
+your own browser. Three traps observed live against the real service are
+guarded in the page that calls it:
+
+- the value is inconsistently typed - Feet returns a number, Meters a string - so the page always coerces it
+- a point off the DEM returns HTTP 200 with a non-JSON body, so the page reads the response as text and guards the parse rather than assuming a 200 means valid JSON
+- the acquisition date can be malformed and is kept as a string, never parsed into a Date
+
+the build sandbox reaches no host outside GitHub and the package registries, so this endpoint is declared from its authority rather than probed here; the page requests it in the learner's own browser, on demand, and shows the number it gets back or says plainly that the lookup failed - never a placeholder standing in for a real one.
 
 ## What this is not
 

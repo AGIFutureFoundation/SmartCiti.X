@@ -20,11 +20,13 @@ const campuses = JSON.parse(readFileSync(
   new URL('../unions/registry/campuses.json', import.meta.url))).campuses;
 const geo = JSON.parse(readFileSync(
   new URL('../geo/registry/campuses_geo.json', import.meta.url)));
+const page = readFileSync(
+  new URL('../web/trade_craft_3d.html', import.meta.url), 'utf8');
 
 /* ------------------------------------------------------------ contract --- */
 ok('the contract is a source contract: no record is stored, the browser fetches, failure falls back',
   /source contract, not a data copy/.test(reg.contract)
-  && /no parcel or imagery record is stored/.test(reg.contract)
+  && /no parcel, imagery or elevation record is stored/.test(reg.contract)
   && /learner's own browser/.test(reg.contract)
   && /fall back to the SCHEMATIC layers/.test(reg.contract));
 ok('the registry holds no record geometry at all - only the way to ask for it',
@@ -74,6 +76,39 @@ ok('the imagery admits it was never probed from the build, and says what happens
   reg.imagery.verified_from_build === false
   && /reaches no host outside GitHub/.test(reg.imagery.verification_note)
   && /fall back to the SCHEMATIC ground/.test(reg.imagery.verification_note));
+
+/* ----------------------------------------------------------- elevation --- */
+ok('the elevation source is the federal point query service, cited from Locator.X',
+  /United States Geological Survey/.test(reg.elevation.authority)
+  && reg.elevation.endpoint === 'https://epqs.nationalmap.gov/v1/json'
+  && /public domain/.test(reg.elevation.licence)
+  && reg.elevation.cite_file === 'src/sources.js');
+ok('the elevation contract is single-point and on demand, and says so - never a bulk pull',
+  /one coordinate per request/.test(reg.elevation.scope)
+  && /never pre-fetched and never bulk/.test(reg.elevation.scope));
+ok('the elevation service admits it was never probed from the build, exactly like the imagery',
+  reg.elevation.verified_from_build === false
+  && /reaches no host outside GitHub/.test(reg.elevation.verification_note)
+  && /never a placeholder standing in for a real one/
+    .test(reg.elevation.verification_note));
+ok('the three traps observed live against the real service are guarded and named',
+  reg.elevation.traps_guarded.length === 3
+  && reg.elevation.traps_guarded.some((t) => /inconsistently typed/.test(t))
+  && reg.elevation.traps_guarded.some((t) => /non-JSON body/.test(t))
+  && reg.elevation.traps_guarded.some((t) => /malformed/.test(t)));
+
+/* ------------------------------------------------------ the page builds it --- */
+ok('the page implements the elevation lookup declared here, endpoint and query alike',
+  page.includes("D.elevation.endpoint")
+  && /function elevationLookup\(/.test(page)
+  && /Look up ground elevation/.test(page));
+ok('the page guards the same three traps the registry names',
+  /typeof v === 'string' \? parseFloat\(v\) : v/.test(page)
+  && /catch \(e\) \{/.test(page.split('function elevationLookup(')[1]?.slice(0, 900) ?? '')
+  && /AcquisitionDate/.test(page));
+ok('the lookup is single-point and on demand - a button per card, never fired in bulk',
+  /const go = document\.getElementById\('elevGo'\);/.test(page)
+  && !/for \(.*elevationLookup/.test(page));
 
 /* ------------------------------------------------------------- honesty --- */
 ok('the records honesty refuses to name a person: public record, geometry and use-class only',
