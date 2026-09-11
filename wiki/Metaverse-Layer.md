@@ -53,7 +53,7 @@ learner-local only: a .glb or .gltf chosen from the device renders on the locker
 
 ## What this layer is not
 
-a metaverse layer is file formats and honesty, not a place: exports are plain Khronos glTF of this bundle's own original meshes; imports never leave the device; no service, account, token or blockchain is involved, nothing here is an NFT, and where module resolution is unavailable (the single-file artifact build) the buttons degrade to a HUD line instead of failing.
+a metaverse layer is file formats and honesty, not a place: exports are plain Khronos glTF of this bundle's own original meshes; imports never leave the device; no service, account, token or blockchain is involved, nothing here is an NFT. The single-file artifact build carries the exporter and loader inline and delivers exports as a viewer-confirmed .zip; only where neither door exists do the buttons degrade to a HUD line instead of failing.
 
 ---
 

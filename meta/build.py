@@ -66,6 +66,12 @@ DOC = {
         'scene_naming': 'tc-hall-<slug> with room-<strand> floors and the '
                         'guest-asset stand',
         'stripped_on_export': ['Sprite', 'Line', 'Points'],
+        'host_mediated_save': 'where the hosting page mediates file saves '
+                              '(the published artifact), the export is '
+                              'offered as <file>.zip (STORE method, the '
+                              '.glb inside unchanged) through a viewer '
+                              'confirmation - .zip is on the host '
+                              'allowlist, .glb is not',
     },
     'exports': [
         {'id': 'avatar-glb', 'from': 'the locker view (the .glb button)',
@@ -106,9 +112,11 @@ DOC = {
                   'place: exports are plain Khronos glTF of this bundle\'s '
                   'own original meshes; imports never leave the device; no '
                   'service, account, token or blockchain is involved, '
-                  'nothing here is an NFT, and where module resolution is '
-                  'unavailable (the single-file artifact build) the '
-                  'buttons degrade to a HUD line instead of failing.',
+                  'nothing here is an NFT. The single-file artifact build '
+                  'carries the exporter and loader inline and delivers '
+                  'exports as a viewer-confirmed .zip; only where neither '
+                  'door exists do the buttons degrade to a HUD line '
+                  'instead of failing.',
     },
 }
 
@@ -118,7 +126,7 @@ for node in DOC['conventions']['avatar_rig']:
     assert f"'{node}'" in page_src, f'rig node {node} not named in the page'
 assert "'tc-hall-' + sg" in page_src, 'hall naming drifted from the page'
 assert "'guest-asset'" in page_src, 'guest stand missing from the page'
-for token in ('GLTFExporter', 'GLTFLoader', 'never uploaded'):
+for token in ('GLTFExporter', 'GLTFLoader', 'never uploaded', 'zipOne'):
     assert token in page_src, f'{token} missing from the page'
 for fname in ('gltf/GLTFExporter.js', 'gltf/GLTFLoader.js',
               'utils/TextureUtils.js', 'utils/BufferGeometryUtils.js'):

@@ -7,7 +7,7 @@ The Adaptive Stack: the packs implementing the ACP protocol suite (v3.2) —
 counted, like everything else here, by the table below rather than by a
 number that can drift from it.
 
-**433 checks, all passing from inside this bundle**, with no model credentials
+**434 checks, all passing from inside this bundle**, with no model credentials
 required.
 
 ```bash
@@ -39,7 +39,7 @@ node sims/test.mjs                 # 22 — simulator bindings, rubrics, cockpit
 node tools/test.mjs                # 13 — district tool cribs, the deterministic crib drill, hall bindings
 node schools/test.mjs              # 15 — flipped-classroom model, proposed districts, live units + class drills
 node avatars/test.mjs              # 25 — locker depth, crews, characters, costumes, the TradeApes, marks policy, the guarantee
-node meta/test.mjs                 # 13 — the metaverse layer: standards claimed vs implemented, rig names, import policy, honesty
+node meta/test.mjs                 # 14 — the metaverse layer: standards claimed vs implemented, rig names, import policy, honesty
 node control/fuzz.mjs              # 21 — hostile inputs and adversarial learners
 node control/soak.mjs              # long-run invariants, 4,000 attempts x 3 seeds
 python3 console/check_console.py   # fails if the console is behind its sources
