@@ -28,7 +28,7 @@ The glTF exports open directly in Unity, Sketchfab, Blender, Godot, three.js.
 ## The Unity avatar systems, reviewed
 
 Three MIT-licensed Unity avatar systems were read from their own
-checkouts before choosing (cross-checked against the reviewed checkouts):
+checkouts before choosing (checkouts not present; review carried as recorded):
 
 | Repository | Licence | What it is | Verdict |
 |---|---|---|---|
@@ -36,11 +36,24 @@ checkouts before choosing (cross-checked against the reviewed checkouts):
 | [`microsoft/Microsoft-Rocketbox`](https://github.com/microsoft/Microsoft-Rocketbox) | MIT | a library of rigged, animated human avatars for Unity, organised as Adults, Children and Professions, with an animation set - the closest thing to an off-the-shelf realistic trades crew | NOT BUNDLED, available to the learner - its licence would permit redistribution, but the Academy ships its own original avatars and this bundle stays free of third-party artwork. A learner may load any Rocketbox avatar through the locker's guest stand, where the .glb import already works. |
 | [`readyplayerme/rpm-unity-sdk-core`](https://github.com/readyplayerme/rpm-unity-sdk-core) | MIT | a Unity SDK that fetches a hosted, service-generated avatar as glTF at runtime | NOT ADOPTED - it is a client for an external avatar service, and this layer holds that a learner's avatar must not require an account or leave the device. The same .glb it produces still imports through the guest stand. |
 
-**The rig vocabulary.** VRM / Unity humanoid bone names (vrm-c/UniVRM, MIT).
-Exposed as real transform nodes:
-`head`, `leftUpperArm`, `rightUpperArm`.
-Deliberately absent: `hips`, `spine`, `chest`, `neck`, `leftLowerArm`, `rightLowerArm`, `leftHand`, `rightHand`, `leftUpperLeg`, `rightUpperLeg`, `leftFoot`, `rightFoot` —
-the rig is capsule-built: only these three are real transform nodes, the rest of the body is baked geometry. Naming only what exists keeps an importer from believing in a skeleton that is not there.
+**The rig.** VRM / Unity humanoid bone names (vrm-c/UniVRM, MIT) — and the
+hierarchy now carries **every bone VRM requires of a humanoid**, nested as
+the spec nests them, as real transform nodes in rest pose:
+
+```
+hips ── spine ── chest ── neck ── head
+ │                 └───── left/rightUpperArm ── LowerArm ── Hand
+ └─── left/rightUpperLeg ── LowerLeg ── Foot
+```
+
+Deliberately absent (all VRM *optional*):
+`upperChest`, `leftShoulder`, `rightShoulder`, `leftToes`, `rightToes`, `leftEye`, `rightEye`, `jaw` —
+the hierarchy carries every bone VRM requires of a humanoid, nested as the spec nests them, so a Unity Humanoid or VRM importer maps the whole skeleton. The bones left out are VRM OPTIONAL ones the capsule body has no articulation for - naming them would claim joints that cannot move.
+
+**And they move.** the bones are driven, not decorative: the walk cycle swings the legs in opposition with the knees bending only on the return, the arms counter-swing at the elbow, the locker idle breathes through the spine, and the neck and head turn toward the viewer within a human range (neck 0.6 rad, head 0.4 rad). The gait is keyed to distance covered and the settle decays per second, so both look the same at any frame rate. Reduced-motion viewers keep the rest pose.
+
+**What the export carries.**
+the motion is computed at view time and no animation clip is exported: the .glb carries the rest-pose skeleton only, which is what a Unity Humanoid or VRM import needs to retarget its own clips.
 
 ## Conventions
 
@@ -48,7 +61,7 @@ glTF 2.0 binary (.glb) · metres ·
 up axis +Y · scenes named
 `tc-hall-<slug> with room-<strand> floors and the guest-asset stand` ·
 `Sprite`, `Line`, `Points`
-stripped on export. The avatar rig: `tc-avatar` → `head` → `leftUpperArm` → `rightUpperArm` → `headwear`.
+stripped on export. The avatar rig: `tc-avatar` → `hips` → `spine` → `chest` → `neck` → `head` → `leftUpperArm` → `leftLowerArm` → `leftHand` → `rightUpperArm` → `rightLowerArm` → `rightHand` → `leftUpperLeg` → `leftLowerLeg` → `leftFoot` → `rightUpperLeg` → `rightLowerLeg` → `rightFoot` → `headwear`.
 
 ## Exports
 

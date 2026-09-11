@@ -1592,20 +1592,44 @@ function buildAvatarMesh(cfg) {
     lineman: .24, logger: .2, 'high-top': .15, hiker: .13 }[cfg.shoes] ?? 0;
   const SOLED = /sneaker|high-top|hiker/.test(cfg.shoes);
   const LACED = /sneaker|high-top|hiker|steel|comp|logger|lineman/.test(cfg.shoes);
-  for (const sx of [-1, 1]) {
-    capsule(.095, .3, legM, sx * .13, .82, 0, g);
-    capsule(.08, .26, shorts ? skin : legM, sx * .13, .42, 0, g);
-    if (SHAFT) box(.155, SHAFT, .18, shoeM, sx * .13, .13 + SHAFT / 2, -.01, g);
-    const b = box(.17, .13, .3, shoeM, sx * .13, .1, .03, g);
-    sphere(.085, shoeM, sx * .13, .09, .17, g, 1, .8, 1);
-    if (SOLED) box(.18, .035, .33, M('#e6e6e2', .6), sx * .13, .028, .03, g, false);
-    if (LACED) box(.1, .022, .07, dark, sx * .13, .158, .1, g, false);
+  /* ---------------------------------------------------- the skeleton ---
+     A real VRM / Unity humanoid bone hierarchy (vrm-c/UniVRM, MIT): every
+     bone below is an actual transform node, nested as the spec nests them,
+     and the geometry hangs off the bone it belongs to. That buys three
+     things at once - elbows and knees that bend, a walk cycle that reads
+     as walking, and an export a Unity Humanoid or VRM importer maps whole
+     instead of in part. Rest-pose world heights are unchanged, so every
+     capsule sits exactly where it always did. */
+  const bone = (name, parent, x, y, z) => {
+    const b = new THREE.Group();
+    b.name = name; b.position.set(x, y, z); parent.add(b);
+    return b;
+  };
+  const hips = bone('hips', g, 0, .95, 0);
+  const spine = bone('spine', hips, 0, .15, 0);          // world 1.10
+  const chest = bone('chest', spine, 0, .25, 0);         // world 1.35
+  const neck = bone('neck', chest, 0, .22, 0);           // world 1.57
+  const bones = { hips, spine, chest, neck };   // head joins below
+  for (const [side, sx] of [['left', -1], ['right', 1]]) {
+    const up = bone(side + 'UpperLeg', hips, sx * .13, -.13, 0);   // world .82
+    const lo = bone(side + 'LowerLeg', up, 0, -.40, 0);            // world .42
+    const ft = bone(side + 'Foot', lo, 0, -.32, 0);                // world .10
+    bones[side + 'UpperLeg'] = up;
+    bones[side + 'LowerLeg'] = lo;
+    bones[side + 'Foot'] = ft;
+    capsule(.095, .3, legM, 0, 0, 0, up);
+    capsule(.08, .26, shorts ? skin : legM, 0, 0, 0, lo);
+    if (SHAFT) box(.155, SHAFT, .18, shoeM, 0, .03 + SHAFT / 2, -.01, ft);
+    const b = box(.17, .13, .3, shoeM, 0, 0, .03, ft);
+    sphere(.085, shoeM, 0, -.01, .17, ft, 1, .8, 1);
+    if (SOLED) box(.18, .035, .33, M('#e6e6e2', .6), 0, -.072, .03, ft, false);
+    if (LACED) box(.1, .022, .07, dark, 0, .058, .1, ft, false);
     b.castShadow = true;
-    // trouser details ride each leg
-    if (cfg.pants === 'cargo') box(.05, .13, .16, pantsM, sx * .185, .8, 0, g, false);
-    if (cfg.pants === 'hi-vis') box(.16, .05, .21, reflect, sx * .13, .5, 0, g, false);
-    if (cfg.pants === 'fr-pants') box(.165, .04, .21, M('#33363a', .8), sx * .13, .32, 0, g, false);
-    if (cfg.extras === 'knee-pads') box(.14, .12, .1, dark, sx * .13, .6, .09, g, false);
+    // trouser details ride the bone whose limb they belong to
+    if (cfg.pants === 'cargo') box(.05, .13, .16, pantsM, sx * .055, -.02, 0, up, false);
+    if (cfg.pants === 'hi-vis') box(.16, .05, .21, reflect, 0, .08, 0, lo, false);
+    if (cfg.pants === 'fr-pants') box(.165, .04, .21, M('#33363a', .8), 0, -.10, 0, lo, false);
+    if (cfg.extras === 'knee-pads') box(.14, .12, .1, dark, 0, .18, .09, lo, false);
   }
   if (cfg.pants === 'carpenter')
     box(.03, .15, .05, pantsM, .215, .88, .02, g, false);   // the hammer loop
@@ -1681,8 +1705,9 @@ function buildAvatarMesh(cfg) {
       for (const sx of [-1, 1]) capsule(.09, .14, M('#e6e6e2', .8), sx * .3, 1.38, 0, g);
   }
   // the shirt mark
-  const chest = markPlane(.14, .16, crewId);
-  chest.position.set(.1, 1.4, .215); g.add(chest);
+  // the crew mark rides the chest BONE, so it moves with the torso
+  const crewMark = markPlane(.14, .16, crewId);
+  crewMark.position.set(.1, .05, .215); chest.add(crewMark);
 
   // vest over it
   if (vestOn) {
@@ -1725,21 +1750,29 @@ function buildAvatarMesh(cfg) {
     : cfg.costume === 'parade' || cfg.costume === 'mascot' ? M('#e6e6e2', .6)
     : skin;
   if (APE) handM.flatShading = true;
-  for (const [nm, sx] of [['armL', -1], ['armR', 1]]) {
-    const p = new THREE.Group(); p.position.set(sx * .3, 1.52, 0); g.add(p);
+  for (const [nm, side, sx] of [['armL', 'left', -1], ['armR', 'right', 1]]) {
+    // the arm chain hangs off the chest, so a shrug carries the whole arm
+    const p = bone(side + 'UpperArm', chest, sx * .3, .17, 0);     // world 1.52
+    const lo = bone(side + 'LowerArm', p, 0, -.28, 0);             // world 1.24
+    const hd = bone(side + 'Hand', lo, 0, -.28, 0);                // world 0.96
+    bones[side + 'UpperArm'] = p;
+    bones[side + 'LowerArm'] = lo;
+    bones[side + 'Hand'] = hd;
     capsule(.07, .2, tank ? skin : topM, 0, -.14, 0, p);
-    capsule(.06, .18, sleeves ? topM : skin, 0, -.42, 0, p);
-    sphere(APE ? .082 : cfg.costume === 'mascot' ? .085 : .06, handM, 0, -.58, 0, p);
-    if (cfg.extras === 'elbow-pads') box(.1, .1, .09, dark, 0, -.3, .05, p, false);
+    capsule(.06, .18, sleeves ? topM : skin, 0, -.14, 0, lo);
+    sphere(APE ? .082 : cfg.costume === 'mascot' ? .085 : .06, handM, 0, -.02, 0, hd);
+    if (cfg.extras === 'elbow-pads') box(.1, .1, .09, dark, 0, -.02, .05, lo, false);
     if (cfg.costume === 'night-reflective' || cfg.costume === 'tunnel')
-      box(.15, .035, .15, reflect, 0, -.24, 0, p, false);
+      box(.15, .035, .15, reflect, 0, .04, 0, lo, false);
     if (APE) { p.scale.y = APE_ARM; p.position.x *= APE_SHX; }
     arms[nm] = p;
+    arms[nm + 'Lo'] = lo;
   }
 
   // neck + head with the face
   capsule(.06, .06, skin, 0, 1.6, 0, g);
-  const head = new THREE.Group(); head.position.y = 1.78; g.add(head);
+  const head = bone('head', neck, 0, .21, 0);        // world 1.78
+  bones.head = head;
   if (ANIMAL) {
     const fur = M(CS.top, .95);
     const eyePair = (ex, ey, ez, r = .018) => {
@@ -2047,17 +2080,12 @@ function buildAvatarMesh(cfg) {
   const sc = optOf('build').scale ?? [1, 1, 1];
   g.scale.set(sc[0], sc[1], sc[2]);
   g.traverse((o) => { if (o.isMesh) o.castShadow = true; });
-  g.userData = { ...g.userData, arms, head, hat };
-  // The rig, NAMED for export in the VRM / Unity humanoid vocabulary
-  // (vrm-c/UniVRM, MIT) so a Unity Humanoid or VRM import maps these
-  // nodes without a hand-built avatar definition. Only the bones this
-  // rig actually exposes as transforms are named - the rest of the body
-  // is baked geometry, and meta/ says so rather than implying a skeleton
-  // that is not there.
+  g.userData = { ...g.userData, arms, head, hat, bones };
+  // The rig is NAMED for export in the VRM / Unity humanoid vocabulary
+  // (vrm-c/UniVRM, MIT): bone() above named every bone as it was built,
+  // so an importer meets the whole hierarchy rather than three loose
+  // nodes. Only the root and the headwear are not VRM bones.
   g.name = 'tc-avatar';
-  head.name = 'head';                       // VRM: head
-  arms.armL.name = 'leftUpperArm';          // VRM: leftUpperArm
-  arms.armR.name = 'rightUpperArm';         // VRM: rightUpperArm
   hat.name = 'headwear';                    // accessory, not a VRM bone
   return g;
 }
@@ -2079,6 +2107,70 @@ function refreshAvatarMeshes() {
   }
 }
 
+/* --------------------------------------------------------- the gait ----
+   With a real skeleton the walk can be a walk: the legs swing in
+   opposition with the knees bending only on the return, the feet roll,
+   the arms counter-swing at the elbow, and the hips rise on each step.
+   Driven by DISTANCE TRAVELLED rather than elapsed time, so the stride
+   is tied to the ground and never moonwalks when the frame rate dips.
+   Reduced-motion users keep the rest pose. */
+const GAIT_LIMBS = ['leftUpperLeg', 'rightUpperLeg', 'leftLowerLeg',
+  'rightLowerLeg', 'leftFoot', 'rightFoot', 'leftUpperArm', 'rightUpperArm',
+  'leftLowerArm', 'rightLowerArm'];
+function gait(av, dist) {
+  const b = av?.userData?.bones;
+  if (!b || reduced) return;
+  const ph = dist * 2.2;                      // one stride per ~2.9 m
+  const sw = Math.sin(ph), op = Math.sin(ph + Math.PI);
+  b.leftUpperLeg.rotation.x = sw * .55;
+  b.rightUpperLeg.rotation.x = op * .55;
+  b.leftLowerLeg.rotation.x = Math.max(0, -sw) * .95;   // knees bend one way
+  b.rightLowerLeg.rotation.x = Math.max(0, -op) * .95;
+  b.leftFoot.rotation.x = -b.leftLowerLeg.rotation.x * .45;
+  b.rightFoot.rotation.x = -b.rightLowerLeg.rotation.x * .45;
+  b.leftUpperArm.rotation.x = op * .40;
+  b.rightUpperArm.rotation.x = sw * .40;
+  b.leftLowerArm.rotation.x = -Math.abs(op) * .35;
+  b.rightLowerArm.rotation.x = -Math.abs(sw) * .35;
+  b.chest.rotation.y = sw * .08;
+  b.hips.rotation.y = -sw * .05;
+  b.hips.position.y = .95 + Math.abs(sw) * .03;
+}
+function gaitRest(av, dt) {                    // settle back to the rest pose
+  const b = av?.userData?.bones;
+  if (!b) return;
+  // decay per SECOND, not per frame, so the settle looks the same on a
+  // 120 Hz laptop and on a phone the quality ladder has dropped to 20 fps
+  const k = Math.exp(-11 * Math.min(dt || .016, .1));
+  for (const n of GAIT_LIMBS) b[n].rotation.x *= k;
+  b.chest.rotation.y *= k; b.hips.rotation.y *= k;
+  b.hips.position.y += (.95 - b.hips.position.y) * (1 - k);
+}
+// the locker's idle: a breath in the spine, and a head that notices you.
+// Both are bounded - the neck turns at most ~34 deg and the head ~23, so
+// the avatar looks around rather than swivelling like a doll.
+const NECK_MAX = .6, HEAD_MAX = .4;
+function idleBreath(av, t, dt) {
+  const b = av?.userData?.bones;
+  if (!b || reduced) return;
+  b.spine.rotation.x = Math.sin(t * 1.1) * .014;
+  b.chest.rotation.x = Math.sin(t * 1.1 + .5) * .012;
+  // look toward the camera: the yaw between where the body faces and where
+  // the viewer stands, split between neck and head and clamped at both
+  const dx = camera.position.x - av.position.x;
+  const dz = camera.position.z - av.position.z;
+  let yaw = Math.atan2(dx, dz) - av.rotation.y;
+  yaw = Math.atan2(Math.sin(yaw), Math.cos(yaw));       // wrap to +/- PI
+  const pitch = Math.max(-.3, Math.min(.3,
+    -(camera.position.y - (av.position.y + 1.6)) * .08));
+  const k = Math.min(1, (dt || .016) * 4);
+  const nY = Math.max(-NECK_MAX, Math.min(NECK_MAX, yaw * .45));
+  const hY = Math.max(-HEAD_MAX, Math.min(HEAD_MAX, yaw * .35));
+  b.neck.rotation.y += (nY - b.neck.rotation.y) * k;
+  b.head.rotation.y += (hY - b.head.rotation.y) * k;
+  b.head.rotation.x += (pitch - b.head.rotation.x) * k;
+}
+
 /* ------------------------------------------------------ emote engine ---- */
 function playEmote(id) {
   const e = D.avatars.emotes.find((x) => x.id === id);
@@ -2095,17 +2187,20 @@ function stepEmote(dt) {
   for (const av of targets) {
     const { arms, head, hat } = av.userData;
     arms.armL.rotation.set(0, 0, 0); arms.armR.rotation.set(0, 0, 0);
+    arms.armLLo.rotation.set(0, 0, 0); arms.armRLo.rotation.set(0, 0, 0);
     hat.position.y = .13; av.position.y = av.userData.baseY ?? av.position.y;
     switch (emo.move) {
       case 'arm-wave':
         arms.armR.rotation.z = -2.6 * s;
-        arms.armR.rotation.x = Math.sin(emo.t * 14) * .5 * s; break;
+        arms.armR.rotation.x = Math.sin(emo.t * 14) * .5 * s;
+        arms.armRLo.rotation.z = -.5 * s; break;   // the elbow joins in
       case 'arm-up': arms.armR.rotation.x = -2.9 * s; break;
       case 'arm-point': arms.armR.rotation.x = -1.55 * s; break;
       case 'hat-tip':
         arms.armR.rotation.x = -2.4 * s;
         hat.position.y = .13 + .14 * s; hat.rotation.z = .35 * s; break;
       case 'clap':
+        arms.armLLo.rotation.x = arms.armRLo.rotation.x = -.9;
         arms.armL.rotation.x = arms.armR.rotation.x = -1.4;
         arms.armL.rotation.z = .5 * Math.abs(Math.sin(emo.t * 12));
         arms.armR.rotation.z = -.5 * Math.abs(Math.sin(emo.t * 12)); break;
@@ -2117,8 +2212,16 @@ function stepEmote(dt) {
         av.position.y = av.userData.baseY + Math.abs(Math.sin(emo.t * 9)) * .35 * s;
         break;
     }
+    // an emote owns the whole body: unwind any idle head-turn under it
+    const b = av.userData.bones;
+    if (b) {
+      const d = Math.min(1, dt * 6);
+      b.neck.rotation.y *= 1 - d;
+      b.head.rotation.y *= 1 - d; b.head.rotation.x *= 1 - d;
+    }
     if (k >= 1) {
       arms.armL.rotation.set(0, 0, 0); arms.armR.rotation.set(0, 0, 0);
+      arms.armLLo.rotation.set(0, 0, 0); arms.armRLo.rotation.set(0, 0, 0);
       hat.position.y = .13; hat.rotation.z = 0;
       if (av.userData.baseY !== undefined) av.position.y = av.userData.baseY;
     }
@@ -2467,6 +2570,7 @@ function exitWalkMode() {
 }
 function touchWalkStep(dt) {
   const sp = 5.2 * dt;
+  const was = walkAvatar.position.clone();
   const f = new THREE.Vector3(Math.sin(tYaw), 0, Math.cos(tYaw));
   const r = new THREE.Vector3(f.z, 0, -f.x);
   walkAvatar.position.addScaledVector(f, -joyVec.y * sp);
@@ -2484,6 +2588,11 @@ function touchWalkStep(dt) {
     walkAvatar.position.z = Math.min(DEP / 2 - .8,
       Math.max(-DEP / 2 - 26, walkAvatar.position.z));
   }
+  // the gait rides the distance actually covered, after the clamps
+  const moved = walkAvatar.position.distanceTo(was);
+  walkAvatar.userData.dist = (walkAvatar.userData.dist ?? 0) + moved;
+  if (moved > .0015) gait(walkAvatar, walkAvatar.userData.dist);
+  else gaitRest(walkAvatar, dt);
   // third-person camera
   const back = new THREE.Vector3(Math.sin(tYaw), 0, Math.cos(tYaw));
   const eye = walkAvatar.position.clone()
@@ -4892,6 +5001,7 @@ window.__tc3dDo = (fn, arg) => {
   else if (fn === 'crib') openCrib(arg);
   else if (fn === 'wa') openWa(arg);
   else if (fn === 'quality') { qAuto = false; setQuality(arg); }
+  else if (fn === 'emote') playEmote(arg);
 };
 window.__tc3d = () => ({ view, buildings: buildings.length, plates: plates.length,
   beacons: beacons.length, floors: floors.length, slug, campusKey, loc, walkActive,
@@ -4917,6 +5027,33 @@ window.__tc3d = () => ({ view, buildings: buildings.length, plates: plates.lengt
   meta: { exp: lastExport,
     imp: importedGlb ? { nodes: importedGlb.nodes, name: importedGlb.name } : null },
   quality: qLevel, px: renderer.getPixelRatio(),
+  rig: (() => {                       // the VRM skeleton, as it really is
+    const av = avatarMesh ?? walkAvatar ?? simRider;
+    if (!av?.userData?.bones) return null;
+    av.updateMatrixWorld(true);
+    const v = new THREE.Vector3(), out = {};
+    for (const [n, b] of Object.entries(av.userData.bones))
+      out[n] = Math.round(b.getWorldPosition(v).y * 100) / 100;
+    return out;
+  })(),
+  rigTree: (() => {                   // and how those bones hang together
+    const av = avatarMesh ?? walkAvatar ?? simRider;
+    if (!av?.userData?.bones) return null;
+    const out = {};
+    av.traverse((o) => { if (o.name) out[o.name] = o.parent?.name ?? null; });
+    return out;
+  })(),
+  pose: (() => {                      // the joints a gait actually drives
+    const av = avatarMesh ?? walkAvatar ?? simRider;
+    const b = av?.userData?.bones;
+    if (!b) return null;
+    const r = (x) => Math.round(x * 1000) / 1000;
+    return { leg: r(b.leftUpperLeg.rotation.x), knee: r(b.leftLowerLeg.rotation.x),
+      legR: r(b.rightUpperLeg.rotation.x), arm: r(b.rightUpperArm.rotation.x),
+      elbow: r(b.rightLowerArm.rotation.x), hipY: r(b.hips.position.y),
+      neckY: r(b.neck.rotation.y), headY: r(b.head.rotation.y),
+      headX: r(b.head.rotation.x), dist: r(av.userData.dist ?? 0) };
+  })(),
   sat: { state: satState, plane: !!satPlane,
          tiles: SAT_TILES ?? D.imagery.tiles, z: SAT_Z,
          span: satPlane ? [Math.round(satPlane.geometry.parameters.width),
@@ -4950,6 +5087,7 @@ renderer.setAnimationLoop(() => {
     if (sim.gauges) setDash(D.sims.sims[curSimId], sim.gauges());
   }
   stepEmote(dt);
+  if (view === 'avatar' && !emo) idleBreath(avatarMesh, clock.elapsedTime, dt);
   if (!reduced) for (const b of fogBanks) {
     b.ang += dt * b.sp;
     b.m.position.x = Math.cos(b.ang) * b.rad;

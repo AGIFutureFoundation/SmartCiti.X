@@ -761,11 +761,24 @@ checkouts before choosing ({meta["avatar_review_check"]}):
 |---|---|---|---|
 {chr(10).join(f'| [`{x["repo"]}`](https://github.com/{x["repo"]}) | {x["licence"]} | {x["what"]} | {x["verdict"]} |' for x in meta["avatar_systems_reviewed"])}
 
-**The rig vocabulary.** {meta["conventions"]["rig_vocabulary"]["standard"]}.
-Exposed as real transform nodes:
-{", ".join(f'`{b}`' for b in meta["conventions"]["rig_vocabulary"]["exposed"])}.
-Deliberately absent: {", ".join(f'`{b}`' for b in meta["conventions"]["rig_vocabulary"]["not_exposed"])} —
+**The rig.** {meta["conventions"]["rig_vocabulary"]["standard"]} — and the
+hierarchy now carries **every bone VRM requires of a humanoid**, nested as
+the spec nests them, as real transform nodes in rest pose:
+
+```
+hips ── spine ── chest ── neck ── head
+ │                 └───── left/rightUpperArm ── LowerArm ── Hand
+ └─── left/rightUpperLeg ── LowerLeg ── Foot
+```
+
+Deliberately absent (all VRM *optional*):
+{", ".join(f'`{b}`' for b in meta["conventions"]["rig_vocabulary"]["not_exposed"])} —
 {meta["conventions"]["rig_vocabulary"]["why"]}
+
+**And they move.** {meta["conventions"]["rig_vocabulary"]["articulation"]}
+
+**What the export carries.**
+{meta["conventions"]["rig_vocabulary"]["no_animation_track"]}
 
 ## Conventions
 

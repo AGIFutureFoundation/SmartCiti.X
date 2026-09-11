@@ -104,17 +104,45 @@ DOC = {
         'up_axis': '+Y',
         'rig_vocabulary': {
             'standard': 'VRM / Unity humanoid bone names (vrm-c/UniVRM, MIT)',
-            'exposed': ['head', 'leftUpperArm', 'rightUpperArm'],
-            'not_exposed': ['hips', 'spine', 'chest', 'neck', 'leftLowerArm',
-                            'rightLowerArm', 'leftHand', 'rightHand',
-                            'leftUpperLeg', 'rightUpperLeg', 'leftFoot',
-                            'rightFoot'],
-            'why': 'the rig is capsule-built: only these three are real '
-                   'transform nodes, the rest of the body is baked '
-                   'geometry. Naming only what exists keeps an importer '
-                   'from believing in a skeleton that is not there.',
+            # every bone VRM REQUIRES of a humanoid, plus the two optional
+            # torso bones, each a real nested transform node in rest pose
+            'required_complete': True,
+            'exposed': ['hips', 'spine', 'chest', 'neck', 'head',
+                        'leftUpperArm', 'leftLowerArm', 'leftHand',
+                        'rightUpperArm', 'rightLowerArm', 'rightHand',
+                        'leftUpperLeg', 'leftLowerLeg', 'leftFoot',
+                        'rightUpperLeg', 'rightLowerLeg', 'rightFoot'],
+            'not_exposed': ['upperChest', 'leftShoulder', 'rightShoulder',
+                            'leftToes', 'rightToes', 'leftEye', 'rightEye',
+                            'jaw'],
+            'why': 'the hierarchy carries every bone VRM requires of a '
+                   'humanoid, nested as the spec nests them, so a Unity '
+                   'Humanoid or VRM importer maps the whole skeleton. The '
+                   'bones left out are VRM OPTIONAL ones the capsule body '
+                   'has no articulation for - naming them would claim '
+                   'joints that cannot move.',
+            'articulation': 'the bones are driven, not decorative: the '
+                            'walk cycle swings the legs in opposition with '
+                            'the knees bending only on the return, the '
+                            'arms counter-swing at the elbow, the locker '
+                            'idle breathes through the spine, and the neck '
+                            'and head turn toward the viewer within a human '
+                            'range (neck 0.6 rad, head 0.4 rad). The gait '
+                            'is keyed to distance covered and the settle '
+                            'decays per second, so both look the same at '
+                            'any frame rate. Reduced-motion viewers keep '
+                            'the rest pose.',
+            'no_animation_track': 'the motion is computed at view time and '
+                                  'no animation clip is exported: the .glb '
+                                  'carries the rest-pose skeleton only, '
+                                  'which is what a Unity Humanoid or VRM '
+                                  'import needs to retarget its own clips.',
         },
-        'avatar_rig': ['tc-avatar', 'head', 'leftUpperArm', 'rightUpperArm',
+        'avatar_rig': ['tc-avatar', 'hips', 'spine', 'chest', 'neck', 'head',
+                       'leftUpperArm', 'leftLowerArm', 'leftHand',
+                       'rightUpperArm', 'rightLowerArm', 'rightHand',
+                       'leftUpperLeg', 'leftLowerLeg', 'leftFoot',
+                       'rightUpperLeg', 'rightLowerLeg', 'rightFoot',
                        'headwear'],
         'scene_naming': 'tc-hall-<slug> with room-<strand> floors and the '
                         'guest-asset stand',
@@ -175,10 +203,24 @@ DOC = {
 
 # every claim above that names page behavior is held against the page
 page_src = (ROOT / 'web/build_3d.py').read_text()
-for node in DOC['conventions']['avatar_rig']:
+for node in ('tc-avatar', 'headwear'):
     assert f"'{node}'" in page_src, f'rig node {node} not named in the page'
-for bone in DOC['conventions']['rig_vocabulary']['exposed']:
-    assert f"name = '{bone}'" in page_src, f'VRM bone {bone} not set in the page'
+_rig = DOC['conventions']['rig_vocabulary']
+for b in _rig['exposed']:
+    limb = b[4:] if b.startswith('left') else (
+        b[5:] if b.startswith('right') else None)
+    assert (f"bone('{b}'" in page_src
+            or (limb and f"bone(side + '{limb}'" in page_src)), \
+        f'VRM bone {b} is not built by the page'
+for b in _rig['not_exposed']:
+    assert f"bone('{b}'" not in page_src, f'{b} is claimed absent but built'
+# the articulation claim is only worth making if the page enforces it
+assert 'const NECK_MAX = .6, HEAD_MAX = .4;' in page_src, \
+    'the head-turn limits drifted from the range the registry states'
+for fn in ('function gait(', 'function gaitRest(', 'function idleBreath('):
+    assert fn in page_src, f'{fn} is claimed by the registry but not built'
+assert 'animations:' not in page_src, \
+    'the export claims no animation track; the page must not write one'
 assert "'tc-hall-' + sg" in page_src, 'hall naming drifted from the page'
 assert "'guest-asset'" in page_src, 'guest stand missing from the page'
 for token in ('GLTFExporter', 'GLTFLoader', 'never uploaded', 'zipOne'):

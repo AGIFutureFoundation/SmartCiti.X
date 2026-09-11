@@ -34,10 +34,12 @@ ok('the not-claimed list stays honest: VRM, OMI extensions and USD are unclaimed
 ok('conventions are complete: .glb, metres, +Y up, a named rig, named scenes',
   reg.conventions.format === 'glTF 2.0 binary (.glb)'
   && reg.conventions.units === 'metres' && reg.conventions.up_axis === '+Y'
-  && reg.conventions.avatar_rig.length === 5
+  && reg.conventions.avatar_rig.length === 19
   && /tc-hall-<slug>/.test(reg.conventions.scene_naming));
-ok('every declared rig node is actually named in the page source',
-  reg.conventions.avatar_rig.every((node) => page.includes(`'${node}'`)));
+ok('the two non-bone rig nodes are named in the page, and the bones are built by name',
+  ['tc-avatar', 'headwear'].every((node) => page.includes(`'${node}'`))
+  && reg.conventions.avatar_rig.filter((x) =>
+      !['tc-avatar', 'headwear'].includes(x)).length === 17);
 ok('the host-mediated save door is declared and implemented: a confirmed .zip carrying the unchanged .glb',
   /\.zip/.test(reg.conventions.host_mediated_save)
   && /unchanged/.test(reg.conventions.host_mediated_save)
@@ -64,16 +66,55 @@ ok('the review adopts VRM only as a vocabulary, and bundles no third-party avata
     .find((x) => /Rocketbox/.test(x.repo)).verdict)
   && /must not require an account/.test(reg.avatar_systems_reviewed
     .find((x) => /readyplayerme/.test(x.repo)).verdict));
-ok('the rig names exactly the VRM bones it really has, and says which it does not',
+// VRM 1.0 requires these fifteen of a humanoid; the rig now carries all
+// of them, plus the two optional torso bones, as real nested nodes
+const VRM_REQUIRED = ['hips', 'spine', 'head',
+  'leftUpperArm', 'leftLowerArm', 'leftHand',
+  'rightUpperArm', 'rightLowerArm', 'rightHand',
+  'leftUpperLeg', 'leftLowerLeg', 'leftFoot',
+  'rightUpperLeg', 'rightLowerLeg', 'rightFoot'];
+ok('the rig carries every bone VRM requires of a humanoid, and the registry claims exactly that',
   reg.conventions.rig_vocabulary.standard.includes('VRM')
-  && JSON.stringify(reg.conventions.rig_vocabulary.exposed)
-    === JSON.stringify(['head', 'leftUpperArm', 'rightUpperArm'])
-  && reg.conventions.rig_vocabulary.not_exposed.includes('hips')
-  && /baked\s+geometry/.test(reg.conventions.rig_vocabulary.why)
-  && reg.conventions.rig_vocabulary.exposed.every((b) =>
-      page.includes(`name = '${b}'`))
-  && reg.conventions.rig_vocabulary.not_exposed.every((b) =>
-      !page.includes(`name = '${b}'`)));
+  && reg.conventions.rig_vocabulary.required_complete === true
+  && VRM_REQUIRED.every((b) => reg.conventions.rig_vocabulary.exposed.includes(b))
+  && reg.conventions.rig_vocabulary.exposed.length === 17);
+ok('the bones it leaves out are VRM OPTIONAL ones, and it says why',
+  reg.conventions.rig_vocabulary.not_exposed
+    .every((b) => !VRM_REQUIRED.includes(b))
+  && ['upperChest', 'leftShoulder', 'leftToes', 'jaw']
+    .every((b) => reg.conventions.rig_vocabulary.not_exposed.includes(b))
+  && /VRM OPTIONAL/.test(reg.conventions.rig_vocabulary.why)
+  && /cannot move/.test(reg.conventions.rig_vocabulary.why));
+ok('every claimed bone is actually built by the page, and no unclaimed one is',
+  reg.conventions.rig_vocabulary.exposed.every((b) => {
+    const limb = b.startsWith('left') ? b.slice(4)
+      : b.startsWith('right') ? b.slice(5) : null;
+    return page.includes(`bone('${b}'`)
+      || (limb && page.includes(`bone(side + '${limb}'`));
+  })
+  && reg.conventions.rig_vocabulary.not_exposed
+    .every((b) => !page.includes(`bone('${b}'`)));
+ok('the bones are driven, not decorative: the page implements the gait the registry describes',
+  /walk cycle/.test(reg.conventions.rig_vocabulary.articulation)
+  && /Reduced-motion/.test(reg.conventions.rig_vocabulary.articulation)
+  && /function gait\(/.test(page) && /function gaitRest\(/.test(page)
+  && /function idleBreath\(/.test(page)
+  && /if \(!b \|\| reduced\) return;/.test(page));
+ok('the head-turn is bounded to the human range the registry states, and the page enforces it',
+  /neck 0\.6 rad, head 0\.4 rad/.test(reg.conventions.rig_vocabulary.articulation)
+  && /const NECK_MAX = \.6, HEAD_MAX = \.4;/.test(page)
+  && /Math\.max\(-NECK_MAX, Math\.min\(NECK_MAX/.test(page)
+  && /Math\.max\(-HEAD_MAX, Math\.min\(HEAD_MAX/.test(page));
+ok('the motion is frame-rate independent by construction, as claimed: distance-keyed gait, per-second settle',
+  /look the same at\s+any frame rate/.test(reg.conventions.rig_vocabulary.articulation)
+  && /const ph = dist \* 2\.2;/.test(page)
+  && /Math\.exp\(-11 \* Math\.min\(dt/.test(page));
+ok('no animation clip is exported - the .glb carries the rest-pose skeleton only',
+  /no animation clip is exported/
+    .test(reg.conventions.rig_vocabulary.no_animation_track)
+  && /retarget its own clips/
+    .test(reg.conventions.rig_vocabulary.no_animation_track)
+  && !/animations:/.test(page));
 ok('VRM stays honestly unclaimed as a spec even though its vocabulary is adopted',
   reg.baseline.not_claimed.some((x) => x.id === 'vrm'));
 
