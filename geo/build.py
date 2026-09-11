@@ -233,6 +233,56 @@ for i, a in enumerate(keys):
 
 stamp = hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest()[:16]
 
+# --------------------------------------------------------------- on foot ---
+# A distance is only meaningful against a human pace, so the walk bands and
+# the destination classes below are RECORDED from Locator.X's walk module
+# (src/walk.js, Apache-2.0) rather than invented here, and cross-checked
+# against that checkout when it is present. The caveat travels with them:
+# this is straight-line distance, not a street-network walk, so a freeway, a
+# rail cut, a canal or a gated block makes the real walk longer - sometimes
+# impossibly longer.
+WALK = {
+    'bands_m': {'ten_minute': 800, 'fifteen_minute': 1200},
+    'pace_note': 'a ten-minute walk at a normal pace is about 800 m; '
+                 'fifteen minutes about 1.2 km',
+    'classes': [
+        {'id': 'shop', 'name': 'Shops & everyday errands'},
+        {'id': 'eat', 'name': 'Eating & drinking'},
+        {'id': 'work', 'name': 'Workplaces'},
+        {'id': 'care', 'name': 'Health & care'},
+        {'id': 'learn', 'name': 'Learning'},
+        {'id': 'stay', 'name': 'Lodging & mixed use'},
+    ],
+    'provenance': 'RECORDED - Locator.X src/walk.js, Apache-2.0',
+    'cite_file': 'src/walk.js',
+    'honesty': {
+        'not_a_score': 'this is not Walk Score(R) and no relationship with '
+                       'it is claimed or implied.',
+        'straight_line': 'distance here is straight-line between '
+                         'coordinates, not a street-network walk: a '
+                         'freeway, a rail cut, a canal or a gated block '
+                         'makes the real walk longer, sometimes impossibly '
+                         'longer. Walk the block before you believe the '
+                         'number.',
+        'what_it_counts': 'the Academy draws the bands around a campus and '
+                          'reports which RECORDED anchors fall inside '
+                          'them. It counts no shops, because this bundle '
+                          'holds no shop records - the classes above are '
+                          'carried so the map can say what a walkable '
+                          'measure would have to count.',
+    },
+}
+if locx.exists():
+    _w = (ROOT.parent / 'locator.x' / 'src' / 'walk.js').read_text()
+    assert (f"R10={WALK['bands_m']['ten_minute']}, "
+            f"R15={WALK['bands_m']['fifteen_minute']}") in _w, \
+        'the walk bands drifted from the Locator.X walk module'
+    for _c in WALK['classes']:
+        assert f"id:'{_c['id']}'" in _w, f"walk class {_c['id']} is not in the source"
+        assert f"name:'{_c['name']}'" in _w, \
+            f"walk class name drifted: {_c['name']}"
+    assert 'not Walk Score' in _w, 'the Walk Score disclaimer left the source'
+
 doc = {
     'pack': 'smartcitix-trade-craft-academy-geo-registry',
     'product': 'SmartCiti.X : Trade Craft Academy (powered by AGI Corp)',
@@ -267,6 +317,7 @@ doc = {
              for n, lat, lng, src in lst]
         for ck, lst in ANCHORS.items()
     },
+    'walk': WALK,
 }
 
 geojson = {

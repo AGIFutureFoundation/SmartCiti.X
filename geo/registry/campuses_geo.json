@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-10",
- "source_stamp": "3b7ee5cf96f5d44b",
+ "source_stamp": "c3908d9b73e7cffa",
  "crs": "WGS84 (EPSG:4326)",
  "recorded_check": "cross-checked against the Locator.X checkout",
  "honesty": {
@@ -316,5 +316,45 @@
     "blurb_provenance": "authored from public record"
    }
   ]
+ },
+ "walk": {
+  "bands_m": {
+   "ten_minute": 800,
+   "fifteen_minute": 1200
+  },
+  "pace_note": "a ten-minute walk at a normal pace is about 800 m; fifteen minutes about 1.2 km",
+  "classes": [
+   {
+    "id": "shop",
+    "name": "Shops & everyday errands"
+   },
+   {
+    "id": "eat",
+    "name": "Eating & drinking"
+   },
+   {
+    "id": "work",
+    "name": "Workplaces"
+   },
+   {
+    "id": "care",
+    "name": "Health & care"
+   },
+   {
+    "id": "learn",
+    "name": "Learning"
+   },
+   {
+    "id": "stay",
+    "name": "Lodging & mixed use"
+   }
+  ],
+  "provenance": "RECORDED - Locator.X src/walk.js, Apache-2.0",
+  "cite_file": "src/walk.js",
+  "honesty": {
+   "not_a_score": "this is not Walk Score(R) and no relationship with it is claimed or implied.",
+   "straight_line": "distance here is straight-line between coordinates, not a street-network walk: a freeway, a rail cut, a canal or a gated block makes the real walk longer, sometimes impossibly longer. Walk the block before you believe the number.",
+   "what_it_counts": "the Academy draws the bands around a campus and reports which RECORDED anchors fall inside them. It counts no shops, because this bundle holds no shop records - the classes above are carried so the map can say what a walkable measure would have to count."
+  }
  }
 }

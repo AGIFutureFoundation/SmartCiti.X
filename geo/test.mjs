@@ -143,6 +143,30 @@ ok('every anchor point in the network file carries its blurb and provenance',
       && f.properties.provenance === 'RECORDED'
       && /authored/.test(f.properties.blurb_provenance)));
 
+/* ----------------------------------------------------------- on foot --- */
+ok('the walk bands are the RECORDED ones, with the pace they come from stated',
+  reg.walk.bands_m.ten_minute === 800
+  && reg.walk.bands_m.fifteen_minute === 1200
+  && /about 800 m/.test(reg.walk.pace_note)
+  && /about 1\.2 km/.test(reg.walk.pace_note)
+  && reg.walk.provenance.startsWith('RECORDED')
+  && reg.walk.cite_file === 'src/walk.js');
+ok('the six destination classes a walkable measure has to count are carried',
+  reg.walk.classes.length === 6
+  && ['shop', 'eat', 'work', 'care', 'learn', 'stay']
+    .every((id) => reg.walk.classes.some((c) => c.id === id))
+  && reg.walk.classes.every((c) => c.name.length >= 8));
+ok('the walk refuses the trademark and the false precision at once',
+  /not Walk Score/.test(reg.walk.honesty.not_a_score)
+  && /no relationship with\s+it is claimed/.test(reg.walk.honesty.not_a_score)
+  && /straight-line between/.test(reg.walk.honesty.straight_line)
+  && /sometimes impossibly\s+longer/.test(reg.walk.honesty.straight_line));
+ok('and it says plainly what it does NOT count, rather than implying it counts shops',
+  /holds no shop records/.test(reg.walk.honesty.what_it_counts)
+  && /RECORDED anchors/.test(reg.walk.honesty.what_it_counts));
+ok('no band is asserted without a campus to measure it from',
+  Object.keys(reg.anchors).every((ck) => ck in reg.campuses));
+
 const src = readFileSync(new URL('./build.py', import.meta.url));
 ok('the registry was built from the current builder source (stamp check)',
   reg.source_stamp === createHash('sha256').update(src).digest('hex').slice(0, 16));

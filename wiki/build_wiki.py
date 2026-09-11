@@ -44,6 +44,7 @@ chapters = json.load(open(ROOT / 'unions/registry/chapters.json'))
 tools = json.load(open(ROOT / 'tools/registry/toolcribs.json'))
 meta = json.load(open(ROOT / 'meta/registry/metaverse.json'))
 parcels = json.load(open(ROOT / 'parcels/registry/parcels.json'))
+advisors = json.load(open(ROOT / 'agents/registry/advisors.json'))
 skills = json.load(open(ROOT / 'pack/registry/skills.json'))['skills']
 by_slug = {h['slug']: h for h in halls}
 
@@ -112,6 +113,7 @@ content graph and details:
 | Languages (`web/trade_craft_languages.html`) | The Academy overview in {len(LOCALES)} languages | [Languages](Languages.md) |
 | **Simulators** (inside the 3D environment) | {len(sims["sims"])} operable seats — schematic physics, deterministic rubrics, pre-shift walkarounds, bound to real skills in {len(sims["hall_bindings"])} halls | [Simulators](Simulators.md) |
 | **Toolrooms** (inside the 3D + interactive maps) | {len(tools["cribs"])} district tool cribs — {sum(len(c["tools"]) for c in tools["cribs"].values())} tools with the deterministic crib drill | [Toolrooms](Toolrooms.md) |
+| **Advisors** (in the rooms and on the green) | {len(advisors["advisors"])} scripted guides answering {advisors["counts"]["topics"]} fixed questions — {advisors["counts"]["read_bindings"]} of them read straight from the registry that holds the fact | [Advisors](Advisors.md) |
 | **Metaverse layer** (`meta/registry/metaverse.json`) | The interchange contract: {len(meta["baseline"]["standards"])} open standards claimed (glTF 2.0, WebXR, GeoJSON), {len(meta["baseline"]["not_claimed"])} honestly not, avatar and hall .glb export, learner-local import | [Metaverse-Layer](Metaverse-Layer.md) |
 | **City records** (`parcels/registry/parcels.json`) | The source contract for the three campus regions\' own parcel and building-footprint authorities ({sum(set(s["records"] for s in parcels["sources"].values())):,} records published upstream), plus the public-domain federal orthoimagery both maps draw | [City-Records](City-Records.md) |
 | **Network geomap** (`web/trade_craft_geomap.html`) | The geo registry on a real WGS84 map (MapLibre, no basemap tiles): campuses, {n_anchors} RECORDED anchors, great-circle routes, RECORDED city frames | [Campus-Map](Campus-Map.md) |
@@ -858,6 +860,77 @@ it as a basemap and extrudes the fetched footprints over it.
 {FOOTER}'''
 
 
+def page_advisors():
+    rows = []
+    for aid, a in advisors['advisors'].items():
+        where = {'door': 'the hall door', 'green': 'the campus green'}.get(
+            a['stands_in'], f"the {a['stands_in']} room")
+        asks = '<br>'.join(
+            f"{t['ask']} *({'reads ' + t['bind'] if t['kind'] == 'read' else 'written here'})*"
+            for t in a['topics'])
+        rows.append(f"| {a['glyph']} **{a['name']}** | {where} | {a['role']} "
+                    f"| {asks} |")
+    binds = '\n'.join(f'| `{k}` | {v} |'
+                       for k, v in advisors['bindings'].items())
+    c = advisors['counts']
+    return f"""# The advisors
+
+A hall is a building until somebody in it will answer a question.
+**{c['advisors']} advisors** stand in the rooms and on the campus green,
+each one of the Academy\'s own rigged avatars — breathing, turning its head
+toward you — and each able to answer exactly **{c['topics']} questions**
+between them.
+
+## What an advisor is
+
+{advisors['honesty']['status']}
+
+{advisors['honesty']['closed_book']}
+
+## Quote, never copy
+
+{advisors['contract']}
+
+That is why {c['read_bindings']} of the {c['topics']} topics carry no words
+at all. Ask the safety steward what to wear and the answer is the hall\'s
+own condition record; walk into a different hall and the same question
+gives a different answer, because the record changed and the advisor did
+not. The other {c['say_topics']} are written down, and each one names the
+file it was written in.
+
+| Binding | What the page must read |
+|---|---|
+{binds}
+
+## Who is standing where
+
+| Advisor | Stands in | Role | Can be asked |
+|---|---|---|---|
+{chr(10).join(rows)}
+
+## What an advisor is not
+
+- **Not advice.** {advisors['honesty']['not_advice']}
+- **Not scored.** {advisors['honesty']['not_scored']}
+- **Not a person.** {advisors['honesty']['not_a_person']}
+
+## On foot
+
+The dispatcher answers *"what can I reach on foot?"* against bands that
+were not invented here: **{geo['walk']['bands_m']['ten_minute']} m** for ten
+minutes and **{geo['walk']['bands_m']['fifteen_minute']} m** for fifteen,
+{geo['walk']['provenance'].lower()}, cross-checked against that checkout on
+every build. The six destination classes a walkable measure has to count
+travel with them: {', '.join(c['name'] for c in geo['walk']['classes'])}.
+
+The caveats travel with them too, because without them the number lies:
+
+- {geo['walk']['honesty']['not_a_score']}
+- {geo['walk']['honesty']['straight_line']}
+- {geo['walk']['honesty']['what_it_counts']}
+{FOOTER}"""
+
+
 PAGES = {
     'Home.md': page_home,
     'Campus-Map.md': page_campus,
@@ -868,6 +941,7 @@ PAGES = {
     'Toolrooms.md': page_tools,
     'Metaverse-Layer.md': page_meta,
     'City-Records.md': page_records,
+    'Advisors.md': page_advisors,
     'Flipped-Classroom.md': page_schools,
     'Provenance.md': page_provenance,
     **{f'District-{k}.md': (lambda k=k, d=d: page_district(k, d))
