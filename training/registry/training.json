@@ -1,0 +1,75 @@
+{
+ "pack": "smartcitix-trade-craft-academy-training-data",
+ "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
+ "pack_version": "3.2.0",
+ "built": "2026-09-11",
+ "source_stamp": "592db99006941f7e",
+ "honesty": {
+  "schematic": "every episode comes from SCHEMATIC physics and deterministic rubrics, not a real robot or a real machine: useful for exercising a training pipeline's plumbing and export format, not for training a controller that will run on real equipment.",
+  "anonymous": "no name, no email, no biometric or device-identifying data is ever recorded - an episode carries only a scenario id, the control scheme the registry already declares, and the measured outcome.",
+  "device_local": "recorded to this browser's own storage, exactly like the progress record, and never uploaded automatically. Export and clear are both one click, both the learner's own.",
+  "not_scored": "recording an episode changes no score and is never read by a grader - the same guarantee this bundle keeps for advisors, and the suite proves it the same way, by reading the graders.",
+  "consent": "the recorder ships on, with a visible toggle: turning it off stops new episodes without touching ones already kept, and clearing them is a separate, deliberate action.",
+  "granularity": "episode-level records, not frame-by-frame joint trajectories - a finer-grained recorder is a natural next step and is not built yet."
+ },
+ "episode_kinds": {
+  "sim": {
+   "fields": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "sim",
+    "scenario",
+    "controls",
+    "outcome"
+   ],
+   "outcome_shape": {
+    "passed": "bool",
+    "rows": "[{axis, value, ok}] - the rubric rows"
+   },
+   "granularity": "episode-level: the scenario and control scheme a run was attempted under, and how it ended - not a per-tick trajectory",
+   "what": "one completed simulator run"
+  },
+  "advisor": {
+   "fields": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "advisor",
+    "topic",
+    "answer_kind"
+   ],
+   "outcome_shape": null,
+   "granularity": "one exchange: which fixed topic was asked and whether the answer was read from a record or written in the advisor registry",
+   "what": "one advisor question asked and answered"
+  },
+  "walkaround": {
+   "fields": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "sim",
+    "point"
+   ],
+   "outcome_shape": null,
+   "granularity": "one point marked - not a score, the same habit the sim registry already declares is not a gate",
+   "what": "one pre-shift walkaround point checked"
+  }
+ },
+ "storage": {
+  "key": "tc-training",
+  "toggle_key": "tc-training-on",
+  "cap": 500,
+  "cap_policy": "a rolling window: the oldest episode is dropped when the cap is reached, never the newest",
+  "scope": "this browser only - localStorage, wrapped so a blocked store never breaks the page, exactly like tc-progress"
+ },
+ "export_format": {
+  "shape": "{ \"pack\": \"smartcitix-trade-craft-academy-training-data\", \"exported\": ISO-8601, \"episodes\": [episode, ...] }",
+  "consumer": "shaped to hand to the ml-agents fork RECORDED in meta/registry/metaverse.json as example JSON a conversion script could read",
+  "not_a_demo_file": "not a native Unity ML-Agents .demo (protobuf) file - this bundle has never produced or tested one, and does not claim to",
+  "no_agent_trained": "exporting this file trains nothing by itself: no agent exists in this bundle and none is claimed to, until one is actually trained against this data outside it"
+ }
+}

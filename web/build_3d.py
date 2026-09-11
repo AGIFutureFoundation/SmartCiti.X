@@ -56,6 +56,7 @@ parcels_reg = json.load(open(ROOT / 'parcels/registry/parcels.json'))
 tools_reg = json.load(open(ROOT / 'tools/registry/toolcribs.json'))
 stations_reg = json.load(open(ROOT / 'stations/registry/stations.json'))
 agents_reg = json.load(open(ROOT / 'agents/registry/advisors.json'))
+training_reg = json.load(open(ROOT / 'training/registry/training.json'))
 world_reg = json.load(open(ROOT / 'world/registry/world.json'))
 labels_reg = json.load(open(ROOT / 'labels/registry/labels.json'))
 
@@ -267,6 +268,19 @@ DATA = json.dumps({
                'type': trim(labels_reg['type'], 'note'),
                'kinds': trim(labels_reg['kinds'], 'what', 'provenance'),
                'focus': trim(labels_reg['focus'], 'contract', 'focus_rule')},
+    # the training-data recorder: only what the page needs to build the
+    # UI and the export envelope - the essays stay in the registry, read
+    # from the wiki, exactly like the world and label packs
+    'training': {'storage': training_reg['storage'],
+                 'export_format': trim(training_reg['export_format'],
+                     'consumer', 'not_a_demo_file', 'no_agent_trained'),
+                 'kinds': trim(training_reg['episode_kinds'],
+                     'granularity', 'what'),
+                 # the two lines actually shown in the records panel;
+                 # device-local reuses the existing progress.local i18n
+                 # string, and the rest stays registry+wiki only
+                 'honesty': {k: training_reg['honesty'][k]
+                             for k in ('schematic', 'not_scored')}},
     'advisors': {'who': agents_reg['advisors'],
                  'honesty': agents_reg['honesty'],
                  'walk': geo_reg['walk']},
@@ -529,6 +543,10 @@ function simResults(simId, rows, passed) {
   const i = D.i18n[loc];
   chime(passed); buzz(passed ? 180 : 90, .5);
   // the run lands in the device-local record: runs, passes, best time
+  recordEpisode({ kind: 'sim', campus: campusKey, hall: slug, sim: simId,
+    scenario: curScenario?.id ?? null,
+    controls: def.controls.map((c) => c.action),
+    outcome: { passed, rows } });
   const rec = prog.sims[simId] ?? {};
   rec.runs = (rec.runs ?? 0) + 1;
   if (passed) {
@@ -2982,6 +3000,11 @@ function openAdvisor(aid, topicId) {
   const a = ADVISOR_TABLE[aid];
   if (!a) return;
   curAdvisor = aid; curTopic = topicId || null;
+  if (topicId) {
+    const tp = a.topics.find((x) => x.id === topicId);
+    if (tp) recordEpisode({ kind: 'advisor', campus: campusKey, hall: slug,
+      advisor: aid, topic: topicId, answer_kind: tp.kind });
+  }
   const esc = (s) => String(s).replace(/[&<>]/g,
     (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
   const t = topicId && a.topics.find((x) => x.id === topicId);
@@ -5538,6 +5561,44 @@ function renderChrome() {
   document.getElementById('pclose').textContent = t('ui.close');
 }
 
+/* ------------------------------------------------ training-data recorder
+   Three interaction shapes, one per episode: a completed sim run (the
+   scenario, the declared control scheme, the measured rubric outcome), an
+   advisor exchange (which fixed topic, whether the answer was read from a
+   record or written in the advisor registry), a walkaround point checked.
+   Episode-level, not frame-by-frame - see D.training.honesty. Device-local,
+   like tc-progress, under its OWN key so the two records never collide;
+   on by default with a visible toggle; never read by any grader. */
+const TR_KEY = D.training.storage.key, TR_ON_KEY = D.training.storage.toggle_key;
+function trLoad() {
+  try { const a = JSON.parse(localStorage.getItem(TR_KEY)); return Array.isArray(a) ? a : []; }
+  catch (e) { return []; }
+}
+let trainingLog = trLoad();
+let trainingOn = (() => {
+  try { const v = localStorage.getItem(TR_ON_KEY); return v === null ? true : v === '1'; }
+  catch (e) { return true; }
+})();
+function trainingToggle(on) {
+  trainingOn = on;
+  try { localStorage.setItem(TR_ON_KEY, on ? '1' : '0'); } catch (e) { /* blocked store */ }
+}
+function recordEpisode(ep) {
+  if (!trainingOn) return;
+  trainingLog.push({ t: new Date().toISOString(), ...ep });
+  if (trainingLog.length > D.training.storage.cap) trainingLog.shift();
+  try { localStorage.setItem(TR_KEY, JSON.stringify(trainingLog)); }
+  catch (e) { /* private mode / blocked store: session-only */ }
+}
+function clearTraining() {
+  trainingLog = [];
+  try { localStorage.removeItem(TR_KEY); } catch (e) { /* blocked store */ }
+}
+function exportTraining() {
+  return JSON.stringify({ pack: 'smartcitix-trade-craft-academy-training-data',
+    exported: new Date().toISOString(), episodes: trainingLog });
+}
+
 /* The learner record is device-local only - localStorage, every access
    wrapped so a blocked store never breaks the page - and the honesty line
    in the corner says exactly that. Not a transcript, not certification. */
@@ -5864,10 +5925,26 @@ document.addEventListener('click', (e) => {
     }
     return;
   }
+  if (e.target.id === 'trExpBtn') {
+    const j = exportTraining();
+    document.getElementById('trBox').innerHTML =
+      `<textarea id="trTa" readonly style="width:100%;height:90px;background:var(--sunk);color:var(--ink);border:1px solid var(--rule);border-radius:7px;font:11px 'IBM Plex Mono',monospace;padding:7px"></textarea>`;
+    const ta = document.getElementById('trTa');
+    ta.value = j; ta.select();
+    try { navigator.clipboard?.writeText(j); } catch (err) { /* manual copy */ }
+    return;
+  }
+  if (e.target.id === 'trClearBtn') {
+    clearTraining();
+    openRecords();
+    return;
+  }
   const wa = e.target.closest('[data-wa]');
   if (wa && sim) {
     const i = +wa.dataset.wa;
     waDone.add(i);
+    recordEpisode({ kind: 'walkaround', campus: campusKey, hall: slug,
+      sim: curSimId, point: D.sims.sims[curSimId].walkaround[i].id });
     waBeacons[i].material = mat.steel;
     blip(900, 1300, .1, 'triangle', .1);
     if (waDone.size === waTotal) {
@@ -5954,9 +6031,22 @@ function openRecords() {
        <button class="barbtn" id="impBtn">⇲ JSON</button></p>
     <div id="saveBox"></div>
     <div id="cardBox"></div>
+    <h3>🤖 Training-data episodes</h3>
+    <span class="chip">${trainingLog.length} / ${D.training.storage.cap} kept</span>
+    <p style="margin:6px 0">
+      <label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer">
+        <input type="checkbox" id="trOn" ${trainingOn ? 'checked' : ''}>
+        <span style="font-size:12.5px;color:var(--muted)">record episodes as I train</span>
+      </label></p>
+    <p><button class="barbtn" id="trExpBtn">⇪ export</button>
+       <button class="barbtn" id="trClearBtn">🗑 clear</button></p>
+    <div id="trBox"></div>
+    <p style="color:var(--muted);font-size:12px">${D.training.honesty.schematic}</p>
+    <p style="color:var(--muted);font-size:12px">${D.training.honesty.not_scored}</p>
     <p style="color:var(--muted);font-size:12px;margin-top:12px">${t('progress.local')} ${D.sims.honesty}</p>
     <style>#pbody td,#pbody th{border-top:1px solid var(--rule);padding:5px 8px;color:var(--muted);font-weight:400}</style>`;
   document.body.classList.add('open');
+  document.getElementById('trOn')?.addEventListener('change', (e) => trainingToggle(e.target.checked));
 }
 /* The progress card: the record drawn as one image the learner can save
    (long-press / right-click - the page never uploads it anywhere). */
@@ -6102,6 +6192,9 @@ window.__tc3d = () => ({ view, buildings: buildings.length, plates: plates.lengt
   quality: qLevel, px: renderer.getPixelRatio(),
   advisors: { here: advisorMeshes.map((m) => m.userData.advisor),
               near: nearAdvisor, open: curAdvisor, topic: curTopic },
+  training: { on: trainingOn, count: trainingLog.length,
+              kinds: trainingLog.map((e) => e.kind),
+              last: trainingLog[trainingLog.length - 1] ?? null },
   labels: { live: labelSet.filter((x) => x.parent).length,
             kinds: [...new Set(labelSet.filter((x) => x.parent)
               .map((x) => x.userData.lbl.kind))].sort(),
