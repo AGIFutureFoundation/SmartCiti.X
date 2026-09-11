@@ -68,14 +68,31 @@ for s in stations_reg['stations']:
 
 district_of = {slug: k for k, d in districts_reg.items() for slug in d['halls']}
 
+# rooms dedupe, same shape as the 3D page: distinct layouts + per-strand
+# defs on the wire, the full rooms inflated in-page at boot
+ROOM_DEFS, LAY_LIST, LAY_IDX = {}, [], {}
+for h in halls_json:
+    lay = [{'strand': r['strand'], 'x': r['x'], 'y': r['y'],
+            'w': r['w'], 'h': r['h']} for r in plans[h['slug']]['rooms']]
+    key = json.dumps(lay, sort_keys=True)
+    for i, (k2, _) in enumerate(LAY_LIST):
+        if k2 == key:
+            LAY_IDX[h['slug']] = i
+            break
+    else:
+        LAY_IDX[h['slug']] = len(LAY_LIST)
+        LAY_LIST.append((key, lay))
+    for r in plans[h['slug']]['rooms']:
+        rd = {'label': r['label'], 'purpose': r['purpose']}
+        assert ROOM_DEFS.setdefault(r['strand'], rd) == rd, \
+            f"room def diverges for strand {r['strand']}"
+
 HALLS = [{
     'slug': h['slug'], 'name': h['name'], 'focus': h['focus'],
     'index': h['index'], 'district': district_of[h['slug']],
     'lessons': h['lessons'], 'modules': h['modules'],
     'census': census[h['slug']],
-    'rooms': [{'strand': r['strand'], 'label': r['label'],
-               'purpose': r['purpose'], 'x': r['x'], 'y': r['y'],
-               'w': r['w'], 'h': r['h']} for r in plans[h['slug']]['rooms']],
+    'lay': LAY_IDX[h['slug']],
     'depth': plans[h['slug']]['envelope']['d'],
     'stations': [s['station_id'] for s in stations_by_hall.get(h['slug'], [])],
 } for h in halls_json]
@@ -100,6 +117,8 @@ DATA = json.dumps({
     'districts': DISTRICTS,
     'campuses': campuses_reg,
     'halls': HALLS,
+    'roomDefs': ROOM_DEFS,
+    'layouts': [lay for _, lay in LAY_LIST],
     'stations': {s['station_id']: s for s in stations_reg['stations']},
     'tools': {'cribs': tools_reg['cribs'],
               'drill': tools_reg['drill']['name'],
@@ -224,6 +243,9 @@ footer{color:var(--muted);font-size:12.5px;margin-top:26px;border-top:1px solid 
 <script id="data" type="application/json">__DATA__</script>
 <script>
 const D = JSON.parse(document.getElementById('data').textContent);
+for (const h of D.halls) h.rooms = D.layouts[h.lay].map((r) => ({
+  ...r, label: D.roomDefs[r.strand].label,
+  purpose: D.roomDefs[r.strand].purpose }));
 const params = new URLSearchParams(location.search);
 const STATE_COLORS = {live:'var(--good)', calibrating:'var(--steel)', schema_ok:'var(--warn)', draft:'var(--rule)'};
 const STATES = ['live','calibrating','schema_ok','draft'];

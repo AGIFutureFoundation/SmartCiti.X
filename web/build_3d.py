@@ -77,16 +77,49 @@ stations_by_hall = {}
 for s in stations_reg['stations']:
     stations_by_hall.setdefault(s['hall'], []).append(s['station_id'])
 
+# Payload dedupe, measured before it was written: labels and purposes are
+# one per strand (ROOM_DEFS), room geometry depends only on the envelope
+# depth (LAYOUTS), so each hall ships depth + its own fixtures and the
+# page inflates rooms at boot. Asserted here, so a plan change that
+# breaks the invariant fails the build instead of the page.
+ROOM_DEFS, LAY_LIST, LAY_IDX = {}, [], {}
+for h in halls_json:
+    lay = [{'strand': r['strand'], 'x': r['x'], 'y': r['y'],
+            'w': r['w'], 'h': r['h']} for r in plans[h['slug']]['rooms']]
+    key = json.dumps(lay, sort_keys=True)
+    for i, (k2, _) in enumerate(LAY_LIST):
+        if k2 == key:
+            LAY_IDX[h['slug']] = i
+            break
+    else:
+        LAY_IDX[h['slug']] = len(LAY_LIST)
+        LAY_LIST.append((key, lay))
+    for r in plans[h['slug']]['rooms']:
+        rd = {'label': r['label'], 'purpose': r['purpose']}
+        assert ROOM_DEFS.setdefault(r['strand'], rd) == rd, \
+            f"room def diverges for strand {r['strand']}"
+
 HALLS = [{
     'slug': h['slug'], 'name': h['name'], 'focus': h['focus'],
     'index': h['index'], 'district': district_of[h['slug']],
-    'rooms': [{'strand': r['strand'], 'label': r['label'],
-               'purpose': r['purpose'], 'fixtures': r['fixtures'],
-               'x': r['x'], 'y': r['y'], 'w': r['w'], 'h': r['h']}
-              for r in plans[h['slug']]['rooms']],
+    'fixtures': {r['strand']: r['fixtures']
+                 for r in plans[h['slug']]['rooms'] if r['fixtures']},
+    'lay': LAY_IDX[h['slug']],
     'depth': plans[h['slug']]['envelope']['d'],
     'stations': stations_by_hall.get(h['slug'], []),
 } for h in halls_json]
+
+# finishes collapse the same way: 12 distinct maps across 111 halls
+FIN_MAPS, FIN_IDX = [], {}
+for sl, h in finishes_reg['halls'].items():
+    key = json.dumps(h['rooms'], sort_keys=True)
+    for i, (k2, m2) in enumerate(FIN_MAPS):
+        if k2 == key:
+            FIN_IDX[sl] = i
+            break
+    else:
+        FIN_IDX[sl] = len(FIN_MAPS)
+        FIN_MAPS.append((key, h['rooms']))
 
 I18N = {}
 for f in sorted((ROOT / 'i18n/locales').glob('*.json')):
@@ -135,7 +168,10 @@ DATA = json.dumps({
                       'bp': a.get('blurb_provenance', '')}
                      for a in geo_reg['anchors'][ck]]
                 for ck in geo_reg.get('city', {})}},
-    'finishes': {sl: h['rooms'] for sl, h in finishes_reg['halls'].items()},
+    'finMaps': [m for _, m in FIN_MAPS],
+    'finIdx': FIN_IDX,
+    'roomDefs': ROOM_DEFS,
+    'layouts': [lay for _, lay in LAY_LIST],
     'finCat': finishes_reg['catalogue'],
     'baseCond': finishes_reg['base_conditions'],
     'condOver': {sl: {st: c for st, c in h['conditions'].items()
@@ -310,7 +346,7 @@ function setSimView(mode) {
 function teardownSim() {
   if (!sim) return;
   scene.remove(sim.group);
-  sim.group.traverse((o) => o.geometry?.dispose());
+  disposeOf(sim.group);
   sim = null; simView = null; curScenario = null; simRider = null;
   waBeacons = []; waDone = new Set(); waTotal = 0;
   controls.enabled = true;
@@ -640,7 +676,7 @@ function excavatorSim(P = {}) {
   const CZ = 6, span = SPEC.length - 1;
   const cells = SPEC.map((c, i) => {
     const cx = (i - span / 2) * 2;
-    const m = new THREE.Mesh(new THREE.BoxGeometry(1.8, .1, 1.8),
+    const m = new THREE.Mesh(boxGeo(1.8, .1, 1.8),
       new THREE.MeshStandardMaterial({ color: 0x53575a, roughness: .95 }));
     m.position.set(cx, .05, CZ); m.receiveShadow = true; g.add(m);
     return { x: cx, z: CZ, target: c.d, d: 0, util: !!c.util, struck: false, mesh: m };
@@ -911,7 +947,7 @@ function weldSim(P = {}) {
   box(seamL + 1.2, .05, .9, mat.metal, 0, topY + .02, .6, g);
   box(seamL, .02, .1, mat.paint, 0, topY + .05, 0, g, false);    // seam mark
   for (const sx of [-seamL / 2 - 2.2, seamL / 2 + 2.2]) {        // screens
-    const scr = new THREE.Mesh(new THREE.BoxGeometry(.08, 1.9, 3.2),
+    const scr = new THREE.Mesh(boxGeo(.08, 1.9, 3.2),
       new THREE.MeshStandardMaterial({ color: 0x5a3021, roughness: .7,
         transparent: true, opacity: .85 }));
     scr.position.set(sx, 1.3, 0); g.add(scr);
@@ -919,7 +955,7 @@ function weldSim(P = {}) {
   // the seam, segment by segment: dark until fused, amber in band,
   // pale out of band, a scorched hole where it burned through
   const segs = Array.from({ length: SEGS }, (_, i) => {
-    const m = new THREE.Mesh(new THREE.BoxGeometry(SEG_W - .04, .05, .16),
+    const m = new THREE.Mesh(boxGeo(SEG_W - .04, .05, .16),
       new THREE.MeshStandardMaterial({ color: 0x22282b, roughness: .8 }));
     m.position.set(x0 + (i + .5) * SEG_W, topY + .06, 0); g.add(m);
     return { x: x0 + (i + .5) * SEG_W, heat: 0, good: 0,
@@ -1045,7 +1081,7 @@ function scaffoldSim(P = {}) {
   const parts = [];
   for (const [sx, sz] of [[-1.6, -.75], [-1.6, .75], [1.6, -.75], [1.6, .75]])
     parts.push({ stage: 0,
-      mesh: mk(new THREE.BoxGeometry(.5, .1, .5), mat.wood, sx, .1, sz) });
+      mesh: mk(boxGeo(.5, .1, .5), mat.wood, sx, .1, sz) });
   for (const fx of [-1.6, 1.6]) {
     const fg = new THREE.Group(); fg.position.set(fx, 0, 0);
     fg.visible = false; g.add(fg);
@@ -1068,16 +1104,16 @@ function scaffoldSim(P = {}) {
   for (let i = 0; i < PLANKS; i++) {
     const pz = -((PLANKS - 1) / 2) * .55 + i * .55;
     parts.push({ stage: 3,
-      mesh: mk(new THREE.BoxGeometry(3.4, .08, .5), mat.wood, 0, 2.14, pz) });
+      mesh: mk(boxGeo(3.4, .08, .5), mat.wood, 0, 2.14, pz) });
   }
   for (let i = 0; i < RAILS; i++) {
     const side = i % 2 ? .85 : -.85, ry = 2.65 + Math.floor(i / 2) * .4;
     parts.push({ stage: 4,
-      mesh: mk(new THREE.BoxGeometry(3.4, .07, .07), railMat, 0, ry, side) });
+      mesh: mk(boxGeo(3.4, .07, .07), railMat, 0, ry, side) });
   }
   const STAGES = ['sills', 'frames', 'braces', 'planks', 'rails'];
   // the ghost previews where the selected rack's next part will land
-  const ghost = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1),
+  const ghost = new THREE.Mesh(boxGeo(1, 1, 1),
     new THREE.MeshBasicMaterial({ color: 0x41C4D4, transparent: true,
       opacity: .28, depthWrite: false }));
   ghost.visible = false; g.add(ghost);
@@ -2007,7 +2043,7 @@ function refreshAvatarMeshes() {
   if (avatarMesh) {
     const parent = avatarMesh.parent;
     parent.remove(avatarMesh);
-    avatarMesh.traverse((o) => o.geometry?.dispose());
+    disposeOf(avatarMesh);
     avatarMesh = buildAvatarMesh(avatarCfg);
     parent.add(avatarMesh);
   }
@@ -2671,6 +2707,17 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
 
 const D = JSON.parse(document.getElementById('data').textContent);
+// inflate the deduped payload: rooms from the per-depth layout and the
+// per-strand defs, finishes from the 12 distinct maps - one truth per
+// fact on the wire, the full shape everywhere downstream
+for (const h of D.halls) {
+  h.rooms = D.layouts[h.lay].map((r) => ({
+    ...r, label: D.roomDefs[r.strand].label,
+    purpose: D.roomDefs[r.strand].purpose,
+    fixtures: h.fixtures?.[r.strand] ?? [] }));
+}
+D.finishes = Object.fromEntries(Object.entries(D.finIdx)
+  .map(([sl, i2]) => [sl, D.finMaps[i2]]));
 const params = new URLSearchParams(location.search);
 let loc = D.i18n[params.get('lang')] ? params.get('lang') : 'en';
 let slug = D.halls.some(h => h.slug === params.get('hall')) ? params.get('hall') : 'bricklayers';
@@ -2705,6 +2752,32 @@ document.body.appendChild(renderer.domElement);
    actually offers the session kind, and a refused session degrades to a
    HUD line, never an error. The same scene, the same registries; XR is
    a viewpoint, not a second world. */
+/* Adaptive quality: when the frame rate stays under budget the page
+   steps itself down ONCE - pixel ratio to 1, the sun stops casting
+   shadows, the fog banks rest - and says so in the HUD. Manual override
+   via the __tc3dDo hook; reduced-motion users are already served. */
+let qLevel = 'high', qAuto = true, qAcc = 0, qFrames = 0;
+function setQuality(l) {
+  qLevel = l;
+  renderer.setPixelRatio(l === 'low' ? 1
+    : Math.min(devicePixelRatio, isTouch ? 1.5 : 2));
+  key.castShadow = l !== 'low';
+  for (const b of fogBanks) b.m.visible = l !== 'low';
+}
+function qStep(dt) {
+  // harness runs (webdriver) keep deterministic visuals; they force via the hook
+  if (!qAuto || qLevel === 'low' || reduced || navigator.webdriver) return;
+  qAcc += dt; qFrames++;
+  if (qAcc >= 5) {
+    if (qFrames / qAcc < 22) {
+      setQuality('low');
+      document.getElementById('hint').textContent =
+        '⚡ performance mode: resolution and shadows stepped down';
+    }
+    qAcc = 0; qFrames = 0;
+  }
+}
+
 let xrMode = null;
 async function xrProbe() {
   if (!navigator.xr?.isSessionSupported) return;
@@ -3067,8 +3140,28 @@ function finishTex(fin) {
   finTexCache.set(key, t); return t;
 }
 
+/* The geometry cache: identical box dimensions share ONE BufferGeometry
+   (a hall's fence posts alone repeat a size dozens of times). Shared
+   geometries are marked and never disposed on teardown - disposeOf()
+   below is the one legal teardown path. */
+const geoCache = new Map();
+function boxGeo(w, h, d) {
+  const k = w + '|' + h + '|' + d;
+  let g2 = geoCache.get(k);
+  if (!g2) {
+    g2 = new THREE.BoxGeometry(w, h, d);
+    g2.userData.shared = true;
+    geoCache.set(k, g2);
+  }
+  return g2;
+}
+function disposeOf(root) {
+  root.traverse((o) => {
+    if (o.geometry && !o.geometry.userData?.shared) o.geometry.dispose();
+  });
+}
 function box(w, h, d, m, x, y, z, group, shadow = true) {
-  const b = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), m);
+  const b = new THREE.Mesh(boxGeo(w, h, d), m);
   b.position.set(x, y, z);
   b.castShadow = shadow; b.receiveShadow = true;
   group.add(b); return b;
@@ -3117,18 +3210,18 @@ function toolMesh(tl) {
     roughness: .45, metalness: .35 });
   let geo;
   switch (tl.shape) {
-    case 'bar': geo = new THREE.BoxGeometry(.05, .46, .05); break;
-    case 'blade': geo = new THREE.BoxGeometry(.02, .34, .16); break;
+    case 'bar': geo = boxGeo(.05, .46, .05); break;
+    case 'blade': geo = boxGeo(.02, .34, .16); break;
     case 'cyl': geo = new THREE.CylinderGeometry(.035, .035, .4, 8); break;
     case 'cone': geo = new THREE.ConeGeometry(.07, .3, 8); break;
-    case 'meter': geo = new THREE.BoxGeometry(.09, .26, .18); break;
-    case 'case': geo = new THREE.BoxGeometry(.12, .2, .3); break;
+    case 'meter': geo = boxGeo(.09, .26, .18); break;
+    case 'case': geo = boxGeo(.12, .2, .3); break;
     case 'coil': geo = new THREE.TorusGeometry(.13, .035, 8, 14); break;
     case 'hook': geo = new THREE.TorusGeometry(.1, .04, 8, 12, Math.PI * 1.5); break;
     default: {                                   // wrench: shaft + open head
       const grp = new THREE.Group();
-      const bar = new THREE.Mesh(new THREE.BoxGeometry(.045, .38, .045), m);
-      const head = new THREE.Mesh(new THREE.BoxGeometry(.05, .09, .14), m);
+      const bar = new THREE.Mesh(boxGeo(.045, .38, .045), m);
+      const head = new THREE.Mesh(boxGeo(.05, .09, .14), m);
       head.position.y = .21; grp.add(bar, head);
       grp.traverse((o) => { if (o.isMesh) o.castShadow = true; });
       return grp;
@@ -3166,8 +3259,7 @@ function buildCrib(h, rx, rz, rw, rd) {
 }
 
 function buildHall(sg) {
-  if (hallGroup) { scene.remove(hallGroup); hallGroup.traverse(o => {
-    o.geometry?.dispose(); }); }
+  if (hallGroup) { scene.remove(hallGroup); disposeOf(hallGroup); }
   hallGroup = new THREE.Group(); beacons = []; floors = []; roomRects = []; curRoom = null;
   hallGroup.name = 'tc-hall-' + sg;
   cribCount = 0;
@@ -3182,7 +3274,7 @@ function buildHall(sg) {
   box(.25, 3.2, DEP, mat.wall, cx(0), 1.95, 0, hallGroup);          // left
   box(.25, 3.2, DEP, mat.wall, cx(W), 1.95, 0, hallGroup);          // right
   // district fascia over the open front
-  const fascia = new THREE.Mesh(new THREE.BoxGeometry(W + .8, .55, .5),
+  const fascia = new THREE.Mesh(boxGeo(W + .8, .55, .5),
     new THREE.MeshStandardMaterial({
       color: new THREE.Color().setHSL(hue/360, .55, .5), roughness: .5 }));
   fascia.position.set(0, 3.6, cz(0)); fascia.castShadow = true;
@@ -3193,11 +3285,11 @@ function buildHall(sg) {
   // roof trusses across the span, and lit strips along the side walls
   for (let tz = 4; tz < DEP - 1; tz += 6) {
     box(W - .6, .18, .5, mat.metal, 0, 3.05, cz(tz), hallGroup, false);
-    const lamp = new THREE.Mesh(new THREE.BoxGeometry(1.6, .1, .5), mat.win);
+    const lamp = new THREE.Mesh(boxGeo(1.6, .1, .5), mat.win);
     lamp.position.set(0, 2.9, cz(tz)); hallGroup.add(lamp);
   }
   for (const wx of [cx(0) + .18, cx(W) - .18]) {
-    const strip = new THREE.Mesh(new THREE.BoxGeometry(.06, .55, DEP * .8), mat.win);
+    const strip = new THREE.Mesh(boxGeo(.06, .55, DEP * .8), mat.win);
     strip.position.set(wx, 2.55, 0); hallGroup.add(strip);
   }
 
@@ -3210,7 +3302,7 @@ function buildHall(sg) {
     const ftex = finishTex(fin).clone(); ftex.needsUpdate = true;
     ftex.repeat.set(Math.max(1, (rw - .3) / fin.tile_m),
                     Math.max(1, (rd - .3) / fin.tile_m));
-    const floor = new THREE.Mesh(new THREE.BoxGeometry(rw - .3, .06, rd - .3),
+    const floor = new THREE.Mesh(boxGeo(rw - .3, .06, rd - .3),
       new THREE.MeshStandardMaterial({ map: ftex,
         roughness: fin.roughness, metalness: fin.metalness }));
     floor.position.set(rx, .38, rz); floor.receiveShadow = true;
@@ -3222,7 +3314,7 @@ function buildHall(sg) {
                      label: r.label, strand: r.strand });
     // safety rooms carry a hazard-stripe threshold at the doorway
     if (r.strand === 'safety') {
-      const stripe = new THREE.Mesh(new THREE.BoxGeometry(Math.min(rw-.6,2.4), .07, .5),
+      const stripe = new THREE.Mesh(boxGeo(Math.min(rw-.6,2.4), .07, .5),
         mat.post);
       stripe.position.set(rx, .42, rz + rd/2 - .4); hallGroup.add(stripe);
     }
@@ -3317,15 +3409,15 @@ function building(h, style, g) {   // built at the local origin, door toward -z
   bld.userData.slug = h.slug;
   const hueMat = new THREE.MeshStandardMaterial({
     color: new THREE.Color().setHSL(hue / 360, .5, .45), roughness: .6 });
-  const band = new THREE.Mesh(new THREE.BoxGeometry(wid + .4, .9, dep + .4), hueMat);
+  const band = new THREE.Mesh(boxGeo(wid + .4, .9, dep + .4), hueMat);
   band.position.set(0, hgt - .2, 0); g.add(band);
   for (const [tx, tz] of [[-wid/2, -dep/2], [wid/2, -dep/2],
                           [-wid/2, dep/2], [wid/2, dep/2]]) {
-    const trim = new THREE.Mesh(new THREE.BoxGeometry(.5, hgt, .5), hueMat);
+    const trim = new THREE.Mesh(boxGeo(.5, hgt, .5), hueMat);
     trim.position.set(tx, hgt / 2, tz); g.add(trim);
   }
   for (const zz of [-dep/2 - .03, dep/2 + .03]) {
-    const strip = new THREE.Mesh(new THREE.BoxGeometry(wid * .78, .7, .06), mat.win);
+    const strip = new THREE.Mesh(boxGeo(wid * .78, .7, .06), mat.win);
     strip.position.set(0, hgt * .55, zz); g.add(strip);
   }
   box(1.6, 2.4, .1, mat.part, 0, 1.2, -dep/2 - .06, g, false);
@@ -4648,6 +4740,7 @@ window.__tc3dDo = (fn, arg) => {
     .rooms.find((r) => r.strand === 'tools').label);
   else if (fn === 'crib') openCrib(arg);
   else if (fn === 'wa') openWa(arg);
+  else if (fn === 'quality') { qAuto = false; setQuality(arg); }
 };
 window.__tc3d = () => ({ view, buildings: buildings.length, plates: plates.length,
   beacons: beacons.length, floors: floors.length, slug, campusKey, loc, walkActive,
@@ -4672,6 +4765,12 @@ window.__tc3d = () => ({ view, buildings: buildings.length, plates: plates.lengt
         mode: xrMode, presenting: renderer.xr.isPresenting },
   meta: { exp: lastExport,
     imp: importedGlb ? { nodes: importedGlb.nodes, name: importedGlb.name } : null },
+  quality: qLevel, px: renderer.getPixelRatio(),
+  perf: { calls: renderer.info.render.calls,
+    tris: renderer.info.render.triangles,
+    geoms: renderer.info.memory.geometries,
+    tex: renderer.info.memory.textures,
+    cached: geoCache.size },
   wheel: document.querySelectorAll('#wheel path').length,
   progress: { stations: doneStations.size, sims: Object.keys(prog.sims).length,
     tools: Object.keys(prog.tools).length },
@@ -4699,7 +4798,7 @@ renderer.setAnimationLoop(() => {
     b.m.position.x = Math.cos(b.ang) * b.rad;
     b.m.position.z = Math.sin(b.ang) * b.rad;
   }
-  rainStep(dt);
+  rainStep(dt); qStep(dt);
   if (view === 'campus') mmDraw();
   if (walkActive) (isTouch ? touchWalkStep : walkStep)(dt);
   // in a sim's operator view the sim owns the camera - the orbit controls
