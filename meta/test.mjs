@@ -47,6 +47,36 @@ ok('the export stripper is declared and implemented: sprites, lines, points neve
     reg.conventions.stripped_on_export.includes(k))
   && /isSprite \|\| o\.isLine \|\| o\.isPoints/.test(page));
 
+ok('three Unity avatar systems were reviewed from their own checkouts, each MIT, each with a verdict',
+  reg.avatar_systems_reviewed.length === 3
+  && ['vrm-c/UniVRM', 'microsoft/Microsoft-Rocketbox',
+      'readyplayerme/rpm-unity-sdk-core'].every((r) =>
+      reg.avatar_systems_reviewed.some((x) => x.repo === r
+        && x.licence === 'MIT' && x.holder && x.what.length > 40
+        && /^(ADOPTED|NOT)/.test(x.verdict)))
+  && /cross-checked|carried as recorded/.test(reg.avatar_review_check));
+ok('the review adopts VRM only as a vocabulary, and bundles no third-party avatar',
+  /ADOPTED IN PART/.test(reg.avatar_systems_reviewed
+    .find((x) => x.repo === 'vrm-c/UniVRM').verdict)
+  && /vendor none of its code/.test(reg.avatar_systems_reviewed
+    .find((x) => x.repo === 'vrm-c/UniVRM').verdict)
+  && /NOT BUNDLED/.test(reg.avatar_systems_reviewed
+    .find((x) => /Rocketbox/.test(x.repo)).verdict)
+  && /must not require an account/.test(reg.avatar_systems_reviewed
+    .find((x) => /readyplayerme/.test(x.repo)).verdict));
+ok('the rig names exactly the VRM bones it really has, and says which it does not',
+  reg.conventions.rig_vocabulary.standard.includes('VRM')
+  && JSON.stringify(reg.conventions.rig_vocabulary.exposed)
+    === JSON.stringify(['head', 'leftUpperArm', 'rightUpperArm'])
+  && reg.conventions.rig_vocabulary.not_exposed.includes('hips')
+  && /baked\s+geometry/.test(reg.conventions.rig_vocabulary.why)
+  && reg.conventions.rig_vocabulary.exposed.every((b) =>
+      page.includes(`name = '${b}'`))
+  && reg.conventions.rig_vocabulary.not_exposed.every((b) =>
+      !page.includes(`name = '${b}'`)));
+ok('VRM stays honestly unclaimed as a spec even though its vocabulary is adopted',
+  reg.baseline.not_claimed.some((x) => x.id === 'vrm'));
+
 /* ------------------------------------------------------------- exchange --- */
 ok('both exports are declared with their trigger and file, and the page exports them',
   reg.exports.length === 2

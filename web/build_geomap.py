@@ -17,6 +17,7 @@ HERE = pathlib.Path(__file__).resolve().parent
 ROOT = HERE.parent
 
 network = json.load(open(ROOT / 'geo/registry/network.geojson'))
+parcels = json.load(open(ROOT / 'parcels/registry/parcels.json'))
 geo = json.load(open(ROOT / 'geo/registry/campuses_geo.json'))
 manifest = json.load(open(ROOT / 'pack/manifest.json'))
 L = manifest['ledger']
@@ -26,6 +27,10 @@ DATA = json.dumps({
     'city': geo['city'],
     'honesty': geo['honesty'],
     'halls': L['halls'],
+    'imagery': parcels['imagery'],
+    'sources': parcels['sources'],
+    'contract': parcels['contract'],
+    'recHonesty': parcels['honesty'],
 }, ensure_ascii=False, separators=(',', ':'))
 
 page = '''<!doctype html>
@@ -87,6 +92,8 @@ body{margin:0;background:var(--plate);color:var(--ink);
   <button class="barbtn" data-fit="network">⌂ Network</button>
   <button class="barbtn" data-fit="bay">Bay Area</button>
   <button class="barbtn" data-fit="nola">New Orleans</button>
+  <button class="barbtn" id="satBtn">🛰️ Imagery</button>
+  <button class="barbtn" id="parBtn">▦ Footprints</button>
 </div>
 <div id="map"></div>
 <div id="legend">
@@ -101,6 +108,11 @@ body{margin:0;background:var(--plate);color:var(--ink);
 <script src="vendor/maplibre/maplibre-gl.js"></script>
 <script>
 const D = JSON.parse(document.getElementById('data').textContent);
+// operator overrides: a self-hosted mirror of either source. They also
+// let the harness prove the drawing paths without the public services.
+const qs = new URLSearchParams(location.search);
+if (qs.get('imagery')) D.imagery.tiles = qs.get('imagery');
+const RECORDS_OVERRIDE = qs.get('records');
 document.getElementById('honesty').textContent =
   'No basemap tiles: the registry drawn on the graticule, and nothing else. '
   + D.honesty.siting + ' ' + D.honesty.provenance;
@@ -120,13 +132,29 @@ const map = new maplibregl.Map({
   style: {
     version: 8,
     sources: {
+      // the public-domain federal orthoimagery, straight from its authority
+      sat: { type: 'raster', tiles: [D.imagery.tiles],
+             tileSize: D.imagery.tile_size,
+             maxzoom: D.imagery.zoom.max,
+             attribution: D.imagery.attribution },
       grat: { type: 'geojson', data: grat },
+      // the city's own building footprints, filled at view time
+      parcels: { type: 'geojson',
+                 data: { type: 'FeatureCollection', features: [] } },
       net: { type: 'geojson', data: D.network },
     },
     layers: [
       { id: 'bg', type: 'background', paint: { 'background-color': '#0C1113' } },
+      { id: 'sat', type: 'raster', source: 'sat',
+        layout: { visibility: 'none' },
+        paint: { 'raster-opacity': .85 } },
       { id: 'grat', type: 'line', source: 'grat',
         paint: { 'line-color': '#1c262b', 'line-width': 1 } },
+      // RECORDED footprints, extruded as they arrive from the authority
+      { id: 'parcels', type: 'fill-extrusion', source: 'parcels',
+        paint: { 'fill-extrusion-color': '#41C4D4',
+                 'fill-extrusion-opacity': .55,
+                 'fill-extrusion-height': 9 } },
       { id: 'frames-fill', type: 'fill', source: 'net',
         filter: ['==', ['get', 'kind'], 'frame'],
         paint: { 'fill-color': '#41C4D4', 'fill-opacity': .05 } },
@@ -197,6 +225,82 @@ document.querySelectorAll('[data-fit]').forEach((b) =>
   b.addEventListener('click', () =>
     map.fitBounds(FITS[b.dataset.fit], { padding: 60, duration: 700 })));
 
+/* ---------------------------------------------------------------------
+   The city's own records, and the sky's own picture of it. Both are
+   fetched from their authority in THIS browser - nothing is stored in
+   the bundle - and a failure is a fallback with a line on the page,
+   never an error. */
+let satOn = false, satState = 'off';
+let parcelState = 'off', parcelCount = 0, parcelCampus = null;
+const statusEl = document.getElementById('honesty');
+function status(extra) {
+  statusEl.textContent = (extra ? extra + ' ' : '')
+    + (satOn ? D.imagery.attribution + ' (' + D.imagery.licence + '). ' : '')
+    + D.honesty.siting + ' ' + D.recHonesty.fidelity;
+}
+status('No basemap tiles unless you ask: the registry drawn on the graticule.');
+
+document.getElementById('satBtn').addEventListener('click', () => {
+  satOn = !satOn;
+  satState = satOn ? 'requested' : 'off';
+  map.setLayoutProperty('sat', 'visibility', satOn ? 'visible' : 'none');
+  document.getElementById('satBtn').style.borderColor =
+    satOn ? 'var(--mark)' : 'var(--rule)';
+  status(satOn ? 'Imagery requested from ' + D.imagery.authority + '.'
+    : 'Imagery off.');
+});
+// a tile that never arrives is expected here, not a fault: say so once
+map.on('error', (e) => {
+  if (satOn && /sat/.test(e.sourceId ?? '') && satState !== 'failed') {
+    satState = 'failed';
+    status('Imagery did not answer from this network - the graticule stands in.');
+  }
+});
+
+// which campus frame is the view sitting in?
+function campusInView() {
+  const c = map.getCenter();
+  for (const [ck, s] of Object.entries(D.sources)) {
+    const f = s.frame;
+    if (c.lng > f.w && c.lng < f.e && c.lat > f.s && c.lat < f.n) return ck;
+  }
+  return null;
+}
+async function loadParcels() {
+  const ck = campusInView();
+  if (!ck) {
+    parcelState = 'no-frame';
+    status('Zoom into a campus frame first - footprints are fetched per city.');
+    return;
+  }
+  const src = D.sources[ck];
+  const b = map.getBounds();
+  const q = new URLSearchParams(src.query);
+  // the envelope goes on only where the declared query asks for one
+  if (src.query.geometryType)
+    q.set('geometry', [b.getWest(), b.getSouth(), b.getEast(), b.getNorth()].join(','));
+  parcelState = 'loading'; parcelCampus = ck;
+  status('Asking ' + src.authority + ' for footprints in view...');
+  try {
+    const res = await fetch(RECORDS_OVERRIDE
+      ?? (src.endpoint + '?' + q.toString()));
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const fc = await res.json();
+    const feats = (fc.features ?? []).filter((f) => f.geometry);
+    map.getSource('parcels').setData({ type: 'FeatureCollection', features: feats });
+    parcelCount = feats.length;
+    parcelState = feats.length ? 'live' : 'empty';
+    status(feats.length
+      ? feats.length + ' RECORDED footprints drawn from ' + src.authority + '.'
+      : 'That authority returned no footprint in this view.');
+  } catch (err) {
+    parcelState = 'failed';
+    status('Could not reach ' + src.authority + ' from this network - '
+      + 'the schematic layers stand in. ' + D.recHonesty.availability);
+  }
+}
+document.getElementById('parBtn').addEventListener('click', loadParcels);
+
 let loaded = false;
 map.on('load', () => { loaded = true; });
 // test hook: state without poking MapLibre internals
@@ -208,6 +312,11 @@ window.__geomap = () => ({
            Math.round(map.getCenter().lat * 10) / 10],
   zoom: Math.round(map.getZoom() * 10) / 10,
   popups: document.querySelectorAll('.maplibregl-popup').length,
+  sat: { on: satOn, state: satState, tiles: D.imagery.tiles,
+         visible: map.getLayoutProperty('sat', 'visibility') },
+  parcels: { state: parcelState, count: parcelCount, campus: parcelCampus,
+             authorities: Object.keys(D.sources).length },
+  status: statusEl.textContent,
 });
 </script>
 </body>

@@ -43,6 +43,7 @@ schools = json.load(open(ROOT / 'schools/registry/schools.json'))
 chapters = json.load(open(ROOT / 'unions/registry/chapters.json'))
 tools = json.load(open(ROOT / 'tools/registry/toolcribs.json'))
 meta = json.load(open(ROOT / 'meta/registry/metaverse.json'))
+parcels = json.load(open(ROOT / 'parcels/registry/parcels.json'))
 skills = json.load(open(ROOT / 'pack/registry/skills.json'))['skills']
 by_slug = {h['slug']: h for h in halls}
 
@@ -112,6 +113,7 @@ content graph and details:
 | **Simulators** (inside the 3D environment) | {len(sims["sims"])} operable seats — schematic physics, deterministic rubrics, pre-shift walkarounds, bound to real skills in {len(sims["hall_bindings"])} halls | [Simulators](Simulators.md) |
 | **Toolrooms** (inside the 3D + interactive maps) | {len(tools["cribs"])} district tool cribs — {sum(len(c["tools"]) for c in tools["cribs"].values())} tools with the deterministic crib drill | [Toolrooms](Toolrooms.md) |
 | **Metaverse layer** (`meta/registry/metaverse.json`) | The interchange contract: {len(meta["baseline"]["standards"])} open standards claimed (glTF 2.0, WebXR, GeoJSON), {len(meta["baseline"]["not_claimed"])} honestly not, avatar and hall .glb export, learner-local import | [Metaverse-Layer](Metaverse-Layer.md) |
+| **City records** (`parcels/registry/parcels.json`) | The source contract for the three campus regions\' own parcel and building-footprint authorities ({sum(set(s["records"] for s in parcels["sources"].values())):,} records published upstream), plus the public-domain federal orthoimagery both maps draw | [City-Records](City-Records.md) |
 | **Network geomap** (`web/trade_craft_geomap.html`) | The geo registry on a real WGS84 map (MapLibre, no basemap tiles): campuses, {n_anchors} RECORDED anchors, great-circle routes, RECORDED city frames | [Campus-Map](Campus-Map.md) |
 
 ## The campus at a glance
@@ -750,6 +752,21 @@ The glTF exports open directly in {", ".join(meta["baseline"]["standards"][0]["c
 |---|---|
 {not_rows}
 
+## The Unity avatar systems, reviewed
+
+Three MIT-licensed Unity avatar systems were read from their own
+checkouts before choosing ({meta["avatar_review_check"]}):
+
+| Repository | Licence | What it is | Verdict |
+|---|---|---|---|
+{chr(10).join(f'| [`{x["repo"]}`](https://github.com/{x["repo"]}) | {x["licence"]} | {x["what"]} | {x["verdict"]} |' for x in meta["avatar_systems_reviewed"])}
+
+**The rig vocabulary.** {meta["conventions"]["rig_vocabulary"]["standard"]}.
+Exposed as real transform nodes:
+{", ".join(f'`{b}`' for b in meta["conventions"]["rig_vocabulary"]["exposed"])}.
+Deliberately absent: {", ".join(f'`{b}`' for b in meta["conventions"]["rig_vocabulary"]["not_exposed"])} —
+{meta["conventions"]["rig_vocabulary"]["why"]}
+
 ## Conventions
 
 {meta["conventions"]["format"]} · {meta["conventions"]["units"]} ·
@@ -781,6 +798,53 @@ stripped on export. The avatar rig: {rig}.
 {FOOTER}'''
 
 
+def page_records():
+    rows = '\n'.join(
+        f'| **{campuses[ck]["name"]}** | {s["region"]} | {s["authority"]} '
+        f'| {s["records"]:,} | {s["licence"]} |'
+        for ck, s in parcels['sources'].items())
+    return f'''# The city records
+
+To mimic a city you need the city\'s own records. This pack is the
+**source contract** for reaching them — and deliberately not a copy of
+them.
+
+{parcels["contract"]}
+
+## The authorities
+
+| Campus | Region | Authority | Records published upstream | Licence |
+|---|---|---|---|---|
+{rows}
+
+Every authority, dataset id and record count above is RECORDED from
+Locator.X\'s committed builders (Apache-2.0) — the same sibling source
+the [geo registry](Campus-Map.md) copies its coordinates from — and
+{parcels["recorded_check"]}. Each query is bounded by that campus\'s own
+RECORDED city frame.
+
+## The imagery
+
+**{parcels["imagery"]["name"]}** — {parcels["imagery"]["authority"]},
+{parcels["imagery"]["licence"]}. Tiles are requested
+`{parcels["imagery"]["scheme"]}` up to zoom {parcels["imagery"]["zoom"]["max"]}
+and credited on the page as *{parcels["imagery"]["attribution"]}*.
+
+The 3D campus board lays this imagery under the city layer,
+georeferenced off the same campus record the RECORDED anchors use, so the
+picture and the points agree. The [network geomap](Campus-Map.md) offers
+it as a basemap and extrudes the fetched footprints over it.
+
+{parcels["imagery"]["verification_note"].capitalize()}
+
+## What this is not
+
+- **Records:** {parcels["honesty"]["records"]}
+- **Fidelity:** {parcels["honesty"]["fidelity"]}
+- **Availability:** {parcels["honesty"]["availability"]}
+{FOOTER}'''
+
+
 PAGES = {
     'Home.md': page_home,
     'Campus-Map.md': page_campus,
@@ -790,6 +854,7 @@ PAGES = {
     'Simulators.md': page_sims,
     'Toolrooms.md': page_tools,
     'Metaverse-Layer.md': page_meta,
+    'City-Records.md': page_records,
     'Flipped-Classroom.md': page_schools,
     'Provenance.md': page_provenance,
     **{f'District-{k}.md': (lambda k=k, d=d: page_district(k, d))

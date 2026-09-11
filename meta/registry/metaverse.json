@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-11",
- "source_stamp": "23e4374fde1715ad",
+ "source_stamp": "8461bc5e84ee034d",
  "baseline": {
   "note": "built to the open interchange baseline. No private \"metaverse standard\" is referenced or claimed: what is listed under standards is implemented and tested, and what is listed under not_claimed is honestly not.",
   "standards": [
@@ -45,16 +45,62 @@
    }
   ]
  },
+ "avatar_systems_reviewed": [
+  {
+   "repo": "vrm-c/UniVRM",
+   "licence": "MIT",
+   "holder": "VRM Consortium (MToon: Masataka SUMI)",
+   "what": "the reference Unity implementation of VRM - a humanoid avatar profile layered on glTF 2.0, with a fixed bone vocabulary (hips, spine, chest, neck, head, left/rightUpperArm, LowerArm, Hand, UpperLeg, Foot) and the MToon stylised shader",
+   "verdict": "ADOPTED IN PART - the bone vocabulary only. We name the bones our rig actually exposes with VRM names so Unity and VRM importers map them automatically; we vendor none of its code and do not claim VRM compliance."
+  },
+  {
+   "repo": "microsoft/Microsoft-Rocketbox",
+   "licence": "MIT",
+   "holder": "Microsoft",
+   "what": "a library of rigged, animated human avatars for Unity, organised as Adults, Children and Professions, with an animation set - the closest thing to an off-the-shelf realistic trades crew",
+   "verdict": "NOT BUNDLED, available to the learner - its licence would permit redistribution, but the Academy ships its own original avatars and this bundle stays free of third-party artwork. A learner may load any Rocketbox avatar through the locker's guest stand, where the .glb import already works."
+  },
+  {
+   "repo": "readyplayerme/rpm-unity-sdk-core",
+   "licence": "MIT",
+   "holder": "Ready Player Me",
+   "what": "a Unity SDK that fetches a hosted, service-generated avatar as glTF at runtime",
+   "verdict": "NOT ADOPTED - it is a client for an external avatar service, and this layer holds that a learner's avatar must not require an account or leave the device. The same .glb it produces still imports through the guest stand."
+  }
+ ],
  "conventions": {
   "format": "glTF 2.0 binary (.glb)",
   "units": "metres",
   "up_axis": "+Y",
+  "rig_vocabulary": {
+   "standard": "VRM / Unity humanoid bone names (vrm-c/UniVRM, MIT)",
+   "exposed": [
+    "head",
+    "leftUpperArm",
+    "rightUpperArm"
+   ],
+   "not_exposed": [
+    "hips",
+    "spine",
+    "chest",
+    "neck",
+    "leftLowerArm",
+    "rightLowerArm",
+    "leftHand",
+    "rightHand",
+    "leftUpperLeg",
+    "rightUpperLeg",
+    "leftFoot",
+    "rightFoot"
+   ],
+   "why": "the rig is capsule-built: only these three are real transform nodes, the rest of the body is baked geometry. Naming only what exists keeps an importer from believing in a skeleton that is not there."
+  },
   "avatar_rig": [
    "tc-avatar",
    "head",
-   "headwear",
-   "arm-L",
-   "arm-R"
+   "leftUpperArm",
+   "rightUpperArm",
+   "headwear"
   ],
   "scene_naming": "tc-hall-<slug> with room-<strand> floors and the guest-asset stand",
   "stripped_on_export": [
@@ -91,5 +137,6 @@
  },
  "honesty": {
   "status": "a metaverse layer is file formats and honesty, not a place: exports are plain Khronos glTF of this bundle's own original meshes; imports never leave the device; no service, account, token or blockchain is involved, nothing here is an NFT. The single-file artifact build carries the exporter and loader inline and delivers exports as a viewer-confirmed .zip; only where neither door exists do the buttons degrade to a HUD line instead of failing."
- }
+ },
+ "avatar_review_check": "cross-checked against the reviewed checkouts"
 }

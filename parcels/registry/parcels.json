@@ -1,0 +1,108 @@
+{
+ "pack": "smartcitix-trade-craft-academy-city-records",
+ "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
+ "pack_version": "3.2.0",
+ "built": "2026-09-11",
+ "source_stamp": "31433310911c3b62",
+ "contract": "source contract, not a data copy: no parcel or imagery record is stored in this repository. The maps request them from the authority in the learner's own browser at view time, render what comes back, and fall back to the SCHEMATIC layers when the request fails.",
+ "recorded_check": "cross-checked against the Locator.X checkout",
+ "honesty": {
+  "records": "a parcel record is a public administrative record, not a claim about any person: no owner is named, and the maps render geometry and use-class only.",
+  "fidelity": "footprints fetched from an authority are RECORDED and drawn as they arrive; everything the Academy draws around them - the campus buildings, roads and water - remains SCHEMATIC and is labelled so on the page.",
+  "availability": "no endpoint here is guaranteed: authorities move datasets. A failed fetch is a fallback, never an error, and the page says which layer it is showing."
+ },
+ "sources": {
+  "new-orleans": {
+   "region": "Orleans and Jefferson parishes, Louisiana",
+   "authority": "City of New Orleans (data.nola.gov) parcel and building-footprint GIS",
+   "cite": "data.nola.gov",
+   "cite_file": "build_data_nola.py",
+   "records": 125803,
+   "records_cite": "125,803 parcels across Orleans and Jefferson parishes",
+   "records_cite_file": "build_atlas_nola.py",
+   "licence": "City of New Orleans open data - public records, published for reuse with attribution",
+   "kind": "parcel + building footprint",
+   "endpoint": "https://services.arcgis.com/mQjZPm5VsAyGyND5/arcgis/rest/services/Building_Footprint/FeatureServer/0/query",
+   "query": {
+    "where": "1=1",
+    "outFields": "OBJECTID",
+    "geometryType": "esriGeometryEnvelope",
+    "inSR": "4326",
+    "outSR": "4326",
+    "f": "geojson",
+    "resultRecordCount": "600"
+   },
+   "frame": {
+    "w": -90.65,
+    "s": 29.5,
+    "e": -89.45,
+    "n": 30.35
+   }
+  },
+  "treasure-island": {
+   "region": "City and County of San Francisco, California",
+   "authority": "San Francisco Assessor secured roll, published by DataSF (dataset wv5m-vpq2)",
+   "cite": "SF Assessor secured roll (DataSF wv5m-vpq2), closed roll 2025",
+   "cite_file": "build_data.py",
+   "records": 128319,
+   "records_cite": "128,319 real sites from county records",
+   "records_cite_file": "build_atlas_nola.py",
+   "licence": "DataSF open data - public records, published for reuse",
+   "kind": "assessor parcel roll",
+   "endpoint": "https://data.sfgov.org/resource/ramy-di5m.geojson",
+   "query": {
+    "$limit": "600"
+   },
+   "frame": {
+    "w": -124.2,
+    "s": 36.2,
+    "e": -120.2,
+    "n": 39.2
+   }
+  },
+  "oakland": {
+   "region": "Alameda County, California",
+   "authority": "Alameda County Assessor parcels, published as an ArcGIS FeatureServer",
+   "cite": "Alameda County Assessor parcels (ArcGIS FeatureServer), roll 2025",
+   "cite_file": "build_data.py",
+   "records": 128319,
+   "records_cite": "128,319 real sites from county records",
+   "records_cite_file": "build_atlas_nola.py",
+   "licence": "Alameda County open data - public records, published for reuse",
+   "kind": "assessor parcel roll",
+   "endpoint": "https://services3.arcgis.com/HESxeTbDliKKvec2/arcgis/rest/services/Alameda_County_Parcels/FeatureServer/0/query",
+   "query": {
+    "where": "1=1",
+    "outFields": "OBJECTID",
+    "geometryType": "esriGeometryEnvelope",
+    "inSR": "4326",
+    "outSR": "4326",
+    "f": "geojson",
+    "resultRecordCount": "600"
+   },
+   "frame": {
+    "w": -124.2,
+    "s": 36.2,
+    "e": -120.2,
+    "n": 39.2
+   }
+  }
+ },
+ "imagery": {
+  "id": "usgs-imagery-only",
+  "name": "USGS National Map - imagery only",
+  "authority": "United States Geological Survey",
+  "licence": "public domain (work of the U.S. federal government)",
+  "attribution": "Imagery: USGS The National Map",
+  "tiles": "https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryOnly/MapServer/tile/{z}/{y}/{x}",
+  "scheme": "xyz (ArcGIS z/y/x order)",
+  "zoom": {
+   "min": 0,
+   "max": 16
+  },
+  "tile_size": 256,
+  "provenance": "RECORDED - the published service of the cited authority",
+  "verified_from_build": false,
+  "verification_note": "the build sandbox reaches no host outside GitHub and the package registries, so this endpoint is declared from its authority rather than probed here; the maps request it in the learner's browser and fall back to the SCHEMATIC ground when it does not answer."
+ }
+}
