@@ -190,10 +190,24 @@ DATA = json.dumps({
     'tools': {'cribs': tools_reg['cribs'], 'drills': tools_reg['drills'],
               'drill': tools_reg['drill'],
               'honesty': tools_reg['honesty']['status']},
+    # characters and apes travel as deltas against the locker defaults
+    # (the registry keeps the full truth; the page inflates at boot)
     'avatars': {'sections': avatars_reg['sections'],
                 'defaults': avatars_reg['defaults'],
-                'characters': avatars_reg['characters'],
-                'tradeapes': avatars_reg['tradeapes'],
+                'characters': [
+                    {**{k: c[k] for k in ('id', 'name', 'emoji', 'blurb')},
+                     'd': {k: v for k, v in c['cfg'].items()
+                           if avatars_reg['defaults'].get(k) != v}}
+                    for c in avatars_reg['characters']],
+                'tradeapes': {
+                    **avatars_reg['tradeapes'],
+                    'apes': [
+                        {'hall': a['hall'], 'code': a['code'],
+                         'district': a['district'], 'hue': a['hue'],
+                         'd': {k: v for k, v in a['cfg'].items()
+                               if k != 'crew'
+                               and avatars_reg['defaults'].get(k) != v}}
+                        for a in avatars_reg['tradeapes']['apes']]},
                 'emotes': avatars_reg['emotes'],
                 'guarantee': avatars_reg['guarantee']},
     'chapters': {'of': {slug: c['home']
@@ -2705,6 +2719,7 @@ body.open #panel{transform:none}
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 
 const D = JSON.parse(document.getElementById('data').textContent);
 // inflate the deduped payload: rooms from the per-depth layout and the
@@ -2718,6 +2733,11 @@ for (const h of D.halls) {
 }
 D.finishes = Object.fromEntries(Object.entries(D.finIdx)
   .map(([sl, i2]) => [sl, D.finMaps[i2]]));
+D.avatars.characters = D.avatars.characters.map((c) => ({
+  ...c, cfg: { ...D.avatars.defaults, ...c.d } }));
+D.avatars.tradeapes.apes = D.avatars.tradeapes.apes.map((a) => ({
+  ...a, name: 'TradeApe ' + a.code,
+  cfg: { ...D.avatars.defaults, ...a.d, crew: a.hall } }));
 const params = new URLSearchParams(location.search);
 let loc = D.i18n[params.get('lang')] ? params.get('lang') : 'en';
 let slug = D.halls.some(h => h.slug === params.get('hall')) ? params.get('hall') : 'bricklayers';
@@ -3401,38 +3421,57 @@ const STYLE_OF = { industry: 'saw', transport: 'saw', earthworks: 'saw',
                    envelope: 'gable', control: 'gable',
                    structural: 'flat', systems: 'flat', energy: 'flat' };
 
+/* Buildings merge their decoration into ONE mesh per material - band,
+   trims, window strips, door and roofline become three draw calls
+   instead of a dozen, per building, across the whole campus. The main
+   box stays its own mesh: it is the raycast target the hover and click
+   handlers read. Merged geometries are per-building (not shared), so
+   disposeOf() frees them on rebuild. */
+const hueMatCache = new Map();
+function hueMatOf(hue) {
+  let m2 = hueMatCache.get(hue);
+  if (!m2) {
+    m2 = new THREE.MeshStandardMaterial({
+      color: new THREE.Color().setHSL(hue / 360, .5, .45), roughness: .6 });
+    hueMatCache.set(hue, m2);
+  }
+  return m2;
+}
 function building(h, style, g) {   // built at the local origin, door toward -z
   const dep = Math.max(h.depth, 5), wid = 12;
   const hgt = 6 + (h.depth % 3) * .7;
-  const hue = D.districts[h.district].hue;
   const bld = box(wid, hgt, dep, mat.wall, 0, hgt / 2, 0, g);
   bld.userData.slug = h.slug;
-  const hueMat = new THREE.MeshStandardMaterial({
-    color: new THREE.Color().setHSL(hue / 360, .5, .45), roughness: .6 });
-  const band = new THREE.Mesh(boxGeo(wid + .4, .9, dep + .4), hueMat);
-  band.position.set(0, hgt - .2, 0); g.add(band);
+  const parts = new Map();           // material -> [transformed geometries]
+  const add = (m2, w, hh, d2, x, y, z, rz = 0) => {
+    const ge = new THREE.BoxGeometry(w, hh, d2);
+    const mx = new THREE.Matrix4().makeRotationZ(rz).setPosition(x, y, z);
+    ge.applyMatrix4(mx);
+    (parts.get(m2) ?? parts.set(m2, []).get(m2)).push(ge);
+  };
+  const hueMat = hueMatOf(D.districts[h.district].hue);
+  add(hueMat, wid + .4, .9, dep + .4, 0, hgt - .2, 0);
   for (const [tx, tz] of [[-wid/2, -dep/2], [wid/2, -dep/2],
-                          [-wid/2, dep/2], [wid/2, dep/2]]) {
-    const trim = new THREE.Mesh(boxGeo(.5, hgt, .5), hueMat);
-    trim.position.set(tx, hgt / 2, tz); g.add(trim);
-  }
-  for (const zz of [-dep/2 - .03, dep/2 + .03]) {
-    const strip = new THREE.Mesh(boxGeo(wid * .78, .7, .06), mat.win);
-    strip.position.set(0, hgt * .55, zz); g.add(strip);
-  }
-  box(1.6, 2.4, .1, mat.part, 0, 1.2, -dep/2 - .06, g, false);
+                          [-wid/2, dep/2], [wid/2, dep/2]])
+    add(hueMat, .5, hgt, .5, tx, hgt / 2, tz);
+  for (const zz of [-dep/2 - .03, dep/2 + .03])
+    add(mat.win, wid * .78, .7, .06, 0, hgt * .55, zz);
+  add(mat.part, 1.6, 2.4, .1, 0, 1.2, -dep/2 - .06);
   if (style === 'saw') {              // industrial sawtooth roofline
-    for (let sx = -wid/2 + 2; sx < wid/2 - .5; sx += 4) {
-      const w = box(3.2, 1.5, dep - .6, mat.metal, sx, hgt + .55, 0, g);
-      w.rotation.z = .42;
-    }
+    for (let sx = -wid/2 + 2; sx < wid/2 - .5; sx += 4)
+      add(mat.metal, 3.2, 1.5, dep - .6, sx, hgt + .55, 0, .42);
   } else if (style === 'gable') {     // pitched pair
-    const r1 = box(wid * .6, .5, dep + .3, mat.part, -wid * .24, hgt + 1.1, 0, g);
-    r1.rotation.z = .48;
-    const r2 = box(wid * .6, .5, dep + .3, mat.part, wid * .24, hgt + 1.1, 0, g);
-    r2.rotation.z = -.48;
+    add(mat.part, wid * .6, .5, dep + .3, -wid * .24, hgt + 1.1, 0, .48);
+    add(mat.part, wid * .6, .5, dep + .3, wid * .24, hgt + 1.1, 0, -.48);
   } else {                            // flat: parapet already, rooftop unit
-    box(1.6, .8, 1.2, mat.metal, wid * .22, hgt + .4, dep * .15, g);
+    add(mat.metal, 1.6, .8, 1.2, wid * .22, hgt + .4, dep * .15);
+  }
+  for (const [m2, list] of parts) {
+    const merged = mergeGeometries(list);
+    list.forEach((ge) => ge.dispose());
+    const mesh = new THREE.Mesh(merged, m2);
+    mesh.castShadow = true; mesh.receiveShadow = true;
+    g.add(mesh);
   }
   if (h.stations.length) {
     const bcn = new THREE.Mesh(new THREE.OctahedronGeometry(.9), mat.post);
@@ -3448,13 +3487,28 @@ function roadRect(u, v, w, len, m, g, y = .05) {
   return { u, v, w, h: len };
 }
 
+/* Lane dashes accumulate and merge into ONE mesh per campus build -
+   they were the largest single mesh swarm on the board. */
+let dashAcc = [];
+function dashGeo(w, d2, x, z) {
+  const ge = new THREE.BoxGeometry(w, .02, d2);
+  ge.applyMatrix4(new THREE.Matrix4().setPosition(x, .09, z));
+  dashAcc.push(ge);
+}
 function dashesU(u0, u1, v, g) {
-  for (let u = u0 + 2; u < u1 - 2; u += 4)
-    box(1.6, .02, .16, mat.paint, u, .09, v, g, false);
+  for (let u = u0 + 2; u < u1 - 2; u += 4) dashGeo(1.6, .16, u, v);
 }
 function dashesV(v0, v1, u, g) {
-  for (let v = v0 + 2; v < v1 - 2; v += 4)
-    box(.16, .02, 1.6, mat.paint, u, .09, v, g, false);
+  for (let v = v0 + 2; v < v1 - 2; v += 4) dashGeo(.16, 1.6, u, v);
+}
+function flushDashes(g) {
+  if (!dashAcc.length) return;
+  const merged = mergeGeometries(dashAcc);
+  dashAcc.forEach((ge) => ge.dispose());
+  dashAcc = [];
+  const mesh = new THREE.Mesh(merged, mat.paint);
+  mesh.receiveShadow = true;
+  g.add(mesh);
 }
 
 /* ------------------------------ campus dressing, keyed by campus slug --- */
@@ -3786,6 +3840,7 @@ function buildCampus(key) {
   dressCampus(key, campusGroup, R + 42);
   buildChapterHall(campusGroup, key);
   buildCity(campusGroup, R);
+  flushDashes(campusGroup);
   walkLim = cityPois ? (cityLog ? 268 : 175) : campusR + 85;
   // fog banks: the island's weather, drifting flat haze sheets
   fogBanks = [];
