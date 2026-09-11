@@ -22,6 +22,7 @@ content graph and details:
 | Languages (`web/trade_craft_languages.html`) | The Academy overview in 8 languages | [Languages](Languages.md) |
 | **Simulators** (inside the 3D environment) | 7 operable seats — schematic physics, deterministic rubrics, pre-shift walkarounds, bound to real skills in 21 halls | [Simulators](Simulators.md) |
 | **Toolrooms** (inside the 3D + interactive maps) | 8 district tool cribs — 96 tools with the deterministic crib drill | [Toolrooms](Toolrooms.md) |
+| **Metaverse layer** (`meta/registry/metaverse.json`) | The interchange contract: 3 open standards claimed (glTF 2.0, WebXR, GeoJSON), 3 honestly not, avatar and hall .glb export, learner-local import | [Metaverse-Layer](Metaverse-Layer.md) |
 | **Network geomap** (`web/trade_craft_geomap.html`) | The geo registry on a real WGS84 map (MapLibre, no basemap tiles): campuses, 19 RECORDED anchors, great-circle routes, RECORDED city frames | [Campus-Map](Campus-Map.md) |
 
 ## The campus at a glance
