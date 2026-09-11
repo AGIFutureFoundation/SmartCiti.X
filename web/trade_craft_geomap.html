@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SmartCiti.X : Trade Craft Academy — network geomap</title>
+<link rel="stylesheet" href="vendor/maplibre/maplibre-gl.css">
+<style>
+:root{
+  --plate:#12181B; --panel:#182023; --ink:#E8EDEC; --muted:#93A3A6;
+  --rule:#28353A; --mark:#E8A33D; --steel:#41C4D4; --good:#5CB584;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--plate);color:var(--ink);
+  font:14px/1.5 "IBM Plex Sans",system-ui,sans-serif;overflow:hidden}
+#bar{position:fixed;top:0;left:0;right:0;z-index:5;display:flex;flex-wrap:wrap;
+  gap:8px 14px;align-items:center;padding:10px 16px;
+  background:color-mix(in oklab, var(--plate) 88%, transparent);
+  border-bottom:2px solid var(--mark);backdrop-filter:blur(6px)}
+#bar .brand{font:700 19px/1 "Barlow Condensed",system-ui,sans-serif;white-space:nowrap}
+#bar .brand .x{color:var(--mark)}
+#bar a{color:var(--steel);text-decoration:none;font-size:13px}
+.barbtn{background:var(--panel);color:var(--ink);border:1px solid var(--rule);
+  border-radius:6px;padding:6px 11px;font:inherit;cursor:pointer;white-space:nowrap}
+.barbtn:hover{border-color:var(--mark)}
+#map{position:absolute;inset:0}
+#honesty{position:fixed;right:14px;bottom:12px;z-index:5;max-width:340px;
+  color:var(--muted);font-size:10.5px;text-align:end;opacity:.9;
+  pointer-events:none}
+#legend{position:fixed;left:14px;bottom:12px;z-index:5;
+  background:color-mix(in oklab, var(--panel) 90%, transparent);
+  border:1px solid var(--rule);border-radius:9px;padding:9px 13px;
+  font-size:12px;color:var(--muted)}
+#legend b{color:var(--ink)}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-inline-end:5px}
+.campus-marker{background:var(--mark);color:#12181B;border-radius:999px;
+  padding:2px 9px;font:600 12px "Barlow Condensed",sans-serif;white-space:nowrap;
+  border:1.5px solid #12181B;cursor:pointer}
+.maplibregl-popup-content{background:var(--panel)!important;color:var(--ink)!important;
+  border:1px solid var(--rule);border-radius:9px;font:12.5px/1.45 "IBM Plex Sans",sans-serif;
+  padding:10px 13px!important;max-width:270px}
+.maplibregl-popup-tip{border-top-color:var(--panel)!important;
+  border-bottom-color:var(--panel)!important}
+.pv{display:inline-block;border:1px solid var(--rule);border-radius:999px;
+  padding:0 7px;font-size:10.5px;color:var(--muted);margin:2px 4px 4px 0}
+.pv.rec{color:var(--good);border-color:var(--good)}
+.src{color:var(--muted);font-size:10.5px}
+@media(pointer:coarse){.barbtn{min-height:42px}#honesty{display:none}}
+</style>
+</head>
+<body>
+<div id="bar">
+  <span class="brand">SmartCiti<span class="x">.X</span> : Trade Craft Academy</span>
+  <a href="trade_craft_3d.html">⬡ 3D environment</a>
+  <a href="trade_craft_interactive.html">▦ interactive map</a>
+  <button class="barbtn" data-fit="network">⌂ Network</button>
+  <button class="barbtn" data-fit="bay">Bay Area</button>
+  <button class="barbtn" data-fit="nola">New Orleans</button>
+</div>
+<div id="map"></div>
+<div id="legend">
+  <b>The geo registry, drawn</b><br>
+  <span class="dot" style="background:var(--mark)"></span>campus (RECORDED/DERIVED siting)<br>
+  <span class="dot" style="background:var(--steel)"></span>anchor — RECORDED from Locator.X<br>
+  <span class="dot" style="background:none;border:1.5px dashed var(--mark);border-radius:0"></span>great-circle route — DERIVED<br>
+  <span class="dot" style="background:none;border:1px solid var(--steel);border-radius:0"></span>city frame — RECORDED
+</div>
+<div id="honesty"></div>
+<script id="data" type="application/json">{"network":{"type":"FeatureCollection","features":[{"type":"Feature","geometry":{"type":"Point","coordinates":[-122.3705,37.8235]},"properties":{"slug":"treasure-island","name":"Treasure Island Campus","city":"San Francisco","region":"California","districts":3,"halls":51,"provenance":"DERIVED","source":"Treasure Island centroid, authored (WGS84)"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-122.2712,37.8044]},"properties":{"slug":"oakland","name":"Oakland Waterfront Campus","city":"Oakland","region":"California","districts":3,"halls":32,"provenance":"RECORDED","source":"Locator.X city table (src/app.js CITIES), Apache-2.0"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-90.0715,29.9511]},"properties":{"slug":"new-orleans","name":"Crescent Works Campus","city":"New Orleans","region":"Louisiana","districts":2,"halls":28,"provenance":"DERIVED","source":"New Orleans centroid, authored (WGS84)"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-122.4194,37.7749]},"properties":{"kind":"anchor","name":"San Francisco","near":"treasure-island","provenance":"RECORDED","source":"Locator.X src/app.js CITIES, Apache-2.0","blurb":"The peninsula city at the Golden Gate - the Bay Area’s historic urban core, west across the bay from the campus island.","km":6.9,"bearing_deg":218.5,"blurb_provenance":"authored from public record"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-122.4853,37.859]},"properties":{"kind":"anchor","name":"Sausalito","near":"treasure-island","provenance":"RECORDED","source":"Locator.X src/app.js CITIES, Apache-2.0","blurb":"Waterfront town just inside the Golden Gate, on Richardson Bay under the Marin Headlands.","km":10.8,"bearing_deg":291.4,"blurb_provenance":"authored from public record"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-122.2416,37.7652]},"properties":{"kind":"anchor","name":"Alameda","near":"treasure-island","provenance":"RECORDED","source":"Locator.X src/app.js CITIES, Apache-2.0","blurb":"Island city in San Francisco Bay beside Oakland, on the grounds of the former naval air station.","km":13.1,"bearing_deg":119.7,"blurb_provenance":"authored from public record"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-122.4702,37.6879]},"properties":{"kind":"anchor","name":"Daly City","near":"treasure-island","provenance":"RECORDED","source":"Locator.X src/app.js CITIES, Apache-2.0","blurb":"The gateway city where the San Francisco peninsula meets San Mateo County.","km":17.4,"bearing_deg":210.2,"blurb_provenance":"authored from public record"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-122.3477,37.9358]},"properties":{"kind":"anchor","name":"Richmond","near":"treasure-island","provenance":"RECORDED","source":"Locator.X src/app.js CITIES, Apache-2.0","blurb":"East Bay port city on San Pablo Bay, home of the wartime Kaiser shipyards.","km":12.6,"bearing_deg":9.1,"blurb_provenance":"authored from public record"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-122.5311,37.9735]},"properties":{"kind":"anchor","name":"San Rafael","near":"treasure-island","provenance":"RECORDED","source":"Locator.X src/app.js CITIES, Apache-2.0","blurb":"Marin County’s seat, north of the bay along the 101 corridor.","km":21.8,"bearing_deg":319.9,"blurb_provenance":"authored from public record"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-122.4077,37.6547]},"properties":{"kind":"anchor","name":"South San Francisco","near":"treasure-island","provenance":"RECORDED","source":"Locator.X src/app.js CITIES, Apache-2.0","blurb":"The industrial city - its hillside sign says so - between San Francisco and the airport.","km":19.1,"bearing_deg":189.9,"blurb_provenance":"authored from public record"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-122.3255,37.563]},"properties":{"kind":"anchor","name":"San Mateo","near":"treasure-island","provenance":"RECORDED","source":"Locator.X src/app.js CITIES, Apache-2.0","blurb":"Peninsula city midway between San Francisco and Silicon Valley.","km":29.2,"bearing_deg":172.2,"blurb_provenance":"authored from public record"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-122.2727,37.8716]},"properties":{"kind":"anchor","name":"Berkeley","near":"oakland","provenance":"RECORDED","source":"Locator.X src/app.js CITIES, Apache-2.0","blurb":"East Bay city, home of the University of California’s founding campus.","km":7.5,"bearing_deg":359.0,"blurb_provenance":"authored from public record"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-122.2852,37.8313]},"properties":{"kind":"anchor","name":"Emeryville","near":"oakland","provenance":"RECORDED","source":"Locator.X src/app.js CITIES, Apache-2.0","blurb":"Compact industrial-turned-tech city at the foot of the Bay Bridge approach.","km":3.2,"bearing_deg":337.7,"blurb_provenance":"authored from public record"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-122.2416,37.7652]},"properties":{"kind":"anchor","name":"Alameda","near":"oakland","provenance":"RECORDED","source":"Locator.X src/app.js CITIES, Apache-2.0","blurb":"Island city in San Francisco Bay beside Oakland, on the grounds of the former naval air station.","km":5.1,"bearing_deg":149.2,"blurb_provenance":"authored from public record"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-122.1561,37.7249]},"properties":{"kind":"anchor","name":"San Leandro","near":"oakland","provenance":"RECORDED","source":"Locator.X src/app.js CITIES, Apache-2.0","blurb":"East Bay manufacturing city directly south of Oakland.","km":13.4,"bearing_deg":131.1,"blurb_provenance":"authored from public record"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-90.1207,29.9404]},"properties":{"kind":"anchor","name":"Tulane University","near":"new-orleans","provenance":"RECORDED","source":"Locator.X build_data_nola.py pois, Apache-2.0","blurb":"Private research university Uptown on St. Charles Avenue, founded 1834; engineering and architecture among its schools.","km":4.9,"bearing_deg":255.9,"blurb_provenance":"authored from public record"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-90.1073,29.9649]},"properties":{"kind":"anchor","name":"Xavier University","near":"new-orleans","provenance":"RECORDED","source":"Locator.X build_data_nola.py pois, Apache-2.0","blurb":"Xavier University of Louisiana - the nation’s only historically Black and Catholic university.","km":3.8,"bearing_deg":294.0,"blurb_provenance":"authored from public record"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-90.0664,30.0288]},"properties":{"kind":"anchor","name":"University of New Orleans","near":"new-orleans","provenance":"RECORDED","source":"Locator.X build_data_nola.py pois, Apache-2.0","blurb":"Public research university on the Lake Pontchartrain shore; home to naval architecture and marine engineering.","km":8.7,"bearing_deg":3.3,"blurb_provenance":"authored from public record"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-90.105,29.9814]},"properties":{"kind":"anchor","name":"Delgado Community College","near":"new-orleans","provenance":"RECORDED","source":"Locator.X build_data_nola.py pois, Apache-2.0","blurb":"Louisiana’s largest community college, City Park campus - the region’s major technical and trades educator.","km":4.7,"bearing_deg":316.2,"blurb_provenance":"authored from public record"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-90.1223,29.9351]},"properties":{"kind":"anchor","name":"Loyola University","near":"new-orleans","provenance":"RECORDED","source":"Locator.X build_data_nola.py pois, Apache-2.0","blurb":"Jesuit university on St. Charles Avenue, directly beside Tulane at Audubon Park.","km":5.2,"bearing_deg":250.0,"blurb_provenance":"authored from public record"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-90.0517,29.9903]},"properties":{"kind":"anchor","name":"Dillard University","near":"new-orleans","provenance":"RECORDED","source":"Locator.X build_data_nola.py pois, Apache-2.0","blurb":"Historically Black university on Gentilly Boulevard, known for its oak-lined Avenue of the Oaks.","km":4.8,"bearing_deg":23.6,"blurb_provenance":"authored from public record"}},{"type":"Feature","geometry":{"type":"Point","coordinates":[-90.033,30.0421]},"properties":{"kind":"anchor","name":"SUNO","near":"new-orleans","provenance":"RECORDED","source":"Locator.X build_data_nola.py pois, Apache-2.0","blurb":"Southern University at New Orleans - public historically Black university in Pontchartrain Park.","km":10.8,"bearing_deg":20.1,"blurb_provenance":"authored from public record"}},{"type":"Feature","geometry":{"type":"LineString","coordinates":[[-122.3705,37.8235],[-122.3674,37.8229],[-122.3643,37.8223],[-122.3612,37.8217],[-122.3581,37.8211],[-122.355,37.8205],[-122.3519,37.8199],[-122.3488,37.8193],[-122.3457,37.8187],[-122.3426,37.8181],[-122.3395,37.8175],[-122.3364,37.8169],[-122.3333,37.8163],[-122.3302,37.8158],[-122.327,37.8152],[-122.3239,37.8146],[-122.3208,37.814],[-122.3177,37.8134],[-122.3146,37.8128],[-122.3115,37.8122],[-122.3084,37.8116],[-122.3053,37.811],[-122.3022,37.8104],[-122.2991,37.8098],[-122.296,37.8092],[-122.2929,37.8086],[-122.2898,37.808],[-122.2867,37.8074],[-122.2836,37.8068],[-122.2805,37.8062],[-122.2774,37.8056],[-122.2743,37.805],[-122.2712,37.8044]]},"properties":{"kind":"route","from":"treasure-island","to":"oakland","km":9.0,"bearing_deg":103.7,"provenance":"DERIVED","source":"great-circle between the campus records"}},{"type":"Feature","geometry":{"type":"LineString","coordinates":[[-122.3705,37.8235],[-121.2803,37.7165],[-120.1934,37.5995],[-119.1101,37.4725],[-118.0306,37.3357],[-116.9551,37.1891],[-115.8839,37.0328],[-114.8173,36.867],[-113.7555,36.6916],[-112.6986,36.5069],[-111.6468,36.3129],[-110.6004,36.1097],[-109.5595,35.8975],[-108.5243,35.6763],[-107.495,35.4464],[-106.4716,35.2077],[-105.4543,34.9605],[-104.4432,34.7048],[-103.4385,34.4409],[-102.4402,34.1688],[-101.4484,33.8887],[-100.4632,33.6006],[-99.4846,33.3048],[-98.5127,33.0014],[-97.5476,32.6905],[-96.5893,32.3723],[-95.6377,32.0469],[-94.693,31.7144],[-93.7551,31.375],[-92.824,31.0289],[-91.8997,30.6761],[-90.9822,30.3168],[-90.0715,29.9511]]},"properties":{"kind":"route","from":"treasure-island","to":"new-orleans","km":3089.9,"bearing_deg":96.7,"provenance":"DERIVED","source":"great-circle between the campus records"}},{"type":"Feature","geometry":{"type":"LineString","coordinates":[[-122.2712,37.8044],[-121.1845,37.6971],[-120.1012,37.5798],[-119.0213,37.4527],[-117.9453,37.3157],[-116.8733,37.1691],[-115.8057,37.0129],[-114.7425,36.8471],[-113.6841,36.6719],[-112.6306,36.4874],[-111.5822,36.2936],[-110.5391,36.0908],[-109.5016,35.879],[-108.4697,35.6582],[-107.4435,35.4288],[-106.4234,35.1907],[-105.4093,34.9441],[-104.4013,34.6891],[-103.3997,34.4259],[-102.4044,34.1546],[-101.4157,33.8753],[-100.4334,33.5881],[-99.4578,33.2932],[-98.4888,32.9908],[-97.5265,32.6809],[-96.571,32.3638],[-95.6222,32.0394],[-94.6801,31.7081],[-93.7449,31.3699],[-92.8164,31.025],[-91.8947,30.6734],[-90.9797,30.3154],[-90.0715,29.9511]]},"properties":{"kind":"route","from":"oakland","to":"new-orleans","km":3081.0,"bearing_deg":96.8,"provenance":"DERIVED","source":"great-circle between the campus records"}},{"type":"Feature","geometry":{"type":"Polygon","coordinates":[[[-90.65,29.5],[-89.45,29.5],[-89.45,30.35],[-90.65,30.35],[-90.65,29.5]]]},"properties":{"kind":"frame","campus":"new-orleans","provenance":"RECORDED","source":"Locator.X build_data_nola.py region, Apache-2.0"}},{"type":"Feature","geometry":{"type":"Polygon","coordinates":[[[-124.2,36.2],[-120.2,36.2],[-120.2,39.2],[-124.2,39.2],[-124.2,36.2]]]},"properties":{"kind":"frame","campus":"treasure-island","provenance":"RECORDED","source":"Locator.X src/app.js map frame, Apache-2.0"}}]},"city":{"new-orleans":{"center":{"lat":29.975,"lng":-90.09},"bounds":{"w":-90.65,"s":29.5,"e":-89.45,"n":30.35},"provenance":"RECORDED","source":"Locator.X build_data_nola.py region, Apache-2.0"},"treasure-island":{"center":{"lat":37.72,"lng":-122.27},"bounds":{"w":-124.2,"s":36.2,"e":-120.2,"n":39.2},"provenance":"RECORDED","source":"Locator.X src/app.js map frame, Apache-2.0"},"oakland":{"center":{"lat":37.72,"lng":-122.27},"bounds":{"w":-124.2,"s":36.2,"e":-120.2,"n":39.2},"provenance":"RECORDED","source":"Locator.X src/app.js map frame, Apache-2.0"}},"honesty":{"siting":"a coordinate anchors a map; it does not claim a parcel. The campuses remain planned locations per the union registry, and no address is recorded.","provenance":"RECORDED / DERIVED / SCHEMATIC discipline after the Locator.X rooms module (Apache-2.0): nothing is stated that the source does not support."},"halls":111}</script>
+<script src="vendor/maplibre/maplibre-gl.js"></script>
+<script>
+const D = JSON.parse(document.getElementById('data').textContent);
+document.getElementById('honesty').textContent =
+  'No basemap tiles: the registry drawn on the graticule, and nothing else. '
+  + D.honesty.siting + ' ' + D.honesty.provenance;
+
+/* the graticule: 2-degree lines generated here, DERIVED trivially */
+const grat = { type: 'FeatureCollection', features: [] };
+for (let lng = -180; lng <= 180; lng += 2)
+  grat.features.push({ type: 'Feature', properties: {},
+    geometry: { type: 'LineString', coordinates: [[lng, -85], [lng, 85]] } });
+for (let lat = -84; lat <= 84; lat += 2)
+  grat.features.push({ type: 'Feature', properties: {},
+    geometry: { type: 'LineString', coordinates: [[-180, lat], [180, lat]] } });
+
+const map = new maplibregl.Map({
+  container: 'map',
+  attributionControl: false,
+  style: {
+    version: 8,
+    sources: {
+      grat: { type: 'geojson', data: grat },
+      net: { type: 'geojson', data: D.network },
+    },
+    layers: [
+      { id: 'bg', type: 'background', paint: { 'background-color': '#0C1113' } },
+      { id: 'grat', type: 'line', source: 'grat',
+        paint: { 'line-color': '#1c262b', 'line-width': 1 } },
+      { id: 'frames-fill', type: 'fill', source: 'net',
+        filter: ['==', ['get', 'kind'], 'frame'],
+        paint: { 'fill-color': '#41C4D4', 'fill-opacity': .05 } },
+      { id: 'frames', type: 'line', source: 'net',
+        filter: ['==', ['get', 'kind'], 'frame'],
+        paint: { 'line-color': '#41C4D4', 'line-width': 1.2,
+                 'line-opacity': .7 } },
+      { id: 'routes', type: 'line', source: 'net',
+        filter: ['==', ['get', 'kind'], 'route'],
+        paint: { 'line-color': '#E8A33D', 'line-width': 1.6,
+                 'line-dasharray': [2.5, 2] } },
+      { id: 'anchors', type: 'circle', source: 'net',
+        filter: ['==', ['get', 'kind'], 'anchor'],
+        paint: { 'circle-radius': 4.5, 'circle-color': '#41C4D4',
+                 'circle-stroke-color': '#0C1113', 'circle-stroke-width': 1.5 } },
+      { id: 'campuses', type: 'circle', source: 'net',
+        filter: ['has', 'slug'],
+        paint: { 'circle-radius': 7, 'circle-color': '#E8A33D',
+                 'circle-stroke-color': '#0C1113', 'circle-stroke-width': 2 } },
+    ],
+  },
+  center: [-106, 34], zoom: 3.1,
+});
+map.addControl(new maplibregl.NavigationControl({ showCompass: false }));
+
+/* campus labels as DOM markers - no glyph server needed */
+let markers = 0;
+for (const f of D.network.features.filter((x) => x.properties.slug)) {
+  const el = document.createElement('div');
+  el.className = 'campus-marker';
+  el.textContent = f.properties.name;
+  el.addEventListener('click', (ev) => { ev.stopPropagation(); popupFor(f); });
+  new maplibregl.Marker({ element: el, anchor: 'bottom', offset: [0, -10] })
+    .setLngLat(f.geometry.coordinates).addTo(map);
+  markers++;
+}
+
+function popupFor(f, lngLat) {
+  const p = f.properties;
+  const at = lngLat ?? (f.geometry.type === 'Point'
+    ? f.geometry.coordinates : map.getCenter());
+  const chips = `<span class="pv ${p.provenance === 'RECORDED' ? 'rec' : ''}">${p.provenance}</span>`
+    + (p.km !== undefined ? `<span class="pv">${p.km} km</span>` : '')
+    + (p.bearing_deg !== undefined ? `<span class="pv">${p.bearing_deg}°</span>` : '');
+  new maplibregl.Popup({ closeButton: false })
+    .setLngLat(at)
+    .setHTML(`<b>${p.name ?? (p.kind === 'route'
+        ? p.from + ' ↔ ' + p.to : 'city frame · ' + p.campus)}</b><br>${chips}`
+      + (p.halls ? `<br>${p.halls} halls · ${p.districts} districts · ${p.city}, ${p.region}` : '')
+      + (p.blurb ? `<br>${p.blurb}` : '')
+      + `<br><span class="src">${p.source}</span>`)
+    .addTo(map);
+}
+for (const layer of ['campuses', 'anchors', 'routes', 'frames']) {
+  map.on('click', layer, (e) => popupFor(e.features[0], e.lngLat));
+  map.on('mouseenter', layer, () => { map.getCanvas().style.cursor = 'pointer'; });
+  map.on('mouseleave', layer, () => { map.getCanvas().style.cursor = ''; });
+}
+
+const FITS = {
+  network: [[-126, 27], [-86, 41]],
+  bay: [[D.city['treasure-island'].bounds.w, D.city['treasure-island'].bounds.s],
+        [D.city['treasure-island'].bounds.e, D.city['treasure-island'].bounds.n]],
+  nola: [[D.city['new-orleans'].bounds.w, D.city['new-orleans'].bounds.s],
+         [D.city['new-orleans'].bounds.e, D.city['new-orleans'].bounds.n]],
+};
+document.querySelectorAll('[data-fit]').forEach((b) =>
+  b.addEventListener('click', () =>
+    map.fitBounds(FITS[b.dataset.fit], { padding: 60, duration: 700 })));
+
+let loaded = false;
+map.on('load', () => { loaded = true; });
+// test hook: state without poking MapLibre internals
+window.__geomap = () => ({
+  loaded, markers,
+  layers: map.getStyle().layers.map((l) => l.id),
+  features: D.network.features.length,
+  center: [Math.round(map.getCenter().lng * 10) / 10,
+           Math.round(map.getCenter().lat * 10) / 10],
+  zoom: Math.round(map.getZoom() * 10) / 10,
+  popups: document.querySelectorAll('.maplibregl-popup').length,
+});
+</script>
+</body>
+</html>

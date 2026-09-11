@@ -130,6 +130,8 @@ body.open #panel{transform:none}
   <button id="sndBtn" class="barbtn" style="display:none"></button>
   <button id="dnBtn" class="barbtn" aria-label="day / night">🌙</button>
   <button id="recBtn" class="barbtn" aria-label="records">⏱</button>
+  <button id="vrBtn" class="barbtn" style="display:none">🥽 VR</button>
+  <button id="arBtn" class="barbtn" style="display:none">📱 AR</button>
   <select id="lang"></select>
 </div>
 <div id="wheelWrap" style="display:none">
@@ -187,7 +189,38 @@ renderer.shadowMap.enabled = !('ontouchstart' in window);
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.12;
+renderer.xr.enabled = true;
 document.body.appendChild(renderer.domElement);
+
+/* WebXR - experimental: the buttons appear only where the platform
+   actually offers the session kind, and a refused session degrades to a
+   HUD line, never an error. The same scene, the same registries; XR is
+   a viewpoint, not a second world. */
+let xrMode = null;
+async function xrProbe() {
+  if (!navigator.xr?.isSessionSupported) return;
+  for (const [mode, id] of [['immersive-vr', 'vrBtn'], ['immersive-ar', 'arBtn']]) {
+    try {
+      if (await navigator.xr.isSessionSupported(mode))
+        document.getElementById(id).style.display = '';
+    } catch (e) { /* stays hidden */ }
+  }
+}
+xrProbe();
+async function xrStart(mode) {
+  try {
+    const session = await navigator.xr.requestSession(mode, {
+      optionalFeatures: ['local-floor'] });
+    xrMode = mode;
+    session.addEventListener('end', () => { xrMode = null; });
+    await renderer.xr.setSession(session);
+  } catch (e) {
+    document.getElementById('hint').textContent =
+      'XR session unavailable: ' + (e?.message ?? e);
+  }
+}
+document.getElementById('vrBtn').addEventListener('click', () => xrStart('immersive-vr'));
+document.getElementById('arBtn').addEventListener('click', () => xrStart('immersive-ar'));
 
 const scene = new THREE.Scene();
 // the sky: a vertical gradient the fog can sink into, per atmosphere
@@ -4084,6 +4117,38 @@ document.addEventListener('click', (e) => {
     document.body.classList.remove('open'); exitSim(); return;
   }
   if (e.target.id === 'cardBtn') return drawCard();
+  /* portable saves: the record as JSON, exported and imported by the
+     learner alone - it never leaves the device unless they carry it */
+  if (e.target.id === 'expBtn') {
+    saveProg();
+    const j = JSON.stringify(prog);
+    document.getElementById('saveBox').innerHTML =
+      `<textarea id="saveTa" readonly style="width:100%;height:90px;background:var(--sunk);color:var(--ink);border:1px solid var(--rule);border-radius:7px;font:11px 'IBM Plex Mono',monospace;padding:7px"></textarea>
+       <p style="color:var(--muted);font-size:11.5px;margin:4px 0 0">${t('progress.local')}</p>`;
+    const ta = document.getElementById('saveTa');
+    ta.value = j; ta.select();
+    try { navigator.clipboard?.writeText(j); } catch (err) { /* manual copy */ }
+    return;
+  }
+  if (e.target.id === 'impBtn') {
+    document.getElementById('saveBox').innerHTML =
+      `<textarea id="saveTa" style="width:100%;height:90px;background:var(--sunk);color:var(--ink);border:1px solid var(--rule);border-radius:7px;font:11px 'IBM Plex Mono',monospace;padding:7px"></textarea>
+       <p><button class="barbtn" id="impGo">⇲ ✓</button>
+       <span id="impMsg" style="color:var(--muted);font-size:12px"></span></p>`;
+    return;
+  }
+  if (e.target.id === 'impGo') {
+    try {
+      const p = JSON.parse(document.getElementById('saveTa').value);
+      if (typeof p !== 'object' || p === null || Array.isArray(p))
+        throw new Error('not a record');
+      localStorage.setItem(PROG_KEY, JSON.stringify(p));
+      location.reload();
+    } catch (err) {
+      document.getElementById('impMsg').textContent = '✗ ' + (err?.message ?? err);
+    }
+    return;
+  }
   const wa = e.target.closest('[data-wa]');
   if (wa && sim) {
     const i = +wa.dataset.wa;
@@ -4157,7 +4222,10 @@ function openRecords() {
     <table style="width:100%;border-collapse:collapse;font-size:13px"><tbody>
       ${head}${Object.entries(D.tools.cribs).map(([dk, c]) => row(c.name, prog.tools[dk])).join('')}
     </tbody></table>
-    <p><button class="barbtn" id="cardBtn">🪪 ${t('sim.results')}</button></p>
+    <p><button class="barbtn" id="cardBtn">🪪 ${t('sim.results')}</button>
+       <button class="barbtn" id="expBtn">⇪ JSON</button>
+       <button class="barbtn" id="impBtn">⇲ JSON</button></p>
+    <div id="saveBox"></div>
     <div id="cardBox"></div>
     <p style="color:var(--muted);font-size:12px;margin-top:12px">${t('progress.local')} ${D.sims.honesty}</p>
     <style>#pbody td,#pbody th{border-top:1px solid var(--rule);padding:5px 8px;color:var(--muted);font-weight:400}</style>`;
@@ -4277,6 +4345,9 @@ window.__tc3d = () => ({ view, buildings: buildings.length, plates: plates.lengt
   rollup: view === 'campus' ? campusRollup(campusKey) : null,
   mmDone: mmInfo.done ?? 0, night, wx, rain: rain.visible,
   wa: waTotal ? { done: waDone.size, total: waTotal } : null,
+  xr: { vr: document.getElementById('vrBtn').style.display !== 'none',
+        ar: document.getElementById('arBtn').style.display !== 'none',
+        mode: xrMode, presenting: renderer.xr.isPresenting },
   wheel: document.querySelectorAll('#wheel path').length,
   progress: { stations: doneStations.size, sims: Object.keys(prog.sims).length,
     tools: Object.keys(prog.tools).length },

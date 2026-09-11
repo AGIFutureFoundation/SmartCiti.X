@@ -41,6 +41,7 @@ finishes = json.load(open(ROOT / 'surfaces/registry/finishes.json'))
 sims = json.load(open(ROOT / 'sims/registry/sims.json'))
 schools = json.load(open(ROOT / 'schools/registry/schools.json'))
 chapters = json.load(open(ROOT / 'unions/registry/chapters.json'))
+tools = json.load(open(ROOT / 'tools/registry/toolcribs.json'))
 skills = json.load(open(ROOT / 'pack/registry/skills.json'))['skills']
 by_slug = {h['slug']: h for h in halls}
 
@@ -107,7 +108,9 @@ content graph and details:
 | Hall floor plans (inside the campus map) | A generated interior for every hall — {L["halls"]} plans, 11 rooms each | [Interiors-Map](Interiors-Map.md) |
 | Skill graph (`pack/registry/skills.json`) | {F(len(skills))} skills and the edges that sequence practice | [Skill-Graph](Skill-Graph.md) |
 | Languages (`web/trade_craft_languages.html`) | The Academy overview in {len(LOCALES)} languages | [Languages](Languages.md) |
-| **Simulators** (inside the 3D environment) | {len(sims["sims"])} operable machines — schematic physics, deterministic rubrics, bound to real skills in {len(sims["hall_bindings"])} halls | [Simulators](Simulators.md) |
+| **Simulators** (inside the 3D environment) | {len(sims["sims"])} operable seats — schematic physics, deterministic rubrics, pre-shift walkarounds, bound to real skills in {len(sims["hall_bindings"])} halls | [Simulators](Simulators.md) |
+| **Toolrooms** (inside the 3D + interactive maps) | {len(tools["cribs"])} district tool cribs — {sum(len(c["tools"]) for c in tools["cribs"].values())} tools with the deterministic crib drill | [Toolrooms](Toolrooms.md) |
+| **Network geomap** (`web/trade_craft_geomap.html`) | The geo registry on a real WGS84 map (MapLibre, no basemap tiles): campuses, {n_anchors} RECORDED anchors, great-circle routes, RECORDED city frames | [Campus-Map](Campus-Map.md) |
 
 ## The campus at a glance
 
@@ -482,6 +485,11 @@ View modes: {" / ".join(f"`{v}`" for v in sm["view_modes"])}. Audio is a
 {sm["audio"]["note"]}. Haptic cues ({", ".join(sm["haptics"])}) fire on
 gamepad rumble and the vibration API where the platform offers them.
 
+**Pre-shift walkaround.** Five clipboards ring the machine —
+{", ".join(f'*{w["point"]}*' for w in sm["walkaround"])} — a habit-builder
+the registry declares **not a gate**: nothing locks behind it and marking
+it changes no score.
+
 **Regional scenarios.** The campus you train at picks the yard — the
 environment varies, the rubric never does:
 
@@ -503,6 +511,8 @@ axis is computed from measured state; nothing narrative can change a score.
 ## What a simulator run is not
 
 {sims["honesty"]["status"]}
+
+**And the walkaround:** {sims["honesty"]["walkaround"]}
 {FOOTER}'''
 
 
@@ -662,6 +672,49 @@ the class trains at ([Simulators](Simulators.md)).
 {FOOTER}'''
 
 
+def page_tools():
+    blocks = []
+    for dk, crib in tools['cribs'].items():
+        rows = '\n'.join(
+            f'| {t["glyph"]} **{t["name"]}** | {t["use"]} | `{t["shape"]}` |'
+            for t in crib['tools'])
+        drill_rows = '\n'.join(
+            f'| {i + 1} | {x["ask"]} | `{x["tool"]}` |'
+            for i, x in enumerate(tools['drills'][dk]))
+        blocks.append(f'''## {crib["name"]} ({districts[dk]["name"]})
+
+| Tool | What it is for | Render shape |
+|---|---|---|
+{rows}
+
+<details><summary>The {tools["drill"]["name"]} for this crib ({tools["drill"]["picks"]} picks)</summary>
+
+| # | Ask | Answer |
+|---|---|---|
+{drill_rows}
+
+</details>''')
+    n_tools = sum(len(c['tools']) for c in tools['cribs'].values())
+    return f'''# The toolrooms
+
+One **tool crib per district** — {len(tools["cribs"])} cribs, {n_tools}
+generic hand tools — hung on a pegboard in every hall\'s tools room in the
+[3D environment](Campus-Map.md) and listed on every hall panel of the
+interactive map. Every hall binds through its district to a real
+`tools.applied` skill in the graph, and `tools/test.mjs` proves all
+{len(tools["hall_bindings"])} bindings.
+
+**The {tools["drill"]["name"]}.** {tools["drill"]["contract"]}. The suite
+re-runs the derivation and requires a byte-identical result.
+
+{chr(10).join(blocks)}
+
+## What a crib is not
+
+{tools["honesty"]["status"]}
+{FOOTER}'''
+
+
 PAGES = {
     'Home.md': page_home,
     'Campus-Map.md': page_campus,
@@ -669,6 +722,7 @@ PAGES = {
     'Skill-Graph.md': page_skills,
     'Languages.md': page_languages,
     'Simulators.md': page_sims,
+    'Toolrooms.md': page_tools,
     'Flipped-Classroom.md': page_schools,
     'Provenance.md': page_provenance,
     **{f'District-{k}.md': (lambda k=k, d=d: page_district(k, d))
