@@ -292,10 +292,74 @@ geojson = {
     ],
 }
 
+# The EXPANDED network GeoJSON - everything a Mapbox/MapLibre style needs
+# in one FeatureCollection: campuses and anchors as points with their full
+# provenance and blurbs, the inter-campus routes as great-circle
+# LineStrings (DERIVED - sampled from the same haversine math the route
+# table uses), and the RECORDED city frames as polygons. The web/geomap
+# page renders exactly this file over a graticule - no third-party tiles,
+# so nothing on that map exists that this registry does not state.
+
+
+def great_circle(a, b, n=33):
+    """Sample n points along the great circle from a to b (lat,lng)."""
+    p1, l1 = math.radians(a[0]), math.radians(a[1])
+    p2, l2 = math.radians(b[0]), math.radians(b[1])
+    d = 2 * math.asin(math.sqrt(
+        math.sin((p2 - p1) / 2) ** 2
+        + math.cos(p1) * math.cos(p2) * math.sin((l2 - l1) / 2) ** 2))
+    pts = []
+    for i in range(n):
+        f = i / (n - 1)
+        A = math.sin((1 - f) * d) / math.sin(d)
+        B = math.sin(f * d) / math.sin(d)
+        x = A * math.cos(p1) * math.cos(l1) + B * math.cos(p2) * math.cos(l2)
+        y = A * math.cos(p1) * math.sin(l1) + B * math.cos(p2) * math.sin(l2)
+        z = A * math.sin(p1) + B * math.sin(p2)
+        pts.append([round(math.degrees(math.atan2(y, x)), 4),
+                    round(math.degrees(math.atan2(z, math.hypot(x, y))), 4)])
+    return pts
+
+
+network = {
+    'type': 'FeatureCollection',
+    'features': geojson['features'] + [
+        {'type': 'Feature',
+         'geometry': {'type': 'LineString',
+                      'coordinates': great_circle(GEO[r['from']][:2],
+                                                  GEO[r['to']][:2])},
+         'properties': {'kind': 'route', 'from': r['from'], 'to': r['to'],
+                        'km': r['km'], 'bearing_deg': r['bearing_deg'],
+                        'provenance': 'DERIVED',
+                        'source': 'great-circle between the campus records'}}
+        for r in routes
+    ] + [
+        {'type': 'Feature',
+         'geometry': {'type': 'Polygon', 'coordinates': [[
+             [c['bounds']['w'], c['bounds']['s']],
+             [c['bounds']['e'], c['bounds']['s']],
+             [c['bounds']['e'], c['bounds']['n']],
+             [c['bounds']['w'], c['bounds']['n']],
+             [c['bounds']['w'], c['bounds']['s']]]]},
+         'properties': {'kind': 'frame', 'campus': ck,
+                        'provenance': c['provenance'], 'source': c['source']}}
+        for ck, c in CITY.items() if ck != 'oakland'  # the Bay frame once
+    ],
+}
+# anchors in the network file also carry their blurbs and distances
+for f in network['features']:
+    p = f['properties']
+    if p.get('kind') == 'anchor' and p['name'] in BLURBS:
+        a = next(x for x in doc['anchors'][p['near']] if x['name'] == p['name'])
+        p.update({'blurb': BLURBS[p['name']], 'km': a['km'],
+                  'bearing_deg': a['bearing_deg'],
+                  'blurb_provenance': 'authored from public record'})
+
 OUT = HERE / 'registry'
 OUT.mkdir(exist_ok=True)
 (OUT / 'campuses_geo.json').write_text(json.dumps(doc, indent=1) + '\n')
 (OUT / 'campuses.geojson').write_text(json.dumps(geojson, indent=1) + '\n')
+(OUT / 'network.geojson').write_text(json.dumps(network, indent=1) + '\n')
 route_txt = ', '.join('{}-{} {} km'.format(r['from'], r['to'], r['km'])
                       for r in routes)
 n_anchor = sum(len(v) for v in ANCHORS.values())

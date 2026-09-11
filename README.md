@@ -7,7 +7,7 @@ The Adaptive Stack: the packs implementing the ACP protocol suite (v3.2) —
 counted, like everything else here, by the table below rather than by a
 number that can drift from it.
 
-**417 checks, all passing from inside this bundle**, with no model credentials
+**420 checks, all passing from inside this bundle**, with no model credentials
 required.
 
 ```bash
@@ -34,7 +34,7 @@ node brand/lint.mjs .              # fails on any forbidden spelling anywhere in
 node i18n/test.mjs                 # 16 — locale parity, placeholders, pack agreement
 node stations/test.mjs             # 13 — recovered stations vs roster, skills, rooms
 node surfaces/test.mjs             # 24 — finishes, conditions, more-demanding-wins, honesty
-node geo/test.mjs                  # 19 — real coordinates + RECORDED anchors, recomputed distances, GeoJSON
+node geo/test.mjs                  # 22 — real coordinates + RECORDED anchors, recomputed distances, GeoJSON + the network map file
 node sims/test.mjs                 # 22 — simulator bindings, rubrics, cockpit + scoring + regional scenarios
 node tools/test.mjs                # 13 — district tool cribs, the deterministic crib drill, hall bindings
 node schools/test.mjs              # 15 — flipped-classroom model, proposed districts, live units + class drills
@@ -53,7 +53,7 @@ python3 wiki/build_wiki.py --check # fails if the wiki is behind the registries
 | `fabric/` | ACP-11/12 | Mentor contract and middleware, the five-gate eval harness with adversarial stubs, supervisor/swarm router |
 | `security/` | — | Deny-by-default authorization with tenant isolation, rate limiting, data classification, retention and erasure; plus `SECURITY.md` with the threat model and an honest launch checklist |
 | `ops/` | ACP-13 | The three registries with a pipeline transition table, hall-by-hall rollout lanes that ask ACP-08 rather than re-deciding, the seven-job automation loop, and the cost governor that cannot throttle the control plane |
-| `web/` | — | The published pages and their builders: landing page, rendered protocol spec, the languages page, the campus plan with a generated floor plan for every hall, the **interactive layered map** (districts, pipeline, module layers, training stations, the district tool crib on every hall panel and floor plan, all locales, searchable and deep-linkable) and the **3D environment** (the three-campus network as a 3D board — enter a campus city, then any hall for its extruded floor plan, fixtures, station beacons and first-person walk mode; each campus carries its own atmosphere — sky, fog, drifting fog banks over Treasure Island, a synthesized ambient bed of wind, gulls, harbor horns, insects and thunder (no recordings), and a day/night/storm cycle derived from the same records: crushed sky and moonlight after dark, grey light, thicker fog and falling rain in the storm — plus a live campus minimap that rings fully-worked halls, campus-wide completion rollups in the HUD, the learner's own avatar riding the training machines, and the district tool crib hung and clickable in every hall's tools room) |
+| `web/` | — | The published pages and their builders: landing page, rendered protocol spec, the languages page, the campus plan with a generated floor plan for every hall, the **network geomap** (`trade_craft_geomap.html` — the geo registry on a real WGS84 map with vendored MapLibre GL: RECORDED campuses, anchors and city frames, DERIVED great-circle routes, provenance in every popup, and deliberately no basemap tiles, so nothing appears that the registry does not state), the **interactive layered map** (districts, pipeline, module layers, training stations, the district tool crib on every hall panel and floor plan, all locales, searchable and deep-linkable) and the **3D environment** (the three-campus network as a 3D board — enter a campus city, then any hall for its extruded floor plan, fixtures, station beacons and first-person walk mode; each campus carries its own atmosphere — sky, fog, drifting fog banks over Treasure Island, a synthesized ambient bed of wind, gulls, harbor horns, insects and thunder (no recordings), and a day/night/storm cycle derived from the same records: crushed sky and moonlight after dark, grey light, thicker fog and falling rain in the storm — plus a live campus minimap that rings fully-worked halls, campus-wide completion rollups in the HUD, the learner's own avatar riding the training machines, and the district tool crib hung and clickable in every hall's tools room; experimental WebXR entry — VR and AR buttons that appear only where the platform offers the session — and portable saves: the device-local record exported and imported as JSON by the learner alone) |
 | `brand/` | — | The canonical identity: names and forbidden spellings with reasons, the two-theme token set, the wordmark, hall livery, and a lint that fails the build on drift |
 | `bus/` | ACP-01/08/09 | The message bus with single-writer enforcement, the telemetry envelope and its quality guards, the append-only audit log, the parity/stop-condition/override safeguards, and the whole loop assembled over them |
 | `console/` | — | **The Adaptive Console**: a single-file web app running the real protocol on the real pack, with the builder and its staleness guard |
@@ -69,7 +69,12 @@ python3 wiki/build_wiki.py --check # fails if the wiki is behind the registries
 | `archive/` | — | Superseded working data kept for provenance, consumed by nothing and skipped by the figures lint |
 
 Alongside the packs: [`ROADMAP.md`](ROADMAP.md) — the phased plan from v3.2
-forward — and [`wiki/Home.md`](wiki/Home.md), the index of every map's page.
+forward — and [`wiki/Home.md`](wiki/Home.md), the index of every map's page
+(17 generated pages, staleness-guarded). `.github/workflows/pages.yml`
+publishes the committed, verified pages — the landing page, every map and
+environment under `web/`, and the wiki — to GitHub Pages on every push to
+`main`; the workflow deploys, it does not build, so Pages can never show a
+page the suite has not seen.
 
 ### Simulation harnesses
 

@@ -36,6 +36,11 @@ View modes: `orbit` / `cab`. Audio is a
 synthesized in-page (WebAudio); no recordings shipped. Haptic cues (strike, finish) fire on
 gamepad rumble and the vibration API where the platform offers them.
 
+**Pre-shift walkaround.** Five clipboards ring the machine —
+*Hoist rope and hook*, *Slew ring and bolts*, *Counterweight*, *Limit switches*, *Base and ballast* — a habit-builder
+the registry declares **not a gate**: nothing locks behind it and marking
+it changes no score.
+
 **Regional scenarios.** The campus you train at picks the yard — the
 environment varies, the rubric never does:
 
@@ -72,6 +77,11 @@ View modes: `orbit` / `cab`. Audio is a
 synthesized in-page (WebAudio); no recordings shipped. Haptic cues (utility, dump, finish) fire on
 gamepad rumble and the vibration API where the platform offers them.
 
+**Pre-shift walkaround.** Five clipboards ring the machine —
+*Tracks and rollers*, *Bucket teeth and pins*, *Boom hydraulics*, *Slew brake*, *The trench edge* — a habit-builder
+the registry declares **not a gate**: nothing locks behind it and marking
+it changes no score.
+
 **Regional scenarios.** The campus you train at picks the yard — the
 environment varies, the rubric never does:
 
@@ -106,6 +116,11 @@ View modes: `chase` / `driver`. Audio is a
 `diesel` engine plus `reverse-beeper`, `cone-thud`, `result-chime` —
 synthesized in-page (WebAudio); no recordings shipped. Haptic cues (cone, gate, finish) fire on
 gamepad rumble and the vibration API where the platform offers them.
+
+**Pre-shift walkaround.** Five clipboards ring the machine —
+*Tires and wheel nuts*, *Fork heels and locks*, *Mast chains*, *Horn and beeper*, *Seatbelt and overhead guard* — a habit-builder
+the registry declares **not a gate**: nothing locks behind it and marking
+it changes no score.
 
 **Regional scenarios.** The campus you train at picks the yard — the
 environment varies, the rubric never does:
@@ -142,6 +157,11 @@ View modes: `orbit` / `visor`. Audio is a
 synthesized in-page (WebAudio); no recordings shipped. Haptic cues (burn, finish) fire on
 gamepad rumble and the vibration API where the platform offers them.
 
+**Pre-shift walkaround.** Five clipboards ring the machine —
+*Leads and clamps*, *Gas and regulator*, *Welding screens*, *Fume extraction*, *Fire watch kit* — a habit-builder
+the registry declares **not a gate**: nothing locks behind it and marking
+it changes no score.
+
 **Regional scenarios.** The campus you train at picks the yard — the
 environment varies, the rubric never does:
 
@@ -175,6 +195,11 @@ View modes: `orbit` / `deck`. Audio is a
 `site` engine plus `refusal-buzz`, `lock-click`, `result-chime` —
 synthesized in-page (WebAudio); no recordings shipped. Haptic cues (refusal, finish) fire on
 gamepad rumble and the vibration API where the platform offers them.
+
+**Pre-shift walkaround.** Five clipboards ring the machine —
+*Sills and bearing*, *Frames plumb and level*, *Brace pins*, *Plank condition*, *The scaffold tag* — a habit-builder
+the registry declares **not a gate**: nothing locks behind it and marking
+it changes no score.
 
 **Regional scenarios.** The campus you train at picks the yard — the
 environment varies, the rubric never does:
@@ -211,6 +236,11 @@ View modes: `orbit` / `signal`. Audio is a
 synthesized in-page (WebAudio); no recordings shipped. Haptic cues (wrong, finish) fire on
 gamepad rumble and the vibration API where the platform offers them.
 
+**Pre-shift walkaround.** Five clipboards ring the machine —
+*Line of sight*, *Radio and whistle*, *Slings and shackles*, *The load path*, *Exclusion zone* — a habit-builder
+the registry declares **not a gate**: nothing locks behind it and marking
+it changes no score.
+
 **Regional scenarios.** The campus you train at picks the yard — the
 environment varies, the rubric never does:
 
@@ -245,6 +275,11 @@ View modes: `orbit` / `chart`. Audio is a
 synthesized in-page (WebAudio); no recordings shipped. Haptic cues (overload, finish) fire on
 gamepad rumble and the vibration API where the platform offers them.
 
+**Pre-shift walkaround.** Five clipboards ring the machine —
+*The chart itself*, *Radius markers*, *Ground bearing*, *Wind check*, *Hook block* — a habit-builder
+the registry declares **not a gate**: nothing locks behind it and marking
+it changes no score.
+
 **Regional scenarios.** The campus you train at picks the yard — the
 environment varies, the rubric never does:
 
@@ -257,6 +292,8 @@ environment varies, the rubric never does:
 ## What a simulator run is not
 
 schematic physics for practising control discipline - smooth inputs, swing management, ordered procedure. Not equipment certification; no seat time here counts toward one, and the assessment gates still demand unaided verification runs.
+
+**And the walkaround:** a habit-builder, not a gate: no seat is locked behind the walkaround, completing it changes no score, and it is not an equipment inspection record.
 
 ---
 

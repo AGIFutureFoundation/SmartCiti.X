@@ -118,6 +118,31 @@ ok('both Bay campuses share the one committed Bay frame',
   JSON.stringify(reg.city['treasure-island'])
     === JSON.stringify(reg.city['oakland']));
 
+const net = JSON.parse(readFileSync(
+  new URL('./registry/network.geojson', import.meta.url)));
+ok('the network GeoJSON carries the whole registry: 22 points, 3 route lines, 2 recorded frames',
+  net.features.filter((f) => f.geometry.type === 'Point').length === 22
+  && net.features.filter((f) => f.geometry.type === 'LineString').length === 3
+  && net.features.filter((f) => f.geometry.type === 'Polygon').length === 2
+  && net.features.filter((f) => f.geometry.type === 'Polygon')
+      .every((f) => f.properties.provenance === 'RECORDED'));
+ok('every route line ends on its own campuses and states the table\'s distance',
+  net.features.filter((f) => f.properties.kind === 'route').every((f) => {
+    const r = reg.routes_km.find((x) =>
+      x.from === f.properties.from && x.to === f.properties.to);
+    const cs = f.geometry.coordinates;
+    const near = (c, k) => Math.abs(c[0] - pts[k].lng) < .001
+      && Math.abs(c[1] - pts[k].lat) < .001;
+    return r && f.properties.km === r.km
+      && f.properties.provenance === 'DERIVED'
+      && near(cs[0], f.properties.from) && near(cs[cs.length - 1], f.properties.to);
+  }));
+ok('every anchor point in the network file carries its blurb and provenance',
+  net.features.filter((f) => f.properties.kind === 'anchor')
+    .every((f) => f.properties.blurb?.length > 40
+      && f.properties.provenance === 'RECORDED'
+      && /authored/.test(f.properties.blurb_provenance)));
+
 const src = readFileSync(new URL('./build.py', import.meta.url));
 ok('the registry was built from the current builder source (stamp check)',
   reg.source_stamp === createHash('sha256').update(src).digest('hex').slice(0, 16));

@@ -1,0 +1,38 @@
+# Publishes the committed pages to GitHub Pages: the landing page at the
+# root, every built map and environment under web/, and the generated
+# wiki. Everything served is already verified in-repo (verify_all.sh) -
+# the workflow deploys, it does not build, so Pages can never show a page
+# the suite has not seen.
+name: pages
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: true
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Assemble the site from committed, verified pages
+        run: |
+          mkdir -p _site/web/vendor
+          cp index.html _site/
+          cp web/*.html _site/web/
+          cp -r web/vendor/. _site/web/vendor/
+          cp -r wiki _site/wiki
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4
