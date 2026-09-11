@@ -47,6 +47,7 @@ parcels = json.load(open(ROOT / 'parcels/registry/parcels.json'))
 advisors = json.load(open(ROOT / 'agents/registry/advisors.json'))
 world = json.load(open(ROOT / 'world/registry/world.json'))
 labels = json.load(open(ROOT / 'labels/registry/labels.json'))
+training = json.load(open(ROOT / 'training/registry/training.json'))
 skills = json.load(open(ROOT / 'pack/registry/skills.json'))['skills']
 by_slug = {h['slug']: h for h in halls}
 
@@ -118,6 +119,7 @@ content graph and details:
 | **Advisors** (in the rooms and on the green) | {len(advisors["advisors"])} scripted guides answering {advisors["counts"]["topics"]} fixed questions — {advisors["counts"]["read_bindings"]} of them read straight from the registry that holds the fact | [Advisors](Advisors.md) |
 | **The world** (sky, weather, ground, animals) | {world["counts"]["weather"]} weather states over per-campus atmospheres, {world["counts"]["ground"]} generated ground surfaces and {world["counts"]["animals"]} animals — and not one texture file anywhere | [World](World.md) |
 | **The signs** (every word in the 3D world) | {labels["counts"]["kinds"]} kinds over {labels["counts"]["shapes"]} shapes — shape carries the category, colour the provenance, type the rank, and every sign reacts to where you are looking | [Signs](Signs.md) |
+| **Training data** (device-local, opt-out, exportable) | {len(training['episode_kinds'])} episode kinds recorded from real interactions — sim outcomes, advisor exchanges, walkaround checks — shaped for the org's own `ml-agents` fork, never read by a grader | [Training-Data](Training-Data.md) |
 | **Metaverse layer** (`meta/registry/metaverse.json`) | The interchange contract: {len(meta["baseline"]["standards"])} open standards claimed (glTF 2.0, WebXR, GeoJSON), {len(meta["baseline"]["not_claimed"])} honestly not, avatar and hall .glb export, learner-local import | [Metaverse-Layer](Metaverse-Layer.md) |
 | **City records** (`parcels/registry/parcels.json`) | The source contract for the three campus regions\' own parcel and building-footprint authorities ({sum(set(s["records"] for s in parcels["sources"].values())):,} records published upstream), plus the public-domain federal orthoimagery both maps draw | [City-Records](City-Records.md) |
 | **Network geomap** (`web/trade_craft_geomap.html`) | The geo registry on a real WGS84 map (MapLibre, no basemap tiles): campuses, {n_anchors} RECORDED anchors, great-circle routes, RECORDED city frames | [Campus-Map](Campus-Map.md) |
@@ -1096,6 +1098,49 @@ a dashed outline and says so on its face.
 {FOOTER}"""
 
 
+def page_training():
+    krows = '\n'.join(
+        f"| **{kid}** | {k['what']} | {', '.join(k['fields'])} | {k['granularity']} |"
+        for kid, k in training['episode_kinds'].items())
+    return f"""# Training data
+
+Every interaction in this bundle already produces a structured fact: a
+sim run ends in a measured rubric outcome, an advisor answer is a fixed
+topic against a fixed record, a walkaround check is a point marked done.
+This pack declares the shape those facts are recorded in when a learner
+chooses to keep them — so the same sessions that teach a person can also
+become example data for the robotics-training side of this project.
+
+## The link this pack does not invent
+
+`{training['export_format']['consumer']}`
+
+That fork already exists in `meta/registry/metaverse.json`, RECORDED and
+cross-checked on every build. This pack cites it; it does not claim it.
+{training['export_format']['not_a_demo_file']}. {training['export_format']['no_agent_trained']}
+
+## Three episode kinds
+
+| Kind | What it is | Fields | Granularity |
+|---|---|---|---|
+{krows}
+
+## Storage
+
+- **Key:** `{training['storage']['key']}` — never `tc-progress`, so the two records can never collide.
+- **Cap:** {training['storage']['cap']} episodes, {training['storage']['cap_policy']}
+- **Scope:** {training['storage']['scope']}
+
+## What this is not
+
+- **Schematic.** {training['honesty']['schematic']}
+- **Anonymous.** {training['honesty']['anonymous']}
+- **Not a score.** {training['honesty']['not_scored']}
+- **Consent.** {training['honesty']['consent']}
+- **Granularity.** {training['honesty']['granularity']}
+{FOOTER}"""
+
+
 PAGES = {
     'Home.md': page_home,
     'Campus-Map.md': page_campus,
@@ -1109,6 +1154,7 @@ PAGES = {
     'Advisors.md': page_advisors,
     'World.md': page_world,
     'Signs.md': page_signs,
+    'Training-Data.md': page_training,
     'Flipped-Classroom.md': page_schools,
     'Provenance.md': page_provenance,
     **{f'District-{k}.md': (lambda k=k, d=d: page_district(k, d))
