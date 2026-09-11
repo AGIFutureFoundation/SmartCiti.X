@@ -1,0 +1,72 @@
+# The signs
+
+Every word in the 3D world is on a sign, and a sign should be readable
+**before** it is read. 13 kinds over 10 shapes, all
+declared in `labels/registry/labels.json` and never in the page.
+
+## Shape carries the category
+
+| Shape | What is drawn | What it reads as |
+|---|---|---|
+| `speech` | a rounded bubble with a tail pointing down at the speaker | somebody who will answer a question |
+| `tab` | a rounded plate with a downward pointer | a place you can go into |
+| `chip` | a small full-radius pill | a thing you can open or pick up |
+| `plate` | a chamfered rectangle with a left accent stripe | a room, or a part of a place you are already in |
+| `pin` | a plate on a stem ending in a dot | somewhere real, out there |
+| `banner` | a wide bar with a heavy left accent stripe | a whole district or section |
+| `marquee` | a large plate with a rule above the title and letter-spaced caps | the name of the whole place |
+| `ribbon` | a slanted parallelogram | a route or a distance |
+| `ghost` | no plate at all - text with a shadow, so it does not compete with what it labels | a detail, there if you look |
+| `readout` | a dark bordered box in monospace | a number a machine measured |
+
+## Colour carries provenance and district
+
+A hall wears its district's own hue — the same hue the map and the crew
+mark use, so one colour means one thing everywhere in the bundle. A
+**RECORDED** place wears a solid accent. A **SCHEMATIC** one is drawn with
+a dashed outline and says so on its face.
+
+a dashed outline on a SCHEMATIC sign and a solid accent on a RECORDED one restate the claim the registry behind them already makes - the label never upgrades a claim.
+
+## Type carries rank
+
+display for names, body for the line under them, mono for anything a machine measured - three faces, three ranks, and no fourth
+
+## The whole legend
+
+| Kind | Shape | Reads as | Accent | Face | What it marks |
+|---|---|---|---|---|---|
+| **campus** | `marquee` | the name of the whole place | mark | display | the name of a campus, over its plaza |
+| **district** | `banner` | a whole district or section | district | display | a district of halls, over its block |
+| **hall** | `tab` | a place you can go into | district | display | a hall you can walk into |
+| **room** | `plate` | a room, or a part of a place you are already in | steel | display | a room inside a hall |
+| **advisor** | `speech` | somebody who will answer a question | mark | display | somebody standing there who will answer questions |
+| **station** | `chip` | a thing you can open or pick up | steel | display | a training station |
+| **crib** | `chip` | a thing you can open or pick up | mark | display | a tool crib you can open |
+| **fixture** | `ghost` | a detail, there if you look | muted | body | a bench or a piece of kit, named quietly |
+| **anchor** | `pin` | somewhere real, out there | recorded | display | a real place, at its recorded distance and bearing |
+| **schematic** | `pin` | somewhere real, out there | schematic | display | a drawn place - the dashed outline is the claim |
+| **route** | `ribbon` | a route or a distance | derived | mono | a distance between two recorded points |
+| **readout** | `readout` | a number a machine measured | steel | mono | a measured number, from a seat or a chart |
+| **brand** | `marquee` | the name of the whole place | mark | display | the Academy itself |
+
+## A sign reads the view
+
+each frame a label is scored 0..1 on the angle between the view direction and the label, inside the declared cone, and again on distance relative to how far out the view is; the two are multiplied. The score drives opacity (never below the floor while in range), size and tint, and it is eased rather than snapped so nothing flickers as the head turns.
+
+the single most centred label within reach is the FOCUS: it takes the accent tint and lifts by lift_m, so a learner can see what they are about to act on without a cursor - which is what makes this work in a headset, where there is no cursor to have.
+
+- Focus cone: **34°**
+- Full brightness out to **1.45×** the view distance, gone by **3.1×**
+- On screen a sign is clamped between **3.4%** and **8.5%** of the viewport's height, so it stays readable however close or far you stand
+
+## What a label is not
+
+- **Not a standard.** these shapes are a convention this bundle invented, not a standard anyone else uses; the legend is in the wiki and on the page rather than assumed.
+- **Not a score.** focus is presentation. Looking at a label changes nothing: no label is a score, none gates anything, and no grader reads which sign a learner faced.
+- **Not a claim.** a dashed outline on a SCHEMATIC sign and a solid accent on a RECORDED one restate the claim the registry behind them already makes - the label never upgrades a claim.
+- **Reduced motion.** viewers who ask for reduced motion keep the shapes and the colours and lose the easing: labels sit at full opacity rather than breathing as the head turns.
+
+---
+
+*Generated by `wiki/build_wiki.py` from the verified registries — edit the sources, not this page. Adaptive Stack v3.2 · pack 3.2.0.*

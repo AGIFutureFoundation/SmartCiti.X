@@ -12,7 +12,7 @@ for t in control/test.mjs control/test_graph.mjs control/test_hints.mjs \
          pack/verify.mjs i18n/test.mjs stations/test.mjs surfaces/test.mjs \
          geo/test.mjs sims/test.mjs tools/test.mjs schools/test.mjs \
          avatars/test.mjs parcels/test.mjs meta/test.mjs \
-         agents/test.mjs world/test.mjs; do
+         agents/test.mjs world/test.mjs labels/test.mjs; do
   out=$(node "$t" 2>&1); rc=$?
   n=$(printf '%s\n' "$out" | grep -c '^  ok ')
   total=$((total + n))

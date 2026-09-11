@@ -1,0 +1,232 @@
+{
+ "pack": "smartcitix-trade-craft-academy-labels",
+ "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
+ "pack_version": "3.2.0",
+ "built": "2026-09-11",
+ "source_stamp": "755a26c6b771f0ff",
+ "honesty": {
+  "convention": "these shapes are a convention this bundle invented, not a standard anyone else uses; the legend is in the wiki and on the page rather than assumed.",
+  "presentation_only": "focus is presentation. Looking at a label changes nothing: no label is a score, none gates anything, and no grader reads which sign a learner faced.",
+  "provenance": "a dashed outline on a SCHEMATIC sign and a solid accent on a RECORDED one restate the claim the registry behind them already makes - the label never upgrades a claim.",
+  "legibility": "a label never shrinks below the declared floor while it is in range, carries a shadow so it survives a bright sky, and is drawn at device pixel ratio so it is not soft on a phone.",
+  "reduced_motion": "viewers who ask for reduced motion keep the shapes and the colours and lose the easing: labels sit at full opacity rather than breathing as the head turns."
+ },
+ "counts": {
+  "kinds": 13,
+  "shapes": 10,
+  "district_hues": 8
+ },
+ "shapes": {
+  "speech": {
+   "draws": "a rounded bubble with a tail pointing down at the speaker",
+   "radius": 22,
+   "tail": true,
+   "reads_as": "somebody who will answer a question"
+  },
+  "tab": {
+   "draws": "a rounded plate with a downward pointer",
+   "radius": 16,
+   "tail": true,
+   "reads_as": "a place you can go into"
+  },
+  "chip": {
+   "draws": "a small full-radius pill",
+   "radius": 999,
+   "tail": false,
+   "reads_as": "a thing you can open or pick up"
+  },
+  "plate": {
+   "draws": "a chamfered rectangle with a left accent stripe",
+   "radius": 6,
+   "tail": false,
+   "reads_as": "a room, or a part of a place you are already in"
+  },
+  "pin": {
+   "draws": "a plate on a stem ending in a dot",
+   "radius": 12,
+   "tail": false,
+   "stem": true,
+   "reads_as": "somewhere real, out there"
+  },
+  "banner": {
+   "draws": "a wide bar with a heavy left accent stripe",
+   "radius": 4,
+   "tail": false,
+   "reads_as": "a whole district or section"
+  },
+  "marquee": {
+   "draws": "a large plate with a rule above the title and letter-spaced caps",
+   "radius": 10,
+   "tail": false,
+   "reads_as": "the name of the whole place"
+  },
+  "ribbon": {
+   "draws": "a slanted parallelogram",
+   "radius": 2,
+   "tail": false,
+   "reads_as": "a route or a distance"
+  },
+  "ghost": {
+   "draws": "no plate at all - text with a shadow, so it does not compete with what it labels",
+   "radius": 0,
+   "tail": false,
+   "reads_as": "a detail, there if you look"
+  },
+  "readout": {
+   "draws": "a dark bordered box in monospace",
+   "radius": 4,
+   "tail": false,
+   "reads_as": "a number a machine measured"
+  }
+ },
+ "palette": {
+  "ink": "#E8EDEC",
+  "muted": "#93A3A6",
+  "plate": "rgba(12,17,19,.84)",
+  "plate_focus": "rgba(18,26,29,.94)",
+  "mark": "#E8A33D",
+  "steel": "#41C4D4",
+  "good": "#5CB584",
+  "crit": "#E07C68",
+  "recorded": "#5CB584",
+  "derived": "#41C4D4",
+  "schematic": "#93A3A6"
+ },
+ "type": {
+  "display": "\"Barlow Condensed\", system-ui, sans-serif",
+  "body": "\"IBM Plex Sans\", system-ui, sans-serif",
+  "mono": "\"IBM Plex Mono\", ui-monospace, monospace",
+  "title_px": 44,
+  "sub_px": 27,
+  "chip_px": 34,
+  "tracking_marquee": 3,
+  "note": "display for names, body for the line under them, mono for anything a machine measured - three faces, three ranks, and no fourth"
+ },
+ "kinds": {
+  "campus": {
+   "shape": "marquee",
+   "accent": "mark",
+   "face": "display",
+   "min_focus": 0.15,
+   "hide_beyond_m": 0,
+   "what": "the name of a campus, over its plaza"
+  },
+  "district": {
+   "shape": "banner",
+   "accent": "district",
+   "face": "display",
+   "min_focus": 0.2,
+   "hide_beyond_m": 0,
+   "what": "a district of halls, over its block"
+  },
+  "hall": {
+   "shape": "tab",
+   "accent": "district",
+   "face": "display",
+   "min_focus": 0.25,
+   "hide_beyond_m": 0,
+   "what": "a hall you can walk into"
+  },
+  "room": {
+   "shape": "plate",
+   "accent": "steel",
+   "face": "display",
+   "min_focus": 0.2,
+   "hide_beyond_m": 0,
+   "what": "a room inside a hall"
+  },
+  "advisor": {
+   "shape": "speech",
+   "accent": "mark",
+   "face": "display",
+   "min_focus": 0.3,
+   "hide_beyond_m": 0,
+   "what": "somebody standing there who will answer questions"
+  },
+  "station": {
+   "shape": "chip",
+   "accent": "steel",
+   "face": "display",
+   "min_focus": 0.25,
+   "hide_beyond_m": 46,
+   "what": "a training station"
+  },
+  "crib": {
+   "shape": "chip",
+   "accent": "mark",
+   "face": "display",
+   "min_focus": 0.25,
+   "hide_beyond_m": 46,
+   "what": "a tool crib you can open"
+  },
+  "fixture": {
+   "shape": "ghost",
+   "accent": "muted",
+   "face": "body",
+   "min_focus": 0.12,
+   "hide_beyond_m": 26,
+   "what": "a bench or a piece of kit, named quietly"
+  },
+  "anchor": {
+   "shape": "pin",
+   "accent": "recorded",
+   "face": "display",
+   "min_focus": 0.2,
+   "hide_beyond_m": 0,
+   "provenance": "RECORDED",
+   "what": "a real place, at its recorded distance and bearing"
+  },
+  "schematic": {
+   "shape": "pin",
+   "accent": "schematic",
+   "face": "display",
+   "min_focus": 0.2,
+   "hide_beyond_m": 0,
+   "dashed": true,
+   "provenance": "SCHEMATIC",
+   "what": "a drawn place - the dashed outline is the claim"
+  },
+  "route": {
+   "shape": "ribbon",
+   "accent": "derived",
+   "face": "mono",
+   "min_focus": 0.2,
+   "hide_beyond_m": 0,
+   "provenance": "DERIVED",
+   "what": "a distance between two recorded points"
+  },
+  "readout": {
+   "shape": "readout",
+   "accent": "steel",
+   "face": "mono",
+   "min_focus": 0.35,
+   "hide_beyond_m": 0,
+   "what": "a measured number, from a seat or a chart"
+  },
+  "brand": {
+   "shape": "marquee",
+   "accent": "mark",
+   "face": "display",
+   "min_focus": 0.1,
+   "hide_beyond_m": 0,
+   "what": "the Academy itself"
+  }
+ },
+ "focus": {
+  "cone_deg": 34,
+  "floor": 0.34,
+  "lift_m": 0.18,
+  "grow": 0.16,
+  "ease": 6.0,
+  "near_full_m": 18,
+  "fade_from_rel": 1.45,
+  "fade_to_rel": 3.1,
+  "contract": "each frame a label is scored 0..1 on the angle between the view direction and the label, inside the declared cone, and again on distance relative to how far out the view is; the two are multiplied. The score drives opacity (never below the floor while in range), size and tint, and it is eased rather than snapped so nothing flickers as the head turns.",
+  "screen": {
+   "min_frac": 0.034,
+   "max_frac": 0.085,
+   "note": "a fraction of viewport height, applied after the focus grow, so the clamp is what the eye finally sees"
+  },
+  "focus_rule": "the single most centred label within reach is the FOCUS: it takes the accent tint and lifts by lift_m, so a learner can see what they are about to act on without a cursor - which is what makes this work in a headset, where there is no cursor to have."
+ }
+}
