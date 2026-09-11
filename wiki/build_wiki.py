@@ -856,6 +856,23 @@ it as a basemap and extrudes the fetched footprints over it.
 
 {parcels["imagery"]["verification_note"].capitalize()}
 
+## The elevation
+
+**{parcels["elevation"]["name"]}** — {parcels["elevation"]["authority"]},
+{parcels["elevation"]["licence"]}. Adopted point-for-point from
+Locator.X\'s own lookup (`{parcels["elevation"]["cite_file"]}`,
+Apache-2.0): one coordinate at a time, on demand, never a bulk pull —
+{parcels["elevation"]["scope"]}.
+
+Open any RECORDED anchor\'s card on a campus board and a button offers
+the real USGS 3DEP ground elevation at that exact coordinate, fetched in
+your own browser. Three traps observed live against the real service are
+guarded in the page that calls it:
+
+{chr(10).join(f'- {trap}' for trap in parcels["elevation"]["traps_guarded"])}
+
+{parcels["elevation"]["verification_note"]}
+
 ## What this is not
 
 - **Records:** {parcels["honesty"]["records"]}

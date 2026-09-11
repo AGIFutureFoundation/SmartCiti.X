@@ -211,6 +211,11 @@ DATA = json.dumps({
              'walkHonesty': sims_reg['honesty']['walkaround']},
     'imagery': parcels_reg['imagery'],
     'recHonesty': parcels_reg['honesty'],
+    # only what the page actually renders: the endpoint, the query template, and the one line of scope text the lookup button shows
+    'elevation': trim(parcels_reg['elevation'], 'name', 'authority',
+                      'licence', 'cite', 'cite_file', 'provenance',
+                      'verified_from_build', 'verification_note',
+                      'traps_guarded', 'id'),
     'tools': {'cribs': tools_reg['cribs'], 'drills': tools_reg['drills'],
               'drill': tools_reg['drill'],
               'honesty': tools_reg['honesty']['status']},
@@ -3554,7 +3559,9 @@ function groundMat(id, tint, repeat) {
 const asphaltTex = groundMaps('asphalt', 34).map;
 const concreteTex = groundMaps('concrete', 9).map;
 
-const camera = new THREE.PerspectiveCamera(50, innerWidth/innerHeight, .1, 900);
+// far clears both the campus fog-far (1280) and the region board's
+// (1300) with margin, so nothing pops at the clip plane before fog hides it
+const camera = new THREE.PerspectiveCamera(50, innerWidth/innerHeight, .1, 1600);
 camera.position.set(30, 26, 42);
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
@@ -3700,19 +3707,23 @@ function clearFauna() {
   faunaGroup = null; faunaBodies = [];
 }
 
+// birds fly at a groundspeed: angular rate is scaled by radius so a
+// bigger campus doesn't make them cover more ground per second
+const FAUNA_REF_R = 84;
 function spawnFauna(campusKey, radius) {
   clearFauna();
   if (reduced) return;                      // stillness for those who ask
   faunaGroup = new THREE.Group();
   faunaGroup.name = 'tc-fauna';
   const rnd = seeded(0xFA0A + (campusKey || '').length * 131);
+  const angK = FAUNA_REF_R / radius;
   for (const [fk, f] of Object.entries(FAUNA)) {
     if (!f.campuses.includes(campusKey)) continue;
     for (let i = 0; i < f.flock; i++) {
       const b = faunaBody(f);
       b.userData.kind = fk;
       b.userData.motion = f.motion;
-      b.userData.speed = f.speed * (.8 + rnd() * .45);
+      b.userData.speed = f.speed * (.8 + rnd() * .45) * angK;
       b.userData.phase = rnd() * Math.PI * 2;
       b.userData.rad = radius * (.3 + rnd() * .55);
       b.userData.h = f.height_m[0]
@@ -3810,7 +3821,7 @@ function rainStep(dt) {
 function reAtmos() {
   if (view === 'campus') {
     applyAtmos(campusKey);
-    scene.fog.near = 160 * fogMul; scene.fog.far = 640 * fogMul;
+    scene.fog.near = 320 * fogMul; scene.fog.far = 1280 * fogMul;
   } else if (view === 'hall') {
     applyAtmos(campusKey);
     scene.fog.near = 70 * fogMul; scene.fog.far = 170 * fogMul;
@@ -3886,20 +3897,23 @@ renderer.domElement.addEventListener('pointerdown', () => {
   acEnsure(); ambSync(ambCfg);
 }, { once: true });
 
+// the drawn ground's outer edge - sized to clear the campus dressing at
+// the scale below, so nothing floats past it
+const GROUND_R = 520;
 // ground: dark apron with a faint work grid
 const ground = new THREE.Mesh(
-  new THREE.CircleGeometry(260, 64),
-  groundMat('asphalt', 0x8f9698, 34));
+  new THREE.CircleGeometry(GROUND_R, 64),
+  groundMat('asphalt', 0x8f9698, 68));
 // a campus can stand on a different surface from its neighbour, and the
 // atmosphere record is where that is said
 function setGroundSurface(campusKey) {
   const a = ATMOS[campusKey] ?? DEF_ATMOS;
   ground.material.dispose();
-  ground.material = groundMat(a.ground, 0x8f9698, 34);
+  ground.material = groundMat(a.ground, 0x8f9698, 68);
 }
 ground.rotation.x = -Math.PI/2; ground.receiveShadow = true;
 scene.add(ground);
-const grid = new THREE.GridHelper(520, 130, 0x28353A, 0x1b2427);
+const grid = new THREE.GridHelper(GROUND_R * 2, 180, 0x28353A, 0x1b2427);
 grid.position.y = .02; scene.add(grid);
 
 const mat = {
@@ -4579,7 +4593,7 @@ function flushDashes(g) {
 function dressCampus(key, g, R) {
   if (key === 'treasure-island') {
     // the island: a bay ring beyond the ground's edge and a flag over the plaza
-    const bay = new THREE.Mesh(new THREE.RingGeometry(258, 640, 64), mat.water);
+    const bay = new THREE.Mesh(new THREE.RingGeometry(GROUND_R - 2, GROUND_R + 760, 64), mat.water);
     bay.rotation.x = -Math.PI / 2; bay.position.y = -.08; g.add(bay);
     box(.14, 15, .14, mat.metal, 0, 7.5, -30, g);
     const flag = new THREE.Mesh(new THREE.PlaneGeometry(4.6, 2.6),
@@ -4667,6 +4681,39 @@ const CITY_S = 13;   // units per real kilometre in the city layer
 /* An institution's panel: the RECORDED coordinate with a live-map link
    built from it, the authored blurb labelled as authored, and the union
    honesty line - hall addresses are not recorded, no local is named. */
+/* elevation: USGS EPQS, one coordinate at a time, never bulk - adopted
+   from Locator.X (src/sources.js, Apache-2.0). See D.elevation. */
+const elevCache = {};
+function elevationLookup(lat, lng, cb) {
+  const key = lat.toFixed(5) + ',' + lng.toFixed(5);
+  if (elevCache[key]) { cb(elevCache[key]); return; }
+  const q = D.elevation.query;
+  const url = D.elevation.endpoint + '?x=' + encodeURIComponent(lng)
+    + '&y=' + encodeURIComponent(lat) + '&units=' + q.units
+    + '&wkid=' + q.wkid + '&includeDate=' + q.includeDate;
+  const done = (o) => { elevCache[key] = o; cb(o); };
+  fetch(url).then((r) => r.text()).then((txt) => {
+    let j = null;
+    try { j = JSON.parse(txt); }
+    catch (e) {
+      done({ ok: false, why: 'The elevation service returned a non-JSON '
+        + 'body for this point, which is how it reports a location '
+        + 'outside its coverage.' });
+      return;
+    }
+    const v = j && j.value;
+    const num = typeof v === 'string' ? parseFloat(v) : v;
+    if (num == null || !isFinite(num)) {
+      done({ ok: false, why: 'No elevation is published for this coordinate.' });
+      return;
+    }
+    done({ ok: true, feet: num,
+      res: j.resolution == null ? null : j.resolution,
+      acquired: (j.attributes && j.attributes.AcquisitionDate) || null });
+  }).catch(() => done({ ok: false,
+    why: 'The elevation service could not be reached from here.' }));
+}
+
 function openCityPoi(name) {
   const p = (D.geo.cityPois?.[campusKey] ?? []).find((x) => x.name === name);
   if (!p) return;
@@ -4683,12 +4730,32 @@ function openCityPoi(name) {
     <p><a href="${osm}" target="_blank" rel="noopener"
       style="color:var(--steel)">↗ OpenStreetMap</a>
       <span style="color:var(--muted)">· live map from the RECORDED coordinate</span></p>
+    <p id="elevRow">
+      <button class="opt" id="elevGo" style="display:inline-block;width:auto;padding:5px 12px">
+        ↕ Look up ground elevation</button></p>
     <p style="color:var(--muted);font-size:12px">coordinate: ${p.src}${
       p.bp ? `<br>description: ${p.bp}` : ''}</p>
     <p style="color:var(--muted);font-size:12px">${t('honesty.taxonomy')}</p>`;
   document.body.classList.add('open');
+  const go = document.getElementById('elevGo');
+  go?.addEventListener('click', () => {
+    go.textContent = 'Looking up…'; go.disabled = true;
+    elevationLookup(p.lat, p.lng, (o) => {
+      const row = document.getElementById('elevRow');
+      if (!row) return;
+      row.innerHTML = o.ok
+        ? `<span class="chip" style="border-color:var(--steel);color:var(--steel)">`
+          + `${Math.round(o.feet)} ft</span>`
+          + `<span style="color:var(--muted);font-size:12px"> USGS 3DEP ground `
+          + `elevation at this coordinate${o.res ? ` · ${o.res} ft resolution` : ''}`
+          + `${o.acquired ? ` · surveyed ${o.acquired}` : ''}. `
+          + D.elevation.scope + `</span>`
+        : `<span style="color:var(--crit);font-size:12px">${o.why}</span>`;
+    });
+  });
 }
 window.__tc3dPoi = openCityPoi;   // test hook
+window.__tc3dElev = elevationLookup;   // test hook
 
 // Two placement modes, both labelled with REAL kilometres: a compact city
 // (New Orleans) lays its places at true linear offsets; a bay-scale region
@@ -4894,7 +4961,7 @@ function buildCampus(key) {
   roadFaults = 0; roadCount = 0; cityPois = 0; cityHits = [];
   const camp = D.campuses[key];
   const dk = camp.districts;
-  const R = dk.length === 2 ? 62 : 84;
+  const R = dk.length === 2 ? 124 : 168;   // the campus scale: districts this far out
   campusR = R;
   const rr = R - 24;
   // the ring road, dashed, and the plaza walkway
@@ -4997,7 +5064,7 @@ function buildCampus(key) {
   buildChapterHall(campusGroup, key);
   buildCity(campusGroup, R);
   flushDashes(campusGroup);
-  walkLim = cityPois ? (cityLog ? 268 : 175) : campusR + 85;
+  walkLim = cityPois ? (cityLog ? 536 : 350) : campusR + 85;
   // fog banks: the island's weather, drifting flat haze sheets
   fogBanks = [];
   const nb = ATMOS[key]?.banks ?? 0;
@@ -5255,10 +5322,10 @@ function showCampus(key) {
   ground.visible = grid.visible = true;
   applyAtmos(key);
   buildCampus(key);
-  scene.fog.near = 160 * fogMul; scene.fog.far = 640 * fogMul;
+  scene.fog.near = 320 * fogMul; scene.fog.far = 1280 * fogMul;
   document.getElementById('mm').style.display = '';
-  controls.maxDistance = 420; controls.minDistance = 20;
-  camera.position.set(0, 165, 195); controls.target.set(0, 0, 0);
+  controls.maxDistance = 760; controls.minDistance = 20;
+  camera.position.set(0, 300, 350); controls.target.set(0, 0, 0);
   const camp = D.campuses[key];
   document.getElementById('hname').textContent =
     camp.name + '  ' + campusRollup(key);
@@ -5323,7 +5390,7 @@ document.addEventListener('keydown', (e) => {
 });
 document.addEventListener('keyup', (e) => { keys[e.code] = false; });
 
-let campusR = 84, nearSlug = null, nearPoi = null;
+let campusR = 168, nearSlug = null, nearPoi = null;
 function enterWalk() {
   if (view === 'region' || view === 'avatar') return;
   if (isTouch) {
@@ -6018,6 +6085,7 @@ window.__tc3d = () => ({ view, buildings: buildings.length, plates: plates.lengt
   avatar: avatarCfg ? { ...avatarCfg } : null, emote: lastEmote,
   apeSpan: (avatarMesh ?? walkAvatar)?.userData?.apeSpanRatio ?? null,
   atmos: atmosKey, fogNear: Math.round(scene.fog.near),
+  fogFar: Math.round(scene.fog.far), camFar: camera.far,
   banks: fogBanks.length, mmN: mmInfo.n,
   mmVis: document.getElementById('mm').style.display !== 'none',
   simRider: !!simRider, ambN: ambNodes.length,
