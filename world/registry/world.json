@@ -1,0 +1,422 @@
+{
+ "pack": "smartcitix-trade-craft-academy-world",
+ "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
+ "pack_version": "3.2.0",
+ "built": "2026-09-11",
+ "source_stamp": "f8b07b0568fbec48",
+ "honesty": {
+  "textures": "no texture, photograph or artwork file exists in this repository and none is downloaded: every surface is a recipe - a base colour, a grain, an octave count and a relief depth - and the page generates the image and its normal map in the learner's own browser at boot. There is therefore no third-party artwork anywhere in the render.",
+  "weather": "schematic weather, not a forecast and not an observation: nothing here is tied to a reading taken at any real place or time, and the per-campus atmospheres are authored by reputation rather than measured.",
+  "fauna": "ambience, not a wildlife survey: common names, schematic bodies and authored paths. No species record, population count or sighting is claimed, and no animal here is drawn from any photograph.",
+  "sky": "the sky is generated, not photographed, and the night sky is placed by a fixed seed rather than from any star catalogue - it is a night sky, not the night sky.",
+  "ground": "the ground a campus stands on is SCHEMATIC like the buildings on it: the surfaces are the ones the trade actually works over, but their extent and placement are drawn to teach, not surveyed."
+ },
+ "counts": {
+  "weather": 6,
+  "ground": 6,
+  "fauna": 5,
+  "animals": 36
+ },
+ "sky": {
+  "projection": "equirectangular, drawn to a 1024x512 canvas at boot",
+  "bands": [
+   "zenith",
+   "upper",
+   "horizon",
+   "ground_haze"
+  ],
+  "disc": {
+   "sun": {
+    "radius_px": 26,
+    "glow_px": 150,
+    "color": "#fff3d0"
+   },
+   "moon": {
+    "radius_px": 17,
+    "glow_px": 82,
+    "color": "#cfd9ea"
+   },
+   "placement": "the disc is drawn where the key light actually comes from - its azimuth and elevation are read off the light, so the sun in the sky and the shadows on the ground agree rather than merely coexisting"
+  },
+  "horizon_haze": {
+   "height": 0.12,
+   "strength": 0.5,
+   "note": "a bright band just above the horizon so the dome does not end on a hard edge"
+  },
+  "stars": {
+   "count": 420,
+   "only_when": "night",
+   "note": "placed by a fixed seed, so the sky is the same sky every time the page is opened - no two learners see a different night"
+  },
+  "clouds": {
+   "octaves": 4,
+   "band_from": 0.28,
+   "band_to": 0.78,
+   "base_frequency": 0.022727272727272728,
+   "note": "value noise, thickened or thinned by the weather record rather than by a separate cloud asset"
+  }
+ },
+ "weather": {
+  "clear": {
+   "name": "Clear",
+   "glyph": "\u2600\ufe0f",
+   "order": 0,
+   "sky_mul": 1.75,
+   "fog_tint": 1.0,
+   "fog_mul": 1.0,
+   "sun_mul": 1.0,
+   "hemi_mul": 1.0,
+   "cloud": 0.18,
+   "rain": 0,
+   "window_glow": 0.5,
+   "wind": 0,
+   "blurb": "the working day the halls were drawn for"
+  },
+  "overcast": {
+   "name": "Overcast",
+   "glyph": "\u2601\ufe0f",
+   "order": 1,
+   "sky_mul": 1.18,
+   "fog_tint": 0.92,
+   "fog_mul": 1.15,
+   "sun_mul": 0.62,
+   "hemi_mul": 0.92,
+   "cloud": 0.72,
+   "rain": 0,
+   "window_glow": 0.66,
+   "wind": 0.15,
+   "blurb": "flat light, no shadows to judge a line by - the light a layout hand complains about"
+  },
+  "fog": {
+   "name": "Fog",
+   "glyph": "\ud83c\udf2b\ufe0f",
+   "order": 2,
+   "sky_mul": 1.3,
+   "fog_tint": 1.25,
+   "fog_mul": 0.34,
+   "sun_mul": 0.5,
+   "hemi_mul": 1.05,
+   "cloud": 0.5,
+   "rain": 0,
+   "window_glow": 0.8,
+   "wind": 0.25,
+   "blurb": "the visibility a crane signal has to survive; the Bay campuses were drawn with this in mind"
+  },
+  "rain": {
+   "name": "Rain",
+   "glyph": "\ud83c\udf27\ufe0f",
+   "order": 3,
+   "sky_mul": 0.85,
+   "fog_tint": 0.8,
+   "fog_mul": 0.86,
+   "sun_mul": 0.55,
+   "hemi_mul": 0.8,
+   "cloud": 0.85,
+   "rain": 0.55,
+   "window_glow": 0.85,
+   "wind": 0.35,
+   "blurb": "wet ground, longer stopping distances, and every surface in the yard reading differently"
+  },
+  "storm": {
+   "name": "Storm",
+   "glyph": "\u26c8\ufe0f",
+   "order": 4,
+   "sky_mul": 0.5,
+   "fog_tint": 0.62,
+   "fog_mul": 0.7,
+   "sun_mul": 0.42,
+   "hemi_mul": 0.62,
+   "cloud": 1.0,
+   "rain": 1.0,
+   "window_glow": 0.95,
+   "wind": 0.8,
+   "thunder": true,
+   "blurb": "the condition that stops a lift - and the one worth practising the stop in"
+  },
+  "night": {
+   "name": "Night",
+   "glyph": "\ud83c\udf19",
+   "order": 5,
+   "sky_mul": 0.3,
+   "fog_tint": 0.32,
+   "fog_mul": 1.12,
+   "sun_mul": 0.28,
+   "hemi_mul": 0.42,
+   "cloud": 0.3,
+   "rain": 0,
+   "window_glow": 1.2,
+   "wind": 0.1,
+   "moon": true,
+   "stars": true,
+   "blurb": "the shift most of this work actually happens on"
+  }
+ },
+ "ground": {
+  "asphalt": {
+   "name": "Asphalt",
+   "base": "#191f22",
+   "grain": "220,225,225",
+   "octaves": 3,
+   "speckle": 1800,
+   "relief": 0.35,
+   "repeat": 34,
+   "roughness": 0.96,
+   "metalness": 0.0,
+   "where": "the yard running surface and the ring road"
+  },
+  "concrete": {
+   "name": "Concrete",
+   "base": "#262e31",
+   "grain": "235,238,238",
+   "octaves": 3,
+   "speckle": 1000,
+   "relief": 0.22,
+   "repeat": 9,
+   "roughness": 0.9,
+   "metalness": 0.02,
+   "where": "slabs, aprons and walkways"
+  },
+  "gravel": {
+   "name": "Compacted gravel",
+   "base": "#3b3a34",
+   "grain": "205,198,180",
+   "octaves": 2,
+   "speckle": 5200,
+   "relief": 0.85,
+   "repeat": 26,
+   "roughness": 0.99,
+   "metalness": 0.0,
+   "where": "the plant yard, where the machines actually track"
+  },
+  "grass": {
+   "name": "Rough grass",
+   "base": "#2b3a24",
+   "grain": "120,168,92",
+   "octaves": 4,
+   "speckle": 6400,
+   "relief": 0.55,
+   "repeat": 44,
+   "roughness": 0.98,
+   "metalness": 0.0,
+   "where": "the campus green and the verges"
+  },
+  "sand": {
+   "name": "Sand and fill",
+   "base": "#4a4234",
+   "grain": "214,196,158",
+   "octaves": 3,
+   "speckle": 4200,
+   "relief": 0.4,
+   "repeat": 30,
+   "roughness": 0.97,
+   "metalness": 0.0,
+   "where": "stockpiles and the excavator cut"
+  },
+  "water": {
+   "name": "Open water",
+   "base": "#10202e",
+   "grain": "90,150,180",
+   "octaves": 5,
+   "speckle": 900,
+   "relief": 0.18,
+   "repeat": 12,
+   "roughness": 0.28,
+   "metalness": 0.35,
+   "where": "the Bay, the estuary and the river"
+  }
+ },
+ "fauna": {
+  "gull": {
+   "name": "Gull",
+   "glyph": "\ud83d\udc26",
+   "body": "bird",
+   "span_m": 1.2,
+   "color": "#e6ecef",
+   "accent": "#9aa6ad",
+   "motion": "circuit",
+   "height_m": [
+    14,
+    30
+   ],
+   "speed": 1.0,
+   "flock": 5,
+   "campuses": [
+    "treasure-island",
+    "oakland"
+   ],
+   "why": "a working waterfront has gulls over it; both Bay campuses are on one"
+  },
+  "pelican": {
+   "name": "Brown pelican",
+   "glyph": "\ud83e\udda9",
+   "body": "bird",
+   "span_m": 2.0,
+   "color": "#8d7f6c",
+   "accent": "#e0d6c2",
+   "motion": "glide",
+   "height_m": [
+    10,
+    18
+   ],
+   "speed": 0.6,
+   "flock": 3,
+   "campuses": [
+    "new-orleans"
+   ],
+   "why": "Louisiana\u2019s state bird, and unmistakable over the Gulf coast"
+  },
+  "egret": {
+   "name": "Egret",
+   "glyph": "\ud83d\udd4a\ufe0f",
+   "body": "wader",
+   "span_m": 1.0,
+   "color": "#f2f4f2",
+   "accent": "#d8cc9a",
+   "motion": "perch",
+   "height_m": [
+    0,
+    0
+   ],
+   "speed": 0.2,
+   "flock": 2,
+   "campuses": [
+    "new-orleans"
+   ],
+   "why": "standing in the wet margin, which is most of the ground around this campus"
+  },
+  "pigeon": {
+   "name": "Pigeon",
+   "glyph": "\ud83d\udd4a\ufe0f",
+   "body": "bird",
+   "span_m": 0.6,
+   "color": "#6b7076",
+   "accent": "#2f3a42",
+   "motion": "hop",
+   "height_m": [
+    0,
+    6
+   ],
+   "speed": 0.5,
+   "flock": 6,
+   "campuses": [
+    "treasure-island",
+    "oakland",
+    "new-orleans"
+   ],
+   "why": "every yard in every city has them, and they are the scale reference nobody thinks about"
+  },
+  "yard-dog": {
+   "name": "Yard dog",
+   "glyph": "\ud83d\udc15",
+   "body": "quadruped",
+   "span_m": 1.0,
+   "color": "#6f5a44",
+   "accent": "#3a2f24",
+   "motion": "patrol",
+   "height_m": [
+    0,
+    0
+   ],
+   "speed": 0.55,
+   "flock": 1,
+   "campuses": [
+    "treasure-island",
+    "oakland",
+    "new-orleans"
+   ],
+   "why": "the yard dog is a fixture of the trade, and it teaches the habit of looking down before reversing"
+  }
+ },
+ "atmos": {
+  "treasure-island": {
+   "sky": [
+    "#0b141d",
+    "#22323e",
+    "#48575f",
+    "#5e646a"
+   ],
+   "fog": {
+    "color": 2832962,
+    "mul": 0.62
+   },
+   "banks": 6,
+   "sun": {
+    "color": 14213864,
+    "i": 1.15
+   },
+   "hemi": {
+    "sky": 10466496,
+    "ground": 2367772,
+    "i": 1.15
+   },
+   "amb": {
+    "wind": 0.8,
+    "gulls": true,
+    "harbor": true
+   },
+   "ground": "concrete",
+   "verge": "grass",
+   "character": "marine layer off the Pacific; cool, grey and bright at once - authored by reputation, not measured"
+  },
+  "oakland": {
+   "sky": [
+    "#0c141c",
+    "#1a2a36",
+    "#33404a",
+    "#5a4426"
+   ],
+   "fog": {
+    "color": 2041888,
+    "mul": 1
+   },
+   "banks": 0,
+   "sun": {
+    "color": 16767392,
+    "i": 1.7
+   },
+   "hemi": {
+    "sky": 11453131,
+    "ground": 2366742,
+    "i": 1.05
+   },
+   "amb": {
+    "wind": 0.45,
+    "gulls": true,
+    "harbor": true
+   },
+   "ground": "asphalt",
+   "verge": "gravel",
+   "character": "the estuary side, warmer and harder-edged than the island - authored by reputation, not measured"
+  },
+  "new-orleans": {
+   "sky": [
+    "#101318",
+    "#26272e",
+    "#4a4238",
+    "#6e4c30"
+   ],
+   "fog": {
+    "color": 3025702,
+    "mul": 0.8
+   },
+   "banks": 0,
+   "sun": {
+    "color": 16763274,
+    "i": 1.45
+   },
+   "hemi": {
+    "sky": 12102812,
+    "ground": 2760728,
+    "i": 1.1
+   },
+   "amb": {
+    "wind": 0.3,
+    "insects": true,
+    "thunder": true
+   },
+   "ground": "concrete",
+   "verge": "grass",
+   "character": "Gulf humidity and a low warm haze - authored by reputation, not measured"
+  }
+ }
+}

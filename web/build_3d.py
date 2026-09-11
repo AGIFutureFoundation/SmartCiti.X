@@ -56,6 +56,7 @@ parcels_reg = json.load(open(ROOT / 'parcels/registry/parcels.json'))
 tools_reg = json.load(open(ROOT / 'tools/registry/toolcribs.json'))
 stations_reg = json.load(open(ROOT / 'stations/registry/stations.json'))
 agents_reg = json.load(open(ROOT / 'agents/registry/advisors.json'))
+world_reg = json.load(open(ROOT / 'world/registry/world.json'))
 yard = json.load(open(ROOT / 'archive/bac_yard_stations.json'))['yard_placements']
 
 
@@ -225,6 +226,11 @@ DATA = json.dumps({
     # and the fixed list of questions each can answer. A `read` topic carries
     # only a binding - the page resolves it against the record that already
     # holds the fact, so nothing here is a second copy of one
+    # the sky, the weather it is seen under, the ground it stands on and
+    # the animals moving through it - every texture a recipe, never a file
+    'world': {'sky': world_reg['sky'], 'weather': world_reg['weather'],
+              'ground': world_reg['ground'], 'fauna': world_reg['fauna'],
+              'atmos': world_reg['atmos'], 'honesty': world_reg['honesty']},
     'advisors': {'who': agents_reg['advisors'],
                  'honesty': agents_reg['honesty'],
                  'walk': geo_reg['walk']},
@@ -3250,19 +3256,154 @@ document.getElementById('vrBtn').addEventListener('click', () => xrStart('immers
 document.getElementById('arBtn').addEventListener('click', () => xrStart('immersive-ar'));
 
 const scene = new THREE.Scene();
-// the sky: a vertical gradient the fog can sink into, per atmosphere
-function setSky(stops) {
-  const c = document.createElement('canvas'); c.width = 2; c.height = 256;
+
+/* ---------------------------------------------------------- the sky ----
+   An equirectangular dome drawn into one canvas: the campus's own four
+   gradient bands, a sun or a moon with its glow, a band of value-noise
+   cloud thickened or thinned by the weather record, and after dark a star
+   field placed by a FIXED seed - so it is a night sky, the same one every
+   time, rather than a photograph of the night sky. No image is loaded to
+   make any of it; see D.world.honesty.sky. */
+const SKY = D.world.sky;
+// a small deterministic generator: the same world every visit
+function seeded(seed) {
+  let x = seed >>> 0;
+  return () => ((x = (x * 1664525 + 1013904223) >>> 0) / 4294967296);
+}
+// two-dimensional value noise, tiled, summed over octaves
+function valueNoise(rnd, size) {
+  const g = new Float32Array(size * size);
+  for (let i = 0; i < g.length; i++) g[i] = rnd();
+  return (x, y) => {
+    const xi = Math.floor(x), yi = Math.floor(y);
+    const fx = x - xi, fy = y - yi;
+    const at = (a, b) => g[((b % size) + size) % size * size
+      + ((a % size) + size) % size];
+    const sx = fx * fx * (3 - 2 * fx), sy = fy * fy * (3 - 2 * fy);
+    const t = at(xi, yi) + (at(xi + 1, yi) - at(xi, yi)) * sx;
+    const u = at(xi, yi + 1) + (at(xi + 1, yi + 1) - at(xi, yi + 1)) * sx;
+    return t + (u - t) * sy;
+  };
+}
+
+function skyCanvas(stops, opts) {
+  const W = 1024, H = 512;
+  const c = document.createElement('canvas'); c.width = W; c.height = H;
   const g = c.getContext('2d');
-  const gr = g.createLinearGradient(0, 0, 0, 256);
+  const gr = g.createLinearGradient(0, 0, 0, H);
   gr.addColorStop(0, stops[0]); gr.addColorStop(.55, stops[1]);
   gr.addColorStop(.8, stops[2]); gr.addColorStop(1, stops[3]);
-  g.fillStyle = gr; g.fillRect(0, 0, 2, 256);
-  scene.background?.dispose?.();
-  scene.background = new THREE.CanvasTexture(c);
+  g.fillStyle = gr; g.fillRect(0, 0, W, H);
+
+  // the stars go under everything else, and never move between visits
+  if (opts.stars) {
+    const rnd = seeded(0x5EEDDA7A);
+    for (let i = 0; i < SKY.stars.count; i++) {
+      const x = rnd() * W, y = rnd() * H * .62, a = .25 + rnd() * .7;
+      const r = rnd() < .08 ? 2.1 : rnd() < .32 ? 1.4 : .9;
+      g.fillStyle = `rgba(232,240,255,${(a * (1 - y / (H * .95))).toFixed(3)})`;
+      g.beginPath(); g.arc(x, y, r, 0, 7); g.fill();
+    }
+  }
+
+  // Sun or moon, drawn where the key light ACTUALLY comes from: azimuth
+  // and elevation are read off the light itself, so the disc in the sky
+  // and the shadows on the ground agree instead of merely coexisting.
+  const disc = opts.moon ? SKY.disc.moon : SKY.disc.sun;
+  const kp = key.position;
+  const klen = Math.hypot(kp.x, kp.y, kp.z) || 1;
+  const dx = W * ((Math.atan2(kp.z, kp.x) / (Math.PI * 2)) + .5);
+  const dy = H * (1 - (Math.asin(Math.min(1, kp.y / klen)) / Math.PI + .5));
+  const glow = g.createRadialGradient(dx, dy, 0, dx, dy, disc.glow_px);
+  glow.addColorStop(0, disc.color + 'cc');
+  glow.addColorStop(.35, disc.color + '44');
+  glow.addColorStop(1, disc.color + '00');
+  g.fillStyle = glow;
+  g.fillRect(dx - disc.glow_px, dy - disc.glow_px,
+    disc.glow_px * 2, disc.glow_px * 2);
+  g.fillStyle = disc.color;
+  g.beginPath(); g.arc(dx, dy, disc.radius_px, 0, 7); g.fill();
+  // the canvas wraps around the horizon, so a disc near the seam is drawn
+  // on both sides of it rather than being sliced in half
+  if (dx < disc.glow_px || dx > W - disc.glow_px) {
+    const wrap = dx < disc.glow_px ? dx + W : dx - W;
+    const g2 = g.createRadialGradient(wrap, dy, 0, wrap, dy, disc.glow_px);
+    g2.addColorStop(0, disc.color + 'cc');
+    g2.addColorStop(.35, disc.color + '44');
+    g2.addColorStop(1, disc.color + '00');
+    g.fillStyle = g2;
+    g.fillRect(wrap - disc.glow_px, dy - disc.glow_px,
+      disc.glow_px * 2, disc.glow_px * 2);
+    g.fillStyle = disc.color;
+    g.beginPath(); g.arc(wrap, dy, disc.radius_px, 0, 7); g.fill();
+  }
+  if (opts.moon) {                       // bite a crescent out of it
+    g.globalCompositeOperation = 'destination-out';
+    g.beginPath();
+    g.arc(dx - disc.radius_px * .5, dy - disc.radius_px * .25,
+      disc.radius_px * .92, 0, 7);
+    g.fill();
+    g.globalCompositeOperation = 'source-over';
+  }
+
+  // the cloud band: value noise over octaves, alpha driven by the weather
+  const amount = opts.cloud ?? .2;
+  if (amount > .02) {
+    const rnd = seeded(0xC10D5);
+    const n = valueNoise(rnd, 64);
+    const y0 = H * SKY.clouds.band_from, y1 = H * SKY.clouds.band_to;
+    const img = g.getImageData(0, y0, W, y1 - y0);
+    const d = img.data;
+    for (let y = 0; y < y1 - y0; y++) {
+      const fade = Math.sin(Math.PI * (y / (y1 - y0)));
+      for (let x = 0; x < W; x++) {
+        let v = 0, amp = .5, f = SKY.clouds.base_frequency;
+        for (let o = 0; o < SKY.clouds.octaves; o++) {
+          v += n(x * f, (y + y0) * f) * amp; amp *= .5; f *= 2.1;
+        }
+        const a = Math.max(0, (v - (1 - amount) * .58)) * fade * 3.2
+          * Math.min(1, opts.dim ?? 1);
+        if (a <= 0) continue;
+        const i = (y * W + x) * 4;
+        const lum = opts.moon ? 96 : 232;
+        d[i] += (lum - d[i]) * Math.min(1, a);
+        d[i + 1] += (lum - d[i + 1]) * Math.min(1, a);
+        d[i + 2] += (lum + 6 - d[i + 2]) * Math.min(1, a);
+      }
+    }
+    g.putImageData(img, 0, y0);
+  }
+  // a bright band just above the horizon, so the dome does not end on an
+  // edge the eye can find
+  const hz = SKY.horizon_haze;
+  const hg = g.createLinearGradient(0, H * (1 - hz.height * 2), 0, H);
+  const haze = opts.moon ? '150,166,190' : '214,226,236';
+  hg.addColorStop(0, `rgba(${haze},0)`);
+  hg.addColorStop(1, `rgba(${haze},${(hz.strength * (opts.moon ? .35 : 1))
+    .toFixed(2)})`);
+  g.fillStyle = hg;
+  g.fillRect(0, H * (1 - hz.height * 2), W, H * hz.height * 2);
+  return c;
 }
-setSky(['#0c141c', '#1a2a36', '#33404a', '#463a2a']);
+
+function setSky(stops, opts = {}) {
+  scene.background?.dispose?.();
+  const t = new THREE.CanvasTexture(skyCanvas(stops, opts));
+  t.mapping = THREE.EquirectangularReflectionMapping;
+  t.colorSpace = THREE.SRGBColorSpace;
+  scene.background = t;
+}
 scene.fog = new THREE.Fog(0x1a2229, 70, 170);
+
+/* ------------------------------------------------- generated surfaces ----
+   Every surface in this bundle is a RECIPE, never a file: a base colour, a
+   grain, an octave count and a relief depth, all declared in the world
+   registry. The colour map and its NORMAL map are both generated here, in
+   this browser, at boot - which is why the render contains no third-party
+   artwork, and why the whole surface set can be regenerated smaller when
+   the quality ladder steps down. See D.world.honesty.textures. */
+const GROUND_RECIPES = D.world.ground;
+const groundCache = new Map();
 
 function noiseTex(base, grain, n = 1400, size = 256) {
   const c = document.createElement('canvas'); c.width = c.height = size;
@@ -3278,10 +3419,107 @@ function noiseTex(base, grain, n = 1400, size = 256) {
   t.anisotropy = 4;
   return t;
 }
-const asphaltTex = noiseTex('#191f22', '220,225,225');
-asphaltTex.repeat.set(34, 34);
-const concreteTex = noiseTex('#262e31', '235,238,238', 1000);
-concreteTex.repeat.set(9, 9);
+
+// one recipe -> { map, normalMap }, generated once and shared
+function groundTex(id, size = 256) {
+  const hit = groundCache.get(id + ':' + size);
+  if (hit) return hit;
+  const r = GROUND_RECIPES[id];
+  if (!r) return { map: null, normalMap: null };
+  const rnd = seeded(0xA5 + id.length * 7919);
+  const n = valueNoise(rnd, 32);
+  const c = document.createElement('canvas'); c.width = c.height = size;
+  const g = c.getContext('2d');
+  g.fillStyle = r.base; g.fillRect(0, 0, size, size);
+  // the height field the relief is read from, built as we shade
+  const h = new Float32Array(size * size);
+  const img = g.getImageData(0, 0, size, size), d = img.data;
+  for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) {
+    let v = 0, amp = .5, f = 1 / 22;
+    for (let o = 0; o < r.octaves; o++) {
+      v += n(x * f, y * f) * amp; amp *= .5; f *= 2.07;
+    }
+    h[y * size + x] = v;
+    const i = (y * size + x) * 4;
+    const k = (v - .5) * 46;
+    d[i] = Math.max(0, Math.min(255, d[i] + k));
+    d[i + 1] = Math.max(0, Math.min(255, d[i + 1] + k));
+    d[i + 2] = Math.max(0, Math.min(255, d[i + 2] + k));
+  }
+  g.putImageData(img, 0, 0);
+  // the speckle sits on top of the noise, in the recipe's grain colour
+  for (let i = 0; i < r.speckle; i++) {
+    g.fillStyle = `rgba(${r.grain},${(.05 + rnd() * .12).toFixed(3)})`;
+    const rr = rnd() * 2.4;
+    g.fillRect(rnd() * size, rnd() * size, rr, rr);
+  }
+  const map = new THREE.CanvasTexture(c);
+  map.wrapS = map.wrapT = THREE.RepeatWrapping;
+  map.anisotropy = 4; map.colorSpace = THREE.SRGBColorSpace;
+
+  // the normal map, read straight off the height field by central difference
+  let normalMap = null;
+  if (r.relief > .01) {
+    const nc = document.createElement('canvas'); nc.width = nc.height = size;
+    const ng = nc.getContext('2d');
+    const nimg = ng.createImageData(size, size), nd = nimg.data;
+    const at = (x, y) => h[(((y % size) + size) % size) * size
+      + (((x % size) + size) % size)];
+    const k = r.relief * 5.5;
+    for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) {
+      const dx = (at(x + 1, y) - at(x - 1, y)) * k;
+      const dy = (at(x, y + 1) - at(x, y - 1)) * k;
+      const len = Math.hypot(dx, dy, 1);
+      const i = (y * size + x) * 4;
+      nd[i] = (-dx / len * .5 + .5) * 255;
+      nd[i + 1] = (-dy / len * .5 + .5) * 255;
+      nd[i + 2] = (1 / len * .5 + .5) * 255;
+      nd[i + 3] = 255;
+    }
+    ng.putImageData(nimg, 0, 0);
+    normalMap = new THREE.CanvasTexture(nc);
+    normalMap.wrapS = normalMap.wrapT = THREE.RepeatWrapping;
+    normalMap.anisotropy = 4;
+  }
+  const out = { map, normalMap, recipe: r };
+  groundCache.set(id + ':' + size, out);
+  return out;
+}
+
+// One recipe can be laid at several scales, and a texture carries its own
+// repeat, so the pair is cached per (recipe, repeat) rather than per
+// recipe. The canvas underneath is still generated once and shared.
+const groundMapCache = new Map();
+function groundMaps(id, repeat) {
+  const key = id + '@' + repeat;
+  const hit = groundMapCache.get(key);
+  if (hit) return hit;
+  const base = groundTex(id);
+  const map = base.map.clone(); map.needsUpdate = true;
+  map.repeat.set(repeat, repeat);
+  let normalMap = null;
+  if (base.normalMap) {
+    normalMap = base.normalMap.clone(); normalMap.needsUpdate = true;
+    normalMap.repeat.set(repeat, repeat);
+  }
+  const out = { map, normalMap };
+  groundMapCache.set(key, out);
+  return out;
+}
+
+// a standard material straight off a recipe, repeat and relief included
+function groundMat(id, tint, repeat) {
+  const r = GROUND_RECIPES[id];
+  const t = groundMaps(id, repeat ?? r.repeat);
+  return new THREE.MeshStandardMaterial({
+    map: t.map, normalMap: t.normalMap,
+    normalScale: t.normalMap ? new THREE.Vector2(r.relief, r.relief) : null,
+    color: tint ?? 0xffffff,
+    roughness: r.roughness, metalness: r.metalness });
+}
+
+const asphaltTex = groundMaps('asphalt', 34).map;
+const concreteTex = groundMaps('concrete', 9).map;
 
 const camera = new THREE.PerspectiveCamera(50, innerWidth/innerHeight, .1, 900);
 camera.position.set(30, 26, 42);
@@ -3306,83 +3544,200 @@ const fill = new THREE.DirectionalLight(0x41C4D4, .25);
 fill.position.set(-30, 20, -30);
 scene.add(fill);
 
+// the first sky, now that the light it draws the sun from exists
+setSky(['#0c141c', '#1a2a36', '#33404a', '#463a2a'], { cloud: .18 });
+
 /* ------------------------------------------------------- atmosphere ----- */
-// Authored ambience per campus, schematic like the water layers: the fog
-// is San Francisco's and the haze is New Orleans's by reputation, not by
-// any weather record - nothing here claims a measurement.
-const ATMOS = {
-  'treasure-island': {
-    sky: ['#0b141d', '#22323e', '#48575f', '#5e646a'],
-    fog: { color: 0x2b3a42, mul: .62 }, banks: 6,
-    sun: { color: 0xd8e2e8, i: 1.15 },
-    hemi: { sky: 0x9fb4c0, ground: 0x24211c, i: 1.15 },
-    amb: { wind: .8, gulls: true, harbor: true },
-  },
-  oakland: {
-    sky: ['#0c141c', '#1a2a36', '#33404a', '#5a4426'],
-    fog: { color: 0x1f2820, mul: 1 }, banks: 0,
-    sun: { color: 0xffd9a0, i: 1.7 },
-    hemi: { sky: 0xaec2cb, ground: 0x241d16, i: 1.05 },
-    amb: { wind: .45, gulls: true, harbor: true },
-  },
-  'new-orleans': {
-    sky: ['#101318', '#26272e', '#4a4238', '#6e4c30'],
-    fog: { color: 0x2e2b26, mul: .8 }, banks: 0,
-    sun: { color: 0xffc98a, i: 1.45 },
-    hemi: { sky: 0xb8ac9c, ground: 0x2a2018, i: 1.1 },
-    amb: { wind: .3, insects: true, thunder: true },
-  },
-};
+// Authored ambience per campus and six weather states, both read from the
+// world registry rather than written here: the fog is San Francisco's and
+// the haze is New Orleans's BY REPUTATION, not by any weather record, and
+// a weather state is a set of multipliers applied to whichever campus
+// atmosphere is loaded - so a campus keeps its own character in the rain
+// instead of every campus looking alike under it.
+const ATMOS = D.world.atmos;
+const WX = D.world.weather;
+const WX_CYCLE = Object.entries(WX).sort((a, b) => a[1].order - b[1].order)
+  .map(([k]) => k);
 const DEF_ATMOS = {
   sky: ['#0c141c', '#1a2a36', '#33404a', '#463a2a'],
   fog: { color: 0x1a2229, mul: 1 }, banks: 0,
   sun: { color: 0xffe0b0, i: 1.6 },
   hemi: { sky: 0xaec2cb, ground: 0x241d16, i: 1.05 },
-  amb: { wind: .2 },
+  amb: { wind: .2 }, ground: 'concrete', verge: 'grass',
 };
-let atmosKey = null, fogMul = 1, fogBanks = [], wx = 'day', night = false;
+let atmosKey = null, fogMul = 1, fogBanks = [], wx = 'clear', night = false;
+let genMs = 0;
 const darkHex = (hex, f) => '#' + [1, 3, 5].map((i) =>
-  Math.round(parseInt(hex.slice(i, i + 2), 16) * f)
+  Math.round(Math.min(255, parseInt(hex.slice(i, i + 2), 16) * f))
     .toString(16).padStart(2, '0')).join('');
+
 function applyAtmos(k) {
   const a = ATMOS[k] ?? DEF_ATMOS;
+  const w = WX[wx] ?? WX.clear;
   atmosKey = ATMOS[k] ? k : null;
   night = wx === 'night';
-  fogMul = a.fog.mul * (wx === 'night' ? 1.12 : wx === 'storm' ? 1.3 : 1);
-  if (wx === 'night') {
-    // the same atmosphere record, after dark: the sky crushed toward
-    // black, the sun swapped for cool moonlight, the windows turned up
-    setSky(a.sky.map((h) => darkHex(h, .32)));
-    scene.fog.color.setHex(a.fog.color).multiplyScalar(.32);
-    key.color.setHex(0x9db4d8); key.intensity = a.sun.i * .3;
-    hemi.color.setHex(0x35455c);
-    hemi.groundColor.setHex(0x0d0c0a);
-    hemi.intensity = a.hemi.i * .45;
-    mat.win.emissiveIntensity = 1.15;
-  } else if (wx === 'storm') {
-    // and the same record under weather: sky and sun greyed hard, the
-    // wind up, thunder in every bed, rain falling in the loop below
-    setSky(a.sky.map((h) => darkHex(h, .55)));
-    scene.fog.color.setHex(a.fog.color).multiplyScalar(.55);
-    key.color.setHex(0x8a949c); key.intensity = a.sun.i * .5;
-    hemi.color.setHex(0x5c6a74);
-    hemi.groundColor.setHex(0x1a1a18);
-    hemi.intensity = a.hemi.i * .65;
-    mat.win.emissiveIntensity = .9;
-  } else {
-    setSky(a.sky);
-    scene.fog.color.setHex(a.fog.color);
-    key.color.setHex(a.sun.color); key.intensity = a.sun.i;
-    hemi.color.setHex(a.hemi.sky);
-    hemi.groundColor.setHex(a.hemi.ground);
-    hemi.intensity = a.hemi.i;
-    mat.win.emissiveIntensity = .5;
-  }
-  rain.visible = wx === 'storm' && !reduced;
-  ambSync(wx === 'storm'
-    ? { ...a.amb, wind: (a.amb.wind ?? .2) + .5, thunder: true }
-    : a.amb);
+  fogMul = a.fog.mul * w.fog_mul;
+  const t0 = performance.now();
+  setSky(a.sky.map((h) => darkHex(h, w.sky_mul)),
+    { cloud: w.cloud, moon: !!w.moon, stars: !!w.stars,
+      dim: Math.min(1, w.sky_mul) });
+  genMs += performance.now() - t0;
+  scene.fog.color.setHex(a.fog.color).multiplyScalar(w.fog_tint);
+  // after dark the sun is swapped for moonlight rather than dimmed; under
+  // weather it keeps its own colour and simply loses strength
+  if (night) { key.color.setHex(0x9db4d8); hemi.color.setHex(0x35455c);
+               hemi.groundColor.setHex(0x0d0c0a); }
+  else if (w.sun_mul < .7) { key.color.setHex(0x8a949c);
+               hemi.color.setHex(0x5c6a74); hemi.groundColor.setHex(0x1a1a18); }
+  else { key.color.setHex(a.sun.color); hemi.color.setHex(a.hemi.sky);
+         hemi.groundColor.setHex(a.hemi.ground); }
+  key.intensity = a.sun.i * w.sun_mul;
+  hemi.intensity = a.hemi.i * w.hemi_mul;
+  mat.win.emissiveIntensity = w.window_glow;
+  rain.visible = w.rain > 0 && !reduced;
+  rainRate = w.rain;
+  ambSync({ ...a.amb, wind: (a.amb.wind ?? .2) + w.wind,
+            ...(w.thunder ? { thunder: true } : {}) });
+  faunaWeather(w);
 }
+
+/* ----------------------------------------------------------- fauna -----
+   The animals that belong in a working yard, declared per campus in the
+   world registry and built here out of the same shared boxes as
+   everything else. Ambience, not a survey: common names, schematic
+   bodies, authored paths. Nothing is drawn from any photograph and no
+   sighting, count or species record is claimed - see D.world.honesty.fauna.
+
+   They cost almost nothing (three or four shared-geometry meshes each),
+   they are the only moving thing on an idle campus, and they give the
+   scene something the buildings cannot: a sense of scale that a learner
+   reads without being told. */
+const FAUNA = D.world.fauna;
+let faunaGroup = null, faunaBodies = [], faunaGust = 0;
+
+function faunaBody(f) {
+  const g = new THREE.Group();
+  const col = new THREE.Color(f.color), acc = new THREE.Color(f.accent);
+  const mBody = new THREE.MeshStandardMaterial({ color: col, roughness: .85 });
+  const mAcc = new THREE.MeshStandardMaterial({ color: acc, roughness: .8 });
+  const sp = f.span_m;
+  if (f.body === 'bird' || f.body === 'wader') {
+    const torso = new THREE.Mesh(boxGeo(sp * .3, sp * .2, sp * .5), mBody);
+    g.add(torso);
+    const wingL = new THREE.Mesh(boxGeo(sp * .48, sp * .05, sp * .26), mBody);
+    const wingR = wingL.clone();
+    wingL.position.set(-sp * .36, 0, 0); wingR.position.set(sp * .36, 0, 0);
+    g.add(wingL, wingR);
+    const head = new THREE.Mesh(boxGeo(sp * .16, sp * .16, sp * .2), mAcc);
+    head.position.set(0, sp * .12, sp * .32); g.add(head);
+    if (f.body === 'wader') {              // long neck, long legs, standing
+      const neck = new THREE.Mesh(boxGeo(sp * .07, sp * .5, sp * .07), mBody);
+      neck.position.set(0, sp * .34, sp * .2); g.add(neck);
+      head.position.set(0, sp * .6, sp * .24);
+      for (const sx of [-1, 1]) {
+        const leg = new THREE.Mesh(boxGeo(sp * .05, sp * .55, sp * .05), mAcc);
+        leg.position.set(sx * sp * .07, -sp * .34, 0); g.add(leg);
+      }
+      wingL.visible = wingR.visible = false;
+    }
+    g.userData.wings = [wingL, wingR];
+  } else {                                  // quadruped: the yard dog
+    const torso = new THREE.Mesh(boxGeo(sp * .26, sp * .28, sp * .62), mBody);
+    torso.position.y = sp * .42; g.add(torso);
+    const head = new THREE.Mesh(boxGeo(sp * .2, sp * .2, sp * .24), mAcc);
+    head.position.set(0, sp * .58, sp * .38); g.add(head);
+    const tail = new THREE.Mesh(boxGeo(sp * .06, sp * .06, sp * .3), mAcc);
+    tail.position.set(0, sp * .52, -sp * .42); tail.rotation.x = -.5;
+    g.add(tail);
+    const legs = [];
+    for (const sx of [-1, 1]) for (const sz of [-1, 1]) {
+      const leg = new THREE.Mesh(boxGeo(sp * .07, sp * .42, sp * .07), mBody);
+      leg.position.set(sx * sp * .1, sp * .21, sz * sp * .22);
+      g.add(leg); legs.push(leg);
+    }
+    g.userData.legs = legs; g.userData.tail = tail;
+  }
+  return g;
+}
+
+function clearFauna() {
+  if (!faunaGroup) return;
+  faunaGroup.parent?.remove(faunaGroup);
+  disposeOf(faunaGroup);
+  faunaGroup = null; faunaBodies = [];
+}
+
+function spawnFauna(campusKey, radius) {
+  clearFauna();
+  if (reduced) return;                      // stillness for those who ask
+  faunaGroup = new THREE.Group();
+  faunaGroup.name = 'tc-fauna';
+  const rnd = seeded(0xFA0A + (campusKey || '').length * 131);
+  for (const [fk, f] of Object.entries(FAUNA)) {
+    if (!f.campuses.includes(campusKey)) continue;
+    for (let i = 0; i < f.flock; i++) {
+      const b = faunaBody(f);
+      b.userData.kind = fk;
+      b.userData.motion = f.motion;
+      b.userData.speed = f.speed * (.8 + rnd() * .45);
+      b.userData.phase = rnd() * Math.PI * 2;
+      b.userData.rad = radius * (.3 + rnd() * .55);
+      b.userData.h = f.height_m[0]
+        + rnd() * (f.height_m[1] - f.height_m[0]);
+      b.userData.flap = 4 + rnd() * 3;
+      b.userData.span = f.span_m;
+      faunaGroup.add(b); faunaBodies.push(b);
+    }
+  }
+  scene.add(faunaGroup);
+}
+
+// weather reaches the animals too: they fly lower and faster in wind, and
+// in a storm they are simply not out
+function faunaWeather(w) {
+  faunaGust = w.wind;
+  if (faunaGroup) faunaGroup.visible = w.rain < .9;
+}
+
+function faunaStep(t, dt) {
+  if (!faunaGroup || !faunaGroup.visible) return;
+  for (const b of faunaBodies) {
+    const u = b.userData;
+    const sp = u.speed * (1 + faunaGust * .6);
+    const a = u.phase + t * sp * .22;
+    if (u.motion === 'circuit' || u.motion === 'glide') {
+      const wob = u.motion === 'glide' ? 0 : Math.sin(t * sp + u.phase) * 2.2;
+      b.position.set(Math.cos(a) * u.rad, u.h + wob - faunaGust * 3,
+        Math.sin(a) * u.rad);
+      b.rotation.y = -a + Math.PI / 2;
+      b.rotation.z = Math.sin(t * sp * .7 + u.phase) * .18;
+      const fl = u.motion === 'glide'
+        ? Math.sin(t * 1.1 + u.phase) * .12          // pelicans mostly glide
+        : Math.sin(t * u.flap + u.phase) * .85;
+      if (u.wings) { u.wings[0].rotation.z = fl; u.wings[1].rotation.z = -fl; }
+    } else if (u.motion === 'hop') {
+      const hop = Math.max(0, Math.sin(t * 2.4 + u.phase)) * .35;
+      b.position.set(Math.cos(a * .6) * u.rad, hop,
+        Math.sin(a * .6) * u.rad);
+      b.rotation.y = -a * .6 + Math.PI / 2;
+      if (u.wings) { const f2 = hop * 1.6;
+        u.wings[0].rotation.z = f2; u.wings[1].rotation.z = -f2; }
+    } else if (u.motion === 'perch') {
+      b.position.set(Math.cos(u.phase) * u.rad, 0, Math.sin(u.phase) * u.rad);
+      b.rotation.y = u.phase * 2;
+      b.position.y = Math.sin(t * .6 + u.phase) * .03;   // barely, breathing
+    } else {                                  // patrol: the yard dog, trotting
+      const seg = (t * sp * .1 + u.phase) % (Math.PI * 2);
+      b.position.set(Math.cos(seg) * u.rad, 0, Math.sin(seg) * u.rad);
+      b.rotation.y = -seg + Math.PI / 2;
+      if (u.legs) u.legs.forEach((l, i) => {
+        l.rotation.x = Math.sin(t * 7 * sp + i * 1.7) * .5;
+      });
+      if (u.tail) u.tail.rotation.y = Math.sin(t * 4) * .35;
+    }
+  }
+}
+
 // the rain: one Points cloud recycled over the camera target in storms
 const rain = (() => {
   const N = 900, pos = new Float32Array(N * 3);
@@ -3399,12 +3754,17 @@ const rain = (() => {
   return pts;
 })();
 scene.add(rain);
+let rainRate = 0;
 function rainStep(dt) {
   if (!rain.visible) return;
+  // rain is a rate, not a switch: a shower falls slower and thinner than
+  // a storm, from the same one particle cloud
+  rain.material.opacity = .22 + rainRate * .42;
+  rain.material.size = .5 + rainRate * .45;
   const p = rain.geometry.attributes.position.array;
   const cx2 = controls.target.x, cz2 = controls.target.z;
   for (let i = 0; i < p.length; i += 3) {
-    p[i + 1] -= 55 * dt;
+    p[i + 1] -= (28 + rainRate * 34) * dt;
     if (p[i + 1] < 0) {
       p[i + 1] = 80 + Math.random() * 10;
       p[i] = cx2 + (Math.random() - .5) * 220;
@@ -3496,7 +3856,14 @@ renderer.domElement.addEventListener('pointerdown', () => {
 // ground: dark apron with a faint work grid
 const ground = new THREE.Mesh(
   new THREE.CircleGeometry(260, 64),
-  new THREE.MeshStandardMaterial({ map: asphaltTex, color: 0x8f9698, roughness: .96 }));
+  groundMat('asphalt', 0x8f9698, 34));
+// a campus can stand on a different surface from its neighbour, and the
+// atmosphere record is where that is said
+function setGroundSurface(campusKey) {
+  const a = ATMOS[campusKey] ?? DEF_ATMOS;
+  ground.material.dispose();
+  ground.material = groundMat(a.ground, 0x8f9698, 34);
+}
 ground.rotation.x = -Math.PI/2; ground.receiveShadow = true;
 scene.add(ground);
 const grid = new THREE.GridHelper(520, 130, 0x28353A, 0x1b2427);
@@ -3506,8 +3873,13 @@ const mat = {
   slab:  new THREE.MeshStandardMaterial({ map: concreteTex, color: 0xb8bdbd, roughness: .9 }),
   win:   new THREE.MeshStandardMaterial({ color: 0x0b0f11,
            emissive: 0xffc27a, emissiveIntensity: .5, roughness: .4 }),
-  water: new THREE.MeshStandardMaterial({ color: 0x14283a, roughness: .3,
-           metalness: .3 }),
+  // open water, rough grass, plant-yard gravel and stockpile sand all come
+  // straight off their recipes in the world registry - colour map and
+  // normal map both generated in this browser, never loaded
+  water: groundMat('water', 0x8fb4c8, 10),
+  grass: groundMat('grass'),
+  gravel: groundMat('gravel'),
+  sand:  groundMat('sand'),
   land:  new THREE.MeshStandardMaterial({ map: asphaltTex, color: 0xcdd2d3,
            roughness: .95 }),
   road:  new THREE.MeshStandardMaterial({ color: 0x565c60, roughness: .95 }),
@@ -3815,6 +4187,7 @@ function buildHall(sg) {
     fn(hallGroup, px, pz);
   }
   clearAdvisors();
+  clearFauna();
   spawnHallAdvisors(h, W, DEP);
   scene.add(hallGroup);
 
@@ -4268,6 +4641,13 @@ function buildCampus(key) {
       Math.cos(th) * rr, .09, Math.sin(th) * rr, campusGroup, false);
     dsh.rotation.y = -th;
   }
+  // the green: rough grass between the plaza walkway and the ring road,
+  // which is what a campus actually has there and what makes the ring
+  // read as a road rather than a line on a slab
+  const green = new THREE.Mesh(new THREE.RingGeometry(27, rr - 3, 72),
+    mat.grass);
+  green.rotation.x = -Math.PI / 2; green.position.y = .035;
+  green.receiveShadow = true; campusGroup.add(green);
   const wlk = new THREE.Mesh(new THREE.RingGeometry(24, 27, 64), mat.walkway);
   wlk.rotation.x = -Math.PI / 2; wlk.position.y = .04;
   wlk.receiveShadow = true; campusGroup.add(wlk);
@@ -4363,8 +4743,10 @@ function buildCampus(key) {
     campusGroup.add(m);
     fogBanks.push({ m, ang, rad, sp: .015 + (i % 3) * .008 });
   }
+  setGroundSurface(key);
   clearAdvisors();
   spawnCampusAdvisors();
+  spawnFauna(key, R);
   scene.add(campusGroup);
   buildMinimap(key, R);
 }
@@ -5186,13 +5568,25 @@ document.addEventListener('click', (e) => {
 document.getElementById('hall').addEventListener('change', (e) => {
   showHall(e.target.value);
 });
-document.getElementById('dnBtn').addEventListener('click', () => {
-  // the sky cycle: day, night, storm - each derived from the one record
-  wx = wx === 'day' ? 'night' : wx === 'night' ? 'storm' : 'day';
-  document.getElementById('dnBtn').textContent =
-    wx === 'day' ? '🌙' : wx === 'night' ? '🌧️' : '☀️';
+// the weather cycle: every state the world registry declares, in its own
+// declared order, each one a set of multipliers on this campus's own
+// atmosphere rather than a separate look
+function setWeather(id) {
+  if (!WX[id]) return;
+  wx = id;
+  const nxt = WX_CYCLE[(WX_CYCLE.indexOf(wx) + 1) % WX_CYCLE.length];
+  const b = document.getElementById('dnBtn');
+  b.textContent = WX[nxt].glyph;
+  b.title = WX[wx].name + ' \u2014 ' + WX[wx].blurb
+    + '. Next: ' + WX[nxt].name;
+  b.setAttribute('aria-label', 'weather: ' + WX[wx].name
+    + '; next ' + WX[nxt].name);
   reAtmos();
+}
+document.getElementById('dnBtn').addEventListener('click', () => {
+  setWeather(WX_CYCLE[(WX_CYCLE.indexOf(wx) + 1) % WX_CYCLE.length]);
 });
+setWeather(WX[params.get('wx')] ? params.get('wx') : 'clear');
 // the records panel: every seat and drill from the device-local record
 function openRecords() {
   const td = "style=\\"text-align:end\\"";
@@ -5323,6 +5717,15 @@ window.__tc3dDo = (fn, arg) => {
   else if (fn === 'quality') { qAuto = false; setQuality(arg); }
   else if (fn === 'emote') playEmote(arg);
   else if (fn === 'advisor') openAdvisor(...String(arg).split(':'));
+  else if (fn === 'wx') setWeather(arg);
+  // place the camera: "eyeX,eyeY,eyeZ|atX,atY,atZ" - used by the harnesses
+  // and, later, by anything that wants to drive the view
+  else if (fn === 'cam') {
+    const [eye, at] = String(arg).split('|').map((v) => v.split(',').map(Number));
+    camera.position.set(...eye);
+    if (at) { controls.target.set(...at); camera.lookAt(...at); }
+    controls.autoRotate = false; controls.update();
+  }
   // test hooks: stand the walker beside an advisor, or well away from one
   else if (fn === 'walkTo' || fn === 'walkAway') {
     const m = advisorMeshes.find((x) => x.userData.advisor === arg);
@@ -5359,6 +5762,14 @@ window.__tc3d = () => ({ view, buildings: buildings.length, plates: plates.lengt
   quality: qLevel, px: renderer.getPixelRatio(),
   advisors: { here: advisorMeshes.map((m) => m.userData.advisor),
               near: nearAdvisor, open: curAdvisor, topic: curTopic },
+  world: { wx, cycle: WX_CYCLE, rain: rainRate,
+           fauna: faunaBodies.map((b) => b.userData.kind),
+           // rounded so a harness can watch them move without floating noise
+           faunaAt: faunaBodies.map((b) => b.position.toArray()
+             .map((v) => Math.round(v * 10) / 10).join(',')),
+           faunaOut: !!(faunaGroup && faunaGroup.visible),
+           ground: Object.keys(GROUND_RECIPES),
+           maps: groundMapCache.size, genMs: Math.round(genMs) },
   rig: (() => {                       // the VRM skeleton, as it really is
     const av = avatarMesh ?? walkAvatar ?? simRider;
     if (!av?.userData?.bones) return null;
@@ -5432,6 +5843,7 @@ renderer.setAnimationLoop(() => {
   // must not re-clamp it to their own distance limits
   else if (!sim || controls.enabled) controls.update();
   advisorProximity(dt);
+  faunaStep(clock.elapsedTime, dt);
   renderer.render(scene, camera);
 });
 </script>
