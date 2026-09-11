@@ -25,13 +25,30 @@ The glTF exports open directly in Unity, Sketchfab, Blender, Godot, three.js.
 | `omi-gltf-extensions` | no OMI extension is emitted; core glTF only |
 | `usd` | no USD is written or read |
 
+## The Unity avatar systems, reviewed
+
+Three MIT-licensed Unity avatar systems were read from their own
+checkouts before choosing (cross-checked against the reviewed checkouts):
+
+| Repository | Licence | What it is | Verdict |
+|---|---|---|---|
+| [`vrm-c/UniVRM`](https://github.com/vrm-c/UniVRM) | MIT | the reference Unity implementation of VRM - a humanoid avatar profile layered on glTF 2.0, with a fixed bone vocabulary (hips, spine, chest, neck, head, left/rightUpperArm, LowerArm, Hand, UpperLeg, Foot) and the MToon stylised shader | ADOPTED IN PART - the bone vocabulary only. We name the bones our rig actually exposes with VRM names so Unity and VRM importers map them automatically; we vendor none of its code and do not claim VRM compliance. |
+| [`microsoft/Microsoft-Rocketbox`](https://github.com/microsoft/Microsoft-Rocketbox) | MIT | a library of rigged, animated human avatars for Unity, organised as Adults, Children and Professions, with an animation set - the closest thing to an off-the-shelf realistic trades crew | NOT BUNDLED, available to the learner - its licence would permit redistribution, but the Academy ships its own original avatars and this bundle stays free of third-party artwork. A learner may load any Rocketbox avatar through the locker's guest stand, where the .glb import already works. |
+| [`readyplayerme/rpm-unity-sdk-core`](https://github.com/readyplayerme/rpm-unity-sdk-core) | MIT | a Unity SDK that fetches a hosted, service-generated avatar as glTF at runtime | NOT ADOPTED - it is a client for an external avatar service, and this layer holds that a learner's avatar must not require an account or leave the device. The same .glb it produces still imports through the guest stand. |
+
+**The rig vocabulary.** VRM / Unity humanoid bone names (vrm-c/UniVRM, MIT).
+Exposed as real transform nodes:
+`head`, `leftUpperArm`, `rightUpperArm`.
+Deliberately absent: `hips`, `spine`, `chest`, `neck`, `leftLowerArm`, `rightLowerArm`, `leftHand`, `rightHand`, `leftUpperLeg`, `rightUpperLeg`, `leftFoot`, `rightFoot` —
+the rig is capsule-built: only these three are real transform nodes, the rest of the body is baked geometry. Naming only what exists keeps an importer from believing in a skeleton that is not there.
+
 ## Conventions
 
 glTF 2.0 binary (.glb) · metres ·
 up axis +Y · scenes named
 `tc-hall-<slug> with room-<strand> floors and the guest-asset stand` ·
 `Sprite`, `Line`, `Points`
-stripped on export. The avatar rig: `tc-avatar` → `head` → `headwear` → `arm-L` → `arm-R`.
+stripped on export. The avatar rig: `tc-avatar` → `head` → `leftUpperArm` → `rightUpperArm` → `headwear`.
 
 ## Exports
 

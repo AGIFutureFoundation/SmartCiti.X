@@ -52,6 +52,7 @@ geo_reg = json.load(open(ROOT / 'geo/registry/campuses_geo.json'))
 avatars_reg = json.load(open(ROOT / 'avatars/registry/avatars.json'))
 chapters_reg = json.load(open(ROOT / 'unions/registry/chapters.json'))
 sims_reg = json.load(open(ROOT / 'sims/registry/sims.json'))
+parcels_reg = json.load(open(ROOT / 'parcels/registry/parcels.json'))
 tools_reg = json.load(open(ROOT / 'tools/registry/toolcribs.json'))
 stations_reg = json.load(open(ROOT / 'stations/registry/stations.json'))
 yard = json.load(open(ROOT / 'archive/bac_yard_stations.json'))['yard_placements']
@@ -187,6 +188,8 @@ DATA = json.dumps({
     'sims': {'sims': sims_reg['sims'], 'bindings': sims_reg['hall_bindings'],
              'honesty': sims_reg['honesty']['status'],
              'walkHonesty': sims_reg['honesty']['walkaround']},
+    'imagery': parcels_reg['imagery'],
+    'recHonesty': parcels_reg['honesty'],
     'tools': {'cribs': tools_reg['cribs'], 'drills': tools_reg['drills'],
               'drill': tools_reg['drill'],
               'honesty': tools_reg['honesty']['status']},
@@ -2045,11 +2048,17 @@ function buildAvatarMesh(cfg) {
   g.scale.set(sc[0], sc[1], sc[2]);
   g.traverse((o) => { if (o.isMesh) o.castShadow = true; });
   g.userData = { ...g.userData, arms, head, hat };
-  // the rig, NAMED for export: a Unity, Blender or Sketchfab import
-  // reads these nodes by the names the meta registry declares
+  // The rig, NAMED for export in the VRM / Unity humanoid vocabulary
+  // (vrm-c/UniVRM, MIT) so a Unity Humanoid or VRM import maps these
+  // nodes without a hand-built avatar definition. Only the bones this
+  // rig actually exposes as transforms are named - the rest of the body
+  // is baked geometry, and meta/ says so rather than implying a skeleton
+  // that is not there.
   g.name = 'tc-avatar';
-  head.name = 'head'; hat.name = 'headwear';
-  arms.armL.name = 'arm-L'; arms.armR.name = 'arm-R';
+  head.name = 'head';                       // VRM: head
+  arms.armL.name = 'leftUpperArm';          // VRM: leftUpperArm
+  arms.armR.name = 'rightUpperArm';         // VRM: rightUpperArm
+  hat.name = 'headwear';                    // accessory, not a VRM bone
   return g;
 }
 
@@ -2688,6 +2697,7 @@ body.open #panel{transform:none}
   <button id="recBtn" class="barbtn" aria-label="records">⏱</button>
   <button id="vrBtn" class="barbtn" style="display:none">🥽 VR</button>
   <button id="arBtn" class="barbtn" style="display:none">📱 AR</button>
+  <button id="satBtn" class="barbtn" style="display:none">🛰️</button>
   <button id="glbBtn" class="barbtn" style="display:none">⬇ .glb</button>
   <button id="glbInBtn" class="barbtn" style="display:none">＋ .glb</button>
   <input id="glbFile" type="file" accept=".glb,.gltf" style="display:none">
@@ -3637,6 +3647,87 @@ function cityPos(p) {
   const r = 96 + 95 * Math.log10(1 + p.km);
   return [p.e / km * r, -p.n / km * r];
 }
+/* ------------------------------------------- orthoimagery ground ------- */
+// The campus city layer places its RECORDED anchors at true east/north
+// offsets from the campus point. This lays the authority's own public-
+// domain orthoimagery underneath them at the SAME scale, georeferenced
+// off the same record, so the picture and the points agree. Fetched in
+// this browser from the cited service - never bundled - and a tile that
+// does not arrive leaves the SCHEMATIC ground exactly as it was.
+let satPlane = null, satState = 'off';
+// an operator may point this at their own mirror of the same service;
+// the harness uses it to prove the drawing path without the public one
+const SAT_TILES = params.get('imagery') || null;
+const SAT_Z = 14, SAT_SPAN = 3;          // a 3x3 tile block on the campus
+const tileLat = (y, n) =>
+  Math.atan(Math.sinh(Math.PI * (1 - 2 * y / n))) * 180 / Math.PI;
+function satClear() {
+  if (satPlane) { scene.remove(satPlane); satPlane.material.map?.dispose();
+    satPlane.geometry.dispose(); satPlane = null; }
+}
+async function satGround() {
+  if (satPlane) {                        // a second press puts it away
+    satClear(); satState = 'off';
+    document.getElementById('hint').textContent = t('hint.campus');
+    return;
+  }
+  const pt = D.geo.campuses[campusKey];
+  const n = 2 ** SAT_Z;
+  const x0 = Math.floor((pt.lng + 180) / 360 * n) - 1;
+  const la = pt.lat * Math.PI / 180;
+  const y0 = Math.floor((1 - Math.log(Math.tan(la) + 1 / Math.cos(la))
+    / Math.PI) / 2 * n) - 1;
+  satState = 'loading';
+  document.getElementById('hint').textContent =
+    'Asking ' + D.imagery.authority + ' for orthoimagery...';
+  const S = 256;
+  const cv = document.createElement('canvas');
+  cv.width = cv.height = S * SAT_SPAN;
+  const cx2 = cv.getContext('2d');
+  try {
+    await Promise.all(Array.from({ length: SAT_SPAN * SAT_SPAN }, (_, i) => {
+      const dx = i % SAT_SPAN, dy = (i - dx) / SAT_SPAN;
+      const url = (SAT_TILES ?? D.imagery.tiles).replace('{z}', SAT_Z)
+        .replace('{y}', y0 + dy).replace('{x}', x0 + dx);
+      return new Promise((res, rej) => {
+        const im = new Image();
+        im.crossOrigin = 'anonymous';
+        im.onload = () => { cx2.drawImage(im, dx * S, dy * S, S, S); res(); };
+        im.onerror = () => rej(new Error('tile ' + (x0 + dx) + '/' + (y0 + dy)));
+        im.src = url;
+      });
+    }));
+  } catch (e) {
+    satState = 'failed';
+    document.getElementById('hint').textContent =
+      'Orthoimagery did not answer from this network - the schematic ground '
+      + 'stands. ' + D.recHonesty.availability;
+    return;
+  }
+  // georeference the block onto the same km scale the anchors use
+  const kmE = (d) => (d - pt.lng) * 111.32 * Math.cos(la);
+  const kmN = (d) => (d - pt.lat) * 110.574;
+  const west = x0 / n * 360 - 180, east = (x0 + SAT_SPAN) / n * 360 - 180;
+  const north = tileLat(y0, n), south = tileLat(y0 + SAT_SPAN, n);
+  const eW = kmE(west) * CITY_S, eE = kmE(east) * CITY_S;
+  const nN = kmN(north) * CITY_S, nS = kmN(south) * CITY_S;
+  const tex = new THREE.CanvasTexture(cv);
+  tex.colorSpace = THREE.SRGBColorSpace;
+  satPlane = new THREE.Mesh(
+    new THREE.PlaneGeometry(Math.abs(eE - eW), Math.abs(nN - nS)),
+    new THREE.MeshStandardMaterial({ map: tex, roughness: .95 }));
+  satPlane.rotation.x = -Math.PI / 2;
+  satPlane.position.set((eW + eE) / 2, .05, -(nN + nS) / 2);
+  satPlane.receiveShadow = true;
+  satPlane.name = 'orthoimagery-ground';
+  scene.add(satPlane);
+  satState = 'live';
+  document.getElementById('hint').textContent =
+    D.imagery.attribution + ' - ' + D.imagery.licence
+    + ', georeferenced to the campus record. ' + D.recHonesty.fidelity;
+}
+document.getElementById('satBtn').addEventListener('click', satGround);
+
 function buildCity(g, R) {
   const pois = D.geo.cityPois?.[campusKey] ?? [];
   if (!pois.length) return;
@@ -4058,6 +4149,8 @@ function showRegion() {
   document.getElementById('simBtn').style.display = 'none';
   document.getElementById('glbBtn').style.display = 'none';
   document.getElementById('glbInBtn').style.display = 'none';
+  document.getElementById('satBtn').style.display = 'none';
+  satClear(); satState = 'off';
   syncURL();
 }
 
@@ -4106,6 +4199,7 @@ function showCampus(key) {
   document.getElementById('simBtn').style.display = 'none';
   document.getElementById('glbBtn').style.display = 'none';
   document.getElementById('glbInBtn').style.display = 'none';
+  document.getElementById('satBtn').style.display = '';
   syncURL();
 }
 
@@ -4133,6 +4227,8 @@ function showHall(sg) {
     (D.sims.bindings[sg] && !('ontouchstart' in window)) ? '' : 'none';
   document.getElementById('glbBtn').style.display = '';
   document.getElementById('glbInBtn').style.display = 'none';
+  document.getElementById('satBtn').style.display = 'none';
+  satClear(); satState = 'off';
   syncURL();
 }
 
@@ -4821,6 +4917,12 @@ window.__tc3d = () => ({ view, buildings: buildings.length, plates: plates.lengt
   meta: { exp: lastExport,
     imp: importedGlb ? { nodes: importedGlb.nodes, name: importedGlb.name } : null },
   quality: qLevel, px: renderer.getPixelRatio(),
+  sat: { state: satState, plane: !!satPlane,
+         tiles: SAT_TILES ?? D.imagery.tiles, z: SAT_Z,
+         span: satPlane ? [Math.round(satPlane.geometry.parameters.width),
+                           Math.round(satPlane.geometry.parameters.height)] : null,
+         at: satPlane ? satPlane.position.toArray()
+                          .map((v) => Math.round(v * 10) / 10) : null },
   perf: { calls: renderer.info.render.calls,
     tris: renderer.info.render.triangles,
     geoms: renderer.info.memory.geometries,

@@ -58,11 +58,64 @@ DOC = {
             {'id': 'usd', 'why': 'no USD is written or read'},
         ],
     },
+    # Reviewed on the Unity side before choosing: three MIT-licensed avatar
+    # systems, each read from its own checkout rather than its marketing.
+    # The decision is the last row - we adopt the VRM humanoid VOCABULARY
+    # for our exported rig, which costs nothing, ships no third-party code,
+    # and makes our .glb land in Unity Humanoid and VRM tooling as itself.
+    'avatar_systems_reviewed': [
+        {'repo': 'vrm-c/UniVRM', 'licence': 'MIT',
+         'holder': 'VRM Consortium (MToon: Masataka SUMI)',
+         'what': 'the reference Unity implementation of VRM - a humanoid '
+                 'avatar profile layered on glTF 2.0, with a fixed bone '
+                 'vocabulary (hips, spine, chest, neck, head, '
+                 'left/rightUpperArm, LowerArm, Hand, UpperLeg, Foot) and '
+                 'the MToon stylised shader',
+         'verdict': 'ADOPTED IN PART - the bone vocabulary only. We name '
+                    'the bones our rig actually exposes with VRM names so '
+                    'Unity and VRM importers map them automatically; we '
+                    'vendor none of its code and do not claim VRM '
+                    'compliance.'},
+        {'repo': 'microsoft/Microsoft-Rocketbox', 'licence': 'MIT',
+         'holder': 'Microsoft',
+         'what': 'a library of rigged, animated human avatars for Unity, '
+                 'organised as Adults, Children and Professions, with an '
+                 'animation set - the closest thing to an off-the-shelf '
+                 'realistic trades crew',
+         'verdict': 'NOT BUNDLED, available to the learner - its licence '
+                    'would permit redistribution, but the Academy ships '
+                    'its own original avatars and this bundle stays free '
+                    'of third-party artwork. A learner may load any '
+                    'Rocketbox avatar through the locker\'s guest stand, '
+                    'where the .glb import already works.'},
+        {'repo': 'readyplayerme/rpm-unity-sdk-core', 'licence': 'MIT',
+         'holder': 'Ready Player Me',
+         'what': 'a Unity SDK that fetches a hosted, service-generated '
+                 'avatar as glTF at runtime',
+         'verdict': 'NOT ADOPTED - it is a client for an external avatar '
+                    'service, and this layer holds that a learner\'s '
+                    'avatar must not require an account or leave the '
+                    'device. The same .glb it produces still imports '
+                    'through the guest stand.'},
+    ],
     'conventions': {
         'format': 'glTF 2.0 binary (.glb)',
         'units': 'metres',
         'up_axis': '+Y',
-        'avatar_rig': ['tc-avatar', 'head', 'headwear', 'arm-L', 'arm-R'],
+        'rig_vocabulary': {
+            'standard': 'VRM / Unity humanoid bone names (vrm-c/UniVRM, MIT)',
+            'exposed': ['head', 'leftUpperArm', 'rightUpperArm'],
+            'not_exposed': ['hips', 'spine', 'chest', 'neck', 'leftLowerArm',
+                            'rightLowerArm', 'leftHand', 'rightHand',
+                            'leftUpperLeg', 'rightUpperLeg', 'leftFoot',
+                            'rightFoot'],
+            'why': 'the rig is capsule-built: only these three are real '
+                   'transform nodes, the rest of the body is baked '
+                   'geometry. Naming only what exists keeps an importer '
+                   'from believing in a skeleton that is not there.',
+        },
+        'avatar_rig': ['tc-avatar', 'head', 'leftUpperArm', 'rightUpperArm',
+                       'headwear'],
         'scene_naming': 'tc-hall-<slug> with room-<strand> floors and the '
                         'guest-asset stand',
         'stripped_on_export': ['Sprite', 'Line', 'Points'],
@@ -124,6 +177,8 @@ DOC = {
 page_src = (ROOT / 'web/build_3d.py').read_text()
 for node in DOC['conventions']['avatar_rig']:
     assert f"'{node}'" in page_src, f'rig node {node} not named in the page'
+for bone in DOC['conventions']['rig_vocabulary']['exposed']:
+    assert f"name = '{bone}'" in page_src, f'VRM bone {bone} not set in the page'
 assert "'tc-hall-' + sg" in page_src, 'hall naming drifted from the page'
 assert "'guest-asset'" in page_src, 'guest stand missing from the page'
 for token in ('GLTFExporter', 'GLTFLoader', 'never uploaded', 'zipOne'):
@@ -132,6 +187,25 @@ for fname in ('gltf/GLTFExporter.js', 'gltf/GLTFLoader.js',
               'utils/TextureUtils.js', 'utils/BufferGeometryUtils.js'):
     assert (ROOT / 'web/vendor/addons' / fname).exists(), f'{fname} not vendored'
 assert (ROOT / 'geo/registry/network.geojson').exists()
+
+# The avatar review is RECORDED from checkouts, not from marketing: where
+# those checkouts sit beside this repo, hold each licence claim against the
+# licence file that repository actually ships.
+import os
+rev = pathlib.Path(os.environ.get('TC_AVATAR_REVIEW', '')) if os.environ.get(
+    'TC_AVATAR_REVIEW') else None
+review_checked = 'checkouts not present; review carried as recorded'
+if rev and rev.is_dir():
+    for sysrec in DOC['avatar_systems_reviewed']:
+        d = rev / sysrec['repo'].split('/')[1]
+        if not d.is_dir():
+            continue
+        lic = next((f for f in d.glob('LICENSE*')), None)
+        assert lic, f"{sysrec['repo']}: no licence file in the checkout"
+        assert 'MIT' in lic.read_text()[:400], \
+            f"{sysrec['repo']}: licence drifted from MIT"
+    review_checked = 'cross-checked against the reviewed checkouts'
+DOC['avatar_review_check'] = review_checked
 
 # the Unity bridge is RECORDED: when the fork's checkout sits beside this
 # repository, hold the claim against it (same pattern as geo vs Locator.X)
