@@ -42,6 +42,7 @@ sims = json.load(open(ROOT / 'sims/registry/sims.json'))
 schools = json.load(open(ROOT / 'schools/registry/schools.json'))
 chapters = json.load(open(ROOT / 'unions/registry/chapters.json'))
 tools = json.load(open(ROOT / 'tools/registry/toolcribs.json'))
+meta = json.load(open(ROOT / 'meta/registry/metaverse.json'))
 skills = json.load(open(ROOT / 'pack/registry/skills.json'))['skills']
 by_slug = {h['slug']: h for h in halls}
 
@@ -110,6 +111,7 @@ content graph and details:
 | Languages (`web/trade_craft_languages.html`) | The Academy overview in {len(LOCALES)} languages | [Languages](Languages.md) |
 | **Simulators** (inside the 3D environment) | {len(sims["sims"])} operable seats — schematic physics, deterministic rubrics, pre-shift walkarounds, bound to real skills in {len(sims["hall_bindings"])} halls | [Simulators](Simulators.md) |
 | **Toolrooms** (inside the 3D + interactive maps) | {len(tools["cribs"])} district tool cribs — {sum(len(c["tools"]) for c in tools["cribs"].values())} tools with the deterministic crib drill | [Toolrooms](Toolrooms.md) |
+| **Metaverse layer** (`meta/registry/metaverse.json`) | The interchange contract: {len(meta["baseline"]["standards"])} open standards claimed (glTF 2.0, WebXR, GeoJSON), {len(meta["baseline"]["not_claimed"])} honestly not, avatar and hall .glb export, learner-local import | [Metaverse-Layer](Metaverse-Layer.md) |
 | **Network geomap** (`web/trade_craft_geomap.html`) | The geo registry on a real WGS84 map (MapLibre, no basemap tiles): campuses, {n_anchors} RECORDED anchors, great-circle routes, RECORDED city frames | [Campus-Map](Campus-Map.md) |
 
 ## The campus at a glance
@@ -715,6 +717,70 @@ re-runs the derivation and requires a byte-identical result.
 {FOOTER}'''
 
 
+def page_meta():
+    std_rows = '\n'.join(
+        f'| `{x["id"]}` | {x["body"]} | {x["role"]} |'
+        for x in meta['baseline']['standards'])
+    not_rows = '\n'.join(
+        f'| `{x["id"]}` | {x["why"]} |' for x in meta['baseline']['not_claimed'])
+    exp_rows = '\n'.join(
+        f'| `{x["file"]}` | {x["from"]} | {x["content"]} |'
+        for x in meta['exports'])
+    rig = ' → '.join(f'`{r}`' for r in meta['conventions']['avatar_rig'])
+    return f'''# The metaverse layer
+
+{meta["baseline"]["note"]}
+
+The contract in one line: **standard files out, the learner\'s own files
+in.** No service, no account, no token, no blockchain — and
+`meta/test.mjs` holds every claim on this page against the page source
+that implements it.
+
+## Standards claimed
+
+| Standard | Body | Role here |
+|---|---|---|
+{std_rows}
+
+The glTF exports open directly in {", ".join(meta["baseline"]["standards"][0]["consumers"])}.
+
+## Honestly not claimed
+
+| Standard | Why not |
+|---|---|
+{not_rows}
+
+## Conventions
+
+{meta["conventions"]["format"]} · {meta["conventions"]["units"]} ·
+up axis {meta["conventions"]["up_axis"]} · scenes named
+`{meta["conventions"]["scene_naming"]}` ·
+{", ".join(f"`{k}`" for k in meta["conventions"]["stripped_on_export"])}
+stripped on export. The avatar rig: {rig}.
+
+## Exports
+
+| File | From | Content |
+|---|---|---|
+{exp_rows}
+
+## Imports
+
+{meta["imports"]["policy"]}
+
+## The Unity bridge
+
+[`{meta["unity_bridge"]["repo"]}`](https://github.com/{meta["unity_bridge"]["repo"]})
+— {meta["unity_bridge"]["upstream"]}. {meta["unity_bridge"]["role"]}.
+**Status:** {meta["unity_bridge"]["status"]}
+({meta["unity_bridge"]["recorded_check"]}.)
+
+## What this layer is not
+
+{meta["honesty"]["status"]}
+{FOOTER}'''
+
+
 PAGES = {
     'Home.md': page_home,
     'Campus-Map.md': page_campus,
@@ -723,6 +789,7 @@ PAGES = {
     'Languages.md': page_languages,
     'Simulators.md': page_sims,
     'Toolrooms.md': page_tools,
+    'Metaverse-Layer.md': page_meta,
     'Flipped-Classroom.md': page_schools,
     'Provenance.md': page_provenance,
     **{f'District-{k}.md': (lambda k=k, d=d: page_district(k, d))
