@@ -55,6 +55,7 @@ sims_reg = json.load(open(ROOT / 'sims/registry/sims.json'))
 parcels_reg = json.load(open(ROOT / 'parcels/registry/parcels.json'))
 tools_reg = json.load(open(ROOT / 'tools/registry/toolcribs.json'))
 stations_reg = json.load(open(ROOT / 'stations/registry/stations.json'))
+agents_reg = json.load(open(ROOT / 'agents/registry/advisors.json'))
 yard = json.load(open(ROOT / 'archive/bac_yard_stations.json'))['yard_placements']
 
 
@@ -220,6 +221,13 @@ DATA = json.dumps({
                  'hosted': chapters_reg['hosted'],
                  'honesty': chapters_reg['honesty']['chapters']},
     'strandmods': strand_modules(),
+    # the advisors who stand in the rooms: their look, where each one stands,
+    # and the fixed list of questions each can answer. A `read` topic carries
+    # only a binding - the page resolves it against the record that already
+    # holds the fact, so nothing here is a second copy of one
+    'advisors': {'who': agents_reg['advisors'],
+                 'honesty': agents_reg['honesty'],
+                 'walk': geo_reg['walk']},
     'i18n': I18N,
 }, ensure_ascii=False, separators=(',', ':'))
 
@@ -2672,6 +2680,298 @@ renderer.domElement.addEventListener('pointermove', (e) => {
 
 """
 
+ADVISOR_JS = """/* ------------------------------------------------ advisor agents -------
+   Somebody to ask. Each advisor is one of the Academy's own rigged
+   avatars, standing in the room it speaks for, breathing and turning its
+   head toward you like any other figure here - and answering a FIXED list
+   of questions.
+
+   Nothing is generated. A topic is either a `say` written in the advisor
+   registry, or a `read` naming a binding that is resolved HERE against the
+   record that already holds the fact - the hall's own condition record,
+   the district's own crib, the seat's own walkaround. So the advisor never
+   becomes a second copy of anything: change the condition record and the
+   safety steward's answer changes with it.
+
+   An advisor is not an instructor and not a gate. No grader reads any of
+   this state, and there is nothing here for one to read. */
+const ADVISOR_TABLE = D.advisors.who;
+let advisorMeshes = [], nearAdvisor = null, curAdvisor = null, curTopic = null;
+
+function advisorCfg(aid, crewSlug) {
+  // an advisor wears locker options only - the look is one a learner could
+  // also choose, and it takes the crew mark of the hall it stands in
+  return { ...D.avatars.defaults, ...ADVISOR_TABLE[aid].crew,
+           crew: crewSlug || D.avatars.defaults.crew };
+}
+
+function clearAdvisors() {
+  for (const m of advisorMeshes) { m.parent?.remove(m); disposeOf(m); }
+  advisorMeshes = []; nearAdvisor = null;
+  const b = document.getElementById('advBtn');
+  if (b) b.style.display = 'none';
+}
+
+// A whole rigged avatar is about forty draw calls. Seven of them standing
+// in one hall is not worth what it costs at the far end of the room, so an
+// advisor carries two bodies: the real one, and a three-box stand-in that
+// reads as a person from across the floor. Only one is ever visible, and
+// the swap happens well outside conversation range.
+const ADV_DETAIL = 20;
+function proxyFigure() {
+  const g = new THREE.Group();
+  const torso = new THREE.Mesh(boxGeo(.44, .62, .26), mat.part);
+  torso.position.y = 1.22;
+  const legs = new THREE.Mesh(boxGeo(.38, .82, .24), mat.wall);
+  legs.position.y = .5;
+  const head = new THREE.Mesh(boxGeo(.22, .24, .22), mat.metal);
+  head.position.y = 1.66;
+  g.add(torso, legs, head);
+  return g;
+}
+
+function placeAdvisor(aid, parent, x, z, crewSlug) {
+  const a = ADVISOR_TABLE[aid];
+  if (!a) return null;
+  const g = new THREE.Group();
+  const body = buildAvatarMesh(advisorCfg(aid, crewSlug));
+  const proxy = proxyFigure();
+  proxy.visible = false;
+  g.add(body, proxy);
+  g.position.set(x, .45, z);
+  g.rotation.y = Math.atan2(-x, -z);          // face the middle of the room
+  g.scale.setScalar(.98);
+  g.userData = { advisor: aid, body, proxy };
+  const plate = label(a.glyph + '  ' + a.name, a.role, .44);
+  plate.position.set(0, 2.3, 0);
+  g.add(plate);
+  parent.add(g); advisorMeshes.push(g);
+  return g;
+}
+
+// the hall: one advisor per room that has one, plus the guide at the door
+function spawnHallAdvisors(h, W, DEP) {
+  for (const [aid, a] of Object.entries(ADVISOR_TABLE)) {
+    if (a.stands_in === 'green') continue;
+    if (a.stands_in === 'door') { placeAdvisor(aid, hallGroup, 2.6,
+      DEP / 2 - 3.2, h.slug); continue; }
+    const r = roomRects.find((x) => x.strand === a.stands_in);
+    if (!r) continue;                         // not every hall has every room
+    const mx = (r.x0 + r.x1) / 2, mz = (r.z0 + r.z1) / 2;
+    const len = Math.hypot(mx, mz) || 1;      // stand a step toward the aisle
+    placeAdvisor(aid, hallGroup, mx - mx / len * .9, mz - mz / len * .9,
+      h.slug);
+  }
+}
+
+// the campus green: the dispatcher, who speaks for the whole site
+function spawnCampusAdvisors() {
+  for (const [aid, a] of Object.entries(ADVISOR_TABLE))
+    if (a.stands_in === 'green')
+      placeAdvisor(aid, campusGroup, 0, 11, null);
+}
+
+/* ---- what an advisor is standing near enough to be asked ---------------- */
+const ADV_REACH = 4.2;
+function advisorNear(pos) {
+  let best = null, bd = 1e9, v = new THREE.Vector3();
+  for (const m of advisorMeshes) {
+    const d = m.getWorldPosition(v).distanceTo(pos);
+    if (d < bd) { bd = d; best = m; }
+  }
+  return bd < ADV_REACH ? best.userData.advisor : null;
+}
+
+// Called every frame: offers the nearest advisor while walking, and keeps
+// them alive - the same breath and head-turn every other figure here gets,
+// so they read as people standing in a room rather than as signage.
+function advisorProximity(dt) {
+  const btn = document.getElementById('advBtn');
+  if (!advisorMeshes.length) { if (nearAdvisor) clearAdvisors(); return; }
+  const t = clock.elapsedTime, v = new THREE.Vector3();
+  for (const m of advisorMeshes) {
+    const near = m.getWorldPosition(v).distanceTo(camera.position) < ADV_DETAIL;
+    m.userData.body.visible = near;
+    m.userData.proxy.visible = !near;
+    if (near) idleBreath(m.userData.body, t + m.position.x, dt);
+  }
+  if (!walkActive) {
+    if (nearAdvisor) { nearAdvisor = null; btn.style.display = 'none'; }
+    return;
+  }
+  const here = isTouch && walkAvatar ? walkAvatar.position : camera.position;
+  const who = advisorNear(here);
+  if (who === nearAdvisor) return;
+  nearAdvisor = who;
+  btn.style.display = who ? '' : 'none';
+  if (who) btn.textContent = ADVISOR_TABLE[who].glyph + '  Ask the '
+    + ADVISOR_TABLE[who].name.toLowerCase();
+}
+
+/* ---- resolving a `read` topic against the record that holds the fact ---- */
+// the seat bound to a hall, if it has one: bindings are a list because a
+// hall can host more than one machine, and the first is the hall's own
+function seatOf(sg) {
+  const bl = D.sims.bindings[sg];
+  return bl && bl.length ? D.sims.sims[bl[0].sim] : null;
+}
+function advRead(bind, aid) {
+  const esc = (s) => String(s).replace(/[&<>]/g,
+    (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+  const h = D.halls.find((x) => x.slug === slug);
+  // a room-bound answer is about the room this advisor is standing in,
+  // never a room picked here: move the steward and the answer moves
+  const st = (ADVISOR_TABLE[aid] || {}).stands_in;
+  const room = () => h && h.rooms.find((r) => r.strand === st);
+  const cond = () => (D.condOver[slug] && D.condOver[slug][st])
+    || D.baseCond[st] || D.baseCond.safety;
+  const li = (xs) => '<ul>' + xs.map((x) => '<li>' + x + '</li>').join('') + '</ul>';
+  const cite = (w) => '<p class="src">' + esc(w) + '</p>';
+  switch (bind) {
+    case 'conditions.ppe': {
+      const c = cond();
+      // what this room demands, and then what the floor the trade is
+      // actually learned on demands - the second is usually the longer
+      // list, and hearing it at the door is the point of the door
+      const bay = (D.condOver[slug] && D.condOver[slug].procedure)
+        || D.baseCond.procedure;
+      const extra = bay.ppe.filter((x) => !c.ppe.includes(x));
+      return li(c.ppe.map(esc))
+        + (extra.length ? '<h3>And on the practice floor, also</h3>'
+            + li(extra.map(esc)) : '')
+        + cite('read from this hall\\u2019s own condition records '
+          + '(surfaces registry, \\u00a724.2)');
+    }
+    case 'conditions.hazards': {
+      const c = cond();
+      return (c.hazards && c.hazards.length
+        ? li(c.hazards.map(esc))
+        : '<p>None declared for this room \\u2014 which is a statement about '
+          + 'the record, not a promise about a real one.</p>')
+        + cite('read from this room\\u2019s condition record');
+    }
+    case 'conditions.env': {
+      const c = cond();
+      return '<p>' + c.lux + ' lux, ' + c.ach + ' air changes an hour, '
+        + c.noise_db + ' dB, ' + c.temp_c[0] + '\\u2013' + c.temp_c[1]
+        + ' \\u00b0C.</p>' + cite('read from this room\\u2019s condition record');
+    }
+    case 'surface.finish': {
+      const r = room();
+      if (!r) return '<p>That room is not laid out in this hall.</p>';
+      const f = D.finCat[D.finishes[slug][r.strand].surface];
+      return '<p><b>' + esc(f.name) + '</b> \\u2014 ' + esc(f.why) + '</p>'
+        + cite('read from the finishes registry');
+    }
+    case 'crib.tools': {
+      const c = h && D.tools.cribs[h.district];
+      if (!c) return '<p>No crib is bound to this hall.</p>';
+      return li(c.tools.map((t) => t.glyph + ' <b>' + esc(t.name) + '</b> \\u2014 '
+        + esc(t.use))) + cite('read from the toolcrib registry');
+    }
+    case 'crib.drill':
+      return '<p><b>' + esc(D.tools.drill.name) + '</b>, '
+        + D.tools.drill.picks + ' picks. ' + esc(D.tools.drill.contract)
+        + '</p>' + cite('read from the toolcrib registry');
+    case 'sim.walkaround': {
+      const s = seatOf(slug);
+      if (!s) return '<p>No seat is bound to this hall, so there is nothing '
+        + 'to walk before a start.</p>';
+      return li(s.walkaround.map((w) => '<b>' + esc(w.point) + '</b> \\u2014 '
+        + esc(w.check))) + cite('read from the simulator registry');
+    }
+    case 'sim.rubric': {
+      const s = seatOf(slug);
+      if (!s) return '<p>No seat is bound to this hall.</p>';
+      return li(s.rubric.map((r) => '<b>' + esc(r.axis) + '</b> \\u2014 '
+        + esc(r.measure) + ' (pass ' + esc(r.pass) + ')'))
+        + '<p>' + esc(D.sims.honesty) + '</p>'
+        + cite('read from the simulator registry');
+    }
+    case 'hall.rooms':
+      return li((h ? h.rooms : []).map((r) => '<b>' + esc(r.label) + '</b> \\u2014 '
+        + esc(r.purpose))) + cite('read from this hall\\u2019s own layout');
+    case 'hall.focus':
+      return '<p>' + esc(h ? h.focus : '') + '</p>'
+        + cite('read from the hall registry');
+    case 'campus.districts': {
+      const c = D.campuses[campusKey];
+      return li(c.districts.map((k) => '<b>' + esc(D.districts[k].name)
+        + '</b> \\u2014 ' + D.districts[k].halls.length + ' halls'))
+        + cite('read from the campus registry');
+    }
+    case 'campus.network':
+      return li(D.geo.routes.filter((r) => r.from === campusKey
+          || r.to === campusKey)
+        .map((r) => '<b>' + esc(D.campuses[r.from === campusKey ? r.to : r.from]
+          .name) + '</b> \\u2014 ' + r.km + ' km, bearing ' + r.bearing_deg
+          + '\\u00b0'))
+        + cite('DERIVED by great circle from the RECORDED coordinates');
+    case 'city.anchors':
+      return li((D.geo.anchors[campusKey] || []).map((a) => '<b>' + esc(a.name)
+        + '</b> \\u2014 ' + a.km + ' km, bearing ' + a.bearing_deg + '\\u00b0'))
+        + cite('RECORDED anchors, Locator.X (Apache-2.0)');
+    case 'city.walk': {
+      const W = D.advisors.walk, r10 = W.bands_m.ten_minute / 1000;
+      const r15 = W.bands_m.fifteen_minute / 1000;
+      const an = D.geo.anchors[campusKey] || [];
+      const inside = an.filter((a) => a.km <= r15);
+      const head = '<p>' + W.pace_note + '.</p>';
+      const body = inside.length
+        ? li(inside.map((a) => '<b>' + esc(a.name) + '</b> \\u2014 ' + a.km
+            + ' km, inside the ' + (a.km <= r10 ? 'ten' : 'fifteen')
+            + '-minute band'))
+        : '<p>Not one recorded place around this campus is inside the '
+          + 'fifteen-minute band \\u2014 the nearest is '
+          + (an.length ? esc(an[0].name) + ' at ' + an[0].km + ' km'
+             : 'not recorded') + '. This is car territory, and saying so is '
+          + 'the useful part.</p>';
+      return head + body + '<p class="src">' + esc(W.honesty.straight_line)
+        + '</p><p class="src">' + esc(W.honesty.not_a_score) + '</p>';
+    }
+  }
+  return '<p>No binding.</p>';
+}
+
+/* ---- the panel --------------------------------------------------------- */
+function openAdvisor(aid, topicId) {
+  const a = ADVISOR_TABLE[aid];
+  if (!a) return;
+  curAdvisor = aid; curTopic = topicId || null;
+  const esc = (s) => String(s).replace(/[&<>]/g,
+    (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+  const t = topicId && a.topics.find((x) => x.id === topicId);
+  const answer = !t ? '<p class="focus">' + esc(a.greeting) + '</p>'
+    : (t.kind === 'read' ? advRead(t.bind, aid)
+       : '<p>' + esc(t.say) + '</p><p class="src">written in '
+         + esc(t.cites) + '</p>');
+  document.getElementById('pbody').innerHTML =
+    '<h2>' + a.glyph + ' ' + esc(a.name) + '</h2>'
+    + '<span class="chip">' + esc(a.role) + '</span>'
+    + (t ? '<h3>' + esc(t.ask) + '</h3>' : '')
+    + answer
+    + '<h3>Ask</h3><div class="asks">'
+    + a.topics.map((x) => '<button class="opt" data-adv="' + aid
+        + '" data-topic="' + x.id + '"' + (t && t.id === x.id
+          ? ' style="border-color:var(--mark)"' : '') + '>'
+        + esc(x.ask) + '</button>').join('')
+    + '</div>'
+    + '<p class="src">' + esc(D.advisors.honesty.status) + '</p>'
+    + '<p class="src">' + esc(D.advisors.honesty.not_scored) + '</p>'
+    + '<p class="src">' + esc(D.advisors.honesty.not_a_person) + '</p>';
+  document.body.classList.add('open');
+}
+
+document.addEventListener('click', (e) => {
+  const b = e.target.closest('[data-adv]');
+  if (b) openAdvisor(b.dataset.adv, b.dataset.topic);
+});
+document.getElementById('advBtn').addEventListener('click', () => {
+  if (nearAdvisor) { if (walkActive && plc.isLocked) plc.unlock();
+                     openAdvisor(nearAdvisor); }
+});
+"""
+
 page = '''<!doctype html>
 <html lang="en">
 <head>
@@ -2787,6 +3087,11 @@ body.open #panel{transform:none}
   width:100%;text-align:start}
 .q .opt.ok{border-color:var(--good);color:var(--good)}
 .q .opt.bad{border-color:var(--crit);color:var(--crit)}
+#panel p.src{color:var(--muted);font-size:11px;margin:6px 0 0}
+.asks{display:flex;flex-direction:column;gap:4px}
+.asks .opt{background:var(--sunk);border:1px solid var(--rule);color:var(--ink);border-radius:6px;padding:8px 10px;cursor:pointer;font:inherit;text-align:start;min-height:40px}
+.asks .opt:hover{border-color:var(--mark)}
+#advBtn{right:18px;bottom:158px}
 @media(prefers-reduced-motion:reduce){#panel{transition:none}}
 </style>
 </head>
@@ -2818,6 +3123,7 @@ body.open #panel{transform:none}
 </div>
 <div id="joy" style="display:none"><div id="knob"></div></div>
 <button id="emoBtn" class="fab" style="display:none">😀</button>
+<button id="advBtn" class="fab wide" style="display:none"></button>
 <button id="actBtn" class="fab wide" style="display:none"></button>
 <div id="hud"><h2 id="hname"></h2><p class="focus" id="hfocus"></p><p class="hint" id="hint"></p></div>
 <canvas id="mm" width="150" height="150" style="display:none"></canvas>
@@ -3508,6 +3814,8 @@ function buildHall(sg) {
     if (Math.abs(px) > 60 || Math.abs(pz) > 60) continue;
     fn(hallGroup, px, pz);
   }
+  clearAdvisors();
+  spawnHallAdvisors(h, W, DEP);
   scene.add(hallGroup);
 
   document.getElementById('hname').textContent = h.name + scoreChip();
@@ -4055,6 +4363,8 @@ function buildCampus(key) {
     campusGroup.add(m);
     fogBanks.push({ m, ang, rad, sp: .015 + (i % 3) * .008 });
   }
+  clearAdvisors();
+  spawnCampusAdvisors();
   scene.add(campusGroup);
   buildMinimap(key, R);
 }
@@ -4471,6 +4781,7 @@ function walkStep(dt) {
 __SIM_JS__
 
 __AVATAR_JS__
+__ADVISOR_JS__
 
 /* ---------------------------------------------------------------- UI ---- */
 function renderChrome() {
@@ -4724,6 +5035,15 @@ renderer.domElement.addEventListener('pointerdown', (e) => {
     const wh = ray.intersectObjects(waBeacons, false)[0];
     if (wh?.object.userData.wapt !== undefined)
       return openWa(wh.object.userData.wapt);
+  }
+  const ahit = ray.intersectObjects(advisorMeshes, true)[0];
+  if (ahit) {
+    let o = ahit.object;
+    while (o && !o.userData.advisor) o = o.parent;
+    if (o) {
+      if (walkActive && plc.isLocked) plc.unlock();
+      return openAdvisor(o.userData.advisor);
+    }
   }
   const hit = ray.intersectObjects(beacons, false)[0];
   if (hit?.object.userData.station) {
@@ -5002,6 +5322,16 @@ window.__tc3dDo = (fn, arg) => {
   else if (fn === 'wa') openWa(arg);
   else if (fn === 'quality') { qAuto = false; setQuality(arg); }
   else if (fn === 'emote') playEmote(arg);
+  else if (fn === 'advisor') openAdvisor(...String(arg).split(':'));
+  // test hooks: stand the walker beside an advisor, or well away from one
+  else if (fn === 'walkTo' || fn === 'walkAway') {
+    const m = advisorMeshes.find((x) => x.userData.advisor === arg);
+    if (m && walkAvatar) {
+      const v = m.getWorldPosition(new THREE.Vector3());
+      const off = fn === 'walkTo' ? 1.4 : 40;
+      walkAvatar.position.set(v.x + off, walkAvatar.position.y, v.z + off);
+    }
+  }
 };
 window.__tc3d = () => ({ view, buildings: buildings.length, plates: plates.length,
   beacons: beacons.length, floors: floors.length, slug, campusKey, loc, walkActive,
@@ -5027,6 +5357,8 @@ window.__tc3d = () => ({ view, buildings: buildings.length, plates: plates.lengt
   meta: { exp: lastExport,
     imp: importedGlb ? { nodes: importedGlb.nodes, name: importedGlb.name } : null },
   quality: qLevel, px: renderer.getPixelRatio(),
+  advisors: { here: advisorMeshes.map((m) => m.userData.advisor),
+              near: nearAdvisor, open: curAdvisor, topic: curTopic },
   rig: (() => {                       // the VRM skeleton, as it really is
     const av = avatarMesh ?? walkAvatar ?? simRider;
     if (!av?.userData?.bones) return null;
@@ -5099,6 +5431,7 @@ renderer.setAnimationLoop(() => {
   // in a sim's operator view the sim owns the camera - the orbit controls
   // must not re-clamp it to their own distance limits
   else if (!sim || controls.enabled) controls.update();
+  advisorProximity(dt);
   renderer.render(scene, camera);
 });
 </script>
@@ -5109,6 +5442,7 @@ renderer.setAnimationLoop(() => {
 page = page.replace('__DATA__', DATA).replace('__PIPELINE_JS__', PIPELINE_JS)
 page = page.replace('__SIM_JS__', SIM_JS)
 page = page.replace('__AVATAR_JS__', AVATAR_JS)
+page = page.replace('__ADVISOR_JS__', ADVISOR_JS)
 out = HERE / 'trade_craft_3d.html'
 out.write_text(page)
 print(f"written: {len(page):,} bytes | {len(HALLS)} halls | "
