@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-11",
- "source_stamp": "8461bc5e84ee034d",
+ "source_stamp": "102585aa66162ae4",
  "baseline": {
   "note": "built to the open interchange baseline. No private \"metaverse standard\" is referenced or claimed: what is listed under standards is implemented and tested, and what is listed under not_claimed is honestly not.",
   "standards": [
@@ -74,32 +74,59 @@
   "up_axis": "+Y",
   "rig_vocabulary": {
    "standard": "VRM / Unity humanoid bone names (vrm-c/UniVRM, MIT)",
+   "required_complete": true,
    "exposed": [
-    "head",
-    "leftUpperArm",
-    "rightUpperArm"
-   ],
-   "not_exposed": [
     "hips",
     "spine",
     "chest",
     "neck",
+    "head",
+    "leftUpperArm",
     "leftLowerArm",
-    "rightLowerArm",
     "leftHand",
+    "rightUpperArm",
+    "rightLowerArm",
     "rightHand",
     "leftUpperLeg",
-    "rightUpperLeg",
+    "leftLowerLeg",
     "leftFoot",
+    "rightUpperLeg",
+    "rightLowerLeg",
     "rightFoot"
    ],
-   "why": "the rig is capsule-built: only these three are real transform nodes, the rest of the body is baked geometry. Naming only what exists keeps an importer from believing in a skeleton that is not there."
+   "not_exposed": [
+    "upperChest",
+    "leftShoulder",
+    "rightShoulder",
+    "leftToes",
+    "rightToes",
+    "leftEye",
+    "rightEye",
+    "jaw"
+   ],
+   "why": "the hierarchy carries every bone VRM requires of a humanoid, nested as the spec nests them, so a Unity Humanoid or VRM importer maps the whole skeleton. The bones left out are VRM OPTIONAL ones the capsule body has no articulation for - naming them would claim joints that cannot move.",
+   "articulation": "the bones are driven, not decorative: the walk cycle swings the legs in opposition with the knees bending only on the return, the arms counter-swing at the elbow, the locker idle breathes through the spine, and the neck and head turn toward the viewer within a human range (neck 0.6 rad, head 0.4 rad). The gait is keyed to distance covered and the settle decays per second, so both look the same at any frame rate. Reduced-motion viewers keep the rest pose.",
+   "no_animation_track": "the motion is computed at view time and no animation clip is exported: the .glb carries the rest-pose skeleton only, which is what a Unity Humanoid or VRM import needs to retarget its own clips."
   },
   "avatar_rig": [
    "tc-avatar",
+   "hips",
+   "spine",
+   "chest",
+   "neck",
    "head",
    "leftUpperArm",
+   "leftLowerArm",
+   "leftHand",
    "rightUpperArm",
+   "rightLowerArm",
+   "rightHand",
+   "leftUpperLeg",
+   "leftLowerLeg",
+   "leftFoot",
+   "rightUpperLeg",
+   "rightLowerLeg",
+   "rightFoot",
    "headwear"
   ],
   "scene_naming": "tc-hall-<slug> with room-<strand> floors and the guest-asset stand",
@@ -138,5 +165,5 @@
  "honesty": {
   "status": "a metaverse layer is file formats and honesty, not a place: exports are plain Khronos glTF of this bundle's own original meshes; imports never leave the device; no service, account, token or blockchain is involved, nothing here is an NFT. The single-file artifact build carries the exporter and loader inline and delivers exports as a viewer-confirmed .zip; only where neither door exists do the buttons degrade to a HUD line instead of failing."
  },
- "avatar_review_check": "cross-checked against the reviewed checkouts"
+ "avatar_review_check": "checkouts not present; review carried as recorded"
 }
