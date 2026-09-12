@@ -104,6 +104,9 @@ ok('the panel points to each runner\'s own README rather than embedding install 
   /README has the exact install\/run steps/.test(page));
 ok('naming the real runners still never puts a key NAME on the page - that bar holds everywhere, not just near the prompt builder',
   !page.includes('REACTOR_API_KEY') && !page.includes('GEMINI_API_KEY'));
+ok('the panel also points back to the training-data records - the pack it pairs with, not just the runners it hands off to',
+  page.includes(reg.honesty.every_module_covered)
+  && /orbisRecBtn/.test(page) && /openRecords/.test(page));
 ok('no fetch, socket or reactor/gemini host reference sits near the panel that names the runners either',
   (() => {
     if (!page.includes('function openOrbis(')) return false;

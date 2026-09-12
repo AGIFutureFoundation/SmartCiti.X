@@ -116,6 +116,17 @@ ok('the trace is folded into the sim episode\'s own outcome, never recorded as a
 ok('capturing a trace requires the sim to actually be running - gated on the same sim object the gauges come from',
   /function traceStep\(dt\) \{\s*if \(!traceOn \|\| !sim \|\| !sim\.gauges/.test(page));
 
+/* ---------------------------------------------------------- orbis pairing --- */
+// the records panel used to say nothing about orbis/ even though the two
+// packs are declared as a pair; it now names the fact and links to it.
+ok('the registry states the orbis pairing as a real fact, not a bare cross-reference',
+  /this log only ever gets an episode once a learner\s+actually trains here/
+    .test(reg.honesty.orbis_pairing)
+  && /never a substitute for this\s+real one/.test(reg.honesty.orbis_pairing));
+ok('the records panel actually renders that pairing fact and links to the Orbis panel',
+  page.includes(reg.honesty.orbis_pairing)
+  && /trOrbisBtn/.test(page) && /openOrbis/.test(page));
+
 /* -------------------------------------------- downstream of a final score --- */
 ok('every sim\'s pass/fail expression is computed first, with no reference to training state',
   [...page.matchAll(/simResults\('[a-z-]+', rows,\s*([^)]*)\)/g)]

@@ -278,11 +278,12 @@ DATA = json.dumps({
                      'consumer', 'not_a_demo_file', 'no_agent_trained'),
                  'kinds': trim(training_reg['episode_kinds'],
                      'granularity', 'what'),
-                 # the two lines actually shown in the records panel;
+                 # the lines actually shown in the records panel;
                  # device-local reuses the existing progress.local i18n
                  # string, and the rest stays registry+wiki only
                  'honesty': {k: training_reg['honesty'][k]
-                             for k in ('schematic', 'not_scored')}},
+                             for k in ('schematic', 'not_scored',
+                                       'orbis_pairing')}},
     # the Orbis prompt contract: text-only, built locally from the union
     # registry already shipped above - no key, no fetch, no second copy
     # of a hall's name or focus. See orbis/build.py for the full contract
@@ -290,7 +291,8 @@ DATA = json.dumps({
     'orbis': {'model': orbis_reg['model']['id'],
               'template': orbis_reg['prompt_template'],
               'honesty': {k: orbis_reg['honesty'][k]
-                          for k in ('synthetic_not_real', 'no_network_here')},
+                          for k in ('synthetic_not_real', 'no_network_here',
+                                    'every_module_covered')},
               # this panel only ever builds text - see D.orbis.runners for
               # the two real, separately-installed apps that actually
               # generate a clip. Deliberately just a path and a model id:
@@ -5858,6 +5860,8 @@ function openOrbis() {
     <div id="orbisBox"></div>
     <p style="color:var(--muted);font-size:12px">${esc(D.orbis.honesty.synthetic_not_real)}</p>
     <p style="color:var(--muted);font-size:12px">${esc(D.orbis.honesty.no_network_here)}</p>
+    <p style="color:var(--muted);font-size:12px">${esc(D.orbis.honesty.every_module_covered)}
+       <button class="barbtn" id="orbisRecBtn" style="font-size:11px;padding:2px 8px">\\u23f1 open training-data records</button></p>
     <h3>Want to actually generate a clip?</h3>
     <p style="color:var(--muted);font-size:12px">This panel only ever builds the text above. Two real, separately-runnable apps checked into this repo do the actual generation \\u2014 install and run either yourself, with your own Reactor API key, on your own machine:</p>
     <ul style="color:var(--muted);font-size:12px;padding-left:18px">${runnerRows}</ul>
@@ -5866,6 +5870,7 @@ function openOrbis() {
   const ta = document.getElementById('orbisTa');
   ta.value = orbisPrompt(slug); ta.select();
   try { navigator.clipboard?.writeText(ta.value); } catch (e) { /* manual copy */ }
+  document.getElementById('orbisRecBtn')?.addEventListener('click', openRecords);
 }
 window.__tc3dOrbis = openOrbis;
 
@@ -6327,11 +6332,14 @@ function openRecords() {
     <div id="trBox"></div>
     <p style="color:var(--muted);font-size:12px">${D.training.honesty.schematic}</p>
     <p style="color:var(--muted);font-size:12px">${D.training.honesty.not_scored}</p>
+    <p style="color:var(--muted);font-size:12px">${D.training.honesty.orbis_pairing}
+       <button class="barbtn" id="trOrbisBtn" style="font-size:11px;padding:2px 8px">\U0001f3ac open Orbis</button></p>
     <p style="color:var(--muted);font-size:12px;margin-top:12px">${t('progress.local')} ${D.sims.honesty}</p>
     <style>#pbody td,#pbody th{border-top:1px solid var(--rule);padding:5px 8px;color:var(--muted);font-weight:400}</style>`;
   document.body.classList.add('open');
   document.getElementById('trOn')?.addEventListener('change', (e) => trainingToggle(e.target.checked));
   document.getElementById('traceOn')?.addEventListener('change', (e) => traceToggle(e.target.checked));
+  document.getElementById('trOrbisBtn')?.addEventListener('click', openOrbis);
 }
 /* The progress card: the record drawn as one image the learner can save
    (long-press / right-click - the page never uploads it anywhere). */
