@@ -52,6 +52,7 @@
   "sim.sound": "Ton",
   "sim.view": "Ansicht",
   "sim.choose": "Simulator wählen",
+  "sim.operator": "Den Bediener fragen",
   "progress.local": "Der Fortschritt wird nur auf diesem Gerät gespeichert.",
   "city.note": "Stadtebene: Orte aus Locator.X ÜBERNOMMEN; Straßen, Brücken und Gewässer schematisch",
   "chapters.hall": "Regionales Kapitelhaus",

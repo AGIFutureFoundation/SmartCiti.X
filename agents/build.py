@@ -30,6 +30,18 @@ worker, steward or union officer: the figures are the Academy's own
 schematic avatars wearing the Academy's own crew marks. And not a gate -
 talking to one changes no score and unlocks nothing, which the suite
 asserts by reading the graders.
+
+THE OPERATOR, AND THE `seat.*` BINDINGS. Eight advisors stand in hall
+rooms or on the green; the ninth, the Operator, stands inside a
+simulator's own yard instead (`stands_in: 'yard'`) - a place this build
+did not have a voice in before now. The `sim.*` bindings the Inspector
+and Foreman already use resolve against a HALL's first bound seat (a
+hall can train more than one machine, and only the first ever got
+covered); the Operator's `seat.*` bindings resolve against whichever
+seat is ACTUALLY running when asked, so a hall with three machines gets
+three correct answers, not one answer repeated three times. Same
+contract as every other topic here - read at view time from the
+simulator registry, nothing copied into this one.
 """
 import hashlib
 import json
@@ -55,6 +67,15 @@ BINDINGS = {
     'crib.drill': 'how the crib check is scored',
     'sim.walkaround': 'the pre-shift walkaround points for this hall\'s seat',
     'sim.rubric': 'what the seat at this hall actually measures',
+    'seat.task': 'the goal of the seat currently running, read live rather '
+                 'than from the hall it happens to have been entered from',
+    'seat.controls': 'the control scheme of the seat currently running',
+    'seat.dash': 'the gauges the seat currently running puts on the dash',
+    'seat.rubric': 'what the seat currently running actually measures',
+    'seat.walkaround': 'the pre-shift walkaround points for the seat '
+                       'currently running',
+    'seat.trade': 'every hall that actually trains on the seat currently '
+                  'running, not just the one the learner is standing in',
     'hall.rooms': 'the rooms this hall is laid out with',
     'hall.focus': 'what this hall is for',
     'campus.districts': 'the districts this campus holds',
@@ -249,6 +270,30 @@ ADVISORS = {
                     'says so on every entry rather than in a footnote.'},
         ],
     },
+    'operator': {
+        'name': 'Operator',
+        'role': 'stands at the machine and walks you through the seat',
+        'stands_in': 'yard',           # inside the sim's own yard, not a room
+        'glyph': '👷',
+        'crew': {'top': 'work-shirt', 'headwear': 'hard-cap',
+                 'vest': 'hi-vis-2', 'extras': 'radio'},
+        'greeting': 'Before you touch a control, ask me what this seat is '
+                    'and what it actually measures.',
+        'topics': [
+            {'id': 'task', 'ask': 'What am I trying to do here?',
+             'kind': 'read', 'bind': 'seat.task'},
+            {'id': 'controls', 'ask': 'What do the controls do?',
+             'kind': 'read', 'bind': 'seat.controls'},
+            {'id': 'gauges', 'ask': 'What are the gauges telling me?',
+             'kind': 'read', 'bind': 'seat.dash'},
+            {'id': 'rubric', 'ask': 'What does this seat actually measure?',
+             'kind': 'read', 'bind': 'seat.rubric'},
+            {'id': 'walk', 'ask': 'What should I walk before I start?',
+             'kind': 'read', 'bind': 'seat.walkaround'},
+            {'id': 'trade', 'ask': 'Who actually trains on this machine?',
+             'kind': 'read', 'bind': 'seat.trade'},
+        ],
+    },
     'dispatcher': {
         'name': 'Dispatcher',
         'role': 'sends you to the right campus and the right hall',
@@ -323,7 +368,7 @@ for aid, a in ADVISORS.items():
             f'{aid}: {sec}={pick} is not an option in the locker'
 for aid, a in ADVISORS.items():
     where = a['stands_in']
-    assert where in strands or where in ('door', 'green'), \
+    assert where in strands or where in ('door', 'green', 'yard'), \
         f'{aid}: stands in {where}, which is not a room strand'
     assert a['topics'], f'{aid}: an advisor with nothing to say'
     seen = set()

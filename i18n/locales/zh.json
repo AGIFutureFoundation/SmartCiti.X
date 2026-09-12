@@ -52,6 +52,7 @@
   "sim.sound": "声音",
   "sim.view": "视角",
   "sim.choose": "选择模拟器",
+  "sim.operator": "询问操作员",
   "progress.local": "进度仅保存在此设备上。",
   "city.note": "城市图层：地点记录自 Locator.X；街道、桥梁与水体为示意",
   "chapters.hall": "地区分会大厅",

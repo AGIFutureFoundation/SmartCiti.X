@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-11",
- "source_stamp": "fb804bf6edeac8c3",
+ "source_stamp": "b07538521b630d2e",
  "contract": "a topic is either a `say` - a sentence written in this registry about this bundle's own policy, with the record it comes from named in `cites` - or a `read` - a binding naming the page-data path the answer must be read from at view time. No `read` answer is copied into this registry, so the record it quotes stays the one truth for that fact.",
  "honesty": {
   "status": "an advisor is a scripted guide, not an instructor and not an AI: no model runs behind one, nothing is generated at view time, no network is reached, and every line an advisor can say is written in this registry or read from another registry in this bundle.",
@@ -13,9 +13,9 @@
   "closed_book": "an advisor cannot be asked an open question because it has no way to answer one. The topics below are all of them, and the suite counts them."
  },
  "counts": {
-  "advisors": 8,
-  "topics": 28,
-  "read_bindings": 14,
+  "advisors": 9,
+  "topics": 34,
+  "read_bindings": 20,
   "say_topics": 14
  },
  "bindings": {
@@ -27,6 +27,12 @@
   "crib.drill": "how the crib check is scored",
   "sim.walkaround": "the pre-shift walkaround points for this hall's seat",
   "sim.rubric": "what the seat at this hall actually measures",
+  "seat.task": "the goal of the seat currently running, read live rather than from the hall it happens to have been entered from",
+  "seat.controls": "the control scheme of the seat currently running",
+  "seat.dash": "the gauges the seat currently running puts on the dash",
+  "seat.rubric": "what the seat currently running actually measures",
+  "seat.walkaround": "the pre-shift walkaround points for the seat currently running",
+  "seat.trade": "every hall that actually trains on the seat currently running, not just the one the learner is standing in",
   "hall.rooms": "the rooms this hall is laid out with",
   "hall.focus": "what this hall is for",
   "campus.districts": "the districts this campus holds",
@@ -288,6 +294,57 @@
      "kind": "say",
      "cites": "schools/registry/schools.json",
      "say": "Proposed ones. Every district named in the schools pack is recorded as a proposed partner - no district has reviewed or agreed to any of it, and the registry says so on every entry rather than in a footnote."
+    }
+   ]
+  },
+  "operator": {
+   "name": "Operator",
+   "role": "stands at the machine and walks you through the seat",
+   "stands_in": "yard",
+   "glyph": "\ud83d\udc77",
+   "crew": {
+    "top": "work-shirt",
+    "headwear": "hard-cap",
+    "vest": "hi-vis-2",
+    "extras": "radio"
+   },
+   "greeting": "Before you touch a control, ask me what this seat is and what it actually measures.",
+   "topics": [
+    {
+     "id": "task",
+     "ask": "What am I trying to do here?",
+     "kind": "read",
+     "bind": "seat.task"
+    },
+    {
+     "id": "controls",
+     "ask": "What do the controls do?",
+     "kind": "read",
+     "bind": "seat.controls"
+    },
+    {
+     "id": "gauges",
+     "ask": "What are the gauges telling me?",
+     "kind": "read",
+     "bind": "seat.dash"
+    },
+    {
+     "id": "rubric",
+     "ask": "What does this seat actually measure?",
+     "kind": "read",
+     "bind": "seat.rubric"
+    },
+    {
+     "id": "walk",
+     "ask": "What should I walk before I start?",
+     "kind": "read",
+     "bind": "seat.walkaround"
+    },
+    {
+     "id": "trade",
+     "ask": "Who actually trains on this machine?",
+     "kind": "read",
+     "bind": "seat.trade"
     }
    ]
   },

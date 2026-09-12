@@ -30,9 +30,9 @@ const topics = all.flatMap(([id, a]) => a.topics.map((t) => [id, t]));
 ok('every advisor has a name, a role, a place to stand, a glyph and a greeting',
   all.every(([, a]) => a.name.length > 3 && a.role.length > 10
     && a.stands_in && a.glyph && a.greeting.length > 20));
-ok('every advisor stands somewhere real: a room strand, the door, or the campus green',
+ok('every advisor stands somewhere real: a room strand, the door, the campus green, or a sim\'s own yard',
   all.every(([, a]) => a.stands_in in surf.base_conditions
-    || ['door', 'green'].includes(a.stands_in)));
+    || ['door', 'green', 'yard'].includes(a.stands_in)));
 ok('no two advisors stand in the same place - one voice per room',
   new Set(all.map(([, a]) => a.stands_in)).size === all.length);
 ok('every topic is a question, and every topic id is unique within its advisor',
@@ -103,6 +103,37 @@ ok('the page builds them, places them, and lets them be asked',
     'function advisorNear('].every((f) => page.includes(f)));
 ok('every advisor the registry declares actually reaches the page',
   all.every(([id]) => page.includes(`"${id}"`)));
+
+/* --------------------------------------------------------- the operator --- */
+// The ninth advisor stands in a simulator's own yard, not a hall room, and
+// its topics resolve against the ACTUAL running seat rather than the
+// hall's first bound one - the gap the module docstring names by hand.
+ok('the operator stands in a sim\'s own yard, a place no other advisor uses',
+  who.operator?.stands_in === 'yard'
+  && all.filter(([, a]) => a.stands_in === 'yard').length === 1);
+ok('every one of the operator\'s topics binds to a seat.* key, never a sim.* one',
+  who.operator.topics.every((t) => t.kind === 'read' && t.bind.startsWith('seat.')));
+ok('every seat.* binding is used only by the operator - no other advisor reaches into a running seat',
+  Object.keys(reg.bindings).filter((b) => b.startsWith('seat.')).every((b) =>
+    topics.filter(([, t]) => t.bind === b).every(([id]) => id === 'operator')));
+ok('the page places the operator inside startSim(), not spawnHallAdvisors()',
+  (() => {
+    const fnBody = page.split('function startSim(simId) {')[1]?.slice(0, 4000) ?? '';
+    return /placeAdvisor\('operator', sim\.group/.test(fnBody);
+  })());
+ok('the operator\'s seat.* bindings resolve against curSimId, not seatOf(hall) - the hall/seat scoping bug the docstring names',
+  ['seat.task', 'seat.controls', 'seat.dash', 'seat.rubric', 'seat.walkaround', 'seat.trade']
+    .every((b) => {
+      const chunk = page.split(`case '${b}':`)[1]?.slice(0, 260) ?? '';
+      return /D\.sims\.sims\[curSimId\]/.test(chunk);
+    }));
+ok('the operator button only ever shows while a seat is actually running',
+  /getElementById\('opBtn'\)/.test(page)
+  && /getElementById\('opBtn'\)\.style\.display = 'none'/.test(page));
+ok('leaving the seat drops the operator\'s mesh so it never lingers into hall or campus view',
+  /function clearOperatorAdvisor/.test(page)
+  && page.split('function teardownSim()')[1]?.slice(0, 200)
+      .includes('clearOperatorAdvisor()'));
 
 /* ------------------------------------------------------------- the walk --- */
 const geo = JSON.parse(readFileSync(

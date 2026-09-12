@@ -890,7 +890,8 @@ guarded in the page that calls it:
 def page_advisors():
     rows = []
     for aid, a in advisors['advisors'].items():
-        where = {'door': 'the hall door', 'green': 'the campus green'}.get(
+        where = {'door': 'the hall door', 'green': 'the campus green',
+                 'yard': "the running seat's own yard"}.get(
             a['stands_in'], f"the {a['stands_in']} room")
         asks = '<br>'.join(
             f"{t['ask']} *({'reads ' + t['bind'] if t['kind'] == 'read' else 'written here'})*"
