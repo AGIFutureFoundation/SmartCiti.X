@@ -95,7 +95,7 @@ to every door, and an alley tying the rows back to the ring. Roads and
 buildings are laid out in one cluster-local frame with a depth-aware row
 pitch, and the build checks itself: any road rectangle overlapping any
 building rectangle counts as a fault, and the headless harness asserts
-zero across all three campuses. Building rooflines are typed by district
+zero across every campus. Building rooflines are typed by district
 (sawtooth for the industrial districts, gabled for the finish trades,
 flat with rooftop plant elsewhere), with corner trims in the district hue.
 

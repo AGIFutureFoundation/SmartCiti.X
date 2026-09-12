@@ -3,13 +3,14 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-11",
- "source_stamp": "675e99b08f36e9d8",
+ "source_stamp": "2323215c8e78ff7c",
  "contract": "source contract, not a data copy: no parcel, imagery or elevation record is stored in this repository. The maps request them from the authority in the learner's own browser at view time, render what comes back, and fall back to the SCHEMATIC layers - or say the lookup failed - when the request fails.",
  "recorded_check": "cross-checked against the Locator.X checkout",
  "honesty": {
   "records": "a parcel record is a public administrative record, not a claim about any person: no owner is named, and the maps render geometry and use-class only.",
   "fidelity": "footprints fetched from an authority are RECORDED and drawn as they arrive; everything the Academy draws around them - the campus buildings, roads and water - remains SCHEMATIC and is labelled so on the page.",
-  "availability": "no endpoint here is guaranteed: authorities move datasets. A failed fetch is a fallback, never an error, and the page says which layer it is showing."
+  "availability": "no endpoint here is guaranteed: authorities move datasets. A failed fetch is a fallback, never an error, and the page says which layer it is showing.",
+  "hub_campuses": "a records contract exists only where the Academy draws real buildings for a real-world footprint to sit under. A hub campus (Houston) hosts no home district and draws no district ring, so it carries no parcel contract of its own - there is no ground here for one to overlay."
  },
  "sources": {
   "new-orleans": {

@@ -180,11 +180,19 @@ HONESTY = {
     'availability': 'no endpoint here is guaranteed: authorities move '
                     'datasets. A failed fetch is a fallback, never an '
                     'error, and the page says which layer it is showing.',
+    'hub_campuses': 'a records contract exists only where the Academy '
+                    'draws real buildings for a real-world footprint to '
+                    'sit under. A hub campus (Houston) hosts no home '
+                    'district and draws no district ring, so it carries '
+                    'no parcel contract of its own - there is no ground '
+                    'here for one to overlay.',
 }
 
 # ---------------------------------------------------------------- checks ---
 campuses = json.load(open(ROOT / 'unions/registry/campuses.json'))['campuses']
-assert set(SOURCES) == set(campuses), 'a records source per campus, exactly'
+hub_campuses = {ck for ck, c in campuses.items() if not c['districts']}
+assert set(SOURCES) == set(campuses) - hub_campuses, \
+    'a records source per district-bearing campus, exactly'
 
 geo = json.load(open(ROOT / 'geo/registry/campuses_geo.json'))
 for ck, s in SOURCES.items():

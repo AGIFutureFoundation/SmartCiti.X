@@ -23,7 +23,7 @@ content graph and details:
 | **Simulators** (inside the 3D environment) | 7 operable seats — schematic physics, deterministic rubrics, pre-shift walkarounds, bound to real skills in 21 halls | [Simulators](Simulators.md) |
 | **Toolrooms** (inside the 3D + interactive maps) | 8 district tool cribs — 96 tools with the deterministic crib drill | [Toolrooms](Toolrooms.md) |
 | **Advisors** (in the rooms and on the green) | 8 scripted guides answering 28 fixed questions — 14 of them read straight from the registry that holds the fact | [Advisors](Advisors.md) |
-| **The world** (sky, weather, ground, animals) | 6 weather states over per-campus atmospheres, 6 generated ground surfaces and 36 animals — and not one texture file anywhere | [World](World.md) |
+| **The world** (sky, weather, ground, animals) | 6 weather states over per-campus atmospheres, 6 generated ground surfaces and 46 animals — and not one texture file anywhere | [World](World.md) |
 | **The signs** (every word in the 3D world) | 13 kinds over 10 shapes — shape carries the category, colour the provenance, type the rank, and every sign reacts to where you are looking | [Signs](Signs.md) |
 | **Training data** (device-local, opt-out, exportable) | 3 episode kinds recorded from real interactions — sim outcomes, advisor exchanges, walkaround checks — shaped for the org's own `ml-agents` fork, never read by a grader | [Training-Data](Training-Data.md) |
 | **The network roadmap** (3 built, 7 candidates) | the path from three RECORDED campuses to ten walkable worlds — two honest provenance tiers, and the real checklist a candidate has to clear to become built | [Roadmap](Roadmap.md) |
@@ -64,6 +64,7 @@ no site surveyed and no address recorded:
 | **Treasure Island Campus** | San Francisco, California | The flagship: structure, systems and finish on the bay | Structural, Building Systems, Envelope & Finish | 51 |
 | **Oakland Waterfront Campus** | Oakland, California | Port, plant and heavy industry on the working estuary | Heavy Industry, Transport & Mobility, Earthworks & Plant | 32 |
 | **Crescent Works Campus** | New Orleans, Louisiana | Energy, water and environmental response on the Gulf | Energy & Utilities, Survey, Safety & Environment | 28 |
+| **Bayou Energy Hub** | Houston, Texas | The network's hub: no home district of its own, and a regional chapter seat for every one of the 111 trades |  | 0 |
 
 ### Real geography
 
@@ -77,7 +78,10 @@ map; it does not claim a parcel.
 |---|---|
 | San Francisco ↔ Oakland | 9.0 km |
 | San Francisco ↔ New Orleans | 3,089.9 km |
+| San Francisco ↔ Houston | 2,639.9 km |
 | Oakland ↔ New Orleans | 3,081.0 km |
+| Oakland ↔ Houston | 2,631.0 km |
+| New Orleans ↔ Houston | 511.3 km |
 
 The registry also ships `geo/registry/campuses.geojson` — standard GeoJSON,
 directly consumable by any Mapbox/MapLibre-compatible stack. The 3D network
@@ -109,9 +113,9 @@ everything drawn between them schematic.
 
 Every hall keeps its **home campus** — where its district trains — and
 holds a **regional chapter** at each of the other two, so all 111 trades
-train in all three regions: **333 chapter seats** in
+train in all three regions: **444 chapter seats** in
 total, and each campus plaza carries a Regional Chapter Hall listing the
-60/79/83 unions it hosts
+60/79/83/111 unions it hosts
 from elsewhere. This is the Academy's own regional structure across its
 planned campuses, not a claim about any real union's locals or
 jurisdictions — no local is named.

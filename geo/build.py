@@ -2,19 +2,29 @@
 """
 SmartCiti.X : Trade Craft Academy — the geo pack builder.
 
-Real geography for the three-campus network: WGS84 coordinates, great-circle
+Real geography for the campus network: WGS84 coordinates, great-circle
 distances, and true bearings, emitted both as a registry and as standard
 GeoJSON (the interchange format every Mapbox/MapLibre-compatible stack
 consumes directly).
 
 PROVENANCE, per point, in the record itself — the discipline is adopted from
 Locator.X's rooms module (RECORDED / DERIVED / SCHEMATIC; Apache-2.0, the
-same foundation), where nothing is stated that the source does not support:
+same foundation), where nothing is stated that the source does not support.
+A fourth tier, AUTHORED, was added for the roadmap pack's candidate cities
+and is used here for the same reason: it is a materially weaker claim than
+RECORDED, and it is labelled as one rather than dressed up as one of the
+three tiers this build can actually check itself against.
 
   - Oakland's coordinates are RECORDED: copied verbatim from Locator.X's
     city table (src/app.js, CITIES), which is real committed data.
   - Treasure Island and New Orleans are DERIVED: well-known place centroids
     authored here, since neither appears in that table.
+  - Houston is AUTHORED: widely-published public geography (the kind a
+    city's own Wikipedia infobox states), typed here from general
+    knowledge. No sibling source cross-checks it, unlike the other three -
+    the same honesty this pack's roadmap already states for every
+    candidate city, carried through now that Houston is built rather than
+    proposed.
   - Everything downstream of the coordinates (distances, bearings) is
     computed, and the suite recomputes it rather than trusting it.
 
@@ -44,6 +54,10 @@ GEO = {
                         'Locator.X city table (src/app.js CITIES), Apache-2.0'),
     'new-orleans':     (29.9511, -90.0715, 'DERIVED',
                         'New Orleans centroid, authored (WGS84)'),
+    'houston':         (29.7604, -95.3698, 'AUTHORED',
+                        'widely-published public geography (city-center), '
+                        'typed from general knowledge - not cross-checked '
+                        'against any file this build can verify'),
 }
 
 # Cross-check the RECORDED value against the table it cites, when the

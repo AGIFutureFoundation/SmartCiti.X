@@ -169,9 +169,9 @@ FAUNA = {
         'name': 'Brown pelican', 'glyph': '\U0001f9a9', 'body': 'bird',
         'span_m': 2.0, 'color': '#8d7f6c', 'accent': '#e0d6c2',
         'motion': 'glide', 'height_m': [10, 18], 'speed': .6,
-        'flock': 3, 'campuses': ['new-orleans'],
-        'why': 'Louisiana’s state bird, and unmistakable over the '
-               'Gulf coast',
+        'flock': 3, 'campuses': ['new-orleans', 'houston'],
+        'why': 'Louisiana’s state bird, and unmistakable over any Gulf '
+               'coast - the ship channel included',
     },
     'egret': {
         'name': 'Egret', 'glyph': '\U0001f54a️', 'body': 'wader',
@@ -185,7 +185,8 @@ FAUNA = {
         'name': 'Pigeon', 'glyph': '\U0001f54a️', 'body': 'bird',
         'span_m': .6, 'color': '#6b7076', 'accent': '#2f3a42',
         'motion': 'hop', 'height_m': [0, 6], 'speed': .5,
-        'flock': 6, 'campuses': ['treasure-island', 'oakland', 'new-orleans'],
+        'flock': 6,
+        'campuses': ['treasure-island', 'oakland', 'new-orleans', 'houston'],
         'why': 'every yard in every city has them, and they are the scale '
                'reference nobody thinks about',
     },
@@ -193,7 +194,8 @@ FAUNA = {
         'name': 'Yard dog', 'glyph': '\U0001f415', 'body': 'quadruped',
         'span_m': 1.0, 'color': '#6f5a44', 'accent': '#3a2f24',
         'motion': 'patrol', 'height_m': [0, 0], 'speed': .55,
-        'flock': 1, 'campuses': ['treasure-island', 'oakland', 'new-orleans'],
+        'flock': 1,
+        'campuses': ['treasure-island', 'oakland', 'new-orleans', 'houston'],
         'why': 'the yard dog is a fixture of the trade, and it teaches the '
                'habit of looking down before reversing',
     },
@@ -231,6 +233,17 @@ ATMOS = {
         'ground': 'concrete', 'verge': 'grass',
         'character': 'Gulf humidity and a low warm haze - authored by '
                      'reputation, not measured',
+    },
+    'houston': {
+        'sky': ['#141210', '#2c2620', '#5c4e34', '#7a5a2e'],
+        'fog': {'color': 0x33291c, 'mul': 1.35}, 'banks': 2,
+        'sun': {'color': 0xffcf8c, 'i': 1.35},
+        'hemi': {'sky': 0xbfae8c, 'ground': 0x261f14, 'i': 1.0},
+        'amb': {'wind': .2, 'insects': True, 'thunder': True},
+        'ground': 'asphalt', 'verge': 'gravel',
+        'character': 'Gulf-coast heat haze over a working ship channel, a '
+                     'refinery glow at the sky\'s edge after dark - '
+                     'authored by reputation, not measured',
     },
 }
 

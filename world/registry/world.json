@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-11",
- "source_stamp": "f8b07b0568fbec48",
+ "source_stamp": "036267ca29117c2e",
  "honesty": {
   "textures": "no texture, photograph or artwork file exists in this repository and none is downloaded: every surface is a recipe - a base colour, a grain, an octave count and a relief depth - and the page generates the image and its normal map in the learner's own browser at boot. There is therefore no third-party artwork anywhere in the render.",
   "weather": "schematic weather, not a forecast and not an observation: nothing here is tied to a reading taken at any real place or time, and the per-campus atmospheres are authored by reputation rather than measured.",
@@ -15,7 +15,7 @@
   "weather": 6,
   "ground": 6,
   "fauna": 5,
-  "animals": 36
+  "animals": 46
  },
  "sky": {
   "projection": "equirectangular, drawn to a 1024x512 canvas at boot",
@@ -261,9 +261,10 @@
    "speed": 0.6,
    "flock": 3,
    "campuses": [
-    "new-orleans"
+    "new-orleans",
+    "houston"
    ],
-   "why": "Louisiana\u2019s state bird, and unmistakable over the Gulf coast"
+   "why": "Louisiana\u2019s state bird, and unmistakable over any Gulf coast - the ship channel included"
   },
   "egret": {
    "name": "Egret",
@@ -301,7 +302,8 @@
    "campuses": [
     "treasure-island",
     "oakland",
-    "new-orleans"
+    "new-orleans",
+    "houston"
    ],
    "why": "every yard in every city has them, and they are the scale reference nobody thinks about"
   },
@@ -322,7 +324,8 @@
    "campuses": [
     "treasure-island",
     "oakland",
-    "new-orleans"
+    "new-orleans",
+    "houston"
    ],
    "why": "the yard dog is a fixture of the trade, and it teaches the habit of looking down before reversing"
   }
@@ -417,6 +420,36 @@
    "ground": "concrete",
    "verge": "grass",
    "character": "Gulf humidity and a low warm haze - authored by reputation, not measured"
+  },
+  "houston": {
+   "sky": [
+    "#141210",
+    "#2c2620",
+    "#5c4e34",
+    "#7a5a2e"
+   ],
+   "fog": {
+    "color": 3352860,
+    "mul": 1.35
+   },
+   "banks": 2,
+   "sun": {
+    "color": 16764812,
+    "i": 1.35
+   },
+   "hemi": {
+    "sky": 12562060,
+    "ground": 2498324,
+    "i": 1.0
+   },
+   "amb": {
+    "wind": 0.2,
+    "insects": true,
+    "thunder": true
+   },
+   "ground": "asphalt",
+   "verge": "gravel",
+   "character": "Gulf-coast heat haze over a working ship channel, a refinery glow at the sky's edge after dark - authored by reputation, not measured"
   }
  }
 }
