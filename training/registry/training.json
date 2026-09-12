@@ -3,14 +3,14 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-11",
- "source_stamp": "419b531161e49f0f",
+ "source_stamp": "87f14599d4550440",
  "honesty": {
   "schematic": "every episode comes from SCHEMATIC physics and deterministic rubrics, not a real robot or a real machine: useful for exercising a training pipeline's plumbing and export format, not for training a controller that will run on real equipment.",
   "anonymous": "no name, no email, no biometric or device-identifying data is ever recorded - an episode carries only a scenario id, the control scheme the registry already declares, and the measured outcome.",
   "device_local": "recorded to this browser's own storage, exactly like the progress record, and never uploaded automatically. Export and clear are both one click, both the learner's own.",
   "not_scored": "recording an episode changes no score and is never read by a grader - the same guarantee this bundle keeps for advisors, and the suite proves it the same way, by reading the graders.",
   "consent": "the recorder ships on, with a visible toggle: turning it off stops new episodes without touching ones already kept, and clearing them is a separate, deliberate action.",
-  "granularity": "episode-level records, not frame-by-frame joint trajectories - a finer-grained recorder is a natural next step and is not built yet."
+  "granularity": "episode-level by default. TRACE, its own off-by-default toggle, adds a coarse (~1 Hz) sample of a running sim's own gauges() readout - still not a per-tick physics or joint trajectory a real controller would train on: these are schematic single-machine simulators, not articulated robots, and gauges() returns display-shaped scalars and short labels, the same numbers the dashboard already reads out - sampled once a second instead of every frame, computed nowhere new for this purpose."
  },
  "episode_kinds": {
   "sim": {
@@ -26,9 +26,10 @@
    ],
    "outcome_shape": {
     "passed": "bool",
-    "rows": "[{axis, value, ok}] - the rubric rows"
+    "rows": "[{axis, value, ok}] - the rubric rows",
+    "trace": "[{t, gauges}] - OPTIONAL, present only when TRACE is on: ~1 Hz samples of the sim's own gauges() readout across the run, capped at TRACE['max_samples']"
    },
-   "granularity": "episode-level: the scenario and control scheme a run was attempted under, and how it ended - not a per-tick trajectory",
+   "granularity": "episode-level by default: the scenario and control scheme a run was attempted under, and how it ended. With TRACE on, also a coarse (~1 Hz) gauge trace across the run - still not a per-tick physics or joint trajectory; see TRACE below",
    "what": "one completed simulator run"
   },
   "advisor": {
@@ -65,6 +66,15 @@
   "cap": 500,
   "cap_policy": "a rolling window: the oldest episode is dropped when the cap is reached, never the newest",
   "scope": "this browser only - localStorage, wrapped so a blocked store never breaks the page, exactly like tc-progress"
+ },
+ "trace": {
+  "toggle_key": "tc-training-detail",
+  "default": "off - heavier than an episode record, so it needs its own opt-in rather than riding the base recorder's",
+  "sample_hz": 1,
+  "max_samples": 90,
+  "max_samples_policy": "a hard cap per episode, not a rolling window: sampling simply stops once a run passes max_samples seconds - the run's outcome is unaffected either way",
+  "sampled_from": "the running sim's own gauges() function - the exact numbers the on-screen dashboard already reads out every frame, sampled once a second rather than every frame, and computed nowhere new for this purpose",
+  "scope": "attached to the sim episode it belongs to, inside the same tc-training record - no second storage key"
  },
  "export_format": {
   "shape": "{ \"pack\": \"smartcitix-trade-craft-academy-training-data\", \"exported\": ISO-8601, \"episodes\": [episode, ...] }",

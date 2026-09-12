@@ -1135,6 +1135,18 @@ cross-checked on every build. This pack cites it; it does not claim it.
 - **Cap:** {training['storage']['cap']} episodes, {training['storage']['cap_policy']}
 - **Scope:** {training['storage']['scope']}
 
+## TRACE — the finer-grained recorder, built now
+
+A separate, **off by default** add-on to the `sim` episode kind: while its
+own toggle is on, a running sim's own `gauges()` readout — the exact
+numbers the on-screen dashboard already shows — is sampled and folded
+into that episode's `outcome.trace` when the run ends.
+
+- **Toggle:** `{training['trace']['toggle_key']}` — its own key, separate from `{training['storage']['toggle_key']}`; default {training['trace']['default']}
+- **Rate / cap:** {training['trace']['sample_hz']} Hz, capped at {training['trace']['max_samples']} samples per episode — {training['trace']['max_samples_policy']}
+- **Sampled from:** {training['trace']['sampled_from']}
+- **Scope:** {training['trace']['scope']}
+
 ## What this is not
 
 - **Schematic.** {training['honesty']['schematic']}

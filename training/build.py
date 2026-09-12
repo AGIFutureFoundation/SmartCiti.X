@@ -18,16 +18,34 @@ in this bundle. Three kinds of episode, one per interaction:
   * sim       - the scenario a learner trained under, the control scheme
                 the registry already declares for that seat, and the
                 final measured rubric outcome (the same rows the results
-                panel shows). EPISODE-LEVEL, not frame-by-frame: this
-                records what a run was attempted under and how it ended,
-                not a per-tick joint trajectory. A finer-grained recorder
-                is a natural next step and is not built yet - stated
-                plainly rather than implied.
+                panel shows). EPISODE-LEVEL by default: what a run was
+                attempted under and how it ended. A separate, OFF-BY-
+                DEFAULT toggle (see TRACE below) adds a coarse gauge
+                TRACE across the run itself - still not a per-tick joint
+                trajectory, see TRACE's own honesty note for exactly
+                what that is and is not.
   * advisor   - which advisor, which fixed topic, and whether the answer
                 was `read` from another registry or `say` written here -
                 never the words themselves, which the advisor registry
                 already owns.
   * walkaround - which point, on which seat.
+
+TRACE. The finer-grained recorder this file used to describe as "a
+natural next step, not built yet" - built now, scoped honestly rather
+than promoted past what it actually is. While TRACE is on (its own
+toggle, default OFF - see CONSENT), a running sim's own gauges() output
+- the same numbers the on-screen dashboard already reads out, nothing
+new computed - is sampled once a second and appended to that episode's
+`outcome.trace` array when the run ends, capped at TRACE['max_samples']
+so one long run cannot balloon the record. This is still not a per-tick
+physics or joint trajectory: these are schematic single-machine
+simulators (a crane winch, a trench profile, a weld bead), not
+articulated robots, and their `gauges()` output is display-shaped
+scalars and short labels, not a state vector a controller would train
+on directly. It is real data about what this session's own SCHEMATIC
+simulator computed, sampled coarser than every frame and finer than
+"episode-level" - stated at exactly that resolution, not dressed up as
+either end.
 
 WHAT THIS IS NOT. Not a transcript, not a surveillance log, and not real
 robot data: every episode comes from SCHEMATIC physics and deterministic
@@ -46,7 +64,13 @@ that already keeps company with `tc-progress`; always-on with no control
 is wrong for something described to a learner as training data. So the
 recorder ships ON, with a visible toggle next to the export button, and
 turning it off does not touch episodes already kept - a learner clears
-those the same way they clear progress, on purpose, separately.
+those the same way they clear progress, on purpose, separately. TRACE
+gets the opposite default for the opposite reason: it is meaningfully
+heavier data than an episode record, so it ships OFF, behind its own
+separate toggle next to the base one - turning the base recorder on
+does not turn TRACE on, and turning TRACE on does nothing unless the
+base recorder is on too, since a trace with no episode to attach to is
+never kept.
 
 HOW THIS PAIRS WITH orbis/build.py. That pack declares a second, separate
 stream toward the same `ml-agents` fork: a deterministic prompt contract
@@ -72,10 +96,16 @@ EPISODE_KINDS = {
         'fields': ['t', 'kind', 'campus', 'hall', 'sim', 'scenario',
                    'controls', 'outcome'],
         'outcome_shape': {'passed': 'bool',
-                           'rows': '[{axis, value, ok}] - the rubric rows'},
-        'granularity': 'episode-level: the scenario and control scheme a '
-                       'run was attempted under, and how it ended - not a '
-                       'per-tick trajectory',
+                           'rows': '[{axis, value, ok}] - the rubric rows',
+                           'trace': '[{t, gauges}] - OPTIONAL, present only '
+                                    'when TRACE is on: ~1 Hz samples of the '
+                                    "sim's own gauges() readout across the "
+                                    'run, capped at TRACE[\'max_samples\']'},
+        'granularity': 'episode-level by default: the scenario and control '
+                       'scheme a run was attempted under, and how it ended. '
+                       'With TRACE on, also a coarse (~1 Hz) gauge trace '
+                       'across the run - still not a per-tick physics or '
+                       'joint trajectory; see TRACE below',
         'what': 'one completed simulator run',
     },
     'advisor': {
@@ -104,6 +134,24 @@ STORAGE = {
                   'the cap is reached, never the newest',
     'scope': 'this browser only - localStorage, wrapped so a blocked '
              'store never breaks the page, exactly like tc-progress',
+}
+
+TRACE = {
+    'toggle_key': 'tc-training-detail',
+    'default': 'off - heavier than an episode record, so it needs its '
+              'own opt-in rather than riding the base recorder\'s',
+    'sample_hz': 1,
+    'max_samples': 90,
+    'max_samples_policy': 'a hard cap per episode, not a rolling window: '
+                          'sampling simply stops once a run passes '
+                          "max_samples seconds - the run's outcome is "
+                          'unaffected either way',
+    'sampled_from': "the running sim's own gauges() function - the exact "
+                    'numbers the on-screen dashboard already reads out '
+                    'every frame, sampled once a second rather than every '
+                    'frame, and computed nowhere new for this purpose',
+    'scope': 'attached to the sim episode it belongs to, inside the same '
+             'tc-training record - no second storage key',
 }
 
 EXPORT_FORMAT = {
@@ -142,9 +190,16 @@ HONESTY = {
     'consent': 'the recorder ships on, with a visible toggle: turning it '
               'off stops new episodes without touching ones already kept, '
               'and clearing them is a separate, deliberate action.',
-    'granularity': 'episode-level records, not frame-by-frame joint '
-                   'trajectories - a finer-grained recorder is a natural '
-                   'next step and is not built yet.',
+    'granularity': 'episode-level by default. TRACE, its own off-by-'
+                   'default toggle, adds a coarse (~1 Hz) sample of a '
+                   "running sim's own gauges() readout - still not a "
+                   'per-tick physics or joint trajectory a real '
+                   'controller would train on: these are schematic '
+                   'single-machine simulators, not articulated robots, '
+                   'and gauges() returns display-shaped scalars and '
+                   'short labels, the same numbers the dashboard already '
+                   'reads out - sampled once a second instead of every '
+                   'frame, computed nowhere new for this purpose.',
 }
 
 # ---------------------------------------------------------------- checks ---
@@ -167,13 +222,23 @@ for kk, k in EPISODE_KINDS.items():
 assert STORAGE['cap'] > 0 and STORAGE['key'] != 'tc-progress', \
     'training data must not share the progress key'
 
+assert TRACE['toggle_key'] != STORAGE['toggle_key'], \
+    'TRACE needs its own toggle, separate from the base recorder\'s'
+assert TRACE['sample_hz'] > 0 and TRACE['max_samples'] > 0, \
+    'TRACE must sample at a real rate and cap at a real number'
+assert 'off' in TRACE['default'].lower(), \
+    'TRACE must default off - it is stated as heavier than the base episode'
+
 BOOTSTRAP = '--bootstrap' in __import__('sys').argv
 if not BOOTSTRAP:
     page = (ROOT / 'web/trade_craft_3d.html').read_text()
     for fn in ('function recordEpisode(', 'function trainingToggle(',
-               'function exportTraining(', 'function clearTraining('):
+               'function exportTraining(', 'function clearTraining(',
+               'function traceToggle('):
         assert fn in page, f'the page does not build the recorder: {fn} missing'
     assert '"tc-training"' in page, 'the page does not embed the declared storage key'
+    assert f'"{TRACE["toggle_key"]}"' in page, \
+        'the page does not embed the declared TRACE toggle key'
     for kk in EPISODE_KINDS:
         assert f"kind: '{kk}'" in page, \
             f'episode kind {kk} is declared but never recorded'
@@ -181,6 +246,17 @@ if not BOOTSTRAP:
     # pack promises, not more integration points quietly grown elsewhere
     assert page.count('recordEpisode({') == len(EPISODE_KINDS), \
         'recordEpisode is called somewhere other than the three declared kinds'
+    # the sample rate and cap the registry declares must be the ones the
+    # page actually enforces, not a second, silently-drifted pair of numbers
+    trace_ms = round(1000 / TRACE['sample_hz'])
+    assert f'TRACE_MS = {trace_ms}' in page, \
+        "the page's TRACE sample interval does not match the declared sample_hz"
+    assert f'TRACE_MAX = {TRACE["max_samples"]}' in page, \
+        "the page's TRACE cap does not match the declared max_samples"
+    # the trace can only ever reach an episode through the sim outcome it
+    # belongs to - never as a second, independent recordEpisode call
+    assert 'trace:' in page and 'recordEpisode({ kind: \'sim\'' in page, \
+        'the trace field must be attached inside the sim episode, not recorded separately'
     # the real guarantee is about WRITE direction, not read: recording is
     # strictly downstream of a score already final, so the boolean that
     # decides pass/fail for every seat must never mention training state -
@@ -201,6 +277,7 @@ doc = {
     'honesty': HONESTY,
     'episode_kinds': EPISODE_KINDS,
     'storage': STORAGE,
+    'trace': TRACE,
     'export_format': EXPORT_FORMAT,
 }
 

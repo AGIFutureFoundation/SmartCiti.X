@@ -7,8 +7,12 @@
  * never the progress key; a rolling cap; a visible on/off toggle that
  * never touches episodes already kept; and - the property that actually
  * matters - the recorder is strictly downstream of a score already
- * final, never upstream of one. The suite holds the page to the same
- * shape.
+ * final, never upstream of one. TRACE, the finer-grained add-on, gets
+ * its own narrow claim held separately: off by default, its own toggle,
+ * a real declared sample rate and cap the page actually enforces (not a
+ * second, silently-drifted pair of numbers), and folded into the SAME
+ * sim episode it belongs to rather than recorded as a fourth kind. The
+ * suite holds the page to the same shape.
  */
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
@@ -32,9 +36,11 @@ ok('every kind\'s fields are facts this bundle already produces, not new invente
   && reg.episode_kinds.advisor.fields.includes('topic')
   && reg.episode_kinds.advisor.fields.includes('answer_kind')
   && reg.episode_kinds.walkaround.fields.includes('point'));
-ok('the sim kind is honestly episode-level, not a claim of a frame-by-frame trajectory',
-  /episode-level/.test(reg.episode_kinds.sim.granularity)
-  && /not a\s+per-tick trajectory/.test(reg.episode_kinds.sim.granularity));
+ok('the sim kind is honestly episode-level by default, and names TRACE rather than implying it',
+  /episode-level by default/.test(reg.episode_kinds.sim.granularity)
+  && /not a per-tick physics or\s+joint trajectory/.test(reg.episode_kinds.sim.granularity));
+ok('the sim outcome shape declares trace as OPTIONAL, gated on TRACE being on',
+  /OPTIONAL, present only\s+when TRACE is on/.test(reg.episode_kinds.sim.outcome_shape.trace));
 
 /* ----------------------------------------------------------- storage --- */
 ok('training data lives under its own key, never the progress key',
@@ -73,13 +79,15 @@ ok('consent is real: on by default, a visible toggle, and clearing is separate f
   /ships on, with a visible toggle/.test(reg.honesty.consent)
   && /without touching ones already kept/.test(reg.honesty.consent)
   && /clearing them is a separate, deliberate action/.test(reg.honesty.consent));
-ok('the granularity gap is stated plainly rather than implied away',
-  /not built yet/.test(reg.honesty.granularity));
+ok('the granularity note describes what TRACE actually is, not a bare promise of a future feature',
+  /episode-level by default/.test(reg.honesty.granularity)
+  && /not a\s+per-tick physics or joint trajectory/.test(reg.honesty.granularity)
+  && /schematic single-machine simulators,\s+not articulated robots/.test(reg.honesty.granularity));
 
 /* --------------------------------------------------------------- the page --- */
 ok('the page builds the recorder, the toggle, the exporter and the clearer',
   ['function recordEpisode(', 'function trainingToggle(',
-    'function exportTraining(', 'function clearTraining(']
+    'function exportTraining(', 'function clearTraining(', 'function traceToggle(']
     .every((f) => page.includes(f)));
 ok('the page embeds the declared storage key and the declared cap',
   page.includes('"tc-training"') && page.includes(`"cap":${reg.storage.cap}`));
@@ -87,6 +95,26 @@ ok('every declared episode kind is actually recorded by the page, by name',
   kinds.every(([kk]) => page.includes(`kind: '${kk}'`)));
 ok('recordEpisode is called from exactly the three declared integration points',
   (page.match(/recordEpisode\(\{/g) || []).length === kinds.length);
+
+/* ------------------------------------------------------------------ TRACE --- */
+ok('TRACE has its own toggle key, separate from the base recorder\'s, off by default',
+  reg.trace.toggle_key !== reg.storage.toggle_key
+  && /^off/.test(reg.trace.default));
+ok('TRACE declares a real sample rate and a real cap',
+  reg.trace.sample_hz > 0 && reg.trace.max_samples > 0);
+ok('TRACE is sampled from the sim\'s own existing gauges() output, nothing computed anew',
+  /sim's own gauges\(\)\s+function/.test(reg.trace.sampled_from)
+  && /computed nowhere new/.test(reg.trace.sampled_from));
+ok('the page embeds TRACE\'s own toggle key',
+  page.includes(`"${reg.trace.toggle_key}"`));
+ok('the page\'s TRACE sample interval and cap match the registry\'s declared rate and cap exactly',
+  page.includes(`TRACE_MS = ${Math.round(1000 / reg.trace.sample_hz)}`)
+  && page.includes(`TRACE_MAX = ${reg.trace.max_samples}`));
+ok('the trace is folded into the sim episode\'s own outcome, never recorded as a separate episode',
+  page.includes('trace: simTicks')
+  && (page.match(/recordEpisode\(\{/g) || []).length === kinds.length);
+ok('capturing a trace requires the sim to actually be running - gated on the same sim object the gauges come from',
+  /function traceStep\(dt\) \{\s*if \(!traceOn \|\| !sim \|\| !sim\.gauges/.test(page));
 
 /* -------------------------------------------- downstream of a final score --- */
 ok('every sim\'s pass/fail expression is computed first, with no reference to training state',

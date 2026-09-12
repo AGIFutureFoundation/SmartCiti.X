@@ -19,7 +19,7 @@ not a native Unity ML-Agents .demo (protobuf) file - this bundle has never produ
 
 | Kind | What it is | Fields | Granularity |
 |---|---|---|---|
-| **sim** | one completed simulator run | t, kind, campus, hall, sim, scenario, controls, outcome | episode-level: the scenario and control scheme a run was attempted under, and how it ended - not a per-tick trajectory |
+| **sim** | one completed simulator run | t, kind, campus, hall, sim, scenario, controls, outcome | episode-level by default: the scenario and control scheme a run was attempted under, and how it ended. With TRACE on, also a coarse (~1 Hz) gauge trace across the run - still not a per-tick physics or joint trajectory; see TRACE below |
 | **advisor** | one advisor question asked and answered | t, kind, campus, hall, advisor, topic, answer_kind | one exchange: which fixed topic was asked and whether the answer was read from a record or written in the advisor registry |
 | **walkaround** | one pre-shift walkaround point checked | t, kind, campus, hall, sim, point | one point marked - not a score, the same habit the sim registry already declares is not a gate |
 
@@ -29,13 +29,25 @@ not a native Unity ML-Agents .demo (protobuf) file - this bundle has never produ
 - **Cap:** 500 episodes, a rolling window: the oldest episode is dropped when the cap is reached, never the newest
 - **Scope:** this browser only - localStorage, wrapped so a blocked store never breaks the page, exactly like tc-progress
 
+## TRACE — the finer-grained recorder, built now
+
+A separate, **off by default** add-on to the `sim` episode kind: while its
+own toggle is on, a running sim's own `gauges()` readout — the exact
+numbers the on-screen dashboard already shows — is sampled and folded
+into that episode's `outcome.trace` when the run ends.
+
+- **Toggle:** `tc-training-detail` — its own key, separate from `tc-training-on`; default off - heavier than an episode record, so it needs its own opt-in rather than riding the base recorder's
+- **Rate / cap:** 1 Hz, capped at 90 samples per episode — a hard cap per episode, not a rolling window: sampling simply stops once a run passes max_samples seconds - the run's outcome is unaffected either way
+- **Sampled from:** the running sim's own gauges() function - the exact numbers the on-screen dashboard already reads out every frame, sampled once a second rather than every frame, and computed nowhere new for this purpose
+- **Scope:** attached to the sim episode it belongs to, inside the same tc-training record - no second storage key
+
 ## What this is not
 
 - **Schematic.** every episode comes from SCHEMATIC physics and deterministic rubrics, not a real robot or a real machine: useful for exercising a training pipeline's plumbing and export format, not for training a controller that will run on real equipment.
 - **Anonymous.** no name, no email, no biometric or device-identifying data is ever recorded - an episode carries only a scenario id, the control scheme the registry already declares, and the measured outcome.
 - **Not a score.** recording an episode changes no score and is never read by a grader - the same guarantee this bundle keeps for advisors, and the suite proves it the same way, by reading the graders.
 - **Consent.** the recorder ships on, with a visible toggle: turning it off stops new episodes without touching ones already kept, and clearing them is a separate, deliberate action.
-- **Granularity.** episode-level records, not frame-by-frame joint trajectories - a finer-grained recorder is a natural next step and is not built yet.
+- **Granularity.** episode-level by default. TRACE, its own off-by-default toggle, adds a coarse (~1 Hz) sample of a running sim's own gauges() readout - still not a per-tick physics or joint trajectory a real controller would train on: these are schematic single-machine simulators, not articulated robots, and gauges() returns display-shaped scalars and short labels, the same numbers the dashboard already reads out - sampled once a second instead of every frame, computed nowhere new for this purpose.
 
 ---
 

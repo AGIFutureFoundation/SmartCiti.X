@@ -273,6 +273,7 @@ DATA = json.dumps({
     # UI and the export envelope - the essays stay in the registry, read
     # from the wiki, exactly like the world and label packs
     'training': {'storage': training_reg['storage'],
+                 'trace': {'toggle_key': training_reg['trace']['toggle_key']},
                  'export_format': trim(training_reg['export_format'],
                      'consumer', 'not_a_demo_file', 'no_agent_trained'),
                  'kinds': trim(training_reg['episode_kinds'],
@@ -452,6 +453,7 @@ function exitSim() { teardownSim(); showHall(slug); }
 function startSim(simId) {
   if (walkActive) plc.unlock();
   if (sim) teardownSim();
+  simTicks = []; traceClock = 0;
   curSimId = simId; view = 'sim';
   if (hallGroup) hallGroup.visible = false;
   if (campusGroup) campusGroup.visible = false;
@@ -555,7 +557,9 @@ function simResults(simId, rows, passed) {
   recordEpisode({ kind: 'sim', campus: campusKey, hall: slug, sim: simId,
     scenario: curScenario?.id ?? null,
     controls: def.controls.map((c) => c.action),
-    outcome: { passed, rows } });
+    outcome: traceOn && simTicks.length
+      ? { passed, rows, trace: simTicks.slice(0, TRACE_MAX) }
+      : { passed, rows } });
   const rec = prog.sims[simId] ?? {};
   rec.runs = (rec.runs ?? 0) + 1;
   if (passed) {
@@ -5646,6 +5650,32 @@ function recordEpisode(ep) {
   try { localStorage.setItem(TR_KEY, JSON.stringify(trainingLog)); }
   catch (e) { /* private mode / blocked store: session-only */ }
 }
+
+/* TRACE: the finer-grained recorder D.training.honesty.granularity
+   describes - off by default (heavier than an episode), its own toggle,
+   separate from trainingOn. While on, a running sim's own gauges()
+   readout - the exact numbers the dashboard already shows, nothing
+   computed anew - is sampled once a second and folded into that sim's
+   own episode as outcome.trace when the run ends. Not a per-tick
+   physics or joint trajectory: see D.training.trace and D.training.honesty
+   for exactly what it is. */
+const TRACE_KEY = D.training.trace.toggle_key;
+const TRACE_MS = 1000, TRACE_MAX = 90;   // must match training/build.py's checks
+let traceOn = (() => {
+  try { return localStorage.getItem(TRACE_KEY) === '1'; } catch (e) { return false; }
+})();
+function traceToggle(on) {
+  traceOn = on;
+  try { localStorage.setItem(TRACE_KEY, on ? '1' : '0'); } catch (e) { /* blocked store */ }
+}
+let simTicks = [], traceClock = 0;
+function traceStep(dt) {
+  if (!traceOn || !sim || !sim.gauges || simTicks.length >= TRACE_MAX) return;
+  traceClock += dt * 1000;
+  if (traceClock < TRACE_MS) return;
+  traceClock = 0;
+  simTicks.push({ t: Math.round(simTicks.length * TRACE_MS), gauges: sim.gauges() });
+}
 function clearTraining() {
   trainingLog = [];
   try { localStorage.removeItem(TR_KEY); } catch (e) { /* blocked store */ }
@@ -6141,6 +6171,11 @@ function openRecords() {
         <input type="checkbox" id="trOn" ${trainingOn ? 'checked' : ''}>
         <span style="font-size:12.5px;color:var(--muted)">record episodes as I train</span>
       </label></p>
+    <p style="margin:6px 0">
+      <label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer">
+        <input type="checkbox" id="traceOn" ${traceOn ? 'checked' : ''}>
+        <span style="font-size:12.5px;color:var(--muted)">also capture a per-second gauge trace during sim runs (off by default, heavier)</span>
+      </label></p>
     <p><button class="barbtn" id="trExpBtn">⇪ export</button>
        <button class="barbtn" id="trClearBtn">🗑 clear</button></p>
     <div id="trBox"></div>
@@ -6150,6 +6185,7 @@ function openRecords() {
     <style>#pbody td,#pbody th{border-top:1px solid var(--rule);padding:5px 8px;color:var(--muted);font-weight:400}</style>`;
   document.body.classList.add('open');
   document.getElementById('trOn')?.addEventListener('change', (e) => trainingToggle(e.target.checked));
+  document.getElementById('traceOn')?.addEventListener('change', (e) => traceToggle(e.target.checked));
 }
 /* The progress card: the record drawn as one image the learner can save
    (long-press / right-click - the page never uploads it anywhere). */
@@ -6300,6 +6336,7 @@ window.__tc3d = () => ({ view, buildings: buildings.length, plates: plates.lengt
   advisors: { here: advisorMeshes.map((m) => m.userData.advisor),
               near: nearAdvisor, open: curAdvisor, topic: curTopic },
   training: { on: trainingOn, count: trainingLog.length,
+    trace: { on: traceOn, ticks: simTicks.length },
               kinds: trainingLog.map((e) => e.kind),
               last: trainingLog[trainingLog.length - 1] ?? null },
   orbis: { model: D.orbis.model, prompt: orbisPrompt(slug) },
@@ -6392,6 +6429,7 @@ renderer.setAnimationLoop(() => {
   if (sim) {
     sim.update(dt);
     if (sim.gauges) setDash(D.sims.sims[curSimId], sim.gauges());
+    traceStep(dt);
   }
   stepEmote(dt);
   if (view === 'avatar' && !emo) idleBreath(avatarMesh, clock.elapsedTime, dt);
