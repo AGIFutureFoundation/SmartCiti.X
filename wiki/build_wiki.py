@@ -49,6 +49,7 @@ world = json.load(open(ROOT / 'world/registry/world.json'))
 labels = json.load(open(ROOT / 'labels/registry/labels.json'))
 training = json.load(open(ROOT / 'training/registry/training.json'))
 roadmap = json.load(open(ROOT / 'roadmap/registry/roadmap.json'))
+orbis = json.load(open(ROOT / 'orbis/registry/orbis.json'))
 skills = json.load(open(ROOT / 'pack/registry/skills.json'))['skills']
 by_slug = {h['slug']: h for h in halls}
 
@@ -121,7 +122,8 @@ content graph and details:
 | **The world** (sky, weather, ground, animals) | {world["counts"]["weather"]} weather states over per-campus atmospheres, {world["counts"]["ground"]} generated ground surfaces and {world["counts"]["animals"]} animals — and not one texture file anywhere | [World](World.md) |
 | **The signs** (every word in the 3D world) | {labels["counts"]["kinds"]} kinds over {labels["counts"]["shapes"]} shapes — shape carries the category, colour the provenance, type the rank, and every sign reacts to where you are looking | [Signs](Signs.md) |
 | **Training data** (device-local, opt-out, exportable) | {len(training['episode_kinds'])} episode kinds recorded from real interactions — sim outcomes, advisor exchanges, walkaround checks — shaped for the org's own `ml-agents` fork, never read by a grader | [Training-Data](Training-Data.md) |
-| **The network roadmap** (3 built, 7 candidates) | the path from three RECORDED campuses to ten walkable worlds — two honest provenance tiers, and the real checklist a candidate has to clear to become built | [Roadmap](Roadmap.md) |
+| **Orbis synthetic-training prompts** (text only, no network) | a deterministic prompt for every one of the {orbis['modules']} union modules, built for a hosted video model this build never calls — a separate, clearly-labelled AI-SYNTHESIZED stream from the real episode log above | [Orbis-Synthetic-Training](Orbis-Synthetic-Training.md) |
+| **The network roadmap** ({len(roadmap['built_campuses'])} built, {len(roadmap['candidates'])} candidates) | the path from {len(roadmap['built_campuses'])} built campuses to {roadmap['target']} walkable worlds — two honest provenance tiers, and the real checklist a candidate has to clear to become built | [Roadmap](Roadmap.md) |
 | **Metaverse layer** (`meta/registry/metaverse.json`) | The interchange contract: {len(meta["baseline"]["standards"])} open standards claimed (glTF 2.0, WebXR, GeoJSON), {len(meta["baseline"]["not_claimed"])} honestly not, avatar and hall .glb export, learner-local import | [Metaverse-Layer](Metaverse-Layer.md) |
 | **City records** (`parcels/registry/parcels.json`) | The source contract for the three campus regions\' own parcel and building-footprint authorities ({sum(set(s["records"] for s in parcels["sources"].values())):,} records published upstream), plus the public-domain federal orthoimagery both maps draw | [City-Records](City-Records.md) |
 | **Network geomap** (`web/trade_craft_geomap.html`) | The geo registry on a real WGS84 map (MapLibre, no basemap tiles): campuses, {n_anchors} RECORDED anchors, great-circle routes, RECORDED city frames | [Campus-Map](Campus-Map.md) |
@@ -1190,6 +1192,70 @@ every figure above read straight from its own registry.
 {FOOTER}"""
 
 
+def page_orbis():
+    seqrows = '\n'.join(f'{i + 1}. {s}' for i, s in enumerate(orbis['contract']['sequence']))
+    return f"""# Orbis synthetic-training prompts
+
+{training['export_format']['consumer'].split('.')[0]} already gets a real,
+schematic episode log from `training/`. This pack adds a second, separate
+stream: a deterministic PROMPT CONTRACT that turns any of the
+{orbis['modules']} union modules into a text prompt for a hosted
+text/image-to-video model, so an operator who wants denser synthetic video
+for robotics-training augmentation can generate it themselves — for any
+module, whether or not a learner has ever trained there.
+
+## What this build does not do
+
+{orbis['honesty']['no_network_here']}
+
+{orbis['honesty']['no_key_shipped']}. {orbis['honesty']['operator_action']}
+
+## The model
+
+- **Id:** `{orbis['model']['id']}` — {orbis['model']['provider']}
+- **Docs:** {orbis['model']['docs']}
+- **Cited from:** `{orbis['model']['source_repo']}` ({orbis['model']['source_file']})
+
+## The prompt template
+
+Built from the union registry already shipped elsewhere in this bundle —
+no fact is authored twice:
+
+```
+{orbis['prompt_template']}
+```
+
+## The command sequence (RECORDED from the cited README)
+
+{seqrows}
+
+Chunking: {orbis['contract']['chunking']}
+
+## What a generated clip is not
+
+{orbis['honesty']['synthetic_not_real']}
+
+{orbis['honesty']['every_module_covered']}
+
+**Verified from build:** {orbis['verified_from_build']}. {orbis['verification_note']}
+
+## A second, separate thing: a real runner
+
+Everything above is text only. `{orbis['runner']['path']}/` is different -
+a real, runnable companion app, scaffolded from Reactor's own
+`create-reactor-app --model={orbis['runner']['model'].split('/')[-1]}`
+template ({orbis['runner']['scaffolded_from']}). Its one customization is
+its scene library: `{orbis['runner']['modules_file']}`, generated by this
+same builder from the union registry, so the runner offers all
+{orbis['modules']} modules as presets rather than the template's four
+illustrative demo scenes.
+
+{orbis['runner']['never_run_by_this_build']}
+
+To run it yourself: `{orbis['runner']['run']}`
+{FOOTER}"""
+
+
 PAGES = {
     'Home.md': page_home,
     'Campus-Map.md': page_campus,
@@ -1204,6 +1270,7 @@ PAGES = {
     'World.md': page_world,
     'Signs.md': page_signs,
     'Training-Data.md': page_training,
+    'Orbis-Synthetic-Training.md': page_orbis,
     'Roadmap.md': page_roadmap,
     'Flipped-Classroom.md': page_schools,
     'Provenance.md': page_provenance,

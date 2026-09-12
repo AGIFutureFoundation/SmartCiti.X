@@ -1,0 +1,62 @@
+{
+ "pack": "smartcitix-trade-craft-academy-orbis-prompts",
+ "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
+ "pack_version": "3.3.0",
+ "built": "2026-09-12",
+ "source_stamp": "3c448bf08b6ccc3c",
+ "model": {
+  "id": "reactor/visko-orbis-stable",
+  "provider": "Reactor (public Visko Orbis Stable API)",
+  "docs": "https://www.reactor.inc/models/visko-orbis-stable/api",
+  "source_repo": "github.com/AGIFutureFoundation/orbis-hackathon-starter",
+  "source_file": "README.md"
+ },
+ "contract": {
+  "auth": {
+   "token_endpoint": "https://api.reactor.inc/tokens",
+   "keys_required": [
+    "REACTOR_API_KEY",
+    "GEMINI_API_KEY"
+   ],
+   "keys_held_by": "the operator's own deployment of the Orbis starter, server-side only - this bundle never requests, stores or transmits either key"
+  },
+  "sequence": [
+   "POST /api/token mints a scoped session JWT from the token endpoint",
+   "connect to the model with recv-only main_video and main_audio tracks",
+   "read the state snapshot; treat its available_resolutions as authoritative",
+   "set_image (optional) to supply a reference frame before start",
+   "set_resolution (optional) to stage a delivery tier for the next start",
+   "set_prompt (required) supplies the prompt text this pack builds",
+   "start begins generation; another set_prompt steers it mid-run",
+   "pause / resume / reset control an active generation"
+  ],
+  "chunking": "chunks emit roughly every 1.8 seconds; the first chunk carries no frames while the upscaler primes",
+  "events": [
+   "state",
+   "prompt_accepted",
+   "resolution_accepted",
+   "generation_started",
+   "chunk_complete",
+   "command_error"
+  ]
+ },
+ "prompt_template": "A {district} apprentice practicing {hall}: {focus}. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text.",
+ "modules": 111,
+ "runner": {
+  "path": "orbis/runner-helios",
+  "model": "reactor/helios",
+  "scaffolded_from": "github.com/reactor-team/create-reactor-app (templates/helios), Apache-2.0",
+  "modules_file": "app/lib/modules.generated.json",
+  "run": "cd orbis/runner-helios && cp .env.example .env.local && # put a REACTOR_API_KEY you generated yourself into .env.local && pnpm install && pnpm dev",
+  "never_run_by_this_build": "this repository's own build and verify pipeline never installs the runner's dependencies, never starts it, and never holds a REACTOR_API_KEY - it only keeps the runner's generated module library in sync with the union registry"
+ },
+ "honesty": {
+  "no_network_here": "this build reaches no host outside GitHub, and the page it extends calls no network host at all: it builds prompt text locally and stops - generating an actual clip happens outside this bundle, on the operator's own Orbis deployment",
+  "no_key_shipped": "this bundle never requests, stores or transmits a REACTOR_API_KEY or a GEMINI_API_KEY",
+  "synthetic_not_real": "a clip generated from one of these prompts is AI-SYNTHESIZED synthetic video - it is not footage of any real trade, worker or site, and it is a separate stream from the real, schematic episode log training/ already records from a learner's own interactions",
+  "every_module_covered": "the prompt builder works from the union registry, not the training log, so every one of the 111 modules has a prompt whether or not a learner has ever trained there",
+  "operator_action": "running the sequence above against a real prompt is the operator's own action, with their own keys, against the cited public API - this pack declares the contract, it does not exercise it"
+ },
+ "verified_from_build": false,
+ "verification_note": "this build reaches no host outside GitHub and npm/pypi, so the contract above is carried as RECORDED from the cited README rather than re-checked against Reactor's live API on every build"
+}

@@ -57,6 +57,7 @@ tools_reg = json.load(open(ROOT / 'tools/registry/toolcribs.json'))
 stations_reg = json.load(open(ROOT / 'stations/registry/stations.json'))
 agents_reg = json.load(open(ROOT / 'agents/registry/advisors.json'))
 training_reg = json.load(open(ROOT / 'training/registry/training.json'))
+orbis_reg = json.load(open(ROOT / 'orbis/registry/orbis.json'))
 world_reg = json.load(open(ROOT / 'world/registry/world.json'))
 labels_reg = json.load(open(ROOT / 'labels/registry/labels.json'))
 
@@ -281,6 +282,14 @@ DATA = json.dumps({
                  # string, and the rest stays registry+wiki only
                  'honesty': {k: training_reg['honesty'][k]
                              for k in ('schematic', 'not_scored')}},
+    # the Orbis prompt contract: text-only, built locally from the union
+    # registry already shipped above - no key, no fetch, no second copy
+    # of a hall's name or focus. See orbis/build.py for the full contract
+    # this trims down to what the page's prompt builder actually needs.
+    'orbis': {'model': orbis_reg['model']['id'],
+              'template': orbis_reg['prompt_template'],
+              'honesty': {k: orbis_reg['honesty'][k]
+                          for k in ('synthetic_not_real', 'no_network_here')}},
     'advisors': {'who': agents_reg['advisors'],
                  'honesty': agents_reg['honesty'],
                  'walk': geo_reg['walk']},
@@ -3176,6 +3185,7 @@ body.open #panel{transform:none}
   <button id="sndBtn" class="barbtn" style="display:none"></button>
   <button id="dnBtn" class="barbtn" aria-label="day / night">🌙</button>
   <button id="recBtn" class="barbtn" aria-label="records">⏱</button>
+  <button id="orbisBtn" class="barbtn" aria-label="Orbis synthetic-training prompt">🎬</button>
   <button id="vrBtn" class="barbtn" style="display:none">🥽 VR</button>
   <button id="arBtn" class="barbtn" style="display:none">📱 AR</button>
   <button id="satBtn" class="barbtn" style="display:none">🛰️</button>
@@ -5622,6 +5632,44 @@ function exportTraining() {
     exported: new Date().toISOString(), episodes: trainingLog });
 }
 
+/* ---------------------------------------------- Orbis synthetic-training
+   prompts. Text only, built locally from the union registry this page
+   already ships - no key, no fetch, no socket, ever. A clip made from one
+   of these outside this page is AI-SYNTHESIZED synthetic video for
+   robotics-training augmentation, not the real episode log above and not
+   footage of any real trade, worker or site. See D.orbis.honesty and
+   orbis/build.py for the full contract. */
+function orbisPrompt(sg) {
+  const h = D.halls.find((x) => x.slug === sg);
+  if (!h) return '';
+  const district = D.districts[h.district].name;
+  return D.orbis.template.replace('{district}', district)
+    .replace('{hall}', h.name).replace('{focus}', h.focus);
+}
+function exportOrbisPrompts() {
+  return D.halls.map((h) => `# ${h.slug} \\u2014 ${h.name}\\n${orbisPrompt(h.slug)}`)
+    .join('\\n\\n');
+}
+function openOrbis() {
+  const esc = (s) => String(s).replace(/[&<>]/g,
+    (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+  const h = D.halls.find((x) => x.slug === slug);
+  document.getElementById('pbody').innerHTML = `
+    <h2>\U0001f3ac ${esc(D.orbis.model)}</h2>
+    <span class="chip">synthetic training video \\u2014 generated outside this page</span>
+    <h3>${esc(h.name)}</h3>
+    <textarea id="orbisTa" readonly style="width:100%;height:90px;background:var(--sunk);color:var(--ink);border:1px solid var(--rule);border-radius:7px;font:12px 'IBM Plex Mono',monospace;padding:7px"></textarea>
+    <p><button class="barbtn" id="orbisExpBtn">\\u21aa export all 111</button></p>
+    <div id="orbisBox"></div>
+    <p style="color:var(--muted);font-size:12px">${esc(D.orbis.honesty.synthetic_not_real)}</p>
+    <p style="color:var(--muted);font-size:12px">${esc(D.orbis.honesty.no_network_here)}</p>`;
+  document.body.classList.add('open');
+  const ta = document.getElementById('orbisTa');
+  ta.value = orbisPrompt(slug); ta.select();
+  try { navigator.clipboard?.writeText(ta.value); } catch (e) { /* manual copy */ }
+}
+window.__tc3dOrbis = openOrbis;
+
 /* The learner record is device-local only - localStorage, every access
    wrapped so a blocked store never breaks the page - and the honesty line
    in the corner says exactly that. Not a transcript, not certification. */
@@ -5962,6 +6010,15 @@ document.addEventListener('click', (e) => {
     openRecords();
     return;
   }
+  if (e.target.id === 'orbisExpBtn') {
+    const txt = exportOrbisPrompts();
+    document.getElementById('orbisBox').innerHTML =
+      `<textarea id="orbisAllTa" readonly style="width:100%;height:140px;background:var(--sunk);color:var(--ink);border:1px solid var(--rule);border-radius:7px;font:11px 'IBM Plex Mono',monospace;padding:7px"></textarea>`;
+    const ta = document.getElementById('orbisAllTa');
+    ta.value = txt; ta.select();
+    try { navigator.clipboard?.writeText(txt); } catch (err) { /* manual copy */ }
+    return;
+  }
   const wa = e.target.closest('[data-wa]');
   if (wa && sim) {
     const i = +wa.dataset.wa;
@@ -6119,6 +6176,10 @@ document.getElementById('recBtn').addEventListener('click', () => {
   if (walkActive) plc.unlock();
   openRecords();
 });
+document.getElementById('orbisBtn').addEventListener('click', () => {
+  if (walkActive) plc.unlock();
+  openOrbis();
+});
 document.getElementById('regionBtn').addEventListener('click', showRegion);
 document.getElementById('campusBtn').addEventListener('click',
   () => showCampus(campusKey));
@@ -6218,6 +6279,7 @@ window.__tc3d = () => ({ view, buildings: buildings.length, plates: plates.lengt
   training: { on: trainingOn, count: trainingLog.length,
               kinds: trainingLog.map((e) => e.kind),
               last: trainingLog[trainingLog.length - 1] ?? null },
+  orbis: { model: D.orbis.model, prompt: orbisPrompt(slug) },
   labels: { live: labelSet.filter((x) => x.parent).length,
             kinds: [...new Set(labelSet.filter((x) => x.parent)
               .map((x) => x.userData.lbl.kind))].sort(),
