@@ -290,7 +290,16 @@ DATA = json.dumps({
     'orbis': {'model': orbis_reg['model']['id'],
               'template': orbis_reg['prompt_template'],
               'honesty': {k: orbis_reg['honesty'][k]
-                          for k in ('synthetic_not_real', 'no_network_here')}},
+                          for k in ('synthetic_not_real', 'no_network_here')},
+              # this panel only ever builds text - see D.orbis.runners for
+              # the two real, separately-installed apps that actually
+              # generate a clip. Deliberately just a path and a model id:
+              # the full run command names REACTOR_API_KEY by NAME (an
+              # instruction, not a value) for an operator's own terminal,
+              # and this shipped page never names a key at all, anywhere -
+              # each runner's own README carries that instruction instead
+              'runners': [{'path': r['path'], 'model': r['model']}
+                          for r in orbis_reg['runners']]},
     'advisors': {'who': agents_reg['advisors'],
                  'honesty': agents_reg['honesty'],
                  'walk': geo_reg['walk']},
@@ -5832,6 +5841,14 @@ function openOrbis() {
   const esc = (s) => String(s).replace(/[&<>]/g,
     (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
   const h = D.halls.find((x) => x.slug === slug);
+  // this panel only ever builds text (below); the two real apps that
+  // actually generate a clip are a separate, deliberate step an operator
+  // takes on their own machine, with their own key - named here so this
+  // is the one place a learner or operator finds both, not an orphaned
+  // text tool next to two runners nothing on this page ever mentions
+  const runnerRows = D.orbis.runners.map((r) => `<li><code>${esc(r.path)}/</code>
+    \\u2014 <code>${esc(r.model)}</code><br>
+    <span style="font-size:10.5px">its own README has the exact install/run steps</span></li>`).join('');
   document.getElementById('pbody').innerHTML = `
     <h2>\U0001f3ac ${esc(D.orbis.model)}</h2>
     <span class="chip">synthetic training video \\u2014 generated outside this page</span>
@@ -5840,7 +5857,11 @@ function openOrbis() {
     <p><button class="barbtn" id="orbisExpBtn">\\u21aa export all 111</button></p>
     <div id="orbisBox"></div>
     <p style="color:var(--muted);font-size:12px">${esc(D.orbis.honesty.synthetic_not_real)}</p>
-    <p style="color:var(--muted);font-size:12px">${esc(D.orbis.honesty.no_network_here)}</p>`;
+    <p style="color:var(--muted);font-size:12px">${esc(D.orbis.honesty.no_network_here)}</p>
+    <h3>Want to actually generate a clip?</h3>
+    <p style="color:var(--muted);font-size:12px">This panel only ever builds the text above. Two real, separately-runnable apps checked into this repo do the actual generation \\u2014 install and run either yourself, with your own Reactor API key, on your own machine:</p>
+    <ul style="color:var(--muted);font-size:12px;padding-left:18px">${runnerRows}</ul>
+    <p style="color:var(--muted);font-size:12px">Neither is installed, started, or given a key by this page or this repo\\u2019s own build \\u2014 that stays true everywhere else in this bundle too.</p>`;
   document.body.classList.add('open');
   const ta = document.getElementById('orbisTa');
   ta.value = orbisPrompt(slug); ta.select();
