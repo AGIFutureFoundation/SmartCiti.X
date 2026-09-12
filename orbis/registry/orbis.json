@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.3.0",
  "built": "2026-09-12",
- "source_stamp": "1ab93cd8a3f0f55d",
+ "source_stamp": "14169a3b278eff9f",
  "model": {
   "id": "reactor/visko-orbis-stable",
   "provider": "Reactor (public Visko Orbis Stable API)",

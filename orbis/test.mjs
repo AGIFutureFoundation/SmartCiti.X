@@ -92,6 +92,26 @@ ok('no fetch, socket or reactor/gemini host reference sits near the prompt build
 ok('the page never opens a socket or fetch to any Orbis/Reactor/Gemini host anywhere at all',
   !/reactor\.inc|api\.reactor|generativelanguage\.googleapis/.test(page));
 
+/* -------------------------------------- the panel actually names them --- */
+// the text-prompt panel used to say nothing about the two real runners
+// sitting in the same repo - a learner or operator had no way to find
+// them from here. It now does, and this is the drift guard.
+ok('the Orbis panel actually renders the runners the registry declares, not a stale hand-typed list',
+  page.includes('D.orbis.runners')
+  && reg.runners.every((r) => page.includes(r.path)
+    && page.includes(`"${r.model}"`)));
+ok('the panel points to each runner\'s own README rather than embedding install steps',
+  /README has the exact install\/run steps/.test(page));
+ok('naming the real runners still never puts a key NAME on the page - that bar holds everywhere, not just near the prompt builder',
+  !page.includes('REACTOR_API_KEY') && !page.includes('GEMINI_API_KEY'));
+ok('no fetch, socket or reactor/gemini host reference sits near the panel that names the runners either',
+  (() => {
+    if (!page.includes('function openOrbis(')) return false;
+    const chunk = page.split('function openOrbis(')[1].slice(0, 1600);
+    return ['fetch(', 'XMLHttpRequest', 'reactor.inc', 'api.reactor',
+      'gemini', 'WebSocket', 'RTCPeer'].every((banned) => !chunk.includes(banned));
+  })());
+
 /* --------------------------------------------------------- the runners --- */
 ok('the registry names two real runners, one per model, each with how to run it',
   reg.runners.length === 2

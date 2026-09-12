@@ -245,8 +245,11 @@ if not BOOTSTRAP:
     for ph in ('{district}', '{hall}', '{focus}'):
         assert ph.strip('{}') in page, \
             f'the page prompt builder is missing the {ph} field'
-    # never a network call anywhere near the prompt builder or its export
-    for anchor in ('function orbisPrompt(', 'function exportOrbisPrompts('):
+    # never a network call anywhere near the prompt builder, its export,
+    # or the panel that names the real runners (openOrbis itself must
+    # still never reach past naming a path and a shell command)
+    for anchor in ('function orbisPrompt(', 'function exportOrbisPrompts(',
+                   'function openOrbis('):
         if anchor in page:
             chunk = page.split(anchor, 1)[1][:1600]
             for banned in ('fetch(', 'XMLHttpRequest', 'reactor.inc',
@@ -258,6 +261,17 @@ if not BOOTSTRAP:
     assert 'AI-SYNTHESIZED' in page or 'AI-synthesized' in page.replace(
         'AI-SYNTHESIZED', 'AI-synthesized'), \
         'the synthetic-video honesty label must actually reach the page'
+    # the Orbis panel used to build a prompt and say nothing about the two
+    # real runners sitting in the same repo - it now names both, and this
+    # is the drift guard: every runner this registry declares must actually
+    # reach the panel that is supposed to be pointing learners at it
+    assert 'D.orbis.runners' in page, \
+        'the page does not render the real runners the registry declares'
+    for r in RUNNERS:
+        assert r['path'] in page, \
+            f"runner {r['path']} is declared but never named in the page"
+        assert f'"{r["model"]}"' in page, \
+            f"runner {r['path']}'s model never reaches the page"
 
 stamp = hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest()[:16]
 
