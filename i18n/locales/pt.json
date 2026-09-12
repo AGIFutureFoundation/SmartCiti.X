@@ -52,6 +52,7 @@
   "sim.sound": "Som",
   "sim.view": "Vista",
   "sim.choose": "Escolha um simulador",
+  "sim.operator": "Perguntar ao operador",
   "progress.local": "O progresso é salvo somente neste dispositivo.",
   "city.note": "Camada urbana: locais REGISTRADOS do Locator.X; ruas, pontes e águas esquemáticas",
   "chapters.hall": "Sede regional de capítulos",

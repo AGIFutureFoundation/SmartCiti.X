@@ -434,8 +434,18 @@ function setSimView(mode) {
   }
 }
 
+// the Operator's mesh is a child of sim.group, so disposeOf(sim.group)
+// below frees it - this just drops the now-dangling advisorMeshes entry
+// so proximity/rendering never touches a mesh no longer in the scene
+function clearOperatorAdvisor() {
+  const i = advisorMeshes.findIndex((m) => m.userData.advisor === 'operator');
+  if (i >= 0) advisorMeshes.splice(i, 1);
+  if (nearAdvisor === 'operator') nearAdvisor = null;
+}
+
 function teardownSim() {
   if (!sim) return;
+  clearOperatorAdvisor();
   scene.remove(sim.group);
   disposeOf(sim.group);
   sim = null; simView = null; curScenario = null; simRider = null;
@@ -446,6 +456,7 @@ function teardownSim() {
   dash.style.display = 'none'; dash.innerHTML = '';
   document.getElementById('camBtn').style.display = 'none';
   document.getElementById('sndBtn').style.display = 'none';
+  document.getElementById('opBtn').style.display = 'none';
 }
 
 function exitSim() { teardownSim(); showHall(slug); }
@@ -513,7 +524,17 @@ function startSim(simId) {
       clip.userData.wapt = i;
       waBeacons.push(clip);
     });
+    // the Operator: a live advisor standing in THIS seat's own yard, not a
+    // hall room - a step outside the walkaround ring so it never overlaps
+    // a clipboard or the machine itself. See agents/build.py for why its
+    // topics bind to curSimId rather than the hall's first bound seat.
+    const oAng = -1.9, oRad = wr + 3.2;
+    placeAdvisor('operator', sim.group,
+      wcx + Math.cos(oAng) * oRad, wcz + Math.sin(oAng) * oRad, null);
   }
+  const ob = document.getElementById('opBtn');
+  ob.style.display = '';
+  ob.textContent = '\\U0001f477 ' + t('sim.operator');
   controls.autoRotate = false;
   setSimView(def.view_modes[0]);
   acEnsure(); engineStart(def.audio.engine === 'diesel' ? 'diesel'
@@ -547,6 +568,9 @@ document.getElementById('sndBtn').addEventListener('click', () => {
   if (master) master.gain.value = audioOn ? .9 : 0;
   document.getElementById('sndBtn').textContent =
     '\\u266a ' + t('sim.sound') + (audioOn ? '' : ' \\u2717');
+});
+document.getElementById('opBtn').addEventListener('click', () => {
+  if (sim) openAdvisor('operator');
 });
 
 function simResults(simId, rows, passed) {
@@ -2827,7 +2851,9 @@ function placeAdvisor(aid, parent, x, z, crewSlug) {
 // the hall: one advisor per room that has one, plus the guide at the door
 function spawnHallAdvisors(h, W, DEP) {
   for (const [aid, a] of Object.entries(ADVISOR_TABLE)) {
-    if (a.stands_in === 'green') continue;
+    // the campus green (dispatcher) and a sim's own yard (operator) are
+    // both placed by their own spawners, never as a hall room
+    if (a.stands_in === 'green' || a.stands_in === 'yard') continue;
     if (a.stands_in === 'door') { placeAdvisor(aid, hallGroup, 2.6,
       DEP / 2 - 3.2, h.slug); continue; }
     const r = roomRects.find((x) => x.strand === a.stands_in);
@@ -2962,6 +2988,50 @@ function advRead(bind, aid) {
         + esc(r.measure) + ' (pass ' + esc(r.pass) + ')'))
         + '<p>' + esc(D.sims.honesty) + '</p>'
         + cite('read from the simulator registry');
+    }
+    // the Operator's own bindings: the ACTUAL running seat (curSimId), not
+    // the hall's first bound one - see agents/build.py's header note
+    case 'seat.task': {
+      const s = D.sims.sims[curSimId];
+      if (!s) return '<p>No seat is running.</p>';
+      return '<p><b>' + esc(s.name) + '</b></p><p>' + esc(s.task) + '</p>'
+        + cite('read from the simulator registry');
+    }
+    case 'seat.controls': {
+      const s = D.sims.sims[curSimId];
+      if (!s) return '<p>No seat is running.</p>';
+      return li(s.controls.map((c) => '<b>' + esc(c.keys) + '</b> \\u2014 '
+        + esc(c.action))) + cite('read from the simulator registry');
+    }
+    case 'seat.dash': {
+      const s = D.sims.sims[curSimId];
+      if (!s) return '<p>No seat is running.</p>';
+      return li(s.dash.map((g) => '<b>' + esc(g.label) + '</b>'
+        + (g.unit ? ' (' + esc(g.unit) + ')' : '')
+        + (g.warn_at !== undefined ? ' \\u2014 warns past ' + esc(g.warn_at) : '')))
+        + cite('read from the simulator registry');
+    }
+    case 'seat.rubric': {
+      const s = D.sims.sims[curSimId];
+      if (!s) return '<p>No seat is running.</p>';
+      return li(s.rubric.map((r) => '<b>' + esc(r.axis) + '</b> \\u2014 '
+        + esc(r.measure) + ' (pass ' + esc(r.pass) + ')'))
+        + '<p>' + esc(D.sims.honesty) + '</p>'
+        + cite('read from the simulator registry');
+    }
+    case 'seat.walkaround': {
+      const s = D.sims.sims[curSimId];
+      if (!s) return '<p>No seat is running.</p>';
+      return li(s.walkaround.map((w) => '<b>' + esc(w.point) + '</b> \\u2014 '
+        + esc(w.check))) + cite('read from the simulator registry');
+    }
+    case 'seat.trade': {
+      const s = D.sims.sims[curSimId];
+      if (!s) return '<p>No seat is running.</p>';
+      return li(s.halls.map((sg) => {
+        const hh = D.halls.find((x) => x.slug === sg);
+        return '<b>' + esc(hh ? hh.name : sg) + '</b>';
+      })) + cite('read from the simulator registry\\u2019s hall bindings');
     }
     case 'hall.rooms':
       return li((h ? h.rooms : []).map((r) => '<b>' + esc(r.label) + '</b> \\u2014 '
@@ -3187,6 +3257,7 @@ body.open #panel{transform:none}
   <button id="avaBtn" class="barbtn"></button>
   <button id="camBtn" class="barbtn" style="display:none"></button>
   <button id="sndBtn" class="barbtn" style="display:none"></button>
+  <button id="opBtn" class="barbtn" style="display:none"></button>
   <button id="dnBtn" class="barbtn" aria-label="day / night">🌙</button>
   <button id="recBtn" class="barbtn" aria-label="records">⏱</button>
   <button id="orbisBtn" class="barbtn" aria-label="Orbis synthetic-training prompt">🎬</button>

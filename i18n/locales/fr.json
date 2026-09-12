@@ -52,6 +52,7 @@
   "sim.sound": "Son",
   "sim.view": "Vue",
   "sim.choose": "Choisissez un simulateur",
+  "sim.operator": "Demander à l'opérateur",
   "progress.local": "La progression est enregistrée uniquement sur cet appareil.",
   "city.note": "Couche urbaine : lieux ENREGISTRÉS depuis Locator.X ; rues, ponts et plans d’eau schématiques",
   "chapters.hall": "Maison des sections régionales",

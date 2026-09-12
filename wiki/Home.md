@@ -22,7 +22,7 @@ content graph and details:
 | Languages (`web/trade_craft_languages.html`) | The Academy overview in 8 languages | [Languages](Languages.md) |
 | **Simulators** (inside the 3D environment) | 7 operable seats — schematic physics, deterministic rubrics, pre-shift walkarounds, bound to real skills in 21 halls | [Simulators](Simulators.md) |
 | **Toolrooms** (inside the 3D + interactive maps) | 8 district tool cribs — 96 tools with the deterministic crib drill | [Toolrooms](Toolrooms.md) |
-| **Advisors** (in the rooms and on the green) | 8 scripted guides answering 28 fixed questions — 14 of them read straight from the registry that holds the fact | [Advisors](Advisors.md) |
+| **Advisors** (in the rooms and on the green) | 9 scripted guides answering 34 fixed questions — 20 of them read straight from the registry that holds the fact | [Advisors](Advisors.md) |
 | **The world** (sky, weather, ground, animals) | 6 weather states over per-campus atmospheres, 6 generated ground surfaces and 58 animals — and not one texture file anywhere | [World](World.md) |
 | **The signs** (every word in the 3D world) | 13 kinds over 10 shapes — shape carries the category, colour the provenance, type the rank, and every sign reacts to where you are looking | [Signs](Signs.md) |
 | **Training data** (device-local, opt-out, exportable) | 3 episode kinds recorded from real interactions — sim outcomes, advisor exchanges, walkaround checks — shaped for the org's own `ml-agents` fork, never read by a grader | [Training-Data](Training-Data.md) |
