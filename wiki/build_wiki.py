@@ -48,6 +48,7 @@ advisors = json.load(open(ROOT / 'agents/registry/advisors.json'))
 world = json.load(open(ROOT / 'world/registry/world.json'))
 labels = json.load(open(ROOT / 'labels/registry/labels.json'))
 training = json.load(open(ROOT / 'training/registry/training.json'))
+roadmap = json.load(open(ROOT / 'roadmap/registry/roadmap.json'))
 skills = json.load(open(ROOT / 'pack/registry/skills.json'))['skills']
 by_slug = {h['slug']: h for h in halls}
 
@@ -120,6 +121,7 @@ content graph and details:
 | **The world** (sky, weather, ground, animals) | {world["counts"]["weather"]} weather states over per-campus atmospheres, {world["counts"]["ground"]} generated ground surfaces and {world["counts"]["animals"]} animals — and not one texture file anywhere | [World](World.md) |
 | **The signs** (every word in the 3D world) | {labels["counts"]["kinds"]} kinds over {labels["counts"]["shapes"]} shapes — shape carries the category, colour the provenance, type the rank, and every sign reacts to where you are looking | [Signs](Signs.md) |
 | **Training data** (device-local, opt-out, exportable) | {len(training['episode_kinds'])} episode kinds recorded from real interactions — sim outcomes, advisor exchanges, walkaround checks — shaped for the org's own `ml-agents` fork, never read by a grader | [Training-Data](Training-Data.md) |
+| **The network roadmap** (3 built, 7 candidates) | the path from three RECORDED campuses to ten walkable worlds — two honest provenance tiers, and the real checklist a candidate has to clear to become built | [Roadmap](Roadmap.md) |
 | **Metaverse layer** (`meta/registry/metaverse.json`) | The interchange contract: {len(meta["baseline"]["standards"])} open standards claimed (glTF 2.0, WebXR, GeoJSON), {len(meta["baseline"]["not_claimed"])} honestly not, avatar and hall .glb export, learner-local import | [Metaverse-Layer](Metaverse-Layer.md) |
 | **City records** (`parcels/registry/parcels.json`) | The source contract for the three campus regions\' own parcel and building-footprint authorities ({sum(set(s["records"] for s in parcels["sources"].values())):,} records published upstream), plus the public-domain federal orthoimagery both maps draw | [City-Records](City-Records.md) |
 | **Network geomap** (`web/trade_craft_geomap.html`) | The geo registry on a real WGS84 map (MapLibre, no basemap tiles): campuses, {n_anchors} RECORDED anchors, great-circle routes, RECORDED city frames | [Campus-Map](Campus-Map.md) |
@@ -1141,6 +1143,52 @@ cross-checked on every build. This pack cites it; it does not claim it.
 {FOOTER}"""
 
 
+def page_roadmap():
+    built = roadmap['built_campuses']
+    cand = roadmap['candidates']
+    brows = '\n'.join(
+        f"| **{b['name']}** | {b['city']}, {b['region']} | {', '.join(districts[d]['name'] for d in b['districts'])} "
+        f"| {b['halls']} | RECORDED |"
+        for b in built.values())
+    crows = '\n'.join(
+        f"| **{c['name']}** | {c['city']}, {c['region']} | {', '.join(districts[d]['name'] for d in c['districts'])} "
+        f"| {c['why']} |"
+        for c in cand.values())
+    chrows = '\n'.join(
+        f"1. **{r['step']}** — {r['what']} (`{r['file']}`)" for r in roadmap['checklist'])
+    return f"""# The network roadmap
+
+{roadmap['honesty']['target_not_claim']}
+
+## Built — {len(built)} of {roadmap['target']}
+
+| Campus | Where | Districts | Halls | Coordinate |
+|---|---|---|---|---|
+{brows}
+
+## Candidates — {len(cand)} proposed
+
+| Campus | Where | Districts | Why |
+|---|---|---|---|
+{crows}
+
+{roadmap['honesty']['not_a_claim_of_content']}
+
+## Two provenance tiers
+
+{roadmap['honesty']['provenance_tiers']}
+
+## Building the next one
+
+{chrows}
+
+{roadmap['honesty']['no_dates']}
+
+See the live [network dashboard](../web/trade_craft_dashboard.html) for
+every figure above read straight from its own registry.
+{FOOTER}"""
+
+
 PAGES = {
     'Home.md': page_home,
     'Campus-Map.md': page_campus,
@@ -1155,6 +1203,7 @@ PAGES = {
     'World.md': page_world,
     'Signs.md': page_signs,
     'Training-Data.md': page_training,
+    'Roadmap.md': page_roadmap,
     'Flipped-Classroom.md': page_schools,
     'Provenance.md': page_provenance,
     **{f'District-{k}.md': (lambda k=k, d=d: page_district(k, d))

@@ -1,0 +1,190 @@
+{
+ "pack": "smartcitix-trade-craft-academy-roadmap",
+ "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
+ "pack_version": "3.2.0",
+ "built": "2026-09-12",
+ "source_stamp": "0c9c7103674deaf6",
+ "target": 10,
+ "honesty": {
+  "target_not_claim": "ten walkable worlds is a target this registry tracks progress toward, not a claim that ten exist. Three are built; seven are candidates.",
+  "provenance_tiers": "the three built campuses' coordinates are RECORDED - copied from a cited file and cross-checked against it on every build. The seven candidates' coordinates are AUTHORED: widely-published public geography, typed here from general knowledge rather than copied from any file this build can check itself against - a materially weaker claim, labelled as one.",
+  "not_a_claim_of_content": "a candidate names a proposed metro and a proposed district emphasis. It does not claim any hall, union, curriculum content or trade partnership exists there - building one is the checklist, done in full, the same way the first three were.",
+  "no_dates": "this is an ordered list of what is next, not a timeline: no candidate carries a committed date."
+ },
+ "built_campuses": {
+  "treasure-island": {
+   "name": "Treasure Island Campus",
+   "city": "San Francisco",
+   "region": "California",
+   "lat": 37.8235,
+   "lng": -122.3705,
+   "districts": [
+    "structural",
+    "systems",
+    "envelope"
+   ],
+   "halls": 51,
+   "provenance": "DERIVED",
+   "source": "Treasure Island centroid, authored (WGS84)"
+  },
+  "oakland": {
+   "name": "Oakland Waterfront Campus",
+   "city": "Oakland",
+   "region": "California",
+   "lat": 37.8044,
+   "lng": -122.2712,
+   "districts": [
+    "industry",
+    "transport",
+    "earthworks"
+   ],
+   "halls": 32,
+   "provenance": "RECORDED",
+   "source": "Locator.X city table (src/app.js CITIES), Apache-2.0"
+  },
+  "new-orleans": {
+   "name": "Crescent Works Campus",
+   "city": "New Orleans",
+   "region": "Louisiana",
+   "lat": 29.9511,
+   "lng": -90.0715,
+   "districts": [
+    "energy",
+    "control"
+   ],
+   "halls": 28,
+   "provenance": "DERIVED",
+   "source": "New Orleans centroid, authored (WGS84)"
+  }
+ },
+ "candidates": {
+  "houston": {
+   "name": "Bayou Energy Campus",
+   "city": "Houston",
+   "region": "Texas",
+   "lat": 29.7604,
+   "lng": -95.3698,
+   "districts": [
+    "energy",
+    "industry",
+    "transport"
+   ],
+   "why": "the country's petrochemical and pipeline capital, on the Gulf beside a working ship channel - energy, process plant and marine trades at the scale the real industry runs at"
+  },
+  "chicago": {
+   "name": "Loop Rail Campus",
+   "city": "Chicago",
+   "region": "Illinois",
+   "lat": 41.8781,
+   "lng": -87.6298,
+   "districts": [
+    "structural",
+    "transport",
+    "systems"
+   ],
+   "why": "the nation's rail hub and a structural-steel skyline built by the trades that invented the high-rise - transport, structural and the building systems a dense downtown runs on"
+  },
+  "seattle": {
+   "name": "Sound Aerospace Campus",
+   "city": "Seattle",
+   "region": "Washington",
+   "lat": 47.6062,
+   "lng": -122.3321,
+   "districts": [
+    "transport",
+    "structural",
+    "industry"
+   ],
+   "why": "aerospace manufacturing and a working port on the Sound - precision heavy industry alongside the structural and transport trades a port city depends on"
+  },
+  "pittsburgh": {
+   "name": "Three Rivers Steel Campus",
+   "city": "Pittsburgh",
+   "region": "Pennsylvania",
+   "lat": 40.4406,
+   "lng": -79.9959,
+   "districts": [
+    "industry",
+    "structural",
+    "earthworks"
+   ],
+   "why": "the steel city, its three rivers crossed by more bridges than any other in the country - heavy industry and the structural trades it was built to teach are its own history"
+  },
+  "denver": {
+   "name": "Front Range Campus",
+   "city": "Denver",
+   "region": "Colorado",
+   "lat": 39.7392,
+   "lng": -104.9903,
+   "districts": [
+    "earthworks",
+    "energy",
+    "control"
+   ],
+   "why": "a mining and energy heritage at altitude, and the ground, survey and safety disciplines that heritage was built on"
+  },
+  "miami": {
+   "name": "Biscayne Coastal Campus",
+   "city": "Miami",
+   "region": "Florida",
+   "lat": 25.7617,
+   "lng": -80.1918,
+   "districts": [
+    "envelope",
+    "control",
+    "transport"
+   ],
+   "why": "hurricane-code envelope work and storm-response discipline on a coast that tests both every season, beside a working port"
+  },
+  "detroit": {
+   "name": "Motor City Campus",
+   "city": "Detroit",
+   "region": "Michigan",
+   "lat": 42.3314,
+   "lng": -83.0458,
+   "districts": [
+    "industry",
+    "structural",
+    "systems"
+   ],
+   "why": "a century of heavy manufacturing and the machinist, structural and building-systems trades an automotive industrial base actually runs on"
+  }
+ },
+ "checklist": [
+  {
+   "step": "source real coordinates",
+   "what": "find the metro's city-center and any regional-institution coordinates in a citable, checkable source - the pattern geo/build.py already follows against the Locator.X checkout",
+   "file": "geo/build.py"
+  },
+  {
+   "step": "cross-check on every build",
+   "what": "assert the coordinate matches the cited source whenever that checkout is present, so a drifted number fails the build rather than going unnoticed",
+   "file": "geo/build.py"
+  },
+  {
+   "step": "add the campus and its districts",
+   "what": "register the campus, its region and its 2-3 districts in the union registry, matching real local trade profile to the existing eight-district taxonomy",
+   "file": "unions/registry/campuses.json"
+  },
+  {
+   "step": "assign or share halls",
+   "what": "every hall already exists once in the pack; a new campus hosts the halls its assigned districts already declare - no hall content is duplicated per campus",
+   "file": "pack/registry/halls.json"
+  },
+  {
+   "step": "build the 3D campus geometry",
+   "what": "the district ring, roads and green generate from the campus record automatically - buildCampus() takes a district count and a region key, not a hand-placed layout",
+   "file": "web/build_3d.py"
+  },
+  {
+   "step": "give it a world",
+   "what": "an authored atmosphere (sky, ground surface, character) and the fauna that belongs on that coast or that plain",
+   "file": "world/build.py"
+  },
+  {
+   "step": "verify, ship, publish",
+   "what": "every suite in verify_all.sh must hold, a browser harness must prove the campus walks and judges correctly, and the hosted artifact must be rebuilt and republished",
+   "file": "verify_all.sh"
+  }
+ ]
+}
