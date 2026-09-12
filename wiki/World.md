@@ -56,10 +56,11 @@ schematic weather, not a forecast and not an observation: nothing here is tied t
 | **Oakland Waterfront Campus** | `asphalt` / `gravel` | the estuary side, warmer and harder-edged than the island - authored by reputation, not measured |
 | **Crescent Works Campus** | `concrete` / `grass` | Gulf humidity and a low warm haze - authored by reputation, not measured |
 | **Bayou Energy Hub** | `asphalt` / `gravel` | Gulf-coast heat haze over a working ship channel, a refinery glow at the sky's edge after dark - authored by reputation, not measured |
+| **Loop Rail Hub** | `concrete` / `gravel` | a flat lakefront wind that never really stops, cold and grey off the water most of the year - authored by reputation, not measured |
 
 ## The animals
 
-5 kinds, 46 placed across the 4 campuses. They are
+6 kinds, 58 placed across the 5 campuses. They are
 the only moving thing on an idle campus, and they give the scene the one
 thing the buildings cannot: a sense of scale a learner reads without being
 told.
@@ -68,9 +69,10 @@ told.
 |---|---|---|---|---|
 | 🐦 **Gull** | 5 | 1.2 m | treasure-island, oakland | a working waterfront has gulls over it; both Bay campuses are on one |
 | 🦩 **Brown pelican** | 3 | 2.0 m | new-orleans, houston | Louisiana’s state bird, and unmistakable over any Gulf coast - the ship channel included |
+| 🐦 **Ring-billed gull** | 5 | 1.1 m | chicago | the lakefront gull, by reputation the most familiar bird on the Chicago waterfront |
 | 🕊️ **Egret** | 2 | 1.0 m | new-orleans | standing in the wet margin, which is most of the ground around this campus |
-| 🕊️ **Pigeon** | 6 | 0.6 m | treasure-island, oakland, new-orleans, houston | every yard in every city has them, and they are the scale reference nobody thinks about |
-| 🐕 **Yard dog** | 1 | 1.0 m | treasure-island, oakland, new-orleans, houston | the yard dog is a fixture of the trade, and it teaches the habit of looking down before reversing |
+| 🕊️ **Pigeon** | 6 | 0.6 m | treasure-island, oakland, new-orleans, houston, chicago | every yard in every city has them, and they are the scale reference nobody thinks about |
+| 🐕 **Yard dog** | 1 | 1.0 m | treasure-island, oakland, new-orleans, houston, chicago | the yard dog is a fixture of the trade, and it teaches the habit of looking down before reversing |
 
 ambience, not a wildlife survey: common names, schematic bodies and authored paths. No species record, population count or sighting is claimed, and no animal here is drawn from any photograph.
 

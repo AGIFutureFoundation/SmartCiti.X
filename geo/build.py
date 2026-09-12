@@ -19,12 +19,12 @@ three tiers this build can actually check itself against.
     city table (src/app.js, CITIES), which is real committed data.
   - Treasure Island and New Orleans are DERIVED: well-known place centroids
     authored here, since neither appears in that table.
-  - Houston is AUTHORED: widely-published public geography (the kind a
-    city's own Wikipedia infobox states), typed here from general
-    knowledge. No sibling source cross-checks it, unlike the other three -
-    the same honesty this pack's roadmap already states for every
-    candidate city, carried through now that Houston is built rather than
-    proposed.
+  - Houston and Chicago are AUTHORED: widely-published public geography
+    (the kind a city's own Wikipedia infobox states), typed here from
+    general knowledge. No sibling source cross-checks either, unlike the
+    other three - the same honesty this pack's roadmap already states for
+    every candidate city, carried through now that each is built rather
+    than proposed.
   - Everything downstream of the coordinates (distances, bearings) is
     computed, and the suite recomputes it rather than trusting it.
 
@@ -55,6 +55,10 @@ GEO = {
     'new-orleans':     (29.9511, -90.0715, 'DERIVED',
                         'New Orleans centroid, authored (WGS84)'),
     'houston':         (29.7604, -95.3698, 'AUTHORED',
+                        'widely-published public geography (city-center), '
+                        'typed from general knowledge - not cross-checked '
+                        'against any file this build can verify'),
+    'chicago':         (41.8781, -87.6298, 'AUTHORED',
                         'widely-published public geography (city-center), '
                         'typed from general knowledge - not cross-checked '
                         'against any file this build can verify'),

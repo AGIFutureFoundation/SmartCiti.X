@@ -2,8 +2,8 @@
  "pack": "smartcitix-trade-craft-academy-union-registry",
  "pack_version": "3.2.0",
  "built": "2026-09-09",
- "source_stamp": "2638d791b6297d9f",
- "count": 444,
+ "source_stamp": "53b44a303bcd7256",
+ "count": 555,
  "regions": {
   "treasure-island": {
    "abbr": "SF",
@@ -24,13 +24,19 @@
    "abbr": "HOU",
    "name": "Bayou Energy Hub",
    "city": "Houston"
+  },
+  "chicago": {
+   "abbr": "CHI",
+   "name": "Loop Rail Hub",
+   "city": "Chicago"
   }
  },
  "hosted": {
   "treasure-island": 60,
   "oakland": 79,
   "new-orleans": 83,
-  "houston": 111
+  "houston": 111,
+  "chicago": 111
  },
  "honesty": {
   "chapters": "the Academy's own regional training structure across its planned campuses - not a claim about any real union's locals, chapters or jurisdictions; no local is named"
@@ -51,6 +57,10 @@
     "houston": {
      "code": "ironworkers@HOU",
      "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "ironworkers@CHI",
+     "role": "regional chapter"
     }
    }
   },
@@ -68,6 +78,10 @@
     },
     "houston": {
      "code": "electricians@HOU",
+     "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "electricians@CHI",
      "role": "regional chapter"
     }
    }
@@ -87,6 +101,10 @@
     "houston": {
      "code": "pipefitters@HOU",
      "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "pipefitters@CHI",
+     "role": "regional chapter"
     }
    }
   },
@@ -104,6 +122,10 @@
     },
     "houston": {
      "code": "carpenters@HOU",
+     "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "carpenters@CHI",
      "role": "regional chapter"
     }
    }
@@ -123,6 +145,10 @@
     "houston": {
      "code": "operating-eng@HOU",
      "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "operating-eng@CHI",
+     "role": "regional chapter"
     }
    }
   },
@@ -140,6 +166,10 @@
     },
     "houston": {
      "code": "laborers@HOU",
+     "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "laborers@CHI",
      "role": "regional chapter"
     }
    }
@@ -159,6 +189,10 @@
     "houston": {
      "code": "sheetmetal@HOU",
      "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "sheetmetal@CHI",
+     "role": "regional chapter"
     }
    }
   },
@@ -176,6 +210,10 @@
     },
     "houston": {
      "code": "bricklayers@HOU",
+     "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "bricklayers@CHI",
      "role": "regional chapter"
     }
    }
@@ -195,6 +233,10 @@
     "houston": {
      "code": "cement-masons@HOU",
      "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "cement-masons@CHI",
+     "role": "regional chapter"
     }
    }
   },
@@ -212,6 +254,10 @@
     },
     "houston": {
      "code": "roofers@HOU",
+     "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "roofers@CHI",
      "role": "regional chapter"
     }
    }
@@ -231,6 +277,10 @@
     "houston": {
      "code": "painters@HOU",
      "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "painters@CHI",
+     "role": "regional chapter"
     }
    }
   },
@@ -248,6 +298,10 @@
     },
     "houston": {
      "code": "glaziers@HOU",
+     "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "glaziers@CHI",
      "role": "regional chapter"
     }
    }
@@ -267,6 +321,10 @@
     "houston": {
      "code": "insulators@HOU",
      "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "insulators@CHI",
+     "role": "regional chapter"
     }
    }
   },
@@ -284,6 +342,10 @@
     },
     "houston": {
      "code": "millwrights@HOU",
+     "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "millwrights@CHI",
      "role": "regional chapter"
     }
    }
@@ -303,6 +365,10 @@
     "houston": {
      "code": "boilermakers@HOU",
      "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "boilermakers@CHI",
+     "role": "regional chapter"
     }
    }
   },
@@ -320,6 +386,10 @@
     },
     "houston": {
      "code": "elevator@HOU",
+     "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "elevator@CHI",
      "role": "regional chapter"
     }
    }
@@ -339,6 +409,10 @@
     "houston": {
      "code": "teamsters@HOU",
      "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "teamsters@CHI",
+     "role": "regional chapter"
     }
    }
   },
@@ -356,6 +430,10 @@
     },
     "houston": {
      "code": "welders@HOU",
+     "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "welders@CHI",
      "role": "regional chapter"
     }
    }
@@ -375,6 +453,10 @@
     "houston": {
      "code": "hvacr@HOU",
      "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "hvacr@CHI",
+     "role": "regional chapter"
     }
    }
   },
@@ -392,6 +474,10 @@
     },
     "houston": {
      "code": "crane-ops@HOU",
+     "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "crane-ops@CHI",
      "role": "regional chapter"
     }
    }
@@ -411,6 +497,10 @@
     "houston": {
      "code": "riggers@HOU",
      "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "riggers@CHI",
+     "role": "regional chapter"
     }
    }
   },
@@ -428,6 +518,10 @@
     },
     "houston": {
      "code": "heavy-equip@HOU",
+     "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "heavy-equip@CHI",
      "role": "regional chapter"
     }
    }
@@ -447,6 +541,10 @@
     "houston": {
      "code": "drywall@HOU",
      "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "drywall@CHI",
+     "role": "regional chapter"
     }
    }
   },
@@ -464,6 +562,10 @@
     },
     "houston": {
      "code": "flooring@HOU",
+     "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "flooring@CHI",
      "role": "regional chapter"
     }
    }
@@ -483,6 +585,10 @@
     "houston": {
      "code": "grounds@HOU",
      "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "grounds@CHI",
+     "role": "regional chapter"
     }
    }
   },
@@ -500,6 +606,10 @@
     },
     "houston": {
      "code": "line-workers@HOU",
+     "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "line-workers@CHI",
      "role": "regional chapter"
     }
    }
@@ -519,6 +629,10 @@
     "houston": {
      "code": "solar@HOU",
      "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "solar@CHI",
+     "role": "regional chapter"
     }
    }
   },
@@ -536,6 +650,10 @@
     },
     "houston": {
      "code": "wind@HOU",
+     "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "wind@CHI",
      "role": "regional chapter"
     }
    }
@@ -555,6 +673,10 @@
     "houston": {
      "code": "demolition@HOU",
      "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "demolition@CHI",
+     "role": "regional chapter"
     }
    }
   },
@@ -572,6 +694,10 @@
     },
     "houston": {
      "code": "scaffold@HOU",
+     "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "scaffold@CHI",
      "role": "regional chapter"
     }
    }
@@ -591,6 +717,10 @@
     "houston": {
      "code": "surveyors@HOU",
      "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "surveyors@CHI",
+     "role": "regional chapter"
     }
    }
   },
@@ -608,6 +738,10 @@
     },
     "houston": {
      "code": "fire-sprinkler@HOU",
+     "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "fire-sprinkler@CHI",
      "role": "regional chapter"
     }
    }
@@ -627,6 +761,10 @@
     "houston": {
      "code": "hazmat@HOU",
      "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "hazmat@CHI",
+     "role": "regional chapter"
     }
    }
   },
@@ -644,6 +782,10 @@
     },
     "houston": {
      "code": "refractory@HOU",
+     "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "refractory@CHI",
      "role": "regional chapter"
     }
    }
@@ -663,6 +805,10 @@
     "houston": {
      "code": "pipeline@HOU",
      "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "pipeline@CHI",
+     "role": "regional chapter"
     }
    }
   },
@@ -680,6 +826,10 @@
     },
     "houston": {
      "code": "tank-erectors@HOU",
+     "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "tank-erectors@CHI",
      "role": "regional chapter"
     }
    }
@@ -699,6 +849,10 @@
     "houston": {
      "code": "shipfitters@HOU",
      "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "shipfitters@CHI",
+     "role": "regional chapter"
     }
    }
   },
@@ -716,6 +870,10 @@
     },
     "houston": {
      "code": "marine-pipe@HOU",
+     "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "marine-pipe@CHI",
      "role": "regional chapter"
     }
    }
@@ -735,6 +893,10 @@
     "houston": {
      "code": "divers@HOU",
      "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "divers@CHI",
+     "role": "regional chapter"
     }
    }
   },
@@ -752,6 +914,10 @@
     },
     "houston": {
      "code": "blasters@HOU",
+     "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "blasters@CHI",
      "role": "regional chapter"
     }
    }
@@ -771,6 +937,10 @@
     "houston": {
      "code": "miners@HOU",
      "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "miners@CHI",
+     "role": "regional chapter"
     }
    }
   },
@@ -788,6 +958,10 @@
     },
     "houston": {
      "code": "smelter@HOU",
+     "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "smelter@CHI",
      "role": "regional chapter"
     }
    }
@@ -807,6 +981,10 @@
     "houston": {
      "code": "foundry@HOU",
      "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "foundry@CHI",
+     "role": "regional chapter"
     }
    }
   },
@@ -824,6 +1002,10 @@
     },
     "houston": {
      "code": "machinists@HOU",
+     "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "machinists@CHI",
      "role": "regional chapter"
     }
    }
@@ -843,6 +1025,10 @@
     "houston": {
      "code": "toolmakers@HOU",
      "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "toolmakers@CHI",
+     "role": "regional chapter"
     }
    }
   },
@@ -860,6 +1046,10 @@
     },
     "houston": {
      "code": "fabricators@HOU",
+     "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "fabricators@CHI",
      "role": "regional chapter"
     }
    }
@@ -879,6 +1069,10 @@
     "houston": {
      "code": "platers@HOU",
      "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "platers@CHI",
+     "role": "regional chapter"
     }
    }
   },
@@ -896,6 +1090,10 @@
     },
     "houston": {
      "code": "substation@HOU",
+     "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "substation@CHI",
      "role": "regional chapter"
     }
    }
@@ -915,6 +1113,10 @@
     "houston": {
      "code": "cable-splicers@HOU",
      "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "cable-splicers@CHI",
+     "role": "regional chapter"
     }
    }
   },
@@ -932,6 +1134,10 @@
     },
     "houston": {
      "code": "meter-techs@HOU",
+     "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "meter-techs@CHI",
      "role": "regional chapter"
     }
    }
@@ -951,6 +1157,10 @@
     "houston": {
      "code": "gas-distrib@HOU",
      "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "gas-distrib@CHI",
+     "role": "regional chapter"
     }
    }
   },
@@ -968,6 +1178,10 @@
     },
     "houston": {
      "code": "water-distrib@HOU",
+     "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "water-distrib@CHI",
      "role": "regional chapter"
     }
    }
@@ -987,6 +1201,10 @@
     "houston": {
      "code": "wastewater@HOU",
      "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "wastewater@CHI",
+     "role": "regional chapter"
     }
    }
   },
@@ -1004,6 +1222,10 @@
     },
     "houston": {
      "code": "nuclear@HOU",
+     "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "nuclear@CHI",
      "role": "regional chapter"
     }
    }
@@ -1023,6 +1245,10 @@
     "houston": {
      "code": "hydro@HOU",
      "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "hydro@CHI",
+     "role": "regional chapter"
     }
    }
   },
@@ -1040,6 +1266,10 @@
     },
     "houston": {
      "code": "geothermal@HOU",
+     "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "geothermal@CHI",
      "role": "regional chapter"
     }
    }
@@ -1059,6 +1289,10 @@
     "houston": {
      "code": "battery-storage@HOU",
      "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "battery-storage@CHI",
+     "role": "regional chapter"
     }
    }
   },
@@ -1076,6 +1310,10 @@
     },
     "houston": {
      "code": "ev-charging@HOU",
+     "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "ev-charging@CHI",
      "role": "regional chapter"
     }
    }
@@ -1095,6 +1333,10 @@
     "houston": {
      "code": "hydrogen@HOU",
      "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "hydrogen@CHI",
+     "role": "regional chapter"
     }
    }
   },
@@ -1112,6 +1354,10 @@
     },
     "houston": {
      "code": "transmission@HOU",
+     "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "transmission@CHI",
      "role": "regional chapter"
     }
    }
@@ -1131,6 +1377,10 @@
     "houston": {
      "code": "district-energy@HOU",
      "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "district-energy@CHI",
+     "role": "regional chapter"
     }
    }
   },
@@ -1148,6 +1398,10 @@
     },
     "houston": {
      "code": "masonry-restore@HOU",
+     "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "masonry-restore@CHI",
      "role": "regional chapter"
     }
    }
@@ -1167,6 +1421,10 @@
     "houston": {
      "code": "stone-carvers@HOU",
      "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "stone-carvers@CHI",
+     "role": "regional chapter"
     }
    }
   },
@@ -1184,6 +1442,10 @@
     },
     "houston": {
      "code": "plasterers@HOU",
+     "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "plasterers@CHI",
      "role": "regional chapter"
     }
    }
@@ -1203,6 +1465,10 @@
     "houston": {
      "code": "terrazzo@HOU",
      "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "terrazzo@CHI",
+     "role": "regional chapter"
     }
    }
   },
@@ -1220,6 +1486,10 @@
     },
     "houston": {
      "code": "tilesetters@HOU",
+     "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "tilesetters@CHI",
      "role": "regional chapter"
     }
    }
@@ -1239,6 +1509,10 @@
     "houston": {
      "code": "lathers@HOU",
      "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "lathers@CHI",
+     "role": "regional chapter"
     }
    }
   },
@@ -1256,6 +1530,10 @@
     },
     "houston": {
      "code": "curtainwall@HOU",
+     "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "curtainwall@CHI",
      "role": "regional chapter"
     }
    }
@@ -1275,6 +1553,10 @@
     "houston": {
      "code": "waterproofers@HOU",
      "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "waterproofers@CHI",
+     "role": "regional chapter"
     }
    }
   },
@@ -1292,6 +1574,10 @@
     },
     "houston": {
      "code": "firestop@HOU",
+     "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "firestop@CHI",
      "role": "regional chapter"
     }
    }
@@ -1311,6 +1597,10 @@
     "houston": {
      "code": "acoustic@HOU",
      "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "acoustic@CHI",
+     "role": "regional chapter"
     }
    }
   },
@@ -1328,6 +1618,10 @@
     },
     "houston": {
      "code": "cladding@HOU",
+     "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "cladding@CHI",
      "role": "regional chapter"
     }
    }
@@ -1347,6 +1641,10 @@
     "houston": {
      "code": "shoring@HOU",
      "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "shoring@CHI",
+     "role": "regional chapter"
     }
    }
   },
@@ -1364,6 +1662,10 @@
     },
     "houston": {
      "code": "piling@HOU",
+     "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "piling@CHI",
      "role": "regional chapter"
     }
    }
@@ -1383,6 +1685,10 @@
     "houston": {
      "code": "concrete-pump@HOU",
      "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "concrete-pump@CHI",
+     "role": "regional chapter"
     }
    }
   },
@@ -1400,6 +1706,10 @@
     },
     "houston": {
      "code": "post-tension@HOU",
+     "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "post-tension@CHI",
      "role": "regional chapter"
     }
    }
@@ -1419,6 +1729,10 @@
     "houston": {
      "code": "precast@HOU",
      "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "precast@CHI",
+     "role": "regional chapter"
     }
    }
   },
@@ -1436,6 +1750,10 @@
     },
     "houston": {
      "code": "steel-erectors@HOU",
+     "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "steel-erectors@CHI",
      "role": "regional chapter"
     }
    }
@@ -1455,6 +1773,10 @@
     "houston": {
      "code": "decking@HOU",
      "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "decking@CHI",
+     "role": "regional chapter"
     }
    }
   },
@@ -1472,6 +1794,10 @@
     },
     "houston": {
      "code": "window-glazing@HOU",
+     "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "window-glazing@CHI",
      "role": "regional chapter"
     }
    }
@@ -1491,6 +1817,10 @@
     "houston": {
      "code": "bas-controls@HOU",
      "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "bas-controls@CHI",
+     "role": "regional chapter"
     }
    }
   },
@@ -1508,6 +1838,10 @@
     },
     "houston": {
      "code": "fire-alarm@HOU",
+     "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "fire-alarm@CHI",
      "role": "regional chapter"
     }
    }
@@ -1527,6 +1861,10 @@
     "houston": {
      "code": "security-sys@HOU",
      "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "security-sys@CHI",
+     "role": "regional chapter"
     }
    }
   },
@@ -1544,6 +1882,10 @@
     },
     "houston": {
      "code": "network-cabling@HOU",
+     "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "network-cabling@CHI",
      "role": "regional chapter"
     }
    }
@@ -1563,6 +1905,10 @@
     "houston": {
      "code": "fiber-splicers@HOU",
      "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "fiber-splicers@CHI",
+     "role": "regional chapter"
     }
    }
   },
@@ -1580,6 +1926,10 @@
     },
     "houston": {
      "code": "data-center@HOU",
+     "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "data-center@CHI",
      "role": "regional chapter"
     }
    }
@@ -1599,6 +1949,10 @@
     "houston": {
      "code": "instrumentation@HOU",
      "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "instrumentation@CHI",
+     "role": "regional chapter"
     }
    }
   },
@@ -1616,6 +1970,10 @@
     },
     "houston": {
      "code": "plc-techs@HOU",
+     "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "plc-techs@CHI",
      "role": "regional chapter"
     }
    }
@@ -1635,6 +1993,10 @@
     "houston": {
      "code": "robotics@HOU",
      "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "robotics@CHI",
+     "role": "regional chapter"
     }
    }
   },
@@ -1652,6 +2014,10 @@
     },
     "houston": {
      "code": "automation-int@HOU",
+     "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "automation-int@CHI",
      "role": "regional chapter"
     }
    }
@@ -1671,6 +2037,10 @@
     "houston": {
      "code": "cleanroom@HOU",
      "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "cleanroom@CHI",
+     "role": "regional chapter"
     }
    }
   },
@@ -1688,6 +2058,10 @@
     },
     "houston": {
      "code": "medical-gas@HOU",
+     "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "medical-gas@CHI",
      "role": "regional chapter"
     }
    }
@@ -1707,6 +2081,10 @@
     "houston": {
      "code": "rail-track@HOU",
      "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "rail-track@CHI",
+     "role": "regional chapter"
     }
    }
   },
@@ -1724,6 +2102,10 @@
     },
     "houston": {
      "code": "rail-signals@HOU",
+     "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "rail-signals@CHI",
      "role": "regional chapter"
     }
    }
@@ -1743,6 +2125,10 @@
     "houston": {
      "code": "catenary@HOU",
      "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "catenary@CHI",
+     "role": "regional chapter"
     }
    }
   },
@@ -1760,6 +2146,10 @@
     },
     "houston": {
      "code": "transit-vehicle@HOU",
+     "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "transit-vehicle@CHI",
      "role": "regional chapter"
     }
    }
@@ -1779,6 +2169,10 @@
     "houston": {
      "code": "aviation-ground@HOU",
      "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "aviation-ground@CHI",
+     "role": "regional chapter"
     }
    }
   },
@@ -1796,6 +2190,10 @@
     },
     "houston": {
      "code": "airfield@HOU",
+     "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "airfield@CHI",
      "role": "regional chapter"
     }
    }
@@ -1815,6 +2213,10 @@
     "houston": {
      "code": "port-crane@HOU",
      "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "port-crane@CHI",
+     "role": "regional chapter"
     }
    }
   },
@@ -1832,6 +2234,10 @@
     },
     "houston": {
      "code": "marine-terminal@HOU",
+     "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "marine-terminal@CHI",
      "role": "regional chapter"
     }
    }
@@ -1851,6 +2257,10 @@
     "houston": {
      "code": "fleet-diesel@HOU",
      "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "fleet-diesel@CHI",
+     "role": "regional chapter"
     }
    }
   },
@@ -1868,6 +2278,10 @@
     },
     "houston": {
      "code": "bridge-inspect@HOU",
+     "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "bridge-inspect@CHI",
      "role": "regional chapter"
     }
    }
@@ -1887,6 +2301,10 @@
     "houston": {
      "code": "asbestos@HOU",
      "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "asbestos@CHI",
+     "role": "regional chapter"
     }
    }
   },
@@ -1904,6 +2322,10 @@
     },
     "houston": {
      "code": "lead-abatement@HOU",
+     "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "lead-abatement@CHI",
      "role": "regional chapter"
     }
    }
@@ -1923,6 +2345,10 @@
     "houston": {
      "code": "mold-remediation@HOU",
      "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "mold-remediation@CHI",
+     "role": "regional chapter"
     }
    }
   },
@@ -1940,6 +2366,10 @@
     },
     "houston": {
      "code": "spill-response@HOU",
+     "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "spill-response@CHI",
      "role": "regional chapter"
     }
    }
@@ -1959,6 +2389,10 @@
     "houston": {
      "code": "confined-space@HOU",
      "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "confined-space@CHI",
+     "role": "regional chapter"
     }
    }
   },
@@ -1976,6 +2410,10 @@
     },
     "houston": {
      "code": "high-angle@HOU",
+     "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "high-angle@CHI",
      "role": "regional chapter"
     }
    }
@@ -1995,6 +2433,10 @@
     "houston": {
      "code": "site-safety@HOU",
      "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "site-safety@CHI",
+     "role": "regional chapter"
     }
    }
   },
@@ -2013,6 +2455,10 @@
     "houston": {
      "code": "industrial-clean@HOU",
      "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "industrial-clean@CHI",
+     "role": "regional chapter"
     }
    }
   },
@@ -2030,6 +2476,10 @@
     },
     "houston": {
      "code": "survey-drone@HOU",
+     "role": "regional chapter"
+    },
+    "chicago": {
+     "code": "survey-drone@CHI",
      "role": "regional chapter"
     }
    }

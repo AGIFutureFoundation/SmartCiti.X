@@ -3,44 +3,46 @@
 SmartCiti.X : Trade Craft Academy — the network roadmap builder.
 
 Ten is a target this registry tracks progress toward, not a claim that
-ten walkable worlds exist. Four are BUILT: real campuses, each with the
+ten walkable worlds exist. Five are BUILT: real campuses, each with the
 full stack this bundle ships - districts, halls, rooms, simulators,
 advisors, a generated world, shape-coded signage - or, for a hub campus,
-the subset of that stack a hub actually needs (see below). Six are
+the subset of that stack a hub actually needs (see below). Five are
 CANDIDATES: real US metros with real trade profiles, proposed as the
-next six, and nothing more than proposed.
+next five, and nothing more than proposed.
 
-TWO PROVENANCE TIERS, NOT ONE. Three of the four built campuses'
+TWO PROVENANCE TIERS, NOT ONE. Three of the five built campuses'
 coordinates are RECORDED - copied from a cited file in the Locator.X
 sibling checkout (Apache-2.0) and cross-checked against it on every
-build, exactly like every other RECORDED fact in this bundle. Houston,
-the fourth, and the six candidates' city coordinates are AUTHORED:
-widely-published public geography (the kind a city's own Wikipedia
-infobox states), typed here from general knowledge rather than copied
-from any file this build can check itself against. That is a materially
-weaker claim, and it is labelled as one rather than dressed up as
-RECORDED. Promoting a candidate to built means doing the checklist below
-in full, not just relabelling an entry - Houston did it as a HUB campus
-rather than a district campus (see HUB_DESIGN below); a future candidate
-could go either way.
+build, exactly like every other RECORDED fact in this bundle. Houston
+and Chicago, the fourth and fifth, and the five remaining candidates'
+city coordinates are AUTHORED: widely-published public geography (the
+kind a city's own Wikipedia infobox states), typed here from general
+knowledge rather than copied from any file this build can check itself
+against. That is a materially weaker claim, and it is labelled as one
+rather than dressed up as RECORDED. Promoting a candidate to built means
+doing the checklist below in full, not just relabelling an entry -
+Houston and Chicago both did it as a HUB campus rather than a district
+campus (see HUB_DESIGN below); a future candidate could still go either
+way.
 
 HUB_DESIGN. A district campus and a hub campus are the two shapes this
 network's campuses come in, not a hierarchy. Every one of the eight
 trade districts already has exactly one home among the three original
 campuses - that invariant (unions/unions111.py) was not relaxed to add
-Houston. Instead Houston hosts no home district of its own (districts:
-[]) and the chapters mechanic every campus already had - a regional
-chapter, for every hall, at every campus that is not its home - simply
-gained a fourth destination: Houston is now a regional-chapter seat for
-all 111 halls, a real walkable point on the network map, and duplicates
-no hall's content anywhere. It draws no district ring and carries no
-parcel-records contract (parcels/build.py), because there are no
-buildings there for either to describe.
+Houston or Chicago. Instead each hosts no home district of its own
+(districts: []) and the chapters mechanic every campus already had - a
+regional chapter, for every hall, at every campus that is not its home -
+simply gained a fourth and a fifth destination: Houston and Chicago are
+each now a regional-chapter seat for all 111 halls, real walkable points
+on the network map, and duplicate no hall's content anywhere. Neither
+draws a district ring nor carries a parcel-records contract
+(parcels/build.py), because there are no buildings at either for one to
+describe.
 
 A candidate names a proposed metro and a proposed district emphasis. It
 does NOT claim any hall, union, curriculum content, or trade partnership
 exists there - building one is the checklist below, done in full, the
-same way the first three were.
+same way the first four were.
 """
 import hashlib
 import json
@@ -59,14 +61,6 @@ TARGET = 10
 # the built campuses already cover all eight between them, so a candidate
 # deepens the network's regional variety rather than filling a gap.
 CANDIDATES = {
-    'chicago': {
-        'name': 'Loop Rail Campus', 'city': 'Chicago', 'region': 'Illinois',
-        'lat': 41.8781, 'lng': -87.6298,
-        'districts': ['structural', 'transport', 'systems'],
-        'why': 'the nation\'s rail hub and a structural-steel skyline built '
-               'by the trades that invented the high-rise - transport, '
-               'structural and the building systems a dense downtown runs on',
-    },
     'seattle': {
         'name': 'Sound Aerospace Campus', 'city': 'Seattle',
         'region': 'Washington',
@@ -155,25 +149,27 @@ CHECKLIST = [
 HONESTY = {
     'target_not_claim': 'ten walkable worlds is a target this registry '
                         'tracks progress toward, not a claim that ten '
-                        'exist. Four are built; six are candidates.',
-    'provenance_tiers': 'three of the four built campuses\' coordinates '
+                        'exist. Five are built; five are candidates.',
+    'provenance_tiers': 'three of the five built campuses\' coordinates '
                         'are RECORDED - copied from a cited file and '
                         'cross-checked against it on every build. '
-                        'Houston, the fourth, and the six candidates\' '
-                        'coordinates are AUTHORED: widely-published '
-                        'public geography, typed here from general '
-                        'knowledge rather than copied from any file this '
-                        'build can check itself against - a materially '
-                        'weaker claim, labelled as one.',
+                        'Houston and Chicago, the fourth and fifth, and '
+                        'the five remaining candidates\' coordinates are '
+                        'AUTHORED: widely-published public geography, '
+                        'typed here from general knowledge rather than '
+                        'copied from any file this build can check '
+                        'itself against - a materially weaker claim, '
+                        'labelled as one.',
     'hub_vs_district': 'three built campuses are district campuses: a '
                        'home for 2-3 trade districts, a district ring, '
-                       'the full stack this bundle ships. Houston is a '
-                       'hub campus: no home district, no district ring, '
-                       'no parcel-records contract - and a real regional '
-                       'chapter seat for all 111 halls, the same '
-                       'mechanic every campus already had, extended to a '
-                       'fourth destination. Building one shape does not '
-                       'oblige the next candidate to be the other.',
+                       'the full stack this bundle ships. Houston and '
+                       'Chicago are hub campuses: no home district, no '
+                       'district ring, no parcel-records contract - and '
+                       'a real regional chapter seat for all 111 halls '
+                       'each, the same mechanic every campus already '
+                       'had, extended to a fourth and a fifth '
+                       'destination. Building one shape does not oblige '
+                       'the next candidate to be the other.',
     'not_a_claim_of_content': 'a candidate names a proposed metro and a '
                               'proposed district emphasis. It does not '
                               'claim any hall, union, curriculum content '

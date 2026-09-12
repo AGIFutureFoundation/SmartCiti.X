@@ -2,8 +2,8 @@
  "pack": "smartcitix-trade-craft-academy-union-registry",
  "pack_version": "3.2.0",
  "built": "2026-09-09",
- "source_stamp": "2638d791b6297d9f",
- "count": 4,
+ "source_stamp": "53b44a303bcd7256",
+ "count": 5,
  "honesty": {
   "siting": "planned locations named for real cities; no site has been surveyed, no address is recorded, and no figure comes from any city's records"
  },
@@ -161,7 +161,15 @@
    "name": "Bayou Energy Hub",
    "city": "Houston",
    "region": "Texas",
-   "tagline": "The network's hub: no home district of its own, and a regional chapter seat for every one of the 111 trades",
+   "tagline": "The network's first hub: no home district of its own, and a regional chapter seat for every one of the 111 trades",
+   "districts": [],
+   "halls": []
+  },
+  "chicago": {
+   "name": "Loop Rail Hub",
+   "city": "Chicago",
+   "region": "Illinois",
+   "tagline": "The network's second hub: no home district of its own, and a regional chapter seat for every one of the 111 trades",
    "districts": [],
    "halls": []
   }

@@ -2,19 +2,19 @@
  * Network roadmap verification.
  *
  * The claim this pack makes has two parts that must never blur together:
- * four campuses are BUILT (three on RECORDED, cross-checked coordinates,
- * one - Houston - on AUTHORED ones, same as a candidate's): six are
- * CANDIDATES on AUTHORED, not-cross-checked coordinates. A third
+ * five campuses are BUILT (three on RECORDED, cross-checked coordinates,
+ * two - Houston and Chicago - on AUTHORED ones, same as a candidate's):
+ * five are CANDIDATES on AUTHORED, not-cross-checked coordinates. A third
  * distinction cuts across the first: three built campuses are DISTRICT
  * campuses (a home for 2-3 districts, a district ring, halls > 0);
- * Houston is a HUB campus (no home district, no ring, zero home halls,
- * a regional-chapter seat for all 111 instead) - the suite checks each
- * shape holds to its own honest bar rather than forcing Houston through
- * the district campus's checks. The built entries must still trace to
- * the geo and union registries' own figures, and the candidates must
- * never claim more than a proposed metro and a proposed district
- * emphasis. Ten is a target the count must actually add up to, not a
- * number quoted and left unchecked.
+ * Houston and Chicago are HUB campuses (no home district, no ring, zero
+ * home halls, a regional-chapter seat for all 111 instead) - the suite
+ * checks each shape holds to its own honest bar rather than forcing a
+ * hub through the district campus's checks. The built entries must
+ * still trace to the geo and union registries' own figures, and the
+ * candidates must never claim more than a proposed metro and a proposed
+ * district emphasis. Ten is a target the count must actually add up to,
+ * not a number quoted and left unchecked.
  */
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
@@ -38,7 +38,7 @@ const cand = Object.entries(reg.candidates);
 /* -------------------------------------------------------------- the count --- */
 ok(`the network totals exactly the declared target (${built.length} built + ${cand.length} candidates = ${reg.target})`,
   built.length + cand.length === reg.target && reg.target === 10
-  && built.length === 4 && cand.length === 6);
+  && built.length === 5 && cand.length === 5);
 ok('no candidate slug collides with a built campus slug',
   built.every(([k]) => !reg.candidates[k])
   && cand.every(([k]) => !reg.built_campuses[k]));
@@ -58,8 +58,9 @@ ok('built entries carry a real hall count off the union registry',
 /* ----------------------------------------------------------- hub vs district --- */
 const hub = built.filter(([, b]) => b.districts.length === 0);
 const dist = built.filter(([, b]) => b.districts.length > 0);
-ok('exactly one built campus is a hub: no home district, zero home halls',
-  hub.length === 1 && hub[0][0] === 'houston'
+ok('exactly two built campuses are hubs (Houston, Chicago): no home district, zero home halls',
+  hub.length === 2 && new Set(hub.map(([k]) => k)).size === 2
+  && ['houston', 'chicago'].every((k) => hub.some(([hk]) => hk === k))
   && hub.every(([, b]) => b.halls === 0));
 ok('every district campus actually hosts 2-3 districts and at least one hall',
   dist.length === 3
@@ -86,8 +87,8 @@ ok('every candidate names 2-3 real districts that actually exist in the taxonomy
     && c.districts.every((d) => d in districts)));
 ok('every candidate states a real reason, not a placeholder',
   cand.every(([, c]) => c.why.length > 40));
-ok('the six candidates are six distinct real US metros',
-  new Set(cand.map(([, c]) => c.city)).size === cand.length && cand.length === 6);
+ok('the five candidates are five distinct real US metros',
+  new Set(cand.map(([, c]) => c.city)).size === cand.length && cand.length === 5);
 
 /* -------------------------------------------------------------- the tiers --- */
 ok('the provenance gap between built and candidate is stated in exact, checkable words',

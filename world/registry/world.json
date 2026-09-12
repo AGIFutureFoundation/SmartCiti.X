@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-11",
- "source_stamp": "036267ca29117c2e",
+ "source_stamp": "d894f7c28aec2241",
  "honesty": {
   "textures": "no texture, photograph or artwork file exists in this repository and none is downloaded: every surface is a recipe - a base colour, a grain, an octave count and a relief depth - and the page generates the image and its normal map in the learner's own browser at boot. There is therefore no third-party artwork anywhere in the render.",
   "weather": "schematic weather, not a forecast and not an observation: nothing here is tied to a reading taken at any real place or time, and the per-campus atmospheres are authored by reputation rather than measured.",
@@ -14,8 +14,8 @@
  "counts": {
   "weather": 6,
   "ground": 6,
-  "fauna": 5,
-  "animals": 46
+  "fauna": 6,
+  "animals": 58
  },
  "sky": {
   "projection": "equirectangular, drawn to a 1024x512 canvas at boot",
@@ -266,6 +266,25 @@
    ],
    "why": "Louisiana\u2019s state bird, and unmistakable over any Gulf coast - the ship channel included"
   },
+  "ring-billed-gull": {
+   "name": "Ring-billed gull",
+   "glyph": "\ud83d\udc26",
+   "body": "bird",
+   "span_m": 1.1,
+   "color": "#e8ecec",
+   "accent": "#8f9ba0",
+   "motion": "circuit",
+   "height_m": [
+    12,
+    26
+   ],
+   "speed": 1.0,
+   "flock": 5,
+   "campuses": [
+    "chicago"
+   ],
+   "why": "the lakefront gull, by reputation the most familiar bird on the Chicago waterfront"
+  },
   "egret": {
    "name": "Egret",
    "glyph": "\ud83d\udd4a\ufe0f",
@@ -303,7 +322,8 @@
     "treasure-island",
     "oakland",
     "new-orleans",
-    "houston"
+    "houston",
+    "chicago"
    ],
    "why": "every yard in every city has them, and they are the scale reference nobody thinks about"
   },
@@ -325,7 +345,8 @@
     "treasure-island",
     "oakland",
     "new-orleans",
-    "houston"
+    "houston",
+    "chicago"
    ],
    "why": "the yard dog is a fixture of the trade, and it teaches the habit of looking down before reversing"
   }
@@ -450,6 +471,36 @@
    "ground": "asphalt",
    "verge": "gravel",
    "character": "Gulf-coast heat haze over a working ship channel, a refinery glow at the sky's edge after dark - authored by reputation, not measured"
+  },
+  "chicago": {
+   "sky": [
+    "#12161c",
+    "#232c38",
+    "#4a5866",
+    "#7d8a92"
+   ],
+   "fog": {
+    "color": 2634042,
+    "mul": 1.1
+   },
+   "banks": 4,
+   "sun": {
+    "color": 14674158,
+    "i": 1.2
+   },
+   "hemi": {
+    "sky": 11057346,
+    "ground": 2104860,
+    "i": 1.1
+   },
+   "amb": {
+    "wind": 0.95,
+    "gulls": true,
+    "harbor": false
+   },
+   "ground": "concrete",
+   "verge": "gravel",
+   "character": "a flat lakefront wind that never really stops, cold and grey off the water most of the year - authored by reputation, not measured"
   }
  }
 }
