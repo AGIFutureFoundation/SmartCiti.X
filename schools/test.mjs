@@ -95,6 +95,10 @@ ok('the flipped-unit rows build a working hall click-through, and every unit rea
   && reg.units.every((u) => page.includes(`"hall":"${u.hall}"`)));
 ok('the schools honesty text reaches the page verbatim',
   page.includes(reg.honesty.districts) && page.includes(reg.honesty.certification));
+ok('the reverse direction is wired too: a hall panel links back to its own flipped unit',
+  page.includes('D.schools.units.find((u) => u.hall === sg)')
+  && page.includes('data-schools-hall="${esc(sg)}"')
+  && page.includes('openSchools(sh.dataset.schoolsHall)'));
 
 const src = readFileSync(new URL('./build.py', import.meta.url));
 ok('the registry was built from the current builder source (stamp check)',
