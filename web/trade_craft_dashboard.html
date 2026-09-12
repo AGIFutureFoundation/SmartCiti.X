@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SmartCiti.X : Trade Craft Academy — network dashboard</title>
+<style>
+:root{
+  --plate:#12181B; --panel:#182023; --sunk:#0C1113; --ink:#E8EDEC; --muted:#93A3A6;
+  --rule:#28353A; --mark:#E8A33D; --mark-ink:#12181B; --steel:#41C4D4; --good:#5CB584;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--plate);color:var(--ink);
+  font:15px/1.6 "IBM Plex Sans",system-ui,sans-serif;padding:0 16px 56px}
+.wrap{max-width:1040px;margin:0 auto}
+header{padding:36px 0 10px;border-bottom:3px solid var(--mark)}
+header h1{font:700 32px/1.1 "Barlow Condensed",system-ui,sans-serif;margin:0}
+header h1 .x{color:var(--mark)}
+header p{color:var(--muted);margin:6px 0 0}
+h2{font:600 22px "Barlow Condensed",system-ui,sans-serif;letter-spacing:.02em;
+  margin:34px 0 4px;padding-bottom:6px;border-bottom:1px solid var(--rule)}
+.lead{color:var(--muted);font-size:13.5px;margin:2px 0 16px;max-width:720px}
+.meter-wrap{display:flex;align-items:center;gap:16px;margin:14px 0 22px;flex-wrap:wrap}
+.meter{flex:1;min-width:220px;height:14px;background:var(--sunk);
+  border:1px solid var(--rule);border-radius:8px;overflow:hidden}
+.meter i{display:block;height:100%;background:linear-gradient(90deg,var(--mark),var(--good))}
+.meter-n{font:700 26px "Barlow Condensed",system-ui,sans-serif;white-space:nowrap}
+.meter-n span{color:var(--muted);font-size:15px;font-weight:400}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.card{background:var(--panel);border:1px solid var(--rule);border-radius:9px;padding:14px 16px}
+.ch{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.ch b{font:600 16px "Barlow Condensed",system-ui,sans-serif}
+.tag{font-size:10px;letter-spacing:.06em;font-weight:700;border-radius:4px;padding:2px 7px}
+.tag.built{background:var(--good);color:#0c1113}
+.tag.planned{background:var(--sunk);color:var(--mark);border:1px solid var(--mark)}
+.sub{color:var(--muted);font-size:12.5px;margin:4px 0}
+.prov{font-weight:700;letter-spacing:.03em}
+.prov.rec{color:var(--good)}
+.prov.auth{color:var(--mark)}
+.chips{display:flex;flex-wrap:wrap;gap:5px;margin:6px 0}
+.chip{font-size:11px;border:1px solid var(--rule);border-radius:999px;padding:2px 9px;color:var(--muted)}
+.why{color:var(--ink);font-size:12.5px;margin:8px 0 0;line-height:1.55}
+.figs{display:flex;flex-wrap:wrap;gap:10px}
+.fig{background:var(--panel);border:1px solid var(--rule);border-radius:8px;
+  padding:11px 16px;min-width:130px;flex:1}
+.fig b{display:block;font:600 22px/1.2 "Barlow Condensed",system-ui,sans-serif;color:var(--steel)}
+.fig span{color:var(--muted);font-size:12px}
+.checklist{background:var(--sunk);border-radius:8px;padding:16px 20px;list-style:none;margin:0}
+.checklist li{padding:6px 0;border-bottom:1px solid var(--rule);color:var(--muted);font-size:13px}
+.checklist li:last-child{border-bottom:none}
+.checklist code{background:var(--panel);border-radius:4px;padding:1px 6px;font-size:11.5px;color:var(--steel)}
+.honesty{background:var(--sunk);border-inline-start:3px solid var(--mark);border-radius:6px;
+  padding:14px 22px;color:var(--muted);font-size:13px;margin-top:30px}
+.honesty li{margin:5px 0}
+footer{color:var(--muted);font-size:12px;margin-top:30px;padding-top:14px;border-top:1px solid var(--rule)}
+a{color:var(--steel)}
+</style>
+</head>
+<body><div class="wrap">
+<header>
+  <h1>SmartCiti<span class="x">.X</span> : Trade Craft Academy</h1>
+  <p>Network dashboard — powered by AGI Corp</p>
+</header>
+
+<h2>Ten walkable worlds</h2>
+<p class="lead">ten walkable worlds is a target this registry tracks progress toward, not a claim that ten exist. Three are built; seven are candidates.</p>
+<div class="meter-wrap">
+  <div class="meter-n">3<span>/10 built</span></div>
+  <div class="meter" role="progressbar" aria-valuenow="3" aria-valuemin="0"
+       aria-valuemax="10"><i style="width:30%"></i></div>
+  <div class="meter-n" style="font-size:16px;color:var(--muted)">7 candidates</div>
+</div>
+<div class="grid">
+<div class="card">
+  <div class="ch"><span class="tag built">BUILT</span><b>Treasure Island Campus</b></div>
+  <p class="sub">San Francisco, California · 51 halls · <span class="prov rec">RECORDED</span></p>
+  <div class="chips"><span class="chip" style="border-color:hsl(210 45% 40%);color:hsl(210 65% 72%)">Structural</span><span class="chip" style="border-color:hsl(182 45% 40%);color:hsl(182 65% 72%)">Building Systems</span><span class="chip" style="border-color:hsl(28 45% 40%);color:hsl(28 65% 72%)">Envelope & Finish</span></div>
+  
+</div>
+<div class="card">
+  <div class="ch"><span class="tag built">BUILT</span><b>Oakland Waterfront Campus</b></div>
+  <p class="sub">Oakland, California · 32 halls · <span class="prov rec">RECORDED</span></p>
+  <div class="chips"><span class="chip" style="border-color:hsl(348 45% 40%);color:hsl(348 65% 72%)">Heavy Industry</span><span class="chip" style="border-color:hsl(262 45% 40%);color:hsl(262 65% 72%)">Transport & Mobility</span><span class="chip" style="border-color:hsl(100 45% 40%);color:hsl(100 65% 72%)">Earthworks & Plant</span></div>
+  
+</div>
+<div class="card">
+  <div class="ch"><span class="tag built">BUILT</span><b>Crescent Works Campus</b></div>
+  <p class="sub">New Orleans, Louisiana · 28 halls · <span class="prov rec">RECORDED</span></p>
+  <div class="chips"><span class="chip" style="border-color:hsl(48 45% 40%);color:hsl(48 65% 72%)">Energy & Utilities</span><span class="chip" style="border-color:hsl(148 45% 40%);color:hsl(148 65% 72%)">Survey, Safety & Environment</span></div>
+  
+</div>
+<div class="card">
+  <div class="ch"><span class="tag planned">CANDIDATE</span><b>Bayou Energy Campus</b></div>
+  <p class="sub">Houston, Texas · <span class="prov auth">AUTHORED</span></p>
+  <div class="chips"><span class="chip" style="border-color:hsl(48 45% 40%);color:hsl(48 65% 72%)">Energy & Utilities</span><span class="chip" style="border-color:hsl(348 45% 40%);color:hsl(348 65% 72%)">Heavy Industry</span><span class="chip" style="border-color:hsl(262 45% 40%);color:hsl(262 65% 72%)">Transport & Mobility</span></div>
+  <p class="why">the country's petrochemical and pipeline capital, on the Gulf beside a working ship channel - energy, process plant and marine trades at the scale the real industry runs at</p>
+</div>
+<div class="card">
+  <div class="ch"><span class="tag planned">CANDIDATE</span><b>Loop Rail Campus</b></div>
+  <p class="sub">Chicago, Illinois · <span class="prov auth">AUTHORED</span></p>
+  <div class="chips"><span class="chip" style="border-color:hsl(210 45% 40%);color:hsl(210 65% 72%)">Structural</span><span class="chip" style="border-color:hsl(262 45% 40%);color:hsl(262 65% 72%)">Transport & Mobility</span><span class="chip" style="border-color:hsl(182 45% 40%);color:hsl(182 65% 72%)">Building Systems</span></div>
+  <p class="why">the nation's rail hub and a structural-steel skyline built by the trades that invented the high-rise - transport, structural and the building systems a dense downtown runs on</p>
+</div>
+<div class="card">
+  <div class="ch"><span class="tag planned">CANDIDATE</span><b>Sound Aerospace Campus</b></div>
+  <p class="sub">Seattle, Washington · <span class="prov auth">AUTHORED</span></p>
+  <div class="chips"><span class="chip" style="border-color:hsl(262 45% 40%);color:hsl(262 65% 72%)">Transport & Mobility</span><span class="chip" style="border-color:hsl(210 45% 40%);color:hsl(210 65% 72%)">Structural</span><span class="chip" style="border-color:hsl(348 45% 40%);color:hsl(348 65% 72%)">Heavy Industry</span></div>
+  <p class="why">aerospace manufacturing and a working port on the Sound - precision heavy industry alongside the structural and transport trades a port city depends on</p>
+</div>
+<div class="card">
+  <div class="ch"><span class="tag planned">CANDIDATE</span><b>Three Rivers Steel Campus</b></div>
+  <p class="sub">Pittsburgh, Pennsylvania · <span class="prov auth">AUTHORED</span></p>
+  <div class="chips"><span class="chip" style="border-color:hsl(348 45% 40%);color:hsl(348 65% 72%)">Heavy Industry</span><span class="chip" style="border-color:hsl(210 45% 40%);color:hsl(210 65% 72%)">Structural</span><span class="chip" style="border-color:hsl(100 45% 40%);color:hsl(100 65% 72%)">Earthworks & Plant</span></div>
+  <p class="why">the steel city, its three rivers crossed by more bridges than any other in the country - heavy industry and the structural trades it was built to teach are its own history</p>
+</div>
+<div class="card">
+  <div class="ch"><span class="tag planned">CANDIDATE</span><b>Front Range Campus</b></div>
+  <p class="sub">Denver, Colorado · <span class="prov auth">AUTHORED</span></p>
+  <div class="chips"><span class="chip" style="border-color:hsl(100 45% 40%);color:hsl(100 65% 72%)">Earthworks & Plant</span><span class="chip" style="border-color:hsl(48 45% 40%);color:hsl(48 65% 72%)">Energy & Utilities</span><span class="chip" style="border-color:hsl(148 45% 40%);color:hsl(148 65% 72%)">Survey, Safety & Environment</span></div>
+  <p class="why">a mining and energy heritage at altitude, and the ground, survey and safety disciplines that heritage was built on</p>
+</div>
+<div class="card">
+  <div class="ch"><span class="tag planned">CANDIDATE</span><b>Biscayne Coastal Campus</b></div>
+  <p class="sub">Miami, Florida · <span class="prov auth">AUTHORED</span></p>
+  <div class="chips"><span class="chip" style="border-color:hsl(28 45% 40%);color:hsl(28 65% 72%)">Envelope & Finish</span><span class="chip" style="border-color:hsl(148 45% 40%);color:hsl(148 65% 72%)">Survey, Safety & Environment</span><span class="chip" style="border-color:hsl(262 45% 40%);color:hsl(262 65% 72%)">Transport & Mobility</span></div>
+  <p class="why">hurricane-code envelope work and storm-response discipline on a coast that tests both every season, beside a working port</p>
+</div>
+<div class="card">
+  <div class="ch"><span class="tag planned">CANDIDATE</span><b>Motor City Campus</b></div>
+  <p class="sub">Detroit, Michigan · <span class="prov auth">AUTHORED</span></p>
+  <div class="chips"><span class="chip" style="border-color:hsl(348 45% 40%);color:hsl(348 65% 72%)">Heavy Industry</span><span class="chip" style="border-color:hsl(210 45% 40%);color:hsl(210 65% 72%)">Structural</span><span class="chip" style="border-color:hsl(182 45% 40%);color:hsl(182 65% 72%)">Building Systems</span></div>
+  <p class="why">a century of heavy manufacturing and the machinist, structural and building-systems trades an automotive industrial base actually runs on</p>
+</div>
+</div>
+
+<h2>Building the next one</h2>
+<p class="lead">a candidate names a proposed metro and a proposed district emphasis. It does not claim any hall, union, curriculum content or trade partnership exists there - building one is the checklist, done in full, the same way the first three were.</p>
+<ul class="checklist"><li><b>source real coordinates</b> — find the metro's city-center and any regional-institution coordinates in a citable, checkable source - the pattern geo/build.py already follows against the Locator.X checkout <code>geo/build.py</code></li><li><b>cross-check on every build</b> — assert the coordinate matches the cited source whenever that checkout is present, so a drifted number fails the build rather than going unnoticed <code>geo/build.py</code></li><li><b>add the campus and its districts</b> — register the campus, its region and its 2-3 districts in the union registry, matching real local trade profile to the existing eight-district taxonomy <code>unions/registry/campuses.json</code></li><li><b>assign or share halls</b> — every hall already exists once in the pack; a new campus hosts the halls its assigned districts already declare - no hall content is duplicated per campus <code>pack/registry/halls.json</code></li><li><b>build the 3D campus geometry</b> — the district ring, roads and green generate from the campus record automatically - buildCampus() takes a district count and a region key, not a hand-placed layout <code>web/build_3d.py</code></li><li><b>give it a world</b> — an authored atmosphere (sky, ground surface, character) and the fauna that belongs on that coast or that plain <code>world/build.py</code></li><li><b>verify, ship, publish</b> — every suite in verify_all.sh must hold, a browser harness must prove the campus walks and judges correctly, and the hosted artifact must be rebuilt and republished <code>verify_all.sh</code></li></ul>
+
+<h2>The platform, live</h2>
+<p class="lead">Every figure below reads from its own registry at build time.</p>
+<div class="figs"><div class="fig"><b>111</b><span>training halls</span></div><div class="fig"><b>11,000,000</b><span>generated modules</span></div><div class="fig"><b>8</b><span>districts</span></div><div class="fig"><b>111</b><span>union crafts named</span></div><div class="fig"><b>7</b><span>operable simulators</span></div><div class="fig"><b>8 / 96</b><span>tool cribs / tools</span></div><div class="fig"><b>8 / 28</b><span>advisors / topics</span></div><div class="fig"><b>6</b><span>weather states</span></div><div class="fig"><b>6</b><span>generated ground surfaces</span></div><div class="fig"><b>36</b><span>animals in the yards</span></div><div class="fig"><b>13</b><span>sign kinds</span></div><div class="fig"><b>3</b><span>training-data episode kinds</span></div></div>
+
+<div class="honesty">
+  <li>the three built campuses' coordinates are RECORDED - copied from a cited file and cross-checked against it on every build. The seven candidates' coordinates are AUTHORED: widely-published public geography, typed here from general knowledge rather than copied from any file this build can check itself against - a materially weaker claim, labelled as one.</li>
+  <li>this is an ordered list of what is next, not a timeline: no candidate carries a committed date.</li>
+  <li>an advisor is a scripted guide, not an instructor and not an AI: no model runs behind one, nothing is generated at view time, no network is reached, and every line an advisor can say is written in this registry or read from another registry in this bundle.</li>
+  <li>every episode comes from SCHEMATIC physics and deterministic rubrics, not a real robot or a real machine: useful for exercising a training pipeline's plumbing and export format, not for training a controller that will run on real equipment.</li>
+</div>
+<footer>
+  <a href="trade_craft_3d.html">3D environment</a> ·
+  <a href="trade_craft_map.html">campus map</a> ·
+  <a href="trade_craft_geomap.html">network geomap</a> ·
+  <a href="../wiki/Home.md">wiki</a>
+</footer>
+</div></body>
+</html>
