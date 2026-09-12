@@ -16,6 +16,7 @@ let n = 0;
 const ok = (m, c) => { if (!c) { console.error('FAIL', m); process.exit(1); } n++; console.log('  ok ', m); };
 
 const reg = JSON.parse(readFileSync(new URL('./registry/schools.json', import.meta.url)));
+const page = readFileSync(new URL('../web/trade_craft_3d.html', import.meta.url), 'utf8');
 const campuses = JSON.parse(readFileSync(new URL('../unions/registry/campuses.json', import.meta.url))).campuses;
 const sims = JSON.parse(readFileSync(new URL('../sims/registry/sims.json', import.meta.url)));
 const stations = new Set(JSON.parse(readFileSync(
@@ -77,6 +78,23 @@ ok("the class stage carries the crib drill, and every unit's drill is its own di
       && u.class_drill in tools.cribs));
 ok('every unit gate demands the unaided run',
   reg.units.every((u) => /unaided/.test(u.gate) && /no sim hour counts/.test(u.gate)));
+
+/* ------------------------------------------------------------- the page --- */
+// this pack used to have zero presence in the live app - only the wiki
+// ever showed it. These checks are the drift guard: every district, every
+// flipped unit and the honesty text this registry declares must actually
+// reach the Schools panel, and each unit must click through to its hall.
+ok('the page builds the Schools panel and trims the registry into D.schools',
+  page.includes('function openSchools(') && page.includes('"schools":{'));
+ok('every proposed district is named in the page, with its status verbatim',
+  reg.districts.every((d) => page.includes(d.district))
+  && page.includes(reg.districts[0].status));
+ok('the flipped-unit rows build a working hall click-through, and every unit reaches D.schools',
+  page.includes('data-hall-goto="${esc(u.hall)}"')
+  && page.includes('showHall(hg.dataset.hallGoto)')
+  && reg.units.every((u) => page.includes(`"hall":"${u.hall}"`)));
+ok('the schools honesty text reaches the page verbatim',
+  page.includes(reg.honesty.districts) && page.includes(reg.honesty.certification));
 
 const src = readFileSync(new URL('./build.py', import.meta.url));
 ok('the registry was built from the current builder source (stamp check)',

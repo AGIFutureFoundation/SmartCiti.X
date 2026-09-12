@@ -31,8 +31,8 @@ import pathlib
 HERE = pathlib.Path(__file__).resolve().parent
 ROOT = HERE.parent
 
-PACK_VERSION = "3.2.0"
-BUILT = "2026-09-10"
+PACK_VERSION = "3.3.0"
+BUILT = "2026-09-12"
 
 MODEL = {
     'name': 'gamified flipped classroom',
@@ -137,6 +137,43 @@ for hall, bindings in sorted(sims_reg['hall_bindings'].items()):
         'gate': 'unaided verification run (ACP-04); no sim hour counts',
     })
 
+HONESTY = {
+    'districts': 'district names are public-record identities only; '
+                 'every record is a PROPOSED partner - no district has '
+                 'reviewed or agreed, and no agreement exists',
+    'certification': 'nothing in the school program certifies '
+                     'equipment operation; the assessment gates demand '
+                     'unaided verification and simulator hours never '
+                     'count toward certification',
+}
+
+# --------------------------------------------------------- the live page ---
+# Until this check, the schools pack had zero presence in the live app -
+# every fact below was only ever visible via the generated wiki page. The
+# drift guard mirrors orbis/build.py's own: every district, every flipped
+# unit and the honesty text this pack declares must actually reach the
+# Schools panel, and each unit must click through to the hall it names.
+BOOTSTRAP = '--bootstrap' in __import__('sys').argv
+if not BOOTSTRAP:
+    page = (ROOT / 'web/trade_craft_3d.html').read_text()
+    assert 'function openSchools(' in page, \
+        'the page does not implement the Schools panel'
+    assert '"schools":{' in page, \
+        'the page does not trim the schools registry into D.schools'
+    for d in DISTRICTS:
+        assert d['district'] in page, \
+            f"district {d['district']} is declared but never named in the page"
+    assert DISTRICT_STATUS in page, \
+        'the proposed-partner status text must reach the page verbatim'
+    assert 'data-hall-goto="${esc(u.hall)}"' in page \
+        and 'showHall(hg.dataset.hallGoto)' in page, \
+        'the flipped-unit rows do not build a working hall click-through'
+    for u in units:
+        assert f'"hall":"{u["hall"]}"' in page, \
+            f"unit {u['hall']} is declared but never reaches D.schools.units"
+    assert HONESTY['districts'] in page and HONESTY['certification'] in page, \
+        'the schools honesty text must reach the page verbatim'
+
 stamp = hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest()[:16]
 
 doc = {
@@ -145,15 +182,7 @@ doc = {
     'pack_version': PACK_VERSION,
     'built': BUILT,
     'source_stamp': stamp,
-    'honesty': {
-        'districts': 'district names are public-record identities only; '
-                     'every record is a PROPOSED partner - no district has '
-                     'reviewed or agreed, and no agreement exists',
-        'certification': 'nothing in the school program certifies '
-                         'equipment operation; the assessment gates demand '
-                         'unaided verification and simulator hours never '
-                         'count toward certification',
-    },
+    'honesty': HONESTY,
     'model': MODEL,
     'bands': BANDS,
     'districts': DISTRICTS,
