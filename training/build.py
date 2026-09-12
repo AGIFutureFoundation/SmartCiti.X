@@ -200,6 +200,12 @@ HONESTY = {
                    'short labels, the same numbers the dashboard already '
                    'reads out - sampled once a second instead of every '
                    'frame, computed nowhere new for this purpose.',
+    'orbis_pairing': 'this log only ever gets an episode once a learner '
+                     'actually trains here. orbis/ builds a text prompt '
+                     'for all 111 modules whether or not anyone has - a '
+                     'denser, separate, AI-SYNTHESIZED stream toward the '
+                     'same ml-agents fork, never a substitute for this '
+                     'real one.',
 }
 
 # ---------------------------------------------------------------- checks ---

@@ -3,14 +3,15 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-11",
- "source_stamp": "87f14599d4550440",
+ "source_stamp": "2c25af9fb30dd587",
  "honesty": {
   "schematic": "every episode comes from SCHEMATIC physics and deterministic rubrics, not a real robot or a real machine: useful for exercising a training pipeline's plumbing and export format, not for training a controller that will run on real equipment.",
   "anonymous": "no name, no email, no biometric or device-identifying data is ever recorded - an episode carries only a scenario id, the control scheme the registry already declares, and the measured outcome.",
   "device_local": "recorded to this browser's own storage, exactly like the progress record, and never uploaded automatically. Export and clear are both one click, both the learner's own.",
   "not_scored": "recording an episode changes no score and is never read by a grader - the same guarantee this bundle keeps for advisors, and the suite proves it the same way, by reading the graders.",
   "consent": "the recorder ships on, with a visible toggle: turning it off stops new episodes without touching ones already kept, and clearing them is a separate, deliberate action.",
-  "granularity": "episode-level by default. TRACE, its own off-by-default toggle, adds a coarse (~1 Hz) sample of a running sim's own gauges() readout - still not a per-tick physics or joint trajectory a real controller would train on: these are schematic single-machine simulators, not articulated robots, and gauges() returns display-shaped scalars and short labels, the same numbers the dashboard already reads out - sampled once a second instead of every frame, computed nowhere new for this purpose."
+  "granularity": "episode-level by default. TRACE, its own off-by-default toggle, adds a coarse (~1 Hz) sample of a running sim's own gauges() readout - still not a per-tick physics or joint trajectory a real controller would train on: these are schematic single-machine simulators, not articulated robots, and gauges() returns display-shaped scalars and short labels, the same numbers the dashboard already reads out - sampled once a second instead of every frame, computed nowhere new for this purpose.",
+  "orbis_pairing": "this log only ever gets an episode once a learner actually trains here. orbis/ builds a text prompt for all 111 modules whether or not anyone has - a denser, separate, AI-SYNTHESIZED stream toward the same ml-agents fork, never a substitute for this real one."
  },
  "episode_kinds": {
   "sim": {
