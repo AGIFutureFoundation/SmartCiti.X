@@ -31,7 +31,7 @@ import pathlib
 HERE = pathlib.Path(__file__).resolve().parent
 ROOT = HERE.parent
 
-PACK_VERSION = "3.3.0"
+PACK_VERSION = "3.4.0"
 BUILT = "2026-09-12"
 
 MODEL = {
@@ -173,6 +173,14 @@ if not BOOTSTRAP:
             f"unit {u['hall']} is declared but never reaches D.schools.units"
     assert HONESTY['districts'] in page and HONESTY['certification'] in page, \
         'the schools honesty text must reach the page verbatim'
+    # the reverse direction: a hall panel that runs a flipped unit must
+    # itself link back to that unit's entry in the Schools panel - the
+    # same bidirectional pattern already proven for orbis/training
+    assert 'D.schools.units.find((u) => u.hall === sg)' in page \
+        and 'data-schools-hall="${esc(sg)}"' in page, \
+        "the hall panel does not check for or link back to its own flipped unit"
+    assert "openSchools(sh.dataset.schoolsHall)" in page, \
+        'the hall-panel flipped-unit badge does not actually open the Schools panel'
 
 stamp = hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest()[:16]
 

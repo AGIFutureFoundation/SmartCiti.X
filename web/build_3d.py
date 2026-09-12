@@ -4658,10 +4658,17 @@ function buildHall(sg) {
   document.getElementById('hname').textContent = h.name + scoreChip();
   // the regional chapter line: home region marked, chapters at the rest
   const home = D.chapters.of[h.slug];
-  document.getElementById('hfocus').textContent = h.focus + ' \\u00b7 '
+  const esc = (s) => String(s).replace(/[&<>]/g,
+    (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+  // the reverse of the Schools panel's own hall links: a hall that runs a
+  // flipped unit gets a small badge straight back to that unit's entry
+  const unit = D.schools.units.find((u) => u.hall === sg);
+  document.getElementById('hfocus').innerHTML = esc(h.focus) + ' \\u00b7 '
     + Object.entries(D.chapters.regions)
         .map(([ck, ab]) => ab + (ck === home ? ' \\u2302' : ''))
-        .join(' \\u00b7 ');
+        .join(' \\u00b7 ')
+    + (unit ? ` <button class="barbtn" data-schools-hall="${esc(sg)}"
+        style="font-size:10.5px;padding:1px 7px;vertical-align:2px">\U0001f393 flipped unit</button>` : '');
 }
 
 /* -------------------------------------------------------- campus view --- */
@@ -5891,7 +5898,7 @@ window.__tc3dOrbis = openOrbis;
 // proposed district records, plus a click-through from each flipped
 // unit straight to the hall that runs it - nothing here duplicates a
 // hall panel's own stations/seat/crib content, it only links to it
-function openSchools() {
+function openSchools(focusHall) {
   const esc = (s) => String(s).replace(/[&<>]/g,
     (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
   const stageRows = D.schools.stages.map((s) => `<li style="margin:7px 0">
@@ -5907,7 +5914,9 @@ function openSchools() {
   const unitRows = D.schools.units.map((u) => {
     const h = D.halls.find((x) => x.slug === u.hall);
     const sims = u.floor_sims.map((id) => D.sims.sims[id].name).join(', ');
-    return `<li style="margin:6px 0">
+    const here = u.hall === focusHall;
+    return `<li id="unit-${esc(u.hall)}" style="margin:6px 0;${here
+        ? 'border:1px solid var(--mark);border-radius:8px;padding:6px' : ''}">
       <button class="barbtn" data-hall-goto="${esc(u.hall)}" style="font-size:12px;padding:2px 8px">\\u2192 ${esc(h ? h.name : u.hall)}</button><br>
       <span style="font-size:11px;color:var(--muted)">${esc(sims)}</span></li>`;
   }).join('');
@@ -5926,6 +5935,8 @@ function openSchools() {
     <p style="color:var(--muted);font-size:12px">${esc(D.schools.honesty.certification)}</p>
     <h3>Flipped units \\u2014 jump to a hall</h3>
     <ul style="list-style:none;padding:0">${unitRows}</ul>`;
+  if (focusHall) document.getElementById('unit-' + focusHall)
+    ?.scrollIntoView({ block: 'center' });
   document.body.classList.add('open');
 }
 window.__tc3dSchools = openSchools;
@@ -6221,6 +6232,8 @@ document.addEventListener('click', (e) => {
     document.body.classList.remove('open');
     showHall(hg.dataset.hallGoto); return;
   }
+  const sh = e.target.closest('[data-schools-hall]');
+  if (sh) { openSchools(sh.dataset.schoolsHall); return; }
   if (e.target.id === 'simRetry') {
     document.body.classList.remove('open');
     const id = curSimId; teardownSim(); view = 'hall'; startSim(id); return;
