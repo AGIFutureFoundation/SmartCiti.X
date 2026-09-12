@@ -141,6 +141,37 @@ for (const leaked of ['.env', '.env.local']) {
     !existsSync(new URL(leaked, runnerDir)));
 }
 
+/* -------------------------------------------------------- the flow panel --- */
+// Optional pacing-adaptation add-on. Checked statically here (no TS
+// import - this suite must run with zero installed dependencies); the
+// deterministic decision logic itself is verified by
+// orbis/runner-helios/flow.test.mjs, which does import the real
+// TypeScript and is not part of this zero-dependency suite.
+const flowSrc = readFileSync(new URL('app/lib/flow.ts', runnerDir), 'utf8');
+const flowPanelSrc = readFileSync(
+  new URL('app/components/FlowPanel.tsx', runnerDir), 'utf8');
+const heliosAppSrc = readFileSync(new URL('app/HeliosApp.tsx', runnerDir), 'utf8');
+ok('the flow module states its safety claim as a closed type, not a runtime denylist',
+  /closed by construction/.test(flowSrc) && /interface LearnerSignal/.test(flowSrc));
+ok('the flow module documents that Helios is video-only, before it ever calls setPrompt',
+  flowSrc.indexOf('VIDEO ONLY') < flowSrc.indexOf('export function chooseIntervention'));
+const flowStripComments = (s) => s.split('\n')
+  .map((line) => line.replace(/\/\/.*/, '')).join('\n');
+const flowCodeOnly = flowStripComments(flowSrc) + flowStripComments(flowPanelSrc);
+ok('no biometric, emotion-recognition or medical field name appears in the flow code itself',
+  ['heart_rate', 'heartRate', 'facial', 'camera_emotion', 'cameraEmotion',
+    'mental_health', 'mentalHealth', 'keystroke', 'biometric', 'webcam',
+    'eye_tracking', 'eyeTracking'].every((banned) => !flowCodeOnly.includes(banned)));
+ok('the flow panel never calls an audio method Helios does not have',
+  !/setAudioPrompt|setAudioEnabled/.test(flowPanelSrc));
+ok('the consent toggle is real: FlowPanel reads it before ever calling setPrompt',
+  /adaptiveOn/.test(flowPanelSrc) && /if \(!adaptiveOn/.test(flowPanelSrc));
+ok('the session log is explicitly local-only, and the code never actually calls localStorage',
+  /this tab only, never saved/.test(flowPanelSrc)
+  && !/localStorage\./.test(flowStripComments(flowPanelSrc)));
+ok('HeliosApp actually renders FlowPanel in the live phase, not just imports it unused',
+  /import \{ FlowPanel \}/.test(heliosAppSrc) && /<FlowPanel \/>/.test(heliosAppSrc));
+
 const src = readFileSync(new URL('./build.py', import.meta.url));
 ok('the registry was built from the current builder source (stamp check)',
   reg.source_stamp === createHash('sha256').update(src).digest('hex').slice(0, 16));

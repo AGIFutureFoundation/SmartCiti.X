@@ -6,6 +6,7 @@ import { StatusBadge } from "./components/StatusBadge";
 import { CommandError } from "./components/CommandError";
 import { NowPlaying } from "./components/NowPlaying";
 import { EvolveScene } from "./components/EvolveScene";
+import { FlowPanel } from "./components/FlowPanel";
 import { PromptComposer } from "./components/PromptComposer";
 import { ImageStarter } from "./components/ImageStarter";
 import { SnapClip } from "./components/SnapClip";
@@ -88,7 +89,7 @@ export function HeliosApp() {
            * The sidebar has two phases driven by `snapshot.started`:
            *
            *   - Setup  (waiting):   <PromptComposer /> + <ImageStarter />
-           *   - Live   (generating): <NowPlaying />     + <EvolveScene />
+           *   - Live   (generating): <NowPlaying /> + <EvolveScene /> + <FlowPanel />
            *
            * Each component subscribes to the snapshot via
            * `useHeliosState` and returns null when it's not its phase.
@@ -106,6 +107,7 @@ export function HeliosApp() {
             <CommandError />
             <NowPlaying />
             <EvolveScene />
+            <FlowPanel />
             <PromptComposer />
             <ImageStarter />
             <SnapClip />

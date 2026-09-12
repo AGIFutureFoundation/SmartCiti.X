@@ -5,13 +5,14 @@ a demo, and not part of that project's static site. This is a genuine
 Next.js + TypeScript frontend for **Helios**, Reactor's real-time
 prompt-steerable video model, scaffolded from Reactor's own
 [`create-reactor-app`](https://github.com/reactor-team/create-reactor-app)
-template (Apache-2.0 — see `LICENSE` and `NOTICE` in this directory) and
-customized in exactly one place: its scene library.
+template (Apache-2.0 — see `LICENSE` and `NOTICE` in this directory),
+customized in two places: its scene library, and an added, optional
+pacing-adaptation panel.
 
 ## What's actually different from the stock template
 
-Everything except the scene library is the unmodified Helios reference
-frontend. The one real customization:
+Everything else is the unmodified Helios reference frontend. The real
+customizations:
 
 - **`app/lib/prompts.ts`** no longer hand-authors four illustrative scenes
   (a lion, a man in the rain, a flower, a birthday party). It imports
@@ -34,6 +35,23 @@ frontend. The one real customization:
 - The curated example-image cards are empty (SmartCiti.X ships no
   reference photos, only procedurally generated scenes) — uploading your
   own image still works exactly as the stock template does.
+- **`app/components/FlowPanel.tsx`** (new) — an optional, off-by-one-toggle
+  pacing panel that appears once a session is running. Whoever is
+  watching (the student, or a teacher sitting with them) can log a
+  voluntary check-in ("too easy", "too much", "distracted") plus real
+  lesson-performance numbers (attempts, correct rate, hints used, time
+  without progress), and the panel asks the backdrop — never the
+  module content — to adapt: calmer and simpler under load, a touch
+  more visual variety when the pace is clearly too easy. The decision
+  logic lives in **`app/lib/flow.ts`**, a pure, dependency-free module
+  with its own test (`flow.test.mjs`, run it with
+  `node flow.test.mjs` once you have a Node new enough for built-in
+  TypeScript support). See its header comment for the full safety
+  design: no biometric, emotion-recognition or medical signal can even
+  be expressed in its types, every adaptation is logged in that tab
+  only and never saved, and the toggle that turns it off is checked
+  inside the pure decision function itself, not just by whichever
+  component happens to call it.
 
 Every prompt this app offers by default is therefore short and factual
 ("A Structural apprentice practicing Ironworkers: Structural steel, rebar,
@@ -94,6 +112,8 @@ for the upstream project this was scaffolded from.
 | `app/components/PromptComposer.tsx` | Setup phase. District-grouped module picker + free-text input → `setPrompt` + `start`. |
 | `app/components/ImageStarter.tsx` | Setup phase. Custom image upload → `setImage` (curated image cards are empty here). |
 | `app/components/EvolveScene.tsx` | Live phase. Hidden for every generated module (no evolutions authored). |
+| `app/lib/flow.ts` | Pure pacing-decision logic for `FlowPanel` - config, the flowFit formula, prompt building. No SDK import; test it with `node flow.test.mjs`. |
+| `app/components/FlowPanel.tsx` | Live phase. Optional pacing check-in → calls `setPrompt` on the ambient backdrop only. |
 | `app/api/reactor/token/route.ts` | Mints a session-scoped JWT pinned to `reactor/helios`, server-side only. |
 | everything else | Unmodified from `create-reactor-app --model=helios`. |
 
