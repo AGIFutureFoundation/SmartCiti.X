@@ -173,6 +173,14 @@ FAUNA = {
         'why': 'Louisiana’s state bird, and unmistakable over any Gulf '
                'coast - the ship channel included',
     },
+    'ring-billed-gull': {
+        'name': 'Ring-billed gull', 'glyph': '\U0001f426', 'body': 'bird',
+        'span_m': 1.1, 'color': '#e8ecec', 'accent': '#8f9ba0',
+        'motion': 'circuit', 'height_m': [12, 26], 'speed': 1.0,
+        'flock': 5, 'campuses': ['chicago'],
+        'why': 'the lakefront gull, by reputation the most familiar bird '
+               'on the Chicago waterfront',
+    },
     'egret': {
         'name': 'Egret', 'glyph': '\U0001f54a️', 'body': 'wader',
         'span_m': 1.0, 'color': '#f2f4f2', 'accent': '#d8cc9a',
@@ -186,7 +194,8 @@ FAUNA = {
         'span_m': .6, 'color': '#6b7076', 'accent': '#2f3a42',
         'motion': 'hop', 'height_m': [0, 6], 'speed': .5,
         'flock': 6,
-        'campuses': ['treasure-island', 'oakland', 'new-orleans', 'houston'],
+        'campuses': ['treasure-island', 'oakland', 'new-orleans', 'houston',
+                     'chicago'],
         'why': 'every yard in every city has them, and they are the scale '
                'reference nobody thinks about',
     },
@@ -195,7 +204,8 @@ FAUNA = {
         'span_m': 1.0, 'color': '#6f5a44', 'accent': '#3a2f24',
         'motion': 'patrol', 'height_m': [0, 0], 'speed': .55,
         'flock': 1,
-        'campuses': ['treasure-island', 'oakland', 'new-orleans', 'houston'],
+        'campuses': ['treasure-island', 'oakland', 'new-orleans', 'houston',
+                     'chicago'],
         'why': 'the yard dog is a fixture of the trade, and it teaches the '
                'habit of looking down before reversing',
     },
@@ -244,6 +254,17 @@ ATMOS = {
         'character': 'Gulf-coast heat haze over a working ship channel, a '
                      'refinery glow at the sky\'s edge after dark - '
                      'authored by reputation, not measured',
+    },
+    'chicago': {
+        'sky': ['#12161c', '#232c38', '#4a5866', '#7d8a92'],
+        'fog': {'color': 0x28313a, 'mul': 1.1}, 'banks': 4,
+        'sun': {'color': 0xdfe8ee, 'i': 1.2},
+        'hemi': {'sky': 0xa8b8c2, 'ground': 0x201e1c, 'i': 1.1},
+        'amb': {'wind': .95, 'gulls': True, 'harbor': False},
+        'ground': 'concrete', 'verge': 'gravel',
+        'character': 'a flat lakefront wind that never really stops, cold '
+                     'and grey off the water most of the year - authored '
+                     'by reputation, not measured',
     },
 }
 

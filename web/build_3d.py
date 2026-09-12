@@ -4685,6 +4685,29 @@ function dressCampus(key, g, R) {
     const chan = new THREE.Mesh(new THREE.PlaneGeometry(420, 90), mat.water);
     chan.rotation.x = -Math.PI / 2; chan.position.set(0, -.06, -(R + 130)); g.add(chan);
   }
+  if (key === 'chicago') {
+    // the second hub, dressed the same way as the first: a free skyline
+    // on the green rather than anything at the plaza. Generic massing
+    // only - no real building is modeled or named - plus an elevated
+    // rail viaduct, schematic like every road on this network.
+    const skyMat = new THREE.MeshStandardMaterial({ color: 0x2b3038, roughness: .8 });
+    for (let i = 0; i < 9; i++) {
+      const ang = i / 9 * Math.PI * 2 + .5, rad = R + 55 + (i % 3) * 16;
+      const h = 14 + (i * 5) % 26;
+      const t = box(4.4, h, 4.4, skyMat, Math.cos(ang) * rad, h / 2, Math.sin(ang) * rad, g);
+      t.castShadow = true;
+    }
+    const pierMat = mat.metal;
+    for (let i = 0; i < 10; i++) {
+      const px = -108 + i * 24;
+      box(1, 8, 1, pierMat, px, 4, R + 70, g);
+      box(1, 8, 1, pierMat, px, 4, R + 78, g);
+    }
+    const track = box(240, .8, 10, mat.part, -0, 8.2, R + 74, g);
+    track.castShadow = true;
+    const lake = new THREE.Mesh(new THREE.PlaneGeometry(460, 140), mat.water);
+    lake.rotation.x = -Math.PI / 2; lake.position.set(0, -.06, -(R + 140)); g.add(lake);
+  }
 }
 
 /* ------------------------------------------------- the city layer -------- */

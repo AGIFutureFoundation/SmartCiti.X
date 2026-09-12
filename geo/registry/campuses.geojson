@@ -86,6 +86,26 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
+     -87.6298,
+     41.8781
+    ]
+   },
+   "properties": {
+    "slug": "chicago",
+    "name": "Loop Rail Hub",
+    "city": "Chicago",
+    "region": "Illinois",
+    "districts": 0,
+    "halls": 0,
+    "provenance": "AUTHORED",
+    "source": "widely-published public geography (city-center), typed from general knowledge - not cross-checked against any file this build can verify"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
      -122.4194,
      37.7749
     ]

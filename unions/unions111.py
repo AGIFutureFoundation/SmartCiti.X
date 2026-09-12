@@ -186,15 +186,17 @@ assert len(set(_assigned)) == 111, 'a hall may belong to exactly one district'
 # the flagship island campus; heavy industry, port and plant on the Oakland
 # waterfront; energy, water and environmental response on the Gulf.
 #
-# Houston is a fourth kind of campus: a HUB. It hosts no district of its
-# own (districts: []) — every district that exists already has exactly one
-# home among the other three, and that invariant (asserted below) is not
-# relaxed for it. Instead the chapters mechanic in unions/build.py, which
-# already gives every hall a regional chapter at every campus that is not
-# its home, does the rest for free: with a fourth campus in CAMPUSES, every
-# one of the 111 halls now also holds a regional chapter at Houston. A hub
-# is a real, walkable, fourth point on the network map, not a fourth copy
-# of anyone's home turf.
+# Houston and Chicago are a fourth kind of campus: a HUB. Each hosts no
+# district of its own (districts: []) — every district that exists already
+# has exactly one home among the three original campuses, and that
+# invariant (asserted below) is not relaxed for either. Instead the
+# chapters mechanic in unions/build.py, which already gives every hall a
+# regional chapter at every campus that is not its home, does the rest for
+# free: with a fourth and fifth campus in CAMPUSES, every one of the 111
+# halls now also holds a regional chapter at Houston and at Chicago. Each
+# hub is a real, walkable point on the network map, not a copy of anyone's
+# home turf, and hosting two hubs is the same mechanic doing the same
+# thing twice, not a special case written for either one.
 #
 # HONESTY, same rule as the taxonomy: these are PLANNED locations named for
 # real cities. No site has been surveyed, no address is recorded, and no
@@ -210,8 +212,12 @@ CAMPUSES = {
         'Energy, water and environmental response on the Gulf',
         ['energy', 'control']),
     'houston': ('Bayou Energy Hub', 'Houston', 'Texas',
-        'The network\'s hub: no home district of its own, and a regional '
-        'chapter seat for every one of the 111 trades',
+        'The network\'s first hub: no home district of its own, and a '
+        'regional chapter seat for every one of the 111 trades',
+        []),
+    'chicago': ('Loop Rail Hub', 'Chicago', 'Illinois',
+        'The network\'s second hub: no home district of its own, and a '
+        'regional chapter seat for every one of the 111 trades',
         []),
 }
 

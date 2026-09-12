@@ -182,10 +182,10 @@ HONESTY = {
                     'error, and the page says which layer it is showing.',
     'hub_campuses': 'a records contract exists only where the Academy '
                     'draws real buildings for a real-world footprint to '
-                    'sit under. A hub campus (Houston) hosts no home '
-                    'district and draws no district ring, so it carries '
-                    'no parcel contract of its own - there is no ground '
-                    'here for one to overlay.',
+                    'sit under. Each hub campus (Houston, Chicago) hosts '
+                    'no home district and draws no district ring, so '
+                    'neither carries a parcel contract of its own - '
+                    'there is no ground at either for one to overlay.',
 }
 
 # ---------------------------------------------------------------- checks ---

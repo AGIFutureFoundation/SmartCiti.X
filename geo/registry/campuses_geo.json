@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-10",
- "source_stamp": "7911205b470833b5",
+ "source_stamp": "e01b2eb65a08ae12",
  "crs": "WGS84 (EPSG:4326)",
  "recorded_check": "cross-checked against the Locator.X checkout",
  "honesty": {
@@ -42,6 +42,14 @@
    "source": "widely-published public geography (city-center), typed from general knowledge - not cross-checked against any file this build can verify",
    "city": "Houston",
    "region": "Texas"
+  },
+  "chicago": {
+   "lat": 41.8781,
+   "lng": -87.6298,
+   "provenance": "AUTHORED",
+   "source": "widely-published public geography (city-center), typed from general knowledge - not cross-checked against any file this build can verify",
+   "city": "Chicago",
+   "region": "Illinois"
   }
  },
  "routes_km": [
@@ -64,6 +72,12 @@
    "bearing_deg": 101.8
   },
   {
+   "from": "treasure-island",
+   "to": "chicago",
+   "km": 2979.0,
+   "bearing_deg": 70.3
+  },
+  {
    "from": "oakland",
    "to": "new-orleans",
    "km": 3081.0,
@@ -76,10 +90,28 @@
    "bearing_deg": 101.8
   },
   {
+   "from": "oakland",
+   "to": "chicago",
+   "km": 2971.5,
+   "bearing_deg": 70.3
+  },
+  {
    "from": "new-orleans",
    "to": "houston",
    "km": 511.3,
    "bearing_deg": 268.9
+  },
+  {
+   "from": "new-orleans",
+   "to": "chicago",
+   "km": 1344.2,
+   "bearing_deg": 8.7
+  },
+  {
+   "from": "houston",
+   "to": "chicago",
+   "km": 1515.8,
+   "bearing_deg": 25.2
   }
  ],
  "city": {
