@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.3.0",
  "built": "2026-09-12",
- "source_stamp": "3c448bf08b6ccc3c",
+ "source_stamp": "1ab93cd8a3f0f55d",
  "model": {
   "id": "reactor/visko-orbis-stable",
   "provider": "Reactor (public Visko Orbis Stable API)",
@@ -42,14 +42,24 @@
  },
  "prompt_template": "A {district} apprentice practicing {hall}: {focus}. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text.",
  "modules": 111,
- "runner": {
-  "path": "orbis/runner-helios",
-  "model": "reactor/helios",
-  "scaffolded_from": "github.com/reactor-team/create-reactor-app (templates/helios), Apache-2.0",
-  "modules_file": "app/lib/modules.generated.json",
-  "run": "cd orbis/runner-helios && cp .env.example .env.local && # put a REACTOR_API_KEY you generated yourself into .env.local && pnpm install && pnpm dev",
-  "never_run_by_this_build": "this repository's own build and verify pipeline never installs the runner's dependencies, never starts it, and never holds a REACTOR_API_KEY - it only keeps the runner's generated module library in sync with the union registry"
- },
+ "runners": [
+  {
+   "path": "orbis/runner-helios",
+   "model": "reactor/helios",
+   "scaffolded_from": "github.com/reactor-team/create-reactor-app (templates/helios), Apache-2.0",
+   "modules_file": "app/lib/modules.generated.json",
+   "run": "cd orbis/runner-helios && cp .env.example .env.local && # put a REACTOR_API_KEY you generated yourself into .env.local && pnpm install && pnpm dev",
+   "never_run_by_this_build": "this repository's own build and verify pipeline never installs the runner's dependencies, never starts it, and never holds a REACTOR_API_KEY - it only keeps the runner's generated module library in sync with the union registry"
+  },
+  {
+   "path": "orbis/runner-visko-orbis-stable",
+   "model": "reactor/visko-orbis-stable",
+   "scaffolded_from": "github.com/reactor-team/create-reactor-app (templates/visko-orbis-stable), Apache-2.0",
+   "modules_file": "app/lib/modules.generated.json",
+   "run": "cd orbis/runner-visko-orbis-stable && cp .env.example .env.local && # put a REACTOR_API_KEY you generated yourself into .env.local && pnpm install && pnpm dev",
+   "never_run_by_this_build": "this repository's own build and verify pipeline never installs the runner's dependencies, never starts it, and never holds a REACTOR_API_KEY - it only keeps the runner's generated module library in sync with the union registry"
+  }
+ ],
  "honesty": {
   "no_network_here": "this build reaches no host outside GitHub, and the page it extends calls no network host at all: it builds prompt text locally and stops - generating an actual clip happens outside this bundle, on the operator's own Orbis deployment",
   "no_key_shipped": "this bundle never requests, stores or transmits a REACTOR_API_KEY or a GEMINI_API_KEY",
