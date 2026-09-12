@@ -34,12 +34,20 @@ ok('the registry holds no record geometry at all - only the way to ask for it',
   && Object.values(reg.sources).every((s) => !('features' in s)));
 
 /* ----------------------------------------------------------- authority --- */
-ok('every campus names an authority, a dataset licence, a record count and a record kind',
+const districtCampuses = Object.keys(campuses)
+  .filter((k) => campuses[k].districts.length > 0);
+const hubCampuses = Object.keys(campuses)
+  .filter((k) => campuses[k].districts.length === 0);
+ok('every district-bearing campus names an authority, a dataset licence, a record count and a record kind',
   JSON.stringify(Object.keys(reg.sources).sort())
-    === JSON.stringify(Object.keys(campuses).sort())
+    === JSON.stringify(districtCampuses.sort())
   && Object.values(reg.sources).every((s) => s.authority.length > 20
       && s.licence.length > 20 && s.records > 1000 && s.kind
       && s.region));
+ok('a hub campus carries no records source, and the registry says why',
+  hubCampuses.length > 0
+  && hubCampuses.every((k) => !(k in reg.sources))
+  && /no home district and draws no district ring/.test(reg.honesty.hub_campuses));
 ok('the New Orleans authority is the city GIS the record count comes from',
   /data\.nola\.gov/.test(reg.sources['new-orleans'].authority)
   && reg.sources['new-orleans'].records === 125803);

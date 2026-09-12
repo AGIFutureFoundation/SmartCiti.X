@@ -1,20 +1,20 @@
 # The network roadmap
 
-ten walkable worlds is a target this registry tracks progress toward, not a claim that ten exist. Three are built; seven are candidates.
+ten walkable worlds is a target this registry tracks progress toward, not a claim that ten exist. Four are built; six are candidates.
 
-## Built — 3 of 10
+## Built — 4 of 10
 
 | Campus | Where | Districts | Halls | Coordinate |
 |---|---|---|---|---|
-| **Treasure Island Campus** | San Francisco, California | Structural, Building Systems, Envelope & Finish | 51 | RECORDED |
+| **Treasure Island Campus** | San Francisco, California | Structural, Building Systems, Envelope & Finish | 51 | DERIVED |
 | **Oakland Waterfront Campus** | Oakland, California | Heavy Industry, Transport & Mobility, Earthworks & Plant | 32 | RECORDED |
-| **Crescent Works Campus** | New Orleans, Louisiana | Energy & Utilities, Survey, Safety & Environment | 28 | RECORDED |
+| **Crescent Works Campus** | New Orleans, Louisiana | Energy & Utilities, Survey, Safety & Environment | 28 | DERIVED |
+| **Bayou Energy Hub** | Houston, Texas | (hub — no home district) | 0 | AUTHORED |
 
-## Candidates — 7 proposed
+## Candidates — 6 proposed
 
 | Campus | Where | Districts | Why |
 |---|---|---|---|
-| **Bayou Energy Campus** | Houston, Texas | Energy & Utilities, Heavy Industry, Transport & Mobility | the country's petrochemical and pipeline capital, on the Gulf beside a working ship channel - energy, process plant and marine trades at the scale the real industry runs at |
 | **Loop Rail Campus** | Chicago, Illinois | Structural, Transport & Mobility, Building Systems | the nation's rail hub and a structural-steel skyline built by the trades that invented the high-rise - transport, structural and the building systems a dense downtown runs on |
 | **Sound Aerospace Campus** | Seattle, Washington | Transport & Mobility, Structural, Heavy Industry | aerospace manufacturing and a working port on the Sound - precision heavy industry alongside the structural and transport trades a port city depends on |
 | **Three Rivers Steel Campus** | Pittsburgh, Pennsylvania | Heavy Industry, Structural, Earthworks & Plant | the steel city, its three rivers crossed by more bridges than any other in the country - heavy industry and the structural trades it was built to teach are its own history |
@@ -22,11 +22,11 @@ ten walkable worlds is a target this registry tracks progress toward, not a clai
 | **Biscayne Coastal Campus** | Miami, Florida | Envelope & Finish, Survey, Safety & Environment, Transport & Mobility | hurricane-code envelope work and storm-response discipline on a coast that tests both every season, beside a working port |
 | **Motor City Campus** | Detroit, Michigan | Heavy Industry, Structural, Building Systems | a century of heavy manufacturing and the machinist, structural and building-systems trades an automotive industrial base actually runs on |
 
-a candidate names a proposed metro and a proposed district emphasis. It does not claim any hall, union, curriculum content or trade partnership exists there - building one is the checklist, done in full, the same way the first three were.
+a candidate names a proposed metro and a proposed district emphasis. It does not claim any hall, union, curriculum content or trade partnership exists there - building one is the checklist, done in full, the same way the built campuses were.
 
 ## Two provenance tiers
 
-the three built campuses' coordinates are RECORDED - copied from a cited file and cross-checked against it on every build. The seven candidates' coordinates are AUTHORED: widely-published public geography, typed here from general knowledge rather than copied from any file this build can check itself against - a materially weaker claim, labelled as one.
+three of the four built campuses' coordinates are RECORDED - copied from a cited file and cross-checked against it on every build. Houston, the fourth, and the six candidates' coordinates are AUTHORED: widely-published public geography, typed here from general knowledge rather than copied from any file this build can check itself against - a materially weaker claim, labelled as one.
 
 ## Building the next one
 

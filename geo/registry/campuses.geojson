@@ -66,6 +66,26 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
+     -95.3698,
+     29.7604
+    ]
+   },
+   "properties": {
+    "slug": "houston",
+    "name": "Bayou Energy Hub",
+    "city": "Houston",
+    "region": "Texas",
+    "districts": 0,
+    "halls": 0,
+    "provenance": "AUTHORED",
+    "source": "widely-published public geography (city-center), typed from general knowledge - not cross-checked against any file this build can verify"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
      -122.4194,
      37.7749
     ]

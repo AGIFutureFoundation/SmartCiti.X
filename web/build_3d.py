@@ -4654,6 +4654,27 @@ function dressCampus(key, g, R) {
     box(30, 2, 10, mat.part, 26, .9, R + 78, g);        // barge hull
     box(6, 3, 4, mat.metal, 36, 3.4, R + 78, g);        // wheelhouse
   }
+  if (key === 'houston') {
+    // the hub has no district ring to dress a road frontage against, so
+    // its skyline stands free on the green: a refinery silhouette on the
+    // horizon (tanks, a flare stack) rather than anything at the plaza -
+    // a hub campus is a real place to stand, not an empty green circle
+    const tankMat = new THREE.MeshStandardMaterial({ color: 0x7a8288, roughness: .85 });
+    for (let i = 0; i < 6; i++) {
+      const ang = i / 6 * Math.PI * 2 + .3, rad = R + 60 + (i % 2) * 22;
+      const h = 9 + (i % 3) * 4;
+      const t = new THREE.Mesh(new THREE.CylinderGeometry(6, 6, h, 16), tankMat);
+      t.position.set(Math.cos(ang) * rad, h / 2, Math.sin(ang) * rad);
+      t.castShadow = true; g.add(t);
+    }
+    const stack = box(1.6, 34, 1.6, mat.metal, R + 92, 17, -R - 20, g);
+    stack.castShadow = true;
+    const flame = new THREE.Mesh(new THREE.ConeGeometry(1.4, 3.6, 8),
+      new THREE.MeshBasicMaterial({ color: 0xff8a3c }));
+    flame.position.set(R + 92, 35.6, -R - 20); g.add(flame);
+    const chan = new THREE.Mesh(new THREE.PlaneGeometry(420, 90), mat.water);
+    chan.rotation.x = -Math.PI / 2; chan.position.set(0, -.06, -(R + 130)); g.add(chan);
+  }
 }
 
 /* ------------------------------------------------- the city layer -------- */
@@ -5260,8 +5281,10 @@ function buildRegion() {
   }
   // glowing routes between the campuses
   const lineMat = new THREE.LineBasicMaterial({ color: 0xE8A33D, transparent: true, opacity: .65 });
-  const pairs = [['treasure-island', 'oakland'], ['oakland', 'new-orleans'],
-                 ['treasure-island', 'new-orleans']];
+  const pairs = [];
+  const pkeys = Object.keys(D.campuses);
+  for (let i = 0; i < pkeys.length; i++)
+    for (let j = i + 1; j < pkeys.length; j++) pairs.push([pkeys[i], pkeys[j]]);
   for (const [a, b] of pairs) {
     const pa = centers[a], pb = centers[b];
     const mid = pa.clone().add(pb).multiplyScalar(.5); mid.y = 26;

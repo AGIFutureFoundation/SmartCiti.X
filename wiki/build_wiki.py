@@ -320,7 +320,7 @@ to every door, and an alley tying the rows back to the ring. Roads and
 buildings are laid out in one cluster-local frame with a depth-aware row
 pitch, and the build checks itself: any road rectangle overlapping any
 building rectangle counts as a fault, and the headless harness asserts
-zero across all three campuses. Building rooflines are typed by district
+zero across every campus. Building rooflines are typed by district
 (sawtooth for the industrial districts, gabled for the finish trades,
 flat with rooftop plant elsewhere), with corner trims in the district hue.
 
@@ -1021,7 +1021,7 @@ campus looking alike under it.
 
 ## The animals
 
-{c['fauna']} kinds, {c['animals']} placed across the three campuses. They are
+{c['fauna']} kinds, {c['animals']} placed across the {len(campuses)} campuses. They are
 the only moving thing on an idle campus, and they give the scene the one
 thing the buildings cannot: a sense of scale a learner reads without being
 told.
@@ -1147,8 +1147,9 @@ def page_roadmap():
     built = roadmap['built_campuses']
     cand = roadmap['candidates']
     brows = '\n'.join(
-        f"| **{b['name']}** | {b['city']}, {b['region']} | {', '.join(districts[d]['name'] for d in b['districts'])} "
-        f"| {b['halls']} | RECORDED |"
+        f"| **{b['name']}** | {b['city']}, {b['region']} | "
+        f"{', '.join(districts[d]['name'] for d in b['districts']) or '(hub — no home district)'} "
+        f"| {b['halls']} | {b['provenance']} |"
         for b in built.values())
     crows = '\n'.join(
         f"| **{c['name']}** | {c['city']}, {c['region']} | {', '.join(districts[d]['name'] for d in c['districts'])} "

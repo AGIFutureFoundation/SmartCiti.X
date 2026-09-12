@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """The network dashboard: SmartCiti.X's whole platform, read live from the
-verified registries - three campuses built, seven candidates on the
-roadmap toward ten, and the pack that stands behind each one.
+verified registries - four campuses built (one a regional hub, not a
+district campus), six candidates on the roadmap toward ten, and the pack
+that stands behind each one.
 
 Every figure on this page is read from a registry's own JSON, not
 retyped: halls and modules from the pack manifest, districts and campuses
@@ -65,18 +66,25 @@ STATS = [
 ]
 
 
+PROV_CLASS = {'RECORDED': 'rec', 'DERIVED': 'rec', 'AUTHORED': 'auth'}
+
+
 def campus_card(slug, c, is_built):
+    is_hub = is_built and not c['districts']
     dist_chips = ''.join(
         f'<span class="chip" style="border-color:hsl({HUES[d]} 45% 40%);color:hsl({HUES[d]} 65% 72%)">{districts[d]["name"]}</span>'
         for d in c['districts'])
+    if is_hub:
+        dist_chips = '<span class="chip">regional hub · no home district</span>'
+    prov = c['provenance'] if is_built else 'AUTHORED'
+    prov_span = f'<span class="prov {PROV_CLASS[prov]}">{prov}</span>'
     if is_built:
         tag = '<span class="tag built">BUILT</span>'
-        sub = (f'{c["city"]}, {c["region"]} · {c["halls"]} halls · '
-               f'<span class="prov rec">RECORDED</span>')
+        halls_bit = '0 home halls (111 regional)' if is_hub else f'{c["halls"]} halls'
+        sub = f'{c["city"]}, {c["region"]} · {halls_bit} · {prov_span}'
     else:
         tag = '<span class="tag planned">CANDIDATE</span>'
-        sub = (f'{c["city"]}, {c["region"]} · '
-               f'<span class="prov auth">AUTHORED</span>')
+        sub = f'{c["city"]}, {c["region"]} · {prov_span}'
     why = f'<p class="why">{c["why"]}</p>' if not is_built else ''
     return f'''<div class="card">
   <div class="ch">{tag}<b>{c["name"]}</b></div>

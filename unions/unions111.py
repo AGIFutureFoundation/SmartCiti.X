@@ -181,10 +181,20 @@ assert len(set(_assigned)) == 111, 'a hall may belong to exactly one district'
 
 
 # ---------------------------------------------------------------- campuses --
-# The network's three planned campuses. Districts are assigned whole — a
-# district trains where its trades cluster: structural, systems and finish
-# work at the flagship island campus; heavy industry, port and plant on the
-# Oakland waterfront; energy, water and environmental response on the Gulf.
+# The network's planned campuses. Districts are assigned whole — a district
+# trains where its trades cluster: structural, systems and finish work at
+# the flagship island campus; heavy industry, port and plant on the Oakland
+# waterfront; energy, water and environmental response on the Gulf.
+#
+# Houston is a fourth kind of campus: a HUB. It hosts no district of its
+# own (districts: []) — every district that exists already has exactly one
+# home among the other three, and that invariant (asserted below) is not
+# relaxed for it. Instead the chapters mechanic in unions/build.py, which
+# already gives every hall a regional chapter at every campus that is not
+# its home, does the rest for free: with a fourth campus in CAMPUSES, every
+# one of the 111 halls now also holds a regional chapter at Houston. A hub
+# is a real, walkable, fourth point on the network map, not a fourth copy
+# of anyone's home turf.
 #
 # HONESTY, same rule as the taxonomy: these are PLANNED locations named for
 # real cities. No site has been surveyed, no address is recorded, and no
@@ -199,6 +209,10 @@ CAMPUSES = {
     'new-orleans': ('Crescent Works Campus', 'New Orleans', 'Louisiana',
         'Energy, water and environmental response on the Gulf',
         ['energy', 'control']),
+    'houston': ('Bayou Energy Hub', 'Houston', 'Texas',
+        'The network\'s hub: no home district of its own, and a regional '
+        'chapter seat for every one of the 111 trades',
+        []),
 }
 
 _hosted = [d for _, _, _, _, ds in CAMPUSES.values() for d in ds]

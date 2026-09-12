@@ -2,8 +2,8 @@
  "pack": "smartcitix-trade-craft-academy-union-registry",
  "pack_version": "3.2.0",
  "built": "2026-09-09",
- "source_stamp": "8760dc671a8854b8",
- "count": 333,
+ "source_stamp": "2638d791b6297d9f",
+ "count": 444,
  "regions": {
   "treasure-island": {
    "abbr": "SF",
@@ -19,12 +19,18 @@
    "abbr": "NOLA",
    "name": "Crescent Works Campus",
    "city": "New Orleans"
+  },
+  "houston": {
+   "abbr": "HOU",
+   "name": "Bayou Energy Hub",
+   "city": "Houston"
   }
  },
  "hosted": {
   "treasure-island": 60,
   "oakland": 79,
-  "new-orleans": 83
+  "new-orleans": 83,
+  "houston": 111
  },
  "honesty": {
   "chapters": "the Academy's own regional training structure across its planned campuses - not a claim about any real union's locals, chapters or jurisdictions; no local is named"
@@ -41,6 +47,10 @@
     "new-orleans": {
      "code": "ironworkers@NOLA",
      "role": "regional chapter"
+    },
+    "houston": {
+     "code": "ironworkers@HOU",
+     "role": "regional chapter"
     }
    }
   },
@@ -54,6 +64,10 @@
     },
     "new-orleans": {
      "code": "electricians@NOLA",
+     "role": "regional chapter"
+    },
+    "houston": {
+     "code": "electricians@HOU",
      "role": "regional chapter"
     }
    }
@@ -69,6 +83,10 @@
     "new-orleans": {
      "code": "pipefitters@NOLA",
      "role": "regional chapter"
+    },
+    "houston": {
+     "code": "pipefitters@HOU",
+     "role": "regional chapter"
     }
    }
   },
@@ -82,6 +100,10 @@
     },
     "new-orleans": {
      "code": "carpenters@NOLA",
+     "role": "regional chapter"
+    },
+    "houston": {
+     "code": "carpenters@HOU",
      "role": "regional chapter"
     }
    }
@@ -97,6 +119,10 @@
     "new-orleans": {
      "code": "operating-eng@NOLA",
      "role": "regional chapter"
+    },
+    "houston": {
+     "code": "operating-eng@HOU",
+     "role": "regional chapter"
     }
    }
   },
@@ -110,6 +136,10 @@
     },
     "new-orleans": {
      "code": "laborers@NOLA",
+     "role": "regional chapter"
+    },
+    "houston": {
+     "code": "laborers@HOU",
      "role": "regional chapter"
     }
    }
@@ -125,6 +155,10 @@
     "new-orleans": {
      "code": "sheetmetal@NOLA",
      "role": "regional chapter"
+    },
+    "houston": {
+     "code": "sheetmetal@HOU",
+     "role": "regional chapter"
     }
    }
   },
@@ -138,6 +172,10 @@
     },
     "new-orleans": {
      "code": "bricklayers@NOLA",
+     "role": "regional chapter"
+    },
+    "houston": {
+     "code": "bricklayers@HOU",
      "role": "regional chapter"
     }
    }
@@ -153,6 +191,10 @@
     "new-orleans": {
      "code": "cement-masons@NOLA",
      "role": "regional chapter"
+    },
+    "houston": {
+     "code": "cement-masons@HOU",
+     "role": "regional chapter"
     }
    }
   },
@@ -166,6 +208,10 @@
     },
     "new-orleans": {
      "code": "roofers@NOLA",
+     "role": "regional chapter"
+    },
+    "houston": {
+     "code": "roofers@HOU",
      "role": "regional chapter"
     }
    }
@@ -181,6 +227,10 @@
     "new-orleans": {
      "code": "painters@NOLA",
      "role": "regional chapter"
+    },
+    "houston": {
+     "code": "painters@HOU",
+     "role": "regional chapter"
     }
    }
   },
@@ -194,6 +244,10 @@
     },
     "new-orleans": {
      "code": "glaziers@NOLA",
+     "role": "regional chapter"
+    },
+    "houston": {
+     "code": "glaziers@HOU",
      "role": "regional chapter"
     }
    }
@@ -209,6 +263,10 @@
     "new-orleans": {
      "code": "insulators@NOLA",
      "role": "regional chapter"
+    },
+    "houston": {
+     "code": "insulators@HOU",
+     "role": "regional chapter"
     }
    }
   },
@@ -222,6 +280,10 @@
     },
     "new-orleans": {
      "code": "millwrights@NOLA",
+     "role": "regional chapter"
+    },
+    "houston": {
+     "code": "millwrights@HOU",
      "role": "regional chapter"
     }
    }
@@ -237,6 +299,10 @@
     "new-orleans": {
      "code": "boilermakers@NOLA",
      "role": "regional chapter"
+    },
+    "houston": {
+     "code": "boilermakers@HOU",
+     "role": "regional chapter"
     }
    }
   },
@@ -250,6 +316,10 @@
     },
     "new-orleans": {
      "code": "elevator@NOLA",
+     "role": "regional chapter"
+    },
+    "houston": {
+     "code": "elevator@HOU",
      "role": "regional chapter"
     }
    }
@@ -265,6 +335,10 @@
     "new-orleans": {
      "code": "teamsters@NOLA",
      "role": "regional chapter"
+    },
+    "houston": {
+     "code": "teamsters@HOU",
+     "role": "regional chapter"
     }
    }
   },
@@ -278,6 +352,10 @@
     },
     "new-orleans": {
      "code": "welders@NOLA",
+     "role": "regional chapter"
+    },
+    "houston": {
+     "code": "welders@HOU",
      "role": "regional chapter"
     }
    }
@@ -293,6 +371,10 @@
     "new-orleans": {
      "code": "hvacr@NOLA",
      "role": "regional chapter"
+    },
+    "houston": {
+     "code": "hvacr@HOU",
+     "role": "regional chapter"
     }
    }
   },
@@ -306,6 +388,10 @@
     },
     "new-orleans": {
      "code": "crane-ops@NOLA",
+     "role": "regional chapter"
+    },
+    "houston": {
+     "code": "crane-ops@HOU",
      "role": "regional chapter"
     }
    }
@@ -321,6 +407,10 @@
     "new-orleans": {
      "code": "riggers@NOLA",
      "role": "regional chapter"
+    },
+    "houston": {
+     "code": "riggers@HOU",
+     "role": "regional chapter"
     }
    }
   },
@@ -334,6 +424,10 @@
     },
     "new-orleans": {
      "code": "heavy-equip@NOLA",
+     "role": "regional chapter"
+    },
+    "houston": {
+     "code": "heavy-equip@HOU",
      "role": "regional chapter"
     }
    }
@@ -349,6 +443,10 @@
     "new-orleans": {
      "code": "drywall@NOLA",
      "role": "regional chapter"
+    },
+    "houston": {
+     "code": "drywall@HOU",
+     "role": "regional chapter"
     }
    }
   },
@@ -362,6 +460,10 @@
     },
     "new-orleans": {
      "code": "flooring@NOLA",
+     "role": "regional chapter"
+    },
+    "houston": {
+     "code": "flooring@HOU",
      "role": "regional chapter"
     }
    }
@@ -377,6 +479,10 @@
     "new-orleans": {
      "code": "grounds@NOLA",
      "role": "regional chapter"
+    },
+    "houston": {
+     "code": "grounds@HOU",
+     "role": "regional chapter"
     }
    }
   },
@@ -390,6 +496,10 @@
     },
     "oakland": {
      "code": "line-workers@OAK",
+     "role": "regional chapter"
+    },
+    "houston": {
+     "code": "line-workers@HOU",
      "role": "regional chapter"
     }
    }
@@ -405,6 +515,10 @@
     "oakland": {
      "code": "solar@OAK",
      "role": "regional chapter"
+    },
+    "houston": {
+     "code": "solar@HOU",
+     "role": "regional chapter"
     }
    }
   },
@@ -418,6 +532,10 @@
     },
     "oakland": {
      "code": "wind@OAK",
+     "role": "regional chapter"
+    },
+    "houston": {
+     "code": "wind@HOU",
      "role": "regional chapter"
     }
    }
@@ -433,6 +551,10 @@
     "new-orleans": {
      "code": "demolition@NOLA",
      "role": "regional chapter"
+    },
+    "houston": {
+     "code": "demolition@HOU",
+     "role": "regional chapter"
     }
    }
   },
@@ -446,6 +568,10 @@
     },
     "new-orleans": {
      "code": "scaffold@NOLA",
+     "role": "regional chapter"
+    },
+    "houston": {
+     "code": "scaffold@HOU",
      "role": "regional chapter"
     }
    }
@@ -461,6 +587,10 @@
     "oakland": {
      "code": "surveyors@OAK",
      "role": "regional chapter"
+    },
+    "houston": {
+     "code": "surveyors@HOU",
+     "role": "regional chapter"
     }
    }
   },
@@ -474,6 +604,10 @@
     },
     "new-orleans": {
      "code": "fire-sprinkler@NOLA",
+     "role": "regional chapter"
+    },
+    "houston": {
+     "code": "fire-sprinkler@HOU",
      "role": "regional chapter"
     }
    }
@@ -489,6 +623,10 @@
     "oakland": {
      "code": "hazmat@OAK",
      "role": "regional chapter"
+    },
+    "houston": {
+     "code": "hazmat@HOU",
+     "role": "regional chapter"
     }
    }
   },
@@ -502,6 +640,10 @@
     },
     "new-orleans": {
      "code": "refractory@NOLA",
+     "role": "regional chapter"
+    },
+    "houston": {
+     "code": "refractory@HOU",
      "role": "regional chapter"
     }
    }
@@ -517,6 +659,10 @@
     "new-orleans": {
      "code": "pipeline@NOLA",
      "role": "regional chapter"
+    },
+    "houston": {
+     "code": "pipeline@HOU",
+     "role": "regional chapter"
     }
    }
   },
@@ -530,6 +676,10 @@
     },
     "new-orleans": {
      "code": "tank-erectors@NOLA",
+     "role": "regional chapter"
+    },
+    "houston": {
+     "code": "tank-erectors@HOU",
      "role": "regional chapter"
     }
    }
@@ -545,6 +695,10 @@
     "new-orleans": {
      "code": "shipfitters@NOLA",
      "role": "regional chapter"
+    },
+    "houston": {
+     "code": "shipfitters@HOU",
+     "role": "regional chapter"
     }
    }
   },
@@ -558,6 +712,10 @@
     },
     "new-orleans": {
      "code": "marine-pipe@NOLA",
+     "role": "regional chapter"
+    },
+    "houston": {
+     "code": "marine-pipe@HOU",
      "role": "regional chapter"
     }
    }
@@ -573,6 +731,10 @@
     "new-orleans": {
      "code": "divers@NOLA",
      "role": "regional chapter"
+    },
+    "houston": {
+     "code": "divers@HOU",
+     "role": "regional chapter"
     }
    }
   },
@@ -586,6 +748,10 @@
     },
     "new-orleans": {
      "code": "blasters@NOLA",
+     "role": "regional chapter"
+    },
+    "houston": {
+     "code": "blasters@HOU",
      "role": "regional chapter"
     }
    }
@@ -601,6 +767,10 @@
     "new-orleans": {
      "code": "miners@NOLA",
      "role": "regional chapter"
+    },
+    "houston": {
+     "code": "miners@HOU",
+     "role": "regional chapter"
     }
    }
   },
@@ -614,6 +784,10 @@
     },
     "new-orleans": {
      "code": "smelter@NOLA",
+     "role": "regional chapter"
+    },
+    "houston": {
+     "code": "smelter@HOU",
      "role": "regional chapter"
     }
    }
@@ -629,6 +803,10 @@
     "new-orleans": {
      "code": "foundry@NOLA",
      "role": "regional chapter"
+    },
+    "houston": {
+     "code": "foundry@HOU",
+     "role": "regional chapter"
     }
    }
   },
@@ -642,6 +820,10 @@
     },
     "new-orleans": {
      "code": "machinists@NOLA",
+     "role": "regional chapter"
+    },
+    "houston": {
+     "code": "machinists@HOU",
      "role": "regional chapter"
     }
    }
@@ -657,6 +839,10 @@
     "new-orleans": {
      "code": "toolmakers@NOLA",
      "role": "regional chapter"
+    },
+    "houston": {
+     "code": "toolmakers@HOU",
+     "role": "regional chapter"
     }
    }
   },
@@ -670,6 +856,10 @@
     },
     "new-orleans": {
      "code": "fabricators@NOLA",
+     "role": "regional chapter"
+    },
+    "houston": {
+     "code": "fabricators@HOU",
      "role": "regional chapter"
     }
    }
@@ -685,6 +875,10 @@
     "new-orleans": {
      "code": "platers@NOLA",
      "role": "regional chapter"
+    },
+    "houston": {
+     "code": "platers@HOU",
+     "role": "regional chapter"
     }
    }
   },
@@ -698,6 +892,10 @@
     },
     "oakland": {
      "code": "substation@OAK",
+     "role": "regional chapter"
+    },
+    "houston": {
+     "code": "substation@HOU",
      "role": "regional chapter"
     }
    }
@@ -713,6 +911,10 @@
     "oakland": {
      "code": "cable-splicers@OAK",
      "role": "regional chapter"
+    },
+    "houston": {
+     "code": "cable-splicers@HOU",
+     "role": "regional chapter"
     }
    }
   },
@@ -726,6 +928,10 @@
     },
     "oakland": {
      "code": "meter-techs@OAK",
+     "role": "regional chapter"
+    },
+    "houston": {
+     "code": "meter-techs@HOU",
      "role": "regional chapter"
     }
    }
@@ -741,6 +947,10 @@
     "oakland": {
      "code": "gas-distrib@OAK",
      "role": "regional chapter"
+    },
+    "houston": {
+     "code": "gas-distrib@HOU",
+     "role": "regional chapter"
     }
    }
   },
@@ -754,6 +964,10 @@
     },
     "oakland": {
      "code": "water-distrib@OAK",
+     "role": "regional chapter"
+    },
+    "houston": {
+     "code": "water-distrib@HOU",
      "role": "regional chapter"
     }
    }
@@ -769,6 +983,10 @@
     "oakland": {
      "code": "wastewater@OAK",
      "role": "regional chapter"
+    },
+    "houston": {
+     "code": "wastewater@HOU",
+     "role": "regional chapter"
     }
    }
   },
@@ -782,6 +1000,10 @@
     },
     "oakland": {
      "code": "nuclear@OAK",
+     "role": "regional chapter"
+    },
+    "houston": {
+     "code": "nuclear@HOU",
      "role": "regional chapter"
     }
    }
@@ -797,6 +1019,10 @@
     "oakland": {
      "code": "hydro@OAK",
      "role": "regional chapter"
+    },
+    "houston": {
+     "code": "hydro@HOU",
+     "role": "regional chapter"
     }
    }
   },
@@ -810,6 +1036,10 @@
     },
     "oakland": {
      "code": "geothermal@OAK",
+     "role": "regional chapter"
+    },
+    "houston": {
+     "code": "geothermal@HOU",
      "role": "regional chapter"
     }
    }
@@ -825,6 +1055,10 @@
     "oakland": {
      "code": "battery-storage@OAK",
      "role": "regional chapter"
+    },
+    "houston": {
+     "code": "battery-storage@HOU",
+     "role": "regional chapter"
     }
    }
   },
@@ -838,6 +1072,10 @@
     },
     "oakland": {
      "code": "ev-charging@OAK",
+     "role": "regional chapter"
+    },
+    "houston": {
+     "code": "ev-charging@HOU",
      "role": "regional chapter"
     }
    }
@@ -853,6 +1091,10 @@
     "oakland": {
      "code": "hydrogen@OAK",
      "role": "regional chapter"
+    },
+    "houston": {
+     "code": "hydrogen@HOU",
+     "role": "regional chapter"
     }
    }
   },
@@ -866,6 +1108,10 @@
     },
     "oakland": {
      "code": "transmission@OAK",
+     "role": "regional chapter"
+    },
+    "houston": {
+     "code": "transmission@HOU",
      "role": "regional chapter"
     }
    }
@@ -881,6 +1127,10 @@
     "oakland": {
      "code": "district-energy@OAK",
      "role": "regional chapter"
+    },
+    "houston": {
+     "code": "district-energy@HOU",
+     "role": "regional chapter"
     }
    }
   },
@@ -894,6 +1144,10 @@
     },
     "new-orleans": {
      "code": "masonry-restore@NOLA",
+     "role": "regional chapter"
+    },
+    "houston": {
+     "code": "masonry-restore@HOU",
      "role": "regional chapter"
     }
    }
@@ -909,6 +1163,10 @@
     "new-orleans": {
      "code": "stone-carvers@NOLA",
      "role": "regional chapter"
+    },
+    "houston": {
+     "code": "stone-carvers@HOU",
+     "role": "regional chapter"
     }
    }
   },
@@ -922,6 +1180,10 @@
     },
     "new-orleans": {
      "code": "plasterers@NOLA",
+     "role": "regional chapter"
+    },
+    "houston": {
+     "code": "plasterers@HOU",
      "role": "regional chapter"
     }
    }
@@ -937,6 +1199,10 @@
     "new-orleans": {
      "code": "terrazzo@NOLA",
      "role": "regional chapter"
+    },
+    "houston": {
+     "code": "terrazzo@HOU",
+     "role": "regional chapter"
     }
    }
   },
@@ -950,6 +1216,10 @@
     },
     "new-orleans": {
      "code": "tilesetters@NOLA",
+     "role": "regional chapter"
+    },
+    "houston": {
+     "code": "tilesetters@HOU",
      "role": "regional chapter"
     }
    }
@@ -965,6 +1235,10 @@
     "new-orleans": {
      "code": "lathers@NOLA",
      "role": "regional chapter"
+    },
+    "houston": {
+     "code": "lathers@HOU",
+     "role": "regional chapter"
     }
    }
   },
@@ -978,6 +1252,10 @@
     },
     "new-orleans": {
      "code": "curtainwall@NOLA",
+     "role": "regional chapter"
+    },
+    "houston": {
+     "code": "curtainwall@HOU",
      "role": "regional chapter"
     }
    }
@@ -993,6 +1271,10 @@
     "new-orleans": {
      "code": "waterproofers@NOLA",
      "role": "regional chapter"
+    },
+    "houston": {
+     "code": "waterproofers@HOU",
+     "role": "regional chapter"
     }
    }
   },
@@ -1006,6 +1288,10 @@
     },
     "new-orleans": {
      "code": "firestop@NOLA",
+     "role": "regional chapter"
+    },
+    "houston": {
+     "code": "firestop@HOU",
      "role": "regional chapter"
     }
    }
@@ -1021,6 +1307,10 @@
     "new-orleans": {
      "code": "acoustic@NOLA",
      "role": "regional chapter"
+    },
+    "houston": {
+     "code": "acoustic@HOU",
+     "role": "regional chapter"
     }
    }
   },
@@ -1034,6 +1324,10 @@
     },
     "new-orleans": {
      "code": "cladding@NOLA",
+     "role": "regional chapter"
+    },
+    "houston": {
+     "code": "cladding@HOU",
      "role": "regional chapter"
     }
    }
@@ -1049,6 +1343,10 @@
     "new-orleans": {
      "code": "shoring@NOLA",
      "role": "regional chapter"
+    },
+    "houston": {
+     "code": "shoring@HOU",
+     "role": "regional chapter"
     }
    }
   },
@@ -1062,6 +1360,10 @@
     },
     "new-orleans": {
      "code": "piling@NOLA",
+     "role": "regional chapter"
+    },
+    "houston": {
+     "code": "piling@HOU",
      "role": "regional chapter"
     }
    }
@@ -1077,6 +1379,10 @@
     "new-orleans": {
      "code": "concrete-pump@NOLA",
      "role": "regional chapter"
+    },
+    "houston": {
+     "code": "concrete-pump@HOU",
+     "role": "regional chapter"
     }
    }
   },
@@ -1090,6 +1396,10 @@
     },
     "new-orleans": {
      "code": "post-tension@NOLA",
+     "role": "regional chapter"
+    },
+    "houston": {
+     "code": "post-tension@HOU",
      "role": "regional chapter"
     }
    }
@@ -1105,6 +1415,10 @@
     "new-orleans": {
      "code": "precast@NOLA",
      "role": "regional chapter"
+    },
+    "houston": {
+     "code": "precast@HOU",
+     "role": "regional chapter"
     }
    }
   },
@@ -1118,6 +1432,10 @@
     },
     "new-orleans": {
      "code": "steel-erectors@NOLA",
+     "role": "regional chapter"
+    },
+    "houston": {
+     "code": "steel-erectors@HOU",
      "role": "regional chapter"
     }
    }
@@ -1133,6 +1451,10 @@
     "new-orleans": {
      "code": "decking@NOLA",
      "role": "regional chapter"
+    },
+    "houston": {
+     "code": "decking@HOU",
+     "role": "regional chapter"
     }
    }
   },
@@ -1146,6 +1468,10 @@
     },
     "new-orleans": {
      "code": "window-glazing@NOLA",
+     "role": "regional chapter"
+    },
+    "houston": {
+     "code": "window-glazing@HOU",
      "role": "regional chapter"
     }
    }
@@ -1161,6 +1487,10 @@
     "new-orleans": {
      "code": "bas-controls@NOLA",
      "role": "regional chapter"
+    },
+    "houston": {
+     "code": "bas-controls@HOU",
+     "role": "regional chapter"
     }
    }
   },
@@ -1174,6 +1504,10 @@
     },
     "new-orleans": {
      "code": "fire-alarm@NOLA",
+     "role": "regional chapter"
+    },
+    "houston": {
+     "code": "fire-alarm@HOU",
      "role": "regional chapter"
     }
    }
@@ -1189,6 +1523,10 @@
     "new-orleans": {
      "code": "security-sys@NOLA",
      "role": "regional chapter"
+    },
+    "houston": {
+     "code": "security-sys@HOU",
+     "role": "regional chapter"
     }
    }
   },
@@ -1202,6 +1540,10 @@
     },
     "new-orleans": {
      "code": "network-cabling@NOLA",
+     "role": "regional chapter"
+    },
+    "houston": {
+     "code": "network-cabling@HOU",
      "role": "regional chapter"
     }
    }
@@ -1217,6 +1559,10 @@
     "new-orleans": {
      "code": "fiber-splicers@NOLA",
      "role": "regional chapter"
+    },
+    "houston": {
+     "code": "fiber-splicers@HOU",
+     "role": "regional chapter"
     }
    }
   },
@@ -1230,6 +1576,10 @@
     },
     "new-orleans": {
      "code": "data-center@NOLA",
+     "role": "regional chapter"
+    },
+    "houston": {
+     "code": "data-center@HOU",
      "role": "regional chapter"
     }
    }
@@ -1245,6 +1595,10 @@
     "new-orleans": {
      "code": "instrumentation@NOLA",
      "role": "regional chapter"
+    },
+    "houston": {
+     "code": "instrumentation@HOU",
+     "role": "regional chapter"
     }
    }
   },
@@ -1258,6 +1612,10 @@
     },
     "new-orleans": {
      "code": "plc-techs@NOLA",
+     "role": "regional chapter"
+    },
+    "houston": {
+     "code": "plc-techs@HOU",
      "role": "regional chapter"
     }
    }
@@ -1273,6 +1631,10 @@
     "new-orleans": {
      "code": "robotics@NOLA",
      "role": "regional chapter"
+    },
+    "houston": {
+     "code": "robotics@HOU",
+     "role": "regional chapter"
     }
    }
   },
@@ -1286,6 +1648,10 @@
     },
     "new-orleans": {
      "code": "automation-int@NOLA",
+     "role": "regional chapter"
+    },
+    "houston": {
+     "code": "automation-int@HOU",
      "role": "regional chapter"
     }
    }
@@ -1301,6 +1667,10 @@
     "new-orleans": {
      "code": "cleanroom@NOLA",
      "role": "regional chapter"
+    },
+    "houston": {
+     "code": "cleanroom@HOU",
+     "role": "regional chapter"
     }
    }
   },
@@ -1314,6 +1684,10 @@
     },
     "new-orleans": {
      "code": "medical-gas@NOLA",
+     "role": "regional chapter"
+    },
+    "houston": {
+     "code": "medical-gas@HOU",
      "role": "regional chapter"
     }
    }
@@ -1329,6 +1703,10 @@
     "new-orleans": {
      "code": "rail-track@NOLA",
      "role": "regional chapter"
+    },
+    "houston": {
+     "code": "rail-track@HOU",
+     "role": "regional chapter"
     }
    }
   },
@@ -1342,6 +1720,10 @@
     },
     "new-orleans": {
      "code": "rail-signals@NOLA",
+     "role": "regional chapter"
+    },
+    "houston": {
+     "code": "rail-signals@HOU",
      "role": "regional chapter"
     }
    }
@@ -1357,6 +1739,10 @@
     "new-orleans": {
      "code": "catenary@NOLA",
      "role": "regional chapter"
+    },
+    "houston": {
+     "code": "catenary@HOU",
+     "role": "regional chapter"
     }
    }
   },
@@ -1370,6 +1756,10 @@
     },
     "new-orleans": {
      "code": "transit-vehicle@NOLA",
+     "role": "regional chapter"
+    },
+    "houston": {
+     "code": "transit-vehicle@HOU",
      "role": "regional chapter"
     }
    }
@@ -1385,6 +1775,10 @@
     "new-orleans": {
      "code": "aviation-ground@NOLA",
      "role": "regional chapter"
+    },
+    "houston": {
+     "code": "aviation-ground@HOU",
+     "role": "regional chapter"
     }
    }
   },
@@ -1398,6 +1792,10 @@
     },
     "new-orleans": {
      "code": "airfield@NOLA",
+     "role": "regional chapter"
+    },
+    "houston": {
+     "code": "airfield@HOU",
      "role": "regional chapter"
     }
    }
@@ -1413,6 +1811,10 @@
     "new-orleans": {
      "code": "port-crane@NOLA",
      "role": "regional chapter"
+    },
+    "houston": {
+     "code": "port-crane@HOU",
+     "role": "regional chapter"
     }
    }
   },
@@ -1426,6 +1828,10 @@
     },
     "new-orleans": {
      "code": "marine-terminal@NOLA",
+     "role": "regional chapter"
+    },
+    "houston": {
+     "code": "marine-terminal@HOU",
      "role": "regional chapter"
     }
    }
@@ -1441,6 +1847,10 @@
     "new-orleans": {
      "code": "fleet-diesel@NOLA",
      "role": "regional chapter"
+    },
+    "houston": {
+     "code": "fleet-diesel@HOU",
+     "role": "regional chapter"
     }
    }
   },
@@ -1454,6 +1864,10 @@
     },
     "new-orleans": {
      "code": "bridge-inspect@NOLA",
+     "role": "regional chapter"
+    },
+    "houston": {
+     "code": "bridge-inspect@HOU",
      "role": "regional chapter"
     }
    }
@@ -1469,6 +1883,10 @@
     "oakland": {
      "code": "asbestos@OAK",
      "role": "regional chapter"
+    },
+    "houston": {
+     "code": "asbestos@HOU",
+     "role": "regional chapter"
     }
    }
   },
@@ -1482,6 +1900,10 @@
     },
     "oakland": {
      "code": "lead-abatement@OAK",
+     "role": "regional chapter"
+    },
+    "houston": {
+     "code": "lead-abatement@HOU",
      "role": "regional chapter"
     }
    }
@@ -1497,6 +1919,10 @@
     "oakland": {
      "code": "mold-remediation@OAK",
      "role": "regional chapter"
+    },
+    "houston": {
+     "code": "mold-remediation@HOU",
+     "role": "regional chapter"
     }
    }
   },
@@ -1510,6 +1936,10 @@
     },
     "oakland": {
      "code": "spill-response@OAK",
+     "role": "regional chapter"
+    },
+    "houston": {
+     "code": "spill-response@HOU",
      "role": "regional chapter"
     }
    }
@@ -1525,6 +1955,10 @@
     "oakland": {
      "code": "confined-space@OAK",
      "role": "regional chapter"
+    },
+    "houston": {
+     "code": "confined-space@HOU",
+     "role": "regional chapter"
     }
    }
   },
@@ -1538,6 +1972,10 @@
     },
     "oakland": {
      "code": "high-angle@OAK",
+     "role": "regional chapter"
+    },
+    "houston": {
+     "code": "high-angle@HOU",
      "role": "regional chapter"
     }
    }
@@ -1553,6 +1991,10 @@
     "oakland": {
      "code": "site-safety@OAK",
      "role": "regional chapter"
+    },
+    "houston": {
+     "code": "site-safety@HOU",
+     "role": "regional chapter"
     }
    }
   },
@@ -1567,6 +2009,10 @@
     "oakland": {
      "code": "industrial-clean@OAK",
      "role": "regional chapter"
+    },
+    "houston": {
+     "code": "industrial-clean@HOU",
+     "role": "regional chapter"
     }
    }
   },
@@ -1580,6 +2026,10 @@
     },
     "oakland": {
      "code": "survey-drone@OAK",
+     "role": "regional chapter"
+    },
+    "houston": {
+     "code": "survey-drone@HOU",
      "role": "regional chapter"
     }
    }

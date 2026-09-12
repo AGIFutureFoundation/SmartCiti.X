@@ -116,7 +116,8 @@ campuses_doc = {
 # regional structure - a design decision about planned campuses, NOT a claim
 # about any real union's locals, chapters or jurisdictions; the taxonomy
 # honesty note governs here too, and no local is named.
-REGION_ABBR = {"treasure-island": "SF", "oakland": "OAK", "new-orleans": "NOLA"}
+REGION_ABBR = {"treasure-island": "SF", "oakland": "OAK", "new-orleans": "NOLA",
+               "houston": "HOU"}
 
 chapters = {}
 for u in unions:

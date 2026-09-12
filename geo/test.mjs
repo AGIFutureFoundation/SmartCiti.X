@@ -40,14 +40,20 @@ ok('every point is a plausible WGS84 coordinate for its stated city',
   && pts['treasure-island'].lng < -122 && pts['treasure-island'].lng > -123
   && pts['oakland'].lat > 37 && pts['oakland'].lat < 38.5
   && pts['new-orleans'].lat > 29 && pts['new-orleans'].lat < 30.5
-  && pts['new-orleans'].lng < -89 && pts['new-orleans'].lng > -91);
+  && pts['new-orleans'].lng < -89 && pts['new-orleans'].lng > -91
+  && pts['houston'].lat > 29 && pts['houston'].lat < 30.5
+  && pts['houston'].lng < -94 && pts['houston'].lng > -96);
 ok('every point carries its provenance and names its source',
-  Object.values(pts).every((p) => ['RECORDED', 'DERIVED'].includes(p.provenance)
+  Object.values(pts).every((p) =>
+    ['RECORDED', 'DERIVED', 'AUTHORED'].includes(p.provenance)
     && p.source.length > 10));
 ok("the RECORDED point cites Locator.X's city table; the DERIVED points do not claim it",
   pts.oakland.provenance === 'RECORDED' && /Locator\.X/.test(pts.oakland.source)
   && ['treasure-island', 'new-orleans'].every((k) =>
       pts[k].provenance === 'DERIVED' && /authored/.test(pts[k].source)));
+ok('the AUTHORED point (Houston, a hub campus) admits it is not cross-checked - the same bar a roadmap candidate is held to',
+  pts.houston.provenance === 'AUTHORED'
+  && /not cross-checked against any\s+file this build can verify/.test(pts.houston.source));
 
 /* ---------------------------------------------------- recomputed truths --- */
 ok('every stored route distance recomputes from the coordinates (±0.1 km)',
@@ -64,7 +70,7 @@ ok('the bay pair is a short hop and the Gulf runs are long hauls — sane scale'
 /* -------------------------------------------------------------- GeoJSON --- */
 const campusFeats = gj.features.filter((f) => f.properties.kind !== 'anchor');
 ok('the GeoJSON is a FeatureCollection with one campus Point per campus',
-  gj.type === 'FeatureCollection' && campusFeats.length === 3
+  gj.type === 'FeatureCollection' && campusFeats.length === 4
   && gj.features.every((f) => f.type === 'Feature'
     && f.geometry.type === 'Point'));
 ok('GeoJSON coordinates are [lng, lat] — the order the spec demands',
@@ -120,9 +126,9 @@ ok('both Bay campuses share the one committed Bay frame',
 
 const net = JSON.parse(readFileSync(
   new URL('./registry/network.geojson', import.meta.url)));
-ok('the network GeoJSON carries the whole registry: 22 points, 3 route lines, 2 recorded frames',
-  net.features.filter((f) => f.geometry.type === 'Point').length === 22
-  && net.features.filter((f) => f.geometry.type === 'LineString').length === 3
+ok('the network GeoJSON carries the whole registry: 23 points (4 campuses + 19 anchors), 6 route lines (every campus pair), 2 recorded frames',
+  net.features.filter((f) => f.geometry.type === 'Point').length === 23
+  && net.features.filter((f) => f.geometry.type === 'LineString').length === 6
   && net.features.filter((f) => f.geometry.type === 'Polygon').length === 2
   && net.features.filter((f) => f.geometry.type === 'Polygon')
       .every((f) => f.properties.provenance === 'RECORDED'));

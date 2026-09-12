@@ -59,9 +59,13 @@ ok('the module manifest ledger agrees on the hall count',
 
 /* ---------------------------------------------------------- the campuses --- */
 const clists = Object.values(campuses.campuses);
-ok('three campuses, each with a name, city, region and tagline',
-  campuses.count === 3 && clists.length === 3
+ok('four campuses, each with a name, city, region and tagline',
+  campuses.count === 4 && clists.length === 4
   && clists.every((c) => c.name && c.city && c.region && c.tagline));
+ok('exactly one campus is a hub: no home districts, no home halls',
+  clists.filter((c) => c.districts.length === 0).length === 1
+  && clists.filter((c) => c.districts.length === 0)
+      .every((c) => c.halls.length === 0));
 ok('the campuses partition the districts: every district trains at exactly one',
   (() => {
     const hosted = clists.flatMap((c) => c.districts);
@@ -83,9 +87,16 @@ ok('the campus registry declares its siting honesty (planned, not surveyed)',
 const chapters = JSON.parse(readFileSync(new URL('./registry/chapters.json', import.meta.url)));
 ok('every union holds a home seat plus a regional chapter at each other campus',
   Object.keys(chapters.chapters).length === 111
-  && chapters.count === 111 * 3
+  && chapters.count === 111 * 4
   && Object.values(chapters.chapters).every((c) =>
-      Object.keys(c.regional).length === 2 && !(c.home in c.regional)));
+      Object.keys(c.regional).length === 3 && !(c.home in c.regional)));
+ok('the hub campus is a regional chapter destination for every one of the 111 halls',
+  (() => {
+    const hub = Object.entries(campuses.campuses)
+      .find(([, c]) => c.districts.length === 0)[0];
+    return Object.values(chapters.chapters)
+      .every((c) => hub in c.regional && c.home !== hub);
+  })());
 ok("each union's home campus is where its district actually trains",
   unions.unions.every((u) => {
     const camp = Object.entries(campuses.campuses)
@@ -96,7 +107,7 @@ ok('chapter codes are unique across the whole network',
   (() => {
     const codes = Object.values(chapters.chapters).flatMap((c) =>
       [c.home_code, ...Object.values(c.regional).map((r) => r.code)]);
-    return codes.length === 333 && new Set(codes).size === 333;
+    return codes.length === 444 && new Set(codes).size === 444;
   })());
 ok('hosted counts balance: a campus hosts every union it does not home',
   Object.entries(chapters.hosted).every(([ck, nHosted]) =>
