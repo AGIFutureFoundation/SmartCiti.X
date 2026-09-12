@@ -457,6 +457,11 @@ function teardownSim() {
   document.getElementById('camBtn').style.display = 'none';
   document.getElementById('sndBtn').style.display = 'none';
   document.getElementById('opBtn').style.display = 'none';
+  // a sim drives the camera itself in cab/driver view - offering a headset
+  // session on top of that would have two things fighting for the camera
+  // every frame, so XR entry is a hall/campus/walk thing only
+  document.getElementById('vrBtn').style.display = vrSupported ? '' : 'none';
+  document.getElementById('arBtn').style.display = arSupported ? '' : 'none';
 }
 
 function exitSim() { teardownSim(); showHall(slug); }
@@ -535,6 +540,10 @@ function startSim(simId) {
   const ob = document.getElementById('opBtn');
   ob.style.display = '';
   ob.textContent = '\\U0001f477 ' + t('sim.operator');
+  // see the matching note in teardownSim(): a sim owns the camera itself,
+  // so it never offers a headset session too
+  document.getElementById('vrBtn').style.display = 'none';
+  document.getElementById('arBtn').style.display = 'none';
   controls.autoRotate = false;
   setSimView(def.view_modes[0]);
   acEnsure(); engineStart(def.audio.engine === 'diesel' ? 'diesel'
@@ -671,9 +680,12 @@ function craneSim(P = {}) {
                loadV: new THREE.Vector2(), swingPeak: 0, swingNow: 0, strikes: 0,
                inStrike: false, t0: null, act: 0, chirped: false };
   // start the hook over open ground
-  function hookPos() {
-    return new THREE.Vector3(Math.cos(st.slew) * st.r, st.h,
-                             Math.sin(st.slew) * st.r);
+  // update() runs every frame and passes its own scratch vector so the
+  // hot path allocates nothing; action() fires rarely (a keypress), so it
+  // keeps the simple allocate-a-fresh-one default
+  const _hp = new THREE.Vector3(), _tp = new THREE.Vector3();
+  function hookPos(out = new THREE.Vector3()) {
+    return out.set(Math.cos(st.slew) * st.r, st.h, Math.sin(st.slew) * st.r);
   }
   function finish() {
     st.done = true;
@@ -717,7 +729,7 @@ function craneSim(P = {}) {
       engineSet(st.act);
       slewG.rotation.y = -st.slew;
       trolley.position.x = st.r;
-      const hp = hookPos();
+      const hp = hookPos(_hp);
       if (st.attached) {
         // pendulum: the load chases the hook in the plan, and it shows;
         // a scenario's river breeze is a constant, deterministic lean
@@ -745,11 +757,14 @@ function craneSim(P = {}) {
         if (hit && !st.inStrike) { st.strikes++; st.inStrike = true; thud(); buzz(140); }
         if (!hit) st.inStrike = false;
       } else st.swingNow = 0;
-      hook.position.copy(st.attached
-        ? new THREE.Vector3(load.position.x, load.position.y + 1.6, load.position.z)
-        : hp.clone().setY(Math.max(1.4, hp.y - 1)));
+      if (st.attached) {
+        hook.position.set(load.position.x, load.position.y + 1.6, load.position.z);
+      } else {
+        hook.position.copy(hp);
+        hook.position.y = Math.max(1.4, hp.y - 1);
+      }
       const pts = cableGeo.attributes.position.array;
-      const tp = new THREE.Vector3(Math.cos(st.slew) * st.r, MAST_H, Math.sin(st.slew) * st.r);
+      const tp = _tp.set(Math.cos(st.slew) * st.r, MAST_H, Math.sin(st.slew) * st.r);
       pts[0] = tp.x; pts[1] = tp.y; pts[2] = tp.z;
       pts[3] = hook.position.x; pts[4] = hook.position.y; pts[5] = hook.position.z;
       cableGeo.attributes.position.needsUpdate = true;
@@ -1240,6 +1255,7 @@ function scaffoldSim(P = {}) {
       opacity: .28, depthWrite: false }));
   ghost.visible = false; g.add(ghost);
   const gBox = new THREE.Box3(), gSize = new THREE.Vector3(), gMid = new THREE.Vector3();
+  let gLast = null;   // the ghost target never moves once placed - recompute its box only when it changes, not every frame
   const st = { rack: 0, faults: 0, t0: null, done: false, la: false, ld: false, lr: false };
   const nextOf = (stage) => parts.find((p) => p.stage === stage && !p.mesh.visible);
   const legal = () => { for (let i = 0; i < 5; i++) if (nextOf(i)) return i; return -1; };
@@ -1282,13 +1298,16 @@ function scaffoldSim(P = {}) {
       engineSet(.06);
       const nx = nextOf(st.rack);
       if (nx) {
-        gBox.setFromObject(nx.mesh);
-        gBox.getSize(gSize); gBox.getCenter(gMid);
-        ghost.position.copy(gMid);
-        ghost.scale.set(Math.max(.12, gSize.x), Math.max(.12, gSize.y),
-          Math.max(.12, gSize.z));
+        if (nx !== gLast) {
+          gLast = nx;
+          gBox.setFromObject(nx.mesh);
+          gBox.getSize(gSize); gBox.getCenter(gMid);
+          ghost.position.copy(gMid);
+          ghost.scale.set(Math.max(.12, gSize.x), Math.max(.12, gSize.y),
+            Math.max(.12, gSize.z));
+        }
         ghost.visible = true;
-      } else ghost.visible = false;
+      } else { gLast = null; ghost.visible = false; }
       if (simView === 'deck') {
         camera.position.set(2.7, 3.05, 0);
         camera.lookAt(-1.6, 2.1, 0);
@@ -1515,7 +1534,13 @@ function loadChartSim(P = {}) {
         else a.m.position.z -= 2.6 * dt;
         a.lb.position.copy(a.m.position).y += 1.4;
         if (a.m.position.y > 6.5 || a.m.position.z < -9) {
-          g.remove(a.m); g.remove(a.lb); anims.splice(i, 1);
+          // the labelSet loop drops a.lb's own reference once it sees no
+          // parent, but that alone never frees its canvas texture - do
+          // that here, at removal, rather than waiting on a teardown that
+          // may be minutes away if this run keeps going
+          g.remove(a.m); g.remove(a.lb);
+          a.lb.material.map?.dispose(); a.lb.material.dispose();
+          anims.splice(i, 1);
         }
       }
       if (simView === 'chart') {
@@ -2886,12 +2911,20 @@ function advisorNear(pos) {
 // Called every frame: offers the nearest advisor while walking, and keeps
 // them alive - the same breath and head-turn every other figure here gets,
 // so they read as people standing in a room rather than as signage.
+const _advV = new THREE.Vector3();
 function advisorProximity(dt) {
   const btn = document.getElementById('advBtn');
   if (!advisorMeshes.length) { if (nearAdvisor) clearAdvisors(); return; }
-  const t = clock.elapsedTime, v = new THREE.Vector3();
+  const t = clock.elapsedTime;
   for (const m of advisorMeshes) {
-    const near = m.getWorldPosition(v).distanceTo(camera.position) < ADV_DETAIL;
+    // the Operator is asked via a button, never approached on foot - a
+    // sim's own orbitCam often sits well inside ADV_DETAIL, so distance
+    // alone would leave its full ~40-draw-call rigged body on screen for
+    // the whole run; it stays low-poly always, the same way it stays
+    // reachable without ever needing to be walked up to
+    const isOperator = m.userData.advisor === 'operator';
+    const near = !isOperator
+      && m.getWorldPosition(_advV).distanceTo(camera.position) < ADV_DETAIL;
     m.userData.body.visible = near;
     m.userData.proxy.visible = !near;
     if (near) idleBreath(m.userData.body, t + m.position.x, dt);
@@ -3375,13 +3408,17 @@ function qStep(dt) {
   }
 }
 
-let xrMode = null;
+let xrMode = null, vrSupported = false, arSupported = false;
 async function xrProbe() {
   if (!navigator.xr?.isSessionSupported) return;
-  for (const [mode, id] of [['immersive-vr', 'vrBtn'], ['immersive-ar', 'arBtn']]) {
+  for (const [mode, id, set] of [
+    ['immersive-vr', 'vrBtn', (v) => { vrSupported = v; }],
+    ['immersive-ar', 'arBtn', (v) => { arSupported = v; }]]) {
     try {
-      if (await navigator.xr.isSessionSupported(mode))
+      if (await navigator.xr.isSessionSupported(mode)) {
         document.getElementById(id).style.display = '';
+        set(true);
+      }
     } catch (e) { /* stays hidden */ }
   }
 }
@@ -4054,6 +4091,10 @@ const mat = {
   block: new THREE.MeshStandardMaterial({ color: 0x9aa0a2, roughness: .92 }),
   cone:  new THREE.MeshStandardMaterial({ color: 0xE07C48, roughness: .6 }),
 };
+// every material above is a page-wide singleton, reused by name across
+// halls, campuses and every sim yard - disposeOf() must never free one of
+// these just because the group it happens to sit in is being torn down
+for (const m of Object.values(mat)) m.userData.shared = true;
 
 /* ------------------------------------------------------- the signs -----
    Every word in this world is on a sign, and a sign should be readable
@@ -4355,9 +4396,22 @@ function boxGeo(w, h, d) {
   }
   return g2;
 }
+// materials get the same shared/unshared split as geometry above: the
+// `mat` table (and anything else marked userData.shared) is a page-wide
+// singleton and must survive; a sim or an avatar builds its OWN fresh
+// materials (and, for canvas-based ones, their own textures) every time
+// it is entered/placed, and those are exactly what a teardown should free
+const MAT_MAPS = ['map', 'normalMap', 'emissiveMap', 'roughnessMap',
+  'metalnessMap', 'alphaMap', 'aoMap', 'bumpMap'];
 function disposeOf(root) {
   root.traverse((o) => {
     if (o.geometry && !o.geometry.userData?.shared) o.geometry.dispose();
+    if (!o.material) return;
+    for (const m of Array.isArray(o.material) ? o.material : [o.material]) {
+      if (!m || m.userData?.shared) continue;
+      for (const k of MAT_MAPS) m[k]?.dispose?.();
+      m.dispose();
+    }
   });
 }
 function box(w, h, d, m, x, y, z, group, shadow = true) {
@@ -6513,8 +6567,12 @@ renderer.setAnimationLoop(() => {
   if (view === 'campus') mmDraw();
   if (walkActive) (isTouch ? touchWalkStep : walkStep)(dt);
   // in a sim's operator view the sim owns the camera - the orbit controls
-  // must not re-clamp it to their own distance limits
-  else if (!sim || controls.enabled) controls.update();
+  // must not re-clamp it to their own distance limits. A presenting XR
+  // session owns the camera even harder: the headset's own pose IS the
+  // camera transform, and orbit controls updating on top of that is the
+  // classic WebXR bug where the view fights itself every frame
+  else if ((!sim || controls.enabled) && !renderer.xr.isPresenting)
+    controls.update();
   advisorProximity(dt);
   faunaStep(clock.elapsedTime, dt);
   labelStep(dt);
