@@ -47,6 +47,15 @@ is wrong for something described to a learner as training data. So the
 recorder ships ON, with a visible toggle next to the export button, and
 turning it off does not touch episodes already kept - a learner clears
 those the same way they clear progress, on purpose, separately.
+
+HOW THIS PAIRS WITH orbis/build.py. That pack declares a second, separate
+stream toward the same `ml-agents` fork: a deterministic prompt contract
+that turns any of the same 111 union modules into an AI-SYNTHESIZED video
+prompt for Reactor's hosted video models, dense enough to cover a module
+this recorder has no episode for yet, since this recorder only ever
+produces an episode once a learner actually trains here. Real schematic
+episode versus AI-SYNTHESIZED video - neither claims to be the other, and
+this build still exports neither anywhere by itself.
 """
 import hashlib
 import json
