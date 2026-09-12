@@ -58,6 +58,7 @@ stations_reg = json.load(open(ROOT / 'stations/registry/stations.json'))
 agents_reg = json.load(open(ROOT / 'agents/registry/advisors.json'))
 training_reg = json.load(open(ROOT / 'training/registry/training.json'))
 orbis_reg = json.load(open(ROOT / 'orbis/registry/orbis.json'))
+schools_reg = json.load(open(ROOT / 'schools/registry/schools.json'))
 world_reg = json.load(open(ROOT / 'world/registry/world.json'))
 labels_reg = json.load(open(ROOT / 'labels/registry/labels.json'))
 
@@ -302,6 +303,17 @@ DATA = json.dumps({
               # each runner's own README carries that instruction instead
               'runners': [{'path': r['path'], 'model': r['model']}
                           for r in orbis_reg['runners']]},
+    # the schools pack: the flipped-classroom model, grade bands and
+    # proposed-district records this bundle already computes for the
+    # wiki - trimmed to what the Schools panel actually renders, same
+    # honesty text, no fact re-authored here
+    'schools': {'stages': schools_reg['model']['stages'],
+                'loop': schools_reg['model']['loop'],
+                'bands': schools_reg['bands'],
+                'districts': schools_reg['districts'],
+                'units': schools_reg['units'],
+                'honesty': {k: schools_reg['honesty'][k]
+                            for k in ('districts', 'certification')}},
     'advisors': {'who': agents_reg['advisors'],
                  'honesty': agents_reg['honesty'],
                  'walk': geo_reg['walk']},
@@ -3305,6 +3317,7 @@ body.open #panel{transform:none}
   <button id="dnBtn" class="barbtn" aria-label="day / night">🌙</button>
   <button id="recBtn" class="barbtn" aria-label="records">⏱</button>
   <button id="orbisBtn" class="barbtn" aria-label="Orbis synthetic-training prompt">🎬</button>
+  <button id="schoolsBtn" class="barbtn" aria-label="schools flipped-classroom program">🎓</button>
   <button id="vrBtn" class="barbtn" style="display:none">🥽 VR</button>
   <button id="arBtn" class="barbtn" style="display:none">📱 AR</button>
   <button id="satBtn" class="barbtn" style="display:none">🛰️</button>
@@ -5874,6 +5887,49 @@ function openOrbis() {
 }
 window.__tc3dOrbis = openOrbis;
 
+// the schools panel: the flipped-classroom model, grade bands and the
+// proposed district records, plus a click-through from each flipped
+// unit straight to the hall that runs it - nothing here duplicates a
+// hall panel's own stations/seat/crib content, it only links to it
+function openSchools() {
+  const esc = (s) => String(s).replace(/[&<>]/g,
+    (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+  const stageRows = D.schools.stages.map((s) => `<li style="margin:7px 0">
+    <b>${esc(s.title)}</b><br>
+    <span style="font-size:12px">${esc(s.what)}</span><br>
+    <span style="font-size:11px;color:var(--muted)">${esc(s.implemented_by)}</span></li>`).join('');
+  const bandRows = D.schools.bands.map((b) => `<li style="margin:5px 0">
+    <b>${esc(b.band)}</b> \\u00b7 ${esc(b.level)}<br>
+    <span style="font-size:12px">${esc(b.offer)}</span></li>`).join('');
+  const distRows = D.schools.districts.map((d) => `<li style="margin:5px 0">
+    <b>${esc(d.district)}</b>, ${esc(d.city)} (${esc(D.campuses[d.campus].name)})<br>
+    <span style="font-size:11px;color:var(--muted)">${esc(d.status)}</span></li>`).join('');
+  const unitRows = D.schools.units.map((u) => {
+    const h = D.halls.find((x) => x.slug === u.hall);
+    const sims = u.floor_sims.map((id) => D.sims.sims[id].name).join(', ');
+    return `<li style="margin:6px 0">
+      <button class="barbtn" data-hall-goto="${esc(u.hall)}" style="font-size:12px;padding:2px 8px">\\u2192 ${esc(h ? h.name : u.hall)}</button><br>
+      <span style="font-size:11px;color:var(--muted)">${esc(sims)}</span></li>`;
+  }).join('');
+  document.getElementById('pbody').innerHTML = `
+    <h2>\U0001f393 Schools \\u00b7 flipped classroom</h2>
+    <span class="chip">${D.schools.units.length} flipped units</span>
+    <span class="chip">${D.schools.districts.length} proposed districts</span>
+    <p style="color:var(--muted);font-size:12px">${esc(D.schools.loop)}</p>
+    <h3>The loop</h3>
+    <ul style="list-style:none;padding:0">${stageRows}</ul>
+    <h3>Grade bands</h3>
+    <ul style="list-style:none;padding:0">${bandRows}</ul>
+    <h3>Proposed district partners</h3>
+    <ul style="list-style:none;padding:0">${distRows}</ul>
+    <p style="color:var(--muted);font-size:12px">${esc(D.schools.honesty.districts)}</p>
+    <p style="color:var(--muted);font-size:12px">${esc(D.schools.honesty.certification)}</p>
+    <h3>Flipped units \\u2014 jump to a hall</h3>
+    <ul style="list-style:none;padding:0">${unitRows}</ul>`;
+  document.body.classList.add('open');
+}
+window.__tc3dSchools = openSchools;
+
 /* The learner record is device-local only - localStorage, every access
    wrapped so a blocked store never breaks the page - and the honesty line
    in the corner says exactly that. Not a transcript, not certification. */
@@ -6160,6 +6216,11 @@ document.addEventListener('click', (e) => {
     document.body.classList.remove('open');
     startSim(ss.dataset.simStart); return;
   }
+  const hg = e.target.closest('[data-hall-goto]');
+  if (hg) {
+    document.body.classList.remove('open');
+    showHall(hg.dataset.hallGoto); return;
+  }
   if (e.target.id === 'simRetry') {
     document.body.classList.remove('open');
     const id = curSimId; teardownSim(); view = 'hall'; startSim(id); return;
@@ -6392,6 +6453,10 @@ document.getElementById('recBtn').addEventListener('click', () => {
 document.getElementById('orbisBtn').addEventListener('click', () => {
   if (walkActive) plc.unlock();
   openOrbis();
+});
+document.getElementById('schoolsBtn').addEventListener('click', () => {
+  if (walkActive) plc.unlock();
+  openSchools();
 });
 document.getElementById('regionBtn').addEventListener('click', showRegion);
 document.getElementById('campusBtn').addEventListener('click',
