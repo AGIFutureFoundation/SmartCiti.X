@@ -1,0 +1,668 @@
+[
+ {
+  "id": "ironworkers",
+  "label": "Ironworkers",
+  "district": "Structural",
+  "text": "A Structural apprentice practicing Ironworkers: Structural steel, rebar, rigging and connecting. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "electricians",
+  "label": "Electrical Workers",
+  "district": "Building Systems",
+  "text": "A Building Systems apprentice practicing Electrical Workers: Power, control, low-voltage and code compliance. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "pipefitters",
+  "label": "Plumbers & Pipefitters",
+  "district": "Building Systems",
+  "text": "A Building Systems apprentice practicing Plumbers & Pipefitters: Process piping, drainage, medical gas and hydronics. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "carpenters",
+  "label": "Carpenters",
+  "district": "Envelope & Finish",
+  "text": "A Envelope & Finish apprentice practicing Carpenters: Framing, formwork, finish and layout. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "operating-eng",
+  "label": "Operating Engineers",
+  "district": "Earthworks & Plant",
+  "text": "A Earthworks & Plant apprentice practicing Operating Engineers: Earthmoving, lifting and heavy plant operation. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "laborers",
+  "label": "Laborers",
+  "district": "Earthworks & Plant",
+  "text": "A Earthworks & Plant apprentice practicing Laborers: Site prep, materials, excavation support and cleanup. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "sheetmetal",
+  "label": "Sheet Metal Workers",
+  "district": "Building Systems",
+  "text": "A Building Systems apprentice practicing Sheet Metal Workers: Duct fabrication, architectural metal and balancing. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "bricklayers",
+  "label": "Bricklayers & Allied Craft",
+  "district": "Envelope & Finish",
+  "text": "A Envelope & Finish apprentice practicing Bricklayers & Allied Craft: Masonry, refractory, tile and stone. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "cement-masons",
+  "label": "Cement Masons",
+  "district": "Envelope & Finish",
+  "text": "A Envelope & Finish apprentice practicing Cement Masons: Placement, finishing, curing and decorative concrete. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "roofers",
+  "label": "Roofers & Waterproofers",
+  "district": "Envelope & Finish",
+  "text": "A Envelope & Finish apprentice practicing Roofers & Waterproofers: Low-slope, steep-slope, membranes and moisture control. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "painters",
+  "label": "Painters & Allied Trades",
+  "district": "Envelope & Finish",
+  "text": "A Envelope & Finish apprentice practicing Painters & Allied Trades: Coatings, containment, industrial and decorative finish. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "glaziers",
+  "label": "Glaziers",
+  "district": "Envelope & Finish",
+  "text": "A Envelope & Finish apprentice practicing Glaziers: Curtain wall, storefront, glazing and sealants. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "insulators",
+  "label": "Heat & Frost Insulators",
+  "district": "Envelope & Finish",
+  "text": "A Envelope & Finish apprentice practicing Heat & Frost Insulators: Mechanical insulation, abatement and firestopping. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "millwrights",
+  "label": "Millwrights",
+  "district": "Structural",
+  "text": "A Structural apprentice practicing Millwrights: Precision alignment, machinery install and vibration. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "boilermakers",
+  "label": "Boilermakers",
+  "district": "Structural",
+  "text": "A Structural apprentice practicing Boilermakers: Pressure vessels, tanks, tubes and code welding. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "elevator",
+  "label": "Elevator Constructors",
+  "district": "Building Systems",
+  "text": "A Building Systems apprentice practicing Elevator Constructors: Traction and hydraulic install, controls and testing. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "teamsters",
+  "label": "Teamsters",
+  "district": "Earthworks & Plant",
+  "text": "A Earthworks & Plant apprentice practicing Teamsters: Haul, delivery, logistics and vehicle compliance. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "welders",
+  "label": "Welding Trades",
+  "district": "Structural",
+  "text": "A Structural apprentice practicing Welding Trades: SMAW, GMAW, GTAW, FCAW, procedure and qualification. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "hvacr",
+  "label": "HVAC/R Technicians",
+  "district": "Building Systems",
+  "text": "A Building Systems apprentice practicing HVAC/R Technicians: Refrigeration, air systems, controls and commissioning. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "crane-ops",
+  "label": "Crane Operators",
+  "district": "Structural",
+  "text": "A Structural apprentice practicing Crane Operators: Mobile, tower and overhead lifting operations. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "riggers",
+  "label": "Riggers & Signalpersons",
+  "district": "Structural",
+  "text": "A Structural apprentice practicing Riggers & Signalpersons: Load calculation, rigging hardware and signals. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "heavy-equip",
+  "label": "Heavy Equipment Technicians",
+  "district": "Earthworks & Plant",
+  "text": "A Earthworks & Plant apprentice practicing Heavy Equipment Technicians: Diagnostics, hydraulics, drivetrain and field service. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "drywall",
+  "label": "Drywall Finishers",
+  "district": "Envelope & Finish",
+  "text": "A Envelope & Finish apprentice practicing Drywall Finishers: Board, level of finish, texture and acoustic assemblies. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "flooring",
+  "label": "Floor Coverers",
+  "district": "Envelope & Finish",
+  "text": "A Envelope & Finish apprentice practicing Floor Coverers: Substrate prep, resilient, carpet, terrazzo and epoxy. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "grounds",
+  "label": "Grounds & Landscape",
+  "district": "Earthworks & Plant",
+  "text": "A Earthworks & Plant apprentice practicing Grounds & Landscape: Mowing, trimming, irrigation, arbor and turf care. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "line-workers",
+  "label": "Utility Line Workers",
+  "district": "Energy & Utilities",
+  "text": "A Energy & Utilities apprentice practicing Utility Line Workers: Distribution, transmission, switching and storm work. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "solar",
+  "label": "Solar Installers",
+  "district": "Energy & Utilities",
+  "text": "A Energy & Utilities apprentice practicing Solar Installers: PV array, racking, inverters and interconnection. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "wind",
+  "label": "Wind Turbine Technicians",
+  "district": "Energy & Utilities",
+  "text": "A Energy & Utilities apprentice practicing Wind Turbine Technicians: Nacelle systems, blades, climb rescue and torque. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "demolition",
+  "label": "Demolition Workers",
+  "district": "Earthworks & Plant",
+  "text": "A Earthworks & Plant apprentice practicing Demolition Workers: Selective demo, structural takedown and debris control. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "scaffold",
+  "label": "Scaffold Erectors",
+  "district": "Earthworks & Plant",
+  "text": "A Earthworks & Plant apprentice practicing Scaffold Erectors: System scaffold, shoring, suspended access and tags. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "surveyors",
+  "label": "Construction Surveyors",
+  "district": "Survey, Safety & Environment",
+  "text": "A Survey, Safety & Environment apprentice practicing Construction Surveyors: Layout, control networks, GNSS and as-builts. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "fire-sprinkler",
+  "label": "Fire Sprinkler Fitters",
+  "district": "Building Systems",
+  "text": "A Building Systems apprentice practicing Fire Sprinkler Fitters: Hydraulics, hangers, heads, testing and inspection. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "hazmat",
+  "label": "Hazmat & Environmental",
+  "district": "Survey, Safety & Environment",
+  "text": "A Survey, Safety & Environment apprentice practicing Hazmat & Environmental: Containment, decon, monitoring and disposal. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "refractory",
+  "label": "Refractory Masons",
+  "district": "Heavy Industry",
+  "text": "A Heavy Industry apprentice practicing Refractory Masons: Furnace linings, castables, gunning and dryout. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "pipeline",
+  "label": "Pipeline Trades",
+  "district": "Heavy Industry",
+  "text": "A Heavy Industry apprentice practicing Pipeline Trades: Mainline welding, coating, tie-ins and integrity digs. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "tank-erectors",
+  "label": "Tank Erectors",
+  "district": "Heavy Industry",
+  "text": "A Heavy Industry apprentice practicing Tank Erectors: Field-erected storage, floating roofs and hydrotest. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "shipfitters",
+  "label": "Shipfitters",
+  "district": "Structural",
+  "text": "A Structural apprentice practicing Shipfitters: Hull sections, tack and fit, alignment and launch. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "marine-pipe",
+  "label": "Marine Pipefitters",
+  "district": "Heavy Industry",
+  "text": "A Heavy Industry apprentice practicing Marine Pipefitters: Shipboard systems, sea valves and pressure test. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "divers",
+  "label": "Commercial Divers",
+  "district": "Heavy Industry",
+  "text": "A Heavy Industry apprentice practicing Commercial Divers: Underwater cutting, welding, inspection and lift bags. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "blasters",
+  "label": "Drillers & Blasters",
+  "district": "Earthworks & Plant",
+  "text": "A Earthworks & Plant apprentice practicing Drillers & Blasters: Shot design, loading, initiation and vibration control. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "miners",
+  "label": "Underground Miners",
+  "district": "Earthworks & Plant",
+  "text": "A Earthworks & Plant apprentice practicing Underground Miners: Ground support, ventilation, haulage and rescue. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "smelter",
+  "label": "Smelter Operators",
+  "district": "Heavy Industry",
+  "text": "A Heavy Industry apprentice practicing Smelter Operators: Furnace tapping, molten handling and pot lines. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "foundry",
+  "label": "Foundry Workers",
+  "district": "Heavy Industry",
+  "text": "A Heavy Industry apprentice practicing Foundry Workers: Moulding, pouring, shakeout and heat treatment. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "machinists",
+  "label": "Machinists",
+  "district": "Heavy Industry",
+  "text": "A Heavy Industry apprentice practicing Machinists: Turning, milling, CNC setup, metrology and fits. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "toolmakers",
+  "label": "Tool & Die Makers",
+  "district": "Heavy Industry",
+  "text": "A Heavy Industry apprentice practicing Tool & Die Makers: Die build, jig and fixture, grinding and tryout. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "fabricators",
+  "label": "Structural Fabricators",
+  "district": "Structural",
+  "text": "A Structural apprentice practicing Structural Fabricators: Layout, cut, fit and weld-out in the shop. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "platers",
+  "label": "Platers & Coaters",
+  "district": "Heavy Industry",
+  "text": "A Heavy Industry apprentice practicing Platers & Coaters: Surface prep, electroplating, anodising and waste. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "substation",
+  "label": "Substation Technicians",
+  "district": "Energy & Utilities",
+  "text": "A Energy & Utilities apprentice practicing Substation Technicians: Relays, breakers, transformers and switching orders. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "cable-splicers",
+  "label": "Cable Splicers",
+  "district": "Energy & Utilities",
+  "text": "A Energy & Utilities apprentice practicing Cable Splicers: MV/HV terminations, splices and cable fault work. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "meter-techs",
+  "label": "Meter Technicians",
+  "district": "Energy & Utilities",
+  "text": "A Energy & Utilities apprentice practicing Meter Technicians: Metering, CT/PT, revenue accuracy and sealing. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "gas-distrib",
+  "label": "Gas Distribution Fitters",
+  "district": "Energy & Utilities",
+  "text": "A Energy & Utilities apprentice practicing Gas Distribution Fitters: Mains, services, fusion, purging and leak survey. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "water-distrib",
+  "label": "Water Distribution Fitters",
+  "district": "Energy & Utilities",
+  "text": "A Energy & Utilities apprentice practicing Water Distribution Fitters: Mains, valves, hydrants, chlorination and tapping. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "wastewater",
+  "label": "Wastewater Operators",
+  "district": "Energy & Utilities",
+  "text": "A Energy & Utilities apprentice practicing Wastewater Operators: Treatment trains, blowers, sludge and permit limits. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "nuclear",
+  "label": "Nuclear Plant Trades",
+  "district": "Energy & Utilities",
+  "text": "A Energy & Utilities apprentice practicing Nuclear Plant Trades: Rad-controlled work, ALARA, containment and outage. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "hydro",
+  "label": "Hydro Plant Trades",
+  "district": "Energy & Utilities",
+  "text": "A Energy & Utilities apprentice practicing Hydro Plant Trades: Turbines, wickets, gates, penstocks and governors. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "geothermal",
+  "label": "Geothermal Technicians",
+  "district": "Energy & Utilities",
+  "text": "A Energy & Utilities apprentice practicing Geothermal Technicians: Wellhead, brine handling, scaling and binary cycle. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "battery-storage",
+  "label": "Battery Storage Technicians",
+  "district": "Energy & Utilities",
+  "text": "A Energy & Utilities apprentice practicing Battery Storage Technicians: Racks, BMS, thermal runaway response and commissioning. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "ev-charging",
+  "label": "EV Charging Installers",
+  "district": "Energy & Utilities",
+  "text": "A Energy & Utilities apprentice practicing EV Charging Installers: Service upgrades, DCFC, networking and commissioning. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "hydrogen",
+  "label": "Hydrogen Systems Trades",
+  "district": "Energy & Utilities",
+  "text": "A Energy & Utilities apprentice practicing Hydrogen Systems Trades: Electrolysers, compression, purity and leak detection. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "transmission",
+  "label": "Transmission Linemen",
+  "district": "Energy & Utilities",
+  "text": "A Energy & Utilities apprentice practicing Transmission Linemen: EHV structures, conductor stringing and live-line work. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "district-energy",
+  "label": "District Energy Operators",
+  "district": "Energy & Utilities",
+  "text": "A Energy & Utilities apprentice practicing District Energy Operators: Steam and chilled loops, vaults and metering. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "masonry-restore",
+  "label": "Masonry Restoration",
+  "district": "Envelope & Finish",
+  "text": "A Envelope & Finish apprentice practicing Masonry Restoration: Repointing, consolidation, Dutchman and cleaning. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "stone-carvers",
+  "label": "Stone Carvers",
+  "district": "Envelope & Finish",
+  "text": "A Envelope & Finish apprentice practicing Stone Carvers: Banker work, lettering, tracery and matching. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "plasterers",
+  "label": "Plasterers",
+  "district": "Envelope & Finish",
+  "text": "A Envelope & Finish apprentice practicing Plasterers: Three-coat, veneer, ornamental run and repair. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "terrazzo",
+  "label": "Terrazzo Workers",
+  "district": "Envelope & Finish",
+  "text": "A Envelope & Finish apprentice practicing Terrazzo Workers: Divider strips, pours, grinding and sealing. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "tilesetters",
+  "label": "Tile Setters",
+  "district": "Envelope & Finish",
+  "text": "A Envelope & Finish apprentice practicing Tile Setters: Substrates, waterproofing, large format and grout. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "lathers",
+  "label": "Lathers & Metal Framers",
+  "district": "Envelope & Finish",
+  "text": "A Envelope & Finish apprentice practicing Lathers & Metal Framers: Metal stud, furring, ceiling grid and backing. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "curtainwall",
+  "label": "Curtain Wall Erectors",
+  "district": "Envelope & Finish",
+  "text": "A Envelope & Finish apprentice practicing Curtain Wall Erectors: Unitised panels, anchors, sequencing and water test. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "waterproofers",
+  "label": "Below-Grade Waterproofers",
+  "district": "Envelope & Finish",
+  "text": "A Envelope & Finish apprentice practicing Below-Grade Waterproofers: Membranes, injection, drainage and blindside. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "firestop",
+  "label": "Firestop Installers",
+  "district": "Envelope & Finish",
+  "text": "A Envelope & Finish apprentice practicing Firestop Installers: Penetrations, joints, listed systems and inspection. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "acoustic",
+  "label": "Acoustic Specialists",
+  "district": "Envelope & Finish",
+  "text": "A Envelope & Finish apprentice practicing Acoustic Specialists: Isolation, mass-loaded assemblies and STC testing. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "cladding",
+  "label": "Rainscreen Cladding Fitters",
+  "district": "Envelope & Finish",
+  "text": "A Envelope & Finish apprentice practicing Rainscreen Cladding Fitters: Substructure, panels, cavity drainage and tolerance. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "shoring",
+  "label": "Shoring & Underpinning",
+  "district": "Earthworks & Plant",
+  "text": "A Earthworks & Plant apprentice practicing Shoring & Underpinning: Needle beams, jacking, monitoring and sequencing. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "piling",
+  "label": "Piling Crews",
+  "district": "Structural",
+  "text": "A Structural apprentice practicing Piling Crews: Driven, bored, sheet piles, refusal and integrity. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "concrete-pump",
+  "label": "Concrete Pump Operators",
+  "district": "Earthworks & Plant",
+  "text": "A Earthworks & Plant apprentice practicing Concrete Pump Operators: Boom setup, ground bearing, line safety and cleanout. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "post-tension",
+  "label": "Post-Tension Technicians",
+  "district": "Earthworks & Plant",
+  "text": "A Earthworks & Plant apprentice practicing Post-Tension Technicians: Tendon layout, stressing, elongation and grouting. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "precast",
+  "label": "Precast Erectors",
+  "district": "Structural",
+  "text": "A Structural apprentice practicing Precast Erectors: Yard to crane, connections, grouting and tolerance. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "steel-erectors",
+  "label": "Steel Erectors",
+  "district": "Structural",
+  "text": "A Structural apprentice practicing Steel Erectors: Detailing, plumbing up, bolting and connection safety. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "decking",
+  "label": "Metal Deck Installers",
+  "district": "Structural",
+  "text": "A Structural apprentice practicing Metal Deck Installers: Layout, puddle welds, shear studs and edge form. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "window-glazing",
+  "label": "Architectural Glaziers",
+  "district": "Envelope & Finish",
+  "text": "A Envelope & Finish apprentice practicing Architectural Glaziers: Structural silicone, blast glazing and heritage sash. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "bas-controls",
+  "label": "Building Automation Techs",
+  "district": "Building Systems",
+  "text": "A Building Systems apprentice practicing Building Automation Techs: DDC, BACnet, sequences of operation and tuning. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "fire-alarm",
+  "label": "Fire Alarm Technicians",
+  "district": "Building Systems",
+  "text": "A Building Systems apprentice practicing Fire Alarm Technicians: Initiating and notification circuits, cause and effect. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "security-sys",
+  "label": "Security Systems Installers",
+  "district": "Building Systems",
+  "text": "A Building Systems apprentice practicing Security Systems Installers: Access control, CCTV, intrusion and cabling standards. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "network-cabling",
+  "label": "Structured Cabling Techs",
+  "district": "Building Systems",
+  "text": "A Building Systems apprentice practicing Structured Cabling Techs: Copper and fibre, testing, labelling and pathways. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "fiber-splicers",
+  "label": "Fiber Splicers",
+  "district": "Building Systems",
+  "text": "A Building Systems apprentice practicing Fiber Splicers: Fusion splicing, OTDR, loss budgets and closures. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "data-center",
+  "label": "Data Centre Technicians",
+  "district": "Building Systems",
+  "text": "A Building Systems apprentice practicing Data Centre Technicians: White space, busway, CRAC/CRAH and change control. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "instrumentation",
+  "label": "Instrumentation Technicians",
+  "district": "Building Systems",
+  "text": "A Building Systems apprentice practicing Instrumentation Technicians: Loop checks, calibration, transmitters and control valves. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "plc-techs",
+  "label": "PLC & Controls Technicians",
+  "district": "Building Systems",
+  "text": "A Building Systems apprentice practicing PLC & Controls Technicians: Ladder logic, I/O, safety relays and commissioning. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "robotics",
+  "label": "Industrial Robotics Techs",
+  "district": "Building Systems",
+  "text": "A Building Systems apprentice practicing Industrial Robotics Techs: Cells, teach pendants, safeguarding and payload. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "automation-int",
+  "label": "Automation Integrators",
+  "district": "Building Systems",
+  "text": "A Building Systems apprentice practicing Automation Integrators: SCADA, historians, protocols and cutover planning. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "cleanroom",
+  "label": "Cleanroom Trades",
+  "district": "Building Systems",
+  "text": "A Building Systems apprentice practicing Cleanroom Trades: Classification, gowning, laminar flow and validation. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "medical-gas",
+  "label": "Medical Gas Installers",
+  "district": "Building Systems",
+  "text": "A Building Systems apprentice practicing Medical Gas Installers: Brazing, purity, zone valves and verification. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "rail-track",
+  "label": "Rail Track Workers",
+  "district": "Transport & Mobility",
+  "text": "A Transport & Mobility apprentice practicing Rail Track Workers: Ballast, ties, rail laying, welds and geometry. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "rail-signals",
+  "label": "Rail Signal Technicians",
+  "district": "Transport & Mobility",
+  "text": "A Transport & Mobility apprentice practicing Rail Signal Technicians: Interlockings, track circuits, crossings and testing. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "catenary",
+  "label": "Overhead Catenary Linemen",
+  "district": "Transport & Mobility",
+  "text": "A Transport & Mobility apprentice practicing Overhead Catenary Linemen: Contact wire, tensioning, isolation and clearances. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "transit-vehicle",
+  "label": "Transit Vehicle Technicians",
+  "district": "Transport & Mobility",
+  "text": "A Transport & Mobility apprentice practicing Transit Vehicle Technicians: Propulsion, brakes, doors and inspection cycles. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "aviation-ground",
+  "label": "Aviation Ground Support",
+  "district": "Transport & Mobility",
+  "text": "A Transport & Mobility apprentice practicing Aviation Ground Support: GSE, ramp safety, de-icing and turnaround. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "airfield",
+  "label": "Airfield Trades",
+  "district": "Transport & Mobility",
+  "text": "A Transport & Mobility apprentice practicing Airfield Trades: Lighting, markings, pavement and airside escort. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "port-crane",
+  "label": "Port Crane Technicians",
+  "district": "Transport & Mobility",
+  "text": "A Transport & Mobility apprentice practicing Port Crane Technicians: STS and RTG cranes, spreaders, ropes and drives. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "marine-terminal",
+  "label": "Marine Terminal Operators",
+  "district": "Transport & Mobility",
+  "text": "A Transport & Mobility apprentice practicing Marine Terminal Operators: Mooring, loading arms, spill response and manifests. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "fleet-diesel",
+  "label": "Fleet Diesel Technicians",
+  "district": "Transport & Mobility",
+  "text": "A Transport & Mobility apprentice practicing Fleet Diesel Technicians: Aftertreatment, electrical, hydraulics and DOT checks. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "bridge-inspect",
+  "label": "Bridge Inspection Crews",
+  "district": "Transport & Mobility",
+  "text": "A Transport & Mobility apprentice practicing Bridge Inspection Crews: Access, NDT, fracture-critical members and reporting. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "asbestos",
+  "label": "Asbestos Abatement Workers",
+  "district": "Survey, Safety & Environment",
+  "text": "A Survey, Safety & Environment apprentice practicing Asbestos Abatement Workers: Enclosures, negative air, wet removal and clearance. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "lead-abatement",
+  "label": "Lead Abatement Workers",
+  "district": "Survey, Safety & Environment",
+  "text": "A Survey, Safety & Environment apprentice practicing Lead Abatement Workers: Containment, HEPA, waste characterisation and clearance. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "mold-remediation",
+  "label": "Mould Remediation Techs",
+  "district": "Survey, Safety & Environment",
+  "text": "A Survey, Safety & Environment apprentice practicing Mould Remediation Techs: Moisture mapping, containment, drying and verification. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "spill-response",
+  "label": "Spill Response Technicians",
+  "district": "Survey, Safety & Environment",
+  "text": "A Survey, Safety & Environment apprentice practicing Spill Response Technicians: Booming, recovery, decon and incident command. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "confined-space",
+  "label": "Confined Space Rescue",
+  "district": "Survey, Safety & Environment",
+  "text": "A Survey, Safety & Environment apprentice practicing Confined Space Rescue: Atmospheric testing, retrieval, patient packaging. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "high-angle",
+  "label": "High-Angle Rescue",
+  "district": "Survey, Safety & Environment",
+  "text": "A Survey, Safety & Environment apprentice practicing High-Angle Rescue: Rope systems, anchors, edge management and litter work. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "site-safety",
+  "label": "Site Safety Coordinators",
+  "district": "Survey, Safety & Environment",
+  "text": "A Survey, Safety & Environment apprentice practicing Site Safety Coordinators: Permits, JHAs, audits, incident investigation. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "industrial-clean",
+  "label": "Industrial Cleaning Crews",
+  "district": "Survey, Safety & Environment",
+  "text": "A Survey, Safety & Environment apprentice practicing Industrial Cleaning Crews: Hydroblasting, vacuum trucks, tank entry and decon. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ },
+ {
+  "id": "survey-drone",
+  "label": "Aerial Survey Operators",
+  "district": "Survey, Safety & Environment",
+  "text": "A Survey, Safety & Environment apprentice practicing Aerial Survey Operators: Flight planning, photogrammetry, airspace and accuracy. Training-yard setting, full PPE visible, single continuous take, documentary style, no on-screen text."
+ }
+]

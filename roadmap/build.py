@@ -53,7 +53,7 @@ PACK_VERSION = "3.2.0"
 BUILT = "2026-09-12"
 TARGET = 10
 
-# ----------------------------------------------------- the seven candidates ---
+# ------------------------------------------------------------ the candidates ---
 # lat/lng: AUTHORED, not RECORDED - see the honesty note above and in HONESTY
 # below. `districts` names 2-3 of the 8 the real metro's trade profile fits;
 # the built campuses already cover all eight between them, so a candidate
