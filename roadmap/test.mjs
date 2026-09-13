@@ -33,6 +33,8 @@ const dash = readFileSync(
   new URL('../web/trade_craft_dashboard.html', import.meta.url), 'utf8');
 const page3d = readFileSync(
   new URL('../web/trade_craft_3d.html', import.meta.url), 'utf8');
+const geomap = readFileSync(
+  new URL('../web/trade_craft_geomap.html', import.meta.url), 'utf8');
 
 const built = Object.entries(reg.built_campuses);
 const cand = Object.entries(reg.candidates);
@@ -171,6 +173,20 @@ ok('a candidate marker click-through actually opens its own panel, distinct from
 ok('the candidate panel renders the same honesty text the registry declares, not new prose',
   page3d.includes('D.roadmap.honesty.not_a_claim_of_content')
   && page3d.includes('D.roadmap.honesty.provenance_tiers'));
+
+/* --------------------------------------------------------- the geomap --- */
+// a real WGS84 map is the one surface where a candidate's own coordinate
+// - not a schematic bearing - is the honest thing to draw. Same guard,
+// third surface: every candidate must actually reach this page too.
+ok('the geomap trims the roadmap registry into D.candidates and marks each one',
+  geomap.includes('D.candidates') && geomap.includes('candMarkers++'));
+ok('every candidate\'s own real coordinate reaches the geomap, not a rounded stand-in',
+  cand.every(([, c]) => geomap.includes(`"lat":${c.lat},"lng":${c.lng}`)));
+ok('the geomap draws candidates visually distinct (dashed) from built campuses, per the labels doctrine',
+  geomap.includes('candidate-marker') && geomap.includes('dashed'));
+ok('the geomap candidate popup states AUTHORED and the same not-built honesty text',
+  geomap.includes('>AUTHORED<')
+  && geomap.includes('D.roadmapHonesty.not_a_claim_of_content'));
 
 const src = readFileSync(new URL('./build.py', import.meta.url));
 ok('the registry was built from the current builder source (stamp check)',

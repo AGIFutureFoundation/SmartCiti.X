@@ -20,6 +20,7 @@ network = json.load(open(ROOT / 'geo/registry/network.geojson'))
 parcels = json.load(open(ROOT / 'parcels/registry/parcels.json'))
 geo = json.load(open(ROOT / 'geo/registry/campuses_geo.json'))
 manifest = json.load(open(ROOT / 'pack/manifest.json'))
+roadmap = json.load(open(ROOT / 'roadmap/registry/roadmap.json'))
 L = manifest['ledger']
 
 DATA = json.dumps({
@@ -31,6 +32,16 @@ DATA = json.dumps({
     'sources': parcels['sources'],
     'contract': parcels['contract'],
     'recHonesty': parcels['honesty'],
+    # the roadmap's five candidates: real AUTHORED coordinates, the same
+    # tier a Wikipedia infobox carries - this map is the one place they
+    # can be shown at their own true position rather than a schematic
+    # bearing, since every other feature here is already lat/lng
+    'candidates': {k: {'name': c['name'], 'city': c['city'],
+                       'region': c['region'], 'lat': c['lat'], 'lng': c['lng'],
+                       'districts': c['districts'], 'why': c['why']}
+                   for k, c in roadmap['candidates'].items()},
+    'roadmapHonesty': {k: roadmap['honesty'][k]
+                       for k in ('not_a_claim_of_content', 'provenance_tiers')},
 }, ensure_ascii=False, separators=(',', ':'))
 
 page = '''<!doctype html>
@@ -72,6 +83,9 @@ body{margin:0;background:var(--plate);color:var(--ink);
 .campus-marker{background:var(--mark);color:#12181B;border-radius:999px;
   padding:2px 9px;font:600 12px "Barlow Condensed",sans-serif;white-space:nowrap;
   border:1.5px solid #12181B;cursor:pointer}
+.candidate-marker{background:transparent;color:var(--muted);border-radius:999px;
+  padding:1px 8px;font:600 11px "Barlow Condensed",sans-serif;white-space:nowrap;
+  border:1.5px dashed var(--muted);cursor:pointer}
 .maplibregl-popup-content{background:var(--panel)!important;color:var(--ink)!important;
   border:1px solid var(--rule);border-radius:9px;font:12.5px/1.45 "IBM Plex Sans",sans-serif;
   padding:10px 13px!important;max-width:270px}
@@ -101,7 +115,8 @@ body{margin:0;background:var(--plate);color:var(--ink);
   <span class="dot" style="background:var(--mark)"></span>campus (RECORDED/DERIVED siting)<br>
   <span class="dot" style="background:var(--steel)"></span>anchor — RECORDED from Locator.X<br>
   <span class="dot" style="background:none;border:1.5px dashed var(--mark);border-radius:0"></span>great-circle route — DERIVED<br>
-  <span class="dot" style="background:none;border:1px solid var(--steel);border-radius:0"></span>city frame — RECORDED
+  <span class="dot" style="background:none;border:1px solid var(--steel);border-radius:0"></span>city frame — RECORDED<br>
+  <span class="dot" style="background:none;border:1.5px dashed var(--muted)"></span>roadmap candidate — AUTHORED, not built
 </div>
 <div id="honesty"></div>
 <script id="data" type="application/json">__DATA__</script>
@@ -190,6 +205,30 @@ for (const f of D.network.features.filter((x) => x.properties.slug)) {
   new maplibregl.Marker({ element: el, anchor: 'bottom', offset: [0, -10] })
     .setLngLat(f.geometry.coordinates).addTo(map);
   markers++;
+}
+
+/* the five roadmap candidates - real AUTHORED coordinates, dashed to
+   match the labels doctrine ("the dashed outline is the claim"), never
+   drawn into D.network itself: this map's own network.geojson source
+   states only the built network, and candidates are not that */
+let candMarkers = 0;
+for (const [ck, c] of Object.entries(D.candidates)) {
+  const el = document.createElement('div');
+  el.className = 'candidate-marker';
+  el.textContent = c.name;
+  el.addEventListener('click', (ev) => { ev.stopPropagation(); popupForCandidate(ck, c); });
+  new maplibregl.Marker({ element: el, anchor: 'bottom', offset: [0, -10] })
+    .setLngLat([c.lng, c.lat]).addTo(map);
+  candMarkers++;
+}
+function popupForCandidate(ck, c) {
+  new maplibregl.Popup({ closeButton: false })
+    .setLngLat([c.lng, c.lat])
+    .setHTML(`<b>${c.name}</b><br><span class="pv">AUTHORED</span>`
+      + `<span class="pv">proposed</span>`
+      + `<br>${c.city}, ${c.region}<br>${c.why}`
+      + `<br><span class="src">${D.roadmapHonesty.not_a_claim_of_content}</span>`)
+    .addTo(map);
 }
 
 function popupFor(f, lngLat) {
@@ -305,7 +344,7 @@ let loaded = false;
 map.on('load', () => { loaded = true; });
 // test hook: state without poking MapLibre internals
 window.__geomap = () => ({
-  loaded, markers,
+  loaded, markers, candMarkers,
   layers: map.getStyle().layers.map((l) => l.id),
   features: D.network.features.length,
   center: [Math.round(map.getCenter().lng * 10) / 10,
