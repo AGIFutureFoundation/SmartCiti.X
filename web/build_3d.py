@@ -61,6 +61,7 @@ orbis_reg = json.load(open(ROOT / 'orbis/registry/orbis.json'))
 schools_reg = json.load(open(ROOT / 'schools/registry/schools.json'))
 world_reg = json.load(open(ROOT / 'world/registry/world.json'))
 labels_reg = json.load(open(ROOT / 'labels/registry/labels.json'))
+roadmap_reg = json.load(open(ROOT / 'roadmap/registry/roadmap.json'))
 
 def trim(rows, *drop):
     """Ship what is drawn, not what is explained.
@@ -317,6 +318,21 @@ DATA = json.dumps({
     'advisors': {'who': agents_reg['advisors'],
                  'honesty': agents_reg['honesty'],
                  'walk': geo_reg['walk']},
+    # the network roadmap: the five candidate metros, trimmed to what the
+    # region board's own markers need - bearing and distance already
+    # computed from the flagship campus in roadmap/build.py, not derived
+    # twice. Built campuses need no trim here; D.campuses already IS them.
+    'roadmap': {'target': roadmap_reg['target'],
+                'candidates': {k: {'name': c['name'], 'city': c['city'],
+                                   'region': c['region'],
+                                   'districts': c['districts'], 'why': c['why'],
+                                   'km_from_flagship': c['km_from_flagship'],
+                                   'bearing_from_flagship_deg':
+                                       c['bearing_from_flagship_deg']}
+                               for k, c in roadmap_reg['candidates'].items()},
+                'honesty': {k: roadmap_reg['honesty'][k]
+                            for k in ('not_a_claim_of_content',
+                                      'provenance_tiers')}},
     'i18n': I18N,
 }, ensure_ascii=False, separators=(',', ':'))
 
@@ -5422,6 +5438,32 @@ const PLATE_POS = (() => {
   return pos;
 })();
 
+// The five roadmap candidates, placed by the same true bearing/log-range
+// scheme as the built plates above, from the same flagship reference
+// point (treasure-island) - honest position, not a decorative ring. The
+// centroid shift is recomputed from the built plates' own RAW positions
+// (before their centering) so both sets share exactly one frame - PLATE_POS
+// only exposes its already-centered result, not that intermediate value.
+const CAND_POS = (() => {
+  const range = (km) => 34 + 50 * Math.log10(1 + km);
+  const raw = { 'treasure-island': [0, 0] };
+  for (const r of D.geo.routes) {
+    if (r.from !== 'treasure-island') continue;
+    const b = r.bearing_deg * Math.PI / 180, d = range(r.km);
+    raw[r.to] = [Math.sin(b) * d, -Math.cos(b) * d];
+  }
+  const rk = Object.keys(raw);
+  const cx = rk.reduce((a, k) => a + raw[k][0], 0) / rk.length;
+  const cz = rk.reduce((a, k) => a + raw[k][1], 0) / rk.length;
+  const pos = {};
+  for (const [k, c] of Object.entries(D.roadmap.candidates)) {
+    const b = c.bearing_from_flagship_deg * Math.PI / 180,
+      d = range(c.km_from_flagship);
+    pos[k] = [Math.sin(b) * d - cx, -Math.cos(b) * d - cz];
+  }
+  return pos;
+})();
+
 function buildRegion() {
   if (regionGroup) scene.remove(regionGroup);
   regionGroup = new THREE.Group(); plates = []; anchorPins = 0;
@@ -5471,6 +5513,20 @@ function buildRegion() {
       const al = label(a.name, a.km + ' km', 1.15, { kind: 'anchor' });
       al.position.set(ax, 9.6, az); regionGroup.add(al);
     }
+  }
+  // the five roadmap candidates: a dashed schematic ring, not a plate -
+  // the shape itself is the claim (labels/registry: 'the dashed outline
+  // is the claim'), placed at the real bearing/distance CAND_POS computed,
+  // never a hall, union or curriculum content standing there to walk into
+  for (const [ck, c] of Object.entries(D.roadmap.candidates)) {
+    const [px, pz] = CAND_POS[ck];
+    const ring = new THREE.Mesh(new THREE.RingGeometry(30, 32, 48, 1, 0, Math.PI * 1.7),
+      new THREE.MeshBasicMaterial({ color: 0x93A3A6, transparent: true,
+        opacity: .55, side: THREE.DoubleSide }));
+    ring.rotation.x = -Math.PI / 2; ring.position.set(px, .3, pz);
+    ring.userData.candidate = ck; regionGroup.add(ring); plates.push(ring);
+    const cl = label(c.name, c.city + ', ' + c.region, 2.6, { kind: 'schematic' });
+    cl.position.set(px, 14, pz); regionGroup.add(cl);
   }
   // glowing routes between the campuses
   const lineMat = new THREE.LineBasicMaterial({ color: 0xE8A33D, transparent: true, opacity: .65 });
@@ -5941,6 +5997,29 @@ function openSchools(focusHall) {
 }
 window.__tc3dSchools = openSchools;
 
+// a roadmap candidate's own card: no hall stands here to enter, so this
+// panel never offers one - a name, a real bearing/distance, the proposed
+// district emphasis and the honesty text, nothing more
+function openCandidate(ck) {
+  const esc = (s) => String(s).replace(/[&<>]/g,
+    (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+  const c = D.roadmap.candidates[ck];
+  const distRows = c.districts.map((dk) =>
+    `<li>${esc(D.districts[dk].name)}</li>`).join('');
+  document.getElementById('pbody').innerHTML = `
+    <h2>\U0001f4cd ${esc(c.name)}</h2>
+    <span class="chip">proposed · not built</span>
+    <span class="chip">${c.km_from_flagship.toLocaleString('en-US')} km, bearing ${Math.round(c.bearing_from_flagship_deg)}° from the flagship campus</span>
+    <p style="color:var(--muted);font-size:12px">${esc(c.city)}, ${esc(c.region)}</p>
+    <p>${esc(c.why)}</p>
+    <h3>Proposed district emphasis</h3>
+    <ul style="list-style:none;padding:0">${distRows}</ul>
+    <p style="color:var(--muted);font-size:12px">${esc(D.roadmap.honesty.not_a_claim_of_content)}</p>
+    <p style="color:var(--muted);font-size:12px">${esc(D.roadmap.honesty.provenance_tiers)}</p>`;
+  document.body.classList.add('open');
+}
+window.__tc3dCandidate = openCandidate;
+
 /* The learner record is device-local only - localStorage, every access
    wrapped so a blocked store never breaks the page - and the honesty line
    in the corner says exactly that. Not a transcript, not certification. */
@@ -6138,6 +6217,7 @@ renderer.domElement.addEventListener('pointerdown', (e) => {
   if (view === 'region') {
     const phit = ray.intersectObjects(plates, false)[0];
     if (phit?.object.userData.campus) showCampus(phit.object.userData.campus);
+    else if (phit?.object.userData.candidate) openCandidate(phit.object.userData.candidate);
     return;
   }
   if (view === 'campus') {
@@ -6214,6 +6294,12 @@ renderer.domElement.addEventListener('pointermove', (e) => {
         document.getElementById('hname').textContent = c.name;
         document.getElementById('hfocus').textContent =
           c.city + ', ' + c.region + ' — ' + c.tagline;
+        renderer.domElement.style.cursor = 'pointer';
+      } else if (phit?.object.userData.candidate) {
+        const c = D.roadmap.candidates[phit.object.userData.candidate];
+        document.getElementById('hname').textContent = c.name + ' (proposed)';
+        document.getElementById('hfocus').textContent =
+          c.city + ', ' + c.region + ' — ' + c.km_from_flagship + ' km away';
         renderer.domElement.style.cursor = 'pointer';
       } else renderer.domElement.style.cursor = '';
     }
