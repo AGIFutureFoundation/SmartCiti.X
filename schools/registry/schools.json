@@ -1,9 +1,9 @@
 {
  "pack": "smartcitix-trade-craft-academy-schools",
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
- "pack_version": "3.4.0",
- "built": "2026-09-12",
- "source_stamp": "c92054fcae6c2c6a",
+ "pack_version": "3.5.0",
+ "built": "2026-09-13",
+ "source_stamp": "e7f113eb389b288c",
  "honesty": {
   "districts": "district names are public-record identities only; every record is a PROPOSED partner - no district has reviewed or agreed, and no agreement exists",
   "certification": "nothing in the school program certifies equipment operation; the assessment gates demand unaided verification and simulator hours never count toward certification"
@@ -30,7 +30,7 @@
     "stage": "floor",
     "title": "Practice on the floor",
     "what": "simulator seat time with the regional scenario of the campus - live dash, synthesized sound, deterministic rubric; results and best times persist device-locally",
-    "implemented_by": "sims/ (4 simulators, regional scenarios)",
+    "implemented_by": "sims/ (7 simulators, regional scenarios)",
     "gamified": "pass/retry chips, best-time records, cockpit views"
    },
    {

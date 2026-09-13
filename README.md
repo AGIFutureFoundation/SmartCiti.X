@@ -40,7 +40,7 @@ node tools/test.mjs                # 13 — district tool cribs, the determinist
 node schools/test.mjs              # 20 — flipped-classroom model, proposed districts, live units + class drills, bidirectional Schools/hall panel links
 node avatars/test.mjs              # 25 — locker depth, crews, characters, costumes, the TradeApes, marks policy, the guarantee
 node parcels/test.mjs              # 22 — the city-records source contract: authorities, licences, frames, imagery, honesty
-node roadmap/test.mjs              # 20 — the network roadmap: 3 built (RECORDED) + 7 candidates (AUTHORED) totalling exactly 10
+node roadmap/test.mjs              # 20 — the network roadmap: 5 built (3 district campuses + 2 regional-chapter hubs) + 5 candidates (AUTHORED) totalling exactly 10
 node training/test.mjs             # 31 — the robotic training-data recorder: episode shapes, the storage/export contract, the not-scored guarantee, TRACE's own gauge-sampling add-on, the Orbis cross-link
 node orbis/test.mjs                # 66 — the Orbis synthetic-training prompt contract + the two real video-model runners, now cross-linked from the panel itself in both directions: no key shipped, no network reached, AI-SYNTHESIZED labelled
 node labels/test.mjs               # 27 — the signs: shape, colour and type per kind, and the field-of-vision focus
