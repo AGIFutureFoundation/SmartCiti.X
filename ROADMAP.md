@@ -145,13 +145,15 @@ gates doing their job on real halls.
    rate limiting re-verified against the §23.1 fail-open classes.
 3. **Tenancy GA.** Multi-tenant deployments with the erasure and retention
    guarantees the privacy pack asserts; per-tenant locale defaults.
-4. **VR sim modality pilot.** The browser simulator layer (`sims/` —
-   crane lift and forklift run, deterministic rubrics, skill-bound) is the
-   shipped precursor; this milestone ports it to headsets, widens the
-   machine roster (excavator, boom lift, overhead crane), and the
-   interiors and §24 packages remain the sim environments' source of
-   truth. Simulator results stay formative until the assessment gates'
-   unaided verification contract says otherwise.
+4. **VR sim modality pilot.** The browser simulator layer (`sims/` — seven
+   machines now: tower-crane lift, excavator trench cut, forklift yard run,
+   weld bead bench, scaffold bay build, rigging signal call and load chart
+   judgment, all deterministic-rubric and skill-bound) is the shipped
+   precursor; this milestone ports it to headsets and widens the roster
+   further (boom lift, overhead crane), and the interiors and §24 packages
+   remain the sim environments' source of truth. Simulator results stay
+   formative until the assessment gates' unaided verification contract
+   says otherwise.
 
 ### Exit criteria
 

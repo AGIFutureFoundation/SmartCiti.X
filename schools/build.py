@@ -31,8 +31,19 @@ import pathlib
 HERE = pathlib.Path(__file__).resolve().parent
 ROOT = HERE.parent
 
-PACK_VERSION = "3.4.0"
-BUILT = "2026-09-12"
+PACK_VERSION = "3.5.0"
+BUILT = "2026-09-13"
+
+# ---------------------------------------------------------------- inputs ---
+# Loaded before MODEL so its counts (stations, cribs, sims) are read from
+# these registries rather than hand-typed - the "4 simulators" drift this
+# file once carried (sims/ grew to 7 without this literal following) is
+# exactly the bug a computed count can't have.
+campuses = json.load(open(ROOT / 'unions/registry/campuses.json'))['campuses']
+sims_reg = json.load(open(ROOT / 'sims/registry/sims.json'))
+stations_reg = json.load(open(ROOT / 'stations/registry/stations.json'))
+tools_reg = json.load(open(ROOT / 'tools/registry/toolcribs.json'))
+unions = json.load(open(ROOT / 'unions/registry/unions.json'))['unions']
 
 MODEL = {
     'name': 'gamified flipped classroom',
@@ -52,15 +63,18 @@ MODEL = {
                  'district crib drill at the tools-room pegboard (match '
                  'the job to the tool, graded deterministically), with the '
                  'teacher moving bench to bench',
-         'implemented_by': 'stations/ (25 recovered yard stations) + '
-                           'tools/ (8 district cribs, the crib drill)',
+         'implemented_by': f'stations/ ({len(stations_reg["stations"])} '
+                           'recovered yard stations) + '
+                           f'tools/ ({len(tools_reg["cribs"])} district '
+                           'cribs, the crib drill)',
          'gamified': 'station beacons and the crib pegboard in the 3D '
                      'hall; completion marks accumulate on the hall roster'},
         {'stage': 'floor', 'title': 'Practice on the floor',
          'what': 'simulator seat time with the regional scenario of the '
                  'campus - live dash, synthesized sound, deterministic '
                  'rubric; results and best times persist device-locally',
-         'implemented_by': 'sims/ (4 simulators, regional scenarios)',
+         'implemented_by': f'sims/ ({len(sims_reg["sims"])} simulators, '
+                           'regional scenarios)',
          'gamified': 'pass/retry chips, best-time records, cockpit views'},
         {'stage': 'gate', 'title': 'Verify unaided',
          'what': 'assessment gates certify only unaided work; no home '
@@ -101,13 +115,6 @@ DISTRICTS = [
     {'district': 'Jefferson Parish Schools',
      'campus': 'new-orleans', 'city': 'Jefferson Parish'},
 ]
-
-# ---------------------------------------------------------------- inputs ---
-campuses = json.load(open(ROOT / 'unions/registry/campuses.json'))['campuses']
-sims_reg = json.load(open(ROOT / 'sims/registry/sims.json'))
-stations_reg = json.load(open(ROOT / 'stations/registry/stations.json'))
-tools_reg = json.load(open(ROOT / 'tools/registry/toolcribs.json'))
-unions = json.load(open(ROOT / 'unions/registry/unions.json'))['unions']
 
 slugs = {u['slug'] for u in unions}
 stations_by_hall = {}
