@@ -103,7 +103,12 @@ content, hall by hall, and let the label retreat only where the work landed.
    family has a head start: the recovered pre-rebrand yard curriculum
    (`archive/bac_yard_stations.json`, 25 machine-gradable stations — see
    `wiki/Upgrade-Candidates.md`) seeds `bricklayers` and its neighbouring
-   halls once practitioners have reviewed it.
+   halls once practitioners have reviewed it. A coverage check (2026-09-13)
+   found only 11 of 111 halls carry any yard station today, all from that
+   one recovered set — Energy & Utilities and Transport & Mobility hold
+   zero, with no surveyed candidate source for either yet (`wiki/
+   Upgrade-Candidates.md` §6); a future wave of this workstream should name
+   a flagship hall in each.
 2. **Local-standards mapping (§24.3).** The texture and environment values
    ship as general good practice with the absence of code references
    asserted. This workstream adds a jurisdiction overlay format: a deployment

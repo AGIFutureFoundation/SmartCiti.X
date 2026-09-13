@@ -1,10 +1,10 @@
 # Upgrade candidates — the sibling repositories
 
-A reviewed survey (2026-09-09, extended 2026-09-10) of AGI Future
-Foundation repositories — and a search for external 3D city worlds — for
-assets the Academy could adopt. This page is hand-maintained survey
-material, not generated from the registries; treat each row as a candidate
-to be verified before adoption, per the roadmap's standing rules.
+A reviewed survey (2026-09-09, extended 2026-09-10, gap-checked 2026-09-13)
+of AGI Future Foundation repositories — and a search for external 3D city
+worlds — for assets the Academy could adopt. This page is hand-maintained
+survey material, not generated from the registries; treat each row as a
+candidate to be verified before adoption, per the roadmap's standing rules.
 
 ## 1. The pre-rebrand yard (`stonebyte-vr-bac-yard-`)
 
@@ -117,6 +117,28 @@ or gaming worlds ended in refusals, each for a stated reason:
 - What *was* reachable and licensed — Locator.X's committed coordinate
   tables (Apache-2.0, this foundation) — was adopted instead, as above.
 
+## 6. A gap none of the above closes: three districts with zero station content
+
+A coverage check against the live registries (2026-09-13): of 111 halls, only
+11 carry a bound yard station today, all from the recovered BAC yard
+(candidate 1) — 7 in Envelope & Finish, 1 each in Structural, Earthworks &
+Plant, Heavy Industry, and Survey/Safety/Environment. **Building Systems and
+Energy & Utilities have zero station-covered halls, and so does Transport &
+Mobility.** Folding candidate 1 fully into the pack — the v3.4 milestone
+already scheduled — closes none of that: its 25 stations are masonry and
+adjacent-safety content, with no systems, energy, or transport trade among
+them.
+
+Of the candidates surveyed on this page, only one even brushes those
+districts: TradesQuest (candidate 4) includes electrical and HVAC field
+jobs, both Building Systems trades — but it remains blocked on the same
+missing-LICENSE issue noted there. Energy & Utilities and Transport &
+Mobility have no surveyed source at all yet. This is a real, unfilled gap
+in the authoring pipeline, not a data-entry omission — worth naming as its
+own line in a future v3.4 authoring wave, separate from candidate 1's
+masonry-family rollout, since practitioner authoring for those three
+districts has no existing draft to start from.
+
 ## Disposition
 
 The recovered yard data sits in `archive/` with its
@@ -128,5 +150,6 @@ standing rules require.
 
 ---
 
-*Hand-maintained; reviewed 2026-09-09, extended 2026-09-10. The generated
-wiki pages carry the registry truths — this page carries candidates only.*
+*Hand-maintained; reviewed 2026-09-09, extended 2026-09-10, gap-checked
+2026-09-13. The generated wiki pages carry the registry truths — this page
+carries candidates only.*
