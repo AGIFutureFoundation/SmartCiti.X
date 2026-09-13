@@ -1,9 +1,9 @@
 {
  "pack": "smartcitix-trade-craft-academy-roadmap",
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
- "pack_version": "3.2.0",
- "built": "2026-09-12",
- "source_stamp": "8f4cdc2f9cb5f16e",
+ "pack_version": "3.3.0",
+ "built": "2026-09-13",
+ "source_stamp": "a4b760950dc6442f",
  "target": 10,
  "honesty": {
   "target_not_claim": "ten walkable worlds is a target this registry tracks progress toward, not a claim that ten exist. Five are built; five are candidates.",
@@ -92,7 +92,9 @@
     "structural",
     "industry"
    ],
-   "why": "aerospace manufacturing and a working port on the Sound - precision heavy industry alongside the structural and transport trades a port city depends on"
+   "why": "aerospace manufacturing and a working port on the Sound - precision heavy industry alongside the structural and transport trades a port city depends on",
+   "km_from_flagship": 1087.8,
+   "bearing_from_flagship_deg": 0.2
   },
   "pittsburgh": {
    "name": "Three Rivers Steel Campus",
@@ -105,7 +107,9 @@
     "structural",
     "earthworks"
    ],
-   "why": "the steel city, its three rivers crossed by more bridges than any other in the country - heavy industry and the structural trades it was built to teach are its own history"
+   "why": "the steel city, its three rivers crossed by more bridges than any other in the country - heavy industry and the structural trades it was built to teach are its own history",
+   "km_from_flagship": 3631.5,
+   "bearing_from_flagship_deg": 71.9
   },
   "denver": {
    "name": "Front Range Campus",
@@ -118,7 +122,9 @@
     "energy",
     "control"
    ],
-   "why": "a mining and energy heritage at altitude, and the ground, survey and safety disciplines that heritage was built on"
+   "why": "a mining and energy heritage at altitude, and the ground, survey and safety disciplines that heritage was built on",
+   "km_from_flagship": 1519.1,
+   "bearing_from_flagship_deg": 76.5
   },
   "miami": {
    "name": "Biscayne Coastal Campus",
@@ -131,7 +137,9 @@
     "control",
     "transport"
    ],
-   "why": "hurricane-code envelope work and storm-response discipline on a coast that tests both every season, beside a working port"
+   "why": "hurricane-code envelope work and storm-response discipline on a coast that tests both every season, beside a working port",
+   "km_from_flagship": 4166.1,
+   "bearing_from_flagship_deg": 96.2
   },
   "detroit": {
    "name": "Motor City Campus",
@@ -144,7 +152,9 @@
     "structural",
     "systems"
    ],
-   "why": "a century of heavy manufacturing and the machinist, structural and building-systems trades an automotive industrial base actually runs on"
+   "why": "a century of heavy manufacturing and the machinist, structural and building-systems trades an automotive industrial base actually runs on",
+   "km_from_flagship": 3352.9,
+   "bearing_from_flagship_deg": 68.8
   }
  },
  "checklist": [

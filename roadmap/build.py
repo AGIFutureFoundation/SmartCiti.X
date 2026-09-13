@@ -51,8 +51,8 @@ import pathlib
 HERE = pathlib.Path(__file__).resolve().parent
 ROOT = HERE.parent
 
-PACK_VERSION = "3.2.0"
-BUILT = "2026-09-12"
+PACK_VERSION = "3.3.0"
+BUILT = "2026-09-13"
 TARGET = 10
 
 # ------------------------------------------------------------ the candidates ---
@@ -185,6 +185,39 @@ campuses_reg = json.load(open(ROOT / 'unions/registry/campuses.json'))['campuses
 districts_reg = json.load(open(ROOT / 'unions/registry/districts.json'))['districts']
 geo_reg = json.load(open(ROOT / 'geo/registry/campuses_geo.json'))
 
+# The same haversine/bearing pair geo/build.py already uses for the built
+# network's routes - duplicated here (pure math, not a fact) rather than
+# imported across packs, so this pack still runs standalone. Every
+# candidate gets a real bearing and distance from the flagship campus, the
+# same reference point the 3D region board's own layout already uses -
+# so the board can place a candidate honestly instead of arbitrarily.
+import math
+
+
+def haversine_km(a, b):
+    R = 6371.0088
+    p1, p2 = math.radians(a[0]), math.radians(b[0])
+    dp = math.radians(b[0] - a[0])
+    dl = math.radians(b[1] - a[1])
+    h = math.sin(dp / 2) ** 2 + math.cos(p1) * math.cos(p2) * math.sin(dl / 2) ** 2
+    return 2 * R * math.asin(math.sqrt(h))
+
+
+def bearing_deg(a, b):
+    p1, p2 = math.radians(a[0]), math.radians(b[0])
+    dl = math.radians(b[1] - a[1])
+    y = math.sin(dl) * math.cos(p2)
+    x = math.cos(p1) * math.sin(p2) - math.sin(p1) * math.cos(p2) * math.cos(dl)
+    return (math.degrees(math.atan2(y, x)) + 360) % 360
+
+
+FLAGSHIP = (geo_reg['campuses']['treasure-island']['lat'],
+            geo_reg['campuses']['treasure-island']['lng'])
+for c in CANDIDATES.values():
+    pt = (c['lat'], c['lng'])
+    c['km_from_flagship'] = round(haversine_km(FLAGSHIP, pt), 1)
+    c['bearing_from_flagship_deg'] = round(bearing_deg(FLAGSHIP, pt), 1)
+
 BUILT_ENTRIES = {
     k: {'name': v['name'], 'city': v['city'], 'region': v['region'],
         'lat': geo_reg['campuses'][k]['lat'], 'lng': geo_reg['campuses'][k]['lng'],
@@ -210,6 +243,10 @@ for ck, c in CANDIDATES.items():
     assert all(d in districts_reg for d in c['districts']), \
         f'{ck}: names a district that does not exist'
     assert len(c['why']) > 40, f'{ck}: a candidate needs a real reason'
+    assert 0 < c['km_from_flagship'] < 5000, \
+        f'{ck}: distance from the flagship campus looks wrong'
+    assert 0 <= c['bearing_from_flagship_deg'] < 360, \
+        f'{ck}: bearing from the flagship campus must be a compass degree'
 
 for row in CHECKLIST:
     assert (ROOT / row['file']).exists() or row['file'] in (
@@ -229,6 +266,21 @@ if not BOOTSTRAP:
     for bk in BUILT_ENTRIES:
         assert BUILT_ENTRIES[bk]['name'] in dash, \
             f'built campus {bk} is declared but not shown on the dashboard'
+
+    # the region board (the 3D network view) used to show only the five
+    # built campuses, never a hint that five more are planned - a learner
+    # exploring the actual walkable board, not just the flat dashboard,
+    # had no way to discover the roadmap at all. This is the drift guard:
+    # every candidate this registry declares must actually reach the board.
+    page3d = (ROOT / 'web/trade_craft_3d.html').read_text()
+    assert 'D.roadmap.candidates' in page3d, \
+        'the 3D region board does not render the roadmap candidates'
+    for ck, c in CANDIDATES.items():
+        assert c['name'] in page3d, \
+            f'candidate {ck} is declared but never named on the region board'
+        assert f'"bearing_from_flagship_deg":{c["bearing_from_flagship_deg"]}' \
+            in page3d, \
+            f"candidate {ck}'s bearing does not reach the region board"
 
 stamp = hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest()[:16]
 

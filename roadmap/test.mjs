@@ -31,6 +31,8 @@ const districts = JSON.parse(readFileSync(
   new URL('../unions/registry/districts.json', import.meta.url))).districts;
 const dash = readFileSync(
   new URL('../web/trade_craft_dashboard.html', import.meta.url), 'utf8');
+const page3d = readFileSync(
+  new URL('../web/trade_craft_3d.html', import.meta.url), 'utf8');
 
 const built = Object.entries(reg.built_campuses);
 const cand = Object.entries(reg.candidates);
@@ -90,6 +92,32 @@ ok('every candidate states a real reason, not a placeholder',
 ok('the five candidates are five distinct real US metros',
   new Set(cand.map(([, c]) => c.city)).size === cand.length && cand.length === 5);
 
+/* --------------------------------------------------- the flagship bearing --- */
+// independently re-derived (not copied from build.py) so a real math bug
+// in either implementation would show up as a disagreement, not agree
+// with itself
+const haversineKm = (a, b) => {
+  const R = 6371.0088;
+  const [p1, p2] = [a[0], b[0]].map((d) => d * Math.PI / 180);
+  const dp = (b[0] - a[0]) * Math.PI / 180, dl = (b[1] - a[1]) * Math.PI / 180;
+  const h = Math.sin(dp / 2) ** 2 + Math.cos(p1) * Math.cos(p2) * Math.sin(dl / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(h));
+};
+const bearingDeg = (a, b) => {
+  const [p1, p2] = [a[0], b[0]].map((d) => d * Math.PI / 180);
+  const dl = (b[1] - a[1]) * Math.PI / 180;
+  const y = Math.sin(dl) * Math.cos(p2);
+  const x = Math.cos(p1) * Math.sin(p2) - Math.sin(p1) * Math.cos(p2) * Math.cos(dl);
+  return (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
+};
+const flagship = [geo.campuses['treasure-island'].lat, geo.campuses['treasure-island'].lng];
+ok('every candidate\'s distance and bearing from the flagship campus are real great-circle figures',
+  cand.every(([, c]) => {
+    const pt = [c.lat, c.lng];
+    return Math.abs(haversineKm(flagship, pt) - c.km_from_flagship) < 0.5
+      && Math.abs(bearingDeg(flagship, pt) - c.bearing_from_flagship_deg) < 0.5;
+  }));
+
 /* -------------------------------------------------------------- the tiers --- */
 ok('the provenance gap between built and candidate is stated in exact, checkable words',
   /RECORDED - copied from a cited file and\s+cross-checked/.test(reg.honesty.provenance_tiers)
@@ -124,6 +152,25 @@ ok('every built campus and every candidate actually appears on the dashboard by 
   && cand.every(([, c]) => dash.includes(c.name)));
 ok('the dashboard carries both provenance words where a viewer can see them',
   dash.includes('>RECORDED<') && dash.includes('>AUTHORED<'));
+
+/* ------------------------------------------------------- the region board --- */
+// the flat dashboard used to be the only place a learner could discover
+// the roadmap at all - the actual walkable 3D network board showed only
+// the five built campuses. This is the drift guard for that gap: every
+// candidate this registry declares must actually reach the board, at its
+// own real bearing and distance, with a working click-through.
+ok('the 3D page trims the roadmap registry into D.roadmap and builds a candidate marker per entry',
+  page3d.includes('"roadmap":{') && page3d.includes('const CAND_POS ='));
+ok('every candidate is named on the region board, with its real bearing reaching the page',
+  cand.every(([ck, c]) =>
+    page3d.includes(c.name)
+    && page3d.includes(`"bearing_from_flagship_deg":${c.bearing_from_flagship_deg}`)));
+ok('a candidate marker click-through actually opens its own panel, distinct from showCampus',
+  page3d.includes('openCandidate(phit.object.userData.candidate)')
+  && page3d.includes('function openCandidate(ck)'));
+ok('the candidate panel renders the same honesty text the registry declares, not new prose',
+  page3d.includes('D.roadmap.honesty.not_a_claim_of_content')
+  && page3d.includes('D.roadmap.honesty.provenance_tiers'));
 
 const src = readFileSync(new URL('./build.py', import.meta.url));
 ok('the registry was built from the current builder source (stamp check)',
