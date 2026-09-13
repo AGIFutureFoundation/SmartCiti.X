@@ -222,7 +222,15 @@ any free static host, no build step required:
 - **Vercel** — import the GitHub repository (framework preset: *Other*, no
   build command, output directory: repository root). `vercel.json` is
   already configured.
-- **GitHub Pages** — Settings → Pages → deploy from branch, `main`, `/ (root)`.
+- **GitHub Pages** — `.github/workflows/pages.yml` already deploys on every
+  push to `main` via `actions/configure-pages`, which requires the
+  repository's Pages source to be set to **GitHub Actions**, not the legacy
+  branch-deploy mode: Settings → Pages → Build and deployment → Source →
+  **GitHub Actions**. This is a one-time step a repo admin has to take by
+  hand — the workflow cannot enable Pages for itself — and until it is
+  done every run of `pages.yml` fails at the `configure-pages` step with
+  `Get Pages site failed … Not Found`, not at the deploy step, so the
+  built site is never stale — it simply is not live yet.
 - **Netlify** — drag the repository folder onto the drop zone, or connect
   the repo with no build command.
 - **Locally** — `python3 -m http.server` from the repository root and open
