@@ -51,7 +51,7 @@ import pathlib
 HERE = pathlib.Path(__file__).resolve().parent
 ROOT = HERE.parent
 
-PACK_VERSION = "3.3.0"
+PACK_VERSION = "3.4.0"
 BUILT = "2026-09-13"
 TARGET = 10
 
@@ -281,6 +281,16 @@ if not BOOTSTRAP:
         assert f'"bearing_from_flagship_deg":{c["bearing_from_flagship_deg"]}' \
             in page3d, \
             f"candidate {ck}'s bearing does not reach the region board"
+
+    # the network geomap is a real WGS84 map - every candidate's own real
+    # (AUTHORED) coordinate belongs there too, not just a schematic bearing
+    # on the 3D board. Same drift guard, third surface.
+    geomap = (ROOT / 'web/trade_craft_geomap.html').read_text()
+    assert 'D.candidates' in geomap, \
+        'the network geomap does not render the roadmap candidates'
+    for ck, c in CANDIDATES.items():
+        assert f'"lat":{c["lat"]},"lng":{c["lng"]}' in geomap, \
+            f"candidate {ck}'s own coordinate does not reach the geomap"
 
 stamp = hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest()[:16]
 
