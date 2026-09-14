@@ -28,8 +28,8 @@ ROOT = HERE.parent
 sys.path.insert(0, str(ROOT / 'web'))
 from mapdata import HUES, make_codes  # noqa: E402
 
-PACK_VERSION = "3.2.0"
-BUILT = "2026-09-10"
+PACK_VERSION = "3.3.0"
+BUILT = "2026-09-14"
 
 
 def lerp_hex(a, b, t):
@@ -371,6 +371,21 @@ for t in TRADEAPES:
     for k, v in t['cfg'].items():
         assert v in _valid[k], f"{t['hall']}: {k}={v}"
 
+GUARANTEE = ('cosmetic only: every option is free and unlocked, and no '
+             'avatar choice affects scoring, access, progression or '
+             'anything the rubrics measure')
+
+# the network dashboard names its own contributing pack for every other
+# platform-wide fact but used to say nothing about the locker or the
+# TradeApes - the drift guard for that gap
+BOOTSTRAP = '--bootstrap' in __import__('sys').argv
+if not BOOTSTRAP:
+    dash = (ROOT / 'web/trade_craft_dashboard.html').read_text()
+    assert f'{len(SECTIONS)} / {len(TRADEAPES)}' in dash, \
+        'the dashboard does not render the avatar-section / TradeApes count'
+    assert GUARANTEE in dash, \
+        'the dashboard does not carry the cosmetic-only guarantee'
+
 stamp = hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest()[:16]
 
 doc = {
@@ -379,9 +394,7 @@ doc = {
     'pack_version': PACK_VERSION,
     'built': BUILT,
     'source_stamp': stamp,
-    'guarantee': 'cosmetic only: every option is free and unlocked, and no '
-                 'avatar choice affects scoring, access, progression or '
-                 'anything the rubrics measure',
+    'guarantee': GUARANTEE,
     'marks': 'crew marks are the Academy’s own insignia - the roster’s '
              'three-letter hall codes on a shield in the district hue, the '
              'same codes the campus map prints. They are not, and do not '

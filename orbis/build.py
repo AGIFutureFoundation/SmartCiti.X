@@ -51,8 +51,8 @@ import pathlib
 HERE = pathlib.Path(__file__).resolve().parent
 ROOT = HERE.parent
 
-PACK_VERSION = "3.3.0"
-BUILT = "2026-09-12"
+PACK_VERSION = "3.4.0"
+BUILT = "2026-09-14"
 
 # ------------------------------------------------------------- the model ---
 MODEL = {
@@ -272,6 +272,14 @@ if not BOOTSTRAP:
             f"runner {r['path']} is declared but never named in the page"
         assert f'"{r["model"]}"' in page, \
             f"runner {r['path']}'s model never reaches the page"
+    # the network dashboard names its own contributing pack for every
+    # other platform-wide fact (advisors, training, the roster) but used
+    # to say nothing about this one - the drift guard for that gap
+    dash = (ROOT / 'web/trade_craft_dashboard.html').read_text()
+    assert f"{unions_reg['count']} / {len(RUNNERS)}" in dash, \
+        'the dashboard does not render the Orbis module/runner count'
+    assert HONESTY['synthetic_not_real'] in dash, \
+        'the dashboard does not carry the synthetic-video honesty line'
 
 stamp = hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest()[:16]
 

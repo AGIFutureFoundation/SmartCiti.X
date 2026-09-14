@@ -1,9 +1,9 @@
 {
  "pack": "smartcitix-trade-craft-academy-metaverse-layer",
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
- "pack_version": "3.2.0",
- "built": "2026-09-11",
- "source_stamp": "102585aa66162ae4",
+ "pack_version": "3.3.0",
+ "built": "2026-09-14",
+ "source_stamp": "d2212142d3b8b0a3",
  "baseline": {
   "note": "built to the open interchange baseline. No private \"metaverse standard\" is referenced or claimed: what is listed under standards is implemented and tested, and what is listed under not_claimed is honestly not.",
   "standards": [

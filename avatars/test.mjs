@@ -129,6 +129,14 @@ const simResults = page.slice(page.indexOf('function simResults'),
 ok("the page's grader never reads the avatar record",
   !/avatar/i.test(simResults));
 
+/* -------------------------------------------------------- the dashboard --- */
+const dash = readFileSync(
+  new URL('../web/trade_craft_dashboard.html', import.meta.url), 'utf8');
+ok('the network dashboard renders the locker-section / TradeApes count',
+  dash.includes(`${reg.sections.length} / ${reg.tradeapes.apes.length}`));
+ok('the network dashboard carries the cosmetic-only guarantee',
+  dash.includes(reg.guarantee));
+
 const src = readFileSync(new URL('./build.py', import.meta.url));
 ok('the registry was built from the current builder source (stamp check)',
   reg.source_stamp === createHash('sha256').update(src).digest('hex').slice(0, 16));
