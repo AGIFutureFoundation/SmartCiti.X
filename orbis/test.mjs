@@ -20,6 +20,8 @@ const reg = JSON.parse(readFileSync(new URL('./registry/orbis.json', import.meta
 const unions = JSON.parse(readFileSync(
   new URL('../unions/registry/unions.json', import.meta.url)));
 const page = readFileSync(new URL('../web/trade_craft_3d.html', import.meta.url), 'utf8');
+const dash = readFileSync(
+  new URL('../web/trade_craft_dashboard.html', import.meta.url), 'utf8');
 
 /* ---------------------------------------------------------- the model --- */
 ok('the model names a real provider-qualified id and its own docs page',
@@ -228,6 +230,12 @@ ok('runner-visko-orbis-stable: the flow panel never sends an audio command even 
   !/sendSetAudioPrompt\(|sendSetAudioEnabled\(/.test(viskoPanelSrc));
 ok('runner-visko-orbis-stable: ViskoOrbisStableApp actually renders FlowPanel in the live phase, not just imports it unused',
   /import \{ FlowPanel \}/.test(viskoAppSrc) && /<FlowPanel \/>/.test(viskoAppSrc));
+
+/* -------------------------------------------------------- the dashboard --- */
+ok('the network dashboard renders the Orbis module/runner count',
+  dash.includes(`${reg.modules} / ${reg.runners.length}`));
+ok('the network dashboard carries the synthetic-video honesty line',
+  dash.includes(reg.honesty.synthetic_not_real));
 
 const src = readFileSync(new URL('./build.py', import.meta.url));
 ok('the registry was built from the current builder source (stamp check)',

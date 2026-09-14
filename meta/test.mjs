@@ -153,6 +153,14 @@ ok('the honesty line refuses the hype: files not a place, no tokens, no upload, 
   && /nothing here is an NFT/.test(reg.honesty.status)
   && /degrade to a HUD line/.test(reg.honesty.status));
 
+/* -------------------------------------------------------------- dashboard --- */
+const dash = readFileSync(
+  new URL('../web/trade_craft_dashboard.html', import.meta.url), 'utf8');
+ok('the network dashboard renders the Unity-avatar-systems-reviewed count',
+  dash.includes(String(reg.avatar_systems_reviewed.length)));
+ok('the network dashboard carries the metaverse-layer honesty line',
+  dash.includes(reg.honesty.status));
+
 const src = readFileSync(new URL('./build.py', import.meta.url));
 ok('the registry was built from the current builder source (stamp check)',
   reg.source_stamp === createHash('sha256').update(src).digest('hex').slice(0, 16));

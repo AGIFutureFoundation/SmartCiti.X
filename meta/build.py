@@ -24,8 +24,8 @@ import pathlib
 HERE = pathlib.Path(__file__).resolve().parent
 ROOT = HERE.parent
 
-PACK_VERSION = "3.2.0"
-BUILT = "2026-09-11"
+PACK_VERSION = "3.3.0"
+BUILT = "2026-09-14"
 
 DOC = {
     'baseline': {
@@ -259,6 +259,17 @@ if mla.exists():
     assert (mla / 'LICENSE.md').exists(), 'the fork lost its license file'
     bridge_checked = 'cross-checked against the ml-agents checkout'
 DOC['unity_bridge']['recorded_check'] = bridge_checked
+
+# the network dashboard names its own contributing pack for every other
+# platform-wide fact but used to say nothing about this one - the drift
+# guard for that gap
+BOOTSTRAP = '--bootstrap' in __import__('sys').argv
+if not BOOTSTRAP:
+    dash = (ROOT / 'web/trade_craft_dashboard.html').read_text()
+    assert str(len(DOC['avatar_systems_reviewed'])) in dash, \
+        'the dashboard does not render the Unity-avatar-systems-reviewed count'
+    assert DOC['honesty']['status'] in dash, \
+        'the dashboard does not carry the metaverse-layer honesty line'
 
 stamp = hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest()[:16]
 

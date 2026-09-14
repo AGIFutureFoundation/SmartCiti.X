@@ -8,9 +8,12 @@ Every figure on this page is read from a registry's own JSON, not
 retyped: halls and modules from the pack manifest, districts and campuses
 from the union registry, simulators from sims/, tool cribs from tools/,
 advisors from agents/, the world's weather and fauna from world/, the
-sign system from labels/, and the training-data recorder's shape from
-training/. If a number here disagrees with its source, the source is
-right and this page is stale - which `--check` mode exists to catch.
+sign system from labels/, the training-data recorder's shape from
+training/, the synthetic-video prompt contract and its real runners from
+orbis/, the avatar locker and TradeApes collection from avatars/, and the
+metaverse interchange layer's reviewed standards from meta/. If a number
+here disagrees with its source, the source is right and this page is
+stale - which `--check` mode exists to catch.
 """
 import json
 import pathlib
@@ -40,6 +43,9 @@ world = json.load(open(ROOT / 'world/registry/world.json'))
 labels = json.load(open(ROOT / 'labels/registry/labels.json'))
 training = json.load(open(ROOT / 'training/registry/training.json'))
 roadmap = json.load(open(ROOT / 'roadmap/registry/roadmap.json'))
+orbis = json.load(open(ROOT / 'orbis/registry/orbis.json'))
+avatars = json.load(open(ROOT / 'avatars/registry/avatars.json'))
+meta = json.load(open(ROOT / 'meta/registry/metaverse.json'))
 
 F = lambda x: f"{x:,}"
 built = roadmap['built_campuses']
@@ -63,6 +69,11 @@ STATS = [
     (str(world['counts']['animals']), 'animals in the yards'),
     (str(labels['counts']['kinds']), 'sign kinds'),
     (str(len(training['episode_kinds'])), 'training-data episode kinds'),
+    (f"{orbis['modules']} / {len(orbis['runners'])}",
+     'Orbis module prompts / real runners'),
+    (f"{len(avatars['sections'])} / {len(avatars['tradeapes']['apes'])}",
+     'avatar locker sections / TradeApes'),
+    (str(len(meta['avatar_systems_reviewed'])), 'Unity avatar systems reviewed'),
 ]
 
 
@@ -192,6 +203,9 @@ a{{color:var(--steel)}}
   <li>{roadmap['honesty']['no_dates']}</li>
   <li>{agents['honesty']['status']}</li>
   <li>{training['honesty']['schematic']}</li>
+  <li>{orbis['honesty']['synthetic_not_real']}</li>
+  <li>{avatars['guarantee']}</li>
+  <li>{meta['honesty']['status']}</li>
 </div>
 <footer>
   <a href="trade_craft_3d.html">3D environment</a> ·
