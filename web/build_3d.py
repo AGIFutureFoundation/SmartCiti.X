@@ -62,6 +62,7 @@ schools_reg = json.load(open(ROOT / 'schools/registry/schools.json'))
 world_reg = json.load(open(ROOT / 'world/registry/world.json'))
 labels_reg = json.load(open(ROOT / 'labels/registry/labels.json'))
 roadmap_reg = json.load(open(ROOT / 'roadmap/registry/roadmap.json'))
+restoration_reg = json.load(open(ROOT / 'restoration/registry/restoration.json'))
 
 def trim(rows, *drop):
     """Ship what is drawn, not what is explained.
@@ -333,6 +334,12 @@ DATA = json.dumps({
                 'honesty': {k: roadmap_reg['honesty'][k]
                             for k in ('not_a_claim_of_content',
                                       'provenance_tiers')}},
+    # Bay Restoration: real, independently-run sites and the real skills
+    # in this bundle's own graph their field work draws on - see
+    # restoration/build.py. Nothing here is a SmartCiti.X program.
+    'restoration': {'sites': restoration_reg['sites'],
+                    'tracks': restoration_reg['tracks'],
+                    'honesty': restoration_reg['honesty']},
     'i18n': I18N,
 }, ensure_ascii=False, separators=(',', ':'))
 
@@ -3334,6 +3341,7 @@ body.open #panel{transform:none}
   <button id="recBtn" class="barbtn" aria-label="records">⏱</button>
   <button id="orbisBtn" class="barbtn" aria-label="Orbis synthetic-training prompt">🎬</button>
   <button id="schoolsBtn" class="barbtn" aria-label="schools flipped-classroom program">🎓</button>
+  <button id="restorationBtn" class="barbtn" aria-label="Bay Restoration sites and training tracks">🌊</button>
   <button id="vrBtn" class="barbtn" style="display:none">🥽 VR</button>
   <button id="arBtn" class="barbtn" style="display:none">📱 AR</button>
   <button id="satBtn" class="barbtn" style="display:none">🛰️</button>
@@ -6020,6 +6028,49 @@ function openCandidate(ck) {
 }
 window.__tc3dCandidate = openCandidate;
 
+// the Bay Restoration panel: real, independently-run restoration sites
+// plus the real skills in this bundle's own graph their field work
+// draws on - each track links straight to the hall that teaches it
+function openRestoration() {
+  const esc = (s) => String(s).replace(/[&<>]/g,
+    (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+  const siteRows = D.restoration.sites.map((s) => {
+    const wf = s.workforce
+      ? `<br><span style="font-size:11px;color:var(--good)">▶ real workforce pathway: ${esc(s.workforce_note)}</span>` : '';
+    const camp = s.campus ? `<span class="chip" style="font-size:10.5px">near ${esc(D.campuses[s.campus].name)}</span>` : '';
+    return `<li style="margin:9px 0">
+      <b>${esc(s.name)}</b> ${camp}<br>
+      <span style="font-size:11.5px;color:var(--muted)">${esc(s.org)} · ${esc(s.city)}, ${esc(s.county)}</span><br>
+      <span style="font-size:12px">${esc(s.habitat)} — ${esc(s.scale)}</span>${wf}<br>
+      <a href="${esc(s.source_url)}" target="_blank" rel="noopener" style="font-size:11px">${esc(s.source_url)}</a></li>`;
+  }).join('');
+  const trackRows = D.restoration.tracks.map((t) => {
+    const skillBtns = t.skills.map((sk) => {
+      const hall = sk.split('.')[0];
+      const h = D.halls.find((x) => x.slug === hall);
+      return `<button class="barbtn" data-hall-goto="${esc(hall)}" style="font-size:11px;padding:2px 8px;margin:2px 4px 2px 0">→ ${esc(h ? h.name : hall)}</button>`;
+    }).join('');
+    return `<li style="margin:9px 0">
+      <b>${esc(t.title)}</b><br>
+      <span style="font-size:12px;color:var(--muted)">${esc(t.what)}</span><br>
+      ${skillBtns}</li>`;
+  }).join('');
+  document.getElementById('pbody').innerHTML = `
+    <h2>\U0001f30a Bay Restoration</h2>
+    <span class="chip">${D.restoration.sites.length} real sites</span>
+    <span class="chip">${D.restoration.tracks.length} field-skill tracks</span>
+    <p style="color:var(--muted);font-size:12px">${esc(D.restoration.honesty.not_affiliated)}</p>
+    <h3>Real restoration sites</h3>
+    <ul style="list-style:none;padding:0">${siteRows}</ul>
+    <h3>Field-skill tracks — jump to the hall that teaches it</h3>
+    <ul style="list-style:none;padding:0">${trackRows}</ul>
+    <p style="color:var(--muted);font-size:12px">${esc(D.restoration.honesty.provenance)}</p>
+    <p style="color:var(--muted);font-size:12px">${esc(D.restoration.honesty.no_new_skills)}</p>
+    <p style="color:var(--muted);font-size:12px">${esc(D.restoration.honesty.not_certification)}</p>`;
+  document.body.classList.add('open');
+}
+window.__tc3dRestoration = openRestoration;
+
 /* The learner record is device-local only - localStorage, every access
    wrapped so a blocked store never breaks the page - and the honesty line
    in the corner says exactly that. Not a transcript, not certification. */
@@ -6556,6 +6607,10 @@ document.getElementById('orbisBtn').addEventListener('click', () => {
 document.getElementById('schoolsBtn').addEventListener('click', () => {
   if (walkActive) plc.unlock();
   openSchools();
+});
+document.getElementById('restorationBtn').addEventListener('click', () => {
+  if (walkActive) plc.unlock();
+  openRestoration();
 });
 document.getElementById('regionBtn').addEventListener('click', showRegion);
 document.getElementById('campusBtn').addEventListener('click',
