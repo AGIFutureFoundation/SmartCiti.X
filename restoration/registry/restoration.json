@@ -1,0 +1,189 @@
+{
+ "pack": "smartcitix-trade-craft-academy-bay-restoration",
+ "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
+ "pack_version": "1.0.0",
+ "built": "2026-09-14",
+ "source_stamp": "7447ffd6db6b60a3",
+ "honesty": {
+  "not_affiliated": "SmartCiti.X : Trade Craft Academy is not affiliated with, and does not certify, endorse or claim to fund, any site or organization named in this pack. Every site and program below is real and independently run by its own listed organization.",
+  "provenance": "this build reaches no network host, so the site list is AUTHORED FROM PUBLIC RECORD - typed from public search results describing each site's own published project page, not RECORDED against a live fetch this build performed itself. Coordinates are each named site's approximate, widely-published location, not a surveyed pin.",
+  "no_new_skills": "every field-work skill named here is a real skill_id this bundle's own skill graph already ships (pack/registry/skills.json) - nothing restoration-specific is invented, and practicing one at a trade hall is the same skill a restoration crew actually uses",
+  "campus_grouping": "each site is tagged with whichever of this bundle's two real Bay campuses (Treasure Island-San Francisco or Oakland) is nearer, for grouping only - not a claim that campus operates, funds or sits next to the site",
+  "not_certification": "nothing here certifies a learner for real restoration field work; the real workforce programs named (Eco-Apprentice, STRAW, Planting Justice's youth program) are the actual path to that, run by their own organizations, with their own application process - this pack only names and links them"
+ },
+ "sites": [
+  {
+   "id": "herons-head",
+   "name": "Heron's Head Park Shoreline Resilience Project (Phases 1 and 2)",
+   "org": "Port of San Francisco; Literacy for Environmental Justice",
+   "city": "San Francisco",
+   "county": "San Francisco",
+   "campus": "treasure-island",
+   "lat": 37.7355,
+   "lng": -122.3803,
+   "pin": true,
+   "habitat": "shoreline & green infrastructure",
+   "scale": "shoreline resilience work across two funded phases",
+   "workforce": true,
+   "workforce_note": "the site's own Eco-Apprentice program hires low-income transitional-age youth (18-25) for paid green-infrastructure job training",
+   "source_url": "https://www.sfbayrestore.org/projects/herons-head-park-shoreline-resilience-project-phases-1-and-2"
+  },
+  {
+   "id": "candlestick-point",
+   "name": "Candlestick Point Stewardship Project (Phases 1 and 2)",
+   "org": "California State Parks; community stewardship partners",
+   "city": "San Francisco",
+   "county": "San Francisco",
+   "campus": "treasure-island",
+   "lat": 37.718,
+   "lng": -122.375,
+   "pin": true,
+   "habitat": "shoreline stewardship",
+   "scale": "trash clean-up, monitoring and native plant propagation over a two-year funded period",
+   "workforce": true,
+   "workforce_note": "the project funds workforce development training alongside its stewardship work",
+   "source_url": "https://www.sfbayrestore.org/projects/candlestick-point-stewardship-project-phase-1-and-2"
+  },
+  {
+   "id": "east-oakland-youth",
+   "name": "Bay Restoration: Youth Engagement and Service Learning in East Oakland",
+   "org": "Planting Justice",
+   "city": "Oakland",
+   "county": "Alameda",
+   "campus": "oakland",
+   "lat": 37.762,
+   "lng": -122.178,
+   "pin": true,
+   "habitat": "shoreline & upland restoration",
+   "scale": "roughly 20 youth interns trained per the funded program",
+   "workforce": true,
+   "workforce_note": "Planting Justice trains youth interns in shoreline clean-up, invasive-plant removal and habitat restoration technique, and in environmental-justice issues generally",
+   "source_url": "https://www.sfbayrestore.org/projects/bay-restoration-youth-engagement-and-service-learning-east-oakland"
+  },
+  {
+   "id": "alviso-shoreline",
+   "name": "Alviso Shoreline Habitat Restoration",
+   "org": "Grassroots Ecology",
+   "city": "San Jose",
+   "county": "Santa Clara",
+   "campus": "oakland",
+   "lat": 37.4266,
+   "lng": -121.9765,
+   "pin": true,
+   "habitat": "marsh-adjacent upland",
+   "scale": "approximately 2 acres restored and enhanced",
+   "workforce": false,
+   "workforce_note": null,
+   "source_url": "https://www.sfbayrestore.org/projects/alviso-shoreline-habitat-restoration"
+  },
+  {
+   "id": "south-bay-salt-ponds",
+   "name": "South Bay Salt Pond Restoration \u2014 ecotone levee (Phase 1)",
+   "org": "South Bay Salt Pond Restoration Project (multi-agency)",
+   "city": "Hayward (Eden Landing)",
+   "county": "Alameda",
+   "campus": "oakland",
+   "lat": 37.612,
+   "lng": -122.113,
+   "pin": true,
+   "habitat": "managed pond to tidal marsh",
+   "scale": "a 4-mile ecotone levee, first phase of restoring roughly 2,900 acres of ponds to tidal marsh",
+   "workforce": false,
+   "workforce_note": null,
+   "source_url": "https://www.southbayrestoration.org/page/restoration-project"
+  },
+  {
+   "id": "montezuma-wetlands",
+   "name": "Montezuma Tidal and Seasonal Wetlands Restoration Project",
+   "org": "San Francisco Bay Restoration Authority (Measure AA)",
+   "city": "Suisun Marsh",
+   "county": "Solano",
+   "campus": "oakland",
+   "lat": 38.15,
+   "lng": -121.95,
+   "pin": true,
+   "habitat": "tidal & seasonal wetland, adjacent upland",
+   "scale": "roughly 630 acres of diked baylands along Montezuma Slough",
+   "workforce": false,
+   "workforce_note": null,
+   "source_url": "https://www.sfbayrestore.org/projects/montezuma-tidal-and-seasonal-wetlands-restoration-project"
+  },
+  {
+   "id": "american-canyon",
+   "name": "American Canyon Wetlands Restoration Plan",
+   "org": "City of American Canyon",
+   "city": "American Canyon",
+   "county": "Napa",
+   "campus": "oakland",
+   "lat": 38.171,
+   "lng": -122.26,
+   "pin": true,
+   "habitat": "wetland & upland shoreline",
+   "scale": "a plan summarizing restoration opportunities along the city's shoreline",
+   "workforce": false,
+   "workforce_note": null,
+   "source_url": "https://www.sfbayrestore.org/projects/american-canyon-wetlands-restoration-plan"
+  },
+  {
+   "id": "straw-north-bay",
+   "name": "Restoring Wetland-Upland Transition Zone Habitat in the North Bay with STRAW",
+   "org": "Point Blue Conservation Science (STRAW program)",
+   "city": "North Bay (four sites)",
+   "county": "Marin / Sonoma",
+   "campus": "oakland",
+   "lat": 38.05,
+   "lng": -122.53,
+   "pin": true,
+   "habitat": "wetland-upland transition zone",
+   "scale": "roughly 1.3 linear miles of habitat across four sites over five years",
+   "workforce": true,
+   "workforce_note": "STRAW (Students and Teachers Restoring a Watershed) engages over 5,000 student and teacher participants in the restoration work itself \u2014 a real, existing field-science education program, not a SmartCiti.X program",
+   "source_url": "https://www.sfbayrestore.org/projects/restoring-wetland-upland-transition-zone-habitat-north-bay-straw"
+  },
+  {
+   "id": "spartina-removal",
+   "name": "San Francisco Estuary Invasive Spartina Removal",
+   "org": "San Francisco Estuary Invasive Spartina Project (multi-agency)",
+   "city": "Bay-wide",
+   "county": "multiple",
+   "campus": null,
+   "lat": null,
+   "lng": null,
+   "pin": false,
+   "habitat": "tidal marsh (invasive-species removal & revegetation)",
+   "scale": "coordinated across roughly 70,000 acres of the estuary",
+   "workforce": true,
+   "workforce_note": "the project provides workforce-development internships alongside its removal and revegetation work",
+   "source_url": "https://www.sfbayrestore.org/"
+  }
+ ],
+ "tracks": [
+  {
+   "id": "habitat-grounds",
+   "title": "Habitat & grounds work",
+   "what": "native planting, invasive-species removal, erosion and shoreline stabilization work \u2014 the same hands-on grounds skills this bundle already trains",
+   "skills": [
+    "grounds.procedure.applied",
+    "grounds.materials.applied"
+   ]
+  },
+  {
+   "id": "field-safety",
+   "title": "Field safety & labor",
+   "what": "PPE, tidal and site hazard awareness, and the general physical field-labor skill restoration crews use every day",
+   "skills": [
+    "site-safety.safety.applied",
+    "laborers.procedure.applied"
+   ]
+  },
+  {
+   "id": "survey-monitoring",
+   "title": "Survey & monitoring",
+   "what": "marking control points, tracking restoration progress and documenting site conditions over time",
+   "skills": [
+    "surveyors.inspection.applied",
+    "survey-drone.inspection.applied"
+   ]
+  }
+ ]
+}

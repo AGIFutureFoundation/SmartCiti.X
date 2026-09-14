@@ -21,6 +21,7 @@ parcels = json.load(open(ROOT / 'parcels/registry/parcels.json'))
 geo = json.load(open(ROOT / 'geo/registry/campuses_geo.json'))
 manifest = json.load(open(ROOT / 'pack/manifest.json'))
 roadmap = json.load(open(ROOT / 'roadmap/registry/roadmap.json'))
+restoration = json.load(open(ROOT / 'restoration/registry/restoration.json'))
 L = manifest['ledger']
 
 DATA = json.dumps({
@@ -42,6 +43,12 @@ DATA = json.dumps({
                    for k, c in roadmap['candidates'].items()},
     'roadmapHonesty': {k: roadmap['honesty'][k]
                        for k in ('not_a_claim_of_content', 'provenance_tiers')},
+    # real Bay Restoration Authority sites - AUTHORED coordinates (this
+    # build reaches no network host, so nothing here is cross-checked
+    # against sfbayrestore.org live), each with its own source link
+    'restorationSites': [s for s in restoration['sites'] if s['pin']],
+    'restorationHonesty': {k: restoration['honesty'][k]
+                           for k in ('not_affiliated', 'provenance')},
 }, ensure_ascii=False, separators=(',', ':'))
 
 page = '''<!doctype html>
@@ -86,6 +93,9 @@ body{margin:0;background:var(--plate);color:var(--ink);
 .candidate-marker{background:transparent;color:var(--muted);border-radius:999px;
   padding:1px 8px;font:600 11px "Barlow Condensed",sans-serif;white-space:nowrap;
   border:1.5px dashed var(--muted);cursor:pointer}
+.restoration-marker{background:var(--good);color:#0C1113;border-radius:999px;
+  padding:2px 9px;font:600 12px "Barlow Condensed",sans-serif;white-space:nowrap;
+  border:1.5px solid #0C1113;cursor:pointer}
 .maplibregl-popup-content{background:var(--panel)!important;color:var(--ink)!important;
   border:1px solid var(--rule);border-radius:9px;font:12.5px/1.45 "IBM Plex Sans",sans-serif;
   padding:10px 13px!important;max-width:270px}
@@ -116,7 +126,8 @@ body{margin:0;background:var(--plate);color:var(--ink);
   <span class="dot" style="background:var(--steel)"></span>anchor — RECORDED from Locator.X<br>
   <span class="dot" style="background:none;border:1.5px dashed var(--mark);border-radius:0"></span>great-circle route — DERIVED<br>
   <span class="dot" style="background:none;border:1px solid var(--steel);border-radius:0"></span>city frame — RECORDED<br>
-  <span class="dot" style="background:none;border:1.5px dashed var(--muted)"></span>roadmap candidate — AUTHORED, not built
+  <span class="dot" style="background:none;border:1.5px dashed var(--muted)"></span>roadmap candidate — AUTHORED, not built<br>
+  <span class="dot" style="background:var(--good)"></span>Bay Restoration site — real project, not affiliated with this bundle
 </div>
 <div id="honesty"></div>
 <script id="data" type="application/json">__DATA__</script>
@@ -228,6 +239,33 @@ function popupForCandidate(ck, c) {
       + `<span class="pv">proposed</span>`
       + `<br>${c.city}, ${c.region}<br>${c.why}`
       + `<br><span class="src">${D.roadmapHonesty.not_a_claim_of_content}</span>`)
+    .addTo(map);
+}
+
+/* Bay Restoration sites: real, independently-run projects - AUTHORED
+   coordinates on this map's side only, each linking to its own real
+   source page rather than anything this bundle claims to run */
+let restMarkers = 0;
+for (const s of D.restorationSites) {
+  const el = document.createElement('div');
+  el.className = 'restoration-marker';
+  el.textContent = s.name;
+  el.addEventListener('click', (ev) => { ev.stopPropagation(); popupForRestoration(s); });
+  new maplibregl.Marker({ element: el, anchor: 'bottom', offset: [0, -10] })
+    .setLngLat([s.lng, s.lat]).addTo(map);
+  restMarkers++;
+}
+function popupForRestoration(s) {
+  const wf = s.workforce
+    ? `<br><b>Workforce pathway:</b> ${s.workforce_note}` : '';
+  new maplibregl.Popup({ closeButton: false })
+    .setLngLat([s.lng, s.lat])
+    .setHTML(`<b>${s.name}</b><br><span class="pv rec">real project</span>`
+      + `<span class="pv">AUTHORED coordinate</span>`
+      + `<br>${s.org}<br>${s.city}, ${s.county} · ${s.habitat}<br>${s.scale}`
+      + wf
+      + `<br><a href="${s.source_url}" target="_blank" rel="noopener" class="src">${s.source_url}</a>`
+      + `<br><span class="src">${D.restorationHonesty.not_affiliated}</span>`)
     .addTo(map);
 }
 
@@ -344,7 +382,7 @@ let loaded = false;
 map.on('load', () => { loaded = true; });
 // test hook: state without poking MapLibre internals
 window.__geomap = () => ({
-  loaded, markers, candMarkers,
+  loaded, markers, candMarkers, restMarkers,
   layers: map.getStyle().layers.map((l) => l.id),
   features: D.network.features.length,
   center: [Math.round(map.getCenter().lng * 10) / 10,
