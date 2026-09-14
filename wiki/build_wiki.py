@@ -50,6 +50,7 @@ labels = json.load(open(ROOT / 'labels/registry/labels.json'))
 training = json.load(open(ROOT / 'training/registry/training.json'))
 roadmap = json.load(open(ROOT / 'roadmap/registry/roadmap.json'))
 orbis = json.load(open(ROOT / 'orbis/registry/orbis.json'))
+restoration = json.load(open(ROOT / 'restoration/registry/restoration.json'))
 skills = json.load(open(ROOT / 'pack/registry/skills.json'))['skills']
 by_slug = {h['slug']: h for h in halls}
 
@@ -127,6 +128,7 @@ content graph and details:
 | **Metaverse layer** (`meta/registry/metaverse.json`) | The interchange contract: {len(meta["baseline"]["standards"])} open standards claimed (glTF 2.0, WebXR, GeoJSON), {len(meta["baseline"]["not_claimed"])} honestly not, avatar and hall .glb export, learner-local import | [Metaverse-Layer](Metaverse-Layer.md) |
 | **City records** (`parcels/registry/parcels.json`) | The source contract for the three campus regions\' own parcel and building-footprint authorities ({sum(set(s["records"] for s in parcels["sources"].values())):,} records published upstream), plus the public-domain federal orthoimagery both maps draw | [City-Records](City-Records.md) |
 | **Network geomap** (`web/trade_craft_geomap.html`) | The geo registry on a real WGS84 map (MapLibre, no basemap tiles): campuses, {n_anchors} RECORDED anchors, great-circle routes, RECORDED city frames | [Campus-Map](Campus-Map.md) |
+| **Bay Restoration** (`restoration/registry/restoration.json`) | {len(restoration['sites'])} real, independently-run San Francisco Bay habitat-restoration sites ({sum(1 for s in restoration['sites'] if s['pin'])} mapped) bridged to {len(restoration['tracks'])} field-skill tracks bound to real skill_ids already in this bundle's graph — not a SmartCiti.X program | [Bay-Restoration](Bay-Restoration.md) |
 
 ## The campus at a glance
 
@@ -1277,6 +1279,54 @@ their own machine.
 {FOOTER}"""
 
 
+def page_restoration():
+    pinned = [s for s in restoration['sites'] if s['pin']]
+    srows = '\n'.join(
+        f"| **{s['name']}** | {s['org']} | {s['city']}, {s['county']} | "
+        f"{s['habitat']} | {'yes' if s['pin'] else 'bay-wide, unpinned'} | "
+        f"{'yes — ' + s['workforce_note'] if s['workforce'] else 'no'} | "
+        f"[source]({s['source_url']}) |"
+        for s in restoration['sites'])
+    trows = '\n'.join(
+        f"| **{t['title']}** | {t['what']} | "
+        f"{', '.join(f'`{sk}`' for sk in t['skills'])} |"
+        for t in restoration['tracks'])
+    return f"""# Bay Restoration
+
+{restoration['honesty']['not_affiliated']}
+
+{restoration['honesty']['provenance']}
+
+## The sites — {len(restoration['sites'])} real, {len(pinned)} mapped
+
+| Site | Run by | Where | Habitat | Mapped | Workforce pathway | |
+|---|---|---|---|---|---|---|
+{srows}
+
+{restoration['honesty']['campus_grouping']}
+
+## Field-skill tracks — {len(restoration['tracks'])}, bound to real skill_ids
+
+{restoration['honesty']['no_new_skills']}
+
+| Track | What it bridges to | Real skill_ids |
+|---|---|---|
+{trows}
+
+Every skill_id above already exists in `pack/registry/skills.json` — this
+pack invents nothing new to train, it only points real restoration field
+work at the practice this bundle already ships.
+
+{restoration['honesty']['not_certification']}
+
+Live on the [network geomap](../web/trade_craft_geomap.html) (mapped sites,
+each linking to its own real source page) and inside the 3D app's own
+🌊 Bay Restoration panel, where every track's skills click straight
+through to the hall that teaches them — and any hall that teaches one
+links straight back.
+{FOOTER}"""
+
+
 PAGES = {
     'Home.md': page_home,
     'Campus-Map.md': page_campus,
@@ -1293,6 +1343,7 @@ PAGES = {
     'Training-Data.md': page_training,
     'Orbis-Synthetic-Training.md': page_orbis,
     'Roadmap.md': page_roadmap,
+    'Bay-Restoration.md': page_restoration,
     'Flipped-Classroom.md': page_schools,
     'Provenance.md': page_provenance,
     **{f'District-{k}.md': (lambda k=k, d=d: page_district(k, d))
