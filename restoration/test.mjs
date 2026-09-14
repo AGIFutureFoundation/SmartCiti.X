@@ -83,6 +83,20 @@ ok('every track builds a click-through via the existing hall-goto handler, and e
     page3d.includes(`"${sk}"`))));
 ok('the restoration toolbar button actually opens the panel',
   page3d.includes("getElementById('restorationBtn')") && page3d.includes('openRestoration()'));
+ok('the hall panel checks for and links back to a taught field-skill track (reverse of the schools link)',
+  page3d.includes("D.restoration.tracks.some((t) => t.skills.some((sk) => sk.split('.')[0] === sg))")
+  && page3d.includes('data-restoration-hall="${esc(sg)}"'));
+ok('the hall-panel restoration badge actually opens the Bay Restoration panel, focused on the hall',
+  page3d.includes('openRestoration(rh.dataset.restorationHall)')
+  && page3d.includes('function openRestoration(focusHall)'));
+
+/* -------------------------------------------------------------- dashboard --- */
+const dash = readFileSync(
+  new URL('../web/trade_craft_dashboard.html', import.meta.url), 'utf8');
+ok('the network dashboard renders the site / track count',
+  dash.includes(`${reg.sites.length} / ${reg.tracks.length}`));
+ok('the network dashboard carries the not-affiliated honesty line',
+  dash.includes(reg.honesty.not_affiliated));
 
 const src = readFileSync(new URL('./build.py', import.meta.url));
 ok('the registry was built from the current builder source (stamp check)',
