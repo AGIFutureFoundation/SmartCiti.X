@@ -1489,7 +1489,12 @@ function buildHall(sg) {
         .map(([ck, ab]) => ab + (ck === home ? ' \u2302' : ''))
         .join(' \u00b7 ')
     + (unit ? ` <button class="barbtn" data-schools-hall="${esc(sg)}"
-        style="font-size:10.5px;padding:1px 7px;vertical-align:2px">🎓 flipped unit</button>` : '');
+        style="font-size:10.5px;padding:1px 7px;vertical-align:2px">🎓 flipped unit</button>` : '')
+    // the reverse of the Bay Restoration panel's own hall links: a hall
+    // that teaches a real field-skill track gets a badge straight back
+    + (D.restoration.tracks.some((t) => t.skills.some((sk) => sk.split('.')[0] === sg))
+        ? ` <button class="barbtn" data-restoration-hall="${esc(sg)}"
+        style="font-size:10.5px;padding:1px 7px;vertical-align:2px">🌊 Bay Restoration</button>` : '');
 }
 
 /* -------------------------------------------------------- campus view --- */
@@ -5680,7 +5685,7 @@ window.__tc3dCandidate = openCandidate;
 // the Bay Restoration panel: real, independently-run restoration sites
 // plus the real skills in this bundle's own graph their field work
 // draws on - each track links straight to the hall that teaches it
-function openRestoration() {
+function openRestoration(focusHall) {
   const esc = (s) => String(s).replace(/[&<>]/g,
     (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
   const siteRows = D.restoration.sites.map((s) => {
@@ -5694,12 +5699,14 @@ function openRestoration() {
       <a href="${esc(s.source_url)}" target="_blank" rel="noopener" style="font-size:11px">${esc(s.source_url)}</a></li>`;
   }).join('');
   const trackRows = D.restoration.tracks.map((t) => {
+    const here = focusHall && t.skills.some((sk) => sk.split('.')[0] === focusHall);
     const skillBtns = t.skills.map((sk) => {
       const hall = sk.split('.')[0];
       const h = D.halls.find((x) => x.slug === hall);
       return `<button class="barbtn" data-hall-goto="${esc(hall)}" style="font-size:11px;padding:2px 8px;margin:2px 4px 2px 0">→ ${esc(h ? h.name : hall)}</button>`;
     }).join('');
-    return `<li style="margin:9px 0">
+    return `<li id="track-${esc(t.id)}" style="margin:9px 0;${here
+        ? 'border:1px solid var(--mark);border-radius:8px;padding:6px' : ''}">
       <b>${esc(t.title)}</b><br>
       <span style="font-size:12px;color:var(--muted)">${esc(t.what)}</span><br>
       ${skillBtns}</li>`;
@@ -5717,6 +5724,11 @@ function openRestoration() {
     <p style="color:var(--muted);font-size:12px">${esc(D.restoration.honesty.no_new_skills)}</p>
     <p style="color:var(--muted);font-size:12px">${esc(D.restoration.honesty.not_certification)}</p>`;
   document.body.classList.add('open');
+  if (focusHall) {
+    const t = D.restoration.tracks.find((x) =>
+      x.skills.some((sk) => sk.split('.')[0] === focusHall));
+    if (t) document.getElementById('track-' + t.id)?.scrollIntoView({ block: 'center' });
+  }
 }
 window.__tc3dRestoration = openRestoration;
 
@@ -6027,6 +6039,8 @@ document.addEventListener('click', (e) => {
   }
   const sh = e.target.closest('[data-schools-hall]');
   if (sh) { openSchools(sh.dataset.schoolsHall); return; }
+  const rh = e.target.closest('[data-restoration-hall]');
+  if (rh) { openRestoration(rh.dataset.restorationHall); return; }
   if (e.target.id === 'simRetry') {
     document.body.classList.remove('open');
     const id = curSimId; teardownSim(); view = 'hall'; startSim(id); return;

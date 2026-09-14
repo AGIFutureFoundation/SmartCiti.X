@@ -11,9 +11,10 @@ advisors from agents/, the world's weather and fauna from world/, the
 sign system from labels/, the training-data recorder's shape from
 training/, the synthetic-video prompt contract and its real runners from
 orbis/, the avatar locker and TradeApes collection from avatars/, and the
-metaverse interchange layer's reviewed standards from meta/. If a number
-here disagrees with its source, the source is right and this page is
-stale - which `--check` mode exists to catch.
+metaverse interchange layer's reviewed standards from meta/, and the real
+Bay Restoration sites and their field-skill bridge from restoration/. If
+a number here disagrees with its source, the source is right and this
+page is stale - which `--check` mode exists to catch.
 """
 import json
 import pathlib
@@ -46,6 +47,7 @@ roadmap = json.load(open(ROOT / 'roadmap/registry/roadmap.json'))
 orbis = json.load(open(ROOT / 'orbis/registry/orbis.json'))
 avatars = json.load(open(ROOT / 'avatars/registry/avatars.json'))
 meta = json.load(open(ROOT / 'meta/registry/metaverse.json'))
+restoration = json.load(open(ROOT / 'restoration/registry/restoration.json'))
 
 F = lambda x: f"{x:,}"
 built = roadmap['built_campuses']
@@ -74,6 +76,8 @@ STATS = [
     (f"{len(avatars['sections'])} / {len(avatars['tradeapes']['apes'])}",
      'avatar locker sections / TradeApes'),
     (str(len(meta['avatar_systems_reviewed'])), 'Unity avatar systems reviewed'),
+    (f"{len(restoration['sites'])} / {len(restoration['tracks'])}",
+     'real Bay Restoration sites / field-skill tracks'),
 ]
 
 
@@ -206,6 +210,7 @@ a{{color:var(--steel)}}
   <li>{orbis['honesty']['synthetic_not_real']}</li>
   <li>{avatars['guarantee']}</li>
   <li>{meta['honesty']['status']}</li>
+  <li>{restoration['honesty']['not_affiliated']}</li>
 </div>
 <footer>
   <a href="trade_craft_3d.html">3D environment</a> ·

@@ -276,6 +276,25 @@ if not BOOTSTRAP:
         assert t['title'] in page3d, \
             f"track {t['id']} is declared but never named in the 3D panel"
 
+    # the network dashboard names its own contributing pack for every
+    # other platform-wide fact - the drift guard for this one
+    dash = (ROOT / 'web/trade_craft_dashboard.html').read_text()
+    assert f'{len(SITES)} / {len(TRACKS)}' in dash, \
+        'the dashboard does not render the site / track count'
+    assert HONESTY['not_affiliated'] in dash, \
+        'the dashboard does not carry the not-affiliated honesty line'
+
+    # the reverse direction: a hall panel that teaches a restoration
+    # field-skill must itself link back to that track's entry in the
+    # Bay Restoration panel - the same bidirectional pattern already
+    # proven for orbis/training and Schools
+    assert "D.restoration.tracks.some((t) => t.skills.some((sk) => " \
+           "sk.split('.')[0] === sg))" in page3d \
+        and 'data-restoration-hall="${esc(sg)}"' in page3d, \
+        "the hall panel does not check for or link back to a taught track"
+    assert "openRestoration(rh.dataset.restorationHall)" in page3d, \
+        'the hall-panel restoration badge does not actually open the panel'
+
 stamp = hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest()[:16]
 
 doc = {
