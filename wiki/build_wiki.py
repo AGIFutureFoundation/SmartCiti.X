@@ -1362,6 +1362,17 @@ def main():
                 stale.append(name)
         else:
             path.write_text(want)
+
+    # README.md cites this page count by hand (it links Home.md rather than
+    # regenerating from PAGES itself) - the 19 -> 26 drift that shipped
+    # silently for two packs' worth of rounds is exactly what this guards.
+    readme = (ROOT / 'README.md').read_text()
+    page_count_line = f'({len(PAGES)} generated pages, staleness-guarded)'
+    if page_count_line not in readme:
+        print(f"STALE: README.md does not say '{page_count_line}'")
+        print('       the wiki now has ' + str(len(PAGES)) + ' pages - update README.md')
+        sys.exit(1)
+
     if check:
         if stale:
             print('STALE wiki pages: ' + ', '.join(stale))

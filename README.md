@@ -87,7 +87,7 @@ python3 wiki/build_wiki.py --check # fails if the wiki is behind the registries
 
 Alongside the packs: [`ROADMAP.md`](ROADMAP.md) — the phased plan from v3.2
 forward — and [`wiki/Home.md`](wiki/Home.md), the index of every map's page
-(19 generated pages, staleness-guarded). `.github/workflows/pages.yml`
+(26 generated pages, staleness-guarded). `.github/workflows/pages.yml`
 publishes the committed, verified pages — the landing page, every map and
 environment under `web/`, and the wiki — to GitHub Pages on every push to
 `main`; the workflow deploys, it does not build, so Pages can never show a
