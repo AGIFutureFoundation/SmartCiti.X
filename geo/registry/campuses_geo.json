@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-10",
- "source_stamp": "e01b2eb65a08ae12",
+ "source_stamp": "25c89adc778d4eed",
  "crs": "WGS84 (EPSG:4326)",
  "recorded_check": "cross-checked against the Locator.X checkout",
  "honesty": {
@@ -156,6 +156,34 @@
    },
    "provenance": "RECORDED",
    "source": "Locator.X src/app.js map frame, Apache-2.0"
+  },
+  "houston": {
+   "center": {
+    "lat": 29.76,
+    "lng": -95.37
+   },
+   "bounds": {
+    "w": -95.9,
+    "s": 29.45,
+    "e": -94.95,
+    "n": 30.15
+   },
+   "provenance": "AUTHORED",
+   "source": "widely-published public geography (metro-area extent), typed from general knowledge - not cross-checked against any file this build can verify"
+  },
+  "chicago": {
+   "center": {
+    "lat": 41.88,
+    "lng": -87.63
+   },
+   "bounds": {
+    "w": -88.05,
+    "s": 41.62,
+    "e": -87.35,
+    "n": 42.05
+   },
+   "provenance": "AUTHORED",
+   "source": "widely-published public geography (metro-area extent), typed from general knowledge - not cross-checked against any file this build can verify"
   }
  },
  "anchors": {
@@ -373,6 +401,98 @@
     "blurb": "Southern University at New Orleans - public historically Black university in Pontchartrain Park.",
     "blurb_provenance": "authored from public record"
    }
+  ],
+  "houston": [
+   {
+    "name": "Port of Houston Authority",
+    "lat": 29.735,
+    "lng": -95.27,
+    "provenance": "AUTHORED",
+    "source": "the Houston Ship Channel port authority's Turning Basin district",
+    "km": 10.0,
+    "bearing_deg": 106.3,
+    "blurb": "One of the busiest ports in the United States by tonnage, on the Houston Ship Channel connecting the city to the Gulf of Mexico.",
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   },
+   {
+    "name": "University of Houston",
+    "lat": 29.7199,
+    "lng": -95.3422,
+    "provenance": "AUTHORED",
+    "source": "the public research university\u2019s main campus",
+    "km": 5.2,
+    "bearing_deg": 149.4,
+    "blurb": "Public research university southeast of downtown, Texas\u2019s third-largest by enrollment.",
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   },
+   {
+    "name": "San Jacinto College",
+    "lat": 29.691,
+    "lng": -95.183,
+    "provenance": "AUTHORED",
+    "source": "the Central campus in Pasadena, TX, known for its maritime and process-technology trades programs",
+    "km": 19.6,
+    "bearing_deg": 113.1,
+    "blurb": "Community college serving the Houston Ship Channel-area workforce, with real maritime, process-technology and trades programs.",
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   },
+   {
+    "name": "Houston Community College",
+    "lat": 29.7241,
+    "lng": -95.3775,
+    "provenance": "AUTHORED",
+    "source": "the community-college system\u2019s Central campus",
+    "km": 4.1,
+    "bearing_deg": 190.4,
+    "blurb": "One of the largest community college systems in the country, central to the city\u2019s technical and workforce education.",
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   }
+  ],
+  "chicago": [
+   {
+    "name": "Chicago Union Station",
+    "lat": 41.8789,
+    "lng": -87.6359,
+    "provenance": "AUTHORED",
+    "source": "the city\u2019s major intercity and commuter rail terminal",
+    "km": 0.5,
+    "bearing_deg": 280.0,
+    "blurb": "The city\u2019s grand 1925 rail terminal on the west bank of the Chicago River, still Amtrak\u2019s hub for the entire Midwest.",
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   },
+   {
+    "name": "Navy Pier",
+    "lat": 41.8917,
+    "lng": -87.6086,
+    "provenance": "AUTHORED",
+    "source": "the Lake Michigan pier and public landmark",
+    "km": 2.3,
+    "bearing_deg": 49.2,
+    "blurb": "A 1916 municipal pier on Lake Michigan, now one of the Midwest\u2019s most-visited public landmarks.",
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   },
+   {
+    "name": "University of Illinois Chicago",
+    "lat": 41.8708,
+    "lng": -87.6505,
+    "provenance": "AUTHORED",
+    "source": "the public research university\u2019s campus",
+    "km": 1.9,
+    "bearing_deg": 244.7,
+    "blurb": "Public research university just west of the Loop, one of the city\u2019s largest employers and enrollments.",
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   },
+   {
+    "name": "Richard J. Daley College",
+    "lat": 41.7648,
+    "lng": -87.727,
+    "provenance": "AUTHORED",
+    "source": "City Colleges of Chicago\u2019s construction-trades campus",
+    "km": 15.0,
+    "bearing_deg": 212.6,
+    "blurb": "City Colleges of Chicago\u2019s Southwest Side campus, home to its construction and manufacturing trades programs.",
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   }
   ]
  },
  "walk": {
@@ -412,7 +532,7 @@
   "honesty": {
    "not_a_score": "this is not Walk Score(R) and no relationship with it is claimed or implied.",
    "straight_line": "distance here is straight-line between coordinates, not a street-network walk: a freeway, a rail cut, a canal or a gated block makes the real walk longer, sometimes impossibly longer. Walk the block before you believe the number.",
-   "what_it_counts": "the Academy draws the bands around a campus and reports which RECORDED anchors fall inside them. It counts no shops, because this bundle holds no shop records - the classes above are carried so the map can say what a walkable measure would have to count."
+   "what_it_counts": "the Academy draws the bands around a campus and reports which real anchors - RECORDED where a sibling source exists to cross-check against, AUTHORED where none does - fall inside them. It counts no shops, because this bundle holds no shop records - the classes above are carried so the map can say what a walkable measure would have to count."
   }
  }
 }

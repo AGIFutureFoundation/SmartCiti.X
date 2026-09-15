@@ -503,6 +503,174 @@
   {
    "type": "Feature",
    "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.27,
+     29.735
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Port of Houston Authority",
+    "near": "houston",
+    "provenance": "AUTHORED",
+    "source": "the Houston Ship Channel port authority's Turning Basin district",
+    "blurb": "One of the busiest ports in the United States by tonnage, on the Houston Ship Channel connecting the city to the Gulf of Mexico.",
+    "km": 10.0,
+    "bearing_deg": 106.3,
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.3422,
+     29.7199
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "University of Houston",
+    "near": "houston",
+    "provenance": "AUTHORED",
+    "source": "the public research university\u2019s main campus",
+    "blurb": "Public research university southeast of downtown, Texas\u2019s third-largest by enrollment.",
+    "km": 5.2,
+    "bearing_deg": 149.4,
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.183,
+     29.691
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "San Jacinto College",
+    "near": "houston",
+    "provenance": "AUTHORED",
+    "source": "the Central campus in Pasadena, TX, known for its maritime and process-technology trades programs",
+    "blurb": "Community college serving the Houston Ship Channel-area workforce, with real maritime, process-technology and trades programs.",
+    "km": 19.6,
+    "bearing_deg": 113.1,
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -95.3775,
+     29.7241
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Houston Community College",
+    "near": "houston",
+    "provenance": "AUTHORED",
+    "source": "the community-college system\u2019s Central campus",
+    "blurb": "One of the largest community college systems in the country, central to the city\u2019s technical and workforce education.",
+    "km": 4.1,
+    "bearing_deg": 190.4,
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -87.6359,
+     41.8789
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Chicago Union Station",
+    "near": "chicago",
+    "provenance": "AUTHORED",
+    "source": "the city\u2019s major intercity and commuter rail terminal",
+    "blurb": "The city\u2019s grand 1925 rail terminal on the west bank of the Chicago River, still Amtrak\u2019s hub for the entire Midwest.",
+    "km": 0.5,
+    "bearing_deg": 280.0,
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -87.6086,
+     41.8917
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Navy Pier",
+    "near": "chicago",
+    "provenance": "AUTHORED",
+    "source": "the Lake Michigan pier and public landmark",
+    "blurb": "A 1916 municipal pier on Lake Michigan, now one of the Midwest\u2019s most-visited public landmarks.",
+    "km": 2.3,
+    "bearing_deg": 49.2,
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -87.6505,
+     41.8708
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "University of Illinois Chicago",
+    "near": "chicago",
+    "provenance": "AUTHORED",
+    "source": "the public research university\u2019s campus",
+    "blurb": "Public research university just west of the Loop, one of the city\u2019s largest employers and enrollments.",
+    "km": 1.9,
+    "bearing_deg": 244.7,
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -87.727,
+     41.7648
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Richard J. Daley College",
+    "near": "chicago",
+    "provenance": "AUTHORED",
+    "source": "City Colleges of Chicago\u2019s construction-trades campus",
+    "blurb": "City Colleges of Chicago\u2019s Southwest Side campus, home to its construction and manufacturing trades programs.",
+    "km": 15.0,
+    "bearing_deg": 212.6,
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
     "type": "LineString",
     "coordinates": [
      [
@@ -2060,6 +2228,78 @@
     "campus": "treasure-island",
     "provenance": "RECORDED",
     "source": "Locator.X src/app.js map frame, Apache-2.0"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -95.9,
+       29.45
+      ],
+      [
+       -94.95,
+       29.45
+      ],
+      [
+       -94.95,
+       30.15
+      ],
+      [
+       -95.9,
+       30.15
+      ],
+      [
+       -95.9,
+       29.45
+      ]
+     ]
+    ]
+   },
+   "properties": {
+    "kind": "frame",
+    "campus": "houston",
+    "provenance": "AUTHORED",
+    "source": "widely-published public geography (metro-area extent), typed from general knowledge - not cross-checked against any file this build can verify"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -88.05,
+       41.62
+      ],
+      [
+       -87.35,
+       41.62
+      ],
+      [
+       -87.35,
+       42.05
+      ],
+      [
+       -88.05,
+       42.05
+      ],
+      [
+       -88.05,
+       41.62
+      ]
+     ]
+    ]
+   },
+   "properties": {
+    "kind": "frame",
+    "campus": "chicago",
+    "provenance": "AUTHORED",
+    "source": "widely-published public geography (metro-area extent), typed from general knowledge - not cross-checked against any file this build can verify"
    }
   }
  ]

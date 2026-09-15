@@ -54,7 +54,7 @@
   "sim.choose": "Choisissez un simulateur",
   "sim.operator": "Demander à l'opérateur",
   "progress.local": "La progression est enregistrée uniquement sur cet appareil.",
-  "city.note": "Couche urbaine : lieux ENREGISTRÉS depuis Locator.X ; rues, ponts et plans d’eau schématiques",
+  "city.note": "Couche urbaine : lieux réels près du campus (le niveau réel de chacun s’affiche à l’ouverture) ; rues, ponts et plans d’eau schématiques",
   "chapters.hall": "Maison des sections régionales",
   "avatar.title": "Avatar"
  },

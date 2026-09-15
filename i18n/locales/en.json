@@ -54,7 +54,7 @@
   "sim.choose": "Choose a simulator",
   "sim.operator": "Ask the operator",
   "progress.local": "Progress is saved on this device only.",
-  "city.note": "City layer: places RECORDED from Locator.X; streets, bridges and water schematic",
+  "city.note": "City layer: real places near the campus (each one’s own real tier shown when you open it); streets, bridges and water schematic",
   "chapters.hall": "Regional chapter hall",
   "avatar.title": "Avatar"
  },

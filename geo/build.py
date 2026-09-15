@@ -110,6 +110,42 @@ ANCHORS = {
     ],
 }
 
+# Institution anchors near the two HUB campuses (Houston, Chicago) — a
+# different, weaker tier than ANCHORS above, and kept in a separate table
+# so the two are never confused. Every anchor above is RECORDED, copied
+# verbatim from a sibling Locator.X table this build can cross-check
+# against. No such table lists a single real place near either hub campus,
+# so nothing here could ever be RECORDED — each one is AUTHORED, the same
+# tier this pack already uses for the Houston/Chicago campus centres
+# themselves (GEO, above) and for the Bay Restoration sites: real, named,
+# well-known institutions only, never invented, each typed from general
+# public knowledge and not cross-checked against any file this build can
+# verify. Coordinates are each institution's approximate, widely-published
+# location, not a surveyed pin.
+AUTHORED_ANCHORS = {
+    'houston': [
+        ('Port of Houston Authority', 29.7350, -95.2700,
+         "the Houston Ship Channel port authority's Turning Basin district"),
+        ('University of Houston', 29.7199, -95.3422,
+         'the public research university’s main campus'),
+        ('San Jacinto College', 29.6910, -95.1830,
+         'the Central campus in Pasadena, TX, known for its maritime and '
+         'process-technology trades programs'),
+        ('Houston Community College', 29.7241, -95.3775,
+         'the community-college system’s Central campus'),
+    ],
+    'chicago': [
+        ('Chicago Union Station', 41.8789, -87.6359,
+         'the city’s major intercity and commuter rail terminal'),
+        ('Navy Pier', 41.8917, -87.6086,
+         'the Lake Michigan pier and public landmark'),
+        ('University of Illinois Chicago', 41.8708, -87.6505,
+         'the public research university’s campus'),
+        ('Richard J. Daley College', 41.7648, -87.7270,
+         'City Colleges of Chicago’s construction-trades campus'),
+    ],
+}
+
 # One-line descriptions for the New Orleans institutions — AUTHORED from
 # public record, and labelled so: the coordinate is RECORDED from
 # Locator.X, the sentence about the place is not from that table and does
@@ -166,6 +202,30 @@ BLURBS = {
     'SUNO':
         'Southern University at New Orleans - public historically Black '
         'university in Pontchartrain Park.',
+    'Port of Houston Authority':
+        'One of the busiest ports in the United States by tonnage, on the '
+        'Houston Ship Channel connecting the city to the Gulf of Mexico.',
+    'University of Houston':
+        'Public research university southeast of downtown, Texas’s '
+        'third-largest by enrollment.',
+    'San Jacinto College':
+        'Community college serving the Houston Ship Channel-area workforce, '
+        'with real maritime, process-technology and trades programs.',
+    'Houston Community College':
+        'One of the largest community college systems in the country, '
+        'central to the city’s technical and workforce education.',
+    'Chicago Union Station':
+        'The city’s grand 1925 rail terminal on the west bank of the '
+        'Chicago River, still Amtrak’s hub for the entire Midwest.',
+    'Navy Pier':
+        'A 1916 municipal pier on Lake Michigan, now one of the '
+        'Midwest’s most-visited public landmarks.',
+    'University of Illinois Chicago':
+        'Public research university just west of the Loop, one of the '
+        'city’s largest employers and enrollments.',
+    'Richard J. Daley College':
+        'City Colleges of Chicago’s Southwest Side campus, home to its '
+        'construction and manufacturing trades programs.',
 }
 
 # CITY records - the region frames Locator.X's own maps ship, RECORDED
@@ -189,6 +249,25 @@ CITY = {
     },
     'treasure-island': dict(BAY_FRAME),
     'oakland': dict(BAY_FRAME),
+    # the two hub campuses' own frames: AUTHORED, like their anchors and
+    # their own campus-centre coordinates above - no sibling table ships a
+    # committed frame for either metro, so neither can honestly claim more
+    'houston': {
+        'center': {'lat': 29.76, 'lng': -95.37},
+        'bounds': {'w': -95.9, 's': 29.45, 'e': -94.95, 'n': 30.15},
+        'provenance': 'AUTHORED',
+        'source': 'widely-published public geography (metro-area extent), '
+                  'typed from general knowledge - not cross-checked '
+                  'against any file this build can verify',
+    },
+    'chicago': {
+        'center': {'lat': 41.88, 'lng': -87.63},
+        'bounds': {'w': -88.05, 's': 41.62, 'e': -87.35, 'n': 42.05},
+        'provenance': 'AUTHORED',
+        'source': 'widely-published public geography (metro-area extent), '
+                  'typed from general knowledge - not cross-checked '
+                  'against any file this build can verify',
+    },
 }
 
 if locx.exists():
@@ -283,8 +362,10 @@ WALK = {
                          'longer. Walk the block before you believe the '
                          'number.',
         'what_it_counts': 'the Academy draws the bands around a campus and '
-                          'reports which RECORDED anchors fall inside '
-                          'them. It counts no shops, because this bundle '
+                          'reports which real anchors - RECORDED where a '
+                          'sibling source exists to cross-check against, '
+                          'AUTHORED where none does - fall inside them. '
+                          'It counts no shops, because this bundle '
                           'holds no shop records - the classes above are '
                           'carried so the map can say what a walkable '
                           'measure would have to count.',
@@ -324,19 +405,41 @@ doc = {
     },
     'routes_km': routes,
     'city': CITY,
-    'anchors': {
-        ck: [dict({'name': n, 'lat': lat, 'lng': lng, 'provenance': 'RECORDED',
-                   'source': f'Locator.X {src}, Apache-2.0',
-                   'km': round(haversine_km(GEO[ck][:2], (lat, lng)), 1),
-                   'bearing_deg': round(bearing_deg(GEO[ck][:2], (lat, lng)), 1)},
-                  **({'blurb': BLURBS[n],
-                      'blurb_provenance': 'authored from public record'}
-                     if n in BLURBS else {}))
-             for n, lat, lng, src in lst]
-        for ck, lst in ANCHORS.items()
-    },
+    'anchors': {},
     'walk': WALK,
 }
+
+# One real per-anchor provenance, threaded everywhere an anchor is emitted
+# below - never hardcoded again the way an earlier version of this file did.
+# RECORDED anchors (ANCHORS) cite the sibling Locator.X table verbatim;
+# AUTHORED anchors (AUTHORED_ANCHORS) name themselves plainly as a weaker,
+# uncross-checked claim - the same distinction GEO already draws between
+# the three original campus centres and the two hub ones.
+def anchor_source(prov, src):
+    return f'Locator.X {src}, Apache-2.0' if prov == 'RECORDED' else src
+
+
+def anchor_entries():
+    for ck, lst in ANCHORS.items():
+        for n, lat, lng, src in lst:
+            yield ck, n, lat, lng, 'RECORDED', src
+    for ck, lst in AUTHORED_ANCHORS.items():
+        for n, lat, lng, src in lst:
+            yield ck, n, lat, lng, 'AUTHORED', src
+
+
+for ck, n, lat, lng, prov, src in anchor_entries():
+    entry = {
+        'name': n, 'lat': lat, 'lng': lng, 'provenance': prov,
+        'source': anchor_source(prov, src),
+        'km': round(haversine_km(GEO[ck][:2], (lat, lng)), 1),
+        'bearing_deg': round(bearing_deg(GEO[ck][:2], (lat, lng)), 1),
+    }
+    if n in BLURBS:
+        entry['blurb'] = BLURBS[n]
+        entry['blurb_provenance'] = ('authored from public record' if prov == 'RECORDED'
+            else 'authored from public record, the same tier as the coordinate itself')
+    doc['anchors'].setdefault(ck, []).append(entry)
 
 geojson = {
     'type': 'FeatureCollection',
@@ -355,9 +458,8 @@ geojson = {
         {'type': 'Feature',
          'geometry': {'type': 'Point', 'coordinates': [lng, lat]},
          'properties': {'kind': 'anchor', 'name': n, 'near': ck,
-                        'provenance': 'RECORDED',
-                        'source': f'Locator.X {src}, Apache-2.0'}}
-        for ck, lst in ANCHORS.items() for n, lat, lng, src in lst
+                        'provenance': prov, 'source': anchor_source(prov, src)}}
+        for ck, n, lat, lng, prov, src in anchor_entries()
     ],
 }
 
@@ -422,7 +524,7 @@ for f in network['features']:
         a = next(x for x in doc['anchors'][p['near']] if x['name'] == p['name'])
         p.update({'blurb': BLURBS[p['name']], 'km': a['km'],
                   'bearing_deg': a['bearing_deg'],
-                  'blurb_provenance': 'authored from public record'})
+                  'blurb_provenance': a['blurb_provenance']})
 
 OUT = HERE / 'registry'
 OUT.mkdir(exist_ok=True)
@@ -431,7 +533,8 @@ OUT.mkdir(exist_ok=True)
 (OUT / 'network.geojson').write_text(json.dumps(network, indent=1) + '\n')
 route_txt = ', '.join('{}-{} {} km'.format(r['from'], r['to'], r['km'])
                       for r in routes)
-n_anchor = sum(len(v) for v in ANCHORS.values())
+n_recorded = sum(len(v) for v in ANCHORS.values())
+n_authored = sum(len(v) for v in AUTHORED_ANCHORS.values())
 print(f"geo registry: {len(GEO)} campuses, {len(routes)} routes "
-      f"({route_txt}), {n_anchor} RECORDED anchors; {checked} "
-      f"(source stamp {stamp})")
+      f"({route_txt}), {n_recorded} RECORDED + {n_authored} AUTHORED "
+      f"anchors; {checked} (source stamp {stamp})")

@@ -190,7 +190,7 @@ DATA = json.dumps({
                                  * 110.574, 2),
                       'km': a['km'], 'bearing': a['bearing_deg'],
                       'lat': a['lat'], 'lng': a['lng'],
-                      'src': a['source'],
+                      'src': a['source'], 'prov': a['provenance'],
                       'blurb': a.get('blurb', ''),
                       'bp': a.get('blurb_provenance', '')}
                      for a in geo_reg['anchors'][ck]]
@@ -3162,10 +3162,17 @@ function advRead(bind, aid) {
           .name) + '</b> \\u2014 ' + r.km + ' km, bearing ' + r.bearing_deg
           + '\\u00b0'))
         + cite('DERIVED by great circle from the RECORDED coordinates');
-    case 'city.anchors':
+    case 'city.anchors': {
+      // the citation follows the anchors' OWN real tier - RECORDED where a
+      // sibling Locator.X table backs them, AUTHORED where none does (the
+      // two hub campuses) - never a hardcoded claim
+      const cp = D.geo.cityPois[campusKey] || [];
+      const allRecorded = cp.length > 0 && cp.every((a) => a.prov === 'RECORDED');
       return li((D.geo.anchors[campusKey] || []).map((a) => '<b>' + esc(a.name)
         + '</b> \\u2014 ' + a.km + ' km, bearing ' + a.bearing_deg + '\\u00b0'))
-        + cite('RECORDED anchors, Locator.X (Apache-2.0)');
+        + cite(allRecorded ? 'RECORDED anchors, Locator.X (Apache-2.0)'
+          : 'AUTHORED anchors, typed from public record \\u2014 not cross-checked against a committed source');
+    }
     case 'city.walk': {
       const W = D.advisors.walk, r10 = W.bands_m.ten_minute / 1000;
       const r15 = W.bands_m.fifteen_minute / 1000;
@@ -5019,9 +5026,10 @@ function openCityPoi(name) {
   if (!p) return;
   const osm = `https://www.openstreetmap.org/?mlat=${p.lat}&mlon=${p.lng}`
     + `#map=16/${p.lat}/${p.lng}`;
+  const recorded = p.prov === 'RECORDED';
   document.getElementById('pbody').innerHTML = `
     <h2>${p.name}</h2>
-    <span class="chip" style="border-color:var(--good);color:var(--good)">RECORDED</span>
+    <span class="chip" style="border-color:var(${recorded ? '--good' : '--mark'});color:var(${recorded ? '--good' : '--mark'})">${p.prov}</span>
     <span class="chip">${p.km} km · ${p.bearing}°</span>
     ${p.blurb ? `<p>${p.blurb}</p>` : ''}
     <p style="font-family:'IBM Plex Mono',monospace;font-size:13.5px">
@@ -5029,7 +5037,7 @@ function openCityPoi(name) {
       <span style="color:var(--muted)">WGS84</span></p>
     <p><a href="${osm}" target="_blank" rel="noopener"
       style="color:var(--steel)">↗ OpenStreetMap</a>
-      <span style="color:var(--muted)">· live map from the RECORDED coordinate</span></p>
+      <span style="color:var(--muted)">· live map from the ${p.prov} coordinate</span></p>
     <p id="elevRow">
       <button class="opt" id="elevGo" style="display:inline-block;width:auto;padding:5px 12px">
         ↕ Look up ground elevation</button></p>
@@ -5222,8 +5230,8 @@ function buildCity(g, R) {
     box(3, .5, 3, mat.slab, x + 4, hgt + 5.4, z - 3.5, g, false);
     bld.userData.poi = twr.userData.poi = p.name;
     cityHits.push(bld, twr);
-    const pl = label(p.name, p.km + ' km \\u00b7 RECORDED', 1.7,
-      { kind: 'anchor' });
+    const pl = label(p.name, p.km + ' km \\u00b7 ' + p.prov, 1.7,
+      { kind: p.prov === 'RECORDED' ? 'anchor' : 'schematic' });
     pl.position.set(x, hgt + 10, z); g.add(pl);
     cityPois++;
   });
@@ -5284,6 +5292,31 @@ function cityWater(g, key, R, pois) {
     bay.rotation.x = -Math.PI / 2;
     bay.position.set(-(R + 60) - 120, .06, 0); g.add(bay);
     tag('San Francisco Bay', -(R + 90), 0);
+    return;
+  }
+  if (key === 'houston') {
+    // the real bayou this hub is named for - a winding schematic ribbon,
+    // never claimed as more than that
+    const bayou = new THREE.Mesh(new THREE.TubeGeometry(
+      new THREE.QuadraticBezierCurve3(
+        new THREE.Vector3(-160, 0, 60), new THREE.Vector3(-10, 0, 90),
+        new THREE.Vector3(140, 0, 40)), 48, 8, 8), mat.water);
+    bayou.scale.y = .012; bayou.position.y = .09; g.add(bayou);
+    tag('Buffalo Bayou', -30, 92);
+    return;
+  }
+  if (key === 'chicago') {
+    // the real river the Loop sits on - the same schematic ribbon idiom
+    const river = new THREE.Mesh(new THREE.TubeGeometry(
+      new THREE.QuadraticBezierCurve3(
+        new THREE.Vector3(-150, 0, 70), new THREE.Vector3(0, 0, 96),
+        new THREE.Vector3(150, 0, 60)), 48, 8, 8), mat.water);
+    river.scale.y = .012; river.position.y = .09; g.add(river);
+    tag('Chicago River', 0, 98);
+    const lake = new THREE.Mesh(new THREE.PlaneGeometry(260, 90), mat.water);
+    lake.rotation.x = -Math.PI / 2; lake.position.set(0, .07, -(R + 145));
+    g.add(lake);
+    tag('Lake Michigan', 0, -(R + 140));
   }
 }
 
@@ -6685,7 +6718,7 @@ renderer.domElement.addEventListener('pointermove', (e) => {
         const p = D.geo.cityPois[campusKey].find((x) => x.name === chit.object.userData.poi);
         document.getElementById('hname').textContent = p.name;
         document.getElementById('hfocus').textContent =
-          p.km + ' km · RECORDED — ' + (p.blurb || '');
+          p.km + ' km · ' + p.prov + ' — ' + (p.blurb || '');
         renderer.domElement.style.cursor = 'pointer';
         return;
       }
