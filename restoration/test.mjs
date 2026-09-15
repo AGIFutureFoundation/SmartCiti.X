@@ -110,6 +110,41 @@ ok('a walkable site never claims RECORDED provenance in its in-world sign - it i
 ok('the panel itself marks which real sites are walkable in the city layer',
   page3d.includes('walkable in the city layer'));
 
+/* ------------------------------------------------- standalone site walk --- */
+ok('a "Walk this site" button reaches every walkable site from the panel',
+  page3d.includes('data-resto-walk="${esc(s.id)}"')
+  && page3d.includes("e.target.closest('[data-resto-walk]')")
+  && page3d.includes('startRestorationWalk(rw.dataset.restoWalk)'));
+ok('the standalone scene builds real, distinct ground for every walkable site - '
+  + 'not one shared template stamped eight times',
+  page3d.includes('function buildRestoGround(')
+  && walkable.every((s) => page3d.includes(`site.id === '${s.id}'`)));
+ok('every walkable site\'s own real habitat/scale/org text is quoted in its scene '
+  + 'as the reason for what stands there (no invented per-site detail)',
+  walkable.every((s) => page3d.includes(s.habitat)));
+ok('the American Canyon site - the one entry the registry itself calls a PLAN, not '
+  + 'built work - reads proposed and unbuilt in its own scene, not built like the rest',
+  page3d.includes('proposed · not yet built')
+  && /american-canyon[\s\S]{0,600}not yet built/.test(page3d));
+ok('the standalone scene builds a real, clickable beacon for every field-skill track, '
+  + 'each opening a panel that still links to the real hall that teaches it',
+  page3d.includes('function buildRestoTrackBeacons(')
+  && page3d.includes('function openRestoTrack(')
+  && page3d.includes('userData.restoTrack'));
+ok('entering or leaving a site walk is wired into every place the 3D app changes '
+  + 'view, so it can never be left running underneath a hall, campus or sim',
+  page3d.includes('if (curRestoSite) teardownRestoWalk();')
+  && [...page3d.matchAll(/if \(curRestoSite\) teardownRestoWalk\(\);/g)].length >= 4);
+ok('walking the site (desktop pointer-lock and touch alike) clamps to the site\'s '
+  + 'own bounds and offers the nearest track beacon to open, the same pattern '
+  + 'campus and hall walking already use',
+  page3d.includes("view === 'restoration'")
+  && page3d.includes('RESTO_R')
+  && page3d.includes('nearTrack'));
+ok('the scene never claims a survey or aerial scan of the real site - it says '
+  + 'schematic, composed from that site\'s own real habitat description',
+  page3d.includes('Schematic ground, composed from this site'));
+
 /* -------------------------------------------------------------- dashboard --- */
 const dash = readFileSync(
   new URL('../web/trade_craft_dashboard.html', import.meta.url), 'utf8');
