@@ -35,7 +35,7 @@ node i18n/test.mjs                 # 16 — locale parity, placeholders, pack ag
 node stations/test.mjs             # 13 — recovered stations vs roster, skills, rooms
 node surfaces/test.mjs             # 24 — finishes, conditions, more-demanding-wins, honesty
 node geo/test.mjs                  # 27 — real coordinates + RECORDED anchors, recomputed distances, GeoJSON + the network map file
-node sims/test.mjs                 # 22 — simulator bindings, rubrics, cockpit + scoring + regional scenarios
+node sims/test.mjs                 # 22 — 7 simulators bound to 40 real halls (crane-lift/rigging-signals/load-chart extend to every trade that actually rigs, signs or plans a pick — ironworkers, decking, tank-erectors, piling; weld-bead to marine-pipe and tank-erectors; scaffold-bay to the rest of the envelope district plus refractory), rubrics, cockpit + scoring + regional scenarios
 node tools/test.mjs                # 13 — district tool cribs, the deterministic crib drill, hall bindings
 node schools/test.mjs              # 20 — flipped-classroom model, proposed districts, live units + class drills, bidirectional Schools/hall panel links
 node avatars/test.mjs              # 27 — locker depth, crews, characters, costumes, the TradeApes, marks policy, the guarantee, now on the network dashboard too

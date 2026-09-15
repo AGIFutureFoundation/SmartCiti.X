@@ -141,6 +141,28 @@
    "gate": "unaided verification run (ACP-04); no sim hour counts"
   },
   {
+   "hall": "cement-masons",
+   "home": "module pack lesson positions, machines strand",
+   "class_stations": [
+    "st008"
+   ],
+   "class_drill": "envelope",
+   "floor_sims": [
+    "scaffold-bay"
+   ],
+   "gate": "unaided verification run (ACP-04); no sim hour counts"
+  },
+  {
+   "hall": "cladding",
+   "home": "module pack lesson positions, machines strand",
+   "class_stations": [],
+   "class_drill": "envelope",
+   "floor_sims": [
+    "scaffold-bay"
+   ],
+   "gate": "unaided verification run (ACP-04); no sim hour counts"
+  },
+  {
    "hall": "crane-ops",
    "home": "module pack lesson positions, machines strand",
    "class_stations": [],
@@ -148,6 +170,27 @@
    "floor_sims": [
     "crane-lift",
     "load-chart",
+    "rigging-signals"
+   ],
+   "gate": "unaided verification run (ACP-04); no sim hour counts"
+  },
+  {
+   "hall": "curtainwall",
+   "home": "module pack lesson positions, machines strand",
+   "class_stations": [],
+   "class_drill": "envelope",
+   "floor_sims": [
+    "scaffold-bay"
+   ],
+   "gate": "unaided verification run (ACP-04); no sim hour counts"
+  },
+  {
+   "hall": "decking",
+   "home": "module pack lesson positions, machines strand",
+   "class_stations": [],
+   "class_drill": "structural",
+   "floor_sims": [
+    "crane-lift",
     "rigging-signals"
    ],
    "gate": "unaided verification run (ACP-04); no sim hour counts"
@@ -173,6 +216,26 @@
    "gate": "unaided verification run (ACP-04); no sim hour counts"
   },
   {
+   "hall": "firestop",
+   "home": "module pack lesson positions, machines strand",
+   "class_stations": [],
+   "class_drill": "envelope",
+   "floor_sims": [
+    "scaffold-bay"
+   ],
+   "gate": "unaided verification run (ACP-04); no sim hour counts"
+  },
+  {
+   "hall": "glaziers",
+   "home": "module pack lesson positions, machines strand",
+   "class_stations": [],
+   "class_drill": "envelope",
+   "floor_sims": [
+    "scaffold-bay"
+   ],
+   "gate": "unaided verification run (ACP-04); no sim hour counts"
+  },
+  {
    "hall": "heavy-equip",
    "home": "module pack lesson positions, machines strand",
    "class_stations": [],
@@ -180,6 +243,28 @@
    "floor_sims": [
     "forklift-run",
     "load-chart"
+   ],
+   "gate": "unaided verification run (ACP-04); no sim hour counts"
+  },
+  {
+   "hall": "insulators",
+   "home": "module pack lesson positions, machines strand",
+   "class_stations": [],
+   "class_drill": "envelope",
+   "floor_sims": [
+    "scaffold-bay"
+   ],
+   "gate": "unaided verification run (ACP-04); no sim hour counts"
+  },
+  {
+   "hall": "ironworkers",
+   "home": "module pack lesson positions, machines strand",
+   "class_stations": [],
+   "class_drill": "structural",
+   "floor_sims": [
+    "crane-lift",
+    "load-chart",
+    "rigging-signals"
    ],
    "gate": "unaided verification run (ACP-04); no sim hour counts"
   },
@@ -196,12 +281,49 @@
    "gate": "unaided verification run (ACP-04); no sim hour counts"
   },
   {
+   "hall": "lathers",
+   "home": "module pack lesson positions, machines strand",
+   "class_stations": [
+    "st023"
+   ],
+   "class_drill": "envelope",
+   "floor_sims": [
+    "scaffold-bay"
+   ],
+   "gate": "unaided verification run (ACP-04); no sim hour counts"
+  },
+  {
+   "hall": "marine-pipe",
+   "home": "module pack lesson positions, machines strand",
+   "class_stations": [],
+   "class_drill": "industry",
+   "floor_sims": [
+    "weld-bead"
+   ],
+   "gate": "unaided verification run (ACP-04); no sim hour counts"
+  },
+  {
    "hall": "marine-terminal",
    "home": "module pack lesson positions, machines strand",
    "class_stations": [],
    "class_drill": "transport",
    "floor_sims": [
     "forklift-run"
+   ],
+   "gate": "unaided verification run (ACP-04); no sim hour counts"
+  },
+  {
+   "hall": "masonry-restore",
+   "home": "module pack lesson positions, machines strand",
+   "class_stations": [
+    "st009",
+    "st014",
+    "st016",
+    "st017"
+   ],
+   "class_drill": "envelope",
+   "floor_sims": [
+    "scaffold-bay"
    ],
    "gate": "unaided verification run (ACP-04); no sim hour counts"
   },
@@ -238,12 +360,33 @@
    "gate": "unaided verification run (ACP-04); no sim hour counts"
   },
   {
+   "hall": "piling",
+   "home": "module pack lesson positions, machines strand",
+   "class_stations": [],
+   "class_drill": "structural",
+   "floor_sims": [
+    "crane-lift",
+    "rigging-signals"
+   ],
+   "gate": "unaided verification run (ACP-04); no sim hour counts"
+  },
+  {
    "hall": "pipeline",
    "home": "module pack lesson positions, machines strand",
    "class_stations": [],
    "class_drill": "industry",
    "floor_sims": [
     "weld-bead"
+   ],
+   "gate": "unaided verification run (ACP-04); no sim hour counts"
+  },
+  {
+   "hall": "plasterers",
+   "home": "module pack lesson positions, machines strand",
+   "class_stations": [],
+   "class_drill": "envelope",
+   "floor_sims": [
+    "scaffold-bay"
    ],
    "gate": "unaided verification run (ACP-04); no sim hour counts"
   },
@@ -260,6 +403,18 @@
    "gate": "unaided verification run (ACP-04); no sim hour counts"
   },
   {
+   "hall": "refractory",
+   "home": "module pack lesson positions, machines strand",
+   "class_stations": [
+    "st015"
+   ],
+   "class_drill": "industry",
+   "floor_sims": [
+    "scaffold-bay"
+   ],
+   "gate": "unaided verification run (ACP-04); no sim hour counts"
+  },
+  {
    "hall": "riggers",
    "home": "module pack lesson positions, machines strand",
    "class_stations": [
@@ -270,6 +425,16 @@
     "crane-lift",
     "load-chart",
     "rigging-signals"
+   ],
+   "gate": "unaided verification run (ACP-04); no sim hour counts"
+  },
+  {
+   "hall": "roofers",
+   "home": "module pack lesson positions, machines strand",
+   "class_stations": [],
+   "class_drill": "envelope",
+   "floor_sims": [
+    "scaffold-bay"
    ],
    "gate": "unaided verification run (ACP-04); no sim hour counts"
   },
@@ -317,6 +482,32 @@
    "gate": "unaided verification run (ACP-04); no sim hour counts"
   },
   {
+   "hall": "stone-carvers",
+   "home": "module pack lesson positions, machines strand",
+   "class_stations": [
+    "st011",
+    "st021"
+   ],
+   "class_drill": "envelope",
+   "floor_sims": [
+    "scaffold-bay"
+   ],
+   "gate": "unaided verification run (ACP-04); no sim hour counts"
+  },
+  {
+   "hall": "tank-erectors",
+   "home": "module pack lesson positions, machines strand",
+   "class_stations": [],
+   "class_drill": "industry",
+   "floor_sims": [
+    "crane-lift",
+    "load-chart",
+    "rigging-signals",
+    "weld-bead"
+   ],
+   "gate": "unaided verification run (ACP-04); no sim hour counts"
+  },
+  {
    "hall": "teamsters",
    "home": "module pack lesson positions, machines strand",
    "class_stations": [],
@@ -327,12 +518,35 @@
    "gate": "unaided verification run (ACP-04); no sim hour counts"
   },
   {
+   "hall": "waterproofers",
+   "home": "module pack lesson positions, machines strand",
+   "class_stations": [
+    "st019",
+    "st024"
+   ],
+   "class_drill": "envelope",
+   "floor_sims": [
+    "scaffold-bay"
+   ],
+   "gate": "unaided verification run (ACP-04); no sim hour counts"
+  },
+  {
    "hall": "welders",
    "home": "module pack lesson positions, machines strand",
    "class_stations": [],
    "class_drill": "structural",
    "floor_sims": [
     "weld-bead"
+   ],
+   "gate": "unaided verification run (ACP-04); no sim hour counts"
+  },
+  {
+   "hall": "window-glazing",
+   "home": "module pack lesson positions, machines strand",
+   "class_stations": [],
+   "class_drill": "envelope",
+   "floor_sims": [
+    "scaffold-bay"
    ],
    "gate": "unaided verification run (ACP-04); no sim hour counts"
   }

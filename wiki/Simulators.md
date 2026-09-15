@@ -12,7 +12,7 @@ axis is computed from measured state; nothing narrative can change a score.
 
 Pick the load from the supply pad, carry it over the stacks and set it inside the target ring — swing under control the whole way.
 
-Trains at: **Crane Operators**, **Riggers & Signalpersons**, **Steel Erectors**, **Port Crane Technicians** — each run exercises that hall's
+Trains at: **Crane Operators**, **Riggers & Signalpersons**, **Steel Erectors**, **Port Crane Technicians**, **Ironworkers**, **Metal Deck Installers**, **Tank Erectors**, **Piling Crews** — each run exercises that hall's
 `machines.applied` skill.
 
 | Control | Action |
@@ -134,7 +134,7 @@ environment varies, the rubric never does:
 
 Strike the arc and run one clean bead down the marked seam — hold the gap inside the band and keep the torch travelling; linger on a segment and the plate burns through.
 
-Trains at: **Welding Trades**, **Boilermakers**, **Shipfitters**, **Structural Fabricators**, **Pipeline Trades** — each run exercises that hall's
+Trains at: **Welding Trades**, **Boilermakers**, **Shipfitters**, **Structural Fabricators**, **Pipeline Trades**, **Marine Pipefitters**, **Tank Erectors** — each run exercises that hall's
 `machines.applied` skill.
 
 | Control | Action |
@@ -174,7 +174,7 @@ environment varies, the rubric never does:
 
 Erect one bay in the legal order — sills, frames, braces, planks, then guardrails. The rack refuses a part whose stage has not come, every refusal counts, and the bay is not done until the rails are on.
 
-Trains at: **Scaffold Erectors**, **Carpenters**, **Laborers**, **Bricklayers & Allied Craft**, **Painters & Allied Trades** — each run exercises that hall's
+Trains at: **Scaffold Erectors**, **Carpenters**, **Laborers**, **Bricklayers & Allied Craft**, **Painters & Allied Trades**, **Glaziers**, **Roofers & Waterproofers**, **Cement Masons**, **Heat & Frost Insulators**, **Plasterers**, **Below-Grade Waterproofers**, **Firestop Installers**, **Rainscreen Cladding Fitters**, **Masonry Restoration**, **Curtain Wall Erectors**, **Architectural Glaziers**, **Lathers & Metal Framers**, **Stone Carvers**, **Refractory Masons** — each run exercises that hall's
 `machines.applied` skill.
 
 | Control | Action |
@@ -213,7 +213,7 @@ environment varies, the rubric never does:
 
 You are the signalperson: the lift card calls the moves, and the crane follows YOUR hands. Give each called signal in order — a wrong signal counts against you and the crane holds — and finish the lift with the stop signal.
 
-Trains at: **Riggers & Signalpersons**, **Crane Operators**, **Steel Erectors**, **Port Crane Technicians**, **Millwrights** — each run exercises that hall's
+Trains at: **Riggers & Signalpersons**, **Crane Operators**, **Steel Erectors**, **Port Crane Technicians**, **Millwrights**, **Ironworkers**, **Metal Deck Installers**, **Tank Erectors**, **Piling Crews** — each run exercises that hall's
 `machines.applied` skill.
 
 | Control | Action |
@@ -253,7 +253,7 @@ environment varies, the rubric never does:
 
 Work the pick list against the chart on the board: at each radius the crane has one honest number. Hook the picks the chart allows and refuse the ones it does not — an overweight pick accepted is the failure that matters.
 
-Trains at: **Crane Operators**, **Riggers & Signalpersons**, **Port Crane Technicians**, **Heavy Equipment Technicians**, **Operating Engineers** — each run exercises that hall's
+Trains at: **Crane Operators**, **Riggers & Signalpersons**, **Port Crane Technicians**, **Heavy Equipment Technicians**, **Operating Engineers**, **Ironworkers**, **Tank Erectors** — each run exercises that hall's
 `machines.applied` skill.
 
 | Control | Action |
