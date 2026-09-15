@@ -49,24 +49,43 @@ the class trains at ([Simulators](Simulators.md)).
 | **Boilermakers** | `weld-bead` | — | unaided verification run (ACP-04); no sim hour counts |
 | **Bricklayers & Allied Craft** | `scaffold-bay` | 10 | unaided verification run (ACP-04); no sim hour counts |
 | **Carpenters** | `scaffold-bay` | — | unaided verification run (ACP-04); no sim hour counts |
+| **Cement Masons** | `scaffold-bay` | 1 | unaided verification run (ACP-04); no sim hour counts |
+| **Rainscreen Cladding Fitters** | `scaffold-bay` | — | unaided verification run (ACP-04); no sim hour counts |
 | **Crane Operators** | `crane-lift`, `load-chart`, `rigging-signals` | — | unaided verification run (ACP-04); no sim hour counts |
+| **Curtain Wall Erectors** | `scaffold-bay` | — | unaided verification run (ACP-04); no sim hour counts |
+| **Metal Deck Installers** | `crane-lift`, `rigging-signals` | — | unaided verification run (ACP-04); no sim hour counts |
 | **Demolition Workers** | `excavator-trench` | — | unaided verification run (ACP-04); no sim hour counts |
 | **Structural Fabricators** | `weld-bead` | — | unaided verification run (ACP-04); no sim hour counts |
+| **Firestop Installers** | `scaffold-bay` | — | unaided verification run (ACP-04); no sim hour counts |
+| **Glaziers** | `scaffold-bay` | — | unaided verification run (ACP-04); no sim hour counts |
 | **Heavy Equipment Technicians** | `forklift-run`, `load-chart` | — | unaided verification run (ACP-04); no sim hour counts |
+| **Heat & Frost Insulators** | `scaffold-bay` | — | unaided verification run (ACP-04); no sim hour counts |
+| **Ironworkers** | `crane-lift`, `load-chart`, `rigging-signals` | — | unaided verification run (ACP-04); no sim hour counts |
 | **Laborers** | `excavator-trench`, `forklift-run`, `scaffold-bay` | — | unaided verification run (ACP-04); no sim hour counts |
+| **Lathers & Metal Framers** | `scaffold-bay` | 1 | unaided verification run (ACP-04); no sim hour counts |
+| **Marine Pipefitters** | `weld-bead` | — | unaided verification run (ACP-04); no sim hour counts |
 | **Marine Terminal Operators** | `forklift-run` | — | unaided verification run (ACP-04); no sim hour counts |
+| **Masonry Restoration** | `scaffold-bay` | 4 | unaided verification run (ACP-04); no sim hour counts |
 | **Millwrights** | `rigging-signals` | — | unaided verification run (ACP-04); no sim hour counts |
 | **Operating Engineers** | `excavator-trench`, `forklift-run`, `load-chart` | — | unaided verification run (ACP-04); no sim hour counts |
 | **Painters & Allied Trades** | `scaffold-bay` | — | unaided verification run (ACP-04); no sim hour counts |
+| **Piling Crews** | `crane-lift`, `rigging-signals` | — | unaided verification run (ACP-04); no sim hour counts |
 | **Pipeline Trades** | `weld-bead` | — | unaided verification run (ACP-04); no sim hour counts |
+| **Plasterers** | `scaffold-bay` | — | unaided verification run (ACP-04); no sim hour counts |
 | **Port Crane Technicians** | `crane-lift`, `load-chart`, `rigging-signals` | — | unaided verification run (ACP-04); no sim hour counts |
+| **Refractory Masons** | `scaffold-bay` | 1 | unaided verification run (ACP-04); no sim hour counts |
 | **Riggers & Signalpersons** | `crane-lift`, `load-chart`, `rigging-signals` | 1 | unaided verification run (ACP-04); no sim hour counts |
+| **Roofers & Waterproofers** | `scaffold-bay` | — | unaided verification run (ACP-04); no sim hour counts |
 | **Scaffold Erectors** | `scaffold-bay` | 1 | unaided verification run (ACP-04); no sim hour counts |
 | **Shipfitters** | `weld-bead` | — | unaided verification run (ACP-04); no sim hour counts |
 | **Shoring & Underpinning** | `excavator-trench` | — | unaided verification run (ACP-04); no sim hour counts |
 | **Steel Erectors** | `crane-lift`, `rigging-signals` | — | unaided verification run (ACP-04); no sim hour counts |
+| **Stone Carvers** | `scaffold-bay` | 2 | unaided verification run (ACP-04); no sim hour counts |
+| **Tank Erectors** | `crane-lift`, `load-chart`, `rigging-signals`, `weld-bead` | — | unaided verification run (ACP-04); no sim hour counts |
 | **Teamsters** | `forklift-run` | — | unaided verification run (ACP-04); no sim hour counts |
+| **Below-Grade Waterproofers** | `scaffold-bay` | 2 | unaided verification run (ACP-04); no sim hour counts |
 | **Welding Trades** | `weld-bead` | — | unaided verification run (ACP-04); no sim hour counts |
+| **Architectural Glaziers** | `scaffold-bay` | — | unaided verification run (ACP-04); no sim hour counts |
 
 ## What this is not
 

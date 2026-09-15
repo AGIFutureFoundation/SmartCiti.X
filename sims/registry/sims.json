@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-10",
- "source_stamp": "07d1e93f4e8c9e13",
+ "source_stamp": "496010137f31c517",
  "scoring_contract": "deterministic: every rubric axis is computed from measured state; nothing narrative can change a score",
  "honesty": {
   "status": "schematic physics for practising control discipline - smooth inputs, swing management, ordered procedure. Not equipment certification; no seat time here counts toward one, and the assessment gates still demand unaided verification runs.",
@@ -58,7 +58,11 @@
     "crane-ops",
     "riggers",
     "steel-erectors",
-    "port-crane"
+    "port-crane",
+    "ironworkers",
+    "decking",
+    "tank-erectors",
+    "piling"
    ],
    "skill_strand": "machines",
    "skill_tier": "applied",
@@ -581,7 +585,9 @@
     "boilermakers",
     "shipfitters",
     "fabricators",
-    "pipeline"
+    "pipeline",
+    "marine-pipe",
+    "tank-erectors"
    ],
    "skill_strand": "machines",
    "skill_tier": "applied",
@@ -746,7 +752,21 @@
     "carpenters",
     "laborers",
     "bricklayers",
-    "painters"
+    "painters",
+    "glaziers",
+    "roofers",
+    "cement-masons",
+    "insulators",
+    "plasterers",
+    "waterproofers",
+    "firestop",
+    "cladding",
+    "masonry-restore",
+    "curtainwall",
+    "window-glazing",
+    "lathers",
+    "stone-carvers",
+    "refractory"
    ],
    "skill_strand": "machines",
    "skill_tier": "applied",
@@ -899,7 +919,11 @@
     "crane-ops",
     "steel-erectors",
     "port-crane",
-    "millwrights"
+    "millwrights",
+    "ironworkers",
+    "decking",
+    "tank-erectors",
+    "piling"
    ],
    "skill_strand": "machines",
    "skill_tier": "applied",
@@ -1065,7 +1089,9 @@
     "riggers",
     "port-crane",
     "heavy-equip",
-    "operating-eng"
+    "operating-eng",
+    "ironworkers",
+    "tank-erectors"
    ],
    "skill_strand": "machines",
    "skill_tier": "applied",
@@ -1319,6 +1345,58 @@
     "skill_id": "port-crane.machines.applied"
    }
   ],
+  "ironworkers": [
+   {
+    "sim": "crane-lift",
+    "skill_id": "ironworkers.machines.applied"
+   },
+   {
+    "sim": "rigging-signals",
+    "skill_id": "ironworkers.machines.applied"
+   },
+   {
+    "sim": "load-chart",
+    "skill_id": "ironworkers.machines.applied"
+   }
+  ],
+  "decking": [
+   {
+    "sim": "crane-lift",
+    "skill_id": "decking.machines.applied"
+   },
+   {
+    "sim": "rigging-signals",
+    "skill_id": "decking.machines.applied"
+   }
+  ],
+  "tank-erectors": [
+   {
+    "sim": "crane-lift",
+    "skill_id": "tank-erectors.machines.applied"
+   },
+   {
+    "sim": "weld-bead",
+    "skill_id": "tank-erectors.machines.applied"
+   },
+   {
+    "sim": "rigging-signals",
+    "skill_id": "tank-erectors.machines.applied"
+   },
+   {
+    "sim": "load-chart",
+    "skill_id": "tank-erectors.machines.applied"
+   }
+  ],
+  "piling": [
+   {
+    "sim": "crane-lift",
+    "skill_id": "piling.machines.applied"
+   },
+   {
+    "sim": "rigging-signals",
+    "skill_id": "piling.machines.applied"
+   }
+  ],
   "operating-eng": [
    {
     "sim": "excavator-trench",
@@ -1411,6 +1489,12 @@
     "skill_id": "pipeline.machines.applied"
    }
   ],
+  "marine-pipe": [
+   {
+    "sim": "weld-bead",
+    "skill_id": "marine-pipe.machines.applied"
+   }
+  ],
   "scaffold": [
    {
     "sim": "scaffold-bay",
@@ -1433,6 +1517,90 @@
    {
     "sim": "scaffold-bay",
     "skill_id": "painters.machines.applied"
+   }
+  ],
+  "glaziers": [
+   {
+    "sim": "scaffold-bay",
+    "skill_id": "glaziers.machines.applied"
+   }
+  ],
+  "roofers": [
+   {
+    "sim": "scaffold-bay",
+    "skill_id": "roofers.machines.applied"
+   }
+  ],
+  "cement-masons": [
+   {
+    "sim": "scaffold-bay",
+    "skill_id": "cement-masons.machines.applied"
+   }
+  ],
+  "insulators": [
+   {
+    "sim": "scaffold-bay",
+    "skill_id": "insulators.machines.applied"
+   }
+  ],
+  "plasterers": [
+   {
+    "sim": "scaffold-bay",
+    "skill_id": "plasterers.machines.applied"
+   }
+  ],
+  "waterproofers": [
+   {
+    "sim": "scaffold-bay",
+    "skill_id": "waterproofers.machines.applied"
+   }
+  ],
+  "firestop": [
+   {
+    "sim": "scaffold-bay",
+    "skill_id": "firestop.machines.applied"
+   }
+  ],
+  "cladding": [
+   {
+    "sim": "scaffold-bay",
+    "skill_id": "cladding.machines.applied"
+   }
+  ],
+  "masonry-restore": [
+   {
+    "sim": "scaffold-bay",
+    "skill_id": "masonry-restore.machines.applied"
+   }
+  ],
+  "curtainwall": [
+   {
+    "sim": "scaffold-bay",
+    "skill_id": "curtainwall.machines.applied"
+   }
+  ],
+  "window-glazing": [
+   {
+    "sim": "scaffold-bay",
+    "skill_id": "window-glazing.machines.applied"
+   }
+  ],
+  "lathers": [
+   {
+    "sim": "scaffold-bay",
+    "skill_id": "lathers.machines.applied"
+   }
+  ],
+  "stone-carvers": [
+   {
+    "sim": "scaffold-bay",
+    "skill_id": "stone-carvers.machines.applied"
+   }
+  ],
+  "refractory": [
+   {
+    "sim": "scaffold-bay",
+    "skill_id": "refractory.machines.applied"
    }
   ],
   "millwrights": [

@@ -51,7 +51,13 @@ SIMS = {
             {'axis': 'time', 'measure': 'seconds from hook to release',
              'pass': 'informational'},
         ],
-        'halls': ['crane-ops', 'riggers', 'steel-erectors', 'port-crane'],
+        # every hall added below is one whose own real field work is
+        # planning or making this exact pick, not a stretch: ironworkers
+        # and decking crews are who a tower crane actually sets structural
+        # steel and deck panels for, tank-erectors set steel plate the
+        # same way, and piling rigs are themselves crane-mounted
+        'halls': ['crane-ops', 'riggers', 'steel-erectors', 'port-crane',
+                  'ironworkers', 'decking', 'tank-erectors', 'piling'],
         'skill_strand': 'machines',
         'skill_tier': 'applied',
         'dash': [
@@ -229,8 +235,11 @@ SIMS = {
             {'axis': 'time', 'measure': 'seconds first strike to last fuse',
              'pass': 'informational'},
         ],
+        # marine-pipe runs the same shipboard/dockside pipe seams shipfitters
+        # and pipeline already train here; tank-erectors weld the plate
+        # seams on every tank they set
         'halls': ['welders', 'boilermakers', 'shipfitters', 'fabricators',
-                  'pipeline'],
+                  'pipeline', 'marine-pipe', 'tank-erectors'],
         'skill_strand': 'machines',
         'skill_tier': 'applied',
         'dash': [
@@ -287,8 +296,15 @@ SIMS = {
             {'axis': 'time', 'measure': 'seconds first sill to last rail',
              'pass': 'informational'},
         ],
+        # every trade added below does its own real work standing on a
+        # scaffold bay at height - the whole rest of the envelope district
+        # that was not already covered, plus the refractory crews who
+        # stage the same way inside a furnace or kiln shell
         'halls': ['scaffold', 'carpenters', 'laborers', 'bricklayers',
-                  'painters'],
+                  'painters', 'glaziers', 'roofers', 'cement-masons',
+                  'insulators', 'plasterers', 'waterproofers', 'firestop',
+                  'cladding', 'masonry-restore', 'curtainwall',
+                  'window-glazing', 'lathers', 'stone-carvers', 'refractory'],
         'skill_strand': 'machines',
         'skill_tier': 'applied',
         'dash': [
@@ -344,8 +360,11 @@ SIMS = {
             {'axis': 'time', 'measure': 'seconds first signal to stop',
              'pass': 'informational'},
         ],
+        # the same real crews the crane-lift sim above now trains, signing
+        # the same picks by hand before the machine ever moves
         'halls': ['riggers', 'crane-ops', 'steel-erectors', 'port-crane',
-                  'millwrights'],
+                  'millwrights', 'ironworkers', 'decking', 'tank-erectors',
+                  'piling'],
         'skill_strand': 'machines',
         'skill_tier': 'applied',
         'dash': [
@@ -402,8 +421,10 @@ SIMS = {
             {'axis': 'time', 'measure': 'seconds first judgment to last',
              'pass': 'informational'},
         ],
+        # the two structural trades who plan a pick against a load chart
+        # before the crane-lift sim above ever swings the jib
         'halls': ['crane-ops', 'riggers', 'port-crane', 'heavy-equip',
-                  'operating-eng'],
+                  'operating-eng', 'ironworkers', 'tank-erectors'],
         'skill_strand': 'machines',
         'skill_tier': 'applied',
         # The machine's one honest chart: capacity falls as radius grows.
