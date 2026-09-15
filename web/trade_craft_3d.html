@@ -935,6 +935,9 @@ const mat = {
   brick: new THREE.MeshStandardMaterial({ color: 0xb3462f, roughness: .92 }),
   block: new THREE.MeshStandardMaterial({ color: 0x9aa0a2, roughness: .92 }),
   cone:  new THREE.MeshStandardMaterial({ color: 0xE07C48, roughness: .6 }),
+  // schematic marsh/shrub vegetation clumps at the walkable restoration
+  // sites - one shared low-poly material, never a downloaded plant asset
+  veg:   new THREE.MeshStandardMaterial({ color: 0x4c6b3a, roughness: .95 }),
 };
 // every material above is a page-wide singleton, reused by name across
 // halls, campuses and every sim yard - disposeOf() must never free one of
@@ -2401,6 +2404,7 @@ function buildRegion() {
 
 function showRegion() {
   if (sim) teardownSim();
+  if (curRestoSite) teardownRestoWalk();
   view = 'region';
   if (walkActive) (isTouch ? exitWalkMode() : plc.unlock());
   if (avatarGroup) avatarGroup.visible = false;
@@ -2451,6 +2455,7 @@ function campusRollup(key) {
 
 function showCampus(key) {
   if (sim) teardownSim();
+  if (curRestoSite) teardownRestoWalk();
   campusKey = key; view = 'campus';
   if (walkActive) (isTouch ? exitWalkMode() : plc.unlock());
   if (avatarGroup) avatarGroup.visible = false;
@@ -2483,6 +2488,7 @@ function showCampus(key) {
 
 function showHall(sg) {
   if (sim) teardownSim();
+  if (curRestoSite) teardownRestoWalk();
   slug = sg; view = 'hall'; campusKey = campusOfHall(sg);
   if (avatarGroup) avatarGroup.visible = false;
   if (!(isTouch && walkActive)) wheelShow(false);
@@ -2518,6 +2524,8 @@ document.addEventListener('keydown', (e) => {
   keys[e.code] = true;
   if (sim && e.code === 'Escape' && !document.body.classList.contains('open'))
     exitSim();
+  if (curRestoSite && e.code === 'Escape' && !document.body.classList.contains('open'))
+    exitRestoWalk();
   if (sim && e.code === 'Space') { e.preventDefault(); sim.action?.(); }
   if (walkActive && view === 'campus' && nearSlug
       && (e.code === 'Enter' || e.code === 'KeyE')) enterHallWalking(nearSlug);
@@ -2525,10 +2533,14 @@ document.addEventListener('keydown', (e) => {
       && (e.code === 'Enter' || e.code === 'KeyE')) {
     plc.unlock(); openCityPoi(nearPoi);
   }
+  if (walkActive && view === 'restoration' && nearTrack
+      && (e.code === 'Enter' || e.code === 'KeyE')) {
+    plc.unlock(); openRestoTrack(nearTrack);
+  }
 });
 document.addEventListener('keyup', (e) => { keys[e.code] = false; });
 
-let campusR = 168, nearSlug = null, nearPoi = null;
+let campusR = 168, nearSlug = null, nearPoi = null, nearTrack = null;
 function enterWalk() {
   if (view === 'region' || view === 'avatar') return;
   if (isTouch) {
@@ -2597,6 +2609,28 @@ function walkStep(dt) {
           D.halls.find(x => x.slug === slug).focus;
         document.getElementById('hint').textContent = t('hint.walk');
       }
+    }
+    return;
+  }
+  if (view === 'restoration') {
+    const rlen = Math.hypot(camera.position.x, camera.position.z);
+    if (rlen > RESTO_R) {
+      camera.position.x *= RESTO_R / rlen; camera.position.z *= RESTO_R / rlen;
+    }
+    let rbest = null, rbd = 1e9;
+    const rwp = new THREE.Vector3();
+    for (const b of restoBeacons) {
+      b.getWorldPosition(rwp);
+      const d = Math.hypot(rwp.x - camera.position.x, rwp.z - camera.position.z);
+      if (d < rbd) { rbd = d; rbest = b; }
+    }
+    if (rbest && rbd < 6) {
+      nearTrack = rbest.userData.restoTrack;
+      document.getElementById('hint').textContent =
+        '⏎ ' + D.restoration.tracks.find((x) => x.id === nearTrack).title;
+    } else if (nearTrack) {
+      nearTrack = null;
+      document.getElementById('hint').textContent = t('hint.walk');
     }
     return;
   }
@@ -2809,6 +2843,7 @@ function exitSim() { teardownSim(); showHall(slug); }
 function startSim(simId) {
   if (walkActive) plc.unlock();
   if (sim) teardownSim();
+  if (curRestoSite) teardownRestoWalk();
   simTicks = []; traceClock = 0;
   curSimId = simId; view = 'sim';
   if (hallGroup) hallGroup.visible = false;
@@ -5037,7 +5072,7 @@ function exitWalkMode() {
   document.getElementById('actBtn').style.display = 'none';
   wheelShow(false);
   controls.enabled = true;
-  nearSlug = null; nearPoi = null;
+  nearSlug = null; nearPoi = null; nearTrack = null;
 }
 function touchWalkStep(dt) {
   const sp = 5.2 * dt;
@@ -5058,6 +5093,9 @@ function touchWalkStep(dt) {
     walkAvatar.position.x = Math.min(21, Math.max(-21, walkAvatar.position.x));
     walkAvatar.position.z = Math.min(DEP / 2 - .8,
       Math.max(-DEP / 2 - 26, walkAvatar.position.z));
+  } else if (view === 'restoration') {
+    const len = Math.hypot(walkAvatar.position.x, walkAvatar.position.z);
+    if (len > RESTO_R) walkAvatar.position.multiplyScalar(RESTO_R / len);
   }
   // the gait rides the distance actually covered, after the clamps
   const moved = walkAvatar.position.distanceTo(was);
@@ -5094,10 +5132,25 @@ function touchWalkStep(dt) {
       nearPoi = bp.userData.poi; nearSlug = null;
       act.style.display = ''; act.textContent = '\u23ce ' + nearPoi;
     } else { nearSlug = nearPoi = null; act.style.display = 'none'; }
+  } else if (view === 'restoration') {
+    let bt = null, td = 1e9;
+    const wp = new THREE.Vector3();
+    for (const b of restoBeacons) {
+      b.getWorldPosition(wp);
+      const d = Math.hypot(wp.x - walkAvatar.position.x, wp.z - walkAvatar.position.z);
+      if (d < td) { td = d; bt = b; }
+    }
+    const act = document.getElementById('actBtn');
+    if (bt && td < 6) {
+      nearTrack = bt.userData.restoTrack;
+      act.style.display = '';
+      act.textContent = '\u23ce ' + D.restoration.tracks.find((x) => x.id === nearTrack).title;
+    } else { nearTrack = null; act.style.display = 'none'; }
   }
 }
 document.getElementById('actBtn').addEventListener('click', () => {
   if (nearSlug) { showHall(nearSlug); enterTouchWalk(); }
+  else if (nearTrack) openRestoTrack(nearTrack);
   else if (nearPoi) openCityPoi(nearPoi);
 });
 document.getElementById('emoBtn').addEventListener('click', () => {
@@ -5726,13 +5779,16 @@ function openRestoration(focusHall, focusSite) {
       ? `<br><span style="font-size:11px;color:var(--good)">▶ real workforce pathway: ${esc(s.workforce_note)}</span>` : '';
     const camp = s.campus ? `<span class="chip" style="font-size:10.5px">near ${esc(D.campuses[s.campus].name)}</span>` : '';
     const walk = s.e !== undefined
-      ? `<span class="chip" style="font-size:10.5px">🚶 walkable in the city layer</span>` : '';
+      ? `<span class="chip" style="font-size:10.5px">🚶 walkable in the city layer</span>
+         <button class="barbtn" data-resto-walk="${esc(s.id)}"
+           style="font-size:11px;padding:2px 8px;margin:2px 0 2px 6px">🚶 Walk this site</button>` : '';
     return `<li id="site-${esc(s.id)}" style="margin:9px 0;${s.id === focusSite
         ? 'border:1px solid var(--mark);border-radius:8px;padding:6px' : ''}">
-      <b>${esc(s.name)}</b> ${camp}${walk}<br>
+      <b>${esc(s.name)}</b> ${camp}<br>
       <span style="font-size:11.5px;color:var(--muted)">${esc(s.org)} · ${esc(s.city)}, ${esc(s.county)}</span><br>
       <span style="font-size:12px">${esc(s.habitat)} — ${esc(s.scale)}</span>${wf}<br>
-      <a href="${esc(s.source_url)}" target="_blank" rel="noopener" style="font-size:11px">${esc(s.source_url)}</a></li>`;
+      <a href="${esc(s.source_url)}" target="_blank" rel="noopener" style="font-size:11px">${esc(s.source_url)}</a>
+      ${walk}</li>`;
   }).join('');
   const trackRows = D.restoration.tracks.map((t) => {
     const here = focusHall && t.skills.some((sk) => sk.split('.')[0] === focusHall);
@@ -5769,6 +5825,241 @@ function openRestoration(focusHall, focusSite) {
   }
 }
 window.__tc3dRestoration = openRestoration;
+
+/* ---------------------------------------- the walkable site scene -------- */
+// A standalone, ground-level scene for ONE real restoration site - not one
+// shared template stamped eight times. Each site's terrain is composed
+// from THAT site's own real, registry-sourced habitat/scale/org facts
+// (restoration/build.py), the same way dressCampus() customizes each real
+// campus by name below. It is schematic ground, not a survey or aerial
+// scan of the actual site - the on-screen honesty line says so every time
+// a learner enters one, and every prop here (a levee, a nursery bed, a
+// monitoring transect) is a fair schematic reading of that site's own
+// published description, never an invented detail.
+let restoGroup = null, restoBeacons = [], curRestoSite = null;
+const RESTO_R = 46;
+
+function stakeLine(n, x0, z0, x1, z1, g, tall) {
+  for (let i = 0; i < n; i++) {
+    const u = n > 1 ? i / (n - 1) : 0;
+    box(.1, tall ?? .9, .1, mat.post, x0 + (x1 - x0) * u, (tall ?? .9) / 2,
+      z0 + (z1 - z0) * u, g);
+  }
+}
+function flagAt(x, z, g, color) {
+  box(.06, .8, .06, mat.post, x, .4, z, g);
+  const f = new THREE.Mesh(new THREE.PlaneGeometry(.4, .26),
+    new THREE.MeshStandardMaterial({ color: color ?? 0xE8A33D, side: THREE.DoubleSide }));
+  f.position.set(x + .2, .68, z); g.add(f);
+}
+function vegClump(x, z, g, n, spread) {
+  for (let i = 0; i < n; i++) {
+    const a = i / n * Math.PI * 2, r = spread * (.3 + .7 * ((i * 53) % 100) / 100);
+    const s = .35 + ((i * 29) % 100) / 220;
+    const c = new THREE.Mesh(new THREE.SphereGeometry(s, 6, 5), mat.veg);
+    c.position.set(x + Math.cos(a) * r, s * .7, z + Math.sin(a) * r);
+    c.castShadow = true; g.add(c);
+  }
+}
+function fieldCanopy(x, z, g) {
+  box(2.6, .08, 2.6, mat.slab, x, .04, z, g, false);
+  for (const [dx, dz] of [[-1.1, -1.1], [1.1, -1.1], [-1.1, 1.1], [1.1, 1.1]])
+    box(.08, 1.8, .08, mat.metal, x + dx, .9, z + dz, g);
+  const roof = new THREE.Mesh(new THREE.PlaneGeometry(3, 3),
+    new THREE.MeshStandardMaterial({ color: 0xE8A33D, side: THREE.DoubleSide }));
+  roof.rotation.x = -Math.PI / 2; roof.position.set(x, 1.84, z); g.add(roof);
+  box(.7, .6, .5, mat.part, x + 1.6, .3, z - 1.6, g);
+  box(.7, .5, .5, mat.part, x + 1.9, .25, z - 1.3, g);
+}
+function berm(w, h, d, x, z, rot, g) {
+  const b = box(w, h, d, mat.grass, x, h / 2, z, g);
+  if (rot) b.rotation.y = rot;
+  return b;
+}
+function waterAt(w, d, x, z, g, rot) {
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(w, d), mat.water);
+  m.rotation.x = -Math.PI / 2; if (rot) m.rotation.z = rot;
+  m.position.set(x, -.05, z); g.add(m);
+  return m;
+}
+
+function buildRestoGround(g, site) {
+  const pad = new THREE.Mesh(new THREE.CircleGeometry(RESTO_R + 6, 48), mat.grass);
+  pad.rotation.x = -Math.PI / 2; pad.receiveShadow = true; g.add(pad);
+
+  if (site.id === 'herons-head') {
+    // shoreline resilience + green infrastructure, an Eco-Apprentice crew
+    // actually working the ground here - riprap shoreline meeting the
+    // bay, shallow rain-garden swales set back from it, and the crew's
+    // own field canopy since this is a real, active paid-training site
+    waterAt(140, 60, 0, -46, g);
+    box(120, .08, 18, mat.sand, 0, .05, -22, g, false);
+    for (let i = 0; i < 3; i++)
+      box(46, .3, 4, mat.grass, -20 + i * 20, .18, 2 + i * 9, g, false);
+    vegClump(24, 12, g, 10, 8);
+    fieldCanopy(-18, 16, g);
+  } else if (site.id === 'candlestick-point') {
+    // rocky shoreline stewardship: clean-up bins along the tideline, a
+    // native-plant propagation bed, and a numbered monitoring transect -
+    // the site's own three named activities, nothing added
+    waterAt(150, 50, 0, -50, g);
+    for (let i = -2; i <= 2; i++)
+      box(1.6 + Math.abs(i) * .2, .7, 1.6, mat.steel, i * 9, .35, -34, g);
+    vegClump(-22, 10, g, 14, 7);
+    stakeLine(6, -30, 0, 30, 0, g, 1.1);
+  } else if (site.id === 'east-oakland-youth') {
+    // Planting Justice: shoreline and upland restoration, a youth nursery
+    // laid out in rows, and a stump-seat circle for the service-learning
+    // cohort the site's own program actually trains
+    waterAt(130, 46, 0, -44, g);
+    for (let r = 0; r < 4; r++) for (let c = 0; c < 8; c++)
+      vegClump(-24 + c * 6.4, 8 + r * 6, g, 3, 1.6);
+    for (let i = 0; i < 8; i++) {
+      const a = i / 8 * Math.PI * 2;
+      box(.7, .4, .7, mat.wood, Math.cos(a) * 4 + 16, .2, Math.sin(a) * 4 - 6, g);
+    }
+  } else if (site.id === 'alviso-shoreline') {
+    // the smallest funded footprint in the pack ("approximately 2 acres")
+    // - a modest marsh-adjacent wet edge, not a bay frontage, with its
+    // own restored-area boundary flagged at the corners
+    waterAt(50, 20, 20, -18, g, .15);
+    vegClump(6, -8, g, 16, 14);
+    for (const [x, z] of [[-16, -16], [16, -16], [-16, 16], [16, 16]])
+      flagAt(x, z, g, 0xE8A33D);
+  } else if (site.id === 'south-bay-salt-ponds') {
+    // a real ecotone levee dividing the managed former salt pond (still
+    // water) from the tidal marsh it is being restored into (broken,
+    // channelled water) - the actual before/after this project performs
+    berm(90, 1.6, 5, 0, 0, 0, g);
+    waterAt(80, 30, 0, -22, g);
+    waterAt(70, 10, -30, 24, g, .3);
+    waterAt(70, 8, 26, 30, g, -.25);
+    vegClump(30, 22, g, 12, 10);
+  } else if (site.id === 'montezuma-wetlands') {
+    // diked baylands along the real, named Montezuma Slough, with duller,
+    // shallower seasonal-wetland pools set apart from the slough itself
+    berm(120, 1.3, 4, 0, -8, 0, g);
+    waterAt(140, 16, 0, -30, g);
+    const seasonal = new THREE.MeshStandardMaterial({ color: 0x6a7a5e, roughness: .5 });
+    for (const [x, z, w, d] of [[-22, 14, 16, 10], [10, 20, 20, 8], [28, 8, 10, 12]]) {
+      const m = new THREE.Mesh(new THREE.PlaneGeometry(w, d), seasonal);
+      m.rotation.x = -Math.PI / 2; m.position.set(x, -.04, z); g.add(m);
+    }
+  } else if (site.id === 'american-canyon') {
+    // honestly what the registry itself says this is: a PLAN summarizing
+    // restoration opportunities, not built work yet - so the ground here
+    // reads proposed and dashed, the same visual language the roadmap
+    // board already uses for AUTHORED-but-not-built content
+    for (let i = 0; i < 28; i += 2) {
+      const a = i / 28 * Math.PI * 2;
+      box(1.4, .04, .12, mat.paint, Math.cos(a) * 30, .03, Math.sin(a) * 30, g, false)
+        .rotation.y = -a;
+    }
+    waterAt(120, 40, 0, -50, g);
+    const l = label('proposed · not yet built', 'AUTHORED', 1.3, { kind: 'schematic' });
+    l.position.set(0, 6, 0); g.add(l);
+  } else if (site.id === 'straw-north-bay') {
+    // STRAW (Students and Teachers Restoring a Watershed): a long, narrow
+    // transition-zone corridor - real to the registry's own "1.3 linear
+    // miles across four sites" - marked with small student-group flags
+    // rather than one crew canopy
+    waterAt(160, 14, 0, -6, g, .08);
+    for (let i = -3; i <= 3; i++) vegClump(i * 11, 8 + Math.abs(i), g, 6, 5);
+    for (let i = -2; i <= 2; i++) flagAt(i * 15, 20, g, 0x41C4D4);
+  }
+}
+
+function buildRestoTrackBeacons(g) {
+  restoBeacons = [];
+  D.restoration.tracks.forEach((tr, i) => {
+    const ang = i / D.restoration.tracks.length * Math.PI * 2 + Math.PI / 2;
+    const x = Math.cos(ang) * 14, z = Math.sin(ang) * 14 + 6;
+    box(.4, 2.2, .4, mat.post, x, 1.1, z, g);
+    const sign = box(1.5, .9, .08, mat.paint, x, 2.1, z, g);
+    sign.userData.restoTrack = tr.id;
+    restoBeacons.push(sign);
+    const l = label(tr.title, 'field-skill track', 1.1, { kind: 'station' });
+    l.position.set(x, 3.3, z); g.add(l);
+  });
+}
+
+function openRestoTrack(trackId) {
+  const esc = (s) => String(s).replace(/[&<>]/g,
+    (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+  const tr = D.restoration.tracks.find((x) => x.id === trackId);
+  if (!tr || !curRestoSite) return;
+  const tabs = D.restoration.tracks.map((x) =>
+    `<button class="barbtn" data-resto-track="${esc(x.id)}"
+      style="font-size:11px;padding:2px 8px;margin:2px 4px 2px 0;${x.id === trackId
+        ? 'border-color:var(--mark);color:var(--mark)' : ''}">${esc(x.title)}</button>`).join('');
+  const skillBtns = tr.skills.map((sk) => {
+    const hall = sk.split('.')[0];
+    const h = D.halls.find((x) => x.slug === hall);
+    return `<button class="barbtn" data-hall-goto="${esc(hall)}" style="font-size:11px;padding:2px 8px;margin:2px 4px 2px 0">→ ${esc(h ? h.name : hall)}</button>`;
+  }).join('');
+  document.getElementById('pbody').innerHTML = `
+    <h2>${esc(tr.title)}</h2>
+    <span class="chip">at ${esc(curRestoSite.name)}</span>
+    <p style="color:var(--muted);font-size:12px">${esc(tr.what)}</p>
+    <p style="font-size:12px">${esc(curRestoSite.habitat)} — ${esc(curRestoSite.scale)}</p>
+    <h3>Train this at the real hall that teaches it</h3>
+    <p>${skillBtns}</p>
+    <h3>Other tracks at this site</h3>
+    <p>${tabs}</p>
+    <p style="color:var(--muted);font-size:12px">${esc(D.restoration.honesty.no_new_skills)}</p>`;
+  document.body.classList.add('open');
+}
+window.__tc3dRestoTrack = openRestoTrack;
+
+function teardownRestoWalk() {
+  if (!curRestoSite) return;
+  if (restoGroup) { scene.remove(restoGroup); disposeOf(restoGroup); restoGroup = null; }
+  restoBeacons = []; nearTrack = null; curRestoSite = null;
+  clearFauna();
+}
+function exitRestoWalk() {
+  const ck = curRestoSite?.campus ?? campusKey;
+  teardownRestoWalk();
+  showCampus(ck);
+}
+function startRestorationWalk(siteId) {
+  const site = D.restoration.sites.find((s) => s.id === siteId && s.e !== undefined);
+  if (!site) return;
+  if (walkActive) (isTouch ? exitWalkMode() : plc.unlock());
+  if (sim) teardownSim();
+  if (curRestoSite) teardownRestoWalk();
+  view = 'restoration'; curRestoSite = site; campusKey = site.campus;
+  if (hallGroup) hallGroup.visible = false;
+  if (campusGroup) campusGroup.visible = false;
+  if (regionGroup) regionGroup.visible = false;
+  if (avatarGroup) avatarGroup.visible = false;
+  ground.visible = grid.visible = false;
+  applyAtmos(site.campus);
+  restoGroup = new THREE.Group();
+  buildRestoGround(restoGroup, site);
+  buildRestoTrackBeacons(restoGroup);
+  scene.add(restoGroup);
+  spawnFauna(site.campus, RESTO_R);
+  scene.fog.near = 30 * fogMul; scene.fog.far = 130 * fogMul;
+  controls.maxDistance = 90; controls.minDistance = 8;
+  camera.position.set(0, 13, 40); controls.target.set(0, 1, -10);
+  document.getElementById('mm').style.display = 'none';
+  document.getElementById('hname').textContent = site.name;
+  document.getElementById('hfocus').textContent = site.org + ' · ' + site.habitat;
+  document.getElementById('hint').textContent =
+    'Schematic ground, composed from this site’s own real habitat '
+    + 'description — not a survey or aerial scan of the actual site.';
+  document.getElementById('walkBtn').style.display = '';
+  document.getElementById('avaBtn').style.display = 'none';
+  const cb = document.getElementById('campusBtn');
+  cb.style.display = ''; cb.textContent = '↑ ' + D.campuses[site.campus].name;
+  document.getElementById('simBtn').style.display = 'none';
+  document.getElementById('glbBtn').style.display = 'none';
+  document.getElementById('glbInBtn').style.display = 'none';
+  document.getElementById('satBtn').style.display = 'none';
+}
+window.__tc3dRestoWalk = startRestorationWalk;
+window.__tc3dRestoExit = exitRestoWalk;
 
 /* The learner record is device-local only - localStorage, every access
    wrapped so a blocked store never breaks the page - and the honesty line
@@ -6093,6 +6384,13 @@ document.addEventListener('click', (e) => {
   if (sh) { openSchools(sh.dataset.schoolsHall); return; }
   const rh = e.target.closest('[data-restoration-hall]');
   if (rh) { openRestoration(rh.dataset.restorationHall); return; }
+  const rw = e.target.closest('[data-resto-walk]');
+  if (rw) {
+    document.body.classList.remove('open');
+    startRestorationWalk(rw.dataset.restoWalk); return;
+  }
+  const rt = e.target.closest('[data-resto-track]');
+  if (rt) { openRestoTrack(rt.dataset.restoTrack); return; }
   if (e.target.id === 'simRetry') {
     document.body.classList.remove('open');
     const id = curSimId; teardownSim(); view = 'hall'; startSim(id); return;
