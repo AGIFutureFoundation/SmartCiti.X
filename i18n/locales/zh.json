@@ -54,7 +54,7 @@
   "sim.choose": "选择模拟器",
   "sim.operator": "询问操作员",
   "progress.local": "进度仅保存在此设备上。",
-  "city.note": "城市图层：地点记录自 Locator.X；街道、桥梁与水体为示意",
+  "city.note": "城市图层：校园附近的真实地点（打开后可见各自的真实认定等级）；街道、桥梁与水体为示意",
   "chapters.hall": "地区分会大厅",
   "avatar.title": "角色"
  },

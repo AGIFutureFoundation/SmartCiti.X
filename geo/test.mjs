@@ -91,23 +91,45 @@ ok('the registry says what a coordinate is not: an anchor, not a parcel claim',
   /does not claim a parcel/.test(reg.honesty.siting)
   && /planned locations/.test(reg.honesty.siting));
 /* -------------------------------------------------------------- anchors --- */
-ok('every campus carries RECORDED anchors citing their Locator.X table — eight Bay cities, seven NOLA institutions',
-  Object.keys(reg.anchors).length === 3
+const RECORDED_CKS = ['treasure-island', 'oakland', 'new-orleans'];
+const AUTHORED_CKS = ['houston', 'chicago'];
+ok('every campus carries anchors — RECORDED citing their Locator.X table for '
+  + 'the three flagship campuses (eight Bay cities, seven NOLA institutions), '
+  + 'AUTHORED for the two hub campuses that have no such sibling table',
+  Object.keys(reg.anchors).length === 5
   && reg.anchors['treasure-island'].length === 8
   && reg.anchors['oakland'].length === 4
   && reg.anchors['new-orleans'].length === 7
-  && Object.values(reg.anchors).every((l) =>
-    l.every((a) => a.provenance === 'RECORDED' && /Locator\.X/.test(a.source))));
+  && reg.anchors['houston'].length === 4
+  && reg.anchors['chicago'].length === 4
+  && RECORDED_CKS.every((ck) => reg.anchors[ck].every((a) =>
+      a.provenance === 'RECORDED' && /Locator\.X/.test(a.source)))
+  && AUTHORED_CKS.every((ck) => reg.anchors[ck].every((a) =>
+      a.provenance === 'AUTHORED' && !/Locator\.X/.test(a.source))));
+ok('the AUTHORED anchors (Houston, Chicago) admit plainly they are not RECORDED '
+  + '- no sibling table lists them, unlike every anchor near the three flagship campuses',
+  AUTHORED_CKS.every((ck) => reg.anchors[ck].every((a) =>
+    a.source.length > 15 && !/Locator\.X/.test(a.source))));
 ok('every anchor sits within 60 km of its campus, distances recomputed',
   Object.entries(reg.anchors).every(([ck, l]) => l.every((a) =>
     Math.abs(haversineKm(pts[ck], a) - a.km) < 0.1 && a.km < 60)));
 ok('the GeoJSON carries the anchors as tagged features, [lng, lat]',
-  gj.features.filter((f) => f.properties.kind === 'anchor').length === 19
+  gj.features.filter((f) => f.properties.kind === 'anchor').length === 27
   && gj.features.filter((f) => f.properties.kind === 'anchor')
       .every((f) => Math.abs(f.geometry.coordinates[0]) > Math.abs(f.geometry.coordinates[1])));
-ok('every anchor, Bay city and NOLA institution alike, carries an authored blurb that says it is not the RECORDED table',
-  Object.values(reg.anchors).every((l) => l.every((a) => a.blurb?.length > 40
-    && /authored/.test(a.blurb_provenance))));
+ok('the GeoJSON anchor features carry the same real provenance split as the registry',
+  gj.features.filter((f) => f.properties.kind === 'anchor')
+    .every((f) => RECORDED_CKS.includes(f.properties.near)
+      ? f.properties.provenance === 'RECORDED'
+      : f.properties.provenance === 'AUTHORED'));
+ok('every anchor, RECORDED and AUTHORED alike, carries an authored blurb - '
+  + 'each one honestly naming its OWN coordinate\'s tier, never claiming RECORDED for an AUTHORED point',
+  Object.entries(reg.anchors).every(([ck, l]) => l.every((a) => {
+    if (a.blurb?.length <= 40 || !/authored/.test(a.blurb_provenance)) return false;
+    return RECORDED_CKS.includes(ck)
+      ? !/same tier as the coordinate/.test(a.blurb_provenance)
+      : /same tier as the coordinate/.test(a.blurb_provenance);
+  })));
 ok('the New Orleans city frame is RECORDED, plausible, and inside its own bounds',
   reg.city['new-orleans'].provenance === 'RECORDED'
   && /Locator\.X/.test(reg.city['new-orleans'].source)
@@ -116,25 +138,43 @@ ok('the New Orleans city frame is RECORDED, plausible, and inside its own bounds
       && c.center.lat > c.bounds.s && c.center.lat < c.bounds.n
       && haversineKm(pts['new-orleans'],
         { lat: c.center.lat, lng: c.center.lng }) < 6; })());
-ok('every city frame is RECORDED from Locator.X and actually frames its campus',
-  Object.entries(reg.city).every(([ck, c]) =>
-    c.provenance === 'RECORDED' && /Locator\.X/.test(c.source)
-    && c.center.lng > c.bounds.w && c.center.lng < c.bounds.e
-    && c.center.lat > c.bounds.s && c.center.lat < c.bounds.n
-    && pts[ck].lng > c.bounds.w && pts[ck].lng < c.bounds.e
-    && pts[ck].lat > c.bounds.s && pts[ck].lat < c.bounds.n));
+ok('every RECORDED city frame (the three flagship campuses) actually cites Locator.X and frames its campus',
+  RECORDED_CKS.every((ck) => {
+    const c = reg.city[ck];
+    return c.provenance === 'RECORDED' && /Locator\.X/.test(c.source)
+      && c.center.lng > c.bounds.w && c.center.lng < c.bounds.e
+      && c.center.lat > c.bounds.s && c.center.lat < c.bounds.n
+      && pts[ck].lng > c.bounds.w && pts[ck].lng < c.bounds.e
+      && pts[ck].lat > c.bounds.s && pts[ck].lat < c.bounds.n;
+  }));
+ok('every AUTHORED city frame (the two hub campuses) admits it is not cross-checked, and still actually frames its campus',
+  AUTHORED_CKS.every((ck) => {
+    const c = reg.city[ck];
+    return c.provenance === 'AUTHORED' && !/Locator\.X/.test(c.source)
+      && /not cross-checked/.test(c.source)
+      && c.center.lng > c.bounds.w && c.center.lng < c.bounds.e
+      && c.center.lat > c.bounds.s && c.center.lat < c.bounds.n
+      && pts[ck].lng > c.bounds.w && pts[ck].lng < c.bounds.e
+      && pts[ck].lat > c.bounds.s && pts[ck].lat < c.bounds.n;
+  }));
 ok('both Bay campuses share the one committed Bay frame',
   JSON.stringify(reg.city['treasure-island'])
     === JSON.stringify(reg.city['oakland']));
+ok('the two hub campuses do not share a frame with each other or with the Bay',
+  JSON.stringify(reg.city['houston']) !== JSON.stringify(reg.city['chicago'])
+  && JSON.stringify(reg.city['houston']) !== JSON.stringify(reg.city['treasure-island']));
 
 const net = JSON.parse(readFileSync(
   new URL('./registry/network.geojson', import.meta.url)));
-ok('the network GeoJSON carries the whole registry: 24 points (5 campuses + 19 anchors), 10 route lines (every campus pair), 2 recorded frames',
-  net.features.filter((f) => f.geometry.type === 'Point').length === 24
+ok('the network GeoJSON carries the whole registry: 32 points (5 campuses + 27 '
+  + 'anchors), 10 route lines (every campus pair), 4 frames (2 RECORDED, 2 AUTHORED)',
+  net.features.filter((f) => f.geometry.type === 'Point').length === 32
   && net.features.filter((f) => f.geometry.type === 'LineString').length === 10
-  && net.features.filter((f) => f.geometry.type === 'Polygon').length === 2
+  && net.features.filter((f) => f.geometry.type === 'Polygon').length === 4
   && net.features.filter((f) => f.geometry.type === 'Polygon')
-      .every((f) => f.properties.provenance === 'RECORDED'));
+      .every((f) => RECORDED_CKS.includes(f.properties.campus)
+        ? f.properties.provenance === 'RECORDED'
+        : f.properties.provenance === 'AUTHORED'));
 ok('every route line ends on its own campuses and states the table\'s distance',
   net.features.filter((f) => f.properties.kind === 'route').every((f) => {
     const r = reg.routes_km.find((x) =>
@@ -146,11 +186,13 @@ ok('every route line ends on its own campuses and states the table\'s distance',
       && f.properties.provenance === 'DERIVED'
       && near(cs[0], f.properties.from) && near(cs[cs.length - 1], f.properties.to);
   }));
-ok('every anchor point in the network file carries its blurb and provenance',
+ok('every anchor point in the network file carries its blurb and its own real provenance',
   net.features.filter((f) => f.properties.kind === 'anchor')
     .every((f) => f.properties.blurb?.length > 40
-      && f.properties.provenance === 'RECORDED'
-      && /authored/.test(f.properties.blurb_provenance)));
+      && /authored/.test(f.properties.blurb_provenance)
+      && (RECORDED_CKS.includes(f.properties.near)
+        ? f.properties.provenance === 'RECORDED'
+        : f.properties.provenance === 'AUTHORED')));
 
 /* ----------------------------------------------------------- on foot --- */
 ok('the walk bands are the RECORDED ones, with the pace they come from stated',
@@ -170,9 +212,11 @@ ok('the walk refuses the trademark and the false precision at once',
   && /no relationship with\s+it is claimed/.test(reg.walk.honesty.not_a_score)
   && /straight-line between/.test(reg.walk.honesty.straight_line)
   && /sometimes impossibly\s+longer/.test(reg.walk.honesty.straight_line));
-ok('and it says plainly what it does NOT count, rather than implying it counts shops',
+ok('and it says plainly what it does NOT count, rather than implying it counts shops - '
+  + 'and states real anchors span both provenance tiers, not just RECORDED',
   /holds no shop records/.test(reg.walk.honesty.what_it_counts)
-  && /RECORDED anchors/.test(reg.walk.honesty.what_it_counts));
+  && /RECORDED where a\s+sibling source exists/.test(reg.walk.honesty.what_it_counts)
+  && /AUTHORED where none does/.test(reg.walk.honesty.what_it_counts));
 ok('no band is asserted without a campus to measure it from',
   Object.keys(reg.anchors).every((ck) => ck in reg.campuses));
 

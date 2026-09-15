@@ -79,7 +79,7 @@ The caveats travel with them too, because without them the number lies:
 
 - this is not Walk Score(R) and no relationship with it is claimed or implied.
 - distance here is straight-line between coordinates, not a street-network walk: a freeway, a rail cut, a canal or a gated block makes the real walk longer, sometimes impossibly longer. Walk the block before you believe the number.
-- the Academy draws the bands around a campus and reports which RECORDED anchors fall inside them. It counts no shops, because this bundle holds no shop records - the classes above are carried so the map can say what a walkable measure would have to count.
+- the Academy draws the bands around a campus and reports which real anchors - RECORDED where a sibling source exists to cross-check against, AUTHORED where none does - fall inside them. It counts no shops, because this bundle holds no shop records - the classes above are carried so the map can say what a walkable measure would have to count.
 
 ---
 

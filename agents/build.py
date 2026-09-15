@@ -107,13 +107,18 @@ ADVISORS = {
                     'yours - but that is the order a shift starts in.'},
             {'id': 'real', 'ask': 'How much of this is real?',
              'kind': 'say', 'cites': 'geo/registry/campuses_geo.json',
-             'say': 'Three words are used on every label and they mean '
+             'say': 'Four words are used on every label and they mean '
                     'exactly what they say. RECORDED is a fact taken from a '
                     'cited source and checked against it. DERIVED is '
-                    'computed from a recorded fact. SCHEMATIC is drawn to '
-                    'teach and is not a survey of anywhere. The buildings '
-                    'you are standing in are SCHEMATIC. The coordinates the '
-                    'campus sits on are RECORDED.'},
+                    'computed from a recorded fact. AUTHORED is typed from '
+                    'general public knowledge, not cross-checked against '
+                    'any file this build can verify - a materially weaker '
+                    'claim than RECORDED, and labelled as one. SCHEMATIC is '
+                    'drawn to teach and is not a survey of anywhere. The '
+                    'buildings you are standing in are SCHEMATIC. The '
+                    'coordinates the three flagship campuses sit on are '
+                    'RECORDED or DERIVED; the two hub campuses, Houston and '
+                    'Chicago, are AUTHORED.'},
         ],
     },
     'safety-steward': {
@@ -313,11 +318,14 @@ ADVISORS = {
              'kind': 'read', 'bind': 'city.walk'},
             {'id': 'sited', 'ask': 'Is the campus really here?',
              'kind': 'say', 'cites': 'geo/registry/campuses_geo.json',
-             'say': 'The coordinates are RECORDED and the distances '
-                    'between campuses are DERIVED from them by great '
-                    'circle. The campus itself is SCHEMATIC: no ground has '
-                    'been acquired, no building has been consented, and '
-                    'nothing here is a site plan.'},
+             'say': 'The coordinate here is RECORDED or DERIVED for the '
+                    'three flagship campuses, AUTHORED for the two hub '
+                    'campuses (Houston, Chicago) - and the distances '
+                    'between every campus pair are DERIVED from those '
+                    'points by great circle either way. The campus itself '
+                    'is SCHEMATIC: no ground has been acquired, no '
+                    'building has been consented, and nothing here is a '
+                    'site plan.'},
         ],
     },
 }
