@@ -337,7 +337,19 @@ DATA = json.dumps({
     # Bay Restoration: real, independently-run sites and the real skills
     # in this bundle's own graph their field work draws on - see
     # restoration/build.py. Nothing here is a SmartCiti.X program.
-    'restoration': {'sites': restoration_reg['sites'],
+    # A pinned, campus-grouped site also carries its true east/north km
+    # offset from that campus point - the exact formula D.geo.cityPois
+    # already uses - so the walkable city layer can place a real marker
+    # at it; nothing here re-derives or upgrades the site's own AUTHORED
+    # coordinate, it is only re-projected onto the same in-world scale.
+    'restoration': {'sites': [
+        {**s, **({'e': round((s['lng'] - geo_reg['campuses'][s['campus']]['lng'])
+                              * 111.32 * math.cos(math.radians(
+                                  geo_reg['campuses'][s['campus']]['lat'])), 2),
+                  'n': round((s['lat'] - geo_reg['campuses'][s['campus']]['lat'])
+                             * 110.574, 2)}
+           if s.get('pin') and s.get('campus') else {})}
+        for s in restoration_reg['sites']],
                     'tracks': restoration_reg['tracks'],
                     'honesty': restoration_reg['honesty']},
     'i18n': I18N,
@@ -4905,7 +4917,7 @@ function dressCampus(key, g, R) {
 // the POI table stands at its true east/north offset (13 units per km,
 // walkable), joined to the ring road by SCHEMATIC avenues; the river and
 // lake bands are schematic too, and the labels say which is which.
-let cityPois = 0, walkLim = 169, cityHits = [], chapterHit = [];
+let cityPois = 0, walkLim = 169, cityHits = [], chapterHit = [], restorationHits = [];
 
 /* The regional chapter hall: one pavilion on each plaza carrying every
    union homed elsewhere - the 111-trade network made visible per campus.
@@ -5022,6 +5034,38 @@ function openCityPoi(name) {
 }
 window.__tc3dPoi = openCityPoi;   // test hook
 window.__tc3dElev = elevationLookup;   // test hook
+
+/* Bay Restoration site markers: a real, AUTHORED-FROM-PUBLIC-RECORD point
+   (restoration/build.py), re-projected onto the SAME log-eased bay-scale
+   ring the campus's own far city anchors use - decoupled from cityLog so
+   a site lands in a walkable, rendered band regardless of how close this
+   campus's institution layer happens to sit. Clicking one opens the same
+   Bay Restoration panel the toolbar button does, focused on that site. */
+function restoPos(p) {
+  const km = Math.hypot(p.e, p.n) || .001;
+  // within 15km, the same true linear km scale the institution layer uses;
+  // beyond it, the log-eased ring (matching cityPos's own far-anchor
+  // mode) keeps a distant site inside a walkable, rendered radius
+  if (km <= 15) return [p.e * CITY_S, -p.n * CITY_S];
+  const r = 96 + 95 * Math.log10(1 + km);
+  return [p.e / km * r, -p.n / km * r];
+}
+function buildRestorationSites(g) {
+  const sites = D.restoration.sites.filter((s) => s.campus === campusKey && s.e !== undefined);
+  if (!sites.length) return;
+  const pad = new THREE.MeshStandardMaterial({ color: 0x2f6b52, roughness: .92 });
+  const post = new THREE.MeshStandardMaterial({ color: 0x6b5a3a, roughness: .8 });
+  sites.forEach((s) => {
+    const [x, z] = restoPos(s);
+    const p = box(9, .12, 9, pad, x, .12, z, g, false);
+    const m = box(.5, 2.6, .5, post, x, 1.4, z, g);
+    p.userData.restorationSite = m.userData.restorationSite = s.id;
+    restorationHits.push(p, m);
+    const rl = label(s.name, (s.workforce ? 'workforce pathway \\u00b7 ' : '')
+      + 'AUTHORED \\u00b7 real site', 1.4, { kind: 'schematic' });
+    rl.position.set(x, 5, z); g.add(rl);
+  });
+}
 
 // Two placement modes, both labelled with REAL kilometres: a compact city
 // (New Orleans) lays its places at true linear offsets; a bay-scale region
@@ -5224,7 +5268,7 @@ function cityWater(g, key, R, pois) {
 function buildCampus(key) {
   if (campusGroup) scene.remove(campusGroup);
   campusGroup = new THREE.Group(); buildings = []; campusSpin = [];
-  roadFaults = 0; roadCount = 0; cityPois = 0; cityHits = [];
+  roadFaults = 0; roadCount = 0; cityPois = 0; cityHits = []; restorationHits = [];
   const camp = D.campuses[key];
   const dk = camp.districts;
   const R = dk.length === 2 ? 124 : 168;   // the campus scale: districts this far out
@@ -5329,6 +5373,7 @@ function buildCampus(key) {
   dressCampus(key, campusGroup, R + 42);
   buildChapterHall(campusGroup, key);
   buildCity(campusGroup, R);
+  buildRestorationSites(campusGroup);
   flushDashes(campusGroup);
   walkLim = cityPois ? (cityLog ? 536 : 350) : campusR + 85;
   // fog banks: the island's weather, drifting flat haze sheets
@@ -6036,15 +6081,18 @@ window.__tc3dCandidate = openCandidate;
 // the Bay Restoration panel: real, independently-run restoration sites
 // plus the real skills in this bundle's own graph their field work
 // draws on - each track links straight to the hall that teaches it
-function openRestoration(focusHall) {
+function openRestoration(focusHall, focusSite) {
   const esc = (s) => String(s).replace(/[&<>]/g,
     (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
   const siteRows = D.restoration.sites.map((s) => {
     const wf = s.workforce
       ? `<br><span style="font-size:11px;color:var(--good)">▶ real workforce pathway: ${esc(s.workforce_note)}</span>` : '';
     const camp = s.campus ? `<span class="chip" style="font-size:10.5px">near ${esc(D.campuses[s.campus].name)}</span>` : '';
-    return `<li style="margin:9px 0">
-      <b>${esc(s.name)}</b> ${camp}<br>
+    const walk = s.e !== undefined
+      ? `<span class="chip" style="font-size:10.5px">\U0001f6b6 walkable in the city layer</span>` : '';
+    return `<li id="site-${esc(s.id)}" style="margin:9px 0;${s.id === focusSite
+        ? 'border:1px solid var(--mark);border-radius:8px;padding:6px' : ''}">
+      <b>${esc(s.name)}</b> ${camp}${walk}<br>
       <span style="font-size:11.5px;color:var(--muted)">${esc(s.org)} · ${esc(s.city)}, ${esc(s.county)}</span><br>
       <span style="font-size:12px">${esc(s.habitat)} — ${esc(s.scale)}</span>${wf}<br>
       <a href="${esc(s.source_url)}" target="_blank" rel="noopener" style="font-size:11px">${esc(s.source_url)}</a></li>`;
@@ -6075,7 +6123,9 @@ function openRestoration(focusHall) {
     <p style="color:var(--muted);font-size:12px">${esc(D.restoration.honesty.no_new_skills)}</p>
     <p style="color:var(--muted);font-size:12px">${esc(D.restoration.honesty.not_certification)}</p>`;
   document.body.classList.add('open');
-  if (focusHall) {
+  if (focusSite) {
+    document.getElementById('site-' + focusSite)?.scrollIntoView({ block: 'center' });
+  } else if (focusHall) {
     const t = D.restoration.tracks.find((x) =>
       x.skills.some((sk) => sk.split('.')[0] === focusHall));
     if (t) document.getElementById('track-' + t.id)?.scrollIntoView({ block: 'center' });
@@ -6294,6 +6344,11 @@ renderer.domElement.addEventListener('pointerdown', (e) => {
       if (walkActive) plc.unlock();
       return openCityPoi(chit.object.userData.poi);
     }
+    const rhit = ray.intersectObjects(restorationHits, false)[0];
+    if (rhit?.object.userData.restorationSite) {
+      if (walkActive) plc.unlock();
+      return openRestoration(null, rhit.object.userData.restorationSite);
+    }
     const bhit = ray.intersectObjects(buildings, false)[0];
     if (bhit?.object.userData.slug) showHall(bhit.object.userData.slug);
     return;
@@ -6340,6 +6395,15 @@ renderer.domElement.addEventListener('pointermove', (e) => {
         document.getElementById('hname').textContent = p.name;
         document.getElementById('hfocus').textContent =
           p.km + ' km · RECORDED — ' + (p.blurb || '');
+        renderer.domElement.style.cursor = 'pointer';
+        return;
+      }
+      const rhit = ray.intersectObjects(restorationHits, false)[0];
+      if (rhit?.object.userData.restorationSite) {
+        const s = D.restoration.sites.find((x) => x.id === rhit.object.userData.restorationSite);
+        document.getElementById('hname').textContent = s.name;
+        document.getElementById('hfocus').textContent =
+          'Bay Restoration · AUTHORED — ' + s.habitat + ', ' + s.org;
         renderer.domElement.style.cursor = 'pointer';
         return;
       }
@@ -6699,6 +6763,7 @@ window.__tc3d = () => ({ view, buildings: buildings.length, plates: plates.lengt
   beacons: beacons.length, floors: floors.length, slug, campusKey, loc, walkActive,
   sim: curSimId && sim ? curSimId : null, roadFaults, roadCount,
   anchors: anchorPins, simCam: simView, audio: !!ac, city: cityPois,
+  restoSites: restorationHits.length / 2,
   scenario: curScenario?.id ?? null,
   chHosted: D.chapters.hosted[campusKey] ?? null,
   isTouch, shadows: renderer.shadowMap.enabled,

@@ -88,7 +88,27 @@ ok('the hall panel checks for and links back to a taught field-skill track (reve
   && page3d.includes('data-restoration-hall="${esc(sg)}"'));
 ok('the hall-panel restoration badge actually opens the Bay Restoration panel, focused on the hall',
   page3d.includes('openRestoration(rh.dataset.restorationHall)')
-  && page3d.includes('function openRestoration(focusHall)'));
+  && page3d.includes('function openRestoration(focusHall, focusSite)'));
+
+/* --------------------------------------------------- walkable city layer --- */
+const walkable = pinned.filter((s) => s.campus);
+const builder3d = readFileSync(new URL('../web/build_3d.py', import.meta.url), 'utf8');
+ok('every pinned, campus-grouped site gets a true east/north km offset (the same '
+  + 'formula D.geo.cityPois already uses) for the walkable city layer',
+  builder3d.includes("s.get('pin') and s.get('campus')")
+  && walkable.length > 0);
+ok('the 3D app builds a real, clickable marker for every walkable restoration site',
+  page3d.includes('function buildRestorationSites(')
+  && page3d.includes('restorationHits')
+  && page3d.includes('userData.restorationSite'));
+ok('a click on a restoration-site marker opens the panel focused on that exact site',
+  page3d.includes('openRestoration(null, rhit.object.userData.restorationSite)')
+  && page3d.includes("id=\"site-${esc(s.id)}\""));
+ok('a walkable site never claims RECORDED provenance in its in-world sign - it is AUTHORED',
+  page3d.includes("'AUTHORED")
+  && !/restorationSite[\s\S]{0,200}RECORDED/.test(page3d));
+ok('the panel itself marks which real sites are walkable in the city layer',
+  page3d.includes('walkable in the city layer'));
 
 /* -------------------------------------------------------------- dashboard --- */
 const dash = readFileSync(
