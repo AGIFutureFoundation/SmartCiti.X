@@ -126,6 +126,26 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
+     -79.9959,
+     40.4406
+    ]
+   },
+   "properties": {
+    "slug": "pittsburgh",
+    "name": "Three Rivers Steel Hub",
+    "city": "Pittsburgh",
+    "region": "Pennsylvania",
+    "districts": 0,
+    "halls": 0,
+    "provenance": "AUTHORED",
+    "source": "widely-published public geography (city-center), typed from general knowledge - not cross-checked against any file this build can verify"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
      -122.4194,
      37.7749
     ]
@@ -769,6 +789,90 @@
     "blurb": "One of the three Seattle Colleges system campuses, with career-technical and apprenticeship-adjacent programs.",
     "km": 6.6,
     "bearing_deg": 196.9,
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -79.9958,
+     40.438
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Port of Pittsburgh Commission",
+    "near": "pittsburgh",
+    "provenance": "AUTHORED",
+    "source": "the regional port authority for the Pittsburgh-area inland waterway system, headquartered near the three-rivers confluence",
+    "blurb": "The state-chartered regional authority for the Pittsburgh district\u2019s inland waterways, the busiest inland port system in the country by tonnage.",
+    "km": 0.3,
+    "bearing_deg": 178.3,
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -79.9436,
+     40.4443
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Carnegie Mellon University",
+    "near": "pittsburgh",
+    "provenance": "AUTHORED",
+    "source": "the private research university\u2019s Oakland (Pittsburgh) campus",
+    "blurb": "Private research university in Pittsburgh\u2019s Oakland neighborhood, known for engineering, computer science and the arts.",
+    "km": 4.4,
+    "bearing_deg": 84.7,
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -79.8631,
+     40.4062
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Carrie Blast Furnaces National Historic Landmark",
+    "near": "pittsburgh",
+    "provenance": "AUTHORED",
+    "source": "a former U.S. Steel blast-furnace plant on the Monongahela, part of the Rivers of Steel National Heritage Area",
+    "blurb": "A former U.S. Steel ironmaking plant on the Monongahela River, preserved as part of the Rivers of Steel National Heritage Area.",
+    "km": 11.9,
+    "bearing_deg": 108.7,
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -80.009,
+     40.453
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Community College of Allegheny County",
+    "near": "pittsburgh",
+    "provenance": "AUTHORED",
+    "source": "CCAC\u2019s Allegheny Campus on the North Side, with career-technical and trades programs",
+    "blurb": "A public community-college system with real career-technical and trades programs across the Pittsburgh region.",
+    "km": 1.8,
+    "bearing_deg": 321.2,
     "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
    }
   }

@@ -2,8 +2,8 @@
  "pack": "smartcitix-trade-craft-academy-union-registry",
  "pack_version": "3.2.0",
  "built": "2026-09-09",
- "source_stamp": "af58599b8232c39e",
- "count": 666,
+ "source_stamp": "2c57592ee46cd955",
+ "count": 777,
  "regions": {
   "treasure-island": {
    "abbr": "SF",
@@ -34,6 +34,11 @@
    "abbr": "SEA",
    "name": "Sound Aerospace Hub",
    "city": "Seattle"
+  },
+  "pittsburgh": {
+   "abbr": "PIT",
+   "name": "Three Rivers Steel Hub",
+   "city": "Pittsburgh"
   }
  },
  "hosted": {
@@ -42,7 +47,8 @@
   "new-orleans": 83,
   "houston": 111,
   "chicago": 111,
-  "seattle": 111
+  "seattle": 111,
+  "pittsburgh": 111
  },
  "honesty": {
   "chapters": "the Academy's own regional training structure across its planned campuses - not a claim about any real union's locals, chapters or jurisdictions; no local is named"
@@ -71,6 +77,10 @@
     "seattle": {
      "code": "ironworkers@SEA",
      "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "ironworkers@PIT",
+     "role": "regional chapter"
     }
    }
   },
@@ -96,6 +106,10 @@
     },
     "seattle": {
      "code": "electricians@SEA",
+     "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "electricians@PIT",
      "role": "regional chapter"
     }
    }
@@ -123,6 +137,10 @@
     "seattle": {
      "code": "pipefitters@SEA",
      "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "pipefitters@PIT",
+     "role": "regional chapter"
     }
    }
   },
@@ -148,6 +166,10 @@
     },
     "seattle": {
      "code": "carpenters@SEA",
+     "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "carpenters@PIT",
      "role": "regional chapter"
     }
    }
@@ -175,6 +197,10 @@
     "seattle": {
      "code": "operating-eng@SEA",
      "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "operating-eng@PIT",
+     "role": "regional chapter"
     }
    }
   },
@@ -200,6 +226,10 @@
     },
     "seattle": {
      "code": "laborers@SEA",
+     "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "laborers@PIT",
      "role": "regional chapter"
     }
    }
@@ -227,6 +257,10 @@
     "seattle": {
      "code": "sheetmetal@SEA",
      "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "sheetmetal@PIT",
+     "role": "regional chapter"
     }
    }
   },
@@ -252,6 +286,10 @@
     },
     "seattle": {
      "code": "bricklayers@SEA",
+     "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "bricklayers@PIT",
      "role": "regional chapter"
     }
    }
@@ -279,6 +317,10 @@
     "seattle": {
      "code": "cement-masons@SEA",
      "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "cement-masons@PIT",
+     "role": "regional chapter"
     }
    }
   },
@@ -304,6 +346,10 @@
     },
     "seattle": {
      "code": "roofers@SEA",
+     "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "roofers@PIT",
      "role": "regional chapter"
     }
    }
@@ -331,6 +377,10 @@
     "seattle": {
      "code": "painters@SEA",
      "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "painters@PIT",
+     "role": "regional chapter"
     }
    }
   },
@@ -356,6 +406,10 @@
     },
     "seattle": {
      "code": "glaziers@SEA",
+     "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "glaziers@PIT",
      "role": "regional chapter"
     }
    }
@@ -383,6 +437,10 @@
     "seattle": {
      "code": "insulators@SEA",
      "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "insulators@PIT",
+     "role": "regional chapter"
     }
    }
   },
@@ -408,6 +466,10 @@
     },
     "seattle": {
      "code": "millwrights@SEA",
+     "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "millwrights@PIT",
      "role": "regional chapter"
     }
    }
@@ -435,6 +497,10 @@
     "seattle": {
      "code": "boilermakers@SEA",
      "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "boilermakers@PIT",
+     "role": "regional chapter"
     }
    }
   },
@@ -460,6 +526,10 @@
     },
     "seattle": {
      "code": "elevator@SEA",
+     "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "elevator@PIT",
      "role": "regional chapter"
     }
    }
@@ -487,6 +557,10 @@
     "seattle": {
      "code": "teamsters@SEA",
      "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "teamsters@PIT",
+     "role": "regional chapter"
     }
    }
   },
@@ -512,6 +586,10 @@
     },
     "seattle": {
      "code": "welders@SEA",
+     "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "welders@PIT",
      "role": "regional chapter"
     }
    }
@@ -539,6 +617,10 @@
     "seattle": {
      "code": "hvacr@SEA",
      "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "hvacr@PIT",
+     "role": "regional chapter"
     }
    }
   },
@@ -564,6 +646,10 @@
     },
     "seattle": {
      "code": "crane-ops@SEA",
+     "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "crane-ops@PIT",
      "role": "regional chapter"
     }
    }
@@ -591,6 +677,10 @@
     "seattle": {
      "code": "riggers@SEA",
      "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "riggers@PIT",
+     "role": "regional chapter"
     }
    }
   },
@@ -616,6 +706,10 @@
     },
     "seattle": {
      "code": "heavy-equip@SEA",
+     "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "heavy-equip@PIT",
      "role": "regional chapter"
     }
    }
@@ -643,6 +737,10 @@
     "seattle": {
      "code": "drywall@SEA",
      "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "drywall@PIT",
+     "role": "regional chapter"
     }
    }
   },
@@ -668,6 +766,10 @@
     },
     "seattle": {
      "code": "flooring@SEA",
+     "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "flooring@PIT",
      "role": "regional chapter"
     }
    }
@@ -695,6 +797,10 @@
     "seattle": {
      "code": "grounds@SEA",
      "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "grounds@PIT",
+     "role": "regional chapter"
     }
    }
   },
@@ -720,6 +826,10 @@
     },
     "seattle": {
      "code": "line-workers@SEA",
+     "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "line-workers@PIT",
      "role": "regional chapter"
     }
    }
@@ -747,6 +857,10 @@
     "seattle": {
      "code": "solar@SEA",
      "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "solar@PIT",
+     "role": "regional chapter"
     }
    }
   },
@@ -772,6 +886,10 @@
     },
     "seattle": {
      "code": "wind@SEA",
+     "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "wind@PIT",
      "role": "regional chapter"
     }
    }
@@ -799,6 +917,10 @@
     "seattle": {
      "code": "demolition@SEA",
      "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "demolition@PIT",
+     "role": "regional chapter"
     }
    }
   },
@@ -824,6 +946,10 @@
     },
     "seattle": {
      "code": "scaffold@SEA",
+     "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "scaffold@PIT",
      "role": "regional chapter"
     }
    }
@@ -851,6 +977,10 @@
     "seattle": {
      "code": "surveyors@SEA",
      "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "surveyors@PIT",
+     "role": "regional chapter"
     }
    }
   },
@@ -876,6 +1006,10 @@
     },
     "seattle": {
      "code": "fire-sprinkler@SEA",
+     "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "fire-sprinkler@PIT",
      "role": "regional chapter"
     }
    }
@@ -903,6 +1037,10 @@
     "seattle": {
      "code": "hazmat@SEA",
      "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "hazmat@PIT",
+     "role": "regional chapter"
     }
    }
   },
@@ -928,6 +1066,10 @@
     },
     "seattle": {
      "code": "refractory@SEA",
+     "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "refractory@PIT",
      "role": "regional chapter"
     }
    }
@@ -955,6 +1097,10 @@
     "seattle": {
      "code": "pipeline@SEA",
      "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "pipeline@PIT",
+     "role": "regional chapter"
     }
    }
   },
@@ -980,6 +1126,10 @@
     },
     "seattle": {
      "code": "tank-erectors@SEA",
+     "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "tank-erectors@PIT",
      "role": "regional chapter"
     }
    }
@@ -1007,6 +1157,10 @@
     "seattle": {
      "code": "shipfitters@SEA",
      "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "shipfitters@PIT",
+     "role": "regional chapter"
     }
    }
   },
@@ -1032,6 +1186,10 @@
     },
     "seattle": {
      "code": "marine-pipe@SEA",
+     "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "marine-pipe@PIT",
      "role": "regional chapter"
     }
    }
@@ -1059,6 +1217,10 @@
     "seattle": {
      "code": "divers@SEA",
      "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "divers@PIT",
+     "role": "regional chapter"
     }
    }
   },
@@ -1084,6 +1246,10 @@
     },
     "seattle": {
      "code": "blasters@SEA",
+     "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "blasters@PIT",
      "role": "regional chapter"
     }
    }
@@ -1111,6 +1277,10 @@
     "seattle": {
      "code": "miners@SEA",
      "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "miners@PIT",
+     "role": "regional chapter"
     }
    }
   },
@@ -1136,6 +1306,10 @@
     },
     "seattle": {
      "code": "smelter@SEA",
+     "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "smelter@PIT",
      "role": "regional chapter"
     }
    }
@@ -1163,6 +1337,10 @@
     "seattle": {
      "code": "foundry@SEA",
      "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "foundry@PIT",
+     "role": "regional chapter"
     }
    }
   },
@@ -1188,6 +1366,10 @@
     },
     "seattle": {
      "code": "machinists@SEA",
+     "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "machinists@PIT",
      "role": "regional chapter"
     }
    }
@@ -1215,6 +1397,10 @@
     "seattle": {
      "code": "toolmakers@SEA",
      "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "toolmakers@PIT",
+     "role": "regional chapter"
     }
    }
   },
@@ -1240,6 +1426,10 @@
     },
     "seattle": {
      "code": "fabricators@SEA",
+     "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "fabricators@PIT",
      "role": "regional chapter"
     }
    }
@@ -1267,6 +1457,10 @@
     "seattle": {
      "code": "platers@SEA",
      "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "platers@PIT",
+     "role": "regional chapter"
     }
    }
   },
@@ -1292,6 +1486,10 @@
     },
     "seattle": {
      "code": "substation@SEA",
+     "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "substation@PIT",
      "role": "regional chapter"
     }
    }
@@ -1319,6 +1517,10 @@
     "seattle": {
      "code": "cable-splicers@SEA",
      "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "cable-splicers@PIT",
+     "role": "regional chapter"
     }
    }
   },
@@ -1344,6 +1546,10 @@
     },
     "seattle": {
      "code": "meter-techs@SEA",
+     "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "meter-techs@PIT",
      "role": "regional chapter"
     }
    }
@@ -1371,6 +1577,10 @@
     "seattle": {
      "code": "gas-distrib@SEA",
      "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "gas-distrib@PIT",
+     "role": "regional chapter"
     }
    }
   },
@@ -1396,6 +1606,10 @@
     },
     "seattle": {
      "code": "water-distrib@SEA",
+     "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "water-distrib@PIT",
      "role": "regional chapter"
     }
    }
@@ -1423,6 +1637,10 @@
     "seattle": {
      "code": "wastewater@SEA",
      "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "wastewater@PIT",
+     "role": "regional chapter"
     }
    }
   },
@@ -1448,6 +1666,10 @@
     },
     "seattle": {
      "code": "nuclear@SEA",
+     "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "nuclear@PIT",
      "role": "regional chapter"
     }
    }
@@ -1475,6 +1697,10 @@
     "seattle": {
      "code": "hydro@SEA",
      "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "hydro@PIT",
+     "role": "regional chapter"
     }
    }
   },
@@ -1500,6 +1726,10 @@
     },
     "seattle": {
      "code": "geothermal@SEA",
+     "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "geothermal@PIT",
      "role": "regional chapter"
     }
    }
@@ -1527,6 +1757,10 @@
     "seattle": {
      "code": "battery-storage@SEA",
      "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "battery-storage@PIT",
+     "role": "regional chapter"
     }
    }
   },
@@ -1552,6 +1786,10 @@
     },
     "seattle": {
      "code": "ev-charging@SEA",
+     "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "ev-charging@PIT",
      "role": "regional chapter"
     }
    }
@@ -1579,6 +1817,10 @@
     "seattle": {
      "code": "hydrogen@SEA",
      "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "hydrogen@PIT",
+     "role": "regional chapter"
     }
    }
   },
@@ -1604,6 +1846,10 @@
     },
     "seattle": {
      "code": "transmission@SEA",
+     "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "transmission@PIT",
      "role": "regional chapter"
     }
    }
@@ -1631,6 +1877,10 @@
     "seattle": {
      "code": "district-energy@SEA",
      "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "district-energy@PIT",
+     "role": "regional chapter"
     }
    }
   },
@@ -1656,6 +1906,10 @@
     },
     "seattle": {
      "code": "masonry-restore@SEA",
+     "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "masonry-restore@PIT",
      "role": "regional chapter"
     }
    }
@@ -1683,6 +1937,10 @@
     "seattle": {
      "code": "stone-carvers@SEA",
      "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "stone-carvers@PIT",
+     "role": "regional chapter"
     }
    }
   },
@@ -1708,6 +1966,10 @@
     },
     "seattle": {
      "code": "plasterers@SEA",
+     "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "plasterers@PIT",
      "role": "regional chapter"
     }
    }
@@ -1735,6 +1997,10 @@
     "seattle": {
      "code": "terrazzo@SEA",
      "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "terrazzo@PIT",
+     "role": "regional chapter"
     }
    }
   },
@@ -1760,6 +2026,10 @@
     },
     "seattle": {
      "code": "tilesetters@SEA",
+     "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "tilesetters@PIT",
      "role": "regional chapter"
     }
    }
@@ -1787,6 +2057,10 @@
     "seattle": {
      "code": "lathers@SEA",
      "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "lathers@PIT",
+     "role": "regional chapter"
     }
    }
   },
@@ -1812,6 +2086,10 @@
     },
     "seattle": {
      "code": "curtainwall@SEA",
+     "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "curtainwall@PIT",
      "role": "regional chapter"
     }
    }
@@ -1839,6 +2117,10 @@
     "seattle": {
      "code": "waterproofers@SEA",
      "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "waterproofers@PIT",
+     "role": "regional chapter"
     }
    }
   },
@@ -1864,6 +2146,10 @@
     },
     "seattle": {
      "code": "firestop@SEA",
+     "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "firestop@PIT",
      "role": "regional chapter"
     }
    }
@@ -1891,6 +2177,10 @@
     "seattle": {
      "code": "acoustic@SEA",
      "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "acoustic@PIT",
+     "role": "regional chapter"
     }
    }
   },
@@ -1916,6 +2206,10 @@
     },
     "seattle": {
      "code": "cladding@SEA",
+     "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "cladding@PIT",
      "role": "regional chapter"
     }
    }
@@ -1943,6 +2237,10 @@
     "seattle": {
      "code": "shoring@SEA",
      "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "shoring@PIT",
+     "role": "regional chapter"
     }
    }
   },
@@ -1968,6 +2266,10 @@
     },
     "seattle": {
      "code": "piling@SEA",
+     "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "piling@PIT",
      "role": "regional chapter"
     }
    }
@@ -1995,6 +2297,10 @@
     "seattle": {
      "code": "concrete-pump@SEA",
      "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "concrete-pump@PIT",
+     "role": "regional chapter"
     }
    }
   },
@@ -2020,6 +2326,10 @@
     },
     "seattle": {
      "code": "post-tension@SEA",
+     "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "post-tension@PIT",
      "role": "regional chapter"
     }
    }
@@ -2047,6 +2357,10 @@
     "seattle": {
      "code": "precast@SEA",
      "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "precast@PIT",
+     "role": "regional chapter"
     }
    }
   },
@@ -2072,6 +2386,10 @@
     },
     "seattle": {
      "code": "steel-erectors@SEA",
+     "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "steel-erectors@PIT",
      "role": "regional chapter"
     }
    }
@@ -2099,6 +2417,10 @@
     "seattle": {
      "code": "decking@SEA",
      "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "decking@PIT",
+     "role": "regional chapter"
     }
    }
   },
@@ -2124,6 +2446,10 @@
     },
     "seattle": {
      "code": "window-glazing@SEA",
+     "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "window-glazing@PIT",
      "role": "regional chapter"
     }
    }
@@ -2151,6 +2477,10 @@
     "seattle": {
      "code": "bas-controls@SEA",
      "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "bas-controls@PIT",
+     "role": "regional chapter"
     }
    }
   },
@@ -2176,6 +2506,10 @@
     },
     "seattle": {
      "code": "fire-alarm@SEA",
+     "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "fire-alarm@PIT",
      "role": "regional chapter"
     }
    }
@@ -2203,6 +2537,10 @@
     "seattle": {
      "code": "security-sys@SEA",
      "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "security-sys@PIT",
+     "role": "regional chapter"
     }
    }
   },
@@ -2228,6 +2566,10 @@
     },
     "seattle": {
      "code": "network-cabling@SEA",
+     "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "network-cabling@PIT",
      "role": "regional chapter"
     }
    }
@@ -2255,6 +2597,10 @@
     "seattle": {
      "code": "fiber-splicers@SEA",
      "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "fiber-splicers@PIT",
+     "role": "regional chapter"
     }
    }
   },
@@ -2280,6 +2626,10 @@
     },
     "seattle": {
      "code": "data-center@SEA",
+     "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "data-center@PIT",
      "role": "regional chapter"
     }
    }
@@ -2307,6 +2657,10 @@
     "seattle": {
      "code": "instrumentation@SEA",
      "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "instrumentation@PIT",
+     "role": "regional chapter"
     }
    }
   },
@@ -2332,6 +2686,10 @@
     },
     "seattle": {
      "code": "plc-techs@SEA",
+     "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "plc-techs@PIT",
      "role": "regional chapter"
     }
    }
@@ -2359,6 +2717,10 @@
     "seattle": {
      "code": "robotics@SEA",
      "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "robotics@PIT",
+     "role": "regional chapter"
     }
    }
   },
@@ -2384,6 +2746,10 @@
     },
     "seattle": {
      "code": "automation-int@SEA",
+     "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "automation-int@PIT",
      "role": "regional chapter"
     }
    }
@@ -2411,6 +2777,10 @@
     "seattle": {
      "code": "cleanroom@SEA",
      "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "cleanroom@PIT",
+     "role": "regional chapter"
     }
    }
   },
@@ -2436,6 +2806,10 @@
     },
     "seattle": {
      "code": "medical-gas@SEA",
+     "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "medical-gas@PIT",
      "role": "regional chapter"
     }
    }
@@ -2463,6 +2837,10 @@
     "seattle": {
      "code": "rail-track@SEA",
      "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "rail-track@PIT",
+     "role": "regional chapter"
     }
    }
   },
@@ -2488,6 +2866,10 @@
     },
     "seattle": {
      "code": "rail-signals@SEA",
+     "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "rail-signals@PIT",
      "role": "regional chapter"
     }
    }
@@ -2515,6 +2897,10 @@
     "seattle": {
      "code": "catenary@SEA",
      "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "catenary@PIT",
+     "role": "regional chapter"
     }
    }
   },
@@ -2540,6 +2926,10 @@
     },
     "seattle": {
      "code": "transit-vehicle@SEA",
+     "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "transit-vehicle@PIT",
      "role": "regional chapter"
     }
    }
@@ -2567,6 +2957,10 @@
     "seattle": {
      "code": "aviation-ground@SEA",
      "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "aviation-ground@PIT",
+     "role": "regional chapter"
     }
    }
   },
@@ -2592,6 +2986,10 @@
     },
     "seattle": {
      "code": "airfield@SEA",
+     "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "airfield@PIT",
      "role": "regional chapter"
     }
    }
@@ -2619,6 +3017,10 @@
     "seattle": {
      "code": "port-crane@SEA",
      "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "port-crane@PIT",
+     "role": "regional chapter"
     }
    }
   },
@@ -2644,6 +3046,10 @@
     },
     "seattle": {
      "code": "marine-terminal@SEA",
+     "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "marine-terminal@PIT",
      "role": "regional chapter"
     }
    }
@@ -2671,6 +3077,10 @@
     "seattle": {
      "code": "fleet-diesel@SEA",
      "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "fleet-diesel@PIT",
+     "role": "regional chapter"
     }
    }
   },
@@ -2696,6 +3106,10 @@
     },
     "seattle": {
      "code": "bridge-inspect@SEA",
+     "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "bridge-inspect@PIT",
      "role": "regional chapter"
     }
    }
@@ -2723,6 +3137,10 @@
     "seattle": {
      "code": "asbestos@SEA",
      "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "asbestos@PIT",
+     "role": "regional chapter"
     }
    }
   },
@@ -2748,6 +3166,10 @@
     },
     "seattle": {
      "code": "lead-abatement@SEA",
+     "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "lead-abatement@PIT",
      "role": "regional chapter"
     }
    }
@@ -2775,6 +3197,10 @@
     "seattle": {
      "code": "mold-remediation@SEA",
      "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "mold-remediation@PIT",
+     "role": "regional chapter"
     }
    }
   },
@@ -2800,6 +3226,10 @@
     },
     "seattle": {
      "code": "spill-response@SEA",
+     "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "spill-response@PIT",
      "role": "regional chapter"
     }
    }
@@ -2827,6 +3257,10 @@
     "seattle": {
      "code": "confined-space@SEA",
      "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "confined-space@PIT",
+     "role": "regional chapter"
     }
    }
   },
@@ -2852,6 +3286,10 @@
     },
     "seattle": {
      "code": "high-angle@SEA",
+     "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "high-angle@PIT",
      "role": "regional chapter"
     }
    }
@@ -2879,6 +3317,10 @@
     "seattle": {
      "code": "site-safety@SEA",
      "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "site-safety@PIT",
+     "role": "regional chapter"
     }
    }
   },
@@ -2905,6 +3347,10 @@
     "seattle": {
      "code": "industrial-clean@SEA",
      "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "industrial-clean@PIT",
+     "role": "regional chapter"
     }
    }
   },
@@ -2930,6 +3376,10 @@
     },
     "seattle": {
      "code": "survey-drone@SEA",
+     "role": "regional chapter"
+    },
+    "pittsburgh": {
+     "code": "survey-drone@PIT",
      "role": "regional chapter"
     }
    }

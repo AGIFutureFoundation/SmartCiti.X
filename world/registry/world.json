@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-11",
- "source_stamp": "806d25b112be840d",
+ "source_stamp": "e5bf79cda32df5cf",
  "honesty": {
   "textures": "no texture, photograph or artwork file exists in this repository and none is downloaded: every surface is a recipe - a base colour, a grain, an octave count and a relief depth - and the page generates the image and its normal map in the learner's own browser at boot. There is therefore no third-party artwork anywhere in the render.",
   "weather": "schematic weather, not a forecast and not an observation: nothing here is tied to a reading taken at any real place or time, and the per-campus atmospheres are authored by reputation rather than measured.",
@@ -15,7 +15,7 @@
   "weather": 6,
   "ground": 6,
   "fauna": 6,
-  "animals": 70
+  "animals": 77
  },
  "sky": {
   "projection": "equirectangular, drawn to a 1024x512 canvas at boot",
@@ -325,7 +325,8 @@
     "new-orleans",
     "houston",
     "chicago",
-    "seattle"
+    "seattle",
+    "pittsburgh"
    ],
    "why": "every yard in every city has them, and they are the scale reference nobody thinks about"
   },
@@ -349,7 +350,8 @@
     "new-orleans",
     "houston",
     "chicago",
-    "seattle"
+    "seattle",
+    "pittsburgh"
    ],
    "why": "the yard dog is a fixture of the trade, and it teaches the habit of looking down before reversing"
   }
@@ -534,6 +536,36 @@
    "ground": "concrete",
    "verge": "gravel",
    "character": "a low marine overcast off the Sound, a working waterfront and the hum of aerospace manufacturing just south of the green - authored by reputation, not measured"
+  },
+  "pittsburgh": {
+   "sky": [
+    "#13161a",
+    "#282c2e",
+    "#4c4c49",
+    "#6e6155"
+   ],
+   "fog": {
+    "color": 3354666,
+    "mul": 1.2
+   },
+   "banks": 3,
+   "sun": {
+    "color": 14274749,
+    "i": 1.05
+   },
+   "hemi": {
+    "sky": 10132630,
+    "ground": 2367258,
+    "i": 1.0
+   },
+   "amb": {
+    "wind": 0.4,
+    "gulls": false,
+    "harbor": true
+   },
+   "ground": "concrete",
+   "verge": "gravel",
+   "character": "a river haze over three confluent rivers crossed by more bridges than any other American city, and a post-industrial skyline standing where the mills once were - authored by reputation, not measured"
   }
  }
 }

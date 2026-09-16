@@ -117,7 +117,8 @@ campuses_doc = {
 # about any real union's locals, chapters or jurisdictions; the taxonomy
 # honesty note governs here too, and no local is named.
 REGION_ABBR = {"treasure-island": "SF", "oakland": "OAK", "new-orleans": "NOLA",
-               "houston": "HOU", "chicago": "CHI", "seattle": "SEA"}
+               "houston": "HOU", "chicago": "CHI", "seattle": "SEA",
+               "pittsburgh": "PIT"}
 
 chapters = {}
 for u in unions:

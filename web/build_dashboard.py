@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """The network dashboard: SmartCiti.X's whole platform, read live from the
-verified registries - six campuses built (three regional hubs, not
-district campuses), four candidates on the roadmap toward ten, and the
+verified registries - seven campuses built (four regional hubs, not
+district campuses), three candidates on the roadmap toward ten, and the
 pack that stands behind each one.
 
 Every figure on this page is read from a registry's own JSON, not
