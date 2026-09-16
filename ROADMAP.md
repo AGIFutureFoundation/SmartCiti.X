@@ -36,7 +36,7 @@ The consolidation release: one repository, one version, one truth per fact.
 | Recovered station curriculum rebranded onto halls, skills and rooms, machine-gradable | `stations/`, `archive/` |
 | §24 realized: 22 floor finishes resolved hazard-first, per-room conditions merged more-demanding-wins, provenance-tagged (RECORDED/DERIVED/SCHEMATIC) | `surfaces/` |
 | The interactive layered map, the **network geomap** (a real WGS84 map, vendored MapLibre GL, on-request USGS orthoimagery and live parcel/footprint fetches), the four-level 3D environment (network → campus → hall → walk) with live condition readouts, and the **network dashboard** reading every platform figure live from its own registry | `web/` |
-| Seven operable training simulators — tower-crane lift, excavator trench cut, forklift yard run, weld bead bench, scaffold bay build, rigging signal call, load chart judgment — each with a five-point pre-shift walkaround, a declared cockpit (dash, synthesized audio, haptics, seat view) and a per-region scenario; schematic physics, deterministic rubrics, bound to real skills | `sims/` |
+| Nine operable training simulators — tower-crane lift, excavator trench cut, forklift yard run, weld bead bench, scaffold bay build, rigging signal call, load chart judgment, pressure washer surface clean, airless paint sprayer finish — each with a five-point pre-shift walkaround, a declared cockpit (dash, synthesized audio, haptics, seat view) and a per-region scenario; schematic physics, deterministic rubrics, bound to real skills | `sims/` |
 | The toolroom registry — one crib per district, twelve schematic hand tools each, plus the deterministic crib drill | `tools/` |
 | The schools flipped-classroom pack — the model, four grade bands, proposed district partnerships (public-record names only, every one PROPOSED), 21 live flipped units — with an in-app 🎓 Schools panel bidirectionally linked to every hall it names | `schools/` |
 | The humanoid avatar locker — 18 sections / 284 options, a crew look stamping all 111 halls, 17 one-tap character presets, 19 costumes, the original **SmartCiti.X TradeApes** (111, one per hall), 8 emotes — cosmetic only, none graded | `avatars/` |
@@ -150,10 +150,11 @@ gates doing their job on real halls.
    rate limiting re-verified against the §23.1 fail-open classes.
 3. **Tenancy GA.** Multi-tenant deployments with the erasure and retention
    guarantees the privacy pack asserts; per-tenant locale defaults.
-4. **VR sim modality pilot.** The browser simulator layer (`sims/` — seven
+4. **VR sim modality pilot.** The browser simulator layer (`sims/` — nine
    machines now: tower-crane lift, excavator trench cut, forklift yard run,
-   weld bead bench, scaffold bay build, rigging signal call and load chart
-   judgment, all deterministic-rubric and skill-bound) is the shipped
+   weld bead bench, scaffold bay build, rigging signal call, load chart
+   judgment, pressure washer surface clean and airless paint sprayer
+   finish, all deterministic-rubric and skill-bound) is the shipped
    precursor; this milestone ports it to headsets and widens the roster
    further (boom lift, overhead crane), and the interiors and §24 packages
    remain the sim environments' source of truth. Simulator results stay
