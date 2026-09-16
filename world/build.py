@@ -196,7 +196,8 @@ FAUNA = {
         'motion': 'hop', 'height_m': [0, 6], 'speed': .5,
         'flock': 6,
         'campuses': ['treasure-island', 'oakland', 'new-orleans', 'houston',
-                     'chicago', 'seattle', 'pittsburgh', 'denver', 'miami'],
+                     'chicago', 'seattle', 'pittsburgh', 'denver', 'miami',
+                     'detroit'],
         'why': 'every yard in every city has them, and they are the scale '
                'reference nobody thinks about',
     },
@@ -206,7 +207,8 @@ FAUNA = {
         'motion': 'patrol', 'height_m': [0, 0], 'speed': .55,
         'flock': 1,
         'campuses': ['treasure-island', 'oakland', 'new-orleans', 'houston',
-                     'chicago', 'seattle', 'pittsburgh', 'denver', 'miami'],
+                     'chicago', 'seattle', 'pittsburgh', 'denver', 'miami',
+                     'detroit'],
         'why': 'the yard dog is a fixture of the trade, and it teaches the '
                'habit of looking down before reversing',
     },
@@ -315,6 +317,19 @@ ATMOS = {
                      'hurricane season, and a working seaport at the '
                      'harbor\'s edge - authored by reputation, not '
                      'measured',
+    },
+    'detroit': {
+        'sky': ['#12161c', '#282e34', '#4e5458', '#7a6a4a'],
+        'fog': {'color': 0x2c302e, 'mul': 1.15}, 'banks': 3,
+        'sun': {'color': 0xe6d4a8, 'i': 1.2},
+        'hemi': {'sky': 0x9ba4a2, 'ground': 0x241f1a, 'i': 1.0},
+        'amb': {'wind': .45, 'gulls': False, 'harbor': True},
+        'ground': 'concrete', 'verge': 'gravel',
+        'character': 'a Great Lakes river haze off the Detroit River, a '
+                     'working industrial waterfront across from Windsor, '
+                     'Ontario, and a century of automotive manufacturing '
+                     'standing behind the skyline - authored by '
+                     'reputation, not measured',
     },
 }
 

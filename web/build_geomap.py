@@ -33,10 +33,13 @@ DATA = json.dumps({
     'sources': parcels['sources'],
     'contract': parcels['contract'],
     'recHonesty': parcels['honesty'],
-    # the roadmap's five candidates: real AUTHORED coordinates, the same
-    # tier a Wikipedia infobox carries - this map is the one place they
-    # can be shown at their own true position rather than a schematic
-    # bearing, since every other feature here is already lat/lng
+    # whatever roadmap candidates remain: real AUTHORED coordinates, the
+    # same tier a Wikipedia infobox carries - this map is the one place
+    # they can be shown at their own true position rather than a
+    # schematic bearing, since every other feature here is already
+    # lat/lng. With Detroit's promotion the dict is empty and the ten-
+    # campus target is fully met, so nothing renders here - by design,
+    # not by omission.
     'candidates': {k: {'name': c['name'], 'city': c['city'],
                        'region': c['region'], 'lat': c['lat'], 'lng': c['lng'],
                        'districts': c['districts'], 'why': c['why']}
@@ -122,10 +125,10 @@ body{margin:0;background:var(--plate);color:var(--ink);
 <div id="map"></div>
 <div id="legend">
   <b>The geo registry, drawn</b><br>
-  <span class="dot" style="background:var(--mark)"></span>campus — RECORDED/DERIVED for the three flagship campuses, AUTHORED for the six hub campuses<br>
+  <span class="dot" style="background:var(--mark)"></span>campus — RECORDED/DERIVED for the three flagship campuses, AUTHORED for the seven hub campuses<br>
   <span class="dot" style="background:var(--steel)"></span>anchor — RECORDED from Locator.X near the flagship campuses, AUTHORED near the hub campuses (click a dot for the one that applies)<br>
   <span class="dot" style="background:none;border:1.5px dashed var(--mark);border-radius:0"></span>great-circle route — DERIVED<br>
-  <span class="dot" style="background:none;border:1px solid var(--steel);border-radius:0"></span>city frame — RECORDED for the three flagship campuses, AUTHORED for the six hub campuses<br>
+  <span class="dot" style="background:none;border:1px solid var(--steel);border-radius:0"></span>city frame — RECORDED for the three flagship campuses, AUTHORED for the seven hub campuses<br>
   <span class="dot" style="background:none;border:1.5px dashed var(--muted)"></span>roadmap candidate — AUTHORED, not built<br>
   <span class="dot" style="background:var(--good)"></span>Bay Restoration site — real project, not affiliated with this bundle
 </div>
@@ -218,10 +221,12 @@ for (const f of D.network.features.filter((x) => x.properties.slug)) {
   markers++;
 }
 
-/* the five roadmap candidates - real AUTHORED coordinates, dashed to
-   match the labels doctrine ("the dashed outline is the claim"), never
+/* whatever roadmap candidates remain - real AUTHORED coordinates, dashed
+   to match the labels doctrine ("the dashed outline is the claim"), never
    drawn into D.network itself: this map's own network.geojson source
-   states only the built network, and candidates are not that */
+   states only the built network, and candidates are not that. With
+   Detroit's promotion D.candidates is empty and the loop below draws
+   nothing - the ten-campus target is fully met, not exceeded. */
 let candMarkers = 0;
 for (const [ck, c] of Object.entries(D.candidates)) {
   const el = document.createElement('div');

@@ -1,8 +1,8 @@
 # The network roadmap
 
-ten walkable worlds is a target this registry tracks progress toward, not a claim that ten exist. Nine are built; one is a candidate.
+ten walkable worlds was a target this registry tracked progress toward, not a claim that ten existed. All ten are now built; zero are candidates. The target is met, not exceeded - this registry does not invent an eleventh campus or a new "next" candidate to keep the roadmap open.
 
-## Built — 9 of 10
+## Built — 10 of 10
 
 | Campus | Where | Districts | Halls | Coordinate |
 |---|---|---|---|---|
@@ -15,20 +15,19 @@ ten walkable worlds is a target this registry tracks progress toward, not a clai
 | **Three Rivers Steel Hub** | Pittsburgh, Pennsylvania | (hub — no home district) | 0 | AUTHORED |
 | **Front Range Mining Hub** | Denver, Colorado | (hub — no home district) | 0 | AUTHORED |
 | **Biscayne Coastal Hub** | Miami, Florida | (hub — no home district) | 0 | AUTHORED |
+| **Motor City Hub** | Detroit, Michigan | (hub — no home district) | 0 | AUTHORED |
 
-## Candidates — 1 proposed
+## Candidates — none remaining
 
-| Campus | Where | Districts | Why |
-|---|---|---|---|
-| **Motor City Campus** | Detroit, Michigan | Heavy Industry, Structural, Building Systems | a century of heavy manufacturing and the machinist, structural and building-systems trades an automotive industrial base actually runs on |
-
-a candidate names a proposed metro and a proposed district emphasis. It does not claim any hall, union, curriculum content or trade partnership exists there - building one is the checklist, done in full, the same way the built campuses were.
+All ten planned campuses are now built; the ten-campus network was a
+target this registry tracked progress toward, not a promise, and that
+target is now met. a candidate, when one existed, named a proposed metro and a proposed district emphasis. It never claimed any hall, union, curriculum content or trade partnership existed there - building one meant doing the checklist, done in full, the same way every built campus was. With the roadmap now at ten of ten, there is no remaining candidate for this to describe.
 
 ## Two provenance tiers
 
-three of the nine built campuses' coordinates are RECORDED - copied from a cited file and cross-checked against it on every build. Houston, Chicago, Seattle, Pittsburgh, Denver and Miami, the fourth through ninth, and the one remaining candidate's coordinate are AUTHORED: widely-published public geography, typed here from general knowledge rather than copied from any file this build can check itself against - a materially weaker claim, labelled as one.
+three of the ten built campuses' coordinates are RECORDED - copied from a cited file and cross-checked against it on every build. Houston, Chicago, Seattle, Pittsburgh, Denver, Miami and Detroit, the fourth through tenth, are AUTHORED: widely-published public geography, typed here from general knowledge rather than copied from any file this build can check itself against - a materially weaker claim, labelled as one.
 
-## Building the next one
+## How every campus got built
 
 1. **source real coordinates** — find the metro's city-center and any regional-institution coordinates in a citable, checkable source - the pattern geo/build.py already follows against the Locator.X checkout (`geo/build.py`)
 1. **cross-check on every build** — assert the coordinate matches the cited source whenever that checkout is present, so a drifted number fails the build rather than going unnoticed (`geo/build.py`)
@@ -38,7 +37,7 @@ three of the nine built campuses' coordinates are RECORDED - copied from a cited
 1. **give it a world** — an authored atmosphere (sky, ground surface, character) and the fauna that belongs on that coast or that plain (`world/build.py`)
 1. **verify, ship, publish** — every suite in verify_all.sh must hold, a browser harness must prove the campus walks and judges correctly, and the hosted artifact must be rebuilt and republished (`verify_all.sh`)
 
-this is an ordered list of what is next, not a timeline: no candidate carries a committed date.
+this was an ordered list of what was next, not a timeline: no candidate ever carried a committed date, and none remain to carry one now.
 
 See the live [network dashboard](../web/trade_craft_dashboard.html) for
 every figure above read straight from its own registry.
