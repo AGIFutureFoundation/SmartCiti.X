@@ -166,6 +166,26 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
+     -80.1918,
+     25.7617
+    ]
+   },
+   "properties": {
+    "slug": "miami",
+    "name": "Biscayne Coastal Hub",
+    "city": "Miami",
+    "region": "Florida",
+    "districts": 0,
+    "halls": 0,
+    "provenance": "AUTHORED",
+    "source": "widely-published public geography (city-center), typed from general knowledge - not cross-checked against any file this build can verify"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
      -122.4194,
      37.7749
     ]
@@ -977,6 +997,90 @@
     "blurb": "A public community college on the Auraria Campus, with real career-technical and trades programs.",
     "km": 1.5,
     "bearing_deg": 292.8,
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -80.1719,
+     25.7716
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "PortMiami",
+    "near": "miami",
+    "provenance": "AUTHORED",
+    "source": "Miami-Dade County's seaport authority, on Dodge Island in Biscayne Bay",
+    "blurb": "Miami-Dade County's seaport authority on Dodge Island, one of the busiest cargo and cruise ports in the country.",
+    "km": 2.3,
+    "bearing_deg": 61.1,
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -80.1615,
+     25.7302
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "NOAA Atlantic Oceanographic and Meteorological Laboratory",
+    "near": "miami",
+    "provenance": "AUTHORED",
+    "source": "the U.S. federal government's hurricane and ocean research laboratory on Virginia Key",
+    "blurb": "The U.S. federal government's hurricane and ocean research laboratory on Virginia Key, part of NOAA.",
+    "km": 4.6,
+    "bearing_deg": 139.1,
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -80.2762,
+     25.7171
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "University of Miami",
+    "near": "miami",
+    "provenance": "AUTHORED",
+    "source": "the private research university\u2019s Coral Gables campus",
+    "blurb": "Private research university in Coral Gables, Florida, with schools of engineering, architecture and marine science.",
+    "km": 9.8,
+    "bearing_deg": 239.6,
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -80.1937,
+     25.7745
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Miami Dade College",
+    "near": "miami",
+    "provenance": "AUTHORED",
+    "source": "the community-college system's Wolfson Campus downtown, with real career-technical and trades programs",
+    "blurb": "A large public community-college system with real career-technical and trades programs across Miami-Dade County.",
+    "km": 1.4,
+    "bearing_deg": 352.4,
     "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
    }
   },
@@ -2029,6 +2133,155 @@
     "type": "LineString",
     "coordinates": [
      [
+      -122.3705,
+      37.8235
+     ],
+     [
+      -120.8996,
+      37.6874
+     ],
+     [
+      -119.4345,
+      37.5331
+     ],
+     [
+      -117.9758,
+      37.3608
+     ],
+     [
+      -116.5242,
+      37.1706
+     ],
+     [
+      -115.0801,
+      36.9629
+     ],
+     [
+      -113.6443,
+      36.7377
+     ],
+     [
+      -112.2171,
+      36.4954
+     ],
+     [
+      -110.7992,
+      36.2362
+     ],
+     [
+      -109.3909,
+      35.9604
+     ],
+     [
+      -107.9927,
+      35.6683
+     ],
+     [
+      -106.605,
+      35.3601
+     ],
+     [
+      -105.2281,
+      35.0362
+     ],
+     [
+      -103.8624,
+      34.6969
+     ],
+     [
+      -102.508,
+      34.3424
+     ],
+     [
+      -101.1653,
+      33.9732
+     ],
+     [
+      -99.8344,
+      33.5895
+     ],
+     [
+      -98.5156,
+      33.1916
+     ],
+     [
+      -97.2088,
+      32.78
+     ],
+     [
+      -95.9143,
+      32.355
+     ],
+     [
+      -94.6321,
+      31.9169
+     ],
+     [
+      -93.3622,
+      31.466
+     ],
+     [
+      -92.1046,
+      31.0027
+     ],
+     [
+      -90.8594,
+      30.5273
+     ],
+     [
+      -89.6264,
+      30.0402
+     ],
+     [
+      -88.4057,
+      29.5418
+     ],
+     [
+      -87.197,
+      29.0323
+     ],
+     [
+      -86.0004,
+      28.512
+     ],
+     [
+      -84.8156,
+      27.9814
+     ],
+     [
+      -83.6425,
+      27.4408
+     ],
+     [
+      -82.481,
+      26.8904
+     ],
+     [
+      -81.3308,
+      26.3306
+     ],
+     [
+      -80.1918,
+      25.7617
+     ]
+    ]
+   },
+   "properties": {
+    "kind": "route",
+    "from": "treasure-island",
+    "to": "miami",
+    "km": 4166.1,
+    "bearing_deg": 96.2,
+    "provenance": "DERIVED",
+    "source": "great-circle between the campus records"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
       -122.2712,
       37.8044
      ],
@@ -2923,6 +3176,155 @@
     "type": "LineString",
     "coordinates": [
      [
+      -122.2712,
+      37.8044
+     ],
+     [
+      -120.804,
+      37.6677
+     ],
+     [
+      -119.3426,
+      37.5128
+     ],
+     [
+      -117.8876,
+      37.34
+     ],
+     [
+      -116.4395,
+      37.1495
+     ],
+     [
+      -114.9991,
+      36.9415
+     ],
+     [
+      -113.5669,
+      36.7162
+     ],
+     [
+      -112.1434,
+      36.4738
+     ],
+     [
+      -110.729,
+      36.2146
+     ],
+     [
+      -109.3243,
+      35.9389
+     ],
+     [
+      -107.9296,
+      35.647
+     ],
+     [
+      -106.5454,
+      35.339
+     ],
+     [
+      -105.1719,
+      35.0155
+     ],
+     [
+      -103.8095,
+      34.6766
+     ],
+     [
+      -102.4585,
+      34.3226
+     ],
+     [
+      -101.119,
+      33.9539
+     ],
+     [
+      -99.7914,
+      33.5709
+     ],
+     [
+      -98.4756,
+      33.1738
+     ],
+     [
+      -97.172,
+      32.763
+     ],
+     [
+      -95.8805,
+      32.3388
+     ],
+     [
+      -94.6012,
+      31.9016
+     ],
+     [
+      -93.3342,
+      31.4517
+     ],
+     [
+      -92.0795,
+      30.9895
+     ],
+     [
+      -90.8371,
+      30.5152
+     ],
+     [
+      -89.6068,
+      30.0293
+     ],
+     [
+      -88.3887,
+      29.532
+     ],
+     [
+      -87.1827,
+      29.0238
+     ],
+     [
+      -85.9886,
+      28.5049
+     ],
+     [
+      -84.8063,
+      27.9756
+     ],
+     [
+      -83.6356,
+      27.4363
+     ],
+     [
+      -82.4764,
+      26.8874
+     ],
+     [
+      -81.3286,
+      26.3291
+     ],
+     [
+      -80.1918,
+      25.7617
+     ]
+    ]
+   },
+   "properties": {
+    "kind": "route",
+    "from": "oakland",
+    "to": "miami",
+    "km": 4157.2,
+    "bearing_deg": 96.3,
+    "provenance": "DERIVED",
+    "source": "great-circle between the campus records"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
       -90.0715,
       29.9511
      ],
@@ -3668,6 +4070,155 @@
     "type": "LineString",
     "coordinates": [
      [
+      -90.0715,
+      29.9511
+     ],
+     [
+      -89.751,
+      29.8313
+     ],
+     [
+      -89.4313,
+      29.7107
+     ],
+     [
+      -89.1124,
+      29.5893
+     ],
+     [
+      -88.7943,
+      29.4672
+     ],
+     [
+      -88.4769,
+      29.3443
+     ],
+     [
+      -88.1603,
+      29.2207
+     ],
+     [
+      -87.8444,
+      29.0964
+     ],
+     [
+      -87.5293,
+      28.9713
+     ],
+     [
+      -87.215,
+      28.8454
+     ],
+     [
+      -86.9014,
+      28.7189
+     ],
+     [
+      -86.5886,
+      28.5916
+     ],
+     [
+      -86.2766,
+      28.4636
+     ],
+     [
+      -85.9653,
+      28.3349
+     ],
+     [
+      -85.6547,
+      28.2055
+     ],
+     [
+      -85.345,
+      28.0753
+     ],
+     [
+      -85.0359,
+      27.9445
+     ],
+     [
+      -84.7276,
+      27.813
+     ],
+     [
+      -84.4201,
+      27.6809
+     ],
+     [
+      -84.1133,
+      27.548
+     ],
+     [
+      -83.8073,
+      27.4145
+     ],
+     [
+      -83.502,
+      27.2803
+     ],
+     [
+      -83.1974,
+      27.1454
+     ],
+     [
+      -82.8936,
+      27.0099
+     ],
+     [
+      -82.5905,
+      26.8738
+     ],
+     [
+      -82.2881,
+      26.737
+     ],
+     [
+      -81.9865,
+      26.5995
+     ],
+     [
+      -81.6856,
+      26.4614
+     ],
+     [
+      -81.3854,
+      26.3227
+     ],
+     [
+      -81.0859,
+      26.1834
+     ],
+     [
+      -80.7872,
+      26.0434
+     ],
+     [
+      -80.4891,
+      25.9029
+     ],
+     [
+      -80.1918,
+      25.7617
+     ]
+    ]
+   },
+   "properties": {
+    "kind": "route",
+    "from": "new-orleans",
+    "to": "miami",
+    "km": 1076.6,
+    "bearing_deg": 113.2,
+    "provenance": "DERIVED",
+    "source": "great-circle between the campus records"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
       -95.3698,
       29.7604
      ],
@@ -4264,6 +4815,155 @@
     "type": "LineString",
     "coordinates": [
      [
+      -95.3698,
+      29.7604
+     ],
+     [
+      -94.8791,
+      29.6616
+     ],
+     [
+      -94.3893,
+      29.561
+     ],
+     [
+      -93.9005,
+      29.4586
+     ],
+     [
+      -93.4128,
+      29.3544
+     ],
+     [
+      -92.926,
+      29.2484
+     ],
+     [
+      -92.4402,
+      29.1407
+     ],
+     [
+      -91.9555,
+      29.0312
+     ],
+     [
+      -91.4718,
+      28.92
+     ],
+     [
+      -90.9892,
+      28.8071
+     ],
+     [
+      -90.5076,
+      28.6924
+     ],
+     [
+      -90.027,
+      28.5761
+     ],
+     [
+      -89.5476,
+      28.458
+     ],
+     [
+      -89.0692,
+      28.3383
+     ],
+     [
+      -88.5919,
+      28.217
+     ],
+     [
+      -88.1156,
+      28.0939
+     ],
+     [
+      -87.6405,
+      27.9693
+     ],
+     [
+      -87.1665,
+      27.843
+     ],
+     [
+      -86.6936,
+      27.715
+     ],
+     [
+      -86.2218,
+      27.5855
+     ],
+     [
+      -85.7512,
+      27.4544
+     ],
+     [
+      -85.2816,
+      27.3217
+     ],
+     [
+      -84.8132,
+      27.1875
+     ],
+     [
+      -84.3459,
+      27.0517
+     ],
+     [
+      -83.8798,
+      26.9143
+     ],
+     [
+      -83.4148,
+      26.7755
+     ],
+     [
+      -82.9509,
+      26.6351
+     ],
+     [
+      -82.4882,
+      26.4932
+     ],
+     [
+      -82.0266,
+      26.3498
+     ],
+     [
+      -81.5662,
+      26.205
+     ],
+     [
+      -81.1069,
+      26.0587
+     ],
+     [
+      -80.6488,
+      25.9109
+     ],
+     [
+      -80.1918,
+      25.7617
+     ]
+    ]
+   },
+   "properties": {
+    "kind": "route",
+    "from": "houston",
+    "to": "miami",
+    "km": 1556.8,
+    "bearing_deg": 102.9,
+    "provenance": "DERIVED",
+    "source": "great-circle between the campus records"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
       -87.6298,
       41.8781
      ],
@@ -4711,6 +5411,155 @@
     "type": "LineString",
     "coordinates": [
      [
+      -87.6298,
+      41.8781
+     ],
+     [
+      -87.3473,
+      41.3823
+     ],
+     [
+      -87.0692,
+      40.8859
+     ],
+     [
+      -86.7951,
+      40.3888
+     ],
+     [
+      -86.5251,
+      39.8911
+     ],
+     [
+      -86.259,
+      39.3927
+     ],
+     [
+      -85.9967,
+      38.8938
+     ],
+     [
+      -85.738,
+      38.3943
+     ],
+     [
+      -85.4829,
+      37.8942
+     ],
+     [
+      -85.2312,
+      37.3935
+     ],
+     [
+      -84.9828,
+      36.8924
+     ],
+     [
+      -84.7377,
+      36.3907
+     ],
+     [
+      -84.4958,
+      35.8886
+     ],
+     [
+      -84.2569,
+      35.3859
+     ],
+     [
+      -84.0209,
+      34.8828
+     ],
+     [
+      -83.7879,
+      34.3793
+     ],
+     [
+      -83.5576,
+      33.8753
+     ],
+     [
+      -83.33,
+      33.3709
+     ],
+     [
+      -83.105,
+      32.866
+     ],
+     [
+      -82.8826,
+      32.3608
+     ],
+     [
+      -82.6627,
+      31.8552
+     ],
+     [
+      -82.4452,
+      31.3492
+     ],
+     [
+      -82.23,
+      30.8429
+     ],
+     [
+      -82.017,
+      30.3362
+     ],
+     [
+      -81.8063,
+      29.8291
+     ],
+     [
+      -81.5976,
+      29.3218
+     ],
+     [
+      -81.3911,
+      28.8141
+     ],
+     [
+      -81.1865,
+      28.3061
+     ],
+     [
+      -80.9839,
+      27.7978
+     ],
+     [
+      -80.7832,
+      27.2892
+     ],
+     [
+      -80.5843,
+      26.7803
+     ],
+     [
+      -80.3872,
+      26.2711
+     ],
+     [
+      -80.1918,
+      25.7617
+     ]
+    ]
+   },
+   "properties": {
+    "kind": "route",
+    "from": "chicago",
+    "to": "miami",
+    "km": 1917.3,
+    "bearing_deg": 156.8,
+    "provenance": "DERIVED",
+    "source": "great-circle between the campus records"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
       -122.3321,
       47.6062
      ],
@@ -5009,6 +5858,155 @@
     "type": "LineString",
     "coordinates": [
      [
+      -122.3321,
+      47.6062
+     ],
+     [
+      -120.6057,
+      47.2047
+     ],
+     [
+      -118.906,
+      46.7777
+     ],
+     [
+      -117.2339,
+      46.3259
+     ],
+     [
+      -115.5899,
+      45.8501
+     ],
+     [
+      -113.9744,
+      45.3512
+     ],
+     [
+      -112.3878,
+      44.8299
+     ],
+     [
+      -110.8302,
+      44.287
+     ],
+     [
+      -109.3016,
+      43.7233
+     ],
+     [
+      -107.8021,
+      43.1397
+     ],
+     [
+      -106.3314,
+      42.5369
+     ],
+     [
+      -104.8892,
+      41.9156
+     ],
+     [
+      -103.4752,
+      41.2766
+     ],
+     [
+      -102.089,
+      40.6207
+     ],
+     [
+      -100.7301,
+      39.9485
+     ],
+     [
+      -99.3979,
+      39.2608
+     ],
+     [
+      -98.0919,
+      38.5582
+     ],
+     [
+      -96.8115,
+      37.8413
+     ],
+     [
+      -95.5559,
+      37.1109
+     ],
+     [
+      -94.3245,
+      36.3674
+     ],
+     [
+      -93.1166,
+      35.6116
+     ],
+     [
+      -91.9315,
+      34.844
+     ],
+     [
+      -90.7685,
+      34.0651
+     ],
+     [
+      -89.6268,
+      33.2754
+     ],
+     [
+      -88.5057,
+      32.4754
+     ],
+     [
+      -87.4044,
+      31.6658
+     ],
+     [
+      -86.3223,
+      30.8468
+     ],
+     [
+      -85.2587,
+      30.0189
+     ],
+     [
+      -84.2127,
+      29.1827
+     ],
+     [
+      -83.1837,
+      28.3385
+     ],
+     [
+      -82.171,
+      27.4866
+     ],
+     [
+      -81.1739,
+      26.6276
+     ],
+     [
+      -80.1918,
+      25.7617
+     ]
+    ]
+   },
+   "properties": {
+    "kind": "route",
+    "from": "seattle",
+    "to": "miami",
+    "km": 4396.1,
+    "bearing_deg": 108.3,
+    "provenance": "DERIVED",
+    "source": "great-circle between the campus records"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
       -79.9959,
       40.4406
      ],
@@ -5148,6 +6146,304 @@
     "to": "denver",
     "km": 2120.6,
     "bearing_deg": 276.1,
+    "provenance": "DERIVED",
+    "source": "great-circle between the campus records"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -79.9959,
+      40.4406
+     ],
+     [
+      -80.0032,
+      39.9819
+     ],
+     [
+      -80.0104,
+      39.5232
+     ],
+     [
+      -80.0174,
+      39.0645
+     ],
+     [
+      -80.0244,
+      38.6058
+     ],
+     [
+      -80.0313,
+      38.147
+     ],
+     [
+      -80.0381,
+      37.6883
+     ],
+     [
+      -80.0449,
+      37.2296
+     ],
+     [
+      -80.0515,
+      36.7709
+     ],
+     [
+      -80.0581,
+      36.3122
+     ],
+     [
+      -80.0646,
+      35.8535
+     ],
+     [
+      -80.071,
+      35.3948
+     ],
+     [
+      -80.0774,
+      34.936
+     ],
+     [
+      -80.0836,
+      34.4773
+     ],
+     [
+      -80.0899,
+      34.0186
+     ],
+     [
+      -80.096,
+      33.5599
+     ],
+     [
+      -80.1021,
+      33.1012
+     ],
+     [
+      -80.1081,
+      32.6425
+     ],
+     [
+      -80.114,
+      32.1838
+     ],
+     [
+      -80.1199,
+      31.725
+     ],
+     [
+      -80.1258,
+      31.2663
+     ],
+     [
+      -80.1315,
+      30.8076
+     ],
+     [
+      -80.1373,
+      30.3489
+     ],
+     [
+      -80.1429,
+      29.8902
+     ],
+     [
+      -80.1486,
+      29.4315
+     ],
+     [
+      -80.1541,
+      28.9727
+     ],
+     [
+      -80.1596,
+      28.514
+     ],
+     [
+      -80.1651,
+      28.0553
+     ],
+     [
+      -80.1705,
+      27.5966
+     ],
+     [
+      -80.1759,
+      27.1379
+     ],
+     [
+      -80.1813,
+      26.6791
+     ],
+     [
+      -80.1865,
+      26.2204
+     ],
+     [
+      -80.1918,
+      25.7617
+     ]
+    ]
+   },
+   "properties": {
+    "kind": "route",
+    "from": "pittsburgh",
+    "to": "miami",
+    "km": 1632.3,
+    "bearing_deg": 180.7,
+    "provenance": "DERIVED",
+    "source": "great-circle between the campus records"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -104.9903,
+      39.7392
+     ],
+     [
+      -104.0869,
+      39.3873
+     ],
+     [
+      -103.1926,
+      39.0286
+     ],
+     [
+      -102.3074,
+      38.6631
+     ],
+     [
+      -101.4313,
+      38.2909
+     ],
+     [
+      -100.5642,
+      37.9124
+     ],
+     [
+      -99.7061,
+      37.5275
+     ],
+     [
+      -98.8568,
+      37.1365
+     ],
+     [
+      -98.0164,
+      36.7395
+     ],
+     [
+      -97.1847,
+      36.3366
+     ],
+     [
+      -96.3615,
+      35.928
+     ],
+     [
+      -95.5469,
+      35.5139
+     ],
+     [
+      -94.7408,
+      35.0944
+     ],
+     [
+      -93.9429,
+      34.6695
+     ],
+     [
+      -93.1532,
+      34.2396
+     ],
+     [
+      -92.3716,
+      33.8046
+     ],
+     [
+      -91.5979,
+      33.3647
+     ],
+     [
+      -90.8321,
+      32.9201
+     ],
+     [
+      -90.0739,
+      32.4709
+     ],
+     [
+      -89.3233,
+      32.0171
+     ],
+     [
+      -88.5802,
+      31.559
+     ],
+     [
+      -87.8443,
+      31.0967
+     ],
+     [
+      -87.1156,
+      30.6302
+     ],
+     [
+      -86.394,
+      30.1596
+     ],
+     [
+      -85.6792,
+      29.6852
+     ],
+     [
+      -84.9711,
+      29.207
+     ],
+     [
+      -84.2697,
+      28.725
+     ],
+     [
+      -83.5747,
+      28.2395
+     ],
+     [
+      -82.8861,
+      27.7505
+     ],
+     [
+      -82.2036,
+      27.2581
+     ],
+     [
+      -81.5271,
+      26.7625
+     ],
+     [
+      -80.8566,
+      26.2636
+     ],
+     [
+      -80.1918,
+      25.7617
+     ]
+    ]
+   },
+   "properties": {
+    "kind": "route",
+    "from": "denver",
+    "to": "miami",
+    "km": 2776.5,
+    "bearing_deg": 116.5,
     "provenance": "DERIVED",
     "source": "great-circle between the campus records"
    }
@@ -5400,6 +6696,42 @@
    "properties": {
     "kind": "frame",
     "campus": "denver",
+    "provenance": "AUTHORED",
+    "source": "widely-published public geography (metro-area extent), typed from general knowledge - not cross-checked against any file this build can verify"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -80.55,
+       25.45
+      ],
+      [
+       -80.05,
+       25.45
+      ],
+      [
+       -80.05,
+       26.05
+      ],
+      [
+       -80.55,
+       26.05
+      ],
+      [
+       -80.55,
+       25.45
+      ]
+     ]
+    ]
+   },
+   "properties": {
+    "kind": "frame",
+    "campus": "miami",
     "provenance": "AUTHORED",
     "source": "widely-published public geography (metro-area extent), typed from general knowledge - not cross-checked against any file this build can verify"
    }

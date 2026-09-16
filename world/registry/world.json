@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-11",
- "source_stamp": "0dcd9a4343d8188a",
+ "source_stamp": "d6e9bb9915498d69",
  "honesty": {
   "textures": "no texture, photograph or artwork file exists in this repository and none is downloaded: every surface is a recipe - a base colour, a grain, an octave count and a relief depth - and the page generates the image and its normal map in the learner's own browser at boot. There is therefore no third-party artwork anywhere in the render.",
   "weather": "schematic weather, not a forecast and not an observation: nothing here is tied to a reading taken at any real place or time, and the per-campus atmospheres are authored by reputation rather than measured.",
@@ -15,7 +15,7 @@
   "weather": 6,
   "ground": 6,
   "fauna": 6,
-  "animals": 84
+  "animals": 94
  },
  "sky": {
   "projection": "equirectangular, drawn to a 1024x512 canvas at boot",
@@ -263,9 +263,10 @@
    "flock": 3,
    "campuses": [
     "new-orleans",
-    "houston"
+    "houston",
+    "miami"
    ],
-   "why": "Louisiana\u2019s state bird, and unmistakable over any Gulf coast - the ship channel included"
+   "why": "Louisiana\u2019s state bird, and unmistakable over any Gulf coast or Biscayne Bay alike - the ship channel and the working port both"
   },
   "ring-billed-gull": {
    "name": "Ring-billed gull",
@@ -327,7 +328,8 @@
     "chicago",
     "seattle",
     "pittsburgh",
-    "denver"
+    "denver",
+    "miami"
    ],
    "why": "every yard in every city has them, and they are the scale reference nobody thinks about"
   },
@@ -353,7 +355,8 @@
     "chicago",
     "seattle",
     "pittsburgh",
-    "denver"
+    "denver",
+    "miami"
    ],
    "why": "the yard dog is a fixture of the trade, and it teaches the habit of looking down before reversing"
   }
@@ -599,6 +602,37 @@
    "ground": "concrete",
    "verge": "gravel",
    "character": "thin, dry high-altitude light off the Front Range, a mining and energy heritage at 5,280 feet, and the Rockies standing on the western horizon - authored by reputation, not measured"
+  },
+  "miami": {
+   "sky": [
+    "#0d1b26",
+    "#1e3a44",
+    "#3f8a92",
+    "#f2c14e"
+   ],
+   "fog": {
+    "color": 3029562,
+    "mul": 1.0
+   },
+   "banks": 1,
+   "sun": {
+    "color": 16768926,
+    "i": 1.55
+   },
+   "hemi": {
+    "sky": 12179670,
+    "ground": 2368026,
+    "i": 1.05
+   },
+   "amb": {
+    "wind": 0.4,
+    "insects": true,
+    "harbor": true,
+    "thunder": true
+   },
+   "ground": "concrete",
+   "verge": "grass",
+   "character": "subtropical coastal heat and humidity off Biscayne Bay, afternoon thunderheads stacking through hurricane season, and a working seaport at the harbor's edge - authored by reputation, not measured"
   }
  }
 }

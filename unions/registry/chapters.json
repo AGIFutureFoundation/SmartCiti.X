@@ -2,8 +2,8 @@
  "pack": "smartcitix-trade-craft-academy-union-registry",
  "pack_version": "3.2.0",
  "built": "2026-09-09",
- "source_stamp": "7e28045337d1558e",
- "count": 888,
+ "source_stamp": "82d80ac77d617f9f",
+ "count": 999,
  "regions": {
   "treasure-island": {
    "abbr": "SF",
@@ -44,6 +44,11 @@
    "abbr": "DEN",
    "name": "Front Range Mining Hub",
    "city": "Denver"
+  },
+  "miami": {
+   "abbr": "MIA",
+   "name": "Biscayne Coastal Hub",
+   "city": "Miami"
   }
  },
  "hosted": {
@@ -54,7 +59,8 @@
   "chicago": 111,
   "seattle": 111,
   "pittsburgh": 111,
-  "denver": 111
+  "denver": 111,
+  "miami": 111
  },
  "honesty": {
   "chapters": "the Academy's own regional training structure across its planned campuses - not a claim about any real union's locals, chapters or jurisdictions; no local is named"
@@ -91,6 +97,10 @@
     "denver": {
      "code": "ironworkers@DEN",
      "role": "regional chapter"
+    },
+    "miami": {
+     "code": "ironworkers@MIA",
+     "role": "regional chapter"
     }
    }
   },
@@ -124,6 +134,10 @@
     },
     "denver": {
      "code": "electricians@DEN",
+     "role": "regional chapter"
+    },
+    "miami": {
+     "code": "electricians@MIA",
      "role": "regional chapter"
     }
    }
@@ -159,6 +173,10 @@
     "denver": {
      "code": "pipefitters@DEN",
      "role": "regional chapter"
+    },
+    "miami": {
+     "code": "pipefitters@MIA",
+     "role": "regional chapter"
     }
    }
   },
@@ -192,6 +210,10 @@
     },
     "denver": {
      "code": "carpenters@DEN",
+     "role": "regional chapter"
+    },
+    "miami": {
+     "code": "carpenters@MIA",
      "role": "regional chapter"
     }
    }
@@ -227,6 +249,10 @@
     "denver": {
      "code": "operating-eng@DEN",
      "role": "regional chapter"
+    },
+    "miami": {
+     "code": "operating-eng@MIA",
+     "role": "regional chapter"
     }
    }
   },
@@ -260,6 +286,10 @@
     },
     "denver": {
      "code": "laborers@DEN",
+     "role": "regional chapter"
+    },
+    "miami": {
+     "code": "laborers@MIA",
      "role": "regional chapter"
     }
    }
@@ -295,6 +325,10 @@
     "denver": {
      "code": "sheetmetal@DEN",
      "role": "regional chapter"
+    },
+    "miami": {
+     "code": "sheetmetal@MIA",
+     "role": "regional chapter"
     }
    }
   },
@@ -328,6 +362,10 @@
     },
     "denver": {
      "code": "bricklayers@DEN",
+     "role": "regional chapter"
+    },
+    "miami": {
+     "code": "bricklayers@MIA",
      "role": "regional chapter"
     }
    }
@@ -363,6 +401,10 @@
     "denver": {
      "code": "cement-masons@DEN",
      "role": "regional chapter"
+    },
+    "miami": {
+     "code": "cement-masons@MIA",
+     "role": "regional chapter"
     }
    }
   },
@@ -396,6 +438,10 @@
     },
     "denver": {
      "code": "roofers@DEN",
+     "role": "regional chapter"
+    },
+    "miami": {
+     "code": "roofers@MIA",
      "role": "regional chapter"
     }
    }
@@ -431,6 +477,10 @@
     "denver": {
      "code": "painters@DEN",
      "role": "regional chapter"
+    },
+    "miami": {
+     "code": "painters@MIA",
+     "role": "regional chapter"
     }
    }
   },
@@ -464,6 +514,10 @@
     },
     "denver": {
      "code": "glaziers@DEN",
+     "role": "regional chapter"
+    },
+    "miami": {
+     "code": "glaziers@MIA",
      "role": "regional chapter"
     }
    }
@@ -499,6 +553,10 @@
     "denver": {
      "code": "insulators@DEN",
      "role": "regional chapter"
+    },
+    "miami": {
+     "code": "insulators@MIA",
+     "role": "regional chapter"
     }
    }
   },
@@ -532,6 +590,10 @@
     },
     "denver": {
      "code": "millwrights@DEN",
+     "role": "regional chapter"
+    },
+    "miami": {
+     "code": "millwrights@MIA",
      "role": "regional chapter"
     }
    }
@@ -567,6 +629,10 @@
     "denver": {
      "code": "boilermakers@DEN",
      "role": "regional chapter"
+    },
+    "miami": {
+     "code": "boilermakers@MIA",
+     "role": "regional chapter"
     }
    }
   },
@@ -600,6 +666,10 @@
     },
     "denver": {
      "code": "elevator@DEN",
+     "role": "regional chapter"
+    },
+    "miami": {
+     "code": "elevator@MIA",
      "role": "regional chapter"
     }
    }
@@ -635,6 +705,10 @@
     "denver": {
      "code": "teamsters@DEN",
      "role": "regional chapter"
+    },
+    "miami": {
+     "code": "teamsters@MIA",
+     "role": "regional chapter"
     }
    }
   },
@@ -668,6 +742,10 @@
     },
     "denver": {
      "code": "welders@DEN",
+     "role": "regional chapter"
+    },
+    "miami": {
+     "code": "welders@MIA",
      "role": "regional chapter"
     }
    }
@@ -703,6 +781,10 @@
     "denver": {
      "code": "hvacr@DEN",
      "role": "regional chapter"
+    },
+    "miami": {
+     "code": "hvacr@MIA",
+     "role": "regional chapter"
     }
    }
   },
@@ -736,6 +818,10 @@
     },
     "denver": {
      "code": "crane-ops@DEN",
+     "role": "regional chapter"
+    },
+    "miami": {
+     "code": "crane-ops@MIA",
      "role": "regional chapter"
     }
    }
@@ -771,6 +857,10 @@
     "denver": {
      "code": "riggers@DEN",
      "role": "regional chapter"
+    },
+    "miami": {
+     "code": "riggers@MIA",
+     "role": "regional chapter"
     }
    }
   },
@@ -804,6 +894,10 @@
     },
     "denver": {
      "code": "heavy-equip@DEN",
+     "role": "regional chapter"
+    },
+    "miami": {
+     "code": "heavy-equip@MIA",
      "role": "regional chapter"
     }
    }
@@ -839,6 +933,10 @@
     "denver": {
      "code": "drywall@DEN",
      "role": "regional chapter"
+    },
+    "miami": {
+     "code": "drywall@MIA",
+     "role": "regional chapter"
     }
    }
   },
@@ -872,6 +970,10 @@
     },
     "denver": {
      "code": "flooring@DEN",
+     "role": "regional chapter"
+    },
+    "miami": {
+     "code": "flooring@MIA",
      "role": "regional chapter"
     }
    }
@@ -907,6 +1009,10 @@
     "denver": {
      "code": "grounds@DEN",
      "role": "regional chapter"
+    },
+    "miami": {
+     "code": "grounds@MIA",
+     "role": "regional chapter"
     }
    }
   },
@@ -940,6 +1046,10 @@
     },
     "denver": {
      "code": "line-workers@DEN",
+     "role": "regional chapter"
+    },
+    "miami": {
+     "code": "line-workers@MIA",
      "role": "regional chapter"
     }
    }
@@ -975,6 +1085,10 @@
     "denver": {
      "code": "solar@DEN",
      "role": "regional chapter"
+    },
+    "miami": {
+     "code": "solar@MIA",
+     "role": "regional chapter"
     }
    }
   },
@@ -1008,6 +1122,10 @@
     },
     "denver": {
      "code": "wind@DEN",
+     "role": "regional chapter"
+    },
+    "miami": {
+     "code": "wind@MIA",
      "role": "regional chapter"
     }
    }
@@ -1043,6 +1161,10 @@
     "denver": {
      "code": "demolition@DEN",
      "role": "regional chapter"
+    },
+    "miami": {
+     "code": "demolition@MIA",
+     "role": "regional chapter"
     }
    }
   },
@@ -1076,6 +1198,10 @@
     },
     "denver": {
      "code": "scaffold@DEN",
+     "role": "regional chapter"
+    },
+    "miami": {
+     "code": "scaffold@MIA",
      "role": "regional chapter"
     }
    }
@@ -1111,6 +1237,10 @@
     "denver": {
      "code": "surveyors@DEN",
      "role": "regional chapter"
+    },
+    "miami": {
+     "code": "surveyors@MIA",
+     "role": "regional chapter"
     }
    }
   },
@@ -1144,6 +1274,10 @@
     },
     "denver": {
      "code": "fire-sprinkler@DEN",
+     "role": "regional chapter"
+    },
+    "miami": {
+     "code": "fire-sprinkler@MIA",
      "role": "regional chapter"
     }
    }
@@ -1179,6 +1313,10 @@
     "denver": {
      "code": "hazmat@DEN",
      "role": "regional chapter"
+    },
+    "miami": {
+     "code": "hazmat@MIA",
+     "role": "regional chapter"
     }
    }
   },
@@ -1212,6 +1350,10 @@
     },
     "denver": {
      "code": "refractory@DEN",
+     "role": "regional chapter"
+    },
+    "miami": {
+     "code": "refractory@MIA",
      "role": "regional chapter"
     }
    }
@@ -1247,6 +1389,10 @@
     "denver": {
      "code": "pipeline@DEN",
      "role": "regional chapter"
+    },
+    "miami": {
+     "code": "pipeline@MIA",
+     "role": "regional chapter"
     }
    }
   },
@@ -1280,6 +1426,10 @@
     },
     "denver": {
      "code": "tank-erectors@DEN",
+     "role": "regional chapter"
+    },
+    "miami": {
+     "code": "tank-erectors@MIA",
      "role": "regional chapter"
     }
    }
@@ -1315,6 +1465,10 @@
     "denver": {
      "code": "shipfitters@DEN",
      "role": "regional chapter"
+    },
+    "miami": {
+     "code": "shipfitters@MIA",
+     "role": "regional chapter"
     }
    }
   },
@@ -1348,6 +1502,10 @@
     },
     "denver": {
      "code": "marine-pipe@DEN",
+     "role": "regional chapter"
+    },
+    "miami": {
+     "code": "marine-pipe@MIA",
      "role": "regional chapter"
     }
    }
@@ -1383,6 +1541,10 @@
     "denver": {
      "code": "divers@DEN",
      "role": "regional chapter"
+    },
+    "miami": {
+     "code": "divers@MIA",
+     "role": "regional chapter"
     }
    }
   },
@@ -1416,6 +1578,10 @@
     },
     "denver": {
      "code": "blasters@DEN",
+     "role": "regional chapter"
+    },
+    "miami": {
+     "code": "blasters@MIA",
      "role": "regional chapter"
     }
    }
@@ -1451,6 +1617,10 @@
     "denver": {
      "code": "miners@DEN",
      "role": "regional chapter"
+    },
+    "miami": {
+     "code": "miners@MIA",
+     "role": "regional chapter"
     }
    }
   },
@@ -1484,6 +1654,10 @@
     },
     "denver": {
      "code": "smelter@DEN",
+     "role": "regional chapter"
+    },
+    "miami": {
+     "code": "smelter@MIA",
      "role": "regional chapter"
     }
    }
@@ -1519,6 +1693,10 @@
     "denver": {
      "code": "foundry@DEN",
      "role": "regional chapter"
+    },
+    "miami": {
+     "code": "foundry@MIA",
+     "role": "regional chapter"
     }
    }
   },
@@ -1552,6 +1730,10 @@
     },
     "denver": {
      "code": "machinists@DEN",
+     "role": "regional chapter"
+    },
+    "miami": {
+     "code": "machinists@MIA",
      "role": "regional chapter"
     }
    }
@@ -1587,6 +1769,10 @@
     "denver": {
      "code": "toolmakers@DEN",
      "role": "regional chapter"
+    },
+    "miami": {
+     "code": "toolmakers@MIA",
+     "role": "regional chapter"
     }
    }
   },
@@ -1620,6 +1806,10 @@
     },
     "denver": {
      "code": "fabricators@DEN",
+     "role": "regional chapter"
+    },
+    "miami": {
+     "code": "fabricators@MIA",
      "role": "regional chapter"
     }
    }
@@ -1655,6 +1845,10 @@
     "denver": {
      "code": "platers@DEN",
      "role": "regional chapter"
+    },
+    "miami": {
+     "code": "platers@MIA",
+     "role": "regional chapter"
     }
    }
   },
@@ -1688,6 +1882,10 @@
     },
     "denver": {
      "code": "substation@DEN",
+     "role": "regional chapter"
+    },
+    "miami": {
+     "code": "substation@MIA",
      "role": "regional chapter"
     }
    }
@@ -1723,6 +1921,10 @@
     "denver": {
      "code": "cable-splicers@DEN",
      "role": "regional chapter"
+    },
+    "miami": {
+     "code": "cable-splicers@MIA",
+     "role": "regional chapter"
     }
    }
   },
@@ -1756,6 +1958,10 @@
     },
     "denver": {
      "code": "meter-techs@DEN",
+     "role": "regional chapter"
+    },
+    "miami": {
+     "code": "meter-techs@MIA",
      "role": "regional chapter"
     }
    }
@@ -1791,6 +1997,10 @@
     "denver": {
      "code": "gas-distrib@DEN",
      "role": "regional chapter"
+    },
+    "miami": {
+     "code": "gas-distrib@MIA",
+     "role": "regional chapter"
     }
    }
   },
@@ -1824,6 +2034,10 @@
     },
     "denver": {
      "code": "water-distrib@DEN",
+     "role": "regional chapter"
+    },
+    "miami": {
+     "code": "water-distrib@MIA",
      "role": "regional chapter"
     }
    }
@@ -1859,6 +2073,10 @@
     "denver": {
      "code": "wastewater@DEN",
      "role": "regional chapter"
+    },
+    "miami": {
+     "code": "wastewater@MIA",
+     "role": "regional chapter"
     }
    }
   },
@@ -1892,6 +2110,10 @@
     },
     "denver": {
      "code": "nuclear@DEN",
+     "role": "regional chapter"
+    },
+    "miami": {
+     "code": "nuclear@MIA",
      "role": "regional chapter"
     }
    }
@@ -1927,6 +2149,10 @@
     "denver": {
      "code": "hydro@DEN",
      "role": "regional chapter"
+    },
+    "miami": {
+     "code": "hydro@MIA",
+     "role": "regional chapter"
     }
    }
   },
@@ -1960,6 +2186,10 @@
     },
     "denver": {
      "code": "geothermal@DEN",
+     "role": "regional chapter"
+    },
+    "miami": {
+     "code": "geothermal@MIA",
      "role": "regional chapter"
     }
    }
@@ -1995,6 +2225,10 @@
     "denver": {
      "code": "battery-storage@DEN",
      "role": "regional chapter"
+    },
+    "miami": {
+     "code": "battery-storage@MIA",
+     "role": "regional chapter"
     }
    }
   },
@@ -2028,6 +2262,10 @@
     },
     "denver": {
      "code": "ev-charging@DEN",
+     "role": "regional chapter"
+    },
+    "miami": {
+     "code": "ev-charging@MIA",
      "role": "regional chapter"
     }
    }
@@ -2063,6 +2301,10 @@
     "denver": {
      "code": "hydrogen@DEN",
      "role": "regional chapter"
+    },
+    "miami": {
+     "code": "hydrogen@MIA",
+     "role": "regional chapter"
     }
    }
   },
@@ -2096,6 +2338,10 @@
     },
     "denver": {
      "code": "transmission@DEN",
+     "role": "regional chapter"
+    },
+    "miami": {
+     "code": "transmission@MIA",
      "role": "regional chapter"
     }
    }
@@ -2131,6 +2377,10 @@
     "denver": {
      "code": "district-energy@DEN",
      "role": "regional chapter"
+    },
+    "miami": {
+     "code": "district-energy@MIA",
+     "role": "regional chapter"
     }
    }
   },
@@ -2164,6 +2414,10 @@
     },
     "denver": {
      "code": "masonry-restore@DEN",
+     "role": "regional chapter"
+    },
+    "miami": {
+     "code": "masonry-restore@MIA",
      "role": "regional chapter"
     }
    }
@@ -2199,6 +2453,10 @@
     "denver": {
      "code": "stone-carvers@DEN",
      "role": "regional chapter"
+    },
+    "miami": {
+     "code": "stone-carvers@MIA",
+     "role": "regional chapter"
     }
    }
   },
@@ -2232,6 +2490,10 @@
     },
     "denver": {
      "code": "plasterers@DEN",
+     "role": "regional chapter"
+    },
+    "miami": {
+     "code": "plasterers@MIA",
      "role": "regional chapter"
     }
    }
@@ -2267,6 +2529,10 @@
     "denver": {
      "code": "terrazzo@DEN",
      "role": "regional chapter"
+    },
+    "miami": {
+     "code": "terrazzo@MIA",
+     "role": "regional chapter"
     }
    }
   },
@@ -2300,6 +2566,10 @@
     },
     "denver": {
      "code": "tilesetters@DEN",
+     "role": "regional chapter"
+    },
+    "miami": {
+     "code": "tilesetters@MIA",
      "role": "regional chapter"
     }
    }
@@ -2335,6 +2605,10 @@
     "denver": {
      "code": "lathers@DEN",
      "role": "regional chapter"
+    },
+    "miami": {
+     "code": "lathers@MIA",
+     "role": "regional chapter"
     }
    }
   },
@@ -2368,6 +2642,10 @@
     },
     "denver": {
      "code": "curtainwall@DEN",
+     "role": "regional chapter"
+    },
+    "miami": {
+     "code": "curtainwall@MIA",
      "role": "regional chapter"
     }
    }
@@ -2403,6 +2681,10 @@
     "denver": {
      "code": "waterproofers@DEN",
      "role": "regional chapter"
+    },
+    "miami": {
+     "code": "waterproofers@MIA",
+     "role": "regional chapter"
     }
    }
   },
@@ -2436,6 +2718,10 @@
     },
     "denver": {
      "code": "firestop@DEN",
+     "role": "regional chapter"
+    },
+    "miami": {
+     "code": "firestop@MIA",
      "role": "regional chapter"
     }
    }
@@ -2471,6 +2757,10 @@
     "denver": {
      "code": "acoustic@DEN",
      "role": "regional chapter"
+    },
+    "miami": {
+     "code": "acoustic@MIA",
+     "role": "regional chapter"
     }
    }
   },
@@ -2504,6 +2794,10 @@
     },
     "denver": {
      "code": "cladding@DEN",
+     "role": "regional chapter"
+    },
+    "miami": {
+     "code": "cladding@MIA",
      "role": "regional chapter"
     }
    }
@@ -2539,6 +2833,10 @@
     "denver": {
      "code": "shoring@DEN",
      "role": "regional chapter"
+    },
+    "miami": {
+     "code": "shoring@MIA",
+     "role": "regional chapter"
     }
    }
   },
@@ -2572,6 +2870,10 @@
     },
     "denver": {
      "code": "piling@DEN",
+     "role": "regional chapter"
+    },
+    "miami": {
+     "code": "piling@MIA",
      "role": "regional chapter"
     }
    }
@@ -2607,6 +2909,10 @@
     "denver": {
      "code": "concrete-pump@DEN",
      "role": "regional chapter"
+    },
+    "miami": {
+     "code": "concrete-pump@MIA",
+     "role": "regional chapter"
     }
    }
   },
@@ -2640,6 +2946,10 @@
     },
     "denver": {
      "code": "post-tension@DEN",
+     "role": "regional chapter"
+    },
+    "miami": {
+     "code": "post-tension@MIA",
      "role": "regional chapter"
     }
    }
@@ -2675,6 +2985,10 @@
     "denver": {
      "code": "precast@DEN",
      "role": "regional chapter"
+    },
+    "miami": {
+     "code": "precast@MIA",
+     "role": "regional chapter"
     }
    }
   },
@@ -2708,6 +3022,10 @@
     },
     "denver": {
      "code": "steel-erectors@DEN",
+     "role": "regional chapter"
+    },
+    "miami": {
+     "code": "steel-erectors@MIA",
      "role": "regional chapter"
     }
    }
@@ -2743,6 +3061,10 @@
     "denver": {
      "code": "decking@DEN",
      "role": "regional chapter"
+    },
+    "miami": {
+     "code": "decking@MIA",
+     "role": "regional chapter"
     }
    }
   },
@@ -2776,6 +3098,10 @@
     },
     "denver": {
      "code": "window-glazing@DEN",
+     "role": "regional chapter"
+    },
+    "miami": {
+     "code": "window-glazing@MIA",
      "role": "regional chapter"
     }
    }
@@ -2811,6 +3137,10 @@
     "denver": {
      "code": "bas-controls@DEN",
      "role": "regional chapter"
+    },
+    "miami": {
+     "code": "bas-controls@MIA",
+     "role": "regional chapter"
     }
    }
   },
@@ -2844,6 +3174,10 @@
     },
     "denver": {
      "code": "fire-alarm@DEN",
+     "role": "regional chapter"
+    },
+    "miami": {
+     "code": "fire-alarm@MIA",
      "role": "regional chapter"
     }
    }
@@ -2879,6 +3213,10 @@
     "denver": {
      "code": "security-sys@DEN",
      "role": "regional chapter"
+    },
+    "miami": {
+     "code": "security-sys@MIA",
+     "role": "regional chapter"
     }
    }
   },
@@ -2912,6 +3250,10 @@
     },
     "denver": {
      "code": "network-cabling@DEN",
+     "role": "regional chapter"
+    },
+    "miami": {
+     "code": "network-cabling@MIA",
      "role": "regional chapter"
     }
    }
@@ -2947,6 +3289,10 @@
     "denver": {
      "code": "fiber-splicers@DEN",
      "role": "regional chapter"
+    },
+    "miami": {
+     "code": "fiber-splicers@MIA",
+     "role": "regional chapter"
     }
    }
   },
@@ -2980,6 +3326,10 @@
     },
     "denver": {
      "code": "data-center@DEN",
+     "role": "regional chapter"
+    },
+    "miami": {
+     "code": "data-center@MIA",
      "role": "regional chapter"
     }
    }
@@ -3015,6 +3365,10 @@
     "denver": {
      "code": "instrumentation@DEN",
      "role": "regional chapter"
+    },
+    "miami": {
+     "code": "instrumentation@MIA",
+     "role": "regional chapter"
     }
    }
   },
@@ -3048,6 +3402,10 @@
     },
     "denver": {
      "code": "plc-techs@DEN",
+     "role": "regional chapter"
+    },
+    "miami": {
+     "code": "plc-techs@MIA",
      "role": "regional chapter"
     }
    }
@@ -3083,6 +3441,10 @@
     "denver": {
      "code": "robotics@DEN",
      "role": "regional chapter"
+    },
+    "miami": {
+     "code": "robotics@MIA",
+     "role": "regional chapter"
     }
    }
   },
@@ -3116,6 +3478,10 @@
     },
     "denver": {
      "code": "automation-int@DEN",
+     "role": "regional chapter"
+    },
+    "miami": {
+     "code": "automation-int@MIA",
      "role": "regional chapter"
     }
    }
@@ -3151,6 +3517,10 @@
     "denver": {
      "code": "cleanroom@DEN",
      "role": "regional chapter"
+    },
+    "miami": {
+     "code": "cleanroom@MIA",
+     "role": "regional chapter"
     }
    }
   },
@@ -3184,6 +3554,10 @@
     },
     "denver": {
      "code": "medical-gas@DEN",
+     "role": "regional chapter"
+    },
+    "miami": {
+     "code": "medical-gas@MIA",
      "role": "regional chapter"
     }
    }
@@ -3219,6 +3593,10 @@
     "denver": {
      "code": "rail-track@DEN",
      "role": "regional chapter"
+    },
+    "miami": {
+     "code": "rail-track@MIA",
+     "role": "regional chapter"
     }
    }
   },
@@ -3252,6 +3630,10 @@
     },
     "denver": {
      "code": "rail-signals@DEN",
+     "role": "regional chapter"
+    },
+    "miami": {
+     "code": "rail-signals@MIA",
      "role": "regional chapter"
     }
    }
@@ -3287,6 +3669,10 @@
     "denver": {
      "code": "catenary@DEN",
      "role": "regional chapter"
+    },
+    "miami": {
+     "code": "catenary@MIA",
+     "role": "regional chapter"
     }
    }
   },
@@ -3320,6 +3706,10 @@
     },
     "denver": {
      "code": "transit-vehicle@DEN",
+     "role": "regional chapter"
+    },
+    "miami": {
+     "code": "transit-vehicle@MIA",
      "role": "regional chapter"
     }
    }
@@ -3355,6 +3745,10 @@
     "denver": {
      "code": "aviation-ground@DEN",
      "role": "regional chapter"
+    },
+    "miami": {
+     "code": "aviation-ground@MIA",
+     "role": "regional chapter"
     }
    }
   },
@@ -3388,6 +3782,10 @@
     },
     "denver": {
      "code": "airfield@DEN",
+     "role": "regional chapter"
+    },
+    "miami": {
+     "code": "airfield@MIA",
      "role": "regional chapter"
     }
    }
@@ -3423,6 +3821,10 @@
     "denver": {
      "code": "port-crane@DEN",
      "role": "regional chapter"
+    },
+    "miami": {
+     "code": "port-crane@MIA",
+     "role": "regional chapter"
     }
    }
   },
@@ -3456,6 +3858,10 @@
     },
     "denver": {
      "code": "marine-terminal@DEN",
+     "role": "regional chapter"
+    },
+    "miami": {
+     "code": "marine-terminal@MIA",
      "role": "regional chapter"
     }
    }
@@ -3491,6 +3897,10 @@
     "denver": {
      "code": "fleet-diesel@DEN",
      "role": "regional chapter"
+    },
+    "miami": {
+     "code": "fleet-diesel@MIA",
+     "role": "regional chapter"
     }
    }
   },
@@ -3524,6 +3934,10 @@
     },
     "denver": {
      "code": "bridge-inspect@DEN",
+     "role": "regional chapter"
+    },
+    "miami": {
+     "code": "bridge-inspect@MIA",
      "role": "regional chapter"
     }
    }
@@ -3559,6 +3973,10 @@
     "denver": {
      "code": "asbestos@DEN",
      "role": "regional chapter"
+    },
+    "miami": {
+     "code": "asbestos@MIA",
+     "role": "regional chapter"
     }
    }
   },
@@ -3592,6 +4010,10 @@
     },
     "denver": {
      "code": "lead-abatement@DEN",
+     "role": "regional chapter"
+    },
+    "miami": {
+     "code": "lead-abatement@MIA",
      "role": "regional chapter"
     }
    }
@@ -3627,6 +4049,10 @@
     "denver": {
      "code": "mold-remediation@DEN",
      "role": "regional chapter"
+    },
+    "miami": {
+     "code": "mold-remediation@MIA",
+     "role": "regional chapter"
     }
    }
   },
@@ -3660,6 +4086,10 @@
     },
     "denver": {
      "code": "spill-response@DEN",
+     "role": "regional chapter"
+    },
+    "miami": {
+     "code": "spill-response@MIA",
      "role": "regional chapter"
     }
    }
@@ -3695,6 +4125,10 @@
     "denver": {
      "code": "confined-space@DEN",
      "role": "regional chapter"
+    },
+    "miami": {
+     "code": "confined-space@MIA",
+     "role": "regional chapter"
     }
    }
   },
@@ -3728,6 +4162,10 @@
     },
     "denver": {
      "code": "high-angle@DEN",
+     "role": "regional chapter"
+    },
+    "miami": {
+     "code": "high-angle@MIA",
      "role": "regional chapter"
     }
    }
@@ -3763,6 +4201,10 @@
     "denver": {
      "code": "site-safety@DEN",
      "role": "regional chapter"
+    },
+    "miami": {
+     "code": "site-safety@MIA",
+     "role": "regional chapter"
     }
    }
   },
@@ -3797,6 +4239,10 @@
     "denver": {
      "code": "industrial-clean@DEN",
      "role": "regional chapter"
+    },
+    "miami": {
+     "code": "industrial-clean@MIA",
+     "role": "regional chapter"
     }
    }
   },
@@ -3830,6 +4276,10 @@
     },
     "denver": {
      "code": "survey-drone@DEN",
+     "role": "regional chapter"
+    },
+    "miami": {
+     "code": "survey-drone@MIA",
      "role": "regional chapter"
     }
    }

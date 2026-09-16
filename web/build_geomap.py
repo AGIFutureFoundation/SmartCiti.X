@@ -122,10 +122,10 @@ body{margin:0;background:var(--plate);color:var(--ink);
 <div id="map"></div>
 <div id="legend">
   <b>The geo registry, drawn</b><br>
-  <span class="dot" style="background:var(--mark)"></span>campus — RECORDED/DERIVED for the three flagship campuses, AUTHORED for the five hub campuses<br>
+  <span class="dot" style="background:var(--mark)"></span>campus — RECORDED/DERIVED for the three flagship campuses, AUTHORED for the six hub campuses<br>
   <span class="dot" style="background:var(--steel)"></span>anchor — RECORDED from Locator.X near the flagship campuses, AUTHORED near the hub campuses (click a dot for the one that applies)<br>
   <span class="dot" style="background:none;border:1.5px dashed var(--mark);border-radius:0"></span>great-circle route — DERIVED<br>
-  <span class="dot" style="background:none;border:1px solid var(--steel);border-radius:0"></span>city frame — RECORDED for the three flagship campuses, AUTHORED for the five hub campuses<br>
+  <span class="dot" style="background:none;border:1px solid var(--steel);border-radius:0"></span>city frame — RECORDED for the three flagship campuses, AUTHORED for the six hub campuses<br>
   <span class="dot" style="background:none;border:1.5px dashed var(--muted)"></span>roadmap candidate — AUTHORED, not built<br>
   <span class="dot" style="background:var(--good)"></span>Bay Restoration site — real project, not affiliated with this bundle
 </div>

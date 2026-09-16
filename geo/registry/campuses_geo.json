@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-10",
- "source_stamp": "1a75e5b8d5075e1b",
+ "source_stamp": "b87221a7237a0c61",
  "crs": "WGS84 (EPSG:4326)",
  "recorded_check": "cross-checked against the Locator.X checkout",
  "honesty": {
@@ -74,6 +74,14 @@
    "source": "widely-published public geography (city-center), typed from general knowledge - not cross-checked against any file this build can verify",
    "city": "Denver",
    "region": "Colorado"
+  },
+  "miami": {
+   "lat": 25.7617,
+   "lng": -80.1918,
+   "provenance": "AUTHORED",
+   "source": "widely-published public geography (city-center), typed from general knowledge - not cross-checked against any file this build can verify",
+   "city": "Miami",
+   "region": "Florida"
   }
  },
  "routes_km": [
@@ -120,6 +128,12 @@
    "bearing_deg": 76.5
   },
   {
+   "from": "treasure-island",
+   "to": "miami",
+   "km": 4166.1,
+   "bearing_deg": 96.2
+  },
+  {
    "from": "oakland",
    "to": "new-orleans",
    "km": 3081.0,
@@ -156,6 +170,12 @@
    "bearing_deg": 76.5
   },
   {
+   "from": "oakland",
+   "to": "miami",
+   "km": 4157.2,
+   "bearing_deg": 96.3
+  },
+  {
    "from": "new-orleans",
    "to": "houston",
    "km": 511.3,
@@ -186,6 +206,12 @@
    "bearing_deg": 312.7
   },
   {
+   "from": "new-orleans",
+   "to": "miami",
+   "km": 1076.6,
+   "bearing_deg": 113.2
+  },
+  {
    "from": "houston",
    "to": "chicago",
    "km": 1515.8,
@@ -210,6 +236,12 @@
    "bearing_deg": 324.3
   },
   {
+   "from": "houston",
+   "to": "miami",
+   "km": 1556.8,
+   "bearing_deg": 102.9
+  },
+  {
    "from": "chicago",
    "to": "seattle",
    "km": 2788.9,
@@ -228,6 +260,12 @@
    "bearing_deg": 266.5
   },
   {
+   "from": "chicago",
+   "to": "miami",
+   "km": 1917.3,
+   "bearing_deg": 156.8
+  },
+  {
    "from": "seattle",
    "to": "pittsburgh",
    "km": 3432.2,
@@ -240,10 +278,28 @@
    "bearing_deg": 115.9
   },
   {
+   "from": "seattle",
+   "to": "miami",
+   "km": 4396.1,
+   "bearing_deg": 108.3
+  },
+  {
    "from": "pittsburgh",
    "to": "denver",
    "km": 2120.6,
    "bearing_deg": 276.1
+  },
+  {
+   "from": "pittsburgh",
+   "to": "miami",
+   "km": 1632.3,
+   "bearing_deg": 180.7
+  },
+  {
+   "from": "denver",
+   "to": "miami",
+   "km": 2776.5,
+   "bearing_deg": 116.5
   }
  ],
  "city": {
@@ -355,6 +411,20 @@
     "s": 39.45,
     "e": -104.6,
     "n": 40.05
+   },
+   "provenance": "AUTHORED",
+   "source": "widely-published public geography (metro-area extent), typed from general knowledge - not cross-checked against any file this build can verify"
+  },
+  "miami": {
+   "center": {
+    "lat": 25.76,
+    "lng": -80.19
+   },
+   "bounds": {
+    "w": -80.55,
+    "s": 25.45,
+    "e": -80.05,
+    "n": 26.05
    },
    "provenance": "AUTHORED",
    "source": "widely-published public geography (metro-area extent), typed from general knowledge - not cross-checked against any file this build can verify"
@@ -803,6 +873,52 @@
     "km": 1.5,
     "bearing_deg": 292.8,
     "blurb": "A public community college on the Auraria Campus, with real career-technical and trades programs.",
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   }
+  ],
+  "miami": [
+   {
+    "name": "PortMiami",
+    "lat": 25.7716,
+    "lng": -80.1719,
+    "provenance": "AUTHORED",
+    "source": "Miami-Dade County's seaport authority, on Dodge Island in Biscayne Bay",
+    "km": 2.3,
+    "bearing_deg": 61.1,
+    "blurb": "Miami-Dade County's seaport authority on Dodge Island, one of the busiest cargo and cruise ports in the country.",
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   },
+   {
+    "name": "NOAA Atlantic Oceanographic and Meteorological Laboratory",
+    "lat": 25.7302,
+    "lng": -80.1615,
+    "provenance": "AUTHORED",
+    "source": "the U.S. federal government's hurricane and ocean research laboratory on Virginia Key",
+    "km": 4.6,
+    "bearing_deg": 139.1,
+    "blurb": "The U.S. federal government's hurricane and ocean research laboratory on Virginia Key, part of NOAA.",
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   },
+   {
+    "name": "University of Miami",
+    "lat": 25.7171,
+    "lng": -80.2762,
+    "provenance": "AUTHORED",
+    "source": "the private research university\u2019s Coral Gables campus",
+    "km": 9.8,
+    "bearing_deg": 239.6,
+    "blurb": "Private research university in Coral Gables, Florida, with schools of engineering, architecture and marine science.",
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   },
+   {
+    "name": "Miami Dade College",
+    "lat": 25.7745,
+    "lng": -80.1937,
+    "provenance": "AUTHORED",
+    "source": "the community-college system's Wolfson Campus downtown, with real career-technical and trades programs",
+    "km": 1.4,
+    "bearing_deg": 352.4,
+    "blurb": "A large public community-college system with real career-technical and trades programs across Miami-Dade County.",
     "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
    }
   ]

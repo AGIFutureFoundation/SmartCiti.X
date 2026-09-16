@@ -166,6 +166,26 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
+     -80.1918,
+     25.7617
+    ]
+   },
+   "properties": {
+    "slug": "miami",
+    "name": "Biscayne Coastal Hub",
+    "city": "Miami",
+    "region": "Florida",
+    "districts": 0,
+    "halls": 0,
+    "provenance": "AUTHORED",
+    "source": "widely-published public geography (city-center), typed from general knowledge - not cross-checked against any file this build can verify"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
      -122.4194,
      37.7749
     ]
@@ -977,6 +997,90 @@
     "blurb": "A public community college on the Auraria Campus, with real career-technical and trades programs.",
     "km": 1.5,
     "bearing_deg": 292.8,
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -80.1719,
+     25.7716
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "PortMiami",
+    "near": "miami",
+    "provenance": "AUTHORED",
+    "source": "Miami-Dade County's seaport authority, on Dodge Island in Biscayne Bay",
+    "blurb": "Miami-Dade County's seaport authority on Dodge Island, one of the busiest cargo and cruise ports in the country.",
+    "km": 2.3,
+    "bearing_deg": 61.1,
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -80.1615,
+     25.7302
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "NOAA Atlantic Oceanographic and Meteorological Laboratory",
+    "near": "miami",
+    "provenance": "AUTHORED",
+    "source": "the U.S. federal government's hurricane and ocean research laboratory on Virginia Key",
+    "blurb": "The U.S. federal government's hurricane and ocean research laboratory on Virginia Key, part of NOAA.",
+    "km": 4.6,
+    "bearing_deg": 139.1,
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -80.2762,
+     25.7171
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "University of Miami",
+    "near": "miami",
+    "provenance": "AUTHORED",
+    "source": "the private research university\u2019s Coral Gables campus",
+    "blurb": "Private research university in Coral Gables, Florida, with schools of engineering, architecture and marine science.",
+    "km": 9.8,
+    "bearing_deg": 239.6,
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -80.1937,
+     25.7745
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Miami Dade College",
+    "near": "miami",
+    "provenance": "AUTHORED",
+    "source": "the community-college system's Wolfson Campus downtown, with real career-technical and trades programs",
+    "blurb": "A large public community-college system with real career-technical and trades programs across Miami-Dade County.",
+    "km": 1.4,
+    "bearing_deg": 352.4,
     "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
    }
   }
