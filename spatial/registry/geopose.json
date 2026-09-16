@@ -1,0 +1,2111 @@
+{
+ "pack": "smartcitix-trade-craft-academy-spatial-fabric",
+ "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
+ "pack_version": "1.0.0",
+ "built": "2026-09-16",
+ "source_stamp": "e4b52e89463fa2a1",
+ "encoding": "OGC GeoPose 1.0 Basic-YPR, OGC 21-056r11, application/geopose+json",
+ "media_type": "application/geopose+json",
+ "crs": "WGS84 (EPSG:4326)",
+ "counts": {
+  "campuses": 10,
+  "anchors": 47,
+  "restoration_sites": 9,
+  "total": 66,
+  "unposed": 1
+ },
+ "honesty": {
+  "geopose_claimed": "OGC GeoPose 1.0 (OGC 21-056r11) is a published standard with a confirmed Basic-YPR JSON encoding, and it is claimed outright: every pose in geopose.json is exactly {position: {lat, lon, h}, orientation: {yaw, pitch, roll}}, lat/lon in degrees, h in metres, angles in degrees, LTP-ENU inner frame. The horizontal position is copied at build time from the registry that owns it and carries that registry's own provenance word (RECORDED / DERIVED / AUTHORED) and source string.",
+  "no_heights_or_headings": "this bundle holds no height and no heading for any campus, anchor or site - elevation exists only as an on-request live USGS 3DEP lookup in the learner's own browser, never stored - so every pose emits h = 0.0 and yaw = pitch = roll = 0 with an explicit UNKNOWN sidecar beside it. A zero here is a placeholder, never a measurement, and no height or heading is invented to fill the slot.",
+  "ombi_not_claimed": "the OMBI spatial-fabric manifest, the Scene Object Model (SOM) and RMAP are marked \"OMBI - New\" in the public deck and their normative texts were not reachable from this build, so fabric.json and som.json are SHAPED after the deck's vocabulary, not validated against a specification. They are registered in meta/registry/metaverse.json under not_claimed, with the reason, and never under standards.",
+  "static_files_only_no_rmap": "this fabric is static files a plain web server serves next to the site - the deck's own \"publish 3D content like a website\" point. No RMAP endpoint, no server, no WebSocket, no fetch at build time, no DID minted: the identity field is honestly null. Every service listed runs in-page with no network, and every anchored .glb is produced on demand by the learner's browser, not a file sitting on disk.",
+  "external_origins": "every other operator this fabric points at - a restoration site's own organization, the US Navy, EPA Region 9 and California DTSC at Hunters Point, a port authority, a university, a museum, a neighbouring city - is a separate origin: named, located by its own pose, and never content this fabric serves for them (served_by_this_fabric is false on every one). That is the SOM's per-branch ownership idea, and it is the same \"not affiliated\" line restoration/ and geo/ already hold. The 111 union halls' real organizations are deliberately NOT listed as origins: the halls here are SCHEMATIC training buildings named after a craft, not a union's premises.",
+  "not_loaded_in_any_browser": "nothing here has been opened in Sneeze, Artemis or any other metaverse browser. The only consumers this pack can defend are a reader of application/geopose+json and this bundle's own suite (spatial/test.mjs), which holds every pose against its source registry on every run."
+ },
+ "poses": [
+  {
+   "subject": {
+    "kind": "campus",
+    "id": "treasure-island",
+    "name": "Treasure Island Campus",
+    "campus": "treasure-island",
+    "ref": "campus:treasure-island"
+   },
+   "geopose": {
+    "position": {
+     "lat": 37.8235,
+     "lon": -122.3705,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "DERIVED",
+    "source": "Treasure Island centroid, authored (WGS84)",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   }
+  },
+  {
+   "subject": {
+    "kind": "campus",
+    "id": "oakland",
+    "name": "Oakland Waterfront Campus",
+    "campus": "oakland",
+    "ref": "campus:oakland"
+   },
+   "geopose": {
+    "position": {
+     "lat": 37.8044,
+     "lon": -122.2712,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "RECORDED",
+    "source": "Locator.X city table (src/app.js CITIES), Apache-2.0",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   }
+  },
+  {
+   "subject": {
+    "kind": "campus",
+    "id": "new-orleans",
+    "name": "Crescent Works Campus",
+    "campus": "new-orleans",
+    "ref": "campus:new-orleans"
+   },
+   "geopose": {
+    "position": {
+     "lat": 29.9511,
+     "lon": -90.0715,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "DERIVED",
+    "source": "New Orleans centroid, authored (WGS84)",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   }
+  },
+  {
+   "subject": {
+    "kind": "campus",
+    "id": "houston",
+    "name": "Bayou Energy Hub",
+    "campus": "houston",
+    "ref": "campus:houston"
+   },
+   "geopose": {
+    "position": {
+     "lat": 29.7604,
+     "lon": -95.3698,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "AUTHORED",
+    "source": "widely-published public geography (city-center), typed from general knowledge - not cross-checked against any file this build can verify",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   }
+  },
+  {
+   "subject": {
+    "kind": "campus",
+    "id": "chicago",
+    "name": "Loop Rail Hub",
+    "campus": "chicago",
+    "ref": "campus:chicago"
+   },
+   "geopose": {
+    "position": {
+     "lat": 41.8781,
+     "lon": -87.6298,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "AUTHORED",
+    "source": "widely-published public geography (city-center), typed from general knowledge - not cross-checked against any file this build can verify",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   }
+  },
+  {
+   "subject": {
+    "kind": "campus",
+    "id": "seattle",
+    "name": "Sound Aerospace Hub",
+    "campus": "seattle",
+    "ref": "campus:seattle"
+   },
+   "geopose": {
+    "position": {
+     "lat": 47.6062,
+     "lon": -122.3321,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "AUTHORED",
+    "source": "widely-published public geography (city-center), typed from general knowledge - not cross-checked against any file this build can verify",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   }
+  },
+  {
+   "subject": {
+    "kind": "campus",
+    "id": "pittsburgh",
+    "name": "Three Rivers Steel Hub",
+    "campus": "pittsburgh",
+    "ref": "campus:pittsburgh"
+   },
+   "geopose": {
+    "position": {
+     "lat": 40.4406,
+     "lon": -79.9959,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "AUTHORED",
+    "source": "widely-published public geography (city-center), typed from general knowledge - not cross-checked against any file this build can verify",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   }
+  },
+  {
+   "subject": {
+    "kind": "campus",
+    "id": "denver",
+    "name": "Front Range Mining Hub",
+    "campus": "denver",
+    "ref": "campus:denver"
+   },
+   "geopose": {
+    "position": {
+     "lat": 39.7392,
+     "lon": -104.9903,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "AUTHORED",
+    "source": "widely-published public geography (city-center), typed from general knowledge - not cross-checked against any file this build can verify",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   }
+  },
+  {
+   "subject": {
+    "kind": "campus",
+    "id": "miami",
+    "name": "Biscayne Coastal Hub",
+    "campus": "miami",
+    "ref": "campus:miami"
+   },
+   "geopose": {
+    "position": {
+     "lat": 25.7617,
+     "lon": -80.1918,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "AUTHORED",
+    "source": "widely-published public geography (city-center), typed from general knowledge - not cross-checked against any file this build can verify",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   }
+  },
+  {
+   "subject": {
+    "kind": "campus",
+    "id": "detroit",
+    "name": "Motor City Hub",
+    "campus": "detroit",
+    "ref": "campus:detroit"
+   },
+   "geopose": {
+    "position": {
+     "lat": 42.3314,
+     "lon": -83.0458,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "AUTHORED",
+    "source": "widely-published public geography (city-center), typed from general knowledge - not cross-checked against any file this build can verify",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "treasure-island/san-francisco",
+    "name": "San Francisco",
+    "campus": "treasure-island",
+    "ref": "anchor:treasure-island/san-francisco"
+   },
+   "geopose": {
+    "position": {
+     "lat": 37.7749,
+     "lon": -122.4194,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 6.9,
+    "bearing_from_campus_deg": 218.5,
+    "kind": "city"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "treasure-island/sausalito",
+    "name": "Sausalito",
+    "campus": "treasure-island",
+    "ref": "anchor:treasure-island/sausalito"
+   },
+   "geopose": {
+    "position": {
+     "lat": 37.859,
+     "lon": -122.4853,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 10.8,
+    "bearing_from_campus_deg": 291.4,
+    "kind": "city"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "treasure-island/alameda",
+    "name": "Alameda",
+    "campus": "treasure-island",
+    "ref": "anchor:treasure-island/alameda"
+   },
+   "geopose": {
+    "position": {
+     "lat": 37.7652,
+     "lon": -122.2416,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 13.1,
+    "bearing_from_campus_deg": 119.7,
+    "kind": "city"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "treasure-island/daly-city",
+    "name": "Daly City",
+    "campus": "treasure-island",
+    "ref": "anchor:treasure-island/daly-city"
+   },
+   "geopose": {
+    "position": {
+     "lat": 37.6879,
+     "lon": -122.4702,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 17.4,
+    "bearing_from_campus_deg": 210.2,
+    "kind": "city"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "treasure-island/richmond",
+    "name": "Richmond",
+    "campus": "treasure-island",
+    "ref": "anchor:treasure-island/richmond"
+   },
+   "geopose": {
+    "position": {
+     "lat": 37.9358,
+     "lon": -122.3477,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 12.6,
+    "bearing_from_campus_deg": 9.1,
+    "kind": "city"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "treasure-island/san-rafael",
+    "name": "San Rafael",
+    "campus": "treasure-island",
+    "ref": "anchor:treasure-island/san-rafael"
+   },
+   "geopose": {
+    "position": {
+     "lat": 37.9735,
+     "lon": -122.5311,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 21.8,
+    "bearing_from_campus_deg": 319.9,
+    "kind": "city"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "treasure-island/south-san-francisco",
+    "name": "South San Francisco",
+    "campus": "treasure-island",
+    "ref": "anchor:treasure-island/south-san-francisco"
+   },
+   "geopose": {
+    "position": {
+     "lat": 37.6547,
+     "lon": -122.4077,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 19.1,
+    "bearing_from_campus_deg": 189.9,
+    "kind": "city"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "treasure-island/san-mateo",
+    "name": "San Mateo",
+    "campus": "treasure-island",
+    "ref": "anchor:treasure-island/san-mateo"
+   },
+   "geopose": {
+    "position": {
+     "lat": 37.563,
+     "lon": -122.3255,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 29.2,
+    "bearing_from_campus_deg": 172.2,
+    "kind": "city"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "oakland/berkeley",
+    "name": "Berkeley",
+    "campus": "oakland",
+    "ref": "anchor:oakland/berkeley"
+   },
+   "geopose": {
+    "position": {
+     "lat": 37.8716,
+     "lon": -122.2727,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 7.5,
+    "bearing_from_campus_deg": 359.0,
+    "kind": "city"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "oakland/emeryville",
+    "name": "Emeryville",
+    "campus": "oakland",
+    "ref": "anchor:oakland/emeryville"
+   },
+   "geopose": {
+    "position": {
+     "lat": 37.8313,
+     "lon": -122.2852,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 3.2,
+    "bearing_from_campus_deg": 337.7,
+    "kind": "city"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "oakland/alameda",
+    "name": "Alameda",
+    "campus": "oakland",
+    "ref": "anchor:oakland/alameda"
+   },
+   "geopose": {
+    "position": {
+     "lat": 37.7652,
+     "lon": -122.2416,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 5.1,
+    "bearing_from_campus_deg": 149.2,
+    "kind": "city"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "oakland/san-leandro",
+    "name": "San Leandro",
+    "campus": "oakland",
+    "ref": "anchor:oakland/san-leandro"
+   },
+   "geopose": {
+    "position": {
+     "lat": 37.7249,
+     "lon": -122.1561,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "RECORDED",
+    "source": "Locator.X src/app.js CITIES, Apache-2.0",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 13.4,
+    "bearing_from_campus_deg": 131.1,
+    "kind": "city"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "new-orleans/tulane-university",
+    "name": "Tulane University",
+    "campus": "new-orleans",
+    "ref": "anchor:new-orleans/tulane-university"
+   },
+   "geopose": {
+    "position": {
+     "lat": 29.9404,
+     "lon": -90.1207,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "RECORDED",
+    "source": "Locator.X build_data_nola.py pois, Apache-2.0",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 4.9,
+    "bearing_from_campus_deg": 255.9,
+    "kind": "institution"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "new-orleans/xavier-university",
+    "name": "Xavier University",
+    "campus": "new-orleans",
+    "ref": "anchor:new-orleans/xavier-university"
+   },
+   "geopose": {
+    "position": {
+     "lat": 29.9649,
+     "lon": -90.1073,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "RECORDED",
+    "source": "Locator.X build_data_nola.py pois, Apache-2.0",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 3.8,
+    "bearing_from_campus_deg": 294.0,
+    "kind": "institution"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "new-orleans/university-of-new-orleans",
+    "name": "University of New Orleans",
+    "campus": "new-orleans",
+    "ref": "anchor:new-orleans/university-of-new-orleans"
+   },
+   "geopose": {
+    "position": {
+     "lat": 30.0288,
+     "lon": -90.0664,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "RECORDED",
+    "source": "Locator.X build_data_nola.py pois, Apache-2.0",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 8.7,
+    "bearing_from_campus_deg": 3.3,
+    "kind": "institution"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "new-orleans/delgado-community-college",
+    "name": "Delgado Community College",
+    "campus": "new-orleans",
+    "ref": "anchor:new-orleans/delgado-community-college"
+   },
+   "geopose": {
+    "position": {
+     "lat": 29.9814,
+     "lon": -90.105,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "RECORDED",
+    "source": "Locator.X build_data_nola.py pois, Apache-2.0",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 4.7,
+    "bearing_from_campus_deg": 316.2,
+    "kind": "institution"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "new-orleans/loyola-university",
+    "name": "Loyola University",
+    "campus": "new-orleans",
+    "ref": "anchor:new-orleans/loyola-university"
+   },
+   "geopose": {
+    "position": {
+     "lat": 29.9351,
+     "lon": -90.1223,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "RECORDED",
+    "source": "Locator.X build_data_nola.py pois, Apache-2.0",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 5.2,
+    "bearing_from_campus_deg": 250.0,
+    "kind": "institution"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "new-orleans/dillard-university",
+    "name": "Dillard University",
+    "campus": "new-orleans",
+    "ref": "anchor:new-orleans/dillard-university"
+   },
+   "geopose": {
+    "position": {
+     "lat": 29.9903,
+     "lon": -90.0517,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "RECORDED",
+    "source": "Locator.X build_data_nola.py pois, Apache-2.0",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 4.8,
+    "bearing_from_campus_deg": 23.6,
+    "kind": "institution"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "new-orleans/suno",
+    "name": "SUNO",
+    "campus": "new-orleans",
+    "ref": "anchor:new-orleans/suno"
+   },
+   "geopose": {
+    "position": {
+     "lat": 30.0421,
+     "lon": -90.033,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "RECORDED",
+    "source": "Locator.X build_data_nola.py pois, Apache-2.0",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 10.8,
+    "bearing_from_campus_deg": 20.1,
+    "kind": "institution"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "houston/port-of-houston-authority",
+    "name": "Port of Houston Authority",
+    "campus": "houston",
+    "ref": "anchor:houston/port-of-houston-authority"
+   },
+   "geopose": {
+    "position": {
+     "lat": 29.735,
+     "lon": -95.27,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "AUTHORED",
+    "source": "the Houston Ship Channel port authority's Turning Basin district",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 10.0,
+    "bearing_from_campus_deg": 106.3,
+    "kind": "institution"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "houston/university-of-houston",
+    "name": "University of Houston",
+    "campus": "houston",
+    "ref": "anchor:houston/university-of-houston"
+   },
+   "geopose": {
+    "position": {
+     "lat": 29.7199,
+     "lon": -95.3422,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "AUTHORED",
+    "source": "the public research university\u2019s main campus",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 5.2,
+    "bearing_from_campus_deg": 149.4,
+    "kind": "institution"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "houston/san-jacinto-college",
+    "name": "San Jacinto College",
+    "campus": "houston",
+    "ref": "anchor:houston/san-jacinto-college"
+   },
+   "geopose": {
+    "position": {
+     "lat": 29.691,
+     "lon": -95.183,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "AUTHORED",
+    "source": "the Central campus in Pasadena, TX, known for its maritime and process-technology trades programs",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 19.6,
+    "bearing_from_campus_deg": 113.1,
+    "kind": "institution"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "houston/houston-community-college",
+    "name": "Houston Community College",
+    "campus": "houston",
+    "ref": "anchor:houston/houston-community-college"
+   },
+   "geopose": {
+    "position": {
+     "lat": 29.7241,
+     "lon": -95.3775,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "AUTHORED",
+    "source": "the community-college system\u2019s Central campus",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 4.1,
+    "bearing_from_campus_deg": 190.4,
+    "kind": "institution"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "chicago/chicago-union-station",
+    "name": "Chicago Union Station",
+    "campus": "chicago",
+    "ref": "anchor:chicago/chicago-union-station"
+   },
+   "geopose": {
+    "position": {
+     "lat": 41.8789,
+     "lon": -87.6359,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "AUTHORED",
+    "source": "the city\u2019s major intercity and commuter rail terminal",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 0.5,
+    "bearing_from_campus_deg": 280.0,
+    "kind": "institution"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "chicago/navy-pier",
+    "name": "Navy Pier",
+    "campus": "chicago",
+    "ref": "anchor:chicago/navy-pier"
+   },
+   "geopose": {
+    "position": {
+     "lat": 41.8917,
+     "lon": -87.6086,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "AUTHORED",
+    "source": "the Lake Michigan pier and public landmark",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 2.3,
+    "bearing_from_campus_deg": 49.2,
+    "kind": "institution"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "chicago/university-of-illinois-chicago",
+    "name": "University of Illinois Chicago",
+    "campus": "chicago",
+    "ref": "anchor:chicago/university-of-illinois-chicago"
+   },
+   "geopose": {
+    "position": {
+     "lat": 41.8708,
+     "lon": -87.6505,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "AUTHORED",
+    "source": "the public research university\u2019s campus",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 1.9,
+    "bearing_from_campus_deg": 244.7,
+    "kind": "institution"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "chicago/richard-j-daley-college",
+    "name": "Richard J. Daley College",
+    "campus": "chicago",
+    "ref": "anchor:chicago/richard-j-daley-college"
+   },
+   "geopose": {
+    "position": {
+     "lat": 41.7648,
+     "lon": -87.727,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "AUTHORED",
+    "source": "City Colleges of Chicago\u2019s construction-trades campus",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 15.0,
+    "bearing_from_campus_deg": 212.6,
+    "kind": "institution"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "seattle/port-of-seattle",
+    "name": "Port of Seattle",
+    "campus": "seattle",
+    "ref": "anchor:seattle/port-of-seattle"
+   },
+   "geopose": {
+    "position": {
+     "lat": 47.6087,
+     "lon": -122.3428,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "AUTHORED",
+    "source": "the public port authority's Pier 69 headquarters on the central waterfront",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 0.8,
+    "bearing_from_campus_deg": 289.1,
+    "kind": "institution"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "seattle/university-of-washington",
+    "name": "University of Washington",
+    "campus": "seattle",
+    "ref": "anchor:seattle/university-of-washington"
+   },
+   "geopose": {
+    "position": {
+     "lat": 47.6553,
+     "lon": -122.3035,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "AUTHORED",
+    "source": "the public research university\u2019s Seattle campus",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 5.9,
+    "bearing_from_campus_deg": 21.4,
+    "kind": "institution"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "seattle/museum-of-flight",
+    "name": "Museum of Flight",
+    "campus": "seattle",
+    "ref": "anchor:seattle/museum-of-flight"
+   },
+   "geopose": {
+    "position": {
+     "lat": 47.5185,
+     "lon": -122.2971,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "AUTHORED",
+    "source": "the aerospace museum at Boeing Field (King County International Airport)",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 10.1,
+    "bearing_from_campus_deg": 164.9,
+    "kind": "institution"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "seattle/south-seattle-college",
+    "name": "South Seattle College",
+    "campus": "seattle",
+    "ref": "anchor:seattle/south-seattle-college"
+   },
+   "geopose": {
+    "position": {
+     "lat": 47.5495,
+     "lon": -122.3576,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "AUTHORED",
+    "source": "the Seattle Colleges system\u2019s West Seattle campus",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 6.6,
+    "bearing_from_campus_deg": 196.9,
+    "kind": "institution"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "pittsburgh/port-of-pittsburgh-commission",
+    "name": "Port of Pittsburgh Commission",
+    "campus": "pittsburgh",
+    "ref": "anchor:pittsburgh/port-of-pittsburgh-commission"
+   },
+   "geopose": {
+    "position": {
+     "lat": 40.438,
+     "lon": -79.9958,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "AUTHORED",
+    "source": "the regional port authority for the Pittsburgh-area inland waterway system, headquartered near the three-rivers confluence",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 0.3,
+    "bearing_from_campus_deg": 178.3,
+    "kind": "institution"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "pittsburgh/carnegie-mellon-university",
+    "name": "Carnegie Mellon University",
+    "campus": "pittsburgh",
+    "ref": "anchor:pittsburgh/carnegie-mellon-university"
+   },
+   "geopose": {
+    "position": {
+     "lat": 40.4443,
+     "lon": -79.9436,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "AUTHORED",
+    "source": "the private research university\u2019s Oakland (Pittsburgh) campus",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 4.4,
+    "bearing_from_campus_deg": 84.7,
+    "kind": "institution"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "pittsburgh/carrie-blast-furnaces-national-historic-landmark",
+    "name": "Carrie Blast Furnaces National Historic Landmark",
+    "campus": "pittsburgh",
+    "ref": "anchor:pittsburgh/carrie-blast-furnaces-national-historic-landmark"
+   },
+   "geopose": {
+    "position": {
+     "lat": 40.4062,
+     "lon": -79.8631,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "AUTHORED",
+    "source": "a former U.S. Steel blast-furnace plant on the Monongahela, part of the Rivers of Steel National Heritage Area",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 11.9,
+    "bearing_from_campus_deg": 108.7,
+    "kind": "institution"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "pittsburgh/community-college-of-allegheny-county",
+    "name": "Community College of Allegheny County",
+    "campus": "pittsburgh",
+    "ref": "anchor:pittsburgh/community-college-of-allegheny-county"
+   },
+   "geopose": {
+    "position": {
+     "lat": 40.453,
+     "lon": -80.009,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "AUTHORED",
+    "source": "CCAC\u2019s Allegheny Campus on the North Side, with career-technical and trades programs",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 1.8,
+    "bearing_from_campus_deg": 321.2,
+    "kind": "institution"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "denver/colorado-school-of-mines",
+    "name": "Colorado School of Mines",
+    "campus": "denver",
+    "ref": "anchor:denver/colorado-school-of-mines"
+   },
+   "geopose": {
+    "position": {
+     "lat": 39.7503,
+     "lon": -105.2211,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "AUTHORED",
+    "source": "the public mining and earth-sciences research university in Golden, just west of Denver",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 19.8,
+    "bearing_from_campus_deg": 273.7,
+    "kind": "institution"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "denver/national-renewable-energy-laboratory",
+    "name": "National Renewable Energy Laboratory",
+    "campus": "denver",
+    "ref": "anchor:denver/national-renewable-energy-laboratory"
+   },
+   "geopose": {
+    "position": {
+     "lat": 39.7407,
+     "lon": -105.1686,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "AUTHORED",
+    "source": "the U.S. Department of Energy's national laboratory for renewable-energy research, on its South Table Mountain campus in Golden",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 15.2,
+    "bearing_from_campus_deg": 270.7,
+    "kind": "institution"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "denver/denver-union-station",
+    "name": "Denver Union Station",
+    "campus": "denver",
+    "ref": "anchor:denver/denver-union-station"
+   },
+   "geopose": {
+    "position": {
+     "lat": 39.7539,
+     "lon": -105.0011,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "AUTHORED",
+    "source": "the city's historic downtown transit hub for rail, bus and light rail",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 1.9,
+    "bearing_from_campus_deg": 330.5,
+    "kind": "institution"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "denver/community-college-of-denver",
+    "name": "Community College of Denver",
+    "campus": "denver",
+    "ref": "anchor:denver/community-college-of-denver"
+   },
+   "geopose": {
+    "position": {
+     "lat": 39.7444,
+     "lon": -105.0064,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "AUTHORED",
+    "source": "the public community college on the Auraria Campus downtown, with career-technical and trades programs",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 1.5,
+    "bearing_from_campus_deg": 292.8,
+    "kind": "institution"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "miami/portmiami",
+    "name": "PortMiami",
+    "campus": "miami",
+    "ref": "anchor:miami/portmiami"
+   },
+   "geopose": {
+    "position": {
+     "lat": 25.7716,
+     "lon": -80.1719,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "AUTHORED",
+    "source": "Miami-Dade County's seaport authority, on Dodge Island in Biscayne Bay",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 2.3,
+    "bearing_from_campus_deg": 61.1,
+    "kind": "institution"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "miami/noaa-atlantic-oceanographic-and-meteorological-laboratory",
+    "name": "NOAA Atlantic Oceanographic and Meteorological Laboratory",
+    "campus": "miami",
+    "ref": "anchor:miami/noaa-atlantic-oceanographic-and-meteorological-laboratory"
+   },
+   "geopose": {
+    "position": {
+     "lat": 25.7302,
+     "lon": -80.1615,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "AUTHORED",
+    "source": "the U.S. federal government's hurricane and ocean research laboratory on Virginia Key",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 4.6,
+    "bearing_from_campus_deg": 139.1,
+    "kind": "institution"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "miami/university-of-miami",
+    "name": "University of Miami",
+    "campus": "miami",
+    "ref": "anchor:miami/university-of-miami"
+   },
+   "geopose": {
+    "position": {
+     "lat": 25.7171,
+     "lon": -80.2762,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "AUTHORED",
+    "source": "the private research university\u2019s Coral Gables campus",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 9.8,
+    "bearing_from_campus_deg": 239.6,
+    "kind": "institution"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "miami/miami-dade-college",
+    "name": "Miami Dade College",
+    "campus": "miami",
+    "ref": "anchor:miami/miami-dade-college"
+   },
+   "geopose": {
+    "position": {
+     "lat": 25.7745,
+     "lon": -80.1937,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "AUTHORED",
+    "source": "the community-college system's Wolfson Campus downtown, with real career-technical and trades programs",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 1.4,
+    "bearing_from_campus_deg": 352.4,
+    "kind": "institution"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "detroit/detroit-wayne-county-port-authority",
+    "name": "Detroit/Wayne County Port Authority",
+    "campus": "detroit",
+    "ref": "anchor:detroit/detroit-wayne-county-port-authority"
+   },
+   "geopose": {
+    "position": {
+     "lat": 42.329,
+     "lon": -83.0368,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "AUTHORED",
+    "source": "the regional port authority for the Detroit River, headquartered on the downtown riverfront",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 0.8,
+    "bearing_from_campus_deg": 109.8,
+    "kind": "institution"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "detroit/wayne-state-university",
+    "name": "Wayne State University",
+    "campus": "detroit",
+    "ref": "anchor:detroit/wayne-state-university"
+   },
+   "geopose": {
+    "position": {
+     "lat": 42.3573,
+     "lon": -83.071,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "AUTHORED",
+    "source": "the public research university\u2019s Midtown Detroit campus",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 3.5,
+    "bearing_from_campus_deg": 324.3,
+    "kind": "institution"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "detroit/the-henry-ford",
+    "name": "The Henry Ford",
+    "campus": "detroit",
+    "ref": "anchor:detroit/the-henry-ford"
+   },
+   "geopose": {
+    "position": {
+     "lat": 42.3014,
+     "lon": -83.2321,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "AUTHORED",
+    "source": "the museum and heritage complex in Dearborn - the Henry Ford Museum of American Innovation and Greenfield Village - built around the region\u2019s automotive and manufacturing history",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 15.7,
+    "bearing_from_campus_deg": 257.8,
+    "kind": "institution"
+   }
+  },
+  {
+   "subject": {
+    "kind": "anchor",
+    "id": "detroit/wayne-county-community-college-district",
+    "name": "Wayne County Community College District",
+    "campus": "detroit",
+    "ref": "anchor:detroit/wayne-county-community-college-district"
+   },
+   "geopose": {
+    "position": {
+     "lat": 42.3277,
+     "lon": -83.0574,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "AUTHORED",
+    "source": "the community-college system\u2019s downtown Detroit campus, with real career-technical and trades programs",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "anchor": {
+    "km_from_campus": 1.0,
+    "bearing_from_campus_deg": 246.7,
+    "kind": "institution"
+   }
+  },
+  {
+   "subject": {
+    "kind": "restoration-site",
+    "id": "herons-head",
+    "name": "Heron's Head Park Shoreline Resilience Project (Phases 1 and 2)",
+    "campus": "treasure-island",
+    "ref": "restoration-site:herons-head"
+   },
+   "geopose": {
+    "position": {
+     "lat": 37.7355,
+     "lon": -122.3803,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "AUTHORED",
+    "source": "restoration/registry/restoration.json - https://www.sfbayrestore.org/projects/herons-head-park-shoreline-resilience-project-phases-1-and-2",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "site": {
+    "org": "Port of San Francisco; Literacy for Environmental Justice",
+    "category": "habitat-restoration",
+    "walkable": true,
+    "walkable_reason": null
+   }
+  },
+  {
+   "subject": {
+    "kind": "restoration-site",
+    "id": "candlestick-point",
+    "name": "Candlestick Point Stewardship Project (Phases 1 and 2)",
+    "campus": "treasure-island",
+    "ref": "restoration-site:candlestick-point"
+   },
+   "geopose": {
+    "position": {
+     "lat": 37.718,
+     "lon": -122.375,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "AUTHORED",
+    "source": "restoration/registry/restoration.json - https://www.sfbayrestore.org/projects/candlestick-point-stewardship-project-phase-1-and-2",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "site": {
+    "org": "California State Parks; community stewardship partners",
+    "category": "habitat-restoration",
+    "walkable": true,
+    "walkable_reason": null
+   }
+  },
+  {
+   "subject": {
+    "kind": "restoration-site",
+    "id": "east-oakland-youth",
+    "name": "Bay Restoration: Youth Engagement and Service Learning in East Oakland",
+    "campus": "oakland",
+    "ref": "restoration-site:east-oakland-youth"
+   },
+   "geopose": {
+    "position": {
+     "lat": 37.762,
+     "lon": -122.178,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "AUTHORED",
+    "source": "restoration/registry/restoration.json - https://www.sfbayrestore.org/projects/bay-restoration-youth-engagement-and-service-learning-east-oakland",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "site": {
+    "org": "Planting Justice",
+    "category": "habitat-restoration",
+    "walkable": true,
+    "walkable_reason": null
+   }
+  },
+  {
+   "subject": {
+    "kind": "restoration-site",
+    "id": "alviso-shoreline",
+    "name": "Alviso Shoreline Habitat Restoration",
+    "campus": "oakland",
+    "ref": "restoration-site:alviso-shoreline"
+   },
+   "geopose": {
+    "position": {
+     "lat": 37.4266,
+     "lon": -121.9765,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "AUTHORED",
+    "source": "restoration/registry/restoration.json - https://www.sfbayrestore.org/projects/alviso-shoreline-habitat-restoration",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "site": {
+    "org": "Grassroots Ecology",
+    "category": "habitat-restoration",
+    "walkable": true,
+    "walkable_reason": null
+   }
+  },
+  {
+   "subject": {
+    "kind": "restoration-site",
+    "id": "south-bay-salt-ponds",
+    "name": "South Bay Salt Pond Restoration \u2014 ecotone levee (Phase 1)",
+    "campus": "oakland",
+    "ref": "restoration-site:south-bay-salt-ponds"
+   },
+   "geopose": {
+    "position": {
+     "lat": 37.612,
+     "lon": -122.113,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "AUTHORED",
+    "source": "restoration/registry/restoration.json - https://www.southbayrestoration.org/page/restoration-project",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "site": {
+    "org": "South Bay Salt Pond Restoration Project (multi-agency)",
+    "category": "habitat-restoration",
+    "walkable": true,
+    "walkable_reason": null
+   }
+  },
+  {
+   "subject": {
+    "kind": "restoration-site",
+    "id": "montezuma-wetlands",
+    "name": "Montezuma Tidal and Seasonal Wetlands Restoration Project",
+    "campus": "oakland",
+    "ref": "restoration-site:montezuma-wetlands"
+   },
+   "geopose": {
+    "position": {
+     "lat": 38.15,
+     "lon": -121.95,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "AUTHORED",
+    "source": "restoration/registry/restoration.json - https://www.sfbayrestore.org/projects/montezuma-tidal-and-seasonal-wetlands-restoration-project",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "site": {
+    "org": "San Francisco Bay Restoration Authority (Measure AA)",
+    "category": "habitat-restoration",
+    "walkable": true,
+    "walkable_reason": null
+   }
+  },
+  {
+   "subject": {
+    "kind": "restoration-site",
+    "id": "american-canyon",
+    "name": "American Canyon Wetlands Restoration Plan",
+    "campus": "oakland",
+    "ref": "restoration-site:american-canyon"
+   },
+   "geopose": {
+    "position": {
+     "lat": 38.171,
+     "lon": -122.26,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "AUTHORED",
+    "source": "restoration/registry/restoration.json - https://www.sfbayrestore.org/projects/american-canyon-wetlands-restoration-plan",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "site": {
+    "org": "City of American Canyon",
+    "category": "habitat-restoration",
+    "walkable": true,
+    "walkable_reason": null
+   }
+  },
+  {
+   "subject": {
+    "kind": "restoration-site",
+    "id": "straw-north-bay",
+    "name": "Restoring Wetland-Upland Transition Zone Habitat in the North Bay with STRAW",
+    "campus": "oakland",
+    "ref": "restoration-site:straw-north-bay"
+   },
+   "geopose": {
+    "position": {
+     "lat": 38.05,
+     "lon": -122.53,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "AUTHORED",
+    "source": "restoration/registry/restoration.json - https://www.sfbayrestore.org/projects/restoring-wetland-upland-transition-zone-habitat-north-bay-straw",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "site": {
+    "org": "Point Blue Conservation Science (STRAW program)",
+    "category": "habitat-restoration",
+    "walkable": true,
+    "walkable_reason": null
+   }
+  },
+  {
+   "subject": {
+    "kind": "restoration-site",
+    "id": "hunters-point-shipyard",
+    "name": "Hunters Point Naval Shipyard \u2014 EPA Superfund Site (Bayview-Hunters Point)",
+    "campus": "treasure-island",
+    "ref": "restoration-site:hunters-point-shipyard"
+   },
+   "geopose": {
+    "position": {
+     "lat": 37.728,
+     "lon": -122.373,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "AUTHORED",
+    "source": "restoration/registry/restoration.json - https://cumulis.epa.gov/supercpad/SiteProfiles/index.cfm?fuseaction=second.cleanup&id=0902722",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "site": {
+    "org": "US Navy (CERCLA lead agency for investigation and cleanup); US EPA Region 9 and California DTSC (oversight and enforcement of Navy cleanup activities)",
+    "category": "environmental-monitoring",
+    "walkable": false,
+    "walkable_reason": "an actively litigated federal cleanup site is not something this platform can responsibly present as a place to stroll"
+   }
+  }
+ ],
+ "unposed": [
+  {
+   "subject": {
+    "kind": "restoration-site",
+    "id": "spartina-removal",
+    "name": "San Francisco Estuary Invasive Spartina Removal",
+    "campus": null,
+    "ref": "restoration-site:spartina-removal"
+   },
+   "why": "no GeoPose: the registry pins no single coordinate for this bay-wide program (pin: false, lat/lng null), and this build invents none",
+   "org": "San Francisco Estuary Invasive Spartina Project (multi-agency)"
+  }
+ ]
+}

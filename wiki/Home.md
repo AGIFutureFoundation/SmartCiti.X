@@ -15,7 +15,7 @@ content graph and details:
 | Map | What it shows | Page |
 |---|---|---|
 | **Interactive map** (`web/trade_craft_interactive.html`) | All 111 halls with toggleable layers — districts, pipeline, module layers, training stations — hall floor plans and quizzes, in every locale, searchable and deep-linkable | [Campus-Map](Campus-Map.md) |
-| **3D environment** (`web/trade_craft_3d.html`) | The whole network in 3D — three city campuses on one board, each campus a ringed district city of buildings, each building an enterable hall with rooms, fixtures, station beacons and first-person walk mode | [Campus-Map](Campus-Map.md) |
+| **3D environment** (`web/trade_craft_3d.html`) | The whole network in 3D — 10 campuses on one board, each campus a ringed district city of buildings, each building an enterable hall with rooms, fixtures, station beacons and first-person walk mode | [Campus-Map](Campus-Map.md) |
 | Campus map (`web/trade_craft_map.html`) | All 111 halls in 8 districts, with pipeline state | [Campus-Map](Campus-Map.md) |
 | Hall floor plans (inside the campus map) | A generated interior for every hall — 111 plans, 11 rooms each | [Interiors-Map](Interiors-Map.md) |
 | Skill graph (`pack/registry/skills.json`) | 3,663 skills and the edges that sequence practice | [Skill-Graph](Skill-Graph.md) |
@@ -28,9 +28,10 @@ content graph and details:
 | **Training data** (device-local, opt-out, exportable) | 3 episode kinds recorded from real interactions — sim outcomes, advisor exchanges, walkaround checks — plus SCRIPTED sim episodes the reference operator generates on request, shaped for the org's own `ml-agents` fork, never read by a grader | [Training-Data](Training-Data.md) |
 | **Orbis synthetic-training prompts** (text only, no network) | a deterministic prompt for every one of the 111 union modules, built for a hosted video model this build never calls — a separate, clearly-labelled AI-SYNTHESIZED stream from the real episode log above | [Orbis-Synthetic-Training](Orbis-Synthetic-Training.md) |
 | **The network roadmap** (10 built, 0 candidates) | the path from 10 built campuses to 10 walkable worlds — two honest provenance tiers, and the real checklist a candidate has to clear to become built | [Roadmap](Roadmap.md) |
-| **Metaverse layer** (`meta/registry/metaverse.json`) | The interchange contract: 3 open standards claimed (glTF 2.0, WebXR, GeoJSON), 3 honestly not, avatar and hall .glb export, learner-local import | [Metaverse-Layer](Metaverse-Layer.md) |
+| **Metaverse layer** (`meta/registry/metaverse.json`) | The interchange contract: 4 open standards claimed (gltf-2.0, webxr, geojson-wgs84, geopose-1.0), 6 honestly not, avatar and hall .glb export, learner-local import | [Metaverse-Layer](Metaverse-Layer.md) |
+| **Spatial fabric** (`spatial/registry/`) | The Academy as a self-hosted OMBI-sense spatial fabric: 66 OGC GeoPose 1.0 poses (10 campuses, 47 anchors, 9 restoration sites; height and heading zero-with-UNKNOWN), a fabric manifest and a SOM-shaped scene graph with 56 external origins — GeoPose claimed, the OMBI shapes honestly not | [Spatial-Fabric](Spatial-Fabric.md) |
 | **City records** (`parcels/registry/parcels.json`) | The source contract for the three campus regions' own parcel and building-footprint authorities (254,122 records published upstream), plus the public-domain federal orthoimagery both maps draw | [City-Records](City-Records.md) |
-| **Network geomap** (`web/trade_craft_geomap.html`) | The geo registry on a real WGS84 map (MapLibre, no basemap tiles): campuses, 47 RECORDED anchors, great-circle routes, RECORDED city frames | [Campus-Map](Campus-Map.md) |
+| **Network geomap** (`web/trade_craft_geomap.html`) | The geo registry on a real WGS84 map (MapLibre, no basemap tiles): campuses, 47 anchors (19 RECORDED, 28 AUTHORED), great-circle routes, city frames at their own provenance | [Campus-Map](Campus-Map.md) |
 | **Bay Restoration** (`restoration/registry/restoration.json`) | 10 real, independently-run San Francisco Bay sites across two categories (9 habitat-restoration, 1 environmental-monitoring — Hunters Point Naval Shipyard, a real, litigated federal Superfund site, pinned but never walkable) — 9 mapped, 8 walkable — bridged to 3 field-skill tracks bound to real skill_ids already in this bundle's graph — not a SmartCiti.X program | [Bay-Restoration](Bay-Restoration.md) |
 
 ## The campus at a glance
@@ -135,12 +136,14 @@ directly consumable by any Mapbox/MapLibre-compatible stack. The 3D network
 view places its campus plates by these true bearings, with the real
 kilometres on the route labels.
 
-Around each campus sit **47 RECORDED anchors** — real cities and
-institutions copied verbatim from Locator.X's committed tables (the Bay
-Area city table and the New Orleans POI table, Apache-2.0) and
-cross-checked against those files at build time. The network view marks
-each at its true bearing on the campus plate rim, real kilometres on the
-label.
+Around each campus sit **47 anchors** — 19 RECORDED, real
+cities and institutions copied verbatim from Locator.X's committed tables
+(the Bay Area city table and the New Orleans POI table, Apache-2.0) and
+cross-checked against those files at build time, and 28 AUTHORED for
+the hub campuses: real, named, widely-known institutions typed from
+general knowledge, labelled as the weaker claim they are. The network
+view marks each at its true bearing on the campus plate rim, real
+kilometres on the label.
 
 Every campus now carries a **RECORDED city frame** — the centre and view
 bounds of Locator.X's own maps (the NOLA region record for New Orleans;

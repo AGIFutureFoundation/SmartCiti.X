@@ -51,6 +51,9 @@ training = json.load(open(ROOT / 'training/registry/training.json'))
 roadmap = json.load(open(ROOT / 'roadmap/registry/roadmap.json'))
 orbis = json.load(open(ROOT / 'orbis/registry/orbis.json'))
 restoration = json.load(open(ROOT / 'restoration/registry/restoration.json'))
+geopose = json.load(open(ROOT / 'spatial/registry/geopose.json'))
+fabric = json.load(open(ROOT / 'spatial/registry/fabric.json'))
+som = json.load(open(ROOT / 'spatial/registry/som.json'))
 skills = json.load(open(ROOT / 'pack/registry/skills.json'))['skills']
 by_slug = {h['slug']: h for h in halls}
 
@@ -78,6 +81,9 @@ def mermaid_id(slug):
 # ------------------------------------------------------------------ Home ---
 def page_home():
     n_anchors = sum(len(v) for v in geo['anchors'].values())
+    n_rec = sum(1 for v in geo['anchors'].values() for a in v
+                if a['provenance'] == 'RECORDED')
+    n_auth = n_anchors - n_rec
     route_rows = '\n'.join(
         f'| {campuses[r["from"]]["city"]} ↔ {campuses[r["to"]]["city"]} '
         f'| {r["km"]:,} km |'
@@ -112,7 +118,7 @@ content graph and details:
 | Map | What it shows | Page |
 |---|---|---|
 | **Interactive map** (`web/trade_craft_interactive.html`) | All {L["halls"]} halls with toggleable layers — districts, pipeline, module layers, training stations — hall floor plans and quizzes, in every locale, searchable and deep-linkable | [Campus-Map](Campus-Map.md) |
-| **3D environment** (`web/trade_craft_3d.html`) | The whole network in 3D — three city campuses on one board, each campus a ringed district city of buildings, each building an enterable hall with rooms, fixtures, station beacons and first-person walk mode | [Campus-Map](Campus-Map.md) |
+| **3D environment** (`web/trade_craft_3d.html`) | The whole network in 3D — {len(campuses)} campuses on one board, each campus a ringed district city of buildings, each building an enterable hall with rooms, fixtures, station beacons and first-person walk mode | [Campus-Map](Campus-Map.md) |
 | Campus map (`web/trade_craft_map.html`) | All {L["halls"]} halls in {len(districts)} districts, with pipeline state | [Campus-Map](Campus-Map.md) |
 | Hall floor plans (inside the campus map) | A generated interior for every hall — {L["halls"]} plans, 11 rooms each | [Interiors-Map](Interiors-Map.md) |
 | Skill graph (`pack/registry/skills.json`) | {F(len(skills))} skills and the edges that sequence practice | [Skill-Graph](Skill-Graph.md) |
@@ -125,9 +131,10 @@ content graph and details:
 | **Training data** (device-local, opt-out, exportable) | {len(training['episode_kinds'])} episode kinds recorded from real interactions — sim outcomes, advisor exchanges, walkaround checks — plus SCRIPTED sim episodes the reference operator generates on request, shaped for the org's own `ml-agents` fork, never read by a grader | [Training-Data](Training-Data.md) |
 | **Orbis synthetic-training prompts** (text only, no network) | a deterministic prompt for every one of the {orbis['modules']} union modules, built for a hosted video model this build never calls — a separate, clearly-labelled AI-SYNTHESIZED stream from the real episode log above | [Orbis-Synthetic-Training](Orbis-Synthetic-Training.md) |
 | **The network roadmap** ({len(roadmap['built_campuses'])} built, {len(roadmap['candidates'])} candidates) | the path from {len(roadmap['built_campuses'])} built campuses to {roadmap['target']} walkable worlds — two honest provenance tiers, and the real checklist a candidate has to clear to become built | [Roadmap](Roadmap.md) |
-| **Metaverse layer** (`meta/registry/metaverse.json`) | The interchange contract: {len(meta["baseline"]["standards"])} open standards claimed (glTF 2.0, WebXR, GeoJSON), {len(meta["baseline"]["not_claimed"])} honestly not, avatar and hall .glb export, learner-local import | [Metaverse-Layer](Metaverse-Layer.md) |
+| **Metaverse layer** (`meta/registry/metaverse.json`) | The interchange contract: {len(meta["baseline"]["standards"])} open standards claimed ({", ".join(s["id"] for s in meta["baseline"]["standards"])}), {len(meta["baseline"]["not_claimed"])} honestly not, avatar and hall .glb export, learner-local import | [Metaverse-Layer](Metaverse-Layer.md) |
+| **Spatial fabric** (`spatial/registry/`) | The Academy as a self-hosted OMBI-sense spatial fabric: {geopose["counts"]["total"]} OGC GeoPose 1.0 poses ({geopose["counts"]["campuses"]} campuses, {geopose["counts"]["anchors"]} anchors, {geopose["counts"]["restoration_sites"]} restoration sites; height and heading zero-with-UNKNOWN), a fabric manifest and a SOM-shaped scene graph with {len(som["root"]["branches"]) - 1} external origins — GeoPose claimed, the OMBI shapes honestly not | [Spatial-Fabric](Spatial-Fabric.md) |
 | **City records** (`parcels/registry/parcels.json`) | The source contract for the three campus regions\' own parcel and building-footprint authorities ({sum(set(s["records"] for s in parcels["sources"].values())):,} records published upstream), plus the public-domain federal orthoimagery both maps draw | [City-Records](City-Records.md) |
-| **Network geomap** (`web/trade_craft_geomap.html`) | The geo registry on a real WGS84 map (MapLibre, no basemap tiles): campuses, {n_anchors} RECORDED anchors, great-circle routes, RECORDED city frames | [Campus-Map](Campus-Map.md) |
+| **Network geomap** (`web/trade_craft_geomap.html`) | The geo registry on a real WGS84 map (MapLibre, no basemap tiles): campuses, {n_anchors} anchors ({n_rec} RECORDED, {n_auth} AUTHORED), great-circle routes, city frames at their own provenance | [Campus-Map](Campus-Map.md) |
 | **Bay Restoration** (`restoration/registry/restoration.json`) | {len(restoration['sites'])} real, independently-run San Francisco Bay sites across two categories ({sum(1 for s in restoration['sites'] if s['category'] == 'habitat-restoration')} habitat-restoration, {sum(1 for s in restoration['sites'] if s['category'] == 'environmental-monitoring')} environmental-monitoring — Hunters Point Naval Shipyard, a real, litigated federal Superfund site, pinned but never walkable) — {sum(1 for s in restoration['sites'] if s['pin'])} mapped, {sum(1 for s in restoration['sites'] if s['walkable'])} walkable — bridged to {len(restoration['tracks'])} field-skill tracks bound to real skill_ids already in this bundle's graph — not a SmartCiti.X program | [Bay-Restoration](Bay-Restoration.md) |
 
 ## The campus at a glance
@@ -164,12 +171,14 @@ directly consumable by any Mapbox/MapLibre-compatible stack. The 3D network
 view places its campus plates by these true bearings, with the real
 kilometres on the route labels.
 
-Around each campus sit **{n_anchors} RECORDED anchors** — real cities and
-institutions copied verbatim from Locator.X's committed tables (the Bay
-Area city table and the New Orleans POI table, Apache-2.0) and
-cross-checked against those files at build time. The network view marks
-each at its true bearing on the campus plate rim, real kilometres on the
-label.
+Around each campus sit **{n_anchors} anchors** — {n_rec} RECORDED, real
+cities and institutions copied verbatim from Locator.X's committed tables
+(the Bay Area city table and the New Orleans POI table, Apache-2.0) and
+cross-checked against those files at build time, and {n_auth} AUTHORED for
+the hub campuses: real, named, widely-known institutions typed from
+general knowledge, labelled as the weaker claim they are. The network
+view marks each at its true bearing on the campus plate rim, real
+kilometres on the label.
 
 Every campus now carries a **RECORDED city frame** — the centre and view
 bounds of Locator.X's own maps (the NOLA region record for New Orleans;
@@ -1407,6 +1416,141 @@ links straight back.
 {FOOTER}"""
 
 
+def page_spatial():
+    H = geopose['honesty']
+    c = geopose['counts']
+    std = meta['baseline']['standards']
+    notc = meta['baseline']['not_claimed']
+    kinds = {'campus': 'Campus', 'anchor': 'Institution / city anchor',
+             'restoration-site': 'Restoration site'}
+    prow = '\n'.join(
+        f"| {kinds[p['subject']['kind']]} | {p['subject']['name']} | "
+        f"{campuses[p['subject']['campus']]['name'] if p['subject']['campus'] else '—'} | "
+        f"{p['geopose']['position']['lat']}, {p['geopose']['position']['lon']} | "
+        f"{p['provenance']['position_horizontal']} | "
+        f"{'no — ' + p['site']['walkable_reason'] if 'site' in p and not p['site']['walkable'] else ('yes' if 'site' in p else '—')} |"
+        for p in geopose['poses'])
+    urow = '\n'.join(
+        f"| {u['subject']['name']} | {u['org']} | {u['why']} |"
+        for u in geopose['unposed'])
+    srow = '\n'.join(
+        f"| `{s['id']}` | {s['kind']} | {s['name']} | `{s['anchored_at']}` | `{s['registry']}` |"
+        for s in fabric['services'])
+    orow = '\n'.join(
+        f"| {b['owner']} | {len(b['children'])} | {', '.join(b['provenance_tiers'])} |"
+        for b in som['root']['branches'][1:])
+    ex = next(p for p in geopose['poses'] if p['subject']['kind'] == 'campus')
+    example = json.dumps(ex['geopose'], indent=1)
+    sidecar = json.dumps({k: v for k, v in ex['provenance'].items()
+                          if k.endswith('_provenance')}, indent=1)
+    gp = next(s for s in std if s['id'] == 'geopose-1.0')
+    ombi = [x for x in notc if x['id'] in ('ombi-spatial-fabric', 'ombi-som', 'rmap')]
+    nrow = '\n'.join(f"| `{x['id']}` | {x['why']} |" for x in ombi)
+    srcs = '\n'.join(
+        f"- {s['what']}" + (f" — {s['url']}" if s.get('url') else '')
+        + f" *({s['provenance']})*" for s in fabric['sources'])
+    return f'''# The spatial fabric
+
+A *spatial fabric*, in the sense the Metaverse Standards Forum's Open
+Metaverse Browser Initiative (OMBI) uses the phrase, is the metaverse
+equivalent of a website: a mapped coordinate space containing content and
+services, self-hosted, accessed by proximity, composed with other fabrics
+by a browser through a multi-origin scene graph with per-branch
+ownership. `spatial/` publishes the Academy as one — as static files a
+plain web server serves next to the site — and draws its honesty line in
+exactly two places.
+
+## Claimed: OGC GeoPose 1.0
+
+`{gp["id"]}` — {gp["body"]}. {gp["role"]}. Consumers this pack can
+defend: {", ".join(gp["consumers"])}.
+
+{H["geopose_claimed"]}
+
+{H["no_heights_or_headings"]}
+
+Every pose in `spatial/registry/geopose.json` is the encoding exactly
+(`{geopose["encoding"]}`):
+
+```json
+{example}
+```
+
+with this sidecar beside it, plus the horizontal position's real
+provenance word and source string copied from the registry that owns it:
+
+```json
+{sidecar}
+```
+
+### The {c["total"]} poses — {c["campuses"]} campuses, {c["anchors"]} anchors, {c["restoration_sites"]} restoration sites
+
+| Kind | Subject | Campus | lat, lon | Horizontal provenance | Walkable |
+|---|---|---|---|---|---|
+{prow}
+
+### Honestly unposed — {c["unposed"]}
+
+| Program | Run by | Why no GeoPose |
+|---|---|---|
+{urow}
+
+## Not claimed: the OMBI fabric manifest, SOM and RMAP
+
+{H["ombi_not_claimed"]}
+
+| Shape | Why not claimed |
+|---|---|
+{nrow}
+
+**The fabric manifest** (`spatial/registry/fabric.json`) — operator
+*{fabric["fabric"]["operator"]}*, origin *{fabric["fabric"]["origin"]}*,
+entry `{fabric["fabric"]["entry"]}`, identity `did: null`
+({fabric["fabric"]["identity"]["note"]}). It names {len(fabric["places"])}
+places (one per campus, each with its GeoPose, district or hub kind, hall
+count, atmosphere and walkable city layer),
+{len(fabric["anchored_content"])} anchored content doors (the existing
+`avatar-glb` and `hall-glb` exports, `glTF 2.0 binary`, produced on
+demand by the learner's own browser — never files sitting on disk),
+{len(fabric["services"])} embedded services and
+{len(fabric["external_origins"])} external origins.
+
+{H["static_files_only_no_rmap"]}
+
+### The services — every one in-page, no network
+
+| Service | Kind | What | Anchored at | Its own registry |
+|---|---|---|---|---|
+{srow}
+
+## Other operators are other origins
+
+{H["external_origins"]}
+
+**The SOM-shaped scene graph** (`spatial/registry/som.json`) has one
+branch per origin: this fabric's own branch (owner
+*{som["root"]["branches"][0]["owner"]}*, provenance tiers
+{", ".join(som["root"]["branches"][0]["provenance_tiers"])},
+{len(som["root"]["branches"][0]["children"])} nodes) and
+{len(som["root"]["branches"]) - 1} external branches. The invariant the
+build and the suite both assert: {som["invariants"]["per_branch_ownership"]}
+
+| External origin (owner) | Nodes | Provenance tiers |
+|---|---|---|
+{orow}
+
+## Not loaded in any browser
+
+{H["not_loaded_in_any_browser"]}
+
+## Sources
+
+{srcs}
+
+Both files download from the [network dashboard](../web/trade_craft_dashboard.html).
+{FOOTER}'''
+
+
 PAGES = {
     'Home.md': page_home,
     'Campus-Map.md': page_campus,
@@ -1424,6 +1568,7 @@ PAGES = {
     'Orbis-Synthetic-Training.md': page_orbis,
     'Roadmap.md': page_roadmap,
     'Bay-Restoration.md': page_restoration,
+    'Spatial-Fabric.md': page_spatial,
     'Flipped-Classroom.md': page_schools,
     'Provenance.md': page_provenance,
     **{f'District-{k}.md': (lambda k=k, d=d: page_district(k, d))
