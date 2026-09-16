@@ -20,7 +20,7 @@ content graph and details:
 | Hall floor plans (inside the campus map) | A generated interior for every hall — 111 plans, 11 rooms each | [Interiors-Map](Interiors-Map.md) |
 | Skill graph (`pack/registry/skills.json`) | 3,663 skills and the edges that sequence practice | [Skill-Graph](Skill-Graph.md) |
 | Languages (`web/trade_craft_languages.html`) | The Academy overview in 8 languages | [Languages](Languages.md) |
-| **Simulators** (inside the 3D environment) | 7 operable seats — schematic physics, deterministic rubrics, pre-shift walkarounds, bound to real skills in 40 halls | [Simulators](Simulators.md) |
+| **Simulators** (inside the 3D environment) | 9 operable seats — schematic physics, deterministic rubrics, pre-shift walkarounds, bound to real skills in 41 halls | [Simulators](Simulators.md) |
 | **Toolrooms** (inside the 3D + interactive maps) | 8 district tool cribs — 96 tools with the deterministic crib drill | [Toolrooms](Toolrooms.md) |
 | **Advisors** (in the rooms and on the green) | 9 scripted guides answering 34 fixed questions — 20 of them read straight from the registry that holds the fact | [Advisors](Advisors.md) |
 | **The world** (sky, weather, ground, animals) | 6 weather states over per-campus atmospheres, 6 generated ground surfaces and 101 animals — and not one texture file anywhere | [World](World.md) |

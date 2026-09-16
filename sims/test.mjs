@@ -19,11 +19,11 @@ const skills = new Set(JSON.parse(readFileSync(
 const slugs = new Set(unions.unions.map((u) => u.slug));
 
 const sims = reg.sims;
-ok('seven simulators ship: lifting and earthmoving machines, a driving seat, four process benches',
-  Object.keys(sims).length === 7
+ok('nine simulators ship: lifting and earthmoving machines, a driving seat, six process benches',
+  Object.keys(sims).length === 9
   && Object.values(sims).filter((s) => s.kind === 'machine').length === 2
   && Object.values(sims).filter((s) => s.kind === 'driving').length === 1
-  && Object.values(sims).filter((s) => s.kind === 'process').length === 4);
+  && Object.values(sims).filter((s) => s.kind === 'process').length === 6);
 ok('every sim carries a task, controls with keys and actions, and 3+ rubric axes',
   Object.values(sims).every((s) => s.task.length > 20
     && s.controls.length >= 3 && s.controls.every((c) => c.keys && c.action)
@@ -87,6 +87,29 @@ ok('every seat carries its five-point walkaround, and the walkaround is honestly
   && /not a gate/.test(reg.honesty.walkaround)
   && /changes no score/.test(reg.honesty.walkaround)
   && /not an equipment inspection record/.test(reg.honesty.walkaround));
+ok('the pressure washer teaches containment-first discipline: painters/laborers/hazmat train it, coverage demands 95%, damage and containment are pass-gated',
+  sims['pressure-washer'].halls.includes('painters')
+  && sims['pressure-washer'].halls.includes('laborers')
+  && sims['pressure-washer'].halls.includes('hazmat')
+  && /containment berm/.test(sims['pressure-washer'].task)
+  && sims['pressure-washer'].rubric.some((r) =>
+      r.axis === 'coverage' && r.pass === '>= 95')
+  && sims['pressure-washer'].rubric.some((r) =>
+      r.axis === 'damage' && r.pass === '== 0')
+  && sims['pressure-washer'].rubric.some((r) =>
+      r.axis === 'containment' && r.pass === 'required'));
+ok('the airless sprayer teaches finish-coat discipline: painters/laborers train it, runs/holidays/overspray are all pass-gated at zero',
+  sims['airless-sprayer'].halls.includes('painters')
+  && sims['airless-sprayer'].halls.includes('laborers')
+  && /masked line/.test(sims['airless-sprayer'].task)
+  && sims['airless-sprayer'].rubric.some((r) =>
+      r.axis === 'coverage' && r.pass === '>= 95')
+  && sims['airless-sprayer'].rubric.some((r) =>
+      r.axis === 'runs' && r.pass === '== 0')
+  && sims['airless-sprayer'].rubric.some((r) =>
+      r.axis === 'holidays' && r.pass === '== 0')
+  && sims['airless-sprayer'].rubric.some((r) =>
+      r.axis === 'overspray' && r.pass === '== 0'));
 ok('the trench task teaches utility discipline: a pass demands zero strikes',
   /utility/.test(sims['excavator-trench'].task)
   && sims['excavator-trench'].rubric.some((r) =>
@@ -123,7 +146,7 @@ ok('every sim trains regionally: one scenario per campus, unique ids, real brief
         && x.id && x.name && x.brief.length > 30
         && typeof x.params === 'object'))
   && new Set(Object.values(sims).flatMap((s) => s.scenarios.map((x) => x.id)))
-      .size === 21);
+      .size === 27);
 ok('scenarios vary the environment, never the rubric: no scenario carries pass rules',
   Object.values(sims).every((s) =>
     s.scenarios.every((x) => !('rubric' in x.params) && !('pass' in x.params))));

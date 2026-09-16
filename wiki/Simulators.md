@@ -1,6 +1,6 @@
 # The simulators
 
-7 operable training machines live inside the
+9 operable training machines live inside the
 [3D environment](Campus-Map.md): open a bound hall and press **▶** (a hall
 bound to more than one machine offers the choice). The
 physics are schematic — built for practising control discipline (smooth
@@ -288,6 +288,90 @@ environment varies, the rubric never does:
 | Treasure Island Campus | **Yard pick list** | Five picks off the training pad - one of them is over the chart, and the chart wins. |
 | Oakland Waterfront Campus | **Terminal heavy list** | Six terminal picks, two of them over - the foreman will push, the chart will not. |
 | Crescent Works Campus | **Barge transfer list** | Five barge picks with two over the chart - the river will not forgive the one you talk into. |
+## Pressure Washer Surface Clean (process)
+
+Strip the fouling off the marked test panel to a clean finish — sweep the wand cell by cell and hold your standoff; crowd the surface and linger and the substrate gouges. Set the containment berm before you ever pull the trigger, not after.
+
+Trains at: **Painters & Allied Trades**, **Laborers**, **Hazmat & Environmental** — each run exercises that hall's
+`machines.applied` skill.
+
+| Control | Action |
+|---|---|
+| `A / D` | sweep the wand left / right across the panel |
+| `W / S` | sweep the wand up / down across the panel |
+| `Q / E` | stand off farther / move closer to the surface |
+| `Space` | pull / release the spray trigger |
+| `C` | deploy the containment berm / drain cover |
+
+| Rubric axis | Measured | Pass |
+|---|---|---|
+| coverage | share of the panel surface cleaned (%) | `>= 95` |
+| damage | substrate gouges from spraying too close or lingering too long | `== 0` |
+| containment | containment berm or drain cover deployed before the first spray | `required` |
+| time | seconds first spray to last clean cell | `informational` |
+
+**Cockpit.** A live dash of 5 gauges — `Standoff m`, `Clean %`, `Damage` (warns at 1), `Contain`, `T s` — with the
+warn thresholds drawn from this registry, not hard-coded in the page.
+View modes: `orbit` / `wand`. Audio is a
+`pump` engine plus `spray-hiss`, `breach-alarm`, `result-chime` —
+synthesized in-page (WebAudio); no recordings shipped. Haptic cues (damage, breach, finish) fire on
+gamepad rumble and the vibration API where the platform offers them.
+
+**Pre-shift walkaround.** Five clipboards ring the machine —
+*Eye and face protection*, *GFCI-protected power source*, *Wand trigger lock*, *Hose condition*, *Work-area containment* — a habit-builder
+the registry declares **not a gate**: nothing locks behind it and marking
+it changes no score.
+
+**Regional scenarios.** The campus you train at picks the yard — the
+environment varies, the rubric never does:
+
+| Region | Scenario | The yard |
+|---|---|---|
+| Treasure Island Campus | **Ferry terminal seawall** | Graffiti on the ferry terminal seawall panel - a forgiving concrete face to learn the sweep on. |
+| Oakland Waterfront Campus | **Terminal bulkhead fouling** | Rust bloom on a steel bulkhead panel at the marine terminal - a wider panel, the same clean-cell law. |
+| Crescent Works Campus | **Levee floodwall mildew** | Gulf humidity grows mildew fast on the floodwall panel - a taller face, containment matters more here. |
+## Airless Paint Sprayer Finish (process)
+
+Lay one even finish coat across the marked panel inside the masked line — hold your standoff and travel steady; crowd the surface or linger and the coat runs, rush a cell and it stays a holiday, and drift past the mask is overspray either way.
+
+Trains at: **Painters & Allied Trades**, **Laborers** — each run exercises that hall's
+`machines.applied` skill.
+
+| Control | Action |
+|---|---|
+| `A / D` | sweep the gun left / right across the panel |
+| `W / S` | sweep the gun up / down across the panel |
+| `Q / E` | stand off farther / move closer to the surface |
+| `Space` | pull / release the spray trigger |
+
+| Rubric axis | Measured | Pass |
+|---|---|---|
+| coverage | share of the panel evenly coated (%) | `>= 95` |
+| runs | drips from spraying too close or too slow | `== 0` |
+| holidays | missed spots left uncoated | `== 0` |
+| overspray | spray drift past the masked boundary | `== 0` |
+| time | seconds first spray to last coated cell | `informational` |
+
+**Cockpit.** A live dash of 6 gauges — `Standoff m`, `Coat %`, `Runs` (warns at 1), `Holidays` (warns at 1), `Overspray` (warns at 1), `T s` — with the
+warn thresholds drawn from this registry, not hard-coded in the page.
+View modes: `orbit` / `spray`. Audio is a
+`pump` engine plus `overspray-alarm`, `run-buzz`, `result-chime` —
+synthesized in-page (WebAudio); no recordings shipped. Haptic cues (run, overspray, finish) fire on
+gamepad rumble and the vibration API where the platform offers them.
+
+**Pre-shift walkaround.** Five clipboards ring the machine —
+*Respirator and ventilation*, *Spray-tip guard*, *Pressure-relief procedure*, *Drop-cloth and masking*, *Fire and ignition sources* — a habit-builder
+the registry declares **not a gate**: nothing locks behind it and marking
+it changes no score.
+
+**Regional scenarios.** The campus you train at picks the yard — the
+environment varies, the rubric never does:
+
+| Region | Scenario | The yard |
+|---|---|---|
+| Treasure Island Campus | **Ferry terminal finish coat** | A fresh finish coat on the terminal exterior wall - the forgiving panel to learn the pass rhythm on. |
+| Oakland Waterfront Campus | **Dockside warehouse finish** | A wider warehouse wall panel at the terminal - more travel, the same even-coat law. |
+| Crescent Works Campus | **Shotgun house finish coat** | A taller shotgun-house exterior wall panel - humidity punishes a slow pass, hold the rhythm. |
 
 ## What a simulator run is not
 

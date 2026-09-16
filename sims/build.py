@@ -467,6 +467,136 @@ SIMS = {
                  {'w': 4.0, 'r': 8}, {'w': 1.5, 'r': 12}]}},
         ],
     },
+    'pressure-washer': {
+        'name': 'Pressure Washer Surface Clean',
+        'kind': 'process',
+        'task': 'Strip the fouling off the marked test panel to a clean '
+                'finish — sweep the wand cell by cell and hold your '
+                'standoff; crowd the surface and linger and the substrate '
+                'gouges. Set the containment berm before you ever pull the '
+                'trigger, not after.',
+        'controls': [
+            {'keys': 'A / D', 'action': 'sweep the wand left / right across the panel'},
+            {'keys': 'W / S', 'action': 'sweep the wand up / down across the panel'},
+            {'keys': 'Q / E', 'action': 'stand off farther / move closer to the surface'},
+            {'keys': 'Space', 'action': 'pull / release the spray trigger'},
+            {'keys': 'C', 'action': 'deploy the containment berm / drain cover'},
+        ],
+        'rubric': [
+            {'axis': 'coverage', 'measure': 'share of the panel surface cleaned (%)',
+             'pass': '>= 95'},
+            {'axis': 'damage', 'measure': 'substrate gouges from spraying too '
+                                          'close or lingering too long',
+             'pass': '== 0'},
+            {'axis': 'containment', 'measure': 'containment berm or drain cover '
+                                               'deployed before the first spray',
+             'pass': 'required'},
+            {'axis': 'time', 'measure': 'seconds first spray to last clean cell',
+             'pass': 'informational'},
+        ],
+        # painters run the coatings/containment/industrial-finish envelope
+        # work this bench trains; laborers set the same containment and
+        # runoff control on the ground; hazmat owns the environmental
+        # discipline the containment axis is actually testing
+        'halls': ['painters', 'laborers', 'hazmat'],
+        'skill_strand': 'machines',
+        'skill_tier': 'applied',
+        'dash': [
+            {'id': 'gap', 'label': 'Standoff', 'unit': 'm'},
+            {'id': 'coverage', 'label': 'Clean', 'unit': '%'},
+            {'id': 'damage', 'label': 'Damage', 'unit': '', 'warn_at': 1},
+            {'id': 'containment', 'label': 'Contain', 'unit': ''},
+            {'id': 'time', 'label': 'T', 'unit': 's'},
+        ],
+        'audio': {'engine': 'pump',
+                  'alerts': ['spray-hiss', 'breach-alarm', 'result-chime'],
+                  'note': 'synthesized in-page (WebAudio); no recordings shipped'},
+        'haptics': ['damage', 'breach', 'finish'],
+        'view_modes': ['orbit', 'wand'],
+        # Regional scenarios: the fouled panel is the region's own; "95%
+        # clean, zero gouges, containment first" stays the law everywhere.
+        'scenarios': [
+            {'id': 'bay-seawall-clean', 'campus': 'treasure-island',
+             'name': 'Ferry terminal seawall',
+             'brief': 'Graffiti on the ferry terminal seawall panel - a '
+                      'forgiving concrete face to learn the sweep on.',
+             'params': {'cols': 6, 'rows': 4}},
+            {'id': 'oak-bulkhead-clean', 'campus': 'oakland',
+             'name': 'Terminal bulkhead fouling',
+             'brief': 'Rust bloom on a steel bulkhead panel at the marine '
+                      'terminal - a wider panel, the same clean-cell law.',
+             'params': {'cols': 7, 'rows': 4}},
+            {'id': 'nola-floodwall-clean', 'campus': 'new-orleans',
+             'name': 'Levee floodwall mildew',
+             'brief': 'Gulf humidity grows mildew fast on the floodwall '
+                      'panel - a taller face, containment matters more here.',
+             'params': {'cols': 6, 'rows': 5}},
+        ],
+    },
+    'airless-sprayer': {
+        'name': 'Airless Paint Sprayer Finish',
+        'kind': 'process',
+        'task': 'Lay one even finish coat across the marked panel inside '
+                'the masked line — hold your standoff and travel steady; '
+                'crowd the surface or linger and the coat runs, rush a '
+                'cell and it stays a holiday, and drift past the mask is '
+                'overspray either way.',
+        'controls': [
+            {'keys': 'A / D', 'action': 'sweep the gun left / right across the panel'},
+            {'keys': 'W / S', 'action': 'sweep the gun up / down across the panel'},
+            {'keys': 'Q / E', 'action': 'stand off farther / move closer to the surface'},
+            {'keys': 'Space', 'action': 'pull / release the spray trigger'},
+        ],
+        'rubric': [
+            {'axis': 'coverage', 'measure': 'share of the panel evenly coated (%)',
+             'pass': '>= 95'},
+            {'axis': 'runs', 'measure': 'drips from spraying too close or too slow',
+             'pass': '== 0'},
+            {'axis': 'holidays', 'measure': 'missed spots left uncoated',
+             'pass': '== 0'},
+            {'axis': 'overspray', 'measure': 'spray drift past the masked boundary',
+             'pass': '== 0'},
+            {'axis': 'time', 'measure': 'seconds first spray to last coated cell',
+             'pass': 'informational'},
+        ],
+        # painters run the finish-coat work this bench trains; laborers
+        # hang the same drop-cloth and masking containment on every job
+        'halls': ['painters', 'laborers'],
+        'skill_strand': 'machines',
+        'skill_tier': 'applied',
+        'dash': [
+            {'id': 'gap', 'label': 'Standoff', 'unit': 'm'},
+            {'id': 'coverage', 'label': 'Coat', 'unit': '%'},
+            {'id': 'runs', 'label': 'Runs', 'unit': '', 'warn_at': 1},
+            {'id': 'holidays', 'label': 'Holidays', 'unit': '', 'warn_at': 1},
+            {'id': 'overspray', 'label': 'Overspray', 'unit': '', 'warn_at': 1},
+            {'id': 'time', 'label': 'T', 'unit': 's'},
+        ],
+        'audio': {'engine': 'pump',
+                  'alerts': ['overspray-alarm', 'run-buzz', 'result-chime'],
+                  'note': 'synthesized in-page (WebAudio); no recordings shipped'},
+        'haptics': ['run', 'overspray', 'finish'],
+        'view_modes': ['orbit', 'spray'],
+        # Regional scenarios: the wall is the region's own; "95% coat, no
+        # runs, no holidays, no overspray" stays the law everywhere.
+        'scenarios': [
+            {'id': 'bay-terminal-finish', 'campus': 'treasure-island',
+             'name': 'Ferry terminal finish coat',
+             'brief': 'A fresh finish coat on the terminal exterior wall - '
+                      'the forgiving panel to learn the pass rhythm on.',
+             'params': {'cols': 6, 'rows': 4}},
+            {'id': 'oak-warehouse-finish', 'campus': 'oakland',
+             'name': 'Dockside warehouse finish',
+             'brief': 'A wider warehouse wall panel at the terminal - '
+                      'more travel, the same even-coat law.',
+             'params': {'cols': 7, 'rows': 4}},
+            {'id': 'nola-shotgun-finish', 'campus': 'new-orleans',
+             'name': 'Shotgun house finish coat',
+             'brief': 'A taller shotgun-house exterior wall panel - '
+                      'humidity punishes a slow pass, hold the rhythm.',
+             'params': {'cols': 6, 'rows': 5}},
+        ],
+    },
 }
 
 # The pre-shift walkaround: five looks per machine, the habit that finds
@@ -557,6 +687,35 @@ WALKAROUNDS = {
          'check': 'inside the chart notes for the largest sail area'},
         {'id': 'hook', 'point': 'Hook block',
          'check': 'latch closes, swivel free, sheaves turning true'},
+    ],
+    'pressure-washer': [
+        {'id': 'ppe', 'point': 'Eye and face protection',
+         'check': 'safety glasses or face shield seated, no gaps at the seal'},
+        {'id': 'power', 'point': 'GFCI-protected power source',
+         'check': 'outlet trips on test and resets clean, no bypassed ground'},
+        {'id': 'trigger-lock', 'point': 'Wand trigger lock',
+         'check': 'safety lock engages and holds, releases only under a '
+                  'deliberate pull'},
+        {'id': 'hose', 'point': 'Hose condition',
+         'check': 'no kinks, bursts or abraded jacket along the full length'},
+        {'id': 'containment', 'point': 'Work-area containment',
+         'check': 'drain cover or berm set and the area barricaded before '
+                  'the first spray'},
+    ],
+    'airless-sprayer': [
+        {'id': 'respirator', 'point': 'Respirator and ventilation',
+         'check': 'organic-vapor cartridge seated and fit-tested, area '
+                  'ventilated per the coating data sheet'},
+        {'id': 'tip-guard', 'point': 'Spray-tip guard',
+         'check': 'guard installed and the tip locked in its holder, never '
+                  'left bare'},
+        {'id': 'pressure-relief', 'point': 'Pressure-relief procedure',
+         'check': 'relief followed and the gun locked out before any tip change'},
+        {'id': 'masking', 'point': 'Drop-cloth and masking',
+         'check': 'cloths and masking tape set along every edge before the '
+                  'first pass'},
+        {'id': 'ignition', 'point': 'Fire and ignition sources',
+         'check': 'open flame, sparks and hot work cleared from the solvent area'},
     ],
 }
 for sim_id, wa in WALKAROUNDS.items():

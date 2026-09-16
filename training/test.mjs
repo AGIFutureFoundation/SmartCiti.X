@@ -130,7 +130,7 @@ ok('the records panel actually renders that pairing fact and links to the Orbis 
 /* -------------------------------------------- downstream of a final score --- */
 ok('every sim\'s pass/fail expression is computed first, with no reference to training state',
   [...page.matchAll(/simResults\('[a-z-]+', rows,\s*([^)]*)\)/g)]
-    .length === 7
+    .length === 9
   && [...page.matchAll(/simResults\('[a-z-]+', rows,\s*([^)]*)\)/g)]
     .every((m) => !/train/i.test(m[1])));
 ok('the recorder in simResults receives passed as a parameter - it cannot compute its own outcome',

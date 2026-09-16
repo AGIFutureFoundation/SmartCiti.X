@@ -552,7 +552,9 @@ function startSim(simId) {
     : simId === 'weld-bead' ? weldSim(P)
     : simId === 'scaffold-bay' ? scaffoldSim(P)
     : simId === 'rigging-signals' ? riggingSim(P)
-    : simId === 'load-chart' ? loadChartSim(P) : forkliftSim(P);
+    : simId === 'load-chart' ? loadChartSim(P)
+    : simId === 'pressure-washer' ? pressureWasherSim(P)
+    : simId === 'airless-sprayer' ? paintSprayerSim(P) : forkliftSim(P);
   scene.add(sim.group);
   // your avatar takes the seat the sim declares - the learner is IN the yard
   if (sim.mount) {
@@ -1620,6 +1622,241 @@ function loadChartSim(P = {}) {
         time: { v: 0, txt: st.t0 ? ((performance.now() - st.t0) / 1000).toFixed(0) : '\\u2013' },
       };
     },
+  };
+}
+
+/* ----------------------------------------- pressure washer surface clean --- */
+function pressureWasherSim(P = {}) {
+  const COLS = P.cols ?? 6, ROWS = P.rows ?? 4, CELL = .62;
+  const panelW = COLS * CELL, panelH = ROWS * CELL, x0 = -panelW / 2;
+  const g = new THREE.Group();
+  simYard(g, 14, 11);
+  // the fouled test panel, upright and facing the yard
+  box(panelW + .3, panelH + .3, .1, mat.metal, 0, panelH / 2 + .4, -.06, g);
+  const FOUL = 0x5b4a30, CLEAN = 0xaeb8ba, SCORCH = 0x241c14;
+  const cells = [];
+  for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
+    const cx = x0 + (c + .5) * CELL, cy = (r + .5) * CELL + .4;
+    const m = new THREE.Mesh(boxGeo(CELL - .05, CELL - .05, .05),
+      new THREE.MeshStandardMaterial({ color: FOUL, roughness: .95 }));
+    m.position.set(cx, cy, .01); g.add(m);
+    cells.push({ expose: 0, bad: 0, clean: false, damaged: false, mesh: m });
+  }
+  // the containment berm - not shown until deployed, a habit the run checks
+  const berm = box(panelW + 1, .28, .5, mat.paint, 0, .14, 1.3, g, false);
+  berm.visible = false;
+  // the wand: a hand tool standing off the panel along Z
+  const wand = new THREE.Group(); g.add(wand);
+  box(.1, .1, .5, mat.part, 0, 0, .2, wand, false);
+  box(.08, .08, .28, mat.metal, 0, 0, -.14, wand, false);
+  const jet = new THREE.Mesh(new THREE.SphereGeometry(.09, 10, 10),
+    new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0x9fd8ff,
+      emissiveIntensity: 2.2 }));
+  jet.position.set(0, 0, -.3); jet.visible = false; wand.add(jet);
+  const EFF_MAX = 1.6, DAMAGE_GAP = .55, CLEAN_DWELL = .55, DAMAGE_DWELL = .9;
+  const st = { u: 0, v: panelH / 2, gap: 1.0, spray: false, done: false,
+               damage: 0, containSet: false, containOk: null, t0: null, lc: false };
+  const cellAt = () => {
+    const c = Math.floor((st.u - x0) / CELL), r = Math.floor(st.v / CELL);
+    return c >= 0 && c < COLS && r >= 0 && r < ROWS ? cells[r * COLS + c] : null;
+  };
+  function paint(c) {
+    c.mesh.material.color.setHex(c.damaged ? SCORCH : c.clean ? CLEAN : FOUL);
+    if (c.damaged) c.mesh.scale.z = .3;
+  }
+  function finish() {
+    st.done = true; st.spray = false; jet.visible = false; engineSet(0);
+    const cleaned = cells.filter((c) => c.clean).length;
+    const pct = Math.round(100 * cleaned / cells.length);
+    const time = st.t0 ? ((performance.now() - st.t0) / 1000) : 0;
+    const rows = [
+      { axis: 'coverage', value: pct + '%', ok: pct >= 95 },
+      { axis: 'damage', value: String(st.damage), ok: st.damage === 0 },
+      { axis: 'containment', value: st.containOk ? 'set before spray' : 'set late or never',
+        ok: !!st.containOk },
+      { axis: 'time', value: time.toFixed(1) + ' s', ok: null },
+    ];
+    simResults('pressure-washer', rows,
+      pct >= 95 && st.damage === 0 && !!st.containOk);
+  }
+  return {
+    group: g, orbit: true,
+    orbitCam: { pos: [5, 4, 7.5], tgt: [0, panelH / 2, 0] },
+    mount: { parent: g, pos: [-panelW / 2 - 1.4, 0, 1.4], yaw: -.5 },
+    action() {
+      if (st.done) return;
+      st.spray = !st.spray;
+      if (st.spray) {
+        if (st.containOk === null) st.containOk = st.containSet;
+        if (!st.t0) st.t0 = performance.now();
+        blip(220, 340, .14, 'sawtooth', .06);
+      } else blip(340, 180, .1, 'sawtooth', .05);
+    },
+    update(dt) {
+      if (st.done) return;
+      const SPD = .95;
+      if (keys.KeyA) st.u = Math.max(x0, st.u - SPD * dt);
+      if (keys.KeyD) st.u = Math.min(x0 + panelW, st.u + SPD * dt);
+      if (keys.KeyW) st.v = Math.min(panelH, st.v + SPD * dt);
+      if (keys.KeyS) st.v = Math.max(0, st.v - SPD * dt);
+      if (keys.KeyQ) st.gap = Math.min(3.2, st.gap + 2.2 * dt);
+      if (keys.KeyE) st.gap = Math.max(.2, st.gap - 2.2 * dt);
+      if (keys.KeyC && !st.lc) {
+        st.containSet = !st.containSet; berm.visible = st.containSet;
+        blip(st.containSet ? 500 : 300, st.containSet ? 800 : 200, .12, 'triangle', .1);
+      }
+      st.lc = !!keys.KeyC;
+      const cell = st.spray ? cellAt() : null;
+      if (cell && !cell.damaged) {
+        if (st.gap <= EFF_MAX) {
+          cell.expose += dt;
+          if (!cell.clean && cell.expose >= CLEAN_DWELL) { cell.clean = true; paint(cell); }
+        }
+        if (st.gap <= DAMAGE_GAP) {
+          cell.bad += dt;
+          if (cell.bad >= DAMAGE_DWELL) {
+            cell.damaged = true; cell.clean = false; st.damage++; paint(cell);
+            blip(240, 60, .5, 'sawtooth', .22); buzz(300, .9);
+          }
+        }
+        if (cells.every((c) => c.clean || c.damaged)) return finish();
+      }
+      engineSet(st.spray ? .6 : .1);
+      wand.position.set(st.u, st.v + .4, st.gap);
+      jet.visible = st.spray;
+      if (jet.visible) jet.scale.setScalar(.8 + .4 * Math.abs(Math.sin(performance.now() / 45)));
+      if (simView === 'wand') {
+        camera.position.set(st.u - .3, st.v + .55, st.gap + .5);
+        camera.lookAt(st.u, st.v + .4, -.06);
+      }
+    },
+    gauges: () => ({
+      gap: st.gap,
+      coverage: { v: 0, txt: Math.round(100 * cells.filter((c) => c.clean).length / cells.length) + '%' },
+      damage: { v: st.damage, txt: String(st.damage) },
+      containment: { v: 0, txt: st.containSet ? '\\u2713' : '\\u2013' },
+      time: { v: 0, txt: st.t0 ? ((performance.now() - st.t0) / 1000).toFixed(0) : '\\u2013' },
+    }),
+  };
+}
+
+/* --------------------------------------------- airless paint sprayer finish --- */
+function paintSprayerSim(P = {}) {
+  const COLS = P.cols ?? 6, ROWS = P.rows ?? 4, CELL = .62;
+  const panelW = COLS * CELL, panelH = ROWS * CELL, x0 = -panelW / 2, MASK = .3;
+  const g = new THREE.Group();
+  simYard(g, 14, 11);
+  // the wall, oversized so a masked boundary sits inside its own face
+  box(panelW + MASK * 2 + .3, panelH + MASK * 2 + .3, .1, mat.wall,
+    0, panelH / 2 + .4, -.06, g);
+  // masking tape traced exactly at the paintable boundary
+  box(panelW + .06, .04, .04, mat.paint, 0, .4, .02, g, false);
+  box(panelW + .06, .04, .04, mat.paint, 0, panelH + .4, .02, g, false);
+  box(.04, panelH + .06, .04, mat.paint, x0, panelH / 2 + .4, .02, g, false);
+  box(.04, panelH + .06, .04, mat.paint, x0 + panelW, panelH / 2 + .4, .02, g, false);
+  const BASE = 0x8a8f8f, COAT = 0xE8A33D, RUN = 0x7a4a12;
+  const cells = [];
+  for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) {
+    const cx = x0 + (c + .5) * CELL, cy = (r + .5) * CELL + .4;
+    const m = new THREE.Mesh(boxGeo(CELL - .05, CELL - .05, .05),
+      new THREE.MeshStandardMaterial({ color: BASE, roughness: .85 }));
+    m.position.set(cx, cy, .01); g.add(m);
+    cells.push({ expose: 0, bad: 0, coated: false, run: false, mesh: m });
+  }
+  // the gun: a hand tool standing off the wall along Z
+  const gun = new THREE.Group(); g.add(gun);
+  box(.1, .1, .5, mat.part, 0, 0, .2, gun, false);
+  box(.08, .08, .28, mat.metal, 0, 0, -.14, gun, false);
+  const jet = new THREE.Mesh(new THREE.SphereGeometry(.09, 10, 10),
+    new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xE8A33D,
+      emissiveIntensity: 2 }));
+  jet.position.set(0, 0, -.3); jet.visible = false; gun.add(jet);
+  const EFF_MAX = 1.6, RUN_GAP = .55, COAT_DWELL = .5, RUN_DWELL = .9;
+  const st = { u: 0, v: panelH / 2, gap: 1.0, spray: false, done: false,
+               runs: 0, overspray: 0, inOver: false, t0: null };
+  const cellAt = () => {
+    const c = Math.floor((st.u - x0) / CELL), r = Math.floor(st.v / CELL);
+    return c >= 0 && c < COLS && r >= 0 && r < ROWS ? cells[r * COLS + c] : null;
+  };
+  function paint(c) {
+    c.mesh.material.color.setHex(c.run ? RUN : c.coated ? COAT : BASE);
+  }
+  function finish() {
+    st.done = true; st.spray = false; jet.visible = false; engineSet(0);
+    const coated = cells.filter((c) => c.coated).length;
+    const pct = Math.round(100 * coated / cells.length);
+    const holidays = cells.length - coated;
+    const time = st.t0 ? ((performance.now() - st.t0) / 1000) : 0;
+    const rows = [
+      { axis: 'coverage', value: pct + '%', ok: pct >= 95 },
+      { axis: 'runs', value: String(st.runs), ok: st.runs === 0 },
+      { axis: 'holidays', value: String(holidays), ok: holidays === 0 },
+      { axis: 'overspray', value: String(st.overspray), ok: st.overspray === 0 },
+      { axis: 'time', value: time.toFixed(1) + ' s', ok: null },
+    ];
+    simResults('airless-sprayer', rows,
+      pct >= 95 && st.runs === 0 && holidays === 0 && st.overspray === 0);
+  }
+  return {
+    group: g, orbit: true,
+    orbitCam: { pos: [5, 4, 7.5], tgt: [0, panelH / 2, 0] },
+    mount: { parent: g, pos: [-panelW / 2 - 1.4, 0, 1.4], yaw: -.5 },
+    action() {
+      if (st.done) return;
+      st.spray = !st.spray;
+      if (st.spray) {
+        if (!st.t0) st.t0 = performance.now();
+        blip(260, 420, .12, 'sawtooth', .07);
+      } else blip(340, 180, .1, 'sawtooth', .05);
+    },
+    update(dt) {
+      if (st.done) return;
+      const SPD = .95;
+      if (keys.KeyA) st.u = Math.max(x0 - MASK - .3, st.u - SPD * dt);
+      if (keys.KeyD) st.u = Math.min(x0 + panelW + MASK + .3, st.u + SPD * dt);
+      if (keys.KeyW) st.v = Math.min(panelH + MASK, st.v + SPD * dt);
+      if (keys.KeyS) st.v = Math.max(-MASK, st.v - SPD * dt);
+      if (keys.KeyQ) st.gap = Math.min(3.2, st.gap + 2.2 * dt);
+      if (keys.KeyE) st.gap = Math.max(.2, st.gap - 2.2 * dt);
+      const outMask = st.u < x0 - .02 || st.u > x0 + panelW + .02
+        || st.v < .02 || st.v > panelH - .02;
+      if (st.spray && outMask && !st.inOver) {
+        st.inOver = true; st.overspray++;
+        blip(180, 90, .3, 'square', .16); buzz(180, .6);
+      }
+      if (!st.spray || !outMask) st.inOver = false;
+      const cell = st.spray && !outMask ? cellAt() : null;
+      if (cell && !cell.run) {
+        if (st.gap <= EFF_MAX) {
+          cell.expose += dt;
+          if (!cell.coated && cell.expose >= COAT_DWELL) { cell.coated = true; paint(cell); }
+        }
+        if (st.gap <= RUN_GAP) {
+          cell.bad += dt;
+          if (cell.bad >= RUN_DWELL) {
+            cell.run = true; cell.coated = true; st.runs++; paint(cell);
+            blip(200, 70, .4, 'sawtooth', .18); buzz(260, .7);
+          }
+        }
+        if (cells.every((c) => c.coated)) return finish();
+      }
+      engineSet(st.spray ? .6 : .1);
+      gun.position.set(st.u, st.v + .4, st.gap);
+      jet.visible = st.spray;
+      if (jet.visible) jet.scale.setScalar(.8 + .4 * Math.abs(Math.sin(performance.now() / 45)));
+      if (simView === 'spray') {
+        camera.position.set(st.u - .3, st.v + .55, st.gap + .5);
+        camera.lookAt(st.u, st.v + .4, -.06);
+      }
+    },
+    gauges: () => ({
+      gap: st.gap,
+      coverage: { v: 0, txt: Math.round(100 * cells.filter((c) => c.coated).length / cells.length) + '%' },
+      runs: { v: st.runs, txt: String(st.runs) },
+      holidays: { v: 0, txt: String(cells.filter((c) => !c.coated).length) },
+      overspray: { v: st.overspray, txt: String(st.overspray) },
+      time: { v: 0, txt: st.t0 ? ((performance.now() - st.t0) / 1000).toFixed(0) : '\\u2013' },
+    }),
   };
 }"""
 
