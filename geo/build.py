@@ -19,12 +19,12 @@ three tiers this build can actually check itself against.
     city table (src/app.js, CITIES), which is real committed data.
   - Treasure Island and New Orleans are DERIVED: well-known place centroids
     authored here, since neither appears in that table.
-  - Houston, Chicago, Seattle and Pittsburgh are AUTHORED: widely-published
-    public geography (the kind a city's own Wikipedia infobox states),
-    typed here from general knowledge. No sibling source cross-checks any
-    of the four, unlike the other three - the same honesty this pack's
-    roadmap already states for every candidate city, carried through now
-    that each is built rather than proposed.
+  - Houston, Chicago, Seattle, Pittsburgh and Denver are AUTHORED:
+    widely-published public geography (the kind a city's own Wikipedia
+    infobox states), typed here from general knowledge. No sibling source
+    cross-checks any of the five, unlike the other three - the same
+    honesty this pack's roadmap already states for every candidate city,
+    carried through now that each is built rather than proposed.
   - Everything downstream of the coordinates (distances, bearings) is
     computed, and the suite recomputes it rather than trusting it.
 
@@ -67,6 +67,10 @@ GEO = {
                         'typed from general knowledge - not cross-checked '
                         'against any file this build can verify'),
     'pittsburgh':      (40.4406, -79.9959, 'AUTHORED',
+                        'widely-published public geography (city-center), '
+                        'typed from general knowledge - not cross-checked '
+                        'against any file this build can verify'),
+    'denver':          (39.7392, -104.9903, 'AUTHORED',
                         'widely-published public geography (city-center), '
                         'typed from general knowledge - not cross-checked '
                         'against any file this build can verify'),
@@ -118,12 +122,12 @@ ANCHORS = {
     ],
 }
 
-# Institution anchors near the four HUB campuses (Houston, Chicago,
-# Seattle, Pittsburgh) — a different, weaker tier than ANCHORS above, and
-# kept in a separate table so the two are never confused. Every anchor
-# above is RECORDED, copied verbatim from a sibling Locator.X table this
-# build can cross-check against. No such table lists a single real place
-# near any hub campus, so nothing here could ever be RECORDED — each one is
+# Institution anchors near the five HUB campuses (Houston, Chicago,
+# Seattle, Pittsburgh, Denver) — a different, weaker tier than ANCHORS
+# above, and kept in a separate table so the two are never confused. Every
+# anchor above is RECORDED, copied verbatim from a sibling Locator.X table
+# this build can cross-check against. No such table lists a single real
+# place near any hub campus, so nothing here could ever be RECORDED — each one is
 # AUTHORED, the same tier this pack already uses for the hub campuses'
 # own centres (GEO, above) and for the Bay Restoration sites: real,
 # named, well-known institutions only, never invented, each typed from
@@ -178,6 +182,21 @@ AUTHORED_ANCHORS = {
         ('Community College of Allegheny County', 40.4530, -80.0090,
          'CCAC’s Allegheny Campus on the North Side, with career-'
          'technical and trades programs'),
+    ],
+    'denver': [
+        ('Colorado School of Mines', 39.7503, -105.2211,
+         'the public mining and earth-sciences research university in '
+         'Golden, just west of Denver'),
+        ('National Renewable Energy Laboratory', 39.7407, -105.1686,
+         "the U.S. Department of Energy's national laboratory for "
+         'renewable-energy research, on its South Table Mountain campus '
+         'in Golden'),
+        ('Denver Union Station', 39.7539, -105.0011,
+         "the city's historic downtown transit hub for rail, bus and "
+         'light rail'),
+        ('Community College of Denver', 39.7444, -105.0064,
+         'the public community college on the Auraria Campus downtown, '
+         'with career-technical and trades programs'),
     ],
 }
 
@@ -287,6 +306,19 @@ BLURBS = {
     'Community College of Allegheny County':
         'A public community-college system with real career-technical '
         'and trades programs across the Pittsburgh region.',
+    'Colorado School of Mines':
+        'Public research university in Golden, Colorado, internationally '
+        'known for mining, earth sciences and engineering.',
+    'National Renewable Energy Laboratory':
+        "The U.S. Department of Energy's primary national laboratory for "
+        'renewable energy and energy efficiency research, based in '
+        'Golden, Colorado.',
+    'Denver Union Station':
+        "Denver's historic 1881 rail depot, restored as the downtown "
+        'hub for Amtrak, commuter rail, light rail and bus.',
+    'Community College of Denver':
+        'A public community college on the Auraria Campus, with real '
+        'career-technical and trades programs.',
 }
 
 # CITY records - the region frames Locator.X's own maps ship, RECORDED
@@ -310,9 +342,9 @@ CITY = {
     },
     'treasure-island': dict(BAY_FRAME),
     'oakland': dict(BAY_FRAME),
-    # the four hub campuses' own frames: AUTHORED, like their anchors and
+    # the five hub campuses' own frames: AUTHORED, like their anchors and
     # their own campus-centre coordinates above - no sibling table ships a
-    # committed frame for any of the four metros, so none can honestly
+    # committed frame for any of the five metros, so none can honestly
     # claim more
     'houston': {
         'center': {'lat': 29.76, 'lng': -95.37},
@@ -341,6 +373,14 @@ CITY = {
     'pittsburgh': {
         'center': {'lat': 40.44, 'lng': -79.99},
         'bounds': {'w': -80.40, 's': 40.15, 'e': -79.60, 'n': 40.75},
+        'provenance': 'AUTHORED',
+        'source': 'widely-published public geography (metro-area extent), '
+                  'typed from general knowledge - not cross-checked '
+                  'against any file this build can verify',
+    },
+    'denver': {
+        'center': {'lat': 39.74, 'lng': -104.99},
+        'bounds': {'w': -105.35, 's': 39.45, 'e': -104.60, 'n': 40.05},
         'provenance': 'AUTHORED',
         'source': 'widely-published public geography (metro-area extent), '
                   'typed from general knowledge - not cross-checked '
@@ -492,7 +532,7 @@ doc = {
 # RECORDED anchors (ANCHORS) cite the sibling Locator.X table verbatim;
 # AUTHORED anchors (AUTHORED_ANCHORS) name themselves plainly as a weaker,
 # uncross-checked claim - the same distinction GEO already draws between
-# the three original campus centres and the four hub ones.
+# the three original campus centres and the five hub ones.
 def anchor_source(prov, src):
     return f'Locator.X {src}, Apache-2.0' if prov == 'RECORDED' else src
 

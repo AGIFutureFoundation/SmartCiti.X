@@ -5000,6 +5000,34 @@ function dressCampus(key, g, R) {
     const river = new THREE.Mesh(new THREE.PlaneGeometry(420, 120), mat.water);
     river.rotation.x = -Math.PI / 2; river.position.set(0, -.06, -(R + 120)); g.add(river);
   }
+  if (key === 'denver') {
+    // the fifth hub, dressed the same way as the first four: a free
+    // skyline on the green rather than anything at the plaza, plus a
+    // schematic mountain-range silhouette standing on the western
+    // horizon for the Front Range/Rockies the campus is named for.
+    // Generic massing only - no real building or peak is modeled or
+    // named.
+    const skyMat = new THREE.MeshStandardMaterial({ color: 0x35383c, roughness: .8 });
+    for (let i = 0; i < 8; i++) {
+      const ang = i / 8 * Math.PI * 2 + .3, rad = R + 56 + (i % 2) * 18;
+      const h = 10 + (i % 3) * 6;
+      const t = box(4.6, h, 4.6, skyMat, Math.cos(ang) * rad, h / 2, Math.sin(ang) * rad, g);
+      t.castShadow = true;
+    }
+    const peakMat = new THREE.MeshStandardMaterial({ color: 0x565a5e, roughness: .95 });
+    const snowMat = new THREE.MeshStandardMaterial({ color: 0xe8ecef, roughness: .7 });
+    for (let i = 0; i < 9; i++) {
+      const px = -180 + i * 46, ph = 26 + (i % 4) * 10;
+      const peak = new THREE.Mesh(new THREE.ConeGeometry(22, ph, 4), peakMat);
+      peak.rotation.y = Math.PI / 4;
+      peak.position.set(px, ph / 2, -(R + 170));
+      peak.castShadow = true; g.add(peak);
+      const cap = new THREE.Mesh(new THREE.ConeGeometry(8, ph * .28, 4), snowMat);
+      cap.rotation.y = Math.PI / 4;
+      cap.position.set(px, ph - ph * .14, -(R + 170));
+      g.add(cap);
+    }
+  }
 }
 
 /* ------------------------------------------------- the city layer -------- */
@@ -5469,6 +5497,17 @@ function cityWater(g, key, R, pois) {
         new THREE.Vector3(-150, 0, 10)), 40, 9, 8), mat.water);
     ohio.scale.y = .012; ohio.position.y = .09; g.add(ohio);
     tag('Ohio River', -100, 28);
+    return;
+  }
+  if (key === 'denver') {
+    // the real river this hub sits beside - the same schematic ribbon
+    // idiom, never claimed as more than that
+    const platte = new THREE.Mesh(new THREE.TubeGeometry(
+      new THREE.QuadraticBezierCurve3(
+        new THREE.Vector3(-140, 0, -60), new THREE.Vector3(-20, 0, 10),
+        new THREE.Vector3(80, 0, 100)), 48, 8, 8), mat.water);
+    platte.scale.y = .012; platte.position.y = .09; g.add(platte);
+    tag('South Platte River', -20, 14);
   }
 }
 

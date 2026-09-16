@@ -59,8 +59,8 @@ ok('the module manifest ledger agrees on the hall count',
 
 /* ---------------------------------------------------------- the campuses --- */
 const clists = Object.values(campuses.campuses);
-ok('seven campuses, each with a name, city, region and tagline',
-  campuses.count === 7 && clists.length === 7
+ok('eight campuses, each with a name, city, region and tagline',
+  campuses.count === 8 && clists.length === 8
   && clists.every((c) => c.name && c.city && c.region && c.tagline));
 ok('at least one campus is a hub, and every hub has no home districts and no home halls',
   clists.filter((c) => c.districts.length === 0).length > 0

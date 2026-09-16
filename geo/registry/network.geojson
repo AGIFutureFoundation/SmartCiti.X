@@ -146,6 +146,26 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
+     -104.9903,
+     39.7392
+    ]
+   },
+   "properties": {
+    "slug": "denver",
+    "name": "Front Range Mining Hub",
+    "city": "Denver",
+    "region": "Colorado",
+    "districts": 0,
+    "halls": 0,
+    "provenance": "AUTHORED",
+    "source": "widely-published public geography (city-center), typed from general knowledge - not cross-checked against any file this build can verify"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
      -122.4194,
      37.7749
     ]
@@ -873,6 +893,90 @@
     "blurb": "A public community-college system with real career-technical and trades programs across the Pittsburgh region.",
     "km": 1.8,
     "bearing_deg": 321.2,
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -105.2211,
+     39.7503
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Colorado School of Mines",
+    "near": "denver",
+    "provenance": "AUTHORED",
+    "source": "the public mining and earth-sciences research university in Golden, just west of Denver",
+    "blurb": "Public research university in Golden, Colorado, internationally known for mining, earth sciences and engineering.",
+    "km": 19.8,
+    "bearing_deg": 273.7,
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -105.1686,
+     39.7407
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "National Renewable Energy Laboratory",
+    "near": "denver",
+    "provenance": "AUTHORED",
+    "source": "the U.S. Department of Energy's national laboratory for renewable-energy research, on its South Table Mountain campus in Golden",
+    "blurb": "The U.S. Department of Energy's primary national laboratory for renewable energy and energy efficiency research, based in Golden, Colorado.",
+    "km": 15.2,
+    "bearing_deg": 270.7,
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -105.0011,
+     39.7539
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Denver Union Station",
+    "near": "denver",
+    "provenance": "AUTHORED",
+    "source": "the city's historic downtown transit hub for rail, bus and light rail",
+    "blurb": "Denver's historic 1881 rail depot, restored as the downtown hub for Amtrak, commuter rail, light rail and bus.",
+    "km": 1.9,
+    "bearing_deg": 330.5,
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -105.0064,
+     39.7444
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Community College of Denver",
+    "near": "denver",
+    "provenance": "AUTHORED",
+    "source": "the public community college on the Auraria Campus downtown, with career-technical and trades programs",
+    "blurb": "A public community college on the Auraria Campus, with real career-technical and trades programs.",
+    "km": 1.5,
+    "bearing_deg": 292.8,
     "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
    }
   },
@@ -1776,6 +1880,155 @@
     "type": "LineString",
     "coordinates": [
      [
+      -122.3705,
+      37.8235
+     ],
+     [
+      -121.8442,
+      37.9217
+     ],
+     [
+      -121.3164,
+      38.0175
+     ],
+     [
+      -120.7874,
+      38.1109
+     ],
+     [
+      -120.2569,
+      38.202
+     ],
+     [
+      -119.7252,
+      38.2907
+     ],
+     [
+      -119.1922,
+      38.377
+     ],
+     [
+      -118.6579,
+      38.4608
+     ],
+     [
+      -118.1224,
+      38.5423
+     ],
+     [
+      -117.5857,
+      38.6213
+     ],
+     [
+      -117.0479,
+      38.6978
+     ],
+     [
+      -116.5089,
+      38.7718
+     ],
+     [
+      -115.9688,
+      38.8434
+     ],
+     [
+      -115.4276,
+      38.9125
+     ],
+     [
+      -114.8854,
+      38.9791
+     ],
+     [
+      -114.3422,
+      39.0432
+     ],
+     [
+      -113.798,
+      39.1047
+     ],
+     [
+      -113.2529,
+      39.1637
+     ],
+     [
+      -112.707,
+      39.2202
+     ],
+     [
+      -112.1601,
+      39.2741
+     ],
+     [
+      -111.6124,
+      39.3254
+     ],
+     [
+      -111.064,
+      39.3742
+     ],
+     [
+      -110.5148,
+      39.4204
+     ],
+     [
+      -109.9648,
+      39.4641
+     ],
+     [
+      -109.4143,
+      39.5051
+     ],
+     [
+      -108.863,
+      39.5435
+     ],
+     [
+      -108.3112,
+      39.5793
+     ],
+     [
+      -107.7589,
+      39.6125
+     ],
+     [
+      -107.206,
+      39.6431
+     ],
+     [
+      -106.6527,
+      39.6711
+     ],
+     [
+      -106.0989,
+      39.6964
+     ],
+     [
+      -105.5448,
+      39.7191
+     ],
+     [
+      -104.9903,
+      39.7392
+     ]
+    ]
+   },
+   "properties": {
+    "kind": "route",
+    "from": "treasure-island",
+    "to": "denver",
+    "km": 1519.1,
+    "bearing_deg": 76.5,
+    "provenance": "DERIVED",
+    "source": "great-circle between the campus records"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
       -122.2712,
       37.8044
      ],
@@ -2521,6 +2774,155 @@
     "type": "LineString",
     "coordinates": [
      [
+      -122.2712,
+      37.8044
+     ],
+     [
+      -121.748,
+      37.9027
+     ],
+     [
+      -121.2234,
+      37.9987
+     ],
+     [
+      -120.6974,
+      38.0924
+     ],
+     [
+      -120.1701,
+      38.1837
+     ],
+     [
+      -119.6415,
+      38.2726
+     ],
+     [
+      -119.1116,
+      38.3592
+     ],
+     [
+      -118.5805,
+      38.4434
+     ],
+     [
+      -118.0481,
+      38.5252
+     ],
+     [
+      -117.5145,
+      38.6045
+     ],
+     [
+      -116.9798,
+      38.6815
+     ],
+     [
+      -116.444,
+      38.756
+     ],
+     [
+      -115.907,
+      38.828
+     ],
+     [
+      -115.369,
+      38.8976
+     ],
+     [
+      -114.8299,
+      38.9647
+     ],
+     [
+      -114.2899,
+      39.0293
+     ],
+     [
+      -113.7488,
+      39.0914
+     ],
+     [
+      -113.2069,
+      39.151
+     ],
+     [
+      -112.664,
+      39.2082
+     ],
+     [
+      -112.1203,
+      39.2627
+     ],
+     [
+      -111.5757,
+      39.3148
+     ],
+     [
+      -111.0304,
+      39.3643
+     ],
+     [
+      -110.4843,
+      39.4113
+     ],
+     [
+      -109.9374,
+      39.4557
+     ],
+     [
+      -109.39,
+      39.4975
+     ],
+     [
+      -108.8418,
+      39.5368
+     ],
+     [
+      -108.2931,
+      39.5735
+     ],
+     [
+      -107.7438,
+      39.6076
+     ],
+     [
+      -107.194,
+      39.6391
+     ],
+     [
+      -106.6437,
+      39.668
+     ],
+     [
+      -106.0929,
+      39.6944
+     ],
+     [
+      -105.5418,
+      39.7181
+     ],
+     [
+      -104.9903,
+      39.7392
+     ]
+    ]
+   },
+   "properties": {
+    "kind": "route",
+    "from": "oakland",
+    "to": "denver",
+    "km": 1511.1,
+    "bearing_deg": 76.5,
+    "provenance": "DERIVED",
+    "source": "great-circle between the campus records"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
       -90.0715,
       29.9511
      ],
@@ -3117,6 +3519,155 @@
     "type": "LineString",
     "coordinates": [
      [
+      -90.0715,
+      29.9511
+     ],
+     [
+      -90.4871,
+      30.2821
+     ],
+     [
+      -90.9055,
+      30.6118
+     ],
+     [
+      -91.3268,
+      30.9401
+     ],
+     [
+      -91.751,
+      31.2671
+     ],
+     [
+      -92.1781,
+      31.5927
+     ],
+     [
+      -92.6082,
+      31.9168
+     ],
+     [
+      -93.0413,
+      32.2395
+     ],
+     [
+      -93.4775,
+      32.5607
+     ],
+     [
+      -93.9169,
+      32.8804
+     ],
+     [
+      -94.3594,
+      33.1985
+     ],
+     [
+      -94.8051,
+      33.515
+     ],
+     [
+      -95.2541,
+      33.83
+     ],
+     [
+      -95.7064,
+      34.1433
+     ],
+     [
+      -96.1621,
+      34.4549
+     ],
+     [
+      -96.6212,
+      34.7648
+     ],
+     [
+      -97.0837,
+      35.073
+     ],
+     [
+      -97.5497,
+      35.3794
+     ],
+     [
+      -98.0193,
+      35.684
+     ],
+     [
+      -98.4925,
+      35.9868
+     ],
+     [
+      -98.9692,
+      36.2877
+     ],
+     [
+      -99.4497,
+      36.5867
+     ],
+     [
+      -99.9339,
+      36.8838
+     ],
+     [
+      -100.4219,
+      37.1789
+     ],
+     [
+      -100.9136,
+      37.4719
+     ],
+     [
+      -101.4093,
+      37.7629
+     ],
+     [
+      -101.9088,
+      38.0518
+     ],
+     [
+      -102.4123,
+      38.3386
+     ],
+     [
+      -102.9197,
+      38.6232
+     ],
+     [
+      -103.4312,
+      38.9056
+     ],
+     [
+      -103.9468,
+      39.1858
+     ],
+     [
+      -104.4665,
+      39.4637
+     ],
+     [
+      -104.9903,
+      39.7392
+     ]
+    ]
+   },
+   "properties": {
+    "kind": "route",
+    "from": "new-orleans",
+    "to": "denver",
+    "km": 1738.9,
+    "bearing_deg": 312.7,
+    "provenance": "DERIVED",
+    "source": "great-circle between the campus records"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
       -95.3698,
       29.7604
      ],
@@ -3564,6 +4115,155 @@
     "type": "LineString",
     "coordinates": [
      [
+      -95.3698,
+      29.7604
+     ],
+     [
+      -95.6379,
+      30.0826
+     ],
+     [
+      -95.9078,
+      30.4043
+     ],
+     [
+      -96.1794,
+      30.7255
+     ],
+     [
+      -96.4529,
+      31.046
+     ],
+     [
+      -96.7282,
+      31.366
+     ],
+     [
+      -97.0053,
+      31.6854
+     ],
+     [
+      -97.2844,
+      32.0042
+     ],
+     [
+      -97.5655,
+      32.3224
+     ],
+     [
+      -97.8485,
+      32.64
+     ],
+     [
+      -98.1335,
+      32.9569
+     ],
+     [
+      -98.4206,
+      33.2731
+     ],
+     [
+      -98.7098,
+      33.5887
+     ],
+     [
+      -99.0011,
+      33.9036
+     ],
+     [
+      -99.2945,
+      34.2179
+     ],
+     [
+      -99.5902,
+      34.5314
+     ],
+     [
+      -99.888,
+      34.8442
+     ],
+     [
+      -100.1882,
+      35.1563
+     ],
+     [
+      -100.4906,
+      35.4676
+     ],
+     [
+      -100.7954,
+      35.7782
+     ],
+     [
+      -101.1026,
+      36.0879
+     ],
+     [
+      -101.4122,
+      36.3969
+     ],
+     [
+      -101.7243,
+      36.7051
+     ],
+     [
+      -102.0389,
+      37.0125
+     ],
+     [
+      -102.3561,
+      37.3191
+     ],
+     [
+      -102.6758,
+      37.6247
+     ],
+     [
+      -102.9982,
+      37.9296
+     ],
+     [
+      -103.3232,
+      38.2335
+     ],
+     [
+      -103.651,
+      38.5365
+     ],
+     [
+      -103.9816,
+      38.8386
+     ],
+     [
+      -104.3149,
+      39.1398
+     ],
+     [
+      -104.6512,
+      39.44
+     ],
+     [
+      -104.9903,
+      39.7392
+     ]
+    ]
+   },
+   "properties": {
+    "kind": "route",
+    "from": "houston",
+    "to": "denver",
+    "km": 1413.6,
+    "bearing_deg": 324.3,
+    "provenance": "DERIVED",
+    "source": "great-circle between the campus records"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
       -87.6298,
       41.8781
      ],
@@ -3862,6 +4562,155 @@
     "type": "LineString",
     "coordinates": [
      [
+      -87.6298,
+      41.8781
+     ],
+     [
+      -88.1863,
+      41.8516
+     ],
+     [
+      -88.7423,
+      41.8224
+     ],
+     [
+      -89.2978,
+      41.7905
+     ],
+     [
+      -89.8527,
+      41.7559
+     ],
+     [
+      -90.407,
+      41.7187
+     ],
+     [
+      -90.9607,
+      41.6788
+     ],
+     [
+      -91.5136,
+      41.6363
+     ],
+     [
+      -92.0658,
+      41.5911
+     ],
+     [
+      -92.6171,
+      41.5432
+     ],
+     [
+      -93.1677,
+      41.4928
+     ],
+     [
+      -93.7173,
+      41.4397
+     ],
+     [
+      -94.2661,
+      41.384
+     ],
+     [
+      -94.8139,
+      41.3257
+     ],
+     [
+      -95.3606,
+      41.2648
+     ],
+     [
+      -95.9064,
+      41.2014
+     ],
+     [
+      -96.451,
+      41.1353
+     ],
+     [
+      -96.9946,
+      41.0667
+     ],
+     [
+      -97.537,
+      40.9956
+     ],
+     [
+      -98.0782,
+      40.9219
+     ],
+     [
+      -98.6181,
+      40.8457
+     ],
+     [
+      -99.1569,
+      40.767
+     ],
+     [
+      -99.6943,
+      40.6858
+     ],
+     [
+      -100.2304,
+      40.6021
+     ],
+     [
+      -100.7651,
+      40.5159
+     ],
+     [
+      -101.2984,
+      40.4272
+     ],
+     [
+      -101.8303,
+      40.3362
+     ],
+     [
+      -102.3608,
+      40.2427
+     ],
+     [
+      -102.8898,
+      40.1467
+     ],
+     [
+      -103.4172,
+      40.0484
+     ],
+     [
+      -103.9432,
+      39.9477
+     ],
+     [
+      -104.4675,
+      39.8446
+     ],
+     [
+      -104.9903,
+      39.7392
+     ]
+    ]
+   },
+   "properties": {
+    "kind": "route",
+    "from": "chicago",
+    "to": "denver",
+    "km": 1477.7,
+    "bearing_deg": 266.5,
+    "provenance": "DERIVED",
+    "source": "great-circle between the campus records"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
       -122.3321,
       47.6062
      ],
@@ -4001,6 +4850,304 @@
     "to": "pittsburgh",
     "km": 3432.2,
     "bearing_deg": 87.6,
+    "provenance": "DERIVED",
+    "source": "great-circle between the campus records"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -122.3321,
+      47.6062
+     ],
+     [
+      -121.719,
+      47.4035
+     ],
+     [
+      -121.1106,
+      47.1975
+     ],
+     [
+      -120.507,
+      46.9884
+     ],
+     [
+      -119.9081,
+      46.7761
+     ],
+     [
+      -119.314,
+      46.5607
+     ],
+     [
+      -118.7246,
+      46.3423
+     ],
+     [
+      -118.1399,
+      46.1208
+     ],
+     [
+      -117.5599,
+      45.8964
+     ],
+     [
+      -116.9846,
+      45.6691
+     ],
+     [
+      -116.414,
+      45.4389
+     ],
+     [
+      -115.8481,
+      45.206
+     ],
+     [
+      -115.2868,
+      44.9702
+     ],
+     [
+      -114.7301,
+      44.7317
+     ],
+     [
+      -114.1781,
+      44.4905
+     ],
+     [
+      -113.6306,
+      44.2467
+     ],
+     [
+      -113.0876,
+      44.0003
+     ],
+     [
+      -112.5492,
+      43.7514
+     ],
+     [
+      -112.0152,
+      43.4999
+     ],
+     [
+      -111.4857,
+      43.246
+     ],
+     [
+      -110.9606,
+      42.9896
+     ],
+     [
+      -110.4399,
+      42.7309
+     ],
+     [
+      -109.9236,
+      42.4698
+     ],
+     [
+      -109.4115,
+      42.2065
+     ],
+     [
+      -108.9037,
+      41.9408
+     ],
+     [
+      -108.4002,
+      41.673
+     ],
+     [
+      -107.9008,
+      41.403
+     ],
+     [
+      -107.4056,
+      41.1308
+     ],
+     [
+      -106.9145,
+      40.8565
+     ],
+     [
+      -106.4275,
+      40.5802
+     ],
+     [
+      -105.9444,
+      40.3019
+     ],
+     [
+      -105.4654,
+      40.0215
+     ],
+     [
+      -104.9903,
+      39.7392
+     ]
+    ]
+   },
+   "properties": {
+    "kind": "route",
+    "from": "seattle",
+    "to": "denver",
+    "km": 1640.7,
+    "bearing_deg": 115.9,
+    "provenance": "DERIVED",
+    "source": "great-circle between the campus records"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -79.9959,
+      40.4406
+     ],
+     [
+      -80.7753,
+      40.5009
+     ],
+     [
+      -81.556,
+      40.5559
+     ],
+     [
+      -82.3379,
+      40.6056
+     ],
+     [
+      -83.121,
+      40.6501
+     ],
+     [
+      -83.905,
+      40.6893
+     ],
+     [
+      -84.6899,
+      40.7231
+     ],
+     [
+      -85.4755,
+      40.7517
+     ],
+     [
+      -86.2618,
+      40.7749
+     ],
+     [
+      -87.0485,
+      40.7928
+     ],
+     [
+      -87.8356,
+      40.8053
+     ],
+     [
+      -88.6229,
+      40.8125
+     ],
+     [
+      -89.4103,
+      40.8143
+     ],
+     [
+      -90.1977,
+      40.8108
+     ],
+     [
+      -90.985,
+      40.8019
+     ],
+     [
+      -91.772,
+      40.7876
+     ],
+     [
+      -92.5585,
+      40.7681
+     ],
+     [
+      -93.3446,
+      40.7432
+     ],
+     [
+      -94.13,
+      40.7129
+     ],
+     [
+      -94.9146,
+      40.6774
+     ],
+     [
+      -95.6983,
+      40.6365
+     ],
+     [
+      -96.4811,
+      40.5904
+     ],
+     [
+      -97.2626,
+      40.5389
+     ],
+     [
+      -98.0429,
+      40.4822
+     ],
+     [
+      -98.8219,
+      40.4203
+     ],
+     [
+      -99.5993,
+      40.3532
+     ],
+     [
+      -100.3751,
+      40.2808
+     ],
+     [
+      -101.1492,
+      40.2033
+     ],
+     [
+      -101.9215,
+      40.1207
+     ],
+     [
+      -102.6919,
+      40.0329
+     ],
+     [
+      -103.4602,
+      39.9401
+     ],
+     [
+      -104.2264,
+      39.8421
+     ],
+     [
+      -104.9903,
+      39.7392
+     ]
+    ]
+   },
+   "properties": {
+    "kind": "route",
+    "from": "pittsburgh",
+    "to": "denver",
+    "km": 2120.6,
+    "bearing_deg": 276.1,
     "provenance": "DERIVED",
     "source": "great-circle between the campus records"
    }
@@ -4217,6 +5364,42 @@
    "properties": {
     "kind": "frame",
     "campus": "pittsburgh",
+    "provenance": "AUTHORED",
+    "source": "widely-published public geography (metro-area extent), typed from general knowledge - not cross-checked against any file this build can verify"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -105.35,
+       39.45
+      ],
+      [
+       -104.6,
+       39.45
+      ],
+      [
+       -104.6,
+       40.05
+      ],
+      [
+       -105.35,
+       40.05
+      ],
+      [
+       -105.35,
+       39.45
+      ]
+     ]
+    ]
+   },
+   "properties": {
+    "kind": "frame",
+    "campus": "denver",
     "provenance": "AUTHORED",
     "source": "widely-published public geography (metro-area extent), typed from general knowledge - not cross-checked against any file this build can verify"
    }

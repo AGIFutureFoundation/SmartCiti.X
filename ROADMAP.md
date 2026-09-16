@@ -32,7 +32,7 @@ The consolidation release: one repository, one version, one truth per fact.
 | Wiki generated from the registries — a page per map, a page per district | `wiki/` |
 | Spec v3.2 adopted: §23 adversarial review findings, §24 texture and environment packages | `SmartCitiX_TradeCraft_Academy_Spec.md` |
 | Version unified to Adaptive Stack v3.2 / pack 3.2.0 across every surface | manifest, README, generated pages |
-| Seven-campus network — three district campuses (Treasure Island–SF, Oakland, New Orleans) plus four regional-chapter **hub** campuses with no home district of their own (Houston, Chicago, Seattle, Pittsburgh) — real or AUTHORED WGS84 anchors, recomputed great-circle distances for all twenty-one campus pairs, Mapbox-ready GeoJSON | `unions/`, `geo/` |
+| Eight-campus network — three district campuses (Treasure Island–SF, Oakland, New Orleans) plus five regional-chapter **hub** campuses with no home district of their own (Houston, Chicago, Seattle, Pittsburgh, Denver) — real or AUTHORED WGS84 anchors, recomputed great-circle distances for all twenty-eight campus pairs, Mapbox-ready GeoJSON | `unions/`, `geo/` |
 | Recovered station curriculum rebranded onto halls, skills and rooms, machine-gradable | `stations/`, `archive/` |
 | §24 realized: 22 floor finishes resolved hazard-first, per-room conditions merged more-demanding-wins, provenance-tagged (RECORDED/DERIVED/SCHEMATIC) | `surfaces/` |
 | The interactive layered map, the **network geomap** (a real WGS84 map, vendored MapLibre GL, on-request USGS orthoimagery and live parcel/footprint fetches), the four-level 3D environment (network → campus → hall → walk) with live condition readouts, and the **network dashboard** reading every platform figure live from its own registry | `web/` |
@@ -43,11 +43,11 @@ The consolidation release: one repository, one version, one truth per fact.
 | The city-records GIS contract (real parcel/footprint authorities, licences and bounded queries) for the three district campuses, plus on-demand real USGS 3DEP elevation lookups — no record copied into the repo, fetched live in the learner's own browser | `parcels/` |
 | The metaverse-interchange layer — glTF 2.0 export/import of the avatar and any hall, a complete VRM-compatible humanoid bone skeleton with a driven (not decorative) walk/idle/head-track, WebXR entry | `meta/` |
 | Nine scripted advisors — eight room- or green-bound guides plus **the Operator**, who lives inside a simulator's own yard and resolves against whichever seat is actually running — a closed 34-question list, no model, no network, changes no score | `agents/` |
-| Generated sky, six weather states, browser-generated ground recipes (zero third-party texture files) and 77 ambient animals across all seven campuses | `world/` |
+| Generated sky, six weather states, browser-generated ground recipes (zero third-party texture files) and 84 ambient animals across all eight campuses | `world/` |
 | The in-world signage system — 13 kinds over 10 shapes, shape-carries-category / colour-carries-provenance / type-carries-rank, view-direction-and-distance scored with one field-of-vision focus target | `labels/` |
 | The device-local robotic-training-data recorder (three episode kinds, strictly downstream of a score already final) plus **TRACE**, its off-by-default per-second gauge sampler — cross-linked with `orbis/` in both directions | `training/` |
 | The Orbis synthetic-training-video prompt contract for all 111 union modules, plus two real, separately-runnable companion apps — no key shipped, no network reached from this bundle's own build | `orbis/` |
-| The 10-world network-roadmap tracker itself: 7 built campuses + 3 candidate metros (Denver, Miami, Detroit), each candidate carrying the actual checklist to become built | `roadmap/` |
+| The 10-world network-roadmap tracker itself: 8 built campuses + 2 candidate metros (Miami, Detroit), each candidate carrying the actual checklist to become built | `roadmap/` |
 | Path defects of the packaged layout fixed (builders resolve by walking up) | `web/build_page.py`, `web/build_map.py`, `console/build_slice.py` |
 | Stale second truths removed (duplicate slice builder, 33-hall-era map data) | — |
 

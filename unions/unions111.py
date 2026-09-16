@@ -186,19 +186,19 @@ assert len(set(_assigned)) == 111, 'a hall may belong to exactly one district'
 # the flagship island campus; heavy industry, port and plant on the Oakland
 # waterfront; energy, water and environmental response on the Gulf.
 #
-# Houston, Chicago, Seattle and Pittsburgh are a fourth kind of campus: a
-# HUB. Each hosts no district of its own (districts: []) — every district
-# that exists already has exactly one home among the three original
-# campuses, and that invariant (asserted below) is not relaxed for any of
-# them. Instead the chapters mechanic in unions/build.py, which already
-# gives every hall a regional chapter at every campus that is not its
-# home, does the rest for free: with a fourth, fifth, sixth and seventh
-# campus in CAMPUSES, every one of the 111 halls now also holds a
-# regional chapter at Houston, at Chicago, at Seattle and at Pittsburgh.
-# Each hub is a real, walkable point on the network map, not a copy of
-# anyone's home turf, and hosting four hubs is the same mechanic doing
-# the same thing four times, not a special case written for any one of
-# them.
+# Houston, Chicago, Seattle, Pittsburgh and Denver are a fourth kind of
+# campus: a HUB. Each hosts no district of its own (districts: []) —
+# every district that exists already has exactly one home among the
+# three original campuses, and that invariant (asserted below) is not
+# relaxed for any of them. Instead the chapters mechanic in
+# unions/build.py, which already gives every hall a regional chapter at
+# every campus that is not its home, does the rest for free: with a
+# fourth, fifth, sixth, seventh and eighth campus in CAMPUSES, every one
+# of the 111 halls now also holds a regional chapter at Houston, at
+# Chicago, at Seattle, at Pittsburgh and at Denver. Each hub is a real,
+# walkable point on the network map, not a copy of anyone's home turf,
+# and hosting five hubs is the same mechanic doing the same thing five
+# times, not a special case written for any one of them.
 #
 # HONESTY, same rule as the taxonomy: these are PLANNED locations named for
 # real cities. No site has been surveyed, no address is recorded, and no
@@ -227,6 +227,10 @@ CAMPUSES = {
         []),
     'pittsburgh': ('Three Rivers Steel Hub', 'Pittsburgh', 'Pennsylvania',
         'The network\'s fourth hub: no home district of its own, and a '
+        'regional chapter seat for every one of the 111 trades',
+        []),
+    'denver': ('Front Range Mining Hub', 'Denver', 'Colorado',
+        'The network\'s fifth hub: no home district of its own, and a '
         'regional chapter seat for every one of the 111 trades',
         []),
 }
