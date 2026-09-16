@@ -99,6 +99,7 @@ body{margin:0;background:var(--plate);color:var(--ink);
 .restoration-marker{background:var(--good);color:#0C1113;border-radius:999px;
   padding:2px 9px;font:600 12px "Barlow Condensed",sans-serif;white-space:nowrap;
   border:1.5px solid #0C1113;cursor:pointer}
+.restoration-marker.env-monitoring{background:var(--steel)}
 .maplibregl-popup-content{background:var(--panel)!important;color:var(--ink)!important;
   border:1px solid var(--rule);border-radius:9px;font:12.5px/1.45 "IBM Plex Sans",sans-serif;
   padding:10px 13px!important;max-width:270px}
@@ -130,7 +131,8 @@ body{margin:0;background:var(--plate);color:var(--ink);
   <span class="dot" style="background:none;border:1.5px dashed var(--mark);border-radius:0"></span>great-circle route — DERIVED<br>
   <span class="dot" style="background:none;border:1px solid var(--steel);border-radius:0"></span>city frame — RECORDED for the three flagship campuses, AUTHORED for the seven hub campuses<br>
   <span class="dot" style="background:none;border:1.5px dashed var(--muted)"></span>roadmap candidate — AUTHORED, not built<br>
-  <span class="dot" style="background:var(--good)"></span>Bay Restoration site — real project, not affiliated with this bundle
+  <span class="dot" style="background:var(--good)"></span>Bay Restoration site (habitat-restoration) — real project, not affiliated with this bundle<br>
+  <span class="dot" style="background:var(--steel)"></span>Bay Restoration site (environmental-monitoring) — real, litigated federal cleanup site; located but never rendered as a walkable scene
 </div>
 <div id="honesty"></div>
 <script id="data" type="application/json">__DATA__</script>
@@ -253,7 +255,7 @@ function popupForCandidate(ck, c) {
 let restMarkers = 0;
 for (const s of D.restorationSites) {
   const el = document.createElement('div');
-  el.className = 'restoration-marker';
+  el.className = 'restoration-marker' + (s.category === 'environmental-monitoring' ? ' env-monitoring' : '');
   el.textContent = s.name;
   el.addEventListener('click', (ev) => { ev.stopPropagation(); popupForRestoration(s); });
   new maplibregl.Marker({ element: el, anchor: 'bottom', offset: [0, -10] })
@@ -263,12 +265,20 @@ for (const s of D.restorationSites) {
 function popupForRestoration(s) {
   const wf = s.workforce
     ? `<br><b>Workforce pathway:</b> ${s.workforce_note}` : '';
+  // environmental-monitoring sites point at real monitoring participation
+  // instead of a workforce/job-training pathway - kept in its own field
+  // so the two are never conflated
+  const pt = s.participation
+    ? `<br><b>Monitoring participation:</b> ${s.participation_note}` : '';
+  const cat = s.category === 'environmental-monitoring'
+    ? `<br><span class="pv" style="color:var(--steel);border-color:var(--steel)">environmental monitoring — not walkable: ${s.walkable_reason}</span>`
+    : '';
   new maplibregl.Popup({ closeButton: false })
     .setLngLat([s.lng, s.lat])
     .setHTML(`<b>${s.name}</b><br><span class="pv rec">real project</span>`
-      + `<span class="pv">AUTHORED coordinate</span>`
+      + `<span class="pv">AUTHORED coordinate</span>` + cat
       + `<br>${s.org}<br>${s.city}, ${s.county} · ${s.habitat}<br>${s.scale}`
-      + wf
+      + wf + pt
       + `<br><a href="${s.source_url}" target="_blank" rel="noopener" class="src">${s.source_url}</a>`
       + `<br><span class="src">${D.restorationHonesty.not_affiliated}</span>`)
     .addTo(map);

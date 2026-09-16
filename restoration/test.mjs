@@ -21,6 +21,15 @@ const campuses = JSON.parse(readFileSync(
   new URL('../unions/registry/campuses.json', import.meta.url))).campuses;
 const geomap = readFileSync(new URL('../web/trade_craft_geomap.html', import.meta.url), 'utf8');
 const page3d = readFileSync(new URL('../web/trade_craft_3d.html', import.meta.url), 'utf8');
+const unions = JSON.parse(readFileSync(
+  new URL('../unions/registry/unions.json', import.meta.url))).unions;
+const unionSlugs = new Set(unions.map((u) => u.slug));
+
+// the page's own embedded data blob, parsed for real - not just grepped -
+// so the walkable/non-walkable claim can be checked against the actual
+// data the running page would see, not just a source string
+const dataMatch = page3d.match(/<script id="data"[^>]*>([\s\S]*?)<\/script>/);
+const pageData = dataMatch ? JSON.parse(dataMatch[1]) : null;
 
 const pinned = reg.sites.filter((s) => s.pin);
 
@@ -37,6 +46,24 @@ ok('a site marked workforce=true names its real workforce pathway',
   reg.sites.filter((s) => s.workforce).every((s) => s.workforce_note?.length > 20));
 ok('every campus grouping names a real campus this bundle actually has',
   reg.sites.every((s) => s.campus === null || s.campus in campuses));
+ok('every site names a category, and it is one of exactly two allowed values',
+  reg.sites.every((s) => ['habitat-restoration', 'environmental-monitoring'].includes(s.category)));
+ok('nine sites are habitat-restoration and exactly one is environmental-monitoring',
+  reg.sites.filter((s) => s.category === 'habitat-restoration').length === 9
+  && reg.sites.filter((s) => s.category === 'environmental-monitoring').length === 1);
+ok('every site names at least one real trade_needs union slug, grounded in the '
+  + 'real registry - none invented',
+  reg.sites.every((s) => Array.isArray(s.trade_needs) && s.trade_needs.length > 0
+    && s.trade_needs.every((slug) => unionSlugs.has(slug))));
+ok('a site marked participation=true names its real monitoring-participation note, '
+  + 'distinct from a workforce/job-training pathway',
+  reg.sites.filter((s) => s.participation).every((s) => s.participation_note?.length > 20));
+ok('every site declares walkable explicitly, and walkable=false always states the '
+  + 'real reason',
+  reg.sites.every((s) => typeof s.walkable === 'boolean'
+    && (s.walkable || !!s.walkable_reason)));
+ok('every fact a site cites has real text and a real https source',
+  reg.sites.every((s) => (s.facts ?? []).every((f) => f.text && f.source_url?.startsWith('https://'))));
 
 /* --------------------------------------------------------------- tracks --- */
 ok('three field-skill tracks, each bound to at least two real skill_ids',
@@ -90,13 +117,72 @@ ok('the hall-panel restoration badge actually opens the Bay Restoration panel, f
   page3d.includes('openRestoration(rh.dataset.restorationHall)')
   && page3d.includes('function openRestoration(focusHall, focusSite)'));
 
+/* ----------------------------------------------------- Hunters Point --- */
+const hp = reg.sites.find((s) => s.id === 'hunters-point-shipyard');
+ok('the Hunters Point entry exists, is pinned and environmental-monitoring',
+  hp && hp.pin && hp.category === 'environmental-monitoring');
+ok('Hunters Point is explicitly NOT walkable, with the honest reason stated inline',
+  hp.walkable === false
+  && /litigated federal cleanup site/.test(hp.walkable_reason));
+ok('Hunters Point carries at least four real, cited facts, none of them claiming '
+  + 'the cleanup or the litigation is resolved',
+  hp.facts.length >= 4
+  && !/the cleanup (is|has been) (complete|resolved|finished)/i.test(JSON.stringify(hp.facts))
+  && /OPEN, not resolved/.test(hp.facts.map((f) => f.text).join(' ')));
+ok('Hunters Point states the Tetra Tech fraud settlement as SETTLED and the '
+  + 'Greenaction litigation as still open - the two are not conflated',
+  /SETTLED/.test(hp.facts.map((f) => f.text).join(' '))
+  && /OPEN/.test(hp.facts.map((f) => f.text).join(' ')));
+ok('Hunters Point is not framed as a workforce/job-training program',
+  hp.workforce === false && hp.workforce_note === null);
+ok('Hunters Point points to the real Marie Harrison Bayview Air Monitoring '
+  + 'Project / Greenaction / IVAN BVHP, not an invented SmartCiti.X program',
+  hp.participation === true
+  && /Marie Harrison/.test(hp.participation_note)
+  && /Greenaction/.test(hp.participation_note)
+  && /IVAN Bayview Hunters Point/.test(hp.participation_note));
+ok('Hunters Point\'s trade_needs are hazmat first, with laborers and '
+  + 'operating-eng as the secondary real fit, all real union slugs',
+  hp.trade_needs[0] === 'hazmat'
+  && new Set(hp.trade_needs).size === 3
+  && hp.trade_needs.every((slug) => unionSlugs.has(slug)));
+ok('the honesty block explicitly extends not_affiliated to Hunters Point and '
+  + 'explains why the environmental-monitoring category is framed differently',
+  /Hunters Point/.test(reg.honesty.not_affiliated)
+  && /snapshot of public record as of September 2026/.test(
+    reg.honesty.environmental_monitoring_category));
+
 /* --------------------------------------------------- walkable city layer --- */
-const walkable = pinned.filter((s) => s.campus);
+// walkable=false (Hunters Point) must never appear wherever the walkable-scene
+// list is asserted below - the single most load-bearing constraint in this pack
+const walkable = pinned.filter((s) => s.campus && s.walkable !== false);
+ok('walkable=false sites are excluded from the walkable-scene set entirely',
+  !walkable.some((s) => s.id === 'hunters-point-shipyard')
+  && walkable.length === pinned.filter((s) => s.campus).length - 1);
 const builder3d = readFileSync(new URL('../web/build_3d.py', import.meta.url), 'utf8');
 ok('every pinned, campus-grouped site gets a true east/north km offset (the same '
-  + 'formula D.geo.cityPois already uses) for the walkable city layer',
+  + 'formula D.geo.cityPois already uses) for the walkable city layer, but only '
+  + 'when walkable is not explicitly false',
   builder3d.includes("s.get('pin') and s.get('campus')")
+  && builder3d.includes("s.get('walkable', True)")
   && walkable.length > 0);
+ok('the page\'s own embedded data proves it at runtime: Hunters Point carries no '
+  + 'e/n walkable offset, while every other walkable site does',
+  pageData !== null
+  && (() => {
+    const hpData = pageData.restoration.sites.find((s) => s.id === 'hunters-point-shipyard');
+    return hpData && hpData.e === undefined && hpData.n === undefined
+      && walkable.every((s) => pageData.restoration.sites.find((x) => x.id === s.id).e !== undefined);
+  })());
+ok('the panel source itself only ever emits the "Walk this site" button when '
+  + 's.e is defined, and otherwise states the walkable_reason honestly instead - '
+  + 'proven true for Hunters Point by the pageData check above',
+  page3d.includes('s.e !== undefined')
+  && page3d.includes('not a walkable scene: '));
+ok('Hunters Point is still located and clickable: it reaches the geomap as a real '
+  + 'pinned marker with its own coordinate',
+  geomap.includes(hp.name)
+  && geomap.includes(`"lat":${hp.lat},"lng":${hp.lng}`));
 ok('the 3D app builds a real, clickable marker for every walkable restoration site',
   page3d.includes('function buildRestorationSites(')
   && page3d.includes('restorationHits')

@@ -35,6 +35,27 @@ Treasure Island–San Francisco and Oakland. Every restoration site below
 is tagged with whichever of those two is nearer, for map/panel grouping
 only — it is not a claim that the campus operates, funds or is adjacent
 to the site.
+
+TWO CATEGORIES. Nine sites are 'habitat-restoration' — real planting,
+invasive-removal and shoreline-stabilization field work. One site,
+Hunters Point Naval Shipyard, is 'environmental-monitoring' — a real,
+currently-litigated federal Superfund cleanup site, not a habitat site
+and not an open park. It carries `walkable=False` on purpose: this
+build never renders it as a walkable ground scene, only as a located,
+clickable map marker with a flat facts-and-citations panel, the same
+"flat panel result, not a walkable scene" pattern already used for the
+real elevation/aerial-imagery lookups elsewhere in this pack. Its facts
+are a snapshot of public record as of September 2026 — the cleanup and
+the litigation over it are both still open and will keep changing.
+
+TRADE NEEDS. Every site also names `trade_needs`: real union slugs from
+`unions/registry/unions.json` whose OWN registered `focus` text actually
+matches that site's real field work (levee/grading work calls on
+`operating-eng`; site prep, excavation support and cleanup calls on
+`laborers`; survey/monitoring calls on `surveyors`; containment, decon
+and disposal calls on `hazmat`). A trade is never added just because it
+exists in the roster — only where the site's own cited description
+calls for it.
 """
 import hashlib
 import json
@@ -65,7 +86,12 @@ SITES = [
                        'low-income transitional-age youth (18-25) for '
                        'paid green-infrastructure job training',
      'source_url': 'https://www.sfbayrestore.org/projects/'
-                   'herons-head-park-shoreline-resilience-project-phases-1-and-2'},
+                   'herons-head-park-shoreline-resilience-project-phases-1-and-2',
+     'category': 'habitat-restoration', 'walkable': True, 'walkable_reason': None,
+     'participation': False, 'participation_note': None, 'facts': [],
+     # shoreline resilience work is real earthmoving/grading, done by an
+     # Eco-Apprentice crew with general site-labor support
+     'trade_needs': ['laborers', 'operating-eng']},
     {'id': 'candlestick-point', 'name': 'Candlestick Point Stewardship '
      'Project (Phases 1 and 2)',
      'org': 'California State Parks; community stewardship partners',
@@ -78,7 +104,12 @@ SITES = [
      'workforce_note': 'the project funds workforce development '
                        'training alongside its stewardship work',
      'source_url': 'https://www.sfbayrestore.org/projects/'
-                   'candlestick-point-stewardship-project-phase-1-and-2'},
+                   'candlestick-point-stewardship-project-phase-1-and-2',
+     'category': 'habitat-restoration', 'walkable': True, 'walkable_reason': None,
+     'participation': False, 'participation_note': None, 'facts': [],
+     # the site's own scale line names "monitoring" directly alongside
+     # trash clean-up and native plant propagation
+     'trade_needs': ['laborers', 'surveyors']},
     {'id': 'east-oakland-youth', 'name': 'Bay Restoration: Youth '
      'Engagement and Service Learning in East Oakland',
      'org': 'Planting Justice',
@@ -92,7 +123,12 @@ SITES = [
                        'habitat restoration technique, and in '
                        'environmental-justice issues generally',
      'source_url': 'https://www.sfbayrestore.org/projects/'
-                   'bay-restoration-youth-engagement-and-service-learning-east-oakland'},
+                   'bay-restoration-youth-engagement-and-service-learning-east-oakland',
+     'category': 'habitat-restoration', 'walkable': True, 'walkable_reason': None,
+     'participation': False, 'participation_note': None, 'facts': [],
+     # youth interns doing shoreline clean-up and invasive-plant removal
+     # by hand - general field-labor work, nothing heavier cited
+     'trade_needs': ['laborers']},
     {'id': 'alviso-shoreline', 'name': 'Alviso Shoreline Habitat '
      'Restoration',
      'org': 'Grassroots Ecology',
@@ -102,7 +138,12 @@ SITES = [
      'scale': 'approximately 2 acres restored and enhanced',
      'workforce': False, 'workforce_note': None,
      'source_url': 'https://www.sfbayrestore.org/projects/'
-                   'alviso-shoreline-habitat-restoration'},
+                   'alviso-shoreline-habitat-restoration',
+     'category': 'habitat-restoration', 'walkable': True, 'walkable_reason': None,
+     'participation': False, 'participation_note': None, 'facts': [],
+     # the smallest funded footprint in the pack - general field labor,
+     # nothing heavier cited
+     'trade_needs': ['laborers']},
     {'id': 'south-bay-salt-ponds', 'name': 'South Bay Salt Pond '
      'Restoration — ecotone levee (Phase 1)',
      'org': 'South Bay Salt Pond Restoration Project (multi-agency)',
@@ -113,7 +154,12 @@ SITES = [
               '2,900 acres of ponds to tidal marsh',
      'workforce': False, 'workforce_note': None,
      'source_url': 'https://www.southbayrestoration.org/page/'
-                   'restoration-project'},
+                   'restoration-project',
+     'category': 'habitat-restoration', 'walkable': True, 'walkable_reason': None,
+     'participation': False, 'participation_note': None, 'facts': [],
+     # a real 4-mile ecotone levee is heavy earthmoving/grading, with
+     # survey control for the grading and general site labor throughout
+     'trade_needs': ['operating-eng', 'laborers', 'surveyors']},
     {'id': 'montezuma-wetlands', 'name': 'Montezuma Tidal and Seasonal '
      'Wetlands Restoration Project',
      'org': 'San Francisco Bay Restoration Authority (Measure AA)',
@@ -123,7 +169,12 @@ SITES = [
      'scale': 'roughly 630 acres of diked baylands along Montezuma Slough',
      'workforce': False, 'workforce_note': None,
      'source_url': 'https://www.sfbayrestore.org/projects/'
-                   'montezuma-tidal-and-seasonal-wetlands-restoration-project'},
+                   'montezuma-tidal-and-seasonal-wetlands-restoration-project',
+     'category': 'habitat-restoration', 'walkable': True, 'walkable_reason': None,
+     'participation': False, 'participation_note': None, 'facts': [],
+     # restoring 630 acres of diked baylands to tidal wetland means real
+     # levee/grading earthmoving, with general site labor alongside it
+     'trade_needs': ['operating-eng', 'laborers']},
     {'id': 'american-canyon', 'name': 'American Canyon Wetlands '
      'Restoration Plan',
      'org': 'City of American Canyon',
@@ -134,7 +185,12 @@ SITES = [
               "city's shoreline",
      'workforce': False, 'workforce_note': None,
      'source_url': 'https://www.sfbayrestore.org/projects/'
-                   'american-canyon-wetlands-restoration-plan'},
+                   'american-canyon-wetlands-restoration-plan',
+     'category': 'habitat-restoration', 'walkable': True, 'walkable_reason': None,
+     'participation': False, 'participation_note': None, 'facts': [],
+     # the registry's own text says this is still a PLAN, not built work -
+     # general field labor is the only trade honest to name this early
+     'trade_needs': ['laborers']},
     {'id': 'straw-north-bay', 'name': 'Restoring Wetland-Upland '
      'Transition Zone Habitat in the North Bay with STRAW',
      'org': 'Point Blue Conservation Science (STRAW program)',
@@ -152,7 +208,12 @@ SITES = [
                        'education program, not a SmartCiti.X program',
      'source_url': 'https://www.sfbayrestore.org/projects/'
                    'restoring-wetland-upland-transition-zone-habitat-'
-                   'north-bay-straw'},
+                   'north-bay-straw',
+     'category': 'habitat-restoration', 'walkable': True, 'walkable_reason': None,
+     'participation': False, 'participation_note': None, 'facts': [],
+     # student/teacher restoration-day field work - general field labor,
+     # nothing heavier cited
+     'trade_needs': ['laborers']},
     {'id': 'spartina-removal', 'name': 'San Francisco Estuary Invasive '
      'Spartina Removal',
      'org': 'San Francisco Estuary Invasive Spartina Project '
@@ -165,7 +226,115 @@ SITES = [
      'workforce_note': 'the project provides workforce-development '
                        'internships alongside its removal and '
                        'revegetation work',
-     'source_url': 'https://www.sfbayrestore.org/'},
+     'source_url': 'https://www.sfbayrestore.org/',
+     'category': 'habitat-restoration', 'walkable': False,
+     # bay-wide and unpinned - there is no single point to walk to, not
+     # a judgment about the work itself
+     'walkable_reason': 'bay-wide, unpinned - no single point to walk',
+     'participation': False, 'participation_note': None, 'facts': [],
+     # removal/revegetation field labor, with monitoring tracked across
+     # roughly 70,000 acres of estuary
+     'trade_needs': ['laborers', 'surveyors']},
+
+    # -------------------------------------------------- environmental --
+    # monitoring category. This is NOT a habitat-restoration site: no
+    # planting or invasive-removal framing applies here. Hunters Point
+    # Naval Shipyard is a real, currently-litigated federal Superfund
+    # site in San Francisco's Bayview-Hunters Point neighborhood - the
+    # facts below are a snapshot of public record as of September 2026,
+    # not a claim that the cleanup or the litigation over it is finished;
+    # both are open and will keep changing. `walkable` is explicitly
+    # False: an actively litigated federal cleanup site is not something
+    # this platform can responsibly present as a place to stroll. Each
+    # `facts` entry below cites its own real source, the same terse,
+    # factual pattern every other site above already uses for its one
+    # source_url - this site just needs more than one citation to state
+    # honestly. SmartCiti.X has no role in the cleanup, the litigation or
+    # the monitoring program named below - see HONESTY['not_affiliated'].
+    {'id': 'hunters-point-shipyard',
+     'name': 'Hunters Point Naval Shipyard — EPA Superfund Site '
+             '(Bayview-Hunters Point)',
+     'org': 'US Navy (CERCLA lead agency for investigation and cleanup); '
+            'US EPA Region 9 and California DTSC (oversight and '
+            'enforcement of Navy cleanup activities)',
+     'city': 'San Francisco', 'county': 'San Francisco', 'campus': 'treasure-island',
+     'lat': 37.7280, 'lng': -122.3730, 'pin': True,
+     'habitat': 'federal Superfund cleanup site — radiological soil '
+                'investigation/remediation, hazardous-materials removal '
+                'and demolition support; NOT habitat restoration and not '
+                'an open park',
+     'scale': 'an active, litigated federal Superfund cleanup on the '
+              'National Priorities List — not resolved; see the cited '
+              'facts below for current status as of September 2026',
+     'workforce': False, 'workforce_note': None,
+     'source_url': 'https://cumulis.epa.gov/supercpad/SiteProfiles/'
+                   'index.cfm?fuseaction=second.cleanup&id=0902722',
+     'category': 'environmental-monitoring', 'walkable': False,
+     'walkable_reason': 'an actively litigated federal cleanup site is '
+                        'not something this platform can responsibly '
+                        'present as a place to stroll',
+     # a real, community-run air-monitoring program - citizen-science
+     # participation, explicitly NOT job training and NOT a SmartCiti.X
+     # program (kept in a field separate from `workforce` on purpose, so
+     # this is never read as a workforce-apprenticeship pathway)
+     'participation': True,
+     'participation_note': 'the real, community-run Marie Harrison '
+                           'Bayview Air Monitoring Project — ten '
+                           'community air monitors placed in and around '
+                           'Bayview-Hunters Point, run by Greenaction for '
+                           'Health and Environmental Justice as part of '
+                           'IVAN Bayview Hunters Point (bvhp-ivan.org) — '
+                           'citizen-science air-monitoring participation, '
+                           'not a workforce-training program, and not '
+                           'run by SmartCiti.X',
+     'facts': [
+         {'text': "Former US Navy shipyard in San Francisco's "
+                  'Bayview-Hunters Point neighborhood; an EPA Superfund '
+                  'site on the National Priorities List. The Navy is '
+                  'CERCLA lead agency for investigation and cleanup; US '
+                  'EPA Region 9 and California DTSC oversee and enforce '
+                  'Navy cleanup activities.',
+          'source_url': 'https://cumulis.epa.gov/supercpad/SiteProfiles/'
+                        'index.cfm?fuseaction=second.cleanup&id=0902722'},
+         {'text': 'Navy contractor Tetra Tech EC Inc. was found to have '
+                  'falsified radiological soil-testing data at the site '
+                  'across 15 contracts worth a combined $262 million; a '
+                  'federal judge approved a $57 million False Claims Act '
+                  'settlement on August 24, 2026, resolving a 2013 qui '
+                  'tam whistleblower complaint. This part is SETTLED, '
+                  'public record.',
+          'source_url': 'https://www.justice.gov/usao-ndca/pr/'
+                        'tetra-tech-ec-inc-agrees-pay-57-million-settle-'
+                        'false-claims-act-allegations-falsifying'},
+         {'text': 'Greenaction for Health and Environmental Justice sued '
+                  'the US Navy in 2024 alleging inadequate cleanup of '
+                  'radioactive contamination at the site; a federal '
+                  'court hearing was held February 26, 2026. This '
+                  'litigation remains OPEN, not resolved.',
+          'source_url': 'https://greenaction.org/2026/02/25/'
+                        'february-26-2026-federal-court-hearing-on-'
+                        'greenactions-lawsuit-vs-the-navy-over-inadequate-'
+                        'cleanup-of-contamination-at-the-hunters-point-'
+                        'naval-shipyard-superfund-site/'},
+         {'text': 'The Navy began hazardous-materials removal at six '
+                  'buildings in March 2026, ahead of scheduled '
+                  'demolition — real, active site work.',
+          'source_url': 'https://localnewsmatters.org/2026/03/09/'
+                        'navy-begins-hazardous-materials-removal-for-'
+                        'hunters-point-shipyard-demolition-project/'},
+         {'text': 'Real community-run environmental monitoring: the '
+                  'Marie Harrison Bayview Air Monitoring Project places '
+                  'ten community air monitors in and around '
+                  'Bayview-Hunters Point, run by Greenaction for Health '
+                  'and Environmental Justice as part of IVAN Bayview '
+                  'Hunters Point.',
+          'source_url': 'https://insideclimatenews.org/news/27112021/'
+                        'air-pollution-bayview-hunters-point-san-francisco/'},
+     ],
+     # containment/decon/monitoring/disposal is a direct fit for the
+     # real hazmat removal work under way; demolition and excavation
+     # support explain the secondary picks
+     'trade_needs': ['hazmat', 'laborers', 'operating-eng']},
 ]
 
 # ------------------------------------------------------- field skill tracks ---
@@ -196,7 +365,20 @@ HONESTY = {
                       'or claim to fund, any site or organization named '
                       'in this pack. Every site and program below is '
                       'real and independently run by its own listed '
-                      'organization.',
+                      'organization - this extends explicitly to Hunters '
+                      'Point Naval Shipyard: SmartCiti.X has no role in '
+                      'the actual cleanup, the litigation over it, or the '
+                      'Marie Harrison Bayview Air Monitoring Project.',
+    'environmental_monitoring_category': 'the environmental-monitoring '
+                       "category is framed differently on purpose: it is "
+                       'not habitat-restoration field work, so it never '
+                       'renders as a walkable ground scene - only as a '
+                       'located, clickable marker with a flat '
+                       'facts-and-citations panel. Its facts are a '
+                       'snapshot of public record as of September 2026, '
+                       'not a permanent claim - an active federal cleanup '
+                       'and open litigation over it will keep changing, '
+                       'and this pack has no live feed into either.',
     'provenance': 'this build reaches no network host, so the site list '
                   'is AUTHORED FROM PUBLIC RECORD - typed from public '
                   'search results describing each site\'s own published '
@@ -228,6 +410,10 @@ HONESTY = {
 skills_reg = json.load(open(ROOT / 'pack/registry/skills.json'))
 skill_ids = {s['skill_id'] for s in skills_reg['skills']}
 campuses_reg = json.load(open(ROOT / 'unions/registry/campuses.json'))['campuses']
+unions_reg = json.load(open(ROOT / 'unions/registry/unions.json'))['unions']
+union_slugs = {u['slug'] for u in unions_reg}
+
+CATEGORIES = {'habitat-restoration', 'environmental-monitoring'}
 
 assert len(SITES) >= 8, 'the site list looks too thin to be worth shipping'
 assert len({s['id'] for s in SITES}) == len(SITES), 'a site id repeats'
@@ -246,6 +432,41 @@ for s in SITES:
             f"{s['id']}: no pin but still carries a coordinate"
     if s['workforce']:
         assert s['workforce_note'], f"{s['id']}: workforce=True needs the real note"
+    if s['participation']:
+        assert s['participation_note'] and len(s['participation_note']) > 20, \
+            f"{s['id']}: participation=True needs the real note"
+    assert s['category'] in CATEGORIES, \
+        f"{s['id']}: category must be one of {CATEGORIES}"
+    assert s['trade_needs'] and isinstance(s['trade_needs'], list), \
+        f"{s['id']}: trade_needs must name at least one real union slug"
+    for slug in s['trade_needs']:
+        assert slug in union_slugs, \
+            f"{s['id']}: trade_needs names {slug!r}, not a real union slug"
+    assert isinstance(s['walkable'], bool), f"{s['id']}: walkable must be a bool"
+    if s['walkable']:
+        assert s['pin'] and s['campus'], \
+            f"{s['id']}: walkable=True needs a pin and a campus to place it in"
+    else:
+        assert s['walkable_reason'], \
+            f"{s['id']}: walkable=False needs the honest reason stated"
+    for f in s['facts']:
+        assert f['text'] and f['source_url'].startswith('https://'), \
+            f"{s['id']}: every fact needs real text and an https source"
+
+# the one load-bearing constraint this whole pack turns on: Hunters Point
+# is pinned (locatable, clickable) but never walkable, and its category
+# is the new, distinctly-framed one
+hp = next(s for s in SITES if s['id'] == 'hunters-point-shipyard')
+assert hp['category'] == 'environmental-monitoring' and hp['pin'] and not hp['walkable'], \
+    'Hunters Point must be pinned, environmental-monitoring, and NOT walkable'
+assert set(hp['trade_needs']) == {'hazmat', 'laborers', 'operating-eng'}, \
+    'Hunters Point trade_needs drifted from the verified fit'
+assert len(hp['facts']) >= 4, 'Hunters Point needs its citations, not a summary'
+assert not hp['workforce'], \
+    'Hunters Point is not a workforce/job-training program'
+assert hp['participation'] and 'Greenaction' in hp['participation_note'] \
+    and 'Marie Harrison' in hp['participation_note'], \
+    'Hunters Point must point to the real community air-monitoring program'
 
 assert len({t['id'] for t in TRACKS}) == len(TRACKS)
 for t in TRACKS:
@@ -311,5 +532,7 @@ doc = {
 OUT = HERE / 'registry'
 OUT.mkdir(exist_ok=True)
 (OUT / 'restoration.json').write_text(json.dumps(doc, indent=1) + '\n')
-print(f"restoration pack: {len(SITES)} real sites ({len(pinned)} mapped), "
+walkable_n = sum(1 for s in SITES if s['walkable'])
+print(f"restoration pack: {len(SITES)} real sites across 2 categories "
+      f"({len(pinned)} mapped, {walkable_n} walkable), "
       f"{len(TRACKS)} field-skill tracks (source stamp {stamp})")
