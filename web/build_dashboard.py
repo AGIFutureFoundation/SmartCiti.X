@@ -71,6 +71,9 @@ STATS = [
     (str(world['counts']['animals']), 'animals in the yards'),
     (str(labels['counts']['kinds']), 'sign kinds'),
     (str(len(training['episode_kinds'])), 'training-data episode kinds'),
+    (f"{sum(1 for s in sims['sims'].values() if s.get('operator'))} / "
+     f"{len(sims['operator_levels'])}",
+     'scripted reference operators / levels'),
     (f"{orbis['modules']} / {len(orbis['runners'])}",
      'Orbis module prompts / real runners'),
     (f"{len(avatars['sections'])} / {len(avatars['tradeapes']['apes'])}",
@@ -207,6 +210,7 @@ a{{color:var(--steel)}}
   <li>{roadmap['honesty']['no_dates']}</li>
   <li>{agents['honesty']['status']}</li>
   <li>{training['honesty']['schematic']}</li>
+  <li>{sims['honesty']['operator']}</li>
   <li>{orbis['honesty']['synthetic_not_real']}</li>
   <li>{avatars['guarantee']}</li>
   <li>{meta['honesty']['status']}</li>

@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-11",
- "source_stamp": "56ff996af62bf2ef",
+ "source_stamp": "e09dddba72f20683",
  "contract": "a topic is either a `say` - a sentence written in this registry about this bundle's own policy, with the record it comes from named in `cites` - or a `read` - a binding naming the page-data path the answer must be read from at view time. No `read` answer is copied into this registry, so the record it quotes stays the one truth for that fact.",
  "honesty": {
   "status": "an advisor is a scripted guide, not an instructor and not an AI: no model runs behind one, nothing is generated at view time, no network is reached, and every line an advisor can say is written in this registry or read from another registry in this bundle.",
@@ -14,8 +14,8 @@
  },
  "counts": {
   "advisors": 9,
-  "topics": 34,
-  "read_bindings": 20,
+  "topics": 35,
+  "read_bindings": 21,
   "say_topics": 14
  },
  "bindings": {
@@ -33,6 +33,7 @@
   "seat.rubric": "what the seat currently running actually measures",
   "seat.walkaround": "the pre-shift walkaround points for the seat currently running",
   "seat.trade": "every hall that actually trains on the seat currently running, not just the one the learner is standing in",
+  "seat.procedure": "the scripted reference operator's own step list for the seat currently running - the procedure the page's policy is written around, read from the simulator registry, with the axes it guarantees",
   "hall.rooms": "the rooms this hall is laid out with",
   "hall.focus": "what this hall is for",
   "campus.districts": "the districts this campus holds",
@@ -345,6 +346,12 @@
      "ask": "Who actually trains on this machine?",
      "kind": "read",
      "bind": "seat.trade"
+    },
+    {
+     "id": "procedure",
+     "ask": "What is the reference procedure?",
+     "kind": "read",
+     "bind": "seat.procedure"
     }
    ]
   },

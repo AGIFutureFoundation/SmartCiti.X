@@ -107,12 +107,17 @@ ok('TRACE is sampled from the sim\'s own existing gauges() output, nothing compu
   && /computed nowhere new/.test(reg.trace.sampled_from));
 ok('the page embeds TRACE\'s own toggle key',
   page.includes(`"${reg.trace.toggle_key}"`));
-ok('the page\'s TRACE sample interval and cap match the registry\'s declared rate and cap exactly',
-  page.includes(`TRACE_MS = ${Math.round(1000 / reg.trace.sample_hz)}`)
-  && page.includes(`TRACE_MAX = ${reg.trace.max_samples}`));
+ok('the page READS its TRACE sample interval and cap from the embedded registry - one declared pair, not a second hand-typed one',
+  page.includes('TRACE_MS = Math.round(1000 / D.training.trace.sample_hz)')
+  && page.includes('TRACE_MAX = D.training.trace.max_samples')
+  && page.includes(`"sample_hz":${reg.trace.sample_hz}`)
+  && page.includes(`"max_samples":${reg.trace.max_samples}`));
 ok('the trace is folded into the sim episode\'s own outcome, never recorded as a separate episode',
-  page.includes('trace: simTicks')
+  page.includes('trace: simTicks }')
   && (page.match(/recordEpisode\(\{/g) || []).length === kinds.length);
+ok('the trace cap is enforced once, in traceStep - never re-capped at record time',
+  !page.includes('simTicks.slice(')
+  && /simTicks\.length >= TRACE_MAX\) return/.test(page));
 ok('capturing a trace requires the sim to actually be running - gated on the same sim object the gauges come from',
   /function traceStep\(dt\) \{\s*if \(!traceOn \|\| !sim \|\| !sim\.gauges/.test(page));
 
@@ -128,15 +133,82 @@ ok('the records panel actually renders that pairing fact and links to the Orbis 
   && /trOrbisBtn/.test(page) && /openOrbis/.test(page));
 
 /* -------------------------------------------- downstream of a final score --- */
-ok('every sim\'s pass/fail expression is computed first, with no reference to training state',
-  [...page.matchAll(/simResults\('[a-z-]+', rows,\s*([^)]*)\)/g)]
-    .length === 9
-  && [...page.matchAll(/simResults\('[a-z-]+', rows,\s*([^)]*)\)/g)]
-    .every((m) => !/train/i.test(m[1])));
+// every simResults(...) call's third argument - the pass/fail expression -
+// read with balanced parentheses, so an inner call such as Math.abs(x) is
+// captured whole rather than cut at its first ')'
+const passExprs = (src) => {
+  const out = [];
+  for (let i = src.indexOf("simResults('"); i >= 0; i = src.indexOf("simResults('", i + 1)) {
+    const j = src.indexOf('(', i);
+    let depth = 0, k = j;
+    for (;; k++) {
+      if (src[k] === '(') depth++;
+      else if (src[k] === ')' && --depth === 0) break;
+    }
+    out.push(src.slice(j + 1, k).split('rows,').slice(1).join('rows,').trim());
+    i = k;
+  }
+  return out;
+};
+ok('the pass-expression reader captures a whole third argument, inner parentheses included',
+  JSON.stringify(passExprs("simResults('x', rows, Math.abs(a) <= 1 && g(t) === 0);\n"
+    + "  simResults('y', rows,\n    f(train) === 0);"))
+  === JSON.stringify(['Math.abs(a) <= 1 && g(t) === 0', 'f(train) === 0']));
+const exprs = passExprs(page);
+ok('every sim\'s pass/fail expression is computed first, with no reference to training or operator state',
+  exprs.length === 9 && exprs.every((e) => e && !/train|oprun/i.test(e)));
 ok('the recorder in simResults receives passed as a parameter - it cannot compute its own outcome',
   /function simResults\(simId, rows, passed\)/.test(page)
   && page.split('function simResults(simId, rows, passed)')[1]
       ?.slice(0, 400).includes("recordEpisode({ kind: 'sim'"));
+
+/* ------------------------------------------------ the scripted tier --- */
+const sims = JSON.parse(readFileSync(
+  new URL('../sims/registry/sims.json', import.meta.url)));
+ok('two actors are declared - human, and the scripted reference operator - and a human episode is stated to be exactly as it was',
+  Object.keys(reg.actors).length === 2 && 'human' in reg.actors
+  && 'scripted-reference' in reg.actors
+  && /exactly as before/.test(reg.actors.human)
+  && /no model, no network/.test(reg.actors['scripted-reference']));
+ok('the sim episode names its actor and, scripted only, its replay handle',
+  reg.episode_kinds.sim.fields.includes('actor')
+  && reg.episode_kinds.sim.fields.includes('operator')
+  && /present ONLY when actor is\s+scripted-reference/.test(reg.episode_kinds.sim.operator)
+  && /absent on a human episode/.test(reg.episode_kinds.sim.operator));
+ok('the SCRIPTED word is stated honestly: a written policy on a schematic sim, not learned, not real equipment, not a physical robot, not AI-SYNTHESIZED',
+  /^a SCRIPTED episode/.test(reg.honesty.scripted)
+  && /Not a learned policy, not real\s+equipment, and not a claim about any physical robot/.test(reg.honesty.scripted)
+  && /not\s+AI-SYNTHESIZED either/.test(reg.honesty.scripted)
+  && /never credits the learner/.test(reg.honesty.scripted));
+ok('the scripted tier is sims/\'s own declaration, cited here: every seat carries an operator at the one closed level set',
+  Object.values(sims.sims).every((s) => s.operator
+    && JSON.stringify(s.operator.levels) === JSON.stringify(Object.keys(sims.operator_levels)))
+  && /^SCRIPTED/.test(sims.honesty.operator));
+ok('the page records the actor from the live operator state, inside the ONE sim recordEpisode call, with the replay handle',
+  page.includes("actor: opRun ? 'scripted-reference' : 'human'")
+  && /operator: \{ level: opRun\.level, seed: opRun\.seed, scenario: opRun\.scenario,\s+steps: opRun\.step, dt: opRun\.fixedDt \}/.test(page)
+  && (page.match(/recordEpisode\(\{/g) || []).length === kinds.length);
+ok('a scripted run never writes the learner\'s progress record - the guard is by name, inside simResults',
+  (() => {
+    const body = page.split('function simResults(simId, rows, passed)')[1]?.slice(0, 1400) ?? '';
+    return body.includes('if (!opRun) {') && body.includes('prog.sims[simId] = rec; saveProg()')
+      && body.indexOf('if (!opRun) {') < body.indexOf('prog.sims[simId] = rec');
+  })());
+ok('the page builds one policy per seat, deterministic (no Math.random), each naming every step of its declared procedure',
+  (() => {
+    const ops = page.split('const OPERATORS = {')[1]?.split('function opAttach(')[0] ?? '';
+    return ops.length > 1000 && !ops.includes('Math.random')
+      && Object.entries(sims.sims).every(([id, s]) => ops.includes(`'${id}': {`)
+        && s.operator.procedure.every((p) => ops.includes(`'${p.id}'`)));
+  })());
+ok('the driver surface and the headless sweep exist, and the sweep records through the same recorder under the same toggle',
+  page.includes('window.__tc3dSim = {') && page.includes('function opRunHeadless(')
+  && page.includes('async function opSweep(')
+  && /return \{ recorded: trainingOn, rows \}/.test(page)
+  && !/opSweep[\s\S]{0,3000}recordEpisode\(/.test(page.split('async function opSweep(')[1]?.slice(0, 3000) ?? ''));
+ok('the records panel offers the sweep, off until clicked, and says when the recorder is off',
+  page.includes('id="trSweepBtn"') && page.includes('id="trSweepLvl"')
+  && /recorder is off/.test(page));
 
 const src = readFileSync(new URL('./build.py', import.meta.url));
 ok('the registry was built from the current builder source (stamp check)',

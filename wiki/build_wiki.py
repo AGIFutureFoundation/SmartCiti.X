@@ -117,12 +117,12 @@ content graph and details:
 | Hall floor plans (inside the campus map) | A generated interior for every hall — {L["halls"]} plans, 11 rooms each | [Interiors-Map](Interiors-Map.md) |
 | Skill graph (`pack/registry/skills.json`) | {F(len(skills))} skills and the edges that sequence practice | [Skill-Graph](Skill-Graph.md) |
 | Languages (`web/trade_craft_languages.html`) | The Academy overview in {len(LOCALES)} languages | [Languages](Languages.md) |
-| **Simulators** (inside the 3D environment) | {len(sims["sims"])} operable seats — schematic physics, deterministic rubrics, pre-shift walkarounds, bound to real skills in {len(sims["hall_bindings"])} halls | [Simulators](Simulators.md) |
+| **Simulators** (inside the 3D environment) | {len(sims["sims"])} operable seats — schematic physics, deterministic rubrics, pre-shift walkarounds, bound to real skills in {len(sims["hall_bindings"])} halls — each with a scripted reference operator at {len(sims["operator_levels"])} levels (no model, no network) | [Simulators](Simulators.md) |
 | **Toolrooms** (inside the 3D + interactive maps) | {len(tools["cribs"])} district tool cribs — {sum(len(c["tools"]) for c in tools["cribs"].values())} tools with the deterministic crib drill | [Toolrooms](Toolrooms.md) |
 | **Advisors** (in the rooms and on the green) | {len(advisors["advisors"])} scripted guides answering {advisors["counts"]["topics"]} fixed questions — {advisors["counts"]["read_bindings"]} of them read straight from the registry that holds the fact | [Advisors](Advisors.md) |
 | **The world** (sky, weather, ground, animals) | {world["counts"]["weather"]} weather states over per-campus atmospheres, {world["counts"]["ground"]} generated ground surfaces and {world["counts"]["animals"]} animals — and not one texture file anywhere | [World](World.md) |
 | **The signs** (every word in the 3D world) | {labels["counts"]["kinds"]} kinds over {labels["counts"]["shapes"]} shapes — shape carries the category, colour the provenance, type the rank, and every sign reacts to where you are looking | [Signs](Signs.md) |
-| **Training data** (device-local, opt-out, exportable) | {len(training['episode_kinds'])} episode kinds recorded from real interactions — sim outcomes, advisor exchanges, walkaround checks — shaped for the org's own `ml-agents` fork, never read by a grader | [Training-Data](Training-Data.md) |
+| **Training data** (device-local, opt-out, exportable) | {len(training['episode_kinds'])} episode kinds recorded from real interactions — sim outcomes, advisor exchanges, walkaround checks — plus SCRIPTED sim episodes the reference operator generates on request, shaped for the org's own `ml-agents` fork, never read by a grader | [Training-Data](Training-Data.md) |
 | **Orbis synthetic-training prompts** (text only, no network) | a deterministic prompt for every one of the {orbis['modules']} union modules, built for a hosted video model this build never calls — a separate, clearly-labelled AI-SYNTHESIZED stream from the real episode log above | [Orbis-Synthetic-Training](Orbis-Synthetic-Training.md) |
 | **The network roadmap** ({len(roadmap['built_campuses'])} built, {len(roadmap['candidates'])} candidates) | the path from {len(roadmap['built_campuses'])} built campuses to {roadmap['target']} walkable worlds — two honest provenance tiers, and the real checklist a candidate has to clear to become built | [Roadmap](Roadmap.md) |
 | **Metaverse layer** (`meta/registry/metaverse.json`) | The interchange contract: {len(meta["baseline"]["standards"])} open standards claimed (glTF 2.0, WebXR, GeoJSON), {len(meta["baseline"]["not_claimed"])} honestly not, avatar and hall .glb export, learner-local import | [Metaverse-Layer](Metaverse-Layer.md) |
@@ -513,7 +513,14 @@ environment varies, the rubric never does:
 
 | Region | Scenario | The yard |
 |---|---|---|
-{chr(10).join(f'| {by_campus_name[x["campus"]]} | **{x["name"]}** | {x["brief"]} |' for x in sm["scenarios"])}''')
+{chr(10).join(f'| {by_campus_name[x["campus"]]} | **{x["name"]}** | {x["brief"]} |' for x in sm["scenarios"])}
+
+**Scripted reference operator.** At `optimal` it passes
+{", ".join(f"**{a}**" for a in sm["operator"]["guarantees"])} on all three
+yards. Its procedure, the step list the page's policy is written around:
+
+{chr(10).join(f'{i + 1}. {p["step"]}' for i, p in enumerate(sm["operator"]["procedure"]))}''')
+    lv = sims['operator_levels']
     return f'''# The simulators
 
 {len(sims["sims"])} operable training machines live inside the
@@ -523,6 +530,26 @@ physics are schematic — built for practising control discipline (smooth
 inputs, swing management, ordered procedure) — and the scoring contract is
 the same shape the mentor fabric enforces: **deterministic**. Every rubric
 axis is computed from measured state; nothing narrative can change a score.
+
+## The scripted reference operator
+
+Every seat can also be driven by a **scripted reference operator**: a
+hand-written, deterministic control policy in the page — a function of the
+seat's own live `gauges()` readout (the same numbers the dash shows), the
+scenario's params, the seat's declared yard `layout` and a level — with no
+model behind it and no network reached, exactly as the [advisors](Advisors.md)
+are scripted. Its inputs land in the same key state a keyboard fills and the
+same Space verb, so the seat cannot tell the two apart. In the seat, the HUD
+offers a level and a **watch it drive** button; the Operator advisor quotes
+the procedure; the [records panel](Training-Data.md) sweeps every seat and
+yard headlessly at a fixed step and keeps the runs as SCRIPTED episodes. A
+scripted run is the operator's own record — it never credits the learner.
+
+| Level | What it is |
+|---|---|
+{chr(10).join(f"| `{k}` | {v} |" for k, v in lv.items())}
+
+**Provenance word:** {sims["honesty"]["operator"]}
 
 {chr(10).join(blocks)}
 
@@ -1131,6 +1158,25 @@ cross-checked on every build. This pack cites it; it does not claim it.
 | Kind | What it is | Fields | Granularity |
 |---|---|---|---|
 {krows}
+
+## Who drove the seat: `actor`, and the SCRIPTED tier
+
+A `sim` episode names its actor. `human` is a learner at the keys — every
+episode this recorder ever kept, exactly as it was. `scripted-reference` is
+the [scripted reference operator](Simulators.md) every seat carries: a
+hand-written, deterministic control policy driven from the seat's own
+gauges, no model, no network. A scripted episode also carries
+`operator: {{level, seed, scenario, steps, dt}}`, the handle that replays it —
+the levels are the closed set `sims/` owns, the seed drives a fixed-seed
+generator, and under the records panel's headless fixed-step sweep the same
+handle yields the same non-time axes every run.
+
+| Actor | What it is |
+|---|---|
+{chr(10).join(f"| `{k}` | {v} |" for k, v in training['actors'].items())}
+
+- **SCRIPTED.** {training['honesty']['scripted']}
+- **Operator field.** {training['episode_kinds']['sim']['operator']}
 
 ## Storage
 

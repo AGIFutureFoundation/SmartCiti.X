@@ -17,6 +17,28 @@ HONESTY: these are schematic physics for practising control discipline —
 smooth inputs, swing management, ordered procedure. They are not equipment
 certification and no seat time here counts toward one; the registry says
 so, and the assessment gates still demand unaided verification runs.
+
+THE SCRIPTED REFERENCE OPERATOR. Every seat can also be driven by a
+scripted reference operator: a hand-written, deterministic control policy
+in the page - a function of the seat's own live gauges(), the scenario's
+params and a skill level, with no model behind it and no network reached,
+exactly as the advisors are scripted. At the `optimal` level it passes
+every pass-gated rubric axis on every regional scenario, and the build
+proves it by running it headlessly; the degraded levels are honestly-
+labelled, seeded perturbations of the same procedure, so a sweep yields
+both passing demonstrations and labelled sub-optimal episodes for the
+training-data recorder in training/. This registry owns the operator's
+METADATA - the closed level set, the axes it guarantees at optimal, and
+its reference procedure as an ordered step list the page's policy is
+structured around - so the advisor that quotes the procedure, the wiki
+that documents it and the page that runs it read one truth. The `layout`
+block a seat carries is the yard geometry the sim and its operator share
+for the same reason: a supply pad, a spoil zone, a cell pitch, declared
+once and read by both, never typed twice.
+
+The operator's provenance word is SCRIPTED: a demonstration of a written
+policy on a schematic single-machine simulator - not a learned policy,
+not real equipment, and not a claim about any physical robot.
 """
 import hashlib
 import json
@@ -73,6 +95,9 @@ SIMS = {
                   'note': 'synthesized in-page (WebAudio); no recordings shipped'},
         'haptics': ['strike', 'finish'],
         'view_modes': ['orbit', 'cab'],
+        # the yard geometry the sim and its scripted operator both read:
+        # the supply pad the load waits on and the target ring it lands in
+        'layout': {'supply': [14, 10], 'target': [-13, -9]},
         # Regional scenarios: the campus you train at picks the yard. The
         # ENVIRONMENT varies; the rubric contract above never does.
         'scenarios': [
@@ -119,6 +144,7 @@ SIMS = {
         'skill_strand': 'machines',
         'skill_tier': 'applied',
         'dash': [
+            {'id': 'slew', 'label': 'Slew', 'unit': '°'},
             {'id': 'reach', 'label': 'Reach', 'unit': 'm'},
             {'id': 'depth', 'label': 'Bucket', 'unit': 'm'},
             {'id': 'grade', 'label': 'Grade', 'unit': ''},
@@ -131,6 +157,10 @@ SIMS = {
                   'note': 'synthesized in-page (WebAudio); no recordings shipped'},
         'haptics': ['utility', 'dump', 'finish'],
         'view_modes': ['orbit', 'cab'],
+        # the trench line and spoil zone the sim and its operator share:
+        # cell i sits at x = (i - (n-1)/2) * pitch on the trench line, and
+        # every dig takes one `bite` of depth
+        'layout': {'pitch': 2, 'trench_z': 6, 'spoil': [-5, -4], 'bite': 0.5},
         # Regional scenarios: the trench profile is the region's own -
         # cells carry their marked depth and flagged utilities as data.
         'scenarios': [
@@ -182,6 +212,9 @@ SIMS = {
         'dash': [
             {'id': 'speed', 'label': 'Speed', 'unit': 'km/h'},
             {'id': 'steer', 'label': 'Steer', 'unit': '\u00b0'},
+            {'id': 'heading', 'label': 'Heading', 'unit': '\u00b0'},
+            {'id': 'x', 'label': 'X', 'unit': 'm'},
+            {'id': 'z', 'label': 'Z', 'unit': 'm'},
             {'id': 'load', 'label': 'Load', 'unit': ''},
             {'id': 'gates', 'label': 'Gates', 'unit': ''},
             {'id': 'cones', 'label': 'Cones', 'unit': '', 'warn_at': 1},
@@ -192,6 +225,13 @@ SIMS = {
                   'note': 'synthesized in-page (WebAudio); no recordings shipped'},
         'haptics': ['cone', 'gate', 'finish'],
         'view_modes': ['chase', 'driver'],
+        # the course the sim lays out and its operator threads: gate i sits
+        # at x = side[i % 2] * gate_x, z = gate_z0 - i * pitch, its cones
+        # cone_offset either side; the pallet waits one pitch past the last
+        # gate on the centre line; the dock bay is where it is
+        'layout': {'gates': {'x': 6, 'z0': -14, 'pitch': 10, 'side': [-1, 1],
+                             'cone_offset': 2.6},
+                   'dock': [14, -10], 'start': [0, -2]},
         # Regional scenarios: gate count and dock tolerance are the
         # region's lane, declared here; "all gates, no cones" stays the law.
         'scenarios': [
@@ -502,6 +542,8 @@ SIMS = {
         'skill_strand': 'machines',
         'skill_tier': 'applied',
         'dash': [
+            {'id': 'u', 'label': 'Across', 'unit': 'm'},
+            {'id': 'v', 'label': 'Up', 'unit': 'm'},
             {'id': 'gap', 'label': 'Standoff', 'unit': 'm'},
             {'id': 'coverage', 'label': 'Clean', 'unit': '%'},
             {'id': 'damage', 'label': 'Damage', 'unit': '', 'warn_at': 1},
@@ -513,6 +555,11 @@ SIMS = {
                   'note': 'synthesized in-page (WebAudio); no recordings shipped'},
         'haptics': ['damage', 'breach', 'finish'],
         'view_modes': ['orbit', 'wand'],
+        # the panel grid and the standoff window the sim and its operator
+        # share: cells are `cell` m square from the panel's bottom-left; the
+        # jet only works inside effective_max and gouges under damage_under
+        'layout': {'cell': 0.62,
+                   'standoff': {'effective_max': 1.6, 'damage_under': 0.55}},
         # Regional scenarios: the fouled panel is the region's own; "95%
         # clean, zero gouges, containment first" stays the law everywhere.
         'scenarios': [
@@ -565,6 +612,8 @@ SIMS = {
         'skill_strand': 'machines',
         'skill_tier': 'applied',
         'dash': [
+            {'id': 'u', 'label': 'Across', 'unit': 'm'},
+            {'id': 'v', 'label': 'Up', 'unit': 'm'},
             {'id': 'gap', 'label': 'Standoff', 'unit': 'm'},
             {'id': 'coverage', 'label': 'Coat', 'unit': '%'},
             {'id': 'runs', 'label': 'Runs', 'unit': '', 'warn_at': 1},
@@ -577,6 +626,10 @@ SIMS = {
                   'note': 'synthesized in-page (WebAudio); no recordings shipped'},
         'haptics': ['run', 'overspray', 'finish'],
         'view_modes': ['orbit', 'spray'],
+        # the same grid and standoff window as the washer bench, plus the
+        # masked margin past the paintable boundary
+        'layout': {'cell': 0.62, 'mask': 0.3,
+                   'standoff': {'effective_max': 1.6, 'damage_under': 0.55}},
         # Regional scenarios: the wall is the region's own; "95% coat, no
         # runs, no holidays, no overspray" stays the law everywhere.
         'scenarios': [
@@ -722,6 +775,173 @@ for sim_id, wa in WALKAROUNDS.items():
     SIMS[sim_id]['walkaround'] = wa
 assert set(WALKAROUNDS) == set(SIMS), 'every seat gets its walkaround'
 
+# The scripted reference operator - see the module docstring. The closed
+# level set is declared ONCE here; every seat's operator runs at every
+# level. `guarantees` is the list of rubric axes the optimal run passes
+# on every scenario, asserted below to be exactly the seat's pass-gated
+# axes, and proven by the page's headless sweep. `procedure` is the
+# operator's own ordered step list: the page's policy is written as a
+# switch over these step ids in this order, so the Operator advisor's
+# `seat.procedure` answer, the wiki and the running policy cannot drift.
+OPERATOR_LEVELS = {
+    'optimal': 'the reference: the written procedure with its checks and '
+               'waits intact - passes every pass-gated rubric axis on '
+               'every regional scenario, proven by the build',
+    'novice': 'the same procedure with seeded, deterministic slips - a '
+              'mis-selected rack, a wrong signal, a wandering standoff, a '
+              'low carry - so the sweep also yields labelled sub-optimal '
+              'episodes',
+    'hurried': 'the same procedure with its waits and checks removed - no '
+               'settle before release, no containment before the trigger, '
+               'no chart read before the hook - the failure a rushed '
+               'shift actually produces',
+}
+OPERATOR_HONESTY = (
+    'SCRIPTED: a demonstration of a hand-written, deterministic control '
+    'policy on a schematic single-machine simulator - a function of the '
+    "seat's own gauges, the scenario's params and a level, no model behind "
+    'it and no network reached. Not a learned policy, not real equipment, '
+    'and not a claim about any physical robot; its runs are its own '
+    'record, never credited to the learner watching it.'
+)
+OPERATORS = {
+    'crane-lift': {
+        'guarantees': ['placement', 'swing', 'strikes'],
+        'procedure': [
+            {'id': 'reach', 'step': 'slew and trolley the hook over the '
+                                    'supply pad and lower it under 4.5 m'},
+            {'id': 'hook', 'step': 'hook the load'},
+            {'id': 'hoist', 'step': 'hoist to carry height - clear of the '
+                                    'tallest stack - before anything moves '
+                                    'sideways'},
+            {'id': 'pull-in', 'step': 'trolley in to a short radius, moving '
+                                      'only while the swing gauge is low'},
+            {'id': 'slew', 'step': 'slew round to the target bearing, moving '
+                                   'only while the swing gauge is low'},
+            {'id': 'trolley', 'step': 'trolley out to the target radius, '
+                                      'moving only while the swing gauge is '
+                                      'low'},
+            {'id': 'settle', 'step': 'hold everything until the swing dies '
+                                     'away'},
+            {'id': 'lower', 'step': 'lower the load to the ground'},
+            {'id': 'release', 'step': 'release once the swing is still'},
+        ],
+    },
+    'excavator-trench': {
+        'guarantees': ['grade', 'utility', 'spoil'],
+        'procedure': [
+            {'id': 'cell', 'step': 'swing to the next cell short of grade, '
+                                   'reach out to it and drop the bucket '
+                                   'under 0.6 m'},
+            {'id': 'dig', 'step': 'take one bite - the marked depth divided '
+                                  'by the bite is the count, and a flagged '
+                                  'cell gets no more'},
+            {'id': 'carry', 'step': 'swing the full bucket to the spoil zone '
+                                    'and reach to its centre'},
+            {'id': 'dump', 'step': 'dump inside the zone, then back to the '
+                                   'trench until every cell is at grade'},
+        ],
+    },
+    'forklift-run': {
+        'guarantees': ['gates', 'cones', 'docking'],
+        'procedure': [
+            {'id': 'gates', 'step': 'steer for the centre of the next '
+                                    'untaken gate, slowing into every turn'},
+            {'id': 'approach', 'step': 'roll up to the pallet on the centre '
+                                       'line and brake to a walk'},
+            {'id': 'lift', 'step': 'lift once the forks are on the pallet '
+                                   'and the truck has all but stopped'},
+            {'id': 'return', 'step': 'carry up the clear lane outside the '
+                                     'cone rows, never back through the '
+                                     'gates'},
+            {'id': 'dock', 'step': 'square up on the dock from the lane and '
+                                   'set the pallet down inside the bay'},
+        ],
+    },
+    'weld-bead': {
+        'guarantees': ['fusion', 'band', 'burns'],
+        'procedure': [
+            {'id': 'gap', 'step': 'set the arc gap to the middle of the '
+                                  "scenario's band before striking"},
+            {'id': 'strike', 'step': 'strike the arc at the start of the '
+                                     'seam'},
+            {'id': 'travel', 'step': 'travel steadily to the end of the seam '
+                                     'without pausing - every segment fuses '
+                                     'in band and none lingers to a burn'},
+        ],
+    },
+    'scaffold-bay': {
+        'guarantees': ['sequence', 'complete'],
+        'procedure': [
+            {'id': 'rack', 'step': 'jump the rack to the stage the bay is '
+                                   'legally at - the dash names it'},
+            {'id': 'place', 'step': 'place the next part, and repeat until '
+                                    'the rails are on'},
+        ],
+    },
+    'rigging-signals': {
+        'guarantees': ['calls', 'wrong'],
+        'procedure': [
+            {'id': 'read', 'step': 'read the called signal off the lift '
+                                   'card - the dash shows it'},
+            {'id': 'give', 'step': 'give exactly that signal, wait for the '
+                                   'crane to finish moving, and give the '
+                                   'next; STOP ends the card'},
+        ],
+    },
+    'load-chart': {
+        'guarantees': ['judgments', 'overloads'],
+        'procedure': [
+            {'id': 'read', 'step': 'read the pick weight and radius against '
+                                   'the chart line at that radius'},
+            {'id': 'judge', 'step': 'hook the pick if its weight is inside '
+                                    'the chart, refuse it if it is over'},
+        ],
+    },
+    'pressure-washer': {
+        'guarantees': ['coverage', 'damage', 'containment'],
+        'procedure': [
+            {'id': 'contain', 'step': 'deploy the containment berm before the '
+                                      'trigger is ever pulled'},
+            {'id': 'standoff', 'step': 'set the standoff to the middle of the '
+                                       'effective window, well clear of the '
+                                       'damage distance'},
+            {'id': 'spray', 'step': 'pull the trigger'},
+            {'id': 'raster', 'step': 'sweep the panel cell by cell in rows, '
+                                     'dwelling on each just past the clean '
+                                     'time and never lingering'},
+        ],
+    },
+    'airless-sprayer': {
+        'guarantees': ['coverage', 'runs', 'holidays', 'overspray'],
+        'procedure': [
+            {'id': 'standoff', 'step': 'set the standoff to the middle of the '
+                                       'effective window, well clear of the '
+                                       'run distance'},
+            {'id': 'spray', 'step': 'pull the trigger inside the masked '
+                                    'line'},
+            {'id': 'raster', 'step': 'sweep the panel cell by cell in rows, '
+                                     'dwelling on each just past the coat '
+                                     'time, turning inside the mask'},
+        ],
+    },
+}
+for sim_id, op in OPERATORS.items():
+    gated = [r['axis'] for r in SIMS[sim_id]['rubric']
+             if r['pass'] != 'informational']
+    assert op['guarantees'] == gated, \
+        f'{sim_id}: the operator must guarantee exactly the pass-gated axes'
+    ids = [p['id'] for p in op['procedure']]
+    assert len(ids) == len(set(ids)) and len(ids) >= 2, \
+        f'{sim_id}: a procedure is an ordered list of distinct steps'
+    assert all(p['step'] and len(p['step']) >= 12 for p in op['procedure']), \
+        f'{sim_id}: every step is a sentence a learner can act on'
+    SIMS[sim_id]['operator'] = {'levels': list(OPERATOR_LEVELS), **op}
+assert set(OPERATORS) == set(SIMS), 'every seat gets its reference operator'
+for sim_id, s in SIMS.items():
+    if 'layout' in s:
+        assert s['layout'], f'{sim_id}: an empty layout is no shared truth'
+
 unions = json.load(open(ROOT / 'unions/registry/unions.json'))['unions']
 skills = {s['skill_id'] for s in
           json.load(open(ROOT / 'pack/registry/skills.json'))['skills']}
@@ -755,7 +975,9 @@ doc = {
         'walkaround': 'a habit-builder, not a gate: no seat is locked '
                       'behind the walkaround, completing it changes no '
                       'score, and it is not an equipment inspection record.',
+        'operator': OPERATOR_HONESTY,
     },
+    'operator_levels': OPERATOR_LEVELS,
     'sims': SIMS,
     'hall_bindings': bindings,
 }

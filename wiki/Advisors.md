@@ -3,7 +3,7 @@
 A hall is a building until somebody in it will answer a question.
 **9 advisors** stand in the rooms and on the campus green,
 each one of the Academy's own rigged avatars — breathing, turning its head
-toward you — and each able to answer exactly **34 questions**
+toward you — and each able to answer exactly **35 questions**
 between them.
 
 ## What an advisor is
@@ -16,7 +16,7 @@ an advisor cannot be asked an open question because it has no way to answer one.
 
 a topic is either a `say` - a sentence written in this registry about this bundle's own policy, with the record it comes from named in `cites` - or a `read` - a binding naming the page-data path the answer must be read from at view time. No `read` answer is copied into this registry, so the record it quotes stays the one truth for that fact.
 
-That is why 20 of the 34 topics carry no words
+That is why 21 of the 35 topics carry no words
 at all. Ask the safety steward what to wear and the answer is the hall's
 own condition record; walk into a different hall and the same question
 gives a different answer, because the record changed and the advisor did
@@ -39,6 +39,7 @@ file it was written in.
 | `seat.rubric` | what the seat currently running actually measures |
 | `seat.walkaround` | the pre-shift walkaround points for the seat currently running |
 | `seat.trade` | every hall that actually trains on the seat currently running, not just the one the learner is standing in |
+| `seat.procedure` | the scripted reference operator's own step list for the seat currently running - the procedure the page's policy is written around, read from the simulator registry, with the axes it guarantees |
 | `hall.rooms` | the rooms this hall is laid out with |
 | `hall.focus` | what this hall is for |
 | `campus.districts` | the districts this campus holds |
@@ -57,7 +58,7 @@ file it was written in.
 | 🔍 **Inspector** | the inspection room | holds the work to the acceptance criteria | What does the seat here measure? *(reads sim.rubric)*<br>Can I talk my way to a pass? *(written here)*<br>Does a pass here certify me? *(written here)* |
 | 📋 **Foreman** | the coordination room | runs the shift brief and the hand-offs | What gets walked before a start? *(reads sim.walkaround)*<br>Is the walkaround a gate? *(written here)*<br>What makes a hand-off good? *(written here)* |
 | 🗂️ **Records clerk** | the documentation room | keeps the permits, the certificates and the as-builts | Where does my progress go? *(written here)*<br>What does the Academy certify? *(written here)*<br>Who are the school partners? *(written here)* |
-| 👷 **Operator** | the running seat's own yard | stands at the machine and walks you through the seat | What am I trying to do here? *(reads seat.task)*<br>What do the controls do? *(reads seat.controls)*<br>What are the gauges telling me? *(reads seat.dash)*<br>What does this seat actually measure? *(reads seat.rubric)*<br>What should I walk before I start? *(reads seat.walkaround)*<br>Who actually trains on this machine? *(reads seat.trade)* |
+| 👷 **Operator** | the running seat's own yard | stands at the machine and walks you through the seat | What am I trying to do here? *(reads seat.task)*<br>What do the controls do? *(reads seat.controls)*<br>What are the gauges telling me? *(reads seat.dash)*<br>What does this seat actually measure? *(reads seat.rubric)*<br>What should I walk before I start? *(reads seat.walkaround)*<br>Who actually trains on this machine? *(reads seat.trade)*<br>What is the reference procedure? *(reads seat.procedure)* |
 | 📡 **Dispatcher** | the campus green | sends you to the right campus and the right hall | What does this campus hold? *(reads campus.districts)*<br>Where are the other campuses? *(reads campus.network)*<br>What is around us? *(reads city.anchors)*<br>What can I reach on foot? *(reads city.walk)*<br>Is the campus really here? *(written here)* |
 
 ## What an advisor is not
