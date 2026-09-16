@@ -19,10 +19,10 @@ three tiers this build can actually check itself against.
     city table (src/app.js, CITIES), which is real committed data.
   - Treasure Island and New Orleans are DERIVED: well-known place centroids
     authored here, since neither appears in that table.
-  - Houston, Chicago, Seattle, Pittsburgh and Denver are AUTHORED:
+  - Houston, Chicago, Seattle, Pittsburgh, Denver and Miami are AUTHORED:
     widely-published public geography (the kind a city's own Wikipedia
     infobox states), typed here from general knowledge. No sibling source
-    cross-checks any of the five, unlike the other three - the same
+    cross-checks any of the six, unlike the other three - the same
     honesty this pack's roadmap already states for every candidate city,
     carried through now that each is built rather than proposed.
   - Everything downstream of the coordinates (distances, bearings) is
@@ -74,6 +74,10 @@ GEO = {
                         'widely-published public geography (city-center), '
                         'typed from general knowledge - not cross-checked '
                         'against any file this build can verify'),
+    'miami':           (25.7617, -80.1918, 'AUTHORED',
+                        'widely-published public geography (city-center), '
+                        'typed from general knowledge - not cross-checked '
+                        'against any file this build can verify'),
 }
 
 # Cross-check the RECORDED value against the table it cites, when the
@@ -122,9 +126,10 @@ ANCHORS = {
     ],
 }
 
-# Institution anchors near the five HUB campuses (Houston, Chicago,
-# Seattle, Pittsburgh, Denver) — a different, weaker tier than ANCHORS
-# above, and kept in a separate table so the two are never confused. Every
+# Institution anchors near the six HUB campuses (Houston, Chicago,
+# Seattle, Pittsburgh, Denver, Miami) — a different, weaker tier than
+# ANCHORS above, and kept in a separate table so the two are never
+# confused. Every
 # anchor above is RECORDED, copied verbatim from a sibling Locator.X table
 # this build can cross-check against. No such table lists a single real
 # place near any hub campus, so nothing here could ever be RECORDED — each one is
@@ -197,6 +202,19 @@ AUTHORED_ANCHORS = {
         ('Community College of Denver', 39.7444, -105.0064,
          'the public community college on the Auraria Campus downtown, '
          'with career-technical and trades programs'),
+    ],
+    'miami': [
+        ('PortMiami', 25.7716, -80.1719,
+         "Miami-Dade County's seaport authority, on Dodge Island in "
+         'Biscayne Bay'),
+        ('NOAA Atlantic Oceanographic and Meteorological Laboratory',
+         25.7302, -80.1615, "the U.S. federal government's hurricane and "
+         'ocean research laboratory on Virginia Key'),
+        ('University of Miami', 25.7171, -80.2762,
+         'the private research university’s Coral Gables campus'),
+        ('Miami Dade College', 25.7745, -80.1937,
+         "the community-college system's Wolfson Campus downtown, with "
+         'real career-technical and trades programs'),
     ],
 }
 
@@ -319,6 +337,18 @@ BLURBS = {
     'Community College of Denver':
         'A public community college on the Auraria Campus, with real '
         'career-technical and trades programs.',
+    'PortMiami':
+        "Miami-Dade County's seaport authority on Dodge Island, one of "
+        'the busiest cargo and cruise ports in the country.',
+    'NOAA Atlantic Oceanographic and Meteorological Laboratory':
+        "The U.S. federal government's hurricane and ocean research "
+        'laboratory on Virginia Key, part of NOAA.',
+    'University of Miami':
+        'Private research university in Coral Gables, Florida, with '
+        'schools of engineering, architecture and marine science.',
+    'Miami Dade College':
+        'A large public community-college system with real career-'
+        'technical and trades programs across Miami-Dade County.',
 }
 
 # CITY records - the region frames Locator.X's own maps ship, RECORDED
@@ -342,9 +372,9 @@ CITY = {
     },
     'treasure-island': dict(BAY_FRAME),
     'oakland': dict(BAY_FRAME),
-    # the five hub campuses' own frames: AUTHORED, like their anchors and
+    # the six hub campuses' own frames: AUTHORED, like their anchors and
     # their own campus-centre coordinates above - no sibling table ships a
-    # committed frame for any of the five metros, so none can honestly
+    # committed frame for any of the six metros, so none can honestly
     # claim more
     'houston': {
         'center': {'lat': 29.76, 'lng': -95.37},
@@ -381,6 +411,14 @@ CITY = {
     'denver': {
         'center': {'lat': 39.74, 'lng': -104.99},
         'bounds': {'w': -105.35, 's': 39.45, 'e': -104.60, 'n': 40.05},
+        'provenance': 'AUTHORED',
+        'source': 'widely-published public geography (metro-area extent), '
+                  'typed from general knowledge - not cross-checked '
+                  'against any file this build can verify',
+    },
+    'miami': {
+        'center': {'lat': 25.76, 'lng': -80.19},
+        'bounds': {'w': -80.55, 's': 25.45, 'e': -80.05, 'n': 26.05},
         'provenance': 'AUTHORED',
         'source': 'widely-published public geography (metro-area extent), '
                   'typed from general knowledge - not cross-checked '
@@ -532,7 +570,7 @@ doc = {
 # RECORDED anchors (ANCHORS) cite the sibling Locator.X table verbatim;
 # AUTHORED anchors (AUTHORED_ANCHORS) name themselves plainly as a weaker,
 # uncross-checked claim - the same distinction GEO already draws between
-# the three original campus centres and the five hub ones.
+# the three original campus centres and the six hub ones.
 def anchor_source(prov, src):
     return f'Locator.X {src}, Apache-2.0' if prov == 'RECORDED' else src
 

@@ -2,8 +2,8 @@
  "pack": "smartcitix-trade-craft-academy-union-registry",
  "pack_version": "3.2.0",
  "built": "2026-09-09",
- "source_stamp": "7e28045337d1558e",
- "count": 8,
+ "source_stamp": "82d80ac77d617f9f",
+ "count": 9,
  "honesty": {
   "siting": "planned locations named for real cities; no site has been surveyed, no address is recorded, and no figure comes from any city's records"
  },
@@ -194,6 +194,14 @@
    "city": "Denver",
    "region": "Colorado",
    "tagline": "The network's fifth hub: no home district of its own, and a regional chapter seat for every one of the 111 trades",
+   "districts": [],
+   "halls": []
+  },
+  "miami": {
+   "name": "Biscayne Coastal Hub",
+   "city": "Miami",
+   "region": "Florida",
+   "tagline": "The network's sixth hub: no home district of its own, and a regional chapter seat for every one of the 111 trades",
    "districts": [],
    "halls": []
   }

@@ -118,7 +118,7 @@ campuses_doc = {
 # honesty note governs here too, and no local is named.
 REGION_ABBR = {"treasure-island": "SF", "oakland": "OAK", "new-orleans": "NOLA",
                "houston": "HOU", "chicago": "CHI", "seattle": "SEA",
-               "pittsburgh": "PIT", "denver": "DEN"}
+               "pittsburgh": "PIT", "denver": "DEN", "miami": "MIA"}
 
 chapters = {}
 for u in unions:

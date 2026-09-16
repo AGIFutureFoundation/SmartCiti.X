@@ -5028,6 +5028,44 @@ function dressCampus(key, g, R) {
       g.add(cap);
     }
   }
+  if (key === 'miami') {
+    // the sixth hub, dressed the same way as the first five: a free
+    // skyline on the green rather than anything at the plaza, plus a
+    // schematic gantry crane standing in for the working seaport at
+    // Dodge Island and a row of stylized palm silhouettes along the
+    // shore. Generic massing only - no real building, crane or palm
+    // species is modeled or named.
+    const skyMat = new THREE.MeshStandardMaterial({ color: 0xe4e0d4, roughness: .75 });
+    for (let i = 0; i < 8; i++) {
+      const ang = i / 8 * Math.PI * 2 + .25, rad = R + 56 + (i % 2) * 18;
+      const h = 12 + (i % 4) * 8;
+      const t = box(4.8, h, 4.8, skyMat, Math.cos(ang) * rad, h / 2, Math.sin(ang) * rad, g);
+      t.castShadow = true;
+    }
+    const craneMat = mat.metal;
+    const craneLeg1 = box(1.2, 18, 1.2, craneMat, R + 92, 9, -R - 18, g);
+    const craneLeg2 = box(1.2, 18, 1.2, craneMat, R + 92, 9, -R - 32, g);
+    craneLeg1.castShadow = craneLeg2.castShadow = true;
+    const craneBoom = box(56, 1.4, 1.4, craneMat, R + 64, 18.6, -R - 25, g);
+    craneBoom.castShadow = true;
+    const trunkMat = new THREE.MeshStandardMaterial({ color: 0x6b5238, roughness: .9 });
+    const frondMat = new THREE.MeshStandardMaterial({ color: 0x2f6b3a, roughness: .8 });
+    for (let i = 0; i < 7; i++) {
+      const px = -160 + i * 50, pz = R + 96;
+      const trunk = new THREE.Mesh(new THREE.CylinderGeometry(.55, .8, 9, 6), trunkMat);
+      trunk.position.set(px, 4.5, pz);
+      trunk.castShadow = true; g.add(trunk);
+      for (let k = 0; k < 6; k++) {
+        const frond = new THREE.Mesh(new THREE.ConeGeometry(.6, 5.5, 3), frondMat);
+        frond.position.set(px, 9.6, pz);
+        frond.rotation.z = Math.PI / 2.3;
+        frond.rotation.y = k / 6 * Math.PI * 2;
+        frond.castShadow = true; g.add(frond);
+      }
+    }
+    const bay = new THREE.Mesh(new THREE.PlaneGeometry(480, 150), mat.water);
+    bay.rotation.x = -Math.PI / 2; bay.position.set(0, -.06, -(R + 140)); g.add(bay);
+  }
 }
 
 /* ------------------------------------------------- the city layer -------- */
@@ -5508,6 +5546,15 @@ function cityWater(g, key, R, pois) {
         new THREE.Vector3(80, 0, 100)), 48, 8, 8), mat.water);
     platte.scale.y = .012; platte.position.y = .09; g.add(platte);
     tag('South Platte River', -20, 14);
+  }
+  if (key === 'miami') {
+    // Biscayne Bay, the water PortMiami sits on - a schematic water
+    // plane east of the campus grounds, the same idiom Oakland's Bay
+    // already uses
+    const bay = new THREE.Mesh(new THREE.PlaneGeometry(260, 560), mat.water);
+    bay.rotation.x = -Math.PI / 2;
+    bay.position.set((R + 60) + 120, .06, 0); g.add(bay);
+    tag('Biscayne Bay', R + 90, 0);
   }
 }
 

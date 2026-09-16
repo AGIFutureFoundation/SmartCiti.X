@@ -1,8 +1,8 @@
 # The network roadmap
 
-ten walkable worlds is a target this registry tracks progress toward, not a claim that ten exist. Eight are built; two are candidates.
+ten walkable worlds is a target this registry tracks progress toward, not a claim that ten exist. Nine are built; one is a candidate.
 
-## Built — 8 of 10
+## Built — 9 of 10
 
 | Campus | Where | Districts | Halls | Coordinate |
 |---|---|---|---|---|
@@ -14,19 +14,19 @@ ten walkable worlds is a target this registry tracks progress toward, not a clai
 | **Sound Aerospace Hub** | Seattle, Washington | (hub — no home district) | 0 | AUTHORED |
 | **Three Rivers Steel Hub** | Pittsburgh, Pennsylvania | (hub — no home district) | 0 | AUTHORED |
 | **Front Range Mining Hub** | Denver, Colorado | (hub — no home district) | 0 | AUTHORED |
+| **Biscayne Coastal Hub** | Miami, Florida | (hub — no home district) | 0 | AUTHORED |
 
-## Candidates — 2 proposed
+## Candidates — 1 proposed
 
 | Campus | Where | Districts | Why |
 |---|---|---|---|
-| **Biscayne Coastal Campus** | Miami, Florida | Envelope & Finish, Survey, Safety & Environment, Transport & Mobility | hurricane-code envelope work and storm-response discipline on a coast that tests both every season, beside a working port |
 | **Motor City Campus** | Detroit, Michigan | Heavy Industry, Structural, Building Systems | a century of heavy manufacturing and the machinist, structural and building-systems trades an automotive industrial base actually runs on |
 
 a candidate names a proposed metro and a proposed district emphasis. It does not claim any hall, union, curriculum content or trade partnership exists there - building one is the checklist, done in full, the same way the built campuses were.
 
 ## Two provenance tiers
 
-three of the eight built campuses' coordinates are RECORDED - copied from a cited file and cross-checked against it on every build. Houston, Chicago, Seattle, Pittsburgh and Denver, the fourth through eighth, and the two remaining candidates' coordinates are AUTHORED: widely-published public geography, typed here from general knowledge rather than copied from any file this build can check itself against - a materially weaker claim, labelled as one.
+three of the nine built campuses' coordinates are RECORDED - copied from a cited file and cross-checked against it on every build. Houston, Chicago, Seattle, Pittsburgh, Denver and Miami, the fourth through ninth, and the one remaining candidate's coordinate are AUTHORED: widely-published public geography, typed here from general knowledge rather than copied from any file this build can check itself against - a materially weaker claim, labelled as one.
 
 ## Building the next one
 

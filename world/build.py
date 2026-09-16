@@ -169,9 +169,10 @@ FAUNA = {
         'name': 'Brown pelican', 'glyph': '\U0001f9a9', 'body': 'bird',
         'span_m': 2.0, 'color': '#8d7f6c', 'accent': '#e0d6c2',
         'motion': 'glide', 'height_m': [10, 18], 'speed': .6,
-        'flock': 3, 'campuses': ['new-orleans', 'houston'],
+        'flock': 3, 'campuses': ['new-orleans', 'houston', 'miami'],
         'why': 'Louisiana’s state bird, and unmistakable over any Gulf '
-               'coast - the ship channel included',
+               'coast or Biscayne Bay alike - the ship channel and the '
+               'working port both',
     },
     'ring-billed-gull': {
         'name': 'Ring-billed gull', 'glyph': '\U0001f426', 'body': 'bird',
@@ -195,7 +196,7 @@ FAUNA = {
         'motion': 'hop', 'height_m': [0, 6], 'speed': .5,
         'flock': 6,
         'campuses': ['treasure-island', 'oakland', 'new-orleans', 'houston',
-                     'chicago', 'seattle', 'pittsburgh', 'denver'],
+                     'chicago', 'seattle', 'pittsburgh', 'denver', 'miami'],
         'why': 'every yard in every city has them, and they are the scale '
                'reference nobody thinks about',
     },
@@ -205,7 +206,7 @@ FAUNA = {
         'motion': 'patrol', 'height_m': [0, 0], 'speed': .55,
         'flock': 1,
         'campuses': ['treasure-island', 'oakland', 'new-orleans', 'houston',
-                     'chicago', 'seattle', 'pittsburgh', 'denver'],
+                     'chicago', 'seattle', 'pittsburgh', 'denver', 'miami'],
         'why': 'the yard dog is a fixture of the trade, and it teaches the '
                'habit of looking down before reversing',
     },
@@ -301,6 +302,19 @@ ATMOS = {
                      'a mining and energy heritage at 5,280 feet, and the '
                      'Rockies standing on the western horizon - authored '
                      'by reputation, not measured',
+    },
+    'miami': {
+        'sky': ['#0d1b26', '#1e3a44', '#3f8a92', '#f2c14e'],
+        'fog': {'color': 0x2e3a3a, 'mul': 1.0}, 'banks': 1,
+        'sun': {'color': 0xffdf9e, 'i': 1.55},
+        'hemi': {'sky': 0xb9d8d6, 'ground': 0x24221a, 'i': 1.05},
+        'amb': {'wind': .4, 'insects': True, 'harbor': True, 'thunder': True},
+        'ground': 'concrete', 'verge': 'grass',
+        'character': 'subtropical coastal heat and humidity off Biscayne '
+                     'Bay, afternoon thunderheads stacking through '
+                     'hurricane season, and a working seaport at the '
+                     'harbor\'s edge - authored by reputation, not '
+                     'measured',
     },
 }
 
