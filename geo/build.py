@@ -19,10 +19,10 @@ three tiers this build can actually check itself against.
     city table (src/app.js, CITIES), which is real committed data.
   - Treasure Island and New Orleans are DERIVED: well-known place centroids
     authored here, since neither appears in that table.
-  - Houston, Chicago and Seattle are AUTHORED: widely-published public
-    geography (the kind a city's own Wikipedia infobox states), typed
-    here from general knowledge. No sibling source cross-checks any of
-    the three, unlike the other three - the same honesty this pack's
+  - Houston, Chicago, Seattle and Pittsburgh are AUTHORED: widely-published
+    public geography (the kind a city's own Wikipedia infobox states),
+    typed here from general knowledge. No sibling source cross-checks any
+    of the four, unlike the other three - the same honesty this pack's
     roadmap already states for every candidate city, carried through now
     that each is built rather than proposed.
   - Everything downstream of the coordinates (distances, bearings) is
@@ -63,6 +63,10 @@ GEO = {
                         'typed from general knowledge - not cross-checked '
                         'against any file this build can verify'),
     'seattle':         (47.6062, -122.3321, 'AUTHORED',
+                        'widely-published public geography (city-center), '
+                        'typed from general knowledge - not cross-checked '
+                        'against any file this build can verify'),
+    'pittsburgh':      (40.4406, -79.9959, 'AUTHORED',
                         'widely-published public geography (city-center), '
                         'typed from general knowledge - not cross-checked '
                         'against any file this build can verify'),
@@ -114,12 +118,12 @@ ANCHORS = {
     ],
 }
 
-# Institution anchors near the three HUB campuses (Houston, Chicago,
-# Seattle) — a different, weaker tier than ANCHORS above, and kept in a
-# separate table so the two are never confused. Every anchor above is
-# RECORDED, copied verbatim from a sibling Locator.X table this build can
-# cross-check against. No such table lists a single real place near any
-# hub campus, so nothing here could ever be RECORDED — each one is
+# Institution anchors near the four HUB campuses (Houston, Chicago,
+# Seattle, Pittsburgh) — a different, weaker tier than ANCHORS above, and
+# kept in a separate table so the two are never confused. Every anchor
+# above is RECORDED, copied verbatim from a sibling Locator.X table this
+# build can cross-check against. No such table lists a single real place
+# near any hub campus, so nothing here could ever be RECORDED — each one is
 # AUTHORED, the same tier this pack already uses for the hub campuses'
 # own centres (GEO, above) and for the Bay Restoration sites: real,
 # named, well-known institutions only, never invented, each typed from
@@ -159,6 +163,21 @@ AUTHORED_ANCHORS = {
          'International Airport)'),
         ('South Seattle College', 47.5495, -122.3576,
          'the Seattle Colleges system’s West Seattle campus'),
+    ],
+    'pittsburgh': [
+        ('Port of Pittsburgh Commission', 40.4380, -79.9958,
+         'the regional port authority for the Pittsburgh-area inland '
+         'waterway system, headquartered near the three-rivers '
+         'confluence'),
+        ('Carnegie Mellon University', 40.4443, -79.9436,
+         'the private research university’s Oakland (Pittsburgh) campus'),
+        ('Carrie Blast Furnaces National Historic Landmark', 40.4062,
+         -79.8631, 'a former U.S. Steel blast-furnace plant on the '
+         'Monongahela, part of the Rivers of Steel National Heritage '
+         'Area'),
+        ('Community College of Allegheny County', 40.4530, -80.0090,
+         'CCAC’s Allegheny Campus on the North Side, with career-'
+         'technical and trades programs'),
     ],
 }
 
@@ -254,6 +273,20 @@ BLURBS = {
     'South Seattle College':
         'One of the three Seattle Colleges system campuses, with '
         'career-technical and apprenticeship-adjacent programs.',
+    'Port of Pittsburgh Commission':
+        'The state-chartered regional authority for the Pittsburgh '
+        'district’s inland waterways, the busiest inland port system '
+        'in the country by tonnage.',
+    'Carnegie Mellon University':
+        'Private research university in Pittsburgh’s Oakland '
+        'neighborhood, known for engineering, computer science and '
+        'the arts.',
+    'Carrie Blast Furnaces National Historic Landmark':
+        'A former U.S. Steel ironmaking plant on the Monongahela River, '
+        'preserved as part of the Rivers of Steel National Heritage Area.',
+    'Community College of Allegheny County':
+        'A public community-college system with real career-technical '
+        'and trades programs across the Pittsburgh region.',
 }
 
 # CITY records - the region frames Locator.X's own maps ship, RECORDED
@@ -277,9 +310,9 @@ CITY = {
     },
     'treasure-island': dict(BAY_FRAME),
     'oakland': dict(BAY_FRAME),
-    # the three hub campuses' own frames: AUTHORED, like their anchors and
+    # the four hub campuses' own frames: AUTHORED, like their anchors and
     # their own campus-centre coordinates above - no sibling table ships a
-    # committed frame for any of the three metros, so none can honestly
+    # committed frame for any of the four metros, so none can honestly
     # claim more
     'houston': {
         'center': {'lat': 29.76, 'lng': -95.37},
@@ -300,6 +333,14 @@ CITY = {
     'seattle': {
         'center': {'lat': 47.60, 'lng': -122.33},
         'bounds': {'w': -122.55, 's': 47.35, 'e': -121.95, 'n': 47.85},
+        'provenance': 'AUTHORED',
+        'source': 'widely-published public geography (metro-area extent), '
+                  'typed from general knowledge - not cross-checked '
+                  'against any file this build can verify',
+    },
+    'pittsburgh': {
+        'center': {'lat': 40.44, 'lng': -79.99},
+        'bounds': {'w': -80.40, 's': 40.15, 'e': -79.60, 'n': 40.75},
         'provenance': 'AUTHORED',
         'source': 'widely-published public geography (metro-area extent), '
                   'typed from general knowledge - not cross-checked '
@@ -451,7 +492,7 @@ doc = {
 # RECORDED anchors (ANCHORS) cite the sibling Locator.X table verbatim;
 # AUTHORED anchors (AUTHORED_ANCHORS) name themselves plainly as a weaker,
 # uncross-checked claim - the same distinction GEO already draws between
-# the three original campus centres and the three hub ones.
+# the three original campus centres and the four hub ones.
 def anchor_source(prov, src):
     return f'Locator.X {src}, Apache-2.0' if prov == 'RECORDED' else src
 

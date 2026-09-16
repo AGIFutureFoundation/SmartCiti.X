@@ -195,7 +195,7 @@ FAUNA = {
         'motion': 'hop', 'height_m': [0, 6], 'speed': .5,
         'flock': 6,
         'campuses': ['treasure-island', 'oakland', 'new-orleans', 'houston',
-                     'chicago', 'seattle'],
+                     'chicago', 'seattle', 'pittsburgh'],
         'why': 'every yard in every city has them, and they are the scale '
                'reference nobody thinks about',
     },
@@ -205,7 +205,7 @@ FAUNA = {
         'motion': 'patrol', 'height_m': [0, 0], 'speed': .55,
         'flock': 1,
         'campuses': ['treasure-island', 'oakland', 'new-orleans', 'houston',
-                     'chicago', 'seattle'],
+                     'chicago', 'seattle', 'pittsburgh'],
         'why': 'the yard dog is a fixture of the trade, and it teaches the '
                'habit of looking down before reversing',
     },
@@ -277,6 +277,18 @@ ATMOS = {
                      'waterfront and the hum of aerospace manufacturing '
                      'just south of the green - authored by reputation, '
                      'not measured',
+    },
+    'pittsburgh': {
+        'sky': ['#13161a', '#282c2e', '#4c4c49', '#6e6155'],
+        'fog': {'color': 0x33302a, 'mul': 1.2}, 'banks': 3,
+        'sun': {'color': 0xd9d0bd, 'i': 1.05},
+        'hemi': {'sky': 0x9a9c96, 'ground': 0x241f1a, 'i': 1.0},
+        'amb': {'wind': .4, 'gulls': False, 'harbor': True},
+        'ground': 'concrete', 'verge': 'gravel',
+        'character': 'a river haze over three confluent rivers crossed '
+                     'by more bridges than any other American city, and '
+                     'a post-industrial skyline standing where the mills '
+                     'once were - authored by reputation, not measured',
     },
 }
 

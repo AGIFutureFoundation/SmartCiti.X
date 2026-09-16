@@ -126,6 +126,26 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
+     -79.9959,
+     40.4406
+    ]
+   },
+   "properties": {
+    "slug": "pittsburgh",
+    "name": "Three Rivers Steel Hub",
+    "city": "Pittsburgh",
+    "region": "Pennsylvania",
+    "districts": 0,
+    "halls": 0,
+    "provenance": "AUTHORED",
+    "source": "widely-published public geography (city-center), typed from general knowledge - not cross-checked against any file this build can verify"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
      -122.4194,
      37.7749
     ]
@@ -769,6 +789,90 @@
     "blurb": "One of the three Seattle Colleges system campuses, with career-technical and apprenticeship-adjacent programs.",
     "km": 6.6,
     "bearing_deg": 196.9,
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -79.9958,
+     40.438
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Port of Pittsburgh Commission",
+    "near": "pittsburgh",
+    "provenance": "AUTHORED",
+    "source": "the regional port authority for the Pittsburgh-area inland waterway system, headquartered near the three-rivers confluence",
+    "blurb": "The state-chartered regional authority for the Pittsburgh district\u2019s inland waterways, the busiest inland port system in the country by tonnage.",
+    "km": 0.3,
+    "bearing_deg": 178.3,
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -79.9436,
+     40.4443
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Carnegie Mellon University",
+    "near": "pittsburgh",
+    "provenance": "AUTHORED",
+    "source": "the private research university\u2019s Oakland (Pittsburgh) campus",
+    "blurb": "Private research university in Pittsburgh\u2019s Oakland neighborhood, known for engineering, computer science and the arts.",
+    "km": 4.4,
+    "bearing_deg": 84.7,
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -79.8631,
+     40.4062
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Carrie Blast Furnaces National Historic Landmark",
+    "near": "pittsburgh",
+    "provenance": "AUTHORED",
+    "source": "a former U.S. Steel blast-furnace plant on the Monongahela, part of the Rivers of Steel National Heritage Area",
+    "blurb": "A former U.S. Steel ironmaking plant on the Monongahela River, preserved as part of the Rivers of Steel National Heritage Area.",
+    "km": 11.9,
+    "bearing_deg": 108.7,
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -80.009,
+     40.453
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Community College of Allegheny County",
+    "near": "pittsburgh",
+    "provenance": "AUTHORED",
+    "source": "CCAC\u2019s Allegheny Campus on the North Side, with career-technical and trades programs",
+    "blurb": "A public community-college system with real career-technical and trades programs across the Pittsburgh region.",
+    "km": 1.8,
+    "bearing_deg": 321.2,
     "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
    }
   },
@@ -1523,6 +1627,155 @@
     "type": "LineString",
     "coordinates": [
      [
+      -122.3705,
+      37.8235
+     ],
+     [
+      -121.1371,
+      38.134
+     ],
+     [
+      -119.8934,
+      38.4316
+     ],
+     [
+      -118.6397,
+      38.7158
+     ],
+     [
+      -117.3761,
+      38.9866
+     ],
+     [
+      -116.1031,
+      39.2437
+     ],
+     [
+      -114.821,
+      39.4868
+     ],
+     [
+      -113.5302,
+      39.7157
+     ],
+     [
+      -112.2311,
+      39.9302
+     ],
+     [
+      -110.924,
+      40.1302
+     ],
+     [
+      -109.6095,
+      40.3154
+     ],
+     [
+      -108.2881,
+      40.4856
+     ],
+     [
+      -106.9603,
+      40.6407
+     ],
+     [
+      -105.6266,
+      40.7805
+     ],
+     [
+      -104.2876,
+      40.9049
+     ],
+     [
+      -102.9438,
+      41.0137
+     ],
+     [
+      -101.5959,
+      41.1069
+     ],
+     [
+      -100.2446,
+      41.1844
+     ],
+     [
+      -98.8903,
+      41.246
+     ],
+     [
+      -97.5338,
+      41.2917
+     ],
+     [
+      -96.1758,
+      41.3215
+     ],
+     [
+      -94.8168,
+      41.3353
+     ],
+     [
+      -93.4576,
+      41.3331
+     ],
+     [
+      -92.0988,
+      41.3149
+     ],
+     [
+      -90.7411,
+      41.2808
+     ],
+     [
+      -89.3852,
+      41.2307
+     ],
+     [
+      -88.0316,
+      41.1648
+     ],
+     [
+      -86.6811,
+      41.083
+     ],
+     [
+      -85.3343,
+      40.9856
+     ],
+     [
+      -83.9918,
+      40.8724
+     ],
+     [
+      -82.6542,
+      40.7438
+     ],
+     [
+      -81.322,
+      40.5998
+     ],
+     [
+      -79.9959,
+      40.4406
+     ]
+    ]
+   },
+   "properties": {
+    "kind": "route",
+    "from": "treasure-island",
+    "to": "pittsburgh",
+    "km": 3631.5,
+    "bearing_deg": 71.9,
+    "provenance": "DERIVED",
+    "source": "great-circle between the campus records"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
       -122.2712,
       37.8044
      ],
@@ -2119,6 +2372,155 @@
     "type": "LineString",
     "coordinates": [
      [
+      -122.2712,
+      37.8044
+     ],
+     [
+      -121.0408,
+      38.1144
+     ],
+     [
+      -119.8001,
+      38.4114
+     ],
+     [
+      -118.5494,
+      38.6953
+     ],
+     [
+      -117.289,
+      38.9658
+     ],
+     [
+      -116.0191,
+      39.2225
+     ],
+     [
+      -114.7402,
+      39.4654
+     ],
+     [
+      -113.4526,
+      39.6942
+     ],
+     [
+      -112.1567,
+      39.9087
+     ],
+     [
+      -110.8529,
+      40.1087
+     ],
+     [
+      -109.5417,
+      40.294
+     ],
+     [
+      -108.2236,
+      40.4643
+     ],
+     [
+      -106.8991,
+      40.6197
+     ],
+     [
+      -105.5688,
+      40.7598
+     ],
+     [
+      -104.2331,
+      40.8846
+     ],
+     [
+      -102.8927,
+      40.994
+     ],
+     [
+      -101.5481,
+      41.0877
+     ],
+     [
+      -100.2,
+      41.1658
+     ],
+     [
+      -98.8491,
+      41.2282
+     ],
+     [
+      -97.4958,
+      41.2747
+     ],
+     [
+      -96.141,
+      41.3053
+     ],
+     [
+      -94.7852,
+      41.3201
+     ],
+     [
+      -93.4292,
+      41.3189
+     ],
+     [
+      -92.0735,
+      41.3019
+     ],
+     [
+      -90.7189,
+      41.2689
+     ],
+     [
+      -89.366,
+      41.2201
+     ],
+     [
+      -88.0154,
+      41.1555
+     ],
+     [
+      -86.6678,
+      41.0751
+     ],
+     [
+      -85.3238,
+      40.9791
+     ],
+     [
+      -83.984,
+      40.8675
+     ],
+     [
+      -82.6491,
+      40.7405
+     ],
+     [
+      -81.3195,
+      40.5981
+     ],
+     [
+      -79.9959,
+      40.4406
+     ]
+    ]
+   },
+   "properties": {
+    "kind": "route",
+    "from": "oakland",
+    "to": "pittsburgh",
+    "km": 3623.8,
+    "bearing_deg": 71.9,
+    "provenance": "DERIVED",
+    "source": "great-circle between the campus records"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
       -90.0715,
       29.9511
      ],
@@ -2566,6 +2968,155 @@
     "type": "LineString",
     "coordinates": [
      [
+      -90.0715,
+      29.9511
+     ],
+     [
+      -89.7929,
+      30.2903
+     ],
+     [
+      -89.5124,
+      30.6289
+     ],
+     [
+      -89.2299,
+      30.967
+     ],
+     [
+      -88.9454,
+      31.3044
+     ],
+     [
+      -88.6588,
+      31.6411
+     ],
+     [
+      -88.3702,
+      31.9772
+     ],
+     [
+      -88.0795,
+      32.3127
+     ],
+     [
+      -87.7866,
+      32.6475
+     ],
+     [
+      -87.4915,
+      32.9816
+     ],
+     [
+      -87.1941,
+      33.315
+     ],
+     [
+      -86.8945,
+      33.6477
+     ],
+     [
+      -86.5926,
+      33.9797
+     ],
+     [
+      -86.2883,
+      34.3109
+     ],
+     [
+      -85.9815,
+      34.6413
+     ],
+     [
+      -85.6724,
+      34.971
+     ],
+     [
+      -85.3607,
+      35.2999
+     ],
+     [
+      -85.0465,
+      35.628
+     ],
+     [
+      -84.7297,
+      35.9553
+     ],
+     [
+      -84.4103,
+      36.2817
+     ],
+     [
+      -84.0882,
+      36.6073
+     ],
+     [
+      -83.7634,
+      36.932
+     ],
+     [
+      -83.4357,
+      37.2558
+     ],
+     [
+      -83.1053,
+      37.5787
+     ],
+     [
+      -82.772,
+      37.9007
+     ],
+     [
+      -82.4358,
+      38.2217
+     ],
+     [
+      -82.0966,
+      38.5417
+     ],
+     [
+      -81.7543,
+      38.8608
+     ],
+     [
+      -81.409,
+      39.1789
+     ],
+     [
+      -81.0606,
+      39.4959
+     ],
+     [
+      -80.709,
+      39.8119
+     ],
+     [
+      -80.3541,
+      40.1268
+     ],
+     [
+      -79.9959,
+      40.4406
+     ]
+    ]
+   },
+   "properties": {
+    "kind": "route",
+    "from": "new-orleans",
+    "to": "pittsburgh",
+    "km": 1480.6,
+    "bearing_deg": 35.3,
+    "provenance": "DERIVED",
+    "source": "great-circle between the campus records"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
       -95.3698,
       29.7604
      ],
@@ -2864,6 +3415,155 @@
     "type": "LineString",
     "coordinates": [
      [
+      -95.3698,
+      29.7604
+     ],
+     [
+      -94.9463,
+      30.1207
+     ],
+     [
+      -94.5198,
+      30.4796
+     ],
+     [
+      -94.09,
+      30.8372
+     ],
+     [
+      -93.6571,
+      31.1933
+     ],
+     [
+      -93.2209,
+      31.5479
+     ],
+     [
+      -92.7814,
+      31.9011
+     ],
+     [
+      -92.3385,
+      32.2527
+     ],
+     [
+      -91.8922,
+      32.6028
+     ],
+     [
+      -91.4424,
+      32.9512
+     ],
+     [
+      -90.989,
+      33.2981
+     ],
+     [
+      -90.532,
+      33.6433
+     ],
+     [
+      -90.0714,
+      33.9868
+     ],
+     [
+      -89.607,
+      34.3286
+     ],
+     [
+      -89.1388,
+      34.6686
+     ],
+     [
+      -88.6668,
+      35.0068
+     ],
+     [
+      -88.1909,
+      35.3431
+     ],
+     [
+      -87.711,
+      35.6776
+     ],
+     [
+      -87.2271,
+      36.0102
+     ],
+     [
+      -86.7391,
+      36.3407
+     ],
+     [
+      -86.2469,
+      36.6693
+     ],
+     [
+      -85.7505,
+      36.9959
+     ],
+     [
+      -85.2499,
+      37.3204
+     ],
+     [
+      -84.7449,
+      37.6427
+     ],
+     [
+      -84.2356,
+      37.9629
+     ],
+     [
+      -83.7218,
+      38.2808
+     ],
+     [
+      -83.2035,
+      38.5965
+     ],
+     [
+      -82.6806,
+      38.9099
+     ],
+     [
+      -82.1531,
+      39.2209
+     ],
+     [
+      -81.621,
+      39.5296
+     ],
+     [
+      -81.0841,
+      39.8358
+     ],
+     [
+      -80.5424,
+      40.1395
+     ],
+     [
+      -79.9959,
+      40.4406
+     ]
+    ]
+   },
+   "properties": {
+    "kind": "route",
+    "from": "houston",
+    "to": "pittsburgh",
+    "km": 1829.9,
+    "bearing_deg": 45.4,
+    "provenance": "DERIVED",
+    "source": "great-circle between the campus records"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
       -87.6298,
       41.8781
      ],
@@ -3003,6 +3703,304 @@
     "to": "seattle",
     "km": 2788.9,
     "bearing_deg": 295.1,
+    "provenance": "DERIVED",
+    "source": "great-circle between the campus records"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -87.6298,
+      41.8781
+     ],
+     [
+      -87.3864,
+      41.8409
+     ],
+     [
+      -87.1432,
+      41.8032
+     ],
+     [
+      -86.9004,
+      41.765
+     ],
+     [
+      -86.6578,
+      41.7263
+     ],
+     [
+      -86.4156,
+      41.6871
+     ],
+     [
+      -86.1736,
+      41.6474
+     ],
+     [
+      -85.9319,
+      41.6071
+     ],
+     [
+      -85.6906,
+      41.5664
+     ],
+     [
+      -85.4495,
+      41.5251
+     ],
+     [
+      -85.2088,
+      41.4834
+     ],
+     [
+      -84.9683,
+      41.4411
+     ],
+     [
+      -84.7282,
+      41.3984
+     ],
+     [
+      -84.4884,
+      41.3551
+     ],
+     [
+      -84.2489,
+      41.3114
+     ],
+     [
+      -84.0098,
+      41.2671
+     ],
+     [
+      -83.7709,
+      41.2224
+     ],
+     [
+      -83.5324,
+      41.1772
+     ],
+     [
+      -83.2942,
+      41.1314
+     ],
+     [
+      -83.0564,
+      41.0852
+     ],
+     [
+      -82.8189,
+      41.0385
+     ],
+     [
+      -82.5817,
+      40.9913
+     ],
+     [
+      -82.3449,
+      40.9437
+     ],
+     [
+      -82.1084,
+      40.8955
+     ],
+     [
+      -81.8723,
+      40.8469
+     ],
+     [
+      -81.6365,
+      40.7978
+     ],
+     [
+      -81.4011,
+      40.7482
+     ],
+     [
+      -81.166,
+      40.6981
+     ],
+     [
+      -80.9312,
+      40.6475
+     ],
+     [
+      -80.6969,
+      40.5965
+     ],
+     [
+      -80.4628,
+      40.545
+     ],
+     [
+      -80.2292,
+      40.493
+     ],
+     [
+      -79.9959,
+      40.4406
+     ]
+    ]
+   },
+   "properties": {
+    "kind": "route",
+    "from": "chicago",
+    "to": "pittsburgh",
+    "km": 658.5,
+    "bearing_deg": 101.5,
+    "provenance": "DERIVED",
+    "source": "great-circle between the campus records"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -122.3321,
+      47.6062
+     ],
+     [
+      -120.9018,
+      47.6384
+     ],
+     [
+      -119.4702,
+      47.6528
+     ],
+     [
+      -118.0383,
+      47.6494
+     ],
+     [
+      -116.6071,
+      47.6282
+     ],
+     [
+      -115.1776,
+      47.5891
+     ],
+     [
+      -113.7506,
+      47.5324
+     ],
+     [
+      -112.3272,
+      47.458
+     ],
+     [
+      -110.9083,
+      47.3661
+     ],
+     [
+      -109.4948,
+      47.2567
+     ],
+     [
+      -108.0877,
+      47.1299
+     ],
+     [
+      -106.6876,
+      46.9861
+     ],
+     [
+      -105.2955,
+      46.8253
+     ],
+     [
+      -103.9121,
+      46.6477
+     ],
+     [
+      -102.5382,
+      46.4535
+     ],
+     [
+      -101.1745,
+      46.243
+     ],
+     [
+      -99.8216,
+      46.0165
+     ],
+     [
+      -98.4801,
+      45.7741
+     ],
+     [
+      -97.1506,
+      45.5161
+     ],
+     [
+      -95.8336,
+      45.2428
+     ],
+     [
+      -94.5296,
+      44.9546
+     ],
+     [
+      -93.2389,
+      44.6517
+     ],
+     [
+      -91.9619,
+      44.3344
+     ],
+     [
+      -90.699,
+      44.003
+     ],
+     [
+      -89.4504,
+      43.6579
+     ],
+     [
+      -88.2164,
+      43.2993
+     ],
+     [
+      -86.9971,
+      42.9277
+     ],
+     [
+      -85.7926,
+      42.5432
+     ],
+     [
+      -84.6031,
+      42.1463
+     ],
+     [
+      -83.4287,
+      41.7373
+     ],
+     [
+      -82.2694,
+      41.3164
+     ],
+     [
+      -81.1251,
+      40.8841
+     ],
+     [
+      -79.9959,
+      40.4406
+     ]
+    ]
+   },
+   "properties": {
+    "kind": "route",
+    "from": "seattle",
+    "to": "pittsburgh",
+    "km": 3432.2,
+    "bearing_deg": 87.6,
     "provenance": "DERIVED",
     "source": "great-circle between the campus records"
    }
@@ -3183,6 +4181,42 @@
    "properties": {
     "kind": "frame",
     "campus": "seattle",
+    "provenance": "AUTHORED",
+    "source": "widely-published public geography (metro-area extent), typed from general knowledge - not cross-checked against any file this build can verify"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -80.4,
+       40.15
+      ],
+      [
+       -79.6,
+       40.15
+      ],
+      [
+       -79.6,
+       40.75
+      ],
+      [
+       -80.4,
+       40.75
+      ],
+      [
+       -80.4,
+       40.15
+      ]
+     ]
+    ]
+   },
+   "properties": {
+    "kind": "frame",
+    "campus": "pittsburgh",
     "provenance": "AUTHORED",
     "source": "widely-published public geography (metro-area extent), typed from general knowledge - not cross-checked against any file this build can verify"
    }

@@ -4971,6 +4971,35 @@ function dressCampus(key, g, R) {
     const sound = new THREE.Mesh(new THREE.PlaneGeometry(460, 140), mat.water);
     sound.rotation.x = -Math.PI / 2; sound.position.set(0, -.06, -(R + 130)); g.add(sound);
   }
+  if (key === 'pittsburgh') {
+    // the fourth hub, dressed the same way as the first three: a free
+    // skyline on the green rather than anything at the plaza. Generic
+    // massing only - no real building is modeled or named - plus a
+    // schematic steel truss bridge, standing in for the bridge city's
+    // best-known feature, and a river band behind it.
+    const skyMat = new THREE.MeshStandardMaterial({ color: 0x3a3630, roughness: .8 });
+    for (let i = 0; i < 7; i++) {
+      const ang = i / 7 * Math.PI * 2 + .35, rad = R + 56 + (i % 2) * 20;
+      const h = 11 + (i % 3) * 7;
+      const t = box(4.6, h, 4.6, skyMat, Math.cos(ang) * rad, h / 2, Math.sin(ang) * rad, g);
+      t.castShadow = true;
+    }
+    const steelMat = mat.metal;
+    for (const bx of [-14, 14]) {
+      const pier = box(1, 9, 1, steelMat, bx, 4.5, R + 60, g);
+      pier.castShadow = true;
+    }
+    const deck = box(30, .8, 4, mat.road, 0, 9, R + 60, g);
+    deck.castShadow = true;
+    for (let i = 0; i < 6; i++) {
+      const sx = -13 + i * 5.2;
+      const strut = box(.7, 6.5, .7, steelMat, sx, 12.2, R + 60, g);
+      strut.rotation.z = (i % 2 === 0) ? .5 : -.5;
+      strut.castShadow = true;
+    }
+    const river = new THREE.Mesh(new THREE.PlaneGeometry(420, 120), mat.water);
+    river.rotation.x = -Math.PI / 2; river.position.set(0, -.06, -(R + 120)); g.add(river);
+  }
 }
 
 /* ------------------------------------------------- the city layer -------- */
@@ -5417,6 +5446,29 @@ function cityWater(g, key, R, pois) {
     sound.rotation.x = -Math.PI / 2; sound.position.set(0, .07, -(R + 140));
     g.add(sound);
     tag('Puget Sound', 0, -(R + 135));
+    return;
+  }
+  if (key === 'pittsburgh') {
+    // the real confluence this hub is named for - three schematic river
+    // ribbons meeting at the Point, never claimed as more than that
+    const allegheny = new THREE.Mesh(new THREE.TubeGeometry(
+      new THREE.QuadraticBezierCurve3(
+        new THREE.Vector3(150, 0, -30), new THREE.Vector3(40, 0, 20),
+        new THREE.Vector3(-10, 0, 70)), 40, 8, 8), mat.water);
+    allegheny.scale.y = .012; allegheny.position.y = .09; g.add(allegheny);
+    tag('Allegheny River', 70, -14);
+    const monongahela = new THREE.Mesh(new THREE.TubeGeometry(
+      new THREE.QuadraticBezierCurve3(
+        new THREE.Vector3(-150, 0, 100), new THREE.Vector3(-60, 0, 85),
+        new THREE.Vector3(-10, 0, 70)), 40, 8, 8), mat.water);
+    monongahela.scale.y = .012; monongahela.position.y = .09; g.add(monongahela);
+    tag('Monongahela River', -90, 92);
+    const ohio = new THREE.Mesh(new THREE.TubeGeometry(
+      new THREE.QuadraticBezierCurve3(
+        new THREE.Vector3(-10, 0, 70), new THREE.Vector3(-70, 0, 40),
+        new THREE.Vector3(-150, 0, 10)), 40, 9, 8), mat.water);
+    ohio.scale.y = .012; ohio.position.y = .09; g.add(ohio);
+    tag('Ohio River', -100, 28);
   }
 }
 

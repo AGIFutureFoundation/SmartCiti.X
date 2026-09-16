@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-10",
- "source_stamp": "f2f937b609a20e4b",
+ "source_stamp": "3f33b5a4a6879c07",
  "crs": "WGS84 (EPSG:4326)",
  "recorded_check": "cross-checked against the Locator.X checkout",
  "honesty": {
@@ -58,6 +58,14 @@
    "source": "widely-published public geography (city-center), typed from general knowledge - not cross-checked against any file this build can verify",
    "city": "Seattle",
    "region": "Washington"
+  },
+  "pittsburgh": {
+   "lat": 40.4406,
+   "lng": -79.9959,
+   "provenance": "AUTHORED",
+   "source": "widely-published public geography (city-center), typed from general knowledge - not cross-checked against any file this build can verify",
+   "city": "Pittsburgh",
+   "region": "Pennsylvania"
   }
  },
  "routes_km": [
@@ -92,6 +100,12 @@
    "bearing_deg": 0.2
   },
   {
+   "from": "treasure-island",
+   "to": "pittsburgh",
+   "km": 3631.5,
+   "bearing_deg": 71.9
+  },
+  {
    "from": "oakland",
    "to": "new-orleans",
    "km": 3081.0,
@@ -116,6 +130,12 @@
    "bearing_deg": 359.8
   },
   {
+   "from": "oakland",
+   "to": "pittsburgh",
+   "km": 3623.8,
+   "bearing_deg": 71.9
+  },
+  {
    "from": "new-orleans",
    "to": "houston",
    "km": 511.3,
@@ -134,6 +154,12 @@
    "bearing_deg": 314.6
   },
   {
+   "from": "new-orleans",
+   "to": "pittsburgh",
+   "km": 1480.6,
+   "bearing_deg": 35.3
+  },
+  {
    "from": "houston",
    "to": "chicago",
    "km": 1515.8,
@@ -146,10 +172,28 @@
    "bearing_deg": 318.3
   },
   {
+   "from": "houston",
+   "to": "pittsburgh",
+   "km": 1829.9,
+   "bearing_deg": 45.4
+  },
+  {
    "from": "chicago",
    "to": "seattle",
    "km": 2788.9,
    "bearing_deg": 295.1
+  },
+  {
+   "from": "chicago",
+   "to": "pittsburgh",
+   "km": 658.5,
+   "bearing_deg": 101.5
+  },
+  {
+   "from": "seattle",
+   "to": "pittsburgh",
+   "km": 3432.2,
+   "bearing_deg": 87.6
   }
  ],
  "city": {
@@ -233,6 +277,20 @@
     "s": 47.35,
     "e": -121.95,
     "n": 47.85
+   },
+   "provenance": "AUTHORED",
+   "source": "widely-published public geography (metro-area extent), typed from general knowledge - not cross-checked against any file this build can verify"
+  },
+  "pittsburgh": {
+   "center": {
+    "lat": 40.44,
+    "lng": -79.99
+   },
+   "bounds": {
+    "w": -80.4,
+    "s": 40.15,
+    "e": -79.6,
+    "n": 40.75
    },
    "provenance": "AUTHORED",
    "source": "widely-published public geography (metro-area extent), typed from general knowledge - not cross-checked against any file this build can verify"
@@ -589,6 +647,52 @@
     "km": 6.6,
     "bearing_deg": 196.9,
     "blurb": "One of the three Seattle Colleges system campuses, with career-technical and apprenticeship-adjacent programs.",
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   }
+  ],
+  "pittsburgh": [
+   {
+    "name": "Port of Pittsburgh Commission",
+    "lat": 40.438,
+    "lng": -79.9958,
+    "provenance": "AUTHORED",
+    "source": "the regional port authority for the Pittsburgh-area inland waterway system, headquartered near the three-rivers confluence",
+    "km": 0.3,
+    "bearing_deg": 178.3,
+    "blurb": "The state-chartered regional authority for the Pittsburgh district\u2019s inland waterways, the busiest inland port system in the country by tonnage.",
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   },
+   {
+    "name": "Carnegie Mellon University",
+    "lat": 40.4443,
+    "lng": -79.9436,
+    "provenance": "AUTHORED",
+    "source": "the private research university\u2019s Oakland (Pittsburgh) campus",
+    "km": 4.4,
+    "bearing_deg": 84.7,
+    "blurb": "Private research university in Pittsburgh\u2019s Oakland neighborhood, known for engineering, computer science and the arts.",
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   },
+   {
+    "name": "Carrie Blast Furnaces National Historic Landmark",
+    "lat": 40.4062,
+    "lng": -79.8631,
+    "provenance": "AUTHORED",
+    "source": "a former U.S. Steel blast-furnace plant on the Monongahela, part of the Rivers of Steel National Heritage Area",
+    "km": 11.9,
+    "bearing_deg": 108.7,
+    "blurb": "A former U.S. Steel ironmaking plant on the Monongahela River, preserved as part of the Rivers of Steel National Heritage Area.",
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   },
+   {
+    "name": "Community College of Allegheny County",
+    "lat": 40.453,
+    "lng": -80.009,
+    "provenance": "AUTHORED",
+    "source": "CCAC\u2019s Allegheny Campus on the North Side, with career-technical and trades programs",
+    "km": 1.8,
+    "bearing_deg": 321.2,
+    "blurb": "A public community-college system with real career-technical and trades programs across the Pittsburgh region.",
     "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
    }
   ]
