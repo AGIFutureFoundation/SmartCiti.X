@@ -128,7 +128,7 @@ content graph and details:
 | **Metaverse layer** (`meta/registry/metaverse.json`) | The interchange contract: {len(meta["baseline"]["standards"])} open standards claimed (glTF 2.0, WebXR, GeoJSON), {len(meta["baseline"]["not_claimed"])} honestly not, avatar and hall .glb export, learner-local import | [Metaverse-Layer](Metaverse-Layer.md) |
 | **City records** (`parcels/registry/parcels.json`) | The source contract for the three campus regions\' own parcel and building-footprint authorities ({sum(set(s["records"] for s in parcels["sources"].values())):,} records published upstream), plus the public-domain federal orthoimagery both maps draw | [City-Records](City-Records.md) |
 | **Network geomap** (`web/trade_craft_geomap.html`) | The geo registry on a real WGS84 map (MapLibre, no basemap tiles): campuses, {n_anchors} RECORDED anchors, great-circle routes, RECORDED city frames | [Campus-Map](Campus-Map.md) |
-| **Bay Restoration** (`restoration/registry/restoration.json`) | {len(restoration['sites'])} real, independently-run San Francisco Bay habitat-restoration sites ({sum(1 for s in restoration['sites'] if s['pin'])} mapped) bridged to {len(restoration['tracks'])} field-skill tracks bound to real skill_ids already in this bundle's graph — not a SmartCiti.X program | [Bay-Restoration](Bay-Restoration.md) |
+| **Bay Restoration** (`restoration/registry/restoration.json`) | {len(restoration['sites'])} real, independently-run San Francisco Bay sites across two categories ({sum(1 for s in restoration['sites'] if s['category'] == 'habitat-restoration')} habitat-restoration, {sum(1 for s in restoration['sites'] if s['category'] == 'environmental-monitoring')} environmental-monitoring — Hunters Point Naval Shipyard, a real, litigated federal Superfund site, pinned but never walkable) — {sum(1 for s in restoration['sites'] if s['pin'])} mapped, {sum(1 for s in restoration['sites'] if s['walkable'])} walkable — bridged to {len(restoration['tracks'])} field-skill tracks bound to real skill_ids already in this bundle's graph — not a SmartCiti.X program | [Bay-Restoration](Bay-Restoration.md) |
 
 ## The campus at a glance
 
@@ -1294,29 +1294,50 @@ their own machine.
 
 def page_restoration():
     pinned = [s for s in restoration['sites'] if s['pin']]
+    walkable = [s for s in restoration['sites'] if s['walkable']]
+    habitat_n = sum(1 for s in restoration['sites'] if s['category'] == 'habitat-restoration')
+    env_n = sum(1 for s in restoration['sites'] if s['category'] == 'environmental-monitoring')
     srows = '\n'.join(
         f"| **{s['name']}** | {s['org']} | {s['city']}, {s['county']} | "
-        f"{s['habitat']} | {'yes' if s['pin'] else 'bay-wide, unpinned'} | "
-        f"{'yes — ' + s['workforce_note'] if s['workforce'] else 'no'} | "
+        f"{'habitat-restoration' if s['category'] == 'habitat-restoration' else 'environmental-monitoring'} | "
+        f"{s['habitat']} | {'yes' if s['walkable'] else 'no — ' + s['walkable_reason'] if s['walkable_reason'] else 'no'} | "
+        f"{', '.join(s['trade_needs'])} | "
+        f"{'yes — ' + s['workforce_note'] if s['workforce'] else ('yes — ' + s['participation_note'] if s['participation'] else 'no')} | "
         f"[source]({s['source_url']}) |"
         for s in restoration['sites'])
     trows = '\n'.join(
         f"| **{t['title']}** | {t['what']} | "
         f"{', '.join(f'`{sk}`' for sk in t['skills'])} |"
         for t in restoration['tracks'])
+    hp = next(s for s in restoration['sites'] if s['id'] == 'hunters-point-shipyard')
+    hp_facts = '\n'.join(f"- {f['text']} [source]({f['source_url']})" for f in hp['facts'])
     return f"""# Bay Restoration
 
 {restoration['honesty']['not_affiliated']}
 
 {restoration['honesty']['provenance']}
 
-## The sites — {len(restoration['sites'])} real, {len(pinned)} mapped
+## The sites — {len(restoration['sites'])} real, across two categories \
+({habitat_n} habitat-restoration, {env_n} environmental-monitoring); \
+{len(pinned)} mapped, {len(walkable)} walkable
 
-| Site | Run by | Where | Habitat | Mapped | Workforce pathway | |
-|---|---|---|---|---|---|---|
+{restoration['honesty']['environmental_monitoring_category']}
+
+| Site | Run by | Where | Category | Habitat / work | Walkable | Real trade fit | Workforce / participation pathway | |
+|---|---|---|---|---|---|---|---|---|
 {srows}
 
 {restoration['honesty']['campus_grouping']}
+
+### Hunters Point Naval Shipyard — a September 2026 snapshot, not a live feed
+
+This is the one environmental-monitoring site above, and it is deliberately
+**not** rendered as a walkable ground scene — {hp['walkable_reason']}. It
+is still a real, located, clickable marker on the network geomap and in the
+3D app's flat Bay Restoration panel. Its facts, each with its own real
+citation:
+
+{hp_facts}
 
 ## Field-skill tracks — {len(restoration['tracks'])}, bound to real skill_ids
 

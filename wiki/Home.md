@@ -31,7 +31,7 @@ content graph and details:
 | **Metaverse layer** (`meta/registry/metaverse.json`) | The interchange contract: 3 open standards claimed (glTF 2.0, WebXR, GeoJSON), 3 honestly not, avatar and hall .glb export, learner-local import | [Metaverse-Layer](Metaverse-Layer.md) |
 | **City records** (`parcels/registry/parcels.json`) | The source contract for the three campus regions' own parcel and building-footprint authorities (254,122 records published upstream), plus the public-domain federal orthoimagery both maps draw | [City-Records](City-Records.md) |
 | **Network geomap** (`web/trade_craft_geomap.html`) | The geo registry on a real WGS84 map (MapLibre, no basemap tiles): campuses, 47 RECORDED anchors, great-circle routes, RECORDED city frames | [Campus-Map](Campus-Map.md) |
-| **Bay Restoration** (`restoration/registry/restoration.json`) | 9 real, independently-run San Francisco Bay habitat-restoration sites (8 mapped) bridged to 3 field-skill tracks bound to real skill_ids already in this bundle's graph — not a SmartCiti.X program | [Bay-Restoration](Bay-Restoration.md) |
+| **Bay Restoration** (`restoration/registry/restoration.json`) | 10 real, independently-run San Francisco Bay sites across two categories (9 habitat-restoration, 1 environmental-monitoring — Hunters Point Naval Shipyard, a real, litigated federal Superfund site, pinned but never walkable) — 9 mapped, 8 walkable — bridged to 3 field-skill tracks bound to real skill_ids already in this bundle's graph — not a SmartCiti.X program | [Bay-Restoration](Bay-Restoration.md) |
 
 ## The campus at a glance
 
