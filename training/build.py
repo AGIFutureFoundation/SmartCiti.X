@@ -30,9 +30,8 @@ in this bundle. Three kinds of episode, one per interaction:
                 already owns.
   * walkaround - which point, on which seat.
 
-TRACE. The finer-grained recorder this file used to describe as "a
-natural next step, not built yet" - built now, scoped honestly rather
-than promoted past what it actually is. While TRACE is on (its own
+TRACE. The finer-grained recorder, scoped to exactly what it is rather
+than promoted past it. While TRACE is on (its own
 toggle, default OFF - see CONSENT), a running sim's own gauges() output
 - the same numbers the on-screen dashboard already reads out, nothing
 new computed - is sampled once a second and appended to that episode's
@@ -46,6 +45,29 @@ on directly. It is real data about what this session's own SCHEMATIC
 simulator computed, sampled coarser than every frame and finer than
 "episode-level" - stated at exactly that resolution, not dressed up as
 either end.
+
+ACTORS, AND THE SCRIPTED TIER. A sim episode names who drove the seat.
+`human` is a learner at the keys - every episode this recorder kept
+before actors existed, and exactly as it was. `scripted-reference` is
+the scripted reference operator sims/ declares: a hand-written,
+deterministic control policy in the page - a function of the seat's own
+gauges, the scenario's params and a level, no model, no network - driven
+either at real time while a learner watches, or headlessly at a fixed
+step by the records panel's sweep, so one click yields a demonstration
+episode for every seat, scenario and level. A scripted episode carries
+`operator: {level, seed, scenario}`, the handle that replays it: the
+levels are a closed set (sims/ owns it), the seed drives a fixed-seed
+generator (no Math.random anywhere in the policy), so the same
+(sim, scenario, level, seed) at the same fixed step yields the same
+non-time axes every run. Its provenance word is SCRIPTED - not
+AI-SYNTHESIZED, which orbis/ owns for generated video and would be a
+false label for deterministic data: a scripted episode is a demonstration
+of a written policy on a schematic single-machine simulator, not a
+learned policy, not real equipment, and not a claim about any physical
+robot. It goes through the SAME simResults -> recordEpisode path a human
+run does, downstream of the same final score, gated by the same toggle
+and the same rolling cap - and it never touches the learner's own
+progress record, which the page guards by name.
 
 WHAT THIS IS NOT. Not a transcript, not a surveillance log, and not real
 robot data: every episode comes from SCHEMATIC physics and deterministic
@@ -91,10 +113,31 @@ ROOT = HERE.parent
 PACK_VERSION = "3.2.0"
 BUILT = "2026-09-11"
 
+ACTORS = {
+    'human': 'a learner at the keys - the episode carries nothing new; '
+             'consumers that ignore `actor` read it exactly as before',
+    'scripted-reference': 'the scripted reference operator sims/ declares '
+                          'for every seat - a hand-written, deterministic '
+                          'control policy driven from the seat\'s own '
+                          'gauges, no model, no network; the episode also '
+                          'carries `operator: {level, seed, scenario}`, '
+                          'the handle that replays it',
+}
+
 EPISODE_KINDS = {
     'sim': {
         'fields': ['t', 'kind', 'campus', 'hall', 'sim', 'scenario',
-                   'controls', 'outcome'],
+                   'controls', 'actor', 'operator', 'outcome'],
+        'actor': 'one of ACTORS: `human` or `scripted-reference`',
+        'operator': '{level, seed, scenario, steps, dt} - present ONLY when '
+                    'actor is scripted-reference: the closed level name, the '
+                    'integer seed of its fixed-seed generator, the scenario '
+                    'id, the number of control steps the run took, and the '
+                    'fixed step length when the run was headless (steps x dt '
+                    'is then its deterministic sim time - the `time` axis '
+                    'itself is wall-clock and informational) or null when a '
+                    'learner watched it at real time; absent on a human '
+                    'episode',
         'outcome_shape': {'passed': 'bool',
                            'rows': '[{axis, value, ok}] - the rubric rows',
                            'trace': '[{t, gauges}] - OPTIONAL, present only '
@@ -206,6 +249,17 @@ HONESTY = {
                      'denser, separate, AI-SYNTHESIZED stream toward the '
                      'same ml-agents fork, never a substitute for this '
                      'real one.',
+    'scripted': 'a SCRIPTED episode - actor scripted-reference - is a '
+                'demonstration of a hand-written, deterministic control '
+                'policy on a schematic single-machine simulator: driven '
+                "from the seat's own gauges, no model behind it, no "
+                'network reached, replayable from its own (level, seed, '
+                'scenario) handle. Not a learned policy, not real '
+                'equipment, and not a claim about any physical robot; not '
+                'AI-SYNTHESIZED either, the word orbis/ keeps for '
+                'generated video. It is kept through the same path, the '
+                'same toggle and the same cap as a human episode, and it '
+                'never credits the learner\'s own progress record.',
 }
 
 # ---------------------------------------------------------------- checks ---
@@ -235,6 +289,50 @@ assert TRACE['sample_hz'] > 0 and TRACE['max_samples'] > 0, \
 assert 'off' in TRACE['default'].lower(), \
     'TRACE must default off - it is stated as heavier than the base episode'
 
+# the scripted tier is sims/' own declaration, cited here, never re-authored:
+# every seat carries an operator, at the closed level set sims/ owns
+assert 'scripted-reference' in ACTORS and 'human' in ACTORS
+assert all('operator' in s for s in sims_reg['sims'].values()), \
+    'every seat needs a scripted reference operator before this pack names one'
+assert set(sims_reg['operator_levels']) == \
+    set(next(iter(sims_reg['sims'].values()))['operator']['levels']), \
+    'the level set is declared once, in sims/'
+assert sims_reg['honesty']['operator'].startswith('SCRIPTED'), \
+    'the operator\'s provenance word is SCRIPTED, declared by sims/'
+assert 'AI-SYNTHESIZED' not in sims_reg['honesty']['operator'], \
+    'SCRIPTED must never borrow the word orbis/ owns for generated video'
+
+
+def pass_exprs(src):
+    """Every simResults(...) call's third argument - the pass/fail
+    expression - read with balanced parentheses, so an inner call such as
+    Math.abs(x) is captured whole rather than cut at its first ')'."""
+    out, i = [], 0
+    while True:
+        i = src.find("simResults('", i)
+        if i < 0:
+            return out
+        j = src.index('(', i)
+        depth, k = 0, j
+        while True:
+            if src[k] == '(':
+                depth += 1
+            elif src[k] == ')':
+                depth -= 1
+                if depth == 0:
+                    break
+            k += 1
+        out.append(src[j + 1:k].partition('rows,')[2].strip())
+        i = k
+
+
+# the extractor must itself be proven on an inner-paren expression, or the
+# guard below would silently check a truncated prefix
+assert pass_exprs("simResults('x', rows, Math.abs(a) <= 1 && g(t) === 0);\n"
+                  "  simResults('y', rows,\n    f(train) === 0);") \
+    == ['Math.abs(a) <= 1 && g(t) === 0', 'f(train) === 0'], \
+    'the pass-expression extractor must read a whole third argument'
+
 BOOTSTRAP = '--bootstrap' in __import__('sys').argv
 if not BOOTSTRAP:
     page = (ROOT / 'web/trade_craft_3d.html').read_text()
@@ -252,25 +350,60 @@ if not BOOTSTRAP:
     # pack promises, not more integration points quietly grown elsewhere
     assert page.count('recordEpisode({') == len(EPISODE_KINDS), \
         'recordEpisode is called somewhere other than the three declared kinds'
-    # the sample rate and cap the registry declares must be the ones the
-    # page actually enforces, not a second, silently-drifted pair of numbers
-    trace_ms = round(1000 / TRACE['sample_hz'])
-    assert f'TRACE_MS = {trace_ms}' in page, \
-        "the page's TRACE sample interval does not match the declared sample_hz"
-    assert f'TRACE_MAX = {TRACE["max_samples"]}' in page, \
-        "the page's TRACE cap does not match the declared max_samples"
+    # the sample rate and cap the page enforces are READ from this registry
+    # as embedded in the page - one truth, not a second hand-typed pair - so
+    # the check is that the page reads them, and that what it reads is ours
+    assert 'TRACE_MS = Math.round(1000 / D.training.trace.sample_hz)' in page, \
+        "the page's TRACE sample interval must be read from the embedded registry"
+    assert 'TRACE_MAX = D.training.trace.max_samples' in page, \
+        "the page's TRACE cap must be read from the embedded registry"
+    assert f'"sample_hz":{TRACE["sample_hz"]}' in page \
+        and f'"max_samples":{TRACE["max_samples"]}' in page, \
+        'the page embeds a TRACE rate or cap other than the declared ones'
     # the trace can only ever reach an episode through the sim outcome it
-    # belongs to - never as a second, independent recordEpisode call
-    assert 'trace:' in page and 'recordEpisode({ kind: \'sim\'' in page, \
+    # belongs to - never as a second, independent recordEpisode call - and
+    # it is the sampler's own array, un-re-capped: traceStep already stops
+    # at the cap, so a second slice would be a second truth about it
+    assert 'trace: simTicks }' in page and 'recordEpisode({ kind: \'sim\'' in page, \
         'the trace field must be attached inside the sim episode, not recorded separately'
+    assert 'simTicks.slice(' not in page, \
+        'the trace cap is enforced once, in traceStep - not re-capped at record time'
     # the real guarantee is about WRITE direction, not read: recording is
     # strictly downstream of a score already final, so the boolean that
     # decides pass/fail for every seat must never mention training state -
-    # it is computed first, and simResults(id, rows, PASSED) receives it
-    import re as _re
-    for m in _re.finditer(r"simResults\('[a-z-]+', rows,\s*([^)]*)\)", page):
-        assert 'train' not in m.group(1).lower(), \
-            f'a rubric outcome references training state: {m.group(1)[:80]}'
+    # it is computed first, and simResults(id, rows, PASSED) receives it.
+    # Read with balanced parentheses (see pass_exprs) so an expression with
+    # an inner call is checked whole
+    exprs = pass_exprs(page)
+    assert len(exprs) == len(sims_reg['sims']), \
+        f'expected one simResults call per seat, found {len(exprs)}'
+    for e in exprs:
+        assert e and 'train' not in e.lower() and 'oprun' not in e.lower(), \
+            f'a rubric outcome references training or operator state: {e[:80]}'
+    # the scripted tier reaches the record through the SAME call, as an
+    # actor field - never a fourth integration point - and a scripted run
+    # never credits the learner's progress record
+    assert "actor: opRun ? 'scripted-reference' : 'human'" in page, \
+        'the sim episode must name its actor from the live operator state'
+    assert ('operator: { level: opRun.level, seed: opRun.seed, scenario: opRun.scenario,\n'
+            '      steps: opRun.step, dt: opRun.fixedDt }') in page, \
+        'a scripted episode must carry its replay handle'
+    assert 'if (!opRun) {' in page.split('function simResults(')[1][:1400] \
+        and 'prog.sims[simId] = rec; saveProg()' in page, \
+        'a scripted run must never write the learner\'s progress record'
+    for fn in ('const OPERATORS = {', 'window.__tc3dSim = {',
+               'function opRunHeadless(', 'function opStep('):
+        assert fn in page, f'the page does not build the scripted operator: {fn} missing'
+    # the whole scripted section: the policy table and the shared bench
+    # policy after it, up to the driver
+    ops = page.split('const OPERATORS = {')[1].split('function opAttach(')[0]
+    assert 'Math.random' not in ops, \
+        'the scripted operator must be deterministic: no Math.random in any policy'
+    for sid in sims_reg['sims']:
+        assert f"'{sid}': {{" in ops, f'no scripted operator policy for {sid}'
+        for p in sims_reg['sims'][sid]['operator']['procedure']:
+            assert f"'{p['id']}'" in ops, \
+                f"{sid}: procedure step {p['id']} is declared but the policy never names it"
 
 stamp = hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest()[:16]
 
@@ -281,6 +414,7 @@ doc = {
     'built': BUILT,
     'source_stamp': stamp,
     'honesty': HONESTY,
+    'actors': ACTORS,
     'episode_kinds': EPISODE_KINDS,
     'storage': STORAGE,
     'trace': TRACE,

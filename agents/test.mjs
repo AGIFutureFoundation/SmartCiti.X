@@ -118,15 +118,23 @@ ok('every seat.* binding is used only by the operator - no other advisor reaches
     topics.filter(([, t]) => t.bind === b).every(([id]) => id === 'operator')));
 ok('the page places the operator inside startSim(), not spawnHallAdvisors()',
   (() => {
-    const fnBody = page.split('function startSim(simId) {')[1]?.slice(0, 4000) ?? '';
+    const fnBody = page.split('function startSim(simId, scenarioId) {')[1]?.slice(0, 4000) ?? '';
     return /placeAdvisor\('operator', sim\.group/.test(fnBody);
   })());
 ok('the operator\'s seat.* bindings resolve against curSimId, not seatOf(hall) - the hall/seat scoping bug the docstring names',
-  ['seat.task', 'seat.controls', 'seat.dash', 'seat.rubric', 'seat.walkaround', 'seat.trade']
+  ['seat.task', 'seat.controls', 'seat.dash', 'seat.rubric', 'seat.walkaround', 'seat.trade',
+    'seat.procedure']
     .every((b) => {
       const chunk = page.split(`case '${b}':`)[1]?.slice(0, 260) ?? '';
       return /D\.sims\.sims\[curSimId\]/.test(chunk);
     }));
+ok('the operator quotes the scripted reference procedure the sims registry declares - the same step list the page\'s policy is written around, never a copy',
+  who.operator.topics.some((t) => t.bind === 'seat.procedure')
+  && /scripted reference operator/.test(reg.bindings['seat.procedure'])
+  && (() => {
+    const chunk = page.split("case 'seat.procedure':")[1]?.slice(0, 900) ?? '';
+    return /op\.procedure\.map/.test(chunk) && /D\.sims\.operatorHonesty/.test(chunk);
+  })());
 ok('the operator button only ever shows while a seat is actually running',
   /getElementById\('opBtn'\)/.test(page)
   && /getElementById\('opBtn'\)\.style\.display = 'none'/.test(page));

@@ -41,7 +41,11 @@ covered); the Operator's `seat.*` bindings resolve against whichever
 seat is ACTUALLY running when asked, so a hall with three machines gets
 three correct answers, not one answer repeated three times. Same
 contract as every other topic here - read at view time from the
-simulator registry, nothing copied into this one.
+simulator registry, nothing copied into this one. `seat.procedure` is
+the newest: the scripted reference operator's own ordered step list,
+which sims/ declares and the page's policy is written around - so a
+learner who asks "what is the reference procedure?" gets the same list
+the operator actually drives by, quoted, never a second copy.
 """
 import hashlib
 import json
@@ -76,6 +80,10 @@ BINDINGS = {
                        'currently running',
     'seat.trade': 'every hall that actually trains on the seat currently '
                   'running, not just the one the learner is standing in',
+    'seat.procedure': 'the scripted reference operator\'s own step list for '
+                      'the seat currently running - the procedure the '
+                      'page\'s policy is written around, read from the '
+                      'simulator registry, with the axes it guarantees',
     'hall.rooms': 'the rooms this hall is laid out with',
     'hall.focus': 'what this hall is for',
     'campus.districts': 'the districts this campus holds',
@@ -298,6 +306,8 @@ ADVISORS = {
              'kind': 'read', 'bind': 'seat.walkaround'},
             {'id': 'trade', 'ask': 'Who actually trains on this machine?',
              'kind': 'read', 'bind': 'seat.trade'},
+            {'id': 'procedure', 'ask': 'What is the reference procedure?',
+             'kind': 'read', 'bind': 'seat.procedure'},
         ],
     },
     'dispatcher': {

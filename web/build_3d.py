@@ -213,7 +213,13 @@ DATA = json.dumps({
     'yard': yard,
     'sims': {'sims': sims_reg['sims'], 'bindings': sims_reg['hall_bindings'],
              'honesty': sims_reg['honesty']['status'],
-             'walkHonesty': sims_reg['honesty']['walkaround']},
+             'walkHonesty': sims_reg['honesty']['walkaround'],
+             # the scripted reference operator: its closed level set and
+             # its one SCRIPTED honesty line - each seat's own operator
+             # metadata (guarantees, procedure) and shared yard layout
+             # already travel inside sims_reg['sims'] above
+             'operatorLevels': sims_reg['operator_levels'],
+             'operatorHonesty': sims_reg['honesty']['operator']},
     'imagery': parcels_reg['imagery'],
     'recHonesty': parcels_reg['honesty'],
     # only what the page actually renders: the endpoint, the query template, and the one line of scope text the lookup button shows
@@ -276,7 +282,11 @@ DATA = json.dumps({
     # UI and the export envelope - the essays stay in the registry, read
     # from the wiki, exactly like the world and label packs
     'training': {'storage': training_reg['storage'],
-                 'trace': {'toggle_key': training_reg['trace']['toggle_key']},
+                 # the page READS its sample interval and cap from here -
+                 # the one declared pair, never a second hand-typed one
+                 'trace': {'toggle_key': training_reg['trace']['toggle_key'],
+                           'sample_hz': training_reg['trace']['sample_hz'],
+                           'max_samples': training_reg['trace']['max_samples']},
                  'export_format': trim(training_reg['export_format'],
                      'consumer', 'not_a_demo_file', 'no_agent_trained'),
                  'kinds': trim(training_reg['episode_kinds'],
@@ -370,6 +380,10 @@ SIM_JS = """/* ------------------------------------------------------- simulator
 let sim = null, curSimId = null, simView = null, curScenario = null;
 let simRider = null;
 let waBeacons = [], waDone = new Set(), waTotal = 0;
+// the scripted reference operator's live run (null while a human has the
+// seat) and the headless flag the sweep raises so the frame loop never
+// steps a seat the sweep is stepping at a fixed dt - see OPERATORS below
+let opRun = null, opHeadless = false;
 
 /* Sound is synthesized in-page (WebAudio) - the registry says so and no
    recording is shipped. The context is created on the sim-start click, the
@@ -513,6 +527,11 @@ function clearOperatorAdvisor() {
 function teardownSim() {
   if (!sim) return;
   clearOperatorAdvisor();
+  // the scripted operator leaves with the seat: drop its run and lift
+  // every key it was holding, so nothing it pressed leaks into walk mode
+  opRun = null;
+  for (const kk of OP_KEYS) keys[kk] = false;
+  document.getElementById('opCtl').style.display = 'none';
   scene.remove(sim.group);
   disposeOf(sim.group);
   sim = null; simView = null; curScenario = null; simRider = null;
@@ -533,7 +552,7 @@ function teardownSim() {
 
 function exitSim() { teardownSim(); showHall(slug); }
 
-function startSim(simId) {
+function startSim(simId, scenarioId) {
   if (walkActive) plc.unlock();
   if (sim) teardownSim();
   if (curRestoSite) teardownRestoWalk();
@@ -549,8 +568,11 @@ function startSim(simId) {
   document.getElementById('glbBtn').style.display = 'none';
   document.getElementById('glbInBtn').style.display = 'none';
   const def = D.sims.sims[simId];
-  // the campus you train at picks the regional scenario; the rubric never varies
-  const sc = def.scenarios?.find((s) => s.campus === campusKey)
+  // the campus you train at picks the regional scenario; the rubric never
+  // varies. A scenario id names one outright - the scripted operator's
+  // sweep and a retry of the same yard use that
+  const sc = def.scenarios?.find((s) => s.id === scenarioId)
+    ?? def.scenarios?.find((s) => s.campus === campusKey)
     ?? def.scenarios?.[0] ?? null;
   curScenario = sc;
   const P = sc?.params ?? {};
@@ -609,7 +631,16 @@ function startSim(simId) {
   }
   const ob = document.getElementById('opBtn');
   ob.style.display = '';
-  ob.textContent = '\\U0001f477 ' + t('sim.operator');
+  ob.textContent = '\U0001f477 ' + t('sim.operator');
+  // the scripted reference operator's own control: pick a level, watch it
+  // drive this seat at real time (see OPERATORS) - not offered headless,
+  // where there is nobody to watch
+  if (!opHeadless) {
+    const lv = document.getElementById('opLvl');
+    lv.innerHTML = Object.keys(D.sims.operatorLevels).map((l) =>
+      `<option value="${l}">${l}</option>`).join('');
+    document.getElementById('opCtl').style.display = '';
+  }
   // see the matching note in teardownSim(): a sim owns the camera itself,
   // so it never offers a headset session too
   document.getElementById('vrBtn').style.display = 'none';
@@ -651,33 +682,56 @@ document.getElementById('sndBtn').addEventListener('click', () => {
 document.getElementById('opBtn').addEventListener('click', () => {
   if (sim) openAdvisor('operator');
 });
+// watch the scripted reference operator drive this seat, at real time, at
+// the chosen level: the same seat and yard restarted with the operator in
+// it - its run records as a SCRIPTED episode, never as the learner's own
+document.getElementById('opRefBtn').addEventListener('click', () => {
+  if (!sim) return;
+  const id = curSimId, sc = curScenario?.id, level = document.getElementById('opLvl').value;
+  startSim(id, sc);
+  opAttach(level, 1, false);
+});
 
 function simResults(simId, rows, passed) {
   const def = D.sims.sims[simId];
   const i = D.i18n[loc];
-  chime(passed); buzz(passed ? 180 : 90, .5);
-  // the run lands in the device-local record: runs, passes, best time
-  recordEpisode({ kind: 'sim', campus: campusKey, hall: slug, sim: simId,
+  if (!opRun?.sweep) { chime(passed); buzz(passed ? 180 : 90, .5); }
+  // the run lands in the device-local record, naming who drove the seat
+  recordEpisode({ kind: 'sim', campus: curScenario?.campus ?? campusKey, hall: slug, sim: simId,
     scenario: curScenario?.id ?? null,
+    actor: opRun ? 'scripted-reference' : 'human',
+    ...(opRun ? { operator: { level: opRun.level, seed: opRun.seed, scenario: opRun.scenario,
+      steps: opRun.step, dt: opRun.fixedDt } } : {}),
     controls: def.controls.map((c) => c.action),
     outcome: traceOn && simTicks.length
-      ? { passed, rows, trace: simTicks.slice(0, TRACE_MAX) }
+      ? { passed, rows, trace: simTicks }
       : { passed, rows } });
   const rec = prog.sims[simId] ?? {};
-  rec.runs = (rec.runs ?? 0) + 1;
-  if (passed) {
-    rec.passed = true;
-    const tv = parseFloat(rows.find((r) => r.axis === 'time')?.value);
-    if (isFinite(tv)) rec.best = Math.min(rec.best ?? Infinity, tv);
+  if (!opRun) {
+    // a human run: runs, passes, best time. A scripted reference run is
+    // its own record (the episode above) and never the learner's - no
+    // progress credit, no best time, and a headless sweep shows no panel
+    rec.runs = (rec.runs ?? 0) + 1;
+    if (passed) {
+      rec.passed = true;
+      const tv = parseFloat(rows.find((r) => r.axis === 'time')?.value);
+      if (isFinite(tv)) rec.best = Math.min(rec.best ?? Infinity, tv);
+    }
+    prog.sims[simId] = rec; saveProg(); renderChrome();
+  } else {
+    opRun.result = { passed, rows };
+    if (opRun.sweep) return;
   }
-  prog.sims[simId] = rec; saveProg(); renderChrome();
   const recLine = rec.passed && isFinite(rec.best)
     ? `<p style="color:var(--muted);font-size:12.5px">\\u2713 ${rec.runs}\\u00d7 \\u00b7 best ${rec.best.toFixed(1)} s</p>`
+    : '';
+  const opChip = opRun
+    ? `<span class="chip">\U0001f916 scripted reference \\u00b7 ${opRun.level} \\u00b7 not your record</span>`
     : '';
   document.getElementById('pbody').innerHTML = `
     <h2>${def.name}</h2>
     <span class="chip" style="${passed ? 'border-color:var(--good);color:var(--good)' : 'border-color:var(--crit);color:var(--crit)'}">
-      ${passed ? t('sim.pass') : t('sim.retry')}</span>
+      ${passed ? t('sim.pass') : t('sim.retry')}</span>${opChip}
     <h3>${t('sim.results')}</h3>
     <table style="width:100%;border-collapse:collapse;font-size:13.5px"><tbody>
       ${rows.map(r => `<tr><td>${r.axis}</td>
@@ -738,12 +792,16 @@ function craneSim(P = {}) {
   g.add(new THREE.Line(cableGeo, cableMat));
   const hook = new THREE.Mesh(new THREE.OctahedronGeometry(.45), mat.post);
   hook.castShadow = true; g.add(hook);
-  const load = box(2.4, 1.6, 2.4, mat.brick, 14, .8, 10, g);
+  // the supply pad and target ring sit where the registry's layout says -
+  // the one truth this sim and its scripted operator both read
+  const LAY = D.sims.sims['crane-lift'].layout;
+  const load = box(2.4, 1.6, 2.4, mat.brick, LAY.supply[0], .8, LAY.supply[1], g);
   // pads and obstacles
-  const supply = box(4, .2, 4, mat.slab, 14, .1, 10, g, false);
+  const supply = box(4, .2, 4, mat.slab, LAY.supply[0], .1, LAY.supply[1], g, false);
   const target = new THREE.Mesh(new THREE.RingGeometry(1.6, 2.6, 32),
     new THREE.MeshBasicMaterial({ color: 0x5CB584, side: THREE.DoubleSide }));
-  target.rotation.x = -Math.PI / 2; target.position.set(-13, .12, -9); g.add(target);
+  target.rotation.x = -Math.PI / 2;
+  target.position.set(LAY.target[0], .12, LAY.target[1]); g.add(target);
   const stacks = [box(5, 6 * sh, 3, mat.wall, 2, 3 * sh, -12, g),
                   box(4, 8 * sh, 3, mat.wall, -3, 4 * sh, 4, g)];
   const st = { slew: .6, r: 14.5, h: 6, vslew: 0, attached: false, done: false,
@@ -878,11 +936,14 @@ function excavatorSim(P = {}) {
   const bucket = box(.9, .7, .95, mat.part, L2, -.3, 0, stickG);
   const spoilInBucket = box(.7, .4, .75, mat.wood, L2, .15, 0, stickG, false);
   spoilInBucket.visible = false;
-  // the trench: cells and flagged utilities come from the regional scenario
+  // the trench: cells and flagged utilities come from the regional scenario;
+  // the trench line, cell pitch, spoil zone and bite are the registry's
+  // layout - read here and by the scripted operator, typed nowhere twice
+  const LAY = D.sims.sims['excavator-trench'].layout;
   const SPEC = P.cells ?? [{ d: 1.5 }, { d: 1.5 }, { d: .5, util: true }, { d: 1.5 }];
-  const CZ = 6, span = SPEC.length - 1;
+  const CZ = LAY.trench_z, span = SPEC.length - 1;
   const cells = SPEC.map((c, i) => {
-    const cx = (i - span / 2) * 2;
+    const cx = (i - span / 2) * LAY.pitch;
     const m = new THREE.Mesh(boxGeo(1.8, .1, 1.8),
       new THREE.MeshStandardMaterial({ color: 0x53575a, roughness: .95 }));
     m.position.set(cx, .05, CZ); m.receiveShadow = true; g.add(m);
@@ -900,7 +961,7 @@ function excavatorSim(P = {}) {
     box(.3, .04, 2.4, flagMat, c.x, .12, c.z, g, false);
   }
   // spoil zone and its growing pile
-  const PAD = { x: -5, z: -4 };
+  const PAD = { x: LAY.spoil[0], z: LAY.spoil[1] };
   const pad = new THREE.Mesh(new THREE.CylinderGeometry(1.9, 1.9, .08, 28),
     new THREE.MeshBasicMaterial({ color: 0x8a6a42, transparent: true, opacity: .4 }));
   pad.position.set(PAD.x, .05, PAD.z); g.add(pad);
@@ -942,7 +1003,7 @@ function excavatorSim(P = {}) {
           Math.hypot(tip.x - c.x, tip.z - c.z) < 1.1);
         if (cell && tip.y < .6 && cell.d < 2.5) {
           if (!st.t0) st.t0 = performance.now();
-          cell.d += .5; st.carrying = true; spoilInBucket.visible = true;
+          cell.d += LAY.bite; st.carrying = true; spoilInBucket.visible = true;
           cellShade(cell);
           blip(180, 90, .18, 'sawtooth', .18);      // bite
           if (cell.util && cell.d > cell.target + .01 && !cell.struck) {
@@ -993,6 +1054,7 @@ function excavatorSim(P = {}) {
       }
     },
     gauges: () => ({
+      slew: ((st.slew * 180 / Math.PI) % 360 + 360) % 360,
       reach: st.r,
       depth: st.bh,
       grade: { v: 0, txt: cells.filter((c) => Math.abs(c.d - c.target) < .01).length + '/' + cells.length },
@@ -1006,7 +1068,10 @@ function excavatorSim(P = {}) {
 /* --------------------------------------------------- forklift yard run --- */
 function forkliftSim(P = {}) {
   const nGates = P.gates ?? 4, dockW = P.dock_w ?? 2.2;
-  const laneEnd = 14 + 10 * nGates;           // the pallet waits past the last gate
+  // the course geometry is the registry's layout - gate line, cone offset,
+  // dock and start - read here and by the scripted operator that threads it
+  const LAY = D.sims.sims['forklift-run'].layout, GL = LAY.gates;
+  const laneEnd = -(GL.z0 - GL.pitch * nGates);   // the pallet waits one pitch past the last gate
   const yardHD = (laneEnd + 26) / 2;
   const g = new THREE.Group();
   simYard(g, 32, yardHD, 0, 16 - yardHD);
@@ -1025,11 +1090,11 @@ function forkliftSim(P = {}) {
   }
   // course: cone gates, pallet, dock — the gate count is the scenario's
   const GATES = Array.from({ length: nGates }, (_, i) =>
-    [i % 2 === 0 ? -6 : 6, -14 - 10 * i, 0]);
+    [GL.side[i % GL.side.length] * GL.x, GL.z0 - GL.pitch * i, 0]);
   const cones = [], gates = [];
   GATES.forEach(([gx, gz], gi) => {
     const pair = [];
-    for (const off of [-2.6, 2.6]) {
+    for (const off of [-GL.cone_offset, GL.cone_offset]) {
       const c = new THREE.Mesh(new THREE.ConeGeometry(.32, .8, 12), mat.cone);
       c.position.set(gx + off, .4, gz); c.castShadow = true;
       g.add(c); cones.push(c); pair.push(c);
@@ -1042,10 +1107,11 @@ function forkliftSim(P = {}) {
   pallet.position.set(0, 0, -laneEnd);
   const dock = new THREE.Mesh(new THREE.PlaneGeometry(dockW * 2 + .6, dockW * 2 + .6),
     new THREE.MeshBasicMaterial({ color: 0x41C4D4, transparent: true, opacity: .28 }));
-  dock.rotation.x = -Math.PI / 2; dock.position.set(14, .06, -10); g.add(dock);
+  dock.rotation.x = -Math.PI / 2;
+  dock.position.set(LAY.dock[0], .06, LAY.dock[1]); g.add(dock);
   const st = { v: 0, steer: 0, phi: Math.PI, carrying: false, done: false,
                hits: 0, t0: null, placed: false };
-  fl.position.set(0, 0, -2); fl.rotation.y = st.phi;
+  fl.position.set(LAY.start[0], 0, LAY.start[1]); fl.rotation.y = st.phi;
   function finish(docked) {
     st.done = true;
     const taken = gates.filter(x => x.taken).length;
@@ -1130,6 +1196,9 @@ function forkliftSim(P = {}) {
     gauges: () => ({
       speed: Math.abs(st.v) * 3.6,
       steer: st.steer * 180 / Math.PI,
+      heading: ((st.phi * 180 / Math.PI) % 360 + 360) % 360,
+      x: fl.position.x,
+      z: fl.position.z,
       load: { v: st.carrying ? 1 : 0, txt: st.carrying ? '\\u25a0' : '\\u2013' },
       gates: { v: 0, txt: gates.filter(x => x.taken).length + '/' + gates.length },
       cones: { v: st.hits, txt: String(st.hits) },
@@ -1537,8 +1606,11 @@ function loadChartSim(P = {}) {
   board.position.set(4, 2.1, 3); board.rotation.y = -.5; g.add(board);
   box(.14, 2.2, .14, mat.part, 3.2, 1.1, 3.4, g);
   box(.14, 2.2, .14, mat.part, 4.8, 1.1, 2.6, g);
+  // `respawn` is sim time, not a wall-clock timer, so the next pick lands
+  // the same number of steps after a judgment under any drive - the frame
+  // loop or the scripted operator's fixed-step sweep
   const st = { i: 0, errs: 0, over: 0, t0: null, done: false, hi: -1,
-               lq: false, le: false, lx: false };
+               lq: false, le: false, lx: false, respawn: 0 };
   let loadMesh = null, loadLab = null;
   const anims = [];
   function spawn() {
@@ -1582,7 +1654,7 @@ function loadChartSim(P = {}) {
       } else { blip(300, 200, .3, 'square', .12); buzz(120, .4); }
     }
     st.i++;
-    setTimeout(spawn, 650);
+    st.respawn = .65;
   }
   return {
     group: g, orbit: true,
@@ -1591,6 +1663,10 @@ function loadChartSim(P = {}) {
     action() { judge(true); },
     update(dt) {
       if (!st.done) {
+        if (st.respawn > 0) {
+          st.respawn -= dt;
+          if (st.respawn <= 0) { st.respawn = 0; spawn(); }
+        }
         if (keys.KeyX && !st.lx) judge(false);
         st.lx = !!keys.KeyX;
         if (keys.KeyQ && !st.lq) { st.hi = (st.hi + CHART.length) % CHART.length; drawChart(st.hi); }
@@ -1634,7 +1710,10 @@ function loadChartSim(P = {}) {
 
 /* ----------------------------------------- pressure washer surface clean --- */
 function pressureWasherSim(P = {}) {
-  const COLS = P.cols ?? 6, ROWS = P.rows ?? 4, CELL = .62;
+  // the cell size and standoff window are the registry's layout - read
+  // here and by the scripted operator that sweeps the same grid
+  const LAY = D.sims.sims['pressure-washer'].layout;
+  const COLS = P.cols ?? 6, ROWS = P.rows ?? 4, CELL = LAY.cell;
   const panelW = COLS * CELL, panelH = ROWS * CELL, x0 = -panelW / 2;
   const g = new THREE.Group();
   simYard(g, 14, 11);
@@ -1660,7 +1739,8 @@ function pressureWasherSim(P = {}) {
     new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0x9fd8ff,
       emissiveIntensity: 2.2 }));
   jet.position.set(0, 0, -.3); jet.visible = false; wand.add(jet);
-  const EFF_MAX = 1.6, DAMAGE_GAP = .55, CLEAN_DWELL = .55, DAMAGE_DWELL = .9;
+  const EFF_MAX = LAY.standoff.effective_max, DAMAGE_GAP = LAY.standoff.damage_under;
+  const CLEAN_DWELL = .55, DAMAGE_DWELL = .9;
   const st = { u: 0, v: panelH / 2, gap: 1.0, spray: false, done: false,
                damage: 0, containSet: false, containOk: null, t0: null, lc: false };
   const cellAt = () => {
@@ -1738,6 +1818,8 @@ function pressureWasherSim(P = {}) {
       }
     },
     gauges: () => ({
+      u: st.u,
+      v: st.v,
       gap: st.gap,
       coverage: { v: 0, txt: Math.round(100 * cells.filter((c) => c.clean).length / cells.length) + '%' },
       damage: { v: st.damage, txt: String(st.damage) },
@@ -1749,8 +1831,11 @@ function pressureWasherSim(P = {}) {
 
 /* --------------------------------------------- airless paint sprayer finish --- */
 function paintSprayerSim(P = {}) {
-  const COLS = P.cols ?? 6, ROWS = P.rows ?? 4, CELL = .62;
-  const panelW = COLS * CELL, panelH = ROWS * CELL, x0 = -panelW / 2, MASK = .3;
+  // cell size, masked margin and standoff window: the registry's layout,
+  // shared with the scripted operator exactly as the washer bench's is
+  const LAY = D.sims.sims['airless-sprayer'].layout;
+  const COLS = P.cols ?? 6, ROWS = P.rows ?? 4, CELL = LAY.cell;
+  const panelW = COLS * CELL, panelH = ROWS * CELL, x0 = -panelW / 2, MASK = LAY.mask;
   const g = new THREE.Group();
   simYard(g, 14, 11);
   // the wall, oversized so a masked boundary sits inside its own face
@@ -1778,7 +1863,8 @@ function paintSprayerSim(P = {}) {
     new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xE8A33D,
       emissiveIntensity: 2 }));
   jet.position.set(0, 0, -.3); jet.visible = false; gun.add(jet);
-  const EFF_MAX = 1.6, RUN_GAP = .55, COAT_DWELL = .5, RUN_DWELL = .9;
+  const EFF_MAX = LAY.standoff.effective_max, RUN_GAP = LAY.standoff.damage_under;
+  const COAT_DWELL = .5, RUN_DWELL = .9;
   const st = { u: 0, v: panelH / 2, gap: 1.0, spray: false, done: false,
                runs: 0, overspray: 0, inOver: false, t0: null };
   const cellAt = () => {
@@ -1857,6 +1943,8 @@ function paintSprayerSim(P = {}) {
       }
     },
     gauges: () => ({
+      u: st.u,
+      v: st.v,
       gap: st.gap,
       coverage: { v: 0, txt: Math.round(100 * cells.filter((c) => c.coated).length / cells.length) + '%' },
       runs: { v: st.runs, txt: String(st.runs) },
@@ -1865,6 +1953,456 @@ function paintSprayerSim(P = {}) {
       time: { v: 0, txt: st.t0 ? ((performance.now() - st.t0) / 1000).toFixed(0) : '\\u2013' },
     }),
   };
+}
+
+/* ------------------------------------------ scripted reference operator
+   Every seat can be driven by a scripted reference operator: one policy
+   per sim, a deterministic function of the seat's own gauges() readout
+   (the same numbers the dash shows - nothing the sim keeps private), the
+   scenario's params, the seat's declared layout and a level, plus a small
+   per-run scratch memory (which procedure step it is on) and a fixed-seed
+   generator the degraded levels draw their slips from. No model, no
+   network, no Math.random anywhere below. Each policy is written as a
+   switch over the procedure step ids the sims registry declares for that
+   seat, in that order, so the Operator advisor's `seat.procedure` answer
+   IS this code's outline. At `optimal` it passes every pass-gated axis on
+   every regional scenario - opSweep() below is how the build proves it.
+   Its runs are SCRIPTED episodes (D.sims.operatorHonesty): the operator's
+   own record, never the learner's. Inputs land in the same `keys` object
+   a keyboard fills and the same sim.action() Space calls, so the seat
+   cannot tell the two apart - which is the point. */
+const OP_KEYS = ['KeyW', 'KeyS', 'KeyA', 'KeyD', 'KeyQ', 'KeyE', 'KeyR', 'KeyX', 'KeyC'];
+const OP_DASH = '\\u2013';
+function opRng(handle) {              // FNV-1a of the run handle seeds an LCG
+  let h = 2166136261;
+  for (let i = 0; i < handle.length; i++) {
+    h ^= handle.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0;
+  }
+  let s = h || 1;
+  return () => { s = (Math.imul(s, 1664525) + 1013904223) >>> 0; return s / 4294967296; };
+}
+const wrapDeg = (d) => ((d + 180) % 360 + 360) % 360 - 180;
+// hold a key toward a target reading; true once inside the tolerance
+function seek(k, cur, want, tol, minus, plus) {
+  if (Math.abs(want - cur) <= tol) return true;
+  k[want > cur ? plus : minus] = true;
+  return false;
+}
+// a novice's slip: with probability L.slip per step, one wrong key held too
+function slip(k, c) {
+  if (c.L.slip && c.rng() < c.L.slip) k[OP_KEYS[Math.floor(c.rng() * 6)]] = true;
+}
+// a novice's wandering setpoint: every so often, a new seeded offset
+function wander(c, key, span, low, high) {
+  const m = c.m;
+  if (c.step >= (m[key + 'At'] ?? 0)) {
+    m[key + 'At'] = c.step + low + Math.floor(c.rng() * (high - low));
+    m[key] = -span + c.rng() * span * 1.4;
+  }
+  return m[key] ?? 0;
+}
+
+const OPERATORS = {
+  'crane-lift': {
+    levels: { optimal: { carry: 20, gate: [.5, .9], settle: .3, tol: .5 },
+              novice: { carry: 8, gate: [1.2, 1.9], settle: .8, tol: .8, slip: .05 },
+              hurried: { carry: 20, gate: [1e9, 1e9], settle: 1e9, tol: .9 } },
+    step(g, c) {
+      const k = {}, L = c.L, m = c.m, lay = c.def.layout;
+      const slew = g.slew * Math.PI / 180, r = g.radius;
+      const hx = Math.cos(slew) * r, hz = Math.sin(slew) * r;
+      // the swing gate, with hysteresis: move while the swing gauge is
+      // low, hold everything while it is high - the whole discipline
+      if (g.swing > L.gate[1]) m.hold = true; else if (g.swing < L.gate[0]) m.hold = false;
+      // slew toward a bearing; the tolerance is tangential at the radius
+      // the hook will finally be at, so a small angle stays small there
+      const slewTo = (x, z, atR) => {
+        const da = wrapDeg((Math.atan2(z, x) - slew) * 180 / Math.PI);
+        if (Math.abs(da) * Math.PI / 180 * atR <= L.tol) return true;
+        if (!m.hold) k[da > 0 ? 'KeyD' : 'KeyA'] = true;
+        return false;
+      };
+      const trolleyTo = (want) => m.hold ? false : seek(k, r, want, .3, 'KeyS', 'KeyW');
+      let act = false;
+      const [sx, sz] = lay.supply, [tx, tz] = lay.target;
+      switch (c.id) {
+        case 'reach': {
+          const a = slewTo(sx, sz, Math.hypot(sx, sz)), b = trolleyTo(Math.hypot(sx, sz));
+          const h = seek(k, g.hook, 4, .3, 'KeyE', 'KeyQ');
+          if (a && b && h) c.next();
+          break;
+        }
+        case 'hook': act = true; c.next(); break;
+        case 'hoist':
+          if (g.time.txt === OP_DASH) c.goto('reach');          // the hook missed
+          else if (seek(k, g.hook, L.carry, .3, 'KeyE', 'KeyQ')) c.next();
+          break;
+        case 'pull-in': if (trolleyTo(7)) c.next(); break;
+        case 'slew': if (slewTo(tx, tz, Math.hypot(tx, tz))) c.next(); break;
+        case 'trolley': {
+          const a = slewTo(tx, tz, Math.hypot(tx, tz)), b = trolleyTo(Math.hypot(tx, tz));
+          if (a && b) c.next();
+          break;
+        }
+        case 'settle': if (g.swing <= L.settle) c.next(); break;
+        case 'lower': if (seek(k, g.hook, 3, .25, 'KeyE', 'KeyQ')) c.next(); break;
+        case 'release':
+          if (Math.hypot(hx - tx, hz - tz) > L.tol * 2) c.goto('trolley');
+          else if (g.swing <= L.settle) { act = true; c.next(); }
+          break;
+      }
+      slip(k, c);
+      return { keys: k, act };
+    },
+  },
+  'excavator-trench': {
+    levels: { optimal: { tol: .45, dumpTol: .6 },
+              novice: { tol: .45, dumpTol: .6, slip: .04, extra: .35 },
+              hurried: { tol: .6, dumpTol: 2.4 } },
+    step(g, c) {
+      const k = {}, L = c.L, m = c.m, lay = c.def.layout, cells = c.P.cells ?? [];
+      if (!m.dug) {
+        m.dug = cells.map(() => 0);
+        // the count per cell is the marked depth over the bite - a novice
+        // mis-counts one bite extra on some cells (seeded)
+        m.need = cells.map((x) => Math.round(x.d / lay.bite)
+          + (L.extra && c.rng() < L.extra ? 1 : 0));
+      }
+      const slew = g.slew * Math.PI / 180, r = g.reach;
+      const tx = Math.cos(slew) * r, tz = Math.sin(slew) * r;
+      const go = (x, z, tol) => {
+        const da = wrapDeg((Math.atan2(z, x) - slew) * 180 / Math.PI), wr = Math.hypot(x, z);
+        const okA = Math.abs(da) * Math.PI / 180 * wr <= tol, okR = Math.abs(wr - r) <= tol;
+        if (!okA) k[da > 0 ? 'KeyD' : 'KeyA'] = true;
+        if (!okR) k[wr > r ? 'KeyW' : 'KeyS'] = true;
+        return okA && okR && Math.hypot(tx - x, tz - z) <= tol * 1.5;
+      };
+      let act = false;
+      const i = m.dug.findIndex((d, j) => d < m.need[j]);
+      switch (c.id) {
+        case 'cell': {
+          if (i < 0) break;                       // the last dump finishes the run
+          const x = (i - (cells.length - 1) / 2) * lay.pitch;
+          const a = go(x, lay.trench_z, L.tol), b = seek(k, g.depth, .3, .2, 'KeyE', 'KeyQ');
+          if (a && b) c.next();
+          break;
+        }
+        case 'dig': act = true; m.dug[i]++; c.next(); break;
+        case 'carry': {
+          const a = go(lay.spoil[0], lay.spoil[1], L.dumpTol);
+          const b = seek(k, g.depth, 1.2, .3, 'KeyE', 'KeyQ');
+          if (a && b) c.next();
+          break;
+        }
+        case 'dump': act = true; c.goto('cell'); break;
+      }
+      slip(k, c);
+      return { keys: k, act };
+    },
+  },
+  'forklift-run': {
+    levels: { optimal: { v: 3.2, vTurn: 1.5, lane: true, exit: 1.5, aim: 1, dockFrac: .55 },
+              novice: { v: 3.2, vTurn: 1.5, lane: true, exit: 1.5, aim: 1, dockFrac: .55, slip: .05 },
+              hurried: { v: 6, vTurn: 6, lane: false, exit: 0, aim: 0, dockFrac: 1.6 } },
+    step(g, c) {
+      const k = {}, L = c.L, m = c.m, lay = c.def.layout, G = lay.gates;
+      const n = c.P.gates ?? 4, w = c.P.dock_w ?? 2.2;
+      const gateAt = (i) => [G.side[i % G.side.length] * G.x, G.z0 - i * G.pitch];
+      const palletZ = G.z0 - n * G.pitch;
+      // the clear return lane: outside every cone row, past the dock
+      const laneX = lay.dock[0] + 2.5;
+      const hd = g.heading * Math.PI / 180, dx = Math.sin(hd), dz = Math.cos(hd);
+      const x = g.x, z = g.z, v = g.speed / 3.6;
+      const tipX = x + 2.4 * dx, tipZ = z + 2.4 * dz;
+      const bearing = (px, pz) =>          // + is left, which is KeyA
+        Math.atan2(dz * (px - x) - dx * (pz - z), dx * (px - x) + dz * (pz - z));
+      const range = (px, pz) => Math.hypot(px - x, pz - z);
+      const drive = (px, pz, vWant) => {
+        const b = bearing(px, pz);
+        if (b > .04) k.KeyA = true; else if (b < -.04) k.KeyD = true;
+        const want = Math.abs(b) > .45 ? Math.min(vWant, L.vTurn) : vWant;
+        if (v < want - .15) k.KeyW = true;
+        else if (v > want + .4 && v > 1) k.KeyS = true;
+      };
+      // a gate counts as taken 2.4 m before its centre, while the truck is
+      // still crossing the cone line on its approach diagonal. Between
+      // gates the next one is a full pitch down and across, a gentle turn
+      // that clears the cones; the pallet is not - it sits on the centre
+      // line, so the turn for it starts right at the last gate's inner
+      // cone. So after the LAST take the truck first drives on through an
+      // exit point past the centre on that same diagonal, then turns
+      const taken = parseInt(g.gates.txt, 10);
+      if (taken !== m.taken) {
+        m.taken = taken;
+        if (taken === n && L.exit) {
+          const [gx, gz] = gateAt(taken - 1);
+          const [px, pz] = taken > 1 ? gateAt(taken - 2) : lay.start;
+          const len = Math.hypot(gx - px, gz - pz);
+          m.exit = [gx + (gx - px) / len * L.exit, gz + (gz - pz) / len * L.exit];
+        }
+      }
+      if (m.exit && (range(...m.exit) < 1.2
+          || dx * (m.exit[0] - x) + dz * (m.exit[1] - z) < 0)) m.exit = null;   // reached or passed
+      // pursuit of a gate's exact centre cuts the corner toward the inner
+      // cone (the one facing the gate before); the aim point sits a little
+      // outward of centre so the truck crosses the line nearer the centre
+      const aimAt = (i) => {
+        const [gx, gz] = gateAt(i), px = i > 0 ? gateAt(i - 1)[0] : lay.start[0];
+        return [gx + Math.sign(gx - px) * (L.aim ?? 0), gz];
+      };
+      let act = false;
+      switch (c.id) {
+        case 'gates':
+          if (taken >= n) c.next();
+          else if (m.exit) drive(...m.exit, L.v);
+          else drive(...aimAt(taken), L.v);
+          break;
+        case 'approach': {
+          const d = range(0, palletZ) - 2.4;
+          if (Math.hypot(tipX, tipZ - palletZ) < 1.3 && v < .9) c.next();
+          else if (m.exit) drive(...m.exit, L.v);
+          else drive(0, palletZ, Math.max(.4, Math.min(L.v, d * .8)));
+          break;
+        }
+        case 'lift':
+          if (g.load.v === 1) { m.wp = 0; c.next(); }
+          else if (v < 1) act = true;
+          else k.KeyS = true;
+          break;
+        case 'return': {
+          if (!L.lane) { c.next(); break; }
+          const wps = [[laneX, palletZ], [laneX, lay.dock[1] - 12]];
+          if (m.wp >= wps.length) { c.next(); break; }
+          if (range(...wps[m.wp]) < 2.5) m.wp++; else drive(...wps[m.wp], L.v);
+          break;
+        }
+        case 'dock': {
+          const [ox, oz] = lay.dock;
+          if (Math.abs(tipX - ox) < w * L.dockFrac && Math.abs(tipZ - oz) < w * L.dockFrac) {
+            act = true; c.next();
+          } else drive(ox, oz, Math.max(.5, Math.min(L.v, (range(ox, oz) - 2.4) * .8)));
+          break;
+        }
+      }
+      slip(k, c);
+      return { keys: k, act };
+    },
+  },
+  'weld-bead': {
+    levels: { optimal: { duty: 1 }, novice: { duty: 1, wander: .9 }, hurried: { duty: .4 } },
+    step(g, c) {
+      const k = {}, L = c.L, band = c.P.band ?? [2, 5];
+      let want = (band[0] + band[1]) / 2, act = false;
+      // a novice's gap wanders around the band - and drifts back late,
+      // only once it is clear of it, never so far the arc pops out
+      if (L.wander) {
+        want += wander(c, 'gapOff', L.wander, 30, 90);
+        want = Math.max(band[0] - .4, Math.min(band[1] + .4, want));
+      }
+      switch (c.id) {
+        case 'gap': if (seek(k, g.gap, want, .12, 'KeyE', 'KeyQ')) c.next(); break;
+        case 'strike': act = true; c.next(); break;
+        case 'travel':
+          if (g.time.txt === OP_DASH) { c.goto('strike'); break; }   // the arc did not take
+          seek(k, g.gap, want, .12, 'KeyE', 'KeyQ');
+          // travel without pausing - a hurried hand stutters, and lingers
+          if (L.duty >= 1 || c.step % 10 < L.duty * 10) k.KeyW = true;
+          break;
+      }
+      return { keys: k, act };
+    },
+  },
+  'scaffold-bay': {
+    levels: { optimal: {}, novice: { slip: .12 }, hurried: { blind: true } },
+    step(g, c) {
+      const k = {}, L = c.L, m = c.m;
+      if (g.stage.txt === OP_DASH) return { keys: k, act: false };     // the bay is built
+      if (L.blind) {          // never reads the stage: steps the rack and places regardless
+        if (c.step % 2) k.KeyD = true;
+        return { keys: k, act: c.step % 3 === 0 };
+      }
+      if (m.blind > 0) { m.blind--; return { keys: k, act: true }; }
+      switch (c.id) {
+        case 'rack':
+          if (g.rack.txt === g.stage.txt) c.next();
+          else if (c.step % 2 === 0) k.KeyR = true;        // edge-triggered: press, release
+          break;
+        case 'place':
+          if (L.slip && c.rng() < L.slip) { k.KeyD = true; m.blind = 1; break; }   // a slip: wrong rack, placed anyway
+          if (g.rack.txt !== g.stage.txt) { c.goto('rack'); break; }
+          return { keys: k, act: true };
+      }
+      return { keys: k, act: false };
+    },
+  },
+  'rigging-signals': {
+    levels: { optimal: {}, novice: { slip: .15 }, hurried: { guess: true } },
+    step(g, c) {
+      const k = {}, L = c.L, m = c.m;
+      const KEY = { up: 'KeyQ', down: 'KeyE', 'swing-l': 'KeyA', 'swing-r': 'KeyD',
+                    out: 'KeyW', in: 'KeyS' };
+      if (g.called.txt === OP_DASH) return { keys: k, act: false };    // the card is done
+      switch (c.id) {
+        case 'read': {
+          m.sig = g.called.txt;
+          const opts = Object.keys(KEY);
+          if (L.guess) m.sig = [...opts, 'stop'][m.g = ((m.g ?? -1) + 1) % 7];  // never reads the card
+          else if (L.slip && c.rng() < L.slip) m.sig = opts[Math.floor(c.rng() * opts.length)];
+          c.next();
+          break;
+        }
+        case 'give':            // one press, then a release frame: the seat latches on the edge
+          c.goto('read');
+          if (m.sig === 'stop') return { keys: k, act: true };
+          k[KEY[m.sig]] = true;
+          break;
+      }
+      return { keys: k, act: false };
+    },
+  },
+  'load-chart': {
+    levels: { optimal: {}, novice: { slip: .2 }, hurried: { acceptAll: true } },
+    step(g, c) {
+      const k = {}, L = c.L, m = c.m;
+      switch (c.id) {
+        case 'read':            // the chart line at this radius is the seat's own gauge
+          m.accept = L.acceptAll ? true : g.load <= g.chart;
+          if (L.slip && c.rng() < L.slip) m.accept = !m.accept;
+          c.next();
+          break;
+        case 'judge':
+          c.goto('read');
+          if (m.accept) return { keys: k, act: true };
+          k.KeyX = true;
+          break;
+      }
+      return { keys: k, act: false };
+    },
+  },
+  'pressure-washer': {
+    levels: { optimal: { dwell: .7, contain: true },
+              novice: { dwell: 1.0, contain: true, wander: .7, slip: .03 },
+              hurried: { dwell: 1.0, contain: false, off: -.6 } },
+    step(g, c) { return opBench(g, c, 'containment'); },
+  },
+  'airless-sprayer': {
+    levels: { optimal: { dwell: .6 },
+              novice: { dwell: 1.0, wander: .7, slip: .03 },
+              hurried: { dwell: 1.0, off: -.6, over: .5 } },
+    step(g, c) { return opBench(g, c, null); },
+  },
+};
+// the two hand-tool benches share one raster policy: contain (the washer),
+// set the standoff to the middle of the effective window, pull the
+// trigger, then sweep the grid row by row with a dwell just past the
+// clean/coat time. A novice's standoff wanders; a hurried hand skips the
+// berm, crowds the surface and (spraying) overshoots the mask at row ends
+function opBench(g, c, containGauge) {
+  const k = {}, L = c.L, m = c.m, lay = c.def.layout;
+  const cols = c.P.cols ?? 6, rows = c.P.rows ?? 4, cell = lay.cell;
+  const x0 = -cols * cell / 2, so = lay.standoff;
+  let want = (so.damage_under + so.effective_max) / 2 + (L.off ?? 0);
+  if (L.wander) want += wander(c, 'gapOff', L.wander, 60, 180);
+  let act = false;
+  switch (c.id) {
+    case 'contain':
+      if (!containGauge || !L.contain || g[containGauge].txt !== OP_DASH) c.next();
+      else if (c.step % 2 === 0) k.KeyC = true;              // edge-triggered
+      break;
+    case 'standoff': if (seek(k, g.gap, want, .08, 'KeyE', 'KeyQ')) c.next(); break;
+    case 'spray': act = true; m.i = 0; m.t = 0; c.next(); break;
+    case 'raster': {
+      seek(k, g.gap, want, .08, 'KeyE', 'KeyQ');             // hold the standoff all sweep
+      if (m.i >= cols * rows) break;
+      const r = Math.floor(m.i / cols), ci = r % 2 ? cols - 1 - m.i % cols : m.i % cols;
+      let ux = x0 + (ci + .5) * cell;
+      if (L.over && (ci === 0 || ci === cols - 1)) ux += (ci === 0 ? -1 : 1) * L.over;
+      const a = seek(k, g.u, ux, .05, 'KeyA', 'KeyD');
+      const b = seek(k, g.v, (r + .5) * cell, .05, 'KeyS', 'KeyW');
+      if (a && b) { m.t += c.dt; if (m.t >= L.dwell) { m.i++; m.t = 0; } }
+      break;
+    }
+  }
+  slip(k, c);
+  return { keys: k, act };
+}
+
+/* the driver: attach a policy to the running seat, step it once per
+   physics step, run a seat headlessly to completion at a fixed dt, and
+   sweep seats x scenarios x levels x seeds through simResults() exactly
+   as a human run goes - one integration point, downstream of the score */
+function opAttach(level, seed, sweep, fixedDt = null) {
+  const def = D.sims.sims[curSimId], op = OPERATORS[curSimId];
+  if (!op || !def.operator.levels.includes(level))
+    throw new Error('no scripted reference operator for ' + curSimId + ' at ' + level);
+  const scenario = curScenario?.id ?? null, proc = def.operator.procedure;
+  opRun = { sim: curSimId, level, seed, scenario, sweep, def, fixedDt,
+    P: curScenario?.params ?? {}, L: op.levels[level], m: { phase: 0 },
+    step: 0, dt: fixedDt ?? 1 / 60, result: null,
+    rng: opRng(curSimId + ':' + scenario + ':' + level + ':' + seed),
+    next() { this.m.phase++; },
+    goto(pid) { this.m.phase = proc.findIndex((p) => p.id === pid); },
+    get id() { return proc[this.m.phase]?.id ?? null; } };
+}
+function opStep(dt) {
+  if (!opRun || !sim || opRun.result) return;
+  opRun.dt = dt;
+  const out = OPERATORS[opRun.sim].step(sim.gauges(), opRun) ?? {};
+  for (const kk of OP_KEYS) keys[kk] = !!(out.keys && out.keys[kk]);
+  if (out.act) sim.action?.();
+  opRun.step++;
+  if (!opRun.sweep && opRun.step % 12 === 1) {
+    const p = opRun.def.operator.procedure[opRun.m.phase];
+    document.getElementById('hint').textContent = '\U0001f916 scripted reference \\u00b7 '
+      + opRun.level + ' \\u00b7 ' + (p ? 'step ' + (opRun.m.phase + 1) + '/'
+        + opRun.def.operator.procedure.length + ': ' + p.step : 'done')
+      + ' \\u00b7 Esc';
+  }
+}
+function opRunHeadless(simId, scenarioId, level, seed, dt, maxSec, every = 0) {
+  const def = D.sims.sims[simId];
+  if (!def) throw new Error('no such seat: ' + simId);
+  if (!def.halls.includes(slug)) showHall(def.halls[0]);   // a seat is entered from its hall
+  opHeadless = true;
+  try {
+    startSim(simId, scenarioId);
+    opAttach(level, seed, true, dt);
+    const max = Math.ceil(maxSec / dt), samples = [];
+    let n = 0;
+    while (!opRun.result && n < max) {
+      // `every` > 0 samples the gauges every N steps for a harness to read
+      if (every && n % every === 0) samples.push({ step: n, phase: opRun.id, g: sim.gauges() });
+      opStep(dt); sim.update(dt); traceStep(dt); n++;
+    }
+    const r = opRun.result;
+    return { sim: simId, scenario: curScenario?.id ?? null, level, seed, steps: n, dt,
+      passed: r ? r.passed : null, timedOut: !r,
+      axes: r ? Object.fromEntries(r.rows.map((x) => [x.axis, x.value])) : null,
+      ok: r ? Object.fromEntries(r.rows.filter((x) => x.ok !== null)
+        .map((x) => [x.axis, x.ok])) : null,
+      ...(every ? { samples } : {}) };
+  } finally {
+    opRun = null; teardownSim(); opHeadless = false;
+  }
+}
+async function opSweep(o = {}) {
+  const sims = o.sims ?? Object.keys(OPERATORS);
+  const levels = o.levels ?? Object.keys(D.sims.operatorLevels);
+  const seeds = o.seeds ?? [1], dt = o.dt ?? 1 / 60, maxSec = o.maxSec ?? 400;
+  const before = { view, slug, campusKey }, rows = [];
+  for (const id of sims) {
+    const scs = (D.sims.sims[id].scenarios ?? [null])
+      .filter((s) => !o.scenarios || o.scenarios.includes(s?.id));
+    for (const sc of scs) for (const level of levels) for (const seed of seeds) {
+      rows.push(opRunHeadless(id, sc?.id, level, seed, dt, maxSec));
+      await new Promise((res) => setTimeout(res, 0));   // let the page breathe between runs
+    }
+  }
+  // back to where the sweep was launched from
+  if (before.view === 'campus') showCampus(before.campusKey);
+  else if (before.view === 'region') showRegion();
+  else showHall(before.slug);
+  return { recorded: trainingOn, rows };
 }"""
 
 AVATAR_JS = """/* --------------------------------------------- avatar + mobile layer ---- */
@@ -3389,6 +3927,20 @@ function advRead(bind, aid) {
         return '<b>' + esc(hh ? hh.name : sg) + '</b>';
       })) + cite('read from the simulator registry\\u2019s hall bindings');
     }
+    case 'seat.procedure': {
+      const s = D.sims.sims[curSimId];
+      if (!s) return '<p>No seat is running.</p>';
+      // the scripted reference operator's own step list - the same ids the
+      // page's policy for this seat is written as a switch over
+      const op = s.operator;
+      return '<ol>' + op.procedure.map((p) => '<li>' + esc(p.step) + '</li>').join('')
+        + '</ol><p>At the <b>optimal</b> level this passes <b>'
+        + op.guarantees.map(esc).join('</b>, <b>') + '</b> on every regional '
+        + 'scenario; ' + op.levels.filter((l) => l !== 'optimal').map(esc).join(' and ')
+        + ' are its labelled, seeded degradations.</p><p>'
+        + esc(D.sims.operatorHonesty) + '</p>'
+        + cite('read from the simulator registry\\u2019s scripted reference operator');
+    }
     case 'hall.rooms':
       return li((h ? h.rooms : []).map((r) => '<b>' + esc(r.label) + '</b> \\u2014 '
         + esc(r.purpose))) + cite('read from this hall\\u2019s own layout');
@@ -3642,7 +4194,10 @@ body.open #panel{transform:none}
 <button id="emoBtn" class="fab" style="display:none">😀</button>
 <button id="advBtn" class="fab wide" style="display:none"></button>
 <button id="actBtn" class="fab wide" style="display:none"></button>
-<div id="hud"><h2 id="hname"></h2><p class="focus" id="hfocus"></p><p class="hint" id="hint"></p></div>
+<div id="hud"><h2 id="hname"></h2><p class="focus" id="hfocus"></p><p class="hint" id="hint"></p>
+  <p class="hint" id="opCtl" style="display:none">🤖 scripted reference operator
+    <select id="opLvl" aria-label="operator level" style="padding:2px 6px;font-size:11.5px"></select>
+    <button id="opRefBtn" class="barbtn" style="padding:2px 8px;font-size:11.5px">▶ watch it drive</button></p></div>
 <canvas id="mm" width="150" height="150" style="display:none"></canvas>
 <div id="dash"></div>
 <div id="honesty"></div>
@@ -6319,7 +6874,9 @@ document.addEventListener('keydown', (e) => {
     exitSim();
   if (curRestoSite && e.code === 'Escape' && !document.body.classList.contains('open'))
     exitRestoWalk();
-  if (sim && e.code === 'Space') { e.preventDefault(); sim.action?.(); }
+  // while the scripted reference operator has the seat, the seat is its:
+  // Space is its verb (the policy calls sim.action() itself), Esc still exits
+  if (sim && e.code === 'Space') { e.preventDefault(); if (!opRun) sim.action?.(); }
   if (walkActive && view === 'campus' && nearSlug
       && (e.code === 'Enter' || e.code === 'KeyE')) enterHallWalking(nearSlug);
   if (walkActive && view === 'campus' && nearPoi
@@ -6542,7 +7099,10 @@ function recordEpisode(ep) {
    physics or joint trajectory: see D.training.trace and D.training.honesty
    for exactly what it is. */
 const TRACE_KEY = D.training.trace.toggle_key;
-const TRACE_MS = 1000, TRACE_MAX = 90;   // must match training/build.py's checks
+// the sample interval and cap are READ from the embedded registry - the
+// one declared pair; training/build.py checks the page reads them here
+const TRACE_MS = Math.round(1000 / D.training.trace.sample_hz);
+const TRACE_MAX = D.training.trace.max_samples;
 let traceOn = (() => {
   try { return localStorage.getItem(TRACE_KEY) === '1'; } catch (e) { return false; }
 })();
@@ -6615,7 +7175,9 @@ function openOrbis() {
   document.body.classList.add('open');
   const ta = document.getElementById('orbisTa');
   ta.value = orbisPrompt(slug); ta.select();
-  try { navigator.clipboard?.writeText(ta.value); } catch (e) { /* manual copy */ }
+  // writeText returns a promise: a denied permission rejects it, which a
+  // synchronous try/catch never sees - so the promise is caught as well
+  try { navigator.clipboard?.writeText(ta.value)?.catch(() => {}); } catch (e) { /* manual copy */ }
   document.getElementById('orbisRecBtn')?.addEventListener('click', openRecords);
 }
 window.__tc3dOrbis = openOrbis;
@@ -7350,7 +7912,9 @@ document.addEventListener('click', (e) => {
   }
   if (e.target.id === 'simRetry') {
     document.body.classList.remove('open');
-    const id = curSimId; teardownSim(); view = 'hall'; startSim(id); return;
+    // the same seat in the same yard, back in the learner's own hands
+    const id = curSimId, sc = curScenario?.id;
+    teardownSim(); view = 'hall'; startSim(id, sc); return;
   }
   if (e.target.id === 'simExit') {
     document.body.classList.remove('open'); exitSim(); return;
@@ -7366,7 +7930,7 @@ document.addEventListener('click', (e) => {
        <p style="color:var(--muted);font-size:11.5px;margin:4px 0 0">${t('progress.local')}</p>`;
     const ta = document.getElementById('saveTa');
     ta.value = j; ta.select();
-    try { navigator.clipboard?.writeText(j); } catch (err) { /* manual copy */ }
+    try { navigator.clipboard?.writeText(j)?.catch(() => {}); } catch (err) { /* manual copy */ }
     return;
   }
   if (e.target.id === 'impBtn') {
@@ -7394,7 +7958,7 @@ document.addEventListener('click', (e) => {
       `<textarea id="trTa" readonly style="width:100%;height:90px;background:var(--sunk);color:var(--ink);border:1px solid var(--rule);border-radius:7px;font:11px 'IBM Plex Mono',monospace;padding:7px"></textarea>`;
     const ta = document.getElementById('trTa');
     ta.value = j; ta.select();
-    try { navigator.clipboard?.writeText(j); } catch (err) { /* manual copy */ }
+    try { navigator.clipboard?.writeText(j)?.catch(() => {}); } catch (err) { /* manual copy */ }
     return;
   }
   if (e.target.id === 'trClearBtn') {
@@ -7408,7 +7972,7 @@ document.addEventListener('click', (e) => {
       `<textarea id="orbisAllTa" readonly style="width:100%;height:140px;background:var(--sunk);color:var(--ink);border:1px solid var(--rule);border-radius:7px;font:11px 'IBM Plex Mono',monospace;padding:7px"></textarea>`;
     const ta = document.getElementById('orbisAllTa');
     ta.value = txt; ta.select();
-    try { navigator.clipboard?.writeText(txt); } catch (err) { /* manual copy */ }
+    try { navigator.clipboard?.writeText(txt)?.catch(() => {}); } catch (err) { /* manual copy */ }
     return;
   }
   const wa = e.target.closest('[data-wa]');
@@ -7518,6 +8082,14 @@ function openRecords() {
     <p><button class="barbtn" id="trExpBtn">⇪ export</button>
        <button class="barbtn" id="trClearBtn">🗑 clear</button></p>
     <div id="trBox"></div>
+    <p style="margin:10px 0 6px">
+      <button class="barbtn" id="trSweepBtn">🤖 generate scripted episodes</button>
+      <select id="trSweepLvl" aria-label="operator level" style="max-width:none">
+        ${Object.keys(D.sims.operatorLevels).map((l) => `<option value="${l}">${l}</option>`).join('')}
+      </select></p>
+    <p style="color:var(--muted);font-size:12px;margin:0 0 6px">every seat \\u00d7 every regional scenario, driven headlessly at a fixed step by the scripted reference operator at that level - kept as SCRIPTED episodes through the same recorder, under the same toggle and cap; a human episode is never touched</p>
+    <div id="trSweepBox"></div>
+    <p style="color:var(--muted);font-size:12px">${D.sims.operatorHonesty}</p>
     <p style="color:var(--muted);font-size:12px">${D.training.honesty.schematic}</p>
     <p style="color:var(--muted);font-size:12px">${D.training.honesty.not_scored}</p>
     <p style="color:var(--muted);font-size:12px">${D.training.honesty.orbis_pairing}
@@ -7528,6 +8100,26 @@ function openRecords() {
   document.getElementById('trOn')?.addEventListener('change', (e) => trainingToggle(e.target.checked));
   document.getElementById('traceOn')?.addEventListener('change', (e) => traceToggle(e.target.checked));
   document.getElementById('trOrbisBtn')?.addEventListener('click', openOrbis);
+  document.getElementById('trSweepBtn')?.addEventListener('click', async (e) => {
+    const btn = e.target, box = document.getElementById('trSweepBox');
+    const level = document.getElementById('trSweepLvl').value;
+    btn.disabled = true; btn.textContent = '\\u2026 running';
+    try {
+      const out = await window.__tc3dSim.sweep({ levels: [level] });
+      const n = out.rows.length, np = out.rows.filter((r) => r.passed).length;
+      const cell = (r) => Object.entries(r.axes ?? {}).map(([a, v]) =>
+        `${a} ${v}${r.ok?.[a] === undefined ? '' : r.ok[a] ? ' \\u2713' : ' \\u2717'}`).join(' \\u00b7 ');
+      box.innerHTML = `<p style="font-size:12.5px">${np}/${n} passed at <b>${level}</b> \\u00b7 `
+        + (out.recorded ? `${n} SCRIPTED episodes kept (${trainingLog.length} / ${D.training.storage.cap})`
+          : 'recorder is off \\u2014 the runs happened, nothing was kept') + `</p>
+        <table style="width:100%;border-collapse:collapse;font-size:12px"><tbody>
+        ${out.rows.map((r) => `<tr><td>${D.sims.sims[r.sim].name}</td><td>${r.scenario}</td>
+          <td>${r.timedOut ? 'timed out' : r.passed ? '\\u2713' : '\\u2717'}</td>
+          <td style="color:var(--muted)">${cell(r)}</td></tr>`).join('')}
+        </tbody></table>`;
+      document.querySelector('#pbody .chip').textContent = `${trainingLog.length} / ${D.training.storage.cap} kept`;
+    } finally { btn.disabled = false; btn.textContent = '\U0001f916 generate scripted episodes'; }
+  });
 }
 /* The progress card: the record drawn as one image the learner can save
    (long-press / right-click - the page never uploads it anywhere). */
@@ -7658,6 +8250,34 @@ window.__tc3dDo = (fn, arg) => {
     }
   }
 };
+// the scripted reference operator's driver surface: what a test harness or
+// a robotics pipeline sharing this page context can drive. In-page and
+// deterministic - no network, no model - see OPERATORS in the sim layer
+window.__tc3dSim = {
+  keys,
+  levels: () => Object.keys(D.sims.operatorLevels),
+  operators: () => Object.keys(OPERATORS),
+  action() { sim?.action?.(); },
+  gauges() { return sim?.gauges ? sim.gauges() : null; },
+  // start a seat in a named yard; with a level, the operator drives it at
+  // real time in the frame loop (what the HUD's watch button does)
+  start(simId, scenarioId, opts = {}) {
+    const def = D.sims.sims[simId];
+    if (!def) throw new Error('no such seat: ' + simId);
+    if (!def.halls.includes(slug)) showHall(def.halls[0]);
+    startSim(simId, scenarioId);
+    if (opts.level) opAttach(opts.level, opts.seed ?? 1, false);
+    return { sim: simId, scenario: curScenario?.id ?? null, level: opts.level ?? null };
+  },
+  stop() { if (sim) exitSim(); },
+  // one headless run to completion at a fixed step; returns its outcome
+  run: (simId, scenarioId, o = {}) => opRunHeadless(simId, scenarioId,
+    o.level ?? 'optimal', o.seed ?? 1, o.dt ?? 1 / 60, o.maxSec ?? 400, o.every ?? 0),
+  sweep: opSweep,
+  state: () => opRun ? { sim: opRun.sim, scenario: opRun.scenario, level: opRun.level,
+    seed: opRun.seed, step: opRun.step, phase: opRun.id, sweep: opRun.sweep,
+    result: opRun.result } : null,
+};
 window.__tc3d = () => ({ view, buildings: buildings.length, plates: plates.length,
   beacons: beacons.length, floors: floors.length, slug, campusKey, loc, walkActive,
   sim: curSimId && sim ? curSimId : null, roadFaults, roadCount,
@@ -7689,7 +8309,9 @@ window.__tc3d = () => ({ view, buildings: buildings.length, plates: plates.lengt
   training: { on: trainingOn, count: trainingLog.length,
     trace: { on: traceOn, ticks: simTicks.length },
               kinds: trainingLog.map((e) => e.kind),
+              actors: trainingLog.map((e) => e.actor ?? null),
               last: trainingLog[trainingLog.length - 1] ?? null },
+  operator: window.__tc3dSim.state(),
   orbis: { model: D.orbis.model, prompt: orbisPrompt(slug) },
   labels: { live: labelSet.filter((x) => x.parent).length,
             kinds: [...new Set(labelSet.filter((x) => x.parent)
@@ -7777,7 +8399,12 @@ renderer.setAnimationLoop(() => {
     for (const b of beacons) if (b.userData.spin) b.rotation.y += dt * 1.4;
     for (const b of campusSpin) b.rotation.y += dt * 1.1;
   }
-  if (sim) {
+  // a seat the headless sweep is stepping at its own fixed dt is never
+  // also stepped here; a seat the scripted operator drives at real time
+  // gets its inputs from opStep() before the physics step, exactly where
+  // a keypress would already be waiting in `keys`
+  if (sim && !opHeadless) {
+    if (opRun) opStep(dt);
     sim.update(dt);
     if (sim.gauges) setDash(D.sims.sims[curSimId], sim.gauges());
     traceStep(dt);

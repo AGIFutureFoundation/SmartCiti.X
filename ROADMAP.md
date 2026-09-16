@@ -36,16 +36,16 @@ The consolidation release: one repository, one version, one truth per fact.
 | Recovered station curriculum rebranded onto halls, skills and rooms, machine-gradable | `stations/`, `archive/` |
 | §24 realized: 22 floor finishes resolved hazard-first, per-room conditions merged more-demanding-wins, provenance-tagged (RECORDED/DERIVED/SCHEMATIC) | `surfaces/` |
 | The interactive layered map, the **network geomap** (a real WGS84 map, vendored MapLibre GL, on-request USGS orthoimagery and live parcel/footprint fetches), the four-level 3D environment (network → campus → hall → walk) with live condition readouts, and the **network dashboard** reading every platform figure live from its own registry | `web/` |
-| Nine operable training simulators — tower-crane lift, excavator trench cut, forklift yard run, weld bead bench, scaffold bay build, rigging signal call, load chart judgment, pressure washer surface clean, airless paint sprayer finish — each with a five-point pre-shift walkaround, a declared cockpit (dash, synthesized audio, haptics, seat view) and a per-region scenario; schematic physics, deterministic rubrics, bound to real skills | `sims/` |
+| Nine operable training simulators — tower-crane lift, excavator trench cut, forklift yard run, weld bead bench, scaffold bay build, rigging signal call, load chart judgment, pressure washer surface clean, airless paint sprayer finish — each with a five-point pre-shift walkaround, a declared cockpit (dash, synthesized audio, haptics, seat view), a per-region scenario and a **scripted reference operator** (a deterministic in-page control policy over the seat's own gauges — no model, no network — passing every pass-gated axis on all 27 seat-x-yard combinations at `optimal`, with `novice`/`hurried` as seeded, labelled degradations); schematic physics, deterministic rubrics, bound to real skills | `sims/` |
 | The toolroom registry — one crib per district, twelve schematic hand tools each, plus the deterministic crib drill | `tools/` |
 | The schools flipped-classroom pack — the model, four grade bands, proposed district partnerships (public-record names only, every one PROPOSED), 21 live flipped units — with an in-app 🎓 Schools panel bidirectionally linked to every hall it names | `schools/` |
 | The humanoid avatar locker — 18 sections / 284 options, a crew look stamping all 111 halls, 17 one-tap character presets, 19 costumes, the original **SmartCiti.X TradeApes** (111, one per hall), 8 emotes — cosmetic only, none graded | `avatars/` |
 | The city-records GIS contract (real parcel/footprint authorities, licences and bounded queries) for the three district campuses, plus on-demand real USGS 3DEP elevation lookups — no record copied into the repo, fetched live in the learner's own browser | `parcels/` |
 | The metaverse-interchange layer — glTF 2.0 export/import of the avatar and any hall, a complete VRM-compatible humanoid bone skeleton with a driven (not decorative) walk/idle/head-track, WebXR entry | `meta/` |
-| Nine scripted advisors — eight room- or green-bound guides plus **the Operator**, who lives inside a simulator's own yard and resolves against whichever seat is actually running — a closed 34-question list, no model, no network, changes no score | `agents/` |
+| Nine scripted advisors — eight room- or green-bound guides plus **the Operator**, who lives inside a simulator's own yard and resolves against whichever seat is actually running — a closed 35-question list (the Operator now also quotes the scripted reference procedure), no model, no network, changes no score | `agents/` |
 | Generated sky, six weather states, browser-generated ground recipes (zero third-party texture files) and 101 ambient animals across all ten campuses | `world/` |
 | The in-world signage system — 13 kinds over 10 shapes, shape-carries-category / colour-carries-provenance / type-carries-rank, view-direction-and-distance scored with one field-of-vision focus target | `labels/` |
-| The device-local robotic-training-data recorder (three episode kinds, strictly downstream of a score already final) plus **TRACE**, its off-by-default per-second gauge sampler — cross-linked with `orbis/` in both directions | `training/` |
+| The device-local robotic-training-data recorder (three episode kinds, strictly downstream of a score already final) plus **TRACE**, its off-by-default per-second gauge sampler, and the **SCRIPTED** tier: sim episodes name their `actor`, and the records panel's headless sweep keeps the scripted reference operator's runs as replayable, labelled demonstration episodes through the same recorder — cross-linked with `orbis/` in both directions | `training/` |
 | The Orbis synthetic-training-video prompt contract for all 111 union modules, plus two real, separately-runnable companion apps — no key shipped, no network reached from this bundle's own build | `orbis/` |
 | The 10-world network-roadmap tracker itself: 10 built campuses + 0 candidate metros — the ten-campus target is now fully met, and the registry still carries the actual checklist every one of them cleared to get there | `roadmap/` |
 | Path defects of the packaged layout fixed (builders resolve by walking up) | `web/build_page.py`, `web/build_map.py`, `console/build_slice.py` |
@@ -154,12 +154,15 @@ gates doing their job on real halls.
    machines now: tower-crane lift, excavator trench cut, forklift yard run,
    weld bead bench, scaffold bay build, rigging signal call, load chart
    judgment, pressure washer surface clean and airless paint sprayer
-   finish, all deterministic-rubric and skill-bound) is the shipped
-   precursor; this milestone ports it to headsets and widens the roster
-   further (boom lift, overhead crane), and the interiors and §24 packages
-   remain the sim environments' source of truth. Simulator results stay
-   formative until the assessment gates' unaided verification contract
-   says otherwise.
+   finish, all deterministic-rubric and skill-bound, each with a scripted
+   reference operator that drives it at the rubric-passing level and
+   generates SCRIPTED demonstration episodes for the `training/` recorder)
+   is the shipped precursor; this milestone ports it to headsets and widens
+   the roster further (boom lift, overhead crane), and the interiors and
+   §24 packages remain the sim environments' source of truth. Simulator
+   results stay formative until the assessment gates' unaided verification
+   contract says otherwise, and a scripted operator's run is never a
+   learner's result at all.
 
 ### Exit criteria
 

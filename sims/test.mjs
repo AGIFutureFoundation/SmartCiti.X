@@ -154,6 +154,44 @@ ok('the trench scenarios keep at least one flagged utility each, at a shallow st
   sims['excavator-trench'].scenarios.every((x) =>
     x.params.cells.some((c) => c.util && c.d <= 0.5)));
 
+/* --------------------------------------- the scripted reference operator --- */
+const page = readFileSync(new URL('../web/trade_craft_3d.html', import.meta.url), 'utf8');
+const levels = Object.keys(reg.operator_levels);
+ok('one closed level set is declared, optimal first, each level explained as what it honestly is',
+  levels[0] === 'optimal' && levels.length >= 3
+  && /passes every pass-gated rubric axis/.test(reg.operator_levels.optimal)
+  && levels.slice(1).every((l) => reg.operator_levels[l].length > 40));
+ok('every seat carries a scripted reference operator at exactly that level set',
+  Object.values(sims).every((s) => s.operator
+    && JSON.stringify(s.operator.levels) === JSON.stringify(levels)));
+ok('every operator guarantees exactly the seat\'s pass-gated rubric axes at optimal - no axis quietly left out',
+  Object.values(sims).every((s) => JSON.stringify(s.operator.guarantees)
+    === JSON.stringify(s.rubric.filter((r) => r.pass !== 'informational').map((r) => r.axis))));
+ok('every operator carries an ordered procedure of distinct, actionable steps',
+  Object.values(sims).every((s) => s.operator.procedure.length >= 2
+    && new Set(s.operator.procedure.map((p) => p.id)).size === s.operator.procedure.length
+    && s.operator.procedure.every((p) => /^[a-z-]+$/.test(p.id) && p.step.length >= 12)));
+ok('the operator\'s provenance word is SCRIPTED, stated as not learned, not real equipment, not a physical robot - and never AI-SYNTHESIZED',
+  /^SCRIPTED:/.test(reg.honesty.operator)
+  && /Not a learned policy, not real equipment/.test(reg.honesty.operator)
+  && /not a claim about any physical robot/.test(reg.honesty.operator)
+  && !/AI-SYNTHESIZED/.test(reg.honesty.operator));
+ok('the yard geometry a seat shares with its operator is declared once, here, and the page reads it rather than retyping it',
+  ['crane-lift', 'excavator-trench', 'forklift-run', 'pressure-washer', 'airless-sprayer']
+    .every((id) => sims[id].layout && page.includes(`D.sims.sims['${id}'].layout`)));
+ok('the seats an operator has to see expose what it steers by on the dash itself: excavator slew, forklift pose, bench position',
+  sims['excavator-trench'].dash.some((g) => g.id === 'slew')
+  && ['heading', 'x', 'z'].every((k) => sims['forklift-run'].dash.some((g) => g.id === k))
+  && ['u', 'v'].every((k) => sims['pressure-washer'].dash.some((g) => g.id === k)
+    && sims['airless-sprayer'].dash.some((g) => g.id === k)));
+ok('the page builds a policy for every seat, written as a switch over that seat\'s own procedure ids',
+  (() => {
+    const ops = page.split('const OPERATORS = {')[1]?.split('function opAttach(')[0] ?? '';
+    return Object.entries(sims).every(([id, s]) => ops.includes(`'${id}': {`)
+      && s.operator.procedure.every((p) => ops.includes(`'${p.id}'`)))
+      && levels.every((l) => ops.includes(`${l}:`));
+  })());
+
 const src = readFileSync(new URL('./build.py', import.meta.url));
 ok('the registry was built from the current builder source (stamp check)',
   reg.source_stamp === createHash('sha256').update(src).digest('hex').slice(0, 16));
