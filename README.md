@@ -7,7 +7,7 @@ The Adaptive Stack: the packs implementing the ACP protocol suite (v3.2) —
 counted, like everything else here, by the table below rather than by a
 number that can drift from it.
 
-**744 checks, all passing from inside this bundle**, with no model credentials
+**748 checks, all passing from inside this bundle**, with no model credentials
 required.
 
 ```bash
@@ -43,7 +43,7 @@ node parcels/test.mjs              # 22 — the city-records source contract: au
 node roadmap/test.mjs              # 34 — the network roadmap: 5 built (3 district campuses + 2 regional-chapter hubs) + 5 candidates (AUTHORED) totalling exactly 10, placed by real bearing/distance on the 3D region board and at their own real coordinate on the network geomap
 node training/test.mjs             # 31 — the robotic training-data recorder: episode shapes, the storage/export contract, the not-scored guarantee, TRACE's own gauge-sampling add-on, the Orbis cross-link
 node orbis/test.mjs                # 68 — the Orbis synthetic-training prompt contract + the two real video-model runners, cross-linked from the panel itself in both directions and now on the network dashboard too: no key shipped, no network reached, AI-SYNTHESIZED labelled
-node restoration/test.mjs          # 40 — the Bay Restoration pack: 9 real, independently-run sfbayrestore.org sites (8 mapped) and 3 field-skill tracks bound to real skill_ids, on the geomap, on the network dashboard, and in a live 3D panel with a bidirectional hall link, not affiliated with or certified by this bundle; those 8 sites also stand as real, clickable markers a learner can walk up to in the Treasure Island / Oakland city layer, and each opens onto its own standalone, walkable ground-level scene, terrain composed from that exact site's own real habitat/scale/org record — never one template stamped eight times — with three in-world field-skill-track beacons that still link straight to the real hall that teaches each one
+node restoration/test.mjs          # 44 — the Bay Restoration pack: 9 real, independently-run sfbayrestore.org sites (8 mapped) and 3 field-skill tracks bound to real skill_ids, on the geomap, on the network dashboard, and in a live 3D panel with a bidirectional hall link, not affiliated with or certified by this bundle; those 8 sites also stand as real, clickable markers a learner can walk up to in the Treasure Island / Oakland city layer, and each opens onto its own standalone, walkable ground-level scene, terrain composed from that exact site's own real habitat/scale/org record — never one template stamped eight times — with three in-world field-skill-track beacons that still link straight to the real hall that teaches each one; each site's own panel also offers an on-request real USGS 3DEP elevation reading and a real USGS National Map aerial-imagery thumbnail at its own coordinate, the same two live-fetched sources the city layer's own institution panels already use, kept a flat 2D panel result rather than blended into the deliberately schematic walkable ground
 node labels/test.mjs               # 27 — the signs: shape, colour and type per kind, and the field-of-vision focus
 node world/test.mjs                # 24 — the sky, six weather states, the generated ground recipes and the fauna
 node agents/test.mjs               # 32 — the advisors: who stands where, quote-not-copy bindings, the closed book, and the Operator's live-seat scoping

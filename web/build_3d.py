@@ -5080,6 +5080,64 @@ function restoPos(p) {
   const r = 96 + 95 * Math.log10(1 + km);
   return [p.e / km * r, -p.n / km * r];
 }
+// real ground truth at a restoration site's own coordinate, fetched only
+// on click, from the SAME two sources the city layer's institution panels
+// already use - never a second copy of either service's contract. This
+// stays a flat 2D panel result, never blended into the walkable scene's
+// own ground: that ground is deliberately schematic and non-real-scale
+// (restoPos above compresses real distance onto a walkable 46-unit
+// radius), so a real photo laid under it would misstate what is real.
+function siteElevation(id, lat, lng) {
+  const row = document.getElementById('elevr-' + id);
+  if (!row) return;
+  row.innerHTML = '<span style="font-size:11px;color:var(--muted)"> looking up…</span>';
+  elevationLookup(lat, lng, (o) => {
+    const r = document.getElementById('elevr-' + id);
+    if (!r) return;
+    r.innerHTML = o.ok
+      ? `<span class="chip" style="font-size:10.5px;border-color:var(--steel);color:var(--steel)">`
+        + `${Math.round(o.feet)} ft</span>`
+        + `<span style="color:var(--muted);font-size:10.5px"> USGS 3DEP ground elevation at this `
+        + `coordinate${o.res ? ` · ${o.res} ft resolution` : ''}. ${D.elevation.scope}</span>`
+      : `<span style="color:var(--crit);font-size:10.5px"> ${o.why}</span>`;
+  });
+}
+function singleTileUrl(lat, lng, z) {
+  const n = 2 ** z;
+  const x = Math.floor((lng + 180) / 360 * n);
+  const la = lat * Math.PI / 180;
+  const y = Math.floor((1 - Math.log(Math.tan(la) + 1 / Math.cos(la)) / Math.PI) / 2 * n);
+  return (SAT_TILES ?? D.imagery.tiles).replace('{z}', z).replace('{y}', y).replace('{x}', x);
+}
+function siteAerial(id, lat, lng) {
+  const box = document.getElementById('satr-' + id);
+  if (!box) return;
+  box.innerHTML = `<span style="font-size:10.5px;color:var(--muted)">Asking ${D.imagery.authority} for orthoimagery…</span>`;
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.style.cssText = 'display:block;width:170px;height:170px;border-radius:6px;'
+    + 'margin-top:4px;border:1px solid var(--rule);object-fit:cover';
+  img.onload = () => {
+    const b = document.getElementById('satr-' + id);
+    if (!b) return;
+    b.innerHTML = '';
+    b.appendChild(img);
+    const cap = document.createElement('div');
+    cap.style.cssText = 'font-size:10px;color:var(--muted);margin-top:2px;max-width:170px';
+    cap.textContent = D.imagery.attribution + ' - ' + D.imagery.licence + '. ' + D.recHonesty.fidelity;
+    b.appendChild(cap);
+  };
+  img.onerror = () => {
+    const b = document.getElementById('satr-' + id);
+    if (!b) return;
+    b.innerHTML = `<span style="font-size:10.5px;color:var(--crit)">Orthoimagery did not answer from `
+      + `this network. ${D.recHonesty.availability}</span>`;
+  };
+  img.src = singleTileUrl(lat, lng, D.imagery.zoom.max);
+}
+window.__tc3dSiteElev = siteElevation;   // test hook
+window.__tc3dSiteAerial = siteAerial;    // test hook
+
 function buildRestorationSites(g) {
   const sites = D.restoration.sites.filter((s) => s.campus === campusKey && s.e !== undefined);
   if (!sites.length) return;
@@ -6178,13 +6236,22 @@ function openRestoration(focusHall, focusSite) {
       ? `<span class="chip" style="font-size:10.5px">\U0001f6b6 walkable in the city layer</span>
          <button class="barbtn" data-resto-walk="${esc(s.id)}"
            style="font-size:11px;padding:2px 8px;margin:2px 0 2px 6px">\U0001f6b6 Walk this site</button>` : '';
+    // real data at the site's own RECORDED-by-org coordinate, fetched live
+    // in the learner's own browser only on request - the same two sources
+    // (USGS 3DEP elevation, USGS National Map imagery) the city layer's
+    // own institution panels already use, never a second copy of either
+    const real = s.pin ? `<p style="margin:4px 0 0">
+        <button class="opt" data-elev-go="${esc(s.id)}" style="display:inline-block;width:auto;padding:3px 10px;font-size:11px">↕ Elevation</button>
+        <button class="opt" data-sat-go="${esc(s.id)}" style="display:inline-block;width:auto;padding:3px 10px;font-size:11px;margin-left:4px">\U0001f6f0 Real aerial view</button>
+        <span id="elevr-${esc(s.id)}"></span>
+        <span id="satr-${esc(s.id)}" style="display:block"></span></p>` : '';
     return `<li id="site-${esc(s.id)}" style="margin:9px 0;${s.id === focusSite
         ? 'border:1px solid var(--mark);border-radius:8px;padding:6px' : ''}">
       <b>${esc(s.name)}</b> ${camp}<br>
       <span style="font-size:11.5px;color:var(--muted)">${esc(s.org)} · ${esc(s.city)}, ${esc(s.county)}</span><br>
       <span style="font-size:12px">${esc(s.habitat)} — ${esc(s.scale)}</span>${wf}<br>
       <a href="${esc(s.source_url)}" target="_blank" rel="noopener" style="font-size:11px">${esc(s.source_url)}</a>
-      ${walk}</li>`;
+      ${walk}${real}</li>`;
   }).join('');
   const trackRows = D.restoration.tracks.map((t) => {
     const here = focusHall && t.skills.some((sk) => sk.split('.')[0] === focusHall);
@@ -6780,6 +6847,18 @@ document.addEventListener('click', (e) => {
   }
   const rt = e.target.closest('[data-resto-track]');
   if (rt) { openRestoTrack(rt.dataset.restoTrack); return; }
+  const eg = e.target.closest('[data-elev-go]');
+  if (eg) {
+    const s = D.restoration.sites.find((x) => x.id === eg.dataset.elevGo);
+    if (s) siteElevation(s.id, s.lat, s.lng);
+    return;
+  }
+  const sg = e.target.closest('[data-sat-go]');
+  if (sg) {
+    const s = D.restoration.sites.find((x) => x.id === sg.dataset.satGo);
+    if (s) siteAerial(s.id, s.lat, s.lng);
+    return;
+  }
   if (e.target.id === 'simRetry') {
     document.body.classList.remove('open');
     const id = curSimId; teardownSim(); view = 'hall'; startSim(id); return;

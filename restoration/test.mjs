@@ -145,6 +145,31 @@ ok('the scene never claims a survey or aerial scan of the real site - it says '
   + 'schematic, composed from that site\'s own real habitat description',
   page3d.includes('Schematic ground, composed from this site'));
 
+/* ------------------------------------------- real elevation + imagery --- */
+ok('every pinned site offers a real, on-request USGS elevation lookup at its '
+  + 'own coordinate - the same elevationLookup() the city layer\'s own '
+  + 'institution panels already use, never a second copy of that service',
+  page3d.includes('function siteElevation(')
+  && page3d.includes('elevationLookup(lat, lng, (o) =>')
+  && page3d.includes("data-elev-go=\"${esc(s.id)}\""));
+ok('every pinned site offers a real, on-request USGS aerial-imagery thumbnail '
+  + 'at its own coordinate - the same public-domain tile service the campus '
+  + 'orthoimagery button already uses, never a second copy of that service',
+  page3d.includes('function siteAerial(')
+  && page3d.includes('function singleTileUrl(')
+  && page3d.includes("data-sat-go=\"${esc(s.id)}\""));
+ok('both real-data lookups fire only on click (never at build time or on panel '
+  + 'open) and fail honestly rather than silently, matching the city layer\'s own pattern',
+  page3d.includes("e.target.closest('[data-elev-go]')")
+  && page3d.includes("e.target.closest('[data-sat-go]')")
+  && page3d.includes('Orthoimagery did not answer from')
+  && page3d.includes('D.recHonesty.availability'));
+ok('the real aerial thumbnail is never blended into the walkable scene\'s own '
+  + 'ground - it stays a flat 2D panel result, so the schematic-ground honesty '
+  + 'above is never contradicted by a real photo standing in for it',
+  !/function buildRestoGround[\s\S]{0,4000}singleTileUrl/.test(page3d)
+  && !/function buildRestoGround[\s\S]{0,4000}siteAerial/.test(page3d));
+
 /* -------------------------------------------------------------- dashboard --- */
 const dash = readFileSync(
   new URL('../web/trade_craft_dashboard.html', import.meta.url), 'utf8');
