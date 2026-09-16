@@ -161,9 +161,9 @@ FAUNA = {
         'name': 'Gull', 'glyph': '\U0001f426', 'body': 'bird',
         'span_m': 1.2, 'color': '#e6ecef', 'accent': '#9aa6ad',
         'motion': 'circuit', 'height_m': [14, 30], 'speed': 1.0,
-        'flock': 5, 'campuses': ['treasure-island', 'oakland'],
+        'flock': 5, 'campuses': ['treasure-island', 'oakland', 'seattle'],
         'why': 'a working waterfront has gulls over it; both Bay campuses '
-               'are on one',
+               'and the Sound waterfront at Seattle are on one',
     },
     'pelican': {
         'name': 'Brown pelican', 'glyph': '\U0001f9a9', 'body': 'bird',
@@ -195,7 +195,7 @@ FAUNA = {
         'motion': 'hop', 'height_m': [0, 6], 'speed': .5,
         'flock': 6,
         'campuses': ['treasure-island', 'oakland', 'new-orleans', 'houston',
-                     'chicago'],
+                     'chicago', 'seattle'],
         'why': 'every yard in every city has them, and they are the scale '
                'reference nobody thinks about',
     },
@@ -205,7 +205,7 @@ FAUNA = {
         'motion': 'patrol', 'height_m': [0, 0], 'speed': .55,
         'flock': 1,
         'campuses': ['treasure-island', 'oakland', 'new-orleans', 'houston',
-                     'chicago'],
+                     'chicago', 'seattle'],
         'why': 'the yard dog is a fixture of the trade, and it teaches the '
                'habit of looking down before reversing',
     },
@@ -265,6 +265,18 @@ ATMOS = {
         'character': 'a flat lakefront wind that never really stops, cold '
                      'and grey off the water most of the year - authored '
                      'by reputation, not measured',
+    },
+    'seattle': {
+        'sky': ['#10151a', '#232c31', '#495459', '#7c8a8c'],
+        'fog': {'color': 0x2a3236, 'mul': 1.5}, 'banks': 6,
+        'sun': {'color': 0xd6e0e0, 'i': .95},
+        'hemi': {'sky': 0x9aabac, 'ground': 0x22201c, 'i': 1.0},
+        'amb': {'wind': .5, 'gulls': True, 'harbor': True},
+        'ground': 'concrete', 'verge': 'gravel',
+        'character': 'a low marine overcast off the Sound, a working '
+                     'waterfront and the hum of aerospace manufacturing '
+                     'just south of the green - authored by reputation, '
+                     'not measured',
     },
 }
 

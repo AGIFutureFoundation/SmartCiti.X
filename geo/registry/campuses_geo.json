@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-10",
- "source_stamp": "25c89adc778d4eed",
+ "source_stamp": "f2f937b609a20e4b",
  "crs": "WGS84 (EPSG:4326)",
  "recorded_check": "cross-checked against the Locator.X checkout",
  "honesty": {
@@ -50,6 +50,14 @@
    "source": "widely-published public geography (city-center), typed from general knowledge - not cross-checked against any file this build can verify",
    "city": "Chicago",
    "region": "Illinois"
+  },
+  "seattle": {
+   "lat": 47.6062,
+   "lng": -122.3321,
+   "provenance": "AUTHORED",
+   "source": "widely-published public geography (city-center), typed from general knowledge - not cross-checked against any file this build can verify",
+   "city": "Seattle",
+   "region": "Washington"
   }
  },
  "routes_km": [
@@ -78,6 +86,12 @@
    "bearing_deg": 70.3
   },
   {
+   "from": "treasure-island",
+   "to": "seattle",
+   "km": 1087.8,
+   "bearing_deg": 0.2
+  },
+  {
    "from": "oakland",
    "to": "new-orleans",
    "km": 3081.0,
@@ -96,6 +110,12 @@
    "bearing_deg": 70.3
   },
   {
+   "from": "oakland",
+   "to": "seattle",
+   "km": 1089.9,
+   "bearing_deg": 359.8
+  },
+  {
    "from": "new-orleans",
    "to": "houston",
    "km": 511.3,
@@ -108,10 +128,28 @@
    "bearing_deg": 8.7
   },
   {
+   "from": "new-orleans",
+   "to": "seattle",
+   "km": 3377.7,
+   "bearing_deg": 314.6
+  },
+  {
    "from": "houston",
    "to": "chicago",
    "km": 1515.8,
    "bearing_deg": 25.2
+  },
+  {
+   "from": "houston",
+   "to": "seattle",
+   "km": 3040.5,
+   "bearing_deg": 318.3
+  },
+  {
+   "from": "chicago",
+   "to": "seattle",
+   "km": 2788.9,
+   "bearing_deg": 295.1
   }
  ],
  "city": {
@@ -181,6 +219,20 @@
     "s": 41.62,
     "e": -87.35,
     "n": 42.05
+   },
+   "provenance": "AUTHORED",
+   "source": "widely-published public geography (metro-area extent), typed from general knowledge - not cross-checked against any file this build can verify"
+  },
+  "seattle": {
+   "center": {
+    "lat": 47.6,
+    "lng": -122.33
+   },
+   "bounds": {
+    "w": -122.55,
+    "s": 47.35,
+    "e": -121.95,
+    "n": 47.85
    },
    "provenance": "AUTHORED",
    "source": "widely-published public geography (metro-area extent), typed from general knowledge - not cross-checked against any file this build can verify"
@@ -491,6 +543,52 @@
     "km": 15.0,
     "bearing_deg": 212.6,
     "blurb": "City Colleges of Chicago\u2019s Southwest Side campus, home to its construction and manufacturing trades programs.",
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   }
+  ],
+  "seattle": [
+   {
+    "name": "Port of Seattle",
+    "lat": 47.6087,
+    "lng": -122.3428,
+    "provenance": "AUTHORED",
+    "source": "the public port authority's Pier 69 headquarters on the central waterfront",
+    "km": 0.8,
+    "bearing_deg": 289.1,
+    "blurb": "The public port authority that runs the Seattle waterfront\u2019s seaport and Seattle\u2013Tacoma International Airport.",
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   },
+   {
+    "name": "University of Washington",
+    "lat": 47.6553,
+    "lng": -122.3035,
+    "provenance": "AUTHORED",
+    "source": "the public research university\u2019s Seattle campus",
+    "km": 5.9,
+    "bearing_deg": 21.4,
+    "blurb": "Public research university on the Montlake cut, one of the largest and oldest on the West Coast.",
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   },
+   {
+    "name": "Museum of Flight",
+    "lat": 47.5185,
+    "lng": -122.2971,
+    "provenance": "AUTHORED",
+    "source": "the aerospace museum at Boeing Field (King County International Airport)",
+    "km": 10.1,
+    "bearing_deg": 164.9,
+    "blurb": "The independent, non-profit air and space museum at Boeing Field, tracing the region\u2019s aerospace-manufacturing history.",
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   },
+   {
+    "name": "South Seattle College",
+    "lat": 47.5495,
+    "lng": -122.3576,
+    "provenance": "AUTHORED",
+    "source": "the Seattle Colleges system\u2019s West Seattle campus",
+    "km": 6.6,
+    "bearing_deg": 196.9,
+    "blurb": "One of the three Seattle Colleges system campuses, with career-technical and apprenticeship-adjacent programs.",
     "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
    }
   ]

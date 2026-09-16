@@ -19,12 +19,12 @@ three tiers this build can actually check itself against.
     city table (src/app.js, CITIES), which is real committed data.
   - Treasure Island and New Orleans are DERIVED: well-known place centroids
     authored here, since neither appears in that table.
-  - Houston and Chicago are AUTHORED: widely-published public geography
-    (the kind a city's own Wikipedia infobox states), typed here from
-    general knowledge. No sibling source cross-checks either, unlike the
-    other three - the same honesty this pack's roadmap already states for
-    every candidate city, carried through now that each is built rather
-    than proposed.
+  - Houston, Chicago and Seattle are AUTHORED: widely-published public
+    geography (the kind a city's own Wikipedia infobox states), typed
+    here from general knowledge. No sibling source cross-checks any of
+    the three, unlike the other three - the same honesty this pack's
+    roadmap already states for every candidate city, carried through now
+    that each is built rather than proposed.
   - Everything downstream of the coordinates (distances, bearings) is
     computed, and the suite recomputes it rather than trusting it.
 
@@ -59,6 +59,10 @@ GEO = {
                         'typed from general knowledge - not cross-checked '
                         'against any file this build can verify'),
     'chicago':         (41.8781, -87.6298, 'AUTHORED',
+                        'widely-published public geography (city-center), '
+                        'typed from general knowledge - not cross-checked '
+                        'against any file this build can verify'),
+    'seattle':         (47.6062, -122.3321, 'AUTHORED',
                         'widely-published public geography (city-center), '
                         'typed from general knowledge - not cross-checked '
                         'against any file this build can verify'),
@@ -110,18 +114,18 @@ ANCHORS = {
     ],
 }
 
-# Institution anchors near the two HUB campuses (Houston, Chicago) — a
-# different, weaker tier than ANCHORS above, and kept in a separate table
-# so the two are never confused. Every anchor above is RECORDED, copied
-# verbatim from a sibling Locator.X table this build can cross-check
-# against. No such table lists a single real place near either hub campus,
-# so nothing here could ever be RECORDED — each one is AUTHORED, the same
-# tier this pack already uses for the Houston/Chicago campus centres
-# themselves (GEO, above) and for the Bay Restoration sites: real, named,
-# well-known institutions only, never invented, each typed from general
-# public knowledge and not cross-checked against any file this build can
-# verify. Coordinates are each institution's approximate, widely-published
-# location, not a surveyed pin.
+# Institution anchors near the three HUB campuses (Houston, Chicago,
+# Seattle) — a different, weaker tier than ANCHORS above, and kept in a
+# separate table so the two are never confused. Every anchor above is
+# RECORDED, copied verbatim from a sibling Locator.X table this build can
+# cross-check against. No such table lists a single real place near any
+# hub campus, so nothing here could ever be RECORDED — each one is
+# AUTHORED, the same tier this pack already uses for the hub campuses'
+# own centres (GEO, above) and for the Bay Restoration sites: real,
+# named, well-known institutions only, never invented, each typed from
+# general public knowledge and not cross-checked against any file this
+# build can verify. Coordinates are each institution's approximate,
+# widely-published location, not a surveyed pin.
 AUTHORED_ANCHORS = {
     'houston': [
         ('Port of Houston Authority', 29.7350, -95.2700,
@@ -143,6 +147,18 @@ AUTHORED_ANCHORS = {
          'the public research university’s campus'),
         ('Richard J. Daley College', 41.7648, -87.7270,
          'City Colleges of Chicago’s construction-trades campus'),
+    ],
+    'seattle': [
+        ('Port of Seattle', 47.6087, -122.3428,
+         "the public port authority's Pier 69 headquarters on the "
+         'central waterfront'),
+        ('University of Washington', 47.6553, -122.3035,
+         'the public research university’s Seattle campus'),
+        ('Museum of Flight', 47.5185, -122.2971,
+         'the aerospace museum at Boeing Field (King County '
+         'International Airport)'),
+        ('South Seattle College', 47.5495, -122.3576,
+         'the Seattle Colleges system’s West Seattle campus'),
     ],
 }
 
@@ -226,6 +242,18 @@ BLURBS = {
     'Richard J. Daley College':
         'City Colleges of Chicago’s Southwest Side campus, home to its '
         'construction and manufacturing trades programs.',
+    'Port of Seattle':
+        'The public port authority that runs the Seattle waterfront’s '
+        'seaport and Seattle–Tacoma International Airport.',
+    'University of Washington':
+        'Public research university on the Montlake cut, one of the '
+        'largest and oldest on the West Coast.',
+    'Museum of Flight':
+        'The independent, non-profit air and space museum at Boeing '
+        'Field, tracing the region’s aerospace-manufacturing history.',
+    'South Seattle College':
+        'One of the three Seattle Colleges system campuses, with '
+        'career-technical and apprenticeship-adjacent programs.',
 }
 
 # CITY records - the region frames Locator.X's own maps ship, RECORDED
@@ -249,9 +277,10 @@ CITY = {
     },
     'treasure-island': dict(BAY_FRAME),
     'oakland': dict(BAY_FRAME),
-    # the two hub campuses' own frames: AUTHORED, like their anchors and
+    # the three hub campuses' own frames: AUTHORED, like their anchors and
     # their own campus-centre coordinates above - no sibling table ships a
-    # committed frame for either metro, so neither can honestly claim more
+    # committed frame for any of the three metros, so none can honestly
+    # claim more
     'houston': {
         'center': {'lat': 29.76, 'lng': -95.37},
         'bounds': {'w': -95.9, 's': 29.45, 'e': -94.95, 'n': 30.15},
@@ -263,6 +292,14 @@ CITY = {
     'chicago': {
         'center': {'lat': 41.88, 'lng': -87.63},
         'bounds': {'w': -88.05, 's': 41.62, 'e': -87.35, 'n': 42.05},
+        'provenance': 'AUTHORED',
+        'source': 'widely-published public geography (metro-area extent), '
+                  'typed from general knowledge - not cross-checked '
+                  'against any file this build can verify',
+    },
+    'seattle': {
+        'center': {'lat': 47.60, 'lng': -122.33},
+        'bounds': {'w': -122.55, 's': 47.35, 'e': -121.95, 'n': 47.85},
         'provenance': 'AUTHORED',
         'source': 'widely-published public geography (metro-area extent), '
                   'typed from general knowledge - not cross-checked '
@@ -414,7 +451,7 @@ doc = {
 # RECORDED anchors (ANCHORS) cite the sibling Locator.X table verbatim;
 # AUTHORED anchors (AUTHORED_ANCHORS) name themselves plainly as a weaker,
 # uncross-checked claim - the same distinction GEO already draws between
-# the three original campus centres and the two hub ones.
+# the three original campus centres and the three hub ones.
 def anchor_source(prov, src):
     return f'Locator.X {src}, Apache-2.0' if prov == 'RECORDED' else src
 

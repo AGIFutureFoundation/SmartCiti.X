@@ -2,8 +2,8 @@
  "pack": "smartcitix-trade-craft-academy-union-registry",
  "pack_version": "3.2.0",
  "built": "2026-09-09",
- "source_stamp": "53b44a303bcd7256",
- "count": 5,
+ "source_stamp": "af58599b8232c39e",
+ "count": 6,
  "honesty": {
   "siting": "planned locations named for real cities; no site has been surveyed, no address is recorded, and no figure comes from any city's records"
  },
@@ -170,6 +170,14 @@
    "city": "Chicago",
    "region": "Illinois",
    "tagline": "The network's second hub: no home district of its own, and a regional chapter seat for every one of the 111 trades",
+   "districts": [],
+   "halls": []
+  },
+  "seattle": {
+   "name": "Sound Aerospace Hub",
+   "city": "Seattle",
+   "region": "Washington",
+   "tagline": "The network's third hub: no home district of its own, and a regional chapter seat for every one of the 111 trades",
    "districts": [],
    "halls": []
   }
