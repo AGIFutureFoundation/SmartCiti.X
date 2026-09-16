@@ -47,6 +47,7 @@ The consolidation release: one repository, one version, one truth per fact.
 | The in-world signage system — 13 kinds over 10 shapes, shape-carries-category / colour-carries-provenance / type-carries-rank, view-direction-and-distance scored with one field-of-vision focus target | `labels/` |
 | The device-local robotic-training-data recorder (three episode kinds, strictly downstream of a score already final) plus **TRACE**, its off-by-default per-second gauge sampler, and the **SCRIPTED** tier: sim episodes name their `actor`, and the records panel's headless sweep keeps the scripted reference operator's runs as replayable, labelled demonstration episodes through the same recorder — cross-linked with `orbis/` in both directions | `training/` |
 | The Orbis synthetic-training-video prompt contract for all 111 union modules, plus two real, separately-runnable companion apps — no key shipped, no network reached from this bundle's own build | `orbis/` |
+| The **spatial fabric** — the Academy published as self-hosted static files in the OMBI sense of a spatial fabric: an OGC GeoPose 1.0 Basic-YPR pose (claimed outright, height and heading honestly zero-with-UNKNOWN) for every campus, institution anchor and pinned restoration site, a fabric manifest and a SOM-shaped multi-origin scene graph with per-branch ownership (both shaped after the public deck, registered in `meta/` as NOT claimed), every other operator a separate external origin, no RMAP endpoint, no server, no DID | `spatial/`, `meta/` |
 | The 10-world network-roadmap tracker itself: 10 built campuses + 0 candidate metros — the ten-campus target is now fully met, and the registry still carries the actual checklist every one of them cleared to get there | `roadmap/` |
 | Path defects of the packaged layout fixed (builders resolve by walking up) | `web/build_page.py`, `web/build_map.py`, `console/build_slice.py` |
 | Stale second truths removed (duplicate slice builder, 33-hall-era map data) | — |
@@ -163,6 +164,17 @@ gates doing their job on real halls.
    results stay formative until the assessment gates' unaided verification
    contract says otherwise, and a scripted operator's run is never a
    learner's result at all.
+5. **Metaverse-browser interoperability.** `spatial/` already publishes
+   the Academy as a self-hosted spatial fabric with real OGC GeoPose 1.0
+   poses and an OMBI-shaped manifest and scene graph that are honestly
+   NOT claimed as conformant. This milestone closes that gap only when it
+   can be closed honestly: validate the manifest and SOM against the
+   normative OMBI texts once they are published and reachable, load the
+   fabric in an open metaverse browser (Sneeze / Artemis) and record the
+   result, and then — and only then — move `ombi-spatial-fabric`,
+   `ombi-som` and (if a server is ever run) `rmap` from `not_claimed` to
+   `standards` in `meta/`. Heights and headings stay zero-with-UNKNOWN
+   until a cited measurement exists for them.
 
 ### Exit criteria
 

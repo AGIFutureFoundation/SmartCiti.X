@@ -1,0 +1,2344 @@
+{
+ "pack": "smartcitix-trade-craft-academy-spatial-fabric",
+ "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
+ "pack_version": "1.0.0",
+ "built": "2026-09-16",
+ "source_stamp": "e4b52e89463fa2a1",
+ "shape": "authored from the public OMBI deck and press, Q3 2026 - not validated against a normative specification, and not loaded in any metaverse browser (Sneeze, Artemis) by this build",
+ "root": {
+  "id": "som:root",
+  "composition": "a metaverse browser would compose these branches into one scene; this build composes nothing and only declares who owns what",
+  "branches": [
+   {
+    "id": "branch:this-fabric",
+    "origin": "this fabric",
+    "owner": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
+    "served_by_this_fabric": true,
+    "provenance_tiers": [
+     "AUTHORED",
+     "DERIVED",
+     "RECORDED",
+     "SCHEMATIC"
+    ],
+    "children": [
+     {
+      "kind": "place",
+      "name": "Treasure Island Campus",
+      "geopose": "campus:treasure-island",
+      "provenance": "DERIVED",
+      "served_by_this_fabric": true,
+      "place": "place:treasure-island",
+      "walk": true
+     },
+     {
+      "kind": "place",
+      "name": "Oakland Waterfront Campus",
+      "geopose": "campus:oakland",
+      "provenance": "RECORDED",
+      "served_by_this_fabric": true,
+      "place": "place:oakland",
+      "walk": true
+     },
+     {
+      "kind": "place",
+      "name": "Crescent Works Campus",
+      "geopose": "campus:new-orleans",
+      "provenance": "DERIVED",
+      "served_by_this_fabric": true,
+      "place": "place:new-orleans",
+      "walk": true
+     },
+     {
+      "kind": "place",
+      "name": "Bayou Energy Hub",
+      "geopose": "campus:houston",
+      "provenance": "AUTHORED",
+      "served_by_this_fabric": true,
+      "place": "place:houston",
+      "walk": true
+     },
+     {
+      "kind": "place",
+      "name": "Loop Rail Hub",
+      "geopose": "campus:chicago",
+      "provenance": "AUTHORED",
+      "served_by_this_fabric": true,
+      "place": "place:chicago",
+      "walk": true
+     },
+     {
+      "kind": "place",
+      "name": "Sound Aerospace Hub",
+      "geopose": "campus:seattle",
+      "provenance": "AUTHORED",
+      "served_by_this_fabric": true,
+      "place": "place:seattle",
+      "walk": true
+     },
+     {
+      "kind": "place",
+      "name": "Three Rivers Steel Hub",
+      "geopose": "campus:pittsburgh",
+      "provenance": "AUTHORED",
+      "served_by_this_fabric": true,
+      "place": "place:pittsburgh",
+      "walk": true
+     },
+     {
+      "kind": "place",
+      "name": "Front Range Mining Hub",
+      "geopose": "campus:denver",
+      "provenance": "AUTHORED",
+      "served_by_this_fabric": true,
+      "place": "place:denver",
+      "walk": true
+     },
+     {
+      "kind": "place",
+      "name": "Biscayne Coastal Hub",
+      "geopose": "campus:miami",
+      "provenance": "AUTHORED",
+      "served_by_this_fabric": true,
+      "place": "place:miami",
+      "walk": true
+     },
+     {
+      "kind": "place",
+      "name": "Motor City Hub",
+      "geopose": "campus:detroit",
+      "provenance": "AUTHORED",
+      "served_by_this_fabric": true,
+      "place": "place:detroit",
+      "walk": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-avatar",
+      "geopose": null,
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "avatar-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-ironworkers",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-electricians",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-pipefitters",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-carpenters",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-operating-eng",
+      "geopose": "campus:oakland",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-laborers",
+      "geopose": "campus:oakland",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-sheetmetal",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-bricklayers",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-cement-masons",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-roofers",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-painters",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-glaziers",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-insulators",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-millwrights",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-boilermakers",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-elevator",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-teamsters",
+      "geopose": "campus:oakland",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-welders",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-hvacr",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-crane-ops",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-riggers",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-heavy-equip",
+      "geopose": "campus:oakland",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-drywall",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-flooring",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-grounds",
+      "geopose": "campus:oakland",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-line-workers",
+      "geopose": "campus:new-orleans",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-solar",
+      "geopose": "campus:new-orleans",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-wind",
+      "geopose": "campus:new-orleans",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-demolition",
+      "geopose": "campus:oakland",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-scaffold",
+      "geopose": "campus:oakland",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-surveyors",
+      "geopose": "campus:new-orleans",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-fire-sprinkler",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-hazmat",
+      "geopose": "campus:new-orleans",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-refractory",
+      "geopose": "campus:oakland",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-pipeline",
+      "geopose": "campus:oakland",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-tank-erectors",
+      "geopose": "campus:oakland",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-shipfitters",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-marine-pipe",
+      "geopose": "campus:oakland",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-divers",
+      "geopose": "campus:oakland",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-blasters",
+      "geopose": "campus:oakland",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-miners",
+      "geopose": "campus:oakland",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-smelter",
+      "geopose": "campus:oakland",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-foundry",
+      "geopose": "campus:oakland",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-machinists",
+      "geopose": "campus:oakland",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-toolmakers",
+      "geopose": "campus:oakland",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-fabricators",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-platers",
+      "geopose": "campus:oakland",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-substation",
+      "geopose": "campus:new-orleans",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-cable-splicers",
+      "geopose": "campus:new-orleans",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-meter-techs",
+      "geopose": "campus:new-orleans",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-gas-distrib",
+      "geopose": "campus:new-orleans",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-water-distrib",
+      "geopose": "campus:new-orleans",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-wastewater",
+      "geopose": "campus:new-orleans",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-nuclear",
+      "geopose": "campus:new-orleans",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-hydro",
+      "geopose": "campus:new-orleans",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-geothermal",
+      "geopose": "campus:new-orleans",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-battery-storage",
+      "geopose": "campus:new-orleans",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-ev-charging",
+      "geopose": "campus:new-orleans",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-hydrogen",
+      "geopose": "campus:new-orleans",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-transmission",
+      "geopose": "campus:new-orleans",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-district-energy",
+      "geopose": "campus:new-orleans",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-masonry-restore",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-stone-carvers",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-plasterers",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-terrazzo",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-tilesetters",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-lathers",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-curtainwall",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-waterproofers",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-firestop",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-acoustic",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-cladding",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-shoring",
+      "geopose": "campus:oakland",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-piling",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-concrete-pump",
+      "geopose": "campus:oakland",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-post-tension",
+      "geopose": "campus:oakland",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-precast",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-steel-erectors",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-decking",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-window-glazing",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-bas-controls",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-fire-alarm",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-security-sys",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-network-cabling",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-fiber-splicers",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-data-center",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-instrumentation",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-plc-techs",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-robotics",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-automation-int",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-cleanroom",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-medical-gas",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-rail-track",
+      "geopose": "campus:oakland",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-rail-signals",
+      "geopose": "campus:oakland",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-catenary",
+      "geopose": "campus:oakland",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-transit-vehicle",
+      "geopose": "campus:oakland",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-aviation-ground",
+      "geopose": "campus:oakland",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-airfield",
+      "geopose": "campus:oakland",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-port-crane",
+      "geopose": "campus:oakland",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-marine-terminal",
+      "geopose": "campus:oakland",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-fleet-diesel",
+      "geopose": "campus:oakland",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-bridge-inspect",
+      "geopose": "campus:oakland",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-asbestos",
+      "geopose": "campus:new-orleans",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-lead-abatement",
+      "geopose": "campus:new-orleans",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-mold-remediation",
+      "geopose": "campus:new-orleans",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-spill-response",
+      "geopose": "campus:new-orleans",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-confined-space",
+      "geopose": "campus:new-orleans",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-high-angle",
+      "geopose": "campus:new-orleans",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-site-safety",
+      "geopose": "campus:new-orleans",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-industrial-clean",
+      "geopose": "campus:new-orleans",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "content",
+      "name": "tc-hall-survey-drone",
+      "geopose": "campus:new-orleans",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "export": "hall-glb",
+      "produced_on_demand": true
+     },
+     {
+      "kind": "service",
+      "name": "sim:crane-lift",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "transport": "in-page, no network"
+     },
+     {
+      "kind": "service",
+      "name": "sim:excavator-trench",
+      "geopose": "campus:oakland",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "transport": "in-page, no network"
+     },
+     {
+      "kind": "service",
+      "name": "sim:forklift-run",
+      "geopose": "campus:oakland",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "transport": "in-page, no network"
+     },
+     {
+      "kind": "service",
+      "name": "sim:weld-bead",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "transport": "in-page, no network"
+     },
+     {
+      "kind": "service",
+      "name": "sim:scaffold-bay",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "transport": "in-page, no network"
+     },
+     {
+      "kind": "service",
+      "name": "sim:rigging-signals",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "transport": "in-page, no network"
+     },
+     {
+      "kind": "service",
+      "name": "sim:load-chart",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "transport": "in-page, no network"
+     },
+     {
+      "kind": "service",
+      "name": "sim:pressure-washer",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "transport": "in-page, no network"
+     },
+     {
+      "kind": "service",
+      "name": "sim:airless-sprayer",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "transport": "in-page, no network"
+     },
+     {
+      "kind": "service",
+      "name": "advisors",
+      "geopose": "campus:treasure-island",
+      "provenance": "AUTHORED",
+      "served_by_this_fabric": true,
+      "transport": "in-page, no network"
+     },
+     {
+      "kind": "service",
+      "name": "schools-panel",
+      "geopose": "campus:treasure-island",
+      "provenance": "AUTHORED",
+      "served_by_this_fabric": true,
+      "transport": "in-page, no network"
+     },
+     {
+      "kind": "service",
+      "name": "crib:structural",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "transport": "in-page, no network"
+     },
+     {
+      "kind": "service",
+      "name": "crib:envelope",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "transport": "in-page, no network"
+     },
+     {
+      "kind": "service",
+      "name": "crib:systems",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "transport": "in-page, no network"
+     },
+     {
+      "kind": "service",
+      "name": "crib:energy",
+      "geopose": "campus:new-orleans",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "transport": "in-page, no network"
+     },
+     {
+      "kind": "service",
+      "name": "crib:earthworks",
+      "geopose": "campus:oakland",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "transport": "in-page, no network"
+     },
+     {
+      "kind": "service",
+      "name": "crib:industry",
+      "geopose": "campus:oakland",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "transport": "in-page, no network"
+     },
+     {
+      "kind": "service",
+      "name": "crib:transport",
+      "geopose": "campus:oakland",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "transport": "in-page, no network"
+     },
+     {
+      "kind": "service",
+      "name": "crib:control",
+      "geopose": "campus:new-orleans",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "transport": "in-page, no network"
+     },
+     {
+      "kind": "service",
+      "name": "restoration-panel",
+      "geopose": "campus:treasure-island",
+      "provenance": "AUTHORED",
+      "served_by_this_fabric": true,
+      "transport": "in-page, no network"
+     },
+     {
+      "kind": "service",
+      "name": "training-recorder",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "transport": "in-page, no network"
+     }
+    ]
+   },
+   {
+    "id": "branch:external/san-francisco",
+    "origin": "external",
+    "owner": "San Francisco",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "RECORDED"
+    ],
+    "children": [
+     {
+      "kind": "anchor",
+      "name": "San Francisco",
+      "geopose": "anchor:treasure-island/san-francisco",
+      "provenance": "RECORDED",
+      "served_by_this_fabric": false
+     }
+    ]
+   },
+   {
+    "id": "branch:external/sausalito",
+    "origin": "external",
+    "owner": "Sausalito",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "RECORDED"
+    ],
+    "children": [
+     {
+      "kind": "anchor",
+      "name": "Sausalito",
+      "geopose": "anchor:treasure-island/sausalito",
+      "provenance": "RECORDED",
+      "served_by_this_fabric": false
+     }
+    ]
+   },
+   {
+    "id": "branch:external/alameda",
+    "origin": "external",
+    "owner": "Alameda",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "RECORDED"
+    ],
+    "children": [
+     {
+      "kind": "anchor",
+      "name": "Alameda",
+      "geopose": "anchor:treasure-island/alameda",
+      "provenance": "RECORDED",
+      "served_by_this_fabric": false
+     },
+     {
+      "kind": "anchor",
+      "name": "Alameda",
+      "geopose": "anchor:oakland/alameda",
+      "provenance": "RECORDED",
+      "served_by_this_fabric": false
+     }
+    ]
+   },
+   {
+    "id": "branch:external/daly-city",
+    "origin": "external",
+    "owner": "Daly City",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "RECORDED"
+    ],
+    "children": [
+     {
+      "kind": "anchor",
+      "name": "Daly City",
+      "geopose": "anchor:treasure-island/daly-city",
+      "provenance": "RECORDED",
+      "served_by_this_fabric": false
+     }
+    ]
+   },
+   {
+    "id": "branch:external/richmond",
+    "origin": "external",
+    "owner": "Richmond",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "RECORDED"
+    ],
+    "children": [
+     {
+      "kind": "anchor",
+      "name": "Richmond",
+      "geopose": "anchor:treasure-island/richmond",
+      "provenance": "RECORDED",
+      "served_by_this_fabric": false
+     }
+    ]
+   },
+   {
+    "id": "branch:external/san-rafael",
+    "origin": "external",
+    "owner": "San Rafael",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "RECORDED"
+    ],
+    "children": [
+     {
+      "kind": "anchor",
+      "name": "San Rafael",
+      "geopose": "anchor:treasure-island/san-rafael",
+      "provenance": "RECORDED",
+      "served_by_this_fabric": false
+     }
+    ]
+   },
+   {
+    "id": "branch:external/south-san-francisco",
+    "origin": "external",
+    "owner": "South San Francisco",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "RECORDED"
+    ],
+    "children": [
+     {
+      "kind": "anchor",
+      "name": "South San Francisco",
+      "geopose": "anchor:treasure-island/south-san-francisco",
+      "provenance": "RECORDED",
+      "served_by_this_fabric": false
+     }
+    ]
+   },
+   {
+    "id": "branch:external/san-mateo",
+    "origin": "external",
+    "owner": "San Mateo",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "RECORDED"
+    ],
+    "children": [
+     {
+      "kind": "anchor",
+      "name": "San Mateo",
+      "geopose": "anchor:treasure-island/san-mateo",
+      "provenance": "RECORDED",
+      "served_by_this_fabric": false
+     }
+    ]
+   },
+   {
+    "id": "branch:external/berkeley",
+    "origin": "external",
+    "owner": "Berkeley",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "RECORDED"
+    ],
+    "children": [
+     {
+      "kind": "anchor",
+      "name": "Berkeley",
+      "geopose": "anchor:oakland/berkeley",
+      "provenance": "RECORDED",
+      "served_by_this_fabric": false
+     }
+    ]
+   },
+   {
+    "id": "branch:external/emeryville",
+    "origin": "external",
+    "owner": "Emeryville",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "RECORDED"
+    ],
+    "children": [
+     {
+      "kind": "anchor",
+      "name": "Emeryville",
+      "geopose": "anchor:oakland/emeryville",
+      "provenance": "RECORDED",
+      "served_by_this_fabric": false
+     }
+    ]
+   },
+   {
+    "id": "branch:external/san-leandro",
+    "origin": "external",
+    "owner": "San Leandro",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "RECORDED"
+    ],
+    "children": [
+     {
+      "kind": "anchor",
+      "name": "San Leandro",
+      "geopose": "anchor:oakland/san-leandro",
+      "provenance": "RECORDED",
+      "served_by_this_fabric": false
+     }
+    ]
+   },
+   {
+    "id": "branch:external/tulane-university",
+    "origin": "external",
+    "owner": "Tulane University",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "RECORDED"
+    ],
+    "children": [
+     {
+      "kind": "anchor",
+      "name": "Tulane University",
+      "geopose": "anchor:new-orleans/tulane-university",
+      "provenance": "RECORDED",
+      "served_by_this_fabric": false
+     }
+    ]
+   },
+   {
+    "id": "branch:external/xavier-university",
+    "origin": "external",
+    "owner": "Xavier University",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "RECORDED"
+    ],
+    "children": [
+     {
+      "kind": "anchor",
+      "name": "Xavier University",
+      "geopose": "anchor:new-orleans/xavier-university",
+      "provenance": "RECORDED",
+      "served_by_this_fabric": false
+     }
+    ]
+   },
+   {
+    "id": "branch:external/university-of-new-orleans",
+    "origin": "external",
+    "owner": "University of New Orleans",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "RECORDED"
+    ],
+    "children": [
+     {
+      "kind": "anchor",
+      "name": "University of New Orleans",
+      "geopose": "anchor:new-orleans/university-of-new-orleans",
+      "provenance": "RECORDED",
+      "served_by_this_fabric": false
+     }
+    ]
+   },
+   {
+    "id": "branch:external/delgado-community-college",
+    "origin": "external",
+    "owner": "Delgado Community College",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "RECORDED"
+    ],
+    "children": [
+     {
+      "kind": "anchor",
+      "name": "Delgado Community College",
+      "geopose": "anchor:new-orleans/delgado-community-college",
+      "provenance": "RECORDED",
+      "served_by_this_fabric": false
+     }
+    ]
+   },
+   {
+    "id": "branch:external/loyola-university",
+    "origin": "external",
+    "owner": "Loyola University",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "RECORDED"
+    ],
+    "children": [
+     {
+      "kind": "anchor",
+      "name": "Loyola University",
+      "geopose": "anchor:new-orleans/loyola-university",
+      "provenance": "RECORDED",
+      "served_by_this_fabric": false
+     }
+    ]
+   },
+   {
+    "id": "branch:external/dillard-university",
+    "origin": "external",
+    "owner": "Dillard University",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "RECORDED"
+    ],
+    "children": [
+     {
+      "kind": "anchor",
+      "name": "Dillard University",
+      "geopose": "anchor:new-orleans/dillard-university",
+      "provenance": "RECORDED",
+      "served_by_this_fabric": false
+     }
+    ]
+   },
+   {
+    "id": "branch:external/suno",
+    "origin": "external",
+    "owner": "SUNO",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "RECORDED"
+    ],
+    "children": [
+     {
+      "kind": "anchor",
+      "name": "SUNO",
+      "geopose": "anchor:new-orleans/suno",
+      "provenance": "RECORDED",
+      "served_by_this_fabric": false
+     }
+    ]
+   },
+   {
+    "id": "branch:external/port-of-houston-authority",
+    "origin": "external",
+    "owner": "Port of Houston Authority",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "AUTHORED"
+    ],
+    "children": [
+     {
+      "kind": "anchor",
+      "name": "Port of Houston Authority",
+      "geopose": "anchor:houston/port-of-houston-authority",
+      "provenance": "AUTHORED",
+      "served_by_this_fabric": false
+     }
+    ]
+   },
+   {
+    "id": "branch:external/university-of-houston",
+    "origin": "external",
+    "owner": "University of Houston",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "AUTHORED"
+    ],
+    "children": [
+     {
+      "kind": "anchor",
+      "name": "University of Houston",
+      "geopose": "anchor:houston/university-of-houston",
+      "provenance": "AUTHORED",
+      "served_by_this_fabric": false
+     }
+    ]
+   },
+   {
+    "id": "branch:external/san-jacinto-college",
+    "origin": "external",
+    "owner": "San Jacinto College",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "AUTHORED"
+    ],
+    "children": [
+     {
+      "kind": "anchor",
+      "name": "San Jacinto College",
+      "geopose": "anchor:houston/san-jacinto-college",
+      "provenance": "AUTHORED",
+      "served_by_this_fabric": false
+     }
+    ]
+   },
+   {
+    "id": "branch:external/houston-community-college",
+    "origin": "external",
+    "owner": "Houston Community College",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "AUTHORED"
+    ],
+    "children": [
+     {
+      "kind": "anchor",
+      "name": "Houston Community College",
+      "geopose": "anchor:houston/houston-community-college",
+      "provenance": "AUTHORED",
+      "served_by_this_fabric": false
+     }
+    ]
+   },
+   {
+    "id": "branch:external/chicago-union-station",
+    "origin": "external",
+    "owner": "Chicago Union Station",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "AUTHORED"
+    ],
+    "children": [
+     {
+      "kind": "anchor",
+      "name": "Chicago Union Station",
+      "geopose": "anchor:chicago/chicago-union-station",
+      "provenance": "AUTHORED",
+      "served_by_this_fabric": false
+     }
+    ]
+   },
+   {
+    "id": "branch:external/navy-pier",
+    "origin": "external",
+    "owner": "Navy Pier",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "AUTHORED"
+    ],
+    "children": [
+     {
+      "kind": "anchor",
+      "name": "Navy Pier",
+      "geopose": "anchor:chicago/navy-pier",
+      "provenance": "AUTHORED",
+      "served_by_this_fabric": false
+     }
+    ]
+   },
+   {
+    "id": "branch:external/university-of-illinois-chicago",
+    "origin": "external",
+    "owner": "University of Illinois Chicago",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "AUTHORED"
+    ],
+    "children": [
+     {
+      "kind": "anchor",
+      "name": "University of Illinois Chicago",
+      "geopose": "anchor:chicago/university-of-illinois-chicago",
+      "provenance": "AUTHORED",
+      "served_by_this_fabric": false
+     }
+    ]
+   },
+   {
+    "id": "branch:external/richard-j-daley-college",
+    "origin": "external",
+    "owner": "Richard J. Daley College",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "AUTHORED"
+    ],
+    "children": [
+     {
+      "kind": "anchor",
+      "name": "Richard J. Daley College",
+      "geopose": "anchor:chicago/richard-j-daley-college",
+      "provenance": "AUTHORED",
+      "served_by_this_fabric": false
+     }
+    ]
+   },
+   {
+    "id": "branch:external/port-of-seattle",
+    "origin": "external",
+    "owner": "Port of Seattle",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "AUTHORED"
+    ],
+    "children": [
+     {
+      "kind": "anchor",
+      "name": "Port of Seattle",
+      "geopose": "anchor:seattle/port-of-seattle",
+      "provenance": "AUTHORED",
+      "served_by_this_fabric": false
+     }
+    ]
+   },
+   {
+    "id": "branch:external/university-of-washington",
+    "origin": "external",
+    "owner": "University of Washington",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "AUTHORED"
+    ],
+    "children": [
+     {
+      "kind": "anchor",
+      "name": "University of Washington",
+      "geopose": "anchor:seattle/university-of-washington",
+      "provenance": "AUTHORED",
+      "served_by_this_fabric": false
+     }
+    ]
+   },
+   {
+    "id": "branch:external/museum-of-flight",
+    "origin": "external",
+    "owner": "Museum of Flight",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "AUTHORED"
+    ],
+    "children": [
+     {
+      "kind": "anchor",
+      "name": "Museum of Flight",
+      "geopose": "anchor:seattle/museum-of-flight",
+      "provenance": "AUTHORED",
+      "served_by_this_fabric": false
+     }
+    ]
+   },
+   {
+    "id": "branch:external/south-seattle-college",
+    "origin": "external",
+    "owner": "South Seattle College",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "AUTHORED"
+    ],
+    "children": [
+     {
+      "kind": "anchor",
+      "name": "South Seattle College",
+      "geopose": "anchor:seattle/south-seattle-college",
+      "provenance": "AUTHORED",
+      "served_by_this_fabric": false
+     }
+    ]
+   },
+   {
+    "id": "branch:external/port-of-pittsburgh-commission",
+    "origin": "external",
+    "owner": "Port of Pittsburgh Commission",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "AUTHORED"
+    ],
+    "children": [
+     {
+      "kind": "anchor",
+      "name": "Port of Pittsburgh Commission",
+      "geopose": "anchor:pittsburgh/port-of-pittsburgh-commission",
+      "provenance": "AUTHORED",
+      "served_by_this_fabric": false
+     }
+    ]
+   },
+   {
+    "id": "branch:external/carnegie-mellon-university",
+    "origin": "external",
+    "owner": "Carnegie Mellon University",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "AUTHORED"
+    ],
+    "children": [
+     {
+      "kind": "anchor",
+      "name": "Carnegie Mellon University",
+      "geopose": "anchor:pittsburgh/carnegie-mellon-university",
+      "provenance": "AUTHORED",
+      "served_by_this_fabric": false
+     }
+    ]
+   },
+   {
+    "id": "branch:external/carrie-blast-furnaces-national-historic-landmark",
+    "origin": "external",
+    "owner": "Carrie Blast Furnaces National Historic Landmark",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "AUTHORED"
+    ],
+    "children": [
+     {
+      "kind": "anchor",
+      "name": "Carrie Blast Furnaces National Historic Landmark",
+      "geopose": "anchor:pittsburgh/carrie-blast-furnaces-national-historic-landmark",
+      "provenance": "AUTHORED",
+      "served_by_this_fabric": false
+     }
+    ]
+   },
+   {
+    "id": "branch:external/community-college-of-allegheny-county",
+    "origin": "external",
+    "owner": "Community College of Allegheny County",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "AUTHORED"
+    ],
+    "children": [
+     {
+      "kind": "anchor",
+      "name": "Community College of Allegheny County",
+      "geopose": "anchor:pittsburgh/community-college-of-allegheny-county",
+      "provenance": "AUTHORED",
+      "served_by_this_fabric": false
+     }
+    ]
+   },
+   {
+    "id": "branch:external/colorado-school-of-mines",
+    "origin": "external",
+    "owner": "Colorado School of Mines",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "AUTHORED"
+    ],
+    "children": [
+     {
+      "kind": "anchor",
+      "name": "Colorado School of Mines",
+      "geopose": "anchor:denver/colorado-school-of-mines",
+      "provenance": "AUTHORED",
+      "served_by_this_fabric": false
+     }
+    ]
+   },
+   {
+    "id": "branch:external/national-renewable-energy-laboratory",
+    "origin": "external",
+    "owner": "National Renewable Energy Laboratory",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "AUTHORED"
+    ],
+    "children": [
+     {
+      "kind": "anchor",
+      "name": "National Renewable Energy Laboratory",
+      "geopose": "anchor:denver/national-renewable-energy-laboratory",
+      "provenance": "AUTHORED",
+      "served_by_this_fabric": false
+     }
+    ]
+   },
+   {
+    "id": "branch:external/denver-union-station",
+    "origin": "external",
+    "owner": "Denver Union Station",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "AUTHORED"
+    ],
+    "children": [
+     {
+      "kind": "anchor",
+      "name": "Denver Union Station",
+      "geopose": "anchor:denver/denver-union-station",
+      "provenance": "AUTHORED",
+      "served_by_this_fabric": false
+     }
+    ]
+   },
+   {
+    "id": "branch:external/community-college-of-denver",
+    "origin": "external",
+    "owner": "Community College of Denver",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "AUTHORED"
+    ],
+    "children": [
+     {
+      "kind": "anchor",
+      "name": "Community College of Denver",
+      "geopose": "anchor:denver/community-college-of-denver",
+      "provenance": "AUTHORED",
+      "served_by_this_fabric": false
+     }
+    ]
+   },
+   {
+    "id": "branch:external/portmiami",
+    "origin": "external",
+    "owner": "PortMiami",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "AUTHORED"
+    ],
+    "children": [
+     {
+      "kind": "anchor",
+      "name": "PortMiami",
+      "geopose": "anchor:miami/portmiami",
+      "provenance": "AUTHORED",
+      "served_by_this_fabric": false
+     }
+    ]
+   },
+   {
+    "id": "branch:external/noaa-atlantic-oceanographic-and-meteorological-laboratory",
+    "origin": "external",
+    "owner": "NOAA Atlantic Oceanographic and Meteorological Laboratory",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "AUTHORED"
+    ],
+    "children": [
+     {
+      "kind": "anchor",
+      "name": "NOAA Atlantic Oceanographic and Meteorological Laboratory",
+      "geopose": "anchor:miami/noaa-atlantic-oceanographic-and-meteorological-laboratory",
+      "provenance": "AUTHORED",
+      "served_by_this_fabric": false
+     }
+    ]
+   },
+   {
+    "id": "branch:external/university-of-miami",
+    "origin": "external",
+    "owner": "University of Miami",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "AUTHORED"
+    ],
+    "children": [
+     {
+      "kind": "anchor",
+      "name": "University of Miami",
+      "geopose": "anchor:miami/university-of-miami",
+      "provenance": "AUTHORED",
+      "served_by_this_fabric": false
+     }
+    ]
+   },
+   {
+    "id": "branch:external/miami-dade-college",
+    "origin": "external",
+    "owner": "Miami Dade College",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "AUTHORED"
+    ],
+    "children": [
+     {
+      "kind": "anchor",
+      "name": "Miami Dade College",
+      "geopose": "anchor:miami/miami-dade-college",
+      "provenance": "AUTHORED",
+      "served_by_this_fabric": false
+     }
+    ]
+   },
+   {
+    "id": "branch:external/detroit-wayne-county-port-authority",
+    "origin": "external",
+    "owner": "Detroit/Wayne County Port Authority",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "AUTHORED"
+    ],
+    "children": [
+     {
+      "kind": "anchor",
+      "name": "Detroit/Wayne County Port Authority",
+      "geopose": "anchor:detroit/detroit-wayne-county-port-authority",
+      "provenance": "AUTHORED",
+      "served_by_this_fabric": false
+     }
+    ]
+   },
+   {
+    "id": "branch:external/wayne-state-university",
+    "origin": "external",
+    "owner": "Wayne State University",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "AUTHORED"
+    ],
+    "children": [
+     {
+      "kind": "anchor",
+      "name": "Wayne State University",
+      "geopose": "anchor:detroit/wayne-state-university",
+      "provenance": "AUTHORED",
+      "served_by_this_fabric": false
+     }
+    ]
+   },
+   {
+    "id": "branch:external/the-henry-ford",
+    "origin": "external",
+    "owner": "The Henry Ford",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "AUTHORED"
+    ],
+    "children": [
+     {
+      "kind": "anchor",
+      "name": "The Henry Ford",
+      "geopose": "anchor:detroit/the-henry-ford",
+      "provenance": "AUTHORED",
+      "served_by_this_fabric": false
+     }
+    ]
+   },
+   {
+    "id": "branch:external/wayne-county-community-college-district",
+    "origin": "external",
+    "owner": "Wayne County Community College District",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "AUTHORED"
+    ],
+    "children": [
+     {
+      "kind": "anchor",
+      "name": "Wayne County Community College District",
+      "geopose": "anchor:detroit/wayne-county-community-college-district",
+      "provenance": "AUTHORED",
+      "served_by_this_fabric": false
+     }
+    ]
+   },
+   {
+    "id": "branch:external/port-of-san-francisco-literacy-for-environmental-justice",
+    "origin": "external",
+    "owner": "Port of San Francisco; Literacy for Environmental Justice",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "AUTHORED"
+    ],
+    "children": [
+     {
+      "kind": "restoration-site",
+      "name": "Heron's Head Park Shoreline Resilience Project (Phases 1 and 2)",
+      "geopose": "restoration-site:herons-head",
+      "provenance": "AUTHORED",
+      "served_by_this_fabric": false,
+      "walkable": true,
+      "category": "habitat-restoration"
+     }
+    ]
+   },
+   {
+    "id": "branch:external/california-state-parks-community-stewardship-partners",
+    "origin": "external",
+    "owner": "California State Parks; community stewardship partners",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "AUTHORED"
+    ],
+    "children": [
+     {
+      "kind": "restoration-site",
+      "name": "Candlestick Point Stewardship Project (Phases 1 and 2)",
+      "geopose": "restoration-site:candlestick-point",
+      "provenance": "AUTHORED",
+      "served_by_this_fabric": false,
+      "walkable": true,
+      "category": "habitat-restoration"
+     }
+    ]
+   },
+   {
+    "id": "branch:external/planting-justice",
+    "origin": "external",
+    "owner": "Planting Justice",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "AUTHORED"
+    ],
+    "children": [
+     {
+      "kind": "restoration-site",
+      "name": "Bay Restoration: Youth Engagement and Service Learning in East Oakland",
+      "geopose": "restoration-site:east-oakland-youth",
+      "provenance": "AUTHORED",
+      "served_by_this_fabric": false,
+      "walkable": true,
+      "category": "habitat-restoration"
+     }
+    ]
+   },
+   {
+    "id": "branch:external/grassroots-ecology",
+    "origin": "external",
+    "owner": "Grassroots Ecology",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "AUTHORED"
+    ],
+    "children": [
+     {
+      "kind": "restoration-site",
+      "name": "Alviso Shoreline Habitat Restoration",
+      "geopose": "restoration-site:alviso-shoreline",
+      "provenance": "AUTHORED",
+      "served_by_this_fabric": false,
+      "walkable": true,
+      "category": "habitat-restoration"
+     }
+    ]
+   },
+   {
+    "id": "branch:external/south-bay-salt-pond-restoration-project-multi-agency",
+    "origin": "external",
+    "owner": "South Bay Salt Pond Restoration Project (multi-agency)",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "AUTHORED"
+    ],
+    "children": [
+     {
+      "kind": "restoration-site",
+      "name": "South Bay Salt Pond Restoration \u2014 ecotone levee (Phase 1)",
+      "geopose": "restoration-site:south-bay-salt-ponds",
+      "provenance": "AUTHORED",
+      "served_by_this_fabric": false,
+      "walkable": true,
+      "category": "habitat-restoration"
+     }
+    ]
+   },
+   {
+    "id": "branch:external/san-francisco-bay-restoration-authority-measure-aa",
+    "origin": "external",
+    "owner": "San Francisco Bay Restoration Authority (Measure AA)",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "AUTHORED"
+    ],
+    "children": [
+     {
+      "kind": "restoration-site",
+      "name": "Montezuma Tidal and Seasonal Wetlands Restoration Project",
+      "geopose": "restoration-site:montezuma-wetlands",
+      "provenance": "AUTHORED",
+      "served_by_this_fabric": false,
+      "walkable": true,
+      "category": "habitat-restoration"
+     }
+    ]
+   },
+   {
+    "id": "branch:external/city-of-american-canyon",
+    "origin": "external",
+    "owner": "City of American Canyon",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "AUTHORED"
+    ],
+    "children": [
+     {
+      "kind": "restoration-site",
+      "name": "American Canyon Wetlands Restoration Plan",
+      "geopose": "restoration-site:american-canyon",
+      "provenance": "AUTHORED",
+      "served_by_this_fabric": false,
+      "walkable": true,
+      "category": "habitat-restoration"
+     }
+    ]
+   },
+   {
+    "id": "branch:external/point-blue-conservation-science-straw-program",
+    "origin": "external",
+    "owner": "Point Blue Conservation Science (STRAW program)",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "AUTHORED"
+    ],
+    "children": [
+     {
+      "kind": "restoration-site",
+      "name": "Restoring Wetland-Upland Transition Zone Habitat in the North Bay with STRAW",
+      "geopose": "restoration-site:straw-north-bay",
+      "provenance": "AUTHORED",
+      "served_by_this_fabric": false,
+      "walkable": true,
+      "category": "habitat-restoration"
+     }
+    ]
+   },
+   {
+    "id": "branch:external/san-francisco-estuary-invasive-spartina-project-multi-agency",
+    "origin": "external",
+    "owner": "San Francisco Estuary Invasive Spartina Project (multi-agency)",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "AUTHORED"
+    ],
+    "children": [
+     {
+      "kind": "restoration-site",
+      "name": "San Francisco Estuary Invasive Spartina Removal",
+      "geopose": null,
+      "provenance": "AUTHORED",
+      "served_by_this_fabric": false,
+      "why_no_geopose": "no GeoPose: the registry pins no single coordinate for this bay-wide program (pin: false, lat/lng null), and this build invents none"
+     }
+    ]
+   },
+   {
+    "id": "branch:external/us-navy-cercla-lead-agency-for-investigation-and-cleanup-us-",
+    "origin": "external",
+    "owner": "US Navy (CERCLA lead agency for investigation and cleanup); US EPA Region 9 and California DTSC (oversight and enforcement of Navy cleanup activities)",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "AUTHORED"
+    ],
+    "children": [
+     {
+      "kind": "restoration-site",
+      "name": "Hunters Point Naval Shipyard \u2014 EPA Superfund Site (Bayview-Hunters Point)",
+      "geopose": "restoration-site:hunters-point-shipyard",
+      "provenance": "AUTHORED",
+      "served_by_this_fabric": false,
+      "walkable": false,
+      "category": "environmental-monitoring"
+     }
+    ]
+   }
+  ]
+ },
+ "invariants": {
+  "per_branch_ownership": "every branch has exactly one owner; no external branch contains a place, content or service this fabric serves, and every node this fabric serves sits under its own branch - asserted by spatial/build.py and spatial/test.mjs",
+  "counts": {
+   "branches": 57,
+   "external_branches": 56,
+   "fabric_nodes": 143
+  }
+ },
+ "honesty": {
+  "geopose_claimed": "OGC GeoPose 1.0 (OGC 21-056r11) is a published standard with a confirmed Basic-YPR JSON encoding, and it is claimed outright: every pose in geopose.json is exactly {position: {lat, lon, h}, orientation: {yaw, pitch, roll}}, lat/lon in degrees, h in metres, angles in degrees, LTP-ENU inner frame. The horizontal position is copied at build time from the registry that owns it and carries that registry's own provenance word (RECORDED / DERIVED / AUTHORED) and source string.",
+  "no_heights_or_headings": "this bundle holds no height and no heading for any campus, anchor or site - elevation exists only as an on-request live USGS 3DEP lookup in the learner's own browser, never stored - so every pose emits h = 0.0 and yaw = pitch = roll = 0 with an explicit UNKNOWN sidecar beside it. A zero here is a placeholder, never a measurement, and no height or heading is invented to fill the slot.",
+  "ombi_not_claimed": "the OMBI spatial-fabric manifest, the Scene Object Model (SOM) and RMAP are marked \"OMBI - New\" in the public deck and their normative texts were not reachable from this build, so fabric.json and som.json are SHAPED after the deck's vocabulary, not validated against a specification. They are registered in meta/registry/metaverse.json under not_claimed, with the reason, and never under standards.",
+  "static_files_only_no_rmap": "this fabric is static files a plain web server serves next to the site - the deck's own \"publish 3D content like a website\" point. No RMAP endpoint, no server, no WebSocket, no fetch at build time, no DID minted: the identity field is honestly null. Every service listed runs in-page with no network, and every anchored .glb is produced on demand by the learner's browser, not a file sitting on disk.",
+  "external_origins": "every other operator this fabric points at - a restoration site's own organization, the US Navy, EPA Region 9 and California DTSC at Hunters Point, a port authority, a university, a museum, a neighbouring city - is a separate origin: named, located by its own pose, and never content this fabric serves for them (served_by_this_fabric is false on every one). That is the SOM's per-branch ownership idea, and it is the same \"not affiliated\" line restoration/ and geo/ already hold. The 111 union halls' real organizations are deliberately NOT listed as origins: the halls here are SCHEMATIC training buildings named after a craft, not a union's premises.",
+  "not_loaded_in_any_browser": "nothing here has been opened in Sneeze, Artemis or any other metaverse browser. The only consumers this pack can defend are a reader of application/geopose+json and this bundle's own suite (spatial/test.mjs), which holds every pose against its source registry on every run."
+ }
+}

@@ -20,15 +20,30 @@ const page = readFileSync(new URL('../web/build_3d.py', import.meta.url), 'utf8'
 ok('the baseline is the open one, and says no private standard governs the layer',
   /open interchange baseline/.test(reg.baseline.note)
   && /No private/.test(reg.baseline.note));
-ok('three standards are claimed - glTF 2.0, WebXR, GeoJSON - each with its body and role',
-  reg.baseline.standards.length === 3
-  && ['gltf-2.0', 'webxr', 'geojson-wgs84'].every((id) =>
+ok('four standards are claimed - glTF 2.0, WebXR, GeoJSON, OGC GeoPose 1.0 - each with its body and role',
+  reg.baseline.standards.length === 4
+  && ['gltf-2.0', 'webxr', 'geojson-wgs84', 'geopose-1.0'].every((id) =>
       reg.baseline.standards.some((s) => s.id === id && s.body && s.role))
   && reg.baseline.standards.find((s) => s.id === 'gltf-2.0')
       .consumers.includes('Unity'));
+ok('the GeoPose claim is the one spatial/ actually emits, and names only consumers it can defend',
+  (() => {
+    const gp = reg.baseline.standards.find((s) => s.id === 'geopose-1.0');
+    const sp = JSON.parse(readFileSync(
+      new URL('../spatial/registry/geopose.json', import.meta.url)));
+    return /OGC 21-056r11/.test(gp.body) && /zero-with-UNKNOWN/.test(gp.role)
+      && gp.consumers.includes('any application/geopose+json reader')
+      && /^OGC GeoPose 1\.0 Basic-YPR, OGC 21-056r11/.test(sp.encoding)
+      && sp.counts.total > 0;
+  })());
 ok('the not-claimed list stays honest: VRM, OMI extensions and USD are unclaimed with reasons',
   ['vrm', 'omi-gltf-extensions', 'usd'].every((id) =>
     reg.baseline.not_claimed.some((x) => x.id === id && x.why.length > 20)));
+ok('the OMBI shapes - fabric manifest, SOM, RMAP - are honestly NOT claimed, with reasons, and never listed as standards',
+  ['ombi-spatial-fabric', 'ombi-som', 'rmap'].every((id) =>
+    reg.baseline.not_claimed.some((x) => x.id === id && x.why.length > 40)
+    && !reg.baseline.standards.some((s) => s.id === id))
+  && /OMBI/.test(reg.baseline.note) && /not standards/.test(reg.baseline.note));
 
 /* --------------------------------------------------------- conventions --- */
 ok('conventions are complete: .glb, metres, +Y up, a named rig, named scenes',

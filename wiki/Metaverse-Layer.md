@@ -1,6 +1,6 @@
 # The metaverse layer
 
-built to the open interchange baseline. No private "metaverse standard" is referenced or claimed: what is listed under standards is implemented and tested, and what is listed under not_claimed is honestly not.
+built to the open interchange baseline. No private "metaverse standard" is referenced or claimed: what is listed under standards is implemented and tested, and what is listed under not_claimed is honestly not. The Open Metaverse Browser Initiative (OMBI) is an open initiative, but its spatial-fabric, SOM and RMAP shapes are unverified against any normative text this build could read, so they sit under not_claimed, not standards.
 
 The contract in one line: **standard files out, the learner's own files
 in.** No service, no account, no token, no blockchain — and
@@ -14,6 +14,7 @@ that implements it.
 | `gltf-2.0` | Khronos Group | scene and avatar interchange - binary .glb export from the locker and any hall, learner-local import onto the guest stand |
 | `webxr` | W3C | immersive VR/AR entry in the 3D environment, feature-gated to platforms that offer the session |
 | `geojson-wgs84` | IETF RFC 7946 | the geo registry interchange (campuses.geojson, network.geojson) that the geomap and any Mapbox/MapLibre stack consume |
+| `geopose-1.0` | Open Geospatial Consortium (OGC 21-056r11) | Basic-YPR poses for every campus, institution anchor and pinned restoration site (spatial/registry/geopose.json), horizontal position at its source provenance, height and heading honestly zero-with-UNKNOWN |
 
 The glTF exports open directly in Unity, Sketchfab, Blender, Godot, three.js.
 
@@ -24,6 +25,9 @@ The glTF exports open directly in Unity, Sketchfab, Blender, Godot, three.js.
 | `vrm` | humanoid-avatar spec compliance is not asserted until validated against the reference tooling; exports are plain core glTF |
 | `omi-gltf-extensions` | no OMI extension is emitted; core glTF only |
 | `usd` | no USD is written or read |
+| `ombi-spatial-fabric` | the OMBI fabric manifest (spatial/registry/fabric.json) is shaped after the public deck and press, Q3 2026 - no normative specification was reachable from this build, so the shape is unvalidated, and it has not been loaded in Sneeze, Artemis or any other metaverse browser |
+| `ombi-som` | the Scene Object Model (spatial/registry/som.json) is SOM-shaped - a multi-origin scene graph with per-branch ownership, authored from the deck's vocabulary - not conformant to a specification this build could read, and unverified in any browser |
+| `rmap` | no RMAP endpoint, server or protocol is implemented: the fabric is static files, every service runs in-page with no network, and no DID is minted |
 
 ## The Unity avatar systems, reviewed
 

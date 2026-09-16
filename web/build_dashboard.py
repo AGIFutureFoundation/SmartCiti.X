@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """The network dashboard: SmartCiti.X's whole platform, read live from the
-verified registries - nine campuses built (six regional hubs, not
-district campuses), one candidate on the roadmap toward ten, and the
-pack that stands behind each one.
+verified registries - the built campuses (district campuses and regional
+hubs alike), whatever the roadmap still holds as a candidate toward ten,
+and the pack that stands behind each one.
 
 Every figure on this page is read from a registry's own JSON, not
 retyped: halls and modules from the pack manifest, districts and campuses
@@ -11,8 +11,12 @@ advisors from agents/, the world's weather and fauna from world/, the
 sign system from labels/, the training-data recorder's shape from
 training/, the synthetic-video prompt contract and its real runners from
 orbis/, the avatar locker and TradeApes collection from avatars/, and the
-metaverse interchange layer's reviewed standards from meta/, and the real
-Bay Restoration sites and their field-skill bridge from restoration/. If
+metaverse interchange layer's reviewed standards from meta/, the real
+Bay Restoration sites and their field-skill bridge from restoration/, and
+the spatial fabric's GeoPose count and claimed / not-claimed split from
+spatial/ (both of whose files this page also embeds for download, the
+same inline pattern the geomap uses for its GeoJSON, since Pages serves
+no registry file). If
 a number here disagrees with its source, the source is right and this
 page is stale - which `--check` mode exists to catch.
 """
@@ -48,6 +52,10 @@ orbis = json.load(open(ROOT / 'orbis/registry/orbis.json'))
 avatars = json.load(open(ROOT / 'avatars/registry/avatars.json'))
 meta = json.load(open(ROOT / 'meta/registry/metaverse.json'))
 restoration = json.load(open(ROOT / 'restoration/registry/restoration.json'))
+geopose_path = ROOT / 'spatial/registry/geopose.json'
+fabric_path = ROOT / 'spatial/registry/fabric.json'
+spatial = json.load(open(geopose_path))
+fabric = json.load(open(fabric_path))
 
 F = lambda x: f"{x:,}"
 built = roadmap['built_campuses']
@@ -81,7 +89,33 @@ STATS = [
     (str(len(meta['avatar_systems_reviewed'])), 'Unity avatar systems reviewed'),
     (f"{len(restoration['sites'])} / {len(restoration['tracks'])}",
      'real Bay Restoration sites / field-skill tracks'),
+    (str(spatial['counts']['total']),
+     'GeoPose 1.0 poses (campuses, anchors, restoration sites)'),
 ]
+
+# the spatial fabric's own split: what it claims (GeoPose) and what it
+# honestly does not (the OMBI shapes), both read from meta/'s registry
+spatial_claimed = [s['id'] for s in meta['baseline']['standards']
+                   if s['id'] == 'geopose-1.0']
+spatial_not = [x['id'] for x in meta['baseline']['not_claimed']
+               if x['id'] in ('ombi-spatial-fabric', 'ombi-som', 'rmap')]
+SPATIAL_STATS = [
+    (str(spatial['counts']['total']), 'GeoPose 1.0 Basic-YPR poses'),
+    (f"{spatial['counts']['campuses']} / {spatial['counts']['anchors']} / "
+     f"{spatial['counts']['restoration_sites']}",
+     'campuses / anchors / restoration sites posed'),
+    (str(spatial['counts']['unposed']), 'honestly unposed (no coordinate held)'),
+    (f"{len(spatial_claimed)} / {len(spatial_not)}",
+     'claimed (GeoPose) / not claimed (OMBI fabric, SOM, RMAP)'),
+    (str(len(fabric['services'])), 'in-page services, no network'),
+    (str(len(fabric['external_origins'])),
+     'external origins, none served by this fabric'),
+]
+# embedded for download: a <script> of a non-JS type is inert, and "</"
+# is escaped so no JSON string can close the element early
+_embed = lambda p: p.read_text().replace('</', '<\\/')
+geopose_json = _embed(geopose_path)
+fabric_json = _embed(fabric_path)
 
 
 PROV_CLASS = {'RECORDED': 'rec', 'DERIVED': 'rec', 'AUTHORED': 'auth'}
@@ -119,6 +153,8 @@ checklist_rows = ''.join(
     f'<code>{row["file"]}</code></li>' for row in roadmap['checklist'])
 stat_tiles = ''.join(
     f'<div class="fig"><b>{v}</b><span>{lbl}</span></div>' for v, lbl in STATS)
+spatial_tiles = ''.join(
+    f'<div class="fig"><b>{v}</b><span>{lbl}</span></div>' for v, lbl in SPATIAL_STATS)
 
 page = f'''<!doctype html>
 <html lang="en">
@@ -174,6 +210,10 @@ h2{{font:600 22px "Barlow Condensed",system-ui,sans-serif;letter-spacing:.02em;
 .honesty{{background:var(--sunk);border-inline-start:3px solid var(--mark);border-radius:6px;
   padding:14px 22px;color:var(--muted);font-size:13px;margin-top:30px}}
 .honesty li{{margin:5px 0}}
+.dl{{display:inline-block;font:600 13px "Barlow Condensed",system-ui,sans-serif;letter-spacing:.03em;
+  background:var(--sunk);color:var(--steel);border:1px solid var(--steel);border-radius:6px;
+  padding:6px 12px;margin:8px 8px 0 0;cursor:pointer}}
+.dl:hover{{background:var(--steel);color:var(--mark-ink)}}
 footer{{color:var(--muted);font-size:12px;margin-top:30px;padding-top:14px;border-top:1px solid var(--rule)}}
 a{{color:var(--steel)}}
 </style>
@@ -205,6 +245,20 @@ a{{color:var(--steel)}}
 <p class="lead">Every figure below reads from its own registry at build time.</p>
 <div class="figs">{stat_tiles}</div>
 
+<h2>Spatial fabric</h2>
+<p class="lead">{spatial['honesty']['geopose_claimed']}</p>
+<div class="figs">{spatial_tiles}</div>
+<p class="lead" style="margin-top:14px">{fabric['fabric']['shape']}.</p>
+<p class="sub">{spatial['counts']['total']} GeoPose 1.0 poses · encoding <code>{spatial['encoding']}</code> · CRS {spatial['crs']} ·
+  operator {fabric['fabric']['operator']} · origin {fabric['fabric']['origin']} · entry <code>{fabric['fabric']['entry']}</code></p>
+<p>
+  <button class="dl" data-dl="geopose-json" data-name="geopose.json">⬇ geopose.json</button>
+  <button class="dl" data-dl="fabric-json" data-name="fabric.json">⬇ fabric.json</button>
+  <span class="sub">both embedded in this page and served from your own browser — no server, no fetch</span>
+</p>
+<script id="geopose-json" type="application/geopose+json">{geopose_json}</script>
+<script id="fabric-json" type="application/json">{fabric_json}</script>
+
 <div class="honesty">
   <li>{roadmap['honesty']['provenance_tiers']}</li>
   <li>{roadmap['honesty']['no_dates']}</li>
@@ -215,7 +269,18 @@ a{{color:var(--steel)}}
   <li>{avatars['guarantee']}</li>
   <li>{meta['honesty']['status']}</li>
   <li>{restoration['honesty']['not_affiliated']}</li>
+  <li>{spatial['honesty']['ombi_not_claimed']}</li>
+  <li>{spatial['honesty']['no_heights_or_headings']}</li>
 </div>
+<script>
+document.querySelectorAll('[data-dl]').forEach((b) => b.addEventListener('click', () => {{
+  const src = document.getElementById(b.dataset.dl);
+  const url = URL.createObjectURL(new Blob([src.textContent], {{ type: src.type }}));
+  const a = document.createElement('a'); a.href = url; a.download = b.dataset.name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}}));
+</script>
 <footer>
   <a href="trade_craft_3d.html">3D environment</a> ·
   <a href="trade_craft_map.html">campus map</a> ·

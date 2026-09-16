@@ -32,7 +32,11 @@ DOC = {
         'note': 'built to the open interchange baseline. No private '
                 '"metaverse standard" is referenced or claimed: what is '
                 'listed under standards is implemented and tested, and '
-                'what is listed under not_claimed is honestly not.',
+                'what is listed under not_claimed is honestly not. The '
+                'Open Metaverse Browser Initiative (OMBI) is an open '
+                'initiative, but its spatial-fabric, SOM and RMAP shapes '
+                'are unverified against any normative text this build '
+                'could read, so they sit under not_claimed, not standards.',
         'standards': [
             {'id': 'gltf-2.0', 'body': 'Khronos Group',
              'role': 'scene and avatar interchange - binary .glb export '
@@ -47,6 +51,15 @@ DOC = {
              'role': 'the geo registry interchange (campuses.geojson, '
                      'network.geojson) that the geomap and any '
                      'Mapbox/MapLibre stack consume'},
+            {'id': 'geopose-1.0',
+             'body': 'Open Geospatial Consortium (OGC 21-056r11)',
+             'role': 'Basic-YPR poses for every campus, institution anchor '
+                     'and pinned restoration site '
+                     '(spatial/registry/geopose.json), horizontal position '
+                     'at its source provenance, height and heading '
+                     'honestly zero-with-UNKNOWN',
+             'consumers': ['any application/geopose+json reader',
+                           'OSCP GeoPose Protocol clients']},
         ],
         'not_claimed': [
             {'id': 'vrm', 'why': 'humanoid-avatar spec compliance is not '
@@ -56,6 +69,23 @@ DOC = {
             {'id': 'omi-gltf-extensions', 'why': 'no OMI extension is '
                                                  'emitted; core glTF only'},
             {'id': 'usd', 'why': 'no USD is written or read'},
+            {'id': 'ombi-spatial-fabric',
+             'why': 'the OMBI fabric manifest (spatial/registry/fabric.json) '
+                    'is shaped after the public deck and press, Q3 2026 - '
+                    'no normative specification was reachable from this '
+                    'build, so the shape is unvalidated, and it has not '
+                    'been loaded in Sneeze, Artemis or any other metaverse '
+                    'browser'},
+            {'id': 'ombi-som',
+             'why': 'the Scene Object Model (spatial/registry/som.json) is '
+                    'SOM-shaped - a multi-origin scene graph with '
+                    'per-branch ownership, authored from the deck\'s '
+                    'vocabulary - not conformant to a specification this '
+                    'build could read, and unverified in any browser'},
+            {'id': 'rmap',
+             'why': 'no RMAP endpoint, server or protocol is implemented: '
+                    'the fabric is static files, every service runs '
+                    'in-page with no network, and no DID is minted'},
         ],
     },
     # Reviewed on the Unity side before choosing: three MIT-licensed avatar
@@ -229,6 +259,14 @@ for fname in ('gltf/GLTFExporter.js', 'gltf/GLTFLoader.js',
               'utils/TextureUtils.js', 'utils/BufferGeometryUtils.js'):
     assert (ROOT / 'web/vendor/addons' / fname).exists(), f'{fname} not vendored'
 assert (ROOT / 'geo/registry/network.geojson').exists()
+# the GeoPose claim is only worth making if spatial/ actually emits it
+_geopose = json.load(open(ROOT / 'spatial/registry/geopose.json'))
+assert _geopose['encoding'].startswith('OGC GeoPose 1.0 Basic-YPR, OGC 21-056r11'), \
+    'spatial/ no longer emits the GeoPose encoding meta/ claims'
+assert _geopose['counts']['total'] > 0
+for _oid in ('ombi-spatial-fabric', 'ombi-som', 'rmap'):
+    assert not any(s['id'] == _oid for s in DOC['baseline']['standards']), \
+        f'{_oid} must never be claimed as a standard'
 
 # The avatar review is RECORDED from checkouts, not from marketing: where
 # those checkouts sit beside this repo, hold each licence claim against the
