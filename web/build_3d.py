@@ -4485,6 +4485,17 @@ function boxGeo(w, h, d) {
   }
   return g2;
 }
+const sphereGeoCache = new Map();
+function sphereGeo(r, seg, rings) {
+  const k = r + '|' + seg + '|' + rings;
+  let g2 = sphereGeoCache.get(k);
+  if (!g2) {
+    g2 = new THREE.SphereGeometry(r, seg, rings);
+    g2.userData.shared = true;
+    sphereGeoCache.set(k, g2);
+  }
+  return g2;
+}
 // materials get the same shared/unshared split as geometry above: the
 // `mat` table (and anything else marked userData.shared) is a page-wide
 // singleton and must survive; a sim or an avatar builds its OWN fresh
@@ -6318,8 +6329,11 @@ function flagAt(x, z, g, color) {
 function vegClump(x, z, g, n, spread) {
   for (let i = 0; i < n; i++) {
     const a = i / n * Math.PI * 2, r = spread * (.3 + .7 * ((i * 53) % 100) / 100);
-    const s = .35 + ((i * 29) % 100) / 220;
-    const c = new THREE.Mesh(new THREE.SphereGeometry(s, 6, 5), mat.veg);
+    // snapped to a coarse step so repeated clumps across a site (up to
+    // ~100 spheres) share one of a handful of cached geometries instead
+    // of each getting its own BufferGeometry
+    const s = Math.round((.35 + ((i * 29) % 100) / 220) * 20) / 20;
+    const c = new THREE.Mesh(sphereGeo(s, 6, 5), mat.veg);
     c.position.set(x + Math.cos(a) * r, s * .7, z + Math.sin(a) * r);
     c.castShadow = true; g.add(c);
   }
