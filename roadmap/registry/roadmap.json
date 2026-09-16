@@ -3,12 +3,12 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.4.0",
  "built": "2026-09-13",
- "source_stamp": "91422f9fa7b91c36",
+ "source_stamp": "ffc7d6272976b3d8",
  "target": 10,
  "honesty": {
-  "target_not_claim": "ten walkable worlds is a target this registry tracks progress toward, not a claim that ten exist. Five are built; five are candidates.",
-  "provenance_tiers": "three of the five built campuses' coordinates are RECORDED - copied from a cited file and cross-checked against it on every build. Houston and Chicago, the fourth and fifth, and the five remaining candidates' coordinates are AUTHORED: widely-published public geography, typed here from general knowledge rather than copied from any file this build can check itself against - a materially weaker claim, labelled as one.",
-  "hub_vs_district": "three built campuses are district campuses: a home for 2-3 trade districts, a district ring, the full stack this bundle ships. Houston and Chicago are hub campuses: no home district, no district ring, no parcel-records contract - and a real regional chapter seat for all 111 halls each, the same mechanic every campus already had, extended to a fourth and a fifth destination. Building one shape does not oblige the next candidate to be the other.",
+  "target_not_claim": "ten walkable worlds is a target this registry tracks progress toward, not a claim that ten exist. Six are built; four are candidates.",
+  "provenance_tiers": "three of the six built campuses' coordinates are RECORDED - copied from a cited file and cross-checked against it on every build. Houston, Chicago and Seattle, the fourth, fifth and sixth, and the four remaining candidates' coordinates are AUTHORED: widely-published public geography, typed here from general knowledge rather than copied from any file this build can check itself against - a materially weaker claim, labelled as one.",
+  "hub_vs_district": "three built campuses are district campuses: a home for 2-3 trade districts, a district ring, the full stack this bundle ships. Houston, Chicago and Seattle are hub campuses: no home district, no district ring, no parcel-records contract - and a real regional chapter seat for all 111 halls each, the same mechanic every campus already had, extended to a fourth, fifth and sixth destination. Building one shape does not oblige the next candidate to be the other.",
   "not_a_claim_of_content": "a candidate names a proposed metro and a proposed district emphasis. It does not claim any hall, union, curriculum content or trade partnership exists there - building one is the checklist, done in full, the same way the built campuses were.",
   "no_dates": "this is an ordered list of what is next, not a timeline: no candidate carries a committed date."
  },
@@ -78,24 +78,20 @@
    "halls": 0,
    "provenance": "AUTHORED",
    "source": "widely-published public geography (city-center), typed from general knowledge - not cross-checked against any file this build can verify"
-  }
- },
- "candidates": {
+  },
   "seattle": {
-   "name": "Sound Aerospace Campus",
+   "name": "Sound Aerospace Hub",
    "city": "Seattle",
    "region": "Washington",
    "lat": 47.6062,
    "lng": -122.3321,
-   "districts": [
-    "transport",
-    "structural",
-    "industry"
-   ],
-   "why": "aerospace manufacturing and a working port on the Sound - precision heavy industry alongside the structural and transport trades a port city depends on",
-   "km_from_flagship": 1087.8,
-   "bearing_from_flagship_deg": 0.2
-  },
+   "districts": [],
+   "halls": 0,
+   "provenance": "AUTHORED",
+   "source": "widely-published public geography (city-center), typed from general knowledge - not cross-checked against any file this build can verify"
+  }
+ },
+ "candidates": {
   "pittsburgh": {
    "name": "Three Rivers Steel Campus",
    "city": "Pittsburgh",

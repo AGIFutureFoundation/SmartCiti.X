@@ -2,13 +2,14 @@
  * Network roadmap verification.
  *
  * The claim this pack makes has two parts that must never blur together:
- * five campuses are BUILT (three on RECORDED, cross-checked coordinates,
- * two - Houston and Chicago - on AUTHORED ones, same as a candidate's):
- * five are CANDIDATES on AUTHORED, not-cross-checked coordinates. A third
- * distinction cuts across the first: three built campuses are DISTRICT
- * campuses (a home for 2-3 districts, a district ring, halls > 0);
- * Houston and Chicago are HUB campuses (no home district, no ring, zero
- * home halls, a regional-chapter seat for all 111 instead) - the suite
+ * six campuses are BUILT (three on RECORDED, cross-checked coordinates,
+ * three - Houston, Chicago and Seattle - on AUTHORED ones, same as a
+ * candidate's): four are CANDIDATES on AUTHORED, not-cross-checked
+ * coordinates. A third distinction cuts across the first: three built
+ * campuses are DISTRICT campuses (a home for 2-3 districts, a district
+ * ring, halls > 0); Houston, Chicago and Seattle are HUB campuses (no
+ * home district, no ring, zero home halls, a regional-chapter seat for
+ * all 111 instead) - the suite
  * checks each shape holds to its own honest bar rather than forcing a
  * hub through the district campus's checks. The built entries must
  * still trace to the geo and union registries' own figures, and the
@@ -42,7 +43,7 @@ const cand = Object.entries(reg.candidates);
 /* -------------------------------------------------------------- the count --- */
 ok(`the network totals exactly the declared target (${built.length} built + ${cand.length} candidates = ${reg.target})`,
   built.length + cand.length === reg.target && reg.target === 10
-  && built.length === 5 && cand.length === 5);
+  && built.length === 6 && cand.length === 4);
 ok('no candidate slug collides with a built campus slug',
   built.every(([k]) => !reg.candidates[k])
   && cand.every(([k]) => !reg.built_campuses[k]));
@@ -62,9 +63,9 @@ ok('built entries carry a real hall count off the union registry',
 /* ----------------------------------------------------------- hub vs district --- */
 const hub = built.filter(([, b]) => b.districts.length === 0);
 const dist = built.filter(([, b]) => b.districts.length > 0);
-ok('exactly two built campuses are hubs (Houston, Chicago): no home district, zero home halls',
-  hub.length === 2 && new Set(hub.map(([k]) => k)).size === 2
-  && ['houston', 'chicago'].every((k) => hub.some(([hk]) => hk === k))
+ok('exactly three built campuses are hubs (Houston, Chicago, Seattle): no home district, zero home halls',
+  hub.length === 3 && new Set(hub.map(([k]) => k)).size === 3
+  && ['houston', 'chicago', 'seattle'].every((k) => hub.some(([hk]) => hk === k))
   && hub.every(([, b]) => b.halls === 0));
 ok('every district campus actually hosts 2-3 districts and at least one hall',
   dist.length === 3
@@ -91,8 +92,8 @@ ok('every candidate names 2-3 real districts that actually exist in the taxonomy
     && c.districts.every((d) => d in districts)));
 ok('every candidate states a real reason, not a placeholder',
   cand.every(([, c]) => c.why.length > 40));
-ok('the five candidates are five distinct real US metros',
-  new Set(cand.map(([, c]) => c.city)).size === cand.length && cand.length === 5);
+ok('the four candidates are four distinct real US metros',
+  new Set(cand.map(([, c]) => c.city)).size === cand.length && cand.length === 4);
 
 /* --------------------------------------------------- the flagship bearing --- */
 // independently re-derived (not copied from build.py) so a real math bug
@@ -158,7 +159,7 @@ ok('the dashboard carries both provenance words where a viewer can see them',
 /* ------------------------------------------------------- the region board --- */
 // the flat dashboard used to be the only place a learner could discover
 // the roadmap at all - the actual walkable 3D network board showed only
-// the five built campuses. This is the drift guard for that gap: every
+// the built campuses. This is the drift guard for that gap: every
 // candidate this registry declares must actually reach the board, at its
 // own real bearing and distance, with a working click-through.
 ok('the 3D page trims the roadmap registry into D.roadmap and builds a candidate marker per entry',

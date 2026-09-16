@@ -1,8 +1,8 @@
 # The network roadmap
 
-ten walkable worlds is a target this registry tracks progress toward, not a claim that ten exist. Five are built; five are candidates.
+ten walkable worlds is a target this registry tracks progress toward, not a claim that ten exist. Six are built; four are candidates.
 
-## Built — 5 of 10
+## Built — 6 of 10
 
 | Campus | Where | Districts | Halls | Coordinate |
 |---|---|---|---|---|
@@ -11,12 +11,12 @@ ten walkable worlds is a target this registry tracks progress toward, not a clai
 | **Crescent Works Campus** | New Orleans, Louisiana | Energy & Utilities, Survey, Safety & Environment | 28 | DERIVED |
 | **Bayou Energy Hub** | Houston, Texas | (hub — no home district) | 0 | AUTHORED |
 | **Loop Rail Hub** | Chicago, Illinois | (hub — no home district) | 0 | AUTHORED |
+| **Sound Aerospace Hub** | Seattle, Washington | (hub — no home district) | 0 | AUTHORED |
 
-## Candidates — 5 proposed
+## Candidates — 4 proposed
 
 | Campus | Where | Districts | Why |
 |---|---|---|---|
-| **Sound Aerospace Campus** | Seattle, Washington | Transport & Mobility, Structural, Heavy Industry | aerospace manufacturing and a working port on the Sound - precision heavy industry alongside the structural and transport trades a port city depends on |
 | **Three Rivers Steel Campus** | Pittsburgh, Pennsylvania | Heavy Industry, Structural, Earthworks & Plant | the steel city, its three rivers crossed by more bridges than any other in the country - heavy industry and the structural trades it was built to teach are its own history |
 | **Front Range Campus** | Denver, Colorado | Earthworks & Plant, Energy & Utilities, Survey, Safety & Environment | a mining and energy heritage at altitude, and the ground, survey and safety disciplines that heritage was built on |
 | **Biscayne Coastal Campus** | Miami, Florida | Envelope & Finish, Survey, Safety & Environment, Transport & Mobility | hurricane-code envelope work and storm-response discipline on a coast that tests both every season, beside a working port |
@@ -26,7 +26,7 @@ a candidate names a proposed metro and a proposed district emphasis. It does not
 
 ## Two provenance tiers
 
-three of the five built campuses' coordinates are RECORDED - copied from a cited file and cross-checked against it on every build. Houston and Chicago, the fourth and fifth, and the five remaining candidates' coordinates are AUTHORED: widely-published public geography, typed here from general knowledge rather than copied from any file this build can check itself against - a materially weaker claim, labelled as one.
+three of the six built campuses' coordinates are RECORDED - copied from a cited file and cross-checked against it on every build. Houston, Chicago and Seattle, the fourth, fifth and sixth, and the four remaining candidates' coordinates are AUTHORED: widely-published public geography, typed here from general knowledge rather than copied from any file this build can check itself against - a materially weaker claim, labelled as one.
 
 ## Building the next one
 

@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-11",
- "source_stamp": "d894f7c28aec2241",
+ "source_stamp": "806d25b112be840d",
  "honesty": {
   "textures": "no texture, photograph or artwork file exists in this repository and none is downloaded: every surface is a recipe - a base colour, a grain, an octave count and a relief depth - and the page generates the image and its normal map in the learner's own browser at boot. There is therefore no third-party artwork anywhere in the render.",
   "weather": "schematic weather, not a forecast and not an observation: nothing here is tied to a reading taken at any real place or time, and the per-campus atmospheres are authored by reputation rather than measured.",
@@ -15,7 +15,7 @@
   "weather": 6,
   "ground": 6,
   "fauna": 6,
-  "animals": 58
+  "animals": 70
  },
  "sky": {
   "projection": "equirectangular, drawn to a 1024x512 canvas at boot",
@@ -242,9 +242,10 @@
    "flock": 5,
    "campuses": [
     "treasure-island",
-    "oakland"
+    "oakland",
+    "seattle"
    ],
-   "why": "a working waterfront has gulls over it; both Bay campuses are on one"
+   "why": "a working waterfront has gulls over it; both Bay campuses and the Sound waterfront at Seattle are on one"
   },
   "pelican": {
    "name": "Brown pelican",
@@ -323,7 +324,8 @@
     "oakland",
     "new-orleans",
     "houston",
-    "chicago"
+    "chicago",
+    "seattle"
    ],
    "why": "every yard in every city has them, and they are the scale reference nobody thinks about"
   },
@@ -346,7 +348,8 @@
     "oakland",
     "new-orleans",
     "houston",
-    "chicago"
+    "chicago",
+    "seattle"
    ],
    "why": "the yard dog is a fixture of the trade, and it teaches the habit of looking down before reversing"
   }
@@ -501,6 +504,36 @@
    "ground": "concrete",
    "verge": "gravel",
    "character": "a flat lakefront wind that never really stops, cold and grey off the water most of the year - authored by reputation, not measured"
+  },
+  "seattle": {
+   "sky": [
+    "#10151a",
+    "#232c31",
+    "#495459",
+    "#7c8a8c"
+   ],
+   "fog": {
+    "color": 2765366,
+    "mul": 1.5
+   },
+   "banks": 6,
+   "sun": {
+    "color": 14082272,
+    "i": 0.95
+   },
+   "hemi": {
+    "sky": 10136492,
+    "ground": 2236444,
+    "i": 1.0
+   },
+   "amb": {
+    "wind": 0.5,
+    "gulls": true,
+    "harbor": true
+   },
+   "ground": "concrete",
+   "verge": "gravel",
+   "character": "a low marine overcast off the Sound, a working waterfront and the hum of aerospace manufacturing just south of the green - authored by reputation, not measured"
   }
  }
 }

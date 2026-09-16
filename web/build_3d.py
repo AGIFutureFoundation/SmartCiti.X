@@ -3165,7 +3165,7 @@ function advRead(bind, aid) {
     case 'city.anchors': {
       // the citation follows the anchors' OWN real tier - RECORDED where a
       // sibling Locator.X table backs them, AUTHORED where none does (the
-      // two hub campuses) - never a hardcoded claim
+      // hub campuses) - never a hardcoded claim
       const cp = D.geo.cityPois[campusKey] || [];
       const allRecorded = cp.length > 0 && cp.every((a) => a.prov === 'RECORDED');
       return li((D.geo.anchors[campusKey] || []).map((a) => '<b>' + esc(a.name)
@@ -4949,6 +4949,28 @@ function dressCampus(key, g, R) {
     const lake = new THREE.Mesh(new THREE.PlaneGeometry(460, 140), mat.water);
     lake.rotation.x = -Math.PI / 2; lake.position.set(0, -.06, -(R + 140)); g.add(lake);
   }
+  if (key === 'seattle') {
+    // the third hub, dressed the same way as the first two: a free
+    // skyline on the green rather than anything at the plaza. Generic
+    // massing only - no real building is modeled or named - plus a
+    // container-gantry crane for the working port and the Sound itself
+    // as a schematic water band.
+    const skyMat = new THREE.MeshStandardMaterial({ color: 0x333c42, roughness: .82 });
+    for (let i = 0; i < 8; i++) {
+      const ang = i / 8 * Math.PI * 2 + .4, rad = R + 58 + (i % 2) * 18;
+      const h = 10 + (i % 4) * 6;
+      const t = box(5, h, 5, skyMat, Math.cos(ang) * rad, h / 2, Math.sin(ang) * rad, g);
+      t.castShadow = true;
+    }
+    const craneMat = mat.metal;
+    const craneLeg1 = box(1.2, 20, 1.2, craneMat, R + 96, 10, -R - 16, g);
+    const craneLeg2 = box(1.2, 20, 1.2, craneMat, R + 96, 10, -R - 30, g);
+    craneLeg1.castShadow = craneLeg2.castShadow = true;
+    const craneBoom = box(60, 1.4, 1.4, craneMat, R + 66, 20.6, -R - 23, g);
+    craneBoom.castShadow = true;
+    const sound = new THREE.Mesh(new THREE.PlaneGeometry(460, 140), mat.water);
+    sound.rotation.x = -Math.PI / 2; sound.position.set(0, -.06, -(R + 130)); g.add(sound);
+  }
 }
 
 /* ------------------------------------------------- the city layer -------- */
@@ -5386,6 +5408,15 @@ function cityWater(g, key, R, pois) {
     lake.rotation.x = -Math.PI / 2; lake.position.set(0, .07, -(R + 145));
     g.add(lake);
     tag('Lake Michigan', 0, -(R + 140));
+    return;
+  }
+  if (key === 'seattle') {
+    // the real Sound this hub is named for - the same schematic water
+    // band idiom, never claimed as more than that
+    const sound = new THREE.Mesh(new THREE.PlaneGeometry(260, 120), mat.water);
+    sound.rotation.x = -Math.PI / 2; sound.position.set(0, .07, -(R + 140));
+    g.add(sound);
+    tag('Puget Sound', 0, -(R + 135));
   }
 }
 

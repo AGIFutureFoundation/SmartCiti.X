@@ -2,8 +2,8 @@
  "pack": "smartcitix-trade-craft-academy-union-registry",
  "pack_version": "3.2.0",
  "built": "2026-09-09",
- "source_stamp": "53b44a303bcd7256",
- "count": 555,
+ "source_stamp": "af58599b8232c39e",
+ "count": 666,
  "regions": {
   "treasure-island": {
    "abbr": "SF",
@@ -29,6 +29,11 @@
    "abbr": "CHI",
    "name": "Loop Rail Hub",
    "city": "Chicago"
+  },
+  "seattle": {
+   "abbr": "SEA",
+   "name": "Sound Aerospace Hub",
+   "city": "Seattle"
   }
  },
  "hosted": {
@@ -36,7 +41,8 @@
   "oakland": 79,
   "new-orleans": 83,
   "houston": 111,
-  "chicago": 111
+  "chicago": 111,
+  "seattle": 111
  },
  "honesty": {
   "chapters": "the Academy's own regional training structure across its planned campuses - not a claim about any real union's locals, chapters or jurisdictions; no local is named"
@@ -61,6 +67,10 @@
     "chicago": {
      "code": "ironworkers@CHI",
      "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "ironworkers@SEA",
+     "role": "regional chapter"
     }
    }
   },
@@ -82,6 +92,10 @@
     },
     "chicago": {
      "code": "electricians@CHI",
+     "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "electricians@SEA",
      "role": "regional chapter"
     }
    }
@@ -105,6 +119,10 @@
     "chicago": {
      "code": "pipefitters@CHI",
      "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "pipefitters@SEA",
+     "role": "regional chapter"
     }
    }
   },
@@ -126,6 +144,10 @@
     },
     "chicago": {
      "code": "carpenters@CHI",
+     "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "carpenters@SEA",
      "role": "regional chapter"
     }
    }
@@ -149,6 +171,10 @@
     "chicago": {
      "code": "operating-eng@CHI",
      "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "operating-eng@SEA",
+     "role": "regional chapter"
     }
    }
   },
@@ -170,6 +196,10 @@
     },
     "chicago": {
      "code": "laborers@CHI",
+     "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "laborers@SEA",
      "role": "regional chapter"
     }
    }
@@ -193,6 +223,10 @@
     "chicago": {
      "code": "sheetmetal@CHI",
      "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "sheetmetal@SEA",
+     "role": "regional chapter"
     }
    }
   },
@@ -214,6 +248,10 @@
     },
     "chicago": {
      "code": "bricklayers@CHI",
+     "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "bricklayers@SEA",
      "role": "regional chapter"
     }
    }
@@ -237,6 +275,10 @@
     "chicago": {
      "code": "cement-masons@CHI",
      "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "cement-masons@SEA",
+     "role": "regional chapter"
     }
    }
   },
@@ -258,6 +300,10 @@
     },
     "chicago": {
      "code": "roofers@CHI",
+     "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "roofers@SEA",
      "role": "regional chapter"
     }
    }
@@ -281,6 +327,10 @@
     "chicago": {
      "code": "painters@CHI",
      "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "painters@SEA",
+     "role": "regional chapter"
     }
    }
   },
@@ -302,6 +352,10 @@
     },
     "chicago": {
      "code": "glaziers@CHI",
+     "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "glaziers@SEA",
      "role": "regional chapter"
     }
    }
@@ -325,6 +379,10 @@
     "chicago": {
      "code": "insulators@CHI",
      "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "insulators@SEA",
+     "role": "regional chapter"
     }
    }
   },
@@ -346,6 +404,10 @@
     },
     "chicago": {
      "code": "millwrights@CHI",
+     "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "millwrights@SEA",
      "role": "regional chapter"
     }
    }
@@ -369,6 +431,10 @@
     "chicago": {
      "code": "boilermakers@CHI",
      "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "boilermakers@SEA",
+     "role": "regional chapter"
     }
    }
   },
@@ -390,6 +456,10 @@
     },
     "chicago": {
      "code": "elevator@CHI",
+     "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "elevator@SEA",
      "role": "regional chapter"
     }
    }
@@ -413,6 +483,10 @@
     "chicago": {
      "code": "teamsters@CHI",
      "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "teamsters@SEA",
+     "role": "regional chapter"
     }
    }
   },
@@ -434,6 +508,10 @@
     },
     "chicago": {
      "code": "welders@CHI",
+     "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "welders@SEA",
      "role": "regional chapter"
     }
    }
@@ -457,6 +535,10 @@
     "chicago": {
      "code": "hvacr@CHI",
      "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "hvacr@SEA",
+     "role": "regional chapter"
     }
    }
   },
@@ -478,6 +560,10 @@
     },
     "chicago": {
      "code": "crane-ops@CHI",
+     "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "crane-ops@SEA",
      "role": "regional chapter"
     }
    }
@@ -501,6 +587,10 @@
     "chicago": {
      "code": "riggers@CHI",
      "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "riggers@SEA",
+     "role": "regional chapter"
     }
    }
   },
@@ -522,6 +612,10 @@
     },
     "chicago": {
      "code": "heavy-equip@CHI",
+     "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "heavy-equip@SEA",
      "role": "regional chapter"
     }
    }
@@ -545,6 +639,10 @@
     "chicago": {
      "code": "drywall@CHI",
      "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "drywall@SEA",
+     "role": "regional chapter"
     }
    }
   },
@@ -566,6 +664,10 @@
     },
     "chicago": {
      "code": "flooring@CHI",
+     "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "flooring@SEA",
      "role": "regional chapter"
     }
    }
@@ -589,6 +691,10 @@
     "chicago": {
      "code": "grounds@CHI",
      "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "grounds@SEA",
+     "role": "regional chapter"
     }
    }
   },
@@ -610,6 +716,10 @@
     },
     "chicago": {
      "code": "line-workers@CHI",
+     "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "line-workers@SEA",
      "role": "regional chapter"
     }
    }
@@ -633,6 +743,10 @@
     "chicago": {
      "code": "solar@CHI",
      "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "solar@SEA",
+     "role": "regional chapter"
     }
    }
   },
@@ -654,6 +768,10 @@
     },
     "chicago": {
      "code": "wind@CHI",
+     "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "wind@SEA",
      "role": "regional chapter"
     }
    }
@@ -677,6 +795,10 @@
     "chicago": {
      "code": "demolition@CHI",
      "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "demolition@SEA",
+     "role": "regional chapter"
     }
    }
   },
@@ -698,6 +820,10 @@
     },
     "chicago": {
      "code": "scaffold@CHI",
+     "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "scaffold@SEA",
      "role": "regional chapter"
     }
    }
@@ -721,6 +847,10 @@
     "chicago": {
      "code": "surveyors@CHI",
      "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "surveyors@SEA",
+     "role": "regional chapter"
     }
    }
   },
@@ -742,6 +872,10 @@
     },
     "chicago": {
      "code": "fire-sprinkler@CHI",
+     "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "fire-sprinkler@SEA",
      "role": "regional chapter"
     }
    }
@@ -765,6 +899,10 @@
     "chicago": {
      "code": "hazmat@CHI",
      "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "hazmat@SEA",
+     "role": "regional chapter"
     }
    }
   },
@@ -786,6 +924,10 @@
     },
     "chicago": {
      "code": "refractory@CHI",
+     "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "refractory@SEA",
      "role": "regional chapter"
     }
    }
@@ -809,6 +951,10 @@
     "chicago": {
      "code": "pipeline@CHI",
      "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "pipeline@SEA",
+     "role": "regional chapter"
     }
    }
   },
@@ -830,6 +976,10 @@
     },
     "chicago": {
      "code": "tank-erectors@CHI",
+     "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "tank-erectors@SEA",
      "role": "regional chapter"
     }
    }
@@ -853,6 +1003,10 @@
     "chicago": {
      "code": "shipfitters@CHI",
      "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "shipfitters@SEA",
+     "role": "regional chapter"
     }
    }
   },
@@ -874,6 +1028,10 @@
     },
     "chicago": {
      "code": "marine-pipe@CHI",
+     "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "marine-pipe@SEA",
      "role": "regional chapter"
     }
    }
@@ -897,6 +1055,10 @@
     "chicago": {
      "code": "divers@CHI",
      "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "divers@SEA",
+     "role": "regional chapter"
     }
    }
   },
@@ -918,6 +1080,10 @@
     },
     "chicago": {
      "code": "blasters@CHI",
+     "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "blasters@SEA",
      "role": "regional chapter"
     }
    }
@@ -941,6 +1107,10 @@
     "chicago": {
      "code": "miners@CHI",
      "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "miners@SEA",
+     "role": "regional chapter"
     }
    }
   },
@@ -962,6 +1132,10 @@
     },
     "chicago": {
      "code": "smelter@CHI",
+     "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "smelter@SEA",
      "role": "regional chapter"
     }
    }
@@ -985,6 +1159,10 @@
     "chicago": {
      "code": "foundry@CHI",
      "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "foundry@SEA",
+     "role": "regional chapter"
     }
    }
   },
@@ -1006,6 +1184,10 @@
     },
     "chicago": {
      "code": "machinists@CHI",
+     "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "machinists@SEA",
      "role": "regional chapter"
     }
    }
@@ -1029,6 +1211,10 @@
     "chicago": {
      "code": "toolmakers@CHI",
      "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "toolmakers@SEA",
+     "role": "regional chapter"
     }
    }
   },
@@ -1050,6 +1236,10 @@
     },
     "chicago": {
      "code": "fabricators@CHI",
+     "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "fabricators@SEA",
      "role": "regional chapter"
     }
    }
@@ -1073,6 +1263,10 @@
     "chicago": {
      "code": "platers@CHI",
      "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "platers@SEA",
+     "role": "regional chapter"
     }
    }
   },
@@ -1094,6 +1288,10 @@
     },
     "chicago": {
      "code": "substation@CHI",
+     "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "substation@SEA",
      "role": "regional chapter"
     }
    }
@@ -1117,6 +1315,10 @@
     "chicago": {
      "code": "cable-splicers@CHI",
      "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "cable-splicers@SEA",
+     "role": "regional chapter"
     }
    }
   },
@@ -1138,6 +1340,10 @@
     },
     "chicago": {
      "code": "meter-techs@CHI",
+     "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "meter-techs@SEA",
      "role": "regional chapter"
     }
    }
@@ -1161,6 +1367,10 @@
     "chicago": {
      "code": "gas-distrib@CHI",
      "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "gas-distrib@SEA",
+     "role": "regional chapter"
     }
    }
   },
@@ -1182,6 +1392,10 @@
     },
     "chicago": {
      "code": "water-distrib@CHI",
+     "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "water-distrib@SEA",
      "role": "regional chapter"
     }
    }
@@ -1205,6 +1419,10 @@
     "chicago": {
      "code": "wastewater@CHI",
      "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "wastewater@SEA",
+     "role": "regional chapter"
     }
    }
   },
@@ -1226,6 +1444,10 @@
     },
     "chicago": {
      "code": "nuclear@CHI",
+     "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "nuclear@SEA",
      "role": "regional chapter"
     }
    }
@@ -1249,6 +1471,10 @@
     "chicago": {
      "code": "hydro@CHI",
      "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "hydro@SEA",
+     "role": "regional chapter"
     }
    }
   },
@@ -1270,6 +1496,10 @@
     },
     "chicago": {
      "code": "geothermal@CHI",
+     "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "geothermal@SEA",
      "role": "regional chapter"
     }
    }
@@ -1293,6 +1523,10 @@
     "chicago": {
      "code": "battery-storage@CHI",
      "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "battery-storage@SEA",
+     "role": "regional chapter"
     }
    }
   },
@@ -1314,6 +1548,10 @@
     },
     "chicago": {
      "code": "ev-charging@CHI",
+     "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "ev-charging@SEA",
      "role": "regional chapter"
     }
    }
@@ -1337,6 +1575,10 @@
     "chicago": {
      "code": "hydrogen@CHI",
      "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "hydrogen@SEA",
+     "role": "regional chapter"
     }
    }
   },
@@ -1358,6 +1600,10 @@
     },
     "chicago": {
      "code": "transmission@CHI",
+     "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "transmission@SEA",
      "role": "regional chapter"
     }
    }
@@ -1381,6 +1627,10 @@
     "chicago": {
      "code": "district-energy@CHI",
      "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "district-energy@SEA",
+     "role": "regional chapter"
     }
    }
   },
@@ -1402,6 +1652,10 @@
     },
     "chicago": {
      "code": "masonry-restore@CHI",
+     "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "masonry-restore@SEA",
      "role": "regional chapter"
     }
    }
@@ -1425,6 +1679,10 @@
     "chicago": {
      "code": "stone-carvers@CHI",
      "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "stone-carvers@SEA",
+     "role": "regional chapter"
     }
    }
   },
@@ -1446,6 +1704,10 @@
     },
     "chicago": {
      "code": "plasterers@CHI",
+     "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "plasterers@SEA",
      "role": "regional chapter"
     }
    }
@@ -1469,6 +1731,10 @@
     "chicago": {
      "code": "terrazzo@CHI",
      "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "terrazzo@SEA",
+     "role": "regional chapter"
     }
    }
   },
@@ -1490,6 +1756,10 @@
     },
     "chicago": {
      "code": "tilesetters@CHI",
+     "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "tilesetters@SEA",
      "role": "regional chapter"
     }
    }
@@ -1513,6 +1783,10 @@
     "chicago": {
      "code": "lathers@CHI",
      "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "lathers@SEA",
+     "role": "regional chapter"
     }
    }
   },
@@ -1534,6 +1808,10 @@
     },
     "chicago": {
      "code": "curtainwall@CHI",
+     "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "curtainwall@SEA",
      "role": "regional chapter"
     }
    }
@@ -1557,6 +1835,10 @@
     "chicago": {
      "code": "waterproofers@CHI",
      "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "waterproofers@SEA",
+     "role": "regional chapter"
     }
    }
   },
@@ -1578,6 +1860,10 @@
     },
     "chicago": {
      "code": "firestop@CHI",
+     "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "firestop@SEA",
      "role": "regional chapter"
     }
    }
@@ -1601,6 +1887,10 @@
     "chicago": {
      "code": "acoustic@CHI",
      "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "acoustic@SEA",
+     "role": "regional chapter"
     }
    }
   },
@@ -1622,6 +1912,10 @@
     },
     "chicago": {
      "code": "cladding@CHI",
+     "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "cladding@SEA",
      "role": "regional chapter"
     }
    }
@@ -1645,6 +1939,10 @@
     "chicago": {
      "code": "shoring@CHI",
      "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "shoring@SEA",
+     "role": "regional chapter"
     }
    }
   },
@@ -1666,6 +1964,10 @@
     },
     "chicago": {
      "code": "piling@CHI",
+     "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "piling@SEA",
      "role": "regional chapter"
     }
    }
@@ -1689,6 +1991,10 @@
     "chicago": {
      "code": "concrete-pump@CHI",
      "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "concrete-pump@SEA",
+     "role": "regional chapter"
     }
    }
   },
@@ -1710,6 +2016,10 @@
     },
     "chicago": {
      "code": "post-tension@CHI",
+     "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "post-tension@SEA",
      "role": "regional chapter"
     }
    }
@@ -1733,6 +2043,10 @@
     "chicago": {
      "code": "precast@CHI",
      "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "precast@SEA",
+     "role": "regional chapter"
     }
    }
   },
@@ -1754,6 +2068,10 @@
     },
     "chicago": {
      "code": "steel-erectors@CHI",
+     "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "steel-erectors@SEA",
      "role": "regional chapter"
     }
    }
@@ -1777,6 +2095,10 @@
     "chicago": {
      "code": "decking@CHI",
      "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "decking@SEA",
+     "role": "regional chapter"
     }
    }
   },
@@ -1798,6 +2120,10 @@
     },
     "chicago": {
      "code": "window-glazing@CHI",
+     "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "window-glazing@SEA",
      "role": "regional chapter"
     }
    }
@@ -1821,6 +2147,10 @@
     "chicago": {
      "code": "bas-controls@CHI",
      "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "bas-controls@SEA",
+     "role": "regional chapter"
     }
    }
   },
@@ -1842,6 +2172,10 @@
     },
     "chicago": {
      "code": "fire-alarm@CHI",
+     "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "fire-alarm@SEA",
      "role": "regional chapter"
     }
    }
@@ -1865,6 +2199,10 @@
     "chicago": {
      "code": "security-sys@CHI",
      "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "security-sys@SEA",
+     "role": "regional chapter"
     }
    }
   },
@@ -1886,6 +2224,10 @@
     },
     "chicago": {
      "code": "network-cabling@CHI",
+     "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "network-cabling@SEA",
      "role": "regional chapter"
     }
    }
@@ -1909,6 +2251,10 @@
     "chicago": {
      "code": "fiber-splicers@CHI",
      "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "fiber-splicers@SEA",
+     "role": "regional chapter"
     }
    }
   },
@@ -1930,6 +2276,10 @@
     },
     "chicago": {
      "code": "data-center@CHI",
+     "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "data-center@SEA",
      "role": "regional chapter"
     }
    }
@@ -1953,6 +2303,10 @@
     "chicago": {
      "code": "instrumentation@CHI",
      "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "instrumentation@SEA",
+     "role": "regional chapter"
     }
    }
   },
@@ -1974,6 +2328,10 @@
     },
     "chicago": {
      "code": "plc-techs@CHI",
+     "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "plc-techs@SEA",
      "role": "regional chapter"
     }
    }
@@ -1997,6 +2355,10 @@
     "chicago": {
      "code": "robotics@CHI",
      "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "robotics@SEA",
+     "role": "regional chapter"
     }
    }
   },
@@ -2018,6 +2380,10 @@
     },
     "chicago": {
      "code": "automation-int@CHI",
+     "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "automation-int@SEA",
      "role": "regional chapter"
     }
    }
@@ -2041,6 +2407,10 @@
     "chicago": {
      "code": "cleanroom@CHI",
      "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "cleanroom@SEA",
+     "role": "regional chapter"
     }
    }
   },
@@ -2062,6 +2432,10 @@
     },
     "chicago": {
      "code": "medical-gas@CHI",
+     "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "medical-gas@SEA",
      "role": "regional chapter"
     }
    }
@@ -2085,6 +2459,10 @@
     "chicago": {
      "code": "rail-track@CHI",
      "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "rail-track@SEA",
+     "role": "regional chapter"
     }
    }
   },
@@ -2106,6 +2484,10 @@
     },
     "chicago": {
      "code": "rail-signals@CHI",
+     "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "rail-signals@SEA",
      "role": "regional chapter"
     }
    }
@@ -2129,6 +2511,10 @@
     "chicago": {
      "code": "catenary@CHI",
      "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "catenary@SEA",
+     "role": "regional chapter"
     }
    }
   },
@@ -2150,6 +2536,10 @@
     },
     "chicago": {
      "code": "transit-vehicle@CHI",
+     "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "transit-vehicle@SEA",
      "role": "regional chapter"
     }
    }
@@ -2173,6 +2563,10 @@
     "chicago": {
      "code": "aviation-ground@CHI",
      "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "aviation-ground@SEA",
+     "role": "regional chapter"
     }
    }
   },
@@ -2194,6 +2588,10 @@
     },
     "chicago": {
      "code": "airfield@CHI",
+     "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "airfield@SEA",
      "role": "regional chapter"
     }
    }
@@ -2217,6 +2615,10 @@
     "chicago": {
      "code": "port-crane@CHI",
      "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "port-crane@SEA",
+     "role": "regional chapter"
     }
    }
   },
@@ -2238,6 +2640,10 @@
     },
     "chicago": {
      "code": "marine-terminal@CHI",
+     "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "marine-terminal@SEA",
      "role": "regional chapter"
     }
    }
@@ -2261,6 +2667,10 @@
     "chicago": {
      "code": "fleet-diesel@CHI",
      "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "fleet-diesel@SEA",
+     "role": "regional chapter"
     }
    }
   },
@@ -2282,6 +2692,10 @@
     },
     "chicago": {
      "code": "bridge-inspect@CHI",
+     "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "bridge-inspect@SEA",
      "role": "regional chapter"
     }
    }
@@ -2305,6 +2719,10 @@
     "chicago": {
      "code": "asbestos@CHI",
      "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "asbestos@SEA",
+     "role": "regional chapter"
     }
    }
   },
@@ -2326,6 +2744,10 @@
     },
     "chicago": {
      "code": "lead-abatement@CHI",
+     "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "lead-abatement@SEA",
      "role": "regional chapter"
     }
    }
@@ -2349,6 +2771,10 @@
     "chicago": {
      "code": "mold-remediation@CHI",
      "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "mold-remediation@SEA",
+     "role": "regional chapter"
     }
    }
   },
@@ -2370,6 +2796,10 @@
     },
     "chicago": {
      "code": "spill-response@CHI",
+     "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "spill-response@SEA",
      "role": "regional chapter"
     }
    }
@@ -2393,6 +2823,10 @@
     "chicago": {
      "code": "confined-space@CHI",
      "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "confined-space@SEA",
+     "role": "regional chapter"
     }
    }
   },
@@ -2414,6 +2848,10 @@
     },
     "chicago": {
      "code": "high-angle@CHI",
+     "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "high-angle@SEA",
      "role": "regional chapter"
     }
    }
@@ -2437,6 +2875,10 @@
     "chicago": {
      "code": "site-safety@CHI",
      "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "site-safety@SEA",
+     "role": "regional chapter"
     }
    }
   },
@@ -2459,6 +2901,10 @@
     "chicago": {
      "code": "industrial-clean@CHI",
      "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "industrial-clean@SEA",
+     "role": "regional chapter"
     }
    }
   },
@@ -2480,6 +2926,10 @@
     },
     "chicago": {
      "code": "survey-drone@CHI",
+     "role": "regional chapter"
+    },
+    "seattle": {
+     "code": "survey-drone@SEA",
      "role": "regional chapter"
     }
    }
