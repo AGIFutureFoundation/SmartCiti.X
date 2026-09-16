@@ -146,6 +146,26 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
+     -104.9903,
+     39.7392
+    ]
+   },
+   "properties": {
+    "slug": "denver",
+    "name": "Front Range Mining Hub",
+    "city": "Denver",
+    "region": "Colorado",
+    "districts": 0,
+    "halls": 0,
+    "provenance": "AUTHORED",
+    "source": "widely-published public geography (city-center), typed from general knowledge - not cross-checked against any file this build can verify"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
      -122.4194,
      37.7749
     ]
@@ -873,6 +893,90 @@
     "blurb": "A public community-college system with real career-technical and trades programs across the Pittsburgh region.",
     "km": 1.8,
     "bearing_deg": 321.2,
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -105.2211,
+     39.7503
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Colorado School of Mines",
+    "near": "denver",
+    "provenance": "AUTHORED",
+    "source": "the public mining and earth-sciences research university in Golden, just west of Denver",
+    "blurb": "Public research university in Golden, Colorado, internationally known for mining, earth sciences and engineering.",
+    "km": 19.8,
+    "bearing_deg": 273.7,
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -105.1686,
+     39.7407
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "National Renewable Energy Laboratory",
+    "near": "denver",
+    "provenance": "AUTHORED",
+    "source": "the U.S. Department of Energy's national laboratory for renewable-energy research, on its South Table Mountain campus in Golden",
+    "blurb": "The U.S. Department of Energy's primary national laboratory for renewable energy and energy efficiency research, based in Golden, Colorado.",
+    "km": 15.2,
+    "bearing_deg": 270.7,
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -105.0011,
+     39.7539
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Denver Union Station",
+    "near": "denver",
+    "provenance": "AUTHORED",
+    "source": "the city's historic downtown transit hub for rail, bus and light rail",
+    "blurb": "Denver's historic 1881 rail depot, restored as the downtown hub for Amtrak, commuter rail, light rail and bus.",
+    "km": 1.9,
+    "bearing_deg": 330.5,
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -105.0064,
+     39.7444
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Community College of Denver",
+    "near": "denver",
+    "provenance": "AUTHORED",
+    "source": "the public community college on the Auraria Campus downtown, with career-technical and trades programs",
+    "blurb": "A public community college on the Auraria Campus, with real career-technical and trades programs.",
+    "km": 1.5,
+    "bearing_deg": 292.8,
     "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
    }
   }

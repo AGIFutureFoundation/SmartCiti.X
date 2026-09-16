@@ -2,8 +2,8 @@
  "pack": "smartcitix-trade-craft-academy-union-registry",
  "pack_version": "3.2.0",
  "built": "2026-09-09",
- "source_stamp": "2c57592ee46cd955",
- "count": 777,
+ "source_stamp": "7e28045337d1558e",
+ "count": 888,
  "regions": {
   "treasure-island": {
    "abbr": "SF",
@@ -39,6 +39,11 @@
    "abbr": "PIT",
    "name": "Three Rivers Steel Hub",
    "city": "Pittsburgh"
+  },
+  "denver": {
+   "abbr": "DEN",
+   "name": "Front Range Mining Hub",
+   "city": "Denver"
   }
  },
  "hosted": {
@@ -48,7 +53,8 @@
   "houston": 111,
   "chicago": 111,
   "seattle": 111,
-  "pittsburgh": 111
+  "pittsburgh": 111,
+  "denver": 111
  },
  "honesty": {
   "chapters": "the Academy's own regional training structure across its planned campuses - not a claim about any real union's locals, chapters or jurisdictions; no local is named"
@@ -81,6 +87,10 @@
     "pittsburgh": {
      "code": "ironworkers@PIT",
      "role": "regional chapter"
+    },
+    "denver": {
+     "code": "ironworkers@DEN",
+     "role": "regional chapter"
     }
    }
   },
@@ -110,6 +120,10 @@
     },
     "pittsburgh": {
      "code": "electricians@PIT",
+     "role": "regional chapter"
+    },
+    "denver": {
+     "code": "electricians@DEN",
      "role": "regional chapter"
     }
    }
@@ -141,6 +155,10 @@
     "pittsburgh": {
      "code": "pipefitters@PIT",
      "role": "regional chapter"
+    },
+    "denver": {
+     "code": "pipefitters@DEN",
+     "role": "regional chapter"
     }
    }
   },
@@ -170,6 +188,10 @@
     },
     "pittsburgh": {
      "code": "carpenters@PIT",
+     "role": "regional chapter"
+    },
+    "denver": {
+     "code": "carpenters@DEN",
      "role": "regional chapter"
     }
    }
@@ -201,6 +223,10 @@
     "pittsburgh": {
      "code": "operating-eng@PIT",
      "role": "regional chapter"
+    },
+    "denver": {
+     "code": "operating-eng@DEN",
+     "role": "regional chapter"
     }
    }
   },
@@ -230,6 +256,10 @@
     },
     "pittsburgh": {
      "code": "laborers@PIT",
+     "role": "regional chapter"
+    },
+    "denver": {
+     "code": "laborers@DEN",
      "role": "regional chapter"
     }
    }
@@ -261,6 +291,10 @@
     "pittsburgh": {
      "code": "sheetmetal@PIT",
      "role": "regional chapter"
+    },
+    "denver": {
+     "code": "sheetmetal@DEN",
+     "role": "regional chapter"
     }
    }
   },
@@ -290,6 +324,10 @@
     },
     "pittsburgh": {
      "code": "bricklayers@PIT",
+     "role": "regional chapter"
+    },
+    "denver": {
+     "code": "bricklayers@DEN",
      "role": "regional chapter"
     }
    }
@@ -321,6 +359,10 @@
     "pittsburgh": {
      "code": "cement-masons@PIT",
      "role": "regional chapter"
+    },
+    "denver": {
+     "code": "cement-masons@DEN",
+     "role": "regional chapter"
     }
    }
   },
@@ -350,6 +392,10 @@
     },
     "pittsburgh": {
      "code": "roofers@PIT",
+     "role": "regional chapter"
+    },
+    "denver": {
+     "code": "roofers@DEN",
      "role": "regional chapter"
     }
    }
@@ -381,6 +427,10 @@
     "pittsburgh": {
      "code": "painters@PIT",
      "role": "regional chapter"
+    },
+    "denver": {
+     "code": "painters@DEN",
+     "role": "regional chapter"
     }
    }
   },
@@ -410,6 +460,10 @@
     },
     "pittsburgh": {
      "code": "glaziers@PIT",
+     "role": "regional chapter"
+    },
+    "denver": {
+     "code": "glaziers@DEN",
      "role": "regional chapter"
     }
    }
@@ -441,6 +495,10 @@
     "pittsburgh": {
      "code": "insulators@PIT",
      "role": "regional chapter"
+    },
+    "denver": {
+     "code": "insulators@DEN",
+     "role": "regional chapter"
     }
    }
   },
@@ -470,6 +528,10 @@
     },
     "pittsburgh": {
      "code": "millwrights@PIT",
+     "role": "regional chapter"
+    },
+    "denver": {
+     "code": "millwrights@DEN",
      "role": "regional chapter"
     }
    }
@@ -501,6 +563,10 @@
     "pittsburgh": {
      "code": "boilermakers@PIT",
      "role": "regional chapter"
+    },
+    "denver": {
+     "code": "boilermakers@DEN",
+     "role": "regional chapter"
     }
    }
   },
@@ -530,6 +596,10 @@
     },
     "pittsburgh": {
      "code": "elevator@PIT",
+     "role": "regional chapter"
+    },
+    "denver": {
+     "code": "elevator@DEN",
      "role": "regional chapter"
     }
    }
@@ -561,6 +631,10 @@
     "pittsburgh": {
      "code": "teamsters@PIT",
      "role": "regional chapter"
+    },
+    "denver": {
+     "code": "teamsters@DEN",
+     "role": "regional chapter"
     }
    }
   },
@@ -590,6 +664,10 @@
     },
     "pittsburgh": {
      "code": "welders@PIT",
+     "role": "regional chapter"
+    },
+    "denver": {
+     "code": "welders@DEN",
      "role": "regional chapter"
     }
    }
@@ -621,6 +699,10 @@
     "pittsburgh": {
      "code": "hvacr@PIT",
      "role": "regional chapter"
+    },
+    "denver": {
+     "code": "hvacr@DEN",
+     "role": "regional chapter"
     }
    }
   },
@@ -650,6 +732,10 @@
     },
     "pittsburgh": {
      "code": "crane-ops@PIT",
+     "role": "regional chapter"
+    },
+    "denver": {
+     "code": "crane-ops@DEN",
      "role": "regional chapter"
     }
    }
@@ -681,6 +767,10 @@
     "pittsburgh": {
      "code": "riggers@PIT",
      "role": "regional chapter"
+    },
+    "denver": {
+     "code": "riggers@DEN",
+     "role": "regional chapter"
     }
    }
   },
@@ -710,6 +800,10 @@
     },
     "pittsburgh": {
      "code": "heavy-equip@PIT",
+     "role": "regional chapter"
+    },
+    "denver": {
+     "code": "heavy-equip@DEN",
      "role": "regional chapter"
     }
    }
@@ -741,6 +835,10 @@
     "pittsburgh": {
      "code": "drywall@PIT",
      "role": "regional chapter"
+    },
+    "denver": {
+     "code": "drywall@DEN",
+     "role": "regional chapter"
     }
    }
   },
@@ -770,6 +868,10 @@
     },
     "pittsburgh": {
      "code": "flooring@PIT",
+     "role": "regional chapter"
+    },
+    "denver": {
+     "code": "flooring@DEN",
      "role": "regional chapter"
     }
    }
@@ -801,6 +903,10 @@
     "pittsburgh": {
      "code": "grounds@PIT",
      "role": "regional chapter"
+    },
+    "denver": {
+     "code": "grounds@DEN",
+     "role": "regional chapter"
     }
    }
   },
@@ -830,6 +936,10 @@
     },
     "pittsburgh": {
      "code": "line-workers@PIT",
+     "role": "regional chapter"
+    },
+    "denver": {
+     "code": "line-workers@DEN",
      "role": "regional chapter"
     }
    }
@@ -861,6 +971,10 @@
     "pittsburgh": {
      "code": "solar@PIT",
      "role": "regional chapter"
+    },
+    "denver": {
+     "code": "solar@DEN",
+     "role": "regional chapter"
     }
    }
   },
@@ -890,6 +1004,10 @@
     },
     "pittsburgh": {
      "code": "wind@PIT",
+     "role": "regional chapter"
+    },
+    "denver": {
+     "code": "wind@DEN",
      "role": "regional chapter"
     }
    }
@@ -921,6 +1039,10 @@
     "pittsburgh": {
      "code": "demolition@PIT",
      "role": "regional chapter"
+    },
+    "denver": {
+     "code": "demolition@DEN",
+     "role": "regional chapter"
     }
    }
   },
@@ -950,6 +1072,10 @@
     },
     "pittsburgh": {
      "code": "scaffold@PIT",
+     "role": "regional chapter"
+    },
+    "denver": {
+     "code": "scaffold@DEN",
      "role": "regional chapter"
     }
    }
@@ -981,6 +1107,10 @@
     "pittsburgh": {
      "code": "surveyors@PIT",
      "role": "regional chapter"
+    },
+    "denver": {
+     "code": "surveyors@DEN",
+     "role": "regional chapter"
     }
    }
   },
@@ -1010,6 +1140,10 @@
     },
     "pittsburgh": {
      "code": "fire-sprinkler@PIT",
+     "role": "regional chapter"
+    },
+    "denver": {
+     "code": "fire-sprinkler@DEN",
      "role": "regional chapter"
     }
    }
@@ -1041,6 +1175,10 @@
     "pittsburgh": {
      "code": "hazmat@PIT",
      "role": "regional chapter"
+    },
+    "denver": {
+     "code": "hazmat@DEN",
+     "role": "regional chapter"
     }
    }
   },
@@ -1070,6 +1208,10 @@
     },
     "pittsburgh": {
      "code": "refractory@PIT",
+     "role": "regional chapter"
+    },
+    "denver": {
+     "code": "refractory@DEN",
      "role": "regional chapter"
     }
    }
@@ -1101,6 +1243,10 @@
     "pittsburgh": {
      "code": "pipeline@PIT",
      "role": "regional chapter"
+    },
+    "denver": {
+     "code": "pipeline@DEN",
+     "role": "regional chapter"
     }
    }
   },
@@ -1130,6 +1276,10 @@
     },
     "pittsburgh": {
      "code": "tank-erectors@PIT",
+     "role": "regional chapter"
+    },
+    "denver": {
+     "code": "tank-erectors@DEN",
      "role": "regional chapter"
     }
    }
@@ -1161,6 +1311,10 @@
     "pittsburgh": {
      "code": "shipfitters@PIT",
      "role": "regional chapter"
+    },
+    "denver": {
+     "code": "shipfitters@DEN",
+     "role": "regional chapter"
     }
    }
   },
@@ -1190,6 +1344,10 @@
     },
     "pittsburgh": {
      "code": "marine-pipe@PIT",
+     "role": "regional chapter"
+    },
+    "denver": {
+     "code": "marine-pipe@DEN",
      "role": "regional chapter"
     }
    }
@@ -1221,6 +1379,10 @@
     "pittsburgh": {
      "code": "divers@PIT",
      "role": "regional chapter"
+    },
+    "denver": {
+     "code": "divers@DEN",
+     "role": "regional chapter"
     }
    }
   },
@@ -1250,6 +1412,10 @@
     },
     "pittsburgh": {
      "code": "blasters@PIT",
+     "role": "regional chapter"
+    },
+    "denver": {
+     "code": "blasters@DEN",
      "role": "regional chapter"
     }
    }
@@ -1281,6 +1447,10 @@
     "pittsburgh": {
      "code": "miners@PIT",
      "role": "regional chapter"
+    },
+    "denver": {
+     "code": "miners@DEN",
+     "role": "regional chapter"
     }
    }
   },
@@ -1310,6 +1480,10 @@
     },
     "pittsburgh": {
      "code": "smelter@PIT",
+     "role": "regional chapter"
+    },
+    "denver": {
+     "code": "smelter@DEN",
      "role": "regional chapter"
     }
    }
@@ -1341,6 +1515,10 @@
     "pittsburgh": {
      "code": "foundry@PIT",
      "role": "regional chapter"
+    },
+    "denver": {
+     "code": "foundry@DEN",
+     "role": "regional chapter"
     }
    }
   },
@@ -1370,6 +1548,10 @@
     },
     "pittsburgh": {
      "code": "machinists@PIT",
+     "role": "regional chapter"
+    },
+    "denver": {
+     "code": "machinists@DEN",
      "role": "regional chapter"
     }
    }
@@ -1401,6 +1583,10 @@
     "pittsburgh": {
      "code": "toolmakers@PIT",
      "role": "regional chapter"
+    },
+    "denver": {
+     "code": "toolmakers@DEN",
+     "role": "regional chapter"
     }
    }
   },
@@ -1430,6 +1616,10 @@
     },
     "pittsburgh": {
      "code": "fabricators@PIT",
+     "role": "regional chapter"
+    },
+    "denver": {
+     "code": "fabricators@DEN",
      "role": "regional chapter"
     }
    }
@@ -1461,6 +1651,10 @@
     "pittsburgh": {
      "code": "platers@PIT",
      "role": "regional chapter"
+    },
+    "denver": {
+     "code": "platers@DEN",
+     "role": "regional chapter"
     }
    }
   },
@@ -1490,6 +1684,10 @@
     },
     "pittsburgh": {
      "code": "substation@PIT",
+     "role": "regional chapter"
+    },
+    "denver": {
+     "code": "substation@DEN",
      "role": "regional chapter"
     }
    }
@@ -1521,6 +1719,10 @@
     "pittsburgh": {
      "code": "cable-splicers@PIT",
      "role": "regional chapter"
+    },
+    "denver": {
+     "code": "cable-splicers@DEN",
+     "role": "regional chapter"
     }
    }
   },
@@ -1550,6 +1752,10 @@
     },
     "pittsburgh": {
      "code": "meter-techs@PIT",
+     "role": "regional chapter"
+    },
+    "denver": {
+     "code": "meter-techs@DEN",
      "role": "regional chapter"
     }
    }
@@ -1581,6 +1787,10 @@
     "pittsburgh": {
      "code": "gas-distrib@PIT",
      "role": "regional chapter"
+    },
+    "denver": {
+     "code": "gas-distrib@DEN",
+     "role": "regional chapter"
     }
    }
   },
@@ -1610,6 +1820,10 @@
     },
     "pittsburgh": {
      "code": "water-distrib@PIT",
+     "role": "regional chapter"
+    },
+    "denver": {
+     "code": "water-distrib@DEN",
      "role": "regional chapter"
     }
    }
@@ -1641,6 +1855,10 @@
     "pittsburgh": {
      "code": "wastewater@PIT",
      "role": "regional chapter"
+    },
+    "denver": {
+     "code": "wastewater@DEN",
+     "role": "regional chapter"
     }
    }
   },
@@ -1670,6 +1888,10 @@
     },
     "pittsburgh": {
      "code": "nuclear@PIT",
+     "role": "regional chapter"
+    },
+    "denver": {
+     "code": "nuclear@DEN",
      "role": "regional chapter"
     }
    }
@@ -1701,6 +1923,10 @@
     "pittsburgh": {
      "code": "hydro@PIT",
      "role": "regional chapter"
+    },
+    "denver": {
+     "code": "hydro@DEN",
+     "role": "regional chapter"
     }
    }
   },
@@ -1730,6 +1956,10 @@
     },
     "pittsburgh": {
      "code": "geothermal@PIT",
+     "role": "regional chapter"
+    },
+    "denver": {
+     "code": "geothermal@DEN",
      "role": "regional chapter"
     }
    }
@@ -1761,6 +1991,10 @@
     "pittsburgh": {
      "code": "battery-storage@PIT",
      "role": "regional chapter"
+    },
+    "denver": {
+     "code": "battery-storage@DEN",
+     "role": "regional chapter"
     }
    }
   },
@@ -1790,6 +2024,10 @@
     },
     "pittsburgh": {
      "code": "ev-charging@PIT",
+     "role": "regional chapter"
+    },
+    "denver": {
+     "code": "ev-charging@DEN",
      "role": "regional chapter"
     }
    }
@@ -1821,6 +2059,10 @@
     "pittsburgh": {
      "code": "hydrogen@PIT",
      "role": "regional chapter"
+    },
+    "denver": {
+     "code": "hydrogen@DEN",
+     "role": "regional chapter"
     }
    }
   },
@@ -1850,6 +2092,10 @@
     },
     "pittsburgh": {
      "code": "transmission@PIT",
+     "role": "regional chapter"
+    },
+    "denver": {
+     "code": "transmission@DEN",
      "role": "regional chapter"
     }
    }
@@ -1881,6 +2127,10 @@
     "pittsburgh": {
      "code": "district-energy@PIT",
      "role": "regional chapter"
+    },
+    "denver": {
+     "code": "district-energy@DEN",
+     "role": "regional chapter"
     }
    }
   },
@@ -1910,6 +2160,10 @@
     },
     "pittsburgh": {
      "code": "masonry-restore@PIT",
+     "role": "regional chapter"
+    },
+    "denver": {
+     "code": "masonry-restore@DEN",
      "role": "regional chapter"
     }
    }
@@ -1941,6 +2195,10 @@
     "pittsburgh": {
      "code": "stone-carvers@PIT",
      "role": "regional chapter"
+    },
+    "denver": {
+     "code": "stone-carvers@DEN",
+     "role": "regional chapter"
     }
    }
   },
@@ -1970,6 +2228,10 @@
     },
     "pittsburgh": {
      "code": "plasterers@PIT",
+     "role": "regional chapter"
+    },
+    "denver": {
+     "code": "plasterers@DEN",
      "role": "regional chapter"
     }
    }
@@ -2001,6 +2263,10 @@
     "pittsburgh": {
      "code": "terrazzo@PIT",
      "role": "regional chapter"
+    },
+    "denver": {
+     "code": "terrazzo@DEN",
+     "role": "regional chapter"
     }
    }
   },
@@ -2030,6 +2296,10 @@
     },
     "pittsburgh": {
      "code": "tilesetters@PIT",
+     "role": "regional chapter"
+    },
+    "denver": {
+     "code": "tilesetters@DEN",
      "role": "regional chapter"
     }
    }
@@ -2061,6 +2331,10 @@
     "pittsburgh": {
      "code": "lathers@PIT",
      "role": "regional chapter"
+    },
+    "denver": {
+     "code": "lathers@DEN",
+     "role": "regional chapter"
     }
    }
   },
@@ -2090,6 +2364,10 @@
     },
     "pittsburgh": {
      "code": "curtainwall@PIT",
+     "role": "regional chapter"
+    },
+    "denver": {
+     "code": "curtainwall@DEN",
      "role": "regional chapter"
     }
    }
@@ -2121,6 +2399,10 @@
     "pittsburgh": {
      "code": "waterproofers@PIT",
      "role": "regional chapter"
+    },
+    "denver": {
+     "code": "waterproofers@DEN",
+     "role": "regional chapter"
     }
    }
   },
@@ -2150,6 +2432,10 @@
     },
     "pittsburgh": {
      "code": "firestop@PIT",
+     "role": "regional chapter"
+    },
+    "denver": {
+     "code": "firestop@DEN",
      "role": "regional chapter"
     }
    }
@@ -2181,6 +2467,10 @@
     "pittsburgh": {
      "code": "acoustic@PIT",
      "role": "regional chapter"
+    },
+    "denver": {
+     "code": "acoustic@DEN",
+     "role": "regional chapter"
     }
    }
   },
@@ -2210,6 +2500,10 @@
     },
     "pittsburgh": {
      "code": "cladding@PIT",
+     "role": "regional chapter"
+    },
+    "denver": {
+     "code": "cladding@DEN",
      "role": "regional chapter"
     }
    }
@@ -2241,6 +2535,10 @@
     "pittsburgh": {
      "code": "shoring@PIT",
      "role": "regional chapter"
+    },
+    "denver": {
+     "code": "shoring@DEN",
+     "role": "regional chapter"
     }
    }
   },
@@ -2270,6 +2568,10 @@
     },
     "pittsburgh": {
      "code": "piling@PIT",
+     "role": "regional chapter"
+    },
+    "denver": {
+     "code": "piling@DEN",
      "role": "regional chapter"
     }
    }
@@ -2301,6 +2603,10 @@
     "pittsburgh": {
      "code": "concrete-pump@PIT",
      "role": "regional chapter"
+    },
+    "denver": {
+     "code": "concrete-pump@DEN",
+     "role": "regional chapter"
     }
    }
   },
@@ -2330,6 +2636,10 @@
     },
     "pittsburgh": {
      "code": "post-tension@PIT",
+     "role": "regional chapter"
+    },
+    "denver": {
+     "code": "post-tension@DEN",
      "role": "regional chapter"
     }
    }
@@ -2361,6 +2671,10 @@
     "pittsburgh": {
      "code": "precast@PIT",
      "role": "regional chapter"
+    },
+    "denver": {
+     "code": "precast@DEN",
+     "role": "regional chapter"
     }
    }
   },
@@ -2390,6 +2704,10 @@
     },
     "pittsburgh": {
      "code": "steel-erectors@PIT",
+     "role": "regional chapter"
+    },
+    "denver": {
+     "code": "steel-erectors@DEN",
      "role": "regional chapter"
     }
    }
@@ -2421,6 +2739,10 @@
     "pittsburgh": {
      "code": "decking@PIT",
      "role": "regional chapter"
+    },
+    "denver": {
+     "code": "decking@DEN",
+     "role": "regional chapter"
     }
    }
   },
@@ -2450,6 +2772,10 @@
     },
     "pittsburgh": {
      "code": "window-glazing@PIT",
+     "role": "regional chapter"
+    },
+    "denver": {
+     "code": "window-glazing@DEN",
      "role": "regional chapter"
     }
    }
@@ -2481,6 +2807,10 @@
     "pittsburgh": {
      "code": "bas-controls@PIT",
      "role": "regional chapter"
+    },
+    "denver": {
+     "code": "bas-controls@DEN",
+     "role": "regional chapter"
     }
    }
   },
@@ -2510,6 +2840,10 @@
     },
     "pittsburgh": {
      "code": "fire-alarm@PIT",
+     "role": "regional chapter"
+    },
+    "denver": {
+     "code": "fire-alarm@DEN",
      "role": "regional chapter"
     }
    }
@@ -2541,6 +2875,10 @@
     "pittsburgh": {
      "code": "security-sys@PIT",
      "role": "regional chapter"
+    },
+    "denver": {
+     "code": "security-sys@DEN",
+     "role": "regional chapter"
     }
    }
   },
@@ -2570,6 +2908,10 @@
     },
     "pittsburgh": {
      "code": "network-cabling@PIT",
+     "role": "regional chapter"
+    },
+    "denver": {
+     "code": "network-cabling@DEN",
      "role": "regional chapter"
     }
    }
@@ -2601,6 +2943,10 @@
     "pittsburgh": {
      "code": "fiber-splicers@PIT",
      "role": "regional chapter"
+    },
+    "denver": {
+     "code": "fiber-splicers@DEN",
+     "role": "regional chapter"
     }
    }
   },
@@ -2630,6 +2976,10 @@
     },
     "pittsburgh": {
      "code": "data-center@PIT",
+     "role": "regional chapter"
+    },
+    "denver": {
+     "code": "data-center@DEN",
      "role": "regional chapter"
     }
    }
@@ -2661,6 +3011,10 @@
     "pittsburgh": {
      "code": "instrumentation@PIT",
      "role": "regional chapter"
+    },
+    "denver": {
+     "code": "instrumentation@DEN",
+     "role": "regional chapter"
     }
    }
   },
@@ -2690,6 +3044,10 @@
     },
     "pittsburgh": {
      "code": "plc-techs@PIT",
+     "role": "regional chapter"
+    },
+    "denver": {
+     "code": "plc-techs@DEN",
      "role": "regional chapter"
     }
    }
@@ -2721,6 +3079,10 @@
     "pittsburgh": {
      "code": "robotics@PIT",
      "role": "regional chapter"
+    },
+    "denver": {
+     "code": "robotics@DEN",
+     "role": "regional chapter"
     }
    }
   },
@@ -2750,6 +3112,10 @@
     },
     "pittsburgh": {
      "code": "automation-int@PIT",
+     "role": "regional chapter"
+    },
+    "denver": {
+     "code": "automation-int@DEN",
      "role": "regional chapter"
     }
    }
@@ -2781,6 +3147,10 @@
     "pittsburgh": {
      "code": "cleanroom@PIT",
      "role": "regional chapter"
+    },
+    "denver": {
+     "code": "cleanroom@DEN",
+     "role": "regional chapter"
     }
    }
   },
@@ -2810,6 +3180,10 @@
     },
     "pittsburgh": {
      "code": "medical-gas@PIT",
+     "role": "regional chapter"
+    },
+    "denver": {
+     "code": "medical-gas@DEN",
      "role": "regional chapter"
     }
    }
@@ -2841,6 +3215,10 @@
     "pittsburgh": {
      "code": "rail-track@PIT",
      "role": "regional chapter"
+    },
+    "denver": {
+     "code": "rail-track@DEN",
+     "role": "regional chapter"
     }
    }
   },
@@ -2870,6 +3248,10 @@
     },
     "pittsburgh": {
      "code": "rail-signals@PIT",
+     "role": "regional chapter"
+    },
+    "denver": {
+     "code": "rail-signals@DEN",
      "role": "regional chapter"
     }
    }
@@ -2901,6 +3283,10 @@
     "pittsburgh": {
      "code": "catenary@PIT",
      "role": "regional chapter"
+    },
+    "denver": {
+     "code": "catenary@DEN",
+     "role": "regional chapter"
     }
    }
   },
@@ -2930,6 +3316,10 @@
     },
     "pittsburgh": {
      "code": "transit-vehicle@PIT",
+     "role": "regional chapter"
+    },
+    "denver": {
+     "code": "transit-vehicle@DEN",
      "role": "regional chapter"
     }
    }
@@ -2961,6 +3351,10 @@
     "pittsburgh": {
      "code": "aviation-ground@PIT",
      "role": "regional chapter"
+    },
+    "denver": {
+     "code": "aviation-ground@DEN",
+     "role": "regional chapter"
     }
    }
   },
@@ -2990,6 +3384,10 @@
     },
     "pittsburgh": {
      "code": "airfield@PIT",
+     "role": "regional chapter"
+    },
+    "denver": {
+     "code": "airfield@DEN",
      "role": "regional chapter"
     }
    }
@@ -3021,6 +3419,10 @@
     "pittsburgh": {
      "code": "port-crane@PIT",
      "role": "regional chapter"
+    },
+    "denver": {
+     "code": "port-crane@DEN",
+     "role": "regional chapter"
     }
    }
   },
@@ -3050,6 +3452,10 @@
     },
     "pittsburgh": {
      "code": "marine-terminal@PIT",
+     "role": "regional chapter"
+    },
+    "denver": {
+     "code": "marine-terminal@DEN",
      "role": "regional chapter"
     }
    }
@@ -3081,6 +3487,10 @@
     "pittsburgh": {
      "code": "fleet-diesel@PIT",
      "role": "regional chapter"
+    },
+    "denver": {
+     "code": "fleet-diesel@DEN",
+     "role": "regional chapter"
     }
    }
   },
@@ -3110,6 +3520,10 @@
     },
     "pittsburgh": {
      "code": "bridge-inspect@PIT",
+     "role": "regional chapter"
+    },
+    "denver": {
+     "code": "bridge-inspect@DEN",
      "role": "regional chapter"
     }
    }
@@ -3141,6 +3555,10 @@
     "pittsburgh": {
      "code": "asbestos@PIT",
      "role": "regional chapter"
+    },
+    "denver": {
+     "code": "asbestos@DEN",
+     "role": "regional chapter"
     }
    }
   },
@@ -3170,6 +3588,10 @@
     },
     "pittsburgh": {
      "code": "lead-abatement@PIT",
+     "role": "regional chapter"
+    },
+    "denver": {
+     "code": "lead-abatement@DEN",
      "role": "regional chapter"
     }
    }
@@ -3201,6 +3623,10 @@
     "pittsburgh": {
      "code": "mold-remediation@PIT",
      "role": "regional chapter"
+    },
+    "denver": {
+     "code": "mold-remediation@DEN",
+     "role": "regional chapter"
     }
    }
   },
@@ -3230,6 +3656,10 @@
     },
     "pittsburgh": {
      "code": "spill-response@PIT",
+     "role": "regional chapter"
+    },
+    "denver": {
+     "code": "spill-response@DEN",
      "role": "regional chapter"
     }
    }
@@ -3261,6 +3691,10 @@
     "pittsburgh": {
      "code": "confined-space@PIT",
      "role": "regional chapter"
+    },
+    "denver": {
+     "code": "confined-space@DEN",
+     "role": "regional chapter"
     }
    }
   },
@@ -3290,6 +3724,10 @@
     },
     "pittsburgh": {
      "code": "high-angle@PIT",
+     "role": "regional chapter"
+    },
+    "denver": {
+     "code": "high-angle@DEN",
      "role": "regional chapter"
     }
    }
@@ -3321,6 +3759,10 @@
     "pittsburgh": {
      "code": "site-safety@PIT",
      "role": "regional chapter"
+    },
+    "denver": {
+     "code": "site-safety@DEN",
+     "role": "regional chapter"
     }
    }
   },
@@ -3351,6 +3793,10 @@
     "pittsburgh": {
      "code": "industrial-clean@PIT",
      "role": "regional chapter"
+    },
+    "denver": {
+     "code": "industrial-clean@DEN",
+     "role": "regional chapter"
     }
    }
   },
@@ -3380,6 +3826,10 @@
     },
     "pittsburgh": {
      "code": "survey-drone@PIT",
+     "role": "regional chapter"
+    },
+    "denver": {
+     "code": "survey-drone@DEN",
      "role": "regional chapter"
     }
    }

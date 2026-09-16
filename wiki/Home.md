@@ -23,14 +23,14 @@ content graph and details:
 | **Simulators** (inside the 3D environment) | 7 operable seats — schematic physics, deterministic rubrics, pre-shift walkarounds, bound to real skills in 40 halls | [Simulators](Simulators.md) |
 | **Toolrooms** (inside the 3D + interactive maps) | 8 district tool cribs — 96 tools with the deterministic crib drill | [Toolrooms](Toolrooms.md) |
 | **Advisors** (in the rooms and on the green) | 9 scripted guides answering 34 fixed questions — 20 of them read straight from the registry that holds the fact | [Advisors](Advisors.md) |
-| **The world** (sky, weather, ground, animals) | 6 weather states over per-campus atmospheres, 6 generated ground surfaces and 77 animals — and not one texture file anywhere | [World](World.md) |
+| **The world** (sky, weather, ground, animals) | 6 weather states over per-campus atmospheres, 6 generated ground surfaces and 84 animals — and not one texture file anywhere | [World](World.md) |
 | **The signs** (every word in the 3D world) | 13 kinds over 10 shapes — shape carries the category, colour the provenance, type the rank, and every sign reacts to where you are looking | [Signs](Signs.md) |
 | **Training data** (device-local, opt-out, exportable) | 3 episode kinds recorded from real interactions — sim outcomes, advisor exchanges, walkaround checks — shaped for the org's own `ml-agents` fork, never read by a grader | [Training-Data](Training-Data.md) |
 | **Orbis synthetic-training prompts** (text only, no network) | a deterministic prompt for every one of the 111 union modules, built for a hosted video model this build never calls — a separate, clearly-labelled AI-SYNTHESIZED stream from the real episode log above | [Orbis-Synthetic-Training](Orbis-Synthetic-Training.md) |
-| **The network roadmap** (7 built, 3 candidates) | the path from 7 built campuses to 10 walkable worlds — two honest provenance tiers, and the real checklist a candidate has to clear to become built | [Roadmap](Roadmap.md) |
+| **The network roadmap** (8 built, 2 candidates) | the path from 8 built campuses to 10 walkable worlds — two honest provenance tiers, and the real checklist a candidate has to clear to become built | [Roadmap](Roadmap.md) |
 | **Metaverse layer** (`meta/registry/metaverse.json`) | The interchange contract: 3 open standards claimed (glTF 2.0, WebXR, GeoJSON), 3 honestly not, avatar and hall .glb export, learner-local import | [Metaverse-Layer](Metaverse-Layer.md) |
 | **City records** (`parcels/registry/parcels.json`) | The source contract for the three campus regions' own parcel and building-footprint authorities (254,122 records published upstream), plus the public-domain federal orthoimagery both maps draw | [City-Records](City-Records.md) |
-| **Network geomap** (`web/trade_craft_geomap.html`) | The geo registry on a real WGS84 map (MapLibre, no basemap tiles): campuses, 35 RECORDED anchors, great-circle routes, RECORDED city frames | [Campus-Map](Campus-Map.md) |
+| **Network geomap** (`web/trade_craft_geomap.html`) | The geo registry on a real WGS84 map (MapLibre, no basemap tiles): campuses, 39 RECORDED anchors, great-circle routes, RECORDED city frames | [Campus-Map](Campus-Map.md) |
 | **Bay Restoration** (`restoration/registry/restoration.json`) | 9 real, independently-run San Francisco Bay habitat-restoration sites (8 mapped) bridged to 3 field-skill tracks bound to real skill_ids already in this bundle's graph — not a SmartCiti.X program | [Bay-Restoration](Bay-Restoration.md) |
 
 ## The campus at a glance
@@ -70,6 +70,7 @@ no site surveyed and no address recorded:
 | **Loop Rail Hub** | Chicago, Illinois | The network's second hub: no home district of its own, and a regional chapter seat for every one of the 111 trades |  | 0 |
 | **Sound Aerospace Hub** | Seattle, Washington | The network's third hub: no home district of its own, and a regional chapter seat for every one of the 111 trades |  | 0 |
 | **Three Rivers Steel Hub** | Pittsburgh, Pennsylvania | The network's fourth hub: no home district of its own, and a regional chapter seat for every one of the 111 trades |  | 0 |
+| **Front Range Mining Hub** | Denver, Colorado | The network's fifth hub: no home district of its own, and a regional chapter seat for every one of the 111 trades |  | 0 |
 
 ### Real geography
 
@@ -87,28 +88,35 @@ map; it does not claim a parcel.
 | San Francisco ↔ Chicago | 2,979.0 km |
 | San Francisco ↔ Seattle | 1,087.8 km |
 | San Francisco ↔ Pittsburgh | 3,631.5 km |
+| San Francisco ↔ Denver | 1,519.1 km |
 | Oakland ↔ New Orleans | 3,081.0 km |
 | Oakland ↔ Houston | 2,631.0 km |
 | Oakland ↔ Chicago | 2,971.5 km |
 | Oakland ↔ Seattle | 1,089.9 km |
 | Oakland ↔ Pittsburgh | 3,623.8 km |
+| Oakland ↔ Denver | 1,511.1 km |
 | New Orleans ↔ Houston | 511.3 km |
 | New Orleans ↔ Chicago | 1,344.2 km |
 | New Orleans ↔ Seattle | 3,377.7 km |
 | New Orleans ↔ Pittsburgh | 1,480.6 km |
+| New Orleans ↔ Denver | 1,738.9 km |
 | Houston ↔ Chicago | 1,515.8 km |
 | Houston ↔ Seattle | 3,040.5 km |
 | Houston ↔ Pittsburgh | 1,829.9 km |
+| Houston ↔ Denver | 1,413.6 km |
 | Chicago ↔ Seattle | 2,788.9 km |
 | Chicago ↔ Pittsburgh | 658.5 km |
+| Chicago ↔ Denver | 1,477.7 km |
 | Seattle ↔ Pittsburgh | 3,432.2 km |
+| Seattle ↔ Denver | 1,640.7 km |
+| Pittsburgh ↔ Denver | 2,120.6 km |
 
 The registry also ships `geo/registry/campuses.geojson` — standard GeoJSON,
 directly consumable by any Mapbox/MapLibre-compatible stack. The 3D network
 view places its campus plates by these true bearings, with the real
 kilometres on the route labels.
 
-Around each campus sit **35 RECORDED anchors** — real cities and
+Around each campus sit **39 RECORDED anchors** — real cities and
 institutions copied verbatim from Locator.X's committed tables (the Bay
 Area city table and the New Orleans POI table, Apache-2.0) and
 cross-checked against those files at build time. The network view marks
@@ -133,9 +141,9 @@ everything drawn between them schematic.
 
 Every hall keeps its **home campus** — where its district trains — and
 holds a **regional chapter** at each of the other two, so all 111 trades
-train in all three regions: **777 chapter seats** in
+train in all three regions: **888 chapter seats** in
 total, and each campus plaza carries a Regional Chapter Hall listing the
-60/79/83/111/111/111/111 unions it hosts
+60/79/83/111/111/111/111/111 unions it hosts
 from elsewhere. This is the Academy's own regional structure across its
 planned campuses, not a claim about any real union's locals or
 jurisdictions — no local is named.

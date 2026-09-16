@@ -117,8 +117,8 @@ ADVISORS = {
                     'drawn to teach and is not a survey of anywhere. The '
                     'buildings you are standing in are SCHEMATIC. The '
                     'coordinates the three flagship campuses sit on are '
-                    'RECORDED or DERIVED; the four hub campuses, Houston, '
-                    'Chicago, Seattle and Pittsburgh, are AUTHORED.'},
+                    'RECORDED or DERIVED; the five hub campuses, Houston, '
+                    'Chicago, Seattle, Pittsburgh and Denver, are AUTHORED.'},
         ],
     },
     'safety-steward': {
@@ -319,8 +319,9 @@ ADVISORS = {
             {'id': 'sited', 'ask': 'Is the campus really here?',
              'kind': 'say', 'cites': 'geo/registry/campuses_geo.json',
              'say': 'The coordinate here is RECORDED or DERIVED for the '
-                    'three flagship campuses, AUTHORED for the four hub '
-                    'campuses (Houston, Chicago, Seattle, Pittsburgh) - '
+                    'three flagship campuses, AUTHORED for the five hub '
+                    'campuses (Houston, Chicago, Seattle, Pittsburgh, '
+                    'Denver) - '
                     'and the distances between every campus pair are DERIVED '
                     'from those points by great circle either way. The '
                     'campus itself '

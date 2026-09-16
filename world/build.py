@@ -195,7 +195,7 @@ FAUNA = {
         'motion': 'hop', 'height_m': [0, 6], 'speed': .5,
         'flock': 6,
         'campuses': ['treasure-island', 'oakland', 'new-orleans', 'houston',
-                     'chicago', 'seattle', 'pittsburgh'],
+                     'chicago', 'seattle', 'pittsburgh', 'denver'],
         'why': 'every yard in every city has them, and they are the scale '
                'reference nobody thinks about',
     },
@@ -205,7 +205,7 @@ FAUNA = {
         'motion': 'patrol', 'height_m': [0, 0], 'speed': .55,
         'flock': 1,
         'campuses': ['treasure-island', 'oakland', 'new-orleans', 'houston',
-                     'chicago', 'seattle', 'pittsburgh'],
+                     'chicago', 'seattle', 'pittsburgh', 'denver'],
         'why': 'the yard dog is a fixture of the trade, and it teaches the '
                'habit of looking down before reversing',
     },
@@ -289,6 +289,18 @@ ATMOS = {
                      'by more bridges than any other American city, and '
                      'a post-industrial skyline standing where the mills '
                      'once were - authored by reputation, not measured',
+    },
+    'denver': {
+        'sky': ['#0b1120', '#1c2e4a', '#3f5c88', '#e8a24a'],
+        'fog': {'color': 0x2a3446, 'mul': .4}, 'banks': 0,
+        'sun': {'color': 0xfff2d6, 'i': 1.6},
+        'hemi': {'sky': 0x8fa8c4, 'ground': 0x2c2620, 'i': 1.15},
+        'amb': {'wind': .55, 'gulls': False, 'harbor': False, 'thunder': True},
+        'ground': 'concrete', 'verge': 'gravel',
+        'character': 'thin, dry high-altitude light off the Front Range, '
+                     'a mining and energy heritage at 5,280 feet, and the '
+                     'Rockies standing on the western horizon - authored '
+                     'by reputation, not measured',
     },
 }
 

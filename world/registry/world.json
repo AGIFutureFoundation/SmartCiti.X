@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-11",
- "source_stamp": "e5bf79cda32df5cf",
+ "source_stamp": "0dcd9a4343d8188a",
  "honesty": {
   "textures": "no texture, photograph or artwork file exists in this repository and none is downloaded: every surface is a recipe - a base colour, a grain, an octave count and a relief depth - and the page generates the image and its normal map in the learner's own browser at boot. There is therefore no third-party artwork anywhere in the render.",
   "weather": "schematic weather, not a forecast and not an observation: nothing here is tied to a reading taken at any real place or time, and the per-campus atmospheres are authored by reputation rather than measured.",
@@ -15,7 +15,7 @@
   "weather": 6,
   "ground": 6,
   "fauna": 6,
-  "animals": 77
+  "animals": 84
  },
  "sky": {
   "projection": "equirectangular, drawn to a 1024x512 canvas at boot",
@@ -326,7 +326,8 @@
     "houston",
     "chicago",
     "seattle",
-    "pittsburgh"
+    "pittsburgh",
+    "denver"
    ],
    "why": "every yard in every city has them, and they are the scale reference nobody thinks about"
   },
@@ -351,7 +352,8 @@
     "houston",
     "chicago",
     "seattle",
-    "pittsburgh"
+    "pittsburgh",
+    "denver"
    ],
    "why": "the yard dog is a fixture of the trade, and it teaches the habit of looking down before reversing"
   }
@@ -566,6 +568,37 @@
    "ground": "concrete",
    "verge": "gravel",
    "character": "a river haze over three confluent rivers crossed by more bridges than any other American city, and a post-industrial skyline standing where the mills once were - authored by reputation, not measured"
+  },
+  "denver": {
+   "sky": [
+    "#0b1120",
+    "#1c2e4a",
+    "#3f5c88",
+    "#e8a24a"
+   ],
+   "fog": {
+    "color": 2765894,
+    "mul": 0.4
+   },
+   "banks": 0,
+   "sun": {
+    "color": 16773846,
+    "i": 1.6
+   },
+   "hemi": {
+    "sky": 9414852,
+    "ground": 2893344,
+    "i": 1.15
+   },
+   "amb": {
+    "wind": 0.55,
+    "gulls": false,
+    "harbor": false,
+    "thunder": true
+   },
+   "ground": "concrete",
+   "verge": "gravel",
+   "character": "thin, dry high-altitude light off the Front Range, a mining and energy heritage at 5,280 feet, and the Rockies standing on the western horizon - authored by reputation, not measured"
   }
  }
 }
