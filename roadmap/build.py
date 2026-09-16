@@ -2,49 +2,56 @@
 """
 SmartCiti.X : Trade Craft Academy — the network roadmap builder.
 
-Ten is a target this registry tracks progress toward, not a claim that
-ten walkable worlds exist. Nine are BUILT: real campuses, each with the
-full stack this bundle ships - districts, halls, rooms, simulators,
-advisors, a generated world, shape-coded signage - or, for a hub campus,
-the subset of that stack a hub actually needs (see below). One is a
-CANDIDATE: a real US metro with a real trade profile, proposed as the
-next one, and nothing more than proposed.
+Ten was a target this registry tracked progress toward, not a claim
+that ten walkable worlds existed - and with this build it is met, not
+exceeded and not fictionally rounded up: all TEN are BUILT, real
+campuses, each with the full stack this bundle ships - districts,
+halls, rooms, simulators, advisors, a generated world, shape-coded
+signage - or, for a hub campus, the subset of that stack a hub actually
+needs (see below). Zero are CANDIDATES. The ten-campus network was
+itself a target, not a promise, and this build is the one that closes
+it out - CANDIDATES below is intentionally empty, and TARGET stays 10
+so the registry's own arithmetic (len(BUILT_ENTRIES) + len(CANDIDATES)
+== TARGET) still proves the count rather than assuming it. This build
+does not invent an eleventh target or a "next" candidate city - that
+would be a claim nobody asked this bundle to make.
 
-TWO PROVENANCE TIERS, NOT ONE. Three of the nine built campuses'
+TWO PROVENANCE TIERS, NOT ONE. Three of the ten built campuses'
 coordinates are RECORDED - copied from a cited file in the Locator.X
 sibling checkout (Apache-2.0) and cross-checked against it on every
 build, exactly like every other RECORDED fact in this bundle. Houston,
-Chicago, Seattle, Pittsburgh, Denver and Miami, the fourth through
-ninth, and the one remaining candidate's city coordinate are AUTHORED:
-widely-published public geography (the kind a city's own Wikipedia
-infobox states), typed here from general knowledge rather than copied
-from any file this build can check itself against. That is a materially
-weaker claim, and it is labelled as one rather than dressed up as
-RECORDED. Promoting a candidate to built means doing the checklist below
-in full, not just relabelling an entry - Houston, Chicago, Seattle,
-Pittsburgh, Denver and Miami all did it as a HUB campus rather than a
-district campus (see HUB_DESIGN below); a future candidate could still
-go either way.
+Chicago, Seattle, Pittsburgh, Denver, Miami and Detroit, the fourth
+through tenth, are AUTHORED: widely-published public geography (the
+kind a city's own Wikipedia infobox states), typed here from general
+knowledge rather than copied from any file this build can check itself
+against. That is a materially weaker claim, and it is labelled as one
+rather than dressed up as RECORDED. Promoting a candidate to built means
+doing the checklist below in full, not just relabelling an entry -
+Houston, Chicago, Seattle, Pittsburgh, Denver, Miami and Detroit all did
+it as a HUB campus rather than a district campus (see HUB_DESIGN below).
+With no candidate left to promote, the checklist stands as the record
+of how every hub got here, not as an instruction still waiting to be
+followed.
 
 HUB_DESIGN. A district campus and a hub campus are the two shapes this
 network's campuses come in, not a hierarchy. Every one of the eight
 trade districts already has exactly one home among the three original
 campuses - that invariant (unions/unions111.py) was not relaxed to add
-Houston, Chicago, Seattle, Pittsburgh, Denver or Miami. Instead each
-hosts no home district of its own (districts: []) and the chapters
+Houston, Chicago, Seattle, Pittsburgh, Denver, Miami or Detroit. Instead
+each hosts no home district of its own (districts: []) and the chapters
 mechanic every campus already had - a regional chapter, for every hall,
 at every campus that is not its home - simply gained a fourth, fifth,
-sixth, seventh, eighth and ninth destination: Houston, Chicago, Seattle,
-Pittsburgh, Denver and Miami are each now a regional-chapter seat for
-all 111 halls, real walkable points on the network map, and duplicate
-no hall's content anywhere. None draws a district ring nor carries a
-parcel-records contract (parcels/build.py), because there are no
-buildings at any of them for one to describe.
+sixth, seventh, eighth, ninth and tenth destination: Houston, Chicago,
+Seattle, Pittsburgh, Denver, Miami and Detroit are each now a
+regional-chapter seat for all 111 halls, real walkable points on the
+network map, and duplicate no hall's content anywhere. None draws a
+district ring nor carries a parcel-records contract (parcels/build.py),
+because there are no buildings at any of them for one to describe.
 
-A candidate names a proposed metro and a proposed district emphasis. It
-does NOT claim any hall, union, curriculum content, or trade partnership
-exists there - building one is the checklist below, done in full, the
-same way the first eight were.
+A candidate, when one existed, named a proposed metro and a proposed
+district emphasis. It never claimed any hall, union, curriculum
+content, or trade partnership existed there - building one meant doing
+the checklist below, done in full, the same way every built campus was.
 """
 import hashlib
 import json
@@ -62,22 +69,23 @@ TARGET = 10
 # below. `districts` names 2-3 of the 8 the real metro's trade profile fits;
 # the built campuses already cover all eight between them, so a candidate
 # deepens the network's regional variety rather than filling a gap.
-CANDIDATES = {
-    'detroit': {
-        'name': 'Motor City Campus', 'city': 'Detroit', 'region': 'Michigan',
-        'lat': 42.3314, 'lng': -83.0458,
-        'districts': ['industry', 'structural', 'systems'],
-        'why': 'a century of heavy manufacturing and the machinist, '
-               'structural and building-systems trades an automotive '
-               'industrial base actually runs on',
-    },
-}
+#
+# CANDIDATES is intentionally empty: Detroit, the last entry this dict
+# ever held, was promoted to BUILT (see unions/unions111.py CAMPUSES)
+# in the same build that emptied this table. The ten-campus target
+# (TARGET below) is now fully met, so there is nothing left to propose -
+# this build does not fabricate an eleventh candidate to keep the table
+# non-empty.
+CANDIDATES = {}
 
 # ------------------------------------------------ how a candidate gets built ---
 # The real steps every built campus went through, in order - a district
 # campus follows all seven; a hub campus (see HUB_DESIGN above) does every
 # step except the district/ring/parcels ones, which do not apply to it. A
-# candidate is promoted by doing these, not by editing its status field.
+# candidate was promoted by doing these, not by editing its status field.
+# With CANDIDATES empty, this checklist is kept as the honest record of
+# how all ten campuses actually got built, not as a queue with anything
+# left in it.
 CHECKLIST = [
     {'step': 'source real coordinates',
      'what': 'find the metro\'s city-center and any regional-institution '
@@ -116,40 +124,49 @@ CHECKLIST = [
 ]
 
 HONESTY = {
-    'target_not_claim': 'ten walkable worlds is a target this registry '
-                        'tracks progress toward, not a claim that ten '
-                        'exist. Nine are built; one is a candidate.',
-    'provenance_tiers': 'three of the nine built campuses\' coordinates '
+    'target_not_claim': 'ten walkable worlds was a target this registry '
+                        'tracked progress toward, not a claim that ten '
+                        'existed. All ten are now built; zero are '
+                        'candidates. The target is met, not exceeded - '
+                        'this registry does not invent an eleventh '
+                        'campus or a new "next" candidate to keep the '
+                        'roadmap open.',
+    'provenance_tiers': 'three of the ten built campuses\' coordinates '
                         'are RECORDED - copied from a cited file and '
                         'cross-checked against it on every build. '
-                        'Houston, Chicago, Seattle, Pittsburgh, Denver '
-                        'and Miami, the fourth through ninth, and the '
-                        'one remaining candidate\'s coordinate are '
-                        'AUTHORED: widely-published public geography, '
-                        'typed here from general knowledge rather than '
-                        'copied from any file this build can check '
-                        'itself against - a materially weaker claim, '
-                        'labelled as one.',
+                        'Houston, Chicago, Seattle, Pittsburgh, Denver, '
+                        'Miami and Detroit, the fourth through tenth, '
+                        'are AUTHORED: widely-published public '
+                        'geography, typed here from general knowledge '
+                        'rather than copied from any file this build '
+                        'can check itself against - a materially '
+                        'weaker claim, labelled as one.',
     'hub_vs_district': 'three built campuses are district campuses: a '
                        'home for 2-3 trade districts, a district ring, '
                        'the full stack this bundle ships. Houston, '
-                       'Chicago, Seattle, Pittsburgh, Denver and Miami '
-                       'are hub campuses: no home district, no district '
-                       'ring, no parcel-records contract - and a real '
-                       'regional chapter seat for all 111 halls each, '
-                       'the same mechanic every campus already had, '
-                       'extended to a fourth, fifth, sixth, seventh, '
-                       'eighth and ninth destination. Building one shape '
-                       'does not oblige the next candidate to be the '
-                       'other.',
-    'not_a_claim_of_content': 'a candidate names a proposed metro and a '
-                              'proposed district emphasis. It does not '
-                              'claim any hall, union, curriculum content '
-                              'or trade partnership exists there - '
-                              'building one is the checklist, done in '
-                              'full, the same way the built campuses were.',
-    'no_dates': 'this is an ordered list of what is next, not a '
-               'timeline: no candidate carries a committed date.',
+                       'Chicago, Seattle, Pittsburgh, Denver, Miami and '
+                       'Detroit are hub campuses: no home district, no '
+                       'district ring, no parcel-records contract - and '
+                       'a real regional chapter seat for all 111 halls '
+                       'each, the same mechanic every campus already '
+                       'had, extended to a fourth, fifth, sixth, '
+                       'seventh, eighth, ninth and tenth destination. '
+                       'Seven of the ten built campuses ended up this '
+                       'shape and three the other, which was never a '
+                       'rule - just how the real metros landed.',
+    'not_a_claim_of_content': 'a candidate, when one existed, named a '
+                              'proposed metro and a proposed district '
+                              'emphasis. It never claimed any hall, '
+                              'union, curriculum content or trade '
+                              'partnership existed there - building one '
+                              'meant doing the checklist, done in full, '
+                              'the same way every built campus was. '
+                              'With the roadmap now at ten of ten, '
+                              'there is no remaining candidate for this '
+                              'to describe.',
+    'no_dates': 'this was an ordered list of what was next, not a '
+               'timeline: no candidate ever carried a committed date, '
+               'and none remain to carry one now.',
 }
 
 # ---------------------------------------------------------------- checks ---

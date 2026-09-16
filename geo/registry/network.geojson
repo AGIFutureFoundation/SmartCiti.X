@@ -186,6 +186,26 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
+     -83.0458,
+     42.3314
+    ]
+   },
+   "properties": {
+    "slug": "detroit",
+    "name": "Motor City Hub",
+    "city": "Detroit",
+    "region": "Michigan",
+    "districts": 0,
+    "halls": 0,
+    "provenance": "AUTHORED",
+    "source": "widely-published public geography (city-center), typed from general knowledge - not cross-checked against any file this build can verify"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
      -122.4194,
      37.7749
     ]
@@ -1081,6 +1101,90 @@
     "blurb": "A large public community-college system with real career-technical and trades programs across Miami-Dade County.",
     "km": 1.4,
     "bearing_deg": 352.4,
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -83.0368,
+     42.329
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Detroit/Wayne County Port Authority",
+    "near": "detroit",
+    "provenance": "AUTHORED",
+    "source": "the regional port authority for the Detroit River, headquartered on the downtown riverfront",
+    "blurb": "The regional port authority for the Detroit River, connecting to Windsor, Ontario across the water.",
+    "km": 0.8,
+    "bearing_deg": 109.8,
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -83.071,
+     42.3573
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Wayne State University",
+    "near": "detroit",
+    "provenance": "AUTHORED",
+    "source": "the public research university\u2019s Midtown Detroit campus",
+    "blurb": "Public research university in Midtown Detroit, with schools of engineering and medicine.",
+    "km": 3.5,
+    "bearing_deg": 324.3,
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -83.2321,
+     42.3014
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "The Henry Ford",
+    "near": "detroit",
+    "provenance": "AUTHORED",
+    "source": "the museum and heritage complex in Dearborn - the Henry Ford Museum of American Innovation and Greenfield Village - built around the region\u2019s automotive and manufacturing history",
+    "blurb": "A museum and heritage complex in Dearborn, Michigan - the Henry Ford Museum of American Innovation and Greenfield Village - built around a century of American manufacturing.",
+    "km": 15.7,
+    "bearing_deg": 257.8,
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -83.0574,
+     42.3277
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Wayne County Community College District",
+    "near": "detroit",
+    "provenance": "AUTHORED",
+    "source": "the community-college system\u2019s downtown Detroit campus, with real career-technical and trades programs",
+    "blurb": "A large public community-college system with real career-technical and trades programs across Wayne County.",
+    "km": 1.0,
+    "bearing_deg": 246.7,
     "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
    }
   },
@@ -2282,6 +2386,155 @@
     "type": "LineString",
     "coordinates": [
      [
+      -122.3705,
+      37.8235
+     ],
+     [
+      -121.2528,
+      38.1582
+     ],
+     [
+      -120.125,
+      38.4823
+     ],
+     [
+      -118.9872,
+      38.7954
+     ],
+     [
+      -117.8395,
+      39.0974
+     ],
+     [
+      -116.6821,
+      39.3881
+     ],
+     [
+      -115.5152,
+      39.6672
+     ],
+     [
+      -114.3391,
+      39.9345
+     ],
+     [
+      -113.1539,
+      40.1898
+     ],
+     [
+      -111.96,
+      40.433
+     ],
+     [
+      -110.7577,
+      40.6638
+     ],
+     [
+      -109.5472,
+      40.8821
+     ],
+     [
+      -108.329,
+      41.0876
+     ],
+     [
+      -107.1034,
+      41.2802
+     ],
+     [
+      -105.8707,
+      41.4597
+     ],
+     [
+      -104.6315,
+      41.626
+     ],
+     [
+      -103.3861,
+      41.7789
+     ],
+     [
+      -102.135,
+      41.9183
+     ],
+     [
+      -100.8787,
+      42.0441
+     ],
+     [
+      -99.6177,
+      42.1561
+     ],
+     [
+      -98.3526,
+      42.2543
+     ],
+     [
+      -97.0837,
+      42.3385
+     ],
+     [
+      -95.8117,
+      42.4087
+     ],
+     [
+      -94.5372,
+      42.4648
+     ],
+     [
+      -93.2607,
+      42.5068
+     ],
+     [
+      -91.9827,
+      42.5346
+     ],
+     [
+      -90.7039,
+      42.5482
+     ],
+     [
+      -89.4248,
+      42.5475
+     ],
+     [
+      -88.1461,
+      42.5326
+     ],
+     [
+      -86.8682,
+      42.5036
+     ],
+     [
+      -85.5918,
+      42.4603
+     ],
+     [
+      -84.3175,
+      42.4029
+     ],
+     [
+      -83.0458,
+      42.3314
+     ]
+    ]
+   },
+   "properties": {
+    "kind": "route",
+    "from": "treasure-island",
+    "to": "detroit",
+    "km": 3352.9,
+    "bearing_deg": 68.8,
+    "provenance": "DERIVED",
+    "source": "great-circle between the campus records"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
       -122.2712,
       37.8044
      ],
@@ -3325,6 +3578,155 @@
     "type": "LineString",
     "coordinates": [
      [
+      -122.2712,
+      37.8044
+     ],
+     [
+      -121.1564,
+      38.1387
+     ],
+     [
+      -120.0315,
+      38.4624
+     ],
+     [
+      -118.8967,
+      38.7752
+     ],
+     [
+      -117.752,
+      39.0769
+     ],
+     [
+      -116.5977,
+      39.3674
+     ],
+     [
+      -115.4339,
+      39.6463
+     ],
+     [
+      -114.2609,
+      39.9136
+     ],
+     [
+      -113.079,
+      40.1689
+     ],
+     [
+      -111.8883,
+      40.4122
+     ],
+     [
+      -110.6892,
+      40.6431
+     ],
+     [
+      -109.482,
+      40.8616
+     ],
+     [
+      -108.267,
+      41.0674
+     ],
+     [
+      -107.0446,
+      41.2603
+     ],
+     [
+      -105.8153,
+      41.4402
+     ],
+     [
+      -104.5793,
+      41.607
+     ],
+     [
+      -103.3372,
+      41.7605
+     ],
+     [
+      -102.0895,
+      41.9005
+     ],
+     [
+      -100.8364,
+      42.027
+     ],
+     [
+      -99.5787,
+      42.1398
+     ],
+     [
+      -98.3168,
+      42.2388
+     ],
+     [
+      -97.0512,
+      42.324
+     ],
+     [
+      -95.7824,
+      42.3951
+     ],
+     [
+      -94.511,
+      42.4523
+     ],
+     [
+      -93.2376,
+      42.4954
+     ],
+     [
+      -91.9627,
+      42.5244
+     ],
+     [
+      -90.6869,
+      42.5392
+     ],
+     [
+      -89.4108,
+      42.5399
+     ],
+     [
+      -88.135,
+      42.5264
+     ],
+     [
+      -86.86,
+      42.4988
+     ],
+     [
+      -85.5864,
+      42.4571
+     ],
+     [
+      -84.3149,
+      42.4012
+     ],
+     [
+      -83.0458,
+      42.3314
+     ]
+    ]
+   },
+   "properties": {
+    "kind": "route",
+    "from": "oakland",
+    "to": "detroit",
+    "km": 3345.6,
+    "bearing_deg": 68.8,
+    "provenance": "DERIVED",
+    "source": "great-circle between the campus records"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
       -90.0715,
       29.9511
      ],
@@ -4219,6 +4621,155 @@
     "type": "LineString",
     "coordinates": [
      [
+      -90.0715,
+      29.9511
+     ],
+     [
+      -89.8821,
+      30.3435
+     ],
+     [
+      -89.6912,
+      30.7356
+     ],
+     [
+      -89.4988,
+      31.1274
+     ],
+     [
+      -89.3047,
+      31.519
+     ],
+     [
+      -89.109,
+      31.9102
+     ],
+     [
+      -88.9117,
+      32.3012
+     ],
+     [
+      -88.7126,
+      32.6918
+     ],
+     [
+      -88.5118,
+      33.0821
+     ],
+     [
+      -88.3092,
+      33.4721
+     ],
+     [
+      -88.1048,
+      33.8618
+     ],
+     [
+      -87.8985,
+      34.2511
+     ],
+     [
+      -87.6902,
+      34.64
+     ],
+     [
+      -87.48,
+      35.0287
+     ],
+     [
+      -87.2678,
+      35.4169
+     ],
+     [
+      -87.0536,
+      35.8048
+     ],
+     [
+      -86.8373,
+      36.1923
+     ],
+     [
+      -86.6188,
+      36.5794
+     ],
+     [
+      -86.3981,
+      36.9661
+     ],
+     [
+      -86.1751,
+      37.3523
+     ],
+     [
+      -85.9498,
+      37.7382
+     ],
+     [
+      -85.7222,
+      38.1236
+     ],
+     [
+      -85.4922,
+      38.5086
+     ],
+     [
+      -85.2597,
+      38.8931
+     ],
+     [
+      -85.0247,
+      39.2772
+     ],
+     [
+      -84.787,
+      39.6608
+     ],
+     [
+      -84.5468,
+      40.0438
+     ],
+     [
+      -84.3038,
+      40.4264
+     ],
+     [
+      -84.058,
+      40.8085
+     ],
+     [
+      -83.8094,
+      41.1901
+     ],
+     [
+      -83.5579,
+      41.5711
+     ],
+     [
+      -83.3034,
+      41.9515
+     ],
+     [
+      -83.0458,
+      42.3314
+     ]
+    ]
+   },
+   "properties": {
+    "kind": "route",
+    "from": "new-orleans",
+    "to": "detroit",
+    "km": 1512.9,
+    "bearing_deg": 22.6,
+    "provenance": "DERIVED",
+    "source": "great-circle between the campus records"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
       -95.3698,
       29.7604
      ],
@@ -4964,6 +5515,155 @@
     "type": "LineString",
     "coordinates": [
      [
+      -95.3698,
+      29.7604
+     ],
+     [
+      -95.0387,
+      30.1701
+     ],
+     [
+      -94.7049,
+      30.579
+     ],
+     [
+      -94.3682,
+      30.9871
+     ],
+     [
+      -94.0287,
+      31.3942
+     ],
+     [
+      -93.6862,
+      31.8005
+     ],
+     [
+      -93.3407,
+      32.2058
+     ],
+     [
+      -92.9921,
+      32.6102
+     ],
+     [
+      -92.6403,
+      33.0136
+     ],
+     [
+      -92.2853,
+      33.4161
+     ],
+     [
+      -91.927,
+      33.8175
+     ],
+     [
+      -91.5653,
+      34.2178
+     ],
+     [
+      -91.2002,
+      34.6171
+     ],
+     [
+      -90.8315,
+      35.0153
+     ],
+     [
+      -90.4593,
+      35.4123
+     ],
+     [
+      -90.0833,
+      35.8082
+     ],
+     [
+      -89.7036,
+      36.203
+     ],
+     [
+      -89.3201,
+      36.5965
+     ],
+     [
+      -88.9326,
+      36.9888
+     ],
+     [
+      -88.5412,
+      37.3797
+     ],
+     [
+      -88.1456,
+      37.7694
+     ],
+     [
+      -87.7458,
+      38.1578
+     ],
+     [
+      -87.3418,
+      38.5448
+     ],
+     [
+      -86.9334,
+      38.9304
+     ],
+     [
+      -86.5206,
+      39.3145
+     ],
+     [
+      -86.1032,
+      39.6972
+     ],
+     [
+      -85.6811,
+      40.0783
+     ],
+     [
+      -85.2543,
+      40.458
+     ],
+     [
+      -84.8227,
+      40.836
+     ],
+     [
+      -84.3862,
+      41.2124
+     ],
+     [
+      -83.9446,
+      41.5871
+     ],
+     [
+      -83.4978,
+      41.9601
+     ],
+     [
+      -83.0458,
+      42.3314
+     ]
+    ]
+   },
+   "properties": {
+    "kind": "route",
+    "from": "houston",
+    "to": "detroit",
+    "km": 1779.7,
+    "bearing_deg": 34.9,
+    "provenance": "DERIVED",
+    "source": "great-circle between the campus records"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
       -87.6298,
       41.8781
      ],
@@ -5560,6 +6260,155 @@
     "type": "LineString",
     "coordinates": [
      [
+      -87.6298,
+      41.8781
+     ],
+     [
+      -87.4876,
+      41.895
+     ],
+     [
+      -87.3453,
+      41.9118
+     ],
+     [
+      -87.203,
+      41.9283
+     ],
+     [
+      -87.0606,
+      41.9447
+     ],
+     [
+      -86.9181,
+      41.9609
+     ],
+     [
+      -86.7755,
+      41.9769
+     ],
+     [
+      -86.6328,
+      41.9928
+     ],
+     [
+      -86.4901,
+      42.0085
+     ],
+     [
+      -86.3474,
+      42.024
+     ],
+     [
+      -86.2045,
+      42.0393
+     ],
+     [
+      -86.0616,
+      42.0545
+     ],
+     [
+      -85.9186,
+      42.0694
+     ],
+     [
+      -85.7756,
+      42.0842
+     ],
+     [
+      -85.6324,
+      42.0989
+     ],
+     [
+      -85.4892,
+      42.1133
+     ],
+     [
+      -85.346,
+      42.1276
+     ],
+     [
+      -85.2027,
+      42.1416
+     ],
+     [
+      -85.0593,
+      42.1556
+     ],
+     [
+      -84.9159,
+      42.1693
+     ],
+     [
+      -84.7724,
+      42.1828
+     ],
+     [
+      -84.6288,
+      42.1962
+     ],
+     [
+      -84.4852,
+      42.2094
+     ],
+     [
+      -84.3415,
+      42.2224
+     ],
+     [
+      -84.1978,
+      42.2352
+     ],
+     [
+      -84.054,
+      42.2479
+     ],
+     [
+      -83.9101,
+      42.2603
+     ],
+     [
+      -83.7662,
+      42.2726
+     ],
+     [
+      -83.6222,
+      42.2848
+     ],
+     [
+      -83.4782,
+      42.2967
+     ],
+     [
+      -83.3341,
+      42.3084
+     ],
+     [
+      -83.19,
+      42.32
+     ],
+     [
+      -83.0458,
+      42.3314
+     ]
+    ]
+   },
+   "properties": {
+    "kind": "route",
+    "from": "chicago",
+    "to": "detroit",
+    "km": 381.5,
+    "bearing_deg": 80.9,
+    "provenance": "DERIVED",
+    "source": "great-circle between the campus records"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
       -122.3321,
       47.6062
      ],
@@ -6007,6 +6856,155 @@
     "type": "LineString",
     "coordinates": [
      [
+      -122.3321,
+      47.6062
+     ],
+     [
+      -121.0369,
+      47.6575
+     ],
+     [
+      -119.7394,
+      47.6943
+     ],
+     [
+      -118.4405,
+      47.7164
+     ],
+     [
+      -117.1409,
+      47.7238
+     ],
+     [
+      -115.8412,
+      47.7166
+     ],
+     [
+      -114.5423,
+      47.6947
+     ],
+     [
+      -113.2449,
+      47.6581
+     ],
+     [
+      -111.9496,
+      47.607
+     ],
+     [
+      -110.6572,
+      47.5413
+     ],
+     [
+      -109.3684,
+      47.4611
+     ],
+     [
+      -108.0839,
+      47.3665
+     ],
+     [
+      -106.8043,
+      47.2576
+     ],
+     [
+      -105.5303,
+      47.1346
+     ],
+     [
+      -104.2625,
+      46.9975
+     ],
+     [
+      -103.0016,
+      46.8464
+     ],
+     [
+      -101.748,
+      46.6816
+     ],
+     [
+      -100.5024,
+      46.5032
+     ],
+     [
+      -99.2652,
+      46.3114
+     ],
+     [
+      -98.037,
+      46.1063
+     ],
+     [
+      -96.8182,
+      45.8882
+     ],
+     [
+      -95.6091,
+      45.6572
+     ],
+     [
+      -94.4103,
+      45.4135
+     ],
+     [
+      -93.2221,
+      45.1575
+     ],
+     [
+      -92.0447,
+      44.8892
+     ],
+     [
+      -90.8785,
+      44.6089
+     ],
+     [
+      -89.7237,
+      44.3169
+     ],
+     [
+      -88.5806,
+      44.0134
+     ],
+     [
+      -87.4494,
+      43.6986
+     ],
+     [
+      -86.3301,
+      43.3727
+     ],
+     [
+      -85.2231,
+      43.0361
+     ],
+     [
+      -84.1283,
+      42.6889
+     ],
+     [
+      -83.0458,
+      42.3314
+     ]
+    ]
+   },
+   "properties": {
+    "kind": "route",
+    "from": "seattle",
+    "to": "detroit",
+    "km": 3111.2,
+    "bearing_deg": 86.2,
+    "provenance": "DERIVED",
+    "source": "great-circle between the campus records"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
       -79.9959,
       40.4406
      ],
@@ -6305,6 +7303,155 @@
     "type": "LineString",
     "coordinates": [
      [
+      -79.9959,
+      40.4406
+     ],
+     [
+      -80.0886,
+      40.5009
+     ],
+     [
+      -80.1814,
+      40.5611
+     ],
+     [
+      -80.2744,
+      40.6212
+     ],
+     [
+      -80.3675,
+      40.6813
+     ],
+     [
+      -80.4609,
+      40.7413
+     ],
+     [
+      -80.5544,
+      40.8012
+     ],
+     [
+      -80.648,
+      40.861
+     ],
+     [
+      -80.7419,
+      40.9208
+     ],
+     [
+      -80.8359,
+      40.9805
+     ],
+     [
+      -80.93,
+      41.0401
+     ],
+     [
+      -81.0244,
+      41.0996
+     ],
+     [
+      -81.1189,
+      41.159
+     ],
+     [
+      -81.2136,
+      41.2184
+     ],
+     [
+      -81.3084,
+      41.2777
+     ],
+     [
+      -81.4035,
+      41.3369
+     ],
+     [
+      -81.4987,
+      41.3961
+     ],
+     [
+      -81.594,
+      41.4551
+     ],
+     [
+      -81.6896,
+      41.5141
+     ],
+     [
+      -81.7853,
+      41.573
+     ],
+     [
+      -81.8812,
+      41.6318
+     ],
+     [
+      -81.9773,
+      41.6906
+     ],
+     [
+      -82.0735,
+      41.7492
+     ],
+     [
+      -82.17,
+      41.8078
+     ],
+     [
+      -82.2666,
+      41.8663
+     ],
+     [
+      -82.3634,
+      41.9247
+     ],
+     [
+      -82.4603,
+      41.9831
+     ],
+     [
+      -82.5574,
+      42.0413
+     ],
+     [
+      -82.6548,
+      42.0995
+     ],
+     [
+      -82.7523,
+      42.1576
+     ],
+     [
+      -82.8499,
+      42.2156
+     ],
+     [
+      -82.9478,
+      42.2736
+     ],
+     [
+      -83.0458,
+      42.3314
+     ]
+    ]
+   },
+   "properties": {
+    "kind": "route",
+    "from": "pittsburgh",
+    "to": "detroit",
+    "km": 330.0,
+    "bearing_deg": 310.6,
+    "provenance": "DERIVED",
+    "source": "great-circle between the campus records"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
       -104.9903,
       39.7392
      ],
@@ -6444,6 +7591,304 @@
     "to": "miami",
     "km": 2776.5,
     "bearing_deg": 116.5,
+    "provenance": "DERIVED",
+    "source": "great-circle between the campus records"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -104.9903,
+      39.7392
+     ],
+     [
+      -104.3365,
+      39.8817
+     ],
+     [
+      -103.6799,
+      40.0205
+     ],
+     [
+      -103.0208,
+      40.1556
+     ],
+     [
+      -102.359,
+      40.2869
+     ],
+     [
+      -101.6947,
+      40.4145
+     ],
+     [
+      -101.0279,
+      40.5382
+     ],
+     [
+      -100.3587,
+      40.6581
+     ],
+     [
+      -99.6871,
+      40.7741
+     ],
+     [
+      -99.0132,
+      40.8862
+     ],
+     [
+      -98.337,
+      40.9944
+     ],
+     [
+      -97.6587,
+      41.0986
+     ],
+     [
+      -96.9783,
+      41.1988
+     ],
+     [
+      -96.2958,
+      41.295
+     ],
+     [
+      -95.6113,
+      41.3871
+     ],
+     [
+      -94.925,
+      41.4752
+     ],
+     [
+      -94.2368,
+      41.5592
+     ],
+     [
+      -93.5469,
+      41.6391
+     ],
+     [
+      -92.8553,
+      41.7148
+     ],
+     [
+      -92.1621,
+      41.7864
+     ],
+     [
+      -91.4674,
+      41.8539
+     ],
+     [
+      -90.7713,
+      41.9171
+     ],
+     [
+      -90.0738,
+      41.9761
+     ],
+     [
+      -89.3751,
+      42.0309
+     ],
+     [
+      -88.6753,
+      42.0814
+     ],
+     [
+      -87.9744,
+      42.1277
+     ],
+     [
+      -87.2725,
+      42.1697
+     ],
+     [
+      -86.5697,
+      42.2074
+     ],
+     [
+      -85.8661,
+      42.2408
+     ],
+     [
+      -85.1618,
+      42.2699
+     ],
+     [
+      -84.457,
+      42.2947
+     ],
+     [
+      -83.7516,
+      42.3152
+     ],
+     [
+      -83.0458,
+      42.3314
+     ]
+    ]
+   },
+   "properties": {
+    "kind": "route",
+    "from": "denver",
+    "to": "detroit",
+    "km": 1857.7,
+    "bearing_deg": 74.0,
+    "provenance": "DERIVED",
+    "source": "great-circle between the campus records"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "LineString",
+    "coordinates": [
+     [
+      -80.1918,
+      25.7617
+     ],
+     [
+      -80.2664,
+      26.2804
+     ],
+     [
+      -80.3416,
+      26.799
+     ],
+     [
+      -80.4175,
+      27.3175
+     ],
+     [
+      -80.4941,
+      27.8361
+     ],
+     [
+      -80.5715,
+      28.3546
+     ],
+     [
+      -80.6496,
+      28.873
+     ],
+     [
+      -80.7285,
+      29.3914
+     ],
+     [
+      -80.8083,
+      29.9098
+     ],
+     [
+      -80.8888,
+      30.4281
+     ],
+     [
+      -80.9702,
+      30.9463
+     ],
+     [
+      -81.0525,
+      31.4645
+     ],
+     [
+      -81.1357,
+      31.9827
+     ],
+     [
+      -81.2199,
+      32.5008
+     ],
+     [
+      -81.305,
+      33.0188
+     ],
+     [
+      -81.3912,
+      33.5368
+     ],
+     [
+      -81.4784,
+      34.0547
+     ],
+     [
+      -81.5666,
+      34.5726
+     ],
+     [
+      -81.656,
+      35.0904
+     ],
+     [
+      -81.7465,
+      35.6081
+     ],
+     [
+      -81.8382,
+      36.1258
+     ],
+     [
+      -81.9311,
+      36.6433
+     ],
+     [
+      -82.0252,
+      37.1609
+     ],
+     [
+      -82.1207,
+      37.6783
+     ],
+     [
+      -82.2175,
+      38.1957
+     ],
+     [
+      -82.3156,
+      38.7129
+     ],
+     [
+      -82.4153,
+      39.2301
+     ],
+     [
+      -82.5164,
+      39.7472
+     ],
+     [
+      -82.619,
+      40.2643
+     ],
+     [
+      -82.7232,
+      40.7812
+     ],
+     [
+      -82.829,
+      41.298
+     ],
+     [
+      -82.9365,
+      41.8148
+     ],
+     [
+      -83.0458,
+      42.3314
+     ]
+    ]
+   },
+   "properties": {
+    "kind": "route",
+    "from": "miami",
+    "to": "detroit",
+    "km": 1860.8,
+    "bearing_deg": 352.7,
     "provenance": "DERIVED",
     "source": "great-circle between the campus records"
    }
@@ -6732,6 +8177,42 @@
    "properties": {
     "kind": "frame",
     "campus": "miami",
+    "provenance": "AUTHORED",
+    "source": "widely-published public geography (metro-area extent), typed from general knowledge - not cross-checked against any file this build can verify"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+     [
+      [
+       -83.35,
+       42.05
+      ],
+      [
+       -82.75,
+       42.05
+      ],
+      [
+       -82.75,
+       42.55
+      ],
+      [
+       -83.35,
+       42.55
+      ],
+      [
+       -83.35,
+       42.05
+      ]
+     ]
+    ]
+   },
+   "properties": {
+    "kind": "frame",
+    "campus": "detroit",
     "provenance": "AUTHORED",
     "source": "widely-published public geography (metro-area extent), typed from general knowledge - not cross-checked against any file this build can verify"
    }

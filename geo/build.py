@@ -19,12 +19,14 @@ three tiers this build can actually check itself against.
     city table (src/app.js, CITIES), which is real committed data.
   - Treasure Island and New Orleans are DERIVED: well-known place centroids
     authored here, since neither appears in that table.
-  - Houston, Chicago, Seattle, Pittsburgh, Denver and Miami are AUTHORED:
-    widely-published public geography (the kind a city's own Wikipedia
-    infobox states), typed here from general knowledge. No sibling source
-    cross-checks any of the six, unlike the other three - the same
-    honesty this pack's roadmap already states for every candidate city,
-    carried through now that each is built rather than proposed.
+  - Houston, Chicago, Seattle, Pittsburgh, Denver, Miami and Detroit are
+    AUTHORED: widely-published public geography (the kind a city's own
+    Wikipedia infobox states), typed here from general knowledge. No
+    sibling source cross-checks any of the seven, unlike the other
+    three - the same honesty this pack's roadmap already stated for
+    every candidate city, carried through now that each is built
+    rather than proposed. Detroit is the tenth and last: the roadmap's
+    CANDIDATES table is empty as of this build.
   - Everything downstream of the coordinates (distances, bearings) is
     computed, and the suite recomputes it rather than trusting it.
 
@@ -78,6 +80,10 @@ GEO = {
                         'widely-published public geography (city-center), '
                         'typed from general knowledge - not cross-checked '
                         'against any file this build can verify'),
+    'detroit':         (42.3314, -83.0458, 'AUTHORED',
+                        'widely-published public geography (city-center), '
+                        'typed from general knowledge - not cross-checked '
+                        'against any file this build can verify'),
 }
 
 # Cross-check the RECORDED value against the table it cites, when the
@@ -126,8 +132,8 @@ ANCHORS = {
     ],
 }
 
-# Institution anchors near the six HUB campuses (Houston, Chicago,
-# Seattle, Pittsburgh, Denver, Miami) — a different, weaker tier than
+# Institution anchors near the seven HUB campuses (Houston, Chicago,
+# Seattle, Pittsburgh, Denver, Miami, Detroit) — a different, weaker tier than
 # ANCHORS above, and kept in a separate table so the two are never
 # confused. Every
 # anchor above is RECORDED, copied verbatim from a sibling Locator.X table
@@ -214,6 +220,20 @@ AUTHORED_ANCHORS = {
          'the private research university’s Coral Gables campus'),
         ('Miami Dade College', 25.7745, -80.1937,
          "the community-college system's Wolfson Campus downtown, with "
+         'real career-technical and trades programs'),
+    ],
+    'detroit': [
+        ('Detroit/Wayne County Port Authority', 42.3290, -83.0368,
+         "the regional port authority for the Detroit River, "
+         'headquartered on the downtown riverfront'),
+        ('Wayne State University', 42.3573, -83.0710,
+         'the public research university’s Midtown Detroit campus'),
+        ('The Henry Ford', 42.3014, -83.2321,
+         'the museum and heritage complex in Dearborn - the Henry Ford '
+         'Museum of American Innovation and Greenfield Village - built '
+         'around the region’s automotive and manufacturing history'),
+        ('Wayne County Community College District', 42.3277, -83.0574,
+         'the community-college system’s downtown Detroit campus, with '
          'real career-technical and trades programs'),
     ],
 }
@@ -349,6 +369,19 @@ BLURBS = {
     'Miami Dade College':
         'A large public community-college system with real career-'
         'technical and trades programs across Miami-Dade County.',
+    'Detroit/Wayne County Port Authority':
+        'The regional port authority for the Detroit River, connecting '
+        'to Windsor, Ontario across the water.',
+    'Wayne State University':
+        'Public research university in Midtown Detroit, with schools '
+        'of engineering and medicine.',
+    'The Henry Ford':
+        'A museum and heritage complex in Dearborn, Michigan - the '
+        'Henry Ford Museum of American Innovation and Greenfield '
+        'Village - built around a century of American manufacturing.',
+    'Wayne County Community College District':
+        'A large public community-college system with real career-'
+        'technical and trades programs across Wayne County.',
 }
 
 # CITY records - the region frames Locator.X's own maps ship, RECORDED
@@ -372,9 +405,9 @@ CITY = {
     },
     'treasure-island': dict(BAY_FRAME),
     'oakland': dict(BAY_FRAME),
-    # the six hub campuses' own frames: AUTHORED, like their anchors and
+    # the seven hub campuses' own frames: AUTHORED, like their anchors and
     # their own campus-centre coordinates above - no sibling table ships a
-    # committed frame for any of the six metros, so none can honestly
+    # committed frame for any of the seven metros, so none can honestly
     # claim more
     'houston': {
         'center': {'lat': 29.76, 'lng': -95.37},
@@ -419,6 +452,14 @@ CITY = {
     'miami': {
         'center': {'lat': 25.76, 'lng': -80.19},
         'bounds': {'w': -80.55, 's': 25.45, 'e': -80.05, 'n': 26.05},
+        'provenance': 'AUTHORED',
+        'source': 'widely-published public geography (metro-area extent), '
+                  'typed from general knowledge - not cross-checked '
+                  'against any file this build can verify',
+    },
+    'detroit': {
+        'center': {'lat': 42.33, 'lng': -83.05},
+        'bounds': {'w': -83.35, 's': 42.05, 'e': -82.75, 'n': 42.55},
         'provenance': 'AUTHORED',
         'source': 'widely-published public geography (metro-area extent), '
                   'typed from general knowledge - not cross-checked '
@@ -570,7 +611,7 @@ doc = {
 # RECORDED anchors (ANCHORS) cite the sibling Locator.X table verbatim;
 # AUTHORED anchors (AUTHORED_ANCHORS) name themselves plainly as a weaker,
 # uncross-checked claim - the same distinction GEO already draws between
-# the three original campus centres and the six hub ones.
+# the three original campus centres and the seven hub ones.
 def anchor_source(prov, src):
     return f'Locator.X {src}, Apache-2.0' if prov == 'RECORDED' else src
 

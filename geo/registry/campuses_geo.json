@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-10",
- "source_stamp": "b87221a7237a0c61",
+ "source_stamp": "af3fab9faab90018",
  "crs": "WGS84 (EPSG:4326)",
  "recorded_check": "cross-checked against the Locator.X checkout",
  "honesty": {
@@ -82,6 +82,14 @@
    "source": "widely-published public geography (city-center), typed from general knowledge - not cross-checked against any file this build can verify",
    "city": "Miami",
    "region": "Florida"
+  },
+  "detroit": {
+   "lat": 42.3314,
+   "lng": -83.0458,
+   "provenance": "AUTHORED",
+   "source": "widely-published public geography (city-center), typed from general knowledge - not cross-checked against any file this build can verify",
+   "city": "Detroit",
+   "region": "Michigan"
   }
  },
  "routes_km": [
@@ -134,6 +142,12 @@
    "bearing_deg": 96.2
   },
   {
+   "from": "treasure-island",
+   "to": "detroit",
+   "km": 3352.9,
+   "bearing_deg": 68.8
+  },
+  {
    "from": "oakland",
    "to": "new-orleans",
    "km": 3081.0,
@@ -176,6 +190,12 @@
    "bearing_deg": 96.3
   },
   {
+   "from": "oakland",
+   "to": "detroit",
+   "km": 3345.6,
+   "bearing_deg": 68.8
+  },
+  {
    "from": "new-orleans",
    "to": "houston",
    "km": 511.3,
@@ -212,6 +232,12 @@
    "bearing_deg": 113.2
   },
   {
+   "from": "new-orleans",
+   "to": "detroit",
+   "km": 1512.9,
+   "bearing_deg": 22.6
+  },
+  {
    "from": "houston",
    "to": "chicago",
    "km": 1515.8,
@@ -242,6 +268,12 @@
    "bearing_deg": 102.9
   },
   {
+   "from": "houston",
+   "to": "detroit",
+   "km": 1779.7,
+   "bearing_deg": 34.9
+  },
+  {
    "from": "chicago",
    "to": "seattle",
    "km": 2788.9,
@@ -266,6 +298,12 @@
    "bearing_deg": 156.8
   },
   {
+   "from": "chicago",
+   "to": "detroit",
+   "km": 381.5,
+   "bearing_deg": 80.9
+  },
+  {
    "from": "seattle",
    "to": "pittsburgh",
    "km": 3432.2,
@@ -284,6 +322,12 @@
    "bearing_deg": 108.3
   },
   {
+   "from": "seattle",
+   "to": "detroit",
+   "km": 3111.2,
+   "bearing_deg": 86.2
+  },
+  {
    "from": "pittsburgh",
    "to": "denver",
    "km": 2120.6,
@@ -296,10 +340,28 @@
    "bearing_deg": 180.7
   },
   {
+   "from": "pittsburgh",
+   "to": "detroit",
+   "km": 330.0,
+   "bearing_deg": 310.6
+  },
+  {
    "from": "denver",
    "to": "miami",
    "km": 2776.5,
    "bearing_deg": 116.5
+  },
+  {
+   "from": "denver",
+   "to": "detroit",
+   "km": 1857.7,
+   "bearing_deg": 74.0
+  },
+  {
+   "from": "miami",
+   "to": "detroit",
+   "km": 1860.8,
+   "bearing_deg": 352.7
   }
  ],
  "city": {
@@ -425,6 +487,20 @@
     "s": 25.45,
     "e": -80.05,
     "n": 26.05
+   },
+   "provenance": "AUTHORED",
+   "source": "widely-published public geography (metro-area extent), typed from general knowledge - not cross-checked against any file this build can verify"
+  },
+  "detroit": {
+   "center": {
+    "lat": 42.33,
+    "lng": -83.05
+   },
+   "bounds": {
+    "w": -83.35,
+    "s": 42.05,
+    "e": -82.75,
+    "n": 42.55
    },
    "provenance": "AUTHORED",
    "source": "widely-published public geography (metro-area extent), typed from general knowledge - not cross-checked against any file this build can verify"
@@ -919,6 +995,52 @@
     "km": 1.4,
     "bearing_deg": 352.4,
     "blurb": "A large public community-college system with real career-technical and trades programs across Miami-Dade County.",
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   }
+  ],
+  "detroit": [
+   {
+    "name": "Detroit/Wayne County Port Authority",
+    "lat": 42.329,
+    "lng": -83.0368,
+    "provenance": "AUTHORED",
+    "source": "the regional port authority for the Detroit River, headquartered on the downtown riverfront",
+    "km": 0.8,
+    "bearing_deg": 109.8,
+    "blurb": "The regional port authority for the Detroit River, connecting to Windsor, Ontario across the water.",
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   },
+   {
+    "name": "Wayne State University",
+    "lat": 42.3573,
+    "lng": -83.071,
+    "provenance": "AUTHORED",
+    "source": "the public research university\u2019s Midtown Detroit campus",
+    "km": 3.5,
+    "bearing_deg": 324.3,
+    "blurb": "Public research university in Midtown Detroit, with schools of engineering and medicine.",
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   },
+   {
+    "name": "The Henry Ford",
+    "lat": 42.3014,
+    "lng": -83.2321,
+    "provenance": "AUTHORED",
+    "source": "the museum and heritage complex in Dearborn - the Henry Ford Museum of American Innovation and Greenfield Village - built around the region\u2019s automotive and manufacturing history",
+    "km": 15.7,
+    "bearing_deg": 257.8,
+    "blurb": "A museum and heritage complex in Dearborn, Michigan - the Henry Ford Museum of American Innovation and Greenfield Village - built around a century of American manufacturing.",
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   },
+   {
+    "name": "Wayne County Community College District",
+    "lat": 42.3277,
+    "lng": -83.0574,
+    "provenance": "AUTHORED",
+    "source": "the community-college system\u2019s downtown Detroit campus, with real career-technical and trades programs",
+    "km": 1.0,
+    "bearing_deg": 246.7,
+    "blurb": "A large public community-college system with real career-technical and trades programs across Wayne County.",
     "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
    }
   ]

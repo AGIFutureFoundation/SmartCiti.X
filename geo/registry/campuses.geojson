@@ -186,6 +186,26 @@
    "geometry": {
     "type": "Point",
     "coordinates": [
+     -83.0458,
+     42.3314
+    ]
+   },
+   "properties": {
+    "slug": "detroit",
+    "name": "Motor City Hub",
+    "city": "Detroit",
+    "region": "Michigan",
+    "districts": 0,
+    "halls": 0,
+    "provenance": "AUTHORED",
+    "source": "widely-published public geography (city-center), typed from general knowledge - not cross-checked against any file this build can verify"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
      -122.4194,
      37.7749
     ]
@@ -1081,6 +1101,90 @@
     "blurb": "A large public community-college system with real career-technical and trades programs across Miami-Dade County.",
     "km": 1.4,
     "bearing_deg": 352.4,
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -83.0368,
+     42.329
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Detroit/Wayne County Port Authority",
+    "near": "detroit",
+    "provenance": "AUTHORED",
+    "source": "the regional port authority for the Detroit River, headquartered on the downtown riverfront",
+    "blurb": "The regional port authority for the Detroit River, connecting to Windsor, Ontario across the water.",
+    "km": 0.8,
+    "bearing_deg": 109.8,
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -83.071,
+     42.3573
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Wayne State University",
+    "near": "detroit",
+    "provenance": "AUTHORED",
+    "source": "the public research university\u2019s Midtown Detroit campus",
+    "blurb": "Public research university in Midtown Detroit, with schools of engineering and medicine.",
+    "km": 3.5,
+    "bearing_deg": 324.3,
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -83.2321,
+     42.3014
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "The Henry Ford",
+    "near": "detroit",
+    "provenance": "AUTHORED",
+    "source": "the museum and heritage complex in Dearborn - the Henry Ford Museum of American Innovation and Greenfield Village - built around the region\u2019s automotive and manufacturing history",
+    "blurb": "A museum and heritage complex in Dearborn, Michigan - the Henry Ford Museum of American Innovation and Greenfield Village - built around a century of American manufacturing.",
+    "km": 15.7,
+    "bearing_deg": 257.8,
+    "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
+   }
+  },
+  {
+   "type": "Feature",
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     -83.0574,
+     42.3277
+    ]
+   },
+   "properties": {
+    "kind": "anchor",
+    "name": "Wayne County Community College District",
+    "near": "detroit",
+    "provenance": "AUTHORED",
+    "source": "the community-college system\u2019s downtown Detroit campus, with real career-technical and trades programs",
+    "blurb": "A large public community-college system with real career-technical and trades programs across Wayne County.",
+    "km": 1.0,
+    "bearing_deg": 246.7,
     "blurb_provenance": "authored from public record, the same tier as the coordinate itself"
    }
   }

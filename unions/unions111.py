@@ -186,20 +186,22 @@ assert len(set(_assigned)) == 111, 'a hall may belong to exactly one district'
 # the flagship island campus; heavy industry, port and plant on the Oakland
 # waterfront; energy, water and environmental response on the Gulf.
 #
-# Houston, Chicago, Seattle, Pittsburgh, Denver and Miami are a fourth
-# kind of campus: a HUB. Each hosts no district of its own (districts:
-# []) — every district that exists already has exactly one home among
-# the three original campuses, and that invariant (asserted below) is
-# not relaxed for any of them. Instead the chapters mechanic in
-# unions/build.py, which already gives every hall a regional chapter at
-# every campus that is not its home, does the rest for free: with a
-# fourth, fifth, sixth, seventh, eighth and ninth campus in CAMPUSES,
-# every one of the 111 halls now also holds a regional chapter at
-# Houston, at Chicago, at Seattle, at Pittsburgh, at Denver and at
-# Miami. Each hub is a real, walkable point on the network map, not a
-# copy of anyone's home turf, and hosting six hubs is the same mechanic
-# doing the same thing six times, not a special case written for any
-# one of them.
+# Houston, Chicago, Seattle, Pittsburgh, Denver, Miami and Detroit are a
+# fourth kind of campus: a HUB. Each hosts no district of its own
+# (districts: []) — every district that exists already has exactly one
+# home among the three original campuses, and that invariant (asserted
+# below) is not relaxed for any of them. Instead the chapters mechanic
+# in unions/build.py, which already gives every hall a regional chapter
+# at every campus that is not its home, does the rest for free: with a
+# fourth, fifth, sixth, seventh, eighth, ninth and tenth campus in
+# CAMPUSES, every one of the 111 halls now also holds a regional chapter
+# at Houston, at Chicago, at Seattle, at Pittsburgh, at Denver, at Miami
+# and at Detroit. Each hub is a real, walkable point on the network map,
+# not a copy of anyone's home turf, and hosting seven hubs is the same
+# mechanic doing the same thing seven times, not a special case written
+# for any one of them. Detroit is the network's tenth and final campus:
+# the ten-campus target this pack tracked is now fully met, and
+# roadmap/build.py's own CANDIDATES table is empty as a result.
 #
 # HONESTY, same rule as the taxonomy: these are PLANNED locations named for
 # real cities. No site has been surveyed, no address is recorded, and no
@@ -237,6 +239,11 @@ CAMPUSES = {
     'miami': ('Biscayne Coastal Hub', 'Miami', 'Florida',
         'The network\'s sixth hub: no home district of its own, and a '
         'regional chapter seat for every one of the 111 trades',
+        []),
+    'detroit': ('Motor City Hub', 'Detroit', 'Michigan',
+        'The network\'s seventh and final hub: no home district of its '
+        'own, and a regional chapter seat for every one of the 111 '
+        'trades',
         []),
 }
 

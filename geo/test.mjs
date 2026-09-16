@@ -52,7 +52,9 @@ ok('every point is a plausible WGS84 coordinate for its stated city',
   && pts['denver'].lat > 39 && pts['denver'].lat < 40.5
   && pts['denver'].lng < -104 && pts['denver'].lng > -106
   && pts['miami'].lat > 25 && pts['miami'].lat < 26.5
-  && pts['miami'].lng < -79.5 && pts['miami'].lng > -81);
+  && pts['miami'].lng < -79.5 && pts['miami'].lng > -81
+  && pts['detroit'].lat > 41.5 && pts['detroit'].lat < 43
+  && pts['detroit'].lng < -82.5 && pts['detroit'].lng > -83.5);
 ok('every point carries its provenance and names its source',
   Object.values(pts).every((p) =>
     ['RECORDED', 'DERIVED', 'AUTHORED'].includes(p.provenance)
@@ -61,8 +63,8 @@ ok("the RECORDED point cites Locator.X's city table; the DERIVED points do not c
   pts.oakland.provenance === 'RECORDED' && /Locator\.X/.test(pts.oakland.source)
   && ['treasure-island', 'new-orleans'].every((k) =>
       pts[k].provenance === 'DERIVED' && /authored/.test(pts[k].source)));
-ok('the AUTHORED points (Houston, Chicago, Seattle, Pittsburgh, Denver, Miami - all hub campuses) admit they are not cross-checked - the same bar a roadmap candidate is held to',
-  ['houston', 'chicago', 'seattle', 'pittsburgh', 'denver', 'miami'].every((k) =>
+ok('the AUTHORED points (Houston, Chicago, Seattle, Pittsburgh, Denver, Miami, Detroit - all hub campuses) admit they are not cross-checked - the same bar a roadmap candidate is held to',
+  ['houston', 'chicago', 'seattle', 'pittsburgh', 'denver', 'miami', 'detroit'].every((k) =>
     pts[k].provenance === 'AUTHORED'
     && /not cross-checked against any\s+file this build can verify/.test(pts[k].source)));
 
@@ -81,7 +83,7 @@ ok('the bay pair is a short hop and the Gulf runs are long hauls — sane scale'
 /* -------------------------------------------------------------- GeoJSON --- */
 const campusFeats = gj.features.filter((f) => f.properties.kind !== 'anchor');
 ok('the GeoJSON is a FeatureCollection with one campus Point per campus',
-  gj.type === 'FeatureCollection' && campusFeats.length === 9
+  gj.type === 'FeatureCollection' && campusFeats.length === 10
   && gj.features.every((f) => f.type === 'Feature'
     && f.geometry.type === 'Point'));
 ok('GeoJSON coordinates are [lng, lat] — the order the spec demands',
@@ -100,11 +102,11 @@ ok('the registry says what a coordinate is not: an anchor, not a parcel claim',
   && /planned locations/.test(reg.honesty.siting));
 /* -------------------------------------------------------------- anchors --- */
 const RECORDED_CKS = ['treasure-island', 'oakland', 'new-orleans'];
-const AUTHORED_CKS = ['houston', 'chicago', 'seattle', 'pittsburgh', 'denver', 'miami'];
+const AUTHORED_CKS = ['houston', 'chicago', 'seattle', 'pittsburgh', 'denver', 'miami', 'detroit'];
 ok('every campus carries anchors — RECORDED citing their Locator.X table for '
   + 'the three flagship campuses (eight Bay cities, seven NOLA institutions), '
-  + 'AUTHORED for the six hub campuses that have no such sibling table',
-  Object.keys(reg.anchors).length === 9
+  + 'AUTHORED for the seven hub campuses that have no such sibling table',
+  Object.keys(reg.anchors).length === 10
   && reg.anchors['treasure-island'].length === 8
   && reg.anchors['oakland'].length === 4
   && reg.anchors['new-orleans'].length === 7
@@ -114,11 +116,12 @@ ok('every campus carries anchors — RECORDED citing their Locator.X table for '
   && reg.anchors['pittsburgh'].length === 4
   && reg.anchors['denver'].length === 4
   && reg.anchors['miami'].length === 4
+  && reg.anchors['detroit'].length === 4
   && RECORDED_CKS.every((ck) => reg.anchors[ck].every((a) =>
       a.provenance === 'RECORDED' && /Locator\.X/.test(a.source)))
   && AUTHORED_CKS.every((ck) => reg.anchors[ck].every((a) =>
       a.provenance === 'AUTHORED' && !/Locator\.X/.test(a.source))));
-ok('the AUTHORED anchors (Houston, Chicago, Seattle, Pittsburgh, Denver, Miami) admit plainly they are not RECORDED '
+ok('the AUTHORED anchors (Houston, Chicago, Seattle, Pittsburgh, Denver, Miami, Detroit) admit plainly they are not RECORDED '
   + '- no sibling table lists them, unlike every anchor near the three flagship campuses',
   AUTHORED_CKS.every((ck) => reg.anchors[ck].every((a) =>
     a.source.length > 15 && !/Locator\.X/.test(a.source))));
@@ -126,7 +129,7 @@ ok('every anchor sits within 60 km of its campus, distances recomputed',
   Object.entries(reg.anchors).every(([ck, l]) => l.every((a) =>
     Math.abs(haversineKm(pts[ck], a) - a.km) < 0.1 && a.km < 60)));
 ok('the GeoJSON carries the anchors as tagged features, [lng, lat]',
-  gj.features.filter((f) => f.properties.kind === 'anchor').length === 43
+  gj.features.filter((f) => f.properties.kind === 'anchor').length === 47
   && gj.features.filter((f) => f.properties.kind === 'anchor')
       .every((f) => Math.abs(f.geometry.coordinates[0]) > Math.abs(f.geometry.coordinates[1])));
 ok('the GeoJSON anchor features carry the same real provenance split as the registry',
@@ -159,7 +162,7 @@ ok('every RECORDED city frame (the three flagship campuses) actually cites Locat
       && pts[ck].lng > c.bounds.w && pts[ck].lng < c.bounds.e
       && pts[ck].lat > c.bounds.s && pts[ck].lat < c.bounds.n;
   }));
-ok('every AUTHORED city frame (the six hub campuses) admits it is not cross-checked, and still actually frames its campus',
+ok('every AUTHORED city frame (the seven hub campuses) admits it is not cross-checked, and still actually frames its campus',
   AUTHORED_CKS.every((ck) => {
     const c = reg.city[ck];
     return c.provenance === 'AUTHORED' && !/Locator\.X/.test(c.source)
@@ -180,11 +183,11 @@ ok('no two hub campuses share a frame with each other or with the Bay',
 
 const net = JSON.parse(readFileSync(
   new URL('./registry/network.geojson', import.meta.url)));
-ok('the network GeoJSON carries the whole registry: 52 points (9 campuses + 43 '
-  + 'anchors), 36 route lines (every campus pair), 8 frames (2 RECORDED, 6 AUTHORED)',
-  net.features.filter((f) => f.geometry.type === 'Point').length === 52
-  && net.features.filter((f) => f.geometry.type === 'LineString').length === 36
-  && net.features.filter((f) => f.geometry.type === 'Polygon').length === 8
+ok('the network GeoJSON carries the whole registry: 57 points (10 campuses + 47 '
+  + 'anchors), 45 route lines (every campus pair), 9 frames (2 RECORDED, 7 AUTHORED)',
+  net.features.filter((f) => f.geometry.type === 'Point').length === 57
+  && net.features.filter((f) => f.geometry.type === 'LineString').length === 45
+  && net.features.filter((f) => f.geometry.type === 'Polygon').length === 9
   && net.features.filter((f) => f.geometry.type === 'Polygon')
       .every((f) => RECORDED_CKS.includes(f.properties.campus)
         ? f.properties.provenance === 'RECORDED'

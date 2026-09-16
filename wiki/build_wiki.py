@@ -1168,10 +1168,29 @@ def page_roadmap():
         f"{', '.join(districts[d]['name'] for d in b['districts']) or '(hub — no home district)'} "
         f"| {b['halls']} | {b['provenance']} |"
         for b in built.values())
-    crows = '\n'.join(
-        f"| **{c['name']}** | {c['city']}, {c['region']} | {', '.join(districts[d]['name'] for d in c['districts'])} "
-        f"| {c['why']} |"
-        for c in cand.values())
+    # a dangling table header with zero rows reads as broken, not as
+    # "zero candidates" - so an empty CANDIDATES table gets its own
+    # honest sentence instead of a table with nothing under it.
+    if cand:
+        crows = '\n'.join(
+            f"| **{c['name']}** | {c['city']}, {c['region']} | {', '.join(districts[d]['name'] for d in c['districts'])} "
+            f"| {c['why']} |"
+            for c in cand.values())
+        cand_section = f"""## Candidates — {len(cand)} proposed
+
+| Campus | Where | Districts | Why |
+|---|---|---|---|
+{crows}
+
+{roadmap['honesty']['not_a_claim_of_content']}"""
+        next_heading = 'Building the next one'
+    else:
+        cand_section = f"""## Candidates — none remaining
+
+All ten planned campuses are now built; the ten-campus network was a
+target this registry tracked progress toward, not a promise, and that
+target is now met. {roadmap['honesty']['not_a_claim_of_content']}"""
+        next_heading = 'How every campus got built'
     chrows = '\n'.join(
         f"1. **{r['step']}** — {r['what']} (`{r['file']}`)" for r in roadmap['checklist'])
     return f"""# The network roadmap
@@ -1184,19 +1203,13 @@ def page_roadmap():
 |---|---|---|---|---|
 {brows}
 
-## Candidates — {len(cand)} proposed
-
-| Campus | Where | Districts | Why |
-|---|---|---|---|
-{crows}
-
-{roadmap['honesty']['not_a_claim_of_content']}
+{cand_section}
 
 ## Two provenance tiers
 
 {roadmap['honesty']['provenance_tiers']}
 
-## Building the next one
+## {next_heading}
 
 {chrows}
 

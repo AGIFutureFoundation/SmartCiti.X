@@ -319,10 +319,12 @@ DATA = json.dumps({
     'advisors': {'who': agents_reg['advisors'],
                  'honesty': agents_reg['honesty'],
                  'walk': geo_reg['walk']},
-    # the network roadmap: the five candidate metros, trimmed to what the
-    # region board's own markers need - bearing and distance already
-    # computed from the flagship campus in roadmap/build.py, not derived
-    # twice. Built campuses need no trim here; D.campuses already IS them.
+    # the network roadmap: whatever candidate metros remain, trimmed to
+    # what the region board's own markers need - bearing and distance
+    # already computed from the flagship campus in roadmap/build.py, not
+    # derived twice. Built campuses need no trim here; D.campuses already
+    # IS them. With Detroit's promotion, CANDIDATES is empty, so this
+    # dict renders nothing - the ten-campus target is fully met.
     'roadmap': {'target': roadmap_reg['target'],
                 'candidates': {k: {'name': c['name'], 'city': c['city'],
                                    'region': c['region'],
@@ -5066,6 +5068,39 @@ function dressCampus(key, g, R) {
     const bay = new THREE.Mesh(new THREE.PlaneGeometry(480, 150), mat.water);
     bay.rotation.x = -Math.PI / 2; bay.position.set(0, -.06, -(R + 140)); g.add(bay);
   }
+  if (key === 'detroit') {
+    // the seventh and final hub, dressed the same way as the first six: a
+    // free skyline on the green rather than anything at the plaza, plus a
+    // row of schematic factory sheds and smokestacks standing in for a
+    // century of automotive-industrial manufacturing, and the Detroit
+    // River as schematic water along the campus's southern edge. Generic
+    // massing only - no real plant, building or stack is modeled or named.
+    const skyMat = new THREE.MeshStandardMaterial({ color: 0x4a4640, roughness: .8 });
+    for (let i = 0; i < 8; i++) {
+      const ang = i / 8 * Math.PI * 2 + .2, rad = R + 56 + (i % 2) * 18;
+      const h = 11 + (i % 3) * 7;
+      const t = box(4.6, h, 4.6, skyMat, Math.cos(ang) * rad, h / 2, Math.sin(ang) * rad, g);
+      t.castShadow = true;
+    }
+    const shedMat = new THREE.MeshStandardMaterial({ color: 0x585048, roughness: .85 });
+    const stackMat = new THREE.MeshStandardMaterial({ color: 0x3a3632, roughness: .7 });
+    const bandMat = new THREE.MeshStandardMaterial({ color: 0xb3402a, roughness: .6 });
+    for (let i = 0; i < 4; i++) {
+      const sx = -150 + i * 44, sz = R + 96;
+      const shed = box(30, 8, 14, shedMat, sx, 4, sz, g);
+      shed.castShadow = true;
+      for (let k = 0; k < 2; k++) {
+        const stx = sx - 8 + k * 16;
+        const stack = new THREE.Mesh(new THREE.CylinderGeometry(1.1, 1.5, 16, 10), stackMat);
+        stack.position.set(stx, 16, sz);
+        stack.castShadow = true; g.add(stack);
+        const band = new THREE.Mesh(new THREE.CylinderGeometry(1.15, 1.15, 1.2, 10), bandMat);
+        band.position.set(stx, 22, sz); g.add(band);
+      }
+    }
+    const river = new THREE.Mesh(new THREE.PlaneGeometry(480, 140), mat.water);
+    river.rotation.x = -Math.PI / 2; river.position.set(0, -.06, -(R + 140)); g.add(river);
+  }
 }
 
 /* ------------------------------------------------- the city layer -------- */
@@ -5556,6 +5591,15 @@ function cityWater(g, key, R, pois) {
     bay.position.set((R + 60) + 120, .06, 0); g.add(bay);
     tag('Biscayne Bay', R + 90, 0);
   }
+  if (key === 'detroit') {
+    // the real river the Detroit/Wayne County Port Authority sits on -
+    // the same schematic water-band idiom Puget Sound and Biscayne Bay
+    // already use, never claimed as more than that
+    const river = new THREE.Mesh(new THREE.PlaneGeometry(260, 140), mat.water);
+    river.rotation.x = -Math.PI / 2; river.position.set(0, .07, -(R + 140));
+    g.add(river);
+    tag('Detroit River', 0, -(R + 135));
+  }
 }
 
 function buildCampus(key) {
@@ -5789,7 +5833,7 @@ const PLATE_POS = (() => {
   return pos;
 })();
 
-// The five roadmap candidates, placed by the same true bearing/log-range
+// Whatever roadmap candidates remain, placed by the same true bearing/log-range
 // scheme as the built plates above, from the same flagship reference
 // point (treasure-island) - honest position, not a decorative ring. The
 // centroid shift is recomputed from the built plates' own RAW positions
@@ -5865,7 +5909,7 @@ function buildRegion() {
       al.position.set(ax, 9.6, az); regionGroup.add(al);
     }
   }
-  // the five roadmap candidates: a dashed schematic ring, not a plate -
+  // whatever roadmap candidates remain: a dashed schematic ring, not a plate -
   // the shape itself is the claim (labels/registry: 'the dashed outline
   // is the claim'), placed at the real bearing/distance CAND_POS computed,
   // never a hall, union or curriculum content standing there to walk into

@@ -61,10 +61,11 @@ schematic weather, not a forecast and not an observation: nothing here is tied t
 | **Three Rivers Steel Hub** | `concrete` / `gravel` | a river haze over three confluent rivers crossed by more bridges than any other American city, and a post-industrial skyline standing where the mills once were - authored by reputation, not measured |
 | **Front Range Mining Hub** | `concrete` / `gravel` | thin, dry high-altitude light off the Front Range, a mining and energy heritage at 5,280 feet, and the Rockies standing on the western horizon - authored by reputation, not measured |
 | **Biscayne Coastal Hub** | `concrete` / `grass` | subtropical coastal heat and humidity off Biscayne Bay, afternoon thunderheads stacking through hurricane season, and a working seaport at the harbor's edge - authored by reputation, not measured |
+| **Motor City Hub** | `concrete` / `gravel` | a Great Lakes river haze off the Detroit River, a working industrial waterfront across from Windsor, Ontario, and a century of automotive manufacturing standing behind the skyline - authored by reputation, not measured |
 
 ## The animals
 
-6 kinds, 94 placed across the 9 campuses. They are
+6 kinds, 101 placed across the 10 campuses. They are
 the only moving thing on an idle campus, and they give the scene the one
 thing the buildings cannot: a sense of scale a learner reads without being
 told.
@@ -75,8 +76,8 @@ told.
 | 🦩 **Brown pelican** | 3 | 2.0 m | new-orleans, houston, miami | Louisiana’s state bird, and unmistakable over any Gulf coast or Biscayne Bay alike - the ship channel and the working port both |
 | 🐦 **Ring-billed gull** | 5 | 1.1 m | chicago | the lakefront gull, by reputation the most familiar bird on the Chicago waterfront |
 | 🕊️ **Egret** | 2 | 1.0 m | new-orleans | standing in the wet margin, which is most of the ground around this campus |
-| 🕊️ **Pigeon** | 6 | 0.6 m | treasure-island, oakland, new-orleans, houston, chicago, seattle, pittsburgh, denver, miami | every yard in every city has them, and they are the scale reference nobody thinks about |
-| 🐕 **Yard dog** | 1 | 1.0 m | treasure-island, oakland, new-orleans, houston, chicago, seattle, pittsburgh, denver, miami | the yard dog is a fixture of the trade, and it teaches the habit of looking down before reversing |
+| 🕊️ **Pigeon** | 6 | 0.6 m | treasure-island, oakland, new-orleans, houston, chicago, seattle, pittsburgh, denver, miami, detroit | every yard in every city has them, and they are the scale reference nobody thinks about |
+| 🐕 **Yard dog** | 1 | 1.0 m | treasure-island, oakland, new-orleans, houston, chicago, seattle, pittsburgh, denver, miami, detroit | the yard dog is a fixture of the trade, and it teaches the habit of looking down before reversing |
 
 ambience, not a wildlife survey: common names, schematic bodies and authored paths. No species record, population count or sighting is claimed, and no animal here is drawn from any photograph.
 

@@ -183,10 +183,10 @@ HONESTY = {
     'hub_campuses': 'a records contract exists only where the Academy '
                     'draws real buildings for a real-world footprint to '
                     'sit under. Each hub campus (Houston, Chicago, '
-                    'Seattle, Pittsburgh, Denver, Miami) hosts no home '
-                    'district and draws no district ring, so none '
-                    'carries a parcel contract of its own - there is no '
-                    'ground at any of them for one to overlay.',
+                    'Seattle, Pittsburgh, Denver, Miami, Detroit) hosts '
+                    'no home district and draws no district ring, so '
+                    'none carries a parcel contract of its own - there '
+                    'is no ground at any of them for one to overlay.',
 }
 
 # ---------------------------------------------------------------- checks ---

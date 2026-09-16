@@ -2,21 +2,23 @@
  * Network roadmap verification.
  *
  * The claim this pack makes has two parts that must never blur together:
- * nine campuses are BUILT (three on RECORDED, cross-checked coordinates,
- * six - Houston, Chicago, Seattle, Pittsburgh, Denver and Miami - on
- * AUTHORED ones, same as a candidate's): one is a CANDIDATE on an
- * AUTHORED, not-cross-checked coordinate. A third distinction cuts across
- * the first: three built campuses are DISTRICT campuses (a home for 2-3
- * districts, a district ring, halls > 0); Houston, Chicago, Seattle,
- * Pittsburgh, Denver and Miami are HUB campuses (no home district, no
- * ring, zero home halls, a regional-chapter seat for all 111 instead) -
- * the suite
- * checks each shape holds to its own honest bar rather than forcing a
- * hub through the district campus's checks. The built entries must
- * still trace to the geo and union registries' own figures, and the
- * candidates must never claim more than a proposed metro and a proposed
- * district emphasis. Ten is a target the count must actually add up to,
- * not a number quoted and left unchecked.
+ * all TEN campuses are BUILT (three on RECORDED, cross-checked
+ * coordinates, seven - Houston, Chicago, Seattle, Pittsburgh, Denver,
+ * Miami and Detroit - on AUTHORED ones, the same tier a candidate's
+ * coordinate carries): zero are CANDIDATES, because Detroit, the last
+ * one, was just promoted - the ten-campus target is met, not exceeded,
+ * and this suite must hold for an empty candidates table exactly as well
+ * as it held for a full one. A third distinction cuts across the first:
+ * three built campuses are DISTRICT campuses (a home for 2-3 districts,
+ * a district ring, halls > 0); Houston, Chicago, Seattle, Pittsburgh,
+ * Denver, Miami and Detroit are HUB campuses (no home district, no ring,
+ * zero home halls, a regional-chapter seat for all 111 instead) - the
+ * suite checks each shape holds to its own honest bar rather than
+ * forcing a hub through the district campus's checks. The built entries
+ * must still trace to the geo and union registries' own figures, and any
+ * future candidate would still have to name no more than a proposed
+ * metro and a proposed district emphasis. Ten is a target the count must
+ * actually add up to, not a number quoted and left unchecked.
  */
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
@@ -44,7 +46,7 @@ const cand = Object.entries(reg.candidates);
 /* -------------------------------------------------------------- the count --- */
 ok(`the network totals exactly the declared target (${built.length} built + ${cand.length} candidates = ${reg.target})`,
   built.length + cand.length === reg.target && reg.target === 10
-  && built.length === 9 && cand.length === 1);
+  && built.length === 10 && cand.length === 0);
 ok('no candidate slug collides with a built campus slug',
   built.every(([k]) => !reg.candidates[k])
   && cand.every(([k]) => !reg.built_campuses[k]));
@@ -64,9 +66,9 @@ ok('built entries carry a real hall count off the union registry',
 /* ----------------------------------------------------------- hub vs district --- */
 const hub = built.filter(([, b]) => b.districts.length === 0);
 const dist = built.filter(([, b]) => b.districts.length > 0);
-ok('exactly six built campuses are hubs (Houston, Chicago, Seattle, Pittsburgh, Denver, Miami): no home district, zero home halls',
-  hub.length === 6 && new Set(hub.map(([k]) => k)).size === 6
-  && ['houston', 'chicago', 'seattle', 'pittsburgh', 'denver', 'miami'].every((k) => hub.some(([hk]) => hk === k))
+ok('exactly seven built campuses are hubs (Houston, Chicago, Seattle, Pittsburgh, Denver, Miami, Detroit): no home district, zero home halls',
+  hub.length === 7 && new Set(hub.map(([k]) => k)).size === 7
+  && ['houston', 'chicago', 'seattle', 'pittsburgh', 'denver', 'miami', 'detroit'].every((k) => hub.some(([hk]) => hk === k))
   && hub.every(([, b]) => b.halls === 0));
 ok('every district campus actually hosts 2-3 districts and at least one hall',
   dist.length === 3
@@ -93,8 +95,9 @@ ok('every candidate names 2-3 real districts that actually exist in the taxonomy
     && c.districts.every((d) => d in districts)));
 ok('every candidate states a real reason, not a placeholder',
   cand.every(([, c]) => c.why.length > 40));
-ok('the one candidate is a distinct real US metro',
-  new Set(cand.map(([, c]) => c.city)).size === cand.length && cand.length === 1);
+ok('there are no remaining candidates - the ten-campus target is fully met, not exceeded',
+  cand.length === 0
+  && new Set(cand.map(([, c]) => c.city)).size === cand.length);
 
 /* --------------------------------------------------- the flagship bearing --- */
 // independently re-derived (not copied from build.py) so a real math bug
@@ -127,15 +130,16 @@ ok('the provenance gap between built and candidate is stated in exact, checkable
   /RECORDED - copied from a cited file and\s+cross-checked/.test(reg.honesty.provenance_tiers)
   && /AUTHORED: widely-published public\s+geography/.test(reg.honesty.provenance_tiers)
   && /materially weaker claim, labelled as one/.test(reg.honesty.provenance_tiers));
-ok('the target is stated as a target, never dressed up as an achieved count',
-  /target this registry tracks progress\s+toward, not a claim that ten exist/
-    .test(reg.honesty.target_not_claim));
-ok('a candidate is explicit that no hall, union or curriculum content exists there yet',
-  /does not\s+claim any hall, union, curriculum content/
+ok('the target is stated as met, not exceeded, with no invented eleventh campus',
+  /target this registry tracked progress\s+toward/.test(reg.honesty.target_not_claim)
+  && /All ten are now built; zero are\s+candidates/.test(reg.honesty.target_not_claim)
+  && /does not invent an eleventh\s+campus/.test(reg.honesty.target_not_claim));
+ok('a candidate is explicit that no hall, union or curriculum content ever existed there',
+  /never\s+claimed any hall, union, curriculum content/
     .test(reg.honesty.not_a_claim_of_content)
   && /the checklist, done in\s+full/.test(reg.honesty.not_a_claim_of_content));
-ok('no candidate carries a committed date, and the registry says why',
-  /no candidate carries a\s+committed date/.test(reg.honesty.no_dates)
+ok('no candidate ever carried a committed date, and none remain to carry one',
+  /no candidate ever carried a\s+committed date/.test(reg.honesty.no_dates)
   && !cand.some(([, c]) => 'date' in c || 'eta' in c || 'when' in c));
 
 /* -------------------------------------------------------------- the checklist --- */

@@ -63,12 +63,12 @@ a{color:var(--steel)}
 </header>
 
 <h2>Ten walkable worlds</h2>
-<p class="lead">ten walkable worlds is a target this registry tracks progress toward, not a claim that ten exist. Nine are built; one is a candidate.</p>
+<p class="lead">ten walkable worlds was a target this registry tracked progress toward, not a claim that ten existed. All ten are now built; zero are candidates. The target is met, not exceeded - this registry does not invent an eleventh campus or a new "next" candidate to keep the roadmap open.</p>
 <div class="meter-wrap">
-  <div class="meter-n">9<span>/10 built</span></div>
-  <div class="meter" role="progressbar" aria-valuenow="9" aria-valuemin="0"
-       aria-valuemax="10"><i style="width:90%"></i></div>
-  <div class="meter-n" style="font-size:16px;color:var(--muted)">1 candidates</div>
+  <div class="meter-n">10<span>/10 built</span></div>
+  <div class="meter" role="progressbar" aria-valuenow="10" aria-valuemin="0"
+       aria-valuemax="10"><i style="width:100%"></i></div>
+  <div class="meter-n" style="font-size:16px;color:var(--muted)">0 candidates</div>
 </div>
 <div class="grid">
 <div class="card">
@@ -126,24 +126,25 @@ a{color:var(--steel)}
   
 </div>
 <div class="card">
-  <div class="ch"><span class="tag planned">CANDIDATE</span><b>Motor City Campus</b></div>
-  <p class="sub">Detroit, Michigan · <span class="prov auth">AUTHORED</span></p>
-  <div class="chips"><span class="chip" style="border-color:hsl(348 45% 40%);color:hsl(348 65% 72%)">Heavy Industry</span><span class="chip" style="border-color:hsl(210 45% 40%);color:hsl(210 65% 72%)">Structural</span><span class="chip" style="border-color:hsl(182 45% 40%);color:hsl(182 65% 72%)">Building Systems</span></div>
-  <p class="why">a century of heavy manufacturing and the machinist, structural and building-systems trades an automotive industrial base actually runs on</p>
+  <div class="ch"><span class="tag built">BUILT</span><b>Motor City Hub</b></div>
+  <p class="sub">Detroit, Michigan · 0 home halls (111 regional) · <span class="prov auth">AUTHORED</span></p>
+  <div class="chips"><span class="chip">regional hub · no home district</span></div>
+  
 </div>
+
 </div>
 
 <h2>Building the next one</h2>
-<p class="lead">a candidate names a proposed metro and a proposed district emphasis. It does not claim any hall, union, curriculum content or trade partnership exists there - building one is the checklist, done in full, the same way the built campuses were.</p>
+<p class="lead">a candidate, when one existed, named a proposed metro and a proposed district emphasis. It never claimed any hall, union, curriculum content or trade partnership existed there - building one meant doing the checklist, done in full, the same way every built campus was. With the roadmap now at ten of ten, there is no remaining candidate for this to describe.</p>
 <ul class="checklist"><li><b>source real coordinates</b> — find the metro's city-center and any regional-institution coordinates in a citable, checkable source - the pattern geo/build.py already follows against the Locator.X checkout <code>geo/build.py</code></li><li><b>cross-check on every build</b> — assert the coordinate matches the cited source whenever that checkout is present, so a drifted number fails the build rather than going unnoticed <code>geo/build.py</code></li><li><b>add the campus and its districts</b> — register the campus, its region and its 2-3 districts in the union registry, matching real local trade profile to the existing eight-district taxonomy <code>unions/registry/campuses.json</code></li><li><b>assign or share halls</b> — every hall already exists once in the pack; a new campus hosts the halls its assigned districts already declare - no hall content is duplicated per campus <code>pack/registry/halls.json</code></li><li><b>build the 3D campus geometry</b> — the district ring, roads and green generate from the campus record automatically - buildCampus() takes a district count and a region key, not a hand-placed layout <code>web/build_3d.py</code></li><li><b>give it a world</b> — an authored atmosphere (sky, ground surface, character) and the fauna that belongs on that coast or that plain <code>world/build.py</code></li><li><b>verify, ship, publish</b> — every suite in verify_all.sh must hold, a browser harness must prove the campus walks and judges correctly, and the hosted artifact must be rebuilt and republished <code>verify_all.sh</code></li></ul>
 
 <h2>The platform, live</h2>
 <p class="lead">Every figure below reads from its own registry at build time.</p>
-<div class="figs"><div class="fig"><b>111</b><span>training halls</span></div><div class="fig"><b>11,000,000</b><span>generated modules</span></div><div class="fig"><b>8</b><span>districts</span></div><div class="fig"><b>111</b><span>union crafts named</span></div><div class="fig"><b>7</b><span>operable simulators</span></div><div class="fig"><b>8 / 96</b><span>tool cribs / tools</span></div><div class="fig"><b>9 / 34</b><span>advisors / topics</span></div><div class="fig"><b>6</b><span>weather states</span></div><div class="fig"><b>6</b><span>generated ground surfaces</span></div><div class="fig"><b>94</b><span>animals in the yards</span></div><div class="fig"><b>13</b><span>sign kinds</span></div><div class="fig"><b>3</b><span>training-data episode kinds</span></div><div class="fig"><b>111 / 2</b><span>Orbis module prompts / real runners</span></div><div class="fig"><b>19 / 111</b><span>avatar locker sections / TradeApes</span></div><div class="fig"><b>3</b><span>Unity avatar systems reviewed</span></div><div class="fig"><b>9 / 3</b><span>real Bay Restoration sites / field-skill tracks</span></div></div>
+<div class="figs"><div class="fig"><b>111</b><span>training halls</span></div><div class="fig"><b>11,000,000</b><span>generated modules</span></div><div class="fig"><b>8</b><span>districts</span></div><div class="fig"><b>111</b><span>union crafts named</span></div><div class="fig"><b>7</b><span>operable simulators</span></div><div class="fig"><b>8 / 96</b><span>tool cribs / tools</span></div><div class="fig"><b>9 / 34</b><span>advisors / topics</span></div><div class="fig"><b>6</b><span>weather states</span></div><div class="fig"><b>6</b><span>generated ground surfaces</span></div><div class="fig"><b>101</b><span>animals in the yards</span></div><div class="fig"><b>13</b><span>sign kinds</span></div><div class="fig"><b>3</b><span>training-data episode kinds</span></div><div class="fig"><b>111 / 2</b><span>Orbis module prompts / real runners</span></div><div class="fig"><b>19 / 111</b><span>avatar locker sections / TradeApes</span></div><div class="fig"><b>3</b><span>Unity avatar systems reviewed</span></div><div class="fig"><b>9 / 3</b><span>real Bay Restoration sites / field-skill tracks</span></div></div>
 
 <div class="honesty">
-  <li>three of the nine built campuses' coordinates are RECORDED - copied from a cited file and cross-checked against it on every build. Houston, Chicago, Seattle, Pittsburgh, Denver and Miami, the fourth through ninth, and the one remaining candidate's coordinate are AUTHORED: widely-published public geography, typed here from general knowledge rather than copied from any file this build can check itself against - a materially weaker claim, labelled as one.</li>
-  <li>this is an ordered list of what is next, not a timeline: no candidate carries a committed date.</li>
+  <li>three of the ten built campuses' coordinates are RECORDED - copied from a cited file and cross-checked against it on every build. Houston, Chicago, Seattle, Pittsburgh, Denver, Miami and Detroit, the fourth through tenth, are AUTHORED: widely-published public geography, typed here from general knowledge rather than copied from any file this build can check itself against - a materially weaker claim, labelled as one.</li>
+  <li>this was an ordered list of what was next, not a timeline: no candidate ever carried a committed date, and none remain to carry one now.</li>
   <li>an advisor is a scripted guide, not an instructor and not an AI: no model runs behind one, nothing is generated at view time, no network is reached, and every line an advisor can say is written in this registry or read from another registry in this bundle.</li>
   <li>every episode comes from SCHEMATIC physics and deterministic rubrics, not a real robot or a real machine: useful for exercising a training pipeline's plumbing and export format, not for training a controller that will run on real equipment.</li>
   <li>a clip generated from one of these prompts is AI-SYNTHESIZED synthetic video - it is not footage of any real trade, worker or site, and it is a separate stream from the real, schematic episode log training/ already records from a learner's own interactions</li>

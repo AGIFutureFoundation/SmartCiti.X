@@ -2,8 +2,8 @@
  "pack": "smartcitix-trade-craft-academy-union-registry",
  "pack_version": "3.2.0",
  "built": "2026-09-09",
- "source_stamp": "82d80ac77d617f9f",
- "count": 9,
+ "source_stamp": "4e1f67226afa78af",
+ "count": 10,
  "honesty": {
   "siting": "planned locations named for real cities; no site has been surveyed, no address is recorded, and no figure comes from any city's records"
  },
@@ -202,6 +202,14 @@
    "city": "Miami",
    "region": "Florida",
    "tagline": "The network's sixth hub: no home district of its own, and a regional chapter seat for every one of the 111 trades",
+   "districts": [],
+   "halls": []
+  },
+  "detroit": {
+   "name": "Motor City Hub",
+   "city": "Detroit",
+   "region": "Michigan",
+   "tagline": "The network's seventh and final hub: no home district of its own, and a regional chapter seat for every one of the 111 trades",
    "districts": [],
    "halls": []
   }

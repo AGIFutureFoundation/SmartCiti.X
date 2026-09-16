@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-11",
- "source_stamp": "d6e9bb9915498d69",
+ "source_stamp": "ad55cd5cd1b60912",
  "honesty": {
   "textures": "no texture, photograph or artwork file exists in this repository and none is downloaded: every surface is a recipe - a base colour, a grain, an octave count and a relief depth - and the page generates the image and its normal map in the learner's own browser at boot. There is therefore no third-party artwork anywhere in the render.",
   "weather": "schematic weather, not a forecast and not an observation: nothing here is tied to a reading taken at any real place or time, and the per-campus atmospheres are authored by reputation rather than measured.",
@@ -15,7 +15,7 @@
   "weather": 6,
   "ground": 6,
   "fauna": 6,
-  "animals": 94
+  "animals": 101
  },
  "sky": {
   "projection": "equirectangular, drawn to a 1024x512 canvas at boot",
@@ -329,7 +329,8 @@
     "seattle",
     "pittsburgh",
     "denver",
-    "miami"
+    "miami",
+    "detroit"
    ],
    "why": "every yard in every city has them, and they are the scale reference nobody thinks about"
   },
@@ -356,7 +357,8 @@
     "seattle",
     "pittsburgh",
     "denver",
-    "miami"
+    "miami",
+    "detroit"
    ],
    "why": "the yard dog is a fixture of the trade, and it teaches the habit of looking down before reversing"
   }
@@ -633,6 +635,36 @@
    "ground": "concrete",
    "verge": "grass",
    "character": "subtropical coastal heat and humidity off Biscayne Bay, afternoon thunderheads stacking through hurricane season, and a working seaport at the harbor's edge - authored by reputation, not measured"
+  },
+  "detroit": {
+   "sky": [
+    "#12161c",
+    "#282e34",
+    "#4e5458",
+    "#7a6a4a"
+   ],
+   "fog": {
+    "color": 2895918,
+    "mul": 1.15
+   },
+   "banks": 3,
+   "sun": {
+    "color": 15127720,
+    "i": 1.2
+   },
+   "hemi": {
+    "sky": 10200226,
+    "ground": 2367258,
+    "i": 1.0
+   },
+   "amb": {
+    "wind": 0.45,
+    "gulls": false,
+    "harbor": true
+   },
+   "ground": "concrete",
+   "verge": "gravel",
+   "character": "a Great Lakes river haze off the Detroit River, a working industrial waterfront across from Windsor, Ontario, and a century of automotive manufacturing standing behind the skyline - authored by reputation, not measured"
   }
  }
 }
