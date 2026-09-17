@@ -96,9 +96,26 @@ if locx.exists():
     assert m, 'Locator.X city table no longer lists Oakland'
     assert (float(m.group(1)), float(m.group(2))) == GEO['oakland'][:2], \
         'RECORDED Oakland coordinates drifted from the Locator.X table'
-    checked = 'cross-checked against the Locator.X checkout'
+    print('cross-check: Locator.X checkout present, RECORDED citations held')
 else:
-    checked = 'Locator.X checkout not present; citation not re-checked this build'
+    print('cross-check: Locator.X checkout not present, cross-check skipped')
+# The committed field is the CONTRACT, never a report of this machine: an
+# earlier build wrote "cross-checked against..." or "checkout not present..."
+# depending on whether the sibling checkout existed where it ran, so two
+# honest builders committed different bytes for the same registry. The
+# comparison itself runs above when the checkout is present, and again in
+# geo/test.mjs on every suite run, which prints an explicit skip line when
+# the checkout is absent. The build log says what happened; the bytes do not.
+checked = {
+    'contract': 'cross-checked against the Locator.X checkout when it is '
+                'present beside this repository',
+    'checkout': '../locator.x',
+    'held': ['the Oakland campus pair against src/app.js CITIES',
+             'every RECORDED anchor against the table it cites',
+             'the walk bands and classes against src/walk.js'],
+    'where': 'geo/build.py asserts at build time; geo/test.mjs repeats the '
+             'comparison on every run and says so when the checkout is absent',
+}
 
 # City and institution anchors near each campus — ALL RECORDED, copied
 # verbatim from Locator.X's committed tables (Apache-2.0, this foundation):
@@ -735,4 +752,4 @@ n_recorded = sum(len(v) for v in ANCHORS.values())
 n_authored = sum(len(v) for v in AUTHORED_ANCHORS.values())
 print(f"geo registry: {len(GEO)} campuses, {len(routes)} routes "
       f"({route_txt}), {n_recorded} RECORDED + {n_authored} AUTHORED "
-      f"anchors; {checked} (source stamp {stamp})")
+      f"anchors; {checked['contract']} (source stamp {stamp})")

@@ -9,7 +9,7 @@
  * may drift toward tokens, uploads or a private standard.
  */
 import { createHash } from 'node:crypto';
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 
 let n = 0;
 const ok = (m, c) => { if (!c) { console.error('FAIL', m); process.exit(1); } n++; console.log('  ok ', m); };
@@ -121,7 +121,7 @@ ok('three Unity avatar systems were reviewed from their own checkouts, each MIT,
       reg.avatar_systems_reviewed.some((x) => x.repo === r
         && x.licence === 'MIT' && x.holder && x.what.length > 40
         && /^(ADOPTED|NOT)/.test(x.verdict)))
-  && /cross-checked|carried as recorded/.test(reg.avatar_review_check));
+  && /when\s+TC_AVATAR_REVIEW names/.test(reg.avatar_review_check.contract));
 ok('the review adopts VRM only as a vocabulary, and bundles no third-party avatar',
   /ADOPTED IN PART/.test(reg.avatar_systems_reviewed
     .find((x) => x.repo === 'vrm-c/UniVRM').verdict)
@@ -209,7 +209,25 @@ ok('the Unity bridge is declared and stays honest: the org fork named, export-re
   && /export-ready/.test(reg.unity_bridge.status)
   && /No\s+trained agent/.test(reg.unity_bridge.status)
   && /RECORDED/.test(reg.unity_bridge.provenance)
-  && /checked|carried as recorded/.test(reg.unity_bridge.recorded_check));
+  && reg.unity_bridge.recorded_check.checkout === '../agifuturefoundation/ml-agents'
+  && /when it is\s+present beside this repository/.test(reg.unity_bridge.recorded_check.contract)
+  && /meta\/test\.mjs/.test(reg.unity_bridge.recorded_check.where));
+// the comparisons themselves, every run - the bytes never say whether they ran
+const mla = new URL('../../agifuturefoundation/ml-agents/', import.meta.url);
+if (existsSync(mla))
+  ok('cross-check ran: the ml-agents fork still carries com.unity.ml-agents and LICENSE.md',
+    existsSync(new URL('com.unity.ml-agents/', mla)) && existsSync(new URL('LICENSE.md', mla)));
+else ok('cross-check skipped: ml-agents checkout not present beside this repository (bridge claim not re-held this run)', true);
+const rev = process.env.TC_AVATAR_REVIEW;
+if (rev && existsSync(rev))
+  ok('cross-check ran: every reviewed avatar repository present under TC_AVATAR_REVIEW still ships an MIT licence',
+    reg.avatar_systems_reviewed.every((x) => {
+      const d = new URL(x.repo.split('/')[1] + '/', 'file://' + rev.replace(/\/?$/, '/'));
+      if (!existsSync(d)) return true;
+      const lic = readdirSync(d).find((f) => /^LICENSE/.test(f));
+      return !!lic && /MIT/.test(readFileSync(new URL(lic, d), 'utf8').slice(0, 400));
+    }));
+else ok('cross-check skipped: TC_AVATAR_REVIEW not set (avatar licences not re-held this run)', true);
 
 /* -------------------------------------------------------------- honesty --- */
 ok('the honesty line refuses the hype: files not a place, no tokens, no upload, graceful degrade',

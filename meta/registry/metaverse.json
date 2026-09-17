@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-17",
- "source_stamp": "ddadb50418707764",
+ "source_stamp": "3ed309af9745a2bb",
  "baseline": {
   "note": "built to the open interchange baseline. No private \"metaverse standard\" is referenced or claimed: what is listed under standards is implemented and tested, and what is listed under not_claimed is honestly not. The Open Metaverse Browser Initiative (OMBI) is an open initiative, but its spatial-fabric, SOM and RMAP shapes are unverified against any normative text this build could read, so they sit under not_claimed, not standards.",
   "standards": [
@@ -181,10 +181,25 @@
   "role": "the declared Unity-side consumer: exported tc-hall-<slug>.glb scenes and tc-avatar.glb rigs import into a Unity project as training environments and agent bodies for ML-Agents",
   "status": "export-ready: the .glb files open in Unity today. No trained agent, scene integration or benchmark is claimed until it exists in that repository.",
   "provenance": "RECORDED - the fork exists in the organization and carries the upstream toolkit; cross-checked against the checkout when present",
-  "recorded_check": "cross-checked against the ml-agents checkout"
+  "recorded_check": {
+   "contract": "cross-checked against the ml-agents checkout when it is present beside this repository",
+   "checkout": "../agifuturefoundation/ml-agents",
+   "held": [
+    "the fork carries com.unity.ml-agents",
+    "the fork ships LICENSE.md"
+   ],
+   "where": "meta/build.py asserts at build time; meta/test.mjs repeats the comparison on every run and says so when the checkout is absent"
+  }
  },
  "honesty": {
   "status": "a metaverse layer is file formats and honesty, not a place: exports are plain Khronos glTF of this bundle's own original meshes; imports never leave the device; no service, account, token or blockchain is involved, nothing here is an NFT. The single-file artifact build carries the exporter and loader inline and delivers exports as a viewer-confirmed .zip; only where neither door exists do the buttons degrade to a HUD line instead of failing."
  },
- "avatar_review_check": "checkouts not present; review carried as recorded"
+ "avatar_review_check": {
+  "contract": "cross-checked against the reviewed checkouts when TC_AVATAR_REVIEW names the directory that holds them",
+  "checkout": "$TC_AVATAR_REVIEW/<repo name>",
+  "held": [
+   "each reviewed repository still ships an MIT licence file"
+  ],
+  "where": "meta/build.py asserts at build time; meta/test.mjs repeats the comparison on every run and says so when the checkouts are absent"
+ }
 }

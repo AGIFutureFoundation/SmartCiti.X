@@ -1,4 +1,9 @@
 import pathlib
+import sys
+
+HERE = pathlib.Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE))
+from staleness import emit  # noqa: E402
 
 CSS = """
 /* dark-first: the bare :root carries the dark plate, light is the counterpart */
@@ -440,5 +445,4 @@ page = ('<title>Trade Craft Academy</title>\n'
         f'<style>{CSS}</style>\n{BODY}')
 # Written beside this script, not into the working directory: run from the
 # tree root it left a second, identical copy of the page there (defect 13's shape).
-(pathlib.Path(__file__).resolve().parent / 'trade_craft_landing.html').write_text(page)
-print("written:", len(page), "bytes")
+emit(HERE / 'trade_craft_landing.html', page)

@@ -18,7 +18,7 @@ for t in control/test.mjs control/test_graph.mjs control/test_hints.mjs \
          avatars/test.mjs parcels/test.mjs meta/test.mjs \
          agents/test.mjs world/test.mjs labels/test.mjs training/test.mjs \
          roadmap/test.mjs orbis/test.mjs restoration/test.mjs \
-         spatial/test.mjs; do
+         spatial/test.mjs web/test_3d.mjs; do
   out=$(node "$t" 2>&1); rc=$?
   n=$(printf '%s\n' "$out" | grep -c '^  ok ')
   total=$((total + n))
@@ -36,6 +36,12 @@ python3 console/check_console.py || fail=$((fail + 1))
 python3 wiki/build_wiki.py --check || fail=$((fail + 1))
 python3 web/build_page.py --check || fail=$((fail + 1))
 python3 web/build_dashboard.py --check || fail=$((fail + 1))
+python3 web/build_interactive_map.py --check || fail=$((fail + 1))
+python3 web/build_map.py --check || fail=$((fail + 1))
+python3 web/build_geomap.py --check || fail=$((fail + 1))
+python3 web/build_languages.py --check || fail=$((fail + 1))
+python3 web/build_landing.py --check || fail=$((fail + 1))
+python3 web/build_3d.py --check || fail=$((fail + 1))
 iout=$(python3 web/test_interiors.py 2>&1) || fail=$((fail + 1))
 printf '%s\n' "$iout" | tail -1
 total=$((total + $(printf '%s\n' "$iout" | grep -c '^  ok ')))

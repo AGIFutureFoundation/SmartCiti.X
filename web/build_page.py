@@ -1,6 +1,8 @@
 import markdown, re, pathlib, sys
 
 HERE = pathlib.Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE))
+from staleness import emit  # noqa: E402
 
 
 def _spec_path():
@@ -197,15 +199,7 @@ blockquote {{ margin:0 0 16px; padding:2px 0 2px 16px; border-left:3px solid var
 </div>
 """
 out = HERE / "smartcitix_trade_craft_academy.html"
-if "--check" in sys.argv:
-    # The same staleness guard the wiki and the dashboard carry: the spec
-    # page is a mirror, and a mirror that lags its source is a second truth.
-    if not out.exists() or out.read_text() != page:
-        print("STALE: web/smartcitix_trade_craft_academy.html")
-        print("       run: python3 web/build_page.py")
-        sys.exit(1)
-    print(f"spec page is current (v{SPEC_VERSION})")
-else:
-    out.write_text(page)
-    print(f"written: {len(page):,} bytes | spec v{SPEC_VERSION}")
+# The same staleness guard the wiki and the dashboard carry: the spec
+# page is a mirror, and a mirror that lags its source is a second truth.
+emit(out, page, f"spec v{SPEC_VERSION}")
 print("ok", len(page), "bytes;", "h2 ids:", list(slugs))

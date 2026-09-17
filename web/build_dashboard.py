@@ -37,6 +37,7 @@ def _pack_root():
 ROOT = _pack_root()
 sys.path.insert(0, str(ROOT / 'web'))
 from mapdata import HUES  # noqa: E402
+from staleness import emit  # noqa: E402
 manifest = json.load(open(ROOT / 'pack/manifest.json'))
 L = manifest['ledger']
 districts = json.load(open(ROOT / 'unions/registry/districts.json'))['districts']
@@ -306,13 +307,4 @@ document.querySelectorAll('[data-dl]').forEach((b) => b.addEventListener('click'
 '''
 
 out = HERE / 'trade_craft_dashboard.html'
-if '--check' in sys.argv:
-    if not out.exists() or out.read_text() != page:
-        print('STALE: web/trade_craft_dashboard.html')
-        print('       run: python3 web/build_dashboard.py')
-        sys.exit(1)
-    print('dashboard is current')
-else:
-    out.write_text(page)
-    print(f"written: {len(page):,} bytes | {len(built)}/{target} built, "
-          f"{len(cand)} candidates")
+emit(out, page, f"{len(built)}/{target} built, {len(cand)} candidates")

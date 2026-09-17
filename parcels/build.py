@@ -204,7 +204,6 @@ for ck, s in SOURCES.items():
 
 # Cross-check against the sibling checkout, exactly as geo/build.py does.
 locx = ROOT.parent / 'locator.x'
-checked = 'Locator.X checkout not present; citations carried as recorded'
 if locx.exists():
     for ck, s in SOURCES.items():
         src = (locx / s['cite_file']).read_text()
@@ -213,7 +212,21 @@ if locx.exists():
         rsrc = (locx / s['records_cite_file']).read_text()
         assert s['records_cite'] in rsrc, \
             f"{ck}: record count drifted from {s['records_cite_file']}"
-    checked = 'cross-checked against the Locator.X checkout'
+    print('cross-check: Locator.X checkout present, citations held')
+else:
+    print('cross-check: Locator.X checkout not present, cross-check skipped')
+# the committed field is the contract, byte-stable across machines (see
+# geo/build.py); parcels/test.mjs repeats the comparison on every run
+checked = {
+    'contract': 'cross-checked against the Locator.X checkout when it is '
+                'present beside this repository',
+    'checkout': '../locator.x',
+    'held': ['every authority citation against the Locator.X builder it '
+             'was recorded from', 'every record count against the same'],
+    'where': 'parcels/build.py asserts at build time; parcels/test.mjs '
+             'repeats the comparison on every run and says so when the '
+             'checkout is absent',
+}
 
 stamp = hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest()[:16]
 
@@ -237,4 +250,4 @@ OUT.mkdir(exist_ok=True)
 tot = sum({s['records'] for s in SOURCES.values()})
 print(f"city records: {len(SOURCES)} authorities ({tot:,} records published "
       f"upstream), 1 public-domain imagery service, 1 elevation service "
-      f"(single-point, on demand); {checked} (source stamp {stamp})")
+      f"(single-point, on demand); {checked['contract']} (source stamp {stamp})")

@@ -35,6 +35,7 @@ ROOT = _pack_root()
 sys.path.insert(0, str(ROOT / 'web'))
 from interiors import build as build_interiors  # noqa: E402
 from mapdata import strand_modules, PIPELINE_JS, HUES, make_codes  # noqa: E402
+from staleness import emit  # noqa: E402
 
 manifest = json.load(open(ROOT / 'pack/manifest.json'))
 L = manifest['ledger']
@@ -426,7 +427,5 @@ if (params.get('hall') && D.halls.some(h => h.slug === params.get('hall')))
 
 page = page.replace('__DATA__', DATA).replace('__PIPELINE_JS__', PIPELINE_JS)
 out = HERE / 'trade_craft_interactive.html'
-out.write_text(page)
 n_st = stations_reg['count']
-print(f"written: {len(page):,} bytes | {L['halls']} halls | {n_st} stations | "
-      f"{len(I18N)} locales")
+emit(out, page, f"{L['halls']} halls | {n_st} stations | {len(I18N)} locales")

@@ -10,7 +10,7 @@
  * the fetched records as this bundle's own.
  */
 import { createHash } from 'node:crypto';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 
 let n = 0;
 const ok = (m, c) => { if (!c) { console.error('FAIL', m); process.exit(1); } n++; console.log('  ok ', m); };
@@ -55,10 +55,20 @@ ok('the Bay authorities are the two county rolls: the SF assessor and Alameda Co
   /DataSF/.test(reg.sources['treasure-island'].authority)
   && /wv5m-vpq2/.test(reg.sources['treasure-island'].cite)
   && /Alameda County Assessor/.test(reg.sources.oakland.authority));
-ok('every citation names the Locator.X builder it was recorded from, and the check ran',
+ok('every citation names the Locator.X builder it was recorded from, and recorded_check is the machine-independent contract',
   Object.values(reg.sources).every((s) => /\.py$/.test(s.cite_file)
     && /\.py$/.test(s.records_cite_file) && s.cite.length > 5)
-  && /cross-checked|carried as recorded/.test(reg.recorded_check));
+  && reg.recorded_check.checkout === '../locator.x'
+  && /when it is\s+present beside this repository/.test(reg.recorded_check.contract)
+  && /parcels\/test\.mjs/.test(reg.recorded_check.where));
+// the comparison itself, every run - the bytes above never say whether it ran
+const locx = new URL('../../locator.x/', import.meta.url);
+if (existsSync(locx)) {
+  ok('cross-check ran: every authority citation and record count is still in the Locator.X builder it cites',
+    Object.values(reg.sources).every((s) =>
+      readFileSync(new URL(s.cite_file, locx), 'utf8').includes(s.cite)
+      && readFileSync(new URL(s.records_cite_file, locx), 'utf8').includes(s.records_cite)));
+} else ok('cross-check skipped: Locator.X checkout not present beside this repository (citations not re-held this run)', true);
 
 /* -------------------------------------------------------------- query --- */
 ok('every query is https, and asks for a bounded page of records rather than a whole city',

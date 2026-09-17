@@ -32,7 +32,7 @@ The glTF exports open directly in Unity, Sketchfab, Blender, Godot, three.js.
 ## The Unity avatar systems, reviewed
 
 Three MIT-licensed Unity avatar systems were read from their own
-checkouts before choosing (checkouts not present; review carried as recorded):
+checkouts before choosing (cross-checked against the reviewed checkouts when TC_AVATAR_REVIEW names the directory that holds them):
 
 | Repository | Licence | What it is | Verdict |
 |---|---|---|---|
@@ -83,7 +83,7 @@ learner-local only: a .glb or .gltf chosen from the device renders on the locker
 [`AGIFutureFoundation/ml-agents`](https://github.com/AGIFutureFoundation/ml-agents)
 — Unity ML-Agents Toolkit (Unity Technologies, Apache-2.0), carried as com.unity.ml-agents. the declared Unity-side consumer: exported tc-hall-<slug>.glb scenes and tc-avatar.glb rigs import into a Unity project as training environments and agent bodies for ML-Agents.
 **Status:** export-ready: the .glb files open in Unity today. No trained agent, scene integration or benchmark is claimed until it exists in that repository.
-(cross-checked against the ml-agents checkout.)
+(cross-checked against the ml-agents checkout when it is present beside this repository.)
 
 ## What this layer is not
 
