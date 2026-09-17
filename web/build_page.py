@@ -1,4 +1,4 @@
-import markdown, re, pathlib
+import markdown, re, pathlib, sys
 
 HERE = pathlib.Path(__file__).resolve().parent
 
@@ -13,7 +13,11 @@ def _spec_path():
     raise FileNotFoundError("SmartCitiX_TradeCraft_Academy_Spec.md not found above " + str(HERE))
 
 
-md = _spec_path().read_text()
+raw = _spec_path().read_text()
+# The hero's version is read from the spec's own header, never typed here:
+# the eyebrow carried "v2.6" through three spec versions and nothing noticed.
+SPEC_VERSION = re.search(r"\*\*Version:\*\*\s*([\d.]+)", raw).group(1)
+md = raw
 # Drop the md H1 + meta lines (the HTML header replaces them)
 md = md.split("---", 1)[1].lstrip("-\n")  # everything after first hr
 body = markdown.markdown(md, extensions=["tables", "fenced_code"])
@@ -178,7 +182,7 @@ blockquote {{ margin:0 0 16px; padding:2px 0 2px 16px; border-left:3px solid var
 <div class="wrap">
 <header class="hero">
   <div class="hero-text">
-    <p class="eyebrow">Protocol Specification · ACP Suite · v2.6</p>
+    <p class="eyebrow">Protocol Specification · ACP Suite · v{SPEC_VERSION}</p>
     <h1>SmartCiti.X <span class="colon">:</span> Trade Craft Academy</h1>
     <p class="sub">Adaptive Stack · powered by AGI Corp</p>
     <p class="standfirst">The full adaptive loop of the Academy — telemetry, learner profiling,
@@ -192,5 +196,16 @@ blockquote {{ margin:0 0 16px; padding:2px 0 2px 16px; border-left:3px solid var
 {body}
 </div>
 """
-(HERE / "smartcitix_trade_craft_academy.html").write_text(page)
+out = HERE / "smartcitix_trade_craft_academy.html"
+if "--check" in sys.argv:
+    # The same staleness guard the wiki and the dashboard carry: the spec
+    # page is a mirror, and a mirror that lags its source is a second truth.
+    if not out.exists() or out.read_text() != page:
+        print("STALE: web/smartcitix_trade_craft_academy.html")
+        print("       run: python3 web/build_page.py")
+        sys.exit(1)
+    print(f"spec page is current (v{SPEC_VERSION})")
+else:
+    out.write_text(page)
+    print(f"written: {len(page):,} bytes | spec v{SPEC_VERSION}")
 print("ok", len(page), "bytes;", "h2 ids:", list(slugs))

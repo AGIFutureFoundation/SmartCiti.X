@@ -76,6 +76,17 @@ export class Session {
       this.audit.append({ actor: 'assessment', action: 'gate.decision', why: p.why,
                           after: { pass: p.pass }, learner: this.learnerId, skill: p.skill });
     });
+    // How much help was allowed is a fact about the learner's record, the
+    // same as a dial move or a gate decision - and it was the one topic with
+    // no audit subscriber (found by the security pass). A refusal is logged
+    // as such, so the record of restraint is as visible as the record of help.
+    this.bus.subscribe('hint.served', 'audit', (m) => {
+      const p = m.payload;
+      this.audit.append({ actor: 'hint_engine',
+                          action: p.refused ? 'hint.refused' : 'hint.served', why: p.why,
+                          after: { asked: p.asked, granted: p.granted, refused: p.refused },
+                          learner: this.learnerId, skill: p.skill });
+    });
     // A rejected telemetry event is a client bug that must be visible, not a
     // silent no-op — the fuzz pass showed how quietly bad input can vanish.
     this.bus.subscribe('profile.updated', 'audit', (m) => {

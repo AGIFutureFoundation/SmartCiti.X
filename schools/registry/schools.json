@@ -1,9 +1,9 @@
 {
  "pack": "smartcitix-trade-craft-academy-schools",
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
- "pack_version": "3.5.0",
+ "pack_version": "3.2.0",
  "built": "2026-09-13",
- "source_stamp": "d89b682210a0dffb",
+ "source_stamp": "691a8eb593248b6e",
  "honesty": {
   "districts": "district names are public-record identities only; every record is a PROPOSED partner - no district has reviewed or agreed, and no agreement exists",
   "certification": "nothing in the school program certifies equipment operation; the assessment gates demand unaided verification and simulator hours never count toward certification"

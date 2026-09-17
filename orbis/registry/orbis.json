@@ -1,9 +1,9 @@
 {
  "pack": "smartcitix-trade-craft-academy-orbis-prompts",
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
- "pack_version": "3.4.0",
+ "pack_version": "3.2.0",
  "built": "2026-09-14",
- "source_stamp": "273cc13f30b4c469",
+ "source_stamp": "711277f8deb30c84",
  "model": {
   "id": "reactor/visko-orbis-stable",
   "provider": "Reactor (public Visko Orbis Stable API)",

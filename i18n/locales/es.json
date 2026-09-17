@@ -6,7 +6,7 @@
  "translation_status": "machine-drafted, pending native review",
  "strings": {
   "tagline": "Formación gamificada para potenciar la integración entre robots y personas",
-  "overview": "Una red de 111 salas sindicales de formación en un solo campus, todas ejecutando la misma suite de protocolos adaptativos: un regulador de dificultad que mantiene la zona de desarrollo próximo, un grafo de habilidades que secuencia la práctica, puertas de evaluación que solo certifican trabajo sin ayuda y un tejido de mentores que desvanece su propio andamiaje.",
+  "overview": "Una red de {halls} salas sindicales de formación en {campuses} campus, todas ejecutando la misma suite de protocolos adaptativos: un regulador de dificultad que mantiene la zona de desarrollo próximo, un grafo de habilidades que secuencia la práctica, puertas de evaluación que solo certifican trabajo sin ayuda y un tejido de mentores que desvanece su propio andamiaje.",
   "nav.campus": "Mapa del campus",
   "nav.spec": "Especificación del protocolo",
   "nav.console": "Consola adaptativa",

@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-11",
- "source_stamp": "a5afddf010373073",
+ "source_stamp": "bcdfdf33cb612250",
  "contract": "source contract, not a data copy: no parcel, imagery or elevation record is stored in this repository. The maps request them from the authority in the learner's own browser at view time, render what comes back, and fall back to the SCHEMATIC layers - or say the lookup failed - when the request fails.",
  "recorded_check": "cross-checked against the Locator.X checkout",
  "honesty": {

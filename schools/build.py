@@ -31,7 +31,9 @@ import pathlib
 HERE = pathlib.Path(__file__).resolve().parent
 ROOT = HERE.parent
 
-PACK_VERSION = "3.5.0"
+# One bundle version, read from the manifest rather than typed here (this
+# pack had drifted to 3.5.0 while ROADMAP said 3.2.0 was unified everywhere).
+PACK_VERSION = json.load(open(ROOT / 'pack/manifest.json'))['pack_version']
 BUILT = "2026-09-13"
 
 # ---------------------------------------------------------------- inputs ---

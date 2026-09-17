@@ -6,7 +6,7 @@
  "translation_status": "machine-drafted, pending native review",
  "strings": {
   "tagline": "Spielerisches Training für eine bessere Integration von Robotern und Menschen",
-  "overview": "Ein Netz von 111 gewerkschaftlichen Ausbildungshallen auf einem Campus, die alle dieselbe adaptive Protokollsuite ausführen: ein Schwierigkeitsregler, der die Zone der nächsten Entwicklung hält, ein Fähigkeitsgraph, der die Übung sequenziert, Prüfungstore, die nur eigenständige Arbeit zertifizieren, und ein Mentorengeflecht, das sein eigenes Gerüst ausblendet.",
+  "overview": "Ein Netz von {halls} gewerkschaftlichen Ausbildungshallen an {campuses} Campus-Standorten, die alle dieselbe adaptive Protokollsuite ausführen: ein Schwierigkeitsregler, der die Zone der nächsten Entwicklung hält, ein Fähigkeitsgraph, der die Übung sequenziert, Prüfungstore, die nur eigenständige Arbeit zertifizieren, und ein Mentorengeflecht, das sein eigenes Gerüst ausblendet.",
   "nav.campus": "Campusplan",
   "nav.spec": "Protokollspezifikation",
   "nav.console": "Adaptive Konsole",

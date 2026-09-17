@@ -1,9 +1,9 @@
 {
  "pack": "smartcitix-trade-craft-academy-bay-restoration",
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
- "pack_version": "1.0.0",
+ "pack_version": "3.2.0",
  "built": "2026-09-17",
- "source_stamp": "e4505afdab940a20",
+ "source_stamp": "159244138d6b6217",
  "honesty": {
   "not_affiliated": "SmartCiti.X : Trade Craft Academy is not affiliated with, and does not certify, endorse or claim to fund, any site or organization named in this pack. Every site and program below is real and independently run by its own listed organization - this extends explicitly to Hunters Point Naval Shipyard: SmartCiti.X has no role in the actual cleanup, the litigation over it, or the Marie Harrison Bayview Air Monitoring Project; and to Former Naval Station Treasure Island: SmartCiti.X has no role in the Navy cleanup, the Restoration Advisory Board, the property transfers to TIDA, or One Treasure Island's Construction Training Program.",
   "environmental_monitoring_category": "the environmental-monitoring category is framed differently on purpose: it is not habitat-restoration field work, so it never renders as a walkable ground scene - only as a located, clickable marker with a flat facts-and-citations panel. It holds two sites: Hunters Point Naval Shipyard, an NPL-listed Superfund site with open litigation over it, and Former Naval Station Treasure Island (NSTI), a Navy BRAC/CERCLA cleanup that is NOT NPL-listed (its EPA Superfund ID is an assessment record; the NPL-listed \"Treasure Island Naval Station-Hunters Point Annex\" is the Hunters Point site, a different place). Its facts are a snapshot of public record as of September 2026 (Hunters Point typed 14 September, NSTI 17 September), not a permanent claim - active federal cleanups, unresolved radiological criteria and litigation over them will keep changing, and this pack has no live feed into any of it. NSTI is the island this bundle's own Treasure Island campus scene sits on: that scene is a schematic training campus at the island's derived centroid and stays walkable; the NSTI entry is the real-world record of the ground it stands on, and is not.",

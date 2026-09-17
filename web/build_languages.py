@@ -24,6 +24,7 @@ ROOT = _pack_root()
 manifest = json.load(open(ROOT / 'pack/manifest.json'))
 L = manifest['ledger']
 districts_reg = json.load(open(ROOT / 'unions/registry/districts.json'))['districts']
+campuses_reg = json.load(open(ROOT / 'unions/registry/campuses.json'))['campuses']
 
 LOCALE_DIR = ROOT / 'i18n' / 'locales'
 locales = {}
@@ -67,7 +68,7 @@ def section(code):
     return f'''<section class="loc" id="loc-{code}" lang="{code}" dir="{c["dir"]}" hidden>
 <p class="tagline">{s["tagline"]}</p>
 <div class="figs">{figures}</div>
-<p class="overview">{s["overview"]}</p>
+<p class="overview">{fmt(s["overview"], halls=F(L["halls"]), campuses=len(campuses_reg))}</p>
 <table class="districts"><tbody>{rows}</tbody></table>
 <p class="ladder"><b>{c["tiers"]["fundamentals"]} → {c["tiers"]["applied"]} → {c["tiers"]["mastery"]}</b><br>{ladder}</p>
 <ul class="honesty">{honesty}</ul>

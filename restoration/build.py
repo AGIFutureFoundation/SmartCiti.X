@@ -72,7 +72,9 @@ import pathlib
 HERE = pathlib.Path(__file__).resolve().parent
 ROOT = HERE.parent
 
-PACK_VERSION = "1.0.0"
+# One bundle version, read from the manifest rather than typed here (this
+# pack had drifted to 1.0.0 while ROADMAP said 3.2.0 was unified everywhere).
+PACK_VERSION = json.load(open(ROOT / 'pack/manifest.json'))['pack_version']
 BUILT = "2026-09-17"
 
 # ---------------------------------------------------------------- sites ---

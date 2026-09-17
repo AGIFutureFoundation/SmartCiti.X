@@ -6,7 +6,7 @@
  "translation_status": "source language",
  "strings": {
   "tagline": "Gamified training to enhance robotic and human integrations",
-  "overview": "A network of 111 union training halls on one campus, each running the same adaptive protocol suite: a difficulty dial that holds the zone of proximal development, a skill graph that sequences practice, assessment gates that certify only unaided work, and a mentor fabric that fades its own scaffolding.",
+  "overview": "A network of {halls} union training halls across {campuses} campuses, each running the same adaptive protocol suite: a difficulty dial that holds the zone of proximal development, a skill graph that sequences practice, assessment gates that certify only unaided work, and a mentor fabric that fades its own scaffolding.",
   "nav.campus": "Campus map",
   "nav.spec": "Protocol spec",
   "nav.console": "Adaptive console",

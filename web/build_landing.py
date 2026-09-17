@@ -438,5 +438,7 @@ page = ('<title>Trade Craft Academy</title>\n'
         'family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600;700'
         '&family=IBM+Plex+Mono:wght@400;600&display=swap">\n'
         f'<style>{CSS}</style>\n{BODY}')
-pathlib.Path('trade_craft_landing.html').write_text(page)
+# Written beside this script, not into the working directory: run from the
+# tree root it left a second, identical copy of the page there (defect 13's shape).
+(pathlib.Path(__file__).resolve().parent / 'trade_craft_landing.html').write_text(page)
 print("written:", len(page), "bytes")

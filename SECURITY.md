@@ -99,7 +99,7 @@ empty by design and the criterion is not met.
 |---|---|---|---|
 | 1 | **Authentication itself** — token issuance, MFA, session management and rotation | open — needs external infrastructure: an identity provider, not yet selected. This pack is the authorisation layer only | |
 | 2 | **Transport and storage** — TLS, encryption at rest, key management | open — needs external infrastructure: the packs are in-process; a deployment must add all three | |
-| 3 | **Persistence and backup** — database, backup/restore, tested recovery | open — needs external infrastructure: nothing in this tree survives a restart, and an audit log that does not survive a restart is not an audit log | |
+| 3 | **Persistence and backup** — database, backup/restore, tested recovery | open — needs external infrastructure: nothing in this tree survives a restart, and an audit log that does not survive a restart is not an audit log. Spec §25 describes the append-only journal-and-snapshot store this bundle was written against; it is specified, not present — no `store/` pack exists in this tree, and §25 says so in its own status note | |
 | 4 | **Secrets management** and a rotation policy | open — needs external infrastructure | |
 | 5a | **SBOM generation** | built and tested (`security/build_sbom.py` → `security/registry/sbom.cdx.json`; `security/test_sbom.mjs` verifies every hash, version and licence claim against `web/vendor/` on every run) | |
 | 5b | **Dependency and container scanning in CI** | open — needs maintainer approval: no CI workflow was changed; it requires a workflow edit the maintainers must approve | |

@@ -50,6 +50,14 @@ training = json.load(open(ROOT / 'training/registry/training.json'))
 roadmap = json.load(open(ROOT / 'roadmap/registry/roadmap.json'))
 orbis = json.load(open(ROOT / 'orbis/registry/orbis.json'))
 avatars = json.load(open(ROOT / 'avatars/registry/avatars.json'))
+schools = json.load(open(ROOT / 'schools/registry/schools.json'))
+# The locker's own decomposition: standard sections and their options, plus
+# the one crew section seating every hall. README had typed `284 options`;
+# the registry sums to 289 + 111, and only a read can stay right.
+av_std = [s for s in avatars['sections'] if s['kind'] != 'crew']
+av_crew = next(s for s in avatars['sections'] if s['kind'] == 'crew')
+av_std_options = sum(len(s['options']) for s in av_std)
+av_options = av_std_options + len(av_crew['options'])
 meta = json.load(open(ROOT / 'meta/registry/metaverse.json'))
 restoration = json.load(open(ROOT / 'restoration/registry/restoration.json'))
 geopose_path = ROOT / 'spatial/registry/geopose.json'
@@ -86,6 +94,10 @@ STATS = [
      'Orbis module prompts / real runners'),
     (f"{len(avatars['sections'])} / {len(avatars['tradeapes']['apes'])}",
      'avatar locker sections / TradeApes'),
+    (f"{len(av_std)} / {av_std_options} + {len(av_crew['options'])} = {av_options}",
+     'standard locker sections / options + crew looks = avatar options'),
+    (f"{len(schools['districts'])} / {len(schools['units'])}",
+     'proposed school districts / live flipped units'),
     (str(len(meta['avatar_systems_reviewed'])), 'Unity avatar systems reviewed'),
     (f"{len(restoration['sites'])} / {len(restoration['tracks'])}",
      'real Bay Restoration sites / field-skill tracks'),
