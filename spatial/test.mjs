@@ -10,9 +10,10 @@
  * SOM and RMAP are NOT claimed: the files may be shaped after the deck,
  * but meta/ must list them under not_claimed with a reason, and the SOM's
  * one real idea - per-branch ownership - must hold: no external origin's
- * branch may carry anything this fabric serves. Hunters Point must arrive
- * still walkable:false, and the bay-wide Spartina program must have no
- * pose at all, with the reason stated.
+ * branch may carry anything this fabric serves. Hunters Point and Former
+ * Naval Station Treasure Island must arrive still walkable:false, and the
+ * bay-wide Spartina program must have no pose at all, with the reason
+ * stated.
  */
 import { createHash } from 'node:crypto';
 import { existsSync, readFileSync } from 'node:fs';
@@ -117,6 +118,19 @@ const hp = refs.get('restoration-site:hunters-point-shipyard');
 ok('Hunters Point is posed, and arrives still walkable:false with its real reason carried through',
   hp && hp.site.walkable === false && /litigated federal cleanup site/.test(hp.site.walkable_reason)
   && hp.site.category === 'environmental-monitoring');
+const ti = refs.get('restoration-site:treasure-island-nsti');
+const tiSrc = resto.sites.find((s) => s.id === 'treasure-island-nsti');
+ok('Former Naval Station Treasure Island is posed at the registry\'s own AUTHORED pin, arrives still walkable:false with its reason, and is a different pose from the DERIVED Treasure Island campus centroid',
+  ti && ti.site.walkable === false && /unresolved radiological criteria/.test(ti.site.walkable_reason)
+  && ti.site.category === 'environmental-monitoring' && ti.subject.campus === 'treasure-island'
+  && ti.geopose.position.lat === tiSrc.lat && ti.geopose.position.lon === tiSrc.lng
+  && ti.provenance.position_horizontal === 'AUTHORED'
+  && (() => {
+    const c = byKind('campus').find((p) => p.subject.id === 'treasure-island');
+    return c && c.provenance.position_horizontal === 'DERIVED'
+      && (c.geopose.position.lat !== ti.geopose.position.lat
+          || c.geopose.position.lon !== ti.geopose.position.lon);
+  })());
 ok('the bay-wide Spartina program has no pose at all, and the reason is stated: its registry pins no coordinate',
   !refs.has('restoration-site:spartina-removal')
   && gp.unposed.length === 1 && gp.unposed[0].subject.id === 'spartina-removal'
@@ -192,6 +206,13 @@ ok('the Navy / EPA / DTSC origin at Hunters Point carries the not-affiliated lin
   /not\s+affiliated with/.test(fab.external_origins.find((e) =>
     e.geoposes.includes('restoration-site:hunters-point-shipyard')).note)
   && !fab.external_origins.some((e) => unions.some((u) => u.name === e.operator)));
+ok('the Navy / DTSC / CDPH origin at Former Naval Station Treasure Island is its own cleanup-and-oversight origin, serving nothing through this fabric, carrying the not-affiliated line',
+  (() => {
+    const e = fab.external_origins.find((x) => x.geoposes.includes('restoration-site:treasure-island-nsti'));
+    return e && e.kind === 'cleanup-and-oversight-agencies' && e.served_by_this_fabric === false
+      && /not\s+affiliated with/.test(e.note) && /Restoration Advisory Board/.test(e.note)
+      && !e.geoposes.includes('restoration-site:hunters-point-shipyard');
+  })());
 
 /* ------------------------------------------------------------------- SOM --- */
 const [mine, ...ext] = som.root.branches;

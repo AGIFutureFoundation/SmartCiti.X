@@ -135,7 +135,7 @@ content graph and details:
 | **Spatial fabric** (`spatial/registry/`) | The Academy as a self-hosted OMBI-sense spatial fabric: {geopose["counts"]["total"]} OGC GeoPose 1.0 poses ({geopose["counts"]["campuses"]} campuses, {geopose["counts"]["anchors"]} anchors, {geopose["counts"]["restoration_sites"]} restoration sites; height and heading zero-with-UNKNOWN), a fabric manifest and a SOM-shaped scene graph with {len(som["root"]["branches"]) - 1} external origins — GeoPose claimed, the OMBI shapes honestly not | [Spatial-Fabric](Spatial-Fabric.md) |
 | **City records** (`parcels/registry/parcels.json`) | The source contract for the three campus regions\' own parcel and building-footprint authorities ({sum(set(s["records"] for s in parcels["sources"].values())):,} records published upstream), plus the public-domain federal orthoimagery both maps draw | [City-Records](City-Records.md) |
 | **Network geomap** (`web/trade_craft_geomap.html`) | The geo registry on a real WGS84 map (MapLibre, no basemap tiles): campuses, {n_anchors} anchors ({n_rec} RECORDED, {n_auth} AUTHORED), great-circle routes, city frames at their own provenance | [Campus-Map](Campus-Map.md) |
-| **Bay Restoration** (`restoration/registry/restoration.json`) | {len(restoration['sites'])} real, independently-run San Francisco Bay sites across two categories ({sum(1 for s in restoration['sites'] if s['category'] == 'habitat-restoration')} habitat-restoration, {sum(1 for s in restoration['sites'] if s['category'] == 'environmental-monitoring')} environmental-monitoring — Hunters Point Naval Shipyard, a real, litigated federal Superfund site, pinned but never walkable) — {sum(1 for s in restoration['sites'] if s['pin'])} mapped, {sum(1 for s in restoration['sites'] if s['walkable'])} walkable — bridged to {len(restoration['tracks'])} field-skill tracks bound to real skill_ids already in this bundle's graph — not a SmartCiti.X program | [Bay-Restoration](Bay-Restoration.md) |
+| **Bay Restoration** (`restoration/registry/restoration.json`) | {len(restoration['sites'])} real, independently-run San Francisco Bay sites across two categories ({sum(1 for s in restoration['sites'] if s['category'] == 'habitat-restoration')} habitat-restoration, {sum(1 for s in restoration['sites'] if s['category'] == 'environmental-monitoring')} environmental-monitoring — Hunters Point Naval Shipyard, a real, litigated federal Superfund site, and Former Naval Station Treasure Island, a real Navy BRAC cleanup that is not NPL-listed, both pinned but never walkable) — {sum(1 for s in restoration['sites'] if s['pin'])} mapped, {sum(1 for s in restoration['sites'] if s['walkable'])} walkable — bridged to {len(restoration['tracks'])} field-skill tracks bound to real skill_ids already in this bundle's graph — not a SmartCiti.X program | [Bay-Restoration](Bay-Restoration.md) |
 
 ## The campus at a glance
 
@@ -1364,8 +1364,16 @@ def page_restoration():
         f"| **{t['title']}** | {t['what']} | "
         f"{', '.join(f'`{sk}`' for sk in t['skills'])} |"
         for t in restoration['tracks'])
-    hp = next(s for s in restoration['sites'] if s['id'] == 'hunters-point-shipyard')
-    hp_facts = '\n'.join(f"- {f['text']} [source]({f['source_url']})" for f in hp['facts'])
+    env_sections = '\n\n'.join(
+        f"### {s['name']} — a September 2026 snapshot, not a live feed\n\n"
+        f"This is one of the {env_n} environmental-monitoring sites above, and it is deliberately\n"
+        f"**not** rendered as a walkable ground scene — {s['walkable_reason']}. It\n"
+        f"is still a real, located, clickable marker on the network geomap and in the\n"
+        f"3D app's flat Bay Restoration panel."
+        + (f"\n\n**{s['disambiguation']}**\n\n" if s['disambiguation'] else ' ')
+        + "Its facts, each with its own real\ncitation:\n\n"
+        + '\n'.join(f"- {f['text']} [source]({f['source_url']})" for f in s['facts'])
+        for s in restoration['sites'] if s['category'] == 'environmental-monitoring')
     return f"""# Bay Restoration
 
 {restoration['honesty']['not_affiliated']}
@@ -1384,15 +1392,7 @@ def page_restoration():
 
 {restoration['honesty']['campus_grouping']}
 
-### Hunters Point Naval Shipyard — a September 2026 snapshot, not a live feed
-
-This is the one environmental-monitoring site above, and it is deliberately
-**not** rendered as a walkable ground scene — {hp['walkable_reason']}. It
-is still a real, located, clickable marker on the network geomap and in the
-3D app's flat Bay Restoration panel. Its facts, each with its own real
-citation:
-
-{hp_facts}
+{env_sections}
 
 ## Field-skill tracks — {len(restoration['tracks'])}, bound to real skill_ids
 

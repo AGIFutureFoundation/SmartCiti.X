@@ -30,7 +30,8 @@ honesty line in exactly two places:
   no DID is minted.
 
 Every other operator this fabric points at - a restoration site's own
-organization, the Navy/EPA/DTSC at Hunters Point, a port authority, a
+organization, the Navy/EPA/DTSC at Hunters Point, the Navy/DTSC/CDPH at
+Former Naval Station Treasure Island, a port authority, a
 university, a neighbouring city - is a SEPARATE ORIGIN: named, located,
 and never content this fabric serves for them. That is the SOM's own
 per-branch-ownership idea, and it is the same "not affiliated" line every
@@ -129,6 +130,8 @@ HONESTY = {
     'external_origins': 'every other operator this fabric points at - a '
                         'restoration site\'s own organization, the US Navy, '
                         'EPA Region 9 and California DTSC at Hunters Point, '
+                        'the US Navy, California DTSC and CDPH at Former '
+                        'Naval Station Treasure Island, '
                         'a port authority, a university, a museum, a '
                         'neighbouring city - is a separate origin: named, '
                         'located by its own pose, and never content this '
@@ -256,7 +259,7 @@ REF = {p['subject']['ref']: p for p in poses}
 assert len(REF) == len(poses), 'a pose ref collides'
 assert n_campuses == len(campuses_reg) == 10
 assert n_anchors == sum(len(v) for v in geo['anchors'].values()) == 47
-assert n_sites == sum(1 for s in resto['sites'] if s['pin']) == 9
+assert n_sites == sum(1 for s in resto['sites'] if s['pin']) == 10
 assert len(unposed) == 1
 
 # every pose equals its source, exactly, and every zero is labelled

@@ -46,7 +46,7 @@ provenance word and source string copied from the registry that owns it:
 }
 ```
 
-### The 66 poses — 10 campuses, 47 anchors, 9 restoration sites
+### The 67 poses — 10 campuses, 47 anchors, 10 restoration sites
 
 | Kind | Subject | Campus | lat, lon | Horizontal provenance | Walkable |
 |---|---|---|---|---|---|
@@ -116,6 +116,7 @@ provenance word and source string copied from the registry that owns it:
 | Restoration site | American Canyon Wetlands Restoration Plan | Oakland Waterfront Campus | 38.171, -122.26 | AUTHORED | yes |
 | Restoration site | Restoring Wetland-Upland Transition Zone Habitat in the North Bay with STRAW | Oakland Waterfront Campus | 38.05, -122.53 | AUTHORED | yes |
 | Restoration site | Hunters Point Naval Shipyard — EPA Superfund Site (Bayview-Hunters Point) | Treasure Island Campus | 37.728, -122.373 | AUTHORED | no — an actively litigated federal cleanup site is not something this platform can responsibly present as a place to stroll |
+| Restoration site | Former Naval Station Treasure Island (NSTI) — Navy BRAC cleanup site (Treasure Island) | Treasure Island Campus | 37.824, -122.371 | AUTHORED | no — an active federal cleanup site with unresolved radiological criteria is not something this platform can responsibly present as a place to stroll |
 
 ### Honestly unposed — 1
 
@@ -143,7 +144,7 @@ count, atmosphere and walkable city layer),
 `avatar-glb` and `hall-glb` exports, `glTF 2.0 binary`, produced on
 demand by the learner's own browser — never files sitting on disk),
 23 embedded services and
-56 external origins.
+57 external origins.
 
 this fabric is static files a plain web server serves next to the site - the deck's own "publish 3D content like a website" point. No RMAP endpoint, no server, no WebSocket, no fetch at build time, no DID minted: the identity field is honestly null. Every service listed runs in-page with no network, and every anchored .glb is produced on demand by the learner's browser, not a file sitting on disk.
 
@@ -172,19 +173,19 @@ this fabric is static files a plain web server serves next to the site - the dec
 | `crib:industry` | toolroom-crib | Heavy-industry tool crib | `campus:oakland` | `tools/registry/toolcribs.json` |
 | `crib:transport` | toolroom-crib | Transport & mobility tool crib | `campus:oakland` | `tools/registry/toolcribs.json` |
 | `crib:control` | toolroom-crib | Survey, safety & environment tool crib | `campus:new-orleans` | `tools/registry/toolcribs.json` |
-| `restoration-panel` | panel | Bay Restoration panel - 10 sites, 3 field-skill tracks | `campus:treasure-island` | `restoration/registry/restoration.json` |
+| `restoration-panel` | panel | Bay Restoration panel - 11 sites, 3 field-skill tracks | `campus:treasure-island` | `restoration/registry/restoration.json` |
 | `training-recorder` | recorder | training-data recorder - 3 episode kinds, device-local under tc-training | `campus:treasure-island` | `training/registry/training.json` |
 
 ## Other operators are other origins
 
-every other operator this fabric points at - a restoration site's own organization, the US Navy, EPA Region 9 and California DTSC at Hunters Point, a port authority, a university, a museum, a neighbouring city - is a separate origin: named, located by its own pose, and never content this fabric serves for them (served_by_this_fabric is false on every one). That is the SOM's per-branch ownership idea, and it is the same "not affiliated" line restoration/ and geo/ already hold. The 111 union halls' real organizations are deliberately NOT listed as origins: the halls here are SCHEMATIC training buildings named after a craft, not a union's premises.
+every other operator this fabric points at - a restoration site's own organization, the US Navy, EPA Region 9 and California DTSC at Hunters Point, the US Navy, California DTSC and CDPH at Former Naval Station Treasure Island, a port authority, a university, a museum, a neighbouring city - is a separate origin: named, located by its own pose, and never content this fabric serves for them (served_by_this_fabric is false on every one). That is the SOM's per-branch ownership idea, and it is the same "not affiliated" line restoration/ and geo/ already hold. The 111 union halls' real organizations are deliberately NOT listed as origins: the halls here are SCHEMATIC training buildings named after a craft, not a union's premises.
 
 **The SOM-shaped scene graph** (`spatial/registry/som.json`) has one
 branch per origin: this fabric's own branch (owner
 *SmartCiti.X : Trade Craft Academy (powered by AGI Corp)*, provenance tiers
 AUTHORED, DERIVED, RECORDED, SCHEMATIC,
 145 nodes) and
-56 external branches. The invariant the
+57 external branches. The invariant the
 build and the suite both assert: every branch has exactly one owner; no external branch contains a place, content or service this fabric serves, and every node this fabric serves sits under its own branch - asserted by spatial/build.py and spatial/test.mjs
 
 | External origin (owner) | Nodes | Provenance tiers |
@@ -245,6 +246,7 @@ build and the suite both assert: every branch has exactly one owner; no external
 | Point Blue Conservation Science (STRAW program) | 1 | AUTHORED |
 | San Francisco Estuary Invasive Spartina Project (multi-agency) | 1 | AUTHORED |
 | US Navy (CERCLA lead agency for investigation and cleanup); US EPA Region 9 and California DTSC (oversight and enforcement of Navy cleanup activities) | 1 | AUTHORED |
+| US Navy (BRAC / CERCLA lead agency for investigation and cleanup); California DTSC (lead regulator), California Department of Public Health (radiological matters) and the San Francisco Bay Regional Water Quality Control Board (oversight) | 1 | AUTHORED |
 
 ## Not loaded in any browser
 

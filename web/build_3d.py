@@ -355,8 +355,11 @@ DATA = json.dumps({
     # at it; nothing here re-derives or upgrades the site's own AUTHORED
     # coordinate, it is only re-projected onto the same in-world scale.
     # `walkable` gates this the same as `pin`/`campus` already did: a site
-    # with walkable=False (Hunters Point - an actively litigated federal
-    # cleanup site, see restoration/build.py) never gets the e/n offset
+    # with walkable=False (Hunters Point, an actively litigated federal
+    # Superfund site, and Former Naval Station Treasure Island, a Navy
+    # BRAC cleanup with unresolved radiological criteria - the island the
+    # Treasure Island campus scene itself sits on; see restoration/
+    # build.py) never gets the e/n offset
     # below, so it can never be placed as a walkable-city marker or
     # entered via startRestorationWalk() - it still reaches the map
     # through its own real pin (the geomap) and the flat panel list
@@ -8229,9 +8232,12 @@ function openRestoration(focusHall, focusSite) {
   const siteRows = D.restoration.sites.map((s) => {
     const wf = s.workforce
       ? `<br><span style="font-size:11px;color:var(--good)">▶ real workforce pathway: ${esc(s.workforce_note)}</span>` : '';
-    // environmental-monitoring sites (Hunters Point) point at a real
-    // community monitoring program instead - explicitly not job training,
-    // so it never reads as a workforce pathway
+    // environmental-monitoring sites (Hunters Point, Treasure Island
+    // NSTI) point at a real monitoring / oversight participation body
+    // instead - explicitly not job training, so it never reads as a
+    // workforce pathway (NSTI also carries a real workforce note, One
+    // Treasure Island's program, which its own text says is not the
+    // cleanup)
     const pt = s.participation
       ? `<br><span style="font-size:11px;color:var(--steel)">▶ real monitoring participation: ${esc(s.participation_note)}</span>` : '';
     const camp = s.campus ? `<span class="chip" style="font-size:10.5px">near ${esc(D.campuses[s.campus].name)}</span>` : '';
@@ -8239,6 +8245,10 @@ function openRestoration(focusHall, focusSite) {
       ? '\U0001f9ea environmental monitoring' : '\U0001f331 habitat restoration'}</span>`;
     const trades = s.trade_needs && s.trade_needs.length
       ? `<br><span style="font-size:11px;color:var(--muted)">real trade fit: ${s.trade_needs.map((tn) => esc(tn)).join(', ')}</span>` : '';
+    // the one site that needs it (Treasure Island NSTI) states in its own
+    // voice that it is NOT NPL-listed, and which EPA ID is the other place
+    const dis = s.disambiguation
+      ? `<br><span style="font-size:11px;color:var(--steel)">\u26a0 ${esc(s.disambiguation)}</span>` : '';
     const walk = s.e !== undefined
       ? `<span class="chip" style="font-size:10.5px">\U0001f6b6 walkable in the city layer</span>
          <button class="barbtn" data-resto-walk="${esc(s.id)}"
@@ -8254,9 +8264,10 @@ function openRestoration(focusHall, focusSite) {
         <button class="opt" data-sat-go="${esc(s.id)}" style="display:inline-block;width:auto;padding:3px 10px;font-size:11px;margin-left:4px">\U0001f6f0 Real aerial view</button>
         <span id="elevr-${esc(s.id)}"></span>
         <span id="satr-${esc(s.id)}" style="display:block"></span></p>` : '';
-    // Hunters Point's own multi-fact citation list - flat, never blended
-    // into a walkable scene. Each fact cites its own real source, a
-    // September 2026 snapshot of public record, not a live feed.
+    // the environmental-monitoring sites' own multi-fact citation lists
+    // (Hunters Point, Treasure Island NSTI) - flat, never blended into a
+    // walkable scene. Each fact cites its own real source, a September
+    // 2026 snapshot of public record, not a live feed.
     const facts = (s.facts && s.facts.length) ? `<ul style="margin:6px 0 0;padding-left:16px;font-size:11.5px">${
       s.facts.map((f) => `<li style="margin:3px 0">${esc(f.text)} <a href="${esc(f.source_url)}" target="_blank" rel="noopener" style="font-size:11px">source</a></li>`).join('')
     }</ul>` : '';
@@ -8264,7 +8275,7 @@ function openRestoration(focusHall, focusSite) {
         ? 'border:1px solid var(--mark);border-radius:8px;padding:6px' : ''}">
       <b>${esc(s.name)}</b> ${camp} ${cat}<br>
       <span style="font-size:11.5px;color:var(--muted)">${esc(s.org)} · ${esc(s.city)}, ${esc(s.county)}</span><br>
-      <span style="font-size:12px">${esc(s.habitat)} — ${esc(s.scale)}</span>${wf}${pt}${trades}<br>
+      <span style="font-size:12px">${esc(s.habitat)} — ${esc(s.scale)}</span>${dis}${wf}${pt}${trades}<br>
       <a href="${esc(s.source_url)}" target="_blank" rel="noopener" style="font-size:11px">${esc(s.source_url)}</a>
       ${walk}${real}${facts}</li>`;
   }).join('');
