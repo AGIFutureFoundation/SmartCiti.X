@@ -12,9 +12,12 @@ provenance and source line.
 """
 import json
 import pathlib
+import sys
 
 HERE = pathlib.Path(__file__).resolve().parent
 ROOT = HERE.parent
+sys.path.insert(0, str(HERE))
+from staleness import emit  # noqa: E402
 
 network = json.load(open(ROOT / 'geo/registry/network.geojson'))
 parcels = json.load(open(ROOT / 'parcels/registry/parcels.json'))
@@ -426,6 +429,4 @@ _n_flag = len(geo['campuses']) - _n_hub
 assert _n_hub > 0 and _n_flag > 0
 page = page.replace('__N_FLAGSHIP__', str(_n_flag)).replace('__N_HUB__', str(_n_hub))
 assert '__N_' not in page, 'a legend count token went unreplaced'
-out.write_text(page.replace('__DATA__', DATA))
-print(f"written: {len(out.read_text()):,} bytes | "
-      f"{len(network['features'])} features on the geomap")
+emit(out, page.replace('__DATA__', DATA), f"{len(network['features'])} features on the geomap")

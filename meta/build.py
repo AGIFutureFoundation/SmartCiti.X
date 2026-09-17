@@ -315,7 +315,6 @@ for _oid in ('ombi-spatial-fabric', 'ombi-som', 'rmap'):
 import os
 rev = pathlib.Path(os.environ.get('TC_AVATAR_REVIEW', '')) if os.environ.get(
     'TC_AVATAR_REVIEW') else None
-review_checked = 'checkouts not present; review carried as recorded'
 if rev and rev.is_dir():
     for sysrec in DOC['avatar_systems_reviewed']:
         d = rev / sysrec['repo'].split('/')[1]
@@ -325,19 +324,38 @@ if rev and rev.is_dir():
         assert lic, f"{sysrec['repo']}: no licence file in the checkout"
         assert 'MIT' in lic.read_text()[:400], \
             f"{sysrec['repo']}: licence drifted from MIT"
-    review_checked = 'cross-checked against the reviewed checkouts'
-DOC['avatar_review_check'] = review_checked
+    print('cross-check: TC_AVATAR_REVIEW checkouts present, licences held')
+else:
+    print('cross-check: TC_AVATAR_REVIEW not set, avatar review cross-check skipped')
+# the committed field is the contract, byte-stable across machines (see
+# geo/build.py); meta/test.mjs repeats the comparison on every run
+DOC['avatar_review_check'] = {
+    'contract': 'cross-checked against the reviewed checkouts when '
+                'TC_AVATAR_REVIEW names the directory that holds them',
+    'checkout': '$TC_AVATAR_REVIEW/<repo name>',
+    'held': ['each reviewed repository still ships an MIT licence file'],
+    'where': 'meta/build.py asserts at build time; meta/test.mjs repeats the '
+             'comparison on every run and says so when the checkouts are absent',
+}
 
 # the Unity bridge is RECORDED: when the fork's checkout sits beside this
 # repository, hold the claim against it (same pattern as geo vs Locator.X)
 mla = ROOT.parent / 'agifuturefoundation' / 'ml-agents'
-bridge_checked = 'checkout not present; claim carried as recorded'
 if mla.exists():
     assert (mla / 'com.unity.ml-agents').is_dir(), \
         'the fork no longer carries com.unity.ml-agents'
     assert (mla / 'LICENSE.md').exists(), 'the fork lost its license file'
-    bridge_checked = 'cross-checked against the ml-agents checkout'
-DOC['unity_bridge']['recorded_check'] = bridge_checked
+    print('cross-check: ml-agents checkout present, bridge claim held')
+else:
+    print('cross-check: ml-agents checkout not present, cross-check skipped')
+DOC['unity_bridge']['recorded_check'] = {
+    'contract': 'cross-checked against the ml-agents checkout when it is '
+                'present beside this repository',
+    'checkout': '../agifuturefoundation/ml-agents',
+    'held': ['the fork carries com.unity.ml-agents', 'the fork ships LICENSE.md'],
+    'where': 'meta/build.py asserts at build time; meta/test.mjs repeats the '
+             'comparison on every run and says so when the checkout is absent',
+}
 
 # the network dashboard names its own contributing pack for every other
 # platform-wide fact but used to say nothing about this one - the drift

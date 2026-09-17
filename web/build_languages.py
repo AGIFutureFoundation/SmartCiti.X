@@ -9,8 +9,11 @@ section so screen readers pronounce each language correctly.
 """
 import json
 import pathlib
+import sys
 
 HERE = pathlib.Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE))
+from staleness import emit  # noqa: E402
 
 
 def _pack_root():
@@ -144,5 +147,4 @@ show((navigator.language || 'en').slice(0, 2).match(/^({"|".join(ORDER)})$/) ? (
 '''
 
 out = HERE / 'trade_craft_languages.html'
-out.write_text(page)
-print(f"written: {len(page):,} bytes | {len(ORDER)} locales | {L['halls']} halls")
+emit(out, page, f"{len(ORDER)} locales | {L['halls']} halls")

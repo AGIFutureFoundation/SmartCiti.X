@@ -101,6 +101,29 @@ export function fromIndex(i) {
            modality: MODALITIES[Math.floor(v / 3)], band: BANDS[v % 3] };
 }
 
+/**
+ * One generated lesson for a hall row {index, slug, name} — the rule the
+ * builder (pack/build.py lesson_of) uses, mirrored. Exported on its own so a
+ * consumer that already holds the hall row (the console, which inlines this
+ * file) generates rows without opening the registry files.
+ */
+export function lessonOf(h, level, slot) {
+  if (!h || level < 0 || level >= SHAPE.levels || slot < 0 || slot >= SHAPE.slots) return null;
+  const hallIdx = h.index;
+  const strand = STRANDS[slot % 11], tier = tierOf(level);
+  return {
+    lesson_id: `u${String(hallIdx).padStart(3, '0')}.l${String(level).padStart(3, '0')}.s${String(slot).padStart(3, '0')}`,
+    union: h.slug, union_name: h.name, level, slot,
+    track: trackOf(level), tier,
+    skill_id: `${h.slug}.${strand}.${tier}`,
+    form: FORMS[(slot + level) % 11],
+    base_difficulty: +(14 + (level * SHAPE.slots + slot) / (SHAPE.lessonsPerHall - 1) * 78).toFixed(1),
+    state: pipelineState(hallIdx, level),
+    level_test: slot === SHAPE.slots - 1,
+    final_exam: slot === SHAPE.slots - 1 && level % 10 === 9,
+  };
+}
+
 export async function openRegistry(base = './registry') {
   const [halls, skills, library, variants] = await Promise.all([
     readJSON(base, 'halls.json'), readJSON(base, 'skills.json'),
@@ -112,22 +135,7 @@ export async function openRegistry(base = './registry') {
   const libIds = new Set(library.items.map((i) => i.item_id));
 
   /** One generated lesson — the rule the builder uses, mirrored. */
-  function lesson(hallIdx, level, slot) {
-    const h = byIndex.get(hallIdx);
-    if (!h || level < 0 || level >= SHAPE.levels || slot < 0 || slot >= SHAPE.slots) return null;
-    const strand = STRANDS[slot % 11], tier = tierOf(level);
-    return {
-      lesson_id: `u${String(hallIdx).padStart(3, '0')}.l${String(level).padStart(3, '0')}.s${String(slot).padStart(3, '0')}`,
-      union: h.slug, union_name: h.name, level, slot,
-      track: trackOf(level), tier,
-      skill_id: `${h.slug}.${strand}.${tier}`,
-      form: FORMS[(slot + level) % 11],
-      base_difficulty: +(14 + (level * SHAPE.slots + slot) / (SHAPE.lessonsPerHall - 1) * 78).toFixed(1),
-      state: pipelineState(hallIdx, level),
-      level_test: slot === SHAPE.slots - 1,
-      final_exam: slot === SHAPE.slots - 1 && level % 10 === 9,
-    };
-  }
+  const lesson = (hallIdx, level, slot) => lessonOf(byIndex.get(hallIdx), level, slot);
 
   function resolve(moduleId) {
     const lib = LIB_RE.exec(moduleId);

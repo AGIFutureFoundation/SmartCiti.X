@@ -814,7 +814,7 @@ The glTF exports open directly in {", ".join(meta["baseline"]["standards"][0]["c
 ## The Unity avatar systems, reviewed
 
 Three MIT-licensed Unity avatar systems were read from their own
-checkouts before choosing ({meta["avatar_review_check"]}):
+checkouts before choosing ({meta["avatar_review_check"]["contract"]}):
 
 | Repository | Licence | What it is | Verdict |
 |---|---|---|---|
@@ -862,7 +862,7 @@ stripped on export. The avatar rig: {rig}.
 [`{meta["unity_bridge"]["repo"]}`](https://github.com/{meta["unity_bridge"]["repo"]})
 — {meta["unity_bridge"]["upstream"]}. {meta["unity_bridge"]["role"]}.
 **Status:** {meta["unity_bridge"]["status"]}
-({meta["unity_bridge"]["recorded_check"]}.)
+({meta["unity_bridge"]["recorded_check"]["contract"]}.)
 
 ## What this layer is not
 
@@ -892,7 +892,7 @@ them.
 Every authority, dataset id and record count above is RECORDED from
 Locator.X\'s committed builders (Apache-2.0) — the same sibling source
 the [geo registry](Campus-Map.md) copies its coordinates from — and
-{parcels["recorded_check"]}. Each query is bounded by that campus\'s own
+{parcels["recorded_check"]["contract"]}. Each query is bounded by that campus\'s own
 RECORDED city frame.
 
 ## The imagery

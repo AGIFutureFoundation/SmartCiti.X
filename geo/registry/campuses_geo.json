@@ -3,9 +3,18 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-10",
- "source_stamp": "12139690bb93730d",
+ "source_stamp": "b233d12fe7f78811",
  "crs": "WGS84 (EPSG:4326)",
- "recorded_check": "cross-checked against the Locator.X checkout",
+ "recorded_check": {
+  "contract": "cross-checked against the Locator.X checkout when it is present beside this repository",
+  "checkout": "../locator.x",
+  "held": [
+   "the Oakland campus pair against src/app.js CITIES",
+   "every RECORDED anchor against the table it cites",
+   "the walk bands and classes against src/walk.js"
+  ],
+  "where": "geo/build.py asserts at build time; geo/test.mjs repeats the comparison on every run and says so when the checkout is absent"
+ },
  "honesty": {
   "siting": "a coordinate anchors a map; it does not claim a parcel. The campuses remain planned locations per the union registry, and no address is recorded.",
   "provenance": "RECORDED / DERIVED / SCHEMATIC discipline after the Locator.X rooms module (Apache-2.0): nothing is stated that the source does not support."

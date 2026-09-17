@@ -242,11 +242,23 @@ function setQuality(l) {
   key.castShadow = l !== 'low';
   for (const b of fogBanks) b.m.visible = l !== 'low';
 }
+let qRose = false;
 function qStep(dt) {
   // harness runs (webdriver) keep deterministic visuals; they force via the hook
-  if (!qAuto || qLevel === 'low' || reduced || navigator.webdriver) return;
+  if (!qAuto || reduced || navigator.webdriver) return;
   if (renderer.xr.isPresenting) return;       // a headset has its own ladder: xrQStep
   qAcc += dt; qFrames++;
+  if (qLevel === 'low') {
+    // one step back up, once: a 10 s window comfortably over budget (a
+    // stalled tab that recovered, a heavy view left behind) restores the
+    // full ladder; a second drop after that stays down, so it cannot flap
+    if (qRose) return;
+    if (qAcc >= 10) {
+      if (qFrames / qAcc >= 45) { qRose = true; setQuality('high'); }
+      qAcc = 0; qFrames = 0;
+    }
+    return;
+  }
   if (qAcc >= 5) {
     if (qFrames / qAcc < 22) {
       setQuality('low');
@@ -1036,6 +1048,17 @@ function labelShape(g, shape, w, h, accent, dashed) {
 /* label(text, sub, scale, opts)
    opts: { kind, hue, badge }  - kind names a row of the label registry;
    hue is the district's, for the kinds whose accent is 'district'. */
+/* Identical signs share one texture: the same text on the same kind of
+   sign with the same accent is the same bitmap, so it is drawn once and
+   reference-counted - the sprite (its own material, its own scale, its own
+   focus) stays per sign, and disposeOf() releases the texture with the
+   last sprite that used it. No atlas: a sign is still its own draw. */
+const lblTexCache = new Map();
+function lblTexRelease(key) {
+  const e = key && lblTexCache.get(key);
+  if (!e) return;
+  if (--e.refs <= 0) { e.tex.dispose(); lblTexCache.delete(key); }
+}
 function label(text, sub, scale = 1, opts = {}) {
   const kindId = opts.kind && LKIND[opts.kind] ? opts.kind : 'room';
   const kind = LKIND[kindId];
@@ -1043,6 +1066,19 @@ function label(text, sub, scale = 1, opts = {}) {
   // opts.accent: an explicit accent colour - the XR wrist panel's warning
   // readouts use the dash's own crit colour, the same rule as .warn
   const accent = opts.accent ?? lblAccent(kind, opts.hue);
+  const texKey = kindId + '|' + accent + '|' + text + '|' + (sub ?? '');
+  const hit = lblTexCache.get(texKey);
+  if (hit) {
+    hit.refs++;
+    const sp = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: hit.tex, transparent: true, depthTest: false }));
+    sp.scale.set(hit.w / 90 * scale, hit.h / 90 * scale, 1);
+    sp.userData.lbl = { kind: kindId, base: sp.scale.clone(), baseY: null,
+                        accent, focus: 0, hide: kind.hide_beyond_m || 0,
+                        floor: kind.min_focus, texKey };
+    labelSet.push(sp);
+    return sp;
+  }
   const marquee = shape === 'marquee';
   const dpr = Math.min(2, devicePixelRatio || 1);
 
@@ -1094,12 +1130,13 @@ function label(text, sub, scale = 1, opts = {}) {
 
   const tex = new THREE.CanvasTexture(c);
   tex.colorSpace = THREE.SRGBColorSpace;
+  lblTexCache.set(texKey, { tex, w, h, refs: 1 });
   const sp = new THREE.Sprite(new THREE.SpriteMaterial({
     map: tex, transparent: true, depthTest: false }));
   sp.scale.set(w / 90 * scale, h / 90 * scale, 1);
   sp.userData.lbl = { kind: kindId, base: sp.scale.clone(), baseY: null,
                       accent, focus: 0, hide: kind.hide_beyond_m || 0,
-                      floor: kind.min_focus };
+                      floor: kind.min_focus, texKey };
   labelSet.push(sp);
   return sp;
 }
@@ -1131,6 +1168,12 @@ function labelStep(dt) {
   for (const sp of labelSet) {
     if (!sp.parent) continue;               // its group was disposed
     labelSet[live++] = sp;
+    // a sign in a hidden group (the cached region board behind a campus,
+    // the campus behind a hall) is not scored: nothing on screen to score
+    let hid = false;
+    for (let o = sp.parent; o && o !== scene; o = o.parent)
+      if (!o.visible) { hid = true; break; }
+    if (hid) continue;
     const u = sp.userData.lbl;
     sp.getWorldPosition(_lblPos);
     const dist = _lblPos.distanceTo(eye);
@@ -1258,6 +1301,19 @@ const MAT_MAPS = ['map', 'normalMap', 'emissiveMap', 'roughnessMap',
 function disposeOf(root) {
   root.traverse((o) => {
     if (o.geometry && !o.geometry.userData?.shared) o.geometry.dispose();
+    // a label sprite leaves labelSet HERE, not when labelStep next notices
+    // it is orphaned: a sprite inside a removed-but-intact group keeps its
+    // parent, so every view's signs used to stay in the set forever, each
+    // one scored, positioned and scaled again every frame (+328 sprites per
+    // region->campus->hall->walk->sim->resto->region cycle, never freed)
+    if (o.isSprite && o.userData.lbl) {
+      const i = labelSet.indexOf(o);
+      if (i >= 0) labelSet.splice(i, 1);
+      if (labelFocus === o) labelFocus = null;
+      lblTexRelease(o.userData.lbl.texKey);
+      o.material.dispose();          // its map is the shared texture, released above
+      return;
+    }
     if (!o.material) return;
     for (const m of Array.isArray(o.material) ? o.material : [o.material]) {
       if (!m || m.userData?.shared) continue;
@@ -1505,7 +1561,7 @@ function buildHall(sg) {
 }
 
 /* -------------------------------------------------------- campus view --- */
-let campusGroup = null, buildings = [], campusSpin = [];
+let campusGroup = null, buildings = [], hallRec = null;
 let regionGroup = null, plates = [], anchorPins = 0;
 let campusKey = D.halls.some(h => h.slug === params.get('hall'))
   ? Object.keys(D.campuses).find(k =>
@@ -1525,12 +1581,14 @@ const STYLE_OF = { industry: 'saw', transport: 'saw', earthworks: 'saw',
                    envelope: 'gable', control: 'gable',
                    structural: 'flat', systems: 'flat', energy: 'flat' };
 
-/* Buildings merge their decoration into ONE mesh per material - band,
-   trims, window strips, door and roofline become three draw calls
-   instead of a dozen, per building, across the whole campus. The main
-   box stays its own mesh: it is the raycast target the hover and click
-   handlers read. Merged geometries are per-building (not shared), so
-   disposeOf() frees them on rebuild. */
+/* Buildings pool their decoration into ONE mesh per material PER DISTRICT
+   - band, trims, window strips, door and roofline of every hall in the
+   district become four draw calls for the district rather than four per
+   building (a 51-hall campus went from 516 draws to a third of that). The
+   main box stays its own mesh: it is the raycast target the hover and
+   click handlers read, and buildings[] still counts one per hall. Merged
+   geometries are per-district (not shared), so disposeOf() frees them on
+   rebuild. The station beacons are one InstancedMesh per campus. */
 const hueMatCache = new Map();
 function hueMatOf(hue) {
   let m2 = hueMatCache.get(hue);
@@ -1541,15 +1599,15 @@ function hueMatOf(hue) {
   }
   return m2;
 }
-function building(h, style, g) {   // built at the local origin, door toward -z
+function building(h, style, g, pool, ox = 0, oz = 0) {   // built at the local origin, door toward -z
   const dep = Math.max(h.depth, 5), wid = 12;
   const hgt = 6 + (h.depth % 3) * .7;
   const bld = box(wid, hgt, dep, mat.wall, 0, hgt / 2, 0, g);
   bld.userData.slug = h.slug;
-  const parts = new Map();           // material -> [transformed geometries]
+  const parts = pool;                // material -> [transformed geometries], district-wide
   const add = (m2, w, hh, d2, x, y, z, rz = 0) => {
     const ge = new THREE.BoxGeometry(w, hh, d2);
-    const mx = new THREE.Matrix4().makeRotationZ(rz).setPosition(x, y, z);
+    const mx = new THREE.Matrix4().makeRotationZ(rz).setPosition(x + ox, y, z + oz);
     ge.applyMatrix4(mx);
     (parts.get(m2) ?? parts.set(m2, []).get(m2)).push(ge);
   };
@@ -1570,40 +1628,87 @@ function building(h, style, g) {   // built at the local origin, door toward -z
   } else {                            // flat: parapet already, rooftop unit
     add(mat.metal, 1.6, .8, 1.2, wid * .22, hgt + .4, dep * .15);
   }
-  for (const [m2, list] of parts) {
+  if (h.stations.length) beaconAt.push(new THREE.Vector3(0, hgt + 2, 0));
+  else beaconAt.push(null);
+  return { mesh: bld, w: wid, d: dep };
+}
+// the district's pooled decoration: one mesh per material, into the district group
+function flushParts(pool, g) {
+  for (const [m2, list] of pool) {
     const merged = mergeGeometries(list);
     list.forEach((ge) => ge.dispose());
     const mesh = new THREE.Mesh(merged, m2);
     mesh.castShadow = true; mesh.receiveShadow = true;
     g.add(mesh);
   }
-  if (h.stations.length) {
-    const bcn = new THREE.Mesh(new THREE.OctahedronGeometry(.9), mat.post);
-    bcn.position.set(0, hgt + 2, 0); g.add(bcn); campusSpin.push(bcn);
+  pool.clear();
+}
+// the station beacons: one instanced draw for the campus, spun in the loop
+let beaconAt = [], beaconInst = null, beaconSpin = 0;
+const _bcnM = new THREE.Matrix4();
+function flushBeacons(spots, g) {
+  beaconInst = null;
+  if (!spots.length) return;
+  beaconInst = new THREE.InstancedMesh(new THREE.OctahedronGeometry(.9), mat.post, spots.length);
+  beaconInst.userData.spots = spots;
+  beaconInst.castShadow = true;
+  spinBeacons(0);
+  g.add(beaconInst);
+}
+function spinBeacons(dt) {
+  if (!beaconInst) return;
+  beaconSpin += dt * 1.1;
+  const spots = beaconInst.userData.spots;
+  for (let i = 0; i < spots.length; i++) {
+    _bcnM.makeRotationY(beaconSpin).setPosition(spots[i]);
+    beaconInst.setMatrixAt(i, _bcnM);
   }
-  return { mesh: bld, w: wid, d: dep };
+  beaconInst.instanceMatrix.needsUpdate = true;
 }
 
+/* Roads and lane dashes accumulate in the district's own frame and merge
+   into ONE mesh per material per campus build (the dashes were the largest
+   single mesh swarm on the board; the road planes were the next). Each
+   piece is carried into campus coordinates through the district group's
+   world matrix as it is added - the dashes used to be merged straight into
+   the campus group in district-local (u, v), which drew them across the
+   plaza instead of along their streets. */
+const roadAcc = new Map();          // material -> [world-space geometries]
+let dashAcc = [], dashFrame = null;
+const _rdM = new THREE.Matrix4();
 function roadRect(u, v, w, len, m, g, y = .05) {
-  const r = new THREE.Mesh(new THREE.PlaneGeometry(w, len), m);
-  r.rotation.x = -Math.PI / 2; r.position.set(u, y, v);
-  r.receiveShadow = true; g.add(r);
+  const ge = new THREE.PlaneGeometry(w, len);
+  _rdM.makeRotationX(-Math.PI / 2).setPosition(u, y, v);
+  g.updateWorldMatrix(true, false);
+  ge.applyMatrix4(_rdM).applyMatrix4(g.matrixWorld);
+  (roadAcc.get(m) ?? roadAcc.set(m, []).get(m)).push(ge);
   return { u, v, w, h: len };
 }
-
-/* Lane dashes accumulate and merge into ONE mesh per campus build -
-   they were the largest single mesh swarm on the board. */
-let dashAcc = [];
-function dashGeo(w, d2, x, z) {
+function flushRoads(g) {
+  for (const [m, list] of roadAcc) {
+    const merged = mergeGeometries(list);
+    list.forEach((ge) => ge.dispose());
+    const mesh = new THREE.Mesh(merged, m);
+    mesh.receiveShadow = true;
+    g.add(mesh);            // roadCount counts rectangles laid, not meshes drawn
+  }
+  roadAcc.clear();
+}
+function dashGeo(w, d2, x, z, ry = 0) {
   const ge = new THREE.BoxGeometry(w, .02, d2);
-  ge.applyMatrix4(new THREE.Matrix4().setPosition(x, .09, z));
+  ge.applyMatrix4(new THREE.Matrix4().makeRotationY(ry).setPosition(x, .09, z));
+  if (dashFrame) { dashFrame.updateWorldMatrix(true, false); ge.applyMatrix4(dashFrame.matrixWorld); }
   dashAcc.push(ge);
 }
 function dashesU(u0, u1, v, g) {
+  dashFrame = g;
   for (let u = u0 + 2; u < u1 - 2; u += 4) dashGeo(1.6, .16, u, v);
+  dashFrame = null;
 }
 function dashesV(v0, v1, u, g) {
+  dashFrame = g;
   for (let v = v0 + 2; v < v1 - 2; v += 4) dashGeo(.16, 1.6, u, v);
+  dashFrame = null;
 }
 function flushDashes(g) {
   if (!dashAcc.length) return;
@@ -2353,8 +2458,12 @@ function cityWater(g, key, R, pois) {
 }
 
 function buildCampus(key) {
-  if (campusGroup) scene.remove(campusGroup);
-  campusGroup = new THREE.Group(); buildings = []; campusSpin = [];
+  // the old campus is FREED, not just detached: every rebuild used to leak
+  // its merged building meshes, roads, ring geometry and every label
+  // texture (+284 geometries per campus<->hall trip, +568 per resto walk)
+  if (campusGroup) { scene.remove(campusGroup); disposeOf(campusGroup); }
+  campusGroup = new THREE.Group(); buildings = []; beaconAt = [];
+  campusGroup.userData.key = key; campusGroup.userData.loc = loc;
   roadFaults = 0; roadCount = 0; cityPois = 0; cityHits = []; restorationHits = [];
   const camp = D.campuses[key];
   const dk = camp.districts;
@@ -2365,11 +2474,9 @@ function buildCampus(key) {
   const ring = new THREE.Mesh(new THREE.RingGeometry(rr - 2.4, rr + 2.4, 96), mat.road);
   ring.rotation.x = -Math.PI / 2; ring.position.y = .05;
   ring.receiveShadow = true; campusGroup.add(ring); roadCount++;
-  for (let a = 0; a < 64; a++) {
+  for (let a = 0; a < 64; a++) {         // the ring road's dashes, into the one dash mesh
     const th = a / 64 * Math.PI * 2;
-    const dsh = box(.16, .02, 1.6, mat.paint,
-      Math.cos(th) * rr, .09, Math.sin(th) * rr, campusGroup, false);
-    dsh.rotation.y = -th;
+    dashGeo(.16, 1.6, Math.cos(th) * rr, Math.sin(th) * rr, -th);
   }
   // the green: rough grass between the plaza walkway and the ring road,
   // which is what a campus actually has there and what makes the ring
@@ -2398,14 +2505,16 @@ function buildCampus(key) {
     const maxDep = Math.max(...d.halls.map((sg) =>
       Math.max(D.halls.find(x => x.slug === sg).depth, 5)));
     const pitch = maxDep + 8;
-    const rows = {}, rects = [], roads = [];
+    const rows = {}, rects = [], roads = [], pool = new Map();
     d.halls.forEach((sg, i) => {
       const h = D.halls.find(x => x.slug === sg);
       const gx = (i % cols) - (cols - 1) / 2, gz = Math.floor(i / cols);
       const bg = new THREE.Group();
       bg.position.set(gx * 16, 0, gz * pitch);
       cg.add(bg);
-      const b = building(h, style, bg);
+      const b = building(h, style, bg, pool, gx * 16, gz * pitch);
+      const spot = beaconAt[beaconAt.length - 1];
+      if (spot) { bg.updateWorldMatrix(true, false); bg.localToWorld(spot); }
       buildings.push(b.mesh);
       (rows[gz] ??= []).push({ u: gx * 16, v: gz * pitch, halfD: b.d / 2 });
       rects.push({ u: gx * 16, v: gz * pitch, hw: b.w / 2 + .2, hd: b.d / 2 + .2 });
@@ -2446,11 +2555,14 @@ function buildCampus(key) {
         (window.__faults ??= []).push({ r, b });
       }
     }
+    flushParts(pool, cg);
     const dl = label(D.i18n[loc].districts[k], null, 3,
       { kind: 'district', hue: d.hue });
     dl.position.set(rad.x * (R - 14), 15, rad.y * (R - 14));
     campusGroup.add(dl);
   });
+  flushRoads(campusGroup);
+  flushBeacons(beaconAt.filter(Boolean), campusGroup);
   const plaza = new THREE.Mesh(new THREE.CylinderGeometry(24, 24, .3, 48),
     new THREE.MeshStandardMaterial({ map: concreteTex, color: 0xb8bdbd, roughness: .95 }));
   plaza.position.y = .15; plaza.receiveShadow = true; campusGroup.add(plaza);
@@ -2463,6 +2575,7 @@ function buildCampus(key) {
   buildRestorationSites(campusGroup);
   flushDashes(campusGroup);
   walkLim = cityPois ? (cityLog ? 536 : 350) : campusR + 85;
+  campusGroup.userData.walkLim = walkLim;
   // fog banks: the island's weather, drifting flat haze sheets
   fogBanks = [];
   const nb = ATMOS[key]?.banks ?? 0;
@@ -2541,12 +2654,19 @@ function buildMinimap(key, R) {
     const [px, pz] = cityPos(p);
     g2.beginPath(); g2.arc(X(px), Y(pz), 2.5, 0, 7); g2.fill();
   }
-  mmBase = c;
+  mmBase = c; mmDirty = true;
 }
+// the arrow only moves while walking: an orbiting campus draws the base
+// once (mmDirty, set by buildMinimap) and then leaves the canvas alone -
+// and once more when a walk ends, so no arrow is left standing
+let mmDirty = true, mmCtx = null, mmArrow = false;
+const _mmDir = new THREE.Vector3();
 function mmDraw() {
   const cv = document.getElementById('mm');
   if (!mmBase || cv.style.display === 'none') return;
-  const g2 = cv.getContext('2d');
+  if (!walkActive && !mmDirty && !mmArrow) return;
+  mmDirty = false; mmArrow = walkActive;
+  const g2 = mmCtx ??= cv.getContext('2d');
   g2.clearRect(0, 0, 150, 150);
   g2.drawImage(mmBase, 0, 0);
   if (walkActive) {
@@ -2555,8 +2675,8 @@ function mmDraw() {
     const pz = touchWalk ? walkAvatar.position.z : eyePos().z;
     let yaw;
     if (touchWalk) yaw = tYaw + Math.PI;
-    else { const d = new THREE.Vector3(); camera.getWorldDirection(d);
-      yaw = Math.atan2(d.x, d.z); }
+    else { camera.getWorldDirection(_mmDir);
+      yaw = Math.atan2(_mmDir.x, _mmDir.z); }
     const x = 75 + px * mmInfo.s, y = 75 + pz * mmInfo.s;
     g2.save(); g2.translate(x, y); g2.rotate(yaw + Math.PI);
     g2.fillStyle = '#E8A33D';
@@ -2611,7 +2731,7 @@ const CAND_POS = (() => {
 })();
 
 function buildRegion() {
-  if (regionGroup) scene.remove(regionGroup);
+  if (regionGroup) { scene.remove(regionGroup); disposeOf(regionGroup); }
   regionGroup = new THREE.Group(); plates = []; anchorPins = 0;
   // the gulf-to-bay board: water underneath everything
   const sea = new THREE.Mesh(new THREE.PlaneGeometry(1600, 1600), mat.water);
@@ -2713,7 +2833,11 @@ function showRegion() {
   if (campusGroup) campusGroup.visible = false;
   ground.visible = grid.visible = false;
   applyAtmos(null);
-  buildRegion();
+  // the board is static (real coordinates, real names, no locale in it):
+  // built once, shown again - it used to be rebuilt on every return, 111
+  // label textures and every plate and pin each time, none of it freed
+  if (!regionGroup) buildRegion();
+  regionGroup.visible = true;
   scene.fog.near = 380; scene.fog.far = 1300;
   document.getElementById('mm').style.display = 'none';
   controls.maxDistance = 700; controls.minDistance = 60;
@@ -2764,7 +2888,19 @@ function showCampus(key) {
   if (regionGroup) regionGroup.visible = false;
   ground.visible = grid.visible = true;
   applyAtmos(key);
-  buildCampus(key);
+  if (campusGroup && campusGroup.userData.key === key
+      && campusGroup.userData.loc === loc) {
+    // the same campus in the same language is shown again, not rebuilt:
+    // leaving the restoration walk (and a hall) used to rebuild it whole.
+    // What a hall or a walk can change is re-laid: the fauna the walk
+    // replaced, the advisors the hall cleared, the minimap's done-rings
+    campusGroup.visible = true;
+    walkLim = campusGroup.userData.walkLim;
+    setGroundSurface(key);
+    clearAdvisors(); spawnCampusAdvisors();
+    spawnFauna(key, campusR);
+    buildMinimap(key, campusR);
+  } else buildCampus(key);
   scene.fog.near = 320 * fogMul; scene.fog.far = 1280 * fogMul;
   document.getElementById('mm').style.display = '';
   controls.maxDistance = 760; controls.minDistance = 20;
@@ -2790,6 +2926,7 @@ function showHall(sg) {
   if (sim) teardownSim();
   if (curRestoSite) teardownRestoWalk();
   slug = sg; view = 'hall'; campusKey = campusOfHall(sg);
+  hallRec = D.halls.find(x => x.slug === sg);
   if (avatarGroup) avatarGroup.visible = false;
   if (!(isTouch && walkActive)) wheelShow(false);
   if (regionGroup) regionGroup.visible = false;
@@ -2912,6 +3049,10 @@ function walkLeave() {
 }
 
 const _wf = new THREE.Vector3(), _wr = new THREE.Vector3();
+// scratch vectors for the walk (module scope, like _wf/_wr/_lblPos): the
+// loop allocated five to eight Vector3s per frame in the campus stroll
+const _wp = new THREE.Vector3(), _twWas = new THREE.Vector3(), _twF = new THREE.Vector3();
+const _twR = new THREE.Vector3(), _twEye = new THREE.Vector3();
 function walkStep(dt) {
   const rig = xrRig.position;
   if (renderer.xr.isPresenting) {
@@ -2933,13 +3074,13 @@ function walkStep(dt) {
     rig.y = 1.7;
   }
   if (view === 'hall') {
-    const h = D.halls.find(x => x.slug === slug);
-    const DEP = h.depth * U;
+    const DEP = hallRec.depth * U;
     rig.x = Math.min(21, Math.max(-21, rig.x));
     rig.z = Math.min(DEP/2 - .8, Math.max(-DEP/2 - 26, rig.z));
     const px = rig.x, pz = rig.z;
-    const room = roomRects.find((r) =>
-      px >= r.x0 && px <= r.x1 && pz >= r.z0 && pz <= r.z1) ?? null;
+    let room = null;
+    for (const r of roomRects)
+      if (px >= r.x0 && px <= r.x1 && pz >= r.z0 && pz <= r.z1) { room = r; break; }
     if (room !== curRoom) {
       curRoom = room;
       if (room) {
@@ -2949,8 +3090,7 @@ function walkStep(dt) {
         document.getElementById('hint').textContent =
           condLine(condOf(slug, room.strand));
       } else {
-        document.getElementById('hfocus').textContent =
-          D.halls.find(x => x.slug === slug).focus;
+        document.getElementById('hfocus').textContent = hallRec.focus;
         document.getElementById('hint').textContent = t('hint.walk');
       }
     }
@@ -2962,7 +3102,7 @@ function walkStep(dt) {
       rig.x *= RESTO_R / rlen; rig.z *= RESTO_R / rlen;
     }
     let rbest = null, rbd = 1e9;
-    const rwp = new THREE.Vector3();
+    const rwp = _wp;
     for (const b of restoBeacons) {
       b.getWorldPosition(rwp);
       const d = Math.hypot(rwp.x - rig.x, rwp.z - rig.z);
@@ -2985,7 +3125,7 @@ function walkStep(dt) {
     rig.x *= lim / len; rig.z *= lim / len;
   }
   let best = null, bd = 1e9;
-  const wp = new THREE.Vector3();
+  const wp = _wp;
   for (const b of buildings) {
     b.getWorldPosition(wp);
     const d = Math.hypot(wp.x - rig.x, wp.z - rig.z);
@@ -3129,12 +3269,18 @@ function buzz(ms, mag = .6) {
 
 /* The dash is data-driven: the sims registry declares every gauge (id,
    label, unit, warn threshold), and each sim only supplies live values. */
+const dashCells = new Map();        // gauge id -> { cell, gv, txt, warn }
 function initDash(def) {
   const el = document.getElementById('dash');
   el.innerHTML = def.dash.map((g) =>
     `<div class="g" id="g-${g.id}"><span class="gv">\u2013</span>` +
     `<span class="gl">${g.label}${g.unit ? ' ' + g.unit : ''}</span></div>`).join('');
   el.style.display = 'flex';
+  dashCells.clear();
+  for (const g of def.dash) {
+    const cell = document.getElementById('g-' + g.id);
+    dashCells.set(g.id, { cell, gv: cell.querySelector('.gv'), txt: null, warn: null });
+  }
 }
 // one formatter for a gauge value, read by the DOM dash and the XR wrist
 // panel alike, so the two never show a different number for the same gauge
@@ -3143,14 +3289,18 @@ function gaugeText(x) {
   return typeof x === 'object' && x.txt !== undefined ? x.txt
     : Math.abs(v) >= 100 ? String(Math.round(v)) : (Math.round(v * 10) / 10).toFixed(1);
 }
+// written only on change: every gauge used to be rewritten every frame
+// (6-7 DOM mutations per frame in every seat) whether or not it moved
 function setDash(def, vals) {
   for (const g of def.dash) {
-    const cell = document.getElementById('g-' + g.id);
+    const c = dashCells.get(g.id);
     const x = vals[g.id];
-    if (!cell || x === undefined) continue;
+    if (!c || x === undefined) continue;
     const v = typeof x === 'object' ? x.v : x;
-    cell.querySelector('.gv').textContent = gaugeText(x);
-    cell.classList.toggle('warn', g.warn_at !== undefined && v >= g.warn_at);
+    const txt = gaugeText(x);
+    if (txt !== c.txt) { c.gv.textContent = txt; c.txt = txt; }
+    const warn = g.warn_at !== undefined && v >= g.warn_at;
+    if (warn !== c.warn) { c.cell.classList.toggle('warn', warn); c.warn = warn; }
   }
 }
 
@@ -4359,12 +4509,11 @@ function loadChartSim(P = {}) {
         else a.m.position.z -= 2.6 * dt;
         a.lb.position.copy(a.m.position).y += 1.4;
         if (a.m.position.y > 6.5 || a.m.position.z < -9) {
-          // the labelSet loop drops a.lb's own reference once it sees no
-          // parent, but that alone never frees its canvas texture - do
-          // that here, at removal, rather than waiting on a teardown that
-          // may be minutes away if this run keeps going
+          // freed here, at removal, rather than waiting on a teardown that
+          // may be minutes away if this run keeps going: disposeOf() drops
+          // the sign from labelSet and releases its (shared) texture
           g.remove(a.m); g.remove(a.lb);
-          a.lb.material.map?.dispose(); a.lb.material.dispose();
+          disposeOf(a.lb);
           anims.splice(i, 1);
         }
       }
@@ -6300,13 +6449,15 @@ function playEmote(id) {
   lastEmote = id; emo = { move: e.move, t: 0 };
   buzz(30, .2);
 }
+const _emoTargets = [null, null];
 function stepEmote(dt) {
   if (!emo) return;
+  _emoTargets[0] = avatarMesh; _emoTargets[1] = walkAvatar;
   emo.t += dt;
   const T = 1.3, k = Math.min(1, emo.t / T);
   const s = Math.sin(k * Math.PI);            // rise and settle
-  const targets = [avatarMesh, walkAvatar].filter(Boolean);
-  for (const av of targets) {
+  for (const av of _emoTargets) {
+    if (!av) continue;
     const { arms, head, hat } = av.userData;
     arms.armL.rotation.set(0, 0, 0); arms.armR.rotation.set(0, 0, 0);
     arms.armLLo.rotation.set(0, 0, 0); arms.armRLo.rotation.set(0, 0, 0);
@@ -6693,9 +6844,9 @@ function exitWalkMode() {
 }
 function touchWalkStep(dt) {
   const sp = 5.2 * dt;
-  const was = walkAvatar.position.clone();
-  const f = new THREE.Vector3(Math.sin(tYaw), 0, Math.cos(tYaw));
-  const r = new THREE.Vector3(f.z, 0, -f.x);
+  const was = _twWas.copy(walkAvatar.position);
+  const f = _twF.set(Math.sin(tYaw), 0, Math.cos(tYaw));
+  const r = _twR.set(f.z, 0, -f.x);
   walkAvatar.position.addScaledVector(f, -joyVec.y * sp);
   walkAvatar.position.addScaledVector(r, -joyVec.x * sp);
   if (Math.hypot(joyVec.x, joyVec.y) > .1)
@@ -6705,8 +6856,7 @@ function touchWalkStep(dt) {
     const len = Math.hypot(walkAvatar.position.x, walkAvatar.position.z);
     if (len > walkLim) walkAvatar.position.multiplyScalar(walkLim / len);
   } else if (view === 'hall') {
-    const h = D.halls.find(x => x.slug === slug);
-    const DEP = h.depth * U;
+    const DEP = hallRec.depth * U;
     walkAvatar.position.x = Math.min(21, Math.max(-21, walkAvatar.position.x));
     walkAvatar.position.z = Math.min(DEP / 2 - .8,
       Math.max(-DEP / 2 - 26, walkAvatar.position.z));
@@ -6720,8 +6870,8 @@ function touchWalkStep(dt) {
   if (moved > .0015) gait(walkAvatar, walkAvatar.userData.dist);
   else gaitRest(walkAvatar, dt);
   // third-person camera
-  const back = new THREE.Vector3(Math.sin(tYaw), 0, Math.cos(tYaw));
-  const eye = walkAvatar.position.clone()
+  const back = _twF.set(Math.sin(tYaw), 0, Math.cos(tYaw));
+  const eye = _twEye.copy(walkAvatar.position)
     .addScaledVector(back, 5.6).setY(walkAvatar.position.y + 2.2 + tPitch * 4);
   camera.position.lerp(eye, Math.min(1, 8 * dt));
   camera.lookAt(walkAvatar.position.x, walkAvatar.position.y + 1.4,
@@ -6729,7 +6879,7 @@ function touchWalkStep(dt) {
   // nearest door / institution for the action button
   if (view === 'campus') {
     let best = null, bd = 1e9, bp = null, pd = 1e9;
-    const wp = new THREE.Vector3();
+    const wp = _wp;
     for (const b of buildings) {
       b.getWorldPosition(wp);
       const d = Math.hypot(wp.x - walkAvatar.position.x, wp.z - walkAvatar.position.z);
@@ -6751,7 +6901,7 @@ function touchWalkStep(dt) {
     } else { nearSlug = nearPoi = null; act.style.display = 'none'; }
   } else if (view === 'restoration') {
     let bt = null, td = 1e9;
-    const wp = new THREE.Vector3();
+    const wp = _wp;
     for (const b of restoBeacons) {
       b.getWorldPosition(wp);
       const d = Math.hypot(wp.x - walkAvatar.position.x, wp.z - walkAvatar.position.z);
@@ -6908,8 +7058,9 @@ function spawnCampusAdvisors() {
 
 /* ---- what an advisor is standing near enough to be asked ---------------- */
 const ADV_REACH = 4.2;
+const _advNear = new THREE.Vector3();
 function advisorNear(pos) {
-  let best = null, bd = 1e9, v = new THREE.Vector3();
+  let best = null, bd = 1e9, v = _advNear;
   for (const m of advisorMeshes) {
     const d = m.getWorldPosition(v).distanceTo(pos);
     if (d < bd) { bd = d; best = m; }
@@ -6921,8 +7072,9 @@ function advisorNear(pos) {
 // them alive - the same breath and head-turn every other figure here gets,
 // so they read as people standing in a room rather than as signage.
 const _advV = new THREE.Vector3();
+let advBtnEl = null;
 function advisorProximity(dt) {
-  const btn = document.getElementById('advBtn');
+  const btn = advBtnEl ??= document.getElementById('advBtn');
   if (!advisorMeshes.length) { if (nearAdvisor) clearAdvisors(); return; }
   const t = clock.elapsedTime;
   for (const m of advisorMeshes) {
@@ -8569,7 +8721,9 @@ window.__tc3d = () => ({ view, buildings: buildings.length, plates: plates.lengt
     tris: renderer.info.render.triangles,
     geoms: renderer.info.memory.geometries,
     tex: renderer.info.memory.textures,
-    cached: geoCache.size },
+    cached: geoCache.size, lblTex: lblTexCache.size,
+    labelSet: labelSet.length,
+    campusBeacons: beaconInst ? beaconInst.count : 0 },
   wheel: document.querySelectorAll('#wheel path').length,
   progress: { stations: doneStations.size, sims: Object.keys(prog.sims).length,
     tools: Object.keys(prog.tools).length },
@@ -8888,7 +9042,8 @@ function xrHudMount(grip) {
 }
 function xrHudDrop(slot) {
   const sp = xrHud.sprites[slot]; if (!sp) return;
-  xrHud.group.remove(sp); sp.material.map?.dispose(); sp.material.dispose();
+  // its map is a shared label texture: released through the cache, not disposed here
+  xrHud.group.remove(sp); lblTexRelease(sp.userData.lbl?.texKey); sp.material.dispose();
   delete xrHud.sprites[slot]; delete xrHud.texts[slot];
 }
 function xrHudClear() { for (const k of Object.keys(xrHud.sprites)) xrHudDrop(k); }
@@ -8909,14 +9064,15 @@ function setXRDash(def, vals) {
   if (now - xrHud.last < 150) return;
   xrHud.last = now;
   const per = 4;
-  def.dash.forEach((g, i) => {
-    const x = vals[g.id]; if (x === undefined) return;
+  for (let i = 0; i < def.dash.length; i++) {
+    const g = def.dash[i];
+    const x = vals[g.id]; if (x === undefined) continue;
     const v = typeof x === 'object' ? x.v : x;
     const warn = g.warn_at !== undefined && v >= g.warn_at;
     const sp = xrHudSprite('g:' + g.id, (warn ? '▲ ' : '') + gaugeText(x),
       g.label + (g.unit ? ' ' + g.unit : ''), .045, warn);
     sp.position.set((i % per - (per - 1) / 2) * .08, -.07 - Math.floor(i / per) * .06, 0);
-  });
+  }
 }
 function xrOpStatus() {
   if (!sim) return null;
@@ -8939,23 +9095,27 @@ function xrHudLines(force) {
 }
 
 /* ---- the draw: passthrough, and the headset's own quality ladder ------ */
+const _bankVis = [];
 function xrRender() {
   if (renderer.xr.isPresenting && xrBlend !== 'opaque') {
     // passthrough: the drawn sky, the ground disc, the grid and the fog
     // banks would paint over the room. They are hidden around the draw
     // only, so every view change that sets them stays exactly as written.
     const bg = scene.background, fn = scene.fog.near, ff = scene.fog.far;
-    const gv = ground.visible, grv = grid.visible, banks = fogBanks.map((b) => b.m.visible);
+    const gv = ground.visible, grv = grid.visible, banks = _bankVis;
+    banks.length = fogBanks.length;
+    for (let i = 0; i < fogBanks.length; i++) {
+      banks[i] = fogBanks[i].m.visible; fogBanks[i].m.visible = false;
+    }
     scene.background = null; scene.fog.near = 1e6; scene.fog.far = 2e6;
     ground.visible = false; grid.visible = false;
-    for (const b of fogBanks) b.m.visible = false;
     xrStat.arHidden = { sky: scene.background === null, ground: !ground.visible,
       grid: !grid.visible, fogFar: scene.fog.far, banks: banks.length,
       clearAlpha: renderer.getClearAlpha() };
     renderer.render(scene, camera);
     scene.background = bg; scene.fog.near = fn; scene.fog.far = ff;
     ground.visible = gv; grid.visible = grv;
-    fogBanks.forEach((b, i) => { b.m.visible = banks[i]; });
+    for (let i = 0; i < fogBanks.length; i++) fogBanks[i].m.visible = banks[i];
     return;
   }
   xrStat.arHidden = null;
@@ -9018,7 +9178,7 @@ renderer.setAnimationLoop(() => {
   if (renderer.xr.isPresenting) xrInput(dt);
   if (!reduced) {
     for (const b of beacons) if (b.userData.spin) b.rotation.y += dt * 1.4;
-    for (const b of campusSpin) b.rotation.y += dt * 1.1;
+    if (view === 'campus') spinBeacons(dt);
   }
   // a seat the headless sweep is stepping at its own fixed dt is never
   // also stepped here; a seat the scripted operator drives at real time

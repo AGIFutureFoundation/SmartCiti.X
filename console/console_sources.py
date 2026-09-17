@@ -10,6 +10,9 @@ import hashlib
 import pathlib
 
 SOURCES = [
+    # the pack's consumer library first: the console generates its lessons
+    # with it, the same rule the Academy runs, rather than storing rows
+    'pack/registry.js',
     'control/lpa.mjs', 'control/dial.mjs', 'control/graph.mjs',
     'control/hints.mjs', 'control/sequencer.mjs', 'control/gates.mjs',
     'fabric/agent.mjs', 'fabric/stubs.mjs',

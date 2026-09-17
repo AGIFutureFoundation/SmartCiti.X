@@ -17,7 +17,7 @@ source contract, not a data copy: no parcel, imagery or elevation record is stor
 Every authority, dataset id and record count above is RECORDED from
 Locator.X's committed builders (Apache-2.0) — the same sibling source
 the [geo registry](Campus-Map.md) copies its coordinates from — and
-cross-checked against the Locator.X checkout. Each query is bounded by that campus's own
+cross-checked against the Locator.X checkout when it is present beside this repository. Each query is bounded by that campus's own
 RECORDED city frame.
 
 ## The imagery

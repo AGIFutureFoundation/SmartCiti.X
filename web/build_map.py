@@ -32,6 +32,7 @@ PACKS = _pack_root()
 sys.path.insert(0, str(ROOT))
 from interiors import build as build_interiors, ROOMS as ROOM_PROGRAMME  # noqa: E402
 from mapdata import make_codes, HUES as SHARED_HUES  # noqa: E402
+from staleness import emit  # noqa: E402
 
 _districts_json = json.load(open(PACKS / 'unions/registry/districts.json'))['districts']
 DISTRICT_MAP = {k: (d['name'], d['tagline'], d['halls'])
@@ -597,5 +598,4 @@ renderDetail(selected); apply();
 '''
 
 out = ROOT / 'trade_craft_map.html'
-out.write_text(PAGE, encoding='utf-8')
-print(f'written: {len(PAGE):,} bytes | {len(halls)} halls | {TOTALS["all"]:,} modules')
+emit(out, PAGE, f'{len(halls)} halls | {TOTALS["all"]:,} modules', encoding='utf-8')

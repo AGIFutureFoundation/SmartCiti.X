@@ -7,7 +7,7 @@
  * classic swap bug), and holds every point to its provenance discipline.
  */
 import { createHash } from 'node:crypto';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 
 let n = 0;
 const ok = (m, c) => { if (!c) { console.error('FAIL', m); process.exit(1); } n++; console.log('  ok ', m); };
@@ -236,6 +236,30 @@ ok('and it says plainly what it does NOT count, rather than implying it counts s
   && /AUTHORED where none does/.test(reg.walk.honesty.what_it_counts));
 ok('no band is asserted without a campus to measure it from',
   Object.keys(reg.anchors).every((ck) => ck in reg.campuses));
+
+/* ---------------------------------------------------------- cross-check --- */
+// recorded_check is a contract, never a report of the build machine: the
+// committed bytes are the same whether or not the sibling checkout was
+// present when the registry was built. The comparison runs HERE, every run.
+const rc = reg.recorded_check;
+ok('recorded_check is the machine-independent contract: names the sibling checkout, what is held against it, and where the check runs',
+  typeof rc === 'object' && rc.checkout === '../locator.x'
+  && /when it is\s+present beside this repository/.test(rc.contract)
+  && rc.held.length === 3 && /geo\/test\.mjs/.test(rc.where));
+const locx = new URL('../../locator.x/', import.meta.url);
+if (existsSync(locx)) {
+  const app = readFileSync(new URL('src/app.js', locx), 'utf8');
+  const m = /\['Oakland',([0-9.]+),(-[0-9.]+),/.exec(app);
+  ok('cross-check ran: the RECORDED Oakland pair still matches the Locator.X city table',
+    !!m && +m[1] === reg.campuses.oakland.lat && +m[2] === reg.campuses.oakland.lng);
+  const walk = readFileSync(new URL('src/walk.js', locx), 'utf8');
+  ok('cross-check ran: the walk bands and classes still match the Locator.X walk module',
+    walk.includes(`R10=${reg.walk.bands_m.ten_minute}, R15=${reg.walk.bands_m.fifteen_minute}`)
+    && reg.walk.classes.every((c) => walk.includes(`id:'${c.id}'`) && walk.includes(`name:'${c.name}'`)));
+} else {
+  ok('cross-check skipped: Locator.X checkout not present beside this repository (Oakland pair not re-held this run)', true);
+  ok('cross-check skipped: Locator.X checkout not present beside this repository (walk bands not re-held this run)', true);
+}
 
 const src = readFileSync(new URL('./build.py', import.meta.url));
 ok('the registry was built from the current builder source (stamp check)',
