@@ -410,9 +410,10 @@ function engineStart(kind) {
     return;
   }
   const osc = ac.createOscillator(), g = ac.createGain(), f = ac.createBiquadFilter();
-  osc.type = kind === 'diesel' ? 'sawtooth' : 'triangle';
-  osc.frequency.value = kind === 'diesel' ? 42 : 95;
-  f.type = 'lowpass'; f.frequency.value = kind === 'diesel' ? 320 : 900;
+  // electric: the boom lift's hydraulic pump whine - a higher, cleaner tone
+  osc.type = kind === 'diesel' ? 'sawtooth' : kind === 'electric' ? 'sine' : 'triangle';
+  osc.frequency.value = kind === 'diesel' ? 42 : kind === 'electric' ? 160 : 95;
+  f.type = 'lowpass'; f.frequency.value = kind === 'diesel' ? 320 : kind === 'electric' ? 1400 : 900;
   g.gain.value = 0;
   osc.connect(f); f.connect(g); g.connect(master); osc.start();
   engine = { osc, g, kind };
@@ -423,7 +424,7 @@ function engineSet(load) {  // 0..1 - throttle / hoist activity / arc heat
     engine.g.gain.setTargetAtTime(load * .17, ac.currentTime, .03);
     return;
   }
-  const base = engine.kind === 'diesel' ? 42 : 95;
+  const base = engine.kind === 'diesel' ? 42 : engine.kind === 'electric' ? 160 : 95;
   engine.osc.frequency.setTargetAtTime(base * (1 + load * 1.6), ac.currentTime, .08);
   engine.g.gain.setTargetAtTime(.05 + load * .13, ac.currentTime, .1);
 }
@@ -477,6 +478,12 @@ function buzz(ms, mag = .6) {
         { duration: ms, strongMagnitude: mag, weakMagnitude: mag * .6 });
     }
   } catch (e) { /* unsupported */ }
+  // in a headset: the XR input sources' own actuators (WebXR Gamepads
+  // Module), both hands - absent on a platform without them, never an error
+  try {
+    for (const src of renderer.xr.getSession()?.inputSources ?? [])
+      src.gamepad?.hapticActuators?.[0]?.pulse?.(mag, ms);
+  } catch (e) { /* unsupported */ }
 }
 
 /* The dash is data-driven: the sims registry declares every gauge (id,
@@ -488,15 +495,20 @@ function initDash(def) {
     `<span class="gl">${g.label}${g.unit ? ' ' + g.unit : ''}</span></div>`).join('');
   el.style.display = 'flex';
 }
+// one formatter for a gauge value, read by the DOM dash and the XR wrist
+// panel alike, so the two never show a different number for the same gauge
+function gaugeText(x) {
+  const v = typeof x === 'object' ? x.v : x;
+  return typeof x === 'object' && x.txt !== undefined ? x.txt
+    : Math.abs(v) >= 100 ? String(Math.round(v)) : (Math.round(v * 10) / 10).toFixed(1);
+}
 function setDash(def, vals) {
   for (const g of def.dash) {
     const cell = document.getElementById('g-' + g.id);
     const x = vals[g.id];
     if (!cell || x === undefined) continue;
     const v = typeof x === 'object' ? x.v : x;
-    cell.querySelector('.gv').textContent =
-      typeof x === 'object' && x.txt !== undefined ? x.txt
-        : Math.abs(v) >= 100 ? String(Math.round(v)) : (Math.round(v * 10) / 10).toFixed(1);
+    cell.querySelector('.gv').textContent = gaugeText(x);
     cell.classList.toggle('warn', g.warn_at !== undefined && v >= g.warn_at);
   }
 }
@@ -512,7 +524,39 @@ function setSimView(mode) {
     camera.position.set(...(oc?.pos ?? [36, 28, 42]));
     controls.target.set(...(oc?.tgt ?? [0, 11, 0]));
     controls.update();
+    // in a headset the orbit frame is a viewpoint: the rig stands where the
+    // orbit camera would, facing the target, and the head is free
+    if (renderer.xr.isPresenting) xrOrbitPlace(oc?.pos ?? [36, 28, 42], oc?.tgt ?? [0, 11, 0]);
   }
+}
+
+/* A seat is a POSE, not a camera write. Every operator view (cab, driver,
+   visor, deck, signal, chart, wand, spray, basket, pendant) hands its eye
+   position and the point it looks at here, once per frame. On a desktop
+   this is exactly the camera.position + lookAt it always was. Presenting
+   in a headset, the pose lands on the XR rig instead - the rig stands
+   where the eye would (floor-relative, so the headset's own height is
+   added back, not doubled) and turns to face the look point - and the
+   camera is never written, because the headset owns it. */
+const _seatP = new THREE.Vector3();
+function seatPose(px, py, pz, lx, ly, lz, lerp = 0) {
+  if (!renderer.xr.isPresenting) {
+    if (lerp) camera.position.lerp(_seatP.set(px, py, pz), lerp);
+    else camera.position.set(px, py, pz);
+    camera.lookAt(lx, ly, lz);
+    return;
+  }
+  // the head's height above the rig floor is the headset's own reading
+  // (about 1.6 m in a local-floor space, near 0 in a plain local one)
+  _seatP.set(px, py - camera.position.y, pz);
+  if (lerp) xrRig.position.lerp(_seatP, lerp); else xrRig.position.copy(_seatP);
+  xrRig.rotation.set(0, Math.atan2(-(lx - px), -(lz - pz)), 0);
+}
+function xrOrbitPlace(pos, tgt) {
+  // xrHeadY, not camera.position.y: the orbit controls have just written
+  // their own frame into the camera, and the headset overwrites it next frame
+  xrRig.position.set(pos[0], pos[1] - xrHeadY, pos[2]);
+  xrRig.rotation.set(0, Math.atan2(-(tgt[0] - pos[0]), -(tgt[2] - pos[2])), 0);
 }
 
 // the Operator's mesh is a child of sim.group, so disposeOf(sim.group)
@@ -543,17 +587,15 @@ function teardownSim() {
   document.getElementById('camBtn').style.display = 'none';
   document.getElementById('sndBtn').style.display = 'none';
   document.getElementById('opBtn').style.display = 'none';
-  // a sim drives the camera itself in cab/driver view - offering a headset
-  // session on top of that would have two things fighting for the camera
-  // every frame, so XR entry is a hall/campus/walk thing only
-  document.getElementById('vrBtn').style.display = vrSupported ? '' : 'none';
-  document.getElementById('arBtn').style.display = arSupported ? '' : 'none';
+  xrHudClear();
 }
 
 function exitSim() { teardownSim(); showHall(slug); }
 
 function startSim(simId, scenarioId) {
-  if (walkActive) plc.unlock();
+  // a walker in a headset hands the rig to the seat; a desktop walker unlocks
+  if (xrWalk) { xrWalk = false; walkActive = false; }
+  else if (walkActive) plc.unlock();
   if (sim) teardownSim();
   if (curRestoSite) teardownRestoWalk();
   simTicks = []; traceClock = 0;
@@ -583,7 +625,9 @@ function startSim(simId, scenarioId) {
     : simId === 'rigging-signals' ? riggingSim(P)
     : simId === 'load-chart' ? loadChartSim(P)
     : simId === 'pressure-washer' ? pressureWasherSim(P)
-    : simId === 'airless-sprayer' ? paintSprayerSim(P) : forkliftSim(P);
+    : simId === 'airless-sprayer' ? paintSprayerSim(P)
+    : simId === 'boom-lift' ? boomLiftSim(P)
+    : simId === 'overhead-crane' ? overheadCraneSim(P) : forkliftSim(P);
   scene.add(sim.group);
   // your avatar takes the seat the sim declares - the learner is IN the yard
   if (sim.mount) {
@@ -641,14 +685,14 @@ function startSim(simId, scenarioId) {
       `<option value="${l}">${l}</option>`).join('');
     document.getElementById('opCtl').style.display = '';
   }
-  // see the matching note in teardownSim(): a sim owns the camera itself,
-  // so it never offers a headset session too
-  document.getElementById('vrBtn').style.display = 'none';
-  document.getElementById('arBtn').style.display = 'none';
+  // a seat used to hide the headset buttons because its cab view wrote the
+  // camera every frame; a seat now writes a POSE (seatPose) that lands on
+  // the XR rig while presenting, so every seat is operable in-session
   controls.autoRotate = false;
   setSimView(def.view_modes[0]);
   acEnsure(); engineStart(def.audio.engine === 'diesel' ? 'diesel'
-    : def.audio.engine === 'arc' ? 'arc' : 'hoist');
+    : def.audio.engine === 'arc' ? 'arc'
+    : def.audio.engine === 'electric-hydraulic' ? 'electric' : 'hoist');
   if (def.audio.alerts.includes('reverse-beeper')) beeperEnsure();
   initDash(def);
   document.getElementById('hname').textContent =
@@ -899,9 +943,9 @@ function craneSim(P = {}) {
       if (simView === 'cab') {
         // the operator's cab hangs BELOW the jib (sight to the hook must
         // clear it - the hook always rides directly under the jib line)
-        camera.position.copy(slewG.localToWorld(new THREE.Vector3(3.8, -.6, 1.4)));
+        const eye = slewG.localToWorld(new THREE.Vector3(3.8, -.6, 1.4));
         // aim between the hook and the horizon so the yard stays in frame
-        camera.lookAt(hook.position.x, hook.position.y + 8, hook.position.z);
+        seatPose(eye.x, eye.y, eye.z, hook.position.x, hook.position.y + 8, hook.position.z);
       }
     },
     gauges: () => ({
@@ -1048,9 +1092,8 @@ function excavatorSim(P = {}) {
       stickG.rotation.z = -(Math.PI - Math.acos(cosB));
       if (simView === 'cab') {
         const eye = hg.localToWorld(new THREE.Vector3(.8, 2.5, 1));
-        camera.position.copy(eye);
         const tip = tipPos();
-        camera.lookAt(tip.x, Math.min(tip.y, .8), tip.z);
+        seatPose(eye.x, eye.y, eye.z, tip.x, Math.min(tip.y, .8), tip.z);
       }
     },
     gauges: () => ({
@@ -1185,12 +1228,12 @@ function forkliftSim(P = {}) {
       if (simView === 'driver') {
         // the seat: eye height over the chassis, sight line past the mast
         const eye = fl.position.clone().addScaledVector(dir, .5).setY(2.25);
-        camera.position.copy(eye);
-        camera.lookAt(eye.clone().addScaledVector(dir, 10).setY(1.7));
+        const at = eye.clone().addScaledVector(dir, 10).setY(1.7);
+        seatPose(eye.x, eye.y, eye.z, at.x, at.y, at.z);
       } else {
         const camTo = fl.position.clone().addScaledVector(dir, -8.5).setY(5.2);
-        camera.position.lerp(camTo, Math.min(1, 5 * dt));
-        camera.lookAt(fl.position.clone().addScaledVector(dir, 4).setY(1.2));
+        const at = fl.position.clone().addScaledVector(dir, 4).setY(1.2);
+        seatPose(camTo.x, camTo.y, camTo.z, at.x, at.y, at.z, Math.min(1, 5 * dt));
       }
     },
     gauges: () => ({
@@ -1318,10 +1361,8 @@ function weldSim(P = {}) {
       if (st.arc) arcGlow.scale.setScalar(.8 + .5 * Math.abs(Math.sin(performance.now() / 37)));
       arcGlow.position.y = -.02 - st.gap * .02;
       engineSet(st.arc ? .55 + .25 * Math.random() : 0);  // crackle drive (audio only)
-      if (simView === 'visor') {
-        camera.position.set(st.x - .7, topY + 1.15, 1.45);
-        camera.lookAt(st.x + .2, topY + .05, 0);
-      }
+      if (simView === 'visor')
+        seatPose(st.x - .7, topY + 1.15, 1.45, st.x + .2, topY + .05, 0);
     },
     gauges: () => {
       const s = segAt();
@@ -1447,10 +1488,7 @@ function scaffoldSim(P = {}) {
         }
         ghost.visible = true;
       } else { gLast = null; ghost.visible = false; }
-      if (simView === 'deck') {
-        camera.position.set(2.7, 3.05, 0);
-        camera.lookAt(-1.6, 2.1, 0);
-      }
+      if (simView === 'deck') seatPose(2.7, 3.05, 0, -1.6, 2.1, 0);
     },
     gauges: () => ({
       rack: { v: 0, txt: STAGES[st.rack] },
@@ -1551,8 +1589,7 @@ function riggingSim(P = {}) {
       cableGeo.attributes.position.needsUpdate = true;
       if (simView === 'signal') {
         // the signalperson's eye: on the pad, watching the load
-        camera.position.set(4.5, 1.75, 7.1);
-        camera.lookAt(load.position.x, load.position.y + 1, load.position.z);
+        seatPose(4.5, 1.75, 7.1, load.position.x, load.position.y + 1, load.position.z);
       }
     },
     gauges: () => ({
@@ -1689,10 +1726,8 @@ function loadChartSim(P = {}) {
           anims.splice(i, 1);
         }
       }
-      if (simView === 'chart') {
-        camera.position.set(2.7, 2.15, 4.9);
-        camera.lookAt(board.position.x, board.position.y, board.position.z);
-      }
+      if (simView === 'chart')
+        seatPose(2.7, 2.15, 4.9, board.position.x, board.position.y, board.position.z);
     },
     gauges: () => {
       const p = PICKS[Math.min(st.i, PICKS.length - 1)];
@@ -1812,10 +1847,8 @@ function pressureWasherSim(P = {}) {
       wand.position.set(st.u, st.v + .4, st.gap);
       jet.visible = st.spray;
       if (jet.visible) jet.scale.setScalar(.8 + .4 * Math.abs(Math.sin(performance.now() / 45)));
-      if (simView === 'wand') {
-        camera.position.set(st.u - .3, st.v + .55, st.gap + .5);
-        camera.lookAt(st.u, st.v + .4, -.06);
-      }
+      if (simView === 'wand')
+        seatPose(st.u - .3, st.v + .55, st.gap + .5, st.u, st.v + .4, -.06);
     },
     gauges: () => ({
       u: st.u,
@@ -1937,10 +1970,8 @@ function paintSprayerSim(P = {}) {
       gun.position.set(st.u, st.v + .4, st.gap);
       jet.visible = st.spray;
       if (jet.visible) jet.scale.setScalar(.8 + .4 * Math.abs(Math.sin(performance.now() / 45)));
-      if (simView === 'spray') {
-        camera.position.set(st.u - .3, st.v + .55, st.gap + .5);
-        camera.lookAt(st.u, st.v + .4, -.06);
-      }
+      if (simView === 'spray')
+        seatPose(st.u - .3, st.v + .55, st.gap + .5, st.u, st.v + .4, -.06);
     },
     gauges: () => ({
       u: st.u,
@@ -1971,6 +2002,339 @@ function paintSprayerSim(P = {}) {
    own record, never the learner's. Inputs land in the same `keys` object
    a keyboard fills and the same sim.action() Space calls, so the seat
    cannot tell the two apart - which is the point. */
+/* ---------------------------------------------------- boom lift basket ----
+   An aerial work platform: a turret on a chassis on the level pad, a
+   two-stage boom, a railed basket. Schematic kinematics - swing, boom
+   elevation, extension - with one honest envelope: outreach x platform
+   load against the rated moment the registry's layout declares. The
+   overhead line, where a scenario has one, is an exclusion cylinder the
+   basket must never enter. Tie-off and stabilizers are latched facts:
+   set before the basket first leaves the ground, or late. */
+function boomLiftSim(P = {}) {
+  const LAY = D.sims.sims['boom-lift'].layout;
+  const PTS = P.points ?? [[-3.5, 7, 7], [0, 7, 7], [3.5, 7, 7]];
+  const LINE = P.line ?? null;
+  const g = new THREE.Group();
+  simYard(g, 22, 18);
+  const PIV = LAY.pivot_y, L0 = LAY.boom_min, L1 = LAY.boom_max, EXT = L1 - L0;
+  const EL_MAX = LAY.elev_max_deg * Math.PI / 180;
+  const MAX_OUT = LAY.rated_moment / LAY.load_kg;
+  // the pad, the chassis and its wheels, four stabilizer feet (down = set)
+  box(6.4, .12, 4.4, mat.slab, 0, .06, 0, g, false);
+  box(2.6, .9, 1.7, mat.post, 0, .75, 0, g);
+  for (const [wx, wz] of [[-1.05, .95], [1.05, .95], [-1.05, -.95], [1.05, -.95]]) {
+    const w = new THREE.Mesh(new THREE.CylinderGeometry(.42, .42, .32, 14), mat.part);
+    w.rotation.x = Math.PI / 2; w.position.set(wx, .42, wz); w.castShadow = true; g.add(w);
+  }
+  const feet = [[-2.1, 1.5], [2.1, 1.5], [-2.1, -1.5], [2.1, -1.5]].map(([fx, fz]) => {
+    box(1.3, .14, .14, mat.metal, fx / 2, 1.0, fz, g);            // the outrigger arm
+    const leg = box(.14, .9, .14, mat.metal, fx, 1.05, fz, g);     // the leg: drops when set
+    box(.5, .08, .5, mat.part, fx, .12, fz, g, false);
+    return leg;
+  });
+  const turret = new THREE.Group(); turret.position.y = PIV; g.add(turret);
+  box(1.6, .7, 1.5, mat.part, 0, -.3, 0, turret);
+  const boomG = new THREE.Group(); turret.add(boomG);
+  box(L0, .44, .44, mat.metal, L0 / 2, 0, 0, boomG);
+  const stage = box(EXT, .32, .32, mat.metal, L0 - EXT / 2, 0, 0, boomG);
+  const basketG = new THREE.Group(); boomG.add(basketG);   // counter-rotates: hangs level
+  box(1.8, .1, .9, mat.part, 0, -.55, 0, basketG);
+  for (const [bx, bz] of [[-.85, -.4], [.85, -.4], [-.85, .4], [.85, .4]])
+    box(.05, 1.1, .05, mat.post, bx, 0, bz, basketG, false);
+  box(1.8, .05, .05, mat.post, 0, .5, -.4, basketG, false);
+  box(1.8, .05, .05, mat.post, 0, .5, .4, basketG, false);
+  box(.05, .05, .9, mat.post, -.85, .5, 0, basketG, false);
+  box(.05, .05, .9, mat.post, .85, .5, 0, basketG, false);
+  const anchor = box(.12, .12, .12, mat.steel, 0, .35, 0, basketG, false);
+  // the work: a wall bay behind the points, one marker per point, in order
+  const wz = Math.max(...PTS.map((p) => p[2])) + .9;
+  box(18, 13, .6, mat.wall, 0, 6.5, wz, g);
+  const markMat = () => new THREE.MeshStandardMaterial({
+    color: 0xE8A33D, emissive: 0x7a4d08, roughness: .5 });
+  const marks = PTS.map(([px, py, pz], i) => {
+    const m = box(.5, .5, .12, markMat(), px, py, wz - .36, g, false);
+    m.userData.i = i; return m;
+  });
+  // the overhead line and its exclusion zone, drawn as what they are
+  let zone = null;
+  if (LINE) {
+    for (const px of [-14, 14]) box(.3, LINE.y + .4, .3, mat.metal, px, (LINE.y + .4) / 2, LINE.z, g);
+    const wire = new THREE.Mesh(new THREE.CylinderGeometry(.05, .05, 28, 8), mat.part);
+    wire.rotation.z = Math.PI / 2; wire.position.set(0, LINE.y, LINE.z); g.add(wire);
+    zone = new THREE.Mesh(new THREE.CylinderGeometry(LINE.r, LINE.r, 28, 20, 1, true),
+      new THREE.MeshBasicMaterial({ color: 0xE07C68, transparent: true, opacity: .16,
+        side: THREE.DoubleSide, depthWrite: false }));
+    zone.rotation.z = Math.PI / 2; zone.position.set(0, LINE.y, LINE.z); g.add(zone);
+  }
+  const st = { sw: 0, el: 0, ext: 0, stab: false, tied: false, lifted: false,
+               stabLate: false, tieLate: false, exceed: 0, inExceed: false,
+               strikes: 0, inZone: false, next: 0, done: false, t0: null, act: 0 };
+  const _bp = new THREE.Vector3();
+  const boomLen = () => L0 + st.ext;
+  function basketPos(out = new THREE.Vector3()) {
+    const L = boomLen(), h = Math.cos(st.el) * L;
+    return out.set(Math.cos(st.sw) * h, PIV + Math.sin(st.el) * L, Math.sin(st.sw) * h);
+  }
+  const outreach = () => Math.cos(st.el) * boomLen();
+  const momentPct = () => outreach() * LAY.load_kg / LAY.rated_moment * 100;
+  function finish() {
+    st.done = true;
+    const time = st.t0 ? ((performance.now() - st.t0) / 1000) : 0;
+    const tieOk = st.tied && !st.tieLate, stabOk = st.stab && !st.stabLate;
+    const rows = [
+      { axis: 'reach', value: st.next + '/' + PTS.length, ok: st.next === PTS.length },
+      { axis: 'envelope', value: String(st.exceed), ok: st.exceed === 0 },
+      { axis: 'tie-off', value: tieOk ? 'clipped first' : st.tied ? 'clipped late' : 'never clipped', ok: tieOk },
+      { axis: 'slope', value: stabOk ? 'set first' : st.stab ? 'set late' : 'never set', ok: stabOk },
+      { axis: 'strikes', value: String(st.strikes), ok: st.strikes === 0 },
+      { axis: 'time', value: time.toFixed(1) + ' s', ok: null },
+    ];
+    simResults('boom-lift', rows,
+      st.next === PTS.length && st.exceed === 0 && tieOk && stabOk && st.strikes === 0);
+  }
+  return {
+    group: g, orbit: true, orbitCam: { pos: [22, 14, 24], tgt: [0, 5, 3] },
+    mount: { parent: basketG, pos: [0, -.5, 0], yaw: -Math.PI / 2 },
+    action() {
+      if (st.done) return;
+      const bp = basketPos();
+      if (!st.lifted && !st.tied) {
+        // on the ground: the harness clips to the basket anchor
+        st.tied = true; st.t0 = performance.now();
+        anchor.material = mat.post; blip(700, 1050, .12, 'triangle', .12);
+        return;
+      }
+      const p = PTS[st.next];
+      if (p && bp.distanceTo(_bp.set(p[0], p[1], p[2])) <= LAY.point_tol) {
+        marks[st.next].material = mat.steel; st.next++;
+        blip(880, 1320, .18); buzz(60, .3);
+      }
+    },
+    update(dt) {
+      if (st.done) return;
+      const sr = .5, er = 1.6, qr = .45;
+      if (keys.KeyA) st.sw -= sr * dt;
+      if (keys.KeyD) st.sw += sr * dt;
+      // the limit alarm: at the envelope the boom will not extend further
+      if (keys.KeyW && momentPct() < 100) st.ext = Math.min(EXT, st.ext + er * dt);
+      if (keys.KeyS) st.ext = Math.max(0, st.ext - er * dt);
+      if (keys.KeyQ) st.el = Math.min(EL_MAX, st.el + qr * dt);
+      if (keys.KeyE) st.el = Math.max(0, st.el - qr * dt);
+      if (keys.KeyC && !st.lc && !st.lifted && !st.stab) {
+        st.stab = true; for (const f of feet) f.position.y = .55;
+        blip(320, 200, .25, 'square', .1);
+      }
+      st.lc = !!keys.KeyC;
+      const moving = (keys.KeyA || keys.KeyD ? .4 : 0)
+        + (keys.KeyW || keys.KeyS ? .4 : 0) + (keys.KeyQ || keys.KeyE ? .5 : 0);
+      st.act += (Math.min(1, moving) - st.act) * Math.min(1, 5 * dt);
+      engineSet(.1 + st.act * .9);
+      const bp = basketPos(_bp);
+      if (!st.lifted && bp.y > LAY.stow_h) {
+        // the basket leaves the ground: the two latched facts are read now
+        st.lifted = true; st.tieLate = !st.tied; st.stabLate = !st.stab;
+        if (!st.t0) st.t0 = performance.now();
+      }
+      const m = momentPct();
+      if (m > 100 && !st.inExceed) {
+        st.exceed++; st.inExceed = true; blip(1100, 500, .5, 'square', .18); buzz(220, .8);
+      }
+      if (m < 96) st.inExceed = false;
+      if (LINE) {
+        const d = Math.hypot(bp.y - LINE.y, bp.z - LINE.z);
+        if (d < LINE.r && !st.inZone) {
+          st.strikes++; st.inZone = true; zone.material.opacity = .4;
+          blip(980, 490, .6, 'square', .2); buzz(320, .9);
+        }
+        if (d > LINE.r + .3 && st.inZone) { st.inZone = false; zone.material.opacity = .16; }
+      }
+      turret.rotation.y = -st.sw;
+      boomG.rotation.z = st.el;
+      stage.position.x = L0 - EXT / 2 + st.ext;
+      basketG.position.x = boomLen();
+      basketG.rotation.z = -st.el;
+      if (st.next === PTS.length && st.lifted && bp.y <= LAY.stow_h) finish();
+      if (simView === 'basket') {
+        // standing in the basket, facing out along the boom toward the work
+        seatPose(bp.x, bp.y + .6, bp.z,
+          bp.x + Math.cos(st.sw) * 4, bp.y + .4, bp.z + Math.sin(st.sw) * 4);
+      }
+    },
+    gauges: () => ({
+      height: basketPos(_bp).y,
+      outreach: outreach(),
+      swing: ((st.sw * 180 / Math.PI) % 360 + 360) % 360,
+      elev: st.el * 180 / Math.PI,
+      moment: momentPct(),
+      tieoff: { v: st.tied ? 1 : 0, txt: st.tied ? '\\u25a0' : '\\u2013' },
+      stab: { v: st.stab ? 1 : 0, txt: st.stab ? '\\u25a0' : '\\u2013' },
+      points: { v: st.next, txt: st.next + '/' + PTS.length },
+      time: { v: 0, txt: st.t0 ? ((performance.now() - st.t0) / 1000).toFixed(0) : '\\u2013' },
+    }),
+  };
+}
+
+/* ---------------------------------------------------- overhead crane -----
+   A bridge crane in a shop bay: runway beams on columns, a bridge that
+   travels x, a trolley that traverses z, a hoist. The load is a pendulum
+   under the hook exactly as the tower crane's is; the bay's pedestrian
+   aisle and the scenario's workstation are painted rectangles a loaded
+   pass over counts against, and every obstacle under the route has a
+   height the load has to clear. */
+function overheadCraneSim(P = {}) {
+  const LAY = D.sims.sims['overhead-crane'].layout;
+  const [BX, BZ] = LAY.bay;
+  const PICK = P.pickup ?? [-8, -5], TGT = P.target ?? [6, 6];
+  const OBS = P.obstacles ?? [], WS = P.workstation ?? null, AISLE = LAY.aisle;
+  const g = new THREE.Group();
+  const RAIL_Y = 8.2;
+  box(BX * 2 + 6, .1, BZ * 2 + 6, mat.slab, 0, .05, 0, g, false);
+  for (let x = -BX - 2; x <= BX + 2; x += 6) for (const z of [-BZ - 1.4, BZ + 1.4])
+    box(.5, RAIL_Y, .5, mat.metal, x, RAIL_Y / 2, z, g);
+  for (const z of [-BZ - 1.4, BZ + 1.4]) box(BX * 2 + 6, .5, .45, mat.metal, 0, RAIL_Y + .25, z, g);
+  const bridge = new THREE.Group(); g.add(bridge);
+  box(.55, .8, BZ * 2 + 3.4, mat.post, 0, RAIL_Y + .9, 0, bridge);
+  const trolley = box(1.0, .55, 1.0, mat.steel, 0, RAIL_Y + .3, 0, bridge);
+  const ropeMat = new THREE.LineBasicMaterial({ color: 0xd8dde0 });
+  const ropeGeo = new THREE.BufferGeometry().setFromPoints(
+    [new THREE.Vector3(), new THREE.Vector3()]);
+  g.add(new THREE.Line(ropeGeo, ropeMat));
+  const hook = new THREE.Mesh(new THREE.OctahedronGeometry(.35), mat.post);
+  hook.castShadow = true; g.add(hook);
+  // the floor as the route sees it: aisle, workstation, obstacles, target
+  const zoneMat = (c, o) => new THREE.MeshBasicMaterial({
+    color: c, transparent: true, opacity: o, depthWrite: false });
+  const rect = (r, y, m) => {
+    const p = new THREE.Mesh(new THREE.PlaneGeometry(r.x[1] - r.x[0], r.z[1] - r.z[0]), m);
+    p.rotation.x = -Math.PI / 2;
+    p.position.set((r.x[0] + r.x[1]) / 2, y, (r.z[0] + r.z[1]) / 2); g.add(p); return p;
+  };
+  rect(AISLE, .12, zoneMat(0xE8A33D, .22));
+  box(AISLE.x[1] - AISLE.x[0], .03, .18, mat.paint, (AISLE.x[0] + AISLE.x[1]) / 2, .13, AISLE.z[0], g, false);
+  box(AISLE.x[1] - AISLE.x[0], .03, .18, mat.paint, (AISLE.x[0] + AISLE.x[1]) / 2, .13, AISLE.z[1], g, false);
+  if (WS) {
+    rect(WS, .12, zoneMat(0xE07C68, .2));
+    box(WS.x[1] - WS.x[0] - 1, .9, 1.1, mat.wood, (WS.x[0] + WS.x[1]) / 2, .5, (WS.z[0] + WS.z[1]) / 2, g);
+  }
+  const obs = OBS.map((o) => box(o.w, o.h, o.d, mat.wall, o.x, o.h / 2, o.z, g));
+  box(2.4, .12, 2.4, mat.slab, PICK[0], .12, PICK[1], g, false);
+  rect({ x: [TGT[0] - 1.1, TGT[0] + 1.1], z: [TGT[1] - 1.1, TGT[1] + 1.1] }, .13, zoneMat(0x5CB584, .3));
+  const load = box(1.6, 1.2, 1.6, mat.brick, PICK[0], .78, PICK[1], g);
+  const st = { bx: PICK[0] - 4, tz: PICK[1] + 3, h: 5, attached: false, done: false,
+               loadV: new THREE.Vector2(), swayPeak: 0, swayNow: 0, incursions: 0,
+               inZone: false, limits: 0, atLimit: false, lowCarry: false, t0: null,
+               act: 0, rumble: false };
+  const inRect = (x, z, r) => x >= r.x[0] && x <= r.x[1] && z >= r.z[0] && z <= r.z[1];
+  const loadPct = (P.load_t ?? 3) / (LAY.capacity_t ?? 5) * 100;
+  function finish() {
+    st.done = true;
+    const d = Math.hypot(load.position.x - TGT[0], load.position.z - TGT[1]);
+    const time = st.t0 ? ((performance.now() - st.t0) / 1000) : 0;
+    const rows = [
+      { axis: 'placement', value: d.toFixed(2) + ' m', ok: d <= .5 },
+      { axis: 'sway', value: st.swayPeak.toFixed(2) + ' m', ok: st.swayPeak <= .6 },
+      { axis: 'path', value: String(st.incursions), ok: st.incursions === 0 },
+      { axis: 'limits', value: String(st.limits), ok: st.limits === 0 },
+      { axis: 'clear', value: st.lowCarry ? 'carried low' : 'clear', ok: !st.lowCarry },
+      { axis: 'time', value: time.toFixed(1) + ' s', ok: null },
+    ];
+    simResults('overhead-crane', rows,
+      d <= .5 && st.swayPeak <= .6 && st.incursions === 0 && st.limits === 0 && !st.lowCarry);
+  }
+  return {
+    group: g, orbit: true, orbitCam: { pos: [20, 16, 24], tgt: [0, 3, 0] },
+    mount: { parent: g, pos: [PICK[0] + 2.2, 0, PICK[1] + 1.4], yaw: -2.2 },
+    action() {
+      if (st.done) return;
+      if (!st.attached) {
+        const d = Math.hypot(st.bx - load.position.x, st.tz - load.position.z);
+        if (d < 1.0 && st.h < 2.4) {
+          st.attached = true; st.t0 = performance.now(); st.loadV.set(0, 0);
+          blip(500, 760, .12, 'triangle', .12);
+        }
+      } else { st.attached = false; load.position.y = .78; finish(); }
+    },
+    update(dt) {
+      if (st.done) return;
+      const br = 1.3, tr = 1.0, hr = .9;
+      const bridging = keys.KeyA || keys.KeyD;
+      if (keys.KeyA) st.bx = Math.max(-BX, st.bx - br * dt);
+      if (keys.KeyD) st.bx = Math.min(BX, st.bx + br * dt);
+      if (keys.KeyW) st.tz = Math.min(BZ, st.tz + tr * dt);
+      if (keys.KeyS) st.tz = Math.max(-BZ, st.tz - tr * dt);
+      if (keys.KeyQ) {
+        st.h = Math.min(LAY.hook_max, st.h + hr * dt);
+        // two-block: hoisting into the upper limit switch
+        if (st.h >= LAY.hook_max - 1e-6 && !st.atLimit) {
+          st.atLimit = true; st.limits++; blip(1100, 500, .5, 'square', .18); buzz(220, .8);
+        }
+      }
+      if (keys.KeyE) st.h = Math.max(st.attached ? LAY.hang : LAY.hook_min, st.h - hr * dt);
+      if (st.h < LAY.hook_max - .5) st.atLimit = false;
+      if (bridging && !st.rumble) blip(70, 55, .35, 'sawtooth', .16);   // the bridge rumble
+      st.rumble = !!bridging;
+      const moving = (bridging ? .5 : 0) + (keys.KeyW || keys.KeyS ? .3 : 0)
+        + (keys.KeyQ || keys.KeyE ? .5 : 0);
+      st.act += (Math.min(1, moving) - st.act) * Math.min(1, 5 * dt);
+      engineSet(st.act);
+      bridge.position.x = st.bx;
+      trolley.position.z = st.tz;
+      if (st.attached) {
+        const k = 5, damp = 1.4;
+        const ax = (st.bx - load.position.x) * k - st.loadV.x * damp;
+        const az = (st.tz - load.position.z) * k - st.loadV.y * damp;
+        st.loadV.x += ax * dt; st.loadV.y += az * dt;
+        load.position.x += st.loadV.x * dt;
+        load.position.z += st.loadV.y * dt;
+        // the load's centre hangs (hang - .6) under the hook: its underside
+        // sits `hang` below it, the number the registry's carry height is
+        // judged against
+        load.position.y = Math.max(.78, st.h - (LAY.hang - .6));
+        const sway = Math.hypot(st.bx - load.position.x, st.tz - load.position.z);
+        st.swayNow = sway; st.swayPeak = Math.max(st.swayPeak, sway);
+        const lx = load.position.x, lz = load.position.z, bottom = load.position.y - .6;
+        // the route: never over the aisle or the workstation while loaded
+        const over = inRect(lx, lz, AISLE) || (WS && inRect(lx, lz, WS));
+        if (over && !st.inZone) {
+          st.incursions++; st.inZone = true; blip(700, 300, .4, 'square', .16); buzz(200, .7);
+        }
+        if (!over) st.inZone = false;
+        // and above every obstacle it crosses, by the declared clearance
+        for (const o of obs) {
+          const p = o.geometry.parameters;
+          if (Math.abs(lx - o.position.x) < p.width / 2 + .8
+            && Math.abs(lz - o.position.z) < p.depth / 2 + .8
+            && bottom < p.height + LAY.clearance && !st.lowCarry) {
+            st.lowCarry = true; thud(); buzz(140);
+          }
+        }
+        hook.position.set(lx, load.position.y + .95, lz);
+      } else {
+        st.swayNow = 0;
+        hook.position.set(st.bx, st.h, st.tz);
+      }
+      const pts = ropeGeo.attributes.position.array;
+      pts[0] = st.bx; pts[1] = RAIL_Y; pts[2] = st.tz;
+      pts[3] = hook.position.x; pts[4] = hook.position.y; pts[5] = hook.position.z;
+      ropeGeo.attributes.position.needsUpdate = true;
+      if (simView === 'pendant') {
+        // the pendant operator walks the floor beside the load, watching it
+        const fx = hook.position.x, fz = hook.position.z;
+        seatPose(fx + 2.4, 1.7, fz + 1.8, fx, Math.min(hook.position.y, 2.2), fz,
+          Math.min(1, 6 * dt));
+      }
+    },
+    gauges: () => ({
+      bridge: st.bx,
+      trolley: st.tz,
+      hook: st.h,
+      sway: st.swayNow,
+      load: { v: st.attached ? loadPct : 0, txt: st.attached ? loadPct.toFixed(0) : '\\u2013' },
+      time: { v: 0, txt: st.t0 ? ((performance.now() - st.t0) / 1000).toFixed(0) : '\\u2013' },
+    }),
+  };
+}
+
 const OP_KEYS = ['KeyW', 'KeyS', 'KeyA', 'KeyD', 'KeyQ', 'KeyE', 'KeyR', 'KeyX', 'KeyC'];
 const OP_DASH = '\\u2013';
 function opRng(handle) {              // FNV-1a of the run handle seeds an LCG
@@ -2290,6 +2654,140 @@ const OPERATORS = {
               novice: { dwell: 1.0, wander: .7, slip: .03 },
               hurried: { dwell: 1.0, off: -.6, over: .5 } },
     step(g, c) { return opBench(g, c, null); },
+  },
+  'boom-lift': {
+    // transit: go up to the transit elevation before going out, and come
+    // back up before coming in - the arc a basket sweeps at that angle
+    // clears a low overhead line and a fully extended boom still sits
+    // inside the envelope. A hurried hand aims straight at the point and
+    // extends along the line of sight; a novice does that on some points
+    // (seeded), and slips keys
+    levels: { optimal: { stab: true, tie: true, transit: true, tol: .5 },
+              novice: { stab: true, tie: true, transit: true, tol: .6, slip: .04, direct: .5 },
+              hurried: { stab: false, tie: false, transit: false, tol: .7 } },
+    step(g, c) {
+      const k = {}, L = c.L, m = c.m, lay = c.def.layout, pts = c.P.points ?? [];
+      const n = parseInt(g.points.txt, 10), N = pts.length;
+      const el = g.elev * Math.PI / 180, len = g.outreach / Math.max(.05, Math.cos(el));
+      const solve = (p) => {
+        const d = Math.hypot(p[0], p[2]), dy = p[1] - lay.pivot_y;
+        return { bearing: Math.atan2(p[2], p[0]) * 180 / Math.PI,
+                 len: Math.hypot(d, dy), el: Math.atan2(dy, d) * 180 / Math.PI };
+      };
+      const seekEl = (want, tol) => seek(k, g.elev, want, tol, 'KeyE', 'KeyQ');
+      const seekLen = (want, tol) => seek(k, len, want, tol, 'KeyS', 'KeyW');
+      const seekSw = (want, tol) => {
+        const da = wrapDeg(want - g.swing);
+        if (Math.abs(da) <= tol) return true;
+        k[da > 0 ? 'KeyD' : 'KeyA'] = true;
+        return false;
+      };
+      // this point's own transit: the declared angle, or - a hurried or
+      // slipping hand - straight at the point
+      if (m.pt !== n) {
+        m.pt = n;
+        m.direct = !L.transit || (L.direct ? c.rng() < L.direct : false);
+      }
+      const p = pts[n], s = p ? solve(p) : null;
+      const transit = m.direct && s ? s.el : lay.transit_elev_deg;
+      let act = false;
+      switch (c.id) {
+        case 'level':
+          if (g.height <= lay.stow_h + .01) c.next();
+          break;
+        case 'stabilizers':
+          if (!L.stab || g.stab.txt !== OP_DASH) c.next();
+          else if (c.step % 2 === 0) k.KeyC = true;              // edge-triggered
+          break;
+        case 'tie-off':
+          if (!L.tie || g.tieoff.txt !== OP_DASH) c.next();
+          else act = true;
+          break;
+        case 'raise':
+          if (seekEl(transit, 1.5)) { if (n >= N) c.goto('stow'); else c.next(); }
+          break;
+        case 'swing':
+          seekEl(transit, 1.5);
+          if (seekSw(s.bearing, 1.0)) c.next();
+          break;
+        case 'extend':
+          seekEl(transit, 1.5); seekSw(s.bearing, 1.0);
+          if (seekLen(s.len, .15)) c.next();
+          break;
+        case 'settle': {
+          const a = seekSw(s.bearing, .8), b = seekLen(s.len, .12), e = seekEl(s.el, .6);
+          const bx = g.outreach * Math.cos(g.swing * Math.PI / 180);
+          const bz = g.outreach * Math.sin(g.swing * Math.PI / 180);
+          if (a && b && e && Math.hypot(bx - p[0], g.height - p[1], bz - p[2]) <= lay.point_tol * L.tol)
+            c.next();
+          break;
+        }
+        case 'work':
+          // do the task; the next step reads the points gauge - a miss
+          // simply runs raise/swing/extend/settle again for the same point
+          act = true; c.goto('raise');
+          break;
+        case 'stow': {
+          // retract at transit, swing parallel to the line (bearing 0), lower
+          if (!seekLen(lay.boom_min, .15)) { seekEl(lay.transit_elev_deg, 1.5); break; }
+          if (!seekSw(0, 1.5)) { seekEl(lay.transit_elev_deg, 1.5); break; }
+          seekEl(0, .8);
+          break;
+        }
+      }
+      slip(k, c);
+      return { keys: k, act };
+    },
+  },
+  'overhead-crane': {
+    levels: { optimal: { carry: null, gate: [.12, .3], settle: .1, tol: .12, diag: false },
+              novice: { carry: null, gate: [.12, .3], settle: .1, tol: .18, diag: false, slip: .05, low: .5 },
+              hurried: { carry: 'limit', gate: [1e9, 1e9], settle: 1e9, tol: .3, diag: true } },
+    step(g, c) {
+      const k = {}, L = c.L, m = c.m, lay = c.def.layout;
+      const [px, pz] = c.P.pickup ?? [-8, -5], [tx, tz] = c.P.target ?? [6, 6];
+      // the sway gate, with hysteresis, exactly the tower crane's
+      if (g.sway > L.gate[1]) m.hold = true; else if (g.sway < L.gate[0]) m.hold = false;
+      const bridgeTo = (x) => m.hold ? false : seek(k, g.bridge, x, L.tol, 'KeyA', 'KeyD');
+      const trolleyTo = (z) => m.hold ? false : seek(k, g.trolley, z, L.tol, 'KeyS', 'KeyW');
+      // the carry height: the declared one; a novice on some yards carries
+      // low (seeded); a hurried hand hoists into the upper limit
+      if (m.carry === undefined)
+        m.carry = L.carry === 'limit' ? lay.hook_max + 1
+          : (L.low && c.rng() < L.low) ? lay.carry_h - 1.2 : lay.carry_h;
+      let act = false;
+      switch (c.id) {
+        case 'reach': {
+          const a = seek(k, g.bridge, px, .1, 'KeyA', 'KeyD'), b = seek(k, g.trolley, pz, .1, 'KeyS', 'KeyW');
+          const h = seek(k, g.hook, 2.2, .12, 'KeyE', 'KeyQ');
+          if (a && b && h) c.next();
+          break;
+        }
+        case 'hook': act = true; c.next(); break;
+        case 'hoist':
+          if (g.time.txt === OP_DASH) c.goto('reach');          // the hook missed
+          // a hurried hand hoists until the limit switch stops it
+          else if (seek(k, g.hook, m.carry, .1, 'KeyE', 'KeyQ')
+            || (L.carry === 'limit' && g.hook >= lay.hook_max - .01)) c.next();
+          break;
+        case 'bridge':
+          if (L.diag) trolleyTo(tz);
+          if (bridgeTo(tx)) c.next();
+          break;
+        case 'trolley':
+          bridgeTo(tx);
+          if (trolleyTo(tz)) c.next();
+          break;
+        case 'settle': if (g.sway <= L.settle) c.next(); break;
+        case 'lower': if (seek(k, g.hook, 2.2, .1, 'KeyE', 'KeyQ')) c.next(); break;
+        case 'release':
+          if (Math.hypot(g.bridge - tx, g.trolley - tz) > L.tol * 2) c.goto('bridge');
+          else if (g.sway <= L.settle) { act = true; c.next(); }
+          break;
+      }
+      slip(k, c);
+      return { keys: k, act };
+    },
   },
 };
 // the two hand-tool benches share one raster policy: contain (the washer),
@@ -3131,12 +3629,13 @@ function idleBreath(av, t, dt) {
   b.chest.rotation.x = Math.sin(t * 1.1 + .5) * .012;
   // look toward the camera: the yaw between where the body faces and where
   // the viewer stands, split between neck and head and clamped at both
-  const dx = camera.position.x - av.position.x;
-  const dz = camera.position.z - av.position.z;
+  const eye = eyePos();
+  const dx = eye.x - av.position.x;
+  const dz = eye.z - av.position.z;
   let yaw = Math.atan2(dx, dz) - av.rotation.y;
   yaw = Math.atan2(Math.sin(yaw), Math.cos(yaw));       // wrap to +/- PI
   const pitch = Math.max(-.3, Math.min(.3,
-    -(camera.position.y - (av.position.y + 1.6)) * .08));
+    -(eye.y - (av.position.y + 1.6)) * .08));
   const k = Math.min(1, (dt || .016) * 4);
   const nY = Math.max(-NECK_MAX, Math.min(NECK_MAX, yaw * .45));
   const hY = Math.max(-HEAD_MAX, Math.min(HEAD_MAX, yaw * .35));
@@ -3532,6 +4031,7 @@ function enterTouchWalk() {
   document.getElementById('hint').textContent = '';
 }
 function exitWalkMode() {
+  if (xrWalk) { walkEnded(); return; }
   if (!isTouch && walkActive) { plc.unlock(); return; }
   walkActive = false;
   if (walkAvatar) walkAvatar.visible = false;
@@ -3785,7 +4285,7 @@ function advisorProximity(dt) {
     // reachable without ever needing to be walked up to
     const isOperator = m.userData.advisor === 'operator';
     const near = !isOperator
-      && m.getWorldPosition(_advV).distanceTo(camera.position) < ADV_DETAIL;
+      && m.getWorldPosition(_advV).distanceTo(eyePos()) < ADV_DETAIL;
     m.userData.body.visible = near;
     m.userData.proxy.visible = !near;
     if (near) idleBreath(m.userData.body, t + m.position.x, dt);
@@ -3794,7 +4294,7 @@ function advisorProximity(dt) {
     if (nearAdvisor) { nearAdvisor = null; btn.style.display = 'none'; }
     return;
   }
-  const here = isTouch && walkAvatar ? walkAvatar.position : camera.position;
+  const here = isTouch && walkAvatar && !xrWalk ? walkAvatar.position : eyePos();
   const who = advisorNear(here);
   if (who === nearAdvisor) return;
   nearAdvisor = who;
@@ -4036,6 +4536,415 @@ document.getElementById('advBtn').addEventListener('click', () => {
                      openAdvisor(nearAdvisor); }
 });
 """
+
+XR_JS = r"""/* ------------------------------------------------------------- WebXR ----
+   Experimental, and a viewpoint, not a second world: the same scene, the
+   same registries, the same seats and the same graders. What exists here:
+   a rig the headset rides in (xrRig, the camera's parent), a local-floor
+   reference space with a plain local fallback, AR passthrough (the drawn
+   sky, ground, grid and fog banks suppressed around the draw, clear alpha
+   0), controller input - thumbsticks, trigger, grip, the two face buttons -
+   landing in the same `keys` a keyboard fills, snap-turn locomotion on the
+   rig (a comfort default: no smooth rotation), a wrist panel of `readout`
+   signs driven by the same gauges() the dash reads, and every seat
+   operable in-session through the registry's own `xr` mapping. What does
+   NOT exist: hand tracking, rendered hands or a body beyond two schematic
+   controllers, and any run on a physical headset - this build proves the
+   layer against a mocked WebXR session in headless Chromium only. */
+let xrMode = null, vrSupported = false, arSupported = false, xrProbeNote = null;
+let xrBlend = 'opaque', xrFloor = true, xrWalk = false, xrWalkKey = null;
+const XR_LOCAL_EYE = 1.6;              // rig lift in a plain `local` space
+const XR_SNAP = Math.PI / 6;           // 30 degrees a click
+const XR_SCALES = [1, .8, .65];        // the framebuffer ladder
+const XR_FPS = 60, XR_WINDOW = 3;      // the headset's own budget and window
+let xrScaleIdx = 0, xrFov = 0, xrQAcc = 0, xrQFrames = 0, xrQNote = null;
+let xrHeadY = XR_LOCAL_EYE;            // the headset's last reported height over the rig
+const xrStat = { frames: 0, arHidden: null, lastInput: null, picks: 0 };
+
+async function xrProbe() {
+  if (!navigator.xr?.isSessionSupported) {
+    xrProbeNote = 'navigator.xr is not offered by this browser'; return;
+  }
+  for (const [mode, id, set] of [
+    ['immersive-vr', 'vrBtn', (v) => { vrSupported = v; }],
+    ['immersive-ar', 'arBtn', (v) => { arSupported = v; }]]) {
+    try {
+      if (await navigator.xr.isSessionSupported(mode)) {
+        document.getElementById(id).style.display = '';
+        set(true);
+      }
+    } catch (e) {
+      // a refused probe is a fact worth a line, not a silently hidden button
+      xrProbeNote = mode + ' probe refused: ' + (e?.message ?? e);
+      document.getElementById('hint').textContent = 'XR: ' + xrProbeNote;
+    }
+  }
+}
+xrProbe();
+function xrSay(msg) {
+  document.getElementById('hint').textContent = msg;
+  xrHudLines(true);
+}
+async function xrStart(mode) {
+  if (renderer.xr.isPresenting) return null;
+  try {
+    let session;
+    try {
+      session = await navigator.xr.requestSession(mode, { requiredFeatures: ['local-floor'] });
+      xrFloor = true;
+    } catch (e1) {
+      session = await navigator.xr.requestSession(mode, { requiredFeatures: ['local'] });
+      xrFloor = false;
+    }
+    renderer.xr.setReferenceSpaceType(xrFloor ? 'local-floor' : 'local');
+    renderer.xr.setFramebufferScaleFactor(XR_SCALES[xrScaleIdx]);
+    xrMode = mode;
+    xrBlend = session.environmentBlendMode ?? 'opaque';
+    xrHeadY = xrFloor ? XR_LOCAL_EYE : 0;
+    session.addEventListener('end', xrEnded);
+    // the controllers exist before the session does: three.js maps input
+    // sources onto controllers it already knows at the change event
+    xrCtlBuild();
+    await renderer.xr.setSession(session);
+    xrBegan();
+    return session;
+  } catch (e) {
+    xrMode = null;
+    xrSay('XR session unavailable: ' + (e?.message ?? e));
+    return null;
+  }
+}
+document.getElementById('vrBtn').addEventListener('click', () => xrStart('immersive-vr'));
+document.getElementById('arBtn').addEventListener('click', () => xrStart('immersive-ar'));
+
+function xrBegan() {
+  key.castShadow = false;                        // shadows off in a headset by default
+  if (xrBlend !== 'opaque') renderer.setClearAlpha(0);
+  xrCtlBuild();
+  xrHudBuild();
+  if (walkActive && !xrWalk) { if (isTouch) exitWalkMode(); else plc.unlock(); }
+  if (sim) {
+    if (simView === 'orbit') {
+      const oc = sim.orbitCam;
+      xrOrbitPlace(oc?.pos ?? [36, 28, 42], oc?.tgt ?? [0, 11, 0]);
+    }
+  } else if (['hall', 'campus', 'restoration'].includes(view)) {
+    xrWalkStart();
+  } else {
+    // the region board, the locker: the rig stands where the camera was
+    xrRig.position.set(camera.position.x, camera.position.y - xrHeadY, camera.position.z);
+    xrRig.rotation.set(0, 0, 0); camera.position.set(0, 0, 0);
+  }
+  xrSay((xrMode === 'immersive-ar' ? 'AR' : 'VR') + ' session · '
+    + (xrFloor ? 'local-floor space' : 'local space - rig lifted ' + XR_LOCAL_EYE + ' m, no floor tracking')
+    + ' · ' + xrBlend + ' · left stick walks, right stick snaps 30°, B/Y leaves');
+}
+function xrEnded() {
+  xrMode = null; xrBlend = 'opaque';
+  renderer.setClearAlpha(1);
+  key.castShadow = qLevel !== 'low';
+  xrHudClear();
+  if (xrWalk) walkEnded();
+  else if (sim) {
+    xrRig.position.set(0, 0, 0); xrRig.rotation.set(0, 0, 0);
+    if (simView === 'orbit') setSimView('orbit');
+  } else rigCollapse();
+  document.getElementById('hint').textContent = 'XR session ended';
+}
+// fold the rig into the camera: the camera keeps its world pose, the rig
+// returns to the identity, and every desktop control sees the camera alone
+const _rcP = new THREE.Vector3(), _rcQ = new THREE.Quaternion();
+function rigCollapse() {
+  camera.getWorldPosition(_rcP); camera.getWorldQuaternion(_rcQ);
+  xrRig.position.set(0, 0, 0); xrRig.rotation.set(0, 0, 0); xrRig.updateMatrixWorld(true);
+  camera.position.copy(_rcP); camera.quaternion.copy(_rcQ);
+}
+
+/* ---- walking in a headset: the rig is the body ------------------------ */
+function xrWalkStart() {
+  const [sx, sz] = walkSpawn();
+  xrWalk = true; walkActive = true;
+  controls.enabled = false; controls.autoRotate = false;
+  xrRig.position.set(sx, xrFloor ? 0 : XR_LOCAL_EYE, sz);
+  xrRig.rotation.set(0, Math.atan2(sx, sz), 0);          // facing the origin
+  xrWalkKey = view + ':' + slug + ':' + (curRestoSite?.id ?? '');
+  document.getElementById('cross').style.display = 'none';
+  document.getElementById('hint').textContent = t('hint.walk');
+  nearSlug = null; nearPoi = null; nearTrack = null;
+}
+const _xf = new THREE.Vector3(), _xr = new THREE.Vector3(), _xh = new THREE.Vector3();
+// smooth locomotion on the left stick, relative to where the head looks;
+// a snap turn on the right stick, about the head, re-armed near centre
+function xrMove(dt) {
+  const [lx, ly] = xrPad.l, mag = Math.hypot(lx, ly);
+  if (mag > .15) {
+    camera.getWorldDirection(_xf); _xf.y = 0; _xf.normalize();
+    _xr.set(-_xf.z, 0, _xf.x);
+    const sp = 3 * dt * Math.min(1, mag);
+    xrRig.position.addScaledVector(_xf, -ly * sp).addScaledVector(_xr, lx * sp);
+  }
+  const rx = xrPad.r[0];
+  if (xrPad.snapArmed && Math.abs(rx) > .6) { xrSnap(-Math.sign(rx) * XR_SNAP); xrPad.snapArmed = false; }
+  else if (Math.abs(rx) < .3) xrPad.snapArmed = true;
+}
+function xrSnap(a) {
+  camera.getWorldPosition(_xh);
+  xrRig.rotation.y += a; xrRig.updateMatrixWorld(true);
+  const after = camera.getWorldPosition(_xf);
+  xrRig.position.add(_xh.sub(after));            // the head stays put
+}
+// per-frame housekeeping while presenting: a view change under a walking
+// rig (a door entered, the campus button, a seat left) re-places the walker
+// at that view's spawn; a seat or the board takes the rig for itself
+function xrFrame(dt) {
+  xrStat.frames++;
+  xrHeadY = camera.position.y;
+  const onFoot = !sim && ['hall', 'campus', 'restoration'].includes(view);
+  if (onFoot) {
+    const k = view + ':' + slug + ':' + (curRestoSite?.id ?? '');
+    if (!xrWalk || k !== xrWalkKey) xrWalkStart();
+  } else if (xrWalk) { xrWalk = false; walkActive = false; }
+  if (xrHud.fallback) xrHud.group.position.set(0, xrHeadY - .3, -.6);
+  xrHudLines(false);
+}
+
+/* ---- the controller adapter ------------------------------------------ */
+const xrPad = { l: [0, 0], r: [0, 0], trig: false, lTrig: false, grip: false,
+                a: false, b: false, snapArmed: true, edge: {} };
+function xrInput(dt) {
+  const ses = renderer.xr.getSession(); if (!ses) return;
+  let L = null, R = null;
+  for (const src of ses.inputSources ?? []) {
+    const gp = src.gamepad; if (!gp) continue;
+    if (src.handedness === 'left') L = gp;
+    else if (src.handedness === 'right') R = gp;
+    else if (!R) R = gp;
+  }
+  // xr-standard mapping: axes 2/3 are the thumbstick (0/1 a touchpad),
+  // buttons 0 trigger, 1 squeeze, 4 A/X, 5 B/Y
+  const stick = (gp) => !gp ? [0, 0]
+    : gp.axes.length >= 4 ? [gp.axes[2] || 0, gp.axes[3] || 0] : [gp.axes[0] || 0, gp.axes[1] || 0];
+  const btn = (gp, i) => !!gp?.buttons?.[i]?.pressed;
+  xrPad.l = stick(L); xrPad.r = stick(R);
+  const trig = btn(R, 0), lTrig = btn(L, 0), grip = btn(R, 1) || btn(L, 1);
+  const a = btn(R, 4) || btn(L, 4), b = btn(R, 5) || btn(L, 5);
+  const rose = (name, now) => { const was = xrPad[name]; xrPad[name] = now; return now && !was; };
+  const DZ = .5;
+  if (sim) {
+    // the seat's own mapping, declared once in the registry: sticks to the
+    // W/S/A/D and Q/E verbs, grip to the seat's secondary edge key
+    const map = D.sims.sims[curSimId].xr;
+    const [lx, ly] = xrPad.l, [rx] = xrPad.r;
+    const want = { KeyW: ly < -DZ, KeyS: ly > DZ, KeyA: lx < -DZ, KeyD: lx > DZ,
+                   KeyQ: rx < -DZ, KeyE: rx > DZ };
+    if (map.grip_key) want[map.grip_key] = grip;
+    // written on change only, so a keyboard beside the headset still counts
+    for (const kk in want) if (want[kk] !== xrPad.edge[kk]) { keys[kk] = want[kk]; xrPad.edge[kk] = want[kk]; }
+    // the Space verb, on the press edge - and the operator's while it drives
+    if (rose('trig', trig) && !opRun) sim.action?.();
+    xrPad.grip = grip;
+    if (rose('a', a)) xrWatchToggle();
+    if (rose('b', b)) exitSim();
+  } else {
+    xrPad.trig = trig; xrPad.grip = grip; xrPad.a = a;
+    if (rose('b', b)) ses.end();
+  }
+  if (rose('lTrig', lTrig)) xrPickLeft();
+  xrStat.lastInput = { l: xrPad.l, r: xrPad.r, trig, lTrig, grip, a, b };
+}
+// the A/X button: start watching the scripted reference operator at the
+// level the HUD last selected, or take the seat back - the same restart
+// the HUD's watch button does
+function xrWatchToggle() {
+  if (!sim) return;
+  const id = curSimId, sc = curScenario?.id;
+  if (opRun) { startSim(id, sc); xrSay('the seat is yours again'); return; }
+  const level = document.getElementById('opLvl').value || 'optimal';
+  startSim(id, sc); opAttach(level, 1, false);
+}
+// the left ray picks whatever a click would: a clipboard, an advisor, a
+// station, a door
+const _xrM = new THREE.Matrix4();
+function xrPickLeft() {
+  const ctl = xrCtl.rays.left; if (!ctl) return;
+  _xrM.identity().extractRotation(ctl.matrixWorld);
+  ray.ray.origin.setFromMatrixPosition(ctl.matrixWorld);
+  ray.ray.direction.set(0, 0, -1).applyMatrix4(_xrM);
+  ray.camera = camera;                 // sprites (labels) raycast against a camera
+  xrStat.picks++;
+  pickWith(ray);
+}
+
+/* ---- two schematic controllers, and the left hand's ray --------------- */
+const xrCtl = { built: false, grips: [], rays: {}, hands: {} };
+function xrCtlBuild() {
+  if (xrCtl.built) return; xrCtl.built = true;
+  const body = new THREE.MeshStandardMaterial({ color: 0x2c3639, roughness: .7 });
+  const ring = new THREE.MeshStandardMaterial({ color: 0x41C4D4, roughness: .5, emissive: 0x0e3a40 });
+  for (let i = 0; i < 2; i++) {
+    const grip = renderer.xr.getControllerGrip(i);
+    const handle = new THREE.Mesh(new THREE.CylinderGeometry(.015, .018, .1, 12), body);
+    handle.rotation.x = -Math.PI / 2 + .35; handle.position.set(0, -.02, .04);
+    const halo = new THREE.Mesh(new THREE.TorusGeometry(.03, .004, 8, 24), ring);
+    halo.rotation.x = Math.PI / 2; halo.position.set(0, .01, -.03);
+    grip.add(handle); grip.add(halo);
+    xrRig.add(grip);
+    const ctl = renderer.xr.getController(i);
+    const line = new THREE.Line(new THREE.BufferGeometry().setFromPoints(
+      [new THREE.Vector3(), new THREE.Vector3(0, 0, -2)]),
+      new THREE.LineBasicMaterial({ color: 0xE8A33D, transparent: true, opacity: .6 }));
+    line.visible = false; ctl.add(line); xrRig.add(ctl);
+    ctl.addEventListener('connected', (e) => {
+      const h = e.data?.handedness ?? 'none';
+      xrCtl.hands[i] = h; grip.userData.hand = h;
+      if (h === 'left') { xrCtl.rays.left = ctl; line.visible = true; xrHudMount(grip); }
+    });
+    ctl.addEventListener('disconnected', () => {
+      if (xrCtl.hands[i] === 'left') { xrCtl.rays.left = null; line.visible = false; xrHudMount(null); }
+      xrCtl.hands[i] = null;
+    });
+    xrCtl.grips.push(grip);
+  }
+}
+
+/* ---- the wrist panel: readout signs off the same gauges as the dash --- */
+const xrHud = { group: new THREE.Group(), sprites: {}, texts: {}, last: 0,
+                lastLines: 0, mounted: null, fallback: false };
+xrHud.group.name = 'xr-wrist-panel';
+function xrHudBuild() { if (!xrHud.mounted) xrHudMount(null); }
+function xrHudMount(grip) {
+  if (xrHud.group.parent) xrHud.group.parent.remove(xrHud.group);
+  if (grip) {
+    grip.add(xrHud.group); xrHud.group.position.set(0, .05, .1);
+    xrHud.fallback = false; xrHud.mounted = 'left-grip';
+  } else {
+    // no left controller: a panel 0.6 m ahead of the rig, 0.3 m below the eye
+    xrRig.add(xrHud.group); xrHud.group.position.set(0, xrHeadY - .3, -.6);
+    xrHud.fallback = true; xrHud.mounted = 'rig';
+  }
+}
+function xrHudDrop(slot) {
+  const sp = xrHud.sprites[slot]; if (!sp) return;
+  xrHud.group.remove(sp); sp.material.map?.dispose(); sp.material.dispose();
+  delete xrHud.sprites[slot]; delete xrHud.texts[slot];
+}
+function xrHudClear() { for (const k of Object.keys(xrHud.sprites)) xrHudDrop(k); }
+// a sign is redrawn only when its text changes - the canvas is the cost
+function xrHudSprite(slot, text, sub, scale, warn) {
+  const k = text + '' + (sub ?? '') + (warn ? '!' : '');
+  if (xrHud.texts[slot] === k) return xrHud.sprites[slot];
+  xrHudDrop(slot);
+  const sp = label(text, sub, scale, { kind: 'readout', accent: warn ? LPAL.crit : undefined });
+  const i = labelSet.indexOf(sp); if (i >= 0) labelSet.splice(i, 1);   // on the hand: not view-scored
+  sp.material.opacity = 1; sp.renderOrder = 10;
+  xrHud.group.add(sp); xrHud.sprites[slot] = sp; xrHud.texts[slot] = k;
+  return sp;
+}
+function setXRDash(def, vals) {
+  if (!renderer.xr.isPresenting) return;
+  const now = performance.now();
+  if (now - xrHud.last < 150) return;
+  xrHud.last = now;
+  const per = 4;
+  def.dash.forEach((g, i) => {
+    const x = vals[g.id]; if (x === undefined) return;
+    const v = typeof x === 'object' ? x.v : x;
+    const warn = g.warn_at !== undefined && v >= g.warn_at;
+    const sp = xrHudSprite('g:' + g.id, (warn ? '▲ ' : '') + gaugeText(x),
+      g.label + (g.unit ? ' ' + g.unit : ''), .045, warn);
+    sp.position.set((i % per - (per - 1) / 2) * .08, -.07 - Math.floor(i / per) * .06, 0);
+  });
+}
+function xrOpStatus() {
+  if (!sim) return null;
+  if (!opRun || opRun.sweep) return 'your hands on the seat';
+  const proc = opRun.def.operator.procedure, p = proc[opRun.m.phase];
+  return 'reference operator · ' + opRun.level + ' · '
+    + (opRun.result ? 'done' : 'watching')
+    + (p && !opRun.result ? ' · ' + (opRun.m.phase + 1) + '/' + proc.length + ' ' + p.step.slice(0, 48) : '');
+}
+function xrHudLines(force) {
+  if (!renderer.xr.isPresenting) return;
+  const now = performance.now();
+  if (!force && now - xrHud.lastLines < 250) return;
+  xrHud.lastLines = now;
+  const hint = (document.getElementById('hint').textContent || '').slice(0, 72);
+  xrHudSprite('hint', hint || '–', null, .04, false).position.set(0, .06, 0);
+  const op = xrOpStatus();
+  if (op) xrHudSprite('op', op, null, .04, false).position.set(0, 0, 0);
+  else xrHudDrop('op');
+}
+
+/* ---- the draw: passthrough, and the headset's own quality ladder ------ */
+function xrRender() {
+  if (renderer.xr.isPresenting && xrBlend !== 'opaque') {
+    // passthrough: the drawn sky, the ground disc, the grid and the fog
+    // banks would paint over the room. They are hidden around the draw
+    // only, so every view change that sets them stays exactly as written.
+    const bg = scene.background, fn = scene.fog.near, ff = scene.fog.far;
+    const gv = ground.visible, grv = grid.visible, banks = fogBanks.map((b) => b.m.visible);
+    scene.background = null; scene.fog.near = 1e6; scene.fog.far = 2e6;
+    ground.visible = false; grid.visible = false;
+    for (const b of fogBanks) b.m.visible = false;
+    xrStat.arHidden = { sky: scene.background === null, ground: !ground.visible,
+      grid: !grid.visible, fogFar: scene.fog.far, banks: banks.length,
+      clearAlpha: renderer.getClearAlpha() };
+    renderer.render(scene, camera);
+    scene.background = bg; scene.fog.near = fn; scene.fog.far = ff;
+    ground.visible = gv; grid.visible = grv;
+    fogBanks.forEach((b, i) => { b.m.visible = banks[i]; });
+    return;
+  }
+  xrStat.arHidden = null;
+  renderer.render(scene, camera);
+}
+function xrQStep(dt) {
+  if (!renderer.xr.isPresenting || navigator.webdriver) return;
+  xrQAcc += dt; xrQFrames++;
+  if (xrQAcc >= XR_WINDOW) {
+    const fps = xrQFrames / xrQAcc;
+    if (fps < XR_FPS) xrQDrop(fps);
+    xrQAcc = 0; xrQFrames = 0;
+  }
+}
+// the ladder, honestly: three.js r160 cannot resize the XR framebuffer
+// while presenting (setFramebufferScaleFactor only warns), so a scale step
+// is recorded here and applied when the next session starts; in-session
+// the live levers are fixed foveation (setFoveation applies at once) and
+// the fog banks
+function xrQDrop(fps) {
+  if (xrFov < 1) {
+    xrFov = Math.min(1, xrFov + .5); renderer.xr.setFoveation(xrFov);
+    for (const b of fogBanks) b.m.visible = false;
+  } else if (xrScaleIdx < XR_SCALES.length - 1) xrScaleIdx++;
+  else return;
+  xrQNote = 'XR performance: ' + Math.round(fps) + ' fps · foveation ' + xrFov
+    + ' · framebuffer scale ' + XR_SCALES[xrScaleIdx]
+    + (xrScaleIdx ? ' (applied at the next session start)' : '');
+  xrSay(xrQNote);
+}
+// what a harness can read and drive - the layer is proven against a mocked
+// session, and this is the surface it reads
+window.__tc3dXR = {
+  start: xrStart,
+  end: () => renderer.xr.getSession()?.end(),
+  presenting: () => renderer.xr.isPresenting,
+  forceQ: (fps) => xrQDrop(fps),
+  state: () => ({ mode: xrMode, blend: xrBlend, floor: xrFloor, walk: xrWalk,
+    walkKey: xrWalkKey, probe: xrProbeNote, scale: XR_SCALES[xrScaleIdx],
+    foveation: xrFov, qNote: xrQNote, frames: xrStat.frames, picks: xrStat.picks,
+    arHidden: xrStat.arHidden, clearAlpha: renderer.getClearAlpha(),
+    shadows: key.castShadow, refSpace: xrFloor ? 'local-floor' : 'local',
+    hud: { mounted: xrHud.mounted, fallback: xrHud.fallback,
+      sprites: Object.keys(xrHud.sprites), texts: { ...xrHud.texts },
+      at: xrHud.group.getWorldPosition(new THREE.Vector3()).toArray().map((v) => Math.round(v * 100) / 100) },
+    hands: { ...xrCtl.hands }, ctlBuilt: xrCtl.built,
+    rig: xrRig.position.toArray().map((v) => Math.round(v * 1000) / 1000),
+    rigYaw: Math.round(xrRig.rotation.y * 1000) / 1000,
+    head: camera.position.toArray().map((v) => Math.round(v * 1000) / 1000),
+    eye: eyePos().toArray().map((v) => Math.round(v * 1000) / 1000),
+    input: xrStat.lastInput }),
+};"""
 
 page = '''<!doctype html>
 <html lang="en">
@@ -4284,6 +5193,7 @@ function setQuality(l) {
 function qStep(dt) {
   // harness runs (webdriver) keep deterministic visuals; they force via the hook
   if (!qAuto || qLevel === 'low' || reduced || navigator.webdriver) return;
+  if (renderer.xr.isPresenting) return;       // a headset has its own ladder: xrQStep
   qAcc += dt; qFrames++;
   if (qAcc >= 5) {
     if (qFrames / qAcc < 22) {
@@ -4295,35 +5205,9 @@ function qStep(dt) {
   }
 }
 
-let xrMode = null, vrSupported = false, arSupported = false;
-async function xrProbe() {
-  if (!navigator.xr?.isSessionSupported) return;
-  for (const [mode, id, set] of [
-    ['immersive-vr', 'vrBtn', (v) => { vrSupported = v; }],
-    ['immersive-ar', 'arBtn', (v) => { arSupported = v; }]]) {
-    try {
-      if (await navigator.xr.isSessionSupported(mode)) {
-        document.getElementById(id).style.display = '';
-        set(true);
-      }
-    } catch (e) { /* stays hidden */ }
-  }
-}
-xrProbe();
-async function xrStart(mode) {
-  try {
-    const session = await navigator.xr.requestSession(mode, {
-      optionalFeatures: ['local-floor'] });
-    xrMode = mode;
-    session.addEventListener('end', () => { xrMode = null; });
-    await renderer.xr.setSession(session);
-  } catch (e) {
-    document.getElementById('hint').textContent =
-      'XR session unavailable: ' + (e?.message ?? e);
-  }
-}
-document.getElementById('vrBtn').addEventListener('click', () => xrStart('immersive-vr'));
-document.getElementById('arBtn').addEventListener('click', () => xrStart('immersive-ar'));
+// the WebXR layer itself - probe, session, rig, controllers, wrist panel -
+// lives in the XR block (XR_JS) just above the frame loop, once the scene
+// it moves through exists
 
 const scene = new THREE.Scene();
 
@@ -4595,6 +5479,18 @@ const concreteTex = groundMaps('concrete', 9).map;
 // (1300) with margin, so nothing pops at the clip plane before fog hides it
 const camera = new THREE.PerspectiveCamera(50, innerWidth/innerHeight, .1, 1600);
 camera.position.set(30, 26, 42);
+/* The XR rig: the camera's parent, and the thing that MOVES when a body
+   moves - walking, a seat pose, a snap turn. On a desktop it sits at the
+   identity except in walk mode, so orbit and pointer-lock math see the
+   camera exactly as before; in a headset three.js writes the head pose
+   into the camera relative to this group, so the rig is the only thing
+   the page may ever move. eyePos() is where the eye actually is, in world
+   space, and every reader that used to take camera.position for that
+   reads it instead. */
+const xrRig = new THREE.Group(); xrRig.name = 'xr-rig';
+xrRig.add(camera);
+const _eye = new THREE.Vector3();
+function eyePos() { return camera.getWorldPosition(_eye); }
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.maxPolarAngle = Math.PI * .49;
@@ -4603,6 +5499,7 @@ controls.autoRotate = !reduced;
 controls.autoRotateSpeed = .45;
 controls.addEventListener('start', () => { controls.autoRotate = false; });
 
+scene.add(xrRig);
 const hemi = new THREE.HemisphereLight(0xaec2cb, 0x241d16, 1.05);
 scene.add(hemi);
 const key = new THREE.DirectionalLight(0xffe0b0, 1.6);
@@ -5091,7 +5988,9 @@ function label(text, sub, scale = 1, opts = {}) {
   const kindId = opts.kind && LKIND[opts.kind] ? opts.kind : 'room';
   const kind = LKIND[kindId];
   const shape = kind.shape;
-  const accent = lblAccent(kind, opts.hue);
+  // opts.accent: an explicit accent colour - the XR wrist panel's warning
+  // readouts use the dash's own crit colour, the same rule as .warn
+  const accent = opts.accent ?? lblAccent(kind, opts.hue);
   const marquee = shape === 'marquee';
   const dpr = Math.min(2, devicePixelRatio || 1);
 
@@ -5172,19 +6071,19 @@ function labelStep(dt) {
   if (!labelSet.length) return;
   let live = 0, best = null, bestScore = 0;
   camera.getWorldDirection(_lblFwd);
+  const eye = eyePos();
   const cos = Math.cos(LFOCUS.cone_deg * Math.PI / 180);
   const ease = reduced ? 1 : Math.min(1, (dt || .016) * LFOCUS.ease);
-  const ref = Math.max(LFOCUS.near_full_m,
-    camera.position.distanceTo(controls.target));
+  const ref = Math.max(LFOCUS.near_full_m, eye.distanceTo(controls.target));
   const tanHalfFov = Math.tan(camera.fov * Math.PI / 360);
   for (const sp of labelSet) {
     if (!sp.parent) continue;               // its group was disposed
     labelSet[live++] = sp;
     const u = sp.userData.lbl;
     sp.getWorldPosition(_lblPos);
-    const dist = _lblPos.distanceTo(camera.position);
+    const dist = _lblPos.distanceTo(eye);
     if (u.hide && dist > u.hide) { sp.visible = false; continue; }
-    _lblTo.copy(_lblPos).sub(camera.position).normalize();
+    _lblTo.copy(_lblPos).sub(eye).normalize();
     const dot = _lblTo.dot(_lblFwd);
     // angle: 1 dead ahead, 0 at the edge of the cone and beyond
     const ang = dot <= cos ? 0 : (dot - cos) / (1 - cos);
@@ -6599,10 +7498,11 @@ function mmDraw() {
   g2.clearRect(0, 0, 150, 150);
   g2.drawImage(mmBase, 0, 0);
   if (walkActive) {
-    const px = isTouch ? walkAvatar.position.x : camera.position.x;
-    const pz = isTouch ? walkAvatar.position.z : camera.position.z;
+    const touchWalk = isTouch && !xrWalk;
+    const px = touchWalk ? walkAvatar.position.x : eyePos().x;
+    const pz = touchWalk ? walkAvatar.position.z : eyePos().z;
     let yaw;
-    if (isTouch) yaw = tYaw + Math.PI;
+    if (touchWalk) yaw = tYaw + Math.PI;
     else { const d = new THREE.Vector3(); camera.getWorldDirection(d);
       yaw = Math.atan2(d.x, d.z); }
     const x = 75 + px * mmInfo.s, y = 75 + pz * mmInfo.s;
@@ -6897,21 +7797,31 @@ function enterWalk() {
     if (walkActive) return exitWalkMode();
     return enterTouchWalk();
   }
+  if (renderer.xr.isPresenting) return;      // in a headset you are already on foot
   controls.autoRotate = false; controls.enabled = false;
-  if (view === 'hall') {
-    const h = D.halls.find(x => x.slug === slug);
-    camera.position.set(0, 1.7, -(h.depth * U) / 2 - 8);
-  } else {
-    camera.position.set(0, 1.7, 30);
-  }
+  // the walker is the RIG: it stands at eye height, the camera sits at its
+  // origin and the pointer lock turns only the camera. On unlock the rig
+  // collapses back into the camera, so orbit math never sees the rig.
+  const [sx, sz] = walkSpawn();
+  xrRig.position.set(sx, 1.7, sz); xrRig.rotation.set(0, 0, 0);
+  camera.position.set(0, 0, 0); xrRig.updateMatrixWorld(true);
   camera.lookAt(0, 1.7, 0);
   plc.lock();
+}
+// where a walker stands when a view is entered on foot: outside a hall's
+// door, or on the campus green
+function walkSpawn() {
+  if (view === 'hall') {
+    const h = D.halls.find(x => x.slug === slug);
+    return [0, -(h.depth * U) / 2 - 8];
+  }
+  return [0, 30];
 }
 
 function enterHallWalking(sg) {
   showHall(sg);
-  const h = D.halls.find(x => x.slug === sg);
-  camera.position.set(0, 1.7, -(h.depth * U) / 2 - 8);
+  const [sx, sz] = walkSpawn();
+  xrRig.position.x = sx; xrRig.position.z = sz;
   document.getElementById('hint').textContent = t('hint.walk');
 }
 plc.addEventListener('lock', () => {
@@ -6919,9 +7829,13 @@ plc.addEventListener('lock', () => {
   document.getElementById('cross').style.display = 'block';
   document.getElementById('hint').textContent = t('hint.walk');
 });
-plc.addEventListener('unlock', () => {
-  walkActive = false;
+// the end of a walk, on a desktop (pointer unlock) or in a headset (the
+// session ends, or the B/Y button): the rig folds back into the camera and
+// the orbit controls pick up looking the way the walker was looking
+function walkEnded() {
+  walkActive = false; xrWalk = false;
   document.getElementById('cross').style.display = 'none';
+  rigCollapse();
   controls.enabled = true;
   const fwd = new THREE.Vector3(); camera.getWorldDirection(fwd);
   controls.target.copy(camera.position).addScaledVector(fwd, 6);
@@ -6929,21 +7843,36 @@ plc.addEventListener('unlock', () => {
     '● ' + t('hall.stations') + ' · ' + t('hall.rooms') + ' → ' + t('map.layer.modules');
   else if (view === 'campus') document.getElementById('hint').textContent = t('hint.campus');
   nearSlug = null;
-});
+}
+plc.addEventListener('unlock', () => { if (!xrWalk) walkEnded(); });
 
+const _wf = new THREE.Vector3(), _wr = new THREE.Vector3();
 function walkStep(dt) {
-  const sp = (keys.ShiftLeft || keys.ShiftRight ? 10 : 5) * dt;
-  if (keys.KeyW || keys.ArrowUp) plc.moveForward(sp);
-  if (keys.KeyS || keys.ArrowDown) plc.moveForward(-sp);
-  if (keys.KeyA || keys.ArrowLeft) plc.moveRight(-sp);
-  if (keys.KeyD || keys.ArrowRight) plc.moveRight(sp);
-  camera.position.y = 1.7;
+  const rig = xrRig.position;
+  if (renderer.xr.isPresenting) {
+    xrMove(dt);
+    // a local-floor space puts the floor at the rig; a plain local space
+    // reports the head near zero, so the rig itself stands at eye height
+    rig.y = xrFloor ? 0 : XR_LOCAL_EYE;
+  } else {
+    // forward is where the camera looks, flattened; right is its x axis -
+    // the same vectors PointerLockControls.moveForward/moveRight use, on
+    // the rig instead of the camera
+    const sp = (keys.ShiftLeft || keys.ShiftRight ? 10 : 5) * dt;
+    camera.getWorldDirection(_wf); _wf.y = 0; _wf.normalize();
+    _wr.set(-_wf.z, 0, _wf.x);
+    if (keys.KeyW || keys.ArrowUp) rig.addScaledVector(_wf, sp);
+    if (keys.KeyS || keys.ArrowDown) rig.addScaledVector(_wf, -sp);
+    if (keys.KeyA || keys.ArrowLeft) rig.addScaledVector(_wr, -sp);
+    if (keys.KeyD || keys.ArrowRight) rig.addScaledVector(_wr, sp);
+    rig.y = 1.7;
+  }
   if (view === 'hall') {
     const h = D.halls.find(x => x.slug === slug);
     const DEP = h.depth * U;
-    camera.position.x = Math.min(21, Math.max(-21, camera.position.x));
-    camera.position.z = Math.min(DEP/2 - .8, Math.max(-DEP/2 - 26, camera.position.z));
-    const px = camera.position.x, pz = camera.position.z;
+    rig.x = Math.min(21, Math.max(-21, rig.x));
+    rig.z = Math.min(DEP/2 - .8, Math.max(-DEP/2 - 26, rig.z));
+    const px = rig.x, pz = rig.z;
     const room = roomRects.find((r) =>
       px >= r.x0 && px <= r.x1 && pz >= r.z0 && pz <= r.z1) ?? null;
     if (room !== curRoom) {
@@ -6963,15 +7892,15 @@ function walkStep(dt) {
     return;
   }
   if (view === 'restoration') {
-    const rlen = Math.hypot(camera.position.x, camera.position.z);
+    const rlen = Math.hypot(rig.x, rig.z);
     if (rlen > RESTO_R) {
-      camera.position.x *= RESTO_R / rlen; camera.position.z *= RESTO_R / rlen;
+      rig.x *= RESTO_R / rlen; rig.z *= RESTO_R / rlen;
     }
     let rbest = null, rbd = 1e9;
     const rwp = new THREE.Vector3();
     for (const b of restoBeacons) {
       b.getWorldPosition(rwp);
-      const d = Math.hypot(rwp.x - camera.position.x, rwp.z - camera.position.z);
+      const d = Math.hypot(rwp.x - rig.x, rwp.z - rig.z);
       if (d < rbd) { rbd = d; rbest = b; }
     }
     if (rbest && rbd < 6) {
@@ -6985,16 +7914,16 @@ function walkStep(dt) {
     return;
   }
   // campus stroll: stay on the grounds, and offer the nearest door
-  const len = Math.hypot(camera.position.x, camera.position.z);
+  const len = Math.hypot(rig.x, rig.z);
   const lim = walkLim;
   if (len > lim) {
-    camera.position.x *= lim / len; camera.position.z *= lim / len;
+    rig.x *= lim / len; rig.z *= lim / len;
   }
   let best = null, bd = 1e9;
   const wp = new THREE.Vector3();
   for (const b of buildings) {
     b.getWorldPosition(wp);
-    const d = Math.hypot(wp.x - camera.position.x, wp.z - camera.position.z);
+    const d = Math.hypot(wp.x - rig.x, wp.z - rig.z);
     if (d < bd) { bd = d; best = b; }
   }
   if (best && bd < 11) {
@@ -7008,7 +7937,7 @@ function walkStep(dt) {
   let pbest = null, pd = 1e9;
   for (const b of cityHits) {
     b.getWorldPosition(wp);
-    const d = Math.hypot(wp.x - camera.position.x, wp.z - camera.position.z);
+    const d = Math.hypot(wp.x - rig.x, wp.z - rig.z);
     if (d < pd) { pd = d; pbest = b; }
   }
   if (pbest && pd < 14) {
@@ -7766,9 +8695,16 @@ function drillEnd() {
 
 const ray = new THREE.Raycaster(), ptr = new THREE.Vector2();
 renderer.domElement.addEventListener('pointerdown', (e) => {
+  if (renderer.xr.isPresenting) return;     // the left-hand ray picks in-session
   if (walkActive) ptr.set(0, 0);
   else ptr.set(e.clientX/innerWidth*2-1, -(e.clientY/innerHeight)*2+1);
   ray.setFromCamera(ptr, camera);
+  pickWith(ray);
+});
+// one dispatch for whatever a ray hits - the pointer's ray on a desktop,
+// the left controller's ray in a headset - so in-session picking opens
+// exactly what a click would
+function pickWith(ray) {
   if (view === 'region') {
     const phit = ray.intersectObjects(plates, false)[0];
     if (phit?.object.userData.campus) showCampus(phit.object.userData.campus);
@@ -7821,7 +8757,7 @@ renderer.domElement.addEventListener('pointerdown', (e) => {
   if (walkActive) return;
   const fhit = ray.intersectObjects(floors, false)[0];
   if (fhit?.object.userData.room) openRoom(fhit.object.userData.room);
-});
+}
 let hoverPending = false;
 renderer.domElement.addEventListener('pointermove', (e) => {
   if (view === 'hall' || hoverPending) return;
@@ -8300,7 +9236,8 @@ window.__tc3d = () => ({ view, buildings: buildings.length, plates: plates.lengt
   wa: waTotal ? { done: waDone.size, total: waTotal } : null,
   xr: { vr: document.getElementById('vrBtn').style.display !== 'none',
         ar: document.getElementById('arBtn').style.display !== 'none',
-        mode: xrMode, presenting: renderer.xr.isPresenting },
+        mode: xrMode, presenting: renderer.xr.isPresenting, walk: xrWalk,
+        note: xrProbeNote },
   meta: { exp: lastExport,
     imp: importedGlb ? { nodes: importedGlb.nodes, name: importedGlb.name } : null },
   quality: qLevel, px: renderer.getPixelRatio(),
@@ -8329,7 +9266,7 @@ window.__tc3d = () => ({ view, buildings: buildings.length, plates: plates.lengt
               const tan = Math.tan(camera.fov * Math.PI / 360);
               const v = new THREE.Vector3();
               return labelSet.filter((x) => x.parent && x.visible).map((x) => {
-                const d = x.getWorldPosition(v).distanceTo(camera.position);
+                const d = x.getWorldPosition(v).distanceTo(eyePos());
                 return Math.round(x.scale.y / (2 * d * tan) * 1000) / 1000;
               }).filter((r) => isFinite(r) && r > 0);
             })(),
@@ -8386,15 +9323,23 @@ window.__tc3d = () => ({ view, buildings: buildings.length, plates: plates.lengt
   progress: { stations: doneStations.size, sims: Object.keys(prog.sims).length,
     tools: Object.keys(prog.tools).length },
   dash: document.querySelectorAll('#dash .g').length,
-  cam: camera.position.toArray().map((v) => Math.round(v * 10) / 10),
+  cam: eyePos().toArray().map((v) => Math.round(v * 10) / 10),
+  rigAt: xrRig.position.toArray().map((v) => Math.round(v * 100) / 100),
+  rigYaw: Math.round(xrRig.rotation.y * 1000) / 1000,
   probe: (() => { const r = new THREE.Raycaster();
     r.setFromCamera(new THREE.Vector2(-.4, .4), camera);
     const h = r.intersectObjects(scene.children, true)[0];
     return h ? [h.object.material?.color?.getHexString?.(),
       Math.round(h.distance * 10) / 10, h.object.geometry?.type] : null; })() });
+__XR_JS__
+
 const clock = new THREE.Clock();
 renderer.setAnimationLoop(() => {
   const dt = clock.getDelta();
+  // the controller adapter runs first: thumbsticks, trigger, grip and
+  // buttons land in the same `keys` a keyboard fills (and the same
+  // sim.action() a Space press calls), so nothing below can tell them apart
+  if (renderer.xr.isPresenting) xrInput(dt);
   if (!reduced) {
     for (const b of beacons) if (b.userData.spin) b.rotation.y += dt * 1.4;
     for (const b of campusSpin) b.rotation.y += dt * 1.1;
@@ -8406,7 +9351,11 @@ renderer.setAnimationLoop(() => {
   if (sim && !opHeadless) {
     if (opRun) opStep(dt);
     sim.update(dt);
-    if (sim.gauges) setDash(D.sims.sims[curSimId], sim.gauges());
+    if (sim.gauges) {
+      const gv = sim.gauges();
+      setDash(D.sims.sims[curSimId], gv);
+      setXRDash(D.sims.sims[curSimId], gv);
+    }
     traceStep(dt);
   }
   stepEmote(dt);
@@ -8416,9 +9365,10 @@ renderer.setAnimationLoop(() => {
     b.m.position.x = Math.cos(b.ang) * b.rad;
     b.m.position.z = Math.sin(b.ang) * b.rad;
   }
-  rainStep(dt); qStep(dt);
+  rainStep(dt); qStep(dt); xrQStep(dt);
   if (view === 'campus') mmDraw();
-  if (walkActive) (isTouch ? touchWalkStep : walkStep)(dt);
+  if (renderer.xr.isPresenting) xrFrame(dt);
+  if (walkActive) (isTouch && !xrWalk ? touchWalkStep : walkStep)(dt);
   // in a sim's operator view the sim owns the camera - the orbit controls
   // must not re-clamp it to their own distance limits. A presenting XR
   // session owns the camera even harder: the headset's own pose IS the
@@ -8429,7 +9379,7 @@ renderer.setAnimationLoop(() => {
   advisorProximity(dt);
   faunaStep(clock.elapsedTime, dt);
   labelStep(dt);
-  renderer.render(scene, camera);
+  xrRender();
 });
 </script>
 </body>
@@ -8437,7 +9387,7 @@ renderer.setAnimationLoop(() => {
 '''
 
 page = page.replace('__DATA__', DATA).replace('__PIPELINE_JS__', PIPELINE_JS)
-page = page.replace('__SIM_JS__', SIM_JS)
+page = page.replace('__SIM_JS__', SIM_JS).replace('__XR_JS__', XR_JS)
 page = page.replace('__AVATAR_JS__', AVATAR_JS)
 page = page.replace('__ADVISOR_JS__', ADVISOR_JS)
 out = HERE / 'trade_craft_3d.html'

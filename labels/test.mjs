@@ -106,6 +106,13 @@ ok('focus is presentation: no label is a score and none gates anything',
 ok('no grader anywhere reads which sign a learner faced',
   page.split(/function (?:score|grade)/).slice(1)
     .every((c) => !/labelFocus/.test(c.slice(0, 2500))));
+ok('the wrist panel in a headset reuses the readout kind honestly: same label(), same gauges, fixed size on the hand, not view-scored, verified against a mock only',
+  /readout kind is reused for the\s+wrist panel/.test(reg.honesty.xr_panel)
+  && /same gauges\(\) values/.test(reg.honesty.xr_panel)
+  && /view-direction scoring above does not apply/.test(reg.honesty.xr_panel)
+  && /mocked WebXR session only/.test(reg.honesty.xr_panel)
+  && /kind: 'readout', accent: warn \? LPAL\.crit/.test(page)
+  && /labelSet\.splice\(i, 1\);\s+\/\/ on the hand: not view-scored/.test(page));
 ok('the shapes are admitted to be this bundle\'s own convention, not a standard',
   /a convention this bundle invented, not\s+a standard/
     .test(reg.honesty.convention));

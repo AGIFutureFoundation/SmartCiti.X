@@ -142,7 +142,7 @@ count, atmosphere and walkable city layer),
 112 anchored content doors (the existing
 `avatar-glb` and `hall-glb` exports, `glTF 2.0 binary`, produced on
 demand by the learner's own browser — never files sitting on disk),
-21 embedded services and
+23 embedded services and
 56 external origins.
 
 this fabric is static files a plain web server serves next to the site - the deck's own "publish 3D content like a website" point. No RMAP endpoint, no server, no WebSocket, no fetch at build time, no DID minted: the identity field is honestly null. Every service listed runs in-page with no network, and every anchored .glb is produced on demand by the learner's browser, not a file sitting on disk.
@@ -160,8 +160,10 @@ this fabric is static files a plain web server serves next to the site - the dec
 | `sim:load-chart` | simulator | Load Chart Judgment | `campus:treasure-island` | `sims/registry/sims.json` |
 | `sim:pressure-washer` | simulator | Pressure Washer Surface Clean | `campus:treasure-island` | `sims/registry/sims.json` |
 | `sim:airless-sprayer` | simulator | Airless Paint Sprayer Finish | `campus:treasure-island` | `sims/registry/sims.json` |
+| `sim:boom-lift` | simulator | Boom Lift Basket Work | `campus:treasure-island` | `sims/registry/sims.json` |
+| `sim:overhead-crane` | simulator | Overhead Crane Shop Move | `campus:treasure-island` | `sims/registry/sims.json` |
 | `advisors` | scripted-advisors | 9 scripted advisors, 35 fixed topics | `campus:treasure-island` | `agents/registry/advisors.json` |
-| `schools-panel` | panel | Schools panel - gamified flipped classroom, 41 flipped units | `campus:treasure-island` | `schools/registry/schools.json` |
+| `schools-panel` | panel | Schools panel - gamified flipped classroom, 45 flipped units | `campus:treasure-island` | `schools/registry/schools.json` |
 | `crib:structural` | toolroom-crib | Structural tool crib | `campus:treasure-island` | `tools/registry/toolcribs.json` |
 | `crib:envelope` | toolroom-crib | Envelope & finish tool crib | `campus:treasure-island` | `tools/registry/toolcribs.json` |
 | `crib:systems` | toolroom-crib | Building-systems tool crib | `campus:treasure-island` | `tools/registry/toolcribs.json` |
@@ -181,7 +183,7 @@ every other operator this fabric points at - a restoration site's own organizati
 branch per origin: this fabric's own branch (owner
 *SmartCiti.X : Trade Craft Academy (powered by AGI Corp)*, provenance tiers
 AUTHORED, DERIVED, RECORDED, SCHEMATIC,
-143 nodes) and
+145 nodes) and
 56 external branches. The invariant the
 build and the suite both assert: every branch has exactly one owner; no external branch contains a place, content or service this fabric serves, and every node this fabric serves sits under its own branch - asserted by spatial/build.py and spatial/test.mjs
 

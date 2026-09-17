@@ -2,8 +2,8 @@
  "pack": "smartcitix-trade-craft-academy-metaverse-layer",
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.3.0",
- "built": "2026-09-14",
- "source_stamp": "a1ae7551fa3a5418",
+ "built": "2026-09-17",
+ "source_stamp": "63c265558d86a72f",
  "baseline": {
   "note": "built to the open interchange baseline. No private \"metaverse standard\" is referenced or claimed: what is listed under standards is implemented and tested, and what is listed under not_claimed is honestly not. The Open Metaverse Browser Initiative (OMBI) is an open initiative, but its spatial-fabric, SOM and RMAP shapes are unverified against any normative text this build could read, so they sit under not_claimed, not standards.",
   "standards": [
@@ -22,7 +22,7 @@
    {
     "id": "webxr",
     "body": "W3C",
-    "role": "immersive VR/AR entry in the 3D environment, feature-gated to platforms that offer the session"
+    "role": "immersive VR/AR entry in the 3D environment, feature-gated to platforms that offer the session, and experimental: a viewpoint, not a second world. What exists - an XR rig the headset rides in (the camera's parent; walking, seat poses and turns move the rig, never the camera), a local-floor reference space with a plain local fallback (rig lifted 1.6 m, said in the hint), AR passthrough (the drawn sky, ground, grid and fog banks suppressed, clear alpha 0), controller input - thumbsticks, trigger, grip and the two face buttons - landing in the same key state a keyboard fills through each seat's declared xr mapping, snap-turn locomotion (30 degrees, no smooth rotation) with the same wall clamps a desktop walk has, a wrist panel of readout signs off the same gauges the dash shows, the scripted reference operator watchable in-session, and every one of the eleven simulators operable in a session. The quality ladder is honest about three.js r160: fixed foveation and the fog banks step live, the framebuffer scale (1.0 / 0.8 / 0.65) is recorded in-session and applied at the next session start. What does NOT exist: hand tracking, rendered hands or a body beyond two schematic controllers, and any run on a physical headset - this build verified the layer against a mocked WebXR session in headless Chromium (three.js's own WebXRManager driven by a fake session, frame and input sources) only."
    },
    {
     "id": "geojson-wgs84",

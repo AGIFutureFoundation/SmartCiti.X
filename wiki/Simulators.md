@@ -1,6 +1,6 @@
 # The simulators
 
-9 operable training machines live inside the
+11 operable training machines live inside the
 [3D environment](Campus-Map.md): open a bound hall and press **▶** (a hall
 bound to more than one machine offers the choice). The
 physics are schematic — built for practising control discipline (smooth
@@ -473,6 +473,120 @@ yards. Its procedure, the step list the page's policy is written around:
 1. set the standoff to the middle of the effective window, well clear of the run distance
 2. pull the trigger inside the masked line
 3. sweep the panel cell by cell in rows, dwelling on each just past the coat time, turning inside the mask
+## Boom Lift Basket Work (machine)
+
+Set the stabilizers on the level pad, clip your harness to the basket anchor, then take the basket to every marked work point in order and back down — keeping the load moment under the line the whole way and the basket out of the overhead-line exclusion zone.
+
+Trains at: **Electrical Workers**, **Glaziers**, **Architectural Glaziers**, **Painters & Allied Trades**, **Ironworkers**, **Steel Erectors**, **Sheet Metal Workers**, **Heat & Frost Insulators** — each run exercises that hall's
+`machines.applied` skill.
+
+| Control | Action |
+|---|---|
+| `A / D` | swing the turret |
+| `W / S` | extend / retract the boom |
+| `Q / E` | raise / lower the boom |
+| `Space` | clip the harness (on the ground) / do the task at the work point |
+| `C` | set the stabilizers on the pad |
+
+| Rubric axis | Measured | Pass |
+|---|---|---|
+| reach | marked work points the basket was brought to, within tolerance, in order | `== all` |
+| envelope | load-moment envelope exceedances (outreach x platform load over the rated moment) | `== 0` |
+| tie-off | harness clipped before the basket left the ground | `required` |
+| slope | stabilizers set on the level pad before the first lift | `required` |
+| strikes | basket entries into the overhead-line exclusion zone | `== 0` |
+| time | seconds tie-off to stowed | `informational` |
+
+**Cockpit.** A live dash of 9 gauges — `Height m`, `Outreach m`, `Swing °`, `Boom °`, `Moment %` (warns at 90), `Tie-off`, `Stabs`, `Points`, `T s` — with the
+warn thresholds drawn from this registry, not hard-coded in the page.
+View modes: `orbit` / `basket`. Audio is a
+`electric-hydraulic` engine plus `limit-alarm`, `zone-alarm`, `result-chime` —
+synthesized in-page (WebAudio); no recordings shipped. Haptic cues (limit, strike, finish) fire on
+gamepad rumble and the vibration API where the platform offers them.
+
+**Pre-shift walkaround.** Five clipboards ring the machine —
+*Tires, outriggers and the pad*, *Controls and emergency lowering*, *Guardrails and gate*, *Harness and anchor point*, *Overhead-hazard scan* — a habit-builder
+the registry declares **not a gate**: nothing locks behind it and marking
+it changes no score.
+
+**Regional scenarios.** The campus you train at picks the yard — the
+environment varies, the rubric never does:
+
+| Region | Scenario | The yard |
+|---|---|---|
+| Treasure Island Campus | **Curtain-wall panel run** | Six anchor points up a curtain-wall bay on the island campus - open sky overhead, the run to learn the basket on. |
+| Oakland Waterfront Campus | **Terminal light-fixture run** | Four fixture points along a terminal canopy with a live feeder running overhead between the pad and the work - go up before you go out. |
+| Crescent Works Campus | **Storm-shutter run** | Five shutter anchors low on a warehouse wall before the season turns, with a service drop overhead - short reaches, the same tie-off law. |
+
+**Scripted reference operator.** At `optimal` it passes
+**reach**, **envelope**, **tie-off**, **slope**, **strikes** on all three
+yards. Its procedure, the step list the page's policy is written around:
+
+1. stand on the level pad with the boom stowed - nothing lifts until the base is right
+2. set the stabilizers before the basket leaves the ground
+3. clip the harness to the basket anchor on the ground, before the first lift
+4. raise the boom to the transit elevation first - at that angle a fully extended boom still sits inside the envelope and clears the overhead line
+5. swing the turret to the bearing of the next work point
+6. extend or retract to the boom length the point needs, moment under the line
+7. lower the boom onto the point and hold the basket inside the tolerance
+8. do the task at the point, then back up to transit elevation for the next one
+9. once every point is done: retract fully at transit elevation, swing back parallel to the line, then lower the basket to the stowed height
+## Overhead Crane Shop Move (machine)
+
+Hook the load, hoist it to carry height, travel the bridge and then the trolley along the marked route — never over the pedestrian aisle or the workstation, always above the obstacles — and set it down inside the target square, sway under control the whole way.
+
+Trains at: **Crane Operators**, **Millwrights**, **Machinists**, **Foundry Workers**, **Boilermakers**, **Riggers & Signalpersons**, **Port Crane Technicians** — each run exercises that hall's
+`machines.applied` skill.
+
+| Control | Action |
+|---|---|
+| `A / D` | travel the bridge |
+| `W / S` | traverse the trolley |
+| `Q / E` | hoist up / down |
+| `Space` | hook / release the load |
+
+| Rubric axis | Measured | Pass |
+|---|---|---|
+| placement | distance from the target centre at set-down (m) | `<= 0.5` |
+| sway | peak load swing during travel (m) | `<= 0.6` |
+| path | loaded passes over the pedestrian aisle or the workstation exclusion zone | `== 0` |
+| limits | hoist upper-limit (two-block) hits | `== 0` |
+| clear | load carried above every obstacle it crossed | `required` |
+| time | seconds hook to release | `informational` |
+
+**Cockpit.** A live dash of 6 gauges — `Bridge m`, `Trolley m`, `Hook m`, `Sway m` (warns at 0.45), `Load %`, `T s` — with the
+warn thresholds drawn from this registry, not hard-coded in the page.
+View modes: `orbit` / `pendant`. Audio is a
+`hoist-motor` engine plus `bridge-rumble`, `limit-alarm`, `result-chime` —
+synthesized in-page (WebAudio); no recordings shipped. Haptic cues (limit, incursion, finish) fire on
+gamepad rumble and the vibration API where the platform offers them.
+
+**Pre-shift walkaround.** Five clipboards ring the machine —
+*Hook latch and block*, *Wire rope and sheaves*, *Upper-limit switch test*, *Pendant and e-stop*, *Runway and aisle* — a habit-builder
+the registry declares **not a gate**: nothing locks behind it and marking
+it changes no score.
+
+**Regional scenarios.** The campus you train at picks the yard — the
+environment varies, the rubric never does:
+
+| Region | Scenario | The yard |
+|---|---|---|
+| Treasure Island Campus | **Fabrication-shop coil move** | A steel coil from the receiving pad to the slitter stand across the island fab shop - one bench to clear, the aisle to stay off. |
+| Oakland Waterfront Campus | **Foundry ladle-frame move** | A ladle frame from the pour line to the maintenance bay at the Oakland foundry - two mould stacks under the route, carry high. |
+| Crescent Works Campus | **Boat-shed engine move** | A marine engine from the crate to the test stand in a Gulf boat shed - a narrow bay, a tight square, the crew aisle right through the middle. |
+
+**Scripted reference operator.** At `optimal` it passes
+**placement**, **sway**, **path**, **limits**, **clear** on all three
+yards. Its procedure, the step list the page's policy is written around:
+
+1. bridge and trolley the hook over the pickup and lower it onto the load
+2. hook the load
+3. hoist to carry height - above every obstacle on the route, well short of the upper limit - before anything travels
+4. travel the bridge to the target x, moving only while the sway gauge is low
+5. traverse the trolley to the target z, moving only while the sway gauge is low
+6. hold everything until the sway dies away
+7. lower the load to just above the floor
+8. release once the sway is still and the load is over the square
 
 ## What a simulator run is not
 

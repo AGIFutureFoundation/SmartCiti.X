@@ -2,14 +2,15 @@
  "pack": "smartcitix-trade-craft-academy-labels",
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
- "built": "2026-09-11",
- "source_stamp": "755a26c6b771f0ff",
+ "built": "2026-09-17",
+ "source_stamp": "2f7b0baa24a1c452",
  "honesty": {
   "convention": "these shapes are a convention this bundle invented, not a standard anyone else uses; the legend is in the wiki and on the page rather than assumed.",
   "presentation_only": "focus is presentation. Looking at a label changes nothing: no label is a score, none gates anything, and no grader reads which sign a learner faced.",
   "provenance": "a dashed outline on a SCHEMATIC sign and a solid accent on a RECORDED one restate the claim the registry behind them already makes - the label never upgrades a claim.",
   "legibility": "a label never shrinks below the declared floor while it is in range, carries a shadow so it survives a bright sky, and is drawn at device pixel ratio so it is not soft on a phone.",
-  "reduced_motion": "viewers who ask for reduced motion keep the shapes and the colours and lose the easing: labels sit at full opacity rather than breathing as the head turns."
+  "reduced_motion": "viewers who ask for reduced motion keep the shapes and the colours and lose the easing: labels sit at full opacity rather than breathing as the head turns.",
+  "xr_panel": "in a WebXR session the readout kind is reused for the wrist panel: one sign per dash gauge, drawn by the same label() the world signs use, off the same gauges() values the dash reads, with a warning readout wearing the crit accent the dash uses. Those signs ride the left controller (or hang ahead of the rig without one) at a fixed size and full opacity - they are on the hand, not in the world, so the view-direction scoring above does not apply to them. Verified against a mocked WebXR session only, never a physical headset."
  },
  "counts": {
   "kinds": 13,

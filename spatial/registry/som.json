@@ -1193,6 +1193,22 @@
      },
      {
       "kind": "service",
+      "name": "sim:boom-lift",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "transport": "in-page, no network"
+     },
+     {
+      "kind": "service",
+      "name": "sim:overhead-crane",
+      "geopose": "campus:treasure-island",
+      "provenance": "SCHEMATIC",
+      "served_by_this_fabric": true,
+      "transport": "in-page, no network"
+     },
+     {
+      "kind": "service",
       "name": "advisors",
       "geopose": "campus:treasure-island",
       "provenance": "AUTHORED",
@@ -2330,7 +2346,7 @@
   "counts": {
    "branches": 57,
    "external_branches": 56,
-   "fabric_nodes": 143
+   "fabric_nodes": 145
   }
  },
  "honesty": {

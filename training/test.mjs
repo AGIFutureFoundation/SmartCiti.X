@@ -156,7 +156,7 @@ ok('the pass-expression reader captures a whole third argument, inner parenthese
   === JSON.stringify(['Math.abs(a) <= 1 && g(t) === 0', 'f(train) === 0']));
 const exprs = passExprs(page);
 ok('every sim\'s pass/fail expression is computed first, with no reference to training or operator state',
-  exprs.length === 9 && exprs.every((e) => e && !/train|oprun/i.test(e)));
+  exprs.length === 11 && exprs.every((e) => e && !/train|oprun/i.test(e)));
 ok('the recorder in simResults receives passed as a parameter - it cannot compute its own outcome',
   /function simResults\(simId, rows, passed\)/.test(page)
   && page.split('function simResults(simId, rows, passed)')[1]

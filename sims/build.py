@@ -48,7 +48,7 @@ HERE = pathlib.Path(__file__).resolve().parent
 ROOT = HERE.parent
 
 PACK_VERSION = "3.2.0"
-BUILT = "2026-09-10"
+BUILT = "2026-09-16"
 
 SIMS = {
     'crane-lift': {
@@ -650,7 +650,222 @@ SIMS = {
              'params': {'cols': 6, 'rows': 5}},
         ],
     },
+    'boom-lift': {
+        'name': 'Boom Lift Basket Work',
+        'kind': 'machine',
+        'task': 'Set the stabilizers on the level pad, clip your harness to '
+                'the basket anchor, then take the basket to every marked '
+                'work point in order and back down — keeping the load '
+                'moment under the line the whole way and the basket out of '
+                'the overhead-line exclusion zone.',
+        'controls': [
+            {'keys': 'A / D', 'action': 'swing the turret'},
+            {'keys': 'W / S', 'action': 'extend / retract the boom'},
+            {'keys': 'Q / E', 'action': 'raise / lower the boom'},
+            {'keys': 'Space', 'action': 'clip the harness (on the ground) / '
+                                        'do the task at the work point'},
+            {'keys': 'C', 'action': 'set the stabilizers on the pad'},
+        ],
+        'rubric': [
+            {'axis': 'reach', 'measure': 'marked work points the basket was '
+                                         'brought to, within tolerance, in order',
+             'pass': '== all'},
+            {'axis': 'envelope', 'measure': 'load-moment envelope exceedances '
+                                            '(outreach x platform load over '
+                                            'the rated moment)',
+             'pass': '== 0'},
+            {'axis': 'tie-off', 'measure': 'harness clipped before the basket '
+                                           'left the ground',
+             'pass': 'required'},
+            {'axis': 'slope', 'measure': 'stabilizers set on the level pad '
+                                         'before the first lift',
+             'pass': 'required'},
+            {'axis': 'strikes', 'measure': 'basket entries into the overhead-'
+                                           'line exclusion zone',
+             'pass': '== 0'},
+            {'axis': 'time', 'measure': 'seconds tie-off to stowed',
+             'pass': 'informational'},
+        ],
+        # every hall below does its own real work standing in an aerial
+        # platform basket: overhead conduit and fixtures, glazing and
+        # curtain-wall panels, exterior coatings, bolting up at height,
+        # architectural metal and duct, and insulation on overhead runs
+        'halls': ['electricians', 'glaziers', 'window-glazing', 'painters',
+                  'ironworkers', 'steel-erectors', 'sheetmetal', 'insulators'],
+        'skill_strand': 'machines',
+        'skill_tier': 'applied',
+        'dash': [
+            {'id': 'height', 'label': 'Height', 'unit': 'm'},
+            {'id': 'outreach', 'label': 'Outreach', 'unit': 'm'},
+            {'id': 'swing', 'label': 'Swing', 'unit': '°'},
+            {'id': 'elev', 'label': 'Boom', 'unit': '°'},
+            {'id': 'moment', 'label': 'Moment', 'unit': '%', 'warn_at': 90},
+            {'id': 'tieoff', 'label': 'Tie-off', 'unit': ''},
+            {'id': 'stab', 'label': 'Stabs', 'unit': ''},
+            {'id': 'points', 'label': 'Points', 'unit': ''},
+            {'id': 'time', 'label': 'T', 'unit': 's'},
+        ],
+        'audio': {'engine': 'electric-hydraulic',
+                  'alerts': ['limit-alarm', 'zone-alarm', 'result-chime'],
+                  'note': 'synthesized in-page (WebAudio); no recordings shipped'},
+        'haptics': ['limit', 'strike', 'finish'],
+        'view_modes': ['orbit', 'basket'],
+        # the yard geometry the sim and its operator share: the pad the
+        # machine stands on (turret pivot height and boom lengths), the
+        # rated moment the envelope is judged against with the platform
+        # load, the transit elevation at which a fully extended boom still
+        # sits inside the envelope, and the tolerance a work point counts at
+        'layout': {'pivot_y': 1.9, 'boom_min': 5.0, 'boom_max': 14.0,
+                   'elev_max_deg': 78, 'rated_moment': 2100, 'load_kg': 230,
+                   'transit_elev_deg': 75, 'point_tol': 0.9, 'stow_h': 2.6},
+        # Regional scenarios: the work-point run and the overhead line are
+        # the region's own; the envelope and the tie-off law never vary.
+        'scenarios': [
+            {'id': 'bay-curtainwall-run', 'campus': 'treasure-island',
+             'name': 'Curtain-wall panel run',
+             'brief': 'Six anchor points up a curtain-wall bay on the island '
+                      'campus - open sky overhead, the run to learn the '
+                      'basket on.',
+             'params': {'points': [[-3.5, 7, 7], [0, 7, 7], [3.5, 7, 7],
+                                   [3.5, 9.5, 7], [0, 9.5, 7], [-3.5, 9.5, 7]],
+                        'line': None}},
+            {'id': 'oak-terminal-fixtures', 'campus': 'oakland',
+             'name': 'Terminal light-fixture run',
+             'brief': 'Four fixture points along a terminal canopy with a '
+                      'live feeder running overhead between the pad and the '
+                      'work - go up before you go out.',
+             'params': {'points': [[-4, 9, 7], [-1.5, 9, 7], [1.5, 9, 7],
+                                   [4, 9, 7]],
+                        'line': {'z': 3.5, 'y': 6.0, 'r': 2.0}}},
+            {'id': 'nola-storm-shutters', 'campus': 'new-orleans',
+             'name': 'Storm-shutter run',
+             'brief': 'Five shutter anchors low on a warehouse wall before '
+                      'the season turns, with a service drop overhead - '
+                      'short reaches, the same tie-off law.',
+             'params': {'points': [[-4, 5, 7], [-2, 5, 7], [0, 5, 7],
+                                   [2, 5, 7], [4, 5, 7]],
+                        'line': {'z': 3.5, 'y': 6.0, 'r': 1.8}}},
+        ],
+    },
+    'overhead-crane': {
+        'name': 'Overhead Crane Shop Move',
+        'kind': 'machine',
+        'task': 'Hook the load, hoist it to carry height, travel the bridge '
+                'and then the trolley along the marked route — never over '
+                'the pedestrian aisle or the workstation, always above the '
+                'obstacles — and set it down inside the target square, '
+                'sway under control the whole way.',
+        'controls': [
+            {'keys': 'A / D', 'action': 'travel the bridge'},
+            {'keys': 'W / S', 'action': 'traverse the trolley'},
+            {'keys': 'Q / E', 'action': 'hoist up / down'},
+            {'keys': 'Space', 'action': 'hook / release the load'},
+        ],
+        'rubric': [
+            {'axis': 'placement', 'measure': 'distance from the target centre at set-down (m)',
+             'pass': '<= 0.5'},
+            {'axis': 'sway', 'measure': 'peak load swing during travel (m)',
+             'pass': '<= 0.6'},
+            {'axis': 'path', 'measure': 'loaded passes over the pedestrian aisle '
+                                        'or the workstation exclusion zone',
+             'pass': '== 0'},
+            {'axis': 'limits', 'measure': 'hoist upper-limit (two-block) hits',
+             'pass': '== 0'},
+            {'axis': 'clear', 'measure': 'load carried above every obstacle it '
+                                         'crossed',
+             'pass': 'required'},
+            {'axis': 'time', 'measure': 'seconds hook to release',
+             'pass': 'informational'},
+        ],
+        # the crane hall's own focus names overhead lifting outright; the
+        # shop trades below are who a bridge crane actually moves coils,
+        # castings, vessels and machine beds for, and who rigs the pick
+        'halls': ['crane-ops', 'millwrights', 'machinists', 'foundry',
+                  'boilermakers', 'riggers', 'port-crane'],
+        'skill_strand': 'machines',
+        'skill_tier': 'applied',
+        'dash': [
+            {'id': 'bridge', 'label': 'Bridge', 'unit': 'm'},
+            {'id': 'trolley', 'label': 'Trolley', 'unit': 'm'},
+            {'id': 'hook', 'label': 'Hook', 'unit': 'm'},
+            {'id': 'sway', 'label': 'Sway', 'unit': 'm', 'warn_at': 0.45},
+            {'id': 'load', 'label': 'Load', 'unit': '%'},
+            {'id': 'time', 'label': 'T', 'unit': 's'},
+        ],
+        'audio': {'engine': 'hoist-motor',
+                  'alerts': ['bridge-rumble', 'limit-alarm', 'result-chime'],
+                  'note': 'synthesized in-page (WebAudio); no recordings shipped'},
+        'haptics': ['limit', 'incursion', 'finish'],
+        'view_modes': ['orbit', 'pendant'],
+        # the bay geometry the sim and its operator share: half-extents of
+        # the runway, the hook's travel, the carry height (a HOOK height;
+        # the load's underside hangs `hang` below it) every obstacle sits
+        # under by `clearance`, and where the pedestrian aisle runs. The
+        # pickup, target, obstacles and workstation are the scenario's own.
+        'layout': {'bay': [12, 8], 'hook_max': 7.0, 'hook_min': 0.4,
+                   'carry_h': 5.0, 'hang': 2.0, 'clearance': 0.3,
+                   'capacity_t': 5.0,
+                   'aisle': {'x': [-12, 4], 'z': [1.5, 3.5]}},
+        # Regional scenarios: the shop floor is the region's own; "inside
+        # the square, sway low, nothing over the aisle" stays the law.
+        'scenarios': [
+            {'id': 'bay-fab-coil', 'campus': 'treasure-island',
+             'name': 'Fabrication-shop coil move',
+             'brief': 'A steel coil from the receiving pad to the slitter '
+                      'stand across the island fab shop - one bench to '
+                      'clear, the aisle to stay off.',
+             'params': {'pickup': [-8, -5], 'target': [6, 6], 'load_t': 3.2,
+                        'obstacles': [{'x': 8, 'z': 0, 'w': 3, 'd': 2.4, 'h': 1.6}],
+                        'workstation': {'x': [-4, 1], 'z': [4, 7]}}},
+            {'id': 'oak-foundry-ladle', 'campus': 'oakland',
+             'name': 'Foundry ladle-frame move',
+             'brief': 'A ladle frame from the pour line to the maintenance '
+                      'bay at the Oakland foundry - two mould stacks under '
+                      'the route, carry high.',
+             'params': {'pickup': [-9, -4], 'target': [7, 5], 'load_t': 4.5,
+                        'obstacles': [{'x': -2, 'z': -4, 'w': 3, 'd': 3, 'h': 2.0},
+                                      {'x': 7, 'z': 0, 'w': 2.6, 'd': 2.6, 'h': 1.8}],
+                        'workstation': {'x': [-3, 2], 'z': [4.5, 7]}}},
+            {'id': 'nola-boatshed-engine', 'campus': 'new-orleans',
+             'name': 'Boat-shed engine move',
+             'brief': 'A marine engine from the crate to the test stand in a '
+                      'Gulf boat shed - a narrow bay, a tight square, the '
+                      'crew aisle right through the middle.',
+             'params': {'pickup': [-8, -5], 'target': [5, 6], 'load_t': 2.4,
+                        'obstacles': [{'x': 0, 'z': -5, 'w': 4, 'd': 2.6, 'h': 1.9}],
+                        'workstation': {'x': [-5, 0], 'z': [4.5, 7]}}},
+        ],
+    },
 }
+
+# The in-headset control mapping, declared ONCE here per seat and read by
+# the page's controller adapter (web/build_3d.py, XR block): the same
+# key state a keyboard fills, so a seat cannot tell a thumbstick from a
+# key. The prose is what the wiki and the wrist panel show; `grip_key` is
+# the one machine-readable field - the seat's secondary edge key, where it
+# has one - derived below from the seat's own controls list, never typed.
+def xr_mapping(sim):
+    single = [c for c in sim['controls'] if len(c['keys']) == 1 and c['keys'] in 'CXR']
+    grip = single[0] if single else None
+    verbs = {c['keys']: c['action'] for c in sim['controls']}
+    return {
+        'left_stick': 'W/S on the y axis, A/D on the x axis - '
+                      + (verbs.get('W / S', 'no W/S verb on this seat')
+                         + '; ' + verbs.get('A / D', 'no A/D verb on this seat')),
+        'right_stick': ('Q/E on the x axis - ' + verbs['Q / E']) if 'Q / E' in verbs
+                       else 'unused on this seat (no Q/E verb)',
+        'trigger': 'Space, on the press edge - ' + verbs['Space'],
+        'grip': (f"{grip['keys']}, held - {grip['action']}") if grip
+                else 'unused on this seat (no secondary key)',
+        'grip_key': f"Key{grip['keys']}" if grip else None,
+        'primary': 'A / X button: start or stop watching the scripted '
+                   'reference operator drive this seat, at the level the '
+                   'HUD last selected',
+        'secondary': 'B / Y button: leave the seat',
+    }
+for sim_id, sim in SIMS.items():
+    sim['xr'] = xr_mapping(sim)
+    assert sim['xr']['trigger'] and sim['xr']['left_stick'], f'{sim_id}: xr mapping'
 
 # The pre-shift walkaround: five looks per machine, the habit that finds
 # the fault before the shift does. DELIBERATELY NOT A GATE - the honesty
@@ -769,6 +984,39 @@ WALKAROUNDS = {
                   'first pass'},
         {'id': 'ignition', 'point': 'Fire and ignition sources',
          'check': 'open flame, sparks and hot work cleared from the solvent area'},
+    ],
+    'boom-lift': [
+        {'id': 'tires-level', 'point': 'Tires, outriggers and the pad',
+         'check': 'tires sound, outrigger pads whole, the pad level and firm '
+                  'under every foot'},
+        {'id': 'controls', 'point': 'Controls and emergency lowering',
+         'check': 'every function answers at the basket and the ground '
+                  'station, and the manual lowering valve works'},
+        {'id': 'guardrails', 'point': 'Guardrails and gate',
+         'check': 'rails tight, the gate self-closes and latches behind you'},
+        {'id': 'harness', 'point': 'Harness and anchor point',
+         'check': 'webbing and stitching whole, lanyard in date, the basket '
+                  'anchor rated and unbent'},
+        {'id': 'overhead', 'point': 'Overhead-hazard scan',
+         'check': 'every line, beam and canopy on the run found and its '
+                  'clearance called before the first lift'},
+    ],
+    'overhead-crane': [
+        {'id': 'hook', 'point': 'Hook latch and block',
+         'check': 'latch closes and springs back, no throat stretch or '
+                  'twist, sheaves turning free'},
+        {'id': 'rope', 'point': 'Wire rope and sheaves',
+         'check': 'no broken wires, kinks or crushed strands, rope seated in '
+                  'every sheave groove'},
+        {'id': 'limit', 'point': 'Upper-limit switch test',
+         'check': 'hoist stops at the limit under slow approach, before '
+                  'the block ever touches the drum'},
+        {'id': 'pendant', 'point': 'Pendant and e-stop',
+         'check': 'every button labelled and springing back, the e-stop '
+                  'kills all motion and resets clean'},
+        {'id': 'runway', 'point': 'Runway and aisle',
+         'check': 'runway clear end to end, the pedestrian aisle marked and '
+                  'nobody standing under the route'},
     ],
 }
 for sim_id, wa in WALKAROUNDS.items():
@@ -925,6 +1173,57 @@ OPERATORS = {
                                      'time, turning inside the mask'},
         ],
     },
+    'boom-lift': {
+        'guarantees': ['reach', 'envelope', 'tie-off', 'slope', 'strikes'],
+        'procedure': [
+            {'id': 'level', 'step': 'stand on the level pad with the boom '
+                                    'stowed - nothing lifts until the base '
+                                    'is right'},
+            {'id': 'stabilizers', 'step': 'set the stabilizers before the '
+                                          'basket leaves the ground'},
+            {'id': 'tie-off', 'step': 'clip the harness to the basket anchor '
+                                      'on the ground, before the first lift'},
+            {'id': 'raise', 'step': 'raise the boom to the transit elevation '
+                                    'first - at that angle a fully extended '
+                                    'boom still sits inside the envelope and '
+                                    'clears the overhead line'},
+            {'id': 'swing', 'step': 'swing the turret to the bearing of the '
+                                    'next work point'},
+            {'id': 'extend', 'step': 'extend or retract to the boom length the '
+                                     'point needs, moment under the line'},
+            {'id': 'settle', 'step': 'lower the boom onto the point and hold '
+                                     'the basket inside the tolerance'},
+            {'id': 'work', 'step': 'do the task at the point, then back up '
+                                   'to transit elevation for the next one'},
+            {'id': 'stow', 'step': 'once every point is done: retract fully '
+                                   'at transit elevation, swing back parallel '
+                                   'to the line, then lower the basket to the '
+                                   'stowed height'},
+        ],
+    },
+    'overhead-crane': {
+        'guarantees': ['placement', 'sway', 'path', 'limits', 'clear'],
+        'procedure': [
+            {'id': 'reach', 'step': 'bridge and trolley the hook over the '
+                                    'pickup and lower it onto the load'},
+            {'id': 'hook', 'step': 'hook the load'},
+            {'id': 'hoist', 'step': 'hoist to carry height - above every '
+                                    'obstacle on the route, well short of '
+                                    'the upper limit - before anything '
+                                    'travels'},
+            {'id': 'bridge', 'step': 'travel the bridge to the target x, '
+                                     'moving only while the sway gauge is '
+                                     'low'},
+            {'id': 'trolley', 'step': 'traverse the trolley to the target z, '
+                                      'moving only while the sway gauge is '
+                                      'low'},
+            {'id': 'settle', 'step': 'hold everything until the sway dies '
+                                     'away'},
+            {'id': 'lower', 'step': 'lower the load to just above the floor'},
+            {'id': 'release', 'step': 'release once the sway is still and the '
+                                      'load is over the square'},
+        ],
+    },
 }
 for sim_id, op in OPERATORS.items():
     gated = [r['axis'] for r in SIMS[sim_id]['rubric']
@@ -976,6 +1275,13 @@ doc = {
                       'behind the walkaround, completing it changes no '
                       'score, and it is not an equipment inspection record.',
         'operator': OPERATOR_HONESTY,
+        'xr': 'every seat is operable inside a WebXR session through the '
+              '`xr` mapping it carries: thumbsticks, trigger, grip and the '
+              'two face buttons land in the same key state a keyboard '
+              'fills, so a seat cannot tell the two apart and no rubric '
+              'changes in a headset. The mapping is verified against a '
+              'mocked WebXR session in headless Chromium only - no physical '
+              'headset has run these seats in this build.',
     },
     'operator_levels': OPERATOR_LEVELS,
     'sims': SIMS,

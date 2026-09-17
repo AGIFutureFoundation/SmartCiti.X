@@ -36,12 +36,12 @@ The consolidation release: one repository, one version, one truth per fact.
 | Recovered station curriculum rebranded onto halls, skills and rooms, machine-gradable | `stations/`, `archive/` |
 | §24 realized: 22 floor finishes resolved hazard-first, per-room conditions merged more-demanding-wins, provenance-tagged (RECORDED/DERIVED/SCHEMATIC) | `surfaces/` |
 | The interactive layered map, the **network geomap** (a real WGS84 map, vendored MapLibre GL, on-request USGS orthoimagery and live parcel/footprint fetches), the four-level 3D environment (network → campus → hall → walk) with live condition readouts, and the **network dashboard** reading every platform figure live from its own registry | `web/` |
-| Nine operable training simulators — tower-crane lift, excavator trench cut, forklift yard run, weld bead bench, scaffold bay build, rigging signal call, load chart judgment, pressure washer surface clean, airless paint sprayer finish — each with a five-point pre-shift walkaround, a declared cockpit (dash, synthesized audio, haptics, seat view), a per-region scenario and a **scripted reference operator** (a deterministic in-page control policy over the seat's own gauges — no model, no network — passing every pass-gated axis on all 27 seat-x-yard combinations at `optimal`, with `novice`/`hurried` as seeded, labelled degradations); schematic physics, deterministic rubrics, bound to real skills | `sims/` |
+| Eleven operable training simulators — tower-crane lift, excavator trench cut, forklift yard run, weld bead bench, scaffold bay build, rigging signal call, load chart judgment, pressure washer surface clean, airless paint sprayer finish, **boom lift basket work** and **overhead crane shop move** — each with a five-point pre-shift walkaround, a declared cockpit (dash, synthesized audio, haptics, seat view, an in-headset control mapping), a per-region scenario and a **scripted reference operator** (a deterministic in-page control policy over the seat's own gauges — no model, no network — passing every pass-gated axis on all 33 seat-x-yard combinations at `optimal`, with `novice`/`hurried` as seeded, labelled degradations); schematic physics, deterministic rubrics, bound to real skills in 45 halls | `sims/` |
 | The toolroom registry — one crib per district, twelve schematic hand tools each, plus the deterministic crib drill | `tools/` |
-| The schools flipped-classroom pack — the model, four grade bands, proposed district partnerships (public-record names only, every one PROPOSED), 21 live flipped units — with an in-app 🎓 Schools panel bidirectionally linked to every hall it names | `schools/` |
+| The schools flipped-classroom pack — the model, four grade bands, proposed district partnerships (public-record names only, every one PROPOSED), 45 live flipped units (one per sim-bound hall, so the roster moves with `sims/`) — with an in-app 🎓 Schools panel bidirectionally linked to every hall it names | `schools/` |
 | The humanoid avatar locker — 18 sections / 284 options, a crew look stamping all 111 halls, 17 one-tap character presets, 19 costumes, the original **SmartCiti.X TradeApes** (111, one per hall), 8 emotes — cosmetic only, none graded | `avatars/` |
 | The city-records GIS contract (real parcel/footprint authorities, licences and bounded queries) for the three district campuses, plus on-demand real USGS 3DEP elevation lookups — no record copied into the repo, fetched live in the learner's own browser | `parcels/` |
-| The metaverse-interchange layer — glTF 2.0 export/import of the avatar and any hall, a complete VRM-compatible humanoid bone skeleton with a driven (not decorative) walk/idle/head-track, WebXR entry | `meta/` |
+| The metaverse-interchange layer — glTF 2.0 export/import of the avatar and any hall, a complete VRM-compatible humanoid bone skeleton with a driven (not decorative) walk/idle/head-track, and a WebXR layer that is more than an entry button: an XR rig, `local-floor` with a `local` fallback, AR passthrough, controller input into every simulator, snap-turn locomotion and a wrist panel of readouts — verified against a mocked session in headless Chromium, not yet on a physical headset | `meta/` |
 | Nine scripted advisors — eight room- or green-bound guides plus **the Operator**, who lives inside a simulator's own yard and resolves against whichever seat is actually running — a closed 35-question list (the Operator now also quotes the scripted reference procedure), no model, no network, changes no score | `agents/` |
 | Generated sky, six weather states, browser-generated ground recipes (zero third-party texture files) and 101 ambient animals across all ten campuses | `world/` |
 | The in-world signage system — 13 kinds over 10 shapes, shape-carries-category / colour-carries-provenance / type-carries-rank, view-direction-and-distance scored with one field-of-vision focus target | `labels/` |
@@ -151,19 +151,33 @@ gates doing their job on real halls.
    rate limiting re-verified against the §23.1 fail-open classes.
 3. **Tenancy GA.** Multi-tenant deployments with the erasure and retention
    guarantees the privacy pack asserts; per-tenant locale defaults.
-4. **VR sim modality pilot.** The browser simulator layer (`sims/` — nine
+4. **VR sim modality pilot.** The browser simulator layer (`sims/` — eleven
    machines now: tower-crane lift, excavator trench cut, forklift yard run,
    weld bead bench, scaffold bay build, rigging signal call, load chart
-   judgment, pressure washer surface clean and airless paint sprayer
-   finish, all deterministic-rubric and skill-bound, each with a scripted
-   reference operator that drives it at the rubric-passing level and
-   generates SCRIPTED demonstration episodes for the `training/` recorder)
-   is the shipped precursor; this milestone ports it to headsets and widens
-   the roster further (boom lift, overhead crane), and the interiors and
-   §24 packages remain the sim environments' source of truth. Simulator
-   results stay formative until the assessment gates' unaided verification
-   contract says otherwise, and a scripted operator's run is never a
-   learner's result at all.
+   judgment, pressure washer surface clean, airless paint sprayer finish,
+   and — this milestone's widening — the boom lift basket work and the
+   overhead crane shop move, all deterministic-rubric and skill-bound, each
+   with a scripted reference operator that drives it at the rubric-passing
+   level and generates SCRIPTED demonstration episodes for the `training/`
+   recorder). **What shipped:** the 3D environment now carries a real XR
+   rig (the camera's parent; walking, seat poses and snap turns move the
+   rig, never the camera), a `local-floor` space with a `local` fallback,
+   AR passthrough with the drawn sky, ground and fog suppressed, a
+   controller adapter that lands thumbsticks, trigger, grip and face
+   buttons in the same key state a keyboard fills through each seat's
+   declared `xr` mapping, a wrist panel of readout signs off the same
+   gauges the dash shows, and the scripted operator watchable from inside
+   the session — so every seat, the campus, the halls and the restoration
+   walks run in-session against the interiors/§24 environment packages.
+   **What is honestly not done:** this was verified against a mocked WebXR
+   session in headless Chromium (three.js's own `WebXRManager` driven by a
+   fake session, frame and input sources); no physical headset has run it,
+   no hands are tracked or rendered, and three.js r160 cannot resize the
+   XR framebuffer mid-session, so the resolution ladder applies at the next
+   session start while foveation steps live. Simulator results stay
+   formative until the assessment gates' unaided verification contract
+   says otherwise, and a scripted operator's run is never a learner's
+   result at all.
 5. **Metaverse-browser interoperability.** `spatial/` already publishes
    the Academy as a self-hosted spatial fabric with real OGC GeoPose 1.0
    poses and an OMBI-shaped manifest and scene graph that are honestly
@@ -182,6 +196,10 @@ gates doing their job on real halls.
   and provably unable to throttle the control plane.
 - Security checklist at zero open unaccepted items.
 - One VR sim module running against a §24 environment package end to end.
+  *Status:* every sim module runs in a WebXR session against the
+  interiors/§24 environment packages, verified against a mocked session in
+  headless Chromium; verification on a physical headset is the remaining
+  step, so this criterion is **not yet met**.
 
 ---
 
