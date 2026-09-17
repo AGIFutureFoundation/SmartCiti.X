@@ -26,6 +26,22 @@ ok('four standards are claimed - glTF 2.0, WebXR, GeoJSON, OGC GeoPose 1.0 - eac
       reg.baseline.standards.some((s) => s.id === id && s.body && s.role))
   && reg.baseline.standards.find((s) => s.id === 'gltf-2.0')
       .consumers.includes('Unity'));
+ok('the WebXR role says what exists (rig, local-floor with local fallback, passthrough, controllers, snap turn, wrist readouts, every seat) and what does not (hand tracking, rendered hands, a physical headset run) - and names the mocked session it was verified against',
+  (() => {
+    const r = reg.baseline.standards.find((s) => s.id === 'webxr').role;
+    return /XR rig/.test(r) && /local-floor/.test(r) && /local fallback/.test(r)
+      && /passthrough/.test(r) && /clear alpha 0/.test(r) && /thumbsticks, trigger, grip/.test(r)
+      && /snap-turn/.test(r) && /wrist panel/.test(r) && /eleven simulators/.test(r)
+      && /experimental/.test(r) && /a viewpoint, not a second world/.test(r)
+      && /NOT exist: hand\s+tracking, rendered hands/.test(r)
+      && /mocked WebXR session in headless Chromium/.test(r)
+      && /any run on a physical\s+headset/.test(r)
+      && /applied\s+at the next session start/.test(r);
+  })());
+ok('and the page builds what that role names: the rig, the seat pose, the reference-space choice, the AR clear alpha, the adapter, the snap turn, the wrist dash',
+  ['const xrRig = new THREE.Group()', 'function seatPose(', 'function xrInput(',
+    'function xrSnap(', 'function setXRDash(', 'renderer.setClearAlpha(0)',
+    "setReferenceSpaceType(xrFloor ? 'local-floor' : 'local')"].every((tk) => page.includes(tk)));
 ok('the GeoPose claim is the one spatial/ actually emits, and names only consumers it can defend',
   (() => {
     const gp = reg.baseline.standards.find((s) => s.id === 'geopose-1.0');

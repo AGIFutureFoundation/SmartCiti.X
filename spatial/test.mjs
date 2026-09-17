@@ -162,7 +162,7 @@ ok('every service runs in-page with no network, is anchored at a resolving pose,
     s.transport === 'in-page, no network' && refs.has(s.anchored_at)
     && existsSync(new URL('../' + s.registry, import.meta.url))
     && (s.also_at ?? []).every((r) => refs.has(r))));
-ok('the nine simulators are each a service resolving to sims/, with the operator levels and the scripted reference carried',
+ok('every simulator the registry ships (eleven now) is a service resolving to sims/, with the operator levels and the scripted reference carried',
   Object.keys(sims.sims).every((sk) => {
     const s = fab.services.find((x) => x.id === `sim:${sk}`);
     return s && s.name === sims.sims[sk].name

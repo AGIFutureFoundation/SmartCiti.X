@@ -1687,6 +1687,46 @@
    "provenance": "SCHEMATIC"
   },
   {
+   "id": "sim:boom-lift",
+   "kind": "simulator",
+   "name": "Boom Lift Basket Work",
+   "registry": "sims/registry/sims.json",
+   "transport": "in-page, no network",
+   "anchored_at": "campus:treasure-island",
+   "also_at": [],
+   "halls": 8,
+   "operator": {
+    "levels": [
+     "optimal",
+     "novice",
+     "hurried"
+    ],
+    "scripted_reference": true
+   },
+   "provenance": "SCHEMATIC"
+  },
+  {
+   "id": "sim:overhead-crane",
+   "kind": "simulator",
+   "name": "Overhead Crane Shop Move",
+   "registry": "sims/registry/sims.json",
+   "transport": "in-page, no network",
+   "anchored_at": "campus:treasure-island",
+   "also_at": [
+    "campus:oakland"
+   ],
+   "halls": 7,
+   "operator": {
+    "levels": [
+     "optimal",
+     "novice",
+     "hurried"
+    ],
+    "scripted_reference": true
+   },
+   "provenance": "SCHEMATIC"
+  },
+  {
    "id": "advisors",
    "kind": "scripted-advisors",
    "name": "9 scripted advisors, 35 fixed topics",
@@ -1710,7 +1750,7 @@
   {
    "id": "schools-panel",
    "kind": "panel",
-   "name": "Schools panel - gamified flipped classroom, 41 flipped units",
+   "name": "Schools panel - gamified flipped classroom, 45 flipped units",
    "registry": "schools/registry/schools.json",
    "transport": "in-page, no network",
    "anchored_at": "campus:treasure-island",

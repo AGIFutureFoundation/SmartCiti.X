@@ -43,7 +43,7 @@ HERE = pathlib.Path(__file__).resolve().parent
 ROOT = HERE.parent
 
 PACK_VERSION = "3.2.0"
-BUILT = "2026-09-11"
+BUILT = "2026-09-17"
 
 # ------------------------------------------------------------- the shapes ---
 # Each is drawn on a canvas by the page; `draws` is the contract the suite
@@ -208,6 +208,16 @@ HONESTY = {
                       'and the colours and lose the easing: labels sit at '
                       'full opacity rather than breathing as the head '
                       'turns.',
+    'xr_panel': 'in a WebXR session the readout kind is reused for the '
+                'wrist panel: one sign per dash gauge, drawn by the same '
+                'label() the world signs use, off the same gauges() values '
+                'the dash reads, with a warning readout wearing the crit '
+                'accent the dash uses. Those signs ride the left controller '
+                '(or hang ahead of the rig without one) at a fixed size and '
+                'full opacity - they are on the hand, not in the world, so '
+                'the view-direction scoring above does not apply to them. '
+                'Verified against a mocked WebXR session only, never a '
+                'physical headset.',
 }
 
 # ---------------------------------------------------------------- checks ---

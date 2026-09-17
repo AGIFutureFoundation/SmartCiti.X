@@ -25,7 +25,7 @@ HERE = pathlib.Path(__file__).resolve().parent
 ROOT = HERE.parent
 
 PACK_VERSION = "3.3.0"
-BUILT = "2026-09-14"
+BUILT = "2026-09-17"
 
 DOC = {
     'baseline': {
@@ -46,7 +46,33 @@ DOC = {
                            'three.js']},
             {'id': 'webxr', 'body': 'W3C',
              'role': 'immersive VR/AR entry in the 3D environment, '
-                     'feature-gated to platforms that offer the session'},
+                     'feature-gated to platforms that offer the session, '
+                     'and experimental: a viewpoint, not a second world. '
+                     'What exists - an XR rig the headset rides in (the '
+                     'camera\'s parent; walking, seat poses and turns move '
+                     'the rig, never the camera), a local-floor reference '
+                     'space with a plain local fallback (rig lifted 1.6 m, '
+                     'said in the hint), AR passthrough (the drawn sky, '
+                     'ground, grid and fog banks suppressed, clear alpha 0), '
+                     'controller input - thumbsticks, trigger, grip and the '
+                     'two face buttons - landing in the same key state a '
+                     'keyboard fills through each seat\'s declared xr '
+                     'mapping, snap-turn locomotion (30 degrees, no smooth '
+                     'rotation) with the same wall clamps a desktop walk '
+                     'has, a wrist panel of readout signs off the same '
+                     'gauges the dash shows, the scripted reference '
+                     'operator watchable in-session, and every one of the '
+                     'eleven simulators operable in a session. The quality '
+                     'ladder is honest about three.js r160: fixed foveation '
+                     'and the fog banks step live, the framebuffer scale '
+                     '(1.0 / 0.8 / 0.65) is recorded in-session and applied '
+                     'at the next session start. What does NOT exist: hand '
+                     'tracking, rendered hands or a body beyond two '
+                     'schematic controllers, and any run on a physical '
+                     'headset - this build verified the layer against a '
+                     'mocked WebXR session in headless Chromium (three.js\'s '
+                     'own WebXRManager driven by a fake session, frame and '
+                     'input sources) only.'},
             {'id': 'geojson-wgs84', 'body': 'IETF RFC 7946',
              'role': 'the geo registry interchange (campuses.geojson, '
                      'network.geojson) that the geomap and any '
@@ -255,6 +281,16 @@ assert "'tc-hall-' + sg" in page_src, 'hall naming drifted from the page'
 assert "'guest-asset'" in page_src, 'guest stand missing from the page'
 for token in ('GLTFExporter', 'GLTFLoader', 'never uploaded', 'zipOne'):
     assert token in page_src, f'{token} missing from the page'
+# the WebXR role names page behaviour; every named piece must be built
+for token in ("const xrRig = new THREE.Group()", 'function seatPose(',
+              "setReferenceSpaceType(xrFloor ? 'local-floor' : 'local')",
+              'renderer.setClearAlpha(0)', 'function xrInput(', 'function xrSnap(',
+              'function setXRDash(', 'function xrWatchToggle(',
+              'setFramebufferScaleFactor(XR_SCALES[xrScaleIdx])', 'setFoveation(xrFov)'):
+    assert token in page_src, f'WebXR role claims {token!r} but the page lacks it'
+_xr_role = next(s for s in DOC['baseline']['standards'] if s['id'] == 'webxr')['role']
+assert 'mocked WebXR session' in _xr_role and 'physical' in _xr_role, \
+    'the WebXR role must say how it was verified, and what it was not'
 for fname in ('gltf/GLTFExporter.js', 'gltf/GLTFLoader.js',
               'utils/TextureUtils.js', 'utils/BufferGeometryUtils.js'):
     assert (ROOT / 'web/vendor/addons' / fname).exists(), f'{fname} not vendored'

@@ -265,9 +265,11 @@ a{{color:var(--steel)}}
   <li>{agents['honesty']['status']}</li>
   <li>{training['honesty']['schematic']}</li>
   <li>{sims['honesty']['operator']}</li>
+  <li>{sims['honesty']['xr']}</li>
   <li>{orbis['honesty']['synthetic_not_real']}</li>
   <li>{avatars['guarantee']}</li>
   <li>{meta['honesty']['status']}</li>
+  <li>WebXR, as the metaverse layer claims it: {next(s['role'] for s in meta['baseline']['standards'] if s['id'] == 'webxr')}</li>
   <li>{restoration['honesty']['not_affiliated']}</li>
   <li>{spatial['honesty']['ombi_not_claimed']}</li>
   <li>{spatial['honesty']['no_heights_or_headings']}</li>

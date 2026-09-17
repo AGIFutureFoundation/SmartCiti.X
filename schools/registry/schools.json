@@ -30,7 +30,7 @@
     "stage": "floor",
     "title": "Practice on the floor",
     "what": "simulator seat time with the regional scenario of the campus - live dash, synthesized sound, deterministic rubric; results and best times persist device-locally",
-    "implemented_by": "sims/ (9 simulators, regional scenarios)",
+    "implemented_by": "sims/ (11 simulators, regional scenarios)",
     "gamified": "pass/retry chips, best-time records, cockpit views"
    },
    {
@@ -105,6 +105,7 @@
    "class_stations": [],
    "class_drill": "structural",
    "floor_sims": [
+    "overhead-crane",
     "weld-bead"
    ],
    "gate": "unaided verification run (ACP-04); no sim hour counts"
@@ -170,6 +171,7 @@
    "floor_sims": [
     "crane-lift",
     "load-chart",
+    "overhead-crane",
     "rigging-signals"
    ],
    "gate": "unaided verification run (ACP-04); no sim hour counts"
@@ -206,6 +208,16 @@
    "gate": "unaided verification run (ACP-04); no sim hour counts"
   },
   {
+   "hall": "electricians",
+   "home": "module pack lesson positions, machines strand",
+   "class_stations": [],
+   "class_drill": "systems",
+   "floor_sims": [
+    "boom-lift"
+   ],
+   "gate": "unaided verification run (ACP-04); no sim hour counts"
+  },
+  {
    "hall": "fabricators",
    "home": "module pack lesson positions, machines strand",
    "class_stations": [],
@@ -226,11 +238,22 @@
    "gate": "unaided verification run (ACP-04); no sim hour counts"
   },
   {
+   "hall": "foundry",
+   "home": "module pack lesson positions, machines strand",
+   "class_stations": [],
+   "class_drill": "industry",
+   "floor_sims": [
+    "overhead-crane"
+   ],
+   "gate": "unaided verification run (ACP-04); no sim hour counts"
+  },
+  {
    "hall": "glaziers",
    "home": "module pack lesson positions, machines strand",
    "class_stations": [],
    "class_drill": "envelope",
    "floor_sims": [
+    "boom-lift",
     "scaffold-bay"
    ],
    "gate": "unaided verification run (ACP-04); no sim hour counts"
@@ -262,6 +285,7 @@
    "class_stations": [],
    "class_drill": "envelope",
    "floor_sims": [
+    "boom-lift",
     "scaffold-bay"
    ],
    "gate": "unaided verification run (ACP-04); no sim hour counts"
@@ -272,6 +296,7 @@
    "class_stations": [],
    "class_drill": "structural",
    "floor_sims": [
+    "boom-lift",
     "crane-lift",
     "load-chart",
     "rigging-signals"
@@ -301,6 +326,16 @@
    "class_drill": "envelope",
    "floor_sims": [
     "scaffold-bay"
+   ],
+   "gate": "unaided verification run (ACP-04); no sim hour counts"
+  },
+  {
+   "hall": "machinists",
+   "home": "module pack lesson positions, machines strand",
+   "class_stations": [],
+   "class_drill": "industry",
+   "floor_sims": [
+    "overhead-crane"
    ],
    "gate": "unaided verification run (ACP-04); no sim hour counts"
   },
@@ -345,6 +380,7 @@
    "class_stations": [],
    "class_drill": "structural",
    "floor_sims": [
+    "overhead-crane",
     "rigging-signals"
    ],
    "gate": "unaided verification run (ACP-04); no sim hour counts"
@@ -368,6 +404,7 @@
    "class_drill": "envelope",
    "floor_sims": [
     "airless-sprayer",
+    "boom-lift",
     "pressure-washer",
     "scaffold-bay"
    ],
@@ -412,6 +449,7 @@
    "floor_sims": [
     "crane-lift",
     "load-chart",
+    "overhead-crane",
     "rigging-signals"
    ],
    "gate": "unaided verification run (ACP-04); no sim hour counts"
@@ -438,6 +476,7 @@
    "floor_sims": [
     "crane-lift",
     "load-chart",
+    "overhead-crane",
     "rigging-signals"
    ],
    "gate": "unaided verification run (ACP-04); no sim hour counts"
@@ -461,6 +500,16 @@
    "class_drill": "earthworks",
    "floor_sims": [
     "scaffold-bay"
+   ],
+   "gate": "unaided verification run (ACP-04); no sim hour counts"
+  },
+  {
+   "hall": "sheetmetal",
+   "home": "module pack lesson positions, machines strand",
+   "class_stations": [],
+   "class_drill": "systems",
+   "floor_sims": [
+    "boom-lift"
    ],
    "gate": "unaided verification run (ACP-04); no sim hour counts"
   },
@@ -490,6 +539,7 @@
    "class_stations": [],
    "class_drill": "structural",
    "floor_sims": [
+    "boom-lift",
     "crane-lift",
     "rigging-signals"
    ],
@@ -560,6 +610,7 @@
    "class_stations": [],
    "class_drill": "envelope",
    "floor_sims": [
+    "boom-lift",
     "scaffold-bay"
    ],
    "gate": "unaided verification run (ACP-04); no sim hour counts"
