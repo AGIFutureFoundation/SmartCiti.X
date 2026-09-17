@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "1.0.0",
  "built": "2026-09-16",
- "source_stamp": "704779c6d4d90df4",
+ "source_stamp": "5566a8d25da75b1c",
  "fabric": {
   "name": "SmartCiti.X : Trade Craft Academy - spatial fabric",
   "operator": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
@@ -1840,7 +1840,7 @@
   {
    "id": "restoration-panel",
    "kind": "panel",
-   "name": "Bay Restoration panel - 10 sites, 3 field-skill tracks",
+   "name": "Bay Restoration panel - 11 sites, 3 field-skill tracks",
    "registry": "restoration/registry/restoration.json",
    "transport": "in-page, no network",
    "anchored_at": "campus:treasure-island",
@@ -1893,6 +1893,11 @@
     {
      "site": "hunters-point-shipyard",
      "anchored_at": "restoration-site:hunters-point-shipyard",
+     "walkable": false
+    },
+    {
+     "site": "treasure-island-nsti",
+     "anchored_at": "restoration-site:treasure-island-nsti",
      "walkable": false
     }
    ],
@@ -2514,7 +2519,7 @@
    "kind": "restoration-organization",
    "origin": "external",
    "served_by_this_fabric": false,
-   "note": "SmartCiti.X : Trade Craft Academy is not affiliated with, and does not certify, endorse or claim to fund, any site or organization named in this pack. Every site and program below is real and independently run by its own listed organization - this extends explicitly to Hunters Point Naval Shipyard: SmartCiti.X has no role in the actual cleanup, the litigation over it, or the Marie Harrison Bayview Air Monitoring Project.",
+   "note": "SmartCiti.X : Trade Craft Academy is not affiliated with, and does not certify, endorse or claim to fund, any site or organization named in this pack. Every site and program below is real and independently run by its own listed organization - this extends explicitly to Hunters Point Naval Shipyard: SmartCiti.X has no role in the actual cleanup, the litigation over it, or the Marie Harrison Bayview Air Monitoring Project; and to Former Naval Station Treasure Island: SmartCiti.X has no role in the Navy cleanup, the Restoration Advisory Board, the property transfers to TIDA, or One Treasure Island's Construction Training Program.",
    "geoposes": [
     "restoration-site:herons-head"
    ],
@@ -2527,7 +2532,7 @@
    "kind": "restoration-organization",
    "origin": "external",
    "served_by_this_fabric": false,
-   "note": "SmartCiti.X : Trade Craft Academy is not affiliated with, and does not certify, endorse or claim to fund, any site or organization named in this pack. Every site and program below is real and independently run by its own listed organization - this extends explicitly to Hunters Point Naval Shipyard: SmartCiti.X has no role in the actual cleanup, the litigation over it, or the Marie Harrison Bayview Air Monitoring Project.",
+   "note": "SmartCiti.X : Trade Craft Academy is not affiliated with, and does not certify, endorse or claim to fund, any site or organization named in this pack. Every site and program below is real and independently run by its own listed organization - this extends explicitly to Hunters Point Naval Shipyard: SmartCiti.X has no role in the actual cleanup, the litigation over it, or the Marie Harrison Bayview Air Monitoring Project; and to Former Naval Station Treasure Island: SmartCiti.X has no role in the Navy cleanup, the Restoration Advisory Board, the property transfers to TIDA, or One Treasure Island's Construction Training Program.",
    "geoposes": [
     "restoration-site:candlestick-point"
    ],
@@ -2540,7 +2545,7 @@
    "kind": "restoration-organization",
    "origin": "external",
    "served_by_this_fabric": false,
-   "note": "SmartCiti.X : Trade Craft Academy is not affiliated with, and does not certify, endorse or claim to fund, any site or organization named in this pack. Every site and program below is real and independently run by its own listed organization - this extends explicitly to Hunters Point Naval Shipyard: SmartCiti.X has no role in the actual cleanup, the litigation over it, or the Marie Harrison Bayview Air Monitoring Project.",
+   "note": "SmartCiti.X : Trade Craft Academy is not affiliated with, and does not certify, endorse or claim to fund, any site or organization named in this pack. Every site and program below is real and independently run by its own listed organization - this extends explicitly to Hunters Point Naval Shipyard: SmartCiti.X has no role in the actual cleanup, the litigation over it, or the Marie Harrison Bayview Air Monitoring Project; and to Former Naval Station Treasure Island: SmartCiti.X has no role in the Navy cleanup, the Restoration Advisory Board, the property transfers to TIDA, or One Treasure Island's Construction Training Program.",
    "geoposes": [
     "restoration-site:east-oakland-youth"
    ],
@@ -2553,7 +2558,7 @@
    "kind": "restoration-organization",
    "origin": "external",
    "served_by_this_fabric": false,
-   "note": "SmartCiti.X : Trade Craft Academy is not affiliated with, and does not certify, endorse or claim to fund, any site or organization named in this pack. Every site and program below is real and independently run by its own listed organization - this extends explicitly to Hunters Point Naval Shipyard: SmartCiti.X has no role in the actual cleanup, the litigation over it, or the Marie Harrison Bayview Air Monitoring Project.",
+   "note": "SmartCiti.X : Trade Craft Academy is not affiliated with, and does not certify, endorse or claim to fund, any site or organization named in this pack. Every site and program below is real and independently run by its own listed organization - this extends explicitly to Hunters Point Naval Shipyard: SmartCiti.X has no role in the actual cleanup, the litigation over it, or the Marie Harrison Bayview Air Monitoring Project; and to Former Naval Station Treasure Island: SmartCiti.X has no role in the Navy cleanup, the Restoration Advisory Board, the property transfers to TIDA, or One Treasure Island's Construction Training Program.",
    "geoposes": [
     "restoration-site:alviso-shoreline"
    ],
@@ -2566,7 +2571,7 @@
    "kind": "restoration-organization",
    "origin": "external",
    "served_by_this_fabric": false,
-   "note": "SmartCiti.X : Trade Craft Academy is not affiliated with, and does not certify, endorse or claim to fund, any site or organization named in this pack. Every site and program below is real and independently run by its own listed organization - this extends explicitly to Hunters Point Naval Shipyard: SmartCiti.X has no role in the actual cleanup, the litigation over it, or the Marie Harrison Bayview Air Monitoring Project.",
+   "note": "SmartCiti.X : Trade Craft Academy is not affiliated with, and does not certify, endorse or claim to fund, any site or organization named in this pack. Every site and program below is real and independently run by its own listed organization - this extends explicitly to Hunters Point Naval Shipyard: SmartCiti.X has no role in the actual cleanup, the litigation over it, or the Marie Harrison Bayview Air Monitoring Project; and to Former Naval Station Treasure Island: SmartCiti.X has no role in the Navy cleanup, the Restoration Advisory Board, the property transfers to TIDA, or One Treasure Island's Construction Training Program.",
    "geoposes": [
     "restoration-site:south-bay-salt-ponds"
    ],
@@ -2579,7 +2584,7 @@
    "kind": "restoration-organization",
    "origin": "external",
    "served_by_this_fabric": false,
-   "note": "SmartCiti.X : Trade Craft Academy is not affiliated with, and does not certify, endorse or claim to fund, any site or organization named in this pack. Every site and program below is real and independently run by its own listed organization - this extends explicitly to Hunters Point Naval Shipyard: SmartCiti.X has no role in the actual cleanup, the litigation over it, or the Marie Harrison Bayview Air Monitoring Project.",
+   "note": "SmartCiti.X : Trade Craft Academy is not affiliated with, and does not certify, endorse or claim to fund, any site or organization named in this pack. Every site and program below is real and independently run by its own listed organization - this extends explicitly to Hunters Point Naval Shipyard: SmartCiti.X has no role in the actual cleanup, the litigation over it, or the Marie Harrison Bayview Air Monitoring Project; and to Former Naval Station Treasure Island: SmartCiti.X has no role in the Navy cleanup, the Restoration Advisory Board, the property transfers to TIDA, or One Treasure Island's Construction Training Program.",
    "geoposes": [
     "restoration-site:montezuma-wetlands"
    ],
@@ -2592,7 +2597,7 @@
    "kind": "restoration-organization",
    "origin": "external",
    "served_by_this_fabric": false,
-   "note": "SmartCiti.X : Trade Craft Academy is not affiliated with, and does not certify, endorse or claim to fund, any site or organization named in this pack. Every site and program below is real and independently run by its own listed organization - this extends explicitly to Hunters Point Naval Shipyard: SmartCiti.X has no role in the actual cleanup, the litigation over it, or the Marie Harrison Bayview Air Monitoring Project.",
+   "note": "SmartCiti.X : Trade Craft Academy is not affiliated with, and does not certify, endorse or claim to fund, any site or organization named in this pack. Every site and program below is real and independently run by its own listed organization - this extends explicitly to Hunters Point Naval Shipyard: SmartCiti.X has no role in the actual cleanup, the litigation over it, or the Marie Harrison Bayview Air Monitoring Project; and to Former Naval Station Treasure Island: SmartCiti.X has no role in the Navy cleanup, the Restoration Advisory Board, the property transfers to TIDA, or One Treasure Island's Construction Training Program.",
    "geoposes": [
     "restoration-site:american-canyon"
    ],
@@ -2605,7 +2610,7 @@
    "kind": "restoration-organization",
    "origin": "external",
    "served_by_this_fabric": false,
-   "note": "SmartCiti.X : Trade Craft Academy is not affiliated with, and does not certify, endorse or claim to fund, any site or organization named in this pack. Every site and program below is real and independently run by its own listed organization - this extends explicitly to Hunters Point Naval Shipyard: SmartCiti.X has no role in the actual cleanup, the litigation over it, or the Marie Harrison Bayview Air Monitoring Project.",
+   "note": "SmartCiti.X : Trade Craft Academy is not affiliated with, and does not certify, endorse or claim to fund, any site or organization named in this pack. Every site and program below is real and independently run by its own listed organization - this extends explicitly to Hunters Point Naval Shipyard: SmartCiti.X has no role in the actual cleanup, the litigation over it, or the Marie Harrison Bayview Air Monitoring Project; and to Former Naval Station Treasure Island: SmartCiti.X has no role in the Navy cleanup, the Restoration Advisory Board, the property transfers to TIDA, or One Treasure Island's Construction Training Program.",
    "geoposes": [
     "restoration-site:straw-north-bay"
    ],
@@ -2618,7 +2623,7 @@
    "kind": "restoration-organization",
    "origin": "external",
    "served_by_this_fabric": false,
-   "note": "SmartCiti.X : Trade Craft Academy is not affiliated with, and does not certify, endorse or claim to fund, any site or organization named in this pack. Every site and program below is real and independently run by its own listed organization - this extends explicitly to Hunters Point Naval Shipyard: SmartCiti.X has no role in the actual cleanup, the litigation over it, or the Marie Harrison Bayview Air Monitoring Project.",
+   "note": "SmartCiti.X : Trade Craft Academy is not affiliated with, and does not certify, endorse or claim to fund, any site or organization named in this pack. Every site and program below is real and independently run by its own listed organization - this extends explicitly to Hunters Point Naval Shipyard: SmartCiti.X has no role in the actual cleanup, the litigation over it, or the Marie Harrison Bayview Air Monitoring Project; and to Former Naval Station Treasure Island: SmartCiti.X has no role in the Navy cleanup, the Restoration Advisory Board, the property transfers to TIDA, or One Treasure Island's Construction Training Program.",
    "geoposes": [],
    "provenance": [],
    "unposed": [
@@ -2630,9 +2635,22 @@
    "kind": "cleanup-and-oversight-agencies",
    "origin": "external",
    "served_by_this_fabric": false,
-   "note": "SmartCiti.X : Trade Craft Academy is not affiliated with, and does not certify, endorse or claim to fund, any site or organization named in this pack. Every site and program below is real and independently run by its own listed organization - this extends explicitly to Hunters Point Naval Shipyard: SmartCiti.X has no role in the actual cleanup, the litigation over it, or the Marie Harrison Bayview Air Monitoring Project.",
+   "note": "SmartCiti.X : Trade Craft Academy is not affiliated with, and does not certify, endorse or claim to fund, any site or organization named in this pack. Every site and program below is real and independently run by its own listed organization - this extends explicitly to Hunters Point Naval Shipyard: SmartCiti.X has no role in the actual cleanup, the litigation over it, or the Marie Harrison Bayview Air Monitoring Project; and to Former Naval Station Treasure Island: SmartCiti.X has no role in the Navy cleanup, the Restoration Advisory Board, the property transfers to TIDA, or One Treasure Island's Construction Training Program.",
    "geoposes": [
     "restoration-site:hunters-point-shipyard"
+   ],
+   "provenance": [
+    "AUTHORED"
+   ]
+  },
+  {
+   "operator": "US Navy (BRAC / CERCLA lead agency for investigation and cleanup); California DTSC (lead regulator), California Department of Public Health (radiological matters) and the San Francisco Bay Regional Water Quality Control Board (oversight)",
+   "kind": "cleanup-and-oversight-agencies",
+   "origin": "external",
+   "served_by_this_fabric": false,
+   "note": "SmartCiti.X : Trade Craft Academy is not affiliated with, and does not certify, endorse or claim to fund, any site or organization named in this pack. Every site and program below is real and independently run by its own listed organization - this extends explicitly to Hunters Point Naval Shipyard: SmartCiti.X has no role in the actual cleanup, the litigation over it, or the Marie Harrison Bayview Air Monitoring Project; and to Former Naval Station Treasure Island: SmartCiti.X has no role in the Navy cleanup, the Restoration Advisory Board, the property transfers to TIDA, or One Treasure Island's Construction Training Program.",
+   "geoposes": [
+    "restoration-site:treasure-island-nsti"
    ],
    "provenance": [
     "AUTHORED"
@@ -2644,7 +2662,7 @@
   "no_heights_or_headings": "this bundle holds no height and no heading for any campus, anchor or site - elevation exists only as an on-request live USGS 3DEP lookup in the learner's own browser, never stored - so every pose emits h = 0.0 and yaw = pitch = roll = 0 with an explicit UNKNOWN sidecar beside it. A zero here is a placeholder, never a measurement, and no height or heading is invented to fill the slot.",
   "ombi_not_claimed": "the OMBI spatial-fabric manifest, the Scene Object Model (SOM) and RMAP are marked \"OMBI - New\" in the public deck and their normative texts were not reachable from this build, so fabric.json and som.json are SHAPED after the deck's vocabulary, not validated against a specification. They are registered in meta/registry/metaverse.json under not_claimed, with the reason, and never under standards.",
   "static_files_only_no_rmap": "this fabric is static files a plain web server serves next to the site - the deck's own \"publish 3D content like a website\" point. No RMAP endpoint, no server, no WebSocket, no fetch at build time, no DID minted: the identity field is honestly null. Every service listed runs in-page with no network, and every anchored .glb is produced on demand by the learner's browser, not a file sitting on disk.",
-  "external_origins": "every other operator this fabric points at - a restoration site's own organization, the US Navy, EPA Region 9 and California DTSC at Hunters Point, a port authority, a university, a museum, a neighbouring city - is a separate origin: named, located by its own pose, and never content this fabric serves for them (served_by_this_fabric is false on every one). That is the SOM's per-branch ownership idea, and it is the same \"not affiliated\" line restoration/ and geo/ already hold. The 111 union halls' real organizations are deliberately NOT listed as origins: the halls here are SCHEMATIC training buildings named after a craft, not a union's premises.",
+  "external_origins": "every other operator this fabric points at - a restoration site's own organization, the US Navy, EPA Region 9 and California DTSC at Hunters Point, the US Navy, California DTSC and CDPH at Former Naval Station Treasure Island, a port authority, a university, a museum, a neighbouring city - is a separate origin: named, located by its own pose, and never content this fabric serves for them (served_by_this_fabric is false on every one). That is the SOM's per-branch ownership idea, and it is the same \"not affiliated\" line restoration/ and geo/ already hold. The 111 union halls' real organizations are deliberately NOT listed as origins: the halls here are SCHEMATIC training buildings named after a craft, not a union's premises.",
   "not_loaded_in_any_browser": "nothing here has been opened in Sneeze, Artemis or any other metaverse browser. The only consumers this pack can defend are a reader of application/geopose+json and this bundle's own suite (spatial/test.mjs), which holds every pose against its source registry on every run."
  },
  "sources": [

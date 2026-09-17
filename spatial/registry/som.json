@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "1.0.0",
  "built": "2026-09-16",
- "source_stamp": "704779c6d4d90df4",
+ "source_stamp": "5566a8d25da75b1c",
  "shape": "authored from the public OMBI deck and press, Q3 2026 - not validated against a normative specification, and not loaded in any metaverse browser (Sneeze, Artemis) by this build",
  "root": {
   "id": "som:root",
@@ -2338,14 +2338,34 @@
       "category": "environmental-monitoring"
      }
     ]
+   },
+   {
+    "id": "branch:external/us-navy-brac-cercla-lead-agency-for-investigation-and-cleanu",
+    "origin": "external",
+    "owner": "US Navy (BRAC / CERCLA lead agency for investigation and cleanup); California DTSC (lead regulator), California Department of Public Health (radiological matters) and the San Francisco Bay Regional Water Quality Control Board (oversight)",
+    "served_by_this_fabric": false,
+    "provenance_tiers": [
+     "AUTHORED"
+    ],
+    "children": [
+     {
+      "kind": "restoration-site",
+      "name": "Former Naval Station Treasure Island (NSTI) \u2014 Navy BRAC cleanup site (Treasure Island)",
+      "geopose": "restoration-site:treasure-island-nsti",
+      "provenance": "AUTHORED",
+      "served_by_this_fabric": false,
+      "walkable": false,
+      "category": "environmental-monitoring"
+     }
+    ]
    }
   ]
  },
  "invariants": {
   "per_branch_ownership": "every branch has exactly one owner; no external branch contains a place, content or service this fabric serves, and every node this fabric serves sits under its own branch - asserted by spatial/build.py and spatial/test.mjs",
   "counts": {
-   "branches": 57,
-   "external_branches": 56,
+   "branches": 58,
+   "external_branches": 57,
    "fabric_nodes": 145
   }
  },
@@ -2354,7 +2374,7 @@
   "no_heights_or_headings": "this bundle holds no height and no heading for any campus, anchor or site - elevation exists only as an on-request live USGS 3DEP lookup in the learner's own browser, never stored - so every pose emits h = 0.0 and yaw = pitch = roll = 0 with an explicit UNKNOWN sidecar beside it. A zero here is a placeholder, never a measurement, and no height or heading is invented to fill the slot.",
   "ombi_not_claimed": "the OMBI spatial-fabric manifest, the Scene Object Model (SOM) and RMAP are marked \"OMBI - New\" in the public deck and their normative texts were not reachable from this build, so fabric.json and som.json are SHAPED after the deck's vocabulary, not validated against a specification. They are registered in meta/registry/metaverse.json under not_claimed, with the reason, and never under standards.",
   "static_files_only_no_rmap": "this fabric is static files a plain web server serves next to the site - the deck's own \"publish 3D content like a website\" point. No RMAP endpoint, no server, no WebSocket, no fetch at build time, no DID minted: the identity field is honestly null. Every service listed runs in-page with no network, and every anchored .glb is produced on demand by the learner's browser, not a file sitting on disk.",
-  "external_origins": "every other operator this fabric points at - a restoration site's own organization, the US Navy, EPA Region 9 and California DTSC at Hunters Point, a port authority, a university, a museum, a neighbouring city - is a separate origin: named, located by its own pose, and never content this fabric serves for them (served_by_this_fabric is false on every one). That is the SOM's per-branch ownership idea, and it is the same \"not affiliated\" line restoration/ and geo/ already hold. The 111 union halls' real organizations are deliberately NOT listed as origins: the halls here are SCHEMATIC training buildings named after a craft, not a union's premises.",
+  "external_origins": "every other operator this fabric points at - a restoration site's own organization, the US Navy, EPA Region 9 and California DTSC at Hunters Point, the US Navy, California DTSC and CDPH at Former Naval Station Treasure Island, a port authority, a university, a museum, a neighbouring city - is a separate origin: named, located by its own pose, and never content this fabric serves for them (served_by_this_fabric is false on every one). That is the SOM's per-branch ownership idea, and it is the same \"not affiliated\" line restoration/ and geo/ already hold. The 111 union halls' real organizations are deliberately NOT listed as origins: the halls here are SCHEMATIC training buildings named after a craft, not a union's premises.",
   "not_loaded_in_any_browser": "nothing here has been opened in Sneeze, Artemis or any other metaverse browser. The only consumers this pack can defend are a reader of application/geopose+json and this bundle's own suite (spatial/test.mjs), which holds every pose against its source registry on every run."
  }
 }

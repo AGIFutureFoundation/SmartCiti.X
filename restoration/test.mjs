@@ -24,6 +24,7 @@ const page3d = readFileSync(new URL('../web/trade_craft_3d.html', import.meta.ur
 const unions = JSON.parse(readFileSync(
   new URL('../unions/registry/unions.json', import.meta.url))).unions;
 const unionSlugs = new Set(unions.map((u) => u.slug));
+const geoReg = JSON.parse(readFileSync(new URL('../geo/registry/campuses_geo.json', import.meta.url)));
 
 // the page's own embedded data blob, parsed for real - not just grepped -
 // so the walkable/non-walkable claim can be checked against the actual
@@ -48,9 +49,12 @@ ok('every campus grouping names a real campus this bundle actually has',
   reg.sites.every((s) => s.campus === null || s.campus in campuses));
 ok('every site names a category, and it is one of exactly two allowed values',
   reg.sites.every((s) => ['habitat-restoration', 'environmental-monitoring'].includes(s.category)));
-ok('nine sites are habitat-restoration and exactly one is environmental-monitoring',
+ok('nine sites are habitat-restoration and exactly two are environmental-monitoring',
   reg.sites.filter((s) => s.category === 'habitat-restoration').length === 9
-  && reg.sites.filter((s) => s.category === 'environmental-monitoring').length === 1);
+  && reg.sites.filter((s) => s.category === 'environmental-monitoring').length === 2);
+ok('every site carries the disambiguation key explicitly - null everywhere it is not needed',
+  reg.sites.every((s) => 'disambiguation' in s
+    && (s.disambiguation === null || s.disambiguation.length > 40)));
 ok('every site names at least one real trade_needs union slug, grounded in the '
   + 'real registry - none invented',
   reg.sites.every((s) => Array.isArray(s.trade_needs) && s.trade_needs.length > 0
@@ -152,13 +156,99 @@ ok('the honesty block explicitly extends not_affiliated to Hunters Point and '
   && /snapshot of public record as of September 2026/.test(
     reg.honesty.environmental_monitoring_category));
 
+/* ------------------------------------------ Treasure Island (NSTI) --- */
+const ti = reg.sites.find((s) => s.id === 'treasure-island-nsti');
+const tiText = ti.facts.map((f) => f.text).join(' ');
+ok('the Treasure Island NSTI entry exists, is pinned, environmental-monitoring, and '
+  + 'grouped with the Treasure Island campus - the island that campus scene sits on',
+  ti && ti.pin && ti.category === 'environmental-monitoring' && ti.campus === 'treasure-island');
+ok('NSTI is explicitly NOT walkable, with the honest reason stated in the same voice as '
+  + 'Hunters Point\'s',
+  ti.walkable === false
+  && /active federal cleanup site with unresolved radiological criteria/.test(ti.walkable_reason)
+  && /responsibly present as a place to stroll/.test(ti.walkable_reason));
+ok('NSTI states in its own voice that it is NOT NPL-listed, and names the NPL-listed '
+  + 'Hunters Point Annex EPA ID as the different place',
+  /NOT an NPL/.test(ti.disambiguation)
+  && /CA7170023330/.test(ti.disambiguation) && /CA1170090087/.test(ti.disambiguation)
+  && /Hunters Point Naval Shipyard/.test(ti.disambiguation)
+  && /NOT an NPL/.test(tiText) && /CA1170090087/.test(tiText));
+ok('NSTI carries at least twelve real, individually-cited https facts, none claiming '
+  + 'the cleanup is finished, and the Site 12 remedy is stated as NOT resolved',
+  ti.facts.length >= 12
+  && ti.facts.every((f) => f.text && f.source_url.startsWith('https://'))
+  && !/the cleanup (is|has been) (complete|resolved|finished)/i.test(tiText)
+  && /NOT\s+resolved/.test(tiText));
+ok('the NSTI resident class action reads DISMISSED - never "settled", and no appeal '
+  + 'outcome is stated',
+  /DISMISSED on 30 August 2022/.test(tiText)
+  && !/settled/.test(tiText.replace(/not settled/g, ''))
+  && !/appeal (was|is) (won|lost|affirmed|reversed|upheld)/i.test(tiText));
+ok('NSTI never carries the unverified figures: no "1,280", no Site 31, no survey-grade '
+  + 'or Site 12 coordinate',
+  !/1,280/.test(tiText) && !/Site 31/.test(tiText)
+  && ti.lat === 37.824 && ti.lng === -122.371
+  && !/Site 12[^.]{0,80}\b37\.8\d{3,}/.test(tiText));
+ok('NSTI\'s participation pathway is the real Navy-convened Restoration Advisory Board - '
+  + 'oversight participation, explicitly not job training and not a SmartCiti.X program',
+  ti.participation === true
+  && /Restoration Advisory Board/.test(ti.participation_note)
+  && /not a workforce-training program/.test(ti.participation_note)
+  && /not run by SmartCiti\.X/.test(ti.participation_note));
+ok('NSTI\'s workforce pathway is One Treasure Island\'s real pre-apprenticeship, and its '
+  + 'own note says it is NOT part of the Navy cleanup and not a SmartCiti.X program',
+  ti.workforce === true
+  && /One Treasure Island/.test(ti.workforce_note)
+  && /NOT part of the Navy cleanup/.test(ti.workforce_note)
+  && /not a SmartCiti\.X program/.test(ti.workforce_note));
+ok('NSTI\'s trade_needs are hazmat first, then laborers, operating-eng, demolition and '
+  + 'surveyors - all real union slugs, matching the documented excavation, scanning, '
+  + 'demolition, backfill and air-monitoring work',
+  ti.trade_needs[0] === 'hazmat'
+  && JSON.stringify(ti.trade_needs) === JSON.stringify(['hazmat', 'laborers', 'operating-eng', 'demolition', 'surveyors'])
+  && ti.trade_needs.every((slug) => unionSlugs.has(slug))
+  && /surface radiological scanning/.test(tiText) && /building\s+demolition/.test(tiText)
+  && /air monitoring/.test(tiText));
+ok('NSTI states the campus-scene distinction itself: the walkable Treasure Island campus '
+  + 'is a schematic training campus at the island\'s derived centroid, and this entry is '
+  + 'the real-world record of the ground it stands on',
+  /SCHEMATIC training campus/.test(tiText)
+  && /real-world record of the ground it stands on/.test(tiText));
+ok('the honesty block names both environmental-monitoring sites, the not-NPL distinction, '
+  + 'the snapshot dates, and extends not_affiliated to the NSTI cleanup, the RAB and One '
+  + 'Treasure Island\'s program',
+  /Former Naval Station Treasure Island/.test(reg.honesty.environmental_monitoring_category)
+  && /NOT NPL-listed/.test(reg.honesty.environmental_monitoring_category)
+  && /NSTI 17 September/.test(reg.honesty.environmental_monitoring_category)
+  && /Restoration Advisory Board/.test(reg.honesty.not_affiliated)
+  && /One Treasure Island/.test(reg.honesty.not_affiliated)
+  && /One Treasure Island/.test(reg.honesty.not_certification)
+  && /Former Naval Station Treasure Island/.test(reg.honesty.campus_grouping));
+ok('the geomap shows NSTI as a real pinned marker at its own coordinate, in the '
+  + 'environmental-monitoring class, and renders its disambiguation note',
+  geomap.includes(ti.name) && geomap.includes(`"lat":${ti.lat},"lng":${ti.lng}`)
+  && geomap.includes('env-monitoring') && geomap.includes('s.disambiguation'));
+ok('the 3D panel names NSTI and renders its disambiguation note in the site row',
+  page3d.includes(ti.name) && page3d.includes('s.disambiguation')
+  && page3d.includes('${dis}'));
+const wikiBay = readFileSync(new URL('../wiki/Bay-Restoration.md', import.meta.url), 'utf8');
+ok('the wiki\'s Bay Restoration page carries an NSTI section with its facts, the not-NPL '
+  + 'note and the dismissed-not-settled wording',
+  wikiBay.includes(`### ${ti.name}`) && wikiBay.includes(ti.disambiguation)
+  && wikiBay.includes('DISMISSED on 30 August 2022'));
+
 /* --------------------------------------------------- walkable city layer --- */
-// walkable=false (Hunters Point) must never appear wherever the walkable-scene
-// list is asserted below - the single most load-bearing constraint in this pack
+// walkable=false (Hunters Point, Treasure Island NSTI) must never appear
+// wherever the walkable-scene list is asserted below - the single most
+// load-bearing constraint in this pack
+const envSites = reg.sites.filter((s) => s.category === 'environmental-monitoring');
 const walkable = pinned.filter((s) => s.campus && s.walkable !== false);
 ok('walkable=false sites are excluded from the walkable-scene set entirely',
   !walkable.some((s) => s.id === 'hunters-point-shipyard')
-  && walkable.length === pinned.filter((s) => s.campus).length - 1);
+  && !walkable.some((s) => s.id === 'treasure-island-nsti')
+  && !walkable.some((s) => s.category === 'environmental-monitoring')
+  && walkable.length === pinned.filter((s) => s.campus).length - envSites.length
+  && walkable.length === 8);
 const builder3d = readFileSync(new URL('../web/build_3d.py', import.meta.url), 'utf8');
 ok('every pinned, campus-grouped site gets a true east/north km offset (the same '
   + 'formula D.geo.cityPois already uses) for the walkable city layer, but only '
@@ -166,14 +256,25 @@ ok('every pinned, campus-grouped site gets a true east/north km offset (the same
   builder3d.includes("s.get('pin') and s.get('campus')")
   && builder3d.includes("s.get('walkable', True)")
   && walkable.length > 0);
-ok('the page\'s own embedded data proves it at runtime: Hunters Point carries no '
+ok('the page\'s own embedded data proves it at runtime: Hunters Point and NSTI carry no '
   + 'e/n walkable offset, while every other walkable site does',
   pageData !== null
   && (() => {
     const hpData = pageData.restoration.sites.find((s) => s.id === 'hunters-point-shipyard');
+    const tiData = pageData.restoration.sites.find((s) => s.id === 'treasure-island-nsti');
     return hpData && hpData.e === undefined && hpData.n === undefined
+      && tiData && tiData.e === undefined && tiData.n === undefined
       && walkable.every((s) => pageData.restoration.sites.find((x) => x.id === s.id).e !== undefined);
   })());
+ok('the campus scene NSTI stands on is untouched: the page still carries the Treasure '
+  + 'Island campus at its own DERIVED centroid, distinct from the NSTI pin, and '
+  + 'startRestorationWalk() only ever resolves a site that carries an e offset',
+  pageData !== null && pageData.campuses['treasure-island']
+  && geoReg.campuses['treasure-island'].provenance === 'DERIVED'
+  && pageData.geo.campuses['treasure-island'].lat === geoReg.campuses['treasure-island'].lat
+  && (pageData.geo.campuses['treasure-island'].lat !== ti.lat
+      || pageData.geo.campuses['treasure-island'].lng !== ti.lng)
+  && page3d.includes("D.restoration.sites.find((s) => s.id === siteId && s.e !== undefined)"));
 ok('the panel source itself only ever emits the "Walk this site" button when '
   + 's.e is defined, and otherwise states the walkable_reason honestly instead - '
   + 'proven true for Hunters Point by the pageData check above',

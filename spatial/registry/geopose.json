@@ -3,15 +3,15 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "1.0.0",
  "built": "2026-09-16",
- "source_stamp": "704779c6d4d90df4",
+ "source_stamp": "5566a8d25da75b1c",
  "encoding": "OGC GeoPose 1.0 Basic-YPR, OGC 21-056r11, application/geopose+json",
  "media_type": "application/geopose+json",
  "crs": "WGS84 (EPSG:4326)",
  "counts": {
   "campuses": 10,
   "anchors": 47,
-  "restoration_sites": 9,
-  "total": 66,
+  "restoration_sites": 10,
+  "total": 67,
   "unposed": 1
  },
  "honesty": {
@@ -19,7 +19,7 @@
   "no_heights_or_headings": "this bundle holds no height and no heading for any campus, anchor or site - elevation exists only as an on-request live USGS 3DEP lookup in the learner's own browser, never stored - so every pose emits h = 0.0 and yaw = pitch = roll = 0 with an explicit UNKNOWN sidecar beside it. A zero here is a placeholder, never a measurement, and no height or heading is invented to fill the slot.",
   "ombi_not_claimed": "the OMBI spatial-fabric manifest, the Scene Object Model (SOM) and RMAP are marked \"OMBI - New\" in the public deck and their normative texts were not reachable from this build, so fabric.json and som.json are SHAPED after the deck's vocabulary, not validated against a specification. They are registered in meta/registry/metaverse.json under not_claimed, with the reason, and never under standards.",
   "static_files_only_no_rmap": "this fabric is static files a plain web server serves next to the site - the deck's own \"publish 3D content like a website\" point. No RMAP endpoint, no server, no WebSocket, no fetch at build time, no DID minted: the identity field is honestly null. Every service listed runs in-page with no network, and every anchored .glb is produced on demand by the learner's browser, not a file sitting on disk.",
-  "external_origins": "every other operator this fabric points at - a restoration site's own organization, the US Navy, EPA Region 9 and California DTSC at Hunters Point, a port authority, a university, a museum, a neighbouring city - is a separate origin: named, located by its own pose, and never content this fabric serves for them (served_by_this_fabric is false on every one). That is the SOM's per-branch ownership idea, and it is the same \"not affiliated\" line restoration/ and geo/ already hold. The 111 union halls' real organizations are deliberately NOT listed as origins: the halls here are SCHEMATIC training buildings named after a craft, not a union's premises.",
+  "external_origins": "every other operator this fabric points at - a restoration site's own organization, the US Navy, EPA Region 9 and California DTSC at Hunters Point, the US Navy, California DTSC and CDPH at Former Naval Station Treasure Island, a port authority, a university, a museum, a neighbouring city - is a separate origin: named, located by its own pose, and never content this fabric serves for them (served_by_this_fabric is false on every one). That is the SOM's per-branch ownership idea, and it is the same \"not affiliated\" line restoration/ and geo/ already hold. The 111 union halls' real organizations are deliberately NOT listed as origins: the halls here are SCHEMATIC training buildings named after a craft, not a union's premises.",
   "not_loaded_in_any_browser": "nothing here has been opened in Sneeze, Artemis or any other metaverse browser. The only consumers this pack can defend are a reader of application/geopose+json and this bundle's own suite (spatial/test.mjs), which holds every pose against its source registry on every run."
  },
  "poses": [
@@ -2092,6 +2092,39 @@
     "category": "environmental-monitoring",
     "walkable": false,
     "walkable_reason": "an actively litigated federal cleanup site is not something this platform can responsibly present as a place to stroll"
+   }
+  },
+  {
+   "subject": {
+    "kind": "restoration-site",
+    "id": "treasure-island-nsti",
+    "name": "Former Naval Station Treasure Island (NSTI) \u2014 Navy BRAC cleanup site (Treasure Island)",
+    "campus": "treasure-island",
+    "ref": "restoration-site:treasure-island-nsti"
+   },
+   "geopose": {
+    "position": {
+     "lat": 37.824,
+     "lon": -122.371,
+     "h": 0.0
+    },
+    "orientation": {
+     "yaw": 0,
+     "pitch": 0,
+     "roll": 0
+    }
+   },
+   "provenance": {
+    "position_horizontal": "AUTHORED",
+    "source": "restoration/registry/restoration.json - https://media.defense.gov/2025/Apr/04/2003682676/-1/-1/0/TRBW-0202-4856-0193_FAQ_NSTI_032125_CLEAN_ES_ACM.PDF",
+    "h_provenance": "UNKNOWN - not held by this bundle; 0.0 is a placeholder, not a measurement",
+    "orientation_provenance": "UNKNOWN - no heading is recorded; 0 is a placeholder"
+   },
+   "site": {
+    "org": "US Navy (BRAC / CERCLA lead agency for investigation and cleanup); California DTSC (lead regulator), California Department of Public Health (radiological matters) and the San Francisco Bay Regional Water Quality Control Board (oversight)",
+    "category": "environmental-monitoring",
+    "walkable": false,
+    "walkable_reason": "an active federal cleanup site with unresolved radiological criteria is not something this platform can responsibly present as a place to stroll"
    }
   }
  ],

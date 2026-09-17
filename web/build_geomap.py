@@ -132,7 +132,7 @@ body{margin:0;background:var(--plate);color:var(--ink);
   <span class="dot" style="background:none;border:1px solid var(--steel);border-radius:0"></span>city frame — RECORDED for the __N_FLAGSHIP__ flagship campuses, AUTHORED for the __N_HUB__ hub campuses<br>
   <span class="dot" style="background:none;border:1.5px dashed var(--muted)"></span>roadmap candidate — AUTHORED, not built<br>
   <span class="dot" style="background:var(--good)"></span>Bay Restoration site (habitat-restoration) — real project, not affiliated with this bundle<br>
-  <span class="dot" style="background:var(--steel)"></span>Bay Restoration site (environmental-monitoring) — real, litigated federal cleanup site; located but never rendered as a walkable scene
+  <span class="dot" style="background:var(--steel)"></span>Bay Restoration site (environmental-monitoring) — a real federal cleanup site (Hunters Point, NPL-listed and litigated; Treasure Island NSTI, a Navy BRAC cleanup, not NPL-listed); located but never rendered as a walkable scene
 </div>
 <div id="honesty"></div>
 <script id="data" type="application/json">__DATA__</script>
@@ -273,12 +273,15 @@ function popupForRestoration(s) {
   const cat = s.category === 'environmental-monitoring'
     ? `<br><span class="pv" style="color:var(--steel);border-color:var(--steel)">environmental monitoring — not walkable: ${s.walkable_reason}</span>`
     : '';
+  // the one site that needs it (Treasure Island NSTI) states in its own
+  // voice that it is NOT NPL-listed and which EPA ID is the other place
+  const dis = s.disambiguation ? `<br><b>Note:</b> ${s.disambiguation}` : '';
   new maplibregl.Popup({ closeButton: false })
     .setLngLat([s.lng, s.lat])
     .setHTML(`<b>${s.name}</b><br><span class="pv rec">real project</span>`
       + `<span class="pv">AUTHORED coordinate</span>` + cat
       + `<br>${s.org}<br>${s.city}, ${s.county} · ${s.habitat}<br>${s.scale}`
-      + wf + pt
+      + dis + wf + pt
       + `<br><a href="${s.source_url}" target="_blank" rel="noopener" class="src">${s.source_url}</a>`
       + `<br><span class="src">${D.restorationHonesty.not_affiliated}</span>`)
     .addTo(map);
