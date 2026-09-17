@@ -153,7 +153,9 @@ export class Session {
    * hint engine so the ceiling on the served task is the ceiling that applies —
    * see `attempt()` for why the request path alone is not enough.
    */
-  requestHint(pick, { rung = 1, dwellSeconds = Infinity } = {}) {
+  requestHint(pick, { rung = 1, dwellSeconds = 0 } = {}) {
+    // Same §23.1 closure as `HintEngine.request`: an unreported dwell is zero,
+    // not infinite, so the session cannot be a side door around the engine.
     const r = this.hints.request(pick.skill, {
       rung, dwellSeconds, taskCeiling: pick.scaffold_ceiling ?? 0,
       skill: this.graph.node(pick.skill) ?? pick.skill,

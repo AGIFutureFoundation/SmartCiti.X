@@ -1,0 +1,576 @@
+{
+ "bomFormat": "CycloneDX",
+ "specVersion": "1.5",
+ "version": 1,
+ "metadata": {
+  "component": {
+   "type": "application",
+   "bom-ref": "smartcitix-trade-craft-academy",
+   "name": "SmartCiti.X : Trade Craft Academy",
+   "version": "3.2.0",
+   "description": "the implementation bundle; every pack outside web/vendor is first-party with zero runtime dependencies"
+  },
+  "tools": {
+   "components": [
+    {
+     "type": "application",
+     "name": "security/build_sbom.py",
+     "version": "3.2.0"
+    }
+   ]
+  },
+  "properties": [
+   {
+    "name": "smartcitix:source_stamp",
+    "value": "bf36ba6e7107a98a"
+   },
+   {
+    "name": "smartcitix:scope",
+    "value": "every file under web/vendor/, and nothing else \u2014 the test walks the tree and holds the list to it"
+   },
+   {
+    "name": "smartcitix:first_party",
+    "value": "everything outside web/vendor/ is original to the bundle; orbis/runner-*/ carry their own LICENSE files and are first-party"
+   },
+   {
+    "name": "smartcitix:ci_scanning",
+    "value": "dependency and container scanning in CI: not configured \u2014 needs a workflow change the maintainers must approve"
+   },
+   {
+    "name": "smartcitix:reproducible",
+    "value": "no timestamp and no serial number on purpose: the same tree builds the same document"
+   }
+  ]
+ },
+ "components": [
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/addons/controls/OrbitControls.js",
+   "name": "three",
+   "version": "0.160.0",
+   "purl": "pkg:npm/three@0.160.0#examples/jsm/controls/OrbitControls.js",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "5a44a9e86a2a0fb11933eed69bc2cd33c76a496854c1aed6ed776efa87d7b064"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "MIT",
+      "url": "https://github.com/mrdoob/three.js/blob/r160/LICENSE"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/mrdoob/three.js"
+    },
+    {
+     "type": "website",
+     "url": "https://threejs.org/"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/mrdoob/three.js/blob/r160/LICENSE"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/addons/controls/OrbitControls.js"
+     }
+    ],
+    "copyright": []
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/addons/controls/OrbitControls.js"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "no version string in this file; version attributed from the three file vendored beside it that carries one (see THIRD_PARTY.md)"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "no licence banner in this file; it is the examples/jsm file of the three npm package (imports from 'three') and carries that distribution's licence, whose banner is in three.module.min.js: SPDX-License-Identifier: MIT"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/addons/controls/PointerLockControls.js",
+   "name": "three",
+   "version": "0.160.0",
+   "purl": "pkg:npm/three@0.160.0#examples/jsm/controls/PointerLockControls.js",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "b6ac6e2331d02fc877c49727c879b3f78e974dc56f43f2fcb89b03230e1f52ca"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "MIT",
+      "url": "https://github.com/mrdoob/three.js/blob/r160/LICENSE"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/mrdoob/three.js"
+    },
+    {
+     "type": "website",
+     "url": "https://threejs.org/"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/mrdoob/three.js/blob/r160/LICENSE"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/addons/controls/PointerLockControls.js"
+     }
+    ],
+    "copyright": []
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/addons/controls/PointerLockControls.js"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "no version string in this file; version attributed from the three file vendored beside it that carries one (see THIRD_PARTY.md)"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "no licence banner in this file; it is the examples/jsm file of the three npm package (imports from 'three') and carries that distribution's licence, whose banner is in three.module.min.js: SPDX-License-Identifier: MIT"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/addons/gltf/GLTFExporter.js",
+   "name": "three",
+   "version": "0.160.0",
+   "purl": "pkg:npm/three@0.160.0#examples/jsm/gltf/GLTFExporter.js",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "6775ff744d20e1ff7a37a4b587fcc2ea4e92adfdeddc566641155fd856f03cdf"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "MIT",
+      "url": "https://github.com/mrdoob/three.js/blob/r160/LICENSE"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/mrdoob/three.js"
+    },
+    {
+     "type": "website",
+     "url": "https://threejs.org/"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/mrdoob/three.js/blob/r160/LICENSE"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/addons/gltf/GLTFExporter.js"
+     }
+    ],
+    "copyright": []
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/addons/gltf/GLTFExporter.js"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "no version string in this file; version attributed from the three file vendored beside it that carries one (see THIRD_PARTY.md)"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "no licence banner in this file; it is the examples/jsm file of the three npm package (imports from 'three') and carries that distribution's licence, whose banner is in three.module.min.js: SPDX-License-Identifier: MIT"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/addons/gltf/GLTFLoader.js",
+   "name": "three",
+   "version": "0.160.0",
+   "purl": "pkg:npm/three@0.160.0#examples/jsm/gltf/GLTFLoader.js",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "d073b438e6a07e1359741dd5d6c76c953420cc0d4fd84eb1bdde94315540e6a3"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "MIT",
+      "url": "https://github.com/mrdoob/three.js/blob/r160/LICENSE"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/mrdoob/three.js"
+    },
+    {
+     "type": "website",
+     "url": "https://threejs.org/"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/mrdoob/three.js/blob/r160/LICENSE"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/addons/gltf/GLTFLoader.js"
+     }
+    ],
+    "copyright": []
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/addons/gltf/GLTFLoader.js"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "no version string in this file; version attributed from the three file vendored beside it that carries one (see THIRD_PARTY.md)"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "no licence banner in this file; it is the examples/jsm file of the three npm package (imports from 'three') and carries that distribution's licence, whose banner is in three.module.min.js: SPDX-License-Identifier: MIT"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/addons/utils/BufferGeometryUtils.js",
+   "name": "three",
+   "version": "0.160.0",
+   "purl": "pkg:npm/three@0.160.0#examples/jsm/utils/BufferGeometryUtils.js",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "9be041e96308775d00e2695cc607645b9a9b64fd7c0e759dd8f7c00a8d92becb"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "MIT",
+      "url": "https://github.com/mrdoob/three.js/blob/r160/LICENSE"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/mrdoob/three.js"
+    },
+    {
+     "type": "website",
+     "url": "https://threejs.org/"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/mrdoob/three.js/blob/r160/LICENSE"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/addons/utils/BufferGeometryUtils.js"
+     }
+    ],
+    "copyright": []
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/addons/utils/BufferGeometryUtils.js"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "no version string in this file; version attributed from the three file vendored beside it that carries one (see THIRD_PARTY.md)"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "no licence banner in this file; it is the examples/jsm file of the three npm package (imports from 'three') and carries that distribution's licence, whose banner is in three.module.min.js: SPDX-License-Identifier: MIT"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/addons/utils/TextureUtils.js",
+   "name": "three",
+   "version": "0.160.0",
+   "purl": "pkg:npm/three@0.160.0#examples/jsm/utils/TextureUtils.js",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "1b84a7fde8745dd614f62b6ca8108b592144278c07891a0cbe8cdf8e15796efa"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "MIT",
+      "url": "https://github.com/mrdoob/three.js/blob/r160/LICENSE"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/mrdoob/three.js"
+    },
+    {
+     "type": "website",
+     "url": "https://threejs.org/"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/mrdoob/three.js/blob/r160/LICENSE"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/addons/utils/TextureUtils.js"
+     }
+    ],
+    "copyright": []
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/addons/utils/TextureUtils.js"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "no version string in this file; version attributed from the three file vendored beside it that carries one (see THIRD_PARTY.md)"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "no licence banner in this file; it is the examples/jsm file of the three npm package (imports from 'three') and carries that distribution's licence, whose banner is in three.module.min.js: SPDX-License-Identifier: MIT"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/maplibre/maplibre-gl.css",
+   "name": "maplibre-gl",
+   "version": "4.7.1",
+   "purl": "pkg:npm/maplibre-gl@4.7.1#dist/maplibre-gl.css",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "576b085fdd9487a65a19215328c1e086c07ce5bf6da09b666b3806d3d008dae9"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "BSD-3-Clause",
+      "url": "https://github.com/maplibre/maplibre-gl-js/blob/v4.7.1/LICENSE.txt"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/maplibre/maplibre-gl-js"
+    },
+    {
+     "type": "website",
+     "url": "https://maplibre.org/"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/maplibre/maplibre-gl-js/blob/v4.7.1/LICENSE.txt"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/maplibre/maplibre-gl.css"
+     }
+    ],
+    "copyright": []
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/maplibre/maplibre-gl.css"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "no version string in this file; version attributed from the maplibre-gl file vendored beside it that carries one (see THIRD_PARTY.md)"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "no licence banner in this file; it is the stylesheet of the same maplibre-gl dist as maplibre-gl.js, whose banner names 3-Clause BSD"
+    },
+    {
+     "name": "smartcitix:licence_text",
+     "value": "not vendored and not fetched (no network at build); the banner names the licence and the URL of its full text"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/maplibre/maplibre-gl.js",
+   "name": "maplibre-gl",
+   "version": "4.7.1",
+   "purl": "pkg:npm/maplibre-gl@4.7.1#dist/maplibre-gl.js",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "be9633c4d870e26fb37f1cfe5c5a77181667114003ea16207ac7850d8da8add1"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "BSD-3-Clause",
+      "url": "https://github.com/maplibre/maplibre-gl-js/blob/v4.7.1/LICENSE.txt"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/maplibre/maplibre-gl-js"
+    },
+    {
+     "type": "website",
+     "url": "https://maplibre.org/"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/maplibre/maplibre-gl-js/blob/v4.7.1/LICENSE.txt"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/maplibre/maplibre-gl.js"
+     }
+    ],
+    "copyright": [
+     {
+      "text": "/**\n * MapLibre GL JS\n * @license 3-Clause BSD. Full text of license: https://github.com/maplibre/maplibre-gl-js/blob/v4.7.1/LICENSE.txt\n */"
+     }
+    ]
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/maplibre/maplibre-gl.js"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "var i=\"4.7.1\";"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "banner in file (evidence.copyright)"
+    },
+    {
+     "name": "smartcitix:licence_text",
+     "value": "not vendored and not fetched (no network at build); the banner names the licence and the URL of its full text"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/three.module.min.js",
+   "name": "three",
+   "version": "0.160.0",
+   "purl": "pkg:npm/three@0.160.0",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "3e690ac7d180b0aadf0891bea39eec643e29e2d3e75c99b18689518665f69ba6"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "MIT",
+      "url": "https://github.com/mrdoob/three.js/blob/r160/LICENSE"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/mrdoob/three.js"
+    },
+    {
+     "type": "website",
+     "url": "https://threejs.org/"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/mrdoob/three.js/blob/r160/LICENSE"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/three.module.min.js"
+     }
+    ],
+    "copyright": [
+     {
+      "text": "/**\n * @license\n * Copyright 2010-2023 Three.js Authors\n * SPDX-License-Identifier: MIT\n */"
+     }
+    ]
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/three.module.min.js"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "const t=\"160\""
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "banner in file (evidence.copyright)"
+    }
+   ]
+  }
+ ]
+}

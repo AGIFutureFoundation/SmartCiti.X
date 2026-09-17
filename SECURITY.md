@@ -7,13 +7,17 @@ and **the boundary between one organisation's learners and another's**.
 
 ## What is implemented and tested
 
-`security/` ships with 16 checks (`node test.mjs`). Each is a refusal:
+`security/` ships with 29 checks in `test.mjs` and 10 in `test_sbom.mjs`
+(both run by `verify_all.sh`; each suite asserts the count stated here). Each
+check is a refusal, or a hash held to the bytes in the tree:
 
 | Module | Enforces |
 |---|---|
-| `authz.mjs` | deny-by-default capabilities, tenant isolation checked independently of capability, learner/instructor read scoping, time-boxed elevation |
+| `authz.mjs` | deny-by-default capabilities, tenant isolation checked independently of capability, learner/instructor read scoping, contest self-scoping, time-boxed elevation; no agent role holds a human-only route |
 | `ratelimit.mjs` | separate token buckets for auth, agent turns, API and export; audited auth throttling; idle sweep |
 | `privacy.mjs` | data classification, per-class retention, pseudonymisation, erasure, export sanitisation, raw-stream storage refusal |
+| `contest.mjs` | a learner contests a gate decision on their own record with a human (`gate.contest` → `gate.review`); anyone human reports abuse and support triages it (`abuse.report` → `abuse.triage`); PII redacted before storage, every step audited and attributed, an overturned decision returned as a revocation instruction for the bus's single gate writer rather than applied here |
+| `build_sbom.py` | the software bill of materials (`registry/sbom.cdx.json`, CycloneDX 1.5): every vendored third-party file hashed, versioned from the string in the file, licensed by the banner in the file — and `test_sbom.mjs` holds it to `web/vendor/` and to `THIRD_PARTY.md` on every run |
 
 Enforced elsewhere in the stack and tested there:
 
@@ -35,14 +39,14 @@ Enforced elsewhere in the stack and tested there:
 | Cross-tenant data access | tenant checked separately from capability, on every access | tested |
 | Privilege escalation via role sprawl | no wildcard capability; `pii.reveal` held by no standing role | tested |
 | Credential stuffing / brute force | strict `auth` bucket, audited throttling | tested |
-| Cost exhaustion via agent calls | separate `agent` bucket; ACP-13 cost governor degrades the conversation plane, never the control plane | partial — governor specified, not built |
+| Cost exhaustion via agent calls | separate `agent` bucket; ACP-13 cost governor degrades the conversation plane, never the control plane | built and tested (`ops/jobs.mjs`, `ops/test.mjs`) |
 | Prompt injection steering the dial | forbidden actions filtered after the model turn; bus refuses the publish | tested |
-| Certification fraud (buying/farming a gate) | gates need unaided demonstrations at gate difficulty; hint farming cannot certify | tested |
+| Certification fraud (buying/farming a gate) | gates need unaided demonstrations at gate difficulty; hint farming cannot certify; a contested decision is reviewed by a human who is never the filer and never an agent | tested |
 | Insider record tampering | audit is append-only; gates are awarded events; revocation is deliberate and attributed | tested |
 | Re-identification of behavioural data | identity lives only in the enrolment mapping; erasure breaks it | tested |
 | Affect data leaking to employers | affect stripped from every export; retention 90 days | tested |
 | Raw biometric/keystroke capture | refused at the storage boundary | tested |
-| Supply chain | zero runtime dependencies in every pack | structural |
+| Supply chain | zero runtime dependencies in every pack; the vendored browser libraries (three.js r160, MapLibre GL JS 4.7.1) listed in a CycloneDX 1.5 SBOM (`security/registry/sbom.cdx.json`) and verified by hash on every run | structural + tested |
 | Stale deployed artefact | build stamp + `check_console.py` in CI | tested |
 
 ## Deliberate design decisions
@@ -81,25 +85,30 @@ Mapping to obligations, with what is actually done versus what a launch requires
 **Nothing here is certified.** The controls exist and are tested; certification
 is an external process that has not been undertaken.
 
-## Not yet built — required before public launch
+## Launch checklist — status
 
-These are gaps, listed so nobody mistakes the tested layer for a finished one:
+The items a public launch requires, with what is actually the case. "Built and
+tested" names where. "Open" names what kind of thing closes it — infrastructure
+or people outside this tree, or a CI change the maintainers must approve — and
+nothing here is closed by assertion. The roadmap's exit criterion for this
+checklist (v4.0, workstream 2) requires a named human owner for every item
+accepted as open; **this pass names none**, so the "Accepted by" column is
+empty by design and the criterion is not met.
 
-1. **Authentication itself.** This is the authorisation layer. Token issuance,
-   MFA, session management and rotation belong to an identity provider that has
-   not been selected.
-2. **Transport and storage.** No TLS config, no encryption-at-rest, no key
-   management — the packs are in-process. A deployment must add all three.
-3. **Persistence and backup.** No database, no backup/restore, no tested
-   recovery. An audit log that does not survive a restart is not an audit log.
-4. **Secrets management** and a rotation policy.
-5. **Dependency and container scanning** in CI, plus SBOM generation.
-6. **Penetration test** by someone who did not write this.
-7. **Incident response**: on-call rotation, severity definitions, breach
-   notification timelines per jurisdiction, and a rehearsed runbook.
-8. **The cost governor** (ACP-13) — specified, not built.
-9. **Abuse reporting** and a route for a learner to contest a certification
-   decision with a human.
+| # | Item | Status | Accepted by |
+|---|---|---|---|
+| 1 | **Authentication itself** — token issuance, MFA, session management and rotation | open — needs external infrastructure: an identity provider, not yet selected. This pack is the authorisation layer only | |
+| 2 | **Transport and storage** — TLS, encryption at rest, key management | open — needs external infrastructure: the packs are in-process; a deployment must add all three | |
+| 3 | **Persistence and backup** — database, backup/restore, tested recovery | open — needs external infrastructure: nothing in this tree survives a restart, and an audit log that does not survive a restart is not an audit log | |
+| 4 | **Secrets management** and a rotation policy | open — needs external infrastructure | |
+| 5a | **SBOM generation** | built and tested (`security/build_sbom.py` → `security/registry/sbom.cdx.json`; `security/test_sbom.mjs` verifies every hash, version and licence claim against `web/vendor/` on every run) | |
+| 5b | **Dependency and container scanning in CI** | open — needs maintainer approval: no CI workflow was changed; it requires a workflow edit the maintainers must approve | |
+| 6 | **Penetration test** by someone who did not write this | open — needs external people | |
+| 7 | **Incident response** — on-call rotation, severity definitions, breach-notification timelines per jurisdiction, a rehearsed runbook | open — needs external people; the required shape is written below | |
+| 8 | **The cost governor** (ACP-13) | built and tested (`ops/jobs.mjs` `CostGovernor` and `PLANES`; `ops/test.mjs` proves the control plane is structurally un-throttleable and the conversation plane degrades rather than refuses) | |
+| 9a | **A route for a learner to contest a certification decision with a human** | built and tested (`security/contest.mjs`; `security/test.mjs`). Staffing the review queue is people and stays open under 7 | |
+| 9b | **Abuse reporting** and triage | built and tested (`security/contest.mjs`; `security/test.mjs`). Staffing triage is people and stays open under 7 | |
+| 10 | **Vulnerability reporting** — a monitored `security@` address, a disclosure policy with safe harbour, an acknowledgement SLA | open — needs external people; see below | |
 
 ## Incident response — the shape it must take
 

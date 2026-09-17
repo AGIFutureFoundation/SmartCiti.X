@@ -181,12 +181,30 @@ const WELDERS = JSON.parse(readFileSync(new URL('../pack/registry/skills.json', 
   const s = new Session({ skills: WELDERS });
   const pick = s.seq.next(s.skillIds, s.history);
   pick.scaffold_ceiling = 0;                       // a verification run
-  const refused = s.requestHint(pick, { rung: 1 });
+  const refused = s.requestHint(pick, { rung: 1, dwellSeconds: 60 });
   assert.equal(refused.granted, 0);
+  assert.equal(refused.refused, 'verification', 'refused for the reason under test, not for a missing dwell');
   s.attempt(pick, { correct: true, rung: 3 });
   assert.equal(s.history[s.history.length - 1].rung, 0,
     'a hint-free task must record an unaided attempt or none at all');
   ok('a verification run cannot be talked into counting a hinted success');
+}
+
+/* ------------------------------------- §23.1: an absent dwell fails closed */
+{
+  const s = new Session({ skills: WELDERS });
+  const pick = s.seq.next(s.skillIds, s.history);
+  pick.scaffold_ceiling = 3;                       // hints would be allowed here
+  const seen = [];
+  s.bus.subscribe('hint.served', 'test', (m) => seen.push(m.payload));
+  const absent = s.requestHint(pick, { rung: 1 });
+  assert.equal(absent.granted, 0);
+  assert.equal(absent.refused, 'dwell', 'no dwell reported must read as no dwell taken');
+  assert.ok(seen.some((p) => p.refused === 'dwell'),
+    'the refusal is published as the hint engine, like any other');
+  const served = s.requestHint(pick, { rung: 1, dwellSeconds: 60 });
+  assert.equal(served.granted, 1, 'a reported dwell is served through the same path');
+  ok('the session cannot be a side door around the engine: an unreported dwell is refused there too');
 }
 
 

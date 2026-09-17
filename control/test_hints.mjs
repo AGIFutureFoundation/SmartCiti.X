@@ -46,14 +46,27 @@ ok('a fading contract takes one rung off whatever the other bounds allow',
     /seconds/.test(fast.why) && fast.why.length > 20);
 }
 
+/* ------------------------------------- §23.1: an absent dwell fails closed */
+{
+  const p = (() => { const q = new LearnerProfile('t'); q.get('rigging.sling-angle'); return q; })();
+  const h = new HintEngine(p);
+  const absent = h.request('rigging.sling-angle', { rung: 1 });
+  ok('a request that reports no dwell at all is refused as not yet dwelt, not served at once',
+    absent.granted === 0 && absent.refused === 'dwell' && /another 20 seconds/.test(absent.why));
+  ok('an explicit dwell at the threshold is granted — the caller reported the pause',
+    h.request('rigging.sling-angle', { rung: 1, dwellSeconds: h.cfg.dwellSeconds }).granted === 1);
+  ok('an explicit Infinity is a policy decision and is served; only the default is closed',
+    h.request('rigging.sling-angle', { rung: 1, dwellSeconds: Infinity }).granted === 1);
+}
+
 /* --------------------------------------------- verification is hint-free -- */
 {
   const p = (() => { const q = new LearnerProfile('t'); q.get('rigging.sling-angle'); return q; })();
   const s = p.get('rigging.sling-angle');
   s.p_mastery = 0.88;                        // in the window where rung 1 is allowed
   const h = new HintEngine(p);
-  const practice = h.request('rigging.sling-angle', { rung: 3, taskCeiling: null });
-  const verify = h.request('rigging.sling-angle', { rung: 1, taskCeiling: 0 });
+  const practice = h.request('rigging.sling-angle', { rung: 3, dwellSeconds: 60, taskCeiling: null });
+  const verify = h.request('rigging.sling-angle', { rung: 1, dwellSeconds: 60, taskCeiling: 0 });
   ok('at 0.88 mastery practice still gets rung 1, but a verification run gets nothing',
     practice.granted === 1 && verify.granted === 0 && verify.refused === 'verification');
   ok('the verification refusal tells the learner why the check is bare',
@@ -69,12 +82,12 @@ ok('a fading contract takes one rung off whatever the other bounds allow',
   ok('sustained dependence above 0.35 opens a fading contract, named out loud',
     opened && opened.action === 'fading_contract' && opened.dependence >= 0.35
     && /hint on/.test(opened.why));
-  const under = h.request('rigging.load-calc', { rung: 5 });
+  const under = h.request('rigging.load-calc', { rung: 5, dwellSeconds: 60 });
   ok('the contract serves one rung lower than asked, and says so',
     under.granted === 4 && under.contract === true);
   ok('the contract expires after its three tasks rather than persisting',
-    (() => { h.request('rigging.load-calc', { rung: 5 }); h.request('rigging.load-calc', { rung: 5 });
-             return h.request('rigging.load-calc', { rung: 5 }).granted === 5; })());
+    (() => { h.request('rigging.load-calc', { rung: 5, dwellSeconds: 60 }); h.request('rigging.load-calc', { rung: 5, dwellSeconds: 60 });
+             return h.request('rigging.load-calc', { rung: 5, dwellSeconds: 60 }).granted === 5; })());
 }
 
 {
@@ -90,8 +103,8 @@ ok('a fading contract takes one rung off whatever the other bounds allow',
 {
   const p = (() => { const q = new LearnerProfile('t'); q.get('rigging.load-calc'); q.get('welding.bead-motor'); return q; })();
   const h = new HintEngine(p);
-  const conceptual = h.request('rigging.load-calc', { rung: 2 });
-  const motor = h.request('welding.bead-motor', { rung: 2 });
+  const conceptual = h.request('rigging.load-calc', { rung: 2, dwellSeconds: 60 });
+  const motor = h.request('welding.bead-motor', { rung: 2, dwellSeconds: 60 });
   ok('a rung-2 escalation on a conceptual skill opens a bounded dialogue',
     conceptual.socratic === true && conceptual.maxTurns === 6);
   ok('motor skills get demonstration, never dialogue',

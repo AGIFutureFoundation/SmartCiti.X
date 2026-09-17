@@ -20,8 +20,17 @@ export const CAPABILITIES = Object.freeze([
   'audit.read', 'audit.export',
   'parity.read', 'parity.run',
   'tenant.admin', 'billing.manage',
+  'gate.contest', 'gate.review',   // a learner contests a gate decision; a human reviews it
+  'abuse.report', 'abuse.triage',  // anyone human reports abuse; support triages it
   'pii.reveal',                    // deliberately its own capability
 ]);
+
+/**
+ * Roles that are voiced by a model rather than held by a person. No agent role
+ * may file a contest, review one, report abuse or triage it — those routes
+ * exist so a person can reach a person (ACP-09: agents voice the system).
+ */
+export const AGENT_ROLES = Object.freeze(['mentor_agent']);
 
 /**
  * Roles are bundles of capabilities. Note what is NOT here:
@@ -30,19 +39,20 @@ export const CAPABILITIES = Object.freeze([
  *   - `support` can read audit but cannot touch a learner record
  */
 export const ROLES = Object.freeze({
-  learner:       ['learner.read.self', 'content.read'],
-  instructor:    ['learner.read.assigned', 'content.read', 'dial.override', 'audit.read'],
+  learner:       ['learner.read.self', 'content.read', 'gate.contest', 'abuse.report'],
+  instructor:    ['learner.read.assigned', 'content.read', 'dial.override', 'audit.read',
+                  'gate.review', 'abuse.report'],
   hall_admin:    ['learner.read.tenant', 'content.read', 'content.author',
-                  'dial.override', 'audit.read', 'parity.read'],
-  content_author:['content.read', 'content.author'],
-  publisher:     ['content.read', 'content.author', 'content.publish'],
-  ml_engineer:   ['agent.eval', 'parity.read', 'parity.run', 'audit.read'],
-  release_mgr:   ['agent.deploy', 'agent.eval', 'parity.read', 'audit.read'],
-  support:       ['audit.read'],
+                  'dial.override', 'audit.read', 'parity.read', 'gate.review', 'abuse.report'],
+  content_author:['content.read', 'content.author', 'abuse.report'],
+  publisher:     ['content.read', 'content.author', 'content.publish', 'abuse.report'],
+  ml_engineer:   ['agent.eval', 'parity.read', 'parity.run', 'audit.read', 'abuse.report'],
+  release_mgr:   ['agent.deploy', 'agent.eval', 'parity.read', 'audit.read', 'abuse.report'],
+  support:       ['audit.read', 'abuse.report', 'abuse.triage'],
   tenant_admin:  ['tenant.admin', 'learner.read.tenant', 'audit.read',
-                  'audit.export', 'parity.read', 'billing.manage'],
+                  'audit.export', 'parity.read', 'billing.manage', 'abuse.report', 'abuse.triage'],
   mentor_agent:  ['content.read'],
-  auditor:       ['audit.read', 'audit.export', 'parity.read'],
+  auditor:       ['audit.read', 'audit.export', 'parity.read', 'abuse.report'],
 });
 
 export class AccessDenied extends Error {
@@ -87,6 +97,14 @@ export class Authorizer {
     // Holding a capability never implies holding it in another tenant.
     if (resource.tenant !== undefined && resource.tenant !== p.tenant) {
       return deny('cross-tenant access');
+    }
+
+    // A contest is self-scoped the way `learner.read.self` is: a learner may
+    // contest a decision on their own record and no one else's. A resource
+    // that names no learner is refused rather than assumed to be theirs.
+    if (capability === 'gate.contest') {
+      if (resource.learner === undefined) return deny('a contest must name the learner whose record it concerns');
+      if (resource.learner !== p.id) return deny('learners may contest only decisions on their own record');
     }
 
     // Reading a learner narrows further by scope.
