@@ -78,7 +78,7 @@ blockquote { margin:0 0 16px; padding:2px 0 2px 16px; border-left:3px solid var(
 <div class="wrap">
 <header class="hero">
   <div class="hero-text">
-    <p class="eyebrow">Protocol Specification · ACP Suite · v2.6</p>
+    <p class="eyebrow">Protocol Specification · ACP Suite · v3.2</p>
     <h1>SmartCiti.X <span class="colon">:</span> Trade Craft Academy</h1>
     <p class="sub">Adaptive Stack · powered by AGI Corp</p>
     <p class="standfirst">The full adaptive loop of the Academy — telemetry, learner profiling,
@@ -1709,6 +1709,9 @@ against ambient state.</p>
 <p>The page pays for this too. Inlining each room's finishes and conditions produced 1.36MB for data that never varies between halls sharing a room function and a hazard; interning the repeated blocks into a shared table brought it to 459KB with no value changed.</p>
 <hr />
 <h2 id="s25">25. Durability — the launch blocker the security doc named</h2>
+<blockquote>
+<p><strong>Status in this tree: specified, not present.</strong> This section describes the durability layer the bundle was written against, and no <code>store/</code> pack exists in any commit of this repository — <code>git log --all -- store/</code> is empty, nothing imports one, and <code>bus/session.mjs</code> neither injects a store nor reports a <code>durable</code> flag. Every learner profile, gate award and audit row still lives in memory and ends with the process. <code>SECURITY.md</code> launch-checklist item 3 (persistence and backup) is the one truth on this point and remains <strong>open</strong>; what follows is the contract a store would have to meet, kept so the day it is built it is built against this.</p>
+</blockquote>
 <p><code>SECURITY.md</code> had carried the sentence for four versions: <em>an audit log that does not survive a restart is not an audit log.</em> Nothing in the stack persisted. Every learner profile, every gate award and the entire compliance record lived in a <code>Map</code> and vanished with the process.</p>
 <p>Worse, the audit log <strong>discarded its own history under load</strong>. On reaching its limit it dropped the oldest entry and incremented a counter. For a compliance record that is not a limit, it is data loss with a number beside it.</p>
 <h3>25.1 A gate award is a fact about a person</h3>
@@ -1733,5 +1736,5 @@ against ambient state.</p>
 <p>The console inlines the whole control plane and runs it in a browser, where <code>node:fs</code> does not exist. A static import of the store pack from <code>session.mjs</code> would have made the control plane unloadable there — the page would have kept working until the moment that code path ran.</p>
 <p>So the store is <strong>injected at the edge</strong>, and <code>bus/session.mjs</code> does not import it at all. Durability is opt-in, and the only layer that knows whether it has a filesystem is the one that does. A session without a store behaves exactly as before and reports <code>durable === false</code> rather than implying otherwise.</p>
 <h3>25.5 What this is not</h3>
-<p>It is not a database, and <code>SECURITY.md</code> now says so in the place the old blocker used to sit. No replication, no concurrent writers, no point-in-time restore, no tested backup schedule, no encryption at rest. A real deployment puts a database underneath and keeps this contract — the contract is the part worth having, because it is what the rest of the stack was written against.</p>
+<p>It is not a database — and in this tree it is not yet anything: <code>SECURITY.md</code> item 3 keeps persistence and backup open rather than describing a store the tree does not hold. No replication, no concurrent writers, no point-in-time restore, no tested backup schedule, no encryption at rest. A real deployment puts a database underneath and keeps this contract — the contract is the part worth having, because it is what the rest of the stack was written against.</p>
 </div>

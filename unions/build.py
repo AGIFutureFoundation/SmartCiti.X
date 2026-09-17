@@ -26,7 +26,8 @@ ROOT = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
 from unions111 import UNIONS_111, EXISTING_33, DISTRICTS, CAMPUSES  # noqa: E402
 
-PACK_VERSION = "3.2.0"
+# One bundle version, read from the manifest rather than typed here.
+PACK_VERSION = json.load(open(ROOT.parent / 'pack/manifest.json'))['pack_version']
 BUILT = "2026-09-09"
 
 OUT = ROOT / "registry"

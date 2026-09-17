@@ -28,7 +28,8 @@ ROOT = HERE.parent
 sys.path.insert(0, str(ROOT / 'web'))
 from interiors import ROOMS  # noqa: E402
 
-PACK_VERSION = "3.2.0"
+# One bundle version, read from the manifest rather than typed here.
+PACK_VERSION = json.load(open(ROOT / 'pack/manifest.json'))['pack_version']
 BUILT = "2026-09-09"
 
 archive = json.load(open(ROOT / 'archive' / 'bac_yard_stations.json'))

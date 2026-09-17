@@ -6,7 +6,7 @@
  "translation_status": "machine-drafted, pending native review",
  "strings": {
   "tagline": "Formation ludifiée pour renforcer l'intégration entre robots et humains",
-  "overview": "Un réseau de 111 salles syndicales de formation sur un même campus, exécutant toutes la même suite de protocoles adaptatifs : un cadran de difficulté qui maintient la zone proximale de développement, un graphe de compétences qui séquence la pratique, des portes d'évaluation qui ne certifient que le travail sans aide, et un tissu de mentors qui estompe son propre échafaudage.",
+  "overview": "Un réseau de {halls} salles syndicales de formation sur {campuses} campus, exécutant toutes la même suite de protocoles adaptatifs : un cadran de difficulté qui maintient la zone proximale de développement, un graphe de compétences qui séquence la pratique, des portes d'évaluation qui ne certifient que le travail sans aide, et un tissu de mentors qui estompe son propre échafaudage.",
   "nav.campus": "Plan du campus",
   "nav.spec": "Spécification du protocole",
   "nav.console": "Console adaptative",

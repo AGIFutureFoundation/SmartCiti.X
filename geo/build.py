@@ -45,7 +45,8 @@ import re
 HERE = pathlib.Path(__file__).resolve().parent
 ROOT = HERE.parent
 
-PACK_VERSION = "3.2.0"
+# One bundle version, read from the manifest rather than typed here.
+PACK_VERSION = json.load(open(ROOT / 'pack/manifest.json'))['pack_version']
 BUILT = "2026-09-10"
 
 # slug: (lat, lng, provenance, source)

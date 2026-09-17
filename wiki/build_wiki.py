@@ -36,6 +36,12 @@ halls = json.load(open(ROOT / 'pack/registry/halls.json'))['halls']
 unions = json.load(open(ROOT / 'unions/registry/unions.json'))
 districts = json.load(open(ROOT / 'unions/registry/districts.json'))['districts']
 campuses = json.load(open(ROOT / 'unions/registry/campuses.json'))['campuses']
+# The campus network splits into district campuses (a home for 2-3 trade
+# districts) and regional hubs (no home district). Both counts are read here,
+# never typed: Home.md said `on one campus` and `three planned locations`
+# beside its own ten-row campus table, and nothing noticed.
+n_district_campuses = sum(1 for c in campuses.values() if c['districts'])
+n_hub_campuses = len(campuses) - n_district_campuses
 geo = json.load(open(ROOT / 'geo/registry/campuses_geo.json'))
 finishes = json.load(open(ROOT / 'surfaces/registry/finishes.json'))
 sims = json.load(open(ROOT / 'sims/registry/sims.json'))
@@ -106,8 +112,10 @@ def page_home():
 *powered by AGI Corp*
 
 Gamified training to enhance robotic and human integrations: a network of
-**{L["halls"]} union training halls** in **{len(districts)} districts** on one
-campus, addressing **{F(L["total_modules"])} modules** generated from
+**{L["halls"]} union training halls** in **{len(districts)} districts** across
+**{len(campuses)} campuses** ({n_district_campuses} district campuses and
+{n_hub_campuses} regional hubs), addressing **{F(L["total_modules"])} modules**
+generated from
 {F(manifest["authored_objects"])} authored skeleton objects.
 
 ## The maps
@@ -137,18 +145,19 @@ content graph and details:
 | **Network geomap** (`web/trade_craft_geomap.html`) | The geo registry on a real WGS84 map (MapLibre, no basemap tiles): campuses, {n_anchors} anchors ({n_rec} RECORDED, {n_auth} AUTHORED), great-circle routes, city frames at their own provenance | [Campus-Map](Campus-Map.md) |
 | **Bay Restoration** (`restoration/registry/restoration.json`) | {len(restoration['sites'])} real, independently-run San Francisco Bay sites across two categories ({sum(1 for s in restoration['sites'] if s['category'] == 'habitat-restoration')} habitat-restoration, {sum(1 for s in restoration['sites'] if s['category'] == 'environmental-monitoring')} environmental-monitoring — Hunters Point Naval Shipyard, a real, litigated federal Superfund site, and Former Naval Station Treasure Island, a real Navy BRAC cleanup that is not NPL-listed, both pinned but never walkable) — {sum(1 for s in restoration['sites'] if s['pin'])} mapped, {sum(1 for s in restoration['sites'] if s['walkable'])} walkable — bridged to {len(restoration['tracks'])} field-skill tracks bound to real skill_ids already in this bundle's graph — not a SmartCiti.X program | [Bay-Restoration](Bay-Restoration.md) |
 
-## The campus at a glance
+## The districts at a glance
 
 ```mermaid
 flowchart LR
-  campus(("Treasure Island<br/>campus"))
+  campus(("{len(campuses)}-campus<br/>network"))
 {graph_edges}
 ```
 
 ## The campuses
 
-The network trains in three planned locations — named for real cities, with
-no site surveyed and no address recorded:
+The network trains in {len(campuses)} planned locations — {n_district_campuses}
+district campuses and {n_hub_campuses} regional hubs, named for real cities,
+with no site surveyed and no address recorded:
 
 | Campus | Where | Trains | Districts | Halls |
 |---|---|---|---|---|
@@ -235,7 +244,7 @@ phrased against the learner's own parish.
 - [`SmartCitiX_TradeCraft_Academy_Spec.md`](../SmartCitiX_TradeCraft_Academy_Spec.md) — the ACP protocol suite, v3.2
 - [Provenance](Provenance.md) — superseded data kept in `archive/`, and why
 - [Flipped-Classroom](Flipped-Classroom.md) — the gamified school program:
-  the four-stage flipped loop, grade bands, proposed districts and live units
+  the four-stage flipped loop, grade bands, {len(schools['districts'])} proposed districts and live units
 - [Upgrade-Candidates](Upgrade-Candidates.md) — what the sibling repositories
   offer the Academy, from a reviewed survey
 

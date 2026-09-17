@@ -27,7 +27,9 @@ ROOT = HERE.parent
 # the simulator roster the WebXR role counts - read from sims/, never typed
 _n_sims = len(json.load(open(ROOT / 'sims/registry/sims.json'))['sims'])
 
-PACK_VERSION = "3.3.0"
+# One bundle version, read from the manifest rather than typed here (this
+# pack had drifted to 3.3.0 while ROADMAP said 3.2.0 was unified everywhere).
+PACK_VERSION = json.load(open(ROOT / 'pack/manifest.json'))['pack_version']
 BUILT = "2026-09-17"
 
 DOC = {

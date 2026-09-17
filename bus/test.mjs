@@ -209,6 +209,25 @@ const WELDERS = JSON.parse(readFileSync(new URL('../pack/registry/skills.json', 
 
 
 
+/* ------------------------------------ every hint lands on the audit log --- */
+{
+  const s = new Session({ skills: WELDERS });
+  const pick = s.seq.next(s.skillIds, s.history);
+  pick.scaffold_ceiling = 3;
+  const before = s.audit.entries({ actor: 'hint_engine' }).length;
+  s.requestHint(pick, { rung: 1 });                      // refused: no dwell reported
+  s.requestHint(pick, { rung: 1, dwellSeconds: 60 });    // served
+  const rows = s.audit.entries({ actor: 'hint_engine' }).slice(before);
+  assert.equal(rows.length, 2, 'one audit row per hint decision, refusals included');
+  assert.equal(rows[0].action, 'hint.refused');
+  assert.equal(rows[0].after.refused, 'dwell');
+  assert.equal(rows[1].action, 'hint.served');
+  assert.equal(rows[1].after.granted, 1);
+  assert.ok(rows.every((r) => r.learner === s.learnerId && r.skill === pick.skill),
+    'the rows carry the learner and the skill, like the dial and gate rows');
+  ok('every hint decision lands on the audit log, refusals included - like a dial move or a gate decision');
+}
+
 /* --------------------------------- the mentor may not write the hint record */
 {
   const s = new Session({ skills: WELDERS });

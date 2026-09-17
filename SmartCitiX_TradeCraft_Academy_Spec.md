@@ -1051,6 +1051,8 @@ The page pays for this too. Inlining each room's finishes and conditions produce
 
 ## 25. Durability — the launch blocker the security doc named
 
+> **Status in this tree: specified, not present.** This section describes the durability layer the bundle was written against, and no `store/` pack exists in any commit of this repository — `git log --all -- store/` is empty, nothing imports one, and `bus/session.mjs` neither injects a store nor reports a `durable` flag. Every learner profile, gate award and audit row still lives in memory and ends with the process. `SECURITY.md` launch-checklist item 3 (persistence and backup) is the one truth on this point and remains **open**; what follows is the contract a store would have to meet, kept so the day it is built it is built against this.
+
 `SECURITY.md` had carried the sentence for four versions: *an audit log that does not survive a restart is not an audit log.* Nothing in the stack persisted. Every learner profile, every gate award and the entire compliance record lived in a `Map` and vanished with the process.
 
 Worse, the audit log **discarded its own history under load**. On reaching its limit it dropped the oldest entry and incremented a counter. For a compliance record that is not a limit, it is data loss with a number beside it.
@@ -1088,4 +1090,4 @@ So the store is **injected at the edge**, and `bus/session.mjs` does not import 
 
 ### 25.5 What this is not
 
-It is not a database, and `SECURITY.md` now says so in the place the old blocker used to sit. No replication, no concurrent writers, no point-in-time restore, no tested backup schedule, no encryption at rest. A real deployment puts a database underneath and keeps this contract — the contract is the part worth having, because it is what the rest of the stack was written against.
+It is not a database — and in this tree it is not yet anything: `SECURITY.md` item 3 keeps persistence and backup open rather than describing a store the tree does not hold. No replication, no concurrent writers, no point-in-time restore, no tested backup schedule, no encryption at rest. A real deployment puts a database underneath and keeps this contract — the contract is the part worth having, because it is what the rest of the stack was written against.

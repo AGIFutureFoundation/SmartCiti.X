@@ -3,8 +3,10 @@
 *powered by AGI Corp*
 
 Gamified training to enhance robotic and human integrations: a network of
-**111 union training halls** in **8 districts** on one
-campus, addressing **11,000,000 modules** generated from
+**111 union training halls** in **8 districts** across
+**10 campuses** (3 district campuses and
+7 regional hubs), addressing **11,000,000 modules**
+generated from
 25,875 authored skeleton objects.
 
 ## The maps
@@ -34,11 +36,11 @@ content graph and details:
 | **Network geomap** (`web/trade_craft_geomap.html`) | The geo registry on a real WGS84 map (MapLibre, no basemap tiles): campuses, 47 anchors (19 RECORDED, 28 AUTHORED), great-circle routes, city frames at their own provenance | [Campus-Map](Campus-Map.md) |
 | **Bay Restoration** (`restoration/registry/restoration.json`) | 11 real, independently-run San Francisco Bay sites across two categories (9 habitat-restoration, 2 environmental-monitoring — Hunters Point Naval Shipyard, a real, litigated federal Superfund site, and Former Naval Station Treasure Island, a real Navy BRAC cleanup that is not NPL-listed, both pinned but never walkable) — 10 mapped, 8 walkable — bridged to 3 field-skill tracks bound to real skill_ids already in this bundle's graph — not a SmartCiti.X program | [Bay-Restoration](Bay-Restoration.md) |
 
-## The campus at a glance
+## The districts at a glance
 
 ```mermaid
 flowchart LR
-  campus(("Treasure Island<br/>campus"))
+  campus(("10-campus<br/>network"))
   campus --> structural["Structural<br/>12 halls"]
   click structural "District-structural.md"
   campus --> envelope["Envelope & Finish<br/>21 halls"]
@@ -59,8 +61,9 @@ flowchart LR
 
 ## The campuses
 
-The network trains in three planned locations — named for real cities, with
-no site surveyed and no address recorded:
+The network trains in 10 planned locations — 3
+district campuses and 7 regional hubs, named for real cities,
+with no site surveyed and no address recorded:
 
 | Campus | Where | Trains | Districts | Halls |
 |---|---|---|---|---|
@@ -207,7 +210,7 @@ phrased against the learner's own parish.
 - [`SmartCitiX_TradeCraft_Academy_Spec.md`](../SmartCitiX_TradeCraft_Academy_Spec.md) — the ACP protocol suite, v3.2
 - [Provenance](Provenance.md) — superseded data kept in `archive/`, and why
 - [Flipped-Classroom](Flipped-Classroom.md) — the gamified school program:
-  the four-stage flipped loop, grade bands, proposed districts and live units
+  the four-stage flipped loop, grade bands, 4 proposed districts and live units
 - [Upgrade-Candidates](Upgrade-Candidates.md) — what the sibling repositories
   offer the Academy, from a reviewed survey
 

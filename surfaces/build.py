@@ -26,7 +26,8 @@ from surfaces import (SURFACES, FUNCTION_DEFAULT, HAZARDS, hazard_of,  # noqa: E
                       merge_conditions)
 from interiors import ROOMS  # noqa: E402
 
-PACK_VERSION = "3.2.0"
+# One bundle version, read from the manifest rather than typed here.
+PACK_VERSION = json.load(open(ROOT / 'pack/manifest.json'))['pack_version']
 BUILT = "2026-09-10"
 
 unions = json.load(open(ROOT / 'unions/registry/unions.json'))['unions']

@@ -6,7 +6,7 @@
  "translation_status": "machine-drafted, pending native review",
  "strings": {
   "tagline": "Treinamento gamificado para aprimorar a integração entre robôs e pessoas",
-  "overview": "Uma rede de 111 salões sindicais de formação em um único campus, todos executando a mesma suíte de protocolos adaptativos: um dial de dificuldade que mantém a zona de desenvolvimento proximal, um grafo de habilidades que sequencia a prática, portões de avaliação que certificam apenas trabalho sem ajuda e uma malha de mentores que desvanece seu próprio andaime.",
+  "overview": "Uma rede de {halls} salões sindicais de formação em {campuses} campi, todos executando a mesma suíte de protocolos adaptativos: um dial de dificuldade que mantém a zona de desenvolvimento proximal, um grafo de habilidades que sequencia a prática, portões de avaliação que certificam apenas trabalho sem ajuda e uma malha de mentores que desvanece seu próprio andaime.",
   "nav.campus": "Mapa do campus",
   "nav.spec": "Especificação do protocolo",
   "nav.console": "Console adaptativo",
