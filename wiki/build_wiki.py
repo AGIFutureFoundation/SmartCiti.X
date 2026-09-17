@@ -197,8 +197,8 @@ everything drawn between them schematic.
 ### The regional chapter network
 
 Every hall keeps its **home campus** — where its district trains — and
-holds a **regional chapter** at each of the other two, so all 111 trades
-train in all three regions: **{chapters["count"]} chapter seats** in
+holds a **regional chapter** at each of the other {len(campuses) - 1}, so all
+111 trades train in all {len(campuses)} regions: **{chapters["count"]} chapter seats** in
 total, and each campus plaza carries a Regional Chapter Hall listing the
 {"/".join(str(v) for v in chapters["hosted"].values())} unions it hosts
 from elsewhere. This is the Academy's own regional structure across its
@@ -525,8 +525,8 @@ environment varies, the rubric never does:
 {chr(10).join(f'| {by_campus_name[x["campus"]]} | **{x["name"]}** | {x["brief"]} |' for x in sm["scenarios"])}
 
 **Scripted reference operator.** At `optimal` it passes
-{", ".join(f"**{a}**" for a in sm["operator"]["guarantees"])} on all three
-yards. Its procedure, the step list the page's policy is written around:
+{", ".join(f"**{a}**" for a in sm["operator"]["guarantees"])} on all
+{len(sm["scenarios"])} yards. Its procedure, the step list the page's policy is written around:
 
 {chr(10).join(f'{i + 1}. {p["step"]}' for i, p in enumerate(sm["operator"]["procedure"]))}''')
     lv = sims['operator_levels']

@@ -36,7 +36,7 @@ BUILT = "2026-09-13"
 
 # ---------------------------------------------------------------- inputs ---
 # Loaded before MODEL so its counts (stations, cribs, sims) are read from
-# these registries rather than hand-typed - the "4 simulators" drift this
+# these registries rather than hand-typed - the `4 simulators` drift this
 # file once carried (sims/ grew to 7 without this literal following) is
 # exactly the bug a computed count can't have.
 campuses = json.load(open(ROOT / 'unions/registry/campuses.json'))['campuses']

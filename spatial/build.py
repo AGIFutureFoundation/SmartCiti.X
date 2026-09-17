@@ -558,8 +558,8 @@ assert not any(e['operator'] in {u['name'] for u in unions}
 BOOTSTRAP = '--bootstrap' in sys.argv
 if not BOOTSTRAP:
     dash = (ROOT / 'web/trade_craft_dashboard.html').read_text()
-    assert f'{len(poses)} GeoPose' in dash or f'<b>{len(poses)}</b>' in dash, \
-        'the dashboard does not render the pose count'
+    assert f'<b>{len(poses)}</b><span>GeoPose 1.0' in dash, \
+        'the dashboard does not render the pose count on its GeoPose tile'
     assert HONESTY['ombi_not_claimed'] in dash, \
         'the dashboard does not carry the OMBI-not-claimed honesty line'
 

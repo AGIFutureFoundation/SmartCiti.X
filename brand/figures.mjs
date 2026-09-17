@@ -23,6 +23,22 @@ import { fileURLToPath } from 'node:url';
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const manifest = JSON.parse(readFileSync(join(ROOT, 'pack/manifest.json'), 'utf8'));
 const L = manifest.ledger;
+// The counts that drifted in prose while the halls figure was policed: the
+// campus network ("five-campus"), the hub count ("two hub campuses"), the
+// simulator roster ("seven simulators") and the halls a seat is bound to
+// ("40 real halls"). Each is read from the registry that owns it.
+const campuses = JSON.parse(readFileSync(join(ROOT, 'unions/registry/campuses.json'), 'utf8'));
+const simsReg = JSON.parse(readFileSync(join(ROOT, 'sims/registry/sims.json'), 'utf8'));
+const N_CAMPUSES = campuses.count;
+const N_HUBS = Object.values(campuses.campuses).filter((c) => !c.districts.length).length;
+const N_SIMS = Object.keys(simsReg.sims).length;
+const N_BOUND = Object.keys(simsReg.hall_bindings).length;
+const WORDS = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight',
+  'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen',
+  'seventeen', 'eighteen', 'nineteen', 'twenty'];
+// every spelling of a count but the current one - words and digits alike
+const notN = (n) => [...WORDS, ...Array.from({ length: 60 }, (_, i) => String(i + 1))]
+  .filter((x) => x !== WORDS[n] && x !== String(n)).join('|');
 
 const F = (n) => n.toLocaleString('en-US');
 
@@ -50,6 +66,20 @@ const RULES = [
   // so a miss is a rule to add, not a reason to trust the pass.
   { wrong: /\b33 halls\b/g, right: `${L.halls} halls`,
     why: `the network is ${L.halls} halls` },
+  // Added after "The five-campus network" survived on the landing page
+  // through five hub-campus merges: the campus count was never a rule.
+  { wrong: new RegExp(`\\b(?:${notN(N_CAMPUSES)})-campus network\\b`, 'gi'),
+    right: `${WORDS[N_CAMPUSES]}-campus network`,
+    why: `the network is ${N_CAMPUSES} campuses (unions/registry/campuses.json)` },
+  { wrong: new RegExp(`(?<!\\bno )\\b(?:${notN(N_HUBS)}) hub campuses\\b`, 'gi'),
+    right: `${WORDS[N_HUBS]} hub campuses`,
+    why: `${N_HUBS} campuses are hubs - no home district (unions/registry/campuses.json)` },
+  { wrong: new RegExp(`\\b(?:${notN(N_SIMS)}) (?:simulators|operable (?:training )?seats)\\b`, 'gi'),
+    right: `${WORDS[N_SIMS]} simulators`,
+    why: `the roster is ${N_SIMS} simulators (sims/registry/sims.json)` },
+  { wrong: new RegExp(`\\b(?:${notN(N_BOUND)}) real halls\\b`, 'gi'),
+    right: `${N_BOUND} real halls`,
+    why: `the seats bind ${N_BOUND} halls (sims/registry/sims.json hall_bindings)` },
 ];
 
 const EXT = new Set(['.md', '.html', '.mjs', '.js', '.py', '.json', '.txt', '.sh']);

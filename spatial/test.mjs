@@ -242,7 +242,7 @@ ok('the sources cite the deck as user-supplied and the Sneeze press (Apache 2.0,
 /* ------------------------------------------------------- dashboard + wiki --- */
 const dash = readFileSync(new URL('../web/trade_craft_dashboard.html', import.meta.url), 'utf8');
 ok('the network dashboard renders the pose count and the claimed / not-claimed split',
-  dash.includes(`<b>${gp.counts.total}</b>`) && dash.includes('claimed (GeoPose) / not claimed (OMBI fabric, SOM, RMAP)'));
+  dash.includes(`<b>${gp.counts.total}</b><span>GeoPose 1.0`) && dash.includes('claimed (GeoPose) / not claimed (OMBI fabric, SOM, RMAP)'));
 ok('the dashboard carries the OMBI-not-claimed and no-heights honesty lines',
   dash.includes(H.ombi_not_claimed) && dash.includes(H.no_heights_or_headings));
 ok('the dashboard embeds geopose.json (as application/geopose+json) and fabric.json inline, and the download buttons are wired to them',

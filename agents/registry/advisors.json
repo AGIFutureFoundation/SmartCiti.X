@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-11",
- "source_stamp": "e09dddba72f20683",
+ "source_stamp": "8c4e68cf76b0b583",
  "contract": "a topic is either a `say` - a sentence written in this registry about this bundle's own policy, with the record it comes from named in `cites` - or a `read` - a binding naming the page-data path the answer must be read from at view time. No `read` answer is copied into this registry, so the record it quotes stays the one truth for that fact.",
  "honesty": {
   "status": "an advisor is a scripted guide, not an instructor and not an AI: no model runs behind one, nothing is generated at view time, no network is reached, and every line an advisor can say is written in this registry or read from another registry in this bundle.",

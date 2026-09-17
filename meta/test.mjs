@@ -16,6 +16,9 @@ const ok = (m, c) => { if (!c) { console.error('FAIL', m); process.exit(1); } n+
 
 const reg = JSON.parse(readFileSync(new URL('./registry/metaverse.json', import.meta.url)));
 const page = readFileSync(new URL('../web/build_3d.py', import.meta.url), 'utf8');
+const simsN = Object.keys(JSON.parse(readFileSync(
+  new URL('../sims/registry/sims.json', import.meta.url))).sims).length;
+const body = (fn, n = 900) => page.split(fn)[1]?.slice(0, n) ?? '';
 
 ok('the baseline is the open one, and says no private standard governs the layer',
   /open interchange baseline/.test(reg.baseline.note)
@@ -31,7 +34,7 @@ ok('the WebXR role says what exists (rig, local-floor with local fallback, passt
     const r = reg.baseline.standards.find((s) => s.id === 'webxr').role;
     return /XR rig/.test(r) && /local-floor/.test(r) && /local fallback/.test(r)
       && /passthrough/.test(r) && /clear alpha 0/.test(r) && /thumbsticks, trigger, grip/.test(r)
-      && /snap-turn/.test(r) && /wrist panel/.test(r) && /eleven simulators/.test(r)
+      && /snap-turn/.test(r) && /wrist panel/.test(r) && new RegExp(`${simsN} simulators`).test(r)
       && /experimental/.test(r) && /a viewpoint, not a second world/.test(r)
       && /NOT exist: hand\s+tracking, rendered hands/.test(r)
       && /mocked WebXR session in headless Chromium/.test(r)
@@ -42,6 +45,37 @@ ok('and the page builds what that role names: the rig, the seat pose, the refere
   ['const xrRig = new THREE.Group()', 'function seatPose(', 'function xrInput(',
     'function xrSnap(', 'function setXRDash(', 'renderer.setClearAlpha(0)',
     "setReferenceSpaceType(xrFloor ? 'local-floor' : 'local')"].every((tk) => page.includes(tk)));
+// a session's 'end' reaches the page's listener BEFORE three.js's own (added
+// later, in setSession), so renderer.xr.isPresenting is still true inside
+// xrEnded: the orbit re-place there used to move the rig for a headset that
+// was gone, and a stick held as the session ended kept its key down forever.
+// Both shipped; both are the checks below now.
+ok('the session-end path is symmetric: xrEnded first releases every key the adapter wrote (xrPadRelease, also called on seat teardown), and the orbit re-place asks xrLive() - presenting AND not ending - never isPresenting alone',
+  page.includes('function xrLive() { return renderer.xr.isPresenting && xrMode !== null; }')
+  && page.includes('function xrPadRelease()')
+  && body('function xrEnded() {', 300).includes('xrPadRelease();')
+  && body('function teardownSim() {', 600).includes('xrPadRelease();')
+  // ...but the face-button latches are cleared only at session end: a
+  // teardown caused by the A/X or B/Y press itself must not re-arm that press
+  && !body('function xrPadRelease() {', 130).includes('xrPad.a')
+  && body('function xrEnded() {', 400).includes('xrPad.trig = xrPad.lTrig = xrPad.grip = xrPad.a = xrPad.b = false;')
+  && body('function setSimView(mode) {').includes('if (xrLive()) xrOrbitPlace(')
+  && !/isPresenting\) xrOrbitPlace\(/.test(page)
+  && /for \(const kk in xrPad\.edge\) if \(xrPad\.edge\[kk\]\) keys\[kk\] = false;/.test(page));
+// the pointer-lock 'unlock' event lands a task after plc.unlock(): a view
+// entered from a desktop walk (a seat, the campus, a restoration site) had
+// already written its camera frame by the time walkEnded() folded the rig
+// into the camera, so the walker's offset was baked into that frame
+ok('a desktop walk ends synchronously before any view writes its own camera frame - walkLeave() in startSim, showCampus, showRegion, startRestorationWalk and xrBegan, the unlock listener guarded by walkActive, and the door path re-seating the camera at the rig origin',
+  page.includes('function walkLeave() {')
+  && body('function showRegion() {', 400).includes('walkLeave();')
+  && body('function startSim(simId, scenarioId) {', 400).includes('else walkLeave();')
+  && body('function showCampus(key) {', 400).includes('walkLeave();')
+  && body('function startRestorationWalk(siteId) {', 500).includes('walkLeave();')
+  && body('function xrBegan() {', 600).includes('walkLeave();')
+  && page.includes("plc.addEventListener('unlock', () => { if (!xrWalk && walkActive) walkEnded(); });")
+  && body('function enterHallWalking(sg) {', 500).includes('camera.position.set(0, 0, 0);')
+  && !/if \(walkActive\) \(isTouch \? exitWalkMode\(\) : plc\.unlock\(\)\)/.test(page));
 ok('the GeoPose claim is the one spatial/ actually emits, and names only consumers it can defend',
   (() => {
     const gp = reg.baseline.standards.find((s) => s.id === 'geopose-1.0');

@@ -126,10 +126,10 @@ body{margin:0;background:var(--plate);color:var(--ink);
 <div id="map"></div>
 <div id="legend">
   <b>The geo registry, drawn</b><br>
-  <span class="dot" style="background:var(--mark)"></span>campus — RECORDED/DERIVED for the three flagship campuses, AUTHORED for the seven hub campuses<br>
+  <span class="dot" style="background:var(--mark)"></span>campus — RECORDED/DERIVED for the __N_FLAGSHIP__ flagship campuses, AUTHORED for the __N_HUB__ hub campuses<br>
   <span class="dot" style="background:var(--steel)"></span>anchor — RECORDED from Locator.X near the flagship campuses, AUTHORED near the hub campuses (click a dot for the one that applies)<br>
   <span class="dot" style="background:none;border:1.5px dashed var(--mark);border-radius:0"></span>great-circle route — DERIVED<br>
-  <span class="dot" style="background:none;border:1px solid var(--steel);border-radius:0"></span>city frame — RECORDED for the three flagship campuses, AUTHORED for the seven hub campuses<br>
+  <span class="dot" style="background:none;border:1px solid var(--steel);border-radius:0"></span>city frame — RECORDED for the __N_FLAGSHIP__ flagship campuses, AUTHORED for the __N_HUB__ hub campuses<br>
   <span class="dot" style="background:none;border:1.5px dashed var(--muted)"></span>roadmap candidate — AUTHORED, not built<br>
   <span class="dot" style="background:var(--good)"></span>Bay Restoration site (habitat-restoration) — real project, not affiliated with this bundle<br>
   <span class="dot" style="background:var(--steel)"></span>Bay Restoration site (environmental-monitoring) — real, litigated federal cleanup site; located but never rendered as a walkable scene
@@ -416,6 +416,13 @@ window.__geomap = () => ({
 '''
 
 out = HERE / 'trade_craft_geomap.html'
+# the legend's campus split is the geo registry's own provenance count, read
+# here rather than typed - a hub is a campus whose coordinate is AUTHORED
+_n_hub = sum(1 for c in geo['campuses'].values() if c['provenance'] == 'AUTHORED')
+_n_flag = len(geo['campuses']) - _n_hub
+assert _n_hub > 0 and _n_flag > 0
+page = page.replace('__N_FLAGSHIP__', str(_n_flag)).replace('__N_HUB__', str(_n_hub))
+assert '__N_' not in page, 'a legend count token went unreplaced'
 out.write_text(page.replace('__DATA__', DATA))
 print(f"written: {len(out.read_text()):,} bytes | "
       f"{len(network['features'])} features on the geomap")
