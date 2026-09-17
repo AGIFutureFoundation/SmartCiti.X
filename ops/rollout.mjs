@@ -78,8 +78,16 @@ export class RolloutManager {
    * Advance one lane. Every refusal names its reason, because a rollout that
    * silently declines to advance is indistinguishable from one that is stuck.
    */
-  advance(id, { dwellHours = Infinity, now = Date.now() } = {}) {
+  advance(id, { dwellHours, now = Date.now() } = {}) {
     const r = this.get(id);
+    // §23.1: a default is a policy decision. This used to default to
+    // `Infinity`, so a caller that reported no observation at all advanced
+    // any lane instantly — the exact fail-open the dwell gate exists to
+    // prevent. An absent dwell is now zero observation: it opens nothing past
+    // the first lane, and the refusal says why. An EXPLICIT `Infinity` is a
+    // caller's policy decision and still advances; only the default is closed.
+    const dwellReported = dwellHours !== undefined && dwellHours !== null;
+    if (!dwellReported) dwellHours = 0;
     if (r.state === 'rolled_back') {
       return this.deny(r, 'this rollout was rolled back; open a new one rather than resuming a reverted change');
     }
@@ -109,7 +117,8 @@ export class RolloutManager {
     // 4. dwell: a lane must be observed before the next one opens.
     const cur = LANES[Math.max(0, r.laneIndex)];
     if (r.laneIndex >= 0 && dwellHours < cur.minDwellHours) {
-      return this.deny(r, `${cur.name} needs ${cur.minDwellHours}h of observation, has ${dwellHours}h`);
+      return this.deny(r, `${cur.name} needs ${cur.minDwellHours}h of observation, has `
+        + (dwellReported ? `${dwellHours}h` : 'no observation reported — a lane opens only on a reported dwell'));
     }
 
     r.laneIndex += 1;

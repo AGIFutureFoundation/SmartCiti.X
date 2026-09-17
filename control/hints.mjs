@@ -117,7 +117,12 @@ export class HintEngine {
    * explained, never silent, because an unexplained refusal reads as a bug
    * (P4 applies to the help ladder too).
    */
-  request(skillId, { rung = 1, dwellSeconds = Infinity, taskCeiling = null, skill = null } = {}) {
+  request(skillId, { rung = 1, dwellSeconds = 0, taskCeiling = null, skill = null } = {}) {
+    // §23.1: `dwellSeconds` used to default to `Infinity`, so a request that
+    // reported no dwell at all was served at once — the anti-mashing gate only
+    // fired for callers honest enough to report a short pause. No dwell
+    // reported now reads as no dwell taken: refused `dwell`, and the refusal
+    // says how long to wait. A caller with a real dwell passes it explicitly.
     const h = this.state(skillId);
     const ceiling = this.ceiling(skillId, taskCeiling);
     const asked = Math.max(1, Math.min(this.cfg.maxRung, Math.trunc(rung) || 1));

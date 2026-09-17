@@ -93,6 +93,27 @@ const throws = (fn, re) => { try { fn(); return false; } catch (e) { return re.t
     a3.ok && a3.lane === 'full' && a3.halls === LANES[2].halls);
 }
 
+/* ------------------------------------- §23.1: an absent dwell fails closed */
+{
+  const r = new RolloutManager({});
+  r.start('pack-8', { kind: 'content' });
+  ok('the first lane opens with no dwell reported — there is nothing yet to observe',
+    r.advance('pack-8').ok);
+  const absent = r.advance('pack-8');
+  ok('past the first lane, a call that reports no dwell is denied, not waved through',
+    !absent.ok && /needs 24h/.test(absent.why) && /no observation reported/.test(absent.why));
+  const nulled = r.advance('pack-8', { dwellHours: null });
+  ok('a null dwell is an absent dwell, not a number that happens to compare small',
+    !nulled.ok && /no observation reported/.test(nulled.why));
+  const zero = r.advance('pack-8', { dwellHours: 0 });
+  ok('an explicit zero is reported as zero, so the two refusals stay distinguishable',
+    !zero.ok && /has 0h/.test(zero.why) && !/no observation reported/.test(zero.why));
+  ok('a sufficient explicit dwell advances',
+    r.advance('pack-8', { dwellHours: 24 }).ok);
+  ok('an explicit Infinity still advances: an explicit value is a policy decision, a default is not',
+    r.advance('pack-8', { dwellHours: Infinity }).ok && r.get('pack-8').state === 'full');
+}
+
 /* --------------------------------------------- dial parameters shadow first */
 {
   const r = new RolloutManager({});

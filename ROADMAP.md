@@ -149,6 +149,23 @@ gates doing their job on real halls.
 2. **Security launch checklist.** Every open item in `SECURITY.md` closed or
    explicitly accepted by name; deny-by-default authz, tenant isolation and
    rate limiting re-verified against the §23.1 fail-open classes.
+   *Status:* this pass closed what can be closed in-repo — the ACP-13 cost
+   governor's "specified, not built" claim corrected (it is built and tested
+   in `ops/`); two §23.1 fail-open dwell defaults closed with absent-input
+   tests (`ops/rollout.mjs` `advance()` no longer opens a lane on an
+   unreported dwell; `control/hints.mjs` `request()` and its `bus/session.mjs`
+   pass-through no longer serve a hint on an unreported dwell); an SBOM
+   (`security/build_sbom.py` → `security/registry/sbom.cdx.json`, CycloneDX
+   1.5, verified by hash against `web/vendor/` on every run); the contest and
+   abuse routes (`security/contest.mjs`: `gate.contest`/`gate.review`,
+   `abuse.report`/`abuse.triage`, no agent role holds any of them); and
+   `SECURITY.md` deduplicated (the pack copy is now a pointer). **Still
+   open:** authentication, transport and storage encryption, persistence and
+   backup, secrets management, CI dependency/container scanning (a workflow
+   change the maintainers must approve), the external penetration test, the
+   staffed incident-response rotation and the vulnerability-reporting
+   address — every one needs infrastructure or people outside this tree, and
+   none has a named owner yet.
 3. **Tenancy GA.** Multi-tenant deployments with the erasure and retention
    guarantees the privacy pack asserts; per-tenant locale defaults.
 4. **VR sim modality pilot.** The browser simulator layer (`sims/` — eleven
@@ -195,6 +212,10 @@ gates doing their job on real halls.
 - Rollout lanes complete for wave 1 with audit evidence; cost governor live
   and provably unable to throttle the control plane.
 - Security checklist at zero open unaccepted items.
+  *Status:* **not met** — `SECURITY.md` now carries the checklist as a status
+  table; the in-repo items are built and tested, the remaining items need
+  external infrastructure, people or a maintainer-approved CI change, and its
+  "Accepted by" column is empty because this pass names no owner.
 - One VR sim module running against a §24 environment package end to end.
   *Status:* every sim module runs in a WebXR session against the
   interiors/§24 environment packages, verified against a mocked session in

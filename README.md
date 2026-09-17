@@ -7,7 +7,7 @@ The Adaptive Stack: the packs implementing the ACP protocol suite (v3.2) —
 counted, like everything else here, by the table below rather than by a
 number that can drift from it.
 
-**837 checks, all passing from inside this bundle**, with no model credentials
+**888 checks, all passing from inside this bundle**, with no model credentials
 required.
 
 ```bash
@@ -22,12 +22,13 @@ node unions/verify.mjs             # 26 — roster, districts, campuses, chapter
 node pack/verify.mjs               # 19 — the registry, and all 11,000,000 IDs
 node control/test.mjs              # 12 — learner profile, ZPD dial, affect
 node control/test_graph.mjs        # 20 — skill graph, sequencer, gates
-node control/test_hints.mjs        # 21 — the hint ladder, fading, the ceiling contract
+node control/test_hints.mjs        # 24 — the hint ladder, fading, the ceiling contract, an unreported dwell is refused
 node fabric/test.mjs               # 16 — mentor guards, eval harness, router
-node bus/test.mjs                  # 15 — bus contracts, telemetry guards, audit
+node bus/test.mjs                  # 16 — bus contracts, telemetry guards, audit
 node bus/test_safeguards.mjs       # 15 — parity, stop conditions, overrides
-node security/test.mjs             # 16 — authz, tenancy, rate limits, privacy
-node ops/test.mjs                  # 41 — registries, rollout lanes, jobs, cost governor
+node security/test.mjs             # 29 — authz, tenancy, rate limits, privacy, the contest and abuse routes, SECURITY.md held to the packs
+node security/test_sbom.mjs        # 10 — the SBOM: every vendored file hashed, versioned and licensed from evidence in the file
+node ops/test.mjs                  # 47 — registries, rollout lanes (an unreported dwell opens nothing), jobs, cost governor
 node ops/fuzz.mjs                  #  9 — side doors around the promotion gates
 node brand/test.mjs                # 30 — naming, tokens, contrast, livery, the lint itself
 node brand/lint.mjs .              # fails on any forbidden spelling anywhere in the tree
@@ -61,7 +62,7 @@ python3 wiki/build_wiki.py --check # fails if the wiki is behind the registries
 | `pack/` | ACP-10 | Module registry at 111-hall scale: 25,875 authored skeleton objects (consuming the union roster), a consumer library that generates all 11,000,000 module IDs from them, and a verifier that proves uniqueness over the whole population rather than a sample |
 | `control/` | ACP-02/03/04/05/06/07/15 | The deterministic control plane — profile, dial, affect, hint ladder, skill graph, sequencer, assessment gates — with two simulation harnesses |
 | `fabric/` | ACP-11/12 | Mentor contract and middleware, the five-gate eval harness with adversarial stubs, supervisor/swarm router |
-| `security/` | — | Deny-by-default authorization with tenant isolation, rate limiting, data classification, retention and erasure; plus `SECURITY.md` with the threat model and an honest launch checklist |
+| `security/` | — | Deny-by-default authorization with tenant isolation, rate limiting, data classification, retention and erasure; the contest and abuse routes (a learner reaches a human, never an agent); the CycloneDX SBOM of the vendored browser libraries (`security/registry/sbom.cdx.json`), held to `web/vendor/` by hash on every run; plus `SECURITY.md` with the threat model and the launch checklist as an honest status table |
 | `ops/` | ACP-13 | The three registries with a pipeline transition table, hall-by-hall rollout lanes that ask ACP-08 rather than re-deciding, the seven-job automation loop, and the cost governor that cannot throttle the control plane |
 | `web/` | — | The published pages and their builders: landing page, rendered protocol spec, the languages page, the campus plan with a generated floor plan for every hall, the **network geomap** (`trade_craft_geomap.html` — the geo registry on a real WGS84 map with vendored MapLibre GL: RECORDED campuses, anchors and city frames, DERIVED great-circle routes, provenance in every popup, no basemap tiles unless asked for, and on request the public-domain USGS orthoimagery plus the city's own building footprints fetched live from its authority and extruded), the **interactive layered map** (districts, pipeline, module layers, training stations, the district tool crib on every hall panel and floor plan, all locales, searchable and deep-linkable) and the **3D environment** (the ten-campus network as a 3D board — enter a campus city, then any hall for its extruded floor plan, fixtures, station beacons and first-person walk mode; each campus carries its own atmosphere — sky, fog, drifting fog banks over Treasure Island, a synthesized ambient bed of wind, gulls, harbor horns, insects and thunder (no recordings), and a day/night/storm cycle derived from the same records: crushed sky and moonlight after dark, grey light, thicker fog and falling rain in the storm — at twice the campus radius of earlier rounds — districts sit further from the plaza, the ring road and green grew with them, the ground and its water dressing widened to clear it, and the perspective camera's far plane was corrected to clear both the campus and the region board's fog-far (a pre-existing mismatch that used to pop geometry at the clip plane before fog hid it) — optimized to a measured budget — identical geometry shared through one cache and per-building decoration merged into one mesh per material (campus scene: ~997 → ≤530 draw calls, at double the earlier radius), the hall/finish/avatar payload deduped on the wire and inflated at boot (3D page 660 → 432 KB, interactive map 264 → 138 KB), and an adaptive quality ladder that steps resolution and shadows down when the frame rate stays under budget — the authority's public-domain orthoimagery laid under the city layer on request, georeferenced off the same campus record the RECORDED anchors use, plus a live campus minimap that rings fully-worked halls, campus-wide completion rollups in the HUD, the learner's own avatar riding the training machines, and the district tool crib hung and clickable in every hall's tools room; experimental WebXR entry — VR and AR buttons that appear only where the platform offers the session — portable saves: the device-local record exported and imported as JSON by the learner alone; and the metaverse layer's doors — the avatar and any hall exported as named glTF 2.0 binaries, and the learner's own .glb rendered on the locker's guest stand), and the **network dashboard** (`trade_craft_dashboard.html`) — every platform figure read live from its own registry, the 10/10 progress meter for the now fully-met ten-campus target, and both provenance tiers shown side by side rather than blurred together) |
 | `brand/` | — | The canonical identity: names and forbidden spellings with reasons, the two-theme token set, the wordmark, hall livery, and a lint that fails the build on drift |

@@ -7,7 +7,7 @@ cd "$(dirname "$0")"
 total=0; fail=0
 for t in control/test.mjs control/test_graph.mjs control/test_hints.mjs \
          control/fuzz.mjs control/soak.mjs fabric/test.mjs \
-         bus/test.mjs bus/test_safeguards.mjs security/test.mjs \
+         bus/test.mjs bus/test_safeguards.mjs security/test.mjs security/test_sbom.mjs \
          ops/test.mjs ops/fuzz.mjs brand/test.mjs unions/verify.mjs \
          pack/verify.mjs i18n/test.mjs stations/test.mjs surfaces/test.mjs \
          geo/test.mjs sims/test.mjs tools/test.mjs schools/test.mjs \
