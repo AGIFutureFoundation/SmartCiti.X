@@ -399,11 +399,21 @@ if not BOOTSTRAP:
     ops = page.split('const OPERATORS = {')[1].split('function opAttach(')[0]
     assert 'Math.random' not in ops, \
         'the scripted operator must be deterministic: no Math.random in any policy'
-    for sid in sims_reg['sims']:
-        assert f"'{sid}': {{" in ops, f'no scripted operator policy for {sid}'
+    # sliced per seat - a seat's own block plus the shared bench policy when
+    # it delegates there - because a step id two seats share ('settle',
+    # 'hook') would otherwise be satisfied by another seat's policy and a
+    # dropped step would pass unnoticed
+    table, _, bench = ops.partition('function opBench(')
+    starts = sorted((table.find(f"'{sid}': {{"), sid) for sid in sims_reg['sims'])
+    assert all(i >= 0 for i, _ in starts), 'a seat has no scripted operator policy'
+    for k, (i, sid) in enumerate(starts):
+        blk = table[i:starts[k + 1][0] if k + 1 < len(starts) else None]
+        if 'opBench(' in blk:
+            blk += bench
+        assert len(blk) > 200, f'{sid}: the policy block is too small to be one'
         for p in sims_reg['sims'][sid]['operator']['procedure']:
-            assert f"'{p['id']}'" in ops, \
-                f"{sid}: procedure step {p['id']} is declared but the policy never names it"
+            assert f"'{p['id']}'" in blk, \
+                f"{sid}: procedure step {p['id']} is declared but ITS policy never names it"
 
 stamp = hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest()[:16]
 

@@ -73,8 +73,8 @@ environment varies, the rubric never does:
 | Crescent Works Campus | **Crescent wharf lift** | A steady river breeze leans on the load the whole carry - trim your swing against it. |
 
 **Scripted reference operator.** At `optimal` it passes
-**placement**, **swing**, **strikes** on all three
-yards. Its procedure, the step list the page's policy is written around:
+**placement**, **swing**, **strikes** on all
+3 yards. Its procedure, the step list the page's policy is written around:
 
 1. slew and trolley the hook over the supply pad and lower it under 4.5 m
 2. hook the load
@@ -128,8 +128,8 @@ environment varies, the rubric never does:
 | Crescent Works Campus | **Below-sea trench** | High water table, one live utility at half depth - the flagged cell stops shallow. |
 
 **Scripted reference operator.** At `optimal` it passes
-**grade**, **utility**, **spoil** on all three
-yards. Its procedure, the step list the page's policy is written around:
+**grade**, **utility**, **spoil** on all
+3 yards. Its procedure, the step list the page's policy is written around:
 
 1. swing to the next cell short of grade, reach out to it and drop the bucket under 0.6 m
 2. take one bite - the marked depth divided by the bite is the count, and a flagged cell gets no more
@@ -177,8 +177,8 @@ environment varies, the rubric never does:
 | Crescent Works Campus | **Wharf dock set** | The wharf dock is narrow - four gates, then a set-down with little room to be wrong. |
 
 **Scripted reference operator.** At `optimal` it passes
-**gates**, **cones**, **docking** on all three
-yards. Its procedure, the step list the page's policy is written around:
+**gates**, **cones**, **docking** on all
+3 yards. Its procedure, the step list the page's policy is written around:
 
 1. steer for the centre of the next untaken gate, slowing into every turn
 2. roll up to the pallet on the centre line and brake to a walk
@@ -227,8 +227,8 @@ environment varies, the rubric never does:
 | Crescent Works Campus | **Tank shell seam** | Storage-tank shell plate in Gulf humidity - a slightly higher band, the same clean-bead law. |
 
 **Scripted reference operator.** At `optimal` it passes
-**fusion**, **band**, **burns** on all three
-yards. Its procedure, the step list the page's policy is written around:
+**fusion**, **band**, **burns** on all
+3 yards. Its procedure, the step list the page's policy is written around:
 
 1. set the arc gap to the middle of the scenario's band before striking
 2. strike the arc at the start of the seam
@@ -274,8 +274,8 @@ environment varies, the rubric never does:
 | Crescent Works Campus | **Storm-hardening bay** | Hurricane-season work - a third rail goes on, and the same legal order holds in the wind. |
 
 **Scripted reference operator.** At `optimal` it passes
-**sequence**, **complete** on all three
-yards. Its procedure, the step list the page's policy is written around:
+**sequence**, **complete** on all
+3 yards. Its procedure, the step list the page's policy is written around:
 
 1. jump the rack to the stage the bay is legally at - the dash names it
 2. place the next part, and repeat until the rails are on
@@ -321,8 +321,8 @@ environment varies, the rubric never does:
 | Crescent Works Campus | **River-wind card** | The river breeze wants the load moving - six calls with two swings hold the line to the set. |
 
 **Scripted reference operator.** At `optimal` it passes
-**calls**, **wrong** on all three
-yards. Its procedure, the step list the page's policy is written around:
+**calls**, **wrong** on all
+3 yards. Its procedure, the step list the page's policy is written around:
 
 1. read the called signal off the lift card - the dash shows it
 2. give exactly that signal, wait for the crane to finish moving, and give the next; STOP ends the card
@@ -367,8 +367,8 @@ environment varies, the rubric never does:
 | Crescent Works Campus | **Barge transfer list** | Five barge picks with two over the chart - the river will not forgive the one you talk into. |
 
 **Scripted reference operator.** At `optimal` it passes
-**judgments**, **overloads** on all three
-yards. Its procedure, the step list the page's policy is written around:
+**judgments**, **overloads** on all
+3 yards. Its procedure, the step list the page's policy is written around:
 
 1. read the pick weight and radius against the chart line at that radius
 2. hook the pick if its weight is inside the chart, refuse it if it is over
@@ -416,8 +416,8 @@ environment varies, the rubric never does:
 | Crescent Works Campus | **Levee floodwall mildew** | Gulf humidity grows mildew fast on the floodwall panel - a taller face, containment matters more here. |
 
 **Scripted reference operator.** At `optimal` it passes
-**coverage**, **damage**, **containment** on all three
-yards. Its procedure, the step list the page's policy is written around:
+**coverage**, **damage**, **containment** on all
+3 yards. Its procedure, the step list the page's policy is written around:
 
 1. deploy the containment berm before the trigger is ever pulled
 2. set the standoff to the middle of the effective window, well clear of the damage distance
@@ -467,8 +467,8 @@ environment varies, the rubric never does:
 | Crescent Works Campus | **Shotgun house finish coat** | A taller shotgun-house exterior wall panel - humidity punishes a slow pass, hold the rhythm. |
 
 **Scripted reference operator.** At `optimal` it passes
-**coverage**, **runs**, **holidays**, **overspray** on all three
-yards. Its procedure, the step list the page's policy is written around:
+**coverage**, **runs**, **holidays**, **overspray** on all
+3 yards. Its procedure, the step list the page's policy is written around:
 
 1. set the standoff to the middle of the effective window, well clear of the run distance
 2. pull the trigger inside the masked line
@@ -519,8 +519,8 @@ environment varies, the rubric never does:
 | Crescent Works Campus | **Storm-shutter run** | Five shutter anchors low on a warehouse wall before the season turns, with a service drop overhead - short reaches, the same tie-off law. |
 
 **Scripted reference operator.** At `optimal` it passes
-**reach**, **envelope**, **tie-off**, **slope**, **strikes** on all three
-yards. Its procedure, the step list the page's policy is written around:
+**reach**, **envelope**, **tie-off**, **slope**, **strikes** on all
+3 yards. Its procedure, the step list the page's policy is written around:
 
 1. stand on the level pad with the boom stowed - nothing lifts until the base is right
 2. set the stabilizers before the basket leaves the ground
@@ -576,8 +576,8 @@ environment varies, the rubric never does:
 | Crescent Works Campus | **Boat-shed engine move** | A marine engine from the crate to the test stand in a Gulf boat shed - a narrow bay, a tight square, the crew aisle right through the middle. |
 
 **Scripted reference operator.** At `optimal` it passes
-**placement**, **sway**, **path**, **limits**, **clear** on all three
-yards. Its procedure, the step list the page's policy is written around:
+**placement**, **sway**, **path**, **limits**, **clear** on all
+3 yards. Its procedure, the step list the page's policy is written around:
 
 1. bridge and trolley the hook over the pickup and lower it onto the load
 2. hook the load

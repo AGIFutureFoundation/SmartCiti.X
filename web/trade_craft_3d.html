@@ -2706,7 +2706,7 @@ function showRegion() {
   if (sim) teardownSim();
   if (curRestoSite) teardownRestoWalk();
   view = 'region';
-  if (walkActive) (isTouch ? exitWalkMode() : plc.unlock());
+  walkLeave();
   if (avatarGroup) avatarGroup.visible = false;
   wheelShow(false);
   if (hallGroup) hallGroup.visible = false;
@@ -2757,7 +2757,7 @@ function showCampus(key) {
   if (sim) teardownSim();
   if (curRestoSite) teardownRestoWalk();
   campusKey = key; view = 'campus';
-  if (walkActive) (isTouch ? exitWalkMode() : plc.unlock());
+  walkLeave();
   if (avatarGroup) avatarGroup.visible = false;
   wheelShow(false);
   if (hallGroup) hallGroup.visible = false;
@@ -2871,9 +2871,12 @@ function walkSpawn() {
 }
 
 function enterHallWalking(sg) {
-  showHall(sg);
+  showHall(sg);                     // ...which writes the hall's ORBIT frame into the camera
   const [sx, sz] = walkSpawn();
   xrRig.position.x = sx; xrRig.position.z = sz;
+  // a walker's eye is the rig: the camera sits back at the rig's origin,
+  // keeping only the way it was looking, exactly as enterWalk() seats it
+  camera.position.set(0, 0, 0);
   document.getElementById('hint').textContent = t('hint.walk');
 }
 plc.addEventListener('lock', () => {
@@ -2896,7 +2899,17 @@ function walkEnded() {
   else if (view === 'campus') document.getElementById('hint').textContent = t('hint.campus');
   nearSlug = null;
 }
-plc.addEventListener('unlock', () => { if (!xrWalk) walkEnded(); });
+plc.addEventListener('unlock', () => { if (!xrWalk && walkActive) walkEnded(); });
+// leaving a desktop walk for a view that writes its own camera frame (a seat,
+// the campus, a restoration site): the pointer-lock 'unlock' event lands a
+// task LATER, and walkEnded() folding the rig into the camera then would
+// bake the walker's offset into the frame the new view has just written -
+// so the walk ends here, now, and the late event finds nothing left to end
+function walkLeave() {
+  if (!walkActive || xrWalk) return;
+  if (isTouch) { exitWalkMode(); return; }
+  plc.unlock(); walkEnded();
+}
 
 const _wf = new THREE.Vector3(), _wr = new THREE.Vector3();
 function walkStep(dt) {
@@ -3154,7 +3167,7 @@ function setSimView(mode) {
     controls.update();
     // in a headset the orbit frame is a viewpoint: the rig stands where the
     // orbit camera would, facing the target, and the head is free
-    if (renderer.xr.isPresenting) xrOrbitPlace(oc?.pos ?? [36, 28, 42], oc?.tgt ?? [0, 11, 0]);
+    if (xrLive()) xrOrbitPlace(oc?.pos ?? [36, 28, 42], oc?.tgt ?? [0, 11, 0]);
   }
 }
 
@@ -3203,6 +3216,7 @@ function teardownSim() {
   // every key it was holding, so nothing it pressed leaks into walk mode
   opRun = null;
   for (const kk of OP_KEYS) keys[kk] = false;
+  xrPadRelease();
   document.getElementById('opCtl').style.display = 'none';
   scene.remove(sim.group);
   disposeOf(sim.group);
@@ -3223,7 +3237,7 @@ function exitSim() { teardownSim(); showHall(slug); }
 function startSim(simId, scenarioId) {
   // a walker in a headset hands the rig to the seat; a desktop walker unlocks
   if (xrWalk) { xrWalk = false; walkActive = false; }
-  else if (walkActive) plc.unlock();
+  else walkLeave();
   if (sim) teardownSim();
   if (curRestoSite) teardownRestoWalk();
   simTicks = []; traceClock = 0;
@@ -5511,11 +5525,21 @@ function opRunHeadless(simId, scenarioId, level, seed, dt, maxSec, every = 0) {
     opRun = null; teardownSim(); opHeadless = false;
   }
 }
+// where a headless run was launched from, and the way back: a run tears the
+// launching view down for its seat, so the view is marked before and
+// restored after - by a single run and by the sweep through the SAME two
+// calls, never left reading 'sim' with no seat in it
+function opViewMark() { return { view, slug, campusKey }; }
+function opViewRestore(before) {
+  if (before.view === 'campus') showCampus(before.campusKey);
+  else if (before.view === 'region') showRegion();
+  else showHall(before.slug);
+}
 async function opSweep(o = {}) {
   const sims = o.sims ?? Object.keys(OPERATORS);
   const levels = o.levels ?? Object.keys(D.sims.operatorLevels);
   const seeds = o.seeds ?? [1], dt = o.dt ?? 1 / 60, maxSec = o.maxSec ?? 400;
-  const before = { view, slug, campusKey }, rows = [];
+  const before = opViewMark(), rows = [];
   for (const id of sims) {
     const scs = (D.sims.sims[id].scenarios ?? [null])
       .filter((s) => !o.scenarios || o.scenarios.includes(s?.id));
@@ -5524,10 +5548,7 @@ async function opSweep(o = {}) {
       await new Promise((res) => setTimeout(res, 0));   // let the page breathe between runs
     }
   }
-  // back to where the sweep was launched from
-  if (before.view === 'campus') showCampus(before.campusKey);
-  else if (before.view === 'region') showRegion();
-  else showHall(before.slug);
+  opViewRestore(before);   // back to where the sweep was launched from
   return { recorded: trainingOn, rows };
 }
 
@@ -7677,7 +7698,7 @@ function exitRestoWalk() {
 function startRestorationWalk(siteId) {
   const site = D.restoration.sites.find((s) => s.id === siteId && s.e !== undefined);
   if (!site) return;
-  if (walkActive) (isTouch ? exitWalkMode() : plc.unlock());
+  walkLeave();
   if (sim) teardownSim();
   if (curRestoSite) teardownRestoWalk();
   view = 'restoration'; curRestoSite = site; campusKey = site.campus;
@@ -8422,9 +8443,15 @@ window.__tc3dSim = {
     return { sim: simId, scenario: curScenario?.id ?? null, level: opts.level ?? null };
   },
   stop() { if (sim) exitSim(); },
-  // one headless run to completion at a fixed step; returns its outcome
-  run: (simId, scenarioId, o = {}) => opRunHeadless(simId, scenarioId,
-    o.level ?? 'optimal', o.seed ?? 1, o.dt ?? 1 / 60, o.maxSec ?? 400, o.every ?? 0),
+  // one headless run to completion at a fixed step; returns its outcome,
+  // and hands the launching view back exactly as the sweep does
+  run(simId, scenarioId, o = {}) {
+    const before = opViewMark();
+    try {
+      return opRunHeadless(simId, scenarioId, o.level ?? 'optimal', o.seed ?? 1,
+        o.dt ?? 1 / 60, o.maxSec ?? 400, o.every ?? 0);
+    } finally { opViewRestore(before); }
+  },
   sweep: opSweep,
   state: () => opRun ? { sim: opRun.sim, scenario: opRun.scenario, level: opRun.level,
     seed: opRun.seed, step: opRun.step, phase: opRun.id, sweep: opRun.sweep,
@@ -8632,7 +8659,7 @@ function xrBegan() {
   if (xrBlend !== 'opaque') renderer.setClearAlpha(0);
   xrCtlBuild();
   xrHudBuild();
-  if (walkActive && !xrWalk) { if (isTouch) exitWalkMode(); else plc.unlock(); }
+  walkLeave();
   if (sim) {
     if (simView === 'orbit') {
       const oc = sim.orbitCam;
@@ -8649,8 +8676,26 @@ function xrBegan() {
     + (xrFloor ? 'local-floor space' : 'local space - rig lifted ' + XR_LOCAL_EYE + ' m, no floor tracking')
     + ' · ' + xrBlend + ' · left stick walks, right stick snaps 30°, B/Y leaves');
 }
+// presenting, and not on the way out: the session's 'end' event reaches
+// this page's listener BEFORE three.js's own (registered later, in
+// setSession), so inside xrEnded renderer.xr.isPresenting still reads true
+// - anything that would re-place the rig for a headset must ask this instead
+function xrLive() { return renderer.xr.isPresenting && xrMode !== null; }
+// lift every key the controller adapter wrote and forget its edge cache: at
+// session end (a stick held as the session ends must not keep driving the
+// seat from a headset that is gone) and when a seat is torn down (the next
+// seat starts from a clean cache, so a stick still held registers again).
+// The face-button latches are NOT touched here: a seat is torn down by the
+// A/X and B/Y presses themselves, and clearing the latch under a press
+// still held would re-fire its rising edge on the very next frame
+function xrPadRelease() {
+  for (const kk in xrPad.edge) if (xrPad.edge[kk]) keys[kk] = false;
+  xrPad.edge = {};
+}
 function xrEnded() {
   xrMode = null; xrBlend = 'opaque';
+  xrPadRelease();
+  xrPad.trig = xrPad.lTrig = xrPad.grip = xrPad.a = xrPad.b = false;   // no session: nothing is held
   renderer.setClearAlpha(1);
   key.castShadow = qLevel !== 'low';
   xrHudClear();

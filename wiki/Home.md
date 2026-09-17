@@ -162,8 +162,8 @@ everything drawn between them schematic.
 ### The regional chapter network
 
 Every hall keeps its **home campus** — where its district trains — and
-holds a **regional chapter** at each of the other two, so all 111 trades
-train in all three regions: **1110 chapter seats** in
+holds a **regional chapter** at each of the other 9, so all
+111 trades train in all 10 regions: **1110 chapter seats** in
 total, and each campus plaza carries a Regional Chapter Hall listing the
 60/79/83/111/111/111/111/111/111/111 unions it hosts
 from elsewhere. This is the Academy's own regional structure across its

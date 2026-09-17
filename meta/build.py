@@ -24,6 +24,9 @@ import pathlib
 HERE = pathlib.Path(__file__).resolve().parent
 ROOT = HERE.parent
 
+# the simulator roster the WebXR role counts - read from sims/, never typed
+_n_sims = len(json.load(open(ROOT / 'sims/registry/sims.json'))['sims'])
+
 PACK_VERSION = "3.3.0"
 BUILT = "2026-09-17"
 
@@ -62,7 +65,7 @@ DOC = {
                      'has, a wrist panel of readout signs off the same '
                      'gauges the dash shows, the scripted reference '
                      'operator watchable in-session, and every one of the '
-                     'eleven simulators operable in a session. The quality '
+                     f'{_n_sims} simulators operable in a session. The quality '
                      'ladder is honest about three.js r160: fixed foveation '
                      'and the fog banks step live, the framebuffer scale '
                      '(1.0 / 0.8 / 0.65) is recorded in-session and applied '

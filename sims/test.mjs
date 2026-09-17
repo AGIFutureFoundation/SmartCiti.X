@@ -240,13 +240,34 @@ ok('the seats an operator has to see expose what it steers by on the dash itself
   && ['heading', 'x', 'z'].every((k) => sims['forklift-run'].dash.some((g) => g.id === k))
   && ['u', 'v'].every((k) => sims['pressure-washer'].dash.some((g) => g.id === k)
     && sims['airless-sprayer'].dash.some((g) => g.id === k)));
-ok('the page builds a policy for every seat, written as a switch over that seat\'s own procedure ids',
-  (() => {
-    const ops = page.split('const OPERATORS = {')[1]?.split('function opAttach(')[0] ?? '';
-    return Object.entries(sims).every(([id, s]) => ops.includes(`'${id}': {`)
-      && s.operator.procedure.every((p) => ops.includes(`'${p.id}'`)))
-      && levels.every((l) => ops.includes(`${l}:`));
-  })());
+// the policy table sliced per seat: a seat's own block, plus the shared bench
+// policy when the block delegates to it. Added after the whole-table check
+// was found to pass for the wrong reason: a step id two seats share ('settle',
+// 'hook', 'lower') was satisfied by ANOTHER seat's policy, so a seat could
+// drop a declared step and nothing would notice. A check that reads the
+// wrong scope is a check that cannot fail.
+const opBlocks = (() => {
+  const all = page.split('const OPERATORS = {')[1]?.split('function opAttach(')[0] ?? '';
+  const [table, bench = ''] = all.split('function opBench(');
+  const starts = Object.keys(sims).map((id) => [id, table.indexOf(`'${id}': {`)])
+    .filter(([, i]) => i >= 0).sort((a, b) => a[1] - b[1]);
+  return Object.fromEntries(starts.map(([id, i], k) => {
+    const blk = table.slice(i, k + 1 < starts.length ? starts[k + 1][1] : undefined);
+    return [id, blk + (/opBench\(/.test(blk) ? bench : '')];
+  }));
+})();
+ok('the page builds a policy for every seat, written as a switch over that seat\'s OWN procedure ids - each id found in that seat\'s block (or the bench policy it delegates to), never satisfied by another seat\'s',
+  Object.entries(sims).every(([id, s]) => opBlocks[id]?.length > 200
+    && s.operator.procedure.every((p) => opBlocks[id].includes(`'${p.id}'`)))
+  && levels.every((l) => Object.values(opBlocks).every((b) => b.includes(`${l}:`)))
+  // the bench seats delegate, so their block carries the bench's raster
+  // step; a machine seat's block does not
+  && opBlocks['pressure-washer'].includes("case 'raster'")
+  && !opBlocks['crane-lift'].includes("case 'raster'"));
+ok('a single headless run hands the launching view back exactly as the sweep does - one mark, one restore, called by both, never a view left reading sim with no seat in it',
+  page.includes('function opViewMark()') && page.includes('function opViewRestore(before)')
+  && /run\(simId, scenarioId, o = \{\}\) \{[\s\S]{0,400}finally \{ opViewRestore\(before\); \}/.test(page)
+  && /async function opSweep\([\s\S]{0,1200}opViewRestore\(before\);[\s\S]{0,120}return \{ recorded: trainingOn, rows \}/.test(page));
 
 const src = readFileSync(new URL('./build.py', import.meta.url));
 ok('the registry was built from the current builder source (stamp check)',

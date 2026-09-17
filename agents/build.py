@@ -62,6 +62,27 @@ BUILT = "2026-09-11"
 # `read` bindings name a path the PAGE resolves against its own data for the
 # hall or campus the learner is standing in. The suite proves each one
 # resolves; the page test proves the rendered answer is that record's value.
+# The campus split the Dispatcher and the Orientation guide state - which
+# campuses are flagship (RECORDED or DERIVED coordinates) and which are hubs
+# (AUTHORED) - is READ here from the campus and geo registries and held
+# against each other, so the advisors' prose can never name a hub that is
+# not one or miss one that is. The doctrine's own rule: one truth, read.
+_campuses = json.load(open(ROOT / 'unions/registry/campuses.json'))['campuses']
+_geo = json.load(open(ROOT / 'geo/registry/campuses_geo.json'))['campuses']
+_hubs = [ck for ck, c in _campuses.items() if not c['districts']]
+_flagships = [ck for ck, c in _campuses.items() if c['districts']]
+assert set(_hubs) | set(_flagships) == set(_geo), 'the two campus registries disagree'
+assert all(_geo[ck]['provenance'] == 'AUTHORED' for ck in _hubs), \
+    'a hub campus carries a coordinate tier the advisors do not say it does'
+assert all(_geo[ck]['provenance'] in ('RECORDED', 'DERIVED') for ck in _flagships), \
+    'a flagship campus carries a coordinate tier the advisors do not say it does'
+N_WORD = {2: 'two', 3: 'three', 4: 'four', 5: 'five', 6: 'six', 7: 'seven',
+          8: 'eight', 9: 'nine', 10: 'ten'}
+HUB_CITIES = [_campuses[ck]['city'] for ck in _hubs]
+HUB_N = N_WORD[len(_hubs)]
+FLAG_N = N_WORD[len(_flagships)]
+HUB_LIST = ', '.join(HUB_CITIES[:-1]) + ' and ' + HUB_CITIES[-1]
+
 BINDINGS = {
     'conditions.ppe': 'the PPE list on this room\'s condition record',
     'conditions.hazards': 'the hazards this room\'s condition record carries',
@@ -124,10 +145,9 @@ ADVISORS = {
                     'claim than RECORDED, and labelled as one. SCHEMATIC is '
                     'drawn to teach and is not a survey of anywhere. The '
                     'buildings you are standing in are SCHEMATIC. The '
-                    'coordinates the three flagship campuses sit on are '
-                    'RECORDED or DERIVED; the seven hub campuses, Houston, '
-                    'Chicago, Seattle, Pittsburgh, Denver, Miami and '
-                    'Detroit, are AUTHORED.'},
+                    f'coordinates the {FLAG_N} flagship campuses sit on are '
+                    f'RECORDED or DERIVED; the {HUB_N} hub campuses, '
+                    f'{HUB_LIST}, are AUTHORED.'},
         ],
     },
     'safety-steward': {
@@ -330,9 +350,8 @@ ADVISORS = {
             {'id': 'sited', 'ask': 'Is the campus really here?',
              'kind': 'say', 'cites': 'geo/registry/campuses_geo.json',
              'say': 'The coordinate here is RECORDED or DERIVED for the '
-                    'three flagship campuses, AUTHORED for the seven hub '
-                    'campuses (Houston, Chicago, Seattle, Pittsburgh, '
-                    'Denver, Miami, Detroit) - '
+                    f'{FLAG_N} flagship campuses, AUTHORED for the {HUB_N} hub '
+                    f'campuses ({", ".join(HUB_CITIES)}) - '
                     'and the distances between every campus pair are DERIVED '
                     'from those points by great circle either way. The '
                     'campus itself '
