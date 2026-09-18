@@ -48,6 +48,8 @@
   "room.finish": "Acabado del suelo",
   "geo.note": "Rumbos reales; distancias comprimidas — las etiquetas llevan km reales",
   "sim.start": "Iniciar simulador",
+  "yard.name": "Patio de formación",
+  "yard.seats": "puestos en este campus",
   "sim.results": "Resultados",
   "sim.pass": "Aprobado",
   "sim.retry": "Intentar de nuevo",

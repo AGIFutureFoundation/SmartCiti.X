@@ -202,4 +202,57 @@ ok('the candidate and walkaround panels refuse with a reason instead of throwing
   && /if \(!def\) return refusePanel\(/.test(fn('openWa'))
   && /if \(!c\) \{/.test(fn('openCandidate')));
 
+/* ------------------------------------------------------- built fabric --- */
+ok('a building wears its CAMPUS fabric, not one page-wide wall material',
+  /const fab = fabricOf\(campusKey\);/.test(fn('building'))
+  && /box\(wid, hgt, dep, fab\.wall, 0, hgt \/ 2, 0, g\)/.test(fn('building'))
+  && /add\(fab\.roof,/.test(fn('building'))
+  && /add\(fab\.trim,/.test(fn('building')));
+ok('the district still decides a roofline it has an opinion about; the city '
+  + 'breaks the tie',
+  /STYLE_OF\[k\] \?\? \(D\.world\.fabric\?\.\[campusKey\]\?\.roof \?\? 'flat'\)/.test(src));
+/* Seven of the ten campuses are hubs with no halls, so the fabric would have
+   dressed nothing there. The chapter hall is the one building they have. */
+ok('a hub\'s chapter hall wears the same three fabric materials',
+  /const fab = fabricOf\(key\);/.test(fn('buildChapterHall'))
+  && /CylinderGeometry\(5\.6, 6, 4\.2, 8\), fab\.wall/.test(fn('buildChapterHall'))
+  && /CylinderGeometry\(5\.75, 5\.75, \.5, 8\), fab\.trim/.test(fn('buildChapterHall'))
+  && /ConeGeometry\(7\.2, 2\.6, 8\), fab\.roof/.test(fn('buildChapterHall')));
+ok('the city layer no longer paints real places from a rainbow keyed on '
+  + 'their index',
+  !/const hues = \[42, 152, 205, 268, 20, 96, 330\]/.test(src)
+  && /const baseHSL = new THREE\.Color\(fabCity\.spec\.facade_color\)/.test(fn('buildCity')));
+/* Reading through two levels of an absent table is what broke this function
+   for one build: the registry had `fabric` and the page payload did not. */
+ok('an absent fabric table degrades to a fallback instead of throwing',
+  /const fab = D\.world\.fabric \?\? \{\};/.test(fn('fabricOf'))
+  && /fab\[ck\] \?\? fab\['treasure-island'\] \?\? FABRIC_FALLBACK/.test(fn('fabricOf'))
+  && /const FABRIC_FALLBACK = /.test(src));
+ok('the per-campus fabric materials are dropped when the campus is',
+  /fabMats = null; fabKey = null;/.test(fn('buildCampus')));
+
+/* -------------------------------------------- the campus training yard --- */
+/* Simulation used to be reachable only through a panel - enter a hall, open
+   its list, click a seat - so the seats were never anywhere. These hold the
+   yard to the two things that make it honest rather than decorative: it
+   draws only where a campus has home halls, and entering a stand starts the
+   run against a hall that actually teaches that seat. */
+ok('the yard is built from the sims registry\'s own bindings for THIS campus',
+  /const halls = new Set\(D\.campuses\[campusKey\]\?\.halls \?\? \[\]\);/.test(fn('buildTrainingYard'))
+  && /D\.sims\.bindings\[sg\] \?\? \[\]/.test(fn('buildTrainingYard')));
+ok('a hub draws no yard: no home halls, and a chapter seat is a roster, not a place',
+  /if \(!halls\.size\) return;/.test(fn('buildTrainingYard')));
+ok('each stand is paved in that seat\'s own declared floor, not one apron for all',
+  /finishMat\(D\.finCat\[def\.yard\.surface\]/.test(fn('buildTrainingYard')));
+ok('walking into a stand starts the seat against a hall on THIS campus that '
+  + 'teaches it, and refuses rather than starting an unbound run',
+  /const hall = def\.halls\.find\(\(sg\) => here\.has\(sg\)\);/.test(fn('enterSeatFromYard'))
+  && /if \(!hall\) \{/.test(fn('enterSeatFromYard'))
+  && /return refusePanel\(/.test(fn('enterSeatFromYard')));
+ok('a seat stand is a nearer target than a hall door, so it is tested first',
+  /if \(bs && sd < 6\) \{/.test(src)
+  && /nearSeat = bs\.userData\.seat; nearSlug = nearPoi = null;/.test(src));
+ok('the yard mast light rides the quality ladder like every other',
+  /ml\.visible = qLevel !== 'low';/.test(fn('buildTrainingYard')));
+
 console.log(`web/test_3d: ${n} checks passed - teardown, draw-call and per-frame contracts held at the source`);

@@ -27,6 +27,7 @@ wildlife survey.
 import hashlib
 import json
 import pathlib
+import re
 
 HERE = pathlib.Path(__file__).resolve().parent
 ROOT = HERE.parent
@@ -248,6 +249,12 @@ FAUNA = {
 
 # -------------------------------------------------- the campus atmospheres ---
 # Moved here out of the page, unchanged: authored ambience, by reputation.
+# The page's surface engine draws these patterns and the campus builder
+# draws these rooflines; a fabric may name nothing else. Closed sets, so a
+# typo cannot invent a facade the renderer would silently ignore.
+FACADE_PATTERNS = ('panel', 'brick', 'block', 'smooth', 'plywood', 'board')
+ROOFLINES = ('flat', 'gable', 'saw')
+
 ATMOS = {
     'treasure-island': {
         'sky': ['#0b141d', '#22323e', '#48575f', '#5e646a'],
@@ -365,6 +372,88 @@ ATMOS = {
     },
 }
 
+# ---------------------------------------------------------- built fabric --
+# What each campus is BUILT of.
+#
+# Every campus already had its own sky, fog, sun, ambient bed and ground -
+# and then all ten drew the same building: one flat envelope, one roofline
+# per district, the same trim everywhere. Ten cities that were distinguished
+# only by their weather.
+#
+# `facade` is a pattern key the page's own surface engine already knows (the
+# same set the floors and walls use), `facade_color` and `trim` are the
+# envelope and its band, `roof` is the roofline this city's fabric leans to
+# where the district has no stronger opinion, and `roof_color` is what the
+# roofline is made of.
+#
+# AUTHORED BY REPUTATION, exactly like the `character` line each of these
+# sits beside: no site has been surveyed, no building here is drawn from a
+# photograph or a plan, and no real building is depicted. What a city is
+# known for building with is a reputation, and the record says so rather
+# than implying a survey.
+FABRIC = {
+    'treasure-island': {
+        'facade': 'panel', 'facade_color': '#3f4b50', 'trim': '#9db2b8',
+        'roof': 'flat', 'roof_color': '#6d7a7e',
+        'why': 'the flat-roofed concrete and steel sheds of a former naval '
+               'station, pale and salt-weathered',
+    },
+    'oakland': {
+        'facade': 'brick', 'facade_color': '#77463a', 'trim': '#c4763f',
+        'roof': 'saw', 'roof_color': '#5b5450',
+        'why': 'estuary-side brick warehousing under sawtooth light '
+               'monitors, warmer and harder-edged than the island',
+    },
+    'new-orleans': {
+        'facade': 'smooth', 'facade_color': '#8b8067', 'trim': '#4f7d6a',
+        'roof': 'gable', 'roof_color': '#5e5a4e',
+        'why': 'stuccoed masonry under pitched roofs with deep galleries, '
+               'built for rain and shade',
+    },
+    'houston': {
+        'facade': 'panel', 'facade_color': '#69737a', 'trim': '#d8a33d',
+        'roof': 'flat', 'roof_color': '#7d858a',
+        'why': 'metal-clad process plant at petrochemical scale, flat and '
+               'wide with everything on the outside',
+    },
+    'chicago': {
+        'facade': 'brick', 'facade_color': '#8a4f3d', 'trim': '#5d6b78',
+        'roof': 'flat', 'roof_color': '#6a7076',
+        'why': 'load-bearing masonry on a steel frame behind a flat '
+               'parapet, the city that invented the arrangement',
+    },
+    'seattle': {
+        'facade': 'plywood', 'facade_color': '#54614f', 'trim': '#a9b8ae',
+        'roof': 'gable', 'roof_color': '#4e5a57',
+        'why': 'heavy timber and glass under a pitched roof, green-grey '
+               'and built to shed rain',
+    },
+    'pittsburgh': {
+        'facade': 'brick', 'facade_color': '#6d4134', 'trim': '#41505a',
+        'roof': 'saw', 'roof_color': '#3f4750',
+        'why': 'mill brick and blackened structural steel under sawtooth '
+               'glazing, a river valley of shops',
+    },
+    'denver': {
+        'facade': 'block', 'facade_color': '#9b9078', 'trim': '#b5643a',
+        'roof': 'flat', 'roof_color': '#8a8271',
+        'why': 'concrete block and stone in high-desert buff, flat-roofed '
+               'under a dry sky',
+    },
+    'miami': {
+        'facade': 'smooth', 'facade_color': '#c9d2cc', 'trim': '#39a3a8',
+        'roof': 'flat', 'roof_color': '#aab4b2',
+        'why': 'light stucco with shuttered openings and flat roofs, '
+               'detailed for wind and sun',
+    },
+    'detroit': {
+        'facade': 'block', 'facade_color': '#7a7e79', 'trim': '#a8402f',
+        'roof': 'saw', 'roof_color': '#4a4f52',
+        'why': 'heavy plant in block and steel under sawtooth bays, built '
+               'around the line rather than the street',
+    },
+}
+
 HONESTY = {
     'textures': 'no texture, photograph or artwork file exists in this '
                 'repository and none is downloaded: every surface is a '
@@ -397,6 +486,14 @@ assert set(ATMOS) == set(campuses), 'one atmosphere per campus, exactly'
 for ck, a in ATMOS.items():
     assert a['ground'] in GROUND, f'{ck}: ground {a["ground"]} is not a recipe'
     assert a['verge'] in GROUND, f'{ck}: verge {a["verge"]} is not a recipe'
+    # the built fabric, held to the same contract the atmosphere is
+    f = FABRIC[ck]
+    assert f['facade'] in FACADE_PATTERNS, \
+        f'{ck}: facade {f["facade"]} is not a pattern the page can draw'
+    assert f['roof'] in ROOFLINES, f'{ck}: roof {f["roof"]} is not a roofline'
+    for key in ('facade_color', 'trim', 'roof_color'):
+        assert re.fullmatch(r'#[0-9a-f]{6}', f[key]), f'{ck}: {key} is not a colour'
+    assert len(f['why']) > 25, f'{ck}: a fabric with no reason is a preference'
     assert len(a['sky']) == len(SKY['bands']), \
         f'{ck}: sky stops must match the declared bands'
     assert 'reputation' in a['character'], \
@@ -457,6 +554,7 @@ doc = {
     'ground': GROUND,
     'fauna': FAUNA,
     'atmos': ATMOS,
+    'fabric': FABRIC,
 }
 
 OUT = HERE / 'registry'

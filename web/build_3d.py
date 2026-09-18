@@ -180,6 +180,7 @@ for f in sorted((ROOT / 'i18n/locales').glob('*.json')):
             'figures.halls', 'figures.districts', 'figures.campuses',
             'view.campus', 'view.region', 'ui.walk',
             'hint.campus', 'hint.walk', 'hint.walkRefused', 'geo.note',
+            'yard.name', 'yard.seats',
             'sim.start', 'sim.results', 'sim.pass', 'sim.retry',
             'sim.sound', 'sim.view', 'sim.choose', 'progress.local',
             'city.note', 'avatar.title', 'chapters.hall',
@@ -292,7 +293,11 @@ DATA = json.dumps({
               'weather': world_reg['weather'],
               'ground': trim(world_reg['ground'], 'where', 'name'),
               'fauna': trim(world_reg['fauna'], 'why', 'name', 'glyph'),
-              'atmos': trim(world_reg['atmos'], 'character')},
+              'atmos': trim(world_reg['atmos'], 'character'),
+              # what each campus is BUILT of - facade pattern, envelope and
+              # trim colours, roofline. `why` is prose for the reader and
+              # stays out of the wire, like `character` above it.
+              'fabric': trim(world_reg['fabric'], 'why')},
     # every sign in the world: its shape, its palette, its type and how it
     # reacts to being looked at - again, only the parts that are drawn
     'labels': {'shapes': trim(labels_reg['shapes'], 'draws', 'reads_as'),
@@ -4178,15 +4183,28 @@ function touchWalkStep(dt) {
       const d = Math.hypot(wp.x - walkAvatar.position.x, wp.z - walkAvatar.position.z);
       if (d < pd) { pd = d; bp = b; }
     }
+    // the training yard's stands, on the same footing as a hall door
+    let bs = null, sd = 1e9;
+    for (const b of seatHits) {
+      b.getWorldPosition(wp);
+      const d = Math.hypot(wp.x - walkAvatar.position.x, wp.z - walkAvatar.position.z);
+      if (d < sd) { sd = d; bs = b; }
+    }
     const act = document.getElementById('actBtn');
-    if (best && bd < 12) {
-      nearSlug = best.userData.slug; nearPoi = null;
+    if (bs && sd < 6) {
+      // nearest wins where they overlap, and a seat stand is a smaller
+      // target than a building, so it is tested first
+      nearSeat = bs.userData.seat; nearSlug = nearPoi = null;
+      act.style.display = '';
+      act.textContent = '\\u23ce ' + D.sims.sims[nearSeat].name;
+    } else if (best && bd < 12) {
+      nearSlug = best.userData.slug; nearPoi = null; nearSeat = null;
       act.style.display = '';
       act.textContent = '\\u23ce ' + D.halls.find(x => x.slug === nearSlug).name;
     } else if (bp && pd < 15) {
-      nearPoi = bp.userData.poi; nearSlug = null;
+      nearPoi = bp.userData.poi; nearSlug = null; nearSeat = null;
       act.style.display = ''; act.textContent = '\\u23ce ' + nearPoi;
-    } else { nearSlug = nearPoi = null; act.style.display = 'none'; }
+    } else { nearSlug = nearPoi = nearSeat = null; act.style.display = 'none'; }
   } else if (view === 'restoration') {
     let bt = null, td = 1e9;
     const wp = _wp;
@@ -4204,7 +4222,8 @@ function touchWalkStep(dt) {
   }
 }
 document.getElementById('actBtn').addEventListener('click', () => {
-  if (nearSlug) { showHall(nearSlug); enterTouchWalk(); }
+  if (nearSeat) enterSeatFromYard(nearSeat);
+  else if (nearSlug) { showHall(nearSlug); enterTouchWalk(); }
   else if (nearTrack) openRestoTrack(nearTrack);
   else if (nearPoi) openCityPoi(nearPoi);
 });
@@ -6971,10 +6990,53 @@ function hueMatOf(hue) {
   }
   return m2;
 }
+/* The campus's own built fabric: what THIS city builds with.
+   Ten campuses each had their own sky, fog, sun and ground, and then all
+   ten drew the same flat envelope with the same trim - ten cities told
+   apart only by their weather. The facade pattern, the envelope and trim
+   colours and the roofline now come from the world registry's `fabric`
+   block, authored by reputation and saying so, exactly like the
+   `character` line beside it. Three materials per campus, built once when
+   the campus is built and freed with it. */
+let fabMats = null, fabKey = null;
+// The last resort if the registry ever ships no fabric at all: the page
+// still renders, in the flagship's own colours, rather than failing to boot.
+const FABRIC_FALLBACK = { facade: 'panel', facade_color: '#3f4b50',
+  trim: '#9db2b8', roof: 'flat', roof_color: '#6d7a7e' };
+function fabricOf(ck) {
+  if (fabKey === ck && fabMats) return fabMats;
+  // A missing fabric table degrades to the flagship's rather than throwing:
+  // this reads through TWO levels, and reading a field off an undefined
+  // table is exactly the fault this bundle fixed in openCandidate and
+  // openWa. It is also how this function shipped broken for one build -
+  // the registry had the table and the page payload did not.
+  const fab = D.world.fabric ?? {};
+  const f = fab[ck] ?? fab['treasure-island'] ?? FABRIC_FALLBACK;
+  const { map, normalMap } = surfaceMaps(f.facade_color, f.facade);
+  const wall = new THREE.MeshStandardMaterial({ roughness: .82 });
+  wall.map = map.clone(); wall.map.repeat.set(3, 3); wall.map.needsUpdate = true;
+  if (normalMap) {
+    wall.normalMap = normalMap.clone();
+    wall.normalMap.repeat.set(3, 3); wall.normalMap.needsUpdate = true;
+    wall.normalScale = new THREE.Vector2(.75, .75);
+  }
+  fabMats = {
+    spec: f,
+    wall,
+    trim: new THREE.MeshStandardMaterial({
+      color: new THREE.Color(f.trim), roughness: .55 }),
+    roof: new THREE.MeshStandardMaterial({
+      color: new THREE.Color(f.roof_color), roughness: .7, metalness: .25 }),
+  };
+  fabKey = ck;
+  return fabMats;
+}
+
 function building(h, style, g, pool, ox = 0, oz = 0) {   // built at the local origin, door toward -z
+  const fab = fabricOf(campusKey);
   const dep = Math.max(h.depth, 5), wid = 12;
   const hgt = 6 + (h.depth % 3) * .7;
-  const bld = box(wid, hgt, dep, mat.wall, 0, hgt / 2, 0, g);
+  const bld = box(wid, hgt, dep, fab.wall, 0, hgt / 2, 0, g);
   bld.userData.slug = h.slug;
   const parts = pool;                // material -> [transformed geometries], district-wide
   const add = (m2, w, hh, d2, x, y, z, rz = 0) => {
@@ -6990,16 +7052,19 @@ function building(h, style, g, pool, ox = 0, oz = 0) {   // built at the local o
     add(hueMat, .5, hgt, .5, tx, hgt / 2, tz);
   for (const zz of [-dep/2 - .03, dep/2 + .03])
     add(mat.win, wid * .78, .7, .06, 0, hgt * .55, zz);
-  add(mat.part, 1.6, 2.4, .1, 0, 1.2, -dep/2 - .06);
+  add(fab.trim, 1.6, 2.4, .1, 0, 1.2, -dep/2 - .06);   // the door surround
   if (style === 'saw') {              // industrial sawtooth roofline
     for (let sx = -wid/2 + 2; sx < wid/2 - .5; sx += 4)
-      add(mat.metal, 3.2, 1.5, dep - .6, sx, hgt + .55, 0, .42);
+      add(fab.roof, 3.2, 1.5, dep - .6, sx, hgt + .55, 0, .42);
   } else if (style === 'gable') {     // pitched pair
-    add(mat.part, wid * .6, .5, dep + .3, -wid * .24, hgt + 1.1, 0, .48);
-    add(mat.part, wid * .6, .5, dep + .3, wid * .24, hgt + 1.1, 0, -.48);
+    add(fab.roof, wid * .6, .5, dep + .3, -wid * .24, hgt + 1.1, 0, .48);
+    add(fab.roof, wid * .6, .5, dep + .3, wid * .24, hgt + 1.1, 0, -.48);
   } else {                            // flat: parapet already, rooftop unit
-    add(mat.metal, 1.6, .8, 1.2, wid * .22, hgt + .4, dep * .15);
+    add(fab.roof, 1.6, .8, 1.2, wid * .22, hgt + .4, dep * .15);
   }
+  // the pilasters at the corners wear the city's trim, not one shared steel
+  for (const px of [-wid/2 + .3, wid/2 - .3])
+    add(fab.trim, .34, hgt * .92, .34, px, hgt * .46, -dep/2 + .2);
   if (h.stations.length) beaconAt.push(new THREE.Vector3(0, hgt + 2, 0));
   else beaconAt.push(null);
   return { mesh: bld, w: wid, d: dep };
@@ -7357,15 +7422,95 @@ function openChapters() {
 }
 window.__tc3dChapters = openChapters;
 
+/* ------------------------------------------------- the campus training yard --
+   Simulation used to be something you reached through a PANEL: enter a
+   hall, open its sim list, click a seat. The seats were never anywhere.
+   This puts them on the ground, on the campus green between the plaza and
+   the ring, as a fenced yard with a stand for each seat the campus can
+   actually teach - walk up to one and it opens, exactly as a hall does.
+
+   Which seats: the ones bound to halls THIS campus hosts, read from the
+   sims registry's own bindings. A hub campus hosts no halls of its own, so
+   it draws no yard - its chapter seats are a roster of trades, never a
+   place, which is the same line the chapter hall panel already holds. */
+let seatHits = [], nearSeat = null;
+function buildTrainingYard(g, R) {
+  seatHits = [];
+  const halls = new Set(D.campuses[campusKey]?.halls ?? []);
+  if (!halls.size) return;                       // a hub: no home halls, no yard
+  const seats = [...new Set([...halls]
+    .flatMap((sg) => (D.sims.bindings[sg] ?? []).map((b) => b.sim)))]
+    .filter((id) => D.sims.sims[id])
+    .sort();
+  if (!seats.length) return;
+  const fab = fabricOf(campusKey);
+  const yg = new THREE.Group();
+  // on the green, off to one side of the plaza so it never fights the
+  // dispatcher or the chapter hall for the same ground
+  const YR = Math.min(46, Math.max(26, seats.length * 4.2));
+  yg.position.set(-(R * .52), 0, R * .40);
+  g.add(yg);
+
+  // the apron: the campus's own ground worked into a hard standing
+  const apron = new THREE.Mesh(new THREE.CircleGeometry(YR * .62, 40),
+    groundMat(D.world.atmos[campusKey]?.ground ?? 'concrete'));
+  apron.rotation.x = -Math.PI / 2; apron.position.y = .04;
+  apron.receiveShadow = true; yg.add(apron);
+
+  // a stand per seat, ringed, each wearing the district hue of the first
+  // hall that teaches it - so the yard reads as this campus's own trades
+  seats.forEach((id, i) => {
+    const def = D.sims.sims[id];
+    const a = i / seats.length * Math.PI * 2;
+    const sx = Math.cos(a) * YR * .40, sz = Math.sin(a) * YR * .40;
+    const homeHall = def.halls.find((sg) => halls.has(sg));
+    const hue = homeHall ? D.districts[D.halls.find((h) => h.slug === homeHall).district].hue : 40;
+    const pad = new THREE.Mesh(boxGeo(5.2, .18, 5.2),
+      finishMat(D.finCat[def.yard.surface], 5.2 / U * 2, 5.2 / U * 2));
+    pad.position.set(sx, .12, sz); pad.receiveShadow = true; yg.add(pad);
+    const post = new THREE.Mesh(new THREE.CylinderGeometry(.16, .2, 2.5, 10),
+      hueMatOf(hue));
+    post.position.set(sx, 1.35, sz); post.castShadow = true;
+    post.userData.seat = id; yg.add(post); seatHits.push(post);
+    const head = new THREE.Mesh(new THREE.OctahedronGeometry(.62), mat.post);
+    head.position.set(sx, 3.1, sz); head.castShadow = true;
+    head.userData.seat = id; yg.add(head); seatHits.push(head);
+    const sl = label(def.name, def.yard.name, .82, { kind: 'station', hue });
+    sl.position.set(sx, 4.6, sz); yg.add(sl);
+  });
+
+  // the gate sign, so the yard says what it is before you are in it
+  const gs = label(t('yard.name'), seats.length + ' ' + t('yard.seats'), 1.25,
+    { kind: 'district' });
+  gs.position.set(0, 6.4, YR * .52); yg.add(gs);
+  // a light mast, because this is a working yard like any other
+  box(.3, 8, .3, mat.metal, 0, 4, -YR * .5, yg);
+  box(1.4, .3, .5, mat.win, 0, 8.2, -YR * .5, yg, false);
+  const ml = new THREE.PointLight(0xffe9c8, 1.2, YR * 1.4, 1.6);
+  ml.position.set(0, 7.7, -YR * .5); ml.visible = qLevel !== 'low';
+  yg.add(ml); roomLights.push(ml);
+  // and the yard's perimeter, in the campus's own trim
+  for (let k = 0; k < 28; k++) {
+    const a = k / 28 * Math.PI * 2;
+    box(.13, 1.5, .13, fab.trim, Math.cos(a) * YR * .6, .75, Math.sin(a) * YR * .6, yg, false);
+  }
+}
+
 function buildChapterHall(g, key) {
+  // Seven of the ten campuses are HUBS: no districts, no halls, and so no
+  // buildings at all - the fabric above would have dressed nothing there.
+  // The chapter hall is the one building a hub actually has, so it is
+  // where that city's fabric has to show: its envelope, its trim band and
+  // its roof, the same three materials the hall districts wear.
+  const fab = fabricOf(key);
   const pav = new THREE.Group(); g.add(pav);
   const base = new THREE.Mesh(new THREE.CylinderGeometry(7, 7.6, .9, 8), mat.slab);
   base.position.y = .45; base.receiveShadow = true; pav.add(base);
-  const walls = new THREE.Mesh(new THREE.CylinderGeometry(5.6, 6, 4.2, 8), mat.wall);
+  const walls = new THREE.Mesh(new THREE.CylinderGeometry(5.6, 6, 4.2, 8), fab.wall);
   walls.position.y = 3; walls.castShadow = walls.receiveShadow = true; pav.add(walls);
-  const band = new THREE.Mesh(new THREE.CylinderGeometry(5.75, 5.75, .5, 8), mat.post);
+  const band = new THREE.Mesh(new THREE.CylinderGeometry(5.75, 5.75, .5, 8), fab.trim);
   band.position.y = 4.6; pav.add(band);
-  const roof = new THREE.Mesh(new THREE.ConeGeometry(7.2, 2.6, 8), mat.part);
+  const roof = new THREE.Mesh(new THREE.ConeGeometry(7.2, 2.6, 8), fab.roof);
   roof.position.y = 6.5; roof.castShadow = true; pav.add(roof);
   walls.userData.chapters = true;
   chapterHit = [walls];
@@ -7567,7 +7712,15 @@ function buildCity(g, R) {
   if (!pois.length) return;
   cityLog = pois.some((p) => p.km > 15);
   const grass = new THREE.MeshStandardMaterial({ color: 0x3d5238, roughness: .95 });
-  const hues = [42, 152, 205, 268, 20, 96, 330];
+  /* The city blocks used to run a seven-step RAINBOW - hue 42, 152, 205,
+     268, 20, 96, 330 - keyed on nothing but the index a place happened to
+     sit at. It made every city layer look like the same bag of sweets, and
+     the colour said nothing true about the place (these are real,
+     RECORDED or SCHEMATIC locations; their colour is presentation only).
+     They now vary in LIGHTNESS around the campus's own facade colour, so
+     adjacent blocks still read apart and the city looks like that city. */
+  const fabCity = fabricOf(campusKey);
+  const baseHSL = new THREE.Color(fabCity.spec.facade_color).getHSL({ h: 0, s: 0, l: 0 });
   const ferryMat = new THREE.LineBasicMaterial({
     color: 0x41C4D4, transparent: true, opacity: .55 });
   pois.forEach((p, i) => {
@@ -7594,9 +7747,12 @@ function buildCity(g, R) {
     // the place: green, main block, tower, and its name with real km
     box(15, .12, 15, grass, x, .13, z, g, false);
     const hgt = 7 + (i % 3) * 2.5;
+    const step = [0, .09, -.07, .05, -.04, .12, -.10][i % 7];
     const bmat = new THREE.MeshStandardMaterial({
-      color: new THREE.Color().setHSL(hues[i % hues.length] / 360, .34, .42),
-      roughness: .75 });
+      color: new THREE.Color().setHSL(baseHSL.h,
+        Math.min(.6, baseHSL.s + .06),
+        Math.max(.14, Math.min(.62, baseHSL.l + step))),
+      roughness: .78 });
     const bld = box(8, hgt, 6.5, bmat, x - 2, .15 + hgt / 2, z + 1.5, g);
     const twr = box(2.6, hgt + 5, 2.6, bmat, x + 4, .15 + (hgt + 5) / 2, z - 3.5, g);
     box(3, .5, 3, mat.slab, x + 4, hgt + 5.4, z - 3.5, g, false);
@@ -7754,6 +7910,10 @@ function cityWater(g, key, R, pois) {
 }
 
 function buildCampus(key) {
+  // the previous campus's fabric goes with it: these are per-campus
+  // materials, not page-wide, so they are not marked shared and the
+  // teardown below frees them along with everything they clothed
+  fabMats = null; fabKey = null;
   // the old campus is FREED, not just detached: every rebuild used to leak
   // its merged building meshes, roads, ring geometry and every label
   // texture (+284 geometries per campus<->hall trip, +568 per resto walk)
@@ -7795,7 +7955,11 @@ function buildCampus(key) {
     cg.rotation.y = psi;               // local +z = outward, doors face the plaza
     campusGroup.add(cg);
     const cols = Math.ceil(Math.sqrt(d.halls.length * 1.7));
-    const style = STYLE_OF[k] ?? 'flat';
+    // The district decides the roofline it has an opinion about (an
+    // industry district is sawtooth wherever it is); where it has none,
+    // the CITY decides, so Seattle's unopinionated districts are gabled
+    // and Houston's are flat. Two independent facts, both still visible.
+    const style = STYLE_OF[k] ?? (D.world.fabric?.[campusKey]?.roof ?? 'flat');
     // row pitch sized to the district's deepest building, so a street
     // always fits between rows with clearance on both sides
     const maxDep = Math.max(...d.halls.map((sg) =>
@@ -7867,6 +8031,7 @@ function buildCampus(key) {
   sign.position.set(0, 18, 0); campusGroup.add(sign);
   dressCampus(key, campusGroup, R + 42);
   buildChapterHall(campusGroup, key);
+  buildTrainingYard(campusGroup, R);
   buildCity(campusGroup, R);
   buildRestorationSites(campusGroup);
   flushDashes(campusGroup);
@@ -8262,7 +8427,11 @@ document.addEventListener('keydown', (e) => {
   // while the scripted reference operator has the seat, the seat is its:
   // Space is its verb (the policy calls sim.action() itself), Esc still exits
   if (sim && e.code === 'Space') { e.preventDefault(); if (!opRun) sim.action?.(); }
-  if (walkActive && view === 'campus' && nearSlug
+  if (walkActive && view === 'campus' && nearSeat
+      && (e.code === 'Enter' || e.code === 'KeyE')) {
+    plc.unlock(); enterSeatFromYard(nearSeat);
+  }
+  if (walkActive && view === 'campus' && nearSlug && !nearSeat
       && (e.code === 'Enter' || e.code === 'KeyE')) enterHallWalking(nearSlug);
   if (walkActive && view === 'campus' && nearPoi
       && (e.code === 'Enter' || e.code === 'KeyE')) {
@@ -8326,6 +8495,25 @@ function walkSpawn() {
     return [0, -(h.depth * U) / 2 - 8];
   }
   return [0, 30];
+}
+
+/* Walking into a seat. A simulator is entered FROM ITS HALL everywhere else
+   in this app, and that stays true: the seat is started against the hall on
+   this campus that actually teaches it, so the run is recorded against a
+   real binding rather than against the plaza. If a seat somehow has no hall
+   here, it refuses and says so rather than starting an unbound run. */
+function enterSeatFromYard(id) {
+  const def = D.sims.sims[id];
+  if (!def) return refusePanel('There is no seat by that name in the registry.');
+  const here = new Set(D.campuses[campusKey]?.halls ?? []);
+  const hall = def.halls.find((sg) => here.has(sg));
+  if (!hall) {
+    return refusePanel(`${def.name} is not taught at `
+      + `${D.campuses[campusKey].name} \u2014 no hall homed here teaches it, `
+      + 'and a run has to be recorded against a hall that does.');
+  }
+  slug = hall;
+  startSim(id, null);
 }
 
 function enterHallWalking(sg) {
@@ -9831,6 +10019,9 @@ window.__tc3d = () => ({ view, buildings: buildings.length, plates: plates.lengt
   // disabled with nothing able to turn it back on, and a frame-difference
   // check cannot see that, because this scene animates every frame anyway.
   orbit: controls.enabled, walkRefusedAt,
+  // the campus training yard: how many seats stand on it, and which one the
+  // walker is close enough to enter
+  yardSeats: seatHits.length / 2, nearSeat,
   // the length of the list the quality ladder walks. It is a leak check:
   // every torn-down hall and sim yard must take its lights OUT of it, not
   // merely out of the scene, or a long session ends up walking hundreds of

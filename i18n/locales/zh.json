@@ -48,6 +48,8 @@
   "room.finish": "地面饰面",
   "geo.note": "方位为真实值；距离经压缩——标注为真实公里数",
   "sim.start": "启动模拟器",
+  "yard.name": "实训场",
+  "yard.seats": "本校区的座位",
   "sim.results": "成绩",
   "sim.pass": "通过",
   "sim.retry": "再试一次",
