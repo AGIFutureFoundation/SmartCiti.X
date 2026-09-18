@@ -64,20 +64,34 @@ jobs:
           print(f'link check: every local link in {len(list(site.rglob("*.html")))} '
                 'assembled pages resolves')
           PY
-      # `enablement: true` lets the action turn Pages on itself through the
-      # API, instead of requiring somebody to flip Settings -> Pages ->
-      # Source -> GitHub Actions by hand first. Every run of this workflow
-      # so far - 61 of them - died on the step below with
+      # Pages has to be switched on for this repository ONCE, by a human
+      # with admin, at Settings -> Pages -> Build and deployment ->
+      # Source -> GitHub Actions. Until that happens this workflow cannot
+      # deploy, and it is the only thing standing between a green run and
+      # a live site.
       #
+      # Runs 1-61 all died here with:
       #   Get Pages site failed. Please verify that the repository has
       #   Pages enabled and configured to build using GitHub Actions
       #   Error: Not Found
       #
-      # Checkout and assembly always succeeded; the site has simply never
-      # been switched on. If the account cannot enable Pages through the
-      # API (a private repo without Pages on the plan, or an org policy
-      # that reserves the setting), this still fails and the error says
-      # which - at which point the manual toggle is the remedy.
+      # `enablement: true` was added to try to have the action create the
+      # site itself. Run 62 proves that cannot work with the default
+      # token:
+      #   Get Pages site failed.    Error: Not Found
+      #   Create Pages site failed. Error: Resource not accessible by
+      #                                    integration
+      # `permissions: pages: write` lets GITHUB_TOKEN DEPLOY to an
+      # existing Pages site; it does not let it CREATE one. That needs
+      # admin rights the workflow token does not carry, whoever owns the
+      # repo. (This repo is public, so there is no plan or billing
+      # blocker - only the setting.)
+      #
+      # The flag is kept because it costs nothing: once the site exists,
+      # the Get call succeeds and enablement is a no-op, and it would
+      # work if this workflow were ever given an admin token. Checkout,
+      # assembly and the link check below have always passed - the site
+      # is ready, the switch is off.
       - uses: actions/configure-pages@v5
         with:
           enablement: true
