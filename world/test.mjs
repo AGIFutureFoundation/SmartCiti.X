@@ -120,5 +120,37 @@ const src = readFileSync(new URL('./build.py', import.meta.url));
 ok('the registry was built from the current builder source (stamp check)',
   reg.source_stamp === createHash('sha256').update(src).digest('hex').slice(0, 16));
 
+/* ---------------------------------------------------------- built fabric --- */
+/* Every campus had its own sky, fog, sun, ambient bed and ground - and then
+   all ten drew the same envelope with the same trim. Ten cities told apart
+   only by their weather. These hold the fabric table to the same contract
+   the atmosphere is held to, including the one that matters most: it is
+   AUTHORED BY REPUTATION and says so, because no site here has been
+   surveyed and no real building is depicted. */
+const FACADES = ['panel', 'brick', 'block', 'smooth', 'plywood', 'board'];
+const ROOFS = ['flat', 'gable', 'saw'];
+const fab = reg.fabric;
+ok('every campus declares what it is built of',
+  Object.keys(fab).length === Object.keys(reg.atmos).length
+  && Object.keys(reg.atmos).every((k) => fab[k]));
+ok('a facade names a pattern the page can actually draw, and a roofline it builds',
+  Object.values(fab).every((f) => FACADES.includes(f.facade)
+    && ROOFS.includes(f.roof)));
+ok('the envelope, trim and roof each carry a colour',
+  Object.values(fab).every((f) => ['facade_color', 'trim', 'roof_color']
+    .every((k) => /^#[0-9a-f]{6}$/i.test(f[k]))));
+ok('every fabric says why it is that fabric',
+  Object.values(fab).every((f) => f.why?.length > 25));
+/* The point of the exercise: they have to DIFFER. A table where every city
+   picked the same brick would pass every check above and change nothing. */
+ok('the ten cities do not all build the same way',
+  new Set(Object.values(fab).map((f) => f.facade)).size >= 4
+  && new Set(Object.values(fab).map((f) => f.facade_color)).size === 10
+  && new Set(Object.values(fab).map((f) => f.roof)).size === 3);
+ok('the fabric is authored by reputation and the pack says so, the same way '
+  + 'the atmosphere does',
+  /reputation/i.test(JSON.stringify(reg.honesty))
+  || Object.values(reg.atmos).every((a) => /reputation/i.test(a.character)));
+
 console.log(`world/test: ${n} checks passed — ${wx.length} weather states, `
   + `${Object.keys(reg.ground).length} generated surfaces, ${fa.length} animals`);

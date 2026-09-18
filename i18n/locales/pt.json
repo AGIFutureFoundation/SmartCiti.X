@@ -48,6 +48,8 @@
   "room.finish": "Acabamento do piso",
   "geo.note": "Rumos reais; distâncias comprimidas — os rótulos trazem km reais",
   "sim.start": "Iniciar simulador",
+  "yard.name": "Pátio de formação",
+  "yard.seats": "postos neste campus",
   "sim.results": "Resultados",
   "sim.pass": "Aprovado",
   "sim.retry": "Tentar novamente",

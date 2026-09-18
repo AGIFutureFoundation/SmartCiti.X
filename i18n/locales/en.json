@@ -48,6 +48,8 @@
   "room.finish": "Floor finish",
   "geo.note": "True bearings; distances compressed — labels carry real km",
   "sim.start": "Start simulator",
+  "yard.name": "Training yard",
+  "yard.seats": "seats on this campus",
   "sim.results": "Run results",
   "sim.pass": "Passed",
   "sim.retry": "Try again",

@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-11",
- "source_stamp": "8cceb511a075542a",
+ "source_stamp": "1eb947a8122c5041",
  "honesty": {
   "textures": "no texture, photograph or artwork file exists in this repository and none is downloaded: every surface is a recipe - a base colour, a grain, an octave count and a relief depth - and the page generates the image and its normal map in the learner's own browser at boot. There is therefore no third-party artwork anywhere in the render.",
   "weather": "schematic weather, not a forecast and not an observation: nothing here is tied to a reading taken at any real place or time, and the per-campus atmospheres are authored by reputation rather than measured.",
@@ -713,6 +713,88 @@
    "ground": "concrete",
    "verge": "gravel",
    "character": "a Great Lakes river haze off the Detroit River, a working industrial waterfront across from Windsor, Ontario, and a century of automotive manufacturing standing behind the skyline - authored by reputation, not measured"
+  }
+ },
+ "fabric": {
+  "treasure-island": {
+   "facade": "panel",
+   "facade_color": "#3f4b50",
+   "trim": "#9db2b8",
+   "roof": "flat",
+   "roof_color": "#6d7a7e",
+   "why": "the flat-roofed concrete and steel sheds of a former naval station, pale and salt-weathered"
+  },
+  "oakland": {
+   "facade": "brick",
+   "facade_color": "#77463a",
+   "trim": "#c4763f",
+   "roof": "saw",
+   "roof_color": "#5b5450",
+   "why": "estuary-side brick warehousing under sawtooth light monitors, warmer and harder-edged than the island"
+  },
+  "new-orleans": {
+   "facade": "smooth",
+   "facade_color": "#8b8067",
+   "trim": "#4f7d6a",
+   "roof": "gable",
+   "roof_color": "#5e5a4e",
+   "why": "stuccoed masonry under pitched roofs with deep galleries, built for rain and shade"
+  },
+  "houston": {
+   "facade": "panel",
+   "facade_color": "#69737a",
+   "trim": "#d8a33d",
+   "roof": "flat",
+   "roof_color": "#7d858a",
+   "why": "metal-clad process plant at petrochemical scale, flat and wide with everything on the outside"
+  },
+  "chicago": {
+   "facade": "brick",
+   "facade_color": "#8a4f3d",
+   "trim": "#5d6b78",
+   "roof": "flat",
+   "roof_color": "#6a7076",
+   "why": "load-bearing masonry on a steel frame behind a flat parapet, the city that invented the arrangement"
+  },
+  "seattle": {
+   "facade": "plywood",
+   "facade_color": "#54614f",
+   "trim": "#a9b8ae",
+   "roof": "gable",
+   "roof_color": "#4e5a57",
+   "why": "heavy timber and glass under a pitched roof, green-grey and built to shed rain"
+  },
+  "pittsburgh": {
+   "facade": "brick",
+   "facade_color": "#6d4134",
+   "trim": "#41505a",
+   "roof": "saw",
+   "roof_color": "#3f4750",
+   "why": "mill brick and blackened structural steel under sawtooth glazing, a river valley of shops"
+  },
+  "denver": {
+   "facade": "block",
+   "facade_color": "#9b9078",
+   "trim": "#b5643a",
+   "roof": "flat",
+   "roof_color": "#8a8271",
+   "why": "concrete block and stone in high-desert buff, flat-roofed under a dry sky"
+  },
+  "miami": {
+   "facade": "smooth",
+   "facade_color": "#c9d2cc",
+   "trim": "#39a3a8",
+   "roof": "flat",
+   "roof_color": "#aab4b2",
+   "why": "light stucco with shuttered openings and flat roofs, detailed for wind and sun"
+  },
+  "detroit": {
+   "facade": "block",
+   "facade_color": "#7a7e79",
+   "trim": "#a8402f",
+   "roof": "saw",
+   "roof_color": "#4a4f52",
+   "why": "heavy plant in block and steel under sawtooth bays, built around the line rather than the street"
   }
  }
 }
