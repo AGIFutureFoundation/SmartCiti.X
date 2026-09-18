@@ -1,9 +1,44 @@
+import json
 import pathlib
+import subprocess
 import sys
 
 HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from staleness import emit  # noqa: E402
+
+
+def _pack_root():
+    for cand in (HERE, *HERE.parents):
+        if (cand / 'pack').is_dir() and (cand / 'i18n').is_dir():
+            return cand
+    raise RuntimeError('cannot locate the packs from ' + str(HERE))
+
+
+ROOT = _pack_root()
+
+# The i18n exit criterion applies here too: this page renders in English only,
+# but its copy comes from the source catalog's own strings rather than being
+# retyped as Python literals — i18n/catalog.mjs's load() validates the
+# catalog's honesty fields the moment JS reads one, and i18n/validate.mjs is
+# that same rule run for this Python build (see the identical comment in
+# build_languages.py — one truth, not a second copy of the rule).
+_v = subprocess.run(['node', str(ROOT / 'i18n/validate.mjs')], capture_output=True, text=True)
+if _v.returncode != 0:
+    sys.stderr.write(_v.stdout + _v.stderr)
+    sys.exit(1)
+
+_EN = json.loads((ROOT / 'i18n/locales/en.json').read_text(encoding='utf-8'))['strings']
+
+
+def S(key):
+    """Look up a source-catalog string by its dotted key. Strict, like
+    catalog.mjs's t(): a missing key is a build failure, not a silent blank —
+    the same contract that keeps a translation from falling back quietly."""
+    if key not in _EN:
+        raise KeyError(f'i18n: no en value for {key}')
+    return _EN[key]
+
 
 CSS = """
 /* dark-first: the bare :root carries the dark plate, light is the counterpart */
@@ -41,7 +76,7 @@ nav.top{display:flex;align-items:center;gap:18px;flex-wrap:wrap;
   padding:18px 0;border-bottom:1px solid var(--rule)}
 .logo{font:700 19px/1 "Barlow Condensed",sans-serif;letter-spacing:.02em;text-transform:uppercase}
 .logo .x{color:var(--steel)} .logo .sep{color:var(--mark);padding:0 .18em}
-nav.top .links{margin-left:auto;display:flex;gap:20px;flex-wrap:wrap}
+nav.top .links{margin-inline-start:auto;display:flex;gap:20px;flex-wrap:wrap}
 nav.top a{font:600 12.5px/1 "Barlow Condensed",sans-serif;letter-spacing:.12em;
   text-transform:uppercase;color:var(--muted);text-decoration:none;padding:6px 0}
 nav.top a:hover,nav.top a:focus-visible{color:var(--ink);outline:none;
@@ -86,7 +121,7 @@ p{margin:0 0 16px;max-width:66ch}
   display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
 .panel .ph h3{margin:0}
 .panel .ph .tag{font:600 11px/1 "IBM Plex Mono",monospace;letter-spacing:.12em;
-  text-transform:uppercase;color:var(--muted);margin-left:auto}
+  text-transform:uppercase;color:var(--muted);margin-inline-start:auto}
 .panel .pb{padding:24px}
 .panel .pb p:last-child{margin-bottom:0}
 
@@ -94,8 +129,8 @@ ul.ticks{list-style:none;margin:0 0 18px;padding:0;display:flex;flex-direction:c
 /* The marker is positioned, not a grid item: as grid columns, the text node
    after <b> became a third item and landed in the 16px column, one word per
    line. Absolute positioning keeps the content in normal inline flow. */
-ul.ticks li{position:relative;padding-left:22px;font-size:15px;line-height:1.55}
-ul.ticks li::before{content:"";position:absolute;left:0;top:.5em;width:9px;height:9px;
+ul.ticks li{position:relative;padding-inline-start:22px;font-size:15px;line-height:1.55}
+ul.ticks li::before{content:"";position:absolute;inset-inline-start:0;top:.5em;width:9px;height:9px;
   background:var(--mark);clip-path:polygon(0 0,100% 50%,0 100%)}
 ul.ticks.steel li::before{background:var(--steel)}
 
@@ -107,11 +142,11 @@ dl.terms dd{margin:0}
 /* ---------- status table ---------- */
 .tw{overflow-x:auto}
 table{border-collapse:collapse;width:100%;font-size:14.5px}
-th{text-align:left;font:600 11px/1.3 "IBM Plex Mono",monospace;letter-spacing:.12em;
-  text-transform:uppercase;color:var(--muted);padding:0 14px 9px 0;border-bottom:1px solid var(--rule)}
-td{padding:11px 14px 11px 0;border-bottom:1px solid var(--rule);vertical-align:top}
+th{text-align:start;font:600 11px/1.3 "IBM Plex Mono",monospace;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted);padding-block:0 9px;padding-inline:0 14px;border-bottom:1px solid var(--rule)}
+td{padding-block:11px;padding-inline:0 14px;border-bottom:1px solid var(--rule);vertical-align:top}
 tr:last-child td{border-bottom:none}
-th:last-child,td:last-child{padding-right:0}
+th:last-child,td:last-child{padding-inline-end:0}
 .pill{display:inline-block;font:600 11px/1 "IBM Plex Mono",monospace;letter-spacing:.06em;
   text-transform:uppercase;padding:5px 9px;border:1px solid currentColor;border-radius:2px;
   white-space:nowrap}
@@ -139,151 +174,101 @@ footer .frow{display:flex;gap:26px;flex-wrap:wrap;align-items:baseline}
 :focus-visible{outline:2px solid var(--steel);outline-offset:3px}
 """
 
-BODY = """
+BODY = f"""
 <div class="wrap">
   <nav class="top">
     <div class="logo">SmartCiti<span class="x">.X</span><span class="sep">:</span>Trade Craft Academy</div>
     <div class="links">
-      <a href="#mission">Mission</a>
-      <a href="#how">How it works</a>
-      <a href="#investors">Investors</a>
-      <a href="#partners">Partners</a>
-      <a href="#educators">Educators</a>
-      <a href="#status">Status</a>
+      <a href="#mission">{S('landing.nav.mission')}</a>
+      <a href="#how">{S('landing.nav.how')}</a>
+      <a href="#investors">{S('landing.nav.investors')}</a>
+      <a href="#partners">{S('landing.nav.partners')}</a>
+      <a href="#educators">{S('landing.nav.educators')}</a>
+      <a href="#status">{S('landing.nav.status')}</a>
     </div>
   </nav>
 
   <header class="hero">
-    <p class="eyebrow">A programme of the AGI Future Foundation</p>
-    <h1>Train the trades like the <em>next century</em> depends on them.</h1>
-    <p class="lede">Because it does. The people who wire the grid, weld the pressure
-      vessels, rig the loads and run the plant are the ones who will physically build
-      whatever comes next — and they are being trained on a model designed for the
-      last industrial revolution.</p>
-    <p class="lede lede-2">SmartCiti.X : Trade Craft Academy is an adaptive training
-      system for 111 trade unions: a virtual city of job sites where every task is set
-      at the edge of what you can already do, every coaching decision explains itself,
-      and a ticket is issued only when you have demonstrated the work unaided.</p>
+    <p class="eyebrow">{S('landing.hero.eyebrow')}</p>
+    <h1>{S('landing.hero.title')}</h1>
+    <p class="lede">{S('landing.hero.lede')}</p>
+    <p class="lede lede-2">{S('landing.hero.lede2')}</p>
     <div class="markrule herorule"></div>
   </header>
 
   <div class="facts">
-    <div class="fact"><b>111</b><span>union halls, each with a floor plan and 100 levels</span></div>
-    <div class="fact"><b>11,000,000</b><span>module IDs, every one verified unique</span></div>
-    <div class="fact"><b>0.70&ndash;0.85</b><span>the success band every task is dialled into</span></div>
-    <div class="fact"><b>246</b><span>automated checks gating every release</span></div>
-    <div class="fact"><b>17</b><span>protocol defects found and fixed before any learner saw them</span></div>
+    <div class="fact"><b>111</b><span>{S('landing.facts.halls')}</span></div>
+    <div class="fact"><b>11,000,000</b><span>{S('landing.facts.modules')}</span></div>
+    <div class="fact"><b>0.70&ndash;0.85</b><span>{S('landing.facts.band')}</span></div>
+    <div class="fact"><b>246</b><span>{S('landing.facts.checks')}</span></div>
+    <div class="fact"><b>17</b><span>{S('landing.facts.defects')}</span></div>
   </div>
 
   <section id="mission">
-    <p class="kicker">The mission</p>
+    <p class="kicker">{S('landing.mission.kicker')}</p>
     <div class="lead-col">
       <div>
-        <h2>Skilled work is not a fallback. It is the foundation.</h2>
-        <p>For two generations, trades training has been treated as the path for
-          people who did not take the other one. That framing was always wrong, and
-          it is about to become expensive. Data centres need electricians.
-          Electrification needs line workers. Every climate commitment on earth is a
-          promise about pipefitters, ironworkers and insulators who do not exist yet.</p>
-        <p>The AGI Future Foundation builds public-interest education infrastructure.
-          Trade Craft Academy is its answer to a specific question: <b>if intelligent
-          systems can now teach, what should they teach first?</b> Our answer is the
-          work that cannot be automated away and cannot be learned from a video —
-          skilled physical craft, taught to mastery, at a scale no apprenticeship
-          system has ever reached.</p>
+        <h2>{S('landing.mission.h2')}</h2>
+        <p>{S('landing.mission.p1')}</p>
+        <p>{S('landing.mission.p2')}</p>
       </div>
       <div>
-        <h3>What we hold ourselves to</h3>
+        <h3>{S('landing.mission.h3')}</h3>
         <ul class="ticks">
-          <li><b>Never boredom, never anxiety.</b> Difficulty is throttled to the edge
-            of current capability, continuously, per skill.</li>
-          <li><b>Every decision explains itself.</b> A learner can ask why they were
-            given any task and get the real reason, from the same record an auditor reads.</li>
-          <li><b>A ticket means something.</b> Certification requires demonstrated,
-            unaided work at gate difficulty. Help cannot buy it.</li>
-          <li><b>The system answers to people.</b> Instructors override it, learners
-            can ask for an easier day, and it stops adapting entirely rather than
-            adapt badly.</li>
+          <li>{S('landing.mission.tick1')}</li>
+          <li>{S('landing.mission.tick2')}</li>
+          <li>{S('landing.mission.tick3')}</li>
+          <li>{S('landing.mission.tick4')}</li>
         </ul>
       </div>
     </div>
   </section>
 
   <section id="how">
-    <p class="kicker">How it works</p>
-    <h2>An instrument, not a playlist.</h2>
-    <p>Most &ldquo;adaptive&rdquo; learning is a fixed sequence with a difficulty knob
-      bolted on. This is a control system. It estimates what you can do, serves work
-      just inside that edge, and proves the estimate before it certifies anything.</p>
+    <p class="kicker">{S('landing.how.kicker')}</p>
+    <h2>{S('landing.how.h2')}</h2>
+    <p>{S('landing.how.p')}</p>
     <div class="cols" style="margin-top:30px">
       <div>
-        <h3>The dial</h3>
-        <p class="note">A learner profile turns telemetry — accuracy, hesitation, help
-          requests, control smoothness in the sim — into a proficiency estimate, and a
-          closed-loop controller holds predicted success inside <span class="mono">0.70&ndash;0.85</span>.
-          Above the band is boredom; below it is anxiety. Both are failures, and both
-          get corrected within a handful of tasks.</p>
+        <h3>{S('landing.how.dial.h3')}</h3>
+        <p class="note">{S('landing.how.dial.p')}</p>
       </div>
       <div>
-        <h3>The graph</h3>
-        <p class="note">Skills are a graph, not a list. Evidence on one skill moves its
-          prerequisites, confusable pairs are kept apart, and what you learned in March
-          comes back for review before you lose it. When someone is stuck, the system
-          diagnoses <em>which prerequisite</em> is missing rather than repeating the
-          same task harder.</p>
+        <h3>{S('landing.how.graph.h3')}</h3>
+        <p class="note">{S('landing.how.graph.p')}</p>
       </div>
       <div>
-        <h3>The gate</h3>
-        <p class="note">Practice runs at the middle of the band, where learning happens.
-          Certification runs at the top of it, unaided, with hints closed — a deliberate
-          verification run, because practice difficulty can never prove mastery.
-          Certification is an awarded event on an append-only record.</p>
+        <h3>{S('landing.how.gate.h3')}</h3>
+        <p class="note">{S('landing.how.gate.p')}</p>
       </div>
       <div>
-        <h3>The coaches</h3>
-        <p class="note">Every hall has a mentor agent that knows its trade. They coach,
-          explain and escalate to a human instructor when something is wrong on site.
-          What they cannot do is change your difficulty, your record or your
-          certification — that is enforced in code, not asked for in a prompt.</p>
+        <h3>{S('landing.how.coaches.h3')}</h3>
+        <p class="note">{S('landing.how.coaches.p')}</p>
       </div>
     </div>
   </section>
 
   <section id="investors">
-    <p class="kicker">For investors</p>
-    <h2>Infrastructure, priced like infrastructure.</h2>
+    <p class="kicker">{S('landing.investors.kicker')}</p>
+    <h2>{S('landing.investors.h2')}</h2>
     <div class="lead-col">
       <div>
-        <p>The workforce gap in skilled trades is not a marketing thesis; it is an
-          arithmetic one. Retirements are outrunning apprenticeship intake in every
-          industrialised economy, and the constraint on electrification and
-          reindustrialisation is people, not capital.</p>
-        <p>What we have built is the part that is hard to build: a validated
-          curriculum ledger, an adaptive control system that has been calibrated
-          against simulation and hardened against long-run and adversarial failure,
-          an agent layer whose safety properties are enforced rather than promised,
-          and a security model designed for multi-tenant institutional customers.</p>
-        <p>What we have not built is a business with revenue. We are pre-launch,
-          pre-pilot and pre-accreditation, and we would rather you learn that here
-          than in diligence.</p>
+        <p>{S('landing.investors.p1')}</p>
+        <p>{S('landing.investors.p2')}</p>
+        <p>{S('landing.investors.p3')}</p>
         <div class="ctarow">
-          <a class="cta" href="mailto:x@agifuturefoundation.org?subject=Investor%20enquiry%20%E2%80%94%20Trade%20Craft%20Academy">Request the technical brief</a>
-          <a class="cta ghost" href="#status">See what is unfinished</a>
+          <a class="cta" href="mailto:x@agifuturefoundation.org?subject=Investor%20enquiry%20%E2%80%94%20Trade%20Craft%20Academy">{S('landing.investors.cta1')}</a>
+          <a class="cta ghost" href="#status">{S('landing.investors.cta2')}</a>
         </div>
       </div>
       <div class="panel">
-        <div class="ph"><h3>Where capital goes</h3><span class="tag">Use of funds</span></div>
+        <div class="ph"><h3>{S('landing.investors.panel.h3')}</h3><span class="tag">{S('landing.investors.panel.tag')}</span></div>
         <div class="pb">
           <dl class="terms">
-            <dt>Content</dt><dd>Authored lesson content across 33 trades, reviewed by
-              journey-level practitioners. The largest single line, and the one that
-              cannot be shortcut.</dd>
-            <dt>Evidence</dt><dd>A stepped-wedge evaluation with real apprentices. Until
-              that runs, our efficacy claims are simulation results and we will say so.</dd>
-            <dt>Compliance</dt><dd>SOC 2 observation window, accessibility audit and
-              VPAT, jurisdiction-by-jurisdiction review before any certification claim.</dd>
-            <dt>Platform</dt><dd>Identity, persistence, encryption and the operational
-              layer a public launch requires.</dd>
+            <dt>{S('landing.investors.term.content.dt')}</dt><dd>{S('landing.investors.term.content.dd')}</dd>
+            <dt>{S('landing.investors.term.evidence.dt')}</dt><dd>{S('landing.investors.term.evidence.dd')}</dd>
+            <dt>{S('landing.investors.term.compliance.dt')}</dt><dd>{S('landing.investors.term.compliance.dd')}</dd>
+            <dt>{S('landing.investors.term.platform.dt')}</dt><dd>{S('landing.investors.term.platform.dd')}</dd>
           </dl>
         </div>
       </div>
@@ -291,129 +276,90 @@ BODY = """
   </section>
 
   <section id="partners">
-    <p class="kicker">For strategic partners</p>
-    <h2>Unions, employers, and the people who own the job sites.</h2>
-    <p>This platform is worth nothing without the trades themselves. We are not
-      trying to replace an apprenticeship — we are trying to give it instrumentation,
-      reach, and a way to put a first-year apprentice in a confined space, a live
-      panel or a crane cab a hundred times before it counts.</p>
+    <p class="kicker">{S('landing.partners.kicker')}</p>
+    <h2>{S('landing.partners.h2')}</h2>
+    <p>{S('landing.partners.p')}</p>
     <div class="cols" style="margin-top:30px">
       <div class="panel">
-        <div class="ph"><h3>Trade unions</h3><span class="tag">Curriculum authority</span></div>
+        <div class="ph"><h3>{S('landing.partners.panel.unions.h3')}</h3><span class="tag">{S('landing.partners.panel.unions.tag')}</span></div>
         <div class="pb">
-          <p class="note">Your training directors own the content for your trade — the
-            standards, the sequence, the sign-off. We provide the engine, the sim, and
-            the evidence trail. Your ticket stays yours; we do not issue credentials in
-            your name and never will.</p>
+          <p class="note">{S('landing.partners.panel.unions.p')}</p>
         </div>
       </div>
       <div class="panel">
-        <div class="ph"><h3>Employers &amp; contractors</h3><span class="tag">Site readiness</span></div>
+        <div class="ph"><h3>{S('landing.partners.panel.employers.h3')}</h3><span class="tag">{S('landing.partners.panel.employers.tag')}</span></div>
         <div class="pb">
-          <p class="note">Rehearse a specific site before anyone sets foot on it —
-            induction, permit conditions, hazard walk, the actual plant. Cross-trade
-            hand-offs, where most incidents start, get practised as a named skill with
-            its own assessment.</p>
+          <p class="note">{S('landing.partners.panel.employers.p')}</p>
         </div>
       </div>
       <div class="panel">
-        <div class="ph"><h3>Technology partners</h3><span class="tag">Interoperability</span></div>
+        <div class="ph"><h3>{S('landing.partners.panel.tech.h3')}</h3><span class="tag">{S('landing.partners.panel.tech.tag')}</span></div>
         <div class="pb">
-          <p class="note">Everything emits xAPI 1.0.3 to your LRS. The module catalogue
-            exports as JSON or CSV. The agent layer registers on open agent protocols.
-            We would rather integrate with your system of record than become one.</p>
+          <p class="note">{S('landing.partners.panel.tech.p')}</p>
         </div>
       </div>
     </div>
     <div class="ctarow">
-      <a class="cta" href="mailto:x@agifuturefoundation.org?subject=Partnership%20enquiry%20%E2%80%94%20Trade%20Craft%20Academy">Start a partnership conversation</a>
+      <a class="cta" href="mailto:x@agifuturefoundation.org?subject=Partnership%20enquiry%20%E2%80%94%20Trade%20Craft%20Academy">{S('landing.partners.cta')}</a>
     </div>
   </section>
 
   <section id="educators">
-    <p class="kicker">For educators &amp; training directors</p>
-    <h2>You keep the judgement. It keeps the bookkeeping.</h2>
+    <p class="kicker">{S('landing.educators.kicker')}</p>
+    <h2>{S('landing.educators.h2')}</h2>
     <div class="lead-col">
       <div>
-        <p>An adaptive system should make an instructor more powerful, not redundant.
-          Ours is built so that the decisions requiring judgement stay with you and the
-          decisions requiring memory stay with it — who is stuck and on what, who is
-          overdue for review, who is ready to be tested, and who has been quietly
-          leaning on help for three weeks.</p>
+        <p>{S('landing.educators.p')}</p>
         <ul class="ticks steel">
-          <li><b>You can always override.</b> Pin any learner to any level. The override
-            is logged, and the system down-weights that evidence because it knows it is
-            no longer a clean measurement.</li>
-          <li><b>You see the reasoning.</b> Every task served carries the reason it was
-            chosen. If you disagree with the system, you can see exactly what it
-            believed and why.</li>
-          <li><b>Fairness is monitored, not asserted.</b> Outcomes are compared across
-            sites, languages, device types and age bands. A gap above 10% opens a ticket
-            and blocks releases — and quietly tuning one cohort's settings to make the
-            gap disappear is itself flagged.</li>
-          <li><b>It stops rather than guess.</b> If calibration drifts or a cohort is
-            struggling, adaptation halts and everyone gets fixed difficulty until a
-            human has looked.</li>
+          <li>{S('landing.educators.tick1')}</li>
+          <li>{S('landing.educators.tick2')}</li>
+          <li>{S('landing.educators.tick3')}</li>
+          <li>{S('landing.educators.tick4')}</li>
         </ul>
         <div class="ctarow">
-          <a class="cta" href="mailto:x@agifuturefoundation.org?subject=Educator%20pilot%20enquiry%20%E2%80%94%20Trade%20Craft%20Academy">Ask about a pilot</a>
+          <a class="cta" href="mailto:x@agifuturefoundation.org?subject=Educator%20pilot%20enquiry%20%E2%80%94%20Trade%20Craft%20Academy">{S('landing.educators.cta')}</a>
         </div>
       </div>
       <div class="panel">
-        <div class="ph"><h3>What a learner never loses</h3><span class="tag">Data rights</span></div>
+        <div class="ph"><h3>{S('landing.educators.panel.h3')}</h3><span class="tag">{S('landing.educators.panel.tag')}</span></div>
         <div class="pb">
-          <p class="note">Training records are held under a pseudonym; the link to a
-            person lives in a separate service that no standing role can read. Erasure
-            breaks that link, which is what makes it real rather than cosmetic.</p>
-          <p class="note">Emotional-state signals — the flow and frustration estimates
-            the dial uses — are the <em>most</em> protected data we hold, not the least.
-            They are kept for 90 days, are never included in any export, and are never
-            visible to an employer.</p>
+          <p class="note">{S('landing.educators.panel.p1')}</p>
+          <p class="note">{S('landing.educators.panel.p2')}</p>
         </div>
       </div>
     </div>
   </section>
 
   <section id="status">
-    <p class="kicker">Status &mdash; published deliberately</p>
-    <h2>What is built, what is not, and what we will not claim.</h2>
-    <p>Education technology has a credibility problem because it routinely describes
-      intentions in the present tense. Here is the actual state, and the same table
-      goes to every investor, partner and institution that asks.</p>
+    <p class="kicker">{S('landing.status.kicker')}</p>
+    <h2>{S('landing.status.h2')}</h2>
+    <p>{S('landing.status.p')}</p>
     <div class="tw" style="margin-top:26px">
       <table>
-        <thead><tr><th>Area</th><th>State</th><th>Detail</th></tr></thead>
+        <thead><tr><th>{S('landing.status.th.area')}</th><th>{S('landing.status.th.state')}</th><th>{S('landing.status.th.detail')}</th></tr></thead>
         <tbody>
-          <tr><td>Adaptive control system</td><td><span class="pill p-built">Built &amp; tested</span></td>
-            <td>Calibrated in simulation; holds the target band roughly 6&times; better than fixed or random difficulty across six learner archetypes.</td></tr>
-          <tr><td>Module catalogue</td><td><span class="pill p-built">Built &amp; verified</span></td>
-            <td>11,000,000 module IDs generated from 25,875 authored objects, every one proved unique across the whole population — not a sample.</td></tr>
-          <tr><td>Agent safety layer</td><td><span class="pill p-built">Built &amp; tested</span></td>
-            <td>Coaching agents cannot write control state; enforced at two independent layers and verified against deliberately misbehaving agents.</td></tr>
-          <tr><td>Security model</td><td><span class="pill p-built">Built &amp; tested</span></td>
-            <td>Tenant isolation, deny-by-default permissions, time-boxed identity access, per-class retention and erasure.</td></tr>
-          <tr><td>Lesson content</td><td><span class="pill p-part">Placeholder</span></td>
-            <td><b>The 11,000,000 figure counts addressable module IDs, not hand-written lessons.</b> Structure, sequencing and assessment logic are real and verified; the catalogue is generated from 25,875 authored objects, and the lesson prose awaits authoring by journey-level practitioners.</td></tr>
-          <tr><td>Trade taxonomy</td><td><span class="pill p-part">Ours, not theirs</span></td>
-            <td>The 111 halls are our taxonomy of skilled trades. They are not chartered locals, no union has reviewed the list, and the grouping into districts is ours.</td></tr>
-          <tr><td>Efficacy evidence</td><td><span class="pill p-no">Not established</span></td>
-            <td>All results to date are simulation. No claim about learning outcomes is supported until the stepped-wedge trial with real apprentices runs.</td></tr>
-          <tr><td>Accreditation &amp; union endorsement</td><td><span class="pill p-no">None</span></td>
-            <td>We hold no accreditation and no union has endorsed this platform. Nothing here confers a recognised credential.</td></tr>
-          <tr><td>Production platform</td><td><span class="pill p-no">Not built</span></td>
-            <td>Authentication, encryption, persistence, backups and incident response are required before public launch and do not yet exist.</td></tr>
+          <tr><td>{S('landing.status.row1.area')}</td><td><span class="pill p-built">{S('landing.status.row1.pill')}</span></td>
+            <td>{S('landing.status.row1.detail')}</td></tr>
+          <tr><td>{S('landing.status.row2.area')}</td><td><span class="pill p-built">{S('landing.status.row2.pill')}</span></td>
+            <td>{S('landing.status.row2.detail')}</td></tr>
+          <tr><td>{S('landing.status.row3.area')}</td><td><span class="pill p-built">{S('landing.status.row3.pill')}</span></td>
+            <td>{S('landing.status.row3.detail')}</td></tr>
+          <tr><td>{S('landing.status.row4.area')}</td><td><span class="pill p-built">{S('landing.status.row4.pill')}</span></td>
+            <td>{S('landing.status.row4.detail')}</td></tr>
+          <tr><td>{S('landing.status.row5.area')}</td><td><span class="pill p-part">{S('landing.status.row5.pill')}</span></td>
+            <td>{S('landing.status.row5.detail')}</td></tr>
+          <tr><td>{S('landing.status.row6.area')}</td><td><span class="pill p-part">{S('landing.status.row6.pill')}</span></td>
+            <td>{S('landing.status.row6.detail')}</td></tr>
+          <tr><td>{S('landing.status.row7.area')}</td><td><span class="pill p-no">{S('landing.status.row7.pill')}</span></td>
+            <td>{S('landing.status.row7.detail')}</td></tr>
+          <tr><td>{S('landing.status.row8.area')}</td><td><span class="pill p-no">{S('landing.status.row8.pill')}</span></td>
+            <td>{S('landing.status.row8.detail')}</td></tr>
+          <tr><td>{S('landing.status.row9.area')}</td><td><span class="pill p-no">{S('landing.status.row9.pill')}</span></td>
+            <td>{S('landing.status.row9.detail')}</td></tr>
         </tbody>
       </table>
     </div>
-    <p class="note" style="margin-top:24px">Seventeen protocol defects have been found and
-      fixed by simulation, long-run soak and adversarial testing — including a
-      certification path that could never actually certify anyone, a single
-      malformed event that could permanently corrupt a learner's record, and a
-      help-fading rule that was specified, believed to be in force, and had never
-      once run. The list includes the ones we found in our own checks, such as a
-      layout assertion built on a guessed constant that was 43% wrong and passed
-      while four labels overflowed. We publish the
-      list because a system that has never found a fault in itself has not looked.</p>
+    <p class="note" style="margin-top:24px">{S('landing.status.note')}</p>
   </section>
 
   <footer>
@@ -421,15 +367,11 @@ BODY = """
     <div class="frow">
       <div style="min-width:220px">
         <div class="logo" style="font-size:16px;margin-bottom:8px">SmartCiti<span class="x">.X</span><span class="sep">:</span>Trade Craft Academy</div>
-        <div>A programme of the AGI Future Foundation<br>
+        <div>{S('landing.hero.eyebrow')}<br>
           <a href="mailto:x@agifuturefoundation.org">x@agifuturefoundation.org</a></div>
       </div>
       <div style="max-width:44ch">
-        <b style="color:var(--ink)">Please read this part.</b> Nothing on this page is a
-        recognised credential, an accreditation, or an endorsement by any trade union or
-        licensing body. Training content is general good practice and has not been
-        verified against any jurisdiction's code. Safety-critical work must be learned
-        and signed off by qualified people on real sites.
+        {S('landing.footer.disclaimer')}
       </div>
     </div>
   </footer>

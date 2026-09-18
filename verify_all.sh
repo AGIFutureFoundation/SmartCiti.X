@@ -18,7 +18,7 @@ for t in control/test.mjs control/test_graph.mjs control/test_hints.mjs \
          avatars/test.mjs parcels/test.mjs meta/test.mjs \
          agents/test.mjs world/test.mjs labels/test.mjs training/test.mjs \
          roadmap/test.mjs orbis/test.mjs restoration/test.mjs \
-         spatial/test.mjs web/test_3d.mjs; do
+         spatial/test.mjs web/test_3d.mjs web/test_rtl.mjs; do
   out=$(node "$t" 2>&1); rc=$?
   n=$(printf '%s\n' "$out" | grep -c '^  ok ')
   total=$((total + n))
@@ -47,6 +47,7 @@ printf '%s\n' "$iout" | tail -1
 total=$((total + $(printf '%s\n' "$iout" | grep -c '^  ok ')))
 node brand/lint.mjs . || fail=$((fail + 1))
 node brand/figures.mjs . || fail=$((fail + 1))
+node i18n/lint_hardcoded.mjs || fail=$((fail + 1))
 headline=$(sed -nE 's/^\*\*([0-9,]+) checks, all passing.*/\1/p' README.md | tr -d ,)
 if [ "$headline" != "$total" ]; then
   fail=$((fail + 1)); echo "DRIFT README.md headline says $headline checks, this run counted $total"

@@ -7,7 +7,7 @@ The Adaptive Stack: the packs implementing the ACP protocol suite (v3.2) —
 counted, like everything else here, by the table below rather than by a
 number that can drift from it.
 
-**929 checks, all passing from inside this bundle**, with no model credentials
+**961 checks, all passing from inside this bundle**, with no model credentials
 required.
 
 ```bash
@@ -33,7 +33,8 @@ node ops/fuzz.mjs                  #  9 — side doors around the promotion gate
 node ops/rehearsal.mjs             # 15 — the wave 1 rehearsal: one content rollout walked through every ACP-13/ACP-08 gate against seeded synthetic cohorts (dwell, parity, halt, auto-rollback, the dial-params shadow run, a self-halting parity job driven through the real Scheduler, the full canary→wave→full walk) with the complete audit trail asserted, not just return values — proves the machinery, not that a wave shipped to real halls
 node brand/test.mjs                # 30 — naming, tokens, contrast, livery, the lint itself
 node brand/lint.mjs .              # fails on any forbidden spelling anywhere in the tree
-node i18n/test.mjs                 # 16 — locale parity, placeholders, pack agreement
+node i18n/test.mjs                 # 31 — locale parity, placeholders, pack agreement, the reviewer-attribution rule (a closed status set, a `reviewed` catalog must name its reviewer, a hall-name catalog complete or absent never partial) with self-tested fixtures
+node i18n/lint_hardcoded.mjs       # fails on any hard-coded English string in the landing, map or languages generators — self-tested against a fixture sentence, hard-coded alt text and a JS string literal
 node stations/test.mjs             # 13 — recovered stations vs roster, skills, rooms
 node surfaces/test.mjs             # 24 — finishes, conditions, more-demanding-wins, honesty
 node geo/test.mjs                  # 35 — real coordinates + anchors (RECORDED, citing Locator.X, near the three flagship campuses; AUTHORED, admittedly not cross-checked, near the seven hub campuses), recomputed distances, GeoJSON + the network map file
@@ -51,6 +52,7 @@ node labels/test.mjs               # 28 — the signs: shape, colour and type pe
 node world/test.mjs                # 24 — the sky, six weather states, the generated ground recipes and the fauna
 node agents/test.mjs               # 33 — the advisors: who stands where, quote-not-copy bindings, the closed book, the Operator's live-seat scoping and its quoted reference procedure
 node web/test_3d.mjs               # 18 — the 3D environment's teardown, draw-call and per-frame contracts, held at the generator's source: region board and campus disposed (never just detached), label sprites pruned and their textures released, the restoration walk restoring the campus rather than rebuilding it, decoration pooled per district, beacons instanced, roads and dashes merged in campus coordinates, the sim dash written only on change
+node web/test_rtl.mjs              # 17 — RTL correctness held at the generator's source: the languages page's dir="rtl" switch now reaches <html> itself (not just the inner section), the physical left/right CSS a source read found in the landing and map generators replaced with logical properties, no other hard-coded direction rule survives either file — the actual-render half (Arabic tab, bounding boxes, overflow) is a scratch Playwright proof, reported but not committed
 node meta/test.mjs                 # 34 — the metaverse layer: standards (now four, GeoPose 1.0 via spatial/), the OMBI shapes honestly not claimed, the Unity avatar review, the complete VRM skeleton and how it moves, import policy, honesty, now on the network dashboard too
 node control/fuzz.mjs              # 21 — hostile inputs and adversarial learners
 node control/soak.mjs              # long-run invariants, 4,000 attempts x 3 seeds
@@ -78,7 +80,7 @@ python3 web/build_3d.py --check          # fails if the 3D environment is behind
 | `brand/` | — | The canonical identity: names and forbidden spellings with reasons, the two-theme token set, the wordmark, hall livery, and a lint that fails the build on drift |
 | `bus/` | ACP-01/08/09 | The message bus with single-writer enforcement, the telemetry envelope and its quality guards, the append-only audit log, the parity/stop-condition/override safeguards, and the whole loop assembled over them |
 | `console/` | — | **The Adaptive Console**: a single-file web app running the real protocol on the real pack, with the builder and its staleness guard |
-| `i18n/` | — | **The locale catalogs**: the Academy's vocabulary in 8 languages with structural-parity and pack-agreement checks; hall names deliberately untranslated pending native review |
+| `i18n/` | — | **The locale catalogs**: the Academy's vocabulary in 8 languages with structural-parity and pack-agreement checks; a closed `translation_status` set and a reviewer-attribution rule (a catalog claiming review names its reviewer and a date; a hall-name catalog — `i18n/hall-names/<locale>.json`, none shipped yet — is complete across all 111 halls or absent, never partial), enforced by the suite and again at build time (`i18n/validate.mjs`); the landing, campus-map and languages page generators now read every user-visible string from here (`i18n/lint_hardcoded.mjs` holds them to zero of their own); hall names deliberately untranslated pending native review; all 7 non-English catalogs remain machine-drafted, pending native review — nothing here became `reviewed` |
 | `wiki/` | — | **The wiki**, generated from the registries: a page per map (campus, interiors, skill graph, languages) and a page per district, with Mermaid content graphs and a staleness guard |
 | `stations/` | — | **The station registry**: the recovered pre-rebrand yard curriculum rebranded onto the live structure — 25 machine-gradable stations assigned to halls, skills and floor-plan rooms, verified against all three |
 | `surfaces/` | §24 | **The surface registry**: 22 floor finishes with renderer-ready parameters and the reason each exists, resolved per room hazard-first with §24.1's discipline, plus per-room conditions (illuminance, air changes, design noise, temperature band, PPE) merged more-demanding-wins across every governing hazard — rendered as the 3D room floors and read out live in walk mode |

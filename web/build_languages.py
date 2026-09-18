@@ -9,6 +9,7 @@ section so screen readers pronounce each language correctly.
 """
 import json
 import pathlib
+import subprocess
 import sys
 
 HERE = pathlib.Path(__file__).resolve().parent
@@ -24,6 +25,19 @@ def _pack_root():
 
 
 ROOT = _pack_root()
+
+# i18n/catalog.mjs's load() validates a catalog's honesty fields (closed
+# status set, reviewer attribution) the moment JS reads it, and i18n/test.mjs
+# proves the rule — but this builder is Python, so it never goes through
+# catalog.mjs at all, and a bad catalog would render straight onto the page
+# with no JS runtime in the way to reject it. i18n/validate.mjs is the same
+# rule (one truth, not a second copy re-typed in Python), run here so THIS
+# build fails on a bad catalog too, not only the JS suite.
+_v = subprocess.run(['node', str(ROOT / 'i18n/validate.mjs')], capture_output=True, text=True)
+if _v.returncode != 0:
+    sys.stderr.write(_v.stdout + _v.stderr)
+    sys.exit(1)
+
 manifest = json.load(open(ROOT / 'pack/manifest.json'))
 L = manifest['ledger']
 districts_reg = json.load(open(ROOT / 'unions/registry/districts.json'))['districts']
@@ -138,6 +152,12 @@ function show(loc) {{
   for (const t of tabs) t.setAttribute('aria-selected', String(t.dataset.loc === loc));
   for (const s of document.querySelectorAll('.loc')) s.hidden = (s.id !== 'loc-' + loc);
   document.documentElement.lang = loc;
+  // The shown <section> already carries its own dir (server-rendered, so
+  // the no-JS/first-paint case is still correct) — mirror it onto the
+  // document root too, or only that one section would ever render RTL
+  // while the page chrome (tabs, header) stayed pinned LTR regardless of
+  // which language was selected. i18n/test_rtl.mjs holds this in place.
+  document.documentElement.dir = document.getElementById('loc-' + loc).dir;
 }}
 for (const t of tabs) t.addEventListener('click', () => show(t.dataset.loc));
 show((navigator.language || 'en').slice(0, 2).match(/^({"|".join(ORDER)})$/) ? (navigator.language || 'en').slice(0, 2) : 'en');
