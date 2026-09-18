@@ -123,6 +123,12 @@ function show(loc) {
   for (const t of tabs) t.setAttribute('aria-selected', String(t.dataset.loc === loc));
   for (const s of document.querySelectorAll('.loc')) s.hidden = (s.id !== 'loc-' + loc);
   document.documentElement.lang = loc;
+  // The shown <section> already carries its own dir (server-rendered, so
+  // the no-JS/first-paint case is still correct) — mirror it onto the
+  // document root too, or only that one section would ever render RTL
+  // while the page chrome (tabs, header) stayed pinned LTR regardless of
+  // which language was selected. i18n/test_rtl.mjs holds this in place.
+  document.documentElement.dir = document.getElementById('loc-' + loc).dir;
 }
 for (const t of tabs) t.addEventListener('click', () => show(t.dataset.loc));
 show((navigator.language || 'en').slice(0, 2).match(/^(en|ar|de|es|fr|hi|pt|zh)$/) ? (navigator.language || 'en').slice(0, 2) : 'en');

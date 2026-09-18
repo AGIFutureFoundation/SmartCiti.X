@@ -61,31 +61,129 @@ person who speaks it. The catalogs ship today as *machine-drafted, pending
 native review*, and they say so; this release removes that caveat honestly
 rather than deleting the label.
 
+**Status:** the machinery this release exists to build is built: a catalog
+cannot become `reviewed` without a named human and a date, a hall-name
+catalog cannot ship partial, the three public-facing pages hold zero
+hard-coded English, and RTL correctness is asserted rather than eyeballed —
+each proven by a check, each self-tested against a fixture it must reject.
+What this pass does **not** do, and was never going to: review anything.
+Building the checker is not the same act as a person reading the Spanish
+catalog and signing their name to it, and no amount of machinery changes
+that. All 7 non-English catalogs still declare `"translation_status":
+"machine-drafted, pending native review"`; this commit added 140 new keys to
+every one of them (landing page copy, campus-map chrome) and every new value
+is machine-drafted the same way the rest of the catalog already was — none
+of it is reviewed, and this PR flips no catalog's status. The release's own
+theme — *everything a person reads in their own language is reviewed by a
+person who speaks it* — is **not met**, and will not be met by a PR like
+this one; it needs the native reviewers ws1 names, which is people, not code.
+
 ### Workstreams
 
 1. **Native review of the 7 non-source catalogs.** One reviewer per locale,
    journey-level trade vocabulary where it exists (the German *Geselle*
    ladder, the French *compagnon* tradition). The `translation_status` field
    moves to `reviewed` only with a named reviewer in the commit.
+   *Status:* **not started.** The rule that would enforce a reviewer's name
+   is built and self-tested (`i18n/catalog.mjs`'s `validateCatalog()`,
+   `i18n/test.mjs`, `i18n/validate.mjs`); no reviewer has been named for any
+   of the 7 locales, and this pass invented none — a fabricated name would
+   be exactly the failure criterion 1 exists to prevent, not a shortcut
+   around it.
 2. **Reviewed trade-name translations.** The 111 hall names stay in English
    today by design (`i18n/README.md`). This workstream produces per-locale
    hall-name catalogs with the same parity tests, unlocked locale by locale —
    a locale ships hall names only when all 111 are reviewed.
+   *Status:* **not started.** The convention and the validator exist
+   (`i18n/hall-names/<locale>.json`, `validateHallNames()` — complete-111 or
+   absent, `reviewed` with a named reviewer, never partial) and the rule is
+   proven against fixtures a human never has to construct twice, but no
+   hall-name catalog has been authored; `i18n/test.mjs` holds the rule
+   vacuously true today and would catch the first one that ships incomplete.
 3. **Localized surfaces.** The landing page and campus-map chrome render from
    the catalogs; the map mirrors correctly under RTL. The console UI strings
    externalize into the catalogs (the control plane stays English-internal —
    telemetry keys are protocol, not prose).
+   *Status:* **the landing and languages pages, done; the map's page chrome,
+   done; the console, not started.** `web/build_landing.py` and
+   `web/build_map.py` no longer carry a single hard-coded English string —
+   140 new catalog keys replaced every hero line, mission paragraph,
+   investor panel, status-table cell and map legend/title-block/footer
+   string that used to be typed straight into the Python (`i18n/README.md`'s
+   hard-coded-English-lint section has the full account); `web/build_languages.py`
+   was already catalog-only. A source-level read then found the map and
+   landing CSS used hard-coded `left`/`right` throughout, which would not
+   have mirrored under RTL even though nothing rendered them in another
+   language yet; both now use logical properties
+   (`margin-inline-start`, `border-inline-end`, `text-align:start`, …), and
+   the languages page's locale switcher — which DOES render RTL, for
+   Arabic — had a real gap: only the inner `<section dir="rtl">` ever
+   flipped; `document.documentElement.dir` stayed `ltr` regardless of the
+   selected language, so `document.dir === 'rtl'` was never actually true
+   for a reader who picked Arabic. Fixed; see the exit criterion below for
+   the numbers. The console's own UI strings are untouched — the control
+   plane's telemetry keys stay protocol, not prose, exactly as this
+   workstream says, but the console's visible chrome was out of this pass's
+   reach given the size of the landing/map externalization alone, and stays
+   open.
 4. **Wiki localization.** The wiki builder gains a `--locale` mode; district
    pages render per locale from the same registries.
+   *Status:* **deliberately not built.** 27 pages × 8 locales generated from
+   catalogs that are all still machine-drafted would produce 189 mostly-
+   English pages (district names and a handful of UI labels translated, the
+   actual page body — hall descriptions, skill text — pulled straight from
+   the English registries either way) each carrying a review caveat. That is
+   volume without trust, the opposite of this release's theme, so it is left
+   open rather than built to make a number go up.
 
 ### Exit criteria
 
 - `i18n/test.mjs` gains a rule: a catalog claiming `reviewed` status names
   its reviewer; a hall-name catalog is complete or absent, never partial.
+  *Status:* **met.** `i18n/catalog.mjs` exports `STATUSES` (a closed set:
+  `source language` | `machine-drafted, pending native review` | `reviewed`)
+  and `validateCatalog()`/`validateHallNames()`; `load()` calls the former on
+  every catalog it reads, so a bad catalog fails at the moment anything in
+  JS loads it, not only when the suite happens to run.
+  `i18n/test.mjs` grew from 16 to 31 checks, 8 of them self-tests that
+  construct the exact bad catalogs the rule exists to catch — `reviewed`
+  with no reviewer, `reviewed` with a reviewer but no date, a 110-of-111
+  hall-name catalog, a complete-111 catalog that is not `reviewed` — and
+  assert the validator rejects every one, the same proof-by-tampering
+  `security/test_sbom.mjs` and `training/build.py`'s balanced-paren reader
+  already use on their own guards.
 - Landing, map and languages pages carry zero hard-coded English strings
   (a grep-shaped lint, like the brand lint).
+  *Status:* **met.** `i18n/lint_hardcoded.mjs` reads the three page
+  generators' source (not the built HTML — see the file's own header for
+  why that is the sound way to check this) and fails on any user-visible
+  text that is not a catalog lookup; it is self-tested against a fixture
+  sentence, a hard-coded `alt` attribute and a hard-coded JS string literal,
+  and exempts only the brand name and two planned-campus place names
+  (`Oakland Training Yard`, `SF Bridgehead` — proper nouns, the same
+  exemption class as the untranslated hall names). It runs in
+  `verify_all.sh` alongside `brand/lint.mjs`.
 - RTL rendering asserted by the layout harness, not eyeballed (§23's lesson:
   a rendering claim needs a rendering check).
+  *Status:* **met.** `web/test_rtl.mjs` (17 checks, in `verify_all.sh`)
+  holds the source-level half: the languages page's `document.dir` mirror,
+  and every physical `left`/`right` CSS rule found in the landing and map
+  generators replaced with a logical one, swept broadly enough that a new
+  one introduced later fails the test rather than shipping unnoticed. The
+  actual-render half is a scratch headless-Chromium proof (Playwright,
+  not committed — `verify_all.sh` stays browser-free): on the languages
+  page, selecting Arabic set `document.dir` to `rtl` (computed
+  `direction: rtl` on `<body>`), moved the honesty box's accent border from
+  the left edge (3px) to the right (3px on the right, 0 on the left), and
+  moved the first stat tile from x=200 to x=940 in a 1280px viewport — the
+  DOM order didn't change, the flex layout mirrored it. On the landing and
+  map pages, which have no locale switch of their own, forcing
+  `document.documentElement.dir = 'rtl'` moved the nav-links block from
+  x≈564 to x≈124 and the map's sidebar from x=0–266 to x=1014–1280 — exactly
+  swapped to the opposite edge. `document.documentElement.scrollWidth`
+  equalled `clientWidth` (1280) in every case, LTR and RTL alike, on all
+  three pages: no horizontal overflow. Nothing failed to mirror; there was
+  no finding to fix beyond the two closed above before this proof ran.
 
 ---
 

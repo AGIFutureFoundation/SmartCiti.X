@@ -6,7 +6,7 @@ disagree with the ledger. Hall colours come from brand/identity.mjs's livery
 function, reimplemented here with the SAME hash so the two agree — the values
 are asserted against a fixture below rather than trusted.
 """
-import json, pathlib, html, sys
+import json, pathlib, html, subprocess, sys
 
 ROOT = pathlib.Path(__file__).resolve().parent
 
@@ -23,6 +23,33 @@ def _pack_root():
 
 
 PACKS = _pack_root()
+
+# Same rule, same reason as build_landing.py and build_languages.py: this
+# page's chrome comes from the source catalog rather than being retyped as
+# Python literals, and i18n/validate.mjs (catalog.mjs's own rule, run once,
+# not re-typed per builder) fails this build on a bad catalog too.
+_v = subprocess.run(['node', str(PACKS / 'i18n/validate.mjs')], capture_output=True, text=True)
+if _v.returncode != 0:
+    sys.stderr.write(_v.stdout + _v.stderr)
+    sys.exit(1)
+
+_EN_DOC = json.loads((PACKS / 'i18n/locales/en.json').read_text(encoding='utf-8'))
+_EN = _EN_DOC['strings']
+
+
+def S(key):
+    """Look up a source-catalog string by its dotted key. Strict, like
+    catalog.mjs's t(): a missing key fails the build rather than rendering
+    blank."""
+    if key not in _EN:
+        raise KeyError(f'i18n: no en value for {key}')
+    return _EN[key]
+
+
+def STATE(key):
+    """Look up a pipeline-state label (en.json's top-level `states` section,
+    not the flat `strings` dict — reused here rather than retyped)."""
+    return _EN_DOC['states'][key]
 
 # ---------------------------------------------------------------- data ----
 # Halls and pipeline state come from the module pack; districts come from the
@@ -203,7 +230,7 @@ GRID = ''.join(
     f'<text class="gref" x="{BAND_X - 30}" y="{b["y"] + 27}">{i+1}</text>'
     for i, b in enumerate(bands))
 
-PAGE = f'''<title>Trade Craft Campus Plan</title>
+PAGE = f'''<title>Trade Craft {S('map.page_title')}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;600&display=swap">
@@ -244,7 +271,7 @@ body{{margin:0;background:var(--plate);color:var(--ink);
 
 header.sheet{{display:flex;align-items:center;gap:22px;flex-wrap:wrap;
   padding:16px 22px;border-bottom:1px solid var(--rule);background:var(--panel)}}
-header .sheetmeta{{margin-left:auto;display:flex;gap:26px;flex-wrap:wrap}}
+header .sheetmeta{{margin-inline-start:auto;display:flex;gap:26px;flex-wrap:wrap}}
 header .sheetmeta div{{display:grid;gap:3px}}
 header .sheetmeta b{{font-family:"IBM Plex Mono",monospace;font-size:13px;font-weight:600}}
 header .sheetmeta span{{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.12em;
@@ -253,14 +280,14 @@ header .sheetmeta span{{font-family:"IBM Plex Mono",monospace;font-size:9.5px;le
 .shell{{display:grid;grid-template-columns:266px minmax(0,1fr);gap:0;min-height:calc(100vh - 74px)}}
 @media(max-width:900px){{.shell{{grid-template-columns:1fr}}}}
 
-aside{{border-right:1px solid var(--rule);padding:20px;display:flex;flex-direction:column;gap:20px;
+aside{{border-inline-end:1px solid var(--rule);padding:20px;display:flex;flex-direction:column;gap:20px;
   background:var(--panel)}}
-@media(max-width:900px){{aside{{border-right:none;border-bottom:1px solid var(--rule)}}}}
+@media(max-width:900px){{aside{{border-inline-end:none;border-bottom:1px solid var(--rule)}}}}
 .kicker{{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.16em;
   text-transform:uppercase;color:var(--mark);margin:0 0 10px}}
 .dlist{{display:flex;flex-direction:column;gap:2px}}
 .dbtn{{display:grid;grid-template-columns:1fr auto;gap:2px 8px;align-items:baseline;
-  text-align:left;padding:9px 10px;border:1px solid transparent;border-radius:3px;
+  text-align:start;padding:9px 10px;border:1px solid transparent;border-radius:3px;
   background:none;color:var(--ink);font:inherit;cursor:pointer;width:100%}}
 .dbtn small{{grid-column:1/-1;font-size:12px;color:var(--muted);line-height:1.35}}
 .dbtn b{{font-family:"Barlow Condensed",sans-serif;text-transform:uppercase;font-size:16px;
@@ -331,7 +358,7 @@ svg.map{{display:block;width:100%;height:auto;min-width:940px}}
 .detail .ref{{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);
   border:1px solid var(--rule);border-radius:2px;padding:3px 7px}}
 .detail .dist{{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.1em;
-  text-transform:uppercase;margin-left:auto}}
+  text-transform:uppercase;margin-inline-start:auto}}
 /* ---- hall interior ---- */
 .plan2{{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:22px;align-items:start}}
 @media(max-width:860px){{.plan2{{grid-template-columns:1fr}}}}
@@ -388,49 +415,49 @@ footer p{{max-width:78ch;margin:0 0 8px}}
     </span>
   </a>
   <div class="sheetmeta">
-    <div><b>{SHAPE['halls']}</b><span>union halls</span></div>
-    <div><b class="mono">{TOTALS['all']:,}</b><span>modules on the plan</span></div>
-    <div><b class="mono">{TOTALS['live']:,}</b><span>live</span></div>
-    <div><b>TI-01</b><span>sheet</span></div>
+    <div><b>{SHAPE['halls']}</b><span>{S('map.meta.halls')}</span></div>
+    <div><b class="mono">{TOTALS['all']:,}</b><span>{S('map.meta.modules')}</span></div>
+    <div><b class="mono">{TOTALS['live']:,}</b><span>{S('map.meta.live')}</span></div>
+    <div><b>TI-01</b><span>{S('map.meta.sheet')}</span></div>
   </div>
 </header>
 
 <div class="shell">
   <aside>
     <div>
-      <p class="kicker">Districts</p>
+      <p class="kicker">{S('map.layer.districts')}</p>
       <div class="dlist" id="dlist"></div>
     </div>
     <div>
-      <p class="kicker">Pipeline state</p>
+      <p class="kicker">{S('map.layer.pipeline')}</p>
       <div class="key">
-        <div><i class="swatch-live"></i> Live — authored, calibrated, serving</div>
-        <div><i class="swatch-cal"></i> Calibrating — serving, difficulty still settling</div>
-        <div><i class="swatch-sch"></i> Schema OK — structure valid, not yet calibrated</div>
-        <div><i class="swatch-dra"></i> Draft — not served to anyone</div>
-        <div><i class="swatch-soon"></i> Planned — not built</div>
+        <div><i class="swatch-live"></i> {S('map.key.live')}</div>
+        <div><i class="swatch-cal"></i> {S('map.key.calibrating')}</div>
+        <div><i class="swatch-sch"></i> {S('map.key.schema_ok')}</div>
+        <div><i class="swatch-dra"></i> {S('map.key.draft')}</div>
+        <div><i class="swatch-soon"></i> {S('map.key.planned')}</div>
       </div>
     </div>
   </aside>
 
   <div class="plan">
     <div class="planwrap">
-      <svg class="map" viewBox="0 0 1000 {SHEET_H}" role="img" aria-label="Campus plan: {SHAPE['halls']} union halls grouped into eight districts across the Treasure Island site">
+      <svg class="map" viewBox="0 0 1000 {SHEET_H}" role="img" aria-label="{S('map.aria.plan').format(n=SHAPE['halls'])}">
         <rect class="water" x="0" y="0" width="1000" height="{SHEET_H}"/>
         <path class="land" d="M40 56 L960 56 Q978 56 978 74 L978 {SHEET_H - 70} Q978 {SHEET_H - 52} 960 {SHEET_H - 52} L260 {SHEET_H - 52} Q214 {SHEET_H - 52} 184 {SHEET_H - 84} L52 {SHEET_H - 232} Q40 {SHEET_H - 246} 40 {SHEET_H - 266} Z"/>
         <path class="road" d="M0 {TOP - 34} L978 {TOP - 34}"/>
-        <text class="roadlbl" x="{BAND_X}" y="{TOP - 40}">Bay Bridge Approach &#183; Site Entry</text>
+        <text class="roadlbl" x="{BAND_X}" y="{TOP - 40}">{S('map.entry_road')}</text>
         <g>{GRID}</g>
         {BAND_SVG}
         <g class="soon">
           <rect x="{BAND_X}" y="{PLANNED_Y}" width="404" height="52" rx="4"/>
           <text x="{BAND_X + 16}" y="{PLANNED_Y + 24}">Oakland Training Yard</text>
-          <text class="st" x="{BAND_X + 16}" y="{PLANNED_Y + 40}">PLANNED &#183; NOT BUILT</text>
+          <text class="st" x="{BAND_X + 16}" y="{PLANNED_Y + 40}">{S('map.state_planned')}</text>
         </g>
         <g class="soon">
           <rect x="{BAND_X + 420}" y="{PLANNED_Y}" width="404" height="52" rx="4"/>
           <text x="{BAND_X + 436}" y="{PLANNED_Y + 24}">SF Bridgehead</text>
-          <text class="st" x="{BAND_X + 436}" y="{PLANNED_Y + 40}">PLANNED &#183; NOT BUILT</text>
+          <text class="st" x="{BAND_X + 436}" y="{PLANNED_Y + 40}">{S('map.state_planned')}</text>
         </g>
         <g id="halls"></g>
         <g transform="translate(922,{TOP - 46})">
@@ -447,14 +474,14 @@ footer p{{max-width:78ch;margin:0 0 8px}}
         </g>
         <g transform="translate({BAND_X + 480},{PLANNED_Y + 66})">
           <rect class="titleblock" x="0" y="0" width="344" height="80" rx="3"/>
-          <text class="tb-t" x="14" y="24">Campus Plan &#183; Union Halls</text>
+          <text class="tb-t" x="14" y="24">{S('map.titleblock.title')}</text>
           <text class="tb-b" x="14" y="41">SmartCiti.X : Trade Craft Academy</text>
           <line x1="14" y1="49" x2="330" y2="49" stroke="var(--rule)" stroke-width="1"/>
-          <text class="tb-k" x="14" y="61">Sheet</text><text class="tb-v" x="14" y="73">TI-01</text>
-          <text class="tb-k" x="90" y="61">Rev</text><text class="tb-v" x="90" y="73">2.7</text>
-          <text class="tb-k" x="146" y="61">Halls</text><text class="tb-v" x="146" y="73">{SHAPE['halls']}</text>
-          <text class="tb-k" x="206" y="61">Modules</text><text class="tb-v" x="206" y="73">{TOTALS['all']:,}</text>
-          <text class="tb-k" x="286" y="61">Issued</text><text class="tb-v" x="286" y="73">Review</text>
+          <text class="tb-k" x="14" y="61">{S('map.titleblock.sheet')}</text><text class="tb-v" x="14" y="73">TI-01</text>
+          <text class="tb-k" x="90" y="61">{S('map.titleblock.rev')}</text><text class="tb-v" x="90" y="73">2.7</text>
+          <text class="tb-k" x="146" y="61">{S('map.titleblock.halls')}</text><text class="tb-v" x="146" y="73">{SHAPE['halls']}</text>
+          <text class="tb-k" x="206" y="61">{S('map.titleblock.modules')}</text><text class="tb-v" x="206" y="73">{TOTALS['all']:,}</text>
+          <text class="tb-k" x="286" y="61">{S('map.titleblock.issued')}</text><text class="tb-v" x="286" y="73">{S('map.titleblock.review')}</text>
         </g>
       </svg>
     </div>
@@ -463,22 +490,26 @@ footer p{{max-width:78ch;margin:0 0 8px}}
 </div>
 
 <footer>
-  <p><b>Every number on this plan is read from the module registry</b> — hall counts,
-  module counts and pipeline states are the pack's own values, not illustrations.
-  The geography is schematic: bands show how the halls are grouped, not surveyed positions.</p>
-  <p><b>The interiors are functional programmes, not surveys.</b> Each hall's rooms come from
-  the eleven skill strands that hall actually teaches, and a room gains trade fixtures only when
-  that trade's own focus line names them — a welding hall gets booths and fume extraction because
-  its skills say so, and a drywall hall does not. <b>No address data has been collected for any
-  hall</b>, so every plan carries an empty site block rather than an invented street address.
-  The commissioning state on each plan is read from that hall's live-module share.</p>
-  <p>The Oakland Yard and SF Bridgehead parcels are drawn dashed because they are planned and
-  not built. Nothing on this plan is an accreditation or a union endorsement, and lesson content
-  is unverified general practice pending authoring by practitioners.</p>
+  <p>{S('map.footer.p1')}</p>
+  <p>{S('map.footer.p2')}</p>
+  <p>{S('map.footer.p3')}</p>
 </footer>
 
 <script>
 const DATA = {D};
+// The i18n catalog's own strings, carried in as data rather than retyped:
+// the {{token}} placeholders are filled below, the same contract i18n/test.mjs
+// enforces server-side (placeholder survival) for every locale of this key.
+const I18N = {json.dumps({
+    'ariaHall': S('map.aria.hall'), 'ariaFloor': S('map.aria.floor'),
+    'noAddress': S('map.detail.no_address'), 'of': S('map.detail.of'),
+    'modulesWord': S('map.detail.modules_word'), 'fixture': S('map.detail.fixture'),
+    'states': {
+        'live': STATE('live'), 'calibrating': STATE('calibrating'),
+        'schema_ok': STATE('schema_ok'), 'draft': STATE('draft'),
+    },
+}, ensure_ascii=False)};
+const fillTokens = (s, vars) => Object.entries(vars).reduce((acc, [k, v]) => acc.split(`{{${{k}}}}`).join(v), s);
 const F = (n) => n.toLocaleString('en-US');
 const SW = {{live:'var(--good)', calibrating:'var(--warn)', schema_ok:'var(--steel)', draft:'var(--rule)'}};
 let filter = null, selected = DATA.halls[0].slug;
@@ -492,7 +523,7 @@ const hallsG = document.getElementById('halls');
 hallsG.innerHTML = DATA.halls.map((h) => {{
   const w = h.w, hh = h.h, x = h.x, y = h.y;
   return `<g class="hall" data-s="${{h.slug}}" data-d="${{h.district}}" role="button" tabindex="0"
-            aria-label="${{h.name}} — ${{h.district_name}} district, grid ${{h.ref}}" aria-pressed="false">
+            aria-label="${{fillTokens(I18N.ariaHall, {{name: h.name, district: h.district_name, ref: h.ref}})}}" aria-pressed="false">
     <rect class="pad" x="${{x}}" y="${{y}}" width="${{w}}" height="${{hh}}" rx="3"/>
     <rect class="bar" x="${{x}}" y="${{y}}" width="4" height="${{hh}}" fill="${{h.chip}}"/>
     <text class="hname" x="${{x + 13}}" y="${{y + 17}}">${{h.name}}</text>
@@ -540,16 +571,16 @@ function renderDetail(slug) {{
     <p>${{h.focus}}.</p>
     <div class="stack">${{seg('live')}}${{seg('calibrating')}}${{seg('schema_ok')}}${{seg('draft')}}</div>
     <div class="legrow">
-      <span><i style="background:var(--good)"></i>${{F(h.live)}} <em>live</em></span>
-      <span><i style="background:var(--warn)"></i>${{F(h.calibrating)}} <em>calibrating</em></span>
-      <span><i style="background:var(--steel)"></i>${{F(h.schema_ok)}} <em>schema ok</em></span>
-      <span><i style="background:var(--rule);border:1px solid var(--muted)"></i>${{F(h.draft)}} <em>draft</em></span>
-      <span><em>of</em> ${{F(h.modules)}} <em>modules</em></span>
+      <span><i style="background:var(--good)"></i>${{F(h.live)}} <em>${{I18N.states.live.toLowerCase()}}</em></span>
+      <span><i style="background:var(--warn)"></i>${{F(h.calibrating)}} <em>${{I18N.states.calibrating.toLowerCase()}}</em></span>
+      <span><i style="background:var(--steel)"></i>${{F(h.schema_ok)}} <em>${{I18N.states.schema_ok.toLowerCase()}}</em></span>
+      <span><i style="background:var(--rule);border:1px solid var(--muted)"></i>${{F(h.draft)}} <em>${{I18N.states.draft.toLowerCase()}}</em></span>
+      <span><em>${{I18N.of}}</em> ${{F(h.modules)}} <em>${{I18N.modulesWord}}</em></span>
     </div>
     <div class="plan2">
       <div>
         <svg class="floor" viewBox="0 0 ${{W + PAD * 2}} ${{D + PAD * 2 + 18}}"
-             role="img" aria-label="Floor plan of the ${{h.name}} hall: ${{I.rooms.length}} rooms">
+             role="img" aria-label="${{fillTokens(I18N.ariaFloor, {{name: h.name, n: I.rooms.length}})}}">
           ${{gridLines.join('')}}
           ${{rooms}}
           <rect class="envelope" x="${{PAD}}" y="${{PAD}}" width="${{W}}" height="${{D}}" rx="3"/>
@@ -559,11 +590,11 @@ function renderDetail(slug) {{
       <div>
         <div class="row" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px">
           <span class="comm c-${{I.commissioning}}">${{I.commissioning}}</span>
-          <span class="mono" style="font-size:11.5px;color:var(--muted)">${{I.fixture_count}} trade fixture${{I.fixture_count === 1 ? '' : 's'}}</span>
+          <span class="mono" style="font-size:11.5px;color:var(--muted)">${{I.fixture_count}} ${{I18N.fixture}}${{I.fixture_count === 1 ? '' : 's'}}</span>
         </div>
         <div class="prog">${{programme}}</div>
         <div class="sitebox">
-          <b>Site address — not recorded</b>
+          <b>${{I18N.noAddress}}</b>
           <p>${{I.site.note}}</p>
         </div>
       </div>
