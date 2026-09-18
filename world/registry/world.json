@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-11",
- "source_stamp": "e5546ea54497c33b",
+ "source_stamp": "8cceb511a075542a",
  "honesty": {
   "textures": "no texture, photograph or artwork file exists in this repository and none is downloaded: every surface is a recipe - a base colour, a grain, an octave count and a relief depth - and the page generates the image and its normal map in the learner's own browser at boot. There is therefore no third-party artwork anywhere in the render.",
   "weather": "schematic weather, not a forecast and not an observation: nothing here is tied to a reading taken at any real place or time, and the per-campus atmospheres are authored by reputation rather than measured.",
@@ -13,7 +13,7 @@
  },
  "counts": {
   "weather": 6,
-  "ground": 6,
+  "ground": 10,
   "fauna": 6,
   "animals": 101
  },
@@ -211,6 +211,54 @@
    "roughness": 0.97,
    "metalness": 0.0,
    "where": "stockpiles and the excavator cut"
+  },
+  "marsh": {
+   "name": "Tidal marsh",
+   "base": "#33412c",
+   "grain": "138,166,104",
+   "octaves": 4,
+   "speckle": 7200,
+   "relief": 0.62,
+   "repeat": 40,
+   "roughness": 0.97,
+   "metalness": 0.02,
+   "where": "vegetated tidal marsh, wet underfoot between the channels"
+  },
+  "mudflat": {
+   "name": "Tidal flat",
+   "base": "#3d3b31",
+   "grain": "150,146,128",
+   "octaves": 5,
+   "speckle": 2600,
+   "relief": 0.3,
+   "repeat": 26,
+   "roughness": 0.82,
+   "metalness": 0.06,
+   "where": "the intertidal flat a managed pond becomes as it reopens"
+  },
+  "upland": {
+   "name": "Dry upland",
+   "base": "#3f4230",
+   "grain": "176,178,126",
+   "octaves": 3,
+   "speckle": 5600,
+   "relief": 0.48,
+   "repeat": 38,
+   "roughness": 0.98,
+   "metalness": 0.0,
+   "where": "the dry ground above the tide line, where the uplands are planted back"
+  },
+  "levee": {
+   "name": "Levee crown",
+   "base": "#4b4740",
+   "grain": "198,190,168",
+   "octaves": 2,
+   "speckle": 4800,
+   "relief": 0.7,
+   "repeat": 28,
+   "roughness": 0.99,
+   "metalness": 0.0,
+   "where": "the compacted crown of a dike or levee, which is the path a crew actually walks a diked site on"
   },
   "water": {
    "name": "Open water",

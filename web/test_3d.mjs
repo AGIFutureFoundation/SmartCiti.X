@@ -151,4 +151,55 @@ ok('a hall\'s own materials are never marked shared (so disposeOf frees them), w
   && !/userData\.shared\s*=/.test(fn('wallMat'))
   && !/userData\.shared\s*=/.test(fn('buildHall')));
 
+/* ------------------------------------------- yards, walks and their light --- */
+/* The same gap the halls had, one level out: a simulator yard was a fence
+   and four masts on the page's global ground plane, and every restoration
+   walk stood on one rough-grass pad whatever its habitat. Both now read
+   their footing from the registry that owns it. And the mast head was the
+   same near-miss the room luminaire was - a bright object that lit nothing. */
+ok('a sim yard lays the floor its own registry entry declares, with relief',
+  /const yard = D\.sims\.sims\[simId\]\?\.yard;/.test(fn('simYard'))
+  && /finishMat\(fin, hw \* 2 \/ U \* 2, hd \* 2 \/ U \* 2\)/.test(fn('simYard')));
+ok('the yard mast heads carry a real light, not only an emissive box',
+  /new THREE\.PointLight\(0xffe9c8, 1\.5,/.test(fn('simYard'))
+  && /ml\.visible = qLevel !== 'low';/.test(fn('simYard')));
+ok('the one indoor seat floors and lights its shop bay the same way, without '
+  + 'borrowing the outdoor fence',
+  /const yard = D\.sims\.sims\['overhead-crane'\]\.yard;/.test(src)
+  && /const hb = new THREE\.PointLight\(0xffe9c8, 1\.3,/.test(src));
+ok('a restoration walk lays the ground its site names, not one grass pad for all',
+  /const gid = site\.ground \?\? 'grass';/.test(fn('buildRestoGround'))
+  && /groundMat\(gid\)/.test(fn('buildRestoGround')));
+ok('a restoration walk names the organisation whose site it is, at the entry',
+  /const entry = label\(site\.org, site\.category/.test(fn('buildRestoGround')));
+
+/* Lights are torn down like label sprites are: out of the list, not just out
+   of the scene. A list the quality ladder walks that keeps every light every
+   torn-down hall and sim yard ever built grows without bound and re-shows
+   lights that are no longer in the scene. */
+ok('disposeOf() prunes a light out of roomLights and disposes it, the same '
+  + 'way it prunes a label sprite out of labelSet',
+  /if \(o\.isLight\) \{/.test(fn('disposeOf'))
+  && /roomLights\.splice\(li, 1\)/.test(fn('disposeOf')));
+
+/* The refused pointer lock: enterWalk() disables the orbit controls BEFORE it
+   asks, and neither the lock nor the unlock event fires on a refusal, so
+   nothing was left able to put them back. Both the synchronous throw and the
+   pointerlockerror event now land on one idempotent recovery. */
+ok('a refused pointer lock is caught, not thrown, on both paths',
+  /try \{ plc\.lock\(\); \} catch \(err\) \{ walkRefused\(err\); \}/.test(src)
+  && /document\.addEventListener\('pointerlockerror'/.test(src));
+ok('the recovery puts back exactly what enterWalk took away, and says so',
+  /controls\.enabled = true;/.test(fn('walkRefused'))
+  && /t\('hint\.walkRefused'\)/.test(fn('walkRefused')));
+
+/* A panel that cannot answer says why. Both of these read a field off an
+   undefined record and threw a raw TypeError: every candidate id is stale now
+   that the ten-campus target is met, and a walkaround has no seat to check
+   when no simulator is running. */
+ok('the candidate and walkaround panels refuse with a reason instead of throwing',
+  /function refusePanel\(why\)/.test(src)
+  && /if \(!def\) return refusePanel\(/.test(fn('openWa'))
+  && /if \(!c\) \{/.test(fn('openCandidate')));
+
 console.log(`web/test_3d: ${n} checks passed - teardown, draw-call and per-frame contracts held at the source`);

@@ -290,5 +290,34 @@ const src = readFileSync(new URL('./build.py', import.meta.url));
 ok('the registry was built from the current builder source (stamp check)',
   reg.source_stamp === createHash('sha256').update(src).digest('hex').slice(0, 16));
 
+/* ------------------------------------------------------------- the yard --- */
+/* A seat is a place, and a place has a floor. Every yard used to be a fence
+   and four masts standing on the page's global ground plane, so the welder,
+   the excavator and the pressure washer worked on the same nothing. The
+   surface is cross-checked against the pack that OWNS the finishes rather
+   than described a second time here, which is the whole point of naming it
+   by id. */
+const finishes = JSON.parse(readFileSync(
+  new URL('../surfaces/registry/finishes.json', import.meta.url)));
+ok('every seat declares the floor its yard is laid with, with a reason',
+  Object.values(reg.sims).every((s2) => s2.yard?.surface && s2.yard.why?.length > 20));
+ok('every yard surface is a finish the surfaces catalogue actually holds, '
+  + 'named the same way there',
+  Object.values(reg.sims).every((s2) =>
+    finishes.catalogue[s2.yard.surface]
+    && finishes.catalogue[s2.yard.surface].name === s2.yard.name));
+ok('the yards differ: the seats do not all stand on one floor',
+  new Set(Object.values(reg.sims).map((s2) => s2.yard.surface)).size >= 4);
+/* The welding bay's floor is the one place this pack and the hazard rules in
+   surfaces/ have to agree out loud: hot work goes on bare slab because there
+   must be nothing underfoot to carry a spark, and that is the same sentence
+   in both packs. If someone changes one, this fails. */
+ok('the welding seat stands on the floor the hot-work hazard puts it on',
+  reg.sims['weld-bead'].yard.surface === 'bare-slab'
+  && Object.values(finishes.halls).some((h) =>
+      h.rooms.procedure.placed_by === 'hazard'
+      && h.rooms.procedure.hazard === 'hot-work'
+      && h.rooms.procedure.surface === 'bare-slab'));
+
 console.log(`sims/test: ${n} checks passed — ${Object.keys(sims).length} simulators, `
   + `${Object.keys(reg.hall_bindings).length} halls bound`);

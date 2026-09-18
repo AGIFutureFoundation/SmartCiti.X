@@ -378,5 +378,37 @@ const src = readFileSync(new URL('./build.py', import.meta.url));
 ok('the registry was built from the current builder source (stamp check)',
   reg.source_stamp === createHash('sha256').update(src).digest('hex').slice(0, 16));
 
+/* ---------------------------------------------------------- the ground --- */
+/* Every walkable scene stood on one rough-grass pad, whatever its habitat,
+   so a tidal marsh, an intertidal flat and a dry upland all read as the
+   campus green. A walkable site now names the ground it crosses - by a
+   recipe id from the world pack, cross-checked there - and says which words
+   in its OWN habitat line chose it.
+
+   A non-walkable site names none, and that is the assertion that matters:
+   the two environmental-monitoring sites are deliberately not rendered as
+   places a learner walks into, and giving one a ground would be the first
+   step toward implying otherwise. */
+const world = JSON.parse(readFileSync(
+  new URL('../world/registry/world.json', import.meta.url)));
+const walkSites = reg.sites.filter((s2) => s2.walkable);
+ok('every walkable site names the ground it crosses, from the world pack\'s '
+  + 'own recipes',
+  walkSites.length === 8
+  && walkSites.every((s2) => s2.ground && world.ground[s2.ground]));
+ok('every ground choice cites the words in that site\'s own habitat line',
+  walkSites.every((s2) => s2.ground_why?.length > 25
+    && /["“]/.test(s2.ground_why)));
+ok('a site that is NOT walkable carries no ground - it is never a place you '
+  + 'walk into, and the two cleanup sites must stay that way',
+  reg.sites.filter((s2) => !s2.walkable)
+    .every((s2) => s2.ground === null && s2.ground_why === null));
+ok('the walks differ underfoot: marsh, flat, upland and levee are all in use',
+  new Set(walkSites.map((s2) => s2.ground)).size >= 4);
+ok('the ground is SCHEMATIC, composed from the habitat description and not '
+  + 'sampled from the place',
+  /SCHEMATIC/.test(JSON.stringify(reg.honesty))
+  || Object.values(reg.honesty).some((v) => /not a survey|schematic/i.test(String(v))));
+
 console.log(`restoration/test: ${n} checks passed — ${reg.sites.length} sites `
   + `(${pinned.length} mapped), ${reg.tracks.length} tracks`);

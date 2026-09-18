@@ -698,7 +698,63 @@ union_slugs = {u['slug'] for u in unions_reg}
 CATEGORIES = {'habitat-restoration', 'environmental-monitoring'}
 
 assert len(SITES) >= 8, 'the site list looks too thin to be worth shipping'
+# ------------------------------------------------------------- the ground --
+# What a walkable site is underfoot.
+#
+# Every walkable scene stood on one rough-grass pad, whatever its habitat -
+# a tidal marsh, an intertidal flat and a dry upland all read as the campus
+# green. Each walkable site now names the ground it crosses, from the world
+# pack's own recipe set, and says which words in its OWN habitat line chose
+# it. Non-walkable sites take no ground: they are never rendered as a scene,
+# and giving them one would imply a place a learner can walk into.
+#
+# SCHEMATIC, like everything else in these scenes: composed from the habitat
+# each project describes in its own words, never sampled or surveyed.
+GROUND = {
+    'herons-head': ('upland',
+                    '"shoreline & green infrastructure" - the built-up '
+                    'resilience works are above the tide line, with the '
+                    'water drawn separately at the shore'),
+    'candlestick-point': ('upland',
+                          '"shoreline stewardship" on a rocky park shore: '
+                          'the crew works the dry ground behind the tideline'),
+    'east-oakland-youth': ('upland',
+                           '"shoreline & upland restoration" - the nursery '
+                           'rows and the planting ground are the upland half'),
+    'alviso-shoreline': ('marsh',
+                         '"marsh-adjacent upland" on a two-acre wet edge, '
+                         'where the marsh is what the footprint adjoins'),
+    'south-bay-salt-ponds': ('mudflat',
+                             '"managed pond to tidal marsh" - the flat the '
+                             'pond becomes as the levee is breached is the '
+                             'ground this project is about'),
+    'montezuma-wetlands': ('levee',
+                           '"tidal & seasonal wetland" behind dikes: a diked '
+                           'site is walked on its levee crowns'),
+    'american-canyon': ('marsh',
+                        '"wetland & upland shoreline" - and the scene reads '
+                        'proposed rather than built, which the dashed '
+                        'boundary already says'),
+    'straw-north-bay': ('marsh',
+                        '"wetland-upland transition zone" along 1.3 linear '
+                        'miles of creek corridor'),
+}
+
 assert len({s['id'] for s in SITES}) == len(SITES), 'a site id repeats'
+# the ground is a walkable-site fact, cross-checked against the pack that
+# owns the recipes rather than described a second time here
+_world = json.load(open(ROOT / 'world/registry/world.json'))
+_walk_ids = {s['id'] for s in SITES if s['walkable']}
+assert set(GROUND) == _walk_ids, \
+    'every walkable site names its ground, and only walkable sites do'
+for _sid, (_g, _why) in GROUND.items():
+    assert _g in _world['ground'], f'{_sid}: {_g} is not a world ground recipe'
+    assert len(_why) > 25, f'{_sid}: ground with no reason is a preference'
+for s in SITES:
+    if s['walkable']:
+        s['ground'], s['ground_why'] = GROUND[s['id']]
+    else:
+        s['ground'] = s['ground_why'] = None
 for s in SITES:
     assert s['name'] and s['org'] and s['source_url'].startswith('https://'), \
         f"{s['id']}: needs a real name, org and https source"

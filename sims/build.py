@@ -1238,9 +1238,71 @@ for sim_id, op in OPERATORS.items():
         f'{sim_id}: every step is a sentence a learner can act on'
     SIMS[sim_id]['operator'] = {'levels': list(OPERATOR_LEVELS), **op}
 assert set(OPERATORS) == set(SIMS), 'every seat gets its reference operator'
+# --------------------------------------------------------- the yard (§24) --
+# What each seat's training yard is actually floored with.
+#
+# A simulator yard had a fence, four light masts and a painted apron border
+# standing on the page's global ground plane - so the welder, the excavator
+# and the pressure washer all worked on the same nothing. The surfaces pack
+# has carried twenty-two floor finishes and the reason each one exists since
+# §24; a seat is a place, and a place has a floor.
+#
+# The id on the left is a finish in surfaces/surfaces.py, cross-checked
+# against that catalogue at build time rather than trusted - one truth, in
+# the pack that owns it. `why` is this SEAT's reason, which is not always
+# the finish's own general reason: the welding bay is on bare slab for the
+# same reason the hot-work hazard puts it there, and saying so out loud is
+# how the two stay consistent.
+YARD_SURFACE = {
+    'crane-lift': ('asphalt-apron',
+                   'a lay-down yard the load waits on and the crane tracks '
+                   'over, between the stockpile and the set'),
+    'excavator-trench': ('crushed-stone',
+                         'the ground plant actually digs, piles and tracks '
+                         'on - and the spoil goes back onto it'),
+    'forklift-run': ('asphalt-apron',
+                     'a yard running surface a loaded truck can turn on '
+                     'without rutting it'),
+    'weld-bead': ('bare-slab',
+                  'non-combustible, with nothing underfoot to carry a spark - '
+                  'the same reason the hot-work hazard puts the bay here'),
+    'scaffold-bay': ('sealed-slab',
+                     'the sills need flat, sound, dust-proofed bearing before '
+                     'the first standard goes up'),
+    'rigging-signals': ('asphalt-apron',
+                        'the signalperson stands in the yard with the load, '
+                        'not in a booth beside it'),
+    'load-chart': ('sealed-slab',
+                   'the chart board is read indoors, off the machine, before '
+                   'anybody commits to the pick'),
+    'pressure-washer': ('broom-concrete',
+                        'traction on a wash-down surface, because this seat '
+                        'runs wet by definition'),
+    'airless-sprayer': ('epoxy-smooth',
+                        'wipe-clean, because overspray lands on the floor '
+                        'before it lands anywhere else'),
+    'boom-lift': ('asphalt-apron',
+                  'the stabilizers set on it, so what it is and how flat it '
+                  'is are the first two things the walkaround asks'),
+    'overhead-crane': ('sealed-slab',
+                       'a shop bay floor with the aisle and the workstation '
+                       'marked on it, which is the route this seat travels'),
+}
+
 for sim_id, s in SIMS.items():
     if 'layout' in s:
         assert s['layout'], f'{sim_id}: an empty layout is no shared truth'
+
+# §24, applied to the seats: the yard surface, cross-checked against the
+# catalogue that owns it rather than copied into a second table here.
+_finishes = json.load(open(ROOT / 'surfaces/registry/finishes.json'))
+assert set(YARD_SURFACE) == set(SIMS), 'every seat stands on a declared floor'
+for sim_id, (surf, why) in YARD_SURFACE.items():
+    assert surf in _finishes['catalogue'], \
+        f'{sim_id}: {surf} is not a finish in the surfaces catalogue'
+    assert len(why) > 20, f'{sim_id}: a floor with no reason is a preference'
+    SIMS[sim_id]['yard'] = {'surface': surf, 'why': why,
+                            'name': _finishes['catalogue'][surf]['name']}
 
 unions = json.load(open(ROOT / 'unions/registry/unions.json'))['unions']
 skills = {s['skill_id'] for s in

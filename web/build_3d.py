@@ -828,10 +828,26 @@ function simResults(simId, rows, passed) {
 
 /* A fenced training yard, so a sim reads as a place on the campus rather
    than a void: perimeter fence, corner light masts, painted apron border. */
-function simYard(g, hw, hd, cx = 0, cz = 0) {
+function simYard(g, hw, hd, cx = 0, cz = 0, simId = curSimId) {
   const fence = new THREE.MeshStandardMaterial({ color: 0x5a6468, roughness: .6 });
   const lamp = new THREE.MeshStandardMaterial({
     color: 0xfff2cf, emissive: 0xffdf9a, emissiveIntensity: .9 });
+
+  /* The yard's own floor. Until now a sim yard was a fence and four masts
+     standing on the page's global ground plane, so the welder, the
+     excavator and the pressure washer all worked on the same nothing. Each
+     seat declares what it stands on in the sims registry, by an id from the
+     surfaces catalogue - one truth, in the pack that owns it - and it is
+     laid here with the same relief every hall floor got. */
+  const yard = D.sims.sims[simId]?.yard;
+  if (yard) {
+    const fin = D.finCat[yard.surface];
+    const fmat = finishMat(fin, hw * 2 / U * 2, hd * 2 / U * 2);
+    const floor = new THREE.Mesh(boxGeo(hw * 2, .12, hd * 2), fmat);
+    floor.position.set(cx, -.06, cz); floor.receiveShadow = true;
+    floor.userData.yardSurface = yard.surface;
+    g.add(floor);
+  }
   for (let x = -hw; x <= hw; x += 6) {
     box(.14, 1.9, .14, fence, cx + x, .95, cz - hd, g);
     box(.14, 1.9, .14, fence, cx + x, .95, cz + hd, g);
@@ -850,6 +866,14 @@ function simYard(g, hw, hd, cx = 0, cz = 0) {
     const mx = cx + sx * (hw - 1.4), mz = cz + sz * (hd - 1.4);
     box(.3, 9, .3, mat.metal, mx, 4.5, mz, g);
     box(1.5, .35, .55, lamp, mx, 9.15, mz, g, false);
+    // The mast head was an emissive box: a bright object that lit nothing,
+    // so a yard at dusk was a yard with four glowing rectangles in the dark.
+    // It carries a real light now, reaching its own quarter of the yard, on
+    // the same quality-ladder budget the room lights ride.
+    const ml = new THREE.PointLight(0xffe9c8, 1.5, Math.max(hw, hd) * 1.5, 1.6);
+    ml.position.set(mx, 8.7, mz);
+    ml.visible = qLevel !== 'low';
+    g.add(ml); roomLights.push(ml);
   }
 }
 
@@ -2223,7 +2247,27 @@ function overheadCraneSim(P = {}) {
   const OBS = P.obstacles ?? [], WS = P.workstation ?? null, AISLE = LAY.aisle;
   const g = new THREE.Group();
   const RAIL_Y = 8.2;
-  box(BX * 2 + 6, .1, BZ * 2 + 6, mat.slab, 0, .05, 0, g, false);
+  /* The one seat that is INDOORS, so it draws its own bay rather than
+     calling simYard's fenced outdoor yard - but it gets the same two things
+     the yards just got: the floor its registry entry declares (a marked
+     shop-bay slab, which is the route this seat travels) and high-bay
+     lights that actually light it rather than four bright rectangles. */
+  const yard = D.sims.sims['overhead-crane'].yard;
+  const bayMat = finishMat(D.finCat[yard.surface],
+    (BX * 2 + 6) / U * 2, (BZ * 2 + 6) / U * 2);
+  const bay = new THREE.Mesh(boxGeo(BX * 2 + 6, .1, BZ * 2 + 6), bayMat);
+  bay.position.set(0, .05, 0); bay.receiveShadow = true;
+  bay.userData.yardSurface = yard.surface; g.add(bay);
+  for (const [lx, lz] of [[-BX * .55, -BZ * .55], [BX * .55, -BZ * .55],
+                          [-BX * .55, BZ * .55], [BX * .55, BZ * .55]]) {
+    box(1.2, .25, .5, new THREE.MeshStandardMaterial({
+      color: 0xfff2cf, emissive: 0xffdf9a, emissiveIntensity: .9 }),
+      lx, RAIL_Y + 1.9, lz, g, false);
+    const hb = new THREE.PointLight(0xffe9c8, 1.3, Math.max(BX, BZ) * 2.2, 1.6);
+    hb.position.set(lx, RAIL_Y + 1.6, lz);
+    hb.visible = qLevel !== 'low';
+    g.add(hb); roomLights.push(hb);
+  }
   for (let x = -BX - 2; x <= BX + 2; x += 6) for (const z of [-BZ - 1.4, BZ + 1.4])
     box(.5, RAIL_Y, .5, mat.metal, x, RAIL_Y / 2, z, g);
   for (const z of [-BZ - 1.4, BZ + 1.4]) box(BX * 2 + 6, .5, .45, mat.metal, 0, RAIL_Y + .25, z, g);
@@ -6537,6 +6581,17 @@ function disposeOf(root) {
       o.material.dispose();          // its map is the shared texture, released above
       return;
     }
+    // a room or mast light leaves roomLights HERE, for the same reason a
+    // label sprite leaves labelSet here: the list is walked by the quality
+    // ladder, and a list that keeps every light every torn-down hall and
+    // sim yard ever built grows without bound and re-shows lights that are
+    // no longer in the scene
+    if (o.isLight) {
+      const li = roomLights.indexOf(o);
+      if (li >= 0) roomLights.splice(li, 1);
+      o.dispose?.();
+      return;
+    }
     if (!o.material) return;
     for (const m of Array.isArray(o.material) ? o.material : [o.material]) {
       if (!m || m.userData?.shared) continue;
@@ -8839,8 +8894,29 @@ function waterAt(w, d, x, z, g, rot) {
 }
 
 function buildRestoGround(g, site) {
-  const pad = new THREE.Mesh(new THREE.CircleGeometry(RESTO_R + 6, 48), mat.grass);
-  pad.rotation.x = -Math.PI / 2; pad.receiveShadow = true; g.add(pad);
+  /* The pad used to be mat.grass at every site, so a tidal marsh, an
+     intertidal flat and a dry upland all read as the campus green. Each
+     walkable site names its own ground in the restoration registry - by a
+     recipe id from the world pack, with the words in its own habitat line
+     that chose it - and it is laid here with the relief that recipe
+     declares. Schematic, like everything standing on it. */
+  const gid = site.ground ?? 'grass';
+  const pad = new THREE.Mesh(new THREE.CircleGeometry(RESTO_R + 6, 48),
+    groundMat(gid));
+  pad.rotation.x = -Math.PI / 2; pad.receiveShadow = true;
+  pad.userData.restoGround = gid;
+  g.add(pad);
+
+  /* The site's own entry sign. A real restoration site has one at the gate:
+     whose project it is, and what kind of work this is. Both are already in
+     the registry and were readable only by opening the panel, so a learner
+     could walk a site without ever being told whose ground they were on.
+     The organisation is named because it is THEIRS - none of these is our
+     programme, and the honesty line in the panel says so in words. */
+  const entry = label(site.org, site.category.replace(/-/g, ' '), .62,
+    { kind: 'placard' });
+  entry.position.set(0, 2.4, RESTO_R - 2);
+  g.add(entry);
 
   if (site.id === 'herons-head') {
     // shoreline resilience + green infrastructure, an Eco-Apprentice crew
@@ -9755,6 +9831,22 @@ window.__tc3d = () => ({ view, buildings: buildings.length, plates: plates.lengt
   // disabled with nothing able to turn it back on, and a frame-difference
   // check cannot see that, because this scene animates every frame anyway.
   orbit: controls.enabled, walkRefusedAt,
+  // the length of the list the quality ladder walks. It is a leak check:
+  // every torn-down hall and sim yard must take its lights OUT of it, not
+  // merely out of the scene, or a long session ends up walking hundreds of
+  // dead lights every time the ladder steps
+  litList: roomLights.length,
+  // the walkable restoration site's own ground, read off the scene graph
+  restoGround: restoGroup ? (() => { let v = null;
+    restoGroup.traverse((o) => { if (o.userData?.restoGround) v = o.userData.restoGround; });
+    return v; })() : null,
+  // what the running seat's yard is actually floored and lit with, read off
+  // the scene graph rather than off the registry it was built from
+  yardSurface: sim ? (() => { let v = null;
+    sim.group.traverse((o) => { if (o.userData?.yardSurface) v = o.userData.yardSurface; });
+    return v; })() : null,
+  yardLights: sim ? (() => { let n2 = 0;
+    sim.group.traverse((o) => { if (o.isLight) n2++; }); return n2; })() : null,
   avatar: avatarCfg ? { ...avatarCfg } : null, emote: lastEmote,
   apeSpan: (avatarMesh ?? walkAvatar)?.userData?.apeSpanRatio ?? null,
   atmos: atmosKey, fogNear: Math.round(scene.fog.near),
