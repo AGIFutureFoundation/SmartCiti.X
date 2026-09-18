@@ -179,7 +179,7 @@ for f in sorted((ROOT / 'i18n/locales').glob('*.json')):
             'map.layer.modules', 'figures.modules', 'figures.lessons', 'room.finish',
             'figures.halls', 'figures.districts', 'figures.campuses',
             'view.campus', 'view.region', 'ui.walk',
-            'hint.campus', 'hint.walk', 'geo.note',
+            'hint.campus', 'hint.walk', 'hint.walkRefused', 'geo.note',
             'sim.start', 'sim.results', 'sim.pass', 'sim.retry',
             'sim.sound', 'sim.view', 'sim.choose', 'progress.local',
             'city.note', 'avatar.title', 'chapters.hall',
@@ -5020,6 +5020,7 @@ page = '''<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230C1113'/%3E%3Cpath d='M7 21 L16 7 L25 21 Z' fill='none' stroke='%23E8A33D' stroke-width='2.6' stroke-linejoin='round'/%3E%3Cpath d='M11 21 h10' stroke='%2341C4D4' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E">
 <title>SmartCiti.X : Trade Craft Academy — 3D hall environment</title>
 <style>
 :root{
@@ -8235,8 +8236,33 @@ function enterWalk() {
   xrRig.position.set(sx, 1.7, sz); xrRig.rotation.set(0, 0, 0);
   camera.position.set(0, 0, 0); xrRig.updateMatrixWorld(true);
   camera.lookAt(0, 1.7, 0);
-  plc.lock();
+  // A refused pointer lock used to be an uncaught exception, and a silent
+  // dead end: `controls.enabled` is already false and the camera is already
+  // parked inside the rig by this line, and neither `lock` nor `unlock`
+  // fires when the request is refused - so nothing ever put the orbit
+  // controls back. The browser refuses for ordinary reasons (the user
+  // denies it, the page is framed without pointer-lock permission, there
+  // was no fresh user gesture), and `requestPointerLock` can throw
+  // SYNCHRONOUSLY as well as fire `pointerlockerror`, so both paths land on
+  // the same recovery. A refused session degrades to a HUD line, never an
+  // error - the same rule WebXR entry already follows.
+  try { plc.lock(); } catch (err) { walkRefused(err); }
 }
+
+/* The lock was refused. Put back exactly what enterWalk() took away, and
+   say so, because a walk button that does nothing at all reads as a bug. */
+function walkRefused(err) {
+  walkActive = false; xrWalk = false;
+  document.getElementById('cross').style.display = 'none';
+  rigCollapse();
+  controls.enabled = true;
+  const fwd = new THREE.Vector3(); camera.getWorldDirection(fwd);
+  controls.target.copy(camera.position).addScaledVector(fwd, 6);
+  walkRefusedAt = Date.now();
+  document.getElementById('hint').textContent = t('hint.walkRefused');
+  console.warn('walk mode: the browser refused the pointer lock', err ?? '');
+}
+let walkRefusedAt = 0;
 // where a walker stands when a view is entered on foot: outside a hall's
 // door, or on the campus green
 function walkSpawn() {
@@ -8277,6 +8303,11 @@ function walkEnded() {
   nearSlug = null;
 }
 plc.addEventListener('unlock', () => { if (!xrWalk && walkActive) walkEnded(); });
+// the asynchronous half of the same refusal: some browsers fire this rather
+// than throwing, and a few do both, so the recovery is idempotent
+document.addEventListener('pointerlockerror', () => {
+  if (!walkActive && !renderer.xr.isPresenting) walkRefused('pointerlockerror');
+});
 // leaving a desktop walk for a view that writes its own camera frame (a seat,
 // the campus, a restoration site): the pointer-lock 'unlock' event lands a
 // task LATER, and walkEnded() folding the rig into the camera then would
@@ -8606,10 +8637,38 @@ window.__tc3dSchools = openSchools;
 // a roadmap candidate's own card: no hall stands here to enter, so this
 // panel never offers one - a name, a real bearing/distance, the proposed
 // district emphasis and the honesty text, nothing more
+/* A panel that says why it has nothing to show. Every other refusal in this
+   bundle names its reason (ACP-08's safeguards, the hint ladder, the
+   rollout lanes); a panel that throws instead is the one place that did
+   not, and a stack trace is not a reason a learner can read. */
+function refusePanel(why) {
+  document.getElementById('pbody').innerHTML =
+    '<h2>\u2014</h2><p>' + String(why).replace(/[&<>]/g,
+      (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c])) + '</p>';
+  document.body.classList.add('open');
+  return null;
+}
+
 function openCandidate(ck) {
   const esc = (s) => String(s).replace(/[&<>]/g,
     (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+  // The candidate list empties as candidates are BUILT - it is empty now,
+  // with the ten-campus target met - so every id this panel ever knew is
+  // eventually a stale id. Reading .districts off undefined threw; a
+  // promoted city should say it was promoted.
   const c = D.roadmap.candidates[ck];
+  if (!c) {
+    // D.campuses IS the built set (build_3d.py says so where it trims the
+    // roadmap), so a promoted id is recognised there rather than in a
+    // second list that could disagree with it.
+    const built = D.campuses[ck];
+    return refusePanel(built
+      ? `${built.name} is no longer a candidate \u2014 it is built, and it is `
+        + 'on the network board with the rest of them.'
+      : `There is no candidate campus called \u201c${esc(ck)}\u201d. `
+        + `${Object.keys(D.roadmap.candidates).length} candidates remain: the `
+        + `${D.roadmap.target}-campus target is met.`);
+  }
   const distRows = c.districts.map((dk) =>
     `<li>${esc(D.districts[dk].name)}</li>`).join('');
   document.getElementById('pbody').innerHTML = `
@@ -9066,8 +9125,17 @@ function openRoom(roomLabel) {
 /* The walkaround panel: one clipboard, the whole card's state, and the
    mark. Non-gating by registry rule - nothing reads waDone but the HUD. */
 function openWa(i) {
+  // A walkaround point belongs to the seat you are sitting in, so there has
+  // to BE one. Called with no seat active (the __tc3dDo harness hook can do
+  // that, and so could a stale button left over from a torn-down sim) this
+  // used to read .walkaround off undefined and throw a raw TypeError. A
+  // refusal is explained, never silent, and never a stack trace.
   const def = D.sims.sims[curSimId];
+  if (!def) return refusePanel('There is no simulator running, and a '
+    + 'walkaround is a check on the machine you are about to operate.');
   const w = def.walkaround[i];
+  if (!w) return refusePanel(`That seat has ${def.walkaround.length} `
+    + `walkaround points; there is no point ${i}.`);
   document.getElementById('pbody').innerHTML = `
     <h2>📋 ${w.point}</h2>
     <span class="chip">${def.name}</span>
@@ -9681,6 +9749,12 @@ window.__tc3d = () => ({ view, buildings: buildings.length, plates: plates.lengt
   scenario: curScenario?.id ?? null,
   chHosted: D.chapters.hosted[campusKey] ?? null,
   isTouch, shadows: renderer.shadowMap.enabled,
+  // orbit is the fallback control scheme, so whether it is enabled is the
+  // fact that says the view is still steerable. enterWalk() disables it
+  // before it asks for the pointer lock; a refused lock used to leave it
+  // disabled with nothing able to turn it back on, and a frame-difference
+  // check cannot see that, because this scene animates every frame anyway.
+  orbit: controls.enabled, walkRefusedAt,
   avatar: avatarCfg ? { ...avatarCfg } : null, emote: lastEmote,
   apeSpan: (avatarMesh ?? walkAvatar)?.userData?.apeSpanRatio ?? null,
   atmos: atmosKey, fogNear: Math.round(scene.fog.near),

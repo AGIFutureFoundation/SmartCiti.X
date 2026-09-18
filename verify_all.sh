@@ -48,6 +48,7 @@ total=$((total + $(printf '%s\n' "$iout" | grep -c '^  ok ')))
 node brand/lint.mjs . || fail=$((fail + 1))
 node brand/figures.mjs . || fail=$((fail + 1))
 node i18n/lint_hardcoded.mjs || fail=$((fail + 1))
+node web/lint_external.mjs || fail=$((fail + 1))
 headline=$(sed -nE 's/^\*\*([0-9,]+) checks, all passing.*/\1/p' README.md | tr -d ,)
 if [ "$headline" != "$total" ]; then
   fail=$((fail + 1)); echo "DRIFT README.md headline says $headline checks, this run counted $total"

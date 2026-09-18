@@ -42,6 +42,7 @@
   "ui.walk": "Caminhar",
   "hint.campus": "Clique em um salão para entrar",
   "hint.walk": "WASD para mover · Esc para sair",
+  "hint.walkRefused": "O seu navegador recusou o bloqueio do ponteiro · arraste para olhar em volta",
   "view.region": "Vista da rede",
   "figures.campuses": "{n} campi",
   "room.finish": "Acabamento do piso",

@@ -42,6 +42,7 @@
   "ui.walk": "步行",
   "hint.campus": "点击场馆进入",
   "hint.walk": "WASD 移动 · Esc 退出",
+  "hint.walkRefused": "浏览器拒绝了指针锁定 · 拖动以环视四周",
   "view.region": "网络视图",
   "figures.campuses": "{n} 个园区",
   "room.finish": "地面饰面",
