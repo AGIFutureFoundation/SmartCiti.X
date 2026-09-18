@@ -204,3 +204,127 @@ def merge_conditions(strand, hazard_keys):
     assert tlo < thi, f'temperature band collapsed for {strand} + {hazard_keys}'
     return {'lux': lux, 'ach': ach, 'noise_db': db, 'temp_c': [tlo, thi],
             'ppe': sorted(ppe), 'hazards': sorted(hazard_keys)}
+
+
+# ----------------------------------------------------------- walls (§24.4) --
+# The floor catalogue above has twenty-two entries; the walls had none, so
+# every room of every hall was drawn on the same flat slab colour. A wall
+# is not decoration in a working building — it is what the work does to the
+# room at shoulder height, and it differs by trade for the same reasons the
+# floor does.
+#
+# Each entry carries renderer-ready parameters AND the reason it exists, on
+# the same terms as SURFACES: general good practice, not a code reference
+# (§24.3). No wall names a product, a brand, a fire rating or a
+# specification number, and the suite asserts that absence rather than
+# trusting it.
+#
+# `wainscot` is the band along the bottom of the wall — the height the work
+# actually reaches — and `wainscot_m` is how far up it runs. A wall with no
+# band declares wainscot_m 0.0 rather than omitting the field.
+#
+# id: (name, colour, roughness, metalness, pattern, tile_m,
+#      wainscot colour, wainscot_m, why)
+WALLS = {
+    'painted-block':   ('Painted concrete block', '#8d9499', .88, .02, 'block', .40,
+                        '#4a5b66', 1.20,
+                        'the general working wall: takes a knock, takes a repaint'),
+    'impact-block':    ('Impact-faced block with kerb', '#7f868b', .90, .02, 'block', .40,
+                        '#5a4f3a', 1.40,
+                        'stock and plant hit this wall, so the bottom of it is the '
+                        'part that is built to be hit'),
+    'liner-panel':     ('Washable liner panel', '#aeb7bb', .55, .12, 'panel', .90,
+                        '#5f6a70', 1.00,
+                        'a practice bay gets hosed out, and a lined wall sheds water '
+                        'instead of soaking it'),
+    'ply-lined':       ('Plywood-lined shop wall', '#9a7a4e', .85, .00, 'plywood', 1.20,
+                        '#6d5334', 1.10,
+                        'you hang tools, jigs and a cut list off a wall you can screw into'),
+    'whiteboard-panel':('Full-height marker panel', '#d9dee0', .22, .04, 'board', 1.20,
+                        '#7a848a', 0.95,
+                        'setting out is drawn before it is built, and the wall is the '
+                        'first place it gets drawn'),
+    'matte-board':     ('Matte low-glare board', '#c4c9cb', .82, .02, 'board', 1.20,
+                        '#79828a', 0.90,
+                        'inspection reads surfaces at a raking angle, and a shiny wall '
+                        'throws the light back into the work'),
+    'acoustic-panel':  ('Fabric-faced acoustic panel', '#6e6a66', .95, .00, 'fabric', .60,
+                        '#4a4744', 1.00,
+                        'a room where people talk over each other is a room where the '
+                        'decision gets made twice'),
+    'firebrick-face':  ('Firebrick wall face', '#7a4a3a', .95, .02, 'brick', .23,
+                        '#5d372b', 1.60,
+                        'the wall beside a pour takes the same spatter the hearth does'),
+    'weld-screen':     ('Non-combustible screened bay', '#5c6469', .92, .05, 'screen', .80,
+                        '#3d454a', 1.80,
+                        'the arc is not only the welder\'s problem: the bay walls stop '
+                        'the flash reaching the next bay',),
+    'chem-tile':       ('Glazed chemical-resistant tile', '#9fb0ae', .30, .03, 'tile', .30,
+                        '#4f6a66', 1.50,
+                        'what the floor shrugs off, the splash-back has to shrug off too'),
+    'coved-white':     ('Coved cleanable wall', '#d5dadb', .35, .02, 'smooth', 1.50,
+                        '#b3bcbe', 0.60,
+                        'a square corner is somewhere particulate can sit, so the room '
+                        'has no square corners'),
+    'mesh-guard':      ('Guarded mesh partition', '#6a7276', .70, .55, 'mesh', .35,
+                        '#454c50', 0.85,
+                        'you have to see into a bay you are not allowed to walk into'),
+}
+
+# What each room's function asks of its walls when the trade's hazard says
+# nothing. One per strand, exactly — the same contract FUNCTION_DEFAULT has.
+WALL_DEFAULT = {
+    'safety':          'painted-block',
+    'procedure':       'liner-panel',
+    'machines':        'impact-block',
+    'tools':           'ply-lined',
+    'materials':       'impact-block',
+    'layout':          'whiteboard-panel',
+    'inspection':      'matte-board',
+    'troubleshooting': 'ply-lined',
+    'coordination':    'acoustic-panel',
+    'documentation':   'acoustic-panel',
+    'leadership':      'acoustic-panel',
+}
+
+# What a hazard changes about a wall — and ONLY where it changes something.
+# Several hazards on this list govern a floor without governing a wall
+# (live-electrical and stored-energy are answered underfoot, by matting,
+# not at shoulder height), so they are absent here rather than present with
+# the function default copied in. An absent hazard is a statement: this
+# hazard did not move the wall, and the record should not imply it did.
+WALL_HAZARD = {
+    'molten-metal':  {'procedure': 'firebrick-face', 'machines': 'firebrick-face'},
+    'hot-work':      {'procedure': 'weld-screen'},
+    'corrosive':     {'procedure': 'chem-tile'},
+    'contaminant':   {'procedure': 'coved-white'},
+    'particulate':   {'procedure': 'coved-white', 'inspection': 'coved-white'},
+    'immersion':     {'procedure': 'chem-tile'},
+    'wet-process':   {'procedure': 'chem-tile'},
+    'mobile-plant':  {'procedure': 'mesh-guard', 'machines': 'mesh-guard'},
+    'timber-trade':  {'procedure': 'ply-lined'},
+}
+assert set(WALL_DEFAULT) == set(FUNCTION_DEFAULT), 'a wall default per room, exactly'
+assert set(WALL_HAZARD) <= {h[0] for h in HAZARDS}, \
+    'a wall hazard override must name a hazard that exists'
+assert all(w in WALLS for m in WALL_HAZARD.values() for w in m.values()), \
+    'every hazard override names a wall in the catalogue'
+assert all(w in WALLS for w in WALL_DEFAULT.values()), \
+    'every function default names a wall in the catalogue'
+
+
+def wall_of(strand, hazard_keys):
+    """The room's wall after its governing hazards have had their say.
+
+    Most-specific-first, exactly as §24.1 resolves a floor: the first
+    governing hazard that names THIS strand decides. As with floors, a
+    hazard is only recorded as the placer when it actually changed the
+    answer — where the hazard's wall equals the function default, the
+    function decided, and the record says so.
+    """
+    func = WALL_DEFAULT[strand]
+    for hz in hazard_keys:
+        want = WALL_HAZARD.get(hz, {}).get(strand)
+        if want and want != func:
+            return {'wall': want, 'placed_by': 'hazard', 'hazard': hz}
+    return {'wall': func, 'placed_by': 'function'}

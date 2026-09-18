@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-10",
- "source_stamp": "cfcd9d1043f11ad0",
+ "source_stamp": "1eca14fb0931687e",
  "spec": "section 24 of the ACP suite",
  "honesty": {
   "status": "general good practice, not a code reference; no figure is read from any jurisdiction's standard and no surface names a product, brand, fire rating or specification number. A real deployment replaces these with the local standard."
@@ -208,6 +208,153 @@
    "why": "the yard running surface between door and stockpile"
   }
  },
+ "wall_catalogue": {
+  "painted-block": {
+   "name": "Painted concrete block",
+   "color": "#8d9499",
+   "roughness": 0.88,
+   "metalness": 0.02,
+   "pattern": "block",
+   "tile_m": 0.4,
+   "wainscot": "#4a5b66",
+   "wainscot_m": 1.2,
+   "why": "the general working wall: takes a knock, takes a repaint"
+  },
+  "impact-block": {
+   "name": "Impact-faced block with kerb",
+   "color": "#7f868b",
+   "roughness": 0.9,
+   "metalness": 0.02,
+   "pattern": "block",
+   "tile_m": 0.4,
+   "wainscot": "#5a4f3a",
+   "wainscot_m": 1.4,
+   "why": "stock and plant hit this wall, so the bottom of it is the part that is built to be hit"
+  },
+  "liner-panel": {
+   "name": "Washable liner panel",
+   "color": "#aeb7bb",
+   "roughness": 0.55,
+   "metalness": 0.12,
+   "pattern": "panel",
+   "tile_m": 0.9,
+   "wainscot": "#5f6a70",
+   "wainscot_m": 1.0,
+   "why": "a practice bay gets hosed out, and a lined wall sheds water instead of soaking it"
+  },
+  "ply-lined": {
+   "name": "Plywood-lined shop wall",
+   "color": "#9a7a4e",
+   "roughness": 0.85,
+   "metalness": 0.0,
+   "pattern": "plywood",
+   "tile_m": 1.2,
+   "wainscot": "#6d5334",
+   "wainscot_m": 1.1,
+   "why": "you hang tools, jigs and a cut list off a wall you can screw into"
+  },
+  "whiteboard-panel": {
+   "name": "Full-height marker panel",
+   "color": "#d9dee0",
+   "roughness": 0.22,
+   "metalness": 0.04,
+   "pattern": "board",
+   "tile_m": 1.2,
+   "wainscot": "#7a848a",
+   "wainscot_m": 0.95,
+   "why": "setting out is drawn before it is built, and the wall is the first place it gets drawn"
+  },
+  "matte-board": {
+   "name": "Matte low-glare board",
+   "color": "#c4c9cb",
+   "roughness": 0.82,
+   "metalness": 0.02,
+   "pattern": "board",
+   "tile_m": 1.2,
+   "wainscot": "#79828a",
+   "wainscot_m": 0.9,
+   "why": "inspection reads surfaces at a raking angle, and a shiny wall throws the light back into the work"
+  },
+  "acoustic-panel": {
+   "name": "Fabric-faced acoustic panel",
+   "color": "#6e6a66",
+   "roughness": 0.95,
+   "metalness": 0.0,
+   "pattern": "fabric",
+   "tile_m": 0.6,
+   "wainscot": "#4a4744",
+   "wainscot_m": 1.0,
+   "why": "a room where people talk over each other is a room where the decision gets made twice"
+  },
+  "firebrick-face": {
+   "name": "Firebrick wall face",
+   "color": "#7a4a3a",
+   "roughness": 0.95,
+   "metalness": 0.02,
+   "pattern": "brick",
+   "tile_m": 0.23,
+   "wainscot": "#5d372b",
+   "wainscot_m": 1.6,
+   "why": "the wall beside a pour takes the same spatter the hearth does"
+  },
+  "weld-screen": {
+   "name": "Non-combustible screened bay",
+   "color": "#5c6469",
+   "roughness": 0.92,
+   "metalness": 0.05,
+   "pattern": "screen",
+   "tile_m": 0.8,
+   "wainscot": "#3d454a",
+   "wainscot_m": 1.8,
+   "why": "the arc is not only the welder's problem: the bay walls stop the flash reaching the next bay"
+  },
+  "chem-tile": {
+   "name": "Glazed chemical-resistant tile",
+   "color": "#9fb0ae",
+   "roughness": 0.3,
+   "metalness": 0.03,
+   "pattern": "tile",
+   "tile_m": 0.3,
+   "wainscot": "#4f6a66",
+   "wainscot_m": 1.5,
+   "why": "what the floor shrugs off, the splash-back has to shrug off too"
+  },
+  "coved-white": {
+   "name": "Coved cleanable wall",
+   "color": "#d5dadb",
+   "roughness": 0.35,
+   "metalness": 0.02,
+   "pattern": "smooth",
+   "tile_m": 1.5,
+   "wainscot": "#b3bcbe",
+   "wainscot_m": 0.6,
+   "why": "a square corner is somewhere particulate can sit, so the room has no square corners"
+  },
+  "mesh-guard": {
+   "name": "Guarded mesh partition",
+   "color": "#6a7276",
+   "roughness": 0.7,
+   "metalness": 0.55,
+   "pattern": "mesh",
+   "tile_m": 0.35,
+   "wainscot": "#454c50",
+   "wainscot_m": 0.85,
+   "why": "you have to see into a bay you are not allowed to walk into"
+  }
+ },
+ "wall_defaults": {
+  "safety": "painted-block",
+  "procedure": "liner-panel",
+  "machines": "impact-block",
+  "tools": "ply-lined",
+  "materials": "impact-block",
+  "layout": "whiteboard-panel",
+  "inspection": "matte-board",
+  "troubleshooting": "ply-lined",
+  "coordination": "acoustic-panel",
+  "documentation": "acoustic-panel",
+  "leadership": "acoustic-panel"
+ },
  "hazards_in_use": [
   "contaminant",
   "corrosive",
@@ -285,9 +432,82 @@
   "wind"
  ],
  "hazard_placed_finishes": 71,
+ "hazard_placed_walls": 59,
+ "no_wall_driving_hazard": [
+  "acoustic",
+  "airfield",
+  "automation-int",
+  "aviation-ground",
+  "bas-controls",
+  "battery-storage",
+  "bridge-inspect",
+  "cable-splicers",
+  "catenary",
+  "cement-masons",
+  "cladding",
+  "concrete-pump",
+  "confined-space",
+  "crane-ops",
+  "curtainwall",
+  "data-center",
+  "demolition",
+  "district-energy",
+  "drywall",
+  "electricians",
+  "elevator",
+  "ev-charging",
+  "fiber-splicers",
+  "fire-alarm",
+  "fire-sprinkler",
+  "firestop",
+  "fleet-diesel",
+  "flooring",
+  "gas-distrib",
+  "glaziers",
+  "heavy-equip",
+  "high-angle",
+  "hvacr",
+  "hydro",
+  "hydrogen",
+  "instrumentation",
+  "ironworkers",
+  "lathers",
+  "line-workers",
+  "machinists",
+  "masonry-restore",
+  "meter-techs",
+  "millwrights",
+  "network-cabling",
+  "pipefitters",
+  "plasterers",
+  "plc-techs",
+  "port-crane",
+  "post-tension",
+  "precast",
+  "rail-signals",
+  "riggers",
+  "robotics",
+  "roofers",
+  "security-sys",
+  "sheetmetal",
+  "site-safety",
+  "solar",
+  "steel-erectors",
+  "stone-carvers",
+  "substation",
+  "survey-drone",
+  "surveyors",
+  "tilesetters",
+  "toolmakers",
+  "transit-vehicle",
+  "transmission",
+  "waterproofers",
+  "wind"
+ ],
  "provenance": {
   "geometry": "SCHEMATIC",
   "finish": "DERIVED",
+  "wall": "DERIVED",
   "conditions": "DERIVED",
   "discipline": "RECORDED/DERIVED/SCHEMATIC tagging after the Locator.X rooms module (Apache-2.0)"
  },
@@ -628,6 +848,52 @@
      "placed_by": "function"
     }
    },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
    "conditions": {
     "safety": {
      "lux": 300,
@@ -833,6 +1099,52 @@
     },
     "leadership": {
      "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
      "placed_by": "function"
     }
    },
@@ -1048,6 +1360,52 @@
      "placed_by": "function"
     }
    },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
    "conditions": {
     "safety": {
      "lux": 300,
@@ -1252,6 +1610,53 @@
     },
     "leadership": {
      "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "ply-lined",
+     "placed_by": "hazard",
+     "hazard": "timber-trade"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
      "placed_by": "function"
     }
    },
@@ -1464,6 +1869,54 @@
     },
     "leadership": {
      "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "mesh-guard",
+     "placed_by": "hazard",
+     "hazard": "mobile-plant"
+    },
+    "machines": {
+     "wall": "mesh-guard",
+     "placed_by": "hazard",
+     "hazard": "mobile-plant"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
      "placed_by": "function"
     }
    },
@@ -1680,6 +2133,54 @@
      "placed_by": "function"
     }
    },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "mesh-guard",
+     "placed_by": "hazard",
+     "hazard": "mobile-plant"
+    },
+    "machines": {
+     "wall": "mesh-guard",
+     "placed_by": "hazard",
+     "hazard": "mobile-plant"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
    "conditions": {
     "safety": {
      "lux": 300,
@@ -1889,6 +2390,52 @@
      "placed_by": "function"
     }
    },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
    "conditions": {
     "safety": {
      "lux": 300,
@@ -2094,6 +2641,54 @@
     },
     "leadership": {
      "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "firebrick-face",
+     "placed_by": "hazard",
+     "hazard": "molten-metal"
+    },
+    "machines": {
+     "wall": "firebrick-face",
+     "placed_by": "hazard",
+     "hazard": "molten-metal"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
      "placed_by": "function"
     }
    },
@@ -2309,6 +2904,52 @@
      "placed_by": "function"
     }
    },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
    "conditions": {
     "safety": {
      "lux": 300,
@@ -2510,6 +3151,52 @@
     },
     "leadership": {
      "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
      "placed_by": "function"
     }
    },
@@ -2718,6 +3405,53 @@
     },
     "leadership": {
      "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "chem-tile",
+     "placed_by": "hazard",
+     "hazard": "corrosive"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
      "placed_by": "function"
     }
    },
@@ -2933,6 +3667,52 @@
      "placed_by": "function"
     }
    },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
    "conditions": {
     "safety": {
      "lux": 300,
@@ -3137,6 +3917,53 @@
     },
     "leadership": {
      "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "coved-white",
+     "placed_by": "hazard",
+     "hazard": "contaminant"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
      "placed_by": "function"
     }
    },
@@ -3348,6 +4175,52 @@
      "placed_by": "function"
     }
    },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
    "conditions": {
     "safety": {
      "lux": 300,
@@ -3552,6 +4425,53 @@
     },
     "leadership": {
      "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "weld-screen",
+     "placed_by": "hazard",
+     "hazard": "hot-work"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
      "placed_by": "function"
     }
    },
@@ -3763,6 +4683,52 @@
      "placed_by": "function"
     }
    },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
    "conditions": {
     "safety": {
      "lux": 300,
@@ -3968,6 +4934,54 @@
     },
     "leadership": {
      "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "mesh-guard",
+     "placed_by": "hazard",
+     "hazard": "mobile-plant"
+    },
+    "machines": {
+     "wall": "mesh-guard",
+     "placed_by": "hazard",
+     "hazard": "mobile-plant"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
      "placed_by": "function"
     }
    },
@@ -4183,6 +5197,53 @@
      "placed_by": "function"
     }
    },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "weld-screen",
+     "placed_by": "hazard",
+     "hazard": "hot-work"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
    "conditions": {
     "safety": {
      "lux": 300,
@@ -4391,6 +5452,52 @@
      "placed_by": "function"
     }
    },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
    "conditions": {
     "safety": {
      "lux": 300,
@@ -4592,6 +5699,52 @@
     },
     "leadership": {
      "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
      "placed_by": "function"
     }
    },
@@ -4799,6 +5952,52 @@
      "placed_by": "function"
     }
    },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
    "conditions": {
     "safety": {
      "lux": 300,
@@ -5000,6 +6199,52 @@
     },
     "leadership": {
      "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
      "placed_by": "function"
     }
    },
@@ -5207,6 +6452,52 @@
      "placed_by": "function"
     }
    },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
    "conditions": {
     "safety": {
      "lux": 300,
@@ -5408,6 +6699,52 @@
     },
     "leadership": {
      "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
      "placed_by": "function"
     }
    },
@@ -5616,6 +6953,54 @@
     },
     "leadership": {
      "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "mesh-guard",
+     "placed_by": "hazard",
+     "hazard": "mobile-plant"
+    },
+    "machines": {
+     "wall": "mesh-guard",
+     "placed_by": "hazard",
+     "hazard": "mobile-plant"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
      "placed_by": "function"
     }
    },
@@ -5832,6 +7217,52 @@
      "placed_by": "function"
     }
    },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
    "conditions": {
     "safety": {
      "lux": 300,
@@ -6044,6 +7475,52 @@
      "placed_by": "function"
     }
    },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
    "conditions": {
     "safety": {
      "lux": 300,
@@ -6245,6 +7722,52 @@
     },
     "leadership": {
      "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
      "placed_by": "function"
     }
    },
@@ -6452,6 +7975,52 @@
      "placed_by": "function"
     }
    },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
    "conditions": {
     "safety": {
      "lux": 300,
@@ -6656,6 +8225,53 @@
     },
     "leadership": {
      "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "ply-lined",
+     "placed_by": "hazard",
+     "hazard": "timber-trade"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
      "placed_by": "function"
     }
    },
@@ -6867,6 +8483,52 @@
      "placed_by": "function"
     }
    },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
    "conditions": {
     "safety": {
      "lux": 300,
@@ -7068,6 +8730,52 @@
     },
     "leadership": {
      "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
      "placed_by": "function"
     }
    },
@@ -7276,6 +8984,53 @@
     },
     "leadership": {
      "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "chem-tile",
+     "placed_by": "hazard",
+     "hazard": "corrosive"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
      "placed_by": "function"
     }
    },
@@ -7495,6 +9250,54 @@
      "placed_by": "function"
     }
    },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "firebrick-face",
+     "placed_by": "hazard",
+     "hazard": "molten-metal"
+    },
+    "machines": {
+     "wall": "firebrick-face",
+     "placed_by": "hazard",
+     "hazard": "molten-metal"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
    "conditions": {
     "safety": {
      "lux": 300,
@@ -7708,6 +9511,53 @@
     },
     "leadership": {
      "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "weld-screen",
+     "placed_by": "hazard",
+     "hazard": "hot-work"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
      "placed_by": "function"
     }
    },
@@ -7926,6 +9776,53 @@
      "placed_by": "function"
     }
    },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "chem-tile",
+     "placed_by": "hazard",
+     "hazard": "wet-process"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
    "conditions": {
     "safety": {
      "lux": 300,
@@ -8134,6 +10031,53 @@
     },
     "leadership": {
      "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "chem-tile",
+     "placed_by": "hazard",
+     "hazard": "immersion"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
      "placed_by": "function"
     }
    },
@@ -8347,6 +10291,53 @@
      "placed_by": "function"
     }
    },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "chem-tile",
+     "placed_by": "hazard",
+     "hazard": "immersion"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
    "conditions": {
     "safety": {
      "lux": 300,
@@ -8555,6 +10546,53 @@
     },
     "leadership": {
      "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "weld-screen",
+     "placed_by": "hazard",
+     "hazard": "hot-work"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
      "placed_by": "function"
     }
    },
@@ -8772,6 +10810,54 @@
      "placed_by": "function"
     }
    },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "mesh-guard",
+     "placed_by": "hazard",
+     "hazard": "mobile-plant"
+    },
+    "machines": {
+     "wall": "mesh-guard",
+     "placed_by": "hazard",
+     "hazard": "mobile-plant"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
    "conditions": {
     "safety": {
      "lux": 300,
@@ -8985,6 +11071,54 @@
      "placed_by": "function"
     }
    },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "mesh-guard",
+     "placed_by": "hazard",
+     "hazard": "mobile-plant"
+    },
+    "machines": {
+     "wall": "mesh-guard",
+     "placed_by": "hazard",
+     "hazard": "mobile-plant"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
    "conditions": {
     "safety": {
      "lux": 300,
@@ -9195,6 +11329,54 @@
     },
     "leadership": {
      "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "firebrick-face",
+     "placed_by": "hazard",
+     "hazard": "molten-metal"
+    },
+    "machines": {
+     "wall": "firebrick-face",
+     "placed_by": "hazard",
+     "hazard": "molten-metal"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
      "placed_by": "function"
     }
    },
@@ -9415,6 +11597,54 @@
      "placed_by": "function"
     }
    },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "firebrick-face",
+     "placed_by": "hazard",
+     "hazard": "molten-metal"
+    },
+    "machines": {
+     "wall": "firebrick-face",
+     "placed_by": "hazard",
+     "hazard": "molten-metal"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
    "conditions": {
     "safety": {
      "lux": 300,
@@ -9630,6 +11860,52 @@
      "placed_by": "function"
     }
    },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
    "conditions": {
     "safety": {
      "lux": 300,
@@ -9831,6 +12107,52 @@
     },
     "leadership": {
      "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
      "placed_by": "function"
     }
    },
@@ -10038,6 +12360,53 @@
     },
     "leadership": {
      "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "weld-screen",
+     "placed_by": "hazard",
+     "hazard": "hot-work"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
      "placed_by": "function"
     }
    },
@@ -10252,6 +12621,53 @@
      "placed_by": "function"
     }
    },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "chem-tile",
+     "placed_by": "hazard",
+     "hazard": "corrosive"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
    "conditions": {
     "safety": {
      "lux": 300,
@@ -10462,6 +12878,52 @@
     },
     "leadership": {
      "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
      "placed_by": "function"
     }
    },
@@ -10681,6 +13143,52 @@
      "placed_by": "function"
     }
    },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
    "conditions": {
     "safety": {
      "lux": 300,
@@ -10893,6 +13401,52 @@
      "placed_by": "function"
     }
    },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
    "conditions": {
     "safety": {
      "lux": 300,
@@ -11094,6 +13648,52 @@
     },
     "leadership": {
      "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
      "placed_by": "function"
     }
    },
@@ -11304,6 +13904,54 @@
     },
     "leadership": {
      "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "firebrick-face",
+     "placed_by": "hazard",
+     "hazard": "molten-metal"
+    },
+    "machines": {
+     "wall": "firebrick-face",
+     "placed_by": "hazard",
+     "hazard": "molten-metal"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
      "placed_by": "function"
     }
    },
@@ -11527,6 +14175,53 @@
      "placed_by": "function"
     }
    },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "chem-tile",
+     "placed_by": "hazard",
+     "hazard": "wet-process"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
    "conditions": {
     "safety": {
      "lux": 300,
@@ -11738,6 +14433,53 @@
      "placed_by": "function"
     }
    },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "coved-white",
+     "placed_by": "hazard",
+     "hazard": "contaminant"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
    "conditions": {
     "safety": {
      "lux": 300,
@@ -11946,6 +14688,52 @@
      "placed_by": "function"
     }
    },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
    "conditions": {
     "safety": {
      "lux": 300,
@@ -12150,6 +14938,53 @@
     },
     "leadership": {
      "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "chem-tile",
+     "placed_by": "hazard",
+     "hazard": "wet-process"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
      "placed_by": "function"
     }
    },
@@ -12364,6 +15199,52 @@
      "placed_by": "function"
     }
    },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
    "conditions": {
     "safety": {
      "lux": 300,
@@ -12571,6 +15452,52 @@
      "placed_by": "function"
     }
    },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
    "conditions": {
     "safety": {
      "lux": 300,
@@ -12775,6 +15702,52 @@
     },
     "leadership": {
      "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
      "placed_by": "function"
     }
    },
@@ -12986,6 +15959,52 @@
     },
     "leadership": {
      "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
      "placed_by": "function"
     }
    },
@@ -13201,6 +16220,52 @@
      "placed_by": "function"
     }
    },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
    "conditions": {
     "safety": {
      "lux": 300,
@@ -13402,6 +16467,52 @@
     },
     "leadership": {
      "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
      "placed_by": "function"
     }
    },
@@ -13609,6 +16720,52 @@
      "placed_by": "function"
     }
    },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
    "conditions": {
     "safety": {
      "lux": 300,
@@ -13810,6 +16967,52 @@
     },
     "leadership": {
      "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
      "placed_by": "function"
     }
    },
@@ -14018,6 +17221,54 @@
     },
     "leadership": {
      "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "firebrick-face",
+     "placed_by": "hazard",
+     "hazard": "molten-metal"
+    },
+    "machines": {
+     "wall": "firebrick-face",
+     "placed_by": "hazard",
+     "hazard": "molten-metal"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
      "placed_by": "function"
     }
    },
@@ -14233,6 +17484,52 @@
      "placed_by": "function"
     }
    },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
    "conditions": {
     "safety": {
      "lux": 300,
@@ -14434,6 +17731,52 @@
     },
     "leadership": {
      "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
      "placed_by": "function"
     }
    },
@@ -14641,6 +17984,52 @@
      "placed_by": "function"
     }
    },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
    "conditions": {
     "safety": {
      "lux": 300,
@@ -14842,6 +18231,52 @@
     },
     "leadership": {
      "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
      "placed_by": "function"
     }
    },
@@ -15049,6 +18484,52 @@
      "placed_by": "function"
     }
    },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
    "conditions": {
     "safety": {
      "lux": 300,
@@ -15250,6 +18731,52 @@
     },
     "leadership": {
      "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
      "placed_by": "function"
     }
    },
@@ -15457,6 +18984,52 @@
      "placed_by": "function"
     }
    },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
    "conditions": {
     "safety": {
      "lux": 300,
@@ -15661,6 +19234,53 @@
     },
     "leadership": {
      "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "ply-lined",
+     "placed_by": "hazard",
+     "hazard": "timber-trade"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
      "placed_by": "function"
     }
    },
@@ -15876,6 +19496,54 @@
      "placed_by": "function"
     }
    },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "mesh-guard",
+     "placed_by": "hazard",
+     "hazard": "mobile-plant"
+    },
+    "machines": {
+     "wall": "mesh-guard",
+     "placed_by": "hazard",
+     "hazard": "mobile-plant"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
    "conditions": {
     "safety": {
      "lux": 300,
@@ -16085,6 +19753,52 @@
      "placed_by": "function"
     }
    },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
    "conditions": {
     "safety": {
      "lux": 300,
@@ -16286,6 +20000,52 @@
     },
     "leadership": {
      "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
      "placed_by": "function"
     }
    },
@@ -16493,6 +20253,52 @@
      "placed_by": "function"
     }
    },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
    "conditions": {
     "safety": {
      "lux": 300,
@@ -16694,6 +20500,52 @@
     },
     "leadership": {
      "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
      "placed_by": "function"
     }
    },
@@ -16901,6 +20753,53 @@
     },
     "leadership": {
      "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "weld-screen",
+     "placed_by": "hazard",
+     "hazard": "hot-work"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
      "placed_by": "function"
     }
    },
@@ -17116,6 +21015,54 @@
      "placed_by": "function"
     }
    },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "mesh-guard",
+     "placed_by": "hazard",
+     "hazard": "mobile-plant"
+    },
+    "machines": {
+     "wall": "mesh-guard",
+     "placed_by": "hazard",
+     "hazard": "mobile-plant"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
    "conditions": {
     "safety": {
      "lux": 300,
@@ -17325,6 +21272,52 @@
      "placed_by": "function"
     }
    },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
    "conditions": {
     "safety": {
      "lux": 300,
@@ -17526,6 +21519,52 @@
     },
     "leadership": {
      "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
      "placed_by": "function"
     }
    },
@@ -17733,6 +21772,52 @@
      "placed_by": "function"
     }
    },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
    "conditions": {
     "safety": {
      "lux": 300,
@@ -17934,6 +22019,52 @@
     },
     "leadership": {
      "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
      "placed_by": "function"
     }
    },
@@ -18141,6 +22272,52 @@
      "placed_by": "function"
     }
    },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
    "conditions": {
     "safety": {
      "lux": 300,
@@ -18345,6 +22522,52 @@
      "placed_by": "function"
     }
    },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
    "conditions": {
     "safety": {
      "lux": 300,
@@ -18546,6 +22769,52 @@
     },
     "leadership": {
      "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
      "placed_by": "function"
     }
    },
@@ -18754,6 +23023,52 @@
     },
     "leadership": {
      "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
      "placed_by": "function"
     }
    },
@@ -18969,6 +23284,52 @@
      "placed_by": "function"
     }
    },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
    "conditions": {
     "safety": {
      "lux": 300,
@@ -19170,6 +23531,52 @@
     },
     "leadership": {
      "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
      "placed_by": "function"
     }
    },
@@ -19378,6 +23785,54 @@
     },
     "leadership": {
      "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "coved-white",
+     "placed_by": "hazard",
+     "hazard": "particulate"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "coved-white",
+     "placed_by": "hazard",
+     "hazard": "particulate"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
      "placed_by": "function"
     }
    },
@@ -19597,6 +24052,53 @@
      "placed_by": "function"
     }
    },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "weld-screen",
+     "placed_by": "hazard",
+     "hazard": "hot-work"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
    "conditions": {
     "safety": {
      "lux": 300,
@@ -19808,6 +24310,54 @@
     },
     "leadership": {
      "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "weld-screen",
+     "placed_by": "hazard",
+     "hazard": "hot-work"
+    },
+    "machines": {
+     "wall": "mesh-guard",
+     "placed_by": "hazard",
+     "hazard": "mobile-plant"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
      "placed_by": "function"
     }
    },
@@ -20023,6 +24573,52 @@
      "placed_by": "function"
     }
    },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
    "conditions": {
     "safety": {
      "lux": 300,
@@ -20224,6 +24820,52 @@
     },
     "leadership": {
      "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
      "placed_by": "function"
     }
    },
@@ -20431,6 +25073,52 @@
      "placed_by": "function"
     }
    },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
    "conditions": {
     "safety": {
      "lux": 300,
@@ -20632,6 +25320,52 @@
     },
     "leadership": {
      "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
      "placed_by": "function"
     }
    },
@@ -20839,6 +25573,52 @@
      "placed_by": "function"
     }
    },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
    "conditions": {
     "safety": {
      "lux": 300,
@@ -21040,6 +25820,52 @@
     },
     "leadership": {
      "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
      "placed_by": "function"
     }
    },
@@ -21250,6 +26076,53 @@
      "placed_by": "function"
     }
    },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "chem-tile",
+     "placed_by": "hazard",
+     "hazard": "immersion"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
    "conditions": {
     "safety": {
      "lux": 300,
@@ -21457,6 +26330,52 @@
      "placed_by": "function"
     }
    },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
    "conditions": {
     "safety": {
      "lux": 300,
@@ -21658,6 +26577,52 @@
     },
     "leadership": {
      "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
      "placed_by": "function"
     }
    },
@@ -21866,6 +26831,53 @@
     },
     "leadership": {
      "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "coved-white",
+     "placed_by": "hazard",
+     "hazard": "contaminant"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
      "placed_by": "function"
     }
    },
@@ -22083,6 +27095,53 @@
      "placed_by": "function"
     }
    },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "coved-white",
+     "placed_by": "hazard",
+     "hazard": "contaminant"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
    "conditions": {
     "safety": {
      "lux": 300,
@@ -22291,6 +27350,53 @@
     },
     "leadership": {
      "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "coved-white",
+     "placed_by": "hazard",
+     "hazard": "contaminant"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
      "placed_by": "function"
     }
    },
@@ -22505,6 +27611,53 @@
      "placed_by": "function"
     }
    },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "chem-tile",
+     "placed_by": "hazard",
+     "hazard": "corrosive"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
    "conditions": {
     "safety": {
      "lux": 300,
@@ -22714,6 +27867,52 @@
      "placed_by": "function"
     }
    },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
    "conditions": {
     "safety": {
      "lux": 300,
@@ -22918,6 +28117,52 @@
      "placed_by": "function"
     }
    },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
    "conditions": {
     "safety": {
      "lux": 300,
@@ -23119,6 +28364,52 @@
     },
     "leadership": {
      "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
      "placed_by": "function"
     }
    },
@@ -23328,6 +28619,54 @@
     },
     "leadership": {
      "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "chem-tile",
+     "placed_by": "hazard",
+     "hazard": "corrosive"
+    },
+    "machines": {
+     "wall": "mesh-guard",
+     "placed_by": "hazard",
+     "hazard": "mobile-plant"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
      "placed_by": "function"
     }
    },
@@ -23543,6 +28882,52 @@
     },
     "leadership": {
      "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "liner-panel",
+     "placed_by": "function"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "whiteboard-panel",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
      "placed_by": "function"
     }
    },

@@ -137,6 +137,82 @@ ok('§24.3 still holds over the conditions: no standard or spec number',
   !/\b(ASTM|ANSI|ISO|EN|DIN|UL|NFPA)[\s-]?\d|®|™/i
     .test(JSON.stringify({ b: BASE, h: HAZC })));
 
+/* ---------------------------------------------------------------- walls --- */
+/* The floors had twenty-two entries and the walls had none, so every room of
+   every hall was drawn on one flat slab colour. These checks hold the wall
+   catalogue to the same contract the floor catalogue has always been held
+   to — including §24.3, which is the reason the walls describe what the work
+   does to a surface and never what a standard calls it. */
+const wcat = reg.wall_catalogue;
+const WALL_DEFAULT = {
+  safety: 'painted-block', procedure: 'liner-panel', machines: 'impact-block',
+  tools: 'ply-lined', materials: 'impact-block', layout: 'whiteboard-panel',
+  inspection: 'matte-board', troubleshooting: 'ply-lined',
+  coordination: 'acoustic-panel', documentation: 'acoustic-panel',
+  leadership: 'acoustic-panel',
+};
+ok('the wall catalogue holds 12 walls, each named with a reason',
+  Object.keys(wcat).length === 12
+  && Object.values(wcat).every((w) => w.name && w.why?.length > 10));
+ok('every wall carries renderer-ready parameters in range, wainscot included',
+  Object.values(wcat).every((w) => /^#[0-9a-f]{6}$/i.test(w.color)
+    && /^#[0-9a-f]{6}$/i.test(w.wainscot)
+    && w.roughness >= 0 && w.roughness <= 1
+    && w.metalness >= 0 && w.metalness <= 1
+    && w.tile_m > 0 && w.tile_m <= 4 && w.pattern
+    && w.wainscot_m >= 0 && w.wainscot_m <= 2.4));
+ok('§24.3 holds over the walls too: no standard, product, brand or spec number',
+  !/\b(ASTM|ANSI|ISO|EN|DIN|UL|NFPA)[\s-]?\d|®|™|\bclass\s+[A-Z0-9]\b/i
+    .test(JSON.stringify(wcat)));
+ok('the wall defaults are one per room strand, exactly, and all in the catalogue',
+  ROOM_STRANDS.every((st) => reg.wall_defaults[st] === WALL_DEFAULT[st])
+  && Object.keys(reg.wall_defaults).length === ROOM_STRANDS.length
+  && Object.values(reg.wall_defaults).every((w) => w in wcat));
+ok('every hall carries a wall for every room, drawn from the catalogue',
+  Object.values(halls).every((h) =>
+    ROOM_STRANDS.every((st) => h.walls[st] && h.walls[st].wall in wcat)));
+
+/* §24.1's discipline, applied to walls: a hazard is recorded as the placer
+   only where it CHANGED the answer. A wall recorded as hazard-placed whose
+   wall equals the function default would be a hazard taking credit for a
+   decision the room's function had already made. */
+ok('a wall is recorded as hazard-placed only where the hazard changed it',
+  Object.values(halls).every((h) => ROOM_STRANDS.every((st) => {
+    const w = h.walls[st];
+    return w.placed_by === 'function'
+      ? w.wall === WALL_DEFAULT[st] && w.hazard === undefined
+      : w.wall !== WALL_DEFAULT[st] && h.hazards.includes(w.hazard);
+  })));
+ok('the hazard-placed wall count is the count that is actually in the records',
+  reg.hazard_placed_walls === Object.values(halls)
+    .reduce((a, h) => a + ROOM_STRANDS
+      .filter((st) => h.walls[st].placed_by === 'hazard').length, 0));
+ok('no_wall_driving_hazard names exactly the halls whose walls are all function-placed',
+  JSON.stringify(reg.no_wall_driving_hazard) === JSON.stringify(
+    Object.entries(halls)
+      .filter(([, h]) => ROOM_STRANDS.every((st) => h.walls[st].placed_by === 'function'))
+      .map(([s2]) => s2).sort()));
+
+/* A wall resolves against EVERY hazard the trade carries, not only the one
+   that drove its floor — which is why these two counts differ, and why a
+   hall can have a hazard-placed wall in a room whose floor the function
+   placed. This asserts the wider net rather than leaving it implied. */
+ok('a wall can be hazard-placed in a room whose floor was function-placed '
+  + '(the wall answers every hazard, not just the finish-driving one)',
+  Object.values(halls).some((h) => ROOM_STRANDS.some((st) =>
+    h.walls[st].placed_by === 'hazard' && h.rooms[st].placed_by === 'function')));
+
+/* Hazards that a wall does not answer are ABSENT from the override table,
+   not present with the default copied in. live-electrical and stored-energy
+   are answered underfoot by matting; if either ever appears as a wall
+   placer, someone has made the record claim more than it should. */
+ok('a hazard answered underfoot never appears as a wall placer',
+  Object.values(halls).every((h) => ROOM_STRANDS.every((st) =>
+    !['live-electrical', 'stored-energy'].includes(h.walls[st].hazard))));
+
+ok('walls are DERIVED, like the finishes and conditions beside them',
+  reg.provenance.wall === 'DERIVED');
+
 /* ------------------------------------------------------------ freshness --- */
 const src = readFileSync(new URL('./surfaces.py', import.meta.url));
 ok('the registry was built from the current catalogue source (stamp check)',
@@ -154,4 +230,5 @@ ok('provenance is tagged and honest: SCHEMATIC geometry, DERIVED finish '
   && !Object.values(reg.provenance).includes('RECORDED'));
 
 console.log(`surfaces/test: ${n} checks passed — ${Object.keys(cat).length} finishes, `
-  + `${Object.keys(halls).length} halls, ${reg.hazards_in_use.length} hazard classes`);
+  + `${Object.keys(wcat).length} walls, ${Object.keys(halls).length} halls, `
+  + `${reg.hazards_in_use.length} hazard classes`);

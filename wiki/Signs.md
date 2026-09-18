@@ -1,7 +1,7 @@
 # The signs
 
 Every word in the 3D world is on a sign, and a sign should be readable
-**before** it is read. 13 kinds over 10 shapes, all
+**before** it is read. 14 kinds over 10 shapes, all
 declared in `labels/registry/labels.json` and never in the page.
 
 ## Shape carries the category
@@ -49,6 +49,7 @@ display for names, body for the line under them, mono for anything a machine mea
 | **route** | `ribbon` | a route or a distance | derived | mono | a distance between two recorded points |
 | **readout** | `readout` | a number a machine measured | steel | mono | a measured number, from a seat or a chart |
 | **brand** | `marquee` | the name of the whole place | mark | display | the Academy itself |
+| **placard** | `plate` | a room, or a part of a place you are already in | crit | body | what a room requires of you, read at its door |
 
 ## A sign reads the view
 

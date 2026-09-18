@@ -7,7 +7,7 @@ The Adaptive Stack: the packs implementing the ACP protocol suite (v3.2) —
 counted, like everything else here, by the table below rather than by a
 number that can drift from it.
 
-**989 checks, all passing from inside this bundle**, with no model credentials
+**1,010 checks, all passing from inside this bundle**, with no model credentials
 required.
 
 ```bash
@@ -36,7 +36,7 @@ node brand/lint.mjs .              # fails on any forbidden spelling anywhere in
 node i18n/test.mjs                 # 31 — locale parity, placeholders, pack agreement, the reviewer-attribution rule (a closed status set, a `reviewed` catalog must name its reviewer, a hall-name catalog complete or absent never partial) with self-tested fixtures
 node i18n/lint_hardcoded.mjs       # fails on any hard-coded English string in the landing, map or languages generators — self-tested against a fixture sentence, hard-coded alt text and a JS string literal
 node stations/test.mjs             # 13 — recovered stations vs roster, skills, rooms
-node surfaces/test.mjs             # 24 — finishes, conditions, more-demanding-wins, honesty
+node surfaces/test.mjs             # 35 — finishes, walls, conditions, more-demanding-wins, honesty
 node geo/test.mjs                  # 35 — real coordinates + anchors (RECORDED, citing Locator.X, near the three flagship campuses; AUTHORED, admittedly not cross-checked, near the seven hub campuses), recomputed distances, GeoJSON + the network map file
 node sims/test.mjs                 # 38 — 11 simulators bound to 45 real halls (the boom lift and the overhead crane new, each with an in-headset control mapping), each with a scripted reference operator (3 levels, guarantees asserted against the rubric, procedure ids the page's policy is written around) (crane-lift/rigging-signals/load-chart extend to every trade that actually rigs, signs or plans a pick — ironworkers, decking, tank-erectors, piling; weld-bead to marine-pipe and tank-erectors; scaffold-bay to the rest of the envelope district plus refractory; pressure-washer to laborers and hazmat alongside painters), rubrics, cockpit + scoring + regional scenarios, and the interactive map's own simulator-seat badge, gated to bound halls only, deep-linked into the 3D app
 node tools/test.mjs                # 13 — district tool cribs, the deterministic crib drill, hall bindings
@@ -51,7 +51,7 @@ node spatial/test.mjs              # 45 — the spatial fabric: 67 OGC GeoPose 1
 node labels/test.mjs               # 28 — the signs: shape, colour and type per kind, and the field-of-vision focus
 node world/test.mjs                # 24 — the sky, six weather states, the generated ground recipes and the fauna
 node agents/test.mjs               # 33 — the advisors: who stands where, quote-not-copy bindings, the closed book, the Operator's live-seat scoping and its quoted reference procedure
-node web/test_3d.mjs               # 18 — the 3D environment's teardown, draw-call and per-frame contracts, held at the generator's source: region board and campus disposed (never just detached), label sprites pruned and their textures released, the restoration walk restoring the campus rather than rebuilding it, decoration pooled per district, beacons instanced, roads and dashes merged in campus coordinates, the sim dash written only on change
+node web/test_3d.mjs               # 28 — the 3D environment's teardown, draw-call, surface and per-frame contracts, held at the generator's source: region board and campus disposed (never just detached), label sprites pruned and their textures released, the restoration walk restoring the campus rather than rebuilding it, decoration pooled per district, beacons instanced, roads and dashes merged in campus coordinates, the sim dash written only on change; and the surface contracts — one engine serving floors and walls with a normal map read off the pattern's own height field, walls and per-room partitions read from the registry rather than one flat colour, the room's illuminance record driving a real light rather than an emissive box that lights nothing, those lights on the quality ladder, and a PPE placard hung only where a room actually requires PPE
 node web/test_rtl.mjs              # 17 — RTL correctness held at the generator's source: the languages page's dir="rtl" switch now reaches <html> itself (not just the inner section), the physical left/right CSS a source read found in the landing and map generators replaced with logical properties, no other hard-coded direction rule survives either file — the actual-render half (Arabic tab, bounding boxes, overflow) is a scratch Playwright proof, reported but not committed
 node meta/test.mjs                 # 34 — the metaverse layer: standards (now four, GeoPose 1.0 via spatial/), the OMBI shapes honestly not claimed, the Unity avatar review, the complete VRM skeleton and how it moves, import policy, honesty, now on the network dashboard too
 node control/fuzz.mjs              # 21 — hostile inputs and adversarial learners

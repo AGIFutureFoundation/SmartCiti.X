@@ -152,6 +152,16 @@ KINDS = {
     'brand': {'shape': 'marquee', 'accent': 'mark', 'face': 'display',
               'min_focus': .1, 'hide_beyond_m': 0,
               'what': 'the Academy itself'},
+    # A door placard. The PPE a room asks for has been in the surfaces
+    # registry since §24.2 and had nowhere to appear except a panel you had
+    # to open - so a learner could walk into a room without ever being told
+    # what it expects them to be wearing. It reads in `crit` because it is
+    # the one sign in this world that is a REQUIREMENT rather than a name,
+    # and it sits low, at the door, where it would actually be hung.
+    'placard': {'shape': 'plate', 'accent': 'crit', 'face': 'body',
+                'min_focus': .18, 'hide_beyond_m': 20,
+                'provenance': 'DERIVED',
+                'what': 'what a room requires of you, read at its door'},
 }
 
 # ------------------------------------------------- how a sign reads the view ---
