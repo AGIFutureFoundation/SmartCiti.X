@@ -98,4 +98,108 @@ ok('the quality ladder steps back up once - a 10 s window at or above 45 fps - a
   /if \(qRose\) return;/.test(fn('qStep')) && /qFrames \/ qAcc >= 45\) \{ qRose = true; setQuality\('high'\); \}/.test(fn('qStep'))
   && /qFrames \/ qAcc < 22/.test(fn('qStep')));
 
+/* ------------------------------------------------- surfaces and light --- */
+/* The world read as a rendering rather than a place, and each of these is
+   the specific reason. Floors carried twenty-two finishes and walls carried
+   one flat colour; the pattern was painted into the colour map with no
+   relief, so a checkerplate floor and a sheet-vinyl floor caught the light
+   identically; and the illuminance figure every room has carried since
+   24.2 was TEXT in two panels and drove nothing at all. A bug becomes a
+   check - including the near-miss: an emissive box is a bright object, not
+   a light, and would have looked like the fix without being it. */
+ok('one surface engine serves floors and walls, and it returns a normal map beside the colour map',
+  /function surfaceMaps\(color, pattern\)/.test(src)
+  && /const out = \{ map, normalMap \};/.test(fn('surfaceMaps'))
+  && /function finishMat\(fin, w, d\)/.test(src)
+  && /function wallMat\(wal, runM, hM\)/.test(src));
+ok('the relief is read off a height field the pattern pass drew, not off a second table that could disagree with it',
+  /function paintPattern\(g, hg, pat, S2\)/.test(src)
+  && /const normalMap = normalFromHeight\(h, S2, PATTERN_RELIEF\[pattern\] \?\? 0\);/.test(src)
+  && /function normalFromHeight\(h, size, relief\)/.test(src));
+ok('a pattern with no relief declared skips the normal map rather than shipping a flat one',
+  /if \(!\(relief > \.01\)\) return null;/.test(fn('normalFromHeight')));
+ok('the hall shell and every room partition read their wall from the registry, not from one flat mat.wall',
+  /const wallRec = D\.walls\[h\.slug\];/.test(src)
+  && /const shellW = D\.wallCat\[wallRec\.procedure\.wall\];/.test(src)
+  && /const wal = D\.wallCat\[wallRec\[r\.strand\]\.wall\];/.test(src));
+ok('the wall map is deduped on the wire on its OWN index, not folded into the finish index',
+  /WALL_MAPS, WALL_IDX = \[\], \{\}/.test(src)
+  && /D\.walls = Object\.fromEntries\(Object\.entries\(D\.wallIdx\)/.test(src));
+ok("the room's illuminance record drives a real light, not only the luminaire's emissive",
+  /const rc = condOf\(h\.slug, r\.strand\);/.test(src)
+  && /const luxN = Math\.max\(0, Math\.min\(1, \(rc\.lux - 200\) \/ 800\)\);/.test(src)
+  && /new THREE\.PointLight\(0xffe9c8, \.55 \+ luxN \* 1\.45,/.test(src));
+ok('those lights ride the quality ladder, so a device on the bottom rung does not pay for eleven of them',
+  /rl\.visible = qLevel !== 'low';/.test(src)
+  && /for \(const rl of roomLights\) rl\.visible = l !== 'low';/.test(fn('setQuality')));
+ok('the PPE placard is hung only where the room actually requires PPE (an empty list gets no sign, not a sign saying nothing)',
+  /if \(rc\.ppe\.length\) \{/.test(src)
+  && /kind: 'placard'/.test(src));
+ok('the shared envelope materials carry their own surface, and the tint is not doubled onto the map',
+  /\['wall', 'panel', 3\], \['brick', 'brick', 6\], \['block', 'block', 5\],/.test(src)
+  && /m2\.color\.setHex\(0xffffff\);/.test(src));
+/* The teardown contract for the new materials is the ABSENCE of a mark:
+   disposeOf() frees any material not carrying userData.shared, so a hall's
+   own wall, wainscot, floor and luminaire materials must never carry it -
+   while the page-wide `mat` table and the per-hue cache must. Asserting the
+   absence is the whole contract; a registry of them would be a second copy
+   of a fact the traverse already holds. */
+ok('a hall\'s own materials are never marked shared (so disposeOf frees them), while the page-wide tables still are',
+  /for \(const m of Object\.values\(mat\)\) m\.userData\.shared = true;/.test(src)
+  && /m2\.userData\.shared = true;/.test(fn('hueMatOf'))
+  && !/userData\.shared\s*=/.test(fn('finishMat'))
+  && !/userData\.shared\s*=/.test(fn('wallMat'))
+  && !/userData\.shared\s*=/.test(fn('buildHall')));
+
+/* ------------------------------------------- yards, walks and their light --- */
+/* The same gap the halls had, one level out: a simulator yard was a fence
+   and four masts on the page's global ground plane, and every restoration
+   walk stood on one rough-grass pad whatever its habitat. Both now read
+   their footing from the registry that owns it. And the mast head was the
+   same near-miss the room luminaire was - a bright object that lit nothing. */
+ok('a sim yard lays the floor its own registry entry declares, with relief',
+  /const yard = D\.sims\.sims\[simId\]\?\.yard;/.test(fn('simYard'))
+  && /finishMat\(fin, hw \* 2 \/ U \* 2, hd \* 2 \/ U \* 2\)/.test(fn('simYard')));
+ok('the yard mast heads carry a real light, not only an emissive box',
+  /new THREE\.PointLight\(0xffe9c8, 1\.5,/.test(fn('simYard'))
+  && /ml\.visible = qLevel !== 'low';/.test(fn('simYard')));
+ok('the one indoor seat floors and lights its shop bay the same way, without '
+  + 'borrowing the outdoor fence',
+  /const yard = D\.sims\.sims\['overhead-crane'\]\.yard;/.test(src)
+  && /const hb = new THREE\.PointLight\(0xffe9c8, 1\.3,/.test(src));
+ok('a restoration walk lays the ground its site names, not one grass pad for all',
+  /const gid = site\.ground \?\? 'grass';/.test(fn('buildRestoGround'))
+  && /groundMat\(gid\)/.test(fn('buildRestoGround')));
+ok('a restoration walk names the organisation whose site it is, at the entry',
+  /const entry = label\(site\.org, site\.category/.test(fn('buildRestoGround')));
+
+/* Lights are torn down like label sprites are: out of the list, not just out
+   of the scene. A list the quality ladder walks that keeps every light every
+   torn-down hall and sim yard ever built grows without bound and re-shows
+   lights that are no longer in the scene. */
+ok('disposeOf() prunes a light out of roomLights and disposes it, the same '
+  + 'way it prunes a label sprite out of labelSet',
+  /if \(o\.isLight\) \{/.test(fn('disposeOf'))
+  && /roomLights\.splice\(li, 1\)/.test(fn('disposeOf')));
+
+/* The refused pointer lock: enterWalk() disables the orbit controls BEFORE it
+   asks, and neither the lock nor the unlock event fires on a refusal, so
+   nothing was left able to put them back. Both the synchronous throw and the
+   pointerlockerror event now land on one idempotent recovery. */
+ok('a refused pointer lock is caught, not thrown, on both paths',
+  /try \{ plc\.lock\(\); \} catch \(err\) \{ walkRefused\(err\); \}/.test(src)
+  && /document\.addEventListener\('pointerlockerror'/.test(src));
+ok('the recovery puts back exactly what enterWalk took away, and says so',
+  /controls\.enabled = true;/.test(fn('walkRefused'))
+  && /t\('hint\.walkRefused'\)/.test(fn('walkRefused')));
+
+/* A panel that cannot answer says why. Both of these read a field off an
+   undefined record and threw a raw TypeError: every candidate id is stale now
+   that the ten-campus target is met, and a walkaround has no seat to check
+   when no simulator is running. */
+ok('the candidate and walkaround panels refuse with a reason instead of throwing',
+  /function refusePanel\(why\)/.test(src)
+  && /if \(!def\) return refusePanel\(/.test(fn('openWa'))
+  && /if \(!c\) \{/.test(fn('openCandidate')));
+
 console.log(`web/test_3d: ${n} checks passed - teardown, draw-call and per-frame contracts held at the source`);

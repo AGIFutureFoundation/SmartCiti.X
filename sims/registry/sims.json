@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-16",
- "source_stamp": "9c055c216b86ea73",
+ "source_stamp": "f79d72322a2be9d9",
  "scoring_contract": "deterministic: every rubric axis is computed from measured state; nothing narrative can change a score",
  "honesty": {
   "status": "schematic physics for practising control discipline - smooth inputs, swing management, ordered procedure. Not equipment certification; no seat time here counts toward one, and the assessment gates still demand unaided verification runs.",
@@ -251,6 +251,11 @@
       "step": "release once the swing is still"
      }
     ]
+   },
+   "yard": {
+    "surface": "asphalt-apron",
+    "why": "a lay-down yard the load waits on and the crane tracks over, between the stockpile and the set",
+    "name": "Asphalt apron"
    }
   },
   "excavator-trench": {
@@ -507,6 +512,11 @@
       "step": "dump inside the zone, then back to the trench until every cell is at grade"
      }
     ]
+   },
+   "yard": {
+    "surface": "crushed-stone",
+    "why": "the ground plant actually digs, piles and tracks on - and the spoil goes back onto it",
+    "name": "Compacted crushed stone"
    }
   },
   "forklift-run": {
@@ -745,6 +755,11 @@
       "step": "square up on the dock from the lane and set the pallet down inside the bay"
      }
     ]
+   },
+   "yard": {
+    "surface": "asphalt-apron",
+    "why": "a yard running surface a loaded truck can turn on without rutting it",
+    "name": "Asphalt apron"
    }
   },
   "weld-bead": {
@@ -952,6 +967,11 @@
       "step": "travel steadily to the end of the seam without pausing - every segment fuses in band and none lingers to a burn"
      }
     ]
+   },
+   "yard": {
+    "surface": "bare-slab",
+    "why": "non-combustible, with nothing underfoot to carry a spark - the same reason the hot-work hazard puts the bay here",
+    "name": "Power-floated bare slab"
    }
   },
   "scaffold-bay": {
@@ -1145,6 +1165,11 @@
       "step": "place the next part, and repeat until the rails are on"
      }
     ]
+   },
+   "yard": {
+    "surface": "sealed-slab",
+    "why": "the sills need flat, sound, dust-proofed bearing before the first standard goes up",
+    "name": "Sealed concrete slab"
    }
   },
   "rigging-signals": {
@@ -1349,6 +1374,11 @@
       "step": "give exactly that signal, wait for the crane to finish moving, and give the next; STOP ends the card"
      }
     ]
+   },
+   "yard": {
+    "surface": "asphalt-apron",
+    "why": "the signalperson stands in the yard with the load, not in a booth beside it",
+    "name": "Asphalt apron"
    }
   },
   "load-chart": {
@@ -1621,6 +1651,11 @@
       "step": "hook the pick if its weight is inside the chart, refuse it if it is over"
      }
     ]
+   },
+   "yard": {
+    "surface": "sealed-slab",
+    "why": "the chart board is read indoors, off the machine, before anybody commits to the pick",
+    "name": "Sealed concrete slab"
    }
   },
   "pressure-washer": {
@@ -1838,6 +1873,11 @@
       "step": "sweep the panel cell by cell in rows, dwelling on each just past the clean time and never lingering"
      }
     ]
+   },
+   "yard": {
+    "surface": "broom-concrete",
+    "why": "traction on a wash-down surface, because this seat runs wet by definition",
+    "name": "Broom-finish concrete"
    }
   },
   "airless-sprayer": {
@@ -2060,6 +2100,11 @@
       "step": "sweep the panel cell by cell in rows, dwelling on each just past the coat time, turning inside the mask"
      }
     ]
+   },
+   "yard": {
+    "surface": "epoxy-smooth",
+    "why": "wipe-clean, because overspray lands on the floor before it lands anywhere else",
+    "name": "Smooth epoxy resin"
    }
   },
   "boom-lift": {
@@ -2414,6 +2459,11 @@
       "step": "once every point is done: retract fully at transit elevation, swing back parallel to the line, then lower the basket to the stowed height"
      }
     ]
+   },
+   "yard": {
+    "surface": "asphalt-apron",
+    "why": "the stabilizers set on it, so what it is and how flat it is are the first two things the walkaround asks",
+    "name": "Asphalt apron"
    }
   },
   "overhead-crane": {
@@ -2754,6 +2804,11 @@
       "step": "release once the sway is still and the load is over the square"
      }
     ]
+   },
+   "yard": {
+    "surface": "sealed-slab",
+    "why": "a shop bay floor with the aisle and the workstation marked on it, which is the route this seat travels",
+    "name": "Sealed concrete slab"
    }
   }
  },

@@ -42,6 +42,7 @@
   "ui.walk": "Marcher",
   "hint.campus": "Cliquez sur une salle pour y entrer",
   "hint.walk": "WASD pour se déplacer · Échap pour quitter",
+  "hint.walkRefused": "Votre navigateur a refusé le verrouillage du pointeur · faites glisser pour regarder autour",
   "view.region": "Vue du réseau",
   "figures.campuses": "{n} campus",
   "room.finish": "Revêtement de sol",

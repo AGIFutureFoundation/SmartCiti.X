@@ -42,6 +42,7 @@
   "ui.walk": "Walk",
   "hint.campus": "Click a hall to enter it",
   "hint.walk": "WASD to move · Esc to exit",
+  "hint.walkRefused": "Your browser refused pointer lock · drag to look around instead",
   "view.region": "Network view",
   "figures.campuses": "{n} campuses",
   "room.finish": "Floor finish",

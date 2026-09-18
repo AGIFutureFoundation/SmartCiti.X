@@ -19,6 +19,10 @@ as mentions a texture loader or an image extension.
 | **Compacted gravel** | `#3b3a34` | 2 | 0.85 | the plant yard, where the machines actually track |
 | **Rough grass** | `#2b3a24` | 4 | 0.55 | the campus green and the verges |
 | **Sand and fill** | `#4a4234` | 3 | 0.4 | stockpiles and the excavator cut |
+| **Tidal marsh** | `#33412c` | 4 | 0.62 | vegetated tidal marsh, wet underfoot between the channels |
+| **Tidal flat** | `#3d3b31` | 5 | 0.3 | the intertidal flat a managed pond becomes as it reopens |
+| **Dry upland** | `#3f4230` | 3 | 0.48 | the dry ground above the tide line, where the uplands are planted back |
+| **Levee crown** | `#4b4740` | 2 | 0.7 | the compacted crown of a dike or levee, which is the path a crew actually walks a diked site on |
 | **Open water** | `#10202e` | 5 | 0.18 | the Bay, the estuary and the river |
 
 ## The sky

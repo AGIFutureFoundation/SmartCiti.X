@@ -47,6 +47,7 @@ Enforced elsewhere in the stack and tested there:
 | Affect data leaking to employers | affect stripped from every export; retention 90 days | tested |
 | Raw biometric/keystroke capture | refused at the storage boundary | tested |
 | Supply chain | zero runtime dependencies in every pack; the vendored browser libraries (three.js r160, MapLibre GL JS 4.7.1) listed in a CycloneDX 1.5 SBOM (`security/registry/sbom.cdx.json`) and verified by hash on every run | structural + tested |
+| A third party added to the deployment without anyone writing it down | `web/lint_external.mjs` accounts for **every** external origin in every built page — fetched and disclosed in `THIRD_PARTY.md`, cited by a registry that stands behind it, offered as an outbound page link, or this bundle's own — and fails the build on a new one. It was written because a font CDN had been contacted on four page loads without appearing anywhere in the disclosure | tested |
 | Stale deployed artefact | build stamp + `check_console.py` in CI | tested |
 
 ## Deliberate design decisions
@@ -84,6 +85,25 @@ Mapping to obligations, with what is actually done versus what a launch requires
 
 **Nothing here is certified.** The controls exist and are tested; certification
 is an external process that has not been undertaken.
+
+### One open item a deployment must decide: the font CDN
+
+Four pages (`trade_craft_landing`, `trade_craft_map`,
+`smartcitix_trade_craft_academy`, `trade_craft_console`) load their typefaces
+from Google Fonts. That is a third-party request made by the learner's
+browser before the page renders, and it carries their IP address and user
+agent to Google. It is now disclosed in `THIRD_PARTY.md` and pinned by
+`web/lint_external.mjs`, but disclosure is not consent: under GDPR this is
+the kind of transfer a DPIA has to cover, and it is the one place where a
+bundle that otherwise reaches no network at runtime does.
+
+The faces are Open Font License and every one already has a `system-ui`
+fallback, so **self-hosting them removes the transfer without changing the
+design** — it needs the font files fetched once, vendored under
+`web/vendor/fonts/`, added to the SBOM, and the four `<link>` tags swapped
+for a local `@font-face` block. That has not been done here: this
+environment reaches no network, so the files cannot be fetched. Until it is,
+the four pages contact Google and the other six do not.
 
 ## Launch checklist — status
 

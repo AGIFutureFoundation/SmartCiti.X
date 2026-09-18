@@ -150,6 +150,23 @@ for sl, h in finishes_reg['halls'].items():
         FIN_IDX[sl] = len(FIN_MAPS)
         FIN_MAPS.append((key, h['rooms']))
 
+# and the walls collapse on exactly the same principle - one copy of each
+# distinct wall map, an index per hall. The two indexes are NOT the same
+# index: a wall resolves against every hazard the trade carries and a floor
+# against the finish-driving one, so two halls can share a floor map and
+# differ in their walls. Deduping them together would quietly make one of
+# those two facts a copy of the other.
+WALL_MAPS, WALL_IDX = [], {}
+for sl, h in finishes_reg['halls'].items():
+    key = json.dumps(h['walls'], sort_keys=True)
+    for i, (k2, m2) in enumerate(WALL_MAPS):
+        if k2 == key:
+            WALL_IDX[sl] = i
+            break
+    else:
+        WALL_IDX[sl] = len(WALL_MAPS)
+        WALL_MAPS.append((key, h['walls']))
+
 I18N = {}
 for f in sorted((ROOT / 'i18n/locales').glob('*.json')):
     c = json.load(open(f))
@@ -162,7 +179,7 @@ for f in sorted((ROOT / 'i18n/locales').glob('*.json')):
             'map.layer.modules', 'figures.modules', 'figures.lessons', 'room.finish',
             'figures.halls', 'figures.districts', 'figures.campuses',
             'view.campus', 'view.region', 'ui.walk',
-            'hint.campus', 'hint.walk', 'geo.note',
+            'hint.campus', 'hint.walk', 'hint.walkRefused', 'geo.note',
             'sim.start', 'sim.results', 'sim.pass', 'sim.retry',
             'sim.sound', 'sim.view', 'sim.choose', 'progress.local',
             'city.note', 'avatar.title', 'chapters.hall',
@@ -202,6 +219,9 @@ DATA = json.dumps({
     'roomDefs': ROOM_DEFS,
     'layouts': [lay for _, lay in LAY_LIST],
     'finCat': finishes_reg['catalogue'],
+    'wallCat': finishes_reg['wall_catalogue'],
+    'wallMaps': [m for _, m in WALL_MAPS],
+    'wallIdx': WALL_IDX,
     'baseCond': finishes_reg['base_conditions'],
     'condOver': {sl: {st: c for st, c in h['conditions'].items()
                       if c['hazards']}
@@ -808,10 +828,26 @@ function simResults(simId, rows, passed) {
 
 /* A fenced training yard, so a sim reads as a place on the campus rather
    than a void: perimeter fence, corner light masts, painted apron border. */
-function simYard(g, hw, hd, cx = 0, cz = 0) {
+function simYard(g, hw, hd, cx = 0, cz = 0, simId = curSimId) {
   const fence = new THREE.MeshStandardMaterial({ color: 0x5a6468, roughness: .6 });
   const lamp = new THREE.MeshStandardMaterial({
     color: 0xfff2cf, emissive: 0xffdf9a, emissiveIntensity: .9 });
+
+  /* The yard's own floor. Until now a sim yard was a fence and four masts
+     standing on the page's global ground plane, so the welder, the
+     excavator and the pressure washer all worked on the same nothing. Each
+     seat declares what it stands on in the sims registry, by an id from the
+     surfaces catalogue - one truth, in the pack that owns it - and it is
+     laid here with the same relief every hall floor got. */
+  const yard = D.sims.sims[simId]?.yard;
+  if (yard) {
+    const fin = D.finCat[yard.surface];
+    const fmat = finishMat(fin, hw * 2 / U * 2, hd * 2 / U * 2);
+    const floor = new THREE.Mesh(boxGeo(hw * 2, .12, hd * 2), fmat);
+    floor.position.set(cx, -.06, cz); floor.receiveShadow = true;
+    floor.userData.yardSurface = yard.surface;
+    g.add(floor);
+  }
   for (let x = -hw; x <= hw; x += 6) {
     box(.14, 1.9, .14, fence, cx + x, .95, cz - hd, g);
     box(.14, 1.9, .14, fence, cx + x, .95, cz + hd, g);
@@ -830,6 +866,14 @@ function simYard(g, hw, hd, cx = 0, cz = 0) {
     const mx = cx + sx * (hw - 1.4), mz = cz + sz * (hd - 1.4);
     box(.3, 9, .3, mat.metal, mx, 4.5, mz, g);
     box(1.5, .35, .55, lamp, mx, 9.15, mz, g, false);
+    // The mast head was an emissive box: a bright object that lit nothing,
+    // so a yard at dusk was a yard with four glowing rectangles in the dark.
+    // It carries a real light now, reaching its own quarter of the yard, on
+    // the same quality-ladder budget the room lights ride.
+    const ml = new THREE.PointLight(0xffe9c8, 1.5, Math.max(hw, hd) * 1.5, 1.6);
+    ml.position.set(mx, 8.7, mz);
+    ml.visible = qLevel !== 'low';
+    g.add(ml); roomLights.push(ml);
   }
 }
 
@@ -2203,7 +2247,27 @@ function overheadCraneSim(P = {}) {
   const OBS = P.obstacles ?? [], WS = P.workstation ?? null, AISLE = LAY.aisle;
   const g = new THREE.Group();
   const RAIL_Y = 8.2;
-  box(BX * 2 + 6, .1, BZ * 2 + 6, mat.slab, 0, .05, 0, g, false);
+  /* The one seat that is INDOORS, so it draws its own bay rather than
+     calling simYard's fenced outdoor yard - but it gets the same two things
+     the yards just got: the floor its registry entry declares (a marked
+     shop-bay slab, which is the route this seat travels) and high-bay
+     lights that actually light it rather than four bright rectangles. */
+  const yard = D.sims.sims['overhead-crane'].yard;
+  const bayMat = finishMat(D.finCat[yard.surface],
+    (BX * 2 + 6) / U * 2, (BZ * 2 + 6) / U * 2);
+  const bay = new THREE.Mesh(boxGeo(BX * 2 + 6, .1, BZ * 2 + 6), bayMat);
+  bay.position.set(0, .05, 0); bay.receiveShadow = true;
+  bay.userData.yardSurface = yard.surface; g.add(bay);
+  for (const [lx, lz] of [[-BX * .55, -BZ * .55], [BX * .55, -BZ * .55],
+                          [-BX * .55, BZ * .55], [BX * .55, BZ * .55]]) {
+    box(1.2, .25, .5, new THREE.MeshStandardMaterial({
+      color: 0xfff2cf, emissive: 0xffdf9a, emissiveIntensity: .9 }),
+      lx, RAIL_Y + 1.9, lz, g, false);
+    const hb = new THREE.PointLight(0xffe9c8, 1.3, Math.max(BX, BZ) * 2.2, 1.6);
+    hb.position.set(lx, RAIL_Y + 1.6, lz);
+    hb.visible = qLevel !== 'low';
+    g.add(hb); roomLights.push(hb);
+  }
   for (let x = -BX - 2; x <= BX + 2; x += 6) for (const z of [-BZ - 1.4, BZ + 1.4])
     box(.5, RAIL_Y, .5, mat.metal, x, RAIL_Y / 2, z, g);
   for (const z of [-BZ - 1.4, BZ + 1.4]) box(BX * 2 + 6, .5, .45, mat.metal, 0, RAIL_Y + .25, z, g);
@@ -5000,6 +5064,7 @@ page = '''<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230C1113'/%3E%3Cpath d='M7 21 L16 7 L25 21 Z' fill='none' stroke='%23E8A33D' stroke-width='2.6' stroke-linejoin='round'/%3E%3Cpath d='M11 21 h10' stroke='%2341C4D4' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E">
 <title>SmartCiti.X : Trade Craft Academy — 3D hall environment</title>
 <style>
 :root{
@@ -5188,6 +5253,8 @@ for (const h of D.halls) {
 }
 D.finishes = Object.fromEntries(Object.entries(D.finIdx)
   .map(([sl, i2]) => [sl, D.finMaps[i2]]));
+D.walls = Object.fromEntries(Object.entries(D.wallIdx)
+  .map(([sl, i2]) => [sl, D.wallMaps[i2]]));
 D.avatars.characters = D.avatars.characters.map((c) => ({
   ...c, cfg: { ...D.avatars.defaults, ...c.d } }));
 D.avatars.tradeapes.apes = D.avatars.tradeapes.apes.map((a) => ({
@@ -5232,12 +5299,19 @@ document.body.appendChild(renderer.domElement);
    shadows, the fog banks rest - and says so in the HUD. Manual override
    via the __tc3dDo hook; reduced-motion users are already served. */
 let qLevel = 'high', qAuto = true, qAcc = 0, qFrames = 0;
+// declared up here because setQuality() below reads it and the ladder can
+// fire before the first hall is ever built
+let roomLights = [];
 function setQuality(l) {
   qLevel = l;
   renderer.setPixelRatio(l === 'low' ? 1
     : Math.min(devicePixelRatio, isTouch ? 1.5 : 2));
   key.castShadow = l !== 'low';
   for (const b of fogBanks) b.m.visible = l !== 'low';
+  // the per-room lights are on the same budget the shadows and the fog
+  // banks are on: a device that cannot afford the ladder's top rung does
+  // not pay eleven point lights for it either
+  for (const rl of roomLights) rl.visible = l !== 'low';
 }
 let qRose = false;
 function qStep(dt) {
@@ -6224,42 +6298,238 @@ function labelStep(dt) {
   }
 }
 
-const finTexCache = new Map();
-function finishTex(fin) {
-  const key = fin.pattern + fin.color;
-  if (finTexCache.has(key)) return finTexCache.get(key);
-  const c = document.createElement('canvas'); c.width = c.height = 128;
-  const g = c.getContext('2d');
-  g.fillStyle = fin.color; g.fillRect(0, 0, 128, 128);
-  for (let i = 0; i < 260; i++) { g.fillStyle = `rgba(255,255,255,${Math.random()*.05})`;
-    g.fillRect(Math.random()*128, Math.random()*128, 1.6, 1.6); }
-  for (let i = 0; i < 260; i++) { g.fillStyle = `rgba(0,0,0,${Math.random()*.07})`;
-    g.fillRect(Math.random()*128, Math.random()*128, 1.6, 1.6); }
-  g.strokeStyle = 'rgba(0,0,0,.28)'; g.lineWidth = 2;
-  const line = (x1,y1,x2,y2) => { g.beginPath(); g.moveTo(x1,y1); g.lineTo(x2,y2); g.stroke(); };
-  switch (fin.pattern) {
-    case 'slab': g.strokeRect(1, 1, 126, 126); break;
-    case 'tile': for (let i = 0; i <= 128; i += 32) { line(i,0,i,128); line(0,i,128,i); } break;
-    case 'brick': for (let y = 0; y < 128; y += 16) { line(0,y,128,y);
-      for (let x = ((y/16)%2)*16; x < 128; x += 32) line(x,y,x,y+16); } break;
-    case 'plank': for (let x = 0; x <= 128; x += 16) line(x,0,x,128); break;
-    case 'block': for (let i = 0; i <= 128; i += 10) { line(i,0,i,128); line(0,i,128,i); } break;
-    case 'checker': g.fillStyle = 'rgba(255,255,255,.16)';
-      for (let y = 8; y < 128; y += 16) for (let x = 8; x < 128; x += 16) {
-        g.save(); g.translate(x,y); g.rotate(.785); g.fillRect(-4,-1.4,8,2.8); g.restore(); }
-      break;
-    case 'grate': g.fillStyle = 'rgba(0,0,0,.5)';
-      for (let y = 2; y < 128; y += 10) g.fillRect(0,y,128,4); break;
-    case 'broom': for (let x = 0; x < 128; x += 3) {
-      g.strokeStyle = `rgba(0,0,0,${.04+Math.random()*.06})`; g.lineWidth = 1;
-      line(x,0,x,128); } break;
-    default: for (let i = 0; i < 700; i++) {
-      g.fillStyle = `rgba(${Math.random()>.5?'255,255,255':'0,0,0'},${.06+Math.random()*.1})`;
-      g.fillRect(Math.random()*128, Math.random()*128, 2, 2); }
+/* Floor and wall surfaces: a colour map AND a normal map, both generated
+   here from the registry's own pattern key.
+
+   The floors used to return a colour map only, so a checkerplate floor and
+   a sheet-vinyl floor caught the light identically - the pattern was
+   PAINTED ON, and at a raking angle you could see it was painted on. The
+   ground outside had proper relief (groundTex, above, reads a normal map
+   off its own height field); the rooms inside did not. Same trick, applied
+   where the learner actually stands.
+
+   The height field is drawn alongside the colour, by the same pass, so a
+   mortar course is low BECAUSE it was drawn low and not because a second
+   table says it should be. `relief` is how far that reads - 0 is a flat
+   painted surface and the normal map is skipped entirely. */
+const PATTERN_RELIEF = {
+  slab: .30, tile: .45, brick: .90, plank: .55, block: .80, checker: 1.00,
+  grate: 1.20, broom: .25, smooth: .04, speckle: .30,
+  panel: .60, plywood: .30, board: .10, fabric: .35, screen: .70, mesh: .95,
+};
+
+/* A height field to a normal map, by central difference - the same
+   arithmetic groundTex uses, lifted out so the ground, the floors and the
+   walls all read relief the same way instead of three times differently. */
+function normalFromHeight(h, size, relief) {
+  if (!(relief > .01)) return null;
+  const nc = document.createElement('canvas'); nc.width = nc.height = size;
+  const ng = nc.getContext('2d');
+  const nimg = ng.createImageData(size, size), nd = nimg.data;
+  const at = (x, y) => h[(((y % size) + size) % size) * size
+    + (((x % size) + size) % size)];
+  const k = relief * 5.5;
+  for (let y = 0; y < size; y++) for (let x = 0; x < size; x++) {
+    const dx = (at(x + 1, y) - at(x - 1, y)) * k;
+    const dy = (at(x, y + 1) - at(x, y - 1)) * k;
+    const len = Math.hypot(dx, dy, 1);
+    const i = (y * size + x) * 4;
+    nd[i] = (-dx / len * .5 + .5) * 255;
+    nd[i + 1] = (-dy / len * .5 + .5) * 255;
+    nd[i + 2] = (1 / len * .5 + .5) * 255;
+    nd[i + 3] = 255;
   }
-  const t = new THREE.CanvasTexture(c);
+  ng.putImageData(nimg, 0, 0);
+  const t = new THREE.CanvasTexture(nc);
   t.wrapS = t.wrapT = THREE.RepeatWrapping; t.anisotropy = 4;
-  finTexCache.set(key, t); return t;
+  return t;
+}
+
+/* One pass paints the colour canvas and the height canvas together. `g` is
+   the colour context, `hg` the height context (mid-grey is the datum; dark
+   is a groove, light is proud). */
+function paintPattern(g, hg, pat, S2) {
+  const line = (ctx, x1, y1, x2, y2, w) => { ctx.lineWidth = w; ctx.beginPath();
+    ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); };
+  const groove = (x1, y1, x2, y2, w) => {
+    g.strokeStyle = 'rgba(0,0,0,.28)'; line(g, x1, y1, x2, y2, w);
+    hg.strokeStyle = '#3a3a3a'; line(hg, x1, y1, x2, y2, w);
+  };
+  const proud = (x, y, w, h2, a) => {
+    g.fillStyle = `rgba(255,255,255,${a})`; g.fillRect(x, y, w, h2);
+    hg.fillStyle = '#c8c8c8'; hg.fillRect(x, y, w, h2);
+  };
+  switch (pat) {
+    case 'slab': groove(1, 1, S2 - 1, 1, 2); groove(1, 1, 1, S2 - 1, 2);
+      groove(1, S2 - 1, S2 - 1, S2 - 1, 2); groove(S2 - 1, 1, S2 - 1, S2 - 1, 2); break;
+    case 'tile': for (let i = 0; i <= S2; i += 32) {
+      groove(i, 0, i, S2, 2); groove(0, i, S2, i, 2); } break;
+    case 'brick': for (let y = 0; y < S2; y += 16) { groove(0, y, S2, y, 2);
+      for (let x = ((y / 16) % 2) * 16; x < S2; x += 32) groove(x, y, x, y + 16, 2); } break;
+    case 'plank': for (let x = 0; x <= S2; x += 16) groove(x, 0, x, S2, 2); break;
+    case 'block': for (let i = 0; i <= S2; i += 10) {
+      groove(i, 0, i, S2, 2); groove(0, i, S2, i, 2); } break;
+    case 'checker':
+      for (let y = 8; y < S2; y += 16) for (let x = 8; x < S2; x += 16) {
+        for (const ctx of [g, hg]) {
+          ctx.save(); ctx.translate(x, y); ctx.rotate(.785);
+          ctx.fillStyle = ctx === g ? 'rgba(255,255,255,.16)' : '#d2d2d2';
+          ctx.fillRect(-4, -1.4, 8, 2.8); ctx.restore();
+        }
+      }
+      break;
+    case 'grate':
+      // the bars are proud and the slots between them read as holes
+      for (let y = 2; y < S2; y += 10) {
+        g.fillStyle = 'rgba(0,0,0,.5)'; g.fillRect(0, y, S2, 4);
+        hg.fillStyle = '#242424'; hg.fillRect(0, y, S2, 4);
+        proud(0, y + 4, S2, 6, .06);
+      }
+      break;
+    case 'broom': for (let x = 0; x < S2; x += 3) {
+      const a = .04 + Math.random() * .06;
+      g.strokeStyle = `rgba(0,0,0,${a})`; line(g, x, 0, x, S2, 1);
+      hg.strokeStyle = '#6e6e6e'; line(hg, x, 0, x, S2, 1); } break;
+    case 'panel':
+      // a lined panel wall: a shallow rib every so often, a seam less often
+      for (let x = 0; x < S2; x += 16) { proud(x + 2, 0, 5, S2, .05); groove(x, 0, x, S2, 2); }
+      groove(0, S2 / 2, S2, S2 / 2, 3); break;
+    case 'plywood':
+      // sheet edges, and the long grain running with them
+      groove(0, 0, 0, S2, 3); groove(0, 0, S2, 0, 3);
+      for (let y = 0; y < S2; y += 2) {
+        const a = .03 + Math.random() * .07;
+        g.strokeStyle = `rgba(90,60,25,${a})`; line(g, 0, y, S2, y + (Math.random() * 4 - 2), 1);
+        hg.strokeStyle = '#767676'; line(hg, 0, y, S2, y, 1); }
+      break;
+    case 'board':
+      // a flat drawn-on board: a joint line, and nothing else standing proud
+      groove(S2 / 2, 0, S2 / 2, S2, 2); break;
+    case 'fabric':
+      // a woven face: a fine two-way weave, no hard edges
+      for (let i = 0; i < S2; i += 3) {
+        g.strokeStyle = 'rgba(0,0,0,.10)'; line(g, i, 0, i, S2, 1.4);
+        g.strokeStyle = 'rgba(255,255,255,.06)'; line(g, 0, i, S2, i, 1.4);
+        hg.strokeStyle = '#6a6a6a'; line(hg, i, 0, i, S2, 1.4);
+        hg.strokeStyle = '#969696'; line(hg, 0, i, S2, i, 1.4); }
+      break;
+    case 'screen':
+      // a screened bay: heavy frame, light infill
+      for (let i = 0; i <= S2; i += 42) { groove(i, 0, i, S2, 4); groove(0, i, S2, i, 4); }
+      for (let i = 0; i <= S2; i += 14) { groove(i, 0, i, S2, 1); }
+      break;
+    case 'mesh':
+      // you can see through this one, so the wire is what catches the light
+      for (let i = 0; i <= S2; i += 9) { proud(i, 0, 2, S2, .10); proud(0, i, S2, 2, .10); }
+      for (let i = 4; i <= S2; i += 9) { groove(i, 0, i, S2, 3); groove(0, i, S2, i, 3); }
+      break;
+    default:   // smooth, speckle: aggregate scatter, no joints
+      for (let i = 0; i < 700; i++) {
+        const x = Math.random() * S2, y = Math.random() * S2;
+        const up = Math.random() > .5;
+        g.fillStyle = `rgba(${up ? '255,255,255' : '0,0,0'},${.06 + Math.random() * .1})`;
+        g.fillRect(x, y, 2, 2);
+        hg.fillStyle = up ? '#9a9a9a' : '#666'; hg.fillRect(x, y, 2, 2);
+      }
+  }
+}
+
+/* One recipe -> { map, normalMap }, generated once and shared. Floors and
+   walls both come through here; a wall is not a special case, it is a
+   surface with its own pattern and its own reason for having one. */
+const surfCache = new Map();
+function surfaceMaps(color, pattern) {
+  const key = pattern + '|' + color;
+  const hit = surfCache.get(key);
+  if (hit) return hit;
+  const S2 = 128;
+  const c = document.createElement('canvas'); c.width = c.height = S2;
+  const g = c.getContext('2d');
+  const hc = document.createElement('canvas'); hc.width = hc.height = S2;
+  const hg = hc.getContext('2d');
+  g.fillStyle = color; g.fillRect(0, 0, S2, S2);
+  hg.fillStyle = '#808080'; hg.fillRect(0, 0, S2, S2);
+  // the grain the surface has before anything is drawn on it
+  for (let i = 0; i < 260; i++) { g.fillStyle = `rgba(255,255,255,${Math.random() * .05})`;
+    g.fillRect(Math.random() * S2, Math.random() * S2, 1.6, 1.6); }
+  for (let i = 0; i < 260; i++) { g.fillStyle = `rgba(0,0,0,${Math.random() * .07})`;
+    g.fillRect(Math.random() * S2, Math.random() * S2, 1.6, 1.6); }
+  paintPattern(g, hg, pattern, S2);
+
+  const map = new THREE.CanvasTexture(c);
+  map.wrapS = map.wrapT = THREE.RepeatWrapping;
+  map.anisotropy = 4; map.colorSpace = THREE.SRGBColorSpace;
+
+  const hd = hg.getImageData(0, 0, S2, S2).data;
+  const h = new Float32Array(S2 * S2);
+  for (let i = 0; i < h.length; i++) h[i] = hd[i * 4] / 255;
+  const normalMap = normalFromHeight(h, S2, PATTERN_RELIEF[pattern] ?? 0);
+
+  const out = { map, normalMap };
+  surfCache.set(key, out);
+  return out;
+}
+
+/* A room's floor material, at the repeat its own tile size asks for. The
+   canvas underneath is shared through surfaceMaps; only the repeat differs
+   per room, so the texture pair is cloned and the clone carries the
+   repeat - three.js reference-counts the shared source, so the clone a
+   torn-down hall disposes never takes the cached original's GPU texture
+   with it. */
+function finishMat(fin, w, d) {
+  const { map, normalMap } = surfaceMaps(fin.color, fin.pattern);
+  const rx = Math.max(1, w / fin.tile_m), rz = Math.max(1, d / fin.tile_m);
+  const m2 = map.clone(); m2.needsUpdate = true; m2.repeat.set(rx, rz);
+  const spec = { map: m2, roughness: fin.roughness, metalness: fin.metalness };
+  if (normalMap) {
+    const n2 = normalMap.clone(); n2.needsUpdate = true; n2.repeat.set(rx, rz);
+    spec.normalMap = n2;
+    spec.normalScale = new THREE.Vector2(.8, .8);
+  }
+  return new THREE.MeshStandardMaterial(spec);
+}
+
+/* A wall material, the same way. `runM` is how far the wall runs and
+   `hM` how tall it is, so a long back wall tiles its blockwork across the
+   run instead of stretching one course over twelve metres. */
+function wallMat(wal, runM, hM) {
+  const { map, normalMap } = surfaceMaps(wal.color, wal.pattern);
+  const rx = Math.max(1, runM / wal.tile_m), ry = Math.max(1, hM / wal.tile_m);
+  const m2 = map.clone(); m2.needsUpdate = true; m2.repeat.set(rx, ry);
+  const spec = { map: m2, roughness: wal.roughness, metalness: wal.metalness };
+  if (normalMap) {
+    const n2 = normalMap.clone(); n2.needsUpdate = true; n2.repeat.set(rx, ry);
+    spec.normalMap = n2;
+    spec.normalScale = new THREE.Vector2(.9, .9);
+  }
+  return new THREE.MeshStandardMaterial(spec);
+}
+
+/* The shared materials that describe a SURFACE rather than a colour now get
+   the same treatment. mat.wall is the campus building envelope - 111 of them
+   on the board, every one a flat slab of one colour until now - and mat.brick
+   and mat.block exist precisely because brick and block have a pattern; a
+   flat rectangle of brick-coloured paint is not brick.
+
+   These are page-wide singletons, so this costs one texture pair each and
+   not one draw call: the buildings already carry their own mesh for the
+   raycast, and nothing new is added to the scene. mat.part is deliberately
+   left flat - it is used on thirty-odd small parts at wildly different
+   scales, where a repeat that suits one suits none of the others. */
+for (const [key, pattern, rep] of [
+  ['wall', 'panel', 3], ['brick', 'brick', 6], ['block', 'block', 5],
+]) {
+  const m2 = mat[key];
+  const { map, normalMap } = surfaceMaps('#' + m2.color.getHexString(), pattern);
+  m2.map = map.clone(); m2.map.repeat.set(rep, rep); m2.map.needsUpdate = true;
+  if (normalMap) {
+    m2.normalMap = normalMap.clone();
+    m2.normalMap.repeat.set(rep, rep); m2.normalMap.needsUpdate = true;
+    m2.normalScale = new THREE.Vector2(.7, .7);
+  }
+  // the map carries the colour now, so the tint must not double it
+  m2.color.setHex(0xffffff);
+  m2.needsUpdate = true;
 }
 
 /* The geometry cache: identical box dimensions share ONE BufferGeometry
@@ -6309,6 +6579,17 @@ function disposeOf(root) {
       if (labelFocus === o) labelFocus = null;
       lblTexRelease(o.userData.lbl.texKey);
       o.material.dispose();          // its map is the shared texture, released above
+      return;
+    }
+    // a room or mast light leaves roomLights HERE, for the same reason a
+    // label sprite leaves labelSet here: the list is walked by the quality
+    // ladder, and a list that keeps every light every torn-down hall and
+    // sim yard ever built grows without bound and re-shows lights that are
+    // no longer in the scene
+    if (o.isLight) {
+      const li = roomLights.indexOf(o);
+      if (li >= 0) roomLights.splice(li, 1);
+      o.dispose?.();
       return;
     }
     if (!o.material) return;
@@ -6421,6 +6702,15 @@ function buildCrib(h, rx, rz, rw, rd) {
 function buildHall(sg) {
   if (hallGroup) { scene.remove(hallGroup); disposeOf(hallGroup); }
   hallGroup = new THREE.Group(); beacons = []; floors = []; roomRects = []; curRoom = null;
+  // Every material this hall builds for itself - wall faces, wainscots,
+  // floors, luminaires - is deliberately left UNMARKED, because
+  // userData.shared is what disposeOf() checks before it frees something.
+  // An explicit list of them would be a second copy of a fact the traverse
+  // already has, and the two could drift; the contract is the absence of
+  // the mark, and web/test_3d.mjs asserts that rather than a list.
+  // the room lights go with the hall; the ladder re-reads this list rather
+  // than walking the scene graph looking for point lights
+  roomLights = [];
   hallGroup.name = 'tc-hall-' + sg;
   cribCount = 0;
   const h = D.halls.find(x => x.slug === sg);
@@ -6428,11 +6718,33 @@ function buildHall(sg) {
   const W = 12 * U, DEP = h.depth * U;
   const cx = (x) => x - W/2, cz = (z) => z - DEP/2;   // centre the building
 
-  // slab and perimeter (front face open)
+  // slab and perimeter (front face open).
+  //
+  // The shell used to be three boxes of mat.wall - one flat colour, the
+  // same in all 111 halls, in a world whose FLOORS had twenty-two finishes.
+  // The shell now wears the wall the hall's own busiest room wears (the
+  // practice bay, which is where a trade's hazards actually show up), so a
+  // foundry is brick-faced to the eaves and a cleanroom is coved white.
+  const wallRec = D.walls[h.slug];
+  const shellW = D.wallCat[wallRec.procedure.wall];
+  const shellMat = wallMat(shellW, W / U * 2, 3.2);
   box(W + .6, .35, DEP + .6, mat.slab, 0, .17, 0, hallGroup);
-  box(W, 3.2, .25, mat.wall, 0, 1.95, cz(DEP), hallGroup);          // back
-  box(.25, 3.2, DEP, mat.wall, cx(0), 1.95, 0, hallGroup);          // left
-  box(.25, 3.2, DEP, mat.wall, cx(W), 1.95, 0, hallGroup);          // right
+  box(W, 3.2, .25, shellMat, 0, 1.95, cz(DEP), hallGroup);          // back
+  box(.25, 3.2, DEP, shellMat, cx(0), 1.95, 0, hallGroup);          // left
+  box(.25, 3.2, DEP, shellMat, cx(W), 1.95, 0, hallGroup);          // right
+  // the wainscot: the band at the height the work actually reaches. It is
+  // the part of a working wall that gets hit, and leaving it off is most of
+  // why a rendered room reads as a rendering.
+  if (shellW.wainscot_m > 0) {
+    const wsMat = new THREE.MeshStandardMaterial({
+      color: new THREE.Color(shellW.wainscot), roughness: .8 });
+    const wy = .35 + shellW.wainscot_m / 2;
+    for (const b of [
+      box(W - .02, shellW.wainscot_m, .06, wsMat, 0, wy, cz(DEP) - .16, hallGroup, false),
+      box(.06, shellW.wainscot_m, DEP - .02, wsMat, cx(0) + .16, wy, 0, hallGroup, false),
+      box(.06, shellW.wainscot_m, DEP - .02, wsMat, cx(W) - .16, wy, 0, hallGroup, false),
+    ]) b.userData.wainscot = true;
+  }
   // district fascia over the open front
   const fascia = new THREE.Mesh(boxGeo(W + .8, .55, .5),
     new THREE.MeshStandardMaterial({
@@ -6460,12 +6772,8 @@ function buildHall(sg) {
     const rw = r.w * U, rd = r.h * U;
     const rx = cx(r.x * U + rw/2), rz = cz(r.y * U + rd/2);
     const fin = D.finCat[D.finishes[h.slug][r.strand].surface];
-    const ftex = finishTex(fin).clone(); ftex.needsUpdate = true;
-    ftex.repeat.set(Math.max(1, (rw - .3) / fin.tile_m),
-                    Math.max(1, (rd - .3) / fin.tile_m));
-    const floor = new THREE.Mesh(boxGeo(rw - .3, .06, rd - .3),
-      new THREE.MeshStandardMaterial({ map: ftex,
-        roughness: fin.roughness, metalness: fin.metalness }));
+    const fmat = finishMat(fin, (rw - .3) / U * 2, (rd - .3) / U * 2);
+    const floor = new THREE.Mesh(boxGeo(rw - .3, .06, rd - .3), fmat);
     floor.position.set(rx, .38, rz); floor.receiveShadow = true;
     floor.name = 'room-' + r.strand;
     floor.userData.room = r.label;
@@ -6490,13 +6798,78 @@ function buildHall(sg) {
       const fl = label(fx, null, .34, { kind: 'fixture' });
       fl.position.set(bx, 1.85, bz); hallGroup.add(fl);
     });
-    box(rw, 1.1, .12, mat.part, rx, .9, rz - rd/2, hallGroup);
-    box(rw, 1.1, .12, mat.part, rx, .9, rz + rd/2, hallGroup);
-    box(.12, 1.1, rd, mat.part, rx - rw/2, .9, rz, hallGroup);
-    box(.12, 1.1, rd, mat.part, rx + rw/2, .9, rz, hallGroup);
+    // The partitions used to be four boxes of one flat mat.part, in every
+    // room of every hall. A room's partition now wears that ROOM's wall -
+    // the marker panel in the layout room, the fabric-faced panel where
+    // people talk, the mesh guard around mobile plant - so standing in a
+    // hall you can read what a room is for off its walls before you read
+    // its sign.
+    const wal = D.wallCat[wallRec[r.strand].wall];
+    const pmat = wallMat(wal, rw / U * 2, 1.1);
+    box(rw, 1.1, .12, pmat, rx, .9, rz - rd/2, hallGroup);
+    box(rw, 1.1, .12, pmat, rx, .9, rz + rd/2, hallGroup);
+    box(.12, 1.1, rd, pmat, rx - rw/2, .9, rz, hallGroup);
+    box(.12, 1.1, rd, pmat, rx + rw/2, .9, rz, hallGroup);
+    if (wal.wainscot_m > 0) {
+      const ws = new THREE.MeshStandardMaterial({
+        color: new THREE.Color(wal.wainscot), roughness: .8 });
+      const bh = Math.min(wal.wainscot_m, .9), by = .35 + bh / 2;
+      for (const b of [
+        box(rw, bh, .14, ws, rx, by, rz - rd/2, hallGroup, false),
+        box(rw, bh, .14, ws, rx, by, rz + rd/2, hallGroup, false),
+      ]) b.userData.wainscot = true;
+    }
     const lab = label(r.label, D.i18n[loc].strands[r.strand], .55,
       { kind: 'room' });
     lab.position.set(rx, 2.2, rz); hallGroup.add(lab);
+
+    /* Light the room at the illuminance its own record asks for.
+       D.baseCond / D.condOver have carried a lux figure per room since
+       §24.2 landed, and until now it was TEXT - printed in two panels and
+       nowhere in the render, so a 1000 lx inspection room and a 300 lx
+       leadership room were lit identically. The figure now drives the
+       luminaire over the room: brighter rooms are brighter, and the
+       difference is the registry's, not a mood choice made here.
+
+       It is a RELATIVE mapping and nothing claims otherwise - 1000 lx in
+       the record does not mean 1000 lx reaching a photometer in this
+       scene, and the panel that prints the number keeps §24.3's caveat. */
+    const rc = condOf(h.slug, r.strand);
+    const luxN = Math.max(0, Math.min(1, (rc.lux - 200) / 800));
+    const lmat = new THREE.MeshStandardMaterial({
+      color: 0x0b0f11, emissive: 0xffe6c0,
+      emissiveIntensity: .30 + luxN * .85, roughness: .4 });
+    const lum = new THREE.Mesh(boxGeo(Math.min(rw * .5, 2.2), .08, .34), lmat);
+    lum.position.set(rx, 2.86, rz); hallGroup.add(lum);
+    // An emissive box is a bright OBJECT, not a light - it would have made
+    // the luminaire look brighter over a room that was lit exactly the same
+    // as its neighbour, which is a picture of the fix rather than the fix.
+    // The lamp therefore carries a real light, reaching only its own room
+    // (the decay and the range are the room's, not the hall's), so a 1000 lx
+    // inspection bench genuinely reads brighter than a 300 lx briefing room.
+    const rl = new THREE.PointLight(0xffe9c8, .55 + luxN * 1.45,
+      Math.max(rw, rd) * .85, 1.7);
+    rl.position.set(rx, 2.7, rz);
+    rl.visible = qLevel !== 'low';   // the quality ladder's own budget
+    hallGroup.add(rl); roomLights.push(rl);
+
+    /* The door placard. What a room requires of you has lived in the
+       registry since \u00a724.2 and could only be read by opening a panel,
+       so it was possible to walk into a hot-work bay having never been told
+       to put a hood on. It is hung at the doorway, at reading height, and
+       it carries the room's OWN merged list - the hazard's additions
+       included, because that is what the record says the room asks for.
+
+       Rooms that require nothing get no placard rather than a sign that
+       says "nothing": the explicit "none" answer is the door advisor's,
+       which has a translated surface to say it in. A placard here would
+       have to invent one. */
+    if (rc.ppe.length) {
+      const plac = label(rc.ppe.join(' \u00b7 '),
+        D.i18n[loc].strands[r.strand], .42, { kind: 'placard' });
+      plac.position.set(rx, 1.62, rz + rd/2 + .09);
+      hallGroup.add(plac);
+    }
 
     // stations standing in this room
     const here = stns.filter(s => s.room === r.label);
@@ -7918,8 +8291,33 @@ function enterWalk() {
   xrRig.position.set(sx, 1.7, sz); xrRig.rotation.set(0, 0, 0);
   camera.position.set(0, 0, 0); xrRig.updateMatrixWorld(true);
   camera.lookAt(0, 1.7, 0);
-  plc.lock();
+  // A refused pointer lock used to be an uncaught exception, and a silent
+  // dead end: `controls.enabled` is already false and the camera is already
+  // parked inside the rig by this line, and neither `lock` nor `unlock`
+  // fires when the request is refused - so nothing ever put the orbit
+  // controls back. The browser refuses for ordinary reasons (the user
+  // denies it, the page is framed without pointer-lock permission, there
+  // was no fresh user gesture), and `requestPointerLock` can throw
+  // SYNCHRONOUSLY as well as fire `pointerlockerror`, so both paths land on
+  // the same recovery. A refused session degrades to a HUD line, never an
+  // error - the same rule WebXR entry already follows.
+  try { plc.lock(); } catch (err) { walkRefused(err); }
 }
+
+/* The lock was refused. Put back exactly what enterWalk() took away, and
+   say so, because a walk button that does nothing at all reads as a bug. */
+function walkRefused(err) {
+  walkActive = false; xrWalk = false;
+  document.getElementById('cross').style.display = 'none';
+  rigCollapse();
+  controls.enabled = true;
+  const fwd = new THREE.Vector3(); camera.getWorldDirection(fwd);
+  controls.target.copy(camera.position).addScaledVector(fwd, 6);
+  walkRefusedAt = Date.now();
+  document.getElementById('hint').textContent = t('hint.walkRefused');
+  console.warn('walk mode: the browser refused the pointer lock', err ?? '');
+}
+let walkRefusedAt = 0;
 // where a walker stands when a view is entered on foot: outside a hall's
 // door, or on the campus green
 function walkSpawn() {
@@ -7960,6 +8358,11 @@ function walkEnded() {
   nearSlug = null;
 }
 plc.addEventListener('unlock', () => { if (!xrWalk && walkActive) walkEnded(); });
+// the asynchronous half of the same refusal: some browsers fire this rather
+// than throwing, and a few do both, so the recovery is idempotent
+document.addEventListener('pointerlockerror', () => {
+  if (!walkActive && !renderer.xr.isPresenting) walkRefused('pointerlockerror');
+});
 // leaving a desktop walk for a view that writes its own camera frame (a seat,
 // the campus, a restoration site): the pointer-lock 'unlock' event lands a
 // task LATER, and walkEnded() folding the rig into the camera then would
@@ -8289,10 +8692,38 @@ window.__tc3dSchools = openSchools;
 // a roadmap candidate's own card: no hall stands here to enter, so this
 // panel never offers one - a name, a real bearing/distance, the proposed
 // district emphasis and the honesty text, nothing more
+/* A panel that says why it has nothing to show. Every other refusal in this
+   bundle names its reason (ACP-08's safeguards, the hint ladder, the
+   rollout lanes); a panel that throws instead is the one place that did
+   not, and a stack trace is not a reason a learner can read. */
+function refusePanel(why) {
+  document.getElementById('pbody').innerHTML =
+    '<h2>\u2014</h2><p>' + String(why).replace(/[&<>]/g,
+      (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c])) + '</p>';
+  document.body.classList.add('open');
+  return null;
+}
+
 function openCandidate(ck) {
   const esc = (s) => String(s).replace(/[&<>]/g,
     (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+  // The candidate list empties as candidates are BUILT - it is empty now,
+  // with the ten-campus target met - so every id this panel ever knew is
+  // eventually a stale id. Reading .districts off undefined threw; a
+  // promoted city should say it was promoted.
   const c = D.roadmap.candidates[ck];
+  if (!c) {
+    // D.campuses IS the built set (build_3d.py says so where it trims the
+    // roadmap), so a promoted id is recognised there rather than in a
+    // second list that could disagree with it.
+    const built = D.campuses[ck];
+    return refusePanel(built
+      ? `${built.name} is no longer a candidate \u2014 it is built, and it is `
+        + 'on the network board with the rest of them.'
+      : `There is no candidate campus called \u201c${esc(ck)}\u201d. `
+        + `${Object.keys(D.roadmap.candidates).length} candidates remain: the `
+        + `${D.roadmap.target}-campus target is met.`);
+  }
   const distRows = c.districts.map((dk) =>
     `<li>${esc(D.districts[dk].name)}</li>`).join('');
   document.getElementById('pbody').innerHTML = `
@@ -8463,8 +8894,29 @@ function waterAt(w, d, x, z, g, rot) {
 }
 
 function buildRestoGround(g, site) {
-  const pad = new THREE.Mesh(new THREE.CircleGeometry(RESTO_R + 6, 48), mat.grass);
-  pad.rotation.x = -Math.PI / 2; pad.receiveShadow = true; g.add(pad);
+  /* The pad used to be mat.grass at every site, so a tidal marsh, an
+     intertidal flat and a dry upland all read as the campus green. Each
+     walkable site names its own ground in the restoration registry - by a
+     recipe id from the world pack, with the words in its own habitat line
+     that chose it - and it is laid here with the relief that recipe
+     declares. Schematic, like everything standing on it. */
+  const gid = site.ground ?? 'grass';
+  const pad = new THREE.Mesh(new THREE.CircleGeometry(RESTO_R + 6, 48),
+    groundMat(gid));
+  pad.rotation.x = -Math.PI / 2; pad.receiveShadow = true;
+  pad.userData.restoGround = gid;
+  g.add(pad);
+
+  /* The site's own entry sign. A real restoration site has one at the gate:
+     whose project it is, and what kind of work this is. Both are already in
+     the registry and were readable only by opening the panel, so a learner
+     could walk a site without ever being told whose ground they were on.
+     The organisation is named because it is THEIRS - none of these is our
+     programme, and the honesty line in the panel says so in words. */
+  const entry = label(site.org, site.category.replace(/-/g, ' '), .62,
+    { kind: 'placard' });
+  entry.position.set(0, 2.4, RESTO_R - 2);
+  g.add(entry);
 
   if (site.id === 'herons-head') {
     // shoreline resilience + green infrastructure, an Eco-Apprentice crew
@@ -8749,8 +9201,17 @@ function openRoom(roomLabel) {
 /* The walkaround panel: one clipboard, the whole card's state, and the
    mark. Non-gating by registry rule - nothing reads waDone but the HUD. */
 function openWa(i) {
+  // A walkaround point belongs to the seat you are sitting in, so there has
+  // to BE one. Called with no seat active (the __tc3dDo harness hook can do
+  // that, and so could a stale button left over from a torn-down sim) this
+  // used to read .walkaround off undefined and throw a raw TypeError. A
+  // refusal is explained, never silent, and never a stack trace.
   const def = D.sims.sims[curSimId];
+  if (!def) return refusePanel('There is no simulator running, and a '
+    + 'walkaround is a check on the machine you are about to operate.');
   const w = def.walkaround[i];
+  if (!w) return refusePanel(`That seat has ${def.walkaround.length} `
+    + `walkaround points; there is no point ${i}.`);
   document.getElementById('pbody').innerHTML = `
     <h2>📋 ${w.point}</h2>
     <span class="chip">${def.name}</span>
@@ -9364,6 +9825,28 @@ window.__tc3d = () => ({ view, buildings: buildings.length, plates: plates.lengt
   scenario: curScenario?.id ?? null,
   chHosted: D.chapters.hosted[campusKey] ?? null,
   isTouch, shadows: renderer.shadowMap.enabled,
+  // orbit is the fallback control scheme, so whether it is enabled is the
+  // fact that says the view is still steerable. enterWalk() disables it
+  // before it asks for the pointer lock; a refused lock used to leave it
+  // disabled with nothing able to turn it back on, and a frame-difference
+  // check cannot see that, because this scene animates every frame anyway.
+  orbit: controls.enabled, walkRefusedAt,
+  // the length of the list the quality ladder walks. It is a leak check:
+  // every torn-down hall and sim yard must take its lights OUT of it, not
+  // merely out of the scene, or a long session ends up walking hundreds of
+  // dead lights every time the ladder steps
+  litList: roomLights.length,
+  // the walkable restoration site's own ground, read off the scene graph
+  restoGround: restoGroup ? (() => { let v = null;
+    restoGroup.traverse((o) => { if (o.userData?.restoGround) v = o.userData.restoGround; });
+    return v; })() : null,
+  // what the running seat's yard is actually floored and lit with, read off
+  // the scene graph rather than off the registry it was built from
+  yardSurface: sim ? (() => { let v = null;
+    sim.group.traverse((o) => { if (o.userData?.yardSurface) v = o.userData.yardSurface; });
+    return v; })() : null,
+  yardLights: sim ? (() => { let n2 = 0;
+    sim.group.traverse((o) => { if (o.isLight) n2++; }); return n2; })() : null,
   avatar: avatarCfg ? { ...avatarCfg } : null, emote: lastEmote,
   apeSpan: (avatarMesh ?? walkAvatar)?.userData?.apeSpanRatio ?? null,
   atmos: atmosKey, fogNear: Math.round(scene.fog.near),
@@ -9372,6 +9855,26 @@ window.__tc3d = () => ({ view, buildings: buildings.length, plates: plates.lengt
   mmVis: document.getElementById('mm').style.display !== 'none',
   simRider: !!simRider, ambN: ambNodes.length,
   cribs: cribCount, curCrib, drillN: drill ? drill.i : null,
+  // the environment summary: what the hall actually BUILT, counted off the
+  // scene graph rather than off the intent. A harness that only checked the
+  // source would have passed on an emissive box that lit nothing, so the
+  // numbers here are read from the objects themselves.
+  env: hallGroup ? (() => {
+    let mapped = 0, normals = 0, wainscot = 0, placards = 0;
+    const lux = roomLights.map((l) => +l.intensity.toFixed(3));
+    hallGroup.traverse((o) => {
+      if (o.isSprite && o.userData.lbl?.kind === 'placard') placards++;
+      if (o.userData?.wainscot) wainscot++;
+      const m = o.material;
+      if (!m || m.isSpriteMaterial) return;
+      if (m.map) mapped++;
+      if (m.normalMap) normals++;
+    });
+    return { roomLights: roomLights.length, lit: roomLights.filter((l) => l.visible).length,
+             luxI: { min: Math.min(...lux), max: Math.max(...lux) },
+             mapped, normals, wainscot, placards,
+             surfTex: surfCache.size };
+  })() : null,
   gau: sim?.gauges ? sim.gauges() : null,
   rollup: view === 'campus' ? campusRollup(campusKey) : null,
   mmDone: mmInfo.done ?? 0, night, wx, rain: rain.visible,

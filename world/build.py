@@ -147,6 +147,37 @@ GROUND = {
         'roughness': .97, 'metalness': .0,
         'where': 'stockpiles and the excavator cut',
     },
+    # The Bay Restoration walks stood on the campus green - one rough-grass
+    # pad at every site, whatever its habitat. These four are the ground
+    # those walks actually cross, and a site picks one from its own habitat
+    # line in restoration/. Schematic like everything else here: composed
+    # from the habitat each project describes, not sampled from the place.
+    'marsh': {
+        'name': 'Tidal marsh', 'base': '#33412c', 'grain': '138,166,104',
+        'octaves': 4, 'speckle': 7200, 'relief': .62, 'repeat': 40,
+        'roughness': .97, 'metalness': .02,
+        'where': 'vegetated tidal marsh, wet underfoot between the channels',
+    },
+    'mudflat': {
+        'name': 'Tidal flat', 'base': '#3d3b31', 'grain': '150,146,128',
+        'octaves': 5, 'speckle': 2600, 'relief': .30, 'repeat': 26,
+        'roughness': .82, 'metalness': .06,
+        'where': 'the intertidal flat a managed pond becomes as it reopens',
+    },
+    'upland': {
+        'name': 'Dry upland', 'base': '#3f4230', 'grain': '176,178,126',
+        'octaves': 3, 'speckle': 5600, 'relief': .48, 'repeat': 38,
+        'roughness': .98, 'metalness': .0,
+        'where': 'the dry ground above the tide line, where the uplands are '
+                 'planted back',
+    },
+    'levee': {
+        'name': 'Levee crown', 'base': '#4b4740', 'grain': '198,190,168',
+        'octaves': 2, 'speckle': 4800, 'relief': .70, 'repeat': 28,
+        'roughness': .99, 'metalness': .0,
+        'where': 'the compacted crown of a dike or levee, which is the path '
+                 'a crew actually walks a diked site on',
+    },
     'water': {
         'name': 'Open water', 'base': '#10202e', 'grain': '90,150,180',
         'octaves': 5, 'speckle': 900, 'relief': .18, 'repeat': 12,
