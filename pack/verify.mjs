@@ -12,6 +12,10 @@
  * check it replaces, because a sample can only ever fail to find a collision.
  */
 import { openRegistry, SHAPE, index, fromIndex } from './registry.js';
+import {
+  HALL_CONTENT_STATUSES, claimsHallSignoff,
+  validateHallContentStatus, validateHallsContentStatuses,
+} from './hall_signoff.mjs';
 import { readFileSync } from 'node:fs';
 
 let n = 0;
@@ -125,5 +129,62 @@ ok(`authored objects (${F(manifest.authored_objects)}) are reported beside the m
   manifest.authored_objects > 0 && manifest.generated_to_authored_ratio > 100);
 ok('the state census covers every module and nothing is uncounted',
   Object.values(manifest.by_state).reduce((a, b) => a + b, 0) === 11_000_000);
+
+/* -------------------------------------------- per-hall practitioner sign-off *
+ * v3.4 criterion 1. `pack/hall_signoff.mjs` mirrors i18n/catalog.mjs's
+ * reviewer-attribution rule: a hall record may carry an optional
+ * `content_status`; absent inherits the global caveat above verbatim; a
+ * hall claiming "practitioner sign-off" must name the practitioner(s) and a
+ * date, exactly as a locale catalog claiming "reviewed" must name a
+ * reviewer and a date; the status set is closed so a typo cannot invent a
+ * fourth state. */
+ok('the shipped hall registry validates clean today — no hall carries a content_status that fails the rule',
+  validateHallsContentStatuses(reg.halls).length === 0);
+ok('and specifically: not one of the 111 halls claims practitioner sign-off yet — '
+   + 'that needs a real named journey-level practitioner, which is what the rule exists to require',
+  reg.halls.every((h) => !claimsHallSignoff(h.content_status)));
+ok('every hall with no content_status at all inherits the caveat rather than being silently exempt from it',
+  reg.halls.filter((h) => h.content_status === undefined).length === reg.halls.length);
+
+{
+  const claimsButNoPractitioner = { slug: 'fixture', content_status: 'practitioner sign-off' };
+  const p1 = validateHallContentStatus('fixture', claimsButNoPractitioner);
+  ok('self-test: a hall claiming practitioner sign-off with no practitioner named is REJECTED',
+    p1.some((m) => /names no practitioner/.test(m)));
+
+  const namedButNoDate = {
+    slug: 'fixture', content_status: 'practitioner sign-off', practitioners: ['J. Alvarez, journeyman electrician'],
+  };
+  const p2 = validateHallContentStatus('fixture', namedButNoDate);
+  ok('self-test: a hall claiming sign-off with a practitioner but no signed_off_at date is REJECTED',
+    p2.some((m) => /signed_off_at is missing/.test(m)));
+
+  const emptyNameArray = {
+    slug: 'fixture', content_status: 'practitioner sign-off', practitioners: ['   '], signed_off_at: '2026-09-18',
+  };
+  const p3 = validateHallContentStatus('fixture', emptyNameArray);
+  ok('self-test: a practitioner list of blank strings is treated as naming nobody',
+    p3.some((m) => /names no practitioner/.test(m)));
+
+  const typo = { slug: 'fixture', content_status: 'signed-off' };
+  const p4 = validateHallContentStatus('fixture', typo);
+  ok('self-test: a typo\'d status is REJECTED — the closed set stops a fourth state from being invented',
+    p4.some((m) => /not one of the closed set/.test(m)));
+
+  const clean = {
+    slug: 'fixture', content_status: 'practitioner sign-off',
+    practitioners: ['J. Alvarez, journeyman electrician'], signed_off_at: '2026-09-18',
+  };
+  ok('self-test: the same claim WITH a named practitioner and a signed_off_at date passes',
+    validateHallContentStatus('fixture', clean).length === 0);
+
+  const workInProgress = { slug: 'fixture', content_status: 'pending practitioner authoring' };
+  ok('self-test: "pending practitioner authoring" makes no sign-off claim, so it needs no practitioner or date',
+    validateHallContentStatus('fixture', workInProgress).length === 0);
+
+  ok('the closed set is exactly three states, and exactly one of them claims sign-off',
+    HALL_CONTENT_STATUSES.length === 3
+    && HALL_CONTENT_STATUSES.filter((s) => claimsHallSignoff(s)).length === 1);
+}
 
 console.log(`\n${n} checks passed — ${F(SHAPE.total)} modules verified end to end.`);

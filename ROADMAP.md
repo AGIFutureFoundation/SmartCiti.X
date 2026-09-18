@@ -192,6 +192,35 @@ this one; it needs the native reviewers ws1 names, which is people, not code.
 **Theme:** replace *unverified general practice* with practitioner-authored
 content, hall by hall, and let the label retreat only where the work landed.
 
+**Status:** two pieces of load-bearing machinery landed; no content and no
+real jurisdiction values did, and this pass did not try to fabricate either.
+A design pass proved, by execution rather than by reading, that the ACP-08
+parity monitor (`bus/safeguards.mjs`) reported `clean: true` — and advanced
+its own staleness clock — over zero cohorts, over every cohort under
+`minCohortN`, and over exactly one usable cohort with nothing to compare it
+against; the rollout lanes (`ops/rollout.mjs`) consult exactly that monitor
+before advancing a wave. `run()` now returns a third fact, `observed`,
+distinct from `clean` — "did we find a problem" is no longer the same
+question as "did we look" — `promotionsAllowed()` fails closed whenever the
+most recent run did not observe, and `lastRunAt` (what `ageDays()` reads)
+only advances on an observed run, so a parity job that executes on schedule
+but sees nothing no longer silences the "parity job cannot run" stop
+condition either. Five new tests exercise the zero-cohort, every-cohort-
+under-threshold, one-usable-cohort, legitimate-two-cohorts-agreeing and
+staleness-interaction shapes; `bus/test_safeguards.mjs` grew from 15 to 20
+checks. Separately, `pack/hall_signoff.mjs` gives criterion 1 the mechanism
+its own wording ("the per-hall honesty flag") assumed already existed and
+did not: a closed set of `content_status` values, a hall claiming
+`"practitioner sign-off"` must name the practitioner(s) and a date exactly
+as `i18n/catalog.mjs`'s reviewer rule requires, and an absent status
+inherits the manifest's global caveat rather than being silently exempt
+from it. `pack/verify.mjs` grew from 19 to 29 checks, 6 of them self-tests
+constructing the exact bad claims the rule exists to catch. Neither piece
+touched a single one of the 111 hall records — all still inherit the
+caveat, by design; see criterion 1 below. Nothing here talks to a real
+learner, a real cohort, or a real jurisdiction's code, and the release's own
+theme is not met by a PR like this one.
+
 ### Workstreams
 
 1. **Flagship authoring pilot.** The four console-slice halls first —
@@ -208,28 +237,77 @@ content, hall by hall, and let the label retreat only where the work landed.
    zero, with no surveyed candidate source for either yet (`wiki/
    Upgrade-Candidates.md` §6); a future wave of this workstream should name
    a flagship hall in each.
+   *Status:* **not started, and the mechanism it depends on is now
+   deliberately built ahead of any content to fill it.** `pack/hall_signoff.mjs`
+   gives the manifest's honesty block a per-hall shape: `content_status` is a
+   closed three-value set (`unverified general practice` | `pending
+   practitioner authoring` | `practitioner sign-off`), a hall claiming
+   sign-off must name real practitioner(s) and a `signed_off_at` date or the
+   build refuses it, and an absent `content_status` inherits the global
+   caveat rather than being silently exempt. No practitioner has been named
+   for any hall, and this pass invented none — a fabricated name would be
+   exactly the failure the rule exists to prevent, the same shape as
+   v3.3 ws1's unmet reviewer criterion. All 111 halls still carry
+   `content_status: undefined` and the global caveat applies to every one.
 2. **Local-standards mapping (§24.3).** The texture and environment values
    ship as general good practice with the absence of code references
    asserted. This workstream adds a jurisdiction overlay format: a deployment
    names its jurisdiction, and every illuminance/ACH/PPE value resolves
    against the local standard or fails loudly — never silently defaults
    (§23.1's one-sentence pattern: a default value is a policy decision).
+   *Status:* **deliberately not started; see the exit criterion below.**
 3. **Calibration from live telemetry.** The dial and gates run today against
    simulated learners (ACP-14/15). Shadow-mode deployment feeds the parity
    monitor (ACP-08) real cohorts; item difficulty recalibrates from evidence
    with the audit trail the bus already writes.
+   *Status:* **not started — no shadow-mode deployment and no real cohort
+   exists in this repo.** What this pass did close is a hazard that would
+   have undermined this workstream the moment it started: a shadow-mode
+   network with no enrolled learners, or too few per cohort, used to be told
+   by `ParityMonitor.promotionsAllowed()` that promotions were fine, having
+   compared nothing. See the release status paragraph above and criterion 3
+   below.
 4. **Adversarial review cadence.** §23.5's conclusion operationalized: an
    independent adversarial pass on every minor release, findings filed as
    spec sections, not just fixes.
+   *Status:* **not started as a cadence.** This PR was itself one more
+   design-pass-then-fix cycle in that spirit (spec §23.1's own catalogue
+   named the defect; this closed it), but no recurring schedule exists yet.
 
 ### Exit criteria
 
 - ≥1 hall's content signed off by named journey-level practitioners; the
   per-hall honesty flag verified by `pack/verify.mjs`.
+  *Status:* **not met — and not attempted.** The flag itself now exists and
+  is verified: `pack/verify.mjs` fails the build if any hall claims
+  `practitioner sign-off` without naming a practitioner and a date, and
+  confirms today that not one of the 111 halls makes that claim. Meeting
+  this criterion needs a real journey-level practitioner willing to put
+  their name on a hall's content, which is a person, not a PR.
 - A jurisdiction overlay validates end-to-end for one real jurisdiction with
   every value sourced or explicitly waived.
+  *Status:* **not met, and deliberately left that way.** Meeting it needs
+  real cited values from Title 24, OSHA 1926 or a real AHJ for illuminance,
+  air changes, noise and PPE. This sandbox cannot fetch them, and they must
+  not be typed from memory into a platform whose surface pack currently
+  proves the opposite — `surfaces/build.py`'s own honesty block states
+  "general good practice, not a code reference; no figure is read from any
+  jurisdiction's standard." A wrong safety value that looks sourced is worse
+  than an honest gap, so this criterion stays open rather than closed with
+  invented numbers.
 - Parity monitor green over real cohorts — with the §23.1 fix proven: it can
   never report green over zero cohorts.
+  *Status:* **the §23.1 clause is met; the real-cohorts clause is not, and
+  the two are not the same claim.** `bus/test_safeguards.mjs` now proves, by
+  construction, that a zero-cohort run, an every-cohort-under-threshold run
+  and a one-usable-cohort run are all refused by `promotionsAllowed()`
+  (three new tests), that a legitimate two-cohort agreement still reads as
+  green (one more), and that an empty run does not silence the "parity job
+  cannot run" stop condition (one more) — `ops/rehearsal.mjs`'s wave-1
+  harness, which drives that same stop condition through a real `Scheduler`,
+  still passes unchanged. No real cohort exists anywhere in this repo;
+  everything above runs against constructed fixtures and seeded synthetic
+  data, exactly as `ops/rehearsal.mjs` says of itself.
 
 ---
 

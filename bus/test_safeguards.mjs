@@ -74,11 +74,91 @@ let n = 0; const ok = (m) => { n++; console.log(`  ok  ${m}`); };
   ok('promotions are blocked while a parity ticket is open, and released when it closes');
 }
 
+/* --- §23.1: "measured nothing" must never read as "measured and clean" --- *
+ * Reproduced by execution before the fix:
+ *   zero-cohort run():                  {"clean":true,"tickets":[],"masking":false}
+ *   promotionsAllowed() after that run: true
+ *   ageDays() after that run:           ~0 (not Infinity)
+ *   StopConditions.evaluate({}) after:  {"halted":false,"reasons":[]}
+ * run() filtered cohorts to those with n>=minCohortN, then for each metric
+ * `if (vals.length < 2) continue;` — so with zero cohorts, or every cohort
+ * under threshold, or exactly one usable cohort, no metric was ever
+ * compared, tickets stayed empty, and it returned clean:true while also
+ * stamping lastRunAt (so ageDays() looked fresh). Two harms: promotions
+ * were waved through having measured nothing, and the staleness alarm meant
+ * to catch a parity job that cannot run was silenced by a run that executes
+ * but observes nothing. Fixed by a third fact, `observed`, distinct from
+ * `clean` — and lastRunAt (what ageDays() reads) only advances when
+ * `observed` is true. */
+{
+  const p = new ParityMonitor();
+  const r = p.run();
+  assert.equal(r.observed, false, 'zero cohorts means nothing was compared');
+  assert.equal(p.promotionsAllowed(), false, 'promotions must not ride on an empty run');
+  ok('run() over zero cohorts does not read as green: promotions are refused');
+}
+
+{
+  const p = new ParityMonitor();
+  p.report('a', { n: 5, gatePassRate: 0.9 });   // both under minCohortN=20
+  p.report('b', { n: 3, gatePassRate: 0.1 });
+  const r = p.run();
+  assert.equal(r.observed, false, 'every cohort under threshold means nothing was compared either');
+  assert.equal(p.promotionsAllowed(), false);
+  ok('run() where every cohort is under threshold does not read as green');
+}
+
+{
+  const p = new ParityMonitor();
+  p.report('big',  { n: 500, gatePassRate: 0.60 });
+  p.report('tiny', { n: 4,   gatePassRate: 0.10 });   // filtered out, same as line 41-44 above
+  const r = p.run();
+  assert.equal(r.clean, true, 'still true: a sub-threshold cohort does not itself contradict cleanliness');
+  assert.equal(r.observed, false, 'but only one usable cohort means nothing was compared');
+  assert.equal(p.promotionsAllowed(), false, 'promotions require having actually compared something');
+  ok('run() with one usable cohort only (nothing to compare against) does not read as green, even though clean stays true');
+}
+
+{
+  // the legitimate case: two usable cohorts that actually agree.
+  const p = new ParityMonitor();
+  p.report('a', { n: 300, gatePassRate: 0.60 });
+  p.report('b', { n: 300, gatePassRate: 0.575 });
+  const r = p.run();
+  assert.equal(r.clean, true);
+  assert.equal(r.observed, true, 'two usable cohorts were actually compared');
+  assert.equal(p.promotionsAllowed(), true, 'measured and found nothing wrong is legitimately green');
+  ok('two usable cohorts that agree is measured-and-clean, and promotions stay open');
+}
+
+{
+  // the staleness interaction: an empty run must not satisfy the "parity
+  // job cannot run" stop condition — it must behave exactly like a job that
+  // never ran at all, not like a fresh clean one.
+  const audit = new AuditLog();
+  const p = new ParityMonitor({ audit });
+  assert.equal(p.ageDays(), Infinity, 'never run: infinite age, as before');
+  p.run();                                        // executes, observes nothing
+  assert.equal(p.ageDays(), Infinity,
+    'an empty run must not reset the staleness clock — it is still a parity job that cannot be trusted');
+  const s = new StopConditions({ audit, parity: p });
+  const review = s.evaluate({});
+  assert.equal(review.halted, true, 'an empty run must not satisfy the parity-cannot-run stop condition');
+  assert.ok(review.reasons.some((why) => /parity job/.test(why)));
+  ok('an empty run does not silence the "parity job cannot run" stop condition — it still fires');
+}
+
 /* ----------------------------------------------------- stop conditions --- */
 {
   const audit = new AuditLog();
   const parity = new ParityMonitor({ audit });
-  parity.run();                                   // fresh
+  // A real, observed, agreeing run — not an empty one. An empty run is no
+  // longer "fresh and fine" (that was the fail-open this file now tests for
+  // below); it is indistinguishable from a parity job that cannot run, and
+  // would halt on its own before drift is ever evaluated.
+  parity.report('a', { n: 100, gatePassRate: 0.80 });
+  parity.report('b', { n: 100, gatePassRate: 0.79 });
+  parity.run();
   const s = new StopConditions({ audit, parity });
 
   assert.equal(s.evaluate({}).halted, false);
@@ -117,7 +197,10 @@ let n = 0; const ok = (m) => { n++; console.log(`  ok  ${m}`); };
 
 {
   const audit = new AuditLog();
-  const parity = new ParityMonitor({ audit }); parity.run();
+  const parity = new ParityMonitor({ audit });
+  parity.report('a', { n: 100, gatePassRate: 0.80 });
+  parity.report('b', { n: 100, gatePassRate: 0.79 });
+  parity.run();                                   // a real, observed, clean run
   const s = new StopConditions({ audit, parity });
   s.evaluate({ cohortAnxietyShare: 0.9 });
   s.evaluate({ cohortAnxietyShare: 0.9 });        // still bad — must not re-log

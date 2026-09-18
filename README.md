@@ -7,7 +7,7 @@ The Adaptive Stack: the packs implementing the ACP protocol suite (v3.2) —
 counted, like everything else here, by the table below rather than by a
 number that can drift from it.
 
-**974 checks, all passing from inside this bundle**, with no model credentials
+**989 checks, all passing from inside this bundle**, with no model credentials
 required.
 
 ```bash
@@ -19,13 +19,13 @@ location, so these run from any working directory (v2.6 defect 13):
 
 ```bash
 node unions/verify.mjs             # 28 — roster, districts, campuses, chapters, pack agreement, and the interactive map's chapter-seats chip (every hall, home marked, never a link)
-node pack/verify.mjs               # 19 — the registry, and all 11,000,000 IDs
+node pack/verify.mjs               # 29 — the registry, all 11,000,000 IDs, and per-hall practitioner sign-off (pack/hall_signoff.mjs)
 node control/test.mjs              # 12 — learner profile, ZPD dial, affect
 node control/test_graph.mjs        # 20 — skill graph, sequencer, gates
 node control/test_hints.mjs        # 24 — the hint ladder, fading, the ceiling contract, an unreported dwell is refused
 node fabric/test.mjs               # 16 — mentor guards, eval harness, router
 node bus/test.mjs                  # 17 — bus contracts, telemetry guards, audit
-node bus/test_safeguards.mjs       # 15 — parity, stop conditions, overrides
+node bus/test_safeguards.mjs       # 20 — parity (including the §23.1 "measured nothing" fail-open), stop conditions, overrides
 node security/test.mjs             # 29 — authz, tenancy, rate limits, privacy, the contest and abuse routes, SECURITY.md held to the packs
 node security/test_sbom.mjs        # 10 — the SBOM: every vendored file hashed, versioned and licensed from evidence in the file
 node ops/test.mjs                  # 48 — registries, rollout lanes (an unreported dwell opens nothing, a rollout manager refuses to run with no audit log), jobs, cost governor

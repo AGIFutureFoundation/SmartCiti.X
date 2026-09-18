@@ -43,6 +43,15 @@ export class ParityMonitor {
     this.paramFingerprints = new Map(); // cohort -> fingerprint of dial params
     this.openTickets = [];
     this.lastRunAt = null;
+    // §23.1: "never called run()" and "called run() but had nothing to
+    // compare" must not collapse into the same state. `null` means the
+    // former (unchanged default; nothing here has asserted anything about
+    // parity yet, and callers that never wire up a run rely on that — see
+    // bus/test_safeguards.mjs and the rollout-lanes test in ops/test.mjs).
+    // `run()` sets this to an explicit `true`/`false` on every call from then
+    // on, and only `false` — an executed run that measured nothing — closes
+    // promotionsAllowed() below.
+    this.lastObserved = null;
   }
 
   report(cohortKey, stats) { this.cohorts.set(cohortKey, stats); }
@@ -65,15 +74,34 @@ export class ParityMonitor {
     return seen.size > 1;
   }
 
-  /** @returns {{clean:boolean, tickets:Array, masking:boolean}} */
+  /**
+   * @returns {{clean:boolean, tickets:Array, masking:boolean, observed:boolean}}
+   *
+   * `clean` means "no disparity ticket is open" — that is unchanged, and it
+   * stays true for a run that had exactly one usable cohort (nothing to
+   * compare, so nothing contradicted cleanliness either; see
+   * bus/test_safeguards.mjs's "a cohort under the minimum must not drive an
+   * alarm", which still asserts `clean === true` for that shape).
+   *
+   * `observed` is the new, separate fact this fixes: whether any metric
+   * actually had >=2 usable cohorts to compare. §23.1's own catalogue of
+   * this bug (spec §23.1) is precise about the mechanism — zero cohorts, or
+   * every cohort under `minCohortN`, or exactly one usable cohort, all fall
+   * through every `if (vals.length < 2) continue;` and leave `tickets`
+   * empty. That used to read as indistinguishable from "measured and found
+   * nothing wrong". It no longer does: `clean` answers "did we find a
+   * problem", `observed` answers "did we look", and promotionsAllowed()
+   * below requires both.
+   */
   run({ now = Date.now() } = {}) {
-    this.lastRunAt = now;
     const usable = [...this.cohorts.entries()].filter(([, s]) => (s.n ?? 0) >= this.cfg.minCohortN);
     const tickets = [];
+    let comparisons = 0; // metrics that actually had >=2 usable cohorts to compare
 
     for (const metric of this.cfg.metrics) {
       const vals = usable.map(([k, s]) => [k, s[metric]]).filter(([, v]) => Number.isFinite(v));
       if (vals.length < 2) continue;
+      comparisons += 1;
       const nums = vals.map(([, v]) => v);
       const hi = Math.max(...nums), lo = Math.min(...nums);
       const base = Math.max(Math.abs(hi), 1e-9);
@@ -85,9 +113,33 @@ export class ParityMonitor {
       }
     }
 
+    const observed = comparisons > 0;
+
     // Masking check: a disparity is open AND cohorts are on different settings.
     const masking = tickets.length > 0 && this.paramsDiverge();
     this.openTickets = tickets;
+    this.lastObserved = observed;
+
+    // §23.1: a default is a policy decision. `lastRunAt` used to advance
+    // unconditionally, so a run that measured nothing looked, to ageDays(),
+    // exactly like a run that measured cleanliness — and that silently
+    // satisfied the "parity job cannot run" stop condition (STOP.parityJob-
+    // MaxAgeDays) forever, which is the second, worse half of this bug.
+    // `lastRunAt` — and so ageDays() — now advances only on a run that
+    // actually compared something. An unobserved run leaves it exactly
+    // where it was (Infinity, if this monitor has never yet observed
+    // anything), so the staleness alarm still fires on a parity job that
+    // runs on schedule but sees nothing, the same as it fires on a job that
+    // never runs at all.
+    if (observed) {
+      this.lastRunAt = now;
+    } else {
+      this.audit?.append({ actor: 'parity', action: 'parity.no_observation',
+        why: `run executed over ${this.cohorts.size} cohort(s) (${usable.length} at/above `
+           + `n>=${this.cfg.minCohortN}) but no metric had two usable cohorts to compare — `
+           + 'nothing was measured, so this does not count as clean and promotions fail closed',
+        after: { cohorts: this.cohorts.size, usable: usable.length } });
+    }
 
     for (const t of tickets) {
       this.audit?.append({ actor: 'parity', action: 'parity.ticket',
@@ -100,12 +152,20 @@ export class ParityMonitor {
            + 'root cause belongs in content or calibration, not in per-cohort tuning',
         after: { fingerprints: [...this.paramFingerprints.keys()] } });
     }
-    return { clean: tickets.length === 0, tickets, masking };
+    return { clean: tickets.length === 0, tickets, masking, observed };
   }
 
-  /** ACP-13: promotions are blocked while parity is red. */
+  /**
+   * ACP-13: promotions are blocked while parity is red, AND while the most
+   * recent run() measured nothing. `lastObserved` starts `null` (run() has
+   * never been called on this monitor at all — unchanged prior behaviour,
+   * which callers such as the very first rollout-lanes test rely on: a
+   * network with no ACP-08 wiring calling run() yet is not itself grounds to
+   * refuse). It becomes an explicit `false` only when run() executed and
+   * found nothing to compare, and that is what fails closed here.
+   */
   promotionsAllowed() {
-    return this.openTickets.length === 0;
+    return this.openTickets.length === 0 && this.lastObserved !== false;
   }
 
   ageDays(now = Date.now()) {
