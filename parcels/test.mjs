@@ -22,6 +22,13 @@ const geo = JSON.parse(readFileSync(
   new URL('../geo/registry/campuses_geo.json', import.meta.url)));
 const page = readFileSync(
   new URL('../web/trade_craft_3d.html', import.meta.url), 'utf8');
+const geomapPage = readFileSync(
+  new URL('../web/trade_craft_geomap.html', import.meta.url), 'utf8');
+// the elevation lookup's own trap-guarded implementation lives in ONE place
+// now, web/groundtruth.py's GROUND_TRUTH_JS, inlined into both this page and
+// the geomap rather than typed twice - see that file's own header for why.
+const groundtruth = readFileSync(
+  new URL('../web/groundtruth.py', import.meta.url), 'utf8');
 
 /* ------------------------------------------------------------ contract --- */
 ok('the contract is a source contract: no record is stored, the browser fetches, failure falls back',
@@ -120,10 +127,19 @@ ok('the page implements the elevation lookup declared here, endpoint and query a
   page.includes("D.elevation.endpoint")
   && /function elevationLookup\(/.test(page)
   && /Look up ground elevation/.test(page));
-ok('the page guards the same three traps the registry names',
-  /typeof v === 'string' \? parseFloat\(v\) : v/.test(page)
-  && /catch \(e\) \{/.test(page.split('function elevationLookup(')[1]?.slice(0, 900) ?? '')
-  && /AcquisitionDate/.test(page));
+// the three traps are guarded ONCE, in web/groundtruth.py's shared module -
+// checked at its own source rather than in the built page, so the check
+// still holds however many pages inline it (today: the 3D app AND the
+// geomap - the geomap has no elevation lookup of its own to guard).
+ok('the shared ground-truth module guards the same three traps the registry names',
+  /typeof v === 'string' \? parseFloat\(v\) : v/.test(groundtruth)
+  && /catch \(e\) \{/.test(groundtruth.split('function gtElevationLookup(')[1]?.slice(0, 900) ?? '')
+  && /AcquisitionDate/.test(groundtruth));
+ok('both the 3D app and the geomap inline the SAME shared implementation, not a second copy',
+  page.includes('function gtElevationLookup(D, lat, lng, cb)')
+  && geomapPage.includes('function gtElevationLookup(D, lat, lng, cb)')
+  && page.includes(groundtruth.match(/function gtSingleTileUrl[\s\S]*?\n\}/)[0])
+  && geomapPage.includes(groundtruth.match(/function gtSingleTileUrl[\s\S]*?\n\}/)[0]));
 ok('the lookup is single-point and on demand - a button per card, never fired in bulk',
   /const go = document\.getElementById\('elevGo'\);/.test(page)
   && !/for \(.*elevationLookup/.test(page));

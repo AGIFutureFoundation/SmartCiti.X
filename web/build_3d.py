@@ -42,6 +42,7 @@ sys.path.insert(0, str(ROOT / 'web'))
 from interiors import build as build_interiors  # noqa: E402
 from staleness import emit  # noqa: E402
 from mapdata import strand_modules, PIPELINE_JS, HUES, make_codes  # noqa: E402
+from groundtruth import GROUND_TRUTH_JS  # noqa: E402
 
 manifest = json.load(open(ROOT / 'pack/manifest.json'))
 L = manifest['ledger']
@@ -7004,38 +7005,14 @@ const CITY_S = 13;   // units per real kilometre in the city layer
 /* An institution's panel: the RECORDED coordinate with a live-map link
    built from it, the authored blurb labelled as authored, and the union
    honesty line - hall addresses are not recorded, no local is named. */
-/* elevation: USGS EPQS, one coordinate at a time, never bulk - adopted
-   from Locator.X (src/sources.js, Apache-2.0). See D.elevation. */
-const elevCache = {};
-function elevationLookup(lat, lng, cb) {
-  const key = lat.toFixed(5) + ',' + lng.toFixed(5);
-  if (elevCache[key]) { cb(elevCache[key]); return; }
-  const q = D.elevation.query;
-  const url = D.elevation.endpoint + '?x=' + encodeURIComponent(lng)
-    + '&y=' + encodeURIComponent(lat) + '&units=' + q.units
-    + '&wkid=' + q.wkid + '&includeDate=' + q.includeDate;
-  const done = (o) => { elevCache[key] = o; cb(o); };
-  fetch(url).then((r) => r.text()).then((txt) => {
-    let j = null;
-    try { j = JSON.parse(txt); }
-    catch (e) {
-      done({ ok: false, why: 'The elevation service returned a non-JSON '
-        + 'body for this point, which is how it reports a location '
-        + 'outside its coverage.' });
-      return;
-    }
-    const v = j && j.value;
-    const num = typeof v === 'string' ? parseFloat(v) : v;
-    if (num == null || !isFinite(num)) {
-      done({ ok: false, why: 'No elevation is published for this coordinate.' });
-      return;
-    }
-    done({ ok: true, feet: num,
-      res: j.resolution == null ? null : j.resolution,
-      acquired: (j.attributes && j.attributes.AcquisitionDate) || null });
-  }).catch(() => done({ ok: false,
-    why: 'The elevation service could not be reached from here.' }));
-}
+/* elevation (USGS EPQS) and aerial imagery (USGS National Map): the shared
+   web/groundtruth.py module, so this page and web/build_geomap.py cannot
+   drift into two different answers for the same coordinate. */
+__GROUND_TRUTH_JS__
+// this page's own D is always the first argument the shared module wants;
+// elevationLookup keeps its old two-argument call shape for every existing
+// call site below rather than touching each one.
+function elevationLookup(lat, lng, cb) { gtElevationLookup(D, lat, lng, cb); }
 
 function openCityPoi(name) {
   const p = (D.geo.cityPois?.[campusKey] ?? []).find((x) => x.name === name);
@@ -7064,18 +7041,7 @@ function openCityPoi(name) {
   const go = document.getElementById('elevGo');
   go?.addEventListener('click', () => {
     go.textContent = 'Looking up…'; go.disabled = true;
-    elevationLookup(p.lat, p.lng, (o) => {
-      const row = document.getElementById('elevRow');
-      if (!row) return;
-      row.innerHTML = o.ok
-        ? `<span class="chip" style="border-color:var(--steel);color:var(--steel)">`
-          + `${Math.round(o.feet)} ft</span>`
-          + `<span style="color:var(--muted);font-size:12px"> USGS 3DEP ground `
-          + `elevation at this coordinate${o.res ? ` · ${o.res} ft resolution` : ''}`
-          + `${o.acquired ? ` · surveyed ${o.acquired}` : ''}. `
-          + D.elevation.scope + `</span>`
-        : `<span style="color:var(--crit);font-size:12px">${o.why}</span>`;
-    });
+    gtElevationInto(document.getElementById('elevRow'), D, p.lat, p.lng, false);
   });
 }
 window.__tc3dPoi = openCityPoi;   // test hook
@@ -7104,52 +7070,11 @@ function restoPos(p) {
 // (restoPos above compresses real distance onto a walkable 46-unit
 // radius), so a real photo laid under it would misstate what is real.
 function siteElevation(id, lat, lng) {
-  const row = document.getElementById('elevr-' + id);
-  if (!row) return;
-  row.innerHTML = '<span style="font-size:11px;color:var(--muted)"> looking up…</span>';
-  elevationLookup(lat, lng, (o) => {
-    const r = document.getElementById('elevr-' + id);
-    if (!r) return;
-    r.innerHTML = o.ok
-      ? `<span class="chip" style="font-size:10.5px;border-color:var(--steel);color:var(--steel)">`
-        + `${Math.round(o.feet)} ft</span>`
-        + `<span style="color:var(--muted);font-size:10.5px"> USGS 3DEP ground elevation at this `
-        + `coordinate${o.res ? ` · ${o.res} ft resolution` : ''}. ${D.elevation.scope}</span>`
-      : `<span style="color:var(--crit);font-size:10.5px"> ${o.why}</span>`;
-  });
+  gtElevationInto(document.getElementById('elevr-' + id), D, lat, lng, true);
 }
-function singleTileUrl(lat, lng, z) {
-  const n = 2 ** z;
-  const x = Math.floor((lng + 180) / 360 * n);
-  const la = lat * Math.PI / 180;
-  const y = Math.floor((1 - Math.log(Math.tan(la) + 1 / Math.cos(la)) / Math.PI) / 2 * n);
-  return (SAT_TILES ?? D.imagery.tiles).replace('{z}', z).replace('{y}', y).replace('{x}', x);
-}
+function singleTileUrl(lat, lng, z) { return gtSingleTileUrl(D, lat, lng, z, SAT_TILES); }
 function siteAerial(id, lat, lng) {
-  const box = document.getElementById('satr-' + id);
-  if (!box) return;
-  box.innerHTML = `<span style="font-size:10.5px;color:var(--muted)">Asking ${D.imagery.authority} for orthoimagery…</span>`;
-  const img = new Image();
-  img.crossOrigin = 'anonymous';
-  img.style.cssText = 'display:block;width:170px;height:170px;border-radius:6px;'
-    + 'margin-top:4px;border:1px solid var(--rule);object-fit:cover';
-  img.onload = () => {
-    const b = document.getElementById('satr-' + id);
-    if (!b) return;
-    b.innerHTML = '';
-    b.appendChild(img);
-    const cap = document.createElement('div');
-    cap.style.cssText = 'font-size:10px;color:var(--muted);margin-top:2px;max-width:170px';
-    cap.textContent = D.imagery.attribution + ' - ' + D.imagery.licence + '. ' + D.recHonesty.fidelity;
-    b.appendChild(cap);
-  };
-  img.onerror = () => {
-    const b = document.getElementById('satr-' + id);
-    if (!b) return;
-    b.innerHTML = `<span style="font-size:10.5px;color:var(--crit)">Orthoimagery did not answer from `
-      + `this network. ${D.recHonesty.availability}</span>`;
-  };
-  img.src = singleTileUrl(lat, lng, D.imagery.zoom.max);
+  gtAerialInto(document.getElementById('satr-' + id), D, lat, lng, SAT_TILES);
 }
 window.__tc3dSiteElev = siteElevation;   // test hook
 window.__tc3dSiteAerial = siteAerial;    // test hook
@@ -9609,5 +9534,6 @@ page = page.replace('__DATA__', DATA).replace('__PIPELINE_JS__', PIPELINE_JS)
 page = page.replace('__SIM_JS__', SIM_JS).replace('__XR_JS__', XR_JS)
 page = page.replace('__AVATAR_JS__', AVATAR_JS)
 page = page.replace('__ADVISOR_JS__', ADVISOR_JS)
+page = page.replace('__GROUND_TRUTH_JS__', GROUND_TRUTH_JS)
 out = HERE / 'trade_craft_3d.html'
 emit(out, page, f"{len(HALLS)} halls | {stations_reg['count']} stations | {len(I18N)} locales")

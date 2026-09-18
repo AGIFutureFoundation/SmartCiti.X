@@ -17,6 +17,8 @@ const ok = (m, c) => { if (!c) { console.error('FAIL', m); process.exit(1); } n+
 
 const reg = JSON.parse(readFileSync(new URL('./registry/schools.json', import.meta.url)));
 const page = readFileSync(new URL('../web/trade_craft_3d.html', import.meta.url), 'utf8');
+const pageInteractive = readFileSync(
+  new URL('../web/trade_craft_interactive.html', import.meta.url), 'utf8');
 const campuses = JSON.parse(readFileSync(new URL('../unions/registry/campuses.json', import.meta.url))).campuses;
 const sims = JSON.parse(readFileSync(new URL('../sims/registry/sims.json', import.meta.url)));
 const stations = new Set(JSON.parse(readFileSync(
@@ -99,6 +101,20 @@ ok('the reverse direction is wired too: a hall panel links back to its own flipp
   page.includes('D.schools.units.find((u) => u.hall === sg)')
   && page.includes('data-schools-hall="${esc(sg)}"')
   && page.includes('openSchools(sh.dataset.schoolsHall)'));
+
+/* ---------------------------------------------------- the interactive map --- */
+// The interactive map used to show a hall's toolroom crib but not its
+// Schools flipped unit, even though the 3D app's own hall header does — an
+// audit finding, not a design choice. Every hall with a unit gets a badge;
+// a hall with none gets none (schoolsHallSet marks per-hall, never a blanket
+// "every hall" flag), so the badge can never be invented for a hall that
+// lacks one.
+ok('every hall with a flipped unit is marked schoolsUnit:true on the interactive map, no more and no fewer',
+  reg.units.every((u) => pageInteractive.includes(`"slug":"${u.hall}"`))
+  && (pageInteractive.match(/"schoolsUnit":true/g) || []).length === reg.units.length);
+ok('the interactive map renders a flipped-unit badge only for a hall that has one, deep-linked to the 3D app',
+  pageInteractive.includes('h.schoolsUnit') && pageInteractive.includes('schoolsChip')
+  && pageInteractive.includes('trade_craft_3d.html?hall=${h.slug}'));
 
 const src = readFileSync(new URL('./build.py', import.meta.url));
 ok('the registry was built from the current builder source (stamp check)',

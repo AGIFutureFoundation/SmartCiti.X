@@ -80,13 +80,16 @@ and `web/build_languages.py` — the GENERATOR source, not the built HTML, the
 same distinction `brand/lint.mjs` draws — and fails on any user-visible text
 (a text node, or an `alt`/`title`/`placeholder`/`aria-label` attribute) that
 is not sourced from a catalog lookup (`S('key')` in these three builders).
-Exempt: the brand name and its parts, and two planned-campus place names
-(`Oakland Training Yard`, `SF Bridgehead`) — proper nouns, the same class of
+Exempt: the brand name and its parts — proper nouns, the same class of
 exemption as the 111 untranslated hall names above, not translatable UI
-copy. The lint's own file header documents exactly what counts as in scope
-and why, and its self-test proves the rule catches a hard-coded sentence, a
-hard-coded `alt` attribute and a hard-coded JS string literal before
-trusting it clean.
+copy. (`build_map.py` once also exempted two "planned-campus place names",
+`Oakland Training Yard` and `SF Bridgehead`, drawn on the campus plan as
+dashed `PLANNED · NOT BUILT` parcels; Oakland is a real, built, 32-hall
+campus, and both the parcels and the exemption are gone — see
+`brand/figures.mjs`'s built-campus rule.) The lint's own file header
+documents exactly what counts as in scope and why, and its self-test proves
+the rule catches a hard-coded sentence, a hard-coded `alt` attribute and a
+hard-coded JS string literal before trusting it clean.
 
 ## Surfaces
 

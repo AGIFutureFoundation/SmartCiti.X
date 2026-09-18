@@ -334,17 +334,26 @@ ok('the scene never claims a survey or aerial scan of the real site - it says '
 
 /* ------------------------------------------- real elevation + imagery --- */
 ok('every pinned site offers a real, on-request USGS elevation lookup at its '
-  + 'own coordinate - the same elevationLookup() the city layer\'s own '
-  + 'institution panels already use, never a second copy of that service',
+  + 'own coordinate - the shared web/groundtruth.py lookup the city layer\'s '
+  + 'own institution panels and the geomap\'s markers also use, never a '
+  + 'second copy of that service',
   page3d.includes('function siteElevation(')
-  && page3d.includes('elevationLookup(lat, lng, (o) =>')
+  && page3d.includes('gtElevationInto(document.getElementById(\'elevr-\' + id), D, lat, lng, true)')
   && page3d.includes("data-elev-go=\"${esc(s.id)}\""));
 ok('every pinned site offers a real, on-request USGS aerial-imagery thumbnail '
-  + 'at its own coordinate - the same public-domain tile service the campus '
-  + 'orthoimagery button already uses, never a second copy of that service',
+  + 'at its own coordinate - the same shared, public-domain tile logic the '
+  + 'campus orthoimagery button and the geomap\'s markers also use, never a '
+  + 'second copy of that service',
   page3d.includes('function siteAerial(')
   && page3d.includes('function singleTileUrl(')
+  && page3d.includes('gtAerialInto(document.getElementById(\'satr-\' + id), D, lat, lng, SAT_TILES)')
   && page3d.includes("data-sat-go=\"${esc(s.id)}\""));
+ok('the geomap offers the same real elevation lookup for a pinned restoration '
+  + 'marker\'s own coordinate, from the shared module - not a walkable ground, '
+  + 'still a flat panel result, and still never a second copy of the fetch',
+  geomap.includes('function gtElevationLookup(D, lat, lng, cb)')
+  && geomap.includes("D.geopose.byRef['restoration-site:' + s.id]")
+  && geomap.includes('geoposeLine('));
 ok('both real-data lookups fire only on click (never at build time or on panel '
   + 'open) and fail honestly rather than silently, matching the city layer\'s own pattern',
   page3d.includes("e.target.closest('[data-elev-go]')")

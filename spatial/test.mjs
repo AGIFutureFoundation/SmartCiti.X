@@ -280,6 +280,32 @@ ok('the dashboard embeds geopose.json (as application/geopose+json) and fabric.j
 ok('the wiki has its Spatial-Fabric page',
   existsSync(new URL('../wiki/Spatial-Fabric.md', import.meta.url)));
 
+/* --------------------------------------------------------------- geomap --- */
+// The geomap is the one surface built to be a real WGS84 map, and it drew
+// every campus, anchor and restoration marker without ever mentioning the
+// pose registry that describes those exact points — an audit finding, not
+// a design choice. Every campus and anchor feature now carries its own
+// `geopose` property, joined by build_geomap.py at build time (never typed);
+// the legend states the pose count and the claimed/not-claimed split, and a
+// marker's popup states its own pose line on click.
+const geomap = readFileSync(new URL('../web/trade_craft_geomap.html', import.meta.url), 'utf8');
+const nClaimed = meta.baseline.standards.filter((s) => s.id === 'geopose-1.0').length;
+const nNotClaimed = meta.baseline.not_claimed
+  .filter((x) => ['ombi-spatial-fabric', 'ombi-som', 'rmap'].includes(x.id)).length;
+ok('the geomap legend states the GeoPose pose count and the claimed / not-claimed split',
+  geomap.includes(`GeoPose 1.0</b> pose (${gp.counts.total} total`)
+  && geomap.includes(`${nClaimed} claimed standard / ${nNotClaimed} not-claimed`));
+ok('the geomap carries the exact height/heading honesty line, unabridged, not softened',
+  geomap.includes(H.no_heights_or_headings));
+ok('every campus and anchor feature on the geomap carries its own GeoPose ref, joined at build time - not retyped',
+  (geomap.match(/"geopose":\{"ref":"campus:/g) || []).length === gp.counts.campuses
+  && (geomap.match(/"geopose":\{"ref":"anchor:/g) || []).length === gp.counts.anchors);
+ok('a marker\'s popup renders its own pose line on click, position provenance included',
+  geomap.includes('function geoposeLine(pose)') && geomap.includes('pose.position_provenance'));
+ok('the geomap offers the shared on-request elevation/aerial lookup at a campus, anchor and restoration marker - never invented for a route or a city frame',
+  geomap.includes('function groundTruthButtons(lat, lng)')
+  && geomap.includes("(!p.kind || p.kind === 'anchor') && f.geometry.type === 'Point'"));
+
 const src = readFileSync(new URL('./build.py', import.meta.url));
 ok('all three registries were built from the current builder source (stamp check)',
   [gp, fab, som].every((d) => d.source_stamp === createHash('sha256').update(src).digest('hex').slice(0, 16)));

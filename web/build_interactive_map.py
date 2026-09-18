@@ -44,6 +44,15 @@ districts_reg = json.load(open(ROOT / 'unions/registry/districts.json'))['distri
 campuses_reg = json.load(open(ROOT / 'unions/registry/campuses.json'))['campuses']
 stations_reg = json.load(open(ROOT / 'stations/registry/stations.json'))
 tools_reg = json.load(open(ROOT / 'tools/registry/toolcribs.json'))
+# The other three per-hall facts the 3D app's hall header shows and this
+# panel didn't: a simulator seat (sims/), a Schools flipped unit (schools/),
+# and the regional chapter seats every hall holds (unions/). No walkability
+# distinction applies to any of the three, so there is no overclaim risk in
+# showing them here the way there is for a restoration site's walk status.
+sims_reg = json.load(open(ROOT / 'sims/registry/sims.json'))
+schools_reg = json.load(open(ROOT / 'schools/registry/schools.json'))
+chapters_reg = json.load(open(ROOT / 'unions/registry/chapters.json'))
+schools_hall_set = {u['hall'] for u in schools_reg['units']}
 
 # District hues: eight values far enough apart to read as categories.
 assert set(HUES) == set(districts_reg), 'every district needs a hue'
@@ -96,6 +105,12 @@ HALLS = [{
     'lay': LAY_IDX[h['slug']],
     'depth': plans[h['slug']]['envelope']['d'],
     'stations': [s['station_id'] for s in stations_by_hall.get(h['slug'], [])],
+    # the first bound simulator seat, if this hall has one (sims/registry/
+    # sims.json hall_bindings) — a hall can bind more than one machine; the
+    # first is the hall's own, the same rule build_3d.py's seatOf() uses
+    'sim': (lambda bl: {'id': bl[0]['sim'], 'name': sims_reg['sims'][bl[0]['sim']]['name']}
+            if bl else None)(sims_reg['hall_bindings'].get(h['slug'], [])),
+    'schoolsUnit': h['slug'] in schools_hall_set,
 } for h in halls_json]
 
 DISTRICTS = {k: {'name': d['name'], 'tagline': d['tagline'],
@@ -124,6 +139,19 @@ DATA = json.dumps({
     'tools': {'cribs': tools_reg['cribs'],
               'drill': tools_reg['drill']['name'],
               'honesty': tools_reg['honesty']['status']},
+    # chapter seats: every hall's home campus plus its regional seat at
+    # every other campus (unions/registry/chapters.json) — an Academy
+    # training structure, never a claim about a real union local, so it is
+    # shown as a stat chip, never as a place (build_3d.py's own comment on
+    # this same fact: "an Academy structure only").
+    'chapters': {'of': {slug: c['home'] for slug, c in chapters_reg['chapters'].items()},
+                 'regions': {k: v['abbr'] for k, v in chapters_reg['regions'].items()},
+                 'honesty': chapters_reg['honesty']['chapters']},
+    # the one simulator record a hall's badge needs, keyed for the panel —
+    # full seat detail (controls, rubric, scenarios) stays in the 3D app,
+    # which is what the badge deep-links to.
+    'simsHonesty': sims_reg['honesty']['status'],
+    'schoolsHonesty': schools_reg['honesty']['districts'],
     'strandmods': strand_modules(),
     'i18n': I18N,
 }, ensure_ascii=False, separators=(',', ':'))
@@ -378,6 +406,22 @@ function openHall(slug){
       ['fundamentals','applied','mastery'].map(tier => {
         const seeded = h.stations.some(id => D.stations[id].strand===sk && D.stations[id].tier===tier);
         return `<div class="${seeded?'on':''}">${seeded?'●':'·'}</div>`; }).join('')).join('');
+  // the other three per-hall facts the 3D app's own header shows: a
+  // simulator seat and a Schools flipped unit are not held by every hall
+  // (45/111 each, sims/ and schools/), so each badge appears only when
+  // this hall's own record has one — never invented for a hall without
+  // one. Regional chapter seats are an Academy training structure every
+  // hall holds at every campus, never a place (a stat chip, not a link).
+  const simChip = h.sim
+    ? `<a class="chip" href="trade_craft_3d.html?hall=${h.slug}&lang=${loc}"
+        style="color:var(--warn);border-color:var(--warn)">▶ ${h.sim.name}</a>` : '';
+  const schoolsChip = h.schoolsUnit
+    ? `<a class="chip" href="trade_craft_3d.html?hall=${h.slug}&lang=${loc}"
+        style="color:var(--mark);border-color:var(--mark)">🎓 ${t('hall.flippedUnit')}</a>` : '';
+  const home = D.chapters.of[h.slug];
+  const chapterChip = `<span class="chip" title="${D.chapters.honesty}">⌂ `
+    + Object.entries(D.chapters.regions)
+        .map(([ck, ab]) => ck === home ? `<b>${ab}</b>` : ab).join(' · ') + '</span>';
   history.replaceState(null, '', `?hall=${slug}&lang=${loc}`);
   document.getElementById('pbody').innerHTML = `
     <h2>${h.name}</h2><p class="focus">${h.focus}</p>
@@ -386,6 +430,7 @@ function openHall(slug){
     <span class="chip">${F(h.lessons)} · ${fmt(t('figures.lessons'),{n:''}).trim()}</span>
     <span class="chip">${fmt(t('figures.modules'),{n:F(h.modules)})}</span>
     <a class="chip" id="to3d" href="trade_craft_3d.html?hall=${h.slug}&lang=${loc}" style="color:var(--steel);border-color:var(--steel)">⬡ ${t('hall.enter3d')}</a>
+    ${simChip}${schoolsChip}${chapterChip}
     <h3>${t('map.layer.pipeline')}</h3><div class="cbar">${cbar}</div><div class="ckey">${ckey}</div>
     <h3>${t('hall.rooms')}</h3>${planSVG(h)}
     <h3>🧰 ${D.tools.cribs[h.district].name}</h3>

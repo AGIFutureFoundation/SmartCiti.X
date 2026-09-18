@@ -1,10 +1,21 @@
 #!/usr/bin/env python3
-"""The network map: every union hall on the Treasure Island campus.
+"""The network's union halls, drawn by district — not one campus.
+
+Until this file, the plan called itself a single Treasure Island site, drew
+Oakland — a real, built, 32-hall campus — as a dashed `PLANNED . NOT BUILT`
+parcel, and folded all ten campuses' halls into that one place. The network
+grew to ten built campuses (unions/registry/campuses.json) before this page
+did; the framing is fixed here rather than carried forward again.
 
 Geometry and every number come from the registry pack, so the map cannot
-disagree with the ledger. Hall colours come from brand/identity.mjs's livery
-function, reimplemented here with the SAME hash so the two agree — the values
-are asserted against a fixture below rather than trusted.
+disagree with the ledger. Each district's campus attribution is read from
+unions/registry/campuses.json (built campuses only — a campus that owns no
+district has no halls to draw here), so this page cannot itself misstate
+which campus a district belongs to, and brand/figures.mjs's built-campus
+rule catches any surface, this one included, that calls a built campus
+planned. Hall colours come from brand/identity.mjs's livery function,
+reimplemented here with the SAME hash so the two agree — the values are
+asserted against a fixture below rather than trusted.
 """
 import json, pathlib, html, subprocess, sys
 
@@ -70,10 +81,19 @@ unions = {u['slug']: u for u in halls_json}
 manifest = json.load(open(PACKS / 'pack/manifest.json'))
 SHAPE = manifest['ledger']
 
+# Campus attribution, read from the registry rather than assumed: a campus
+# with no districts is a roadmap hub campus (a chapter seat, no halls of its
+# own — roadmap/registry/roadmap.json), so it contributes nothing here.
+_campuses_json = json.load(open(PACKS / 'unions/registry/campuses.json'))['campuses']
+DISTRICT_CAMPUS = {dk: c['name']
+                   for c in _campuses_json.values() for dk in c['districts']}
+CAMPUS_NAMES = sorted({c['name'] for c in _campuses_json.values() if c['districts']})
+
 CODES = None   # filled after make_codes is defined
 DISTRICTS = [(k, n, b, slugs) for k, (n, b, slugs) in DISTRICT_MAP.items()]
 assert sum(len(d[3]) for d in DISTRICTS) == SHAPE['halls']
 assert {s for d in DISTRICTS for s in d[3]} == set(unions), 'districts must match the pack'
+assert set(DISTRICT_CAMPUS) == set(DISTRICT_MAP), 'every drawn district needs a built campus'
 
 
 def pipeline_state(hall_idx, level):
@@ -140,9 +160,11 @@ CODES = make_codes([(h['slug'], h['name']) for h in halls_json])
 halls, bands = [], []
 y = TOP
 for key, name, blurb, slugs in DISTRICTS:
+    campus = DISTRICT_CAMPUS[key]
     rows = -(-len(slugs) // COLS)
     band_h = HEAD_H + rows * PAD_H + (rows - 1) * GAP_Y + 16
     bands.append({'key': key, 'name': name, 'blurb': blurb, 'n': len(slugs),
+                  'campus': campus,
                   'x': BAND_X - 16, 'y': y, 'w': BAND_W + 32, 'h': band_h})
     for i, slug in enumerate(slugs):
         c, r = i % COLS, i // COLS
@@ -156,7 +178,7 @@ for key, name, blurb, slugs in DISTRICTS:
         hue, chip = livery(slug)
         halls.append({
             'slug': slug, 'name': u['name'], 'focus': u['focus'], 'code': CODES[slug],
-            'district': key, 'district_name': name,
+            'district': key, 'district_name': name, 'campus': campus,
             'x': round(px, 1), 'y': round(py, 1), 'w': PAD_W, 'h': PAD_H,
             'hue': hue, 'chip': chip,
             'modules': state[slug]['n'],
@@ -166,8 +188,12 @@ for key, name, blurb, slugs in DISTRICTS:
         })
     y += band_h + 18
 
-PLANNED_Y = y + 6
-SHEET_H = PLANNED_Y + 150
+# No "planned, not built" band: the roadmap is ten of ten built campuses and
+# zero candidates (roadmap/registry/roadmap.json — target met, not exceeded),
+# so there is nothing left on this network to draw as unbuilt. What follows
+# is a plain footer strip for the scale bar and the title block.
+FOOT_Y = y + 6
+SHEET_H = FOOT_Y + 100
 
 TOTALS = {k: sum(h[k] for h in halls) for k in ('modules', 'live', 'calibrating', 'schema_ok', 'draft')}
 TOTALS['all'] = TOTALS['modules'] + SHAPE['shared_library_modules']
@@ -208,8 +234,10 @@ assert NEED <= PAD_W, (
 
 DATA = {
     'halls': halls,
-    'districts': [{'key': b['key'], 'name': b['name'], 'blurb': b['blurb'], 'n': b['n']} for b in bands],
+    'districts': [{'key': b['key'], 'name': b['name'], 'blurb': b['blurb'],
+                   'n': b['n'], 'campus': b['campus']} for b in bands],
     'totals': TOTALS,
+    'campusNames': CAMPUS_NAMES,
 }
 
 # ------------------------------------------------------------- render ----
@@ -219,7 +247,8 @@ BAND_SVG = ''.join(
     f'<g class="band" data-d="{b["key"]}">'
     f'<rect x="{b["x"]}" y="{b["y"]}" width="{b["w"]}" height="{b["h"]}" rx="4"/>'
     f'<text class="dlabel" x="{b["x"]+16}" y="{b["y"]+27}">{html.escape(b["name"])}</text>'
-    f'<text class="dsub" x="{b["x"]+16}" y="{b["y"]+41}">{b["n"]} halls &#183; {html.escape(b["blurb"])}</text>'
+    f'<text class="dsub" x="{b["x"]+16}" y="{b["y"]+41}">{b["n"]} halls &#183; '
+    f'{html.escape(b["campus"])} &#183; {html.escape(b["blurb"])}</text>'
     f'</g>'
     for b in bands)
 
@@ -302,7 +331,6 @@ aside{{border-inline-end:1px solid var(--rule);padding:20px;display:flex;flex-di
 .key i{{width:11px;height:11px;border-radius:2px;flex:0 0 auto}}
 .key .swatch-live{{background:var(--good)}} .key .swatch-cal{{background:var(--warn)}}
 .key .swatch-sch{{background:var(--steel)}} .key .swatch-dra{{background:var(--rule);border:1px solid var(--muted)}}
-.key .swatch-soon{{background:transparent;border:1px dashed var(--steel)}}
 
 /* ---- the plan ---- */
 .plan{{position:relative;padding:22px;display:grid;gap:0;align-content:start}}
@@ -321,10 +349,6 @@ svg.map{{display:block;width:100%;height:auto;min-width:940px}}
 .road{{stroke:var(--steel);stroke-width:2.5;fill:none;opacity:.5}}
 .roadlbl{{font-family:"IBM Plex Mono",monospace;font-size:9.5px;fill:var(--steel-ink);
   letter-spacing:.1em;text-transform:uppercase}}
-.soon rect{{fill:none;stroke:var(--steel);stroke-width:1.2;stroke-dasharray:6 5;opacity:.8}}
-.soon text{{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:13px;
-  text-transform:uppercase;fill:var(--steel-ink);letter-spacing:.06em}}
-.soon .st{{font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.1em;fill:var(--muted)}}
 
 .hall{{cursor:pointer}}
 .hall .pad{{fill:var(--panel);stroke:var(--rule);stroke-width:1;rx:3}}
@@ -398,6 +422,11 @@ svg.floor{{display:block;width:100%;height:auto;background:var(--sunk);
 .legrow i{{width:9px;height:9px;border-radius:2px}}
 footer{{padding:26px 22px 40px;color:var(--muted);font-size:13px;border-top:1px solid var(--rule)}}
 footer p{{max-width:78ch;margin:0 0 8px}}
+.sheetnav{{display:flex;flex-wrap:wrap;gap:6px 16px;padding:8px 22px;
+  border-bottom:1px solid var(--rule);background:var(--panel)}}
+.sheetnav a{{color:var(--steel);text-decoration:none;font-size:12px;
+  font-family:"IBM Plex Mono",monospace;letter-spacing:.04em}}
+.sheetnav a:hover{{text-decoration:underline}}
 :focus-visible{{outline:2px solid var(--mark);outline-offset:2px}}
 </style>
 
@@ -418,9 +447,16 @@ footer p{{max-width:78ch;margin:0 0 8px}}
     <div><b>{SHAPE['halls']}</b><span>{S('map.meta.halls')}</span></div>
     <div><b class="mono">{TOTALS['all']:,}</b><span>{S('map.meta.modules')}</span></div>
     <div><b class="mono">{TOTALS['live']:,}</b><span>{S('map.meta.live')}</span></div>
-    <div><b>TI-01</b><span>{S('map.meta.sheet')}</span></div>
+    <div><b>NET-01</b><span>{S('map.meta.sheet')}</span></div>
   </div>
 </header>
+<nav class="sheetnav" aria-label="{S('map.nav.aria')}">
+  <a href="trade_craft_3d.html">⬡ {S('map.nav.3d')}</a>
+  <a href="trade_craft_interactive.html">▦ {S('map.nav.interactive')}</a>
+  <a href="trade_craft_geomap.html">🌐 {S('map.nav.geomap')}</a>
+  <a href="trade_craft_dashboard.html">📊 {S('map.nav.dashboard')}</a>
+  <a href="../wiki/Home.md">📖 {S('map.nav.wiki')}</a>
+</nav>
 
 <div class="shell">
   <aside>
@@ -435,36 +471,25 @@ footer p{{max-width:78ch;margin:0 0 8px}}
         <div><i class="swatch-cal"></i> {S('map.key.calibrating')}</div>
         <div><i class="swatch-sch"></i> {S('map.key.schema_ok')}</div>
         <div><i class="swatch-dra"></i> {S('map.key.draft')}</div>
-        <div><i class="swatch-soon"></i> {S('map.key.planned')}</div>
       </div>
     </div>
   </aside>
 
   <div class="plan">
     <div class="planwrap">
-      <svg class="map" viewBox="0 0 1000 {SHEET_H}" role="img" aria-label="{S('map.aria.plan').format(n=SHAPE['halls'])}">
+      <svg class="map" viewBox="0 0 1000 {SHEET_H}" role="img" aria-label="{S('map.aria.plan').format(n=SHAPE['halls'], c=len(CAMPUS_NAMES))}">
         <rect class="water" x="0" y="0" width="1000" height="{SHEET_H}"/>
         <path class="land" d="M40 56 L960 56 Q978 56 978 74 L978 {SHEET_H - 70} Q978 {SHEET_H - 52} 960 {SHEET_H - 52} L260 {SHEET_H - 52} Q214 {SHEET_H - 52} 184 {SHEET_H - 84} L52 {SHEET_H - 232} Q40 {SHEET_H - 246} 40 {SHEET_H - 266} Z"/>
         <path class="road" d="M0 {TOP - 34} L978 {TOP - 34}"/>
         <text class="roadlbl" x="{BAND_X}" y="{TOP - 40}">{S('map.entry_road')}</text>
         <g>{GRID}</g>
         {BAND_SVG}
-        <g class="soon">
-          <rect x="{BAND_X}" y="{PLANNED_Y}" width="404" height="52" rx="4"/>
-          <text x="{BAND_X + 16}" y="{PLANNED_Y + 24}">Oakland Training Yard</text>
-          <text class="st" x="{BAND_X + 16}" y="{PLANNED_Y + 40}">{S('map.state_planned')}</text>
-        </g>
-        <g class="soon">
-          <rect x="{BAND_X + 420}" y="{PLANNED_Y}" width="404" height="52" rx="4"/>
-          <text x="{BAND_X + 436}" y="{PLANNED_Y + 24}">SF Bridgehead</text>
-          <text class="st" x="{BAND_X + 436}" y="{PLANNED_Y + 40}">{S('map.state_planned')}</text>
-        </g>
         <g id="halls"></g>
         <g transform="translate(922,{TOP - 46})">
           <path class="narrow" d="M0 -13 L6 8 L0 3 L-6 8 Z"/>
           <text class="scale-t" x="-4" y="22">N</text>
         </g>
-        <g transform="translate({BAND_X},{PLANNED_Y + 96})">
+        <g transform="translate({BAND_X},{FOOT_Y + 30})">
           <line class="scale-b" x1="0" y1="0" x2="120" y2="0"/>
           <line class="scale-b" x1="0" y1="-4" x2="0" y2="4"/>
           <line class="scale-b" x1="60" y1="-3" x2="60" y2="3"/>
@@ -472,13 +497,13 @@ footer p{{max-width:78ch;margin:0 0 8px}}
           <text class="scale-t" x="0" y="16">0</text>
           <text class="scale-t" x="104" y="16">200m</text>
         </g>
-        <g transform="translate({BAND_X + 480},{PLANNED_Y + 66})">
+        <g transform="translate({BAND_X + 480},{FOOT_Y})">
           <rect class="titleblock" x="0" y="0" width="344" height="80" rx="3"/>
           <text class="tb-t" x="14" y="24">{S('map.titleblock.title')}</text>
           <text class="tb-b" x="14" y="41">SmartCiti.X : Trade Craft Academy</text>
           <line x1="14" y1="49" x2="330" y2="49" stroke="var(--rule)" stroke-width="1"/>
-          <text class="tb-k" x="14" y="61">{S('map.titleblock.sheet')}</text><text class="tb-v" x="14" y="73">TI-01</text>
-          <text class="tb-k" x="90" y="61">{S('map.titleblock.rev')}</text><text class="tb-v" x="90" y="73">2.7</text>
+          <text class="tb-k" x="14" y="61">{S('map.titleblock.sheet')}</text><text class="tb-v" x="14" y="73">NET-01</text>
+          <text class="tb-k" x="90" y="61">{S('map.titleblock.rev')}</text><text class="tb-v" x="90" y="73">3.0</text>
           <text class="tb-k" x="146" y="61">{S('map.titleblock.halls')}</text><text class="tb-v" x="146" y="73">{SHAPE['halls']}</text>
           <text class="tb-k" x="206" y="61">{S('map.titleblock.modules')}</text><text class="tb-v" x="206" y="73">{TOTALS['all']:,}</text>
           <text class="tb-k" x="286" y="61">{S('map.titleblock.issued')}</text><text class="tb-v" x="286" y="73">{S('map.titleblock.review')}</text>
@@ -517,7 +542,8 @@ let filter = null, selected = DATA.halls[0].slug;
 const dlist = document.getElementById('dlist');
 dlist.innerHTML = DATA.districts.map((d) =>
   `<button class="dbtn" data-d="${{d.key}}" aria-pressed="false">
-     <b>${{d.name}}</b><span class="n">${{d.n}}</span><small>${{d.blurb}}</small></button>`).join('');
+     <b>${{d.name}}</b><span class="n">${{d.n}}</span>
+     <small>${{d.campus}} &#183; ${{d.blurb}}</small></button>`).join('');
 
 const hallsG = document.getElementById('halls');
 hallsG.innerHTML = DATA.halls.map((h) => {{
@@ -566,7 +592,7 @@ function renderDetail(slug) {{
     <div class="dhead">
       <h2 style="color:${{h.chip}}">${{h.name}}</h2>
       <span class="ref mono">${{h.code}} · GRID ${{h.ref}}</span>
-      <span class="dist" style="color:${{h.chip}}">${{h.district_name}}</span>
+      <span class="dist" style="color:${{h.chip}}">${{h.district_name}} &#183; ${{h.campus}}</span>
     </div>
     <p>${{h.focus}}.</p>
     <div class="stack">${{seg('live')}}${{seg('calibrating')}}${{seg('schema_ok')}}${{seg('draft')}}</div>

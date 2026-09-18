@@ -42,11 +42,12 @@
  *   - the brand name and its parts ("SmartCiti.X", "Trade Craft Academy",
  *     "AGI Corp", "AGI Future Foundation", "powered by AGI Corp") — identity,
  *     not translatable copy, the same exemption brand/lint.mjs itself
- *     carries for the rule table that names the brand;
- *   - two planned-campus place names, "Oakland Training Yard" and
- *     "SF Bridgehead" — proper nouns, the same class of exemption as the
- *     111 hall names i18n/README.md documents as staying in English by
- *     design, not translatable UI chrome. Documented here AND there.
+ *     carries for the rule table that names the brand. (build_map.py once
+ *     also exempted two "planned-campus place names", Oakland Training
+ *     Yard and SF Bridgehead — drawn as dashed `PLANNED . NOT BUILT`
+ *     parcels. Oakland is a real, built, 32-hall campus, so both the
+ *     exemption and the parcels are gone, and brand/figures.mjs now has a
+ *     rule that catches any surface calling a built campus planned.)
  *
  *   node i18n/lint_hardcoded.mjs
  *
@@ -65,16 +66,13 @@ const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const EXEMPT_EXACT = new Set([
   'SmartCiti.X', 'Trade Craft Academy', 'AGI Corp', 'AGI Future Foundation',
   'powered by AGI Corp', 'SmartCiti', 'Trade Craft', 'Academy',
-  // planned-campus place names — see file-header note above and
-  // i18n/README.md's hall-name exemption, the same class of proper noun.
-  'Oakland Training Yard', 'SF Bridgehead',
 ]);
 // Also strip the brand name where it appears INSIDE a longer literal (e.g.
 // "SmartCiti.X : Trade Craft Academy" in a title-block <text>), so what is
 // left over is judged on its own.
 const EXEMPT_SUBSTRINGS = [
   'SmartCiti.X : Trade Craft Academy', 'SmartCiti.X', 'Trade Craft Academy',
-  'AGI Future Foundation', 'AGI Corp', 'Oakland Training Yard', 'SF Bridgehead',
+  'AGI Future Foundation', 'AGI Corp',
 ];
 
 /**
@@ -281,5 +279,4 @@ if (hits.length) {
   process.exit(1);
 }
 console.log('lint_hardcoded: web/build_landing.py, web/build_map.py and web/build_languages.py '
-  + 'carry zero hard-coded English strings (brand name and planned-campus place names exempted, '
-  + 'see this file\'s header)');
+  + 'carry zero hard-coded English strings (brand name exempted, see this file\'s header)');
