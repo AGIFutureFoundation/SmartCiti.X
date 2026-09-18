@@ -190,7 +190,8 @@ def build_fabric(mentors: dict, halls: dict, checkpoint_uri: str):
 
 
 # ----------------------------------------------------------------- rollout ---
-# Ship hall by hall (ACP-13 §14.2): canary 1 hall (5% of network) -> 5 halls ->
-# all 33, with automatic rollback on ACP-08 stop conditions. No mentor version
+# Ship hall by hall (ACP-13 §14.2): canary 1 hall -> a wave of 5 -> the full
+# network (ops/rollout.mjs LANES; read live from the pack, not typed here),
+# with automatic rollback on ACP-08 stop conditions. No mentor version
 # reaches a canary until it has passed all five gates in evals.mjs.
 PILOT_HALLS = ["welders", "ironworkers"]

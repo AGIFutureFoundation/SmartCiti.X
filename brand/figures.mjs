@@ -19,10 +19,16 @@
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, extname, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { LANES } from '../ops/rollout.mjs';
 
 const ROOT = fileURLToPath(new URL('..', import.meta.url));
 const manifest = JSON.parse(readFileSync(join(ROOT, 'pack/manifest.json'), 'utf8'));
 const L = manifest.ledger;
+// The rollout lane counts: read from ops/rollout.mjs LANES, the tested
+// source, after the spec, the roadmap and the code stated three different
+// cadences for the same three lanes (1/5/111, 1/5/33 and a never-implemented
+// 4/33/111). One truth per fact — prose follows the tested lanes.
+const [LANE_CANARY, LANE_WAVE, LANE_FULL] = LANES.map((l) => l.halls);
 // The counts that drifted in prose while the halls figure was policed: the
 // campus network ("five-campus"), the hub count ("two hub campuses"), the
 // simulator roster ("seven simulators") and the halls a seat is bound to
@@ -82,6 +88,28 @@ const RULES = [
   // so a miss is a rule to add, not a reason to trust the pass.
   { wrong: /\b33 halls\b/g, right: `${L.halls} halls`,
     why: `the network is ${L.halls} halls` },
+  // ACP-13 §14.2 rollout lanes: the spec said "canary = 1 hall (5% of
+  // network), then 5 halls, then all 33"; the roadmap invented a cadence
+  // never implemented ("flagship 4 → the 33 founding halls → the full
+  // 111"); the code (ops/rollout.mjs LANES, imported above, not
+  // retyped) is canary 1 hall, wave 5 halls, full network. Any prose
+  // that states a different canary/wave count, or a lane named
+  // "founding" or "flagship", is a fourth opinion about a fact the code
+  // already settles.
+  // "all 33 seat-x-yard combinations" (sims/) is an unrelated fact (11 seats
+  // x 3 yards) that happens to share the digits; the lookahead excludes it.
+  { wrong: /\ball 33\b(?!\s*seat-x-yard)/g, right: `all ${F(LANE_FULL)}`,
+    why: `the full lane is ${LANE_FULL} halls, read live from the pack (ops/rollout.mjs LANES)` },
+  { wrong: /\bflagship\s+\d+\s*(?:halls?)?\s*(?:→|->)/gi,
+    right: `canary (${LANE_CANARY} hall) →`,
+    why: `ops/rollout.mjs LANES has no "flagship" lane; the first lane is canary, ${LANE_CANARY} hall` },
+  { wrong: new RegExp(`\\b(?:${notN(LANE_WAVE)}) founding halls\\b`, 'gi'),
+    right: `${LANE_WAVE} halls`,
+    why: `the wave lane is ${LANE_WAVE} halls (ops/rollout.mjs LANES), not a named "founding" cohort` },
+  { wrong: /\(5% of network\)/g, right: `(${Math.round((LANE_CANARY / LANE_FULL) * 100)}% of network)`,
+    why: `canary is ${LANE_CANARY} of ${LANE_FULL} halls (ops/rollout.mjs LANES), not the 33-hall-network percentage` },
+  { wrong: /~3% of the network/g, right: `~${Math.round((LANE_CANARY / LANE_FULL) * 100)}% of the network`,
+    why: `canary is ${LANE_CANARY} of ${LANE_FULL} halls (ops/rollout.mjs LANES), not the 33-hall-network percentage` },
   // Added after "The five-campus network" survived on the landing page
   // through five hub-campus merges: the campus count was never a rule.
   { wrong: new RegExp(`\\b(?:${notN(N_CAMPUSES)})-campus network\\b`, 'gi'),
@@ -105,19 +133,22 @@ const RULES = [
     why: `the network is ${N_CAMPUSES} planned locations (unions/registry/campuses.json)` },
   // The avatar locker: standard sections, the crew section and the options
   // they hold. Any three-digit "N options" that is not the standard total,
-  // the crew total or the grand total is a stale locker figure.
-  { wrong: new RegExp(`\\b(?:${notN(N_AV_STD_SECTIONS)}) standard sections\\b`, 'gi'),
+  // the crew total or the grand total is a stale locker figure. Whitespace-
+  // tolerant the way the "on one campus" rule above is, for the same reason:
+  // a line break between the number and the word is still the same claim.
+  { wrong: new RegExp(`\\b(?:${notN(N_AV_STD_SECTIONS)})\\s+standard\\s+sections\\b`, 'gi'),
     right: `${N_AV_STD_SECTIONS} standard sections`,
     why: `the locker has ${N_AV_STD_SECTIONS} standard sections + 1 crew section = ${N_AV_SECTIONS} (avatars/registry/avatars.json)` },
-  { wrong: new RegExp(`\\b(?:${notN(N_AV_SECTIONS)}) locker sections\\b`, 'gi'),
+  { wrong: new RegExp(`\\b(?:${notN(N_AV_SECTIONS)})\\s+locker\\s+sections\\b`, 'gi'),
     right: `${N_AV_SECTIONS} locker sections`,
     why: `the locker has ${N_AV_SECTIONS} sections in all (avatars/registry/avatars.json)` },
-  { wrong: new RegExp(`\\b(?!(?:${N_AV_STD_OPTIONS}|${N_AV_CREW_LOOKS}|${N_AV_OPTIONS})\\b)\\d{3} options\\b`, 'g'),
+  { wrong: new RegExp(`\\b(?!(?:${N_AV_STD_OPTIONS}|${N_AV_CREW_LOOKS}|${N_AV_OPTIONS})\\b)\\d{3}\\s+options\\b`, 'g'),
     right: `${N_AV_STD_OPTIONS} options (standard) / ${N_AV_OPTIONS} options (with the ${N_AV_CREW_LOOKS}-look crew section)`,
     why: `the locker holds ${N_AV_STD_OPTIONS} standard options + ${N_AV_CREW_LOOKS} crew looks = ${N_AV_OPTIONS} (avatars/registry/avatars.json)` },
   // The schools pack's proposed-district records: four records across the
-  // three district-campus regions, and the count is the records, not the regions.
-  { wrong: new RegExp(`\\b(?:${notN(N_SCHOOL_DISTRICTS)}) proposed (?:school[- ])?districts?\\b`, 'gi'),
+  // three district-campus regions, and the count is the records, not the
+  // regions. Same whitespace tolerance as the rules above.
+  { wrong: new RegExp(`\\b(?:${notN(N_SCHOOL_DISTRICTS)})\\s+proposed\\s+(?:school[- ])?districts?\\b`, 'gi'),
     right: `${N_SCHOOL_DISTRICTS} proposed districts`,
     why: `the registry holds ${N_SCHOOL_DISTRICTS} proposed-district records (schools/registry/schools.json)` },
 ];

@@ -142,10 +142,22 @@ gates doing their job on real halls.
 
 ### Workstreams
 
-1. **Staged hall rollout.** Waves per `ops/rollout.mjs` lanes: flagship 4 →
-   the 33 founding halls → the full 111. Each wave holds its dwell window
-   (no `Infinity` defaults — §23.1), passes its stop conditions, and can
-   roll back without data loss.
+1. **Staged hall rollout.** Waves per `ops/rollout.mjs` lanes: canary (1
+   hall) → wave (5 halls) → the full network (111 halls, read live from the
+   pack). Each wave holds its dwell window (no `Infinity` defaults —
+   §23.1), passes its stop conditions, and can roll back without data loss.
+   *Status:* `ops/rehearsal.mjs` drives one content rollout through every
+   gate — the dwell gate with no observation reported, a red parity ticket
+   and its close, an ACP-08 halt and the auto-rollback it triggers, the
+   dial-params shadow run, a parity job that never runs (driven through the
+   real `Scheduler`, not faked) halting the network on its own, and the full
+   canary → wave → full walk — against seeded synthetic cohorts, with every
+   step asserted against the resulting audit trail rather than a return
+   value alone. That proves the lane machinery enforces what it claims.
+   It does not ship anything: there is no deployment and no real learner
+   behind any hall count in that run, so a rehearsal against synthetic
+   cohorts is not a wave shipped to real halls, and the exit criterion below
+   stays **not met**.
 2. **Security launch checklist.** Every open item in `SECURITY.md` closed or
    explicitly accepted by name; deny-by-default authz, tenant isolation and
    rate limiting re-verified against the §23.1 fail-open classes.
@@ -211,6 +223,13 @@ gates doing their job on real halls.
 
 - Rollout lanes complete for wave 1 with audit evidence; cost governor live
   and provably unable to throttle the control plane.
+  *Status:* the cost governor half is met — `ops/jobs.mjs`'s `CostGovernor`
+  is built and tested, and the control plane is structurally un-throttleable
+  (`bus/test_safeguards.mjs`, `ops/test.mjs`, `ops/fuzz.mjs`). The lanes half
+  is not: `ops/rehearsal.mjs` rehearses every gate end to end with audit
+  evidence against seeded synthetic cohorts, which is what this repo can
+  honestly produce with no deployment and no real learners, but a rehearsal
+  is not wave 1 complete. **Not yet met.**
 - Security checklist at zero open unaccepted items.
   *Status:* **not met** — `SECURITY.md` now carries the checklist as a status
   table; the in-repo items are built and tested, the remaining items need
