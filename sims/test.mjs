@@ -269,6 +269,23 @@ ok('a single headless run hands the launching view back exactly as the sweep doe
   && /run\(simId, scenarioId, o = \{\}\) \{[\s\S]{0,400}finally \{ opViewRestore\(before\); \}/.test(page)
   && /async function opSweep\([\s\S]{0,1200}opViewRestore\(before\);[\s\S]{0,120}return \{ recorded: trainingOn, rows \}/.test(page));
 
+/* ---------------------------------------------------- the interactive map --- */
+// The interactive map used to show a hall's toolroom crib but not its
+// bound simulator seat, even though the 3D app's own hall header offers
+// the seat via its simBtn toolbar button. Every bound hall gets a badge
+// naming its first bound seat (the same "hall's own" rule build_3d.py's
+// seatOf() uses); an unbound hall gets none.
+const pageInteractive = readFileSync(
+  new URL('../web/trade_craft_interactive.html', import.meta.url), 'utf8');
+ok('every bound hall carries its first seat\'s id and real name on the interactive map, no more and no fewer',
+  Object.entries(reg.hall_bindings).every(([hall, bl]) =>
+    pageInteractive.includes(`"slug":"${hall}"`)
+    && pageInteractive.includes(`"sim":{"id":"${bl[0].sim}","name":"${sims[bl[0].sim].name}"}`))
+  && (pageInteractive.match(/"sim":\{"id"/g) || []).length === Object.keys(reg.hall_bindings).length);
+ok('the interactive map renders a simulator badge only for a hall that has a bound seat, deep-linked to the 3D app',
+  pageInteractive.includes('h.sim') && pageInteractive.includes('simChip')
+  && pageInteractive.includes('trade_craft_3d.html?hall=${h.slug}'));
+
 const src = readFileSync(new URL('./build.py', import.meta.url));
 ok('the registry was built from the current builder source (stamp check)',
   reg.source_stamp === createHash('sha256').update(src).digest('hex').slice(0, 16));

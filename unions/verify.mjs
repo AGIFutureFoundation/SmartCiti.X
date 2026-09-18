@@ -118,6 +118,24 @@ ok('the chapter honesty stands: an Academy structure, no local named',
   /not a claim/.test(chapters.honesty.chapters)
   && /no local\s+is named/.test(chapters.honesty.chapters));
 
+/* ---------------------------------------------------- the interactive map --- */
+// The interactive map used to show a hall's toolroom crib but not its
+// regional chapter seats, even though the 3D app's own hall header does.
+// Every hall holds a chapter seat at every campus (an Academy training
+// structure the honesty line disclaims as a real union claim), so this is
+// a stat chip on every hall, never gated the way the sim/schools badges
+// are, and never a place — the 3D app's own comment on this same fact
+// calls the chapter hall "an Academy structure only", never rendered here.
+const pageInteractive = readFileSync(
+  new URL('../web/trade_craft_interactive.html', import.meta.url), 'utf8');
+ok('the interactive map carries the chapter home/regional map and its honesty line, unabridged',
+  pageInteractive.includes('"chapters":{"of":')
+  && pageInteractive.includes(chapters.honesty.chapters));
+ok('every hall\'s panel renders a chapter-seats chip, home campus marked, never as a link or a place',
+  pageInteractive.includes('D.chapters.of[h.slug]')
+  && pageInteractive.includes('chapterChip')
+  && !/chapterChip[\s\S]{0,80}href=/.test(pageInteractive));
+
 /* ------------------------------------------------------------ freshness --- */
 const src = readFileSync(new URL('./unions111.py', import.meta.url));
 const stamp = createHash('sha256').update(src).digest('hex').slice(0, 16);

@@ -47,6 +47,15 @@ const N_BOUND = Object.keys(simsReg.hall_bindings).length;
 // these is now a tracked figure read from the registry that owns it.
 const avatarsReg = JSON.parse(readFileSync(join(ROOT, 'avatars/registry/avatars.json'), 'utf8'));
 const schoolsReg = JSON.parse(readFileSync(join(ROOT, 'schools/registry/schools.json'), 'utf8'));
+// Added after web/build_map.py's campus plan drew Oakland — a real, built,
+// 32-hall campus (unions/registry/campuses.json) — as a dashed
+// "PLANNED · NOT BUILT" parcel for two years after the network grew past
+// one site. Every built campus's name and city (roadmap/registry/roadmap.json
+// built_campuses, not retyped here) is a fact that can never be paired with
+// a "not built" / "planned" state in the same breath, on any surface.
+const roadmapReg = JSON.parse(readFileSync(join(ROOT, 'roadmap/registry/roadmap.json'), 'utf8'));
+const BUILT_CAMPUS_NAMES = Object.values(roadmapReg.built_campuses)
+  .flatMap((c) => [c.name, c.city]);
 const AV_STD = avatarsReg.sections.filter((s) => s.kind !== 'crew');
 const AV_CREW = avatarsReg.sections.find((s) => s.kind === 'crew');
 const N_AV_STD_SECTIONS = AV_STD.length;
@@ -151,6 +160,22 @@ const RULES = [
   { wrong: new RegExp(`\\b(?:${notN(N_SCHOOL_DISTRICTS)})\\s+proposed\\s+(?:school[- ])?districts?\\b`, 'gi'),
     right: `${N_SCHOOL_DISTRICTS} proposed districts`,
     why: `the registry holds ${N_SCHOOL_DISTRICTS} proposed-district records (schools/registry/schools.json)` },
+  // No built campus may be called planned or not-built on any surface — the
+  // exact bug this rule exists to catch: web/build_map.py drew Oakland
+  // (built, 32 halls) as a dashed "PLANNED · NOT BUILT" parcel. Matches the
+  // campus's name or city within a short span of "not built" / "planned ...
+  // not built" / "PLANNED · NOT BUILT", case-insensitively, across line
+  // breaks — the same span a reader's eye would take as one claim.
+  ...BUILT_CAMPUS_NAMES.map((name) => {
+    const esc = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return {
+      wrong: new RegExp(`\\b${esc}\\b(?:(?!\\.\\s|\\bnot built\\b).){0,80}\\bnot built\\b`, 'gis'),
+      right: `${name} is built`,
+      why: `${name} is one of the roadmap's ${roadmapReg.target} BUILT campuses `
+        + '(roadmap/registry/roadmap.json built_campuses) — it cannot be drawn '
+        + 'or described as planned / not built on any surface',
+    };
+  }),
 ];
 
 /**

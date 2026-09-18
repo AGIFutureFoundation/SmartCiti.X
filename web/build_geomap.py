@@ -10,14 +10,17 @@ nothing appears on this map that geo/registry does not state. RECORDED
 points and frames, DERIVED great-circle routes, every popup carrying its
 provenance and source line.
 """
+import html
 import json
 import pathlib
+import re
 import sys
 
 HERE = pathlib.Path(__file__).resolve().parent
 ROOT = HERE.parent
 sys.path.insert(0, str(HERE))
 from staleness import emit  # noqa: E402
+from groundtruth import GROUND_TRUTH_JS  # noqa: E402
 
 network = json.load(open(ROOT / 'geo/registry/network.geojson'))
 parcels = json.load(open(ROOT / 'parcels/registry/parcels.json'))
@@ -25,7 +28,45 @@ geo = json.load(open(ROOT / 'geo/registry/campuses_geo.json'))
 manifest = json.load(open(ROOT / 'pack/manifest.json'))
 roadmap = json.load(open(ROOT / 'roadmap/registry/roadmap.json'))
 restoration = json.load(open(ROOT / 'restoration/registry/restoration.json'))
+spatial = json.load(open(ROOT / 'spatial/registry/geopose.json'))
+meta = json.load(open(ROOT / 'meta/registry/metaverse.json'))
 L = manifest['ledger']
+
+
+def _slug(s):
+    """Mirrors spatial/build.py's slug() exactly — the same function, so an
+    anchor's GeoPose ref can be recomputed here rather than re-shipped."""
+    return re.sub(r'[^a-z0-9]+', '-', s.lower()).strip('-')
+
+
+# The spatial fabric's own poses, joined onto this map's own features by the
+# same subject ref spatial/build.py minted them under — this is the one
+# surface built to be a real WGS84 map, and it drew every campus, anchor and
+# restoration marker without ever mentioning the pose registry that
+# describes those exact points. campus:<slug> and restoration-site:<id> read
+# straight off each feature; anchor:<campus>/<slug(name)> is recomputed with
+# the identical slug() so it cannot drift from spatial/build.py's own.
+POSE_BY_REF = {p['subject']['ref']: p for p in spatial['poses']}
+_N_MATCHED = 0
+for f in network['features']:
+    p = f['properties']
+    ref = (f'campus:{p["slug"]}' if p.get('slug')
+           else f'anchor:{p["near"]}/{_slug(p["name"])}' if p.get('kind') == 'anchor'
+           else None)
+    pose = POSE_BY_REF.get(ref) if ref else None
+    if pose:
+        p['geopose'] = {'ref': ref, 'h_m': pose['geopose']['position']['h'],
+                         'position_provenance': pose['provenance']['position_horizontal']}
+        _N_MATCHED += 1
+assert _N_MATCHED == spatial['counts']['campuses'] + spatial['counts']['anchors'], (
+    f'{_N_MATCHED} network features matched a GeoPose, expected '
+    f'{spatial["counts"]["campuses"] + spatial["counts"]["anchors"]} (campuses + anchors)')
+
+# claimed vs. not-claimed, read from meta/'s own registry rather than typed —
+# the same split web/build_dashboard.py shows for the spatial fabric
+_spatial_claimed = [s['id'] for s in meta['baseline']['standards'] if s['id'] == 'geopose-1.0']
+_spatial_not = [x['id'] for x in meta['baseline']['not_claimed']
+                if x['id'] in ('ombi-spatial-fabric', 'ombi-som', 'rmap')]
 
 DATA = json.dumps({
     'network': network,
@@ -36,6 +77,11 @@ DATA = json.dumps({
     'sources': parcels['sources'],
     'contract': parcels['contract'],
     'recHonesty': parcels['honesty'],
+    # only what the markers' lookup buttons actually render — the endpoint,
+    # the query template and the one line of scope text — same trim
+    # web/build_3d.py applies to the same registry entry
+    'elevation': {k: parcels['elevation'][k] for k in
+                  ('endpoint', 'query', 'scope')},
     # whatever roadmap candidates remain: real AUTHORED coordinates, the
     # same tier a Wikipedia infobox carries - this map is the one place
     # they can be shown at their own true position rather than a
@@ -55,6 +101,23 @@ DATA = json.dumps({
     'restorationSites': [s for s in restoration['sites'] if s['pin']],
     'restorationHonesty': {k: restoration['honesty'][k]
                            for k in ('not_affiliated', 'provenance')},
+    # the spatial fabric this map's own features are described by
+    # (spatial/registry/geopose.json) — every campus and anchor feature
+    # above already carries its own `geopose` property; restoration-site
+    # poses are looked up client-side by ref, since the pin filter above
+    # already trims restorationSites to the ones a pose could exist for.
+    'geopose': {
+        'counts': spatial['counts'],
+        'encoding': spatial['encoding'], 'mediaType': spatial['media_type'],
+        'crs': spatial['crs'],
+        'claimedCount': len(_spatial_claimed), 'notClaimedCount': len(_spatial_not),
+        'honesty': {k: spatial['honesty'][k] for k in
+                    ('geopose_claimed', 'no_heights_or_headings', 'ombi_not_claimed')},
+        'byRef': {p['subject']['ref']: {
+            'h_m': p['geopose']['position']['h'],
+            'position_provenance': p['provenance']['position_horizontal']}
+            for p in spatial['poses'] if p['subject']['kind'] == 'restoration-site'},
+    },
 }, ensure_ascii=False, separators=(',', ':'))
 
 page = '''<!doctype html>
@@ -135,7 +198,8 @@ body{margin:0;background:var(--plate);color:var(--ink);
   <span class="dot" style="background:none;border:1px solid var(--steel);border-radius:0"></span>city frame — RECORDED for the __N_FLAGSHIP__ flagship campuses, AUTHORED for the __N_HUB__ hub campuses<br>
   <span class="dot" style="background:none;border:1.5px dashed var(--muted)"></span>roadmap candidate — AUTHORED, not built<br>
   <span class="dot" style="background:var(--good)"></span>Bay Restoration site (habitat-restoration) — real project, not affiliated with this bundle<br>
-  <span class="dot" style="background:var(--steel)"></span>Bay Restoration site (environmental-monitoring) — a real federal cleanup site (Hunters Point, NPL-listed and litigated; Treasure Island NSTI, a Navy BRAC cleanup, not NPL-listed); located but never rendered as a walkable scene
+  <span class="dot" style="background:var(--steel)"></span>Bay Restoration site (environmental-monitoring) — a real federal cleanup site (Hunters Point, NPL-listed and litigated; Treasure Island NSTI, a Navy BRAC cleanup, not NPL-listed); located but never rendered as a walkable scene<br>
+  <span style="display:inline-block;width:9px;height:9px;border:1px solid var(--muted);border-radius:2px;margin-inline-end:5px;vertical-align:-1px"></span><span title="__GEOPOSE_HONESTY__">every campus, anchor and pinned restoration marker on this map also holds a <b>GeoPose 1.0</b> pose (__N_POSES__ total — __N_CLAIMED__ claimed standard / __N_NOTCLAIMED__ not-claimed OMBI shapes; click a marker for its own pose line; hover for the height/heading honesty line)</span>
 </div>
 <div id="honesty"></div>
 <script id="data" type="application/json">__DATA__</script>
@@ -147,6 +211,7 @@ const D = JSON.parse(document.getElementById('data').textContent);
 const qs = new URLSearchParams(location.search);
 if (qs.get('imagery')) D.imagery.tiles = qs.get('imagery');
 const RECORDS_OVERRIDE = qs.get('records');
+__GROUND_TRUTH_JS__
 document.getElementById('honesty').textContent =
   'No basemap tiles: the registry drawn on the graticule, and nothing else. '
   + D.honesty.siting + ' ' + D.honesty.provenance;
@@ -265,6 +330,53 @@ for (const s of D.restorationSites) {
     .setLngLat([s.lng, s.lat]).addTo(map);
   restMarkers++;
 }
+// the spatial fabric's own pose for this exact point, when one exists —
+// campus/anchor features carry it inline (properties.geopose, joined at
+// build time); a restoration site's is looked up by ref, computed the
+// same way build_geomap.py's own Python does (restoration-site:<id>). The
+// full honesty sentence (spatial/registry/geopose.json's own wording, never
+// softened) sits on the legend's GeoPose row as a hover title rather than
+// repeated on every popup.
+function geoposeLine(pose) {
+  if (!pose) return '';
+  return `<br><span class="pv" style="color:var(--steel);border-color:var(--steel)">GeoPose 1.0</span>`
+    + `<span class="pv">${pose.position_provenance}</span>`
+    + `<br><span class="src">h = ${pose.h_m.toFixed(1)} m — UNKNOWN, a placeholder, never a measurement</span>`;
+}
+// The same on-request, live, never-stored ground truth the 3D app fires per
+// POI and per restoration site (elevationLookup(), siteElevation(),
+// siteAerial() there) — ported here from the shared web/groundtruth.py
+// module rather than copy-pasted, so a real USGS elevation and a real USGS
+// aerial thumbnail are one click away on a campus, anchor or restoration
+// marker too. `seq` makes each popup's result containers unique, since more
+// than one popup can be open on this map at once.
+let __gtSeq = 0;
+function groundTruthButtons(lat, lng) {
+  const id = 'gt' + (__gtSeq++);
+  return `<p style="margin:6px 0 2px">`
+    + `<button class="opt gt-elev-btn" data-lat="${lat}" data-lng="${lng}" data-id="elev-${id}" `
+    + `style="font:inherit;font-size:10.5px;padding:2px 8px;background:none;color:var(--ink);`
+    + `border:1px solid var(--rule);border-radius:999px;cursor:pointer">↕ ground elevation</button> `
+    + `<button class="opt gt-aerial-btn" data-lat="${lat}" data-lng="${lng}" data-id="aer-${id}" `
+    + `style="font:inherit;font-size:10.5px;padding:2px 8px;background:none;color:var(--ink);`
+    + `border:1px solid var(--rule);border-radius:999px;cursor:pointer">🛰 aerial</button></p>`
+    + `<p id="elev-${id}"></p><div id="aer-${id}"></div>`;
+}
+document.addEventListener('click', (e) => {
+  const eb = e.target.closest('.gt-elev-btn');
+  if (eb) {
+    eb.disabled = true; eb.textContent = 'looking up…';
+    gtElevationInto(document.getElementById(eb.dataset.id), D,
+      parseFloat(eb.dataset.lat), parseFloat(eb.dataset.lng), true);
+    return;
+  }
+  const ab = e.target.closest('.gt-aerial-btn');
+  if (ab) {
+    ab.disabled = true; ab.textContent = 'loading…';
+    gtAerialInto(document.getElementById(ab.dataset.id), D,
+      parseFloat(ab.dataset.lat), parseFloat(ab.dataset.lng));
+  }
+});
 function popupForRestoration(s) {
   const wf = s.workforce
     ? `<br><b>Workforce pathway:</b> ${s.workforce_note}` : '';
@@ -279,14 +391,16 @@ function popupForRestoration(s) {
   // the one site that needs it (Treasure Island NSTI) states in its own
   // voice that it is NOT NPL-listed and which EPA ID is the other place
   const dis = s.disambiguation ? `<br><b>Note:</b> ${s.disambiguation}` : '';
+  const pose = geoposeLine(D.geopose.byRef['restoration-site:' + s.id]);
   new maplibregl.Popup({ closeButton: false })
     .setLngLat([s.lng, s.lat])
     .setHTML(`<b>${s.name}</b><br><span class="pv rec">real project</span>`
       + `<span class="pv">AUTHORED coordinate</span>` + cat
       + `<br>${s.org}<br>${s.city}, ${s.county} · ${s.habitat}<br>${s.scale}`
-      + dis + wf + pt
+      + dis + wf + pt + pose
       + `<br><a href="${s.source_url}" target="_blank" rel="noopener" class="src">${s.source_url}</a>`
-      + `<br><span class="src">${D.restorationHonesty.not_affiliated}</span>`)
+      + `<br><span class="src">${D.restorationHonesty.not_affiliated}</span>`
+      + groundTruthButtons(s.lat, s.lng))
     .addTo(map);
 }
 
@@ -297,13 +411,18 @@ function popupFor(f, lngLat) {
   const chips = `<span class="pv ${p.provenance === 'RECORDED' ? 'rec' : ''}">${p.provenance}</span>`
     + (p.km !== undefined ? `<span class="pv">${p.km} km</span>` : '')
     + (p.bearing_deg !== undefined ? `<span class="pv">${p.bearing_deg}°</span>` : '');
+  // ground truth only makes sense at a single real point - a campus or an
+  // anchor - never a route (two endpoints) or a city frame (a polygon)
+  const gt = (!p.kind || p.kind === 'anchor') && f.geometry.type === 'Point'
+    ? groundTruthButtons(f.geometry.coordinates[1], f.geometry.coordinates[0]) : '';
   new maplibregl.Popup({ closeButton: false })
     .setLngLat(at)
     .setHTML(`<b>${p.name ?? (p.kind === 'route'
         ? p.from + ' ↔ ' + p.to : 'city frame · ' + p.campus)}</b><br>${chips}`
       + (p.halls ? `<br>${p.halls} halls · ${p.districts} districts · ${p.city}, ${p.region}` : '')
       + (p.blurb ? `<br>${p.blurb}` : '')
-      + `<br><span class="src">${p.source}</span>`)
+      + geoposeLine(p.geopose)
+      + `<br><span class="src">${p.source}</span>` + gt)
     .addTo(map);
 }
 for (const layer of ['campuses', 'anchors', 'routes', 'frames']) {
@@ -414,6 +533,9 @@ window.__geomap = () => ({
          visible: map.getLayoutProperty('sat', 'visibility') },
   parcels: { state: parcelState, count: parcelCount, campus: parcelCampus,
              authorities: Object.keys(D.sources).length },
+  geopose: { total: D.geopose.counts.total,
+             claimed: D.geopose.claimedCount, notClaimed: D.geopose.notClaimedCount,
+             matchedFeatures: D.network.features.filter((f) => f.properties.geopose).length },
   status: statusEl.textContent,
 });
 </script>
@@ -427,6 +549,13 @@ out = HERE / 'trade_craft_geomap.html'
 _n_hub = sum(1 for c in geo['campuses'].values() if c['provenance'] == 'AUTHORED')
 _n_flag = len(geo['campuses']) - _n_hub
 assert _n_hub > 0 and _n_flag > 0
-page = page.replace('__N_FLAGSHIP__', str(_n_flag)).replace('__N_HUB__', str(_n_hub))
+page = (page.replace('__N_FLAGSHIP__', str(_n_flag)).replace('__N_HUB__', str(_n_hub))
+        .replace('__N_POSES__', str(spatial['counts']['total']))
+        .replace('__N_CLAIMED__', str(len(_spatial_claimed)))
+        .replace('__N_NOTCLAIMED__', str(len(_spatial_not)))
+        .replace('__GEOPOSE_HONESTY__', html.escape(spatial['honesty']['no_heights_or_headings']))
+        .replace('__GROUND_TRUTH_JS__', GROUND_TRUTH_JS))
 assert '__N_' not in page, 'a legend count token went unreplaced'
+assert '__GEOPOSE_HONESTY__' not in page, 'the geopose honesty token went unreplaced'
+assert '__GROUND_TRUTH_JS__' not in page, 'the ground-truth module token went unreplaced'
 emit(out, page.replace('__DATA__', DATA), f"{len(network['features'])} features on the geomap")
