@@ -6999,6 +6999,20 @@ function hueMatOf(hue) {
    `character` line beside it. Three materials per campus, built once when
    the campus is built and freed with it. */
 let fabMats = null, fabKey = null;
+/* The carriageway. Every campus paved its streets in one flat grey
+   (mat.road, 0x565c60) whatever its ground was - a gravel-verged estuary
+   yard and a concrete island both had the same asphalt. The campus already
+   declares what it is surfaced with in the world registry's `atmos.ground`,
+   and the roads take it now: the same recipe, laid at a road's own repeat.
+   It costs nothing in draw calls - roads merge into one mesh per material
+   per campus either way - and it is freed with the campus like the rest of
+   the fabric. */
+function roadMatOf(ck) {
+  const g = D.world.atmos?.[ck]?.ground;
+  return (g === 'grass' || g === 'sand' || !g)
+    ? mat.road                     // a road is never grass: fall back
+    : groundMat(g, 0xb9c0c2, 16);  // tinted down, so lane paint still reads
+}
 // The last resort if the registry ever ships no fabric at all: the page
 // still renders, in the flagship's own colours, rather than failing to boot.
 const FABRIC_FALLBACK = { facade: 'panel', facade_color: '#3f4b50',
@@ -7022,6 +7036,7 @@ function fabricOf(ck) {
   }
   fabMats = {
     spec: f,
+    road: roadMatOf(ck),
     wall,
     trim: new THREE.MeshStandardMaterial({
       color: new THREE.Color(f.trim), roughness: .55 }),
@@ -7729,7 +7744,7 @@ function buildCity(g, R) {
     if (!cityLog) {
       // the avenue: ring road out to the place's block
       const r0 = R - 22, aLen = len - r0 - 9;
-      const av = box(aLen, .06, 3.6, mat.road, 0, .03, 0, g, false);
+      const av = box(aLen, .06, 3.6, fabricOf(campusKey).road, 0, .03, 0, g, false);
       av.position.set((r0 + aLen / 2) * ux, .03, (r0 + aLen / 2) * uz);
       av.rotation.y = -Math.atan2(uz, ux);
       for (let d = r0 + 4; d < len - 10; d += 7)
@@ -7927,7 +7942,8 @@ function buildCampus(key) {
   campusR = R;
   const rr = R - 24;
   // the ring road, dashed, and the plaza walkway
-  const ring = new THREE.Mesh(new THREE.RingGeometry(rr - 2.4, rr + 2.4, 96), mat.road);
+  const ring = new THREE.Mesh(new THREE.RingGeometry(rr - 2.4, rr + 2.4, 96),
+    fabricOf(campusKey).road);
   ring.rotation.x = -Math.PI / 2; ring.position.y = .05;
   ring.receiveShadow = true; campusGroup.add(ring); roadCount++;
   for (let a = 0; a < 64; a++) {         // the ring road's dashes, into the one dash mesh
@@ -7987,7 +8003,7 @@ function buildCampus(key) {
       const u1 = Math.max(...members.map(m => m.u)) + 8;
       const maxHalfD = Math.max(...members.map(m => m.halfD));
       const sv = rv - maxHalfD - 2.6;
-      roads.push(roadRect((u0 + u1) / 2, sv, u1 - u0, 3.6, mat.road, cg));
+      roads.push(roadRect((u0 + u1) / 2, sv, u1 - u0, 3.6, fabricOf(campusKey).road, cg));
       dashesU(u0, u1, sv, cg);
       for (const m of members) {
         const top = rv - m.halfD - .45, bot = sv + 1.8;
@@ -8001,10 +8017,10 @@ function buildCampus(key) {
     // building at u=8 and their free lane at u=0, odd grids the reverse
     const alleyU = (cols % 2 === 0) ? 0 : 8;
     roads.push(roadRect(alleyU, ((rr - R) + (lastV - 2.6)) / 2, 3.2,
-      (lastV - 2.6) - (rr - R), mat.road, cg));
+      (lastV - 2.6) - (rr - R), fabricOf(campusKey).road, cg));
     dashesV(rr - R, lastV - 2.6, alleyU, cg);
     roads.push(roadRect(0, ((27 - R) + (rr - R)) / 2, 4.2,
-      (rr - R) - (27 - R), mat.road, cg));
+      (rr - R) - (27 - R), fabricOf(campusKey).road, cg));
     dashesV(27 - R, rr - R, 0, cg);
     roadCount += 2;
     // the guarantee: no road rectangle overlaps a building rectangle
@@ -8202,10 +8218,45 @@ function buildRegion() {
   for (const [key, camp] of Object.entries(D.campuses)) {
     const [px, pz] = PLATE_POS[key];
     centers[key] = new THREE.Vector3(px, 0, pz);
-    const plate = new THREE.Mesh(new THREE.CylinderGeometry(36, 40, 2.2, 48), mat.land);
+    /* The board is the first thing anybody sees, and every plate on it was
+       the same pale disc of mat.land - ten places drawn identically, with
+       seven of them (the hubs, which host no districts) completely bare.
+       A plate now wears its OWN campus's ground recipe on top and its own
+       fabric trim on the rim, both already declared in the world registry
+       and used by the campus view, so the board reads as ten different
+       places from the first frame rather than after you fly into one. */
+    const atm = D.world.atmos[key];
+    const fabR = D.world.fabric?.[key];
+    const plate = new THREE.Mesh(new THREE.CylinderGeometry(36, 40, 2.2, 48), [
+      new THREE.MeshStandardMaterial({                       // the rim
+        color: new THREE.Color(fabR?.trim ?? '#9db2b8'), roughness: .85 }),
+      groundMat(atm?.ground ?? 'concrete', undefined, 10),   // the top
+      groundMat(atm?.verge ?? 'grass', undefined, 10),       // the underside
+    ]);
     plate.position.set(px, 1.1, pz); plate.receiveShadow = plate.castShadow = true;
     plate.userData.campus = key;
     regionGroup.add(plate); plates.push(plate);
+    /* A hub hosts no districts, so its plate had nothing standing on it at
+       all. It does have one building - the chapter hall every campus has -
+       and the count of trades seated there is already in the plate label.
+       Drawing that one building, in the hub's own fabric, is what a hub
+       actually is: a seat for the whole network and no home district. */
+    if (!camp.districts.length) {
+      const f2 = fabR ?? FABRIC_FALLBACK;
+      const drum = new THREE.Mesh(new THREE.CylinderGeometry(6, 6.6, 7, 8),
+        new THREE.MeshStandardMaterial({
+          color: new THREE.Color(f2.facade_color), roughness: .8 }));
+      drum.position.set(px, 5.7, pz);
+      drum.castShadow = drum.receiveShadow = true;
+      drum.userData.campus = key;
+      regionGroup.add(drum); plates.push(drum);
+      const cone = new THREE.Mesh(new THREE.ConeGeometry(7.6, 3.4, 8),
+        new THREE.MeshStandardMaterial({
+          color: new THREE.Color(f2.roof_color), roughness: .7, metalness: .2 }));
+      cone.position.set(px, 10.9, pz); cone.castShadow = true;
+      cone.userData.campus = key;
+      regionGroup.add(cone); plates.push(cone);
+    }
     // one block per hosted district, sized by its hall count
     camp.districts.forEach((dkey, i) => {
       const d = D.districts[dkey];

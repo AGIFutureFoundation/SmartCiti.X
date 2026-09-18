@@ -255,4 +255,27 @@ ok('a seat stand is a nearer target than a hall door, so it is tested first',
 ok('the yard mast light rides the quality ladder like every other',
   /ml\.visible = qLevel !== 'low';/.test(fn('buildTrainingYard')));
 
+/* ------------------------------------------- the board and the streets --- */
+/* The network board is the first thing anybody sees, and every plate on it
+   was the same pale disc of mat.land - ten places drawn identically, seven
+   of them (the hubs, which host no districts) completely bare. */
+ok('a region plate wears its own campus ground on top and its own trim on the rim',
+  /const atm = D\.world\.atmos\[key\];/.test(fn('buildRegion'))
+  && /groundMat\(atm\?\.ground \?\? 'concrete', undefined, 10\)/.test(fn('buildRegion'))
+  && /new THREE\.Color\(fabR\?\.trim \?\? '#9db2b8'\)/.test(fn('buildRegion')));
+ok('a hub plate is no longer bare: it carries the one building a hub has, '
+  + 'in that hub\'s own fabric',
+  /if \(!camp\.districts\.length\) \{/.test(fn('buildRegion'))
+  && /new THREE\.Color\(f2\.facade_color\)/.test(fn('buildRegion'))
+  && /new THREE\.Color\(f2\.roof_color\)/.test(fn('buildRegion')));
+/* Streets were one flat grey on all ten campuses whatever the ground was. */
+ok('a campus paves its streets in its own declared ground, and never in grass '
+  + 'or sand - those fall back to the shared asphalt',
+  /function roadMatOf\(ck\)/.test(src)
+  && /\(g === 'grass' \|\| g === 'sand' \|\| !g\)\s*\?\s*mat\.road/.test(fn('roadMatOf'))
+  && /groundMat\(g, 0xb9c0c2, 16\)/.test(fn('roadMatOf')));
+ok('the carriageway is built with the campus fabric and freed with it',
+  /road: roadMatOf\(ck\),/.test(fn('fabricOf'))
+  && /fabricOf\(campusKey\)\.road/.test(src));
+
 console.log(`web/test_3d: ${n} checks passed - teardown, draw-call and per-frame contracts held at the source`);
