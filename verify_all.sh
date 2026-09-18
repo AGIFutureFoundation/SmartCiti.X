@@ -12,7 +12,7 @@ readme_says() { grep -F "node $1 " README.md | head -1 | sed -nE 's/^node [^#]*#
 for t in control/test.mjs control/test_graph.mjs control/test_hints.mjs \
          control/fuzz.mjs control/soak.mjs fabric/test.mjs \
          bus/test.mjs bus/test_safeguards.mjs security/test.mjs security/test_sbom.mjs \
-         ops/test.mjs ops/fuzz.mjs brand/test.mjs unions/verify.mjs \
+         ops/test.mjs ops/fuzz.mjs ops/rehearsal.mjs brand/test.mjs unions/verify.mjs \
          pack/verify.mjs i18n/test.mjs stations/test.mjs surfaces/test.mjs \
          geo/test.mjs sims/test.mjs tools/test.mjs schools/test.mjs \
          avatars/test.mjs parcels/test.mjs meta/test.mjs \

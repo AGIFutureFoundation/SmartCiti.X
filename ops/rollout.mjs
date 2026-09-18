@@ -1,10 +1,11 @@
 /**
  * ACP-13 §14.2 — rollout discipline.
  *
- * Everything ships hall by hall: 1 hall (canary, ~3% of the network), then 5,
- * then all 33, with automatic rollback on an ACP-08 stop condition. Content,
- * agents and dial parameters use the same lanes; dial parameters additionally
- * serve a shadow run first.
+ * Everything ships hall by hall: 1 hall (canary), then 5 (wave), then the
+ * full network — read live from the pack rather than typed here, because a
+ * typed count is exactly what went stale below. Automatic rollback on an
+ * ACP-08 stop condition. Content, agents and dial parameters use the same
+ * lanes; dial parameters additionally serve a shadow run first.
  *
  * This module deliberately does NOT reimplement the parity check or the stop
  * conditions. It asks ACP-08 and obeys the answer. A second implementation of
@@ -46,9 +47,13 @@ export class RolloutManager {
    * @param {object} deps
    *   parity  — an ACP-08 ParityMonitor (asked, never reimplemented)
    *   stop    — an ACP-08 StopConditions
-   *   audit   — the append-only log
+   *   audit   — required. A rollout that ran without an audit log would return
+   *             healthy "ok" records while leaving zero trail — evidence that
+   *             isn't evidence. A filing that is not on the record did not
+   *             happen (security/contest.mjs's rule, applied here).
    */
-  constructor({ parity = null, stop = null, audit = null, cfg = {} } = {}) {
+  constructor({ parity = null, stop = null, audit, cfg = {} } = {}) {
+    if (!audit) throw new RolloutError('a rollout manager needs an audit log — a wave that ran with no trail did not happen');
     this.parity = parity;
     this.stop = stop;
     this.audit = audit;
@@ -128,7 +133,7 @@ export class RolloutManager {
     const rec = { ok: true, id, lane: lane.name, halls: lane.halls, state: r.state,
                   why: `${id} advanced to ${lane.name} (${lane.halls} hall${lane.halls > 1 ? 's' : ''})` };
     r.history.push(rec);
-    this.audit?.append({ actor: 'ops', action: 'rollout.advance', why: rec.why,
+    this.audit.append({ actor: 'ops', action: 'rollout.advance', why: rec.why,
       after: { id, lane: lane.name, halls: lane.halls } });
     return rec;
   }
@@ -137,7 +142,7 @@ export class RolloutManager {
     const rec = { ok: false, id: r.id, lane: LANES[Math.max(0, r.laneIndex)]?.name ?? 'none',
                   halls: r.halls, state: r.state, why };
     r.history.push(rec);
-    this.audit?.append({ actor: 'ops', action: 'rollout.denied', why, after: { id: r.id } });
+    this.audit.append({ actor: 'ops', action: 'rollout.denied', why, after: { id: r.id } });
     return rec;
   }
 
@@ -153,7 +158,7 @@ export class RolloutManager {
       r.state = 'rolled_back';
       const why = `rolled back from ${r.rolledBackFrom}: ${reasons.join('; ') || 'stop condition'}`;
       r.history.push({ ok: false, id: r.id, rolledBack: true, why });
-      this.audit?.append({ actor: 'ops', action: 'rollout.rollback', why, after: { id: r.id } });
+      this.audit.append({ actor: 'ops', action: 'rollout.rollback', why, after: { id: r.id } });
       reverted.push(r.id);
     }
     return reverted;

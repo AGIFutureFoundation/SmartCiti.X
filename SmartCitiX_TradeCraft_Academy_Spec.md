@@ -496,7 +496,7 @@ Mentor turns emit onto the same bus (`mentor.turn`: version, rung served, handof
 
 ### 14.2 Rollout discipline
 
-Everything ships hall-by-hall: canary = 1 hall (5% of network), then 5 halls, then all 33, with automatic rollback on ACP-08 stop conditions. Content, agents, and dial parameters use the same lanes. Dial parameter changes additionally require a 2-week shadow run (log intended actions, don't act) — the same rule the original build order set.
+Everything ships hall-by-hall: canary = 1 hall, then a wave of 5 halls, then the full network — read live from the pack (`ops/rollout.mjs` `LANES`), not typed here, because a typed count is exactly what went stale once before. Content, agents, and dial parameters use the same lanes. Dial parameter changes additionally require a 2-week shadow run (log intended actions, don't act) — the same rule the original build order set.
 
 ### 14.3 The automation loop
 
@@ -917,7 +917,7 @@ Records are now frozen all the way down and writes rebuild rather than mutate. T
 
 ### 21.3 The lanes ask ACP-08 rather than re-deciding
 
-Rollouts advance 1 hall → 5 → 33, with dwell windows between. Dial-parameter changes serve a 14-day shadow run before the canary opens. The lane manager holds no parity logic and no stop-condition logic of its own: it asks the ACP-08 objects and obeys. A second implementation of a safeguard is a second opinion, and two opinions about whether it is safe to ship is defect 12's shape.
+Rollouts advance 1 hall → 5 → the full network, with dwell windows between. Dial-parameter changes serve a 14-day shadow run before the canary opens. The lane manager holds no parity logic and no stop-condition logic of its own: it asks the ACP-08 objects and obeys. A second implementation of a safeguard is a second opinion, and two opinions about whether it is safe to ship is defect 12's shape.
 
 A halt rolls live rollouts off the network automatically, and a rolled-back change **cannot be resumed** — it reopens as a new rollout, because resuming a reverted change skips the observation that reverted it.
 

@@ -93,9 +93,15 @@ const throws = (fn, re) => { try { fn(); return false; } catch (e) { return re.t
     a3.ok && a3.lane === 'full' && a3.halls === LANES[2].halls);
 }
 
+/* ---------------------------------------- a rollout manager needs an audit */
+{
+  ok('a rollout manager refuses to run with no audit log — an unrecorded wave did not happen',
+    throws(() => new RolloutManager({}), /audit log/));
+}
+
 /* ------------------------------------- §23.1: an absent dwell fails closed */
 {
-  const r = new RolloutManager({});
+  const r = new RolloutManager({ audit: new AuditLog() });
   r.start('pack-8', { kind: 'content' });
   ok('the first lane opens with no dwell reported — there is nothing yet to observe',
     r.advance('pack-8').ok);
@@ -116,7 +122,7 @@ const throws = (fn, re) => { try { fn(); return false; } catch (e) { return re.t
 
 /* --------------------------------------------- dial parameters shadow first */
 {
-  const r = new RolloutManager({});
+  const r = new RolloutManager({ audit: new AuditLog() });
   r.start('dial-loopgain-0.35', { kind: 'dial_params', shadowStartedDaysAgo: 3 });
   const early = r.advance('dial-loopgain-0.35');
   ok('a dial-parameter change cannot reach even the canary without its shadow run',

@@ -897,7 +897,7 @@ library: {mach|tool|ifc|ppe}{0000–4399}                       e.g. mach0042
 <h3>14.1 Registries (single source of truth, one per aggregate)</h3>
 <p><strong>Module registry</strong> — the ACP-10 ledger with pipeline state per ID. <strong>Agent registry</strong> — mentor versions, eval results, traffic split, hall assignment. <strong>Skill graph registry</strong> — versioned graph; edits require a migration script for affected profiles. External listings (NANDA/ASI) mirror from these, never the reverse.</p>
 <h3>14.2 Rollout discipline</h3>
-<p>Everything ships hall-by-hall: canary = 1 hall (5% of network), then 5 halls, then all 33, with automatic rollback on ACP-08 stop conditions. Content, agents, and dial parameters use the same lanes. Dial parameter changes additionally require a 2-week shadow run (log intended actions, don't act) — the same rule the original build order set.</p>
+<p>Everything ships hall-by-hall: canary = 1 hall, then a wave of 5 halls, then the full network — read live from the pack (<code>ops/rollout.mjs</code> <code>LANES</code>), not typed here, because a typed count is exactly what went stale once before. Content, agents, and dial parameters use the same lanes. Dial parameter changes additionally require a 2-week shadow run (log intended actions, don't act) — the same rule the original build order set.</p>
 <h3>14.3 The automation loop</h3>
 <div class="tw"><table>
 <thead>
@@ -1600,7 +1600,7 @@ against ambient state.</p>
 <p>The adversarial pass asked whether a caller could take the record the registry handed it, flip <code>evals.pass</code> to <code>true</code>, and promote a mentor that had failed. It could. The gate was real and the object behind it was writable.</p>
 <p>Records are now frozen all the way down and writes rebuild rather than mutate. The audit log had already solved this exact shape by freezing entries and returning copies (§17.3); the registries had not inherited it. <strong>A validity check is only as strong as the immutability of what it validated.</strong></p>
 <h3>21.3 The lanes ask ACP-08 rather than re-deciding</h3>
-<p>Rollouts advance 1 hall → 5 → 33, with dwell windows between. Dial-parameter changes serve a 14-day shadow run before the canary opens. The lane manager holds no parity logic and no stop-condition logic of its own: it asks the ACP-08 objects and obeys. A second implementation of a safeguard is a second opinion, and two opinions about whether it is safe to ship is defect 12's shape.</p>
+<p>Rollouts advance 1 hall → 5 → the full network, with dwell windows between. Dial-parameter changes serve a 14-day shadow run before the canary opens. The lane manager holds no parity logic and no stop-condition logic of its own: it asks the ACP-08 objects and obeys. A second implementation of a safeguard is a second opinion, and two opinions about whether it is safe to ship is defect 12's shape.</p>
 <p>A halt rolls live rollouts off the network automatically, and a rolled-back change <strong>cannot be resumed</strong> — it reopens as a new rollout, because resuming a reverted change skips the observation that reverted it.</p>
 <h3>21.4 The automation loop is load-bearing for a safeguard</h3>
 <p>Seven jobs on three cadences. The parity job is the one that matters: ACP-08 halts adaptation when it fails to run inside its window, so a scheduler that silently skips it is a <em>safety</em> defect rather than an ops annoyance. Two consequences are implemented rather than assumed:</p>

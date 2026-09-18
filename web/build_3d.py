@@ -6591,6 +6591,8 @@ function hueMatOf(hue) {
   if (!m2) {
     m2 = new THREE.MeshStandardMaterial({
       color: new THREE.Color().setHSL(hue / 360, .5, .45), roughness: .6 });
+    m2.userData.shared = true;   // per-hue cache, page-wide like sphereGeoCache/boxGeoCache above -
+                                  // disposeOf() must never free one of these on a campus teardown
     hueMatCache.set(hue, m2);
   }
   return m2;
