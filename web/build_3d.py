@@ -6853,6 +6853,11 @@ const PROPS = {
 
 /* ---------------------------------------------------------- the hall ---- */
 let hallGroup = null, beacons = [], floors = [], roomRects = [], curRoom = null;
+// The hall's own solid fabric: shell walls and partition segments, as
+// axis-aligned rectangles in the hall's frame (a hall is not turned). Built
+// from the SAME runs that are drawn, so there is no opening you can see and
+// cannot use, and none you can use and cannot see.
+let hallSolids = [];
 let cribCount = 0;
 
 /* ------------------------------------------------------- the tool crib --- */
@@ -6917,6 +6922,7 @@ function buildCrib(h, rx, rz, rw, rd) {
 function buildHall(sg) {
   if (hallGroup) { scene.remove(hallGroup); disposeOf(hallGroup); }
   hallGroup = new THREE.Group(); beacons = []; floors = []; roomRects = []; curRoom = null;
+  hallSolids = [];
   // Every material this hall builds for itself - wall faces, wainscots,
   // floors, luminaires - is deliberately left UNMARKED, because
   // userData.shared is what disposeOf() checks before it frees something.
@@ -6948,6 +6954,11 @@ function buildHall(sg) {
   box(W, 3.2, .25, shellMat, 0, 1.95, cz(DEP), hallGroup);          // back
   box(.25, 3.2, DEP, shellMat, cx(0), 1.95, 0, hallGroup);          // left
   box(.25, 3.2, DEP, shellMat, cx(W), 1.95, 0, hallGroup);          // right
+  // the shell is solid: the walker used to be held in a box 3 m wider than
+  // the building on each side, so the side walls were scenery
+  wallRect(0, cz(DEP), W / 2, .125);
+  wallRect(cx(0), 0, .125, DEP / 2);
+  wallRect(cx(W), 0, .125, DEP / 2);
   // the wainscot: the band at the height the work actually reaches. It is
   // the part of a working wall that gets hit, and leaving it off is most of
   // why a rendered room reads as a rendering.
@@ -6982,7 +6993,14 @@ function buildHall(sg) {
     strip.position.set(wx, 2.55, 0); hallGroup.add(strip);
   }
 
-  // rooms: tinted floor + low partitions + label
+  // rooms: tinted floor + low partitions + label.
+  // The rectangles are worked out FIRST, because a doorway belongs to the
+  // boundary between two rooms and cannot be placed while looking at one.
+  for (const r of h.rooms)
+    roomRects.push({ x0: r.x * U - W/2, x1: r.x * U - W/2 + r.w * U,
+                     z0: r.y * U - DEP/2, z1: r.y * U - DEP/2 + r.h * U,
+                     label: r.label, strand: r.strand });
+  const doors = planDoors(roomRects, -DEP / 2);
   const stns = h.stations.map(id => D.stations[id]);
   for (const r of h.rooms) {
     const rw = r.w * U, rd = r.h * U;
@@ -6994,9 +7012,6 @@ function buildHall(sg) {
     floor.name = 'room-' + r.strand;
     floor.userData.room = r.label;
     hallGroup.add(floor); floors.push(floor);
-    roomRects.push({ x0: r.x * U - W/2, x1: r.x * U - W/2 + rw,
-                     z0: r.y * U - DEP/2, z1: r.y * U - DEP/2 + rd,
-                     label: r.label, strand: r.strand });
     // safety rooms carry a hazard-stripe threshold at the doorway
     if (r.strand === 'safety') {
       const stripe = new THREE.Mesh(boxGeo(Math.min(rw-.6,2.4), .07, .5),
@@ -7022,18 +7037,44 @@ function buildHall(sg) {
     // its sign.
     const wal = D.wallCat[wallRec[r.strand].wall];
     const pmat = wallMat(wal, rw / U * 2, 1.1);
-    box(rw, 1.1, .12, pmat, rx, .9, rz - rd/2, hallGroup);
-    box(rw, 1.1, .12, pmat, rx, .9, rz + rd/2, hallGroup);
-    box(.12, 1.1, rd, pmat, rx - rw/2, .9, rz, hallGroup);
-    box(.12, 1.1, rd, pmat, rx + rw/2, .9, rz, hallGroup);
-    if (wal.wainscot_m > 0) {
-      const ws = new THREE.MeshStandardMaterial({
-        color: new THREE.Color(wal.wainscot), roughness: .8 });
-      const bh = Math.min(wal.wainscot_m, .9), by = .35 + bh / 2;
-      for (const b of [
-        box(rw, bh, .14, ws, rx, by, rz - rd/2, hallGroup, false),
-        box(rw, bh, .14, ws, rx, by, rz + rd/2, hallGroup, false),
-      ]) b.userData.wainscot = true;
+    const ws = wal.wainscot_m > 0 ? new THREE.MeshStandardMaterial({
+      color: new THREE.Color(wal.wainscot), roughness: .8 }) : null;
+    const bh = ws ? Math.min(wal.wainscot_m, .9) : 0, by = .35 + bh / 2;
+    /* Doored partitions cost more boxes than solid ones did - a run can
+       break into several pieces - so a room's segments are MERGED into one
+       geometry per material, exactly as the campus merges its parts. The
+       hall interior went from 44 partition boxes to about 80 segments and
+       from 177 draw calls to 213 while they were separate; merged, it
+       draws fewer than it did before any of this. */
+    const wallPool = new Map(), push = (m2, ge) =>
+      (wallPool.get(m2) ?? wallPool.set(m2, []).get(m2)).push(ge);
+    const slab = (w2, h2, d2, x2, y2, z2) => {
+      const ge = new THREE.BoxGeometry(w2, h2, d2);
+      ge.translate(x2, y2, z2);
+      return ge;
+    };
+    // along the room's width, front and back
+    for (const zz of [rz - rd / 2, rz + rd / 2])
+      for (const [c, len] of runSegments(doors, 'z@' + zz.toFixed(2),
+                                         rx - rw / 2, rx + rw / 2)) {
+        push(pmat, slab(len, 1.1, .12, c, .9, zz));
+        if (ws) push(ws, slab(len, bh, .14, c, by, zz));
+        wallRect(c, zz, len / 2, .06);
+      }
+    // and along its depth, left and right
+    for (const xx of [rx - rw / 2, rx + rw / 2])
+      for (const [c, len] of runSegments(doors, 'x@' + xx.toFixed(2),
+                                         rz - rd / 2, rz + rd / 2)) {
+        push(pmat, slab(.12, 1.1, len, xx, .9, c));
+        wallRect(xx, c, .06, len / 2);
+      }
+    for (const [m2, list] of wallPool) {
+      const merged = mergeGeometries(list);
+      list.forEach((ge) => ge.dispose());
+      const mesh = new THREE.Mesh(merged, m2);
+      mesh.castShadow = true; mesh.receiveShadow = true;
+      if (m2 === ws) mesh.userData.wainscot = true;
+      hallGroup.add(mesh);
     }
     const lab = label(r.label, D.i18n[loc].strands[r.strand], .55,
       { kind: 'room' });
@@ -8836,8 +8877,8 @@ function walkLeave() {
    wall a wall rather than a trap: you slide along it instead of sticking.
    The plaza, the chapter hall and the yard dressing are NOT in this set;
    what a stroller actually walks into is the halls. */
-function pushOutOfSolids(rig) {
-  for (const d of solids) {
+function pushOutOfSolids(rig, list = solids) {
+  for (const d of list) {
     const dx = rig.x - d.cx, dz = rig.z - d.cz;
     if (dx * dx + dz * dz > d.reach * d.reach) continue;      // nowhere near
     // world -> the district's own frame (it is turned to face the plaza)
@@ -8858,6 +8899,79 @@ function pushOutOfSolids(rig) {
       rig.z = d.cz - u * d.sin + v * d.cos;
     }
   }
+}
+
+/* Partitions with a way through them. The rooms tile the envelope wall to
+   wall - there is no corridor in this plan - so a partition that runs solid
+   all the way across seals the room it encloses.
+
+   The first try cut a centred doorway into each of a room's four runs, and
+   sealed most of the building: two rooms sharing a boundary each drew their
+   own partition on it, and because the rooms are different widths the two
+   doorways landed at different places, so the pair blocked everything.
+
+   A doorway therefore belongs to the BOUNDARY BETWEEN TWO ROOMS, not to a
+   room: one door per shared edge, centred on the overlap the two rooms
+   actually share, plus one in each room's frontage onto the open front of
+   the building, which is how a walker gets in at all. Every room then has a
+   way through to each of its neighbours by construction, and the hall test
+   proves it rather than trusting it. */
+const DOOR_W = 1.8;                  // clear opening, before a body is in it
+const _DEPS = .05;                   // two edges this close are the same edge
+function planDoors(rects, frontZ) {
+  // doors, keyed by the line they sit on: 'x@<pos>' or 'z@<pos>'
+  const doors = new Map();
+  const cut = (key, s, e) => {
+    const L = e - s;
+    if (L <= .05) return;
+    const w = Math.min(DOOR_W, L * .9), m = (s + e) / 2;
+    (doors.get(key) ?? doors.set(key, []).get(key)).push([m - w / 2, m + w / 2]);
+  };
+  const ov = (a0, a1, b0, b1) => [Math.max(a0, b0), Math.min(a1, b1)];
+  for (let i = 0; i < rects.length; i++) {
+    const a = rects[i];
+    // the building's open front is a way in, so the frontage is a doorway too
+    if (Math.abs(a.z0 - frontZ) < _DEPS) cut('z@' + a.z0.toFixed(2), a.x0, a.x1);
+    for (let j = i + 1; j < rects.length; j++) {
+      const b = rects[j];
+      for (const [pa, pb] of [[a.x1, b.x0], [b.x1, a.x0]])
+        if (Math.abs(pa - pb) < _DEPS) {
+          const [s, e] = ov(a.z0, a.z1, b.z0, b.z1);
+          if (e > s) cut('x@' + pa.toFixed(2), s, e);
+        }
+      for (const [pa, pb] of [[a.z1, b.z0], [b.z1, a.z0]])
+        if (Math.abs(pa - pb) < _DEPS) {
+          const [s, e] = ov(a.x0, a.x1, b.x0, b.x1);
+          if (e > s) cut('z@' + pa.toFixed(2), s, e);
+        }
+    }
+  }
+  return doors;
+}
+/* One run of partition, minus the doorways cut into its line. Returns the
+   solid pieces as [centre, length] along the run. */
+function runSegments(doors, key, s, e) {
+  let parts = [[s, e]];
+  for (const [d0, d1] of doors.get(key) ?? []) {
+    const next = [];
+    for (const [a, b] of parts) {
+      if (d1 <= a || d0 >= b) { next.push([a, b]); continue; }
+      if (d0 > a) next.push([a, d0]);
+      if (d1 < b) next.push([d1, b]);
+    }
+    parts = next;
+  }
+  return parts.filter(([a, b]) => b - a > .05)
+              .map(([a, b]) => [(a + b) / 2, b - a]);
+}
+/* Record a piece of hall fabric where it is DRAWN, in the one shape the
+   push-out reads. The hall is not turned, so it is its own frame. */
+function wallRect(x, z, hw, hd) {
+  // one entry holding every rect: a hall is one frame, and the walker is
+  // always inside it, so there is nothing for a per-entry reach to skip
+  if (!hallSolids.length)
+    hallSolids.push({ cx: 0, cz: 0, cos: 1, sin: 0, reach: Infinity, rects: [] });
+  hallSolids[0].rects.push({ u: x, v: z, hw, hd });
 }
 
 /* ------------------------------------------------------------- the walk ---
@@ -8984,6 +9098,8 @@ function walkStep(dt) {
     rig.y = EYE_H + strideStep(Math.hypot(wkF * fTop, wkS * top), dt);
   }
   if (view === 'hall') {
+    // the shell and the partitions are solid; the box below is the backstop
+    pushOutOfSolids(rig, hallSolids);
     const DEP = hallRec.depth * U;
     rig.x = Math.min(21, Math.max(-21, rig.x));
     rig.z = Math.min(DEP/2 - .8, Math.max(-DEP/2 - 26, rig.z));
@@ -9684,6 +9800,89 @@ function startRestorationWalk(siteId) {
    It reads the footprints the collision itself uses, so the two cannot
    disagree about where a hall is - only about whether the push-out worked.
    Leaves the rig where it found it, like the walk probe. */
+/* The hall's contract, proven rather than hoped for. Giving the partitions
+   substance without giving them doorways would seal every room, so the two
+   facts are tested together on a grid over the hall's own footprint:
+
+     - no cell a body fits in is inside a wall (the push-out's job), and
+     - EVERY room still holds a cell reachable on foot from the doorway,
+
+   the second being the failure mode that matters. The flood is over the
+   same rectangles the collision reads, so the test and the walls cannot
+   disagree about where a wall is. */
+window.__tc3dHallTest = (cell = .3) => {
+  if (view !== 'hall' || !hallSolids.length) return { skipped: 'not in a hall' };
+  const DEP = hallRec.depth * U, W = 12 * U;
+  const rects = hallSolids[0].rects;
+  const blocked = (x, z) => {
+    for (const b of rects)
+      if (Math.abs(x - b.u) < b.hw + BODY_R && Math.abs(z - b.v) < b.hd + BODY_R)
+        return true;
+    return false;
+  };
+  const nx = Math.floor(W / cell), nz = Math.floor((DEP + 2) / cell);
+  const at = (i, j) => [-W / 2 + (i + .5) * cell, -DEP / 2 - 1 + (j + .5) * cell];
+  const open = new Uint8Array(nx * nz), seen = new Uint8Array(nx * nz);
+  let free = 0;
+  for (let j = 0; j < nz; j++) for (let i = 0; i < nx; i++) {
+    const [x, z] = at(i, j);
+    if (!blocked(x, z)) { open[j * nx + i] = 1; free++; }
+  }
+  // flood from the open front, which is how a walker gets in
+  const q = [];
+  for (let i = 0; i < nx; i++) if (open[i]) { seen[i] = 1; q.push(i); }
+  for (let h = 0; h < q.length; h++) {
+    const k = q[h], i = k % nx, j = (k - i) / nx;
+    for (const [di, dj] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+      const i2 = i + di, j2 = j + dj;
+      if (i2 < 0 || j2 < 0 || i2 >= nx || j2 >= nz) continue;
+      const k2 = j2 * nx + i2;
+      if (open[k2] && !seen[k2]) { seen[k2] = 1; q.push(k2); }
+    }
+  }
+  const unreachable = [];
+  for (const r of roomRects) {
+    let ok = false;
+    for (let j = 0; j < nz && !ok; j++) for (let i = 0; i < nx && !ok; i++) {
+      if (!seen[j * nx + i]) continue;
+      const [x, z] = at(i, j);
+      if (x >= r.x0 && x <= r.x1 && z >= r.z0 && z <= r.z1) ok = true;
+    }
+    if (!ok) unreachable.push(r.label);
+  }
+  // and the walker itself: out of the doorway on many headings, counting
+  // the steps that ended up inside a wall. The grid above proves the rooms
+  // can be reached; this proves the walls cannot be crossed.
+  const p0 = xrRig.position.clone(), r0 = xrRig.rotation.y;
+  const wasKeys = { ...keys }, wasF = wkF, wasS = wkS;
+  const wasSilent = wkSilent; wkSilent = true;
+  const dt = 1 / 60, n = Math.round(24 / dt);
+  let steps = 0, breaches = 0, contacts = 0;
+  for (let hh = 0; hh < 36; hh++) {
+    xrRig.position.set(0, EYE_H, -DEP / 2 + 1.2);
+    camera.rotation.set(0, 0, 0);
+    xrRig.rotation.y = (hh / 36) * Math.PI * 2;
+    xrRig.updateMatrixWorld(true);
+    wkF = wkS = 0;
+    for (const k of Object.keys(keys)) delete keys[k];
+    keys.KeyW = true;
+    for (let i = 0; i < n; i++) {
+      walkStep(dt); steps++;
+      const x = xrRig.position.x, z = xrRig.position.z;
+      for (const b of rects) {
+        if (Math.abs(x - b.u) < b.hw && Math.abs(z - b.v) < b.hd) { breaches++; break; }
+      }
+      if (blocked(x, z)) contacts++;
+    }
+  }
+  for (const k of Object.keys(keys)) delete keys[k];
+  Object.assign(keys, wasKeys);
+  xrRig.position.copy(p0); xrRig.rotation.y = r0;
+  wkF = wasF; wkS = wasS; wkSilent = wasSilent;
+  return { slug, rooms: roomRects.length, walls: rects.length,
+           cells: nx * nz, free, reached: q.length, unreachable,
+           steps, breaches, contacts };
+};
 window.__tc3dSolidTest = (headings = 72, seconds = 200, dt = 1 / 60) => {
   const p0 = xrRig.position.clone(), r0 = xrRig.rotation.y;
   const wasSilent = wkSilent; wkSilent = true;
