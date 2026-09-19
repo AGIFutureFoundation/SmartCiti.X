@@ -7696,9 +7696,15 @@ window.__tc3dChapters = openChapters;
    sims registry's own bindings. A hub campus hosts no halls of its own, so
    it draws no yard - its chapter seats are a roster of trades, never a
    place, which is the same line the chapter hall panel already holds. */
+// Each training stand's pad, where it stands and what it is made of. A
+// stand wears its seat's own declared yard surface - crushed stone under
+// the excavator, an asphalt apron under the crane, a sealed slab under the
+// load-chart board - so stepping onto one off the campus concrete is a
+// change you can hear. The rect is recorded where the pad is BUILT.
+let yardPads = [];
 let seatHits = [], nearSeat = null;
 function buildTrainingYard(g, R) {
-  seatHits = [];
+  seatHits = []; yardPads = [];
   const halls = new Set(D.campuses[campusKey]?.halls ?? []);
   if (!halls.size) return;                       // a hub: no home halls, no yard
   const seats = [...new Set([...halls]
@@ -7728,9 +7734,12 @@ function buildTrainingYard(g, R) {
     const sx = Math.cos(a) * YR * .40, sz = Math.sin(a) * YR * .40;
     const homeHall = def.halls.find((sg) => halls.has(sg));
     const hue = homeHall ? D.districts[D.halls.find((h) => h.slug === homeHall).district].hue : 40;
+    const padFin = D.finCat[def.yard.surface];
     const pad = new THREE.Mesh(boxGeo(5.2, .18, 5.2),
-      finishMat(D.finCat[def.yard.surface], 5.2 / U * 2, 5.2 / U * 2));
+      finishMat(padFin, 5.2 / U * 2, 5.2 / U * 2));
     pad.position.set(sx, .12, sz); pad.receiveShadow = true; yg.add(pad);
+    yardPads.push({ x: yg.position.x + sx, z: yg.position.z + sz,
+                    hw: 2.6, hd: 2.6, fam: famOfFinish(padFin) });
     const post = new THREE.Mesh(new THREE.CylinderGeometry(.16, .2, 2.5, 10),
       hueMatOf(hue));
     post.position.set(sx, 1.35, sz); post.castShadow = true;
@@ -9006,15 +9015,27 @@ function strideStep(speed, dt) {
    room's own floor finish, and outdoors it is the campus or site ground
    recipe. Both resolve to one of the six step families declared in the
    build, which is where the timbre lives - nothing is restated here. */
+// one place turns a built finish into a step family, so a room's floor and
+// a training stand's pad cannot come to disagree about what a slab sounds like
+const famOfFinish = (fin) => D.step.floor[fin?.pattern] ?? 'hard';
 function stepFamily() {
-  if (view === 'hall' && curRoom) {
-    const fin = D.finCat[D.finishes[slug][curRoom.strand].surface];
-    return D.step.floor[fin?.pattern] ?? 'hard';
-  }
-  // outdoors, the same record that laid the ground says what it is: the
-  // site's own recipe at a restoration site, the campus atmosphere's on the
-  // grounds. This is the surface the CAMPUS stands on, not a per-metre
-  // query - a road crossing the grounds still steps as the grounds do.
+  if (view === 'hall' && curRoom)
+    return famOfFinish(D.finCat[D.finishes[slug][curRoom.strand].surface]);
+  // on the grounds, a training stand is its own surface underfoot
+  if (view === 'campus')
+    for (const p of yardPads)
+      if (Math.abs(xrRig.position.x - p.x) < p.hw
+        && Math.abs(xrRig.position.z - p.z) < p.hd) return p.fam;
+  /* Otherwise the same record that laid the ground says what it is: the
+     site's own recipe at a restoration site, the campus atmosphere's on the
+     grounds.
+
+     The ROADS are deliberately not sampled, and that is a finding rather
+     than an omission. A roadway takes the campus's own ground recipe unless
+     that ground is grass or sand, and all ten campuses are laid on concrete
+     or asphalt - which are the same step family. So a road-versus-ground
+     test would be a branch that cannot change the answer on any campus that
+     exists. If a campus is ever laid on grass, this is the place. */
   const g = view === 'restoration'
     ? (curRestoSite?.ground ?? 'grass')
     : (ATMOS[campusKey] ?? DEF_ATMOS).ground;
@@ -9932,6 +9953,20 @@ window.__tc3dSolidTest = (headings = 72, seconds = 200, dt = 1 / 60) => {
            headingsThatMetAWall: met, solids: solids.length,
            rects: solids.reduce((a, d) => a + d.rects.length, 0),
            farthest: +worst.toFixed(1) };
+};
+/* What the walker is standing on, and what each training stand is made of.
+   Reads the live rects - not a second list - and with a point given it
+   samples there and puts the walker back where it was. */
+window.__tc3dUnderfoot = (x, z) => {
+  if (x === undefined)
+    return { here: stepFamily(),
+             pads: yardPads.map((p) => ({ x: +p.x.toFixed(1),
+                                          z: +p.z.toFixed(1), fam: p.fam })) };
+  const ax = xrRig.position.x, az = xrRig.position.z;
+  xrRig.position.x = x; xrRig.position.z = z;
+  const here = stepFamily();
+  xrRig.position.x = ax; xrRig.position.z = az;
+  return { here };
 };
 window.__tc3dWalkProbe = (keyList, seconds, dt = 1 / 60) => {
   const wasKeys = { ...keys };
