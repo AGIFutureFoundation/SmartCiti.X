@@ -128,7 +128,9 @@ ok('the wall map is deduped on the wire on its OWN index, not folded into the fi
 ok("the room's illuminance record drives a real light, not only the luminaire's emissive",
   /const rc = condOf\(h\.slug, r\.strand\);/.test(src)
   && /const luxN = Math\.max\(0, Math\.min\(1, \(rc\.lux - 200\) \/ 800\)\);/.test(src)
-  && /new THREE\.PointLight\(0xffe9c8, \.55 \+ luxN \* 1\.45,/.test(src));
+  // the intensity now goes through lampCd - see the luminaire-units block
+  // below, which is where that changed and why
+  && /new THREE\.PointLight\(0xffe9c8,\s*\n?\s*lampCd\(\.55 \+ luxN \* 1\.45,/.test(src));
 ok('those lights ride the quality ladder, so a device on the bottom rung does not pay for eleven of them',
   /rl\.visible = qLevel !== 'low';/.test(src)
   && /for \(const rl of roomLights\) rl\.visible = l !== 'low';/.test(fn('setQuality')));
@@ -161,12 +163,12 @@ ok('a sim yard lays the floor its own registry entry declares, with relief',
   /const yard = D\.sims\.sims\[simId\]\?\.yard;/.test(fn('simYard'))
   && /finishMat\(fin, hw \* 2 \/ U \* 2, hd \* 2 \/ U \* 2\)/.test(fn('simYard')));
 ok('the yard mast heads carry a real light, not only an emissive box',
-  /new THREE\.PointLight\(0xffe9c8, 1\.5,/.test(fn('simYard'))
+  /new THREE\.PointLight\(0xffe9c8, lampCd\(2\.6, 8\.7, 1\.35\)/.test(fn('simYard'))
   && /ml\.visible = qLevel !== 'low';/.test(fn('simYard')));
 ok('the one indoor seat floors and lights its shop bay the same way, without '
   + 'borrowing the outdoor fence',
   /const yard = D\.sims\.sims\['overhead-crane'\]\.yard;/.test(src)
-  && /const hb = new THREE\.PointLight\(0xffe9c8, 1\.3,/.test(src));
+  && /const hb = new THREE\.PointLight\(0xffe9c8, lampCd\(2\.4,/.test(src));
 ok('a restoration walk lays the ground its site names, not one grass pad for all',
   /const gid = site\.ground \?\? 'grass';/.test(fn('buildRestoGround'))
   && /groundMat\(gid\)/.test(fn('buildRestoGround')));
@@ -277,5 +279,42 @@ ok('a campus paves its streets in its own declared ground, and never in grass '
 ok('the carriageway is built with the campus fabric and freed with it',
   /road: roadMatOf\(ck\),/.test(fn('fabricOf'))
   && /fabricOf\(campusKey\)\.road/.test(src));
+
+/* ----------------------------------------------------- luminaire units --- */
+/* three.js r155 flipped `useLegacyLights` to false and r160 dropped the
+   legacy path, so a PointLight's intensity is CANDELA and falls off as
+   I / r^decay. Every luminaire here was first written with legacy-scale
+   numbers (0.5 - 2.6), which at a 2.7 m ceiling or an 8.7 m mast head is
+   indistinguishable from no light at all - measured on a hall interior,
+   scaling them took the frame from a mean luminance of 46 to 89 out of 255.
+   They were real lights and they did vary with the registry's lux; they
+   simply were not lighting anything, which is the same near-miss as an
+   emissive box that only looks like a lamp, in different clothes.
+
+   So: every point light in this page goes through the one conversion. A new
+   one written with a legacy-scale number fails here rather than shipping
+   dark. */
+ok('there is one candela conversion, and it states the height it converts for',
+  /const LAMP_K = 11;/.test(src)
+  && /const lampCd = \(rel, height_m, decay\) =>/.test(src));
+{
+  const pls = [...src.matchAll(/new THREE\.PointLight\(([^;]*?)\)/gs)]
+    .map((m) => m[1].replace(/\s+/g, ' ').trim());
+  ok(`every point light (${pls.length}) takes its intensity from lampCd, not a bare number`,
+    pls.length >= 4 && pls.every((a) => /lampCd\(/.test(a)));
+}
+/* And the thing the conversion must not break: a brighter room stays
+   brighter. The lux ratio is the fact; the candela is only how it is
+   delivered. */
+ok('the room luminaire still scales with the room\'s own lux record',
+  /lampCd\(\.55 \+ luxN \* 1\.45, 2\.32, 1\.7\)/.test(src)
+  && /const luxN = Math\.max\(0, Math\.min\(1, \(rc\.lux - 200\) \/ 800\)\);/.test(src));
+/* A seat is entered from a hall and inherits that campus's sky, and every
+   campus here is authored at dusk or under a marine layer - so a yard needs
+   its own working light or the machine, the surface and the gauges are all
+   in the dark. */
+ok('a simulator yard carries its own working light, not just the campus sun',
+  /const yardHemi = new THREE\.HemisphereLight\(/.test(fn('simYard'))
+  && /roomLights\.push\(yardHemi\)/.test(fn('simYard')));
 
 console.log(`web/test_3d: ${n} checks passed - teardown, draw-call and per-frame contracts held at the source`);

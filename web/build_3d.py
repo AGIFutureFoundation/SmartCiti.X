@@ -875,11 +875,32 @@ function simYard(g, hw, hd, cx = 0, cz = 0, simId = curSimId) {
     // so a yard at dusk was a yard with four glowing rectangles in the dark.
     // It carries a real light now, reaching its own quarter of the yard, on
     // the same quality-ladder budget the room lights ride.
-    const ml = new THREE.PointLight(0xffe9c8, 1.5, Math.max(hw, hd) * 1.5, 1.6);
+    // reach the far side of the yard, not a quarter of it: four masts at a
+    // corner each have to overlap in the middle or the middle is where the
+    // work happens in the dark
+    const ml = new THREE.PointLight(0xffe9c8, lampCd(2.6, 8.7, 1.35),
+      Math.hypot(hw, hd) * 2.2, 1.35);
     ml.position.set(mx, 8.7, mz);
     ml.visible = qLevel !== 'low';
     g.add(ml); roomLights.push(ml);
   }
+
+  /* The yard's own working light.
+     A seat is entered from a hall, so it inherits that campus's sky - and
+     every campus here is authored at dusk or under a marine layer. Measured
+     on a running seat, 95% of the frame sat below 54/255: the machine, the
+     yard surface and the gauges were all in the dark, which is not what a
+     yard a crew is working in looks like at any hour.
+     A yard therefore carries its own hemisphere, sized to it, sky-coloured
+     from the campus's own atmosphere so the place still reads as that place.
+     It is a FIXTURE, like the masts: it goes in the group, rides the quality
+     ladder and is freed with the seat. */
+  const atmY = D.world.atmos?.[campusKey];
+  const yardHemi = new THREE.HemisphereLight(
+    atmY?.hemi?.sky ?? 0xaec2cb, 0x2a2622, 1.45);
+  yardHemi.position.set(cx, 12, cz);
+  yardHemi.visible = qLevel !== 'low';
+  g.add(yardHemi); roomLights.push(yardHemi);
 }
 
 /* --------------------------------------------------- tower crane lift ---- */
@@ -2268,11 +2289,18 @@ function overheadCraneSim(P = {}) {
     box(1.2, .25, .5, new THREE.MeshStandardMaterial({
       color: 0xfff2cf, emissive: 0xffdf9a, emissiveIntensity: .9 }),
       lx, RAIL_Y + 1.9, lz, g, false);
-    const hb = new THREE.PointLight(0xffe9c8, 1.3, Math.max(BX, BZ) * 2.2, 1.6);
+    const hb = new THREE.PointLight(0xffe9c8, lampCd(2.4, RAIL_Y + 1.6, 1.35),
+      Math.hypot(BX, BZ) * 2.4, 1.35);
     hb.position.set(lx, RAIL_Y + 1.6, lz);
     hb.visible = qLevel !== 'low';
     g.add(hb); roomLights.push(hb);
   }
+  // and the shop's own ambient, for the same reason the outdoor yards have
+  // one: a bay lit only by a campus sun at dusk is a bay nobody can work in
+  const bayHemi = new THREE.HemisphereLight(0xc8d2d6, 0x2a2622, 1.3);
+  bayHemi.position.set(0, RAIL_Y, 0);
+  bayHemi.visible = qLevel !== 'low';
+  g.add(bayHemi); roomLights.push(bayHemi);
   for (let x = -BX - 2; x <= BX + 2; x += 6) for (const z of [-BZ - 1.4, BZ + 1.4])
     box(.5, RAIL_Y, .5, mat.metal, x, RAIL_Y / 2, z, g);
   for (const z of [-BZ - 1.4, BZ + 1.4]) box(BX * 2 + 6, .5, .45, mat.metal, 0, RAIL_Y + .25, z, g);
@@ -5321,6 +5349,23 @@ let qLevel = 'high', qAuto = true, qAcc = 0, qFrames = 0;
 // declared up here because setQuality() below reads it and the ladder can
 // fire before the first hall is ever built
 let roomLights = [];
+
+/* Candela, not "brightness".
+   three.js r155 flipped `useLegacyLights` to false and r160 removed the
+   legacy path, so a PointLight's intensity is now CANDELA and its
+   contribution falls off as I / r^decay. Every luminaire in this bundle was
+   first written with legacy-scale numbers (0.5 - 2.6), which at a 2.7 m
+   ceiling or an 8.7 m mast head is indistinguishable from no light at all:
+   measured on a hall interior, cranking them 60x took the scene from a mean
+   luminance of 46 to 96 out of 255. They WERE real lights and they DID vary
+   with the registry's lux - they just were not lighting anything, which is
+   the same near-miss as an emissive box that only looks like a lamp.
+
+   `lampCd` converts a relative brightness into the candela that delivers it
+   at the height the fitting is actually mounted at. One conversion, so a
+   lamp cannot be bright in one room and invisible in the next. */
+const LAMP_K = 11;
+const lampCd = (rel, height_m, decay) => rel * Math.pow(height_m, decay) * LAMP_K;
 function setQuality(l) {
   qLevel = l;
   renderer.setPixelRatio(l === 'low' ? 1
@@ -6866,7 +6911,8 @@ function buildHall(sg) {
     // The lamp therefore carries a real light, reaching only its own room
     // (the decay and the range are the room's, not the hall's), so a 1000 lx
     // inspection bench genuinely reads brighter than a 300 lx briefing room.
-    const rl = new THREE.PointLight(0xffe9c8, .55 + luxN * 1.45,
+    const rl = new THREE.PointLight(0xffe9c8,
+      lampCd(.55 + luxN * 1.45, 2.32, 1.7),   // 2.7 m fitting over a .38 m floor
       Math.max(rw, rd) * .85, 1.7);
     rl.position.set(rx, 2.7, rz);
     rl.visible = qLevel !== 'low';   // the quality ladder's own budget
@@ -7501,7 +7547,7 @@ function buildTrainingYard(g, R) {
   // a light mast, because this is a working yard like any other
   box(.3, 8, .3, mat.metal, 0, 4, -YR * .5, yg);
   box(1.4, .3, .5, mat.win, 0, 8.2, -YR * .5, yg, false);
-  const ml = new THREE.PointLight(0xffe9c8, 1.2, YR * 1.4, 1.6);
+  const ml = new THREE.PointLight(0xffe9c8, lampCd(1.2, 7.7, 1.6), YR * 1.4, 1.6);
   ml.position.set(0, 7.7, -YR * .5); ml.visible = qLevel !== 'low';
   yg.add(ml); roomLights.push(ml);
   // and the yard's perimeter, in the campus's own trim
