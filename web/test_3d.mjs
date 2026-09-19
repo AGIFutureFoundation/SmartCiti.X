@@ -245,7 +245,8 @@ ok('the yard is built from the sims registry\'s own bindings for THIS campus',
 ok('a hub draws no yard: no home halls, and a chapter seat is a roster, not a place',
   /if \(!halls\.size\) return;/.test(fn('buildTrainingYard')));
 ok('each stand is paved in that seat\'s own declared floor, not one apron for all',
-  /finishMat\(D\.finCat\[def\.yard\.surface\]/.test(fn('buildTrainingYard')));
+  /const padFin = D\.finCat\[def\.yard\.surface\];/.test(fn('buildTrainingYard'))
+  && /finishMat\(padFin,/.test(fn('buildTrainingYard')));
 ok('walking into a stand starts the seat against a hall on THIS campus that '
   + 'teaches it, and refuses rather than starting an unbound run',
   /const hall = def\.halls\.find\(\(sg\) => here\.has\(sg\)\);/.test(fn('enterSeatFromYard'))
@@ -502,9 +503,8 @@ ok('standing still is standing still: the stride resets rather than drifting '
    ground recipe maps to one (and that no family is declared unreachable). */
 ok('a footstep reads the floor the registries already named: the room\'s own '
   + 'finish indoors, the site\'s or the campus\'s ground recipe outdoors',
-  /const fin = D\.finCat\[D\.finishes\[slug\]\[curRoom\.strand\]\.surface\];/
+  /return famOfFinish\(D\.finCat\[D\.finishes\[slug\]\[curRoom\.strand\]\.surface\]\);/
     .test(fn('stepFamily'))
-  && /return D\.step\.floor\[fin\?\.pattern\] \?\? 'hard';/.test(fn('stepFamily'))
   && /\? \(curRestoSite\?\.ground \?\? 'grass'\)/.test(fn('stepFamily'))
   && /: \(ATMOS\[campusKey\] \?\? DEF_ATMOS\)\.ground;/.test(fn('stepFamily')));
 ok('the step families are the one place a timbre is written, and the page '
@@ -656,5 +656,43 @@ ok('the hall test proves BOTH halves together - that no body-sized cell is '
   && /if \(!ok\) unreachable\.push\(r\.label\);/.test(src)
   && /if \(Math\.abs\(x - b\.u\) < b\.hw && Math\.abs\(z - b\.v\) < b\.hd\) \{ breaches\+\+; break; \}/
        .test(src));
+
+/* ------------------------------------------------ what a stand is made of ---
+   A training stand wears its seat's own declared yard surface - crushed
+   stone under the excavator, an asphalt apron under the crane, a sealed
+   slab under the load-chart board - and until now that was a texture you
+   could look at and not a surface you could hear. Measured on Treasure
+   Island: 4 of its 9 stands sound different from the ground beside them,
+   and the other 5 correctly match it, because a sealed slab and a concrete
+   campus ARE the same family.
+
+   The roads are deliberately not sampled: a roadway takes the campus's own
+   ground recipe unless that ground is grass or sand, and all ten campuses
+   are concrete or asphalt, which share a family - so the branch could not
+   change the answer on any campus that exists. That is recorded in the
+   source as a finding, not left as a silent gap. */
+ok('one place turns a built finish into a step family, so a room\'s floor and '
+  + 'a stand\'s pad cannot come to disagree about what a slab sounds like',
+  /const famOfFinish = \(fin\) => D\.step\.floor\[fin\?\.pattern\] \?\? 'hard';/.test(src)
+  && /return famOfFinish\(D\.finCat\[D\.finishes\[slug\]\[curRoom\.strand\]\.surface\]\);/
+       .test(fn('stepFamily'))
+  && /fam: famOfFinish\(padFin\)/.test(src));
+ok('a stand\'s pad is recorded where it is BUILT, carrying the seat\'s own '
+  + 'declared yard surface rather than a second copy of it',
+  /const padFin = D\.finCat\[def\.yard\.surface\];/.test(fn('buildTrainingYard'))
+  && /yardPads\.push\(\{ x: yg\.position\.x \+ sx, z: yg\.position\.z \+ sz,/
+       .test(fn('buildTrainingYard')));
+ok('on the grounds a stand is checked before the campus ground is assumed',
+  /if \(view === 'campus'\)\s*\n\s*for \(const p of yardPads\)/.test(fn('stepFamily')));
+ok('the pads are rebuilt with the yard, so a campus cannot inherit the '
+  + 'stands of the one before it',
+  /seatHits = \[\]; yardPads = \[\];/.test(fn('buildTrainingYard')));
+ok('why the roads are not sampled is written down, so it is a finding and '
+  + 'not a silent gap',
+  /The ROADS are deliberately not sampled, and that is a finding rather/
+    .test(fn('stepFamily')));
+ok('sampling a point puts the walker back where it was',
+  /const ax = xrRig\.position\.x, az = xrRig\.position\.z;[\s\S]*?xrRig\.position\.x = ax; xrRig\.position\.z = az;/
+    .test(src));
 
 console.log(`web/test_3d: ${n} checks passed - teardown, draw-call and per-frame contracts held at the source`);
