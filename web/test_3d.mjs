@@ -527,8 +527,15 @@ ok('a probe silences the footfalls it drives: hundreds of thousands of '
   /let wkSilent = false;/.test(src)
   && /if \(foot !== wkFoot\) \{ wkFoot = foot; if \(!wkSilent\) footfall\(speed \/ RUN_MS\); \}/
        .test(fn('strideStep'))
-  && (src.match(/const wasSilent = wkSilent; wkSilent = true;/g) ?? []).length === 2
-  && (src.match(/\n  wkSilent = wasSilent;/g) ?? []).length === 2);
+  // every probe that drives walkStep in a loop silences it and restores it:
+  // the walk probe, the campus solidity test and the hall test
+  && (() => {
+    const drivers = (src.match(/window\.__tc3d(WalkProbe|SolidTest|HallTest)\b/g)
+                     ?? []).length;
+    const on = (src.match(/const wasSilent = wkSilent; wkSilent = true;/g) ?? []).length;
+    const off = (src.match(/wkSilent = wasSilent;/g) ?? []).length;
+    return drivers === 3 && on === 3 && off === 3;
+  })());
 ok('the walk probe leaves the page exactly as it found it, so measuring the '
   + 'walker cannot move it',
   /xrRig\.position\.copy\(p0\);/.test(src)
@@ -578,5 +585,76 @@ ok('the solidity test reads the footprints the collision itself uses, so '
 ok('and it leaves the rig and the heading where it found them',
   /xrRig\.position\.copy\(p0\); xrRig\.rotation\.y = r0; wkF = wasF; wkS = wasS;/
     .test(src));
+
+/* -------------------------------------------------- rooms with doorways ---
+   Indoors the walker was a ghost: the waist-high partitions and the hall's
+   own side walls were scenery, and the walker was held in a box three
+   metres wider than the building on each side.
+
+   Giving the partitions substance is only half of it. The rooms tile the
+   envelope wall to wall - there is no corridor in this plan - so partitions
+   that run solid seal every room. The first attempt cut a centred doorway
+   into each of a room's four runs and sealed most of the building, because
+   two rooms sharing a boundary each drew their own partition on it and,
+   being different widths, put their doorways in different places. A doorway
+   belongs to the BOUNDARY between two rooms.
+
+   Measured across all 111 halls (1,221 rooms, 9,069 wall segments): zero
+   rooms unreachable on foot from the open front. And on eight halls, 36
+   headings out of the doorway, 51,840 fixed steps each:
+
+     steps inside a wall   before 664-1,616    after 0
+
+   Draw calls in the hall interior: 177 before any of this, 213 with the
+   doorways unmerged, 139 once each room's segments are merged per material. */
+ok('a doorway is cut on the boundary BETWEEN two rooms, over the overlap the '
+  + 'two actually share, not into one room\'s own run',
+  /function planDoors\(rects, frontZ\) \{/.test(src)
+  && /const \[s, e\] = ov\(a\.z0, a\.z1, b\.z0, b\.z1\);/.test(fn('planDoors'))
+  && /const \[s, e\] = ov\(a\.x0, a\.x1, b\.x0, b\.x1\);/.test(fn('planDoors')));
+ok('the building\'s open front is a way in, so a room\'s frontage onto it is '
+  + 'a doorway too - otherwise nothing could be entered at all',
+  /if \(Math\.abs\(a\.z0 - frontZ\) < _DEPS\) cut\('z@' \+ a\.z0\.toFixed\(2\), a\.x0, a\.x1\);/
+    .test(fn('planDoors')));
+ok('the room rectangles are worked out BEFORE anything is drawn, because a '
+  + 'doorway cannot be placed while looking at one room',
+  /for \(const r of h\.rooms\)\s*\n\s*roomRects\.push\(\{/.test(src)
+  && /const doors = planDoors\(roomRects, -DEP \/ 2\);/.test(src));
+ok('a run is drawn as itself minus the doorways cut into its line, and the '
+  + 'collision records the SAME segments - no opening you can see and '
+  + 'cannot use, none you can use and cannot see',
+  /for \(const \[c, len\] of runSegments\(doors, 'z@' \+ zz\.toFixed\(2\),/.test(src)
+  && /wallRect\(c, zz, len \/ 2, \.06\);/.test(src)
+  && /for \(const \[c, len\] of runSegments\(doors, 'x@' \+ xx\.toFixed\(2\),/.test(src)
+  && /wallRect\(xx, c, \.06, len \/ 2\);/.test(src));
+ok('the hall shell is solid too: its back and both sides are recorded where '
+  + 'they are drawn, rather than left as scenery outside the walker\'s box',
+  /wallRect\(0, cz\(DEP\), W \/ 2, \.125\);/.test(src)
+  && /wallRect\(cx\(0\), 0, \.125, DEP \/ 2\);/.test(src)
+  && /wallRect\(cx\(W\), 0, \.125, DEP \/ 2\);/.test(src));
+ok('the hall collision runs before the box clamp, which is now only a '
+  + 'backstop',
+  /pushOutOfSolids\(rig, hallSolids\);\s*\n\s*const DEP = hallRec\.depth \* U;/
+    .test(fn('walkStep')));
+ok('one push-out serves both the campus and the hall - the campus\'s turned '
+  + 'districts and the hall\'s own frame are the same shape of problem',
+  /function pushOutOfSolids\(rig, list = solids\) \{\s*\n\s*for \(const d of list\) \{/
+    .test(src));
+ok('the hall\'s walls live in ONE entry rather than one per rectangle, so a '
+  + 'step tests a list and not a hundred lists',
+  /if \(!hallSolids\.length\)\s*\n\s*hallSolids\.push\(\{ cx: 0, cz: 0, cos: 1, sin: 0, reach: Infinity, rects: \[\] \}\);/
+    .test(fn('wallRect'))
+  && /hallSolids\[0\]\.rects\.push\(\{ u: x, v: z, hw, hd \}\);/.test(fn('wallRect')));
+ok('a room\'s partition segments are merged per material, so doorways cost '
+  + 'fewer draw calls than the solid walls they replaced',
+  /const merged = mergeGeometries\(list\);\s*\n\s*list\.forEach\(\(ge\) => ge\.dispose\(\)\);\s*\n\s*const mesh = new THREE\.Mesh\(merged, m2\);\s*\n\s*mesh\.castShadow = true; mesh\.receiveShadow = true;\s*\n\s*if \(m2 === ws\)/
+    .test(src));
+ok('the hall test proves BOTH halves together - that no body-sized cell is '
+  + 'inside a wall, and that every room is still reachable on foot - since '
+  + 'substance without doorways would pass the first and fail the second',
+  /const unreachable = \[\];/.test(src)
+  && /if \(!ok\) unreachable\.push\(r\.label\);/.test(src)
+  && /if \(Math\.abs\(x - b\.u\) < b\.hw && Math\.abs\(z - b\.v\) < b\.hd\) \{ breaches\+\+; break; \}/
+       .test(src));
 
 console.log(`web/test_3d: ${n} checks passed - teardown, draw-call and per-frame contracts held at the source`);
