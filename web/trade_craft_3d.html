@@ -241,6 +241,23 @@ let qLevel = 'high', qAuto = true, qAcc = 0, qFrames = 0;
 // declared up here because setQuality() below reads it and the ladder can
 // fire before the first hall is ever built
 let roomLights = [];
+
+/* Candela, not "brightness".
+   three.js r155 flipped `useLegacyLights` to false and r160 removed the
+   legacy path, so a PointLight's intensity is now CANDELA and its
+   contribution falls off as I / r^decay. Every luminaire in this bundle was
+   first written with legacy-scale numbers (0.5 - 2.6), which at a 2.7 m
+   ceiling or an 8.7 m mast head is indistinguishable from no light at all:
+   measured on a hall interior, cranking them 60x took the scene from a mean
+   luminance of 46 to 96 out of 255. They WERE real lights and they DID vary
+   with the registry's lux - they just were not lighting anything, which is
+   the same near-miss as an emissive box that only looks like a lamp.
+
+   `lampCd` converts a relative brightness into the candela that delivers it
+   at the height the fitting is actually mounted at. One conversion, so a
+   lamp cannot be bright in one room and invisible in the next. */
+const LAMP_K = 11;
+const lampCd = (rel, height_m, decay) => rel * Math.pow(height_m, decay) * LAMP_K;
 function setQuality(l) {
   qLevel = l;
   renderer.setPixelRatio(l === 'low' ? 1
@@ -249,9 +266,48 @@ function setQuality(l) {
   for (const b of fogBanks) b.m.visible = l !== 'low';
   // the per-room lights are on the same budget the shadows and the fog
   // banks are on: a device that cannot afford the ladder's top rung does
-  // not pay eleven point lights for it either
+  // not pay eleven point lights for it either. Coming back UP hands the
+  // choice to roomLitStep rather than lighting all eleven and leaving them.
   for (const rl of roomLights) rl.visible = l !== 'low';
+  _rlDirty = true;
 }
+/* Eleven point lights, and a walker stands in one room.
+   A forward renderer costs every fragment for every light in range, and a
+   hall carries one per room. Measured on this page with the camera inside
+   the ironworkers hall, holding everything else constant:
+
+     11 room lights lit   1.24 fps      (software raster, so read the ratio)
+      4 lit               1.64 fps      +32%
+      0 lit               2.06 fps      +66%
+
+   So the hall lights the few rooms nearest the eye and douses the rest.
+   The doused ones do not go black - the hall's hemisphere and the sun still
+   reach them - they simply stop costing a per-fragment light each. Only the
+   hall's OWN room lights are culled: a yard's masts and its hemisphere are
+   its whole lighting rig and are left alone.
+
+   It re-evaluates on movement, not every frame: sorting eleven lights on a
+   camera that has not moved is work for nothing. */
+const ROOM_LIT_MAX = 4;
+const _rlEye = new THREE.Vector3(), _rlPos = new THREE.Vector3();
+let _rlLastEye = new THREE.Vector3(1e9, 0, 0), _rlDirty = true;
+function roomLitStep() {
+  if (qLevel === 'low') return;          // the ladder already doused them all
+  camera.getWorldPosition(_rlEye);
+  if (!_rlDirty && _rlEye.distanceToSquared(_rlLastEye) < 2.25) return;  // 1.5 m
+  _rlDirty = false;
+  _rlLastEye.copy(_rlEye);
+  const room = [];
+  for (const l of roomLights) {
+    if (!l.userData?.roomLight) continue;
+    l.getWorldPosition(_rlPos);
+    room.push([_rlPos.distanceToSquared(_rlEye), l]);
+  }
+  if (room.length <= ROOM_LIT_MAX) return;
+  room.sort((a, b) => a[0] - b[0]);
+  for (let i = 0; i < room.length; i++) room[i][1].visible = i < ROOM_LIT_MAX;
+}
+
 let qRose = false;
 function qStep(dt) {
   // harness runs (webdriver) keep deterministic visuals; they force via the hook
@@ -1650,6 +1706,7 @@ function buildHall(sg) {
   // the room lights go with the hall; the ladder re-reads this list rather
   // than walking the scene graph looking for point lights
   roomLights = [];
+  _rlDirty = true;          // a new hall re-evaluates even from a still camera
   hallGroup.name = 'tc-hall-' + sg;
   cribCount = 0;
   const h = D.halls.find(x => x.slug === sg);
@@ -1786,9 +1843,13 @@ function buildHall(sg) {
     // The lamp therefore carries a real light, reaching only its own room
     // (the decay and the range are the room's, not the hall's), so a 1000 lx
     // inspection bench genuinely reads brighter than a 300 lx briefing room.
-    const rl = new THREE.PointLight(0xffe9c8, .55 + luxN * 1.45,
+    const rl = new THREE.PointLight(0xffe9c8,
+      lampCd(.55 + luxN * 1.45, 2.32, 1.7),   // 2.7 m fitting over a .38 m floor
       Math.max(rw, rd) * .85, 1.7);
     rl.position.set(rx, 2.7, rz);
+    // a hall has eleven of these and a forward renderer pays for every one
+    // of them on every fragment; roomLitStep() below lights the nearest few
+    rl.userData.roomLight = true;
     rl.visible = qLevel !== 'low';   // the quality ladder's own budget
     hallGroup.add(rl); roomLights.push(rl);
 
@@ -1919,6 +1980,20 @@ function hueMatOf(hue) {
    `character` line beside it. Three materials per campus, built once when
    the campus is built and freed with it. */
 let fabMats = null, fabKey = null;
+/* The carriageway. Every campus paved its streets in one flat grey
+   (mat.road, 0x565c60) whatever its ground was - a gravel-verged estuary
+   yard and a concrete island both had the same asphalt. The campus already
+   declares what it is surfaced with in the world registry's `atmos.ground`,
+   and the roads take it now: the same recipe, laid at a road's own repeat.
+   It costs nothing in draw calls - roads merge into one mesh per material
+   per campus either way - and it is freed with the campus like the rest of
+   the fabric. */
+function roadMatOf(ck) {
+  const g = D.world.atmos?.[ck]?.ground;
+  return (g === 'grass' || g === 'sand' || !g)
+    ? mat.road                     // a road is never grass: fall back
+    : groundMat(g, 0xb9c0c2, 16);  // tinted down, so lane paint still reads
+}
 // The last resort if the registry ever ships no fabric at all: the page
 // still renders, in the flagship's own colours, rather than failing to boot.
 const FABRIC_FALLBACK = { facade: 'panel', facade_color: '#3f4b50',
@@ -1942,6 +2017,7 @@ function fabricOf(ck) {
   }
   fabMats = {
     spec: f,
+    road: roadMatOf(ck),
     wall,
     trim: new THREE.MeshStandardMaterial({
       color: new THREE.Color(f.trim), roughness: .55 }),
@@ -2406,7 +2482,7 @@ function buildTrainingYard(g, R) {
   // a light mast, because this is a working yard like any other
   box(.3, 8, .3, mat.metal, 0, 4, -YR * .5, yg);
   box(1.4, .3, .5, mat.win, 0, 8.2, -YR * .5, yg, false);
-  const ml = new THREE.PointLight(0xffe9c8, 1.2, YR * 1.4, 1.6);
+  const ml = new THREE.PointLight(0xffe9c8, lampCd(1.2, 7.7, 1.6), YR * 1.4, 1.6);
   ml.position.set(0, 7.7, -YR * .5); ml.visible = qLevel !== 'low';
   yg.add(ml); roomLights.push(ml);
   // and the yard's perimeter, in the campus's own trim
@@ -2740,7 +2816,7 @@ function buildCity(g, R) {
     if (!cityLog) {
       // the avenue: ring road out to the place's block
       const r0 = R - 22, aLen = len - r0 - 9;
-      const av = box(aLen, .06, 3.6, mat.road, 0, .03, 0, g, false);
+      const av = box(aLen, .06, 3.6, fabricOf(campusKey).road, 0, .03, 0, g, false);
       av.position.set((r0 + aLen / 2) * ux, .03, (r0 + aLen / 2) * uz);
       av.rotation.y = -Math.atan2(uz, ux);
       for (let d = r0 + 4; d < len - 10; d += 7)
@@ -2938,7 +3014,8 @@ function buildCampus(key) {
   campusR = R;
   const rr = R - 24;
   // the ring road, dashed, and the plaza walkway
-  const ring = new THREE.Mesh(new THREE.RingGeometry(rr - 2.4, rr + 2.4, 96), mat.road);
+  const ring = new THREE.Mesh(new THREE.RingGeometry(rr - 2.4, rr + 2.4, 96),
+    fabricOf(campusKey).road);
   ring.rotation.x = -Math.PI / 2; ring.position.y = .05;
   ring.receiveShadow = true; campusGroup.add(ring); roadCount++;
   for (let a = 0; a < 64; a++) {         // the ring road's dashes, into the one dash mesh
@@ -2998,7 +3075,7 @@ function buildCampus(key) {
       const u1 = Math.max(...members.map(m => m.u)) + 8;
       const maxHalfD = Math.max(...members.map(m => m.halfD));
       const sv = rv - maxHalfD - 2.6;
-      roads.push(roadRect((u0 + u1) / 2, sv, u1 - u0, 3.6, mat.road, cg));
+      roads.push(roadRect((u0 + u1) / 2, sv, u1 - u0, 3.6, fabricOf(campusKey).road, cg));
       dashesU(u0, u1, sv, cg);
       for (const m of members) {
         const top = rv - m.halfD - .45, bot = sv + 1.8;
@@ -3012,10 +3089,10 @@ function buildCampus(key) {
     // building at u=8 and their free lane at u=0, odd grids the reverse
     const alleyU = (cols % 2 === 0) ? 0 : 8;
     roads.push(roadRect(alleyU, ((rr - R) + (lastV - 2.6)) / 2, 3.2,
-      (lastV - 2.6) - (rr - R), mat.road, cg));
+      (lastV - 2.6) - (rr - R), fabricOf(campusKey).road, cg));
     dashesV(rr - R, lastV - 2.6, alleyU, cg);
     roads.push(roadRect(0, ((27 - R) + (rr - R)) / 2, 4.2,
-      (rr - R) - (27 - R), mat.road, cg));
+      (rr - R) - (27 - R), fabricOf(campusKey).road, cg));
     dashesV(27 - R, rr - R, 0, cg);
     roadCount += 2;
     // the guarantee: no road rectangle overlaps a building rectangle
@@ -3213,10 +3290,45 @@ function buildRegion() {
   for (const [key, camp] of Object.entries(D.campuses)) {
     const [px, pz] = PLATE_POS[key];
     centers[key] = new THREE.Vector3(px, 0, pz);
-    const plate = new THREE.Mesh(new THREE.CylinderGeometry(36, 40, 2.2, 48), mat.land);
+    /* The board is the first thing anybody sees, and every plate on it was
+       the same pale disc of mat.land - ten places drawn identically, with
+       seven of them (the hubs, which host no districts) completely bare.
+       A plate now wears its OWN campus's ground recipe on top and its own
+       fabric trim on the rim, both already declared in the world registry
+       and used by the campus view, so the board reads as ten different
+       places from the first frame rather than after you fly into one. */
+    const atm = D.world.atmos[key];
+    const fabR = D.world.fabric?.[key];
+    const plate = new THREE.Mesh(new THREE.CylinderGeometry(36, 40, 2.2, 48), [
+      new THREE.MeshStandardMaterial({                       // the rim
+        color: new THREE.Color(fabR?.trim ?? '#9db2b8'), roughness: .85 }),
+      groundMat(atm?.ground ?? 'concrete', undefined, 10),   // the top
+      groundMat(atm?.verge ?? 'grass', undefined, 10),       // the underside
+    ]);
     plate.position.set(px, 1.1, pz); plate.receiveShadow = plate.castShadow = true;
     plate.userData.campus = key;
     regionGroup.add(plate); plates.push(plate);
+    /* A hub hosts no districts, so its plate had nothing standing on it at
+       all. It does have one building - the chapter hall every campus has -
+       and the count of trades seated there is already in the plate label.
+       Drawing that one building, in the hub's own fabric, is what a hub
+       actually is: a seat for the whole network and no home district. */
+    if (!camp.districts.length) {
+      const f2 = fabR ?? FABRIC_FALLBACK;
+      const drum = new THREE.Mesh(new THREE.CylinderGeometry(6, 6.6, 7, 8),
+        new THREE.MeshStandardMaterial({
+          color: new THREE.Color(f2.facade_color), roughness: .8 }));
+      drum.position.set(px, 5.7, pz);
+      drum.castShadow = drum.receiveShadow = true;
+      drum.userData.campus = key;
+      regionGroup.add(drum); plates.push(drum);
+      const cone = new THREE.Mesh(new THREE.ConeGeometry(7.6, 3.4, 8),
+        new THREE.MeshStandardMaterial({
+          color: new THREE.Color(f2.roof_color), roughness: .7, metalness: .2 }));
+      cone.position.set(px, 10.9, pz); cone.castShadow = true;
+      cone.userData.campus = key;
+      regionGroup.add(cone); plates.push(cone);
+    }
     // one block per hosted district, sized by its hall count
     camp.districts.forEach((dkey, i) => {
       const d = D.districts[dkey];
@@ -4151,11 +4263,32 @@ function simYard(g, hw, hd, cx = 0, cz = 0, simId = curSimId) {
     // so a yard at dusk was a yard with four glowing rectangles in the dark.
     // It carries a real light now, reaching its own quarter of the yard, on
     // the same quality-ladder budget the room lights ride.
-    const ml = new THREE.PointLight(0xffe9c8, 1.5, Math.max(hw, hd) * 1.5, 1.6);
+    // reach the far side of the yard, not a quarter of it: four masts at a
+    // corner each have to overlap in the middle or the middle is where the
+    // work happens in the dark
+    const ml = new THREE.PointLight(0xffe9c8, lampCd(2.6, 8.7, 1.35),
+      Math.hypot(hw, hd) * 2.2, 1.35);
     ml.position.set(mx, 8.7, mz);
     ml.visible = qLevel !== 'low';
     g.add(ml); roomLights.push(ml);
   }
+
+  /* The yard's own working light.
+     A seat is entered from a hall, so it inherits that campus's sky - and
+     every campus here is authored at dusk or under a marine layer. Measured
+     on a running seat, 95% of the frame sat below 54/255: the machine, the
+     yard surface and the gauges were all in the dark, which is not what a
+     yard a crew is working in looks like at any hour.
+     A yard therefore carries its own hemisphere, sized to it, sky-coloured
+     from the campus's own atmosphere so the place still reads as that place.
+     It is a FIXTURE, like the masts: it goes in the group, rides the quality
+     ladder and is freed with the seat. */
+  const atmY = D.world.atmos?.[campusKey];
+  const yardHemi = new THREE.HemisphereLight(
+    atmY?.hemi?.sky ?? 0xaec2cb, 0x2a2622, 1.45);
+  yardHemi.position.set(cx, 12, cz);
+  yardHemi.visible = qLevel !== 'low';
+  g.add(yardHemi); roomLights.push(yardHemi);
 }
 
 /* --------------------------------------------------- tower crane lift ---- */
@@ -5544,11 +5677,18 @@ function overheadCraneSim(P = {}) {
     box(1.2, .25, .5, new THREE.MeshStandardMaterial({
       color: 0xfff2cf, emissive: 0xffdf9a, emissiveIntensity: .9 }),
       lx, RAIL_Y + 1.9, lz, g, false);
-    const hb = new THREE.PointLight(0xffe9c8, 1.3, Math.max(BX, BZ) * 2.2, 1.6);
+    const hb = new THREE.PointLight(0xffe9c8, lampCd(2.4, RAIL_Y + 1.6, 1.35),
+      Math.hypot(BX, BZ) * 2.4, 1.35);
     hb.position.set(lx, RAIL_Y + 1.6, lz);
     hb.visible = qLevel !== 'low';
     g.add(hb); roomLights.push(hb);
   }
+  // and the shop's own ambient, for the same reason the outdoor yards have
+  // one: a bay lit only by a campus sun at dusk is a bay nobody can work in
+  const bayHemi = new THREE.HemisphereLight(0xc8d2d6, 0x2a2622, 1.3);
+  bayHemi.position.set(0, RAIL_Y, 0);
+  bayHemi.visible = qLevel !== 'low';
+  g.add(bayHemi); roomLights.push(bayHemi);
   for (let x = -BX - 2; x <= BX + 2; x += 6) for (const z of [-BZ - 1.4, BZ + 1.4])
     box(.5, RAIL_Y, .5, mat.metal, x, RAIL_Y / 2, z, g);
   for (const z of [-BZ - 1.4, BZ + 1.4]) box(BX * 2 + 6, .5, .45, mat.metal, 0, RAIL_Y + .25, z, g);
@@ -9227,6 +9367,11 @@ window.__tc3dDo = (fn, arg) => {
 // the scripted reference operator's driver surface: what a test harness or
 // a robotics pipeline sharing this page context can drive. In-page and
 // deterministic - no network, no model - see OPERATORS in the sim layer
+// harness only: light N of the room lights and douse the rest, so the cost
+// of the room-light count can be measured rather than guessed at
+window.__tc3dSetLit = (n) => {
+  roomLights.forEach((l, i) => { l.visible = i < n; });
+};
 window.__tc3dSim = {
   keys,
   levels: () => Object.keys(D.sims.operatorLevels),
@@ -9409,7 +9554,37 @@ window.__tc3d = () => ({ view, buildings: buildings.length, plates: plates.lengt
     tex: renderer.info.memory.textures,
     cached: geoCache.size, lblTex: lblTexCache.size,
     labelSet: labelSet.length,
-    campusBeacons: beaconInst ? beaconInst.count : 0 },
+    campusBeacons: beaconInst ? beaconInst.count : 0,
+    // Shader programs and live lights: the two costs a draw-call count
+    // cannot see. A forward renderer compiles a program per material per
+    // light-count, so adding lights to a scene makes every material in it
+    // more expensive AND can force a recompile storm on the frame the
+    // count changes - which is exactly what a hall full of room lights
+    // does if nothing is watching.
+    programs: renderer.info.programs?.length ?? 0,
+    // Lights, counted two ways, because they are not the same number and
+    // the difference is the whole point. `lightsInScene` is a census of the
+    // graph, including the hall you left behind with its group hidden.
+    // `lightsLit` is what the renderer will actually collect: three.js's
+    // projectObject returns early on an invisible object, so a light under
+    // a hidden group costs nothing. Reporting only the census would have
+    // made a hidden hall look like a running cost it is not.
+    lightsInScene: (() => { let n2 = 0; scene.traverse((o) => { if (o.isLight) n2++; }); return n2; })(),
+    // what they are and where, when the two numbers disagree
+    lightList: (() => {
+      const out = [];
+      const walk = (o, path) => { if (!o.visible) return;
+        if (o.isLight) out.push(o.type + '@' + path);
+        for (const c of o.children) walk(c, path + '/' + (o.name || o.type)); };
+      walk(scene, ''); return out;
+    })(),
+    lightsLit: (() => {
+      let n2 = 0;
+      const walk = (o) => { if (!o.visible) return; if (o.isLight) n2++;
+        for (const c of o.children) walk(c); };
+      walk(scene); return n2;
+    })(),
+    surfTex: surfCache.size, groundTex: groundCache.size },
   wheel: document.querySelectorAll('#wheel path').length,
   progress: { stations: doneStations.size, sims: Object.keys(prog.sims).length,
     tools: Object.keys(prog.tools).length },
@@ -9901,6 +10076,7 @@ renderer.setAnimationLoop(() => {
   advisorProximity(dt);
   faunaStep(clock.elapsedTime, dt);
   labelStep(dt);
+  roomLitStep();
   xrRender();
 });
 </script>

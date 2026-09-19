@@ -128,7 +128,9 @@ ok('the wall map is deduped on the wire on its OWN index, not folded into the fi
 ok("the room's illuminance record drives a real light, not only the luminaire's emissive",
   /const rc = condOf\(h\.slug, r\.strand\);/.test(src)
   && /const luxN = Math\.max\(0, Math\.min\(1, \(rc\.lux - 200\) \/ 800\)\);/.test(src)
-  && /new THREE\.PointLight\(0xffe9c8, \.55 \+ luxN \* 1\.45,/.test(src));
+  // the intensity now goes through lampCd - see the luminaire-units block
+  // below, which is where that changed and why
+  && /new THREE\.PointLight\(0xffe9c8,\s*\n?\s*lampCd\(\.55 \+ luxN \* 1\.45,/.test(src));
 ok('those lights ride the quality ladder, so a device on the bottom rung does not pay for eleven of them',
   /rl\.visible = qLevel !== 'low';/.test(src)
   && /for \(const rl of roomLights\) rl\.visible = l !== 'low';/.test(fn('setQuality')));
@@ -161,12 +163,12 @@ ok('a sim yard lays the floor its own registry entry declares, with relief',
   /const yard = D\.sims\.sims\[simId\]\?\.yard;/.test(fn('simYard'))
   && /finishMat\(fin, hw \* 2 \/ U \* 2, hd \* 2 \/ U \* 2\)/.test(fn('simYard')));
 ok('the yard mast heads carry a real light, not only an emissive box',
-  /new THREE\.PointLight\(0xffe9c8, 1\.5,/.test(fn('simYard'))
+  /new THREE\.PointLight\(0xffe9c8, lampCd\(2\.6, 8\.7, 1\.35\)/.test(fn('simYard'))
   && /ml\.visible = qLevel !== 'low';/.test(fn('simYard')));
 ok('the one indoor seat floors and lights its shop bay the same way, without '
   + 'borrowing the outdoor fence',
   /const yard = D\.sims\.sims\['overhead-crane'\]\.yard;/.test(src)
-  && /const hb = new THREE\.PointLight\(0xffe9c8, 1\.3,/.test(src));
+  && /const hb = new THREE\.PointLight\(0xffe9c8, lampCd\(2\.4,/.test(src));
 ok('a restoration walk lays the ground its site names, not one grass pad for all',
   /const gid = site\.ground \?\? 'grass';/.test(fn('buildRestoGround'))
   && /groundMat\(gid\)/.test(fn('buildRestoGround')));
@@ -254,5 +256,101 @@ ok('a seat stand is a nearer target than a hall door, so it is tested first',
   && /nearSeat = bs\.userData\.seat; nearSlug = nearPoi = null;/.test(src));
 ok('the yard mast light rides the quality ladder like every other',
   /ml\.visible = qLevel !== 'low';/.test(fn('buildTrainingYard')));
+
+/* ------------------------------------------- the board and the streets --- */
+/* The network board is the first thing anybody sees, and every plate on it
+   was the same pale disc of mat.land - ten places drawn identically, seven
+   of them (the hubs, which host no districts) completely bare. */
+ok('a region plate wears its own campus ground on top and its own trim on the rim',
+  /const atm = D\.world\.atmos\[key\];/.test(fn('buildRegion'))
+  && /groundMat\(atm\?\.ground \?\? 'concrete', undefined, 10\)/.test(fn('buildRegion'))
+  && /new THREE\.Color\(fabR\?\.trim \?\? '#9db2b8'\)/.test(fn('buildRegion')));
+ok('a hub plate is no longer bare: it carries the one building a hub has, '
+  + 'in that hub\'s own fabric',
+  /if \(!camp\.districts\.length\) \{/.test(fn('buildRegion'))
+  && /new THREE\.Color\(f2\.facade_color\)/.test(fn('buildRegion'))
+  && /new THREE\.Color\(f2\.roof_color\)/.test(fn('buildRegion')));
+/* Streets were one flat grey on all ten campuses whatever the ground was. */
+ok('a campus paves its streets in its own declared ground, and never in grass '
+  + 'or sand - those fall back to the shared asphalt',
+  /function roadMatOf\(ck\)/.test(src)
+  && /\(g === 'grass' \|\| g === 'sand' \|\| !g\)\s*\?\s*mat\.road/.test(fn('roadMatOf'))
+  && /groundMat\(g, 0xb9c0c2, 16\)/.test(fn('roadMatOf')));
+ok('the carriageway is built with the campus fabric and freed with it',
+  /road: roadMatOf\(ck\),/.test(fn('fabricOf'))
+  && /fabricOf\(campusKey\)\.road/.test(src));
+
+/* ----------------------------------------------------- luminaire units --- */
+/* three.js r155 flipped `useLegacyLights` to false and r160 dropped the
+   legacy path, so a PointLight's intensity is CANDELA and falls off as
+   I / r^decay. Every luminaire here was first written with legacy-scale
+   numbers (0.5 - 2.6), which at a 2.7 m ceiling or an 8.7 m mast head is
+   indistinguishable from no light at all - measured on a hall interior,
+   scaling them took the frame from a mean luminance of 46 to 89 out of 255.
+   They were real lights and they did vary with the registry's lux; they
+   simply were not lighting anything, which is the same near-miss as an
+   emissive box that only looks like a lamp, in different clothes.
+
+   So: every point light in this page goes through the one conversion. A new
+   one written with a legacy-scale number fails here rather than shipping
+   dark. */
+ok('there is one candela conversion, and it states the height it converts for',
+  /const LAMP_K = 11;/.test(src)
+  && /const lampCd = \(rel, height_m, decay\) =>/.test(src));
+{
+  const pls = [...src.matchAll(/new THREE\.PointLight\(([^;]*?)\)/gs)]
+    .map((m) => m[1].replace(/\s+/g, ' ').trim());
+  ok(`every point light (${pls.length}) takes its intensity from lampCd, not a bare number`,
+    pls.length >= 4 && pls.every((a) => /lampCd\(/.test(a)));
+}
+/* And the thing the conversion must not break: a brighter room stays
+   brighter. The lux ratio is the fact; the candela is only how it is
+   delivered. */
+ok('the room luminaire still scales with the room\'s own lux record',
+  /lampCd\(\.55 \+ luxN \* 1\.45, 2\.32, 1\.7\)/.test(src)
+  && /const luxN = Math\.max\(0, Math\.min\(1, \(rc\.lux - 200\) \/ 800\)\);/.test(src));
+/* A seat is entered from a hall and inherits that campus's sky, and every
+   campus here is authored at dusk or under a marine layer - so a yard needs
+   its own working light or the machine, the surface and the gauges are all
+   in the dark. */
+ok('a simulator yard carries its own working light, not just the campus sun',
+  /const yardHemi = new THREE\.HemisphereLight\(/.test(fn('simYard'))
+  && /roomLights\.push\(yardHemi\)/.test(fn('simYard')));
+
+/* ------------------------------------------------ the room-light budget --- */
+/* A hall carries one point light per room and a walker stands in one room.
+   A forward renderer pays for every light in range on every fragment, and
+   measured on this page with the camera inside the ironworkers hall,
+   everything else held constant:
+
+     11 room lights lit   1.24 fps      (software raster - read the ratio)
+      4 lit               1.64 fps      +32%
+      0 lit               2.06 fps      +66%
+
+   So the nearest few are lit and the rest are doused. These hold the parts
+   that make that safe rather than merely cheaper. */
+ok('only the hall\'s own room lights are culled - a yard\'s rig is its whole '
+  + 'lighting and is left alone',
+  /rl\.userData\.roomLight = true;/.test(src)
+  && /if \(!l\.userData\?\.roomLight\) continue;/.test(fn('roomLitStep')));
+ok('the culler defers to the quality ladder rather than fighting it',
+  /if \(qLevel === 'low'\) return;/.test(fn('roomLitStep')));
+ok('it re-evaluates on movement, not on every frame',
+  /_rlEye\.distanceToSquared\(_rlLastEye\) < 2\.25/.test(fn('roomLitStep'))
+  && /roomLitStep\(\);/.test(src));
+/* Two ways the lit set could get stuck: a new hall built under a camera
+   that has not moved, and the ladder stepping back UP (which relights all
+   eleven and would leave them lit if nothing re-ran the choice). */
+ok('a freshly built hall re-evaluates even from a still camera',
+  /_rlDirty = true;\s*\/\/ a new hall re-evaluates/.test(src));
+ok('stepping the quality ladder back up hands the choice to the culler '
+  + 'rather than leaving all eleven lit',
+  /for \(const rl of roomLights\) rl\.visible = l !== 'low';\s*\n\s*_rlDirty = true;/.test(src));
+ok('a hall never lights more rooms than the budget allows',
+  /const ROOM_LIT_MAX = 4;/.test(src)
+  && /room\[i\]\[1\]\.visible = i < ROOM_LIT_MAX;/.test(fn('roomLitStep')));
+ok('the culler allocates nothing per frame beyond its own sort: the eye and '
+  + 'position vectors are module-scope scratch',
+  /const _rlEye = new THREE\.Vector3\(\), _rlPos = new THREE\.Vector3\(\);/.test(src));
 
 console.log(`web/test_3d: ${n} checks passed - teardown, draw-call and per-frame contracts held at the source`);
