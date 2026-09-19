@@ -5374,9 +5374,48 @@ function setQuality(l) {
   for (const b of fogBanks) b.m.visible = l !== 'low';
   // the per-room lights are on the same budget the shadows and the fog
   // banks are on: a device that cannot afford the ladder's top rung does
-  // not pay eleven point lights for it either
+  // not pay eleven point lights for it either. Coming back UP hands the
+  // choice to roomLitStep rather than lighting all eleven and leaving them.
   for (const rl of roomLights) rl.visible = l !== 'low';
+  _rlDirty = true;
 }
+/* Eleven point lights, and a walker stands in one room.
+   A forward renderer costs every fragment for every light in range, and a
+   hall carries one per room. Measured on this page with the camera inside
+   the ironworkers hall, holding everything else constant:
+
+     11 room lights lit   1.24 fps      (software raster, so read the ratio)
+      4 lit               1.64 fps      +32%
+      0 lit               2.06 fps      +66%
+
+   So the hall lights the few rooms nearest the eye and douses the rest.
+   The doused ones do not go black - the hall's hemisphere and the sun still
+   reach them - they simply stop costing a per-fragment light each. Only the
+   hall's OWN room lights are culled: a yard's masts and its hemisphere are
+   its whole lighting rig and are left alone.
+
+   It re-evaluates on movement, not every frame: sorting eleven lights on a
+   camera that has not moved is work for nothing. */
+const ROOM_LIT_MAX = 4;
+const _rlEye = new THREE.Vector3(), _rlPos = new THREE.Vector3();
+let _rlLastEye = new THREE.Vector3(1e9, 0, 0), _rlDirty = true;
+function roomLitStep() {
+  if (qLevel === 'low') return;          // the ladder already doused them all
+  camera.getWorldPosition(_rlEye);
+  if (!_rlDirty && _rlEye.distanceToSquared(_rlLastEye) < 2.25) return;  // 1.5 m
+  _rlDirty = false;
+  _rlLastEye.copy(_rlEye);
+  const room = [];
+  for (const l of roomLights) {
+    if (!l.userData?.roomLight) continue;
+    l.getWorldPosition(_rlPos);
+    room.push([_rlPos.distanceToSquared(_rlEye), l]);
+  }
+  if (room.length <= ROOM_LIT_MAX) return;
+  room.sort((a, b) => a[0] - b[0]);
+  for (let i = 0; i < room.length; i++) room[i][1].visible = i < ROOM_LIT_MAX;
+}
+
 let qRose = false;
 function qStep(dt) {
   // harness runs (webdriver) keep deterministic visuals; they force via the hook
@@ -6775,6 +6814,7 @@ function buildHall(sg) {
   // the room lights go with the hall; the ladder re-reads this list rather
   // than walking the scene graph looking for point lights
   roomLights = [];
+  _rlDirty = true;          // a new hall re-evaluates even from a still camera
   hallGroup.name = 'tc-hall-' + sg;
   cribCount = 0;
   const h = D.halls.find(x => x.slug === sg);
@@ -6915,6 +6955,9 @@ function buildHall(sg) {
       lampCd(.55 + luxN * 1.45, 2.32, 1.7),   // 2.7 m fitting over a .38 m floor
       Math.max(rw, rd) * .85, 1.7);
     rl.position.set(rx, 2.7, rz);
+    // a hall has eleven of these and a forward renderer pays for every one
+    // of them on every fragment; roomLitStep() below lights the nearest few
+    rl.userData.roomLight = true;
     rl.visible = qLevel !== 'low';   // the quality ladder's own budget
     hallGroup.add(rl); roomLights.push(rl);
 
@@ -10071,6 +10114,11 @@ window.__tc3dDo = (fn, arg) => {
 // the scripted reference operator's driver surface: what a test harness or
 // a robotics pipeline sharing this page context can drive. In-page and
 // deterministic - no network, no model - see OPERATORS in the sim layer
+// harness only: light N of the room lights and douse the rest, so the cost
+// of the room-light count can be measured rather than guessed at
+window.__tc3dSetLit = (n) => {
+  roomLights.forEach((l, i) => { l.visible = i < n; });
+};
 window.__tc3dSim = {
   keys,
   levels: () => Object.keys(D.sims.operatorLevels),
@@ -10253,7 +10301,37 @@ window.__tc3d = () => ({ view, buildings: buildings.length, plates: plates.lengt
     tex: renderer.info.memory.textures,
     cached: geoCache.size, lblTex: lblTexCache.size,
     labelSet: labelSet.length,
-    campusBeacons: beaconInst ? beaconInst.count : 0 },
+    campusBeacons: beaconInst ? beaconInst.count : 0,
+    // Shader programs and live lights: the two costs a draw-call count
+    // cannot see. A forward renderer compiles a program per material per
+    // light-count, so adding lights to a scene makes every material in it
+    // more expensive AND can force a recompile storm on the frame the
+    // count changes - which is exactly what a hall full of room lights
+    // does if nothing is watching.
+    programs: renderer.info.programs?.length ?? 0,
+    // Lights, counted two ways, because they are not the same number and
+    // the difference is the whole point. `lightsInScene` is a census of the
+    // graph, including the hall you left behind with its group hidden.
+    // `lightsLit` is what the renderer will actually collect: three.js's
+    // projectObject returns early on an invisible object, so a light under
+    // a hidden group costs nothing. Reporting only the census would have
+    // made a hidden hall look like a running cost it is not.
+    lightsInScene: (() => { let n2 = 0; scene.traverse((o) => { if (o.isLight) n2++; }); return n2; })(),
+    // what they are and where, when the two numbers disagree
+    lightList: (() => {
+      const out = [];
+      const walk = (o, path) => { if (!o.visible) return;
+        if (o.isLight) out.push(o.type + '@' + path);
+        for (const c of o.children) walk(c, path + '/' + (o.name || o.type)); };
+      walk(scene, ''); return out;
+    })(),
+    lightsLit: (() => {
+      let n2 = 0;
+      const walk = (o) => { if (!o.visible) return; if (o.isLight) n2++;
+        for (const c of o.children) walk(c); };
+      walk(scene); return n2;
+    })(),
+    surfTex: surfCache.size, groundTex: groundCache.size },
   wheel: document.querySelectorAll('#wheel path').length,
   progress: { stations: doneStations.size, sims: Object.keys(prog.sims).length,
     tools: Object.keys(prog.tools).length },
@@ -10314,6 +10392,7 @@ renderer.setAnimationLoop(() => {
   advisorProximity(dt);
   faunaStep(clock.elapsedTime, dt);
   labelStep(dt);
+  roomLitStep();
   xrRender();
 });
 </script>

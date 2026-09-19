@@ -317,4 +317,40 @@ ok('a simulator yard carries its own working light, not just the campus sun',
   /const yardHemi = new THREE\.HemisphereLight\(/.test(fn('simYard'))
   && /roomLights\.push\(yardHemi\)/.test(fn('simYard')));
 
+/* ------------------------------------------------ the room-light budget --- */
+/* A hall carries one point light per room and a walker stands in one room.
+   A forward renderer pays for every light in range on every fragment, and
+   measured on this page with the camera inside the ironworkers hall,
+   everything else held constant:
+
+     11 room lights lit   1.24 fps      (software raster - read the ratio)
+      4 lit               1.64 fps      +32%
+      0 lit               2.06 fps      +66%
+
+   So the nearest few are lit and the rest are doused. These hold the parts
+   that make that safe rather than merely cheaper. */
+ok('only the hall\'s own room lights are culled - a yard\'s rig is its whole '
+  + 'lighting and is left alone',
+  /rl\.userData\.roomLight = true;/.test(src)
+  && /if \(!l\.userData\?\.roomLight\) continue;/.test(fn('roomLitStep')));
+ok('the culler defers to the quality ladder rather than fighting it',
+  /if \(qLevel === 'low'\) return;/.test(fn('roomLitStep')));
+ok('it re-evaluates on movement, not on every frame',
+  /_rlEye\.distanceToSquared\(_rlLastEye\) < 2\.25/.test(fn('roomLitStep'))
+  && /roomLitStep\(\);/.test(src));
+/* Two ways the lit set could get stuck: a new hall built under a camera
+   that has not moved, and the ladder stepping back UP (which relights all
+   eleven and would leave them lit if nothing re-ran the choice). */
+ok('a freshly built hall re-evaluates even from a still camera',
+  /_rlDirty = true;\s*\/\/ a new hall re-evaluates/.test(src));
+ok('stepping the quality ladder back up hands the choice to the culler '
+  + 'rather than leaving all eleven lit',
+  /for \(const rl of roomLights\) rl\.visible = l !== 'low';\s*\n\s*_rlDirty = true;/.test(src));
+ok('a hall never lights more rooms than the budget allows',
+  /const ROOM_LIT_MAX = 4;/.test(src)
+  && /room\[i\]\[1\]\.visible = i < ROOM_LIT_MAX;/.test(fn('roomLitStep')));
+ok('the culler allocates nothing per frame beyond its own sort: the eye and '
+  + 'position vectors are module-scope scratch',
+  /const _rlEye = new THREE\.Vector3\(\), _rlPos = new THREE\.Vector3\(\);/.test(src));
+
 console.log(`web/test_3d: ${n} checks passed - teardown, draw-call and per-frame contracts held at the source`);
