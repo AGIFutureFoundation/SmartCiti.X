@@ -454,4 +454,129 @@ ok('the scripted operator\'s steer-to-a-point helper no longer shadows the '
   /const steerTo = \(px, pz, vWant\) => \{/.test(src)
   && !/const drive = \(/.test(src));
 
+/* ----------------------------------------------------------- the walker ---
+   The walker was a hovercraft. It reached full speed on the first frame and
+   stopped dead on the last; it was 41% faster on the diagonal, because two
+   full-speed vectors were added together rather than a command landing on
+   the unit circle; "walking" was 5 m/s, which is 18 km/h, and Shift made it
+   10 m/s, which is faster than any human has run. Measured with the page's
+   own fixed-step walk probe, before and after:
+
+                            before      after
+     walking                5.00 m/s    1.67 m/s
+     diagonal / straight    1.414       1.005
+     running                9.69 m/s    4.91 m/s
+     back-pedal             5.00 m/s    1.04 m/s   (6.79 with Shift, now none)
+     0.25 s from a stop     1.25 m      0.31 m
+
+   These hold the four facts that produced those numbers. */
+const walk = fn('walkStep');
+ok('a corner is not a speed-up: the walk command lands on the unit circle '
+  + 'before it is spooled, rather than two full-speed vectors being added',
+  /const m = Math\.hypot\(fwd, str\);/.test(walk)
+  && /wkF = drive\(wkF, m \? fwd \/ m : 0, dt, WALK_SPOOL\);/.test(walk)
+  && /wkS = drive\(wkS, m \? str \/ m : 0, dt, WALK_SPOOL\);/.test(walk));
+ok('the walker leans into a stride and settles out of one, on the same drive '
+  + 'the machines use, with a body\'s rates rather than a hydraulic drive\'s',
+  /const WALK_SPOOL = \{ up: 6\.5, down: 9\.5 \};/.test(src)
+  && /function drive\(/.test(src));
+ok('the speeds are speeds a person moves at: a brisk walk, a real run, and '
+  + 'a back-pedal that Shift cannot turn into a reverse sprint',
+  /const WALK_MS = 1\.7, RUN_MS = 5\.0, EYE_H = 1\.7, BACK_FRAC = \.62;/.test(src)
+  && /const fTop = wkF >= 0 \? top : WALK_MS \* BACK_FRAC;/.test(walk));
+ok('the head rides the stride rather than a clock: the bob and the footfalls '
+  + 'come off one phase, whose cadence is the speed actually travelled',
+  /rig\.y = EYE_H \+ strideStep\(Math\.hypot\(wkF \* fTop, wkS \* top\), dt\);/.test(walk)
+  && /wkPhase \+= \(speed \/ stepM\) \* Math\.PI \* dt;/.test(fn('strideStep'))
+  && /if \(foot !== wkFoot\) \{ wkFoot = foot; if \(!wkSilent\) footfall\(speed \/ RUN_MS\); \}/
+       .test(fn('strideStep')));
+ok('standing still is standing still: the stride resets rather than drifting '
+  + 'on, so the first step after a stop is a first step',
+  /if \(speed < \.12\) \{ wkPhase = 0; return 0; \}/.test(fn('strideStep')));
+
+/* ---------------------------------------------------------- the footfall ---
+   What you are standing on is already known - the surfaces registry names a
+   room's floor and the world registry names a ground - so a footstep reads
+   it rather than restating it. The timbre itself lives once, per step
+   family, in the build, which asserts that every floor pattern and every
+   ground recipe maps to one (and that no family is declared unreachable). */
+ok('a footstep reads the floor the registries already named: the room\'s own '
+  + 'finish indoors, the site\'s or the campus\'s ground recipe outdoors',
+  /const fin = D\.finCat\[D\.finishes\[slug\]\[curRoom\.strand\]\.surface\];/
+    .test(fn('stepFamily'))
+  && /return D\.step\.floor\[fin\?\.pattern\] \?\? 'hard';/.test(fn('stepFamily'))
+  && /\? \(curRestoSite\?\.ground \?\? 'grass'\)/.test(fn('stepFamily'))
+  && /: \(ATMOS\[campusKey\] \?\? DEF_ATMOS\)\.ground;/.test(fn('stepFamily')));
+ok('the step families are the one place a timbre is written, and the page '
+  + 'reads them from the payload rather than carrying a second copy',
+  /const k = D\.step\.fam\[stepFamily\(\)\];/.test(fn('footfall'))
+  && !/STEP_FAMILIES/.test(src.slice(src.indexOf('<script'))));
+ok('a footstep is synthesised in the browser from filtered noise, like every '
+  + 'other sound on this page - no recording of a real floor is loaded',
+  /const buf = ac\.createBuffer\(1, n, ac\.sampleRate\);/.test(fn('footfall'))
+  && /f\.type = 'bandpass'; f\.frequency\.value = k\.f; f\.Q\.value = k\.q;/
+       .test(fn('footfall'))
+  && !/new Audio\(|\.mp3|\.wav|\.ogg/.test(src));
+ok('the families that ring get a ring, and the ones that do not are not '
+  + 'paying for an oscillator they never hear',
+  /if \(k\.ring > 0\) \{/.test(fn('footfall')));
+ok('no two steps are identical - a real gait is not a metronome',
+  /\(\.86 \+ Math\.random\(\) \* \.28\)/.test(fn('footfall')));
+ok('a probe silences the footfalls it drives: hundreds of thousands of '
+  + 'steps must not move the page being measured, or make it scream',
+  /let wkSilent = false;/.test(src)
+  && /if \(foot !== wkFoot\) \{ wkFoot = foot; if \(!wkSilent\) footfall\(speed \/ RUN_MS\); \}/
+       .test(fn('strideStep'))
+  && (src.match(/const wasSilent = wkSilent; wkSilent = true;/g) ?? []).length === 2
+  && (src.match(/\n  wkSilent = wasSilent;/g) ?? []).length === 2);
+ok('the walk probe leaves the page exactly as it found it, so measuring the '
+  + 'walker cannot move it',
+  /xrRig\.position\.copy\(p0\);/.test(src)
+  && /wkF = wasF; wkS = wasS; wkPhase = wasPhase; wkFoot = wasFoot;/.test(src));
+
+/* ---------------------------------------------------------- solid halls ---
+   The campus stroll walked straight through the buildings, which is the
+   single loudest way a walkable world tells you it is not one. Measured
+   with the page's own solidity test - 72 headings out of the plaza, 200 s
+   of walking each, 864,000 fixed steps, asking after every one whether the
+   walker is inside a footprint:
+
+                       before     after
+     steps inside      14,370     0
+     contact steps     17,105     52,708
+     headings that
+       met a wall      17 of 72   17 of 72
+
+   Same headings meet a wall either way; the difference is that the walker
+   now rests against it instead of passing through it. */
+const solid = fn('pushOutOfSolids');
+ok('the walker is kept out of the SAME footprints the road layout is already '
+  + 'checked against - there is no second copy of where a building is',
+  /solids\.push\(\{ cx: rad\.x \* R, cz: rad\.y \* R,/.test(src)
+  && /for \(const r of roads\) for \(const b of rects\) \{/.test(src)
+  && /rects \}\);/.test(src));
+ok('a district is turned to face the plaza, so the walker is carried into '
+  + 'its frame and back rather than its footprints being flattened',
+  /let u = dx \* d\.cos - dz \* d\.sin;/.test(solid)
+  && /rig\.x = d\.cx \+ u \* d\.cos \+ v \* d\.sin;/.test(solid)
+  && /rig\.z = d\.cz - u \* d\.sin \+ v \* d\.cos;/.test(solid));
+ok('a wall is slid along, not stuck to: the push is along the axis the '
+  + 'walker is least far into',
+  /if \(ou < ov\) u = b\.u \+ \(u >= b\.u \? 1 : -1\) \* \(b\.hw \+ BODY_R\);/.test(solid)
+  && /else v = b\.v \+ \(v >= b\.v \? 1 : -1\) \* \(b\.hd \+ BODY_R\);/.test(solid));
+ok('a stroll tests the three districts before it tests the hundred halls',
+  /if \(dx \* dx \+ dz \* dz > d\.reach \* d\.reach\) continue;/.test(solid));
+ok('the walker has a body rather than being a point on the floor',
+  /const BODY_R = \.45;/.test(src));
+ok('the collision runs on the campus stroll, where the buildings are - the '
+  + 'hall interior and a restoration site have their own bounds',
+  /pushOutOfSolids\(rig\);\s*\n\s*const len = Math\.hypot\(rig\.x, rig\.z\);/.test(walk));
+ok('the solidity test reads the footprints the collision itself uses, so '
+  + 'the two cannot disagree about where a hall is',
+  /const probe = \(x, z, pad\) => \{[\s\S]*?for \(const d of solids\) \{[\s\S]*?for \(const b of d\.rects\)/
+    .test(src));
+ok('and it leaves the rig and the heading where it found them',
+  /xrRig\.position\.copy\(p0\); xrRig\.rotation\.y = r0; wkF = wasF; wkS = wasS;/
+    .test(src));
+
 console.log(`web/test_3d: ${n} checks passed - teardown, draw-call and per-frame contracts held at the source`);

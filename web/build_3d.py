@@ -189,6 +189,56 @@ for f in sorted((ROOT / 'i18n/locales').glob('*.json')):
         'strands': c['strands'], 'tiers': c['tiers'], 'states': c['states'],
     }
 
+# --------------------------------------------------------------- footfall ---
+# What a footstep sounds like. A closed set of STEP FAMILIES, and the two
+# things a walker can be standing on - a room's floor pattern and a world
+# ground recipe - each declaring which family it steps like. One truth: the
+# timbre lives once, per family; nothing here restates a finish or a recipe.
+#
+# SCHEMATIC, like the rest of the audio in this page: synthesised in the
+# browser from filtered noise, never a recording of a real floor.
+STEP_FAMILIES = {
+    'hard':  {'f': 620,  'q': 1.3, 'dur': .085, 'ring': 0,   'grit': .30,
+              'why': 'a hard flat floor gives a short slap and no tail'},
+    'grit':  {'f': 1100, 'q': .65, 'dur': .135, 'ring': 0,   'grit': .92,
+              'why': 'loose aggregate under a boot carries on after the step'},
+    'metal': {'f': 2100, 'q': 3.4, 'dur': .155, 'ring': .62, 'grit': .22,
+              'why': 'plate and grating ring, and open grating rings longest'},
+    'wood':  {'f': 270,  'q': 1.1, 'dur': .115, 'ring': .14, 'grit': .32,
+              'why': 'timber knocks low and hollow'},
+    'soft':  {'f': 420,  'q': .5,  'dur': .10,  'ring': 0,   'grit': .55,
+              'why': 'ground cover damps the step and returns nothing'},
+    'wet':   {'f': 700,  'q': .8,  'dur': .17,  'ring': 0,   'grit': .70,
+              'why': 'saturated ground slaps and then sucks at the boot'},
+}
+# every floor PATTERN in the surfaces registry, and every ground RECIPE in
+# the world registry, maps to exactly one family - asserted below, so a new
+# finish or a new recipe cannot land without someone deciding how it sounds
+FLOOR_STEP = {
+    'slab': 'hard', 'smooth': 'hard', 'tile': 'hard', 'brick': 'hard',
+    'broom': 'grit', 'speckle': 'grit',
+    'checker': 'metal', 'grate': 'metal',
+    'block': 'wood', 'plank': 'wood',
+}
+GROUND_STEP = {
+    'asphalt': 'hard', 'concrete': 'hard',
+    'gravel': 'grit', 'levee': 'grit',
+    'grass': 'soft', 'sand': 'soft', 'upland': 'soft', 'marsh': 'soft',
+    'mudflat': 'wet', 'water': 'wet',
+}
+_pats = {f['pattern'] for f in finishes_reg['catalogue'].values()}
+assert not sorted(_pats - set(FLOOR_STEP)), (
+    f'floor patterns with no step family: {sorted(_pats - set(FLOOR_STEP))}')
+assert not sorted(set(FLOOR_STEP) - _pats), (
+    f'step families for patterns no finish uses: {sorted(set(FLOOR_STEP) - _pats)}')
+assert sorted(GROUND_STEP) == sorted(world_reg['ground']), (
+    'GROUND_STEP must name every world ground recipe and no others')
+_used = set(FLOOR_STEP.values()) | set(GROUND_STEP.values())
+assert not sorted(_used - set(STEP_FAMILIES)), (
+    f'unknown step family: {sorted(_used - set(STEP_FAMILIES))}')
+assert not sorted(set(STEP_FAMILIES) - _used), (
+    f'step family declared and never reachable: {sorted(set(STEP_FAMILIES) - _used)}')
+
 DATA = json.dumps({
     'districts': {k: {'name': d['name'], 'halls': d['halls'], 'hue': HUES[k]}
                   for k, d in districts_reg.items()},
@@ -220,6 +270,7 @@ DATA = json.dumps({
     'roomDefs': ROOM_DEFS,
     'layouts': [lay for _, lay in LAY_LIST],
     'finCat': finishes_reg['catalogue'],
+    'step': {'fam': STEP_FAMILIES, 'floor': FLOOR_STEP, 'ground': GROUND_STEP},
     'wallCat': finishes_reg['wall_catalogue'],
     'wallMaps': [m for _, m in WALL_MAPS],
     'wallIdx': WALL_IDX,
@@ -7101,6 +7152,12 @@ function buildHall(sg) {
 
 /* -------------------------------------------------------- campus view --- */
 let campusGroup = null, buildings = [], hallRec = null;
+// Each district's building footprints, kept in THAT DISTRICT'S OWN frame
+// with the turn that gets a world point into it. These are the same
+// rectangles the road layout is already checked against - a hall is one
+// solid thing, and both the streets and the walker are kept out of it.
+let solids = [];
+const BODY_R = .45;                // shoulders, near enough, in metres
 let regionGroup = null, plates = [], anchorPins = 0;
 let campusKey = D.halls.some(h => h.slug === params.get('hall'))
   ? Object.keys(D.campuses).find(k =>
@@ -8083,7 +8140,7 @@ function buildCampus(key) {
   // its merged building meshes, roads, ring geometry and every label
   // texture (+284 geometries per campus<->hall trip, +568 per resto walk)
   if (campusGroup) { scene.remove(campusGroup); disposeOf(campusGroup); }
-  campusGroup = new THREE.Group(); buildings = []; beaconAt = [];
+  campusGroup = new THREE.Group(); buildings = []; beaconAt = []; solids = [];
   campusGroup.userData.key = key; campusGroup.userData.loc = loc;
   roadFaults = 0; roadCount = 0; cityPois = 0; cityHits = []; restorationHits = [];
   const camp = D.campuses[key];
@@ -8173,6 +8230,14 @@ function buildCampus(key) {
       (rr - R) - (27 - R), fabricOf(campusKey).road, cg));
     dashesV(27 - R, rr - R, 0, cg);
     roadCount += 2;
+    // the walker is kept out of the same rectangles the roads are: one
+    // reach that covers the district, so a stroll tests eight numbers
+    // before it tests a hundred
+    solids.push({ cx: rad.x * R, cz: rad.y * R,
+                  cos: Math.cos(psi), sin: Math.sin(psi),
+                  reach: Math.max(...rects.map((b) =>
+                    Math.hypot(Math.abs(b.u) + b.hw, Math.abs(b.v) + b.hd))) + 2,
+                  rects });
     // the guarantee: no road rectangle overlaps a building rectangle
     for (const r of roads) for (const b of rects) {
       if (Math.abs(r.u - b.u) < r.w / 2 + b.hw
@@ -8763,6 +8828,121 @@ function walkLeave() {
   plc.unlock(); walkEnded();
 }
 
+/* A hall is a solid thing. The campus stroll used to walk straight through
+   the buildings, which is the single loudest way a walkable world tells you
+   it is not one. The walker is pushed out of the same footprints the road
+   layout is already checked against - no second copy of where a building
+   is - along whichever axis it is least far into, which is what keeps a
+   wall a wall rather than a trap: you slide along it instead of sticking.
+   The plaza, the chapter hall and the yard dressing are NOT in this set;
+   what a stroller actually walks into is the halls. */
+function pushOutOfSolids(rig) {
+  for (const d of solids) {
+    const dx = rig.x - d.cx, dz = rig.z - d.cz;
+    if (dx * dx + dz * dz > d.reach * d.reach) continue;      // nowhere near
+    // world -> the district's own frame (it is turned to face the plaza)
+    let u = dx * d.cos - dz * d.sin;
+    let v = dx * d.sin + dz * d.cos;
+    let hit = false;
+    for (const b of d.rects) {
+      const ou = (b.hw + BODY_R) - Math.abs(u - b.u);
+      const ov = (b.hd + BODY_R) - Math.abs(v - b.v);
+      if (ou <= 0 || ov <= 0) continue;                       // outside this one
+      hit = true;
+      // out along the shallower axis, so a wall is slid along, not stuck to
+      if (ou < ov) u = b.u + (u >= b.u ? 1 : -1) * (b.hw + BODY_R);
+      else v = b.v + (v >= b.v ? 1 : -1) * (b.hd + BODY_R);
+    }
+    if (hit) {                                                // and back again
+      rig.x = d.cx + u * d.cos + v * d.sin;
+      rig.z = d.cz - u * d.sin + v * d.cos;
+    }
+  }
+}
+
+/* ------------------------------------------------------------- the walk ---
+   Speeds a person actually moves at. 1.7 m/s is a brisk walk; 5.0 m/s on
+   Shift is a real run, not the 10 m/s this used to do. The grounds are
+   large on purpose - a city layer is a real city - so crossing one takes
+   the time crossing one takes; the minimap, the door prompts and the deep
+   links are how you skip it, not an impossible sprint. */
+const WALK_MS = 1.7, RUN_MS = 5.0, EYE_H = 1.7, BACK_FRAC = .62;
+const WALK_SPOOL = { up: 6.5, down: 9.5 };   // a body, not a hydraulic drive
+let wkF = 0, wkS = 0;                        // spooled walk / strafe levels
+
+/* The stride. Cadence is speed over step length, and step length grows with
+   speed the way a real one does, so a walk lands near 105 steps/min and a
+   run near 180 - which is why the bob and the footfalls read as a gait
+   rather than a metronome. The head rises and falls on the same phase.
+   SCHEMATIC: the shape of a gait, not a gait analysis. */
+let wkPhase = 0, wkFoot = 0;
+// a probe drives the walker hundreds of thousands of steps: it must not
+// move the page it is measuring, and it must not make it scream either
+let wkSilent = false;
+function strideStep(speed, dt) {
+  if (speed < .12) { wkPhase = 0; return 0; }
+  const stepM = .62 + speed * .21;           // longer stride, faster gait
+  wkPhase += (speed / stepM) * Math.PI * dt; // one PI of phase is one foot
+  const foot = Math.floor(wkPhase / Math.PI);
+  if (foot !== wkFoot) { wkFoot = foot; if (!wkSilent) footfall(speed / RUN_MS); }
+  return Math.sin(wkPhase * 2) * (.011 + speed * .006);
+}
+
+/* What is underfoot, as the registries know it: inside a hall it is the
+   room's own floor finish, and outdoors it is the campus or site ground
+   recipe. Both resolve to one of the six step families declared in the
+   build, which is where the timbre lives - nothing is restated here. */
+function stepFamily() {
+  if (view === 'hall' && curRoom) {
+    const fin = D.finCat[D.finishes[slug][curRoom.strand].surface];
+    return D.step.floor[fin?.pattern] ?? 'hard';
+  }
+  // outdoors, the same record that laid the ground says what it is: the
+  // site's own recipe at a restoration site, the campus atmosphere's on the
+  // grounds. This is the surface the CAMPUS stands on, not a per-metre
+  // query - a road crossing the grounds still steps as the grounds do.
+  const g = view === 'restoration'
+    ? (curRestoSite?.ground ?? 'grass')
+    : (ATMOS[campusKey] ?? DEF_ATMOS).ground;
+  return D.step.ground[g] ?? 'hard';
+}
+
+/* A footstep, synthesised: a short noise burst through a bandpass the
+   family tunes, plus a ring for the families that ring. No recording of a
+   real floor is loaded, here or anywhere else in this page. */
+function footfall(effort) {
+  if (!ac) return;
+  const k = D.step.fam[stepFamily()];
+  if (!k) return;
+  const t = ac.currentTime;
+  const n = Math.max(1, Math.floor(ac.sampleRate * k.dur));
+  const buf = ac.createBuffer(1, n, ac.sampleRate);
+  const d = buf.getChannelData(0);
+  // the grit term decides how much of the burst survives past the impact:
+  // a hard floor is all attack, loose aggregate keeps rustling
+  for (let i = 0; i < n; i++) {
+    const x = i / n;
+    d[i] = (Math.random() * 2 - 1) * Math.pow(1 - x, 1 + (1 - k.grit) * 7);
+  }
+  const src = ac.createBufferSource(), f = ac.createBiquadFilter();
+  const g = ac.createGain();
+  src.buffer = buf;
+  f.type = 'bandpass'; f.frequency.value = k.f; f.Q.value = k.q;
+  // heavier on the boot when running, and never two identical steps
+  const vol = (.05 + effort * .05) * (.86 + Math.random() * .28);
+  g.gain.setValueAtTime(vol, t);
+  g.gain.exponentialRampToValueAtTime(.0008, t + k.dur);
+  src.connect(f); f.connect(g); g.connect(master); src.start(t);
+  if (k.ring > 0) {
+    const o = ac.createOscillator(), rg = ac.createGain();
+    o.type = 'triangle';
+    o.frequency.setValueAtTime(k.f * (.94 + Math.random() * .12), t);
+    rg.gain.setValueAtTime(vol * k.ring, t);
+    rg.gain.exponentialRampToValueAtTime(.0008, t + k.dur * 1.6);
+    o.connect(rg); rg.connect(master); o.start(t); o.stop(t + k.dur * 1.7);
+  }
+}
+
 const _wf = new THREE.Vector3(), _wr = new THREE.Vector3();
 // scratch vectors for the walk (module scope, like _wf/_wr/_lblPos): the
 // loop allocated five to eight Vector3s per frame in the campus stroll
@@ -8779,14 +8959,29 @@ function walkStep(dt) {
     // forward is where the camera looks, flattened; right is its x axis -
     // the same vectors PointerLockControls.moveForward/moveRight use, on
     // the rig instead of the camera
-    const sp = (keys.ShiftLeft || keys.ShiftRight ? 10 : 5) * dt;
+    /* The walker used to be a hovercraft: full speed on the first frame, a
+       dead stop on the last, and 41% faster on the diagonal, because two
+       full-speed vectors were added together. And "walking" was 5 m/s -
+       18 km/h, which is a sprint. A body leans into a stride and settles
+       out of one, does not gain speed by facing a corner, and moves at a
+       speed a person moves at. Same doctrine as the machine drives, with a
+       body's rates rather than a hydraulic drive's. */
+    const fwd = axis(keys.KeyS || keys.ArrowDown, keys.KeyW || keys.ArrowUp);
+    const str = axis(keys.KeyA || keys.ArrowLeft, keys.KeyD || keys.ArrowRight);
+    // a corner is not a speed-up: the command lands on the unit circle
+    const m = Math.hypot(fwd, str);
+    wkF = drive(wkF, m ? fwd / m : 0, dt, WALK_SPOOL);
+    wkS = drive(wkS, m ? str / m : 0, dt, WALK_SPOOL);
+    const top = (keys.ShiftLeft || keys.ShiftRight) ? RUN_MS : WALK_MS;
+    // nobody walks backwards as fast as forwards, and nobody runs backwards:
+    // the reverse component is held to a back-pedal off the WALK speed, so
+    // Shift buys nothing going that way
+    const fTop = wkF >= 0 ? top : WALK_MS * BACK_FRAC;
     camera.getWorldDirection(_wf); _wf.y = 0; _wf.normalize();
     _wr.set(-_wf.z, 0, _wf.x);
-    if (keys.KeyW || keys.ArrowUp) rig.addScaledVector(_wf, sp);
-    if (keys.KeyS || keys.ArrowDown) rig.addScaledVector(_wf, -sp);
-    if (keys.KeyA || keys.ArrowLeft) rig.addScaledVector(_wr, -sp);
-    if (keys.KeyD || keys.ArrowRight) rig.addScaledVector(_wr, sp);
-    rig.y = 1.7;
+    rig.addScaledVector(_wf, wkF * fTop * dt);
+    rig.addScaledVector(_wr, wkS * top * dt);
+    rig.y = EYE_H + strideStep(Math.hypot(wkF * fTop, wkS * top), dt);
   }
   if (view === 'hall') {
     const DEP = hallRec.depth * U;
@@ -8833,7 +9028,8 @@ function walkStep(dt) {
     }
     return;
   }
-  // campus stroll: stay on the grounds, and offer the nearest door
+  // campus stroll: out of the buildings, on the grounds, nearest door offered
+  pushOutOfSolids(rig);
   const len = Math.hypot(rig.x, rig.z);
   const lim = walkLim;
   if (len > lim) {
@@ -9478,6 +9674,86 @@ function startRestorationWalk(siteId) {
   document.getElementById('glbInBtn').style.display = 'none';
   document.getElementById('satBtn').style.display = 'none';
 }
+/* A fixed-step drive of the walker, for the same reason opRunHeadless
+   exists for the seats: a desktop walk is entered through pointer lock,
+   which no headless browser grants, so the kinematics are exercised
+   directly here. It leaves the rig, the keys and the spooled levels exactly
+   as it found them, so a probe cannot move the page it is measuring. */
+/* The companion to the walk probe: strolls out from the plaza on N
+   headings and reports how many fixed steps ended up INSIDE a building.
+   It reads the footprints the collision itself uses, so the two cannot
+   disagree about where a hall is - only about whether the push-out worked.
+   Leaves the rig where it found it, like the walk probe. */
+window.__tc3dSolidTest = (headings = 72, seconds = 200, dt = 1 / 60) => {
+  const p0 = xrRig.position.clone(), r0 = xrRig.rotation.y;
+  const wasSilent = wkSilent; wkSilent = true;
+  const wasKeys = { ...keys }, wasF = wkF, wasS = wkS;
+  // inside the building itself, and inside the body-width boundary the
+  // push-out holds: the first must never happen, the second is the contact
+  // that proves this walk actually met a wall
+  const probe = (x, z, pad) => {
+    for (const d of solids) {
+      const dx = x - d.cx, dz = z - d.cz;
+      if (dx * dx + dz * dz > (d.reach + pad) * (d.reach + pad)) continue;
+      const u = dx * d.cos - dz * d.sin, v = dx * d.sin + dz * d.cos;
+      for (const b of d.rects)
+        if (Math.abs(u - b.u) < b.hw + pad && Math.abs(v - b.v) < b.hd + pad)
+          return true;
+    }
+    return false;
+  };
+  let steps = 0, breaches = 0, contacts = 0, met = 0, worst = 0;
+  const n = Math.max(1, Math.round(seconds / dt));
+  for (let h = 0; h < headings; h++) {
+    const a = (h / headings) * Math.PI * 2;
+    xrRig.position.set(0, EYE_H, 0);
+    camera.rotation.set(0, 0, 0);
+    xrRig.rotation.y = a;
+    // the heading only exists once the matrix carries it: walkStep asks the
+    // camera for its WORLD direction, and nothing has rendered since
+    xrRig.updateMatrixWorld(true);
+    wkF = wkS = 0;
+    for (const k of Object.keys(keys)) delete keys[k];
+    keys.KeyW = true;
+    let touchedHere = false;
+    for (let i = 0; i < n; i++) {
+      walkStep(dt); steps++;
+      const x = xrRig.position.x, z = xrRig.position.z;
+      if (probe(x, z, 0)) breaches++;
+      if (probe(x, z, BODY_R + 1e-3)) { contacts++; touchedHere = true; }
+    }
+    if (touchedHere) met++;
+    worst = Math.max(worst, Math.hypot(xrRig.position.x, xrRig.position.z));
+  }
+  for (const k of Object.keys(keys)) delete keys[k];
+  Object.assign(keys, wasKeys);
+  xrRig.position.copy(p0); xrRig.rotation.y = r0; wkF = wasF; wkS = wasS;
+  wkSilent = wasSilent;
+  return { headings, seconds: n * dt, steps, breaches, contacts,
+           headingsThatMetAWall: met, solids: solids.length,
+           rects: solids.reduce((a, d) => a + d.rects.length, 0),
+           farthest: +worst.toFixed(1) };
+};
+window.__tc3dWalkProbe = (keyList, seconds, dt = 1 / 60) => {
+  const wasKeys = { ...keys };
+  const wasSilent = wkSilent; wkSilent = true;
+  const p0 = xrRig.position.clone();
+  const wasF = wkF, wasS = wkS, wasPhase = wkPhase, wasFoot = wkFoot;
+  wkF = wkS = 0;
+  for (const k of Object.keys(keys)) delete keys[k];
+  for (const k of keyList) keys[k] = true;
+  const n = Math.max(1, Math.round(seconds / dt));
+  for (let i = 0; i < n; i++) walkStep(dt);
+  const dx = xrRig.position.x - p0.x, dz = xrRig.position.z - p0.z;
+  const dist = Math.hypot(dx, dz);
+  for (const k of Object.keys(keys)) delete keys[k];
+  Object.assign(keys, wasKeys);
+  xrRig.position.copy(p0);
+  wkF = wasF; wkS = wasS; wkPhase = wasPhase; wkFoot = wasFoot;
+  wkSilent = wasSilent;
+  return { dist: +dist.toFixed(3), seconds: n * dt,
+           mps: +(dist / (n * dt)).toFixed(3), family: stepFamily() };
+};
 window.__tc3dRestoWalk = startRestorationWalk;
 window.__tc3dRestoExit = exitRestoWalk;
 
