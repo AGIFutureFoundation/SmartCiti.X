@@ -381,7 +381,8 @@ const seats = {
                      ['cE', 'st.ext + er * st.cE * dt'],
                      ['cQ', 'st.el + qr * st.cQ * dt']],
   overheadCraneSim: [['cX', 'st.bx + br * st.cX * dt'],
-                     ['cZ', 'st.tz + tr * st.cZ * dt']],
+                     ['cZ', 'st.tz + tr * st.cZ * dt'],
+                     ['cH', 'st.h + hr * st.cH * dt']],
 };
 for (const [seat, axes] of Object.entries(seats)) {
   const body = fn(seat);
@@ -404,6 +405,30 @@ ok('the boom lift\'s moment limit is folded into the COMMANDED axis, so the '
 ok('the overhead crane scores sway against the spooled bridge level rather '
   + 'than the key, so coasting still counts as bridging',
   /const bridging = Math\.abs\(st\.cX\) > \.02;/.test(fn('overheadCraneSim')));
+ok('the overhead crane\'s upper limit switch cuts the HOIST-UP command - '
+  + 'which is what a limit switch is - while the block still reaches the '
+  + 'switch and still trips it',
+  /st\.cH = drive\(st\.cH, axis\(keys\.KeyE, keys\.KeyQ && st\.h < LAY\.hook_max - 1e-6\), dt\);/
+    .test(fn('overheadCraneSim'))
+  && /st\.atLimit = true; st\.limits\+\+;/.test(fn('overheadCraneSim')));
+
+/* ------------------------------------------------------------ the arc ---
+   Arc length was scored (the `band` axis) but changed nothing: heat went in
+   at the same rate whether the arc was 1 mm or 6 mm, so a long arc cost a
+   mark and never a weld. Lack of fusion IS the long-arc defect, so now the
+   gap drives the heat. Measured on the built page, torch held still on one
+   segment: a 0.5 mm arc burns through in 1.27 s against 1.65 s at the
+   band's middle (0.77x); before, the two were 1.70 s and 1.69 s (1.01x). */
+ok('the arc-length heat factor is derived from the band\'s own middle rather '
+  + 'than a second hard-coded number, and is bounded both ways (the check '
+  + 'below is the one that holds it to actually driving the heat)',
+  /const mid = \(BAND\[0\] \+ BAND\[1\]\) \/ 2;/.test(fn('weldSim'))
+  && /Math\.max\(\.45, Math\.min\(1\.35, 1 \+ \(mid - st\.gap\) \* ARC_HEAT\)\)/
+       .test(fn('weldSim')));
+ok('the heat and the in-band credit are weighted the SAME way, so the band '
+  + 'score stays one honest ratio rather than mixing seconds with heat',
+  /const hr = heatRate\(\) \* dt;\s*\n\s*s\.heat \+= hr;\s*\n\s*if \(inBand\(\)\) s\.good \+= hr;/
+    .test(fn('weldSim')));
 
 /* A machine with a load in its hand is slower. The factor is one constant
    so the two seats cannot drift apart, and each applies it to the axis that
