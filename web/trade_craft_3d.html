@@ -4219,6 +4219,35 @@ function simResults(simId, rows, passed) {
   document.body.classList.add('open');
 }
 
+/* ------------------------------------------------ a lever is not a switch --
+   Four of the machine seats drove their axes as ON/OFF velocity: press A
+   and the jib slews at full rate that instant, release and it stops dead.
+   The forklift was the one seat that already did it properly - it carries
+   an acceleration and lerps its steering - so this is the other four
+   catching up with the precedent already in this file.
+
+   `drive` moves a normalised command level (-1..1) toward what the operator
+   is asking for, at a spool-up rate when it is building and a spool-down
+   rate when it is coming off. That is what makes a lift feel like a lift:
+   you cannot stop a slew on a mark, so you come off the lever early, and a
+   load that is already swinging punishes you for not having.
+
+   SCHEMATIC, like the rest of the physics here: this is the SHAPE of a
+   hydraulic drive - build, hold, coast - not any machine's real response
+   curve, and the sims registry's honesty line still governs.  */
+const SPOOL = { up: 3.2, down: 4.0 };     // per second, toward the commanded level
+function drive(cur, want, dt, sp = SPOOL) {
+  const rate = (want === 0 || want * cur < 0) ? sp.down : sp.up;
+  const step = rate * dt;
+  return cur + Math.max(-step, Math.min(step, want - cur));
+}
+const axis = (neg, pos) => (pos ? 1 : 0) - (neg ? 1 : 0);
+/* A machine with something in its hand is slower than an empty one: a
+   loaded hoist is line pull, not free fall, and a full bucket is weight on
+   the same pump. One factor, applied to the axis that actually carries the
+   load, so the operator feels the pick change the machine. SCHEMATIC. */
+const LOADED = .62;
+
 /* A fenced training yard, so a sim reads as a place on the campus rather
    than a void: perimeter fence, corner light masts, painted apron border. */
 function simYard(g, hw, hd, cx = 0, cz = 0, simId = curSimId) {
@@ -4323,6 +4352,7 @@ function craneSim(P = {}) {
   const stacks = [box(5, 6 * sh, 3, mat.wall, 2, 3 * sh, -12, g),
                   box(4, 8 * sh, 3, mat.wall, -3, 4 * sh, 4, g)];
   const st = { slew: .6, r: 14.5, h: 6, vslew: 0, attached: false, done: false,
+               cS: 0, cT: 0, cH: 0,   // commanded lever levels, spooled
                loadV: new THREE.Vector2(), swingPeak: 0, swingNow: 0, strikes: 0,
                inStrike: false, t0: null, act: 0, chirped: false };
   // start the hook over open ground
@@ -4362,15 +4392,17 @@ function craneSim(P = {}) {
     },
     update(dt) {
       if (st.done) return;
-      const sr = 0.55, tr = 6, hr = 5;
-      if (keys.KeyA) st.slew -= sr * dt;
-      if (keys.KeyD) st.slew += sr * dt;
-      if (keys.KeyW) st.r = Math.min(26, st.r + tr * dt);
-      if (keys.KeyS) st.r = Math.max(4, st.r - tr * dt);
-      if (keys.KeyQ) st.h = Math.min(22, st.h + hr * dt);
-      if (keys.KeyE) st.h = Math.max(1.2, st.h - hr * dt);
-      const moving = (keys.KeyA || keys.KeyD ? .4 : 0)
-        + (keys.KeyW || keys.KeyS ? .3 : 0) + (keys.KeyQ || keys.KeyE ? .5 : 0);
+      const sr = 0.55, tr = 6, hr = 5 * (st.attached ? LOADED : 1);
+      // slew, trolley and hoist all spool up and coast down: the jib does
+      // not start or stop on the key, and the load knows it - and the hoist
+      // is slower on the pick than it is on the empty hook
+      st.cS = drive(st.cS, axis(keys.KeyA, keys.KeyD), dt);
+      st.cT = drive(st.cT, axis(keys.KeyS, keys.KeyW), dt);
+      st.cH = drive(st.cH, axis(keys.KeyE, keys.KeyQ), dt);
+      st.slew += sr * st.cS * dt;
+      st.r = Math.max(4, Math.min(26, st.r + tr * st.cT * dt));
+      st.h = Math.max(1.2, Math.min(22, st.h + hr * st.cH * dt));
+      const moving = Math.abs(st.cS) * .4 + Math.abs(st.cT) * .3 + Math.abs(st.cH) * .5;
       st.act += (Math.min(1, moving) - st.act) * Math.min(1, 5 * dt);
       engineSet(st.act);
       slewG.rotation.y = -st.slew;
@@ -4487,6 +4519,7 @@ function excavatorSim(P = {}) {
   pile.position.set(PAD.x, .1, PAD.z); pile.scale.setScalar(.01);
   pile.castShadow = true; g.add(pile);
   const st = { slew: .35, r: 5.5, bh: 1.4, act: 0, carrying: false, done: false,
+               cS: 0, cR: 0, cB: 0,   // commanded lever levels, spooled
                strikes: 0, spoilIn: 0, spoilOut: 0, t0: null };
   const tipPos = () => new THREE.Vector3(
     Math.cos(st.slew) * st.r, st.bh, Math.sin(st.slew) * st.r);
@@ -4541,15 +4574,18 @@ function excavatorSim(P = {}) {
     },
     update(dt) {
       if (st.done) return;
-      const sr = .5, rr = 3.4, hr = 2.6;
-      if (keys.KeyA) st.slew -= sr * dt;
-      if (keys.KeyD) st.slew += sr * dt;
-      if (keys.KeyW) st.r = Math.min(L1 + L2 - .6, st.r + rr * dt);
-      if (keys.KeyS) st.r = Math.max(2.6, st.r - rr * dt);
-      if (keys.KeyQ) st.bh = Math.min(3.2, st.bh + hr * dt);
-      if (keys.KeyE) st.bh = Math.max(-2.4, st.bh - hr * dt);
-      const moving = (keys.KeyA || keys.KeyD ? .4 : 0)
-        + (keys.KeyW || keys.KeyS ? .4 : 0) + (keys.KeyQ || keys.KeyE ? .5 : 0);
+      const f = st.carrying ? LOADED : 1;
+      const sr = .5, rr = 3.4 * f, hr = 2.6 * f;
+      // house slew, stick and boom on the same spooling drive: a full
+      // bucket does not start or stop where the lever does - and it swings
+      // the boom out slower than an empty one does
+      st.cS = drive(st.cS, axis(keys.KeyA, keys.KeyD), dt);
+      st.cR = drive(st.cR, axis(keys.KeyS, keys.KeyW), dt);
+      st.cB = drive(st.cB, axis(keys.KeyE, keys.KeyQ), dt);
+      st.slew += sr * st.cS * dt;
+      st.r = Math.max(2.6, Math.min(L1 + L2 - .6, st.r + rr * st.cR * dt));
+      st.bh = Math.max(-2.4, Math.min(3.2, st.bh + hr * st.cB * dt));
+      const moving = Math.abs(st.cS) * .4 + Math.abs(st.cR) * .4 + Math.abs(st.cB) * .5;
       st.act += (Math.min(1, moving) - st.act) * Math.min(1, 5 * dt);
       engineSet(.15 + st.act * .85);
       hg.rotation.y = -st.slew;
@@ -5540,6 +5576,7 @@ function boomLiftSim(P = {}) {
     zone.rotation.z = Math.PI / 2; zone.position.set(0, LINE.y, LINE.z); g.add(zone);
   }
   const st = { sw: 0, el: 0, ext: 0, stab: false, tied: false, lifted: false,
+               cS: 0, cE: 0, cQ: 0,   // commanded lever levels, spooled
                stabLate: false, tieLate: false, exceed: 0, inExceed: false,
                strikes: 0, inZone: false, next: 0, done: false, t0: null, act: 0 };
   const _bp = new THREE.Vector3();
@@ -5586,20 +5623,23 @@ function boomLiftSim(P = {}) {
     update(dt) {
       if (st.done) return;
       const sr = .5, er = 1.6, qr = .45;
-      if (keys.KeyA) st.sw -= sr * dt;
-      if (keys.KeyD) st.sw += sr * dt;
+      st.cS = drive(st.cS, axis(keys.KeyA, keys.KeyD), dt);
+      st.sw += sr * st.cS * dt;
       // the limit alarm: at the envelope the boom will not extend further
-      if (keys.KeyW && momentPct() < 100) st.ext = Math.min(EXT, st.ext + er * dt);
-      if (keys.KeyS) st.ext = Math.max(0, st.ext - er * dt);
-      if (keys.KeyQ) st.el = Math.min(EL_MAX, st.el + qr * dt);
-      if (keys.KeyE) st.el = Math.max(0, st.el - qr * dt);
+      // the boom will not extend past the rated moment however hard the
+      // lever is held, and the drive still has to spool down off it
+      st.cE = drive(st.cE, axis(keys.KeyS, keys.KeyW && momentPct() < 100), dt);
+      st.cQ = drive(st.cQ, axis(keys.KeyE, keys.KeyQ), dt);
+      st.ext = Math.max(0, Math.min(EXT, st.ext + er * st.cE * dt));
+      st.el = Math.max(0, Math.min(EL_MAX, st.el + qr * st.cQ * dt));
       if (keys.KeyC && !st.lc && !st.lifted && !st.stab) {
         st.stab = true; for (const f of feet) f.position.y = .55;
         blip(320, 200, .25, 'square', .1);
       }
       st.lc = !!keys.KeyC;
-      const moving = (keys.KeyA || keys.KeyD ? .4 : 0)
-        + (keys.KeyW || keys.KeyS ? .4 : 0) + (keys.KeyQ || keys.KeyE ? .5 : 0);
+      // the engine note follows the drive, not the lever: it is still
+      // spooling down after the operator has let go
+      const moving = Math.abs(st.cS) * .4 + Math.abs(st.cE) * .4 + Math.abs(st.cQ) * .5;
       st.act += (Math.min(1, moving) - st.act) * Math.min(1, 5 * dt);
       engineSet(.1 + st.act * .9);
       const bp = basketPos(_bp);
@@ -5721,6 +5761,7 @@ function overheadCraneSim(P = {}) {
   rect({ x: [TGT[0] - 1.1, TGT[0] + 1.1], z: [TGT[1] - 1.1, TGT[1] + 1.1] }, .13, zoneMat(0x5CB584, .3));
   const load = box(1.6, 1.2, 1.6, mat.brick, PICK[0], .78, PICK[1], g);
   const st = { bx: PICK[0] - 4, tz: PICK[1] + 3, h: 5, attached: false, done: false,
+               cX: 0, cZ: 0,          // commanded lever levels, spooled
                loadV: new THREE.Vector2(), swayPeak: 0, swayNow: 0, incursions: 0,
                inZone: false, limits: 0, atLimit: false, lowCarry: false, t0: null,
                act: 0, rumble: false };
@@ -5757,11 +5798,13 @@ function overheadCraneSim(P = {}) {
     update(dt) {
       if (st.done) return;
       const br = 1.3, tr = 1.0, hr = .9;
-      const bridging = keys.KeyA || keys.KeyD;
-      if (keys.KeyA) st.bx = Math.max(-BX, st.bx - br * dt);
-      if (keys.KeyD) st.bx = Math.min(BX, st.bx + br * dt);
-      if (keys.KeyW) st.tz = Math.min(BZ, st.tz + tr * dt);
-      if (keys.KeyS) st.tz = Math.max(-BZ, st.tz - tr * dt);
+      // bridge and trolley are big masses on rails: they build and they
+      // coast, and the sway axis is scored on exactly that
+      st.cX = drive(st.cX, axis(keys.KeyA, keys.KeyD), dt);
+      st.cZ = drive(st.cZ, axis(keys.KeyS, keys.KeyW), dt);
+      const bridging = Math.abs(st.cX) > .02;
+      st.bx = Math.max(-BX, Math.min(BX, st.bx + br * st.cX * dt));
+      st.tz = Math.max(-BZ, Math.min(BZ, st.tz + tr * st.cZ * dt));
       if (keys.KeyQ) {
         st.h = Math.min(LAY.hook_max, st.h + hr * dt);
         // two-block: hoisting into the upper limit switch
@@ -5981,7 +6024,7 @@ const OPERATORS = {
       const bearing = (px, pz) =>          // + is left, which is KeyA
         Math.atan2(dz * (px - x) - dx * (pz - z), dx * (px - x) + dz * (pz - z));
       const range = (px, pz) => Math.hypot(px - x, pz - z);
-      const drive = (px, pz, vWant) => {
+      const steerTo = (px, pz, vWant) => {
         const b = bearing(px, pz);
         if (b > .04) k.KeyA = true; else if (b < -.04) k.KeyD = true;
         const want = Math.abs(b) > .45 ? Math.min(vWant, L.vTurn) : vWant;
@@ -6018,14 +6061,14 @@ const OPERATORS = {
       switch (c.id) {
         case 'gates':
           if (taken >= n) c.next();
-          else if (m.exit) drive(...m.exit, L.v);
-          else drive(...aimAt(taken), L.v);
+          else if (m.exit) steerTo(...m.exit, L.v);
+          else steerTo(...aimAt(taken), L.v);
           break;
         case 'approach': {
           const d = range(0, palletZ) - 2.4;
           if (Math.hypot(tipX, tipZ - palletZ) < 1.3 && v < .9) c.next();
-          else if (m.exit) drive(...m.exit, L.v);
-          else drive(0, palletZ, Math.max(.4, Math.min(L.v, d * .8)));
+          else if (m.exit) steerTo(...m.exit, L.v);
+          else steerTo(0, palletZ, Math.max(.4, Math.min(L.v, d * .8)));
           break;
         }
         case 'lift':
@@ -6037,14 +6080,14 @@ const OPERATORS = {
           if (!L.lane) { c.next(); break; }
           const wps = [[laneX, palletZ], [laneX, lay.dock[1] - 12]];
           if (m.wp >= wps.length) { c.next(); break; }
-          if (range(...wps[m.wp]) < 2.5) m.wp++; else drive(...wps[m.wp], L.v);
+          if (range(...wps[m.wp]) < 2.5) m.wp++; else steerTo(...wps[m.wp], L.v);
           break;
         }
         case 'dock': {
           const [ox, oz] = lay.dock;
           if (Math.abs(tipX - ox) < w * L.dockFrac && Math.abs(tipZ - oz) < w * L.dockFrac) {
             act = true; c.next();
-          } else drive(ox, oz, Math.max(.5, Math.min(L.v, (range(ox, oz) - 2.4) * .8)));
+          } else steerTo(ox, oz, Math.max(.5, Math.min(L.v, (range(ox, oz) - 2.4) * .8)));
           break;
         }
       }
