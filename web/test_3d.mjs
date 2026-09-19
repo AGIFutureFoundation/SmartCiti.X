@@ -353,4 +353,80 @@ ok('the culler allocates nothing per frame beyond its own sort: the eye and '
   + 'position vectors are module-scope scratch',
   /const _rlEye = new THREE\.Vector3\(\), _rlPos = new THREE\.Vector3\(\);/.test(src));
 
+/* ------------------------------------------------------- machine drives ---
+   The four lever seats used to drive their axes as on/off velocity
+   (`if (keys.KeyA) st.slew -= sr * dt;`), so a jib started and stopped
+   exactly on the key and a load could only swing from the pendulum, never
+   from the operator. forkliftSim already modelled a real drive, so these
+   hold the other four to that precedent - and hold the helper itself to
+   the one property that makes it a drive rather than a lerp: coming off a
+   lever, or reversing through zero, uses the DOWN rate, not the up one. */
+ok('the spool helper exists and is a drive, not a lerp: off-lever and '
+  + 'through-zero both come down at the down rate',
+  /const SPOOL = \{ up: 3\.2, down: 4\.0 \};/.test(src)
+  && /const rate = \(want === 0 \|\| want \* cur < 0\) \? sp\.down : sp\.up;/.test(fn('drive'))
+  && /Math\.max\(-step, Math\.min\(step, want - cur\)\)/.test(fn('drive')));
+
+/* Each seat: the axis is read into a commanded level, the level is spooled,
+   and the MOTION is integrated from the level - never from the key. The
+   third of those is the one that matters, so it is asserted per axis. */
+const seats = {
+  craneSim:         [['cS', 'st.slew += sr * st.cS * dt'],
+                     ['cT', 'st.r + tr * st.cT * dt'],
+                     ['cH', 'st.h + hr * st.cH * dt']],
+  excavatorSim:     [['cS', 'st.slew += sr * st.cS * dt'],
+                     ['cR', 'st.r + rr * st.cR * dt'],
+                     ['cB', 'st.bh + hr * st.cB * dt']],
+  boomLiftSim:      [['cS', 'st.sw += sr * st.cS * dt'],
+                     ['cE', 'st.ext + er * st.cE * dt'],
+                     ['cQ', 'st.el + qr * st.cQ * dt']],
+  overheadCraneSim: [['cX', 'st.bx + br * st.cX * dt'],
+                     ['cZ', 'st.tz + tr * st.cZ * dt']],
+};
+for (const [seat, axes] of Object.entries(seats)) {
+  const body = fn(seat);
+  ok(`${seat}() spools every lever axis and integrates its motion from the `
+    + `spooled level, not from the key (${axes.map(([a]) => a).join(', ')})`,
+    body.length > 0
+    && axes.every(([a, motion]) =>
+      new RegExp(`st\\.${a} = drive\\(st\\.${a}, axis\\(`).test(body)
+      && body.includes(motion)));
+  ok(`${seat}() starts its commanded levels at rest, so a seat re-entered `
+    + 'is a machine at idle rather than one still running',
+    axes.every(([a]) => new RegExp(`\\b${a}: 0\\b`).test(body)));
+}
+
+/* Two places where spooling must NOT quietly undo a safety or a score. */
+ok('the boom lift\'s moment limit is folded into the COMMANDED axis, so the '
+  + 'boom stops extending at the envelope and still has to spool down off it',
+  /st\.cE = drive\(st\.cE, axis\(keys\.KeyS, keys\.KeyW && momentPct\(\) < 100\), dt\);/
+    .test(fn('boomLiftSim')));
+ok('the overhead crane scores sway against the spooled bridge level rather '
+  + 'than the key, so coasting still counts as bridging',
+  /const bridging = Math\.abs\(st\.cX\) > \.02;/.test(fn('overheadCraneSim')));
+
+/* A machine with a load in its hand is slower. The factor is one constant
+   so the two seats cannot drift apart, and each applies it to the axis that
+   actually carries - the crane's hoist, the excavator's stick and boom -
+   rather than to everything, which would just be a global slowdown. */
+ok('a loaded machine is slower than an empty one, from one shared factor',
+  /const LOADED = \.62;/.test(src));
+ok('the crane hoists slower on the pick than on the empty hook',
+  /hr = 5 \* \(st\.attached \? LOADED : 1\)/.test(fn('craneSim')));
+ok('the excavator works its stick and boom slower with a full bucket, and '
+  + 'its house slew - which carries no weight out - is left alone',
+  /const f = st\.carrying \? LOADED : 1;/.test(fn('excavatorSim'))
+  && /const sr = \.5, rr = 3\.4 \* f, hr = 2\.6 \* f;/.test(fn('excavatorSim')));
+
+/* forkliftSim set the precedent and is deliberately left alone; its scripted
+   operator steers toward a point, which is a different thing from spooling a
+   lever, and used to be called `drive` too - shadowing the helper above. */
+ok('forkliftSim() still integrates its own acceleration and steering lerp, '
+  + 'untouched by the lever drive',
+  /st\.v \+= /.test(fn('forkliftSim')));
+ok('the scripted operator\'s steer-to-a-point helper no longer shadows the '
+  + 'lever drive',
+  /const steerTo = \(px, pz, vWant\) => \{/.test(src)
+  && !/const drive = \(/.test(src));
+
 console.log(`web/test_3d: ${n} checks passed - teardown, draw-call and per-frame contracts held at the source`);
