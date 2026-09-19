@@ -4806,6 +4806,17 @@ function weldSim(P = {}) {
     return i >= 0 && i < SEGS ? segs[i] : null;
   };
   const inBand = () => st.gap >= BAND[0] && st.gap <= BAND[1];
+  /* Arc length IS heat input. A long arc spreads the heat and loses it to
+     the air, so the seam is slow to fuse - lack of fusion is the classic
+     long-arc defect. A tight one concentrates it and burns through sooner.
+     Inside the band the bead runs at rate, which is why the band is the
+     thing being taught: it was scored before this and now it is also felt.
+     SCHEMATIC - the shape of the relationship, not a heat-input formula. */
+  const ARC_HEAT = .12;                      // per mm of arc off the band's middle
+  const heatRate = () => {
+    const mid = (BAND[0] + BAND[1]) / 2;
+    return Math.max(.45, Math.min(1.35, 1 + (mid - st.gap) * ARC_HEAT));
+  };
   function paint(s) {
     s.mesh.material.color.setHex(
       s.burned ? 0x0c0e0f : s.inBand ? 0xE8A33D : 0xb9c2c6);
@@ -4854,8 +4865,11 @@ function weldSim(P = {}) {
       }
       const s = st.arc ? segAt() : null;
       if (s && !s.burned) {
-        s.heat += dt;
-        if (inBand()) s.good += dt;
+        // both the heat and the in-band credit are weighted the same way, so
+        // the band score reads as the share of HEAT laid down in the band
+        const hr = heatRate() * dt;
+        s.heat += hr;
+        if (inBand()) s.good += hr;
         if (!s.fused && s.heat >= FUSE) {
           s.fused = true; s.inBand = s.good / s.heat >= .75; paint(s);
           if (segs.every((x) => x.fused || x.burned)) return finish();
@@ -5761,7 +5775,7 @@ function overheadCraneSim(P = {}) {
   rect({ x: [TGT[0] - 1.1, TGT[0] + 1.1], z: [TGT[1] - 1.1, TGT[1] + 1.1] }, .13, zoneMat(0x5CB584, .3));
   const load = box(1.6, 1.2, 1.6, mat.brick, PICK[0], .78, PICK[1], g);
   const st = { bx: PICK[0] - 4, tz: PICK[1] + 3, h: 5, attached: false, done: false,
-               cX: 0, cZ: 0,          // commanded lever levels, spooled
+               cX: 0, cZ: 0, cH: 0,   // commanded lever levels, spooled
                loadV: new THREE.Vector2(), swayPeak: 0, swayNow: 0, incursions: 0,
                inZone: false, limits: 0, atLimit: false, lowCarry: false, t0: null,
                act: 0, rumble: false };
@@ -5805,19 +5819,23 @@ function overheadCraneSim(P = {}) {
       const bridging = Math.abs(st.cX) > .02;
       st.bx = Math.max(-BX, Math.min(BX, st.bx + br * st.cX * dt));
       st.tz = Math.max(-BZ, Math.min(BZ, st.tz + tr * st.cZ * dt));
-      if (keys.KeyQ) {
-        st.h = Math.min(LAY.hook_max, st.h + hr * dt);
-        // two-block: hoisting into the upper limit switch
-        if (st.h >= LAY.hook_max - 1e-6 && !st.atLimit) {
-          st.atLimit = true; st.limits++; blip(1100, 500, .5, 'square', .18); buzz(220, .8);
-        }
+      // the hoist spools like the rest of the machine - and the upper limit
+      // switch cuts the HOIST-UP command, which is the whole point of one:
+      // the block still reaches the switch and still trips it, and then the
+      // circuit is open until the operator lowers away
+      st.cH = drive(st.cH, axis(keys.KeyE, keys.KeyQ && st.h < LAY.hook_max - 1e-6), dt);
+      st.h = Math.max(st.attached ? LAY.hang : LAY.hook_min,
+                      Math.min(LAY.hook_max, st.h + hr * st.cH * dt));
+      // two-block: hoisting into the upper limit switch
+      if (st.h >= LAY.hook_max - 1e-6 && !st.atLimit) {
+        st.atLimit = true; st.limits++; blip(1100, 500, .5, 'square', .18); buzz(220, .8);
       }
-      if (keys.KeyE) st.h = Math.max(st.attached ? LAY.hang : LAY.hook_min, st.h - hr * dt);
       if (st.h < LAY.hook_max - .5) st.atLimit = false;
       if (bridging && !st.rumble) blip(70, 55, .35, 'sawtooth', .16);   // the bridge rumble
       st.rumble = !!bridging;
-      const moving = (bridging ? .5 : 0) + (keys.KeyW || keys.KeyS ? .3 : 0)
-        + (keys.KeyQ || keys.KeyE ? .5 : 0);
+      // the motor note follows the drives, not the buttons: a pendant let go
+      // is a machine still coasting
+      const moving = Math.abs(st.cX) * .5 + Math.abs(st.cZ) * .3 + Math.abs(st.cH) * .5;
       st.act += (Math.min(1, moving) - st.act) * Math.min(1, 5 * dt);
       engineSet(st.act);
       bridge.position.x = st.bx;
