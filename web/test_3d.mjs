@@ -695,4 +695,57 @@ ok('sampling a point puts the walker back where it was',
   /const ax = xrRig\.position\.x, az = xrRig\.position\.z;[\s\S]*?xrRig\.position\.x = ax; xrRig\.position\.z = az;/
     .test(src));
 
+/* ------------------------------------------------------- things on the ground ---
+   The halls were solid but everything else on the grounds was not: the
+   chapter hall - a building, and the one building a hub has at all - was a
+   drum the walker went straight through, and so were the yard's light
+   mast, its perimeter and its stand posts. Indoors the benches were
+   ghosts too.
+
+   Measured with the campus solidity test, once its probe was taught about
+   discs (before that it only understood rectangles, so it reported nothing
+   whatever about the round things - a test that could not fail):
+
+     steps inside a prop    before 15,480    after 0
+
+   And indoors, the benches moved as well as hardened. The comment has
+   always said "benched along the back of the room"; the code put them
+   0.8 m in from the FRONT, which was harmless while you could walk
+   through one and is not now - the front edge is where a room's doorway
+   onto the row in front of it is, and a 1.3 m bench across a 1.8 m
+   opening closes it. All 111 halls still report zero rooms sealed. */
+ok('a round thing is round: a disc is pushed out along its radius rather '
+  + 'than squared off onto an axis',
+  /if \(b\.r !== undefined\) \{[\s\S]*?const dd = Math\.hypot\(du, dv\);[\s\S]*?u = b\.u \+ du \/ dd \* rr; v = b\.v \+ dv \/ dd \* rr;/
+    .test(fn('pushOutOfSolids')));
+ok('a walker standing exactly on a post\'s centre still gets out, rather '
+  + 'than dividing by a zero distance',
+  /if \(dd < 1e-4\) u = b\.u \+ rr;/.test(fn('pushOutOfSolids')));
+ok('the chapter hall is a building - the one building a hub has - and is '
+  + 'recorded where it is built',
+  /campusSolid\(0, 0, 6\);/.test(fn('buildChapterHall')));
+ok('the yard\'s mast, its perimeter and its stand posts are solid too, each '
+  + 'recorded in the yard\'s own placed frame',
+  /campusSolid\(yg\.position\.x, yg\.position\.z - YR \* \.5, \.3\);/
+    .test(fn('buildTrainingYard'))
+  && /campusSolid\(yg\.position\.x \+ px, yg\.position\.z \+ pz, \.16\);/
+       .test(fn('buildTrainingYard'))
+  && /campusSolid\(yg\.position\.x \+ sx, yg\.position\.z \+ sz, \.24\);/
+       .test(fn('buildTrainingYard')));
+ok('the props share one entry with one reach over the lot, so a stroll on '
+  + 'the far side of the grounds tests one number instead of forty',
+  /e\.reach = Math\.max\(e\.reach, Math\.hypot\(x, z\) \+ r \+ 1\);/.test(fn('campusSolid')));
+ok('a bench stands against the room\'s BACK wall, as the comment always '
+  + 'said, and in that wall\'s solid pieces - so it can never close a '
+  + 'doorway it is standing in front of',
+  /const bays = runSegments\(doors, 'z@' \+ \(rz \+ rd \/ 2\)\.toFixed\(2\),/.test(src)
+  && /const bz = rz \+ rd\/2 - \.8;/.test(src)
+  && /const bx = spots\[fi\] \?\? rx;/.test(src));
+ok('and you cannot walk through a bench',
+  /wallRect\(bx, bz, \.7, \.4\);/.test(src));
+ok('the solidity probe understands both shapes, so it cannot go quiet about '
+  + 'the round ones and report a clean sweep it never took',
+  /if \(b\.r !== undefined\) \{\s*\n\s*if \(Math\.hypot\(u - b\.u, v - b\.v\) < b\.r \+ pad\) return true;\s*\n\s*\} else if/
+    .test(src));
+
 console.log(`web/test_3d: ${n} checks passed - teardown, draw-call and per-frame contracts held at the source`);
