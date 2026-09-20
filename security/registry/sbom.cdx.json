@@ -22,7 +22,7 @@
   "properties": [
    {
     "name": "smartcitix:source_stamp",
-    "value": "bf36ba6e7107a98a"
+    "value": "12cbf883d874f15e"
    },
    {
     "name": "smartcitix:scope",
@@ -382,6 +382,1774 @@
     {
      "name": "smartcitix:licence_evidence",
      "value": "no licence banner in this file; it is the examples/jsm file of the three npm package (imports from 'three') and carries that distribution's licence, whose banner is in three.module.min.js: SPDX-License-Identifier: MIT"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/fonts/archivo-500-normal-latin-ext.woff2",
+   "name": "archivo",
+   "version": "v25",
+   "purl": "pkg:generic/archivo@v25#archivo-500-normal-latin-ext.woff2",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "ff4f17d21930e36d6d93baba663e624cb767afc3feebf7adaebd82242638de05"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "OFL-1.1",
+      "url": "https://github.com/google/fonts/blob/main/ofl/archivo/OFL.txt"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/Omnibus-Type/Archivo"
+    },
+    {
+     "type": "website",
+     "url": "https://fonts.google.com/specimen/Archivo"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/google/fonts/blob/main/ofl/archivo/OFL.txt"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/fonts/archivo-500-normal-latin-ext.woff2"
+     }
+    ],
+    "copyright": []
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/fonts/archivo-500-normal-latin-ext.woff2"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "https://fonts.gstatic.com/s/archivo/v25/k3kPo8UDI-1M0wlSV9XAw6lQkqWY8Q82sLyTOxK-vA.woff2"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "no banner (binary or plain text); the full SIL OFL 1.1 for this family is committed at web/vendor/fonts/archivo-OFL.txt, sha256 108b4e57c9c796d3..., and reads: Copyright 2020 The Archivo Project Authors (https://github.com/Omnibus-Type/Archivo)"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/fonts/archivo-500-normal-latin.woff2",
+   "name": "archivo",
+   "version": "v25",
+   "purl": "pkg:generic/archivo@v25#archivo-500-normal-latin.woff2",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "8f704806dbedeaaeca334b11ec348bc3ac3a439d6431544b3afb54f534ee4967"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "OFL-1.1",
+      "url": "https://github.com/google/fonts/blob/main/ofl/archivo/OFL.txt"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/Omnibus-Type/Archivo"
+    },
+    {
+     "type": "website",
+     "url": "https://fonts.google.com/specimen/Archivo"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/google/fonts/blob/main/ofl/archivo/OFL.txt"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/fonts/archivo-500-normal-latin.woff2"
+     }
+    ],
+    "copyright": []
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/fonts/archivo-500-normal-latin.woff2"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "https://fonts.gstatic.com/s/archivo/v25/k3kPo8UDI-1M0wlSV9XAw6lQkqWY8Q82sLydOxI.woff2"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "no banner (binary or plain text); the full SIL OFL 1.1 for this family is committed at web/vendor/fonts/archivo-OFL.txt, sha256 108b4e57c9c796d3..., and reads: Copyright 2020 The Archivo Project Authors (https://github.com/Omnibus-Type/Archivo)"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/fonts/archivo-600-normal-latin-ext.woff2",
+   "name": "archivo",
+   "version": "v25",
+   "purl": "pkg:generic/archivo@v25#archivo-600-normal-latin-ext.woff2",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "ff4f17d21930e36d6d93baba663e624cb767afc3feebf7adaebd82242638de05"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "OFL-1.1",
+      "url": "https://github.com/google/fonts/blob/main/ofl/archivo/OFL.txt"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/Omnibus-Type/Archivo"
+    },
+    {
+     "type": "website",
+     "url": "https://fonts.google.com/specimen/Archivo"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/google/fonts/blob/main/ofl/archivo/OFL.txt"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/fonts/archivo-600-normal-latin-ext.woff2"
+     }
+    ],
+    "copyright": []
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/fonts/archivo-600-normal-latin-ext.woff2"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "https://fonts.gstatic.com/s/archivo/v25/k3kPo8UDI-1M0wlSV9XAw6lQkqWY8Q82sLyTOxK-vA.woff2"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "no banner (binary or plain text); the full SIL OFL 1.1 for this family is committed at web/vendor/fonts/archivo-OFL.txt, sha256 108b4e57c9c796d3..., and reads: Copyright 2020 The Archivo Project Authors (https://github.com/Omnibus-Type/Archivo)"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/fonts/archivo-600-normal-latin.woff2",
+   "name": "archivo",
+   "version": "v25",
+   "purl": "pkg:generic/archivo@v25#archivo-600-normal-latin.woff2",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "8f704806dbedeaaeca334b11ec348bc3ac3a439d6431544b3afb54f534ee4967"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "OFL-1.1",
+      "url": "https://github.com/google/fonts/blob/main/ofl/archivo/OFL.txt"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/Omnibus-Type/Archivo"
+    },
+    {
+     "type": "website",
+     "url": "https://fonts.google.com/specimen/Archivo"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/google/fonts/blob/main/ofl/archivo/OFL.txt"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/fonts/archivo-600-normal-latin.woff2"
+     }
+    ],
+    "copyright": []
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/fonts/archivo-600-normal-latin.woff2"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "https://fonts.gstatic.com/s/archivo/v25/k3kPo8UDI-1M0wlSV9XAw6lQkqWY8Q82sLydOxI.woff2"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "no banner (binary or plain text); the full SIL OFL 1.1 for this family is committed at web/vendor/fonts/archivo-OFL.txt, sha256 108b4e57c9c796d3..., and reads: Copyright 2020 The Archivo Project Authors (https://github.com/Omnibus-Type/Archivo)"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/fonts/archivo-700-normal-latin-ext.woff2",
+   "name": "archivo",
+   "version": "v25",
+   "purl": "pkg:generic/archivo@v25#archivo-700-normal-latin-ext.woff2",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "ff4f17d21930e36d6d93baba663e624cb767afc3feebf7adaebd82242638de05"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "OFL-1.1",
+      "url": "https://github.com/google/fonts/blob/main/ofl/archivo/OFL.txt"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/Omnibus-Type/Archivo"
+    },
+    {
+     "type": "website",
+     "url": "https://fonts.google.com/specimen/Archivo"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/google/fonts/blob/main/ofl/archivo/OFL.txt"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/fonts/archivo-700-normal-latin-ext.woff2"
+     }
+    ],
+    "copyright": []
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/fonts/archivo-700-normal-latin-ext.woff2"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "https://fonts.gstatic.com/s/archivo/v25/k3kPo8UDI-1M0wlSV9XAw6lQkqWY8Q82sLyTOxK-vA.woff2"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "no banner (binary or plain text); the full SIL OFL 1.1 for this family is committed at web/vendor/fonts/archivo-OFL.txt, sha256 108b4e57c9c796d3..., and reads: Copyright 2020 The Archivo Project Authors (https://github.com/Omnibus-Type/Archivo)"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/fonts/archivo-700-normal-latin.woff2",
+   "name": "archivo",
+   "version": "v25",
+   "purl": "pkg:generic/archivo@v25#archivo-700-normal-latin.woff2",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "8f704806dbedeaaeca334b11ec348bc3ac3a439d6431544b3afb54f534ee4967"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "OFL-1.1",
+      "url": "https://github.com/google/fonts/blob/main/ofl/archivo/OFL.txt"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/Omnibus-Type/Archivo"
+    },
+    {
+     "type": "website",
+     "url": "https://fonts.google.com/specimen/Archivo"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/google/fonts/blob/main/ofl/archivo/OFL.txt"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/fonts/archivo-700-normal-latin.woff2"
+     }
+    ],
+    "copyright": []
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/fonts/archivo-700-normal-latin.woff2"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "https://fonts.gstatic.com/s/archivo/v25/k3kPo8UDI-1M0wlSV9XAw6lQkqWY8Q82sLydOxI.woff2"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "no banner (binary or plain text); the full SIL OFL 1.1 for this family is committed at web/vendor/fonts/archivo-OFL.txt, sha256 108b4e57c9c796d3..., and reads: Copyright 2020 The Archivo Project Authors (https://github.com/Omnibus-Type/Archivo)"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/fonts/archivo-OFL.txt",
+   "name": "archivo",
+   "version": "v25",
+   "purl": "pkg:generic/archivo@v25#archivo-OFL.txt",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "108b4e57c9c796d3d38d0428ca7ee39de47ad93187302718d9b2d8864b9b716b"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "OFL-1.1",
+      "url": "https://github.com/google/fonts/blob/main/ofl/archivo/OFL.txt"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/Omnibus-Type/Archivo"
+    },
+    {
+     "type": "website",
+     "url": "https://fonts.google.com/specimen/Archivo"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/google/fonts/blob/main/ofl/archivo/OFL.txt"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/fonts/archivo-OFL.txt"
+     }
+    ],
+    "copyright": []
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/fonts/archivo-OFL.txt"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "https://raw.githubusercontent.com/google/fonts/main/ofl/archivo/OFL.txt"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "no banner (binary or plain text); the full SIL OFL 1.1 for this family is committed at web/vendor/fonts/archivo-OFL.txt, sha256 108b4e57c9c796d3..., and reads: Copyright 2020 The Archivo Project Authors (https://github.com/Omnibus-Type/Archivo)"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/fonts/barlow-condensed-600-normal-latin-ext.woff2",
+   "name": "barlow-condensed",
+   "version": "v13",
+   "purl": "pkg:generic/barlow-condensed@v13#barlow-condensed-600-normal-latin-ext.woff2",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "aef7edf54f79a5329fbca9c065b56dcec3852c680d58cf89a9ef2db6940ca4b3"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "OFL-1.1",
+      "url": "https://github.com/google/fonts/blob/main/ofl/barlowcondensed/OFL.txt"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/jpt/barlow"
+    },
+    {
+     "type": "website",
+     "url": "https://fonts.google.com/specimen/Barlow+Condensed"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/google/fonts/blob/main/ofl/barlowcondensed/OFL.txt"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/fonts/barlow-condensed-600-normal-latin-ext.woff2"
+     }
+    ],
+    "copyright": []
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/fonts/barlow-condensed-600-normal-latin-ext.woff2"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B4873z3jWuZEC.woff2"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "no banner (binary or plain text); the full SIL OFL 1.1 for this family is committed at web/vendor/fonts/barlow-condensed-OFL.txt, sha256 186d750eb496a4c1..., and reads: Copyright 2017 The Barlow Project Authors (https://github.com/jpt/barlow)"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/fonts/barlow-condensed-600-normal-latin.woff2",
+   "name": "barlow-condensed",
+   "version": "v13",
+   "purl": "pkg:generic/barlow-condensed@v13#barlow-condensed-600-normal-latin.woff2",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "215a93c696f442034a46fbb382958f753fda60e30490683aeea6b235fcbb2b66"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "OFL-1.1",
+      "url": "https://github.com/google/fonts/blob/main/ofl/barlowcondensed/OFL.txt"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/jpt/barlow"
+    },
+    {
+     "type": "website",
+     "url": "https://fonts.google.com/specimen/Barlow+Condensed"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/google/fonts/blob/main/ofl/barlowcondensed/OFL.txt"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/fonts/barlow-condensed-600-normal-latin.woff2"
+     }
+    ],
+    "copyright": []
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/fonts/barlow-condensed-600-normal-latin.woff2"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B4873z3bWuQ.woff2"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "no banner (binary or plain text); the full SIL OFL 1.1 for this family is committed at web/vendor/fonts/barlow-condensed-OFL.txt, sha256 186d750eb496a4c1..., and reads: Copyright 2017 The Barlow Project Authors (https://github.com/jpt/barlow)"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/fonts/barlow-condensed-700-normal-latin-ext.woff2",
+   "name": "barlow-condensed",
+   "version": "v13",
+   "purl": "pkg:generic/barlow-condensed@v13#barlow-condensed-700-normal-latin-ext.woff2",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "9d351bd9222bfab90f943850f8039aa73cdb40e0a6cfe4127308a48bef59d5f5"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "OFL-1.1",
+      "url": "https://github.com/google/fonts/blob/main/ofl/barlowcondensed/OFL.txt"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/jpt/barlow"
+    },
+    {
+     "type": "website",
+     "url": "https://fonts.google.com/specimen/Barlow+Condensed"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/google/fonts/blob/main/ofl/barlowcondensed/OFL.txt"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/fonts/barlow-condensed-700-normal-latin-ext.woff2"
+     }
+    ],
+    "copyright": []
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/fonts/barlow-condensed-700-normal-latin-ext.woff2"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B46r2z3jWuZEC.woff2"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "no banner (binary or plain text); the full SIL OFL 1.1 for this family is committed at web/vendor/fonts/barlow-condensed-OFL.txt, sha256 186d750eb496a4c1..., and reads: Copyright 2017 The Barlow Project Authors (https://github.com/jpt/barlow)"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/fonts/barlow-condensed-700-normal-latin.woff2",
+   "name": "barlow-condensed",
+   "version": "v13",
+   "purl": "pkg:generic/barlow-condensed@v13#barlow-condensed-700-normal-latin.woff2",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "3787a5a419171630e6890cfa47c4da067474d005cd0ff8dc11ec090fdc3ee2b8"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "OFL-1.1",
+      "url": "https://github.com/google/fonts/blob/main/ofl/barlowcondensed/OFL.txt"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/jpt/barlow"
+    },
+    {
+     "type": "website",
+     "url": "https://fonts.google.com/specimen/Barlow+Condensed"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/google/fonts/blob/main/ofl/barlowcondensed/OFL.txt"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/fonts/barlow-condensed-700-normal-latin.woff2"
+     }
+    ],
+    "copyright": []
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/fonts/barlow-condensed-700-normal-latin.woff2"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "https://fonts.gstatic.com/s/barlowcondensed/v13/HTxwL3I-JCGChYJ8VI-L6OO_au7B46r2z3bWuQ.woff2"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "no banner (binary or plain text); the full SIL OFL 1.1 for this family is committed at web/vendor/fonts/barlow-condensed-OFL.txt, sha256 186d750eb496a4c1..., and reads: Copyright 2017 The Barlow Project Authors (https://github.com/jpt/barlow)"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/fonts/barlow-condensed-OFL.txt",
+   "name": "barlow-condensed",
+   "version": "v13",
+   "purl": "pkg:generic/barlow-condensed@v13#barlow-condensed-OFL.txt",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "186d750eb496a4c17a76385f82be6aea2ac1cf2de074a811d63786cf374ea73f"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "OFL-1.1",
+      "url": "https://github.com/google/fonts/blob/main/ofl/barlowcondensed/OFL.txt"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/jpt/barlow"
+    },
+    {
+     "type": "website",
+     "url": "https://fonts.google.com/specimen/Barlow+Condensed"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/google/fonts/blob/main/ofl/barlowcondensed/OFL.txt"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/fonts/barlow-condensed-OFL.txt"
+     }
+    ],
+    "copyright": []
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/fonts/barlow-condensed-OFL.txt"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "https://raw.githubusercontent.com/google/fonts/main/ofl/barlowcondensed/OFL.txt"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "no banner (binary or plain text); the full SIL OFL 1.1 for this family is committed at web/vendor/fonts/barlow-condensed-OFL.txt, sha256 186d750eb496a4c1..., and reads: Copyright 2017 The Barlow Project Authors (https://github.com/jpt/barlow)"
+    }
+   ]
+  },
+  {
+   "type": "file",
+   "bom-ref": "web/vendor/fonts/fonts.css",
+   "name": "smartcitix/fonts/fonts.css",
+   "version": "3.2.0",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "63d5d338b74c9e32060d8c2f04587650ef9bd903ce4a7bf2389ce79d5684cf0b"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/fonts/fonts.css"
+     }
+    ]
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/fonts/fonts.css"
+    },
+    {
+     "name": "smartcitix:first_party",
+     "value": "generated by web/fetch_fonts.py; it describes the vendored font files rather than being one"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/fonts/ibm-plex-mono-400-normal-latin-ext.woff2",
+   "name": "ibm-plex-mono",
+   "version": "v20",
+   "purl": "pkg:generic/ibm-plex-mono@v20#ibm-plex-mono-400-normal-latin-ext.woff2",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "6bc0f226a5b7884a8170e3f62c63d7675609d4631bdc5931b5cdab81821f00eb"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "OFL-1.1",
+      "url": "https://github.com/google/fonts/blob/main/ofl/ibmplexmono/OFL.txt"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/IBM/plex"
+    },
+    {
+     "type": "website",
+     "url": "https://fonts.google.com/specimen/IBM+Plex+Mono"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/google/fonts/blob/main/ofl/ibmplexmono/OFL.txt"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/fonts/ibm-plex-mono-400-normal-latin-ext.woff2"
+     }
+    ],
+    "copyright": []
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/fonts/ibm-plex-mono-400-normal-latin-ext.woff2"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "https://fonts.gstatic.com/s/ibmplexmono/v20/-F63fjptAgt5VM-kVkqdyU8n1iEq129k.woff2"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "no banner (binary or plain text); the full SIL OFL 1.1 for this family is committed at web/vendor/fonts/ibm-plex-mono-OFL.txt, sha256 7e6b2818edbd8f6a..., and reads: Copyright \u00a9 2017 IBM Corp. with Reserved Font Name \"Plex\""
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/fonts/ibm-plex-mono-400-normal-latin.woff2",
+   "name": "ibm-plex-mono",
+   "version": "v20",
+   "purl": "pkg:generic/ibm-plex-mono@v20#ibm-plex-mono-400-normal-latin.woff2",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "08949f728dc52d528e69b1667d15c89a5686a4ee9a296ff90983985f99c380f7"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "OFL-1.1",
+      "url": "https://github.com/google/fonts/blob/main/ofl/ibmplexmono/OFL.txt"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/IBM/plex"
+    },
+    {
+     "type": "website",
+     "url": "https://fonts.google.com/specimen/IBM+Plex+Mono"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/google/fonts/blob/main/ofl/ibmplexmono/OFL.txt"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/fonts/ibm-plex-mono-400-normal-latin.woff2"
+     }
+    ],
+    "copyright": []
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/fonts/ibm-plex-mono-400-normal-latin.woff2"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "https://fonts.gstatic.com/s/ibmplexmono/v20/-F63fjptAgt5VM-kVkqdyU8n1i8q1w.woff2"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "no banner (binary or plain text); the full SIL OFL 1.1 for this family is committed at web/vendor/fonts/ibm-plex-mono-OFL.txt, sha256 7e6b2818edbd8f6a..., and reads: Copyright \u00a9 2017 IBM Corp. with Reserved Font Name \"Plex\""
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/fonts/ibm-plex-mono-500-normal-latin-ext.woff2",
+   "name": "ibm-plex-mono",
+   "version": "v20",
+   "purl": "pkg:generic/ibm-plex-mono@v20#ibm-plex-mono-500-normal-latin-ext.woff2",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "6bb06407c97584b0867a959e05e8874693bfeb8c317de190811c51598f2d99ea"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "OFL-1.1",
+      "url": "https://github.com/google/fonts/blob/main/ofl/ibmplexmono/OFL.txt"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/IBM/plex"
+    },
+    {
+     "type": "website",
+     "url": "https://fonts.google.com/specimen/IBM+Plex+Mono"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/google/fonts/blob/main/ofl/ibmplexmono/OFL.txt"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/fonts/ibm-plex-mono-500-normal-latin-ext.woff2"
+     }
+    ],
+    "copyright": []
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/fonts/ibm-plex-mono-500-normal-latin-ext.woff2"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "https://fonts.gstatic.com/s/ibmplexmono/v20/-F6qfjptAgt5VM-kVkqdyU8n3twJwl5FgtIU.woff2"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "no banner (binary or plain text); the full SIL OFL 1.1 for this family is committed at web/vendor/fonts/ibm-plex-mono-OFL.txt, sha256 7e6b2818edbd8f6a..., and reads: Copyright \u00a9 2017 IBM Corp. with Reserved Font Name \"Plex\""
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/fonts/ibm-plex-mono-500-normal-latin.woff2",
+   "name": "ibm-plex-mono",
+   "version": "v20",
+   "purl": "pkg:generic/ibm-plex-mono@v20#ibm-plex-mono-500-normal-latin.woff2",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "01d285447409c8a588692162439a038b8cbd7871309ee20267b0d2d91c6e8e22"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "OFL-1.1",
+      "url": "https://github.com/google/fonts/blob/main/ofl/ibmplexmono/OFL.txt"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/IBM/plex"
+    },
+    {
+     "type": "website",
+     "url": "https://fonts.google.com/specimen/IBM+Plex+Mono"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/google/fonts/blob/main/ofl/ibmplexmono/OFL.txt"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/fonts/ibm-plex-mono-500-normal-latin.woff2"
+     }
+    ],
+    "copyright": []
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/fonts/ibm-plex-mono-500-normal-latin.woff2"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "https://fonts.gstatic.com/s/ibmplexmono/v20/-F6qfjptAgt5VM-kVkqdyU8n3twJwlBFgg.woff2"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "no banner (binary or plain text); the full SIL OFL 1.1 for this family is committed at web/vendor/fonts/ibm-plex-mono-OFL.txt, sha256 7e6b2818edbd8f6a..., and reads: Copyright \u00a9 2017 IBM Corp. with Reserved Font Name \"Plex\""
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/fonts/ibm-plex-mono-600-normal-latin-ext.woff2",
+   "name": "ibm-plex-mono",
+   "version": "v20",
+   "purl": "pkg:generic/ibm-plex-mono@v20#ibm-plex-mono-600-normal-latin-ext.woff2",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "32057cf50dd14bdb21a2c93766c4a2c43e4abe688ea3922df3203cac7751a98b"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "OFL-1.1",
+      "url": "https://github.com/google/fonts/blob/main/ofl/ibmplexmono/OFL.txt"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/IBM/plex"
+    },
+    {
+     "type": "website",
+     "url": "https://fonts.google.com/specimen/IBM+Plex+Mono"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/google/fonts/blob/main/ofl/ibmplexmono/OFL.txt"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/fonts/ibm-plex-mono-600-normal-latin-ext.woff2"
+     }
+    ],
+    "copyright": []
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/fonts/ibm-plex-mono-600-normal-latin-ext.woff2"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "https://fonts.gstatic.com/s/ibmplexmono/v20/-F6qfjptAgt5VM-kVkqdyU8n3vAOwl5FgtIU.woff2"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "no banner (binary or plain text); the full SIL OFL 1.1 for this family is committed at web/vendor/fonts/ibm-plex-mono-OFL.txt, sha256 7e6b2818edbd8f6a..., and reads: Copyright \u00a9 2017 IBM Corp. with Reserved Font Name \"Plex\""
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/fonts/ibm-plex-mono-600-normal-latin.woff2",
+   "name": "ibm-plex-mono",
+   "version": "v20",
+   "purl": "pkg:generic/ibm-plex-mono@v20#ibm-plex-mono-600-normal-latin.woff2",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "0d1f0b8d0722224e32e9f28261bdc86c79115be73444ae5eceb73976a1bcdf83"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "OFL-1.1",
+      "url": "https://github.com/google/fonts/blob/main/ofl/ibmplexmono/OFL.txt"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/IBM/plex"
+    },
+    {
+     "type": "website",
+     "url": "https://fonts.google.com/specimen/IBM+Plex+Mono"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/google/fonts/blob/main/ofl/ibmplexmono/OFL.txt"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/fonts/ibm-plex-mono-600-normal-latin.woff2"
+     }
+    ],
+    "copyright": []
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/fonts/ibm-plex-mono-600-normal-latin.woff2"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "https://fonts.gstatic.com/s/ibmplexmono/v20/-F6qfjptAgt5VM-kVkqdyU8n3vAOwlBFgg.woff2"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "no banner (binary or plain text); the full SIL OFL 1.1 for this family is committed at web/vendor/fonts/ibm-plex-mono-OFL.txt, sha256 7e6b2818edbd8f6a..., and reads: Copyright \u00a9 2017 IBM Corp. with Reserved Font Name \"Plex\""
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/fonts/ibm-plex-mono-OFL.txt",
+   "name": "ibm-plex-mono",
+   "version": "v20",
+   "purl": "pkg:generic/ibm-plex-mono@v20#ibm-plex-mono-OFL.txt",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "7e6b2818edbd8f6a01ae80641cc8f16a51080d08fb4e532be3a0b6f74adb07da"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "OFL-1.1",
+      "url": "https://github.com/google/fonts/blob/main/ofl/ibmplexmono/OFL.txt"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/IBM/plex"
+    },
+    {
+     "type": "website",
+     "url": "https://fonts.google.com/specimen/IBM+Plex+Mono"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/google/fonts/blob/main/ofl/ibmplexmono/OFL.txt"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/fonts/ibm-plex-mono-OFL.txt"
+     }
+    ],
+    "copyright": []
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/fonts/ibm-plex-mono-OFL.txt"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "https://raw.githubusercontent.com/google/fonts/main/ofl/ibmplexmono/OFL.txt"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "no banner (binary or plain text); the full SIL OFL 1.1 for this family is committed at web/vendor/fonts/ibm-plex-mono-OFL.txt, sha256 7e6b2818edbd8f6a..., and reads: Copyright \u00a9 2017 IBM Corp. with Reserved Font Name \"Plex\""
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/fonts/ibm-plex-sans-400-italic-latin-ext.woff2",
+   "name": "ibm-plex-sans",
+   "version": "v23",
+   "purl": "pkg:generic/ibm-plex-sans@v23#ibm-plex-sans-400-italic-latin-ext.woff2",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "c5c00e8a32022dfedd2e7e864898ed007232e1450c6de1d6b847fe8825c2c5ce"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "OFL-1.1",
+      "url": "https://github.com/google/fonts/blob/main/ofl/ibmplexsans/OFL.txt"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/IBM/plex"
+    },
+    {
+     "type": "website",
+     "url": "https://fonts.google.com/specimen/IBM+Plex+Sans"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/google/fonts/blob/main/ofl/ibmplexsans/OFL.txt"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/fonts/ibm-plex-sans-400-italic-latin-ext.woff2"
+     }
+    ],
+    "copyright": []
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/fonts/ibm-plex-sans-400-italic-latin-ext.woff2"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "https://fonts.gstatic.com/s/ibmplexsans/v23/zYXEKVElMYYaJe8bpLHnCwDKhdTEG46kmUZQCX598fQbM4jw8V78x9OWIhqbQ5g0voKW6g.woff2"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "no banner (binary or plain text); the full SIL OFL 1.1 for this family is committed at web/vendor/fonts/ibm-plex-sans-OFL.txt, sha256 7e6b2818edbd8f6a..., and reads: Copyright \u00a9 2017 IBM Corp. with Reserved Font Name \"Plex\""
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/fonts/ibm-plex-sans-400-italic-latin.woff2",
+   "name": "ibm-plex-sans",
+   "version": "v23",
+   "purl": "pkg:generic/ibm-plex-sans@v23#ibm-plex-sans-400-italic-latin.woff2",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "6de912e531b6c98084f1b2d5e5a91bad77be4e68bc4e396e43c46fc435e5f3d9"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "OFL-1.1",
+      "url": "https://github.com/google/fonts/blob/main/ofl/ibmplexsans/OFL.txt"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/IBM/plex"
+    },
+    {
+     "type": "website",
+     "url": "https://fonts.google.com/specimen/IBM+Plex+Sans"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/google/fonts/blob/main/ofl/ibmplexsans/OFL.txt"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/fonts/ibm-plex-sans-400-italic-latin.woff2"
+     }
+    ],
+    "copyright": []
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/fonts/ibm-plex-sans-400-italic-latin.woff2"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "https://fonts.gstatic.com/s/ibmplexsans/v23/zYXEKVElMYYaJe8bpLHnCwDKhdTEG46kmUZQCX598fQbM4jw8V78x9OWIhqbQ5g6voI.woff2"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "no banner (binary or plain text); the full SIL OFL 1.1 for this family is committed at web/vendor/fonts/ibm-plex-sans-OFL.txt, sha256 7e6b2818edbd8f6a..., and reads: Copyright \u00a9 2017 IBM Corp. with Reserved Font Name \"Plex\""
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/fonts/ibm-plex-sans-400-normal-latin-ext.woff2",
+   "name": "ibm-plex-sans",
+   "version": "v23",
+   "purl": "pkg:generic/ibm-plex-sans@v23#ibm-plex-sans-400-normal-latin-ext.woff2",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "d160e20920ae4d6556518d352d3af27a74e9b0de3d8fe17b1c1044fc75aa2f81"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "OFL-1.1",
+      "url": "https://github.com/google/fonts/blob/main/ofl/ibmplexsans/OFL.txt"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/IBM/plex"
+    },
+    {
+     "type": "website",
+     "url": "https://fonts.google.com/specimen/IBM+Plex+Sans"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/google/fonts/blob/main/ofl/ibmplexsans/OFL.txt"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/fonts/ibm-plex-sans-400-normal-latin-ext.woff2"
+     }
+    ],
+    "copyright": []
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/fonts/ibm-plex-sans-400-normal-latin-ext.woff2"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "https://fonts.gstatic.com/s/ibmplexsans/v23/zYXzKVElMYYaJe8bpLHnCwDKr932-G7dytD-Dmu1syxQKYbABA.woff2"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "no banner (binary or plain text); the full SIL OFL 1.1 for this family is committed at web/vendor/fonts/ibm-plex-sans-OFL.txt, sha256 7e6b2818edbd8f6a..., and reads: Copyright \u00a9 2017 IBM Corp. with Reserved Font Name \"Plex\""
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/fonts/ibm-plex-sans-400-normal-latin.woff2",
+   "name": "ibm-plex-sans",
+   "version": "v23",
+   "purl": "pkg:generic/ibm-plex-sans@v23#ibm-plex-sans-400-normal-latin.woff2",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "e2291e842cf5af167122a22881a740c7f2dda7716f1e8cd76680264f4a859470"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "OFL-1.1",
+      "url": "https://github.com/google/fonts/blob/main/ofl/ibmplexsans/OFL.txt"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/IBM/plex"
+    },
+    {
+     "type": "website",
+     "url": "https://fonts.google.com/specimen/IBM+Plex+Sans"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/google/fonts/blob/main/ofl/ibmplexsans/OFL.txt"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/fonts/ibm-plex-sans-400-normal-latin.woff2"
+     }
+    ],
+    "copyright": []
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/fonts/ibm-plex-sans-400-normal-latin.woff2"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "https://fonts.gstatic.com/s/ibmplexsans/v23/zYXzKVElMYYaJe8bpLHnCwDKr932-G7dytD-Dmu1syxeKYY.woff2"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "no banner (binary or plain text); the full SIL OFL 1.1 for this family is committed at web/vendor/fonts/ibm-plex-sans-OFL.txt, sha256 7e6b2818edbd8f6a..., and reads: Copyright \u00a9 2017 IBM Corp. with Reserved Font Name \"Plex\""
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/fonts/ibm-plex-sans-500-normal-latin-ext.woff2",
+   "name": "ibm-plex-sans",
+   "version": "v23",
+   "purl": "pkg:generic/ibm-plex-sans@v23#ibm-plex-sans-500-normal-latin-ext.woff2",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "d160e20920ae4d6556518d352d3af27a74e9b0de3d8fe17b1c1044fc75aa2f81"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "OFL-1.1",
+      "url": "https://github.com/google/fonts/blob/main/ofl/ibmplexsans/OFL.txt"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/IBM/plex"
+    },
+    {
+     "type": "website",
+     "url": "https://fonts.google.com/specimen/IBM+Plex+Sans"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/google/fonts/blob/main/ofl/ibmplexsans/OFL.txt"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/fonts/ibm-plex-sans-500-normal-latin-ext.woff2"
+     }
+    ],
+    "copyright": []
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/fonts/ibm-plex-sans-500-normal-latin-ext.woff2"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "https://fonts.gstatic.com/s/ibmplexsans/v23/zYXzKVElMYYaJe8bpLHnCwDKr932-G7dytD-Dmu1syxQKYbABA.woff2"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "no banner (binary or plain text); the full SIL OFL 1.1 for this family is committed at web/vendor/fonts/ibm-plex-sans-OFL.txt, sha256 7e6b2818edbd8f6a..., and reads: Copyright \u00a9 2017 IBM Corp. with Reserved Font Name \"Plex\""
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/fonts/ibm-plex-sans-500-normal-latin.woff2",
+   "name": "ibm-plex-sans",
+   "version": "v23",
+   "purl": "pkg:generic/ibm-plex-sans@v23#ibm-plex-sans-500-normal-latin.woff2",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "e2291e842cf5af167122a22881a740c7f2dda7716f1e8cd76680264f4a859470"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "OFL-1.1",
+      "url": "https://github.com/google/fonts/blob/main/ofl/ibmplexsans/OFL.txt"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/IBM/plex"
+    },
+    {
+     "type": "website",
+     "url": "https://fonts.google.com/specimen/IBM+Plex+Sans"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/google/fonts/blob/main/ofl/ibmplexsans/OFL.txt"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/fonts/ibm-plex-sans-500-normal-latin.woff2"
+     }
+    ],
+    "copyright": []
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/fonts/ibm-plex-sans-500-normal-latin.woff2"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "https://fonts.gstatic.com/s/ibmplexsans/v23/zYXzKVElMYYaJe8bpLHnCwDKr932-G7dytD-Dmu1syxeKYY.woff2"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "no banner (binary or plain text); the full SIL OFL 1.1 for this family is committed at web/vendor/fonts/ibm-plex-sans-OFL.txt, sha256 7e6b2818edbd8f6a..., and reads: Copyright \u00a9 2017 IBM Corp. with Reserved Font Name \"Plex\""
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/fonts/ibm-plex-sans-600-normal-latin-ext.woff2",
+   "name": "ibm-plex-sans",
+   "version": "v23",
+   "purl": "pkg:generic/ibm-plex-sans@v23#ibm-plex-sans-600-normal-latin-ext.woff2",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "d160e20920ae4d6556518d352d3af27a74e9b0de3d8fe17b1c1044fc75aa2f81"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "OFL-1.1",
+      "url": "https://github.com/google/fonts/blob/main/ofl/ibmplexsans/OFL.txt"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/IBM/plex"
+    },
+    {
+     "type": "website",
+     "url": "https://fonts.google.com/specimen/IBM+Plex+Sans"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/google/fonts/blob/main/ofl/ibmplexsans/OFL.txt"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/fonts/ibm-plex-sans-600-normal-latin-ext.woff2"
+     }
+    ],
+    "copyright": []
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/fonts/ibm-plex-sans-600-normal-latin-ext.woff2"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "https://fonts.gstatic.com/s/ibmplexsans/v23/zYXzKVElMYYaJe8bpLHnCwDKr932-G7dytD-Dmu1syxQKYbABA.woff2"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "no banner (binary or plain text); the full SIL OFL 1.1 for this family is committed at web/vendor/fonts/ibm-plex-sans-OFL.txt, sha256 7e6b2818edbd8f6a..., and reads: Copyright \u00a9 2017 IBM Corp. with Reserved Font Name \"Plex\""
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/fonts/ibm-plex-sans-600-normal-latin.woff2",
+   "name": "ibm-plex-sans",
+   "version": "v23",
+   "purl": "pkg:generic/ibm-plex-sans@v23#ibm-plex-sans-600-normal-latin.woff2",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "e2291e842cf5af167122a22881a740c7f2dda7716f1e8cd76680264f4a859470"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "OFL-1.1",
+      "url": "https://github.com/google/fonts/blob/main/ofl/ibmplexsans/OFL.txt"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/IBM/plex"
+    },
+    {
+     "type": "website",
+     "url": "https://fonts.google.com/specimen/IBM+Plex+Sans"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/google/fonts/blob/main/ofl/ibmplexsans/OFL.txt"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/fonts/ibm-plex-sans-600-normal-latin.woff2"
+     }
+    ],
+    "copyright": []
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/fonts/ibm-plex-sans-600-normal-latin.woff2"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "https://fonts.gstatic.com/s/ibmplexsans/v23/zYXzKVElMYYaJe8bpLHnCwDKr932-G7dytD-Dmu1syxeKYY.woff2"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "no banner (binary or plain text); the full SIL OFL 1.1 for this family is committed at web/vendor/fonts/ibm-plex-sans-OFL.txt, sha256 7e6b2818edbd8f6a..., and reads: Copyright \u00a9 2017 IBM Corp. with Reserved Font Name \"Plex\""
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/fonts/ibm-plex-sans-700-normal-latin-ext.woff2",
+   "name": "ibm-plex-sans",
+   "version": "v23",
+   "purl": "pkg:generic/ibm-plex-sans@v23#ibm-plex-sans-700-normal-latin-ext.woff2",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "d160e20920ae4d6556518d352d3af27a74e9b0de3d8fe17b1c1044fc75aa2f81"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "OFL-1.1",
+      "url": "https://github.com/google/fonts/blob/main/ofl/ibmplexsans/OFL.txt"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/IBM/plex"
+    },
+    {
+     "type": "website",
+     "url": "https://fonts.google.com/specimen/IBM+Plex+Sans"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/google/fonts/blob/main/ofl/ibmplexsans/OFL.txt"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/fonts/ibm-plex-sans-700-normal-latin-ext.woff2"
+     }
+    ],
+    "copyright": []
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/fonts/ibm-plex-sans-700-normal-latin-ext.woff2"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "https://fonts.gstatic.com/s/ibmplexsans/v23/zYXzKVElMYYaJe8bpLHnCwDKr932-G7dytD-Dmu1syxQKYbABA.woff2"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "no banner (binary or plain text); the full SIL OFL 1.1 for this family is committed at web/vendor/fonts/ibm-plex-sans-OFL.txt, sha256 7e6b2818edbd8f6a..., and reads: Copyright \u00a9 2017 IBM Corp. with Reserved Font Name \"Plex\""
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/fonts/ibm-plex-sans-700-normal-latin.woff2",
+   "name": "ibm-plex-sans",
+   "version": "v23",
+   "purl": "pkg:generic/ibm-plex-sans@v23#ibm-plex-sans-700-normal-latin.woff2",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "e2291e842cf5af167122a22881a740c7f2dda7716f1e8cd76680264f4a859470"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "OFL-1.1",
+      "url": "https://github.com/google/fonts/blob/main/ofl/ibmplexsans/OFL.txt"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/IBM/plex"
+    },
+    {
+     "type": "website",
+     "url": "https://fonts.google.com/specimen/IBM+Plex+Sans"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/google/fonts/blob/main/ofl/ibmplexsans/OFL.txt"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/fonts/ibm-plex-sans-700-normal-latin.woff2"
+     }
+    ],
+    "copyright": []
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/fonts/ibm-plex-sans-700-normal-latin.woff2"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "https://fonts.gstatic.com/s/ibmplexsans/v23/zYXzKVElMYYaJe8bpLHnCwDKr932-G7dytD-Dmu1syxeKYY.woff2"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "no banner (binary or plain text); the full SIL OFL 1.1 for this family is committed at web/vendor/fonts/ibm-plex-sans-OFL.txt, sha256 7e6b2818edbd8f6a..., and reads: Copyright \u00a9 2017 IBM Corp. with Reserved Font Name \"Plex\""
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/fonts/ibm-plex-sans-OFL.txt",
+   "name": "ibm-plex-sans",
+   "version": "v23",
+   "purl": "pkg:generic/ibm-plex-sans@v23#ibm-plex-sans-OFL.txt",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "7e6b2818edbd8f6a01ae80641cc8f16a51080d08fb4e532be3a0b6f74adb07da"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "OFL-1.1",
+      "url": "https://github.com/google/fonts/blob/main/ofl/ibmplexsans/OFL.txt"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/IBM/plex"
+    },
+    {
+     "type": "website",
+     "url": "https://fonts.google.com/specimen/IBM+Plex+Sans"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/google/fonts/blob/main/ofl/ibmplexsans/OFL.txt"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/fonts/ibm-plex-sans-OFL.txt"
+     }
+    ],
+    "copyright": []
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/fonts/ibm-plex-sans-OFL.txt"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "https://raw.githubusercontent.com/google/fonts/main/ofl/ibmplexsans/OFL.txt"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "no banner (binary or plain text); the full SIL OFL 1.1 for this family is committed at web/vendor/fonts/ibm-plex-sans-OFL.txt, sha256 7e6b2818edbd8f6a..., and reads: Copyright \u00a9 2017 IBM Corp. with Reserved Font Name \"Plex\""
+    }
+   ]
+  },
+  {
+   "type": "file",
+   "bom-ref": "web/vendor/fonts/manifest.json",
+   "name": "smartcitix/fonts/manifest.json",
+   "version": "3.2.0",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "f4d1ff58e33d199fc79413f5a6e42cc0711f0ad8aeeab59ea94e00e1903acdae"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/fonts/manifest.json"
+     }
+    ]
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/fonts/manifest.json"
+    },
+    {
+     "name": "smartcitix:first_party",
+     "value": "generated by web/fetch_fonts.py; it describes the vendored font files rather than being one"
     }
    ]
   },

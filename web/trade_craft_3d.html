@@ -248,12 +248,39 @@ const maxAniso = renderer.capabilities.getMaxAnisotropy();
    Both surface caches are keyed on the size, which differs per rung, so a
    texture built for one rung is never handed back for the other. */
 const anisoNow = () => qLevel === 'low' ? Math.min(4, maxAniso) : maxAniso;
-// mobile budget: cap the pixel ratio and drop shadow maps on touch GPUs
-renderer.setPixelRatio(Math.min(devicePixelRatio,
-  ('ontouchstart' in window) ? 1.5 : 2));
+/* Does this device drive itself by touch? Declared HERE, not where it reads
+   most naturally, because the emitted page puts this renderer block at line
+   269 and the walking code that also wants it some seven thousand lines
+   later. Sharing a `const` across that gap only works in one direction, and
+   this is the direction. */
+const isTouch = 'ontouchstart' in window;
+
+/* Mobile budget: cap the pixel ratio, and size the shadow map to the device
+   rather than taking it away.
+
+   Shadows used to be switched off outright by `!('ontouchstart' in window)`,
+   which was answering the wrong question. That flag is true on every
+   touchscreen laptop and every Windows 2-in-1 - hardware that renders this
+   scene comfortably - and equally true on a budget phone that cannot. It
+   says "this device has a touchscreen"; it was being read as "this device
+   cannot afford a shadow map". So every touch device lost the only cue that
+   puts an object on the ground, including the ones with the GPU to spare,
+   and a walker on a phone floated over the apron with nothing under them.
+
+   The page already has something that measures the right thing: the quality
+   ladder watches real frame time and demotes when frames slip, and its
+   bottom rung already clears key.castShadow. So shadows are on everywhere
+   now, at a map sized to what the device plausibly has, and a device that
+   genuinely cannot hold them loses them within about a second of measured
+   frames instead of never having had them. A device that can, keeps them. */
+renderer.setPixelRatio(Math.min(devicePixelRatio, isTouch ? 1.5 : 2));
 renderer.setSize(innerWidth, innerHeight);
-renderer.shadowMap.enabled = !('ontouchstart' in window);
+renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+// Quarter the texels on touch. Paired with the sun box that now rides with
+// the view at a 70 m radius on foot, 1024 is 13.7 cm per shadow texel -
+// coarser than the desktop's 6.8, and still a shadow where there was none.
+const SHADOW_PX = isTouch ? 1024 : 2048;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.12;
 renderer.xr.enabled = true;
@@ -357,6 +384,17 @@ function qStep(dt) {
   // harness runs (webdriver) keep deterministic visuals; they force via the hook
   if (!qAuto || reduced || navigator.webdriver) return;
   if (renderer.xr.isPresenting) return;       // a headset has its own ladder: xrQStep
+  qLadder(dt);
+}
+
+// The ladder itself, separated from the guard above so it can be PROVEN.
+// Shadows are now on for every device rather than switched off by a
+// touchscreen flag, and the whole justification for that is this function:
+// a device that genuinely cannot hold them loses them here, on measured
+// frames. A justification that rests on code nobody has watched work is not
+// a justification, and the guard above means no browser run can watch it -
+// so __tc3dQualityProbe feeds it synthetic frame times instead.
+function qLadder(dt) {
   qAcc += dt; qFrames++;
   if (qLevel === 'low') {
     // one step back up, once: a 10 s window comfortably over budget (a
@@ -378,6 +416,24 @@ function qStep(dt) {
     qAcc = 0; qFrames = 0;
   }
 }
+
+// Feed the ladder a steady frame rate for a stretch of seconds and report
+// where it ended up. This is the check on the claim that a weak device
+// loses shadows rather than never having had them.
+window.__tc3dQualityProbe = (fps, seconds) => {
+  const was = { q: qLevel, acc: qAcc, frames: qFrames, rose: qRose };
+  qAcc = 0; qFrames = 0; qRose = false;
+  setQuality('high');
+  const dt = 1 / fps;
+  for (let t = 0; t < seconds * fps; t++) qLadder(dt);
+  const out = { fps, seconds, ended: qLevel, shadows: key.castShadow,
+                px: renderer.getPixelRatio() };
+  // put the page back exactly as it was found: a probe that leaves the
+  // scene on a different rung has measured one thing and broken another
+  qAcc = was.acc; qFrames = was.frames; qRose = was.rose;
+  setQuality(was.q);
+  return out;
+};
 
 // the WebXR layer itself - probe, session, rig, controllers, wrist panel -
 // lives in the XR block (XR_JS) just above the frame loop, once the scene
@@ -722,7 +778,7 @@ scene.add(hemi);
 const key = new THREE.DirectionalLight(0xffe0b0, 1.6);
 key.position.set(35, 48, 20);
 key.castShadow = true;
-key.shadow.mapSize.set(2048, 2048);
+key.shadow.mapSize.set(SHADOW_PX, SHADOW_PX);
 scene.add(key);
 // The sun's target has to be IN the scene graph. three.js leaves a
 // DirectionalLight's default target sitting at the origin outside it, which
@@ -4084,7 +4140,7 @@ function showHall(sg) {
   const cb = document.getElementById('campusBtn');
   cb.style.display = ''; cb.textContent = '↑ ' + D.campuses[campusKey].name;
   document.getElementById('simBtn').style.display =
-    (D.sims.bindings[sg] && !('ontouchstart' in window)) ? '' : 'none';
+    (D.sims.bindings[sg] && !isTouch) ? '' : 'none';
   document.getElementById('glbBtn').style.display = '';
   document.getElementById('glbInBtn').style.display = 'none';
   document.getElementById('satBtn').style.display = 'none';
@@ -7309,7 +7365,8 @@ async function opSweep(o = {}) {
 // The locker is data (avatars registry): sections, options, emotes. The
 // avatar is COSMETIC ONLY - the registry guarantee, asserted by its suite:
 // nothing here is read by any grader.
-const isTouch = 'ontouchstart' in window;
+// declared up with the renderer, which reads it before this point in the
+// emitted page - see the note beside renderer.setPixelRatio
 let avatarGroup = null, avatarMesh = null, walkAvatar = null;
 let avatarCfg = null, lastEmote = null;
 let emo = null;                       // {move, t} while an emote plays
@@ -10771,7 +10828,10 @@ window.__tc3d = () => ({ view, buildings: buildings.length, plates: plates.lengt
   restoSites: restorationHits.length / 2,
   scenario: curScenario?.id ?? null,
   chHosted: D.chapters.hosted[campusKey] ?? null,
-  isTouch, shadows: renderer.shadowMap.enabled,
+  // `shadowMap.enabled` is always true now, so it is no longer the fact
+  // worth reporting. What varies is whether the quality ladder is currently
+  // paying for shadows, and how many texels the device was given.
+  isTouch, shadows: key.castShadow, shadowPx: SHADOW_PX,
   // orbit is the fallback control scheme, so whether it is enabled is the
   // fact that says the view is still steerable. enterWalk() disables it
   // before it asks for the pointer lock; a refused lock used to leave it

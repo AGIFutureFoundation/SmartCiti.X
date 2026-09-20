@@ -100,8 +100,13 @@ ok('the glTF exporter and loader are imported on first use of the .glb buttons, 
   && !/^import .*GLTF/m.test(src) && !/modulepreload/.test(src));
 
 ok('the quality ladder steps back up once - a 10 s window at or above 45 fps - and never flaps',
-  /if \(qRose\) return;/.test(fn('qStep')) && /qFrames \/ qAcc >= 45\) \{ qRose = true; setQuality\('high'\); \}/.test(fn('qStep'))
-  && /qFrames \/ qAcc < 22/.test(fn('qStep')));
+  /if \(qRose\) return;/.test(fn('qLadder'))
+  && /qFrames \/ qAcc >= 45\) \{ qRose = true; setQuality\('high'\); \}/.test(fn('qLadder'))
+  && /qFrames \/ qAcc < 22/.test(fn('qLadder'))
+  // the guard stays where it was: a harness run must not be demoted out
+  // from under a measurement, and the ladder's logic is reached through it
+  && /if \(!qAuto \|\| reduced \|\| navigator\.webdriver\) return;/.test(fn('qStep'))
+  && /qLadder\(dt\);/.test(fn('qStep')));
 
 /* ------------------------------------------------- surfaces and light --- */
 /* The world read as a rendering rather than a place, and each of these is
@@ -1002,5 +1007,59 @@ ok('a view the guide has no place for stops the build, and so does a place '
   /_views = set\(re\.findall\(r"\\bview = '\(\[a-z\]\+\)'", page\)\)/.test(src)
   && /the page sets these views that the guide has no place for/.test(src)
   && /the guide has places for views this page never sets/.test(src));
+
+
+/* ------------------------------------------ shadows on every device ----- */
+// Shadows used to be switched off by `!('ontouchstart' in window)`, which
+// answers "does this device have a touchscreen" and was being read as "can
+// this device afford a shadow map". Those are different questions: the flag
+// is true on a 2-in-1 with a discrete GPU and equally true on a budget
+// phone. So every touch device lost the only cue that puts an object on the
+// ground, including the ones with the GPU to spare.
+//
+// The claim replacing it - that a device which genuinely cannot hold shadows
+// loses them on MEASURED frames - was proven before these were written, by
+// feeding the ladder synthetic frame times: 60, 30 and 24 fps for six
+// seconds all keep shadows; 21 and 12 fps drop to the low rung and clear
+// them; 21 fps for four seconds does not, because the window has not closed.
+ok('shadows are enabled for every device - the touchscreen flag no longer '
+  + 'decides, because it was answering a different question',
+  /renderer\.shadowMap\.enabled = true;/.test(src)
+  && !/shadowMap\.enabled = !\('ontouchstart' in window\)/.test(src));
+ok('the shadow map is SIZED to the device rather than taken away, and the '
+  + 'size is declared once instead of typed at the light',
+  /const SHADOW_PX = isTouch \? 1024 : 2048;/.test(src)
+  && /key\.shadow\.mapSize\.set\(SHADOW_PX, SHADOW_PX\);/.test(src));
+{
+  // Counted over CODE, not comments: the note beside the declaration quotes
+  // the old expression, and a check that counts its own explanation is
+  // counting the wrong thing. Writing this check found a THIRD reader -
+  // the sim-binding visibility line still tested the flag inline - which is
+  // exactly the disagreement it exists to prevent.
+  const code = src.replace(/\/\/[^\n]*/g, '').replace(/\/\*[\s\S]*?\*\//g, '');
+  ok('`ontouchstart` is tested ONCE and shared - three separate readers '
+    + 'tested it for themselves, which is how they could have disagreed',
+    (code.match(/'ontouchstart' in window/g) || []).length === 1);
+}
+ok('isTouch is declared before the renderer block that reads it: the emitted '
+  + 'page puts that block at line ~269 and the walking code ~7,000 lines on',
+  src.indexOf("const isTouch = 'ontouchstart' in window;")
+    < src.indexOf('renderer.setPixelRatio(Math.min(devicePixelRatio, isTouch'));
+ok('the ladder that takes shadows away is reachable without the harness '
+  + 'guard, so the claim that a weak device loses them can be PROVEN',
+  /window\.__tc3dQualityProbe = \(fps, seconds\) => \{/.test(src)
+  && /for \(let t = 0; t < seconds \* fps; t\+\+\) qLadder\(dt\);/.test(src));
+ok('the quality probe puts the rung back exactly as it found it - a probe '
+  + 'that leaves the scene changed has measured one thing and broken another',
+  // sliced by hand: fn() finds `function name(`, and this is an arrow
+  // assigned to window. Since fn() now EXITS on a name it cannot find
+  // rather than returning '', passing it one is a hard failure, not a
+  // silent fallback - which is how this was caught.
+  /setQuality\(was\.q\);\s*\n\s*return out;/.test(src.slice(
+    src.indexOf('window.__tc3dQualityProbe'),
+    src.indexOf('window.__tc3dQualityProbe') + 1400)));
+ok('the debug hook reports what actually varies now - whether the ladder is '
+  + 'paying for shadows, and how many texels - not a flag that is always true',
+  /isTouch, shadows: key\.castShadow, shadowPx: SHADOW_PX,/.test(src));
 
 console.log(`web/test_3d: ${n} checks passed - teardown, draw-call and per-frame contracts held at the source`);

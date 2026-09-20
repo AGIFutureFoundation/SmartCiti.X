@@ -16,7 +16,21 @@ concurrency:
   group: pages
   cancel-in-progress: true
 jobs:
+  # The site's own health, reported on its own. This used to live inside the
+  # deploy job, which meant a repository SETTING nobody had flipped showed up
+  # as a red X over work that was entirely sound: 76 runs where checkout,
+  # assembly and the link check all passed and the summary said "failure".
+  # A signal that is red for a reason outside the diff teaches people to stop
+  # reading it.
+  site:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Assemble the site and check every local link
+        run: bash .github/assemble_site.sh
+
   deploy:
+    needs: site
     runs-on: ubuntu-latest
     environment:
       name: github-pages
@@ -24,77 +38,55 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Assemble the site from committed, verified pages
-        run: |
-          mkdir -p _site/web/vendor _site/console
-          cp index.html _site/
-          cp web/*.html _site/web/
-          cp -r web/vendor/. _site/web/vendor/
-          cp console/trade_craft_console.html _site/console/
-          cp -r wiki _site/wiki
-          # The hub links nine surfaces and the dashboard and the 2D map
-          # each link the wiki. A deploy that ships a page the hub links to
-          # a 404 is a deploy that looks fine and is not, so the link set is
-          # checked here rather than discovered by a visitor: every local
-          # href in the assembled site must resolve to a file in it.
-          python3 - <<'PY'
-          import pathlib, re, sys, urllib.parse
-          site = pathlib.Path('_site')
-          # A page's markup is what a visitor follows. The script bodies also
-          # contain href=" strings, but those are template literals a
-          # renderer fills at runtime ('${esc(s.source_url)}'), so they are
-          # cut out first rather than reported as broken files that were
-          # never meant to be files.
-          SCRIPT = re.compile(r'<script\b.*?</script>', re.S | re.I)
-          bad = []
-          for page in site.rglob('*.html'):
-              html = SCRIPT.sub(' ', page.read_text(errors='ignore'))
-              for href in re.findall(r'(?:href|src)="([^"]+)"', html):
-                  if href.startswith(('http://', 'https://', 'data:', '#', 'mailto:')):
-                      continue
-                  if '${' in href or '{{' in href:   # an unfilled template slot
-                      continue
-                  target = (page.parent / urllib.parse.urlparse(href).path).resolve()
-                  if not target.exists():
-                      bad.append(f'{page.relative_to(site)} -> {href}')
-          if bad:
-              print('broken links in the assembled site:')
-              for b in sorted(set(bad)):
-                  print('  ' + b)
-              sys.exit(1)
-          print(f'link check: every local link in {len(list(site.rglob("*.html")))} '
-                'assembled pages resolves')
-          PY
-      # Pages has to be switched on for this repository ONCE, by a human
-      # with admin, at Settings -> Pages -> Build and deployment ->
-      # Source -> GitHub Actions. Until that happens this workflow cannot
-      # deploy, and it is the only thing standing between a green run and
-      # a live site.
+        run: bash .github/assemble_site.sh
+      # Pages has to be switched on for this repository ONCE, by a human with
+      # admin, at:
       #
-      # Runs 1-61 all died here with:
-      #   Get Pages site failed. Please verify that the repository has
-      #   Pages enabled and configured to build using GitHub Actions
-      #   Error: Not Found
+      #   https://github.com/AGIFutureFoundation/SmartCiti.X/settings/pages
+      #   -> Build and deployment -> Source -> GitHub Actions
       #
-      # `enablement: true` was added to try to have the action create the
-      # site itself. Run 62 proves that cannot work with the default
-      # token:
-      #   Get Pages site failed.    Error: Not Found
+      # Runs 1-76 all died at configure-pages with "Get Pages site failed ...
+      # Error: Not Found". `enablement: true` was added to try to have the
+      # action create the site itself; run 62 proved that cannot work with the
+      # default token:
+      #
       #   Create Pages site failed. Error: Resource not accessible by
       #                                    integration
-      # `permissions: pages: write` lets GITHUB_TOKEN DEPLOY to an
-      # existing Pages site; it does not let it CREATE one. That needs
-      # admin rights the workflow token does not carry, whoever owns the
-      # repo. (This repo is public, so there is no plan or billing
-      # blocker - only the setting.)
       #
-      # The flag is kept because it costs nothing: once the site exists,
-      # the Get call succeeds and enablement is a no-op, and it would
-      # work if this workflow were ever given an admin token. Checkout,
-      # assembly and the link check below have always passed - the site
-      # is ready, the switch is off.
-      - uses: actions/configure-pages@v5
+      # `permissions: pages: write` lets GITHUB_TOKEN DEPLOY to a Pages site
+      # that EXISTS; it does not let it CREATE one. Creating needs admin rights
+      # the workflow token does not carry, whoever owns the repo. (This repo is
+      # public, so there is no plan or billing blocker - only the setting.)
+      #
+      # continue-on-error is not the workflow giving up. The step below turns
+      # the failure into a written remedy, so the run says what to do instead
+      # of only that something went wrong.
+      - id: cfg
+        uses: actions/configure-pages@v5
+        continue-on-error: true
         with:
           enablement: true
+      - name: Say plainly what is blocking, and where the switch is
+        if: steps.cfg.outcome == 'failure'
+        run: |
+          {
+            echo '## GitHub Pages is not switched on for this repository'
+            echo
+            echo 'The site is built and sound - checkout, assembly and the'
+            echo 'link check all passed. The only thing missing is a setting'
+            echo 'that the Actions token is not allowed to change.'
+            echo
+            echo '**One click, by someone with admin on this repository:**'
+            echo
+            echo '[Settings -> Pages](https://github.com/'"$GITHUB_REPOSITORY"'/settings/pages)'
+            echo ' -> Build and deployment -> Source -> **GitHub Actions**'
+            echo
+            echo 'Then re-run this workflow. Nothing in the repository needs'
+            echo 'to change; this workflow deploys committed, verified pages'
+            echo 'and builds nothing.'
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "::error title=Pages is off::Enable it at Settings -> Pages -> Source -> GitHub Actions, then re-run."
+          exit 1
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site

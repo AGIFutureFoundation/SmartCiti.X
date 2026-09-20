@@ -29,16 +29,17 @@ const ROOT = new URL('..', import.meta.url).pathname;
    `documented` is the string THIRD_PARTY.md must contain for it, because an
    origin allowed here and undisclosed there is the exact failure this file
    exists to stop. */
-const FETCHED = {
-  'fonts.googleapis.com': {
-    why: 'the web-font stylesheet for the display, body and mono faces',
-    documented: 'fonts.googleapis.com',
-  },
-  'fonts.gstatic.com': {
-    why: 'the font files that stylesheet points at',
-    documented: 'fonts.gstatic.com',
-  },
-};
+/* Empty, and that is the point. Five pages used to link Google's font
+   stylesheet, which made a Google request part of opening any of them and
+   sent every learner's IP and user agent along with it. The faces are
+   vendored under web/vendor/fonts/ now (web/fetch_fonts.py), so no built
+   page fetches anything from anywhere at run time.
+
+   The entry is kept as an empty object rather than deleted because the
+   machinery below is what holds that to be true, and because the next
+   origin somebody is tempted to add belongs here, beside a `why` and the
+   string THIRD_PARTY.md has to carry for it. */
+const FETCHED = {};
 
 /* Origins the pages only CITE - a source link a reader can follow, which
    costs the reader nothing until they click it. These are not typed out:
