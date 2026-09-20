@@ -42,6 +42,7 @@ python3 web/build_geomap.py --check || fail=$((fail + 1))
 python3 web/build_languages.py --check || fail=$((fail + 1))
 python3 web/build_landing.py --check || fail=$((fail + 1))
 python3 web/build_3d.py --check || fail=$((fail + 1))
+python3 web/build_home.py --check || fail=$((fail + 1))
 iout=$(python3 web/test_interiors.py 2>&1) || fail=$((fail + 1))
 printf '%s\n' "$iout" | tail -1
 total=$((total + $(printf '%s\n' "$iout" | grep -c '^  ok ')))
