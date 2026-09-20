@@ -786,4 +786,34 @@ ok('what the ladder does NOT do is written down: a texture already on the '
   + 'GPU is not rebuilt when the rung changes',
   /A texture ALREADY on the GPU is not\s*\n\s*rebuilt when the ladder steps/.test(src));
 
+/* ------------------------------------------------------------ wet ground ---
+   The world pack declares a `wet` figure per weather - 0 clear, .12
+   overcast, .4 fog, .85 rain, 1 storm - and nothing read it, so the rain
+   state's own line about "every surface in the yard reading differently"
+   was a promise the render did not keep. A wet surface is smoother and
+   darker; now that the sky lights the world, dropping roughness buys a
+   reflection rather than a flatter grey. Measured on the built page:
+
+     clear     roughness 0.970   #8f9698
+     overcast            0.918   #8c9395
+     fog                 0.795   #868c8e
+     rain                0.599   #7a8082
+     storm               0.533   #757c7e
+
+   Fog wets a yard with no rain falling, which is why `wet` is its own
+   figure in the registry and not a function of the rain rate. */
+ok('the weather\'s declared wetness reaches the ground, rather than being a '
+  + 'figure the registry ships and nothing reads',
+  /const k = w\.wet \?\? 0;/.test(fn('wetGround'))
+  && /m\.roughness = m\.userData\.dryRough \* \(1 - \.45 \* k\);/.test(fn('wetGround'))
+  && /wetGround\(\);\s*\/\/ the yard takes the weather/.test(src));
+ok('the DRY values are remembered once, so repeated weather changes tone '
+  + 'from the surface\'s own colour instead of compounding on the last wet',
+  /if \(m\.userData\.dryRough === undefined\) \{/.test(fn('wetGround'))
+  && /m\.color\.setHex\(m\.userData\.dryColor\)\.lerp\(_wetTint, \.38 \* k\);/
+       .test(fn('wetGround')));
+ok('only the material is re-toned, never the texture: the maps are cached '
+  + 'and the live mesh must not be rebuilt to change the weather',
+  !/groundMat\(/.test(fn('wetGround')));
+
 console.log(`web/test_3d: ${n} checks passed - teardown, draw-call and per-frame contracts held at the source`);

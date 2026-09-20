@@ -6242,6 +6242,7 @@ function applyAtmos(k) {
                hemi.color.setHex(0x5c6a74); hemi.groundColor.setHex(0x1a1a18); }
   else { key.color.setHex(a.sun.color); hemi.color.setHex(a.hemi.sky);
          hemi.groundColor.setHex(a.hemi.ground); }
+  wetGround();                        // the yard takes the weather
   // how much fog this weather puts in this campus's air
   bankWant = Math.max(Math.round((campusGroup?.userData.banksBase ?? 0)
     * (w.bank_mul ?? 1)), w.bank_floor ?? 0);
@@ -6526,7 +6527,38 @@ function setGroundSurface(campusKey) {
   const a = ATMOS[campusKey] ?? DEF_ATMOS;
   ground.material.dispose();
   ground.material = groundMat(a.ground, 0x8f9698, 68);
+  wetGround();
 }
+/* Wet ground.
+   The world pack declares a `wet` figure per weather - 0 clear, .12
+   overcast, .4 fog, .85 rain, 1 storm, .25 night - and until now NOTHING
+   read it, so the rain state's own line about "every surface in the yard
+   reading differently" was a promise the render did not keep. A wet
+   surface is smoother and darker, which is all it is: water fills the
+   texture and reflects instead of scattering. Now that the sky lights the
+   world, dropping roughness actually buys a reflection rather than just a
+   flatter grey.
+
+   Only the material is touched, never the texture: groundMat builds a
+   fresh material per call and caches only the maps, so the live meshes
+   can be re-toned without rebuilding anything on the GPU. Fog wets a yard
+   with no rain falling, which is why `wet` is its own figure and not a
+   function of the rain rate. */
+function wetGround() {
+  const w = WX[wx] ?? WX.clear;
+  const k = w.wet ?? 0;
+  const m = ground.material;
+  // the DRY values are remembered once, so repeated weather changes tone
+  // from the surface's own colour rather than compounding on the last wet
+  if (m.userData.dryRough === undefined) {
+    m.userData.dryRough = m.roughness;
+    m.userData.dryColor = m.color.getHex();
+  }
+  m.roughness = m.userData.dryRough * (1 - .45 * k);
+  m.color.setHex(m.userData.dryColor).lerp(_wetTint, .38 * k);
+  m.needsUpdate = true;
+}
+const _wetTint = new THREE.Color(0x2b3236);
 ground.rotation.x = -Math.PI/2; ground.receiveShadow = true;
 scene.add(ground);
 const grid = new THREE.GridHelper(GROUND_R * 2, 180, 0x28353A, 0x1b2427);
@@ -10530,6 +10562,10 @@ window.__tc3dSolidTest = (headings = 72, seconds = 200, dt = 1 / 60) => {
 /* What the walker is standing on, and what each training stand is made of.
    Reads the live rects - not a second list - and with a point given it
    samples there and puts the walker back where it was. */
+// what the weather has done to the ground underfoot, for the harness
+window.__tc3dGroundTone = () => ({
+  rough: +ground.material.roughness.toFixed(3),
+  hex: '#' + ground.material.color.getHexString() });
 window.__tc3dUnderfoot = (x, z) => {
   if (x === undefined)
     return { here: stepFamily(),
