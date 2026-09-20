@@ -858,4 +858,49 @@ ok('a probe can stand the eye somewhere, because reaching for the camera '
   /window\.__tc3dLook = \(x, y, z, tx, ty, tz\) => \{/.test(src)
   && /camera\.updateMatrixWorld\(true\);/.test(src));
 
+
+/* ---------------------------------------------------------- sun frustum --- */
+// Measured before the fix: the sun's shadow box was a fixed +/-60 in light
+// space nailed to the world origin, covering x in [-112.8, 104.4] and z in
+// [-99.6, 94.7] against shadow casters spanning 307.8 m - 47% of the campus,
+// in the same place no matter where you stood, with a hard line at the edge.
+// Measured after: 100% from the opening orbit, and on foot the box rides with
+// the view at 6.8 cm per texel against the old box's 10.6. These hold the
+// three things that silently un-do it.
+ok('the sun\'s shadow box is sized inside trackSun(), not nailed to a constant '
+  + 'half-extent at the world origin',
+  /function trackSun\(\) \{/.test(src)
+  && /Object\.assign\(key\.shadow\.camera, \{ left: -R, right: R, top: R, bottom: -R,/
+     .test(fn('trackSun'))
+  && !/const S = 60;/.test(src));
+ok('key.target is IN the scene graph - three.js leaves a directional light\'s '
+  + 'default target outside it, where moving it does nothing at all',
+  /scene\.add\(key\.target\);/.test(src));
+ok('trackSun() updates the target\'s world matrix after moving it, because a '
+  + 'light aimed through a stale matrix points where it used to',
+  /key\.target\.updateMatrixWorld\(true\);/.test(fn('trackSun')));
+ok('the box is aimed at the ground under the view, not at the eye: from the '
+  + 'opening orbit 225 m up, an eye-centred box holds no ground at all',
+  /_sunFocus\.copy\(_sunEye\)\.addScaledVector\(_sunDir, reach\);/.test(fn('trackSun'))
+  && /_sunFocus\.y = 0;/.test(fn('trackSun')));
+ok('the box centre is snapped to whole shadow texels, or every shadow edge in '
+  + 'the scene crawls as the box slides under it',
+  /const texel = \(R \* 2\) \/ key\.shadow\.mapSize\.x;/.test(fn('trackSun'))
+  && /Math\.round\(_sunFocus\.dot\(SUN_RIGHT\) \/ texel\) \* texel/.test(fn('trackSun')));
+ok('the radius is quantised before it is used, so the texel grid the snap '
+  + 'depends on does not itself move every frame',
+  /const SUN_R_STEP = 10;/.test(src)
+  && /Math\.round\(want \/ SUN_R_STEP\) \* SUN_R_STEP/.test(fn('trackSun')));
+ok('trackSun() runs after everything that can move the camera and before the '
+  + 'frame is drawn, not at the top of the loop a frame behind it',
+  /\n  trackSun\(\);\n  xrRender\(\);/.test(src));
+ok('trackSun() is never called at module top level: walkActive is a `let` '
+  + 'declared further down, so an eager call throws on its temporal dead zone',
+  !/\n(?:const [A-Za-z_]+ = )?trackSun\(\);\n(?!  )/.test(src.replace(/\n  trackSun\(\);/g, '')));
+ok('a probe can ask what the sun can actually reach - the half-extent it '
+  + 'renders with, the texel that buys, and how much of the campus is inside',
+  /window\.__tc3dShadowBox = \(\) => \{/.test(src)
+  && /r: sunR, texelCm:/.test(src)
+  && /focusCovered: box\.containsPoint/.test(src));
+
 console.log(`web/test_3d: ${n} checks passed - teardown, draw-call and per-frame contracts held at the source`);

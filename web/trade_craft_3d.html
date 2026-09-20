@@ -706,9 +706,107 @@ const key = new THREE.DirectionalLight(0xffe0b0, 1.6);
 key.position.set(35, 48, 20);
 key.castShadow = true;
 key.shadow.mapSize.set(2048, 2048);
-const S = 60;
-Object.assign(key.shadow.camera, { left: -S, right: S, top: S, bottom: -S, far: 140 });
 scene.add(key);
+// The sun's target has to be IN the scene graph. three.js leaves a
+// DirectionalLight's default target sitting at the origin outside it, which
+// works only for as long as nobody moves it - its matrixWorld stays the
+// identity because nothing updates it. Moving it, as trackSun() does every
+// frame, requires it to be a child like anything else.
+scene.add(key.target);
+
+/* -------------------------------------------------------- sun frustum --- */
+// A directional light's shadow map is an orthographic box, and geometry
+// outside it is not softly unshadowed - it is unshadowed at a hard line
+// where the box ends. This box used to be a fixed +/-60 in light space
+// nailed to the world origin. Measured, it covered x in [-112.8, 104.4] and
+// z in [-99.6, 94.7] while the campus's shadow casters span 307.8 m, so
+// roughly a third of the campus stood in permanent flat light and the
+// walker lost their own shadow past about x = 104.
+//
+// So the box follows the viewer instead. The sun KEEPS ITS DIRECTION - the
+// light is repositioned along a fixed vector, never re-aimed - because a
+// sun whose angle changed as you walked would move every shadow on the
+// campus with you, which is worse than the hard line it replaces.
+const SUN_OFF = new THREE.Vector3(35, 48, 20).normalize().multiplyScalar(96);
+// Half-extent of the box, in metres. It is not one number, because the two
+// ways of looking at this world want opposite things: on foot you see a few
+// dozen metres and want every shadow edge crisp, while the opening orbit
+// sits 225 m up and wants the whole campus lit correctly at whatever
+// sharpness that costs. So the radius follows how far down the view the
+// ground actually is - tight when you are walking, wide when you are above
+// it - and at 2048 texels that is 6.8 cm per texel on foot against the old
+// fixed box's 10.6 cm, and 17.6 cm from overhead where nothing is close
+// enough to show it.
+const SUN_R_MIN = 70, SUN_R_MAX = 180;
+// The radius is quantised before use. Left continuous it would change by
+// centimetres every frame as the view tilts, which both rebuilds the
+// projection matrix for nothing and, worse, moves the texel grid the snap
+// below depends on - so the shadows would crawl exactly where the snapping
+// exists to stop them.
+const SUN_R_STEP = 10;
+// The light's basis. SUN_OFF never changes, so neither do these - deriving
+// them per frame would allocate two vectors every frame for a constant.
+const SUN_FWD = SUN_OFF.clone().normalize();
+const SUN_RIGHT = new THREE.Vector3()
+  .crossVectors(new THREE.Vector3(0, 1, 0), SUN_FWD).normalize();
+const SUN_UP = new THREE.Vector3().crossVectors(SUN_FWD, SUN_RIGHT);
+const _sunEye = new THREE.Vector3();
+const _sunDir = new THREE.Vector3();
+const _sunFocus = new THREE.Vector3();
+// The box is sized once here rather than on the first frame, so nothing can
+// render against an unconfigured frustum; trackSun() resizes it only when
+// the view moves far enough for the radius to cross a step.
+let sunR = SUN_R_MIN;
+Object.assign(key.shadow.camera,
+              { left: -sunR, right: sunR, top: sunR, bottom: -sunR,
+                near: 1, far: SUN_OFF.length() + sunR * 2 });
+key.shadow.camera.updateProjectionMatrix();
+
+// Snap the box's centre to whole shadow-map texels. Without this the box
+// slides by fractions of a texel as you walk and every shadow edge in the
+// scene crawls and fizzes - the classic artefact of a moving shadow
+// frustum, and far more distracting than the static box ever was. Rounding
+// the centre in the light's own basis makes the sampling grid stand still
+// relative to the world while the box travels.
+function trackSun() {
+  if (!key.castShadow) return;
+  (walkActive ? xrRig : camera).getWorldPosition(_sunEye);
+  camera.getWorldDirection(_sunDir);
+  // Aim the box at the ground the viewer is looking at, not at the viewer.
+  // Centring it on the eye wastes half the box behind you, and centring it
+  // on the eye's HEIGHT is worse still: from the opening orbit 225 m up
+  // that put the whole box in the air above the campus and every shadow in
+  // the scene disappeared. So the focus is where the view meets y = 0.
+  const down = -_sunDir.y;
+  // Looking level or upward there is no ground hit to aim at - the ray
+  // meets y = 0 at infinity, or never - so bias the box a little way down
+  // the view instead of chasing the horizon.
+  const reach = down > .15 ? Math.min(_sunEye.y / down, SUN_R_MAX * 2)
+                           : SUN_R_MIN * .35;
+  _sunFocus.copy(_sunEye).addScaledVector(_sunDir, reach);
+  _sunFocus.y = 0;
+  const want = Math.min(SUN_R_MAX, Math.max(SUN_R_MIN, 60 + reach * .45));
+  const R = Math.round(want / SUN_R_STEP) * SUN_R_STEP;
+  if (R !== sunR) {
+    sunR = R;
+    Object.assign(key.shadow.camera, { left: -R, right: R, top: R, bottom: -R,
+                                       near: 1, far: SUN_OFF.length() + R * 2 });
+    key.shadow.camera.updateProjectionMatrix();
+  }
+  // Snap the box's centre to whole shadow-map texels, in the light's own
+  // basis. Without this the box slides by fractions of a texel as you walk
+  // and every shadow edge in the scene crawls and fizzes - the classic
+  // artefact of a moving shadow frustum, and far more distracting than the
+  // static box it replaces ever was.
+  const texel = (R * 2) / key.shadow.mapSize.x;
+  const u = Math.round(_sunFocus.dot(SUN_RIGHT) / texel) * texel;
+  const v = Math.round(_sunFocus.dot(SUN_UP) / texel) * texel;
+  const w = _sunFocus.dot(SUN_FWD);
+  key.target.position.copy(SUN_RIGHT).multiplyScalar(u)
+    .addScaledVector(SUN_UP, v).addScaledVector(SUN_FWD, w);
+  key.position.copy(key.target.position).add(SUN_OFF);
+  key.target.updateMatrixWorld(true);
+}
 const FILL_I = .25;                 // the cool bounce, declared once
 const INDOOR_RIG = .35;             // how much of the outdoor rig a room sees
 const fill = new THREE.DirectionalLight(0x41C4D4, FILL_I);
@@ -9793,6 +9891,62 @@ window.__tc3dLook = (x, y, z, tx, ty, tz) => {
   camera.updateMatrixWorld(true);
   return { at: [+x.toFixed(1), +y.toFixed(1), +z.toFixed(1)] };
 };
+// What the sun can actually cast into. A directional light's shadow map is
+// an orthographic box, and anything outside it is simply unshadowed - not
+// softly, but at a hard line where the box ends. This reports the box in
+// world space, the extent of everything that casts into it, and whether the
+// walker is standing inside it, so the question "do the shadows reach the
+// far side of the campus" has a number rather than an impression.
+window.__tc3dShadowBox = () => {
+  key.updateMatrixWorld(true);
+  key.target.updateMatrixWorld(true);
+  const sc = key.shadow.camera;
+  sc.updateProjectionMatrix();
+  sc.updateMatrixWorld(true);
+  const inv = new THREE.Matrix4().multiplyMatrices(
+    sc.matrixWorld, new THREE.Matrix4().copy(sc.projectionMatrix).invert());
+  const box = new THREE.Box3();
+  for (let i = 0; i < 8; i++)
+    box.expandByPoint(new THREE.Vector3(
+      (i & 1) ? 1 : -1, (i & 2) ? 1 : -1, (i & 4) ? 1 : -1)
+      .applyMatrix4(inv));
+  const casters = new THREE.Box3();
+  scene.traverse((o) => {
+    if (o.isMesh && o.castShadow && o.visible) casters.expandByObject(o);
+  });
+  const eye = new THREE.Vector3();
+  (walkActive ? xrRig : camera).getWorldPosition(eye);
+  const r3 = (v) => [+v.x.toFixed(1), +v.y.toFixed(1), +v.z.toFixed(1)];
+  // How much of what casts a shadow stands inside the box, measured on the
+  // ground plan rather than in the air: the box is a tilted volume, so its
+  // world AABB is much larger than its half-extent and quoting that as
+  // "reach" would flatter it. This is the honest overlap.
+  const ov = (a0, a1, b0, b1) =>
+    Math.max(0, Math.min(a1, b1) - Math.max(a0, b0));
+  const cover = casters.isEmpty() ? null : +(
+    ov(box.min.x, box.max.x, casters.min.x, casters.max.x) *
+    ov(box.min.z, box.max.z, casters.min.z, casters.max.z) /
+    ((casters.max.x - casters.min.x) * (casters.max.z - casters.min.z))
+  ).toFixed(3);
+  return {
+    on: renderer.shadowMap.enabled,
+    map: key.shadow.mapSize.x,
+    // the ortho half-extent the sun actually renders with, and what one
+    // shadow texel is worth in centimetres at that size
+    r: sunR, texelCm: +((sunR * 2 / key.shadow.mapSize.x) * 100).toFixed(1),
+    // where the box is aimed - the ground under the view, not the eye
+    focus: r3(_sunFocus),
+    box: { min: r3(box.min), max: r3(box.max) },
+    casters: casters.isEmpty() ? null
+      : { min: r3(casters.min), max: r3(casters.max) },
+    cover,
+    at: r3(eye),
+    // the two questions worth asking: does the ground being looked at take
+    // shadow, and (walking) does the viewer's own body still cast one
+    focusCovered: box.containsPoint(_sunFocus.clone()),
+    eyeCovered: box.containsPoint(eye),
+  };
+};
 window.__tc3dRooms = () => roomRects.map((r) => {
   const c = condOf(slug, r.strand);
   return { strand: r.strand, lux: c?.lux ?? null,
@@ -11253,6 +11407,11 @@ renderer.setAnimationLoop(() => {
   faunaStep(clock.elapsedTime, dt);
   labelStep(dt);
   roomLitStep();
+  // The sun's shadow box rides with the view, so it is placed after
+  // everything that can move the camera this frame and before the frame is
+  // drawn. Placed at the top of the loop it would read last frame's camera
+  // and the box would lag the view by one frame at every turn.
+  trackSun();
   xrRender();
 });
 </script>
