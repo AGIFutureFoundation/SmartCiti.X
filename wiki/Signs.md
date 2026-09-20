@@ -1,7 +1,7 @@
 # The signs
 
 Every word in the 3D world is on a sign, and a sign should be readable
-**before** it is read. 14 kinds over 10 shapes, all
+**before** it is read. 19 kinds over 15 shapes, all
 declared in `labels/registry/labels.json` and never in the page.
 
 ## Shape carries the category
@@ -18,6 +18,11 @@ declared in `labels/registry/labels.json` and never in the page.
 | `ribbon` | a slanted parallelogram | a route or a distance |
 | `ghost` | no plate at all - text with a shadow, so it does not compete with what it labels | a detail, there if you look |
 | `readout` | a dark bordered box in monospace | a number a machine measured |
+| `chevron` | a plate whose leading edge runs out to a point, so the plate itself points the way | the way out, and which way it runs |
+| `beacon` | a plate with a ringed dot struck at its leading end and the text set in after it | a place to gather, marked so it can be found |
+| `stencil` | a hard-cornered square with a punched hole at its head and a heavy accent border | the number a door answers to |
+| `tag` | a rectangle with its head corner cut away and an eyelet punched through it, like a tag wired to a machine | the identity of one piece of kit |
+| `notice` | a plate banded top and bottom with diagonal hatching in the accent colour | a condition in force in this space, not a name |
 
 ## Colour carries provenance and district
 
@@ -50,6 +55,11 @@ display for names, body for the line under them, mono for anything a machine mea
 | **readout** | `readout` | a number a machine measured | steel | mono | a measured number, from a seat or a chart |
 | **brand** | `marquee` | the name of the whole place | mark | display | the Academy itself |
 | **placard** | `plate` | a room, or a part of a place you are already in | crit | body | what a room requires of you, read at its door |
+| **egress** | `chevron` | the way out, and which way it runs | good | display | the way out of a hall, read off the floor plan the bundle drew and pointing along it |
+| **muster** | `beacon` | a place to gather, marked so it can be found | good | display | where a hall gathers when it empties, off the same plan the route is read from |
+| **door** | `stencil` | the number a door answers to | muted | mono | the number a door answers to, derived from the hall and the room it opens into |
+| **asset** | `tag` | the identity of one piece of kit | steel | mono | the identifier of one piece of kit, derived from its hall, its room and its place in them |
+| **hazard** | `notice` | a condition in force in this space, not a name | crit | body | a condition in force in a space, off the hazards its own conditions record already holds |
 
 ## A sign reads the view
 

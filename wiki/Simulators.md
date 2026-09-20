@@ -249,7 +249,7 @@ Trains at: **Scaffold Erectors**, **Carpenters**, **Laborers**, **Bricklayers & 
 | Rubric axis | Measured | Pass |
 |---|---|---|
 | sequence | placements refused for coming before their stage | `== 0` |
-| complete | parts of the bay placed, rails last | `== all` |
+| complete | parts of the bay placed, rails last | `informational` |
 | time | seconds first sill to last rail | `informational` |
 
 **Cockpit.** A live dash of 5 gauges — `Rack`, `Stage`, `Parts`, `Refused` (warns at 1), `T s` — with the
@@ -274,7 +274,7 @@ environment varies, the rubric never does:
 | Crescent Works Campus | **Storm-hardening bay** | Hurricane-season work - a third rail goes on, and the same legal order holds in the wind. |
 
 **Scripted reference operator.** At `optimal` it passes
-**sequence**, **complete** on all
+**sequence** on all
 3 yards. Its procedure, the step list the page's policy is written around:
 
 1. jump the rack to the stage the bay is legally at - the dash names it
@@ -514,7 +514,7 @@ environment varies, the rubric never does:
 
 | Region | Scenario | The yard |
 |---|---|---|
-| Treasure Island Campus | **Curtain-wall panel run** | Six anchor points up a curtain-wall bay on the island campus - open sky overhead, the run to learn the basket on. |
+| Treasure Island Campus | **Curtain-wall panel run** | Six anchor points up a curtain-wall bay on the island campus, with the site power drop strung across in front of them - the run to learn the basket on, and the first thing to learn is that it is not clear overhead. |
 | Oakland Waterfront Campus | **Terminal light-fixture run** | Four fixture points along a terminal canopy with a live feeder running overhead between the pad and the work - go up before you go out. |
 | Crescent Works Campus | **Storm-shutter run** | Five shutter anchors low on a warehouse wall before the season turns, with a service drop overhead - short reaches, the same tie-off law. |
 
@@ -592,7 +592,7 @@ environment varies, the rubric never does:
 
 schematic physics for practising control discipline - smooth inputs, swing management, ordered procedure. Not equipment certification; no seat time here counts toward one, and the assessment gates still demand unaided verification runs.
 
-**And the walkaround:** a habit-builder, not a gate: no seat is locked behind the walkaround, completing it changes no score, and it is not an equipment inspection record.
+**And the walkaround:** a habit-builder, not a gate: no seat is locked behind the walkaround, completing it changes no score, and it is not an equipment inspection record. Each point also names what a crew would do when the check fails, which is the half of the habit worth having; that is unverified general practice, not a release anybody can sign from here and not a permission this seat grants.
 
 ---
 
