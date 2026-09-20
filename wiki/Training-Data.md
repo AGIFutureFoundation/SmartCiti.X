@@ -21,6 +21,7 @@ not a native Unity ML-Agents .demo (protobuf) file - this bundle has never produ
 |---|---|---|---|
 | **sim** | one completed simulator run | t, kind, campus, hall, sim, scenario, controls, actor, operator, outcome | episode-level by default: the scenario and control scheme a run was attempted under, and how it ended. With TRACE on, also a coarse (~1 Hz) gauge trace across the run - still not a per-tick physics or joint trajectory; see TRACE below |
 | **advisor** | one advisor question asked and answered | t, kind, campus, hall, advisor, topic, answer_kind | one exchange: which fixed topic was asked and whether the answer was read from a record or written in the advisor registry |
+| **crew** | one crew role asked one question while its seat was running | t, kind, campus, hall, crew, role, topic, answer_kind | one exchange with one role of one crew: which crew was standing, which role was asked, which fixed topic, and whether the answer was read from a record or written in the crews registry |
 | **walkaround** | one pre-shift walkaround point checked | t, kind, campus, hall, sim, point | one point marked - not a score, the same habit the sim registry already declares is not a gate |
 
 ## Who drove the seat: `actor`, and the SCRIPTED tier

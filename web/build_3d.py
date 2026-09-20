@@ -25,6 +25,7 @@ from file:// URLs. The page holds no data of its own.
 import json
 import math
 import pathlib
+import re
 import sys
 
 HERE = pathlib.Path(__file__).resolve().parent
@@ -62,6 +63,7 @@ training_reg = json.load(open(ROOT / 'training/registry/training.json'))
 orbis_reg = json.load(open(ROOT / 'orbis/registry/orbis.json'))
 schools_reg = json.load(open(ROOT / 'schools/registry/schools.json'))
 world_reg = json.load(open(ROOT / 'world/registry/world.json'))
+crews_reg = json.load(open(ROOT / 'agents/registry/crews.json'))
 labels_reg = json.load(open(ROOT / 'labels/registry/labels.json'))
 roadmap_reg = json.load(open(ROOT / 'roadmap/registry/roadmap.json'))
 restoration_reg = json.load(open(ROOT / 'restoration/registry/restoration.json'))
@@ -189,6 +191,35 @@ for f in sorted((ROOT / 'i18n/locales').glob('*.json')):
         'strands': c['strands'], 'tiers': c['tiers'], 'states': c['states'],
     }
 
+# ----------------------------------------------------------- pattern cover ---
+# A finish is drawn by painting its PATTERN onto a canvas and reading a
+# normal map off the height field that painting leaves behind. The depth of
+# that relief is declared per pattern in the page, and a pattern with no
+# declaration silently renders FLAT - a new finish would land looking like
+# grey noise and nothing would say so. Two patterns are deliberately
+# grain-only (`smooth` has no pattern to paint, `speckle` is the base grain
+# itself), so painting is optional; the RELIEF is not.
+#
+# The page is generated from this file, so the declaration can be read out
+# of it here and held to the registry. This is the gate: it is why the
+# runtime's `?? 0` can never fire.
+_SELF_SRC = pathlib.Path(__file__).read_text()
+_relief_src = re.search(r'const PATTERN_RELIEF = \{(.*?)\n\};', _SELF_SRC, re.S)
+assert _relief_src, 'PATTERN_RELIEF is no longer declared where the build can read it'
+# strip the // comments first: a word followed by a colon inside one is
+# prose, not a declaration, and the first version of this read "catalogue"
+# out of a comment and failed the build on it
+_relief_body = re.sub(r'//[^\n]*', '', _relief_src.group(1))
+DECLARED_RELIEF = set(re.findall(r'(\w[\w-]*)\s*:', _relief_body))
+_used_patterns = ({f['pattern'] for f in finishes_reg['catalogue'].values()}
+                  | {w['pattern'] for w in finishes_reg['wall_catalogue'].values()})
+_unlit = sorted(_used_patterns - DECLARED_RELIEF)
+assert not _unlit, (
+    f'these patterns would render flat - no relief declared: {_unlit}')
+_orphan = sorted(DECLARED_RELIEF - _used_patterns)
+assert not _orphan, (
+    f'relief declared for patterns no finish uses: {_orphan}')
+
 # --------------------------------------------------------------- footfall ---
 # What a footstep sounds like. A closed set of STEP FAMILIES, and the two
 # things a walker can be standing on - a room's floor pattern and a world
@@ -210,20 +241,50 @@ STEP_FAMILIES = {
               'why': 'ground cover damps the step and returns nothing'},
     'wet':   {'f': 700,  'q': .8,  'dur': .17,  'ring': 0,   'grit': .70,
               'why': 'saturated ground slaps and then sucks at the boot'},
+    # The ten campuses now stand on ten real regional surfaces, and calling
+    # crushed shell, mill slag and decomposed granite all "grit" would throw
+    # away the distinction the world pack just made. Two more families, for
+    # the two ways loose ground actually differs from plain aggregate.
+    'shard': {'f': 1600, 'q': 1.1, 'dur': .155, 'ring': .22, 'grit': .95,
+              'why': 'shell, slag and clinker are brittle and hollow: they '
+                     'crack bright under a boot rather than grinding'},
+    'dust':  {'f': 620,  'q': .45, 'dur': .095, 'ring': 0,   'grit': .65,
+              'why': 'fines and road base take the step and give nothing '
+                     'back - the sound of a yard that raises dust'},
 }
 # every floor PATTERN in the surfaces registry, and every ground RECIPE in
 # the world registry, maps to exactly one family - asserted below, so a new
 # finish or a new recipe cannot land without someone deciding how it sounds
 FLOOR_STEP = {
     'slab': 'hard', 'smooth': 'hard', 'tile': 'hard', 'brick': 'hard',
+    # a ground and polished slab, a terrazzo and a shotcrete invert are all
+    # hard floors: what differs is the light off them, not the step
+    'polish': 'hard', 'terrazzo': 'hard', 'gunite': 'hard', 'trench': 'hard',
     'broom': 'grit', 'speckle': 'grit',
+    # a rammed moulding-sand floor takes the boot the way loose ground does
+    'flake': 'grit', 'sand': 'grit',
+    # a track bed is the one floor in the catalogue that is loose stone
+    'ballast': 'shard',
     'checker': 'metal', 'grate': 'metal',
+    # tread plate, a slotted cast-iron table, a perforated tile and a
+    # sealed plate deck all ring: they are steel underfoot
+    'diamond': 'metal', 'tslot': 'metal', 'perf': 'metal', 'plate': 'metal',
     'block': 'wood', 'plank': 'wood',
 }
 GROUND_STEP = {
+    # laid, hard-troweled or rolled: a slab is a slab
     'asphalt': 'hard', 'concrete': 'hard',
+    'salt-slab': 'hard', 'hardstand': 'hard',
+    # angular stone that grinds under a boot
     'gravel': 'grit', 'levee': 'grit',
+    'ballast': 'grit', 'basalt': 'grit', 'limerock': 'grit',
+    # brittle and hollow: it cracks rather than grinds
+    'shell': 'shard', 'slag': 'shard', 'cinder': 'shard',
+    # fines and road base, which give nothing back
+    'caliche': 'dust', 'decomposed-granite': 'dust',
+    # ground cover
     'grass': 'soft', 'sand': 'soft', 'upland': 'soft', 'marsh': 'soft',
+    'prairie': 'soft', 'moss': 'soft',
     'mudflat': 'wet', 'water': 'wet',
 }
 _pats = {f['pattern'] for f in finishes_reg['catalogue'].values()}
@@ -342,9 +403,9 @@ DATA = json.dumps({
     # because a byte shipped to every learner should be one they can see
     'world': {'sky': trim(world_reg['sky'], 'note', 'placement', 'projection'),
               'weather': world_reg['weather'],
-              'ground': trim(world_reg['ground'], 'where', 'name'),
+              'ground': trim(world_reg['ground'], 'where', 'name', 'why'),
               'fauna': trim(world_reg['fauna'], 'why', 'name', 'glyph'),
-              'atmos': trim(world_reg['atmos'], 'character'),
+              'atmos': trim(world_reg['atmos'], 'character', 'ground_why'),
               # what each campus is BUILT of - facade pattern, envelope and
               # trim colours, roofline. `why` is prose for the reader and
               # stays out of the wire, like `character` above it.
@@ -404,6 +465,8 @@ DATA = json.dumps({
                 'units': schools_reg['units'],
                 'honesty': {k: schools_reg['honesty'][k]
                             for k in ('districts', 'certification')}},
+    'crews': {'crews': crews_reg['crews'], 'honesty': crews_reg['honesty'],
+              'standing': crews_reg['standing']},
     'advisors': {'who': agents_reg['advisors'],
                  'honesty': agents_reg['honesty'],
                  'walk': geo_reg['walk']},
@@ -654,9 +717,16 @@ function xrOrbitPlace(pos, tgt) {
 // below frees it - this just drops the now-dangling advisorMeshes entry
 // so proximity/rendering never touches a mesh no longer in the scene
 function clearOperatorAdvisor() {
-  const i = advisorMeshes.findIndex((m) => m.userData.advisor === 'operator');
-  if (i >= 0) advisorMeshes.splice(i, 1);
-  if (nearAdvisor === 'operator') nearAdvisor = null;
+  /* Everything parented to sim.group goes when the seat does - the
+     Operator and now every crew role - so this only drops the dangling
+     advisorMeshes entries. A crew role's key carries a colon; an advisor's
+     never does, which is what tells the two apart without a second list. */
+  advisorMeshes = advisorMeshes.filter((m) => {
+    const k = m.userData.advisor;
+    return k !== 'operator' && !String(k).includes(':');
+  });
+  if (nearAdvisor === 'operator' || String(nearAdvisor).includes(':'))
+    nearAdvisor = null;
 }
 
 function teardownSim() {
@@ -764,6 +834,13 @@ function startSim(simId, scenarioId) {
     const oAng = -1.9, oRad = wr + 3.2;
     placeAdvisor('operator', sim.group,
       wcx + Math.cos(oAng) * oRad, wcz + Math.sin(oAng) * oRad, null);
+    /* And this seat's CREW, if it has one. The Operator answers for the
+       machine; a crew is the several people a real job needs standing
+       around it, each with the one thing it stops the work for. They post
+       where the crews pack says - a bearing and a radius off the yard's
+       own origin - and are walked up to on foot like any other figure,
+       so they ride the same proximity and detail-swap path. */
+    spawnCrew(simId, sim.group, wcx, wcz);
   }
   const ob = document.getElementById('opBtn');
   ob.style.display = '';
@@ -3232,7 +3309,12 @@ function buildAvatarMesh(cfg) {
     'rubber-green': '#3c6b45', 'sneaker-white': '#e6e6e2',
     'sneaker-black': '#26262a', 'sneaker-red': '#a03a34',
     'sneaker-blue': '#2f4d8a', 'high-top': '#33363a', 'slip-on': '#5d4127',
-    lineman: '#3a2a1c' }[cfg.shoes] ?? '#6a4a2a';
+    lineman: '#3a2a1c',
+    // boots rated for something beyond the toe: a metatarsal guard, an
+    // electrical-hazard sole, a puncture-resistant plate, an insulated pac
+    'met-guard': '#2b2b30', 'eh-rated': '#4a3a2c',
+    'puncture-sole': '#3a3f44', 'insulated-pac': '#23303a',
+  }[cfg.shoes] ?? '#6a4a2a';
   const shoeM = M(shoeHex, .7);
   const crewId = cfg.crew;
 
@@ -3388,6 +3470,14 @@ function buildAvatarMesh(cfg) {
     softshell: { c: '#33363a' }, 'chore-canvas': { c: '#a5793f', long: 1 },
     puffer: { c: '#2c3e5a', puff: 1 }, anorak: { c: '#3c6b45', hood: 1 },
     varsity: { c: '#2c3e5a' }, trench: { c: '#8a7f6a', long: 2 },
+    // the graded and conditioned coats: arc-rated and chem-splash are the
+    // two a hall issues for a hazard rather than for the weather, and the
+    // heated liner and insulated coverall are the cold end of the rack
+    'arc-rated-coat': { c: '#1f3d58', long: 1 },
+    'heated-liner': { c: '#3a3f44', puff: 1 },
+    'chem-splash-coat': { c: '#d8dde0', sheen: 1, hood: 1, long: 1 },
+    'cape-sleeves': { c: '#5b6166' },
+    'insulated-coverall': { c: '#3c4a54', puff: 1, long: 2 },
   }[cfg.outer];
   if (OUTER) {
     const om = M(OUTER.c, OUTER.sheen ? .3 : .85);
@@ -3435,17 +3525,25 @@ function buildAvatarMesh(cfg) {
   // tool belt
   if (cfg.tools !== 'none') {
     box(.44, .09, .3, dark, 0, .95, 0, g);
+    // how many pouches the belt carries: five trades worked a career
+    // without a belt of their own until the locker grew one
     const n = { basic: 1, framing: 3, electric: 2, plumber: 2, mason: 2,
       welder: 2, surveyor: 1, drywall: 2, hvac: 2, glazier: 1, roofer: 3,
-      concrete: 2, rigger: 3, finisher: 2 }[cfg.tools] ?? 1;
+      concrete: 2, rigger: 3, finisher: 2,
+      lineman: 3, 'sheet-metal': 2, painter: 2, millwright: 3,
+      'low-voltage': 2 }[cfg.tools] ?? 1;
     for (let i = 0; i < n; i++)
       box(.11, .16, .07, M('#5d4127', .9), -.16 + i * .16, .84, .18, g);
   }
 
   // arms on shoulder pivots
+  // a garment with sleeves draws sleeves: an FR shirt, a Class-3 long
+  // sleeve, a sun hoodie and a smock are all long-sleeved, and drawing
+  // them bare-armed would contradict the very reason each is worn
   const sleeves = ['long-sleeve', 'flannel', 'hoodie', 'sweatshirt',
     'denim-jacket', 'chore-coat', 'coveralls', 'thermal', 'rain-shell',
-    'fleece', 'work-shirt'].includes(cfg.top);
+    'fleece', 'work-shirt',
+    'fr-shirt', 'hi-vis-long-sleeve', 'sun-hoodie', 'smock'].includes(cfg.top);
   const tank = cfg.top === 'tank';
   const arms = {};
   const handM = cfg.extras === 'gloves' ? M('#e8722a', .7)
@@ -3573,6 +3671,17 @@ function buildAvatarMesh(cfg) {
     if (['full-beard', 'long-beard', 'garibaldi'].includes(fh)) mo();
     if (fh === 'long-beard') capsule(.05, .1, fhM, 0, -.2, .06, head);
     if (fh === 'garibaldi') sphere(.09, fhM, 0, -.15, .05, head, 1, .9, .8);
+    // the four the locker grew that the chain never drew: a van dyke is a
+    // moustache with a detached chin, a chevron is a heavy one and nothing
+    // else, a braided beard is a full one with the braids hanging off it,
+    // and a beard net is containment rather than a cut
+    if (fh === 'van-dyke') { mo();
+      box(.05, .07, .03, fhM, 0, -.115, .11, head, false); }
+    if (fh === 'chevron') { mo();
+      box(.11, .03, .03, fhM, 0, -.055, .128, head, false); }
+    if (fh === 'braided-beard') { sphere(.148, fhM, 0, -.045, 0, head, .95, .8, .95); mo();
+      for (const sx of [-1, 1]) capsule(.024, .1, fhM, sx * .045, -.19, .07, head); }
+    if (fh === 'beard-net') sphere(.156, M('#cfd6d8', .55), 0, -.045, 0, head, .95, .82, .95);
     if (['chin-strap', 'mutton-chops'].includes(fh)) {
       for (const sx of [-1, 1])
         box(.03, .1, .06, fhM, sx * .125, -.04, .04, head, false);
@@ -3594,6 +3703,12 @@ function buildAvatarMesh(cfg) {
       for (const sx of [-1, 0, 1]) capsule(.025, .16, hairM, sx * .07, -.08, -.13, head); }
     else if (hs === 'locs') { shell(.75, .05);
       for (const sx of [-2, -1, 0, 1, 2]) capsule(.022, .12, hairM, sx * .05, -.05, -.12, head); }
+    else if (hs === 'cornrows') { shell(.66, .045);
+      for (const sx of [-2, -1, 0, 1, 2])
+        box(.018, .012, .26, hairM, sx * .045, .09 - Math.abs(sx) * .012, -.01, head, false); }
+    else if (hs === 'twists') { shell(.72, .045);
+      for (const sx of [-2, -1, 0, 1, 2]) for (const sz of [-1, 1])
+        capsule(.018, .07, hairM, sx * .045, .02, -.01 + sz * .09, head); }
     else if (hs === 'mohawk') box(.035, .09, .24, hairM, 0, .12, -.01, head);
     else if (hs === 'long') { shell(.8, .04);
       box(.2, .3, .05, hairM, 0, -.12, -.12, head, false); }
@@ -3608,7 +3723,14 @@ function buildAvatarMesh(cfg) {
     const mk = markPlane(.09, .1, crewId);
     mk.position.set(0, .035, .135); mk.rotation.x = -.15; hat.add(mk);
   };
-  if (['hard-cap', 'full-brim', 'climbing', 'vintage', 'carbon'].includes(hw)) {
+  /* The dome family. A vented shell, a shell worn over a winter liner and
+     a shell with a sun shade are all the same shell - so they join this
+     branch rather than getting their own, which also keeps markFront()
+     stamping the crew mark on them. A bump cap is NOT in this family: it
+     is a thin shell that is explicitly not impact-rated, and drawing it
+     like a hard hat would be the one thing the locker must not say. */
+  if (['hard-cap', 'full-brim', 'climbing', 'vintage', 'carbon',
+       'vented-cap', 'hard-cap-liner', 'sun-shade'].includes(hw)) {
     const dome = new THREE.Mesh(new THREE.CylinderGeometry(
       hw === 'vintage' ? .12 : .135, .15,
       hw === 'vintage' ? .13 : .09, 14),
@@ -3620,6 +3742,16 @@ function buildAvatarMesh(cfg) {
       brim.position.y = .015; hat.add(brim);
     } else if (hw !== 'climbing') box(.14, .02, .1, hatM, 0, .015, .17, hat, false);
     if (hw === 'climbing') box(.04, .06, .2, hatM, 0, .05, 0, hat, false);
+    // the vents, the liner showing below the shell, and the shade skirt
+    if (hw === 'vented-cap') for (const sx of [-1, 1])
+      box(.03, .012, .1, M('#1d2023', .8), sx * .085, .09, 0, hat, false);
+    if (hw === 'hard-cap-liner')
+      sphere(.146, M('#2e3438', .9), 0, .015, 0, hat, 1, .55, 1);
+    if (hw === 'sun-shade') {
+      const skirt = new THREE.Mesh(new THREE.CylinderGeometry(.17, .2, .12, 16, 1, true),
+        M('#c9c2a6', .9));
+      skirt.position.set(0, -.02, -.03); hat.add(skirt);
+    }
     markFront();
   } else if (hw === 'ball-cap' || hw === 'ball-cap-back') {
     sphere(.15, hatM, 0, .03, 0, hat, 1, .68, 1);
@@ -3628,6 +3760,13 @@ function buildAvatarMesh(cfg) {
   } else if (hw === 'flat-cap') {
     sphere(.15, hatM, 0, .025, -.02, hat, 1, .5, 1.05);
     box(.12, .012, .08, hatM, 0, .01, .16, hat, false);
+  } else if (hw === 'bump-cap') {
+    // a thin shell, and nothing that reads as a hard hat: this one is not
+    // impact-rated and the locker's own note says so
+    const shell2 = new THREE.Mesh(new THREE.SphereGeometry(.142, 12, 8, 0, 6.3, 0, 1.25),
+      M('#3a4046', .75));
+    shell2.position.y = .035; hat.add(shell2);
+    box(.13, .016, .09, M('#3a4046', .75), 0, .02, .155, hat, false);
   } else if (hw === 'beanie' || hw === 'winter-liner') {
     sphere(.152, hatM, 0, .03, 0, hat, 1, .8, 1);
     if (hw === 'winter-liner') for (const sx of [-1, 1])
@@ -3655,7 +3794,11 @@ function buildAvatarMesh(cfg) {
 
   // extras: eye, ear and chest kit
   const ex = cfg.extras;
-  if (ex === 'safety-glasses' || ex === 'sunglasses') {
+  /* Prescription safety glasses are ONE pair that corrects and protects,
+     which is the whole point of the option: it exists so that neither is
+     the thing left off. They draw like safety glasses because that is what
+     they are. */
+  if (ex === 'safety-glasses' || ex === 'sunglasses' || ex === 'rx-safety-glasses') {
     const lm = ex === 'sunglasses' ? M('#1a1c20', .3)
       : new THREE.MeshStandardMaterial({ color: 0xcfd8dc, roughness: .2,
           transparent: true, opacity: .55 });
@@ -3665,6 +3808,32 @@ function buildAvatarMesh(cfg) {
   if (ex === 'ear-muffs') {
     for (const sx of [-1, 1]) sphere(.045, dark, sx * .15, .01, 0, head, .6, 1, 1);
     box(.24, .02, .02, dark, 0, .15, 0, head, false);
+  }
+  // plugs are a fit question, not a lesser muff: they go under a welding
+  // hood, where a muff cup cannot
+  if (ex === 'ear-plugs') for (const sx of [-1, 1])
+    sphere(.018, M('#e8a33d', .7), sx * .14, .005, 0, head);
+  /* The respirator classes above a half-mask. A full facepiece seals on
+     the face; a powered loose hood does not need to, which is exactly why
+     it is the class that works on a face that cannot be shaved - and this
+     locker holds nineteen ways to wear a beard. Supplied air is a line
+     from somewhere else, so it draws the line. */
+  if (ex === 'full-face-apr') {
+    const vis = new THREE.MeshStandardMaterial({ color: 0xbfd0d8, roughness: .18,
+      transparent: true, opacity: .5 });
+    sphere(.155, vis, 0, -.01, .03, head, 1, 1, 1.02);
+    for (const sx of [-1, 1]) sphere(.03, M('#33363a', .5), sx * .07, -.06, .13, head);
+  }
+  if (ex === 'papr-hood') {
+    const hood = new THREE.MeshStandardMaterial({ color: 0xdfe4e6, roughness: .6,
+      transparent: true, opacity: .72 });
+    sphere(.185, hood, 0, -.02, 0, head, 1, 1.05, 1);
+    capsule(.022, .14, M('#3a4046', .7), 0, -.22, -.12, head);
+    box(.16, .05, .09, M('#2e3438', .6), 0, -.3, -.14, head, false);
+  }
+  if (ex === 'supplied-air') {
+    sphere(.07, M('#6c7276', .5), 0, -.035, .12, head, 1, .8, .7);
+    capsule(.02, .3, M('#e8a33d', .8), .1, -.3, -.08, head);
   }
   if (ex === 'respirator' || ex === 'dust-mask') {
     const mm = ex === 'respirator' ? M('#6c7276', .5) : M('#e6e6e2', .8);
@@ -3896,6 +4065,25 @@ function stepEmote(dt) {
     arms.armLLo.rotation.set(0, 0, 0); arms.armRLo.rotation.set(0, 0, 0);
     hat.position.y = .13; av.position.y = av.userData.baseY ?? av.position.y;
     switch (emo.move) {
+      /* The yard's own hand vocabulary. These are the moves a rigger or a
+         signalperson makes all day, and the locker's own note is careful
+         about what playing one is NOT: not a signalperson qualification,
+         and on a real lift only the qualified signalperson signals. */
+      case 'arm-hoist':                        // forearm up, finger circling
+        arms.armR.rotation.z = -1.5; arms.armRLo.rotation.x = -1.4 * s;
+        arms.armRLo.rotation.z = -.5 * Math.sin(emo.t * 9);
+        break;
+      case 'arm-lower':                        // arm out, palm down, circling
+        arms.armR.rotation.z = -1.0; arms.armRLo.rotation.x = .9 * s;
+        arms.armRLo.rotation.z = .5 * Math.sin(emo.t * 9);
+        break;
+      case 'arm-stop':                         // both arms out, held flat
+        arms.armR.rotation.z = -1.55 * s; arms.armL.rotation.z = 1.55 * s;
+        break;
+      case 'clip-on':                          // reach back to the D-ring
+        arms.armR.rotation.z = -.6 * s; arms.armR.rotation.x = 1.5 * s;
+        arms.armRLo.rotation.x = -1.9 * s;
+        break;
       case 'arm-wave':
         arms.armR.rotation.z = -2.6 * s;
         arms.armR.rotation.x = Math.sin(emo.t * 14) * .5 * s;
@@ -4426,12 +4614,31 @@ ADVISOR_JS = """/* ------------------------------------------------ advisor agen
    An advisor is not an instructor and not a gate. No grader reads any of
    this state, and there is nothing here for one to read. */
 const ADVISOR_TABLE = D.advisors.who;
+const CREW_TABLE = D.crews?.crews ?? {};
 let advisorMeshes = [], nearAdvisor = null, curAdvisor = null, curTopic = null;
+
+/* One figure lookup for two kinds of figure.
+   An advisor stands alone and answers for a room or a seat. A CREW ROLE is
+   one of several people running one job together, keyed "<crew>:<role>",
+   and the crews pack shapes a role's topics byte-identically to an
+   advisor's - deliberately, so everything downstream of this lookup works
+   on either without knowing which it has. The two tables name the outfit
+   differently (`crew` against `wears`) and the caption differently (`role`
+   against `job`), so those are normalised here rather than at each of the
+   six places that read them. */
+function figureOf(key) {
+  if (!key) return null;
+  if (!key.includes(':')) return ADVISOR_TABLE[key] ?? null;
+  const [cid, rid] = key.split(':');
+  const r = CREW_TABLE[cid]?.roles?.[rid];
+  if (!r) return null;
+  return { ...r, role: r.job, crew: r.wears, inCrew: cid };
+}
 
 function advisorCfg(aid, crewSlug) {
   // an advisor wears locker options only - the look is one a learner could
   // also choose, and it takes the crew mark of the hall it stands in
-  return { ...D.avatars.defaults, ...ADVISOR_TABLE[aid].crew,
+  return { ...D.avatars.defaults, ...(figureOf(aid)?.crew ?? {}),
            crew: crewSlug || D.avatars.defaults.crew };
 }
 
@@ -4461,7 +4668,7 @@ function proxyFigure() {
 }
 
 function placeAdvisor(aid, parent, x, z, crewSlug) {
-  const a = ADVISOR_TABLE[aid];
+  const a = figureOf(aid);
   if (!a) return null;
   const g = new THREE.Group();
   const body = buildAvatarMesh(advisorCfg(aid, crewSlug));
@@ -4478,6 +4685,23 @@ function placeAdvisor(aid, parent, x, z, crewSlug) {
   g.add(plate);
   parent.add(g); advisorMeshes.push(g);
   return g;
+}
+
+/* A crew belongs to one seat, and posts around that seat's yard at the
+   bearing and radius the crews pack declares for each role. Two crews can
+   share a seat - a tank interior runs hot work and a confined-space entry
+   at once, and that is the lesson - so every crew whose seat matches is
+   spawned, not the first one found. */
+function spawnCrew(simId, parent, cx2 = 0, cz2 = 0) {
+  for (const [cid, c] of Object.entries(CREW_TABLE)) {
+    if (c.seat !== simId) continue;
+    for (const [rid, r] of Object.entries(c.roles)) {
+      const a = r.post.deg * Math.PI / 180;
+      placeAdvisor(cid + ':' + rid, parent,
+                   cx2 + Math.sin(a) * r.post.r,
+                   cz2 + Math.cos(a) * r.post.r, null);
+    }
+  }
 }
 
 // the hall: one advisor per room that has one, plus the guide at the door
@@ -4547,8 +4771,8 @@ function advisorProximity(dt) {
   if (who === nearAdvisor) return;
   nearAdvisor = who;
   btn.style.display = who ? '' : 'none';
-  if (who) btn.textContent = ADVISOR_TABLE[who].glyph + '  Ask the '
-    + ADVISOR_TABLE[who].name.toLowerCase();
+  const f = figureOf(who);
+  if (f) btn.textContent = f.glyph + '  Ask the ' + f.name.toLowerCase();
 }
 
 /* ---- resolving a `read` topic against the record that holds the fact ---- */
@@ -4564,7 +4788,8 @@ function advRead(bind, aid) {
   const h = D.halls.find((x) => x.slug === slug);
   // a room-bound answer is about the room this advisor is standing in,
   // never a room picked here: move the steward and the answer moves
-  const st = (ADVISOR_TABLE[aid] || {}).stands_in;
+  // only a room advisor stands in a room; a crew role is at its seat's yard
+  const st = (figureOf(aid) || {}).stands_in;
   const room = () => h && h.rooms.find((r) => r.strand === st);
   const cond = () => (D.condOver[slug] && D.condOver[slug][st])
     || D.baseCond[st] || D.baseCond.safety;
@@ -4743,13 +4968,22 @@ function advRead(bind, aid) {
 
 /* ---- the panel --------------------------------------------------------- */
 function openAdvisor(aid, topicId) {
-  const a = ADVISOR_TABLE[aid];
+  const a = figureOf(aid);
   if (!a) return;
   curAdvisor = aid; curTopic = topicId || null;
+  const crew = a.inCrew ? CREW_TABLE[a.inCrew] : null;
   if (topicId) {
     const tp = a.topics.find((x) => x.id === topicId);
-    if (tp) recordEpisode({ kind: 'advisor', campus: campusKey, hall: slug,
-      advisor: aid, topic: topicId, answer_kind: tp.kind });
+    /* A crew answer is recorded as a crew answer: which crew, which role.
+       Written as two literal calls rather than one conditional, because
+       training/build.py counts the recorder's integration points against
+       its declared episode kinds - and a call whose shape is decided at
+       runtime is exactly the thing that count exists to refuse. */
+    if (tp && crew) recordEpisode({ kind: 'crew', campus: campusKey,
+      hall: slug, crew: a.inCrew, role: aid.split(':')[1],
+      topic: topicId, answer_kind: tp.kind });
+    else if (tp) recordEpisode({ kind: 'advisor', campus: campusKey,
+      hall: slug, advisor: aid, topic: topicId, answer_kind: tp.kind });
   }
   const esc = (s) => String(s).replace(/[&<>]/g,
     (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
@@ -4758,9 +4992,36 @@ function openAdvisor(aid, topicId) {
     : (t.kind === 'read' ? advRead(t.bind, aid)
        : '<p>' + esc(t.say) + '</p><p class="src">written in '
          + esc(t.cites) + '</p>');
+  /* The crew header and the run. Four people each answering for
+     themselves is four narrators; what makes it a crew is the ORDER the
+     job passes through them, so the hand-offs are printed as a numbered
+     run with this role's own steps marked. The role's `stops` line is
+     given its own place, because the one condition a role stops the work
+     for is the reason the role is on the job at all. */
+  const crewHead = !crew ? '' :
+    '<p class="focus">' + esc(crew.name) + ' \u2014 ' + esc(crew.job) + '</p>'
+    + '<p>' + esc(crew.why_a_crew) + '</p>'
+    + '<p class="src">Stop work: ' + esc(crew.stop_work) + '</p>';
+  const stopsLine = !crew ? '' :
+    '<h3>What this role stops the work for</h3><p>' + esc(a.stops) + '</p>'
+    + '<p class="src">' + esc(D.crews.standing[a.standing]) + '</p>';
+  const rid = crew ? aid.split(':')[1] : null;
+  const runList = !crew ? '' :
+    '<h3>How the job passes through the crew</h3><ol class="run">'
+    + crew.run.map((sx) => '<li' + (sx.by === rid || sx.to === rid
+          ? ' style="border-left:3px solid var(--mark);padding-left:8px"' : '')
+        + '><b>' + esc(crew.roles[sx.by].name) + '</b> \u2192 <b>'
+        + esc(crew.roles[sx.to].name) + '</b> \u2014 ' + esc(sx.step)
+        + '</li>').join('') + '</ol>';
+  const honesty = crew
+    ? [D.crews.honesty.status, D.crews.honesty.unverified,
+       D.crews.honesty.not_a_permit, D.crews.honesty.not_a_person]
+    : [D.advisors.honesty.status, D.advisors.honesty.not_scored,
+       D.advisors.honesty.not_a_person];
   document.getElementById('pbody').innerHTML =
     '<h2>' + a.glyph + ' ' + esc(a.name) + '</h2>'
     + '<span class="chip">' + esc(a.role) + '</span>'
+    + crewHead
     + (t ? '<h3>' + esc(t.ask) + '</h3>' : '')
     + answer
     + '<h3>Ask</h3><div class="asks">'
@@ -4769,9 +5030,9 @@ function openAdvisor(aid, topicId) {
           ? ' style="border-color:var(--mark)"' : '') + '>'
         + esc(x.ask) + '</button>').join('')
     + '</div>'
-    + '<p class="src">' + esc(D.advisors.honesty.status) + '</p>'
-    + '<p class="src">' + esc(D.advisors.honesty.not_scored) + '</p>'
-    + '<p class="src">' + esc(D.advisors.honesty.not_a_person) + '</p>';
+    + stopsLine
+    + runList
+    + honesty.map((hx) => '<p class="src">' + esc(hx) + '</p>').join('');
   document.body.classList.add('open');
 }
 
@@ -5438,6 +5699,19 @@ try {
     'The interactive map carries the same content in 2D.';
   throw e;
 }
+/* What this machine can actually filter. Every surface texture in the
+   world reads this instead of the 4 that used to be typed at each one - a
+   desktop GPU offers 16, and a floor seen at a grazing angle is exactly
+   where the difference between 4 and 16 is the difference between a
+   surface and a smear. */
+const maxAniso = renderer.capabilities.getMaxAnisotropy();
+/* ...but filtering is not free, and a machine that cannot afford the
+   texture size cannot afford the filtering either. So it rides the same
+   ladder: the low rung keeps the 4 this page has always used, and only a
+   machine holding frames at the high rung pays for what its GPU offers.
+   Both surface caches are keyed on the size, which differs per rung, so a
+   texture built for one rung is never handed back for the other. */
+const anisoNow = () => qLevel === 'low' ? Math.min(4, maxAniso) : maxAniso;
 // mobile budget: cap the pixel ratio and drop shadow maps on touch GPUs
 renderer.setPixelRatio(Math.min(devicePixelRatio,
   ('ontouchstart' in window) ? 1.5 : 2));
@@ -5483,13 +5757,27 @@ function setQuality(l) {
   renderer.setPixelRatio(l === 'low' ? 1
     : Math.min(devicePixelRatio, isTouch ? 1.5 : 2));
   key.castShadow = l !== 'low';
-  for (const b of fogBanks) b.m.visible = l !== 'low';
+  // the ladder douses them all, and coming back up restores only the
+  // number THIS weather asked for rather than every bank ever built
+  for (let i = 0; i < fogBanks.length; i++)
+    fogBanks[i].m.visible = l !== 'low' && i < bankWant;
   // the per-room lights are on the same budget the shadows and the fog
   // banks are on: a device that cannot afford the ladder's top rung does
   // not pay eleven point lights for it either. Coming back UP hands the
   // choice to roomLitStep rather than lighting all eleven and leaving them.
   for (const rl of roomLights) rl.visible = l !== 'low';
   _rlDirty = true;
+  /* And the sky's own lighting. Textures already on the GPU are not
+     rebuilt when the rung changes, but image-based lighting is not a
+     texture on a material - it is a per-fragment cost on EVERY material,
+     so a demotion has to take it away now rather than at the next view.
+     Coming back up rebuilds it from the sky already standing. */
+  if (l === 'low') { skyEnvRT?.dispose(); skyEnvRT = null; scene.environment = null; }
+  else if (!skyEnvRT && scene.background) {
+    pmrem ??= new THREE.PMREMGenerator(renderer);
+    skyEnvRT = pmrem.fromEquirectangular(scene.background);
+    scene.environment = skyEnvRT.texture;
+  }
 }
 /* Eleven point lights, and a walker stands in one room.
    A forward renderer costs every fragment for every light in range, and a
@@ -5569,6 +5857,13 @@ const scene = new THREE.Scene();
    time, rather than a photograph of the night sky. No image is loaded to
    make any of it; see D.world.honesty.sky. */
 const SKY = D.world.sky;
+// the most any weather asks for, so the banks are built once and the rest
+// is visibility rather than a rebuild on every weather change
+const BANK_MUL_MAX = Math.max(1, ...Object.values(D.world.weather)
+  .map((w) => w.bank_mul ?? 1));
+const BANK_FLOOR_MAX = Math.max(0, ...Object.values(D.world.weather)
+  .map((w) => w.bank_floor ?? 0));
+let bankWant = 0;                   // how many this weather asks to see
 // a small deterministic generator: the same world every visit
 function seeded(seed) {
   let x = seed >>> 0;
@@ -5663,13 +5958,15 @@ function skyCanvas(stops, opts) {
       for (let x = 0; x < W; x++) {
         let v = 0, amp = .5, f = SKY.clouds.base_frequency;
         for (let o = 0; o < SKY.clouds.octaves; o++) {
-          v += n(x * f, (y + y0) * f) * amp; amp *= .5; f *= 2.1;
+          v += n(x * f, (y + y0) * f) * amp; amp *= .5; f *= SKY.clouds.lacunarity;
         }
         const a = Math.max(0, (v - (1 - amount) * .58)) * fade * 3.2
           * Math.min(1, opts.dim ?? 1);
         if (a <= 0) continue;
         const i = (y * W + x) * 4;
-        const lum = opts.moon ? 96 : 232;
+        // the cloud's own luminance, day and night, from the record that
+        // already describes the cloud rather than a second opinion here
+        const lum = opts.moon ? SKY.clouds.night_lum : SKY.clouds.day_lum;
         d[i] += (lum - d[i]) * Math.min(1, a);
         d[i + 1] += (lum - d[i + 1]) * Math.min(1, a);
         d[i + 2] += (lum + 6 - d[i + 2]) * Math.min(1, a);
@@ -5681,21 +5978,55 @@ function skyCanvas(stops, opts) {
   // edge the eye can find
   const hz = SKY.horizon_haze;
   const hg = g.createLinearGradient(0, H * (1 - hz.height * 2), 0, H);
-  const haze = opts.moon ? '150,166,190' : '214,226,236';
+  /* The band just above the horizon. It used to be two literals here, the
+     same on all ten campuses, which is a large part of why the skies read
+     alike: a salt-hazed Bay station and a clear Front Range yard end their
+     domes identically. The tints are the registry's now, and a campus that
+     names its own `haze` overrides the day one. */
+  const hz2 = SKY.horizon_haze;
+  const haze = opts.moon ? hz2.night_tint : (opts.haze ?? hz2.day_tint);
   hg.addColorStop(0, `rgba(${haze},0)`);
-  hg.addColorStop(1, `rgba(${haze},${(hz.strength * (opts.moon ? .35 : 1))
+  hg.addColorStop(1, `rgba(${haze},${(hz.strength
+    * (opts.moon ? SKY.horizon_haze.night_strength_mul : 1))
     .toFixed(2)})`);
   g.fillStyle = hg;
   g.fillRect(0, H * (1 - hz.height * 2), W, H * hz.height * 2);
   return c;
 }
 
+/* The sky lights the world, not just the background behind it.
+   Until now `scene.environment` was never set, so every metal in this
+   bundle - checkerplate, grating, the crane's jib, a hall's roof trusses,
+   a machine's dash - had nothing to reflect and shaded as a flat grey.
+   That is the single reason the metal read as painted cardboard.
+
+   The sky is already an equirectangular texture, so a prefiltered
+   environment is one PMREM pass off the one that was just built: no second
+   sky, no file, nothing fetched. It is regenerated when the atmosphere or
+   the weather changes, because a storm sky should not still be lighting a
+   clear one, and the render target it produces is DISPOSED first - a
+   PMREM target is a GPU allocation like any other and the leak check
+   counts them.
+
+   It rides the ladder: the low rung keeps the flat shading it has always
+   had rather than paying for image-based lighting on a machine already
+   struggling. */
+/* Hold the render TARGET, not just its texture. fromEquirectangular()
+   returns a WebGLRenderTarget; disposing the `.texture` off it leaves the
+   target itself allocated, and the leak check caught exactly that - eight
+   textures per view cycle, climbing and never returned. */
+let skyEnvRT = null, pmrem = null;
 function setSky(stops, opts = {}) {
   scene.background?.dispose?.();
   const t = new THREE.CanvasTexture(skyCanvas(stops, opts));
   t.mapping = THREE.EquirectangularReflectionMapping;
   t.colorSpace = THREE.SRGBColorSpace;
   scene.background = t;
+  skyEnvRT?.dispose(); skyEnvRT = null; scene.environment = null;
+  if (qLevel === 'low') return;
+  pmrem ??= new THREE.PMREMGenerator(renderer);
+  skyEnvRT = pmrem.fromEquirectangular(t);
+  scene.environment = skyEnvRT.texture;
 }
 scene.fog = new THREE.Fog(0x1a2229, 70, 170);
 
@@ -5720,7 +6051,7 @@ function noiseTex(base, grain, n = 1400, size = 256) {
   }
   const t = new THREE.CanvasTexture(c);
   t.wrapS = t.wrapT = THREE.RepeatWrapping;
-  t.anisotropy = 4;
+  t.anisotropy = anisoNow();
   return t;
 }
 
@@ -5759,7 +6090,7 @@ function groundTex(id, size = 256) {
   }
   const map = new THREE.CanvasTexture(c);
   map.wrapS = map.wrapT = THREE.RepeatWrapping;
-  map.anisotropy = 4; map.colorSpace = THREE.SRGBColorSpace;
+  map.anisotropy = anisoNow(); map.colorSpace = THREE.SRGBColorSpace;
 
   // the normal map, read straight off the height field by central difference
   let normalMap = null;
@@ -5783,7 +6114,7 @@ function groundTex(id, size = 256) {
     ng.putImageData(nimg, 0, 0);
     normalMap = new THREE.CanvasTexture(nc);
     normalMap.wrapS = normalMap.wrapT = THREE.RepeatWrapping;
-    normalMap.anisotropy = 4;
+    normalMap.anisotropy = anisoNow();
   }
   const out = { map, normalMap, recipe: r };
   groundCache.set(id + ':' + size, out);
@@ -5899,6 +6230,7 @@ function applyAtmos(k) {
   const t0 = performance.now();
   setSky(a.sky.map((h) => darkHex(h, w.sky_mul)),
     { cloud: w.cloud, moon: !!w.moon, stars: !!w.stars,
+      haze: a.haze,                       // this campus's own horizon band
       dim: Math.min(1, w.sky_mul) });
   genMs += performance.now() - t0;
   scene.fog.color.setHex(a.fog.color).multiplyScalar(w.fog_tint);
@@ -5910,6 +6242,11 @@ function applyAtmos(k) {
                hemi.color.setHex(0x5c6a74); hemi.groundColor.setHex(0x1a1a18); }
   else { key.color.setHex(a.sun.color); hemi.color.setHex(a.hemi.sky);
          hemi.groundColor.setHex(a.hemi.ground); }
+  // how much fog this weather puts in this campus's air
+  bankWant = Math.max(Math.round((campusGroup?.userData.banksBase ?? 0)
+    * (w.bank_mul ?? 1)), w.bank_floor ?? 0);
+  for (let i = 0; i < fogBanks.length; i++)
+    fogBanks[i].m.visible = qLevel !== 'low' && i < bankWant;
   key.intensity = a.sun.i * w.sun_mul;
   hemi.intensity = a.hemi.i * w.hemi_mul;
   mat.win.emissiveIntensity = w.window_glow;
@@ -6531,6 +6868,14 @@ const PATTERN_RELIEF = {
   slab: .30, tile: .45, brick: .90, plank: .55, block: .80, checker: 1.00,
   grate: 1.20, broom: .25, smooth: .04, speckle: .30,
   panel: .60, plywood: .30, board: .10, fabric: .35, screen: .70, mesh: .95,
+  // the deeper catalogue: a tread plate, a trench run and a slotted table
+  // are relief you can see across a bay; a polished slab and a glazed bay
+  // are not, and are honest about it rather than given a number that the
+  // painter below would never put a mark on
+  diamond: 1.10, corrugate: 1.15, tslot: 1.00, trench: 1.05, perf: .80,
+  ashlar: .85, terrazzo: .28, ballast: 1.00, gunite: .55, flake: .34,
+  cabinet: .40, sand: .38,
+  polish: .03, sheet: .07, glazing: .05, plate: .12,
 };
 
 /* A height field to a normal map, by central difference - the same
@@ -6556,7 +6901,7 @@ function normalFromHeight(h, size, relief) {
   }
   ng.putImageData(nimg, 0, 0);
   const t = new THREE.CanvasTexture(nc);
-  t.wrapS = t.wrapT = THREE.RepeatWrapping; t.anisotropy = 4;
+  t.wrapS = t.wrapT = THREE.RepeatWrapping; t.anisotropy = anisoNow();
   return t;
 }
 
@@ -6601,6 +6946,136 @@ function paintPattern(g, hg, pat, S2) {
         proud(0, y + 4, S2, 6, .06);
       }
       break;
+    // ---- the deeper catalogue -------------------------------------
+    case 'glazing': {               // a curtain-wall bay: mullions, transoms
+      const my = Math.max(26, S2 / 3), mx = Math.max(30, S2 / 3);
+      for (let x = 0; x < S2; x += mx) proud(x, 0, Math.max(3, mx * .09), S2, .16);
+      for (let y = 0; y < S2; y += my) proud(0, y, S2, Math.max(2, my * .06), .12);
+      // the pane itself: a faint diagonal sheen, not aggregate speckle
+      g.strokeStyle = 'rgba(255,255,255,.05)';
+      for (let i = -S2; i < S2; i += Math.max(14, S2 / 9))
+        line(g, i, 0, i + S2, S2, 6);
+      break;
+    }
+    case 'plate': {                 // ground weld seams, one per sheet width
+      const w2 = Math.max(24, S2 / 3);
+      for (let x = w2 / 2; x < S2; x += w2) {
+        proud(x - 1, 0, 3, S2, .07);
+        groove(x + 2, 0, x + 2, S2, 2);
+      }
+      break;
+    }
+    case 'diamond': {               // raised lozenges, two opposed courses
+      const st = Math.max(10, S2 / 16);
+      for (let y = 0; y < S2; y += st) for (let x = 0; x < S2; x += st) {
+        const o = ((y / st) & 1) ? st / 2 : 0;
+        proud(x + o + st * .16, y + st * .3, st * .5, st * .16, .10);
+        proud(x + o + st * .16, y + st * .58, st * .5, st * .16, .07);
+      }
+      break;
+    }
+    case 'corrugate': {             // profiled sheet: a rib, not a line
+      const st = Math.max(8, S2 / 14);
+      for (let x = 0; x < S2; x += st) {
+        proud(x, 0, st * .42, S2, .09);
+        groove(x + st * .72, 0, x + st * .72, S2, Math.max(2, st * .22));
+      }
+      break;
+    }
+    case 'tslot': {                 // a cast-iron table: slots on a pitch
+      const st = Math.max(14, S2 / 10);
+      for (let x = st / 2; x < S2; x += st) groove(x, 0, x, S2, Math.max(3, st * .2));
+      for (let y = st / 2; y < S2; y += st) groove(0, y, S2, y, Math.max(3, st * .2));
+      break;
+    }
+    case 'trench': {                // a floor laid to falls, and the drain
+      const mid = S2 / 2, w = Math.max(6, S2 / 14);
+      groove(0, mid, S2, mid, w);
+      for (let x = 0; x < S2; x += Math.max(6, S2 / 18))
+        groove(x, mid - w / 2, x, mid + w / 2, 2);
+      break;
+    }
+    case 'perf': {                  // a perforated tile: holes on a grid
+      const st = Math.max(8, S2 / 18);
+      for (let y = st / 2; y < S2; y += st) for (let x = st / 2; x < S2; x += st) {
+        g.fillStyle = 'rgba(0,0,0,.34)'; g.beginPath();
+        g.arc(x, y, st * .2, 0, 6.3); g.fill();
+        hg.fillStyle = '#2f2f2f'; hg.beginPath();
+        hg.arc(x, y, st * .2, 0, 6.3); hg.fill();
+      }
+      break;
+    }
+    case 'ashlar': {                // coursed stone: long beds, broken joints
+      const h2 = Math.max(12, S2 / 8);
+      for (let y = 0; y < S2; y += h2) {
+        groove(0, y, S2, y, 3);
+        const o = ((y / h2) & 1) ? h2 : 0;
+        for (let x = o; x < S2; x += h2 * 2) groove(x, y, x, y + h2, 3);
+      }
+      break;
+    }
+    case 'terrazzo': {              // chips, and the divider strips between
+      for (let i = 0; i < S2 * 1.6; i++) {
+        const r2 = 1 + Math.random() * (S2 / 64);
+        g.fillStyle = `rgba(${Math.random() > .5 ? '255,255,255' : '40,44,48'},`
+          + `${.10 + Math.random() * .22})`;
+        g.beginPath(); g.arc(Math.random() * S2, Math.random() * S2, r2, 0, 6.3); g.fill();
+      }
+      const st = Math.max(24, S2 / 4);
+      for (let x = 0; x < S2; x += st) proud(x, 0, 2, S2, .22);
+      for (let y = 0; y < S2; y += st) proud(0, y, S2, 2, .22);
+      break;
+    }
+    case 'ballast': {               // angular stone, laid to drain
+      for (let i = 0; i < S2 * 2.2; i++) {
+        const r2 = 1.5 + Math.random() * (S2 / 40);
+        const x = Math.random() * S2, y = Math.random() * S2;
+        g.fillStyle = `rgba(255,255,255,${Math.random() * .12})`;
+        g.fillRect(x, y, r2, r2 * .8);
+        hg.fillStyle = `rgba(255,255,255,${Math.random() * .5})`;
+        hg.fillRect(x, y, r2, r2 * .8);
+      }
+      break;
+    }
+    case 'gunite': {                // sprayed: lumpy, never screeded flat
+      for (let i = 0; i < S2 * 1.1; i++) {
+        const r2 = 2 + Math.random() * (S2 / 26);
+        const x = Math.random() * S2, y = Math.random() * S2;
+        hg.fillStyle = `rgba(255,255,255,${.10 + Math.random() * .3})`;
+        hg.beginPath(); hg.arc(x, y, r2, 0, 6.3); hg.fill();
+        g.fillStyle = `rgba(255,255,255,${Math.random() * .05})`;
+        g.beginPath(); g.arc(x, y, r2, 0, 6.3); g.fill();
+      }
+      break;
+    }
+    case 'flake': {                 // broadcast chip in a clear resin
+      for (let i = 0; i < S2 * 1.4; i++) {
+        const w2 = 2 + Math.random() * (S2 / 40);
+        g.save(); g.translate(Math.random() * S2, Math.random() * S2);
+        g.rotate(Math.random() * 6.3);
+        g.fillStyle = `rgba(${Math.random() > .5 ? '235,238,240' : '58,64,68'},`
+          + `${.16 + Math.random() * .3})`;
+        g.fillRect(-w2 / 2, -w2 / 5, w2, w2 * .4); g.restore();
+      }
+      break;
+    }
+    case 'cabinet': {               // a switchgear lineup: cubicles and seams
+      const w2 = Math.max(20, S2 / 5);
+      for (let x = 0; x < S2; x += w2) {
+        groove(x, 0, x, S2, 3);
+        proud(x + w2 * .12, S2 * .18, w2 * .76, S2 * .1, .07);
+        proud(x + w2 * .12, S2 * .52, w2 * .76, S2 * .1, .07);
+      }
+      break;
+    }
+    case 'sand': {                  // a rammed moulding floor: tool sweeps
+      for (let i = 0; i < 26; i++) {
+        const y = Math.random() * S2;
+        g.strokeStyle = `rgba(0,0,0,${.04 + Math.random() * .07})`;
+        line(g, 0, y, S2, y + (Math.random() - .5) * S2 * .2, 1 + Math.random() * 2);
+      }
+      break;
+    }
     case 'broom': for (let x = 0; x < S2; x += 3) {
       const a = .04 + Math.random() * .06;
       g.strokeStyle = `rgba(0,0,0,${a})`; line(g, x, 0, x, S2, 1);
@@ -6653,32 +7128,61 @@ function paintPattern(g, hg, pat, S2) {
    walls both come through here; a wall is not a special case, it is a
    surface with its own pattern and its own reason for having one. */
 const surfCache = new Map();
+/* Every surface in the world is drawn at this size. 128 was chosen when
+   the floors were flat colours; they now carry a pattern, a normal map and
+   a grain, and at 128 a bay floor you are standing on is mush. The ladder
+   already decides how much this machine can afford, so the texture size
+   rides it rather than being one number for a phone and a workstation
+   alike. The cache is keyed on the size as well, so stepping the ladder
+   does not hand back a texture built for the other rung.
+
+   Be precise about what that buys. A texture ALREADY on the GPU is not
+   rebuilt when the ladder steps - the materials holding it keep it - so
+   stepping down does not shrink the view you are standing in. The NEXT
+   view built after the step picks up the new size, which on this page
+   means the next hall, campus or site you walk into. Measured on the
+   built page, booting straight into a hall and holding steady state:
+   3.56 fps at 128 with anisotropy 4, 3.20 fps at 384 with what the GPU
+   offers - a tenth of the frame rate under a software rasteriser, for
+   nine times the texture pixels. */
+const SURF_PX = { low: 128, high: 384 };
+const surfPx = () => SURF_PX[qLevel] ?? SURF_PX.low;
 function surfaceMaps(color, pattern) {
-  const key = pattern + '|' + color;
+  const S2 = surfPx();
+  const key = pattern + '|' + color + '|' + S2;
   const hit = surfCache.get(key);
   if (hit) return hit;
-  const S2 = 128;
   const c = document.createElement('canvas'); c.width = c.height = S2;
   const g = c.getContext('2d');
   const hc = document.createElement('canvas'); hc.width = hc.height = S2;
   const hg = hc.getContext('2d');
   g.fillStyle = color; g.fillRect(0, 0, S2, S2);
   hg.fillStyle = '#808080'; hg.fillRect(0, 0, S2, S2);
-  // the grain the surface has before anything is drawn on it
-  for (let i = 0; i < 260; i++) { g.fillStyle = `rgba(255,255,255,${Math.random() * .05})`;
-    g.fillRect(Math.random() * S2, Math.random() * S2, 1.6, 1.6); }
-  for (let i = 0; i < 260; i++) { g.fillStyle = `rgba(0,0,0,${Math.random() * .07})`;
-    g.fillRect(Math.random() * S2, Math.random() * S2, 1.6, 1.6); }
+  // the grain the surface has before anything is drawn on it. The count is
+  // per unit AREA, not a flat 260: at 384 a fixed count is a sprinkle on a
+  // field, and the grain is most of what stops a floor reading as plastic.
+  const grains = Math.round(260 * (S2 / 128) * (S2 / 128));
+  const gp = Math.max(1.6, S2 / 80);
+  for (let i = 0; i < grains; i++) { g.fillStyle = `rgba(255,255,255,${Math.random() * .05})`;
+    g.fillRect(Math.random() * S2, Math.random() * S2, gp, gp); }
+  for (let i = 0; i < grains; i++) { g.fillStyle = `rgba(0,0,0,${Math.random() * .07})`;
+    g.fillRect(Math.random() * S2, Math.random() * S2, gp, gp); }
   paintPattern(g, hg, pattern, S2);
 
   const map = new THREE.CanvasTexture(c);
   map.wrapS = map.wrapT = THREE.RepeatWrapping;
-  map.anisotropy = 4; map.colorSpace = THREE.SRGBColorSpace;
+  // a floor is seen at a grazing angle more often than face-on, which is
+  // exactly where anisotropy decides whether it reads. 4 was a guess; the
+  // machine says what it can do.
+  map.anisotropy = anisoNow(); map.colorSpace = THREE.SRGBColorSpace;
 
   const hd = hg.getImageData(0, 0, S2, S2).data;
   const h = new Float32Array(S2 * S2);
   for (let i = 0; i < h.length; i++) h[i] = hd[i * 4] / 255;
+  // the build asserts every registry pattern is declared here, so this
+  // fallback cannot fire - see the pattern-cover gate in build_3d.py
   const normalMap = normalFromHeight(h, S2, PATTERN_RELIEF[pattern] ?? 0);
+  if (normalMap) normalMap.anisotropy = anisoNow();
 
   const out = { map, normalMap };
   surfCache.set(key, out);
@@ -8345,15 +8849,22 @@ function buildCampus(key) {
   flushDashes(campusGroup);
   walkLim = cityPois ? (cityLog ? 536 : 350) : campusR + 85;
   campusGroup.userData.walkLim = walkLim;
-  // fog banks: the island's weather, drifting flat haze sheets
+  /* Fog banks: the island's weather, drifting flat haze sheets.
+     They used to be built purely from the campus's own count, which meant
+     fog WEATHER over a campus that keeps no banks put no fog in the air at
+     all - the weather record said fog and the sky said nothing. The
+     weather now carries a multiplier and a floor, so the most any weather
+     could ask for is built once here and the rest is visibility. */
   fogBanks = [];
-  const nb = ATMOS[key]?.banks ?? 0;
+  const bankBase = ATMOS[key]?.banks ?? 0;
+  campusGroup.userData.banksBase = bankBase;
+  const nb = Math.max(Math.ceil(bankBase * BANK_MUL_MAX), BANK_FLOOR_MAX);
   for (let i = 0; i < nb; i++) {
     const m = new THREE.Mesh(new THREE.PlaneGeometry(150 + i * 22, 34),
       new THREE.MeshBasicMaterial({ color: 0xcfd8dc, transparent: true,
         opacity: .09 + (i % 3) * .025, depthWrite: false }));
     m.rotation.x = -Math.PI / 2;
-    const ang = i / nb * Math.PI * 2, rad = 70 + (i % 3) * 45;
+    const ang = i / Math.max(1, nb) * Math.PI * 2, rad = 70 + (i % 3) * 45;
     m.position.set(Math.cos(ang) * rad, 7 + (i % 4) * 5, Math.sin(ang) * rad);
     campusGroup.add(m);
     fogBanks.push({ m, ang, rad, sp: .015 + (i % 3) * .008 });
@@ -9083,11 +9594,15 @@ function stepFamily() {
      grounds.
 
      The ROADS are deliberately not sampled, and that is a finding rather
-     than an omission. A roadway takes the campus's own ground recipe unless
-     that ground is grass or sand, and all ten campuses are laid on concrete
-     or asphalt - which are the same step family. So a road-versus-ground
-     test would be a branch that cannot change the answer on any campus that
-     exists. If a campus is ever laid on grass, this is the place. */
+     than an omission - though the reasoning has had to be restated once.
+     It used to be that all ten campuses were laid on concrete or asphalt,
+     so a road and the ground around it were the same step family and the
+     branch could not change the answer. They now stand on ten different
+     regional surfaces - shell, ballast, slag, caliche - and a road still
+     cannot differ, because a roadway TAKES the campus's own ground recipe
+     unless that ground is grass or sand, and none of the ten is. The
+     conclusion survives; the reason it holds is a different one. If a
+     campus is ever laid on grass, moss or marsh, this is the place. */
   const g = view === 'restoration'
     ? (curRestoSite?.ground ?? 'grass')
     : (ATMOS[campusKey] ?? DEF_ATMOS).ground;
@@ -10131,8 +10646,15 @@ function openRoom(roomLabel) {
       const fin = D.finCat[pf.surface];
       return `<h3>${t('room.finish')}</h3>
         <p><b>${fin.name}</b>` +
+        /* A floor is chosen by a hazard, by the craft the trade works, or
+           by what the room is for. Only the first ever said so here, so
+           194 craft-placed floors showed a name and no reason - the new
+           tier was invisible in the one panel that exists to explain the
+           choice. */
         (pf.placed_by === 'hazard'
-          ? ` <span class="chip">${pf.hazard}</span>` : '') +
+          ? ` <span class="chip">${pf.hazard}</span>`
+          : pf.placed_by === 'craft'
+            ? ` <span class="chip">${pf.craft}</span>` : '') +
         `<br><span style="color:var(--muted)">${fin.why}.</span></p>` +
         (() => { const c = condOf(h.slug, r.strand);
           return `<p style="color:var(--muted);font-size:13px">${condLine(c)}` +
@@ -10816,7 +11338,10 @@ window.__tc3d = () => ({ view, buildings: buildings.length, plates: plates.lengt
   apeSpan: (avatarMesh ?? walkAvatar)?.userData?.apeSpanRatio ?? null,
   atmos: atmosKey, fogNear: Math.round(scene.fog.near),
   fogFar: Math.round(scene.fog.far), camFar: camera.far,
-  banks: fogBanks.length, mmN: mmInfo.n,
+  // BUILT and VISIBLE are two facts: the banks are built once per campus
+  // for the thickest weather, and this weather shows the first few
+  banks: fogBanks.length, banksLit: fogBanks.filter((b) => b.m.visible).length,
+  mmN: mmInfo.n,
   mmVis: document.getElementById('mm').style.display !== 'none',
   simRider: !!simRider, ambN: ambNodes.length,
   cribs: cribCount, curCrib, drillN: drill ? drill.i : null,

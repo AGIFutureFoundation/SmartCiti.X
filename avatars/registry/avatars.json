@@ -3,8 +3,10 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-14",
- "source_stamp": "2f72a68b7c18724c",
+ "source_stamp": "27ed9dcaa71507d8",
  "guarantee": "cosmetic only: every option is free and unlocked, and no avatar choice affects scoring, access, progression or anything the rubrics measure",
+ "provenance": "AUTHORED - every part, colour, name and note in this locker is typed from general public knowledge of the trades and is not cross-checked against any standard this build can read. A note says what a piece of kit is FOR; it is not the standard, not a specification, and not a substitute for the qualified person on site. Nothing here is RECORDED, and nothing here is graded.",
+ "gestures": "the emotes are gestures an avatar plays on a pedestal. The hoist, lower and stop shapes borrow the yard’s own hand vocabulary because it is the vocabulary members learn, but playing one here is not a signalperson qualification and confers nothing: on a real lift only the qualified signalperson signals, and anyone may call a stop.",
  "marks": "crew marks are the Academy’s own insignia - the roster’s three-letter hall codes on a shield in the district hue, the same codes the campus map prints. They are not, and do not imitate, any real union’s logo or emblem; no local is named and none is drawn. The animal mascots are original Academy characters drawn from scratch in this page’s own primitive style; they are not, and do not imitate, any third-party character, collection or brand - no Bored Ape or other NFT artwork is reproduced or derived from.",
  "tradeapes": {
   "collection": "SmartCiti.X TradeApes",
@@ -46,7 +48,7 @@
      "topcolor": "hi-vis-orange",
      "vest": "hi-vis-2",
      "pants": "duck-canvas",
-     "pantscolor": "safety-green",
+     "pantscolor": "hi-vis-orange",
      "shoes": "steel-toe-brown",
      "tools": "basic",
      "outer": "none",
@@ -74,7 +76,7 @@
      "topcolor": "hi-vis-yellow",
      "vest": "hi-vis-3",
      "pants": "duck-canvas",
-     "pantscolor": "forest",
+     "pantscolor": "hi-vis-yellow",
      "shoes": "steel-toe-black",
      "tools": "framing",
      "outer": "none",
@@ -102,11 +104,11 @@
      "topcolor": "safety-green",
      "vest": "surveyor",
      "pants": "duck-canvas",
-     "pantscolor": "olive",
+     "pantscolor": "safety-green",
      "shoes": "steel-toe-tan",
      "tools": "electric",
      "outer": "none",
-     "extras": "sunglasses",
+     "extras": "rx-safety-glasses",
      "costume": "ape-mascot",
      "crew": "pipefitters"
     }
@@ -130,11 +132,11 @@
      "topcolor": "forest",
      "vest": "tool-vest",
      "pants": "duck-canvas",
-     "pantscolor": "slate",
+     "pantscolor": "forest",
      "shoes": "comp-toe-grey",
      "tools": "plumber",
      "outer": "none",
-     "extras": "ear-muffs",
+     "extras": "sunglasses",
      "costume": "ape-mascot",
      "crew": "carpenters"
     }
@@ -158,11 +160,11 @@
      "topcolor": "olive",
      "vest": "hi-vis-2",
      "pants": "duck-canvas",
-     "pantscolor": "navy",
+     "pantscolor": "olive",
      "shoes": "logger",
      "tools": "mason",
      "outer": "none",
-     "extras": "respirator",
+     "extras": "ear-muffs",
      "costume": "ape-mascot",
      "crew": "operating-eng"
     }
@@ -186,11 +188,11 @@
      "topcolor": "slate",
      "vest": "hi-vis-3",
      "pants": "duck-canvas",
-     "pantscolor": "royal",
+     "pantscolor": "slate",
      "shoes": "wellington",
      "tools": "welder",
      "outer": "none",
-     "extras": "dust-mask",
+     "extras": "ear-plugs",
      "costume": "ape-mascot",
      "crew": "laborers"
     }
@@ -214,11 +216,11 @@
      "topcolor": "navy",
      "vest": "surveyor",
      "pants": "duck-canvas",
-     "pantscolor": "steel-blue",
+     "pantscolor": "navy",
      "shoes": "hiker",
      "tools": "surveyor",
      "outer": "none",
-     "extras": "face-shield",
+     "extras": "dust-mask",
      "costume": "ape-mascot",
      "crew": "sheetmetal"
     }
@@ -242,11 +244,11 @@
      "topcolor": "royal",
      "vest": "tool-vest",
      "pants": "duck-canvas",
-     "pantscolor": "teal",
+     "pantscolor": "royal",
      "shoes": "rubber-yellow",
      "tools": "drywall",
      "outer": "none",
-     "extras": "welding-shield",
+     "extras": "respirator",
      "costume": "ape-mascot",
      "crew": "bricklayers"
     }
@@ -270,11 +272,11 @@
      "topcolor": "steel-blue",
      "vest": "hi-vis-2",
      "pants": "duck-canvas",
-     "pantscolor": "crimson",
+     "pantscolor": "steel-blue",
      "shoes": "rubber-green",
      "tools": "hvac",
      "outer": "none",
-     "extras": "knee-pads",
+     "extras": "full-face-apr",
      "costume": "ape-mascot",
      "crew": "cement-masons"
     }
@@ -298,11 +300,11 @@
      "topcolor": "teal",
      "vest": "hi-vis-3",
      "pants": "duck-canvas",
-     "pantscolor": "rust",
+     "pantscolor": "teal",
      "shoes": "sneaker-white",
      "tools": "glazier",
      "outer": "none",
-     "extras": "elbow-pads",
+     "extras": "papr-hood",
      "costume": "ape-mascot",
      "crew": "roofers"
     }
@@ -326,11 +328,11 @@
      "topcolor": "crimson",
      "vest": "surveyor",
      "pants": "duck-canvas",
-     "pantscolor": "duck-brown",
+     "pantscolor": "crimson",
      "shoes": "sneaker-black",
      "tools": "roofer",
      "outer": "none",
-     "extras": "tool-lanyard",
+     "extras": "supplied-air",
      "costume": "ape-mascot",
      "crew": "painters"
     }
@@ -354,11 +356,11 @@
      "topcolor": "rust",
      "vest": "tool-vest",
      "pants": "duck-canvas",
-     "pantscolor": "sand",
+     "pantscolor": "rust",
      "shoes": "sneaker-red",
      "tools": "concrete",
      "outer": "none",
-     "extras": "radio",
+     "extras": "face-shield",
      "costume": "ape-mascot",
      "crew": "glaziers"
     }
@@ -382,11 +384,11 @@
      "topcolor": "duck-brown",
      "vest": "hi-vis-2",
      "pants": "duck-canvas",
-     "pantscolor": "charcoal",
+     "pantscolor": "duck-brown",
      "shoes": "sneaker-blue",
      "tools": "rigger",
      "outer": "none",
-     "extras": "headlamp",
+     "extras": "welding-shield",
      "costume": "ape-mascot",
      "crew": "insulators"
     }
@@ -410,11 +412,11 @@
      "topcolor": "sand",
      "vest": "hi-vis-3",
      "pants": "duck-canvas",
-     "pantscolor": "grey",
+     "pantscolor": "sand",
      "shoes": "high-top",
      "tools": "finisher",
      "outer": "none",
-     "extras": "id-badge",
+     "extras": "knee-pads",
      "costume": "ape-mascot",
      "crew": "millwrights"
     }
@@ -438,11 +440,11 @@
      "topcolor": "charcoal",
      "vest": "surveyor",
      "pants": "duck-canvas",
-     "pantscolor": "stone",
+     "pantscolor": "charcoal",
      "shoes": "slip-on",
-     "tools": "basic",
+     "tools": "lineman",
      "outer": "none",
-     "extras": "gloves",
+     "extras": "elbow-pads",
      "costume": "ape-mascot",
      "crew": "boilermakers"
     }
@@ -466,11 +468,11 @@
      "topcolor": "grey",
      "vest": "tool-vest",
      "pants": "duck-canvas",
-     "pantscolor": "safety-green",
+     "pantscolor": "grey",
      "shoes": "lineman",
-     "tools": "framing",
+     "tools": "sheet-metal",
      "outer": "none",
-     "extras": "none",
+     "extras": "tool-lanyard",
      "costume": "ape-mascot",
      "crew": "elevator"
     }
@@ -489,16 +491,16 @@
      "eyes": "brown",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "hi-vis-orange",
+     "headcolor": "stone",
      "top": "tee",
      "topcolor": "stone",
      "vest": "hi-vis-2",
      "pants": "duck-canvas",
-     "pantscolor": "forest",
-     "shoes": "steel-toe-brown",
-     "tools": "electric",
+     "pantscolor": "stone",
+     "shoes": "met-guard",
+     "tools": "painter",
      "outer": "none",
-     "extras": "safety-glasses",
+     "extras": "radio",
      "costume": "ape-mascot",
      "crew": "teamsters"
     }
@@ -517,16 +519,16 @@
      "eyes": "light-brown",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "hi-vis-yellow",
+     "headcolor": "white",
      "top": "tee",
      "topcolor": "white",
      "vest": "hi-vis-3",
      "pants": "duck-canvas",
-     "pantscolor": "olive",
-     "shoes": "steel-toe-black",
-     "tools": "plumber",
+     "pantscolor": "white",
+     "shoes": "eh-rated",
+     "tools": "millwright",
      "outer": "none",
-     "extras": "sunglasses",
+     "extras": "headlamp",
      "costume": "ape-mascot",
      "crew": "welders"
     }
@@ -545,16 +547,16 @@
      "eyes": "amber",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "safety-green",
+     "headcolor": "hi-vis-orange",
      "top": "tee",
      "topcolor": "hi-vis-orange",
      "vest": "surveyor",
      "pants": "duck-canvas",
-     "pantscolor": "slate",
-     "shoes": "steel-toe-tan",
-     "tools": "mason",
+     "pantscolor": "hi-vis-orange",
+     "shoes": "puncture-sole",
+     "tools": "low-voltage",
      "outer": "none",
-     "extras": "ear-muffs",
+     "extras": "id-badge",
      "costume": "ape-mascot",
      "crew": "hvacr"
     }
@@ -573,16 +575,16 @@
      "eyes": "hazel",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "forest",
+     "headcolor": "hi-vis-yellow",
      "top": "tee",
      "topcolor": "hi-vis-yellow",
      "vest": "tool-vest",
      "pants": "duck-canvas",
-     "pantscolor": "navy",
-     "shoes": "comp-toe-grey",
-     "tools": "welder",
+     "pantscolor": "hi-vis-yellow",
+     "shoes": "insulated-pac",
+     "tools": "basic",
      "outer": "none",
-     "extras": "respirator",
+     "extras": "gloves",
      "costume": "ape-mascot",
      "crew": "crane-ops"
     }
@@ -601,16 +603,16 @@
      "eyes": "olive-green",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "olive",
+     "headcolor": "safety-green",
      "top": "tee",
      "topcolor": "safety-green",
      "vest": "hi-vis-2",
      "pants": "duck-canvas",
-     "pantscolor": "royal",
-     "shoes": "logger",
-     "tools": "surveyor",
+     "pantscolor": "safety-green",
+     "shoes": "steel-toe-brown",
+     "tools": "framing",
      "outer": "none",
-     "extras": "dust-mask",
+     "extras": "none",
      "costume": "ape-mascot",
      "crew": "riggers"
     }
@@ -629,16 +631,16 @@
      "eyes": "green",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "slate",
+     "headcolor": "forest",
      "top": "tee",
      "topcolor": "forest",
      "vest": "hi-vis-3",
      "pants": "duck-canvas",
-     "pantscolor": "steel-blue",
-     "shoes": "wellington",
-     "tools": "drywall",
+     "pantscolor": "forest",
+     "shoes": "steel-toe-black",
+     "tools": "electric",
      "outer": "none",
-     "extras": "face-shield",
+     "extras": "safety-glasses",
      "costume": "ape-mascot",
      "crew": "heavy-equip"
     }
@@ -657,16 +659,16 @@
      "eyes": "emerald",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "navy",
+     "headcolor": "olive",
      "top": "tee",
      "topcolor": "olive",
      "vest": "surveyor",
      "pants": "duck-canvas",
-     "pantscolor": "teal",
-     "shoes": "hiker",
-     "tools": "hvac",
+     "pantscolor": "olive",
+     "shoes": "steel-toe-tan",
+     "tools": "plumber",
      "outer": "none",
-     "extras": "welding-shield",
+     "extras": "rx-safety-glasses",
      "costume": "ape-mascot",
      "crew": "drywall"
     }
@@ -685,16 +687,16 @@
      "eyes": "grey-green",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "royal",
+     "headcolor": "slate",
      "top": "tee",
      "topcolor": "slate",
      "vest": "tool-vest",
      "pants": "duck-canvas",
-     "pantscolor": "crimson",
-     "shoes": "rubber-yellow",
-     "tools": "glazier",
+     "pantscolor": "slate",
+     "shoes": "comp-toe-grey",
+     "tools": "mason",
      "outer": "none",
-     "extras": "knee-pads",
+     "extras": "sunglasses",
      "costume": "ape-mascot",
      "crew": "flooring"
     }
@@ -713,16 +715,16 @@
      "eyes": "grey",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "steel-blue",
+     "headcolor": "navy",
      "top": "tee",
      "topcolor": "navy",
      "vest": "hi-vis-2",
      "pants": "duck-canvas",
-     "pantscolor": "rust",
-     "shoes": "rubber-green",
-     "tools": "roofer",
+     "pantscolor": "navy",
+     "shoes": "logger",
+     "tools": "welder",
      "outer": "none",
-     "extras": "elbow-pads",
+     "extras": "ear-muffs",
      "costume": "ape-mascot",
      "crew": "grounds"
     }
@@ -741,16 +743,16 @@
      "eyes": "blue-grey",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "teal",
+     "headcolor": "royal",
      "top": "tee",
      "topcolor": "royal",
      "vest": "hi-vis-3",
      "pants": "duck-canvas",
-     "pantscolor": "duck-brown",
-     "shoes": "sneaker-white",
-     "tools": "concrete",
+     "pantscolor": "royal",
+     "shoes": "wellington",
+     "tools": "surveyor",
      "outer": "none",
-     "extras": "tool-lanyard",
+     "extras": "ear-plugs",
      "costume": "ape-mascot",
      "crew": "line-workers"
     }
@@ -769,16 +771,16 @@
      "eyes": "blue",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "crimson",
+     "headcolor": "steel-blue",
      "top": "tee",
      "topcolor": "steel-blue",
      "vest": "surveyor",
      "pants": "duck-canvas",
-     "pantscolor": "sand",
-     "shoes": "sneaker-black",
-     "tools": "rigger",
+     "pantscolor": "steel-blue",
+     "shoes": "hiker",
+     "tools": "drywall",
      "outer": "none",
-     "extras": "radio",
+     "extras": "dust-mask",
      "costume": "ape-mascot",
      "crew": "solar"
     }
@@ -797,16 +799,16 @@
      "eyes": "deep-blue",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "rust",
+     "headcolor": "teal",
      "top": "tee",
      "topcolor": "teal",
      "vest": "tool-vest",
      "pants": "duck-canvas",
-     "pantscolor": "charcoal",
-     "shoes": "sneaker-red",
-     "tools": "finisher",
+     "pantscolor": "teal",
+     "shoes": "rubber-yellow",
+     "tools": "hvac",
      "outer": "none",
-     "extras": "headlamp",
+     "extras": "respirator",
      "costume": "ape-mascot",
      "crew": "wind"
     }
@@ -825,16 +827,16 @@
      "eyes": "violet-grey",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "duck-brown",
+     "headcolor": "crimson",
      "top": "tee",
      "topcolor": "crimson",
      "vest": "hi-vis-2",
      "pants": "duck-canvas",
-     "pantscolor": "grey",
-     "shoes": "sneaker-blue",
-     "tools": "basic",
+     "pantscolor": "crimson",
+     "shoes": "rubber-green",
+     "tools": "glazier",
      "outer": "none",
-     "extras": "id-badge",
+     "extras": "full-face-apr",
      "costume": "ape-mascot",
      "crew": "demolition"
     }
@@ -853,16 +855,16 @@
      "eyes": "near-black",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "sand",
+     "headcolor": "rust",
      "top": "tee",
      "topcolor": "rust",
      "vest": "hi-vis-3",
      "pants": "duck-canvas",
-     "pantscolor": "stone",
-     "shoes": "high-top",
-     "tools": "framing",
+     "pantscolor": "rust",
+     "shoes": "sneaker-white",
+     "tools": "roofer",
      "outer": "none",
-     "extras": "gloves",
+     "extras": "papr-hood",
      "costume": "ape-mascot",
      "crew": "scaffold"
     }
@@ -881,16 +883,16 @@
      "eyes": "dark-brown",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "charcoal",
+     "headcolor": "duck-brown",
      "top": "tee",
      "topcolor": "duck-brown",
      "vest": "surveyor",
      "pants": "duck-canvas",
-     "pantscolor": "safety-green",
-     "shoes": "slip-on",
-     "tools": "electric",
+     "pantscolor": "duck-brown",
+     "shoes": "sneaker-black",
+     "tools": "concrete",
      "outer": "none",
-     "extras": "none",
+     "extras": "supplied-air",
      "costume": "ape-mascot",
      "crew": "surveyors"
     }
@@ -909,16 +911,16 @@
      "eyes": "brown",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "grey",
+     "headcolor": "sand",
      "top": "tee",
      "topcolor": "sand",
      "vest": "tool-vest",
      "pants": "duck-canvas",
-     "pantscolor": "forest",
-     "shoes": "lineman",
-     "tools": "plumber",
+     "pantscolor": "sand",
+     "shoes": "sneaker-red",
+     "tools": "rigger",
      "outer": "none",
-     "extras": "safety-glasses",
+     "extras": "face-shield",
      "costume": "ape-mascot",
      "crew": "fire-sprinkler"
     }
@@ -937,16 +939,16 @@
      "eyes": "light-brown",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "hi-vis-orange",
+     "headcolor": "charcoal",
      "top": "tee",
      "topcolor": "charcoal",
      "vest": "hi-vis-2",
      "pants": "duck-canvas",
-     "pantscolor": "olive",
-     "shoes": "steel-toe-brown",
-     "tools": "mason",
+     "pantscolor": "charcoal",
+     "shoes": "sneaker-blue",
+     "tools": "finisher",
      "outer": "none",
-     "extras": "sunglasses",
+     "extras": "welding-shield",
      "costume": "ape-mascot",
      "crew": "hazmat"
     }
@@ -965,16 +967,16 @@
      "eyes": "amber",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "hi-vis-yellow",
+     "headcolor": "grey",
      "top": "tee",
      "topcolor": "grey",
      "vest": "hi-vis-3",
      "pants": "duck-canvas",
-     "pantscolor": "slate",
-     "shoes": "steel-toe-black",
-     "tools": "welder",
+     "pantscolor": "grey",
+     "shoes": "high-top",
+     "tools": "lineman",
      "outer": "none",
-     "extras": "ear-muffs",
+     "extras": "knee-pads",
      "costume": "ape-mascot",
      "crew": "refractory"
     }
@@ -993,16 +995,16 @@
      "eyes": "hazel",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "safety-green",
+     "headcolor": "stone",
      "top": "tee",
      "topcolor": "stone",
      "vest": "surveyor",
      "pants": "duck-canvas",
-     "pantscolor": "navy",
-     "shoes": "steel-toe-tan",
-     "tools": "surveyor",
+     "pantscolor": "stone",
+     "shoes": "slip-on",
+     "tools": "sheet-metal",
      "outer": "none",
-     "extras": "respirator",
+     "extras": "elbow-pads",
      "costume": "ape-mascot",
      "crew": "pipeline"
     }
@@ -1021,16 +1023,16 @@
      "eyes": "olive-green",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "forest",
+     "headcolor": "white",
      "top": "tee",
      "topcolor": "white",
      "vest": "tool-vest",
      "pants": "duck-canvas",
-     "pantscolor": "royal",
-     "shoes": "comp-toe-grey",
-     "tools": "drywall",
+     "pantscolor": "white",
+     "shoes": "lineman",
+     "tools": "painter",
      "outer": "none",
-     "extras": "dust-mask",
+     "extras": "tool-lanyard",
      "costume": "ape-mascot",
      "crew": "tank-erectors"
     }
@@ -1049,16 +1051,16 @@
      "eyes": "green",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "olive",
+     "headcolor": "hi-vis-orange",
      "top": "tee",
      "topcolor": "hi-vis-orange",
      "vest": "hi-vis-2",
      "pants": "duck-canvas",
-     "pantscolor": "steel-blue",
-     "shoes": "logger",
-     "tools": "hvac",
+     "pantscolor": "hi-vis-orange",
+     "shoes": "met-guard",
+     "tools": "millwright",
      "outer": "none",
-     "extras": "face-shield",
+     "extras": "radio",
      "costume": "ape-mascot",
      "crew": "shipfitters"
     }
@@ -1077,16 +1079,16 @@
      "eyes": "emerald",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "slate",
+     "headcolor": "hi-vis-yellow",
      "top": "tee",
      "topcolor": "hi-vis-yellow",
      "vest": "hi-vis-3",
      "pants": "duck-canvas",
-     "pantscolor": "teal",
-     "shoes": "wellington",
-     "tools": "glazier",
+     "pantscolor": "hi-vis-yellow",
+     "shoes": "eh-rated",
+     "tools": "low-voltage",
      "outer": "none",
-     "extras": "welding-shield",
+     "extras": "headlamp",
      "costume": "ape-mascot",
      "crew": "marine-pipe"
     }
@@ -1105,16 +1107,16 @@
      "eyes": "grey-green",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "navy",
+     "headcolor": "safety-green",
      "top": "tee",
      "topcolor": "safety-green",
      "vest": "surveyor",
      "pants": "duck-canvas",
-     "pantscolor": "crimson",
-     "shoes": "hiker",
-     "tools": "roofer",
+     "pantscolor": "safety-green",
+     "shoes": "puncture-sole",
+     "tools": "basic",
      "outer": "none",
-     "extras": "knee-pads",
+     "extras": "id-badge",
      "costume": "ape-mascot",
      "crew": "divers"
     }
@@ -1133,16 +1135,16 @@
      "eyes": "grey",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "royal",
+     "headcolor": "forest",
      "top": "tee",
      "topcolor": "forest",
      "vest": "tool-vest",
      "pants": "duck-canvas",
-     "pantscolor": "rust",
-     "shoes": "rubber-yellow",
-     "tools": "concrete",
+     "pantscolor": "forest",
+     "shoes": "insulated-pac",
+     "tools": "framing",
      "outer": "none",
-     "extras": "elbow-pads",
+     "extras": "gloves",
      "costume": "ape-mascot",
      "crew": "blasters"
     }
@@ -1161,16 +1163,16 @@
      "eyes": "blue-grey",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "steel-blue",
+     "headcolor": "olive",
      "top": "tee",
      "topcolor": "olive",
      "vest": "hi-vis-2",
      "pants": "duck-canvas",
-     "pantscolor": "duck-brown",
-     "shoes": "rubber-green",
-     "tools": "rigger",
+     "pantscolor": "olive",
+     "shoes": "steel-toe-brown",
+     "tools": "electric",
      "outer": "none",
-     "extras": "tool-lanyard",
+     "extras": "none",
      "costume": "ape-mascot",
      "crew": "miners"
     }
@@ -1189,16 +1191,16 @@
      "eyes": "blue",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "teal",
+     "headcolor": "slate",
      "top": "tee",
      "topcolor": "slate",
      "vest": "hi-vis-3",
      "pants": "duck-canvas",
-     "pantscolor": "sand",
-     "shoes": "sneaker-white",
-     "tools": "finisher",
+     "pantscolor": "slate",
+     "shoes": "steel-toe-black",
+     "tools": "plumber",
      "outer": "none",
-     "extras": "radio",
+     "extras": "safety-glasses",
      "costume": "ape-mascot",
      "crew": "smelter"
     }
@@ -1217,16 +1219,16 @@
      "eyes": "deep-blue",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "crimson",
+     "headcolor": "navy",
      "top": "tee",
      "topcolor": "navy",
      "vest": "surveyor",
      "pants": "duck-canvas",
-     "pantscolor": "charcoal",
-     "shoes": "sneaker-black",
-     "tools": "basic",
+     "pantscolor": "navy",
+     "shoes": "steel-toe-tan",
+     "tools": "mason",
      "outer": "none",
-     "extras": "headlamp",
+     "extras": "rx-safety-glasses",
      "costume": "ape-mascot",
      "crew": "foundry"
     }
@@ -1245,16 +1247,16 @@
      "eyes": "violet-grey",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "rust",
+     "headcolor": "royal",
      "top": "tee",
      "topcolor": "royal",
      "vest": "tool-vest",
      "pants": "duck-canvas",
-     "pantscolor": "grey",
-     "shoes": "sneaker-red",
-     "tools": "framing",
+     "pantscolor": "royal",
+     "shoes": "comp-toe-grey",
+     "tools": "welder",
      "outer": "none",
-     "extras": "id-badge",
+     "extras": "sunglasses",
      "costume": "ape-mascot",
      "crew": "machinists"
     }
@@ -1273,16 +1275,16 @@
      "eyes": "near-black",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "duck-brown",
+     "headcolor": "steel-blue",
      "top": "tee",
      "topcolor": "steel-blue",
      "vest": "hi-vis-2",
      "pants": "duck-canvas",
-     "pantscolor": "stone",
-     "shoes": "sneaker-blue",
-     "tools": "electric",
+     "pantscolor": "steel-blue",
+     "shoes": "logger",
+     "tools": "surveyor",
      "outer": "none",
-     "extras": "gloves",
+     "extras": "ear-muffs",
      "costume": "ape-mascot",
      "crew": "toolmakers"
     }
@@ -1301,16 +1303,16 @@
      "eyes": "dark-brown",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "sand",
+     "headcolor": "teal",
      "top": "tee",
      "topcolor": "teal",
      "vest": "hi-vis-3",
      "pants": "duck-canvas",
-     "pantscolor": "safety-green",
-     "shoes": "high-top",
-     "tools": "plumber",
+     "pantscolor": "teal",
+     "shoes": "wellington",
+     "tools": "drywall",
      "outer": "none",
-     "extras": "none",
+     "extras": "ear-plugs",
      "costume": "ape-mascot",
      "crew": "fabricators"
     }
@@ -1329,16 +1331,16 @@
      "eyes": "brown",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "charcoal",
+     "headcolor": "crimson",
      "top": "tee",
      "topcolor": "crimson",
      "vest": "surveyor",
      "pants": "duck-canvas",
-     "pantscolor": "forest",
-     "shoes": "slip-on",
-     "tools": "mason",
+     "pantscolor": "crimson",
+     "shoes": "hiker",
+     "tools": "hvac",
      "outer": "none",
-     "extras": "safety-glasses",
+     "extras": "dust-mask",
      "costume": "ape-mascot",
      "crew": "platers"
     }
@@ -1357,16 +1359,16 @@
      "eyes": "light-brown",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "grey",
+     "headcolor": "rust",
      "top": "tee",
      "topcolor": "rust",
      "vest": "tool-vest",
      "pants": "duck-canvas",
-     "pantscolor": "olive",
-     "shoes": "lineman",
-     "tools": "welder",
+     "pantscolor": "rust",
+     "shoes": "rubber-yellow",
+     "tools": "glazier",
      "outer": "none",
-     "extras": "sunglasses",
+     "extras": "respirator",
      "costume": "ape-mascot",
      "crew": "substation"
     }
@@ -1385,16 +1387,16 @@
      "eyes": "amber",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "hi-vis-orange",
+     "headcolor": "duck-brown",
      "top": "tee",
      "topcolor": "duck-brown",
      "vest": "hi-vis-2",
      "pants": "duck-canvas",
-     "pantscolor": "slate",
-     "shoes": "steel-toe-brown",
-     "tools": "surveyor",
+     "pantscolor": "duck-brown",
+     "shoes": "rubber-green",
+     "tools": "roofer",
      "outer": "none",
-     "extras": "ear-muffs",
+     "extras": "full-face-apr",
      "costume": "ape-mascot",
      "crew": "cable-splicers"
     }
@@ -1413,16 +1415,16 @@
      "eyes": "hazel",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "hi-vis-yellow",
+     "headcolor": "sand",
      "top": "tee",
      "topcolor": "sand",
      "vest": "hi-vis-3",
      "pants": "duck-canvas",
-     "pantscolor": "navy",
-     "shoes": "steel-toe-black",
-     "tools": "drywall",
+     "pantscolor": "sand",
+     "shoes": "sneaker-white",
+     "tools": "concrete",
      "outer": "none",
-     "extras": "respirator",
+     "extras": "papr-hood",
      "costume": "ape-mascot",
      "crew": "meter-techs"
     }
@@ -1441,16 +1443,16 @@
      "eyes": "olive-green",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "safety-green",
+     "headcolor": "charcoal",
      "top": "tee",
      "topcolor": "charcoal",
      "vest": "surveyor",
      "pants": "duck-canvas",
-     "pantscolor": "royal",
-     "shoes": "steel-toe-tan",
-     "tools": "hvac",
+     "pantscolor": "charcoal",
+     "shoes": "sneaker-black",
+     "tools": "rigger",
      "outer": "none",
-     "extras": "dust-mask",
+     "extras": "supplied-air",
      "costume": "ape-mascot",
      "crew": "gas-distrib"
     }
@@ -1469,14 +1471,14 @@
      "eyes": "green",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "forest",
+     "headcolor": "grey",
      "top": "tee",
      "topcolor": "grey",
      "vest": "tool-vest",
      "pants": "duck-canvas",
-     "pantscolor": "steel-blue",
-     "shoes": "comp-toe-grey",
-     "tools": "glazier",
+     "pantscolor": "grey",
+     "shoes": "sneaker-red",
+     "tools": "finisher",
      "outer": "none",
      "extras": "face-shield",
      "costume": "ape-mascot",
@@ -1497,14 +1499,14 @@
      "eyes": "emerald",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "olive",
+     "headcolor": "stone",
      "top": "tee",
      "topcolor": "stone",
      "vest": "hi-vis-2",
      "pants": "duck-canvas",
-     "pantscolor": "teal",
-     "shoes": "logger",
-     "tools": "roofer",
+     "pantscolor": "stone",
+     "shoes": "sneaker-blue",
+     "tools": "lineman",
      "outer": "none",
      "extras": "welding-shield",
      "costume": "ape-mascot",
@@ -1525,14 +1527,14 @@
      "eyes": "grey-green",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "slate",
+     "headcolor": "white",
      "top": "tee",
      "topcolor": "white",
      "vest": "hi-vis-3",
      "pants": "duck-canvas",
-     "pantscolor": "crimson",
-     "shoes": "wellington",
-     "tools": "concrete",
+     "pantscolor": "white",
+     "shoes": "high-top",
+     "tools": "sheet-metal",
      "outer": "none",
      "extras": "knee-pads",
      "costume": "ape-mascot",
@@ -1553,14 +1555,14 @@
      "eyes": "grey",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "navy",
+     "headcolor": "hi-vis-orange",
      "top": "tee",
      "topcolor": "hi-vis-orange",
      "vest": "surveyor",
      "pants": "duck-canvas",
-     "pantscolor": "rust",
-     "shoes": "hiker",
-     "tools": "rigger",
+     "pantscolor": "hi-vis-orange",
+     "shoes": "slip-on",
+     "tools": "painter",
      "outer": "none",
      "extras": "elbow-pads",
      "costume": "ape-mascot",
@@ -1581,14 +1583,14 @@
      "eyes": "blue-grey",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "royal",
+     "headcolor": "hi-vis-yellow",
      "top": "tee",
      "topcolor": "hi-vis-yellow",
      "vest": "tool-vest",
      "pants": "duck-canvas",
-     "pantscolor": "duck-brown",
-     "shoes": "rubber-yellow",
-     "tools": "finisher",
+     "pantscolor": "hi-vis-yellow",
+     "shoes": "lineman",
+     "tools": "millwright",
      "outer": "none",
      "extras": "tool-lanyard",
      "costume": "ape-mascot",
@@ -1609,14 +1611,14 @@
      "eyes": "blue",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "steel-blue",
+     "headcolor": "safety-green",
      "top": "tee",
      "topcolor": "safety-green",
      "vest": "hi-vis-2",
      "pants": "duck-canvas",
-     "pantscolor": "sand",
-     "shoes": "rubber-green",
-     "tools": "basic",
+     "pantscolor": "safety-green",
+     "shoes": "met-guard",
+     "tools": "low-voltage",
      "outer": "none",
      "extras": "radio",
      "costume": "ape-mascot",
@@ -1637,14 +1639,14 @@
      "eyes": "deep-blue",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "teal",
+     "headcolor": "forest",
      "top": "tee",
      "topcolor": "forest",
      "vest": "hi-vis-3",
      "pants": "duck-canvas",
-     "pantscolor": "charcoal",
-     "shoes": "sneaker-white",
-     "tools": "framing",
+     "pantscolor": "forest",
+     "shoes": "eh-rated",
+     "tools": "basic",
      "outer": "none",
      "extras": "headlamp",
      "costume": "ape-mascot",
@@ -1665,14 +1667,14 @@
      "eyes": "violet-grey",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "crimson",
+     "headcolor": "olive",
      "top": "tee",
      "topcolor": "olive",
      "vest": "surveyor",
      "pants": "duck-canvas",
-     "pantscolor": "grey",
-     "shoes": "sneaker-black",
-     "tools": "electric",
+     "pantscolor": "olive",
+     "shoes": "puncture-sole",
+     "tools": "framing",
      "outer": "none",
      "extras": "id-badge",
      "costume": "ape-mascot",
@@ -1693,14 +1695,14 @@
      "eyes": "near-black",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "rust",
+     "headcolor": "slate",
      "top": "tee",
      "topcolor": "slate",
      "vest": "tool-vest",
      "pants": "duck-canvas",
-     "pantscolor": "stone",
-     "shoes": "sneaker-red",
-     "tools": "plumber",
+     "pantscolor": "slate",
+     "shoes": "insulated-pac",
+     "tools": "electric",
      "outer": "none",
      "extras": "gloves",
      "costume": "ape-mascot",
@@ -1721,14 +1723,14 @@
      "eyes": "dark-brown",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "duck-brown",
+     "headcolor": "navy",
      "top": "tee",
      "topcolor": "navy",
      "vest": "hi-vis-2",
      "pants": "duck-canvas",
-     "pantscolor": "safety-green",
-     "shoes": "sneaker-blue",
-     "tools": "mason",
+     "pantscolor": "navy",
+     "shoes": "steel-toe-brown",
+     "tools": "plumber",
      "outer": "none",
      "extras": "none",
      "costume": "ape-mascot",
@@ -1749,14 +1751,14 @@
      "eyes": "brown",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "sand",
+     "headcolor": "royal",
      "top": "tee",
      "topcolor": "royal",
      "vest": "hi-vis-3",
      "pants": "duck-canvas",
-     "pantscolor": "forest",
-     "shoes": "high-top",
-     "tools": "welder",
+     "pantscolor": "royal",
+     "shoes": "steel-toe-black",
+     "tools": "mason",
      "outer": "none",
      "extras": "safety-glasses",
      "costume": "ape-mascot",
@@ -1777,16 +1779,16 @@
      "eyes": "light-brown",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "charcoal",
+     "headcolor": "steel-blue",
      "top": "tee",
      "topcolor": "steel-blue",
      "vest": "surveyor",
      "pants": "duck-canvas",
-     "pantscolor": "olive",
-     "shoes": "slip-on",
-     "tools": "surveyor",
+     "pantscolor": "steel-blue",
+     "shoes": "steel-toe-tan",
+     "tools": "welder",
      "outer": "none",
-     "extras": "sunglasses",
+     "extras": "rx-safety-glasses",
      "costume": "ape-mascot",
      "crew": "stone-carvers"
     }
@@ -1805,16 +1807,16 @@
      "eyes": "amber",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "grey",
+     "headcolor": "teal",
      "top": "tee",
      "topcolor": "teal",
      "vest": "tool-vest",
      "pants": "duck-canvas",
-     "pantscolor": "slate",
-     "shoes": "lineman",
-     "tools": "drywall",
+     "pantscolor": "teal",
+     "shoes": "comp-toe-grey",
+     "tools": "surveyor",
      "outer": "none",
-     "extras": "ear-muffs",
+     "extras": "sunglasses",
      "costume": "ape-mascot",
      "crew": "plasterers"
     }
@@ -1833,16 +1835,16 @@
      "eyes": "hazel",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "hi-vis-orange",
+     "headcolor": "crimson",
      "top": "tee",
      "topcolor": "crimson",
      "vest": "hi-vis-2",
      "pants": "duck-canvas",
-     "pantscolor": "navy",
-     "shoes": "steel-toe-brown",
-     "tools": "hvac",
+     "pantscolor": "crimson",
+     "shoes": "logger",
+     "tools": "drywall",
      "outer": "none",
-     "extras": "respirator",
+     "extras": "ear-muffs",
      "costume": "ape-mascot",
      "crew": "terrazzo"
     }
@@ -1861,16 +1863,16 @@
      "eyes": "olive-green",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "hi-vis-yellow",
+     "headcolor": "rust",
      "top": "tee",
      "topcolor": "rust",
      "vest": "hi-vis-3",
      "pants": "duck-canvas",
-     "pantscolor": "royal",
-     "shoes": "steel-toe-black",
-     "tools": "glazier",
+     "pantscolor": "rust",
+     "shoes": "wellington",
+     "tools": "hvac",
      "outer": "none",
-     "extras": "dust-mask",
+     "extras": "ear-plugs",
      "costume": "ape-mascot",
      "crew": "tilesetters"
     }
@@ -1889,16 +1891,16 @@
      "eyes": "green",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "safety-green",
+     "headcolor": "duck-brown",
      "top": "tee",
      "topcolor": "duck-brown",
      "vest": "surveyor",
      "pants": "duck-canvas",
-     "pantscolor": "steel-blue",
-     "shoes": "steel-toe-tan",
-     "tools": "roofer",
+     "pantscolor": "duck-brown",
+     "shoes": "hiker",
+     "tools": "glazier",
      "outer": "none",
-     "extras": "face-shield",
+     "extras": "dust-mask",
      "costume": "ape-mascot",
      "crew": "lathers"
     }
@@ -1917,16 +1919,16 @@
      "eyes": "emerald",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "forest",
+     "headcolor": "sand",
      "top": "tee",
      "topcolor": "sand",
      "vest": "tool-vest",
      "pants": "duck-canvas",
-     "pantscolor": "teal",
-     "shoes": "comp-toe-grey",
-     "tools": "concrete",
+     "pantscolor": "sand",
+     "shoes": "rubber-yellow",
+     "tools": "roofer",
      "outer": "none",
-     "extras": "welding-shield",
+     "extras": "respirator",
      "costume": "ape-mascot",
      "crew": "curtainwall"
     }
@@ -1945,16 +1947,16 @@
      "eyes": "grey-green",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "olive",
+     "headcolor": "charcoal",
      "top": "tee",
      "topcolor": "charcoal",
      "vest": "hi-vis-2",
      "pants": "duck-canvas",
-     "pantscolor": "crimson",
-     "shoes": "logger",
-     "tools": "rigger",
+     "pantscolor": "charcoal",
+     "shoes": "rubber-green",
+     "tools": "concrete",
      "outer": "none",
-     "extras": "knee-pads",
+     "extras": "full-face-apr",
      "costume": "ape-mascot",
      "crew": "waterproofers"
     }
@@ -1973,16 +1975,16 @@
      "eyes": "grey",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "slate",
+     "headcolor": "grey",
      "top": "tee",
      "topcolor": "grey",
      "vest": "hi-vis-3",
      "pants": "duck-canvas",
-     "pantscolor": "rust",
-     "shoes": "wellington",
-     "tools": "finisher",
+     "pantscolor": "grey",
+     "shoes": "sneaker-white",
+     "tools": "rigger",
      "outer": "none",
-     "extras": "elbow-pads",
+     "extras": "papr-hood",
      "costume": "ape-mascot",
      "crew": "firestop"
     }
@@ -2001,16 +2003,16 @@
      "eyes": "blue-grey",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "navy",
+     "headcolor": "stone",
      "top": "tee",
      "topcolor": "stone",
      "vest": "surveyor",
      "pants": "duck-canvas",
-     "pantscolor": "duck-brown",
-     "shoes": "hiker",
-     "tools": "basic",
+     "pantscolor": "stone",
+     "shoes": "sneaker-black",
+     "tools": "finisher",
      "outer": "none",
-     "extras": "tool-lanyard",
+     "extras": "supplied-air",
      "costume": "ape-mascot",
      "crew": "acoustic"
     }
@@ -2029,16 +2031,16 @@
      "eyes": "blue",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "royal",
+     "headcolor": "white",
      "top": "tee",
      "topcolor": "white",
      "vest": "tool-vest",
      "pants": "duck-canvas",
-     "pantscolor": "sand",
-     "shoes": "rubber-yellow",
-     "tools": "framing",
+     "pantscolor": "white",
+     "shoes": "sneaker-red",
+     "tools": "lineman",
      "outer": "none",
-     "extras": "radio",
+     "extras": "face-shield",
      "costume": "ape-mascot",
      "crew": "cladding"
     }
@@ -2057,16 +2059,16 @@
      "eyes": "deep-blue",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "steel-blue",
+     "headcolor": "hi-vis-orange",
      "top": "tee",
      "topcolor": "hi-vis-orange",
      "vest": "hi-vis-2",
      "pants": "duck-canvas",
-     "pantscolor": "charcoal",
-     "shoes": "rubber-green",
-     "tools": "electric",
+     "pantscolor": "hi-vis-orange",
+     "shoes": "sneaker-blue",
+     "tools": "sheet-metal",
      "outer": "none",
-     "extras": "headlamp",
+     "extras": "welding-shield",
      "costume": "ape-mascot",
      "crew": "shoring"
     }
@@ -2085,16 +2087,16 @@
      "eyes": "violet-grey",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "teal",
+     "headcolor": "hi-vis-yellow",
      "top": "tee",
      "topcolor": "hi-vis-yellow",
      "vest": "hi-vis-3",
      "pants": "duck-canvas",
-     "pantscolor": "grey",
-     "shoes": "sneaker-white",
-     "tools": "plumber",
+     "pantscolor": "hi-vis-yellow",
+     "shoes": "high-top",
+     "tools": "painter",
      "outer": "none",
-     "extras": "id-badge",
+     "extras": "knee-pads",
      "costume": "ape-mascot",
      "crew": "piling"
     }
@@ -2113,16 +2115,16 @@
      "eyes": "near-black",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "crimson",
+     "headcolor": "safety-green",
      "top": "tee",
      "topcolor": "safety-green",
      "vest": "surveyor",
      "pants": "duck-canvas",
-     "pantscolor": "stone",
-     "shoes": "sneaker-black",
-     "tools": "mason",
+     "pantscolor": "safety-green",
+     "shoes": "slip-on",
+     "tools": "millwright",
      "outer": "none",
-     "extras": "gloves",
+     "extras": "elbow-pads",
      "costume": "ape-mascot",
      "crew": "concrete-pump"
     }
@@ -2141,16 +2143,16 @@
      "eyes": "dark-brown",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "rust",
+     "headcolor": "forest",
      "top": "tee",
      "topcolor": "forest",
      "vest": "tool-vest",
      "pants": "duck-canvas",
-     "pantscolor": "safety-green",
-     "shoes": "sneaker-red",
-     "tools": "welder",
+     "pantscolor": "forest",
+     "shoes": "lineman",
+     "tools": "low-voltage",
      "outer": "none",
-     "extras": "none",
+     "extras": "tool-lanyard",
      "costume": "ape-mascot",
      "crew": "post-tension"
     }
@@ -2169,16 +2171,16 @@
      "eyes": "brown",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "duck-brown",
+     "headcolor": "olive",
      "top": "tee",
      "topcolor": "olive",
      "vest": "hi-vis-2",
      "pants": "duck-canvas",
-     "pantscolor": "forest",
-     "shoes": "sneaker-blue",
-     "tools": "surveyor",
+     "pantscolor": "olive",
+     "shoes": "met-guard",
+     "tools": "basic",
      "outer": "none",
-     "extras": "safety-glasses",
+     "extras": "radio",
      "costume": "ape-mascot",
      "crew": "precast"
     }
@@ -2197,16 +2199,16 @@
      "eyes": "light-brown",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "sand",
+     "headcolor": "slate",
      "top": "tee",
      "topcolor": "slate",
      "vest": "hi-vis-3",
      "pants": "duck-canvas",
-     "pantscolor": "olive",
-     "shoes": "high-top",
-     "tools": "drywall",
+     "pantscolor": "slate",
+     "shoes": "eh-rated",
+     "tools": "framing",
      "outer": "none",
-     "extras": "sunglasses",
+     "extras": "headlamp",
      "costume": "ape-mascot",
      "crew": "steel-erectors"
     }
@@ -2225,16 +2227,16 @@
      "eyes": "amber",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "charcoal",
+     "headcolor": "navy",
      "top": "tee",
      "topcolor": "navy",
      "vest": "surveyor",
      "pants": "duck-canvas",
-     "pantscolor": "slate",
-     "shoes": "slip-on",
-     "tools": "hvac",
+     "pantscolor": "navy",
+     "shoes": "puncture-sole",
+     "tools": "electric",
      "outer": "none",
-     "extras": "ear-muffs",
+     "extras": "id-badge",
      "costume": "ape-mascot",
      "crew": "decking"
     }
@@ -2253,16 +2255,16 @@
      "eyes": "hazel",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "grey",
+     "headcolor": "royal",
      "top": "tee",
      "topcolor": "royal",
      "vest": "tool-vest",
      "pants": "duck-canvas",
-     "pantscolor": "navy",
-     "shoes": "lineman",
-     "tools": "glazier",
+     "pantscolor": "royal",
+     "shoes": "insulated-pac",
+     "tools": "plumber",
      "outer": "none",
-     "extras": "respirator",
+     "extras": "gloves",
      "costume": "ape-mascot",
      "crew": "window-glazing"
     }
@@ -2281,16 +2283,16 @@
      "eyes": "olive-green",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "hi-vis-orange",
+     "headcolor": "steel-blue",
      "top": "tee",
      "topcolor": "steel-blue",
      "vest": "hi-vis-2",
      "pants": "duck-canvas",
-     "pantscolor": "royal",
+     "pantscolor": "steel-blue",
      "shoes": "steel-toe-brown",
-     "tools": "roofer",
+     "tools": "mason",
      "outer": "none",
-     "extras": "dust-mask",
+     "extras": "none",
      "costume": "ape-mascot",
      "crew": "bas-controls"
     }
@@ -2309,16 +2311,16 @@
      "eyes": "green",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "hi-vis-yellow",
+     "headcolor": "teal",
      "top": "tee",
      "topcolor": "teal",
      "vest": "hi-vis-3",
      "pants": "duck-canvas",
-     "pantscolor": "steel-blue",
+     "pantscolor": "teal",
      "shoes": "steel-toe-black",
-     "tools": "concrete",
+     "tools": "welder",
      "outer": "none",
-     "extras": "face-shield",
+     "extras": "safety-glasses",
      "costume": "ape-mascot",
      "crew": "fire-alarm"
     }
@@ -2337,16 +2339,16 @@
      "eyes": "emerald",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "safety-green",
+     "headcolor": "crimson",
      "top": "tee",
      "topcolor": "crimson",
      "vest": "surveyor",
      "pants": "duck-canvas",
-     "pantscolor": "teal",
+     "pantscolor": "crimson",
      "shoes": "steel-toe-tan",
-     "tools": "rigger",
+     "tools": "surveyor",
      "outer": "none",
-     "extras": "welding-shield",
+     "extras": "rx-safety-glasses",
      "costume": "ape-mascot",
      "crew": "security-sys"
     }
@@ -2365,16 +2367,16 @@
      "eyes": "grey-green",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "forest",
+     "headcolor": "rust",
      "top": "tee",
      "topcolor": "rust",
      "vest": "tool-vest",
      "pants": "duck-canvas",
-     "pantscolor": "crimson",
+     "pantscolor": "rust",
      "shoes": "comp-toe-grey",
-     "tools": "finisher",
+     "tools": "drywall",
      "outer": "none",
-     "extras": "knee-pads",
+     "extras": "sunglasses",
      "costume": "ape-mascot",
      "crew": "network-cabling"
     }
@@ -2393,16 +2395,16 @@
      "eyes": "grey",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "olive",
+     "headcolor": "duck-brown",
      "top": "tee",
      "topcolor": "duck-brown",
      "vest": "hi-vis-2",
      "pants": "duck-canvas",
-     "pantscolor": "rust",
+     "pantscolor": "duck-brown",
      "shoes": "logger",
-     "tools": "basic",
+     "tools": "hvac",
      "outer": "none",
-     "extras": "elbow-pads",
+     "extras": "ear-muffs",
      "costume": "ape-mascot",
      "crew": "fiber-splicers"
     }
@@ -2421,16 +2423,16 @@
      "eyes": "blue-grey",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "slate",
+     "headcolor": "sand",
      "top": "tee",
      "topcolor": "sand",
      "vest": "hi-vis-3",
      "pants": "duck-canvas",
-     "pantscolor": "duck-brown",
+     "pantscolor": "sand",
      "shoes": "wellington",
-     "tools": "framing",
+     "tools": "glazier",
      "outer": "none",
-     "extras": "tool-lanyard",
+     "extras": "ear-plugs",
      "costume": "ape-mascot",
      "crew": "data-center"
     }
@@ -2449,16 +2451,16 @@
      "eyes": "blue",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "navy",
+     "headcolor": "charcoal",
      "top": "tee",
      "topcolor": "charcoal",
      "vest": "surveyor",
      "pants": "duck-canvas",
-     "pantscolor": "sand",
+     "pantscolor": "charcoal",
      "shoes": "hiker",
-     "tools": "electric",
+     "tools": "roofer",
      "outer": "none",
-     "extras": "radio",
+     "extras": "dust-mask",
      "costume": "ape-mascot",
      "crew": "instrumentation"
     }
@@ -2477,16 +2479,16 @@
      "eyes": "deep-blue",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "royal",
+     "headcolor": "grey",
      "top": "tee",
      "topcolor": "grey",
      "vest": "tool-vest",
      "pants": "duck-canvas",
-     "pantscolor": "charcoal",
+     "pantscolor": "grey",
      "shoes": "rubber-yellow",
-     "tools": "plumber",
+     "tools": "concrete",
      "outer": "none",
-     "extras": "headlamp",
+     "extras": "respirator",
      "costume": "ape-mascot",
      "crew": "plc-techs"
     }
@@ -2505,16 +2507,16 @@
      "eyes": "violet-grey",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "steel-blue",
+     "headcolor": "stone",
      "top": "tee",
      "topcolor": "stone",
      "vest": "hi-vis-2",
      "pants": "duck-canvas",
-     "pantscolor": "grey",
+     "pantscolor": "stone",
      "shoes": "rubber-green",
-     "tools": "mason",
+     "tools": "rigger",
      "outer": "none",
-     "extras": "id-badge",
+     "extras": "full-face-apr",
      "costume": "ape-mascot",
      "crew": "robotics"
     }
@@ -2533,16 +2535,16 @@
      "eyes": "near-black",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "teal",
+     "headcolor": "white",
      "top": "tee",
      "topcolor": "white",
      "vest": "hi-vis-3",
      "pants": "duck-canvas",
-     "pantscolor": "stone",
+     "pantscolor": "white",
      "shoes": "sneaker-white",
-     "tools": "welder",
+     "tools": "finisher",
      "outer": "none",
-     "extras": "gloves",
+     "extras": "papr-hood",
      "costume": "ape-mascot",
      "crew": "automation-int"
     }
@@ -2561,16 +2563,16 @@
      "eyes": "dark-brown",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "crimson",
+     "headcolor": "hi-vis-orange",
      "top": "tee",
      "topcolor": "hi-vis-orange",
      "vest": "surveyor",
      "pants": "duck-canvas",
-     "pantscolor": "safety-green",
+     "pantscolor": "hi-vis-orange",
      "shoes": "sneaker-black",
-     "tools": "surveyor",
+     "tools": "lineman",
      "outer": "none",
-     "extras": "none",
+     "extras": "supplied-air",
      "costume": "ape-mascot",
      "crew": "cleanroom"
     }
@@ -2589,16 +2591,16 @@
      "eyes": "brown",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "rust",
+     "headcolor": "hi-vis-yellow",
      "top": "tee",
      "topcolor": "hi-vis-yellow",
      "vest": "tool-vest",
      "pants": "duck-canvas",
-     "pantscolor": "forest",
+     "pantscolor": "hi-vis-yellow",
      "shoes": "sneaker-red",
-     "tools": "drywall",
+     "tools": "sheet-metal",
      "outer": "none",
-     "extras": "safety-glasses",
+     "extras": "face-shield",
      "costume": "ape-mascot",
      "crew": "medical-gas"
     }
@@ -2617,16 +2619,16 @@
      "eyes": "light-brown",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "duck-brown",
+     "headcolor": "safety-green",
      "top": "tee",
      "topcolor": "safety-green",
      "vest": "hi-vis-2",
      "pants": "duck-canvas",
-     "pantscolor": "olive",
+     "pantscolor": "safety-green",
      "shoes": "sneaker-blue",
-     "tools": "hvac",
+     "tools": "painter",
      "outer": "none",
-     "extras": "sunglasses",
+     "extras": "welding-shield",
      "costume": "ape-mascot",
      "crew": "rail-track"
     }
@@ -2645,16 +2647,16 @@
      "eyes": "amber",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "sand",
+     "headcolor": "forest",
      "top": "tee",
      "topcolor": "forest",
      "vest": "hi-vis-3",
      "pants": "duck-canvas",
-     "pantscolor": "slate",
+     "pantscolor": "forest",
      "shoes": "high-top",
-     "tools": "glazier",
+     "tools": "millwright",
      "outer": "none",
-     "extras": "ear-muffs",
+     "extras": "knee-pads",
      "costume": "ape-mascot",
      "crew": "rail-signals"
     }
@@ -2673,16 +2675,16 @@
      "eyes": "hazel",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "charcoal",
+     "headcolor": "olive",
      "top": "tee",
      "topcolor": "olive",
      "vest": "surveyor",
      "pants": "duck-canvas",
-     "pantscolor": "navy",
+     "pantscolor": "olive",
      "shoes": "slip-on",
-     "tools": "roofer",
+     "tools": "low-voltage",
      "outer": "none",
-     "extras": "respirator",
+     "extras": "elbow-pads",
      "costume": "ape-mascot",
      "crew": "catenary"
     }
@@ -2701,16 +2703,16 @@
      "eyes": "olive-green",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "grey",
+     "headcolor": "slate",
      "top": "tee",
      "topcolor": "slate",
      "vest": "tool-vest",
      "pants": "duck-canvas",
-     "pantscolor": "royal",
+     "pantscolor": "slate",
      "shoes": "lineman",
-     "tools": "concrete",
+     "tools": "basic",
      "outer": "none",
-     "extras": "dust-mask",
+     "extras": "tool-lanyard",
      "costume": "ape-mascot",
      "crew": "transit-vehicle"
     }
@@ -2729,16 +2731,16 @@
      "eyes": "green",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "hi-vis-orange",
+     "headcolor": "navy",
      "top": "tee",
      "topcolor": "navy",
      "vest": "hi-vis-2",
      "pants": "duck-canvas",
-     "pantscolor": "steel-blue",
-     "shoes": "steel-toe-brown",
-     "tools": "rigger",
+     "pantscolor": "navy",
+     "shoes": "met-guard",
+     "tools": "framing",
      "outer": "none",
-     "extras": "face-shield",
+     "extras": "radio",
      "costume": "ape-mascot",
      "crew": "aviation-ground"
     }
@@ -2757,16 +2759,16 @@
      "eyes": "emerald",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "hi-vis-yellow",
+     "headcolor": "royal",
      "top": "tee",
      "topcolor": "royal",
      "vest": "hi-vis-3",
      "pants": "duck-canvas",
-     "pantscolor": "teal",
-     "shoes": "steel-toe-black",
-     "tools": "finisher",
+     "pantscolor": "royal",
+     "shoes": "eh-rated",
+     "tools": "electric",
      "outer": "none",
-     "extras": "welding-shield",
+     "extras": "headlamp",
      "costume": "ape-mascot",
      "crew": "airfield"
     }
@@ -2785,16 +2787,16 @@
      "eyes": "grey-green",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "safety-green",
+     "headcolor": "steel-blue",
      "top": "tee",
      "topcolor": "steel-blue",
      "vest": "surveyor",
      "pants": "duck-canvas",
-     "pantscolor": "crimson",
-     "shoes": "steel-toe-tan",
-     "tools": "basic",
+     "pantscolor": "steel-blue",
+     "shoes": "puncture-sole",
+     "tools": "plumber",
      "outer": "none",
-     "extras": "knee-pads",
+     "extras": "id-badge",
      "costume": "ape-mascot",
      "crew": "port-crane"
     }
@@ -2813,16 +2815,16 @@
      "eyes": "grey",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "forest",
+     "headcolor": "teal",
      "top": "tee",
      "topcolor": "teal",
      "vest": "tool-vest",
      "pants": "duck-canvas",
-     "pantscolor": "rust",
-     "shoes": "comp-toe-grey",
-     "tools": "framing",
+     "pantscolor": "teal",
+     "shoes": "insulated-pac",
+     "tools": "mason",
      "outer": "none",
-     "extras": "elbow-pads",
+     "extras": "gloves",
      "costume": "ape-mascot",
      "crew": "marine-terminal"
     }
@@ -2841,16 +2843,16 @@
      "eyes": "blue-grey",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "olive",
+     "headcolor": "crimson",
      "top": "tee",
      "topcolor": "crimson",
      "vest": "hi-vis-2",
      "pants": "duck-canvas",
-     "pantscolor": "duck-brown",
-     "shoes": "logger",
-     "tools": "electric",
+     "pantscolor": "crimson",
+     "shoes": "steel-toe-brown",
+     "tools": "welder",
      "outer": "none",
-     "extras": "tool-lanyard",
+     "extras": "none",
      "costume": "ape-mascot",
      "crew": "fleet-diesel"
     }
@@ -2869,16 +2871,16 @@
      "eyes": "blue",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "slate",
+     "headcolor": "rust",
      "top": "tee",
      "topcolor": "rust",
      "vest": "hi-vis-3",
      "pants": "duck-canvas",
-     "pantscolor": "sand",
-     "shoes": "wellington",
-     "tools": "plumber",
+     "pantscolor": "rust",
+     "shoes": "steel-toe-black",
+     "tools": "surveyor",
      "outer": "none",
-     "extras": "radio",
+     "extras": "safety-glasses",
      "costume": "ape-mascot",
      "crew": "bridge-inspect"
     }
@@ -2897,16 +2899,16 @@
      "eyes": "deep-blue",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "navy",
+     "headcolor": "duck-brown",
      "top": "tee",
      "topcolor": "duck-brown",
      "vest": "surveyor",
      "pants": "duck-canvas",
-     "pantscolor": "charcoal",
-     "shoes": "hiker",
-     "tools": "mason",
+     "pantscolor": "duck-brown",
+     "shoes": "steel-toe-tan",
+     "tools": "drywall",
      "outer": "none",
-     "extras": "headlamp",
+     "extras": "rx-safety-glasses",
      "costume": "ape-mascot",
      "crew": "asbestos"
     }
@@ -2925,16 +2927,16 @@
      "eyes": "violet-grey",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "royal",
+     "headcolor": "sand",
      "top": "tee",
      "topcolor": "sand",
      "vest": "tool-vest",
      "pants": "duck-canvas",
-     "pantscolor": "grey",
-     "shoes": "rubber-yellow",
-     "tools": "welder",
+     "pantscolor": "sand",
+     "shoes": "comp-toe-grey",
+     "tools": "hvac",
      "outer": "none",
-     "extras": "id-badge",
+     "extras": "sunglasses",
      "costume": "ape-mascot",
      "crew": "lead-abatement"
     }
@@ -2953,16 +2955,16 @@
      "eyes": "near-black",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "steel-blue",
+     "headcolor": "charcoal",
      "top": "tee",
      "topcolor": "charcoal",
      "vest": "hi-vis-2",
      "pants": "duck-canvas",
-     "pantscolor": "stone",
-     "shoes": "rubber-green",
-     "tools": "surveyor",
+     "pantscolor": "charcoal",
+     "shoes": "logger",
+     "tools": "glazier",
      "outer": "none",
-     "extras": "gloves",
+     "extras": "ear-muffs",
      "costume": "ape-mascot",
      "crew": "mold-remediation"
     }
@@ -2981,16 +2983,16 @@
      "eyes": "dark-brown",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "teal",
+     "headcolor": "grey",
      "top": "tee",
      "topcolor": "grey",
      "vest": "hi-vis-3",
      "pants": "duck-canvas",
-     "pantscolor": "safety-green",
-     "shoes": "sneaker-white",
-     "tools": "drywall",
+     "pantscolor": "grey",
+     "shoes": "wellington",
+     "tools": "roofer",
      "outer": "none",
-     "extras": "none",
+     "extras": "ear-plugs",
      "costume": "ape-mascot",
      "crew": "spill-response"
     }
@@ -3009,16 +3011,16 @@
      "eyes": "brown",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "crimson",
+     "headcolor": "stone",
      "top": "tee",
      "topcolor": "stone",
      "vest": "surveyor",
      "pants": "duck-canvas",
-     "pantscolor": "forest",
-     "shoes": "sneaker-black",
-     "tools": "hvac",
+     "pantscolor": "stone",
+     "shoes": "hiker",
+     "tools": "concrete",
      "outer": "none",
-     "extras": "safety-glasses",
+     "extras": "dust-mask",
      "costume": "ape-mascot",
      "crew": "confined-space"
     }
@@ -3037,16 +3039,16 @@
      "eyes": "light-brown",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "rust",
+     "headcolor": "white",
      "top": "tee",
      "topcolor": "white",
      "vest": "tool-vest",
      "pants": "duck-canvas",
-     "pantscolor": "olive",
-     "shoes": "sneaker-red",
-     "tools": "glazier",
+     "pantscolor": "white",
+     "shoes": "rubber-yellow",
+     "tools": "rigger",
      "outer": "none",
-     "extras": "sunglasses",
+     "extras": "respirator",
      "costume": "ape-mascot",
      "crew": "high-angle"
     }
@@ -3065,16 +3067,16 @@
      "eyes": "amber",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "duck-brown",
+     "headcolor": "hi-vis-orange",
      "top": "tee",
      "topcolor": "hi-vis-orange",
      "vest": "hi-vis-2",
      "pants": "duck-canvas",
-     "pantscolor": "slate",
-     "shoes": "sneaker-blue",
-     "tools": "roofer",
+     "pantscolor": "hi-vis-orange",
+     "shoes": "rubber-green",
+     "tools": "finisher",
      "outer": "none",
-     "extras": "ear-muffs",
+     "extras": "full-face-apr",
      "costume": "ape-mascot",
      "crew": "site-safety"
     }
@@ -3093,16 +3095,16 @@
      "eyes": "hazel",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "sand",
+     "headcolor": "hi-vis-yellow",
      "top": "tee",
      "topcolor": "hi-vis-yellow",
      "vest": "hi-vis-3",
      "pants": "duck-canvas",
-     "pantscolor": "navy",
-     "shoes": "high-top",
-     "tools": "concrete",
+     "pantscolor": "hi-vis-yellow",
+     "shoes": "sneaker-white",
+     "tools": "lineman",
      "outer": "none",
-     "extras": "respirator",
+     "extras": "papr-hood",
      "costume": "ape-mascot",
      "crew": "industrial-clean"
     }
@@ -3121,16 +3123,16 @@
      "eyes": "olive-green",
      "facialhair": "none",
      "headwear": "hard-cap",
-     "headcolor": "charcoal",
+     "headcolor": "safety-green",
      "top": "tee",
      "topcolor": "safety-green",
      "vest": "surveyor",
      "pants": "duck-canvas",
-     "pantscolor": "royal",
-     "shoes": "slip-on",
-     "tools": "rigger",
+     "pantscolor": "safety-green",
+     "shoes": "sneaker-black",
+     "tools": "sheet-metal",
      "outer": "none",
-     "extras": "dust-mask",
+     "extras": "supplied-air",
      "costume": "ape-mascot",
      "crew": "survey-drone"
     }
@@ -3147,6 +3149,7 @@
     {
      "id": "short-slim",
      "glyph": "Ss",
+     "name": "Short · slim",
      "scale": [
       0.88,
       0.9,
@@ -3156,6 +3159,7 @@
     {
      "id": "short-standard",
      "glyph": "Sm",
+     "name": "Short · standard",
      "scale": [
       1.0,
       0.9,
@@ -3165,6 +3169,7 @@
     {
      "id": "short-broad",
      "glyph": "Sb",
+     "name": "Short · broad",
      "scale": [
       1.12,
       0.9,
@@ -3174,6 +3179,7 @@
     {
      "id": "short-heavy",
      "glyph": "Sh",
+     "name": "Short · heavy",
      "scale": [
       1.24,
       0.9,
@@ -3183,6 +3189,7 @@
     {
      "id": "average-slim",
      "glyph": "As",
+     "name": "Average · slim",
      "scale": [
       0.88,
       1.0,
@@ -3192,6 +3199,7 @@
     {
      "id": "average-standard",
      "glyph": "Am",
+     "name": "Average · standard",
      "scale": [
       1.0,
       1.0,
@@ -3201,6 +3209,7 @@
     {
      "id": "average-broad",
      "glyph": "Ab",
+     "name": "Average · broad",
      "scale": [
       1.12,
       1.0,
@@ -3210,6 +3219,7 @@
     {
      "id": "average-heavy",
      "glyph": "Ah",
+     "name": "Average · heavy",
      "scale": [
       1.24,
       1.0,
@@ -3219,6 +3229,7 @@
     {
      "id": "tall-slim",
      "glyph": "Ts",
+     "name": "Tall · slim",
      "scale": [
       0.88,
       1.08,
@@ -3228,6 +3239,7 @@
     {
      "id": "tall-standard",
      "glyph": "Tm",
+     "name": "Tall · standard",
      "scale": [
       1.0,
       1.08,
@@ -3237,6 +3249,7 @@
     {
      "id": "tall-broad",
      "glyph": "Tb",
+     "name": "Tall · broad",
      "scale": [
       1.12,
       1.08,
@@ -3246,6 +3259,7 @@
     {
      "id": "tall-heavy",
      "glyph": "Th",
+     "name": "Tall · heavy",
      "scale": [
       1.24,
       1.08,
@@ -3255,6 +3269,7 @@
     {
      "id": "towering-slim",
      "glyph": "Xs",
+     "name": "Towering · slim",
      "scale": [
       0.88,
       1.16,
@@ -3264,6 +3279,7 @@
     {
      "id": "towering-standard",
      "glyph": "Xm",
+     "name": "Towering · standard",
      "scale": [
       1.0,
       1.16,
@@ -3273,6 +3289,7 @@
     {
      "id": "towering-broad",
      "glyph": "Xb",
+     "name": "Towering · broad",
      "scale": [
       1.12,
       1.16,
@@ -3282,6 +3299,7 @@
     {
      "id": "towering-heavy",
      "glyph": "Xh",
+     "name": "Towering · heavy",
      "scale": [
       1.24,
       1.16,
@@ -3298,75 +3316,93 @@
    "options": [
     {
      "id": "tone-01",
-     "value": "#f6ddc8"
+     "value": "#f6ddc8",
+     "name": "Tone 01"
     },
     {
      "id": "tone-02",
-     "value": "#f0d3ba"
+     "value": "#f0d3ba",
+     "name": "Tone 02"
     },
     {
      "id": "tone-03",
-     "value": "#ebc9ad"
+     "value": "#ebc9ad",
+     "name": "Tone 03"
     },
     {
      "id": "tone-04",
-     "value": "#e5bfa0"
+     "value": "#e5bfa0",
+     "name": "Tone 04"
     },
     {
      "id": "tone-05",
-     "value": "#e0b592"
+     "value": "#e0b592",
+     "name": "Tone 05"
     },
     {
      "id": "tone-06",
-     "value": "#daab84"
+     "value": "#daab84",
+     "name": "Tone 06"
     },
     {
      "id": "tone-07",
-     "value": "#d4a177"
+     "value": "#d4a177",
+     "name": "Tone 07"
     },
     {
      "id": "tone-08",
-     "value": "#cf976a"
+     "value": "#cf976a",
+     "name": "Tone 08"
     },
     {
      "id": "tone-09",
-     "value": "#c98d5c"
+     "value": "#c98d5c",
+     "name": "Tone 09"
     },
     {
      "id": "tone-10",
-     "value": "#b97a4b"
+     "value": "#b97a4b",
+     "name": "Tone 10"
     },
     {
      "id": "tone-11",
-     "value": "#a97045"
+     "value": "#a97045",
+     "name": "Tone 11"
     },
     {
      "id": "tone-12",
-     "value": "#9a6640"
+     "value": "#9a6640",
+     "name": "Tone 12"
     },
     {
      "id": "tone-13",
-     "value": "#8a5c3a"
+     "value": "#8a5c3a",
+     "name": "Tone 13"
     },
     {
      "id": "tone-14",
-     "value": "#7a5234"
+     "value": "#7a5234",
+     "name": "Tone 14"
     },
     {
      "id": "tone-15",
-     "value": "#6b482f"
+     "value": "#6b482f",
+     "name": "Tone 15"
     },
     {
      "id": "tone-16",
-     "value": "#5b3e29"
+     "value": "#5b3e29",
+     "name": "Tone 16"
     },
     {
      "id": "tone-17",
-     "value": "#4c3424"
+     "value": "#4c3424",
+     "name": "Tone 17"
     },
     {
      "id": "tone-18",
-     "value": "#3c2a1e"
+     "value": "#3c2a1e",
+     "name": "Tone 18"
     }
    ]
   },
@@ -3378,67 +3414,93 @@
    "options": [
     {
      "id": "bald",
-     "glyph": "–"
+     "glyph": "–",
+     "name": "Shaved"
     },
     {
      "id": "buzz",
-     "glyph": "bz"
+     "glyph": "bz",
+     "name": "Buzz cut"
     },
     {
      "id": "crew",
-     "glyph": "cr"
+     "glyph": "cr",
+     "name": "Crew cut"
     },
     {
      "id": "short",
-     "glyph": "sh"
+     "glyph": "sh",
+     "name": "Short"
     },
     {
      "id": "side-part",
-     "glyph": "sp"
+     "glyph": "sp",
+     "name": "Side part"
     },
     {
      "id": "waves",
-     "glyph": "wv"
+     "glyph": "wv",
+     "name": "Waves"
     },
     {
      "id": "curls",
-     "glyph": "cu"
+     "glyph": "cu",
+     "name": "Curls"
     },
     {
      "id": "afro",
-     "glyph": "af"
+     "glyph": "af",
+     "name": "Afro"
     },
     {
      "id": "bob",
-     "glyph": "bo"
+     "glyph": "bo",
+     "name": "Bob"
     },
     {
      "id": "bun",
-     "glyph": "bn"
+     "glyph": "bn",
+     "name": "Bun"
     },
     {
      "id": "ponytail",
-     "glyph": "pt"
+     "glyph": "pt",
+     "name": "Ponytail"
     },
     {
      "id": "braids",
-     "glyph": "br"
+     "glyph": "br",
+     "name": "Braids"
     },
     {
      "id": "locs",
-     "glyph": "lc"
+     "glyph": "lc",
+     "name": "Locs"
     },
     {
      "id": "mohawk",
-     "glyph": "mo"
+     "glyph": "mo",
+     "name": "Mohawk"
     },
     {
      "id": "long",
-     "glyph": "lg"
+     "glyph": "lg",
+     "name": "Long"
     },
     {
      "id": "undercut",
-     "glyph": "uc"
+     "glyph": "uc",
+     "name": "Undercut"
+    },
+    {
+     "id": "cornrows",
+     "glyph": "co",
+     "name": "Cornrows"
+    },
+    {
+     "id": "twists",
+     "glyph": "tw",
+     "name": "Twists"
     }
    ]
   },
@@ -3450,67 +3512,83 @@
    "options": [
     {
      "id": "black",
-     "value": "#141210"
+     "value": "#141210",
+     "name": "Black"
     },
     {
      "id": "soft-black",
-     "value": "#241f1c"
+     "value": "#241f1c",
+     "name": "Soft black"
     },
     {
      "id": "dark-brown",
-     "value": "#3a2a1c"
+     "value": "#3a2a1c",
+     "name": "Dark brown"
     },
     {
      "id": "brown",
-     "value": "#553b24"
+     "value": "#553b24",
+     "name": "Brown"
     },
     {
      "id": "chestnut",
-     "value": "#6c4a2b"
+     "value": "#6c4a2b",
+     "name": "Chestnut"
     },
     {
      "id": "auburn",
-     "value": "#7a3b22"
+     "value": "#7a3b22",
+     "name": "Auburn"
     },
     {
      "id": "red",
-     "value": "#933a24"
+     "value": "#933a24",
+     "name": "Red"
     },
     {
      "id": "ginger",
-     "value": "#b55a2c"
+     "value": "#b55a2c",
+     "name": "Ginger"
     },
     {
      "id": "dark-blond",
-     "value": "#8a6b3e"
+     "value": "#8a6b3e",
+     "name": "Dark blond"
     },
     {
      "id": "blond",
-     "value": "#c2a05e"
+     "value": "#c2a05e",
+     "name": "Blond"
     },
     {
      "id": "platinum",
-     "value": "#ddd0b0"
+     "value": "#ddd0b0",
+     "name": "Platinum"
     },
     {
      "id": "grey",
-     "value": "#8d8d8d"
+     "value": "#8d8d8d",
+     "name": "Grey"
     },
     {
      "id": "silver",
-     "value": "#b9bcbe"
+     "value": "#b9bcbe",
+     "name": "Silver"
     },
     {
      "id": "white",
-     "value": "#e8e8e6"
+     "value": "#e8e8e6",
+     "name": "White"
     },
     {
      "id": "dyed-blue",
-     "value": "#2e5f8a"
+     "value": "#2e5f8a",
+     "name": "Dyed blue"
     },
     {
      "id": "dyed-green",
-     "value": "#2f6b4a"
+     "value": "#2f6b4a",
+     "name": "Dyed green"
     }
    ]
   },
@@ -3522,63 +3600,78 @@
    "options": [
     {
      "id": "dark-brown",
-     "value": "#3a2417"
+     "value": "#3a2417",
+     "name": "Dark brown"
     },
     {
      "id": "brown",
-     "value": "#5b3a22"
+     "value": "#5b3a22",
+     "name": "Brown"
     },
     {
      "id": "light-brown",
-     "value": "#7a512e"
+     "value": "#7a512e",
+     "name": "Light brown"
     },
     {
      "id": "amber",
-     "value": "#9c6b2e"
+     "value": "#9c6b2e",
+     "name": "Amber"
     },
     {
      "id": "hazel",
-     "value": "#7a6a35"
+     "value": "#7a6a35",
+     "name": "Hazel"
     },
     {
      "id": "olive-green",
-     "value": "#5f6b3a"
+     "value": "#5f6b3a",
+     "name": "Olive green"
     },
     {
      "id": "green",
-     "value": "#3f7048"
+     "value": "#3f7048",
+     "name": "Green"
     },
     {
      "id": "emerald",
-     "value": "#2e7a5a"
+     "value": "#2e7a5a",
+     "name": "Emerald"
     },
     {
      "id": "grey-green",
-     "value": "#5f7a6a"
+     "value": "#5f7a6a",
+     "name": "Grey green"
     },
     {
      "id": "grey",
-     "value": "#6f7a80"
+     "value": "#6f7a80",
+     "name": "Grey"
     },
     {
      "id": "blue-grey",
-     "value": "#5a7086"
+     "value": "#5a7086",
+     "name": "Blue grey"
     },
     {
      "id": "blue",
-     "value": "#3f6690"
+     "value": "#3f6690",
+     "name": "Blue"
     },
     {
      "id": "deep-blue",
-     "value": "#2e4f7e"
+     "value": "#2e4f7e",
+     "name": "Deep blue"
     },
     {
      "id": "violet-grey",
-     "value": "#6a5f7e"
+     "value": "#6a5f7e",
+     "name": "Violet grey"
     },
     {
      "id": "near-black",
-     "value": "#241a12"
+     "value": "#241a12",
+     "name": "Near black"
     }
    ]
   },
@@ -3590,63 +3683,98 @@
    "options": [
     {
      "id": "none",
-     "glyph": "–"
+     "glyph": "–",
+     "name": "Clean shaven"
     },
     {
      "id": "stubble",
-     "glyph": "st"
+     "glyph": "st",
+     "name": "Stubble"
     },
     {
      "id": "light-mustache",
-     "glyph": "lm"
+     "glyph": "lm",
+     "name": "Light moustache"
     },
     {
      "id": "mustache",
-     "glyph": "mu"
+     "glyph": "mu",
+     "name": "Moustache"
     },
     {
      "id": "handlebar",
-     "glyph": "hb"
+     "glyph": "hb",
+     "name": "Handlebar"
     },
     {
      "id": "chin-strap",
-     "glyph": "cs"
+     "glyph": "cs",
+     "name": "Chin strap"
     },
     {
      "id": "soul-patch",
-     "glyph": "sp"
+     "glyph": "sp",
+     "name": "Soul patch"
     },
     {
      "id": "goatee",
-     "glyph": "go"
+     "glyph": "go",
+     "name": "Goatee"
     },
     {
      "id": "circle-beard",
-     "glyph": "cb"
+     "glyph": "cb",
+     "name": "Circle beard"
     },
     {
      "id": "short-beard",
-     "glyph": "sb"
+     "glyph": "sb",
+     "name": "Short beard"
     },
     {
      "id": "full-beard",
-     "glyph": "fb"
+     "glyph": "fb",
+     "name": "Full beard"
     },
     {
      "id": "long-beard",
-     "glyph": "lb"
+     "glyph": "lb",
+     "name": "Long beard"
     },
     {
      "id": "mutton-chops",
-     "glyph": "mc"
+     "glyph": "mc",
+     "name": "Mutton chops"
     },
     {
      "id": "walrus",
-     "glyph": "wa"
+     "glyph": "wa",
+     "name": "Walrus"
     },
     {
      "id": "garibaldi",
-     "glyph": "ga"
+     "glyph": "ga",
+     "name": "Garibaldi"
+    },
+    {
+     "id": "van-dyke",
+     "glyph": "vd",
+     "name": "Van Dyke"
+    },
+    {
+     "id": "chevron",
+     "glyph": "ch",
+     "name": "Chevron"
+    },
+    {
+     "id": "braided-beard",
+     "glyph": "bb",
+     "name": "Braided beard"
+    },
+    {
+     "id": "beard-net",
+     "glyph": "bn",
+     "name": "Beard net"
     }
    ]
   },
@@ -3658,67 +3786,123 @@
    "options": [
     {
      "id": "none",
-     "glyph": "–"
+     "glyph": "–",
+     "name": "Bare head",
+     "note": "No head protection: the classroom, the office and the locker, and nowhere a hard-hat sign is posted."
     },
     {
      "id": "hard-cap",
-     "glyph": "hc"
+     "glyph": "hc",
+     "name": "Cap-style hard hat",
+     "note": "The everyday shell against the falling object and the low steel overhead."
     },
     {
      "id": "full-brim",
-     "glyph": "fu"
+     "glyph": "fu",
+     "name": "Full-brim hard hat",
+     "note": "A brim all the way round carries rain and sun off the neck as well as taking the overhead hit."
     },
     {
      "id": "climbing",
-     "glyph": "cl"
+     "glyph": "cl",
+     "name": "Climbing-style helmet",
+     "note": "A chin strap and a deeper shell, for work at height where a hat that comes off is a hat that is gone."
     },
     {
      "id": "vintage",
-     "glyph": "vi"
+     "glyph": "vi",
+     "name": "Old-pattern shell",
+     "note": "The tall pre-war shell, kept for the parade and the photographs rather than the deck."
     },
     {
      "id": "carbon",
-     "glyph": "ca"
+     "glyph": "ca",
+     "name": "Composite shell",
+     "note": "A light shell for the long shift, where the weight of the hat is the complaint by hour eight."
     },
     {
      "id": "ball-cap",
-     "glyph": "bc"
+     "glyph": "bc",
+     "name": "Ball cap",
+     "note": "Cloth only: sun off the face where nothing overhead can fall."
     },
     {
      "id": "ball-cap-back",
-     "glyph": "bb"
+     "glyph": "bb",
+     "name": "Ball cap, reversed",
+     "note": "Worn backwards so a welding hood, a face shield or a scope can sit square."
     },
     {
      "id": "flat-cap",
-     "glyph": "fc"
+     "glyph": "fc",
+     "name": "Flat cap",
+     "note": "Cloth and low-brimmed, for the shop and the walk to it."
     },
     {
      "id": "beanie",
-     "glyph": "be"
+     "glyph": "be",
+     "name": "Beanie",
+     "note": "Knit warmth for cold work with no overhead hazard."
     },
     {
      "id": "bucket",
-     "glyph": "bu"
+     "glyph": "bu",
+     "name": "Bucket hat",
+     "note": "Brimmed all round against sun and glare on open ground, the survey line included."
     },
     {
      "id": "welding-cap",
-     "glyph": "we"
+     "glyph": "we",
+     "name": "Welding cap",
+     "note": "A cotton crown under the hood, taking spark and spatter off the scalp."
     },
     {
      "id": "visor",
-     "glyph": "vs"
+     "glyph": "vs",
+     "name": "Visor",
+     "note": "Brim and sweatband with the crown left open, for heat and glare indoors."
     },
     {
      "id": "headband",
-     "glyph": "hb"
+     "glyph": "hb",
+     "name": "Headband",
+     "note": "Keeps sweat out of the eyes and off the inside of a safety lens."
     },
     {
      "id": "bandana",
-     "glyph": "ba"
+     "glyph": "ba",
+     "name": "Bandana",
+     "note": "Cloth over the scalp, worn under the hood or under the shell."
     },
     {
      "id": "winter-liner",
-     "glyph": "wl"
+     "glyph": "wl",
+     "name": "Winter liner",
+     "note": "An insulated liner for cold work; on site it belongs under a shell, not instead of one."
+    },
+    {
+     "id": "vented-cap",
+     "glyph": "vt",
+     "name": "Vented hard hat",
+     "note": "Vents for heat, and conductive by design: a vented shell carries no electrical rating."
+    },
+    {
+     "id": "hard-cap-liner",
+     "glyph": "hl",
+     "name": "Hard hat over liner",
+     "note": "The cold-weather assembly: the insulated liner underneath, the shell still doing the protecting."
+    },
+    {
+     "id": "sun-shade",
+     "glyph": "ss",
+     "name": "Hard hat with sun shade",
+     "note": "A brim-and-neck shade clipped to the shell, for open ground in heat-illness weather."
+    },
+    {
+     "id": "bump-cap",
+     "glyph": "bp",
+     "name": "Bump cap",
+     "note": "A thin shell for pipe racks and low clearances; it is not impact-rated and never stands in for a hard hat."
     }
    ]
   },
@@ -3730,67 +3914,93 @@
    "options": [
     {
      "id": "hi-vis-orange",
-     "value": "#e8722a"
+     "value": "#e8722a",
+     "name": "Hi vis orange"
     },
     {
      "id": "hi-vis-yellow",
-     "value": "#d9c22e"
+     "value": "#d9c22e",
+     "name": "Hi vis yellow"
     },
     {
      "id": "safety-green",
-     "value": "#7ac142"
+     "value": "#7ac142",
+     "name": "Safety green"
     },
     {
      "id": "forest",
-     "value": "#3c6b45"
+     "value": "#3c6b45",
+     "name": "Forest"
     },
     {
      "id": "olive",
-     "value": "#5b6238"
+     "value": "#5b6238",
+     "name": "Olive"
     },
     {
      "id": "slate",
-     "value": "#4a5a64"
+     "value": "#4a5a64",
+     "name": "Slate"
     },
     {
      "id": "navy",
-     "value": "#2c3e5a"
+     "value": "#2c3e5a",
+     "name": "Navy"
     },
     {
      "id": "royal",
-     "value": "#2f4d8a"
+     "value": "#2f4d8a",
+     "name": "Royal"
     },
     {
      "id": "steel-blue",
-     "value": "#4a7a96"
+     "value": "#4a7a96",
+     "name": "Steel blue"
     },
     {
      "id": "teal",
-     "value": "#2f6f6a"
+     "value": "#2f6f6a",
+     "name": "Teal"
     },
     {
      "id": "crimson",
-     "value": "#a03a34"
+     "value": "#a03a34",
+     "name": "Crimson"
     },
     {
      "id": "rust",
-     "value": "#9c5a30"
+     "value": "#9c5a30",
+     "name": "Rust"
     },
     {
      "id": "duck-brown",
-     "value": "#a5793f"
+     "value": "#a5793f",
+     "name": "Duck brown"
     },
     {
      "id": "sand",
-     "value": "#c2a878"
+     "value": "#c2a878",
+     "name": "Sand"
     },
     {
      "id": "charcoal",
-     "value": "#33363a"
+     "value": "#33363a",
+     "name": "Charcoal"
     },
     {
      "id": "grey",
-     "value": "#6c7276"
+     "value": "#6c7276",
+     "name": "Grey"
+    },
+    {
+     "id": "stone",
+     "value": "#9a978c",
+     "name": "Stone"
+    },
+    {
+     "id": "white",
+     "value": "#e6e6e2",
+     "name": "White"
     }
    ]
   },
@@ -3802,67 +4012,111 @@
    "options": [
     {
      "id": "tee",
-     "glyph": "te"
+     "glyph": "te",
+     "name": "Tee"
     },
     {
      "id": "long-sleeve",
-     "glyph": "ls"
+     "glyph": "ls",
+     "name": "Long sleeve"
     },
     {
      "id": "henley",
-     "glyph": "he"
+     "glyph": "he",
+     "name": "Henley"
     },
     {
      "id": "polo",
-     "glyph": "po"
+     "glyph": "po",
+     "name": "Polo"
     },
     {
      "id": "flannel",
-     "glyph": "fl"
+     "glyph": "fl",
+     "name": "Flannel"
     },
     {
      "id": "hoodie",
-     "glyph": "ho"
+     "glyph": "ho",
+     "name": "Hoodie"
     },
     {
      "id": "sweatshirt",
-     "glyph": "sw"
+     "glyph": "sw",
+     "name": "Sweatshirt"
     },
     {
      "id": "denim-jacket",
-     "glyph": "dj"
+     "glyph": "dj",
+     "name": "Denim jacket"
     },
     {
      "id": "chore-coat",
-     "glyph": "cc"
+     "glyph": "cc",
+     "name": "Chore coat"
     },
     {
      "id": "coveralls",
-     "glyph": "co"
+     "glyph": "co",
+     "name": "Coveralls",
+     "note": "One piece over the clothes, keeping dust and spatter off what goes home in the truck."
     },
     {
      "id": "hi-vis-tee",
-     "glyph": "hv"
+     "glyph": "hv",
+     "name": "Hi-vis tee",
+     "note": "High-visibility in short sleeve; a short-sleeved garment cannot carry the highest visibility class on its own."
     },
     {
      "id": "tank",
-     "glyph": "ta"
+     "glyph": "ta",
+     "name": "Tank"
     },
     {
      "id": "thermal",
-     "glyph": "th"
+     "glyph": "th",
+     "name": "Thermal base layer",
+     "note": "The layer under everything else when the work is cold and standing still."
     },
     {
      "id": "rain-shell",
-     "glyph": "ra"
+     "glyph": "ra",
+     "name": "Rain shell",
+     "note": "A waterproof layer over the working clothes for a wet shift."
     },
     {
      "id": "fleece",
-     "glyph": "fe"
+     "glyph": "fe",
+     "name": "Fleece"
     },
     {
      "id": "work-shirt",
-     "glyph": "ws"
+     "glyph": "ws",
+     "name": "Work shirt"
+    },
+    {
+     "id": "fr-shirt",
+     "glyph": "fs",
+     "name": "Flame-resistant shirt",
+     "note": "Daily wear where a flash fire or an arc is possible, so the shirt does not melt into the burn."
+    },
+    {
+     "id": "hi-vis-long-sleeve",
+     "glyph": "hl",
+     "name": "Hi-vis long sleeve",
+     "note": "Sleeved high-visibility, the piece a top-class ensemble needs and a vest alone cannot supply."
+    },
+    {
+     "id": "sun-hoodie",
+     "glyph": "sn",
+     "name": "Sun hoodie",
+     "note": "A light hooded sun shirt: cover beats sunscreen across a ten-hour outdoor shift."
+    },
+    {
+     "id": "smock",
+     "glyph": "sm",
+     "name": "Smock",
+     "note": "A lint-controlled layer for cleanroom and finishing work, where the hazard is what the member sheds."
     }
    ]
   },
@@ -3874,75 +4128,93 @@
    "options": [
     {
      "id": "hi-vis-orange",
-     "value": "#e8722a"
+     "value": "#e8722a",
+     "name": "Hi vis orange"
     },
     {
      "id": "hi-vis-yellow",
-     "value": "#d9c22e"
+     "value": "#d9c22e",
+     "name": "Hi vis yellow"
     },
     {
      "id": "safety-green",
-     "value": "#7ac142"
+     "value": "#7ac142",
+     "name": "Safety green"
     },
     {
      "id": "forest",
-     "value": "#3c6b45"
+     "value": "#3c6b45",
+     "name": "Forest"
     },
     {
      "id": "olive",
-     "value": "#5b6238"
+     "value": "#5b6238",
+     "name": "Olive"
     },
     {
      "id": "slate",
-     "value": "#4a5a64"
+     "value": "#4a5a64",
+     "name": "Slate"
     },
     {
      "id": "navy",
-     "value": "#2c3e5a"
+     "value": "#2c3e5a",
+     "name": "Navy"
     },
     {
      "id": "royal",
-     "value": "#2f4d8a"
+     "value": "#2f4d8a",
+     "name": "Royal"
     },
     {
      "id": "steel-blue",
-     "value": "#4a7a96"
+     "value": "#4a7a96",
+     "name": "Steel blue"
     },
     {
      "id": "teal",
-     "value": "#2f6f6a"
+     "value": "#2f6f6a",
+     "name": "Teal"
     },
     {
      "id": "crimson",
-     "value": "#a03a34"
+     "value": "#a03a34",
+     "name": "Crimson"
     },
     {
      "id": "rust",
-     "value": "#9c5a30"
+     "value": "#9c5a30",
+     "name": "Rust"
     },
     {
      "id": "duck-brown",
-     "value": "#a5793f"
+     "value": "#a5793f",
+     "name": "Duck brown"
     },
     {
      "id": "sand",
-     "value": "#c2a878"
+     "value": "#c2a878",
+     "name": "Sand"
     },
     {
      "id": "charcoal",
-     "value": "#33363a"
+     "value": "#33363a",
+     "name": "Charcoal"
     },
     {
      "id": "grey",
-     "value": "#6c7276"
+     "value": "#6c7276",
+     "name": "Grey"
     },
     {
      "id": "stone",
-     "value": "#9a978c"
+     "value": "#9a978c",
+     "name": "Stone"
     },
     {
      "id": "white",
-     "value": "#e6e6e2"
+     "value": "#e6e6e2",
+     "name": "White"
     }
    ]
   },
@@ -3954,63 +4226,123 @@
    "options": [
     {
      "id": "none",
-     "glyph": "–"
+     "glyph": "–",
+     "name": "No vest",
+     "note": "Shop and indoor work, where nothing moving has to see you first."
+    },
+    {
+     "id": "hi-vis-1",
+     "glyph": "v1",
+     "name": "Hi-vis, lowest class",
+     "note": "The least background material and tape, for off-road work away from moving traffic."
     },
     {
      "id": "hi-vis-2",
-     "glyph": "v2"
+     "glyph": "v2",
+     "name": "Hi-vis, roadway class",
+     "note": "The roadway vest: more background and tape, for traffic and for plant yards where equipment moves."
     },
     {
      "id": "hi-vis-3",
-     "glyph": "v3"
+     "glyph": "v3",
+     "name": "Hi-vis, highest class",
+     "note": "The largest vest in the rack, worn with sleeves or hi-vis trousers to make the highest-class ensemble for night work."
     },
     {
      "id": "surveyor",
-     "glyph": "su"
+     "glyph": "su",
+     "name": "Surveyor vest",
+     "note": "Vertical tape and pockets deep enough for a field book and a prism."
     },
     {
      "id": "harness",
-     "glyph": "ha"
+     "glyph": "ha",
+     "name": "Fall-arrest harness",
+     "note": "Full-body harness with the dorsal D-ring between the shoulder blades, which is the fall-arrest ring."
+    },
+    {
+     "id": "harness-position",
+     "glyph": "hp",
+     "name": "Positioning harness",
+     "note": "Hip D-rings for leaning back on rebar or a pole; work positioning is not fall arrest and needs its own line."
+    },
+    {
+     "id": "harness-suspension",
+     "glyph": "hs",
+     "name": "Retrieval harness",
+     "note": "Shoulder D-rings for a vertical lift, the harness an attendant hauls an entrant out of a hole with."
+    },
+    {
+     "id": "harness-ladder",
+     "glyph": "hl",
+     "name": "Ladder-climb harness",
+     "note": "A sternal D-ring at the chest for a ladder rail or cable climb system."
     },
     {
      "id": "tool-vest",
-     "glyph": "to"
+     "glyph": "to",
+     "name": "Tool vest",
+     "note": "Pockets instead of a belt, for ladder and lift work where a loaded belt drags on the hips."
     },
     {
      "id": "mesh",
-     "glyph": "me"
+     "glyph": "me",
+     "name": "Mesh vest",
+     "note": "Open mesh for heat: the same visibility with air moving through it."
     },
     {
      "id": "insulated",
-     "glyph": "in"
+     "glyph": "in",
+     "name": "Insulated vest",
+     "note": "A lined vest for cold work that keeps the arms free to move."
     },
     {
      "id": "fire-resist",
-     "glyph": "fr"
+     "glyph": "fr",
+     "name": "Flame-resistant vest",
+     "note": "For work near an ignition source, where an ordinary vest is itself the burn."
     },
     {
      "id": "crew-shell",
-     "glyph": "cs"
+     "glyph": "cs",
+     "name": "Crew shell",
+     "note": "A light shell in the hall’s colours: a garment for the hall and the ride in, with nothing protective in it."
     },
     {
      "id": "rain-vest",
-     "glyph": "rv"
+     "glyph": "rv",
+     "name": "Rain vest",
+     "note": "A coated shell over the torso for wet work with the arms left free."
     },
     {
      "id": "lead-apron",
-     "glyph": "la"
+     "glyph": "la",
+     "name": "Lead apron",
+     "note": "For radiographic weld inspection, the shot everyone else clears the area for."
     },
     {
      "id": "life-vest",
-     "glyph": "lv"
+     "glyph": "lv",
+     "name": "Life vest",
+     "note": "Buoyancy for work over water: the dock edge, the barge and the bridge pier."
     },
     {
      "id": "back-support",
-     "glyph": "bs"
+     "glyph": "bs",
+     "name": "Back support",
+     "note": "A belt and brace: a reminder of lifting technique, and not a permit to lift more."
     },
     {
      "id": "parka-vest",
-     "glyph": "pv"
+     "glyph": "pv",
+     "name": "Insulated outer vest",
+     "note": "An outer layer for cold open ground with the sleeves of the work shirt underneath."
+    },
+    {
+     "id": "cooling-vest",
+     "glyph": "cv",
+     "name": "Cooling vest",
+     "note": "A phase-change or evaporative vest for heat-illness weather worked in full protective equipment."
     }
    ]
   },
@@ -4022,67 +4354,112 @@
    "options": [
     {
      "id": "jeans",
-     "glyph": "je"
+     "glyph": "je",
+     "name": "Jeans"
     },
     {
      "id": "duck-canvas",
-     "glyph": "du"
+     "glyph": "du",
+     "name": "Duck canvas"
     },
     {
      "id": "cargo",
-     "glyph": "ca"
+     "glyph": "ca",
+     "name": "Cargo"
     },
     {
      "id": "carpenter",
-     "glyph": "cp"
+     "glyph": "cp",
+     "name": "Carpenter"
     },
     {
      "id": "bib-overalls",
-     "glyph": "bi"
+     "glyph": "bi",
+     "name": "Bib overalls"
     },
     {
      "id": "chinos",
-     "glyph": "ch"
+     "glyph": "ch",
+     "name": "Chinos"
     },
     {
      "id": "shorts",
-     "glyph": "sh"
+     "glyph": "sh",
+     "name": "Shorts"
     },
     {
      "id": "insulated",
-     "glyph": "in"
+     "glyph": "in",
+     "name": "Insulated trousers",
+     "note": "Lined trousers for cold standing work, where movement will not keep a body warm."
     },
     {
      "id": "rain-pants",
-     "glyph": "ra"
+     "glyph": "ra",
+     "name": "Rain trousers",
+     "note": "Waterproof over-trousers for standing water and wet ground."
     },
     {
      "id": "hi-vis",
-     "glyph": "hv"
+     "glyph": "hv",
+     "name": "Hi-vis trousers",
+     "note": "High-visibility on the legs, which is where a member is seen from in a machine mirror."
     },
     {
      "id": "painter-white",
-     "glyph": "pw"
+     "glyph": "pw",
+     "name": "Painter's whites",
+     "note": "The trade uniform of the painters, and a surface that shows the day’s work on it."
     },
     {
      "id": "fr-pants",
-     "glyph": "fr"
+     "glyph": "fr",
+     "name": "Flame-resistant trousers",
+     "note": "For arc and flash-fire work, so the trousers do not keep burning after the source is gone."
     },
     {
      "id": "khaki-work",
-     "glyph": "kh"
+     "glyph": "kh",
+     "name": "Khaki work"
     },
     {
      "id": "black-denim",
-     "glyph": "bd"
+     "glyph": "bd",
+     "name": "Black denim"
     },
     {
      "id": "grey-work",
-     "glyph": "gw"
+     "glyph": "gw",
+     "name": "Grey work"
     },
     {
      "id": "olive-work",
-     "glyph": "ol"
+     "glyph": "ol",
+     "name": "Olive work"
+    },
+    {
+     "id": "hi-vis-class-e",
+     "glyph": "he",
+     "name": "Hi-vis trousers, ensemble class",
+     "note": "Not a class on their own: worn with a roadway vest they make the highest-class ensemble."
+    },
+    {
+     "id": "knee-pad-pants",
+     "glyph": "kp",
+     "name": "Knee-pad trousers",
+     "note": "Built-in knee pockets for the trades that work the whole day off their knees."
+    },
+    {
+     "id": "saw-chaps",
+     "glyph": "sc",
+     "name": "Saw chaps",
+     "note": "Cut-resistant chaps for chainsaw work: the fibres pull out and jam the chain."
+    },
+    {
+     "id": "hip-waders",
+     "glyph": "wd",
+     "name": "Hip waders",
+     "note": "For the wet trench, the treatment plant and shallow water work."
     }
    ]
   },
@@ -4093,64 +4470,94 @@
    "kind": "color",
    "options": [
     {
+     "id": "hi-vis-orange",
+     "value": "#e8722a",
+     "name": "Hi vis orange"
+    },
+    {
+     "id": "hi-vis-yellow",
+     "value": "#d9c22e",
+     "name": "Hi vis yellow"
+    },
+    {
      "id": "safety-green",
-     "value": "#7ac142"
+     "value": "#7ac142",
+     "name": "Safety green"
     },
     {
      "id": "forest",
-     "value": "#3c6b45"
+     "value": "#3c6b45",
+     "name": "Forest"
     },
     {
      "id": "olive",
-     "value": "#5b6238"
+     "value": "#5b6238",
+     "name": "Olive"
     },
     {
      "id": "slate",
-     "value": "#4a5a64"
+     "value": "#4a5a64",
+     "name": "Slate"
     },
     {
      "id": "navy",
-     "value": "#2c3e5a"
+     "value": "#2c3e5a",
+     "name": "Navy"
     },
     {
      "id": "royal",
-     "value": "#2f4d8a"
+     "value": "#2f4d8a",
+     "name": "Royal"
     },
     {
      "id": "steel-blue",
-     "value": "#4a7a96"
+     "value": "#4a7a96",
+     "name": "Steel blue"
     },
     {
      "id": "teal",
-     "value": "#2f6f6a"
+     "value": "#2f6f6a",
+     "name": "Teal"
     },
     {
      "id": "crimson",
-     "value": "#a03a34"
+     "value": "#a03a34",
+     "name": "Crimson"
     },
     {
      "id": "rust",
-     "value": "#9c5a30"
+     "value": "#9c5a30",
+     "name": "Rust"
     },
     {
      "id": "duck-brown",
-     "value": "#a5793f"
+     "value": "#a5793f",
+     "name": "Duck brown"
     },
     {
      "id": "sand",
-     "value": "#c2a878"
+     "value": "#c2a878",
+     "name": "Sand"
     },
     {
      "id": "charcoal",
-     "value": "#33363a"
+     "value": "#33363a",
+     "name": "Charcoal"
     },
     {
      "id": "grey",
-     "value": "#6c7276"
+     "value": "#6c7276",
+     "name": "Grey"
     },
     {
      "id": "stone",
-     "value": "#9a978c"
+     "value": "#9a978c",
+     "name": "Stone"
+    },
+    {
+     "id": "white",
+     "value": "#e6e6e2",
+     "name": "White"
     }
    ]
   },
@@ -4162,67 +4569,123 @@
    "options": [
     {
      "id": "steel-toe-brown",
-     "glyph": "sb"
+     "glyph": "sb",
+     "name": "Steel toe, brown",
+     "note": "The ordinary work boot: a steel toe against impact and compression."
     },
     {
      "id": "steel-toe-black",
-     "glyph": "sk"
+     "glyph": "sk",
+     "name": "Steel toe, black",
+     "note": "The same toe in black, for the shops and plants whose dress code asks for it."
     },
     {
      "id": "steel-toe-tan",
-     "glyph": "st"
+     "glyph": "st",
+     "name": "Steel toe, tan",
+     "note": "The first pair most apprentices buy, and the one they learn to re-lace."
     },
     {
      "id": "comp-toe-grey",
-     "glyph": "cg"
+     "glyph": "cg",
+     "name": "Composite toe",
+     "note": "A non-metallic toe: nothing to set off a detector, and nothing to carry the cold in."
     },
     {
      "id": "logger",
-     "glyph": "lo"
+     "glyph": "lo",
+     "name": "Logger boot",
+     "note": "A high shaft and an aggressive sole for broken ground and saw work."
     },
     {
      "id": "wellington",
-     "glyph": "we"
+     "glyph": "we",
+     "name": "Wellington",
+     "note": "Pull-on and slip-resistant, for wet concrete and washdown floors."
     },
     {
      "id": "hiker",
-     "glyph": "hi"
+     "glyph": "hi",
+     "name": "Work hiker",
+     "note": "A light boot for survey lines and days measured in miles walked."
     },
     {
      "id": "rubber-yellow",
-     "glyph": "ry"
+     "glyph": "ry",
+     "name": "Chemical rubber boot",
+     "note": "Chemical-resistant rubber for the wash bay and the spill."
     },
     {
      "id": "rubber-green",
-     "glyph": "rg"
+     "glyph": "rg",
+     "name": "Water rubber boot",
+     "note": "Rubber for water work: wet trench, treatment plant and dock."
     },
     {
      "id": "sneaker-white",
-     "glyph": "sw"
+     "glyph": "sw",
+     "name": "White trainers",
+     "note": "Street shoes: no toe cap and no rating, so the hall and the classroom only."
     },
     {
      "id": "sneaker-black",
-     "glyph": "sn"
+     "glyph": "sn",
+     "name": "Black trainers",
+     "note": "The pair that passes a shop-floor dress code and no toe-protection rule anywhere."
     },
     {
      "id": "sneaker-red",
-     "glyph": "sr"
+     "glyph": "sr",
+     "name": "Red trainers",
+     "note": "Trainers in a crew colour, for the hall and the bus, with nothing protective in them."
     },
     {
      "id": "sneaker-blue",
-     "glyph": "su"
+     "glyph": "su",
+     "name": "Blue trainers",
+     "note": "The pair kept in the locker for the walk home once the boots come off."
     },
     {
      "id": "high-top",
-     "glyph": "ht"
+     "glyph": "ht",
+     "name": "High tops",
+     "note": "Laced over the ankle for support, still with nothing on the toe."
     },
     {
      "id": "slip-on",
-     "glyph": "so"
+     "glyph": "so",
+     "name": "Slip-on",
+     "note": "Quick off at the door of a clean space, and quick on again."
     },
     {
      "id": "lineman",
-     "glyph": "li"
+     "glyph": "li",
+     "name": "Lineman boot",
+     "note": "A tall lace-up with a shank cut to take a climber and a pole gaff."
+    },
+    {
+     "id": "met-guard",
+     "glyph": "mg",
+     "name": "Metatarsal guard",
+     "note": "An external guard over the laces, for the drop and the pour that lands on the instep."
+    },
+    {
+     "id": "eh-rated",
+     "glyph": "eh",
+     "name": "Electrical-hazard boot",
+     "note": "A secondary barrier against step potential; it is not an insulator and does not make a circuit safe to touch."
+    },
+    {
+     "id": "puncture-sole",
+     "glyph": "pr",
+     "name": "Puncture-resistant sole",
+     "note": "A plate under the foot for demolition floors and nail-strewn decking."
+    },
+    {
+     "id": "insulated-pac",
+     "glyph": "ip",
+     "name": "Insulated pac boot",
+     "note": "For standing on frozen ground through a whole winter shift."
     }
    ]
   },
@@ -4234,63 +4697,123 @@
    "options": [
     {
      "id": "none",
-     "glyph": "–"
+     "glyph": "–",
+     "name": "No belt",
+     "note": "The walk-through, the classroom, and the lift basket where a loaded belt snags on the rail."
     },
     {
      "id": "basic",
-     "glyph": "ba"
+     "glyph": "ba",
+     "name": "Basic belt",
+     "note": "Tape, knife and one pouch: what everybody carries in week one."
     },
     {
      "id": "framing",
-     "glyph": "fr"
+     "glyph": "fr",
+     "name": "Framing belt",
+     "note": "Hammer, speed square and nail bags for wood framing."
     },
     {
      "id": "electric",
-     "glyph": "el"
+     "glyph": "el",
+     "name": "Electrician belt",
+     "note": "Side cutters, strippers and a voltage tester on the hip."
     },
     {
      "id": "plumber",
-     "glyph": "pl"
+     "glyph": "pl",
+     "name": "Plumber belt",
+     "note": "Wrenches, a tubing cutter and a striker for the torch."
     },
     {
      "id": "mason",
-     "glyph": "ma"
+     "glyph": "ma",
+     "name": "Mason belt",
+     "note": "Trowels, line blocks and a brick hammer, all of it wiped before the mud sets."
     },
     {
      "id": "welder",
-     "glyph": "we"
+     "glyph": "we",
+     "name": "Welder belt",
+     "note": "Chipping hammer, wire brush, soapstone and tip cleaners."
     },
     {
      "id": "surveyor",
-     "glyph": "su"
+     "glyph": "su",
+     "name": "Surveyor belt",
+     "note": "Plumb bob, field book, marking keel and the lath the stakes are cut from."
     },
     {
      "id": "drywall",
-     "glyph": "dr"
+     "glyph": "dr",
+     "name": "Drywall belt",
+     "note": "Taping knives in three widths, a rasp and a banjo full of tape."
     },
     {
      "id": "hvac",
-     "glyph": "hv"
+     "glyph": "hv",
+     "name": "HVAC belt",
+     "note": "Manifold gauges, a fin comb, nut drivers and a thermometer that reads fast."
     },
     {
      "id": "glazier",
-     "glyph": "gl"
+     "glyph": "gl",
+     "name": "Glazier belt",
+     "note": "Suction cups, glazing knives and setting blocks."
     },
     {
      "id": "roofer",
-     "glyph": "ro"
+     "glyph": "ro",
+     "name": "Roofer belt",
+     "note": "Hatchet, seam roller and a nail stripper, carried up a ladder one-handed."
     },
     {
      "id": "concrete",
-     "glyph": "co"
+     "glyph": "co",
+     "name": "Concrete belt",
+     "note": "Float, edger and jointer within reach of the pour."
     },
     {
      "id": "rigger",
-     "glyph": "ri"
+     "glyph": "ri",
+     "name": "Rigger belt",
+     "note": "Shackles, a spud wrench and the tags that go on every sling."
     },
     {
      "id": "finisher",
-     "glyph": "fi"
+     "glyph": "fi",
+     "name": "Finisher belt",
+     "note": "Sanding pads, a corner tool and a spare gun tip."
+    },
+    {
+     "id": "lineman",
+     "glyph": "li",
+     "name": "Lineman belt",
+     "note": "A body belt with climbers, a hand line and a loop for the hot stick."
+    },
+    {
+     "id": "sheet-metal",
+     "glyph": "sm",
+     "name": "Sheet metal belt",
+     "note": "Snips in three cuts, a hand seamer and a scratch awl."
+    },
+    {
+     "id": "painter",
+     "glyph": "pa",
+     "name": "Painter belt",
+     "note": "A five-in-one, a pot hook, brushes, and more rags than anyone else carries."
+    },
+    {
+     "id": "millwright",
+     "glyph": "mi",
+     "name": "Millwright belt",
+     "note": "Dial indicator, feeler gauges and shim stock for alignment."
+    },
+    {
+     "id": "low-voltage",
+     "glyph": "lv",
+     "name": "Low-voltage belt",
+     "note": "Punch-down tool, fish tape and a fibre cleaver for structured cabling."
     }
    ]
   },
@@ -4302,63 +4825,123 @@
    "options": [
     {
      "id": "none",
-     "glyph": "–"
+     "glyph": "–",
+     "name": "No outer layer",
+     "note": "Indoor work and the shoulder seasons, when the shirt is the whole answer."
     },
     {
      "id": "parka",
-     "glyph": "pa"
+     "glyph": "pa",
+     "name": "Parka",
+     "note": "A lined hooded coat for cold open ground, cut long enough to sit down in."
     },
     {
      "id": "rain-slicker",
-     "glyph": "rs"
+     "glyph": "rs",
+     "name": "Rain slicker",
+     "note": "A coated slicker for a long shift in standing rain."
     },
     {
      "id": "welding-jacket",
-     "glyph": "wj"
+     "glyph": "wj",
+     "name": "Welding jacket",
+     "note": "Leather across the shoulders and arms against spatter and arc."
     },
     {
      "id": "bomber",
-     "glyph": "bo"
+     "glyph": "bo",
+     "name": "Bomber jacket",
+     "note": "A short lined jacket cut to clear a tool belt."
     },
     {
      "id": "duster",
-     "glyph": "du"
+     "glyph": "du",
+     "name": "Duster",
+     "note": "A long coat for wind on open sites, where the cold comes sideways."
     },
     {
      "id": "windbreaker",
-     "glyph": "wb"
+     "glyph": "wb",
+     "name": "Windbreaker",
+     "note": "An unlined shell for wind without the weight."
     },
     {
      "id": "lined-flannel",
-     "glyph": "lf"
+     "glyph": "lf",
+     "name": "Lined flannel",
+     "note": "The shirt-jacket that comes off by ten in the morning."
     },
     {
      "id": "hi-vis-parka",
-     "glyph": "hp"
+     "glyph": "hp",
+     "name": "Hi-vis parka",
+     "note": "A hooded coat that keeps the visibility class on through winter."
     },
     {
      "id": "softshell",
-     "glyph": "ss"
+     "glyph": "ss",
+     "name": "Softshell",
+     "note": "A stretch shell for cool dry work with a lot of reaching in it."
     },
     {
      "id": "chore-canvas",
-     "glyph": "cc"
+     "glyph": "cc",
+     "name": "Chore canvas",
+     "note": "Duck canvas that takes the abrasion of the yard."
     },
     {
      "id": "puffer",
-     "glyph": "pu"
+     "glyph": "pu",
+     "name": "Puffer",
+     "note": "Insulation for still, cold air where wind is not the problem."
     },
     {
      "id": "anorak",
-     "glyph": "an"
+     "glyph": "an",
+     "name": "Anorak",
+     "note": "A pull-over hooded shell with the pocket on the chest."
     },
     {
      "id": "varsity",
-     "glyph": "va"
+     "glyph": "va",
+     "name": "Hall jacket",
+     "note": "The crew jacket: the parade, the hall and the ride in."
     },
     {
      "id": "trench",
-     "glyph": "tr"
+     "glyph": "tr",
+     "name": "Trench coat",
+     "note": "A long coat for the walk between buildings and the wait at the gate."
+    },
+    {
+     "id": "arc-rated-coat",
+     "glyph": "ar",
+     "name": "Arc-rated coat",
+     "note": "Worn where an arc flash is possible; the whole layer system has to be arc-rated, not this coat alone."
+    },
+    {
+     "id": "heated-liner",
+     "glyph": "he",
+     "name": "Heated liner",
+     "note": "A battery-heated layer for standing work in cold, where the body is not generating its own heat."
+    },
+    {
+     "id": "chem-splash-coat",
+     "glyph": "ch",
+     "name": "Chemical splash coat",
+     "note": "A coated coat for washdown, spill response and anything that sprays back off the surface."
+    },
+    {
+     "id": "cape-sleeves",
+     "glyph": "cp",
+     "name": "Cape sleeves",
+     "note": "Leather over the shoulders and arms for overhead welding, where the spatter comes straight down."
+    },
+    {
+     "id": "insulated-coverall",
+     "glyph": "ic",
+     "name": "Insulated coverall",
+     "note": "One insulated piece over everything else for the coldest outdoor shifts."
     }
    ]
   },
@@ -4370,63 +4953,143 @@
    "options": [
     {
      "id": "none",
-     "glyph": "–"
+     "glyph": "–",
+     "name": "Nothing extra",
+     "note": "The outfit as it stands, with no additional protective equipment on it.",
+     "slot": "none"
     },
     {
      "id": "safety-glasses",
-     "glyph": "sg"
+     "glyph": "sg",
+     "name": "Safety glasses",
+     "note": "Impact-rated lenses, the one piece worn gate to gate on most sites.",
+     "slot": "eyes"
+    },
+    {
+     "id": "rx-safety-glasses",
+     "glyph": "rx",
+     "name": "Prescription safety glasses",
+     "note": "Impact-rated lenses ground to a prescription, so correction and protection are the same pair.",
+     "slot": "eyes"
     },
     {
      "id": "sunglasses",
-     "glyph": "su"
+     "glyph": "su",
+     "name": "Sunglasses",
+     "note": "Tint for glare on open ground and water; a tint is not an impact rating.",
+     "slot": "eyes"
     },
     {
      "id": "ear-muffs",
-     "glyph": "em"
+     "glyph": "em",
+     "name": "Ear muffs",
+     "note": "Over the ear, on and off quickly around intermittent noise.",
+     "slot": "ears"
     },
     {
-     "id": "respirator",
-     "glyph": "re"
+     "id": "ear-plugs",
+     "glyph": "pl",
+     "name": "Ear plugs",
+     "note": "Plugs fit under a welding hood and a tight hard-hat band where muffs will not.",
+     "slot": "ears"
     },
     {
      "id": "dust-mask",
-     "glyph": "dm"
+     "glyph": "dm",
+     "name": "Filtering facepiece",
+     "note": "The lowest class: a disposable facepiece for nuisance dust, and it still needs a seal.",
+     "slot": "airway"
+    },
+    {
+     "id": "respirator",
+     "glyph": "re",
+     "name": "Half-mask respirator",
+     "note": "Cartridges chosen for the hazard, on a seal that has to be fit-tested to the face wearing it.",
+     "slot": "airway"
+    },
+    {
+     "id": "full-face-apr",
+     "glyph": "ff",
+     "name": "Full-face respirator",
+     "note": "A full facepiece: eye protection and a higher protection factor for abatement work.",
+     "slot": "airway"
+    },
+    {
+     "id": "papr-hood",
+     "glyph": "pp",
+     "name": "Powered hood",
+     "note": "Powered air into a loose hood - the class that works over facial hair, where a tight-fitting mask cannot seal.",
+     "slot": "airway"
+    },
+    {
+     "id": "supplied-air",
+     "glyph": "sa",
+     "name": "Supplied air",
+     "note": "Air from a line or a cylinder for confined space and blasting, where filtering the air is not enough.",
+     "slot": "airway"
     },
     {
      "id": "face-shield",
-     "glyph": "fs"
+     "glyph": "fs",
+     "name": "Face shield",
+     "note": "Against splash and flying chips, worn over safety glasses and never instead of them.",
+     "slot": "face"
     },
     {
      "id": "welding-shield",
-     "glyph": "ws"
+     "glyph": "ws",
+     "name": "Welding shield",
+     "note": "A filter lens against arc flash, and cover against the burn on face and neck.",
+     "slot": "face"
     },
     {
      "id": "knee-pads",
-     "glyph": "kp"
+     "glyph": "kp",
+     "name": "Knee pads",
+     "note": "Padding for the trades that spend the day kneeling on concrete.",
+     "slot": "legs"
     },
     {
      "id": "elbow-pads",
-     "glyph": "ep"
+     "glyph": "ep",
+     "name": "Elbow pads",
+     "note": "Padding for overhead and crawlspace work that rides on the elbows.",
+     "slot": "arms"
     },
     {
      "id": "tool-lanyard",
-     "glyph": "tl"
+     "glyph": "tl",
+     "name": "Tool lanyard",
+     "note": "A tether, so a dropped tool does not become a falling object.",
+     "slot": "torso"
     },
     {
      "id": "radio",
-     "glyph": "ra"
+     "glyph": "ra",
+     "name": "Hand radio",
+     "note": "The crew channel on the chest, where it can be heard over plant noise.",
+     "slot": "torso"
     },
     {
      "id": "headlamp",
-     "glyph": "hl"
+     "glyph": "hl",
+     "name": "Headlamp",
+     "note": "Hands-free light for the bore, the crawlspace and the night pour.",
+     "slot": "head"
     },
     {
      "id": "id-badge",
-     "glyph": "id"
+     "glyph": "id",
+     "name": "Site badge",
+     "note": "Which crew, which gate, and which orientation was sat through.",
+     "slot": "torso"
     },
     {
      "id": "gloves",
-     "glyph": "gl"
+     "glyph": "gl",
+     "name": "Gloves",
+     "note": "Chosen for the hazard: cut, chemical and rubber insulating gloves are not interchangeable.",
+     "slot": "hands"
     }
    ]
   },
@@ -4438,83 +5101,103 @@
    "options": [
     {
      "id": "none",
-     "glyph": "–"
+     "glyph": "–",
+     "name": "No costume"
     },
     {
      "id": "krewe",
-     "glyph": "kr"
+     "glyph": "kr",
+     "name": "Krewe"
     },
     {
      "id": "foundry",
-     "glyph": "fo"
+     "glyph": "fo",
+     "name": "Foundry suit"
     },
     {
      "id": "diver",
-     "glyph": "di"
+     "glyph": "di",
+     "name": "Dive dress"
     },
     {
      "id": "vintage-33",
-     "glyph": "vi"
+     "glyph": "vi",
+     "name": "The '33 crew"
     },
     {
      "id": "storm-rider",
-     "glyph": "st"
+     "glyph": "st",
+     "name": "Storm rider"
     },
     {
      "id": "gold-journey",
-     "glyph": "go"
+     "glyph": "go",
+     "name": "Golden journey"
     },
     {
      "id": "hazmat",
-     "glyph": "hz"
+     "glyph": "hz",
+     "name": "Hazmat suit"
     },
     {
      "id": "arc-guard",
-     "glyph": "ar"
+     "glyph": "ar",
+     "name": "Arc guard"
     },
     {
      "id": "tunnel",
-     "glyph": "tu"
+     "glyph": "tu",
+     "name": "Tunnel crew"
     },
     {
      "id": "parade",
-     "glyph": "pd"
+     "glyph": "pd",
+     "name": "Parade dress"
     },
     {
      "id": "night-reflective",
-     "glyph": "ni"
+     "glyph": "ni",
+     "name": "Night reflective"
     },
     {
      "id": "mascot",
-     "glyph": "ms"
+     "glyph": "ms",
+     "name": "Mascot suit"
     },
     {
      "id": "frost",
-     "glyph": "fr"
+     "glyph": "fr",
+     "name": "Frost"
     },
     {
      "id": "gala",
-     "glyph": "ga"
+     "glyph": "ga",
+     "name": "Gala"
     },
     {
      "id": "ape-mascot",
-     "glyph": "🦍"
+     "glyph": "🦍",
+     "name": "Workshop ape"
     },
     {
      "id": "pelican-mascot",
-     "glyph": "🐦"
+     "glyph": "🐦",
+     "name": "Harbour pelican"
     },
     {
      "id": "bear-mascot",
-     "glyph": "🐻"
+     "glyph": "🐻",
+     "name": "Yard bear"
     },
     {
      "id": "gator-mascot",
-     "glyph": "🐊"
+     "glyph": "🐊",
+     "name": "Levee gator"
     },
     {
      "id": "ox-mascot",
-     "glyph": "🐂"
+     "glyph": "🐂",
+     "name": "Hauling ox"
     }
    ]
   },
@@ -5801,6 +6484,146 @@
     "costume": "ape-mascot",
     "crew": "millwrights"
    }
+  },
+  {
+   "id": "the-attendant",
+   "emoji": "🕳",
+   "name": "The Attendant",
+   "blurb": "Stands at the hole the whole shift and never once goes in.",
+   "glyph": "🕳",
+   "cfg": {
+    "build": "average-standard",
+    "skin": "tone-08",
+    "hair": "short",
+    "haircolor": "dark-brown",
+    "eyes": "brown",
+    "facialhair": "none",
+    "headwear": "hard-cap",
+    "headcolor": "white",
+    "top": "long-sleeve",
+    "topcolor": "slate",
+    "vest": "harness-suspension",
+    "pants": "duck-canvas",
+    "pantscolor": "duck-brown",
+    "shoes": "steel-toe-brown",
+    "tools": "rigger",
+    "outer": "none",
+    "extras": "supplied-air",
+    "costume": "none",
+    "crew": "confined-space"
+   }
+  },
+  {
+   "id": "dry-cut",
+   "emoji": "🌫",
+   "name": "The Dry Cut",
+   "blurb": "Argues for water on the blade before anyone starts cutting.",
+   "glyph": "🌫",
+   "cfg": {
+    "build": "average-standard",
+    "skin": "tone-08",
+    "hair": "short",
+    "haircolor": "dark-brown",
+    "eyes": "brown",
+    "facialhair": "none",
+    "headwear": "ball-cap-back",
+    "headcolor": "hi-vis-yellow",
+    "top": "coveralls",
+    "topcolor": "stone",
+    "vest": "hi-vis-1",
+    "pants": "duck-canvas",
+    "pantscolor": "duck-brown",
+    "shoes": "steel-toe-brown",
+    "tools": "mason",
+    "outer": "none",
+    "extras": "respirator",
+    "costume": "none",
+    "crew": "masonry-restore"
+   }
+  },
+  {
+   "id": "heat-index",
+   "emoji": "🌡",
+   "name": "The Heat Index",
+   "blurb": "Watches the index, calls the shade break, takes it first.",
+   "glyph": "🌡",
+   "cfg": {
+    "build": "average-standard",
+    "skin": "tone-08",
+    "hair": "short",
+    "haircolor": "dark-brown",
+    "eyes": "brown",
+    "facialhair": "none",
+    "headwear": "sun-shade",
+    "headcolor": "white",
+    "top": "sun-hoodie",
+    "topcolor": "sand",
+    "vest": "cooling-vest",
+    "pants": "hi-vis-class-e",
+    "pantscolor": "hi-vis-yellow",
+    "shoes": "comp-toe-grey",
+    "tools": "basic",
+    "outer": "none",
+    "extras": "none",
+    "costume": "none",
+    "crew": "airfield"
+   }
+  },
+  {
+   "id": "cold-pour",
+   "emoji": "🥶",
+   "name": "The Cold Pour",
+   "blurb": "Pours at twenty degrees and blankets it before the light goes.",
+   "glyph": "🥶",
+   "cfg": {
+    "build": "average-standard",
+    "skin": "tone-08",
+    "hair": "short",
+    "haircolor": "dark-brown",
+    "eyes": "brown",
+    "facialhair": "none",
+    "headwear": "hard-cap-liner",
+    "headcolor": "hi-vis-yellow",
+    "top": "tee",
+    "topcolor": "hi-vis-orange",
+    "vest": "hi-vis-2",
+    "pants": "duck-canvas",
+    "pantscolor": "charcoal",
+    "shoes": "insulated-pac",
+    "tools": "concrete",
+    "outer": "insulated-coverall",
+    "extras": "none",
+    "costume": "none",
+    "crew": "cement-masons"
+   }
+  },
+  {
+   "id": "hot-stick",
+   "emoji": "🪝",
+   "name": "The Hot Stick",
+   "blurb": "Works it live from the bucket, and checks the cover-up twice.",
+   "glyph": "🪝",
+   "cfg": {
+    "build": "average-standard",
+    "skin": "tone-08",
+    "hair": "short",
+    "haircolor": "dark-brown",
+    "eyes": "brown",
+    "facialhair": "none",
+    "headwear": "climbing",
+    "headcolor": "hi-vis-yellow",
+    "top": "fr-shirt",
+    "topcolor": "navy",
+    "vest": "harness-position",
+    "pants": "fr-pants",
+    "pantscolor": "duck-brown",
+    "shoes": "eh-rated",
+    "tools": "lineman",
+    "outer": "none",
+    "extras": "gloves",
+    "costume": "none",
+    "crew": "transmission"
+   }
   }
  ],
  "emotes": [
@@ -5808,49 +6631,85 @@
    "id": "wave",
    "emoji": "👋",
    "label": "Wave",
-   "move": "arm-wave"
+   "move": "arm-wave",
+   "note": "A hand up across the yard."
   },
   {
    "id": "thumbs",
    "emoji": "👍",
    "label": "Thumbs up",
-   "move": "arm-up"
+   "move": "arm-up",
+   "note": "Understood - the answer that carries over plant noise."
   },
   {
    "id": "point",
    "emoji": "👉",
    "label": "Point",
-   "move": "arm-point"
+   "move": "arm-point",
+   "note": "Points at the thing being talked about."
   },
   {
    "id": "tip",
    "emoji": "👷",
    "label": "Hat tip",
-   "move": "hat-tip"
+   "move": "hat-tip",
+   "note": "Hat off and back on, the oldest greeting on a site."
   },
   {
    "id": "clap",
    "emoji": "👏",
    "label": "Clap",
-   "move": "clap"
+   "move": "clap",
+   "note": "For the class that finished."
   },
   {
    "id": "flex",
    "emoji": "💪",
    "label": "Flex",
-   "move": "flex"
+   "move": "flex",
+   "note": "The end of a hard lift."
   },
   {
    "id": "spin",
    "emoji": "🌀",
    "label": "Spin",
-   "move": "spin"
+   "move": "spin",
+   "note": "A turn on the spot, to be seen from every side."
   },
   {
    "id": "check",
    "emoji": "✅",
    "label": "Safety check",
-   "move": "jump"
+   "move": "jump",
+   "note": "A hop, for a walk-around that came back clean."
+  },
+  {
+   "id": "hoist",
+   "emoji": "☝",
+   "label": "Hoist",
+   "move": "arm-hoist",
+   "note": "The raise shape: forearm up, finger turning."
+  },
+  {
+   "id": "lower",
+   "emoji": "👇",
+   "label": "Lower",
+   "move": "arm-lower",
+   "note": "The lower shape: arm out and down, finger turning."
+  },
+  {
+   "id": "stop",
+   "emoji": "⛔",
+   "label": "Stop",
+   "move": "arm-stop",
+   "note": "The stop shape: arm out, palm down, swept across."
+  },
+  {
+   "id": "tie-off",
+   "emoji": "🔗",
+   "label": "Tie off",
+   "move": "clip-on",
+   "note": "Clipping the lanyard on before stepping out."
   }
  ]
 }

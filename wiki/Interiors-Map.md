@@ -55,14 +55,14 @@ packs rooms per hall by its own focus line and fixtures.)*
 ## Floor finishes (spec §24, as code)
 
 Every room's floor finish is resolved by `surfaces/build.py` —
-**22 finishes** in the catalogue, each carrying
+**38 finishes** in the catalogue, each carrying
 renderer-ready parameters and the reason it exists. Selection runs
 most-specific-first: the trade's hazard, then the room's function, and the
-record says which rule placed it. 71
+record says which rule placed it. 104
 finishes across the network are hazard-placed
-(11 hazard classes in use); a hazard is
+(18 hazard classes in use); a hazard is
 recorded only where it **changed** the outcome, and the
-61 halls whose trade names no
+48 halls whose trade names no
 finish-driving hazard say so explicitly rather than leaving a blank. The 3D
 environment renders these finishes as the room floors, pattern and all.
 

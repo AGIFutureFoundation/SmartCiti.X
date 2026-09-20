@@ -1,8 +1,8 @@
 /**
  * Training-data registry verification.
  *
- * The claim this pack makes is narrow and structural: three episode
- * kinds, each a fact this bundle already produces rather than something
+ * The claim this pack makes is narrow and structural: one episode
+ * kind per interaction, each a fact this bundle already produces rather than something
  * invented for the recorder; device-local storage under its own key,
  * never the progress key; a rolling cap; a visible on/off toggle that
  * never touches episodes already kept; and - the property that actually
@@ -27,10 +27,21 @@ const meta = JSON.parse(readFileSync(
 const kinds = Object.entries(reg.episode_kinds);
 
 /* ------------------------------------------------------------ the shape --- */
-ok('there are exactly three episode kinds, each explaining itself and its fields',
-  kinds.length === 3
+/* This used to read `kinds.length === 3`, which guarded against a kind
+   growing in quietly but said nothing about WHICH kinds exist - so the
+   day a fourth was added deliberately, the check could only be silenced
+   by raising a number. Naming the roster is the stronger guard: a new
+   kind still cannot arrive unannounced, and the test now says what the
+   recorder records. */
+ok('the episode kinds are the declared roster, each explaining itself and '
+  + 'its fields',
+  kinds.map(([k]) => k).sort().join(',') === 'advisor,crew,sim,walkaround'
   && kinds.every(([, k]) => k.what.length > 10 && k.fields.includes('t')
     && k.fields.includes('kind')));
+ok('a crew episode keeps which ROLE answered, not just which crew - a '
+  + 'signalperson\'s answer and a rigger\'s are different evidence',
+  reg.episode_kinds.crew.fields.includes('crew')
+  && reg.episode_kinds.crew.fields.includes('role'));
 ok('every kind\'s fields are facts this bundle already produces, not new invented state',
   reg.episode_kinds.sim.fields.includes('outcome')
   && reg.episode_kinds.advisor.fields.includes('topic')
@@ -93,7 +104,7 @@ ok('the page embeds the declared storage key and the declared cap',
   page.includes('"tc-training"') && page.includes(`"cap":${reg.storage.cap}`));
 ok('every declared episode kind is actually recorded by the page, by name',
   kinds.every(([kk]) => page.includes(`kind: '${kk}'`)));
-ok('recordEpisode is called from exactly the three declared integration points',
+ok('recordEpisode is called from exactly the declared integration points, one per kind',
   (page.match(/recordEpisode\(\{/g) || []).length === kinds.length);
 
 /* ------------------------------------------------------------------ TRACE --- */

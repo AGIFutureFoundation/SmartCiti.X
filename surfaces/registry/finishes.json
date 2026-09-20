@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-10",
- "source_stamp": "1eca14fb0931687e",
+ "source_stamp": "3f9c0b46b479fc1b",
  "spec": "section 24 of the ACP suite",
  "honesty": {
   "status": "general good practice, not a code reference; no figure is read from any jurisdiction's standard and no surface names a product, brand, fire rating or specification number. A real deployment replaces these with the local standard."
@@ -11,7 +11,7 @@
  "catalogue": {
   "bare-slab": {
    "name": "Power-floated bare slab",
-   "color": "#8e9294",
+   "color": "#848d94",
    "roughness": 0.92,
    "metalness": 0.02,
    "pattern": "slab",
@@ -20,7 +20,7 @@
   },
   "sealed-slab": {
    "name": "Sealed concrete slab",
-   "color": "#9aa0a0",
+   "color": "#a09788",
    "roughness": 0.75,
    "metalness": 0.03,
    "pattern": "slab",
@@ -29,7 +29,7 @@
   },
   "broom-concrete": {
    "name": "Broom-finish concrete",
-   "color": "#94999a",
+   "color": "#8e9aa0",
    "roughness": 0.97,
    "metalness": 0.02,
    "pattern": "broom",
@@ -38,7 +38,7 @@
   },
   "epoxy-smooth": {
    "name": "Smooth epoxy resin",
-   "color": "#b8bfc2",
+   "color": "#b0bcc4",
    "roughness": 0.35,
    "metalness": 0.05,
    "pattern": "smooth",
@@ -47,7 +47,7 @@
   },
   "epoxy-quartz": {
    "name": "Quartz-broadcast epoxy",
-   "color": "#a8adad",
+   "color": "#b4a68c",
    "roughness": 0.6,
    "metalness": 0.04,
    "pattern": "speckle",
@@ -56,7 +56,7 @@
   },
   "spill-berm": {
    "name": "Bermed epoxy with coved edge",
-   "color": "#aab4b0",
+   "color": "#a8b09a",
    "roughness": 0.45,
    "metalness": 0.04,
    "pattern": "smooth",
@@ -65,7 +65,7 @@
   },
   "welded-vinyl": {
    "name": "Welded sheet vinyl",
-   "color": "#cfd4d6",
+   "color": "#bcd2cc",
    "roughness": 0.3,
    "metalness": 0.02,
    "pattern": "smooth",
@@ -74,7 +74,7 @@
   },
   "esd-vinyl": {
    "name": "Static-dissipative vinyl",
-   "color": "#a9b3b8",
+   "color": "#8fa3b4",
    "roughness": 0.4,
    "metalness": 0.06,
    "pattern": "tile",
@@ -83,7 +83,7 @@
   },
   "rubber-dielectric": {
    "name": "Dielectric rubber matting",
-   "color": "#2e3335",
+   "color": "#2c333c",
    "roughness": 0.9,
    "metalness": 0.0,
    "pattern": "smooth",
@@ -92,7 +92,7 @@
   },
   "anti-fatigue": {
    "name": "Anti-fatigue matting",
-   "color": "#3c4245",
+   "color": "#38434b",
    "roughness": 0.92,
    "metalness": 0.0,
    "pattern": "smooth",
@@ -101,7 +101,7 @@
   },
   "firebrick-hearth": {
    "name": "Firebrick hearth",
-   "color": "#7a4a3a",
+   "color": "#8a4a33",
    "roughness": 0.95,
    "metalness": 0.02,
    "pattern": "brick",
@@ -110,7 +110,7 @@
   },
   "acid-brick": {
    "name": "Acid-resistant brick",
-   "color": "#8a5a4a",
+   "color": "#8e4e3c",
    "roughness": 0.8,
    "metalness": 0.02,
    "pattern": "brick",
@@ -119,7 +119,7 @@
   },
   "steel-checker": {
    "name": "Checkerplate steel",
-   "color": "#6f7678",
+   "color": "#68757e",
    "roughness": 0.45,
    "metalness": 0.85,
    "pattern": "checker",
@@ -128,7 +128,7 @@
   },
   "steel-grate": {
    "name": "Open steel grating",
-   "color": "#5f6668",
+   "color": "#5c6a74",
    "roughness": 0.5,
    "metalness": 0.8,
    "pattern": "grate",
@@ -137,7 +137,7 @@
   },
   "marine-deck": {
    "name": "Non-skid marine deck",
-   "color": "#55606a",
+   "color": "#4e6470",
    "roughness": 0.85,
    "metalness": 0.3,
    "pattern": "speckle",
@@ -146,7 +146,7 @@
   },
   "end-grain-block": {
    "name": "End-grain wood block",
-   "color": "#7d5f41",
+   "color": "#8a6338",
    "roughness": 0.85,
    "metalness": 0.0,
    "pattern": "block",
@@ -155,7 +155,7 @@
   },
   "timber-plank": {
    "name": "Heavy timber planking",
-   "color": "#8a6a48",
+   "color": "#9a7344",
    "roughness": 0.9,
    "metalness": 0.0,
    "pattern": "plank",
@@ -164,7 +164,7 @@
   },
   "raised-access": {
    "name": "Raised access floor",
-   "color": "#b4b9bb",
+   "color": "#a9b4bd",
    "roughness": 0.5,
    "metalness": 0.15,
    "pattern": "tile",
@@ -173,7 +173,7 @@
   },
   "terrazzo-ground": {
    "name": "Ground terrazzo",
-   "color": "#b9b3a8",
+   "color": "#c2b7a2",
    "roughness": 0.4,
    "metalness": 0.03,
    "pattern": "speckle",
@@ -182,7 +182,7 @@
   },
   "porcelain-tile": {
    "name": "Porcelain tile",
-   "color": "#c4c8c8",
+   "color": "#bfc9cf",
    "roughness": 0.35,
    "metalness": 0.02,
    "pattern": "tile",
@@ -191,7 +191,7 @@
   },
   "crushed-stone": {
    "name": "Compacted crushed stone",
-   "color": "#9d9689",
+   "color": "#a3987f",
    "roughness": 0.98,
    "metalness": 0.0,
    "pattern": "speckle",
@@ -200,146 +200,411 @@
   },
   "asphalt-apron": {
    "name": "Asphalt apron",
-   "color": "#3a3f42",
+   "color": "#383d46",
    "roughness": 0.96,
    "metalness": 0.02,
    "pattern": "speckle",
    "tile_m": 3.0,
    "why": "the yard running surface between door and stockpile"
+  },
+  "polished-slab": {
+   "name": "Ground and polished slab",
+   "color": "#a89f8f",
+   "roughness": 0.18,
+   "metalness": 0.04,
+   "pattern": "polish",
+   "tile_m": 2.4,
+   "why": "a concrete trade grinds its own floor back to the aggregate to show what it put down"
+  },
+  "steel-diamond": {
+   "name": "Diamond tread plate",
+   "color": "#707e86",
+   "roughness": 0.42,
+   "metalness": 0.88,
+   "pattern": "diamond",
+   "tile_m": 0.4,
+   "why": "a raised lozenge holds a boot on a deck a machine leaks onto"
+  },
+  "steel-plate": {
+   "name": "Sealed steel plate deck",
+   "color": "#59656f",
+   "roughness": 0.38,
+   "metalness": 0.9,
+   "pattern": "plate",
+   "tile_m": 1.2,
+   "why": "a welded deck spreads a point load and can be cut and let back in"
+  },
+  "terrazzo-divider": {
+   "name": "Divider-strip terrazzo",
+   "color": "#b0bda3",
+   "roughness": 0.35,
+   "metalness": 0.05,
+   "pattern": "terrazzo",
+   "tile_m": 1.2,
+   "why": "the strip is where the pour stops and the next one starts, and setting it out is the whole of the craft"
+  },
+  "flake-resin": {
+   "name": "Broadcast flake resin",
+   "color": "#9f9483",
+   "roughness": 0.55,
+   "metalness": 0.04,
+   "pattern": "flake",
+   "tile_m": 2.0,
+   "why": "flake hides the drip and the scuff a coating bay makes daily"
+  },
+  "resin-screed": {
+   "name": "Heavy-duty resin screed",
+   "color": "#5f7a63",
+   "roughness": 0.62,
+   "metalness": 0.03,
+   "pattern": "smooth",
+   "tile_m": 2.0,
+   "why": "takes steam and cold water an hour apart without lifting"
+  },
+  "conductive-tile": {
+   "name": "Conductive floor tile",
+   "color": "#46525c",
+   "roughness": 0.45,
+   "metalness": 0.1,
+   "pattern": "tile",
+   "tile_m": 0.6,
+   "why": "charge has to reach earth faster than the atmosphere can find a spark"
+  },
+  "trench-drain": {
+   "name": "Floor to falls with trench drain",
+   "color": "#869399",
+   "roughness": 0.7,
+   "metalness": 0.06,
+   "pattern": "trench",
+   "tile_m": 2.4,
+   "why": "the wash water leaves by a route somebody chose"
+  },
+  "foundry-sand": {
+   "name": "Rammed moulding-sand floor",
+   "color": "#6b6250",
+   "roughness": 0.99,
+   "metalness": 0.0,
+   "pattern": "sand",
+   "tile_m": 1.6,
+   "why": "the floor and the mould are the same material, and the pour goes into both"
+  },
+  "rail-ballast": {
+   "name": "Ballasted track bed",
+   "color": "#7d7268",
+   "roughness": 0.98,
+   "metalness": 0.02,
+   "pattern": "ballast",
+   "tile_m": 1.4,
+   "why": "the track is only as true as the stone under it, so the stone is the floor"
+  },
+  "interlock-paver": {
+   "name": "Interlocking concrete paving",
+   "color": "#8d8279",
+   "roughness": 0.88,
+   "metalness": 0.02,
+   "pattern": "brick",
+   "tile_m": 0.45,
+   "why": "a buried-service trade has to lift the surface and put it back the same afternoon"
+  },
+  "access-perf": {
+   "name": "Perforated access floor tile",
+   "color": "#b3bec6",
+   "roughness": 0.48,
+   "metalness": 0.18,
+   "pattern": "perf",
+   "tile_m": 0.6,
+   "why": "the cold air arrives through the floor, and which tile is open is a decision somebody logs"
+  },
+  "shotcrete-invert": {
+   "name": "Shotcrete invert",
+   "color": "#79838c",
+   "roughness": 0.96,
+   "metalness": 0.02,
+   "pattern": "gunite",
+   "tile_m": 2.0,
+   "why": "the floor of a heading is sprayed the same hour the roof is"
+  },
+  "tooling-plate": {
+   "name": "T-slotted cast-iron floor plate",
+   "color": "#525c66",
+   "roughness": 0.4,
+   "metalness": 0.8,
+   "pattern": "tslot",
+   "tile_m": 0.9,
+   "why": "a workpiece is only square to what it is clamped to"
+  },
+  "strippable-coat": {
+   "name": "Strippable decontamination coating",
+   "color": "#9fc0bd",
+   "roughness": 0.3,
+   "metalness": 0.02,
+   "pattern": "smooth",
+   "tile_m": 2.4,
+   "why": "the contamination leaves with the coating instead of with the person"
+  },
+  "impact-mat": {
+   "name": "Impact-absorbing mat",
+   "color": "#3f4e63",
+   "roughness": 0.94,
+   "metalness": 0.0,
+   "pattern": "smooth",
+   "tile_m": 1.2,
+   "why": "a fall-arrest demonstration ends on the floor, and this is the floor it should end on"
   }
  },
  "wall_catalogue": {
   "painted-block": {
    "name": "Painted concrete block",
-   "color": "#8d9499",
+   "color": "#8b969e",
    "roughness": 0.88,
    "metalness": 0.02,
    "pattern": "block",
    "tile_m": 0.4,
-   "wainscot": "#4a5b66",
+   "wainscot": "#3f5763",
    "wainscot_m": 1.2,
    "why": "the general working wall: takes a knock, takes a repaint"
   },
   "impact-block": {
    "name": "Impact-faced block with kerb",
-   "color": "#7f868b",
+   "color": "#948877",
    "roughness": 0.9,
    "metalness": 0.02,
    "pattern": "block",
    "tile_m": 0.4,
-   "wainscot": "#5a4f3a",
+   "wainscot": "#584a2f",
    "wainscot_m": 1.4,
    "why": "stock and plant hit this wall, so the bottom of it is the part that is built to be hit"
   },
   "liner-panel": {
    "name": "Washable liner panel",
-   "color": "#aeb7bb",
+   "color": "#b2c2ba",
    "roughness": 0.55,
    "metalness": 0.12,
    "pattern": "panel",
    "tile_m": 0.9,
-   "wainscot": "#5f6a70",
+   "wainscot": "#546a66",
    "wainscot_m": 1.0,
    "why": "a practice bay gets hosed out, and a lined wall sheds water instead of soaking it"
   },
   "ply-lined": {
    "name": "Plywood-lined shop wall",
-   "color": "#9a7a4e",
+   "color": "#a8834f",
    "roughness": 0.85,
    "metalness": 0.0,
    "pattern": "plywood",
    "tile_m": 1.2,
-   "wainscot": "#6d5334",
+   "wainscot": "#6d4e2b",
    "wainscot_m": 1.1,
    "why": "you hang tools, jigs and a cut list off a wall you can screw into"
   },
   "whiteboard-panel": {
    "name": "Full-height marker panel",
-   "color": "#d9dee0",
+   "color": "#dce4e8",
    "roughness": 0.22,
    "metalness": 0.04,
    "pattern": "board",
    "tile_m": 1.2,
-   "wainscot": "#7a848a",
+   "wainscot": "#6f818e",
    "wainscot_m": 0.95,
    "why": "setting out is drawn before it is built, and the wall is the first place it gets drawn"
   },
   "matte-board": {
    "name": "Matte low-glare board",
-   "color": "#c4c9cb",
+   "color": "#c8c6bd",
    "roughness": 0.82,
    "metalness": 0.02,
    "pattern": "board",
    "tile_m": 1.2,
-   "wainscot": "#79828a",
+   "wainscot": "#7b7768",
    "wainscot_m": 0.9,
    "why": "inspection reads surfaces at a raking angle, and a shiny wall throws the light back into the work"
   },
   "acoustic-panel": {
    "name": "Fabric-faced acoustic panel",
-   "color": "#6e6a66",
+   "color": "#5f6b76",
    "roughness": 0.95,
    "metalness": 0.0,
    "pattern": "fabric",
    "tile_m": 0.6,
-   "wainscot": "#4a4744",
+   "wainscot": "#3d4750",
    "wainscot_m": 1.0,
    "why": "a room where people talk over each other is a room where the decision gets made twice"
   },
   "firebrick-face": {
    "name": "Firebrick wall face",
-   "color": "#7a4a3a",
+   "color": "#8a4a33",
    "roughness": 0.95,
    "metalness": 0.02,
    "pattern": "brick",
    "tile_m": 0.23,
-   "wainscot": "#5d372b",
+   "wainscot": "#5d3226",
    "wainscot_m": 1.6,
    "why": "the wall beside a pour takes the same spatter the hearth does"
   },
   "weld-screen": {
    "name": "Non-combustible screened bay",
-   "color": "#5c6469",
+   "color": "#566269",
    "roughness": 0.92,
    "metalness": 0.05,
    "pattern": "screen",
    "tile_m": 0.8,
-   "wainscot": "#3d454a",
+   "wainscot": "#7a4326",
    "wainscot_m": 1.8,
    "why": "the arc is not only the welder's problem: the bay walls stop the flash reaching the next bay"
   },
   "chem-tile": {
    "name": "Glazed chemical-resistant tile",
-   "color": "#9fb0ae",
+   "color": "#8fb3ad",
    "roughness": 0.3,
    "metalness": 0.03,
    "pattern": "tile",
    "tile_m": 0.3,
-   "wainscot": "#4f6a66",
+   "wainscot": "#3d6a64",
    "wainscot_m": 1.5,
    "why": "what the floor shrugs off, the splash-back has to shrug off too"
   },
   "coved-white": {
    "name": "Coved cleanable wall",
-   "color": "#d5dadb",
+   "color": "#dbe1e2",
    "roughness": 0.35,
    "metalness": 0.02,
    "pattern": "smooth",
    "tile_m": 1.5,
-   "wainscot": "#b3bcbe",
+   "wainscot": "#aebdc0",
    "wainscot_m": 0.6,
    "why": "a square corner is somewhere particulate can sit, so the room has no square corners"
   },
   "mesh-guard": {
    "name": "Guarded mesh partition",
-   "color": "#6a7276",
+   "color": "#8a8452",
    "roughness": 0.7,
    "metalness": 0.55,
    "pattern": "mesh",
    "tile_m": 0.35,
-   "wainscot": "#454c50",
+   "wainscot": "#4a4626",
    "wainscot_m": 0.85,
    "why": "you have to see into a bay you are not allowed to walk into"
+  },
+  "brick-common": {
+   "name": "Common brick wall",
+   "color": "#9a5f4a",
+   "roughness": 0.92,
+   "metalness": 0.02,
+   "pattern": "brick",
+   "tile_m": 0.23,
+   "wainscot": "#6b3c2d",
+   "wainscot_m": 1.3,
+   "why": "a bricklaying hall is judged on a wall, so the hall has one to be judged against"
+  },
+  "ashlar-stone": {
+   "name": "Coursed ashlar stone",
+   "color": "#b6a98d",
+   "roughness": 0.88,
+   "metalness": 0.02,
+   "pattern": "ashlar",
+   "tile_m": 0.6,
+   "wainscot": "#7d7159",
+   "wainscot_m": 1.4,
+   "why": "the banker shop matches an existing course, and the course has to be on the wall to be matched"
+  },
+  "glazed-curtain": {
+   "name": "Glazed curtain wall bay",
+   "color": "#7f9aa4",
+   "roughness": 0.12,
+   "metalness": 0.35,
+   "pattern": "glazing",
+   "tile_m": 1.5,
+   "wainscot": "#4e6b78",
+   "wainscot_m": 1.0,
+   "why": "a glazing trade tests against a real bay, because a sealed joint only fails where the light gets in"
+  },
+  "corrugated-steel": {
+   "name": "Profiled steel cladding",
+   "color": "#9aa7ae",
+   "roughness": 0.6,
+   "metalness": 0.5,
+   "pattern": "corrugate",
+   "tile_m": 0.7,
+   "wainscot": "#5a666e",
+   "wainscot_m": 1.2,
+   "why": "the cladding trade fixes to the wall it also makes, and the rib spacing is the whole argument"
+  },
+  "stainless-splash": {
+   "name": "Stainless splash-back",
+   "color": "#aeb9c0",
+   "roughness": 0.28,
+   "metalness": 0.75,
+   "pattern": "plate",
+   "tile_m": 1.0,
+   "wainscot": "#77838b",
+   "wainscot_m": 1.6,
+   "why": "a wall that is wiped down every shift should not be made of something that minds being wiped down"
+  },
+  "gunned-castable": {
+   "name": "Gunned refractory castable",
+   "color": "#a89066",
+   "roughness": 0.96,
+   "metalness": 0.02,
+   "pattern": "gunite",
+   "tile_m": 0.8,
+   "wainscot": "#6e5a37",
+   "wainscot_m": 1.7,
+   "why": "a lining is sprayed, not laid, and what it looks like wet is what it looks like for the next four years"
+  },
+  "poly-enclosure": {
+   "name": "Sheeted negative-pressure enclosure",
+   "color": "#c4d2d0",
+   "roughness": 0.4,
+   "metalness": 0.02,
+   "pattern": "sheet",
+   "tile_m": 1.2,
+   "wainscot": "#8fa5a4",
+   "wainscot_m": 1.0,
+   "why": "the room is built the morning the work starts and binned the evening it clears"
+  },
+  "switchgear-lineup": {
+   "name": "Switchgear lineup face",
+   "color": "#8d9aa2",
+   "roughness": 0.35,
+   "metalness": 0.45,
+   "pattern": "cabinet",
+   "tile_m": 0.9,
+   "wainscot": "#48555e",
+   "wainscot_m": 1.1,
+   "why": "in an electrical room the wall IS the equipment, and the labels on it are the only map anyone has"
+  },
+  "perf-acoustic": {
+   "name": "Perforated metal acoustic liner",
+   "color": "#8b9a8c",
+   "roughness": 0.7,
+   "metalness": 0.4,
+   "pattern": "perf",
+   "tile_m": 0.6,
+   "wainscot": "#4f5c51",
+   "wainscot_m": 1.2,
+   "why": "a machine hall is loud because the walls give it all back, unless the walls are built not to"
+  },
+  "rock-face": {
+   "name": "Shotcreted rock face",
+   "color": "#7b7266",
+   "roughness": 0.97,
+   "metalness": 0.02,
+   "pattern": "gunite",
+   "tile_m": 1.0,
+   "wainscot": "#544d44",
+   "wainscot_m": 1.5,
+   "why": "underground the wall is the ground, and what holds it up is sprayed onto it"
+  },
+  "tank-plate": {
+   "name": "Lapped tank plate",
+   "color": "#8f6353",
+   "roughness": 0.78,
+   "metalness": 0.55,
+   "pattern": "plate",
+   "tile_m": 1.2,
+   "wainscot": "#5e4136",
+   "wainscot_m": 1.4,
+   "why": "you enter a vessel through a shell you can read: the laps, the seams and where the primer has gone"
   }
  },
  "wall_defaults": {
@@ -355,18 +620,377 @@
   "documentation": "acoustic-panel",
   "leadership": "acoustic-panel"
  },
+ "function_defaults": {
+  "safety": "epoxy-smooth",
+  "procedure": "sealed-slab",
+  "machines": "steel-checker",
+  "tools": "end-grain-block",
+  "materials": "sealed-slab",
+  "layout": "bare-slab",
+  "inspection": "epoxy-smooth",
+  "troubleshooting": "anti-fatigue",
+  "coordination": "terrazzo-ground",
+  "documentation": "raised-access",
+  "leadership": "porcelain-tile"
+ },
+ "patterns": {
+  "slab": "one large pour with its construction joints at the edges",
+  "tile": "a square modular tile with a grouted joint on every side",
+  "brick": "a stretcher bond with a raked mortar course",
+  "plank": "parallel board joints running one way",
+  "block": "a coursed unit face, wider than it is tall",
+  "checker": "raised two-way bars, the classic plate tread",
+  "grate": "bearing bars with open slots between them",
+  "broom": "fine combed striations dragged across a green slab",
+  "smooth": "no joint at all: a poured film with nothing to catch",
+  "speckle": "loose aggregate scattered through the surface",
+  "panel": "a ribbed sheet with a seam where two sheets meet",
+  "plywood": "sheet edges with the long grain running with them",
+  "board": "a flat drawn-on face with a single joint line",
+  "fabric": "a fine two-way weave with no hard edges",
+  "screen": "a heavy frame with a light infill inside it",
+  "mesh": "woven wire you can see through, the wire catching the light",
+  "diamond": "raised lozenges in offset rows, the tread of a vehicle deck",
+  "plate": "flat plate with a ground weld seam every sheet width",
+  "terrazzo": "chip suspended in matrix, divided by a strip on a grid",
+  "flake": "irregular colour flake broadcast into a wet resin film",
+  "trench": "a floor laid to falls with a slotted drain running the bay",
+  "sand": "rammed granular floor, raked and rolled rather than laid",
+  "ballast": "crossed sleepers bedded in angular stone",
+  "perf": "a modular tile drilled through on a close grid",
+  "tslot": "a machined grid of T-slots in a heavy cast face",
+  "polish": "saw-cut control joints in a ground face with the aggregate up",
+  "ashlar": "squared stone in regular courses with fine joints",
+  "glazing": "a glazed bay divided by its transoms and mullions",
+  "corrugate": "deep profiled sheet, the ribs running full height",
+  "gunite": "sprayed material, lumpy where the nozzle laid it",
+  "sheet": "taped polythene sheeting with a lap seam every sheet width",
+  "cabinet": "a row of cubicle doors with a handle and a vent on each"
+ },
+ "rules": {
+  "hazard_rooms": {
+   "molten-metal": {
+    "procedure": "firebrick-hearth",
+    "machines": "firebrick-hearth",
+    "materials": "foundry-sand"
+   },
+   "ionising-radiation": {
+    "procedure": "strippable-coat",
+    "inspection": "strippable-coat"
+   },
+   "explosives": {
+    "procedure": "conductive-tile",
+    "materials": "conductive-tile"
+   },
+   "hot-work": {
+    "procedure": "bare-slab"
+   },
+   "corrosive": {
+    "procedure": "acid-brick"
+   },
+   "confined-space": {
+    "procedure": "steel-plate",
+    "machines": "steel-plate"
+   },
+   "contaminant": {
+    "procedure": "spill-berm"
+   },
+   "particulate": {
+    "procedure": "welded-vinyl",
+    "inspection": "welded-vinyl"
+   },
+   "flammable-atmosphere": {
+    "procedure": "conductive-tile"
+   },
+   "live-electrical": {
+    "procedure": "rubber-dielectric",
+    "troubleshooting": "rubber-dielectric"
+   },
+   "stored-energy": {
+    "procedure": "esd-vinyl"
+   },
+   "immersion": {
+    "procedure": "marine-deck"
+   },
+   "wet-process": {
+    "procedure": "steel-grate",
+    "machines": "trench-drain"
+   },
+   "work-at-height": {
+    "procedure": "impact-mat",
+    "safety": "impact-mat"
+   },
+   "mobile-plant": {
+    "procedure": "crushed-stone",
+    "machines": "broom-concrete",
+    "materials": "asphalt-apron"
+   },
+   "suspended-load": {
+    "materials": "steel-plate"
+   },
+   "rotating-machinery": {
+    "procedure": "epoxy-quartz",
+    "machines": "steel-diamond"
+   },
+   "timber-trade": {
+    "procedure": "timber-plank"
+   }
+  },
+  "craft_rooms": {
+   "clean-process": {
+    "machines": "welded-vinyl",
+    "materials": "welded-vinyl"
+   },
+   "hot-shop": {
+    "tools": "steel-plate",
+    "troubleshooting": "steel-diamond"
+   },
+   "containment-craft": {
+    "materials": "spill-berm",
+    "tools": "welded-vinyl"
+   },
+   "precision-metal": {
+    "inspection": "tooling-plate",
+    "layout": "tooling-plate",
+    "machines": "steel-diamond"
+   },
+   "structural-steel": {
+    "materials": "steel-plate",
+    "layout": "tooling-plate"
+   },
+   "masonry-stone": {
+    "procedure": "broom-concrete",
+    "materials": "crushed-stone"
+   },
+   "finish-trade": {
+    "procedure": "terrazzo-divider",
+    "inspection": "polished-slab"
+   },
+   "concrete-craft": {
+    "procedure": "polished-slab",
+    "machines": "broom-concrete"
+   },
+   "glass-envelope": {
+    "procedure": "polished-slab",
+    "materials": "timber-plank"
+   },
+   "sheet-membrane": {
+    "machines": "steel-plate",
+    "materials": "steel-diamond"
+   },
+   "coatings": {
+    "machines": "flake-resin",
+    "inspection": "flake-resin"
+   },
+   "rail-craft": {
+    "procedure": "rail-ballast",
+    "machines": "rail-ballast"
+   },
+   "underground": {
+    "safety": "shotcrete-invert",
+    "tools": "shotcrete-invert"
+   },
+   "marine-craft": {
+    "machines": "steel-plate",
+    "materials": "marine-deck"
+   },
+   "lifting-gear": {
+    "tools": "steel-plate",
+    "machines": "steel-diamond"
+   },
+   "vehicle-shop": {
+    "machines": "trench-drain",
+    "materials": "steel-diamond"
+   },
+   "hard-standing": {
+    "procedure": "asphalt-apron",
+    "machines": "interlock-paver"
+   },
+   "digital-systems": {
+    "procedure": "access-perf",
+    "machines": "esd-vinyl",
+    "troubleshooting": "esd-vinyl"
+   },
+   "power-network": {
+    "machines": "crushed-stone",
+    "materials": "crushed-stone"
+   },
+   "process-fluid": {
+    "procedure": "trench-drain",
+    "machines": "resin-screed"
+   },
+   "buried-utility": {
+    "materials": "interlock-paver",
+    "layout": "interlock-paver"
+   },
+   "survey-control": {
+    "inspection": "polished-slab",
+    "machines": "sealed-slab"
+   }
+  },
+  "hazard_walls": {
+   "molten-metal": {
+    "procedure": "firebrick-face",
+    "machines": "firebrick-face",
+    "materials": "gunned-castable"
+   },
+   "ionising-radiation": {
+    "procedure": "poly-enclosure",
+    "inspection": "poly-enclosure"
+   },
+   "hot-work": {
+    "procedure": "weld-screen"
+   },
+   "corrosive": {
+    "procedure": "chem-tile"
+   },
+   "confined-space": {
+    "procedure": "tank-plate",
+    "machines": "tank-plate"
+   },
+   "contaminant": {
+    "procedure": "coved-white"
+   },
+   "particulate": {
+    "procedure": "coved-white",
+    "inspection": "coved-white"
+   },
+   "immersion": {
+    "procedure": "chem-tile"
+   },
+   "wet-process": {
+    "procedure": "chem-tile"
+   },
+   "work-at-height": {
+    "procedure": "impact-block",
+    "safety": "impact-block"
+   },
+   "mobile-plant": {
+    "procedure": "mesh-guard",
+    "machines": "mesh-guard"
+   },
+   "suspended-load": {
+    "materials": "mesh-guard"
+   },
+   "rotating-machinery": {
+    "machines": "perf-acoustic"
+   },
+   "timber-trade": {
+    "procedure": "ply-lined"
+   }
+  },
+  "craft_walls": {
+   "clean-process": {
+    "machines": "stainless-splash",
+    "materials": "stainless-splash"
+   },
+   "hot-shop": {
+    "tools": "gunned-castable"
+   },
+   "containment-craft": {
+    "materials": "coved-white",
+    "tools": "coved-white"
+   },
+   "structural-steel": {
+    "materials": "corrugated-steel"
+   },
+   "marine-craft": {
+    "machines": "tank-plate"
+   },
+   "lifting-gear": {
+    "machines": "mesh-guard"
+   },
+   "vehicle-shop": {
+    "machines": "liner-panel"
+   },
+   "hard-standing": {
+    "procedure": "corrugated-steel"
+   },
+   "precision-metal": {
+    "machines": "perf-acoustic"
+   },
+   "masonry-stone": {
+    "procedure": "ashlar-stone",
+    "layout": "brick-common"
+   },
+   "finish-trade": {
+    "materials": "ply-lined"
+   },
+   "glass-envelope": {
+    "procedure": "glazed-curtain",
+    "inspection": "glazed-curtain"
+   },
+   "sheet-membrane": {
+    "procedure": "corrugated-steel",
+    "materials": "corrugated-steel"
+   },
+   "coatings": {
+    "machines": "chem-tile"
+   },
+   "rail-craft": {
+    "procedure": "mesh-guard",
+    "machines": "mesh-guard"
+   },
+   "underground": {
+    "safety": "rock-face",
+    "tools": "rock-face"
+   },
+   "digital-systems": {
+    "procedure": "switchgear-lineup",
+    "troubleshooting": "switchgear-lineup"
+   },
+   "power-network": {
+    "machines": "switchgear-lineup",
+    "troubleshooting": "switchgear-lineup"
+   },
+   "process-fluid": {
+    "machines": "liner-panel"
+   }
+  }
+ },
  "hazards_in_use": [
+  "confined-space",
   "contaminant",
   "corrosive",
+  "explosives",
+  "flammable-atmosphere",
   "hot-work",
   "immersion",
+  "ionising-radiation",
   "live-electrical",
   "mobile-plant",
   "molten-metal",
   "particulate",
+  "rotating-machinery",
   "stored-energy",
+  "suspended-load",
   "timber-trade",
-  "wet-process"
+  "wet-process",
+  "work-at-height"
+ ],
+ "crafts_in_use": [
+  "buried-utility",
+  "clean-process",
+  "coatings",
+  "concrete-craft",
+  "containment-craft",
+  "digital-systems",
+  "finish-trade",
+  "glass-envelope",
+  "hard-standing",
+  "hot-shop",
+  "lifting-gear",
+  "marine-craft",
+  "masonry-stone",
+  "power-network",
+  "precision-metal",
+  "process-fluid",
+  "rail-craft",
+  "sheet-membrane",
+  "structural-steel",
+  "survey-control",
+  "underground",
+  "vehicle-shop"
  ],
  "no_finish_driving_hazard": [
   "acoustic",
@@ -379,14 +1003,11 @@
   "cement-masons",
   "cladding",
   "concrete-pump",
-  "confined-space",
-  "crane-ops",
   "curtainwall",
   "data-center",
   "demolition",
   "district-energy",
   "drywall",
-  "elevator",
   "ev-charging",
   "fiber-splicers",
   "fire-alarm",
@@ -394,29 +1015,19 @@
   "firestop",
   "fleet-diesel",
   "flooring",
-  "gas-distrib",
   "glaziers",
-  "heavy-equip",
-  "high-angle",
   "hvacr",
-  "hydro",
   "instrumentation",
-  "ironworkers",
   "lathers",
   "machinists",
   "masonry-restore",
   "meter-techs",
-  "millwrights",
   "network-cabling",
   "pipefitters",
   "plasterers",
-  "port-crane",
   "post-tension",
-  "precast",
   "rail-signals",
-  "riggers",
   "robotics",
-  "roofers",
   "security-sys",
   "sheetmetal",
   "site-safety",
@@ -425,14 +1036,34 @@
   "stone-carvers",
   "survey-drone",
   "surveyors",
+  "terrazzo",
   "tilesetters",
   "toolmakers",
-  "transit-vehicle",
   "waterproofers",
+  "window-glazing"
+ ],
+ "hazard_placed_finishes": 104,
+ "craft_placed_finishes": 194,
+ "hazard_placed_walls": 78,
+ "craft_placed_walls": 127,
+ "unplaced_finishes": [],
+ "unplaced_walls": [],
+ "no_craft": [
+  "battery-storage",
+  "blasters",
+  "carpenters",
+  "confined-space",
+  "demolition",
+  "divers",
+  "grounds",
+  "high-angle",
+  "laborers",
+  "operating-eng",
+  "scaffold",
+  "teamsters",
+  "welders",
   "wind"
  ],
- "hazard_placed_finishes": 71,
- "hazard_placed_walls": 59,
  "no_wall_driving_hazard": [
   "acoustic",
   "airfield",
@@ -440,21 +1071,19 @@
   "aviation-ground",
   "bas-controls",
   "battery-storage",
+  "blasters",
   "bridge-inspect",
   "cable-splicers",
   "catenary",
   "cement-masons",
   "cladding",
   "concrete-pump",
-  "confined-space",
-  "crane-ops",
   "curtainwall",
   "data-center",
   "demolition",
   "district-energy",
   "drywall",
   "electricians",
-  "elevator",
   "ev-charging",
   "fiber-splicers",
   "fire-alarm",
@@ -464,30 +1093,21 @@
   "flooring",
   "gas-distrib",
   "glaziers",
-  "heavy-equip",
-  "high-angle",
   "hvacr",
-  "hydro",
   "hydrogen",
   "instrumentation",
-  "ironworkers",
   "lathers",
   "line-workers",
   "machinists",
   "masonry-restore",
   "meter-techs",
-  "millwrights",
   "network-cabling",
   "pipefitters",
   "plasterers",
   "plc-techs",
-  "port-crane",
   "post-tension",
-  "precast",
   "rail-signals",
-  "riggers",
   "robotics",
-  "roofers",
   "security-sys",
   "sheetmetal",
   "site-safety",
@@ -497,17 +1117,19 @@
   "substation",
   "survey-drone",
   "surveyors",
+  "terrazzo",
   "tilesetters",
   "toolmakers",
-  "transit-vehicle",
   "transmission",
   "waterproofers",
-  "wind"
+  "window-glazing"
  ],
  "provenance": {
   "geometry": "SCHEMATIC",
   "finish": "DERIVED",
   "wall": "DERIVED",
+  "catalogue": "AUTHORED",
+  "placement": "DERIVED",
   "conditions": "DERIVED",
   "discipline": "RECORDED/DERIVED/SCHEMATIC tagging after the Locator.X rooms module (Apache-2.0)"
  },
@@ -668,6 +1290,33 @@
     "flame-resistant clothing"
    ]
   },
+  "ionising-radiation": {
+   "lux": 500,
+   "ach": 15,
+   "noise_db": 70,
+   "temp_c": [
+    16,
+    28
+   ],
+   "ppe": [
+    "dosimeter",
+    "coveralls",
+    "respirator"
+   ]
+  },
+  "explosives": {
+   "lux": 500,
+   "ach": 12,
+   "noise_db": 90,
+   "temp_c": [
+    8,
+    32
+   ],
+   "ppe": [
+    "anti-static clothing",
+    "hearing protection"
+   ]
+  },
   "hot-work": {
    "lux": 500,
    "ach": 15,
@@ -695,6 +1344,19 @@
     "apron"
    ]
   },
+  "confined-space": {
+   "lux": 500,
+   "ach": 20,
+   "noise_db": 80,
+   "temp_c": [
+    10,
+    32
+   ],
+   "ppe": [
+    "gas monitor",
+    "rescue harness"
+   ]
+  },
   "contaminant": {
    "lux": 500,
    "ach": 12,
@@ -719,6 +1381,19 @@
    "ppe": [
     "coveralls",
     "gowning"
+   ]
+  },
+  "flammable-atmosphere": {
+   "lux": 500,
+   "ach": 20,
+   "noise_db": 75,
+   "temp_c": [
+    8,
+    32
+   ],
+   "ppe": [
+    "anti-static clothing",
+    "gas monitor"
    ]
   },
   "live-electrical": {
@@ -771,6 +1446,19 @@
     "face shield"
    ]
   },
+  "work-at-height": {
+   "lux": 500,
+   "ach": 6,
+   "noise_db": 70,
+   "temp_c": [
+    8,
+    32
+   ],
+   "ppe": [
+    "full-body harness",
+    "chinstrap helmet"
+   ]
+  },
   "mobile-plant": {
    "lux": 500,
    "ach": 8,
@@ -782,6 +1470,32 @@
    "ppe": [
     "hearing protection",
     "hi-vis"
+   ]
+  },
+  "suspended-load": {
+   "lux": 500,
+   "ach": 8,
+   "noise_db": 85,
+   "temp_c": [
+    5,
+    35
+   ],
+   "ppe": [
+    "hard hat",
+    "hi-vis"
+   ]
+  },
+  "rotating-machinery": {
+   "lux": 500,
+   "ach": 10,
+   "noise_db": 88,
+   "temp_c": [
+    10,
+    30
+   ],
+   "ppe": [
+    "hearing protection",
+    "close-fitting clothing"
    ]
   },
   "timber-trade": {
@@ -800,8 +1514,14 @@
  },
  "halls": {
   "ironworkers": {
-   "hazard": null,
-   "hazards": [],
+   "hazard": "suspended-load",
+   "hazards": [
+    "suspended-load"
+   ],
+   "craft": "structural-steel",
+   "crafts": [
+    "structural-steel"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -820,12 +1540,14 @@
      "placed_by": "function"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "steel-plate",
+     "placed_by": "hazard",
+     "hazard": "suspended-load"
     },
     "layout": {
-     "surface": "bare-slab",
-     "placed_by": "function"
+     "surface": "tooling-plate",
+     "placed_by": "craft",
+     "craft": "structural-steel"
     },
     "inspection": {
      "surface": "epoxy-smooth",
@@ -866,8 +1588,9 @@
      "placed_by": "function"
     },
     "materials": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "mesh-guard",
+     "placed_by": "hazard",
+     "hazard": "suspended-load"
     },
     "layout": {
      "wall": "whiteboard-panel",
@@ -959,9 +1682,9 @@
      "hazards": []
     },
     "materials": {
-     "lux": 200,
-     "ach": 4,
-     "noise_db": 70,
+     "lux": 500,
+     "ach": 8,
+     "noise_db": 85,
      "temp_c": [
       5,
       30
@@ -972,7 +1695,9 @@
       "hi-vis",
       "safety boots"
      ],
-     "hazards": []
+     "hazards": [
+      "suspended-load"
+     ]
     },
     "layout": {
      "lux": 750,
@@ -1054,6 +1779,10 @@
    "hazards": [
     "live-electrical"
    ],
+   "craft": "power-network",
+   "crafts": [
+    "power-network"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -1065,16 +1794,18 @@
      "hazard": "live-electrical"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "crushed-stone",
+     "placed_by": "craft",
+     "craft": "power-network"
     },
     "tools": {
      "surface": "end-grain-block",
      "placed_by": "function"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "crushed-stone",
+     "placed_by": "craft",
+     "craft": "power-network"
     },
     "layout": {
      "surface": "bare-slab",
@@ -1112,8 +1843,9 @@
      "placed_by": "function"
     },
     "machines": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "switchgear-lineup",
+     "placed_by": "craft",
+     "craft": "power-network"
     },
     "tools": {
      "wall": "ply-lined",
@@ -1132,8 +1864,9 @@
      "placed_by": "function"
     },
     "troubleshooting": {
-     "wall": "ply-lined",
-     "placed_by": "function"
+     "wall": "switchgear-lineup",
+     "placed_by": "craft",
+     "craft": "power-network"
     },
     "coordination": {
      "wall": "acoustic-panel",
@@ -1314,18 +2047,24 @@
   "pipefitters": {
    "hazard": null,
    "hazards": [],
+   "craft": "process-fluid",
+   "crafts": [
+    "process-fluid"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
      "placed_by": "function"
     },
     "procedure": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "trench-drain",
+     "placed_by": "craft",
+     "craft": "process-fluid"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "resin-screed",
+     "placed_by": "craft",
+     "craft": "process-fluid"
     },
     "tools": {
      "surface": "end-grain-block",
@@ -1370,8 +2109,9 @@
      "placed_by": "function"
     },
     "machines": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "liner-panel",
+     "placed_by": "craft",
+     "craft": "process-fluid"
     },
     "tools": {
      "wall": "ply-lined",
@@ -1566,6 +2306,8 @@
    "hazards": [
     "timber-trade"
    ],
+   "craft": null,
+   "crafts": [],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -1822,8 +2564,11 @@
   "operating-eng": {
    "hazard": "mobile-plant",
    "hazards": [
-    "mobile-plant"
+    "mobile-plant",
+    "suspended-load"
    ],
+   "craft": null,
+   "crafts": [],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -1844,8 +2589,9 @@
      "placed_by": "function"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "asphalt-apron",
+     "placed_by": "hazard",
+     "hazard": "mobile-plant"
     },
     "layout": {
      "surface": "bare-slab",
@@ -1892,8 +2638,9 @@
      "placed_by": "function"
     },
     "materials": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "mesh-guard",
+     "placed_by": "hazard",
+     "hazard": "suspended-load"
     },
     "layout": {
      "wall": "whiteboard-panel",
@@ -1990,9 +2737,9 @@
      "hazards": []
     },
     "materials": {
-     "lux": 200,
-     "ach": 4,
-     "noise_db": 70,
+     "lux": 500,
+     "ach": 8,
+     "noise_db": 90,
      "temp_c": [
       5,
       30
@@ -2000,10 +2747,14 @@
      "ppe": [
       "gloves",
       "hard hat",
+      "hearing protection",
       "hi-vis",
       "safety boots"
      ],
-     "hazards": []
+     "hazards": [
+      "mobile-plant",
+      "suspended-load"
+     ]
     },
     "layout": {
      "lux": 750,
@@ -2085,6 +2836,8 @@
    "hazards": [
     "mobile-plant"
    ],
+   "craft": null,
+   "crafts": [],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -2105,8 +2858,9 @@
      "placed_by": "function"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "asphalt-apron",
+     "placed_by": "hazard",
+     "hazard": "mobile-plant"
     },
     "layout": {
      "surface": "bare-slab",
@@ -2251,9 +3005,9 @@
      "hazards": []
     },
     "materials": {
-     "lux": 200,
-     "ach": 4,
-     "noise_db": 70,
+     "lux": 500,
+     "ach": 8,
+     "noise_db": 90,
      "temp_c": [
       5,
       30
@@ -2261,10 +3015,13 @@
      "ppe": [
       "gloves",
       "hard hat",
+      "hearing protection",
       "hi-vis",
       "safety boots"
      ],
-     "hazards": []
+     "hazards": [
+      "mobile-plant"
+     ]
     },
     "layout": {
      "lux": 750,
@@ -2344,6 +3101,10 @@
   "sheetmetal": {
    "hazard": null,
    "hazards": [],
+   "craft": "sheet-membrane",
+   "crafts": [
+    "sheet-membrane"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -2354,16 +3115,18 @@
      "placed_by": "function"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "steel-plate",
+     "placed_by": "craft",
+     "craft": "sheet-membrane"
     },
     "tools": {
      "surface": "end-grain-block",
      "placed_by": "function"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "steel-diamond",
+     "placed_by": "craft",
+     "craft": "sheet-membrane"
     },
     "layout": {
      "surface": "bare-slab",
@@ -2396,8 +3159,9 @@
      "placed_by": "function"
     },
     "procedure": {
-     "wall": "liner-panel",
-     "placed_by": "function"
+     "wall": "corrugated-steel",
+     "placed_by": "craft",
+     "craft": "sheet-membrane"
     },
     "machines": {
      "wall": "impact-block",
@@ -2408,8 +3172,9 @@
      "placed_by": "function"
     },
     "materials": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "corrugated-steel",
+     "placed_by": "craft",
+     "craft": "sheet-membrane"
     },
     "layout": {
      "wall": "whiteboard-panel",
@@ -2596,6 +3361,10 @@
    "hazards": [
     "molten-metal"
    ],
+   "craft": "masonry-stone",
+   "crafts": [
+    "masonry-stone"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -2616,8 +3385,9 @@
      "placed_by": "function"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "foundry-sand",
+     "placed_by": "hazard",
+     "hazard": "molten-metal"
     },
     "layout": {
      "surface": "bare-slab",
@@ -2664,12 +3434,14 @@
      "placed_by": "function"
     },
     "materials": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "gunned-castable",
+     "placed_by": "hazard",
+     "hazard": "molten-metal"
     },
     "layout": {
-     "wall": "whiteboard-panel",
-     "placed_by": "function"
+     "wall": "brick-common",
+     "placed_by": "craft",
+     "craft": "masonry-stone"
     },
     "inspection": {
      "wall": "matte-board",
@@ -2765,20 +3537,24 @@
      "hazards": []
     },
     "materials": {
-     "lux": 200,
-     "ach": 4,
-     "noise_db": 70,
+     "lux": 500,
+     "ach": 20,
+     "noise_db": 90,
      "temp_c": [
-      5,
+      10,
       30
      ],
      "ppe": [
+      "face shield",
+      "flame-resistant clothing",
       "gloves",
       "hard hat",
       "hi-vis",
       "safety boots"
      ],
-     "hazards": []
+     "hazards": [
+      "molten-metal"
+     ]
     },
     "layout": {
      "lux": 750,
@@ -2858,18 +3634,24 @@
   "cement-masons": {
    "hazard": null,
    "hazards": [],
+   "craft": "concrete-craft",
+   "crafts": [
+    "concrete-craft"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
      "placed_by": "function"
     },
     "procedure": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "polished-slab",
+     "placed_by": "craft",
+     "craft": "concrete-craft"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "broom-concrete",
+     "placed_by": "craft",
+     "craft": "concrete-craft"
     },
     "tools": {
      "surface": "end-grain-block",
@@ -3106,28 +3888,38 @@
    }
   },
   "roofers": {
-   "hazard": null,
-   "hazards": [],
+   "hazard": "work-at-height",
+   "hazards": [
+    "work-at-height"
+   ],
+   "craft": "sheet-membrane",
+   "crafts": [
+    "sheet-membrane"
+   ],
    "rooms": {
     "safety": {
-     "surface": "epoxy-smooth",
-     "placed_by": "function"
+     "surface": "impact-mat",
+     "placed_by": "hazard",
+     "hazard": "work-at-height"
     },
     "procedure": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "impact-mat",
+     "placed_by": "hazard",
+     "hazard": "work-at-height"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "steel-plate",
+     "placed_by": "craft",
+     "craft": "sheet-membrane"
     },
     "tools": {
      "surface": "end-grain-block",
      "placed_by": "function"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "steel-diamond",
+     "placed_by": "craft",
+     "craft": "sheet-membrane"
     },
     "layout": {
      "surface": "bare-slab",
@@ -3156,12 +3948,14 @@
    },
    "walls": {
     "safety": {
-     "wall": "painted-block",
-     "placed_by": "function"
+     "wall": "impact-block",
+     "placed_by": "hazard",
+     "hazard": "work-at-height"
     },
     "procedure": {
-     "wall": "liner-panel",
-     "placed_by": "function"
+     "wall": "impact-block",
+     "placed_by": "hazard",
+     "hazard": "work-at-height"
     },
     "machines": {
      "wall": "impact-block",
@@ -3172,8 +3966,9 @@
      "placed_by": "function"
     },
     "materials": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "corrugated-steel",
+     "placed_by": "craft",
+     "craft": "sheet-membrane"
     },
     "layout": {
      "wall": "whiteboard-panel",
@@ -3202,18 +3997,22 @@
    },
    "conditions": {
     "safety": {
-     "lux": 300,
+     "lux": 500,
      "ach": 6,
-     "noise_db": 55,
+     "noise_db": 70,
      "temp_c": [
       18,
       24
      ],
      "ppe": [
+      "chinstrap helmet",
+      "full-body harness",
       "hi-vis",
       "safety boots"
      ],
-     "hazards": []
+     "hazards": [
+      "work-at-height"
+     ]
     },
     "procedure": {
      "lux": 500,
@@ -3224,13 +4023,17 @@
       30
      ],
      "ppe": [
+      "chinstrap helmet",
+      "full-body harness",
       "gloves",
       "hard hat",
       "hi-vis",
       "safety boots",
       "safety glasses"
      ],
-     "hazards": []
+     "hazards": [
+      "work-at-height"
+     ]
     },
     "machines": {
      "lux": 500,
@@ -3361,6 +4164,10 @@
     "corrosive",
     "contaminant"
    ],
+   "craft": "coatings",
+   "crafts": [
+    "coatings"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -3372,8 +4179,9 @@
      "hazard": "corrosive"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "flake-resin",
+     "placed_by": "craft",
+     "craft": "coatings"
     },
     "tools": {
      "surface": "end-grain-block",
@@ -3388,8 +4196,9 @@
      "placed_by": "function"
     },
     "inspection": {
-     "surface": "epoxy-smooth",
-     "placed_by": "function"
+     "surface": "flake-resin",
+     "placed_by": "craft",
+     "craft": "coatings"
     },
     "troubleshooting": {
      "surface": "anti-fatigue",
@@ -3419,8 +4228,9 @@
      "hazard": "corrosive"
     },
     "machines": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "chem-tile",
+     "placed_by": "craft",
+     "craft": "coatings"
     },
     "tools": {
      "wall": "ply-lined",
@@ -3621,14 +4431,19 @@
   "glaziers": {
    "hazard": null,
    "hazards": [],
+   "craft": "glass-envelope",
+   "crafts": [
+    "glass-envelope"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
      "placed_by": "function"
     },
     "procedure": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "polished-slab",
+     "placed_by": "craft",
+     "craft": "glass-envelope"
     },
     "machines": {
      "surface": "steel-checker",
@@ -3639,8 +4454,9 @@
      "placed_by": "function"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "timber-plank",
+     "placed_by": "craft",
+     "craft": "glass-envelope"
     },
     "layout": {
      "surface": "bare-slab",
@@ -3673,8 +4489,9 @@
      "placed_by": "function"
     },
     "procedure": {
-     "wall": "liner-panel",
-     "placed_by": "function"
+     "wall": "glazed-curtain",
+     "placed_by": "craft",
+     "craft": "glass-envelope"
     },
     "machines": {
      "wall": "impact-block",
@@ -3693,8 +4510,9 @@
      "placed_by": "function"
     },
     "inspection": {
-     "wall": "matte-board",
-     "placed_by": "function"
+     "wall": "glazed-curtain",
+     "placed_by": "craft",
+     "craft": "glass-envelope"
     },
     "troubleshooting": {
      "wall": "ply-lined",
@@ -3873,6 +4691,10 @@
    "hazards": [
     "contaminant"
    ],
+   "craft": "sheet-membrane",
+   "crafts": [
+    "sheet-membrane"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -3884,16 +4706,18 @@
      "hazard": "contaminant"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "steel-plate",
+     "placed_by": "craft",
+     "craft": "sheet-membrane"
     },
     "tools": {
      "surface": "end-grain-block",
      "placed_by": "function"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "steel-diamond",
+     "placed_by": "craft",
+     "craft": "sheet-membrane"
     },
     "layout": {
      "surface": "bare-slab",
@@ -3939,8 +4763,9 @@
      "placed_by": "function"
     },
     "materials": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "corrugated-steel",
+     "placed_by": "craft",
+     "craft": "sheet-membrane"
     },
     "layout": {
      "wall": "whiteboard-panel",
@@ -4127,20 +4952,28 @@
    }
   },
   "millwrights": {
-   "hazard": null,
-   "hazards": [],
+   "hazard": "rotating-machinery",
+   "hazards": [
+    "rotating-machinery"
+   ],
+   "craft": "precision-metal",
+   "crafts": [
+    "precision-metal"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
      "placed_by": "function"
     },
     "procedure": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "epoxy-quartz",
+     "placed_by": "hazard",
+     "hazard": "rotating-machinery"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "steel-diamond",
+     "placed_by": "hazard",
+     "hazard": "rotating-machinery"
     },
     "tools": {
      "surface": "end-grain-block",
@@ -4151,12 +4984,14 @@
      "placed_by": "function"
     },
     "layout": {
-     "surface": "bare-slab",
-     "placed_by": "function"
+     "surface": "tooling-plate",
+     "placed_by": "craft",
+     "craft": "precision-metal"
     },
     "inspection": {
-     "surface": "epoxy-smooth",
-     "placed_by": "function"
+     "surface": "tooling-plate",
+     "placed_by": "craft",
+     "craft": "precision-metal"
     },
     "troubleshooting": {
      "surface": "anti-fatigue",
@@ -4185,8 +5020,9 @@
      "placed_by": "function"
     },
     "machines": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "perf-acoustic",
+     "placed_by": "hazard",
+     "hazard": "rotating-machinery"
     },
     "tools": {
      "wall": "ply-lined",
@@ -4238,30 +5074,14 @@
     },
     "procedure": {
      "lux": 500,
-     "ach": 8,
-     "noise_db": 80,
+     "ach": 10,
+     "noise_db": 88,
      "temp_c": [
       12,
       30
      ],
      "ppe": [
-      "gloves",
-      "hard hat",
-      "hi-vis",
-      "safety boots",
-      "safety glasses"
-     ],
-     "hazards": []
-    },
-    "machines": {
-     "lux": 500,
-     "ach": 10,
-     "noise_db": 85,
-     "temp_c": [
-      12,
-      28
-     ],
-     "ppe": [
+      "close-fitting clothing",
       "gloves",
       "hard hat",
       "hearing protection",
@@ -4269,7 +5089,30 @@
       "safety boots",
       "safety glasses"
      ],
-     "hazards": []
+     "hazards": [
+      "rotating-machinery"
+     ]
+    },
+    "machines": {
+     "lux": 500,
+     "ach": 10,
+     "noise_db": 88,
+     "temp_c": [
+      12,
+      28
+     ],
+     "ppe": [
+      "close-fitting clothing",
+      "gloves",
+      "hard hat",
+      "hearing protection",
+      "hi-vis",
+      "safety boots",
+      "safety glasses"
+     ],
+     "hazards": [
+      "rotating-machinery"
+     ]
     },
     "tools": {
      "lux": 500,
@@ -4381,6 +5224,10 @@
    "hazards": [
     "hot-work"
    ],
+   "craft": "structural-steel",
+   "crafts": [
+    "structural-steel"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -4400,12 +5247,14 @@
      "placed_by": "function"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "steel-plate",
+     "placed_by": "craft",
+     "craft": "structural-steel"
     },
     "layout": {
-     "surface": "bare-slab",
-     "placed_by": "function"
+     "surface": "tooling-plate",
+     "placed_by": "craft",
+     "craft": "structural-steel"
     },
     "inspection": {
      "surface": "epoxy-smooth",
@@ -4447,8 +5296,9 @@
      "placed_by": "function"
     },
     "materials": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "corrugated-steel",
+     "placed_by": "craft",
+     "craft": "structural-steel"
     },
     "layout": {
      "wall": "whiteboard-panel",
@@ -4635,8 +5485,14 @@
    }
   },
   "elevator": {
-   "hazard": null,
-   "hazards": [],
+   "hazard": "suspended-load",
+   "hazards": [
+    "suspended-load"
+   ],
+   "craft": "lifting-gear",
+   "crafts": [
+    "lifting-gear"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -4647,16 +5503,19 @@
      "placed_by": "function"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "steel-diamond",
+     "placed_by": "craft",
+     "craft": "lifting-gear"
     },
     "tools": {
-     "surface": "end-grain-block",
-     "placed_by": "function"
+     "surface": "steel-plate",
+     "placed_by": "craft",
+     "craft": "lifting-gear"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "steel-plate",
+     "placed_by": "hazard",
+     "hazard": "suspended-load"
     },
     "layout": {
      "surface": "bare-slab",
@@ -4693,16 +5552,18 @@
      "placed_by": "function"
     },
     "machines": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "mesh-guard",
+     "placed_by": "craft",
+     "craft": "lifting-gear"
     },
     "tools": {
      "wall": "ply-lined",
      "placed_by": "function"
     },
     "materials": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "mesh-guard",
+     "placed_by": "hazard",
+     "hazard": "suspended-load"
     },
     "layout": {
      "wall": "whiteboard-panel",
@@ -4794,9 +5655,9 @@
      "hazards": []
     },
     "materials": {
-     "lux": 200,
-     "ach": 4,
-     "noise_db": 70,
+     "lux": 500,
+     "ach": 8,
+     "noise_db": 85,
      "temp_c": [
       5,
       30
@@ -4807,7 +5668,9 @@
       "hi-vis",
       "safety boots"
      ],
-     "hazards": []
+     "hazards": [
+      "suspended-load"
+     ]
     },
     "layout": {
      "lux": 750,
@@ -4889,6 +5752,8 @@
    "hazards": [
     "mobile-plant"
    ],
+   "craft": null,
+   "crafts": [],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -4909,8 +5774,9 @@
      "placed_by": "function"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "asphalt-apron",
+     "placed_by": "hazard",
+     "hazard": "mobile-plant"
     },
     "layout": {
      "surface": "bare-slab",
@@ -5055,9 +5921,9 @@
      "hazards": []
     },
     "materials": {
-     "lux": 200,
-     "ach": 4,
-     "noise_db": 70,
+     "lux": 500,
+     "ach": 8,
+     "noise_db": 90,
      "temp_c": [
       5,
       30
@@ -5065,10 +5931,13 @@
      "ppe": [
       "gloves",
       "hard hat",
+      "hearing protection",
       "hi-vis",
       "safety boots"
      ],
-     "hazards": []
+     "hazards": [
+      "mobile-plant"
+     ]
     },
     "layout": {
      "lux": 750,
@@ -5150,6 +6019,8 @@
    "hazards": [
     "hot-work"
    ],
+   "craft": null,
+   "crafts": [],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -5406,18 +6277,24 @@
   "hvacr": {
    "hazard": null,
    "hazards": [],
+   "craft": "process-fluid",
+   "crafts": [
+    "process-fluid"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
      "placed_by": "function"
     },
     "procedure": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "trench-drain",
+     "placed_by": "craft",
+     "craft": "process-fluid"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "resin-screed",
+     "placed_by": "craft",
+     "craft": "process-fluid"
     },
     "tools": {
      "surface": "end-grain-block",
@@ -5462,8 +6339,9 @@
      "placed_by": "function"
     },
     "machines": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "liner-panel",
+     "placed_by": "craft",
+     "craft": "process-fluid"
     },
     "tools": {
      "wall": "ply-lined",
@@ -5654,8 +6532,14 @@
    }
   },
   "crane-ops": {
-   "hazard": null,
-   "hazards": [],
+   "hazard": "suspended-load",
+   "hazards": [
+    "suspended-load"
+   ],
+   "craft": "lifting-gear",
+   "crafts": [
+    "lifting-gear"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -5666,16 +6550,19 @@
      "placed_by": "function"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "steel-diamond",
+     "placed_by": "craft",
+     "craft": "lifting-gear"
     },
     "tools": {
-     "surface": "end-grain-block",
-     "placed_by": "function"
+     "surface": "steel-plate",
+     "placed_by": "craft",
+     "craft": "lifting-gear"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "steel-plate",
+     "placed_by": "hazard",
+     "hazard": "suspended-load"
     },
     "layout": {
      "surface": "bare-slab",
@@ -5712,16 +6599,18 @@
      "placed_by": "function"
     },
     "machines": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "mesh-guard",
+     "placed_by": "craft",
+     "craft": "lifting-gear"
     },
     "tools": {
      "wall": "ply-lined",
      "placed_by": "function"
     },
     "materials": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "mesh-guard",
+     "placed_by": "hazard",
+     "hazard": "suspended-load"
     },
     "layout": {
      "wall": "whiteboard-panel",
@@ -5813,9 +6702,9 @@
      "hazards": []
     },
     "materials": {
-     "lux": 200,
-     "ach": 4,
-     "noise_db": 70,
+     "lux": 500,
+     "ach": 8,
+     "noise_db": 85,
      "temp_c": [
       5,
       30
@@ -5826,7 +6715,9 @@
       "hi-vis",
       "safety boots"
      ],
-     "hazards": []
+     "hazards": [
+      "suspended-load"
+     ]
     },
     "layout": {
      "lux": 750,
@@ -5904,8 +6795,14 @@
    }
   },
   "riggers": {
-   "hazard": null,
-   "hazards": [],
+   "hazard": "suspended-load",
+   "hazards": [
+    "suspended-load"
+   ],
+   "craft": "lifting-gear",
+   "crafts": [
+    "lifting-gear"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -5916,16 +6813,19 @@
      "placed_by": "function"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "steel-diamond",
+     "placed_by": "craft",
+     "craft": "lifting-gear"
     },
     "tools": {
-     "surface": "end-grain-block",
-     "placed_by": "function"
+     "surface": "steel-plate",
+     "placed_by": "craft",
+     "craft": "lifting-gear"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "steel-plate",
+     "placed_by": "hazard",
+     "hazard": "suspended-load"
     },
     "layout": {
      "surface": "bare-slab",
@@ -5962,16 +6862,18 @@
      "placed_by": "function"
     },
     "machines": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "mesh-guard",
+     "placed_by": "craft",
+     "craft": "lifting-gear"
     },
     "tools": {
      "wall": "ply-lined",
      "placed_by": "function"
     },
     "materials": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "mesh-guard",
+     "placed_by": "hazard",
+     "hazard": "suspended-load"
     },
     "layout": {
      "wall": "whiteboard-panel",
@@ -6063,9 +6965,9 @@
      "hazards": []
     },
     "materials": {
-     "lux": 200,
-     "ach": 4,
-     "noise_db": 70,
+     "lux": 500,
+     "ach": 8,
+     "noise_db": 85,
      "temp_c": [
       5,
       30
@@ -6076,7 +6978,9 @@
       "hi-vis",
       "safety boots"
      ],
-     "hazards": []
+     "hazards": [
+      "suspended-load"
+     ]
     },
     "layout": {
      "lux": 750,
@@ -6154,28 +7058,37 @@
    }
   },
   "heavy-equip": {
-   "hazard": null,
-   "hazards": [],
+   "hazard": "rotating-machinery",
+   "hazards": [
+    "rotating-machinery"
+   ],
+   "craft": "vehicle-shop",
+   "crafts": [
+    "vehicle-shop"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
      "placed_by": "function"
     },
     "procedure": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "epoxy-quartz",
+     "placed_by": "hazard",
+     "hazard": "rotating-machinery"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "steel-diamond",
+     "placed_by": "hazard",
+     "hazard": "rotating-machinery"
     },
     "tools": {
      "surface": "end-grain-block",
      "placed_by": "function"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "steel-diamond",
+     "placed_by": "craft",
+     "craft": "vehicle-shop"
     },
     "layout": {
      "surface": "bare-slab",
@@ -6212,8 +7125,9 @@
      "placed_by": "function"
     },
     "machines": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "perf-acoustic",
+     "placed_by": "hazard",
+     "hazard": "rotating-machinery"
     },
     "tools": {
      "wall": "ply-lined",
@@ -6265,30 +7179,14 @@
     },
     "procedure": {
      "lux": 500,
-     "ach": 8,
-     "noise_db": 80,
+     "ach": 10,
+     "noise_db": 88,
      "temp_c": [
       12,
       30
      ],
      "ppe": [
-      "gloves",
-      "hard hat",
-      "hi-vis",
-      "safety boots",
-      "safety glasses"
-     ],
-     "hazards": []
-    },
-    "machines": {
-     "lux": 500,
-     "ach": 10,
-     "noise_db": 85,
-     "temp_c": [
-      12,
-      28
-     ],
-     "ppe": [
+      "close-fitting clothing",
       "gloves",
       "hard hat",
       "hearing protection",
@@ -6296,7 +7194,30 @@
       "safety boots",
       "safety glasses"
      ],
-     "hazards": []
+     "hazards": [
+      "rotating-machinery"
+     ]
+    },
+    "machines": {
+     "lux": 500,
+     "ach": 10,
+     "noise_db": 88,
+     "temp_c": [
+      12,
+      28
+     ],
+     "ppe": [
+      "close-fitting clothing",
+      "gloves",
+      "hard hat",
+      "hearing protection",
+      "hi-vis",
+      "safety boots",
+      "safety glasses"
+     ],
+     "hazards": [
+      "rotating-machinery"
+     ]
     },
     "tools": {
      "lux": 500,
@@ -6406,14 +7327,19 @@
   "drywall": {
    "hazard": null,
    "hazards": [],
+   "craft": "finish-trade",
+   "crafts": [
+    "finish-trade"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
      "placed_by": "function"
     },
     "procedure": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "terrazzo-divider",
+     "placed_by": "craft",
+     "craft": "finish-trade"
     },
     "machines": {
      "surface": "steel-checker",
@@ -6432,8 +7358,9 @@
      "placed_by": "function"
     },
     "inspection": {
-     "surface": "epoxy-smooth",
-     "placed_by": "function"
+     "surface": "polished-slab",
+     "placed_by": "craft",
+     "craft": "finish-trade"
     },
     "troubleshooting": {
      "surface": "anti-fatigue",
@@ -6470,8 +7397,9 @@
      "placed_by": "function"
     },
     "materials": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "ply-lined",
+     "placed_by": "craft",
+     "craft": "finish-trade"
     },
     "layout": {
      "wall": "whiteboard-panel",
@@ -6656,14 +7584,19 @@
   "flooring": {
    "hazard": null,
    "hazards": [],
+   "craft": "finish-trade",
+   "crafts": [
+    "finish-trade"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
      "placed_by": "function"
     },
     "procedure": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "terrazzo-divider",
+     "placed_by": "craft",
+     "craft": "finish-trade"
     },
     "machines": {
      "surface": "steel-checker",
@@ -6682,8 +7615,9 @@
      "placed_by": "function"
     },
     "inspection": {
-     "surface": "epoxy-smooth",
-     "placed_by": "function"
+     "surface": "polished-slab",
+     "placed_by": "craft",
+     "craft": "finish-trade"
     },
     "troubleshooting": {
      "surface": "anti-fatigue",
@@ -6720,8 +7654,9 @@
      "placed_by": "function"
     },
     "materials": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "ply-lined",
+     "placed_by": "craft",
+     "craft": "finish-trade"
     },
     "layout": {
      "wall": "whiteboard-panel",
@@ -6908,6 +7843,8 @@
    "hazards": [
     "mobile-plant"
    ],
+   "craft": null,
+   "crafts": [],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -6928,8 +7865,9 @@
      "placed_by": "function"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "asphalt-apron",
+     "placed_by": "hazard",
+     "hazard": "mobile-plant"
     },
     "layout": {
      "surface": "bare-slab",
@@ -7074,9 +8012,9 @@
      "hazards": []
     },
     "materials": {
-     "lux": 200,
-     "ach": 4,
-     "noise_db": 70,
+     "lux": 500,
+     "ach": 8,
+     "noise_db": 90,
      "temp_c": [
       5,
       30
@@ -7084,10 +8022,13 @@
      "ppe": [
       "gloves",
       "hard hat",
+      "hearing protection",
       "hi-vis",
       "safety boots"
      ],
-     "hazards": []
+     "hazards": [
+      "mobile-plant"
+     ]
     },
     "layout": {
      "lux": 750,
@@ -7169,6 +8110,10 @@
    "hazards": [
     "live-electrical"
    ],
+   "craft": "power-network",
+   "crafts": [
+    "power-network"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -7180,16 +8125,18 @@
      "hazard": "live-electrical"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "crushed-stone",
+     "placed_by": "craft",
+     "craft": "power-network"
     },
     "tools": {
      "surface": "end-grain-block",
      "placed_by": "function"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "crushed-stone",
+     "placed_by": "craft",
+     "craft": "power-network"
     },
     "layout": {
      "surface": "bare-slab",
@@ -7227,8 +8174,9 @@
      "placed_by": "function"
     },
     "machines": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "switchgear-lineup",
+     "placed_by": "craft",
+     "craft": "power-network"
     },
     "tools": {
      "wall": "ply-lined",
@@ -7247,8 +8195,9 @@
      "placed_by": "function"
     },
     "troubleshooting": {
-     "wall": "ply-lined",
-     "placed_by": "function"
+     "wall": "switchgear-lineup",
+     "placed_by": "craft",
+     "craft": "power-network"
     },
     "coordination": {
      "wall": "acoustic-panel",
@@ -7429,6 +8378,10 @@
   "solar": {
    "hazard": null,
    "hazards": [],
+   "craft": "power-network",
+   "crafts": [
+    "power-network"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -7439,16 +8392,18 @@
      "placed_by": "function"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "crushed-stone",
+     "placed_by": "craft",
+     "craft": "power-network"
     },
     "tools": {
      "surface": "end-grain-block",
      "placed_by": "function"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "crushed-stone",
+     "placed_by": "craft",
+     "craft": "power-network"
     },
     "layout": {
      "surface": "bare-slab",
@@ -7485,8 +8440,9 @@
      "placed_by": "function"
     },
     "machines": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "switchgear-lineup",
+     "placed_by": "craft",
+     "craft": "power-network"
     },
     "tools": {
      "wall": "ply-lined",
@@ -7505,8 +8461,9 @@
      "placed_by": "function"
     },
     "troubleshooting": {
-     "wall": "ply-lined",
-     "placed_by": "function"
+     "wall": "switchgear-lineup",
+     "placed_by": "craft",
+     "craft": "power-network"
     },
     "coordination": {
      "wall": "acoustic-panel",
@@ -7677,16 +8634,23 @@
    }
   },
   "wind": {
-   "hazard": null,
-   "hazards": [],
+   "hazard": "work-at-height",
+   "hazards": [
+    "work-at-height",
+    "rotating-machinery"
+   ],
+   "craft": null,
+   "crafts": [],
    "rooms": {
     "safety": {
-     "surface": "epoxy-smooth",
-     "placed_by": "function"
+     "surface": "impact-mat",
+     "placed_by": "hazard",
+     "hazard": "work-at-height"
     },
     "procedure": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "impact-mat",
+     "placed_by": "hazard",
+     "hazard": "work-at-height"
     },
     "machines": {
      "surface": "steel-checker",
@@ -7727,16 +8691,19 @@
    },
    "walls": {
     "safety": {
-     "wall": "painted-block",
-     "placed_by": "function"
+     "wall": "impact-block",
+     "placed_by": "hazard",
+     "hazard": "work-at-height"
     },
     "procedure": {
-     "wall": "liner-panel",
-     "placed_by": "function"
+     "wall": "impact-block",
+     "placed_by": "hazard",
+     "hazard": "work-at-height"
     },
     "machines": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "perf-acoustic",
+     "placed_by": "hazard",
+     "hazard": "rotating-machinery"
     },
     "tools": {
      "wall": "ply-lined",
@@ -7773,45 +8740,35 @@
    },
    "conditions": {
     "safety": {
-     "lux": 300,
+     "lux": 500,
      "ach": 6,
-     "noise_db": 55,
+     "noise_db": 70,
      "temp_c": [
       18,
       24
      ],
      "ppe": [
+      "chinstrap helmet",
+      "full-body harness",
       "hi-vis",
       "safety boots"
      ],
-     "hazards": []
+     "hazards": [
+      "work-at-height"
+     ]
     },
     "procedure": {
      "lux": 500,
-     "ach": 8,
-     "noise_db": 80,
+     "ach": 10,
+     "noise_db": 88,
      "temp_c": [
       12,
       30
      ],
      "ppe": [
-      "gloves",
-      "hard hat",
-      "hi-vis",
-      "safety boots",
-      "safety glasses"
-     ],
-     "hazards": []
-    },
-    "machines": {
-     "lux": 500,
-     "ach": 10,
-     "noise_db": 85,
-     "temp_c": [
-      12,
-      28
-     ],
-     "ppe": [
+      "chinstrap helmet",
+      "close-fitting clothing",
+      "full-body harness",
       "gloves",
       "hard hat",
       "hearing protection",
@@ -7819,7 +8776,31 @@
       "safety boots",
       "safety glasses"
      ],
-     "hazards": []
+     "hazards": [
+      "rotating-machinery",
+      "work-at-height"
+     ]
+    },
+    "machines": {
+     "lux": 500,
+     "ach": 10,
+     "noise_db": 88,
+     "temp_c": [
+      12,
+      28
+     ],
+     "ppe": [
+      "close-fitting clothing",
+      "gloves",
+      "hard hat",
+      "hearing protection",
+      "hi-vis",
+      "safety boots",
+      "safety glasses"
+     ],
+     "hazards": [
+      "rotating-machinery"
+     ]
     },
     "tools": {
      "lux": 500,
@@ -7929,6 +8910,8 @@
   "demolition": {
    "hazard": null,
    "hazards": [],
+   "craft": null,
+   "crafts": [],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -8177,19 +9160,23 @@
    }
   },
   "scaffold": {
-   "hazard": "timber-trade",
+   "hazard": "work-at-height",
    "hazards": [
+    "work-at-height",
     "timber-trade"
    ],
+   "craft": null,
+   "crafts": [],
    "rooms": {
     "safety": {
-     "surface": "epoxy-smooth",
-     "placed_by": "function"
+     "surface": "impact-mat",
+     "placed_by": "hazard",
+     "hazard": "work-at-height"
     },
     "procedure": {
-     "surface": "timber-plank",
+     "surface": "impact-mat",
      "placed_by": "hazard",
-     "hazard": "timber-trade"
+     "hazard": "work-at-height"
     },
     "machines": {
      "surface": "steel-checker",
@@ -8230,13 +9217,14 @@
    },
    "walls": {
     "safety": {
-     "wall": "painted-block",
-     "placed_by": "function"
+     "wall": "impact-block",
+     "placed_by": "hazard",
+     "hazard": "work-at-height"
     },
     "procedure": {
-     "wall": "ply-lined",
+     "wall": "impact-block",
      "placed_by": "hazard",
-     "hazard": "timber-trade"
+     "hazard": "work-at-height"
     },
     "machines": {
      "wall": "impact-block",
@@ -8277,18 +9265,22 @@
    },
    "conditions": {
     "safety": {
-     "lux": 300,
+     "lux": 500,
      "ach": 6,
-     "noise_db": 55,
+     "noise_db": 70,
      "temp_c": [
       18,
       24
      ],
      "ppe": [
+      "chinstrap helmet",
+      "full-body harness",
       "hi-vis",
       "safety boots"
      ],
-     "hazards": []
+     "hazards": [
+      "work-at-height"
+     ]
     },
     "procedure": {
      "lux": 500,
@@ -8299,7 +9291,9 @@
       30
      ],
      "ppe": [
+      "chinstrap helmet",
       "dust mask",
+      "full-body harness",
       "gloves",
       "hard hat",
       "hearing protection",
@@ -8308,7 +9302,8 @@
       "safety glasses"
      ],
      "hazards": [
-      "timber-trade"
+      "timber-trade",
+      "work-at-height"
      ]
     },
     "machines": {
@@ -8437,6 +9432,10 @@
   "surveyors": {
    "hazard": null,
    "hazards": [],
+   "craft": "survey-control",
+   "crafts": [
+    "survey-control"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -8447,8 +9446,9 @@
      "placed_by": "function"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "sealed-slab",
+     "placed_by": "craft",
+     "craft": "survey-control"
     },
     "tools": {
      "surface": "end-grain-block",
@@ -8463,8 +9463,9 @@
      "placed_by": "function"
     },
     "inspection": {
-     "surface": "epoxy-smooth",
-     "placed_by": "function"
+     "surface": "polished-slab",
+     "placed_by": "craft",
+     "craft": "survey-control"
     },
     "troubleshooting": {
      "surface": "anti-fatigue",
@@ -8687,18 +9688,24 @@
   "fire-sprinkler": {
    "hazard": null,
    "hazards": [],
+   "craft": "process-fluid",
+   "crafts": [
+    "process-fluid"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
      "placed_by": "function"
     },
     "procedure": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "trench-drain",
+     "placed_by": "craft",
+     "craft": "process-fluid"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "resin-screed",
+     "placed_by": "craft",
+     "craft": "process-fluid"
     },
     "tools": {
      "surface": "end-grain-block",
@@ -8743,8 +9750,9 @@
      "placed_by": "function"
     },
     "machines": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "liner-panel",
+     "placed_by": "craft",
+     "craft": "process-fluid"
     },
     "tools": {
      "wall": "ply-lined",
@@ -8940,6 +9948,10 @@
     "corrosive",
     "contaminant"
    ],
+   "craft": "containment-craft",
+   "crafts": [
+    "containment-craft"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -8955,12 +9967,14 @@
      "placed_by": "function"
     },
     "tools": {
-     "surface": "end-grain-block",
-     "placed_by": "function"
+     "surface": "welded-vinyl",
+     "placed_by": "craft",
+     "craft": "containment-craft"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "spill-berm",
+     "placed_by": "craft",
+     "craft": "containment-craft"
     },
     "layout": {
      "surface": "bare-slab",
@@ -9002,12 +10016,14 @@
      "placed_by": "function"
     },
     "tools": {
-     "wall": "ply-lined",
-     "placed_by": "function"
+     "wall": "coved-white",
+     "placed_by": "craft",
+     "craft": "containment-craft"
     },
     "materials": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "coved-white",
+     "placed_by": "craft",
+     "craft": "containment-craft"
     },
     "layout": {
      "wall": "whiteboard-panel",
@@ -9202,6 +10218,10 @@
    "hazards": [
     "molten-metal"
    ],
+   "craft": "hot-shop",
+   "crafts": [
+    "hot-shop"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -9218,12 +10238,14 @@
      "hazard": "molten-metal"
     },
     "tools": {
-     "surface": "end-grain-block",
-     "placed_by": "function"
+     "surface": "steel-plate",
+     "placed_by": "craft",
+     "craft": "hot-shop"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "foundry-sand",
+     "placed_by": "hazard",
+     "hazard": "molten-metal"
     },
     "layout": {
      "surface": "bare-slab",
@@ -9234,8 +10256,9 @@
      "placed_by": "function"
     },
     "troubleshooting": {
-     "surface": "anti-fatigue",
-     "placed_by": "function"
+     "surface": "steel-diamond",
+     "placed_by": "craft",
+     "craft": "hot-shop"
     },
     "coordination": {
      "surface": "terrazzo-ground",
@@ -9266,12 +10289,14 @@
      "hazard": "molten-metal"
     },
     "tools": {
-     "wall": "ply-lined",
-     "placed_by": "function"
+     "wall": "gunned-castable",
+     "placed_by": "craft",
+     "craft": "hot-shop"
     },
     "materials": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "gunned-castable",
+     "placed_by": "hazard",
+     "hazard": "molten-metal"
     },
     "layout": {
      "wall": "whiteboard-panel",
@@ -9371,20 +10396,24 @@
      "hazards": []
     },
     "materials": {
-     "lux": 200,
-     "ach": 4,
-     "noise_db": 70,
+     "lux": 500,
+     "ach": 20,
+     "noise_db": 90,
      "temp_c": [
-      5,
+      10,
       30
      ],
      "ppe": [
+      "face shield",
+      "flame-resistant clothing",
       "gloves",
       "hard hat",
       "hi-vis",
       "safety boots"
      ],
-     "hazards": []
+     "hazards": [
+      "molten-metal"
+     ]
     },
     "layout": {
      "lux": 750,
@@ -9467,6 +10496,10 @@
     "hot-work",
     "corrosive"
    ],
+   "craft": "buried-utility",
+   "crafts": [
+    "buried-utility"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -9486,12 +10519,14 @@
      "placed_by": "function"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "interlock-paver",
+     "placed_by": "craft",
+     "craft": "buried-utility"
     },
     "layout": {
-     "surface": "bare-slab",
-     "placed_by": "function"
+     "surface": "interlock-paver",
+     "placed_by": "craft",
+     "craft": "buried-utility"
     },
     "inspection": {
      "surface": "epoxy-smooth",
@@ -9729,6 +10764,10 @@
    "hazards": [
     "wet-process"
    ],
+   "craft": "marine-craft",
+   "crafts": [
+    "marine-craft"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -9740,16 +10779,18 @@
      "hazard": "wet-process"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "trench-drain",
+     "placed_by": "hazard",
+     "hazard": "wet-process"
     },
     "tools": {
      "surface": "end-grain-block",
      "placed_by": "function"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "marine-deck",
+     "placed_by": "craft",
+     "craft": "marine-craft"
     },
     "layout": {
      "surface": "bare-slab",
@@ -9787,8 +10828,9 @@
      "hazard": "wet-process"
     },
     "machines": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "tank-plate",
+     "placed_by": "craft",
+     "craft": "marine-craft"
     },
     "tools": {
      "wall": "ply-lined",
@@ -9868,14 +10910,18 @@
       28
      ],
      "ppe": [
+      "face shield",
       "gloves",
       "hard hat",
       "hearing protection",
       "hi-vis",
       "safety boots",
-      "safety glasses"
+      "safety glasses",
+      "waterproof boots"
      ],
-     "hazards": []
+     "hazards": [
+      "wet-process"
+     ]
     },
     "tools": {
      "lux": 500,
@@ -9987,6 +11033,10 @@
    "hazards": [
     "immersion"
    ],
+   "craft": "marine-craft",
+   "crafts": [
+    "marine-craft"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -9998,16 +11048,18 @@
      "hazard": "immersion"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "steel-plate",
+     "placed_by": "craft",
+     "craft": "marine-craft"
     },
     "tools": {
      "surface": "end-grain-block",
      "placed_by": "function"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "marine-deck",
+     "placed_by": "craft",
+     "craft": "marine-craft"
     },
     "layout": {
      "surface": "bare-slab",
@@ -10045,8 +11097,9 @@
      "hazard": "immersion"
     },
     "machines": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "tank-plate",
+     "placed_by": "craft",
+     "craft": "marine-craft"
     },
     "tools": {
      "wall": "ply-lined",
@@ -10244,6 +11297,10 @@
    "hazards": [
     "immersion"
    ],
+   "craft": "marine-craft",
+   "crafts": [
+    "marine-craft"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -10255,16 +11312,18 @@
      "hazard": "immersion"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "steel-plate",
+     "placed_by": "craft",
+     "craft": "marine-craft"
     },
     "tools": {
      "surface": "end-grain-block",
      "placed_by": "function"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "marine-deck",
+     "placed_by": "craft",
+     "craft": "marine-craft"
     },
     "layout": {
      "surface": "bare-slab",
@@ -10302,8 +11361,9 @@
      "hazard": "immersion"
     },
     "machines": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "tank-plate",
+     "placed_by": "craft",
+     "craft": "marine-craft"
     },
     "tools": {
      "wall": "ply-lined",
@@ -10502,6 +11562,8 @@
     "hot-work",
     "immersion"
    ],
+   "craft": null,
+   "crafts": [],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -10758,32 +11820,34 @@
    }
   },
   "blasters": {
-   "hazard": "mobile-plant",
+   "hazard": "explosives",
    "hazards": [
-    "mobile-plant"
+    "explosives"
    ],
+   "craft": null,
+   "crafts": [],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
      "placed_by": "function"
     },
     "procedure": {
-     "surface": "crushed-stone",
+     "surface": "conductive-tile",
      "placed_by": "hazard",
-     "hazard": "mobile-plant"
+     "hazard": "explosives"
     },
     "machines": {
-     "surface": "broom-concrete",
-     "placed_by": "hazard",
-     "hazard": "mobile-plant"
+     "surface": "steel-checker",
+     "placed_by": "function"
     },
     "tools": {
      "surface": "end-grain-block",
      "placed_by": "function"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "conductive-tile",
+     "placed_by": "hazard",
+     "hazard": "explosives"
     },
     "layout": {
      "surface": "bare-slab",
@@ -10816,14 +11880,12 @@
      "placed_by": "function"
     },
     "procedure": {
-     "wall": "mesh-guard",
-     "placed_by": "hazard",
-     "hazard": "mobile-plant"
+     "wall": "liner-panel",
+     "placed_by": "function"
     },
     "machines": {
-     "wall": "mesh-guard",
-     "placed_by": "hazard",
-     "hazard": "mobile-plant"
+     "wall": "impact-block",
+     "placed_by": "function"
     },
     "tools": {
      "wall": "ply-lined",
@@ -10875,13 +11937,14 @@
     },
     "procedure": {
      "lux": 500,
-     "ach": 8,
+     "ach": 12,
      "noise_db": 90,
      "temp_c": [
       12,
       30
      ],
      "ppe": [
+      "anti-static clothing",
       "gloves",
       "hard hat",
       "hearing protection",
@@ -10890,13 +11953,13 @@
       "safety glasses"
      ],
      "hazards": [
-      "mobile-plant"
+      "explosives"
      ]
     },
     "machines": {
      "lux": 500,
      "ach": 10,
-     "noise_db": 90,
+     "noise_db": 85,
      "temp_c": [
       12,
       28
@@ -10909,9 +11972,7 @@
       "safety boots",
       "safety glasses"
      ],
-     "hazards": [
-      "mobile-plant"
-     ]
+     "hazards": []
     },
     "tools": {
      "lux": 500,
@@ -10928,20 +11989,24 @@
      "hazards": []
     },
     "materials": {
-     "lux": 200,
-     "ach": 4,
-     "noise_db": 70,
+     "lux": 500,
+     "ach": 12,
+     "noise_db": 90,
      "temp_c": [
-      5,
+      8,
       30
      ],
      "ppe": [
+      "anti-static clothing",
       "gloves",
       "hard hat",
+      "hearing protection",
       "hi-vis",
       "safety boots"
      ],
-     "hazards": []
+     "hazards": [
+      "explosives"
+     ]
     },
     "layout": {
      "lux": 750,
@@ -11023,10 +12088,15 @@
    "hazards": [
     "mobile-plant"
    ],
+   "craft": "underground",
+   "crafts": [
+    "underground"
+   ],
    "rooms": {
     "safety": {
-     "surface": "epoxy-smooth",
-     "placed_by": "function"
+     "surface": "shotcrete-invert",
+     "placed_by": "craft",
+     "craft": "underground"
     },
     "procedure": {
      "surface": "crushed-stone",
@@ -11039,12 +12109,14 @@
      "hazard": "mobile-plant"
     },
     "tools": {
-     "surface": "end-grain-block",
-     "placed_by": "function"
+     "surface": "shotcrete-invert",
+     "placed_by": "craft",
+     "craft": "underground"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "asphalt-apron",
+     "placed_by": "hazard",
+     "hazard": "mobile-plant"
     },
     "layout": {
      "surface": "bare-slab",
@@ -11073,8 +12145,9 @@
    },
    "walls": {
     "safety": {
-     "wall": "painted-block",
-     "placed_by": "function"
+     "wall": "rock-face",
+     "placed_by": "craft",
+     "craft": "underground"
     },
     "procedure": {
      "wall": "mesh-guard",
@@ -11087,8 +12160,9 @@
      "hazard": "mobile-plant"
     },
     "tools": {
-     "wall": "ply-lined",
-     "placed_by": "function"
+     "wall": "rock-face",
+     "placed_by": "craft",
+     "craft": "underground"
     },
     "materials": {
      "wall": "impact-block",
@@ -11189,9 +12263,9 @@
      "hazards": []
     },
     "materials": {
-     "lux": 200,
-     "ach": 4,
-     "noise_db": 70,
+     "lux": 500,
+     "ach": 8,
+     "noise_db": 90,
      "temp_c": [
       5,
       30
@@ -11199,10 +12273,13 @@
      "ppe": [
       "gloves",
       "hard hat",
+      "hearing protection",
       "hi-vis",
       "safety boots"
      ],
-     "hazards": []
+     "hazards": [
+      "mobile-plant"
+     ]
     },
     "layout": {
      "lux": 750,
@@ -11284,6 +12361,10 @@
    "hazards": [
     "molten-metal"
    ],
+   "craft": "hot-shop",
+   "crafts": [
+    "hot-shop"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -11300,12 +12381,14 @@
      "hazard": "molten-metal"
     },
     "tools": {
-     "surface": "end-grain-block",
-     "placed_by": "function"
+     "surface": "steel-plate",
+     "placed_by": "craft",
+     "craft": "hot-shop"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "foundry-sand",
+     "placed_by": "hazard",
+     "hazard": "molten-metal"
     },
     "layout": {
      "surface": "bare-slab",
@@ -11316,8 +12399,9 @@
      "placed_by": "function"
     },
     "troubleshooting": {
-     "surface": "anti-fatigue",
-     "placed_by": "function"
+     "surface": "steel-diamond",
+     "placed_by": "craft",
+     "craft": "hot-shop"
     },
     "coordination": {
      "surface": "terrazzo-ground",
@@ -11348,12 +12432,14 @@
      "hazard": "molten-metal"
     },
     "tools": {
-     "wall": "ply-lined",
-     "placed_by": "function"
+     "wall": "gunned-castable",
+     "placed_by": "craft",
+     "craft": "hot-shop"
     },
     "materials": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "gunned-castable",
+     "placed_by": "hazard",
+     "hazard": "molten-metal"
     },
     "layout": {
      "wall": "whiteboard-panel",
@@ -11453,20 +12539,24 @@
      "hazards": []
     },
     "materials": {
-     "lux": 200,
-     "ach": 4,
-     "noise_db": 70,
+     "lux": 500,
+     "ach": 20,
+     "noise_db": 90,
      "temp_c": [
-      5,
+      10,
       30
      ],
      "ppe": [
+      "face shield",
+      "flame-resistant clothing",
       "gloves",
       "hard hat",
       "hi-vis",
       "safety boots"
      ],
-     "hazards": []
+     "hazards": [
+      "molten-metal"
+     ]
     },
     "layout": {
      "lux": 750,
@@ -11549,6 +12639,10 @@
     "molten-metal",
     "contaminant"
    ],
+   "craft": "hot-shop",
+   "crafts": [
+    "hot-shop"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -11565,12 +12659,14 @@
      "hazard": "molten-metal"
     },
     "tools": {
-     "surface": "end-grain-block",
-     "placed_by": "function"
+     "surface": "steel-plate",
+     "placed_by": "craft",
+     "craft": "hot-shop"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "foundry-sand",
+     "placed_by": "hazard",
+     "hazard": "molten-metal"
     },
     "layout": {
      "surface": "bare-slab",
@@ -11581,8 +12677,9 @@
      "placed_by": "function"
     },
     "troubleshooting": {
-     "surface": "anti-fatigue",
-     "placed_by": "function"
+     "surface": "steel-diamond",
+     "placed_by": "craft",
+     "craft": "hot-shop"
     },
     "coordination": {
      "surface": "terrazzo-ground",
@@ -11613,12 +12710,14 @@
      "hazard": "molten-metal"
     },
     "tools": {
-     "wall": "ply-lined",
-     "placed_by": "function"
+     "wall": "gunned-castable",
+     "placed_by": "craft",
+     "craft": "hot-shop"
     },
     "materials": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "gunned-castable",
+     "placed_by": "hazard",
+     "hazard": "molten-metal"
     },
     "layout": {
      "wall": "whiteboard-panel",
@@ -11721,20 +12820,24 @@
      "hazards": []
     },
     "materials": {
-     "lux": 200,
-     "ach": 4,
-     "noise_db": 70,
+     "lux": 500,
+     "ach": 20,
+     "noise_db": 90,
      "temp_c": [
-      5,
+      10,
       30
      ],
      "ppe": [
+      "face shield",
+      "flame-resistant clothing",
       "gloves",
       "hard hat",
       "hi-vis",
       "safety boots"
      ],
-     "hazards": []
+     "hazards": [
+      "molten-metal"
+     ]
     },
     "layout": {
      "lux": 750,
@@ -11814,6 +12917,10 @@
   "machinists": {
    "hazard": null,
    "hazards": [],
+   "craft": "precision-metal",
+   "crafts": [
+    "precision-metal"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -11824,8 +12931,9 @@
      "placed_by": "function"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "steel-diamond",
+     "placed_by": "craft",
+     "craft": "precision-metal"
     },
     "tools": {
      "surface": "end-grain-block",
@@ -11836,12 +12944,14 @@
      "placed_by": "function"
     },
     "layout": {
-     "surface": "bare-slab",
-     "placed_by": "function"
+     "surface": "tooling-plate",
+     "placed_by": "craft",
+     "craft": "precision-metal"
     },
     "inspection": {
-     "surface": "epoxy-smooth",
-     "placed_by": "function"
+     "surface": "tooling-plate",
+     "placed_by": "craft",
+     "craft": "precision-metal"
     },
     "troubleshooting": {
      "surface": "anti-fatigue",
@@ -11870,8 +12980,9 @@
      "placed_by": "function"
     },
     "machines": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "perf-acoustic",
+     "placed_by": "craft",
+     "craft": "precision-metal"
     },
     "tools": {
      "wall": "ply-lined",
@@ -12064,6 +13175,10 @@
   "toolmakers": {
    "hazard": null,
    "hazards": [],
+   "craft": "precision-metal",
+   "crafts": [
+    "precision-metal"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -12074,8 +13189,9 @@
      "placed_by": "function"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "steel-diamond",
+     "placed_by": "craft",
+     "craft": "precision-metal"
     },
     "tools": {
      "surface": "end-grain-block",
@@ -12086,12 +13202,14 @@
      "placed_by": "function"
     },
     "layout": {
-     "surface": "bare-slab",
-     "placed_by": "function"
+     "surface": "tooling-plate",
+     "placed_by": "craft",
+     "craft": "precision-metal"
     },
     "inspection": {
-     "surface": "epoxy-smooth",
-     "placed_by": "function"
+     "surface": "tooling-plate",
+     "placed_by": "craft",
+     "craft": "precision-metal"
     },
     "troubleshooting": {
      "surface": "anti-fatigue",
@@ -12120,8 +13238,9 @@
      "placed_by": "function"
     },
     "machines": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "perf-acoustic",
+     "placed_by": "craft",
+     "craft": "precision-metal"
     },
     "tools": {
      "wall": "ply-lined",
@@ -12316,6 +13435,10 @@
    "hazards": [
     "hot-work"
    ],
+   "craft": "structural-steel",
+   "crafts": [
+    "structural-steel"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -12335,12 +13458,14 @@
      "placed_by": "function"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "steel-plate",
+     "placed_by": "craft",
+     "craft": "structural-steel"
     },
     "layout": {
-     "surface": "bare-slab",
-     "placed_by": "function"
+     "surface": "tooling-plate",
+     "placed_by": "craft",
+     "craft": "structural-steel"
     },
     "inspection": {
      "surface": "epoxy-smooth",
@@ -12382,8 +13507,9 @@
      "placed_by": "function"
     },
     "materials": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "corrugated-steel",
+     "placed_by": "craft",
+     "craft": "structural-steel"
     },
     "layout": {
      "wall": "whiteboard-panel",
@@ -12574,6 +13700,10 @@
    "hazards": [
     "corrosive"
    ],
+   "craft": "coatings",
+   "crafts": [
+    "coatings"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -12585,8 +13715,9 @@
      "hazard": "corrosive"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "flake-resin",
+     "placed_by": "craft",
+     "craft": "coatings"
     },
     "tools": {
      "surface": "end-grain-block",
@@ -12601,8 +13732,9 @@
      "placed_by": "function"
     },
     "inspection": {
-     "surface": "epoxy-smooth",
-     "placed_by": "function"
+     "surface": "flake-resin",
+     "placed_by": "craft",
+     "craft": "coatings"
     },
     "troubleshooting": {
      "surface": "anti-fatigue",
@@ -12632,8 +13764,9 @@
      "hazard": "corrosive"
     },
     "machines": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "chem-tile",
+     "placed_by": "craft",
+     "craft": "coatings"
     },
     "tools": {
      "wall": "ply-lined",
@@ -12833,6 +13966,10 @@
    "hazards": [
     "live-electrical"
    ],
+   "craft": "power-network",
+   "crafts": [
+    "power-network"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -12844,16 +13981,18 @@
      "hazard": "live-electrical"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "crushed-stone",
+     "placed_by": "craft",
+     "craft": "power-network"
     },
     "tools": {
      "surface": "end-grain-block",
      "placed_by": "function"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "crushed-stone",
+     "placed_by": "craft",
+     "craft": "power-network"
     },
     "layout": {
      "surface": "bare-slab",
@@ -12891,8 +14030,9 @@
      "placed_by": "function"
     },
     "machines": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "switchgear-lineup",
+     "placed_by": "craft",
+     "craft": "power-network"
     },
     "tools": {
      "wall": "ply-lined",
@@ -12911,8 +14051,9 @@
      "placed_by": "function"
     },
     "troubleshooting": {
-     "wall": "ply-lined",
-     "placed_by": "function"
+     "wall": "switchgear-lineup",
+     "placed_by": "craft",
+     "craft": "power-network"
     },
     "coordination": {
      "wall": "acoustic-panel",
@@ -13095,6 +14236,10 @@
    "hazards": [
     "live-electrical"
    ],
+   "craft": "power-network",
+   "crafts": [
+    "power-network"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -13106,16 +14251,18 @@
      "hazard": "live-electrical"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "crushed-stone",
+     "placed_by": "craft",
+     "craft": "power-network"
     },
     "tools": {
      "surface": "end-grain-block",
      "placed_by": "function"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "crushed-stone",
+     "placed_by": "craft",
+     "craft": "power-network"
     },
     "layout": {
      "surface": "bare-slab",
@@ -13153,8 +14300,9 @@
      "placed_by": "function"
     },
     "machines": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "switchgear-lineup",
+     "placed_by": "craft",
+     "craft": "power-network"
     },
     "tools": {
      "wall": "ply-lined",
@@ -13173,8 +14321,9 @@
      "placed_by": "function"
     },
     "troubleshooting": {
-     "wall": "ply-lined",
-     "placed_by": "function"
+     "wall": "switchgear-lineup",
+     "placed_by": "craft",
+     "craft": "power-network"
     },
     "coordination": {
      "wall": "acoustic-panel",
@@ -13355,6 +14504,10 @@
   "meter-techs": {
    "hazard": null,
    "hazards": [],
+   "craft": "power-network",
+   "crafts": [
+    "power-network"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -13365,16 +14518,18 @@
      "placed_by": "function"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "crushed-stone",
+     "placed_by": "craft",
+     "craft": "power-network"
     },
     "tools": {
      "surface": "end-grain-block",
      "placed_by": "function"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "crushed-stone",
+     "placed_by": "craft",
+     "craft": "power-network"
     },
     "layout": {
      "surface": "bare-slab",
@@ -13411,8 +14566,9 @@
      "placed_by": "function"
     },
     "machines": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "switchgear-lineup",
+     "placed_by": "craft",
+     "craft": "power-network"
     },
     "tools": {
      "wall": "ply-lined",
@@ -13431,8 +14587,9 @@
      "placed_by": "function"
     },
     "troubleshooting": {
-     "wall": "ply-lined",
-     "placed_by": "function"
+     "wall": "switchgear-lineup",
+     "placed_by": "craft",
+     "craft": "power-network"
     },
     "coordination": {
      "wall": "acoustic-panel",
@@ -13603,16 +14760,23 @@
    }
   },
   "gas-distrib": {
-   "hazard": null,
-   "hazards": [],
+   "hazard": "flammable-atmosphere",
+   "hazards": [
+    "flammable-atmosphere"
+   ],
+   "craft": "buried-utility",
+   "crafts": [
+    "buried-utility"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
      "placed_by": "function"
     },
     "procedure": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "conductive-tile",
+     "placed_by": "hazard",
+     "hazard": "flammable-atmosphere"
     },
     "machines": {
      "surface": "steel-checker",
@@ -13623,12 +14787,14 @@
      "placed_by": "function"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "interlock-paver",
+     "placed_by": "craft",
+     "craft": "buried-utility"
     },
     "layout": {
-     "surface": "bare-slab",
-     "placed_by": "function"
+     "surface": "interlock-paver",
+     "placed_by": "craft",
+     "craft": "buried-utility"
     },
     "inspection": {
      "surface": "epoxy-smooth",
@@ -13714,20 +14880,24 @@
     },
     "procedure": {
      "lux": 500,
-     "ach": 8,
+     "ach": 20,
      "noise_db": 80,
      "temp_c": [
       12,
       30
      ],
      "ppe": [
+      "anti-static clothing",
+      "gas monitor",
       "gloves",
       "hard hat",
       "hi-vis",
       "safety boots",
       "safety glasses"
      ],
-     "hazards": []
+     "hazards": [
+      "flammable-atmosphere"
+     ]
     },
     "machines": {
      "lux": 500,
@@ -13853,11 +15023,15 @@
    }
   },
   "water-distrib": {
-   "hazard": "molten-metal",
+   "hazard": "corrosive",
    "hazards": [
-    "molten-metal",
     "corrosive",
     "wet-process"
+   ],
+   "craft": "process-fluid",
+   "crafts": [
+    "process-fluid",
+    "buried-utility"
    ],
    "rooms": {
     "safety": {
@@ -13865,26 +15039,28 @@
      "placed_by": "function"
     },
     "procedure": {
-     "surface": "firebrick-hearth",
+     "surface": "acid-brick",
      "placed_by": "hazard",
-     "hazard": "molten-metal"
+     "hazard": "corrosive"
     },
     "machines": {
-     "surface": "firebrick-hearth",
-     "placed_by": "hazard",
-     "hazard": "molten-metal"
+     "surface": "resin-screed",
+     "placed_by": "craft",
+     "craft": "process-fluid"
     },
     "tools": {
      "surface": "end-grain-block",
      "placed_by": "function"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "interlock-paver",
+     "placed_by": "craft",
+     "craft": "buried-utility"
     },
     "layout": {
-     "surface": "bare-slab",
-     "placed_by": "function"
+     "surface": "interlock-paver",
+     "placed_by": "craft",
+     "craft": "buried-utility"
     },
     "inspection": {
      "surface": "epoxy-smooth",
@@ -13913,14 +15089,14 @@
      "placed_by": "function"
     },
     "procedure": {
-     "wall": "firebrick-face",
+     "wall": "chem-tile",
      "placed_by": "hazard",
-     "hazard": "molten-metal"
+     "hazard": "corrosive"
     },
     "machines": {
-     "wall": "firebrick-face",
-     "placed_by": "hazard",
-     "hazard": "molten-metal"
+     "wall": "liner-panel",
+     "placed_by": "craft",
+     "craft": "process-fluid"
     },
     "tools": {
      "wall": "ply-lined",
@@ -13972,8 +15148,8 @@
     },
     "procedure": {
      "lux": 500,
-     "ach": 20,
-     "noise_db": 90,
+     "ach": 15,
+     "noise_db": 80,
      "temp_c": [
       14,
       28
@@ -13982,7 +15158,6 @@
       "apron",
       "chemical gloves",
       "face shield",
-      "flame-resistant clothing",
       "gloves",
       "hard hat",
       "hi-vis",
@@ -13992,30 +15167,29 @@
      ],
      "hazards": [
       "corrosive",
-      "molten-metal",
       "wet-process"
      ]
     },
     "machines": {
      "lux": 500,
-     "ach": 20,
-     "noise_db": 90,
+     "ach": 10,
+     "noise_db": 85,
      "temp_c": [
       12,
       28
      ],
      "ppe": [
       "face shield",
-      "flame-resistant clothing",
       "gloves",
       "hard hat",
       "hearing protection",
       "hi-vis",
       "safety boots",
-      "safety glasses"
+      "safety glasses",
+      "waterproof boots"
      ],
      "hazards": [
-      "molten-metal"
+      "wet-process"
      ]
     },
     "tools": {
@@ -14128,6 +15302,10 @@
    "hazards": [
     "wet-process"
    ],
+   "craft": "process-fluid",
+   "crafts": [
+    "process-fluid"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -14139,8 +15317,9 @@
      "hazard": "wet-process"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "trench-drain",
+     "placed_by": "hazard",
+     "hazard": "wet-process"
     },
     "tools": {
      "surface": "end-grain-block",
@@ -14186,8 +15365,9 @@
      "hazard": "wet-process"
     },
     "machines": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "liner-panel",
+     "placed_by": "craft",
+     "craft": "process-fluid"
     },
     "tools": {
      "wall": "ply-lined",
@@ -14267,14 +15447,18 @@
       28
      ],
      "ppe": [
+      "face shield",
       "gloves",
       "hard hat",
       "hearing protection",
       "hi-vis",
       "safety boots",
-      "safety glasses"
+      "safety glasses",
+      "waterproof boots"
      ],
-     "hazards": []
+     "hazards": [
+      "wet-process"
+     ]
     },
     "tools": {
      "lux": 500,
@@ -14382,9 +15566,14 @@
    }
   },
   "nuclear": {
-   "hazard": "contaminant",
+   "hazard": "ionising-radiation",
    "hazards": [
+    "ionising-radiation",
     "contaminant"
+   ],
+   "craft": "containment-craft",
+   "crafts": [
+    "containment-craft"
    ],
    "rooms": {
     "safety": {
@@ -14392,29 +15581,32 @@
      "placed_by": "function"
     },
     "procedure": {
-     "surface": "spill-berm",
+     "surface": "strippable-coat",
      "placed_by": "hazard",
-     "hazard": "contaminant"
+     "hazard": "ionising-radiation"
     },
     "machines": {
      "surface": "steel-checker",
      "placed_by": "function"
     },
     "tools": {
-     "surface": "end-grain-block",
-     "placed_by": "function"
+     "surface": "welded-vinyl",
+     "placed_by": "craft",
+     "craft": "containment-craft"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "spill-berm",
+     "placed_by": "craft",
+     "craft": "containment-craft"
     },
     "layout": {
      "surface": "bare-slab",
      "placed_by": "function"
     },
     "inspection": {
-     "surface": "epoxy-smooth",
-     "placed_by": "function"
+     "surface": "strippable-coat",
+     "placed_by": "hazard",
+     "hazard": "ionising-radiation"
     },
     "troubleshooting": {
      "surface": "anti-fatigue",
@@ -14439,29 +15631,32 @@
      "placed_by": "function"
     },
     "procedure": {
-     "wall": "coved-white",
+     "wall": "poly-enclosure",
      "placed_by": "hazard",
-     "hazard": "contaminant"
+     "hazard": "ionising-radiation"
     },
     "machines": {
      "wall": "impact-block",
      "placed_by": "function"
     },
     "tools": {
-     "wall": "ply-lined",
-     "placed_by": "function"
+     "wall": "coved-white",
+     "placed_by": "craft",
+     "craft": "containment-craft"
     },
     "materials": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "coved-white",
+     "placed_by": "craft",
+     "craft": "containment-craft"
     },
     "layout": {
      "wall": "whiteboard-panel",
      "placed_by": "function"
     },
     "inspection": {
-     "wall": "matte-board",
-     "placed_by": "function"
+     "wall": "poly-enclosure",
+     "placed_by": "hazard",
+     "hazard": "ionising-radiation"
     },
     "troubleshooting": {
      "wall": "ply-lined",
@@ -14497,14 +15692,15 @@
     },
     "procedure": {
      "lux": 500,
-     "ach": 12,
+     "ach": 15,
      "noise_db": 80,
      "temp_c": [
-      14,
+      16,
       28
      ],
      "ppe": [
       "coveralls",
+      "dosimeter",
       "gloves",
       "hard hat",
       "hi-vis",
@@ -14513,7 +15709,8 @@
       "safety glasses"
      ],
      "hazards": [
-      "contaminant"
+      "contaminant",
+      "ionising-radiation"
      ]
     },
     "machines": {
@@ -14579,16 +15776,21 @@
     },
     "inspection": {
      "lux": 1000,
-     "ach": 6,
-     "noise_db": 60,
+     "ach": 15,
+     "noise_db": 70,
      "temp_c": [
       18,
       24
      ],
      "ppe": [
+      "coveralls",
+      "dosimeter",
+      "respirator",
       "safety glasses"
      ],
-     "hazards": []
+     "hazards": [
+      "ionising-radiation"
+     ]
     },
     "troubleshooting": {
      "lux": 750,
@@ -14640,20 +15842,28 @@
    }
   },
   "hydro": {
-   "hazard": null,
-   "hazards": [],
+   "hazard": "rotating-machinery",
+   "hazards": [
+    "rotating-machinery"
+   ],
+   "craft": "process-fluid",
+   "crafts": [
+    "process-fluid"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
      "placed_by": "function"
     },
     "procedure": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "epoxy-quartz",
+     "placed_by": "hazard",
+     "hazard": "rotating-machinery"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "steel-diamond",
+     "placed_by": "hazard",
+     "hazard": "rotating-machinery"
     },
     "tools": {
      "surface": "end-grain-block",
@@ -14698,8 +15908,9 @@
      "placed_by": "function"
     },
     "machines": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "perf-acoustic",
+     "placed_by": "hazard",
+     "hazard": "rotating-machinery"
     },
     "tools": {
      "wall": "ply-lined",
@@ -14751,30 +15962,14 @@
     },
     "procedure": {
      "lux": 500,
-     "ach": 8,
-     "noise_db": 80,
+     "ach": 10,
+     "noise_db": 88,
      "temp_c": [
       12,
       30
      ],
      "ppe": [
-      "gloves",
-      "hard hat",
-      "hi-vis",
-      "safety boots",
-      "safety glasses"
-     ],
-     "hazards": []
-    },
-    "machines": {
-     "lux": 500,
-     "ach": 10,
-     "noise_db": 85,
-     "temp_c": [
-      12,
-      28
-     ],
-     "ppe": [
+      "close-fitting clothing",
       "gloves",
       "hard hat",
       "hearing protection",
@@ -14782,7 +15977,30 @@
       "safety boots",
       "safety glasses"
      ],
-     "hazards": []
+     "hazards": [
+      "rotating-machinery"
+     ]
+    },
+    "machines": {
+     "lux": 500,
+     "ach": 10,
+     "noise_db": 88,
+     "temp_c": [
+      12,
+      28
+     ],
+     "ppe": [
+      "close-fitting clothing",
+      "gloves",
+      "hard hat",
+      "hearing protection",
+      "hi-vis",
+      "safety boots",
+      "safety glasses"
+     ],
+     "hazards": [
+      "rotating-machinery"
+     ]
     },
     "tools": {
      "lux": 500,
@@ -14894,6 +16112,10 @@
    "hazards": [
     "wet-process"
    ],
+   "craft": "process-fluid",
+   "crafts": [
+    "process-fluid"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -14905,8 +16127,9 @@
      "hazard": "wet-process"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "trench-drain",
+     "placed_by": "hazard",
+     "hazard": "wet-process"
     },
     "tools": {
      "surface": "end-grain-block",
@@ -14952,8 +16175,9 @@
      "hazard": "wet-process"
     },
     "machines": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "liner-panel",
+     "placed_by": "craft",
+     "craft": "process-fluid"
     },
     "tools": {
      "wall": "ply-lined",
@@ -15033,14 +16257,18 @@
       28
      ],
      "ppe": [
+      "face shield",
       "gloves",
       "hard hat",
       "hearing protection",
       "hi-vis",
       "safety boots",
-      "safety glasses"
+      "safety glasses",
+      "waterproof boots"
      ],
-     "hazards": []
+     "hazards": [
+      "wet-process"
+     ]
     },
     "tools": {
      "lux": 500,
@@ -15152,6 +16380,8 @@
    "hazards": [
     "stored-energy"
    ],
+   "craft": null,
+   "crafts": [],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -15406,6 +16636,10 @@
   "ev-charging": {
    "hazard": null,
    "hazards": [],
+   "craft": "power-network",
+   "crafts": [
+    "power-network"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -15416,16 +16650,18 @@
      "placed_by": "function"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "crushed-stone",
+     "placed_by": "craft",
+     "craft": "power-network"
     },
     "tools": {
      "surface": "end-grain-block",
      "placed_by": "function"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "crushed-stone",
+     "placed_by": "craft",
+     "craft": "power-network"
     },
     "layout": {
      "surface": "bare-slab",
@@ -15462,8 +16698,9 @@
      "placed_by": "function"
     },
     "machines": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "switchgear-lineup",
+     "placed_by": "craft",
+     "craft": "power-network"
     },
     "tools": {
      "wall": "ply-lined",
@@ -15482,8 +16719,9 @@
      "placed_by": "function"
     },
     "troubleshooting": {
-     "wall": "ply-lined",
-     "placed_by": "function"
+     "wall": "switchgear-lineup",
+     "placed_by": "craft",
+     "craft": "power-network"
     },
     "coordination": {
      "wall": "acoustic-panel",
@@ -15654,9 +16892,14 @@
    }
   },
   "hydrogen": {
-   "hazard": "stored-energy",
+   "hazard": "flammable-atmosphere",
    "hazards": [
+    "flammable-atmosphere",
     "stored-energy"
+   ],
+   "craft": "process-fluid",
+   "crafts": [
+    "process-fluid"
    ],
    "rooms": {
     "safety": {
@@ -15664,13 +16907,14 @@
      "placed_by": "function"
     },
     "procedure": {
-     "surface": "esd-vinyl",
+     "surface": "conductive-tile",
      "placed_by": "hazard",
-     "hazard": "stored-energy"
+     "hazard": "flammable-atmosphere"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "resin-screed",
+     "placed_by": "craft",
+     "craft": "process-fluid"
     },
     "tools": {
      "surface": "end-grain-block",
@@ -15715,8 +16959,9 @@
      "placed_by": "function"
     },
     "machines": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "liner-panel",
+     "placed_by": "craft",
+     "craft": "process-fluid"
     },
     "tools": {
      "wall": "ply-lined",
@@ -15768,14 +17013,16 @@
     },
     "procedure": {
      "lux": 500,
-     "ach": 12,
+     "ach": 20,
      "noise_db": 80,
      "temp_c": [
       15,
       27
      ],
      "ppe": [
+      "anti-static clothing",
       "face shield",
+      "gas monitor",
       "gloves",
       "hard hat",
       "hi-vis",
@@ -15783,6 +17030,7 @@
       "safety glasses"
      ],
      "hazards": [
+      "flammable-atmosphere",
       "stored-energy"
      ]
     },
@@ -15914,6 +17162,10 @@
    "hazards": [
     "live-electrical"
    ],
+   "craft": "power-network",
+   "crafts": [
+    "power-network"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -15925,16 +17177,18 @@
      "hazard": "live-electrical"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "crushed-stone",
+     "placed_by": "craft",
+     "craft": "power-network"
     },
     "tools": {
      "surface": "end-grain-block",
      "placed_by": "function"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "crushed-stone",
+     "placed_by": "craft",
+     "craft": "power-network"
     },
     "layout": {
      "surface": "bare-slab",
@@ -15972,8 +17226,9 @@
      "placed_by": "function"
     },
     "machines": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "switchgear-lineup",
+     "placed_by": "craft",
+     "craft": "power-network"
     },
     "tools": {
      "wall": "ply-lined",
@@ -15992,8 +17247,9 @@
      "placed_by": "function"
     },
     "troubleshooting": {
-     "wall": "ply-lined",
-     "placed_by": "function"
+     "wall": "switchgear-lineup",
+     "placed_by": "craft",
+     "craft": "power-network"
     },
     "coordination": {
      "wall": "acoustic-panel",
@@ -16174,26 +17430,34 @@
   "district-energy": {
    "hazard": null,
    "hazards": [],
+   "craft": "power-network",
+   "crafts": [
+    "power-network",
+    "process-fluid"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
      "placed_by": "function"
     },
     "procedure": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "trench-drain",
+     "placed_by": "craft",
+     "craft": "process-fluid"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "crushed-stone",
+     "placed_by": "craft",
+     "craft": "power-network"
     },
     "tools": {
      "surface": "end-grain-block",
      "placed_by": "function"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "crushed-stone",
+     "placed_by": "craft",
+     "craft": "power-network"
     },
     "layout": {
      "surface": "bare-slab",
@@ -16230,8 +17494,9 @@
      "placed_by": "function"
     },
     "machines": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "switchgear-lineup",
+     "placed_by": "craft",
+     "craft": "power-network"
     },
     "tools": {
      "wall": "ply-lined",
@@ -16250,8 +17515,9 @@
      "placed_by": "function"
     },
     "troubleshooting": {
-     "wall": "ply-lined",
-     "placed_by": "function"
+     "wall": "switchgear-lineup",
+     "placed_by": "craft",
+     "craft": "power-network"
     },
     "coordination": {
      "wall": "acoustic-panel",
@@ -16424,14 +17690,19 @@
   "masonry-restore": {
    "hazard": null,
    "hazards": [],
+   "craft": "masonry-stone",
+   "crafts": [
+    "masonry-stone"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
      "placed_by": "function"
     },
     "procedure": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "broom-concrete",
+     "placed_by": "craft",
+     "craft": "masonry-stone"
     },
     "machines": {
      "surface": "steel-checker",
@@ -16442,8 +17713,9 @@
      "placed_by": "function"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "crushed-stone",
+     "placed_by": "craft",
+     "craft": "masonry-stone"
     },
     "layout": {
      "surface": "bare-slab",
@@ -16476,8 +17748,9 @@
      "placed_by": "function"
     },
     "procedure": {
-     "wall": "liner-panel",
-     "placed_by": "function"
+     "wall": "ashlar-stone",
+     "placed_by": "craft",
+     "craft": "masonry-stone"
     },
     "machines": {
      "wall": "impact-block",
@@ -16492,8 +17765,9 @@
      "placed_by": "function"
     },
     "layout": {
-     "wall": "whiteboard-panel",
-     "placed_by": "function"
+     "wall": "brick-common",
+     "placed_by": "craft",
+     "craft": "masonry-stone"
     },
     "inspection": {
      "wall": "matte-board",
@@ -16674,14 +17948,19 @@
   "stone-carvers": {
    "hazard": null,
    "hazards": [],
+   "craft": "masonry-stone",
+   "crafts": [
+    "masonry-stone"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
      "placed_by": "function"
     },
     "procedure": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "broom-concrete",
+     "placed_by": "craft",
+     "craft": "masonry-stone"
     },
     "machines": {
      "surface": "steel-checker",
@@ -16692,8 +17971,9 @@
      "placed_by": "function"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "crushed-stone",
+     "placed_by": "craft",
+     "craft": "masonry-stone"
     },
     "layout": {
      "surface": "bare-slab",
@@ -16726,8 +18006,9 @@
      "placed_by": "function"
     },
     "procedure": {
-     "wall": "liner-panel",
-     "placed_by": "function"
+     "wall": "ashlar-stone",
+     "placed_by": "craft",
+     "craft": "masonry-stone"
     },
     "machines": {
      "wall": "impact-block",
@@ -16742,8 +18023,9 @@
      "placed_by": "function"
     },
     "layout": {
-     "wall": "whiteboard-panel",
-     "placed_by": "function"
+     "wall": "brick-common",
+     "placed_by": "craft",
+     "craft": "masonry-stone"
     },
     "inspection": {
      "wall": "matte-board",
@@ -16924,14 +18206,277 @@
   "plasterers": {
    "hazard": null,
    "hazards": [],
+   "craft": "masonry-stone",
+   "crafts": [
+    "masonry-stone"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
      "placed_by": "function"
     },
     "procedure": {
-     "surface": "sealed-slab",
+     "surface": "broom-concrete",
+     "placed_by": "craft",
+     "craft": "masonry-stone"
+    },
+    "machines": {
+     "surface": "steel-checker",
      "placed_by": "function"
+    },
+    "tools": {
+     "surface": "end-grain-block",
+     "placed_by": "function"
+    },
+    "materials": {
+     "surface": "crushed-stone",
+     "placed_by": "craft",
+     "craft": "masonry-stone"
+    },
+    "layout": {
+     "surface": "bare-slab",
+     "placed_by": "function"
+    },
+    "inspection": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "surface": "anti-fatigue",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "surface": "terrazzo-ground",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "surface": "raised-access",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "surface": "porcelain-tile",
+     "placed_by": "function"
+    }
+   },
+   "walls": {
+    "safety": {
+     "wall": "painted-block",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "wall": "ashlar-stone",
+     "placed_by": "craft",
+     "craft": "masonry-stone"
+    },
+    "machines": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "tools": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "materials": {
+     "wall": "impact-block",
+     "placed_by": "function"
+    },
+    "layout": {
+     "wall": "brick-common",
+     "placed_by": "craft",
+     "craft": "masonry-stone"
+    },
+    "inspection": {
+     "wall": "matte-board",
+     "placed_by": "function"
+    },
+    "troubleshooting": {
+     "wall": "ply-lined",
+     "placed_by": "function"
+    },
+    "coordination": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "documentation": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    },
+    "leadership": {
+     "wall": "acoustic-panel",
+     "placed_by": "function"
+    }
+   },
+   "conditions": {
+    "safety": {
+     "lux": 300,
+     "ach": 6,
+     "noise_db": 55,
+     "temp_c": [
+      18,
+      24
+     ],
+     "ppe": [
+      "hi-vis",
+      "safety boots"
+     ],
+     "hazards": []
+    },
+    "procedure": {
+     "lux": 500,
+     "ach": 8,
+     "noise_db": 80,
+     "temp_c": [
+      12,
+      30
+     ],
+     "ppe": [
+      "gloves",
+      "hard hat",
+      "hi-vis",
+      "safety boots",
+      "safety glasses"
+     ],
+     "hazards": []
+    },
+    "machines": {
+     "lux": 500,
+     "ach": 10,
+     "noise_db": 85,
+     "temp_c": [
+      12,
+      28
+     ],
+     "ppe": [
+      "gloves",
+      "hard hat",
+      "hearing protection",
+      "hi-vis",
+      "safety boots",
+      "safety glasses"
+     ],
+     "hazards": []
+    },
+    "tools": {
+     "lux": 500,
+     "ach": 4,
+     "noise_db": 65,
+     "temp_c": [
+      16,
+      26
+     ],
+     "ppe": [
+      "safety boots",
+      "safety glasses"
+     ],
+     "hazards": []
+    },
+    "materials": {
+     "lux": 200,
+     "ach": 4,
+     "noise_db": 70,
+     "temp_c": [
+      5,
+      30
+     ],
+     "ppe": [
+      "gloves",
+      "hard hat",
+      "hi-vis",
+      "safety boots"
+     ],
+     "hazards": []
+    },
+    "layout": {
+     "lux": 750,
+     "ach": 4,
+     "noise_db": 60,
+     "temp_c": [
+      16,
+      26
+     ],
+     "ppe": [
+      "safety boots"
+     ],
+     "hazards": []
+    },
+    "inspection": {
+     "lux": 1000,
+     "ach": 6,
+     "noise_db": 60,
+     "temp_c": [
+      18,
+      24
+     ],
+     "ppe": [
+      "safety glasses"
+     ],
+     "hazards": []
+    },
+    "troubleshooting": {
+     "lux": 750,
+     "ach": 6,
+     "noise_db": 70,
+     "temp_c": [
+      16,
+      26
+     ],
+     "ppe": [
+      "safety boots",
+      "safety glasses"
+     ],
+     "hazards": []
+    },
+    "coordination": {
+     "lux": 300,
+     "ach": 4,
+     "noise_db": 50,
+     "temp_c": [
+      19,
+      25
+     ],
+     "ppe": [],
+     "hazards": []
+    },
+    "documentation": {
+     "lux": 400,
+     "ach": 4,
+     "noise_db": 45,
+     "temp_c": [
+      19,
+      25
+     ],
+     "ppe": [],
+     "hazards": []
+    },
+    "leadership": {
+     "lux": 300,
+     "ach": 4,
+     "noise_db": 40,
+     "temp_c": [
+      19,
+      25
+     ],
+     "ppe": [],
+     "hazards": []
+    }
+   }
+  },
+  "terrazzo": {
+   "hazard": null,
+   "hazards": [],
+   "craft": "finish-trade",
+   "crafts": [
+    "finish-trade"
+   ],
+   "rooms": {
+    "safety": {
+     "surface": "epoxy-smooth",
+     "placed_by": "function"
+    },
+    "procedure": {
+     "surface": "terrazzo-divider",
+     "placed_by": "craft",
+     "craft": "finish-trade"
     },
     "machines": {
      "surface": "steel-checker",
@@ -16950,8 +18495,9 @@
      "placed_by": "function"
     },
     "inspection": {
-     "surface": "epoxy-smooth",
-     "placed_by": "function"
+     "surface": "polished-slab",
+     "placed_by": "craft",
+     "craft": "finish-trade"
     },
     "troubleshooting": {
      "surface": "anti-fatigue",
@@ -16988,8 +18534,9 @@
      "placed_by": "function"
     },
     "materials": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "ply-lined",
+     "placed_by": "craft",
+     "craft": "finish-trade"
     },
     "layout": {
      "wall": "whiteboard-panel",
@@ -17171,10 +18718,12 @@
     }
    }
   },
-  "terrazzo": {
-   "hazard": "molten-metal",
-   "hazards": [
-    "molten-metal"
+  "tilesetters": {
+   "hazard": null,
+   "hazards": [],
+   "craft": "finish-trade",
+   "crafts": [
+    "finish-trade"
    ],
    "rooms": {
     "safety": {
@@ -17182,270 +18731,9 @@
      "placed_by": "function"
     },
     "procedure": {
-     "surface": "firebrick-hearth",
-     "placed_by": "hazard",
-     "hazard": "molten-metal"
-    },
-    "machines": {
-     "surface": "firebrick-hearth",
-     "placed_by": "hazard",
-     "hazard": "molten-metal"
-    },
-    "tools": {
-     "surface": "end-grain-block",
-     "placed_by": "function"
-    },
-    "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
-    },
-    "layout": {
-     "surface": "bare-slab",
-     "placed_by": "function"
-    },
-    "inspection": {
-     "surface": "epoxy-smooth",
-     "placed_by": "function"
-    },
-    "troubleshooting": {
-     "surface": "anti-fatigue",
-     "placed_by": "function"
-    },
-    "coordination": {
-     "surface": "terrazzo-ground",
-     "placed_by": "function"
-    },
-    "documentation": {
-     "surface": "raised-access",
-     "placed_by": "function"
-    },
-    "leadership": {
-     "surface": "porcelain-tile",
-     "placed_by": "function"
-    }
-   },
-   "walls": {
-    "safety": {
-     "wall": "painted-block",
-     "placed_by": "function"
-    },
-    "procedure": {
-     "wall": "firebrick-face",
-     "placed_by": "hazard",
-     "hazard": "molten-metal"
-    },
-    "machines": {
-     "wall": "firebrick-face",
-     "placed_by": "hazard",
-     "hazard": "molten-metal"
-    },
-    "tools": {
-     "wall": "ply-lined",
-     "placed_by": "function"
-    },
-    "materials": {
-     "wall": "impact-block",
-     "placed_by": "function"
-    },
-    "layout": {
-     "wall": "whiteboard-panel",
-     "placed_by": "function"
-    },
-    "inspection": {
-     "wall": "matte-board",
-     "placed_by": "function"
-    },
-    "troubleshooting": {
-     "wall": "ply-lined",
-     "placed_by": "function"
-    },
-    "coordination": {
-     "wall": "acoustic-panel",
-     "placed_by": "function"
-    },
-    "documentation": {
-     "wall": "acoustic-panel",
-     "placed_by": "function"
-    },
-    "leadership": {
-     "wall": "acoustic-panel",
-     "placed_by": "function"
-    }
-   },
-   "conditions": {
-    "safety": {
-     "lux": 300,
-     "ach": 6,
-     "noise_db": 55,
-     "temp_c": [
-      18,
-      24
-     ],
-     "ppe": [
-      "hi-vis",
-      "safety boots"
-     ],
-     "hazards": []
-    },
-    "procedure": {
-     "lux": 500,
-     "ach": 20,
-     "noise_db": 90,
-     "temp_c": [
-      12,
-      30
-     ],
-     "ppe": [
-      "face shield",
-      "flame-resistant clothing",
-      "gloves",
-      "hard hat",
-      "hi-vis",
-      "safety boots",
-      "safety glasses"
-     ],
-     "hazards": [
-      "molten-metal"
-     ]
-    },
-    "machines": {
-     "lux": 500,
-     "ach": 20,
-     "noise_db": 90,
-     "temp_c": [
-      12,
-      28
-     ],
-     "ppe": [
-      "face shield",
-      "flame-resistant clothing",
-      "gloves",
-      "hard hat",
-      "hearing protection",
-      "hi-vis",
-      "safety boots",
-      "safety glasses"
-     ],
-     "hazards": [
-      "molten-metal"
-     ]
-    },
-    "tools": {
-     "lux": 500,
-     "ach": 4,
-     "noise_db": 65,
-     "temp_c": [
-      16,
-      26
-     ],
-     "ppe": [
-      "safety boots",
-      "safety glasses"
-     ],
-     "hazards": []
-    },
-    "materials": {
-     "lux": 200,
-     "ach": 4,
-     "noise_db": 70,
-     "temp_c": [
-      5,
-      30
-     ],
-     "ppe": [
-      "gloves",
-      "hard hat",
-      "hi-vis",
-      "safety boots"
-     ],
-     "hazards": []
-    },
-    "layout": {
-     "lux": 750,
-     "ach": 4,
-     "noise_db": 60,
-     "temp_c": [
-      16,
-      26
-     ],
-     "ppe": [
-      "safety boots"
-     ],
-     "hazards": []
-    },
-    "inspection": {
-     "lux": 1000,
-     "ach": 6,
-     "noise_db": 60,
-     "temp_c": [
-      18,
-      24
-     ],
-     "ppe": [
-      "safety glasses"
-     ],
-     "hazards": []
-    },
-    "troubleshooting": {
-     "lux": 750,
-     "ach": 6,
-     "noise_db": 70,
-     "temp_c": [
-      16,
-      26
-     ],
-     "ppe": [
-      "safety boots",
-      "safety glasses"
-     ],
-     "hazards": []
-    },
-    "coordination": {
-     "lux": 300,
-     "ach": 4,
-     "noise_db": 50,
-     "temp_c": [
-      19,
-      25
-     ],
-     "ppe": [],
-     "hazards": []
-    },
-    "documentation": {
-     "lux": 400,
-     "ach": 4,
-     "noise_db": 45,
-     "temp_c": [
-      19,
-      25
-     ],
-     "ppe": [],
-     "hazards": []
-    },
-    "leadership": {
-     "lux": 300,
-     "ach": 4,
-     "noise_db": 40,
-     "temp_c": [
-      19,
-      25
-     ],
-     "ppe": [],
-     "hazards": []
-    }
-   }
-  },
-  "tilesetters": {
-   "hazard": null,
-   "hazards": [],
-   "rooms": {
-    "safety": {
-     "surface": "epoxy-smooth",
-     "placed_by": "function"
-    },
-    "procedure": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "terrazzo-divider",
+     "placed_by": "craft",
+     "craft": "finish-trade"
     },
     "machines": {
      "surface": "steel-checker",
@@ -17464,8 +18752,9 @@
      "placed_by": "function"
     },
     "inspection": {
-     "surface": "epoxy-smooth",
-     "placed_by": "function"
+     "surface": "polished-slab",
+     "placed_by": "craft",
+     "craft": "finish-trade"
     },
     "troubleshooting": {
      "surface": "anti-fatigue",
@@ -17502,8 +18791,9 @@
      "placed_by": "function"
     },
     "materials": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "ply-lined",
+     "placed_by": "craft",
+     "craft": "finish-trade"
     },
     "layout": {
      "wall": "whiteboard-panel",
@@ -17688,6 +18978,10 @@
   "lathers": {
    "hazard": null,
    "hazards": [],
+   "craft": "sheet-membrane",
+   "crafts": [
+    "sheet-membrane"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -17698,16 +18992,18 @@
      "placed_by": "function"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "steel-plate",
+     "placed_by": "craft",
+     "craft": "sheet-membrane"
     },
     "tools": {
      "surface": "end-grain-block",
      "placed_by": "function"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "steel-diamond",
+     "placed_by": "craft",
+     "craft": "sheet-membrane"
     },
     "layout": {
      "surface": "bare-slab",
@@ -17740,8 +19036,9 @@
      "placed_by": "function"
     },
     "procedure": {
-     "wall": "liner-panel",
-     "placed_by": "function"
+     "wall": "corrugated-steel",
+     "placed_by": "craft",
+     "craft": "sheet-membrane"
     },
     "machines": {
      "wall": "impact-block",
@@ -17752,8 +19049,9 @@
      "placed_by": "function"
     },
     "materials": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "corrugated-steel",
+     "placed_by": "craft",
+     "craft": "sheet-membrane"
     },
     "layout": {
      "wall": "whiteboard-panel",
@@ -17938,14 +19236,19 @@
   "curtainwall": {
    "hazard": null,
    "hazards": [],
+   "craft": "glass-envelope",
+   "crafts": [
+    "glass-envelope"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
      "placed_by": "function"
     },
     "procedure": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "polished-slab",
+     "placed_by": "craft",
+     "craft": "glass-envelope"
     },
     "machines": {
      "surface": "steel-checker",
@@ -17956,8 +19259,9 @@
      "placed_by": "function"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "timber-plank",
+     "placed_by": "craft",
+     "craft": "glass-envelope"
     },
     "layout": {
      "surface": "bare-slab",
@@ -17990,8 +19294,9 @@
      "placed_by": "function"
     },
     "procedure": {
-     "wall": "liner-panel",
-     "placed_by": "function"
+     "wall": "glazed-curtain",
+     "placed_by": "craft",
+     "craft": "glass-envelope"
     },
     "machines": {
      "wall": "impact-block",
@@ -18010,8 +19315,9 @@
      "placed_by": "function"
     },
     "inspection": {
-     "wall": "matte-board",
-     "placed_by": "function"
+     "wall": "glazed-curtain",
+     "placed_by": "craft",
+     "craft": "glass-envelope"
     },
     "troubleshooting": {
      "wall": "ply-lined",
@@ -18188,6 +19494,10 @@
   "waterproofers": {
    "hazard": null,
    "hazards": [],
+   "craft": "sheet-membrane",
+   "crafts": [
+    "sheet-membrane"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -18198,16 +19508,18 @@
      "placed_by": "function"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "steel-plate",
+     "placed_by": "craft",
+     "craft": "sheet-membrane"
     },
     "tools": {
      "surface": "end-grain-block",
      "placed_by": "function"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "steel-diamond",
+     "placed_by": "craft",
+     "craft": "sheet-membrane"
     },
     "layout": {
      "surface": "bare-slab",
@@ -18240,8 +19552,9 @@
      "placed_by": "function"
     },
     "procedure": {
-     "wall": "liner-panel",
-     "placed_by": "function"
+     "wall": "corrugated-steel",
+     "placed_by": "craft",
+     "craft": "sheet-membrane"
     },
     "machines": {
      "wall": "impact-block",
@@ -18252,8 +19565,9 @@
      "placed_by": "function"
     },
     "materials": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "corrugated-steel",
+     "placed_by": "craft",
+     "craft": "sheet-membrane"
     },
     "layout": {
      "wall": "whiteboard-panel",
@@ -18438,6 +19752,10 @@
   "firestop": {
    "hazard": null,
    "hazards": [],
+   "craft": "sheet-membrane",
+   "crafts": [
+    "sheet-membrane"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -18448,16 +19766,18 @@
      "placed_by": "function"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "steel-plate",
+     "placed_by": "craft",
+     "craft": "sheet-membrane"
     },
     "tools": {
      "surface": "end-grain-block",
      "placed_by": "function"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "steel-diamond",
+     "placed_by": "craft",
+     "craft": "sheet-membrane"
     },
     "layout": {
      "surface": "bare-slab",
@@ -18490,8 +19810,9 @@
      "placed_by": "function"
     },
     "procedure": {
-     "wall": "liner-panel",
-     "placed_by": "function"
+     "wall": "corrugated-steel",
+     "placed_by": "craft",
+     "craft": "sheet-membrane"
     },
     "machines": {
      "wall": "impact-block",
@@ -18502,8 +19823,9 @@
      "placed_by": "function"
     },
     "materials": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "corrugated-steel",
+     "placed_by": "craft",
+     "craft": "sheet-membrane"
     },
     "layout": {
      "wall": "whiteboard-panel",
@@ -18688,6 +20010,10 @@
   "acoustic": {
    "hazard": null,
    "hazards": [],
+   "craft": "sheet-membrane",
+   "crafts": [
+    "sheet-membrane"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -18698,16 +20024,18 @@
      "placed_by": "function"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "steel-plate",
+     "placed_by": "craft",
+     "craft": "sheet-membrane"
     },
     "tools": {
      "surface": "end-grain-block",
      "placed_by": "function"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "steel-diamond",
+     "placed_by": "craft",
+     "craft": "sheet-membrane"
     },
     "layout": {
      "surface": "bare-slab",
@@ -18740,8 +20068,9 @@
      "placed_by": "function"
     },
     "procedure": {
-     "wall": "liner-panel",
-     "placed_by": "function"
+     "wall": "corrugated-steel",
+     "placed_by": "craft",
+     "craft": "sheet-membrane"
     },
     "machines": {
      "wall": "impact-block",
@@ -18752,8 +20081,9 @@
      "placed_by": "function"
     },
     "materials": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "corrugated-steel",
+     "placed_by": "craft",
+     "craft": "sheet-membrane"
     },
     "layout": {
      "wall": "whiteboard-panel",
@@ -18938,6 +20268,10 @@
   "cladding": {
    "hazard": null,
    "hazards": [],
+   "craft": "sheet-membrane",
+   "crafts": [
+    "sheet-membrane"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -18948,16 +20282,18 @@
      "placed_by": "function"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "steel-plate",
+     "placed_by": "craft",
+     "craft": "sheet-membrane"
     },
     "tools": {
      "surface": "end-grain-block",
      "placed_by": "function"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "steel-diamond",
+     "placed_by": "craft",
+     "craft": "sheet-membrane"
     },
     "layout": {
      "surface": "bare-slab",
@@ -18990,8 +20326,9 @@
      "placed_by": "function"
     },
     "procedure": {
-     "wall": "liner-panel",
-     "placed_by": "function"
+     "wall": "corrugated-steel",
+     "placed_by": "craft",
+     "craft": "sheet-membrane"
     },
     "machines": {
      "wall": "impact-block",
@@ -19002,8 +20339,9 @@
      "placed_by": "function"
     },
     "materials": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "corrugated-steel",
+     "placed_by": "craft",
+     "craft": "sheet-membrane"
     },
     "layout": {
      "wall": "whiteboard-panel",
@@ -19190,10 +20528,15 @@
    "hazards": [
     "timber-trade"
    ],
+   "craft": "underground",
+   "crafts": [
+    "underground"
+   ],
    "rooms": {
     "safety": {
-     "surface": "epoxy-smooth",
-     "placed_by": "function"
+     "surface": "shotcrete-invert",
+     "placed_by": "craft",
+     "craft": "underground"
     },
     "procedure": {
      "surface": "timber-plank",
@@ -19205,8 +20548,9 @@
      "placed_by": "function"
     },
     "tools": {
-     "surface": "end-grain-block",
-     "placed_by": "function"
+     "surface": "shotcrete-invert",
+     "placed_by": "craft",
+     "craft": "underground"
     },
     "materials": {
      "surface": "sealed-slab",
@@ -19239,8 +20583,9 @@
    },
    "walls": {
     "safety": {
-     "wall": "painted-block",
-     "placed_by": "function"
+     "wall": "rock-face",
+     "placed_by": "craft",
+     "craft": "underground"
     },
     "procedure": {
      "wall": "ply-lined",
@@ -19252,8 +20597,9 @@
      "placed_by": "function"
     },
     "tools": {
-     "wall": "ply-lined",
-     "placed_by": "function"
+     "wall": "rock-face",
+     "placed_by": "craft",
+     "craft": "underground"
     },
     "materials": {
      "wall": "impact-block",
@@ -19448,10 +20794,15 @@
    "hazards": [
     "mobile-plant"
    ],
+   "craft": "underground",
+   "crafts": [
+    "underground"
+   ],
    "rooms": {
     "safety": {
-     "surface": "epoxy-smooth",
-     "placed_by": "function"
+     "surface": "shotcrete-invert",
+     "placed_by": "craft",
+     "craft": "underground"
     },
     "procedure": {
      "surface": "crushed-stone",
@@ -19464,12 +20815,14 @@
      "hazard": "mobile-plant"
     },
     "tools": {
-     "surface": "end-grain-block",
-     "placed_by": "function"
+     "surface": "shotcrete-invert",
+     "placed_by": "craft",
+     "craft": "underground"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "asphalt-apron",
+     "placed_by": "hazard",
+     "hazard": "mobile-plant"
     },
     "layout": {
      "surface": "bare-slab",
@@ -19498,8 +20851,9 @@
    },
    "walls": {
     "safety": {
-     "wall": "painted-block",
-     "placed_by": "function"
+     "wall": "rock-face",
+     "placed_by": "craft",
+     "craft": "underground"
     },
     "procedure": {
      "wall": "mesh-guard",
@@ -19512,8 +20866,9 @@
      "hazard": "mobile-plant"
     },
     "tools": {
-     "wall": "ply-lined",
-     "placed_by": "function"
+     "wall": "rock-face",
+     "placed_by": "craft",
+     "craft": "underground"
     },
     "materials": {
      "wall": "impact-block",
@@ -19614,9 +20969,9 @@
      "hazards": []
     },
     "materials": {
-     "lux": 200,
-     "ach": 4,
-     "noise_db": 70,
+     "lux": 500,
+     "ach": 8,
+     "noise_db": 90,
      "temp_c": [
       5,
       30
@@ -19624,10 +20979,13 @@
      "ppe": [
       "gloves",
       "hard hat",
+      "hearing protection",
       "hi-vis",
       "safety boots"
      ],
-     "hazards": []
+     "hazards": [
+      "mobile-plant"
+     ]
     },
     "layout": {
      "lux": 750,
@@ -19707,18 +21065,24 @@
   "concrete-pump": {
    "hazard": null,
    "hazards": [],
+   "craft": "concrete-craft",
+   "crafts": [
+    "concrete-craft"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
      "placed_by": "function"
     },
     "procedure": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "polished-slab",
+     "placed_by": "craft",
+     "craft": "concrete-craft"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "broom-concrete",
+     "placed_by": "craft",
+     "craft": "concrete-craft"
     },
     "tools": {
      "surface": "end-grain-block",
@@ -19957,18 +21321,24 @@
   "post-tension": {
    "hazard": null,
    "hazards": [],
+   "craft": "concrete-craft",
+   "crafts": [
+    "concrete-craft"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
      "placed_by": "function"
     },
     "procedure": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "polished-slab",
+     "placed_by": "craft",
+     "craft": "concrete-craft"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "broom-concrete",
+     "placed_by": "craft",
+     "craft": "concrete-craft"
     },
     "tools": {
      "surface": "end-grain-block",
@@ -20205,28 +21575,37 @@
    }
   },
   "precast": {
-   "hazard": null,
-   "hazards": [],
+   "hazard": "suspended-load",
+   "hazards": [
+    "suspended-load"
+   ],
+   "craft": "concrete-craft",
+   "crafts": [
+    "concrete-craft"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
      "placed_by": "function"
     },
     "procedure": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "polished-slab",
+     "placed_by": "craft",
+     "craft": "concrete-craft"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "broom-concrete",
+     "placed_by": "craft",
+     "craft": "concrete-craft"
     },
     "tools": {
      "surface": "end-grain-block",
      "placed_by": "function"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "steel-plate",
+     "placed_by": "hazard",
+     "hazard": "suspended-load"
     },
     "layout": {
      "surface": "bare-slab",
@@ -20271,8 +21650,9 @@
      "placed_by": "function"
     },
     "materials": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "mesh-guard",
+     "placed_by": "hazard",
+     "hazard": "suspended-load"
     },
     "layout": {
      "wall": "whiteboard-panel",
@@ -20364,9 +21744,9 @@
      "hazards": []
     },
     "materials": {
-     "lux": 200,
-     "ach": 4,
-     "noise_db": 70,
+     "lux": 500,
+     "ach": 8,
+     "noise_db": 85,
      "temp_c": [
       5,
       30
@@ -20377,7 +21757,9 @@
       "hi-vis",
       "safety boots"
      ],
-     "hazards": []
+     "hazards": [
+      "suspended-load"
+     ]
     },
     "layout": {
      "lux": 750,
@@ -20457,6 +21839,10 @@
   "steel-erectors": {
    "hazard": null,
    "hazards": [],
+   "craft": "structural-steel",
+   "crafts": [
+    "structural-steel"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -20475,12 +21861,14 @@
      "placed_by": "function"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "steel-plate",
+     "placed_by": "craft",
+     "craft": "structural-steel"
     },
     "layout": {
-     "surface": "bare-slab",
-     "placed_by": "function"
+     "surface": "tooling-plate",
+     "placed_by": "craft",
+     "craft": "structural-steel"
     },
     "inspection": {
      "surface": "epoxy-smooth",
@@ -20521,8 +21909,9 @@
      "placed_by": "function"
     },
     "materials": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "corrugated-steel",
+     "placed_by": "craft",
+     "craft": "structural-steel"
     },
     "layout": {
      "wall": "whiteboard-panel",
@@ -20709,6 +22098,10 @@
    "hazards": [
     "hot-work"
    ],
+   "craft": "structural-steel",
+   "crafts": [
+    "structural-steel"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -20728,12 +22121,14 @@
      "placed_by": "function"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "steel-plate",
+     "placed_by": "craft",
+     "craft": "structural-steel"
     },
     "layout": {
-     "surface": "bare-slab",
-     "placed_by": "function"
+     "surface": "tooling-plate",
+     "placed_by": "craft",
+     "craft": "structural-steel"
     },
     "inspection": {
      "surface": "epoxy-smooth",
@@ -20775,8 +22170,9 @@
      "placed_by": "function"
     },
     "materials": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "corrugated-steel",
+     "placed_by": "craft",
+     "craft": "structural-steel"
     },
     "layout": {
      "wall": "whiteboard-panel",
@@ -20963,9 +22359,11 @@
    }
   },
   "window-glazing": {
-   "hazard": "mobile-plant",
-   "hazards": [
-    "mobile-plant"
+   "hazard": null,
+   "hazards": [],
+   "craft": "glass-envelope",
+   "crafts": [
+    "glass-envelope"
    ],
    "rooms": {
     "safety": {
@@ -20973,22 +22371,22 @@
      "placed_by": "function"
     },
     "procedure": {
-     "surface": "crushed-stone",
-     "placed_by": "hazard",
-     "hazard": "mobile-plant"
+     "surface": "polished-slab",
+     "placed_by": "craft",
+     "craft": "glass-envelope"
     },
     "machines": {
-     "surface": "broom-concrete",
-     "placed_by": "hazard",
-     "hazard": "mobile-plant"
+     "surface": "steel-checker",
+     "placed_by": "function"
     },
     "tools": {
      "surface": "end-grain-block",
      "placed_by": "function"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "timber-plank",
+     "placed_by": "craft",
+     "craft": "glass-envelope"
     },
     "layout": {
      "surface": "bare-slab",
@@ -21021,14 +22419,13 @@
      "placed_by": "function"
     },
     "procedure": {
-     "wall": "mesh-guard",
-     "placed_by": "hazard",
-     "hazard": "mobile-plant"
+     "wall": "glazed-curtain",
+     "placed_by": "craft",
+     "craft": "glass-envelope"
     },
     "machines": {
-     "wall": "mesh-guard",
-     "placed_by": "hazard",
-     "hazard": "mobile-plant"
+     "wall": "impact-block",
+     "placed_by": "function"
     },
     "tools": {
      "wall": "ply-lined",
@@ -21043,8 +22440,9 @@
      "placed_by": "function"
     },
     "inspection": {
-     "wall": "matte-board",
-     "placed_by": "function"
+     "wall": "glazed-curtain",
+     "placed_by": "craft",
+     "craft": "glass-envelope"
     },
     "troubleshooting": {
      "wall": "ply-lined",
@@ -21081,7 +22479,7 @@
     "procedure": {
      "lux": 500,
      "ach": 8,
-     "noise_db": 90,
+     "noise_db": 80,
      "temp_c": [
       12,
       30
@@ -21089,19 +22487,16 @@
      "ppe": [
       "gloves",
       "hard hat",
-      "hearing protection",
       "hi-vis",
       "safety boots",
       "safety glasses"
      ],
-     "hazards": [
-      "mobile-plant"
-     ]
+     "hazards": []
     },
     "machines": {
      "lux": 500,
      "ach": 10,
-     "noise_db": 90,
+     "noise_db": 85,
      "temp_c": [
       12,
       28
@@ -21114,9 +22509,7 @@
       "safety boots",
       "safety glasses"
      ],
-     "hazards": [
-      "mobile-plant"
-     ]
+     "hazards": []
     },
     "tools": {
      "lux": 500,
@@ -21226,18 +22619,24 @@
   "bas-controls": {
    "hazard": null,
    "hazards": [],
+   "craft": "digital-systems",
+   "crafts": [
+    "digital-systems"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
      "placed_by": "function"
     },
     "procedure": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "access-perf",
+     "placed_by": "craft",
+     "craft": "digital-systems"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "esd-vinyl",
+     "placed_by": "craft",
+     "craft": "digital-systems"
     },
     "tools": {
      "surface": "end-grain-block",
@@ -21256,8 +22655,9 @@
      "placed_by": "function"
     },
     "troubleshooting": {
-     "surface": "anti-fatigue",
-     "placed_by": "function"
+     "surface": "esd-vinyl",
+     "placed_by": "craft",
+     "craft": "digital-systems"
     },
     "coordination": {
      "surface": "terrazzo-ground",
@@ -21278,8 +22678,9 @@
      "placed_by": "function"
     },
     "procedure": {
-     "wall": "liner-panel",
-     "placed_by": "function"
+     "wall": "switchgear-lineup",
+     "placed_by": "craft",
+     "craft": "digital-systems"
     },
     "machines": {
      "wall": "impact-block",
@@ -21302,8 +22703,9 @@
      "placed_by": "function"
     },
     "troubleshooting": {
-     "wall": "ply-lined",
-     "placed_by": "function"
+     "wall": "switchgear-lineup",
+     "placed_by": "craft",
+     "craft": "digital-systems"
     },
     "coordination": {
      "wall": "acoustic-panel",
@@ -21476,18 +22878,24 @@
   "fire-alarm": {
    "hazard": null,
    "hazards": [],
+   "craft": "digital-systems",
+   "crafts": [
+    "digital-systems"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
      "placed_by": "function"
     },
     "procedure": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "access-perf",
+     "placed_by": "craft",
+     "craft": "digital-systems"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "esd-vinyl",
+     "placed_by": "craft",
+     "craft": "digital-systems"
     },
     "tools": {
      "surface": "end-grain-block",
@@ -21506,8 +22914,9 @@
      "placed_by": "function"
     },
     "troubleshooting": {
-     "surface": "anti-fatigue",
-     "placed_by": "function"
+     "surface": "esd-vinyl",
+     "placed_by": "craft",
+     "craft": "digital-systems"
     },
     "coordination": {
      "surface": "terrazzo-ground",
@@ -21528,8 +22937,9 @@
      "placed_by": "function"
     },
     "procedure": {
-     "wall": "liner-panel",
-     "placed_by": "function"
+     "wall": "switchgear-lineup",
+     "placed_by": "craft",
+     "craft": "digital-systems"
     },
     "machines": {
      "wall": "impact-block",
@@ -21552,8 +22962,9 @@
      "placed_by": "function"
     },
     "troubleshooting": {
-     "wall": "ply-lined",
-     "placed_by": "function"
+     "wall": "switchgear-lineup",
+     "placed_by": "craft",
+     "craft": "digital-systems"
     },
     "coordination": {
      "wall": "acoustic-panel",
@@ -21726,18 +23137,24 @@
   "security-sys": {
    "hazard": null,
    "hazards": [],
+   "craft": "digital-systems",
+   "crafts": [
+    "digital-systems"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
      "placed_by": "function"
     },
     "procedure": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "access-perf",
+     "placed_by": "craft",
+     "craft": "digital-systems"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "esd-vinyl",
+     "placed_by": "craft",
+     "craft": "digital-systems"
     },
     "tools": {
      "surface": "end-grain-block",
@@ -21756,8 +23173,9 @@
      "placed_by": "function"
     },
     "troubleshooting": {
-     "surface": "anti-fatigue",
-     "placed_by": "function"
+     "surface": "esd-vinyl",
+     "placed_by": "craft",
+     "craft": "digital-systems"
     },
     "coordination": {
      "surface": "terrazzo-ground",
@@ -21778,8 +23196,9 @@
      "placed_by": "function"
     },
     "procedure": {
-     "wall": "liner-panel",
-     "placed_by": "function"
+     "wall": "switchgear-lineup",
+     "placed_by": "craft",
+     "craft": "digital-systems"
     },
     "machines": {
      "wall": "impact-block",
@@ -21802,8 +23221,9 @@
      "placed_by": "function"
     },
     "troubleshooting": {
-     "wall": "ply-lined",
-     "placed_by": "function"
+     "wall": "switchgear-lineup",
+     "placed_by": "craft",
+     "craft": "digital-systems"
     },
     "coordination": {
      "wall": "acoustic-panel",
@@ -21976,18 +23396,24 @@
   "network-cabling": {
    "hazard": null,
    "hazards": [],
+   "craft": "digital-systems",
+   "crafts": [
+    "digital-systems"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
      "placed_by": "function"
     },
     "procedure": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "access-perf",
+     "placed_by": "craft",
+     "craft": "digital-systems"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "esd-vinyl",
+     "placed_by": "craft",
+     "craft": "digital-systems"
     },
     "tools": {
      "surface": "end-grain-block",
@@ -22006,8 +23432,9 @@
      "placed_by": "function"
     },
     "troubleshooting": {
-     "surface": "anti-fatigue",
-     "placed_by": "function"
+     "surface": "esd-vinyl",
+     "placed_by": "craft",
+     "craft": "digital-systems"
     },
     "coordination": {
      "surface": "terrazzo-ground",
@@ -22028,8 +23455,9 @@
      "placed_by": "function"
     },
     "procedure": {
-     "wall": "liner-panel",
-     "placed_by": "function"
+     "wall": "switchgear-lineup",
+     "placed_by": "craft",
+     "craft": "digital-systems"
     },
     "machines": {
      "wall": "impact-block",
@@ -22052,8 +23480,9 @@
      "placed_by": "function"
     },
     "troubleshooting": {
-     "wall": "ply-lined",
-     "placed_by": "function"
+     "wall": "switchgear-lineup",
+     "placed_by": "craft",
+     "craft": "digital-systems"
     },
     "coordination": {
      "wall": "acoustic-panel",
@@ -22226,18 +23655,24 @@
   "fiber-splicers": {
    "hazard": null,
    "hazards": [],
+   "craft": "digital-systems",
+   "crafts": [
+    "digital-systems"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
      "placed_by": "function"
     },
     "procedure": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "access-perf",
+     "placed_by": "craft",
+     "craft": "digital-systems"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "esd-vinyl",
+     "placed_by": "craft",
+     "craft": "digital-systems"
     },
     "tools": {
      "surface": "end-grain-block",
@@ -22256,8 +23691,9 @@
      "placed_by": "function"
     },
     "troubleshooting": {
-     "surface": "anti-fatigue",
-     "placed_by": "function"
+     "surface": "esd-vinyl",
+     "placed_by": "craft",
+     "craft": "digital-systems"
     },
     "coordination": {
      "surface": "terrazzo-ground",
@@ -22278,8 +23714,9 @@
      "placed_by": "function"
     },
     "procedure": {
-     "wall": "liner-panel",
-     "placed_by": "function"
+     "wall": "switchgear-lineup",
+     "placed_by": "craft",
+     "craft": "digital-systems"
     },
     "machines": {
      "wall": "impact-block",
@@ -22302,8 +23739,9 @@
      "placed_by": "function"
     },
     "troubleshooting": {
-     "wall": "ply-lined",
-     "placed_by": "function"
+     "wall": "switchgear-lineup",
+     "placed_by": "craft",
+     "craft": "digital-systems"
     },
     "coordination": {
      "wall": "acoustic-panel",
@@ -22476,18 +23914,24 @@
   "data-center": {
    "hazard": null,
    "hazards": [],
+   "craft": "digital-systems",
+   "crafts": [
+    "digital-systems"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
      "placed_by": "function"
     },
     "procedure": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "access-perf",
+     "placed_by": "craft",
+     "craft": "digital-systems"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "esd-vinyl",
+     "placed_by": "craft",
+     "craft": "digital-systems"
     },
     "tools": {
      "surface": "end-grain-block",
@@ -22506,8 +23950,9 @@
      "placed_by": "function"
     },
     "troubleshooting": {
-     "surface": "anti-fatigue",
-     "placed_by": "function"
+     "surface": "esd-vinyl",
+     "placed_by": "craft",
+     "craft": "digital-systems"
     },
     "coordination": {
      "surface": "terrazzo-ground",
@@ -22528,8 +23973,9 @@
      "placed_by": "function"
     },
     "procedure": {
-     "wall": "liner-panel",
-     "placed_by": "function"
+     "wall": "switchgear-lineup",
+     "placed_by": "craft",
+     "craft": "digital-systems"
     },
     "machines": {
      "wall": "impact-block",
@@ -22552,8 +23998,9 @@
      "placed_by": "function"
     },
     "troubleshooting": {
-     "wall": "ply-lined",
-     "placed_by": "function"
+     "wall": "switchgear-lineup",
+     "placed_by": "craft",
+     "craft": "digital-systems"
     },
     "coordination": {
      "wall": "acoustic-panel",
@@ -22726,18 +24173,24 @@
   "instrumentation": {
    "hazard": null,
    "hazards": [],
+   "craft": "digital-systems",
+   "crafts": [
+    "digital-systems"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
      "placed_by": "function"
     },
     "procedure": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "access-perf",
+     "placed_by": "craft",
+     "craft": "digital-systems"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "esd-vinyl",
+     "placed_by": "craft",
+     "craft": "digital-systems"
     },
     "tools": {
      "surface": "end-grain-block",
@@ -22756,8 +24209,9 @@
      "placed_by": "function"
     },
     "troubleshooting": {
-     "surface": "anti-fatigue",
-     "placed_by": "function"
+     "surface": "esd-vinyl",
+     "placed_by": "craft",
+     "craft": "digital-systems"
     },
     "coordination": {
      "surface": "terrazzo-ground",
@@ -22778,8 +24232,9 @@
      "placed_by": "function"
     },
     "procedure": {
-     "wall": "liner-panel",
-     "placed_by": "function"
+     "wall": "switchgear-lineup",
+     "placed_by": "craft",
+     "craft": "digital-systems"
     },
     "machines": {
      "wall": "impact-block",
@@ -22802,8 +24257,9 @@
      "placed_by": "function"
     },
     "troubleshooting": {
-     "wall": "ply-lined",
-     "placed_by": "function"
+     "wall": "switchgear-lineup",
+     "placed_by": "craft",
+     "craft": "digital-systems"
     },
     "coordination": {
      "wall": "acoustic-panel",
@@ -22978,6 +24434,10 @@
    "hazards": [
     "live-electrical"
    ],
+   "craft": "digital-systems",
+   "crafts": [
+    "digital-systems"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -22989,8 +24449,9 @@
      "hazard": "live-electrical"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "esd-vinyl",
+     "placed_by": "craft",
+     "craft": "digital-systems"
     },
     "tools": {
      "surface": "end-grain-block",
@@ -23032,8 +24493,9 @@
      "placed_by": "function"
     },
     "procedure": {
-     "wall": "liner-panel",
-     "placed_by": "function"
+     "wall": "switchgear-lineup",
+     "placed_by": "craft",
+     "craft": "digital-systems"
     },
     "machines": {
      "wall": "impact-block",
@@ -23056,8 +24518,9 @@
      "placed_by": "function"
     },
     "troubleshooting": {
-     "wall": "ply-lined",
-     "placed_by": "function"
+     "wall": "switchgear-lineup",
+     "placed_by": "craft",
+     "craft": "digital-systems"
     },
     "coordination": {
      "wall": "acoustic-panel",
@@ -23238,18 +24701,24 @@
   "robotics": {
    "hazard": null,
    "hazards": [],
+   "craft": "digital-systems",
+   "crafts": [
+    "digital-systems"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
      "placed_by": "function"
     },
     "procedure": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "access-perf",
+     "placed_by": "craft",
+     "craft": "digital-systems"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "esd-vinyl",
+     "placed_by": "craft",
+     "craft": "digital-systems"
     },
     "tools": {
      "surface": "end-grain-block",
@@ -23268,8 +24737,9 @@
      "placed_by": "function"
     },
     "troubleshooting": {
-     "surface": "anti-fatigue",
-     "placed_by": "function"
+     "surface": "esd-vinyl",
+     "placed_by": "craft",
+     "craft": "digital-systems"
     },
     "coordination": {
      "surface": "terrazzo-ground",
@@ -23290,8 +24760,9 @@
      "placed_by": "function"
     },
     "procedure": {
-     "wall": "liner-panel",
-     "placed_by": "function"
+     "wall": "switchgear-lineup",
+     "placed_by": "craft",
+     "craft": "digital-systems"
     },
     "machines": {
      "wall": "impact-block",
@@ -23314,8 +24785,9 @@
      "placed_by": "function"
     },
     "troubleshooting": {
-     "wall": "ply-lined",
-     "placed_by": "function"
+     "wall": "switchgear-lineup",
+     "placed_by": "craft",
+     "craft": "digital-systems"
     },
     "coordination": {
      "wall": "acoustic-panel",
@@ -23488,18 +24960,24 @@
   "automation-int": {
    "hazard": null,
    "hazards": [],
+   "craft": "digital-systems",
+   "crafts": [
+    "digital-systems"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
      "placed_by": "function"
     },
     "procedure": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "access-perf",
+     "placed_by": "craft",
+     "craft": "digital-systems"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "esd-vinyl",
+     "placed_by": "craft",
+     "craft": "digital-systems"
     },
     "tools": {
      "surface": "end-grain-block",
@@ -23518,8 +24996,9 @@
      "placed_by": "function"
     },
     "troubleshooting": {
-     "surface": "anti-fatigue",
-     "placed_by": "function"
+     "surface": "esd-vinyl",
+     "placed_by": "craft",
+     "craft": "digital-systems"
     },
     "coordination": {
      "surface": "terrazzo-ground",
@@ -23540,8 +25019,9 @@
      "placed_by": "function"
     },
     "procedure": {
-     "wall": "liner-panel",
-     "placed_by": "function"
+     "wall": "switchgear-lineup",
+     "placed_by": "craft",
+     "craft": "digital-systems"
     },
     "machines": {
      "wall": "impact-block",
@@ -23564,8 +25044,9 @@
      "placed_by": "function"
     },
     "troubleshooting": {
-     "wall": "ply-lined",
-     "placed_by": "function"
+     "wall": "switchgear-lineup",
+     "placed_by": "craft",
+     "craft": "digital-systems"
     },
     "coordination": {
      "wall": "acoustic-panel",
@@ -23740,6 +25221,10 @@
    "hazards": [
     "particulate"
    ],
+   "craft": "clean-process",
+   "crafts": [
+    "clean-process"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -23751,16 +25236,18 @@
      "hazard": "particulate"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "welded-vinyl",
+     "placed_by": "craft",
+     "craft": "clean-process"
     },
     "tools": {
      "surface": "end-grain-block",
      "placed_by": "function"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "welded-vinyl",
+     "placed_by": "craft",
+     "craft": "clean-process"
     },
     "layout": {
      "surface": "bare-slab",
@@ -23799,16 +25286,18 @@
      "hazard": "particulate"
     },
     "machines": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "stainless-splash",
+     "placed_by": "craft",
+     "craft": "clean-process"
     },
     "tools": {
      "wall": "ply-lined",
      "placed_by": "function"
     },
     "materials": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "stainless-splash",
+     "placed_by": "craft",
+     "craft": "clean-process"
     },
     "layout": {
      "wall": "whiteboard-panel",
@@ -24005,6 +25494,11 @@
     "hot-work",
     "stored-energy"
    ],
+   "craft": "clean-process",
+   "crafts": [
+    "clean-process",
+    "process-fluid"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -24016,16 +25510,18 @@
      "hazard": "hot-work"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "welded-vinyl",
+     "placed_by": "craft",
+     "craft": "clean-process"
     },
     "tools": {
      "surface": "end-grain-block",
      "placed_by": "function"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "welded-vinyl",
+     "placed_by": "craft",
+     "craft": "clean-process"
     },
     "layout": {
      "surface": "bare-slab",
@@ -24063,16 +25559,18 @@
      "hazard": "hot-work"
     },
     "machines": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "stainless-splash",
+     "placed_by": "craft",
+     "craft": "clean-process"
     },
     "tools": {
      "wall": "ply-lined",
      "placed_by": "function"
     },
     "materials": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "stainless-splash",
+     "placed_by": "craft",
+     "craft": "clean-process"
     },
     "layout": {
      "wall": "whiteboard-panel",
@@ -24266,6 +25764,10 @@
     "hot-work",
     "mobile-plant"
    ],
+   "craft": "rail-craft",
+   "crafts": [
+    "rail-craft"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -24277,8 +25779,9 @@
      "hazard": "hot-work"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "rail-ballast",
+     "placed_by": "craft",
+     "craft": "rail-craft"
     },
     "tools": {
      "surface": "end-grain-block",
@@ -24434,9 +25937,9 @@
      "hazards": []
     },
     "materials": {
-     "lux": 200,
-     "ach": 4,
-     "noise_db": 70,
+     "lux": 500,
+     "ach": 8,
+     "noise_db": 90,
      "temp_c": [
       5,
       30
@@ -24444,10 +25947,13 @@
      "ppe": [
       "gloves",
       "hard hat",
+      "hearing protection",
       "hi-vis",
       "safety boots"
      ],
-     "hazards": []
+     "hazards": [
+      "mobile-plant"
+     ]
     },
     "layout": {
      "lux": 750,
@@ -24527,18 +26033,24 @@
   "rail-signals": {
    "hazard": null,
    "hazards": [],
+   "craft": "rail-craft",
+   "crafts": [
+    "rail-craft"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
      "placed_by": "function"
     },
     "procedure": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "rail-ballast",
+     "placed_by": "craft",
+     "craft": "rail-craft"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "rail-ballast",
+     "placed_by": "craft",
+     "craft": "rail-craft"
     },
     "tools": {
      "surface": "end-grain-block",
@@ -24579,12 +26091,14 @@
      "placed_by": "function"
     },
     "procedure": {
-     "wall": "liner-panel",
-     "placed_by": "function"
+     "wall": "mesh-guard",
+     "placed_by": "craft",
+     "craft": "rail-craft"
     },
     "machines": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "mesh-guard",
+     "placed_by": "craft",
+     "craft": "rail-craft"
     },
     "tools": {
      "wall": "ply-lined",
@@ -24777,18 +26291,24 @@
   "catenary": {
    "hazard": null,
    "hazards": [],
+   "craft": "rail-craft",
+   "crafts": [
+    "rail-craft"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
      "placed_by": "function"
     },
     "procedure": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "rail-ballast",
+     "placed_by": "craft",
+     "craft": "rail-craft"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "rail-ballast",
+     "placed_by": "craft",
+     "craft": "rail-craft"
     },
     "tools": {
      "surface": "end-grain-block",
@@ -24829,12 +26349,14 @@
      "placed_by": "function"
     },
     "procedure": {
-     "wall": "liner-panel",
-     "placed_by": "function"
+     "wall": "mesh-guard",
+     "placed_by": "craft",
+     "craft": "rail-craft"
     },
     "machines": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "mesh-guard",
+     "placed_by": "craft",
+     "craft": "rail-craft"
     },
     "tools": {
      "wall": "ply-lined",
@@ -25025,28 +26547,37 @@
    }
   },
   "transit-vehicle": {
-   "hazard": null,
-   "hazards": [],
+   "hazard": "rotating-machinery",
+   "hazards": [
+    "rotating-machinery"
+   ],
+   "craft": "vehicle-shop",
+   "crafts": [
+    "vehicle-shop"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
      "placed_by": "function"
     },
     "procedure": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "epoxy-quartz",
+     "placed_by": "hazard",
+     "hazard": "rotating-machinery"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "steel-diamond",
+     "placed_by": "hazard",
+     "hazard": "rotating-machinery"
     },
     "tools": {
      "surface": "end-grain-block",
      "placed_by": "function"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "steel-diamond",
+     "placed_by": "craft",
+     "craft": "vehicle-shop"
     },
     "layout": {
      "surface": "bare-slab",
@@ -25083,8 +26614,9 @@
      "placed_by": "function"
     },
     "machines": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "perf-acoustic",
+     "placed_by": "hazard",
+     "hazard": "rotating-machinery"
     },
     "tools": {
      "wall": "ply-lined",
@@ -25136,30 +26668,14 @@
     },
     "procedure": {
      "lux": 500,
-     "ach": 8,
-     "noise_db": 80,
+     "ach": 10,
+     "noise_db": 88,
      "temp_c": [
       12,
       30
      ],
      "ppe": [
-      "gloves",
-      "hard hat",
-      "hi-vis",
-      "safety boots",
-      "safety glasses"
-     ],
-     "hazards": []
-    },
-    "machines": {
-     "lux": 500,
-     "ach": 10,
-     "noise_db": 85,
-     "temp_c": [
-      12,
-      28
-     ],
-     "ppe": [
+      "close-fitting clothing",
       "gloves",
       "hard hat",
       "hearing protection",
@@ -25167,7 +26683,30 @@
       "safety boots",
       "safety glasses"
      ],
-     "hazards": []
+     "hazards": [
+      "rotating-machinery"
+     ]
+    },
+    "machines": {
+     "lux": 500,
+     "ach": 10,
+     "noise_db": 88,
+     "temp_c": [
+      12,
+      28
+     ],
+     "ppe": [
+      "close-fitting clothing",
+      "gloves",
+      "hard hat",
+      "hearing protection",
+      "hi-vis",
+      "safety boots",
+      "safety glasses"
+     ],
+     "hazards": [
+      "rotating-machinery"
+     ]
     },
     "tools": {
      "lux": 500,
@@ -25277,18 +26816,24 @@
   "aviation-ground": {
    "hazard": null,
    "hazards": [],
+   "craft": "hard-standing",
+   "crafts": [
+    "hard-standing"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
      "placed_by": "function"
     },
     "procedure": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "asphalt-apron",
+     "placed_by": "craft",
+     "craft": "hard-standing"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "interlock-paver",
+     "placed_by": "craft",
+     "craft": "hard-standing"
     },
     "tools": {
      "surface": "end-grain-block",
@@ -25329,8 +26874,9 @@
      "placed_by": "function"
     },
     "procedure": {
-     "wall": "liner-panel",
-     "placed_by": "function"
+     "wall": "corrugated-steel",
+     "placed_by": "craft",
+     "craft": "hard-standing"
     },
     "machines": {
      "wall": "impact-block",
@@ -25527,18 +27073,24 @@
   "airfield": {
    "hazard": null,
    "hazards": [],
+   "craft": "hard-standing",
+   "crafts": [
+    "hard-standing"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
      "placed_by": "function"
     },
     "procedure": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "asphalt-apron",
+     "placed_by": "craft",
+     "craft": "hard-standing"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "interlock-paver",
+     "placed_by": "craft",
+     "craft": "hard-standing"
     },
     "tools": {
      "surface": "end-grain-block",
@@ -25579,8 +27131,9 @@
      "placed_by": "function"
     },
     "procedure": {
-     "wall": "liner-panel",
-     "placed_by": "function"
+     "wall": "corrugated-steel",
+     "placed_by": "craft",
+     "craft": "hard-standing"
     },
     "machines": {
      "wall": "impact-block",
@@ -25775,8 +27328,14 @@
    }
   },
   "port-crane": {
-   "hazard": null,
-   "hazards": [],
+   "hazard": "suspended-load",
+   "hazards": [
+    "suspended-load"
+   ],
+   "craft": "lifting-gear",
+   "crafts": [
+    "lifting-gear"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -25787,16 +27346,19 @@
      "placed_by": "function"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "steel-diamond",
+     "placed_by": "craft",
+     "craft": "lifting-gear"
     },
     "tools": {
-     "surface": "end-grain-block",
-     "placed_by": "function"
+     "surface": "steel-plate",
+     "placed_by": "craft",
+     "craft": "lifting-gear"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "steel-plate",
+     "placed_by": "hazard",
+     "hazard": "suspended-load"
     },
     "layout": {
      "surface": "bare-slab",
@@ -25833,16 +27395,18 @@
      "placed_by": "function"
     },
     "machines": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "mesh-guard",
+     "placed_by": "craft",
+     "craft": "lifting-gear"
     },
     "tools": {
      "wall": "ply-lined",
      "placed_by": "function"
     },
     "materials": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "mesh-guard",
+     "placed_by": "hazard",
+     "hazard": "suspended-load"
     },
     "layout": {
      "wall": "whiteboard-panel",
@@ -25934,9 +27498,9 @@
      "hazards": []
     },
     "materials": {
-     "lux": 200,
-     "ach": 4,
-     "noise_db": 70,
+     "lux": 500,
+     "ach": 8,
+     "noise_db": 85,
      "temp_c": [
       5,
       30
@@ -25947,7 +27511,9 @@
       "hi-vis",
       "safety boots"
      ],
-     "hazards": []
+     "hazards": [
+      "suspended-load"
+     ]
     },
     "layout": {
      "lux": 750,
@@ -26029,6 +27595,10 @@
    "hazards": [
     "immersion"
    ],
+   "craft": "marine-craft",
+   "crafts": [
+    "marine-craft"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -26040,16 +27610,18 @@
      "hazard": "immersion"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "steel-plate",
+     "placed_by": "craft",
+     "craft": "marine-craft"
     },
     "tools": {
      "surface": "end-grain-block",
      "placed_by": "function"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "marine-deck",
+     "placed_by": "craft",
+     "craft": "marine-craft"
     },
     "layout": {
      "surface": "bare-slab",
@@ -26087,8 +27659,9 @@
      "hazard": "immersion"
     },
     "machines": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "tank-plate",
+     "placed_by": "craft",
+     "craft": "marine-craft"
     },
     "tools": {
      "wall": "ply-lined",
@@ -26284,6 +27857,10 @@
   "fleet-diesel": {
    "hazard": null,
    "hazards": [],
+   "craft": "vehicle-shop",
+   "crafts": [
+    "vehicle-shop"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -26294,16 +27871,18 @@
      "placed_by": "function"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "trench-drain",
+     "placed_by": "craft",
+     "craft": "vehicle-shop"
     },
     "tools": {
      "surface": "end-grain-block",
      "placed_by": "function"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "steel-diamond",
+     "placed_by": "craft",
+     "craft": "vehicle-shop"
     },
     "layout": {
      "surface": "bare-slab",
@@ -26340,8 +27919,9 @@
      "placed_by": "function"
     },
     "machines": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "liner-panel",
+     "placed_by": "craft",
+     "craft": "vehicle-shop"
     },
     "tools": {
      "wall": "ply-lined",
@@ -26534,6 +28114,10 @@
   "bridge-inspect": {
    "hazard": null,
    "hazards": [],
+   "craft": "survey-control",
+   "crafts": [
+    "survey-control"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -26544,8 +28128,9 @@
      "placed_by": "function"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "sealed-slab",
+     "placed_by": "craft",
+     "craft": "survey-control"
     },
     "tools": {
      "surface": "end-grain-block",
@@ -26560,8 +28145,9 @@
      "placed_by": "function"
     },
     "inspection": {
-     "surface": "epoxy-smooth",
-     "placed_by": "function"
+     "surface": "polished-slab",
+     "placed_by": "craft",
+     "craft": "survey-control"
     },
     "troubleshooting": {
      "surface": "anti-fatigue",
@@ -26787,6 +28373,10 @@
     "contaminant",
     "wet-process"
    ],
+   "craft": "containment-craft",
+   "crafts": [
+    "containment-craft"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -26802,12 +28392,14 @@
      "placed_by": "function"
     },
     "tools": {
-     "surface": "end-grain-block",
-     "placed_by": "function"
+     "surface": "welded-vinyl",
+     "placed_by": "craft",
+     "craft": "containment-craft"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "spill-berm",
+     "placed_by": "craft",
+     "craft": "containment-craft"
     },
     "layout": {
      "surface": "bare-slab",
@@ -26849,12 +28441,14 @@
      "placed_by": "function"
     },
     "tools": {
-     "wall": "ply-lined",
-     "placed_by": "function"
+     "wall": "coved-white",
+     "placed_by": "craft",
+     "craft": "containment-craft"
     },
     "materials": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "coved-white",
+     "placed_by": "craft",
+     "craft": "containment-craft"
     },
     "layout": {
      "wall": "whiteboard-panel",
@@ -26929,14 +28523,18 @@
       28
      ],
      "ppe": [
+      "face shield",
       "gloves",
       "hard hat",
       "hearing protection",
       "hi-vis",
       "safety boots",
-      "safety glasses"
+      "safety glasses",
+      "waterproof boots"
      ],
-     "hazards": []
+     "hazards": [
+      "wet-process"
+     ]
     },
     "tools": {
      "lux": 500,
@@ -27048,6 +28646,10 @@
    "hazards": [
     "contaminant"
    ],
+   "craft": "containment-craft",
+   "crafts": [
+    "containment-craft"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -27063,12 +28665,14 @@
      "placed_by": "function"
     },
     "tools": {
-     "surface": "end-grain-block",
-     "placed_by": "function"
+     "surface": "welded-vinyl",
+     "placed_by": "craft",
+     "craft": "containment-craft"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "spill-berm",
+     "placed_by": "craft",
+     "craft": "containment-craft"
     },
     "layout": {
      "surface": "bare-slab",
@@ -27110,12 +28714,14 @@
      "placed_by": "function"
     },
     "tools": {
-     "wall": "ply-lined",
-     "placed_by": "function"
+     "wall": "coved-white",
+     "placed_by": "craft",
+     "craft": "containment-craft"
     },
     "materials": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "coved-white",
+     "placed_by": "craft",
+     "craft": "containment-craft"
     },
     "layout": {
      "wall": "whiteboard-panel",
@@ -27306,6 +28912,10 @@
    "hazards": [
     "contaminant"
    ],
+   "craft": "containment-craft",
+   "crafts": [
+    "containment-craft"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -27321,12 +28931,14 @@
      "placed_by": "function"
     },
     "tools": {
-     "surface": "end-grain-block",
-     "placed_by": "function"
+     "surface": "welded-vinyl",
+     "placed_by": "craft",
+     "craft": "containment-craft"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "spill-berm",
+     "placed_by": "craft",
+     "craft": "containment-craft"
     },
     "layout": {
      "surface": "bare-slab",
@@ -27368,12 +28980,14 @@
      "placed_by": "function"
     },
     "tools": {
-     "wall": "ply-lined",
-     "placed_by": "function"
+     "wall": "coved-white",
+     "placed_by": "craft",
+     "craft": "containment-craft"
     },
     "materials": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "coved-white",
+     "placed_by": "craft",
+     "craft": "containment-craft"
     },
     "layout": {
      "wall": "whiteboard-panel",
@@ -27564,6 +29178,11 @@
    "hazards": [
     "corrosive"
    ],
+   "craft": "containment-craft",
+   "crafts": [
+    "containment-craft",
+    "coatings"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -27575,24 +29194,28 @@
      "hazard": "corrosive"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "flake-resin",
+     "placed_by": "craft",
+     "craft": "coatings"
     },
     "tools": {
-     "surface": "end-grain-block",
-     "placed_by": "function"
+     "surface": "welded-vinyl",
+     "placed_by": "craft",
+     "craft": "containment-craft"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "spill-berm",
+     "placed_by": "craft",
+     "craft": "containment-craft"
     },
     "layout": {
      "surface": "bare-slab",
      "placed_by": "function"
     },
     "inspection": {
-     "surface": "epoxy-smooth",
-     "placed_by": "function"
+     "surface": "flake-resin",
+     "placed_by": "craft",
+     "craft": "coatings"
     },
     "troubleshooting": {
      "surface": "anti-fatigue",
@@ -27622,16 +29245,19 @@
      "hazard": "corrosive"
     },
     "machines": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "chem-tile",
+     "placed_by": "craft",
+     "craft": "coatings"
     },
     "tools": {
-     "wall": "ply-lined",
-     "placed_by": "function"
+     "wall": "coved-white",
+     "placed_by": "craft",
+     "craft": "containment-craft"
     },
     "materials": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "coved-white",
+     "placed_by": "craft",
+     "craft": "containment-craft"
     },
     "layout": {
      "wall": "whiteboard-panel",
@@ -27819,20 +29445,26 @@
    }
   },
   "confined-space": {
-   "hazard": null,
-   "hazards": [],
+   "hazard": "confined-space",
+   "hazards": [
+    "confined-space"
+   ],
+   "craft": null,
+   "crafts": [],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
      "placed_by": "function"
     },
     "procedure": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "steel-plate",
+     "placed_by": "hazard",
+     "hazard": "confined-space"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "steel-plate",
+     "placed_by": "hazard",
+     "hazard": "confined-space"
     },
     "tools": {
      "surface": "end-grain-block",
@@ -27873,12 +29505,14 @@
      "placed_by": "function"
     },
     "procedure": {
-     "wall": "liner-panel",
-     "placed_by": "function"
+     "wall": "tank-plate",
+     "placed_by": "hazard",
+     "hazard": "confined-space"
     },
     "machines": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "tank-plate",
+     "placed_by": "hazard",
+     "hazard": "confined-space"
     },
     "tools": {
      "wall": "ply-lined",
@@ -27930,38 +29564,46 @@
     },
     "procedure": {
      "lux": 500,
-     "ach": 8,
+     "ach": 20,
      "noise_db": 80,
      "temp_c": [
       12,
       30
      ],
      "ppe": [
+      "gas monitor",
       "gloves",
       "hard hat",
       "hi-vis",
+      "rescue harness",
       "safety boots",
       "safety glasses"
      ],
-     "hazards": []
+     "hazards": [
+      "confined-space"
+     ]
     },
     "machines": {
      "lux": 500,
-     "ach": 10,
+     "ach": 20,
      "noise_db": 85,
      "temp_c": [
       12,
       28
      ],
      "ppe": [
+      "gas monitor",
       "gloves",
       "hard hat",
       "hearing protection",
       "hi-vis",
+      "rescue harness",
       "safety boots",
       "safety glasses"
      ],
-     "hazards": []
+     "hazards": [
+      "confined-space"
+     ]
     },
     "tools": {
      "lux": 500,
@@ -28069,16 +29711,22 @@
    }
   },
   "high-angle": {
-   "hazard": null,
-   "hazards": [],
+   "hazard": "work-at-height",
+   "hazards": [
+    "work-at-height"
+   ],
+   "craft": null,
+   "crafts": [],
    "rooms": {
     "safety": {
-     "surface": "epoxy-smooth",
-     "placed_by": "function"
+     "surface": "impact-mat",
+     "placed_by": "hazard",
+     "hazard": "work-at-height"
     },
     "procedure": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "impact-mat",
+     "placed_by": "hazard",
+     "hazard": "work-at-height"
     },
     "machines": {
      "surface": "steel-checker",
@@ -28119,12 +29767,14 @@
    },
    "walls": {
     "safety": {
-     "wall": "painted-block",
-     "placed_by": "function"
+     "wall": "impact-block",
+     "placed_by": "hazard",
+     "hazard": "work-at-height"
     },
     "procedure": {
-     "wall": "liner-panel",
-     "placed_by": "function"
+     "wall": "impact-block",
+     "placed_by": "hazard",
+     "hazard": "work-at-height"
     },
     "machines": {
      "wall": "impact-block",
@@ -28165,18 +29815,22 @@
    },
    "conditions": {
     "safety": {
-     "lux": 300,
+     "lux": 500,
      "ach": 6,
-     "noise_db": 55,
+     "noise_db": 70,
      "temp_c": [
       18,
       24
      ],
      "ppe": [
+      "chinstrap helmet",
+      "full-body harness",
       "hi-vis",
       "safety boots"
      ],
-     "hazards": []
+     "hazards": [
+      "work-at-height"
+     ]
     },
     "procedure": {
      "lux": 500,
@@ -28187,13 +29841,17 @@
       30
      ],
      "ppe": [
+      "chinstrap helmet",
+      "full-body harness",
       "gloves",
       "hard hat",
       "hi-vis",
       "safety boots",
       "safety glasses"
      ],
-     "hazards": []
+     "hazards": [
+      "work-at-height"
+     ]
     },
     "machines": {
      "lux": 500,
@@ -28321,6 +29979,10 @@
   "site-safety": {
    "hazard": null,
    "hazards": [],
+   "craft": "containment-craft",
+   "crafts": [
+    "containment-craft"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -28335,12 +29997,14 @@
      "placed_by": "function"
     },
     "tools": {
-     "surface": "end-grain-block",
-     "placed_by": "function"
+     "surface": "welded-vinyl",
+     "placed_by": "craft",
+     "craft": "containment-craft"
     },
     "materials": {
-     "surface": "sealed-slab",
-     "placed_by": "function"
+     "surface": "spill-berm",
+     "placed_by": "craft",
+     "craft": "containment-craft"
     },
     "layout": {
      "surface": "bare-slab",
@@ -28381,12 +30045,14 @@
      "placed_by": "function"
     },
     "tools": {
-     "wall": "ply-lined",
-     "placed_by": "function"
+     "wall": "coved-white",
+     "placed_by": "craft",
+     "craft": "containment-craft"
     },
     "materials": {
-     "wall": "impact-block",
-     "placed_by": "function"
+     "wall": "coved-white",
+     "placed_by": "craft",
+     "craft": "containment-craft"
     },
     "layout": {
      "wall": "whiteboard-panel",
@@ -28572,8 +30238,12 @@
    "hazard": "corrosive",
    "hazards": [
     "corrosive",
-    "wet-process",
-    "mobile-plant"
+    "confined-space",
+    "wet-process"
+   ],
+   "craft": "coatings",
+   "crafts": [
+    "coatings"
    ],
    "rooms": {
     "safety": {
@@ -28586,8 +30256,9 @@
      "hazard": "corrosive"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "flake-resin",
+     "placed_by": "craft",
+     "craft": "coatings"
     },
     "tools": {
      "surface": "end-grain-block",
@@ -28602,8 +30273,9 @@
      "placed_by": "function"
     },
     "inspection": {
-     "surface": "epoxy-smooth",
-     "placed_by": "function"
+     "surface": "flake-resin",
+     "placed_by": "craft",
+     "craft": "coatings"
     },
     "troubleshooting": {
      "surface": "anti-fatigue",
@@ -28633,9 +30305,9 @@
      "hazard": "corrosive"
     },
     "machines": {
-     "wall": "mesh-guard",
+     "wall": "tank-plate",
      "placed_by": "hazard",
-     "hazard": "mobile-plant"
+     "hazard": "confined-space"
     },
     "tools": {
      "wall": "ply-lined",
@@ -28687,8 +30359,8 @@
     },
     "procedure": {
      "lux": 500,
-     "ach": 15,
-     "noise_db": 90,
+     "ach": 20,
+     "noise_db": 80,
      "temp_c": [
       14,
       28
@@ -28697,38 +30369,44 @@
       "apron",
       "chemical gloves",
       "face shield",
+      "gas monitor",
       "gloves",
       "hard hat",
-      "hearing protection",
       "hi-vis",
+      "rescue harness",
       "safety boots",
       "safety glasses",
       "waterproof boots"
      ],
      "hazards": [
+      "confined-space",
       "corrosive",
-      "mobile-plant",
       "wet-process"
      ]
     },
     "machines": {
      "lux": 500,
-     "ach": 10,
-     "noise_db": 90,
+     "ach": 20,
+     "noise_db": 85,
      "temp_c": [
       12,
       28
      ],
      "ppe": [
+      "face shield",
+      "gas monitor",
       "gloves",
       "hard hat",
       "hearing protection",
       "hi-vis",
+      "rescue harness",
       "safety boots",
-      "safety glasses"
+      "safety glasses",
+      "waterproof boots"
      ],
      "hazards": [
-      "mobile-plant"
+      "confined-space",
+      "wet-process"
      ]
     },
     "tools": {
@@ -28839,6 +30517,10 @@
   "survey-drone": {
    "hazard": null,
    "hazards": [],
+   "craft": "survey-control",
+   "crafts": [
+    "survey-control"
+   ],
    "rooms": {
     "safety": {
      "surface": "epoxy-smooth",
@@ -28849,8 +30531,9 @@
      "placed_by": "function"
     },
     "machines": {
-     "surface": "steel-checker",
-     "placed_by": "function"
+     "surface": "sealed-slab",
+     "placed_by": "craft",
+     "craft": "survey-control"
     },
     "tools": {
      "surface": "end-grain-block",
@@ -28865,8 +30548,9 @@
      "placed_by": "function"
     },
     "inspection": {
-     "surface": "epoxy-smooth",
-     "placed_by": "function"
+     "surface": "polished-slab",
+     "placed_by": "craft",
+     "craft": "survey-control"
     },
     "troubleshooting": {
      "surface": "anti-fatigue",

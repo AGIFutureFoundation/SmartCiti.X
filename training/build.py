@@ -13,7 +13,7 @@ Apache-2.0), RECORDED in `meta/registry/metaverse.json` as the training
 consumer this bundle targets.
 
 WHAT THIS IS. An EPISODE RECORDER, device-local like every other record
-in this bundle. Three kinds of episode, one per interaction:
+in this bundle. One kind of episode per interaction:
 
   * sim       - the scenario a learner trained under, the control scheme
                 the registry already declares for that seat, and the
@@ -160,6 +160,22 @@ EPISODE_KINDS = {
                        'whether the answer was read from a record or '
                        'written in the advisor registry',
         'what': 'one advisor question asked and answered',
+    },
+    # A crew answer is not an advisor answer. An advisor stands alone and
+    # answers for a room or a seat; a crew role is one of several people
+    # running one job, and which ROLE answered is the part worth keeping -
+    # a signalperson's answer and a rigger's are different evidence about
+    # the same lift. So the crew and the role are recorded, not an
+    # advisor id that would flatten both into one figure.
+    'crew': {
+        'fields': ['t', 'kind', 'campus', 'hall', 'crew', 'role', 'topic',
+                   'answer_kind'],
+        'outcome_shape': None,
+        'granularity': 'one exchange with one role of one crew: which crew '
+                       'was standing, which role was asked, which fixed '
+                       'topic, and whether the answer was read from a '
+                       'record or written in the crews registry',
+        'what': 'one crew role asked one question while its seat was running',
     },
     'walkaround': {
         'fields': ['t', 'kind', 'campus', 'hall', 'sim', 'point'],
@@ -350,7 +366,7 @@ if not BOOTSTRAP:
     # exactly one recorder call per declared episode kind - the shape this
     # pack promises, not more integration points quietly grown elsewhere
     assert page.count('recordEpisode({') == len(EPISODE_KINDS), \
-        'recordEpisode is called somewhere other than the three declared kinds'
+        'recordEpisode is called somewhere other than the declared kinds'
     # the sample rate and cap the page enforces are READ from this registry
     # as embedded in the page - one truth, not a second hand-typed pair - so
     # the check is that the page reads them, and that what it reads is ours
