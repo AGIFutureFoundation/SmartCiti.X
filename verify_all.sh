@@ -17,7 +17,7 @@ for t in control/test.mjs control/test_graph.mjs control/test_hints.mjs \
          geo/test.mjs sims/test.mjs tools/test.mjs schools/test.mjs \
          avatars/test.mjs parcels/test.mjs meta/test.mjs \
          agents/test.mjs world/test.mjs labels/test.mjs training/test.mjs \
-         roadmap/test.mjs orbis/test.mjs restoration/test.mjs \
+         roadmap/test.mjs orbis/test.mjs restoration/test.mjs guide/test.mjs \
          spatial/test.mjs web/test_3d.mjs web/test_rtl.mjs; do
   out=$(node "$t" 2>&1); rc=$?
   n=$(printf '%s\n' "$out" | grep -c '^  ok ')
