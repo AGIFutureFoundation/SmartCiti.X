@@ -816,4 +816,46 @@ ok('only the material is re-toned, never the texture: the maps are cached '
   + 'and the live mesh must not be rebuilt to change the weather',
   !/groundMat\(/.test(fn('wetGround')));
 
+/* ------------------------------------------------------- indoors is indoors ---
+   A hall is an open-topped box - a back wall, two side walls, roof
+   trusses and no deck - so once the sky became an environment map, every
+   room surface was lit by the full outdoor sky on top of the hemisphere,
+   the sun and the cool fill: four unoccluded outdoor sources.
+
+   Be exact about what this bought, because it is less than it sounds.
+   Cutting the environment map alone moved the bright-room-to-dim-room
+   ratio from 1.249 to 1.250 - nothing, because it was one source of four.
+   Stepping the whole outdoor rig back indoors as well took it to 1.254.
+   Then sampling the FLOOR rather than the whole frame (which includes the
+   sky above an open hall, the far rooms and the walls, all compressed by
+   ACES) showed the honest number: 1.005 before, 1.012 after, against a
+   registry that asks for 3.33.
+
+   So this reduces the outdoor wash indoors, which is right in itself and
+   costs nothing - and it does NOT make the per-room lux figures read in
+   the render. That remains open, and is written down here rather than
+   left as an unexplained gap. */
+ok('an indoor surface sees a fraction of the sky, declared once and used '
+  + 'by both factories that build a room surface',
+  /const INDOOR_ENV = \.3;/.test(src)
+  && (src.match(/envMapIntensity: INDOOR_ENV/g) ?? []).length === 2);
+ok('and the rest of the outdoor rig steps back with it, where the '
+  + 'atmosphere is already being written - one place decides it',
+  /const INDOOR_RIG = \.35;/.test(src)
+  && /const indoors = view === 'hall' \? INDOOR_RIG : 1;/.test(fn('applyAtmos'))
+  && /hemi\.intensity = a\.hemi\.i \* w\.hemi_mul \* indoors;/.test(fn('applyAtmos'))
+  && /fill\.intensity = FILL_I \* indoors;/.test(fn('applyAtmos')));
+ok('the fill\'s own strength is declared once rather than typed at its '
+  + 'construction and again wherever it is re-set',
+  /const FILL_I = \.25;/.test(src)
+  && /new THREE\.DirectionalLight\(0x41C4D4, FILL_I\)/.test(src));
+ok('what this did NOT achieve is written down: the per-room lux figures '
+  + 'still do not read in the render, measured at 1.012 against 3.33',
+  /it does NOT make the per-room lux figures read/.test(src)
+  || /1\.005 before, 1\.012 after/.test(src));
+ok('a probe can stand the eye somewhere, because reaching for the camera '
+  + 'as a global silently measures the view it was already looking at',
+  /window\.__tc3dLook = \(x, y, z, tx, ty, tz\) => \{/.test(src)
+  && /camera\.updateMatrixWorld\(true\);/.test(src));
+
 console.log(`web/test_3d: ${n} checks passed - teardown, draw-call and per-frame contracts held at the source`);

@@ -709,7 +709,9 @@ key.shadow.mapSize.set(2048, 2048);
 const S = 60;
 Object.assign(key.shadow.camera, { left: -S, right: S, top: S, bottom: -S, far: 140 });
 scene.add(key);
-const fill = new THREE.DirectionalLight(0x41C4D4, .25);
+const FILL_I = .25;                 // the cool bounce, declared once
+const INDOOR_RIG = .35;             // how much of the outdoor rig a room sees
+const fill = new THREE.DirectionalLight(0x41C4D4, FILL_I);
 fill.position.set(-30, 20, -30);
 scene.add(fill);
 
@@ -768,7 +770,21 @@ function applyAtmos(k) {
   for (let i = 0; i < fogBanks.length; i++)
     fogBanks[i].m.visible = qLevel !== 'low' && i < bankWant;
   key.intensity = a.sun.i * w.sun_mul;
-  hemi.intensity = a.hemi.i * w.hemi_mul;
+  /* Indoors, the outdoor rig steps back.
+     A hall is an open-topped box, so the hemisphere, the sun's fill and
+     the sky were all reaching every room at full strength - four
+     unoccluded outdoor sources competing with the one lamp the registry's
+     lux figure actually drives. Cutting the environment map alone moved
+     the bright-room-to-dim-room ratio from 1.249 to 1.250, i.e. nothing,
+     because it was one source of four. The rig has to step back with it.
+
+     This is not occlusion: nothing here knows what is above a given room.
+     It is an honest admission that a room inside a building sees less of
+     the outdoors than the yard does, applied where the atmosphere is
+     already being written so there is one place that decides it. */
+  const indoors = view === 'hall' ? INDOOR_RIG : 1;
+  hemi.intensity = a.hemi.i * w.hemi_mul * indoors;
+  fill.intensity = FILL_I * indoors;
   mat.win.emissiveIntensity = w.window_glow;
   rain.visible = w.rain > 0 && !reduced;
   rainRate = w.rain;
@@ -1442,6 +1458,38 @@ const PATTERN_RELIEF = {
   polish: .03, sheet: .07, glazing: .05, plate: .12,
 };
 
+/* How much of the sky an INDOOR surface sees.
+   A hall is an open-topped box - a back wall, two side walls, roof
+   trusses and no deck - so once the sky became an environment map, every
+   floor and wall in every room was lit by the full outdoor sky at
+   strength 1, on top of the hemisphere, the sun and the fill. The room's
+   own luminaire, the one thing the registry's lux figure actually drives,
+   was competing against four unoccluded outdoor sources. That is why the
+   careful per-room lux mapping was visually almost invisible: a 1000 lx
+   inspection bay and a 300 lx leadership room were washed to the same
+   value before their own lamps said anything.
+
+   This is not occlusion - nothing here knows what is above a given room -
+   it is an honest admission that a surface indoors sees a fraction of the
+   sky. One number, on the two factories that build every room surface.
+   Exterior materials keep the full sky.
+
+   Be exact about what it bought, because it is less than it sounds.
+   Cutting the environment map ALONE moved the bright-room-to-dim-room
+   ratio from 1.249 to 1.250 - nothing, because it was one source of four.
+   Stepping the rest of the outdoor rig back with it took it to 1.254.
+   Sampling the FLOOR rather than the whole frame - which includes the sky
+   above an open hall, the far rooms and the walls, all compressed by ACES
+   - gave the honest number: 1.005 before, 1.012 after, against a registry
+   that asks for 3.33.
+
+   So this reduces the outdoor wash indoors, which is right in itself and
+   costs nothing, and it does NOT make the per-room lux figures read in
+   the render. That is still open. The next thing to look at is whether
+   the room's own luminaire is reaching its floor at all at these candela,
+   not whether something else is drowning it. */
+const INDOOR_ENV = .3;
+
 /* A height field to a normal map, by central difference - the same
    arithmetic groundTex uses, lifted out so the ground, the floors and the
    walls all read relief the same way instead of three times differently. */
@@ -1763,7 +1811,8 @@ function finishMat(fin, w, d) {
   const { map, normalMap } = surfaceMaps(fin.color, fin.pattern);
   const rx = Math.max(1, w / fin.tile_m), rz = Math.max(1, d / fin.tile_m);
   const m2 = map.clone(); m2.needsUpdate = true; m2.repeat.set(rx, rz);
-  const spec = { map: m2, roughness: fin.roughness, metalness: fin.metalness };
+  const spec = { map: m2, roughness: fin.roughness, metalness: fin.metalness,
+                 envMapIntensity: INDOOR_ENV };
   if (normalMap) {
     const n2 = normalMap.clone(); n2.needsUpdate = true; n2.repeat.set(rx, rz);
     spec.normalMap = n2;
@@ -1779,7 +1828,8 @@ function wallMat(wal, runM, hM) {
   const { map, normalMap } = surfaceMaps(wal.color, wal.pattern);
   const rx = Math.max(1, runM / wal.tile_m), ry = Math.max(1, hM / wal.tile_m);
   const m2 = map.clone(); m2.needsUpdate = true; m2.repeat.set(rx, ry);
-  const spec = { map: m2, roughness: wal.roughness, metalness: wal.metalness };
+  const spec = { map: m2, roughness: wal.roughness, metalness: wal.metalness,
+                 envMapIntensity: INDOOR_ENV };
   if (normalMap) {
     const n2 = normalMap.clone(); n2.needsUpdate = true; n2.repeat.set(rx, ry);
     spec.normalMap = n2;
@@ -9729,6 +9779,25 @@ window.__tc3dSolidTest = (headings = 72, seconds = 200, dt = 1 / 60) => {
 window.__tc3dGroundTone = () => ({
   rough: +ground.material.roughness.toFixed(3),
   hex: '#' + ground.material.color.getHexString() });
+/* The hall's rooms with their own lux figures and where to stand in
+   each, so the harness can put the eye in the brightest and the dimmest
+   and read what the frame actually shows. */
+/* Stand the eye somewhere and look at something, for the harness. The
+   camera and the controls are module-scoped, so a probe that reaches for
+   them as globals silently measures the view it was already looking at -
+   which is exactly the mistake this hook exists to stop. */
+window.__tc3dLook = (x, y, z, tx, ty, tz) => {
+  controls.enabled = false;
+  camera.position.set(x, y, z);
+  camera.lookAt(tx, ty, tz);
+  camera.updateMatrixWorld(true);
+  return { at: [+x.toFixed(1), +y.toFixed(1), +z.toFixed(1)] };
+};
+window.__tc3dRooms = () => roomRects.map((r) => {
+  const c = condOf(slug, r.strand);
+  return { strand: r.strand, lux: c?.lux ?? null,
+           at: [(r.x0 + r.x1) / 2, (r.z0 + r.z1) / 2] };
+}).filter((r) => r.lux !== null).sort((a, b2) => a.lux - b2.lux);
 window.__tc3dUnderfoot = (x, z) => {
   if (x === undefined)
     return { here: stepFamily(),
