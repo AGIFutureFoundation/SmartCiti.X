@@ -80,13 +80,17 @@ ok('the chart is honest and the pick lists respect it: capacity falls with radiu
       && sims['load-chart'].rubric.some((r) =>
           r.axis === 'overloads' && r.pass === '== 0');
   })());
-ok('every seat carries its five-point walkaround, and the walkaround is honestly NOT a gate',
+ok('every seat carries its five-point walkaround - each point a look AND the stop it is for - and the walkaround is honestly NOT a gate',
   Object.values(sims).every((s) => s.walkaround?.length === 5
     && new Set(s.walkaround.map((w) => w.id)).size === 5
-    && s.walkaround.every((w) => w.point && w.check.length > 15))
+    && new Set(s.walkaround.map((w) => w.on_fault)).size === 5
+    && s.walkaround.every((w) => w.point && w.check.length > 15
+        && w.on_fault?.length > 40))
   && /not a gate/.test(reg.honesty.walkaround)
   && /changes no score/.test(reg.honesty.walkaround)
-  && /not an equipment inspection record/.test(reg.honesty.walkaround));
+  && /not an equipment inspection record/.test(reg.honesty.walkaround)
+  // the fault action is practice, not a permission the seat hands out
+  && /not a release anybody can sign from here/.test(reg.honesty.walkaround));
 ok('the pressure washer teaches containment-first discipline: painters/laborers/hazmat train it, coverage demands 95%, damage and containment are pass-gated',
   sims['pressure-washer'].halls.includes('painters')
   && sims['pressure-washer'].halls.includes('laborers')
@@ -120,6 +124,15 @@ ok('the scoring contract is deterministic, stated in the record',
 ok('the honesty note refuses certification claims',
   /Not equipment certification/i.test(reg.honesty.status)
   && /unaided verification/.test(reg.honesty.status));
+/* Whose name is on the curriculum is the first thing a training coordinator
+   asks, and the honest answer is nobody's yet. A record that does not say so
+   reads as a claim rather than a draft. */
+ok('the record says who has NOT vouched for it: unverified general practice, pending journey-level authoring, citing no jurisdiction, standard or authority',
+  /unverified general practice/.test(reg.honesty.authoring)
+  && /journey-level practitioners/.test(reg.honesty.authoring)
+  && /Nothing here cites a jurisdiction, a standard or an authority/.test(reg.honesty.authoring)
+  && /no rubric line, walkaround point or fault action is an instruction/
+      .test(reg.honesty.authoring));
 ok('every sim carries a data-driven dash: unique gauge ids with labels',
   Object.values(sims).every((s) => s.dash?.length >= 5
     && new Set(s.dash.map((g) => g.id)).size === s.dash.length
@@ -152,6 +165,74 @@ ok('every sim trains regionally: one scenario per campus, unique ids, real brief
 ok('scenarios vary the environment, never the rubric: no scenario carries pass rules',
   Object.values(sims).every((s) =>
     s.scenarios.every((x) => !('rubric' in x.params) && !('pass' in x.params))));
+/* A PASS GATE IS ONLY A GATE IF A RUN CAN FAIL IT. The rubric now has to say
+   how, in a sentence, for every gated axis - and an informational axis has to
+   stay silent, because it has no failure to describe. Writing those sentences
+   is what found the gates no run could fail; the register below carries what
+   is left of them. */
+ok('every pass gate names the failure it is a gate against, in a sentence, and no two gates on a seat fail the same way',
+  Object.values(sims).every((s) => {
+    const gated = s.rubric.filter((r) => r.pass !== 'informational');
+    return gated.length >= 1
+      && gated.every((r) => typeof r.fails_when === 'string' && r.fails_when.length > 40)
+      && new Set(gated.map((r) => r.fails_when)).size === gated.length
+      && s.rubric.every((r) => ('fails_when' in r) === (r.pass !== 'informational'));
+  }));
+ok('the scaffold bay no longer gates an axis its own finish condition guarantees: sequence is the gate, completeness is reported',
+  sims['scaffold-bay'].rubric.find((r) => r.axis === 'complete').pass === 'informational'
+  && sims['scaffold-bay'].rubric.filter((r) => r.pass !== 'informational')
+      .map((r) => r.axis).join() === 'sequence'
+  && JSON.stringify(sims['scaffold-bay'].operator.guarantees) === '["sequence"]');
+ok('every scenario declares the whole of its seat\'s param set, with nothing null and nothing the page would have to default',
+  Object.values(sims).every((s) => {
+    const want = [...new Set(s.scenarios.flatMap((x) => Object.keys(x.params)))].sort();
+    return want.length > 0
+      && JSON.stringify(s.scenario_params) === JSON.stringify(want)
+      && s.scenarios.every((x) =>
+          JSON.stringify(Object.keys(x.params).sort()) === JSON.stringify(want)
+          && Object.values(x.params).every((v) => v !== null && v !== undefined));
+  }));
+ok('every yard says what it demands that its sibling yards do not - a scenario that cannot is a skin',
+  Object.values(sims).every((s) =>
+    s.scenarios.every((x) => typeof x.teaches === 'string' && x.teaches.length > 30)
+    && new Set(s.scenarios.map((x) => x.teaches)).size === s.scenarios.length)
+  && new Set(Object.values(sims).flatMap((s) => s.scenarios.map((x) => x.teaches)))
+      .size === 33);
+/* The boom lift's route, recomputed from the registry the page reads: the
+   operator raises to the declared transit elevation before it swings or
+   extends, holds it across every bearing and boom length the yard uses, and
+   lowers onto a point along that point's own bearing. If a yard's overhead
+   line were drawn across that route, the scripted operator would strike it on
+   every run - which the builder asserts and this re-derives, with the margin
+   read out of the builder rather than typed here a second time. */
+ok('every boom-lift yard\'s overhead zone sits clear of the transit route the scripted operator flies',
+  (() => {
+    const s = sims['boom-lift'], L = s.layout, R = Math.PI / 180;
+    const margin = parseFloat(
+      /CLEAR_MARGIN = ([\d.]+)/.exec(readFileSync(new URL('./build.py', import.meta.url), 'utf8'))[1]);
+    const basket = (sw, el, len) => [L.pivot_y + Math.sin(el * R) * len,
+                                     Math.sin(sw * R) * Math.cos(el * R) * len];
+    return margin > 0 && s.scenarios.every((x) => {
+      const line = x.params.line;
+      const solved = x.params.points.map(([px, py, pz]) => {
+        const d = Math.hypot(px, pz), dy = py - L.pivot_y;
+        return [Math.atan2(pz, px) / R, Math.hypot(d, dy), Math.atan2(dy, d) / R];
+      });
+      const poses = [];
+      for (let e = 0; e <= L.transit_elev_deg * 2; e++) poses.push([0, e / 2, L.boom_min]);
+      const hi = Math.max(...solved.map((q) => q[1]));
+      for (let b = 0; b < 360; b += 2)
+        for (let len = L.boom_min; len <= hi + .25; len += .25)
+          poses.push([b, L.transit_elev_deg, Math.min(len, hi)]);
+      for (const [bearing, len, elPt] of solved)
+        for (let i = 0; i <= 60; i++)
+          poses.push([bearing, elPt + (L.transit_elev_deg - elPt) * i / 60, len]);
+      return poses.every(([sw, el, len]) => {
+        const [y, z] = basket(sw, el, len);
+        return Math.hypot(y - line.y, z - line.z) - line.r >= margin;
+      });
+    });
+  })());
 ok('the trench scenarios keep at least one flagged utility each, at a shallow stop',
   sims['excavator-trench'].scenarios.every((x) =>
     x.params.cells.some((c) => c.util && c.d <= 0.5)));
@@ -172,7 +253,10 @@ ok('the boom lift teaches tie-off and envelope discipline: aerial-platform trade
         }))
       // the transit elevation keeps a fully extended boom inside the envelope
       && Math.cos(L.transit_elev_deg * Math.PI / 180) * L.boom_max < maxOut
-      && s.scenarios.filter((x) => x.params.line).length >= 2;
+      // one yard used to declare no overhead line at all, which left
+      // `strikes` a pass gate nothing in that yard could reach and the
+      // walkaround's overhead scan with nothing to find
+      && s.scenarios.every((x) => x.params.line && x.params.line.r > 0);
   })());
 ok('the overhead crane teaches route and sway discipline: the crane hall and the shop trades train it, path and limits pass at zero, clearance is required, every yard keeps its pickup and target off the aisle and workstation',
   (() => {
@@ -268,6 +352,54 @@ ok('a single headless run hands the launching view back exactly as the sweep doe
   page.includes('function opViewMark()') && page.includes('function opViewRestore(before)')
   && /run\(simId, scenarioId, o = \{\}\) \{[\s\S]{0,400}finally \{ opViewRestore\(before\); \}/.test(page)
   && /async function opSweep\([\s\S]{0,1200}opViewRestore\(before\);[\s\S]{0,120}return \{ recorded: trainingOn, rows \}/.test(page));
+
+/* ------------------------------------------- gates the seat cannot fail --- */
+/* Four pass gates were found grading their own run's terminating condition:
+   the seat stops at exactly the state the axis demands, so no episode can
+   score them anything but a pass. The rubric lines are right and stay gates;
+   the seats are what is wrong, so the register declares each gap with the
+   seat change that closes it AND the page marker it lives at. These two
+   checks are a ratchet in both directions: a gap that names a non-gate or an
+   axis that does not exist fails, and so does a gap whose marker has gone -
+   which is what closing it looks like, and the signal to delete the entry. */
+/* The register may be EMPTY, and empty is the win: it means every gap
+   found has been closed in the page. Requiring at least one entry would
+   make the suite demand that a known defect stay open, which is the
+   opposite of a ratchet. What is held is the SHAPE of any entry present,
+   and that each one is still open. */
+ok('every declared gate gap names a real pass gate on a real seat and says what would close it',
+  Array.isArray(reg.gate_gaps)
+  && reg.gate_gaps.every((g) => sims[g.sim]
+    && sims[g.sim].rubric.some((r) => r.axis === g.axis && r.pass !== 'informational')
+    && g.why.length > 40 && g.fix.length > 60 && g.page_marker.length > 20)
+  && new Set(reg.gate_gaps.map((g) => g.page_marker)).size === reg.gate_gaps.length);
+ok('every declared gate gap is still open in the page it was declared against - close one and this says so',
+  reg.gate_gaps.every((g) => page.includes(g.page_marker)));
+/* And the four that WERE open are closed, held by the shape that closed
+   them rather than by their absence - so a revert puts the fake gate back
+   and this says so. Each of these is an axis that could not fail before. */
+ok('a stop signal ends the card from anywhere, so the calls gate can fail',
+  /if \(sig === 'stop'\) \{ if \(sig === SEQ\[st\.i\]\) st\.i\+\+; return finish\(\); \}/
+    .test(page));
+ok('a run is a defect and not coverage, so the sprayer\'s coverage and '
+  + 'holidays gates can fail',
+  /cell\.run = true; st\.runs\+\+; paint\(cell\);/.test(page)
+  && /cells\.every\(\(c\) => c\.coated \|\| c\.run\)/.test(page)
+  && /cells\.filter\(\(c\) => c\.coated && !c\.run\)/.test(page));
+ok('a basket that comes down early ends the run, so the reach gate can fail',
+  /if \(st\.lifted && bp\.y <= LAY\.stow_h\) finish\(\);/.test(page));
+ok('and the one tautology is informational rather than a green tick on an '
+  + 'ungraded axis',
+  /\{ axis: 'complete', value: parts\.length \+ '\/' \+ parts\.length, ok: null \}/
+    .test(page));
+/* The washer bench is the pattern the sprayer's coverage gap is measured
+   against, so it is pinned here: a gouged cell ENDS the pass without counting
+   as cleaned, which is exactly what keeps that seat's coverage gate reachable.
+   The sprayer marks a run cell coated instead, which is the gap above. */
+ok('the washer bench keeps its coverage gate reachable: a gouged cell ends the pass without counting as cleaned',
+  page.includes('cell.damaged = true; cell.clean = false;')
+  && page.includes('cells.every((c) => c.clean || c.damaged)')
+  && !reg.gate_gaps.some((g) => g.sim === 'pressure-washer'));
 
 /* ---------------------------------------------------- the interactive map --- */
 // The interactive map used to show a hall's toolroom crib but not its

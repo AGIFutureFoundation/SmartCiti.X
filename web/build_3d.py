@@ -765,7 +765,7 @@ function startSim(simId, scenarioId) {
   if (hallGroup) hallGroup.visible = false;
   if (campusGroup) campusGroup.visible = false;
   if (regionGroup) regionGroup.visible = false;
-  ground.visible = grid.visible = true;
+  ground.visible = true;
   applyAtmos(campusKey);
   scene.fog.near = 90 * fogMul; scene.fog.far = 260 * fogMul;
   document.getElementById('mm').style.display = 'none';
@@ -1708,7 +1708,11 @@ function scaffoldSim(P = {}) {
     const time = st.t0 ? ((performance.now() - st.t0) / 1000) : 0;
     const rows = [
       { axis: 'sequence', value: String(st.faults), ok: st.faults === 0 },
-      { axis: 'complete', value: parts.length + '/' + parts.length, ok: true },
+      // a bay is complete when it is complete: finish() fires on the last
+      // part, so this could never be anything but true. It is informational
+      // now, and `sequence` is the gate that already enforces the rails-last
+      // law this claimed to. An ungraded axis reports null, not a green tick.
+      { axis: 'complete', value: parts.length + '/' + parts.length, ok: null },
       { axis: 'time', value: time.toFixed(1) + ' s', ok: null },
     ];
     simResults('scaffold-bay', rows, st.faults === 0);
@@ -1804,12 +1808,18 @@ function riggingSim(P = {}) {
   function give(sig) {
     if (st.done || st.tgt) return;         // the crane is still moving: hold
     st.given = sig;
+    /* A stop ends the lift from ANYWHERE. This used to sit inside the
+       correct-signal branch, which meant a finished card had by definition
+       signed every call - so the `calls` gate could not fail, on a seat
+       whose whole lesson is that a signalperson may stop the work at any
+       moment. Stopping early now ends the run with the unsigned calls
+       counted against it, which is what the gate was always for. */
+    if (sig === 'stop') { if (sig === SEQ[st.i]) st.i++; return finish(); }
     if (sig === SEQ[st.i]) {
       if (!st.t0) st.t0 = performance.now();
       blip(1450, 1900, .1, 'sine', .12);   // the whistle: call acknowledged
       setTimeout(() => blip(1450, 1900, .1, 'sine', .12), 140);
       st.i++;
-      if (sig === 'stop') return finish();
       st.tgt = {
         'up': { h: st.h + 2.4 }, 'down': { h: Math.max(1.2, st.h - 2.4) },
         'swing-l': { slew: st.slew - .55 }, 'swing-r': { slew: st.slew + .55 },
@@ -2172,7 +2182,7 @@ function paintSprayerSim(P = {}) {
   }
   function finish() {
     st.done = true; st.spray = false; jet.visible = false; engineSet(0);
-    const coated = cells.filter((c) => c.coated).length;
+    const coated = cells.filter((c) => c.coated && !c.run).length;
     const pct = Math.round(100 * coated / cells.length);
     const holidays = cells.length - coated;
     const time = st.t0 ? ((performance.now() - st.t0) / 1000) : 0;
@@ -2223,11 +2233,15 @@ function paintSprayerSim(P = {}) {
         if (st.gap <= RUN_GAP) {
           cell.bad += dt;
           if (cell.bad >= RUN_DWELL) {
-            cell.run = true; cell.coated = true; st.runs++; paint(cell);
+            // a run is a defect, not coverage: this used to mark the cell
+            // coated as well, so the terminator (every cell coated) made
+            // 100% coverage and zero holidays the only reachable score.
+            // The washer bench already had this right - damaged is not clean
+            cell.run = true; st.runs++; paint(cell);
             blip(200, 70, .4, 'sawtooth', .18); buzz(260, .7);
           }
         }
-        if (cells.every((c) => c.coated)) return finish();
+        if (cells.every((c) => c.coated || c.run)) return finish();
       }
       engineSet(st.spray ? .6 : .1);
       gun.position.set(st.u, st.v + .4, st.gap);
@@ -2240,9 +2254,9 @@ function paintSprayerSim(P = {}) {
       u: st.u,
       v: st.v,
       gap: st.gap,
-      coverage: { v: 0, txt: Math.round(100 * cells.filter((c) => c.coated).length / cells.length) + '%' },
+      coverage: { v: 0, txt: Math.round(100 * cells.filter((c) => c.coated && !c.run).length / cells.length) + '%' },
       runs: { v: st.runs, txt: String(st.runs) },
-      holidays: { v: 0, txt: String(cells.filter((c) => !c.coated).length) },
+      holidays: { v: 0, txt: String(cells.filter((c) => !c.coated || c.run).length) },
       overspray: { v: st.overspray, txt: String(st.overspray) },
       time: { v: 0, txt: st.t0 ? ((performance.now() - st.t0) / 1000).toFixed(0) : '\\u2013' },
     }),
@@ -2420,7 +2434,11 @@ function boomLiftSim(P = {}) {
       stage.position.x = L0 - EXT / 2 + st.ext;
       basketG.position.x = boomLen();
       basketG.rotation.z = -st.el;
-      if (st.next === PTS.length && st.lifted && bp.y <= LAY.stow_h) finish();
+      /* Stowing ends the run whether or not every point was reached. The
+         first clause made a stowed basket one that had by definition
+         finished its work, so the `reach` gate could not fail - on the axis
+         that exists to catch exactly that. */
+      if (st.lifted && bp.y <= LAY.stow_h) finish();
       if (simView === 'basket') {
         // standing in the basket, facing out along the boom toward the work
         seatPose(bp.x, bp.y + .6, bp.z,
@@ -4399,7 +4417,7 @@ function showAvatar() {
   if (hallGroup) hallGroup.visible = false;
   if (campusGroup) campusGroup.visible = false;
   if (regionGroup) regionGroup.visible = false;
-  ground.visible = grid.visible = true;
+  ground.visible = true;
   applyAtmos(null);
   scene.fog.near = 40; scene.fog.far = 140;
   document.getElementById('mm').style.display = 'none';
@@ -6561,8 +6579,21 @@ function wetGround() {
 const _wetTint = new THREE.Color(0x2b3236);
 ground.rotation.x = -Math.PI/2; ground.receiveShadow = true;
 scene.add(ground);
+/* The graph paper is gone.
+   A 1,040 m GridHelper at 180 divisions was drawn 2 cm above the ground
+   in both the campus and the hall - a 5.8 m grid whose far half was
+   sub-pixel line moire and whose near half was a debug overlay. It was
+   the loudest single "this is a three.js demo, not a place" signal in the
+   render, and it was competing directly with the generated asphalt normal
+   map underneath it that the surface engine works to produce.
+
+   The object is KEPT and never added to the scene, because the XR
+   passthrough path reads and restores `grid.visible` around its draw; a
+   variable that exists and is always invisible keeps that logic honest
+   without putting a helper back in front of the world. */
 const grid = new THREE.GridHelper(GROUND_R * 2, 180, 0x28353A, 0x1b2427);
-grid.position.y = .02; scene.add(grid);
+grid.position.y = .02;
+grid.visible = false;
 
 const mat = {
   slab:  new THREE.MeshStandardMaterial({ map: concreteTex, color: 0xb8bdbd, roughness: .9 }),
@@ -9178,7 +9209,7 @@ function showRegion() {
   wheelShow(false);
   if (hallGroup) hallGroup.visible = false;
   if (campusGroup) campusGroup.visible = false;
-  ground.visible = grid.visible = false;
+  ground.visible = false;
   applyAtmos(null);
   // the board is static (real coordinates, real names, no locale in it):
   // built once, shown again - it used to be rebuilt on every return, 111
@@ -9233,7 +9264,7 @@ function showCampus(key) {
   wheelShow(false);
   if (hallGroup) hallGroup.visible = false;
   if (regionGroup) regionGroup.visible = false;
-  ground.visible = grid.visible = true;
+  ground.visible = true;
   applyAtmos(key);
   if (campusGroup && campusGroup.userData.key === key
       && campusGroup.userData.loc === loc) {
@@ -9278,7 +9309,7 @@ function showHall(sg) {
   if (!(isTouch && walkActive)) wheelShow(false);
   if (regionGroup) regionGroup.visible = false;
   if (campusGroup) campusGroup.visible = false;
-  ground.visible = grid.visible = true;
+  ground.visible = true;
   applyAtmos(campusKey);
   buildHall(sg);
   scene.fog.near = 70 * fogMul; scene.fog.far = 170 * fogMul;
@@ -10385,7 +10416,7 @@ function startRestorationWalk(siteId) {
   if (campusGroup) campusGroup.visible = false;
   if (regionGroup) regionGroup.visible = false;
   if (avatarGroup) avatarGroup.visible = false;
-  ground.visible = grid.visible = false;
+  ground.visible = false;
   applyAtmos(site.campus);
   restoGroup = new THREE.Group();
   buildRestoGround(restoGroup, site);

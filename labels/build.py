@@ -21,6 +21,18 @@ it can be read before it is read:
   * TYPE carries rank. Display face for names, sans for the line under
     them, mono for anything a machine measured.
 
+NOT EVERY SIGN IS A NAME. A hall is a walkable shed with eleven rooms, an
+open face and a yard, and the signs above answer only "what is this
+called?". A working building also answers "which way out?", "where do we
+gather?", "which door is this?", "which machine is this?" and "what is in
+force here?" - so the registry carries a pointing chevron, a muster beacon,
+a stencilled door number, a machine tag and a hatched notice. Each is a
+shape of its own rather than a name-plate in another colour, because a sign
+that has to be read before it can be told apart is the failure this whole
+registry exists to fix. All five are DERIVED: they are read off plans and
+records this bundle already holds, they are training signage in a drawn
+building, and none of them is life-safety equipment or an approved sign.
+
 FIELD OF VISION. A sign also reacts to being looked at. Each frame every
 label is scored on how near the centre of view it is and how far away it
 stands; the score drives opacity, size and tint, so what you are facing
