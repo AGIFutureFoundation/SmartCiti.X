@@ -748,4 +748,42 @@ ok('the solidity probe understands both shapes, so it cannot go quiet about '
   /if \(b\.r !== undefined\) \{\s*\n\s*if \(Math\.hypot\(u - b\.u, v - b\.v\) < b\.r \+ pad\) return true;\s*\n\s*\} else if/
     .test(src));
 
+/* ------------------------------------------------------- surface fidelity ---
+   Every surface in this world is drawn in the browser onto a canvas, and
+   the canvas was 128 square with anisotropy typed as 4 in five separate
+   places. 128 was chosen when floors were flat colours; they now carry a
+   pattern, a normal map and a grain, and at 128 a bay floor you are
+   standing on is mush.
+
+   Measured on the built page, booting straight into a hall and holding
+   steady state: 3.56 fps at 128 with anisotropy 4, 3.20 fps at 384 with
+   what the GPU offers - a tenth of the frame rate under a software
+   rasteriser, for nine times the texture pixels. Draw calls, triangles and
+   texture COUNT are unchanged: 139 in the hall, 268 on the campus. */
+ok('the surface size rides the quality ladder rather than being one number '
+  + 'for a phone and a workstation alike',
+  /const SURF_PX = \{ low: 128, high: 384 \};/.test(src)
+  && /const surfPx = \(\) => SURF_PX\[qLevel\] \?\? SURF_PX\.low;/.test(src)
+  && /const S2 = surfPx\(\);/.test(fn('surfaceMaps')));
+ok('the surface cache is keyed on the size, so stepping the ladder cannot '
+  + 'hand back a texture built for the other rung',
+  /const key = pattern \+ '\|' \+ color \+ '\|' \+ S2;/.test(fn('surfaceMaps')));
+ok('the grain is counted per unit AREA: a fixed 260 splats on a 384 canvas '
+  + 'is a sprinkle on a field, and grain is most of what stops a floor '
+  + 'reading as plastic',
+  /const grains = Math\.round\(260 \* \(S2 \/ 128\) \* \(S2 \/ 128\)\);/
+    .test(fn('surfaceMaps')));
+ok('anisotropy is asked of the machine rather than typed, and is asked in '
+  + 'ONE place - it used to be the literal 4 in five of them',
+  /const maxAniso = renderer\.capabilities\.getMaxAnisotropy\(\);/.test(src)
+  && !/anisotropy = 4\b/.test(src)
+  && (src.match(/anisotropy = anisoNow\(\)/g) ?? []).length >= 5);
+ok('and it rides the same ladder, because a machine that cannot afford the '
+  + 'pixels cannot afford to filter them either',
+  /const anisoNow = \(\) => qLevel === 'low' \? Math\.min\(4, maxAniso\) : maxAniso;/
+    .test(src));
+ok('what the ladder does NOT do is written down: a texture already on the '
+  + 'GPU is not rebuilt when the rung changes',
+  /A texture ALREADY on the GPU is not\s*\n\s*rebuilt when the ladder steps/.test(src));
+
 console.log(`web/test_3d: ${n} checks passed - teardown, draw-call and per-frame contracts held at the source`);

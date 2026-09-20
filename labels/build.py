@@ -78,6 +78,47 @@ SHAPES = {
     'readout': {'draws': 'a dark bordered box in monospace',
                 'radius': 4, 'tail': False,
                 'reads_as': 'a number a machine measured'},
+
+    # The signs a walkable building carries that a name-plate cannot. A hall
+    # is a shed with eleven rooms, an open face and a yard, and until now
+    # every sign in it answered the question "what is this called?". A real
+    # floor also answers "which way out?", "where do we gather?", "which
+    # door is this?", "which machine is this?" and "what is in force here?" -
+    # five questions a name never answers. None of them is a name-plate in
+    # another colour: each takes the shape the eye already reads on a wall,
+    # because a sign that has to be READ to be told apart is the failure
+    # this registry exists to fix.
+    'chevron': {'draws': 'a plate whose leading edge runs out to a point, so '
+                         'the plate itself points the way', 'radius': 4,
+                'tail': False,
+                'reads_as': 'the way out, and which way it runs'},
+    'beacon': {'draws': 'a plate with a ringed dot struck at its leading end '
+                        'and the text set in after it', 'radius': 10,
+               'tail': False,
+               'reads_as': 'a place to gather, marked so it can be found'},
+    'stencil': {'draws': 'a hard-cornered square with a punched hole at its '
+                         'head and a heavy accent border', 'radius': 0,
+                'tail': False,
+                'reads_as': 'the number a door answers to'},
+    'tag': {'draws': 'a rectangle with its head corner cut away and an eyelet '
+                     'punched through it, like a tag wired to a machine',
+            'radius': 3, 'tail': False,
+            'reads_as': 'the identity of one piece of kit'},
+    'notice': {'draws': 'a plate banded top and bottom with diagonal hatching '
+                        'in the accent colour', 'radius': 5, 'tail': False,
+               'reads_as': 'a condition in force in this space, not a name'},
+}
+
+# ------------------------------------------------------------ ornaments ---
+# A small mark drawn on a plate, for the one job a shape and an accent
+# cannot do between them: separating two kinds that would otherwise be the
+# same bitmap. The vocabulary is declared here and the asserts at the foot
+# fail closed both ways, so a kind cannot name an ornament nobody draws and
+# an ornament cannot sit here unused - the same rule the shapes keep.
+ORNAMENTS = {
+    'rule_under': 'a second rule under the title as well as over it, so the '
+                  'Academy\'s own marquee is not just a campus marquee with '
+                  'a different word on it',
 }
 
 # ------------------------------------------------------------- the palette ---
@@ -149,8 +190,14 @@ KINDS = {
     'readout': {'shape': 'readout', 'accent': 'steel', 'face': 'mono',
                 'min_focus': .35, 'hide_beyond_m': 0,
                 'what': 'a measured number, from a seat or a chart'},
+    # The Academy's own marquee drew exactly the campus marquee: same shape,
+    # same accent, same face, same caps - two kinds that were one bitmap, and
+    # they stand on the same board in the campus-network view, so a reader
+    # met two identical signs saying different kinds of thing. The second
+    # rule under the title is what tells them apart without a word being
+    # read, which is the whole promise of this registry.
     'brand': {'shape': 'marquee', 'accent': 'mark', 'face': 'display',
-              'min_focus': .1, 'hide_beyond_m': 0,
+              'min_focus': .1, 'hide_beyond_m': 0, 'ornament': 'rule_under',
               'what': 'the Academy itself'},
     # A door placard. The PPE a room asks for has been in the surfaces
     # registry since §24.2 and had nowhere to appear except a panel you had
@@ -162,6 +209,63 @@ KINDS = {
                 'min_focus': .18, 'hide_beyond_m': 20,
                 'provenance': 'DERIVED',
                 'what': 'what a room requires of you, read at its door'},
+
+    # ---- wayfinding ------------------------------------------------------
+    # Every sign above answers "what is this called?". A hall is a walkable
+    # shed with eleven rooms, one open face and a yard in front of it, and a
+    # learner standing in the middle of it - in a headset, with no map and no
+    # cursor - had no sign that answered "which way out?". The chevron is the
+    # only sign in this registry that is an INSTRUCTION about movement, so it
+    # is the only one whose plate has a direction: it points, and a sign that
+    # points cannot be mistaken for a sign that names.
+    'egress': {'shape': 'chevron', 'accent': 'good', 'face': 'display',
+               'min_focus': .3, 'hide_beyond_m': 0, 'provenance': 'DERIVED',
+               'what': 'the way out of a hall, read off the floor plan the '
+                       'bundle drew and pointing along it'},
+    # Where a floor goes when it empties. A drill that ends nowhere is a
+    # drill nobody can be marked present at, and the apron in front of the
+    # open face is the only part of a hall that is outside it and still in
+    # it. It wears the same green as the chevron because it is the other end
+    # of the same movement, and a different shape because standing still at
+    # a point is not the same instruction as walking along a route.
+    'muster': {'shape': 'beacon', 'accent': 'good', 'face': 'display',
+               'min_focus': .28, 'hide_beyond_m': 0, 'provenance': 'DERIVED',
+               'what': 'where a hall gathers when it empties, off the same '
+                       'plan the route is read from'},
+    # A door number. Rooms have names, and a name is what you call a place
+    # when you are standing in it; a number is what you call it over a radio
+    # to somebody who is not. It is the first sign in this registry that is
+    # an IDENTIFIER rather than a name, which is why it is set in mono - the
+    # same rank the bundle gives every other value a machine assigned - and
+    # why it is small, hard-cornered and quiet: nobody reads a door number
+    # for pleasure, they read it once and say it out loud.
+    'door': {'shape': 'stencil', 'accent': 'muted', 'face': 'mono',
+             'min_focus': .16, 'hide_beyond_m': 14, 'provenance': 'DERIVED',
+             'what': 'the number a door answers to, derived from the hall '
+                     'and the room it opens into'},
+    # ---- equipment identification ---------------------------------------
+    # A fixture wears a ghost sign: a bench, named quietly, because its name
+    # is a courtesy. A machine is not a courtesy - it is a thing with a
+    # history, which is maintained, locked out, handed over and written down
+    # against an identity, and none of that works if the only thing on it is
+    # what it is called. The tag is the identity, so it is mono like the door
+    # number and shaped like the thing it imitates: a tag wired to a machine.
+    'asset': {'shape': 'tag', 'accent': 'steel', 'face': 'mono',
+              'min_focus': .16, 'hide_beyond_m': 18, 'provenance': 'DERIVED',
+              'what': 'the identifier of one piece of kit, derived from its '
+                      'hall, its room and its place in them'},
+    # ---- hazard and permit notices --------------------------------------
+    # The placard above says what a room requires you to WEAR. That is not
+    # the same claim as what is in force in the space right now - a permit
+    # open, a supply isolated, a surface still hot - and putting the two on
+    # one plate would have made a standing requirement and a temporary
+    # condition read alike. A condition is not a name and not a dress code,
+    # so it takes the hatched band: the one pattern in this registry that
+    # means "this is not about what this place is called".
+    'hazard': {'shape': 'notice', 'accent': 'crit', 'face': 'body',
+               'min_focus': .22, 'hide_beyond_m': 22, 'provenance': 'DERIVED',
+               'what': 'a condition in force in a space, off the hazards its '
+                       'own conditions record already holds'},
 }
 
 # ------------------------------------------------- how a sign reads the view ---
@@ -201,6 +305,62 @@ FOCUS = {
                   'where there is no cursor to have.',
 }
 
+# ------------------------------------------------ what a sign may not say ---
+# A sign that wears a standards body's initials, a standard's designation or
+# a regulator's name is claiming an authority this bundle does not have, and
+# a reader cannot tell a drawn sign from an inspected one by looking at it -
+# which is precisely the confusion signage is good at causing. The new
+# wayfinding kinds make that risk real for the first time: an exit chevron
+# and a hazard notice are the two signs in a building people are trained to
+# obey without thinking.
+#
+# The list is explicit rather than a clever pattern, because a lint reaches
+# exactly the phrasings somebody thought of - a miss is a token to add, not
+# a reason to trust the pass. The one pattern is for designations of the
+# form <letters><digits>.<digits>, which are a shape rather than a word and
+# cannot be enumerated.
+#
+# The STATIONS pack reads this list rather than keeping its own copy: the
+# words on a door placard and the words on a station's checklist are printed
+# on the same kind of sign, in the same building, and there is one list of
+# what they may not say.
+NO_MARKS = {
+    'why': 'no sign in this world borrows a standards body, a standard\'s '
+           'designation, a regulator or a real trade organisation: the '
+           'shapes are this bundle\'s own convention and the words are '
+           'plain practice, so nothing here can be mistaken for an '
+           'inspected, approved or certified sign.',
+    'tokens': [
+        # standards bodies and regulators, by the initials they are known by
+        'osha', 'ansi', 'astm', 'nfpa', 'niosh', 'msha', 'epa', 'cfr',
+        'iso', 'iec', 'csa', 'din', 'aci', 'aws', 'bia', 'ibc', 'irc',
+        'tms', 'ada', 'ul listed', 'code-compliant', 'code compliant',
+        'building code', 'per code', 'to code',
+        # real trade organisations, whose training this is not
+        'bac', 'jatc',
+        # designations and citations that name a document rather than a
+        # practice, including the ones the recovered curriculum carried
+        'c39', 'table 1', 'secretary of the interior', '811',
+    ],
+    'patterns': [r'\b[a-z]{1,4}[ -]?\d{1,4}\.\d+\b'],
+}
+
+
+def borrowed_marks(text):
+    """Every mark the given text borrows, lowercased, in the order found.
+
+    Returns a list rather than a bool so the failure names what it found:
+    a lint that says only "no" leaves the author guessing.
+    """
+    import re
+    low = ' ' + ' '.join(str(text).lower().split()) + ' '
+    hits = [t for t in NO_MARKS['tokens']
+            if re.search(r'(?<![a-z0-9])' + re.escape(t) + r'(?![a-z0-9])', low)]
+    for pat in NO_MARKS['patterns']:
+        hits += re.findall(pat, low)
+    return hits
+
+
 HONESTY = {
     'convention': 'these shapes are a convention this bundle invented, not '
                   'a standard anyone else uses; the legend is in the wiki '
@@ -219,6 +379,28 @@ HONESTY = {
                       'and the colours and lose the easing: labels sit at '
                       'full opacity rather than breathing as the head '
                       'turns.',
+    # Wayfinding is the one part of real signage that is a life-safety
+    # device, inspected and approved by somebody, and this is not that. The
+    # sign says what the drawn plan says and nothing more.
+    'wayfinding': 'an exit chevron, a muster beacon and a door number are a '
+                  'reading of the floor plan this bundle drew, in a building '
+                  'that does not exist. They are training signage: not '
+                  'life-safety equipment, not an inspected route, not an '
+                  'approved sign, and not a substitute for the signs on the '
+                  'wall of the hall a learner is actually standing in.',
+    'identification': 'a door number and an asset tag are identifiers this '
+                      'bundle assigned, not numbers anybody else uses: they '
+                      'are derived from the hall, the room and the fixture '
+                      'that already exist in the registries, and they are '
+                      'set in mono because an identifier is a value a '
+                      'machine assigned, which is the rank this type scale '
+                      'already gives such things.',
+    'notices': 'a hazard notice states the condition the room\'s own '
+               'conditions record holds. It does not classify, rate or '
+               'permit anything, it cites nobody, and a space with no '
+               'recorded condition gets no notice rather than one that says '
+               'there is nothing to say.',
+    'no_marks': NO_MARKS['why'],
     'xr_panel': 'in a WebXR session the readout kind is reused for the '
                 'wrist panel: one sign per dash gauge, drawn by the same '
                 'label() the world signs use, off the same gauges() values '
@@ -246,11 +428,52 @@ for kk, k in KINDS.items():
 used = {k['shape'] for k in KINDS.values()}
 assert used == set(SHAPES), f'shapes drawn but never used: {sorted(set(SHAPES) - used)}'
 
-# provenance words stay the bundle's three, and only those
+# and every ornament earns its place, on the same terms
+worn = {k['ornament'] for k in KINDS.values() if 'ornament' in k}
+assert worn <= set(ORNAMENTS), f'ornaments nobody draws: {sorted(worn - set(ORNAMENTS))}'
+assert worn == set(ORNAMENTS), \
+    f'ornaments declared and never worn: {sorted(set(ORNAMENTS) - worn)}'
+
+# NO TWO KINDS MAY DRAW THE SAME SIGN. `campus` and `brand` did: same
+# marquee, same amber, same face, same caps - one bitmap under two names,
+# on the same board, which is the exact failure this registry was built to
+# prevent. A kind is told apart by what is DRAWN, so the signature is the
+# drawn properties and nothing else: the shape, the accent, whether the
+# outline is dashed, and any ornament. A `what` string is not a signature,
+# because nobody reads it off the sign.
+signature = {}
+for kk, k in KINDS.items():
+    sig = (k['shape'], k['accent'], bool(k.get('dashed')), k.get('ornament'))
+    assert sig not in signature, (
+        f'{kk} draws exactly what {signature[sig]} draws: two kinds, one '
+        f'bitmap. Give one of them its own shape, accent or ornament.')
+    signature[sig] = kk
+    if 'ornament' in k:
+        assert k['ornament'] in ORNAMENTS, f'{kk}: no such ornament'
+
+# A sign may not borrow somebody else's authority, and the words on every
+# sign this registry describes are checked against the one list of marks the
+# bundle keeps - including the words in the honesty block itself, which is
+# where an excuse would be written if one were ever going to be.
+for kk, k in KINDS.items():
+    assert not borrowed_marks(k['what']), \
+        f'{kk}: its description borrows {borrowed_marks(k["what"])}'
+for sk, sh in SHAPES.items():
+    assert not borrowed_marks(sh['draws'] + ' ' + sh['reads_as']), \
+        f'{sk}: its description borrows a mark'
+
+# provenance words stay the bundle's own, and only those. A wayfinding sign
+# is DERIVED and says so: the route, the muster point, the door number and
+# the asset tag are all read off plans and records this bundle already
+# holds, and none of them is a thing anybody recorded in the world.
+PROVENANCE = ('RECORDED', 'DERIVED', 'SCHEMATIC', 'AUTHORED')
 for kk, k in KINDS.items():
     if 'provenance' in k:
-        assert k['provenance'] in ('RECORDED', 'DERIVED', 'SCHEMATIC'), \
-            f'{kk}: {k["provenance"]} is not one of the three words'
+        assert k['provenance'] in PROVENANCE, \
+            f'{kk}: {k["provenance"]} is not one of the bundle\'s words'
+for kk in ('egress', 'muster', 'door', 'asset', 'hazard'):
+    assert KINDS[kk].get('provenance') == 'DERIVED', \
+        f'{kk} is read off a plan or a record, so it must say DERIVED'
 
 assert FOCUS['floor'] < 1 and FOCUS['cone_deg'] > 10, 'the cone must be a cone'
 assert 0 < FOCUS['screen']['min_frac'] < FOCUS['screen']['max_frac'] < .5, \
@@ -259,12 +482,43 @@ assert FOCUS['fade_from_rel'] < FOCUS['fade_to_rel'], 'fade runs outward'
 assert FOCUS['fade_from_rel'] > 1, \
     'a sign at the thing you are looking at must be fully lit'
 
+# ------------------------------------------------- signs not yet drawn ---
+# A kind reaches the page only if the page can draw its SHAPE. The registry
+# travels into the page whole, so a kind's id appears in the page's data the
+# moment the page is regenerated whether anybody drew it or not; the honest
+# gate is the `case` branch in labelShape(), which is why the list below is
+# computed from the page rather than believed.
+#
+# These five kinds are declared here and web/build_3d.py has not grown a
+# branch for them yet. The list is a POLICY and not a skip, and it fails
+# closed in BOTH directions: a kind whose shape the page cannot draw and
+# which is not named here fails the build, and a kind named here whose shape
+# the page HAS learned to draw fails it too, so the branch landing is what
+# forces the name off this list. Nothing silently stays pending.
+PENDING_PAGE = ['asset', 'door', 'egress', 'hazard', 'muster']
+
 BOOTSTRAP = '--bootstrap' in __import__('sys').argv
-if not BOOTSTRAP:
+if BOOTSTRAP:
+    # Bootstrap runs before there is a page to read, so the declared list
+    # stands: this is the one place a value here is taken on trust, it is
+    # deliberate, and the real run below recomputes and contradicts it.
+    pending = sorted(PENDING_PAGE)
+else:
     page = (ROOT / 'web/trade_craft_3d.html').read_text()
+    drawable = {sk for sk in SHAPES if f"case '{sk}'" in page}
+    pending = sorted(kk for kk, k in KINDS.items() if k['shape'] not in drawable)
+    assert pending == sorted(PENDING_PAGE), (
+        'PENDING_PAGE disagrees with the page: the page now draws '
+        f'{sorted(set(PENDING_PAGE) - set(pending))} (take them off the '
+        f'list) and cannot draw {sorted(set(pending) - set(PENDING_PAGE))} '
+        '(a kind with no drawing branch must be declared pending).')
     for kk in KINDS:
+        if kk in pending:
+            continue
         assert f'"{kk}"' in page, f'label kind {kk} never reaches the page'
     for sk in SHAPES:
+        if sk in {KINDS[kk]['shape'] for kk in pending}:
+            continue
         assert f"case '{sk}'" in page, f'the page cannot draw shape {sk}'
     for fn in ('function label(', 'function labelShape(', 'function labelStep('):
         assert fn in page, f'the page does not build labels: {fn} missing'
@@ -284,8 +538,12 @@ doc = {
     'source_stamp': stamp,
     'honesty': HONESTY,
     'counts': {'kinds': len(KINDS), 'shapes': len(SHAPES),
-               'district_hues': len(districts)},
+               'ornaments': len(ORNAMENTS), 'district_hues': len(districts),
+               'drawn': len(KINDS) - len(pending)},
+    'pending_page': pending,
+    'no_marks': NO_MARKS,
     'shapes': SHAPES,
+    'ornaments': ORNAMENTS,
     'palette': PALETTE,
     'type': TYPE,
     'kinds': KINDS,
@@ -295,5 +553,6 @@ doc = {
 OUT = HERE / 'registry'
 OUT.mkdir(exist_ok=True)
 (OUT / 'labels.json').write_text(json.dumps(doc, indent=1) + '\n')
-print(f"labels: {len(KINDS)} kinds over {len(SHAPES)} shapes, "
+print(f"labels: {len(KINDS)} kinds over {len(SHAPES)} shapes "
+      f"({len(pending)} awaiting a drawing branch), "
       f"{FOCUS['cone_deg']}-degree focus cone (source stamp {stamp})")

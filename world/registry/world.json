@@ -3,17 +3,18 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-11",
- "source_stamp": "1eb947a8122c5041",
+ "source_stamp": "f3c6234e6a249e9c",
  "honesty": {
   "textures": "no texture, photograph or artwork file exists in this repository and none is downloaded: every surface is a recipe - a base colour, a grain, an octave count and a relief depth - and the page generates the image and its normal map in the learner's own browser at boot. There is therefore no third-party artwork anywhere in the render.",
   "weather": "schematic weather, not a forecast and not an observation: nothing here is tied to a reading taken at any real place or time, and the per-campus atmospheres are authored by reputation rather than measured.",
   "fauna": "ambience, not a wildlife survey: common names, schematic bodies and authored paths. No species record, population count or sighting is claimed, and no animal here is drawn from any photograph.",
   "sky": "the sky is generated, not photographed, and the night sky is placed by a fixed seed rather than from any star catalogue - it is a night sky, not the night sky.",
-  "ground": "the ground a campus stands on is SCHEMATIC like the buildings on it: the surfaces are the ones the trade actually works over, but their extent and placement are drawn to teach, not surveyed."
+  "ground": "the ground a campus stands on is SCHEMATIC like the buildings on it: the surfaces are the ones the trade actually works over, but their extent and placement are drawn to teach, not surveyed.",
+  "recipes": "every ground recipe is AUTHORED, and authored the way the campus atmospheres and the built fabric are: composed from the character a place is known for - shell fill in a delta, slag in a mill valley, limerock on a subtropical coast - and never taken from a survey, a photograph or a scan of any real yard. What a place is built on is a reputation, and this record says so rather than implying someone went and looked."
  },
  "counts": {
   "weather": 6,
-  "ground": 10,
+  "ground": 22,
   "fauna": 6,
   "animals": 101
  },
@@ -41,7 +42,10 @@
   "horizon_haze": {
    "height": 0.12,
    "strength": 0.5,
-   "note": "a bright band just above the horizon so the dome does not end on a hard edge"
+   "day_tint": "214,226,236",
+   "night_tint": "150,166,190",
+   "night_strength_mul": 0.35,
+   "note": "a bright band just above the horizon so the dome does not end on a hard edge; a campus that names its own haze overrides day_tint"
   },
   "stars": {
    "count": 420,
@@ -53,6 +57,9 @@
    "band_from": 0.28,
    "band_to": 0.78,
    "base_frequency": 0.022727272727272728,
+   "lacunarity": 2.1,
+   "day_lum": 232,
+   "night_lum": 96,
    "note": "value noise, thickened or thinned by the weather record rather than by a separate cloud asset"
   }
  },
@@ -70,7 +77,10 @@
    "rain": 0,
    "window_glow": 0.5,
    "wind": 0,
-   "blurb": "the working day the halls were drawn for"
+   "wet": 0,
+   "bank_mul": 0.5,
+   "bank_floor": 0,
+   "blurb": "the working day the halls were drawn for - hard shadows, dry ground, and nothing in the air to hide a hand signal"
   },
   "overcast": {
    "name": "Overcast",
@@ -85,6 +95,9 @@
    "rain": 0,
    "window_glow": 0.66,
    "wind": 0.15,
+   "wet": 0.12,
+   "bank_mul": 1.0,
+   "bank_floor": 0,
    "blurb": "flat light, no shadows to judge a line by - the light a layout hand complains about"
   },
   "fog": {
@@ -100,7 +113,10 @@
    "rain": 0,
    "window_glow": 0.8,
    "wind": 0.25,
-   "blurb": "the visibility a crane signal has to survive; the Bay campuses were drawn with this in mind"
+   "wet": 0.4,
+   "bank_mul": 2.0,
+   "bank_floor": 5,
+   "blurb": "the visibility a crane signal has to survive; the Bay campuses were drawn with this in mind, and it leaves the ground damp without a drop having fallen"
   },
   "rain": {
    "name": "Rain",
@@ -115,6 +131,9 @@
    "rain": 0.55,
    "window_glow": 0.85,
    "wind": 0.35,
+   "wet": 0.85,
+   "bank_mul": 1.2,
+   "bank_floor": 1,
    "blurb": "wet ground, longer stopping distances, and every surface in the yard reading differently"
   },
   "storm": {
@@ -131,6 +150,9 @@
    "window_glow": 0.95,
    "wind": 0.8,
    "thunder": true,
+   "wet": 1.0,
+   "bank_mul": 1.5,
+   "bank_floor": 2,
    "blurb": "the condition that stops a lift - and the one worth practising the stop in"
   },
   "night": {
@@ -148,117 +170,129 @@
    "wind": 0.1,
    "moon": true,
    "stars": true,
-   "blurb": "the shift most of this work actually happens on"
+   "wet": 0.25,
+   "bank_mul": 1.3,
+   "bank_floor": 0,
+   "blurb": "the shift most of this work actually happens on - dew on the steel by the small hours, and every edge lit by a tower rather than by the sun"
   }
  },
  "ground": {
   "asphalt": {
    "name": "Asphalt",
-   "base": "#191f22",
-   "grain": "220,225,225",
-   "octaves": 3,
-   "speckle": 1800,
-   "relief": 0.35,
+   "base": "#1c2124",
+   "grain": "216,222,222",
+   "octaves": 5,
+   "speckle": 3200,
+   "relief": 0.42,
    "repeat": 34,
    "roughness": 0.96,
    "metalness": 0.0,
-   "where": "the yard running surface and the ring road"
+   "where": "the yard running surface and the ring road",
+   "why": "a binder course that has been driven on goes grey in the wheel tracks and keeps its aggregate proud everywhere else, so it wants fine octaves rather than a flat black"
   },
   "concrete": {
    "name": "Concrete",
-   "base": "#262e31",
-   "grain": "235,238,238",
-   "octaves": 3,
-   "speckle": 1000,
-   "relief": 0.22,
+   "base": "#2a3236",
+   "grain": "236,238,236",
+   "octaves": 5,
+   "speckle": 1700,
+   "relief": 0.26,
    "repeat": 9,
-   "roughness": 0.9,
+   "roughness": 0.88,
    "metalness": 0.02,
-   "where": "slabs, aprons and walkways"
+   "where": "slabs, aprons and walkways",
+   "why": "a power-trowelled slab is nearly flat and still not smooth: the relief is small on purpose and the grain does the work"
   },
   "gravel": {
    "name": "Compacted gravel",
-   "base": "#3b3a34",
-   "grain": "205,198,180",
-   "octaves": 2,
-   "speckle": 5200,
-   "relief": 0.85,
-   "repeat": 26,
+   "base": "#3e3d36",
+   "grain": "208,200,182",
+   "octaves": 4,
+   "speckle": 6400,
+   "relief": 0.9,
+   "repeat": 22,
    "roughness": 0.99,
    "metalness": 0.0,
-   "where": "the plant yard, where the machines actually track"
+   "where": "the plant yard, where the machines actually track",
+   "why": "loose aggregate is all edge and shadow; it is the deepest relief in the table short of ballast, because that is what it looks like from a metre up"
   },
   "grass": {
    "name": "Rough grass",
-   "base": "#2b3a24",
-   "grain": "120,168,92",
-   "octaves": 4,
-   "speckle": 6400,
-   "relief": 0.55,
-   "repeat": 44,
+   "base": "#2d3d25",
+   "grain": "126,172,96",
+   "octaves": 5,
+   "speckle": 7200,
+   "relief": 0.58,
+   "repeat": 40,
    "roughness": 0.98,
    "metalness": 0.0,
-   "where": "the campus green and the verges"
+   "where": "the campus green and the verges",
+   "why": "unirrigated mown grass is never one green: the extra octave is the mower pattern and the dry patches it leaves"
   },
   "sand": {
    "name": "Sand and fill",
-   "base": "#4a4234",
-   "grain": "214,196,158",
-   "octaves": 3,
-   "speckle": 4200,
-   "relief": 0.4,
-   "repeat": 30,
+   "base": "#4d4536",
+   "grain": "218,200,162",
+   "octaves": 4,
+   "speckle": 4800,
+   "relief": 0.44,
+   "repeat": 26,
    "roughness": 0.97,
    "metalness": 0.0,
-   "where": "stockpiles and the excavator cut"
+   "where": "stockpiles and the excavator cut",
+   "why": "a cut face and a stockpile are the same material at two angles of repose, so it is graded fine and lit soft"
   },
   "marsh": {
    "name": "Tidal marsh",
-   "base": "#33412c",
+   "base": "#32422c",
    "grain": "138,166,104",
-   "octaves": 4,
-   "speckle": 7200,
-   "relief": 0.62,
-   "repeat": 40,
+   "octaves": 5,
+   "speckle": 7600,
+   "relief": 0.64,
+   "repeat": 36,
    "roughness": 0.97,
    "metalness": 0.02,
-   "where": "vegetated tidal marsh, wet underfoot between the channels"
+   "where": "vegetated tidal marsh, wet underfoot between the channels",
+   "why": "pickleweed and cordgrass stand in clumps with water between them, which is a clumped grain and a trace of sheen"
   },
   "mudflat": {
    "name": "Tidal flat",
-   "base": "#3d3b31",
+   "base": "#3e3c32",
    "grain": "150,146,128",
    "octaves": 5,
-   "speckle": 2600,
-   "relief": 0.3,
-   "repeat": 26,
-   "roughness": 0.82,
+   "speckle": 3000,
+   "relief": 0.34,
+   "repeat": 30,
+   "roughness": 0.78,
    "metalness": 0.06,
-   "where": "the intertidal flat a managed pond becomes as it reopens"
+   "where": "the intertidal flat a managed pond becomes as it reopens",
+   "why": "a flat that has just drained holds a film of water in every channel, so it is the least rough ground in the table that is not open water"
   },
   "upland": {
    "name": "Dry upland",
    "base": "#3f4230",
    "grain": "176,178,126",
-   "octaves": 3,
-   "speckle": 5600,
-   "relief": 0.48,
-   "repeat": 38,
+   "octaves": 4,
+   "speckle": 6000,
+   "relief": 0.5,
+   "repeat": 34,
    "roughness": 0.98,
    "metalness": 0.0,
-   "where": "the dry ground above the tide line, where the uplands are planted back"
+   "where": "the dry ground above the tide line and on made land: where the uplands are planted back, and the windward fill of an island yard that nobody waters",
+   "why": "dry grass over a thin soil shows the ground through it, which is a bright grain on a drab base rather than a green"
   },
   "levee": {
    "name": "Levee crown",
    "base": "#4b4740",
    "grain": "198,190,168",
-   "octaves": 2,
-   "speckle": 4800,
-   "relief": 0.7,
-   "repeat": 28,
+   "octaves": 3,
+   "speckle": 5200,
+   "relief": 0.72,
+   "repeat": 24,
    "roughness": 0.99,
    "metalness": 0.0,
-   "where": "the compacted crown of a dike or levee, which is the path a crew actually walks a diked site on"
+   "where": "the compacted crown of a dike or levee, which is the path a crew actually walks a diked site on",
+   "why": "a crown is rutted along its length by the truck that maintains it and loose at the edges where nothing drives"
   },
   "water": {
    "name": "Open water",
@@ -266,13 +300,179 @@
    "grain": "90,150,180",
    "octaves": 5,
    "speckle": 900,
-   "relief": 0.18,
+   "relief": 0.2,
    "repeat": 12,
-   "roughness": 0.28,
-   "metalness": 0.35,
-   "where": "the Bay, the estuary and the river"
+   "roughness": 0.22,
+   "metalness": 0.4,
+   "where": "the Bay, the estuary and the river",
+   "why": "the only surface here that is more mirror than material, which is what the low roughness and high metalness say"
+  },
+  "salt-slab": {
+   "name": "Salt-weathered slab",
+   "base": "#3a4145",
+   "grain": "228,232,230",
+   "octaves": 5,
+   "speckle": 2400,
+   "relief": 0.32,
+   "repeat": 12,
+   "roughness": 0.93,
+   "metalness": 0.01,
+   "where": "the concrete apron of a former naval station on made ground, bleached pale and stained at every joint",
+   "why": "salt air takes the fines out of a slab and leaves the aggregate standing: it is paler, pitted and rust-flecked where the reinforcement is closest to the top"
+  },
+  "hardstand": {
+   "name": "Container hardstand",
+   "base": "#22282a",
+   "grain": "198,206,206",
+   "octaves": 5,
+   "speckle": 2800,
+   "relief": 0.38,
+   "repeat": 18,
+   "roughness": 0.95,
+   "metalness": 0.0,
+   "where": "the crane-rated hardstand of a working terminal, rutted on the turning circles and patched everywhere else",
+   "why": "a surface built to carry a loaded stacker is repaired in pieces for thirty years, so it reads as patchwork - the coarse octaves are the patches, not noise"
+  },
+  "shell": {
+   "name": "Crushed shell",
+   "base": "#4e4c40",
+   "grain": "234,228,208",
+   "octaves": 4,
+   "speckle": 7000,
+   "relief": 0.74,
+   "repeat": 24,
+   "roughness": 0.98,
+   "metalness": 0.0,
+   "where": "the crushed-shell yard fill of a delta with no rock in it, pale, sharp and loud underfoot",
+   "why": "the Gulf delta has shell where other places have quarry stone, and a shell yard is far brighter than the ground beside it - which is the whole look of the place"
+  },
+  "caliche": {
+   "name": "Caliche pad",
+   "base": "#585040",
+   "grain": "226,212,178",
+   "octaves": 4,
+   "speckle": 5600,
+   "relief": 0.55,
+   "repeat": 26,
+   "roughness": 0.98,
+   "metalness": 0.0,
+   "where": "the caliche and crushed-limestone pad a coastal-plain plant yard is built up on, above ground that moves",
+   "why": "gumbo clay swells and shrinks with every wet season, so the yard is a pad brought in on trucks: buff, dusty dry and set hard, with nothing of the soil under it showing"
+  },
+  "ballast": {
+   "name": "Track ballast",
+   "base": "#3c3c3a",
+   "grain": "198,194,186",
+   "octaves": 4,
+   "speckle": 6800,
+   "relief": 0.96,
+   "repeat": 20,
+   "roughness": 0.99,
+   "metalness": 0.0,
+   "where": "the angular crushed stone of a rail yard, laid to drain and never laid to be walked on",
+   "why": "ballast is deliberately sharp and deliberately loose so it keys together and sheds water; it is the deepest relief in the table because every stone casts on its neighbour"
+  },
+  "basalt": {
+   "name": "Crushed basalt",
+   "base": "#2f3639",
+   "grain": "178,188,188",
+   "octaves": 5,
+   "speckle": 6000,
+   "relief": 0.8,
+   "repeat": 22,
+   "roughness": 0.97,
+   "metalness": 0.01,
+   "where": "the blue-grey crushed basalt a rain-country yard is surfaced with, darker in the joints where it stays wet",
+   "why": "the Cascade quarries are basalt, and in a climate that never fully dries the stone reads blue-grey and the gaps between it read green"
+  },
+  "slag": {
+   "name": "Air-cooled slag",
+   "base": "#474845",
+   "grain": "214,212,200",
+   "octaves": 5,
+   "speckle": 6600,
+   "relief": 0.88,
+   "repeat": 22,
+   "roughness": 0.99,
+   "metalness": 0.03,
+   "where": "the pale vesicular slag a mill valley paved its own yards and roadbeds with, for a century, because it had it",
+   "why": "air-cooled blast-furnace slag is light, sharp and full of holes: it is paler than the stone around it and it glints, which is why the metalness is not quite zero"
+  },
+  "decomposed-granite": {
+   "name": "Decomposed granite",
+   "base": "#574c3e",
+   "grain": "228,208,178",
+   "octaves": 4,
+   "speckle": 5800,
+   "relief": 0.5,
+   "repeat": 28,
+   "roughness": 0.98,
+   "metalness": 0.0,
+   "where": "the granitic fines and road base of a Front Range yard, pale gold and raising dust in a dry month",
+   "why": "granite weathering in a dry climate leaves a compacted sandy fine that packs like paving and travels like dust, which is a low relief over a high speckle"
+  },
+  "limerock": {
+   "name": "Crushed limerock",
+   "base": "#5e5c50",
+   "grain": "242,238,220",
+   "octaves": 4,
+   "speckle": 6200,
+   "relief": 0.6,
+   "repeat": 26,
+   "roughness": 0.97,
+   "metalness": 0.0,
+   "where": "the crushed oolitic limestone a subtropical coast quarries out from under itself and lays everything on",
+   "why": "South Florida builds on the rock it is standing on, and that rock is near-white: it is the brightest ground in the table, and under a high sun it is the reason for sunglasses"
+  },
+  "cinder": {
+   "name": "Cinder and clinker",
+   "base": "#22201e",
+   "grain": "188,174,152",
+   "octaves": 5,
+   "speckle": 6400,
+   "relief": 0.68,
+   "repeat": 24,
+   "roughness": 0.99,
+   "metalness": 0.02,
+   "where": "the black cinder and clinker fill a coal-era plant yard was raised on and never took back up",
+   "why": "boiler ash went under the yard because it was free and it drained; a century later it is still what the ground is, dark and rust-flecked with what the shops dropped on it"
+  },
+  "prairie": {
+   "name": "Prairie grass",
+   "base": "#4a462c",
+   "grain": "208,192,126",
+   "octaves": 5,
+   "speckle": 7600,
+   "relief": 0.6,
+   "repeat": 46,
+   "roughness": 0.98,
+   "metalness": 0.0,
+   "where": "the unmown bunch grass of a plains or coastal-prairie verge, gold more of the year than it is green",
+   "why": "prairie grass grows in clumps with bare ground between them and cures standing, so the base is straw and the grain is straw - a green verge would be the wrong country"
+  },
+  "moss": {
+   "name": "Moss and wet turf",
+   "base": "#243024",
+   "grain": "128,172,110",
+   "octaves": 5,
+   "speckle": 6800,
+   "relief": 0.5,
+   "repeat": 38,
+   "roughness": 0.94,
+   "metalness": 0.03,
+   "where": "the shaded rain-fed verge of a temperate-rainforest yard, which takes the joints of the path as well",
+   "why": "in a place that is wet nine months of the year moss is the ground cover rather than a defect in it: deeper green than grass, softer relief, and never quite matte"
   }
  },
+ "ground_laid_elsewhere": {
+  "asphalt": "the page's own made land and the fallback carriageway",
+  "concrete": "the page's slabs, walkways and building aprons",
+  "sand": "the page's stockpiles and the excavator cut, and the sandy habitat of a restoration site",
+  "water": "the page's open water, at every campus that has any",
+  "mudflat": "a Bay Restoration site whose habitat line is tidal flat",
+  "levee": "a Bay Restoration site walked along its dike crown"
+ },
+ "ground_awaiting_page": [],
  "fauna": {
   "gull": {
    "name": "Gull",
@@ -424,6 +624,7 @@
     "mul": 0.62
    },
    "banks": 6,
+   "haze": "208,220,228",
    "sun": {
     "color": 14213864,
     "i": 1.15
@@ -438,9 +639,10 @@
     "gulls": true,
     "harbor": true
    },
-   "ground": "concrete",
-   "verge": "grass",
-   "character": "marine layer off the Pacific; cool, grey and bright at once - authored by reputation, not measured"
+   "ground": "salt-slab",
+   "verge": "upland",
+   "ground_why": "a former naval station on made ground: the yard is the station's own apron, and a lifetime of salt air has taken the face off it. The verge is the dry, windswept fill nobody waters - an island lawn would be somebody else's campus",
+   "character": "marine layer off the Pacific; cool, grey and bright at once, and the thickest air on the network - authored by reputation, not measured"
   },
   "oakland": {
    "sky": [
@@ -451,9 +653,10 @@
    ],
    "fog": {
     "color": 2041888,
-    "mul": 1
+    "mul": 0.98
    },
-   "banks": 0,
+   "banks": 1,
+   "haze": "218,214,198",
    "sun": {
     "color": 16767392,
     "i": 1.7
@@ -468,9 +671,10 @@
     "gulls": true,
     "harbor": true
    },
-   "ground": "asphalt",
+   "ground": "hardstand",
    "verge": "gravel",
-   "character": "the estuary side, warmer and harder-edged than the island - authored by reputation, not measured"
+   "ground_why": "a working container terminal on the estuary: the yard is crane-rated hardstand, patched in pieces where the stackers turn, and the verge is the gravel margin every truck parks half on",
+   "character": "the estuary side, warmer and harder-edged than the island, with one thin bank off the water that is gone by the time the yard is working - authored by reputation, not measured"
   },
   "new-orleans": {
    "sky": [
@@ -481,9 +685,10 @@
    ],
    "fog": {
     "color": 3025702,
-    "mul": 0.8
+    "mul": 0.78
    },
-   "banks": 0,
+   "banks": 2,
+   "haze": "226,210,182",
    "sun": {
     "color": 16763274,
     "i": 1.45
@@ -498,9 +703,10 @@
     "insects": true,
     "thunder": true
    },
-   "ground": "concrete",
-   "verge": "grass",
-   "character": "Gulf humidity and a low warm haze - authored by reputation, not measured"
+   "ground": "shell",
+   "verge": "marsh",
+   "ground_why": "a delta with no rock in it fills its yards with crushed shell, and this campus sits between the river and the wet margin the egret is standing in - so the verge is marsh, which is what the animal record has always said the ground here was",
+   "character": "Gulf humidity and a low warm haze that does not lift with the morning, and river fog off the water before it - authored by reputation, not measured"
   },
   "houston": {
    "sky": [
@@ -511,9 +717,10 @@
    ],
    "fog": {
     "color": 3352860,
-    "mul": 1.35
+    "mul": 0.9
    },
-   "banks": 2,
+   "banks": 3,
+   "haze": "224,200,158",
    "sun": {
     "color": 16764812,
     "i": 1.35
@@ -528,9 +735,10 @@
     "insects": true,
     "thunder": true
    },
-   "ground": "asphalt",
-   "verge": "gravel",
-   "character": "Gulf-coast heat haze over a working ship channel, a refinery glow at the sky's edge after dark - authored by reputation, not measured"
+   "ground": "caliche",
+   "verge": "prairie",
+   "ground_why": "a ship-channel plant yard standing on gumbo clay is a caliche pad brought in above ground that moves with every wet season, and what is left unpaved goes back to Gulf coastal prairie rather than lawn",
+   "character": "Gulf-coast heat haze over a working ship channel that never clears the way a sea breeze clears, and a refinery glow at the sky's edge after dark - authored by reputation, not measured"
   },
   "chicago": {
    "sky": [
@@ -541,9 +749,10 @@
    ],
    "fog": {
     "color": 2634042,
-    "mul": 1.1
+    "mul": 1.02
    },
    "banks": 4,
+   "haze": "206,216,224",
    "sun": {
     "color": 14674158,
     "i": 1.2
@@ -558,8 +767,9 @@
     "gulls": true,
     "harbor": false
    },
-   "ground": "concrete",
-   "verge": "gravel",
+   "ground": "ballast",
+   "verge": "prairie",
+   "ground_why": "a rail hub is laid on the same crushed stone as the track running through it, sharp and loose and laid to drain, and the verge is the tallgrass prairie holding the embankment either side of it",
    "character": "a flat lakefront wind that never really stops, cold and grey off the water most of the year - authored by reputation, not measured"
   },
   "seattle": {
@@ -571,9 +781,10 @@
    ],
    "fog": {
     "color": 2765366,
-    "mul": 1.5
+    "mul": 0.8
    },
    "banks": 6,
+   "haze": "200,210,212",
    "sun": {
     "color": 14082272,
     "i": 0.95
@@ -588,9 +799,10 @@
     "gulls": true,
     "harbor": true
    },
-   "ground": "concrete",
-   "verge": "gravel",
-   "character": "a low marine overcast off the Sound, a working waterfront and the hum of aerospace manufacturing just south of the green - authored by reputation, not measured"
+   "ground": "basalt",
+   "verge": "moss",
+   "ground_why": "Cascade basalt is the aggregate at hand here, and in a climate this wet the verge is not grass but moss - in the shade of the yard, and then in the joints of its paths",
+   "character": "a low marine overcast off the Sound that sits on the cranes rather than above them, a working waterfront and the hum of aerospace manufacturing just south of the green - authored by reputation, not measured"
   },
   "pittsburgh": {
    "sky": [
@@ -601,9 +813,10 @@
    ],
    "fog": {
     "color": 3354666,
-    "mul": 1.2
+    "mul": 0.84
    },
-   "banks": 3,
+   "banks": 4,
+   "haze": "212,206,192",
    "sun": {
     "color": 14274749,
     "i": 1.05
@@ -618,9 +831,10 @@
     "gulls": false,
     "harbor": true
    },
-   "ground": "concrete",
-   "verge": "gravel",
-   "character": "a river haze over three confluent rivers crossed by more bridges than any other American city, and a post-industrial skyline standing where the mills once were - authored by reputation, not measured"
+   "ground": "slag",
+   "verge": "grass",
+   "ground_why": "a mill valley paved its own yards and roadbeds with the slag its furnaces made, because it had it by the trainload; the verge is the rough grass of the hillside the shop is cut into",
+   "character": "a river haze that settles in the valley overnight and burns off late, over three confluent rivers crossed by more bridges than any other American city, and a post-industrial skyline standing where the mills once were - authored by reputation, not measured"
   },
   "denver": {
    "sky": [
@@ -631,9 +845,10 @@
    ],
    "fog": {
     "color": 2765894,
-    "mul": 0.4
+    "mul": 1.6
    },
    "banks": 0,
+   "haze": "222,226,236",
    "sun": {
     "color": 16773846,
     "i": 1.6
@@ -649,9 +864,10 @@
     "harbor": false,
     "thunder": true
    },
-   "ground": "concrete",
-   "verge": "gravel",
-   "character": "thin, dry high-altitude light off the Front Range, a mining and energy heritage at 5,280 feet, and the Rockies standing on the western horizon - authored by reputation, not measured"
+   "ground": "decomposed-granite",
+   "verge": "prairie",
+   "ground_why": "Front Range granite weathers to a fine that compacts like paving and travels like dust, which is what a high dry yard is surfaced with; the verge is shortgrass, gold for most of the year, because nothing else survives a mile up without water",
+   "character": "thin, dry high-altitude light off the Front Range with a view that goes as far as the ground allows, a mining and energy heritage at 5,280 feet, and the Rockies standing on the western horizon - authored by reputation, not measured"
   },
   "miami": {
    "sky": [
@@ -665,6 +881,7 @@
     "mul": 1.0
    },
    "banks": 1,
+   "haze": "230,224,206",
    "sun": {
     "color": 16768926,
     "i": 1.55
@@ -680,8 +897,9 @@
     "harbor": true,
     "thunder": true
    },
-   "ground": "concrete",
+   "ground": "limerock",
    "verge": "grass",
+   "ground_why": "everything in South Florida is laid on the limerock quarried out from under it, and it is near-white under a high sun; the verge is the coarse turf that survives salt, heat and a rainy season",
    "character": "subtropical coastal heat and humidity off Biscayne Bay, afternoon thunderheads stacking through hurricane season, and a working seaport at the harbor's edge - authored by reputation, not measured"
   },
   "detroit": {
@@ -693,9 +911,10 @@
    ],
    "fog": {
     "color": 2895918,
-    "mul": 1.15
+    "mul": 0.95
    },
    "banks": 3,
+   "haze": "210,208,198",
    "sun": {
     "color": 15127720,
     "i": 1.2
@@ -710,8 +929,9 @@
     "gulls": false,
     "harbor": true
    },
-   "ground": "concrete",
+   "ground": "cinder",
    "verge": "gravel",
+   "ground_why": "a coal-era plant yard was raised on its own boiler ash because the ash was free and it drained, and nobody has ever taken it back up; the verge is the gravel margin between the shops and the rail spur",
    "character": "a Great Lakes river haze off the Detroit River, a working industrial waterfront across from Windsor, Ontario, and a century of automotive manufacturing standing behind the skyline - authored by reputation, not measured"
   }
  },

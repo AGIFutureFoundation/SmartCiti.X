@@ -35,6 +35,56 @@ ok('the page generates both the colour map and the normal map from those recipes
   /function groundTex\(/.test(page) && /function groundMat\(/.test(page)
   && /normalMap/.test(page) && /central difference|at\(x \+ 1, y\)/.test(page));
 
+/* --------------------------------------------------------- the recipes --- */
+/* The ten campuses were all laid on `concrete` or `asphalt`, and only the
+   verge changed between San Francisco and Miami: ten cities told apart by
+   their weather, standing on one slab. These hold the rebuilt table to the
+   three things that were wrong with it - the surfaces have to differ, they
+   have to say what made them that surface, and the ids other packs hold
+   have to keep working. */
+const gr = Object.entries(reg.ground);
+/* Every id this pack has ever published is a contract: restoration/ names
+   four of them per site, the page's own materials name four more, and a
+   rename here is a silent breakage there. Adding is free; renaming is not. */
+const LEGACY = ['asphalt', 'concrete', 'gravel', 'grass', 'sand',
+  'marsh', 'mudflat', 'upland', 'levee', 'water'];
+ok('every recipe id the pack has published still exists, because other packs hold them',
+  LEGACY.every((id) => id in reg.ground));
+ok('every recipe says what it is made of and why that is what the place is made of',
+  gr.every(([, g]) => g.why?.length > 25 && g.where.length > 15
+    && g.grain.split(',').every((c) => +c >= 0 && +c <= 255)
+    && g.metalness >= 0 && g.metalness <= 1));
+ok('no recipe is another recipe recoloured: every base colour is its own',
+  new Set(gr.map(([, g]) => g.base)).size === gr.length);
+ok('the ground reads at walking distance: nothing survives on two octaves and a dusting',
+  gr.every(([, g]) => g.octaves >= 3 && g.speckle >= 900));
+ok('every recipe is laid by somebody - a campus yard, a verge, or a named consumer',
+  (() => {
+    const laid = new Set(Object.values(reg.atmos)
+      .flatMap((a) => [a.ground, a.verge]));
+    const away = reg.ground_laid_elsewhere;
+    return Object.keys(away).every((k) => k in reg.ground && !laid.has(k)
+      && away[k].length > 20)
+      && gr.every(([k]) => laid.has(k) || k in away);
+  })());
+/* A recipe reaches the render only when web/ is rebuilt, and that build
+   refuses one until somebody has decided what it SOUNDS like underfoot. So
+   a recipe may run ahead of the shipped page - but only while it says so,
+   and the list has to empty itself rather than quietly cover a recipe that
+   never arrived. */
+ok('a recipe ahead of the page is declared ahead of the page, and only while it is',
+  reg.ground_awaiting_page.every((k) => k in reg.ground
+    && !page.includes(`"${k}"`))
+  && gr.every(([k]) => reg.ground_awaiting_page.includes(k)
+    || page.includes(`"${k}"`)));
+ok('the ground is AUTHORED - composed from a reputation, never scanned off a real yard',
+  /every ground recipe is AUTHORED/.test(reg.honesty.recipes)
+  && /never taken from a survey, a photograph or a\s+scan/
+    .test(reg.honesty.recipes)
+  && /reputation/.test(reg.honesty.recipes));
+ok('AI-SYNTHESIZED is orbis\'s word and is nowhere in this registry',
+  !/ai-synthes/i.test(JSON.stringify(reg)));
+
 /* --------------------------------------------------------------- the sky --- */
 ok('the sky is generated too, and says it is a night sky rather than the night sky',
   /generated, not photographed/.test(reg.honesty.sky)
@@ -51,6 +101,20 @@ ok('the sun is drawn where the light actually comes from, not at an arbitrary be
 ok('the dome has four bands, and every campus states exactly four',
   reg.sky.bands.length === 4
   && Object.values(reg.atmos).every((a) => a.sky.length === 4));
+/* The haze band is the last thing the eye reads before the ground, and it
+   was one cool grey for the whole network - a refinery horizon and a high
+   desert horizon in the same colour. The band keeps a default and a campus
+   states its own. */
+ok('the horizon takes each campus\'s own colour rather than one grey for the network',
+  /^\d+,\d+,\d+$/.test(reg.sky.horizon_haze.day_tint)
+  && /^\d+,\d+,\d+$/.test(reg.sky.horizon_haze.night_tint)
+  && reg.sky.horizon_haze.night_strength_mul > 0
+  && Object.values(reg.atmos).every((a) => /^\d+,\d+,\d+$/.test(a.haze))
+  && new Set(Object.values(reg.atmos).map((a) => a.haze)).size >= 8);
+ok('the cloud\'s own shape is declared with the dome rather than left as a literal',
+  reg.sky.clouds.lacunarity > 1 && reg.sky.clouds.lacunarity < 4
+  && reg.sky.clouds.day_lum > reg.sky.clouds.night_lum
+  && reg.sky.clouds.day_lum <= 255 && reg.sky.clouds.night_lum >= 0);
 
 /* ----------------------------------------------------------- the weather --- */
 const wx = Object.entries(reg.weather);
@@ -70,6 +134,23 @@ ok('rain is a rate rather than a switch, and the page treats it as one',
 ok('clear is the brightest sky and night the darkest, which is the whole point',
   reg.weather.clear.sky_mul === Math.max(...wx.map(([, w]) => w.sky_mul))
   && reg.weather.night.sky_mul === Math.min(...wx.map(([, w]) => w.sky_mul)));
+/* Wetness is a property of the GROUND, not of the rain rate: fog leaves a
+   yard damp without a drop falling, and the rain state's own blurb has
+   always promised "every surface in the yard reading differently". */
+ok('how wet the ground is follows the weather rather than the rainfall',
+  wx.every(([, w]) => w.wet >= 0 && w.wet <= 1)
+  && reg.weather.clear.wet === 0
+  && reg.weather.storm.wet === Math.max(...wx.map(([, w]) => w.wet))
+  && reg.weather.fog.wet > reg.weather.overcast.wet
+  && reg.weather.fog.rain === 0);
+/* Fog banks were scaled off the campus's own count, so FOG WEATHER OVER A
+   CAMPUS THAT KEEPS NO BANKS PUT NO FOG IN THE AIR - Denver, by name. */
+ok('fog weather puts fog in the air even where the campus keeps none of its own',
+  wx.every(([, w]) => w.bank_mul >= 0 && w.bank_mul <= 3
+    && w.bank_floor >= 0 && w.bank_floor <= 8)
+  && reg.weather.fog.bank_floor >= 3
+  && reg.weather.clear.bank_mul < 1
+  && Object.values(reg.atmos).some((a) => a.banks === 0));
 ok('the weather admits it is not a forecast and not an observation',
   /not a forecast and not an observation/.test(reg.honesty.weather)
   && /authored by\s+reputation rather than measured/.test(reg.honesty.weather));
@@ -87,6 +168,36 @@ ok('one atmosphere per campus, each naming the ground it stands on',
 ok('and every one of them says out loud that it was authored, not measured',
   Object.values(reg.atmos).every((a) => /reputation/.test(a.character)
     && a.character.length > 40));
+/* The fault this pack was opened to fix: a Gulf-coast yard, a Great Lakes
+   yard, a Rocky Mountain yard and a Bay-side former naval station were the
+   same slab with a different verge. One campus, one ground, no two alike -
+   and each of them says what chose it, in its own words. */
+ok('no two campuses stand on the same ground, and each says what chose it',
+  new Set(Object.values(reg.atmos).map((a) => a.ground)).size
+    === Object.keys(reg.atmos).length
+  && new Set(Object.values(reg.atmos).map((a) => a.ground_why)).size
+    === Object.keys(reg.atmos).length
+  && Object.values(reg.atmos).every((a) => a.ground_why.length > 60));
+/* The ambient bed is a closed set: the page builds wind, insects, gulls, a
+   harbour horn and thunder, and silently ignores anything else - so a key
+   off this list is a sound somebody meant to hear and nobody will. */
+const BEDS = ['wind', 'gulls', 'harbor', 'insects', 'thunder'];
+ok('every ambient bed a campus asks for is one the page actually builds',
+  BEDS.every((b) => page.includes(`a.${b}`))
+  && Object.values(reg.atmos)
+    .every((a) => Object.keys(a.amb).every((k) => BEDS.includes(k))));
+/* `fog.mul` scales the fog distance and SMALLER IS THICKER, which reads
+   backwards to anyone who has not been told: Denver shipped at .4, the
+   thickest air of the ten, on the campus whose character line says "thin,
+   dry high-altitude light". */
+ok('the high desert is the clearest air on the network and the Bay the thickest',
+  (() => {
+    const m = Object.fromEntries(Object.entries(reg.atmos)
+      .map(([k, a]) => [k, a.fog.mul]));
+    const v = Object.values(m);
+    return m.denver === Math.max(...v)
+      && m['treasure-island'] === Math.min(...v);
+  })());
 
 /* ---------------------------------------------------------------- fauna --- */
 const fa = Object.entries(reg.fauna);

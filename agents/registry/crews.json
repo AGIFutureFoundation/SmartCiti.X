@@ -1,0 +1,1153 @@
+{
+ "pack": "smartcitix-trade-craft-academy-crews",
+ "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
+ "pack_version": "3.2.0",
+ "built": "2026-09-11",
+ "source_stamp": "c092920c23e8fd7b",
+ "contract": "a crew is a roster and a run. The roster names roles that each have a job nobody else on the crew does and one condition that role stops the work for; the run is the ordered list of hand-offs between them, and the build refuses a role that appears in neither end of it. A crew names a seat the simulator registry already declares and musters in a room strand the surfaces registry already declares; the halls it reaches are READ from that seat rather than typed here. Every `read` topic a role carries is one of the advisor registry's own declared bindings, resolved by the page against the seat that is actually running - so a crew quotes the record and never keeps a second copy.",
+ "honesty": {
+  "status": "SCRIPTED: a crew is a hand-written, deterministic script - a fixed roster, a fixed order of hand-offs and a fixed list of things each role can say. No model runs behind one, nothing is generated at view time, and no network is reached. Not a learned policy, not a real crew, and not a claim about how any particular site runs a job.",
+  "unverified": "the roles, the hand-offs and the stop conditions written here are unverified general practice, pending authoring by journey-level practitioners of each trade. Where a role is marked commonly-required that is a statement about widespread practice as this Academy understands it, not a reading of any jurisdiction's rule, and every distance, period and threshold a role mentions is deliberately left to the reader's own jurisdiction rather than given a number here.",
+  "not_a_permit": "nothing a crew role says is a permit, an entry authorisation, a tag, a certificate or a code ruling. The permits, tags and authorisations named here are the names of real artefacts, and this bundle issues none of them and stands in for none of them.",
+  "not_a_person": "a crew role represents no real worker, supervisor or union officer, and no real union local is named: the figures are the Academy's own schematic avatars wearing the Academy's own crew marks, exactly as the advisors are.",
+  "not_scored": "standing in a crew changes no score and unlocks nothing: no grader reads crew state, there is no crew state for one to read, and the suite asserts it by reading the graders.",
+  "closed_book": "a crew role cannot be asked an open question because it has no way to answer one. The topics under each role are all of them, and the suite counts them."
+ },
+ "standing": {
+  "commonly-required": "general practice widely treats this role as one the task may not run without",
+  "academy-practice": "the Academy runs the task this way; practice elsewhere may fold this job into another role"
+ },
+ "counts": {
+  "crews": 6,
+  "roles": 20,
+  "topics": 60,
+  "read_topics": 24,
+  "say_topics": 36,
+  "handoffs": 32,
+  "seats": 5,
+  "halls_reached": 38
+ },
+ "page_contract": {
+  "data": "D.crews.crews, alongside D.advisors.who",
+  "place": "one placeAdvisor()-shaped spawner per crew, called from startSim() beside the Operator: each role stands at its own `post` - polar, r metres from the seat's own yard origin at `deg` degrees - inside the sim group, so leaving the seat drops the whole crew the way clearOperatorAdvisor() drops the Operator today",
+  "ask": "openAdvisor() takes a \"crew-id:role-id\" key as well as an advisor id; the role's topics render through the same panel, and a `read` topic goes to the existing advRead() unchanged because every crew binding is already a seat.* binding",
+  "run": "the crew's `run` renders as the crew's own panel - the ordered hand-offs, each one naming the role it comes from and the role it goes to - which is the part that reads as a job being run rather than as four separate advisors",
+  "episode": "recordEpisode({kind: \"crew\", crew, role, topic, answer_kind}), the same envelope the advisor exchange already writes"
+ },
+ "crews": {
+  "crane-lift-crew": {
+   "name": "Crane lift crew",
+   "job": "Pick the load off the supply pad and set it in the ring with nobody underneath it and nobody guessing.",
+   "seat": "crane-lift",
+   "muster": "coordination",
+   "why_a_crew": "The operator cannot see the load land. That single fact is the whole reason this is four people: one who owns the plan, one who can see what the cab cannot, one who knows what the load weighs and how it is held, and one who moves nothing that was not called.",
+   "stop_work": "Every one of the four can stop this lift, and the crane holds on a stop signal from anyone at all - that is the one signal nobody needs standing to give.",
+   "roles": {
+    "lift-director": {
+     "name": "Lift director",
+     "job": "owns the lift plan and is the only voice that changes it",
+     "standing": "commonly-required",
+     "stops": "the plan changed on the ground and nobody wrote the new one",
+     "glyph": "\ud83d\udccb",
+     "wears": {
+      "top": "flannel",
+      "headwear": "full-brim",
+      "vest": "hi-vis-3",
+      "extras": "radio"
+     },
+     "post": {
+      "r": 7.2,
+      "deg": 200
+     },
+     "greeting": "Nothing gets hooked until the plan is read out loud and everyone here has heard their part of it.",
+     "topics": [
+      {
+       "id": "plan",
+       "ask": "What is in a lift plan?",
+       "kind": "say",
+       "cites": "agents/build.py",
+       "say": "The weight, where it is picked from and set, the radius at each end, the rigging chosen for that weight, the path the load travels and who stands where while it does. If a lift plan does not say who is on the crew, it is a sketch."
+      },
+      {
+       "id": "change",
+       "ask": "What if the lift changes?",
+       "kind": "say",
+       "cites": "agents/build.py",
+       "say": "Then it is a different lift and it gets planned again. The failure worth fearing is not a bad plan - it is a good plan that quietly stopped describing what is happening."
+      },
+      {
+       "id": "measures",
+       "ask": "What is this seat holding us to?",
+       "kind": "read",
+       "bind": "seat.rubric"
+      }
+     ],
+     "key": "crane-lift-crew:lift-director"
+    },
+    "crane-operator": {
+     "name": "Crane operator",
+     "job": "runs the machine and takes moves from one set of hands only",
+     "standing": "commonly-required",
+     "stops": "a signal I did not understand",
+     "glyph": "\ud83d\udc77",
+     "wears": {
+      "top": "work-shirt",
+      "headwear": "hard-cap",
+      "vest": "hi-vis-2",
+      "extras": "radio"
+     },
+     "post": {
+      "r": 3.4,
+      "deg": 20
+     },
+     "greeting": "I move on a signal and I hold on anything else. Ask me what the controls do before you ask me to do anything with them.",
+     "topics": [
+      {
+       "id": "controls",
+       "ask": "What do the controls do?",
+       "kind": "read",
+       "bind": "seat.controls"
+      },
+      {
+       "id": "gauges",
+       "ask": "What am I watching on the dash?",
+       "kind": "read",
+       "bind": "seat.dash"
+      },
+      {
+       "id": "obey",
+       "ask": "Whose signals do you take?",
+       "kind": "say",
+       "cites": "agents/build.py",
+       "say": "One person\u2019s, agreed before the pick, and nobody else\u2019s - except a stop, which I take from anyone. Two people signalling one crane is how a load ends up moving in a direction neither of them meant."
+      }
+     ],
+     "key": "crane-lift-crew:crane-operator"
+    },
+    "signalperson": {
+     "name": "Signalperson",
+     "job": "gives the crane its moves and owns the path the load travels",
+     "standing": "commonly-required",
+     "stops": "the load\u2019s path crossing a person",
+     "glyph": "\ud83d\udce3",
+     "wears": {
+      "top": "hi-vis-tee",
+      "headwear": "hard-cap",
+      "vest": "hi-vis-3",
+      "extras": "gloves"
+     },
+     "post": {
+      "r": 6.0,
+      "deg": 300
+     },
+     "greeting": "The crane does what my hands do. Ask me what the signals are and why there is only ever one of me.",
+     "topics": [
+      {
+       "id": "signals",
+       "ask": "Why hand signals at all?",
+       "kind": "say",
+       "cites": "agents/build.py",
+       "say": "Because a radio fails quietly and a hand does not. Signals are a fixed, small set precisely so that they cannot be improvised: a signal the operator has to interpret is a signal that has already failed, and the correct response to one is a hold."
+      },
+      {
+       "id": "one",
+       "ask": "Can two of you signal at once?",
+       "kind": "say",
+       "cites": "agents/build.py",
+       "say": "No. One signalperson per crane, named before the lift and handed over out loud if it changes. The only thing anybody else on site may signal is a stop."
+      },
+      {
+       "id": "procedure",
+       "ask": "What order does this lift run in?",
+       "kind": "read",
+       "bind": "seat.procedure"
+      }
+     ],
+     "key": "crane-lift-crew:signalperson"
+    },
+    "rigger": {
+     "name": "Rigger",
+     "job": "chooses and makes the hitch, and knows what the load weighs",
+     "standing": "commonly-required",
+     "stops": "a load whose weight nobody can tell me",
+     "glyph": "\u26d3\ufe0f",
+     "wears": {
+      "top": "long-sleeve",
+      "headwear": "hard-cap",
+      "vest": "tool-vest",
+      "tools": "rigger"
+     },
+     "post": {
+      "r": 5.4,
+      "deg": 120
+     },
+     "greeting": "The hitch is mine and so is the weight. Ask me either one before you ask for a hoist.",
+     "topics": [
+      {
+       "id": "weight",
+       "ask": "How do you know what it weighs?",
+       "kind": "say",
+       "cites": "agents/build.py",
+       "say": "From the tag, the drawing or a calculation you can show someone - never from how it looks. An estimated weight is a decision to find out at the worst possible moment whether the estimate was low."
+      },
+      {
+       "id": "hitch",
+       "ask": "Why this hitch and not another?",
+       "kind": "say",
+       "cites": "agents/build.py",
+       "say": "Because the sling angle, not the sling, decides the tension. Shorten the legs and the same load pulls harder on every one of them, which is why the hitch is chosen for the geometry of this pick and re-chosen when the geometry changes."
+      },
+      {
+       "id": "walk",
+       "ask": "What gets walked before we hook?",
+       "kind": "read",
+       "bind": "seat.walkaround"
+      }
+     ],
+     "key": "crane-lift-crew:rigger"
+    }
+   },
+   "run": [
+    {
+     "by": "lift-director",
+     "to": "rigger",
+     "step": "reads the plan out: weight, radius, hitch, path, and who stands where"
+    },
+    {
+     "by": "rigger",
+     "to": "signalperson",
+     "step": "makes the hitch, checks the sling angles and calls the load rigged"
+    },
+    {
+     "by": "signalperson",
+     "to": "crane-operator",
+     "step": "takes the load\u2019s path, clears it of people, and gives the first move"
+    },
+    {
+     "by": "crane-operator",
+     "to": "signalperson",
+     "step": "moves only on a signal, and calls a hold the moment one is unclear"
+    },
+    {
+     "by": "signalperson",
+     "to": "rigger",
+     "step": "walks the load to the set and holds it still until hands are on it"
+    },
+    {
+     "by": "rigger",
+     "to": "lift-director",
+     "step": "unhooks clear of the load and reports the pick closed against the plan"
+    }
+   ],
+   "halls": [
+    "crane-ops",
+    "riggers",
+    "steel-erectors",
+    "port-crane",
+    "ironworkers",
+    "decking",
+    "tank-erectors",
+    "piling"
+   ]
+  },
+  "hot-work-crew": {
+   "name": "Hot work crew",
+   "job": "Run an arc inside a building that was not built to have one in it, and leave it not on fire.",
+   "seat": "weld-bead",
+   "muster": "safety",
+   "why_a_crew": "A welder behind a shield can see about a hand\u2019s width of the world and is looking at the brightest thing in it. Sparks travel further than people expect, downwards and through gaps, and they smoulder for a long time before they announce themselves. So one person runs the bead, one watches where the sparks go, and one owns the boundary of the area the work was allowed in.",
+   "stop_work": "The fire watch stops this job without asking anyone, and the permit holder stops it the moment the work leaves the area the permit describes.",
+   "roles": {
+    "permit-holder": {
+     "name": "Permit holder",
+     "job": "issues the hot work permit and owns the boundary of the area it covers",
+     "standing": "commonly-required",
+     "stops": "work drifting outside the area the permit describes",
+     "glyph": "\ud83d\uddc2\ufe0f",
+     "wears": {
+      "top": "polo",
+      "headwear": "hard-cap",
+      "vest": "hi-vis-2",
+      "extras": "id-badge"
+     },
+     "post": {
+      "r": 6.8,
+      "deg": 210
+     },
+     "greeting": "I issue for an area and a period, not for a person and a day. Ask me what that means.",
+     "topics": [
+      {
+       "id": "covers",
+       "ask": "What does a hot work permit cover?",
+       "kind": "say",
+       "cites": "agents/build.py",
+       "say": "A described area, for a described period, after described preparation - what was moved, what was covered, what was tested. It is not permission to weld; it is a record that somebody walked the area and made it survivable first."
+      },
+      {
+       "id": "close",
+       "ask": "What closes it?",
+       "kind": "say",
+       "cites": "agents/build.py",
+       "say": "The end of the fire watch, not the end of the welding. A permit closed when the arc went out is a permit that closed during the part of the job where the fire usually starts."
+      },
+      {
+       "id": "trade",
+       "ask": "Who trains on this seat?",
+       "kind": "read",
+       "bind": "seat.trade"
+      }
+     ],
+     "key": "hot-work-crew:permit-holder"
+    },
+    "welder": {
+     "name": "Welder",
+     "job": "runs the bead, and can see almost nothing while doing it",
+     "standing": "commonly-required",
+     "stops": "a bead I cannot run without moving a screen or a fuel source",
+     "glyph": "\ud83d\udd25",
+     "wears": {
+      "top": "work-shirt",
+      "headwear": "welding-cap",
+      "vest": "fire-resist",
+      "extras": "welding-shield",
+      "tools": "welder"
+     },
+     "post": {
+      "r": 3.2,
+      "deg": 350
+     },
+     "greeting": "Behind this shield I can see the puddle and nothing else. Ask me what the seat is asking for.",
+     "topics": [
+      {
+       "id": "task",
+       "ask": "What is this run asking for?",
+       "kind": "read",
+       "bind": "seat.task"
+      },
+      {
+       "id": "controls",
+       "ask": "What do the controls do?",
+       "kind": "read",
+       "bind": "seat.controls"
+      },
+      {
+       "id": "blind",
+       "ask": "What can you not see from there?",
+       "kind": "say",
+       "cites": "agents/build.py",
+       "say": "Everything except the puddle. Where the spatter landed, who walked in behind me, whether the screen is still where it was set - none of that reaches me, which is why somebody else is paid to watch it and why I stop when they say so."
+      }
+     ],
+     "key": "hot-work-crew:welder"
+    },
+    "fire-watch": {
+     "name": "Fire watch",
+     "job": "watches where the sparks land, not the arc, and stays after the arc stops",
+     "standing": "commonly-required",
+     "stops": "a spark landing somewhere I cannot see where it went",
+     "glyph": "\ud83e\uddef",
+     "wears": {
+      "top": "hi-vis-tee",
+      "headwear": "hard-cap",
+      "vest": "fire-resist",
+      "extras": "face-shield"
+     },
+     "post": {
+      "r": 5.6,
+      "deg": 80
+     },
+     "greeting": "I am not watching the weld. Ask me what I am watching and how long I stay.",
+     "topics": [
+      {
+       "id": "watching",
+       "ask": "What are you actually watching?",
+       "kind": "say",
+       "cites": "agents/build.py",
+       "say": "The floor, the gaps in it, the level below, and anything the sparks could have reached and not obviously set alight. A fire watch who is watching the arc is a spectator with a fire extinguisher."
+      },
+      {
+       "id": "after",
+       "ask": "How long do you stay after?",
+       "kind": "say",
+       "cites": "agents/build.py",
+       "say": "Past the end of the work, and then a second look after that. Smouldering is slow and quiet by definition - if it were fast and loud it would not need a watch. The exact period is set by the permit and by your jurisdiction, not by this bundle."
+      },
+      {
+       "id": "walk",
+       "ask": "What gets walked before the arc?",
+       "kind": "read",
+       "bind": "seat.walkaround"
+      }
+     ],
+     "key": "hot-work-crew:fire-watch"
+    }
+   },
+   "run": [
+    {
+     "by": "permit-holder",
+     "to": "welder",
+     "step": "walks the area, clears or covers what can burn, and issues for that area only"
+    },
+    {
+     "by": "welder",
+     "to": "fire-watch",
+     "step": "sets the screens and the leads, then says the arc is about to be struck"
+    },
+    {
+     "by": "fire-watch",
+     "to": "welder",
+     "step": "takes station where the sparks land, not where the arc is, and says the watch is set"
+    },
+    {
+     "by": "welder",
+     "to": "fire-watch",
+     "step": "runs the bead, and says out loud when the arc is out"
+    },
+    {
+     "by": "fire-watch",
+     "to": "permit-holder",
+     "step": "holds the watch through the whole post-work period, then hands the permit back to be closed"
+    }
+   ],
+   "halls": [
+    "welders",
+    "boilermakers",
+    "shipfitters",
+    "fabricators",
+    "pipeline",
+    "marine-pipe",
+    "tank-erectors"
+   ]
+  },
+  "confined-space-crew": {
+   "name": "Confined space entry crew",
+   "job": "Put a welder inside the tank and get the same person back out.",
+   "seat": "weld-bead",
+   "muster": "procedure",
+   "why_a_crew": "The entrant cannot rescue the entrant. Every part of this roster exists because of that: somebody outside who never goes in, whose only job is to know who is in and to stay in contact, and somebody who owns the conditions the entry was authorised under and can withdraw them.",
+   "stop_work": "The attendant ends this entry alone and without discussion, and the entrant leaves on the attendant\u2019s word rather than on their own judgement.",
+   "roles": {
+    "entry-supervisor": {
+     "name": "Entry supervisor",
+     "job": "authorises the entry against tested conditions, and closes it",
+     "standing": "commonly-required",
+     "stops": "an entry whose conditions no longer describe the space",
+     "glyph": "\ud83d\udcdd",
+     "wears": {
+      "top": "polo",
+      "headwear": "hard-cap",
+      "vest": "hi-vis-3",
+      "extras": "id-badge"
+     },
+     "post": {
+      "r": 7.0,
+      "deg": 160
+     },
+     "greeting": "The entry is authorised for conditions, not for people. Ask me which conditions.",
+     "topics": [
+      {
+       "id": "authorise",
+       "ask": "What are you authorising?",
+       "kind": "say",
+       "cites": "agents/build.py",
+       "say": "A specific space, isolated a specific way, tested and found to be in a specific state, entered by named people with a named means of getting them out. Change any one of those and the authorisation is void - it did not describe this anymore."
+      },
+      {
+       "id": "isolate",
+       "ask": "Why isolate before testing?",
+       "kind": "say",
+       "cites": "agents/build.py",
+       "say": "Because a test tells you what the space was like when you tested it, and a line that can still feed it makes that a snapshot rather than a fact. Isolation is what turns a reading into something worth relying on."
+      },
+      {
+       "id": "trade",
+       "ask": "Which halls train on this seat?",
+       "kind": "read",
+       "bind": "seat.trade"
+      }
+     ],
+     "key": "confined-space-crew:entry-supervisor"
+    },
+    "attendant": {
+     "name": "Attendant",
+     "job": "stays outside, counts who is in, keeps contact, and never enters",
+     "standing": "commonly-required",
+     "stops": "losing contact with the entrant, for any reason at all",
+     "glyph": "\ud83d\udc41\ufe0f",
+     "wears": {
+      "top": "long-sleeve",
+      "headwear": "hard-cap",
+      "vest": "hi-vis-3",
+      "extras": "radio"
+     },
+     "post": {
+      "r": 4.6,
+      "deg": 250
+     },
+     "greeting": "I do not go in. Ask me why that is the whole job.",
+     "topics": [
+      {
+       "id": "never",
+       "ask": "Why do you never go in?",
+       "kind": "say",
+       "cites": "agents/build.py",
+       "say": "Because the attendant who goes in to help is the second casualty, and the space now contains two people and no attendant. Most multiple-fatality confined space events are would-be rescuers. Staying outside is not caution; it is the rescue plan working."
+      },
+      {
+       "id": "contact",
+       "ask": "What counts as contact?",
+       "kind": "say",
+       "cites": "agents/build.py",
+       "say": "Something that tells you the entrant is all right, continuously, and that you would notice stopping. Silence is not contact. A reply you have to ask twice for is a reason to end the entry, not a reason to ask a third time."
+      },
+      {
+       "id": "walk",
+       "ask": "What gets walked before an entry?",
+       "kind": "read",
+       "bind": "seat.walkaround"
+      }
+     ],
+     "key": "confined-space-crew:attendant"
+    },
+    "entrant": {
+     "name": "Entrant",
+     "job": "does the work inside, and leaves the moment they are told to",
+     "standing": "commonly-required",
+     "stops": "any change in the air, the light or the way out",
+     "glyph": "\ud83d\udd26",
+     "wears": {
+      "top": "coveralls",
+      "headwear": "hard-cap",
+      "vest": "harness",
+      "extras": "headlamp"
+     },
+     "post": {
+      "r": 3.0,
+      "deg": 40
+     },
+     "greeting": "Inside, the exit is the only thing I keep track of. Ask me what the work is.",
+     "topics": [
+      {
+       "id": "task",
+       "ask": "What is the work in here?",
+       "kind": "read",
+       "bind": "seat.task"
+      },
+      {
+       "id": "out",
+       "ask": "When do you come out?",
+       "kind": "say",
+       "cites": "agents/build.py",
+       "say": "On the attendant\u2019s word, on any alarm, or on anything I do not like - and I do not finish the pass first. The instinct to finish the thing you are holding is the instinct this drill exists to break."
+      },
+      {
+       "id": "air",
+       "ask": "What changes the air in here?",
+       "kind": "say",
+       "cites": "agents/build.py",
+       "say": "The work does. Welding consumes what is in the space and adds what was not, cutting and cleaning do the same, and a space that tested fine before the arc is not the space that exists ten minutes later. That is why the testing is continuous rather than a gate at the door."
+      }
+     ],
+     "key": "confined-space-crew:entrant"
+    }
+   },
+   "run": [
+    {
+     "by": "entry-supervisor",
+     "to": "attendant",
+     "step": "isolates the space, has it tested, and authorises the entry against what the test found"
+    },
+    {
+     "by": "attendant",
+     "to": "entrant",
+     "step": "logs who is going in, sets the means of contact, and takes station at the opening"
+    },
+    {
+     "by": "entrant",
+     "to": "attendant",
+     "step": "enters and reports that the space matches what was authorised before touching the work"
+    },
+    {
+     "by": "attendant",
+     "to": "entry-supervisor",
+     "step": "raises anything that changed - the air, the contact, a second body at the opening"
+    },
+    {
+     "by": "entrant",
+     "to": "attendant",
+     "step": "comes out on the word, and is counted out by name"
+    }
+   ],
+   "halls": [
+    "welders",
+    "boilermakers",
+    "shipfitters",
+    "fabricators",
+    "pipeline",
+    "marine-pipe",
+    "tank-erectors"
+   ]
+  },
+  "scaffold-crew": {
+   "name": "Scaffold crew",
+   "job": "Build one bay in the order that keeps the people building it off the ground and on it.",
+   "seat": "scaffold-bay",
+   "muster": "materials",
+   "why_a_crew": "A scaffold is assembled by the people who will be standing on the unfinished version of it, which is the only structure on site with that property. So the order is not a preference, the material has to arrive in that order, and the person who says the bay may be used is not the person who built it.",
+   "stop_work": "The ground tender stops this build when anyone walks under it, and the competent person stops it when the bay has changed since it was tagged.",
+   "roles": {
+    "scaffold-competent-person": {
+     "name": "Competent person",
+     "job": "inspects the bay and tags it before anyone else stands on it",
+     "standing": "commonly-required",
+     "stops": "a bay that has been altered since it was tagged",
+     "glyph": "\ud83d\udd0d",
+     "wears": {
+      "top": "polo",
+      "headwear": "hard-cap",
+      "vest": "hi-vis-2",
+      "extras": "id-badge"
+     },
+     "post": {
+      "r": 6.6,
+      "deg": 190
+     },
+     "greeting": "A tag is a claim somebody signed. Ask me what it claims and what voids it.",
+     "topics": [
+      {
+       "id": "tag",
+       "ask": "What does the tag actually say?",
+       "kind": "say",
+       "cites": "agents/build.py",
+       "say": "That a named person looked at this bay, on this date, and found it complete for the use it is tagged for. It does not say it is safe forever and it does not survive the bay being modified by someone in a hurry at half past four."
+      },
+      {
+       "id": "competent",
+       "ask": "What makes someone competent here?",
+       "kind": "say",
+       "cites": "agents/build.py",
+       "say": "Being able to recognise the hazard and having the authority to have it fixed. Both halves matter: recognition without authority is a witness, and authority without recognition is a signature. Who holds that standing is decided by your jurisdiction and your employer, never by this bundle."
+      },
+      {
+       "id": "measures",
+       "ask": "What is this bay measured on?",
+       "kind": "read",
+       "bind": "seat.rubric"
+      }
+     ],
+     "key": "scaffold-crew:scaffold-competent-person"
+    },
+    "erector": {
+     "name": "Erector",
+     "job": "sets sills, frames, braces, planks and rails, in that order",
+     "standing": "commonly-required",
+     "stops": "a part handed up out of its stage",
+     "glyph": "\ud83d\udd29",
+     "wears": {
+      "top": "work-shirt",
+      "headwear": "hard-cap",
+      "vest": "harness",
+      "tools": "basic"
+     },
+     "post": {
+      "r": 3.6,
+      "deg": 10
+     },
+     "greeting": "I build it in one order and refuse it in any other. Ask me what that order is.",
+     "topics": [
+      {
+       "id": "procedure",
+       "ask": "What order does this bay go up in?",
+       "kind": "read",
+       "bind": "seat.procedure"
+      },
+      {
+       "id": "why",
+       "ask": "Why does the order matter that much?",
+       "kind": "say",
+       "cites": "agents/build.py",
+       "say": "Because every stage is what the next stage is built from. Frames on unlevel sills are already wrong and get wronger with height; planks before braces put weight on a frame that is not yet held square; and rails last means the last thing you do is the thing that stops the fall."
+      },
+      {
+       "id": "base",
+       "ask": "Why so much fuss about the sills?",
+       "kind": "say",
+       "cites": "agents/build.py",
+       "say": "A scaffold is a stack, and a stack amplifies what is under it. Out of level at the sill is out of plumb at the top, and a leg that is carrying on soft ground finds that out during, not before."
+      }
+     ],
+     "key": "scaffold-crew:erector"
+    },
+    "ground-tender": {
+     "name": "Ground tender",
+     "job": "keeps the drop zone, and passes material up in the order it is called for",
+     "standing": "academy-practice",
+     "stops": "somebody walking under the bay while a part is moving",
+     "glyph": "\ud83e\ude9c",
+     "wears": {
+      "top": "hi-vis-tee",
+      "headwear": "hard-cap",
+      "vest": "hi-vis-3",
+      "extras": "gloves"
+     },
+     "post": {
+      "r": 5.8,
+      "deg": 110
+     },
+     "greeting": "Everything that goes up goes through me, and nothing comes down through anybody.",
+     "topics": [
+      {
+       "id": "zone",
+       "ask": "What is a drop zone?",
+       "kind": "say",
+       "cites": "agents/build.py",
+       "say": "The ground a dropped part would reach, which is bigger than directly underneath because parts bounce and roll. It is kept clear by a person rather than by tape, because tape does not notice anyone stepping over it."
+      },
+      {
+       "id": "order",
+       "ask": "Why not just send everything up at once?",
+       "kind": "say",
+       "cites": "agents/build.py",
+       "say": "Because a deck stacked with parts that belong to a later stage is a deck you cannot work on and a load nobody calculated. Material arriving in build order is the cheapest way to make the wrong order physically awkward."
+      },
+      {
+       "id": "walk",
+       "ask": "What gets walked before we start?",
+       "kind": "read",
+       "bind": "seat.walkaround"
+      }
+     ],
+     "key": "scaffold-crew:ground-tender"
+    }
+   },
+   "run": [
+    {
+     "by": "ground-tender",
+     "to": "erector",
+     "step": "levels and beds the sills, then passes the first frames up"
+    },
+    {
+     "by": "erector",
+     "to": "ground-tender",
+     "step": "sets frames and braces, and calls for the next stage only once the one below is complete"
+    },
+    {
+     "by": "ground-tender",
+     "to": "erector",
+     "step": "holds the drop zone and passes planks and rails in the order they were called"
+    },
+    {
+     "by": "erector",
+     "to": "scaffold-competent-person",
+     "step": "lands the guardrails and hands the finished bay over to be inspected"
+    },
+    {
+     "by": "scaffold-competent-person",
+     "to": "ground-tender",
+     "step": "inspects, tags the bay, and says out loud who may now stand on it"
+    }
+   ],
+   "halls": [
+    "scaffold",
+    "carpenters",
+    "laborers",
+    "bricklayers",
+    "painters",
+    "glaziers",
+    "roofers",
+    "cement-masons",
+    "insulators",
+    "plasterers",
+    "waterproofers",
+    "firestop",
+    "cladding",
+    "masonry-restore",
+    "curtainwall",
+    "window-glazing",
+    "lathers",
+    "stone-carvers",
+    "refractory"
+   ]
+  },
+  "trench-crew": {
+   "name": "Trench crew",
+   "job": "Cut the trench to grade over a live utility without putting the bucket or a person into it.",
+   "seat": "excavator-trench",
+   "muster": "layout",
+   "why_a_crew": "Two of the things that can go wrong here are invisible from the cab: what is buried in front of the bucket, and who has walked into the swing behind it. Neither is solved by a more careful operator. They are solved by somebody whose only job is to have seen them.",
+   "stop_work": "The spotter stops this machine with one call and does not explain it first; the locator stops the cut when a mark is lost rather than when it is proved wrong.",
+   "roles": {
+    "excavator-operator": {
+     "name": "Excavator operator",
+     "job": "runs the machine, and stops the moment the spotter goes out of sight",
+     "standing": "commonly-required",
+     "stops": "a spotter I can no longer see",
+     "glyph": "\ud83d\udc77",
+     "wears": {
+      "top": "work-shirt",
+      "headwear": "hard-cap",
+      "vest": "hi-vis-2",
+      "extras": "ear-muffs"
+     },
+     "post": {
+      "r": 3.4,
+      "deg": 350
+     },
+     "greeting": "From up here the blind spot is behind me and below me. Ask me what the controls do.",
+     "topics": [
+      {
+       "id": "controls",
+       "ask": "What do the controls do?",
+       "kind": "read",
+       "bind": "seat.controls"
+      },
+      {
+       "id": "gauges",
+       "ask": "What am I watching on the dash?",
+       "kind": "read",
+       "bind": "seat.dash"
+      },
+      {
+       "id": "blind",
+       "ask": "What can you not see from the cab?",
+       "kind": "say",
+       "cites": "agents/build.py",
+       "say": "The counterweight\u2019s whole arc, the ground immediately at the tracks, and anything at all in the trench. That last one matters most: a bucket is a poor instrument for finding out whether somebody stepped down for a moment."
+      }
+     ],
+     "key": "trench-crew:excavator-operator"
+    },
+    "trench-competent-person": {
+     "name": "Competent person",
+     "job": "inspects the ground and the cut, and sets what may be taken without support",
+     "standing": "commonly-required",
+     "stops": "water, spoil or vibration changing the ground since the last inspection",
+     "glyph": "\ud83e\udea8",
+     "wears": {
+      "top": "polo",
+      "headwear": "full-brim",
+      "vest": "hi-vis-3",
+      "extras": "id-badge"
+     },
+     "post": {
+      "r": 6.4,
+      "deg": 210
+     },
+     "greeting": "The soil decides how deep this goes, not the schedule. Ask me what I am reading it for.",
+     "topics": [
+      {
+       "id": "soil",
+       "ask": "What are you reading the ground for?",
+       "kind": "say",
+       "cites": "agents/build.py",
+       "say": "Whether it will stand on its own, for how long, and what has changed since the last time anyone looked. Rain, a spoil pile set too close and a compactor running past all change the answer without changing the look of it."
+      },
+      {
+       "id": "again",
+       "ask": "How often does it get inspected?",
+       "kind": "say",
+       "cites": "agents/build.py",
+       "say": "Before the shift, after anything that could have changed it, and again if you have to ask. The point of repeated inspection is that a trench is not a finished object - it is a hole that is still deciding."
+      },
+      {
+       "id": "measures",
+       "ask": "What is this cut measured on?",
+       "kind": "read",
+       "bind": "seat.rubric"
+      }
+     ],
+     "key": "trench-crew:trench-competent-person"
+    },
+    "spotter": {
+     "name": "Spotter",
+     "job": "stands where the operator cannot see and owns the swing radius",
+     "standing": "commonly-required",
+     "stops": "anyone entering the swing radius",
+     "glyph": "\ud83e\uddba",
+     "wears": {
+      "top": "hi-vis-tee",
+      "headwear": "hard-cap",
+      "vest": "hi-vis-3",
+      "extras": "radio"
+     },
+     "post": {
+      "r": 5.6,
+      "deg": 300
+     },
+     "greeting": "I stand where you cannot and I have one call. Ask me what it is.",
+     "topics": [
+      {
+       "id": "call",
+       "ask": "What is your one call?",
+       "kind": "say",
+       "cites": "agents/build.py",
+       "say": "Stop. Not slow, not careful, not left a bit - stop, and then we talk. A spotter with a vocabulary is a second operator with worse information, and the machine cannot follow two people."
+      },
+      {
+       "id": "where",
+       "ask": "Where do you stand?",
+       "kind": "say",
+       "cites": "agents/build.py",
+       "say": "Outside the swing, in the operator\u2019s mirror or eyeline, and never between the machine and anything solid. If the operator cannot see me, I am not spotting - I am just a person standing near an excavator."
+      },
+      {
+       "id": "walk",
+       "ask": "What gets walked before a start?",
+       "kind": "read",
+       "bind": "seat.walkaround"
+      }
+     ],
+     "key": "trench-crew:spotter"
+    },
+    "locator": {
+     "name": "Utility locator",
+     "job": "marks what is buried before the first cut, and re-marks it when marks are lost",
+     "standing": "commonly-required",
+     "stops": "a cut near a mark that nobody has proved",
+     "glyph": "\ud83d\udce1",
+     "wears": {
+      "top": "long-sleeve",
+      "headwear": "ball-cap",
+      "vest": "surveyor",
+      "tools": "surveyor"
+     },
+     "post": {
+      "r": 7.4,
+      "deg": 140
+     },
+     "greeting": "Paint on the ground is a guess with a tolerance. Ask me how big the tolerance is.",
+     "topics": [
+      {
+       "id": "marks",
+       "ask": "How good are the marks?",
+       "kind": "say",
+       "cites": "agents/build.py",
+       "say": "Good enough to tell you roughly where to be careful, and never good enough to dig hard against. A locate has a tolerance either side, and the depth is the least reliable part of it - the paint says where, not how deep."
+      },
+      {
+       "id": "prove",
+       "ask": "What does proving a mark mean?",
+       "kind": "say",
+       "cites": "agents/build.py",
+       "say": "Exposing the thing by hand or by vacuum until you can see it, rather than inferring it from a line somebody sprayed last week. Everything else is a hypothesis being tested with a machine that wins every argument."
+      },
+      {
+       "id": "task",
+       "ask": "What is this cut trying to do?",
+       "kind": "read",
+       "bind": "seat.task"
+      }
+     ],
+     "key": "trench-crew:locator"
+    }
+   },
+   "run": [
+    {
+     "by": "locator",
+     "to": "trench-competent-person",
+     "step": "marks what is buried and says which marks are proved and which are only painted"
+    },
+    {
+     "by": "trench-competent-person",
+     "to": "excavator-operator",
+     "step": "inspects the ground and sets the depth the machine may take without support"
+    },
+    {
+     "by": "excavator-operator",
+     "to": "spotter",
+     "step": "sets up on level ground and asks for the swing radius to be walked and held"
+    },
+    {
+     "by": "spotter",
+     "to": "excavator-operator",
+     "step": "takes station in the operator\u2019s eyeline, keeps the radius clear, and holds the one call"
+    },
+    {
+     "by": "excavator-operator",
+     "to": "trench-competent-person",
+     "step": "cuts cell by cell and stops shallow where the marked service runs"
+    },
+    {
+     "by": "trench-competent-person",
+     "to": "locator",
+     "step": "re-inspects after anything that changed the ground, and sends the locator back when a mark is gone"
+    }
+   ],
+   "halls": [
+    "operating-eng",
+    "shoring",
+    "laborers",
+    "demolition"
+   ]
+  },
+  "aerial-lift-crew": {
+   "name": "Aerial lift crew",
+   "job": "Take the basket to every work point overhead and bring it down - including on the day the person in it cannot.",
+   "seat": "boom-lift",
+   "muster": "inspection",
+   "why_a_crew": "A basket at height with one person in it has no recovery path. The ground attendant is that path, and the line observer exists because judging clearance to an overhead conductor from inside the basket is exactly the judgement the geometry makes hardest.",
+   "stop_work": "The line observer stops every move toward the conductor, and the ground attendant brings the basket down without waiting for agreement from the person in it.",
+   "roles": {
+    "basket-operator": {
+     "name": "Basket operator",
+     "job": "works from the platform, clipped to the basket and nothing else",
+     "standing": "commonly-required",
+     "stops": "a basket I cannot level or a harness I cannot clip",
+     "glyph": "\ud83e\uddd7",
+     "wears": {
+      "top": "work-shirt",
+      "headwear": "climbing",
+      "vest": "harness",
+      "extras": "gloves"
+     },
+     "post": {
+      "r": 3.2,
+      "deg": 30
+     },
+     "greeting": "I am clipped to the basket, not to the building. Ask me why that is not a detail.",
+     "topics": [
+      {
+       "id": "task",
+       "ask": "What is this run asking for?",
+       "kind": "read",
+       "bind": "seat.task"
+      },
+      {
+       "id": "clip",
+       "ask": "Why clip to the basket?",
+       "kind": "say",
+       "cites": "agents/build.py",
+       "say": "Because a boom that moves takes the basket with it, and anything you are tied to that does not move becomes the thing that pulls you out. The anchor rides with the platform for the same reason a seatbelt is bolted to the car."
+      },
+      {
+       "id": "gauges",
+       "ask": "What is the dash telling me?",
+       "kind": "read",
+       "bind": "seat.dash"
+      }
+     ],
+     "key": "aerial-lift-crew:basket-operator"
+    },
+    "ground-attendant": {
+     "name": "Ground attendant",
+     "job": "mans the ground controls and can bring the basket down without help from it",
+     "standing": "commonly-required",
+     "stops": "an operator who has stopped answering",
+     "glyph": "\ud83c\udd98",
+     "wears": {
+      "top": "hi-vis-tee",
+      "headwear": "hard-cap",
+      "vest": "hi-vis-3",
+      "extras": "radio"
+     },
+     "post": {
+      "r": 5.4,
+      "deg": 250
+     },
+     "greeting": "My job is the day this goes wrong. Ask me what that looks like.",
+     "topics": [
+      {
+       "id": "rescue",
+       "ask": "What happens if they collapse up there?",
+       "kind": "say",
+       "cites": "agents/build.py",
+       "say": "I bring the basket down on the ground controls, which is why they get proved at the start of the shift rather than discovered at the worst moment. A rescue plan that begins with calling somebody is a plan with a travel time in it."
+      },
+      {
+       "id": "sight",
+       "ask": "Why stay within sight and sound?",
+       "kind": "say",
+       "cites": "agents/build.py",
+       "say": "Because the first sign of most of what goes wrong up there is somebody going quiet, and you only notice quiet if you were listening. Wandering off to do something useful is the most common way this role stops existing."
+      },
+      {
+       "id": "walk",
+       "ask": "What gets walked before we go up?",
+       "kind": "read",
+       "bind": "seat.walkaround"
+      }
+     ],
+     "key": "aerial-lift-crew:ground-attendant"
+    },
+    "line-observer": {
+     "name": "Line observer",
+     "job": "watches the clearance to the overhead conductor and nothing else",
+     "standing": "academy-practice",
+     "stops": "any part of the machine closing on the exclusion zone",
+     "glyph": "\u26a1",
+     "wears": {
+      "top": "long-sleeve",
+      "headwear": "hard-cap",
+      "vest": "hi-vis-3",
+      "extras": "safety-glasses"
+     },
+     "post": {
+      "r": 6.8,
+      "deg": 330
+     },
+     "greeting": "I am watching one gap and nothing else. Ask me why that gap is hard to judge from up there.",
+     "topics": [
+      {
+       "id": "zone",
+       "ask": "What is the exclusion zone?",
+       "kind": "say",
+       "cites": "agents/build.py",
+       "say": "A distance from the conductor that no part of the machine, the load or the person enters - measured to the whole machine, not to the basket, because the boom and the load get there first. The actual distance comes from your jurisdiction and the line\u2019s voltage, and this bundle does not supply it."
+      },
+      {
+       "id": "judge",
+       "ask": "Why can the basket not judge it?",
+       "kind": "say",
+       "cites": "agents/build.py",
+       "say": "Because you are looking along the gap rather than across it, and a gap seen end-on looks like whatever you were hoping. From the ground, at an angle, the same gap is a distance you can actually call."
+      },
+      {
+       "id": "measures",
+       "ask": "What is this run measured on?",
+       "kind": "read",
+       "bind": "seat.rubric"
+      }
+     ],
+     "key": "aerial-lift-crew:line-observer"
+    }
+   },
+   "run": [
+    {
+     "by": "line-observer",
+     "to": "basket-operator",
+     "step": "walks the overhead line, sets the exclusion zone on the ground and says where it is"
+    },
+    {
+     "by": "basket-operator",
+     "to": "ground-attendant",
+     "step": "sets the stabilizers on the level pad, clips to the basket anchor, and calls for the ground controls to be manned"
+    },
+    {
+     "by": "ground-attendant",
+     "to": "basket-operator",
+     "step": "proves the ground controls, then stays in sight and sound for the whole run"
+    },
+    {
+     "by": "basket-operator",
+     "to": "line-observer",
+     "step": "takes the basket to each work point and asks for a clearance call before every move toward the line"
+    },
+    {
+     "by": "line-observer",
+     "to": "ground-attendant",
+     "step": "calls the clearance, and calls the stop the moment the machine closes on the zone"
+    }
+   ],
+   "halls": [
+    "electricians",
+    "glaziers",
+    "window-glazing",
+    "painters",
+    "ironworkers",
+    "steel-erectors",
+    "sheetmetal",
+    "insulators"
+   ]
+  }
+ }
+}
