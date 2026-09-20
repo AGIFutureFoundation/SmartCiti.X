@@ -1,0 +1,1422 @@
+{
+ "pack": "smartcitix-trade-craft-academy-guide",
+ "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
+ "pack_version": "3.2.0",
+ "built": "2026-09-20",
+ "source_stamp": "82763c480da8e6a2",
+ "contract": "the guide answers six fixed questions about the place the learner is already in, and nothing else. Every answer is a sentence written in this registry with the repo file it is grounded in named in `cites`; the only thing read at view time is a control scheme, and the biggest one - a seat's own keys and its XR mapping - is read from the simulator registry rather than copied here. Nothing is generated, no model runs behind it, and the guide itself reaches no network.",
+ "honesty": {
+  "status": "SCRIPTED: the guide is a hand-written, deterministic script - a fixed set of places, six fixed questions each, and one fixed answer to each. No model runs behind it, nothing is generated at view time, and the guide reaches no network of its own.",
+  "closed_book": "the guide cannot be asked an open question because it has no way to answer one. The topics below are all of them, and the suite counts them; asking by voice picks one of these same topics and never produces a new answer.",
+  "not_advice": "nothing the guide says is a certification, a permit, a code ruling or a substitute for the qualified person on site; where it states a duty it states it as this Academy teaches it, not as any jurisdiction's law.",
+  "not_scored": "opening the guide changes no score and unlocks nothing: no grader reads guide state, and there is no guide state for one to read.",
+  "device_local": "the guide keeps two things in this browser and nothing else: whether each of the two voice switches is on. No question you ask it, by hand or by voice, is recorded anywhere.",
+  "voice": "both voice features are off by default and opt-in, and each carries its own banner stating exactly what leaves the device when it is on. Asking by voice sends captured audio to a speech service run by the browser's vendor, which this bundle neither operates nor can see.",
+  "hands": "the hand gestures are declared, not proved: no headset has been available to this build, and they are declared to be implemented and tested against a mocked XR session only."
+ },
+ "counts": {
+  "places": 10,
+  "world_places": 6,
+  "panel_places": 4,
+  "asks": 6,
+  "topics": 60,
+  "cited_files": 13,
+  "control_schemes": 5,
+  "seat_schemes": 11,
+  "controls": 63,
+  "shared_controls": 21,
+  "seat_controls": 42,
+  "xr_seat_mappings": 11,
+  "gestures": 4,
+  "hand_joints": 25,
+  "voice_features": 2
+ },
+ "ask_set": [
+  {
+   "id": "what",
+   "asks": "what this place is"
+  },
+  {
+   "id": "do",
+   "asks": "what can be done here"
+  },
+  {
+   "id": "move",
+   "asks": "how to move, with the control scheme named"
+  },
+  {
+   "id": "back",
+   "asks": "how to get back out"
+  },
+  {
+   "id": "measures",
+   "asks": "what, if anything, this place measures"
+  },
+  {
+   "id": "limits",
+   "asks": "what this place does NOT claim"
+  }
+ ],
+ "places": {
+  "region": {
+   "name": "The region board",
+   "kind": "world",
+   "view": "region",
+   "walkable": false,
+   "opened_by": "where the app starts, and the region button in the top bar from anywhere else",
+   "what_line": "the map of ten campuses the whole bundle hangs off",
+   "topics": [
+    {
+     "id": "what",
+     "ask": "What am I looking at?",
+     "cites": "unions/registry/campuses.json",
+     "answer": "The region board: the ten campuses of the Academy, drawn as plates on a map. Each plate is one campus, and clicking one takes you inside it. This is the top of the app - everything else in the bundle is reached through a campus."
+    },
+    {
+     "id": "do",
+     "ask": "What can I do from up here?",
+     "cites": "web/build_3d.py",
+     "answer": "Pick a campus and go in. Nothing on the board is locked and no order is imposed, so the campus you start with is yours to choose. Candidate sites on the board are not campuses and open their own note instead."
+    },
+    {
+     "id": "move",
+     "ask": "How do I get around the board?",
+     "scheme": "pointer",
+     "cites": "web/build_3d.py",
+     "answer": "You do not walk here, because there is nothing to walk on yet. Drag to turn the board, use the wheel to come in or pull back, and click a plate to enter that campus. Walking starts once you are standing on a campus."
+    },
+    {
+     "id": "back",
+     "ask": "How do I come back to this view later?",
+     "cites": "web/build_3d.py",
+     "answer": "The region button in the top bar returns here from any view in the app. It is the one control that always goes up a level rather than sideways."
+    },
+    {
+     "id": "measures",
+     "ask": "Is the board scoring me on anything?",
+     "cites": "geo/registry/campuses_geo.json",
+     "answer": "No. Nothing on the region board is measured, scored or recorded - it is a way in, not an exercise. What the board does carry is one coordinate per campus, and each of those carries the word that says how well it is known."
+    },
+    {
+     "id": "limits",
+     "ask": "How real is this map?",
+     "cites": "geo/registry/campuses_geo.json",
+     "answer": "The coordinates are RECORDED or DERIVED for the flagship campuses and AUTHORED for the hubs, and each plate says which. The campuses themselves are SCHEMATIC: no ground has been acquired, nothing has been consented, and this is not a site plan or a property map."
+    }
+   ]
+  },
+  "campus": {
+   "name": "A campus",
+   "kind": "world",
+   "view": "campus",
+   "walkable": true,
+   "opened_by": "clicking a campus plate on the region board",
+   "what_line": "the green, the ring of halls, the training yard and the restoration pins",
+   "topics": [
+    {
+     "id": "what",
+     "ask": "What is this place?",
+     "cites": "unions/registry/campuses.json",
+     "answer": "One campus of the Academy: a plaza, a ring of trade halls around it, a fenced training yard with a stand for each seat this campus can run, and the chapter hall. Which halls stand here is the campus's own record, not a fixed list every campus shares."
+    },
+    {
+     "id": "do",
+     "ask": "What can I do on the green?",
+     "cites": "web/build_3d.py",
+     "answer": "Walk into any hall through its door, take a seat straight off its stand in the training yard, open the chapter hall, or follow a restoration pin out to a site. Advisors stand on the green as well as inside the halls, and either can be asked."
+    },
+    {
+     "id": "move",
+     "ask": "How do I walk around out here?",
+     "scheme": "walk-keyboard",
+     "cites": "web/build_3d.py",
+     "answer": "Press the walk button and the view becomes a body: the movement keys walk, Shift runs, and the mouse turns your head once the pointer is locked. Walk up to a door, a seat stand or a place marker and the bar tells you what Enter will open."
+    },
+    {
+     "id": "back",
+     "ask": "How do I get off this campus?",
+     "cites": "web/build_3d.py",
+     "answer": "The region button in the top bar takes you back to the board. Escape releases the pointer lock and hands the camera back without leaving the campus, which is usually what you actually want."
+    },
+    {
+     "id": "measures",
+     "ask": "Does walking around here count for anything?",
+     "cites": "sims/registry/sims.json",
+     "answer": "No. Walking, looking and talking to advisors are measured nowhere and change nothing. The only things in this bundle that produce a score are the seats in the yard and the crib check inside a hall, and both say so before you start."
+    },
+    {
+     "id": "limits",
+     "ask": "Is this campus a real place?",
+     "cites": "geo/registry/campuses_geo.json",
+     "answer": "The city it sits in is real and the coordinate is labelled with how well it is known. The campus is SCHEMATIC - drawn to teach, not surveyed - and no ground has been acquired, no building consented and no partnership with anyone here is claimed."
+    }
+   ]
+  },
+  "hall": {
+   "name": "A hall interior",
+   "kind": "world",
+   "view": "hall",
+   "walkable": true,
+   "opened_by": "walking through a hall door on the campus green, or picking the hall from the campus",
+   "what_line": "the rooms of one trade hall, with advisors, a crib and the stations",
+   "topics": [
+    {
+     "id": "what",
+     "ask": "Whose hall is this?",
+     "cites": "unions/registry/unions.json",
+     "answer": "One trade hall of the 111 this bundle draws, laid out in rooms: induction, layout, materials, the practice bays, inspection, coordination and the documentation room. The rooms a hall gets are its own record, so two halls are not the same building with a different sign."
+    },
+    {
+     "id": "do",
+     "ask": "What is there to do in here?",
+     "cites": "agents/registry/advisors.json",
+     "answer": "Find the advisor standing in a room and ask what that room is held to - the PPE, the hazards, the light and air it is kept at. Run the crib check in the tool room, walk the practice bays, and take any seat this hall trains on."
+    },
+    {
+     "id": "move",
+     "ask": "How do I get around inside?",
+     "scheme": "walk-keyboard",
+     "cites": "web/build_3d.py",
+     "answer": "The same walk you use outside: the movement keys, Shift to run, the mouse to look. Stand next to an advisor and the ask button appears; stand at a station or a crib and Enter opens it."
+    },
+    {
+     "id": "back",
+     "ask": "How do I get out of this hall?",
+     "cites": "web/build_3d.py",
+     "answer": "The campus button puts you back on the green outside, and the region button goes all the way up to the board. Escape lets go of the pointer without leaving the room you are in."
+    },
+    {
+     "id": "measures",
+     "ask": "What in here is actually scored?",
+     "cites": "tools/registry/toolcribs.json",
+     "answer": "The crib check is scored, against the tools that district's crib actually issues, and the seats this hall trains on are scored against their own rubrics. Everything else in the hall - the rooms, the advisors, the walk itself - is not."
+    },
+    {
+     "id": "limits",
+     "ask": "Does this hall belong to anybody?",
+     "cites": "unions/registry/unions.json",
+     "answer": "No. The halls carry trade names, not the name of any real union local, employer or training centre, and no affiliation with one is claimed or implied. The building is SCHEMATIC and the room layout teaches a shape of work rather than reproducing a real shop."
+    }
+   ]
+  },
+  "seat": {
+   "name": "A training seat",
+   "kind": "world",
+   "view": "sim",
+   "walkable": false,
+   "opened_by": "taking a stand in the campus training yard, or starting the seat from inside its hall",
+   "what_line": "one machine simulator, its dash, its rubric and its walkaround",
+   "topics": [
+    {
+     "id": "what",
+     "ask": "What have I just sat down in?",
+     "cites": "sims/registry/sims.json",
+     "answer": "One training seat: a single schematic machine with a task, a set of controls, a dash of gauges and a rubric that measures what you did. The seat you are in declares all four itself, and the guide reads them from that seat rather than keeping a copy."
+    },
+    {
+     "id": "do",
+     "ask": "What am I meant to be doing here?",
+     "cites": "sims/registry/sims.json",
+     "answer": "Walk the pre-shift points first, then run the task the seat states. You can also hand the seat to the scripted reference operator and watch it drive, at the level the panel is set to, and take it back at any time."
+    },
+    {
+     "id": "move",
+     "ask": "What do the controls do?",
+     "scheme": "seat:running",
+     "cites": "sims/registry/sims.json",
+     "answer": "Every seat declares its own keys and what each one drives, and the table under this answer is that seat's own list, read live from the seat you are actually in. Space is the verb on every seat - hook, trigger, place, call - and a headset gets the same seat through its own declared mapping."
+    },
+    {
+     "id": "back",
+     "ask": "How do I get out of the seat?",
+     "cites": "web/build_3d.py",
+     "answer": "Escape leaves the seat and puts you back where you took it from. In a headset the B or Y button does the same thing. Leaving mid-run scores nothing and costs nothing - an abandoned run is simply not a run."
+    },
+    {
+     "id": "measures",
+     "ask": "What is this seat actually measuring?",
+     "cites": "sims/registry/sims.json",
+     "answer": "The rubric axes the seat itself declares, every one of them computed from measured state - where things ended up, what was exceeded, how long it took. Nothing narrative moves a score, and neither does what your avatar is wearing or how long you spent talking to an advisor."
+    },
+    {
+     "id": "limits",
+     "ask": "Does time in this seat certify me?",
+     "cites": "sims/registry/sims.json",
+     "answer": "It does not. These are schematic single-machine physics for practising control discipline, not equipment simulators and not a substitute for seat time on real iron. No run here counts toward any certification, and this bundle issues none."
+    }
+   ]
+  },
+  "restoration": {
+   "name": "A restoration site",
+   "kind": "world",
+   "view": "restoration",
+   "walkable": true,
+   "opened_by": "the restoration button in the top bar, or a restoration pin on a campus",
+   "what_line": "a walkable bay-restoration site and the training tracks bound to it",
+   "topics": [
+    {
+     "id": "what",
+     "ask": "Where am I now?",
+     "cites": "restoration/registry/restoration.json",
+     "answer": "A bay restoration site: a real, named place on the water, drawn schematically and walkable, with the training tracks that would be worked there marked on the ground. The site list and the tracks are one registry, and the page draws what that registry holds."
+    },
+    {
+     "id": "do",
+     "ask": "What is there to do at a site?",
+     "cites": "restoration/registry/restoration.json",
+     "answer": "Walk the site and open the track markers. Each track names the trade skills that work would draw on, which is the link back to the halls - a site is a reason for a skill rather than another exercise."
+    },
+    {
+     "id": "move",
+     "ask": "How do I walk the site?",
+     "scheme": "walk-keyboard",
+     "cites": "web/build_3d.py",
+     "answer": "Exactly as you walk a campus: the movement keys, Shift to run, the mouse to look. Stand at a track marker and the bar tells you what Enter will open. The site is bounded, so you cannot walk off it."
+    },
+    {
+     "id": "back",
+     "ask": "How do I leave the site?",
+     "cites": "web/build_3d.py",
+     "answer": "Escape leaves the site walk and hands you back to the view you arrived from. The campus and region buttons in the top bar work here the same as they do anywhere else."
+    },
+    {
+     "id": "measures",
+     "ask": "Is anything measured out here?",
+     "cites": "restoration/registry/restoration.json",
+     "answer": "Nothing. A restoration site records no score and gates nothing - it exists to put the work somewhere real rather than to test you on it. The seats remain the only things in this bundle that measure."
+    },
+    {
+     "id": "limits",
+     "ask": "Is this what the site really looks like?",
+     "cites": "restoration/registry/restoration.json",
+     "answer": "No. The place and its coordinate are real and labelled; the ground, the water line and the planting you are walking through are SCHEMATIC and are not a survey, a design or a restoration plan. No programme named here has reviewed or agreed to any of it."
+    }
+   ]
+  },
+  "locker": {
+   "name": "The avatar locker",
+   "kind": "world",
+   "view": "avatar",
+   "walkable": false,
+   "opened_by": "the avatar button in the top bar",
+   "what_line": "the turntable where a learner builds the figure they walk as",
+   "topics": [
+    {
+     "id": "what",
+     "ask": "What is this screen?",
+     "cites": "avatars/registry/avatars.json",
+     "answer": "The locker: a turntable with your figure on it and the sections that make it up - build, face, hair, headwear, top, vest, trousers, boots, tools, outer layer, extras and crew marks. Every option is declared in one registry, and the advisors and crews are dressed from the same list you are."
+    },
+    {
+     "id": "do",
+     "ask": "What can I change in here?",
+     "cites": "avatars/registry/avatars.json",
+     "answer": "Any section, in any order, as often as you like. You can play an emote to see how it moves, and you can download the figure as a .glb to use elsewhere."
+    },
+    {
+     "id": "move",
+     "ask": "Why can I not walk in here?",
+     "scheme": "pointer",
+     "cites": "web/build_3d.py",
+     "answer": "Because there is nowhere to walk: the locker is a turntable, not a room, and the walk control is switched off while it is open. Drag to turn the figure and use the wheel to come closer."
+    },
+    {
+     "id": "back",
+     "ask": "How do I get back to the world?",
+     "cites": "web/build_3d.py",
+     "answer": "The campus or region button in the top bar. Whatever you changed is already applied - there is no save step and nothing to confirm."
+    },
+    {
+     "id": "measures",
+     "ask": "Does any of this affect my score?",
+     "cites": "sims/registry/sims.json",
+     "answer": "None of it. No rubric, grader or gate in this bundle reads a single thing about your figure, including the crew marks, and no option is locked behind anything you have done. The look is yours and it is only a look."
+    },
+    {
+     "id": "limits",
+     "ask": "Do the crew marks mean anything?",
+     "cites": "avatars/registry/avatars.json",
+     "answer": "Not outside this bundle. The marks and crew colours are the Academy's own, not the insignia of any real union, employer or trade body, and wearing one claims no membership and no qualification. The hand emotes borrow the yard's vocabulary and confer nothing either."
+    }
+   ]
+  },
+  "panel-records": {
+   "name": "The records panel",
+   "kind": "panel",
+   "view": null,
+   "walkable": false,
+   "opened_by": "the records button in the top bar",
+   "what_line": "every run, pass and best time this browser has kept",
+   "topics": [
+    {
+     "id": "what",
+     "ask": "What is this panel showing me?",
+     "cites": "web/build_3d.py",
+     "answer": "Your record: how many times you have run each seat, whether it has ever been passed, your best time on it, and the same three for the crib checks. It also counts the stations you have opened and the walkaround points you have marked."
+    },
+    {
+     "id": "do",
+     "ask": "What can I do with it?",
+     "cites": "training/registry/training.json",
+     "answer": "Export the whole record as JSON, import one back, or clear it. The episode recorder's switches live here too, and the sweep that has the scripted reference operator drive every seat is one button."
+    },
+    {
+     "id": "move",
+     "ask": "Where am I while this is open?",
+     "scheme": "panel",
+     "cites": "web/build_3d.py",
+     "answer": "Exactly where you were: a panel slides in over the view and the view underneath is untouched. Close it and you are back in the same spot, facing the same way."
+    },
+    {
+     "id": "back",
+     "ask": "How do I close it?",
+     "cites": "web/build_3d.py",
+     "answer": "The close button in the corner of the panel, or the same top-bar button you opened it with. Closing it keeps everything - the record is already written, and there is no save step to miss."
+    },
+    {
+     "id": "measures",
+     "ask": "Where does this record live?",
+     "cites": "training/registry/training.json",
+     "answer": "In this browser and nowhere else. Nothing here is uploaded, there is no account to upload it to, and no server in this bundle has ever been asked for it. Clear the site data and the record is gone, which is the price of it never having left."
+    },
+    {
+     "id": "limits",
+     "ask": "Is a pass in here worth anything?",
+     "cites": "sims/registry/sims.json",
+     "answer": "Inside this bundle it is a record of what you practised. Outside it, it is not a certificate, a licence, a card or a transcript, and no body has agreed to recognise it. The Academy certifies nothing by itself."
+    }
+   ]
+  },
+  "panel-schools": {
+   "name": "The schools panel",
+   "kind": "panel",
+   "view": null,
+   "walkable": false,
+   "opened_by": "the schools button in the top bar",
+   "what_line": "the flipped-classroom programme, its stages, bands and proposed districts",
+   "topics": [
+    {
+     "id": "what",
+     "ask": "What is this programme?",
+     "cites": "schools/registry/schools.json",
+     "answer": "The schools side of the Academy: the stages a partnership would run through, the age bands it would offer at, the districts named as candidates, and which hall each school unit would sit against. It is a written proposal, not a running programme."
+    },
+    {
+     "id": "do",
+     "ask": "What can I do with this?",
+     "cites": "schools/registry/schools.json",
+     "answer": "Read it, and jump from any unit straight to the hall it is bound to. It is a proposal you can walk through rather than a form to fill in, and nothing in it asks you for anything."
+    },
+    {
+     "id": "move",
+     "ask": "Do I lose my place while I read this?",
+     "scheme": "panel",
+     "cites": "web/build_3d.py",
+     "answer": "No. The panel is an overlay; the view behind it stays exactly as you left it. Following a link to a hall does change the view, deliberately."
+    },
+    {
+     "id": "back",
+     "ask": "How do I close it?",
+     "cites": "web/build_3d.py",
+     "answer": "The close button in the corner, or the same top-bar button again. Nothing in the panel is a form, so there is nothing to lose by closing it."
+    },
+    {
+     "id": "measures",
+     "ask": "Is any of this tracking me?",
+     "cites": "training/registry/training.json",
+     "answer": "No. The schools panel reads a registry and records nothing at all - no score, no episode, no visit count. Nothing you do in it is kept even locally."
+    },
+    {
+     "id": "limits",
+     "ask": "Are these districts actually partners?",
+     "cites": "schools/registry/schools.json",
+     "answer": "No. Every district named is recorded as a PROPOSED partner and the registry says so on every single entry. None has been approached, reviewed this, or agreed to any of it, and no endorsement by any district, school or board is claimed."
+    }
+   ]
+  },
+  "panel-chapters": {
+   "name": "The chapters panel",
+   "kind": "panel",
+   "view": null,
+   "walkable": false,
+   "opened_by": "the chapter hall on a campus green",
+   "what_line": "which campus hosts the chapter of each hall that is not at home here",
+   "topics": [
+    {
+     "id": "what",
+     "ask": "What is a chapter hall?",
+     "cites": "unions/registry/chapters.json",
+     "answer": "Every one of the 111 halls has one campus it is at home on. The chapter hall on a campus green lists the halls whose home is elsewhere but which keep a chapter here, grouped by the campus they came from."
+    },
+    {
+     "id": "do",
+     "ask": "What is this list for?",
+     "cites": "unions/registry/chapters.json",
+     "answer": "It answers \"why is this trade not here\" without making you check ten campuses. The trade is somewhere, the list says where, and the region board gets you there."
+    },
+    {
+     "id": "move",
+     "ask": "Where am I while this is up?",
+     "scheme": "panel",
+     "cites": "web/build_3d.py",
+     "answer": "Still on the campus green you opened it from, with the view untouched behind the panel. Closing it puts you back with nothing changed."
+    },
+    {
+     "id": "back",
+     "ask": "How do I close it?",
+     "cites": "web/build_3d.py",
+     "answer": "The close button in the corner of the panel, or the chapter hall itself again. You are handed straight back to the green you were standing on."
+    },
+    {
+     "id": "measures",
+     "ask": "Does this track what I read?",
+     "cites": "training/registry/training.json",
+     "answer": "No. Opening the chapter hall records nothing, scores nothing and unlocks nothing, and it is not read by any grader. It is a list, built from a registry, and that is all it is."
+    },
+    {
+     "id": "limits",
+     "ask": "Are these real chapters?",
+     "cites": "unions/registry/chapters.json",
+     "answer": "No. The hosting is this bundle's own arrangement of its own halls, not a description of where any real union local, chapter or district actually sits. No real local is named anywhere in it."
+    }
+   ]
+  },
+  "panel-orbis": {
+   "name": "The orbis panel",
+   "kind": "panel",
+   "view": null,
+   "walkable": false,
+   "opened_by": "the orbis button in the top bar, while standing in a hall",
+   "what_line": "the deterministic video prompt this bundle writes for a hall, and never runs",
+   "topics": [
+    {
+     "id": "what",
+     "ask": "What does this panel make?",
+     "cites": "orbis/registry/orbis.json",
+     "answer": "A text prompt for a video model, built deterministically from the hall you are standing in. The panel writes text and only text - it never calls a model, and nothing on this page has ever produced a frame of video."
+    },
+    {
+     "id": "do",
+     "ask": "What am I supposed to do with the prompt?",
+     "cites": "orbis/registry/orbis.json",
+     "answer": "Copy it, or export the full set for all 111 halls. Running it is a separate, deliberate step somebody takes on their own machine with their own key, and the panel names the runners that would do it."
+    },
+    {
+     "id": "move",
+     "ask": "Where am I while this is open?",
+     "scheme": "panel",
+     "cites": "web/build_3d.py",
+     "answer": "In the hall you opened it from - the panel overlays the view and changes nothing behind it. The prompt is built for that hall, so which hall you are standing in matters."
+    },
+    {
+     "id": "back",
+     "ask": "How do I close it?",
+     "cites": "web/build_3d.py",
+     "answer": "The close button in the corner, or the same top-bar button again. The prompt is rebuilt every time you open it, so nothing is lost by closing it."
+    },
+    {
+     "id": "measures",
+     "ask": "Does this panel send anything anywhere?",
+     "cites": "orbis/registry/orbis.json",
+     "answer": "Nothing. No network call is made from this page for any of it, no key is held here, and nothing is recorded when you open it. The text is built in the page from registries already in the bundle."
+    },
+    {
+     "id": "limits",
+     "ask": "Is the video this describes real footage?",
+     "cites": "orbis/registry/orbis.json",
+     "answer": "It would not be. Anything generated from these prompts is AI-SYNTHESIZED - that is the word this bundle keeps for exactly this and for nothing else - and it is not footage of real work, real workers or real equipment. Nothing generated from it may be presented as a record of anything that happened."
+    }
+   ]
+  }
+ },
+ "controls": {
+  "shared": {
+   "walk-keyboard": {
+    "name": "Walking",
+    "where": "a campus green, a hall interior or a restoration site, once the walk button is pressed",
+    "source": "web/build_3d.py",
+    "rows": [
+     {
+      "input": "W / S, or Up / Down",
+      "does": "walk forward and back; the back-pedal is capped below the forward walk",
+      "codes": [
+       "KeyW",
+       "KeyS",
+       "ArrowUp",
+       "ArrowDown"
+      ]
+     },
+     {
+      "input": "A / D, or Left / Right",
+      "does": "step left and right without turning",
+      "codes": [
+       "KeyA",
+       "KeyD",
+       "ArrowLeft",
+       "ArrowRight"
+      ]
+     },
+     {
+      "input": "Shift, held",
+      "does": "run, forward only - it buys nothing going backwards",
+      "codes": [
+       "ShiftLeft",
+       "ShiftRight"
+      ]
+     },
+     {
+      "input": "Mouse, once the pointer is locked",
+      "does": "turn your head; the body follows where you look",
+      "codes": [
+       "PointerLockControls"
+      ]
+     },
+     {
+      "input": "Enter, or E",
+      "does": "open whatever you are standing at - a hall door, a seat stand, a place marker, a restoration track",
+      "codes": [
+       "Enter",
+       "KeyE"
+      ]
+     },
+     {
+      "input": "Escape",
+      "does": "release the pointer, and leave a seat or a site walk if you are in one",
+      "codes": [
+       "Escape"
+      ]
+     }
+    ]
+   },
+   "pointer": {
+    "name": "Mouse and pointer",
+    "where": "the region board, a campus or hall you are not walking in, and the avatar locker",
+    "source": "web/build_3d.py",
+    "rows": [
+     {
+      "input": "Drag",
+      "does": "orbit the view around what is in front of you; the idle drift stops the moment you do",
+      "codes": [
+       "OrbitControls",
+       "autoRotate"
+      ]
+     },
+     {
+      "input": "Wheel",
+      "does": "come closer or pull back, between the near and far limits the view is held to",
+      "codes": [
+       "minDistance",
+       "maxDistance"
+      ]
+     },
+     {
+      "input": "Click",
+      "does": "open whatever is under the pointer - a campus plate, a hall door, an advisor, a station, a chapter hall, a restoration pin",
+      "codes": [
+       "pointerdown",
+       "pickWith"
+      ]
+     },
+     {
+      "input": "Hover",
+      "does": "name the thing under the pointer without opening it",
+      "codes": [
+       "pointermove"
+      ]
+     }
+    ]
+   },
+   "touch": {
+    "name": "Touch",
+    "where": "a touch device, where walking is third-person rather than first",
+    "source": "web/build_3d.py",
+    "rows": [
+     {
+      "input": "Left thumb stick",
+      "does": "move your figure; you watch it from behind rather than through its eyes",
+      "codes": [
+       "joyVec",
+       "touchWalkStep"
+      ]
+     },
+     {
+      "input": "Drag on the right of the screen",
+      "does": "turn the view around your figure",
+      "codes": [
+       "tYaw",
+       "tPitch"
+      ]
+     },
+     {
+      "input": "Tap",
+      "does": "the same as a click: open whatever you tapped",
+      "codes": [
+       "pointerdown",
+       "pickWith"
+      ]
+     },
+     {
+      "input": "The action button",
+      "does": "open what you are standing at, the way Enter does on a keyboard",
+      "codes": [
+       "actBtn"
+      ]
+     },
+     {
+      "input": "The emote button",
+      "does": "open the emote wheel and play a gesture",
+      "codes": [
+       "emoBtn",
+       "wheelShow"
+      ]
+     }
+    ]
+   },
+   "xr-rig": {
+    "name": "In a headset, outside a seat",
+    "where": "an immersive VR or AR session, while walking rather than driving a seat",
+    "source": "web/build_3d.py",
+    "rows": [
+     {
+      "input": "Left thumb stick",
+      "does": "walk the rig in the direction you are looking",
+      "codes": [
+       "xrMove"
+      ]
+     },
+     {
+      "input": "Right thumb stick, left or right",
+      "does": "snap-turn a fixed step per flick - deliberately not a smooth spin, which is the comfort default",
+      "codes": [
+       "xrSnap",
+       "XR_SNAP"
+      ]
+     },
+     {
+      "input": "Left trigger",
+      "does": "point and pick: the ray opens exactly what a click would",
+      "codes": [
+       "xrPickLeft"
+      ]
+     },
+     {
+      "input": "B / Y button",
+      "does": "end the session and put the headset down",
+      "codes": [
+       "ses.end()"
+      ]
+     }
+    ]
+   },
+   "panel": {
+    "name": "A panel",
+    "where": "any of the four panels, which overlay whichever view you were in",
+    "source": "web/build_3d.py",
+    "rows": [
+     {
+      "input": "The close button in the panel corner",
+      "does": "close the panel and hand the view back untouched",
+      "codes": [
+       "pclose"
+      ]
+     },
+     {
+      "input": "The same top-bar button again",
+      "does": "close the panel that button opened, without touching the view behind it",
+      "codes": [
+       "barbtn"
+      ]
+     }
+    ]
+   }
+  },
+  "seats": {
+   "crane-lift": {
+    "name": "Tower Crane Lift",
+    "source": "sims/registry/sims.json",
+    "rows": [
+     {
+      "input": "A / D",
+      "does": "slew the jib",
+      "codes": [
+       "KeyA",
+       "KeyD"
+      ]
+     },
+     {
+      "input": "W / S",
+      "does": "trolley out / in",
+      "codes": [
+       "KeyW",
+       "KeyS"
+      ]
+     },
+     {
+      "input": "Q / E",
+      "does": "hoist up / down",
+      "codes": [
+       "KeyQ",
+       "KeyE"
+      ]
+     },
+     {
+      "input": "Space",
+      "does": "hook / release the load",
+      "codes": [
+       "Space"
+      ]
+     }
+    ],
+    "xr": {
+     "left_stick": "W/S on the y axis, A/D on the x axis - trolley out / in; slew the jib",
+     "right_stick": "Q/E on the x axis - hoist up / down",
+     "trigger": "Space, on the press edge - hook / release the load",
+     "grip": "unused on this seat (no secondary key)",
+     "grip_key": null,
+     "primary": "A / X button: start or stop watching the scripted reference operator drive this seat, at the level the HUD last selected",
+     "secondary": "B / Y button: leave the seat"
+    }
+   },
+   "excavator-trench": {
+    "name": "Excavator Trench Cut",
+    "source": "sims/registry/sims.json",
+    "rows": [
+     {
+      "input": "A / D",
+      "does": "slew the house",
+      "codes": [
+       "KeyA",
+       "KeyD"
+      ]
+     },
+     {
+      "input": "W / S",
+      "does": "reach out / in",
+      "codes": [
+       "KeyW",
+       "KeyS"
+      ]
+     },
+     {
+      "input": "Q / E",
+      "does": "bucket up / down",
+      "codes": [
+       "KeyQ",
+       "KeyE"
+      ]
+     },
+     {
+      "input": "Space",
+      "does": "dig / dump the bucket",
+      "codes": [
+       "Space"
+      ]
+     }
+    ],
+    "xr": {
+     "left_stick": "W/S on the y axis, A/D on the x axis - reach out / in; slew the house",
+     "right_stick": "Q/E on the x axis - bucket up / down",
+     "trigger": "Space, on the press edge - dig / dump the bucket",
+     "grip": "unused on this seat (no secondary key)",
+     "grip_key": null,
+     "primary": "A / X button: start or stop watching the scripted reference operator drive this seat, at the level the HUD last selected",
+     "secondary": "B / Y button: leave the seat"
+    }
+   },
+   "forklift-run": {
+    "name": "Forklift Yard Run",
+    "source": "sims/registry/sims.json",
+    "rows": [
+     {
+      "input": "W / S",
+      "does": "drive / reverse",
+      "codes": [
+       "KeyW",
+       "KeyS"
+      ]
+     },
+     {
+      "input": "A / D",
+      "does": "steer",
+      "codes": [
+       "KeyA",
+       "KeyD"
+      ]
+     },
+     {
+      "input": "Space",
+      "does": "lift / set the pallet",
+      "codes": [
+       "Space"
+      ]
+     }
+    ],
+    "xr": {
+     "left_stick": "W/S on the y axis, A/D on the x axis - drive / reverse; steer",
+     "right_stick": "unused on this seat (no Q/E verb)",
+     "trigger": "Space, on the press edge - lift / set the pallet",
+     "grip": "unused on this seat (no secondary key)",
+     "grip_key": null,
+     "primary": "A / X button: start or stop watching the scripted reference operator drive this seat, at the level the HUD last selected",
+     "secondary": "B / Y button: leave the seat"
+    }
+   },
+   "weld-bead": {
+    "name": "Weld Bead Run",
+    "source": "sims/registry/sims.json",
+    "rows": [
+     {
+      "input": "W / S",
+      "does": "travel the torch along the seam",
+      "codes": [
+       "KeyW",
+       "KeyS"
+      ]
+     },
+     {
+      "input": "Q / E",
+      "does": "raise / lower the torch (arc gap)",
+      "codes": [
+       "KeyQ",
+       "KeyE"
+      ]
+     },
+     {
+      "input": "Space",
+      "does": "strike / break the arc",
+      "codes": [
+       "Space"
+      ]
+     }
+    ],
+    "xr": {
+     "left_stick": "W/S on the y axis, A/D on the x axis - travel the torch along the seam; no A/D verb on this seat",
+     "right_stick": "Q/E on the x axis - raise / lower the torch (arc gap)",
+     "trigger": "Space, on the press edge - strike / break the arc",
+     "grip": "unused on this seat (no secondary key)",
+     "grip_key": null,
+     "primary": "A / X button: start or stop watching the scripted reference operator drive this seat, at the level the HUD last selected",
+     "secondary": "B / Y button: leave the seat"
+    }
+   },
+   "scaffold-bay": {
+    "name": "Scaffold Bay Build",
+    "source": "sims/registry/sims.json",
+    "rows": [
+     {
+      "input": "A / D",
+      "does": "choose the part rack",
+      "codes": [
+       "KeyA",
+       "KeyD"
+      ]
+     },
+     {
+      "input": "Space",
+      "does": "place the next part",
+      "codes": [
+       "Space"
+      ]
+     },
+     {
+      "input": "R",
+      "does": "jump the rack to the legal stage",
+      "codes": [
+       "KeyR"
+      ]
+     }
+    ],
+    "xr": {
+     "left_stick": "W/S on the y axis, A/D on the x axis - no W/S verb on this seat; choose the part rack",
+     "right_stick": "unused on this seat (no Q/E verb)",
+     "trigger": "Space, on the press edge - place the next part",
+     "grip": "R, held - jump the rack to the legal stage",
+     "grip_key": "KeyR",
+     "primary": "A / X button: start or stop watching the scripted reference operator drive this seat, at the level the HUD last selected",
+     "secondary": "B / Y button: leave the seat"
+    }
+   },
+   "rigging-signals": {
+    "name": "Rigging Signal Call",
+    "source": "sims/registry/sims.json",
+    "rows": [
+     {
+      "input": "Q / E",
+      "does": "signal hoist up / hoist down",
+      "codes": [
+       "KeyQ",
+       "KeyE"
+      ]
+     },
+     {
+      "input": "A / D",
+      "does": "signal swing left / swing right",
+      "codes": [
+       "KeyA",
+       "KeyD"
+      ]
+     },
+     {
+      "input": "W / S",
+      "does": "signal trolley out / trolley in",
+      "codes": [
+       "KeyW",
+       "KeyS"
+      ]
+     },
+     {
+      "input": "Space",
+      "does": "signal STOP",
+      "codes": [
+       "Space"
+      ]
+     }
+    ],
+    "xr": {
+     "left_stick": "W/S on the y axis, A/D on the x axis - signal trolley out / trolley in; signal swing left / swing right",
+     "right_stick": "Q/E on the x axis - signal hoist up / hoist down",
+     "trigger": "Space, on the press edge - signal STOP",
+     "grip": "unused on this seat (no secondary key)",
+     "grip_key": null,
+     "primary": "A / X button: start or stop watching the scripted reference operator drive this seat, at the level the HUD last selected",
+     "secondary": "B / Y button: leave the seat"
+    }
+   },
+   "load-chart": {
+    "name": "Load Chart Judgment",
+    "source": "sims/registry/sims.json",
+    "rows": [
+     {
+      "input": "Space",
+      "does": "accept the pick - hook it",
+      "codes": [
+       "Space"
+      ]
+     },
+     {
+      "input": "X",
+      "does": "refuse the pick - over the chart",
+      "codes": [
+       "KeyX"
+      ]
+     },
+     {
+      "input": "Q / E",
+      "does": "walk the chart rows",
+      "codes": [
+       "KeyQ",
+       "KeyE"
+      ]
+     }
+    ],
+    "xr": {
+     "left_stick": "W/S on the y axis, A/D on the x axis - no W/S verb on this seat; no A/D verb on this seat",
+     "right_stick": "Q/E on the x axis - walk the chart rows",
+     "trigger": "Space, on the press edge - accept the pick - hook it",
+     "grip": "X, held - refuse the pick - over the chart",
+     "grip_key": "KeyX",
+     "primary": "A / X button: start or stop watching the scripted reference operator drive this seat, at the level the HUD last selected",
+     "secondary": "B / Y button: leave the seat"
+    }
+   },
+   "pressure-washer": {
+    "name": "Pressure Washer Surface Clean",
+    "source": "sims/registry/sims.json",
+    "rows": [
+     {
+      "input": "A / D",
+      "does": "sweep the wand left / right across the panel",
+      "codes": [
+       "KeyA",
+       "KeyD"
+      ]
+     },
+     {
+      "input": "W / S",
+      "does": "sweep the wand up / down across the panel",
+      "codes": [
+       "KeyW",
+       "KeyS"
+      ]
+     },
+     {
+      "input": "Q / E",
+      "does": "stand off farther / move closer to the surface",
+      "codes": [
+       "KeyQ",
+       "KeyE"
+      ]
+     },
+     {
+      "input": "Space",
+      "does": "pull / release the spray trigger",
+      "codes": [
+       "Space"
+      ]
+     },
+     {
+      "input": "C",
+      "does": "deploy the containment berm / drain cover",
+      "codes": [
+       "KeyC"
+      ]
+     }
+    ],
+    "xr": {
+     "left_stick": "W/S on the y axis, A/D on the x axis - sweep the wand up / down across the panel; sweep the wand left / right across the panel",
+     "right_stick": "Q/E on the x axis - stand off farther / move closer to the surface",
+     "trigger": "Space, on the press edge - pull / release the spray trigger",
+     "grip": "C, held - deploy the containment berm / drain cover",
+     "grip_key": "KeyC",
+     "primary": "A / X button: start or stop watching the scripted reference operator drive this seat, at the level the HUD last selected",
+     "secondary": "B / Y button: leave the seat"
+    }
+   },
+   "airless-sprayer": {
+    "name": "Airless Paint Sprayer Finish",
+    "source": "sims/registry/sims.json",
+    "rows": [
+     {
+      "input": "A / D",
+      "does": "sweep the gun left / right across the panel",
+      "codes": [
+       "KeyA",
+       "KeyD"
+      ]
+     },
+     {
+      "input": "W / S",
+      "does": "sweep the gun up / down across the panel",
+      "codes": [
+       "KeyW",
+       "KeyS"
+      ]
+     },
+     {
+      "input": "Q / E",
+      "does": "stand off farther / move closer to the surface",
+      "codes": [
+       "KeyQ",
+       "KeyE"
+      ]
+     },
+     {
+      "input": "Space",
+      "does": "pull / release the spray trigger",
+      "codes": [
+       "Space"
+      ]
+     }
+    ],
+    "xr": {
+     "left_stick": "W/S on the y axis, A/D on the x axis - sweep the gun up / down across the panel; sweep the gun left / right across the panel",
+     "right_stick": "Q/E on the x axis - stand off farther / move closer to the surface",
+     "trigger": "Space, on the press edge - pull / release the spray trigger",
+     "grip": "unused on this seat (no secondary key)",
+     "grip_key": null,
+     "primary": "A / X button: start or stop watching the scripted reference operator drive this seat, at the level the HUD last selected",
+     "secondary": "B / Y button: leave the seat"
+    }
+   },
+   "boom-lift": {
+    "name": "Boom Lift Basket Work",
+    "source": "sims/registry/sims.json",
+    "rows": [
+     {
+      "input": "A / D",
+      "does": "swing the turret",
+      "codes": [
+       "KeyA",
+       "KeyD"
+      ]
+     },
+     {
+      "input": "W / S",
+      "does": "extend / retract the boom",
+      "codes": [
+       "KeyW",
+       "KeyS"
+      ]
+     },
+     {
+      "input": "Q / E",
+      "does": "raise / lower the boom",
+      "codes": [
+       "KeyQ",
+       "KeyE"
+      ]
+     },
+     {
+      "input": "Space",
+      "does": "clip the harness (on the ground) / do the task at the work point",
+      "codes": [
+       "Space"
+      ]
+     },
+     {
+      "input": "C",
+      "does": "set the stabilizers on the pad",
+      "codes": [
+       "KeyC"
+      ]
+     }
+    ],
+    "xr": {
+     "left_stick": "W/S on the y axis, A/D on the x axis - extend / retract the boom; swing the turret",
+     "right_stick": "Q/E on the x axis - raise / lower the boom",
+     "trigger": "Space, on the press edge - clip the harness (on the ground) / do the task at the work point",
+     "grip": "C, held - set the stabilizers on the pad",
+     "grip_key": "KeyC",
+     "primary": "A / X button: start or stop watching the scripted reference operator drive this seat, at the level the HUD last selected",
+     "secondary": "B / Y button: leave the seat"
+    }
+   },
+   "overhead-crane": {
+    "name": "Overhead Crane Shop Move",
+    "source": "sims/registry/sims.json",
+    "rows": [
+     {
+      "input": "A / D",
+      "does": "travel the bridge",
+      "codes": [
+       "KeyA",
+       "KeyD"
+      ]
+     },
+     {
+      "input": "W / S",
+      "does": "traverse the trolley",
+      "codes": [
+       "KeyW",
+       "KeyS"
+      ]
+     },
+     {
+      "input": "Q / E",
+      "does": "hoist up / down",
+      "codes": [
+       "KeyQ",
+       "KeyE"
+      ]
+     },
+     {
+      "input": "Space",
+      "does": "hook / release the load",
+      "codes": [
+       "Space"
+      ]
+     }
+    ],
+    "xr": {
+     "left_stick": "W/S on the y axis, A/D on the x axis - traverse the trolley; travel the bridge",
+     "right_stick": "Q/E on the x axis - hoist up / down",
+     "trigger": "Space, on the press edge - hook / release the load",
+     "grip": "unused on this seat (no secondary key)",
+     "grip_key": null,
+     "primary": "A / X button: start or stop watching the scripted reference operator drive this seat, at the level the HUD last selected",
+     "secondary": "B / Y button: leave the seat"
+    }
+   }
+  }
+ },
+ "voice": {
+  "fields": [
+   "opt_in",
+   "leaves_the_device",
+   "not_ours",
+   "no_audio_kept",
+   "on_device",
+   "unavailable"
+  ],
+  "features": {
+   "read_aloud": {
+    "title": "Read the answer aloud",
+    "api": "window.speechSynthesis with SpeechSynthesisUtterance",
+    "default": "off",
+    "storage_key": "tc-guide-voice-out",
+    "opt_in": "Reading an answer aloud is OFF until you switch it on, and the switch is this browser's own.",
+    "leaves_the_device": "It is usually local and not always: most speechSynthesis voices are installed on the machine, but some platforms offer network voices, where the text of the answer is sent to the voice vendor to be spoken.",
+    "not_ours": "Where the voice is a network one, this bundle neither operates nor can see the service that speaks it; SpeechSynthesisVoice.localService is the only thing that says which kind you have, and the guide shows it rather than claiming local.",
+    "no_audio_kept": "Nothing is recorded: reading aloud captures no microphone input, stores no audio, and hands the browser only the text of an answer that is already written in this registry.",
+    "on_device": "The guide prefers a voice whose localService is true, and where the only voice available is a network one it says so before it speaks rather than after.",
+    "unavailable": "Where the browser exposes no speechSynthesis, or exposes it with no voice for your language, the control is absent rather than degraded, and the answer stays on screen exactly as written.",
+    "banner": "Reading an answer aloud is OFF until you switch it on, and the switch is this browser's own. It is usually local and not always: most speechSynthesis voices are installed on the machine, but some platforms offer network voices, where the text of the answer is sent to the voice vendor to be spoken. Where the voice is a network one, this bundle neither operates nor can see the service that speaks it; SpeechSynthesisVoice.localService is the only thing that says which kind you have, and the guide shows it rather than claiming local. Nothing is recorded: reading aloud captures no microphone input, stores no audio, and hands the browser only the text of an answer that is already written in this registry. The guide prefers a voice whose localService is true, and where the only voice available is a network one it says so before it speaks rather than after. Where the browser exposes no speechSynthesis, or exposes it with no voice for your language, the control is absent rather than degraded, and the answer stays on screen exactly as written."
+   },
+   "ask_by_voice": {
+    "title": "Ask the guide by voice",
+    "api": "SpeechRecognition, or webkitSpeechRecognition where that is the only name offered",
+    "default": "off",
+    "storage_key": "tc-guide-voice-in",
+    "opt_in": "Asking by voice is OFF until you switch it on, and it stays off: the switch is this browser's own and nothing in this bundle turns it on for you.",
+    "leaves_the_device": "Switching it on sends your recorded voice off this device. Chrome and Edge do not recognise speech inside the page - they stream the captured audio to a speech service run by the browser's own vendor, and Safari sends it to its vendor's service in the same way.",
+    "not_ours": "This bundle neither operates that service, pays for it, nor can see what it receives, keeps or does with it; all that comes back into this page is a line of text, and what happened to the audio is between you and your browser's vendor.",
+    "no_audio_kept": "This bundle stores no audio anywhere: nothing is written to this browser's storage, nothing is uploaded by us, and the recognised words are used once to pick a topic and then dropped.",
+    "on_device": "Chrome 139 and later can be asked to recognise on the device instead - availableOnDevice() and processLocally - and the guide asks for that wherever it is offered; if the language pack is missing the request fails with language-not-supported, and the guide stops there and says so rather than quietly retrying through the vendor's service.",
+    "unavailable": "Where the browser offers neither constructor - Firefox, which ships it disabled, and anything older - the control is absent rather than degraded: nothing here substitutes another service for the one your browser declined to provide.",
+    "banner": "Asking by voice is OFF until you switch it on, and it stays off: the switch is this browser's own and nothing in this bundle turns it on for you. Switching it on sends your recorded voice off this device. Chrome and Edge do not recognise speech inside the page - they stream the captured audio to a speech service run by the browser's own vendor, and Safari sends it to its vendor's service in the same way. This bundle neither operates that service, pays for it, nor can see what it receives, keeps or does with it; all that comes back into this page is a line of text, and what happened to the audio is between you and your browser's vendor. This bundle stores no audio anywhere: nothing is written to this browser's storage, nothing is uploaded by us, and the recognised words are used once to pick a topic and then dropped. Chrome 139 and later can be asked to recognise on the device instead - availableOnDevice() and processLocally - and the guide asks for that wherever it is offered; if the language pack is missing the request fails with language-not-supported, and the guide stops there and says so rather than quietly retrying through the vendor's service. Where the browser offers neither constructor - Firefox, which ships it disabled, and anything older - the control is absent rather than degraded: nothing here substitutes another service for the one your browser declined to provide."
+   }
+  },
+  "storage": {
+   "read_aloud_key": "tc-guide-voice-out",
+   "ask_by_voice_key": "tc-guide-voice-in",
+   "values": "'1' for on, '0' for off - the same one-character shape the training toggles already use",
+   "default": "absent, and an absent key reads as OFF. A missing key is never read as consent, which is the only safe direction for a default that turns a microphone on.",
+   "scope": "this browser only - localStorage, wrapped so a blocked store never breaks the page, exactly like tc-progress",
+   "not_kept": "neither key ever holds audio, a transcript or anything a learner said: each holds the state of its own switch and nothing else"
+  }
+ },
+ "hands": {
+  "honesty": {
+   "status": "UNVERIFIED-ON-HARDWARE: no headset has been available to this build, so not one of these gestures has been made by a real hand in a real session. They are declared to be implemented and tested against a MOCKED WebXR session only.",
+   "mocked_only": "a mocked session reports whatever joint poses the test hands it, which proves the arithmetic - the distances, the hysteresis, the hold timers - and proves nothing whatever about tracking quality, occlusion, latency, or whether a person can comfortably hold the shape.",
+   "declared_not_built": "this table is a contract for the page to implement, not a description of what the page does today: its own XR note lists hand tracking among the things that do not exist in it yet, and this registry does not claim otherwise.",
+   "thresholds_are_authored": "every distance and angle here is AUTHORED - typed from general practice, not measured against a hand on hardware - and is expected to move once a headset is available to check it against.",
+   "not_a_gate": "no gesture scores anything, unlocks anything or is recorded: the recogniser runs only inside a session that was granted hand tracking, and off entirely otherwise."
+  },
+  "session_feature": "hand-tracking",
+  "joints": [
+   "wrist",
+   "thumb-metacarpal",
+   "thumb-phalanx-proximal",
+   "thumb-phalanx-distal",
+   "thumb-tip",
+   "index-finger-metacarpal",
+   "index-finger-phalanx-proximal",
+   "index-finger-phalanx-intermediate",
+   "index-finger-phalanx-distal",
+   "index-finger-tip",
+   "middle-finger-metacarpal",
+   "middle-finger-phalanx-proximal",
+   "middle-finger-phalanx-intermediate",
+   "middle-finger-phalanx-distal",
+   "middle-finger-tip",
+   "ring-finger-metacarpal",
+   "ring-finger-phalanx-proximal",
+   "ring-finger-phalanx-intermediate",
+   "ring-finger-phalanx-distal",
+   "ring-finger-tip",
+   "pinky-finger-metacarpal",
+   "pinky-finger-phalanx-proximal",
+   "pinky-finger-phalanx-intermediate",
+   "pinky-finger-phalanx-distal",
+   "pinky-finger-tip"
+  ],
+  "gestures": {
+   "pinch-select": {
+    "name": "Pinch to select",
+    "hand": "either",
+    "does": "select whatever the hand is aimed at - the same pick the left controller trigger already does: a door, an advisor, a station, a crib, a campus plate",
+    "where": [
+     "campus",
+     "hall",
+     "restoration"
+    ],
+    "joints": [
+     "thumb-tip",
+     "index-finger-tip"
+    ],
+    "measure": "the distance between the two tips; fires when it falls below the threshold, releases when it rises back above the release distance",
+    "threshold_m": 0.02,
+    "release_m": 0.035,
+    "hold_ms": 0
+   },
+   "point-move": {
+    "name": "Point to move",
+    "hand": "either",
+    "does": "walk the rig in the direction the index finger points, at the same speed the left thumb stick is capped at, for as long as the point is held",
+    "where": [
+     "campus",
+     "hall",
+     "restoration"
+    ],
+    "joints": [
+     "index-finger-tip",
+     "index-finger-metacarpal",
+     "middle-finger-tip",
+     "middle-finger-metacarpal",
+     "ring-finger-tip",
+     "ring-finger-metacarpal",
+     "pinky-finger-tip",
+     "pinky-finger-metacarpal"
+    ],
+    "measure": "the index tip's distance from its own metacarpal, while the middle, ring and little tips are each within the curl distance of theirs; fires above the threshold, releases when the index tip comes back inside the release distance",
+    "threshold_m": 0.09,
+    "release_m": 0.075,
+    "hold_ms": 120,
+    "curl_m": 0.06
+   },
+   "open-palm-stop": {
+    "name": "Open palm to stop",
+    "hand": "either",
+    "does": "stop: zero the walk command and let go of every key the hand is holding - the hand's version of taking your hand off the stick, and the one gesture that needs no aim",
+    "where": [
+     "campus",
+     "hall",
+     "restoration"
+    ],
+    "joints": [
+     "wrist",
+     "thumb-tip",
+     "index-finger-tip",
+     "middle-finger-tip",
+     "ring-finger-tip",
+     "pinky-finger-tip"
+    ],
+    "measure": "every one of the five tips farther from the wrist than the threshold, held for the hold time; releases when any tip comes back inside the release distance",
+    "threshold_m": 0.09,
+    "release_m": 0.075,
+    "hold_ms": 250
+   },
+   "palm-up-guide": {
+    "name": "Palm up to open the guide",
+    "hand": "either",
+    "does": "open this guide, on the place you are standing in, without having to find a button - which is the whole point of a helper that is meant to be reachable from anywhere",
+    "where": [
+     "campus",
+     "hall",
+     "restoration"
+    ],
+    "joints": [
+     "wrist",
+     "thumb-tip",
+     "index-finger-tip",
+     "middle-finger-tip",
+     "ring-finger-tip",
+     "pinky-finger-tip",
+     "index-finger-metacarpal",
+     "pinky-finger-metacarpal"
+    ],
+    "measure": "the open palm above, plus the palm normal - taken from the wrist and the two outer metacarpals - within the declared angle of world up, held for the hold time",
+    "threshold_m": 0.09,
+    "release_m": 0.075,
+    "hold_ms": 500,
+    "angle_deg": 35
+   }
+  }
+ },
+ "page_contract": {
+  "data": "D.guide, alongside D.advisors.who and D.crews.crews",
+  "button": "one control, visible in every view and over every panel - the guide is the only thing in this bundle that is reachable from everywhere, which is what makes it a guide rather than a sixth panel",
+  "route": "the page's own `view` maps to a place id, and a place id is the whole routing: region, campus, hall, sim, restoration and avatar are the six world places, and an open panel selects its own place instead",
+  "ask": "the six asks of that place render as six buttons; nothing accepts free text, because there is nothing behind it that could answer free text",
+  "controls": "the `move` topic names a scheme id - the page renders that scheme's rows under the answer, and the special id seat:running is resolved against D.sims.sims[curSimId] at view time, never copied",
+  "voice": "two switches, each behind its own computed banner read from D.guide.voice, each writing only its own key; the ask-by-voice switch is absent, not disabled, where the browser offers no recognition constructor",
+  "hands": "a recogniser built from D.guide.hands.gestures, run only inside an immersive session that was granted the hand-tracking feature, and not built at all otherwise",
+  "episode": "nothing is recorded. The guide writes no episode, and the only thing it ever puts in storage is the state of its two voice switches"
+ },
+ "cites": [
+  "agents/registry/advisors.json",
+  "avatars/registry/avatars.json",
+  "geo/registry/campuses_geo.json",
+  "orbis/registry/orbis.json",
+  "restoration/registry/restoration.json",
+  "schools/registry/schools.json",
+  "sims/registry/sims.json",
+  "tools/registry/toolcribs.json",
+  "training/registry/training.json",
+  "unions/registry/campuses.json",
+  "unions/registry/chapters.json",
+  "unions/registry/unions.json",
+  "web/build_3d.py"
+ ]
+}

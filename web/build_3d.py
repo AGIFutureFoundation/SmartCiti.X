@@ -67,6 +67,7 @@ crews_reg = json.load(open(ROOT / 'agents/registry/crews.json'))
 labels_reg = json.load(open(ROOT / 'labels/registry/labels.json'))
 roadmap_reg = json.load(open(ROOT / 'roadmap/registry/roadmap.json'))
 restoration_reg = json.load(open(ROOT / 'restoration/registry/restoration.json'))
+guide_reg = json.load(open(ROOT / 'guide/registry/guide.json'))
 
 def trim(rows, *drop):
     """Ship what is drawn, not what is explained.
@@ -467,6 +468,15 @@ DATA = json.dumps({
                             for k in ('districts', 'certification')}},
     'crews': {'crews': crews_reg['crews'], 'honesty': crews_reg['honesty'],
               'standing': crews_reg['standing']},
+    # the helper guide: ten places, six fixed questions each, the control
+    # schemes (the seat rows read from sims/, never copied), the voice
+    # policy with its two off-by-default switches, and the declared hand
+    # gestures. Embedded whole - every field here is rendered by the guide
+    # panel, so trimming it would only mean deciding twice which parts the
+    # panel shows.
+    'guide': {k: guide_reg[k] for k in
+              ('honesty', 'counts', 'ask_set', 'places', 'controls',
+               'voice', 'hands', 'page_contract')},
     'advisors': {'who': agents_reg['advisors'],
                  'honesty': agents_reg['honesty'],
                  'walk': geo_reg['walk']},
@@ -5064,6 +5074,309 @@ document.getElementById('advBtn').addEventListener('click', () => {
 });
 """
 
+GUIDE_JS = r"""/* -------------------------------------------------------- the guide ----
+   One control, reachable from every view and from over every panel, that
+   answers the same six questions about wherever you are standing: what
+   this place is, what you can do here, how to move in it, how to get back,
+   what is measured, and what it does not claim. Nothing here accepts free
+   text, because there is nothing behind it that could answer free text -
+   the six asks are the whole surface, and the answers are written in
+   guide/registry/guide.json rather than generated when you look at them.
+
+   The control rows under "how do I move" are not retyped here: a shared
+   scheme is the registry's rows, and a seat's scheme is the literal id
+   `seat:running`, resolved against D.sims.sims[curSimId] at the moment you
+   ask so it can never drift from the seat you are actually sitting in. */
+const G = D.guide;
+// view -> place id, inverted from each place's own `view` field. Writing
+// this map out would be a second copy of the routing, and the two copies
+// would disagree the first time a view was renamed.
+const GUIDE_OF_VIEW = {};
+for (const [id, pl] of Object.entries(G.places)) if (pl.view) GUIDE_OF_VIEW[pl.view] = id;
+// which panel is in front of you, if any: the four panel openers set it, so
+// the guide answers about the panel you are reading rather than the world
+// behind it.
+// what the panel is actually showing. The ask buttons used to re-derive the
+// place on every click, which is the same answer right up until it is not:
+// the panel would silently swap to whatever view was behind it rather than
+// staying on the place the reader opened. Render once, then stay there.
+let guidePlaceId = null, guideAskId = null, guideNote = '';
+
+function guidePlaceNow() {
+  const marked = document.getElementById('panel').dataset.guidePlace;
+  if (marked && G.places[marked] && document.body.classList.contains('open'))
+    return marked;
+  // `?? null` is the fail-closed answer, not a fallback place: a view with
+  // no entry gets a panel that says which view has no entry, rather than
+  // the guide confidently answering about somewhere else.
+  return GUIDE_OF_VIEW[view] ?? null;
+}
+
+/* ---- voice: two switches, both off until you turn them on -------------- */
+// A missing key is never read as consent. `=== '1'` means an absent key, a
+// blocked store and a thrown read all come back the same way - off - which
+// is the only safe direction for a default that can turn on a microphone.
+const VOICE = G.voice, VK = VOICE.storage;
+const vOn = (k) => { try { return localStorage.getItem(k) === '1'; }
+                     catch (e) { return false; } };
+const vSet = (k, on) => { try { localStorage.setItem(k, on ? '1' : '0'); }
+                          catch (e) { /* blocked store: the switch is just not remembered */ } };
+// The constructor under whichever name this browser offers. `null` is the
+// fail-closed value and it is load-bearing: where the browser exposes
+// neither name the control is absent rather than degraded, and nothing
+// here substitutes another service for the one the browser declined.
+const SR = window.SpeechRecognition ?? window.webkitSpeechRecognition ?? null;
+const synth = window.speechSynthesis ?? null;
+let guideRec = null, guideHearing = false;
+
+function guideVoice() {
+  if (!synth) return null;
+  let vs = [];
+  try { vs = synth.getVoices() ?? []; } catch (e) { return null; }
+  if (!vs.length) return null;
+  const lang = (document.documentElement.lang || 'en').slice(0, 2);
+  const mine = vs.filter((v) => (v.lang || '').slice(0, 2) === lang);
+  const pool = mine.length ? mine : vs;
+  // prefer a voice that speaks on this machine; fall back to a network one
+  // only after saying so, never silently
+  return pool.find((v) => v.localService) ?? pool[0];
+}
+
+function guideSpeak(text) {
+  if (!vOn(VK.read_aloud_key) || !synth) return;
+  try {
+    synth.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    const v = guideVoice();
+    if (v) { u.voice = v; u.lang = v.lang; }
+    synth.speak(u);
+  } catch (e) { /* a refused synthesiser leaves the answer on screen */ }
+}
+
+function guideStopVoice() {
+  try { synth?.cancel(); } catch (e) { /* nothing was speaking */ }
+  if (guideRec) { try { guideRec.abort(); } catch (e) { /* already stopped */ } }
+  guideRec = null; guideHearing = false;
+}
+
+// Match what was heard to one of the six asks by counting words they share.
+// Deterministic and local: no model, no service, no free text. A transcript
+// that matches nothing well enough is REFUSED by name rather than rounded
+// to the nearest ask, because guessing which question someone asked is a
+// worse failure than admitting the words did not land.
+const GUIDE_STOP = new Set(['the', 'a', 'an', 'is', 'are', 'do', 'does', 'i',
+  'me', 'my', 'this', 'that', 'it', 'to', 'in', 'on', 'of', 'and', 'what',
+  'how', 'can', 'here', 'you', 'am']);
+const words = (t) => String(t).toLowerCase().match(/[a-z]+/g)
+  ?.filter((w) => !GUIDE_STOP.has(w)) ?? [];
+function guideMatch(said, place) {
+  const heard = new Set(words(said));
+  if (!heard.size) return null;
+  let best = null, bestScore = 0;
+  for (const t of G.places[place].topics) {
+    const w = words(t.ask + ' ' + t.answer.slice(0, 160));
+    let hit = 0;
+    for (const x of new Set(w)) if (heard.has(x)) hit++;
+    const score = hit / Math.max(3, new Set(w).size ** .5 * 2);
+    if (score > bestScore) { bestScore = score; best = t.id; }
+  }
+  return bestScore >= .34 ? best : null;
+}
+
+async function guideListen() {
+  if (!vOn(VK.ask_by_voice_key) || !SR || guideHearing) return;
+  const r = new SR();
+  r.lang = document.documentElement.lang || 'en-US';
+  r.continuous = false; r.interimResults = false; r.maxAlternatives = 1;
+  // The declared policy, and it FAILS CLOSED: ask to recognise on the
+  // device wherever that is offered, and if the language pack is missing,
+  // stop and say so rather than quietly retrying through the browser
+  // vendor's service with the audio the learner just gave us.
+  if (typeof SR.availableOnDevice === 'function') {
+    let avail = null;
+    try { avail = await SR.availableOnDevice(r.lang); } catch (e) { avail = null; }
+    if (avail === 'available' || avail === true) r.processLocally = true;
+  }
+  r.onerror = (e) => {
+    guideHearing = false;
+    guideNote = e?.error === 'language-not-supported'
+      ? 'Stopped: this browser has no on-device language pack for '
+        + r.lang + ', and the guide does not fall back to the vendor service.'
+      : 'The browser stopped listening: ' + (e?.error ?? 'no reason given') + '.';
+    guideRender(guidePlaceId, guideAskId);
+  };
+  r.onend = () => { guideHearing = false; };
+  r.onresult = (e) => {
+    guideHearing = false;
+    const said = e.results?.[0]?.[0]?.transcript ?? '';
+    const hit = guideMatch(said, guidePlaceId);
+    guideNote = hit ? 'Heard: "' + said.trim() + '"'
+      : 'Heard "' + said.trim() + '", which did not match one of the six '
+        + 'questions closely enough to answer. Pick one instead.';
+    guideRender(guidePlaceId, hit ?? guideAskId);
+  };
+  try { guideHearing = true; r.start(); guideRec = r;
+        guideNote = 'Listening…'; guideRender(guidePlaceId, guideAskId); }
+  catch (e) { guideHearing = false;
+              guideNote = 'The browser refused the microphone: '
+                + (e?.message ?? e) + '.'; }
+}
+
+/* ---- the panel -------------------------------------------------------- */
+const gesc = (t) => String(t).replace(/[&<>"]/g,
+  (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+// the rows that answer "how do I move here", resolved rather than copied
+function guideScheme(id) {
+  if (id === 'seat:running') {
+    if (!curSimId) return null;
+    const sm = D.sims.sims[curSimId];
+    return { name: sm.name + ' — the seat you are in', where: 'this seat',
+             rows: sm.controls.map((c) => ({ input: c.keys, does: c.action })) };
+  }
+  return G.controls.shared[id] ?? null;
+}
+
+function guideRows(sc, schemeId) {
+  // A scheme that resolves to nothing is not nothing to say. `seat:running`
+  // resolves against the seat you are actually in, so reading the seat page
+  // while standing in the yard used to render an empty space where the
+  // controls belong - which reads as a bug rather than as an answer.
+  if (!sc) return schemeId === 'seat:running'
+    ? `<h3>The controls of the seat you are in</h3>
+       <p style="color:var(--muted);font-size:12px">No seat is running, so
+       there are no controls to list: each seat brings its own, and the
+       guide reads them off whichever one you take rather than printing a
+       table that might not match it.</p>` : '';
+  return `<h3>${gesc(sc.name)}</h3>
+    <p style="color:var(--muted);font-size:11.5px">${gesc(sc.where)}</p>
+    <table style="width:100%;border-collapse:collapse;font-size:12.5px">
+      ${sc.rows.map((r) => `<tr>
+        <td style="padding:3px 10px 3px 0;white-space:nowrap;color:var(--mark);
+                   font-family:ui-monospace,monospace">${gesc(r.input)}</td>
+        <td style="padding:3px 0">${gesc(r.does)}</td></tr>`).join('')}
+    </table>`;
+}
+
+function guideVoiceBox() {
+  const rows = [];
+  for (const [id, f] of Object.entries(VOICE.features)) {
+    const key = f.storage_key;
+    // Where the browser offers nothing, the control is ABSENT rather than
+    // shown broken - a switch that cannot do what it says is worse than no
+    // switch, and a disabled one still implies the capability is there.
+    const have = id === 'ask_by_voice' ? !!SR : !!synth;
+    if (!have) {
+      rows.push(`<p style="font-size:12px;color:var(--muted)">
+        <b>${gesc(f.title)}</b> — ${gesc(f.unavailable)}</p>`);
+      continue;
+    }
+    const on = vOn(key);
+    let extra = '';
+    if (id === 'read_aloud') {
+      const v = guideVoice();
+      if (v && !v.localService)
+        extra = `<span style="color:var(--mark)">The only voice this browser
+          offers for your language is a network one (${gesc(v.name)}), so the
+          text of the answer is sent to its vendor to be spoken.</span>`;
+    }
+    rows.push(`<p style="margin:10px 0 4px">
+      <label style="font-size:13px"><input type="checkbox" data-guide-voice="${gesc(key)}"
+        ${on ? 'checked' : ''}> ${gesc(f.title)}</label></p>
+      <p style="font-size:11px;color:var(--muted);margin:0 0 8px">${gesc(f.banner)} ${extra}</p>`);
+  }
+  const ask = vOn(VK.ask_by_voice_key) && SR
+    ? `<p><button class="barbtn" id="guideHear" style="font-size:12px">
+         ${guideHearing ? '● listening…' : '\U0001f3a4 ask by voice'}</button></p>` : '';
+  return `<h3>Voice</h3>${ask}${rows.join('')}`;
+}
+
+function guideRender(placeId, askId) {
+  const body = document.getElementById('pbody');
+  if (!placeId) {
+    body.innerHTML = `<h2>❓ Guide</h2>
+      <p>The guide has no entry for this view (<code>${gesc(view)}</code>).
+      That is a gap in guide/registry/guide.json, not something you did.</p>`;
+    document.body.classList.add('open');
+    return;
+  }
+  guidePlaceId = placeId;
+  const pl = G.places[placeId];
+  const topics = pl.topics;
+  guideAskId = askId && topics.some((t) => t.id === askId) ? askId : topics[0].id;
+  const t = topics.find((x) => x.id === guideAskId);
+  const sc = t.scheme ? guideScheme(t.scheme) : null;
+  const tabs = topics.map((x) => `<button class="barbtn"
+      data-guide-ask="${gesc(x.id)}" style="font-size:12px;margin:0 4px 4px 0;${
+      x.id === guideAskId ? 'border-color:var(--mark);color:var(--mark)' : ''}"
+      >${gesc(x.ask)}</button>`).join('');
+  const cites = t.cites
+    ? `<p style="font-size:11px;color:var(--muted)">read from
+       <code>${gesc(t.cites)}</code></p>` : '';
+  const note = guideNote
+    ? `<p style="font-size:12px;color:var(--mark)">${gesc(guideNote)}</p>` : '';
+  const hands = pl.walkable ? guideHandsBox() : '';
+  body.innerHTML = `<h2>❓ Guide · ${gesc(pl.name)}</h2>
+    <p style="color:var(--muted);font-size:12px">${gesc(pl.what_line)}</p>
+    <p style="font-size:11.5px;color:var(--muted)">You got here: ${gesc(pl.opened_by)}</p>
+    <div style="margin:10px 0">${tabs}</div>
+    ${note}
+    <p id="guideAnswer" style="font-size:13.5px;line-height:1.6">${gesc(t.answer)}</p>
+    ${cites}
+    ${guideRows(sc, t.scheme)}
+    ${hands}
+    ${guideVoiceBox()}
+    <p style="font-size:11px;color:var(--muted);margin-top:14px">${gesc(G.honesty.status)}</p>`;
+  document.body.classList.add('open');
+  guideSpeak(t.answer);
+}
+
+function guideHandsBox() {
+  const H = G.hands;
+  const rows = Object.entries(H.gestures).map(([id, g]) => `<tr>
+    <td style="padding:3px 10px 3px 0;color:var(--mark);white-space:nowrap">${gesc(g.name)}</td>
+    <td style="padding:3px 0">${gesc(g.does)}</td></tr>`).join('');
+  return `<h3>Hands, in a headset</h3>
+    <p style="font-size:11px;color:var(--mark)">${gesc(H.honesty.status)}</p>
+    <table style="width:100%;border-collapse:collapse;font-size:12.5px">${rows}</table>`;
+}
+
+function openGuide(placeId) {
+  const want = placeId ?? guidePlaceNow();
+  document.getElementById('panel').dataset.guidePlace = '';
+  guideNote = '';
+  guideRender(want, null);
+}
+window.__tc3dGuide = openGuide;
+
+document.getElementById('guideBtn').addEventListener('click', () => {
+  if (walkActive && plc.isLocked) plc.unlock();
+  openGuide();
+});
+document.addEventListener('click', (e) => {
+  const a = e.target.closest('[data-guide-ask]');
+  if (a) { guideNote = ''; guideRender(guidePlaceId, a.dataset.guideAsk); return; }
+  if (e.target.closest('#guideHear')) { guideListen(); return; }
+});
+document.addEventListener('change', (e) => {
+  const v = e.target.closest('[data-guide-voice]');
+  if (!v) return;
+  vSet(v.dataset.guideVoice, v.checked);
+  // turning EITHER switch off stops whatever it started, in the same gesture
+  if (!v.checked) guideStopVoice();
+  guideNote = '';
+  guideRender(guidePlaceId, guideAskId);
+});
+// closing the panel stops the voice: a synthesiser still reading an answer
+// nobody can see is the kind of thing that makes people distrust a toggle
+document.addEventListener('click', (e) => {
+  if (e.target.closest('#pclose') || e.target.id === 'ov') {
+    document.getElementById('panel').dataset.guidePlace = '';
+    guideStopVoice();
+  }
+});
+"""
+
 XR_JS = r"""/* ------------------------------------------------------------- WebXR ----
    Experimental, and a viewpoint, not a second world: the same scene, the
    same registries, the same seats and the same graders. What exists here:
@@ -5074,10 +5387,16 @@ XR_JS = r"""/* ------------------------------------------------------------- Web
    landing in the same `keys` a keyboard fills, snap-turn locomotion on the
    rig (a comfort default: no smooth rotation), a wrist panel of `readout`
    signs driven by the same gauges() the dash reads, and every seat
-   operable in-session through the registry's own `xr` mapping. What does
-   NOT exist: hand tracking, rendered hands or a body beyond two schematic
-   controllers, and any run on a physical headset - this build proves the
-   layer against a mocked WebXR session in headless Chromium only. */
+   operable in-session through the registry's own `xr` mapping, and four
+   hand gestures read off WebXR Hand Input joints - pinch to select, point
+   to move, open palm to stop, palm up to open the guide - each with a
+   hysteresis band and a dwell, all four thresholds AUTHORED in
+   guide/registry/guide.json and labelled there as authored. What does NOT
+   exist: rendered hands or a body beyond two schematic controllers, and any
+   run on a physical headset - this build proves the layer against a mocked
+   WebXR session in headless Chromium only, and the gesture recogniser
+   against synthetic joint positions fed straight through it
+   (__tc3dHandProbe). Nobody has held a real hand up to these distances. */
 let xrMode = null, vrSupported = false, arSupported = false, xrProbeNote = null;
 let xrBlend = 'opaque', xrFloor = true, xrWalk = false, xrWalkKey = null;
 const XR_LOCAL_EYE = 1.6;              // rig lift in a plain `local` space
@@ -5117,10 +5436,12 @@ async function xrStart(mode) {
   try {
     let session;
     try {
-      session = await navigator.xr.requestSession(mode, { requiredFeatures: ['local-floor'] });
+      session = await navigator.xr.requestSession(mode,
+        { requiredFeatures: ['local-floor'], optionalFeatures: [XR_HANDS] });
       xrFloor = true;
     } catch (e1) {
-      session = await navigator.xr.requestSession(mode, { requiredFeatures: ['local'] });
+      session = await navigator.xr.requestSession(mode,
+        { requiredFeatures: ['local'], optionalFeatures: [XR_HANDS] });
       xrFloor = false;
     }
     renderer.xr.setReferenceSpaceType(xrFloor ? 'local-floor' : 'local');
@@ -5256,6 +5577,147 @@ function xrFrame(dt) {
 /* ---- the controller adapter ------------------------------------------ */
 const xrPad = { l: [0, 0], r: [0, 0], trig: false, lTrig: false, grip: false,
                 a: false, b: false, snapArmed: true, edge: {} };
+/* ---- hands ------------------------------------------------------------
+   Four gestures, read off WebXR Hand Input joints. Every distance, every
+   release distance and every hold below is the guide registry's - AUTHORED,
+   and stated there as authored: nobody has held a real headset up to these
+   numbers, and this build proves the layer against a mocked WebXR session
+   in headless Chromium only. What IS proven here is the shape: a gesture
+   fires on its threshold and releases on a separate, looser one, because a
+   single threshold on a stop gesture chatters at the boundary and a stop
+   that chatters is worse than no stop at all.
+
+   A hand writes into the same `keys` a keyboard fills and calls the same
+   xrPickLeft() the left trigger calls, so nothing downstream can tell a
+   pinch from a trigger pull - the same rule the thumbstick adapter follows. */
+const XR_HANDS = 'hand-tracking';
+const HANDS = D.guide.hands;
+// gesture id -> { on, since }: the hysteresis state, one per hand, because
+// two hands making the same gesture are two independent gestures
+const xrGest = { left: {}, right: {} };
+const _hj = new THREE.Vector3(), _hk = new THREE.Vector3();
+
+// a joint's position, or null when the hand is not tracked - `null` and not
+// the origin, which would read as a pinch every time tracking dropped
+function jointAt(hand, name, out) {
+  const j = hand?.joints?.[name];
+  if (!j || j.visible === false) return null;
+  return out.copy(j.position);
+}
+const jdist = (hand, a, b) => {
+  const p = jointAt(hand, a, _hj), q = jointAt(hand, b, _hk);
+  return (p && q) ? p.distanceTo(q) : null;
+};
+
+// Does this gesture's measurement read as held, given whether it was held?
+// The band between threshold and release is the whole point: once a gesture
+// is on it stays on until the measurement crosses the looser number.
+function gestHeld(g, was, hand) {
+  if (g.measure.startsWith('the distance between the two tips')) {
+    const d = jdist(hand, g.joints[0], g.joints[1]);
+    if (d === null) return false;
+    return was ? d < g.release_m : d < g.threshold_m;
+  }
+  // the two open-hand gestures and the point: each tip's distance from its
+  // own metacarpal, read as "extended" above the threshold
+  const TIPS = [['index-finger-tip', 'index-finger-metacarpal'],
+                ['middle-finger-tip', 'middle-finger-metacarpal'],
+                ['ring-finger-tip', 'ring-finger-metacarpal'],
+                ['pinky-finger-tip', 'pinky-finger-metacarpal'],
+                ['thumb-tip', 'thumb-metacarpal']];
+  const ext = TIPS.map(([t, m]) => jdist(hand, t, m));
+  if (ext.some((d) => d === null)) return false;
+  const hi = was ? g.release_m : g.threshold_m;
+  if (g.curl_m !== undefined) {
+    // the point: index out, the other three curled in
+    return ext[0] > hi && ext[1] < g.curl_m && ext[2] < g.curl_m && ext[3] < g.curl_m;
+  }
+  const open = ext.every((d) => d > hi);
+  if (g.angle_deg === undefined) return open;
+  // palm-up also wants the palm facing the sky, within the declared angle
+  const w = jointAt(hand, 'wrist', _hj), i = jointAt(hand, 'index-finger-metacarpal', _hk);
+  if (!w || !i) return false;
+  const pk = jointAt(hand, 'pinky-finger-metacarpal', new THREE.Vector3());
+  if (!pk) return false;
+  const n = new THREE.Vector3().crossVectors(
+    i.clone().sub(w), pk.clone().sub(w)).normalize();
+  const up = new THREE.Vector3(0, 1, 0).applyQuaternion(
+    xrRig.getWorldQuaternion(new THREE.Quaternion()).invert());
+  return open && n.angleTo(up) < g.angle_deg * Math.PI / 180;
+}
+
+function xrHands(dt, ses) {
+  if (!ses.inputSources) return;
+  const now = performance.now();
+  for (const src of ses.inputSources) {
+    if (!src.hand) continue;                 // a controller, not a hand
+    const side = src.handedness === 'left' ? 'left' : 'right';
+    const hand = renderer.xr.getHand(side === 'left' ? 0 : 1);
+    const st = xrGest[side];
+    for (const [id, g] of Object.entries(HANDS.gestures)) {
+      const prev = st[id] ?? { on: false, since: 0, fired: false };
+      const held = gestHeld(g, prev.on, hand);
+      if (held && !prev.on) { st[id] = { on: true, since: now, fired: false }; continue; }
+      if (!held) { st[id] = { on: false, since: 0, fired: false };
+                   if (prev.on) xrGestEnd(id); continue; }
+      st[id] = prev;
+      // the hold: a gesture with a dwell fires once it has been held that
+      // long, not the instant it is recognised
+      if (!prev.fired && now - prev.since >= g.hold_ms) {
+        prev.fired = true; xrGestFire(id, side, hand);
+      }
+      if (prev.fired) xrGestHold(id, side, hand, dt);
+    }
+  }
+}
+
+function xrGestFire(id, side, hand) {
+  xrStat.gestures = (xrStat.gestures ?? 0) + 1;
+  xrStat.lastGesture = id + ':' + side;
+  if (id === 'pinch-select') xrPickLeft();
+  else if (id === 'palm-up-guide') openGuide();
+  else if (id === 'open-palm-stop') {
+    // stop means stop: zero the walk command and release every key a hand
+    // or a stick is holding down, rather than only the ones this hand set
+    for (const k of ['KeyW', 'KeyS', 'KeyA', 'KeyD', 'ShiftLeft']) keys[k] = false;
+    xrPad.edge = {};
+  }
+}
+function xrGestHold(id, side, hand) {
+  if (id !== 'point-move') return;
+  // walk where the finger points, at the speed the left stick is capped at
+  const tip = jointAt(hand, 'index-finger-tip', _hj);
+  const knu = jointAt(hand, 'index-finger-metacarpal', _hk);
+  if (!tip || !knu) return;
+  const d = tip.clone().sub(knu).setY(0);
+  if (d.lengthSq() < 1e-6) return;
+  d.normalize();
+  const fwd = new THREE.Vector3(0, 0, -1).applyQuaternion(xrRig.quaternion);
+  const rgt = new THREE.Vector3(1, 0, 0).applyQuaternion(xrRig.quaternion);
+  xrPad.l = [Math.max(-1, Math.min(1, d.dot(rgt))),
+             Math.max(-1, Math.min(1, -d.dot(fwd)))];
+}
+function xrGestEnd(id) {
+  if (id === 'point-move') xrPad.l = [0, 0];
+}
+
+// The recogniser, testable without a session, a headset or a hand: feed it
+// joint positions and ask what it reads. This is the only claim this build
+// can honestly make about the gestures - that the geometry, the hysteresis
+// band and the dwell behave as declared - and it is worth making, because
+// the band is the part that is easy to get backwards.
+window.__tc3dHandProbe = (id, joints, was = false) => {
+  const g = HANDS.gestures[id];
+  if (!g) return { error: 'no gesture ' + id };
+  const hand = { joints: {} };
+  for (const [name, xyz] of Object.entries(joints))
+    hand.joints[name] = { visible: true, position: new THREE.Vector3(...xyz) };
+  return { id, was, held: gestHeld(g, was, hand),
+           threshold_m: g.threshold_m, release_m: g.release_m,
+           hold_ms: g.hold_ms };
+};
+window.__tc3dHandJoints = () => HANDS.joints.slice();
+
 function xrInput(dt) {
   const ses = renderer.xr.getSession(); if (!ses) return;
   let L = null, R = null;
@@ -5296,6 +5758,9 @@ function xrInput(dt) {
   }
   if (rose('lTrig', lTrig)) xrPickLeft();
   xrStat.lastInput = { l: xrPad.l, r: xrPad.r, trig, lTrig, grip, a, b };
+  // after the sticks, so a pointing hand sets the walk command rather than
+  // having it overwritten by a stick that is sitting at rest
+  xrHands(dt, ses);
 }
 // the A/X button: start watching the scripted reference operator at the
 // level the HUD last selected, or take the seat back - the same restart
@@ -5597,6 +6062,21 @@ canvas{display:block}
 html[dir="rtl"] #panel{transform:translateX(-105%)}
 body.open #ov{display:block}
 body.open #panel{transform:none}
+/* The guide is the one control that has to stay reachable from every view
+   AND from over a panel - that is what makes it a guide rather than a sixth
+   panel. Driving the page found it was not: the bar sits at z-index 5, the
+   panel's scrim at 9, and the click landed on the scrim. Lifting the button
+   alone does nothing either, because #bar's own z-index makes a stacking
+   context its children cannot climb out of. So the whole bar rises above
+   the scrim while a panel is open and everything on it EXCEPT the guide is
+   deadened - dimmed and unclickable - which is what those controls should
+   be behind a panel anyway. The corners were not an option: bottom-left is
+   the touch joystick and the HUD, bottom-right the two fabs, top-right the
+   minimap. */
+body.open #bar{z-index:12}
+body.open #bar > *:not(#guideBtn){pointer-events:none;opacity:.3}
+#guideBtn{border-color:var(--mark)}
+#guideBtn:hover{color:var(--mark)}
 #panel h2{font:600 22px "Barlow Condensed",sans-serif;margin:2px 0 4px;
   padding-inline-end:70px}
 #panel .chip{display:inline-block;border:1px solid var(--rule);border-radius:999px;
@@ -5639,6 +6119,8 @@ body.open #panel{transform:none}
   <button id="orbisBtn" class="barbtn" aria-label="Orbis synthetic-training prompt">🎬</button>
   <button id="schoolsBtn" class="barbtn" aria-label="schools flipped-classroom program">🎓</button>
   <button id="restorationBtn" class="barbtn" aria-label="Bay Restoration sites and training tracks">🌊</button>
+  <button id="guideBtn" class="barbtn" aria-label="open the guide: what this place is and how to move in it">❓ Guide</button>
+
   <button id="vrBtn" class="barbtn" style="display:none">🥽 VR</button>
   <button id="arBtn" class="barbtn" style="display:none">📱 AR</button>
   <button id="satBtn" class="barbtn" style="display:none">🛰️</button>
@@ -6205,9 +6687,107 @@ const key = new THREE.DirectionalLight(0xffe0b0, 1.6);
 key.position.set(35, 48, 20);
 key.castShadow = true;
 key.shadow.mapSize.set(2048, 2048);
-const S = 60;
-Object.assign(key.shadow.camera, { left: -S, right: S, top: S, bottom: -S, far: 140 });
 scene.add(key);
+// The sun's target has to be IN the scene graph. three.js leaves a
+// DirectionalLight's default target sitting at the origin outside it, which
+// works only for as long as nobody moves it - its matrixWorld stays the
+// identity because nothing updates it. Moving it, as trackSun() does every
+// frame, requires it to be a child like anything else.
+scene.add(key.target);
+
+/* -------------------------------------------------------- sun frustum --- */
+// A directional light's shadow map is an orthographic box, and geometry
+// outside it is not softly unshadowed - it is unshadowed at a hard line
+// where the box ends. This box used to be a fixed +/-60 in light space
+// nailed to the world origin. Measured, it covered x in [-112.8, 104.4] and
+// z in [-99.6, 94.7] while the campus's shadow casters span 307.8 m, so
+// roughly a third of the campus stood in permanent flat light and the
+// walker lost their own shadow past about x = 104.
+//
+// So the box follows the viewer instead. The sun KEEPS ITS DIRECTION - the
+// light is repositioned along a fixed vector, never re-aimed - because a
+// sun whose angle changed as you walked would move every shadow on the
+// campus with you, which is worse than the hard line it replaces.
+const SUN_OFF = new THREE.Vector3(35, 48, 20).normalize().multiplyScalar(96);
+// Half-extent of the box, in metres. It is not one number, because the two
+// ways of looking at this world want opposite things: on foot you see a few
+// dozen metres and want every shadow edge crisp, while the opening orbit
+// sits 225 m up and wants the whole campus lit correctly at whatever
+// sharpness that costs. So the radius follows how far down the view the
+// ground actually is - tight when you are walking, wide when you are above
+// it - and at 2048 texels that is 6.8 cm per texel on foot against the old
+// fixed box's 10.6 cm, and 17.6 cm from overhead where nothing is close
+// enough to show it.
+const SUN_R_MIN = 70, SUN_R_MAX = 180;
+// The radius is quantised before use. Left continuous it would change by
+// centimetres every frame as the view tilts, which both rebuilds the
+// projection matrix for nothing and, worse, moves the texel grid the snap
+// below depends on - so the shadows would crawl exactly where the snapping
+// exists to stop them.
+const SUN_R_STEP = 10;
+// The light's basis. SUN_OFF never changes, so neither do these - deriving
+// them per frame would allocate two vectors every frame for a constant.
+const SUN_FWD = SUN_OFF.clone().normalize();
+const SUN_RIGHT = new THREE.Vector3()
+  .crossVectors(new THREE.Vector3(0, 1, 0), SUN_FWD).normalize();
+const SUN_UP = new THREE.Vector3().crossVectors(SUN_FWD, SUN_RIGHT);
+const _sunEye = new THREE.Vector3();
+const _sunDir = new THREE.Vector3();
+const _sunFocus = new THREE.Vector3();
+// The box is sized once here rather than on the first frame, so nothing can
+// render against an unconfigured frustum; trackSun() resizes it only when
+// the view moves far enough for the radius to cross a step.
+let sunR = SUN_R_MIN;
+Object.assign(key.shadow.camera,
+              { left: -sunR, right: sunR, top: sunR, bottom: -sunR,
+                near: 1, far: SUN_OFF.length() + sunR * 2 });
+key.shadow.camera.updateProjectionMatrix();
+
+// Snap the box's centre to whole shadow-map texels. Without this the box
+// slides by fractions of a texel as you walk and every shadow edge in the
+// scene crawls and fizzes - the classic artefact of a moving shadow
+// frustum, and far more distracting than the static box ever was. Rounding
+// the centre in the light's own basis makes the sampling grid stand still
+// relative to the world while the box travels.
+function trackSun() {
+  if (!key.castShadow) return;
+  (walkActive ? xrRig : camera).getWorldPosition(_sunEye);
+  camera.getWorldDirection(_sunDir);
+  // Aim the box at the ground the viewer is looking at, not at the viewer.
+  // Centring it on the eye wastes half the box behind you, and centring it
+  // on the eye's HEIGHT is worse still: from the opening orbit 225 m up
+  // that put the whole box in the air above the campus and every shadow in
+  // the scene disappeared. So the focus is where the view meets y = 0.
+  const down = -_sunDir.y;
+  // Looking level or upward there is no ground hit to aim at - the ray
+  // meets y = 0 at infinity, or never - so bias the box a little way down
+  // the view instead of chasing the horizon.
+  const reach = down > .15 ? Math.min(_sunEye.y / down, SUN_R_MAX * 2)
+                           : SUN_R_MIN * .35;
+  _sunFocus.copy(_sunEye).addScaledVector(_sunDir, reach);
+  _sunFocus.y = 0;
+  const want = Math.min(SUN_R_MAX, Math.max(SUN_R_MIN, 60 + reach * .45));
+  const R = Math.round(want / SUN_R_STEP) * SUN_R_STEP;
+  if (R !== sunR) {
+    sunR = R;
+    Object.assign(key.shadow.camera, { left: -R, right: R, top: R, bottom: -R,
+                                       near: 1, far: SUN_OFF.length() + R * 2 });
+    key.shadow.camera.updateProjectionMatrix();
+  }
+  // Snap the box's centre to whole shadow-map texels, in the light's own
+  // basis. Without this the box slides by fractions of a texel as you walk
+  // and every shadow edge in the scene crawls and fizzes - the classic
+  // artefact of a moving shadow frustum, and far more distracting than the
+  // static box it replaces ever was.
+  const texel = (R * 2) / key.shadow.mapSize.x;
+  const u = Math.round(_sunFocus.dot(SUN_RIGHT) / texel) * texel;
+  const v = Math.round(_sunFocus.dot(SUN_UP) / texel) * texel;
+  const w = _sunFocus.dot(SUN_FWD);
+  key.target.position.copy(SUN_RIGHT).multiplyScalar(u)
+    .addScaledVector(SUN_UP, v).addScaledVector(SUN_FWD, w);
+  key.position.copy(key.target.position).add(SUN_OFF);
+  key.target.updateMatrixWorld(true);
+}
 const FILL_I = .25;                 // the cool bounce, declared once
 const INDOOR_RIG = .35;             // how much of the outdoor rig a room sees
 const fill = new THREE.DirectionalLight(0x41C4D4, FILL_I);
@@ -8308,6 +8888,10 @@ let cityPois = 0, walkLim = 169, cityHits = [], chapterHit = [], restorationHits
    union homed elsewhere - the 111-trade network made visible per campus.
    An Academy structure only; the panel repeats the no-local-named honesty. */
 function openChapters() {
+  // the guide answers about the panel you are reading, not the world
+  // behind it; marked on the element so no block has to own the variable
+  document.getElementById('panel').dataset.guidePlace = 'panel-chapters';
+
   const hosted = D.halls.filter((h) => D.chapters.of[h.slug] !== campusKey);
   const byHome = {};
   for (const h of hosted) (byHome[D.chapters.of[h.slug]] ??= []).push(h.name);
@@ -10008,6 +10592,10 @@ function exportOrbisPrompts() {
     .join('\\n\\n');
 }
 function openOrbis() {
+  // the guide answers about the panel you are reading, not the world
+  // behind it; marked on the element so no block has to own the variable
+  document.getElementById('panel').dataset.guidePlace = 'panel-orbis';
+
   const esc = (s) => String(s).replace(/[&<>]/g,
     (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
   const h = D.halls.find((x) => x.slug === slug);
@@ -10049,6 +10637,10 @@ window.__tc3dOrbis = openOrbis;
 // unit straight to the hall that runs it - nothing here duplicates a
 // hall panel's own stations/seat/crib content, it only links to it
 function openSchools(focusHall) {
+  // the guide answers about the panel you are reading, not the world
+  // behind it; marked on the element so no block has to own the variable
+  document.getElementById('panel').dataset.guidePlace = 'panel-schools';
+
   const esc = (s) => String(s).replace(/[&<>]/g,
     (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
   const stageRows = D.schools.stages.map((s) => `<li style="margin:7px 0">
@@ -10099,6 +10691,7 @@ window.__tc3dSchools = openSchools;
    rollout lanes); a panel that throws instead is the one place that did
    not, and a stack trace is not a reason a learner can read. */
 function refusePanel(why) {
+  document.getElementById('panel').dataset.guidePlace = '';
   document.getElementById('pbody').innerHTML =
     '<h2>\u2014</h2><p>' + String(why).replace(/[&<>]/g,
       (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c])) + '</p>';
@@ -10661,6 +11254,62 @@ window.__tc3dLook = (x, y, z, tx, ty, tz) => {
   camera.updateMatrixWorld(true);
   return { at: [+x.toFixed(1), +y.toFixed(1), +z.toFixed(1)] };
 };
+// What the sun can actually cast into. A directional light's shadow map is
+// an orthographic box, and anything outside it is simply unshadowed - not
+// softly, but at a hard line where the box ends. This reports the box in
+// world space, the extent of everything that casts into it, and whether the
+// walker is standing inside it, so the question "do the shadows reach the
+// far side of the campus" has a number rather than an impression.
+window.__tc3dShadowBox = () => {
+  key.updateMatrixWorld(true);
+  key.target.updateMatrixWorld(true);
+  const sc = key.shadow.camera;
+  sc.updateProjectionMatrix();
+  sc.updateMatrixWorld(true);
+  const inv = new THREE.Matrix4().multiplyMatrices(
+    sc.matrixWorld, new THREE.Matrix4().copy(sc.projectionMatrix).invert());
+  const box = new THREE.Box3();
+  for (let i = 0; i < 8; i++)
+    box.expandByPoint(new THREE.Vector3(
+      (i & 1) ? 1 : -1, (i & 2) ? 1 : -1, (i & 4) ? 1 : -1)
+      .applyMatrix4(inv));
+  const casters = new THREE.Box3();
+  scene.traverse((o) => {
+    if (o.isMesh && o.castShadow && o.visible) casters.expandByObject(o);
+  });
+  const eye = new THREE.Vector3();
+  (walkActive ? xrRig : camera).getWorldPosition(eye);
+  const r3 = (v) => [+v.x.toFixed(1), +v.y.toFixed(1), +v.z.toFixed(1)];
+  // How much of what casts a shadow stands inside the box, measured on the
+  // ground plan rather than in the air: the box is a tilted volume, so its
+  // world AABB is much larger than its half-extent and quoting that as
+  // "reach" would flatter it. This is the honest overlap.
+  const ov = (a0, a1, b0, b1) =>
+    Math.max(0, Math.min(a1, b1) - Math.max(a0, b0));
+  const cover = casters.isEmpty() ? null : +(
+    ov(box.min.x, box.max.x, casters.min.x, casters.max.x) *
+    ov(box.min.z, box.max.z, casters.min.z, casters.max.z) /
+    ((casters.max.x - casters.min.x) * (casters.max.z - casters.min.z))
+  ).toFixed(3);
+  return {
+    on: renderer.shadowMap.enabled,
+    map: key.shadow.mapSize.x,
+    // the ortho half-extent the sun actually renders with, and what one
+    // shadow texel is worth in centimetres at that size
+    r: sunR, texelCm: +((sunR * 2 / key.shadow.mapSize.x) * 100).toFixed(1),
+    // where the box is aimed - the ground under the view, not the eye
+    focus: r3(_sunFocus),
+    box: { min: r3(box.min), max: r3(box.max) },
+    casters: casters.isEmpty() ? null
+      : { min: r3(casters.min), max: r3(casters.max) },
+    cover,
+    at: r3(eye),
+    // the two questions worth asking: does the ground being looked at take
+    // shadow, and (walking) does the viewer's own body still cast one
+    focusCovered: box.containsPoint(_sunFocus.clone()),
+    eyeCovered: box.containsPoint(eye),
+  };
+};
 window.__tc3dRooms = () => roomRects.map((r) => {
   const c = condOf(slug, r.strand);
   return { strand: r.strand, lux: c?.lux ?? null,
@@ -11189,6 +11838,10 @@ document.getElementById('dnBtn').addEventListener('click', () => {
 setWeather(WX[params.get('wx')] ? params.get('wx') : 'clear');
 // the records panel: every seat and drill from the device-local record
 function openRecords() {
+  // the guide answers about the panel you are reading, not the world
+  // behind it; marked on the element so no block has to own the variable
+  document.getElementById('panel').dataset.guidePlace = 'panel-records';
+
   const td = "style=\\"text-align:end\\"";
   const mono = "style=\\"text-align:end;font-family:'IBM Plex Mono',monospace\\"";
   const row = (name, r) => `<tr><td>${name}</td>
@@ -11634,6 +12287,7 @@ window.__tc3d = () => ({ view, buildings: buildings.length, plates: plates.lengt
     const h = r.intersectObjects(scene.children, true)[0];
     return h ? [h.object.material?.color?.getHexString?.(),
       Math.round(h.distance * 10) / 10, h.object.geometry?.type] : null; })() });
+__GUIDE_JS__
 __XR_JS__
 
 const clock = new THREE.Clock();
@@ -11683,6 +12337,11 @@ renderer.setAnimationLoop(() => {
   faunaStep(clock.elapsedTime, dt);
   labelStep(dt);
   roomLitStep();
+  // The sun's shadow box rides with the view, so it is placed after
+  // everything that can move the camera this frame and before the frame is
+  // drawn. Placed at the top of the loop it would read last frame's camera
+  // and the box would lag the view by one frame at every turn.
+  trackSun();
   xrRender();
 });
 </script>
@@ -11692,8 +12351,37 @@ renderer.setAnimationLoop(() => {
 
 page = page.replace('__DATA__', DATA).replace('__PIPELINE_JS__', PIPELINE_JS)
 page = page.replace('__SIM_JS__', SIM_JS).replace('__XR_JS__', XR_JS)
+page = page.replace('__GUIDE_JS__', GUIDE_JS)
 page = page.replace('__AVATAR_JS__', AVATAR_JS)
 page = page.replace('__ADVISOR_JS__', ADVISOR_JS)
 page = page.replace('__GROUND_TRUTH_JS__', GROUND_TRUTH_JS)
+
+# ---------------------------------------------------------- guide gate ---
+# The guide answers about wherever you are standing, and it routes by the
+# page's own `view` value. A view the guide has no place for gets a panel
+# that says so - honest, but the wrong place to find out. This reads every
+# `view = '...'` assignment out of the page source and holds the guide to
+# covering all of them, so a new view cannot ship without its entry.
+_views = set(re.findall(r"\bview = '([a-z]+)'", page))
+_guide_views = {pl['view'] for pl in guide_reg['places'].values() if pl['view']}
+assert _views, 'no view assignments found - the extractor has stopped matching'
+assert not (_views - _guide_views), (
+    'the page sets these views that the guide has no place for: '
+    + ', '.join(sorted(_views - _guide_views)))
+assert not (_guide_views - _views), (
+    'the guide has places for views this page never sets: '
+    + ', '.join(sorted(_guide_views - _views)))
+
+# Every gesture the recogniser can be asked about is one the registry
+# declares, and every one of them carries a hysteresis band in the right
+# direction. A gesture whose release equals its threshold has no band, and
+# one whose release is TIGHTER than its threshold has it backwards - which
+# reads as working right up until a hand sits on the boundary.
+for _gid, _g in guide_reg['hands']['gestures'].items():
+    _tight = _gid == 'pinch-select'      # a pinch fires BELOW its threshold
+    assert (_g['release_m'] > _g['threshold_m']) if _tight else (
+        _g['release_m'] < _g['threshold_m']), (
+        f"{_gid}: the release distance is on the wrong side of the threshold")
+
 out = HERE / 'trade_craft_3d.html'
 emit(out, page, f"{len(HALLS)} halls | {stations_reg['count']} stations | {len(I18N)} locales")

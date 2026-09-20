@@ -17,10 +17,15 @@ let n = 0;
 const ok = (m, c) => { if (!c) { console.error('FAIL', m); process.exit(1); } n++; console.log('  ok ', m); };
 
 const src = readFileSync(new URL('./build_3d.py', import.meta.url), 'utf8');
-// the body of a top-level `function name(`: up to the column-0 brace that closes it
+// the body of a top-level `function name(` - or `async function name(`:
+// up to the column-0 brace that closes it. The async form matters, and it
+// bit once: fn('guideListen') came back EMPTY against an async function, so
+// a check written over it would have passed on nothing at all. An empty
+// body is now a failure rather than a silent pass.
 const fn = (name) => {
-  const i = src.indexOf(`\nfunction ${name}(`);
-  if (i < 0) return '';
+  let i = src.indexOf(`\nfunction ${name}(`);
+  if (i < 0) i = src.indexOf(`\nasync function ${name}(`);
+  if (i < 0) { console.error('FAIL no such function in the source:', name); process.exit(1); }
   const j = src.indexOf('\n}\n', i + 1);
   return src.slice(i, j < 0 ? undefined : j + 2);
 };
@@ -857,5 +862,145 @@ ok('a probe can stand the eye somewhere, because reaching for the camera '
   + 'as a global silently measures the view it was already looking at',
   /window\.__tc3dLook = \(x, y, z, tx, ty, tz\) => \{/.test(src)
   && /camera\.updateMatrixWorld\(true\);/.test(src));
+
+
+/* ---------------------------------------------------------- sun frustum --- */
+// Measured before the fix: the sun's shadow box was a fixed +/-60 in light
+// space nailed to the world origin, covering x in [-112.8, 104.4] and z in
+// [-99.6, 94.7] against shadow casters spanning 307.8 m - 47% of the campus,
+// in the same place no matter where you stood, with a hard line at the edge.
+// Measured after: 100% from the opening orbit, and on foot the box rides with
+// the view at 6.8 cm per texel against the old box's 10.6. These hold the
+// three things that silently un-do it.
+ok('the sun\'s shadow box is sized inside trackSun(), not nailed to a constant '
+  + 'half-extent at the world origin',
+  /function trackSun\(\) \{/.test(src)
+  && /Object\.assign\(key\.shadow\.camera, \{ left: -R, right: R, top: R, bottom: -R,/
+     .test(fn('trackSun'))
+  && !/const S = 60;/.test(src));
+ok('key.target is IN the scene graph - three.js leaves a directional light\'s '
+  + 'default target outside it, where moving it does nothing at all',
+  /scene\.add\(key\.target\);/.test(src));
+ok('trackSun() updates the target\'s world matrix after moving it, because a '
+  + 'light aimed through a stale matrix points where it used to',
+  /key\.target\.updateMatrixWorld\(true\);/.test(fn('trackSun')));
+ok('the box is aimed at the ground under the view, not at the eye: from the '
+  + 'opening orbit 225 m up, an eye-centred box holds no ground at all',
+  /_sunFocus\.copy\(_sunEye\)\.addScaledVector\(_sunDir, reach\);/.test(fn('trackSun'))
+  && /_sunFocus\.y = 0;/.test(fn('trackSun')));
+ok('the box centre is snapped to whole shadow texels, or every shadow edge in '
+  + 'the scene crawls as the box slides under it',
+  /const texel = \(R \* 2\) \/ key\.shadow\.mapSize\.x;/.test(fn('trackSun'))
+  && /Math\.round\(_sunFocus\.dot\(SUN_RIGHT\) \/ texel\) \* texel/.test(fn('trackSun')));
+ok('the radius is quantised before it is used, so the texel grid the snap '
+  + 'depends on does not itself move every frame',
+  /const SUN_R_STEP = 10;/.test(src)
+  && /Math\.round\(want \/ SUN_R_STEP\) \* SUN_R_STEP/.test(fn('trackSun')));
+ok('trackSun() runs after everything that can move the camera and before the '
+  + 'frame is drawn, not at the top of the loop a frame behind it',
+  /\n  trackSun\(\);\n  xrRender\(\);/.test(src));
+ok('trackSun() is never called at module top level: walkActive is a `let` '
+  + 'declared further down, so an eager call throws on its temporal dead zone',
+  !/\n(?:const [A-Za-z_]+ = )?trackSun\(\);\n(?!  )/.test(src.replace(/\n  trackSun\(\);/g, '')));
+ok('a probe can ask what the sun can actually reach - the half-extent it '
+  + 'renders with, the texel that buys, and how much of the campus is inside',
+  /window\.__tc3dShadowBox = \(\) => \{/.test(src)
+  && /r: sunR, texelCm:/.test(src)
+  && /focusCovered: box\.containsPoint/.test(src));
+
+
+/* -------------------------------------------- the guide, voice, hands --- */
+// Driven in a browser before these were written: the six asks render and
+// answer for all ten places, a running seat's control rows come back
+// verbatim from sims/, both voice switches start off and write nothing to
+// localStorage until clicked, and the gesture recogniser reads 13 synthetic
+// hand positions the way the registry declares - band in both directions,
+// and an untracked hand reading as no gesture. These hold the source to it.
+ok('the guide routes view -> place by INVERTING each place\'s own view field, '
+  + 'not by a second table that would disagree the first time one is renamed',
+  /for \(const \[id, pl\] of Object\.entries\(G\.places\)\) if \(pl\.view\) GUIDE_OF_VIEW\[pl\.view\] = id;/
+    .test(src));
+ok('the panel stays on the place it rendered: the ask buttons read '
+  + 'guidePlaceId, not the view behind the panel',
+  /let guidePlaceId = null, guideAskId = null/.test(src)
+  && /guideRender\(guidePlaceId, a\.dataset\.guideAsk\)/.test(src)
+  && !/guideRender\(guidePlaceNow\(\), a\.dataset/.test(src));
+ok('a running seat\'s controls are RESOLVED against D.sims.sims[curSimId] at '
+  + 'the moment you ask, never copied into the guide registry',
+  /if \(id === 'seat:running'\)/.test(fn('guideScheme'))
+  && /D\.sims\.sims\[curSimId\]/.test(fn('guideScheme'))
+  && /sm\.controls\.map\(\(c\) => \(\{ input: c\.keys, does: c\.action \}\)\)/.test(fn('guideScheme')));
+{
+  // scoped to what the guide itself renders: the page has read-only
+  // textareas elsewhere (the save slot, the orbis payload), and a check
+  // that swept the whole file would be answering about those instead
+  const guideMarkup = fn('guideRender') + fn('guideVoiceBox') + fn('guideRows')
+    + fn('guideHandsBox');
+  ok('the guide accepts no free text - the six asks are the whole surface, '
+    + 'because nothing behind it could answer free text',
+    !/<textarea|contenteditable|type="text"|type="search"/.test(guideMarkup)
+    && (guideMarkup.match(/<input /g) || []).length === 1
+    && /<input type="checkbox" data-guide-voice=/.test(guideMarkup));
+}
+ok('a voice switch is OFF unless localStorage says exactly \'1\': an absent '
+  + 'key, a blocked store and a thrown read all come back off',
+  /const vOn = \(k\) => \{ try \{ return localStorage\.getItem\(k\) === '1'; \}\s*\n\s*catch \(e\) \{ return false; \} \};/
+    .test(src));
+ok('the recogniser constructor is whichever name the browser offers, and '
+  + 'null when it offers neither - the control is then absent, not degraded',
+  /const SR = window\.SpeechRecognition \?\? window\.webkitSpeechRecognition \?\? null;/.test(src)
+  && /const have = id === 'ask_by_voice' \? !!SR : !!synth;/.test(src));
+ok('speech-to-text asks to recognise on the device where that is offered, '
+  + 'and FAILS CLOSED on a missing language pack rather than retrying '
+  + 'through the browser vendor\'s service with the audio it was given',
+  /typeof SR\.availableOnDevice === 'function'/.test(fn('guideListen'))
+  && /r\.processLocally = true;/.test(fn('guideListen'))
+  && /e\?\.error === 'language-not-supported'/.test(fn('guideListen'))
+  && /does not fall back to the vendor service/.test(fn('guideListen')));
+ok('a network-only voice is disclosed BEFORE it speaks, not after: the '
+  + 'guide prefers a localService voice and says when there is none',
+  /pool\.find\(\(v\) => v\.localService\) \?\? pool\[0\]/.test(fn('guideVoice'))
+  && /if \(v && !v\.localService\)/.test(fn('guideVoiceBox')));
+ok('the guide button survives a panel: the whole bar rises over the scrim '
+  + 'and everything on it except the guide is deadened',
+  /body\.open #bar\{z-index:12\}/.test(src)
+  && /body\.open #bar > \*:not\(#guideBtn\)\{pointer-events:none;opacity:\.3\}/.test(src));
+ok('a hand gesture holds on a LOOSER number than it fires on - one '
+  + 'threshold on a stop gesture chatters, and a stop that chatters is '
+  + 'worse than no stop',
+  /return was \? d < g\.release_m : d < g\.threshold_m;/.test(fn('gestHeld'))
+  && /const hi = was \? g\.release_m : g\.threshold_m;/.test(fn('gestHeld')));
+ok('an untracked joint reads as null, not as the origin - which would be a '
+  + 'pinch every time hand tracking dropped',
+  /if \(!j \|\| j\.visible === false\) return null;/.test(fn('jointAt'))
+  && /if \(ext\.some\(\(d\) => d === null\)\) return false;/.test(fn('gestHeld')));
+ok('the gestures are the registry\'s, walked by id, with the registry\'s own '
+  + 'distances and dwell - none of the four is named in the loop',
+  /for \(const \[id, g\] of Object\.entries\(HANDS\.gestures\)\)/.test(fn('xrHands'))
+  && /now - prev\.since >= g\.hold_ms/.test(fn('xrHands')));
+ok('"stop" releases every walk key and the edge cache, not only the keys '
+  + 'this hand set - a stop that leaves a stick\'s key down has not stopped',
+  /for \(const k of \['KeyW', 'KeyS', 'KeyA', 'KeyD', 'ShiftLeft'\]\) keys\[k\] = false;/
+    .test(fn('xrGestFire'))
+  && /xrPad\.edge = \{\};/.test(fn('xrGestFire')));
+ok('hands are read AFTER the stick adapter, so a pointing hand sets the '
+  + 'walk command instead of having a resting stick overwrite it',
+  /xrStat\.lastInput = \{ l: xrPad\.l[^\n]*\n(?:[^\n]*\n){0,3}\s*xrHands\(dt, ses\);/.test(src));
+ok('hand tracking is asked for as an OPTIONAL feature on both session '
+  + 'shapes, so asking for it can never cost the session',
+  (src.match(/optionalFeatures: \[XR_HANDS\]/g) || []).length === 2);
+ok('the recogniser can be tested without a session, a headset or a hand, '
+  + 'which is the only claim this build can honestly make about it',
+  /window\.__tc3dHandProbe = \(id, joints, was = false\) => \{/.test(src)
+  && /gestHeld\(g, was, hand\)/.test(src));
+ok('the XR note no longer says hand tracking does not exist, and still says '
+  + 'plainly that no hand has been held up to these distances',
+  !/NOT exist: hand tracking/.test(src)
+  && /Nobody has held a real hand up to these distances/.test(src));
+ok('a view the guide has no place for stops the build, and so does a place '
+  + 'for a view the page never sets',
+  /_views = set\(re\.findall\(r"\\bview = '\(\[a-z\]\+\)'", page\)\)/.test(src)
+  && /the page sets these views that the guide has no place for/.test(src)
+  && /the guide has places for views this page never sets/.test(src));
 
 console.log(`web/test_3d: ${n} checks passed - teardown, draw-call and per-frame contracts held at the source`);
