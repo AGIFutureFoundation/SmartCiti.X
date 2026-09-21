@@ -989,10 +989,31 @@ HONESTY = {
                        'not appear in this payload. A bisection and a table of '
                        'hand-picked colours are not that, and labelling them so '
                        'would be a lie in the flattering direction.',
-    'not_built_yet': 'no line of web/build_3d.py reads this registry today. The '
-                     'page still has one fixed sun vector and still gets dark by '
-                     'selecting a weather called `night`. This pack declares the '
-                     'day cycle; it does not claim the page renders one.',
+    # Partly built, and the line between the two halves is the point. This
+    # field said "no line of web/build_3d.py reads this registry today"; the
+    # page reads it now, and saying so is as much the pack's job as saying
+    # the opposite was.
+    'built_so_far': 'the page reads this registry. setSun() places the key '
+                    'light along the selected phase\'s own elevation and '
+                    'azimuth, applyPhase() takes the sun and hemisphere '
+                    'colours and intensity multipliers from the phase, the '
+                    'star field is up when the phase puts the sun below the '
+                    'star layer\'s cutoff and is dimmed rather than culled by '
+                    'the weather\'s star_visibility, a weather state that '
+                    'pins an hour does so through phase_override, and the '
+                    'hour is a control in the top bar and a ?hour= query '
+                    'parameter. The six hex literals the page used to switch '
+                    'the light with are gone.',
+    'not_built_yet': 'the GRADIENT half is not wired. The page still composes '
+                     'its sky from the campus\'s own stops darkened by the '
+                     'weather, so this pack\'s 56 per-phase gradient stops, '
+                     'its gradient_tint_hex, its horizon_haze_mul and its '
+                     'sun_disc are declared and unread. The layer list and '
+                     'compose_order describe the order the page already draws '
+                     'in rather than driving it. And the hour is STEPPED, '
+                     'never interpolated: setSky() rebuilds the environment '
+                     'map on every call, so a sun that slid continuously '
+                     'would rebuild it every frame.',
 }
 assert HONESTY['status'].startswith('COMPUTED:'), \
     'this pack carries the COMPUTED provenance word'

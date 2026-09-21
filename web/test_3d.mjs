@@ -30,6 +30,14 @@ const fn = (name) => {
   return src.slice(i, j < 0 ? undefined : j + 2);
 };
 
+/* The source with its comments cut out.
+   Twice now a check counting or forbidding a string has matched the COMMENT
+   that explains why the string is gone - the old `ontouchstart` expression
+   and the old fixed sun vector are both quoted in the notes beside their
+   replacements. A check that reads its own explanation is answering a
+   different question than the one it was written to ask. */
+const code = src.replace(/\/\/[^\n]*/g, '').replace(/\/\*[\s\S]*?\*\//g, '');
+
 /* ------------------------------------------------------------ teardown --- */
 ok('disposeOf() is the one teardown path, and it still never disposes a shared (cached) geometry',
   /if \(o\.geometry && !o\.geometry\.userData\?\.shared\) o\.geometry\.dispose\(\);/.test(fn('disposeOf')));
@@ -849,12 +857,19 @@ ok('an indoor surface sees a fraction of the sky, declared once and used '
   + 'by both factories that build a room surface',
   /const INDOOR_ENV = \.3;/.test(src)
   && (src.match(/envMapIntensity: INDOOR_ENV/g) ?? []).length === 2);
-ok('and the rest of the outdoor rig steps back with it, where the '
-  + 'atmosphere is already being written - one place decides it',
+ok('and the rest of the outdoor rig steps back with it - the hemisphere '
+  + 'moved into applyPhase() when the hour got the last word on it, and '
+  + 'the step-back had to move WITH it or a hall would be lit outdoors',
   /const INDOOR_RIG = \.35;/.test(src)
+  // the fill stays where the atmosphere is written; the hemisphere is now
+  // the hour's, so it takes its own `indoors` from the same rule
   && /const indoors = view === 'hall' \? INDOOR_RIG : 1;/.test(fn('applyAtmos'))
-  && /hemi\.intensity = a\.hemi\.i \* w\.hemi_mul \* indoors;/.test(fn('applyAtmos'))
-  && /fill\.intensity = FILL_I \* indoors;/.test(fn('applyAtmos')));
+  && /fill\.intensity = FILL_I \* indoors;/.test(fn('applyAtmos'))
+  && /const indoors = view === 'hall' \? INDOOR_RIG : 1;/.test(fn('applyPhase'))
+  && /hemi\.intensity = a\.hemi\.i \* w\.hemi_mul \* indoors \* eff\.hemi\.intensity_mul;/
+     .test(fn('applyPhase'))
+  // and nothing downstream may write either intensity back
+  && !/hemi\.intensity = a\.hemi\.i \* w\.hemi_mul \* indoors;/.test(fn('applyAtmos')));
 ok('the fill\'s own strength is declared once rather than typed at its '
   + 'construction and again wherever it is re-set',
   /const FILL_I = \.25;/.test(src)
@@ -1031,12 +1046,10 @@ ok('the shadow map is SIZED to the device rather than taken away, and the '
   /const SHADOW_PX = isTouch \? 1024 : 2048;/.test(src)
   && /key\.shadow\.mapSize\.set\(SHADOW_PX, SHADOW_PX\);/.test(src));
 {
-  // Counted over CODE, not comments: the note beside the declaration quotes
-  // the old expression, and a check that counts its own explanation is
-  // counting the wrong thing. Writing this check found a THIRD reader -
-  // the sim-binding visibility line still tested the flag inline - which is
+  // Counted over `code`, not `src`: the note beside the declaration quotes
+  // the old expression. Writing this check found a THIRD reader - the
+  // sim-binding visibility line still tested the flag inline - which is
   // exactly the disagreement it exists to prevent.
-  const code = src.replace(/\/\/[^\n]*/g, '').replace(/\/\*[\s\S]*?\*\//g, '');
   ok('`ontouchstart` is tested ONCE and shared - three separate readers '
     + 'tested it for themselves, which is how they could have disagreed',
     (code.match(/'ontouchstart' in window/g) || []).length === 1);
@@ -1061,5 +1074,75 @@ ok('the quality probe puts the rung back exactly as it found it - a probe '
 ok('the debug hook reports what actually varies now - whether the ladder is '
   + 'paying for shadows, and how many texels - not a flag that is always true',
   /isTouch, shadows: key\.castShadow, shadowPx: SHADOW_PX,/.test(src));
+
+
+/* ------------------------------------------------- the hour of the day --- */
+// The sun was ONE fixed vector - (35, 48, 20) normalised, 49.98 degrees of
+// elevation - shared by all ten campuses at every hour, forever. sky/ solves
+// the real elevation and azimuth for fourteen phases at this campus's own
+// latitude, and the page now places the light along that.
+//
+// Driven before these were written: all fourteen phases render, the sun
+// rises in the east (azimuth 89.6 at sunrise, direction x = +1), is due
+// south and 52.1 degrees up at noon, sets in the west (azimuth 270.7,
+// x = -1), and is below the horizon at night (y = -0.79) and above it at
+// noon (y = +0.79). Leak-checked over 56 sky rebuilds: zero drift in
+// textures, geometries and lit lights.
+ok('the sun\'s direction is a function of the HOUR, not a constant - the '
+  + 'fixed (35, 48, 20) vector is gone',
+  /function setSun\(elevDeg, azDeg\) \{/.test(src)
+  && !/new THREE\.Vector3\(35, 48, 20\)\.normalize\(\)/.test(code));
+ok('the light\'s basis is REBUILT when the sun moves - it was cached once '
+  + 'precisely because the sun never did, and a stale basis snaps the '
+  + 'shadow box to a grid belonging to a different hour',
+  /SUN_FWD\.copy\(SUN_OFF\)\.normalize\(\);/.test(fn('setSun'))
+  && /SUN_RIGHT\.crossVectors\(_sunAxis, SUN_FWD\)\.normalize\(\);/.test(fn('setSun'))
+  && /sunR = 0;/.test(fn('setSun')));
+ok('azimuth is converted from degrees-clockwise-from-north, which is what '
+  + 'sky/ publishes, into the axes three.js actually uses',
+  /SUN_OFF\.set\(c \* Math\.sin\(az\), Math\.sin\(el\), -c \* Math\.cos\(az\)\)/.test(fn('setSun')));
+ok('the hour is applied BEFORE the sky is drawn: setSky reads where the sun '
+  + 'is and whether the stars are up, and both are the hour\'s',
+  /applyPhase\(\);\n  const t0 = performance\.now\(\);\n(?:[^\n]*\n){0,8}?\s*setSky\(/.test(src));
+ok('the weather\'s two colour branches are gone - six hex literals that '
+  + 'existed in no registry, making the light a function of the weather '
+  + 'when it is a function of the hour',
+  !/key\.color\.setHex\(0x9db4d8\)/.test(code)
+  && !/key\.color\.setHex\(0x8a949c\)/.test(code)
+  && /key\.color\.setHex\(parseInt\(eff\.sun\.color_hex/.test(fn('applyPhase')));
+ok('the page keeps owning the base intensities and the hour only scales '
+  + 'them, so a campus and a weather state still mean what they meant',
+  /key\.intensity = a\.sun\.i \* w\.sun_mul \* eff\.sun\.intensity_mul;/.test(fn('applyPhase'))
+  && /hemi\.intensity = a\.hemi\.i \* w\.hemi_mul \* indoors \* eff\.hemi\.intensity_mul;/
+     .test(fn('applyPhase')));
+ok('a weather state may PIN the hour rather than dress it - `night` is a '
+  + 'weather state in world/, not a time, and sky/ marks that explicitly '
+  + 'instead of the page inferring it',
+  /ws\?\.phase_override \? PHASE_OF\[ws\.phase_override\] : ph/.test(fn('applyPhase')));
+ok('the stars belong to the SUN: they are up when the hour puts it below '
+  + 'the star layer\'s own cutoff, not when one weather state asks',
+  /starsUp = eff\.elevation_deg < SKYDAY\.layers\.find\(\(l\) => l\.id === 'star-field'\)/
+    .test(fn('applyPhase'))
+  && !/stars: !!w\.stars/.test(code));
+ok('the weather DIMS the stars rather than culling them - an overcast night '
+  + 'is not a smaller sky, it is a dimmer one',
+  /const vis = opts\.starAlpha \?\? 1;/.test(fn('skyCanvas'))
+  && /const alpha = a \* \(1 - y \/ \(H \* \.95\)\) \* vis;/.test(fn('skyCanvas')));
+ok('a bad phase id THROWS rather than falling back to a default hour, and '
+  + 'a bad ?hour= query string is ignored rather than throwing',
+  /throw new Error\('no such sky phase: ' \+ phaseId\)/.test(fn('applyPhase'))
+  && /throw new Error\('no such sky phase: ' \+ id\)/.test(fn('setPhase'))
+  && /if \(want && PHASE_OF\[want\]\)/.test(src));
+ok('a probe can compare what the hour SAYS about the stars with what the '
+  + 'sky was actually drawn with - they disagreed on every hour change '
+  + 'until the ordering was fixed, and an assumption cannot catch that',
+  /let starsDrawn = false;/.test(src)
+  && /stars: \(starsDrawn = starsUp\)/.test(src)
+  && /starsUp, starsDrawn, starAlpha,/.test(src));
+ok('the hour is a control a person can reach, filled from the registry in '
+  + 'its own order and labelled with the sun\'s real elevation',
+  /<select id="hour" aria-label="hour of the day"><\/select>/.test(src)
+  && /sel\.innerHTML = PHASES\.map\(\(ph\) => \{/.test(src)
+  && /sel\.addEventListener\('change', \(\) => setPhase\(sel\.value\)\);/.test(src));
 
 console.log(`web/test_3d: ${n} checks passed - teardown, draw-call and per-frame contracts held at the source`);

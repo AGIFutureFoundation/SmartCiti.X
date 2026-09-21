@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-20",
- "source_stamp": "b141f63824df0916",
+ "source_stamp": "6794771e055d10cc",
  "honesty": {
   "status": "COMPUTED: the sun's elevation and azimuth in every phase, and the hour of every phase defined by a twilight threshold, are computed in sky/build.py from a published solar-position series at a real latitude read from geo/, on a stated day of the year. Nothing in the geometry was placed by eye.",
   "colours_are_authored": "every colour in this pack is AUTHORED - chosen by eye, one person's idea of what a Bay dawn looks like, and labelled AUTHORED in each phase's own provenance block. No colour here is derived from a colour temperature, a Rayleigh integral or a photograph, and none is measured.",
@@ -12,7 +12,8 @@
   "one_truth": "cloud cover, fog density, fog tint, sun strength and rain rate are world/'s and are not copied into this payload - each weather entry holds the dotted path instead, and the build fails if the path does not resolve. The star count, the gradient band names, the disc geometry and the cloud recipe are read the same way.",
   "page_owns": "the page owns the base sun and hemisphere intensities, the canvas, the PMREM environment and the shadow frustum. This pack publishes multipliers and angles; it publishes no absolute intensity, no pixel and no metre.",
   "provenance_word": "the generated-video provenance word this bundle reserves for orbis/ is not used anywhere in this pack and does not appear in this payload. A bisection and a table of hand-picked colours are not that, and labelling them so would be a lie in the flattering direction.",
-  "not_built_yet": "no line of web/build_3d.py reads this registry today. The page still has one fixed sun vector and still gets dark by selecting a weather called `night`. This pack declares the day cycle; it does not claim the page renders one."
+  "built_so_far": "the page reads this registry. setSun() places the key light along the selected phase's own elevation and azimuth, applyPhase() takes the sun and hemisphere colours and intensity multipliers from the phase, the star field is up when the phase puts the sun below the star layer's cutoff and is dimmed rather than culled by the weather's star_visibility, a weather state that pins an hour does so through phase_override, and the hour is a control in the top bar and a ?hour= query parameter. The six hex literals the page used to switch the light with are gone.",
+  "not_built_yet": "the GRADIENT half is not wired. The page still composes its sky from the campus's own stops darkened by the weather, so this pack's 56 per-phase gradient stops, its gradient_tint_hex, its horizon_haze_mul and its sun_disc are declared and unread. The layer list and compose_order describe the order the page already draws in rather than driving it. And the hour is STEPPED, never interpolated: setSky() rebuilds the environment map on every call, so a sun that slid continuously would rebuild it every frame."
  },
  "counts": {
   "phases": 14,

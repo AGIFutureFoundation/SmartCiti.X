@@ -258,8 +258,14 @@ ok('and the honesty block says plainly that the colours were chosen by eye',
   /chosen by\s+eye/.test(reg.honesty.colours_are_authored)
   && /none is measured/.test(reg.honesty.colours_are_authored)
   && /not a date/.test(reg.honesty.not_a_forecast));
-ok('the night phase\'s sun colour is the one the page already turns night to',
-  page.includes('0x9db4d8')
+ok('the page no longer carries the night colour as a LITERAL - it reads '
+  + 'this phase\'s instead, which is what wiring this pack up was for. It '
+  + 'held 0x9db4d8 in a `if (night)` branch beside five other hex values '
+  + 'that existed in no registry; the swap was written to be a no-op at '
+  + 'that hour, and this check flipped from "the page still has it" to '
+  + '"the page has stopped having it" the moment it was made',
+  !page.includes('0x9db4d8')
+  && /key\.color\.setHex\(parseInt\(eff\.sun\.color_hex/.test(page)
   && phases.find((p) => p.id === 'night').sun.color_hex === '#9db4d8');
 
 /* ------------------------------------------------------------ the weathers --- */
@@ -446,8 +452,11 @@ ok('every world path the contract says to READ resolves for every id it covers',
         !== undefined;
     });
   }));
-ok('the contract names the page\'s fixed sun vector as the thing that must change',
-  page.includes('const SUN_OFF = new THREE.Vector3(35, 48, 20)')
+ok('the page\'s fixed sun vector is GONE and setSun() has replaced it - '
+  + 'this check asked for the opposite until the contract was carried out, '
+  + 'and the contract still records what it replaced',
+  !page.includes('const SUN_OFF = new THREE.Vector3(35, 48, 20)')
+  && /function setSun\(elevDeg, azDeg\)/.test(page)
   && /SUN_OFF is a FIXED direction/.test(reg.page_contract.sun_vector)
   && /35, 48, 20/.test(reg.page_contract.sun_vector)
   && /trackSun\(\)/.test(reg.page_contract.sun_vector));
@@ -481,8 +490,16 @@ ok('every contract clause is written out, and the hour is not a score',
   && /changes no score/.test(reg.page_contract.episode)
   && !/"requires"|"unlocks"|"points"/.test(text));
 ok('the pack admits the page does not render any of this yet',
-  /no line of web\/build_3d\.py reads this registry today/.test(reg.honesty.not_built_yet)
-  && /does not claim the page renders one/.test(reg.honesty.not_built_yet));
+  // Both halves, named. A pack that only said what it had built would be
+  // flattering itself; one that only said what it had not would be stale
+  // the moment somebody wired it up, which is exactly what happened here.
+  /the page reads this registry/.test(reg.honesty.built_so_far)
+  && /setSun\(\)/.test(reg.honesty.built_so_far)
+  && /the GRADIENT half is not wired/.test(reg.honesty.not_built_yet)
+  && /the hour is STEPPED, never interpolated/.test(reg.honesty.not_built_yet)
+  // and the claim is checked against the page rather than trusted
+  && /function setSun\(elevDeg, azDeg\)/.test(page)
+  && !/starAlpha[\s\S]{0,40}stars: !!w\.stars/.test(page));
 
 /* -------------------------------------------------------------- the counts --- */
 ok('every published count is the count of the thing it names',
@@ -526,5 +543,5 @@ console.log(`sky/test: ${n} checks passed — ${C.phases} phases `
   + `into world/ and copying none of it; ${C.layers} draw layers in the page's `
   + `own order; ${world.sky.stars.count} stars in ${C.star_magnitude_bins} bins `
   + `from the page's seed, cutoff ${reg.stars.magnitude_cutoff} mag against `
-  + `${reg.stars.equivalent_sky_magnitude} for a real sky; colours AUTHORED, `
-  + `angles DERIVED, and the page renders none of it yet`);
+  + `${reg.stars.equivalent_sky_magnitude} for a real sky; `
+  + `colours AUTHORED and sun angles DERIVED; the page now places the sun, the light and the stars by the hour, and still composes its gradient the old way`);
