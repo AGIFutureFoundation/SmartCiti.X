@@ -396,11 +396,9 @@ page = ('<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n'
         'stroke=%22%23E8A33D%22 stroke-width=%222.6%22 stroke-linejoin=%22round%22/%3E'
         '%3Cpath d=%22M11 21 h10%22 stroke=%22%2341C4D4%22 stroke-width=%222.6%22 '
         'stroke-linecap=%22round%22/%3E%3C/svg%3E">\n'
-        '<link rel="preconnect" href="https://fonts.googleapis.com">\n'
-        '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>\n'
-        '<link rel="stylesheet" href="https://fonts.googleapis.com/css2?'
-        'family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600;700'
-        '&family=IBM+Plex+Mono:wght@400;600&display=swap">\n'
+        '<!-- Self-hosted: nothing on this page is fetched from another '
+        'origin at run time. See web/fetch_fonts.py. -->\n'
+        '<link rel="stylesheet" href="web/vendor/fonts/fonts.css">\n'
         f'<style>{CSS}</style>\n</head>\n{BODY}\n</html>\n')
 
 emit(ROOT / 'index.html', page,

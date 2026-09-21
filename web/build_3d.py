@@ -68,6 +68,7 @@ labels_reg = json.load(open(ROOT / 'labels/registry/labels.json'))
 roadmap_reg = json.load(open(ROOT / 'roadmap/registry/roadmap.json'))
 restoration_reg = json.load(open(ROOT / 'restoration/registry/restoration.json'))
 guide_reg = json.load(open(ROOT / 'guide/registry/guide.json'))
+sky_reg = json.load(open(ROOT / 'sky/registry/sky.json'))
 
 def trim(rows, *drop):
     """Ship what is drawn, not what is explained.
@@ -468,6 +469,13 @@ DATA = json.dumps({
                             for k in ('districts', 'certification')}},
     'crews': {'crews': crews_reg['crews'], 'honesty': crews_reg['honesty'],
               'standing': crews_reg['standing']},
+    # the day-night sky: fourteen phases with the sun's own elevation and
+    # azimuth solved for this campus's latitude, the colours that go with
+    # each, and how the six weather states already in world/ dress them.
+    # The phases carry pointers into world/ rather than copies of it.
+    'sky': {k: sky_reg[k] for k in
+            ('honesty', 'counts', 'site', 'phases', 'weather_sky',
+             'layers', 'stars', 'compose_order')},
     # the helper guide: ten places, six fixed questions each, the control
     # schemes (the seat rows read from sims/, never copied), the voice
     # policy with its two off-by-default switches, and the declared hand
@@ -3243,7 +3251,8 @@ AVATAR_JS = """/* --------------------------------------------- avatar + mobile 
 // The locker is data (avatars registry): sections, options, emotes. The
 // avatar is COSMETIC ONLY - the registry guarantee, asserted by its suite:
 // nothing here is read by any grader.
-const isTouch = 'ontouchstart' in window;
+// declared up with the renderer, which reads it before this point in the
+// emitted page - see the note beside renderer.setPixelRatio
 let avatarGroup = null, avatarMesh = null, walkAvatar = null;
 let avatarCfg = null, lastEmote = null;
 let emo = null;                       // {move, t} while an emote plays
@@ -6119,6 +6128,7 @@ body.open #bar > *:not(#guideBtn){pointer-events:none;opacity:.3}
   <button id="orbisBtn" class="barbtn" aria-label="Orbis synthetic-training prompt">🎬</button>
   <button id="schoolsBtn" class="barbtn" aria-label="schools flipped-classroom program">🎓</button>
   <button id="restorationBtn" class="barbtn" aria-label="Bay Restoration sites and training tracks">🌊</button>
+  <select id="hour" aria-label="hour of the day"></select>
   <button id="guideBtn" class="barbtn" aria-label="open the guide: what this place is and how to move in it">❓ Guide</button>
 
   <button id="vrBtn" class="barbtn" style="display:none">🥽 VR</button>
@@ -6212,12 +6222,39 @@ const maxAniso = renderer.capabilities.getMaxAnisotropy();
    Both surface caches are keyed on the size, which differs per rung, so a
    texture built for one rung is never handed back for the other. */
 const anisoNow = () => qLevel === 'low' ? Math.min(4, maxAniso) : maxAniso;
-// mobile budget: cap the pixel ratio and drop shadow maps on touch GPUs
-renderer.setPixelRatio(Math.min(devicePixelRatio,
-  ('ontouchstart' in window) ? 1.5 : 2));
+/* Does this device drive itself by touch? Declared HERE, not where it reads
+   most naturally, because the emitted page puts this renderer block at line
+   269 and the walking code that also wants it some seven thousand lines
+   later. Sharing a `const` across that gap only works in one direction, and
+   this is the direction. */
+const isTouch = 'ontouchstart' in window;
+
+/* Mobile budget: cap the pixel ratio, and size the shadow map to the device
+   rather than taking it away.
+
+   Shadows used to be switched off outright by `!('ontouchstart' in window)`,
+   which was answering the wrong question. That flag is true on every
+   touchscreen laptop and every Windows 2-in-1 - hardware that renders this
+   scene comfortably - and equally true on a budget phone that cannot. It
+   says "this device has a touchscreen"; it was being read as "this device
+   cannot afford a shadow map". So every touch device lost the only cue that
+   puts an object on the ground, including the ones with the GPU to spare,
+   and a walker on a phone floated over the apron with nothing under them.
+
+   The page already has something that measures the right thing: the quality
+   ladder watches real frame time and demotes when frames slip, and its
+   bottom rung already clears key.castShadow. So shadows are on everywhere
+   now, at a map sized to what the device plausibly has, and a device that
+   genuinely cannot hold them loses them within about a second of measured
+   frames instead of never having had them. A device that can, keeps them. */
+renderer.setPixelRatio(Math.min(devicePixelRatio, isTouch ? 1.5 : 2));
 renderer.setSize(innerWidth, innerHeight);
-renderer.shadowMap.enabled = !('ontouchstart' in window);
+renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+// Quarter the texels on touch. Paired with the sun box that now rides with
+// the view at a 70 m radius on foot, 1024 is 13.7 cm per shadow texel -
+// coarser than the desktop's 6.8, and still a shadow where there was none.
+const SHADOW_PX = isTouch ? 1024 : 2048;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.12;
 renderer.xr.enabled = true;
@@ -6321,6 +6358,17 @@ function qStep(dt) {
   // harness runs (webdriver) keep deterministic visuals; they force via the hook
   if (!qAuto || reduced || navigator.webdriver) return;
   if (renderer.xr.isPresenting) return;       // a headset has its own ladder: xrQStep
+  qLadder(dt);
+}
+
+// The ladder itself, separated from the guard above so it can be PROVEN.
+// Shadows are now on for every device rather than switched off by a
+// touchscreen flag, and the whole justification for that is this function:
+// a device that genuinely cannot hold them loses them here, on measured
+// frames. A justification that rests on code nobody has watched work is not
+// a justification, and the guard above means no browser run can watch it -
+// so __tc3dQualityProbe feeds it synthetic frame times instead.
+function qLadder(dt) {
   qAcc += dt; qFrames++;
   if (qLevel === 'low') {
     // one step back up, once: a 10 s window comfortably over budget (a
@@ -6342,6 +6390,24 @@ function qStep(dt) {
     qAcc = 0; qFrames = 0;
   }
 }
+
+// Feed the ladder a steady frame rate for a stretch of seconds and report
+// where it ended up. This is the check on the claim that a weak device
+// loses shadows rather than never having had them.
+window.__tc3dQualityProbe = (fps, seconds) => {
+  const was = { q: qLevel, acc: qAcc, frames: qFrames, rose: qRose };
+  qAcc = 0; qFrames = 0; qRose = false;
+  setQuality('high');
+  const dt = 1 / fps;
+  for (let t = 0; t < seconds * fps; t++) qLadder(dt);
+  const out = { fps, seconds, ended: qLevel, shadows: key.castShadow,
+                px: renderer.getPixelRatio() };
+  // put the page back exactly as it was found: a probe that leaves the
+  // scene on a different rung has measured one thing and broken another
+  qAcc = was.acc; qFrames = was.frames; qRose = was.rose;
+  setQuality(was.q);
+  return out;
+};
 
 // the WebXR layer itself - probe, session, rig, controllers, wrist panel -
 // lives in the XR block (XR_JS) just above the frame loop, once the scene
@@ -6395,12 +6461,19 @@ function skyCanvas(stops, opts) {
   g.fillStyle = gr; g.fillRect(0, 0, W, H);
 
   // the stars go under everything else, and never move between visits
+  // Whether the stars are up is the HOUR's business; how much of them you
+  // see through is the weather's. `starAlpha` scales every star's alpha
+  // rather than culling some of them, because an overcast night does not
+  // show you a smaller sky - it shows you a dimmer one.
   if (opts.stars) {
     const rnd = seeded(0x5EEDDA7A);
+    const vis = opts.starAlpha ?? 1;
     for (let i = 0; i < SKY.stars.count; i++) {
       const x = rnd() * W, y = rnd() * H * .62, a = .25 + rnd() * .7;
       const r = rnd() < .08 ? 2.1 : rnd() < .32 ? 1.4 : .9;
-      g.fillStyle = `rgba(232,240,255,${(a * (1 - y / (H * .95))).toFixed(3)})`;
+      const alpha = a * (1 - y / (H * .95)) * vis;
+      if (alpha < .01) continue;      // drawn at zero it is a wasted arc
+      g.fillStyle = `rgba(232,240,255,${alpha.toFixed(3)})`;
       g.beginPath(); g.arc(x, y, r, 0, 7); g.fill();
     }
   }
@@ -6686,7 +6759,7 @@ scene.add(hemi);
 const key = new THREE.DirectionalLight(0xffe0b0, 1.6);
 key.position.set(35, 48, 20);
 key.castShadow = true;
-key.shadow.mapSize.set(2048, 2048);
+key.shadow.mapSize.set(SHADOW_PX, SHADOW_PX);
 scene.add(key);
 // The sun's target has to be IN the scene graph. three.js leaves a
 // DirectionalLight's default target sitting at the origin outside it, which
@@ -6708,7 +6781,46 @@ scene.add(key.target);
 // light is repositioned along a fixed vector, never re-aimed - because a
 // sun whose angle changed as you walked would move every shadow on the
 // campus with you, which is worse than the hard line it replaces.
-const SUN_OFF = new THREE.Vector3(35, 48, 20).normalize().multiplyScalar(96);
+/* The sun's direction is now the HOUR's, not a constant.
+
+   It used to be `new THREE.Vector3(35, 48, 20).normalize()` - 49.98 degrees
+   of elevation and 29.74 of azimuth, one permanent hour shared by all ten
+   campuses forever. (Which, measured against this campus's own latitude,
+   turns out to be within two degrees of local noon rather than the
+   mid-morning those numbers look like at a glance.)
+
+   sky/ solves the sun's real elevation and azimuth for each of fourteen
+   phases at the flagship campus's latitude, so setSun() places the light
+   along that direction instead. The DISTANCE is unchanged and still has
+   nothing to do with the hour: it is how far up-sun the shadow box sits.
+
+   Azimuth in sky/ is degrees clockwise from true north, which is the
+   convention a surveyor uses and not the one three.js does. North is -Z
+   here, east is +X, so x = sin(az), z = -cos(az). */
+let sunR = 0;                       // set by setSun / trackSun
+const SUN_DIST = 96;
+const SUN_OFF = new THREE.Vector3();
+// The light's basis, used to snap the shadow box to whole texels. These are
+// derived from SUN_OFF and must be REBUILT whenever it moves - they were
+// cached once precisely because it never did, and leaving them stale would
+// snap the box in a basis belonging to a different hour.
+const SUN_FWD = new THREE.Vector3();
+const SUN_RIGHT = new THREE.Vector3();
+const SUN_UP = new THREE.Vector3();
+const _sunAxis = new THREE.Vector3(0, 1, 0);
+
+function setSun(elevDeg, azDeg) {
+  const el = elevDeg * Math.PI / 180, az = azDeg * Math.PI / 180;
+  const c = Math.cos(el);
+  SUN_OFF.set(c * Math.sin(az), Math.sin(el), -c * Math.cos(az))
+    .normalize().multiplyScalar(SUN_DIST);
+  SUN_FWD.copy(SUN_OFF).normalize();
+  SUN_RIGHT.crossVectors(_sunAxis, SUN_FWD).normalize();
+  SUN_UP.crossVectors(SUN_FWD, SUN_RIGHT);
+  // the box's centre was snapped in the OLD basis; force trackSun() to
+  // resize and re-snap rather than carry a stale grid into the new hour
+  sunR = 0;
+}
 // Half-extent of the box, in metres. It is not one number, because the two
 // ways of looking at this world want opposite things: on foot you see a few
 // dozen metres and want every shadow edge crisp, while the opening orbit
@@ -6725,22 +6837,16 @@ const SUN_R_MIN = 70, SUN_R_MAX = 180;
 // below depends on - so the shadows would crawl exactly where the snapping
 // exists to stop them.
 const SUN_R_STEP = 10;
-// The light's basis. SUN_OFF never changes, so neither do these - deriving
-// them per frame would allocate two vectors every frame for a constant.
-const SUN_FWD = SUN_OFF.clone().normalize();
-const SUN_RIGHT = new THREE.Vector3()
-  .crossVectors(new THREE.Vector3(0, 1, 0), SUN_FWD).normalize();
-const SUN_UP = new THREE.Vector3().crossVectors(SUN_FWD, SUN_RIGHT);
 const _sunEye = new THREE.Vector3();
 const _sunDir = new THREE.Vector3();
 const _sunFocus = new THREE.Vector3();
 // The box is sized once here rather than on the first frame, so nothing can
 // render against an unconfigured frustum; trackSun() resizes it only when
 // the view moves far enough for the radius to cross a step.
-let sunR = SUN_R_MIN;
+sunR = SUN_R_MIN;
 Object.assign(key.shadow.camera,
               { left: -sunR, right: sunR, top: sunR, bottom: -sunR,
-                near: 1, far: SUN_OFF.length() + sunR * 2 });
+                near: 1, far: SUN_DIST + sunR * 2 });
 key.shadow.camera.updateProjectionMatrix();
 
 // Snap the box's centre to whole shadow-map texels. Without this the box
@@ -6771,7 +6877,7 @@ function trackSun() {
   if (R !== sunR) {
     sunR = R;
     Object.assign(key.shadow.camera, { left: -R, right: R, top: R, bottom: -R,
-                                       near: 1, far: SUN_OFF.length() + R * 2 });
+                                       near: 1, far: SUN_DIST + R * 2 });
     key.shadow.camera.updateProjectionMatrix();
   }
   // Snap the box's centre to whole shadow-map texels, in the light's own
@@ -6821,34 +6927,120 @@ const darkHex = (hex, f) => '#' + [1, 3, 5].map((i) =>
   Math.round(Math.min(255, parseInt(hex.slice(i, i + 2), 16) * f))
     .toString(16).padStart(2, '0')).join('');
 
+/* ------------------------------------------------------- the hour ------ */
+/* Fourteen phases of a solar day, from sky/. The sun's elevation and
+   azimuth at each are solved for this campus's own latitude; the colours
+   that go with them are authored, and sky/ says so.
+
+   applyPhase() sets the sun and the hemisphere for an hour and nothing
+   else. applyAtmos() keeps doing everything it already did and calls this
+   LAST, so a campus change, a weather change and an hour change all land
+   the same way and there is one place that decides the light. */
+const SKYDAY = D.sky;
+const PHASES = SKYDAY.phases;
+const PHASE_OF = Object.fromEntries(PHASES.map((p) => [p.id, p]));
+// `?? ` here is not a fallback for a missing phase - a bad id throws below.
+// It is the opening hour, and the choice is stated: noon, because the view
+// the page opens on is an overhead orbit and the campus reads worst at a
+// raking angle.
+let phaseId = 'noon';
+const phaseNow = () => PHASE_OF[phaseId];
+
+function applyPhase() {
+  const ph = PHASE_OF[phaseId];
+  if (!ph) throw new Error('no such sky phase: ' + phaseId);
+  const a = ATMOS[atmosKey ?? ''] ?? DEF_ATMOS;
+  const w = WX[wx] ?? WX.clear;
+  const ws = SKYDAY.weather_sky[wx];
+  // A weather state may pin the hour rather than dress it - `night` is
+  // modelled in world/ as a weather STATE, not a time, so selecting it has
+  // to mean something about the clock. sky/ marks that explicitly rather
+  // than the page inferring it.
+  const eff = ws?.phase_override ? PHASE_OF[ws.phase_override] : ph;
+  // the sun's direction is the hour's. Set BEFORE setSky(), because
+  // skyCanvas reads the disc's position off key.position and the disc and
+  // the shadows have to agree.
+  setSun(eff.elevation_deg, eff.azimuth_deg);
+  key.color.setHex(parseInt(eff.sun.color_hex.slice(1), 16));
+  hemi.color.setHex(parseInt(eff.hemi.sky_hex.slice(1), 16));
+  hemi.groundColor.setHex(parseInt(eff.hemi.ground_hex.slice(1), 16));
+  // the page keeps owning both base numbers; the phase only scales them
+  const indoors = view === 'hall' ? INDOOR_RIG : 1;
+  key.intensity = a.sun.i * w.sun_mul * eff.sun.intensity_mul;
+  hemi.intensity = a.hemi.i * w.hemi_mul * indoors * eff.hemi.intensity_mul;
+  // stars belong to the sun, not to the weather. They used to be drawn only
+  // when the `night` weather asked for them, so no other state could ever
+  // show one and `night` always showed all 420 whatever the cloud. Now the
+  // hour decides whether they are up and the weather decides how much of
+  // them you can see through.
+  starsUp = eff.elevation_deg < SKYDAY.layers.find((l) => l.id === 'star-field')
+    .renders_when.value;
+  starAlpha = ws ? ws.star_visibility : 1;
+}
+
+function setPhase(id) {
+  if (!PHASE_OF[id]) throw new Error('no such sky phase: ' + id);
+  phaseId = id;
+  applyAtmos(campusKey);          // one path: the hour is part of the light
+}
+window.__tc3dPhase = (id) => {
+  if (id !== undefined) setPhase(id);
+  const ph = phaseNow();
+  return { id: phaseId, name: ph.name, t01: ph.t01,
+           elevation_deg: ph.elevation_deg, azimuth_deg: ph.azimuth_deg,
+           starsUp, starsDrawn, starAlpha,
+           sunDir: SUN_OFF.clone().normalize().toArray().map((v) => +v.toFixed(3)),
+           keyHex: key.color.getHexString(), keyI: +key.intensity.toFixed(3) };
+};
+let starsUp = false, starAlpha = 1;
+// what setSky was actually handed, so the hour's answer and the drawn sky
+// can be compared instead of assumed equal
+let starsDrawn = false;
+
 function applyAtmos(k) {
   const a = ATMOS[k] ?? DEF_ATMOS;
   const w = WX[wx] ?? WX.clear;
   atmosKey = ATMOS[k] ? k : null;
   night = wx === 'night';
   fogMul = a.fog.mul * w.fog_mul;
+  /* The hour is set BEFORE the sky is drawn, and that ordering is load
+     bearing. setSky() reads two things applyPhase() decides: whether the
+     stars are up, and where the sun is - skyCanvas puts the disc wherever
+     key.position says, which is what makes the disc and the shadows agree.
+
+     Calling applyPhase() at the END of this function, which is where it
+     first went, drew every hour with the PREVIOUS hour's stars. Measured:
+     selecting `night` reported "the hour says stars true, the sky was drawn
+     with false", and selecting noon after it drew a starfield at midday.
+     __tc3dPhase() reports both numbers so the two can be compared rather
+     than assumed equal. */
+  applyPhase();
   const t0 = performance.now();
+  // `stars: !!w.stars` used to be the whole rule, so only the `night`
+  // WEATHER could ever show one and it always showed all of them whatever
+  // the cloud. The hour decides whether they are up; the weather decides
+  // how much of them you see through.
   setSky(a.sky.map((h) => darkHex(h, w.sky_mul)),
-    { cloud: w.cloud, moon: !!w.moon, stars: !!w.stars,
+    { cloud: w.cloud, moon: !!w.moon, stars: (starsDrawn = starsUp), starAlpha,
       haze: a.haze,                       // this campus's own horizon band
       dim: Math.min(1, w.sky_mul) });
   genMs += performance.now() - t0;
   scene.fog.color.setHex(a.fog.color).multiplyScalar(w.fog_tint);
-  // after dark the sun is swapped for moonlight rather than dimmed; under
-  // weather it keeps its own colour and simply loses strength
-  if (night) { key.color.setHex(0x9db4d8); hemi.color.setHex(0x35455c);
-               hemi.groundColor.setHex(0x0d0c0a); }
-  else if (w.sun_mul < .7) { key.color.setHex(0x8a949c);
-               hemi.color.setHex(0x5c6a74); hemi.groundColor.setHex(0x1a1a18); }
-  else { key.color.setHex(a.sun.color); hemi.color.setHex(a.hemi.sky);
-         hemi.groundColor.setHex(a.hemi.ground); }
+  // The two colour branches that used to live here - one for `night`, one
+  // for `w.sun_mul < .7` - are gone. They carried six hex literals that
+  // existed in no registry, and they made the light a function of the
+  // WEATHER when it is a function of the hour. The colour is the phase's
+  // every time now, and the weather only scales the strength; applyPhase()
+  // at the end of this function does both.
   wetGround();                        // the yard takes the weather
   // how much fog this weather puts in this campus's air
   bankWant = Math.max(Math.round((campusGroup?.userData.banksBase ?? 0)
     * (w.bank_mul ?? 1)), w.bank_floor ?? 0);
   for (let i = 0; i < fogBanks.length; i++)
     fogBanks[i].m.visible = qLevel !== 'low' && i < bankWant;
-  key.intensity = a.sun.i * w.sun_mul;
+  // key.intensity and hemi.intensity are set by applyPhase() near the top of
+  // this function, from the campus's and the weather's own base numbers
+  // times the hour's multiplier. Nothing below may write either one.
   /* Indoors, the outdoor rig steps back.
      A hall is an open-topped box, so the hemisphere, the sun's fill and
      the sky were all reaching every room at full strength - four
@@ -6862,7 +7054,6 @@ function applyAtmos(k) {
      the outdoors than the yard does, applied where the atmosphere is
      already being written so there is one place that decides it. */
   const indoors = view === 'hall' ? INDOOR_RIG : 1;
-  hemi.intensity = a.hemi.i * w.hemi_mul * indoors;
   fill.intensity = FILL_I * indoors;
   mat.win.emissiveIntensity = w.window_glow;
   rain.visible = w.rain > 0 && !reduced;
@@ -9957,7 +10148,7 @@ function showHall(sg) {
   const cb = document.getElementById('campusBtn');
   cb.style.display = ''; cb.textContent = '\u2191 ' + D.campuses[campusKey].name;
   document.getElementById('simBtn').style.display =
-    (D.sims.bindings[sg] && !('ontouchstart' in window)) ? '' : 'none';
+    (D.sims.bindings[sg] && !isTouch) ? '' : 'none';
   document.getElementById('glbBtn').style.display = '';
   document.getElementById('glbInBtn').style.display = 'none';
   document.getElementById('satBtn').style.display = 'none';
@@ -11836,6 +12027,29 @@ document.getElementById('dnBtn').addEventListener('click', () => {
   setWeather(WX_CYCLE[(WX_CYCLE.indexOf(wx) + 1) % WX_CYCLE.length]);
 });
 setWeather(WX[params.get('wx')] ? params.get('wx') : 'clear');
+
+/* The hour, as a control. Fourteen phases in the registry's own order, each
+   labelled with its name and the sun's actual elevation at it, because "6
+   degrees up" is the fact that explains why golden hour looks like golden
+   hour and a label alone is not.
+
+   The hour is a VIEW setting: it changes no score, unlocks nothing, and
+   nothing about which one a learner picked is recorded anywhere. */
+{
+  const sel = document.getElementById('hour');
+  sel.innerHTML = PHASES.map((ph) => {
+    const e = ph.elevation_deg;
+    const at = e >= 0 ? `${e.toFixed(0)}\u00b0 up` : `${(-e).toFixed(0)}\u00b0 down`;
+    return `<option value="${ph.id}"${ph.id === phaseId ? ' selected' : ''}>`
+      + `${ph.name} \u00b7 ${at}</option>`;
+  }).join('');
+  sel.addEventListener('change', () => setPhase(sel.value));
+  // ?hour=sunset opens there, and an id the registry does not know is
+  // ignored rather than throwing: a bad query string is a visitor's typo,
+  // not a broken build.
+  const want = params.get('hour');
+  if (want && PHASE_OF[want]) { phaseId = want; sel.value = want; }
+}
 // the records panel: every seat and drill from the device-local record
 function openRecords() {
   // the guide answers about the panel you are reading, not the world
@@ -12097,7 +12311,10 @@ window.__tc3d = () => ({ view, buildings: buildings.length, plates: plates.lengt
   restoSites: restorationHits.length / 2,
   scenario: curScenario?.id ?? null,
   chHosted: D.chapters.hosted[campusKey] ?? null,
-  isTouch, shadows: renderer.shadowMap.enabled,
+  // `shadowMap.enabled` is always true now, so it is no longer the fact
+  // worth reporting. What varies is whether the quality ladder is currently
+  // paying for shadows, and how many texels the device was given.
+  isTouch, shadows: key.castShadow, shadowPx: SHADOW_PX,
   // orbit is the fallback control scheme, so whether it is enabled is the
   // fact that says the view is still steerable. enterWalk() disables it
   // before it asks for the pointer lock; a refused lock used to leave it

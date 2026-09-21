@@ -17,7 +17,7 @@ for t in control/test.mjs control/test_graph.mjs control/test_hints.mjs \
          geo/test.mjs sims/test.mjs tools/test.mjs schools/test.mjs \
          avatars/test.mjs parcels/test.mjs meta/test.mjs \
          agents/test.mjs world/test.mjs labels/test.mjs training/test.mjs \
-         roadmap/test.mjs orbis/test.mjs restoration/test.mjs guide/test.mjs \
+         roadmap/test.mjs orbis/test.mjs restoration/test.mjs guide/test.mjs sky/test.mjs lessons/test.mjs \
          spatial/test.mjs web/test_3d.mjs web/test_rtl.mjs; do
   out=$(node "$t" 2>&1); rc=$?
   n=$(printf '%s\n' "$out" | grep -c '^  ok ')
@@ -43,6 +43,7 @@ python3 web/build_languages.py --check || fail=$((fail + 1))
 python3 web/build_landing.py --check || fail=$((fail + 1))
 python3 web/build_3d.py --check || fail=$((fail + 1))
 python3 web/build_home.py --check || fail=$((fail + 1))
+python3 web/fetch_fonts.py --check || fail=$((fail + 1))
 iout=$(python3 web/test_interiors.py 2>&1) || fail=$((fail + 1))
 printf '%s\n' "$iout" | tail -1
 total=$((total + $(printf '%s\n' "$iout" | grep -c '^  ok ')))

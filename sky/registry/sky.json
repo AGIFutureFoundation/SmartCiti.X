@@ -1,0 +1,1318 @@
+{
+ "pack": "smartcitix-trade-craft-academy-sky",
+ "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
+ "pack_version": "3.2.0",
+ "built": "2026-09-20",
+ "source_stamp": "6794771e055d10cc",
+ "honesty": {
+  "status": "COMPUTED: the sun's elevation and azimuth in every phase, and the hour of every phase defined by a twilight threshold, are computed in sky/build.py from a published solar-position series at a real latitude read from geo/, on a stated day of the year. Nothing in the geometry was placed by eye.",
+  "colours_are_authored": "every colour in this pack is AUTHORED - chosen by eye, one person's idea of what a Bay dawn looks like, and labelled AUTHORED in each phase's own provenance block. No colour here is derived from a colour temperature, a Rayleigh integral or a photograph, and none is measured.",
+  "not_a_forecast": "this is a day, not a date. The cycle is computed for one day of the year at one latitude and then used at all ten campuses, so a phase's hour is right for Treasure Island in March and approximately right elsewhere. No campus is showing its own sunrise, and the page is not tied to any clock, timezone or observation.",
+  "time_is_solar": "positions in the day are local APPARENT SOLAR time, so noon is t01 = 0.5 by construction. A civil clock would need the equation of time and a zone offset; neither is here, and no phase should be presented as a wall-clock hour.",
+  "one_truth": "cloud cover, fog density, fog tint, sun strength and rain rate are world/'s and are not copied into this payload - each weather entry holds the dotted path instead, and the build fails if the path does not resolve. The star count, the gradient band names, the disc geometry and the cloud recipe are read the same way.",
+  "page_owns": "the page owns the base sun and hemisphere intensities, the canvas, the PMREM environment and the shadow frustum. This pack publishes multipliers and angles; it publishes no absolute intensity, no pixel and no metre.",
+  "provenance_word": "the generated-video provenance word this bundle reserves for orbis/ is not used anywhere in this pack and does not appear in this payload. A bisection and a table of hand-picked colours are not that, and labelling them so would be a lie in the flattering direction.",
+  "built_so_far": "the page reads this registry. setSun() places the key light along the selected phase's own elevation and azimuth, applyPhase() takes the sun and hemisphere colours and intensity multipliers from the phase, the star field is up when the phase puts the sun below the star layer's cutoff and is dimmed rather than culled by the weather's star_visibility, a weather state that pins an hour does so through phase_override, and the hour is a control in the top bar and a ?hour= query parameter. The six hex literals the page used to switch the light with are gone.",
+  "not_built_yet": "the GRADIENT half is not wired. The page still composes its sky from the campus's own stops darkened by the weather, so this pack's 56 per-phase gradient stops, its gradient_tint_hex, its horizon_haze_mul and its sun_disc are declared and unread. The layer list and compose_order describe the order the page already draws in rather than driving it. And the hour is STEPPED, never interpolated: setSky() rebuilds the environment map on every call, so a sun that slid continuously would rebuild it every frame."
+ },
+ "counts": {
+  "phases": 14,
+  "solved_phases": 10,
+  "constructed_phases": 4,
+  "phases_above_horizon": 5,
+  "stops_per_gradient": 4,
+  "gradient_stops": 56,
+  "weather_sky_entries": 6,
+  "weather_reads": 30,
+  "weather_reads_per_entry": 5,
+  "precipitating_weather": 2,
+  "layers": 5,
+  "layer_predicates": 6,
+  "layer_phase_renders": 61,
+  "layer_weather_renders": 30,
+  "star_magnitude_bins": 3,
+  "star_count_rows": 6,
+  "authored_hex_colours": 104,
+  "derived_sun_numbers": 42,
+  "reserved_page_names": 20,
+  "compose_steps": 4,
+  "reads_files": 4
+ },
+ "site": {
+  "campus": "treasure-island",
+  "lat_deg": 37.8235,
+  "lon_deg": -122.3705,
+  "lat_provenance": "DERIVED",
+  "lat_source": "Treasure Island centroid, authored (WGS84)",
+  "lat_read_from": "geo/registry/campuses_geo.json#campuses.treasure-island.lat",
+  "day_of_year": 80,
+  "day_why": "the March equinox - the single day whose sun path is closest to the annual mean. A solstice would make every phase in the table unrepresentative of the rest of the year.",
+  "time_base": "local apparent solar time",
+  "longitude_unused": "the longitude is published because the campus has one, and is NOT used: apparent solar time removes it, along with the timezone and the equation of time.",
+  "declination_formula": "Spencer 1971, Fourier series for solar declination, as published by the NOAA Solar Calculator",
+  "elevation_formula": "sin(h) = sin(phi)sin(dec) + cos(phi)cos(dec)cos(H) - Meeus, Astronomical Algorithms 2nd ed., 13.6",
+  "azimuth_formula": "A = atan2(sin H, cos H sin(phi) - tan(dec) cos(phi)) - Meeus 13.5, from south positive west, published here rotated to degrees clockwise from true north",
+  "refraction": "none applied. The formulae return the GEOMETRIC altitude of the disc centre, which is why the risen-disc phases target -0.833 deg rather than 0.",
+  "solver": "bisection, 60 fixed halvings per solved phase - fixed rather than to a tolerance so the result is a deterministic function of the inputs",
+  "rounding": "every derived number is published to 4 decimals",
+  "risen_disc_deg": -0.833
+ },
+ "provenance_words": {
+  "COMPUTED": "produced by a formula in sky/build.py from stated inputs",
+  "DERIVED": "the same, for one field: computed, never placed by eye",
+  "CONSTRUCTED": "follows from a definition (solar midnight, solar noon) or from the midpoint of two fixed phases",
+  "READ": "held as a pointer into another registry and resolved at build time; not a copy",
+  "READ-FROM-PAGE": "taken from web/build_3d.py and asserted present there",
+  "AUTHORED": "chosen by a person, by eye, with no measurement behind it"
+ },
+ "phases": [
+  {
+   "id": "night",
+   "name": "Night",
+   "order": 0,
+   "next": "astronomical-dawn",
+   "t01": 0.0,
+   "t01_by": "construction",
+   "why": "solar midnight: the hour angle is -180 deg by the definition of apparent solar time, so no solving is needed or honest",
+   "elevation_deg": -52.44,
+   "azimuth_deg": 0.0,
+   "sun": {
+    "color_hex": "#9db4d8",
+    "intensity_mul": 0.14
+   },
+   "hemi": {
+    "sky_hex": "#35455c",
+    "ground_hex": "#0d0c0a",
+    "intensity_mul": 0.3
+   },
+   "gradient": {
+    "stops": [
+     "#05080d",
+     "#0a1018",
+     "#141d27",
+     "#1d2630"
+    ],
+    "bands": [
+     "zenith",
+     "upper",
+     "horizon",
+     "ground_haze"
+    ],
+    "campus_mix": 0.35
+   },
+   "provenance": {
+    "t01": "CONSTRUCTED",
+    "elevation_deg": "DERIVED",
+    "azimuth_deg": "DERIVED",
+    "sun_color_hex": "AUTHORED",
+    "sun_intensity_mul": "AUTHORED",
+    "hemi_sky_hex": "AUTHORED",
+    "hemi_ground_hex": "AUTHORED",
+    "hemi_intensity_mul": "AUTHORED",
+    "gradient": "AUTHORED",
+    "campus_mix": "AUTHORED"
+   }
+  },
+  {
+   "id": "astronomical-dawn",
+   "name": "Astronomical dawn",
+   "order": 1,
+   "next": "nautical-dawn",
+   "t01": 0.1865,
+   "t01_by": "solved",
+   "why": "astronomical twilight begins when the sun centre is 18 deg below the horizon - the standard definition, being the depression at which sunlight stops interfering with the faintest stars",
+   "elevation_deg": -18.0,
+   "azimuth_deg": 75.6504,
+   "sun": {
+    "color_hex": "#6f86b4",
+    "intensity_mul": 0.16
+   },
+   "hemi": {
+    "sky_hex": "#3b4a63",
+    "ground_hex": "#100f0d",
+    "intensity_mul": 0.34
+   },
+   "gradient": {
+    "stops": [
+     "#060a11",
+     "#0d1520",
+     "#1b2635",
+     "#2a3444"
+    ],
+    "bands": [
+     "zenith",
+     "upper",
+     "horizon",
+     "ground_haze"
+    ],
+    "campus_mix": 0.35
+   },
+   "provenance": {
+    "t01": "DERIVED",
+    "elevation_deg": "DERIVED",
+    "azimuth_deg": "DERIVED",
+    "sun_color_hex": "AUTHORED",
+    "sun_intensity_mul": "AUTHORED",
+    "hemi_sky_hex": "AUTHORED",
+    "hemi_ground_hex": "AUTHORED",
+    "hemi_intensity_mul": "AUTHORED",
+    "gradient": "AUTHORED",
+    "campus_mix": "AUTHORED"
+   },
+   "target_elev_deg": -18.0,
+   "branch": "rising"
+  },
+  {
+   "id": "nautical-dawn",
+   "name": "Nautical dawn",
+   "order": 2,
+   "next": "civil-dawn",
+   "t01": 0.208,
+   "t01_by": "solved",
+   "why": "nautical twilight: sun centre 12 deg below the horizon, the standard depression at which the sea horizon is still usable for a sextant sight",
+   "elevation_deg": -12.0,
+   "azimuth_deg": 80.7397,
+   "sun": {
+    "color_hex": "#7d90bc",
+    "intensity_mul": 0.22
+   },
+   "hemi": {
+    "sky_hex": "#47576f",
+    "ground_hex": "#141310",
+    "intensity_mul": 0.42
+   },
+   "gradient": {
+    "stops": [
+     "#081020",
+     "#12203a",
+     "#2b3b56",
+     "#41506a"
+    ],
+    "bands": [
+     "zenith",
+     "upper",
+     "horizon",
+     "ground_haze"
+    ],
+    "campus_mix": 0.4
+   },
+   "provenance": {
+    "t01": "DERIVED",
+    "elevation_deg": "DERIVED",
+    "azimuth_deg": "DERIVED",
+    "sun_color_hex": "AUTHORED",
+    "sun_intensity_mul": "AUTHORED",
+    "hemi_sky_hex": "AUTHORED",
+    "hemi_ground_hex": "AUTHORED",
+    "hemi_intensity_mul": "AUTHORED",
+    "gradient": "AUTHORED",
+    "campus_mix": "AUTHORED"
+   },
+   "target_elev_deg": -12.0,
+   "branch": "rising"
+  },
+  {
+   "id": "civil-dawn",
+   "name": "Civil dawn",
+   "order": 3,
+   "next": "sunrise",
+   "t01": 0.2293,
+   "t01_by": "solved",
+   "why": "civil twilight: sun centre 6 deg below the horizon, the standard depression below which artificial light is needed outdoors",
+   "elevation_deg": -6.0,
+   "azimuth_deg": 85.5404,
+   "sun": {
+    "color_hex": "#b59ac0",
+    "intensity_mul": 0.36
+   },
+   "hemi": {
+    "sky_hex": "#5d6a84",
+    "ground_hex": "#1b1814",
+    "intensity_mul": 0.58
+   },
+   "gradient": {
+    "stops": [
+     "#0e1b32",
+     "#25375a",
+     "#5b5f7e",
+     "#8a7a86"
+    ],
+    "bands": [
+     "zenith",
+     "upper",
+     "horizon",
+     "ground_haze"
+    ],
+    "campus_mix": 0.45
+   },
+   "provenance": {
+    "t01": "DERIVED",
+    "elevation_deg": "DERIVED",
+    "azimuth_deg": "DERIVED",
+    "sun_color_hex": "AUTHORED",
+    "sun_intensity_mul": "AUTHORED",
+    "hemi_sky_hex": "AUTHORED",
+    "hemi_ground_hex": "AUTHORED",
+    "hemi_intensity_mul": "AUTHORED",
+    "gradient": "AUTHORED",
+    "campus_mix": "AUTHORED"
+   },
+   "target_elev_deg": -6.0,
+   "branch": "rising"
+  },
+  {
+   "id": "sunrise",
+   "name": "Sunrise",
+   "order": 4,
+   "next": "golden-morning",
+   "t01": 0.2474,
+   "t01_by": "solved",
+   "why": "the upper limb touches the horizon while the CENTRE is still 50 arcminutes below it: 16 arcmin of solar semidiameter plus 34 arcmin of mean atmospheric refraction. This formula returns the geometric centre, so the target is -0.833 deg rather than 0",
+   "elevation_deg": -0.833,
+   "azimuth_deg": 89.5631,
+   "sun": {
+    "color_hex": "#ff9d5c",
+    "intensity_mul": 0.55
+   },
+   "hemi": {
+    "sky_hex": "#7d8196",
+    "ground_hex": "#241d16",
+    "intensity_mul": 0.72
+   },
+   "gradient": {
+    "stops": [
+     "#1b2c4d",
+     "#456089",
+     "#b07f7a",
+     "#ff9f6a"
+    ],
+    "bands": [
+     "zenith",
+     "upper",
+     "horizon",
+     "ground_haze"
+    ],
+    "campus_mix": 0.5
+   },
+   "provenance": {
+    "t01": "DERIVED",
+    "elevation_deg": "DERIVED",
+    "azimuth_deg": "DERIVED",
+    "sun_color_hex": "AUTHORED",
+    "sun_intensity_mul": "AUTHORED",
+    "hemi_sky_hex": "AUTHORED",
+    "hemi_ground_hex": "AUTHORED",
+    "hemi_intensity_mul": "AUTHORED",
+    "gradient": "AUTHORED",
+    "campus_mix": "AUTHORED"
+   },
+   "target_elev_deg": -0.833,
+   "branch": "rising"
+  },
+  {
+   "id": "golden-morning",
+   "name": "Golden morning",
+   "order": 5,
+   "next": "morning",
+   "t01": 0.2715,
+   "t01_by": "solved",
+   "why": "the top of the morning golden hour: the photographic convention puts its far edge at 6 deg of solar altitude",
+   "elevation_deg": 6.0,
+   "azimuth_deg": 94.8799,
+   "sun": {
+    "color_hex": "#ffc07a",
+    "intensity_mul": 0.82
+   },
+   "hemi": {
+    "sky_hex": "#9fb0c4",
+    "ground_hex": "#2a2118",
+    "intensity_mul": 0.88
+   },
+   "gradient": {
+    "stops": [
+     "#2b4a78",
+     "#5f86ad",
+     "#a8b0ad",
+     "#ffc98d"
+    ],
+    "bands": [
+     "zenith",
+     "upper",
+     "horizon",
+     "ground_haze"
+    ],
+    "campus_mix": 0.6
+   },
+   "provenance": {
+    "t01": "DERIVED",
+    "elevation_deg": "DERIVED",
+    "azimuth_deg": "DERIVED",
+    "sun_color_hex": "AUTHORED",
+    "sun_intensity_mul": "AUTHORED",
+    "hemi_sky_hex": "AUTHORED",
+    "hemi_ground_hex": "AUTHORED",
+    "hemi_intensity_mul": "AUTHORED",
+    "gradient": "AUTHORED",
+    "campus_mix": "AUTHORED"
+   },
+   "target_elev_deg": 6.0,
+   "branch": "rising"
+  },
+  {
+   "id": "morning",
+   "name": "Morning",
+   "order": 6,
+   "next": "noon",
+   "t01": 0.3857,
+   "t01_by": "construction",
+   "why": "the working morning is the half-way point in time between the end of the golden hour and solar noon - constructed from two phases already fixed, so no hour is authored here",
+   "elevation_deg": 36.4215,
+   "azimuth_deg": 125.1601,
+   "sun": {
+    "color_hex": "#ffe0b0",
+    "intensity_mul": 0.95
+   },
+   "hemi": {
+    "sky_hex": "#aec2cb",
+    "ground_hex": "#241d16",
+    "intensity_mul": 1.0
+   },
+   "gradient": {
+    "stops": [
+     "#3a6ca3",
+     "#6d9cc4",
+     "#a9c0cc",
+     "#d8d4c4"
+    ],
+    "bands": [
+     "zenith",
+     "upper",
+     "horizon",
+     "ground_haze"
+    ],
+    "campus_mix": 0.8
+   },
+   "provenance": {
+    "t01": "CONSTRUCTED",
+    "elevation_deg": "DERIVED",
+    "azimuth_deg": "DERIVED",
+    "sun_color_hex": "AUTHORED",
+    "sun_intensity_mul": "AUTHORED",
+    "hemi_sky_hex": "AUTHORED",
+    "hemi_ground_hex": "AUTHORED",
+    "hemi_intensity_mul": "AUTHORED",
+    "gradient": "AUTHORED",
+    "campus_mix": "AUTHORED"
+   }
+  },
+  {
+   "id": "noon",
+   "name": "Solar noon",
+   "order": 7,
+   "next": "afternoon",
+   "t01": 0.5,
+   "t01_by": "construction",
+   "why": "solar noon: hour angle 0 by the definition of apparent solar time, and the maximum elevation of the day",
+   "elevation_deg": 52.1106,
+   "azimuth_deg": 180.0,
+   "sun": {
+    "color_hex": "#fff6e2",
+    "intensity_mul": 1.0
+   },
+   "hemi": {
+    "sky_hex": "#bcd2dc",
+    "ground_hex": "#2a2622",
+    "intensity_mul": 1.08
+   },
+   "gradient": {
+    "stops": [
+     "#2f6fb0",
+     "#6aa3cf",
+     "#b3cbd8",
+     "#dfe2dd"
+    ],
+    "bands": [
+     "zenith",
+     "upper",
+     "horizon",
+     "ground_haze"
+    ],
+    "campus_mix": 1.0
+   },
+   "provenance": {
+    "t01": "CONSTRUCTED",
+    "elevation_deg": "DERIVED",
+    "azimuth_deg": "DERIVED",
+    "sun_color_hex": "AUTHORED",
+    "sun_intensity_mul": "AUTHORED",
+    "hemi_sky_hex": "AUTHORED",
+    "hemi_ground_hex": "AUTHORED",
+    "hemi_intensity_mul": "AUTHORED",
+    "gradient": "AUTHORED",
+    "campus_mix": "AUTHORED"
+   }
+  },
+  {
+   "id": "afternoon",
+   "name": "Afternoon",
+   "order": 8,
+   "next": "golden-hour",
+   "t01": 0.6145,
+   "t01_by": "construction",
+   "why": "the mirror of morning: half way between solar noon and the start of the evening golden hour",
+   "elevation_deg": 36.4446,
+   "azimuth_deg": 234.9796,
+   "sun": {
+    "color_hex": "#ffe3b4",
+    "intensity_mul": 0.93
+   },
+   "hemi": {
+    "sky_hex": "#b0c4ce",
+    "ground_hex": "#272019",
+    "intensity_mul": 1.0
+   },
+   "gradient": {
+    "stops": [
+     "#356ea4",
+     "#6f9ac2",
+     "#aebfc6",
+     "#d9cfba"
+    ],
+    "bands": [
+     "zenith",
+     "upper",
+     "horizon",
+     "ground_haze"
+    ],
+    "campus_mix": 0.8
+   },
+   "provenance": {
+    "t01": "CONSTRUCTED",
+    "elevation_deg": "DERIVED",
+    "azimuth_deg": "DERIVED",
+    "sun_color_hex": "AUTHORED",
+    "sun_intensity_mul": "AUTHORED",
+    "hemi_sky_hex": "AUTHORED",
+    "hemi_ground_hex": "AUTHORED",
+    "hemi_intensity_mul": "AUTHORED",
+    "gradient": "AUTHORED",
+    "campus_mix": "AUTHORED"
+   }
+  },
+  {
+   "id": "golden-hour",
+   "name": "Golden hour",
+   "order": 9,
+   "next": "sunset",
+   "t01": 0.7289,
+   "t01_by": "solved",
+   "why": "the evening golden hour begins at 6 deg of solar altitude, the same photographic convention as its morning twin",
+   "elevation_deg": 6.0,
+   "azimuth_deg": 265.351,
+   "sun": {
+    "color_hex": "#ffb066",
+    "intensity_mul": 0.78
+   },
+   "hemi": {
+    "sky_hex": "#a09aa0",
+    "ground_hex": "#2b2018",
+    "intensity_mul": 0.84
+   },
+   "gradient": {
+    "stops": [
+     "#2e4f7e",
+     "#6b7fa4",
+     "#c39a84",
+     "#ffbe7e"
+    ],
+    "bands": [
+     "zenith",
+     "upper",
+     "horizon",
+     "ground_haze"
+    ],
+    "campus_mix": 0.6
+   },
+   "provenance": {
+    "t01": "DERIVED",
+    "elevation_deg": "DERIVED",
+    "azimuth_deg": "DERIVED",
+    "sun_color_hex": "AUTHORED",
+    "sun_intensity_mul": "AUTHORED",
+    "hemi_sky_hex": "AUTHORED",
+    "hemi_ground_hex": "AUTHORED",
+    "hemi_intensity_mul": "AUTHORED",
+    "gradient": "AUTHORED",
+    "campus_mix": "AUTHORED"
+   },
+   "target_elev_deg": 6.0,
+   "branch": "falling"
+  },
+  {
+   "id": "sunset",
+   "name": "Sunset",
+   "order": 10,
+   "next": "civil-dusk",
+   "t01": 0.753,
+   "t01_by": "solved",
+   "why": "the same 50-arcminute allowance as sunrise - semidiameter plus mean refraction - applied on the falling branch",
+   "elevation_deg": -0.833,
+   "azimuth_deg": 270.6898,
+   "sun": {
+    "color_hex": "#ff8347",
+    "intensity_mul": 0.5
+   },
+   "hemi": {
+    "sky_hex": "#7a7386",
+    "ground_hex": "#241a13",
+    "intensity_mul": 0.68
+   },
+   "gradient": {
+    "stops": [
+     "#1d2d52",
+     "#4a5180",
+     "#b56a63",
+     "#ff8a52"
+    ],
+    "bands": [
+     "zenith",
+     "upper",
+     "horizon",
+     "ground_haze"
+    ],
+    "campus_mix": 0.5
+   },
+   "provenance": {
+    "t01": "DERIVED",
+    "elevation_deg": "DERIVED",
+    "azimuth_deg": "DERIVED",
+    "sun_color_hex": "AUTHORED",
+    "sun_intensity_mul": "AUTHORED",
+    "hemi_sky_hex": "AUTHORED",
+    "hemi_ground_hex": "AUTHORED",
+    "hemi_intensity_mul": "AUTHORED",
+    "gradient": "AUTHORED",
+    "campus_mix": "AUTHORED"
+   },
+   "target_elev_deg": -0.833,
+   "branch": "falling"
+  },
+  {
+   "id": "civil-dusk",
+   "name": "Civil dusk",
+   "order": 11,
+   "next": "nautical-dusk",
+   "t01": 0.7712,
+   "t01_by": "solved",
+   "why": "civil twilight ends at 6 deg of depression",
+   "elevation_deg": -6.0,
+   "azimuth_deg": 274.7329,
+   "sun": {
+    "color_hex": "#9c7fae",
+    "intensity_mul": 0.32
+   },
+   "hemi": {
+    "sky_hex": "#56587a",
+    "ground_hex": "#181510",
+    "intensity_mul": 0.54
+   },
+   "gradient": {
+    "stops": [
+     "#101c36",
+     "#233255",
+     "#5a5375",
+     "#8a6a78"
+    ],
+    "bands": [
+     "zenith",
+     "upper",
+     "horizon",
+     "ground_haze"
+    ],
+    "campus_mix": 0.45
+   },
+   "provenance": {
+    "t01": "DERIVED",
+    "elevation_deg": "DERIVED",
+    "azimuth_deg": "DERIVED",
+    "sun_color_hex": "AUTHORED",
+    "sun_intensity_mul": "AUTHORED",
+    "hemi_sky_hex": "AUTHORED",
+    "hemi_ground_hex": "AUTHORED",
+    "hemi_intensity_mul": "AUTHORED",
+    "gradient": "AUTHORED",
+    "campus_mix": "AUTHORED"
+   },
+   "target_elev_deg": -6.0,
+   "branch": "falling"
+  },
+  {
+   "id": "nautical-dusk",
+   "name": "Nautical dusk",
+   "order": 12,
+   "next": "astronomical-dusk",
+   "t01": 0.7925,
+   "t01_by": "solved",
+   "why": "nautical twilight ends at 12 deg of depression",
+   "elevation_deg": -12.0,
+   "azimuth_deg": 279.5632,
+   "sun": {
+    "color_hex": "#74849f",
+    "intensity_mul": 0.2
+   },
+   "hemi": {
+    "sky_hex": "#414f68",
+    "ground_hex": "#121108",
+    "intensity_mul": 0.4
+   },
+   "gradient": {
+    "stops": [
+     "#0a1020",
+     "#131f36",
+     "#283350",
+     "#3a4460"
+    ],
+    "bands": [
+     "zenith",
+     "upper",
+     "horizon",
+     "ground_haze"
+    ],
+    "campus_mix": 0.4
+   },
+   "provenance": {
+    "t01": "DERIVED",
+    "elevation_deg": "DERIVED",
+    "azimuth_deg": "DERIVED",
+    "sun_color_hex": "AUTHORED",
+    "sun_intensity_mul": "AUTHORED",
+    "hemi_sky_hex": "AUTHORED",
+    "hemi_ground_hex": "AUTHORED",
+    "hemi_intensity_mul": "AUTHORED",
+    "gradient": "AUTHORED",
+    "campus_mix": "AUTHORED"
+   },
+   "target_elev_deg": -12.0,
+   "branch": "falling"
+  },
+  {
+   "id": "astronomical-dusk",
+   "name": "Astronomical dusk",
+   "order": 13,
+   "next": "night",
+   "t01": 0.8141,
+   "t01_by": "solved",
+   "why": "astronomical twilight ends at 18 deg of depression; past it the night is as dark as it is going to get",
+   "elevation_deg": -18.0,
+   "azimuth_deg": 284.6905,
+   "sun": {
+    "color_hex": "#6a80ab",
+    "intensity_mul": 0.15
+   },
+   "hemi": {
+    "sky_hex": "#38465e",
+    "ground_hex": "#0f0e0c",
+    "intensity_mul": 0.32
+   },
+   "gradient": {
+    "stops": [
+     "#070b12",
+     "#0c1319",
+     "#181f2b",
+     "#232b38"
+    ],
+    "bands": [
+     "zenith",
+     "upper",
+     "horizon",
+     "ground_haze"
+    ],
+    "campus_mix": 0.35
+   },
+   "provenance": {
+    "t01": "DERIVED",
+    "elevation_deg": "DERIVED",
+    "azimuth_deg": "DERIVED",
+    "sun_color_hex": "AUTHORED",
+    "sun_intensity_mul": "AUTHORED",
+    "hemi_sky_hex": "AUTHORED",
+    "hemi_ground_hex": "AUTHORED",
+    "hemi_intensity_mul": "AUTHORED",
+    "gradient": "AUTHORED",
+    "campus_mix": "AUTHORED"
+   },
+   "target_elev_deg": -18.0,
+   "branch": "falling"
+  }
+ ],
+ "weather_sky": {
+  "clear": {
+   "gradient_tint_hex": "#cfe3f2",
+   "tint_mix": 0.05,
+   "star_visibility": 1.0,
+   "horizon_haze_mul": 1.0,
+   "sun_disc": "drawn",
+   "precipitation": "none",
+   "phase_override": null,
+   "note": "nothing between the eye and the sun: the phase gradient is left almost alone and the disc keeps its hard edge",
+   "reads": {
+    "cloud_cover": "weather.clear.cloud",
+    "fog_density_mul": "weather.clear.fog_mul",
+    "fog_color_mul": "weather.clear.fog_tint",
+    "sun_intensity_mul": "weather.clear.sun_mul",
+    "precipitation_rate": "weather.clear.rain"
+   },
+   "provenance": {
+    "cloud_cover": "READ",
+    "fog_density_mul": "READ",
+    "fog_color_mul": "READ",
+    "sun_intensity_mul": "READ",
+    "precipitation_rate": "READ",
+    "gradient_tint_hex": "AUTHORED",
+    "tint_mix": "AUTHORED",
+    "star_visibility": "AUTHORED",
+    "horizon_haze_mul": "AUTHORED",
+    "sun_disc": "AUTHORED",
+    "precipitation": "AUTHORED",
+    "phase_override": "AUTHORED"
+   }
+  },
+  "overcast": {
+   "gradient_tint_hex": "#b7c0c6",
+   "tint_mix": 0.55,
+   "star_visibility": 0.0,
+   "horizon_haze_mul": 1.15,
+   "sun_disc": "hidden",
+   "precipitation": "none",
+   "phase_override": null,
+   "note": "a lid. The disc is not dimmed, it is gone, and the phase gradient is pulled most of the way to a flat grey - which is why an overcast dawn and an overcast noon look alike",
+   "reads": {
+    "cloud_cover": "weather.overcast.cloud",
+    "fog_density_mul": "weather.overcast.fog_mul",
+    "fog_color_mul": "weather.overcast.fog_tint",
+    "sun_intensity_mul": "weather.overcast.sun_mul",
+    "precipitation_rate": "weather.overcast.rain"
+   },
+   "provenance": {
+    "cloud_cover": "READ",
+    "fog_density_mul": "READ",
+    "fog_color_mul": "READ",
+    "sun_intensity_mul": "READ",
+    "precipitation_rate": "READ",
+    "gradient_tint_hex": "AUTHORED",
+    "tint_mix": "AUTHORED",
+    "star_visibility": "AUTHORED",
+    "horizon_haze_mul": "AUTHORED",
+    "sun_disc": "AUTHORED",
+    "precipitation": "AUTHORED",
+    "phase_override": "AUTHORED"
+   }
+  },
+  "fog": {
+   "gradient_tint_hex": "#d3d8da",
+   "tint_mix": 0.7,
+   "star_visibility": 0.0,
+   "horizon_haze_mul": 2.2,
+   "sun_disc": "diffused",
+   "precipitation": "none",
+   "phase_override": null,
+   "note": "the haze band climbs until there is no horizon left to find, and the sun survives as a bright patch with no edge",
+   "reads": {
+    "cloud_cover": "weather.fog.cloud",
+    "fog_density_mul": "weather.fog.fog_mul",
+    "fog_color_mul": "weather.fog.fog_tint",
+    "sun_intensity_mul": "weather.fog.sun_mul",
+    "precipitation_rate": "weather.fog.rain"
+   },
+   "provenance": {
+    "cloud_cover": "READ",
+    "fog_density_mul": "READ",
+    "fog_color_mul": "READ",
+    "sun_intensity_mul": "READ",
+    "precipitation_rate": "READ",
+    "gradient_tint_hex": "AUTHORED",
+    "tint_mix": "AUTHORED",
+    "star_visibility": "AUTHORED",
+    "horizon_haze_mul": "AUTHORED",
+    "sun_disc": "AUTHORED",
+    "precipitation": "AUTHORED",
+    "phase_override": "AUTHORED"
+   }
+  },
+  "rain": {
+   "gradient_tint_hex": "#8e9aa4",
+   "tint_mix": 0.6,
+   "star_visibility": 0.0,
+   "horizon_haze_mul": 1.3,
+   "sun_disc": "hidden",
+   "precipitation": "rain",
+   "phase_override": null,
+   "note": "darker and bluer than overcast, and the only difference the sky itself shows is that the precipitation layer renders",
+   "reads": {
+    "cloud_cover": "weather.rain.cloud",
+    "fog_density_mul": "weather.rain.fog_mul",
+    "fog_color_mul": "weather.rain.fog_tint",
+    "sun_intensity_mul": "weather.rain.sun_mul",
+    "precipitation_rate": "weather.rain.rain"
+   },
+   "provenance": {
+    "cloud_cover": "READ",
+    "fog_density_mul": "READ",
+    "fog_color_mul": "READ",
+    "sun_intensity_mul": "READ",
+    "precipitation_rate": "READ",
+    "gradient_tint_hex": "AUTHORED",
+    "tint_mix": "AUTHORED",
+    "star_visibility": "AUTHORED",
+    "horizon_haze_mul": "AUTHORED",
+    "sun_disc": "AUTHORED",
+    "precipitation": "AUTHORED",
+    "phase_override": "AUTHORED"
+   }
+  },
+  "storm": {
+   "gradient_tint_hex": "#5b636d",
+   "tint_mix": 0.78,
+   "star_visibility": 0.0,
+   "horizon_haze_mul": 1.45,
+   "sun_disc": "hidden",
+   "precipitation": "rain",
+   "phase_override": null,
+   "note": "the phase is almost entirely overridden by the weather; a storm at noon and a storm at dusk are separated by very little, which is true of storms",
+   "reads": {
+    "cloud_cover": "weather.storm.cloud",
+    "fog_density_mul": "weather.storm.fog_mul",
+    "fog_color_mul": "weather.storm.fog_tint",
+    "sun_intensity_mul": "weather.storm.sun_mul",
+    "precipitation_rate": "weather.storm.rain"
+   },
+   "provenance": {
+    "cloud_cover": "READ",
+    "fog_density_mul": "READ",
+    "fog_color_mul": "READ",
+    "sun_intensity_mul": "READ",
+    "precipitation_rate": "READ",
+    "gradient_tint_hex": "AUTHORED",
+    "tint_mix": "AUTHORED",
+    "star_visibility": "AUTHORED",
+    "horizon_haze_mul": "AUTHORED",
+    "sun_disc": "AUTHORED",
+    "precipitation": "AUTHORED",
+    "phase_override": "AUTHORED"
+   }
+  },
+  "night": {
+   "gradient_tint_hex": "#1a2230",
+   "tint_mix": 0.3,
+   "star_visibility": 1.0,
+   "horizon_haze_mul": 0.85,
+   "sun_disc": "moon",
+   "precipitation": "none",
+   "phase_override": "night",
+   "note": "world/ carries `night` as a WEATHER because until this pack there was no time axis for it to be. It is kept, and it is kept honest: selecting it pins the phase to `night` rather than pretending to be a sky condition",
+   "reads": {
+    "cloud_cover": "weather.night.cloud",
+    "fog_density_mul": "weather.night.fog_mul",
+    "fog_color_mul": "weather.night.fog_tint",
+    "sun_intensity_mul": "weather.night.sun_mul",
+    "precipitation_rate": "weather.night.rain"
+   },
+   "provenance": {
+    "cloud_cover": "READ",
+    "fog_density_mul": "READ",
+    "fog_color_mul": "READ",
+    "sun_intensity_mul": "READ",
+    "precipitation_rate": "READ",
+    "gradient_tint_hex": "AUTHORED",
+    "tint_mix": "AUTHORED",
+    "star_visibility": "AUTHORED",
+    "horizon_haze_mul": "AUTHORED",
+    "sun_disc": "AUTHORED",
+    "precipitation": "AUTHORED",
+    "phase_override": "AUTHORED"
+   }
+  }
+ },
+ "weather_reads": {
+  "cloud_cover": "cloud",
+  "fog_density_mul": "fog_mul",
+  "fog_color_mul": "fog_tint",
+  "sun_intensity_mul": "sun_mul",
+  "precipitation_rate": "rain"
+ },
+ "precipitation_predicate": {
+  "field": "precipitation_rate",
+  "op": ">",
+  "value": 0,
+  "says": "precipitation renders when the weather record's own rain rate is above zero. This pack names the KIND and never the rate."
+ },
+ "predicate_fields": {
+  "always": "no condition - the layer is always drawn",
+  "sun_elevation_deg": "the current phase's derived solar altitude",
+  "cloud_cover": "the current weather's cloud cover, read from world.weather.<id>.cloud",
+  "precipitation_rate": "the current weather's rain rate, read from world.weather.<id>.rain"
+ },
+ "predicate_ops": [
+  "<",
+  "<=",
+  ">",
+  ">=",
+  "always"
+ ],
+ "layers": [
+  {
+   "id": "gradient-dome",
+   "name": "Gradient dome",
+   "page_anchor": "gr.addColorStop(0, stops[0]);",
+   "renders_when": {
+    "field": "always",
+    "op": "always",
+    "value": null,
+    "says": "the dome is the sky; there is no hour at which it is not drawn"
+   },
+   "params": {
+    "stops": 4,
+    "bands": [
+     "zenith",
+     "upper",
+     "horizon",
+     "ground_haze"
+    ],
+    "composed_from": "the phase gradient, mixed with the campus stops by the phase's campus_mix, then tinted by the weather"
+   },
+   "order": 0,
+   "order_provenance": "DERIVED: the position of `page_anchor` in web/build_3d.py",
+   "renders_in_phases": [
+    "night",
+    "astronomical-dawn",
+    "nautical-dawn",
+    "civil-dawn",
+    "sunrise",
+    "golden-morning",
+    "morning",
+    "noon",
+    "afternoon",
+    "golden-hour",
+    "sunset",
+    "civil-dusk",
+    "nautical-dusk",
+    "astronomical-dusk"
+   ],
+   "renders_in_weather": [
+    "clear",
+    "fog",
+    "night",
+    "overcast",
+    "rain",
+    "storm"
+   ]
+  },
+  {
+   "id": "star-field",
+   "name": "Star field",
+   "page_anchor": "// the stars go under everything else",
+   "renders_when": {
+    "field": "sun_elevation_deg",
+    "op": "<",
+    "value": -6.0,
+    "says": "stars appear once the sun centre is below civil twilight (-6 deg). The page currently keys them off the WEATHER being `night`, which is why a clear 2 a.m. has no stars in it."
+   },
+   "params": {
+    "count_read_from": "sky.stars.count",
+    "attenuated_by": "the weather's star_visibility"
+   },
+   "order": 1,
+   "order_provenance": "DERIVED: the position of `page_anchor` in web/build_3d.py",
+   "renders_in_phases": [
+    "night",
+    "astronomical-dawn",
+    "nautical-dawn",
+    "nautical-dusk",
+    "astronomical-dusk"
+   ],
+   "renders_in_weather": [
+    "clear",
+    "fog",
+    "night",
+    "overcast",
+    "rain",
+    "storm"
+   ]
+  },
+  {
+   "id": "sun-disc",
+   "name": "Sun and moon disc",
+   "page_anchor": "const disc = opts.moon ? SKY.disc.moon : SKY.disc.sun;",
+   "renders_when": {
+    "field": "always",
+    "op": "always",
+    "value": null,
+    "says": "one body is always in the sky; which one is the body_switch predicate below"
+   },
+   "params": {
+    "body_switch": {
+     "field": "sun_elevation_deg",
+     "op": ">",
+     "value": -0.833,
+     "says": "the sun is the body while its centre is above -0.833 deg - the same risen-disc threshold the sunrise and sunset phases are solved from; below it the moon is drawn instead"
+    },
+    "geometry_read_from": "sky.disc",
+    "placed_by": "the phase azimuth and elevation, which the page must set on its key light FIRST so the disc and the shadows agree"
+   },
+   "order": 2,
+   "order_provenance": "DERIVED: the position of `page_anchor` in web/build_3d.py",
+   "renders_in_phases": [
+    "night",
+    "astronomical-dawn",
+    "nautical-dawn",
+    "civil-dawn",
+    "sunrise",
+    "golden-morning",
+    "morning",
+    "noon",
+    "afternoon",
+    "golden-hour",
+    "sunset",
+    "civil-dusk",
+    "nautical-dusk",
+    "astronomical-dusk"
+   ],
+   "renders_in_weather": [
+    "clear",
+    "fog",
+    "night",
+    "overcast",
+    "rain",
+    "storm"
+   ]
+  },
+  {
+   "id": "cloud-band",
+   "name": "Cloud band",
+   "page_anchor": "// the cloud band: value noise over octaves",
+   "renders_when": {
+    "field": "cloud_cover",
+    "op": ">",
+    "value": 0.02,
+    "says": "the page already skips the band below 0.02 cover (`amount > .02`); the threshold is the page's, restated here as the predicate so the layer table is complete"
+   },
+   "params": {
+    "recipe_read_from": "sky.clouds",
+    "luminance": "world's day_lum above the risen-disc threshold, night_lum below it - keyed off the phase rather than off the weather"
+   },
+   "order": 3,
+   "order_provenance": "DERIVED: the position of `page_anchor` in web/build_3d.py",
+   "renders_in_phases": [
+    "night",
+    "astronomical-dawn",
+    "nautical-dawn",
+    "civil-dawn",
+    "sunrise",
+    "golden-morning",
+    "morning",
+    "noon",
+    "afternoon",
+    "golden-hour",
+    "sunset",
+    "civil-dusk",
+    "nautical-dusk",
+    "astronomical-dusk"
+   ],
+   "renders_in_weather": [
+    "clear",
+    "fog",
+    "night",
+    "overcast",
+    "rain",
+    "storm"
+   ]
+  },
+  {
+   "id": "horizon-haze",
+   "name": "Horizon haze",
+   "page_anchor": "const hz = SKY.horizon_haze;",
+   "renders_when": {
+    "field": "always",
+    "op": "always",
+    "value": null,
+    "says": "the dome must never end on an edge, at any hour"
+   },
+   "params": {
+    "recipe_read_from": "sky.horizon_haze",
+    "scaled_by": "the weather's horizon_haze_mul, and the campus's own `haze` tint where it names one"
+   },
+   "order": 4,
+   "order_provenance": "DERIVED: the position of `page_anchor` in web/build_3d.py",
+   "renders_in_phases": [
+    "night",
+    "astronomical-dawn",
+    "nautical-dawn",
+    "civil-dawn",
+    "sunrise",
+    "golden-morning",
+    "morning",
+    "noon",
+    "afternoon",
+    "golden-hour",
+    "sunset",
+    "civil-dusk",
+    "nautical-dusk",
+    "astronomical-dusk"
+   ],
+   "renders_in_weather": [
+    "clear",
+    "fog",
+    "night",
+    "overcast",
+    "rain",
+    "storm"
+   ]
+  }
+ ],
+ "stars": {
+  "seed": 1592646266,
+  "seed_hex": "0x5EEDDA7A",
+  "seed_provenance": "READ-FROM-PAGE: web/build_3d.py uses this seed; it is asserted present in that file rather than restated as an independent choice",
+  "generator": "x = (x * 1664525 + 1013904223) mod 2^32, value x / 2^32 - web/build_3d.py, seeded()",
+  "count_read_from": "world/registry/world.json#sky.stars.count",
+  "bins": [
+   {
+    "radius_px": 2.1,
+    "magnitude": 0.0,
+    "count": 39
+   },
+   {
+    "radius_px": 1.4,
+    "magnitude": 0.8805,
+    "count": 113
+   },
+   {
+    "radius_px": 0.9,
+    "magnitude": 1.8399,
+    "count": 268
+   }
+  ],
+  "bins_provenance": "DERIVED: the page's own generator run here for the star count world/ declares, following the same radius branch the page takes, so these are the stars the page will actually draw",
+  "magnitude_model": "Pogson: m - m_ref = -2.5 log10(A / A_ref), A = pi r^2, on the drawn disc area as a stand-in for flux",
+  "magnitude_anchor": 0.0,
+  "magnitude_anchor_provenance": "AUTHORED: the brightest drawn class is placed at magnitude 0.00, Vega's defining magnitude. The anchor is a choice; the spacing between classes is not.",
+  "magnitude_cutoff": 1.8399,
+  "magnitude_cutoff_provenance": "DERIVED: the faintest magnitude the three drawn radii reach under the model above",
+  "equivalent_sky_magnitude": 3.8496,
+  "equivalent_sky_fit": {
+   "table": [
+    [
+     1,
+     15
+    ],
+    [
+     2,
+     48
+    ],
+    [
+     3,
+     171
+    ],
+    [
+     4,
+     513
+    ],
+    [
+     5,
+     1602
+    ],
+    [
+     6,
+     4800
+    ]
+   ],
+   "table_provenance": "the classic all-sky cumulative naked-eye star counts by visual magnitude, as tabulated in Allen, \"Astrophysical Quantities\". Quoted, not measured here, and not from any catalogue file in this repo.",
+   "slope": 0.5021,
+   "intercept": 0.6904,
+   "fit_provenance": "DERIVED: least squares of log10(N) on magnitude over the six tabulated rows, computed in this builder"
+  },
+  "honesty": "the drawn field spans 1.8399 magnitudes across three disc sizes, while a real sky holding as many stars as world/ asks for would have to reach about magnitude 3.8496. The field is therefore far too bright and far too shallow to be a sky chart, which is the same thing world/ already says in its own words: it is a night sky, not the night sky. No star here has a name, a position or a catalogue entry.",
+  "elevation_cutoff_deg": -6.0
+ },
+ "compose_order": [
+  {
+   "step": 1,
+   "what": "the campus's own four stops",
+   "from": "world.atmos.<campus>.sky",
+   "how": "read, unchanged - this is what keeps a Bay station and a Front Range yard from ending their domes identically"
+  },
+  {
+   "step": 2,
+   "what": "the phase gradient",
+   "from": "sky.phases[].gradient.stops",
+   "how": "mixed over the campus stops by 1 - campus_mix, per stop, in sRGB"
+  },
+  {
+   "step": 3,
+   "what": "the weather tint",
+   "from": "sky.weather_sky.<id>.gradient_tint_hex and tint_mix",
+   "how": "mixed over the result by tint_mix, per stop, in sRGB"
+  },
+  {
+   "step": 4,
+   "what": "the weather's existing sky multiplier",
+   "from": "world.weather.<id>.sky_mul",
+   "how": "the page's own darkHex(), unchanged and last, so nothing about this pack alters what the existing weather switch already does"
+  }
+ ],
+ "page_contract": {
+  "data": "the page already parses one blob; add this registry to it as `D.sky` beside `D.world`, then `const SKYDAY = D.sky;`. Nothing in here is fetched and nothing is generated at render time.",
+  "entry": "applyPhase(phaseId) sets the sun and the hemisphere for a phase and nothing else; applyAtmos(campusKey) keeps doing everything it already does and calls applyPhase last, so a campus change, a weather change and an hour change all land in one place.",
+  "sun_vector": "the page's SUN_OFF is a FIXED direction - (35, 48, 20) normalised, which is 49.98 deg of elevation and 29.74 deg of azimuth, one permanent mid-morning for all ten campuses. Replace the constant with a function of the phase: dir = (cos(el)sin(az), sin(el), -cos(el)cos(az)) in three.js axes for an azimuth measured clockwise from north, scaled by the same 96 m. trackSun() then needs SUN_FWD / SUN_RIGHT / SUN_UP rebuilt whenever the phase changes - they are cached from SUN_OFF today precisely because it never moved.",
+  "intensity": "the page keeps owning both base numbers. key.intensity stays `a.sun.i * w.sun_mul` and gains one factor: `* phase.sun.intensity_mul`. hemi.intensity stays `a.hemi.i * w.hemi_mul * indoors` and gains `* phase.hemi.intensity_mul`. This registry publishes no absolute intensity and could not: it does not know what the page's base is.",
+  "colour": "applyAtmos currently switches the key and hemisphere colours on `night` and on `w.sun_mul < .7`. Both branches go: the colour is the phase's, every time, and the weather only scales the strength. The `night` branch's 0x9db4d8 is this pack's night phase sun colour, kept identical so the swap changes nothing at that hour.",
+  "gradient": "compose in the stated order and no other. See `compose_order`.",
+  "stars": "stop keying the star field off `w.stars`. Draw it when the phase's elevation_deg is below the star layer's cutoff, then multiply its alpha by the weather's star_visibility - so a clear night has stars, an overcast one does not, and the two are no longer the same switch.",
+  "disc": "skyCanvas reads the sun's screen position off key.position. That stays exactly as it is - it is what makes the disc and the shadows agree - which is why the sun vector must be set from the phase BEFORE setSky() is called, not after.",
+  "must_not_duplicate": [
+   "setSky",
+   "skyCanvas",
+   "SKY",
+   "ATMOS",
+   "WX",
+   "WX_CYCLE",
+   "DEF_ATMOS",
+   "applyAtmos",
+   "trackSun",
+   "SUN_OFF",
+   "SUN_FWD",
+   "SUN_RIGHT",
+   "SUN_UP",
+   "skyEnvRT",
+   "fogBanks",
+   "darkHex",
+   "seeded",
+   "valueNoise",
+   "hemi",
+   "key"
+  ],
+  "must_not_duplicate_why": "every name above already exists in web/build_3d.py and is asserted to exist by this pack's test. A second setSky or a second star seed is the defect this registry exists to prevent, not a convenience.",
+  "must_read_not_copy": [
+   "world.sky.stars.count",
+   "world.sky.disc",
+   "world.sky.clouds",
+   "world.sky.horizon_haze",
+   "world.sky.bands",
+   "world.weather.<id>.cloud",
+   "world.weather.<id>.fog_mul",
+   "world.weather.<id>.fog_tint",
+   "world.weather.<id>.sun_mul",
+   "world.weather.<id>.rain",
+   "world.atmos.<id>.sky",
+   "world.atmos.<id>.haze"
+  ],
+  "env_map": "setSky() rebuilds the PMREM environment on every call and disposes the old render target first. A day cycle calls it far more often than a weather change does, so the phase must be stepped rather than interpolated per frame, or the leak check will be counting PMREM targets every frame.",
+  "episode": "the hour is a view setting. It changes no score, unlocks nothing, and nothing about which phase a learner chose is recorded anywhere."
+ },
+ "reads": [
+  "pack/manifest.json",
+  "world/registry/world.json",
+  "geo/registry/campuses_geo.json",
+  "web/build_3d.py"
+ ]
+}

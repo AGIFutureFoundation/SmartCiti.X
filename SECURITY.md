@@ -7,7 +7,7 @@ and **the boundary between one organisation's learners and another's**.
 
 ## What is implemented and tested
 
-`security/` ships with 29 checks in `test.mjs` and 10 in `test_sbom.mjs`
+`security/` ships with 29 checks in `test.mjs` and 11 in `test_sbom.mjs`
 (both run by `verify_all.sh`; each suite asserts the count stated here). Each
 check is a refusal, or a hash held to the bytes in the tree:
 
@@ -17,7 +17,7 @@ check is a refusal, or a hash held to the bytes in the tree:
 | `ratelimit.mjs` | separate token buckets for auth, agent turns, API and export; audited auth throttling; idle sweep |
 | `privacy.mjs` | data classification, per-class retention, pseudonymisation, erasure, export sanitisation, raw-stream storage refusal |
 | `contest.mjs` | a learner contests a gate decision on their own record with a human (`gate.contest` → `gate.review`); anyone human reports abuse and support triages it (`abuse.report` → `abuse.triage`); PII redacted before storage, every step audited and attributed, an overturned decision returned as a revocation instruction for the bus's single gate writer rather than applied here |
-| `build_sbom.py` | the software bill of materials (`registry/sbom.cdx.json`, CycloneDX 1.5): every vendored third-party file hashed, versioned from the string in the file, licensed by the banner in the file — and `test_sbom.mjs` holds it to `web/vendor/` and to `THIRD_PARTY.md` on every run |
+| `build_sbom.py` | the software bill of materials (`registry/sbom.cdx.json`, CycloneDX 1.5): every vendored third-party file hashed, versioned from the string in the file (or, for the self-hosted fonts, from the URL the fetcher recorded), licensed by the banner in the file (or by the full OFL committed beside it) — and `test_sbom.mjs` holds it to `web/vendor/` and to `THIRD_PARTY.md` on every run |
 
 Enforced elsewhere in the stack and tested there:
 

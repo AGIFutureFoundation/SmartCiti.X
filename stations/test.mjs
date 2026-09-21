@@ -143,4 +143,38 @@ const builder = readFileSync(new URL('./build.py', import.meta.url));
 ok('and from the current authored overlay (second stamp: the overlay is a source too)',
   reg.authored_stamp === createHash('sha256').update(builder).digest('hex').slice(0, 16));
 
+
+/* ------------------------------------------------ one truth per room --- */
+// Every station carries a `room` field holding a display label - "Induction
+// & PPE", "Practice Bays" - and that table is owned by web/interiors.py's
+// ROOMS, which is what actually draws and names the 1,221 rooms a learner
+// walks through. This is a second copy of somebody else's fact.
+//
+// They agree today. That is precisely what makes it worth a check rather
+// than a shrug: rename a room in interiors.py and this registry goes on
+// quietly naming the old one, on every station card, with nothing failing.
+// Found by the lessons/ pack, which imports the label from interiors.py
+// rather than reading it here.
+{
+  const interiors = readFileSync(new URL('../web/interiors.py', import.meta.url), 'utf8');
+  const block = interiors.slice(interiors.indexOf('ROOMS = ['),
+                                interiors.indexOf(']', interiors.indexOf('ROOMS = [')));
+  // ("<strand>", "<label>", w, h, "<purpose>")
+  const owned = new Map();
+  for (const m of block.matchAll(/\(\s*"([a-z]+)",\s*"([^"]+)"/g)) owned.set(m[1], m[2]);
+  ok(`web/interiors.py owns ${owned.size} room labels, and this suite reads them rather than trusting a copy`,
+    owned.size === 11);
+  const rows = Array.isArray(reg.stations) ? reg.stations : Object.values(reg.stations);
+  const wrong = rows
+    .filter((s) => owned.has(s.strand) && owned.get(s.strand) !== s.room)
+    .map((s) => `${s.station_id} (${s.name}): says "${s.room}", web/interiors.py says "${owned.get(s.strand)}"`);
+  ok('every station names its room exactly as web/interiors.py names it - the '
+    + 'label is drawn there, and a station that disagrees is naming a room '
+    + 'no learner can find',
+    wrong.length === 0 || (console.error(wrong.join('\n')), false));
+  const unknown = rows.filter((s) => !owned.has(s.strand)).map((s) => s.station_id);
+  ok('and every station stands in a strand that has a room at all',
+    unknown.length === 0 || (console.error('no room for: ' + unknown.join(', ')), false));
+}
+
 console.log(`stations/test: ${n} checks passed — ${reg.count} stations, ${reg.halls_seeded.length} halls seeded`);
