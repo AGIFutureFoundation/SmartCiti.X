@@ -70,6 +70,8 @@ restoration_reg = json.load(open(ROOT / 'restoration/registry/restoration.json')
 guide_reg = json.load(open(ROOT / 'guide/registry/guide.json'))
 sky_reg = json.load(open(ROOT / 'sky/registry/sky.json'))
 terrain_reg = json.load(open(ROOT / 'terrain/registry/terrain.json'))
+kit_reg = json.load(open(ROOT / 'kit/registry/kit.json'))
+props_reg = json.load(open(ROOT / 'props/registry/props.json'))
 
 def trim(rows, *drop):
     """Ship what is drawn, not what is explained.
@@ -303,6 +305,34 @@ assert not sorted(_used - set(STEP_FAMILIES)), (
 assert not sorted(set(STEP_FAMILIES) - _used), (
     f'step family declared and never reachable: {sorted(set(STEP_FAMILIES) - _used)}')
 
+# ------------------------------------------------------ kit and props ---
+# Two packs declare what stands on the OUTSIDE of every hall (kit/) and
+# INSIDE every room (props/): recipes of boxes and cylinders, a wall and a
+# run to hang each on, a count rule, and a budget read from the scene
+# harness. Both registries said in their own honesty blocks that nothing
+# they declared had been drawn. The page reads them now - the slices below
+# go on the wire, the prose stays in the registries - and draws them in
+# kitDress() and placeRoomProps().
+#
+# The kit's run formulas (how many metres a "frontage" or an "eaves_run"
+# is) are the kit builder's own RUNS table. They are READ out of
+# kit/build.py rather than restated: the same six lambdas the registry
+# budgeted with become the six arrow functions the page places with, so
+# the metres cannot drift between the prediction and the drawing.
+_kit_build_src = (ROOT / 'kit/build.py').read_text()
+_kit_runs_m = re.search(r'\nRUNS = \{(.*?)\n\}', _kit_build_src, re.S)
+assert _kit_runs_m, 'kit/build.py no longer declares its RUNS table'
+KIT_RUNS = dict(re.findall(r"'([a-z_]+)':\s*lambda w, d: ([\w\s*+()]+),",
+                           _kit_runs_m.group(1)))
+assert set(KIT_RUNS) == set(kit_reg['vocabulary']['runs']), (
+    'kit/build.py RUNS and kit.json vocabulary.runs disagree: '
+    f'{sorted(set(KIT_RUNS) ^ set(kit_reg["vocabulary"]["runs"]))}')
+for _k, _expr in KIT_RUNS.items():
+    assert re.fullmatch(r'[wd\d\s*+()]+', _expr), (
+        f'kit run {_k}: {_expr!r} is not plain arithmetic in w and d that '
+        'the page can run as written')
+KIT_RUNS_JS = ', '.join(f'{k}: (w, d) => {e.strip()}' for k, e in KIT_RUNS.items())
+
 DATA = json.dumps({
     'districts': {k: {'name': d['name'], 'halls': d['halls'], 'hue': HUES[k]}
                   for k, d in districts_reg.items()},
@@ -491,6 +521,46 @@ DATA = json.dumps({
     'sky': {k: sky_reg[k] for k in
             ('honesty', 'counts', 'site', 'phases', 'weather_sky',
              'layers', 'stars', 'compose_order')},
+    # the campus kit: eighteen pieces that hang on the outside of every
+    # hall - their shape budget, size and material, which wall and run
+    # each family attaches to, how many per hall, and the budget the
+    # registry predicted so the __tc3dKit probe can say whether it held
+    'kit': {
+        'pieces': {k: {kk: v[kk] for kk in
+                       ('family', 'tri_budget', 'size_m', 'material', 'merges')}
+                   for k, v in kit_reg['pieces'].items()},
+        'placement': trim(kit_reg['placement'], 'why'),
+        'counts_rules': kit_reg['counts_rules'],
+        'budget': {
+            'draw_call_ceiling': kit_reg['budget']['draw_call_ceiling'],
+            'triangle_ceiling': kit_reg['budget']['triangle_ceiling'],
+            'campuses': {k: {kk: v[kk] for kk in
+                             ('pieces', 'triangles', 'draw_calls', 'by_family')}
+                         for k, v in kit_reg['budget']['campuses'].items()}},
+    },
+    # the room props: twenty-nine recipes, which strand each stands in
+    # (derived by the registry from the room's own purpose line), the
+    # PPE rule that stands a safety fixture in a room, and the layout
+    # each prop declares. Part names are prose and stay behind.
+    'props': {
+        'props': [{'id': p['id'], 'family': p['family'],
+                   'material': p['material'], 'merges': p['merges'],
+                   'size_m': p['size_m'], 'tris': p['recipe']['tris'],
+                   'parts': [{k: v for k, v in q.items() if k != 'part'}
+                             for q in p['recipe']['parts']],
+                   'layout': {k: p['layout'][k] for k in
+                              ('anchor', 'walls', 'base_y_m', 'gap_m',
+                               'front_clear_m', 'back_reserve_m',
+                               'max_per_room')},
+                   'derive': {k: v for k, v in p['derive'].items()
+                              if k in ('from', 'ppe_any')}}
+                  for p in props_reg['props']],
+        'by_strand': {s: [m['prop'] for m in v['props']]
+                      for s, v in props_reg['by_strand'].items()},
+        'budget': {'self_imposed': {k: props_reg['budget']['self_imposed'][k]
+                                    for k in ('calls_per_hall', 'tris_per_hall')},
+                   'per_hall': props_reg['budget']['per_hall']},
+    },
     # the helper guide: ten places, six fixed questions each, the control
     # schemes (the seat rows read from sims/, never copied), the voice
     # policy with its two off-by-default switches, and the declared hand
@@ -9027,20 +9097,25 @@ function building(h, style, g, pool, ox = 0, oz = 0) {   // built at the local o
   // the pilasters at the corners wear the city's trim, not one shared steel
   for (const px of [-wid/2 + .3, wid/2 - .3])
     add(fab.trim, .34, hgt * .92, .34, px, hgt * .46, -dep/2 + .2);
+  // the kit hangs on this envelope: the same pool, the same materials, the
+  // wall and roofline just drawn rather than a restated copy of them
+  kitDress(h, style, fab, pool, ox, oz, wid, dep, hgt, g);
   if (h.stations.length) beaconAt.push(new THREE.Vector3(0, hgt + 2, 0));
   else beaconAt.push(null);
   return { mesh: bld, w: wid, d: dep };
 }
 // the district's pooled decoration: one mesh per material, into the district group
 function flushParts(pool, g) {
+  const out = [];
   for (const [m2, list] of pool) {
     const merged = mergeGeometries(list);
     list.forEach((ge) => ge.dispose());
     const mesh = new THREE.Mesh(merged, m2);
     mesh.castShadow = true; mesh.receiveShadow = true;
-    g.add(mesh);
+    g.add(mesh); out.push(mesh);
   }
   pool.clear();
+  return out;
 }
 // the station beacons: one instanced draw for the campus, spun in the loop
 let beaconAt = [], beaconInst = null, beaconSpin = 0;
@@ -9064,6 +9139,232 @@ function spinBeacons(dt) {
   }
   beaconInst.instanceMatrix.needsUpdate = true;
 }
+
+
+/* ------------------------------------------------------------ the kit ----
+   kit/registry/kit.json declares eighteen pieces that hang on the OUTSIDE
+   of every hall - stoop and tread, kerbs, parapet coping and corners,
+   gutters, downpipes and a shoe, vents, an awning, a bollard, a hand rail,
+   a sign bracket, conduit, a meter box, a planter and a roof ladder - each
+   a recipe of boxes and cylinders with a triangle budget, a wall, a run, a
+   datum and a count rule. It had been declared and never drawn.
+
+   Pooled pieces go into the SAME district pool building() fills, keyed by
+   the same material object, so flushParts() merges them into the mesh that
+   material already has: a fabric.roof or fabric.trim piece costs no draw
+   call at all, and mat.metal and mat.slab cost one each per district. The
+   two instanced families (bollard, planter) are one InstancedMesh each per
+   campus, built the way flushBeacons() builds the station beacons - but
+   never THROUGH it: the beacons spin every frame, and a bollard that spins
+   is a bug.
+
+   The registry publishes no colours. A material is resolved BY NAME against
+   the page's own tables and a name with nothing behind it throws, because
+   a default here would be a piece wearing a colour nobody decided on.
+   Every recipe produces EXACTLY the primitives the registry counted, and
+   kitGeo() throws when the triangles come out different: the budget the
+   probe reports is the budget that was drawn. */
+const KIT_RUNS = { __KIT_RUNS__ };
+const _kitE = new THREE.Euler(), _kitM = new THREE.Matrix4(), _kitP = new THREE.Matrix4();
+// a box or a cylinder in the piece's own frame: centred on x, base at
+// y = 0 on its datum, z = 0 at the wall it hangs on, +z pointing away
+const kb = (w, h, d, x, y, z, rx = 0, ry = 0, rz = 0) => {
+  const g = new THREE.BoxGeometry(w, h, d);
+  g.applyMatrix4(_kitM.makeRotationFromEuler(_kitE.set(rx, ry, rz)).setPosition(x, y, z));
+  return g;
+};
+const kc = (r, h, seg, capped, x, y, z, rx = 0, rz = 0) => {
+  const g = new THREE.CylinderGeometry(r, r, h, seg, 1, !capped);
+  g.applyMatrix4(_kitM.makeRotationFromEuler(_kitE.set(rx, 0, rz)).setPosition(x, y, z));
+  return g;
+};
+const KIT_SHAPES = {
+  'entry-stoop': ([w, h, d]) => [kb(w, .2, d, 0, h - .1, d / 2),            // the pad
+    kb(w - .2, h - .2, d - .2, 0, (h - .2) / 2, d / 2),                    // the riser under it
+    kb(.2, h, d, w / 2 - .1, h / 2, d / 2)],                               // one cheek wall
+  'entry-step': ([w, h, d], K) => [kb(w, h, d, 0, h / 2, K['entry-stoop'].size_m[2] + d / 2 + .02)],
+  'kerb-run': ([w, h, d]) => [kb(w, h, d, 0, h / 2, 0)],
+  'parapet-coping': ([w, h, d]) => [kb(w, h, d, 0, h / 2, 0)],
+  'parapet-corner': ([w, h, d]) => [kb(w, h, d, 0, h / 2, 0)],
+  'eaves-gutter': ([w, h, d]) => [kb(w, h, d - .04, 0, h / 2, (d - .04) / 2),
+    kc(.05, w, 6, false, 0, h * .4, d - .02, 0, Math.PI / 2)],            // the rolled bead
+  'downpipe-run': ([w, h]) => [kc(w / 2, h, 8, false, 0, h / 2, w / 2 + .03),
+    kb(.2, .1, .2, 0, h * .3, .06), kb(.2, .1, .2, 0, h * .78, .06)],      // two brackets
+  'downpipe-shoe': ([w, h, d]) => [kc(w / 2, h, 6, true, 0, h / 2, d / 2, 1.1, 0)],
+  'wall-vent': ([w, h, d]) => [kb(w, h, .06, 0, h / 2, .03),               // back plate
+    kb(w, h / 2, d - .06, 0, h * .6, .03 + (d - .06) / 2),                 // the hood
+    kc(.06, .2, 8, false, 0, h / 2, .1, Math.PI / 2, 0)],                  // the spigot
+  'louvre-vent': ([w, h, d]) => [kb(w, h, d - .04, 0, h / 2, (d - .04) / 2),
+    kb(w - .1, h - .1, .04, 0, h / 2, d - .02)],
+  'door-awning': ([w, h, d]) => [kb(w, .1, d, 0, h - .05, d / 2),
+    kb(.06, .06, d - .1, -(w / 2 - .1), h * .35, d / 2, -.5),
+    kb(.06, .06, d - .1, w / 2 - .1, h * .35, d / 2, -.5)],
+  'bollard': ([w, h]) => [kc(w / 2, h, 8, true, 0, h / 2, 0)],
+  'wall-rail': ([w, h, d]) => [kc(h / 2, w, 6, false, 0, h / 2, d - .04, 0, Math.PI / 2),
+    kb(.06, h, d, -(w / 2 - .2), h / 2, d / 2), kb(.06, h, d, w / 2 - .2, h / 2, d / 2)],
+  'sign-bracket': ([w, h, d]) => [kb(.06, .06, w, 0, h - .03, w / 2),      // the arm
+    kb(.06, .06, w * .9, 0, h * .5, w * .4, -.75),                         // the stay
+    kb(d, h, .06, 0, h / 2, .03)],                                         // the wall plate
+  'conduit-run': ([w, h]) => [kc(w / 2, h, 6, false, 0, h / 2, w / 2 + .02),
+    kb(.12, .08, .1, 0, h * .25, .04), kb(.12, .08, .1, 0, h * .75, .04)], // two saddles
+  'meter-box': ([w, h, d]) => [kb(w, h, d - .05, 0, h / 2, (d - .05) / 2),
+    kb(w - .05, h - .05, .03, 0, h / 2, d - .03)],                         // its door
+  'planter-tub': ([w, h, d]) => [kb(w, h, .08, 0, h / 2, -(d / 2 - .04)),
+    kb(w, h, .08, 0, h / 2, d / 2 - .04),
+    kb(.08, h, d - .16, -(w / 2 - .04), h / 2, 0), kb(.08, h, d - .16, w / 2 - .04, h / 2, 0)],
+  'cage-ladder': ([w, h, d]) => [kb(.06, h, .06, -(w / 2 - .03), h / 2, d - .03),
+    kb(.06, h, .06, w / 2 - .03, h / 2, d - .03),
+    ...[0, 1, 2, 3].map((i) => kb(w - .06, .05, .05, 0, h * (.2 + .2 * i), d - .03))],
+};
+function kitMat(name, fab) {
+  const m2 = name.startsWith('mat.') ? mat[name.slice(4)]
+    : name.startsWith('fabric.') ? fab[name.slice(7)] : null;
+  if (!m2 || !m2.isMaterial)
+    throw new Error('kit material ' + name + ' names nothing this page builds');
+  return m2;
+}
+// one piece's geometry, fresh and owned by whoever asked for it
+function kitGeo(pid) {
+  const p = D.kit.pieces[pid], shape = KIT_SHAPES[pid];
+  if (!shape) throw new Error('kit piece ' + pid + ' has no shape in this page');
+  const parts = shape(p.size_m, D.kit.pieces);
+  const g = mergeGeometries(parts);
+  parts.forEach((ge) => ge.dispose());
+  const tris = g.index.count / 3;
+  if (tris !== p.tri_budget)
+    throw new Error('kit piece ' + pid + ' built ' + tris + ' triangles; the registry budgets ' + p.tri_budget);
+  return g;
+}
+// a per-campus cache of the base geometry each pooled piece is cloned from
+const kitGeoCache = new Map();
+const kitBase = (pid) => {
+  let g = kitGeoCache.get(pid);
+  if (!g) { g = kitGeo(pid); kitGeoCache.set(pid, g); }
+  return g;
+};
+let kitInst = new Map(), kitStat = null;
+function kitReset() {
+  kitInst = new Map();
+  kitStat = { pieces: 0, tris: 0, byFamily: {}, newCalls: 0, pooled: new Set(),
+              instanced: 0, instances: 0 };
+}
+/* Where the i-th of n pieces of a family stands on a hall of wid x dep,
+   in the hall's own frame (door toward -z): [x, z, ry]. Side pieces
+   alternate walls and spread along the depth; front and back pieces take
+   a fixed station beside the door or the service wall and step sideways
+   for any extra the count rule asks for; the parapet coping walks the roof
+   perimeter at even spacing. */
+function kitSpot(pid, fam, i, n, wid, dep) {
+  const hw = wid / 2, hd = dep / 2;
+  const side = i % 2 ? 1 : -1;                     // alternate the two side walls
+  const k = (i - i % 2) / 2, nSide = i % 2 ? Math.floor(n / 2) : Math.ceil(n / 2);
+  const along = -hd + (k + .5) * dep / nSide;      // spread along the depth
+  const step = (i % 2 ? -1 : 1) * Math.ceil(i / 2); // 0, +1, -1, +2, -2 ...
+  switch (fam) {
+    case 'stoop': case 'step': return [step * 3, -hd, Math.PI];
+    case 'awning': return [step * 2.8, -hd, Math.PI];
+    case 'rail': return [1.9 + step * 2.8, -hd, Math.PI];
+    case 'sign-bracket': return [-2.2 + step * 2.8, -hd, Math.PI];
+    case 'kerb': return [side * 1.35, -hd - 2.5 - k * 4.2, Math.PI / 2];
+    case 'bollard': return [side * 1.7, -hd - 1.4 - k * 1.5, 0];
+    case 'planter': return [side * 3.2, -hd - 1.3 - k * 1.6, 0];
+    case 'downpipe': return [side * hw, hd - .6 - k * 3, side * Math.PI / 2];
+    case 'gutter': return [side * (hw + .12), along, side * Math.PI / 2];
+    case 'vent': return pid === 'louvre-vent'
+      ? [hw, -hd + dep * .25 + k * 2, Math.PI / 2]
+      : [side * hw, along, side * Math.PI / 2];
+    case 'conduit': return [-3 + step * 1.2, hd, 0];
+    case 'meter-box': return [2.5 + step * 1.2, hd, 0];
+    case 'cage-ladder': return [4.2 + step * 1.2, hd, 0];
+    case 'parapet': {
+      if (pid === 'parapet-corner') return [side * (hw - .35), -hd + .35, 0];
+      const P = 2 * (wid + dep);
+      let u = (i + .5) * P / n;                    // walk the roof edge
+      if (u < wid) return [-hw + u, -hd + .3, 0];
+      u -= wid; if (u < dep) return [hw - .3, -hd + u, Math.PI / 2];
+      u -= dep; if (u < wid) return [hw - u, hd - .3, 0];
+      u -= wid; return [-hw + .3, hd - u, Math.PI / 2];
+    }
+    default: throw new Error('kit family ' + fam + ' has no station on a hall');
+  }
+}
+/* Dress one hall. Called from building() with the envelope it just drew,
+   so the kit hangs on the wall that is there rather than on a restated
+   one; pooled geometry lands in the district pool building() is filling,
+   instanced pieces queue a matrix for flushKit(). */
+function kitDress(h, style, fab, pool, ox, oz, wid, dep, hgt, bg) {
+  const K = D.kit, facade = fab.spec.facade;
+  // where the roof meets the wall: under the hue band on a gable, whose
+  // pitched slabs come down past it; on top of the band otherwise
+  const eaves = style === 'gable' ? hgt - .65 : hgt + .25;
+  const cg = bg.parent;
+  cg.updateWorldMatrix(true, false);
+  for (const [pid, p] of Object.entries(K.pieces)) {
+    const pl = K.placement[p.family];
+    if (!pl.rooflines.includes(style) || !pl.facades.includes(facade)) continue;
+    const c = K.counts_rules[pid];
+    let n;
+    if (c.mode === 'per_hall') n = c.n;
+    else if (c.mode === 'per_run_m') n = Math.ceil(KIT_RUNS[pl.run](wid, dep) / c.every_m);
+    else throw new Error('kit count mode ' + c.mode + ' is not one this page resolves');
+    let y;
+    if (pl.datum === 'grade') y = 0;
+    else if (pl.datum === 'wall') y = pl.offset_m;
+    else if (pl.datum === 'eaves') y = eaves + pl.offset_m;
+    else throw new Error('kit datum ' + pl.datum + ' is not one this page resolves');
+    const m2 = kitMat(p.material, fab);
+    for (let i = 0; i < n; i++) {
+      const [x, z, ry] = kitSpot(pid, p.family, i, n, wid, dep);
+      _kitP.makeRotationY(ry).setPosition(x + ox, y, z + oz);
+      if (p.merges === 'pooled') {
+        if (!pool.has(m2)) { kitStat.newCalls++; }
+        kitStat.pooled.add(p.material);
+        (pool.get(m2) ?? pool.set(m2, []).get(m2)).push(kitBase(pid).clone().applyMatrix4(_kitP));
+      } else if (p.merges === 'instanced') {
+        (kitInst.get(pid) ?? kitInst.set(pid, []).get(pid))
+          .push(cg.matrixWorld.clone().multiply(_kitP));
+      } else throw new Error('kit piece ' + pid + ' asks to merge as ' + p.merges + ', which this page does not grant');
+      kitStat.pieces++; kitStat.tris += p.tri_budget;
+      kitStat.byFamily[p.family] = (kitStat.byFamily[p.family] ?? 0) + 1;
+    }
+  }
+}
+// the two instanced families: one InstancedMesh per piece per campus, its
+// matrices written once at build. Owned by the campus group, freed with it;
+// the material is a page-wide singleton disposeOf() already knows to keep.
+function flushKit(g) {
+  for (const [pid, mats] of kitInst) {
+    const p = D.kit.pieces[pid];
+    const im = new THREE.InstancedMesh(kitGeo(pid), kitMat(p.material, fabricOf(campusKey)), mats.length);
+    mats.forEach((m, i) => im.setMatrixAt(i, m));
+    im.instanceMatrix.needsUpdate = true;
+    im.castShadow = true; im.receiveShadow = true;
+    im.userData.kit = pid;
+    g.add(im);
+    kitStat.instanced++; kitStat.instances += mats.length;
+  }
+  kitInst.clear();
+  for (const ge of kitGeoCache.values()) ge.dispose();   // the clones are merged already
+  kitGeoCache.clear();
+}
+window.__tc3dKit = () => {
+  const k = campusGroup && campusGroup.userData.key;
+  if (!k || !kitStat) return null;
+  const hub = !D.campuses[k].districts.length;      // a hub has no halls to dress
+  const decl = D.kit.budget.campuses[k];
+  if (!hub && !decl) throw new Error('kit budget has no row for campus ' + k);
+  return { campus: k, pieces: kitStat.pieces, tris: kitStat.tris,
+           byFamily: { ...kitStat.byFamily },
+           pooledMaterials: [...kitStat.pooled].sort(),
+           pooledCalls: kitStat.newCalls, instancedCalls: kitStat.instanced,
+           instances: kitStat.instances,
+           drawCallsAdded: kitStat.newCalls + kitStat.instanced,
+           declared: hub ? { hub: true, pieces: 0, triangles: 0, draw_calls: 0 }
+             : { pieces: decl.pieces, triangles: decl.triangles,
+                 draw_calls: decl.draw_calls, by_family: decl.by_family },
+           ceiling: { draw_calls: D.kit.budget.draw_call_ceiling,
+                      triangles: D.kit.budget.triangle_ceiling } };
+};
 
 /* Roads and lane dashes accumulate in the district's own frame and merge
    into ONE mesh per material per campus build (the dashes were the largest
@@ -9704,18 +10005,28 @@ function buildCity(g, R) {
   const baseHSL = new THREE.Color(fabCity.spec.facade_color).getHSL({ h: 0, s: 0, l: 0 });
   const ferryMat = new THREE.LineBasicMaterial({
     color: 0x41C4D4, transparent: true, opacity: .55 });
+  /* The pads, greens, avenues, lane dashes and tower caps of every place
+     used to be a mesh each - 51 meshes for the 17 places of the bay, 3
+     draw calls per place for three flat slabs nothing raycasts and
+     nothing moves. They pool into one mesh per material for the city,
+     exactly as a district's decoration does. The block and the tower
+     stay their own meshes: they are the click targets in cityHits. */
+  const cityPool = new Map();
+  const cityPut = (m2, w, h2, d2, x, y, z, ry = 0) => {
+    const ge = new THREE.BoxGeometry(w, h2, d2);
+    ge.rotateY(ry); ge.translate(x, y, z);
+    (cityPool.get(m2) ?? cityPool.set(m2, []).get(m2)).push(ge);
+  };
   pois.forEach((p, i) => {
     const [x, z] = cityPos(p);
     const len = Math.hypot(x, z), ux = x / len, uz = z / len;
     if (!cityLog) {
       // the avenue: ring road out to the place's block
       const r0 = R - 22, aLen = len - r0 - 9;
-      const av = box(aLen, .06, 3.6, fabricOf(campusKey).road, 0, .03, 0, g, false);
-      av.position.set((r0 + aLen / 2) * ux, .03, (r0 + aLen / 2) * uz);
-      av.rotation.y = -Math.atan2(uz, ux);
+      cityPut(fabricOf(campusKey).road, aLen, .06, 3.6,
+        (r0 + aLen / 2) * ux, .03, (r0 + aLen / 2) * uz, -Math.atan2(uz, ux));
       for (let d = r0 + 4; d < len - 10; d += 7)
-        box(1.7, .02, .16, mat.paint, d * ux, .08, d * uz, g, false)
-          .rotation.y = -Math.atan2(uz, ux);
+        cityPut(mat.paint, 1.7, .02, .16, d * ux, .08, d * uz, -Math.atan2(uz, ux));
     } else {
       // across open water: a schematic ferry line, not a road
       const geoL = new THREE.BufferGeometry().setFromPoints([
@@ -9723,10 +10034,10 @@ function buildCity(g, R) {
         new THREE.Vector3((len - 14) * ux, .5, (len - 14) * uz)]);
       g.add(new THREE.Line(geoL, ferryMat));
       // and its own ground: a shoreline pad in the bay
-      box(24, .14, 24, mat.land, x, .07, z, g, false);
+      cityPut(mat.land, 24, .14, 24, x, .07, z);
     }
     // the place: green, main block, tower, and its name with real km
-    box(15, .12, 15, grass, x, .13, z, g, false);
+    cityPut(grass, 15, .12, 15, x, .13, z);
     const hgt = 7 + (i % 3) * 2.5;
     const step = [0, .09, -.07, .05, -.04, .12, -.10][i % 7];
     const bmat = new THREE.MeshStandardMaterial({
@@ -9736,7 +10047,7 @@ function buildCity(g, R) {
       roughness: .78 });
     const bld = box(8, hgt, 6.5, bmat, x - 2, .15 + hgt / 2, z + 1.5, g);
     const twr = box(2.6, hgt + 5, 2.6, bmat, x + 4, .15 + (hgt + 5) / 2, z - 3.5, g);
-    box(3, .5, 3, mat.slab, x + 4, hgt + 5.4, z - 3.5, g, false);
+    cityPut(mat.slab, 3, .5, 3, x + 4, hgt + 5.4, z - 3.5);
     bld.userData.poi = twr.userData.poi = p.name;
     cityHits.push(bld, twr);
     const pl = label(p.name, p.km + ' km \\u00b7 ' + p.prov, 1.7,
@@ -9744,6 +10055,8 @@ function buildCity(g, R) {
     pl.position.set(x, hgt + 10, z); g.add(pl);
     cityPois++;
   });
+  // flat slabs on the ground throw no shadow worth a pass
+  for (const m of flushParts(cityPool, g)) m.castShadow = false;
   cityWater(g, campusKey, R, pois);
 }
 
@@ -9901,6 +10214,7 @@ function buildCampus(key) {
   if (campusGroup) { scene.remove(campusGroup); disposeOf(campusGroup); }
   campusGroup = new THREE.Group(); buildings = []; beaconAt = []; solids = [];
   campusGroup.userData.key = key; campusGroup.userData.loc = loc;
+  kitReset();
   roadFaults = 0; roadCount = 0; cityPois = 0; cityHits = []; restorationHits = [];
   const camp = D.campuses[key];
   const dk = camp.districts;
@@ -10019,6 +10333,7 @@ function buildCampus(key) {
   });
   flushRoads(campusGroup);
   flushBeacons(beaconAt.filter(Boolean), campusGroup);
+  flushKit(campusGroup);
   const plaza = new THREE.Mesh(new THREE.CylinderGeometry(24, 24, .3, 48),
     new THREE.MeshStandardMaterial({ map: concreteTex, color: 0xb8bdbd, roughness: .95 }));
   plaza.position.y = .15; plaza.receiveShadow = true; campusGroup.add(plaza);
@@ -12885,6 +13200,7 @@ renderer.setAnimationLoop(() => {
 '''
 
 page = page.replace('__DATA__', DATA).replace('__PIPELINE_JS__', PIPELINE_JS)
+page = page.replace('__KIT_RUNS__', KIT_RUNS_JS)
 page = page.replace('__SIM_JS__', SIM_JS).replace('__XR_JS__', XR_JS)
 page = page.replace('__GUIDE_JS__', GUIDE_JS)
 page = page.replace('__AVATAR_JS__', AVATAR_JS)
