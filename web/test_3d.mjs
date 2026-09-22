@@ -1501,7 +1501,6 @@ ok('the city layer\'s pads, greens, avenues, dashes and tower caps pool '
   && /cityHits\.push\(bld, twr\);/.test(fnCode('buildCity'))
   && /return out;/.test(fnCode('flushParts')));
 
-console.log(`web/test_3d: ${n} checks passed - teardown, draw-call and per-frame contracts held at the source`);
 
 /* ------------------------------------------- first responders + EI ------ */
 /* Two packs that the bundle's own R&D register listed as DECLARED AND
@@ -1564,7 +1563,7 @@ ok('no authority is rendered without the line saying whether a document of '
 
 ok('the hall cross-links run both ways: a frame card links into each hall '
   + 'it names, and a hall whose slug the registry pairs gets a badge back '
-  + 'into the panel - 81 halls with one, 30 without',
+  + 'into the panel - every hall the registry pairs, and no other',
   /data-hall-goto="' \+ esc\(sg\)/.test(fnCode('respFrameCard'))
   && /showHall\(hg\.dataset\.hallGoto\)/.test(code)
   && builtPage.includes('D.respond.crossLinks[sg] ? ` <button class="barbtn" data-respond-hall=')
@@ -1664,3 +1663,4 @@ ok('neither panel puts anything in the scene: a panel is DOM, and this one '
   ['openResponder', 'respFrameCard', 'respAuthority', 'advisorConduct',
    'eiDoes', 'eiSignalRows'].every((f) => !/THREE\./.test(fnCode(f))
      && !/scene\.add/.test(fnCode(f))));
+console.log(`web/test_3d: ${n} checks passed - teardown, draw-call and per-frame contracts held at the source`);

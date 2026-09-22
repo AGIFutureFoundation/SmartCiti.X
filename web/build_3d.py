@@ -699,10 +699,12 @@ _EI_BAN_SRC = (ROOT / 'ei/build.py').read_text()
 _EI_BAN_BODY = _EI_BAN_SRC[_EI_BAN_SRC.index('\nBANNED = ['):]
 _EI_BAN_BODY = _EI_BAN_BODY[:_EI_BAN_BODY.index('\n]\n') + 3]
 EI_BANNED = ast.literal_eval(_EI_BAN_BODY.split('=', 1)[1].strip())
-if len(EI_BANNED) != 5:
-    raise SystemExit('build_3d: ei/build.py declares %d banned patterns, not '
-                     'the 5 this page mirrors - read it again before shipping'
-                     % len(EI_BANNED))
+EI_BAN_MIRRORED = 5              # what this page was written against
+if len(EI_BANNED) != EI_BAN_MIRRORED:
+    raise SystemExit('build_3d: ei/build.py declares %d banned patterns and '
+                     'this page mirrors %d - the two have drifted apart, so '
+                     'read that list again before shipping either'
+                     % (len(EI_BANNED), EI_BAN_MIRRORED))
 
 
 def _ei_strings(node, path):
@@ -5263,6 +5265,10 @@ function openAdvisor(aid, topicId) {
     // printed on the advisor and nowhere else. A crew role has no binding
     // and advisorConduct() returns nothing for one.
     + advisorConduct(aid);
+  // same reason as the responder panel: the conduct block below carries
+  // the '0 of 59 reviewed' banner, and a panel that opened at the last
+  // one's scroll offset could drop a reader into the middle of it
+  document.getElementById('panel').scrollTop = 0;
   document.body.classList.add('open');
 }
 
@@ -5706,6 +5712,10 @@ function openResponder(focusHall) {
     + '<p class="src">' + esc(H.coverage_is_published_as_a_number) + '</p>'
     + '<p class="src">' + esc(H.unions_and_associations) + '</p>';
 
+  // the panel keeps whatever scroll the last one left it at, and this one
+  // opens with the sign-off banner at the top. A reader who lands halfway
+  // down a long panel has been shown the content without the caveat.
+  document.getElementById('panel').scrollTop = 0;
   if (focusHall) document.getElementById('resph-' + focusHall)
     ?.scrollIntoView({ block: 'center' });
   document.body.classList.add('open');
