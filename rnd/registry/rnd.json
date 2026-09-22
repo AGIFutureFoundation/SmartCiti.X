@@ -26,11 +26,11 @@
   "doc_renderers_scanned": 3,
   "builders_scanned": 28,
   "suites_scanned": 41,
-  "declared_unbuilt": 10,
+  "declared_unbuilt": 8,
   "declared_unbuilt_by_their_own_words": 1,
-  "declared_unbuilt_not_drawn": 9,
+  "declared_unbuilt_not_drawn": 7,
   "declared_unbuilt_documented_but_not_drawn": 5,
-  "declared_unbuilt_read_by_nothing": 4,
+  "declared_unbuilt_read_by_nothing": 2,
   "gaps": 17,
   "gaps_open": 16,
   "gaps_closed": 1,
@@ -1373,24 +1373,6 @@
  ],
  "declared_unbuilt": [
   {
-   "registry": "ei/registry/ei.json",
-   "pack": "ei",
-   "reasons": [
-    "no page generator under web/ names this path, so nothing a learner opens reads it",
-    "and nothing outside its own pack names it either - not a builder, not the wiki, not another pack's suite; inside it, ei/build.py, ei/test.mjs does"
-   ],
-   "says": null,
-   "read_by_app_renderers": [],
-   "read_by_doc_renderers": [],
-   "read_by_builders": [],
-   "read_by_suites": [],
-   "read_by_its_own_pack": [
-    "ei/build.py",
-    "ei/test.mjs"
-   ],
-   "drops_off_when": "a page generator under web/ opens this path, or the pack removes its own honesty.not_built_yet - either one, on the next build of rnd/, with no edit here"
-  },
-  {
    "registry": "lessons/registry/lessons.json",
    "pack": "lessons",
    "reasons": [
@@ -1485,24 +1467,6 @@
    "read_by_its_own_pack": [
     "pack/build.py",
     "pack/registry.js"
-   ],
-   "drops_off_when": "a page generator under web/ opens this path, or the pack removes its own honesty.not_built_yet - either one, on the next build of rnd/, with no edit here"
-  },
-  {
-   "registry": "respond/registry/respond.json",
-   "pack": "respond",
-   "reasons": [
-    "no page generator under web/ names this path, so nothing a learner opens reads it",
-    "and nothing outside its own pack names it either - not a builder, not the wiki, not another pack's suite; inside it, respond/build.py, respond/test.mjs does"
-   ],
-   "says": null,
-   "read_by_app_renderers": [],
-   "read_by_doc_renderers": [],
-   "read_by_builders": [],
-   "read_by_suites": [],
-   "read_by_its_own_pack": [
-    "respond/build.py",
-    "respond/test.mjs"
    ],
    "drops_off_when": "a page generator under web/ opens this path, or the pack removes its own honesty.not_built_yet - either one, on the next build of rnd/, with no edit here"
   },
@@ -1651,8 +1615,12 @@
    ]
   },
   "ei/registry/ei.json": {
-   "app_renderers": [],
-   "doc_renderers": [],
+   "app_renderers": [
+    "web/build_3d.py"
+   ],
+   "doc_renderers": [
+    "wiki/build_wiki.py"
+   ],
    "builders": [],
    "suites": [],
    "own_pack": [
@@ -1915,8 +1883,12 @@
    ]
   },
   "respond/registry/respond.json": {
-   "app_renderers": [],
-   "doc_renderers": [],
+   "app_renderers": [
+    "web/build_3d.py"
+   ],
+   "doc_renderers": [
+    "wiki/build_wiki.py"
+   ],
    "builders": [],
    "suites": [],
    "own_pack": [

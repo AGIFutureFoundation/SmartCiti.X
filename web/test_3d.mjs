@@ -1502,3 +1502,165 @@ ok('the city layer\'s pads, greens, avenues, dashes and tower caps pool '
   && /return out;/.test(fnCode('flushParts')));
 
 console.log(`web/test_3d: ${n} checks passed - teardown, draw-call and per-frame contracts held at the source`);
+
+/* ------------------------------------------- first responders + EI ------ */
+/* Two packs that the bundle's own R&D register listed as DECLARED AND
+   UNBUILT: nothing a learner opened read either registry. These checks hold
+   the two things a surface for them can most easily get wrong - dropping
+   the review status, and rendering a standards body as though the content
+   came from it - plus the bidirectional hall link and the one rule the EI
+   pack enforces with a regex: it names TYPES of resource and never an
+   instance of one.
+
+   Everything below reads either a function body with its comments cut out
+   (fnCode) or the SHIPPED payload parsed out of the built page, never the
+   generator's prose - a check that reads the comment explaining a removal
+   has answered a different question, and this file has been bitten by that
+   eight times. */
+const respondReg = JSON.parse(readFileSync(new URL('../respond/registry/respond.json', import.meta.url), 'utf8'));
+const eiReg = JSON.parse(readFileSync(new URL('../ei/registry/ei.json', import.meta.url), 'utf8'));
+const builtPage = readFileSync(new URL('./trade_craft_3d.html', import.meta.url), 'utf8');
+const wire = JSON.parse(builtPage.match(
+  /<script id="data" type="application\/json">([\s\S]*?)<\/script>/)[1]);
+
+ok('the responder panel exists, the bar opens it, and every service, role '
+  + 'tier, competency domain and scenario frame the registry declares '
+  + 'reaches the shipped payload',
+  /\nfunction openResponder\(/.test(src)
+  && /window\.__tc3dRespond = openResponder;/.test(code)
+  && /getElementById\('respondBtn'\)\.addEventListener/.test(code)
+  && Object.keys(wire.respond.services).length === respondReg.counts.services
+  && Object.values(wire.respond.services)
+       .reduce((n, s) => n + s.tiers.length, 0) === respondReg.counts.role_tiers
+  && wire.respond.competencies.length === respondReg.counts.competencies
+  && wire.respond.frames.length === respondReg.counts.scenario_frames);
+
+ok('the review status is read from each record\'s OWN two fields and the '
+  + 'banner from the registry\'s own counts - no panel function types the '
+  + 'number of signed-off items',
+  /rec\.needs_practitioner_review === true && rec\.signed_off_by === null/
+    .test(fnCode('respUnsigned'))
+  && /C\.signed_off_items \+ ' of '\s*\+ C\.training_items/.test(fnCode('openResponder'))
+  && !/117|\b0 of\b/.test(fnCode('openResponder'))
+  && !/117/.test(fnCode('respFrameCard'))
+  // and it is actually true of every item that ships, all 117 of them
+  && [...Object.values(wire.respond.services).flatMap((s) => s.tiers),
+      ...wire.respond.competencies, ...wire.respond.frames]
+       .every((r) => r.needs_practitioner_review === true
+                  && r.signed_off_by === null));
+
+ok('no authority is rendered without the line saying whether a document of '
+  + 'that body was opened, and a body the registry does not carry throws '
+  + 'rather than defaulting',
+  /document_read_by_this_build === true/.test(fnCode('respAuthority'))
+  && /no document of this body was opened by this build/.test(fnCode('respAuthority'))
+  && /this pack reproduces/.test(fnCode('respAuthority'))
+  && /throw new Error\('respond: no authority record at D\.respond\./
+       .test(fnCode('respAuthority'))
+  && !/\?\?/.test(fnCode('respAuthority'))
+  && Object.values(wire.respond.authorities)
+       .every((a) => a.document_read_by_this_build === false)
+  && respondReg.counts.authority_documents_opened === 0);
+
+ok('the hall cross-links run both ways: a frame card links into each hall '
+  + 'it names, and a hall whose slug the registry pairs gets a badge back '
+  + 'into the panel - 81 halls with one, 30 without',
+  /data-hall-goto="' \+ esc\(sg\)/.test(fnCode('respFrameCard'))
+  && /showHall\(hg\.dataset\.hallGoto\)/.test(code)
+  && builtPage.includes('D.respond.crossLinks[sg] ? ` <button class="barbtn" data-respond-hall=')
+  && /openResponder\(rh\.dataset\.respondHall\)/.test(code)
+  && Object.keys(wire.respond.crossLinks).length === respondReg.counts.halls_touched
+  && Object.values(wire.respond.crossLinks)
+       .reduce((n, x) => n + x.frames.length, 0)
+       === respondReg.counts.hall_cross_links);
+
+ok('the cross-links ship no second copy of a hall\'s protective equipment - '
+  + 'the surfaces registry already reaches this page and owns that fact',
+  Object.values(respondReg.hall_cross_links)
+    .every((x) => Array.isArray(x.trade_ppe_in_that_hall))
+  && Object.values(wire.respond.crossLinks)
+       .every((x) => !('trade_ppe_in_that_hall' in x))
+  && wire.baseCond !== undefined);
+
+ok('the EI layer is printed on the advisor it binds to, and a figure the '
+  + 'pack binds nothing to (a crew role) gets nothing invented for it',
+  /\+ advisorConduct\(aid\);/.test(fnCode('openAdvisor'))
+  && /const b = D\.ei\.bindings\[aid\];\s*if \(!b\) return '';/
+       .test(fnCode('advisorConduct'))
+  && eiReg.agent_bindings.length === eiReg.counts.advisors_in_registry
+  && eiReg.agent_bindings.every((b) => b.agent in wire.advisors.who)
+  && Object.keys(wire.ei.bindings).length === eiReg.counts.agent_bindings);
+
+ok('every response is rendered with what it does NOT do, its stop condition '
+  + 'and its handoff rung beside what it does - and a rung the ladder does '
+  + 'not have throws instead of defaulting',
+  /What it does not do/.test(fnCode('eiDoes'))
+  && /r\.does_not\.map/.test(fnCode('eiDoes'))
+  && /esc\(r\.stop_condition\)/.test(fnCode('eiDoes'))
+  && /eiRungLine\(r\.handoff/.test(fnCode('eiDoes'))
+  && /throw new Error\('ei: no handoff rung called '/.test(fnCode('eiRung'))
+  && !/\?\?/.test(fnCode('eiRungLine'))
+  && Object.values(wire.ei.responses).every((r) => r.does_not.length > 0
+       && typeof r.stop_condition === 'string' && r.stop_condition.length > 0));
+
+ok('the post-incident state is rendered as a refusal, not a coach: the '
+  + 'universal response is printed only where its state is hand-off-only, '
+  + 'it lasts one turn, and it neither asks what happened nor offers a '
+  + 'technique',
+  /st\.agent_may !== 'hand-off-only'/.test(fnCode('advisorConduct'))
+  && /this block renders a refusal, not a coach/.test(fnCode('advisorConduct'))
+  && /hand-off only, '\s*\+ r\.max_turns/.test(fnCode('advisorConduct'))
+  && wire.ei.states['post-incident-distress'].agent_may === 'hand-off-only'
+  && wire.ei.responses['post-incident.disclosed'].max_turns === 1
+  && wire.ei.responses['post-incident.disclosed'].universal === true
+  && wire.ei.responses['post-incident.disclosed'].does_not
+       .some((x) => /does not ask what happened/.test(x))
+  && wire.ei.responses['post-incident.disclosed'].does_not
+       .some((x) => /does not offer a technique/.test(x))
+  && eiReg.agent_bindings.every((b) =>
+       b.universal_responses.includes('post-incident.disclosed')));
+
+/* The one rule the ei pack enforces with a regex, re-asked of the bytes
+   that actually ship. The patterns are READ OUT of ei/build.py rather than
+   retyped here, for the same reason build_3d.py reads them: a second copy
+   of a rule is a second chance for the two to disagree about it. */
+const eiBuildSrc = readFileSync(new URL('../ei/build.py', import.meta.url), 'utf8');
+const eiBanBlock = eiBuildSrc.slice(eiBuildSrc.indexOf('\nBANNED = ['),
+  eiBuildSrc.indexOf('\n]\n', eiBuildSrc.indexOf('\nBANNED = [')));
+const eiBanned = eiBanBlock.split('\n    (').slice(1).map((entry) =>
+  new RegExp([...entry.matchAll(/r'((?:[^'\\]|\\.)*)'/g)]
+    .map((m) => m[1]).join('')));
+const eiStrings = (node, path, out = []) => {
+  if (typeof node === 'string') out.push([path, node]);
+  else if (Array.isArray(node)) node.forEach((v, i) => eiStrings(v, `${path}[${i}]`, out));
+  else if (node && typeof node === 'object')
+    for (const [k, v] of Object.entries(node)) eiStrings(v, `${path}.${k}`, out);
+  return out;
+};
+const eiHits = eiStrings(wire.ei, 'D.ei')
+  .flatMap(([p, s]) => eiBanned.map((re) => [p, s.match(re)])
+    .filter(([, m]) => m).map(([p2, m]) => `${p2}: ${m[0]}`));
+
+ok(`the EI layer ships ${eiBanned.length} banned patterns' worth of nothing: `
+  + 'no telephone number, emergency or crisis line, dialling instruction, '
+  + 'web or email address or named support organisation reaches the page, '
+  + 'and the ladder names a resource TYPE on every one of its rungs',
+  eiBanned.length === 5
+  && eiHits.length === 0
+  && wire.ei.ladder.length === eiReg.counts.handoff_rungs
+  && wire.ei.ladder.every((r) => typeof r.resource_type === 'string'
+       && r.resource_type.length > 0 && typeof r.why_no_contact_detail === 'string'));
+
+ok('build_3d.py re-runs that refusal over the bytes it is about to ship, '
+  + 'reading the patterns out of ei/build.py rather than retyping them, and '
+  + 'stops the build on a hit',
+  /_EI_BAN_SRC = \(ROOT \/ 'ei\/build\.py'\)\.read_text\(\)/.test(src)
+  && /EI_BANNED = ast\.literal_eval\(/.test(src)
+  && /ships %s \(%r\) to the page/.test(src)
+  && /raise SystemExit\(\s*\n\s*'build_3d: %s ships/.test(src));
+
+ok('neither panel puts anything in the scene: a panel is DOM, and this one '
+  + 'is held to costing nothing in draw calls',
+  ['openResponder', 'respFrameCard', 'respAuthority', 'advisorConduct',
+   'eiDoes', 'eiSignalRows'].every((f) => !/THREE\./.test(fnCode(f))
+     && !/scene\.add/.test(fnCode(f))));

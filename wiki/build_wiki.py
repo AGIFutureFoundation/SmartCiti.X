@@ -70,6 +70,8 @@ sky = json.load(open(ROOT / 'sky/registry/sky.json'))
 lessons = json.load(open(ROOT / 'lessons/registry/lessons.json'))
 kit = json.load(open(ROOT / 'kit/registry/kit.json'))
 props = json.load(open(ROOT / 'props/registry/props.json'))
+respond = json.load(open(ROOT / 'respond/registry/respond.json'))
+ei = json.load(open(ROOT / 'ei/registry/ei.json'))
 skills = json.load(open(ROOT / 'pack/registry/skills.json'))['skills']
 by_slug = {h['slug']: h for h in halls}
 
@@ -163,6 +165,8 @@ content graph and details:
 | **The lessons** (`lessons/registry/lessons.json`) | {lessons['counts']['lessons']} walkable lessons, {lessons['counts']['steps']} steps in {lessons['counts']['step_kinds']} kinds, across all {lessons['counts']['strands_covered']} skill strands and {lessons['counts']['halls_covered']} of the {lessons['counts']['halls_total']} halls, ordered by a {lessons['counts']['prerequisite_edges']}-edge acyclic ladder that locks nothing — and certifying nobody | [Lessons](Lessons.md) |
 | **The building kit** (`kit/registry/kit.json`) | {kit['counts']['pieces']} exterior pieces in {kit['counts']['families']} families, median {kit['counts']['tri_budget_median']:.0f} triangles, arithmetic for {F(kit['budget']['campuses'][kit['budget']['budgeted_campus']]['pieces'])} pieces at {kit['budget']['campuses'][kit['budget']['budgeted_campus']]['draw_calls']} draw calls on the {campuses[kit['budget']['budgeted_campus']]['name']} — declared against a measured reference, and not yet drawn by the page | [Building-Kit](Building-Kit.md) |
 | **The room props** (`props/registry/props.json`) | {props['counts']['props']} interior props over all {props['counts']['strands_covered']} strands, {F(props['counts']['prop_instances'])} instances across {F(props['counts']['rooms'])} rooms, every hazard prop derived from that room's own protective-equipment record — a declaration the page does not read yet | [Room-Props](Room-Props.md) |
+| **First responders** (`respond/registry/respond.json`) | {respond['counts']['services']} services, {respond['counts']['role_tiers']} role tiers, {respond['counts']['competencies']} competency domains and {respond['counts']['scenario_frames']} scenario frames, cross-linked {respond['counts']['hall_cross_links']} times into {respond['counts']['halls_touched']} of the {respond['counts']['halls_total']} trade halls — a scaffold, not a protocol: {respond['counts']['signed_off_items']} of {respond['counts']['training_items']} items carry a practitioner sign-off and {respond['counts']['authority_documents_opened']} of the {respond['counts']['authorities']} standards bodies had a document opened | [First-Responders](First-Responders.md) |
+| **The emotional-intelligence layer** (`ei/registry/ei.json`) | {ei['counts']['records']} records binding {ei['counts']['agent_bindings']} of the advisors to what they may do when a learner is struggling — {ei['counts']['responses']} responses each with a stop condition, {ei['counts']['red_lines']} red lines, a {ei['counts']['handoff_rungs']}-rung ladder that names resource TYPES and no contact detail at all, and {ei['counts']['clinician_reviewed_records']} of {ei['counts']['records']} records read by a clinician | [Emotional-Intelligence](Emotional-Intelligence.md) |
 
 ## The districts at a glance
 
@@ -2264,6 +2268,350 @@ would place, not a measurement of anything drawn.
 {FOOTER}"""
 
 
+def page_respond():
+    """The respond pack: a scaffold whose own honesty block is the page.
+
+    Every authority row prints `document_read_by_this_build` as a word,
+    because the one failure mode this page has is reading as though the
+    content came from the body it names. Nothing here is typed: the counts
+    are the registry's counts and the review column is each record's own
+    two fields.
+    """
+    c = respond['counts']
+    unsigned = lambda r: ('needs review' if r['needs_practitioner_review']
+                          and r['signed_off_by'] is None
+                          else r['signed_off_by'])
+    svc = '\n'.join(
+        f"| **{s['name']}** | {s['scope']} | {c['by_service'][k]['role_tiers']} "
+        f"| {c['by_service'][k]['competencies']} | {c['by_service'][k]['frames']} "
+        f"| {c['by_service'][k]['standards_bodies']} |"
+        for k, s in respond['services'].items())
+    tiers = '\n'.join(
+        f"| {respond['services'][k]['name']} | **{t['name']}** "
+        f"| {t['what_the_role_is']} | `{t['authority']}` | {unsigned(t)} |"
+        for k, s in respond['services'].items() for t in s['tiers'])
+    comps = '\n'.join(
+        f"| `{x['id']}` | **{x['title']}** | {x['what_it_is']} "
+        f"| {x['tier_floor']} | `{x['authority']}` | {unsigned(x)} |"
+        for x in respond['competencies'])
+    frames = '\n'.join(
+        f"| **{f['title']}** | {f['setting']} "
+        f"| {', '.join(respond['services'][k]['name'] for k in f['services'])} "
+        f"| {len(f['competencies'])} | {len(f['halls'])} "
+        f"| {len(f['debrief_questions'])} | {unsigned(f)} |"
+        for f in respond['scenario_frames'])
+    detail = '\n\n'.join(
+        f"### {f['title']}\n\n"
+        f"*{f['setting']}*\n\n{f['situation']}\n\n"
+        f"**The pressure.** {f['decision_pressure']}\n\n"
+        f"**This frame is not** {f['this_frame_is_not']}\n\n"
+        + ('**Trade halls it touches.** '
+           + ', '.join(f'[{by_slug[h]["name"]}]'
+                       f'(../web/trade_craft_3d.html?hall={h})'
+                       for h in f['halls']) + '\n\n'
+           if f['halls'] else '**No trade hall in this bundle is touched by '
+                              'this frame.**\n\n')
+        + '**A debrief would ask:**\n\n'
+        + '\n'.join(f'{i + 1}. {q}'
+                     for i, q in enumerate(f['debrief_questions']))
+        for f in respond['scenario_frames'])
+    links = '\n'.join(
+        f"| [{x['hall_name']}](../web/trade_craft_3d.html?hall={sg}) "
+        f"| {campuses[x['campus']]['name']} | {len(x['frames'])} "
+        f"| {', '.join(fr['title'] for fr in respond['scenario_frames'] if fr['id'] in x['frames'])} |"
+        for sg, x in respond['hall_cross_links'].items())
+    untouched = ', '.join(by_slug[h]['name'] for h in respond['halls_untouched'])
+    debrief = '\n'.join(
+        f"| {st['n']} | `{st['stage']}` | **{st['question']}** | {st['purpose']} |"
+        for st in respond['debrief_structure'])
+    auth = '\n'.join(
+        f"| `{k}` | **{a['name']}** | {a['kind']} | {a['owns']} "
+        f"| {a['this_pack_reproduces']} "
+        f"| {'yes' if a['document_read_by_this_build'] else '**no**'} |"
+        for k, a in respond['authorities'].items())
+    gaps = '\n'.join(
+        f"| `{g['id']}` | {g['question']} | **{g['have']} of {g['of']}** "
+        f"{g['unit']} | {g['note']} |" for g in respond['gaps'])
+    hon = respond['honesty']
+    return f"""# First responders
+
+A training scaffold for the emergency services and disaster relief:
+**{c['services']} services**, **{c['role_tiers']} role tiers**,
+**{c['competencies']} competency domains**, **{c['scenario_frames']} scenario
+frames** and **{c['hall_cross_links']} cross-links** that tie a frame to
+**{c['halls_touched']} of the {c['halls_total']}** trade halls this bundle
+already builds. It reaches a learner through the 🚒 panel in the
+[3D app](../web/trade_craft_3d.html), and from the other end: a hall a frame
+names carries a badge in its own header back into that panel.
+
+## Before anything else
+
+> {hon['nobody_qualified_has_read_this']}
+
+> {hon['status']}
+
+> {hon['scaffold_not_protocol']}
+
+## The five services
+
+| Service | Scope | Role tiers | Competencies | Frames | Standards bodies |
+|---|---|---|---|---|---|
+{svc}
+
+### Role tiers
+
+| Service | Tier | What the role is | Authority | Sign-off |
+|---|---|---|---|---|
+{tiers}
+
+## Competency domains
+
+{c['competencies_exercised']} of {c['competencies']} are exercised by at
+least one scenario frame; {c['competencies_unexercised']} are not, and stay
+listed rather than being quietly dropped.
+
+| id | Domain | What it is | From tier | Authority | Sign-off |
+|---|---|---|---|---|---|
+{comps}
+
+## Scenario frames
+
+> {hon['what_a_frame_is']}
+
+| Frame | Setting | Services | Competencies | Halls | Debrief questions | Sign-off |
+|---|---|---|---|---|---|---|
+{frames}
+
+{detail}
+
+## Where a frame meets a trade hall
+
+> {hon['the_cross_links_are_real']}
+
+> {hon['ppe_is_not_transferable']}
+
+| Hall | Campus | Frames | Which |
+|---|---|---|---|
+{links}
+
+**Touched by no frame at all ({c['halls_untouched']} halls):** {untouched}
+
+## The debrief structure
+
+> {hon['the_debrief_structure_is_ours']}
+
+| # | Stage | The question | Why it is there |
+|---|---|---|---|
+{debrief}
+
+## Where the authority actually is
+
+> {hon['the_authority_is_elsewhere']}
+
+**{c['authority_documents_opened']} of {c['authorities']}** of these bodies
+had a document opened by this build. The last column says so per row, and
+the panel in the app prints it beside every mention of a body.
+
+| id | Body | Kind | Owns | This pack reproduces | Document opened? |
+|---|---|---|---|---|---|
+{auth}
+
+## What is missing, counted
+
+| id | Question | Answer | Note |
+|---|---|---|---|
+{gaps}
+
+## What this is not
+
+{hon['coverage_is_published_as_a_number']}
+
+{hon['unions_and_associations']}
+{FOOTER}"""
+
+
+def page_ei():
+    """The EI pack: what an agent does when a learner is struggling.
+
+    The agent-binding table is the spine of this page, because the pack
+    only acts through the nine advisors in agents/registry/advisors.json
+    and the app surfaces it on those advisors and nowhere else.
+    """
+    c = ei['counts']
+    states = {s['id']: s for s in ei['states']}
+    rungs = {r['id']: r for r in ei['handoff_ladder']}
+    rung = lambda k: (f"rung {rungs[k]['rank']} — {rungs[k]['resource_type']}"
+                      if k else '—')
+    sig = '\n'.join(
+        f"| `{s['id']}` | {s['observable']} | {s['window']} "
+        f"| {s['confound']} | {'yes' if s['observable_today'] else '**no**'} "
+        f"| {s['threshold']['value'] if s['threshold']['value'] is not None else '**none**'} |"
+        for s in ei['signals'])
+    st = '\n'.join(
+        f"| **{s['name']}** | {s['urgency']} | `{s['agent_may']}` "
+        f"| {s['looks_like']} | {s['is_not']} |" for s in ei['states'])
+    resp = '\n'.join(
+        f"| `{r['id']}` | {states[r['state']]['name']} | {r['moment']} "
+        f"| {r['max_turns']} | {r['scope']} | {r['stop_condition']} "
+        f"| {rung(r['handoff'])} |" for r in ei['responses'])
+    nots = '\n\n'.join(
+        f"**`{r['id']}`** — " + '; '.join(r['does_not']) + '.'
+        for r in ei['responses'])
+    red = '\n'.join(
+        f"| `{r['id']}` | Never {r['never']} | {r['required_action']} "
+        f"| {rung(r['handoff']) if r['handoff'] else r['no_handoff_because']} |"
+        for r in ei['red_lines'])
+    moves = '\n'.join(
+        f"| **{m['name']}** | {m['when']} | {m['structure']} "
+        f"| {m['forbidden_variant']} "
+        f"| {'yes' if m['available_today'] else m['unavailable_because']} |"
+        for m in ei['debrief_moves'])
+    ladder = '\n'.join(
+        f"| {r['rank']} | **{r['resource_type']}** | {r['agent_does']} "
+        f"| {r['agent_must_not']} | {r['latency']} | {r['why_no_contact_detail']} |"
+        for r in ei['handoff_ladder'])
+    binds = '\n'.join(
+        f"| {advisors['advisors'][b['agent']]['glyph']} **{b['agent_name']}** "
+        f"| {b['scope_note']} "
+        f"| {', '.join('`' + x + '`' for x in b['responses'])} "
+        f"| {', '.join(states[x]['name'] for x in b['states_out_of_scope']) or '—'} "
+        f"| {len(b['red_lines'])} | {len(b['debrief_moves'])} |"
+        for b in ei['agent_bindings'])
+    fw = '\n'.join(
+        f"| **{f['name']}** | {f['used_for']} | {f['shape_taken']} "
+        f"| {f['not_reproduced']} |" for f in ei['frameworks'])
+    gaps = '\n'.join(
+        f"| `{g['id']}` | {g['question']} | **{g['have']} of {g['of']}** "
+        f"{g['unit']} | {g['standing']} |" for g in ei['gaps'])
+    h = ei['honesty']
+    return f"""# The emotional-intelligence layer
+
+What a training agent notices, what it does about it, what it never does,
+and the point at which it stops being a helper and names a category of
+person instead. **{c['records']} records**: {c['signals']} signals,
+{c['states']} states, {c['responses']} responses, {c['red_lines']} red
+lines, {c['debrief_moves']} debrief moves, {c['agent_bindings']} agent
+bindings and a {c['handoff_rungs']}-rung handoff ladder.
+
+It reaches a learner through the [advisors](Advisors.md): open any of the
+{c['advisors_in_registry']} in the [3D app](../web/trade_craft_3d.html) and
+the panel prints that advisor's own scope, its stop conditions and the rung
+it hands to.
+
+## Before anything else
+
+> {h['not_reviewed']}
+
+> {h['not_a_therapist']}
+
+> {h['no_contact_details']}
+
+## The contract
+
+{ei['contract']}
+
+## What it may notice
+
+{c['signals_observable_today']} of the {c['signals']} signals could be
+emitted by this bundle today; **{c['signals_with_calibrated_threshold']} of
+{c['signals']}** carry a threshold fitted to a cohort.
+
+> {h['signals_are_not_diagnoses']}
+
+| id | Observable | Window | Its innocent explanation | Emittable today? | Threshold |
+|---|---|---|---|---|---|
+{sig}
+
+## The states
+
+{c['states_the_agent_may_respond_to']} of {c['states']} may be answered.
+**{c['states_handoff_only']}** is hand-off only.
+
+| State | Urgency | The agent may | Looks like | Is not |
+|---|---|---|---|---|
+{st}
+
+## The responses
+
+Longest exchange any response permits: **{c['longest_response_turns']} turns**
+of a ceiling of {c['max_turns_ceiling']}.
+**{c['responses_that_raise_the_rung']} of {c['responses']}** raise the hint
+rung — an agent that made the work easier to end the discomfort would be
+buying comfort with the learner's competence.
+
+| id | State | Moment | Turns | Scope | Where it stops | Hands to |
+|---|---|---|---|---|---|---|
+{resp}
+
+### What each response does NOT do
+
+This half is the half that gets dropped, so it is printed in full here and
+in the app's own advisor panel.
+
+{nots}
+
+## Red lines
+
+{c['red_lines_ending_in_a_handoff']} of {c['red_lines']} end in a handoff;
+the rest are duties owed inside the conversation.
+
+| id | Never | Instead | Hands to |
+|---|---|---|---|
+{red}
+
+## Debrief moves
+
+{c['debrief_moves_available_today']} of {c['debrief_moves']} can be made
+with what this bundle records today.
+
+| Move | When | Structure | Not this | Available today? |
+|---|---|---|---|---|
+{moves}
+
+## The handoff ladder
+
+> {h['ladder_is_untested']}
+
+| Rung | Resource type | The agent does | The agent must not | Latency | Why no contact detail |
+|---|---|---|---|---|---|
+{ladder}
+
+## Which advisor carries what
+
+| Advisor | Its scope | Responses | Out of scope | Red lines | Debrief moves |
+|---|---|---|---|---|---|
+{binds}
+
+## The frameworks named
+
+| Framework | Used for | Shape taken | Not reproduced |
+|---|---|---|---|
+{fw}
+
+## What is missing, counted
+
+| id | Question | Answer | Standing |
+|---|---|---|---|
+{gaps}
+
+## What this is not
+
+{h['no_dialogue']}
+
+{h['nothing_is_stored']}
+
+{h['nothing_here_is_scored']}
+
+{h['no_comfort_over_help']}
+
+{h['the_dial_is_not_this_pack']}
+
+{h['responder_series_is_unbuilt']}
+
+{h['status']}
+{FOOTER}"""
+
+
 PAGES = {
     'Home.md': page_home,
     'Campus-Map.md': page_campus,
@@ -2288,6 +2636,8 @@ PAGES = {
     'Lessons.md': page_lessons,
     'Building-Kit.md': page_kit,
     'Room-Props.md': page_props,
+    'First-Responders.md': page_respond,
+    'Emotional-Intelligence.md': page_ei,
     'Provenance.md': page_provenance,
     **{f'District-{k}.md': (lambda k=k, d=d: page_district(k, d))
        for k, d in districts.items()},
