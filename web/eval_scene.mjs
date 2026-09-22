@@ -31,11 +31,6 @@ const CHROME = '/opt/pw-browsers/chromium-1194/chrome-linux/chrome';
 const JSON_OUT = process.argv.includes('--json');
 
 /* Each view, how to get there, and what it is held to.
-   `maxCalls` and `maxTris` are ceilings: a view may cost less. `minMeshes`
-   is a FLOOR, and it is the interesting one - it asks whether the view has
-   enough separate things standing in it to read as a place. The reference
-   block that prompted this is 93 meshes for one residential street. */
-/* Each view, how to get there, and what it is held to.
 
    The ceilings are the MEASURED baseline plus stated headroom, not round
    numbers picked by eye. A ceiling loose enough never to fire is not a

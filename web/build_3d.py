@@ -8672,17 +8672,29 @@ function roadMatOf(ck) {
 }
 // The last resort if the registry ever ships no fabric at all: the page
 // still renders, in the flagship's own colours, rather than failing to boot.
-const FABRIC_FALLBACK = { facade: 'panel', facade_color: '#3f4b50',
-  trim: '#9db2b8', roof: 'flat', roof_color: '#6d7a7e' };
 function fabricOf(ck) {
   if (fabKey === ck && fabMats) return fabMats;
-  // A missing fabric table degrades to the flagship's rather than throwing:
-  // this reads through TWO levels, and reading a field off an undefined
-  // table is exactly the fault this bundle fixed in openCandidate and
-  // openWa. It is also how this function shipped broken for one build -
-  // the registry had the table and the page payload did not.
-  const fab = D.world.fabric ?? {};
-  const f = fab[ck] ?? fab['treasure-island'] ?? FABRIC_FALLBACK;
+  /* This used to degrade through three levels - `D.world.fabric ?? {}`,
+     then `fab[ck] ?? fab['treasure-island'] ?? FABRIC_FALLBACK` - and that
+     last constant was byte-for-byte the five drawn fields of
+     world.fabric['treasure-island']. Two problems, and the second is the
+     serious one.
+
+     It was a second copy of somebody else's fact: five values with two
+     owners, in the page that this bundle lints 206 files to prevent.
+
+     And it failed OPEN. A campus whose fabric row went missing did not
+     break - it quietly wore the flagship's livery, on every building, and
+     looked entirely fine. Ten campuses told apart by their built fabric is
+     the whole point of that registry; a silent fallback to one of them is
+     the failure this page would never have noticed. The build now gates
+     every campus on having a row, so reaching this at run time means the
+     payload and the registry have come apart, which is worth a throw. */
+  const fab = D.world.fabric;
+  const f = fab?.[ck];
+  if (!f) throw new Error('no built fabric for campus ' + ck
+    + ' - world/registry/world.json declares one for every campus, so the '
+    + 'page payload and the registry have come apart');
   const { map, normalMap } = surfaceMaps(f.facade_color, f.facade);
   const wall = new THREE.MeshStandardMaterial({ roughness: .82 });
   wall.map = map.clone(); wall.map.repeat.set(3, 3); wall.map.needsUpdate = true;
@@ -9651,7 +9663,13 @@ function buildCampus(key) {
     // industry district is sawtooth wherever it is); where it has none,
     // the CITY decides, so Seattle's unopinionated districts are gabled
     // and Houston's are flat. Two independent facts, both still visible.
-    const style = STYLE_OF[k] ?? (D.world.fabric?.[campusKey]?.roof ?? 'flat');
+    // STYLE_OF names every district the union registry declares - the
+    // build gates it below - so the `?? fabric.roof ?? 'flat'` chain that
+    // used to sit here could not fire on any input. Dead code with a
+    // comment describing a case that does not occur is worse than no
+    // comment: it tells the next reader the fallback matters.
+    const style = STYLE_OF[k];
+    if (!style) throw new Error('no roofline style for district ' + k);
     // row pitch sized to the district's deepest building, so a street
     // always fits between rows with clearance on both sides
     const maxDep = Math.max(...d.halls.map((sg) =>
@@ -9933,7 +9951,10 @@ function buildRegion() {
        Drawing that one building, in the hub's own fabric, is what a hub
        actually is: a seat for the whole network and no home district. */
     if (!camp.districts.length) {
-      const f2 = fabR ?? FABRIC_FALLBACK;
+      // same rule as fabricOf(): every campus has a fabric row, so a
+      // missing one means the payload and the registry disagree
+      if (!fabR) throw new Error('no built fabric for hub ' + key);
+      const f2 = fabR;
       const drum = new THREE.Mesh(new THREE.CylinderGeometry(6, 6.6, 7, 8),
         new THREE.MeshStandardMaterial({
           color: new THREE.Color(f2.facade_color), roughness: .8 }));
@@ -12616,6 +12637,37 @@ for _gid, _g in guide_reg['hands']['gestures'].items():
     assert (_g['release_m'] > _g['threshold_m']) if _tight else (
         _g['release_m'] < _g['threshold_m']), (
         f"{_gid}: the release distance is on the wrong side of the threshold")
+
+
+# ---------------------------------------------------- fabric/style gate ---
+# Two defects the kit/ pack found by reading this file, both fixed above and
+# both gated here so they cannot come back quietly.
+#
+# 1. STYLE_OF carried a `?? fabric.roof ?? 'flat'` chain that could not fire,
+#    because it already names every district the union registry declares. The
+#    page throws on a missing style now; this makes that throw unreachable.
+_styled = set(re.findall(r"(\w+):\s*'", re.search(
+    r'const STYLE_OF = \{(.*?)\};', page, re.S).group(1)))
+assert _styled == set(districts_reg), (
+    'STYLE_OF and the district roster disagree: '
+    f'styled-but-not-a-district {sorted(_styled - set(districts_reg))}, '
+    f'district-with-no-style {sorted(set(districts_reg) - _styled)}')
+
+# 2. FABRIC_FALLBACK was byte-for-byte the five drawn fields of
+#    world.fabric['treasure-island'] - five facts with two owners - and it
+#    failed OPEN: a campus whose row went missing wore the flagship's livery
+#    and looked fine. Ten campuses told apart by their built fabric is the
+#    point of that registry, so a missing row is a broken build, not a
+#    default. The page throws; this is what stops it ever being reached.
+_fab = world_reg['fabric']
+_nofab = sorted(set(campuses_reg) - set(_fab))
+assert not _nofab, (
+    'world/registry/world.json ships no built fabric for: '
+    + ', '.join(_nofab) + ' - every campus needs its own, because the page '
+    'no longer substitutes the flagship\'s')
+assert 'const FABRIC_FALLBACK' not in page, (
+    'a fabric fallback constant is back in the page: it would be a second '
+    'copy of a campus row and it would fail open')
 
 out = HERE / 'trade_craft_3d.html'
 emit(out, page, f"{len(HALLS)} halls | {stations_reg['count']} stations | {len(I18N)} locales")
