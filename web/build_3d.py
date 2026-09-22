@@ -8739,12 +8739,15 @@ function placeRoomProps(h, r, rx, rz, rw, rd, doors, benches, ppe, inset, reserv
   const Pk = D.props;
   const ids = Pk.by_strand[r.strand];
   if (!ids) throw new Error('props registry covers no strand named ' + r.strand);
-  const want = [...ids];
+  // the fixtures the room's own record REQUIRES take their wall first;
+  // the furniture its purpose line earns it stands where room is left
+  const want = [];
   for (const p of Pk.props) {
     if (p.derive.from !== 'room.conditions.ppe') continue;
     const any = p.derive.ppe_any;
     if (any[0] === '*any*' ? ppe.length > 0 : any.some((x) => ppe.includes(x))) want.push(p.id);
   }
+  want.push(...ids);
   const x0 = rx - rw / 2, x1 = rx + rw / 2, zF = rz - rd / 2, zB = rz + rd / 2;
   const partHalf = .06;      // the partition slabs above are .12 thick
   const seg = { left: runSegments(doors, 'x@' + x0.toFixed(2), zF, zB),
@@ -8781,7 +8784,11 @@ function placeRoomProps(h, r, rx, rz, rw, rd, doors, benches, ppe, inset, reserv
     }
     propStat.wanted += n;
     if (lay.anchor === 'side-wall' || wallMounted) {
-      const band = [zF + inset + lay.front_clear_m, zB - inset - lay.back_reserve_m];
+      // the front clearance keeps the FLOOR open by a body width; a
+      // wall-mounted prop occupies none, so it may hang there. The back
+      // reserve is the fixture benches' band and holds for both.
+      const band = [zF + inset + (wallMounted ? 0 : lay.front_clear_m),
+                    zB - inset - lay.back_reserve_m];
       for (const wall of lay.walls) {
         const left = wall === 'left';
         for (const [c, len] of seg[wall]) {
@@ -13544,6 +13551,105 @@ assert 'function setCampusFog' in page
 assert 'const FABRIC_FALLBACK' not in page, (
     'a fabric fallback constant is back in the page: it would be a second '
     'copy of a campus row and it would fail open')
+
+# ---- kit and props gates -------------------------------------------------
+# Both packs are drawn from their registries at run time, and the page
+# resolves every material BY NAME and THROWS on a name with nothing behind
+# it, on a merge mode it does not grant, on a datum, run or anchor it
+# cannot resolve, and on a recipe whose triangles differ from the count the
+# registry states. A thrown error in a learner's browser is the wrong place
+# to learn any of that, so the same resolutions are made here first, against
+# the same tables, and the build stops instead.
+_mat_tbl = re.search(r'\nconst mat = \{(.*?)\n\};', page, re.S)
+assert _mat_tbl, 'the page no longer declares the shared material table'
+_page_mats = {f'mat.{k}' for k in re.findall(r'^\s{2}(\w+):', _mat_tbl.group(1), re.M)}
+_fab_tbl = re.search(r'\n  fabMats = \{(.*?)\n  \};', page, re.S)
+assert _fab_tbl, 'the page no longer builds the per-campus fabric materials'
+_page_mats |= {f'fabric.{k}' for k in
+               re.findall(r'^\s{4}(\w+):', _fab_tbl.group(1), re.M)} - {'fabric.spec'}
+_kit_unbuilt = sorted({p['material'] for p in kit_reg['pieces'].values()} - _page_mats)
+assert not _kit_unbuilt, (
+    'kit/registry/kit.json names a material the page does not build: '
+    f'{_kit_unbuilt} - kitMat() resolves by name and would throw')
+_prop_unbuilt = sorted({'mat.' + p['material'] for p in props_reg['props']} - _page_mats)
+assert not _prop_unbuilt, (
+    'props/registry/props.json names a material the page does not build: '
+    f'{_prop_unbuilt} - propMat() resolves by name and would throw')
+_kit_own = sorted(k for k, v in kit_reg['pieces'].items()
+                  if v['merges'] not in ('pooled', 'instanced'))
+assert not _kit_own, (
+    f'kit pieces asking for a merge mode the page does not grant: {_kit_own} '
+    '- an own-mesh piece is a draw call per piece, the failure this kit is '
+    'arithmetic against')
+_prop_own = sorted(v['id'] for v in props_reg['props']
+                   if v['merges'] not in ('pooled', 'instanced'))
+assert not _prop_own, (
+    f'props asking for a merge mode the page does not grant: {_prop_own}')
+# every kit piece has a shape recipe in the page, and every shape is a piece
+_shapes_blk = re.search(r'\nconst KIT_SHAPES = \{(.*?)\n\};', page, re.S)
+assert _shapes_blk, 'the page no longer declares KIT_SHAPES'
+_kit_shapes = set(re.findall(r"^  '([a-z-]+)': \(", _shapes_blk.group(1), re.M))
+assert _kit_shapes == set(kit_reg['pieces']), (
+    'KIT_SHAPES and kit.json disagree about which pieces exist: '
+    f'shape-without-piece {sorted(_kit_shapes - set(kit_reg["pieces"]))}, '
+    f'piece-without-shape {sorted(set(kit_reg["pieces"]) - _kit_shapes)}')
+# the placement vocabulary is the page's to resolve: a roofline the page
+# never draws, a run it cannot measure, a datum or a wall it has no station
+# for, a count mode it does not know, would each be a thrown error
+_style_vals = set(re.findall(r":\s*'([a-z]+)'", re.search(
+    r'const STYLE_OF = \{(.*?)\};', page, re.S).group(1)))
+assert {v['family'] for v in kit_reg['pieces'].values()} <= set(kit_reg['placement']), (
+    'a kit piece belongs to a family with no placement row')
+for _fam, _pl in kit_reg['placement'].items():
+    assert set(_pl['rooflines']) <= _style_vals, (
+        f'kit family {_fam} is admitted by a roofline the page never draws: '
+        f'{sorted(set(_pl["rooflines"]) - _style_vals)}')
+    assert _pl['run'] in KIT_RUNS, (
+        f'kit family {_fam} hangs on a run the page cannot measure: {_pl["run"]}')
+    assert _pl['datum'] in ('grade', 'wall', 'eaves'), (
+        f'kit family {_fam} sits on a datum the page does not resolve: {_pl["datum"]}')
+    assert _pl['wall'] in ('front', 'back', 'side', 'roofline', 'ground'), (
+        f'kit family {_fam} hangs on a wall the page has no station for: {_pl["wall"]}')
+assert set(kit_reg['counts_rules']) == set(kit_reg['pieces']), (
+    'kit counts_rules and pieces disagree about which pieces exist')
+for _pid, _c in kit_reg['counts_rules'].items():
+    assert _c['mode'] in ('per_hall', 'per_run_m'), (
+        f'kit piece {_pid} is counted by a mode the page does not resolve: {_c["mode"]}')
+# the probe reads a budget row per campus with districts and throws on a
+# missing one; a hub has no halls to dress and gets none
+_dist_campuses = {k for k, c in campuses_reg.items() if c['districts']}
+assert _dist_campuses <= set(kit_reg['budget']['campuses']), (
+    'the kit budgets no row for these campuses with districts: '
+    f'{sorted(_dist_campuses - set(kit_reg["budget"]["campuses"]))}')
+# props: every strand the page inflates rooms for has a row, every placed
+# prop exists, every anchor and wall is one the page has a station for,
+# every part is a primitive it builds, and every PPE trigger is a word
+# some room record actually uses - a fixture triggered by a word no record
+# carries would never stand anywhere and nobody would notice
+assert set(props_reg['by_strand']) == set(ROOM_DEFS), (
+    'props/registry/props.json and the room table disagree about the strands: '
+    f'{sorted(set(props_reg["by_strand"]) ^ set(ROOM_DEFS))}')
+_prop_ids = {v['id'] for v in props_reg['props']}
+for _s, _v in props_reg['by_strand'].items():
+    for _m in _v['props']:
+        assert _m['prop'] in _prop_ids, f'{_s} places {_m["prop"]}, which no prop declares'
+_ppe_words = {w for h in finishes_reg['halls'].values()
+              for r in h['conditions'].values() for w in r['ppe']}
+for _v in props_reg['props']:
+    _lay = _v['layout']
+    assert _lay['anchor'] in ('side-wall', 'back-corner', 'wall-mounted'), (
+        f'prop {_v["id"]} anchors as {_lay["anchor"]}, which the page does not resolve')
+    assert _lay['walls'] and set(_lay['walls']) <= {'left', 'right'}, (
+        f'prop {_v["id"]} names a wall the page has no station for: {_lay["walls"]}')
+    assert _v['derive']['from'] in ('room.purpose', 'room.conditions.ppe'), (
+        f'prop {_v["id"]} is derived from {_v["derive"]["from"]}, which the page does not read')
+    for _q in _v['recipe']['parts']:
+        assert _q['prim'] in ('box', 'cylinder'), (
+            f'prop {_v["id"]} has a {_q["prim"]} part; the page builds boxes and cylinders')
+    if _v['derive']['from'] == 'room.conditions.ppe':
+        _any = _v['derive']['ppe_any']
+        assert _any == ['*any*'] or set(_any) & _ppe_words, (
+            f'prop {_v["id"]} is triggered by PPE no room record names: {_any}')
 
 out = HERE / 'trade_craft_3d.html'
 emit(out, page, f"{len(HALLS)} halls | {stations_reg['count']} stations | {len(I18N)} locales")

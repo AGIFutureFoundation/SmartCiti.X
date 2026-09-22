@@ -58,5 +58,26 @@ if [ "$headline" != "$total" ]; then
   fail=$((fail + 1)); echo "DRIFT README.md headline says $headline checks, this run counted $total"
 fi
 echo "----"
+# What this run did NOT check, said out loud.
+#
+# This is here because of a real escape. A terrain commit added a water
+# plane, a merged landmass and two line sets to the campus view and took
+# it to 344 draw calls against a 341 ceiling - over budget - and it
+# SHIPPED, because this script passed 2,002 checks without measuring a
+# single draw call. The ceilings live in web/eval_scene.mjs, which needs a
+# browser and a served page, and this script is deliberately browser-free
+# and network-free so it runs anywhere. That trade is still the right one.
+# What was wrong was that the gap was silent: a green run read as "the
+# scene is within budget" when nothing had asked.
+#
+# So the omission travels with the answer now. This does not fail the run
+# and must not - it is a statement about what was not measured, not a
+# measurement.
+echo "NOT CHECKED HERE: draw-call and triangle ceilings per view. This"
+echo "  script is browser-free by design and cannot measure them. Run"
+echo "  'node web/eval_scene.mjs' against a served copy before shipping a"
+echo "  change to the 3D scene - a view can be over its ceiling while"
+echo "  every check above passes, and once was."
+echo "----"
 echo "$total checks, $fail failing suites"
 [ $fail -eq 0 ] || exit 1

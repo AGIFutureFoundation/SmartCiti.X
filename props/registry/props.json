@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-22",
- "source_stamp": "8fd7218779592272",
+ "source_stamp": "d115bfcc61e016de",
  "honesty": {
   "status": "SCHEMATIC: every prop in this pack is a handful of boxes and cylinders built in the browser from the recipe printed here. No mesh is loaded, no model is vendored, no texture is fetched, and nothing is generated at view time.",
   "not_a_specification": "These are shapes in a training environment. The eyewash stand is a cylinder and a bowl standing where a room record says corrosives are handled; the extinguisher is a cylinder on a plate. They are not fixture specifications, not rated appliances, not compliance artefacts, and not evidence that any equipment has been provided anywhere. Nothing in this pack should be read as a safety-equipment specification, and a learner who has walked past one has not been trained on it.",
@@ -11,7 +11,7 @@
   "one_truth": "No room label, purpose, footprint, illuminance figure, hazard or PPE item is typed in this pack. The room table is imported from web/interiors.py and the conditions are read from surfaces/registry/finishes.json. The page's body radius, eye height, grid unit, floor height, partition height, room-label height and bench setback are parsed out of web/build_3d.py, so a prop cannot be sized against a constant the page does not use.",
   "measured_not_guessed": "The triangle band is taken from a measurement of six reference models made before anything here was drawn: the blocks that read as real places have a median mesh of 46 and 104 triangles. Nothing from those files is vendored, copied or named \u2014 what was taken is the finding that a place is made of many small distinct pieces rather than of dense ones.",
   "the_scarce_currency": "A hall interior is draw-call bound, not triangle bound. Every prop here pools or instances; none takes a mesh of its own, and the budget block refuses a design that would.",
-  "not_built_yet": "This registry is a declaration. web/build_3d.py does not read it yet: no prop declared here is standing in any room in the shipped page. The page_contract block states exactly what wiring is outstanding.",
+  "built": "BUILT. web/build_3d.py reads this registry and stands its props: placeRoomProps() lays them against the partitions buildHall() has just cut, pooled into one mesh per material for the whole hall and one InstancedMesh per safety fixture, and window.__tc3dProps() reports what was drawn beside what the count rule here wanted. The count rule knows nothing of doorways or of the tool crib, so a room stands fewer than it predicts; the probe names each prop that found no wall and why.",
   "unreviewed": "The vocabulary is AUTHORED \u2014 a judgement about what a trade-training room contains \u2014 and no journey-level practitioner has reviewed it."
  },
  "counts": {
@@ -4419,7 +4419,7 @@
   }
  },
  "page_contract": {
-  "symbol": "The page builds these under a new `ROOM_PROPS` table. It already has a `PROPS` const and that one is the OUTDOOR yard dressing in front of a hall; the two must not collide, and this build fails if `ROOM_PROPS` is ever taken.",
+  "symbol": "The page builds these with placeRoomProps(), called per room inside buildHall(), into one hall-wide pool flushed once by flushProps(). There is no ROOM_PROPS table: this pack reserved that name while the work was unbuilt, and the work was then done another way. The page does still have a `PROPS` const and it is the OUTDOOR yard dressing in front of a hall, which is a different thing and is left alone.",
   "where": "Inside buildHall(), in the existing `for (const r of h.rooms)` loop, after the partitions are merged and before the room label is added. The rectangle a prop is placed against is the one already computed as rx, rz, rw, rd in that loop.",
   "pooling": "Props accumulate into ONE Map for the whole hall, declared beside the existing wallPool pattern but hoisted out of the room loop, and flushed once after the loop through the page's own flushParts(pool, hallGroup). Pooling per room instead of per hall would multiply the draw calls in this budget by eleven.",
   "instancing": "The safety-fixture family draws through the same InstancedMesh shape the page already uses in flushBeacons(): one instanced draw per prop type per hall, however many rooms hold it.",

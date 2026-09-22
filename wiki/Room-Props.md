@@ -5,7 +5,7 @@ from the bench a trade is learned at to the safety fixtures a room's own record
 asks for. Placed by rule across 111 halls and 1,221 rooms,
 that is 5,082 instances.
 
-**Not one of them is standing anywhere yet.** This registry is a declaration. web/build_3d.py does not read it yet: no prop declared here is standing in any room in the shipped page. The page_contract block states exactly what wiring is outstanding.
+**They are standing now.** BUILT. web/build_3d.py reads this registry and stands its props: placeRoomProps() lays them against the partitions buildHall() has just cut, pooled into one mesh per material for the whole hall and one InstancedMesh per safety fixture, and window.__tc3dProps() reports what was drawn beside what the count rule here wanted. The count rule knows nothing of doorways or of the tool crib, so a room stands fewer than it predicts; the probe names each prop that found no wall and why.
 
 ## What a prop is
 
@@ -154,7 +154,6 @@ would place, not a measurement of anything drawn.
 
 - **Not a specification.** These are shapes in a training environment. The eyewash stand is a cylinder and a bowl standing where a room record says corrosives are handled; the extinguisher is a cylinder on a plate. They are not fixture specifications, not rated appliances, not compliance artefacts, and not evidence that any equipment has been provided anywhere. Nothing in this pack should be read as a safety-equipment specification, and a learner who has walked past one has not been trained on it.
 - **Not reviewed.** The vocabulary is AUTHORED — a judgement about what a trade-training room contains — and no journey-level practitioner has reviewed it.
-- **Not wired.** This registry is a declaration. web/build_3d.py does not read it yet: no prop declared here is standing in any room in the shipped page. The page_contract block states exactly what wiring is outstanding.
 - **Not a second copy.** No room label, purpose, footprint, illuminance figure, hazard or PPE item is typed in this pack. The room table is imported from web/interiors.py and the conditions are read from surfaces/registry/finishes.json. The page's body radius, eye height, grid unit, floor height, partition height, room-label height and bench setback are parsed out of web/build_3d.py, so a prop cannot be sized against a constant the page does not use.
 
 ---

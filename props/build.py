@@ -144,9 +144,19 @@ assert len(PAGE_MATERIALS) > 10, 'the material table came back suspiciously smal
 _yardblock = re.search(r'const PROPS = \{(.*?)\n\};', PAGE, re.S)
 assert _yardblock, 'web/build_3d.py no longer declares the yard prop table'
 YARD_PROPS = set(re.findall(r'^\s{2}(\w+):', _yardblock.group(1), re.M))
-PAGE_SYMBOL = 'ROOM_PROPS'
-assert PAGE_SYMBOL not in PAGE, \
-    f'{PAGE_SYMBOL} is already taken in the page; pick a free identifier'
+# This used to RESERVE the name `ROOM_PROPS` for a table the page had not
+# written yet, and assert the page did not already use it. The page draws
+# these props now, and it does not do it with a table: placeRoomProps()
+# lays each room's props against the partitions buildHall() just cut, into
+# one hall-wide pool. So the reservation is gone and what replaces it is an
+# assertion about the functions that really exist. A reserved name for
+# work that has since been done differently is a contract nobody is party
+# to any more.
+for _sym in ('function placeRoomProps(', 'function flushProps('):
+    assert _sym in PAGE, (
+        'web/build_3d.py no longer has %s, which is what stands these props. '
+        'This pack describes a page that draws it; if the page stopped, the '
+        'description is false and this build refuses to write it.' % _sym)
 assert 'function flushParts(pool, g)' in PAGE, \
     'the page no longer has the pooled-merge helper this pack is drawn through'
 assert 'function wallRect(' in PAGE, \
@@ -1173,20 +1183,29 @@ HONESTY = {
                            'bound. Every prop here pools or instances; none '
                            'takes a mesh of its own, and the budget block '
                            'refuses a design that would.',
-    'not_built_yet': 'This registry is a declaration. web/build_3d.py does '
-                     'not read it yet: no prop declared here is standing in '
-                     'any room in the shipped page. The page_contract block '
-                     'states exactly what wiring is outstanding.',
+    'built': 'BUILT. web/build_3d.py reads this registry and stands '
+                     'its props: placeRoomProps() lays them against the '
+                     'partitions buildHall() has just cut, pooled into one '
+                     'mesh per material for the whole hall and one '
+                     'InstancedMesh per safety fixture, and '
+                     'window.__tc3dProps() reports what was drawn beside '
+                     'what the count rule here wanted. The count rule knows '
+                     'nothing of doorways or of the tool crib, so a room '
+                     'stands fewer than it predicts; the probe names each '
+                     'prop that found no wall and why.',
     'unreviewed': 'The vocabulary is AUTHORED — a judgement about what a '
                   'trade-training room contains — and no journey-level '
                   'practitioner has reviewed it.',
 }
 
 PAGE_CONTRACT = {
-    'symbol': f'The page builds these under a new `{PAGE_SYMBOL}` table. It '
-              f'already has a `PROPS` const and that one is the OUTDOOR yard '
-              f'dressing in front of a hall; the two must not collide, and '
-              f'this build fails if `{PAGE_SYMBOL}` is ever taken.',
+    'symbol': 'The page builds these with placeRoomProps(), called per '
+              'room inside buildHall(), into one hall-wide pool flushed '
+              'once by flushProps(). There is no ROOM_PROPS table: this '
+              'pack reserved that name while the work was unbuilt, and the '
+              'work was then done another way. The page does still have a '
+              '`PROPS` const and it is the OUTDOOR yard dressing in front '
+              'of a hall, which is a different thing and is left alone.',
     'where': 'Inside buildHall(), in the existing `for (const r of h.rooms)` '
              'loop, after the partitions are merged and before the room '
              'label is added. The rectangle a prop is placed against is the '

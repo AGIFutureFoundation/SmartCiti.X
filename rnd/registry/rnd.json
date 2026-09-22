@@ -3,13 +3,13 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-22",
- "source_stamp": "8c84fd105f2472c1",
+ "source_stamp": "4524991db5241c73",
  "contract": "this pack states no fact of its own. Every value in it is read out of another file at build time and carries the path and the locator it was read with, so a reader can resolve any entry back to its source and disagree with it there rather than here. Three questions are answered: what has been measured, what is declared and unbuilt, and where the known gaps are - plus the budgets those measurements govern, the suites that hold the assurance, and the questions this bundle records as open.",
  "honesty": {
   "status": "DERIVED: nothing in this registry was authored as a fact about the bundle. Every number is read from a named file through a named locator, and the suite re-resolves every pointer against the live file rather than trusting the value stored here.",
   "not_a_measurement": "this pack measures nothing. It reaches no network, opens no browser and runs no harness. Where it says MEASURED-IN-BROWSER, another file did the measuring and this one is quoting its record of it.",
   "not_a_roadmap": "declared_unbuilt is a computed backlog, not a plan and not a commitment. Nothing here schedules anything, no entry carries a date it is due, and roadmap/ owns the campus network's own plan without this pack duplicating a line of it.",
-  "predictions_are_not_measurements": "the whole-campus and whole-hall figures kit/ and props/ publish are PREDICTIONS of what their placement rules would cost. Nothing either pack declares has been drawn, so no browser has ever confirmed one of them. The budget block spends them against a measured baseline anyway, because that is the only way to know whether they fit - but a spent prediction is not a spent budget.",
+  "predictions_are_not_measurements": "the whole-campus and whole-hall figures kit/ and props/ publish are PREDICTIONS of what their placement rules would cost. Both are drawn now and both publish a browser probe beside the prediction, so a reader can compare them - but this register still holds the PREDICTED figures, because that is what the packs publish. The budget block spends them against a measured baseline anyway, because that is the only way to know whether they fit - but a spent prediction is not a spent budget.",
   "three_views_of_six": "every budget in this bundle is an argument about three of the six views the page can show. The avatar locker, a running simulator and a restoration site have no measured cost at all.",
   "does_not_flatter": "a gap is published with its numerator and its denominator whether or not the share is comfortable, a closed gap stays in the list so the closure can be checked, and the thinnest suites are named beside the thickest. A register that reported only good news would have to be checked against the thing it summarises, which is the work it exists to save.",
   "provenance_word": "DERIVED, and that word is this pack's whole claim. The generated-video provenance word this bundle reserves for orbis/ is not used anywhere in this pack and does not appear in this payload; the build asserts its absence rather than promising it.",
@@ -26,8 +26,8 @@
   "doc_renderers_scanned": 3,
   "builders_scanned": 28,
   "suites_scanned": 41,
-  "declared_unbuilt": 11,
-  "declared_unbuilt_by_their_own_words": 2,
+  "declared_unbuilt": 10,
+  "declared_unbuilt_by_their_own_words": 1,
   "declared_unbuilt_not_drawn": 9,
   "declared_unbuilt_documented_but_not_drawn": 5,
   "declared_unbuilt_read_by_nothing": 4,
@@ -39,7 +39,7 @@
   "budget_currencies": 2,
   "budget_agreements": 7,
   "suites_run": 46,
-  "suite_checks_declared": 1991,
+  "suite_checks_declared": 2018,
   "open_questions": 12,
   "negative_findings": 9,
   "cross_checks": 2,
@@ -1489,27 +1489,6 @@
    "drops_off_when": "a page generator under web/ opens this path, or the pack removes its own honesty.not_built_yet - either one, on the next build of rnd/, with no edit here"
   },
   {
-   "registry": "props/registry/props.json",
-   "pack": "props",
-   "reasons": [
-    "the registry declares honesty.not_built_yet"
-   ],
-   "says": "This registry is a declaration. web/build_3d.py does not read it yet: no prop declared here is standing in any room in the shipped page. The page_contract block states exactly what wiring is outstanding.",
-   "read_by_app_renderers": [
-    "web/build_3d.py"
-   ],
-   "read_by_doc_renderers": [
-    "wiki/build_wiki.py"
-   ],
-   "read_by_builders": [],
-   "read_by_suites": [],
-   "read_by_its_own_pack": [
-    "props/build.py",
-    "props/test.mjs"
-   ],
-   "drops_off_when": "a page generator under web/ opens this path, or the pack removes its own honesty.not_built_yet - either one, on the next build of rnd/, with no edit here"
-  },
-  {
    "registry": "respond/registry/respond.json",
    "pack": "respond",
    "reasons": [
@@ -1737,7 +1716,9 @@
     "wiki/build_wiki.py"
    ],
    "builders": [],
-   "suites": [],
+   "suites": [
+    "web/test_3d.mjs"
+   ],
    "own_pack": [
     "kit/build.py",
     "kit/test.mjs"
@@ -1925,7 +1906,9 @@
     "wiki/build_wiki.py"
    ],
    "builders": [],
-   "suites": [],
+   "suites": [
+    "web/test_3d.mjs"
+   ],
    "own_pack": [
     "props/build.py",
     "props/test.mjs"
@@ -3179,7 +3162,7 @@
    {
     "suite": "props/test.mjs",
     "pack": "props",
-    "readme_checks": 49,
+    "readme_checks": 50,
     "declared": true,
     "in_readme_table": true
    },
@@ -3228,7 +3211,7 @@
    {
     "suite": "web/test_3d.mjs",
     "pack": "web",
-    "readme_checks": 207,
+    "readme_checks": 233,
     "declared": true,
     "in_readme_table": true
    },
@@ -3245,12 +3228,12 @@
   "suites_without_a_count": [
    "control/soak.mjs"
   ],
-  "declared_total": 1991,
-  "readme_headline": 2002,
+  "declared_total": 2018,
+  "readme_headline": 2029,
   "unaccounted_for": 11,
   "unaccounted_note": "the headline counts every `  ok ` line verify_all.sh sees, which includes suites the README table gives no number to and web/test_interiors.py, which the table does not list at all. The difference is that remainder and is computed, not reconciled by hand.",
   "min": 9,
-  "max": 207,
+  "max": 233,
   "median": 35,
   "thinnest": [
    {
@@ -3281,7 +3264,7 @@
   "thickest": [
    {
     "suite": "web/test_3d.mjs",
-    "checks": 207
+    "checks": 233
    },
    {
     "suite": "respond/test.mjs",

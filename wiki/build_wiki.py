@@ -2161,7 +2161,7 @@ from the bench a trade is learned at to the safety fixtures a room's own record
 asks for. Placed by rule across {F(c['halls'])} halls and {F(c['rooms'])} rooms,
 that is {F(c['prop_instances'])} instances.
 
-**Not one of them is standing anywhere yet.** {hon['not_built_yet']}
+**They are standing now.** {hon['built']}
 
 ## What a prop is
 
@@ -2260,7 +2260,6 @@ would place, not a measurement of anything drawn.
 
 - **Not a specification.** {hon['not_a_specification']}
 - **Not reviewed.** {hon['unreviewed']}
-- **Not wired.** {hon['not_built_yet']}
 - **Not a second copy.** {hon['one_truth']}
 {FOOTER}"""
 

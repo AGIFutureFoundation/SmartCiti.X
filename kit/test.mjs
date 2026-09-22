@@ -268,9 +268,20 @@ ok('it states the limit with the capability: nothing here is a construction deta
   /nobody should\s+build anything from it/.test(reg.honesty.not_a_construction_detail)
   && /no fixing centres/.test(reg.honesty.not_a_construction_detail)
   && /no loads/.test(reg.honesty.not_a_construction_detail));
-ok('the whole-campus arithmetic admits it is a PREDICTION, and names the one campus it was measured against',
+/* The second clause of this check used to require the sentence "Nothing
+   here has been drawn yet". It is drawn now, so that clause was asserting
+   something false and had to go. The first and third clauses did not: the
+   whole-campus figure is STILL a prediction of what the placement rules
+   would cost, and it must still name the campus it was reckoned against.
+   What replaces the stale clause is the thing that makes the prediction
+   answerable — the page's own probe, which reports what was really built
+   beside what was predicted here. */
+ok('the whole-campus arithmetic admits it is a PREDICTION, names the one '
+  + 'campus it was reckoned against, and names the probe that can now '
+  + 'check it against the drawing',
   /PREDICTION, not a measurement/.test(reg.honesty.budget_limit)
-  && /Nothing here has been drawn\s+yet/.test(reg.honesty.budget_limit)
+  && /__tc3dKit\(\)/.test(reg.honesty.budget_limit)
+  && /kitDress\(\)/.test(reg.honesty.budget_limit)
   && reg.honesty.budget_limit.includes(reg.budget.budgeted_campus));
 ok('the reference figures admit they were measured elsewhere, on files this repo does not contain',
   reg.reference.provenance === 'MEASURED-ELSEWHERE'

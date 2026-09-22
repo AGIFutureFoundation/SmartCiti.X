@@ -1318,4 +1318,187 @@ ok('a measurement recorded twice in two files, with two different values '
   && /46 to 96 in this/.test(src) && /file, 46 to 89 in the suite/.test(src)
   && /the frame that would settle which is right is gone/.test(src));
 
+
+/* ---- the kit and the props, drawn ------------------------------------
+   kit/registry/kit.json and props/registry/props.json were DECLARED BUT
+   UNBUILT: 1,117 campus pieces and 5,082 prop instances that nothing a
+   learner opened ever read. They are drawn now, and these hold the shape
+   of that drawing: through the pools that already exist (never a mesh per
+   piece), by name against tables that already exist (never a colour from
+   a registry that publishes none), owned by the group that tears them
+   down, and reported by a probe that puts the drawn figure beside the
+   declared one. Every check here is scoped to a function body: the
+   builder now carries gates that quote the very strings these forbid. */
+const kitReg = JSON.parse(readFileSync(new URL('../kit/registry/kit.json', import.meta.url), 'utf8'));
+const propsReg = JSON.parse(readFileSync(new URL('../props/registry/props.json', import.meta.url), 'utf8'));
+
+ok('both packs are shipped to the page as the slices it draws from, and '
+  + 'the kit run formulas are read out of kit/build.py\'s own RUNS table '
+  + 'rather than restated',
+  /'kit': \{/.test(src) && /'props': \{/.test(src)
+  && /_kit_runs_m = re\.search\(r'\\nRUNS = \\\{\(\.\*\?\)\\n\\\}', _kit_build_src, re\.S\)/.test(src)
+  && /const KIT_RUNS = \{ __KIT_RUNS__ \};/.test(src)
+  && /page\.replace\('__KIT_RUNS__', KIT_RUNS_JS\)/.test(src));
+ok('the kit hangs on the envelope building() just drew - called from '
+  + 'inside it with that envelope - and enters the SAME district pool, '
+  + 'not a second one',
+  /kitDress\(h, style, fab, pool, ox, oz, wid, dep, hgt, g\);/.test(fnCode('building'))
+  && /\(pool\.get\(m2\) \?\? pool\.set\(m2, \[\]\)\.get\(m2\)\)\.push\(kitBase\(pid\)\.clone\(\)/
+    .test(fnCode('kitDress')));
+ok('building() itself pushes none of the kit\'s NEW materials through '
+  + 'add(): the kit registry reads which materials add() already pools to '
+  + 'price its own draw calls, and a kit piece pushed through '
+  + 'add(mat.metal) would have priced itself free',
+  (() => {
+    const fresh = new Set(Object.values(kitReg.budget.campuses)
+      .flatMap((c) => c.new_pooled_materials));
+    return fresh.size > 0
+      && [...fresh].every((m) => !fnCode('building').includes('add(' + m + ','))
+      && !/\badd\(kitMat/.test(fnCode('building'));
+  })());
+ok('flushParts() stays the only merge door for the kit: kitDress() builds '
+  + 'no mesh and merges nothing itself, and buildCampus() still flushes '
+  + 'each district once',
+  !/mergeGeometries\(/.test(fnCode('kitDress'))
+  && !/new THREE\.Mesh\(/.test(fnCode('kitDress'))
+  && (fnCode('buildCampus').match(/flushParts\(pool, cg\);/g) || []).length === 1);
+ok('the two instanced kit families are their own InstancedMesh per campus '
+  + 'and never ride the station beacons, which spin every frame',
+  /new THREE\.InstancedMesh\(kitGeo\(pid\)/.test(fnCode('flushKit'))
+  && !/beaconInst|beaconAt|spinBeacons/.test(fnCode('flushKit') + fnCode('kitDress')));
+ok('a kit material is resolved BY NAME against the page\'s own tables and '
+  + 'a name with nothing behind it throws - the kit publishes no colours '
+  + 'and the page invents none for it',
+  /throw new Error\('kit material ' \+ name \+ ' names nothing this page builds'\)/
+    .test(fnCode('kitMat'))
+  && !/0x[0-9a-fA-F]{6}/.test(fnCode('kitMat') + fnCode('kitDress') + fnCode('flushKit')));
+ok('a kit piece that comes out of its recipe with a different triangle '
+  + 'count than the registry budgets throws, so the probe\'s triangles are '
+  + 'the ones drawn',
+  /tris !== p\.tri_budget\)\s+throw new Error/.test(fnCode('kitGeo')));
+ok('a kit count mode, datum or merge mode the page does not resolve is a '
+  + 'thrown error, not a quiet default',
+  /throw new Error\('kit count mode '/.test(fnCode('kitDress'))
+  && /throw new Error\('kit datum '/.test(fnCode('kitDress'))
+  && /which this page does not grant'\)/.test(fnCode('kitDress')));
+ok('every piece the kit registry declares has a shape in the page, and '
+  + 'every shape is a declared piece (the build gates the same pair)',
+  (() => {
+    const blk = code.match(/\nconst KIT_SHAPES = \{([\s\S]*?)\n\};/);
+    const shapes = new Set([...blk[1].matchAll(/^ {2}'([a-z-]+)': \(/gm)].map((m) => m[1]));
+    const pieces = new Set(Object.keys(kitReg.pieces));
+    return shapes.size === pieces.size && [...pieces].every((p) => shapes.has(p))
+      && /KIT_SHAPES and kit\.json disagree about which pieces exist/.test(src);
+  })());
+ok('the kit belongs to the campus group: reset when a campus is built, '
+  + 'flushed into it after the beacons, and freed with it',
+  /kitReset\(\);/.test(fnCode('buildCampus'))
+  && /flushKit\(campusGroup\);/.test(fnCode('buildCampus'))
+  && !/userData\.shared = true/.test(fnCode('kitGeo') + fnCode('flushKit')));
+ok('a probe reports the kit actually drawn beside the figures the registry '
+  + 'predicted and the ceiling it was held to - all three read from the '
+  + 'payload, none typed here',
+  /window\.__tc3dKit = /.test(code)
+  && /D\.kit\.budget\.campuses\[k\]/.test(code)
+  && /drawCallsAdded: kitStat\.newCalls \+ kitStat\.instanced/.test(code)
+  && /ceiling: \{ draw_calls: D\.kit\.budget\.draw_call_ceiling/.test(code));
+ok('the build gates what the browser would otherwise throw on: a kit or '
+  + 'prop material the page does not build, and a safety fixture '
+  + 'triggered by PPE no room record names',
+  /kit\/registry\/kit\.json names a material the page does not build/.test(src)
+  && /props\/registry\/props\.json names a material the page does not build/.test(src)
+  && /is triggered by PPE no room record names/.test(src));
+ok('the kit registry\'s honesty now names the functions that draw it, and '
+  + 'the page has them',
+  /kitDress\(\)/.test(kitReg.honesty.budget_limit)
+  && /__tc3dKit\(\)/.test(kitReg.honesty.budget_limit)
+  && /\nfunction kitDress\(/.test(src) && /\nfunction flushKit\(/.test(src));
+
+ok('the props of all eleven rooms pool into ONE map hoisted above the room '
+  + 'loop and flush ONCE after it - pooling per room would multiply the '
+  + 'hall\'s draw calls by eleven',
+  (() => {
+    const b = fnCode('buildHall');
+    const pool = b.indexOf('propPool = new Map(); propInst = new Map();');
+    const loop = b.indexOf('for (const r of h.rooms) {');
+    const flush = b.indexOf('flushProps(hallGroup);');
+    return pool > 0 && loop > pool && flush > loop
+      && (b.match(/flushProps\(hallGroup\);/g) || []).length === 1;
+  })());
+ok('a room\'s props are placed against the rectangle and the doorways its '
+  + 'partitions were cut with, and a safety fixture is stood by the room\'s '
+  + 'OWN conditions record - the one the placard is drawn from, handed in '
+  + 'rather than looked up a second time',
+  /placeRoomProps\(h, r, rx, rz, rw, rd, doors, benches, rc\.ppe,/.test(fnCode('buildHall'))
+  && /runSegments\(doors, 'x@' \+ x0\.toFixed\(2\), zF, zB\)/.test(fnCode('placeRoomProps'))
+  && !/condOf\(|D\.condOver|D\.baseCond/.test(fnCode('placeRoomProps')));
+ok('the fixtures a room\'s record REQUIRES claim their wall before the '
+  + 'furniture its purpose line earns it',
+  (() => {
+    const b = fnCode('placeRoomProps');
+    return b.indexOf('ppe_any') > 0 && b.indexOf('want.push(...ids);') > b.indexOf('ppe_any');
+  })());
+ok('a floor-standing prop registers with wallRect() so the walker cannot '
+  + 'pass through it; a wall-mounted one hangs above nothing a walker '
+  + 'occupies and registers nothing',
+  /if \(!wallMounted\) wallRect\(x, \(z0 \+ z1\) \/ 2, sd \/ 2, sw \/ 2\);/.test(fnCode('placeRoomProps'))
+  && /wallRect\(x, z, sw \/ 2, sd \/ 2\);/.test(fnCode('placeRoomProps')));
+ok('a corner prop is kept out of the fixture benches by the SAME solid '
+  + 'rectangles the walker is, read back from where the bench registered '
+  + 'them rather than from a second copy of the bench size',
+  /benches\.push\(hallSolids\[0\]\.rects\[hallSolids\[0\]\.rects\.length - 1\]\);/.test(fnCode('buildHall'))
+  && /!benches\.some\(\(b\) => Math\.abs\(x - b\.u\) < sw \/ 2 \+ b\.hw \+ BODY_R\)/.test(fnCode('placeRoomProps')));
+ok('the tool crib says which run of which wall it took, and the tools '
+  + 'room\'s props are placed after it has said so',
+  /return \{ wall: 'right', z0: rz - bw \/ 2 - \.75, z1: rz \+ bw \/ 2 \};/.test(fnCode('buildCrib'))
+  && /const reserved = r\.strand === 'tools' \? \[buildCrib\(h, rx, rz, rw, rd\)\] : \[\];/.test(fnCode('buildHall'))
+  && /for \(const rv of reserved\) used\[rv\.wall\]\.push\(\[rv\.z0, rv\.z1\]\);/.test(fnCode('placeRoomProps')));
+ok('a prop material is resolved by name and throws on nothing; an anchor '
+  + 'or merge mode the page does not resolve throws too',
+  /throw new Error\('prop material ' \+ name \+ ' names nothing this page builds'\)/.test(fnCode('propMat'))
+  && /throw new Error\('prop anchor '/.test(fnCode('placeRoomProps'))
+  && /which this page does not grant'\)/.test(fnCode('placeRoomProps')));
+ok('a prop whose recipe adds up to a different triangle count than the '
+  + 'registry states throws, and its geometry is never marked shared, so '
+  + 'disposeOf() frees it with the hall',
+  /tris !== p\.tris\)\s+throw new Error/.test(fnCode('propGeo'))
+  && !/userData\.shared = true/.test(fnCode('propGeo')));
+ok('the pooled props go through flushParts() and each safety fixture is '
+  + 'one InstancedMesh per hall - never the beacons\' - and the recipe '
+  + 'cache is emptied once the clones are merged',
+  /flushParts\(propPool, g\)/.test(fnCode('flushProps'))
+  && /new THREE\.InstancedMesh\(propGeo\(p\)\.clone\(\)/.test(fnCode('flushProps'))
+  && !/beaconInst/.test(fnCode('flushProps'))
+  && /for \(const ge of propGeoCache\.values\(\)\) ge\.dispose\(\);/.test(fnCode('flushProps')));
+ok('a probe reports the props actually standing beside the count the '
+  + 'registry\'s rule wanted, names each one that found no wall and why, '
+  + 'and quotes the registry\'s own per-hall budget rather than a typed one',
+  /window\.__tc3dProps = /.test(code)
+  && /skipped: propStat\.skipped\.slice\(\)/.test(code)
+  && /declared: \{ per_hall: D\.props\.budget\.per_hall/.test(code)
+  && /why: 'no clear back corner'/.test(fnCode('placeRoomProps')));
+ok('the props registry\'s honesty says it is built, names the function '
+  + 'that builds it, the page has that function, and the claim is not '
+  + 'filed under a key called not_built_yet',
+  !('not_built_yet' in propsReg.honesty)
+  && /^BUILT\./.test(propsReg.honesty.built)
+  && /placeRoomProps\(\)/.test(propsReg.honesty.built)
+  && /\nfunction placeRoomProps\(/.test(src));
+ok('every strand the props registry places into is one the room table '
+  + 'inflates, and the page throws rather than furnishing a strand it has '
+  + 'no row for',
+  /throw new Error\('props registry covers no strand named '/.test(fnCode('placeRoomProps'))
+  && /props\/registry\/props\.json and the room table disagree about the strands/.test(src));
+
+ok('the city layer\'s pads, greens, avenues, dashes and tower caps pool '
+  + 'into one mesh per material through flushParts() - 17 places used to '
+  + 'cost 51 draw calls for flat slabs nothing raycasts - while the block '
+  + 'and the tower stay the click targets',
+  /flushParts\(cityPool, g\)/.test(fnCode('buildCity'))
+  && !/box\(24, \.14, 24/.test(fnCode('buildCity'))
+  && !/box\(15, \.12, 15/.test(fnCode('buildCity'))
+  && !/box\(3, \.5, 3,/.test(fnCode('buildCity'))
+  && /cityHits\.push\(bld, twr\);/.test(fnCode('buildCity'))
+  && /return out;/.test(fnCode('flushParts')));
+
 console.log(`web/test_3d: ${n} checks passed - teardown, draw-call and per-frame contracts held at the source`);

@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-22",
- "source_stamp": "01ce82c14cfd6650",
+ "source_stamp": "0272d42782083260",
  "honesty": {
   "status": "SCHEMATIC: every piece here is the SHAPE of a thing, not a measurement of one. A downpipe is a cylinder and two brackets at a plausible size; a meter box is two boxes. No dimension was taken off a real component, no product was consulted, and no standard is referenced.",
   "not_a_construction_detail": "Nothing in this registry is a construction detail and nobody should build anything from it. There are no gauges, no fixing centres, no material specifications, no loads, no falls and no clearances. A size here is the size something reads as from across a campus green, chosen so a fifty-one-building campus looks built rather than diagrammed.",
@@ -11,7 +11,7 @@
   "no_assets": "This kit loads no mesh, no texture, no model and no file. Every piece is built in the browser from THREE.BoxGeometry and THREE.CylinderGeometry, which is why a triangle budget can be checked against a recipe at all. Nothing was vendored from the reference measurement and nothing from it is reproduced here.",
   "derived_not_typed": "No hall is named in this pack. A piece is admitted by roofline and facade pattern, both of which are read from the registries that own them - web/build_3d.py's STYLE_OF for the district roofline, world/registry/world.json's fabric for the city's, and surfaces/registry/finishes.json for the pattern vocabulary those facades must already belong to.",
   "measurement_limit": "The reference figures were measured outside this repository on files it does not contain, and this build cannot re-run that inspection. They are quoted, not verified here. The scene costs are different: they come from web/eval_scene.mjs, which does run against this page, and they are read out of that file rather than restated.",
-  "budget_limit": "The whole-campus arithmetic is a PREDICTION, not a measurement. It counts what the placement rules would place and what those pieces would cost if they merge as declared. Nothing here has been drawn yet. Only running web/eval_scene.mjs against a page that actually places them can say whether the prediction held - and the campus baseline it is measured against is one campus, treasure-island, so the other nine are unmeasured ground.",
+  "budget_limit": "The whole-campus arithmetic is a PREDICTION, not a measurement. It counts what the placement rules would place and what those pieces would cost if they merge as declared. web/build_3d.py now DRAWS them - kitDress() hangs every admitted piece on the envelope building() just drew, through the district pool it fills, and flushKit() instances the two instanced families per campus - and window.__tc3dKit() reports the pieces, triangles and draw calls actually built beside the figures predicted here, so the prediction can be checked against the drawing from a browser. Only running web/eval_scene.mjs against the page says whether the campus stays under its ceilings - and the baseline it is measured against is one campus, treasure-island, so the other nine are unmeasured ground.",
   "not_a_kit_of_parts": "The word kit is the modelling sense: a small set of repeated pieces that assemble into variety. It is not a construction kit of parts, not a specification, not a schedule and not a takeoff."
  },
  "reference": {

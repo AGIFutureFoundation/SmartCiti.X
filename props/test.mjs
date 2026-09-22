@@ -230,9 +230,24 @@ ok('every page function the contract leans on is one the page actually has',
   && ['pooling', 'instancing', 'geometry', 'materials', 'solidity',
       'clearance', 'read_not_copied', 'where'].every((k) =>
     typeof reg.page_contract[k] === 'string' && reg.page_contract[k].length > 40));
-ok('the pack admits the page does not read it yet rather than implying eleven furnished rooms exist',
-  /does not read it yet/.test(reg.honesty.not_built_yet)
-  && /no prop declared here is standing in any room/.test(reg.honesty.not_built_yet));
+/* This check used to assert that the pack admitted the page did NOT read
+   it. The page reads it now, so the sentence it guarded had to change and
+   this check had to change with it. What it guards instead is that the
+   claim is CHECKABLE: the field is no longer called not_built_yet (a key
+   of that name holding the word BUILT is a contradiction a reader has to
+   resolve), it names the functions that do the drawing, and it states the
+   shortfall rather than implying every declared prop is standing. */
+ok('the pack says it is built, names the functions that build it, and does '
+  + 'not carry a key called not_built_yet while saying so',
+  !('not_built_yet' in reg.honesty)
+  && /^BUILT\./.test(reg.honesty.built)
+  && /placeRoomProps\(\)/.test(reg.honesty.built)
+  && /__tc3dProps\(\)/.test(reg.honesty.built));
+ok('and it states the shortfall instead of implying every declared prop is '
+  + 'standing: the count rule knows nothing of doorways or the tool crib, '
+  + 'so a room stands fewer than it predicts',
+  /stands fewer than it predicts/.test(reg.honesty.built)
+  && /names each prop that found no wall/.test(reg.honesty.built));
 
 /* ------------------------------------------------------------- the layout --- */
 ok('clearance is the page\'s own body radius, doubled, plus half again for anything you stand at',

@@ -2681,12 +2681,15 @@ function placeRoomProps(h, r, rx, rz, rw, rd, doors, benches, ppe, inset, reserv
   const Pk = D.props;
   const ids = Pk.by_strand[r.strand];
   if (!ids) throw new Error('props registry covers no strand named ' + r.strand);
-  const want = [...ids];
+  // the fixtures the room's own record REQUIRES take their wall first;
+  // the furniture its purpose line earns it stands where room is left
+  const want = [];
   for (const p of Pk.props) {
     if (p.derive.from !== 'room.conditions.ppe') continue;
     const any = p.derive.ppe_any;
     if (any[0] === '*any*' ? ppe.length > 0 : any.some((x) => ppe.includes(x))) want.push(p.id);
   }
+  want.push(...ids);
   const x0 = rx - rw / 2, x1 = rx + rw / 2, zF = rz - rd / 2, zB = rz + rd / 2;
   const partHalf = .06;      // the partition slabs above are .12 thick
   const seg = { left: runSegments(doors, 'x@' + x0.toFixed(2), zF, zB),
@@ -2723,7 +2726,11 @@ function placeRoomProps(h, r, rx, rz, rw, rd, doors, benches, ppe, inset, reserv
     }
     propStat.wanted += n;
     if (lay.anchor === 'side-wall' || wallMounted) {
-      const band = [zF + inset + lay.front_clear_m, zB - inset - lay.back_reserve_m];
+      // the front clearance keeps the FLOOR open by a body width; a
+      // wall-mounted prop occupies none, so it may hang there. The back
+      // reserve is the fixture benches' band and holds for both.
+      const band = [zF + inset + (wallMounted ? 0 : lay.front_clear_m),
+                    zB - inset - lay.back_reserve_m];
       for (const wall of lay.walls) {
         const left = wall === 'left';
         for (const [c, len] of seg[wall]) {
