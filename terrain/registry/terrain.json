@@ -1,0 +1,1838 @@
+{
+ "campuses": {
+  "chicago": {
+   "anchor": {
+    "lat": 41.8781,
+    "lng": -87.6298
+   },
+   "facts": {
+    "anchor_on_land": true,
+    "anchor_to_mask_boundary_m": 1325.8,
+    "coast_km_in_window": 0.0,
+    "coast_runs": 0,
+    "lake_rings": 0,
+    "nearest_water_cell_bearing_deg": 81.9,
+    "nearest_water_cell_m": 1325.8,
+    "nearest_water_edge_bearing_deg": null,
+    "nearest_water_edge_m": null,
+    "river_runs": 0,
+    "water_cells": 3685,
+    "waterfront": true
+   },
+   "local": {
+    "coast": [],
+    "half_m": 6000.0,
+    "lakes": [],
+    "rivers": []
+   },
+   "mask": {
+    "cell_m": 125.0,
+    "land_share": 0.6002,
+    "n": 96,
+    "rows": [
+     "0000003fffffffffffffffff",
+     "0000003fffffffffffffffff",
+     "0000003fffffffffffffffff",
+     "0000003fffffffffffffffff",
+     "0000001fffffffffffffffff",
+     "0000001fffffffffffffffff",
+     "0000001fffffffffffffffff",
+     "0000001fffffffffffffffff",
+     "0000000fffffffffffffffff",
+     "0000000fffffffffffffffff",
+     "0000000fffffffffffffffff",
+     "0000000fffffffffffffffff",
+     "00000007ffffffffffffffff",
+     "00000007ffffffffffffffff",
+     "00000007ffffffffffffffff",
+     "00000007ffffffffffffffff",
+     "00000003ffffffffffffffff",
+     "00000003ffffffffffffffff",
+     "00000003ffffffffffffffff",
+     "00000003ffffffffffffffff",
+     "00000001ffffffffffffffff",
+     "00000001ffffffffffffffff",
+     "00000001ffffffffffffffff",
+     "00000001ffffffffffffffff",
+     "00000000ffffffffffffffff",
+     "00000000ffffffffffffffff",
+     "00000000ffffffffffffffff",
+     "00000000ffffffffffffffff",
+     "00000000ffffffffffffffff",
+     "000000007fffffffffffffff",
+     "000000007fffffffffffffff",
+     "000000007fffffffffffffff",
+     "000000007fffffffffffffff",
+     "000000003fffffffffffffff",
+     "000000003fffffffffffffff",
+     "000000003fffffffffffffff",
+     "000000003fffffffffffffff",
+     "000000001fffffffffffffff",
+     "000000001fffffffffffffff",
+     "000000001fffffffffffffff",
+     "000000001fffffffffffffff",
+     "000000000fffffffffffffff",
+     "000000000fffffffffffffff",
+     "000000000fffffffffffffff",
+     "000000000fffffffffffffff",
+     "0000000007ffffffffffffff",
+     "0000000007ffffffffffffff",
+     "0000000007ffffffffffffff",
+     "0000000007ffffffffffffff",
+     "0000000003ffffffffffffff",
+     "0000000003ffffffffffffff",
+     "0000000003ffffffffffffff",
+     "0000000003ffffffffffffff",
+     "0000000001ffffffffffffff",
+     "0000000001ffffffffffffff",
+     "0000000001ffffffffffffff",
+     "0000000001ffffffffffffff",
+     "0000000000ffffffffffffff",
+     "0000000000ffffffffffffff",
+     "0000000000ffffffffffffff",
+     "0000000000ffffffffffffff",
+     "0000000000ffffffffffffff",
+     "00000000007fffffffffffff",
+     "00000000007fffffffffffff",
+     "00000000003fffffffffffff",
+     "00000000003fffffffffffff",
+     "00000000001fffffffffffff",
+     "00000000001fffffffffffff",
+     "00000000001fffffffffffff",
+     "00000000000fffffffffffff",
+     "00000000000fffffffffffff",
+     "000000000007ffffffffffff",
+     "000000000007ffffffffffff",
+     "000000000003ffffffffffff",
+     "000000000003ffffffffffff",
+     "000000000001ffffffffffff",
+     "000000000001ffffffffffff",
+     "000000000001ffffffffffff",
+     "000000000000ffffffffffff",
+     "000000000000ffffffffffff",
+     "0000000000007fffffffffff",
+     "0000000000007fffffffffff",
+     "0000000000003fffffffffff",
+     "0000000000003fffffffffff",
+     "0000000000003fffffffffff",
+     "0000000000001fffffffffff",
+     "0000000000001fffffffffff",
+     "0000000000000fffffffffff",
+     "0000000000000fffffffffff",
+     "00000000000007ffffffffff",
+     "00000000000007ffffffffff",
+     "00000000000007ffffffffff",
+     "00000000000003ffffffffff",
+     "00000000000003ffffffffff",
+     "00000000000001ffffffffff",
+     "00000000000001ffffffffff"
+    ]
+   }
+  },
+  "denver": {
+   "anchor": {
+    "lat": 39.7392,
+    "lng": -104.9903
+   },
+   "facts": {
+    "anchor_on_land": true,
+    "anchor_to_mask_boundary_m": null,
+    "coast_km_in_window": 0.0,
+    "coast_runs": 0,
+    "lake_rings": 0,
+    "nearest_water_cell_bearing_deg": null,
+    "nearest_water_cell_m": null,
+    "nearest_water_edge_bearing_deg": 291.4,
+    "nearest_water_edge_m": 4503.4,
+    "river_runs": 1,
+    "water_cells": 0,
+    "waterfront": true
+   },
+   "local": {
+    "coast": [],
+    "half_m": 6000.0,
+    "lakes": [],
+    "rivers": [
+     [
+      [
+       -4201.0,
+       -5217.8
+      ],
+      [
+       -4570.3,
+       -3627.9
+      ],
+      [
+       -4956.9,
+       -307.7
+      ],
+      [
+       -4821.0,
+       317.4
+      ],
+      [
+       -4194.1,
+       1640.1
+      ]
+     ]
+    ]
+   },
+   "mask": {
+    "cell_m": 125.0,
+    "land_share": 1.0,
+    "n": 96,
+    "rows": [
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff"
+    ]
+   }
+  },
+  "detroit": {
+   "anchor": {
+    "lat": 42.3314,
+    "lng": -83.0458
+   },
+   "facts": {
+    "anchor_on_land": false,
+    "anchor_to_mask_boundary_m": 618.7,
+    "coast_km_in_window": 0.0,
+    "coast_runs": 0,
+    "lake_rings": 3,
+    "nearest_water_cell_bearing_deg": 225.0,
+    "nearest_water_cell_m": 88.4,
+    "nearest_water_edge_bearing_deg": 316.5,
+    "nearest_water_edge_m": 583.2,
+    "river_runs": 0,
+    "water_cells": 1573,
+    "waterfront": true
+   },
+   "local": {
+    "coast": [],
+    "half_m": 6000.0,
+    "lakes": [
+     [
+      [
+       -2548.3,
+       -3010.1
+      ],
+      [
+       -2717.8,
+       -3108.4
+      ],
+      [
+       -3638.3,
+       -5140.1
+      ]
+     ],
+     [
+      [
+       -2948.0,
+       -2485.8
+      ],
+      [
+       -1324.9,
+       -454.2
+      ],
+      [
+       261.9,
+       1053.2
+      ],
+      [
+       5445.9,
+       3117.6
+      ]
+     ],
+     [
+      [
+       4174.1,
+       -749.1
+      ],
+      [
+       3144.6,
+       -1338.8
+      ],
+      [
+       2333.1,
+       -1044.0
+      ],
+      [
+       1255.1,
+       -323.1
+      ],
+      [
+       213.4,
+       -847.4
+      ],
+      [
+       -755.6,
+       -1764.9
+      ],
+      [
+       -2548.3,
+       -3010.1
+      ],
+      [
+       -2948.0,
+       -2485.8
+      ]
+     ]
+    ],
+    "rivers": []
+   },
+   "mask": {
+    "cell_m": 125.0,
+    "land_share": 0.8293,
+    "n": 96,
+    "rows": [
+     "fffffffffffffffffffe0003",
+     "fffffffffffffffffffe0007",
+     "fffffffffffffffffffc000f",
+     "fffffffffffffffffffc001f",
+     "fffffffffffffffffffc003f",
+     "fffffffffffffffffff8003f",
+     "fffffffffffffffffff8007f",
+     "fffffffffffffffffff800ff",
+     "fffffffffffffffffff001ff",
+     "fffffffffffffffffff003ff",
+     "ffffffffffffffffffe003ff",
+     "ffffffffffffffffffe007ff",
+     "ffffffffffffffffffe00fff",
+     "ffffffffffffffffffc01fff",
+     "ffffffffffffffffffc03fff",
+     "ffffffffffffffffff803fff",
+     "ffffffffffffffffff807fff",
+     "ffffffffffffffffff00ffff",
+     "ffffffffffffffffff01ffff",
+     "fffffffffffffffffe03ffff",
+     "fffffffffffffffffe03ffff",
+     "fffffffffffffffffc07ffff",
+     "fffffffffffffffffc0fffff",
+     "fffffffffffffffff81fffff",
+     "fffffffffffffffff03fffff",
+     "ffffffffffffffffc03fffff",
+     "ffffffffffffffff807fffff",
+     "fffffffffffffffe00ffffff",
+     "fffffffffffffffc01ffffff",
+     "fffffffffffffff003ffffff",
+     "ffffffffffffffe003ffffff",
+     "ffffffffffffff8007ffffff",
+     "ffffffffffffff000fffffff",
+     "fffffffffffffe001fffffff",
+     "fffffffffffff8003fffffff",
+     "fffffffffffff0003fffffff",
+     "ffffffffffffe0007fffffff",
+     "fffffdffffffc000ffffffff",
+     "fffff83fffff8001ffffffff",
+     "ffffe007ffff0003ffffffff",
+     "ffff8001fffe0003ffffffff",
+     "fffe0000fffc0007ffffffff",
+     "fffc00003ff0000fffffffff",
+     "fff800001fc0001fffffffff",
+     "fff000000700003fffffffff",
+     "ffc000000000007fffffffff",
+     "ff800000000000ffffffffff",
+     "ff000000000001ffffffffff",
+     "fe000000000003ffffffffff",
+     "fc000000000007ffffffffff",
+     "f000000000000fffffffffff",
+     "e000000000001fffffffffff",
+     "c000000000003fffffffffff",
+     "8000000000007fffffffffff",
+     "000000000000ffffffffffff",
+     "000000000001ffffffffffff",
+     "000000000003ffffffffffff",
+     "00000000001fffffffffffff",
+     "00000000007fffffffffffff",
+     "0000000003ffffffffffffff",
+     "000000000fffffffffffffff",
+     "000000007fffffffffffffff",
+     "00000001ffffffffffffffff",
+     "0000000fffffffffffffffff",
+     "0000003fffffffffffffffff",
+     "000001ffffffffffffffffff",
+     "000007ffffffffffffffffff",
+     "00003fffffffffffffffffff",
+     "0000ffffffffffffffffffff",
+     "0007ffffffffffffffffffff",
+     "001fffffffffffffffffffff",
+     "00ffffffffffffffffffffff",
+     "03ffffffffffffffffffffff",
+     "7fffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff"
+    ]
+   }
+  },
+  "houston": {
+   "anchor": {
+    "lat": 29.7604,
+    "lng": -95.3698
+   },
+   "facts": {
+    "anchor_on_land": true,
+    "anchor_to_mask_boundary_m": null,
+    "coast_km_in_window": 0.0,
+    "coast_runs": 0,
+    "lake_rings": 0,
+    "nearest_water_cell_bearing_deg": null,
+    "nearest_water_cell_m": null,
+    "nearest_water_edge_bearing_deg": null,
+    "nearest_water_edge_m": null,
+    "river_runs": 0,
+    "water_cells": 0,
+    "waterfront": false
+   },
+   "local": {
+    "coast": [],
+    "half_m": 6000.0,
+    "lakes": [],
+    "rivers": []
+   },
+   "mask": {
+    "cell_m": 125.0,
+    "land_share": 1.0,
+    "n": 96,
+    "rows": [
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff"
+    ]
+   }
+  },
+  "miami": {
+   "anchor": {
+    "lat": 25.7617,
+    "lng": -80.1918
+   },
+   "facts": {
+    "anchor_on_land": false,
+    "anchor_to_mask_boundary_m": 441.9,
+    "coast_km_in_window": 15.71,
+    "coast_runs": 2,
+    "lake_rings": 0,
+    "nearest_water_cell_bearing_deg": 225.0,
+    "nearest_water_cell_m": 88.4,
+    "nearest_water_edge_bearing_deg": 270.9,
+    "nearest_water_edge_m": 427.0,
+    "river_runs": 0,
+    "water_cells": 5448,
+    "waterfront": true
+   },
+   "local": {
+    "coast": [
+     [
+      [
+       -5997.0,
+       -4574.4
+      ],
+      [
+       -4903.7,
+       -3577.8
+      ],
+      [
+       -3924.6,
+       -3396.7
+      ],
+      [
+       -2953.7,
+       -3405.7
+      ],
+      [
+       -1893.1,
+       -2979.9
+      ],
+      [
+       -440.8,
+       -878.2
+      ],
+      [
+       -367.4,
+       3800.9
+      ]
+     ],
+     [
+      [
+       3581.4,
+       -2979.9
+      ],
+      [
+       2896.1,
+       -2979.9
+      ],
+      [
+       2586.1,
+       -3731.9
+      ],
+      [
+       2178.2,
+       -4325.2
+      ],
+      [
+       1615.2,
+       -4828.1
+      ],
+      [
+       848.3,
+       -5330.8
+      ]
+     ]
+    ],
+    "half_m": 6000.0,
+    "lakes": [],
+    "rivers": []
+   },
+   "mask": {
+    "cell_m": 125.0,
+    "land_share": 0.4089,
+    "n": 96,
+    "rows": [
+     "00000fffff80000000000000",
+     "00000fffff80000000000000",
+     "00000fffff80000000000000",
+     "00000fffff80000000000000",
+     "00000fffff80000000000000",
+     "00000fffff80000000000000",
+     "00000ffffe00000000000000",
+     "00000ffffc00000000000000",
+     "00000ffff000000000000000",
+     "00000fffe000000000000000",
+     "00000fffc000000000000000",
+     "00000fff8000000000000000",
+     "00000fff0000000000000001",
+     "00000ffe0000000000000003",
+     "00000ffc0000000000000007",
+     "00000ff8000000000000001f",
+     "00000ff0000000000000003f",
+     "00000ff0000000000000007f",
+     "00000fe000000000000000ff",
+     "00000fe000000000000001ff",
+     "00001fc00000000000007fff",
+     "00001fc00000000003ffffff",
+     "00001fc0000000001fffffff",
+     "00001f80000000007fffffff",
+     "0000000000000001ffffffff",
+     "0000000000000003ffffffff",
+     "0000000000000003ffffffff",
+     "0000000000000007ffffffff",
+     "000000000000000fffffffff",
+     "000000000000001fffffffff",
+     "000000000000001fffffffff",
+     "000000000000003fffffffff",
+     "000000000000007fffffffff",
+     "000000000000007fffffffff",
+     "00000000000000ffffffffff",
+     "00000000000001ffffffffff",
+     "00000000000001ffffffffff",
+     "00000000000003ffffffffff",
+     "00000000000007ffffffffff",
+     "00000000000007ffffffffff",
+     "0000000000000fffffffffff",
+     "0000000000000fffffffffff",
+     "0000000000000fffffffffff",
+     "0000000000001fffffffffff",
+     "0000000000001fffffffffff",
+     "0000000000001fffffffffff",
+     "0000000000001fffffffffff",
+     "0000000000001fffffffffff",
+     "0000000000001fffffffffff",
+     "0000000000001fffffffffff",
+     "0000000000001fffffffffff",
+     "0000000000001fffffffffff",
+     "0000000000001fffffffffff",
+     "0000000000001fffffffffff",
+     "0000000000001fffffffffff",
+     "0000000000001fffffffffff",
+     "0000000000001fffffffffff",
+     "0000000000001fffffffffff",
+     "0000000000001fffffffffff",
+     "0000000000001fffffffffff",
+     "e000000000001fffffffffff",
+     "e000000000001fffffffffff",
+     "e000000000001fffffffffff",
+     "e000000000001fffffffffff",
+     "e000000000001fffffffffff",
+     "e000000000001fffffffffff",
+     "e000000000001fffffffffff",
+     "e000000000001fffffffffff",
+     "e000000000001fffffffffff",
+     "e000000000001fffffffffff",
+     "e000000000001fffffffffff",
+     "e000000000001fffffffffff",
+     "e000000000001fffffffffff",
+     "e000000000001fffffffffff",
+     "e000000000001fffffffffff",
+     "e000000000001fffffffffff",
+     "e000000000001fffffffffff",
+     "e000000000001fffffffffff",
+     "e000000000001fffffffffff",
+     "e000000000003fffffffffff",
+     "e000000000003fffffffffff",
+     "e000000000003fffffffffff",
+     "e000000000007fffffffffff",
+     "e000000000007fffffffffff",
+     "e00000000000ffffffffffff",
+     "e00000000000ffffffffffff",
+     "e00000000001ffffffffffff",
+     "e00000000001ffffffffffff",
+     "e00000000001ffffffffffff",
+     "e00000000003ffffffffffff",
+     "e00000000003ffffffffffff",
+     "e00000000007ffffffffffff",
+     "e00000000007ffffffffffff",
+     "e0000000000fffffffffffff",
+     "e0000000000fffffffffffff",
+     "e0000000001fffffffffffff"
+    ]
+   }
+  },
+  "new-orleans": {
+   "anchor": {
+    "lat": 29.9511,
+    "lng": -90.0715
+   },
+   "facts": {
+    "anchor_on_land": true,
+    "anchor_to_mask_boundary_m": null,
+    "coast_km_in_window": 0.0,
+    "coast_runs": 0,
+    "lake_rings": 0,
+    "nearest_water_cell_bearing_deg": null,
+    "nearest_water_cell_m": null,
+    "nearest_water_edge_bearing_deg": 118.9,
+    "nearest_water_edge_m": 1122.0,
+    "river_runs": 1,
+    "water_cells": 0,
+    "waterfront": true
+   },
+   "local": {
+    "coast": [],
+    "half_m": 6000.0,
+    "lakes": [],
+    "rivers": [
+     [
+      [
+       -5854.0,
+       -1184.9
+      ],
+      [
+       -5488.9,
+       -2077.2
+      ],
+      [
+       -4884.5,
+       -2806.5
+      ],
+      [
+       -3353.9,
+       -3232.2
+      ],
+      [
+       -2388.4,
+       -3055.6
+      ],
+      [
+       303.9,
+       -1778.2
+      ],
+      [
+       672.9,
+       -1411.3
+      ],
+      [
+       947.6,
+       -605.0
+      ],
+      [
+       1395.0,
+       205.7
+      ],
+      [
+       2274.2,
+       563.6
+      ],
+      [
+       4507.3,
+       341.6
+      ]
+     ]
+    ]
+   },
+   "mask": {
+    "cell_m": 125.0,
+    "land_share": 1.0,
+    "n": 96,
+    "rows": [
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff"
+    ]
+   }
+  },
+  "oakland": {
+   "anchor": {
+    "lat": 37.8044,
+    "lng": -122.2712
+   },
+   "facts": {
+    "anchor_on_land": true,
+    "anchor_to_mask_boundary_m": 3623.9,
+    "coast_km_in_window": 23.31,
+    "coast_runs": 2,
+    "lake_rings": 0,
+    "nearest_water_cell_bearing_deg": 315.0,
+    "nearest_water_cell_m": 3623.9,
+    "nearest_water_edge_bearing_deg": 220.0,
+    "nearest_water_edge_m": 3580.9,
+    "river_runs": 0,
+    "water_cells": 2411,
+    "waterfront": true
+   },
+   "local": {
+    "coast": [
+     [
+      [
+       -2347.3,
+       3886.3
+      ],
+      [
+       -2137.5,
+       2993.6
+      ],
+      [
+       -2654.9,
+       2431.1
+      ],
+      [
+       -4265.0,
+       2303.5
+      ],
+      [
+       -5027.5,
+       1850.8
+      ],
+      [
+       -3990.6,
+       1412.7
+      ],
+      [
+       -4499.9,
+       728.3
+      ],
+      [
+       -5587.6,
+       805.0
+      ]
+     ],
+     [
+      [
+       -5971.6,
+       -113.4
+      ],
+      [
+       -5033.0,
+       6.7
+      ],
+      [
+       -4732.8,
+       -72.2
+      ],
+      [
+       -4705.6,
+       -369.2
+      ],
+      [
+       -5050.0,
+       -880.7
+      ],
+      [
+       -5304.5,
+       -2450.4
+      ],
+      [
+       -3399.5,
+       -3137.2
+      ],
+      [
+       -3197.8,
+       -2619.9
+      ],
+      [
+       -2301.9,
+       -2743.0
+      ],
+      [
+       -2522.6,
+       -3579.4
+      ],
+      [
+       -1082.9,
+       -4572.0
+      ],
+      [
+       -30.9,
+       -4625.7
+      ],
+      [
+       2802.6,
+       -5463.0
+      ],
+      [
+       3947.6,
+       -5455.0
+      ],
+      [
+       4340.6,
+       -4974.1
+      ],
+      [
+       4741.4,
+       -5111.1
+      ]
+     ]
+    ],
+    "half_m": 6000.0,
+    "lakes": [],
+    "rivers": []
+   },
+   "mask": {
+    "cell_m": 125.0,
+    "land_share": 0.7384,
+    "n": 96,
+    "rows": [
+     "ff0000000000000000000000",
+     "ff8000000000000000000000",
+     "ff8000000000000000000000",
+     "ff8000000000000000000000",
+     "ff80ffc00000000000000000",
+     "ffc1fffc0000000000000000",
+     "ffc1ffff8000000000000000",
+     "ffe3fffff000000000000000",
+     "ffffffffff00000000000000",
+     "ffffffffffe0000000000000",
+     "fffffffffffe000000000000",
+     "ffffffffffffff8000000000",
+     "ffffffffffffffc000000000",
+     "ffffffffffffffe000000000",
+     "fffffffffffffff800000000",
+     "fffffffffffffffc00000000",
+     "ffffffffffffffff00000000",
+     "ffffffffffffffff80000000",
+     "ffffffffffffffffe0000000",
+     "fffffffffffffffff0000000",
+     "fffffffffffffffff0000000",
+     "fffffffffffffffff0000000",
+     "ffffffffffffffffe0000000",
+     "ffffffffffffffffe0180000",
+     "ffffffffffffffffe01f0000",
+     "ffffffffffffffffe03fc000",
+     "fffffffffffffffffc3ff800",
+     "ffffffffffffffffffffff00",
+     "ffffffffffffffffffffffc0",
+     "ffffffffffffffffffffffc0",
+     "ffffffffffffffffffffffc0",
+     "ffffffffffffffffffffffc0",
+     "ffffffffffffffffffffffc0",
+     "ffffffffffffffffffffffc0",
+     "ffffffffffffffffffffff80",
+     "ffffffffffffffffffffff80",
+     "ffffffffffffffffffffff80",
+     "ffffffffffffffffffffff80",
+     "ffffffffffffffffffffff80",
+     "ffffffffffffffffffffff80",
+     "ffffffffffffffffffffff00",
+     "ffffffffffffffffffffff00",
+     "fffffffffffffffffffffe00",
+     "fffffffffffffffffffffe00",
+     "fffffffffffffffffffffc00",
+     "fffffffffffffffffffffc00",
+     "fffffffffffffffffffffc00",
+     "fffffffffffffffffffffc07",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "fffffffffffffffffffffffe",
+     "fffffffffffffffffffffffc",
+     "ffffffffffffffffffffe000",
+     "ffffffffffffffffffffe000",
+     "ffffffffffffffffffffc000",
+     "ffffffffffffffffffff8000",
+     "ffffffffffffffffffff8000",
+     "ffffffffffffffffffff0000",
+     "ffffffffffffffffffffe000",
+     "fffffffffffffffffffff800",
+     "fffffffffffffffffffffe00",
+     "fffffffffffffffffffffe00",
+     "fffffffffffffffffffff800",
+     "fffffffffffffffffffff000",
+     "ffffffffffffffffffff8000",
+     "fffffffffffffffff8000000",
+     "fffffffffffffffff0000000",
+     "ffffffffffffffffe0000000",
+     "ffffffffffffffffc0000000",
+     "ffffffffffffffffc0000000",
+     "ffffffffffffffff80000000",
+     "ffffffffffffffff80000000",
+     "ffffffffffffffffc0000000",
+     "ffffffffffffffffc0000000",
+     "ffffffffffffffffc0000000",
+     "ffffffffffffffffc0000000",
+     "ffffffffffffffffe0000000",
+     "ffffffffffffffffe0000000",
+     "ffffffffffffffffe0000000",
+     "ffffffffffffffffe0000000",
+     "ffffffffffffffffe0000000",
+     "fffffffffffffffff0000000",
+     "fffffffffffffffff0000000",
+     "fffffffffffffffff0000000",
+     "fffffffffffffffff0000000",
+     "fffffffffffffffff0000000",
+     "fffffffffffffffff8000000",
+     "fffffffffffffffff8000000",
+     "fffffffffffffffff8000000",
+     "fffffffffffffffff8000000",
+     "fffffffffffffffff8000000",
+     "fffffffffffffffffc000000",
+     "fffffffffffffffffc000000",
+     "fffffffffffffffffc000000"
+    ]
+   }
+  },
+  "pittsburgh": {
+   "anchor": {
+    "lat": 40.4406,
+    "lng": -79.9959
+   },
+   "facts": {
+    "anchor_on_land": true,
+    "anchor_to_mask_boundary_m": null,
+    "coast_km_in_window": 0.0,
+    "coast_runs": 0,
+    "lake_rings": 0,
+    "nearest_water_cell_bearing_deg": null,
+    "nearest_water_cell_m": null,
+    "nearest_water_edge_bearing_deg": 327.2,
+    "nearest_water_edge_m": 434.2,
+    "river_runs": 3,
+    "water_cells": 0,
+    "waterfront": true
+   },
+   "local": {
+    "coast": [],
+    "half_m": 6000.0,
+    "lakes": [],
+    "rivers": [
+     [
+      [
+       2197.7,
+       -2294.4
+      ],
+      [
+       432.7,
+       -1193.7
+      ],
+      [
+       -787.8,
+       29.3
+      ]
+     ],
+     [
+      [
+       2052.9,
+       5356.2
+      ],
+      [
+       1487.6,
+       4282.6
+      ],
+      [
+       963.6,
+       1786.8
+      ],
+      [
+       425.7,
+       790.3
+      ]
+     ],
+     [
+      [
+       425.7,
+       790.3
+      ],
+      [
+       -418.9,
+       246.7
+      ],
+      [
+       -1391.0,
+       74.6
+      ],
+      [
+       -2187.4,
+       355.4
+      ],
+      [
+       -2518.3,
+       1134.6
+      ],
+      [
+       -3190.6,
+       2067.7
+      ]
+     ]
+    ]
+   },
+   "mask": {
+    "cell_m": 125.0,
+    "land_share": 1.0,
+    "n": 96,
+    "rows": [
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff"
+    ]
+   }
+  },
+  "seattle": {
+   "anchor": {
+    "lat": 47.6062,
+    "lng": -122.3321
+   },
+   "facts": {
+    "anchor_on_land": true,
+    "anchor_to_mask_boundary_m": 814.9,
+    "coast_km_in_window": 19.96,
+    "coast_runs": 1,
+    "lake_rings": 0,
+    "nearest_water_cell_bearing_deg": 265.6,
+    "nearest_water_cell_m": 814.9,
+    "nearest_water_edge_bearing_deg": 254.9,
+    "nearest_water_edge_m": 782.5,
+    "river_runs": 0,
+    "water_cells": 1777,
+    "waterfront": true
+   },
+   "local": {
+    "coast": [
+     [
+      [
+       -5662.2,
+       -4467.6
+      ],
+      [
+       -5775.2,
+       -3480.2
+      ],
+      [
+       -5375.2,
+       -2696.5
+      ],
+      [
+       -4379.6,
+       -1392.1
+      ],
+      [
+       -3438.9,
+       -1115.8
+      ],
+      [
+       -2589.9,
+       -2284.4
+      ],
+      [
+       -1798.9,
+       -3887.9
+      ],
+      [
+       -1026.3,
+       -4884.4
+      ],
+      [
+       -672.0,
+       -2587.9
+      ],
+      [
+       -592.6,
+       -807.7
+      ],
+      [
+       -983.5,
+       641.8
+      ],
+      [
+       -2046.3,
+       1950.9
+      ],
+      [
+       -5399.6,
+       3472.9
+      ]
+     ]
+    ],
+    "half_m": 6000.0,
+    "lakes": [],
+    "rivers": []
+   },
+   "mask": {
+    "cell_m": 125.0,
+    "land_share": 0.8072,
+    "n": 96,
+    "rows": [
+     "ffffffffffffffffffffffc0",
+     "ffffffffffffffffffffffc0",
+     "ffffffffffffffffffffffe0",
+     "ffffffffffffffffffffffe0",
+     "ffffffffffffffffffffffe0",
+     "ffffffffffffffffffffffe0",
+     "fffffffffffffffffffffff0",
+     "fffffffffffffffffffffff0",
+     "fffffffffffffffffffffff0",
+     "ffffffffffffff7ffffffff8",
+     "ffffffffffffff7ffffffff8",
+     "ffffffffffffff3ffffffff8",
+     "ffffffffffffff1ffffffff8",
+     "ffffffffffffff0ffffffff8",
+     "fffffffffffffe07fffffffc",
+     "fffffffffffffe07fffffffc",
+     "fffffffffffffe03fffffffc",
+     "fffffffffffffe01fffffffc",
+     "fffffffffffffe01fffffffc",
+     "fffffffffffffe00fffffffc",
+     "fffffffffffffc00fffffffc",
+     "fffffffffffffc007ffffffc",
+     "fffffffffffffc007ffffff8",
+     "fffffffffffffc003ffffff0",
+     "fffffffffffffc003ffffff0",
+     "fffffffffffffc001fffffe0",
+     "fffffffffffff8001fffffe0",
+     "fffffffffffff8000fffffc0",
+     "fffffffffffff8000fffff80",
+     "fffffffffffff80007ffff80",
+     "fffffffffffff80007ffff00",
+     "fffffffffffff80003fffe00",
+     "fffffffffffff80001fffc00",
+     "fffffffffffff80001fffc00",
+     "fffffffffffff80000fff800",
+     "fffffffffffff800007ff000",
+     "fffffffffffff800003fe000",
+     "fffffffffffff800003f8000",
+     "fffffffffffff80000180000",
+     "fffffffffffff80000000000",
+     "fffffffffffff80000000000",
+     "fffffffffffff80000000000",
+     "fffffffffffff80000000000",
+     "fffffffffffff80000000000",
+     "fffffffffffffc0000000000",
+     "fffffffffffffc0000000000",
+     "fffffffffffffc0000000000",
+     "fffffffffffffc0000000000",
+     "fffffffffffffe0000000000",
+     "fffffffffffffe0000000000",
+     "fffffffffffffe0000000000",
+     "fffffffffffffe0000000000",
+     "ffffffffffffff0000000000",
+     "ffffffffffffff0000000000",
+     "ffffffffffffff8000000000",
+     "ffffffffffffffc000000000",
+     "ffffffffffffffe000000000",
+     "ffffffffffffffe000000000",
+     "fffffffffffffff000000000",
+     "fffffffffffffff800000000",
+     "fffffffffffffffc00000000",
+     "fffffffffffffffe00000000",
+     "fffffffffffffffe00000000",
+     "ffffffffffffffff00000000",
+     "ffffffffffffffffc0000000",
+     "fffffffffffffffff8000000",
+     "fffffffffffffffffe000000",
+     "ffffffffffffffffff800000",
+     "ffffffffffffffffffe00000",
+     "fffffffffffffffffff80000",
+     "ffffffffffffffffffff0000",
+     "ffffffffffffffffffffc000",
+     "fffffffffffffffffffff000",
+     "fffffffffffffffffffffc00",
+     "ffffffffffffffffffffff00",
+     "ffffffffffffffffffffffe0",
+     "fffffffffffffffffffffff0",
+     "fffffffffffffffffffffffc",
+     "fffffffffffffffffffffffe",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff",
+     "ffffffffffffffffffffffff"
+    ]
+   }
+  },
+  "treasure-island": {
+   "anchor": {
+    "lat": 37.8235,
+    "lng": -122.3705
+   },
+   "facts": {
+    "anchor_on_land": true,
+    "anchor_to_mask_boundary_m": 537.6,
+    "coast_km_in_window": 20.08,
+    "coast_runs": 3,
+    "lake_rings": 0,
+    "nearest_water_cell_bearing_deg": 234.5,
+    "nearest_water_cell_m": 537.6,
+    "nearest_water_edge_bearing_deg": 124.8,
+    "nearest_water_edge_m": 3195.8,
+    "river_runs": 0,
+    "water_cells": 6800,
+    "waterfront": true
+   },
+   "local": {
+    "coast": [
+     [
+      [
+       5468.8,
+       5213.0
+      ],
+      [
+       4638.7,
+       4938.7
+      ],
+      [
+       4790.2,
+       4162.4
+      ],
+      [
+       5859.5,
+       4386.2
+      ]
+     ],
+     [
+      [
+       4467.7,
+       177.3
+      ],
+      [
+       3705.5,
+       -275.4
+      ],
+      [
+       4742.1,
+       -713.6
+      ],
+      [
+       4233.0,
+       -1398.0
+      ],
+      [
+       3145.5,
+       -1321.3
+      ],
+      [
+       2624.2,
+       -1823.9
+      ],
+      [
+       2761.6,
+       -2239.6
+      ],
+      [
+       3700.0,
+       -2119.5
+      ],
+      [
+       4000.1,
+       -2198.5
+      ],
+      [
+       4027.3,
+       -2495.5
+      ],
+      [
+       3682.9,
+       -3006.9
+      ],
+      [
+       3428.6,
+       -4576.6
+      ],
+      [
+       5333.0,
+       -5263.4
+      ],
+      [
+       5534.7,
+       -4746.1
+      ]
+     ],
+     [
+      [
+       -970.1,
+       -5550.1
+      ],
+      [
+       -1460.0,
+       -4982.1
+      ],
+      [
+       -1532.6,
+       -3622.2
+      ],
+      [
+       -2435.3,
+       -2227.0
+      ],
+      [
+       -3353.5,
+       -1459.2
+      ],
+      [
+       -4243.3,
+       -1375.6
+      ]
+     ]
+    ],
+    "half_m": 6000.0,
+    "lakes": [],
+    "rivers": []
+   },
+   "mask": {
+    "cell_m": 125.0,
+    "land_share": 0.2622,
+    "n": 96,
+    "rows": [
+     "00000000000000ffffffffff",
+     "00000000000000ffffffffff",
+     "00000000000000ffffffffff",
+     "00000000000000ffffffffff",
+     "000000000000007fffffffff",
+     "000000000000007fffffffff",
+     "060000000000003fffffffff",
+     "07c000000000001fffffffff",
+     "0ff800000000000fffffffff",
+     "0ffe00000000000fffffffff",
+     "ffffc0000000000fffffffff",
+     "fffff8000000000fffffffff",
+     "fffff0000000000fffffffff",
+     "fffff0000000000fffffffff",
+     "fffff0000000000fffffffff",
+     "fffff0000000000fffffffff",
+     "fffff0000000000fffffffff",
+     "fffff0000000000fffffffff",
+     "ffffe0000000000fffffffff",
+     "ffffe00000000007ffffffff",
+     "ffffe00000000007ffffffff",
+     "ffffe00000000003ffffffff",
+     "ffffe00000000001ffffffff",
+     "ffffe00000000001ffffffff",
+     "ffffc00000000000ffffffff",
+     "ffff800000000000ffffffff",
+     "ffff8000000000007fffffff",
+     "ffff0000000000003fffffff",
+     "ffff0000000000003fffffff",
+     "ffff0000000000001fffffff",
+     "ffff01c0000000000fffffff",
+     "ffffffc00000000007ffffff",
+     "ffffffe00000000003ffffff",
+     "ffffffe00000000001ffffff",
+     "ffffffc000380000007fffff",
+     "ffffff8000ff0000003fffe0",
+     "ffffff00007f00000007f800",
+     "fffc0000007f000000000000",
+     "fff800000037000000000000",
+     "fff000000003000000000000",
+     "ffe000000003800000000000",
+     "ffe000000001800000000000",
+     "ffe000000003800000000000",
+     "fff800000007c00000000000",
+     "fffe0000000fe00000000000",
+     "ffffc000001fe00000000000",
+     "ffff8000001ff00000000000",
+     "fffe0000001ff00000000000",
+     "fffc0000000ff80000000000",
+     "ffe00000000ff80000000000",
+     "00000000000ff80000000000",
+     "000000000007fc0000000000",
+     "000000000007fc0000000000",
+     "000000000007f80000000000",
+     "000000000003f00000000000",
+     "000000000001e00000000000",
+     "000000000000000000000000",
+     "000000000000000000000000",
+     "000000000000000000000000",
+     "000000000000000000000000",
+     "000000000000000000000000",
+     "000000000000000000000000",
+     "000000000000000000000000",
+     "000000000000000000000000",
+     "000000000000000000000000",
+     "000000000000000000000000",
+     "000000000000000000000000",
+     "000000000000000000000000",
+     "000000000000000000000000",
+     "000000000000000000000000",
+     "000000000000000000000000",
+     "000000000000000000000000",
+     "000000000000000000000000",
+     "000000000000000000000000",
+     "00000000000000000000000e",
+     "000000000000000000003fff",
+     "000000000000000000003fff",
+     "000000000000000000003fff",
+     "000000000000000000003fff",
+     "000000000000000000003fff",
+     "800000000000000000003fff",
+     "804000000000000000003fff",
+     "8fc000000000000000007fff",
+     "ffc000000000000000007fff",
+     "ffc000000000000000003fff",
+     "ffc000000000000000001fff",
+     "ffe000000000000000000fff",
+     "ffe000000000000000000fff",
+     "ff00000000000000000007fc",
+     "f800000000000000000003fc",
+     "f000000000000000000003c0",
+     "f80000000000000000000000",
+     "f80000000000000000000000",
+     "f80000000000000000000000",
+     "fc0000000000000000000000",
+     "fc0000000000000000000000"
+    ]
+   }
+  }
+ },
+ "counts": {
+  "anchors_in_water": 2,
+  "campuses": 10,
+  "cell_m": 125.0,
+  "coast_points": 74,
+  "coast_runs": 8,
+  "inland": 1,
+  "lake_rings": 3,
+  "local_half_m": 6000.0,
+  "mask_cells": 92160,
+  "mask_n": 96,
+  "mask_water_cells": 21694,
+  "river_runs": 5,
+  "simplify_m": 40.0,
+  "waterfront": 9
+ },
+ "honesty": {
+  "dry_campuses": "Of the ten, 9 have water inside the 6 km window and 1 do not (houston). The dry ones get no shoreline rather than a decorative one.",
+  "no_addresses": "No street, address or parcel is in here. The Locator.X checkout that carries per-address Bay records keeps them out of git on purpose - its own data/README.md says several upstream feeds carry owner PII that a committed mirror would preserve forever. This pack takes the public-domain outlines instead and says so.",
+  "no_elevation": "There is no height in this pack. Natural Earth is an outline set. The ground is still flat; what changed is where it stops being ground.",
+  "resolution": "The source is 1:10,000,000. Its vertices in these windows are hundreds of metres apart, so a shoreline here is the shape of a bay and not the shape of a pier. The mask resolves 125 m per cell. A map that zoomed past that would be drawing confidence this data does not have.",
+  "status": "DERIVED: every line and every bit here is computed from the Natural Earth 10m vectors vendored in terrain/vendor, whose licence is one sentence and whose hash is checked on every build. Nothing is drawn from imagination and nothing is fetched at run time.",
+  "the_anchors_in_water": "The mask puts 2 of the ten campus anchors on a water cell (detroit, miami). Neither is a mistake in the data or in this build - both cities meet their water within one 125 m cell of downtown, and a 1:10,000,000 line drawn through them lands on the wrong side. The consequence is concrete: a renderer that cut the ground away wherever this mask says water would drop those two campuses into a bay. Every campus publishes anchor_on_land and the radius out to the first cell that disagrees with it, so a page can use the mask for the far ground and leave the campus alone.",
+  "two_water_signals": "Every campus reports water twice: the distance to a drawn line, and the distance to a water cell in the mask. They disagree by design. Chicago has no water LINE in its window and a mask that is 40% water, because Lake Michigan is where the land polygon stops. New Orleans has the Mississippi 1.1 km away and a mask that is 100% land, because a river in this source is a line with no width. A pack that published one figure would have been confidently wrong about one of them."
+ },
+ "licence": "public domain - see NATURAL_EARTH_LICENSE.md, vendored beside this",
+ "licence_sha256": "2631b5b39b6d1acc56de75235109b5af2dbb4b0ac5a127b6f06185977247fd4b",
+ "pack": "terrain",
+ "pack_version": "3.2.0",
+ "product": "real land and water outlines around the ten campuses, in local metres, with a derived land/water mask per campus",
+ "source": "Natural Earth (naturalearthdata.com), 10m physical vectors",
+ "source_stamp": "e0b2c317cc3146d7"
+}

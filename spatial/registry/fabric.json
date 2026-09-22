@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-16",
- "source_stamp": "ecd6e7790e71d798",
+ "source_stamp": "4042572cdc54051f",
  "fabric": {
   "name": "SmartCiti.X : Trade Craft Academy - spatial fabric",
   "operator": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
@@ -34,7 +34,7 @@
    ],
    "halls": 51,
    "atmosphere": "treasure-island",
-   "atmosphere_character": "marine layer off the Pacific; cool, grey and bright at once - authored by reputation, not measured",
+   "atmosphere_character": "marine layer off the Pacific; cool, grey and bright at once, and the thickest air on the network - authored by reputation, not measured",
    "walk": true,
    "walk_why": "a BUILT entry in roadmap/registry/roadmap.json: a walkable campus city in web/trade_craft_3d.html"
   },
@@ -50,7 +50,7 @@
    ],
    "halls": 32,
    "atmosphere": "oakland",
-   "atmosphere_character": "the estuary side, warmer and harder-edged than the island - authored by reputation, not measured",
+   "atmosphere_character": "the estuary side, warmer and harder-edged than the island, with one thin bank off the water that is gone by the time the yard is working - authored by reputation, not measured",
    "walk": true,
    "walk_why": "a BUILT entry in roadmap/registry/roadmap.json: a walkable campus city in web/trade_craft_3d.html"
   },
@@ -65,7 +65,7 @@
    ],
    "halls": 28,
    "atmosphere": "new-orleans",
-   "atmosphere_character": "Gulf humidity and a low warm haze - authored by reputation, not measured",
+   "atmosphere_character": "Gulf humidity and a low warm haze that does not lift with the morning, and river fog off the water before it - authored by reputation, not measured",
    "walk": true,
    "walk_why": "a BUILT entry in roadmap/registry/roadmap.json: a walkable campus city in web/trade_craft_3d.html"
   },
@@ -77,7 +77,7 @@
    "districts": [],
    "halls": 0,
    "atmosphere": "houston",
-   "atmosphere_character": "Gulf-coast heat haze over a working ship channel, a refinery glow at the sky's edge after dark - authored by reputation, not measured",
+   "atmosphere_character": "Gulf-coast heat haze over a working ship channel that never clears the way a sea breeze clears, and a refinery glow at the sky's edge after dark - authored by reputation, not measured",
    "walk": true,
    "walk_why": "a BUILT entry in roadmap/registry/roadmap.json: a walkable campus city in web/trade_craft_3d.html"
   },
@@ -101,7 +101,7 @@
    "districts": [],
    "halls": 0,
    "atmosphere": "seattle",
-   "atmosphere_character": "a low marine overcast off the Sound, a working waterfront and the hum of aerospace manufacturing just south of the green - authored by reputation, not measured",
+   "atmosphere_character": "a low marine overcast off the Sound that sits on the cranes rather than above them, a working waterfront and the hum of aerospace manufacturing just south of the green - authored by reputation, not measured",
    "walk": true,
    "walk_why": "a BUILT entry in roadmap/registry/roadmap.json: a walkable campus city in web/trade_craft_3d.html"
   },
@@ -113,7 +113,7 @@
    "districts": [],
    "halls": 0,
    "atmosphere": "pittsburgh",
-   "atmosphere_character": "a river haze over three confluent rivers crossed by more bridges than any other American city, and a post-industrial skyline standing where the mills once were - authored by reputation, not measured",
+   "atmosphere_character": "a river haze that settles in the valley overnight and burns off late, over three confluent rivers crossed by more bridges than any other American city, and a post-industrial skyline standing where the mills once were - authored by reputation, not measured",
    "walk": true,
    "walk_why": "a BUILT entry in roadmap/registry/roadmap.json: a walkable campus city in web/trade_craft_3d.html"
   },
@@ -125,7 +125,7 @@
    "districts": [],
    "halls": 0,
    "atmosphere": "denver",
-   "atmosphere_character": "thin, dry high-altitude light off the Front Range, a mining and energy heritage at 5,280 feet, and the Rockies standing on the western horizon - authored by reputation, not measured",
+   "atmosphere_character": "thin, dry high-altitude light off the Front Range with a view that goes as far as the ground allows, a mining and energy heritage at 5,280 feet, and the Rockies standing on the western horizon - authored by reputation, not measured",
    "walk": true,
    "walk_why": "a BUILT entry in roadmap/registry/roadmap.json: a walkable campus city in web/trade_craft_3d.html"
   },
@@ -1906,7 +1906,7 @@
   {
    "id": "training-recorder",
    "kind": "recorder",
-   "name": "training-data recorder - 3 episode kinds, device-local under tc-training",
+   "name": "training-data recorder - 4 episode kinds, device-local under tc-training",
    "registry": "training/registry/training.json",
    "transport": "in-page, no network",
    "anchored_at": "campus:treasure-island",
@@ -1922,7 +1922,77 @@
    "served_by_this_fabric": false,
    "note": "named as a neighbouring place, not as an organization",
    "geoposes": [
-    "anchor:treasure-island/san-francisco"
+    "anchor:treasure-island/san-francisco",
+    "anchor:oakland/san-francisco"
+   ],
+   "provenance": [
+    "RECORDED"
+   ]
+  },
+  {
+   "operator": "Emeryville",
+   "kind": "city",
+   "origin": "external",
+   "served_by_this_fabric": false,
+   "note": "named as a neighbouring place, not as an organization",
+   "geoposes": [
+    "anchor:treasure-island/emeryville",
+    "anchor:oakland/emeryville"
+   ],
+   "provenance": [
+    "RECORDED"
+   ]
+  },
+  {
+   "operator": "Oakland",
+   "kind": "city",
+   "origin": "external",
+   "served_by_this_fabric": false,
+   "note": "named as a neighbouring place, not as an organization",
+   "geoposes": [
+    "anchor:treasure-island/oakland"
+   ],
+   "provenance": [
+    "RECORDED"
+   ]
+  },
+  {
+   "operator": "Tiburon",
+   "kind": "city",
+   "origin": "external",
+   "served_by_this_fabric": false,
+   "note": "named as a neighbouring place, not as an organization",
+   "geoposes": [
+    "anchor:treasure-island/tiburon",
+    "anchor:oakland/tiburon"
+   ],
+   "provenance": [
+    "RECORDED"
+   ]
+  },
+  {
+   "operator": "Albany",
+   "kind": "city",
+   "origin": "external",
+   "served_by_this_fabric": false,
+   "note": "named as a neighbouring place, not as an organization",
+   "geoposes": [
+    "anchor:treasure-island/albany",
+    "anchor:oakland/albany"
+   ],
+   "provenance": [
+    "RECORDED"
+   ]
+  },
+  {
+   "operator": "Berkeley",
+   "kind": "city",
+   "origin": "external",
+   "served_by_this_fabric": false,
+   "note": "named as a neighbouring place, not as an organization",
+   "geoposes": [
+    "anchor:treasure-island/berkeley",
+    "anchor:oakland/berkeley"
    ],
    "provenance": [
     "RECORDED"
@@ -1935,7 +2005,50 @@
    "served_by_this_fabric": false,
    "note": "named as a neighbouring place, not as an organization",
    "geoposes": [
-    "anchor:treasure-island/sausalito"
+    "anchor:treasure-island/sausalito",
+    "anchor:oakland/sausalito"
+   ],
+   "provenance": [
+    "RECORDED"
+   ]
+  },
+  {
+   "operator": "El Cerrito",
+   "kind": "city",
+   "origin": "external",
+   "served_by_this_fabric": false,
+   "note": "named as a neighbouring place, not as an organization",
+   "geoposes": [
+    "anchor:treasure-island/el-cerrito",
+    "anchor:oakland/el-cerrito"
+   ],
+   "provenance": [
+    "RECORDED"
+   ]
+  },
+  {
+   "operator": "Piedmont",
+   "kind": "city",
+   "origin": "external",
+   "served_by_this_fabric": false,
+   "note": "named as a neighbouring place, not as an organization",
+   "geoposes": [
+    "anchor:treasure-island/piedmont",
+    "anchor:oakland/piedmont"
+   ],
+   "provenance": [
+    "RECORDED"
+   ]
+  },
+  {
+   "operator": "Richmond",
+   "kind": "city",
+   "origin": "external",
+   "served_by_this_fabric": false,
+   "note": "named as a neighbouring place, not as an organization",
+   "geoposes": [
+    "anchor:treasure-island/richmond",
+    "anchor:oakland/richmond"
    ],
    "provenance": [
     "RECORDED"
@@ -1962,20 +2075,63 @@
    "served_by_this_fabric": false,
    "note": "named as a neighbouring place, not as an organization",
    "geoposes": [
-    "anchor:treasure-island/daly-city"
+    "anchor:treasure-island/daly-city",
+    "anchor:oakland/daly-city"
    ],
    "provenance": [
     "RECORDED"
    ]
   },
   {
-   "operator": "Richmond",
+   "operator": "Orinda",
    "kind": "city",
    "origin": "external",
    "served_by_this_fabric": false,
    "note": "named as a neighbouring place, not as an organization",
    "geoposes": [
-    "anchor:treasure-island/richmond"
+    "anchor:treasure-island/orinda",
+    "anchor:oakland/orinda"
+   ],
+   "provenance": [
+    "RECORDED"
+   ]
+  },
+  {
+   "operator": "Mill Valley",
+   "kind": "city",
+   "origin": "external",
+   "served_by_this_fabric": false,
+   "note": "named as a neighbouring place, not as an organization",
+   "geoposes": [
+    "anchor:treasure-island/mill-valley"
+   ],
+   "provenance": [
+    "RECORDED"
+   ]
+  },
+  {
+   "operator": "South San Francisco",
+   "kind": "city",
+   "origin": "external",
+   "served_by_this_fabric": false,
+   "note": "named as a neighbouring place, not as an organization",
+   "geoposes": [
+    "anchor:treasure-island/south-san-francisco",
+    "anchor:oakland/south-san-francisco"
+   ],
+   "provenance": [
+    "RECORDED"
+   ]
+  },
+  {
+   "operator": "San Leandro",
+   "kind": "city",
+   "origin": "external",
+   "served_by_this_fabric": false,
+   "note": "named as a neighbouring place, not as an organization",
+   "geoposes": [
+    "anchor:treasure-island/san-leandro",
+    "anchor:oakland/san-leandro"
    ],
    "provenance": [
     "RECORDED"
@@ -1995,65 +2151,39 @@
    ]
   },
   {
-   "operator": "South San Francisco",
+   "operator": "Lafayette",
    "kind": "city",
    "origin": "external",
    "served_by_this_fabric": false,
    "note": "named as a neighbouring place, not as an organization",
    "geoposes": [
-    "anchor:treasure-island/south-san-francisco"
+    "anchor:oakland/lafayette"
    ],
    "provenance": [
     "RECORDED"
    ]
   },
   {
-   "operator": "San Mateo",
+   "operator": "Castro Valley",
    "kind": "city",
    "origin": "external",
    "served_by_this_fabric": false,
    "note": "named as a neighbouring place, not as an organization",
    "geoposes": [
-    "anchor:treasure-island/san-mateo"
+    "anchor:oakland/castro-valley"
    ],
    "provenance": [
     "RECORDED"
    ]
   },
   {
-   "operator": "Berkeley",
+   "operator": "Walnut Creek",
    "kind": "city",
    "origin": "external",
    "served_by_this_fabric": false,
    "note": "named as a neighbouring place, not as an organization",
    "geoposes": [
-    "anchor:oakland/berkeley"
-   ],
-   "provenance": [
-    "RECORDED"
-   ]
-  },
-  {
-   "operator": "Emeryville",
-   "kind": "city",
-   "origin": "external",
-   "served_by_this_fabric": false,
-   "note": "named as a neighbouring place, not as an organization",
-   "geoposes": [
-    "anchor:oakland/emeryville"
-   ],
-   "provenance": [
-    "RECORDED"
-   ]
-  },
-  {
-   "operator": "San Leandro",
-   "kind": "city",
-   "origin": "external",
-   "served_by_this_fabric": false,
-   "note": "named as a neighbouring place, not as an organization",
-   "geoposes": [
-    "anchor:oakland/san-leandro"
+    "anchor:oakland/walnut-creek"
    ],
    "provenance": [
     "RECORDED"

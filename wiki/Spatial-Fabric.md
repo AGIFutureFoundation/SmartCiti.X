@@ -46,7 +46,7 @@ provenance word and source string copied from the registry that owns it:
 }
 ```
 
-### The 67 poses — 10 campuses, 47 anchors, 10 restoration sites
+### The 89 poses — 10 campuses, 69 anchors, 10 restoration sites
 
 | Kind | Subject | Campus | lat, lon | Horizontal provenance | Walkable |
 |---|---|---|---|---|---|
@@ -61,17 +61,39 @@ provenance word and source string copied from the registry that owns it:
 | Campus | Biscayne Coastal Hub | Biscayne Coastal Hub | 25.7617, -80.1918 | AUTHORED | — |
 | Campus | Motor City Hub | Motor City Hub | 42.3314, -83.0458 | AUTHORED | — |
 | Institution / city anchor | San Francisco | Treasure Island Campus | 37.7749, -122.4194 | RECORDED | — |
+| Institution / city anchor | Emeryville | Treasure Island Campus | 37.8313, -122.2852 | RECORDED | — |
+| Institution / city anchor | Oakland | Treasure Island Campus | 37.8044, -122.2712 | RECORDED | — |
+| Institution / city anchor | Tiburon | Treasure Island Campus | 37.8735, -122.4566 | RECORDED | — |
+| Institution / city anchor | Albany | Treasure Island Campus | 37.8869, -122.2978 | RECORDED | — |
+| Institution / city anchor | Berkeley | Treasure Island Campus | 37.8716, -122.2727 | RECORDED | — |
 | Institution / city anchor | Sausalito | Treasure Island Campus | 37.859, -122.4853 | RECORDED | — |
+| Institution / city anchor | El Cerrito | Treasure Island Campus | 37.9158, -122.3108 | RECORDED | — |
+| Institution / city anchor | Piedmont | Treasure Island Campus | 37.8244, -122.2316 | RECORDED | — |
+| Institution / city anchor | Richmond | Treasure Island Campus | 37.9358, -122.3477 | RECORDED | — |
 | Institution / city anchor | Alameda | Treasure Island Campus | 37.7652, -122.2416 | RECORDED | — |
 | Institution / city anchor | Daly City | Treasure Island Campus | 37.6879, -122.4702 | RECORDED | — |
-| Institution / city anchor | Richmond | Treasure Island Campus | 37.9358, -122.3477 | RECORDED | — |
-| Institution / city anchor | San Rafael | Treasure Island Campus | 37.9735, -122.5311 | RECORDED | — |
+| Institution / city anchor | Orinda | Treasure Island Campus | 37.8771, -122.1797 | RECORDED | — |
+| Institution / city anchor | Mill Valley | Treasure Island Campus | 37.906, -122.545 | RECORDED | — |
 | Institution / city anchor | South San Francisco | Treasure Island Campus | 37.6547, -122.4077 | RECORDED | — |
-| Institution / city anchor | San Mateo | Treasure Island Campus | 37.563, -122.3255 | RECORDED | — |
-| Institution / city anchor | Berkeley | Oakland Waterfront Campus | 37.8716, -122.2727 | RECORDED | — |
+| Institution / city anchor | San Leandro | Treasure Island Campus | 37.7249, -122.1561 | RECORDED | — |
+| Institution / city anchor | San Rafael | Treasure Island Campus | 37.9735, -122.5311 | RECORDED | — |
 | Institution / city anchor | Emeryville | Oakland Waterfront Campus | 37.8313, -122.2852 | RECORDED | — |
+| Institution / city anchor | Piedmont | Oakland Waterfront Campus | 37.8244, -122.2316 | RECORDED | — |
 | Institution / city anchor | Alameda | Oakland Waterfront Campus | 37.7652, -122.2416 | RECORDED | — |
+| Institution / city anchor | Berkeley | Oakland Waterfront Campus | 37.8716, -122.2727 | RECORDED | — |
+| Institution / city anchor | Albany | Oakland Waterfront Campus | 37.8869, -122.2978 | RECORDED | — |
+| Institution / city anchor | Orinda | Oakland Waterfront Campus | 37.8771, -122.1797 | RECORDED | — |
+| Institution / city anchor | El Cerrito | Oakland Waterfront Campus | 37.9158, -122.3108 | RECORDED | — |
+| Institution / city anchor | San Francisco | Oakland Waterfront Campus | 37.7749, -122.4194 | RECORDED | — |
 | Institution / city anchor | San Leandro | Oakland Waterfront Campus | 37.7249, -122.1561 | RECORDED | — |
+| Institution / city anchor | Richmond | Oakland Waterfront Campus | 37.9358, -122.3477 | RECORDED | — |
+| Institution / city anchor | Lafayette | Oakland Waterfront Campus | 37.8858, -122.118 | RECORDED | — |
+| Institution / city anchor | Tiburon | Oakland Waterfront Campus | 37.8735, -122.4566 | RECORDED | — |
+| Institution / city anchor | Sausalito | Oakland Waterfront Campus | 37.859, -122.4853 | RECORDED | — |
+| Institution / city anchor | Castro Valley | Oakland Waterfront Campus | 37.6941, -122.0864 | RECORDED | — |
+| Institution / city anchor | South San Francisco | Oakland Waterfront Campus | 37.6547, -122.4077 | RECORDED | — |
+| Institution / city anchor | Walnut Creek | Oakland Waterfront Campus | 37.9101, -122.0652 | RECORDED | — |
+| Institution / city anchor | Daly City | Oakland Waterfront Campus | 37.6879, -122.4702 | RECORDED | — |
 | Institution / city anchor | Tulane University | Crescent Works Campus | 29.9404, -90.1207 | RECORDED | — |
 | Institution / city anchor | Xavier University | Crescent Works Campus | 29.9649, -90.1073 | RECORDED | — |
 | Institution / city anchor | University of New Orleans | Crescent Works Campus | 30.0288, -90.0664 | RECORDED | — |
@@ -144,7 +166,7 @@ count, atmosphere and walkable city layer),
 `avatar-glb` and `hall-glb` exports, `glTF 2.0 binary`, produced on
 demand by the learner's own browser — never files sitting on disk),
 23 embedded services and
-57 external origins.
+66 external origins.
 
 this fabric is static files a plain web server serves next to the site - the deck's own "publish 3D content like a website" point. No RMAP endpoint, no server, no WebSocket, no fetch at build time, no DID minted: the identity field is honestly null. Every service listed runs in-page with no network, and every anchored .glb is produced on demand by the learner's browser, not a file sitting on disk.
 
@@ -174,7 +196,7 @@ this fabric is static files a plain web server serves next to the site - the dec
 | `crib:transport` | toolroom-crib | Transport & mobility tool crib | `campus:oakland` | `tools/registry/toolcribs.json` |
 | `crib:control` | toolroom-crib | Survey, safety & environment tool crib | `campus:new-orleans` | `tools/registry/toolcribs.json` |
 | `restoration-panel` | panel | Bay Restoration panel - 11 sites, 3 field-skill tracks | `campus:treasure-island` | `restoration/registry/restoration.json` |
-| `training-recorder` | recorder | training-data recorder - 3 episode kinds, device-local under tc-training | `campus:treasure-island` | `training/registry/training.json` |
+| `training-recorder` | recorder | training-data recorder - 4 episode kinds, device-local under tc-training | `campus:treasure-island` | `training/registry/training.json` |
 
 ## Other operators are other origins
 
@@ -185,22 +207,31 @@ branch per origin: this fabric's own branch (owner
 *SmartCiti.X : Trade Craft Academy (powered by AGI Corp)*, provenance tiers
 AUTHORED, DERIVED, RECORDED, SCHEMATIC,
 145 nodes) and
-57 external branches. The invariant the
+66 external branches. The invariant the
 build and the suite both assert: every branch has exactly one owner; no external branch contains a place, content or service this fabric serves, and every node this fabric serves sits under its own branch - asserted by spatial/build.py and spatial/test.mjs
 
 | External origin (owner) | Nodes | Provenance tiers |
 |---|---|---|
-| San Francisco | 1 | RECORDED |
-| Sausalito | 1 | RECORDED |
+| San Francisco | 2 | RECORDED |
+| Emeryville | 2 | RECORDED |
+| Oakland | 1 | RECORDED |
+| Tiburon | 2 | RECORDED |
+| Albany | 2 | RECORDED |
+| Berkeley | 2 | RECORDED |
+| Sausalito | 2 | RECORDED |
+| El Cerrito | 2 | RECORDED |
+| Piedmont | 2 | RECORDED |
+| Richmond | 2 | RECORDED |
 | Alameda | 2 | RECORDED |
-| Daly City | 1 | RECORDED |
-| Richmond | 1 | RECORDED |
+| Daly City | 2 | RECORDED |
+| Orinda | 2 | RECORDED |
+| Mill Valley | 1 | RECORDED |
+| South San Francisco | 2 | RECORDED |
+| San Leandro | 2 | RECORDED |
 | San Rafael | 1 | RECORDED |
-| South San Francisco | 1 | RECORDED |
-| San Mateo | 1 | RECORDED |
-| Berkeley | 1 | RECORDED |
-| Emeryville | 1 | RECORDED |
-| San Leandro | 1 | RECORDED |
+| Lafayette | 1 | RECORDED |
+| Castro Valley | 1 | RECORDED |
+| Walnut Creek | 1 | RECORDED |
 | Tulane University | 1 | RECORDED |
 | Xavier University | 1 | RECORDED |
 | University of New Orleans | 1 | RECORDED |

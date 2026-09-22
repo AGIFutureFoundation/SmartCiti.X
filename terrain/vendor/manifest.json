@@ -1,0 +1,98 @@
+{
+ "source": "Natural Earth (naturalearthdata.com), 10m physical vectors",
+ "licence": "public domain - see NATURAL_EARTH_LICENSE.md, vendored beside this",
+ "licence_sha256": "2631b5b39b6d1acc56de75235109b5af2dbb4b0ac5a127b6f06185977247fd4b",
+ "window_deg": 1.4,
+ "campuses": [
+  "chicago",
+  "denver",
+  "detroit",
+  "houston",
+  "miami",
+  "new-orleans",
+  "oakland",
+  "pittsburgh",
+  "seattle",
+  "treasure-island"
+ ],
+ "upstream_bytes": 32619997,
+ "vendored_bytes": 152384,
+ "files": {
+  "ne_coastline.json": {
+   "layer": "coastline",
+   "why": "the water's edge - the single line that makes a bay a bay",
+   "from": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_coastline.geojson",
+   "bytes": 62444,
+   "sha256": "5842e67e4707cac469c25b1226fc90ebd59827dea0050b75bdfe20416e5c8aaa",
+   "features": {
+    "treasure-island": 1,
+    "oakland": 1,
+    "new-orleans": 7,
+    "houston": 2,
+    "chicago": 0,
+    "seattle": 7,
+    "pittsburgh": 0,
+    "denver": 0,
+    "miami": 4,
+    "detroit": 0
+   }
+  },
+  "ne_lakes.json": {
+   "layer": "lakes",
+   "why": "inland water, which several of these campuses sit beside",
+   "from": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_lakes.geojson",
+   "bytes": 8373,
+   "sha256": "67790c5273c9cd38b147e136aff0a4c9cbfdc93a56668f8ab0b2c17805ccbd0a",
+   "features": {
+    "treasure-island": 0,
+    "oakland": 0,
+    "new-orleans": 2,
+    "houston": 0,
+    "chicago": 1,
+    "seattle": 0,
+    "pittsburgh": 0,
+    "denver": 0,
+    "miami": 0,
+    "detroit": 3
+   }
+  },
+  "ne_land.json": {
+   "layer": "land",
+   "why": "land polygons, so a map can fill the ground rather than outline it",
+   "from": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_land.geojson",
+   "bytes": 66645,
+   "sha256": "7f1131fb0aa90a3b3c9724af6c48390c0087f98567ca7ec4bf730c2623ab5764",
+   "features": {
+    "treasure-island": 2,
+    "oakland": 2,
+    "new-orleans": 3,
+    "houston": 2,
+    "chicago": 1,
+    "seattle": 4,
+    "pittsburgh": 1,
+    "denver": 1,
+    "miami": 4,
+    "detroit": 1
+   }
+  },
+  "ne_rivers.json": {
+   "layer": "rivers",
+   "why": "the rivers three of these cities were built on",
+   "from": "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_10m_rivers_lake_centerlines.geojson",
+   "bytes": 14922,
+   "sha256": "b599011f80beea3c4c3ab488927c3904d5adbd867c0e62fa08f8d7d316ec41c7",
+   "features": {
+    "treasure-island": 1,
+    "oakland": 1,
+    "new-orleans": 3,
+    "houston": 1,
+    "chicago": 2,
+    "seattle": 0,
+    "pittsburgh": 3,
+    "denver": 1,
+    "miami": 0,
+    "detroit": 1
+   }
+  }
+ }
+}

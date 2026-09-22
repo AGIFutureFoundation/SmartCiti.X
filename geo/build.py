@@ -123,21 +123,50 @@ checked = {
 # (build_data_nola.py). Cross-checked against the cited files when the
 # checkout is present, like the Oakland campus pair above.
 ANCHORS = {
+    # Every Bay city in the cited table within 22 km of the campus, in
+    # distance order. The selection rule is stated so a reader can re-run
+    # it; the coordinates are the table's own, checked below. Eight
+    # anchors on a bay this dense was a sparse map, not a true one.
     'treasure-island': [
         ('San Francisco', 37.7749, -122.4194, 'src/app.js CITIES'),
+        ('Emeryville', 37.8313, -122.2852, 'src/app.js CITIES'),
+        ('Oakland', 37.8044, -122.2712, 'src/app.js CITIES'),
+        ('Tiburon', 37.8735, -122.4566, 'src/app.js CITIES'),
+        ('Albany', 37.8869, -122.2978, 'src/app.js CITIES'),
+        ('Berkeley', 37.8716, -122.2727, 'src/app.js CITIES'),
         ('Sausalito', 37.859, -122.4853, 'src/app.js CITIES'),
+        ('El Cerrito', 37.9158, -122.3108, 'src/app.js CITIES'),
+        ('Piedmont', 37.8244, -122.2316, 'src/app.js CITIES'),
+        ('Richmond', 37.9358, -122.3477, 'src/app.js CITIES'),
         ('Alameda', 37.7652, -122.2416, 'src/app.js CITIES'),
         ('Daly City', 37.6879, -122.4702, 'src/app.js CITIES'),
-        ('Richmond', 37.9358, -122.3477, 'src/app.js CITIES'),
-        ('San Rafael', 37.9735, -122.5311, 'src/app.js CITIES'),
+        ('Orinda', 37.8771, -122.1797, 'src/app.js CITIES'),
+        ('Mill Valley', 37.906, -122.545, 'src/app.js CITIES'),
         ('South San Francisco', 37.6547, -122.4077, 'src/app.js CITIES'),
-        ('San Mateo', 37.5630, -122.3255, 'src/app.js CITIES'),
-    ],
-    'oakland': [
-        ('Berkeley', 37.8716, -122.2727, 'src/app.js CITIES'),
-        ('Emeryville', 37.8313, -122.2852, 'src/app.js CITIES'),
-        ('Alameda', 37.7652, -122.2416, 'src/app.js CITIES'),
         ('San Leandro', 37.7249, -122.1561, 'src/app.js CITIES'),
+        ('San Rafael', 37.9735, -122.5311, 'src/app.js CITIES'),
+    ],
+    # Same rule. Oakland itself is in the table and is NOT here: an anchor
+    # nought kilometres from the campus it anchors is a label on top of a
+    # label, and the distance field would read 0.0.
+    'oakland': [
+        ('Emeryville', 37.8313, -122.2852, 'src/app.js CITIES'),
+        ('Piedmont', 37.8244, -122.2316, 'src/app.js CITIES'),
+        ('Alameda', 37.7652, -122.2416, 'src/app.js CITIES'),
+        ('Berkeley', 37.8716, -122.2727, 'src/app.js CITIES'),
+        ('Albany', 37.8869, -122.2978, 'src/app.js CITIES'),
+        ('Orinda', 37.8771, -122.1797, 'src/app.js CITIES'),
+        ('El Cerrito', 37.9158, -122.3108, 'src/app.js CITIES'),
+        ('San Francisco', 37.7749, -122.4194, 'src/app.js CITIES'),
+        ('San Leandro', 37.7249, -122.1561, 'src/app.js CITIES'),
+        ('Richmond', 37.9358, -122.3477, 'src/app.js CITIES'),
+        ('Lafayette', 37.8858, -122.118, 'src/app.js CITIES'),
+        ('Tiburon', 37.8735, -122.4566, 'src/app.js CITIES'),
+        ('Sausalito', 37.859, -122.4853, 'src/app.js CITIES'),
+        ('Castro Valley', 37.6941, -122.0864, 'src/app.js CITIES'),
+        ('South San Francisco', 37.6547, -122.4077, 'src/app.js CITIES'),
+        ('Walnut Creek', 37.9101, -122.0652, 'src/app.js CITIES'),
+        ('Daly City', 37.6879, -122.4702, 'src/app.js CITIES'),
     ],
     'new-orleans': [
         ('Tulane University', 29.9404, -90.1207, 'build_data_nola.py pois'),
@@ -261,6 +290,47 @@ AUTHORED_ANCHORS = {
 # Locator.X, the sentence about the place is not from that table and does
 # not claim to be. Kept to widely-verifiable identity facts only.
 BLURBS = {
+    # The ten below arrived with the Bay densification: taking every city
+    # in the cited table within 22 km of a campus, rather than a hand-
+    # picked eight, added anchors the blurb table had never needed. Each
+    # is authored from public record at the same tier as the rest - a
+    # sentence of geography, not a claim about a local or a programme.
+    'Oakland':
+        'The East Bay’s largest city and the Port of Oakland’s home - '
+        'the campus across the estuary from Alameda.',
+    'Berkeley':
+        'University city on the East Bay’s northern flat and hills, '
+        'north of Oakland.',
+    'Emeryville':
+        'Small industrial-turned-commercial city wedged between Oakland '
+        'and Berkeley on the bay shore.',
+    'Piedmont':
+        'A small city entirely surrounded by Oakland, in the hills above '
+        'the estuary.',
+    'Albany':
+        'Compact East Bay city on the shoreline between Berkeley and '
+        'El Cerrito.',
+    'El Cerrito':
+        'East Bay city along the hills north of Albany, on the Richmond '
+        'side of the ridge.',
+    'Orinda':
+        'Residential city east of the Berkeley hills, through the '
+        'Caldecott Tunnel from Oakland.',
+    'Lafayette':
+        'Central Contra Costa city east of Orinda along the ridge road '
+        'to Walnut Creek.',
+    'Walnut Creek':
+        'Central Contra Costa’s commercial hub, east of the Berkeley '
+        'hills at the foot of Mount Diablo.',
+    'Castro Valley':
+        'Unincorporated community in the East Bay hills south-east of '
+        'San Leandro.',
+    'Mill Valley':
+        'Southern Marin town at the foot of Mount Tamalpais, north of '
+        'the Golden Gate.',
+    'Tiburon':
+        'Peninsula town on the Marin side of the bay, facing Angel '
+        'Island and the campus across the water.',
     'San Francisco':
         'The peninsula city at the Golden Gate - the Bay Area’s '
         'historic urban core, west across the bay from the campus island.',

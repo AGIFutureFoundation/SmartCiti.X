@@ -260,7 +260,13 @@ n_sites = len(poses) - n_campuses - n_anchors
 REF = {p['subject']['ref']: p for p in poses}
 assert len(REF) == len(poses), 'a pose ref collides'
 assert n_campuses == len(campuses_reg) == 10
-assert n_anchors == sum(len(v) for v in geo['anchors'].values()) == 47
+# The anchor count is geo/'s to publish, not this pack's to remember. It
+# was typed as == 47 here, and the day geo/ densified its Bay anchors from
+# the Locator.X table that literal was the only thing standing between a
+# correct rebuild and a failed one. The tie to geo/ is the check; a second
+# copy of the number is not.
+assert n_anchors == sum(len(v) for v in geo['anchors'].values())
+assert n_anchors > 0, 'spatial: no anchors came through from geo/'
 assert n_sites == sum(1 for s in resto['sites'] if s['pin']) == 10
 assert len(unposed) == 1
 

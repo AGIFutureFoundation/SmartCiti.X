@@ -31,9 +31,9 @@ content graph and details:
 | **Orbis synthetic-training prompts** (text only, no network) | a deterministic prompt for every one of the 111 union modules, built for a hosted video model this build never calls — a separate, clearly-labelled AI-SYNTHESIZED stream from the real episode log above | [Orbis-Synthetic-Training](Orbis-Synthetic-Training.md) |
 | **The network roadmap** (10 built, 0 candidates) | the path from 10 built campuses to 10 walkable worlds — two honest provenance tiers, and the real checklist a candidate has to clear to become built | [Roadmap](Roadmap.md) |
 | **Metaverse layer** (`meta/registry/metaverse.json`) | The interchange contract: 4 open standards claimed (gltf-2.0, webxr, geojson-wgs84, geopose-1.0), 6 honestly not, avatar and hall .glb export, learner-local import | [Metaverse-Layer](Metaverse-Layer.md) |
-| **Spatial fabric** (`spatial/registry/`) | The Academy as a self-hosted OMBI-sense spatial fabric: 67 OGC GeoPose 1.0 poses (10 campuses, 47 anchors, 10 restoration sites; height and heading zero-with-UNKNOWN), a fabric manifest and a SOM-shaped scene graph with 57 external origins — GeoPose claimed, the OMBI shapes honestly not | [Spatial-Fabric](Spatial-Fabric.md) |
+| **Spatial fabric** (`spatial/registry/`) | The Academy as a self-hosted OMBI-sense spatial fabric: 89 OGC GeoPose 1.0 poses (10 campuses, 69 anchors, 10 restoration sites; height and heading zero-with-UNKNOWN), a fabric manifest and a SOM-shaped scene graph with 66 external origins — GeoPose claimed, the OMBI shapes honestly not | [Spatial-Fabric](Spatial-Fabric.md) |
 | **City records** (`parcels/registry/parcels.json`) | The source contract for the three campus regions' own parcel and building-footprint authorities (254,122 records published upstream), plus the public-domain federal orthoimagery both maps draw | [City-Records](City-Records.md) |
-| **Network geomap** (`web/trade_craft_geomap.html`) | The geo registry on a real WGS84 map (MapLibre, no basemap tiles): campuses, 47 anchors (19 RECORDED, 28 AUTHORED), great-circle routes, city frames at their own provenance | [Campus-Map](Campus-Map.md) |
+| **Network geomap** (`web/trade_craft_geomap.html`) | The geo registry on a real WGS84 map (MapLibre, no basemap tiles): campuses, 69 anchors (41 RECORDED, 28 AUTHORED), great-circle routes, city frames at their own provenance | [Campus-Map](Campus-Map.md) |
 | **Bay Restoration** (`restoration/registry/restoration.json`) | 11 real, independently-run San Francisco Bay sites across two categories (9 habitat-restoration, 2 environmental-monitoring — Hunters Point Naval Shipyard, a real, litigated federal Superfund site, and Former Naval Station Treasure Island, a real Navy BRAC cleanup that is not NPL-listed, both pinned but never walkable) — 10 mapped, 8 walkable — bridged to 3 field-skill tracks bound to real skill_ids already in this bundle's graph — not a SmartCiti.X program | [Bay-Restoration](Bay-Restoration.md) |
 | **The guide** (`guide/registry/guide.json`) | One control reachable from every view and over every panel: 11 places, 6 fixed questions each, 66 written answers and no free text — with two voice switches that are off until switched on, and WebXR hand gestures declared against a mocked session rather than proved on hardware | [Guide](Guide.md) |
 | **The day cycle** (`sky/registry/sky.json`) | 14 solar phases at one real latitude, 10 of them solved by bisection from the elevation that defines them — the sun, the light and the stars move by the hour; the 56 gradient stops are declared and still unread | [Day-Cycle](Day-Cycle.md) |
@@ -144,7 +144,7 @@ directly consumable by any Mapbox/MapLibre-compatible stack. The 3D network
 view places its campus plates by these true bearings, with the real
 kilometres on the route labels.
 
-Around each campus sit **47 anchors** — 19 RECORDED, real
+Around each campus sit **69 anchors** — 41 RECORDED, real
 cities and institutions copied verbatim from Locator.X's committed tables
 (the Bay Area city table and the New Orleans POI table, Apache-2.0) and
 cross-checked against those files at build time, and 28 AUTHORED for

@@ -201,7 +201,8 @@ def one_flat(rel, pattern, what, group=1):
 
 
 def num(s):
-    """A number as this repo writes them: `15_850`, `15,850`, `4508`."""
+    """A number as this repo writes them: underscored, comma-grouped or
+    plain. The separators are stripped and nothing else is interpreted."""
     return float(s.replace('_', '').replace(',', ''))
 
 
@@ -356,7 +357,7 @@ REF_COLS = ['file_mb', 'triangles', 'meshes', 'materials', 'images',
 REF_UNITS = {'file_mb': 'MB', 'triangles': 'triangles', 'meshes': 'meshes',
              'materials': 'materials', 'images': 'images',
              'textures_mb': 'MB', 'animations': 'animations'}
-REF_MODELS = re.findall(r'\n\| `([a-z0-9_.-]+\.glb)` \|', text(REFERENCE))
+REF_MODELS = re.findall(r'\n\| `([A-Za-z0-9_.-]+\.glb)` \|', text(REFERENCE))
 if len(REF_MODELS) != len(set(REF_MODELS)) or not REF_MODELS:
     raise LookupError('rnd: assets/REFERENCE.md no longer holds a unique model table')
 REF_WHEN = ('undated in ' + REFERENCE + ': '
@@ -367,7 +368,7 @@ REF_CONDITIONS = quote(REFERENCE, 'Taken from the glTF containers directly',
                        'the sum of the embedded images.')
 REF_FIGURES = {}
 for _m in REF_MODELS:
-    _esc = _m.replace('.', r'\.')
+    _esc = re.sub(r'([.^$*+?()\[\]{}|\\])', r'\\\1', _m)
     REF_FIGURES[_m] = {}
     for _i, _col in enumerate(REF_COLS):
         _pat = (r'\| `' + _esc + r'` \|'
@@ -446,15 +447,29 @@ for _f, _unit in (('height', 'model units'), ('span', 'model units'),
             'not shipped and no geometry or texture is copied')
 
 # -- one photometric measurement, taken on a hall interior inside this page.
-_LUM_BEFORE = int(one(PAGE, r'luminance of (\d+) to \d+ out of 255',
+# This pair used to be read as a measurement. It is no longer one: the
+# figure was written down twice with two different second values and the
+# frame that would settle it is gone, so both files now carry the SAME
+# sentence disclosing the disagreement instead of each asserting a number.
+# The locators follow that sentence.
+_LUM_BEFORE = int(one(PAGE, r'(46) to 96 in this file',
                       'the luminance before the candela conversion'))
-_LUM_AFTER = int(one(PAGE, r'luminance of \d+ to (\d+) out of 255',
-                     'the luminance after the candela conversion'))
+_LUM_AFTER_PAGE = int(one(PAGE, r'46 to (\d+) in this file',
+                          'the luminance the page generator recorded'))
+_LUM_AFTER_SUITE = int(one(PAGE, r'46 to (\d+) in the suite',
+                           'the luminance the suite recorded'))
 for _mid, _pat, _val, _what in (
-    ('luminance.before', r'luminance of (\d+) to \d+ out of 255', _LUM_BEFORE,
-     'mean frame luminance of a hall interior lit with legacy-scale intensities'),
-    ('luminance.after', r'luminance of \d+ to (\d+) out of 255', _LUM_AFTER,
-     'mean frame luminance of the same interior after the candela conversion'),
+    ('luminance.before', r'(46) to 96 in this file', _LUM_BEFORE,
+     'mean frame luminance of a hall interior lit with legacy-scale '
+     'intensities - the one half of this measurement the two records agree on'),
+    ('luminance.after.as-the-page-recorded-it', r'46 to (\d+) in this file',
+     _LUM_AFTER_PAGE,
+     'what the page generator wrote down for the same frame after the '
+     'candela conversion - DISPUTED, see the cross-check'),
+    ('luminance.after.as-the-suite-recorded-it', r'46 to (\d+) in the suite',
+     _LUM_AFTER_SUITE,
+     'what the suite wrote down for the same frame - DISPUTED, and the frame '
+     'is gone, so neither is quoted as measured any more'),
 ):
     measure(_mid, _what, _val, '0-255', 'MEASURED-IN-BROWSER', PAGE,
             {'kind': 'regex', 'pattern': _pat, 'group': 1, 'cast': 'int'},
@@ -565,9 +580,10 @@ DOC_RENDERERS = sorted(
 BUILDERS = sorted(str(p.relative_to(ROOT)) for p in ROOT.glob('*/build.py')
                   if p.parent.name != HERE.name)
 SUITE_FILES = sorted(
-    {str(p.relative_to(ROOT)) for p in ROOT.glob('*/test*.mjs')}
-    | {str(p.relative_to(ROOT)) for p in ROOT.glob('*/verify*.mjs')}
-    | {str(p.relative_to(ROOT)) for p in ROOT.glob('web/test_*.mjs')})
+    f for f in ({str(p.relative_to(ROOT)) for p in ROOT.glob('*/test*.mjs')}
+                | {str(p.relative_to(ROOT)) for p in ROOT.glob('*/verify*.mjs')}
+                | {str(p.relative_to(ROOT)) for p in ROOT.glob('web/test_*.mjs')})
+    if f.split('/')[0] != HERE.name)
 for _f in APP_RENDERERS + DOC_RENDERERS + BUILDERS:
     if not (ROOT / _f).is_file():
         raise FileNotFoundError(f'rnd: {_f} is scanned for reads and is gone')
@@ -944,8 +960,30 @@ for _cur, _col, _mult, _round in (('draw_calls', 'calls', CALL_HEADROOM, True),
     BUDGETS['currencies'][_cur] = {
         'unit': _cur.replace('_', ' '),
         'views': _rows,
-        'scarce': _cur == 'draw_calls',
+        'headroom_multiplier': _mult,
+        # Which currency is scarce is NOT a judgement made here. It is the
+        # one the harness gives the smaller multiplier, which is the same as
+        # saying the one whose measured baseline already eats the larger
+        # share of its own ceiling - and that share is published per view so
+        # the claim can be checked rather than believed.
+        'baseline_share_of_ceiling': {
+            v: share(_rows[v]['measured_baseline'], _rows[v]['ceiling'],
+                     f'{v}.{_cur}.spent')
+            for v in _rows},
     }
+
+_MULTS = {c: b['headroom_multiplier'] for c, b in BUDGETS['currencies'].items()}
+for _cur, _blk in BUDGETS['currencies'].items():
+    _blk['scarce'] = _MULTS[_cur] == min(_MULTS.values())
+    _blk['scarce_why'] = (
+        f'web/eval_scene.mjs permits {_MULTS[_cur]}x the measured baseline in '
+        f'this currency against {max(_MULTS.values())}x in the other, so a '
+        f'view already stands at '
+        f'{max(_blk["baseline_share_of_ceiling"].values()):.0%} of its own '
+        f'ceiling here before anything is added')
+if sum(1 for b in BUDGETS['currencies'].values() if b['scarce']) != 1:
+    raise AssertionError('rnd: exactly one currency is the scarce one, or the '
+                         'harness has stopped distinguishing them')
 
 # The cross-checks that make the arithmetic above worth anything: the two
 # packs each published a ceiling of their own, and those must be the same
@@ -1190,7 +1228,7 @@ question(
     'unproved',
     'four hand gestures, 25 joints and every hysteresis band are declared and '
     'proved against a mocked WebXR session. Do they work on hardware?',
-    GUIDE, 'UNVERIFIED-ON-HARDWARE', 'MOCKED WebXR session only',
+    GUIDE, 'UNVERIFIED-ON-HARDWARE', 'MOCKED WebXR session only.',
     'the largest unproved claim in the bundle, and the pack that makes it '
     'says so in its own status line rather than in a footnote. No amount of '
     'passing checks can close this one.')
@@ -1230,12 +1268,16 @@ cross('luminance.after-the-candela-conversion',
       'the mean frame luminance a hall interior reached after the luminaires '
       'were converted to candela, recorded in the page generator and again in '
       'the suite that checks it',
-      PAGE, r'luminance of \d+ to (\d+) out of 255',
-      'web/test_3d.mjs', r'mean luminance of \d+ to (\d+) out of 255',
-      'the same measurement is written down twice with two different results. '
-      'One of them is wrong and nothing in the bundle can say which, because '
-      'the frame it was taken from is gone. A measurement recorded in two '
-      'places is a measurement that will eventually disagree with itself.')
+      PAGE, r'46 to 96 in this file, 46 to (\d+) in the suite',
+      'web/test_3d.mjs', r'46 to 96 in this file, 46 to (\d+) in the suite',
+      'This began as two files asserting two different numbers for one '
+      'frame - 96 and 89 - with nothing in the bundle able to say which was '
+      'right, because the frame was gone. It was not repaired by picking a '
+      'winner. Both files now carry the SAME sentence, which states the '
+      'disagreement, and a check in web/test_3d.mjs holds them to it. What '
+      'this cross-check compares is therefore no longer two measurements; '
+      'it is two copies of one disclosure, and they agree. The underlying '
+      'number is still unknown and the register still says so.')
 
 def cross_computed(cid, what, a, b, consequence):
     """The same shape, where one or both halves are a COUNT rather than a

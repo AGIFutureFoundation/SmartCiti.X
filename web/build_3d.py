@@ -69,6 +69,7 @@ roadmap_reg = json.load(open(ROOT / 'roadmap/registry/roadmap.json'))
 restoration_reg = json.load(open(ROOT / 'restoration/registry/restoration.json'))
 guide_reg = json.load(open(ROOT / 'guide/registry/guide.json'))
 sky_reg = json.load(open(ROOT / 'sky/registry/sky.json'))
+terrain_reg = json.load(open(ROOT / 'terrain/registry/terrain.json'))
 
 def trim(rows, *drop):
     """Ship what is drawn, not what is explained.
@@ -473,6 +474,20 @@ DATA = json.dumps({
     # azimuth solved for this campus's latitude, the colours that go with
     # each, and how the six weather states already in world/ dress them.
     # The phases carry pointers into world/ rather than copies of it.
+    # the real ground: Natural Earth's own coastline, rivers and lakes
+    # around each campus in local metres, and the land/water mask derived
+    # from them. The anchor is NOT shipped - geo/ already says where every
+    # campus is, and a second copy of a coordinate is a second chance to
+    # be wrong about it.
+    'terrain': {
+        'honesty': terrain_reg['honesty'],
+        'counts': terrain_reg['counts'],
+        'licence': terrain_reg['licence'],
+        'source': terrain_reg['source'],
+        'campuses': {k: {'local': v['local'], 'mask': v['mask'],
+                         'facts': v['facts']}
+                     for k, v in terrain_reg['campuses'].items()},
+    },
     'sky': {k: sky_reg[k] for k in
             ('honesty', 'counts', 'site', 'phases', 'weather_sky',
              'layers', 'stars', 'compose_order')},
@@ -6279,8 +6294,7 @@ let roomLights = [];
    contribution falls off as I / r^decay. Every luminaire in this bundle was
    first written with legacy-scale numbers (0.5 - 2.6), which at a 2.7 m
    ceiling or an 8.7 m mast head is indistinguishable from no light at all:
-   measured on a hall interior, cranking them 60x took the scene from a mean
-   luminance of 46 to 96 out of 255. They WERE real lights and they DID vary
+   measured on a hall interior, cranking them 60x lifted the frame from near-black to readable. The exact pair was written down twice and the two records disagree - 46 to 96 in this file, 46 to 89 in the suite beside it - and the frame that would settle which is right is gone. So neither number is quoted as measured any more: what survives the disagreement is the direction and the order of magnitude, and a check now holds the two files to the same sentence so they cannot drift apart again unnoticed. They WERE real lights and they DID vary
    with the registry's lux - they just were not lighting anything, which is
    the same near-miss as an emissive box that only looks like a lamp.
 
@@ -7073,6 +7087,12 @@ function applyAtmos(k) {
     const lit = mixHex(h, ph.gradient.stops[i], 1 - ph.gradient.campus_mix);
     return darkHex(mixHex(lit, ws.gradient_tint_hex, ws.tint_mix), w.sky_mul);
   });
+  // The bay reflects the sky that is actually up. gStops was composed
+  // just above from this campus's own colours, this phase's gradient and
+  // this weather's tint; its last stop IS the horizon. Re-solving that
+  // colour for the water would be a second copy of it, and the two would
+  // drift the first time either half changed.
+  tintTerrain(parseInt(gStops[gStops.length - 1].slice(1), 16));
   setSky(gStops,
     { cloud: w.cloud, moon: !!w.moon, stars: (starsDrawn = starsUp), starAlpha,
       haze: a.haze,                       // this campus's own horizon band
@@ -7297,7 +7317,7 @@ function rainStep(dt) {
 function reAtmos() {
   if (view === 'campus') {
     applyAtmos(campusKey);
-    scene.fog.near = 320 * fogMul; scene.fog.far = 1280 * fogMul;
+    setCampusFog();
   } else if (view === 'hall') {
     applyAtmos(campusKey);
     scene.fog.near = 70 * fogMul; scene.fog.far = 170 * fogMul;
@@ -7420,6 +7440,210 @@ function wetGround() {
 const _wetTint = new THREE.Color(0x2b3236);
 ground.rotation.x = -Math.PI/2; ground.receiveShadow = true;
 scene.add(ground);
+
+/* ------------------------------------------------------- real terrain ---
+   Every campus in this app has stood on a disc. The coordinates were true
+   and the world around them was a circle of asphalt fading into fog, which
+   is why Oakland and Denver looked like the same place with different
+   signs. This draws what is actually out there: Natural Earth's own
+   coastline, rivers and lakes within 6 km of each campus, and the
+   land/water mask derived from those outlines.
+
+   Three rules, each of them load-bearing.
+
+   ONE: the mask is never consulted inside the apron. At 1:10,000,000 a
+   shoreline drawn through a downtown lands on whichever side it lands on,
+   and the terrain pack measures the consequence rather than assuming it
+   away - the mask puts the Miami and Detroit campus anchors on WATER, and
+   Miami's first disagreeing cell is 442 m out, inside GROUND_R. A render
+   that cut the ground wherever the mask said water would drop two of the
+   ten campuses into a bay. So land is drawn from GROUND_R outward and the
+   apron is always solid.
+
+   TWO: the water takes its colour from the sky that is actually up. Water
+   is a mirror; a fixed blue would be wrong at every hour but one, and the
+   sky gradient's horizon stop is already solved per phase and per weather.
+   Tying the two means dusk turns the bay the colour of dusk without a
+   second palette to keep in step.
+
+   THREE: one draw call for the land, one for the water, one for the lines.
+   The mask is up to 9,216 cells and a cell per mesh would cost more draw
+   calls than the entire campus. Consecutive land cells in a row are run
+   together into a single quad first, which is a few hundred quads rather
+   than nine thousand, and those are merged into one geometry. */
+/* The campus fog used to end at 1,280 m, which was the right answer when
+   the world ended at a 520 m disc: the fog was there to hide the edge of
+   the data. There is six kilometres of real ground now, so the fog that
+   hid the edge is hiding the bay instead - at 1,280 m a learner standing
+   on Treasure Island could see 1.3 km of a shoreline that runs for 20.
+   The far plane is therefore derived from how much ground there IS, and
+   the weather still closes it: fog weather multiplies by 0.34 and the
+   view shuts back down to under two kilometres, which is what fog does. */
+function setCampusFog() {
+  const k = campusGroup && campusGroup.userData.key;
+  const T = k && D.terrain.campuses[k];
+  const far = T ? T.local.half_m * .95 : 1280;
+  scene.fog.near = 420 * fogMul;
+  scene.fog.far = far * fogMul;
+}
+const TERRAIN_LINE_Y = 0.9, TERRAIN_WATER_Y = -1.2, TERRAIN_LAND_Y = -0.6;
+let terrainWaterMat = null, terrainLandMat = null;
+// how much of the water's colour comes from the body rather than the
+// surface. See tintTerrain.
+const WATER_ABSORB = .72;
+const _waterBody = new THREE.Color(0x1d4a55);
+let skyHorizonHex = 0x8fa6b8;
+
+/* Greedy horizontal run-length over the mask. Returns [x0, x1, z0, z1] in
+   metres for each run of land cells, skipping any run that lies wholly
+   inside the apron - see rule ONE. */
+function terrainRuns(mask, half, inner) {
+  const n = mask.n, step = 2 * half / n, out = [];
+  for (let j = 0; j < n; j++) {
+    const bits = BigInt('0x' + mask.rows[j]);
+    const z0 = -half + j * step, z1 = z0 + step;
+    let run = -1;
+    for (let i = 0; i <= n; i++) {
+      const land = i < n && ((bits >> BigInt(i)) & 1n) === 1n;
+      if (land && run < 0) run = i;
+      else if (!land && run >= 0) {
+        const x0 = -half + run * step, x1 = -half + i * step;
+        // the apron already covers this square, and drawing a second
+        // ground over it would z-fight with the one the learner walks on
+        const far = Math.max(Math.abs(x0), Math.abs(x1)) > inner
+                 || Math.max(Math.abs(z0), Math.abs(z1)) > inner;
+        if (far) out.push([x0, x1, z0, z1]);
+        run = -1;
+      }
+    }
+  }
+  return out;
+}
+
+function terrainLines(lines, colour, opacity) {
+  const pos = [];
+  for (const line of lines) {
+    for (let i = 1; i < line.length; i++) {
+      pos.push(line[i - 1][0], TERRAIN_LINE_Y, line[i - 1][1],
+               line[i][0], TERRAIN_LINE_Y, line[i][1]);
+    }
+  }
+  if (!pos.length) return null;
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  return new THREE.LineSegments(g, new THREE.LineBasicMaterial(
+    { color: colour, transparent: true, opacity, depthWrite: false }));
+}
+
+/* Build the terrain for one campus into `parent`, which owns it: the
+   campus group is disposed as a unit, so nothing here needs its own
+   teardown path. */
+function buildTerrain(key, parent) {
+  const T = D.terrain.campuses[key];
+  if (!T) throw new Error('no terrain built for campus ' + key);
+  const half = T.local.half_m;
+
+  // water first, as a floor under everything - a single plane, because a
+  // hole cut to the coastline would need the mask to be right inside the
+  // apron, and rule ONE says it is not
+  terrainWaterMat = new THREE.MeshStandardMaterial({
+    color: skyHorizonHex, roughness: .16, metalness: .28,
+    transparent: true, opacity: .93 });
+  const water = new THREE.Mesh(
+    new THREE.PlaneGeometry(half * 2, half * 2), terrainWaterMat);
+  water.rotation.x = -Math.PI / 2;
+  water.position.y = TERRAIN_WATER_Y;
+  water.renderOrder = -2;
+  parent.add(water);
+
+  // then the land that the mask says is land, out past the apron
+  const runs = terrainRuns(T.mask, half, GROUND_R);
+  if (runs.length) {
+    const geos = runs.map(([x0, x1, z0, z1]) => {
+      const g = new THREE.PlaneGeometry(x1 - x0, z1 - z0);
+      g.rotateX(-Math.PI / 2);
+      g.translate((x0 + x1) / 2, TERRAIN_LAND_Y, (z0 + z1) / 2);
+      return g;
+    });
+    const merged = mergeGeometries(geos);
+    geos.forEach(g => g.dispose());
+    const a = ATMOS[key] ?? DEF_ATMOS;
+    terrainLandMat = new THREE.MeshStandardMaterial({
+      color: 0x55605c, roughness: .96, metalness: 0 });
+    terrainLandMat.userData.atmosGround = a.ground;
+    const land = new THREE.Mesh(merged, terrainLandMat);
+    land.receiveShadow = false;
+    land.renderOrder = -1;
+    parent.add(land);
+  }
+
+  // and the water's own edge, drawn as lines so a shoreline reads as a
+  // shoreline rather than as the boundary between two greys
+  const coast = terrainLines(T.local.coast, 0xdff0f6, .5);
+  if (coast) parent.add(coast);
+  const fresh = terrainLines([...T.local.rivers, ...T.local.lakes],
+                             0xbfe3ef, .42);
+  if (fresh) parent.add(fresh);
+
+  parent.userData.terrainRuns = runs.length;
+  parent.userData.terrainWater = water;
+}
+
+/* The bay follows the hour. Called from applyAtmos once the gradient for
+   this phase and this weather is composed, with the horizon stop it
+   already computed - not a second solve of the same colour. */
+function tintTerrain(horizonHex) {
+  skyHorizonHex = horizonHex;
+  if (terrainWaterMat) {
+    /* Water is not a mirror, and the first cut treated it as one: the
+       reflected horizon alone put a CECE79 bay under Miami - a sheet of
+       yellow where the sea should be. What that model left out is the
+       other half of what water does. It REFLECTS the sky at the surface
+       and ABSORBS through the body, and absorption takes the red end
+       first, which is why deep water is blue-green under a gold sky
+       rather than gold.
+
+       So: reflect, then pull toward the body colour, then darken. The
+       weight is the one thing here that is a judgement rather than a
+       measurement, and it is written once, named, and used for every
+       campus and every hour. */
+    terrainWaterMat.color.setHex(horizonHex)
+      .lerp(_waterBody, WATER_ABSORB).multiplyScalar(.42);
+    terrainWaterMat.needsUpdate = true;
+  }
+  if (terrainLandMat) {
+    // The land keeps most of its own tone. The first cut lerped it 22%
+    // toward the same horizon the water was reflecting, which pulled the
+    // two colours together until, at noon on Treasure Island, the bay was
+    // #636f78 and the shore was #5e6a68 - a coastline drawn in two greys
+    // a reader cannot tell apart. Ambient light tints the ground; it does
+    // not repaint it.
+    terrainLandMat.color.setHex(0x6b7466)
+      .lerp(new THREE.Color(horizonHex), .10);
+    terrainLandMat.needsUpdate = true;
+  }
+}
+window.__tc3dTerrain = () => {
+  const k = campusGroup && campusGroup.userData.key;
+  if (!k) return null;
+  const T = D.terrain.campuses[k];
+  return { campus: k, runs: campusGroup.userData.terrainRuns,
+           half_m: T.local.half_m, inner_m: GROUND_R,
+           anchorOnLand: T.facts.anchor_on_land,
+           boundary_m: T.facts.anchor_to_mask_boundary_m,
+           waterHex: terrainWaterMat
+             ? '#' + terrainWaterMat.color.getHexString() : null,
+           landHex: terrainLandMat
+             ? '#' + terrainLandMat.color.getHexString() : null,
+           // the thing that decides whether a coastline is visible at all
+           contrast: (terrainWaterMat && terrainLandMat)
+             ? Math.round(Math.abs(
+                 terrainWaterMat.color.r * 299 + terrainWaterMat.color.g * 587
+                 + terrainWaterMat.color.b * 114
+                 - (terrainLandMat.color.r * 299 + terrainLandMat.color.g * 587
+                    + terrainLandMat.color.b * 114)) / 10) / 100
+             : null };
+};
 /* The graph paper is gone.
    A 1,040 m GridHelper at 180 divisions was drawn 2 cm above the ground
    in both the campus and the hall - a 5.8 m grid whose far half was
@@ -9830,6 +10054,8 @@ function buildCampus(key) {
     fogBanks.push({ m, ang, rad, sp: .015 + (i % 3) * .008 });
   }
   setGroundSurface(key);
+  buildTerrain(key, campusGroup);
+  tintTerrain(skyHorizonHex);
   clearAdvisors();
   spawnCampusAdvisors();
   spawnFauna(key, R);
@@ -10179,7 +10405,7 @@ function showCampus(key) {
     spawnFauna(key, campusR);
     buildMinimap(key, campusR);
   } else buildCampus(key);
-  scene.fog.near = 320 * fogMul; scene.fog.far = 1280 * fogMul;
+  setCampusFog();
   document.getElementById('mm').style.display = '';
   controls.maxDistance = 760; controls.minDistance = 20;
   camera.position.set(0, 300, 350); controls.target.set(0, 0, 0);
@@ -12719,6 +12945,68 @@ assert not _nofab, (
     'world/registry/world.json ships no built fabric for: '
     + ', '.join(_nofab) + ' - every campus needs its own, because the page '
     'no longer substitutes the flagship\'s')
+# ---- terrain gates -------------------------------------------------------
+# Every campus the page can open has ground under it. buildTerrain THROWS
+# on a missing key rather than drawing a disc, so a campus added without
+# terrain would fail in the browser; this fails at build instead.
+_t_shipped = set(terrain_reg['campuses'])
+_t_viewable = set(campuses_reg)
+assert _t_viewable <= _t_shipped, (
+    'these campuses can be opened but have no terrain: %s. Run '
+    'terrain/build.py.' % sorted(_t_viewable - _t_shipped))
+
+# The mask is never consulted inside the apron. terrain/ measures why this
+# matters: the mask puts two of the ten campus ANCHORS on water, and
+# Miami's first disagreeing cell is 441.9 m out - inside GROUND_R. If the
+# inner radius ever stopped being passed, the ground would open under two
+# campuses and nothing else here would notice.
+# Matching the call site as a STRING would be a check that edits itself:
+# the literal lives in this same file, so one global rename rewrites the
+# assertion along with the code, and the gate passes while the ground
+# opens. (That is not hypothetical - this gate was written that way first
+# and a mutation walked straight through it.) So the call site is PARSED:
+# the inner radius must be an identifier, that identifier must be declared
+# as a number in the page, and that number must be positive.
+_m_call = re.search(r'terrainRuns\(T\.mask, half, ([A-Za-z_$][\w$]*)\)', page)
+assert _m_call, (
+    'the terrain runs must be clipped to a NAMED apron radius; the mask '
+    'is wrong under two of the ten campuses and an unclipped run would '
+    'cut the ground away beneath them')
+_m_decl = re.search(r'const %s = (\d+(?:\.\d+)?)\b' % _m_call.group(1), page)
+assert _m_decl, (
+    'the apron radius passed to terrainRuns (%s) is not declared as a '
+    'number anywhere in the page' % _m_call.group(1))
+assert float(_m_decl.group(1)) > 0, (
+    'the apron radius is %s, so nothing is clipped and the mask reaches '
+    'the campus' % _m_decl.group(1))
+_wet = [k for k, v in terrain_reg['campuses'].items()
+        if not v['facts']['anchor_on_land']]
+_tight = [k for k in _wet
+          if terrain_reg['campuses'][k]['facts']['anchor_to_mask_boundary_m']
+          is not None
+          and terrain_reg['campuses'][k]['facts'][
+              'anchor_to_mask_boundary_m'] < 520]
+assert _tight, (
+    'this gate exists because at least one campus anchor sits on water '
+    'with the disagreement INSIDE the apron; if that is no longer true '
+    'the gate is guarding nothing and the comment above is stale')
+
+# The water's colour is solved once, from the sky that is up. Two solves
+# would drift the first time either the phase table or the weather tint
+# changed - which is exactly how the sky and the stars fell out of step
+# earlier in this file's history.
+assert page.count('const WATER_ABSORB') == 1, (
+    'the water absorption weight is declared once and used everywhere')
+assert page.count("tintTerrain(parseInt(gStops[gStops.length - 1]") == 1, (
+    'the water takes the composed gradient\'s own horizon stop, not a '
+    'second solve of the same colour')
+
+# The campus fog far plane is derived from the terrain window, never typed.
+assert '1280 * fogMul' not in page, (
+    'a literal campus fog distance is back: it would hide the bay again, '
+    'which is the whole reason setCampusFog() reads the terrain window')
+assert 'function setCampusFog' in page
+
 assert 'const FABRIC_FALLBACK' not in page, (
     'a fabric fallback constant is back in the page: it would be a second '
     'copy of a campus row and it would fail open')

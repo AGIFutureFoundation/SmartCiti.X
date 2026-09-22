@@ -358,8 +358,7 @@ ok('the carriageway is built with the campus fabric and freed with it',
    legacy path, so a PointLight's intensity is CANDELA and falls off as
    I / r^decay. Every luminaire here was first written with legacy-scale
    numbers (0.5 - 2.6), which at a 2.7 m ceiling or an 8.7 m mast head is
-   indistinguishable from no light at all - measured on a hall interior,
-   scaling them took the frame from a mean luminance of 46 to 89 out of 255.
+   indistinguishable from no light at all - measured on a hall interior, cranking them 60x lifted the frame from near-black to readable. The exact pair was written down twice and the two records disagree - 46 to 96 in this file, 46 to 89 in the suite beside it - and the frame that would settle which is right is gone. So neither number is quoted as measured any more: what survives the disagreement is the direction and the order of magnitude, and a check now holds the two files to the same sentence so they cannot drift apart again unnoticed.
    They were real lights and they did vary with the registry's lux; they
    simply were not lighting anything, which is the same near-miss as an
    emissive box that only looks like a lamp, in different clothes.
@@ -1252,5 +1251,71 @@ ok('applyPhase hands the resolved hour and weather treatment out rather '
   + 'than having applyAtmos resolve either a second time',
   /phaseGrad = eff; wxSky = ws;/.test(code)
   && /const ph = phaseGrad, ws = wxSky;/.test(code));
+
+/* ---- real terrain ----------------------------------------------------
+   Two checks below are scoped to a FUNCTION BODY rather than to `code`,
+   and that is deliberate. `code` is the BUILDER, and the builder now
+   carries build-time gates that quote the very JS they guard - so
+   counting `tintTerrain(parseInt(gStops` across the file found two: the
+   call, and the assertion that there is only one call. That is the same
+   trap as the comment-matching one above, wearing different clothes: the
+   text a check forbids or counts is likeliest to appear in the thing
+   written to enforce it. Scope to where the code actually runs. */
+ok('the terrain pack is shipped to the page, and the page holds no second '
+  + 'copy of where a campus is - geo/ already answers that',
+  /'terrain': \{/.test(src) || /D\.terrain/.test(code));
+ok('every campus the page can open has ground built for it, checked at '
+  + 'build rather than discovered as a thrown error in a browser',
+  /these campuses can be opened but have no terrain/.test(src));
+ok('buildTerrain refuses a campus with no terrain instead of quietly '
+  + 'drawing the old disc - a missing world should stop, not degrade',
+  /throw new Error\('no terrain built for campus ' \+ key\)/
+    .test(fnCode('buildTerrain')));
+ok('the mask is run-length encoded into quads before it is drawn: 9,216 '
+  + 'cells as meshes would cost more draw calls than the whole campus',
+  /mergeGeometries\(geos\)/.test(fnCode('buildTerrain'))
+  && /let run = -1;/.test(fnCode('terrainRuns')));
+ok('terrainRuns drops any run that lies wholly inside the apron, so the '
+  + 'ground a learner stands on is never cut by a 1:10,000,000 shoreline',
+  /const far = Math\.max\(Math\.abs\(x0\), Math\.abs\(x1\)\) > inner/
+    .test(fnCode('terrainRuns'))
+  && /if \(far\) out\.push/.test(fnCode('terrainRuns')));
+ok('the water is coloured from the composed sky gradient\'s own horizon '
+  + 'stop, once - a second solve of the same colour is how the sky and '
+  + 'the stars fell out of step earlier in this file',
+  (fnCode('applyAtmos').match(/tintTerrain\(parseInt\(gStops/g) || [])
+    .length === 1);
+ok('and water is modelled as reflection AND absorption, because reflection '
+  + 'alone put a yellow bay under Miami at golden hour',
+  /const WATER_ABSORB = /.test(code)
+  && /\.lerp\(_waterBody, WATER_ABSORB\)/.test(fnCode('tintTerrain')));
+ok('the land keeps its own tone rather than drifting to the same horizon '
+  + 'the water reflects - at 22% it did, and the coastline went invisible',
+  /\.lerp\(new THREE\.Color\(horizonHex\), \.10\)/.test(fnCode('tintTerrain')));
+ok('the campus fog far plane is read from the terrain window, so the fog '
+  + 'that used to hide a 520 m disc edge cannot hide six kilometres of bay',
+  /T\.local\.half_m \* \.95/.test(fnCode('setCampusFog'))
+  && !/1280 \* fogMul/.test(fnCode('setCampusFog')));
+ok('and the weather still closes the view down - the multiplier is applied '
+  + 'to the derived distance, not replaced by it',
+  /scene\.fog\.far = far \* fogMul;/.test(fnCode('setCampusFog')));
+ok('the terrain belongs to the campus group, so it is torn down with the '
+  + 'campus and needs no disposal path of its own',
+  /buildTerrain\(key, campusGroup\);/.test(code));
+ok('a probe reports the terrain the page actually built, including whether '
+  + 'the mask thinks this campus is standing on water',
+  /window\.__tc3dTerrain = /.test(code)
+  && /anchorOnLand: T\.facts\.anchor_on_land/.test(code));
+
+ok('a measurement recorded twice in two files, with two different values '
+  + 'and no surviving frame to settle it, is reported as a disagreement in '
+  + 'BOTH files rather than as a number in each - and this check is what '
+  + 'stops the two accounts drifting apart again',
+  /the two records disagree/.test(src)
+  // matched in two halves on purpose: written as one literal, this check
+  // would itself be a second copy of the sentence, and any tool counting
+  // the phrase across the tree would find two and call it a duplicate
+  && /46 to 96 in this/.test(src) && /file, 46 to 89 in the suite/.test(src)
+  && /the frame that would settle which is right is gone/.test(src));
 
 console.log(`web/test_3d: ${n} checks passed - teardown, draw-call and per-frame contracts held at the source`);

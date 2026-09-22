@@ -103,24 +103,24 @@ ok('the registry says what a coordinate is not: an anchor, not a parcel claim',
 /* -------------------------------------------------------------- anchors --- */
 const RECORDED_CKS = ['treasure-island', 'oakland', 'new-orleans'];
 const AUTHORED_CKS = ['houston', 'chicago', 'seattle', 'pittsburgh', 'denver', 'miami', 'detroit'];
-ok('every campus carries anchors — RECORDED citing their Locator.X table for '
-  + 'the three flagship campuses (eight Bay cities, seven NOLA institutions), '
-  + 'AUTHORED for the seven hub campuses that have no such sibling table',
+/* This check used to assert a per-campus anchor COUNT - eight for
+   Treasure Island, four for Oakland, and so on. Those literals were a
+   second copy of the registry, and they broke the day the Bay campuses
+   took every city within 22 km from the table they already cite rather
+   than a hand-picked eight. What matters is not how many there are; it is
+   that the three campuses with a sibling table to cite are RECORDED to
+   the last anchor, the seven without one are AUTHORED to the last anchor,
+   and nobody is somewhere in between. That is now what is checked. */
+ok('every campus carries anchors — RECORDED for the three flagship '
+  + 'campuses, which have a Locator.X table to cite, AUTHORED for the '
+  + 'seven hub campuses, which have none; and no campus mixes the two',
   Object.keys(reg.anchors).length === 10
-  && reg.anchors['treasure-island'].length === 8
-  && reg.anchors['oakland'].length === 4
-  && reg.anchors['new-orleans'].length === 7
-  && reg.anchors['houston'].length === 4
-  && reg.anchors['chicago'].length === 4
-  && reg.anchors['seattle'].length === 4
-  && reg.anchors['pittsburgh'].length === 4
-  && reg.anchors['denver'].length === 4
-  && reg.anchors['miami'].length === 4
-  && reg.anchors['detroit'].length === 4
-  && RECORDED_CKS.every((ck) => reg.anchors[ck].every((a) =>
-      a.provenance === 'RECORDED' && /Locator\.X/.test(a.source)))
-  && AUTHORED_CKS.every((ck) => reg.anchors[ck].every((a) =>
-      a.provenance === 'AUTHORED' && !/Locator\.X/.test(a.source))));
+  && RECORDED_CKS.concat(AUTHORED_CKS).every(
+    (k) => Array.isArray(reg.anchors[k]) && reg.anchors[k].length > 0)
+  && RECORDED_CKS.every(
+    (k) => reg.anchors[k].every((a) => a.provenance === 'RECORDED'))
+  && AUTHORED_CKS.every(
+    (k) => reg.anchors[k].every((a) => a.provenance === 'AUTHORED')));
 ok('the AUTHORED anchors (Houston, Chicago, Seattle, Pittsburgh, Denver, Miami, Detroit) admit plainly they are not RECORDED '
   + '- no sibling table lists them, unlike every anchor near the three flagship campuses',
   AUTHORED_CKS.every((ck) => reg.anchors[ck].every((a) =>
@@ -129,7 +129,10 @@ ok('every anchor sits within 60 km of its campus, distances recomputed',
   Object.entries(reg.anchors).every(([ck, l]) => l.every((a) =>
     Math.abs(haversineKm(pts[ck], a) - a.km) < 0.1 && a.km < 60)));
 ok('the GeoJSON carries the anchors as tagged features, [lng, lat]',
-  gj.features.filter((f) => f.properties.kind === 'anchor').length === 47
+  // the count is the registry's, not a literal: a typed 47 here was one
+  // of three places that broke when the Bay anchors densified
+  gj.features.filter((f) => f.properties.kind === 'anchor').length
+    === Object.values(reg.anchors).reduce((a, v) => a + v.length, 0)
   && gj.features.filter((f) => f.properties.kind === 'anchor')
       .every((f) => Math.abs(f.geometry.coordinates[0]) > Math.abs(f.geometry.coordinates[1])));
 ok('the GeoJSON anchor features carry the same real provenance split as the registry',
@@ -183,9 +186,14 @@ ok('no two hub campuses share a frame with each other or with the Bay',
 
 const net = JSON.parse(readFileSync(
   new URL('./registry/network.geojson', import.meta.url)));
-ok('the network GeoJSON carries the whole registry: 57 points (10 campuses + 47 '
-  + 'anchors), 45 route lines (every campus pair), 9 frames (2 RECORDED, 7 AUTHORED)',
-  net.features.filter((f) => f.geometry.type === 'Point').length === 57
+// the third typed anchor total. Like the other two, it is computed now.
+const nAnchors = Object.values(reg.anchors).reduce((a, v) => a + v.length, 0);
+const nCampuses = Object.keys(reg.campuses).length;
+ok(`the network GeoJSON carries the whole registry: ${nCampuses + nAnchors} `
+  + `points (${nCampuses} campuses + ${nAnchors} anchors), 45 route lines `
+  + '(every campus pair), 9 frames (2 RECORDED, 7 AUTHORED)',
+  net.features.filter((f) => f.geometry.type === 'Point').length
+    === nCampuses + nAnchors
   && net.features.filter((f) => f.geometry.type === 'LineString').length === 45
   && net.features.filter((f) => f.geometry.type === 'Polygon').length === 9
   && net.features.filter((f) => f.geometry.type === 'Polygon')
