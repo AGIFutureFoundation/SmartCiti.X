@@ -26,10 +26,10 @@
   "doc_renderers_scanned": 3,
   "builders_scanned": 28,
   "suites_scanned": 41,
-  "declared_unbuilt": 12,
+  "declared_unbuilt": 11,
   "declared_unbuilt_by_their_own_words": 2,
-  "declared_unbuilt_not_drawn": 11,
-  "declared_unbuilt_documented_but_not_drawn": 7,
+  "declared_unbuilt_not_drawn": 9,
+  "declared_unbuilt_documented_but_not_drawn": 5,
   "declared_unbuilt_read_by_nothing": 4,
   "gaps": 17,
   "gaps_open": 16,
@@ -38,8 +38,8 @@
   "budget_views": 3,
   "budget_currencies": 2,
   "budget_agreements": 7,
-  "suites_run": 45,
-  "suite_checks_declared": 1873,
+  "suites_run": 46,
+  "suite_checks_declared": 1991,
   "open_questions": 12,
   "negative_findings": 9,
   "cross_checks": 2,
@@ -1391,26 +1391,6 @@
    "drops_off_when": "a page generator under web/ opens this path, or the pack removes its own honesty.not_built_yet - either one, on the next build of rnd/, with no edit here"
   },
   {
-   "registry": "kit/registry/kit.json",
-   "pack": "kit",
-   "reasons": [
-    "no page generator under web/ names this path, so nothing a learner opens reads it",
-    "it is DOCUMENTED but not drawn: wiki/build_wiki.py renders a description of it"
-   ],
-   "says": null,
-   "read_by_app_renderers": [],
-   "read_by_doc_renderers": [
-    "wiki/build_wiki.py"
-   ],
-   "read_by_builders": [],
-   "read_by_suites": [],
-   "read_by_its_own_pack": [
-    "kit/build.py",
-    "kit/test.mjs"
-   ],
-   "drops_off_when": "a page generator under web/ opens this path, or the pack removes its own honesty.not_built_yet - either one, on the next build of rnd/, with no edit here"
-  },
-  {
    "registry": "lessons/registry/lessons.json",
    "pack": "lessons",
    "reasons": [
@@ -1512,12 +1492,12 @@
    "registry": "props/registry/props.json",
    "pack": "props",
    "reasons": [
-    "the registry declares honesty.not_built_yet",
-    "no page generator under web/ names this path, so nothing a learner opens reads it",
-    "it is DOCUMENTED but not drawn: wiki/build_wiki.py renders a description of it"
+    "the registry declares honesty.not_built_yet"
    ],
    "says": "This registry is a declaration. web/build_3d.py does not read it yet: no prop declared here is standing in any room in the shipped page. The page_contract block states exactly what wiring is outstanding.",
-   "read_by_app_renderers": [],
+   "read_by_app_renderers": [
+    "web/build_3d.py"
+   ],
    "read_by_doc_renderers": [
     "wiki/build_wiki.py"
    ],
@@ -1750,7 +1730,9 @@
    ]
   },
   "kit/registry/kit.json": {
-   "app_renderers": [],
+   "app_renderers": [
+    "web/build_3d.py"
+   ],
    "doc_renderers": [
     "wiki/build_wiki.py"
    ],
@@ -1936,7 +1918,9 @@
    ]
   },
   "props/registry/props.json": {
-   "app_renderers": [],
+   "app_renderers": [
+    "web/build_3d.py"
+   ],
    "doc_renderers": [
     "wiki/build_wiki.py"
    ],
@@ -3228,6 +3212,13 @@
     "in_readme_table": true
    },
    {
+    "suite": "respond/test.mjs",
+    "pack": "respond",
+    "readme_checks": 118,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
     "suite": "spatial/test.mjs",
     "pack": "spatial",
     "readme_checks": 45,
@@ -3249,18 +3240,18 @@
     "in_readme_table": true
    }
   ],
-  "suites_run": 45,
-  "suites_declaring_a_count": 44,
+  "suites_run": 46,
+  "suites_declaring_a_count": 45,
   "suites_without_a_count": [
    "control/soak.mjs"
   ],
-  "declared_total": 1873,
-  "readme_headline": 1884,
+  "declared_total": 1991,
+  "readme_headline": 2002,
   "unaccounted_for": 11,
   "unaccounted_note": "the headline counts every `  ok ` line verify_all.sh sees, which includes suites the README table gives no number to and web/test_interiors.py, which the table does not list at all. The difference is that remainder and is computed, not reconciled by hand.",
   "min": 9,
   "max": 207,
-  "median": 34.5,
+  "median": 35,
   "thinnest": [
    {
     "suite": "ops/fuzz.mjs",
@@ -3293,6 +3284,10 @@
     "checks": 207
    },
    {
+    "suite": "respond/test.mjs",
+    "checks": 118
+   },
+   {
     "suite": "ei/test.mjs",
     "checks": 112
    },
@@ -3307,10 +3302,6 @@
    {
     "suite": "orbis/test.mjs",
     "checks": 68
-   },
-   {
-    "suite": "rnd/test.mjs",
-    "checks": 61
    }
   ],
   "note": "a thin suite is not automatically a bad one - tools/ has 13 checks over a registry of twelve hand tools - but a thin suite over a large surface is where an unfound defect is most likely to be sitting, and this table is the only place the two are shown side by side."
