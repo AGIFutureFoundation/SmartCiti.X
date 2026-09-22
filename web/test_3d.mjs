@@ -1155,9 +1155,20 @@ ok('the light\'s basis is REBUILT when the sun moves - it was cached once '
 ok('azimuth is converted from degrees-clockwise-from-north, which is what '
   + 'sky/ publishes, into the axes three.js actually uses',
   /SUN_OFF\.set\(c \* Math\.sin\(az\), Math\.sin\(el\), -c \* Math\.cos\(az\)\)/.test(fn('setSun')));
-ok('the hour is applied BEFORE the sky is drawn: setSky reads where the sun '
-  + 'is and whether the stars are up, and both are the hour\'s',
-  /applyPhase\(\);\n  const t0 = performance\.now\(\);\n(?:[^\n]*\n){0,8}?\s*setSky\(/.test(src));
+{
+  // Asserted as an ORDER, not as a line distance. The first version of this
+  // check wanted setSky within eight lines of applyPhase, and wiring the
+  // gradient - which belongs exactly between them - broke a check whose
+  // guarantee was untouched. What matters is which runs first.
+  const body = fnCode('applyAtmos');
+  ok('the hour is applied BEFORE the sky is drawn: setSky reads where the '
+    + 'sun is, whether the stars are up and which gradient to compose, and '
+    + 'all three are the hour\'s',
+    body.indexOf('applyPhase();') > -1
+    && body.indexOf('setSky(') > body.indexOf('applyPhase();')
+    && body.indexOf('const gStops') > body.indexOf('applyPhase();')
+    && body.indexOf('setSky(') > body.indexOf('const gStops'));
+}
 ok('the weather\'s two colour branches are gone - six hex literals that '
   + 'existed in no registry, making the light a function of the weather '
   + 'when it is a function of the hour',
@@ -1198,5 +1209,48 @@ ok('the hour is a control a person can reach, filled from the registry in '
   /<select id="hour" aria-label="hour of the day"><\/select>/.test(src)
   && /sel\.innerHTML = PHASES\.map\(\(ph\) => \{/.test(src)
   && /sel\.addEventListener\('change', \(\) => setPhase\(sel\.value\)\);/.test(src));
+
+
+/* ------------------------------------------------- the sky's own colour --- */
+// Capturing frames for the overview is what found this. The hour moved the
+// sun and the lights, and painted the dome for daytime whatever the time:
+// measured on the campus, night came out at luma 34.8 against golden hour's
+// 36.6, a difference of 1.8 out of 255, which is why night looked like
+// dusk. The gradient half of sky/ was declared and unread, and its own
+// honesty block said so.
+//
+// Measured after, on a horizon-facing camera where the dome is actually
+// visible, against noon: golden hour 136%, sunset 117%, civil dusk 96%,
+// night 68%. The low-sun hours come out BRIGHTER than noon, which is the
+// arc a sky really has - a low sun lights the whole dome - and not the one
+// a linear dimmer would have given.
+ok('the sky gradient is composed in the order sky/ declares and no other: '
+  + 'the campus\'s own stops stay the base, the hour mixes over them, the '
+  + 'weather tints that, and the weather\'s own sky_mul goes last',
+  /const gStops = a\.sky\.map\(\(h, i\) => \{/.test(code)
+  && /mixHex\(h, ph\.gradient\.stops\[i\], 1 - ph\.gradient\.campus_mix\)/.test(code)
+  && /darkHex\(mixHex\(lit, ws\.gradient_tint_hex, ws\.tint_mix\), w\.sky_mul\)/.test(code));
+ok('the campus keeps its own character rather than becoming one more thing '
+  + 'mixed in - a Bay station and a Front Range yard must not end their '
+  + 'domes identically',
+  /setSky\(gStops,/.test(code)
+  && /haze: a\.haze,/.test(code));
+ok('the mix is per channel in sRGB, because these are colours chosen by eye '
+  + 'against a screen and linear-space mixing moves them somewhere their '
+  + 'author did not pick',
+  /const mixHex = \(a, b, t\) => '#' \+ \[1, 3, 5\]\.map\(\(i\) => \{/.test(code));
+ok('the weather scales the horizon band, and the identity is named as an '
+  + 'identity rather than left to read as a policy default',
+  /\* \(opts\.hazeMul \?\? 1\)/.test(code)
+  && /not a policy\s*\n\s*\/\/ default but the identity/.test(src));
+ok('the hour control follows the hour whoever set it - a programmatic '
+  + 'change left the bar reading "Solar noon" while the sky was at night, '
+  + 'and the control is the thing a person checks to find out the state',
+  /const sel = document\.getElementById\('hour'\);/.test(fnCode('setPhase'))
+  && /if \(sel && sel\.value !== id\) sel\.value = id;/.test(fnCode('setPhase')));
+ok('applyPhase hands the resolved hour and weather treatment out rather '
+  + 'than having applyAtmos resolve either a second time',
+  /phaseGrad = eff; wxSky = ws;/.test(code)
+  && /const ph = phaseGrad, ws = wxSky;/.test(code));
 
 console.log(`web/test_3d: ${n} checks passed - teardown, draw-call and per-frame contracts held at the source`);

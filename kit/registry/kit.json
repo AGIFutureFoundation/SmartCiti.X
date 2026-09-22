@@ -3,11 +3,11 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-22",
- "source_stamp": "1943041dd98d2773",
+ "source_stamp": "01ce82c14cfd6650",
  "honesty": {
   "status": "SCHEMATIC: every piece here is the SHAPE of a thing, not a measurement of one. A downpipe is a cylinder and two brackets at a plausible size; a meter box is two boxes. No dimension was taken off a real component, no product was consulted, and no standard is referenced.",
   "not_a_construction_detail": "Nothing in this registry is a construction detail and nobody should build anything from it. There are no gauges, no fixing centres, no material specifications, no loads, no falls and no clearances. A size here is the size something reads as from across a campus green, chosen so a fifty-one-building campus looks built rather than diagrammed.",
-  "provenance": "SCHEMATIC for the shapes and sizes; AUTHORED for the placement rates, which are somebody's judgement about how often a thing appears on a wall. MEASURED-ELSEWHERE for the four reference figures in `reference`, and for the scene costs read out of web/eval_scene.mjs. AI-SYNTHESIZED is orbis/'s word for generated video and is not this pack's to borrow.",
+  "provenance": "SCHEMATIC for the shapes and sizes; AUTHORED for the placement rates, which are somebody's judgement about how often a thing appears on a wall. MEASURED-ELSEWHERE for the nine reference figures in `reference`, and for the scene costs read out of web/eval_scene.mjs. AI-SYNTHESIZED is orbis/'s word for generated video and is not this pack's to borrow.",
   "no_assets": "This kit loads no mesh, no texture, no model and no file. Every piece is built in the browser from THREE.BoxGeometry and THREE.CylinderGeometry, which is why a triangle budget can be checked against a recipe at all. Nothing was vendored from the reference measurement and nothing from it is reproduced here.",
   "derived_not_typed": "No hall is named in this pack. A piece is admitted by roofline and facade pattern, both of which are read from the registries that own them - web/build_3d.py's STYLE_OF for the district roofline, world/registry/world.json's fabric for the city's, and surfaces/registry/finishes.json for the pattern vocabulary those facades must already belong to.",
   "measurement_limit": "The reference figures were measured outside this repository on files it does not contain, and this build cannot re-run that inspection. They are quoted, not verified here. The scene costs are different: they come from web/eval_scene.mjs, which does run against this page, and they are read out of that file rather than restated.",
@@ -16,7 +16,7 @@
  },
  "reference": {
   "provenance": "MEASURED-ELSEWHERE",
-  "how": "a glTF 2.0 inspection of five downloaded reference models, run outside this repository on files it does not contain. This build cannot re-run it and does not try to: the figures below are quoted, not verified here.",
+  "how": "a glTF 2.0 inspection of six downloaded reference models, run outside this repository on files it does not contain. This build cannot re-run it and does not try to: the figures below are quoted, not verified here.",
   "not_vendored": "No mesh, texture, name, shape or layout from any measured file is reproduced in this pack or anywhere in this bundle. Two of the five are third-party copyrighted work. What was taken is a distribution.",
   "block_median_tris": 104,
   "block_total_tris": 21893,

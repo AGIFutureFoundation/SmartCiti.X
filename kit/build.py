@@ -307,7 +307,7 @@ KIT_TRI_CEILING = int(TRI_CEILING * TRI_SHARE)
 # repo does not contain and this build cannot open.
 REFERENCE = {
     'provenance': 'MEASURED-ELSEWHERE',
-    'how': ('a glTF 2.0 inspection of five downloaded reference models, run '
+    'how': ('a glTF 2.0 inspection of six downloaded reference models, run '
             'outside this repository on files it does not contain. This '
             'build cannot re-run it and does not try to: the figures below '
             'are quoted, not verified here.'),
@@ -1063,7 +1063,7 @@ HONESTY = {
     'provenance': (
         'SCHEMATIC for the shapes and sizes; AUTHORED for the placement '
         'rates, which are somebody\'s judgement about how often a thing '
-        'appears on a wall. MEASURED-ELSEWHERE for the four reference '
+        'appears on a wall. MEASURED-ELSEWHERE for the nine reference '
         'figures in `reference`, and for the scene costs read out of '
         'web/eval_scene.mjs. AI-SYNTHESIZED is orbis/\'s word for generated '
         'video and is not this pack\'s to borrow.'),

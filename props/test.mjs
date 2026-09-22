@@ -380,6 +380,25 @@ const src = readFileSync(url('./build.py'));
 ok('the registry was built from the current builder source (stamp check)',
   reg.source_stamp === createHash('sha256').update(src).digest('hex').slice(0, 16));
 
+
+/* -------------------------------------------- the reference count -------- */
+// This pack quoted "five downloaded reference models" while
+// assets/REFERENCE.md, which is the record of the measurement, tables SIX.
+// The five came from the brief that commissioned the pack, not from the
+// measurement, and it sat in the registry as a provenance claim - the one
+// kind of string that must not be approximately right. A number about where
+// evidence came from is checked against the evidence.
+{
+  const NUM = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6,
+               seven: 7, eight: 8, nine: 9, ten: 10 };
+  const note = readFileSync(new URL('../assets/REFERENCE.md', import.meta.url), 'utf8');
+  const rows = [...note.matchAll(/^\| `[^`]+\.glb` \|/gm)].length;
+  const said = reg.honesty.measured_not_guessed.match(/\b(one|two|three|four|five|six|seven|eight|nine|ten)\s+(?:downloaded\s+)?reference/i);
+  ok('the number of reference models this pack names is the number '
+    + `assets/REFERENCE.md actually tables (${rows})`,
+    rows > 0 && said !== null && NUM[said[1].toLowerCase()] === rows);
+}
+
 console.log(`props/test: ${n} checks passed — ${reg.counts.props} props in `
   + `${reg.counts.families} families, ${reg.counts.tris_min}-${reg.counts.tris_max} tri `
   + `(median ${reg.counts.tris_median}) verified against the vendored three.js; `

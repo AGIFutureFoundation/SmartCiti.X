@@ -495,7 +495,14 @@ ok('the pack admits the page does not render any of this yet',
   // the moment somebody wired it up, which is exactly what happened here.
   /the page reads this registry/.test(reg.honesty.built_so_far)
   && /setSun\(\)/.test(reg.honesty.built_so_far)
-  && /the GRADIENT half is not wired/.test(reg.honesty.not_built_yet)
+  && /the gradient is wired too/.test(reg.honesty.gradient_built)
+  // and the claim is checked against the page rather than trusted: the
+  // three-step mix and the haze multiplier must actually be there
+  && /const gStops = a\.sky\.map\(\(h, i\) => \{/.test(page)
+  && /mixHex\(h, ph\.gradient\.stops\[i\], 1 - ph\.gradient\.campus_mix\)/.test(page)
+  && /mixHex\(lit, ws\.gradient_tint_hex, ws\.tint_mix\)/.test(page)
+  && /hazeMul: ws\.horizon_haze_mul/.test(page)
+  && /sun_disc is declared and unread/.test(reg.honesty.not_built_yet)
   && /the hour is STEPPED, never interpolated/.test(reg.honesty.not_built_yet)
   // and the claim is checked against the page rather than trusted
   && /function setSun\(elevDeg, azDeg\)/.test(page)
@@ -544,4 +551,4 @@ console.log(`sky/test: ${n} checks passed — ${C.phases} phases `
   + `own order; ${world.sky.stars.count} stars in ${C.star_magnitude_bins} bins `
   + `from the page's seed, cutoff ${reg.stars.magnitude_cutoff} mag against `
   + `${reg.stars.equivalent_sky_magnitude} for a real sky; `
-  + `colours AUTHORED and sun angles DERIVED; the page now places the sun, the light and the stars by the hour, and still composes its gradient the old way`);
+  + `colours AUTHORED and sun angles DERIVED; the page places the sun, the light, the stars AND the gradient by the hour - measured at the flagship, night is 68% of noon and golden hour 136%`);

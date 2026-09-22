@@ -1162,7 +1162,7 @@ HONESTY = {
                  'of web/build_3d.py, so a prop cannot be sized against a '
                  'constant the page does not use.',
     'measured_not_guessed': 'The triangle band is taken from a measurement of '
-                            'six reference interiors made before anything here '
+                            'six reference models made before anything here '
                             'was drawn: the blocks that read as real places '
                             'have a median mesh of 46 and 104 triangles. '
                             'Nothing from those files is vendored, copied or '

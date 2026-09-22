@@ -3,13 +3,13 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-22",
- "source_stamp": "64448be93efb14c2",
+ "source_stamp": "8fd7218779592272",
  "honesty": {
   "status": "SCHEMATIC: every prop in this pack is a handful of boxes and cylinders built in the browser from the recipe printed here. No mesh is loaded, no model is vendored, no texture is fetched, and nothing is generated at view time.",
   "not_a_specification": "These are shapes in a training environment. The eyewash stand is a cylinder and a bowl standing where a room record says corrosives are handled; the extinguisher is a cylinder on a plate. They are not fixture specifications, not rated appliances, not compliance artefacts, and not evidence that any equipment has been provided anywhere. Nothing in this pack should be read as a safety-equipment specification, and a learner who has walked past one has not been trained on it.",
   "placement_is_derived": "No prop is placed by hand. A prop stands in a strand because a word it declares appears in that strand's own purpose line in web/interiors.py, and a hazard prop stands in a room because that room's own conditions record in surfaces/registry/finishes.json asks for the protective equipment it holds. The build fails if a room requiring PPE gets no PPE prop.",
   "one_truth": "No room label, purpose, footprint, illuminance figure, hazard or PPE item is typed in this pack. The room table is imported from web/interiors.py and the conditions are read from surfaces/registry/finishes.json. The page's body radius, eye height, grid unit, floor height, partition height, room-label height and bench setback are parsed out of web/build_3d.py, so a prop cannot be sized against a constant the page does not use.",
-  "measured_not_guessed": "The triangle band is taken from a measurement of six reference interiors made before anything here was drawn: the blocks that read as real places have a median mesh of 46 and 104 triangles. Nothing from those files is vendored, copied or named \u2014 what was taken is the finding that a place is made of many small distinct pieces rather than of dense ones.",
+  "measured_not_guessed": "The triangle band is taken from a measurement of six reference models made before anything here was drawn: the blocks that read as real places have a median mesh of 46 and 104 triangles. Nothing from those files is vendored, copied or named \u2014 what was taken is the finding that a place is made of many small distinct pieces rather than of dense ones.",
   "the_scarce_currency": "A hall interior is draw-call bound, not triangle bound. Every prop here pools or instances; none takes a mesh of its own, and the budget block refuses a design that would.",
   "not_built_yet": "This registry is a declaration. web/build_3d.py does not read it yet: no prop declared here is standing in any room in the shipped page. The page_contract block states exactly what wiring is outstanding.",
   "unreviewed": "The vocabulary is AUTHORED \u2014 a judgement about what a trade-training room contains \u2014 and no journey-level practitioner has reviewed it."

@@ -1,0 +1,3345 @@
+{
+ "pack": "smartcitix-trade-craft-academy-rnd",
+ "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
+ "pack_version": "3.2.0",
+ "built": "2026-09-22",
+ "source_stamp": "ae37a73231f9940c",
+ "contract": "this pack states no fact of its own. Every value in it is read out of another file at build time and carries the path and the locator it was read with, so a reader can resolve any entry back to its source and disagree with it there rather than here. Three questions are answered: what has been measured, what is declared and unbuilt, and where the known gaps are - plus the budgets those measurements govern, the suites that hold the assurance, and the questions this bundle records as open.",
+ "honesty": {
+  "status": "DERIVED: nothing in this registry was authored as a fact about the bundle. Every number is read from a named file through a named locator, and the suite re-resolves every pointer against the live file rather than trusting the value stored here.",
+  "not_a_measurement": "this pack measures nothing. It reaches no network, opens no browser and runs no harness. Where it says MEASURED-IN-BROWSER, another file did the measuring and this one is quoting its record of it.",
+  "not_a_roadmap": "declared_unbuilt is a computed backlog, not a plan and not a commitment. Nothing here schedules anything, no entry carries a date it is due, and roadmap/ owns the campus network's own plan without this pack duplicating a line of it.",
+  "predictions_are_not_measurements": "the whole-campus and whole-hall figures kit/ and props/ publish are PREDICTIONS of what their placement rules would cost. Nothing either pack declares has been drawn, so no browser has ever confirmed one of them. The budget block spends them against a measured baseline anyway, because that is the only way to know whether they fit - but a spent prediction is not a spent budget.",
+  "three_views_of_six": "every budget in this bundle is an argument about three of the six views the page can show. The avatar locker, a running simulator and a restoration site have no measured cost at all.",
+  "does_not_flatter": "a gap is published with its numerator and its denominator whether or not the share is comfortable, a closed gap stays in the list so the closure can be checked, and the thinnest suites are named beside the thickest. A register that reported only good news would have to be checked against the thing it summarises, which is the work it exists to save.",
+  "provenance_word": "DERIVED, and that word is this pack's whole claim. The generated-video provenance word this bundle reserves for orbis/ is not used anywhere in this pack and does not appear in this payload; the build asserts its absence rather than promising it.",
+  "the_backlog_computes": "a pack that gets wired up drops off declared_unbuilt on the next build of this file, because the entry is computed from whether a renderer names its registry path - not from a note here saying it is unbuilt."
+ },
+ "counts": {
+  "measured": 67,
+  "measured_in_browser": 11,
+  "measured_elsewhere": 44,
+  "computed_from_registry": 12,
+  "measured_source_files": 11,
+  "registries_scanned": 34,
+  "app_renderers_scanned": 11,
+  "doc_renderers_scanned": 3,
+  "builders_scanned": 24,
+  "suites_scanned": 37,
+  "declared_unbuilt": 9,
+  "declared_unbuilt_by_their_own_words": 2,
+  "declared_unbuilt_not_drawn": 8,
+  "declared_unbuilt_documented_but_not_drawn": 7,
+  "declared_unbuilt_read_by_nothing": 1,
+  "gaps": 17,
+  "gaps_open": 16,
+  "gaps_closed": 1,
+  "widest_gap_share": 0.0,
+  "budget_views": 3,
+  "budget_currencies": 2,
+  "budget_agreements": 7,
+  "suites_run": 41,
+  "suite_checks_declared": 1591,
+  "open_questions": 12,
+  "negative_findings": 9,
+  "cross_checks": 2,
+  "cross_checks_disagreeing": 2,
+  "files_read": 136
+ },
+ "tiers": [
+  "MEASURED-IN-BROWSER",
+  "MEASURED-ELSEWHERE",
+  "COMPUTED-FROM-REGISTRY"
+ ],
+ "measured": [
+  {
+   "id": "eval.campus.calls",
+   "what": "the campus view, measured draw calls",
+   "value": 273,
+   "unit": "draw calls",
+   "tier": "MEASURED-IN-BROWSER",
+   "file": "web/eval_scene.mjs",
+   "locator": {
+    "kind": "regex",
+    "pattern": "campus:\\s*\\{ calls: ([\\d_]+)",
+    "group": 1,
+    "cast": "int"
+   },
+   "when": "2026-09-22",
+   "conditions": "Chromium/SwiftShader, 1280x800, quality rung `high`",
+   "method": "web/eval_scene.mjs drives the built page through each view in Playwright-driven Chromium, renders two frames so the counters belong to this view and not the last one, and reads renderer.info plus a walk of the visible scene graph",
+   "why": "the scarce currency on this page: one per material per merged group, so it counts pieces of state rather than geometry"
+  },
+  {
+   "id": "eval.campus.tris",
+   "what": "the campus view, measured triangles",
+   "value": 15850,
+   "unit": "triangles",
+   "tier": "MEASURED-IN-BROWSER",
+   "file": "web/eval_scene.mjs",
+   "locator": {
+    "kind": "regex",
+    "pattern": "campus:\\s*\\{ calls: [\\d_]+, tris: ([\\d_]+)",
+    "group": 1,
+    "cast": "int"
+   },
+   "when": "2026-09-22",
+   "conditions": "Chromium/SwiftShader, 1280x800, quality rung `high`",
+   "method": "web/eval_scene.mjs drives the built page through each view in Playwright-driven Chromium, renders two frames so the counters belong to this view and not the last one, and reads renderer.info plus a walk of the visible scene graph",
+   "why": "the cheap currency here, and the one the kit and props packs were written to spend"
+  },
+  {
+   "id": "eval.campus.meshes",
+   "what": "the campus view, measured visible meshes",
+   "value": 250,
+   "unit": "visible meshes",
+   "tier": "MEASURED-IN-BROWSER",
+   "file": "web/eval_scene.mjs",
+   "locator": {
+    "kind": "regex",
+    "pattern": "campus:\\s*\\{ calls: [\\d_]+, tris: [\\d_]+, meshes: ([\\d_]+)",
+    "group": 1,
+    "cast": "int"
+   },
+   "when": "2026-09-22",
+   "conditions": "Chromium/SwiftShader, 1280x800, quality rung `high`",
+   "method": "web/eval_scene.mjs drives the built page through each view in Playwright-driven Chromium, renders two frames so the counters belong to this view and not the last one, and reads renderer.info plus a walk of the visible scene graph",
+   "why": "a FLOOR rather than a ceiling: it asks whether enough separate things are standing in the view for it to read as a place"
+  },
+  {
+   "id": "eval.hall.calls",
+   "what": "the hall view, measured draw calls",
+   "value": 157,
+   "unit": "draw calls",
+   "tier": "MEASURED-IN-BROWSER",
+   "file": "web/eval_scene.mjs",
+   "locator": {
+    "kind": "regex",
+    "pattern": "hall:\\s*\\{ calls: ([\\d_]+)",
+    "group": 1,
+    "cast": "int"
+   },
+   "when": "2026-09-22",
+   "conditions": "Chromium/SwiftShader, 1280x800, quality rung `high`",
+   "method": "web/eval_scene.mjs drives the built page through each view in Playwright-driven Chromium, renders two frames so the counters belong to this view and not the last one, and reads renderer.info plus a walk of the visible scene graph",
+   "why": "the scarce currency on this page: one per material per merged group, so it counts pieces of state rather than geometry"
+  },
+  {
+   "id": "eval.hall.tris",
+   "what": "the hall view, measured triangles",
+   "value": 3806,
+   "unit": "triangles",
+   "tier": "MEASURED-IN-BROWSER",
+   "file": "web/eval_scene.mjs",
+   "locator": {
+    "kind": "regex",
+    "pattern": "hall:\\s*\\{ calls: [\\d_]+, tris: ([\\d_]+)",
+    "group": 1,
+    "cast": "int"
+   },
+   "when": "2026-09-22",
+   "conditions": "Chromium/SwiftShader, 1280x800, quality rung `high`",
+   "method": "web/eval_scene.mjs drives the built page through each view in Playwright-driven Chromium, renders two frames so the counters belong to this view and not the last one, and reads renderer.info plus a walk of the visible scene graph",
+   "why": "the cheap currency here, and the one the kit and props packs were written to spend"
+  },
+  {
+   "id": "eval.hall.meshes",
+   "what": "the hall view, measured visible meshes",
+   "value": 137,
+   "unit": "visible meshes",
+   "tier": "MEASURED-IN-BROWSER",
+   "file": "web/eval_scene.mjs",
+   "locator": {
+    "kind": "regex",
+    "pattern": "hall:\\s*\\{ calls: [\\d_]+, tris: [\\d_]+, meshes: ([\\d_]+)",
+    "group": 1,
+    "cast": "int"
+   },
+   "when": "2026-09-22",
+   "conditions": "Chromium/SwiftShader, 1280x800, quality rung `high`",
+   "method": "web/eval_scene.mjs drives the built page through each view in Playwright-driven Chromium, renders two frames so the counters belong to this view and not the last one, and reads renderer.info plus a walk of the visible scene graph",
+   "why": "a FLOOR rather than a ceiling: it asks whether enough separate things are standing in the view for it to read as a place"
+  },
+  {
+   "id": "eval.region.calls",
+   "what": "the region view, measured draw calls",
+   "value": 249,
+   "unit": "draw calls",
+   "tier": "MEASURED-IN-BROWSER",
+   "file": "web/eval_scene.mjs",
+   "locator": {
+    "kind": "regex",
+    "pattern": "region:\\s*\\{ calls: ([\\d_]+)",
+    "group": 1,
+    "cast": "int"
+   },
+   "when": "2026-09-22",
+   "conditions": "Chromium/SwiftShader, 1280x800, quality rung `high`",
+   "method": "web/eval_scene.mjs drives the built page through each view in Playwright-driven Chromium, renders two frames so the counters belong to this view and not the last one, and reads renderer.info plus a walk of the visible scene graph",
+   "why": "the scarce currency on this page: one per material per merged group, so it counts pieces of state rather than geometry"
+  },
+  {
+   "id": "eval.region.tris",
+   "what": "the region view, measured triangles",
+   "value": 4508,
+   "unit": "triangles",
+   "tier": "MEASURED-IN-BROWSER",
+   "file": "web/eval_scene.mjs",
+   "locator": {
+    "kind": "regex",
+    "pattern": "region:\\s*\\{ calls: [\\d_]+, tris: ([\\d_]+)",
+    "group": 1,
+    "cast": "int"
+   },
+   "when": "2026-09-22",
+   "conditions": "Chromium/SwiftShader, 1280x800, quality rung `high`",
+   "method": "web/eval_scene.mjs drives the built page through each view in Playwright-driven Chromium, renders two frames so the counters belong to this view and not the last one, and reads renderer.info plus a walk of the visible scene graph",
+   "why": "the cheap currency here, and the one the kit and props packs were written to spend"
+  },
+  {
+   "id": "eval.region.meshes",
+   "what": "the region view, measured visible meshes",
+   "value": 80,
+   "unit": "visible meshes",
+   "tier": "MEASURED-IN-BROWSER",
+   "file": "web/eval_scene.mjs",
+   "locator": {
+    "kind": "regex",
+    "pattern": "region:\\s*\\{ calls: [\\d_]+, tris: [\\d_]+, meshes: ([\\d_]+)",
+    "group": 1,
+    "cast": "int"
+   },
+   "when": "2026-09-22",
+   "conditions": "Chromium/SwiftShader, 1280x800, quality rung `high`",
+   "method": "web/eval_scene.mjs drives the built page through each view in Playwright-driven Chromium, renders two frames so the counters belong to this view and not the last one, and reads renderer.info plus a walk of the visible scene graph",
+   "why": "a FLOOR rather than a ceiling: it asks whether enough separate things are standing in the view for it to read as a place"
+  },
+  {
+   "id": "reference.frickies_yacht.glb.file_mb",
+   "what": "frickies_yacht.glb: file mb",
+   "value": 6.31,
+   "unit": "MB",
+   "tier": "MEASURED-ELSEWHERE",
+   "file": "assets/REFERENCE.md",
+   "locator": {
+    "kind": "regex",
+    "pattern": "\\| `frickies_yacht\\.glb` \\| ([\\d,.]+) \\|",
+    "group": 1,
+    "cast": "float"
+   },
+   "when": "undated in assets/REFERENCE.md: It is a scratch script and is not committed.",
+   "conditions": "Taken from the glTF containers directly, not from a viewer. File size is the `.glb` on disk; texture MB is the sum of the embedded images.",
+   "method": "RECORDED. Every figure above was taken from the six files by a script, `/tmp/claude-0/glb/inspect.py`, which walks the glTF JSON and the binary image chunks.",
+   "why": "the distribution these six files hold is the whole reason kit/ and props/ have a per-piece triangle budget at all; no geometry, texture or name from any of them is here"
+  },
+  {
+   "id": "reference.frickies_yacht.glb.triangles",
+   "what": "frickies_yacht.glb: triangles",
+   "value": 70770,
+   "unit": "triangles",
+   "tier": "MEASURED-ELSEWHERE",
+   "file": "assets/REFERENCE.md",
+   "locator": {
+    "kind": "regex",
+    "pattern": "\\| `frickies_yacht\\.glb` \\| [\\d,.]+ \\| ([\\d,.]+) \\|",
+    "group": 1,
+    "cast": "int"
+   },
+   "when": "undated in assets/REFERENCE.md: It is a scratch script and is not committed.",
+   "conditions": "Taken from the glTF containers directly, not from a viewer. File size is the `.glb` on disk; texture MB is the sum of the embedded images.",
+   "method": "RECORDED. Every figure above was taken from the six files by a script, `/tmp/claude-0/glb/inspect.py`, which walks the glTF JSON and the binary image chunks.",
+   "why": "the distribution these six files hold is the whole reason kit/ and props/ have a per-piece triangle budget at all; no geometry, texture or name from any of them is here"
+  },
+  {
+   "id": "reference.frickies_yacht.glb.meshes",
+   "what": "frickies_yacht.glb: meshes",
+   "value": 45,
+   "unit": "meshes",
+   "tier": "MEASURED-ELSEWHERE",
+   "file": "assets/REFERENCE.md",
+   "locator": {
+    "kind": "regex",
+    "pattern": "\\| `frickies_yacht\\.glb` \\| [\\d,.]+ \\| [\\d,.]+ \\| ([\\d,.]+) \\|",
+    "group": 1,
+    "cast": "int"
+   },
+   "when": "undated in assets/REFERENCE.md: It is a scratch script and is not committed.",
+   "conditions": "Taken from the glTF containers directly, not from a viewer. File size is the `.glb` on disk; texture MB is the sum of the embedded images.",
+   "method": "RECORDED. Every figure above was taken from the six files by a script, `/tmp/claude-0/glb/inspect.py`, which walks the glTF JSON and the binary image chunks.",
+   "why": "the distribution these six files hold is the whole reason kit/ and props/ have a per-piece triangle budget at all; no geometry, texture or name from any of them is here"
+  },
+  {
+   "id": "reference.frickies_yacht.glb.materials",
+   "what": "frickies_yacht.glb: materials",
+   "value": 44,
+   "unit": "materials",
+   "tier": "MEASURED-ELSEWHERE",
+   "file": "assets/REFERENCE.md",
+   "locator": {
+    "kind": "regex",
+    "pattern": "\\| `frickies_yacht\\.glb` \\| [\\d,.]+ \\| [\\d,.]+ \\| [\\d,.]+ \\| ([\\d,.]+) \\|",
+    "group": 1,
+    "cast": "int"
+   },
+   "when": "undated in assets/REFERENCE.md: It is a scratch script and is not committed.",
+   "conditions": "Taken from the glTF containers directly, not from a viewer. File size is the `.glb` on disk; texture MB is the sum of the embedded images.",
+   "method": "RECORDED. Every figure above was taken from the six files by a script, `/tmp/claude-0/glb/inspect.py`, which walks the glTF JSON and the binary image chunks.",
+   "why": "the distribution these six files hold is the whole reason kit/ and props/ have a per-piece triangle budget at all; no geometry, texture or name from any of them is here"
+  },
+  {
+   "id": "reference.frickies_yacht.glb.images",
+   "what": "frickies_yacht.glb: images",
+   "value": 43,
+   "unit": "images",
+   "tier": "MEASURED-ELSEWHERE",
+   "file": "assets/REFERENCE.md",
+   "locator": {
+    "kind": "regex",
+    "pattern": "\\| `frickies_yacht\\.glb` \\| [\\d,.]+ \\| [\\d,.]+ \\| [\\d,.]+ \\| [\\d,.]+ \\| ([\\d,.]+) \\|",
+    "group": 1,
+    "cast": "int"
+   },
+   "when": "undated in assets/REFERENCE.md: It is a scratch script and is not committed.",
+   "conditions": "Taken from the glTF containers directly, not from a viewer. File size is the `.glb` on disk; texture MB is the sum of the embedded images.",
+   "method": "RECORDED. Every figure above was taken from the six files by a script, `/tmp/claude-0/glb/inspect.py`, which walks the glTF JSON and the binary image chunks.",
+   "why": "the distribution these six files hold is the whole reason kit/ and props/ have a per-piece triangle budget at all; no geometry, texture or name from any of them is here"
+  },
+  {
+   "id": "reference.frickies_yacht.glb.textures_mb",
+   "what": "frickies_yacht.glb: textures mb",
+   "value": 2.58,
+   "unit": "MB",
+   "tier": "MEASURED-ELSEWHERE",
+   "file": "assets/REFERENCE.md",
+   "locator": {
+    "kind": "regex",
+    "pattern": "\\| `frickies_yacht\\.glb` \\| [\\d,.]+ \\| [\\d,.]+ \\| [\\d,.]+ \\| [\\d,.]+ \\| [\\d,.]+ \\| ([\\d,.]+) \\|",
+    "group": 1,
+    "cast": "float"
+   },
+   "when": "undated in assets/REFERENCE.md: It is a scratch script and is not committed.",
+   "conditions": "Taken from the glTF containers directly, not from a viewer. File size is the `.glb` on disk; texture MB is the sum of the embedded images.",
+   "method": "RECORDED. Every figure above was taken from the six files by a script, `/tmp/claude-0/glb/inspect.py`, which walks the glTF JSON and the binary image chunks.",
+   "why": "the distribution these six files hold is the whole reason kit/ and props/ have a per-piece triangle budget at all; no geometry, texture or name from any of them is here"
+  },
+  {
+   "id": "reference.frickies_yacht.glb.animations",
+   "what": "frickies_yacht.glb: animations",
+   "value": 0,
+   "unit": "animations",
+   "tier": "MEASURED-ELSEWHERE",
+   "file": "assets/REFERENCE.md",
+   "locator": {
+    "kind": "regex",
+    "pattern": "\\| `frickies_yacht\\.glb` \\| [\\d,.]+ \\| [\\d,.]+ \\| [\\d,.]+ \\| [\\d,.]+ \\| [\\d,.]+ \\| [\\d,.]+ \\| ([\\d,.]+) \\|",
+    "group": 1,
+    "cast": "int"
+   },
+   "when": "undated in assets/REFERENCE.md: It is a scratch script and is not committed.",
+   "conditions": "Taken from the glTF containers directly, not from a viewer. File size is the `.glb` on disk; texture MB is the sum of the embedded images.",
+   "method": "RECORDED. Every figure above was taken from the six files by a script, `/tmp/claude-0/glb/inspect.py`, which walks the glTF JSON and the binary image chunks.",
+   "why": "the distribution these six files hold is the whole reason kit/ and props/ have a per-piece triangle budget at all; no geometry, texture or name from any of them is here"
+  },
+  {
+   "id": "reference.construction_worker_in_safety_gear.glb.file_mb",
+   "what": "construction_worker_in_safety_gear.glb: file mb",
+   "value": 25.41,
+   "unit": "MB",
+   "tier": "MEASURED-ELSEWHERE",
+   "file": "assets/REFERENCE.md",
+   "locator": {
+    "kind": "regex",
+    "pattern": "\\| `construction_worker_in_safety_gear\\.glb` \\| ([\\d,.]+) \\|",
+    "group": 1,
+    "cast": "float"
+   },
+   "when": "undated in assets/REFERENCE.md: It is a scratch script and is not committed.",
+   "conditions": "Taken from the glTF containers directly, not from a viewer. File size is the `.glb` on disk; texture MB is the sum of the embedded images.",
+   "method": "RECORDED. Every figure above was taken from the six files by a script, `/tmp/claude-0/glb/inspect.py`, which walks the glTF JSON and the binary image chunks.",
+   "why": "the distribution these six files hold is the whole reason kit/ and props/ have a per-piece triangle budget at all; no geometry, texture or name from any of them is here"
+  },
+  {
+   "id": "reference.construction_worker_in_safety_gear.glb.triangles",
+   "what": "construction_worker_in_safety_gear.glb: triangles",
+   "value": 222507,
+   "unit": "triangles",
+   "tier": "MEASURED-ELSEWHERE",
+   "file": "assets/REFERENCE.md",
+   "locator": {
+    "kind": "regex",
+    "pattern": "\\| `construction_worker_in_safety_gear\\.glb` \\| [\\d,.]+ \\| ([\\d,.]+) \\|",
+    "group": 1,
+    "cast": "int"
+   },
+   "when": "undated in assets/REFERENCE.md: It is a scratch script and is not committed.",
+   "conditions": "Taken from the glTF containers directly, not from a viewer. File size is the `.glb` on disk; texture MB is the sum of the embedded images.",
+   "method": "RECORDED. Every figure above was taken from the six files by a script, `/tmp/claude-0/glb/inspect.py`, which walks the glTF JSON and the binary image chunks.",
+   "why": "the distribution these six files hold is the whole reason kit/ and props/ have a per-piece triangle budget at all; no geometry, texture or name from any of them is here"
+  },
+  {
+   "id": "reference.construction_worker_in_safety_gear.glb.meshes",
+   "what": "construction_worker_in_safety_gear.glb: meshes",
+   "value": 3,
+   "unit": "meshes",
+   "tier": "MEASURED-ELSEWHERE",
+   "file": "assets/REFERENCE.md",
+   "locator": {
+    "kind": "regex",
+    "pattern": "\\| `construction_worker_in_safety_gear\\.glb` \\| [\\d,.]+ \\| [\\d,.]+ \\| ([\\d,.]+) \\|",
+    "group": 1,
+    "cast": "int"
+   },
+   "when": "undated in assets/REFERENCE.md: It is a scratch script and is not committed.",
+   "conditions": "Taken from the glTF containers directly, not from a viewer. File size is the `.glb` on disk; texture MB is the sum of the embedded images.",
+   "method": "RECORDED. Every figure above was taken from the six files by a script, `/tmp/claude-0/glb/inspect.py`, which walks the glTF JSON and the binary image chunks.",
+   "why": "the distribution these six files hold is the whole reason kit/ and props/ have a per-piece triangle budget at all; no geometry, texture or name from any of them is here"
+  },
+  {
+   "id": "reference.construction_worker_in_safety_gear.glb.materials",
+   "what": "construction_worker_in_safety_gear.glb: materials",
+   "value": 1,
+   "unit": "materials",
+   "tier": "MEASURED-ELSEWHERE",
+   "file": "assets/REFERENCE.md",
+   "locator": {
+    "kind": "regex",
+    "pattern": "\\| `construction_worker_in_safety_gear\\.glb` \\| [\\d,.]+ \\| [\\d,.]+ \\| [\\d,.]+ \\| ([\\d,.]+) \\|",
+    "group": 1,
+    "cast": "int"
+   },
+   "when": "undated in assets/REFERENCE.md: It is a scratch script and is not committed.",
+   "conditions": "Taken from the glTF containers directly, not from a viewer. File size is the `.glb` on disk; texture MB is the sum of the embedded images.",
+   "method": "RECORDED. Every figure above was taken from the six files by a script, `/tmp/claude-0/glb/inspect.py`, which walks the glTF JSON and the binary image chunks.",
+   "why": "the distribution these six files hold is the whole reason kit/ and props/ have a per-piece triangle budget at all; no geometry, texture or name from any of them is here"
+  },
+  {
+   "id": "reference.construction_worker_in_safety_gear.glb.images",
+   "what": "construction_worker_in_safety_gear.glb: images",
+   "value": 4,
+   "unit": "images",
+   "tier": "MEASURED-ELSEWHERE",
+   "file": "assets/REFERENCE.md",
+   "locator": {
+    "kind": "regex",
+    "pattern": "\\| `construction_worker_in_safety_gear\\.glb` \\| [\\d,.]+ \\| [\\d,.]+ \\| [\\d,.]+ \\| [\\d,.]+ \\| ([\\d,.]+) \\|",
+    "group": 1,
+    "cast": "int"
+   },
+   "when": "undated in assets/REFERENCE.md: It is a scratch script and is not committed.",
+   "conditions": "Taken from the glTF containers directly, not from a viewer. File size is the `.glb` on disk; texture MB is the sum of the embedded images.",
+   "method": "RECORDED. Every figure above was taken from the six files by a script, `/tmp/claude-0/glb/inspect.py`, which walks the glTF JSON and the binary image chunks.",
+   "why": "the distribution these six files hold is the whole reason kit/ and props/ have a per-piece triangle budget at all; no geometry, texture or name from any of them is here"
+  },
+  {
+   "id": "reference.construction_worker_in_safety_gear.glb.textures_mb",
+   "what": "construction_worker_in_safety_gear.glb: textures mb",
+   "value": 12.32,
+   "unit": "MB",
+   "tier": "MEASURED-ELSEWHERE",
+   "file": "assets/REFERENCE.md",
+   "locator": {
+    "kind": "regex",
+    "pattern": "\\| `construction_worker_in_safety_gear\\.glb` \\| [\\d,.]+ \\| [\\d,.]+ \\| [\\d,.]+ \\| [\\d,.]+ \\| [\\d,.]+ \\| ([\\d,.]+) \\|",
+    "group": 1,
+    "cast": "float"
+   },
+   "when": "undated in assets/REFERENCE.md: It is a scratch script and is not committed.",
+   "conditions": "Taken from the glTF containers directly, not from a viewer. File size is the `.glb` on disk; texture MB is the sum of the embedded images.",
+   "method": "RECORDED. Every figure above was taken from the six files by a script, `/tmp/claude-0/glb/inspect.py`, which walks the glTF JSON and the binary image chunks.",
+   "why": "the distribution these six files hold is the whole reason kit/ and props/ have a per-piece triangle budget at all; no geometry, texture or name from any of them is here"
+  },
+  {
+   "id": "reference.construction_worker_in_safety_gear.glb.animations",
+   "what": "construction_worker_in_safety_gear.glb: animations",
+   "value": 0,
+   "unit": "animations",
+   "tier": "MEASURED-ELSEWHERE",
+   "file": "assets/REFERENCE.md",
+   "locator": {
+    "kind": "regex",
+    "pattern": "\\| `construction_worker_in_safety_gear\\.glb` \\| [\\d,.]+ \\| [\\d,.]+ \\| [\\d,.]+ \\| [\\d,.]+ \\| [\\d,.]+ \\| [\\d,.]+ \\| ([\\d,.]+) \\|",
+    "group": 1,
+    "cast": "int"
+   },
+   "when": "undated in assets/REFERENCE.md: It is a scratch script and is not committed.",
+   "conditions": "Taken from the glTF containers directly, not from a viewer. File size is the `.glb` on disk; texture MB is the sum of the embedded images.",
+   "method": "RECORDED. Every figure above was taken from the six files by a script, `/tmp/claude-0/glb/inspect.py`, which walks the glTF JSON and the binary image chunks.",
+   "why": "the distribution these six files hold is the whole reason kit/ and props/ have a per-piece triangle budget at all; no geometry, texture or name from any of them is here"
+  },
+  {
+   "id": "reference.gtasa__grove_street.glb.file_mb",
+   "what": "gtasa__grove_street.glb: file mb",
+   "value": 7.11,
+   "unit": "MB",
+   "tier": "MEASURED-ELSEWHERE",
+   "file": "assets/REFERENCE.md",
+   "locator": {
+    "kind": "regex",
+    "pattern": "\\| `gtasa__grove_street\\.glb` \\| ([\\d,.]+) \\|",
+    "group": 1,
+    "cast": "float"
+   },
+   "when": "undated in assets/REFERENCE.md: It is a scratch script and is not committed.",
+   "conditions": "Taken from the glTF containers directly, not from a viewer. File size is the `.glb` on disk; texture MB is the sum of the embedded images.",
+   "method": "RECORDED. Every figure above was taken from the six files by a script, `/tmp/claude-0/glb/inspect.py`, which walks the glTF JSON and the binary image chunks.",
+   "why": "the distribution these six files hold is the whole reason kit/ and props/ have a per-piece triangle budget at all; no geometry, texture or name from any of them is here"
+  },
+  {
+   "id": "reference.gtasa__grove_street.glb.triangles",
+   "what": "gtasa__grove_street.glb: triangles",
+   "value": 21893,
+   "unit": "triangles",
+   "tier": "MEASURED-ELSEWHERE",
+   "file": "assets/REFERENCE.md",
+   "locator": {
+    "kind": "regex",
+    "pattern": "\\| `gtasa__grove_street\\.glb` \\| [\\d,.]+ \\| ([\\d,.]+) \\|",
+    "group": 1,
+    "cast": "int"
+   },
+   "when": "undated in assets/REFERENCE.md: It is a scratch script and is not committed.",
+   "conditions": "Taken from the glTF containers directly, not from a viewer. File size is the `.glb` on disk; texture MB is the sum of the embedded images.",
+   "method": "RECORDED. Every figure above was taken from the six files by a script, `/tmp/claude-0/glb/inspect.py`, which walks the glTF JSON and the binary image chunks.",
+   "why": "the distribution these six files hold is the whole reason kit/ and props/ have a per-piece triangle budget at all; no geometry, texture or name from any of them is here"
+  },
+  {
+   "id": "reference.gtasa__grove_street.glb.meshes",
+   "what": "gtasa__grove_street.glb: meshes",
+   "value": 93,
+   "unit": "meshes",
+   "tier": "MEASURED-ELSEWHERE",
+   "file": "assets/REFERENCE.md",
+   "locator": {
+    "kind": "regex",
+    "pattern": "\\| `gtasa__grove_street\\.glb` \\| [\\d,.]+ \\| [\\d,.]+ \\| ([\\d,.]+) \\|",
+    "group": 1,
+    "cast": "int"
+   },
+   "when": "undated in assets/REFERENCE.md: It is a scratch script and is not committed.",
+   "conditions": "Taken from the glTF containers directly, not from a viewer. File size is the `.glb` on disk; texture MB is the sum of the embedded images.",
+   "method": "RECORDED. Every figure above was taken from the six files by a script, `/tmp/claude-0/glb/inspect.py`, which walks the glTF JSON and the binary image chunks.",
+   "why": "the distribution these six files hold is the whole reason kit/ and props/ have a per-piece triangle budget at all; no geometry, texture or name from any of them is here"
+  },
+  {
+   "id": "reference.gtasa__grove_street.glb.materials",
+   "what": "gtasa__grove_street.glb: materials",
+   "value": 93,
+   "unit": "materials",
+   "tier": "MEASURED-ELSEWHERE",
+   "file": "assets/REFERENCE.md",
+   "locator": {
+    "kind": "regex",
+    "pattern": "\\| `gtasa__grove_street\\.glb` \\| [\\d,.]+ \\| [\\d,.]+ \\| [\\d,.]+ \\| ([\\d,.]+) \\|",
+    "group": 1,
+    "cast": "int"
+   },
+   "when": "undated in assets/REFERENCE.md: It is a scratch script and is not committed.",
+   "conditions": "Taken from the glTF containers directly, not from a viewer. File size is the `.glb` on disk; texture MB is the sum of the embedded images.",
+   "method": "RECORDED. Every figure above was taken from the six files by a script, `/tmp/claude-0/glb/inspect.py`, which walks the glTF JSON and the binary image chunks.",
+   "why": "the distribution these six files hold is the whole reason kit/ and props/ have a per-piece triangle budget at all; no geometry, texture or name from any of them is here"
+  },
+  {
+   "id": "reference.gtasa__grove_street.glb.images",
+   "what": "gtasa__grove_street.glb: images",
+   "value": 93,
+   "unit": "images",
+   "tier": "MEASURED-ELSEWHERE",
+   "file": "assets/REFERENCE.md",
+   "locator": {
+    "kind": "regex",
+    "pattern": "\\| `gtasa__grove_street\\.glb` \\| [\\d,.]+ \\| [\\d,.]+ \\| [\\d,.]+ \\| [\\d,.]+ \\| ([\\d,.]+) \\|",
+    "group": 1,
+    "cast": "int"
+   },
+   "when": "undated in assets/REFERENCE.md: It is a scratch script and is not committed.",
+   "conditions": "Taken from the glTF containers directly, not from a viewer. File size is the `.glb` on disk; texture MB is the sum of the embedded images.",
+   "method": "RECORDED. Every figure above was taken from the six files by a script, `/tmp/claude-0/glb/inspect.py`, which walks the glTF JSON and the binary image chunks.",
+   "why": "the distribution these six files hold is the whole reason kit/ and props/ have a per-piece triangle budget at all; no geometry, texture or name from any of them is here"
+  },
+  {
+   "id": "reference.gtasa__grove_street.glb.textures_mb",
+   "what": "gtasa__grove_street.glb: textures mb",
+   "value": 5.72,
+   "unit": "MB",
+   "tier": "MEASURED-ELSEWHERE",
+   "file": "assets/REFERENCE.md",
+   "locator": {
+    "kind": "regex",
+    "pattern": "\\| `gtasa__grove_street\\.glb` \\| [\\d,.]+ \\| [\\d,.]+ \\| [\\d,.]+ \\| [\\d,.]+ \\| [\\d,.]+ \\| ([\\d,.]+) \\|",
+    "group": 1,
+    "cast": "float"
+   },
+   "when": "undated in assets/REFERENCE.md: It is a scratch script and is not committed.",
+   "conditions": "Taken from the glTF containers directly, not from a viewer. File size is the `.glb` on disk; texture MB is the sum of the embedded images.",
+   "method": "RECORDED. Every figure above was taken from the six files by a script, `/tmp/claude-0/glb/inspect.py`, which walks the glTF JSON and the binary image chunks.",
+   "why": "the distribution these six files hold is the whole reason kit/ and props/ have a per-piece triangle budget at all; no geometry, texture or name from any of them is here"
+  },
+  {
+   "id": "reference.gtasa__grove_street.glb.animations",
+   "what": "gtasa__grove_street.glb: animations",
+   "value": 0,
+   "unit": "animations",
+   "tier": "MEASURED-ELSEWHERE",
+   "file": "assets/REFERENCE.md",
+   "locator": {
+    "kind": "regex",
+    "pattern": "\\| `gtasa__grove_street\\.glb` \\| [\\d,.]+ \\| [\\d,.]+ \\| [\\d,.]+ \\| [\\d,.]+ \\| [\\d,.]+ \\| [\\d,.]+ \\| ([\\d,.]+) \\|",
+    "group": 1,
+    "cast": "int"
+   },
+   "when": "undated in assets/REFERENCE.md: It is a scratch script and is not committed.",
+   "conditions": "Taken from the glTF containers directly, not from a viewer. File size is the `.glb` on disk; texture MB is the sum of the embedded images.",
+   "method": "RECORDED. Every figure above was taken from the six files by a script, `/tmp/claude-0/glb/inspect.py`, which walks the glTF JSON and the binary image chunks.",
+   "why": "the distribution these six files hold is the whole reason kit/ and props/ have a per-piece triangle budget at all; no geometry, texture or name from any of them is here"
+  },
+  {
+   "id": "reference.crop_harvestor.glb.file_mb",
+   "what": "crop_harvestor.glb: file mb",
+   "value": 1.59,
+   "unit": "MB",
+   "tier": "MEASURED-ELSEWHERE",
+   "file": "assets/REFERENCE.md",
+   "locator": {
+    "kind": "regex",
+    "pattern": "\\| `crop_harvestor\\.glb` \\| ([\\d,.]+) \\|",
+    "group": 1,
+    "cast": "float"
+   },
+   "when": "undated in assets/REFERENCE.md: It is a scratch script and is not committed.",
+   "conditions": "Taken from the glTF containers directly, not from a viewer. File size is the `.glb` on disk; texture MB is the sum of the embedded images.",
+   "method": "RECORDED. Every figure above was taken from the six files by a script, `/tmp/claude-0/glb/inspect.py`, which walks the glTF JSON and the binary image chunks.",
+   "why": "the distribution these six files hold is the whole reason kit/ and props/ have a per-piece triangle budget at all; no geometry, texture or name from any of them is here"
+  },
+  {
+   "id": "reference.crop_harvestor.glb.triangles",
+   "what": "crop_harvestor.glb: triangles",
+   "value": 7067,
+   "unit": "triangles",
+   "tier": "MEASURED-ELSEWHERE",
+   "file": "assets/REFERENCE.md",
+   "locator": {
+    "kind": "regex",
+    "pattern": "\\| `crop_harvestor\\.glb` \\| [\\d,.]+ \\| ([\\d,.]+) \\|",
+    "group": 1,
+    "cast": "int"
+   },
+   "when": "undated in assets/REFERENCE.md: It is a scratch script and is not committed.",
+   "conditions": "Taken from the glTF containers directly, not from a viewer. File size is the `.glb` on disk; texture MB is the sum of the embedded images.",
+   "method": "RECORDED. Every figure above was taken from the six files by a script, `/tmp/claude-0/glb/inspect.py`, which walks the glTF JSON and the binary image chunks.",
+   "why": "the distribution these six files hold is the whole reason kit/ and props/ have a per-piece triangle budget at all; no geometry, texture or name from any of them is here"
+  },
+  {
+   "id": "reference.crop_harvestor.glb.meshes",
+   "what": "crop_harvestor.glb: meshes",
+   "value": 9,
+   "unit": "meshes",
+   "tier": "MEASURED-ELSEWHERE",
+   "file": "assets/REFERENCE.md",
+   "locator": {
+    "kind": "regex",
+    "pattern": "\\| `crop_harvestor\\.glb` \\| [\\d,.]+ \\| [\\d,.]+ \\| ([\\d,.]+) \\|",
+    "group": 1,
+    "cast": "int"
+   },
+   "when": "undated in assets/REFERENCE.md: It is a scratch script and is not committed.",
+   "conditions": "Taken from the glTF containers directly, not from a viewer. File size is the `.glb` on disk; texture MB is the sum of the embedded images.",
+   "method": "RECORDED. Every figure above was taken from the six files by a script, `/tmp/claude-0/glb/inspect.py`, which walks the glTF JSON and the binary image chunks.",
+   "why": "the distribution these six files hold is the whole reason kit/ and props/ have a per-piece triangle budget at all; no geometry, texture or name from any of them is here"
+  },
+  {
+   "id": "reference.crop_harvestor.glb.materials",
+   "what": "crop_harvestor.glb: materials",
+   "value": 4,
+   "unit": "materials",
+   "tier": "MEASURED-ELSEWHERE",
+   "file": "assets/REFERENCE.md",
+   "locator": {
+    "kind": "regex",
+    "pattern": "\\| `crop_harvestor\\.glb` \\| [\\d,.]+ \\| [\\d,.]+ \\| [\\d,.]+ \\| ([\\d,.]+) \\|",
+    "group": 1,
+    "cast": "int"
+   },
+   "when": "undated in assets/REFERENCE.md: It is a scratch script and is not committed.",
+   "conditions": "Taken from the glTF containers directly, not from a viewer. File size is the `.glb` on disk; texture MB is the sum of the embedded images.",
+   "method": "RECORDED. Every figure above was taken from the six files by a script, `/tmp/claude-0/glb/inspect.py`, which walks the glTF JSON and the binary image chunks.",
+   "why": "the distribution these six files hold is the whole reason kit/ and props/ have a per-piece triangle budget at all; no geometry, texture or name from any of them is here"
+  },
+  {
+   "id": "reference.crop_harvestor.glb.images",
+   "what": "crop_harvestor.glb: images",
+   "value": 3,
+   "unit": "images",
+   "tier": "MEASURED-ELSEWHERE",
+   "file": "assets/REFERENCE.md",
+   "locator": {
+    "kind": "regex",
+    "pattern": "\\| `crop_harvestor\\.glb` \\| [\\d,.]+ \\| [\\d,.]+ \\| [\\d,.]+ \\| [\\d,.]+ \\| ([\\d,.]+) \\|",
+    "group": 1,
+    "cast": "int"
+   },
+   "when": "undated in assets/REFERENCE.md: It is a scratch script and is not committed.",
+   "conditions": "Taken from the glTF containers directly, not from a viewer. File size is the `.glb` on disk; texture MB is the sum of the embedded images.",
+   "method": "RECORDED. Every figure above was taken from the six files by a script, `/tmp/claude-0/glb/inspect.py`, which walks the glTF JSON and the binary image chunks.",
+   "why": "the distribution these six files hold is the whole reason kit/ and props/ have a per-piece triangle budget at all; no geometry, texture or name from any of them is here"
+  },
+  {
+   "id": "reference.crop_harvestor.glb.textures_mb",
+   "what": "crop_harvestor.glb: textures mb",
+   "value": 1.26,
+   "unit": "MB",
+   "tier": "MEASURED-ELSEWHERE",
+   "file": "assets/REFERENCE.md",
+   "locator": {
+    "kind": "regex",
+    "pattern": "\\| `crop_harvestor\\.glb` \\| [\\d,.]+ \\| [\\d,.]+ \\| [\\d,.]+ \\| [\\d,.]+ \\| [\\d,.]+ \\| ([\\d,.]+) \\|",
+    "group": 1,
+    "cast": "float"
+   },
+   "when": "undated in assets/REFERENCE.md: It is a scratch script and is not committed.",
+   "conditions": "Taken from the glTF containers directly, not from a viewer. File size is the `.glb` on disk; texture MB is the sum of the embedded images.",
+   "method": "RECORDED. Every figure above was taken from the six files by a script, `/tmp/claude-0/glb/inspect.py`, which walks the glTF JSON and the binary image chunks.",
+   "why": "the distribution these six files hold is the whole reason kit/ and props/ have a per-piece triangle budget at all; no geometry, texture or name from any of them is here"
+  },
+  {
+   "id": "reference.crop_harvestor.glb.animations",
+   "what": "crop_harvestor.glb: animations",
+   "value": 1,
+   "unit": "animations",
+   "tier": "MEASURED-ELSEWHERE",
+   "file": "assets/REFERENCE.md",
+   "locator": {
+    "kind": "regex",
+    "pattern": "\\| `crop_harvestor\\.glb` \\| [\\d,.]+ \\| [\\d,.]+ \\| [\\d,.]+ \\| [\\d,.]+ \\| [\\d,.]+ \\| [\\d,.]+ \\| ([\\d,.]+) \\|",
+    "group": 1,
+    "cast": "int"
+   },
+   "when": "undated in assets/REFERENCE.md: It is a scratch script and is not committed.",
+   "conditions": "Taken from the glTF containers directly, not from a viewer. File size is the `.glb` on disk; texture MB is the sum of the embedded images.",
+   "method": "RECORDED. Every figure above was taken from the six files by a script, `/tmp/claude-0/glb/inspect.py`, which walks the glTF JSON and the binary image chunks.",
+   "why": "the distribution these six files hold is the whole reason kit/ and props/ have a per-piece triangle budget at all; no geometry, texture or name from any of them is here"
+  },
+  {
+   "id": "reference.gtasa-_samshaus.glb.file_mb",
+   "what": "gtasa-_samshaus.glb: file mb",
+   "value": 3.81,
+   "unit": "MB",
+   "tier": "MEASURED-ELSEWHERE",
+   "file": "assets/REFERENCE.md",
+   "locator": {
+    "kind": "regex",
+    "pattern": "\\| `gtasa-_samshaus\\.glb` \\| ([\\d,.]+) \\|",
+    "group": 1,
+    "cast": "float"
+   },
+   "when": "undated in assets/REFERENCE.md: It is a scratch script and is not committed.",
+   "conditions": "Taken from the glTF containers directly, not from a viewer. File size is the `.glb` on disk; texture MB is the sum of the embedded images.",
+   "method": "RECORDED. Every figure above was taken from the six files by a script, `/tmp/claude-0/glb/inspect.py`, which walks the glTF JSON and the binary image chunks.",
+   "why": "the distribution these six files hold is the whole reason kit/ and props/ have a per-piece triangle budget at all; no geometry, texture or name from any of them is here"
+  },
+  {
+   "id": "reference.gtasa-_samshaus.glb.triangles",
+   "what": "gtasa-_samshaus.glb: triangles",
+   "value": 26411,
+   "unit": "triangles",
+   "tier": "MEASURED-ELSEWHERE",
+   "file": "assets/REFERENCE.md",
+   "locator": {
+    "kind": "regex",
+    "pattern": "\\| `gtasa-_samshaus\\.glb` \\| [\\d,.]+ \\| ([\\d,.]+) \\|",
+    "group": 1,
+    "cast": "int"
+   },
+   "when": "undated in assets/REFERENCE.md: It is a scratch script and is not committed.",
+   "conditions": "Taken from the glTF containers directly, not from a viewer. File size is the `.glb` on disk; texture MB is the sum of the embedded images.",
+   "method": "RECORDED. Every figure above was taken from the six files by a script, `/tmp/claude-0/glb/inspect.py`, which walks the glTF JSON and the binary image chunks.",
+   "why": "the distribution these six files hold is the whole reason kit/ and props/ have a per-piece triangle budget at all; no geometry, texture or name from any of them is here"
+  },
+  {
+   "id": "reference.gtasa-_samshaus.glb.meshes",
+   "what": "gtasa-_samshaus.glb: meshes",
+   "value": 70,
+   "unit": "meshes",
+   "tier": "MEASURED-ELSEWHERE",
+   "file": "assets/REFERENCE.md",
+   "locator": {
+    "kind": "regex",
+    "pattern": "\\| `gtasa-_samshaus\\.glb` \\| [\\d,.]+ \\| [\\d,.]+ \\| ([\\d,.]+) \\|",
+    "group": 1,
+    "cast": "int"
+   },
+   "when": "undated in assets/REFERENCE.md: It is a scratch script and is not committed.",
+   "conditions": "Taken from the glTF containers directly, not from a viewer. File size is the `.glb` on disk; texture MB is the sum of the embedded images.",
+   "method": "RECORDED. Every figure above was taken from the six files by a script, `/tmp/claude-0/glb/inspect.py`, which walks the glTF JSON and the binary image chunks.",
+   "why": "the distribution these six files hold is the whole reason kit/ and props/ have a per-piece triangle budget at all; no geometry, texture or name from any of them is here"
+  },
+  {
+   "id": "reference.gtasa-_samshaus.glb.materials",
+   "what": "gtasa-_samshaus.glb: materials",
+   "value": 70,
+   "unit": "materials",
+   "tier": "MEASURED-ELSEWHERE",
+   "file": "assets/REFERENCE.md",
+   "locator": {
+    "kind": "regex",
+    "pattern": "\\| `gtasa-_samshaus\\.glb` \\| [\\d,.]+ \\| [\\d,.]+ \\| [\\d,.]+ \\| ([\\d,.]+) \\|",
+    "group": 1,
+    "cast": "int"
+   },
+   "when": "undated in assets/REFERENCE.md: It is a scratch script and is not committed.",
+   "conditions": "Taken from the glTF containers directly, not from a viewer. File size is the `.glb` on disk; texture MB is the sum of the embedded images.",
+   "method": "RECORDED. Every figure above was taken from the six files by a script, `/tmp/claude-0/glb/inspect.py`, which walks the glTF JSON and the binary image chunks.",
+   "why": "the distribution these six files hold is the whole reason kit/ and props/ have a per-piece triangle budget at all; no geometry, texture or name from any of them is here"
+  },
+  {
+   "id": "reference.gtasa-_samshaus.glb.images",
+   "what": "gtasa-_samshaus.glb: images",
+   "value": 76,
+   "unit": "images",
+   "tier": "MEASURED-ELSEWHERE",
+   "file": "assets/REFERENCE.md",
+   "locator": {
+    "kind": "regex",
+    "pattern": "\\| `gtasa-_samshaus\\.glb` \\| [\\d,.]+ \\| [\\d,.]+ \\| [\\d,.]+ \\| [\\d,.]+ \\| ([\\d,.]+) \\|",
+    "group": 1,
+    "cast": "int"
+   },
+   "when": "undated in assets/REFERENCE.md: It is a scratch script and is not committed.",
+   "conditions": "Taken from the glTF containers directly, not from a viewer. File size is the `.glb` on disk; texture MB is the sum of the embedded images.",
+   "method": "RECORDED. Every figure above was taken from the six files by a script, `/tmp/claude-0/glb/inspect.py`, which walks the glTF JSON and the binary image chunks.",
+   "why": "the distribution these six files hold is the whole reason kit/ and props/ have a per-piece triangle budget at all; no geometry, texture or name from any of them is here"
+  },
+  {
+   "id": "reference.gtasa-_samshaus.glb.textures_mb",
+   "what": "gtasa-_samshaus.glb: textures mb",
+   "value": 2.02,
+   "unit": "MB",
+   "tier": "MEASURED-ELSEWHERE",
+   "file": "assets/REFERENCE.md",
+   "locator": {
+    "kind": "regex",
+    "pattern": "\\| `gtasa-_samshaus\\.glb` \\| [\\d,.]+ \\| [\\d,.]+ \\| [\\d,.]+ \\| [\\d,.]+ \\| [\\d,.]+ \\| ([\\d,.]+) \\|",
+    "group": 1,
+    "cast": "float"
+   },
+   "when": "undated in assets/REFERENCE.md: It is a scratch script and is not committed.",
+   "conditions": "Taken from the glTF containers directly, not from a viewer. File size is the `.glb` on disk; texture MB is the sum of the embedded images.",
+   "method": "RECORDED. Every figure above was taken from the six files by a script, `/tmp/claude-0/glb/inspect.py`, which walks the glTF JSON and the binary image chunks.",
+   "why": "the distribution these six files hold is the whole reason kit/ and props/ have a per-piece triangle budget at all; no geometry, texture or name from any of them is here"
+  },
+  {
+   "id": "reference.gtasa-_samshaus.glb.animations",
+   "what": "gtasa-_samshaus.glb: animations",
+   "value": 0,
+   "unit": "animations",
+   "tier": "MEASURED-ELSEWHERE",
+   "file": "assets/REFERENCE.md",
+   "locator": {
+    "kind": "regex",
+    "pattern": "\\| `gtasa-_samshaus\\.glb` \\| [\\d,.]+ \\| [\\d,.]+ \\| [\\d,.]+ \\| [\\d,.]+ \\| [\\d,.]+ \\| [\\d,.]+ \\| ([\\d,.]+) \\|",
+    "group": 1,
+    "cast": "int"
+   },
+   "when": "undated in assets/REFERENCE.md: It is a scratch script and is not committed.",
+   "conditions": "Taken from the glTF containers directly, not from a viewer. File size is the `.glb` on disk; texture MB is the sum of the embedded images.",
+   "method": "RECORDED. Every figure above was taken from the six files by a script, `/tmp/claude-0/glb/inspect.py`, which walks the glTF JSON and the binary image chunks.",
+   "why": "the distribution these six files hold is the whole reason kit/ and props/ have a per-piece triangle budget at all; no geometry, texture or name from any of them is here"
+  },
+  {
+   "id": "reference.block_median_tris",
+   "what": "the median mesh of the residential block that reads as a place",
+   "value": 104,
+   "unit": "triangles",
+   "tier": "MEASURED-ELSEWHERE",
+   "file": "assets/REFERENCE.md",
+   "locator": {
+    "kind": "regex",
+    "pattern": "The median mesh is (\\d+) triangles",
+    "group": 1,
+    "cast": "int"
+   },
+   "when": "undated in assets/REFERENCE.md: It is a scratch script and is not committed.",
+   "conditions": "Taken from the glTF containers directly, not from a viewer. File size is the `.glb` on disk; texture MB is the sum of the embedded images.",
+   "method": "RECORDED. Every figure above was taken from the six files by a script, `/tmp/claude-0/glb/inspect.py`, which walks the glTF JSON and the binary image chunks.",
+   "why": "kit/ sizes its exterior pieces against this and says so in its own `reference` block"
+  },
+  {
+   "id": "reference.house_median_tris",
+   "what": "the median mesh of the single interior from the same source",
+   "value": 46,
+   "unit": "triangles",
+   "tier": "MEASURED-ELSEWHERE",
+   "file": "assets/REFERENCE.md",
+   "locator": {
+    "kind": "regex",
+    "pattern": "a median mesh of (\\d+) triangles",
+    "group": 1,
+    "cast": "int"
+   },
+   "when": "undated in assets/REFERENCE.md: It is a scratch script and is not committed.",
+   "conditions": "Taken from the glTF containers directly, not from a viewer. File size is the `.glb` on disk; texture MB is the sum of the embedded images.",
+   "method": "RECORDED. Every figure above was taken from the six files by a script, `/tmp/claude-0/glb/inspect.py`, which walks the glTF JSON and the binary image chunks.",
+   "why": "props/ sizes its interior props against this and says so in its own `measured` block"
+  },
+  {
+   "id": "font.map_px_per_char",
+   "what": "rendered width of one uppercase character, Barlow Condensed 700 at 13.5px",
+   "value": 8.74,
+   "unit": "px/char",
+   "tier": "MEASURED-ELSEWHERE",
+   "file": "web/build_map.py",
+   "locator": {
+    "kind": "regex",
+    "pattern": "\\nPX_PER_CHAR = ([\\d.]+)",
+    "group": 1,
+    "cast": "float"
+   },
+   "when": "undated in the source; recorded at the commit that replaced the guessed constant",
+   "conditions": "measured in a browser at the stated family, weight and size, on uppercase text",
+   "method": "the browser was asked what it actually rendered, rather than the width being inferred from an em ratio",
+   "why": "the campus-map pad is sized from it, so a hall name either fits by arithmetic or fails the build"
+  },
+  {
+   "id": "font.plan_px_per_char",
+   "what": "rendered width of one uppercase character, Barlow Condensed 700 at 11px",
+   "value": 7.275,
+   "unit": "px/char",
+   "tier": "MEASURED-ELSEWHERE",
+   "file": "web/interiors.py",
+   "locator": {
+    "kind": "regex",
+    "pattern": "\\nPX_PER_CHAR = ([\\d.]+)",
+    "group": 1,
+    "cast": "float"
+   },
+   "when": "undated in the source; recorded at the commit that replaced the guessed constant",
+   "conditions": "measured in a browser at the stated family, weight and size, on uppercase text",
+   "method": "the browser was asked what it actually rendered, rather than the width being inferred from an em ratio",
+   "why": "every room in the 1,221-room plan is at least wide enough for its own name because the width is derived from this"
+  },
+  {
+   "id": "font.plan_caption_px_per_char",
+   "what": "rendered width of one caption character, IBM Plex Mono 400 at 7.2px",
+   "value": 4.4,
+   "unit": "px/char",
+   "tier": "MEASURED-ELSEWHERE",
+   "file": "web/interiors.py",
+   "locator": {
+    "kind": "regex",
+    "pattern": "\\nCAPTION_PX_PER_CHAR = ([\\d.]+)",
+    "group": 1,
+    "cast": "float"
+   },
+   "when": "undated in the source; recorded at the commit that replaced the guessed constant",
+   "conditions": "measured in a browser at the stated family, weight and size, on uppercase text",
+   "method": "the browser was asked what it actually rendered, rather than the width being inferred from an em ratio",
+   "why": "the room caption is held to the same arithmetic as the room label"
+  },
+  {
+   "id": "ape.height",
+   "what": "ape anatomy reference: height",
+   "value": 23.64,
+   "unit": "model units",
+   "tier": "MEASURED-ELSEWHERE",
+   "file": "avatars/registry/avatars.json",
+   "locator": {
+    "kind": "json",
+    "path": "tradeapes.ape_reference.height"
+   },
+   "when": "undated in the registry; taken at the build that introduced the TradeApes collection",
+   "conditions": "a user-supplied low-poly ape GLB exported by Khronos glTF Blender I/O v1.6.16, whose licence is unknown",
+   "method": "measured from a user-supplied GLB; measurements only - the mesh is not shipped, no geometry or texture is copied, and no third-party artwork is derived from",
+   "why": "the proportions are the whole of what was taken; the mesh is not shipped and no geometry or texture is copied"
+  },
+  {
+   "id": "ape.span",
+   "what": "ape anatomy reference: span",
+   "value": 24.24,
+   "unit": "model units",
+   "tier": "MEASURED-ELSEWHERE",
+   "file": "avatars/registry/avatars.json",
+   "locator": {
+    "kind": "json",
+    "path": "tradeapes.ape_reference.span"
+   },
+   "when": "undated in the registry; taken at the build that introduced the TradeApes collection",
+   "conditions": "a user-supplied low-poly ape GLB exported by Khronos glTF Blender I/O v1.6.16, whose licence is unknown",
+   "method": "measured from a user-supplied GLB; measurements only - the mesh is not shipped, no geometry or texture is copied, and no third-party artwork is derived from",
+   "why": "the proportions are the whole of what was taken; the mesh is not shipped and no geometry or texture is copied"
+  },
+  {
+   "id": "ape.depth",
+   "what": "ape anatomy reference: depth",
+   "value": 13.73,
+   "unit": "model units",
+   "tier": "MEASURED-ELSEWHERE",
+   "file": "avatars/registry/avatars.json",
+   "locator": {
+    "kind": "json",
+    "path": "tradeapes.ape_reference.depth"
+   },
+   "when": "undated in the registry; taken at the build that introduced the TradeApes collection",
+   "conditions": "a user-supplied low-poly ape GLB exported by Khronos glTF Blender I/O v1.6.16, whose licence is unknown",
+   "method": "measured from a user-supplied GLB; measurements only - the mesh is not shipped, no geometry or texture is copied, and no third-party artwork is derived from",
+   "why": "the proportions are the whole of what was taken; the mesh is not shipped and no geometry or texture is copied"
+  },
+  {
+   "id": "ape.span_to_height",
+   "what": "ape anatomy reference: span_to_height",
+   "value": 1.03,
+   "unit": "ratio",
+   "tier": "MEASURED-ELSEWHERE",
+   "file": "avatars/registry/avatars.json",
+   "locator": {
+    "kind": "json",
+    "path": "tradeapes.ape_reference.span_to_height"
+   },
+   "when": "undated in the registry; taken at the build that introduced the TradeApes collection",
+   "conditions": "a user-supplied low-poly ape GLB exported by Khronos glTF Blender I/O v1.6.16, whose licence is unknown",
+   "method": "measured from a user-supplied GLB; measurements only - the mesh is not shipped, no geometry or texture is copied, and no third-party artwork is derived from",
+   "why": "the proportions are the whole of what was taken; the mesh is not shipped and no geometry or texture is copied"
+  },
+  {
+   "id": "luminance.before",
+   "what": "mean frame luminance of a hall interior lit with legacy-scale intensities",
+   "value": 46,
+   "unit": "0-255",
+   "tier": "MEASURED-IN-BROWSER",
+   "file": "web/build_3d.py",
+   "locator": {
+    "kind": "regex",
+    "pattern": "luminance of (\\d+) to \\d+ out of 255",
+    "group": 1,
+    "cast": "int"
+   },
+   "when": "undated in the source; recorded at the commit that introduced lampCd()",
+   "conditions": "one hall interior, measured as a mean over the rendered frame",
+   "method": "the frame was sampled rather than looked at: three.js r155 made PointLight intensity candela, and the old numbers were real lights that lit nothing",
+   "why": "it is the evidence that the lights were not merely dim but indistinguishable from absent, which is why one conversion now stands between every luminaire and the scene"
+  },
+  {
+   "id": "luminance.after",
+   "what": "mean frame luminance of the same interior after the candela conversion",
+   "value": 96,
+   "unit": "0-255",
+   "tier": "MEASURED-IN-BROWSER",
+   "file": "web/build_3d.py",
+   "locator": {
+    "kind": "regex",
+    "pattern": "luminance of \\d+ to (\\d+) out of 255",
+    "group": 1,
+    "cast": "int"
+   },
+   "when": "undated in the source; recorded at the commit that introduced lampCd()",
+   "conditions": "one hall interior, measured as a mean over the rendered frame",
+   "method": "the frame was sampled rather than looked at: three.js r155 made PointLight intensity candela, and the old numbers were real lights that lit nothing",
+   "why": "it is the evidence that the lights were not merely dim but indistinguishable from absent, which is why one conversion now stands between every luminaire and the scene"
+  },
+  {
+   "id": "kit.campus_pieces",
+   "what": "exterior kit pieces predicted for the flagship campus",
+   "value": 1117,
+   "unit": "pieces",
+   "tier": "COMPUTED-FROM-REGISTRY",
+   "file": "kit/registry/kit.json",
+   "locator": {
+    "kind": "json",
+    "path": "counts.campus_pieces"
+   },
+   "when": "2026-09-22",
+   "conditions": "computed by kit/build.py from the registries it reads; re-computed on every build of that pack",
+   "method": "derived arithmetic over another pack's registry, not an observation of anything rendered",
+   "why": "it is a PREDICTION from placement rules over 51 halls, not a render"
+  },
+  {
+   "id": "kit.campus_triangles",
+   "what": "triangles those pieces would cost",
+   "value": 31392,
+   "unit": "triangles",
+   "tier": "COMPUTED-FROM-REGISTRY",
+   "file": "kit/registry/kit.json",
+   "locator": {
+    "kind": "json",
+    "path": "counts.campus_triangles"
+   },
+   "when": "2026-09-22",
+   "conditions": "computed by kit/build.py from the registries it reads; re-computed on every build of that pack",
+   "method": "derived arithmetic over another pack's registry, not an observation of anything rendered",
+   "why": "it is the figure the campus triangle ceiling is spent against"
+  },
+  {
+   "id": "kit.campus_draw_calls",
+   "what": "draw calls those pieces would cost if they merge as declared",
+   "value": 8,
+   "unit": "draw calls",
+   "tier": "COMPUTED-FROM-REGISTRY",
+   "file": "kit/registry/kit.json",
+   "locator": {
+    "kind": "json",
+    "path": "counts.campus_draw_calls"
+   },
+   "when": "2026-09-22",
+   "conditions": "computed by kit/build.py from the registries it reads; re-computed on every build of that pack",
+   "method": "derived arithmetic over another pack's registry, not an observation of anything rendered",
+   "why": "it is the figure the campus draw-call ceiling is spent against"
+  },
+  {
+   "id": "kit.pieces_per_draw_call",
+   "what": "how many pieces the kit gets for one draw call",
+   "value": 139.6,
+   "unit": "pieces/call",
+   "tier": "COMPUTED-FROM-REGISTRY",
+   "file": "kit/registry/kit.json",
+   "locator": {
+    "kind": "json",
+    "path": "counts.pieces_per_draw_call"
+   },
+   "when": "2026-09-22",
+   "conditions": "computed by kit/build.py from the registries it reads; re-computed on every build of that pack",
+   "method": "derived arithmetic over another pack's registry, not an observation of anything rendered",
+   "why": "the one-mesh-per-piece anti-pattern the reference models exhibit can never reach this number, which is what makes the check arithmetic"
+  },
+  {
+   "id": "props.prop_instances",
+   "what": "interior props the placement rules would stand across the bundle",
+   "value": 5082,
+   "unit": "props",
+   "tier": "COMPUTED-FROM-REGISTRY",
+   "file": "props/registry/props.json",
+   "locator": {
+    "kind": "json",
+    "path": "counts.prop_instances"
+   },
+   "when": "2026-09-22",
+   "conditions": "computed by props/build.py from the registries it reads; re-computed on every build of that pack",
+   "method": "derived arithmetic over another pack's registry, not an observation of anything rendered",
+   "why": "it is the size of the thing that is declared and not yet drawn"
+  },
+  {
+   "id": "props.rooms_requiring_ppe",
+   "what": "rooms whose own conditions record asks for protective equipment",
+   "value": 888,
+   "unit": "rooms",
+   "tier": "COMPUTED-FROM-REGISTRY",
+   "file": "props/registry/props.json",
+   "locator": {
+    "kind": "json",
+    "path": "counts.rooms_requiring_ppe"
+   },
+   "when": "2026-09-22",
+   "conditions": "computed by props/build.py from the registries it reads; re-computed on every build of that pack",
+   "method": "derived arithmetic over another pack's registry, not an observation of anything rendered",
+   "why": "the build fails if one of them gets no PPE prop, so the number is a constraint rather than a statistic"
+  },
+  {
+   "id": "props.bundle_triangles",
+   "what": "triangles the whole bundle of props would cost",
+   "value": 481924,
+   "unit": "triangles",
+   "tier": "COMPUTED-FROM-REGISTRY",
+   "file": "props/registry/props.json",
+   "locator": {
+    "kind": "json",
+    "path": "budget.bundle.triangles"
+   },
+   "when": "2026-09-22",
+   "conditions": "computed by props/build.py from the registries it reads; re-computed on every build of that pack",
+   "method": "derived arithmetic over another pack's registry, not an observation of anything rendered",
+   "why": "stated so the prediction can be compared against a later measurement"
+  },
+  {
+   "id": "sky.equivalent_sky_magnitude",
+   "what": "the visual magnitude a real sky would have to reach to hold as many stars as world/ asks for",
+   "value": 3.8496,
+   "unit": "magnitude",
+   "tier": "COMPUTED-FROM-REGISTRY",
+   "file": "sky/registry/sky.json",
+   "locator": {
+    "kind": "json",
+    "path": "stars.equivalent_sky_magnitude"
+   },
+   "when": "2026-09-20",
+   "conditions": "computed by sky/build.py from the registries it reads; re-computed on every build of that pack",
+   "method": "derived arithmetic over another pack's registry, not an observation of anything rendered",
+   "why": "set against the magnitude the drawn field actually spans, it is the size of the gap between this star field and a sky chart"
+  },
+  {
+   "id": "sky.magnitude_cutoff",
+   "what": "the faintest magnitude the three drawn disc sizes reach",
+   "value": 1.8399,
+   "unit": "magnitude",
+   "tier": "COMPUTED-FROM-REGISTRY",
+   "file": "sky/registry/sky.json",
+   "locator": {
+    "kind": "json",
+    "path": "stars.magnitude_cutoff"
+   },
+   "when": "2026-09-20",
+   "conditions": "computed by sky/build.py from the registries it reads; re-computed on every build of that pack",
+   "method": "derived arithmetic over another pack's registry, not an observation of anything rendered",
+   "why": "derived from the drawn radii under Pogson, so it moves if the page changes a radius"
+  },
+  {
+   "id": "sky.gradient_stops",
+   "what": "per-phase sky gradient stops declared",
+   "value": 56,
+   "unit": "stops",
+   "tier": "COMPUTED-FROM-REGISTRY",
+   "file": "sky/registry/sky.json",
+   "locator": {
+    "kind": "json",
+    "path": "counts.gradient_stops"
+   },
+   "when": "2026-09-20",
+   "conditions": "computed by sky/build.py from the registries it reads; re-computed on every build of that pack",
+   "method": "derived arithmetic over another pack's registry, not an observation of anything rendered",
+   "why": "all of them are currently unread by the page, which is why sky/ appears in declared_unbuilt"
+  },
+  {
+   "id": "geopose.total",
+   "what": "OGC GeoPose 1.0 Basic-YPR poses emitted from the source registries",
+   "value": 67,
+   "unit": "poses",
+   "tier": "COMPUTED-FROM-REGISTRY",
+   "file": "spatial/registry/geopose.json",
+   "locator": {
+    "kind": "json",
+    "path": "counts.total"
+   },
+   "when": "2026-09-16",
+   "conditions": "computed by spatial/build.py from the registries it reads; re-computed on every build of that pack",
+   "method": "derived arithmetic over another pack's registry, not an observation of anything rendered",
+   "why": "every one is height-zero and heading-zero with UNKNOWN, which the pack states rather than implies"
+  },
+  {
+   "id": "lessons.steps",
+   "what": "lesson steps, every one resolving to a real id in another registry",
+   "value": 135,
+   "unit": "steps",
+   "tier": "COMPUTED-FROM-REGISTRY",
+   "file": "lessons/registry/lessons.json",
+   "locator": {
+    "kind": "json",
+    "path": "counts.steps"
+   },
+   "when": "2026-09-20",
+   "conditions": "computed by lessons/build.py from the registries it reads; re-computed on every build of that pack",
+   "method": "derived arithmetic over another pack's registry, not an observation of anything rendered",
+   "why": "a step that could not resolve its ids failed the build rather than becoming a lesson with a footnote"
+  }
+ ],
+ "declared_unbuilt": [
+  {
+   "registry": "kit/registry/kit.json",
+   "pack": "kit",
+   "reasons": [
+    "no page generator under web/ names this path, so nothing a learner opens reads it",
+    "it is DOCUMENTED but not drawn: wiki/build_wiki.py renders a description of it"
+   ],
+   "says": null,
+   "read_by_app_renderers": [],
+   "read_by_doc_renderers": [
+    "wiki/build_wiki.py"
+   ],
+   "read_by_builders": [],
+   "read_by_suites": [],
+   "read_by_its_own_pack": [
+    "kit/build.py",
+    "kit/test.mjs"
+   ],
+   "drops_off_when": "a page generator under web/ opens this path, or the pack removes its own honesty.not_built_yet - either one, on the next build of rnd/, with no edit here"
+  },
+  {
+   "registry": "lessons/registry/lessons.json",
+   "pack": "lessons",
+   "reasons": [
+    "no page generator under web/ names this path, so nothing a learner opens reads it",
+    "it is DOCUMENTED but not drawn: wiki/build_wiki.py renders a description of it"
+   ],
+   "says": null,
+   "read_by_app_renderers": [],
+   "read_by_doc_renderers": [
+    "wiki/build_wiki.py"
+   ],
+   "read_by_builders": [],
+   "read_by_suites": [],
+   "read_by_its_own_pack": [
+    "lessons/build.py",
+    "lessons/test.mjs"
+   ],
+   "drops_off_when": "a page generator under web/ opens this path, or the pack removes its own honesty.not_built_yet - either one, on the next build of rnd/, with no edit here"
+  },
+  {
+   "registry": "pack/registry/library.json",
+   "pack": "pack",
+   "reasons": [
+    "no page generator under web/ names this path, so nothing a learner opens reads it",
+    "it is DOCUMENTED but not drawn: console/build_slice.py renders a description of it"
+   ],
+   "says": null,
+   "read_by_app_renderers": [],
+   "read_by_doc_renderers": [
+    "console/build_slice.py"
+   ],
+   "read_by_builders": [],
+   "read_by_suites": [],
+   "read_by_its_own_pack": [
+    "pack/build.py",
+    "pack/registry.js"
+   ],
+   "drops_off_when": "a page generator under web/ opens this path, or the pack removes its own honesty.not_built_yet - either one, on the next build of rnd/, with no edit here"
+  },
+  {
+   "registry": "pack/registry/skills.json",
+   "pack": "pack",
+   "reasons": [
+    "no page generator under web/ names this path, so nothing a learner opens reads it",
+    "it is DOCUMENTED but not drawn: console/build_slice.py, wiki/build_wiki.py renders a description of it"
+   ],
+   "says": null,
+   "read_by_app_renderers": [],
+   "read_by_doc_renderers": [
+    "console/build_slice.py",
+    "wiki/build_wiki.py"
+   ],
+   "read_by_builders": [
+    "lessons/build.py",
+    "restoration/build.py",
+    "sims/build.py",
+    "tools/build.py"
+   ],
+   "read_by_suites": [
+    "bus/test.mjs",
+    "bus/test_safeguards.mjs",
+    "control/test_graph.mjs",
+    "i18n/test.mjs",
+    "lessons/test.mjs",
+    "restoration/test.mjs",
+    "sims/test.mjs",
+    "stations/test.mjs",
+    "tools/test.mjs"
+   ],
+   "read_by_its_own_pack": [
+    "pack/build.py",
+    "pack/registry.js"
+   ],
+   "drops_off_when": "a page generator under web/ opens this path, or the pack removes its own honesty.not_built_yet - either one, on the next build of rnd/, with no edit here"
+  },
+  {
+   "registry": "pack/registry/variants.json",
+   "pack": "pack",
+   "reasons": [
+    "no page generator under web/ names this path, so nothing a learner opens reads it",
+    "it is DOCUMENTED but not drawn: console/build_slice.py renders a description of it"
+   ],
+   "says": null,
+   "read_by_app_renderers": [],
+   "read_by_doc_renderers": [
+    "console/build_slice.py"
+   ],
+   "read_by_builders": [],
+   "read_by_suites": [
+    "i18n/test.mjs"
+   ],
+   "read_by_its_own_pack": [
+    "pack/build.py",
+    "pack/registry.js"
+   ],
+   "drops_off_when": "a page generator under web/ opens this path, or the pack removes its own honesty.not_built_yet - either one, on the next build of rnd/, with no edit here"
+  },
+  {
+   "registry": "props/registry/props.json",
+   "pack": "props",
+   "reasons": [
+    "the registry declares honesty.not_built_yet",
+    "no page generator under web/ names this path, so nothing a learner opens reads it",
+    "it is DOCUMENTED but not drawn: wiki/build_wiki.py renders a description of it"
+   ],
+   "says": "This registry is a declaration. web/build_3d.py does not read it yet: no prop declared here is standing in any room in the shipped page. The page_contract block states exactly what wiring is outstanding.",
+   "read_by_app_renderers": [],
+   "read_by_doc_renderers": [
+    "wiki/build_wiki.py"
+   ],
+   "read_by_builders": [],
+   "read_by_suites": [],
+   "read_by_its_own_pack": [
+    "props/build.py",
+    "props/test.mjs"
+   ],
+   "drops_off_when": "a page generator under web/ opens this path, or the pack removes its own honesty.not_built_yet - either one, on the next build of rnd/, with no edit here"
+  },
+  {
+   "registry": "security/registry/sbom.cdx.json",
+   "pack": "security",
+   "reasons": [
+    "no page generator under web/ names this path, so nothing a learner opens reads it",
+    "and nothing outside its own pack names it either - not a builder, not the wiki, not another pack's suite; inside it, security/build_sbom.py, security/test.mjs, security/test_sbom.mjs does"
+   ],
+   "says": null,
+   "read_by_app_renderers": [],
+   "read_by_doc_renderers": [],
+   "read_by_builders": [],
+   "read_by_suites": [],
+   "read_by_its_own_pack": [
+    "security/build_sbom.py",
+    "security/test.mjs",
+    "security/test_sbom.mjs"
+   ],
+   "drops_off_when": "a page generator under web/ opens this path, or the pack removes its own honesty.not_built_yet - either one, on the next build of rnd/, with no edit here"
+  },
+  {
+   "registry": "sky/registry/sky.json",
+   "pack": "sky",
+   "reasons": [
+    "the registry declares honesty.not_built_yet"
+   ],
+   "says": "sun_disc is declared and unread - the page draws its disc from the light's own position, which is what makes the disc and the shadows agree, so this pack's disc block has nothing to drive yet. The layer list and compose_order describe an order the page now follows but does not read from here. And the hour is STEPPED, never interpolated: setSky() rebuilds the environment map on every call, so a sun that slid continuously would rebuild it every frame.",
+   "read_by_app_renderers": [
+    "web/build_3d.py"
+   ],
+   "read_by_doc_renderers": [
+    "wiki/build_wiki.py"
+   ],
+   "read_by_builders": [],
+   "read_by_suites": [],
+   "read_by_its_own_pack": [
+    "sky/build.py",
+    "sky/test.mjs"
+   ],
+   "drops_off_when": "a page generator under web/ opens this path, or the pack removes its own honesty.not_built_yet - either one, on the next build of rnd/, with no edit here"
+  },
+  {
+   "registry": "spatial/registry/som.json",
+   "pack": "spatial",
+   "reasons": [
+    "no page generator under web/ names this path, so nothing a learner opens reads it",
+    "it is DOCUMENTED but not drawn: wiki/build_wiki.py renders a description of it"
+   ],
+   "says": null,
+   "read_by_app_renderers": [],
+   "read_by_doc_renderers": [
+    "wiki/build_wiki.py"
+   ],
+   "read_by_builders": [
+    "meta/build.py"
+   ],
+   "read_by_suites": [],
+   "read_by_its_own_pack": [
+    "spatial/build.py",
+    "spatial/test.mjs"
+   ],
+   "drops_off_when": "a page generator under web/ opens this path, or the pack removes its own honesty.not_built_yet - either one, on the next build of rnd/, with no edit here"
+  }
+ ],
+ "consumers": {
+  "agents/registry/advisors.json": {
+   "app_renderers": [
+    "web/build_3d.py",
+    "web/build_dashboard.py",
+    "web/build_home.py"
+   ],
+   "doc_renderers": [
+    "wiki/build_wiki.py"
+   ],
+   "builders": [
+    "guide/build.py",
+    "lessons/build.py",
+    "spatial/build.py",
+    "training/build.py"
+   ],
+   "suites": [
+    "lessons/test.mjs",
+    "spatial/test.mjs"
+   ],
+   "own_pack": [
+    "agents/build.py",
+    "agents/test.mjs"
+   ]
+  },
+  "agents/registry/crews.json": {
+   "app_renderers": [
+    "web/build_3d.py",
+    "web/build_home.py"
+   ],
+   "doc_renderers": [],
+   "builders": [
+    "lessons/build.py"
+   ],
+   "suites": [
+    "lessons/test.mjs"
+   ],
+   "own_pack": [
+    "agents/build.py",
+    "agents/test.mjs"
+   ]
+  },
+  "avatars/registry/avatars.json": {
+   "app_renderers": [
+    "web/build_3d.py",
+    "web/build_dashboard.py",
+    "web/build_home.py"
+   ],
+   "doc_renderers": [],
+   "builders": [
+    "agents/build.py",
+    "guide/build.py"
+   ],
+   "suites": [
+    "agents/test.mjs"
+   ],
+   "own_pack": [
+    "avatars/build.py",
+    "avatars/test.mjs"
+   ]
+  },
+  "geo/registry/campuses_geo.json": {
+   "app_renderers": [
+    "web/build_3d.py",
+    "web/build_geomap.py",
+    "web/build_home.py"
+   ],
+   "doc_renderers": [
+    "wiki/build_wiki.py"
+   ],
+   "builders": [
+    "agents/build.py",
+    "guide/build.py",
+    "parcels/build.py",
+    "restoration/build.py",
+    "roadmap/build.py",
+    "sky/build.py",
+    "spatial/build.py"
+   ],
+   "suites": [
+    "agents/test.mjs",
+    "parcels/test.mjs",
+    "restoration/test.mjs",
+    "roadmap/test.mjs",
+    "sky/test.mjs",
+    "spatial/test.mjs"
+   ],
+   "own_pack": [
+    "geo/build.py",
+    "geo/test.mjs"
+   ]
+  },
+  "guide/registry/guide.json": {
+   "app_renderers": [
+    "web/build_3d.py",
+    "web/build_home.py"
+   ],
+   "doc_renderers": [
+    "wiki/build_wiki.py"
+   ],
+   "builders": [],
+   "suites": [],
+   "own_pack": [
+    "guide/build.py",
+    "guide/test.mjs"
+   ]
+  },
+  "kit/registry/kit.json": {
+   "app_renderers": [],
+   "doc_renderers": [
+    "wiki/build_wiki.py"
+   ],
+   "builders": [],
+   "suites": [],
+   "own_pack": [
+    "kit/build.py",
+    "kit/test.mjs"
+   ]
+  },
+  "labels/registry/labels.json": {
+   "app_renderers": [
+    "web/build_3d.py",
+    "web/build_dashboard.py",
+    "web/build_home.py"
+   ],
+   "doc_renderers": [
+    "wiki/build_wiki.py"
+   ],
+   "builders": [
+    "lessons/build.py"
+   ],
+   "suites": [
+    "lessons/test.mjs",
+    "stations/test.mjs"
+   ],
+   "own_pack": [
+    "labels/build.py",
+    "labels/test.mjs"
+   ]
+  },
+  "lessons/registry/lessons.json": {
+   "app_renderers": [],
+   "doc_renderers": [
+    "wiki/build_wiki.py"
+   ],
+   "builders": [],
+   "suites": [],
+   "own_pack": [
+    "lessons/build.py",
+    "lessons/test.mjs"
+   ]
+  },
+  "meta/registry/metaverse.json": {
+   "app_renderers": [
+    "web/build_dashboard.py",
+    "web/build_geomap.py"
+   ],
+   "doc_renderers": [
+    "wiki/build_wiki.py"
+   ],
+   "builders": [
+    "spatial/build.py",
+    "training/build.py"
+   ],
+   "suites": [
+    "spatial/test.mjs",
+    "training/test.mjs"
+   ],
+   "own_pack": [
+    "meta/build.py",
+    "meta/test.mjs"
+   ]
+  },
+  "orbis/registry/orbis.json": {
+   "app_renderers": [
+    "web/build_3d.py",
+    "web/build_dashboard.py"
+   ],
+   "doc_renderers": [
+    "wiki/build_wiki.py"
+   ],
+   "builders": [
+    "guide/build.py"
+   ],
+   "suites": [],
+   "own_pack": [
+    "orbis/build.py",
+    "orbis/test.mjs"
+   ]
+  },
+  "pack/registry/halls.json": {
+   "app_renderers": [
+    "web/build_3d.py",
+    "web/build_interactive_map.py",
+    "web/build_map.py"
+   ],
+   "doc_renderers": [
+    "console/build_slice.py",
+    "wiki/build_wiki.py"
+   ],
+   "builders": [
+    "avatars/build.py",
+    "lessons/build.py",
+    "props/build.py",
+    "roadmap/build.py"
+   ],
+   "suites": [
+    "i18n/test.mjs",
+    "lessons/test.mjs",
+    "unions/verify.mjs"
+   ],
+   "own_pack": [
+    "pack/build.py",
+    "pack/hall_signoff.mjs",
+    "pack/registry.js"
+   ]
+  },
+  "pack/registry/library.json": {
+   "app_renderers": [],
+   "doc_renderers": [
+    "console/build_slice.py"
+   ],
+   "builders": [],
+   "suites": [],
+   "own_pack": [
+    "pack/build.py",
+    "pack/registry.js"
+   ]
+  },
+  "pack/registry/skills.json": {
+   "app_renderers": [],
+   "doc_renderers": [
+    "console/build_slice.py",
+    "wiki/build_wiki.py"
+   ],
+   "builders": [
+    "lessons/build.py",
+    "restoration/build.py",
+    "sims/build.py",
+    "tools/build.py"
+   ],
+   "suites": [
+    "bus/test.mjs",
+    "bus/test_safeguards.mjs",
+    "control/test_graph.mjs",
+    "i18n/test.mjs",
+    "lessons/test.mjs",
+    "restoration/test.mjs",
+    "sims/test.mjs",
+    "stations/test.mjs",
+    "tools/test.mjs"
+   ],
+   "own_pack": [
+    "pack/build.py",
+    "pack/registry.js"
+   ]
+  },
+  "pack/registry/variants.json": {
+   "app_renderers": [],
+   "doc_renderers": [
+    "console/build_slice.py"
+   ],
+   "builders": [],
+   "suites": [
+    "i18n/test.mjs"
+   ],
+   "own_pack": [
+    "pack/build.py",
+    "pack/registry.js"
+   ]
+  },
+  "parcels/registry/parcels.json": {
+   "app_renderers": [
+    "web/build_3d.py",
+    "web/build_geomap.py",
+    "web/groundtruth.py"
+   ],
+   "doc_renderers": [
+    "wiki/build_wiki.py"
+   ],
+   "builders": [],
+   "suites": [
+    "roadmap/test.mjs"
+   ],
+   "own_pack": [
+    "parcels/build.py",
+    "parcels/test.mjs"
+   ]
+  },
+  "props/registry/props.json": {
+   "app_renderers": [],
+   "doc_renderers": [
+    "wiki/build_wiki.py"
+   ],
+   "builders": [],
+   "suites": [],
+   "own_pack": [
+    "props/build.py",
+    "props/test.mjs"
+   ]
+  },
+  "restoration/registry/restoration.json": {
+   "app_renderers": [
+    "web/build_3d.py",
+    "web/build_dashboard.py",
+    "web/build_geomap.py",
+    "web/build_home.py"
+   ],
+   "doc_renderers": [
+    "wiki/build_wiki.py"
+   ],
+   "builders": [
+    "guide/build.py",
+    "spatial/build.py"
+   ],
+   "suites": [
+    "spatial/test.mjs"
+   ],
+   "own_pack": [
+    "restoration/build.py",
+    "restoration/test.mjs"
+   ]
+  },
+  "roadmap/registry/roadmap.json": {
+   "app_renderers": [
+    "web/build_3d.py",
+    "web/build_dashboard.py",
+    "web/build_geomap.py",
+    "web/build_map.py"
+   ],
+   "doc_renderers": [
+    "wiki/build_wiki.py"
+   ],
+   "builders": [
+    "spatial/build.py"
+   ],
+   "suites": [],
+   "own_pack": [
+    "roadmap/build.py",
+    "roadmap/test.mjs"
+   ]
+  },
+  "schools/registry/schools.json": {
+   "app_renderers": [
+    "web/build_3d.py",
+    "web/build_dashboard.py",
+    "web/build_interactive_map.py"
+   ],
+   "doc_renderers": [
+    "wiki/build_wiki.py"
+   ],
+   "builders": [
+    "agents/build.py",
+    "guide/build.py",
+    "lessons/build.py",
+    "spatial/build.py"
+   ],
+   "suites": [
+    "lessons/test.mjs"
+   ],
+   "own_pack": [
+    "schools/build.py",
+    "schools/test.mjs"
+   ]
+  },
+  "security/registry/sbom.cdx.json": {
+   "app_renderers": [],
+   "doc_renderers": [],
+   "builders": [],
+   "suites": [],
+   "own_pack": [
+    "security/build_sbom.py",
+    "security/test.mjs",
+    "security/test_sbom.mjs"
+   ]
+  },
+  "sims/registry/sims.json": {
+   "app_renderers": [
+    "web/build_3d.py",
+    "web/build_dashboard.py",
+    "web/build_home.py",
+    "web/build_interactive_map.py"
+   ],
+   "doc_renderers": [
+    "wiki/build_wiki.py"
+   ],
+   "builders": [
+    "agents/build.py",
+    "guide/build.py",
+    "lessons/build.py",
+    "meta/build.py",
+    "schools/build.py",
+    "spatial/build.py",
+    "training/build.py"
+   ],
+   "suites": [
+    "agents/test.mjs",
+    "guide/test.mjs",
+    "lessons/test.mjs",
+    "meta/test.mjs",
+    "schools/test.mjs",
+    "spatial/test.mjs",
+    "training/test.mjs"
+   ],
+   "own_pack": [
+    "sims/build.py",
+    "sims/test.mjs"
+   ]
+  },
+  "sky/registry/sky.json": {
+   "app_renderers": [
+    "web/build_3d.py"
+   ],
+   "doc_renderers": [
+    "wiki/build_wiki.py"
+   ],
+   "builders": [],
+   "suites": [],
+   "own_pack": [
+    "sky/build.py",
+    "sky/test.mjs"
+   ]
+  },
+  "spatial/registry/fabric.json": {
+   "app_renderers": [
+    "web/build_dashboard.py"
+   ],
+   "doc_renderers": [
+    "wiki/build_wiki.py"
+   ],
+   "builders": [
+    "meta/build.py"
+   ],
+   "suites": [],
+   "own_pack": [
+    "spatial/build.py",
+    "spatial/test.mjs"
+   ]
+  },
+  "spatial/registry/geopose.json": {
+   "app_renderers": [
+    "web/build_dashboard.py",
+    "web/build_geomap.py"
+   ],
+   "doc_renderers": [
+    "wiki/build_wiki.py"
+   ],
+   "builders": [
+    "meta/build.py"
+   ],
+   "suites": [
+    "meta/test.mjs"
+   ],
+   "own_pack": [
+    "spatial/build.py",
+    "spatial/test.mjs"
+   ]
+  },
+  "spatial/registry/som.json": {
+   "app_renderers": [],
+   "doc_renderers": [
+    "wiki/build_wiki.py"
+   ],
+   "builders": [
+    "meta/build.py"
+   ],
+   "suites": [],
+   "own_pack": [
+    "spatial/build.py",
+    "spatial/test.mjs"
+   ]
+  },
+  "stations/registry/stations.json": {
+   "app_renderers": [
+    "web/build_3d.py",
+    "web/build_home.py",
+    "web/build_interactive_map.py"
+   ],
+   "doc_renderers": [],
+   "builders": [
+    "lessons/build.py",
+    "props/build.py",
+    "schools/build.py"
+   ],
+   "suites": [
+    "lessons/test.mjs",
+    "props/test.mjs",
+    "schools/test.mjs"
+   ],
+   "own_pack": [
+    "stations/build.py",
+    "stations/test.mjs"
+   ]
+  },
+  "surfaces/registry/finishes.json": {
+   "app_renderers": [
+    "web/build_3d.py",
+    "web/build_home.py"
+   ],
+   "doc_renderers": [
+    "wiki/build_wiki.py"
+   ],
+   "builders": [
+    "agents/build.py",
+    "kit/build.py",
+    "lessons/build.py",
+    "props/build.py",
+    "sims/build.py"
+   ],
+   "suites": [
+    "agents/test.mjs",
+    "kit/test.mjs",
+    "lessons/test.mjs",
+    "props/test.mjs",
+    "sims/test.mjs",
+    "stations/test.mjs"
+   ],
+   "own_pack": [
+    "surfaces/build.py",
+    "surfaces/test.mjs"
+   ]
+  },
+  "tools/registry/toolcribs.json": {
+   "app_renderers": [
+    "web/build_3d.py",
+    "web/build_dashboard.py",
+    "web/build_interactive_map.py"
+   ],
+   "doc_renderers": [
+    "wiki/build_wiki.py"
+   ],
+   "builders": [
+    "agents/build.py",
+    "guide/build.py",
+    "lessons/build.py",
+    "props/build.py",
+    "schools/build.py",
+    "spatial/build.py"
+   ],
+   "suites": [
+    "lessons/test.mjs",
+    "schools/test.mjs",
+    "spatial/test.mjs"
+   ],
+   "own_pack": [
+    "tools/build.py",
+    "tools/test.mjs"
+   ]
+  },
+  "training/registry/training.json": {
+   "app_renderers": [
+    "web/build_3d.py",
+    "web/build_dashboard.py"
+   ],
+   "doc_renderers": [
+    "wiki/build_wiki.py"
+   ],
+   "builders": [
+    "guide/build.py",
+    "lessons/build.py",
+    "spatial/build.py"
+   ],
+   "suites": [
+    "guide/test.mjs",
+    "lessons/test.mjs"
+   ],
+   "own_pack": [
+    "training/build.py",
+    "training/test.mjs"
+   ]
+  },
+  "unions/registry/campuses.json": {
+   "app_renderers": [
+    "web/build_3d.py",
+    "web/build_home.py",
+    "web/build_interactive_map.py",
+    "web/build_languages.py",
+    "web/build_map.py"
+   ],
+   "doc_renderers": [
+    "wiki/build_wiki.py"
+   ],
+   "builders": [
+    "agents/build.py",
+    "geo/build.py",
+    "guide/build.py",
+    "kit/build.py",
+    "lessons/build.py",
+    "orbis/build.py",
+    "parcels/build.py",
+    "restoration/build.py",
+    "roadmap/build.py",
+    "schools/build.py",
+    "spatial/build.py",
+    "world/build.py"
+   ],
+   "suites": [
+    "geo/test.mjs",
+    "kit/test.mjs",
+    "lessons/test.mjs",
+    "parcels/test.mjs",
+    "restoration/test.mjs",
+    "roadmap/test.mjs",
+    "schools/test.mjs",
+    "sims/test.mjs",
+    "spatial/test.mjs",
+    "world/test.mjs"
+   ],
+   "own_pack": [
+    "unions/build.py",
+    "unions/verify.mjs"
+   ]
+  },
+  "unions/registry/chapters.json": {
+   "app_renderers": [
+    "web/build_3d.py",
+    "web/build_interactive_map.py"
+   ],
+   "doc_renderers": [
+    "wiki/build_wiki.py"
+   ],
+   "builders": [
+    "guide/build.py"
+   ],
+   "suites": [],
+   "own_pack": [
+    "unions/build.py",
+    "unions/verify.mjs"
+   ]
+  },
+  "unions/registry/districts.json": {
+   "app_renderers": [
+    "web/build_3d.py",
+    "web/build_dashboard.py",
+    "web/build_home.py",
+    "web/build_interactive_map.py",
+    "web/build_languages.py",
+    "web/build_map.py"
+   ],
+   "doc_renderers": [
+    "wiki/build_wiki.py"
+   ],
+   "builders": [
+    "kit/build.py",
+    "labels/build.py",
+    "orbis/build.py",
+    "roadmap/build.py",
+    "tools/build.py"
+   ],
+   "suites": [
+    "i18n/test.mjs",
+    "kit/test.mjs",
+    "labels/test.mjs",
+    "roadmap/test.mjs",
+    "tools/test.mjs"
+   ],
+   "own_pack": [
+    "unions/build.py",
+    "unions/verify.mjs"
+   ]
+  },
+  "unions/registry/unions.json": {
+   "app_renderers": [
+    "web/build_dashboard.py",
+    "web/build_home.py"
+   ],
+   "doc_renderers": [
+    "wiki/build_wiki.py"
+   ],
+   "builders": [
+    "agents/build.py",
+    "avatars/build.py",
+    "guide/build.py",
+    "kit/build.py",
+    "orbis/build.py",
+    "restoration/build.py",
+    "schools/build.py",
+    "sims/build.py",
+    "spatial/build.py",
+    "surfaces/build.py",
+    "tools/build.py"
+   ],
+   "suites": [
+    "agents/test.mjs",
+    "avatars/test.mjs",
+    "kit/test.mjs",
+    "orbis/test.mjs",
+    "restoration/test.mjs",
+    "schools/test.mjs",
+    "sims/test.mjs",
+    "spatial/test.mjs",
+    "stations/test.mjs",
+    "surfaces/test.mjs",
+    "tools/test.mjs"
+   ],
+   "own_pack": [
+    "unions/build.py",
+    "unions/verify.mjs"
+   ]
+  },
+  "world/registry/world.json": {
+   "app_renderers": [
+    "web/build_3d.py",
+    "web/build_dashboard.py",
+    "web/build_home.py"
+   ],
+   "doc_renderers": [
+    "wiki/build_wiki.py"
+   ],
+   "builders": [
+    "kit/build.py",
+    "restoration/build.py",
+    "sky/build.py",
+    "spatial/build.py"
+   ],
+   "suites": [
+    "kit/test.mjs",
+    "restoration/test.mjs",
+    "sky/test.mjs",
+    "spatial/test.mjs"
+   ],
+   "own_pack": [
+    "world/build.py",
+    "world/test.mjs"
+   ]
+  }
+ },
+ "scanned": {
+  "app_renderers": [
+   "web/build_3d.py",
+   "web/build_dashboard.py",
+   "web/build_geomap.py",
+   "web/build_home.py",
+   "web/build_interactive_map.py",
+   "web/build_landing.py",
+   "web/build_languages.py",
+   "web/build_map.py",
+   "web/build_page.py",
+   "web/groundtruth.py",
+   "web/interiors.py"
+  ],
+  "doc_renderers": [
+   "console/build_app.py",
+   "console/build_slice.py",
+   "wiki/build_wiki.py"
+  ],
+  "builders": [
+   "agents/build.py",
+   "avatars/build.py",
+   "geo/build.py",
+   "guide/build.py",
+   "kit/build.py",
+   "labels/build.py",
+   "lessons/build.py",
+   "meta/build.py",
+   "orbis/build.py",
+   "pack/build.py",
+   "parcels/build.py",
+   "props/build.py",
+   "restoration/build.py",
+   "roadmap/build.py",
+   "schools/build.py",
+   "sims/build.py",
+   "sky/build.py",
+   "spatial/build.py",
+   "stations/build.py",
+   "surfaces/build.py",
+   "tools/build.py",
+   "training/build.py",
+   "unions/build.py",
+   "world/build.py"
+  ],
+  "suites": [
+   "agents/test.mjs",
+   "avatars/test.mjs",
+   "brand/test.mjs",
+   "bus/test.mjs",
+   "bus/test_safeguards.mjs",
+   "control/test.mjs",
+   "control/test_graph.mjs",
+   "control/test_hints.mjs",
+   "fabric/test.mjs",
+   "geo/test.mjs",
+   "guide/test.mjs",
+   "i18n/test.mjs",
+   "kit/test.mjs",
+   "labels/test.mjs",
+   "lessons/test.mjs",
+   "meta/test.mjs",
+   "ops/test.mjs",
+   "orbis/test.mjs",
+   "pack/verify.mjs",
+   "parcels/test.mjs",
+   "props/test.mjs",
+   "restoration/test.mjs",
+   "roadmap/test.mjs",
+   "schools/test.mjs",
+   "security/test.mjs",
+   "security/test_sbom.mjs",
+   "sims/test.mjs",
+   "sky/test.mjs",
+   "spatial/test.mjs",
+   "stations/test.mjs",
+   "surfaces/test.mjs",
+   "tools/test.mjs",
+   "training/test.mjs",
+   "unions/verify.mjs",
+   "web/test_3d.mjs",
+   "web/test_rtl.mjs",
+   "world/test.mjs"
+  ],
+  "why": "an app renderer is a page generator under web/ and what it reads is something a learner can stand in front of; a doc renderer is the wiki or the console and what it reads has been written ABOUT, which is not the same as built; a builder is another pack's build.py; and a suite reads a registry to check it, which is not consumption at all. This pack excludes itself from every one of the four, because it reads every registry in the tree by definition."
+ },
+ "gaps": [
+  {
+   "id": "lessons.halls",
+   "question": "how many of the halls have a walkable lesson standing in them",
+   "have": 27,
+   "of": 111,
+   "unit": "halls",
+   "share": 0.2432,
+   "missing": 84,
+   "sources": [
+    "lessons/registry/lessons.json",
+    "pack/registry/halls.json"
+   ],
+   "how": "the distinct halls named in lessons/registry/lessons.json#spread.halls, over the hall roster in pack/registry/halls.json",
+   "note": "lessons/ declares this thinness itself and caps how much of the set any one hall may hold; the spread is deliberate, the size of it is the gap"
+  },
+  {
+   "id": "lessons.strands",
+   "question": "how many of the skill strands a lesson stands in",
+   "have": 11,
+   "of": 11,
+   "unit": "strands",
+   "share": 1.0,
+   "missing": 0,
+   "sources": [
+    "lessons/registry/lessons.json",
+    "surfaces/registry/finishes.json"
+   ],
+   "how": "the distinct strands in lessons/registry/lessons.json#spread.strands, over the room strands surfaces/registry/finishes.json gives every hall",
+   "note": "a CLOSED gap, kept here on purpose: a register that showed only the open ones would be a way of hiding which closures were ever real"
+  },
+  {
+   "id": "lessons.stations",
+   "question": "how many recovered stations a lesson uses",
+   "have": 12,
+   "of": 25,
+   "unit": "stations",
+   "share": 0.48,
+   "missing": 13,
+   "sources": [
+    "lessons/registry/lessons.json"
+   ],
+   "how": "lessons/registry/lessons.json#counts.stations_used over #counts.stations_total, both computed by that pack from the registries it reads",
+   "note": "a station nothing walks to is a station only its own suite has seen"
+  },
+  {
+   "id": "lessons.sims",
+   "question": "how many simulator seats a lesson sits a learner in",
+   "have": 10,
+   "of": 11,
+   "unit": "seats",
+   "share": 0.9091,
+   "missing": 1,
+   "sources": [
+    "lessons/registry/lessons.json"
+   ],
+   "how": "lessons/registry/lessons.json#counts.sims_used over #counts.sims_total, both computed by that pack from the registries it reads",
+   "note": "the unused seat is the overhead crane, the newest of the eleven"
+  },
+  {
+   "id": "lessons.scenarios",
+   "question": "how many simulator scenarios a lesson reaches",
+   "have": 10,
+   "of": 33,
+   "unit": "scenarios",
+   "share": 0.303,
+   "missing": 23,
+   "sources": [
+    "lessons/registry/lessons.json"
+   ],
+   "how": "lessons/registry/lessons.json#counts.scenarios_used over #counts.scenarios_total, both computed by that pack from the registries it reads",
+   "note": "the widest gap in the lesson pack: the scenarios exist, are scored and are reachable by hand, but no lesson walks to most of them"
+  },
+  {
+   "id": "lessons.walkaround_points",
+   "question": "how many walkaround check points a lesson asks for",
+   "have": 17,
+   "of": 55,
+   "unit": "points",
+   "share": 0.3091,
+   "missing": 38,
+   "sources": [
+    "lessons/registry/lessons.json"
+   ],
+   "how": "lessons/registry/lessons.json#counts.walkaround_points_used over #counts.walkaround_points_total, both computed by that pack from the registries it reads",
+   "note": "the walkaround is a habit-builder rather than a gate, and two thirds of the habit is currently unpractised by any lesson"
+  },
+  {
+   "id": "sims.halls",
+   "question": "how many halls bind at least one simulator seat",
+   "have": 45,
+   "of": 111,
+   "unit": "halls",
+   "share": 0.4054,
+   "missing": 66,
+   "sources": [
+    "pack/registry/halls.json",
+    "sims/registry/sims.json"
+   ],
+   "how": "the keys of sims/registry/sims.json#hall_bindings, over the hall roster in pack/registry/halls.json",
+   "note": "a seat is bound to a hall by a real skill id, so this is the share of the trades that can practise on a machine at all"
+  },
+  {
+   "id": "schools.halls",
+   "question": "how many halls have a flipped-classroom unit",
+   "have": 45,
+   "of": 111,
+   "unit": "halls",
+   "share": 0.4054,
+   "missing": 66,
+   "sources": [
+    "pack/registry/halls.json",
+    "schools/registry/schools.json"
+   ],
+   "how": "the distinct hall slugs in schools/registry/schools.json#units, over the hall roster in pack/registry/halls.json",
+   "note": "the flipped model is declared for four proposed districts, not for the network, and the number says which"
+  },
+  {
+   "id": "surfaces.ppe_rooms",
+   "question": "how many rooms require protective equipment",
+   "have": 888,
+   "of": 1221,
+   "unit": "rooms",
+   "share": 0.7273,
+   "missing": 333,
+   "sources": [
+    "surfaces/registry/finishes.json"
+   ],
+   "how": "every room condition record in surfaces/registry/finishes.json#halls whose own `ppe` list is non-empty, counted here rather than read from the number props/ published",
+   "note": "props/ fails its own build if one of these rooms gets no PPE prop - but no prop is standing in any room yet, so today the requirement is declared against nothing"
+  },
+  {
+   "id": "surfaces.hazard_halls",
+   "question": "how many halls carry a finish-driving hazard in their practice bay",
+   "have": 63,
+   "of": 111,
+   "unit": "halls",
+   "share": 0.5676,
+   "missing": 48,
+   "sources": [
+    "surfaces/registry/finishes.json"
+   ],
+   "how": "halls in surfaces/registry/finishes.json#halls whose own `hazard` field is not null, counted here",
+   "note": "the remainder are bench, design and coordination trades; the spec claims a different number for them, which is recorded as a cross-check below"
+  },
+  {
+   "id": "pack.signed_off_halls",
+   "question": "how many halls carry a named practitioner sign-off on their content",
+   "have": 0,
+   "of": 111,
+   "unit": "halls",
+   "share": 0.0,
+   "missing": 111,
+   "sources": [
+    "pack/hall_signoff.mjs",
+    "pack/registry/halls.json"
+   ],
+   "how": "hall records in pack/registry/halls.json whose `content_status` equals the one claiming status pack/hall_signoff.mjs declares, over the roster",
+   "note": "the mechanism exists, is closed-set and refuses an unnamed reviewer; no hall has used it. Every lesson, rubric, walkaround point and advisor line in this bundle is unverified general practice, and this is the number that says so"
+  },
+  {
+   "id": "i18n.reviewed_locales",
+   "question": "how many shipped locales have been reviewed by a native speaker",
+   "have": 0,
+   "of": 8,
+   "unit": "locales",
+   "share": 0.0,
+   "missing": 8,
+   "sources": [
+    "i18n/locales/ar.json",
+    "i18n/locales/de.json",
+    "i18n/locales/en.json",
+    "i18n/locales/es.json",
+    "i18n/locales/fr.json",
+    "i18n/locales/hi.json",
+    "i18n/locales/pt.json",
+    "i18n/locales/zh.json"
+   ],
+   "how": "each catalog's own `translation_status` field, counted here; a catalog claiming review must name its reviewer and a date or i18n/ refuses it",
+   "note": "seven of the eight are machine-drafted and say so; the eighth is the source language. Nothing in this bundle has been read by a native speaker of any language but English"
+  },
+  {
+   "id": "eval.views_scored",
+   "question": "how many of the views the page can show have ever been scored in a browser",
+   "have": 3,
+   "of": 6,
+   "unit": "views",
+   "share": 0.5,
+   "missing": 3,
+   "sources": [
+    "web/build_3d.py",
+    "web/eval_scene.mjs"
+   ],
+   "how": "the view ids in the BASE table of web/eval_scene.mjs that web/build_3d.py actually sets, over every view id that file sets",
+   "note": "the avatar locker, a running simulator and a restoration site have no measured cost at all: every budget in this bundle is an argument about three views out of six"
+  },
+  {
+   "id": "eval.campuses_scored",
+   "question": "how many campuses the scene harness has ever driven to",
+   "have": 1,
+   "of": 10,
+   "unit": "campuses",
+   "share": 0.1,
+   "missing": 9,
+   "sources": [
+    "unions/registry/campuses.json",
+    "web/eval_scene.mjs"
+   ],
+   "how": "the campus slugs web/eval_scene.mjs navigates to, over the campus roster in unions/registry/campuses.json",
+   "note": "kit/ says this in its own words: the baseline its whole-campus arithmetic is added to is a measurement of one campus, and the other nine are unmeasured ground"
+  },
+  {
+   "id": "restoration.walkable",
+   "question": "how many restoration sites a learner can walk into",
+   "have": 8,
+   "of": 11,
+   "unit": "sites",
+   "share": 0.7273,
+   "missing": 3,
+   "sources": [
+    "restoration/registry/restoration.json"
+   ],
+   "how": "sites in restoration/registry/restoration.json whose own `walkable` flag is true, over every site",
+   "note": "this gap is CLOSED BY POLICY and should not be closed further: the two that are not walkable are an actively litigated Superfund site and a cleanup with unresolved radiological criteria, and each carries its own written reason"
+  },
+  {
+   "id": "geo.recorded_anchors",
+   "question": "how many map anchors are RECORDED from a cited source rather than typed from general knowledge",
+   "have": 19,
+   "of": 47,
+   "unit": "anchors",
+   "share": 0.4043,
+   "missing": 28,
+   "sources": [
+    "geo/registry/campuses_geo.json"
+   ],
+   "how": "anchors in geo/registry/campuses_geo.json#anchors whose own `provenance` reads RECORDED, over every anchor",
+   "note": "the rest are AUTHORED, the weaker tier, and the pack labels each one; they are real named institutions but nothing here cross-checked them"
+  },
+  {
+   "id": "spatial.posed",
+   "question": "how many spatial subjects carry a GeoPose",
+   "have": 67,
+   "of": 68,
+   "unit": "subjects",
+   "share": 0.9853,
+   "missing": 1,
+   "sources": [
+    "spatial/registry/geopose.json"
+   ],
+   "how": "spatial/registry/geopose.json#counts.total over that plus #counts.unposed",
+   "note": "the one unposed subject is a bay-wide program that pins no single coordinate, and the pack refuses to invent one for it"
+  }
+ ],
+ "budgets": {
+  "currencies": {
+   "draw_calls": {
+    "unit": "draw calls",
+    "views": {
+     "campus": {
+      "measured_baseline": 273,
+      "ceiling": 341,
+      "headroom": 68,
+      "claimed_by": {
+       "kit": 8
+      },
+      "allowance_by": {
+       "kit": 68
+      },
+      "claimed_total": 8,
+      "left": 60,
+      "left_share": 0.8824,
+      "claims": {
+       "kit": "the exterior kit clothing 51 halls at the one campus the harness drives to; a PREDICTION, nothing is drawn yet"
+      }
+     },
+     "hall": {
+      "measured_baseline": 157,
+      "ceiling": 196,
+      "headroom": 39,
+      "claimed_by": {
+       "props": 10
+      },
+      "allowance_by": {
+       "props": 19
+      },
+      "claimed_total": 10,
+      "left": 29,
+      "left_share": 0.7436,
+      "claims": {
+       "props": "the worst hall standing its full set of props in eleven rooms; a PREDICTION, nothing is drawn yet"
+      }
+     },
+     "region": {
+      "measured_baseline": 249,
+      "ceiling": 311,
+      "headroom": 62,
+      "claimed_by": {},
+      "allowance_by": {},
+      "claimed_total": 0,
+      "left": 62,
+      "left_share": 1.0,
+      "claims": {}
+     }
+    },
+    "scarce": true
+   },
+   "triangles": {
+    "unit": "triangles",
+    "views": {
+     "campus": {
+      "measured_baseline": 15850,
+      "ceiling": 63400,
+      "headroom": 47550,
+      "claimed_by": {
+       "kit": 31392
+      },
+      "allowance_by": {
+       "kit": 33285
+      },
+      "claimed_total": 31392,
+      "left": 16158,
+      "left_share": 0.3398,
+      "claims": {
+       "kit": "the exterior kit clothing 51 halls at the one campus the harness drives to; a PREDICTION, nothing is drawn yet"
+      }
+     },
+     "hall": {
+      "measured_baseline": 3806,
+      "ceiling": 15224,
+      "headroom": 11418,
+      "claimed_by": {
+       "props": 5032
+      },
+      "allowance_by": {
+       "props": 5709
+      },
+      "claimed_total": 5032,
+      "left": 6386,
+      "left_share": 0.5593,
+      "claims": {
+       "props": "the worst hall standing its full set of props in eleven rooms; a PREDICTION, nothing is drawn yet"
+      }
+     },
+     "region": {
+      "measured_baseline": 4508,
+      "ceiling": 18032,
+      "headroom": 13524,
+      "claimed_by": {},
+      "allowance_by": {},
+      "claimed_total": 0,
+      "left": 13524,
+      "left_share": 1.0,
+      "claims": {}
+     }
+    },
+    "scarce": false
+   }
+  },
+  "multipliers": {
+   "call_headroom": 1.25,
+   "tri_headroom": 4.0,
+   "mesh_floor": 0.9,
+   "source": "web/eval_scene.mjs",
+   "why": "the multipliers are read from the harness, so a change to its policy moves every ceiling below with it instead of leaving three stale copies behind"
+  }
+ },
+ "budget_agreements": [
+  {
+   "figure": "the campus draw-call headroom",
+   "value": 68,
+   "recomputed_from": "web/eval_scene.mjs",
+   "agrees_with": "kit/registry/kit.json#budget.draw_call_ceiling"
+  },
+  {
+   "figure": "the campus triangle headroom",
+   "value": 47550,
+   "recomputed_from": "web/eval_scene.mjs",
+   "agrees_with": "kit/registry/kit.json#budget.triangle_headroom_total"
+  },
+  {
+   "figure": "the hall draw-call ceiling",
+   "value": 196,
+   "recomputed_from": "web/eval_scene.mjs",
+   "agrees_with": "props/registry/props.json#budget.ceiling_source.max_calls"
+  },
+  {
+   "figure": "the hall triangle ceiling",
+   "value": 15224,
+   "recomputed_from": "web/eval_scene.mjs",
+   "agrees_with": "props/registry/props.json#budget.ceiling_source.max_tris"
+  },
+  {
+   "figure": "the hall draw-call headroom",
+   "value": 39,
+   "recomputed_from": "web/eval_scene.mjs",
+   "agrees_with": "props/registry/props.json#budget.ceiling_source.headroom_calls"
+  },
+  {
+   "figure": "the hall triangle headroom left after props",
+   "value": 6386,
+   "recomputed_from": "web/eval_scene.mjs",
+   "agrees_with": "props/registry/props.json#budget.delta.triangles_headroom"
+  },
+  {
+   "figure": "the hall draw-call headroom left after props",
+   "value": 29,
+   "recomputed_from": "web/eval_scene.mjs",
+   "agrees_with": "props/registry/props.json#budget.delta.draw_calls_headroom"
+  }
+ ],
+ "suites": {
+  "source_of_the_list": "verify_all.sh",
+  "source_of_the_counts": "README.md",
+  "rows": [
+   {
+    "suite": "control/test.mjs",
+    "pack": "control",
+    "readme_checks": 12,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "control/test_graph.mjs",
+    "pack": "control",
+    "readme_checks": 20,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "control/test_hints.mjs",
+    "pack": "control",
+    "readme_checks": 24,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "control/fuzz.mjs",
+    "pack": "control",
+    "readme_checks": 21,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "control/soak.mjs",
+    "pack": "control",
+    "readme_checks": null,
+    "declared": false,
+    "in_readme_table": true
+   },
+   {
+    "suite": "fabric/test.mjs",
+    "pack": "fabric",
+    "readme_checks": 16,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "bus/test.mjs",
+    "pack": "bus",
+    "readme_checks": 17,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "bus/test_safeguards.mjs",
+    "pack": "bus",
+    "readme_checks": 20,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "security/test.mjs",
+    "pack": "security",
+    "readme_checks": 29,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "security/test_sbom.mjs",
+    "pack": "security",
+    "readme_checks": 11,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "ops/test.mjs",
+    "pack": "ops",
+    "readme_checks": 48,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "ops/fuzz.mjs",
+    "pack": "ops",
+    "readme_checks": 9,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "ops/rehearsal.mjs",
+    "pack": "ops",
+    "readme_checks": 15,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "brand/test.mjs",
+    "pack": "brand",
+    "readme_checks": 30,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "unions/verify.mjs",
+    "pack": "unions",
+    "readme_checks": 28,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "pack/verify.mjs",
+    "pack": "pack",
+    "readme_checks": 29,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "i18n/test.mjs",
+    "pack": "i18n",
+    "readme_checks": 31,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "stations/test.mjs",
+    "pack": "stations",
+    "readme_checks": 27,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "surfaces/test.mjs",
+    "pack": "surfaces",
+    "readme_checks": 56,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "geo/test.mjs",
+    "pack": "geo",
+    "readme_checks": 35,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "sims/test.mjs",
+    "pack": "sims",
+    "readme_checks": 55,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "tools/test.mjs",
+    "pack": "tools",
+    "readme_checks": 13,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "schools/test.mjs",
+    "pack": "schools",
+    "readme_checks": 22,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "avatars/test.mjs",
+    "pack": "avatars",
+    "readme_checks": 52,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "parcels/test.mjs",
+    "pack": "parcels",
+    "readme_checks": 25,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "meta/test.mjs",
+    "pack": "meta",
+    "readme_checks": 34,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "agents/test.mjs",
+    "pack": "agents",
+    "readme_checks": 59,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "world/test.mjs",
+    "pack": "world",
+    "readme_checks": 45,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "labels/test.mjs",
+    "pack": "labels",
+    "readme_checks": 39,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "training/test.mjs",
+    "pack": "training",
+    "readme_checks": 43,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "roadmap/test.mjs",
+    "pack": "roadmap",
+    "readme_checks": 34,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "orbis/test.mjs",
+    "pack": "orbis",
+    "readme_checks": 68,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "restoration/test.mjs",
+    "pack": "restoration",
+    "readme_checks": 84,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "guide/test.mjs",
+    "pack": "guide",
+    "readme_checks": 56,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "sky/test.mjs",
+    "pack": "sky",
+    "readme_checks": 69,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "lessons/test.mjs",
+    "pack": "lessons",
+    "readme_checks": 53,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "kit/test.mjs",
+    "pack": "kit",
+    "readme_checks": 57,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "props/test.mjs",
+    "pack": "props",
+    "readme_checks": 49,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "spatial/test.mjs",
+    "pack": "spatial",
+    "readme_checks": 45,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "web/test_3d.mjs",
+    "pack": "web",
+    "readme_checks": 194,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "web/test_rtl.mjs",
+    "pack": "web",
+    "readme_checks": 17,
+    "declared": true,
+    "in_readme_table": true
+   }
+  ],
+  "suites_run": 41,
+  "suites_declaring_a_count": 40,
+  "suites_without_a_count": [
+   "control/soak.mjs"
+  ],
+  "declared_total": 1591,
+  "readme_headline": 1602,
+  "unaccounted_for": 11,
+  "unaccounted_note": "the headline counts every `  ok ` line verify_all.sh sees, which includes suites the README table gives no number to and web/test_interiors.py, which the table does not list at all. The difference is that remainder and is computed, not reconciled by hand.",
+  "min": 9,
+  "max": 194,
+  "median": 32.5,
+  "thinnest": [
+   {
+    "suite": "ops/fuzz.mjs",
+    "checks": 9
+   },
+   {
+    "suite": "security/test_sbom.mjs",
+    "checks": 11
+   },
+   {
+    "suite": "control/test.mjs",
+    "checks": 12
+   },
+   {
+    "suite": "tools/test.mjs",
+    "checks": 13
+   },
+   {
+    "suite": "ops/rehearsal.mjs",
+    "checks": 15
+   },
+   {
+    "suite": "fabric/test.mjs",
+    "checks": 16
+   }
+  ],
+  "thickest": [
+   {
+    "suite": "web/test_3d.mjs",
+    "checks": 194
+   },
+   {
+    "suite": "restoration/test.mjs",
+    "checks": 84
+   },
+   {
+    "suite": "sky/test.mjs",
+    "checks": 69
+   },
+   {
+    "suite": "orbis/test.mjs",
+    "checks": 68
+   },
+   {
+    "suite": "agents/test.mjs",
+    "checks": 59
+   },
+   {
+    "suite": "kit/test.mjs",
+    "checks": 57
+   }
+  ],
+  "note": "a thin suite is not automatically a bad one - tools/ has 13 checks over a registry of twelve hand tools - but a thin suite over a large surface is where an unfound defect is most likely to be sitting, and this table is the only place the two are shown side by side."
+ },
+ "open_questions": [
+  {
+   "id": "working-set.measured-optimum-is-not-the-shipped-default",
+   "kind": "negative-finding",
+   "asks": "the parameter sweep run to support interleaving measured its optimum at one or two open skills; the shipped default is three. Which is right?",
+   "file": "SmartCitiX_TradeCraft_Academy_Spec.md",
+   "anchors": {
+    "from": "The measured optimum is",
+    "to": "hedges against a known model deficiency rather than over-fitting to it."
+   },
+   "quote": "The measured optimum is **1\u20132**, which sits awkwardly against \u00a75.2's claim that interleaving beats blocking. The honest reading: what this simulation demonstrates is that **wide working sets dilute practice** \u2014 which it shows decisively \u2014 and *not* that interleaving fails, which it cannot show. Interleaving's main claimed benefit is discrimination between confusable items, and the learner model represents that only through the sparse `interferes` edges. The model is under-specified for the very thing being tested. **So the default is 3, not the measured 1.** It sits inside the flat part of the curve (130 vs 143 durable, ~9%), preserves interleaving for the discrimination benefit the simulation cannot measure, and hedges against a known model deficiency rather than over-fitting to it.",
+   "why_it_matters": "this is the sharpest recorded negative in the bundle: an experiment that contradicted the policy it was run to support, kept, labelled uncomfortable, and answered by declining to over-fit to an under-specified model. The honest reading is written down, and the question is explicitly left for real telemetry to settle."
+  },
+  {
+   "id": "sequencing.blocked-practice-acquires-more",
+   "kind": "negative-finding",
+   "asks": "the traditional curriculum this bundle argues against acquired 2.4x more raw ability than the graph sequencer. Is durable ability the right thing to optimise?",
+   "file": "SmartCitiX_TradeCraft_Academy_Spec.md",
+   "anchors": {
+    "from": "**Massed practice acquires more and keeps less.**",
+    "to": "a certificate should mean the holder can still do it next month."
+   },
+   "quote": "**Massed practice acquires more and keeps less.** Blocked ends with 2.4\u00d7 more raw ability gained, but 0.32 retention against 0.78 \u2014 durable ability (gained \u00d7 retained) is 69.4 against 130.0, a 1.9\u00d7 advantage to spaced sequencing. Fast-looking progress that evaporates is the failure mode a trades academy can least afford: a certificate should mean the holder can still do it next month.",
+   "why_it_matters": "the comparison was not reported as a clean win, and the number that lost is printed next to the number that won. A pack summarising this bundle without that line would be flattering it."
+  },
+  {
+   "id": "review.same-mind-same-day",
+   "kind": "negative-finding",
+   "asks": "simulation, soak and fuzz all probe the paths the author thought of. What class of defect can no harness in this bundle catch?",
+   "file": "SmartCitiX_TradeCraft_Academy_Spec.md",
+   "anchors": {
+    "from": "Every defect in \u00a723.1 and \u00a723.3 shares one property",
+    "to": "the branch nobody had exercised."
+   },
+   "quote": "Every defect in \u00a723.1 and \u00a723.3 shares one property: **the test suite and the implementation were written by the same mind on the same day, so they agreed about which paths existed.** Simulation, soak and fuzz all probe the paths the author thought of \u2014 harder, longer, with nastier inputs, but the same paths. What found these was a reader who assumed there were bugs and went looking for the branch nobody had exercised.",
+   "why_it_matters": "it is the standing argument against reading this bundle's own check count as a measure of its correctness - which is exactly what the `suites` block above could otherwise be mistaken for."
+  },
+  {
+   "id": "livery.hue-cannot-carry-identity",
+   "kind": "negative-finding",
+   "asks": "hashing 111 hall slugs into hue produced 94 distinct colours with three-way ties, and the first fix collapsed to 21. What channel carries identity?",
+   "file": "SmartCitiX_TradeCraft_Academy_Spec.md",
+   "anchors": {
+    "from": "Over the real roster it produced",
+    "to": "identical to a reader."
+   },
+   "quote": "Over the real roster it produced **94 distinct hues for 111 halls**, with three-way ties. The first fix enforced a 12-degree separation, which caps at 30 slots and collapsed to 21 colours; relaxing the separation to fit would have produced 111 hues three degrees apart \u2014 distinct to a `Set`, identical to a reader.",
+   "why_it_matters": "a measurement that killed the design it was run to validate, including the tempting fix - 111 hues three degrees apart would have been distinct to a Set and identical to a reader, which is a defect a test cannot see."
+  },
+  {
+   "id": "mentor.gate-5-is-the-only-one-that-catches-over-helping",
+   "kind": "negative-finding",
+   "asks": "an over-helping mentor passes the scope, knowledge and persona gates cleanly. What does that say about gates that look at the turn rather than the outcome?",
+   "file": "SmartCitiX_TradeCraft_Academy_Spec.md",
+   "anchors": {
+    "from": "*Gate 5 earns its place.*",
+    "to": "against the \u22120.03 threshold."
+   },
+   "quote": "*Gate 5 earns its place.* The over-helper passes gates 1, 3 and 4 cleanly \u2014 it knows its trade, respects scope, holds its voice \u2014 and only cohort outcome catches it: mean served rung 1 \u2192 4, ability gain 26.3 \u2192 24.7, lift \u22120.063 against the \u22120.03 threshold.",
+   "why_it_matters": "the failure mode named here is the one users never report, because it feels generous - so the only instrument that finds it is a cohort outcome measured after the fact."
+  },
+  {
+   "id": "hazard.a-reason-that-did-no-work",
+   "kind": "negative-finding",
+   "asks": "a hazard-driven finish turned out identical to the function default it was supposed to override. How many recorded reasons change nothing?",
+   "file": "SmartCitiX_TradeCraft_Academy_Spec.md",
+   "anchors": {
+    "from": "**A hazard is only recorded as hazard-driven when it changed something.**",
+    "to": "which is what actually happened."
+   },
+   "quote": "**A hazard is only recorded as hazard-driven when it changed something.** For contaminant trades the induction room's hazard specification turned out identical to its function default \u2014 an induction room is already wipe-clean \u2014 so the record was claiming a reason that did no work. It now reads as the function choice the hazard happens to confirm, which is what actually happened.",
+   "why_it_matters": "a provenance field that records a cause which changed no outcome is worse than an empty one, because it reports a decision that was never made. The same trap is open to every `why` field in every registry this pack reads."
+  },
+  {
+   "id": "constants.a-guessed-one-passes-its-own-assertion",
+   "kind": "negative-finding",
+   "asks": "an assertion built on a guessed character width sat passing while four hall names ran out of their pads. Which other constants in this bundle are guesses?",
+   "file": "web/build_map.py",
+   "anchors": {
+    "from": "PX_PER_CHAR is MEASURED, not estimated.",
+    "to": "it reports confidence it has not earned."
+   },
+   "quote": "PX_PER_CHAR is MEASURED, not estimated. The first version guessed 6.1 from # \"condensed faces run about 0.47em\"; the browser reports 8.74 at 13.5px, so # the guess was 43% low and four hall names ran out of their pads while the # assertion sat there passing. An assertion built on a guessed constant is # worse than no assertion: it reports confidence it has not earned.",
+   "why_it_matters": "the guess was 43 per cent low and the check never fired. This is the reason `measured` above distinguishes a measurement from a choice at all, and the reason every entry in it carries the file it was read from."
+  },
+  {
+   "id": "ceilings.a-limit-that-cannot-fire-is-not-a-limit",
+   "kind": "negative-finding",
+   "asks": "the first draft of the scene harness permitted 400 draw calls on a view costing 249 and 900,000 triangles on one costing 4,508. What else in this bundle is held to a limit that cannot fire?",
+   "file": "web/eval_scene.mjs",
+   "anchors": {
+    "from": "A ceiling loose enough never to fire is not a",
+    "to": "without a word."
+   },
+   "quote": "A ceiling loose enough never to fire is not a ceiling: the first draft of this file allowed 400 draw calls on a view that costs 249, and 900,000 triangles on one that costs 4,508, which would have let the campus double in cost twice over without a word.",
+   "why_it_matters": "every budget in the `budgets` block above descends from this correction; without it the whole arithmetic would be decoration."
+  },
+  {
+   "id": "audio.a-prompt-measured-worse-than-none",
+   "kind": "negative-finding",
+   "asks": "setting an audio prompt from the scene description was measured to make the audio worse than leaving it unset. Which other helpful-looking knobs hurt?",
+   "file": "orbis/runner-visko-orbis-stable/skill/SKILL.md",
+   "anchors": {
+    "from": "**Don't set `set_audio_prompt` from a scene description.**",
+    "to": "says why."
+   },
+   "quote": "**Don't set `set_audio_prompt` from a scene description.** Measured to make audio WORSE than unset (unset = sound from the picture alone). `AudioPanel` deliberately has no audio-prompt box and says why.",
+   "why_it_matters": "the finding was acted on by REMOVING a control from the panel, which is the rarest response to a negative result and the one that leaves no trace unless it is written down."
+  },
+  {
+   "id": "roads.a-branch-that-cannot-change-the-answer",
+   "kind": "unresolved-policy",
+   "asks": "the roads are deliberately not sampled for footstep sound, and the reasoning has already had to be restated once. Does it survive the next campus?",
+   "file": "web/build_3d.py",
+   "anchors": {
+    "from": "The ROADS are deliberately not sampled",
+    "to": "this is the place."
+   },
+   "quote": "The ROADS are deliberately not sampled, and that is a finding rather than an omission - though the reasoning has had to be restated once. It used to be that all ten campuses were laid on concrete or asphalt, so a road and the ground around it were the same step family and the branch could not change the answer. They now stand on ten different regional surfaces - shell, ballast, slag, caliche - and a road still cannot differ, because a roadway TAKES the campus's own ground recipe unless that ground is grass or sand, and none of the ten is. The conclusion survives; the reason it holds is a different one. If a campus is ever laid on grass, moss or marsh, this is the place.",
+   "why_it_matters": "the conclusion held while the reason underneath it changed completely - which is the shape of a finding that is about to stop being true, and it is recorded in the file rather than in anybody's head."
+  },
+  {
+   "id": "xr.no-headset-has-ever-run-this",
+   "kind": "unproved",
+   "asks": "four hand gestures, 25 joints and every hysteresis band are declared and proved against a mocked WebXR session. Do they work on hardware?",
+   "file": "guide/registry/guide.json",
+   "anchors": {
+    "from": "UNVERIFIED-ON-HARDWARE",
+    "to": "MOCKED WebXR session only"
+   },
+   "quote": "UNVERIFIED-ON-HARDWARE: no headset has been available to this build, so not one of these gestures has been made by a real hand in a real session. They are declared to be implemented and tested against a MOCKED WebXR session only",
+   "why_it_matters": "the largest unproved claim in the bundle, and the pack that makes it says so in its own status line rather than in a footnote. No amount of passing checks can close this one."
+  },
+  {
+   "id": "stars.too-bright-and-too-shallow",
+   "kind": "unproved",
+   "asks": "the drawn star field spans under two magnitudes where a real sky holding that many stars would reach nearly four. Is it a sky or a decoration?",
+   "file": "sky/registry/sky.json",
+   "anchors": {
+    "from": "the drawn field spans",
+    "to": "No star here has a name, a position or a catalogue entry."
+   },
+   "quote": "the drawn field spans 1.8399 magnitudes across three disc sizes, while a real sky holding as many stars as world/ asks for would have to reach about magnitude 3.8496. The field is therefore far too bright and far too shallow to be a sky chart, which is the same thing world/ already says in its own words: it is a night sky, not the night sky. No star here has a name, a position or a catalogue entry.",
+   "why_it_matters": "sky/ computed the number that embarrasses its own star field and published it. That is the behaviour this pack exists to make visible."
+  }
+ ],
+ "cross_checks": [
+  {
+   "id": "luminance.after-the-candela-conversion",
+   "what": "the mean frame luminance a hall interior reached after the luminaires were converted to candela, recorded in the page generator and again in the suite that checks it",
+   "agree": false,
+   "a": {
+    "file": "web/build_3d.py",
+    "pattern": "luminance of \\d+ to (\\d+) out of 255",
+    "value": 96
+   },
+   "b": {
+    "file": "web/test_3d.mjs",
+    "pattern": "mean luminance of \\d+ to (\\d+) out of 255",
+    "value": 89
+   },
+   "consequence": "the same measurement is written down twice with two different results. One of them is wrong and nothing in the bundle can say which, because the frame it was taken from is gone. A measurement recorded in two places is a measurement that will eventually disagree with itself."
+  },
+  {
+   "id": "hazard-free-halls",
+   "what": "how many halls have no finish-driving hazard: the figure the spec states in prose, against the figure the surface registry actually holds",
+   "agree": false,
+   "a": {
+    "file": "SmartCitiX_TradeCraft_Academy_Spec.md",
+    "how": "the number written in section 24.2 of the spec, read by pattern",
+    "value": 31
+   },
+   "b": {
+    "file": "surfaces/registry/finishes.json",
+    "how": "halls in surfaces/registry/finishes.json#halls whose own `hazard` field is null, counted here",
+    "value": 48
+   },
+   "consequence": "the spec's number is prose and the registry's is data; they disagree, and the phrase the spec says those halls \"now say\" appears nowhere in the registry at all. The registry is what the page renders, so the prose is the half that is stale."
+  }
+ ],
+ "page_contract": {
+  "data": "D.rnd, one payload, read-only. Nothing on the page writes to it and nothing is stored in the browser: this is a register, not a workspace.",
+  "route": "a single R&D board, four panels wide, reachable from the front door rather than from inside a view - it describes the bundle, not a place in it",
+  "measured": "one row per entry, grouped by `tier`, with the value, the unit, the file and the locator rendered as literal text. The locator is the point: a reader who does not believe a number is given the exact path or pattern that produced it.",
+  "declared_unbuilt": "the backlog, one card per registry, each listing its computed reasons and the files that do and do not read it. A card carries no owner, no date and no priority, because this pack has no standing to assign any of the three.",
+  "gaps": "one bar per gap, drawn as have-of-total with the share printed as a number beside it. A bar is never drawn as a percentage alone: 24 per cent and 27-of-111 are different amounts of information and only the second can be argued with.",
+  "budgets": "two columns, one per currency, three rows of views. Each cell shows baseline, ceiling, claimed and left, and the claimed segment is labelled PREDICTED so it cannot be read as drawn.",
+  "suites": "the check table sorted ascending, so the thin end is at the top where a reader looking for where to add assurance will find it first",
+  "open_questions": "each quote rendered verbatim in a monospaced block with its file and its two anchors beneath it, and the negative findings first. Nothing here is summarised on the page: a summary of a negative finding is how a negative finding becomes a positive one.",
+  "cross_checks": "the disagreements rendered first with both values side by side and both paths, and the agreements collapsed beneath them",
+  "episode": "nothing is recorded. No score, no progress, no episode and no storage key: opening this board is not an interaction with the Academy, it is a reading of it."
+ },
+ "reads": [
+  "README.md",
+  "SmartCitiX_TradeCraft_Academy_Spec.md",
+  "agents/build.py",
+  "agents/registry/advisors.json",
+  "agents/registry/crews.json",
+  "agents/test.mjs",
+  "assets/REFERENCE.md",
+  "avatars/build.py",
+  "avatars/registry/avatars.json",
+  "avatars/test.mjs",
+  "brand/test.mjs",
+  "bus/test.mjs",
+  "bus/test_safeguards.mjs",
+  "console/build_app.py",
+  "console/build_slice.py",
+  "control/test.mjs",
+  "control/test_graph.mjs",
+  "control/test_hints.mjs",
+  "fabric/test.mjs",
+  "geo/build.py",
+  "geo/registry/campuses_geo.json",
+  "geo/test.mjs",
+  "guide/build.py",
+  "guide/registry/guide.json",
+  "guide/test.mjs",
+  "i18n/locales/ar.json",
+  "i18n/locales/de.json",
+  "i18n/locales/en.json",
+  "i18n/locales/es.json",
+  "i18n/locales/fr.json",
+  "i18n/locales/hi.json",
+  "i18n/locales/pt.json",
+  "i18n/locales/zh.json",
+  "i18n/test.mjs",
+  "kit/build.py",
+  "kit/registry/kit.json",
+  "kit/test.mjs",
+  "labels/build.py",
+  "labels/registry/labels.json",
+  "labels/test.mjs",
+  "lessons/build.py",
+  "lessons/registry/lessons.json",
+  "lessons/test.mjs",
+  "meta/build.py",
+  "meta/registry/metaverse.json",
+  "meta/test.mjs",
+  "ops/test.mjs",
+  "orbis/build.py",
+  "orbis/registry/orbis.json",
+  "orbis/runner-helios/flow.test.mjs",
+  "orbis/runner-helios/postcss.config.mjs",
+  "orbis/runner-visko-orbis-stable/flow.test.mjs",
+  "orbis/runner-visko-orbis-stable/postcss.config.mjs",
+  "orbis/runner-visko-orbis-stable/skill/SKILL.md",
+  "orbis/test.mjs",
+  "pack/build.py",
+  "pack/hall_signoff.mjs",
+  "pack/registry.js",
+  "pack/registry/halls.json",
+  "pack/registry/library.json",
+  "pack/registry/skills.json",
+  "pack/registry/variants.json",
+  "pack/verify.mjs",
+  "parcels/build.py",
+  "parcels/registry/parcels.json",
+  "parcels/test.mjs",
+  "props/build.py",
+  "props/registry/props.json",
+  "props/test.mjs",
+  "restoration/build.py",
+  "restoration/registry/restoration.json",
+  "restoration/test.mjs",
+  "roadmap/build.py",
+  "roadmap/registry/roadmap.json",
+  "roadmap/test.mjs",
+  "schools/build.py",
+  "schools/registry/schools.json",
+  "schools/test.mjs",
+  "security/authz.mjs",
+  "security/build_sbom.py",
+  "security/contest.mjs",
+  "security/privacy.mjs",
+  "security/ratelimit.mjs",
+  "security/registry/sbom.cdx.json",
+  "security/test.mjs",
+  "security/test_sbom.mjs",
+  "sims/build.py",
+  "sims/registry/sims.json",
+  "sims/test.mjs",
+  "sky/build.py",
+  "sky/registry/sky.json",
+  "sky/test.mjs",
+  "spatial/build.py",
+  "spatial/registry/fabric.json",
+  "spatial/registry/geopose.json",
+  "spatial/registry/som.json",
+  "spatial/test.mjs",
+  "stations/build.py",
+  "stations/registry/stations.json",
+  "stations/test.mjs",
+  "surfaces/build.py",
+  "surfaces/registry/finishes.json",
+  "surfaces/surfaces.py",
+  "surfaces/test.mjs",
+  "tools/build.py",
+  "tools/registry/toolcribs.json",
+  "tools/test.mjs",
+  "training/build.py",
+  "training/registry/training.json",
+  "training/test.mjs",
+  "unions/build.py",
+  "unions/registry/campuses.json",
+  "unions/registry/chapters.json",
+  "unions/registry/districts.json",
+  "unions/registry/unions.json",
+  "unions/unions111.py",
+  "unions/verify.mjs",
+  "verify_all.sh",
+  "web/build_3d.py",
+  "web/build_dashboard.py",
+  "web/build_geomap.py",
+  "web/build_home.py",
+  "web/build_interactive_map.py",
+  "web/build_landing.py",
+  "web/build_languages.py",
+  "web/build_map.py",
+  "web/build_page.py",
+  "web/eval_scene.mjs",
+  "web/groundtruth.py",
+  "web/interiors.py",
+  "web/test_3d.mjs",
+  "web/test_rtl.mjs",
+  "wiki/build_wiki.py",
+  "world/build.py",
+  "world/registry/world.json",
+  "world/test.mjs"
+ ]
+}

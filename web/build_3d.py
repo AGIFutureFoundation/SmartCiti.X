@@ -6559,8 +6559,12 @@ function skyCanvas(stops, opts) {
   const hz2 = SKY.horizon_haze;
   const haze = opts.moon ? hz2.night_tint : (opts.haze ?? hz2.day_tint);
   hg.addColorStop(0, `rgba(${haze},0)`);
+  // the weather's own multiplier on the horizon band, from sky/. Fog thickens
+  // the band, a clear hour leaves it alone; `?? 1` here is not a policy
+  // default but the identity, and it is named as such.
   hg.addColorStop(1, `rgba(${haze},${(hz.strength
-    * (opts.moon ? SKY.horizon_haze.night_strength_mul : 1))
+    * (opts.moon ? SKY.horizon_haze.night_strength_mul : 1)
+    * (opts.hazeMul ?? 1))
     .toFixed(2)})`);
   g.fillStyle = hg;
   g.fillRect(0, H * (1 - hz.height * 2), W, H * hz.height * 2);
@@ -6923,6 +6927,17 @@ const DEF_ATMOS = {
 };
 let atmosKey = null, fogMul = 1, fogBanks = [], wx = 'clear', night = false;
 let genMs = 0;
+/* Mix two hex colours per channel. The sky's gradient is composed from
+   three sources in a declared order - the campus's own stops, the hour's,
+   then the weather's tint - and each step is a per-stop mix, so this is the
+   one operation all three share. sRGB, not linear: these are authored
+   colours picked by eye against a screen, and mixing them in linear space
+   would move them somewhere their author did not choose. */
+const mixHex = (a, b, t) => '#' + [1, 3, 5].map((i) => {
+  const av = parseInt(a.slice(i, i + 2), 16), bv = parseInt(b.slice(i, i + 2), 16);
+  return Math.round(av + (bv - av) * t).toString(16).padStart(2, '0');
+}).join('');
+
 const darkHex = (hex, f) => '#' + [1, 3, 5].map((i) =>
   Math.round(Math.min(255, parseInt(hex.slice(i, i + 2), 16) * f))
     .toString(16).padStart(2, '0')).join('');
@@ -6976,11 +6991,22 @@ function applyPhase() {
   starsUp = eff.elevation_deg < SKYDAY.layers.find((l) => l.id === 'star-field')
     .renders_when.value;
   starAlpha = ws ? ws.star_visibility : 1;
+  // The hour and the weather treatment applyAtmos needs to compose the
+  // dome, carried out rather than resolved twice. Both are local to this
+  // function and both are wanted by the caller immediately after.
+  phaseGrad = eff; wxSky = ws;
 }
 
 function setPhase(id) {
   if (!PHASE_OF[id]) throw new Error('no such sky phase: ' + id);
   phaseId = id;
+  // The control follows the hour, whoever set it. Capturing frames for the
+  // overview found this: __tc3dPhase('night') changed the sky and left the
+  // top bar reading "Solar noon", and so would ?hour=, the guide, or an XR
+  // gesture. A control that shows the wrong state is worse than no control,
+  // because it is the thing a person checks to find out what the state is.
+  const sel = document.getElementById('hour');
+  if (sel && sel.value !== id) sel.value = id;
   applyAtmos(campusKey);          // one path: the hour is part of the light
 }
 window.__tc3dPhase = (id) => {
@@ -6996,6 +7022,9 @@ let starsUp = false, starAlpha = 1;
 // what setSky was actually handed, so the hour's answer and the drawn sky
 // can be compared instead of assumed equal
 let starsDrawn = false;
+// the phase applyPhase() last resolved, weather override included, and the
+// weather's own sky treatment beside it
+let phaseGrad = null, wxSky = null;
 
 function applyAtmos(k) {
   const a = ATMOS[k] ?? DEF_ATMOS;
@@ -7020,9 +7049,34 @@ function applyAtmos(k) {
   // WEATHER could ever show one and it always showed all of them whatever
   // the cloud. The hour decides whether they are up; the weather decides
   // how much of them you see through.
-  setSky(a.sky.map((h) => darkHex(h, w.sky_mul)),
+  /* The gradient, composed in the order sky/registry/sky.json declares and
+     no other - see its `compose_order`:
+
+       1. the campus's own four stops, unchanged. This is what keeps a Bay
+          station and a Front Range yard from ending their domes identically,
+          and it stays the base rather than becoming one more thing mixed in.
+       2. the HOUR's stops, mixed over them by 1 - campus_mix. Noon's
+          campus_mix is 1.0, so noon leaves the campus exactly as it was;
+          night's is 0.35, so a night sky is mostly night and a little bit
+          which-campus-you-are-on.
+       3. the weather's tint, by its own tint_mix.
+       4. the weather's existing sky_mul through darkHex, last and unchanged,
+          so nothing here alters what the weather switch already did.
+
+     Until this was wired the sky was step 1 and step 4 only: the hour moved
+     the sun and the lights but painted the dome for daytime whatever the
+     time. Measured on the campus, night came out at luma 34.8 against
+     golden hour's 36.6 - a difference of 1.8 out of 255, which is why night
+     looked like dusk. */
+  const ph = phaseGrad, ws = wxSky;
+  const gStops = a.sky.map((h, i) => {
+    const lit = mixHex(h, ph.gradient.stops[i], 1 - ph.gradient.campus_mix);
+    return darkHex(mixHex(lit, ws.gradient_tint_hex, ws.tint_mix), w.sky_mul);
+  });
+  setSky(gStops,
     { cloud: w.cloud, moon: !!w.moon, stars: (starsDrawn = starsUp), starAlpha,
       haze: a.haze,                       // this campus's own horizon band
+      hazeMul: ws.horizon_haze_mul,
       dim: Math.min(1, w.sky_mul) });
   genMs += performance.now() - t0;
   scene.fog.color.setHex(a.fog.color).multiplyScalar(w.fog_tint);
