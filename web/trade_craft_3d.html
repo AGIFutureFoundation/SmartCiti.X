@@ -2595,7 +2595,215 @@ function buildCrib(h, rx, rz, rw, rd) {
     .5, { kind: 'crib' });
   lab.position.set(bx - .6, 2.85, rz); hallGroup.add(lab);
   cribCount++;
+  return { wall: 'right', z0: rz - bw / 2 - .75, z1: rz + bw / 2 };   // board and chest
 }
+
+
+/* ------------------------------------------------------ the room props ----
+   props/registry/props.json declares twenty-nine props - benches, boards,
+   racks, bins, stands, seats and five safety fixtures - each a recipe of
+   boxes and cylinders with a triangle count, a material the page already
+   builds, a layout (which partition it stands against, how much wall it
+   takes, how many a room may hold) and a rule for which rooms get it. A
+   strand prop stands in a room because a word it declares appears in that
+   room's own purpose line; the registry did that derivation and ships the
+   result as by_strand. A safety fixture stands in a room because that
+   room's own conditions record names protective equipment the fixture
+   holds - the same condOf() record the door placard is drawn from. The
+   pack had been declared and never drawn.
+
+   A hall interior is draw-call bound, so every pooled prop in the hall -
+   all eleven rooms - merges into ONE mesh per material through the same
+   flushParts() the campus uses, and each safety-fixture type is one
+   InstancedMesh however many rooms hold it. Pooling per room would have
+   multiplied those calls by eleven. Floor-standing props register with
+   wallRect() so the walker cannot pass through them; wall-mounted ones
+   hang above nothing a walker occupies. Nothing here is raycast and
+   nothing here moves, so nothing earns a mesh of its own. */
+const PROP_BY_ID = new Map(D.props.props.map((p) => [p.id, p]));
+let propPool = null, propInst = null, propStat = null;
+const propGeoCache = new Map();
+function propMat(name) {
+  const m2 = mat[name];
+  if (!m2 || !m2.isMaterial)
+    throw new Error('prop material ' + name + ' names nothing this page builds');
+  return m2;
+}
+/* A part with count > 1 is one recipe line standing for several: the
+   registry gives ONE position and a count, and the page spreads them. Two
+   mirror across the axis they sit off (x first, then z); four off centre
+   on both x and z mirror across both; a run that starts left of centre
+   spreads from -x to +x; anything else stacks up the prop's own height,
+   from the stated height toward whichever end of the prop is further.
+   The rule is written once, here. */
+function propPartAt(q, yBot, yTop) {
+  const [x, y, z] = q.at, n = q.count;
+  if (n === 1) return [[x, y, z]];
+  if (n === 2 && x !== 0) return [[x, y, z], [-x, y, z]];
+  if (n === 2 && z !== 0) return [[x, y, z], [x, y, -z]];
+  if (n === 4 && x > 0 && z !== 0) return [[x, y, z], [-x, y, z], [x, y, -z], [-x, y, -z]];
+  if (x < 0) return Array.from({ length: n }, (_, i) => [x + i * (-2 * x) / (n - 1), y, z]);
+  const hh = (q.prim === 'box' ? q.size[1] : q.h) / 2;
+  const far = (yTop - y) >= (y - yBot) ? yTop - hh : yBot + hh;
+  return Array.from({ length: n }, (_, i) => [x, y + i * (far - y) / (n - 1), z]);
+}
+// a prop's geometry in its own frame, built once per hall from its
+// recipe and checked against the triangle count the registry states
+function propGeo(p) {
+  let g2 = propGeoCache.get(p.id);
+  if (g2) return g2;
+  const lay = p.layout, standing = lay.anchor !== 'wall-mounted';
+  const yBot = standing ? lay.base_y_m : -p.size_m[1] / 2;
+  const yTop = standing ? lay.base_y_m + p.size_m[1] : p.size_m[1] / 2;
+  const parts = [];
+  for (const q of p.parts) for (const [x, y, z] of propPartAt(q, yBot, yTop)) {
+    let ge;
+    if (q.prim === 'box') ge = new THREE.BoxGeometry(q.size[0], q.size[1], q.size[2]);
+    else if (q.prim === 'cylinder')
+      ge = new THREE.CylinderGeometry(q.r, q.r, q.h, q.radial_segments, 1, !q.capped);
+    else throw new Error('prop part ' + q.prim + ' is not a primitive this page builds');
+    ge.translate(x, y, z); parts.push(ge);
+  }
+  g2 = mergeGeometries(parts);
+  parts.forEach((ge) => ge.dispose());
+  const tris = g2.index.count / 3;
+  if (tris !== p.tris)
+    throw new Error('prop ' + p.id + ' built ' + tris + ' triangles; the registry counts ' + p.tris);
+  propGeoCache.set(p.id, g2);
+  return g2;
+}
+/* Stand one room's props. The rectangle is the one buildHall() computed
+   for the room; the doorways are the ones its partitions were cut with,
+   so a prop never stands across an opening; the benches are the fixture
+   benches already registered as solid, so a corner prop never stands in
+   one. `ppe` is the room's own conditions record. */
+function placeRoomProps(h, r, rx, rz, rw, rd, doors, benches, ppe, inset, reserved) {
+  const Pk = D.props;
+  const ids = Pk.by_strand[r.strand];
+  if (!ids) throw new Error('props registry covers no strand named ' + r.strand);
+  const want = [...ids];
+  for (const p of Pk.props) {
+    if (p.derive.from !== 'room.conditions.ppe') continue;
+    const any = p.derive.ppe_any;
+    if (any[0] === '*any*' ? ppe.length > 0 : any.some((x) => ppe.includes(x))) want.push(p.id);
+  }
+  const x0 = rx - rw / 2, x1 = rx + rw / 2, zF = rz - rd / 2, zB = rz + rd / 2;
+  const partHalf = .06;      // the partition slabs above are .12 thick
+  const seg = { left: runSegments(doors, 'x@' + x0.toFixed(2), zF, zB),
+                right: runSegments(doors, 'x@' + x1.toFixed(2), zF, zB) };
+  const used = { left: [], right: [] }, corners = [];
+  for (const rv of reserved) used[rv.wall].push([rv.z0, rv.z1]);   // the tool crib's wall
+  const backDoors = doors.get('z@' + zB.toFixed(2)) || [];
+  const sideDoors = { left: doors.get('x@' + x0.toFixed(2)) || [],
+                      right: doors.get('x@' + x1.toFixed(2)) || [] };
+  const hits = (list, a, b) => list.some(([c, d]) => a < d && b > c);
+  const pose = new THREE.Matrix4();
+  const stand = (p, x, y, z, ry) => {
+    pose.makeRotationY(ry).setPosition(x, y, z);
+    if (p.merges === 'pooled') {
+      const m2 = propMat(p.material);
+      (propPool.get(m2) ?? propPool.set(m2, []).get(m2)).push(propGeo(p).clone().applyMatrix4(pose));
+    } else if (p.merges === 'instanced') {
+      (propInst.get(p.id) ?? propInst.set(p.id, []).get(p.id)).push(pose.clone());
+    } else throw new Error('prop ' + p.id + ' asks to merge as ' + p.merges + ', which this page does not grant');
+    propStat.drawn++; propStat.tris += p.tris;
+    propStat.byProp[p.id] = (propStat.byProp[p.id] ?? 0) + 1;
+  };
+  for (const pid of want) {
+    const p = PROP_BY_ID.get(pid);
+    if (!p) throw new Error('props registry places ' + pid + ' and declares no such prop');
+    const lay = p.layout, [sw, sh, sd] = p.size_m, gap = lay.gap_m;
+    const wallMounted = lay.anchor === 'wall-mounted';
+    let n, placed = 0;
+    if (lay.anchor === 'back-corner') n = Math.min(lay.max_per_room, lay.walls.length);
+    else {
+      // the registry's own count rule, resolved against this room's depth
+      const run = rd - 2 * inset - lay.front_clear_m - lay.back_reserve_m;
+      n = Math.min(lay.max_per_room, lay.walls.length * Math.max(0, Math.floor((run + gap) / (sw + gap))));
+    }
+    propStat.wanted += n;
+    if (lay.anchor === 'side-wall' || wallMounted) {
+      const band = [zF + inset + lay.front_clear_m, zB - inset - lay.back_reserve_m];
+      for (const wall of lay.walls) {
+        const left = wall === 'left';
+        for (const [c, len] of seg[wall]) {
+          // the gap is air BETWEEN pieces; a piece may take a corner or
+          // stand at a jamb, where a body width of the doorway still
+          // clears it
+          let cur = Math.max(c - len / 2, band[0]);
+          const hi = Math.min(c + len / 2, band[1]);
+          while (placed < n && cur + sw <= hi) {
+            const z0 = cur, z1 = cur + sw;
+            const clash = used[wall].find(([a, b]) => z0 < b && z1 > a);
+            if (clash) { cur = clash[1] + gap; continue; }
+            const face = left ? x0 + partHalf : x1 - partHalf;
+            const x = wallMounted ? face + (left ? .02 : -.02)
+                                  : face + (left ? 1 : -1) * (sd / 2 + .02);
+            stand(p, x, wallMounted ? lay.base_y_m : 0, (z0 + z1) / 2, left ? Math.PI / 2 : -Math.PI / 2);
+            if (!wallMounted) wallRect(x, (z0 + z1) / 2, sd / 2, sw / 2);
+            used[wall].push([z0, z1]); placed++;
+            cur = z1 + gap;
+          }
+        }
+      }
+    } else if (lay.anchor === 'back-corner') {
+      const z = zB - inset - gap - sd / 2;
+      const clear = (x) => x - sw / 2 >= x0 + inset && x + sw / 2 <= x1 - inset
+        && !benches.some((b) => Math.abs(x - b.u) < sw / 2 + b.hw + BODY_R)
+        && !hits(backDoors, x - sw / 2 - BODY_R, x + sw / 2 + BODY_R)
+        && !corners.some(([a, b]) => x - sw / 2 < b && x + sw / 2 > a);
+      for (const wall of lay.walls) {
+        if (placed >= n) break;
+        const left = wall === 'left';
+        // the corner itself, unless a side doorway opens into it
+        const cand = [];
+        if (!hits(sideDoors[wall], z - sd / 2 - BODY_R, z + sd / 2 + BODY_R))
+          cand.push(left ? x0 + inset + gap + sw / 2 : x1 - inset - gap - sw / 2);
+        // else just past each bench, toward the middle of the room
+        for (const b of benches)
+          cand.push(left ? b.u + b.hw + BODY_R + gap + sw / 2 : b.u - b.hw - BODY_R - gap - sw / 2);
+        const x = cand.find(clear);
+        if (x === undefined) {
+          propStat.skipped.push({ prop: pid, room: r.strand, why: 'no clear back corner' });
+          continue;
+        }
+        stand(p, x, 0, z, Math.PI);
+        wallRect(x, z, sw / 2, sd / 2);
+        corners.push([x - sw / 2, x + sw / 2]); placed++;
+      }
+    } else throw new Error('prop anchor ' + lay.anchor + ' is not one this page resolves');
+    if (placed < n && lay.anchor !== 'back-corner')
+      propStat.skipped.push({ prop: pid, room: r.strand, why: (n - placed) + ' of ' + n + ' found no solid wall run' });
+  }
+}
+// the whole hall's props: one merged mesh per material, one InstancedMesh
+// per safety fixture, all owned by the hall group and freed with it
+function flushProps(g) {
+  propStat.pooledCalls = flushParts(propPool, g).length;
+  for (const [pid, mats] of propInst) {
+    const p = PROP_BY_ID.get(pid);
+    const im = new THREE.InstancedMesh(propGeo(p).clone(), propMat(p.material), mats.length);
+    mats.forEach((m, i) => im.setMatrixAt(i, m));
+    im.instanceMatrix.needsUpdate = true;
+    im.castShadow = true; im.receiveShadow = true;
+    im.userData.prop = pid;
+    g.add(im);
+    propStat.instancedCalls++;
+  }
+  propInst.clear();
+  for (const ge of propGeoCache.values()) ge.dispose();  // clones went to the pool and the instances
+  propGeoCache.clear();
+}
+window.__tc3dProps = () => {
+  if (!hallGroup || !propStat) return null;
+  return { slug: propStat.slug, rooms: propStat.rooms, wanted: propStat.wanted,
+           drawn: propStat.drawn, tris: propStat.tris,
+           byProp: { ...propStat.byProp }, skipped: propStat.skipped.slice(),
+           pooledCalls: propStat.pooledCalls, instancedCalls: propStat.instancedCalls,
+           drawCallsAdded: propStat.pooledCalls + propStat.instancedCalls,
+           declared: { per_hall: D.props.budget.per_hall,
+                       self_imposed: D.props.budget.self_imposed } };
+};
 
 function buildHall(sg) {
   if (hallGroup) { scene.remove(hallGroup); disposeOf(hallGroup); }
@@ -2680,6 +2888,10 @@ function buildHall(sg) {
                      label: r.label, strand: r.strand });
   const doors = planDoors(roomRects, -DEP / 2);
   const stns = h.stations.map(id => D.stations[id]);
+  // the props of all eleven rooms pool here and flush ONCE after the loop
+  propPool = new Map(); propInst = new Map();
+  propStat = { slug: sg, rooms: h.rooms.length, wanted: 0, drawn: 0, tris: 0,
+               byProp: {}, skipped: [], pooledCalls: 0, instancedCalls: 0 };
   for (const r of h.rooms) {
     const rw = r.w * U, rd = r.h * U;
     const rx = cx(r.x * U + rw/2), rz = cz(r.y * U + rd/2);
@@ -2717,6 +2929,7 @@ function buildHall(sg) {
       const k = Math.max(1, Math.floor(len / 1.6));
       for (let i2 = 0; i2 < k; i2++) spots.push(c - len / 2 + (i2 + .5) * (len / k));
     }
+    const benches = [];
     (r.fixtures || []).slice(0, 3).forEach((fx, fi) => {
       const bx = spots[fi] ?? rx;
       const bz = rz + rd/2 - .8;
@@ -2727,6 +2940,7 @@ function buildHall(sg) {
       const fl = label(fx, null, .34, { kind: 'fixture' });
       fl.position.set(bx, 1.85, bz); hallGroup.add(fl);
       wallRect(bx, bz, .7, .4);          // you cannot walk through a bench
+      benches.push(hallSolids[0].rects[hallSolids[0].rects.length - 1]);
     });
     // The partitions used to be four boxes of one flat mat.part, in every
     // room of every hall. A room's partition now wears that ROOM's wall -
@@ -2791,6 +3005,11 @@ function buildHall(sg) {
        the record does not mean 1000 lx reaching a photometer in this
        scene, and the panel that prints the number keeps §24.3's caveat. */
     const rc = condOf(h.slug, r.strand);
+    // the district's tool crib hangs in the tools room, on the right
+    // partition; its board and chest reserve that run before a prop asks
+    const reserved = r.strand === 'tools' ? [buildCrib(h, rx, rz, rw, rd)] : [];
+    placeRoomProps(h, r, rx, rz, rw, rd, doors, benches, rc.ppe,
+                   (rw - floor.geometry.parameters.width) / 2, reserved);
     const luxN = Math.max(0, Math.min(1, (rc.lux - 200) / 800));
     const lmat = new THREE.MeshStandardMaterial({
       color: 0x0b0f11, emissive: 0xffe6c0,
@@ -2844,9 +3063,8 @@ function buildHall(sg) {
       hallGroup.add(post, gem); beacons.push(gem, post);
     });
 
-    // the district's tool crib hangs in the tools room
-    if (r.strand === 'tools') buildCrib(h, rx, rz, rw, rd);
   }
+  flushProps(hallGroup);
 
   // the apron: recovered yard layout for seeded halls, a light deterministic
   // dressing for the rest. Original yard coords span ±16; fold them onto the
