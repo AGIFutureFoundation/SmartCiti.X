@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-20",
- "source_stamp": "82763c480da8e6a2",
+ "source_stamp": "7e010962496b4d76",
  "contract": "the guide answers six fixed questions about the place the learner is already in, and nothing else. Every answer is a sentence written in this registry with the repo file it is grounded in named in `cites`; the only thing read at view time is a control scheme, and the biggest one - a seat's own keys and its XR mapping - is read from the simulator registry rather than copied here. Nothing is generated, no model runs behind it, and the guide itself reaches no network.",
  "honesty": {
   "status": "SCRIPTED: the guide is a hand-written, deterministic script - a fixed set of places, six fixed questions each, and one fixed answer to each. No model runs behind it, nothing is generated at view time, and the guide reaches no network of its own.",
@@ -15,12 +15,13 @@
   "hands": "the hand gestures are declared, not proved: no headset has been available to this build, and they are declared to be implemented and tested against a mocked XR session only."
  },
  "counts": {
-  "places": 10,
+  "places": 11,
   "world_places": 6,
   "panel_places": 4,
+  "page_places": 1,
   "asks": 6,
-  "topics": 60,
-  "cited_files": 13,
+  "topics": 66,
+  "cited_files": 15,
   "control_schemes": 5,
   "seat_schemes": 11,
   "controls": 63,
@@ -337,6 +338,53 @@
      "ask": "Do the crew marks mean anything?",
      "cites": "avatars/registry/avatars.json",
      "answer": "Not outside this bundle. The marks and crew colours are the Academy's own, not the insignia of any real union, employer or trade body, and wearing one claims no membership and no qualification. The hand emotes borrow the yard's vocabulary and confer nothing either."
+    }
+   ]
+  },
+  "home": {
+   "name": "The front door",
+   "kind": "page",
+   "view": null,
+   "walkable": false,
+   "opened_by": "opening index.html - it is the first page of the bundle",
+   "what_line": "nine surfaces built from the same registries, and what each of them does and does not claim",
+   "topics": [
+    {
+     "id": "what",
+     "ask": "What is this?",
+     "cites": "README.md",
+     "answer": "A walkable training world for the skilled trades: a taxonomy of union halls, each with a generated floor plan you can walk through on foot, a yard of operable machine seats, and the registries every one of those is built from. Every figure on this page is read from the pack that owns it rather than typed beside it."
+    },
+    {
+     "id": "do",
+     "ask": "Where should I start?",
+     "cites": "web/build_home.py",
+     "answer": "The walkable world. It is the only surface where you stand in the thing rather than read about it - press walk on a campus green and the view becomes a body. The interactive map is the better second stop if you want the whole roster at once instead of one hall."
+    },
+    {
+     "id": "move",
+     "ask": "How do I get around the surfaces?",
+     "scheme": "pointer",
+     "cites": "web/build_home.py",
+     "answer": "Every card on this page is a link to one built page. They do not nest: each opens on its own and the back button returns here. Nothing on this page needs a keyboard, and nothing on it is fetched from anywhere."
+    },
+    {
+     "id": "back",
+     "ask": "How do I come back here?",
+     "cites": "web/build_home.py",
+     "answer": "The browser's own back button, or the root of the site. This page holds no state: there is nothing to lose by leaving it and nothing to restore on return."
+    },
+    {
+     "id": "measures",
+     "ask": "Is anything here scoring me?",
+     "cites": "training/registry/training.json",
+     "answer": "Nothing on this page. The simulator seats keep a record, and it is this browser's own - it never leaves the device and no account exists to attach it to. Opening the front door records nothing at all."
+    },
+    {
+     "id": "limits",
+     "ask": "What does this not claim?",
+     "cites": "unions/registry/unions.json",
+     "answer": "It is a taxonomy of skilled trades, not a roster of chartered locals: no real local is named and no real union's mark is drawn. No seat certifies anybody, no site has been surveyed, and the lesson content is unverified general practice pending authoring by journey-level practitioners from the halls."
     }
    ]
   },
@@ -1405,6 +1453,7 @@
   "episode": "nothing is recorded. The guide writes no episode, and the only thing it ever puts in storage is the state of its two voice switches"
  },
  "cites": [
+  "README.md",
   "agents/registry/advisors.json",
   "avatars/registry/avatars.json",
   "geo/registry/campuses_geo.json",
@@ -1417,6 +1466,7 @@
   "unions/registry/campuses.json",
   "unions/registry/chapters.json",
   "unions/registry/unions.json",
-  "web/build_3d.py"
+  "web/build_3d.py",
+  "web/build_home.py"
  ]
 }

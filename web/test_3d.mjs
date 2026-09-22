@@ -36,7 +36,16 @@ const fn = (name) => {
    and the old fixed sun vector are both quoted in the notes beside their
    replacements. A check that reads its own explanation is answering a
    different question than the one it was written to ask. */
-const code = src.replace(/\/\/[^\n]*/g, '').replace(/\/\*[\s\S]*?\*\//g, '');
+const strip = (t) => t.replace(/\/\/[^\n]*/g, '').replace(/\/\*[\s\S]*?\*\//g, '');
+const code = strip(src);
+/* One function's body, comments cut out. Four checks in a row have now
+   matched the COMMENT that explains why a string is gone rather than the
+   string: the old `ontouchstart` expression, the old fixed sun vector, the
+   forbidden fabric constant, and `fab['treasure-island']` quoted inside the
+   very function that stopped using it. A check written as "this is no
+   longer here" must read code, and the comment explaining the removal is
+   the likeliest place for the removed text to still be. */
+const fnCode = (name) => strip(fn(name));
 
 /* ------------------------------------------------------------ teardown --- */
 ok('disposeOf() is the one teardown path, and it still never disposes a shared (cached) geometry',
@@ -228,9 +237,38 @@ ok('a building wears its CAMPUS fabric, not one page-wide wall material',
   && /box\(wid, hgt, dep, fab\.wall, 0, hgt \/ 2, 0, g\)/.test(fn('building'))
   && /add\(fab\.roof,/.test(fn('building'))
   && /add\(fab\.trim,/.test(fn('building')));
-ok('the district still decides a roofline it has an opinion about; the city '
-  + 'breaks the tie',
-  /STYLE_OF\[k\] \?\? \(D\.world\.fabric\?\.\[campusKey\]\?\.roof \?\? 'flat'\)/.test(src));
+/* This check used to assert the opposite: that a `?? fabric.roof ?? 'flat'`
+   chain followed STYLE_OF, described as "the city breaks the tie". The kit/
+   pack, reading this file, computed that STYLE_OF already names all eight
+   districts the union registry declares - so NEITHER arm could ever fire.
+   It was dead code, and the comment beside it described a case that does
+   not occur, which is worse than no comment: it tells the next reader the
+   fallback matters. */
+ok('the district decides the roofline outright - there is no tie to break, '
+  + 'because STYLE_OF covers every district and the build proves it',
+  /const style = STYLE_OF\[k\];/.test(src)
+  && /if \(!style\) throw new Error\('no roofline style for district ' \+ k\)/.test(src)
+  && !/STYLE_OF\[k\] \?\?/.test(code)
+  && /assert _styled == set\(districts_reg\)/.test(src));
+ok('a campus with no built fabric breaks the build instead of quietly '
+  + 'wearing the flagship\'s livery - the fallback constant was a second '
+  + 'copy of treasure-island\'s five drawn fields AND it failed open',
+  // matched against the JS DECLARATION, not the bare name: the build-time
+  // gate that forbids the constant is Python, `code` only strips JavaScript
+  // comments, and so the check was matching the very line that exists to
+  // prevent what it was checking for. Third time this shape has bitten -
+  // the `ontouchstart` count and the old sun vector were the first two.
+  // The DECLARATION with its brace. Matching the bare name matched the
+  // build-time gate that forbids it - the gate is Python, `code` strips
+  // only JavaScript comments, so the check kept finding the very line
+  // written to prevent what it was checking for. Third time this shape has
+  // bitten: the `ontouchstart` count and the old sun vector were the first
+  // two. The gate itself is asserted separately, below.
+  !/const FABRIC_FALLBACK = \{/.test(code)
+  && /assert 'const FABRIC_FALLBACK' not in page/.test(src)
+  && /const fab = D\.world\.fabric;/.test(fn('fabricOf'))
+  && /throw new Error\('no built fabric for campus '/.test(fn('fabricOf'))
+  && /_nofab = sorted\(set\(campuses_reg\) - set\(_fab\)\)/.test(src));
 /* Seven of the ten campuses are hubs with no halls, so the fabric would have
    dressed nothing there. The chapter hall is the one building they have. */
 ok('a hub\'s chapter hall wears the same three fabric materials',
@@ -242,12 +280,28 @@ ok('the city layer no longer paints real places from a rainbow keyed on '
   + 'their index',
   !/const hues = \[42, 152, 205, 268, 20, 96, 330\]/.test(src)
   && /const baseHSL = new THREE\.Color\(fabCity\.spec\.facade_color\)/.test(fn('buildCity')));
-/* Reading through two levels of an absent table is what broke this function
-   for one build: the registry had `fabric` and the page payload did not. */
-ok('an absent fabric table degrades to a fallback instead of throwing',
-  /const fab = D\.world\.fabric \?\? \{\};/.test(fn('fabricOf'))
-  && /fab\[ck\] \?\? fab\['treasure-island'\] \?\? FABRIC_FALLBACK/.test(fn('fabricOf'))
-  && /const FABRIC_FALLBACK = /.test(src));
+/* This check used to assert the OPPOSITE, and it was wrong to. It read
+   "an absent fabric table degrades to a fallback instead of throwing", and
+   it held the page to a three-level chain - `D.world.fabric ?? {}`, then
+   `fab[ck] ?? fab['treasure-island'] ?? FABRIC_FALLBACK`.
+
+   Reading through an absent table IS the fault it was written after, and
+   guarding the read was right. Choosing the flagship's livery as the answer
+   was not. Ten campuses told apart by their built fabric is the whole point
+   of that registry, so a campus whose row went missing did not break - it
+   quietly wore Treasure Island's colours on every building and looked
+   entirely fine. A defect that looks fine is the one nobody finds.
+
+   The guard stays, as a throw. The build gates every campus on having a
+   row, so the throw is unreachable unless the payload and the registry come
+   apart - which is exactly the fault this function shipped with once. */
+ok('an absent fabric row BREAKS the build rather than quietly borrowing the '
+  + 'flagship\'s livery - the read is still guarded, the answer is not a '
+  + 'default',
+  /const fab = D\.world\.fabric;/.test(fnCode('fabricOf'))
+  && /const f = fab\?\.\[ck\];/.test(fnCode('fabricOf'))
+  && !/fab\['treasure-island'\]/.test(fnCode('fabricOf'))
+  && /throw new Error\('no built fabric for campus '/.test(fnCode('fabricOf')));
 ok('the per-campus fabric materials are dropped when the campus is',
   /fabMats = null; fabKey = null;/.test(fn('buildCampus')));
 

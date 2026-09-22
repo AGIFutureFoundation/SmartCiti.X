@@ -1,0 +1,4433 @@
+{
+ "pack": "smartcitix-trade-craft-academy-props",
+ "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
+ "pack_version": "3.2.0",
+ "built": "2026-09-22",
+ "source_stamp": "64448be93efb14c2",
+ "honesty": {
+  "status": "SCHEMATIC: every prop in this pack is a handful of boxes and cylinders built in the browser from the recipe printed here. No mesh is loaded, no model is vendored, no texture is fetched, and nothing is generated at view time.",
+  "not_a_specification": "These are shapes in a training environment. The eyewash stand is a cylinder and a bowl standing where a room record says corrosives are handled; the extinguisher is a cylinder on a plate. They are not fixture specifications, not rated appliances, not compliance artefacts, and not evidence that any equipment has been provided anywhere. Nothing in this pack should be read as a safety-equipment specification, and a learner who has walked past one has not been trained on it.",
+  "placement_is_derived": "No prop is placed by hand. A prop stands in a strand because a word it declares appears in that strand's own purpose line in web/interiors.py, and a hazard prop stands in a room because that room's own conditions record in surfaces/registry/finishes.json asks for the protective equipment it holds. The build fails if a room requiring PPE gets no PPE prop.",
+  "one_truth": "No room label, purpose, footprint, illuminance figure, hazard or PPE item is typed in this pack. The room table is imported from web/interiors.py and the conditions are read from surfaces/registry/finishes.json. The page's body radius, eye height, grid unit, floor height, partition height, room-label height and bench setback are parsed out of web/build_3d.py, so a prop cannot be sized against a constant the page does not use.",
+  "measured_not_guessed": "The triangle band is taken from a measurement of six reference interiors made before anything here was drawn: the blocks that read as real places have a median mesh of 46 and 104 triangles. Nothing from those files is vendored, copied or named \u2014 what was taken is the finding that a place is made of many small distinct pieces rather than of dense ones.",
+  "the_scarce_currency": "A hall interior is draw-call bound, not triangle bound. Every prop here pools or instances; none takes a mesh of its own, and the budget block refuses a design that would.",
+  "not_built_yet": "This registry is a declaration. web/build_3d.py does not read it yet: no prop declared here is standing in any room in the shipped page. The page_contract block states exactly what wiring is outstanding.",
+  "unreviewed": "The vocabulary is AUTHORED \u2014 a judgement about what a trade-training room contains \u2014 and no journey-level practitioner has reviewed it."
+ },
+ "counts": {
+  "props": 29,
+  "families": 7,
+  "strand_props": 24,
+  "hazard_props": 5,
+  "placements": 25,
+  "strands": 11,
+  "strands_covered": 11,
+  "anchors": 3,
+  "merge_modes": 3,
+  "pooled": 24,
+  "instanced": 5,
+  "own_mesh": 0,
+  "materials_used": 7,
+  "box_parts": 173,
+  "cylinder_parts": 17,
+  "vocabulary_tris": 2684,
+  "tris_min": 48,
+  "tris_median": 96,
+  "tris_max": 132,
+  "halls": 111,
+  "rooms": 1221,
+  "rooms_requiring_ppe": 888,
+  "ppe_vocabulary": 26,
+  "hazard_vocabulary": 18,
+  "prop_instances": 5082
+ },
+ "families": {
+  "bench": "a horizontal surface work happens on top of",
+  "storage": "something that holds what a room keeps between sessions",
+  "board": "a vertical surface a room reads from",
+  "seat": "something a person is off their feet on",
+  "vessel": "an open container things go into and come out of",
+  "stand": "a freestanding upright a piece of apparatus lives on",
+  "safety-fixture": "a schematic shape standing where a room record asks for protective equipment \u2014 not a specification"
+ },
+ "anchors": {
+  "side-wall": "stands on the floor along a left or right partition",
+  "back-corner": "stands on the floor in one back corner, clear of the fixture bench band",
+  "wall-mounted": "hangs on a left or right partition, its top no higher than the partition itself"
+ },
+ "merge_modes": {
+  "pooled": "its geometry is translated into hall space and merged by material with every other pooled prop in the hall, one mesh per material for all eleven rooms",
+  "instanced": "the same geometry repeats in many rooms of a hall, so it draws once as an InstancedMesh however many rooms have it",
+  "own-mesh": "RESERVED. Only for a prop the hover/click raycast reads or one that moves; a prop that claims it must name the list it joins, because an unpooled prop is a whole draw call"
+ },
+ "measured": {
+  "reference_median_tris": [
+   46,
+   104
+  ],
+  "reference_texture": "128x128",
+  "what_was_taken": "the finding that a place reads as real from many small distinct pieces rather than from dense ones",
+  "what_was_not_taken": "no geometry, no texture, no material, no name and no shape; two of the reference files are somebody else's copyrighted assets and nothing from any of them is vendored here",
+  "page_constants_read": {
+   "body_radius_m": 0.45,
+   "eye_height_m": 1.7,
+   "grid_unit_m": 3.0,
+   "floor_top_m": 0.41,
+   "floor_inset_m": 0.3,
+   "partition_top_m": 1.45,
+   "room_label_m": 2.2,
+   "bench_setback_m": 0.8,
+   "bench_half_depth_m": 0.4,
+   "source": "web/build_3d.py"
+  }
+ },
+ "props": [
+  {
+   "id": "gowning-bench",
+   "name": "Gowning bench",
+   "family": "seat",
+   "why": "you change at it before you cross the stripe the page already paints across a safety room doorway",
+   "provenance": {
+    "geometry": "SCHEMATIC",
+    "vocabulary": "AUTHORED",
+    "placement": "DERIVED"
+   },
+   "tri_budget": {
+    "tris": 84,
+    "floor": 40,
+    "ceiling": 250,
+    "why": "40-250 tri. The two reference interiors that read as places have a median mesh of 46 and 104 triangles, so 46-104 is the size at which a piece reads as a thing; this prop is built to sit in or above that band rather than under it, because the hall spends 3,806 of 2,400,000 permitted triangles and triangles are the currency that is not scarce here."
+   },
+   "size_m": [
+    1.6,
+    0.95,
+    0.55
+   ],
+   "recipe": {
+    "primitives_only": [
+     "box",
+     "cylinder"
+    ],
+    "loads_no_mesh": true,
+    "parts": [
+     {
+      "part": "seat",
+      "prim": "box",
+      "size": [
+       1.6,
+       0.08,
+       0.45
+      ],
+      "at": [
+       0,
+       0.86,
+       0
+      ],
+      "count": 1
+     },
+     {
+      "part": "leg",
+      "prim": "box",
+      "size": [
+       0.08,
+       0.45,
+       0.45
+      ],
+      "at": [
+       0.72,
+       0.63,
+       0
+      ],
+      "count": 2
+     },
+     {
+      "part": "back rail",
+      "prim": "box",
+      "size": [
+       1.6,
+       0.1,
+       0.06
+      ],
+      "at": [
+       0,
+       1.31,
+       -0.2
+      ],
+      "count": 1
+     },
+     {
+      "part": "back post",
+      "prim": "box",
+      "size": [
+       0.06,
+       0.5,
+       0.06
+      ],
+      "at": [
+       0.72,
+       1.11,
+       -0.2
+      ],
+      "count": 2
+     },
+     {
+      "part": "boot shelf",
+      "prim": "box",
+      "size": [
+       1.5,
+       0.05,
+       0.4
+      ],
+      "at": [
+       0,
+       0.55,
+       0
+      ],
+      "count": 1
+     }
+    ],
+    "box_count": 7,
+    "cylinder_count": 0,
+    "formula": "12 x 7 box = 84",
+    "tris": 84
+   },
+   "material": "wood",
+   "merges": "pooled",
+   "merges_why": "seven boxes of one material in eleven halls; nothing about it is read by a raycast and nothing about it moves",
+   "clearance_m": 0.9,
+   "approach": false,
+   "derive": {
+    "from": "room.purpose",
+    "tokens": [
+     "gowning"
+    ]
+   },
+   "layout": {
+    "anchor": "side-wall",
+    "anchor_is": "stands on the floor along a left or right partition",
+    "walls": [
+     "left"
+    ],
+    "base_y_m": 0.41,
+    "gap_m": 0.25,
+    "front_clear_m": 0.9,
+    "back_reserve_m": 1.45,
+    "max_per_room": 2,
+    "count_rule": "min(max_per_room, walls x floor((run_m + gap_m) / (size_m[0] + gap_m))), run_m = room depth in metres - floor inset - front_clear_m - back_reserve_m",
+    "admitted_by": [
+     "safety"
+    ],
+    "smallest_room": {
+     "units": [
+      6,
+      2
+     ],
+     "floor_m": [
+      17.7,
+      5.7
+     ],
+     "fits": 1
+    },
+    "top_m": 1.36
+   }
+  },
+  {
+   "id": "permit-board",
+   "name": "Permit board",
+   "family": "board",
+   "why": "the board the safety room is named after, and the one the records room files afterwards",
+   "provenance": {
+    "geometry": "SCHEMATIC",
+    "vocabulary": "AUTHORED",
+    "placement": "DERIVED"
+   },
+   "tri_budget": {
+    "tris": 96,
+    "floor": 40,
+    "ceiling": 250,
+    "why": "40-250 tri. The two reference interiors that read as places have a median mesh of 46 and 104 triangles, so 46-104 is the size at which a piece reads as a thing; this prop is built to sit in or above that band rather than under it, because the hall spends 3,806 of 2,400,000 permitted triangles and triangles are the currency that is not scarce here."
+   },
+   "size_m": [
+    1.14,
+    0.8,
+    0.06
+   ],
+   "recipe": {
+    "primitives_only": [
+     "box",
+     "cylinder"
+    ],
+    "loads_no_mesh": true,
+    "parts": [
+     {
+      "part": "panel",
+      "prim": "box",
+      "size": [
+       1.1,
+       0.7,
+       0.04
+      ],
+      "at": [
+       0,
+       0,
+       0
+      ],
+      "count": 1
+     },
+     {
+      "part": "frame rail",
+      "prim": "box",
+      "size": [
+       1.14,
+       0.05,
+       0.06
+      ],
+      "at": [
+       0,
+       0.375,
+       0
+      ],
+      "count": 2
+     },
+     {
+      "part": "stile",
+      "prim": "box",
+      "size": [
+       0.05,
+       0.7,
+       0.06
+      ],
+      "at": [
+       0.545,
+       0,
+       0
+      ],
+      "count": 2
+     },
+     {
+      "part": "permit card",
+      "prim": "box",
+      "size": [
+       0.3,
+       0.22,
+       0.01
+      ],
+      "at": [
+       -0.35,
+       0.1,
+       0.03
+      ],
+      "count": 3
+     }
+    ],
+    "box_count": 8,
+    "cylinder_count": 0,
+    "formula": "12 x 8 box = 96",
+    "tris": 96
+   },
+   "material": "paint",
+   "merges": "pooled",
+   "merges_why": "a flat panel is four square metres of nothing; pooling it with the other painted props costs no extra draw at all",
+   "clearance_m": 1.35,
+   "approach": true,
+   "derive": {
+    "from": "room.purpose",
+    "tokens": [
+     "permit"
+    ]
+   },
+   "layout": {
+    "anchor": "wall-mounted",
+    "anchor_is": "hangs on a left or right partition, its top no higher than the partition itself",
+    "walls": [
+     "left"
+    ],
+    "base_y_m": 0.93,
+    "gap_m": 0.25,
+    "front_clear_m": 0.9,
+    "back_reserve_m": 1.45,
+    "max_per_room": 1,
+    "count_rule": "min(max_per_room, walls x floor((run_m + gap_m) / (size_m[0] + gap_m))), run_m = room depth in metres - floor inset - front_clear_m - back_reserve_m",
+    "admitted_by": [
+     "safety",
+     "documentation"
+    ],
+    "smallest_room": {
+     "units": [
+      3,
+      2
+     ],
+     "floor_m": [
+      8.7,
+      5.7
+     ],
+     "fits": 1
+    },
+    "top_m": 1.33
+   }
+  },
+  {
+   "id": "atmosphere-post",
+   "name": "Atmospheric check post",
+   "family": "stand",
+   "why": "the room says atmospheric checks happen here, so the thing they are made on stands in it",
+   "provenance": {
+    "geometry": "SCHEMATIC",
+    "vocabulary": "AUTHORED",
+    "placement": "DERIVED"
+   },
+   "tri_budget": {
+    "tris": 96,
+    "floor": 40,
+    "ceiling": 250,
+    "why": "40-250 tri. The two reference interiors that read as places have a median mesh of 46 and 104 triangles, so 46-104 is the size at which a piece reads as a thing; this prop is built to sit in or above that band rather than under it, because the hall spends 3,806 of 2,400,000 permitted triangles and triangles are the currency that is not scarce here."
+   },
+   "size_m": [
+    0.32,
+    1.36,
+    0.32
+   ],
+   "recipe": {
+    "primitives_only": [
+     "box",
+     "cylinder"
+    ],
+    "loads_no_mesh": true,
+    "parts": [
+     {
+      "part": "column",
+      "prim": "cylinder",
+      "r": 0.05,
+      "h": 1.0,
+      "radial_segments": 8,
+      "capped": true,
+      "at": [
+       0,
+       0.91,
+       0
+      ],
+      "count": 1
+     },
+     {
+      "part": "foot",
+      "prim": "cylinder",
+      "r": 0.16,
+      "h": 0.06,
+      "radial_segments": 10,
+      "capped": true,
+      "at": [
+       0,
+       0.44,
+       0
+      ],
+      "count": 1
+     },
+     {
+      "part": "head",
+      "prim": "box",
+      "size": [
+       0.22,
+       0.3,
+       0.14
+      ],
+      "at": [
+       0,
+       1.56,
+       0
+      ],
+      "count": 1
+     },
+     {
+      "part": "readout",
+      "prim": "box",
+      "size": [
+       0.16,
+       0.1,
+       0.02
+      ],
+      "at": [
+       0,
+       1.59,
+       0.08
+      ],
+      "count": 1
+     }
+    ],
+    "box_count": 2,
+    "cylinder_count": 2,
+    "formula": "12 x 2 box + 4 x 8 x 1 capped cylinder + 4 x 10 x 1 capped cylinder = 96",
+    "tris": 96
+   },
+   "material": "metal",
+   "merges": "pooled",
+   "merges_why": "one of these per safety room, 111 in the bundle, and none of them is interactive; merged it is a share of one mesh",
+   "clearance_m": 0.9,
+   "approach": false,
+   "derive": {
+    "from": "room.purpose",
+    "tokens": [
+     "atmospheric"
+    ]
+   },
+   "layout": {
+    "anchor": "side-wall",
+    "anchor_is": "stands on the floor along a left or right partition",
+    "walls": [
+     "right"
+    ],
+    "base_y_m": 0.41,
+    "gap_m": 0.25,
+    "front_clear_m": 0.9,
+    "back_reserve_m": 1.45,
+    "max_per_room": 1,
+    "count_rule": "min(max_per_room, walls x floor((run_m + gap_m) / (size_m[0] + gap_m))), run_m = room depth in metres - floor inset - front_clear_m - back_reserve_m",
+    "admitted_by": [
+     "safety"
+    ],
+    "smallest_room": {
+     "units": [
+      6,
+      2
+     ],
+     "floor_m": [
+      17.7,
+      5.7
+     ],
+     "fits": 1
+    },
+    "top_m": 1.77
+   }
+  },
+  {
+   "id": "work-trestle",
+   "name": "Work trestle",
+   "family": "stand",
+   "why": "the bay is the floor a trade is learned on, and a trestle is what the work is held at height on while it is",
+   "provenance": {
+    "geometry": "SCHEMATIC",
+    "vocabulary": "AUTHORED",
+    "placement": "DERIVED"
+   },
+   "tri_budget": {
+    "tris": 84,
+    "floor": 40,
+    "ceiling": 250,
+    "why": "40-250 tri. The two reference interiors that read as places have a median mesh of 46 and 104 triangles, so 46-104 is the size at which a piece reads as a thing; this prop is built to sit in or above that band rather than under it, because the hall spends 3,806 of 2,400,000 permitted triangles and triangles are the currency that is not scarce here."
+   },
+   "size_m": [
+    1.8,
+    0.9,
+    0.5
+   ],
+   "recipe": {
+    "primitives_only": [
+     "box",
+     "cylinder"
+    ],
+    "loads_no_mesh": true,
+    "parts": [
+     {
+      "part": "top rail",
+      "prim": "box",
+      "size": [
+       1.8,
+       0.12,
+       0.18
+      ],
+      "at": [
+       0,
+       1.25,
+       0
+      ],
+      "count": 1
+     },
+     {
+      "part": "leg",
+      "prim": "box",
+      "size": [
+       0.09,
+       0.78,
+       0.09
+      ],
+      "at": [
+       0.78,
+       0.8,
+       0.18
+      ],
+      "count": 4
+     },
+     {
+      "part": "brace",
+      "prim": "box",
+      "size": [
+       1.5,
+       0.06,
+       0.06
+      ],
+      "at": [
+       0,
+       0.71,
+       0.18
+      ],
+      "count": 2
+     }
+    ],
+    "box_count": 7,
+    "cylinder_count": 0,
+    "formula": "12 x 7 box = 84",
+    "tris": 84
+   },
+   "material": "wood",
+   "merges": "pooled",
+   "merges_why": "the practice bay gets several and every hall has one bay; seven boxes each merged into the hall-wide wood mesh",
+   "clearance_m": 1.35,
+   "approach": true,
+   "derive": {
+    "from": "room.purpose",
+    "tokens": [
+     "floor"
+    ]
+   },
+   "layout": {
+    "anchor": "side-wall",
+    "anchor_is": "stands on the floor along a left or right partition",
+    "walls": [
+     "left",
+     "right"
+    ],
+    "base_y_m": 0.41,
+    "gap_m": 0.25,
+    "front_clear_m": 0.9,
+    "back_reserve_m": 1.45,
+    "max_per_room": 3,
+    "count_rule": "min(max_per_room, walls x floor((run_m + gap_m) / (size_m[0] + gap_m))), run_m = room depth in metres - floor inset - front_clear_m - back_reserve_m",
+    "admitted_by": [
+     "procedure"
+    ],
+    "smallest_room": {
+     "units": [
+      6,
+      3
+     ],
+     "floor_m": [
+      17.7,
+      8.7
+     ],
+     "fits": 3
+    },
+    "top_m": 1.31
+   }
+  },
+  {
+   "id": "learner-stool",
+   "name": "Learner stool",
+   "family": "seat",
+   "why": "nobody stands for six hours; a bay with no seat in it is a rendering of a bay",
+   "provenance": {
+    "geometry": "SCHEMATIC",
+    "vocabulary": "AUTHORED",
+    "placement": "DERIVED"
+   },
+   "tri_budget": {
+    "tris": 96,
+    "floor": 40,
+    "ceiling": 250,
+    "why": "40-250 tri. The two reference interiors that read as places have a median mesh of 46 and 104 triangles, so 46-104 is the size at which a piece reads as a thing; this prop is built to sit in or above that band rather than under it, because the hall spends 3,806 of 2,400,000 permitted triangles and triangles are the currency that is not scarce here."
+   },
+   "size_m": [
+    0.44,
+    0.62,
+    0.44
+   ],
+   "recipe": {
+    "primitives_only": [
+     "box",
+     "cylinder"
+    ],
+    "loads_no_mesh": true,
+    "parts": [
+     {
+      "part": "seat pad",
+      "prim": "cylinder",
+      "r": 0.17,
+      "h": 0.07,
+      "radial_segments": 10,
+      "capped": true,
+      "at": [
+       0,
+       0.99,
+       0
+      ],
+      "count": 1
+     },
+     {
+      "part": "column",
+      "prim": "cylinder",
+      "r": 0.045,
+      "h": 0.5,
+      "radial_segments": 8,
+      "capped": false,
+      "at": [
+       0,
+       0.69,
+       0
+      ],
+      "count": 1
+     },
+     {
+      "part": "base",
+      "prim": "cylinder",
+      "r": 0.22,
+      "h": 0.05,
+      "radial_segments": 10,
+      "capped": true,
+      "at": [
+       0,
+       0.44,
+       0
+      ],
+      "count": 1
+     }
+    ],
+    "box_count": 0,
+    "cylinder_count": 3,
+    "formula": "12 x 0 box + 4 x 10 x 1 capped cylinder + 2 x 8 x 1 open cylinder + 4 x 10 x 1 capped cylinder = 96",
+    "tris": 96
+   },
+   "material": "metal",
+   "merges": "pooled",
+   "merges_why": "round things in the reference blocks are the cheapest pieces on the sheet; three cylinders pooled is a fraction of one draw",
+   "clearance_m": 0.9,
+   "approach": false,
+   "derive": {
+    "from": "room.purpose",
+    "tokens": [
+     "learned"
+    ]
+   },
+   "layout": {
+    "anchor": "side-wall",
+    "anchor_is": "stands on the floor along a left or right partition",
+    "walls": [
+     "right"
+    ],
+    "base_y_m": 0.41,
+    "gap_m": 0.25,
+    "front_clear_m": 0.9,
+    "back_reserve_m": 1.45,
+    "max_per_room": 2,
+    "count_rule": "min(max_per_room, walls x floor((run_m + gap_m) / (size_m[0] + gap_m))), run_m = room depth in metres - floor inset - front_clear_m - back_reserve_m",
+    "admitted_by": [
+     "procedure"
+    ],
+    "smallest_room": {
+     "units": [
+      6,
+      3
+     ],
+     "floor_m": [
+      17.7,
+      8.7
+     ],
+     "fits": 2
+    },
+    "top_m": 1.03
+   }
+  },
+  {
+   "id": "checkout-board",
+   "name": "Plant checkout board",
+   "family": "board",
+   "why": "plant is CHECKED OUT to this room, and a checkout that is not written down anywhere did not happen",
+   "provenance": {
+    "geometry": "SCHEMATIC",
+    "vocabulary": "AUTHORED",
+    "placement": "DERIVED"
+   },
+   "tri_budget": {
+    "tris": 108,
+    "floor": 40,
+    "ceiling": 250,
+    "why": "40-250 tri. The two reference interiors that read as places have a median mesh of 46 and 104 triangles, so 46-104 is the size at which a piece reads as a thing; this prop is built to sit in or above that band rather than under it, because the hall spends 3,806 of 2,400,000 permitted triangles and triangles are the currency that is not scarce here."
+   },
+   "size_m": [
+    1.34,
+    0.9,
+    0.06
+   ],
+   "recipe": {
+    "primitives_only": [
+     "box",
+     "cylinder"
+    ],
+    "loads_no_mesh": true,
+    "parts": [
+     {
+      "part": "panel",
+      "prim": "box",
+      "size": [
+       1.3,
+       0.8,
+       0.04
+      ],
+      "at": [
+       0,
+       0,
+       0
+      ],
+      "count": 1
+     },
+     {
+      "part": "frame rail",
+      "prim": "box",
+      "size": [
+       1.34,
+       0.05,
+       0.06
+      ],
+      "at": [
+       0,
+       0.425,
+       0
+      ],
+      "count": 2
+     },
+     {
+      "part": "tag hook",
+      "prim": "box",
+      "size": [
+       0.03,
+       0.06,
+       0.03
+      ],
+      "at": [
+       -0.5,
+       0.25,
+       0.03
+      ],
+      "count": 6
+     }
+    ],
+    "box_count": 9,
+    "cylinder_count": 0,
+    "formula": "12 x 9 box = 108",
+    "tris": 108
+   },
+   "material": "paint",
+   "merges": "pooled",
+   "merges_why": "one per equipment bay, flat, static and never raycast",
+   "clearance_m": 1.35,
+   "approach": true,
+   "derive": {
+    "from": "room.purpose",
+    "tokens": [
+     "checked out"
+    ]
+   },
+   "layout": {
+    "anchor": "wall-mounted",
+    "anchor_is": "hangs on a left or right partition, its top no higher than the partition itself",
+    "walls": [
+     "left"
+    ],
+    "base_y_m": 0.93,
+    "gap_m": 0.25,
+    "front_clear_m": 0.9,
+    "back_reserve_m": 1.45,
+    "max_per_room": 1,
+    "count_rule": "min(max_per_room, walls x floor((run_m + gap_m) / (size_m[0] + gap_m))), run_m = room depth in metres - floor inset - front_clear_m - back_reserve_m",
+    "admitted_by": [
+     "machines"
+    ],
+    "smallest_room": {
+     "units": [
+      5,
+      3
+     ],
+     "floor_m": [
+      14.7,
+      8.7
+     ],
+     "fits": 1
+    },
+    "top_m": 1.38
+   }
+  },
+  {
+   "id": "bay-guard-rail",
+   "name": "Bay guard rail",
+   "family": "stand",
+   "why": "a training AREA is an area because something marks where it stops",
+   "provenance": {
+    "geometry": "SCHEMATIC",
+    "vocabulary": "AUTHORED",
+    "placement": "DERIVED"
+   },
+   "tri_budget": {
+    "tris": 112,
+    "floor": 40,
+    "ceiling": 250,
+    "why": "40-250 tri. The two reference interiors that read as places have a median mesh of 46 and 104 triangles, so 46-104 is the size at which a piece reads as a thing; this prop is built to sit in or above that band rather than under it, because the hall spends 3,806 of 2,400,000 permitted triangles and triangles are the currency that is not scarce here."
+   },
+   "size_m": [
+    2.0,
+    1.06,
+    0.2
+   ],
+   "recipe": {
+    "primitives_only": [
+     "box",
+     "cylinder"
+    ],
+    "loads_no_mesh": true,
+    "parts": [
+     {
+      "part": "post",
+      "prim": "cylinder",
+      "r": 0.06,
+      "h": 1.0,
+      "radial_segments": 8,
+      "capped": true,
+      "at": [
+       0.95,
+       0.91,
+       0
+      ],
+      "count": 2
+     },
+     {
+      "part": "rail",
+      "prim": "box",
+      "size": [
+       2.0,
+       0.08,
+       0.06
+      ],
+      "at": [
+       0,
+       1.36,
+       0
+      ],
+      "count": 2
+     },
+     {
+      "part": "base plate",
+      "prim": "box",
+      "size": [
+       0.2,
+       0.03,
+       0.2
+      ],
+      "at": [
+       0.95,
+       0.425,
+       0
+      ],
+      "count": 2
+     }
+    ],
+    "box_count": 4,
+    "cylinder_count": 2,
+    "formula": "12 x 4 box + 4 x 8 x 2 capped cylinder = 112",
+    "tris": 112
+   },
+   "material": "post",
+   "merges": "pooled",
+   "merges_why": "the page already keeps one high-visibility material; every rail in the bundle merges into that one mesh per hall",
+   "clearance_m": 0.9,
+   "approach": false,
+   "derive": {
+    "from": "room.purpose",
+    "tokens": [
+     "training area"
+    ]
+   },
+   "layout": {
+    "anchor": "side-wall",
+    "anchor_is": "stands on the floor along a left or right partition",
+    "walls": [
+     "right"
+    ],
+    "base_y_m": 0.41,
+    "gap_m": 0.25,
+    "front_clear_m": 0.9,
+    "back_reserve_m": 1.45,
+    "max_per_room": 2,
+    "count_rule": "min(max_per_room, walls x floor((run_m + gap_m) / (size_m[0] + gap_m))), run_m = room depth in metres - floor inset - front_clear_m - back_reserve_m",
+    "admitted_by": [
+     "machines"
+    ],
+    "smallest_room": {
+     "units": [
+      5,
+      3
+     ],
+     "floor_m": [
+      14.7,
+      8.7
+     ],
+     "fits": 2
+    },
+    "top_m": 1.47
+   }
+  },
+  {
+   "id": "issue-counter",
+   "name": "Issue counter",
+   "family": "bench",
+   "why": "the crib the page already builds hands tools ACROSS something, and until now it handed them across nothing",
+   "provenance": {
+    "geometry": "SCHEMATIC",
+    "vocabulary": "AUTHORED",
+    "placement": "DERIVED"
+   },
+   "tri_budget": {
+    "tris": 72,
+    "floor": 40,
+    "ceiling": 250,
+    "why": "40-250 tri. The two reference interiors that read as places have a median mesh of 46 and 104 triangles, so 46-104 is the size at which a piece reads as a thing; this prop is built to sit in or above that band rather than under it, because the hall spends 3,806 of 2,400,000 permitted triangles and triangles are the currency that is not scarce here."
+   },
+   "size_m": [
+    1.8,
+    0.86,
+    0.6
+   ],
+   "recipe": {
+    "primitives_only": [
+     "box",
+     "cylinder"
+    ],
+    "loads_no_mesh": true,
+    "parts": [
+     {
+      "part": "top",
+      "prim": "box",
+      "size": [
+       1.8,
+       0.07,
+       0.6
+      ],
+      "at": [
+       0,
+       1.23,
+       0
+      ],
+      "count": 1
+     },
+     {
+      "part": "front panel",
+      "prim": "box",
+      "size": [
+       1.8,
+       0.75,
+       0.05
+      ],
+      "at": [
+       0,
+       0.83,
+       -0.27
+      ],
+      "count": 1
+     },
+     {
+      "part": "end panel",
+      "prim": "box",
+      "size": [
+       0.05,
+       0.75,
+       0.6
+      ],
+      "at": [
+       0.87,
+       0.83,
+       0
+      ],
+      "count": 2
+     },
+     {
+      "part": "under shelf",
+      "prim": "box",
+      "size": [
+       1.7,
+       0.04,
+       0.5
+      ],
+      "at": [
+       0,
+       0.71,
+       0.02
+      ],
+      "count": 1
+     },
+     {
+      "part": "kick",
+      "prim": "box",
+      "size": [
+       1.7,
+       0.1,
+       0.05
+      ],
+      "at": [
+       0,
+       0.46,
+       -0.27
+      ],
+      "count": 1
+     }
+    ],
+    "box_count": 6,
+    "cylinder_count": 0,
+    "formula": "12 x 6 box = 72",
+    "tris": 72
+   },
+   "material": "wood",
+   "merges": "pooled",
+   "merges_why": "six boxes, one material, one per tool crib; it is furniture, not an object the page listens to",
+   "clearance_m": 1.35,
+   "approach": true,
+   "derive": {
+    "from": "room.purpose",
+    "tokens": [
+     "issue"
+    ]
+   },
+   "layout": {
+    "anchor": "side-wall",
+    "anchor_is": "stands on the floor along a left or right partition",
+    "walls": [
+     "left"
+    ],
+    "base_y_m": 0.41,
+    "gap_m": 0.25,
+    "front_clear_m": 0.9,
+    "back_reserve_m": 1.45,
+    "max_per_room": 1,
+    "count_rule": "min(max_per_room, walls x floor((run_m + gap_m) / (size_m[0] + gap_m))), run_m = room depth in metres - floor inset - front_clear_m - back_reserve_m",
+    "admitted_by": [
+     "tools"
+    ],
+    "smallest_room": {
+     "units": [
+      4,
+      2
+     ],
+     "floor_m": [
+      11.7,
+      5.7
+     ],
+     "fits": 1
+    },
+    "top_m": 1.27
+   }
+  },
+  {
+   "id": "calibration-cabinet",
+   "name": "Calibration cabinet",
+   "family": "storage",
+   "why": "calibration is the middle word of this room's purpose and it is the one that needs a locked box",
+   "provenance": {
+    "geometry": "SCHEMATIC",
+    "vocabulary": "AUTHORED",
+    "placement": "DERIVED"
+   },
+   "tri_budget": {
+    "tris": 84,
+    "floor": 40,
+    "ceiling": 250,
+    "why": "40-250 tri. The two reference interiors that read as places have a median mesh of 46 and 104 triangles, so 46-104 is the size at which a piece reads as a thing; this prop is built to sit in or above that band rather than under it, because the hall spends 3,806 of 2,400,000 permitted triangles and triangles are the currency that is not scarce here."
+   },
+   "size_m": [
+    0.94,
+    1.36,
+    0.54
+   ],
+   "recipe": {
+    "primitives_only": [
+     "box",
+     "cylinder"
+    ],
+    "loads_no_mesh": true,
+    "parts": [
+     {
+      "part": "carcass",
+      "prim": "box",
+      "size": [
+       0.9,
+       1.3,
+       0.5
+      ],
+      "at": [
+       0,
+       1.06,
+       0
+      ],
+      "count": 1
+     },
+     {
+      "part": "door",
+      "prim": "box",
+      "size": [
+       0.43,
+       1.2,
+       0.03
+      ],
+      "at": [
+       0.22,
+       1.09,
+       0.265
+      ],
+      "count": 2
+     },
+     {
+      "part": "plinth",
+      "prim": "box",
+      "size": [
+       0.9,
+       0.1,
+       0.48
+      ],
+      "at": [
+       0,
+       0.46,
+       0
+      ],
+      "count": 1
+     },
+     {
+      "part": "top cap",
+      "prim": "box",
+      "size": [
+       0.94,
+       0.04,
+       0.54
+      ],
+      "at": [
+       0,
+       1.73,
+       0
+      ],
+      "count": 1
+     },
+     {
+      "part": "handle",
+      "prim": "box",
+      "size": [
+       0.03,
+       0.2,
+       0.03
+      ],
+      "at": [
+       0.02,
+       1.11,
+       0.29
+      ],
+      "count": 2
+     }
+    ],
+    "box_count": 7,
+    "cylinder_count": 0,
+    "formula": "12 x 7 box = 84",
+    "tris": 84
+   },
+   "material": "steel",
+   "merges": "pooled",
+   "merges_why": "static, closed, and the same seven boxes in every hall",
+   "clearance_m": 1.35,
+   "approach": true,
+   "derive": {
+    "from": "room.purpose",
+    "tokens": [
+     "calibration"
+    ]
+   },
+   "layout": {
+    "anchor": "side-wall",
+    "anchor_is": "stands on the floor along a left or right partition",
+    "walls": [
+     "right"
+    ],
+    "base_y_m": 0.41,
+    "gap_m": 0.25,
+    "front_clear_m": 0.9,
+    "back_reserve_m": 1.45,
+    "max_per_room": 1,
+    "count_rule": "min(max_per_room, walls x floor((run_m + gap_m) / (size_m[0] + gap_m))), run_m = room depth in metres - floor inset - front_clear_m - back_reserve_m",
+    "admitted_by": [
+     "tools"
+    ],
+    "smallest_room": {
+     "units": [
+      4,
+      2
+     ],
+     "floor_m": [
+      11.7,
+      5.7
+     ],
+     "fits": 1
+    },
+    "top_m": 1.77
+   }
+  },
+  {
+   "id": "return-bin",
+   "name": "Return bin",
+   "family": "vessel",
+   "why": "things come BACK to a crib, and a crib with nowhere to put them back is a counter with a queue",
+   "provenance": {
+    "geometry": "SCHEMATIC",
+    "vocabulary": "AUTHORED",
+    "placement": "DERIVED"
+   },
+   "tri_budget": {
+    "tris": 84,
+    "floor": 40,
+    "ceiling": 250,
+    "why": "40-250 tri. The two reference interiors that read as places have a median mesh of 46 and 104 triangles, so 46-104 is the size at which a piece reads as a thing; this prop is built to sit in or above that band rather than under it, because the hall spends 3,806 of 2,400,000 permitted triangles and triangles are the currency that is not scarce here."
+   },
+   "size_m": [
+    0.6,
+    0.78,
+    0.6
+   ],
+   "recipe": {
+    "primitives_only": [
+     "box",
+     "cylinder"
+    ],
+    "loads_no_mesh": true,
+    "parts": [
+     {
+      "part": "body",
+      "prim": "cylinder",
+      "r": 0.28,
+      "h": 0.7,
+      "radial_segments": 12,
+      "capped": false,
+      "at": [
+       0,
+       0.79,
+       0
+      ],
+      "count": 1
+     },
+     {
+      "part": "rim",
+      "prim": "cylinder",
+      "r": 0.3,
+      "h": 0.05,
+      "radial_segments": 12,
+      "capped": true,
+      "at": [
+       0,
+       1.15,
+       0
+      ],
+      "count": 1
+     },
+     {
+      "part": "base tray",
+      "prim": "box",
+      "size": [
+       0.5,
+       0.05,
+       0.5
+      ],
+      "at": [
+       0,
+       0.435,
+       0
+      ],
+      "count": 1
+     }
+    ],
+    "box_count": 1,
+    "cylinder_count": 2,
+    "formula": "12 x 1 box + 2 x 12 x 1 open cylinder + 4 x 12 x 1 capped cylinder = 84",
+    "tris": 84
+   },
+   "material": "part",
+   "merges": "pooled",
+   "merges_why": "an open cylinder is 24 triangles; there is no argument for giving it a draw call of its own",
+   "clearance_m": 1.35,
+   "approach": true,
+   "derive": {
+    "from": "room.purpose",
+    "tokens": [
+     "return"
+    ]
+   },
+   "layout": {
+    "anchor": "back-corner",
+    "anchor_is": "stands on the floor in one back corner, clear of the fixture bench band",
+    "walls": [
+     "right"
+    ],
+    "base_y_m": 0.41,
+    "gap_m": 0.25,
+    "front_clear_m": 0.9,
+    "back_reserve_m": 1.45,
+    "max_per_room": 1,
+    "count_rule": "min(max_per_room, walls x floor((run_m + gap_m) / (size_m[0] + gap_m))), run_m = room depth in metres - floor inset - front_clear_m - back_reserve_m",
+    "admitted_by": [
+     "tools"
+    ],
+    "smallest_room": {
+     "units": [
+      4,
+      2
+     ],
+     "floor_m": [
+      11.7,
+      5.7
+     ],
+     "fits": 1
+    },
+    "top_m": 1.19
+   }
+  },
+  {
+   "id": "stock-rack",
+   "name": "Stock rack",
+   "family": "storage",
+   "why": "STOCK is the first word of this room's purpose and stock is kept on something",
+   "provenance": {
+    "geometry": "SCHEMATIC",
+    "vocabulary": "AUTHORED",
+    "placement": "DERIVED"
+   },
+   "tri_budget": {
+    "tris": 96,
+    "floor": 40,
+    "ceiling": 250,
+    "why": "40-250 tri. The two reference interiors that read as places have a median mesh of 46 and 104 triangles, so 46-104 is the size at which a piece reads as a thing; this prop is built to sit in or above that band rather than under it, because the hall spends 3,806 of 2,400,000 permitted triangles and triangles are the currency that is not scarce here."
+   },
+   "size_m": [
+    1.8,
+    1.7,
+    0.7
+   ],
+   "recipe": {
+    "primitives_only": [
+     "box",
+     "cylinder"
+    ],
+    "loads_no_mesh": true,
+    "parts": [
+     {
+      "part": "upright",
+      "prim": "box",
+      "size": [
+       0.09,
+       1.7,
+       0.09
+      ],
+      "at": [
+       0.855,
+       1.26,
+       0
+      ],
+      "count": 2
+     },
+     {
+      "part": "shelf",
+      "prim": "box",
+      "size": [
+       1.8,
+       0.06,
+       0.6
+      ],
+      "at": [
+       0,
+       0.96,
+       0
+      ],
+      "count": 3
+     },
+     {
+      "part": "brace",
+      "prim": "box",
+      "size": [
+       1.8,
+       0.05,
+       0.05
+      ],
+      "at": [
+       0,
+       2.01,
+       -0.28
+      ],
+      "count": 2
+     },
+     {
+      "part": "foot",
+      "prim": "box",
+      "size": [
+       1.8,
+       0.06,
+       0.7
+      ],
+      "at": [
+       0,
+       0.44,
+       0
+      ],
+      "count": 1
+     }
+    ],
+    "box_count": 8,
+    "cylinder_count": 0,
+    "formula": "12 x 8 box = 96",
+    "tris": 96
+   },
+   "material": "metal",
+   "merges": "pooled",
+   "merges_why": "eight boxes, one material; a store gets two or three of them and they all land in the same merged mesh",
+   "clearance_m": 1.35,
+   "approach": true,
+   "derive": {
+    "from": "room.purpose",
+    "tokens": [
+     "stock"
+    ]
+   },
+   "layout": {
+    "anchor": "side-wall",
+    "anchor_is": "stands on the floor along a left or right partition",
+    "walls": [
+     "left",
+     "right"
+    ],
+    "base_y_m": 0.41,
+    "gap_m": 0.25,
+    "front_clear_m": 0.9,
+    "back_reserve_m": 1.45,
+    "max_per_room": 2,
+    "count_rule": "min(max_per_room, walls x floor((run_m + gap_m) / (size_m[0] + gap_m))), run_m = room depth in metres - floor inset - front_clear_m - back_reserve_m",
+    "admitted_by": [
+     "materials"
+    ],
+    "smallest_room": {
+     "units": [
+      6,
+      2
+     ],
+     "floor_m": [
+      17.7,
+      5.7
+     ],
+     "fits": 2
+    },
+    "top_m": 2.11
+   }
+  },
+  {
+   "id": "offcut-bin",
+   "name": "Offcut bin",
+   "family": "vessel",
+   "why": "OFFCUTS is the second word, and the difference between a trade shop and a warehouse is that the offcuts are kept",
+   "provenance": {
+    "geometry": "SCHEMATIC",
+    "vocabulary": "AUTHORED",
+    "placement": "DERIVED"
+   },
+   "tri_budget": {
+    "tris": 84,
+    "floor": 40,
+    "ceiling": 250,
+    "why": "40-250 tri. The two reference interiors that read as places have a median mesh of 46 and 104 triangles, so 46-104 is the size at which a piece reads as a thing; this prop is built to sit in or above that band rather than under it, because the hall spends 3,806 of 2,400,000 permitted triangles and triangles are the currency that is not scarce here."
+   },
+   "size_m": [
+    0.9,
+    0.66,
+    0.6
+   ],
+   "recipe": {
+    "primitives_only": [
+     "box",
+     "cylinder"
+    ],
+    "loads_no_mesh": true,
+    "parts": [
+     {
+      "part": "side",
+      "prim": "box",
+      "size": [
+       0.9,
+       0.6,
+       0.03
+      ],
+      "at": [
+       0,
+       0.73,
+       0.285
+      ],
+      "count": 2
+     },
+     {
+      "part": "end",
+      "prim": "box",
+      "size": [
+       0.03,
+       0.6,
+       0.6
+      ],
+      "at": [
+       0.435,
+       0.73,
+       0
+      ],
+      "count": 2
+     },
+     {
+      "part": "base",
+      "prim": "box",
+      "size": [
+       0.9,
+       0.04,
+       0.6
+      ],
+      "at": [
+       0,
+       0.45,
+       0
+      ],
+      "count": 1
+     },
+     {
+      "part": "lip rail",
+      "prim": "box",
+      "size": [
+       0.9,
+       0.04,
+       0.04
+      ],
+      "at": [
+       0,
+       1.05,
+       0.285
+      ],
+      "count": 2
+     }
+    ],
+    "box_count": 7,
+    "cylinder_count": 0,
+    "formula": "12 x 7 box = 84",
+    "tris": 84
+   },
+   "material": "wood",
+   "merges": "pooled",
+   "merges_why": "seven boxes and nothing that reacts to anything",
+   "clearance_m": 1.35,
+   "approach": true,
+   "derive": {
+    "from": "room.purpose",
+    "tokens": [
+     "offcuts"
+    ]
+   },
+   "layout": {
+    "anchor": "back-corner",
+    "anchor_is": "stands on the floor in one back corner, clear of the fixture bench band",
+    "walls": [
+     "left"
+    ],
+    "base_y_m": 0.41,
+    "gap_m": 0.25,
+    "front_clear_m": 0.9,
+    "back_reserve_m": 1.45,
+    "max_per_room": 1,
+    "count_rule": "min(max_per_room, walls x floor((run_m + gap_m) / (size_m[0] + gap_m))), run_m = room depth in metres - floor inset - front_clear_m - back_reserve_m",
+    "admitted_by": [
+     "materials"
+    ],
+    "smallest_room": {
+     "units": [
+      6,
+      2
+     ],
+     "floor_m": [
+      17.7,
+      5.7
+     ],
+     "fits": 1
+    },
+    "top_m": 1.07
+   }
+  },
+  {
+   "id": "consumables-shelf",
+   "name": "Consumables shelf",
+   "family": "storage",
+   "why": "CONSUMABLES is the third word; they are small, they go at hand height, and they do not belong on the stock rack",
+   "provenance": {
+    "geometry": "SCHEMATIC",
+    "vocabulary": "AUTHORED",
+    "placement": "DERIVED"
+   },
+   "tri_budget": {
+    "tris": 72,
+    "floor": 40,
+    "ceiling": 250,
+    "why": "40-250 tri. The two reference interiors that read as places have a median mesh of 46 and 104 triangles, so 46-104 is the size at which a piece reads as a thing; this prop is built to sit in or above that band rather than under it, because the hall spends 3,806 of 2,400,000 permitted triangles and triangles are the currency that is not scarce here."
+   },
+   "size_m": [
+    1.2,
+    0.9,
+    0.3
+   ],
+   "recipe": {
+    "primitives_only": [
+     "box",
+     "cylinder"
+    ],
+    "loads_no_mesh": true,
+    "parts": [
+     {
+      "part": "back panel",
+      "prim": "box",
+      "size": [
+       1.2,
+       0.9,
+       0.03
+      ],
+      "at": [
+       0,
+       0,
+       0
+      ],
+      "count": 1
+     },
+     {
+      "part": "shelf",
+      "prim": "box",
+      "size": [
+       1.2,
+       0.04,
+       0.28
+      ],
+      "at": [
+       0,
+       -0.25,
+       0.14
+      ],
+      "count": 3
+     },
+     {
+      "part": "end",
+      "prim": "box",
+      "size": [
+       0.03,
+       0.9,
+       0.3
+      ],
+      "at": [
+       0.585,
+       0,
+       0.14
+      ],
+      "count": 2
+     }
+    ],
+    "box_count": 6,
+    "cylinder_count": 0,
+    "formula": "12 x 6 box = 72",
+    "tris": 72
+   },
+   "material": "wood",
+   "merges": "pooled",
+   "merges_why": "a wall shelf with no moving part and nothing to click",
+   "clearance_m": 1.35,
+   "approach": true,
+   "derive": {
+    "from": "room.purpose",
+    "tokens": [
+     "consumables"
+    ]
+   },
+   "layout": {
+    "anchor": "wall-mounted",
+    "anchor_is": "hangs on a left or right partition, its top no higher than the partition itself",
+    "walls": [
+     "right"
+    ],
+    "base_y_m": 0.93,
+    "gap_m": 0.25,
+    "front_clear_m": 0.9,
+    "back_reserve_m": 1.45,
+    "max_per_room": 2,
+    "count_rule": "min(max_per_room, walls x floor((run_m + gap_m) / (size_m[0] + gap_m))), run_m = room depth in metres - floor inset - front_clear_m - back_reserve_m",
+    "admitted_by": [
+     "materials"
+    ],
+    "smallest_room": {
+     "units": [
+      6,
+      2
+     ],
+     "floor_m": [
+      17.7,
+      5.7
+     ],
+     "fits": 2
+    },
+    "top_m": 1.38
+   }
+  },
+  {
+   "id": "layout-table",
+   "name": "Layout table",
+   "family": "bench",
+   "why": "setting out and marking are done flat, at waist height, on something that does not move",
+   "provenance": {
+    "geometry": "SCHEMATIC",
+    "vocabulary": "AUTHORED",
+    "placement": "DERIVED"
+   },
+   "tri_budget": {
+    "tris": 96,
+    "floor": 40,
+    "ceiling": 250,
+    "why": "40-250 tri. The two reference interiors that read as places have a median mesh of 46 and 104 triangles, so 46-104 is the size at which a piece reads as a thing; this prop is built to sit in or above that band rather than under it, because the hall spends 3,806 of 2,400,000 permitted triangles and triangles are the currency that is not scarce here."
+   },
+   "size_m": [
+    2.0,
+    0.8,
+    0.9
+   ],
+   "recipe": {
+    "primitives_only": [
+     "box",
+     "cylinder"
+    ],
+    "loads_no_mesh": true,
+    "parts": [
+     {
+      "part": "top",
+      "prim": "box",
+      "size": [
+       2.0,
+       0.06,
+       0.9
+      ],
+      "at": [
+       0,
+       1.18,
+       0
+      ],
+      "count": 1
+     },
+     {
+      "part": "leg",
+      "prim": "box",
+      "size": [
+       0.08,
+       0.72,
+       0.08
+      ],
+      "at": [
+       0.92,
+       0.77,
+       0.38
+      ],
+      "count": 4
+     },
+     {
+      "part": "rail",
+      "prim": "box",
+      "size": [
+       1.8,
+       0.06,
+       0.06
+      ],
+      "at": [
+       0,
+       0.61,
+       0.38
+      ],
+      "count": 2
+     },
+     {
+      "part": "marking strip",
+      "prim": "box",
+      "size": [
+       2.0,
+       0.01,
+       0.05
+      ],
+      "at": [
+       0,
+       1.215,
+       0.4
+      ],
+      "count": 1
+     }
+    ],
+    "box_count": 8,
+    "cylinder_count": 0,
+    "formula": "12 x 8 box = 96",
+    "tris": 96
+   },
+   "material": "steel",
+   "merges": "pooled",
+   "merges_why": "eight boxes; the marking strip is a triangle cost of twelve and a draw cost of zero",
+   "clearance_m": 1.35,
+   "approach": true,
+   "derive": {
+    "from": "room.purpose",
+    "tokens": [
+     "setting",
+     "marking"
+    ]
+   },
+   "layout": {
+    "anchor": "side-wall",
+    "anchor_is": "stands on the floor along a left or right partition",
+    "walls": [
+     "left",
+     "right"
+    ],
+    "base_y_m": 0.41,
+    "gap_m": 0.25,
+    "front_clear_m": 0.9,
+    "back_reserve_m": 1.45,
+    "max_per_room": 2,
+    "count_rule": "min(max_per_room, walls x floor((run_m + gap_m) / (size_m[0] + gap_m))), run_m = room depth in metres - floor inset - front_clear_m - back_reserve_m",
+    "admitted_by": [
+     "layout"
+    ],
+    "smallest_room": {
+     "units": [
+      5,
+      2
+     ],
+     "floor_m": [
+      14.7,
+      5.7
+     ],
+     "fits": 2
+    },
+    "top_m": 1.21
+   }
+  },
+  {
+   "id": "control-pillar",
+   "name": "Control point pillar",
+   "family": "stand",
+   "why": "a CONTROL POINT is a thing you can put an instrument over twice and get the same answer; a painted cross is not one",
+   "provenance": {
+    "geometry": "SCHEMATIC",
+    "vocabulary": "AUTHORED",
+    "placement": "DERIVED"
+   },
+   "tri_budget": {
+    "tris": 104,
+    "floor": 40,
+    "ceiling": 250,
+    "why": "40-250 tri. The two reference interiors that read as places have a median mesh of 46 and 104 triangles, so 46-104 is the size at which a piece reads as a thing; this prop is built to sit in or above that band rather than under it, because the hall spends 3,806 of 2,400,000 permitted triangles and triangles are the currency that is not scarce here."
+   },
+   "size_m": [
+    0.4,
+    1.28,
+    0.4
+   ],
+   "recipe": {
+    "primitives_only": [
+     "box",
+     "cylinder"
+    ],
+    "loads_no_mesh": true,
+    "parts": [
+     {
+      "part": "shaft",
+      "prim": "cylinder",
+      "r": 0.08,
+      "h": 1.1,
+      "radial_segments": 10,
+      "capped": true,
+      "at": [
+       0,
+       0.96,
+       0
+      ],
+      "count": 1
+     },
+     {
+      "part": "cap",
+      "prim": "cylinder",
+      "r": 0.09,
+      "h": 0.04,
+      "radial_segments": 10,
+      "capped": true,
+      "at": [
+       0,
+       1.53,
+       0
+      ],
+      "count": 1
+     },
+     {
+      "part": "base plate",
+      "prim": "box",
+      "size": [
+       0.4,
+       0.08,
+       0.4
+      ],
+      "at": [
+       0,
+       0.45,
+       0
+      ],
+      "count": 1
+     },
+     {
+      "part": "target plate",
+      "prim": "box",
+      "size": [
+       0.18,
+       0.18,
+       0.02
+      ],
+      "at": [
+       0,
+       1.36,
+       0.09
+      ],
+      "count": 1
+     }
+    ],
+    "box_count": 2,
+    "cylinder_count": 2,
+    "formula": "12 x 2 box + 4 x 10 x 1 capped cylinder + 4 x 10 x 1 capped cylinder = 104",
+    "tris": 104
+   },
+   "material": "metal",
+   "merges": "pooled",
+   "merges_why": "one or two per layout floor and completely static",
+   "clearance_m": 0.9,
+   "approach": false,
+   "derive": {
+    "from": "room.purpose",
+    "tokens": [
+     "control point"
+    ]
+   },
+   "layout": {
+    "anchor": "back-corner",
+    "anchor_is": "stands on the floor in one back corner, clear of the fixture bench band",
+    "walls": [
+     "left",
+     "right"
+    ],
+    "base_y_m": 0.41,
+    "gap_m": 0.25,
+    "front_clear_m": 0.9,
+    "back_reserve_m": 1.45,
+    "max_per_room": 1,
+    "count_rule": "min(max_per_room, walls x floor((run_m + gap_m) / (size_m[0] + gap_m))), run_m = room depth in metres - floor inset - front_clear_m - back_reserve_m",
+    "admitted_by": [
+     "layout"
+    ],
+    "smallest_room": {
+     "units": [
+      5,
+      2
+     ],
+     "floor_m": [
+      14.7,
+      5.7
+     ],
+     "fits": 1
+    },
+    "top_m": 1.69
+   }
+  },
+  {
+   "id": "gauge-stand",
+   "name": "Acceptance gauge stand",
+   "family": "stand",
+   "why": "ACCEPTANCE CRITERIA is a number somebody reads off something",
+   "provenance": {
+    "geometry": "SCHEMATIC",
+    "vocabulary": "AUTHORED",
+    "placement": "DERIVED"
+   },
+   "tri_budget": {
+    "tris": 108,
+    "floor": 40,
+    "ceiling": 250,
+    "why": "40-250 tri. The two reference interiors that read as places have a median mesh of 46 and 104 triangles, so 46-104 is the size at which a piece reads as a thing; this prop is built to sit in or above that band rather than under it, because the hall spends 3,806 of 2,400,000 permitted triangles and triangles are the currency that is not scarce here."
+   },
+   "size_m": [
+    0.4,
+    1.28,
+    0.4
+   ],
+   "recipe": {
+    "primitives_only": [
+     "box",
+     "cylinder"
+    ],
+    "loads_no_mesh": true,
+    "parts": [
+     {
+      "part": "column",
+      "prim": "cylinder",
+      "r": 0.06,
+      "h": 0.9,
+      "radial_segments": 8,
+      "capped": true,
+      "at": [
+       0,
+       0.86,
+       0
+      ],
+      "count": 1
+     },
+     {
+      "part": "dial",
+      "prim": "cylinder",
+      "r": 0.07,
+      "h": 0.03,
+      "radial_segments": 10,
+      "capped": true,
+      "at": [
+       0,
+       1.46,
+       0.18
+      ],
+      "count": 1
+     },
+     {
+      "part": "base",
+      "prim": "box",
+      "size": [
+       0.35,
+       0.06,
+       0.35
+      ],
+      "at": [
+       0,
+       0.44,
+       0
+      ],
+      "count": 1
+     },
+     {
+      "part": "head",
+      "prim": "box",
+      "size": [
+       0.3,
+       0.25,
+       0.2
+      ],
+      "at": [
+       0,
+       1.43,
+       0
+      ],
+      "count": 1
+     },
+     {
+      "part": "arm",
+      "prim": "box",
+      "size": [
+       0.4,
+       0.05,
+       0.05
+      ],
+      "at": [
+       0.15,
+       1.43,
+       0.1
+      ],
+      "count": 1
+     }
+    ],
+    "box_count": 3,
+    "cylinder_count": 2,
+    "formula": "12 x 3 box + 4 x 8 x 1 capped cylinder + 4 x 10 x 1 capped cylinder = 108",
+    "tris": 108
+   },
+   "material": "metal",
+   "merges": "pooled",
+   "merges_why": "static apparatus; the inspection bench of every hall gets one and they merge into a single metal mesh with everything else",
+   "clearance_m": 1.35,
+   "approach": true,
+   "derive": {
+    "from": "room.purpose",
+    "tokens": [
+     "acceptance",
+     "criteria"
+    ]
+   },
+   "layout": {
+    "anchor": "side-wall",
+    "anchor_is": "stands on the floor along a left or right partition",
+    "walls": [
+     "right"
+    ],
+    "base_y_m": 0.41,
+    "gap_m": 0.25,
+    "front_clear_m": 0.9,
+    "back_reserve_m": 1.45,
+    "max_per_room": 1,
+    "count_rule": "min(max_per_room, walls x floor((run_m + gap_m) / (size_m[0] + gap_m))), run_m = room depth in metres - floor inset - front_clear_m - back_reserve_m",
+    "admitted_by": [
+     "inspection"
+    ],
+    "smallest_room": {
+     "units": [
+      6,
+      2
+     ],
+     "floor_m": [
+      17.7,
+      5.7
+     ],
+     "fits": 1
+    },
+    "top_m": 1.69
+   }
+  },
+  {
+   "id": "signoff-desk",
+   "name": "Sign-off desk",
+   "family": "bench",
+   "why": "SIGN-OFF is a person writing on paper at a desk, and the second half of what this room is for",
+   "provenance": {
+    "geometry": "SCHEMATIC",
+    "vocabulary": "AUTHORED",
+    "placement": "DERIVED"
+   },
+   "tri_budget": {
+    "tris": 96,
+    "floor": 40,
+    "ceiling": 250,
+    "why": "40-250 tri. The two reference interiors that read as places have a median mesh of 46 and 104 triangles, so 46-104 is the size at which a piece reads as a thing; this prop is built to sit in or above that band rather than under it, because the hall spends 3,806 of 2,400,000 permitted triangles and triangles are the currency that is not scarce here."
+   },
+   "size_m": [
+    1.4,
+    0.8,
+    0.7
+   ],
+   "recipe": {
+    "primitives_only": [
+     "box",
+     "cylinder"
+    ],
+    "loads_no_mesh": true,
+    "parts": [
+     {
+      "part": "top",
+      "prim": "box",
+      "size": [
+       1.4,
+       0.06,
+       0.7
+      ],
+      "at": [
+       0,
+       1.18,
+       0
+      ],
+      "count": 1
+     },
+     {
+      "part": "leg",
+      "prim": "box",
+      "size": [
+       0.07,
+       0.72,
+       0.07
+      ],
+      "at": [
+       0.63,
+       0.77,
+       0.28
+      ],
+      "count": 4
+     },
+     {
+      "part": "modesty panel",
+      "prim": "box",
+      "size": [
+       1.3,
+       0.4,
+       0.03
+      ],
+      "at": [
+       0,
+       0.93,
+       -0.32
+      ],
+      "count": 1
+     },
+     {
+      "part": "paper tray",
+      "prim": "box",
+      "size": [
+       0.5,
+       0.03,
+       0.35
+      ],
+      "at": [
+       -0.35,
+       1.22,
+       0
+      ],
+      "count": 1
+     },
+     {
+      "part": "stamp block",
+      "prim": "box",
+      "size": [
+       0.12,
+       0.1,
+       0.12
+      ],
+      "at": [
+       0.45,
+       1.26,
+       0
+      ],
+      "count": 1
+     }
+    ],
+    "box_count": 8,
+    "cylinder_count": 0,
+    "formula": "12 x 8 box = 96",
+    "tris": 96
+   },
+   "material": "wood",
+   "merges": "pooled",
+   "merges_why": "eight boxes of the same wood the benches use",
+   "clearance_m": 1.35,
+   "approach": true,
+   "derive": {
+    "from": "room.purpose",
+    "tokens": [
+     "sign-off"
+    ]
+   },
+   "layout": {
+    "anchor": "side-wall",
+    "anchor_is": "stands on the floor along a left or right partition",
+    "walls": [
+     "left"
+    ],
+    "base_y_m": 0.41,
+    "gap_m": 0.25,
+    "front_clear_m": 0.9,
+    "back_reserve_m": 1.45,
+    "max_per_room": 1,
+    "count_rule": "min(max_per_room, walls x floor((run_m + gap_m) / (size_m[0] + gap_m))), run_m = room depth in metres - floor inset - front_clear_m - back_reserve_m",
+    "admitted_by": [
+     "inspection"
+    ],
+    "smallest_room": {
+     "units": [
+      6,
+      2
+     ],
+     "floor_m": [
+      17.7,
+      5.7
+     ],
+     "fits": 1
+    },
+    "top_m": 1.21
+   }
+  },
+  {
+   "id": "rig-frame",
+   "name": "Live rig frame",
+   "family": "stand",
+   "why": "a LIVE RIG is a frame with something wired to it that can be made to fail on purpose",
+   "provenance": {
+    "geometry": "SCHEMATIC",
+    "vocabulary": "AUTHORED",
+    "placement": "DERIVED"
+   },
+   "tri_budget": {
+    "tris": 108,
+    "floor": 40,
+    "ceiling": 250,
+    "why": "40-250 tri. The two reference interiors that read as places have a median mesh of 46 and 104 triangles, so 46-104 is the size at which a piece reads as a thing; this prop is built to sit in or above that band rather than under it, because the hall spends 3,806 of 2,400,000 permitted triangles and triangles are the currency that is not scarce here."
+   },
+   "size_m": [
+    1.5,
+    1.66,
+    0.25
+   ],
+   "recipe": {
+    "primitives_only": [
+     "box",
+     "cylinder"
+    ],
+    "loads_no_mesh": true,
+    "parts": [
+     {
+      "part": "upright",
+      "prim": "box",
+      "size": [
+       0.08,
+       1.6,
+       0.08
+      ],
+      "at": [
+       0.71,
+       1.21,
+       0
+      ],
+      "count": 2
+     },
+     {
+      "part": "crossbar",
+      "prim": "box",
+      "size": [
+       1.4,
+       0.08,
+       0.08
+      ],
+      "at": [
+       0,
+       1.97,
+       0
+      ],
+      "count": 2
+     },
+     {
+      "part": "back panel",
+      "prim": "box",
+      "size": [
+       1.3,
+       1.0,
+       0.03
+      ],
+      "at": [
+       0,
+       1.36,
+       -0.06
+      ],
+      "count": 1
+     },
+     {
+      "part": "mount block",
+      "prim": "box",
+      "size": [
+       0.15,
+       0.15,
+       0.08
+      ],
+      "at": [
+       -0.45,
+       1.51,
+       0.05
+      ],
+      "count": 4
+     }
+    ],
+    "box_count": 9,
+    "cylinder_count": 0,
+    "formula": "12 x 9 box = 108",
+    "tris": 108
+   },
+   "material": "metal",
+   "merges": "pooled",
+   "merges_why": "nine boxes, vertical, static; the rig is scenery the learner works in front of rather than an object the page tracks",
+   "clearance_m": 1.35,
+   "approach": true,
+   "derive": {
+    "from": "room.purpose",
+    "tokens": [
+     "rigs"
+    ]
+   },
+   "layout": {
+    "anchor": "side-wall",
+    "anchor_is": "stands on the floor along a left or right partition",
+    "walls": [
+     "left",
+     "right"
+    ],
+    "base_y_m": 0.41,
+    "gap_m": 0.25,
+    "front_clear_m": 0.9,
+    "back_reserve_m": 1.45,
+    "max_per_room": 2,
+    "count_rule": "min(max_per_room, walls x floor((run_m + gap_m) / (size_m[0] + gap_m))), run_m = room depth in metres - floor inset - front_clear_m - back_reserve_m",
+    "admitted_by": [
+     "troubleshooting"
+    ],
+    "smallest_room": {
+     "units": [
+      6,
+      2
+     ],
+     "floor_m": [
+      17.7,
+      5.7
+     ],
+     "fits": 2
+    },
+    "top_m": 2.07
+   }
+  },
+  {
+   "id": "test-bench",
+   "name": "Fault-finding bench",
+   "family": "bench",
+   "why": "FAULT-FINDING happens with instruments on a surface, facing the rig",
+   "provenance": {
+    "geometry": "SCHEMATIC",
+    "vocabulary": "AUTHORED",
+    "placement": "DERIVED"
+   },
+   "tri_budget": {
+    "tris": 108,
+    "floor": 40,
+    "ceiling": 250,
+    "why": "40-250 tri. The two reference interiors that read as places have a median mesh of 46 and 104 triangles, so 46-104 is the size at which a piece reads as a thing; this prop is built to sit in or above that band rather than under it, because the hall spends 3,806 of 2,400,000 permitted triangles and triangles are the currency that is not scarce here."
+   },
+   "size_m": [
+    1.5,
+    1.1,
+    0.7
+   ],
+   "recipe": {
+    "primitives_only": [
+     "box",
+     "cylinder"
+    ],
+    "loads_no_mesh": true,
+    "parts": [
+     {
+      "part": "top",
+      "prim": "box",
+      "size": [
+       1.5,
+       0.07,
+       0.7
+      ],
+      "at": [
+       0,
+       1.23,
+       0
+      ],
+      "count": 1
+     },
+     {
+      "part": "leg",
+      "prim": "box",
+      "size": [
+       0.08,
+       0.75,
+       0.08
+      ],
+      "at": [
+       0.68,
+       0.79,
+       0.28
+      ],
+      "count": 4
+     },
+     {
+      "part": "under shelf",
+      "prim": "box",
+      "size": [
+       1.4,
+       0.05,
+       0.6
+      ],
+      "at": [
+       0,
+       0.66,
+       0
+      ],
+      "count": 1
+     },
+     {
+      "part": "instrument case",
+      "prim": "box",
+      "size": [
+       0.45,
+       0.25,
+       0.3
+      ],
+      "at": [
+       -0.45,
+       1.39,
+       -0.15
+      ],
+      "count": 1
+     },
+     {
+      "part": "dial",
+      "prim": "box",
+      "size": [
+       0.08,
+       0.08,
+       0.02
+      ],
+      "at": [
+       -0.45,
+       1.39,
+       0.01
+      ],
+      "count": 2
+     }
+    ],
+    "box_count": 9,
+    "cylinder_count": 0,
+    "formula": "12 x 9 box = 108",
+    "tris": 108
+   },
+   "material": "steel",
+   "merges": "pooled",
+   "merges_why": "nine boxes of a material the page already builds for its own benches",
+   "clearance_m": 1.35,
+   "approach": true,
+   "derive": {
+    "from": "room.purpose",
+    "tokens": [
+     "fault-finding"
+    ]
+   },
+   "layout": {
+    "anchor": "side-wall",
+    "anchor_is": "stands on the floor along a left or right partition",
+    "walls": [
+     "right"
+    ],
+    "base_y_m": 0.41,
+    "gap_m": 0.25,
+    "front_clear_m": 0.9,
+    "back_reserve_m": 1.45,
+    "max_per_room": 1,
+    "count_rule": "min(max_per_room, walls x floor((run_m + gap_m) / (size_m[0] + gap_m))), run_m = room depth in metres - floor inset - front_clear_m - back_reserve_m",
+    "admitted_by": [
+     "troubleshooting"
+    ],
+    "smallest_room": {
+     "units": [
+      6,
+      2
+     ],
+     "floor_m": [
+      17.7,
+      5.7
+     ],
+     "fits": 1
+    },
+    "top_m": 1.51
+   }
+  },
+  {
+   "id": "shift-board",
+   "name": "Shift board",
+   "family": "board",
+   "why": "a SHIFT START is people standing in front of a board that says who is doing what",
+   "provenance": {
+    "geometry": "SCHEMATIC",
+    "vocabulary": "AUTHORED",
+    "placement": "DERIVED"
+   },
+   "tri_budget": {
+    "tris": 96,
+    "floor": 40,
+    "ceiling": 250,
+    "why": "40-250 tri. The two reference interiors that read as places have a median mesh of 46 and 104 triangles, so 46-104 is the size at which a piece reads as a thing; this prop is built to sit in or above that band rather than under it, because the hall spends 3,806 of 2,400,000 permitted triangles and triangles are the currency that is not scarce here."
+   },
+   "size_m": [
+    1.64,
+    0.95,
+    0.08
+   ],
+   "recipe": {
+    "primitives_only": [
+     "box",
+     "cylinder"
+    ],
+    "loads_no_mesh": true,
+    "parts": [
+     {
+      "part": "panel",
+      "prim": "box",
+      "size": [
+       1.6,
+       0.9,
+       0.04
+      ],
+      "at": [
+       0,
+       0,
+       0
+      ],
+      "count": 1
+     },
+     {
+      "part": "frame rail",
+      "prim": "box",
+      "size": [
+       1.64,
+       0.05,
+       0.06
+      ],
+      "at": [
+       0,
+       0.475,
+       0
+      ],
+      "count": 2
+     },
+     {
+      "part": "column divider",
+      "prim": "box",
+      "size": [
+       0.02,
+       0.85,
+       0.01
+      ],
+      "at": [
+       -0.4,
+       0,
+       0.025
+      ],
+      "count": 4
+     },
+     {
+      "part": "marker tray",
+      "prim": "box",
+      "size": [
+       1.5,
+       0.05,
+       0.08
+      ],
+      "at": [
+       0,
+       -0.48,
+       0.05
+      ],
+      "count": 1
+     }
+    ],
+    "box_count": 8,
+    "cylinder_count": 0,
+    "formula": "12 x 8 box = 96",
+    "tris": 96
+   },
+   "material": "paint",
+   "merges": "pooled",
+   "merges_why": "the largest flat thing in the pack and still eight boxes",
+   "clearance_m": 1.35,
+   "approach": true,
+   "derive": {
+    "from": "room.purpose",
+    "tokens": [
+     "shift"
+    ]
+   },
+   "layout": {
+    "anchor": "wall-mounted",
+    "anchor_is": "hangs on a left or right partition, its top no higher than the partition itself",
+    "walls": [
+     "left"
+    ],
+    "base_y_m": 0.93,
+    "gap_m": 0.25,
+    "front_clear_m": 0.9,
+    "back_reserve_m": 1.45,
+    "max_per_room": 1,
+    "count_rule": "min(max_per_room, walls x floor((run_m + gap_m) / (size_m[0] + gap_m))), run_m = room depth in metres - floor inset - front_clear_m - back_reserve_m",
+    "admitted_by": [
+     "coordination"
+    ],
+    "smallest_room": {
+     "units": [
+      5,
+      2
+     ],
+     "floor_m": [
+      14.7,
+      5.7
+     ],
+     "fits": 1
+    },
+    "top_m": 1.405
+   }
+  },
+  {
+   "id": "handoff-table",
+   "name": "Hand-off table",
+   "family": "bench",
+   "why": "a HAND-OFF is two crews around one table with the drawing on it",
+   "provenance": {
+    "geometry": "SCHEMATIC",
+    "vocabulary": "AUTHORED",
+    "placement": "DERIVED"
+   },
+   "tri_budget": {
+    "tris": 72,
+    "floor": 40,
+    "ceiling": 250,
+    "why": "40-250 tri. The two reference interiors that read as places have a median mesh of 46 and 104 triangles, so 46-104 is the size at which a piece reads as a thing; this prop is built to sit in or above that band rather than under it, because the hall spends 3,806 of 2,400,000 permitted triangles and triangles are the currency that is not scarce here."
+   },
+   "size_m": [
+    1.6,
+    0.78,
+    0.8
+   ],
+   "recipe": {
+    "primitives_only": [
+     "box",
+     "cylinder"
+    ],
+    "loads_no_mesh": true,
+    "parts": [
+     {
+      "part": "top",
+      "prim": "box",
+      "size": [
+       1.6,
+       0.06,
+       0.8
+      ],
+      "at": [
+       0,
+       1.16,
+       0
+      ],
+      "count": 1
+     },
+     {
+      "part": "leg",
+      "prim": "box",
+      "size": [
+       0.07,
+       0.7,
+       0.07
+      ],
+      "at": [
+       0.73,
+       0.76,
+       0.33
+      ],
+      "count": 4
+     },
+     {
+      "part": "rail",
+      "prim": "box",
+      "size": [
+       1.5,
+       0.05,
+       0.05
+      ],
+      "at": [
+       0,
+       0.63,
+       0.33
+      ],
+      "count": 1
+     }
+    ],
+    "box_count": 6,
+    "cylinder_count": 0,
+    "formula": "12 x 6 box = 72",
+    "tris": 72
+   },
+   "material": "wood",
+   "merges": "pooled",
+   "merges_why": "six boxes; the cheapest prop in the pack after the lectern",
+   "clearance_m": 1.35,
+   "approach": true,
+   "derive": {
+    "from": "room.purpose",
+    "tokens": [
+     "hand-offs"
+    ]
+   },
+   "layout": {
+    "anchor": "side-wall",
+    "anchor_is": "stands on the floor along a left or right partition",
+    "walls": [
+     "left",
+     "right"
+    ],
+    "base_y_m": 0.41,
+    "gap_m": 0.25,
+    "front_clear_m": 0.9,
+    "back_reserve_m": 1.45,
+    "max_per_room": 2,
+    "count_rule": "min(max_per_room, walls x floor((run_m + gap_m) / (size_m[0] + gap_m))), run_m = room depth in metres - floor inset - front_clear_m - back_reserve_m",
+    "admitted_by": [
+     "coordination"
+    ],
+    "smallest_room": {
+     "units": [
+      5,
+      2
+     ],
+     "floor_m": [
+      14.7,
+      5.7
+     ],
+     "fits": 2
+    },
+    "top_m": 1.19
+   }
+  },
+  {
+   "id": "records-cabinet",
+   "name": "Records cabinet",
+   "family": "storage",
+   "why": "CERTIFICATES and AS-BUILTS are paper, and paper that matters lives in a drawer somebody can find",
+   "provenance": {
+    "geometry": "SCHEMATIC",
+    "vocabulary": "AUTHORED",
+    "placement": "DERIVED"
+   },
+   "tri_budget": {
+    "tris": 132,
+    "floor": 40,
+    "ceiling": 250,
+    "why": "40-250 tri. The two reference interiors that read as places have a median mesh of 46 and 104 triangles, so 46-104 is the size at which a piece reads as a thing; this prop is built to sit in or above that band rather than under it, because the hall spends 3,806 of 2,400,000 permitted triangles and triangles are the currency that is not scarce here."
+   },
+   "size_m": [
+    1.0,
+    1.39,
+    0.57
+   ],
+   "recipe": {
+    "primitives_only": [
+     "box",
+     "cylinder"
+    ],
+    "loads_no_mesh": true,
+    "parts": [
+     {
+      "part": "carcass",
+      "prim": "box",
+      "size": [
+       1.0,
+       1.35,
+       0.55
+      ],
+      "at": [
+       0,
+       1.09,
+       0
+      ],
+      "count": 1
+     },
+     {
+      "part": "drawer front",
+      "prim": "box",
+      "size": [
+       0.94,
+       0.3,
+       0.03
+      ],
+      "at": [
+       0,
+       0.71,
+       0.29
+      ],
+      "count": 4
+     },
+     {
+      "part": "pull",
+      "prim": "box",
+      "size": [
+       0.2,
+       0.03,
+       0.02
+      ],
+      "at": [
+       0,
+       0.81,
+       0.31
+      ],
+      "count": 4
+     },
+     {
+      "part": "plinth",
+      "prim": "box",
+      "size": [
+       1.0,
+       0.08,
+       0.53
+      ],
+      "at": [
+       0,
+       0.45,
+       0
+      ],
+      "count": 1
+     },
+     {
+      "part": "top cap",
+      "prim": "box",
+      "size": [
+       1.0,
+       0.04,
+       0.57
+      ],
+      "at": [
+       0,
+       1.78,
+       0
+      ],
+      "count": 1
+     }
+    ],
+    "box_count": 11,
+    "cylinder_count": 0,
+    "formula": "12 x 11 box = 132",
+    "tris": 132
+   },
+   "material": "steel",
+   "merges": "pooled",
+   "merges_why": "ten boxes, one material, two or three per records room, all in the hall-wide steel mesh",
+   "clearance_m": 1.35,
+   "approach": true,
+   "derive": {
+    "from": "room.purpose",
+    "tokens": [
+     "certificates",
+     "as-builts"
+    ]
+   },
+   "layout": {
+    "anchor": "side-wall",
+    "anchor_is": "stands on the floor along a left or right partition",
+    "walls": [
+     "left",
+     "right"
+    ],
+    "base_y_m": 0.41,
+    "gap_m": 0.25,
+    "front_clear_m": 0.9,
+    "back_reserve_m": 1.45,
+    "max_per_room": 2,
+    "count_rule": "min(max_per_room, walls x floor((run_m + gap_m) / (size_m[0] + gap_m))), run_m = room depth in metres - floor inset - front_clear_m - back_reserve_m",
+    "admitted_by": [
+     "documentation"
+    ],
+    "smallest_room": {
+     "units": [
+      3,
+      2
+     ],
+     "floor_m": [
+      8.7,
+      5.7
+     ],
+     "fits": 2
+    },
+    "top_m": 1.8
+   }
+  },
+  {
+   "id": "exam-desk",
+   "name": "Exam desk",
+   "family": "bench",
+   "why": "LEVEL TESTS are sat at a desk, and a classroom with no desks is a corridor",
+   "provenance": {
+    "geometry": "SCHEMATIC",
+    "vocabulary": "AUTHORED",
+    "placement": "DERIVED"
+   },
+   "tri_budget": {
+    "tris": 72,
+    "floor": 40,
+    "ceiling": 250,
+    "why": "40-250 tri. The two reference interiors that read as places have a median mesh of 46 and 104 triangles, so 46-104 is the size at which a piece reads as a thing; this prop is built to sit in or above that band rather than under it, because the hall spends 3,806 of 2,400,000 permitted triangles and triangles are the currency that is not scarce here."
+   },
+   "size_m": [
+    1.2,
+    0.76,
+    0.6
+   ],
+   "recipe": {
+    "primitives_only": [
+     "box",
+     "cylinder"
+    ],
+    "loads_no_mesh": true,
+    "parts": [
+     {
+      "part": "top",
+      "prim": "box",
+      "size": [
+       1.2,
+       0.05,
+       0.6
+      ],
+      "at": [
+       0,
+       1.14,
+       0
+      ],
+      "count": 1
+     },
+     {
+      "part": "leg",
+      "prim": "box",
+      "size": [
+       0.06,
+       0.7,
+       0.06
+      ],
+      "at": [
+       0.54,
+       0.76,
+       0.24
+      ],
+      "count": 4
+     },
+     {
+      "part": "book rail",
+      "prim": "box",
+      "size": [
+       1.1,
+       0.04,
+       0.04
+      ],
+      "at": [
+       0,
+       0.61,
+       0.24
+      ],
+      "count": 1
+     }
+    ],
+    "box_count": 6,
+    "cylinder_count": 0,
+    "formula": "12 x 6 box = 72",
+    "tris": 72
+   },
+   "material": "wood",
+   "merges": "pooled",
+   "merges_why": "six boxes; the classroom takes four of them and they are still one share of one mesh",
+   "clearance_m": 1.35,
+   "approach": true,
+   "derive": {
+    "from": "room.purpose",
+    "tokens": [
+     "tests"
+    ]
+   },
+   "layout": {
+    "anchor": "side-wall",
+    "anchor_is": "stands on the floor along a left or right partition",
+    "walls": [
+     "left",
+     "right"
+    ],
+    "base_y_m": 0.41,
+    "gap_m": 0.25,
+    "front_clear_m": 0.9,
+    "back_reserve_m": 1.45,
+    "max_per_room": 3,
+    "count_rule": "min(max_per_room, walls x floor((run_m + gap_m) / (size_m[0] + gap_m))), run_m = room depth in metres - floor inset - front_clear_m - back_reserve_m",
+    "admitted_by": [
+     "leadership"
+    ],
+    "smallest_room": {
+     "units": [
+      4,
+      2
+     ],
+     "floor_m": [
+      11.7,
+      5.7
+     ],
+     "fits": 3
+    },
+    "top_m": 1.17
+   }
+  },
+  {
+   "id": "instructor-lectern",
+   "name": "Instructor lectern",
+   "family": "stand",
+   "why": "the INSTRUCTOR TRACK has an instructor in it and the instructor stands somewhere",
+   "provenance": {
+    "geometry": "SCHEMATIC",
+    "vocabulary": "AUTHORED",
+    "placement": "DERIVED"
+   },
+   "tri_budget": {
+    "tris": 48,
+    "floor": 40,
+    "ceiling": 250,
+    "why": "40-250 tri. The two reference interiors that read as places have a median mesh of 46 and 104 triangles, so 46-104 is the size at which a piece reads as a thing; this prop is built to sit in or above that band rather than under it, because the hall spends 3,806 of 2,400,000 permitted triangles and triangles are the currency that is not scarce here."
+   },
+   "size_m": [
+    0.7,
+    1.16,
+    0.5
+   ],
+   "recipe": {
+    "primitives_only": [
+     "box",
+     "cylinder"
+    ],
+    "loads_no_mesh": true,
+    "parts": [
+     {
+      "part": "slope top",
+      "prim": "box",
+      "size": [
+       0.6,
+       0.05,
+       0.45
+      ],
+      "at": [
+       0,
+       1.53,
+       0
+      ],
+      "count": 1
+     },
+     {
+      "part": "body",
+      "prim": "box",
+      "size": [
+       0.55,
+       1.05,
+       0.4
+      ],
+      "at": [
+       0,
+       0.94,
+       0
+      ],
+      "count": 1
+     },
+     {
+      "part": "base",
+      "prim": "box",
+      "size": [
+       0.7,
+       0.06,
+       0.5
+      ],
+      "at": [
+       0,
+       0.44,
+       0
+      ],
+      "count": 1
+     },
+     {
+      "part": "shelf",
+      "prim": "box",
+      "size": [
+       0.5,
+       0.03,
+       0.35
+      ],
+      "at": [
+       0,
+       1.11,
+       0
+      ],
+      "count": 1
+     }
+    ],
+    "box_count": 4,
+    "cylinder_count": 0,
+    "formula": "12 x 4 box = 48",
+    "tris": 48
+   },
+   "material": "wood",
+   "merges": "pooled",
+   "merges_why": "four boxes, 48 triangles, two off the reference median \u2014 and it still reads as a lectern because it is the right shape, not because it is dense",
+   "clearance_m": 1.35,
+   "approach": true,
+   "derive": {
+    "from": "room.purpose",
+    "tokens": [
+     "instructor"
+    ]
+   },
+   "layout": {
+    "anchor": "back-corner",
+    "anchor_is": "stands on the floor in one back corner, clear of the fixture bench band",
+    "walls": [
+     "left"
+    ],
+    "base_y_m": 0.41,
+    "gap_m": 0.25,
+    "front_clear_m": 0.9,
+    "back_reserve_m": 1.45,
+    "max_per_room": 1,
+    "count_rule": "min(max_per_room, walls x floor((run_m + gap_m) / (size_m[0] + gap_m))), run_m = room depth in metres - floor inset - front_clear_m - back_reserve_m",
+    "admitted_by": [
+     "leadership"
+    ],
+    "smallest_room": {
+     "units": [
+      4,
+      2
+     ],
+     "floor_m": [
+      11.7,
+      5.7
+     ],
+     "fits": 1
+    },
+    "top_m": 1.57
+   }
+  },
+  {
+   "id": "ppe-station",
+   "name": "PPE station",
+   "family": "safety-fixture",
+   "why": "the room record already says what this room requires of you, and the page already hangs that list on the door as a placard; this is a schematic rack standing where the placard points \u2014 it issues nothing and holds nothing",
+   "provenance": {
+    "geometry": "SCHEMATIC",
+    "vocabulary": "AUTHORED",
+    "placement": "DERIVED"
+   },
+   "tri_budget": {
+    "tris": 108,
+    "floor": 40,
+    "ceiling": 250,
+    "why": "40-250 tri. The two reference interiors that read as places have a median mesh of 46 and 104 triangles, so 46-104 is the size at which a piece reads as a thing; this prop is built to sit in or above that band rather than under it, because the hall spends 3,806 of 2,400,000 permitted triangles and triangles are the currency that is not scarce here."
+   },
+   "size_m": [
+    1.0,
+    1.0,
+    0.24
+   ],
+   "recipe": {
+    "primitives_only": [
+     "box",
+     "cylinder"
+    ],
+    "loads_no_mesh": true,
+    "parts": [
+     {
+      "part": "back panel",
+      "prim": "box",
+      "size": [
+       1.0,
+       1.0,
+       0.04
+      ],
+      "at": [
+       0,
+       0,
+       0
+      ],
+      "count": 1
+     },
+     {
+      "part": "bin",
+      "prim": "box",
+      "size": [
+       0.28,
+       0.22,
+       0.2
+      ],
+      "at": [
+       -0.34,
+       -0.25,
+       0.12
+      ],
+      "count": 3
+     },
+     {
+      "part": "hook rail",
+      "prim": "box",
+      "size": [
+       1.0,
+       0.05,
+       0.06
+      ],
+      "at": [
+       0,
+       0.38,
+       0.05
+      ],
+      "count": 1
+     },
+     {
+      "part": "hook",
+      "prim": "box",
+      "size": [
+       0.03,
+       0.1,
+       0.03
+      ],
+      "at": [
+       -0.36,
+       0.32,
+       0.08
+      ],
+      "count": 4
+     }
+    ],
+    "box_count": 9,
+    "cylinder_count": 0,
+    "formula": "12 x 9 box = 108",
+    "tris": 108
+   },
+   "material": "paint",
+   "merges": "instanced",
+   "merges_why": "the same nine boxes stand in eight rooms of every hall \u2014 888 rooms in the bundle. One InstancedMesh draws all eight copies in a hall in one call; pooling them would cost the same and instancing says plainly that they are the same object",
+   "clearance_m": 1.35,
+   "approach": true,
+   "derive": {
+    "from": "room.conditions.ppe",
+    "ppe_any": [
+     "*any*"
+    ],
+    "triggered_by_hazards": [],
+    "rule": "a room gets this when its own conditions.ppe is non-empty"
+   },
+   "layout": {
+    "anchor": "wall-mounted",
+    "anchor_is": "hangs on a left or right partition, its top no higher than the partition itself",
+    "walls": [
+     "right"
+    ],
+    "base_y_m": 0.93,
+    "gap_m": 0.25,
+    "front_clear_m": 0.9,
+    "back_reserve_m": 1.45,
+    "max_per_room": 1,
+    "count_rule": "min(max_per_room, walls x floor((run_m + gap_m) / (size_m[0] + gap_m))), run_m = room depth in metres - floor inset - front_clear_m - back_reserve_m",
+    "admitted_by": [
+     "inspection",
+     "layout",
+     "machines",
+     "materials",
+     "procedure",
+     "safety",
+     "tools",
+     "troubleshooting"
+    ],
+    "smallest_room": {
+     "units": [
+      4,
+      2
+     ],
+     "floor_m": [
+      11.7,
+      5.7
+     ],
+     "fits": 1
+    },
+    "top_m": 1.43
+   }
+  },
+  {
+   "id": "eyewash-stand",
+   "name": "Eyewash stand",
+   "family": "safety-fixture",
+   "why": "a shape standing where a room record says something can get in your eyes \u2014 NOT a fixture specification and not evidence that anything has been installed",
+   "provenance": {
+    "geometry": "SCHEMATIC",
+    "vocabulary": "AUTHORED",
+    "placement": "DERIVED"
+   },
+   "tri_budget": {
+    "tris": 128,
+    "floor": 40,
+    "ceiling": 250,
+    "why": "40-250 tri. The two reference interiors that read as places have a median mesh of 46 and 104 triangles, so 46-104 is the size at which a piece reads as a thing; this prop is built to sit in or above that band rather than under it, because the hall spends 3,806 of 2,400,000 permitted triangles and triangles are the currency that is not scarce here."
+   },
+   "size_m": [
+    0.4,
+    1.24,
+    0.4
+   ],
+   "recipe": {
+    "primitives_only": [
+     "box",
+     "cylinder"
+    ],
+    "loads_no_mesh": true,
+    "parts": [
+     {
+      "part": "column",
+      "prim": "cylinder",
+      "r": 0.05,
+      "h": 1.1,
+      "radial_segments": 8,
+      "capped": true,
+      "at": [
+       0,
+       0.96,
+       0
+      ],
+      "count": 1
+     },
+     {
+      "part": "bowl",
+      "prim": "cylinder",
+      "r": 0.17,
+      "h": 0.08,
+      "radial_segments": 12,
+      "capped": true,
+      "at": [
+       0,
+       1.55,
+       0
+      ],
+      "count": 1
+     },
+     {
+      "part": "base",
+      "prim": "box",
+      "size": [
+       0.3,
+       0.05,
+       0.3
+      ],
+      "at": [
+       0,
+       0.435,
+       0
+      ],
+      "count": 1
+     },
+     {
+      "part": "nozzle",
+      "prim": "box",
+      "size": [
+       0.06,
+       0.06,
+       0.12
+      ],
+      "at": [
+       -0.06,
+       1.57,
+       0
+      ],
+      "count": 2
+     },
+     {
+      "part": "paddle",
+      "prim": "box",
+      "size": [
+       0.2,
+       0.04,
+       0.1
+      ],
+      "at": [
+       0,
+       1.41,
+       0.14
+      ],
+      "count": 1
+     }
+    ],
+    "box_count": 4,
+    "cylinder_count": 2,
+    "formula": "12 x 4 box + 4 x 8 x 1 capped cylinder + 4 x 12 x 1 capped cylinder = 128",
+    "tris": 128
+   },
+   "material": "post",
+   "merges": "instanced",
+   "merges_why": "repeats across every room whose record asks for chemical-contact protection; identical geometry, so one draw per hall",
+   "clearance_m": 1.35,
+   "approach": true,
+   "derive": {
+    "from": "room.conditions.ppe",
+    "ppe_any": [
+     "chemical gloves",
+     "apron",
+     "face shield"
+    ],
+    "triggered_by_hazards": [
+     "corrosive",
+     "molten-metal",
+     "stored-energy",
+     "wet-process"
+    ],
+    "rule": "a room gets this when its own conditions.ppe names any of apron, chemical gloves, face shield"
+   },
+   "layout": {
+    "anchor": "back-corner",
+    "anchor_is": "stands on the floor in one back corner, clear of the fixture bench band",
+    "walls": [
+     "right"
+    ],
+    "base_y_m": 0.41,
+    "gap_m": 0.25,
+    "front_clear_m": 0.9,
+    "back_reserve_m": 1.45,
+    "max_per_room": 1,
+    "count_rule": "min(max_per_room, walls x floor((run_m + gap_m) / (size_m[0] + gap_m))), run_m = room depth in metres - floor inset - front_clear_m - back_reserve_m",
+    "admitted_by": [
+     "machines",
+     "materials",
+     "procedure"
+    ],
+    "smallest_room": {
+     "units": [
+      5,
+      2
+     ],
+     "floor_m": [
+      14.7,
+      5.7
+     ],
+     "fits": 1
+    },
+    "top_m": 1.65
+   }
+  },
+  {
+   "id": "extinguisher-bracket",
+   "name": "Extinguisher bracket",
+   "family": "safety-fixture",
+   "why": "a shape standing where a room record asks for flame-resistant or anti-static clothing \u2014 schematic, not a rated appliance",
+   "provenance": {
+    "geometry": "SCHEMATIC",
+    "vocabulary": "AUTHORED",
+    "placement": "DERIVED"
+   },
+   "tri_budget": {
+    "tris": 108,
+    "floor": 40,
+    "ceiling": 250,
+    "why": "40-250 tri. The two reference interiors that read as places have a median mesh of 46 and 104 triangles, so 46-104 is the size at which a piece reads as a thing; this prop is built to sit in or above that band rather than under it, because the hall spends 3,806 of 2,400,000 permitted triangles and triangles are the currency that is not scarce here."
+   },
+   "size_m": [
+    0.22,
+    0.7,
+    0.2
+   ],
+   "recipe": {
+    "primitives_only": [
+     "box",
+     "cylinder"
+    ],
+    "loads_no_mesh": true,
+    "parts": [
+     {
+      "part": "body",
+      "prim": "cylinder",
+      "r": 0.09,
+      "h": 0.5,
+      "radial_segments": 10,
+      "capped": true,
+      "at": [
+       0,
+       0.0,
+       0
+      ],
+      "count": 1
+     },
+     {
+      "part": "neck",
+      "prim": "cylinder",
+      "r": 0.03,
+      "h": 0.1,
+      "radial_segments": 8,
+      "capped": true,
+      "at": [
+       0,
+       0.3,
+       0
+      ],
+      "count": 1
+     },
+     {
+      "part": "back plate",
+      "prim": "box",
+      "size": [
+       0.2,
+       0.5,
+       0.02
+      ],
+      "at": [
+       0,
+       0,
+       -0.11
+      ],
+      "count": 1
+     },
+     {
+      "part": "bracket",
+      "prim": "box",
+      "size": [
+       0.14,
+       0.2,
+       0.1
+      ],
+      "at": [
+       0,
+       -0.1,
+       -0.05
+      ],
+      "count": 1
+     },
+     {
+      "part": "handle",
+      "prim": "box",
+      "size": [
+       0.1,
+       0.03,
+       0.06
+      ],
+      "at": [
+       0,
+       0.33,
+       0.02
+      ],
+      "count": 1
+     }
+    ],
+    "box_count": 3,
+    "cylinder_count": 2,
+    "formula": "12 x 3 box + 4 x 10 x 1 capped cylinder + 4 x 8 x 1 capped cylinder = 108",
+    "tris": 108
+   },
+   "material": "cone",
+   "merges": "instanced",
+   "merges_why": "small, identical and in every hot-work room of every hall",
+   "clearance_m": 0.9,
+   "approach": false,
+   "derive": {
+    "from": "room.conditions.ppe",
+    "ppe_any": [
+     "flame-resistant clothing",
+     "anti-static clothing",
+     "welding hood"
+    ],
+    "triggered_by_hazards": [
+     "explosives",
+     "flammable-atmosphere",
+     "hot-work",
+     "molten-metal"
+    ],
+    "rule": "a room gets this when its own conditions.ppe names any of anti-static clothing, flame-resistant clothing, welding hood"
+   },
+   "layout": {
+    "anchor": "wall-mounted",
+    "anchor_is": "hangs on a left or right partition, its top no higher than the partition itself",
+    "walls": [
+     "left"
+    ],
+    "base_y_m": 0.95,
+    "gap_m": 0.25,
+    "front_clear_m": 0.9,
+    "back_reserve_m": 1.45,
+    "max_per_room": 1,
+    "count_rule": "min(max_per_room, walls x floor((run_m + gap_m) / (size_m[0] + gap_m))), run_m = room depth in metres - floor inset - front_clear_m - back_reserve_m",
+    "admitted_by": [
+     "machines",
+     "materials",
+     "procedure"
+    ],
+    "smallest_room": {
+     "units": [
+      5,
+      2
+     ],
+     "floor_m": [
+      14.7,
+      5.7
+     ],
+     "fits": 1
+    },
+    "top_m": 1.3
+   }
+  },
+  {
+   "id": "spill-kit-cabinet",
+   "name": "Spill kit cabinet",
+   "family": "safety-fixture",
+   "why": "a shape standing where a room record says something can be spilled \u2014 schematic, and it contains nothing",
+   "provenance": {
+    "geometry": "SCHEMATIC",
+    "vocabulary": "AUTHORED",
+    "placement": "DERIVED"
+   },
+   "tri_budget": {
+    "tris": 60,
+    "floor": 40,
+    "ceiling": 250,
+    "why": "40-250 tri. The two reference interiors that read as places have a median mesh of 46 and 104 triangles, so 46-104 is the size at which a piece reads as a thing; this prop is built to sit in or above that band rather than under it, because the hall spends 3,806 of 2,400,000 permitted triangles and triangles are the currency that is not scarce here."
+   },
+   "size_m": [
+    0.6,
+    0.88,
+    0.37
+   ],
+   "recipe": {
+    "primitives_only": [
+     "box",
+     "cylinder"
+    ],
+    "loads_no_mesh": true,
+    "parts": [
+     {
+      "part": "carcass",
+      "prim": "box",
+      "size": [
+       0.6,
+       0.8,
+       0.35
+      ],
+      "at": [
+       0,
+       0.83,
+       0
+      ],
+      "count": 1
+     },
+     {
+      "part": "door",
+      "prim": "box",
+      "size": [
+       0.56,
+       0.74,
+       0.03
+      ],
+      "at": [
+       0,
+       0.85,
+       0.19
+      ],
+      "count": 1
+     },
+     {
+      "part": "handle",
+      "prim": "box",
+      "size": [
+       0.03,
+       0.12,
+       0.03
+      ],
+      "at": [
+       0.22,
+       0.85,
+       0.21
+      ],
+      "count": 1
+     },
+     {
+      "part": "label",
+      "prim": "box",
+      "size": [
+       0.3,
+       0.12,
+       0.01
+      ],
+      "at": [
+       0,
+       1.09,
+       0.21
+      ],
+      "count": 1
+     },
+     {
+      "part": "plinth",
+      "prim": "box",
+      "size": [
+       0.6,
+       0.08,
+       0.33
+      ],
+      "at": [
+       0,
+       0.45,
+       0
+      ],
+      "count": 1
+     }
+    ],
+    "box_count": 5,
+    "cylinder_count": 0,
+    "formula": "12 x 5 box = 60",
+    "tris": 60
+   },
+   "material": "cone",
+   "merges": "instanced",
+   "merges_why": "five boxes; it appears wherever a record asks for chemical, wet or contaminated-work protection, which is many rooms and one draw",
+   "clearance_m": 1.35,
+   "approach": true,
+   "derive": {
+    "from": "room.conditions.ppe",
+    "ppe_any": [
+     "chemical gloves",
+     "waterproof boots",
+     "coveralls"
+    ],
+    "triggered_by_hazards": [
+     "contaminant",
+     "corrosive",
+     "ionising-radiation",
+     "particulate",
+     "wet-process"
+    ],
+    "rule": "a room gets this when its own conditions.ppe names any of chemical gloves, coveralls, waterproof boots"
+   },
+   "layout": {
+    "anchor": "back-corner",
+    "anchor_is": "stands on the floor in one back corner, clear of the fixture bench band",
+    "walls": [
+     "left"
+    ],
+    "base_y_m": 0.41,
+    "gap_m": 0.25,
+    "front_clear_m": 0.9,
+    "back_reserve_m": 1.45,
+    "max_per_room": 1,
+    "count_rule": "min(max_per_room, walls x floor((run_m + gap_m) / (size_m[0] + gap_m))), run_m = room depth in metres - floor inset - front_clear_m - back_reserve_m",
+    "admitted_by": [
+     "inspection",
+     "machines",
+     "procedure"
+    ],
+    "smallest_room": {
+     "units": [
+      5,
+      2
+     ],
+     "floor_m": [
+      14.7,
+      5.7
+     ],
+     "fits": 1
+    },
+    "top_m": 1.29
+   }
+  },
+  {
+   "id": "gas-monitor-dock",
+   "name": "Gas monitor dock",
+   "family": "safety-fixture",
+   "why": "a shape standing where a room record asks the person to carry a gas monitor \u2014 it docks nothing and measures nothing",
+   "provenance": {
+    "geometry": "SCHEMATIC",
+    "vocabulary": "AUTHORED",
+    "placement": "DERIVED"
+   },
+   "tri_budget": {
+    "tris": 72,
+    "floor": 40,
+    "ceiling": 250,
+    "why": "40-250 tri. The two reference interiors that read as places have a median mesh of 46 and 104 triangles, so 46-104 is the size at which a piece reads as a thing; this prop is built to sit in or above that band rather than under it, because the hall spends 3,806 of 2,400,000 permitted triangles and triangles are the currency that is not scarce here."
+   },
+   "size_m": [
+    0.35,
+    0.45,
+    0.12
+   ],
+   "recipe": {
+    "primitives_only": [
+     "box",
+     "cylinder"
+    ],
+    "loads_no_mesh": true,
+    "parts": [
+     {
+      "part": "back plate",
+      "prim": "box",
+      "size": [
+       0.35,
+       0.45,
+       0.03
+      ],
+      "at": [
+       0,
+       0,
+       0
+      ],
+      "count": 1
+     },
+     {
+      "part": "cradle",
+      "prim": "box",
+      "size": [
+       0.12,
+       0.14,
+       0.1
+      ],
+      "at": [
+       -0.09,
+       -0.05,
+       0.06
+      ],
+      "count": 2
+     },
+     {
+      "part": "unit",
+      "prim": "box",
+      "size": [
+       0.08,
+       0.12,
+       0.05
+      ],
+      "at": [
+       -0.09,
+       0.0,
+       0.08
+      ],
+      "count": 2
+     },
+     {
+      "part": "charge strip",
+      "prim": "box",
+      "size": [
+       0.3,
+       0.03,
+       0.01
+      ],
+      "at": [
+       0,
+       -0.2,
+       0.03
+      ],
+      "count": 1
+     }
+    ],
+    "box_count": 6,
+    "cylinder_count": 0,
+    "formula": "12 x 6 box = 72",
+    "tris": 72
+   },
+   "material": "metal",
+   "merges": "instanced",
+   "merges_why": "the smallest prop in the pack and it repeats; instancing is the only shape that makes sense for it",
+   "clearance_m": 0.9,
+   "approach": false,
+   "derive": {
+    "from": "room.conditions.ppe",
+    "ppe_any": [
+     "gas monitor"
+    ],
+    "triggered_by_hazards": [
+     "confined-space",
+     "flammable-atmosphere"
+    ],
+    "rule": "a room gets this when its own conditions.ppe names any of gas monitor"
+   },
+   "layout": {
+    "anchor": "wall-mounted",
+    "anchor_is": "hangs on a left or right partition, its top no higher than the partition itself",
+    "walls": [
+     "right"
+    ],
+    "base_y_m": 1.0,
+    "gap_m": 0.25,
+    "front_clear_m": 0.9,
+    "back_reserve_m": 1.45,
+    "max_per_room": 1,
+    "count_rule": "min(max_per_room, walls x floor((run_m + gap_m) / (size_m[0] + gap_m))), run_m = room depth in metres - floor inset - front_clear_m - back_reserve_m",
+    "admitted_by": [
+     "machines",
+     "procedure"
+    ],
+    "smallest_room": {
+     "units": [
+      5,
+      3
+     ],
+     "floor_m": [
+      14.7,
+      8.7
+     ],
+     "fits": 1
+    },
+    "top_m": 1.225
+   }
+  }
+ ],
+ "by_strand": {
+  "safety": {
+   "label": "Induction & PPE",
+   "source": "web/interiors.py ROOMS",
+   "props": [
+    {
+     "prop": "gowning-bench",
+     "matched": "gowning",
+     "in": "purpose"
+    },
+    {
+     "prop": "permit-board",
+     "matched": "permit",
+     "in": "purpose"
+    },
+    {
+     "prop": "atmosphere-post",
+     "matched": "atmospheric",
+     "in": "purpose"
+    }
+   ]
+  },
+  "procedure": {
+   "label": "Practice Bays",
+   "source": "web/interiors.py ROOMS",
+   "props": [
+    {
+     "prop": "work-trestle",
+     "matched": "floor",
+     "in": "purpose"
+    },
+    {
+     "prop": "learner-stool",
+     "matched": "learned",
+     "in": "purpose"
+    }
+   ]
+  },
+  "machines": {
+   "label": "Equipment Bay",
+   "source": "web/interiors.py ROOMS",
+   "props": [
+    {
+     "prop": "checkout-board",
+     "matched": "checked out",
+     "in": "purpose"
+    },
+    {
+     "prop": "bay-guard-rail",
+     "matched": "training area",
+     "in": "purpose"
+    }
+   ]
+  },
+  "tools": {
+   "label": "Tool Crib",
+   "source": "web/interiors.py ROOMS",
+   "props": [
+    {
+     "prop": "issue-counter",
+     "matched": "issue",
+     "in": "purpose"
+    },
+    {
+     "prop": "calibration-cabinet",
+     "matched": "calibration",
+     "in": "purpose"
+    },
+    {
+     "prop": "return-bin",
+     "matched": "return",
+     "in": "purpose"
+    }
+   ]
+  },
+  "materials": {
+   "label": "Materials Store",
+   "source": "web/interiors.py ROOMS",
+   "props": [
+    {
+     "prop": "stock-rack",
+     "matched": "stock",
+     "in": "purpose"
+    },
+    {
+     "prop": "offcut-bin",
+     "matched": "offcuts",
+     "in": "purpose"
+    },
+    {
+     "prop": "consumables-shelf",
+     "matched": "consumables",
+     "in": "purpose"
+    }
+   ]
+  },
+  "layout": {
+   "label": "Layout Floor",
+   "source": "web/interiors.py ROOMS",
+   "props": [
+    {
+     "prop": "layout-table",
+     "matched": "setting",
+     "in": "purpose"
+    },
+    {
+     "prop": "control-pillar",
+     "matched": "control point",
+     "in": "purpose"
+    }
+   ]
+  },
+  "inspection": {
+   "label": "Inspection Bench",
+   "source": "web/interiors.py ROOMS",
+   "props": [
+    {
+     "prop": "gauge-stand",
+     "matched": "acceptance",
+     "in": "purpose"
+    },
+    {
+     "prop": "signoff-desk",
+     "matched": "sign-off",
+     "in": "purpose"
+    }
+   ]
+  },
+  "troubleshooting": {
+   "label": "Diagnostic Bench",
+   "source": "web/interiors.py ROOMS",
+   "props": [
+    {
+     "prop": "rig-frame",
+     "matched": "rigs",
+     "in": "purpose"
+    },
+    {
+     "prop": "test-bench",
+     "matched": "fault-finding",
+     "in": "purpose"
+    }
+   ]
+  },
+  "coordination": {
+   "label": "Briefing Room",
+   "source": "web/interiors.py ROOMS",
+   "props": [
+    {
+     "prop": "shift-board",
+     "matched": "shift",
+     "in": "purpose"
+    },
+    {
+     "prop": "handoff-table",
+     "matched": "hand-offs",
+     "in": "purpose"
+    }
+   ]
+  },
+  "documentation": {
+   "label": "Records",
+   "source": "web/interiors.py ROOMS",
+   "props": [
+    {
+     "prop": "permit-board",
+     "matched": "permit",
+     "in": "purpose"
+    },
+    {
+     "prop": "records-cabinet",
+     "matched": "certificates",
+     "in": "purpose"
+    }
+   ]
+  },
+  "leadership": {
+   "label": "Classroom",
+   "source": "web/interiors.py ROOMS",
+   "props": [
+    {
+     "prop": "exam-desk",
+     "matched": "tests",
+     "in": "purpose"
+    },
+    {
+     "prop": "instructor-lectern",
+     "matched": "instructor",
+     "in": "purpose"
+    }
+   ]
+  }
+ },
+ "hazard_props": {
+  "source": "surfaces/registry/finishes.json halls[*].conditions",
+  "rule": "a hazard prop stands in a room when THAT ROOM'S own conditions record names protective equipment the prop holds. No hazard prop is placed by hand anywhere.",
+  "ppe_vocabulary": [
+   "anti-static clothing",
+   "apron",
+   "arc-flash face shield",
+   "chemical gloves",
+   "chinstrap helmet",
+   "close-fitting clothing",
+   "coveralls",
+   "dielectric gloves",
+   "dosimeter",
+   "dust mask",
+   "face shield",
+   "flame-resistant clothing",
+   "full-body harness",
+   "gas monitor",
+   "gloves",
+   "gowning",
+   "hard hat",
+   "hearing protection",
+   "hi-vis",
+   "immersion suit",
+   "rescue harness",
+   "respirator",
+   "safety boots",
+   "safety glasses",
+   "waterproof boots",
+   "welding hood"
+  ],
+  "hazard_vocabulary": [
+   "confined-space",
+   "contaminant",
+   "corrosive",
+   "explosives",
+   "flammable-atmosphere",
+   "hot-work",
+   "immersion",
+   "ionising-radiation",
+   "live-electrical",
+   "mobile-plant",
+   "molten-metal",
+   "particulate",
+   "rotating-machinery",
+   "stored-energy",
+   "suspended-load",
+   "timber-trade",
+   "wet-process",
+   "work-at-height"
+  ],
+  "rooms_requiring_ppe": 888,
+  "props": {
+   "ppe-station": {
+    "ppe_any": [
+     "*any*"
+    ],
+    "rule": "a room gets this when its own conditions.ppe is non-empty",
+    "triggered_by_hazards": [],
+    "rooms": 888
+   },
+   "eyewash-stand": {
+    "ppe_any": [
+     "chemical gloves",
+     "apron",
+     "face shield"
+    ],
+    "rule": "a room gets this when its own conditions.ppe names any of apron, chemical gloves, face shield",
+    "triggered_by_hazards": [
+     "corrosive",
+     "molten-metal",
+     "stored-energy",
+     "wet-process"
+    ],
+    "rooms": 32
+   },
+   "extinguisher-bracket": {
+    "ppe_any": [
+     "flame-resistant clothing",
+     "anti-static clothing",
+     "welding hood"
+    ],
+    "rule": "a room gets this when its own conditions.ppe names any of anti-static clothing, flame-resistant clothing, welding hood",
+    "triggered_by_hazards": [
+     "explosives",
+     "flammable-atmosphere",
+     "hot-work",
+     "molten-metal"
+    ],
+    "rooms": 24
+   },
+   "spill-kit-cabinet": {
+    "ppe_any": [
+     "chemical gloves",
+     "waterproof boots",
+     "coveralls"
+    ],
+    "rule": "a room gets this when its own conditions.ppe names any of chemical gloves, coveralls, waterproof boots",
+    "triggered_by_hazards": [
+     "contaminant",
+     "corrosive",
+     "ionising-radiation",
+     "particulate",
+     "wet-process"
+    ],
+    "rooms": 25
+   },
+   "gas-monitor-dock": {
+    "ppe_any": [
+     "gas monitor"
+    ],
+    "rule": "a room gets this when its own conditions.ppe names any of gas monitor",
+    "triggered_by_hazards": [
+     "confined-space",
+     "flammable-atmosphere"
+    ],
+    "rooms": 6
+   }
+  }
+ },
+ "budget": {
+  "ceiling_source": {
+   "file": "web/eval_scene.mjs",
+   "view": "hall",
+   "measured_calls": 157,
+   "measured_tris": 3806,
+   "measured_meshes": 137,
+   "call_headroom_x": 1.25,
+   "tri_headroom_x": 4.0,
+   "mesh_floor_x": 0.9,
+   "max_calls": 196,
+   "max_tris": 15224,
+   "min_meshes": 123,
+   "headroom_calls": 39,
+   "headroom_tris": 11418,
+   "why": "it is the only file in this repo that states what a rendered hall costs and what it may cost, and it states both with a reason; the multipliers are read from it too, so its policy moving moves this ceiling with it"
+  },
+  "self_imposed": {
+   "calls_per_hall": 19,
+   "calls_rationale": "half of the 39 draw calls the eval leaves unspent. Its own comment names two packs expected to spend that headroom, so this one takes half and leaves half",
+   "tris_per_hall": 5709,
+   "tris_rationale": "half of the 11,418 triangles the eval leaves unspent, on the same split"
+  },
+  "baseline": {
+   "view": "hall",
+   "draw_calls": 157,
+   "triangles": 3806,
+   "visible_meshes": 137,
+   "provenance": "MEASURED-ELSEWHERE",
+   "source": "web/eval_scene.mjs BASE",
+   "how": "measured 2026-09-22 in Chromium/SwiftShader at 1280x800 on quality rung high, by the eval this builder reads but does not run \u2014 verify_all.sh opens no browser and neither does this file",
+   "why_it_is_here": "it says which currency is scarce. A hall spends 157 of 196 permitted draw calls and 3,806 of 15,224 permitted triangles, so the draw call is the expensive one and the triangle is not."
+  },
+  "per_hall": {
+   "props_min": 45,
+   "props_median": 45,
+   "props_max": 52,
+   "tris_min": 4264,
+   "tris_median": 4264,
+   "tris_max": 5032,
+   "calls_min": 7,
+   "calls_max": 10,
+   "calls_are": "one per pooled material for the whole hall plus one per instanced prop type; never one per prop"
+  },
+  "delta": {
+   "draw_calls": 10,
+   "draw_calls_after": 167,
+   "draw_calls_headroom": 29,
+   "triangles": 5032,
+   "triangles_after": 8838,
+   "triangles_headroom": 6386,
+   "props_per_draw_call": 5.2,
+   "reading": "the worst hall stands 52 props in eleven rooms and pays 10 draw calls for all of them \u2014 6% on top of what the hall already draws, for 132% more triangles"
+  },
+  "bundle": {
+   "halls": 111,
+   "rooms": 1221,
+   "prop_instances": 5082,
+   "triangles": 481924
+  }
+ },
+ "page_contract": {
+  "symbol": "The page builds these under a new `ROOM_PROPS` table. It already has a `PROPS` const and that one is the OUTDOOR yard dressing in front of a hall; the two must not collide, and this build fails if `ROOM_PROPS` is ever taken.",
+  "where": "Inside buildHall(), in the existing `for (const r of h.rooms)` loop, after the partitions are merged and before the room label is added. The rectangle a prop is placed against is the one already computed as rx, rz, rw, rd in that loop.",
+  "pooling": "Props accumulate into ONE Map for the whole hall, declared beside the existing wallPool pattern but hoisted out of the room loop, and flushed once after the loop through the page's own flushParts(pool, hallGroup). Pooling per room instead of per hall would multiply the draw calls in this budget by eleven.",
+  "instancing": "The safety-fixture family draws through the same InstancedMesh shape the page already uses in flushBeacons(): one instanced draw per prop type per hall, however many rooms hold it.",
+  "geometry": "Boxes come from the page's own boxGeo(w, h, d) and are translated into hall space before being pushed to the pool, exactly as the partition slab() helper already does. Cylinders are THREE.CylinderGeometry with the radial segment count stated in each recipe. No loader is involved.",
+  "materials": "A prop names a key of the page's existing `mat` table and nothing else. This build fails if a prop names a material the page does not already build, because a new material is a new draw call.",
+  "solidity": "Every floor-standing prop registers with the page's own wallRect(x, z, hw, hd) so the walker cannot pass through it, the same call the fixture benches already make. Wall-mounted props do not: they hang above nothing a walker occupies.",
+  "clearance": "clearance_m is derived from the page's own BODY_R and is the floor a walker needs beside a prop. The page's existing reachability probe is what proves it after the wiring lands; this registry only guarantees the arithmetic fits.",
+  "read_not_copied": "The room label, its purpose and its w x h come from h.rooms, which the page already inflates from ROOM_DEFS and LAYOUTS. A prop carries no label() of its own naming the room, because the room already has one hanging at its centre. The hazard trigger is the room's own condOf(hallSlug, strand).ppe \u2014 the same record the door placard is already drawn from \u2014 and never a second copy of it.",
+  "quality_ladder": "Props belong to the hall group and are freed by the existing disposeOf() traverse, which is why none of their materials may be marked userData.shared."
+ }
+}

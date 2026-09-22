@@ -1,0 +1,1275 @@
+{
+ "pack": "smartcitix-trade-craft-academy-kit",
+ "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
+ "pack_version": "3.2.0",
+ "built": "2026-09-22",
+ "source_stamp": "1943041dd98d2773",
+ "honesty": {
+  "status": "SCHEMATIC: every piece here is the SHAPE of a thing, not a measurement of one. A downpipe is a cylinder and two brackets at a plausible size; a meter box is two boxes. No dimension was taken off a real component, no product was consulted, and no standard is referenced.",
+  "not_a_construction_detail": "Nothing in this registry is a construction detail and nobody should build anything from it. There are no gauges, no fixing centres, no material specifications, no loads, no falls and no clearances. A size here is the size something reads as from across a campus green, chosen so a fifty-one-building campus looks built rather than diagrammed.",
+  "provenance": "SCHEMATIC for the shapes and sizes; AUTHORED for the placement rates, which are somebody's judgement about how often a thing appears on a wall. MEASURED-ELSEWHERE for the four reference figures in `reference`, and for the scene costs read out of web/eval_scene.mjs. AI-SYNTHESIZED is orbis/'s word for generated video and is not this pack's to borrow.",
+  "no_assets": "This kit loads no mesh, no texture, no model and no file. Every piece is built in the browser from THREE.BoxGeometry and THREE.CylinderGeometry, which is why a triangle budget can be checked against a recipe at all. Nothing was vendored from the reference measurement and nothing from it is reproduced here.",
+  "derived_not_typed": "No hall is named in this pack. A piece is admitted by roofline and facade pattern, both of which are read from the registries that own them - web/build_3d.py's STYLE_OF for the district roofline, world/registry/world.json's fabric for the city's, and surfaces/registry/finishes.json for the pattern vocabulary those facades must already belong to.",
+  "measurement_limit": "The reference figures were measured outside this repository on files it does not contain, and this build cannot re-run that inspection. They are quoted, not verified here. The scene costs are different: they come from web/eval_scene.mjs, which does run against this page, and they are read out of that file rather than restated.",
+  "budget_limit": "The whole-campus arithmetic is a PREDICTION, not a measurement. It counts what the placement rules would place and what those pieces would cost if they merge as declared. Nothing here has been drawn yet. Only running web/eval_scene.mjs against a page that actually places them can say whether the prediction held - and the campus baseline it is measured against is one campus, treasure-island, so the other nine are unmeasured ground.",
+  "not_a_kit_of_parts": "The word kit is the modelling sense: a small set of repeated pieces that assemble into variety. It is not a construction kit of parts, not a specification, not a schedule and not a takeoff."
+ },
+ "reference": {
+  "provenance": "MEASURED-ELSEWHERE",
+  "how": "a glTF 2.0 inspection of five downloaded reference models, run outside this repository on files it does not contain. This build cannot re-run it and does not try to: the figures below are quoted, not verified here.",
+  "not_vendored": "No mesh, texture, name, shape or layout from any measured file is reproduced in this pack or anywhere in this bundle. Two of the five are third-party copyrighted work. What was taken is a distribution.",
+  "block_median_tris": 104,
+  "block_total_tris": 21893,
+  "block_meshes": 93,
+  "block_materials": 93,
+  "block_note": "one residential city block that reads convincingly as a place: 21,893 triangles over 93 meshes, median mesh 104 triangles, smallest 2, commonest texture 128x128",
+  "house_median_tris": 46,
+  "house_meshes": 70,
+  "house_note": "one house from the same era: 26,411 triangles over 70 meshes, median 46, forty of its textures 128x128",
+  "character_tris": 222507,
+  "character_meshes": 3,
+  "character_tex_mb": 12.3,
+  "character_note": "one modern character model: 222,507 triangles in 3 meshes behind four 2048-square maps, 12.3 MB of texture for one figure - ten times this whole page",
+  "anti_pattern": "the block pays 93 materials for 93 meshes, which is 93 draw calls for one street. That is an export artefact, not a design, and this kit is held to the opposite arrangement by its own draw-call check."
+ },
+ "counts": {
+  "families": 15,
+  "pieces": 18,
+  "pooled_pieces": 16,
+  "instanced_pieces": 2,
+  "own_mesh_pieces": 0,
+  "primitives": 43,
+  "boxes": 36,
+  "cylinders": 7,
+  "tri_budget_min": 12,
+  "tri_budget_median": 34.0,
+  "tri_budget_max": 72,
+  "tri_budget_sum": 556,
+  "materials_used": 5,
+  "materials_free": 2,
+  "material_vocabulary": 27,
+  "walls": 5,
+  "runs": 6,
+  "rooflines": 3,
+  "facades": 5,
+  "districts": 8,
+  "campuses_budgeted": 3,
+  "halls_budgeted": 111,
+  "per_hall_count_rules": 12,
+  "per_metre_count_rules": 6,
+  "campus_pieces": 1117,
+  "campus_triangles": 31392,
+  "campus_draw_calls": 8,
+  "campus_halls": 51,
+  "pieces_per_draw_call": 139.6
+ },
+ "tri_formula": {
+  "box": "a THREE.BoxGeometry with one segment per axis is six quads, so 12 triangles, whatever its dimensions",
+  "cylinder_capped": "a THREE.CylinderGeometry with N radial segments and one height segment is 2N on the side plus N per cap: 4N triangles",
+  "cylinder_open": "the same cylinder with openEnded true is the side only: 2N triangles"
+ },
+ "vocabulary": {
+  "families": [
+   "awning",
+   "bollard",
+   "cage-ladder",
+   "conduit",
+   "downpipe",
+   "gutter",
+   "kerb",
+   "meter-box",
+   "parapet",
+   "planter",
+   "rail",
+   "sign-bracket",
+   "step",
+   "stoop",
+   "vent"
+  ],
+  "walls": [
+   "front",
+   "back",
+   "side",
+   "roofline",
+   "ground"
+  ],
+  "runs": {
+   "frontage": "the hall width, along the front",
+   "front_width": "the hall width",
+   "back_width": "the hall width, at the back",
+   "both_sides": "twice the hall depth",
+   "roof_perimeter": "twice the width plus twice the depth",
+   "eaves_run": "twice the hall depth, along the two eaves"
+  },
+  "run_of_wall": {
+   "front": [
+    "front_width",
+    "frontage"
+   ],
+   "back": [
+    "back_width"
+   ],
+   "side": [
+    "both_sides"
+   ],
+   "roofline": [
+    "roof_perimeter",
+    "eaves_run"
+   ],
+   "ground": [
+    "frontage"
+   ]
+  },
+  "datums": [
+   "grade",
+   "wall",
+   "eaves"
+  ],
+  "merges": [
+   "pooled",
+   "instanced",
+   "own-mesh"
+  ],
+  "rooflines": [
+   "flat",
+   "gable",
+   "saw"
+  ],
+  "facades": [
+   "block",
+   "brick",
+   "panel",
+   "plywood",
+   "smooth"
+  ],
+  "materials": [
+   "district-hue",
+   "fabric.road",
+   "fabric.roof",
+   "fabric.spec",
+   "fabric.trim",
+   "fabric.wall",
+   "mat.block",
+   "mat.brick",
+   "mat.cone",
+   "mat.drive",
+   "mat.grass",
+   "mat.gravel",
+   "mat.land",
+   "mat.metal",
+   "mat.paint",
+   "mat.part",
+   "mat.post",
+   "mat.road",
+   "mat.sand",
+   "mat.slab",
+   "mat.steel",
+   "mat.veg",
+   "mat.walkway",
+   "mat.wall",
+   "mat.water",
+   "mat.win",
+   "mat.wood"
+  ],
+  "already_pooled": [
+   "district-hue",
+   "fabric.roof",
+   "fabric.trim",
+   "mat.win"
+  ],
+  "own_mesh_policy": "own-mesh is admitted by the schema and used by nothing. The only reason this page gives a piece its own mesh is that something raycasts it, and the page already has exactly one such mesh per hall - the envelope box carrying userData.slug, which buildings[] holds and the hover and click handlers read. Nothing in this kit is clickable, so nothing in this kit earns a mesh. A future piece that MOVES independently would earn one, and would have to say so here.",
+  "count_policy": "a per_run_m rate is resolved with ceil against the metres that run actually has, so a wall that exists gets at least one piece and a deeper hall earns more of them; a per_hall count is a fixed number of that piece per building. There is no third mode and no implicit minimum."
+ },
+ "envelope": {
+  "source": "web/build_3d.py building()",
+  "width_m": 12.0,
+  "depth_floor_m": 5.0,
+  "height_formula": "6 + (depth % 3) * 0.7",
+  "shortest_hall_m": 6.0,
+  "door_faces": "local -z",
+  "note": "read out of the page, not restated: change the page and this build fails rather than describing a building that is no longer drawn"
+ },
+ "page_findings": {
+  "note": "computed against web/build_3d.py while reading it, and reported rather than enforced: these belong to that file and this pack does not fail on them.",
+  "unopinionated_districts": [],
+  "roofline_fallback_reachable": false,
+  "roofline_fallback": "buildCampus() resolves a roofline as STYLE_OF[k] ?? fabric[campus].roof ?? 'flat'. STYLE_OF names 8 districts and the union registry declares 8, so NEITHER fallback can fire today - both arms are unreachable and the comment beside them describes a case that does not occur",
+  "fabric_fallback_duplicates": [],
+  "fabric_fallback_present": false,
+  "fabric_fallback": "FIXED. The page carries no fabric fallback constant any more. fabricOf() reads world.fabric[campus] and throws when there is no row, and the build gates every campus on having one - so a campus whose fabric went missing now breaks the build instead of quietly wearing the flagship's livery and looking fine."
+ },
+ "pieces": {
+  "entry-stoop": {
+   "name": "Entrance stoop",
+   "family": "stoop",
+   "tri_budget": 36,
+   "size_m": [
+    2.6,
+    0.45,
+    1.4
+   ],
+   "primitives": [
+    {
+     "shape": "box",
+     "n": 3,
+     "note": "the pad, the riser below it, one cheek wall"
+    }
+   ],
+   "material": "mat.slab",
+   "merges": "pooled",
+   "merge_why": "one box set per hall in the district's slab pool; nothing raycasts a stoop and nothing moves it",
+   "tri_why": "three boxes at 12 triangles each. the measured residential-block reference has a median mesh of 104 triangles and this sits under it."
+  },
+  "entry-step": {
+   "name": "Entrance tread",
+   "family": "step",
+   "tri_budget": 12,
+   "size_m": [
+    2.4,
+    0.15,
+    0.34
+   ],
+   "primitives": [
+    {
+     "shape": "box",
+     "n": 1,
+     "note": "one tread"
+    }
+   ],
+   "material": "mat.slab",
+   "merges": "pooled",
+   "merge_why": "a single box, pooled with every other slab piece in the district",
+   "tri_why": "one box. the same reference's smallest meshes are 2 to 9 triangles and its median is 104; a single box at 12 is that size of thing, and the place reads off how MANY of them there are."
+  },
+  "kerb-run": {
+   "name": "Kerb run",
+   "family": "kerb",
+   "tri_budget": 12,
+   "size_m": [
+    4.0,
+    0.14,
+    0.3
+   ],
+   "primitives": [
+    {
+     "shape": "box",
+     "n": 1,
+     "note": "four metres of kerb"
+    }
+   ],
+   "material": "mat.slab",
+   "merges": "pooled",
+   "merge_why": "a run of kerb is a box; pooled, a whole district's kerbs are one mesh",
+   "tri_why": "one box. the same reference's smallest meshes are 2 to 9 triangles and its median is 104; a single box at 12 is that size of thing, and the place reads off how MANY of them there are."
+  },
+  "parapet-coping": {
+   "name": "Parapet coping run",
+   "family": "parapet",
+   "tri_budget": 12,
+   "size_m": [
+    6.0,
+    0.18,
+    0.6
+   ],
+   "primitives": [
+    {
+     "shape": "box",
+     "n": 1,
+     "note": "six metres of coping"
+    }
+   ],
+   "material": "fabric.roof",
+   "merges": "pooled",
+   "merge_why": "fabric.roof is ALREADY in the district pool - building() puts the roofline there - so this costs no draw call at all",
+   "tri_why": "one box. the same reference's smallest meshes are 2 to 9 triangles and its median is 104; a single box at 12 is that size of thing, and the place reads off how MANY of them there are."
+  },
+  "parapet-corner": {
+   "name": "Parapet corner block",
+   "family": "parapet",
+   "tri_budget": 12,
+   "size_m": [
+    0.7,
+    0.26,
+    0.7
+   ],
+   "primitives": [
+    {
+     "shape": "box",
+     "n": 1,
+     "note": "the returned corner"
+    }
+   ],
+   "material": "fabric.roof",
+   "merges": "pooled",
+   "merge_why": "same pool, same material, same zero cost in draw calls",
+   "tri_why": "one box. the same reference's smallest meshes are 2 to 9 triangles and its median is 104; a single box at 12 is that size of thing, and the place reads off how MANY of them there are."
+  },
+  "eaves-gutter": {
+   "name": "Eaves gutter",
+   "family": "gutter",
+   "tri_budget": 24,
+   "size_m": [
+    4.0,
+    0.16,
+    0.18
+   ],
+   "primitives": [
+    {
+     "shape": "box",
+     "n": 1,
+     "note": "the trough"
+    },
+    {
+     "shape": "cylinder",
+     "n": 1,
+     "segments": 6,
+     "capped": false,
+     "note": "the rolled front bead"
+    }
+   ],
+   "material": "mat.metal",
+   "merges": "pooled",
+   "merge_why": "every metal piece in the district merges into one mesh",
+   "tri_why": "one box at 12 plus a six-sided open cylinder at 2x6=12. the measured residential-block reference has a median mesh of 104 triangles and this sits under it."
+  },
+  "downpipe-run": {
+   "name": "Downpipe run",
+   "family": "downpipe",
+   "tri_budget": 40,
+   "size_m": [
+    0.14,
+    5.4,
+    0.14
+   ],
+   "primitives": [
+    {
+     "shape": "cylinder",
+     "n": 1,
+     "segments": 8,
+     "capped": false,
+     "note": "the pipe, open at both ends"
+    },
+    {
+     "shape": "box",
+     "n": 2,
+     "note": "two wall brackets"
+    }
+   ],
+   "material": "mat.metal",
+   "merges": "pooled",
+   "merge_why": "pooled with the district's other metal",
+   "tri_why": "an eight-sided open cylinder at 2x8=16 plus two boxes at 24. the measured residential-block reference has a median mesh of 104 triangles and this sits under it."
+  },
+  "downpipe-shoe": {
+   "name": "Downpipe shoe",
+   "family": "downpipe",
+   "tri_budget": 24,
+   "size_m": [
+    0.2,
+    0.3,
+    0.4
+   ],
+   "primitives": [
+    {
+     "shape": "cylinder",
+     "n": 1,
+     "segments": 6,
+     "capped": true,
+     "note": "the spill at the bottom"
+    }
+   ],
+   "material": "mat.metal",
+   "merges": "pooled",
+   "merge_why": "pooled with the district's other metal",
+   "tri_why": "a six-sided capped cylinder at 4x6=24. the measured residential-block reference has a median mesh of 104 triangles and this sits under it."
+  },
+  "wall-vent": {
+   "name": "Wall vent hood",
+   "family": "vent",
+   "tri_budget": 40,
+   "size_m": [
+    0.5,
+    0.5,
+    0.36
+   ],
+   "primitives": [
+    {
+     "shape": "box",
+     "n": 2,
+     "note": "the back plate and the hood"
+    },
+    {
+     "shape": "cylinder",
+     "n": 1,
+     "segments": 8,
+     "capped": false,
+     "note": "the spigot through the wall"
+    }
+   ],
+   "material": "mat.metal",
+   "merges": "pooled",
+   "merge_why": "pooled with the district's other metal",
+   "tri_why": "two boxes at 24 plus 2x8=16. the measured residential-block reference has a median mesh of 104 triangles and this sits under it."
+  },
+  "louvre-vent": {
+   "name": "Louvred vent panel",
+   "family": "vent",
+   "tri_budget": 24,
+   "size_m": [
+    0.9,
+    0.6,
+    0.12
+   ],
+   "primitives": [
+    {
+     "shape": "box",
+     "n": 2,
+     "note": "the frame and the blade face"
+    }
+   ],
+   "material": "mat.metal",
+   "merges": "pooled",
+   "merge_why": "pooled with the district's other metal",
+   "tri_why": "two boxes. The blades are a texture's job, not a geometry's. the measured residential-block reference has a median mesh of 104 triangles and this sits under it."
+  },
+  "door-awning": {
+   "name": "Door awning",
+   "family": "awning",
+   "tri_budget": 36,
+   "size_m": [
+    2.4,
+    0.34,
+    1.1
+   ],
+   "primitives": [
+    {
+     "shape": "box",
+     "n": 3,
+     "note": "the canopy and two struts"
+    }
+   ],
+   "material": "fabric.trim",
+   "merges": "pooled",
+   "merge_why": "fabric.trim is ALREADY in the district pool - building() puts the door surround and the pilasters there - so the awning is free in draw calls and wears the city's own trim colour without holding a copy of it",
+   "tri_why": "three boxes. the measured residential-block reference has a median mesh of 104 triangles and this sits under it."
+  },
+  "bollard": {
+   "name": "Bollard",
+   "family": "bollard",
+   "tri_budget": 32,
+   "size_m": [
+    0.22,
+    0.95,
+    0.22
+   ],
+   "primitives": [
+    {
+     "shape": "cylinder",
+     "n": 1,
+     "segments": 8,
+     "capped": true,
+     "note": "the post, capped"
+    }
+   ],
+   "material": "mat.post",
+   "merges": "instanced",
+   "merge_why": "identical at every hall and there are hundreds of them, which is exactly the case flushBeacons() already solves: one InstancedMesh for the whole campus, one draw call, no merge and no per-hall geometry",
+   "tri_why": "an eight-sided capped cylinder at 4x8=32. the measured residential-block reference has a median mesh of 104 triangles and this sits under it."
+  },
+  "wall-rail": {
+   "name": "Wall-mounted hand rail",
+   "family": "rail",
+   "tri_budget": 36,
+   "size_m": [
+    2.4,
+    0.08,
+    0.14
+   ],
+   "primitives": [
+    {
+     "shape": "cylinder",
+     "n": 1,
+     "segments": 6,
+     "capped": false,
+     "note": "the rail itself"
+    },
+    {
+     "shape": "box",
+     "n": 2,
+     "note": "two brackets"
+    }
+   ],
+   "material": "mat.metal",
+   "merges": "pooled",
+   "merge_why": "pooled with the district's other metal",
+   "tri_why": "2x6=12 plus two boxes at 24. the measured residential-block reference has a median mesh of 104 triangles and this sits under it."
+  },
+  "sign-bracket": {
+   "name": "Sign bracket",
+   "family": "sign-bracket",
+   "tri_budget": 36,
+   "size_m": [
+    0.95,
+    0.7,
+    0.14
+   ],
+   "primitives": [
+    {
+     "shape": "box",
+     "n": 3,
+     "note": "the arm, the stay and the wall plate"
+    }
+   ],
+   "material": "mat.metal",
+   "merges": "pooled",
+   "merge_why": "pooled with the district's other metal",
+   "tri_why": "three boxes. the measured residential-block reference has a median mesh of 104 triangles and this sits under it."
+  },
+  "conduit-run": {
+   "name": "Surface conduit run",
+   "family": "conduit",
+   "tri_budget": 36,
+   "size_m": [
+    0.08,
+    4.2,
+    0.08
+   ],
+   "primitives": [
+    {
+     "shape": "cylinder",
+     "n": 1,
+     "segments": 6,
+     "capped": false,
+     "note": "the conduit"
+    },
+    {
+     "shape": "box",
+     "n": 2,
+     "note": "two saddles"
+    }
+   ],
+   "material": "mat.metal",
+   "merges": "pooled",
+   "merge_why": "pooled with the district's other metal",
+   "tri_why": "2x6=12 plus two boxes at 24. the measured residential-block reference has a median mesh of 104 triangles and this sits under it."
+  },
+  "meter-box": {
+   "name": "Meter box",
+   "family": "meter-box",
+   "tri_budget": 24,
+   "size_m": [
+    0.55,
+    0.75,
+    0.26
+   ],
+   "primitives": [
+    {
+     "shape": "box",
+     "n": 2,
+     "note": "the enclosure and its door"
+    }
+   ],
+   "material": "mat.metal",
+   "merges": "pooled",
+   "merge_why": "pooled with the district's other metal",
+   "tri_why": "two boxes. the measured residential-block reference has a median mesh of 104 triangles and this sits under it."
+  },
+  "planter-tub": {
+   "name": "Planter tub",
+   "family": "planter",
+   "tri_budget": 48,
+   "size_m": [
+    1.2,
+    0.55,
+    1.2
+   ],
+   "primitives": [
+    {
+     "shape": "box",
+     "n": 4,
+     "note": "the tub as four sides; no soil box, the top is never seen from a walker's eye"
+    }
+   ],
+   "material": "mat.slab",
+   "merges": "instanced",
+   "merge_why": "identical everywhere, like the bollard, so it takes the same InstancedMesh treatment rather than growing the merged slab geometry on every district",
+   "tri_why": "four boxes. the measured residential-block reference has a median mesh of 104 triangles and this sits under it."
+  },
+  "cage-ladder": {
+   "name": "Caged roof ladder",
+   "family": "cage-ladder",
+   "tri_budget": 72,
+   "size_m": [
+    0.52,
+    5.0,
+    0.16
+   ],
+   "primitives": [
+    {
+     "shape": "box",
+     "n": 6,
+     "note": "two stiles and four rungs; the cage hoops are the one thing here a texture cannot fake and are still left out, because six boxes reads as a ladder and eighteen does not"
+    }
+   ],
+   "material": "mat.metal",
+   "merges": "pooled",
+   "merge_why": "pooled with the district's other metal",
+   "tri_why": "six boxes at 72 - the largest piece in this kit, and still under the 104-triangle median of the measured reference block"
+  }
+ },
+ "placement": {
+  "stoop": {
+   "wall": "front",
+   "run": "frontage",
+   "datum": "grade",
+   "offset_m": 0.0,
+   "rooflines": [
+    "flat",
+    "gable",
+    "saw"
+   ],
+   "facades": [
+    "block",
+    "brick",
+    "panel",
+    "plywood",
+    "smooth"
+   ],
+   "why": "the page builds every hall with its door toward local -z, so the front is the one wall whose position is guaranteed; a threshold sits on the ground in front of it whatever the city is built of"
+  },
+  "step": {
+   "wall": "front",
+   "run": "frontage",
+   "datum": "grade",
+   "offset_m": 0.0,
+   "rooflines": [
+    "flat",
+    "gable",
+    "saw"
+   ],
+   "facades": [
+    "block",
+    "brick",
+    "panel",
+    "plywood",
+    "smooth"
+   ],
+   "why": "a tread in front of the threshold, for the same reason and at the same wall"
+  },
+  "kerb": {
+   "wall": "ground",
+   "run": "frontage",
+   "datum": "grade",
+   "offset_m": 0.0,
+   "rooflines": [
+    "flat",
+    "gable",
+    "saw"
+   ],
+   "facades": [
+    "block",
+    "brick",
+    "panel",
+    "plywood",
+    "smooth"
+   ],
+   "why": "buildCampus() already lays a driveway to every door; a kerb is the edge that driveway meets, and it belongs to the ground rather than to any wall"
+  },
+  "parapet": {
+   "wall": "roofline",
+   "run": "roof_perimeter",
+   "datum": "eaves",
+   "offset_m": 0.1,
+   "rooflines": [
+    "flat"
+   ],
+   "facades": [
+    "block",
+    "brick",
+    "panel",
+    "plywood",
+    "smooth"
+   ],
+   "why": "a parapet is what a flat roof has instead of an eaves. The page draws the flat roofline as a rooftop unit and nothing else, so the top of a flat hall is the one edge with nothing on it"
+  },
+  "gutter": {
+   "wall": "roofline",
+   "run": "eaves_run",
+   "datum": "eaves",
+   "offset_m": -0.15,
+   "rooflines": [
+    "gable"
+   ],
+   "facades": [
+    "block",
+    "brick",
+    "panel",
+    "plywood",
+    "smooth"
+   ],
+   "why": "a gutter needs an eaves to hang off, and the page gives an eaves only to the gable roofline - its two pitched slabs run along the depth, so the gutter does too"
+  },
+  "downpipe": {
+   "wall": "side",
+   "run": "both_sides",
+   "datum": "wall",
+   "offset_m": 0.0,
+   "rooflines": [
+    "flat",
+    "gable",
+    "saw"
+   ],
+   "facades": [
+    "block",
+    "brick",
+    "panel",
+    "plywood",
+    "smooth"
+   ],
+   "why": "water comes off every roofline this page draws, and it comes down a side wall rather than across the door"
+  },
+  "vent": {
+   "wall": "side",
+   "run": "both_sides",
+   "datum": "wall",
+   "offset_m": 3.2,
+   "rooflines": [
+    "flat",
+    "gable",
+    "saw"
+   ],
+   "facades": [
+    "block",
+    "brick",
+    "panel",
+    "plywood",
+    "smooth"
+   ],
+   "why": "every hall in this bundle has plant in it; the side wall is where a hall puts what it does not want on its front"
+  },
+  "awning": {
+   "wall": "front",
+   "run": "front_width",
+   "datum": "wall",
+   "offset_m": 2.7,
+   "rooflines": [
+    "flat",
+    "gable"
+   ],
+   "facades": [
+    "block",
+    "brick",
+    "panel",
+    "plywood",
+    "smooth"
+   ],
+   "why": "shade over the entrance. A sawtooth hall's front is a goods opening rather than a door people gather at, so it is not given one"
+  },
+  "bollard": {
+   "wall": "ground",
+   "run": "frontage",
+   "datum": "grade",
+   "offset_m": 0.0,
+   "rooflines": [
+    "flat",
+    "gable",
+    "saw"
+   ],
+   "facades": [
+    "block",
+    "brick",
+    "panel",
+    "plywood",
+    "smooth"
+   ],
+   "why": "the driveway runs to the door; something has to stop it running through the door"
+  },
+  "rail": {
+   "wall": "front",
+   "run": "front_width",
+   "datum": "wall",
+   "offset_m": 0.95,
+   "rooflines": [
+    "flat",
+    "gable",
+    "saw"
+   ],
+   "facades": [
+    "block",
+    "brick",
+    "panel",
+    "plywood",
+    "smooth"
+   ],
+   "why": "a hand hold beside the threshold, on the wall the door is in. Every hall has a stoop and a tread, so every hall has the small change of level a rail exists for"
+  },
+  "sign-bracket": {
+   "wall": "front",
+   "run": "front_width",
+   "datum": "wall",
+   "offset_m": 3.6,
+   "rooflines": [
+    "flat",
+    "gable",
+    "saw"
+   ],
+   "facades": [
+    "block",
+    "brick",
+    "panel",
+    "plywood",
+    "smooth"
+   ],
+   "why": "the page already hangs a district-hued fascia on the hall; the bracket is the ironwork that arm would need, and it carries nothing itself - the label sprite is the page's"
+  },
+  "conduit": {
+   "wall": "back",
+   "run": "back_width",
+   "datum": "wall",
+   "offset_m": 1.2,
+   "rooflines": [
+    "flat",
+    "saw"
+   ],
+   "facades": [
+    "block",
+    "brick",
+    "panel",
+    "plywood",
+    "smooth"
+   ],
+   "why": "surface conduit runs up the back of a building to the roof plant. On a gable there is no roof deck to run to, so the gable rooflines do not admit it"
+  },
+  "meter-box": {
+   "wall": "back",
+   "run": "back_width",
+   "datum": "wall",
+   "offset_m": 1.5,
+   "rooflines": [
+    "flat",
+    "gable",
+    "saw"
+   ],
+   "facades": [
+    "block",
+    "brick",
+    "panel",
+    "plywood",
+    "smooth"
+   ],
+   "why": "the service entry goes on the wall nobody arrives at, which on this page is the wall away from the plaza - the page points every door at local -z, so the back is knowable"
+  },
+  "planter": {
+   "wall": "ground",
+   "run": "frontage",
+   "datum": "grade",
+   "offset_m": 0.0,
+   "rooflines": [
+    "flat",
+    "gable",
+    "saw"
+   ],
+   "facades": [
+    "block",
+    "brick",
+    "panel",
+    "plywood",
+    "smooth"
+   ],
+   "why": "the campus already has a green ring and a walkway; a tub at the frontage is the same idea at building scale"
+  },
+  "cage-ladder": {
+   "wall": "back",
+   "run": "back_width",
+   "datum": "wall",
+   "offset_m": 0.9,
+   "rooflines": [
+    "flat",
+    "saw"
+   ],
+   "facades": [
+    "block",
+    "brick",
+    "panel"
+   ],
+   "why": "roof access reaches a flat deck or a sawtooth valley, never a pitch. It also needs a facade that takes a fixing: the plywood and smooth-stucco cities do not get one"
+  }
+ },
+ "counts_rules": {
+  "entry-stoop": {
+   "mode": "per_hall",
+   "n": 1
+  },
+  "entry-step": {
+   "mode": "per_hall",
+   "n": 1
+  },
+  "kerb-run": {
+   "mode": "per_run_m",
+   "every_m": 6.0
+  },
+  "parapet-coping": {
+   "mode": "per_run_m",
+   "every_m": 16.0
+  },
+  "parapet-corner": {
+   "mode": "per_hall",
+   "n": 2
+  },
+  "eaves-gutter": {
+   "mode": "per_run_m",
+   "every_m": 6.0
+  },
+  "downpipe-run": {
+   "mode": "per_hall",
+   "n": 2
+  },
+  "downpipe-shoe": {
+   "mode": "per_hall",
+   "n": 1
+  },
+  "wall-vent": {
+   "mode": "per_run_m",
+   "every_m": 26.0
+  },
+  "louvre-vent": {
+   "mode": "per_hall",
+   "n": 1
+  },
+  "door-awning": {
+   "mode": "per_hall",
+   "n": 1
+  },
+  "bollard": {
+   "mode": "per_run_m",
+   "every_m": 12.0
+  },
+  "wall-rail": {
+   "mode": "per_hall",
+   "n": 1
+  },
+  "sign-bracket": {
+   "mode": "per_hall",
+   "n": 1
+  },
+  "conduit-run": {
+   "mode": "per_run_m",
+   "every_m": 12.0
+  },
+  "meter-box": {
+   "mode": "per_hall",
+   "n": 1
+  },
+  "planter-tub": {
+   "mode": "per_hall",
+   "n": 1
+  },
+  "cage-ladder": {
+   "mode": "per_hall",
+   "n": 1
+  }
+ },
+ "budget": {
+  "measured_baseline": {
+   "source": "web/eval_scene.mjs",
+   "views": {
+    "region": {
+     "calls": 249,
+     "tris": 4508,
+     "meshes": 80
+    },
+    "campus": {
+     "calls": 273,
+     "tris": 15850,
+     "meshes": 250
+    },
+    "hall": {
+     "calls": 157,
+     "tris": 3806,
+     "meshes": 137
+    }
+   },
+   "call_headroom": 1.25,
+   "tri_headroom": 4.0,
+   "note": "the campus view costs 273 draw calls and 15,850 triangles: the whole fifty-one-hall campus is smaller in triangles than one reference street block. This page is draw-call bound with an unused triangle budget, so the draw-call ceiling is the one that governs and the triangle ceiling is a courtesy to the pack that spends next."
+  },
+  "draw_call_ceiling": 68,
+  "draw_call_ceiling_why": "web/eval_scene.mjs measured the campus view at 273 draw calls and holds it to 1.25x that, so 68 is what is left for everything added after the measurement. It is read from that file, not typed here.",
+  "triangle_ceiling": 33285,
+  "triangle_headroom_total": 47550,
+  "triangle_share": 0.7,
+  "triangle_ceiling_why": "web/eval_scene.mjs allows the campus view four times its measured 15,850 triangles and says in its own comment that the kit and props packs are expected to spend it. Two packs cannot each spend all of it. This kit takes 70 per cent of the headroom because it clothes every one of the fifty-one building envelopes on the campus, and leaves 30 per cent for the props that stand on the ground between them.",
+  "budgeted_campus": "treasure-island",
+  "budgeted_campus_why": "the campus the scene harness actually drives to, so the baseline the arithmetic is added to is a measurement of this campus and not of a campus nobody scored",
+  "campuses": {
+   "treasure-island": {
+    "campus": "treasure-island",
+    "facade": "panel",
+    "halls": 51,
+    "districts": 3,
+    "pieces": 1117,
+    "triangles": 31392,
+    "draw_calls": 8,
+    "pooled_draw_calls": 6,
+    "instanced_draw_calls": 2,
+    "own_mesh_draw_calls": 0,
+    "new_pooled_materials": [
+     "mat.metal",
+     "mat.slab"
+    ],
+    "instanced_families": [
+     "bollard",
+     "planter"
+    ],
+    "per_district": {
+     "structural": {
+      "roofline": "flat",
+      "halls": 12,
+      "pieces": 274,
+      "triangles": 7616,
+      "pooled_materials": [
+       "fabric.roof",
+       "fabric.trim",
+       "mat.metal",
+       "mat.slab"
+      ],
+      "new_draw_calls": 2,
+      "free_materials": [
+       "fabric.roof",
+       "fabric.trim"
+      ]
+     },
+     "systems": {
+      "roofline": "flat",
+      "halls": 18,
+      "pieces": 423,
+      "triangles": 11764,
+      "pooled_materials": [
+       "fabric.roof",
+       "fabric.trim",
+       "mat.metal",
+       "mat.slab"
+      ],
+      "new_draw_calls": 2,
+      "free_materials": [
+       "fabric.roof",
+       "fabric.trim"
+      ]
+     },
+     "envelope": {
+      "roofline": "gable",
+      "halls": 21,
+      "pieces": 420,
+      "triangles": 12012,
+      "pooled_materials": [
+       "fabric.trim",
+       "mat.metal",
+       "mat.slab"
+      ],
+      "new_draw_calls": 2,
+      "free_materials": [
+       "fabric.trim"
+      ]
+     }
+    },
+    "by_family": {
+     "awning": 51,
+     "bollard": 51,
+     "cage-ladder": 30,
+     "conduit": 30,
+     "downpipe": 153,
+     "gutter": 105,
+     "kerb": 102,
+     "meter-box": 51,
+     "parapet": 175,
+     "planter": 51,
+     "rail": 51,
+     "sign-bracket": 51,
+     "step": 51,
+     "stoop": 51,
+     "vent": 114
+    },
+    "pieces_per_hall_min": 20,
+    "pieces_per_hall_max": 24,
+    "distinct_hall_loadouts": 4
+   },
+   "oakland": {
+    "campus": "oakland",
+    "facade": "brick",
+    "halls": 32,
+    "districts": 3,
+    "pieces": 529,
+    "triangles": 17448,
+    "draw_calls": 8,
+    "pooled_draw_calls": 6,
+    "instanced_draw_calls": 2,
+    "own_mesh_draw_calls": 0,
+    "new_pooled_materials": [
+     "mat.metal",
+     "mat.slab"
+    ],
+    "instanced_families": [
+     "bollard",
+     "planter"
+    ],
+    "per_district": {
+     "industry": {
+      "roofline": "saw",
+      "halls": 10,
+      "pieces": 163,
+      "triangles": 5360,
+      "pooled_materials": [
+       "mat.metal",
+       "mat.slab"
+      ],
+      "new_draw_calls": 2,
+      "free_materials": []
+     },
+     "transport": {
+      "roofline": "saw",
+      "halls": 10,
+      "pieces": 168,
+      "triangles": 5560,
+      "pooled_materials": [
+       "mat.metal",
+       "mat.slab"
+      ],
+      "new_draw_calls": 2,
+      "free_materials": []
+     },
+     "earthworks": {
+      "roofline": "saw",
+      "halls": 12,
+      "pieces": 198,
+      "triangles": 6528,
+      "pooled_materials": [
+       "mat.metal",
+       "mat.slab"
+      ],
+      "new_draw_calls": 2,
+      "free_materials": []
+     }
+    },
+    "by_family": {
+     "awning": 0,
+     "bollard": 32,
+     "cage-ladder": 32,
+     "conduit": 32,
+     "downpipe": 96,
+     "gutter": 0,
+     "kerb": 64,
+     "meter-box": 32,
+     "parapet": 0,
+     "planter": 32,
+     "rail": 32,
+     "sign-bracket": 32,
+     "step": 32,
+     "stoop": 32,
+     "vent": 81
+    },
+    "pieces_per_hall_min": 16,
+    "pieces_per_hall_max": 17,
+    "distinct_hall_loadouts": 2
+   },
+   "new-orleans": {
+    "campus": "new-orleans",
+    "facade": "smooth",
+    "halls": 28,
+    "districts": 2,
+    "pieces": 598,
+    "triangles": 16128,
+    "draw_calls": 6,
+    "pooled_draw_calls": 4,
+    "instanced_draw_calls": 2,
+    "own_mesh_draw_calls": 0,
+    "new_pooled_materials": [
+     "mat.metal",
+     "mat.slab"
+    ],
+    "instanced_families": [
+     "bollard",
+     "planter"
+    ],
+    "per_district": {
+     "energy": {
+      "roofline": "flat",
+      "halls": 17,
+      "pieces": 377,
+      "triangles": 9780,
+      "pooled_materials": [
+       "fabric.roof",
+       "fabric.trim",
+       "mat.metal",
+       "mat.slab"
+      ],
+      "new_draw_calls": 2,
+      "free_materials": [
+       "fabric.roof",
+       "fabric.trim"
+      ]
+     },
+     "control": {
+      "roofline": "gable",
+      "halls": 11,
+      "pieces": 221,
+      "triangles": 6348,
+      "pooled_materials": [
+       "fabric.trim",
+       "mat.metal",
+       "mat.slab"
+      ],
+      "new_draw_calls": 2,
+      "free_materials": [
+       "fabric.trim"
+      ]
+     }
+    },
+    "by_family": {
+     "awning": 28,
+     "bollard": 28,
+     "cage-ladder": 0,
+     "conduit": 17,
+     "downpipe": 84,
+     "gutter": 54,
+     "kerb": 56,
+     "meter-box": 28,
+     "parapet": 97,
+     "planter": 28,
+     "rail": 28,
+     "sign-bracket": 28,
+     "step": 28,
+     "stoop": 28,
+     "vent": 66
+    },
+    "pieces_per_hall_min": 19,
+    "pieces_per_hall_max": 23,
+    "distinct_hall_loadouts": 5
+   }
+  },
+  "worst_campus_draw_calls": 8,
+  "result": {
+   "campus": "treasure-island",
+   "halls": 51,
+   "pieces": 1117,
+   "triangles": 31392,
+   "draw_calls": 8,
+   "pieces_per_draw_call": 139.6,
+   "campus_calls_after": 281,
+   "campus_tris_after": 47242,
+   "against_reference_block": "31,392 triangles is 1.4 times the measured reference block, spread over 51 buildings, for 8 draw calls against that block's 93"
+  }
+ },
+ "page_contract": {
+  "data": "web/build_3d.py already assembles one DATA payload from the registries. This pack joins it as `kit`, read the same way `world`, `districts` and `wallCat` are. Ship the `pieces`, `placement`, `counts` and `budget` blocks; the `honesty` and `reference` blocks are for the reader of the registry and do not need to reach the browser.",
+  "pools": "Kit pieces go through the SAME closure the hall decoration already uses: the `add(m2, w, h, d, x, y, z, rz)` inside `building()`, which pushes a transformed BoxGeometry into the district `pool` Map that `buildCampus()` hands it. `flushParts(pool, cg)` then merges one mesh per material per district exactly as it does today. Do not write a second merge helper and do not call mergeGeometries directly: flushParts is the only door.",
+  "cylinders": "The recipes here name cylinders, and `add()` builds boxes only. Extend `add()` to take a geometry rather than six dimensions, or give it a sibling that does - either way the geometry still lands in the same `pool` Map keyed by the same material, so the district still flushes one mesh per material. A cylinder that bypasses the pool is a new draw call per piece, which is the whole failure this pack is arithmetic against.",
+  "instances": "The two `instanced` families follow `flushBeacons()`: one THREE.InstancedMesh per campus, added to campusGroup, its matrices written once at build. They must NOT reuse `beaconInst`, `beaconAt` or `spinBeacons()` - those belong to the station beacons, which spin every frame, and a bollard that rotates is a bug the beacon code would hand you for free.",
+  "materials": "Every `material` value here names something the page ALREADY holds: a `mat.*` singleton or a key of what `fabricOf(campusKey)` returns. Resolve them by name at build time. Do not construct a material from a colour in this registry, because this registry publishes no colours - the envelope, trim and roof colours are the world registry's and `fabricOf()` is the one place they are turned into materials.",
+  "roofline": "A piece is admitted by roofline, and the roofline is the one `buildCampus()` already computes for the district: STYLE_OF[k] ?? D.world.fabric?.[campusKey]?.roof. Read that same `style` variable through to the kit. Do not add a second roofline table and do not re-derive it per hall: it is a district fact and the page already holds it.",
+  "facade": "A piece is also admitted by facade pattern, which is `fabricOf(campusKey).spec.facade` - already carried on the fabric object as `spec`. Read it there rather than reaching back into D.world.fabric a second time.",
+  "geometry": "The envelope this kit hangs on is `building()`'s own: wid = 12, dep = Math.max(h.depth, 5), hgt = 6 + (h.depth % 3) * .7, door toward local -z. This pack reads all three out of the page source and its arithmetic fails if they change, so the page may change them - it just has to rebuild this registry afterwards.",
+  "never_duplicate": "Do not add a second STYLE_OF, a second fabric material factory, a second merge helper, or a second raycast target. `buildings[]` stays one entry per hall and `ray.intersectObjects(buildings, false)` stays the hover and click path: a kit piece must never be hoverable, because a stoop that opens a hall page is a bug wearing a feature's clothes.",
+  "teardown": "`disposeOf(campusGroup)` already frees everything a campus built. The merged kit geometry is per-district and freed with it. The two InstancedMeshes are freed the same way - but their materials are `mat.post` and `mat.slab`, page-wide singletons, and disposeOf() must not free those, exactly as it must not free `mat.post` today for the beacons.",
+  "not_the_page": "This registry decides nothing about lighting, shadows, level of detail, culling or the quality rungs. Those are the page's and it already has them."
+ }
+}

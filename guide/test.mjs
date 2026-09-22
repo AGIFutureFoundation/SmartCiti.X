@@ -71,7 +71,12 @@ ok('every place answers every ask, in the declared order, and invents no seventh
 ok('every place says what it is, how it is reached, and whether it can be walked',
   places.every(([, p]) => p.name.length > 3 && p.what_line.length > 20
     && p.opened_by.length > 20 && typeof p.walkable === 'boolean'
-    && ['world', 'panel'].includes(p.kind)));
+    // three kinds now: `page` joined them when the guide landed on the
+    // front door, which is neither a view of the world nor a panel over one
+    && ['world', 'panel', 'page'].includes(p.kind)
+    // and only a world place carries a view - the 3D page routes on that
+    // field, so a page or panel claiming one would be routed to
+    && (p.kind === 'world') === (p.view !== null)));
 ok('every topic is a question, and no two topics in a place share an id',
   topics.every(([, , t]) => t.ask.endsWith('?') && t.ask.length > 12)
   && places.every(([, p]) => new Set(p.topics.map((t) => t.id)).size === p.topics.length));
@@ -97,10 +102,17 @@ ok('no answer is a template the page would have to evaluate at view time',
   topics.every(([, , t]) => !t.answer.includes('${') && !t.answer.includes('{')));
 
 /* --------------------------------------------------------- where you are --- */
-ok('every world place names a view the page actually sets, and no panel names one',
-  places.every(([, p]) => p.kind === 'panel'
-    ? p.view === null
-    : page.includes(`view = '${p.view}'`)));
+ok('every world place names a view the page actually sets, and nothing that '
+  + 'is not a world place names one - a panel overlays a view and a page is '
+  + 'not in the 3D world at all',
+  places.every(([, p]) => p.kind === 'world'
+    ? page.includes(`view = '${p.view}'`)
+    : p.view === null));
+ok('the page place is a built HTML page, and the page that renders it is '
+  + 'the one it says it is',
+  places.filter(([, p]) => p.kind === 'page').length === 1
+  && readFileSync(new URL('../web/build_home.py', import.meta.url), 'utf8')
+       .includes("guide['places']['home']"));
 ok('every view the page can set has exactly one place speaking for it',
   (() => {
     const pageViews = new Set([...page.matchAll(/view = '([a-z]+)'/g)].map((m) => m[1]));
