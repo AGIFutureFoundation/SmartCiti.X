@@ -22,6 +22,7 @@ page works offline and on any static host with no CDN dependency. Serve the
 tree over HTTP (python3 -m http.server) — browsers refuse module imports
 from file:// URLs. The page holds no data of its own.
 """
+import ast
 import json
 import math
 import pathlib
@@ -72,6 +73,8 @@ sky_reg = json.load(open(ROOT / 'sky/registry/sky.json'))
 terrain_reg = json.load(open(ROOT / 'terrain/registry/terrain.json'))
 kit_reg = json.load(open(ROOT / 'kit/registry/kit.json'))
 props_reg = json.load(open(ROOT / 'props/registry/props.json'))
+respond_reg = json.load(open(ROOT / 'respond/registry/respond.json'))
+ei_reg = json.load(open(ROOT / 'ei/registry/ei.json'))
 
 def trim(rows, *drop):
     """Ship what is drawn, not what is explained.
@@ -618,8 +621,109 @@ DATA = json.dumps({
         for s in restoration_reg['sites']],
                     'tracks': restoration_reg['tracks'],
                     'honesty': restoration_reg['honesty']},
+    # the first-responder and disaster-relief scaffold: five services and
+    # their role tiers, the competency domains, the scenario frames, and
+    # the cross-links that tie a frame to trade halls this bundle already
+    # builds. Every tier, competency and frame travels with its own
+    # `needs_practitioner_review` flag and its null `signed_off_by`,
+    # because the panel prints those beside the content rather than in a
+    # footnote: 0 of 117 signed off is the fact this pack is most at risk
+    # of being read as though it were not true.
+    #
+    # `trade_ppe_in_that_hall` is deliberately dropped on the way in. The
+    # surfaces registry already reaches this page as D.condOver/D.baseCond
+    # and a hall's PPE has one home here; a second copy is a second chance
+    # to disagree with it. The honesty line that says PPE does not transfer
+    # ships instead, which is the part a reader needs.
+    'respond': {
+        'counts': respond_reg['counts'],
+        'services': {k: {'name': s['name'], 'scope': s['scope'],
+                         'standards_bodies': s['standards_bodies'],
+                         'tiers': s['tiers'],
+                         'kinds': s['representation']['kinds'],
+                         'acronyms': s['representation']['real_acronyms'],
+                         'endorsement': s['representation']['endorsement'],
+                         'endorsementNote':
+                             s['representation']['endorsement_note']}
+                     for k, s in respond_reg['services'].items()},
+        'competencies': respond_reg['competencies'],
+        'frames': respond_reg['scenario_frames'],
+        'authorities': respond_reg['authorities'],
+        'crossLinks': trim(respond_reg['hall_cross_links'],
+                           'trade_ppe_in_that_hall'),
+        'debrief': respond_reg['debrief_structure'],
+        'gaps': respond_reg['gaps'],
+        'unexercised': respond_reg['competencies_unexercised'],
+        'noHallContact': respond_reg['frames_without_hall_contact'],
+        'hallsUntouched': respond_reg['halls_untouched'],
+        'honesty': respond_reg['honesty'],
+    },
+    # the emotional-intelligence layer, surfaced where it acts: on the nine
+    # advisors. A binding says which response set an advisor carries, which
+    # states it is out of scope for, which red lines bind it and which
+    # debrief moves it may make; the panel renders `does` beside `does_not`,
+    # the stop condition, and the rung the response hands to. The ladder
+    # names resource TYPES and no contact detail of any kind - a guard below
+    # re-runs the pack's own banned patterns over exactly what ships here,
+    # because trimming for the wire is the moment a number could get in.
+    'ei': {
+        'counts': ei_reg['counts'],
+        'contract': ei_reg['contract'],
+        'bindings': {b['agent']: {k: b[k] for k in (
+            'scope_note', 'responses', 'universal_responses',
+            'states_out_of_scope', 'red_lines', 'debrief_moves')}
+            for b in ei_reg['agent_bindings']},
+        'responses': {r['id']: r for r in ei_reg['responses']},
+        'states': {st['id']: st for st in ei_reg['states']},
+        'ladder': ei_reg['handoff_ladder'],
+        'redLines': {r['id']: r for r in ei_reg['red_lines']},
+        'moves': {m['id']: m for m in ei_reg['debrief_moves']},
+        'signals': {sg['id']: sg for sg in ei_reg['signals']},
+        'gaps': ei_reg['gaps'],
+        'honesty': ei_reg['honesty'],
+    },
     'i18n': I18N,
 }, ensure_ascii=False, separators=(',', ':'))
+
+# --------------------------------------------- what the EI layer may say ---
+# ei/build.py refuses a telephone number, an emergency or crisis line, a
+# dialling instruction, a web or email address and a named support
+# organisation anywhere in its payload: a wrong number in a crisis is worse
+# than no number, and neither that build nor this one has a network with
+# which to check one. This page is a SECOND publisher of those records, and
+# a trim is exactly the edit that could let one through - so the same
+# refusal runs again over the bytes that actually ship. The patterns are
+# read from ei/build.py rather than retyped, because a guard that drifts
+# from the one it mirrors is worse than no guard.
+_EI_BAN_SRC = (ROOT / 'ei/build.py').read_text()
+_EI_BAN_BODY = _EI_BAN_SRC[_EI_BAN_SRC.index('\nBANNED = ['):]
+_EI_BAN_BODY = _EI_BAN_BODY[:_EI_BAN_BODY.index('\n]\n') + 3]
+EI_BANNED = ast.literal_eval(_EI_BAN_BODY.split('=', 1)[1].strip())
+if len(EI_BANNED) != 5:
+    raise SystemExit('build_3d: ei/build.py declares %d banned patterns, not '
+                     'the 5 this page mirrors - read it again before shipping'
+                     % len(EI_BANNED))
+
+
+def _ei_strings(node, path):
+    if isinstance(node, dict):
+        for k, v in node.items():
+            yield from _ei_strings(v, path + '.' + k)
+    elif isinstance(node, list):
+        for i, v in enumerate(node):
+            yield from _ei_strings(v, '%s[%d]' % (path, i))
+    elif isinstance(node, str):
+        yield path, node
+
+
+for _path, _s in _ei_strings(json.loads(DATA)['ei'], 'D.ei'):
+    for _pat, _what in EI_BANNED:
+        _m = re.search(_pat, _s)
+        if _m:
+            raise SystemExit(
+                'build_3d: %s ships %s (%r) to the page. The EI layer names '
+                'types of resource and never an instance of one; this is the '
+                'trim that let it through.' % (_path, _what, _m.group(0)))
 
 SIM_JS = """/* ------------------------------------------------------- simulators ----- */
 // Schematic physics for practising control discipline; the graders are
@@ -5154,8 +5258,199 @@ function openAdvisor(aid, topicId) {
     + '</div>'
     + stopsLine
     + runList
-    + honesty.map((hx) => '<p class="src">' + esc(hx) + '</p>').join('');
+    + honesty.map((hx) => '<p class="src">' + esc(hx) + '</p>').join('')
+    // the emotional-intelligence layer binds to the ADVISOR, so it is
+    // printed on the advisor and nowhere else. A crew role has no binding
+    // and advisorConduct() returns nothing for one.
+    + advisorConduct(aid);
   document.body.classList.add('open');
+}
+
+
+/* ---- the emotional-intelligence layer, where it actually acts ---------- *
+   An advisor is a scripted helper for the trade work. The ei pack says
+   what that helper may do when the person in front of it is struggling,
+   what it must not do, and the point at which it stops being a helper and
+   names a category of person instead.
+
+   It is surfaced HERE, on the advisor, because that is the only place it
+   binds: ei.agent_bindings names which of these nine carries which
+   response set, which states it is out of scope for, which red lines hold
+   it and which debrief moves it may make. A crew role has no binding and
+   gets no block - nothing is invented for a figure the pack never named.
+
+   The panel renders `does` beside `does_not`, because the second is the
+   half that gets dropped, and every response's stop condition and handoff
+   rung beside both. Every rung names a TYPE of person and no contact
+   detail of any kind; build_3d.py re-runs the pack's own banned patterns
+   over exactly these bytes before they ship. */
+function eiRung(id) {
+  const r = D.ei.ladder.find((x) => x.id === id);
+  if (!r) throw new Error('ei: no handoff rung called ' + id
+    + ' - a response or red line hands to a rung the ladder does not have');
+  return r;
+}
+
+function eiRungLine(id, noHandoffBecause) {
+  const esc = eiEsc;
+  if (id === null) {
+    if (!noHandoffBecause) throw new Error('ei: a record hands to nobody and '
+      + 'does not say why - that reason is the record, not a default');
+    return '<span style="color:var(--muted)">hands to nobody: '
+      + esc(noHandoffBecause) + '</span>';
+  }
+  const r = eiRung(id);
+  return 'hands to <b>rung ' + r.rank + ' of ' + D.ei.ladder.length + '</b> — '
+    + esc(r.resource_type);
+}
+
+function eiEsc(s) {
+  return String(s).replace(/[&<>]/g,
+    (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+}
+
+function eiState(id) {
+  const st = D.ei.states[id];
+  if (!st) throw new Error('ei: no state record called ' + id);
+  return st;
+}
+
+function eiDoes(r) {
+  const esc = eiEsc;
+  return '<h4>What it does</h4><ul style="font-size:12.5px">'
+    + r.does.map((x) => '<li>' + esc(x) + '</li>').join('') + '</ul>'
+    + '<h4>What it does not do</h4><ul style="font-size:12.5px;color:var(--crit)">'
+    + r.does_not.map((x) => '<li>' + esc(x) + '</li>').join('') + '</ul>'
+    + '<h4>Where it stops</h4><p style="font-size:12.5px">'
+    + esc(r.stop_condition) + '</p>'
+    + '<p style="font-size:12px">' + eiRungLine(r.handoff, '') + '</p>';
+}
+
+function eiResponse(id) {
+  const r = D.ei.responses[id];
+  if (!r) throw new Error('ei: no response record called ' + id
+    + ' - an agent binding names a response set the pack does not carry');
+  return r;
+}
+
+function eiSignalRows(ids) {
+  const esc = eiEsc;
+  if (!ids.length) return '<p style="font-size:12px;color:var(--muted)">'
+    + 'This response watches for nothing: it begins when a learner says '
+    + 'something, never when the app notices something.</p>';
+  return '<ul style="font-size:12px;list-style:none;padding:0">'
+    + ids.map((sid) => {
+        const sg = D.ei.signals[sid];
+        if (!sg) throw new Error('ei: no signal record called ' + sid);
+        return '<li style="margin:5px 0"><b>' + esc(sg.observable) + '</b><br>'
+          + '<span style="color:var(--muted)">it could just as easily mean: '
+          + esc(sg.confound) + '</span><br>'
+          + '<span style="color:var(--crit)">' + esc(sg.not_a_diagnosis)
+          + '</span>' + (sg.threshold.value === null
+            ? '<br><span style="color:var(--muted)">no threshold is set: '
+              + esc(sg.threshold.why) + '</span>' : '') + '</li>';
+      }).join('') + '</ul>';
+}
+
+function advisorConduct(aid) {
+  const b = D.ei.bindings[aid];
+  if (!b) return '';                 // a crew role: the pack binds no set to one
+  const esc = eiEsc, H = D.ei.honesty, C = D.ei.counts;
+
+  // the universal response first, and rendered as the refusal it is. This
+  // is the one state the agent may not answer at all: one turn, no
+  // question about what happened, no technique, and the ladder is the
+  // whole of the response.
+  const universal = b.universal_responses.map((id) => {
+    const r = eiResponse(id);
+    const st = eiState(r.state);
+    if (st.agent_may !== 'hand-off-only') throw new Error('ei: ' + id
+      + ' is bound as a universal response but its state ' + st.id
+      + ' is not hand-off-only - this block renders a refusal, not a coach');
+    return '<div class="warn"><b>' + esc(st.name) + ' — hand-off only, '
+      + r.max_turns + ' turn.</b><br>' + esc(r.intent) + eiDoes(r) + '</div>';
+  }).join('');
+
+  const rows = b.responses.filter((id) => !b.universal_responses.includes(id))
+    .map((id) => {
+      const r = eiResponse(id);
+      const st = eiState(r.state);
+      return '<details class="respf"><summary><b>' + esc(st.name)
+        + '</b> <span style="color:var(--muted);font-size:12px">'
+        + esc(r.moment.replace(/_/g, ' ')) + ' · at most ' + r.max_turns
+        + ' of ' + C.max_turns_ceiling + ' turns</span></summary>'
+        + '<p style="font-size:12.5px">' + esc(r.intent) + '</p>'
+        + '<p style="font-size:12px;color:var(--muted)">Its scope: '
+        + esc(r.scope) + '</p>'
+        + '<h4>What this state is not</h4><p style="font-size:12px;'
+        + 'color:var(--muted)">' + esc(st.is_not) + '</p>'
+        + '<h4>What the app would be going on</h4>' + eiSignalRows(r.notices)
+        + eiDoes(r)
+        + '<p class="src">shape taken from ' + esc(r.framework.replace(/-/g, ' '))
+        + ', reproduced from none of it</p></details>';
+    }).join('');
+
+  const out = !b.states_out_of_scope.length ? '' :
+    '<h4>Not this advisor’s to answer (' + b.states_out_of_scope.length
+    + ' of ' + C.states + ')</h4><ul style="font-size:12.5px">'
+    + b.states_out_of_scope.map((sid) => '<li><b>' + esc(eiState(sid).name)
+        + '</b> — ' + esc(eiState(sid).is_not) + '</li>').join('') + '</ul>';
+
+  const lines = b.red_lines.map((rid) => {
+    const rl = D.ei.redLines[rid];
+    if (!rl) throw new Error('ei: no red line called ' + rid);
+    return '<li style="margin:7px 0"><b style="color:var(--crit)">Never</b> '
+      + esc(rl.never) + '<br><span style="font-size:12px">Instead: '
+      + esc(rl.required_action) + '</span><br><span style="font-size:11.5px;'
+      + 'color:var(--muted)">' + eiRungLine(rl.handoff, rl.no_handoff_because)
+      + '</span></li>';
+  }).join('');
+
+  const moves = !b.debrief_moves.length
+    ? '<p style="font-size:12px;color:var(--muted)">This advisor makes no '
+      + 'debrief move: it is not in the room when a run is reviewed.</p>'
+    : '<ul style="list-style:none;padding:0">' + b.debrief_moves.map((mid) => {
+        const m = D.ei.moves[mid];
+        if (!m) throw new Error('ei: no debrief move called ' + mid);
+        return '<li style="margin:7px 0"><b>' + esc(m.name) + '</b> '
+          + '<span style="font-size:11px;color:var(--muted)">' + esc(m.when)
+          + '</span><br><span style="font-size:12.5px">' + esc(m.structure)
+          + '</span><br><span style="font-size:11.5px;color:var(--crit)">'
+          + 'not this: ' + esc(m.forbidden_variant) + '</span>'
+          + (m.available_today ? '' : '<br><span style="font-size:11.5px;'
+             + 'color:var(--muted)">not available today: '
+             + esc(m.unavailable_because) + '</span>') + '</li>';
+      }).join('') + '</ul>';
+
+  const ladder = '<ol style="padding-inline-start:20px">'
+    + D.ei.ladder.map((r) => '<li style="margin:7px 0"><b>'
+        + esc(r.resource_type) + '</b><br><span style="font-size:12.5px">'
+        + esc(r.agent_does) + '</span><br><span style="font-size:12px;'
+        + 'color:var(--crit)">it must not ' + esc(r.agent_must_not)
+        + '</span><br><span style="font-size:11.5px;color:var(--muted)">'
+        + esc(r.reached_how) + ' · ' + esc(r.latency) + ' · no contact detail: '
+        + esc(r.why_no_contact_detail) + '</span></li>').join('') + '</ol>';
+
+  return '<h3>What this advisor does when something is wrong</h3>'
+    + '<div class="warn"><b>' + C.clinician_reviewed_records + ' of '
+      + C.records + ' records in this layer have been read by a clinician.</b>'
+      + '<br>' + esc(H.not_reviewed) + '</div>'
+    + '<p style="font-size:12.5px">' + esc(b.scope_note) + '</p>'
+    + '<p class="src">' + esc(H.not_a_therapist) + '</p>'
+    + '<h4>Whatever else is being talked about</h4>' + universal
+    + (rows ? '<h4>What it may respond to</h4>' + rows : '')
+    + out
+    + '<h4>Red lines (' + b.red_lines.length + ' of ' + C.red_lines + ')</h4>'
+    + '<ul style="list-style:none;padding:0">' + lines + '</ul>'
+    + '<h4>Debrief moves it may make</h4>' + moves
+    + '<h4>The handoff ladder, ' + D.ei.ladder.length + ' rungs</h4>'
+    + '<p style="font-size:12px;color:var(--muted)">' + esc(H.no_contact_details)
+      + '</p>' + ladder
+    + '<p class="src">' + esc(H.ladder_is_untested) + '</p>'
+    + '<p class="src">' + esc(H.no_dialogue) + '</p>'
+    + '<p class="src">' + esc(H.nothing_is_stored) + '</p>'
+    + '<p class="src">' + esc(H.nothing_here_is_scored) + '</p>'
+    + '<p class="src">' + esc(H.status) + '</p>';
 }
 
 document.addEventListener('click', (e) => {
@@ -5165,6 +5460,279 @@ document.addEventListener('click', (e) => {
 document.getElementById('advBtn').addEventListener('click', () => {
   if (nearAdvisor) { if (walkActive && plc.isLocked) plc.unlock();
                      openAdvisor(nearAdvisor); }
+});
+"""
+
+RESPOND_JS = r"""/* ------------------------------------------- first responders ----------
+   The respond pack, given a surface. Five services, their role tiers, the
+   competency domains, the scenario frames and the cross-links that tie a
+   frame to trade halls this bundle already builds - and, beside every one
+   of them, the fact that nobody who does this work has read any of it.
+
+   The link is bidirectional and both halves are the same data read from
+   two ends: a frame lists the halls it touches as buttons into those
+   halls, and a hall whose slug appears in D.respond.crossLinks gets a
+   badge in its own header straight back into this panel, scrolled to its
+   own block. Neither direction stores a second copy of the pairing.
+
+   Nothing here is a protocol. The pack records no correct answer - it
+   says so itself, in honesty.what_a_frame_is, which this panel prints. */
+
+// A record is unreviewed when its OWN two fields say so, never because a
+// count elsewhere was read as a blanket. `signed_off_by` is null on all
+// 117 today; the day one is filled in, that row stops carrying the mark
+// and the chip beside the heading moves with the registry's own count.
+function respUnsigned(rec) {
+  return rec.needs_practitioner_review === true && rec.signed_off_by === null;
+}
+const RESP_MARK = '<span class="unsigned">needs practitioner review'
+  + ' · not signed off</span>';
+
+/* An authority is named so a reader goes to the SOURCE for the actual
+   requirement, and the one thing this panel must never do is render the
+   name in a way that reads as provenance. So the authority's own two
+   sentences travel with every mention: what it owns, and that this pack
+   reproduces none of it - plus, where the registry says no document was
+   opened, that too. A missing key throws: a default here would be a
+   policy decision about somebody else's standard. */
+function respAuthority(key) {
+  const a = D.respond.authorities[key];
+  if (!a) throw new Error('respond: no authority record at D.respond.'
+    + 'authorities.' + key + ' - a frame or competency names a body the '
+    + 'registry does not carry');
+  const esc = respEsc;
+  const opened = a.document_read_by_this_build === true
+    ? 'a document of this body was opened by this build'
+    : 'no document of this body was opened by this build';
+  return '<b>' + esc(a.name) + '</b> <span style="color:var(--muted)">('
+    + esc(a.kind) + ')</span><br><span style="font-size:12px">owns '
+    + esc(a.owns) + '</span><br><span style="font-size:11.5px;color:var(--crit)">'
+    + 'this pack reproduces ' + esc(a.this_pack_reproduces) + ' · '
+    + opened + '</span>';
+}
+
+function respEsc(s) {
+  return String(s).replace(/[&<>]/g,
+    (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]));
+}
+
+// one frame's title, wherever a frame is named away from its own block
+function respFrame(id) {
+  const f = D.respond.frames.find((x) => x.id === id);
+  if (!f) throw new Error('respond: no scenario frame with id ' + id);
+  return f;
+}
+
+function respFrameCard(f) {
+  const esc = respEsc;
+  const svc = f.services.map((k) => esc(D.respond.services[k].name)).join(' + ');
+  const comps = f.competencies.map((cid) => {
+    const c = D.respond.competencies.find((x) => x.id === cid);
+    if (!c) throw new Error('respond: frame ' + f.id + ' exercises ' + cid
+      + ', which is in no competency record');
+    return '<li>' + esc(c.title) + '</li>';
+  }).join('');
+  const halls = f.halls.map((sg) => {
+    const h = D.halls.find((x) => x.slug === sg);
+    if (!h) throw new Error('respond: frame ' + f.id + ' names hall ' + sg
+      + ', which this bundle does not build');
+    return '<button class="barbtn" data-hall-goto="' + esc(sg)
+      + '" style="font-size:11.5px;padding:2px 8px;margin:0 4px 4px 0">→ '
+      + esc(h.name) + '</button>';
+  }).join('');
+  return '<details id="respf-' + esc(f.id) + '" class="respf">'
+    + '<summary><b>' + esc(f.title) + '</b> <span style="color:var(--muted);'
+    + 'font-size:12px">' + svc + '</span></summary>'
+    + (respUnsigned(f) ? '<p>' + RESP_MARK + '</p>' : '')
+    + '<p style="font-size:12px;color:var(--muted)">' + esc(f.setting) + '</p>'
+    + '<p style="font-size:13px">' + esc(f.situation) + '</p>'
+    + '<h4>What makes it hard</h4><p style="font-size:12.5px">'
+    + esc(f.decision_pressure) + '</p>'
+    + '<h4>Competencies it exercises</h4><ul style="font-size:12.5px">'
+    + comps + '</ul>'
+    + '<h4>What a debrief would ask</h4><ol style="font-size:12.5px;'
+    + 'color:var(--muted);padding-inline-start:20px">'
+    + f.debrief_questions.map((q) => '<li>' + esc(q) + '</li>').join('')
+    + '</ol>'
+    + '<p class="src">This frame is not ' + esc(f.this_frame_is_not) + '</p>'
+    + '<h4>Trade halls it touches</h4>'
+    + (halls || '<p style="font-size:12px;color:var(--muted)">No trade hall '
+       + 'in this bundle is touched by this frame.</p>')
+    + '<h4>Where the authority is</h4><p style="font-size:12px">'
+    + respAuthority(f.authority) + '</p>'
+    + '</details>';
+}
+
+function openResponder(focusHall) {
+  // no guide place is declared for this panel, so the guide answers about
+  // the view behind it rather than confidently answering about somewhere
+  // else - the same fail-closed answer guidePlaceNow() already gives
+  document.getElementById('panel').dataset.guidePlace = '';
+  const esc = respEsc, C = D.respond.counts, H = D.respond.honesty;
+
+  // the review banner, first thing under the heading and not in a
+  // footnote: the two numbers are the registry's own
+  const banner = '<div class="warn"><b>' + C.signed_off_items + ' of '
+    + C.training_items + ' training items carry a practitioner sign-off.</b>'
+    + '<br>' + esc(H.nobody_qualified_has_read_this) + '</div>'
+    + '<div class="warn"><b>' + C.authority_documents_opened + ' of '
+    + C.authorities + ' standards bodies had a document opened by this '
+    + 'build.</b><br>' + esc(H.status) + '</div>';
+
+  // the hall a learner arrived from, if they arrived from one
+  const link = focusHall ? D.respond.crossLinks[focusHall] : null;
+  const here = !link ? '' : '<h3>Frames that touch ' + esc(link.hall_name)
+    + '</h3><p style="font-size:12px;color:var(--muted)">'
+    + link.frames.length + ' of ' + C.scenario_frames + ' scenario frames '
+    + 'name this hall.</p>'
+    + link.frames.map((id) => '<button class="barbtn" data-respond-frame="'
+        + esc(id) + '" style="font-size:12px;padding:3px 9px;margin:0 4px 5px 0"'
+        + '>' + esc(respFrame(id).title) + '</button>').join('')
+    + '<p class="src">' + esc(H.ppe_is_not_transferable) + '</p>';
+
+  const services = Object.entries(D.respond.services).map(([k, s]) => {
+    const tiers = s.tiers.map((t) => '<li><b>' + esc(t.name) + '</b><br>'
+      + '<span style="font-size:12px;color:var(--muted)">'
+      + esc(t.what_the_role_is) + '</span>'
+      + (respUnsigned(t) ? '<br>' + RESP_MARK : '') + '</li>').join('');
+    const bodies = s.standards_bodies.map((b) =>
+      '<li>' + respAuthority(b) + '</li>').join('');
+    return '<details class="respf"><summary><b>' + esc(s.name) + '</b> '
+      + '<span style="color:var(--muted);font-size:12px">'
+      + C.by_service[k].role_tiers + ' tiers · '
+      + C.by_service[k].competencies + ' competencies · '
+      + C.by_service[k].frames + ' frames</span></summary>'
+      + '<p style="font-size:12.5px">' + esc(s.scope) + '</p>'
+      + '<h4>Role tiers</h4><ul style="list-style:none;padding:0">' + tiers + '</ul>'
+      + '<h4>Who represents this workforce</h4><p style="font-size:12px">'
+      + s.acronyms.map(esc).join(' · ') + '</p>'
+      + '<ul style="font-size:12px">' + s.kinds.map((x) => '<li>' + esc(x)
+          + '</li>').join('') + '</ul>'
+      + '<p class="src">' + esc(s.endorsementNote) + '</p>'
+      + '<h4>Standards bodies named</h4><ul style="list-style:none;padding:0;'
+      + 'font-size:12px">' + bodies + '</ul></details>';
+  }).join('');
+
+  const frames = D.respond.frames.map(respFrameCard).join('');
+
+  // the other end of the same pairing: every hall a frame touches, with a
+  // button into the hall and the frames that named it
+  const hallRows = Object.entries(D.respond.crossLinks).map(([sg, x]) => {
+    const mine = sg === focusHall;
+    return '<li id="resph-' + esc(sg) + '" style="margin:5px 0;' + (mine
+        ? 'border:1px solid var(--mark);border-radius:8px;padding:6px' : '')
+      + '"><button class="barbtn" data-hall-goto="' + esc(sg)
+      + '" style="font-size:11.5px;padding:2px 8px">→ '
+      + esc(x.hall_name) + '</button> <span style="font-size:11px;'
+      + 'color:var(--muted)">' + esc(D.campuses[x.campus].name) + '</span><br>'
+      + x.frames.map((id) => '<button class="barbtn" data-respond-frame="'
+          + esc(id) + '" style="font-size:11px;padding:1px 7px;margin:2px 4px 0 0">'
+          + esc(respFrame(id).title) + '</button>').join('') + '</li>';
+  }).join('');
+
+  const comps = Object.entries(D.respond.services).map(([k, s]) => {
+    const rows = D.respond.competencies.filter((c) => c.service === k)
+      .map((c) => '<li style="margin:7px 0"><b>' + esc(c.title) + '</b>'
+        + ' <span style="font-size:11px;color:var(--muted)">from '
+        + esc(c.tier_floor) + '</span><br>'
+        + '<span style="font-size:12.5px">' + esc(c.what_it_is) + '</span><br>'
+        + '<span style="font-size:12px;color:var(--muted)">'
+        + esc(c.why_it_matters) + '</span>'
+        + '<ul style="font-size:12px">' + c.look_for.map((w) => '<li>'
+            + esc(w) + '</li>').join('') + '</ul>'
+        + (respUnsigned(c) ? RESP_MARK : '') + '</li>').join('');
+    return '<details class="respf"><summary><b>' + esc(s.name)
+      + '</b> <span style="color:var(--muted);font-size:12px">'
+      + C.by_service[k].competencies + ' domains</span></summary>'
+      + '<ul style="list-style:none;padding:0">' + rows + '</ul></details>';
+  }).join('');
+
+  const debrief = D.respond.debrief.map((st) => '<li style="margin:5px 0">'
+    + '<b>' + esc(st.question) + '</b><br><span style="font-size:12px;'
+    + 'color:var(--muted)">' + esc(st.purpose) + '</span></li>').join('');
+
+  const gaps = D.respond.gaps.map((g) => '<li style="margin:6px 0">'
+    + '<b>' + g.have + ' of ' + g.of + ' ' + esc(g.unit) + '</b> — '
+    + esc(g.question) + '<br><span style="font-size:11.5px;color:var(--muted)">'
+    + esc(g.note) + '</span></li>').join('');
+
+  document.getElementById('pbody').innerHTML =
+    '<h2>🚒 First responders · a training scaffold</h2>'
+    + '<span class="chip">' + C.services + ' services</span>'
+    + '<span class="chip">' + C.role_tiers + ' role tiers</span>'
+    + '<span class="chip">' + C.competencies + ' competency domains</span>'
+    + '<span class="chip">' + C.scenario_frames + ' scenario frames</span>'
+    + '<span class="chip">' + C.hall_cross_links + ' cross-links into '
+      + C.halls_touched + ' of ' + C.halls_total + ' halls</span>'
+    + banner
+    + '<p style="font-size:12.5px">' + esc(H.scaffold_not_protocol) + '</p>'
+    + here
+    + '<h3>The five services</h3>' + services
+    + '<h3>Scenario frames</h3>'
+    + '<p style="font-size:12px;color:var(--muted)">' + esc(H.what_a_frame_is)
+      + '</p>' + frames
+    + '<h3>Trade halls a frame touches</h3>'
+    + '<p style="font-size:12px;color:var(--muted)">' + esc(H.the_cross_links_are_real)
+      + '</p><ul style="list-style:none;padding:0">' + hallRows + '</ul>'
+    + '<h4>Touched by no frame at all (' + C.halls_untouched + ')</h4>'
+    + '<p style="font-size:11.5px;color:var(--muted)">'
+      + D.respond.hallsUntouched.map((sg) => {
+          const h = D.halls.find((x) => x.slug === sg);
+          return esc(h ? h.name : sg); }).join(' · ') + '</p>'
+    + '<h4>Frames that touch no trade hall (' + C.frames_without_hall_contact
+      + ')</h4><p style="font-size:11.5px;color:var(--muted)">'
+      + D.respond.noHallContact.map((id) => esc(respFrame(id).title))
+          .join(' · ') + '</p>'
+    + '<h3>Competency domains</h3>' + comps
+    + '<h4>Exercised by no frame (' + C.competencies_unexercised + ')</h4>'
+    + '<p style="font-size:11.5px;color:var(--muted)">'
+      + D.respond.unexercised.map((cid) => {
+          const c = D.respond.competencies.find((x) => x.id === cid);
+          if (!c) throw new Error('respond: unexercised names ' + cid
+            + ', which is in no competency record');
+          return esc(c.title); }).join(' · ') + '</p>'
+    + '<h3>The debrief structure</h3>'
+    + '<p style="font-size:12px;color:var(--muted)">'
+      + esc(H.the_debrief_structure_is_ours) + '</p>'
+    + '<ol style="padding-inline-start:20px">' + debrief + '</ol>'
+    + '<h3>Where the authority actually is</h3>'
+    + '<p style="font-size:12px;color:var(--muted)">'
+      + esc(H.the_authority_is_elsewhere) + '</p>'
+    + '<ul style="list-style:none;padding:0;font-size:12px">'
+      + Object.keys(D.respond.authorities).map((k) => '<li style="margin:6px 0">'
+          + respAuthority(k) + '</li>').join('') + '</ul>'
+    + '<h3>What is missing, counted</h3>'
+    + '<ul style="list-style:none;padding:0">' + gaps + '</ul>'
+    + '<p class="src">' + esc(H.coverage_is_published_as_a_number) + '</p>'
+    + '<p class="src">' + esc(H.unions_and_associations) + '</p>';
+
+  if (focusHall) document.getElementById('resph-' + focusHall)
+    ?.scrollIntoView({ block: 'center' });
+  document.body.classList.add('open');
+}
+window.__tc3dRespond = openResponder;
+
+// a frame named from a hall row or from the arrival block: open its own
+// card and put it in front of the reader
+function respShowFrame(id) {
+  let d = document.getElementById('respf-' + id);
+  // the panel may be showing one hall's arrival block and nothing else;
+  // build the whole thing once and look again, rather than recursing
+  if (!d) { openResponder(); d = document.getElementById('respf-' + id); }
+  if (!d) throw new Error('respond: no scenario frame card for ' + id);
+  d.open = true;
+  d.scrollIntoView({ block: 'center' });
+}
+
+document.addEventListener('click', (e) => {
+  const rh = e.target.closest('[data-respond-hall]');
+  if (rh) { openResponder(rh.dataset.respondHall); return; }
+  const rf = e.target.closest('[data-respond-frame]');
+  if (rf) { respShowFrame(rf.dataset.respondFrame); return; }
+});
+document.getElementById('respondBtn').addEventListener('click', () => {
+  if (walkActive) plc.unlock();
+  openResponder();
 });
 """
 
@@ -6192,6 +6760,19 @@ body.open #bar > *:not(#guideBtn){pointer-events:none;opacity:.3}
 .asks .opt{background:var(--sunk);border:1px solid var(--rule);color:var(--ink);border-radius:6px;padding:8px 10px;cursor:pointer;font:inherit;text-align:start;min-height:40px}
 .asks .opt:hover{border-color:var(--mark)}
 #advBtn{right:18px;bottom:158px}
+#panel h4{font:600 12.5px "Barlow Condensed",sans-serif;letter-spacing:.03em;
+  text-transform:uppercase;color:var(--steel);margin:12px 0 4px}
+/* An unreviewed record says so where it is read, not in a footnote: the
+   respond pack publishes 0 of 117 items signed off and the EI pack 0 of 59
+   read by a clinician, and a surface that files that at the bottom of a
+   long panel has quietly decided the reader will scroll. */
+#panel .warn{border:1px solid var(--crit);border-radius:8px;padding:9px 12px;
+  margin:10px 0;font-size:12.5px;line-height:1.5}
+#panel .warn b{color:var(--crit)}
+#panel .unsigned{display:inline-block;font-size:10.5px;color:var(--crit);
+  border:1px solid var(--crit);border-radius:999px;padding:1px 8px;margin:3px 0}
+#panel details.respf{border-block-start:1px solid var(--rule);padding:7px 0}
+#panel details.respf > summary{cursor:pointer;font-size:13px;line-height:1.5}
 @media(prefers-reduced-motion:reduce){#panel{transition:none}}
 </style>
 </head>
@@ -6212,6 +6793,7 @@ body.open #bar > *:not(#guideBtn){pointer-events:none;opacity:.3}
   <button id="recBtn" class="barbtn" aria-label="records">⏱</button>
   <button id="orbisBtn" class="barbtn" aria-label="Orbis synthetic-training prompt">🎬</button>
   <button id="schoolsBtn" class="barbtn" aria-label="schools flipped-classroom program">🎓</button>
+  <button id="respondBtn" class="barbtn" aria-label="first-responder and disaster-relief training scaffold">🚒</button>
   <button id="restorationBtn" class="barbtn" aria-label="Bay Restoration sites and training tracks">🌊</button>
   <select id="hour" aria-label="hour of the day"></select>
   <button id="guideBtn" class="barbtn" aria-label="open the guide: what this place is and how to move in it">❓ Guide</button>
@@ -9170,7 +9752,14 @@ function buildHall(sg) {
     // that teaches a real field-skill track gets a badge straight back
     + (D.restoration.tracks.some((t) => t.skills.some((sk) => sk.split('.')[0] === sg))
         ? ` <button class="barbtn" data-restoration-hall="${esc(sg)}"
-        style="font-size:10.5px;padding:1px 7px;vertical-align:2px">\U0001f30a Bay Restoration</button>` : '');
+        style="font-size:10.5px;padding:1px 7px;vertical-align:2px">\U0001f30a Bay Restoration</button>` : '')
+    // the other end of the responder cross-links: a hall a scenario frame
+    // names gets a badge straight back into the responder panel, scrolled
+    // to its own block. 81 of the 111 halls have one and 30 do not, and
+    // the badge is decided per hall from the registry's own pairing - a
+    // blanket flag would invent one for the 30 that no frame touches.
+    + (D.respond.crossLinks[sg] ? ` <button class="barbtn" data-respond-hall="${esc(sg)}"
+        style="font-size:10.5px;padding:1px 7px;vertical-align:2px">🚒 ${D.respond.crossLinks[sg].frames.length} responder frame${D.respond.crossLinks[sg].frames.length === 1 ? '' : 's'}</button>` : '');
 }
 
 /* -------------------------------------------------------- campus view --- */
@@ -11715,6 +12304,8 @@ function openSchools(focusHall) {
 }
 window.__tc3dSchools = openSchools;
 
+__RESPOND_JS__
+
 // a roadmap candidate's own card: no hall stands here to enter, so this
 // panel never offers one - a name, a real bearing/distance, the proposed
 // district emphasis and the honesty text, nothing more
@@ -13428,6 +14019,7 @@ page = page.replace('__DATA__', DATA).replace('__PIPELINE_JS__', PIPELINE_JS)
 page = page.replace('__KIT_RUNS__', KIT_RUNS_JS)
 page = page.replace('__SIM_JS__', SIM_JS).replace('__XR_JS__', XR_JS)
 page = page.replace('__GUIDE_JS__', GUIDE_JS)
+page = page.replace('__RESPOND_JS__', RESPOND_JS)
 page = page.replace('__AVATAR_JS__', AVATAR_JS)
 page = page.replace('__ADVISOR_JS__', ADVISOR_JS)
 page = page.replace('__GROUND_TRUTH_JS__', GROUND_TRUTH_JS)
