@@ -1,0 +1,342 @@
+{
+ "attachment_kinds": {
+  "integrated-certified-hardhat": "the display is built into a hardhat the vendor certifies as a hardhat - one product, one certification",
+  "integrated-protective-mask": "the display is built into a protective mask",
+  "integrator-dependent": "no vendor mount is named in the claim relayed here; helmet fitting is left to whoever integrates it, which is the weakest of these",
+  "vendor-helmet-mount": "the vendor sells a named mount for standard helmet accessory slots",
+  "vendor-states-compatible": "the vendor states helmet mounting is supported, without a single named mount part in the claim relayed here",
+  "worn-alongside": "not mounted to the helmet - worn with existing eyewear and helmet"
+ },
+ "counts": {
+  "by_attachment": {
+   "integrated-certified-hardhat": 2,
+   "integrated-protective-mask": 1,
+   "integrator-dependent": 2,
+   "vendor-helmet-mount": 2,
+   "vendor-states-compatible": 5,
+   "worn-alongside": 3
+  },
+  "by_class": {
+   "assisted-reality": 2,
+   "binocular-ar": 4,
+   "integrated-hardhat": 2,
+   "mask-integrated": 1,
+   "monocular-ar": 5,
+   "mr-headset": 1
+  },
+  "devices": 15,
+  "eye_protection_by_the_device_itself": 1,
+  "eye_protection_not_established": 13,
+  "eye_protection_standard_named": 2,
+  "procurement_flags": 2,
+  "rooms_requiring_both": 228,
+  "rooms_requiring_eye_protection": 570,
+  "rooms_requiring_head_protection": 342,
+  "rooms_total": 1250,
+  "vendors": 10
+ },
+ "devices": {
+  "daqri-helmet": {
+   "best_fit": "legacy reference for smart-hardhat concepts",
+   "claim_checked": false,
+   "claim_source": "https://www.vuzix.com/products/m-series-safety-helmet-mounts",
+   "class": "integrated-hardhat",
+   "eye_protection": {
+    "delivered_by": null,
+    "note": "NO eye-protection standard is named in the claim relayed here. This pack therefore records that it does NOT replace the eye protection a room requires, and that a worker needs certified eyewear as well. That is the fail-closed reading, not a finding about the product.",
+    "replaces_room_eye_ppe": false,
+    "standard": null
+   },
+   "head_attachment": "integrated-certified-hardhat",
+   "head_attachment_evidence": 4,
+   "head_attachment_means": "the display is built into a hardhat the vendor certifies as a hardhat - one product, one certification",
+   "procurement_flag": {
+    "confidence": "high, from general knowledge; not verified here because no vendor host is reachable from this build",
+    "consequence": "treat as a historical reference design only. A procurement shortlist that carries it as an option is carrying a dead line item.",
+    "flag": "the vendor is believed to have ceased operations in 2019 and the product to be unavailable new"
+   },
+   "product": "Smart Helmet",
+   "provenance": "AUTHORED",
+   "vendor": "DAQRI"
+  },
+  "epson-bt45c": {
+   "best_fit": "hands-free remote guidance and jobsite workflows",
+   "claim_checked": false,
+   "claim_source": "https://news.epson.com/news/moverio-bt-45c-45cs-ar-smart-glasses",
+   "class": "binocular-ar",
+   "eye_protection": {
+    "delivered_by": null,
+    "note": "NO eye-protection standard is named in the claim relayed here. This pack therefore records that it does NOT replace the eye protection a room requires, and that a worker needs certified eyewear as well. That is the fail-closed reading, not a finding about the product.",
+    "replaces_room_eye_ppe": false,
+    "standard": null
+   },
+   "head_attachment": "vendor-states-compatible",
+   "head_attachment_evidence": 2,
+   "head_attachment_means": "the vendor states helmet mounting is supported, without a single named mount part in the claim relayed here",
+   "product": "Moverio BT-45C",
+   "provenance": "AUTHORED",
+   "vendor": "Epson"
+  },
+  "epson-bt45cs": {
+   "best_fit": "construction supervision, maintenance, training, inspection",
+   "claim_checked": false,
+   "claim_source": "https://news.epson.com/news/moverio-bt-45c-45cs-ar-smart-glasses",
+   "class": "binocular-ar",
+   "eye_protection": {
+    "delivered_by": "attachable certified shield",
+    "note": "states a standard, so it can be evaluated as the room's eye protection - by a safety officer, against the specific room, not by this file",
+    "replaces_room_eye_ppe": true,
+    "standard": "ANSI Z87.1"
+   },
+   "head_attachment": "vendor-states-compatible",
+   "head_attachment_evidence": 2,
+   "head_attachment_means": "the vendor states helmet mounting is supported, without a single named mount part in the claim relayed here",
+   "product": "Moverio BT-45CS",
+   "provenance": "AUTHORED",
+   "vendor": "Epson"
+  },
+  "hololens2-ie": {
+   "best_fit": "BIM overlays, construction QA/QC, digital-twin visualization",
+   "claim_checked": false,
+   "claim_source": "https://www.vuzix.com/products/m-series-safety-helmet-mounts",
+   "class": "mr-headset",
+   "eye_protection": {
+    "delivered_by": null,
+    "note": "NO eye-protection standard is named in the claim relayed here. This pack therefore records that it does NOT replace the eye protection a room requires, and that a worker needs certified eyewear as well. That is the fail-closed reading, not a finding about the product.",
+    "replaces_room_eye_ppe": false,
+    "standard": null
+   },
+   "head_attachment": "integrator-dependent",
+   "head_attachment_evidence": 1,
+   "head_attachment_means": "no vendor mount is named in the claim relayed here; helmet fitting is left to whoever integrates it, which is the weakest of these",
+   "procurement_flag": {
+    "confidence": "moderate, from general knowledge; not verified here",
+    "consequence": "viable for a pilot or a training-room fixture, questionable as the basis of a multi-year fleet. Confirm the support date with the vendor before committing.",
+    "flag": "production is believed to have ended in 2024 with security support announced only to the end of 2027"
+   },
+   "product": "HoloLens 2 Industrial Edition",
+   "provenance": "AUTHORED",
+   "vendor": "Microsoft"
+  },
+  "iristick-g2": {
+   "best_fit": "first-response communications, field service, assisted procedures",
+   "claim_checked": false,
+   "claim_source": "https://nsflow.com/blog/best-industrial-grade-augmented-reality-ar-glasses",
+   "class": "monocular-ar",
+   "eye_protection": {
+    "delivered_by": null,
+    "note": "NO eye-protection standard is named in the claim relayed here. This pack therefore records that it does NOT replace the eye protection a room requires, and that a worker needs certified eyewear as well. That is the fail-closed reading, not a finding about the product.",
+    "replaces_room_eye_ppe": false,
+    "standard": null
+   },
+   "head_attachment": "vendor-states-compatible",
+   "head_attachment_evidence": 2,
+   "head_attachment_means": "the vendor states helmet mounting is supported, without a single named mount part in the claim relayed here",
+   "product": "Iristick.G2",
+   "provenance": "AUTHORED",
+   "vendor": "Iristick"
+  },
+  "realwear": {
+   "best_fit": "construction, utilities, oil and gas, remote expert support, inspection",
+   "claim_checked": false,
+   "claim_source": "https://vsight.io/industrial-smart-glasses-vsight-compatibility/",
+   "class": "assisted-reality",
+   "eye_protection": {
+    "delivered_by": null,
+    "note": "NO eye-protection standard is named in the claim relayed here. This pack therefore records that it does NOT replace the eye protection a room requires, and that a worker needs certified eyewear as well. That is the fail-closed reading, not a finding about the product.",
+    "replaces_room_eye_ppe": false,
+    "standard": null
+   },
+   "head_attachment": "worn-alongside",
+   "head_attachment_evidence": 2,
+   "head_attachment_means": "not mounted to the helmet - worn with existing eyewear and helmet",
+   "product": "Navigator 520",
+   "provenance": "AUTHORED",
+   "vendor": "RealWear"
+  },
+  "realwear-hmt1z1": {
+   "best_fit": "industrial response, petrochemical, mining, emergency maintenance",
+   "claim_checked": false,
+   "claim_source": "https://vsight.io/industrial-smart-glasses-vsight-compatibility/",
+   "class": "assisted-reality",
+   "eye_protection": {
+    "delivered_by": null,
+    "note": "NO eye-protection standard is named in the claim relayed here. This pack therefore records that it does NOT replace the eye protection a room requires, and that a worker needs certified eyewear as well. That is the fail-closed reading, not a finding about the product.",
+    "replaces_room_eye_ppe": false,
+    "standard": null
+   },
+   "head_attachment": "vendor-states-compatible",
+   "head_attachment_evidence": 2,
+   "head_attachment_means": "the vendor states helmet mounting is supported, without a single named mount part in the claim relayed here",
+   "product": "HMT-1Z1",
+   "provenance": "AUTHORED",
+   "vendor": "RealWear"
+  },
+  "rokid-xcraft": {
+   "best_fit": "utilities, energy, rail, aviation, industrial construction",
+   "claim_checked": false,
+   "claim_source": "https://displaydaily.com/an-interesting-upgrade-to-an-interesting-ar-headset/",
+   "class": "binocular-ar",
+   "eye_protection": {
+    "delivered_by": null,
+    "note": "NO eye-protection standard is named in the claim relayed here. This pack therefore records that it does NOT replace the eye protection a room requires, and that a worker needs certified eyewear as well. That is the fail-closed reading, not a finding about the product.",
+    "replaces_room_eye_ppe": false,
+    "standard": null
+   },
+   "head_attachment": "vendor-states-compatible",
+   "head_attachment_evidence": 2,
+   "head_attachment_means": "the vendor states helmet mounting is supported, without a single named mount part in the claim relayed here",
+   "product": "X-Craft",
+   "provenance": "AUTHORED",
+   "vendor": "Rokid"
+  },
+  "thirdeye-midas": {
+   "best_fit": "firefighters, hazmat, defense, zero-visibility emergency response",
+   "claim_checked": false,
+   "claim_source": "https://www.thirdeyegen.com/",
+   "class": "mask-integrated",
+   "eye_protection": {
+    "delivered_by": null,
+    "note": "NO eye-protection standard is named in the claim relayed here. This pack therefore records that it does NOT replace the eye protection a room requires, and that a worker needs certified eyewear as well. That is the fail-closed reading, not a finding about the product.",
+    "replaces_room_eye_ppe": false,
+    "standard": null
+   },
+   "head_attachment": "integrated-protective-mask",
+   "head_attachment_evidence": 4,
+   "head_attachment_means": "the display is built into a protective mask",
+   "product": "MIDAS",
+   "provenance": "AUTHORED",
+   "vendor": "ThirdEye"
+  },
+  "thirdeye-x2": {
+   "best_fit": "EMS, fire and public safety, telemedicine, incident documentation",
+   "claim_checked": false,
+   "claim_source": "https://www.thirdeyegen.com/",
+   "class": "binocular-ar",
+   "eye_protection": {
+    "delivered_by": null,
+    "note": "NO eye-protection standard is named in the claim relayed here. This pack therefore records that it does NOT replace the eye protection a room requires, and that a worker needs certified eyewear as well. That is the fail-closed reading, not a finding about the product.",
+    "replaces_room_eye_ppe": false,
+    "standard": null
+   },
+   "head_attachment": "worn-alongside",
+   "head_attachment_evidence": 2,
+   "head_attachment_means": "not mounted to the helmet - worn with existing eyewear and helmet",
+   "product": "X2 MR Glasses",
+   "provenance": "AUTHORED",
+   "vendor": "ThirdEye"
+  },
+  "univet-visionar": {
+   "best_fit": "construction, manufacturing, industrial safety workflows",
+   "claim_checked": false,
+   "claim_source": "https://news.epson.com/news/moverio-bt-45c-45cs-ar-smart-glasses",
+   "class": "monocular-ar",
+   "eye_protection": {
+    "delivered_by": "the device itself",
+    "note": "states a standard, so it can be evaluated as the room's eye protection - by a safety officer, against the specific room, not by this file",
+    "replaces_room_eye_ppe": true,
+    "standard": "ANSI Z87.1+ and EN166"
+   },
+   "head_attachment": "worn-alongside",
+   "head_attachment_evidence": 2,
+   "head_attachment_means": "not mounted to the helmet - worn with existing eyewear and helmet",
+   "product": "VisionAR",
+   "provenance": "AUTHORED",
+   "vendor": "Univet Optics"
+  },
+  "vuzix-blade2": {
+   "best_fit": "lighter-duty logistics, field operations, guided workflows",
+   "claim_checked": false,
+   "claim_source": "https://www.vuzix.com/products/m-series-safety-helmet-mounts",
+   "class": "monocular-ar",
+   "eye_protection": {
+    "delivered_by": null,
+    "note": "NO eye-protection standard is named in the claim relayed here. This pack therefore records that it does NOT replace the eye protection a room requires, and that a worker needs certified eyewear as well. That is the fail-closed reading, not a finding about the product.",
+    "replaces_room_eye_ppe": false,
+    "standard": null
+   },
+   "head_attachment": "integrator-dependent",
+   "head_attachment_evidence": 1,
+   "head_attachment_means": "no vendor mount is named in the claim relayed here; helmet fitting is left to whoever integrates it, which is the weakest of these",
+   "product": "Blade 2",
+   "provenance": "AUTHORED",
+   "vendor": "Vuzix"
+  },
+  "vuzix-m400": {
+   "best_fit": "field inspection, public-sector inspection, construction service teams",
+   "claim_checked": false,
+   "claim_source": "https://www.vuzix.com/products/m-series-safety-helmet-mounts",
+   "class": "monocular-ar",
+   "eye_protection": {
+    "delivered_by": null,
+    "note": "NO eye-protection standard is named in the claim relayed here. This pack therefore records that it does NOT replace the eye protection a room requires, and that a worker needs certified eyewear as well. That is the fail-closed reading, not a finding about the product.",
+    "replaces_room_eye_ppe": false,
+    "standard": null
+   },
+   "head_attachment": "vendor-helmet-mount",
+   "head_attachment_evidence": 3,
+   "head_attachment_means": "the vendor sells a named mount for standard helmet accessory slots",
+   "product": "M400 Smart Glasses",
+   "provenance": "AUTHORED",
+   "vendor": "Vuzix"
+  },
+  "vuzix-m4000": {
+   "best_fit": "remote assistance, procedures, asset inspection",
+   "claim_checked": false,
+   "claim_source": "https://www.vuzix.com/products/m-series-safety-helmet-mounts",
+   "class": "monocular-ar",
+   "eye_protection": {
+    "delivered_by": null,
+    "note": "NO eye-protection standard is named in the claim relayed here. This pack therefore records that it does NOT replace the eye protection a room requires, and that a worker needs certified eyewear as well. That is the fail-closed reading, not a finding about the product.",
+    "replaces_room_eye_ppe": false,
+    "standard": null
+   },
+   "head_attachment": "vendor-helmet-mount",
+   "head_attachment_evidence": 3,
+   "head_attachment_means": "the vendor sells a named mount for standard helmet accessory slots",
+   "product": "M4000 Smart Glasses",
+   "provenance": "AUTHORED",
+   "vendor": "Vuzix"
+  },
+  "xyz-atom": {
+   "best_fit": "high-precision BIM layout, structural verification, installation",
+   "claim_checked": false,
+   "claim_source": "https://www.xyzreality.com/atom",
+   "class": "integrated-hardhat",
+   "eye_protection": {
+    "delivered_by": null,
+    "note": "NO eye-protection standard is named in the claim relayed here. This pack therefore records that it does NOT replace the eye protection a room requires, and that a worker needs certified eyewear as well. That is the fail-closed reading, not a finding about the product.",
+    "replaces_room_eye_ppe": false,
+    "standard": null
+   },
+   "head_attachment": "integrated-certified-hardhat",
+   "head_attachment_evidence": 4,
+   "head_attachment_means": "the display is built into a hardhat the vendor certifies as a hardhat - one product, one certification",
+   "product": "Atom",
+   "provenance": "AUTHORED",
+   "vendor": "XYZ Reality"
+  }
+ },
+ "eye_ppe_items_counted": [
+  "safety glasses",
+  "face shield",
+  "arc-flash face shield",
+  "welding hood"
+ ],
+ "head_ppe_items_counted": [
+  "hard hat",
+  "chinstrap helmet"
+ ],
+ "honesty": {
+  "eye_protection_fails_closed": "A null standard means this pack cannot say, not that the device is unprotected and not that it is fine. 13 of 15 devices name no eye-protection standard in the claim relayed here, and every one of those is recorded as NOT replacing the eye protection a room requires.",
+  "mounting_does_not_transfer_certification": "A helmet's rating belongs to the helmet as tested. Hanging a powered device off it is a modification until the helmet maker says otherwise. This pack records how strong each attachment claim is (1 integrator-dependent to 4 integrated) and never treats a mount as inheriting a rating.",
+  "no_headset_has_run_this": "The WebXR layer in web/build_3d.py has hand tracking and four declared gestures whose joint distances are AUTHORED and unverified on hardware. rnd/ carries that as an open question. This pack names hardware; it does not close that question and must not be read as closing it.",
+  "not_a_recommendation": "This is a target list, not a shortlist. The ordering in the source material was somebody else's recommendation and is not reproduced as a ranking here. Nothing in this bundle has been run on any of these devices.",
+  "status": "AUTHORED: every device fact here is a vendor claim relayed into this repository as text. Not one was opened and read by this build - the three vendor hosts sampled all returned 000/ERR from this environment - so not one is RECORDED, and each carries the URL it was claimed from and claim_checked false.",
+  "the_rooms_are_the_constraint": "This is not a procurement abstraction. Of the 1250 rooms this bundle describes, 570 require eye protection and 228 require both eye and head protection. In those 228 rooms a head-mounted display is something worn IN ADDITION to certified eyewear unless it is certified itself - and by this list, 1 device is certified in its own right."
+ },
+ "pack": "xr",
+ "pack_version": "3.2.0",
+ "product": "head-mounted hardware targets for the walkable layer, with the eye- and head-protection question each one raises cross-referenced against the PPE this bundle's rooms already require",
+ "source_stamp": "253fa89821cce200"
+}
