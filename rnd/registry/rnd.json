@@ -39,7 +39,7 @@
   "budget_currencies": 2,
   "budget_agreements": 7,
   "suites_run": 46,
-  "suite_checks_declared": 2029,
+  "suite_checks_declared": 2031,
   "open_questions": 12,
   "negative_findings": 9,
   "cross_checks": 2,
@@ -3187,7 +3187,7 @@
    {
     "suite": "web/test_3d.mjs",
     "pack": "web",
-    "readme_checks": 244,
+    "readme_checks": 246,
     "declared": true,
     "in_readme_table": true
    },
@@ -3204,12 +3204,12 @@
   "suites_without_a_count": [
    "control/soak.mjs"
   ],
-  "declared_total": 2029,
-  "readme_headline": 2040,
+  "declared_total": 2031,
+  "readme_headline": 2042,
   "unaccounted_for": 11,
   "unaccounted_note": "the headline counts every `  ok ` line verify_all.sh sees, which includes suites the README table gives no number to and web/test_interiors.py, which the table does not list at all. The difference is that remainder and is computed, not reconciled by hand.",
   "min": 9,
-  "max": 244,
+  "max": 246,
   "median": 35,
   "thinnest": [
    {
@@ -3240,7 +3240,7 @@
   "thickest": [
    {
     "suite": "web/test_3d.mjs",
-    "checks": 244
+    "checks": 246
    },
    {
     "suite": "respond/test.mjs",

@@ -1663,4 +1663,40 @@ ok('neither panel puts anything in the scene: a panel is DOM, and this one '
   ['openResponder', 'respFrameCard', 'respAuthority', 'advisorConduct',
    'eiDoes', 'eiSignalRows'].every((f) => !/THREE\./.test(fnCode(f))
      && !/scene\.add/.test(fnCode(f))));
+/* ---- a panel nothing opens is a panel nobody has ---------------------
+   This check exists because of a mistake I made reading this very file.
+   I searched the built page for `onclick="openResponder` and found zero,
+   and reported that the responder panel was unreachable. It was reachable
+   the whole time: the handler is ATTACHED as a listener, not written as
+   an attribute, so the search could not have found it however true the
+   thing was.
+   Two lessons are encoded below. The check reads the SHIPPED PAGE rather
+   than the generator, because the generator's own comments quote the
+   strings it is looking for. And it matches the wiring by its EFFECT —
+   an element the markup carries, addressed by a script that calls the
+   opener — rather than by one spelling of one idiom. */
+{
+  // the bar control, as it reaches a browser
+  const hasEl = /id="respondBtn"/.test(builtPage);
+  // any script that gets that element and calls the opener, however the
+  // handler is spelled: addEventListener, .onclick =, or an attribute
+  const wired =
+    /getElementById\('respondBtn'\)[\s\S]{0,200}?openResponder\(/
+      .test(builtPage)
+    || /onclick="[^"]*openResponder/.test(builtPage);
+  ok('the responder panel has a control that opens it: #respondBtn is in '
+    + 'the markup and a script reaches it and calls openResponder. A panel '
+    + 'nothing opens is a panel nobody has, and this is checked against the '
+    + 'shipped page because the generator quotes these strings in its own '
+    + 'comments',
+    hasEl && wired);
+
+  // the second way in, from a hall
+  ok('and a hall the registry pairs carries a badge back into it, so the '
+    + 'cross-links run both ways from a learner\'s side and not only in '
+    + 'the data',
+    /responder frame/.test(builtPage)
+    && /D\.respond\.crossLinks\[/.test(builtPage));
+}
+
 console.log(`web/test_3d: ${n} checks passed - teardown, draw-call and per-frame contracts held at the source`);
