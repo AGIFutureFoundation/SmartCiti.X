@@ -12238,6 +12238,13 @@ else if (D.campuses[params.get('campus')]) showCampus(params.get('campus'));
 else showRegion();
 // test hooks: state for assertions, and the two panel openers the toolroom
 // harness drives (module scope hides them from the page's own globals)
+// The scene graph itself. renderer.info counts what was DRAWN, which is
+// what a budget cares about; this is for the other question - how many
+// separate things are standing in front of you - and only a walk of the
+// graph can answer that, because a merged mesh of forty pieces is one
+// mesh and reads as one place, not forty.
+window.__tc3dScene = () => scene;
+
 window.__tc3dDo = (fn, arg) => {
   if (fn === 'room') openRoom(arg ?? D.halls.find((x) => x.slug === slug)
     .rooms.find((r) => r.strand === 'tools').label);
@@ -12247,6 +12254,16 @@ window.__tc3dDo = (fn, arg) => {
   else if (fn === 'emote') playEmote(arg);
   else if (fn === 'advisor') openAdvisor(...String(arg).split(':'));
   else if (fn === 'wx') setWeather(arg);
+  // move between views. The eval harness needs this to score each view's
+  // real cost, and a harness that clicks its way there scores whatever the
+  // click happened to hit instead. "region", "campus:<key>", "hall:<slug>".
+  else if (fn === 'view') {
+    const [what, which] = String(arg).split(':');
+    if (what === 'region') showRegion();
+    else if (what === 'campus') showCampus(which ?? campusKey);
+    else if (what === 'hall') showHall(which ?? D.halls[0].slug);
+    else throw new Error('no such view: ' + arg);
+  }
   // place the camera: "eyeX,eyeY,eyeZ|atX,atY,atZ" - used by the harnesses
   // and, later, by anything that wants to drive the view
   else if (fn === 'cam') {

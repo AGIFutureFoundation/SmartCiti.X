@@ -444,6 +444,63 @@ PLACES = {
         ],
     },
 
+    # The front door. Not a view of the world and not a panel over one -
+    # the guide is reachable from the homepage too, and a reader who has
+    # not opened the 3D world yet has different questions than one standing
+    # in it. `kind: page` and `view: None` keep it out of the 3D page's
+    # view routing, which only maps places that carry a `view`.
+    'home': {
+        'name': 'The front door',
+        'kind': 'page',
+        'view': None,
+        'walkable': False,
+        'opened_by': 'opening index.html - it is the first page of the bundle',
+        'what_line': 'nine surfaces built from the same registries, and what '
+                     'each of them does and does not claim',
+        'topics': [
+            {'id': 'what', 'ask': 'What is this?',
+             'cites': 'README.md',
+             'answer': 'A walkable training world for the skilled trades: a '
+                       'taxonomy of union halls, each with a generated floor '
+                       'plan you can walk through on foot, a yard of operable '
+                       'machine seats, and the registries every one of those '
+                       'is built from. Every figure on this page is read from '
+                       'the pack that owns it rather than typed beside it.'},
+            {'id': 'do', 'ask': 'Where should I start?',
+             'cites': 'web/build_home.py',
+             'answer': 'The walkable world. It is the only surface where you '
+                       'stand in the thing rather than read about it - press '
+                       'walk on a campus green and the view becomes a body. '
+                       'The interactive map is the better second stop if you '
+                       'want the whole roster at once instead of one hall.'},
+            {'id': 'move', 'ask': 'How do I get around the surfaces?',
+             'scheme': 'pointer',
+             'cites': 'web/build_home.py',
+             'answer': 'Every card on this page is a link to one built page. '
+                       'They do not nest: each opens on its own and the back '
+                       'button returns here. Nothing on this page needs a '
+                       'keyboard, and nothing on it is fetched from anywhere.'},
+            {'id': 'back', 'ask': 'How do I come back here?',
+             'cites': 'web/build_home.py',
+             'answer': 'The browser\'s own back button, or the root of the '
+                       'site. This page holds no state: there is nothing to '
+                       'lose by leaving it and nothing to restore on return.'},
+            {'id': 'measures', 'ask': 'Is anything here scoring me?',
+             'cites': 'training/registry/training.json',
+             'answer': 'Nothing on this page. The simulator seats keep a '
+                       'record, and it is this browser\'s own - it never '
+                       'leaves the device and no account exists to attach it '
+                       'to. Opening the front door records nothing at all.'},
+            {'id': 'limits', 'ask': 'What does this not claim?',
+             'cites': 'unions/registry/unions.json',
+             'answer': 'It is a taxonomy of skilled trades, not a roster of '
+                       'chartered locals: no real local is named and no real '
+                       'union\'s mark is drawn. No seat certifies anybody, no '
+                       'site has been surveyed, and the lesson content is '
+                       'unverified general practice pending authoring by '
+                       'journey-level practitioners from the halls.'},
+        ],
+    },
     'panel-records': {
         'name': 'The records panel',
         'kind': 'panel',
@@ -1041,7 +1098,12 @@ for pid, p in PLACES.items():
     got = [t['id'] for t in p['topics']]
     assert got == ASK_IDS, \
         f'{pid}: answers {got}, but the ask set is {ASK_IDS}'
-    assert p['kind'] in ('world', 'panel'), f'{pid}: unknown kind'
+    # three kinds, and the distinction is load-bearing: a `world` place is
+    # routed from the 3D page's own `view` value, a `panel` overlays one,
+    # and a `page` is a built HTML page that has no 3D view at all.
+    assert p['kind'] in ('world', 'panel', 'page'), f'{pid}: unknown kind'
+    assert (p['view'] is None) == (p['kind'] != 'world'), \
+        f'{pid}: only a world place carries a view, and every one must'
     assert isinstance(p['walkable'], bool), f'{pid}: walkable is a decision'
     assert len(p['opened_by']) > 20 and len(p['what_line']) > 20, \
         f'{pid}: a place needs to say how it is reached and what it is'
@@ -1282,6 +1344,7 @@ doc = {
         'places': len(PLACES),
         'world_places': sum(1 for p in PLACES.values() if p['kind'] == 'world'),
         'panel_places': sum(1 for p in PLACES.values() if p['kind'] == 'panel'),
+        'page_places': sum(1 for p in PLACES.values() if p['kind'] == 'page'),
         'asks': len(ASK_SET),
         'topics': len(topics),
         'cited_files': len(cited),
@@ -1316,7 +1379,8 @@ OUT = HERE / 'registry'
 OUT.mkdir(exist_ok=True)
 (OUT / 'guide.json').write_text(json.dumps(doc, indent=1) + '\n')
 print(f"guide: {doc['counts']['places']} places "
-      f"({doc['counts']['world_places']} views, {doc['counts']['panel_places']} panels), "
+      f"({doc['counts']['world_places']} views, {doc['counts']['panel_places']} panels, "
+      f"{doc['counts']['page_places']} page), "
       f"{doc['counts']['topics']} topics over {doc['counts']['asks']} asks, "
       f"{doc['counts']['cited_files']} files cited; "
       f"{doc['counts']['controls']} controls in "

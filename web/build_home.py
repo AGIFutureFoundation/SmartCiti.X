@@ -23,6 +23,10 @@ import sys
 HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from staleness import emit  # noqa: E402
+# The eight district hues. web/mapdata.py owns them and the campus
+# map, the 3D world and the crew marks all read from there; a second set of
+# numbers here would be eight facts with two owners.
+from mapdata import HUES  # noqa: E402
 
 
 def _pack_root():
@@ -44,8 +48,11 @@ stations = R('stations/registry/stations.json')
 agents = R('agents/registry/advisors.json')
 crews = R('agents/registry/crews.json')
 labels = R('labels/registry/labels.json')
+guide = R('guide/registry/guide.json')
 restoration = R('restoration/registry/restoration.json')
 geo = R('geo/registry/campuses_geo.json')
+districts = R('unions/registry/districts.json')['districts']
+campuses = R('unions/registry/campuses.json')['campuses']
 i18n_en = R('i18n/locales/en.json')
 
 # ---------------------------------------------------------------- figures ---
@@ -86,6 +93,191 @@ assert CAMPUSES == len(geo['campuses']), (
 _pack_readme = (ROOT / 'README.md').read_text(encoding='utf-8')
 assert f'{MODULES:,}' in _pack_readme, (
     'the module figure on the front door is not the one the bundle states')
+
+
+# --------------------------------------------------------------- drawn ---
+# Three pictures, each one a picture OF something rather than a decoration
+# beside it. Nothing here is a stock image, an icon font or a file fetched
+# from anywhere: the page draws its own SVG from the same registries every
+# figure on it is read from, so a picture cannot disagree with the number
+# printed under it.
+
+
+def hero_map(w=1040, h=340):
+    """The ten campuses at their real coordinates, and the routes between.
+
+    An equirectangular projection - longitude straight onto x, latitude onto
+    y - which is the wrong projection for measuring anything and the right
+    one for a diagram that must not imply a survey. The dot area is the
+    hall count, so Treasure Island reads as the flagship because it holds
+    the most halls, not because it was drawn bigger.
+    """
+    pts = {k: (v['lng'], v['lat']) for k, v in geo['campuses'].items()}
+    xs = [p[0] for p in pts.values()]
+    ys = [p[1] for p in pts.values()]
+    pad = 54
+    x0, x1, y0, y1 = min(xs), max(xs), min(ys), max(ys)
+    sx = (w - pad * 2) / (x1 - x0)
+    sy = (h - pad * 2) / (y1 - y0)
+    def xy(lng, lat):
+        return (pad + (lng - x0) * sx, h - pad - (lat - y0) * sy)
+
+    flag = 'treasure-island'
+    assert flag in pts, 'the flagship campus is not in the geo registry'
+    fx, fy = xy(*pts[flag])
+
+    # the graticule: whole degrees of longitude, so the frame is a real
+    # grid rather than a texture
+    grid = []
+    step = 10
+    lo = int(x0 // step) * step
+    while lo <= x1 + step:
+        gx, _ = xy(lo, y0)
+        if pad * .4 < gx < w - pad * .4:
+            grid.append(f'<line x1="{gx:.1f}" y1="{pad*.5:.0f}" x2="{gx:.1f}" '
+                        f'y2="{h-pad*.5:.0f}" class="grat"/>')
+        lo += step
+    la = int(y0 // step) * step
+    while la <= y1 + step:
+        _, gy = xy(x0, la)
+        if pad * .4 < gy < h - pad * .4:
+            grid.append(f'<line x1="{pad*.5:.0f}" y1="{gy:.1f}" x2="{w-pad*.5:.0f}" '
+                        f'y2="{gy:.1f}" class="grat"/>')
+        la += step
+
+    # Place every dot first, then push the LABELS apart. Drawn straight
+    # from the coordinates, Detroit and Pittsburgh printed on top of each
+    # other - which is what the projection honestly gives you and is still
+    # unreadable. The dots stay exactly where the data puts them; only the
+    # text slides, and only vertically, so a label never implies a position
+    # its dot does not have.
+    placed = []
+    for k, (lng, lat) in sorted(pts.items(), key=lambda kv: -kv[1][1]):
+        cx, cy = xy(lng, lat)
+        ly = cy
+        for pk, pcx, ply in placed:
+            if abs(pcx - cx) < 96 and abs(ply - ly) < 15:
+                ly = ply + 15
+        placed.append((k, cx, ly))
+    label_y = {k: ly for k, _, ly in placed}
+
+    routes, dots, names = [], [], []
+    for k, (lng, lat) in sorted(pts.items(), key=lambda kv: -kv[1][1]):
+        cx, cy = xy(lng, lat)
+        halls = len(campuses[k]['halls'])
+        # area proportional to halls, so a campus twice the size reads twice
+        # the size rather than four times it
+        r = 5.5 + (halls ** .5) * 1.5
+        if k != flag:
+            # bowed, not straight: a straight line between two points on a
+            # sphere is the one thing this projection definitely is not
+            mx, my = (fx + cx) / 2, (fy + cy) / 2 - abs(cx - fx) * .13
+            routes.append(f'<path d="M{fx:.1f} {fy:.1f} Q{mx:.1f} {my:.1f} '
+                          f'{cx:.1f} {cy:.1f}" class="route"/>')
+        cls = 'dot flag' if k == flag else 'dot'
+        dots.append(f'<circle cx="{cx:.1f}" cy="{cy:.1f}" r="{r:.1f}" class="{cls}">'
+                    f'<title>{esc(campuses[k]["name"])} \u2014 {halls} halls, '
+                    f'{esc(campuses[k]["city"])}</title></circle>')
+        anchor, dx = ('end', -r - 7) if cx > w * .6 else ('start', r + 7)
+        ly = label_y[k]
+        # a leader line where the label had to move, so the pairing stays
+        # obvious rather than becoming a guess
+        if abs(ly - cy) > 1:
+            names.append(f'<line x1="{cx+dx*.5:.1f}" y1="{cy:.1f}" '
+                         f'x2="{cx+dx:.1f}" y2="{ly:.1f}" class="lead"/>')
+        names.append(f'<text x="{cx+dx:.1f}" y="{ly+4:.1f}" text-anchor="{anchor}" '
+                     f'class="cname">{esc(campuses[k]["city"])}</text>')
+
+    return (f'<svg viewBox="0 0 {w} {h}" class="hero" role="img" '
+            f'aria-label="The ten campuses at their real coordinates, '
+            f'{n(HALLS)} halls between them">'
+            f'<rect width="{w}" height="{h}" class="plate"/>'
+            + ''.join(grid) + ''.join(routes) + ''.join(dots) + ''.join(names)
+            + f'<text x="{pad*.5:.0f}" y="{h-14}" class="cap">WGS84 \u00b7 '
+            f'equirectangular \u00b7 dot area is the hall count \u00b7 routes are '
+            f'drawn, not surveyed</text></svg>')
+
+
+def district_bar(w=1040, h=124):
+    """All 111 halls, banded by district, in each district's own hue."""
+    tot = sum(len(d['halls']) for d in districts.values())
+    assert tot == HALLS, f'the districts hold {tot} halls, the roster says {HALLS}'
+    out, x = [], 0.0
+    for k, d in districts.items():
+        c = len(d['halls'])
+        seg = (w - 0) * c / tot
+        hue = HUES[k]
+        out.append(f'<rect x="{x:.1f}" y="0" width="{seg-2:.1f}" height="34" '
+                   f'rx="3" fill="hsl({hue} 52% 46%)" class="seg">'
+                   f'<title>{esc(d["name"])} \u2014 {c} halls</title></rect>')
+        # "Transport & Mobility" is wider than the ten-hall band it sits
+        # under, so it ran into its neighbour. Wrap onto two lines rather
+        # than truncate: the district's name is the one thing this band is
+        # for, and a clipped name is a name nobody can read.
+        words, lines, cur = esc(d['name']).split(' '), [], ''
+        for wd in words:
+            if len(cur) + len(wd) + 1 <= 13 or not cur:
+                cur = (cur + ' ' + wd).strip()
+            else:
+                lines.append(cur); cur = wd
+        lines.append(cur)
+        # Three lines, not two. At two, "Transport & Mobility" printed as
+        # "Transport &" and "Survey, Safety & Environment" lost the word
+        # Environment - a clipped name, which is the thing the wrap was
+        # added to avoid. Every district name fits in three.
+        assert len(lines) <= 3, f'{k}: {d["name"]} needs {len(lines)} lines'
+        for li, ln in enumerate(lines):
+            out.append(f'<text x="{x:.1f}" y="{50 + li*11:.0f}" class="dname">{ln}</text>')
+        out.append(f'<text x="{x:.1f}" y="{50 + len(lines)*11 + 4:.0f}" '
+                   f'class="dcount">{c} halls</text>')
+        # every hall as its own tick, so the band is a count and not a bar
+        for i in range(c):
+            tx = x + 2 + (seg - 6) * (i + .5) / c
+            out.append(f'<rect x="{tx:.1f}" y="108" width="1.6" height="10" '
+                       f'rx=".8" fill="hsl({hue} 52% 58%)" opacity=".85"/>')
+        x += seg
+    return (f'<svg viewBox="0 0 {w} {h}" class="bar" role="img" '
+            f'aria-label="{n(HALLS)} halls across {len(districts)} districts">'
+            + ''.join(out) + '</svg>')
+
+
+def seat_strip(w=1040, h=96):
+    """One tile per operable training seat, drawn as its own silhouette."""
+    ids = list(sims['sims'])
+    cell = w / len(ids)
+    out = []
+    for i, sid in enumerate(ids):
+        x = i * cell
+        sm = sims['sims'][sid]
+        # a schematic mark per seat, built from the seat's own id so two
+        # seats cannot share a drawing by accident
+        seed = sum(ord(ch) for ch in sid)
+        bars = ''.join(
+            f'<rect x="{x+12+j*7:.1f}" y="{36 - ((seed >> j) % 5 + 2) * 3:.1f}" '
+            f'width="4" height="{((seed >> j) % 5 + 2) * 3}" rx="1" '
+            f'class="sbar" opacity="{.45 + .07*j:.2f}"/>' for j in range(5))
+        # "Overhead Crane Shop Move" is three times the width of the tile
+        # it names, and printed on one line it ran straight through its
+        # neighbours. Stack the words instead: a seat's name is the whole
+        # point of the tile, so it wraps rather than clipping.
+        words, lines, cur = esc(sm['name']).split(' '), [], ''
+        for wd in words:
+            if len(cur) + len(wd) + 1 <= 11 or not cur:
+                cur = (cur + ' ' + wd).strip()
+            else:
+                lines.append(cur); cur = wd
+        lines.append(cur)
+        lines = lines[:3]
+        top = h - 10 - (len(lines) - 1) * 10
+        txt = ''.join(
+            f'<text x="{x+cell/2:.1f}" y="{top + li*10:.1f}" text-anchor="middle" '
+            f'class="sname">{ln}</text>' for li, ln in enumerate(lines))
+        out.append(f'<g class="seat"><rect x="{x+2:.1f}" y="4" width="{cell-6:.1f}" '
+                   f'height="{h-8}" rx="7" class="stile"/>{bars}{txt}'
+                   f'<title>{esc(sm["name"])}</title></g>')
+    return (f'<svg viewBox="0 0 {w} {h}" class="strip" role="img" '
+            f'aria-label="{n(SEATS)} operable training seats">'
+            + ''.join(out) + '</svg>')
 
 
 def n(x):
@@ -249,6 +441,58 @@ a.card .limit b2{display:none}
 footer{margin-top:56px;border-top:1px solid var(--rule);background:var(--sunk)}
 footer .wrap{padding:26px 20px 40px}
 footer p{color:var(--dim);font-size:13px;max-width:82ch;margin:0 0 10px}
+
+/* ---- the drawings ---------------------------------------------------
+   Everything below styles SVG this page generated from its own registries.
+   No image is fetched; there is nothing to fetch. */
+.hero{display:block;width:100%;height:auto;margin:30px 0 0;
+  border:1px solid var(--rule);border-radius:10px;background:var(--sunk)}
+.hero .plate{fill:var(--sunk)}
+.hero .grat{stroke:var(--rule);stroke-width:1;opacity:.55}
+.hero .route{fill:none;stroke:var(--steel);stroke-width:1.2;opacity:.42}
+.hero .dot{fill:var(--steel);stroke:var(--sunk);stroke-width:2}
+.hero .dot.flag{fill:var(--mark)}
+.hero .cname{fill:var(--muted);font:11.5px "IBM Plex Sans",sans-serif}
+.hero .lead{stroke:var(--dim);stroke-width:1;opacity:.6}
+.hero .cap{fill:var(--dim);font:10.5px "IBM Plex Mono",monospace;
+  letter-spacing:.3px;text-transform:uppercase}
+.bar,.strip{display:block;width:100%;height:auto;margin:18px 0 0}
+.bar .seg{transition:opacity .15s}
+.bar .seg:hover{opacity:.82}
+.bar .dname{fill:var(--ink);font:600 11.5px "IBM Plex Sans",sans-serif}
+.bar .dcount{fill:var(--dim);font:10.5px "IBM Plex Mono",monospace}
+.strip .stile{fill:var(--panel);stroke:var(--rule);stroke-width:1}
+.strip .sbar{fill:var(--mark)}
+.strip .sname{fill:var(--muted);font:9.5px "IBM Plex Sans",sans-serif}
+.strip .seat:hover .stile{stroke:var(--mark)}
+
+/* ---- the guide, beside the cards ------------------------------------ */
+.withguide{display:grid;grid-template-columns:minmax(0,1fr) 320px;
+  gap:22px;align-items:start}
+#guide{position:sticky;top:18px;background:var(--panel);
+  border:1px solid var(--rule);border-radius:10px;padding:16px 16px 14px}
+.ghead{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;
+  padding-bottom:9px;border-bottom:1px solid var(--rule)}
+.ghead b{font:600 16px "Barlow Condensed",sans-serif;color:var(--mark);
+  letter-spacing:.4px}
+.ghead span{color:var(--dim);font-size:11.5px}
+.gwhat{color:var(--muted);font-size:12px;margin:10px 0 12px}
+.gasks{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
+.gask{text-align:start;background:var(--sunk);color:var(--ink);
+  border:1px solid var(--rule);border-radius:7px;padding:7px 10px;
+  font:inherit;font-size:12.5px;cursor:pointer}
+.gask:hover{border-color:var(--mark)}
+.gask[aria-expanded="true"]{border-color:var(--mark);color:var(--mark)}
+.gans p{font-size:12.5px;line-height:1.6;margin:0 0 8px}
+.gcite{color:var(--dim);font-size:10.5px}
+.gcite code{font-family:"IBM Plex Mono",monospace}
+.gfoot{color:var(--dim);font-size:10.5px;margin:12px 0 0;
+  padding-top:10px;border-top:1px solid var(--rule)}
+@media(max-width:900px){
+  .withguide{grid-template-columns:1fr}
+  #guide{position:static}
+  .hero .cname,.bar .dname,.bar .dcount,.strip .sname{font-size:13px}
+}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}
   html{scroll-behavior:auto}}
 """
@@ -277,6 +521,56 @@ PROV = [
     ('SCRIPTED', 'a hand-written deterministic policy, with no model behind it'),
 ]
 
+# ------------------------------------------------------- the guide ------
+# The same helper the walkable world carries, on the front door. Six fixed
+# questions about this page, answered from guide/registry/guide.json - the
+# `home` place - with each answer citing the file it was written from.
+# Nothing here takes free text, because nothing behind it could answer free
+# text, and nothing here is fetched.
+GUIDE_HOME = guide['places']['home']
+assert [t['id'] for t in GUIDE_HOME['topics']] == \
+    [a['id'] for a in guide['ask_set'][0]['asks']] if isinstance(
+        guide['ask_set'][0].get('asks'), list) else True
+
+GUIDE_HTML = f"""<aside id="guide" aria-label="guide">
+  <div class="ghead">
+    <b>\u2753 Guide</b>
+    <span>{esc(GUIDE_HOME['name'])}</span>
+  </div>
+  <p class="gwhat">{esc(GUIDE_HOME['what_line'])}</p>
+  <div class="gasks">
+    {''.join(f'<button class="gask" data-a="{t["id"]}"'
+             f'{" aria-expanded=true" if i == 0 else ""}>{esc(t["ask"])}</button>'
+             for i, t in enumerate(GUIDE_HOME['topics']))}
+  </div>
+  {''.join(f'<div class="gans" id="ga-{t["id"]}"{"" if i == 0 else " hidden"}>'
+           f'<p>{esc(t["answer"])}</p>'
+           f'<p class="gcite">read from <code>{esc(t["cites"])}</code></p></div>'
+           for i, t in enumerate(GUIDE_HOME['topics']))}
+  <p class="gfoot">{esc(guide['honesty']['status'])}</p>
+</aside>"""
+
+GUIDE_JS = """<script>
+/* The guide is six buttons and six answers, all of them already on the
+   page. No fetch, no template, no state worth losing: clicking an ask
+   shows its answer and hides the others. It works without JavaScript too -
+   every answer is in the markup and only the hiding is scripted, so a
+   reader with scripts off gets all six rather than none. */
+(function () {
+  var asks = document.querySelectorAll('.gask');
+  asks.forEach(function (b) {
+    b.addEventListener('click', function () {
+      asks.forEach(function (o) {
+        var a = document.getElementById('ga-' + o.dataset.a);
+        var on = o === b;
+        o.setAttribute('aria-expanded', on ? 'true' : 'false');
+        if (a) a.hidden = !on;
+      });
+    });
+  });
+}());
+</script>"""
+
 BODY = f"""<body>
 <header class="top"><div class="wrap">
   <div class="brandline">
@@ -294,14 +588,32 @@ BODY = f"""<body>
   <div class="stats">
     {''.join(f'<div class="stat"><b>{v}</b><span>{esc(k)}</span></div>' for v, k in STATS)}
   </div>
+  {hero_map()}
 </div></header>
 <div class="stripe"></div>
 <div class="wrap">
 <section>
+  <h2>Every hall, by district</h2>
+  <p class="lede">All {n(HALLS)} halls, banded into the {len(districts)}
+    districts that organise them. Each tick is one hall; the colours are the
+    same eight the campus map and the walkable world use.</p>
+  {district_bar()}
+</section>
+<section>
+  <h2>The yard</h2>
+  <p class="lede">{n(SEATS)} operable training seats stand in the campus
+    yard. Every one is a machine you sit in and drive, scored by a rubric
+    you can read.</p>
+  {seat_strip()}
+</section>
+<section>
   <h2>Where to start</h2>
   <p class="lede">{n(len(CARDS))} surfaces, each built from the same
     registries. The walkable world is the one to open first.</p>
-  <div class="grid">{''.join(card(c) for c in CARDS)}</div>
+  <div class="withguide">
+    <div class="grid">{''.join(card(c) for c in CARDS)}</div>
+    {GUIDE_HTML}
+  </div>
 </section>
 <section>
   <h2>How to read a claim here</h2>
@@ -342,6 +654,7 @@ BODY = f"""<body>
     {n(WALKABLE)} are walkable. Every one of those figures is read from its
     own registry by the script that generated this page.</p>
 </div></footer>
+{GUIDE_JS}
 </body>"""
 
 
@@ -361,6 +674,14 @@ _DERIVED = {
     STATIONS, ADVISORS, CREWS, CREW_ROLES, LABEL_KINDS, LOCALES, SITES,
     WALKABLE, AV_SECTIONS, AV_ALL, ROOMS, MODULES, len(CARDS), len(PROV),
     FLOORS + WALLS,   # the "built surfaces" stat, a sum of two read figures
+    len(districts),   # the district count, in the band's own lede
+    # Every district's hall count and every campus's, which the drawings
+    # print in their tooltips and labels. They are read - `len(d['halls'])`
+    # off the registry that owns the roster - so they belong here rather
+    # than in an exception list. Adding them by hand would be the very
+    # thing this gate exists to stop.
+    *(len(d['halls']) for d in districts.values()),
+    *(len(c['halls']) for c in campuses.values()),
 }
 
 
