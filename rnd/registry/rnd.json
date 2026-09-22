@@ -21,16 +21,16 @@
   "measured_elsewhere": 51,
   "computed_from_registry": 12,
   "measured_source_files": 11,
-  "registries_scanned": 36,
+  "registries_scanned": 38,
   "app_renderers_scanned": 11,
   "doc_renderers_scanned": 3,
-  "builders_scanned": 26,
-  "suites_scanned": 39,
-  "declared_unbuilt": 10,
+  "builders_scanned": 28,
+  "suites_scanned": 41,
+  "declared_unbuilt": 12,
   "declared_unbuilt_by_their_own_words": 2,
-  "declared_unbuilt_not_drawn": 9,
+  "declared_unbuilt_not_drawn": 11,
   "declared_unbuilt_documented_but_not_drawn": 7,
-  "declared_unbuilt_read_by_nothing": 2,
+  "declared_unbuilt_read_by_nothing": 4,
   "gaps": 17,
   "gaps_open": 16,
   "gaps_closed": 1,
@@ -38,13 +38,13 @@
   "budget_views": 3,
   "budget_currencies": 2,
   "budget_agreements": 7,
-  "suites_run": 44,
-  "suite_checks_declared": 1761,
+  "suites_run": 45,
+  "suite_checks_declared": 1873,
   "open_questions": 12,
   "negative_findings": 9,
   "cross_checks": 2,
   "cross_checks_disagreeing": 0,
-  "files_read": 143
+  "files_read": 149
  },
  "tiers": [
   "MEASURED-IN-BROWSER",
@@ -1373,6 +1373,24 @@
  ],
  "declared_unbuilt": [
   {
+   "registry": "ei/registry/ei.json",
+   "pack": "ei",
+   "reasons": [
+    "no page generator under web/ names this path, so nothing a learner opens reads it",
+    "and nothing outside its own pack names it either - not a builder, not the wiki, not another pack's suite; inside it, ei/build.py, ei/test.mjs does"
+   ],
+   "says": null,
+   "read_by_app_renderers": [],
+   "read_by_doc_renderers": [],
+   "read_by_builders": [],
+   "read_by_suites": [],
+   "read_by_its_own_pack": [
+    "ei/build.py",
+    "ei/test.mjs"
+   ],
+   "drops_off_when": "a page generator under web/ opens this path, or the pack removes its own honesty.not_built_yet - either one, on the next build of rnd/, with no edit here"
+  },
+  {
    "registry": "kit/registry/kit.json",
    "pack": "kit",
    "reasons": [
@@ -1512,6 +1530,24 @@
    "drops_off_when": "a page generator under web/ opens this path, or the pack removes its own honesty.not_built_yet - either one, on the next build of rnd/, with no edit here"
   },
   {
+   "registry": "respond/registry/respond.json",
+   "pack": "respond",
+   "reasons": [
+    "no page generator under web/ names this path, so nothing a learner opens reads it",
+    "and nothing outside its own pack names it either - not a builder, not the wiki, not another pack's suite; inside it, respond/build.py, respond/test.mjs does"
+   ],
+   "says": null,
+   "read_by_app_renderers": [],
+   "read_by_doc_renderers": [],
+   "read_by_builders": [],
+   "read_by_suites": [],
+   "read_by_its_own_pack": [
+    "respond/build.py",
+    "respond/test.mjs"
+   ],
+   "drops_off_when": "a page generator under web/ opens this path, or the pack removes its own honesty.not_built_yet - either one, on the next build of rnd/, with no edit here"
+  },
+  {
    "registry": "security/registry/sbom.cdx.json",
    "pack": "security",
    "reasons": [
@@ -1603,12 +1639,14 @@
     "wiki/build_wiki.py"
    ],
    "builders": [
+    "ei/build.py",
     "guide/build.py",
     "lessons/build.py",
     "spatial/build.py",
     "training/build.py"
    ],
    "suites": [
+    "ei/test.mjs",
     "lessons/test.mjs",
     "spatial/test.mjs"
    ],
@@ -1651,6 +1689,16 @@
    "own_pack": [
     "avatars/build.py",
     "avatars/test.mjs"
+   ]
+  },
+  "ei/registry/ei.json": {
+   "app_renderers": [],
+   "doc_renderers": [],
+   "builders": [],
+   "suites": [],
+   "own_pack": [
+    "ei/build.py",
+    "ei/test.mjs"
    ]
   },
   "geo/registry/campuses_geo.json": {
@@ -1796,13 +1844,17 @@
    ],
    "builders": [
     "avatars/build.py",
+    "ei/build.py",
     "lessons/build.py",
     "props/build.py",
+    "respond/build.py",
     "roadmap/build.py"
    ],
    "suites": [
+    "ei/test.mjs",
     "i18n/test.mjs",
     "lessons/test.mjs",
+    "respond/test.mjs",
     "unions/verify.mjs"
    ],
    "own_pack": [
@@ -1893,6 +1945,16 @@
    "own_pack": [
     "props/build.py",
     "props/test.mjs"
+   ]
+  },
+  "respond/registry/respond.json": {
+   "app_renderers": [],
+   "doc_renderers": [],
+   "builders": [],
+   "suites": [],
+   "own_pack": [
+    "respond/build.py",
+    "respond/test.mjs"
    ]
   },
   "restoration/registry/restoration.json": {
@@ -2101,6 +2163,7 @@
     "kit/build.py",
     "lessons/build.py",
     "props/build.py",
+    "respond/build.py",
     "sims/build.py"
    ],
    "suites": [
@@ -2108,6 +2171,7 @@
     "kit/test.mjs",
     "lessons/test.mjs",
     "props/test.mjs",
+    "respond/test.mjs",
     "sims/test.mjs",
     "stations/test.mjs",
     "xr/test.mjs"
@@ -2197,6 +2261,7 @@
     "lessons/build.py",
     "orbis/build.py",
     "parcels/build.py",
+    "respond/build.py",
     "restoration/build.py",
     "roadmap/build.py",
     "schools/build.py",
@@ -2208,6 +2273,7 @@
     "kit/test.mjs",
     "lessons/test.mjs",
     "parcels/test.mjs",
+    "respond/test.mjs",
     "restoration/test.mjs",
     "roadmap/test.mjs",
     "schools/test.mjs",
@@ -2366,6 +2432,7 @@
   "builders": [
    "agents/build.py",
    "avatars/build.py",
+   "ei/build.py",
    "geo/build.py",
    "guide/build.py",
    "kit/build.py",
@@ -2376,6 +2443,7 @@
    "pack/build.py",
    "parcels/build.py",
    "props/build.py",
+   "respond/build.py",
    "restoration/build.py",
    "roadmap/build.py",
    "schools/build.py",
@@ -2400,6 +2468,7 @@
    "control/test.mjs",
    "control/test_graph.mjs",
    "control/test_hints.mjs",
+   "ei/test.mjs",
    "fabric/test.mjs",
    "geo/test.mjs",
    "guide/test.mjs",
@@ -2413,6 +2482,7 @@
    "pack/verify.mjs",
    "parcels/test.mjs",
    "props/test.mjs",
+   "respond/test.mjs",
    "restoration/test.mjs",
    "roadmap/test.mjs",
    "schools/test.mjs",
@@ -3151,6 +3221,13 @@
     "in_readme_table": true
    },
    {
+    "suite": "ei/test.mjs",
+    "pack": "ei",
+    "readme_checks": 112,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
     "suite": "spatial/test.mjs",
     "pack": "spatial",
     "readme_checks": 45,
@@ -3172,18 +3249,18 @@
     "in_readme_table": true
    }
   ],
-  "suites_run": 44,
-  "suites_declaring_a_count": 43,
+  "suites_run": 45,
+  "suites_declaring_a_count": 44,
   "suites_without_a_count": [
    "control/soak.mjs"
   ],
-  "declared_total": 1761,
-  "readme_headline": 1772,
+  "declared_total": 1873,
+  "readme_headline": 1884,
   "unaccounted_for": 11,
   "unaccounted_note": "the headline counts every `  ok ` line verify_all.sh sees, which includes suites the README table gives no number to and web/test_interiors.py, which the table does not list at all. The difference is that remainder and is computed, not reconciled by hand.",
   "min": 9,
   "max": 207,
-  "median": 34,
+  "median": 34.5,
   "thinnest": [
    {
     "suite": "ops/fuzz.mjs",
@@ -3216,6 +3293,10 @@
     "checks": 207
    },
    {
+    "suite": "ei/test.mjs",
+    "checks": 112
+   },
+   {
     "suite": "restoration/test.mjs",
     "checks": 84
    },
@@ -3230,10 +3311,6 @@
    {
     "suite": "rnd/test.mjs",
     "checks": 61
-   },
-   {
-    "suite": "agents/test.mjs",
-    "checks": 59
    }
   ],
   "note": "a thin suite is not automatically a bad one - tools/ has 13 checks over a registry of twelve hand tools - but a thin suite over a large surface is where an unfound defect is most likely to be sitting, and this table is the only place the two are shown side by side."
@@ -3449,6 +3526,9 @@
   "control/test.mjs",
   "control/test_graph.mjs",
   "control/test_hints.mjs",
+  "ei/build.py",
+  "ei/registry/ei.json",
+  "ei/test.mjs",
   "fabric/test.mjs",
   "geo/build.py",
   "geo/registry/campuses_geo.json",
@@ -3500,6 +3580,9 @@
   "props/build.py",
   "props/registry/props.json",
   "props/test.mjs",
+  "respond/build.py",
+  "respond/registry/respond.json",
+  "respond/test.mjs",
   "restoration/build.py",
   "restoration/registry/restoration.json",
   "restoration/test.mjs",
