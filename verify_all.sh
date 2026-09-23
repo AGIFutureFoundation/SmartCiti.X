@@ -19,7 +19,7 @@ for t in control/test.mjs control/test_graph.mjs control/test_hints.mjs \
          agents/test.mjs world/test.mjs labels/test.mjs training/test.mjs \
          roadmap/test.mjs orbis/test.mjs restoration/test.mjs guide/test.mjs sky/test.mjs lessons/test.mjs \
          kit/test.mjs props/test.mjs terrain/test.mjs rnd/test.mjs xr/test.mjs ei/test.mjs respond/test.mjs \
-         spatial/test.mjs auth/test.mjs web/test_3d.mjs web/test_rtl.mjs; do
+         spatial/test.mjs auth/test.mjs web/test_ladder.mjs web/test_3d.mjs web/test_rtl.mjs; do
   out=$(node "$t" 2>&1); rc=$?
   n=$(printf '%s\n' "$out" | grep -c '^  ok ')
   total=$((total + n))
@@ -46,6 +46,7 @@ python3 web/build_landing.py --check || fail=$((fail + 1))
 python3 web/build_3d.py --check || fail=$((fail + 1))
 python3 web/build_home.py --check || fail=$((fail + 1))
 python3 web/build_auth.py --check || fail=$((fail + 1))
+python3 web/build_ladder.py --check || fail=$((fail + 1))
 python3 web/fetch_fonts.py --check || fail=$((fail + 1))
 python3 terrain/fetch_terrain.py --check || fail=$((fail + 1))
 iout=$(python3 web/test_interiors.py 2>&1) || fail=$((fail + 1))
