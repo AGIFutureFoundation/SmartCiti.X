@@ -1017,15 +1017,32 @@ HONESTY = {
                       'the low-sun hours are brighter than noon because a low '
                       'sun lights the whole dome, which is the arc a sky '
                       'actually has and not the one a linear dimmer gives.',
-    'not_built_yet': 'sun_disc is declared and unread - the page draws its '
-                     'disc from the light\'s own position, which is what '
-                     'makes the disc and the shadows agree, so this pack\'s '
-                     'disc block has nothing to drive yet. The layer list and '
-                     'compose_order describe an order the page now follows '
-                     'but does not read from here. And the hour is STEPPED, '
-                     'never interpolated: setSky() rebuilds the environment '
-                     'map on every call, so a sun that slid continuously '
-                     'would rebuild it every frame.',
+    # Two of the three things this block used to list are not backlog at all:
+    # they are decisions, each taken for a stated reason, and filing them
+    # under the same word as real backlog made the backlog look bigger than
+    # it is AND hid that anyone had decided anything. A reader cannot tell
+    # "nobody got to it" from "we considered it and chose otherwise" if both
+    # are called not_built_yet. So they are split, and a decision only earns
+    # its place here by carrying the reason it was taken.
+    'decided': {
+        'sun_disc_is_drawn_from_the_light': 'sun_disc is declared here and '
+            'deliberately unread. The page draws its disc from the key '
+            'light\'s own position, which is what makes the disc and the '
+            'shadows agree; a disc driven from this block instead could sit '
+            'where the shadows say the sun is not. The block stays as a '
+            'record of the geometry, not as a thing waiting to be wired.',
+        'the_hour_is_stepped_not_interpolated': 'the hour moves in phases and '
+            'never slides between them. setSky() rebuilds the environment map '
+            'on every call, so a continuously moving sun would rebuild it '
+            'every frame. This is a chosen trade, not an unfinished one.',
+    },
+    'not_built_yet': 'the layer list and compose_order describe an order the '
+                     'page follows but does not read from here. The page is '
+                     'handed compose_order in its own blob and re-derives the '
+                     'same order in code, so the order has two owners and '
+                     'they agree today by inspection rather than by '
+                     'construction. That is the one thing in this pack still '
+                     'genuinely undone.',
 }
 assert HONESTY['status'].startswith('COMPUTED:'), \
     'this pack carries the COMPUTED provenance word'

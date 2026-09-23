@@ -29,7 +29,7 @@ them, field by field:
 
 **What the page reads today.** the page reads this registry. setSun() places the key light along the selected phase's own elevation and azimuth, applyPhase() takes the sun and hemisphere colours and intensity multipliers from the phase, the star field is up when the phase puts the sun below the star layer's cutoff and is dimmed rather than culled by the weather's star_visibility, a weather state that pins an hour does so through phase_override, and the hour is a control in the top bar and a ?hour= query parameter. The six hex literals the page used to switch the light with are gone.
 
-**What it does not.** sun_disc is declared and unread - the page draws its disc from the light's own position, which is what makes the disc and the shadows agree, so this pack's disc block has nothing to drive yet. The layer list and compose_order describe an order the page now follows but does not read from here. And the hour is STEPPED, never interpolated: setSky() rebuilds the environment map on every call, so a sun that slid continuously would rebuild it every frame.
+**What it does not.** the layer list and compose_order describe an order the page follows but does not read from here. The page is handed compose_order in its own blob and re-derives the same order in code, so the order has two owners and they agree today by inspection rather than by construction. That is the one thing in this pack still genuinely undone.
 
 ## The site and the day
 

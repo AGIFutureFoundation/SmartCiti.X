@@ -502,8 +502,24 @@ ok('the pack admits the page does not render any of this yet',
   && /mixHex\(h, ph\.gradient\.stops\[i\], 1 - ph\.gradient\.campus_mix\)/.test(page)
   && /mixHex\(lit, ws\.gradient_tint_hex, ws\.tint_mix\)/.test(page)
   && /hazeMul: ws\.horizon_haze_mul/.test(page)
-  && /sun_disc is declared and unread/.test(reg.honesty.not_built_yet)
-  && /the hour is STEPPED, never interpolated/.test(reg.honesty.not_built_yet)
+  // Both of these used to sit in not_built_yet. They are decisions, not
+  // backlog, so they moved to `decided` - and the move only counts if each
+  // one carries the REASON it was decided, otherwise splitting the block
+  // would just be a quieter way of dropping two admissions.
+  && /sun_disc is declared here and deliberately unread/
+      .test(reg.honesty.decided.sun_disc_is_drawn_from_the_light)
+  && /shadows agree/
+      .test(reg.honesty.decided.sun_disc_is_drawn_from_the_light)
+  && /never slides between them/
+      .test(reg.honesty.decided.the_hour_is_stepped_not_interpolated)
+  && /rebuild it every frame/
+      .test(reg.honesty.decided.the_hour_is_stepped_not_interpolated)
+  && Object.values(reg.honesty.decided).every((v) => v.length > 120)
+  // and what is left in not_built_yet is the one thing actually undone:
+  // the page is handed compose_order and re-derives it anyway.
+  && /compose_order describe an order the page follows but does not read/
+      .test(reg.honesty.not_built_yet)
+  && !/sun_disc|STEPPED/.test(reg.honesty.not_built_yet)
   // and the claim is checked against the page rather than trusted
   && /function setSun\(elevDeg, azDeg\)/.test(page)
   && !/starAlpha[\s\S]{0,40}stars: !!w\.stars/.test(page));
