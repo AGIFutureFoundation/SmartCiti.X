@@ -54,6 +54,10 @@ geo = R('geo/registry/campuses_geo.json')
 districts = R('unions/registry/districts.json')['districts']
 campuses = R('unions/registry/campuses.json')['campuses']
 i18n_en = R('i18n/locales/en.json')
+lessons = R('lessons/registry/lessons.json')
+auth = R('auth/registry/auth.json')
+skills = R('pack/registry/skills.json')
+variants = R('pack/registry/variants.json')
 
 # ---------------------------------------------------------------- figures ---
 # Read, never typed. Each is the pack's own count or a length over the pack's
@@ -73,6 +77,25 @@ CREWS = crews['counts']['crews']
 CREW_ROLES = crews['counts']['roles']
 LABEL_KINDS = labels['counts']['kinds']
 LOCALES = len(list((ROOT / 'i18n/locales').glob('*.json')))
+LESSONS = lessons['counts']['lessons']
+LESSON_STEPS = lessons['counts']['steps']
+AUTH_METHODS = auth['counts']['methods']
+AUTH_WORKING = auth['counts']['configured_true']
+AUTH_AUTHENTICATES = auth['counts']['methods_that_authenticate']
+SKILLS = skills['count']
+# The ladder's shape, recomputed here rather than restated: one cell per
+# (strand, tier), and the cells a seat actually stands on. Every one of the
+# eleven seats is machines/applied, so COVERED_POS is 1 of 33 - the figure
+# this card exists to be honest about.
+STRANDS = len({k['strand'] for k in skills['skills']})
+TIERS = len({k['tier'] for k in skills['skills']})
+LADDER_CELLS = STRANDS * TIERS
+COVERED_POS = len({(v['skill_strand'], v['skill_tier'])
+                   for v in sims['sims'].values()})
+UNCOVERED_STRANDS = STRANDS - len({v['skill_strand']
+                                   for v in sims['sims'].values()})
+MODALITIES = len(variants['modalities'])
+BANDS = len(variants['bands'])
 SITES = len(restoration['sites'])
 WALKABLE = len([s for s in restoration['sites'] if s['walkable']])
 AV_SECTIONS = len(avatars['sections'])
@@ -373,6 +396,45 @@ def n(x):
 # with it, and what it does not claim - the limits in the same breath as the
 # capability, because a training product for the trades owes a reader that.
 CARDS = [
+    {'href': 'web/trade_craft_ladder.html',
+     'title': 'The union training ladder',
+     'kicker': f'{n(SKILLS)} skills \u00b7 {n(LADDER_CELLS)} cells a trade \u00b7 '
+               f'{n(COVERED_POS)} a seat stands on',
+     'body': f"""The module graph and the simulators, joined where a member
+        can see it. Each trade's own {n(LADDER_CELLS)} cells -
+        {n(STRANDS)} strands by {n(TIERS)} tiers - with the prerequisite
+        edges the registry declares, and the cell each training seat proves
+        outlined and linked straight into that seat. The same cell can be
+        taken {n(MODALITIES * BANDS)} ways: {n(MODALITIES)} modalities across
+        {n(BANDS)} support bands.""",
+     'limit': f"""Every seat is machines/applied, so a seat stands on
+        {n(COVERED_POS)} of {n(LADDER_CELLS)} cells and
+        {n(UNCOVERED_STRANDS)} of {n(STRANDS)} strands carry no simulator at
+        all. The ladder draws the gaps as plainly as the coverage, and a
+        passing run certifies nobody."""},
+    {'href': 'web/trade_craft_lessons.html',
+     'title': 'The walkable lessons',
+     'kicker': f'{n(LESSONS)} lessons \u00b7 {n(LESSON_STEPS)} steps you can stand in',
+     'body': f"""{n(LESSONS)} lessons a learner walks rather than reads:
+        {n(LESSON_STEPS)} steps that send you to a placard, a station, a tool
+        crib, a walkaround, an advisor or a seat, in the room where the work
+        happens. Each lesson names the hall it stands in and links through to
+        it, and each hall names its lessons back.""",
+     'limit': """A step marks itself in the open tab and nowhere else:
+        nothing is stored, and no lesson carries a practitioner sign-off."""},
+    {'href': 'web/trade_craft_signin.html',
+     'title': 'Sign in, and what a bundle with no server cannot do',
+     'kicker': f'{n(AUTH_METHODS)} methods \u00b7 {n(AUTH_WORKING)} that work here \u00b7 '
+               f'{n(AUTH_AUTHENTICATES)} that authenticate anybody',
+     'body': f"""Name whose training record this device holds, or sign a
+        real EIP-4361 message with a wallet. All {n(AUTH_METHODS)} methods
+        are described, including the ones that are off and exactly what each
+        is missing.""",
+     'limit': f"""{n(AUTH_AUTHENTICATES)} of {n(AUTH_METHODS)} authenticate
+        anybody. An authorization-code exchange needs a server holding a
+        client secret and this bundle has none, so Google, Microsoft and
+        email-link fail closed rather than setting a flag that would report a
+        learner as signed in when nothing signed them in."""},
     {'href': 'web/trade_craft_3d.html', 'lead': True,
      'title': 'The walkable world',
      'kicker': f'{n(HALLS)} halls · {n(CAMPUSES)} campuses · {n(SEATS)} training seats',
@@ -796,6 +858,15 @@ _DERIVED = {
     # thing this gate exists to stop.
     *(len(d['halls']) for d in districts.values()),
     *(len(c['halls']) for c in campuses.values()),
+    # The three cards added when the ladder, the lessons and the sign-in
+    # page got a way in from the front door. Each is read or recomputed
+    # above from the registry that owns it - the ladder's shape from
+    # skills.json, its covered position from the seats' own declared
+    # strand and tier - so they belong here for the same reason the
+    # district hall counts do.
+    LESSONS, LESSON_STEPS, AUTH_METHODS, AUTH_WORKING, AUTH_AUTHENTICATES,
+    SKILLS, STRANDS, TIERS, LADDER_CELLS, COVERED_POS, UNCOVERED_STRANDS,
+    MODALITIES, BANDS, MODALITIES * BANDS,
 }
 
 
@@ -808,6 +879,12 @@ def _figures_in(html):
     """
     text = re.sub(r'<[^>]+>', ' ', html)
     text = text.replace('&mdash;', ' ')
+    # ...and neither is the number in a hyphenated standard's designation.
+    # EIP-4361 names the sign-in message format the way WGS84 names a
+    # coordinate system: 4361 counts nothing and cannot drift. The letters
+    # must be UPPERCASE for this to apply, so `top-10` is still a figure and
+    # still caught - this narrows the rule rather than opening a hole in it.
+    text = re.sub(r'(?<![A-Za-z0-9])[A-Z]{2,}-\d+(?![A-Za-z0-9])', ' ', text)
     found = re.findall(r'(?<![A-Za-z0-9])\d[\d,]*(?![A-Za-z0-9])', text)
     return {int(m.replace(',', ''))
             for m in found if len(m.replace(',', '')) > 1}

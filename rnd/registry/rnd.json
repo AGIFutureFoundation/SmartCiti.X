@@ -1519,7 +1519,8 @@
   },
   "auth/registry/auth.json": {
    "app_renderers": [
-    "web/build_auth.py"
+    "web/build_auth.py",
+    "web/build_home.py"
    ],
    "doc_renderers": [
     "wiki/build_wiki.py"
@@ -1654,6 +1655,7 @@
   "lessons/registry/lessons.json": {
    "app_renderers": [
     "web/build_3d.py",
+    "web/build_home.py",
     "web/build_lessons.py"
    ],
    "doc_renderers": [
@@ -1752,6 +1754,7 @@
   },
   "pack/registry/skills.json": {
    "app_renderers": [
+    "web/build_home.py",
     "web/build_ladder.py"
    ],
    "doc_renderers": [
@@ -1783,6 +1786,7 @@
   },
   "pack/registry/variants.json": {
    "app_renderers": [
+    "web/build_home.py",
     "web/build_ladder.py"
    ],
    "doc_renderers": [
