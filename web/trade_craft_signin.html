@@ -1,0 +1,555 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230C1113'/%3E%3Cpath d='M7 21 L16 7 L25 21 Z' fill='none' stroke='%23E8A33D' stroke-width='2.6' stroke-linejoin='round'/%3E%3Cpath d='M11 21 h10' stroke='%2341C4D4' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E">
+<title>SmartCiti.X : Trade Craft Academy &mdash; sign in</title>
+<style>
+:root{
+  --plate:#12181B; --panel:#182023; --sunk:#0C1113; --ink:#E8EDEC; --muted:#93A3A6;
+  --rule:#28353A; --mark:#E8A33D; --mark-ink:#12181B; --steel:#41C4D4; --stop:#D2705B;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--plate);color:var(--ink);
+  font:16px/1.6 "IBM Plex Sans",system-ui,sans-serif;padding:0 16px 56px}
+.wrap{max-width:900px;margin:0 auto}
+header{padding:40px 0 8px;border-bottom:3px solid var(--mark)}
+header h1{font:700 34px/1.1 "Barlow Condensed",system-ui,sans-serif;margin:0}
+header h1 .x{color:var(--mark)}
+header p{color:var(--muted);margin:6px 0 14px}
+h2{font:600 22px/1.2 "Barlow Condensed",system-ui,sans-serif;margin:34px 0 8px;
+  text-transform:uppercase;letter-spacing:.04em}
+.lede{background:var(--sunk);border-inline-start:3px solid var(--stop);border-radius:6px;
+  padding:16px 22px;margin:22px 0}
+.lede p{margin:8px 0}
+.lede b{color:var(--mark)}
+.card{background:var(--panel);border:1px solid var(--rule);border-radius:8px;
+  padding:18px 20px;margin:14px 0}
+.card h3{margin:0 0 6px;font:600 18px/1.3 "Barlow Condensed",system-ui,sans-serif;
+  text-transform:uppercase;letter-spacing:.03em}
+.claim{color:var(--muted);font-size:14px;margin:6px 0}
+.claim.not{color:var(--stop)}
+input[type=text]{background:var(--sunk);color:var(--ink);border:1px solid var(--rule);
+  border-radius:6px;padding:9px 12px;font:inherit;min-width:16rem}
+button{background:var(--mark);color:var(--mark-ink);border:1px solid var(--mark);
+  padding:9px 16px;border-radius:6px;cursor:pointer;font:inherit;font-weight:600}
+button.ghost{background:transparent;color:var(--ink);border-color:var(--rule);font-weight:400}
+button.off-btn{background:var(--sunk);color:var(--muted);border:1px dashed var(--stop);
+  cursor:not-allowed;font-weight:400;text-decoration:line-through}
+button[aria-disabled=true]{opacity:.65}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:10px 0}
+.msg{font-size:14px;margin:8px 0;min-height:1.4em}
+.msg.good{color:var(--steel)}
+.msg.bad{color:var(--stop)}
+.msg.note{color:var(--muted)}
+.now{background:var(--sunk);border:1px solid var(--rule);border-radius:6px;
+  padding:10px 14px;font-size:14px;color:var(--ink);margin:8px 0}
+pre{background:var(--sunk);border:1px solid var(--rule);border-radius:6px;
+  padding:12px 14px;overflow:auto;font-size:12.5px;color:var(--muted);white-space:pre-wrap;
+  word-break:break-all}
+.issuer{border-top:1px solid var(--rule);padding:14px 0}
+.issuer .why{color:var(--stop);font-size:14px;margin:8px 0}
+.issuer .when{color:var(--muted);font-size:13px;margin:8px 0 0}
+details summary{cursor:pointer;color:var(--muted);font-size:13px}
+details ul{color:var(--muted);font-size:13px;margin:8px 0 0}
+table{border-collapse:collapse;width:100%;margin:12px 0;font-size:14px}
+th,td{border-top:1px solid var(--rule);padding:8px 10px;text-align:start;vertical-align:top}
+th{color:var(--muted);font-weight:600;font-size:12.5px;text-transform:uppercase;letter-spacing:.04em}
+td.m{font-weight:600;white-space:nowrap}
+td.f{text-align:center;font-variant-numeric:tabular-nums}
+td.f.yes{color:var(--steel)}
+td.f.no{color:var(--stop)}
+tr.off td.m{color:var(--muted)}
+.figs{display:flex;flex-wrap:wrap;gap:12px;margin:18px 0}
+.fig{background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:12px 18px;min-width:150px}
+.fig b{display:block;font:600 26px/1.2 "Barlow Condensed",system-ui,sans-serif;color:var(--mark)}
+.fig span{color:var(--muted);font-size:13px}
+footer{color:var(--muted);font-size:13px;margin-top:34px;border-top:1px solid var(--rule);padding-top:14px}
+</style>
+</head>
+<body><div class="wrap">
+<header>
+  <h1>SmartCiti<span class="x">.X</span> : Trade Craft Academy</h1>
+  <p>powered by AGI Corp &mdash; sign in</p>
+</header>
+
+<div class="lede">
+<p><b>Read this before you use anything on this page.</b> This bundle is static HTML generated from registries and served from a file or from GitHub Pages. There is no server, no session, no account and no database anywhere in it. Every consequence below follows from that one fact.</p>
+<p>All 5 methods carry authenticates false and gates_anything false, the wallet one included. This page cannot tell anyone apart and does not protect one learner's record from another.</p>
+<p>A browser-only &quot;sign in with Google&quot; that set a local flag would report a learner as authenticated when nothing had authenticated them. On a product that carries training records that is worse than no sign-in, because it invites reliance. So it is not here, and what is here says why.</p>
+</div>
+
+<div class="figs">
+  <div class="fig"><b>5</b><span>sign-in methods described</span></div>
+  <div class="fig"><b>2</b><span>that work here</span></div>
+  <div class="fig"><b>3</b><span>issuer adapters OFF</span></div>
+  <div class="fig"><b>0</b><span>that authenticate anybody</span></div>
+  <div class="fig"><b>12</b><span>missing server-side pieces, named</span></div>
+</div>
+
+<h2>1 &mdash; Name this device&rsquo;s training record</h2>
+<div class="card">
+  <h3>Name this device's training record</h3>
+  <p class="claim">that the completions in tc-progress and the sim episodes in tc-training on THIS device belong to the name typed here.</p>
+  <p class="claim not"><b>What this is not.</b> It does not verify the name. It does not check anything against anyone. Anybody with this device can type any name, or open the browser's storage panel and change it. It protects nothing and it is not a login.</p>
+  <div class="row">
+    <input type="text" id="ident-name" placeholder="a name for this record" autocomplete="off">
+    <button id="ident-save">Save on this device</button>
+    <button id="ident-clear" class="ghost">Clear</button>
+  </div>
+  <p class="msg note" id="ident-msg"></p>
+  <p class="now" id="ident-now"></p>
+  <p class="claim">Stored under <code>tc-identity</code>. this browser only - localStorage, wrapped so a blocked store never breaks the page, exactly like tc-progress no request is made by this page. There is nowhere for the record to go.</p>
+</div>
+
+<h2>2 &mdash; Sign a statement with an Ethereum wallet</h2>
+<div class="card">
+  <h3>Sign in with an Ethereum wallet (EIP-4361)</h3>
+  <p class="claim">that whoever held the private key for this address, at the moment they were asked, consented to the statement below - and that the page checked that by recovering the address from the signature rather than taking the wallet's word for it.</p>
+  <p class="claim not"><b>What this is not.</b> It is not a login and it gates nothing. Verification happens in a page anyone can edit, so it is evidence to the person reading it, not a control over anybody else. It does not prove who the person is, only that a key was available to them. A stolen key signs just as well.</p>
+  <p class="claim">This page checks the signature itself: keccak-256 over the EIP-191 personal-sign preimage, then secp256k1 public-key recovery from (r, s, v), then the address as the low 20 bytes of keccak-256 of the uncompressed public key, EIP-55 checksummed</p>
+  <p class="claim">the EIP-4361 field list and order in this registry are AUTHORED FROM RECOLLECTION - this build has no network and did not open the EIP. A wallet that refuses or mis-renders the message is the signal that the recollection is wrong; no test here can be.</p>
+  <div class="row"><button id="siwe-btn">Sign in with an Ethereum wallet (EIP-4361)</button></div>
+  <p class="msg note" id="siwe-status"></p>
+  <pre id="siwe-out"></pre>
+</div>
+
+<h2>3 &mdash; 3 issuer adapters that are off</h2>
+<div class="card">
+  <p class="claim not">3 of 5 methods are issuer adapters that are OFF: email-link, google-oidc, microsoft-entra. Each names the flow it would need and the server-side piece that is missing, each is rendered as a disabled control whose own label says what is absent, and the page's single identity writer refuses any method whose configured is not exactly true.</p>
+  <div class="issuer"><button class="off-btn" aria-disabled="true" data-method="email-link">Sign in with an email link</button><p class="why">Email sign-in needs something that can send mail and remember which codes are still live; this bundle has no server, so it is off.</p><details><summary>what is missing (4)</summary><ul><li>a mail sender that can actually deliver the link or the code</li><li>a server-side store of issued tokens with an expiry, so a link works once and then stops working</li><li>rate limiting and replay control on the endpoint that redeems them, or the mailbox becomes the attack surface</li><li>a session the server issues and can revoke</li></ul><p class="when">the pieces above exist and this record is flipped to configured true - a configuration change, not a code change, and not something the page can do to itself.</p></details></div><div class="issuer"><button class="off-btn" aria-disabled="true" data-method="google-oidc">Sign in with Google</button><p class="why">Google sign-in needs an authorization-code exchange on a server; this bundle has no server, so it is off.</p><details><summary>what is missing (4)</summary><ul><li>an HTTPS redirect URI under our control that can receive the authorization code - a file:// path or a GitHub Pages file cannot receive and hold one</li><li>a server-side token exchange that presents the OAuth client secret to Google's token endpoint; a static page cannot keep a secret, so shipping one would publish it</li><li>server-side validation of the id_token signature, issuer, audience and nonce against Google's published keys</li><li>a session the server issues and can revoke - a flag in localStorage is not a session, and revoking it protects nobody</li></ul><p class="when">the pieces above exist and this record is flipped to configured true - a configuration change, not a code change, and not something the page can do to itself.</p></details></div><div class="issuer"><button class="off-btn" aria-disabled="true" data-method="microsoft-entra">Sign in with Microsoft</button><p class="why">Microsoft sign-in needs an authorization-code exchange on a server, and a registered tenant and redirect URI; this bundle has no server, so it is off.</p><details><summary>what is missing (4)</summary><ul><li>a registered application in a Microsoft Entra ID tenant, which is an organisational decision nobody has made for this bundle</li><li>an HTTPS redirect URI under our control that can receive the authorization code</li><li>a server-side token exchange holding the client secret or certificate; a static page cannot hold either</li><li>server-side validation of the id_token against the tenant's keys, and a session the server issues and can revoke</li></ul><p class="when">the pieces above exist and this record is flipped to configured true - a configuration change, not a code change, and not something the page can do to itself.</p></details></div>
+  <p class="msg bad" id="off-msg"></p>
+  <p class="claim">These controls still answer a click, on purpose: the click runs the page&rsquo;s real identity writer and shows you what it refuses with. Nothing is stored.</p>
+</div>
+
+<h2>Every method, and what it claims</h2>
+<table>
+<thead><tr><th>method</th><th>the flow it uses</th><th>works here</th><th>authenticates</th><th>gates anything</th></tr></thead>
+<tbody><tr class="on"><td class="m">Name this device's training record</td><td>a name typed into this page and kept in this browser's localStorage under tc-identity</td><td class="f yes">yes</td><td class="f no">no</td><td class="f no">no</td></tr><tr class="on"><td class="m">Sign in with an Ethereum wallet (EIP-4361)</td><td>EIP-4361 message built in the page, signed by the wallet with personal_sign (EIP-191), and the signer recovered in the page from the signature</td><td class="f yes">yes</td><td class="f no">no</td><td class="f no">no</td></tr><tr class="off"><td class="m">Sign in with an email link</td><td>a one-time link or code mailed to the address, redeemed once</td><td class="f no">no</td><td class="f no">no</td><td class="f no">no</td></tr><tr class="off"><td class="m">Sign in with Google</td><td>OAuth 2.0 authorization code with PKCE, over OpenID Connect</td><td class="f no">no</td><td class="f no">no</td><td class="f no">no</td></tr><tr class="off"><td class="m">Sign in with Microsoft</td><td>OAuth 2.0 authorization code with PKCE against Microsoft Entra ID</td><td class="f no">no</td><td class="f no">no</td><td class="f no">no</td></tr></tbody>
+</table>
+<p class="claim">One HTTPS service that holds the client secret, completes the code exchange, validates the id_token and issues a session it can revoke. Until that exists, flipping any configured flag in this file would make the page lie, and the suite would not catch it - the suite checks that the page obeys this registry, not that this registry is true.</p>
+
+<footer>
+<p>AUTHORED. Every record here is written by this build; none is a measurement. The one claim that is checked rather than asserted is that the page verifies a wallet signature, and siwe.verification names the oracles auth/test.mjs holds it to.</p>
+<p>Rendered from <code>auth/registry/auth.json</code> at pack version 3.2.0; every count above is read from that file rather than typed here.</p>
+</footer>
+
+<script type="application/json" id="auth-data">{"counts":{"configured_false":3,"configured_true":2,"issuer_adapters_off":3,"methods":5,"methods_that_authenticate":0,"methods_that_gate_anything":0,"missing_server_side_items":12,"siwe_fields":8},"methods":{"email-link":{"authenticates":false,"becomes_available_when":"the pieces above exist and this record is flipped to configured true - a configuration change, not a code change, and not something the page can do to itself.","configured":false,"disabled":true,"disabled_label":"Email sign-in needs something that can send mail and remember which codes are still live; this bundle has no server, so it is off.","flow":"a one-time link or code mailed to the address, redeemed once","gates_anything":false,"issuer":"Email","kind":"federated-issuer","label":"Sign in with an email link","missing_server_side":["a mail sender that can actually deliver the link or the code","a server-side store of issued tokens with an expiry, so a link works once and then stops working","rate limiting and replay control on the endpoint that redeems them, or the mailbox becomes the attack surface","a session the server issues and can revoke"],"needs_network":true,"provenance":"AUTHORED","requires_verified_signature":false,"sets_identity":false,"what_it_claims":"nothing. This adapter is off and cannot be switched on from inside the page.","what_it_does_not_claim":"It never writes an identity. The page's single identity writer refuses any method whose configured is not exactly true, and the control is rendered disabled, so a click reports what is missing and nothing else happens."},"google-oidc":{"authenticates":false,"becomes_available_when":"the pieces above exist and this record is flipped to configured true - a configuration change, not a code change, and not something the page can do to itself.","configured":false,"disabled":true,"disabled_label":"Google sign-in needs an authorization-code exchange on a server; this bundle has no server, so it is off.","flow":"OAuth 2.0 authorization code with PKCE, over OpenID Connect","gates_anything":false,"issuer":"Google","kind":"federated-issuer","label":"Sign in with Google","missing_server_side":["an HTTPS redirect URI under our control that can receive the authorization code - a file:// path or a GitHub Pages file cannot receive and hold one","a server-side token exchange that presents the OAuth client secret to Google's token endpoint; a static page cannot keep a secret, so shipping one would publish it","server-side validation of the id_token signature, issuer, audience and nonce against Google's published keys","a session the server issues and can revoke - a flag in localStorage is not a session, and revoking it protects nobody"],"needs_network":true,"provenance":"AUTHORED","requires_verified_signature":false,"sets_identity":false,"what_it_claims":"nothing. This adapter is off and cannot be switched on from inside the page.","what_it_does_not_claim":"It never writes an identity. The page's single identity writer refuses any method whose configured is not exactly true, and the control is rendered disabled, so a click reports what is missing and nothing else happens."},"local-identity":{"authenticates":false,"configured":true,"flow":"a name typed into this page and kept in this browser's localStorage under tc-identity","gates_anything":false,"kind":"local-label","label":"Name this device's training record","needs_network":false,"provenance":"AUTHORED","requires_verified_signature":false,"sets_identity":true,"what_it_claims":"that the completions in tc-progress and the sim episodes in tc-training on THIS device belong to the name typed here.","what_it_does_not_claim":"It does not verify the name. It does not check anything against anyone. Anybody with this device can type any name, or open the browser's storage panel and change it. It protects nothing and it is not a login."},"microsoft-entra":{"authenticates":false,"becomes_available_when":"the pieces above exist and this record is flipped to configured true - a configuration change, not a code change, and not something the page can do to itself.","configured":false,"disabled":true,"disabled_label":"Microsoft sign-in needs an authorization-code exchange on a server, and a registered tenant and redirect URI; this bundle has no server, so it is off.","flow":"OAuth 2.0 authorization code with PKCE against Microsoft Entra ID","gates_anything":false,"issuer":"Microsoft","kind":"federated-issuer","label":"Sign in with Microsoft","missing_server_side":["a registered application in a Microsoft Entra ID tenant, which is an organisational decision nobody has made for this bundle","an HTTPS redirect URI under our control that can receive the authorization code","a server-side token exchange holding the client secret or certificate; a static page cannot hold either","server-side validation of the id_token against the tenant's keys, and a session the server issues and can revoke"],"needs_network":true,"provenance":"AUTHORED","requires_verified_signature":false,"sets_identity":false,"what_it_claims":"nothing. This adapter is off and cannot be switched on from inside the page.","what_it_does_not_claim":"It never writes an identity. The page's single identity writer refuses any method whose configured is not exactly true, and the control is rendered disabled, so a click reports what is missing and nothing else happens."},"siwe-ethereum":{"authenticates":false,"configured":true,"flow":"EIP-4361 message built in the page, signed by the wallet with personal_sign (EIP-191), and the signer recovered in the page from the signature","gates_anything":false,"kind":"wallet-signature","label":"Sign in with an Ethereum wallet (EIP-4361)","needs_network":false,"needs_runtime":"window.ethereum. With no wallet in the browser this method offers nothing and says so; it does not fall back to anything.","provenance":"AUTHORED","requires_verified_signature":true,"sets_identity":true,"spec_provenance":"the EIP-4361 field list and order in this registry are AUTHORED FROM RECOLLECTION - this build has no network and did not open the EIP. A wallet that refuses or mis-renders the message is the signal that the recollection is wrong; no test here can be.","statement":"I am naming this Ethereum account as the owner of the Trade Craft Academy training record kept in this browser. This signature does not log me in, does not reach any server, and protects nothing: this bundle has no backend.","what_it_claims":"that whoever held the private key for this address, at the moment they were asked, consented to the statement below - and that the page checked that by recovering the address from the signature rather than taking the wallet's word for it.","what_it_does_not_claim":"It is not a login and it gates nothing. Verification happens in a page anyone can edit, so it is evidence to the person reading it, not a control over anybody else. It does not prove who the person is, only that a key was available to them. A stolen key signs just as well."}},"records_named":{"progress_key":"tc-progress","training_key":"tc-training","what_a_name_attaches_to":"completions kept under tc-progress and sim episodes kept under tc-training, both of which already exist in this bundle and today belong to a browser rather than to a person"},"siwe":{"chain_id":1,"field_notes":{"address":"the checksummed account being claimed","chain-id":"the chain the account is claimed on","domain":"the origin asking, on its own first line, so the human reading the wallet prompt sees who asked","issued-at":"when this attempt was made, ISO-8601","nonce":"fresh per attempt, so a captured signature cannot be replayed into a later attempt","statement":"one sentence the human is agreeing to, verbatim","uri":"the exact page that asked","version":"the EIP-4361 version, 1"},"fields":["domain","address","statement","uri","version","chain-id","nonce","issued-at"],"no_wallet":"No Ethereum wallet is present in this browser (there is no window.ethereum). There is nothing to sign with, and this page offers nothing in its place.","nonce_bytes":16,"signing_method":"personal_sign (EIP-191), requested from window.ethereum","statement":"I am naming this Ethereum account as the owner of the Trade Craft Academy training record kept in this browser. This signature does not log me in, does not reach any server, and protects nothing: this bundle has no backend.","verification":{"claims_verified_only_when":"the recovered address equals the address the wallet reported, compared as lowercase hex. There is no other branch that reports a signature as verified.","if_this_were_false":"were recovery not implemented, this field would read false, the page would say the signature was produced but NOT verified here, and no identity would be written from it. An unverified signature presented as verified is the one lie this bundle exists not to tell.","implemented":true,"method":"keccak-256 over the EIP-191 personal-sign preimage, then secp256k1 public-key recovery from (r, s, v), then the address as the low 20 bytes of keccak-256 of the uncompressed public key, EIP-55 checksummed","oracles":["the Keccak-f[1600] permutation the page ships is driven in SHA3-256 mode (the same sponge, pad byte 0x06 instead of 0x01) and compared against node:crypto's own sha3-256 - an implementation this pack did not write","secp256k1 recovery is checked against signatures produced by node:crypto with namedCurve secp256k1: the page reconstructs the exact public key node generated, over many random keys. node will not sign a digest it did not compute - crypto.sign hashes with SHA-256 whatever algorithm is named - so the oracle is applied one level down, to the curve arithmetic, which is the part no test could fake","the published addresses of the private keys 1, 2 and 3 are reproduced by the page's own curve, keccak and EIP-55 code; the first of them is reproduced end to end from a personal_sign signature over an EIP-191 preimage","a tampered signature is required to recover a DIFFERENT address, so a stub that returned the claimed address would fail"],"where":"in the page itself, in the AUTH-CORE region of web/trade_craft_signin.html - no library is fetched and none is vendored; the code is short enough to read in one sitting"},"version":"1"},"storage":{"identity_key":"tc-identity","never_leaves_the_device":"no request is made by this page. There is nowhere for the record to go.","record_shape":"{ v, method, label, set_at, authenticates: false, and for a wallet identity: address, chain_id, verified, recovered }","scope":"this browser only - localStorage, wrapped so a blocked store never breaks the page, exactly like tc-progress"}}</script>
+<script>
+/* AUTH-CORE:BEGIN — lifted verbatim by auth/test.mjs and run in node. It
+   touches no DOM and no globals beyond TextEncoder and crypto, so the
+   suite can drive every branch of it without a browser. */
+'use strict';
+var ID_KEY = 'tc-identity';
+
+function te(s) { return new TextEncoder().encode(s); }
+function hex(u) {
+  var s = '', i;
+  for (i = 0; i < u.length; i++) { s += u[i].toString(16).padStart(2, '0'); }
+  return s;
+}
+function unhex(s) {
+  var t = s.indexOf('0x') === 0 ? s.slice(2) : s, i;
+  if (t.length % 2 !== 0) { throw new Error('auth: odd-length hex'); }
+  var u = new Uint8Array(t.length / 2);
+  for (i = 0; i < u.length; i++) {
+    var b = parseInt(t.substr(i * 2, 2), 16);
+    if (Number.isNaN(b)) { throw new Error('auth: not hex at byte ' + i); }
+    u[i] = b;
+  }
+  return u;
+}
+
+/* ---- Keccak-f[1600]. The sponge takes its pad byte, so the same
+   permutation this page uses for keccak-256 (0x01) can be driven in
+   SHA3-256 mode (0x06) by the suite and compared against node's own
+   sha3-256 — an implementation this pack did not write. ---------------- */
+var KECCAK_RC = [
+  0x0000000000000001n, 0x0000000000008082n, 0x800000000000808an,
+  0x8000000080008000n, 0x000000000000808bn, 0x0000000080000001n,
+  0x8000000080008081n, 0x8000000000008009n, 0x000000000000008an,
+  0x0000000000000088n, 0x0000000080008009n, 0x000000008000000an,
+  0x000000008000808bn, 0x800000000000008bn, 0x8000000000008089n,
+  0x8000000000008003n, 0x8000000000008002n, 0x8000000000000080n,
+  0x000000000000800an, 0x800000008000000an, 0x8000000080008081n,
+  0x8000000000008080n, 0x0000000080000001n, 0x8000000080008008n];
+var KECCAK_ROT = [[0, 36, 3, 41, 18], [1, 44, 10, 45, 2], [62, 6, 43, 15, 61],
+                  [28, 55, 25, 21, 56], [27, 20, 39, 8, 14]];
+var MASK64 = (1n << 64n) - 1n;
+function rol(x, n) { return n === 0n ? x : ((x << n) | (x >> (64n - n))) & MASK64; }
+function lanes() {
+  var a = [], x, y;
+  for (x = 0; x < 5; x++) { a.push([]); for (y = 0; y < 5; y++) { a[x].push(0n); } }
+  return a;
+}
+function keccakF(A) {
+  var r, x, y, C, D, B;
+  for (r = 0; r < 24; r++) {
+    C = [0n, 0n, 0n, 0n, 0n];
+    for (x = 0; x < 5; x++) { C[x] = A[x][0] ^ A[x][1] ^ A[x][2] ^ A[x][3] ^ A[x][4]; }
+    D = [0n, 0n, 0n, 0n, 0n];
+    for (x = 0; x < 5; x++) { D[x] = C[(x + 4) % 5] ^ rol(C[(x + 1) % 5], 1n); }
+    for (x = 0; x < 5; x++) { for (y = 0; y < 5; y++) { A[x][y] ^= D[x]; } }
+    B = lanes();
+    for (x = 0; x < 5; x++) {
+      for (y = 0; y < 5; y++) { B[y][(2 * x + 3 * y) % 5] = rol(A[x][y], BigInt(KECCAK_ROT[x][y])); }
+    }
+    for (x = 0; x < 5; x++) {
+      for (y = 0; y < 5; y++) { A[x][y] = B[x][y] ^ ((~B[(x + 1) % 5][y] & MASK64) & B[(x + 2) % 5][y]); }
+    }
+    A[0][0] ^= KECCAK_RC[r];
+  }
+  return A;
+}
+function sponge(bytes, pad, outLen) {
+  var rate = 136, A = lanes(), n = bytes.length, off, i, b, lane;
+  var padded = new Uint8Array((Math.floor(n / rate) + 1) * rate);
+  padded.set(bytes);
+  padded[n] = pad;
+  padded[padded.length - 1] |= 0x80;
+  for (off = 0; off < padded.length; off += rate) {
+    for (i = 0; i < rate / 8; i++) {
+      lane = 0n;
+      for (b = 7; b >= 0; b--) { lane = (lane << 8n) | BigInt(padded[off + i * 8 + b]); }
+      A[i % 5][Math.floor(i / 5)] ^= lane;
+    }
+    keccakF(A);
+  }
+  var out = new Uint8Array(outLen);
+  for (i = 0; i < outLen; i++) {
+    var L = Math.floor(i / 8);
+    out[i] = Number((A[L % 5][Math.floor(L / 5)] >> BigInt(8 * (i % 8))) & 0xffn);
+  }
+  return out;
+}
+function keccak256(bytes) { return sponge(bytes, 0x01, 32); }
+
+/* ---- secp256k1: public-key recovery from (r, s, v) ------------------ */
+var SECP_P = (1n << 256n) - (1n << 32n) - 977n;
+var SECP_N = 0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141n;
+var SECP_G = [0x79BE667EF9DCBBAC55A06295CE870B07029BFCDB2DCE28D959F2815B16F81798n,
+              0x483ADA7726A3C4655DA4FBFC0E1108A8FD17B448A68554199C47D08FFB10D4B8n];
+function fmod(a, m) { var v = a % m; return v < 0n ? v + m : v; }
+function finv(a, m) {
+  var o = fmod(a, m), r = m, x = 1n, y = 0n, q, t;
+  while (r !== 0n) { q = o / r; t = o - q * r; o = r; r = t; t = x - q * y; x = y; y = t; }
+  if (o !== 1n) { throw new Error('auth: value has no inverse in the field'); }
+  return fmod(x, m);
+}
+function ptDouble(P) {
+  if (P === null) { return null; }
+  if (P[1] === 0n) { return null; }
+  var l = fmod(3n * P[0] * P[0] * finv(2n * P[1], SECP_P), SECP_P);
+  var x = fmod(l * l - 2n * P[0], SECP_P);
+  return [x, fmod(l * (P[0] - x) - P[1], SECP_P)];
+}
+function ptAdd(A, B) {
+  if (A === null) { return B; }
+  if (B === null) { return A; }
+  if (A[0] === B[0]) { return fmod(A[1] + B[1], SECP_P) === 0n ? null : ptDouble(A); }
+  var l = fmod((B[1] - A[1]) * finv(fmod(B[0] - A[0], SECP_P), SECP_P), SECP_P);
+  var x = fmod(l * l - A[0] - B[0], SECP_P);
+  return [x, fmod(l * (A[0] - x) - A[1], SECP_P)];
+}
+function ptMul(k, P) {
+  var R = null, A = P, n = fmod(k, SECP_N);
+  while (n > 0n) {
+    if ((n & 1n) === 1n) { R = ptAdd(R, A); }
+    A = ptDouble(A);
+    n >>= 1n;
+  }
+  return R;
+}
+function fpow(b, e) {
+  var r = 1n, x = fmod(b, SECP_P), n = e;
+  while (n > 0n) { if ((n & 1n) === 1n) { r = fmod(r * x, SECP_P); } x = fmod(x * x, SECP_P); n >>= 1n; }
+  return r;
+}
+function beInt(u) { var v = 0n, i; for (i = 0; i < u.length; i++) { v = (v << 8n) | BigInt(u[i]); } return v; }
+function be32(v) {
+  var u = new Uint8Array(32), x = v, i;
+  for (i = 31; i >= 0; i--) { u[i] = Number(x & 0xffn); x >>= 8n; }
+  return u;
+}
+/* the 65-byte signature a wallet returns: r | s | v */
+function splitSig(sigHex) {
+  var u = unhex(sigHex);
+  if (u.length !== 65) {
+    throw new Error('auth: a personal_sign signature is 65 bytes; this one is ' + u.length);
+  }
+  var v = u[64];
+  if (v === 27 || v === 28) { v -= 27; }
+  if (v !== 0 && v !== 1) {
+    throw new Error('auth: recovery byte ' + u[64] + ' is not 27, 28, 0 or 1');
+  }
+  return { r: beInt(u.slice(0, 32)), s: beInt(u.slice(32, 64)), recid: v };
+}
+function recoverPubkey(hash32, r, s, recid) {
+  if (r <= 0n || r >= SECP_N || s <= 0n || s >= SECP_N) {
+    throw new Error('auth: signature scalar out of range — not a signature this curve made');
+  }
+  var x = r;
+  if (x >= SECP_P) { throw new Error('auth: r is not an x-coordinate on secp256k1'); }
+  var y = fpow(fmod(x * x * x + 7n, SECP_P), (SECP_P + 1n) / 4n);
+  if (fmod(y * y, SECP_P) !== fmod(x * x * x + 7n, SECP_P)) {
+    throw new Error('auth: r is not an x-coordinate on secp256k1');
+  }
+  if ((y & 1n) !== BigInt(recid & 1)) { y = SECP_P - y; }
+  var e = fmod(beInt(hash32), SECP_N);
+  var Q = ptMul(finv(r, SECP_N), ptAdd(ptMul(s, [x, y]), ptMul(SECP_N - e, SECP_G)));
+  if (Q === null) { throw new Error('auth: recovery produced the point at infinity'); }
+  return Q;
+}
+function addressOfPubkey(Q) {
+  var raw = new Uint8Array(64);
+  raw.set(be32(Q[0]), 0);
+  raw.set(be32(Q[1]), 32);
+  return toChecksumAddress('0x' + hex(keccak256(raw).slice(12)));
+}
+function toChecksumAddress(addr) {
+  var lower = (addr.indexOf('0x') === 0 ? addr.slice(2) : addr).toLowerCase();
+  if (lower.length !== 40) { throw new Error('auth: an address is 20 bytes; this one is ' + (lower.length / 2)); }
+  var h = hex(keccak256(te(lower))), out = '0x', i;
+  for (i = 0; i < 40; i++) {
+    out += parseInt(h[i], 16) >= 8 ? lower[i].toUpperCase() : lower[i];
+  }
+  return out;
+}
+/* EIP-191 personal_sign preimage */
+function personalHash(message) {
+  var body = te(message);
+  var prefix = te('\x19Ethereum Signed Message:\n' + body.length);
+  var all = new Uint8Array(prefix.length + body.length);
+  all.set(prefix, 0);
+  all.set(body, prefix.length);
+  return keccak256(all);
+}
+function recoverAddress(message, sigHex) {
+  var p = splitSig(sigHex);
+  return addressOfPubkey(recoverPubkey(personalHash(message), p.r, p.s, p.recid));
+}
+/* The ONLY place a signature is called verified. Equality of the recovered
+   address with the one the wallet reported, compared as lowercase hex —
+   there is no other branch that returns verified true. */
+function verifySiwe(message, sigHex, claimedAddress) {
+  if (typeof claimedAddress !== 'string' || claimedAddress === '') {
+    throw new Error('auth: verifySiwe needs the address the wallet reported; there is nothing to compare against');
+  }
+  var recovered = recoverAddress(message, sigHex);
+  return {
+    recovered: recovered,
+    claimed: toChecksumAddress(claimedAddress),
+    verified: recovered.toLowerCase() === toChecksumAddress(claimedAddress).toLowerCase()
+  };
+}
+
+/* ---- EIP-4361. Field order is AUTHORED from recollection of the spec;
+   this build had no network. A wallet that mis-renders it is the signal. */
+function siweMessage(f) {
+  var need = ['domain', 'address', 'statement', 'uri', 'version', 'chainId', 'nonce', 'issuedAt'], i;
+  for (i = 0; i < need.length; i++) {
+    if (typeof f[need[i]] !== 'string' || f[need[i]] === '') {
+      throw new Error('auth: siweMessage: field "' + need[i] + '" is missing. A default here would put a sentence in front of a person that they never agreed to.');
+    }
+  }
+  return [f.domain + ' wants you to sign in with your Ethereum account:',
+          f.address, '', f.statement, '',
+          'URI: ' + f.uri,
+          'Version: ' + f.version,
+          'Chain ID: ' + f.chainId,
+          'Nonce: ' + f.nonce,
+          'Issued At: ' + f.issuedAt].join('\n');
+}
+function siweNonce(nBytes) {
+  var u = new Uint8Array(nBytes);
+  crypto.getRandomValues(u);
+  return hex(u);
+}
+
+/* ---- the identity record. One writer, one guard. ------------------- */
+function methodOf(AUTH, id) {
+  if (!Object.prototype.hasOwnProperty.call(AUTH.methods, id)) {
+    throw new Error('auth: "' + id + '" is not a method in auth/registry/auth.json#methods');
+  }
+  return AUTH.methods[id];
+}
+function identityGuard(AUTH, id) {
+  var m = methodOf(AUTH, id);
+  if (m.configured !== true) {
+    throw new Error('auth: refused to sign in with "' + id + '": ' + m.disabled_label);
+  }
+  if (m.sets_identity !== true) {
+    throw new Error('auth: refused to sign in with "' + id + '": this method does not set an identity');
+  }
+  if (m.authenticates !== false) {
+    throw new Error('auth: "' + id + '" claims to authenticate. Nothing in this bundle can; the record is wrong, not the page.');
+  }
+  return m;
+}
+function writeIdentity(store, AUTH, id, record) {
+  var m = identityGuard(AUTH, id);
+  if (typeof record.label !== 'string' || record.label.trim() === '') {
+    throw new Error('auth: an identity with no name is not an identity');
+  }
+  if (typeof record.set_at !== 'string' || record.set_at === '') {
+    throw new Error('auth: record.set_at is missing; when a record was named is part of the record');
+  }
+  var out = { v: 1, method: id, label: record.label.trim(), set_at: record.set_at, authenticates: false };
+  if (m.requires_verified_signature === true) {
+    if (record.verified !== true) {
+      throw new Error('auth: "' + id + '" requires a verified signature and this one was not verified');
+    }
+    if (typeof record.address !== 'string' || typeof record.recovered !== 'string'
+        || record.address.toLowerCase() !== record.recovered.toLowerCase()) {
+      throw new Error('auth: the recovered signer does not match the address claimed; no identity written');
+    }
+    out.address = record.address;
+    out.recovered = record.recovered;
+    out.verified = true;
+    out.chain_id = AUTH.siwe.chain_id;
+  }
+  store.setItem(ID_KEY, JSON.stringify(out));
+  return out;
+}
+function readIdentity(store) {
+  var raw = store.getItem(ID_KEY);
+  if (raw === null || raw === undefined || raw === '') { return null; }
+  var v = JSON.parse(raw);
+  if (v === null || typeof v !== 'object' || typeof v.method !== 'string') {
+    throw new Error('auth: the record under ' + ID_KEY + ' is not an identity this page wrote');
+  }
+  return v;
+}
+function clearIdentity(store) { store.removeItem(ID_KEY); }
+/* AUTH-CORE:END */
+
+/* The page, wired to the core above. Nothing below decides policy: every
+   refusal comes back out of writeIdentity, which reads the registry. */
+var AUTH = JSON.parse(document.getElementById('auth-data').textContent);
+if (AUTH.storage.identity_key !== ID_KEY) {
+  throw new Error('auth: the page stores under ' + ID_KEY + ' but the registry says ' + AUTH.storage.identity_key);
+}
+var store = {
+  ok: true,
+  getItem: function (k) { try { return localStorage.getItem(k); } catch (e) { this.ok = false; return null; } },
+  setItem: function (k, v) { try { localStorage.setItem(k, v); } catch (e) { this.ok = false; throw new Error('auth: this browser is not letting the page store anything, so nothing was saved'); } },
+  removeItem: function (k) { try { localStorage.removeItem(k); } catch (e) { this.ok = false; } }
+};
+var elName = document.getElementById('ident-name');
+var elNow = document.getElementById('ident-now');
+var elMsg = document.getElementById('ident-msg');
+var elSiweStatus = document.getElementById('siwe-status');
+var elSiweOut = document.getElementById('siwe-out');
+var elSiweBtn = document.getElementById('siwe-btn');
+var elOffMsg = document.getElementById('off-msg');
+
+function say(el, text, kind) {
+  el.textContent = text;
+  el.className = 'msg ' + kind;
+}
+function show() {
+  var id = null, err = null;
+  try { id = readIdentity(store); } catch (e) { err = e.message; }
+  if (err !== null) {
+    elNow.textContent = err + ' — clear it and name it again.';
+    return;
+  }
+  if (id === null) {
+    elNow.textContent = 'No name is set on this device yet. A name would '
+      + 'attach to ' + AUTH.records_named.what_a_name_attaches_to + '.';
+    return;
+  }
+  var line = id.label + ' — set on ' + id.set_at + ', by: ' + AUTH.methods[id.method].label + '.';
+  if (id.method === 'siwe-ethereum') {
+    line += ' Wallet ' + id.address + ', signature verified in this page. This is not a login.';
+  } else {
+    line += ' This is a label on this device, not a login: nothing was verified.';
+  }
+  elNow.textContent = line;
+}
+
+document.getElementById('ident-save').addEventListener('click', function () {
+  try {
+    writeIdentity(store, AUTH, 'local-identity', {
+      label: elName.value, set_at: new Date().toISOString()
+    });
+    say(elMsg, 'Saved on this device. Nothing was sent anywhere and nothing was verified.', 'good');
+    show();
+  } catch (e) { say(elMsg, e.message, 'bad'); }
+});
+document.getElementById('ident-clear').addEventListener('click', function () {
+  clearIdentity(store);
+  say(elMsg, 'Cleared from this device.', 'good');
+  show();
+});
+
+/* ---- the three adapters that are off. The handler makes the real call
+   and shows what comes back, so the refusal is demonstrated rather than
+   described. It can never write: writeIdentity reads configured. ------ */
+var offBtns = document.querySelectorAll('.off-btn');
+for (var i = 0; i < offBtns.length; i++) {
+  offBtns[i].addEventListener('click', function (ev) {
+    var id = ev.currentTarget.getAttribute('data-method');
+    try {
+      writeIdentity(store, AUTH, id, { label: 'should never happen', set_at: new Date().toISOString() });
+      say(elOffMsg, 'THIS PAGE IS BROKEN: ' + id + ' wrote an identity. Report it.', 'bad');
+    } catch (e) {
+      say(elOffMsg, e.message, 'bad');
+    }
+    show();
+  });
+}
+
+/* ---- the wallet ----------------------------------------------------- */
+var wallet = (typeof window.ethereum === 'undefined') ? null : window.ethereum;
+if (wallet === null) {
+  elSiweBtn.setAttribute('aria-disabled', 'true');
+  say(elSiweStatus, AUTH.siwe.no_wallet, 'note');
+} else {
+  say(elSiweStatus, 'A wallet is present in this browser. Signing proves consent; it does not log you in.', 'note');
+}
+elSiweBtn.addEventListener('click', function () {
+  if (wallet === null) {
+    say(elSiweStatus, AUTH.siwe.no_wallet, 'bad');
+    return;
+  }
+  say(elSiweStatus, 'Asking the wallet…', 'note');
+  wallet.request({ method: 'eth_requestAccounts' }).then(function (accounts) {
+    if (!Array.isArray(accounts) || accounts.length === 0) {
+      throw new Error('auth: the wallet returned no account');
+    }
+    var address = toChecksumAddress(accounts[0]);
+    var message = siweMessage({
+      domain: location.host === '' ? 'local file' : location.host,
+      address: address,
+      statement: AUTH.siwe.statement,
+      uri: location.href,
+      version: AUTH.siwe.version,
+      chainId: String(AUTH.siwe.chain_id),
+      nonce: siweNonce(AUTH.siwe.nonce_bytes),
+      issuedAt: new Date().toISOString()
+    });
+    return wallet.request({ method: 'personal_sign', params: [message, accounts[0]] })
+      .then(function (sig) {
+        var v = verifySiwe(message, sig, address);
+        elSiweOut.textContent = message + '\n\nsignature: ' + sig
+          + '\nrecovered: ' + v.recovered + '\nverified:  ' + v.verified;
+        if (v.verified !== true) {
+          say(elSiweStatus, 'The signature did NOT recover to ' + address + '. No identity was written.', 'bad');
+          return;
+        }
+        writeIdentity(store, AUTH, 'siwe-ethereum', {
+          label: v.recovered, set_at: new Date().toISOString(),
+          address: address, recovered: v.recovered, verified: true
+        });
+        say(elSiweStatus, 'Signature verified in this page: it recovers to ' + v.recovered + '. That is consent, not a login, and it gates nothing.', 'good');
+        show();
+      });
+  }).catch(function (e) { say(elSiweStatus, String(e.message === undefined ? e : e.message), 'bad'); });
+});
+
+show();
+</script>
+</div></body>
+</html>
