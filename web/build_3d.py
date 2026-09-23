@@ -9691,9 +9691,11 @@ const TIER_LADDER = (() => {
    The page prices itself now, while it builds, against the SAME ceiling the
    eval scores it with - D.budget.hall_draw_calls, read out of
    web/eval_scene.mjs by the builder rather than typed here. Measured in
-   this scene, `renderer.info.render.calls` in the hall view equals the
-   number of VISIBLE drawables standing in it, one call each, so counting
-   them is not a model of the cost, it is the cost.
+   this scene, a hall view's `renderer.info.render.calls` tracks the number
+   of VISIBLE drawables standing in it one for one, plus the one the
+   backdrop costs (bricklayers: 141 calls over 140 drawables; ironworkers:
+   118 over 117), so counting them is not a model of the cost, it is the
+   cost.
 
    Two deliberate choices:
 
@@ -9872,6 +9874,64 @@ function buildHall(sg) {
                      z0: r.y * U - DEP/2, z1: r.y * U - DEP/2 + r.h * U,
                      label: r.label, strand: r.strand });
   const doors = planDoors(roomRects, -DEP / 2);
+
+  /* A GATE AT EVERY OPENING.
+
+     The partitions have carried doorways since the reachability work, and
+     a doorway was a GAP: the plan had openings and the building had
+     nothing standing in them, which is most of what makes a rendered
+     interior read as a diagram of a building rather than a building. Every
+     cut planDoors() made now gets a leaf - a mesh gate, swung back flat
+     against the wall beside its own opening, the height of the partition
+     it hangs on rather than a full-height door, because these are 1.1 m
+     partitions and a 2 m door on one would be a drawing of a different
+     building.
+
+     Each is its OWN mesh on purpose. Merging them is the cheaper drawing
+     and the wrong one: a gate is a separate thing standing in the room,
+     and the whole point of the floor web/eval_scene.mjs holds this view to
+     is whether enough separate things are standing in it. They lie in the
+     wall line, flat, so nothing that walks here has to go round one and
+     none of them is recorded as solid.
+
+     They are read off the SAME cuts the partitions were drawn around, so
+     a gate can never hang where there is no way through. */
+  let gates = 0;
+  const frontKey = 'z@' + (-DEP / 2).toFixed(2);
+  for (const [key, cuts] of doors) {
+    const on = Number(key.slice(2)), along = key[0];
+    for (const [a, b] of cuts) {
+      const w2 = b - a, at = b + w2 / 2;       // flat against the jamb it hangs on
+      const g2 = along === 'z'
+        ? box(w2, 1.0, .05, mat.metal, at, .85, on - .09, hallGroup)
+        : box(.05, 1.0, w2, mat.metal, on - .09, .85, at, hallGroup);
+      g2.userData.gate = key;
+      gates++;
+      /* ...and the WAYS IN carry a stencilled number.
+
+         labels/registry declares a `door` sign - a stencil, mono, readable
+         only within 14 m - and nothing in the world had ever hung one. The
+         first draft hung one at every room, which is eleven mono plates in
+         an eleven-room open shed where every room already wears a plate
+         with its own name and strand on it: a number that repeats a name
+         is noise, and it cost eight drawables in the dearest hall, which
+         has none to spare. A number identifies the door you come IN by, so
+         it hangs on the gates off the apron - the building's own frontage,
+         which planDoors() cuts for exactly that reason - and it names the
+         room behind it by its place in the hall's programme. */
+      if (key !== frontKey) continue;
+      const mid = (a + b) / 2;
+      const ri2 = h.rooms.findIndex((r2) => {
+        const x0 = r2.x * U - W / 2;
+        return Math.abs(r2.y) < 1e-6 && mid >= x0 - .02 && mid <= x0 + r2.w * U + .02;
+      });
+      if (ri2 < 0) continue;           // a frontage run no room fronts onto
+      const num = label(String(ri2 + 1).padStart(2, '0'),
+        D.i18n[loc].strands[h.rooms[ri2].strand], .3, { kind: 'door' });
+      num.position.set(mid, 1.55, on + .12);
+      hallGroup.add(num);
+    }
+  }
   const stns = h.stations.map(id => D.stations[id]);
   // the props of all eleven rooms pool here and flush ONCE after the loop
   propPool = new Map(); propInst = new Map();
@@ -9973,9 +10033,12 @@ function buildHall(sg) {
              carries the level the registry files it at. */
           const rl2 = label(D.i18n[loc].tiers[rg.tier],
             'level ' + rg.level, .3, { kind: 'route' });
-          // the sign climbs with its own rung, and by more than the tread
-          // rises: three plates 22 cm apart are one illegible plate
-          rl2.position.set(tx, .35 + hgt + .5 + ti * .32, bz2);
+          /* The three plates stack over the MIDDLE of the rig rather than
+             one over each tread. Side by side they are 1.25 m apart and
+             each is wider than that, so they read as one illegible plate;
+             stacked, they climb, which is the shape of the thing they are
+             naming. */
+          rl2.position.set(bc, .35 + .62 + ti * .46, bz2);
           hallGroup.add(rl2);
         });
         wallRect(bc, bz2, span / 2, .55);
@@ -10097,42 +10160,7 @@ function buildHall(sg) {
       hallGroup.add(plac);
     }
 
-    /* The stencilled door number.
-
-       labels/registry declares a `door` sign - a stencil, mono, readable
-       only within 14 m - and nothing in the world had ever hung one. It
-       goes at a doorway this room ACTUALLY HAS: the openings below are the
-       ones planDoors() cut and the partitions were drawn around, so a
-       stencil can never mark a wall you cannot walk through. The number is
-       the room's own place in the hall's programme, and the line under it
-       is the strand, in the reader's language. */
-    const doorAt = () => {
-      for (const [key, along] of [['z@' + (rz - rd / 2).toFixed(2), 'x'],
-                                  ['z@' + (rz + rd / 2).toFixed(2), 'x'],
-                                  ['x@' + (rx - rw / 2).toFixed(2), 'z'],
-                                  ['x@' + (rx + rw / 2).toFixed(2), 'z']]) {
-        const cuts = doors.get(key);
-        if (!cuts) continue;          // this side of the room is solid wall
-        const lo = along === 'x' ? rx - rw / 2 : rz - rd / 2;
-        const hi = along === 'x' ? rx + rw / 2 : rz + rd / 2;
-        const d = cuts.find(([a, b]) => a >= lo - .02 && b <= hi + .02);
-        if (!d) continue;
-        const m = (d[0] + d[1]) / 2, at = Number(key.slice(2));
-        return along === 'x' ? [m, at] : [at, m];
-      }
-      return null;                    // a room with no opening at all
-    };
-    const dAt = doorAt();
-    if (dAt) {
-      const num = label(String(ri + 1).padStart(2, '0'),
-        D.i18n[loc].strands[r.strand], .3, { kind: 'door' });
-      // just inside the room, at the height a door number is stencilled
-      num.position.set(dAt[0] + (rx - dAt[0]) * .06, 2.05,
-                       dAt[1] + (rz - dAt[1]) * .06);
-      hallGroup.add(num);
-    }
-
-    /* And the hazard notice, where the room's OWN record names a hazard.
+    /* The hazard notice, where the room's OWN record names a hazard.
 
        A room either records hazards or it does not - D.baseCond carries no
        `hazards` key at all and D.condOver adds one only where the trade has
@@ -10193,14 +10221,29 @@ function buildHall(sg) {
      They are training signage in a drawn building. The registry says so in
      its own honesty line, and neither is life-safety equipment nor an
      approved sign. */
+  /* They are SIGNAGE, and they are sized like it.
+
+     The first draft hung all three at the scale of a place plate, and a
+     1280x800 capture of the default hall showed the campus name standing
+     three times across the frame at three depths, over the top of the hall
+     plate - which reads exactly like the campus board failing to be torn
+     down, and was reported as that. The scene graph said otherwise: 25
+     visible sprites, every one of them inside the hall group, three of
+     them these. Nothing had leaked; three door signs had been drawn the
+     size of a building name.
+
+     A sign on a wall is read from a few metres, so it is scaled and placed
+     like one: the chevrons sit at head height on the back wall of the
+     hall, the beacon stands on the apron, and all three are well under the
+     1.35 the hall's own name plate wears. */
   const outTo = D.campuses[campusKey].name;
-  for (const ex of [cx(0) + 1.6, cx(W) - 1.6]) {
-    const way = label(outTo, null, .5, { kind: 'egress' });
-    way.position.set(ex, 2.45, cz(DEP) - .6);
+  for (const ex of [cx(0) + 2.2, cx(W) - 2.2]) {
+    const way = label(outTo, null, .3, { kind: 'egress' });
+    way.position.set(ex, 2.1, cz(DEP) - .45);
     hallGroup.add(way);
   }
-  const muster = label(outTo, h.name, .62, { kind: 'muster' });
-  muster.position.set(0, 2.3, cz(0) - 7);
+  const muster = label(outTo, h.name, .36, { kind: 'muster' });
+  muster.position.set(0, 1.9, cz(0) - 7);
   hallGroup.add(muster);
 
   // the apron: recovered yard layout for seeded halls, a light deterministic
@@ -12136,6 +12179,27 @@ function showHall(sg) {
   if (sim) teardownSim();
   if (curRestoSite) teardownRestoWalk();
   slug = sg; view = 'hall'; campusKey = campusOfHall(sg);
+  /* THE BAR FOLLOWS THE BUILDING.
+
+     This is the mirror image of the bug already fixed one layer up. That
+     one was `showHall(which ?? D.halls[0].slug)`: the content ignored the
+     selector, so the bar said Welding Trades over an ironworkers building.
+     The selector was only ever written by renderChrome(), which runs at
+     boot and on a locale change - so every OTHER way into a hall (the
+     campus click, a ?hall= link, the lessons cross-link, a seat entered
+     from the yard, the harness hook) moved the building and left the bar
+     reading whatever it read before. Same class, opposite direction, same
+     consequence: the bar and the building disagree, which is exactly how
+     the draw-call breach went unseen for as long as it did.
+
+     Setting .value to a name the list does not carry silently leaves the
+     select blank, so the result is read back: a hall with no option is a
+     broken build and says so rather than showing an empty bar. */
+  const sel = document.getElementById('hall');
+  sel.value = sg;
+  if (sel.value !== sg)
+    throw new Error('the hall selector carries no option for ' + sg
+      + ', so the bar and the building would disagree');
   hallRec = D.halls.find(x => x.slug === sg);
   if (avatarGroup) avatarGroup.visible = false;
   if (!(isTouch && walkActive)) wheelShow(false);

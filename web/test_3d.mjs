@@ -2034,14 +2034,78 @@ ok(`all ${kindsDeclared.length} sign kinds labels/registry declares are hung `
   kindsDeclared.every((k) => kindsDrawn.has(k))
   && ['egress', 'muster', 'door', 'asset', 'hazard'].every((k) => kindsDrawn.has(k)));
 
-ok('the stencilled door number goes at a doorway the room ACTUALLY HAS - it '
-   + 'reads the same planDoors() cuts the partitions were drawn around, '
-   + 'tries all four of the room\'s own lines, and a room with no opening at '
-   + 'all gets no stencil rather than one on a solid wall',
-  /const cuts = doors\.get\(key\);\s*if \(!cuts\) continue;/.test(fnCode('buildHall'))
-  && /const d = cuts\.find\(\(\[a, b\]\) => a >= lo - \.02 && b <= hi \+ \.02\);/
+/* A GATE IN EVERY OPENING, AND A NUMBER ON THE WAYS IN.
+
+   The partitions have carried doorways since the reachability work, and a
+   doorway was a GAP - the plan had openings and the building had nothing
+   standing in them. Each gate is deliberately its OWN mesh: merging them is
+   the cheaper drawing and the wrong one, because the floor this view is
+   held to asks how many separate things are standing in it, and a gate is
+   one of them. They hang off the SAME cuts the partitions were drawn
+   around, so a gate can never hang where there is no way through. */
+ok('every opening planDoors() cut has a gate standing in it, hung off those '
+   + 'same cuts, at the height of the partition it hangs on rather than the '
+   + 'height of a door in a different building - and each is its own mesh, '
+   + 'not pooled, because the mesh floor counts separate standing things',
+  /for \(const \[key, cuts\] of doors\) \{/.test(fnCode('buildHall'))
+  && /\? box\(w2, 1\.0, \.05, mat\.metal, at, \.85, on - \.09, hallGroup\)/
        .test(fnCode('buildHall'))
-  && /const dAt = doorAt\(\);\s*if \(dAt\) \{/.test(fnCode('buildHall')));
+  && /: box\(\.05, 1\.0, w2, mat\.metal, on - \.09, \.85, at, hallGroup\)/
+       .test(fnCode('buildHall'))
+  && /g2\.userData\.gate = key;/.test(fnCode('buildHall')));
+
+ok('the stencilled door number hangs on the WAYS IN - the gates off the '
+   + 'building\'s own frontage, which planDoors() cuts for exactly that '
+   + 'reason - and names the room behind it by its place in the plan; one '
+   + 'per room was eleven mono plates repeating eleven room plates, and it '
+   + 'cost the dearest hall eight drawables it did not have',
+  /const frontKey = 'z@' \+ \(-DEP \/ 2\)\.toFixed\(2\);/.test(fnCode('buildHall'))
+  && /if \(key !== frontKey\) continue;/.test(fnCode('buildHall'))
+  && /if \(ri2 < 0\) continue;/.test(fnCode('buildHall'))
+  && /label\(String\(ri2 \+ 1\)\.padStart\(2, '0'\),/.test(fnCode('buildHall')));
+
+/* THE BAR AND THE BUILDING, THE OTHER WAY ROUND.
+
+   The fix one layer up made the CONTENT follow the selector. The selector
+   still did not follow the content: it was written once by renderChrome()
+   at boot, so every other way into a hall - a campus click, a ?hall= link,
+   the lessons cross-link, a seat entered from the yard, the harness hook -
+   moved the building and left the bar reading the hall before it. Same
+   class, opposite direction, and the same consequence: the bar and the
+   building disagree, which is how the draw-call breach stayed hidden.
+
+   Scoped to showHall()'s own body, because the note beside the fix quotes
+   the broken expression from the first half of this bug. */
+ok('the bar follows the building: showHall() writes the hall selector and '
+   + 'then READS IT BACK, because setting .value to a name the list does '
+   + 'not carry leaves the select silently blank - so a hall with no option '
+   + 'is a broken build rather than an empty bar over a drawn building',
+  /const sel = document\.getElementById\('hall'\);\s*sel\.value = sg;/
+    .test(fnCode('showHall'))
+  && /if \(sel\.value !== sg\)\s*throw new Error\('the hall selector carries no option for ' \+ sg/
+       .test(fnCode('showHall')));
+
+/* AND THE THREE SIGNS THAT LOOKED LIKE A LEAK.
+
+   The first draft hung the two egress chevrons and the muster beacon at the
+   scale of a place plate, and a capture of the default hall showed the
+   campus name standing three times across the frame at three depths over
+   the hall plate - which reads as the campus board failing to be torn down,
+   and was reported as that. The scene graph said otherwise: 25 visible
+   sprites, every one inside the hall group. Nothing had leaked; three door
+   signs had been drawn the size of a building name. Both halves are held
+   here - the sizing, and the teardown that makes the reading correct. */
+ok('the way-out signs are sized as signage, not as place plates: both are '
+   + 'well under the 1.35 the hall\'s own name plate wears, both hang on '
+   + 'the hall group so disposeOf() takes them with the building, and '
+   + 'showHall() hides the region board and the campus before it builds one',
+  /label\(outTo, null, \.3, \{ kind: 'egress' \}\)/.test(fnCode('buildHall'))
+  && /label\(outTo, h\.name, \.36, \{ kind: 'muster' \}\)/.test(fnCode('buildHall'))
+  && /hallGroup\.add\(way\);/.test(fnCode('buildHall'))
+  && /hallGroup\.add\(muster\);/.test(fnCode('buildHall'))
+  && /label\(h\.name, D\.i18n\[loc\]\.districts\[h\.district\], 1\.35,/.test(fnCode('buildHall'))
+  && /if \(regionGroup\) regionGroup\.visible = false;/.test(fnCode('showHall'))
+  && /if \(campusGroup\) campusGroup\.visible = false;/.test(fnCode('showHall')));
 
 ok('the hazard notice reads the ABSENCE of a hazards list as the answer it '
    + 'is - D.baseCond carries no such key and D.condOver adds one only where '
