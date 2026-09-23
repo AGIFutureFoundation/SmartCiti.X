@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-17",
- "source_stamp": "b0780a82c27eb714",
+ "source_stamp": "91f1f81806607d37",
  "honesty": {
   "convention": "these shapes are a convention this bundle invented, not a standard anyone else uses; the legend is in the wiki and on the page rather than assumed.",
   "presentation_only": "focus is presentation. Looking at a label changes nothing: no label is a score, none gates anything, and no grader reads which sign a learner faced.",
@@ -21,15 +21,9 @@
   "shapes": 15,
   "ornaments": 1,
   "district_hues": 8,
-  "drawn": 14
+  "drawn": 19
  },
- "pending_page": [
-  "asset",
-  "door",
-  "egress",
-  "hazard",
-  "muster"
- ],
+ "pending_page": [],
  "no_marks": {
   "why": "no sign in this world borrows a standards body, a standard's designation, a regulator or a real trade organisation: the shapes are this bundle's own convention and the words are plain practice, so nothing here can be mistaken for an inspected, approved or certified sign.",
   "tokens": [
@@ -312,7 +306,7 @@
    "accent": "good",
    "face": "display",
    "min_focus": 0.3,
-   "hide_beyond_m": 0,
+   "hide_beyond_m": 30,
    "provenance": "DERIVED",
    "what": "the way out of a hall, read off the floor plan the bundle drew and pointing along it"
   },
@@ -321,7 +315,7 @@
    "accent": "good",
    "face": "display",
    "min_focus": 0.28,
-   "hide_beyond_m": 0,
+   "hide_beyond_m": 36,
    "provenance": "DERIVED",
    "what": "where a hall gathers when it empties, off the same plan the route is read from"
   },

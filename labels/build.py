@@ -230,8 +230,17 @@ KINDS = {
     # only sign in this registry that is an INSTRUCTION about movement, so it
     # is the only one whose plate has a direction: it points, and a sign that
     # points cannot be mistaken for a sign that names.
+    # It hides at 30 m, and that is not a cost saving. Every OTHER kind in
+    # this registry that never hides is a place NAME - a campus, a
+    # district, a hall, a recorded anchor - something you are meant to read
+    # from across a green. A way-out sign is read from inside the room it
+    # serves, like the placard (20 m), the door number (14 m), the machine
+    # tag (18 m) and the hazard notice (22 m) beside it. Hung at 0 it stood
+    # legible from 55 m outside the building, where it competed with the
+    # hall's own name plate and was read as one - which is what happened
+    # the first time three of them were hung.
     'egress': {'shape': 'chevron', 'accent': 'good', 'face': 'display',
-               'min_focus': .3, 'hide_beyond_m': 0, 'provenance': 'DERIVED',
+               'min_focus': .3, 'hide_beyond_m': 30, 'provenance': 'DERIVED',
                'what': 'the way out of a hall, read off the floor plan the '
                        'bundle drew and pointing along it'},
     # Where a floor goes when it empties. A drill that ends nowhere is a
@@ -240,8 +249,10 @@ KINDS = {
     # it. It wears the same green as the chevron because it is the other end
     # of the same movement, and a different shape because standing still at
     # a point is not the same instruction as walking along a route.
+    # 36 m, a little further than the chevron: the beacon marks a point on
+    # the apron OUTSIDE the building, and the walk to it starts inside.
     'muster': {'shape': 'beacon', 'accent': 'good', 'face': 'display',
-               'min_focus': .28, 'hide_beyond_m': 0, 'provenance': 'DERIVED',
+               'min_focus': .28, 'hide_beyond_m': 36, 'provenance': 'DERIVED',
                'what': 'where a hall gathers when it empties, off the same '
                        'plan the route is read from'},
     # A door number. Rooms have names, and a name is what you call a place
@@ -507,7 +518,22 @@ assert FOCUS['fade_from_rel'] > 1, \
 # which is not named here fails the build, and a kind named here whose shape
 # the page HAS learned to draw fails it too, so the branch landing is what
 # forces the name off this list. Nothing silently stays pending.
-PENDING_PAGE = ['asset', 'door', 'egress', 'hazard', 'muster']
+# ...and this list is now EMPTY, which is what it was for.
+#
+# All five landed together: web/build_3d.py grew a `case` for the chevron,
+# the beacon, the stencil, the tag and the notice, and the hall hangs all
+# five - a chevron in each back corner pointing at the one open face, a
+# beacon on the apron, a stencilled number on every way in, a tag on every
+# machine, and a hatched notice in every room whose own record names a
+# hazard. Until they landed, a kind on this list fell through that switch
+# and drew NO PLATE: bare text with a shadow, which is what a campus name
+# looks like from across a green, and which is exactly how the first three
+# hung were read when somebody looked at the hall.
+#
+# The gate stays. It fails closed in both directions, so the next kind
+# declared here without a drawing branch fails this build, and this list
+# going empty is the only way to say the registry has no unpaid promises.
+PENDING_PAGE = []
 
 BOOTSTRAP = '--bootstrap' in __import__('sys').argv
 if BOOTSTRAP:

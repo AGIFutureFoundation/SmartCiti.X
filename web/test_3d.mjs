@@ -1431,7 +1431,7 @@ ok('the props of all eleven rooms pool into ONE map hoisted above the room '
   (() => {
     const b = fnCode('buildHall');
     const pool = b.indexOf('propPool = new Map(); propInst = new Map();');
-    const loop = b.indexOf('h.rooms.forEach((r, ri) => {');
+    const loop = b.indexOf('h.rooms.forEach((r) => {');
     const flush = b.indexOf('flushProps(hallGroup);');
     return pool > 0 && loop > pool && flush > loop
       && (b.match(/flushProps\(hallGroup\);/g) || []).length === 1;
@@ -2026,6 +2026,34 @@ const interiorsSrc = readFileSync(new URL('./interiors.py', import.meta.url), 'u
    unnoticed the way these five did. */
 const kindsDrawn = new Set([...code.matchAll(/kind: '([a-z]+)'/g)].map((m) => m[1]));
 const kindsDeclared = Object.keys(labelsReg.kinds);
+/* A SHAPE THAT IS NOT DRAWN IS NOT A CONVENTION.
+
+   labels/ kept a PENDING_PAGE list computed from this page - a kind whose
+   shape has no `case` in labelShape() is pending - and five of the
+   nineteen sat on it: chevron, beacon, stencil, tag, notice. They fell
+   through that switch and drew NO PLATE, so the first three hung in a hall
+   came out as bare text with a shadow, which is what a campus name looks
+   like from across a green, and which is how they were read when somebody
+   looked at the hall. The registry's whole argument is that a sign you
+   have to read to tell apart has failed; five of its shapes were failing
+   it. The list is empty now, and it is empty in the REGISTRY, which
+   recomputes it from this page rather than believing a note. */
+ok('every shape the label registry declares has a drawing branch on the '
+   + 'page, and the registry says so from its own reading of the page: the '
+   + 'chevron, beacon, stencil, tag and notice branches landed together and '
+   + 'the pending list is empty - and the head and tip insets the dot, the '
+   + 'hole, the eyelet and the point need are declared ONCE and read by '
+   + 'both the sizing and the drawing, so no text is laid into them',
+  labelsReg.pending_page.length === 0
+  && labelsReg.counts.drawn === kindsDeclared.length
+  && ['chevron', 'beacon', 'stencil', 'tag', 'notice']
+       .every((sk) => new RegExp("case '" + sk + "':").test(code))
+  && Object.keys(labelsReg.shapes).every((sk) => new RegExp("case '" + sk + "':").test(code)
+       || sk === 'ghost' || sk === 'plate')
+  && /const LHEAD = \{ beacon: 22, stencil: 20, tag: 12 \};/.test(code)
+  && /const head = lblHead\(shape\), tip = lblTip\(shape\);/.test(fnCode('label'))
+  && /\+ head \+ tip;/.test(fnCode('label')));
+
 ok(`all ${kindsDeclared.length} sign kinds labels/registry declares are hung `
    + 'somewhere in the world - including the five that were declared and '
    + 'never drawn: a chevron to the way out, a muster beacon on the apron, a '
@@ -2120,9 +2148,9 @@ ok('the egress chevrons and the muster beacon are read off the plan, not '
    + 'campus through the building\'s one open face, and the beacon stands out '
    + 'on the apron in front of it',
   /const outTo = D\.campuses\[campusKey\]\.name;/.test(fnCode('buildHall'))
-  && /for \(const ex of \[cx\(0\) \+ 1\.6, cx\(W\) - 1\.6\]\)/.test(fnCode('buildHall'))
-  && /way\.position\.set\(ex, 2\.45, cz\(DEP\) - \.6\);/.test(fnCode('buildHall'))
-  && /muster\.position\.set\(0, 2\.3, cz\(0\) - 7\);/.test(fnCode('buildHall')));
+  && /for \(const ex of \[cx\(0\) \+ 2\.2, cx\(W\) - 2\.2\]\)/.test(fnCode('buildHall'))
+  && /way\.position\.set\(ex, 2\.1, cz\(DEP\) - \.45\);/.test(fnCode('buildHall'))
+  && /muster\.position\.set\(0, 1\.9, cz\(0\) - 7\);/.test(fnCode('buildHall')));
 
 /* ---- the three levels, stood up ---------------------------------------- */
 ok('the training ladder is READ out of D.strandmods and is hall-wide only '
@@ -2225,7 +2253,7 @@ ok('and nothing added since is keyed by strand: the ladder rung is keyed by '
    + 'strand to a second room',
   /TIER_LADDER\.forEach\(\(rg, ti\) => \{/.test(code)
   && /D\.i18n\[loc\]\.tiers\[rg\.tier\]/.test(code)
-  && /label\(String\(ri \+ 1\)\.padStart\(2, '0'\),/.test(code));
+  && /label\(String\(ri2 \+ 1\)\.padStart\(2, '0'\),/.test(code));
 
 ok('every lesson in the registry still resolves its room through the strand '
    + 'table, and every strand it names is one of the eleven - the binding '

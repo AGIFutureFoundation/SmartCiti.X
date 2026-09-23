@@ -8527,6 +8527,20 @@ const lblAccent = (kind, hue) => kind.accent === 'district'
 
 // the ten plates, drawn on the 2D context; `case` per shape so the
 // registry and the page cannot drift apart without the build noticing
+/* How much room a shape wants before its first letter, and after its last.
+
+   Five of the nineteen kinds are not name-plates: the registry asks for a
+   ringed dot struck at a beacon's leading end, a punched hole at a
+   stencil's head, an eyelet through a tag's cut corner, and a chevron
+   whose plate runs out to a point. Each of those eats width that the text
+   must not be laid into, so the two are declared HERE, once, and both
+   label() (which sizes the canvas and sets the text) and labelShape()
+   (which draws the plate) read the same numbers. */
+const LHEAD = { beacon: 22, stencil: 20, tag: 12 };
+const LTIP = { chevron: 18 };
+const lblHead = (shape) => LHEAD[shape] ?? 0;
+const lblTip = (shape) => LTIP[shape] ?? 0;
+
 function labelShape(g, shape, w, h, accent, dashed) {
   const S = LBL.shapes[shape] ?? LBL.shapes.plate;
   const r = Math.min(S.radius, h / 2);
@@ -8584,6 +8598,77 @@ function labelShape(g, shape, w, h, accent, dashed) {
       g.strokeStyle = accent; g.lineWidth = 2;
       g.beginPath(); g.roundRect(1, 1, w - 2, body - 2, r); g.stroke();
       break;
+
+    /* The five the registry declared and this page could not draw.
+
+       labels/build.py held them on a PENDING_PAGE list computed from this
+       file - a kind whose shape has no `case` here is pending, and a kind
+       named pending whose shape HAS one fails that build - so the list is
+       what forces these branches to land rather than a note somebody meant
+       to act on. Until they did land, an egress chevron and a muster
+       beacon fell through this switch and drew no plate at all: bare text
+       with a shadow, which is what a campus name looks like from across a
+       green, which is exactly how they were read when somebody looked at
+       the hall. A shape that is not drawn is not a convention.
+
+       Each follows the registry's own words for it rather than inventing
+       a look here; `draws` in labels/registry/labels.json is the spec. */
+    case 'chevron': {                      // the plate runs out to a point
+      const tip = lblTip(shape);
+      g.beginPath();
+      g.moveTo(0, 0); g.lineTo(w - tip, 0); g.lineTo(w, body / 2);
+      g.lineTo(w - tip, body); g.lineTo(0, body);
+      g.closePath(); g.fill();
+      g.shadowBlur = 0;
+      g.fillStyle = accent; g.fillRect(0, 0, 6, body);
+      break;
+    }
+    case 'beacon': {                       // a ringed dot at the leading end
+      g.beginPath(); g.roundRect(0, 0, w, body, r); g.fill();
+      g.shadowBlur = 0;
+      const cx2 = 22, cy2 = body / 2;
+      g.strokeStyle = accent; g.lineWidth = 3;
+      g.beginPath(); g.arc(cx2, cy2, 11, 0, 7); g.stroke();
+      g.fillStyle = accent;
+      g.beginPath(); g.arc(cx2, cy2, 4.5, 0, 7); g.fill();
+      break;
+    }
+    case 'stencil': {                      // hard corners, punched, bordered
+      g.fillRect(0, 0, w, body);
+      g.shadowBlur = 0;
+      g.strokeStyle = accent; g.lineWidth = 4;
+      g.strokeRect(2, 2, w - 4, body - 4);
+      g.globalCompositeOperation = 'destination-out';
+      g.beginPath(); g.arc(20, body / 2, 6, 0, 7); g.fill();
+      g.globalCompositeOperation = 'source-over';
+      break;
+    }
+    case 'tag': {                          // head corner cut, eyelet punched
+      const cut = 15;
+      g.beginPath();
+      g.moveTo(cut, 0); g.lineTo(w, 0); g.lineTo(w, body);
+      g.lineTo(0, body); g.lineTo(0, cut);
+      g.closePath(); g.fill();
+      g.shadowBlur = 0;
+      g.strokeStyle = accent; g.lineWidth = 2;
+      g.beginPath(); g.moveTo(cut, 0); g.lineTo(0, cut); g.stroke();
+      g.globalCompositeOperation = 'destination-out';
+      g.beginPath(); g.arc(15, 15, 4.5, 0, 7); g.fill();
+      g.globalCompositeOperation = 'source-over';
+      break;
+    }
+    case 'notice': {                       // hatched bands, top and bottom
+      g.beginPath(); g.roundRect(0, 0, w, body, r); g.fill();
+      g.shadowBlur = 0;
+      g.save();
+      g.beginPath(); g.rect(0, 0, w, 7); g.rect(0, body - 7, w, 7); g.clip();
+      g.strokeStyle = accent; g.lineWidth = 4;
+      for (let x2 = -body; x2 < w + body; x2 += 11) {
+        g.beginPath(); g.moveTo(x2, body); g.lineTo(x2 + body, 0); g.stroke();
+      }
+      g.restore();
+      break;
+    }
   }
   g.restore();
   // the accent: a stripe for the wide shapes, a dashed outline where the
@@ -8654,8 +8739,11 @@ function label(text, sub, scale = 1, opts = {}) {
     sw = g.measureText(sub).width;
   }
   const padX = shape === 'chip' ? 26 : shape === 'ghost' ? 6 : 22;
+  // the dot, the hole, the eyelet and the point all take width the text
+  // must not be laid into - see LHEAD / LTIP above labelShape()
+  const head = lblHead(shape), tip = lblTip(shape);
   const w = Math.max(tw, sw, shape === 'chip' ? 48 : 110) + padX * 2
-    + (shape === 'plate' || shape === 'banner' ? 10 : 0);
+    + (shape === 'plate' || shape === 'banner' ? 10 : 0) + head + tip;
   const bodyH = (sub ? 104 : shape === 'chip' ? 54 : 68)
     + (marquee ? 14 : 0);
   const h = bodyH + (LBL.shapes[shape].tail ? 14 : 0)
@@ -8665,7 +8753,7 @@ function label(text, sub, scale = 1, opts = {}) {
   g.scale(dpr, dpr);
   const body = labelShape(g, shape, w, h, accent, !!kind.dashed);
 
-  const left = padX + (shape === 'plate' ? 5 : shape === 'banner' ? 8 : 0);
+  const left = padX + (shape === 'plate' ? 5 : shape === 'banner' ? 8 : 0) + head;
   const baseline = sub ? (marquee ? 62 : 52) : body / 2 + titlePx * .35;
   g.save();
   g.shadowColor = 'rgba(0,0,0,.75)'; g.shadowBlur = 6;
@@ -9941,7 +10029,7 @@ function buildHall(sg) {
   const benchPool = new Map(), benchTop = partCollector(benchPool);
   // the room luminaires, one material per distinct illuminance in the record
   const lumPool = new Map(), lumTop = partCollector(lumPool), lumMats = new Map();
-  h.rooms.forEach((r, ri) => {
+  h.rooms.forEach((r) => {
     const rw = r.w * U, rd = r.h * U;
     const rx = cx(r.x * U + rw/2), rz = cz(r.y * U + rd/2);
     const fin = D.finCat[D.finishes[h.slug][r.strand].surface];
