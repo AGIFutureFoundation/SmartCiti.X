@@ -3231,7 +3231,6 @@ function buildHall(sg) {
 
      They are read off the SAME cuts the partitions were drawn around, so
      a gate can never hang where there is no way through. */
-  let gates = 0;
   const frontKey = 'z@' + (-DEP / 2).toFixed(2);
   for (const [key, cuts] of doors) {
     const on = Number(key.slice(2)), along = key[0];
@@ -3241,7 +3240,6 @@ function buildHall(sg) {
         ? box(w2, 1.0, .05, mat.metal, at, .85, on - .09, hallGroup)
         : box(.05, 1.0, w2, mat.metal, on - .09, .85, at, hallGroup);
       g2.userData.gate = key;
-      gates++;
       /* ...and the WAYS IN carry a stencilled number.
 
          labels/registry declares a `door` sign - a stencil, mono, readable

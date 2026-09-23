@@ -245,7 +245,7 @@ CONTROL_BUNDLE = '\n'.join(
 CONTROL_NAMES = (
     'LearnerProfile', 'pSuccess', 'RUNG_CREDIT', 'SIGMA_MAX', 'shrinkMastery',
     'SkillGraph', 'TRANSFER', 'INTERFERENCE',
-    'ZpdDial', 'BAND', 'BAND_CENTER', 'DEFAULTS', 'classifyAffect',
+    'ZpdDial', 'BAND', 'BAND_CENTER', 'DEFAULTS', 'STATES', 'classifyAffect',
     'Sequencer', 'WEIGHTS', 'POLICY',
     'checkSkillGate', 'scoreLevelTest', 'scoreJobsiteFinal', 'certified', 'GATE', 'ANTIGAMING',
     'HintEngine', 'RUNGS', 'HINT_POLICY', 'masteryCeiling', 'ceilingFor', 'creditFor',
@@ -345,7 +345,7 @@ def quote(rel, start, end):
     if j < 0:
         raise LookupError(f'{rel}: cannot find the closing anchor {end!r} after {start!r}')
     run = text[i:j + len(end)]
-    run = re.sub(r'\n\s*\*\s?', ' ', run)
+    run = re.sub(r'\n\s*(?:\*|//)\s?', ' ', run)
     return re.sub(r'\s+', ' ', run).strip()
 
 
@@ -355,16 +355,17 @@ JOBSITE_DOC = quote(GATES_PATH, 'Jobsite final (tier 3)', "the union agent's ora
 JOBSITE_EXPR = quote(GATES_PATH, 'const pass = stepOrder', 'oral >= 2;')
 GATES_RULE = quote(GATES_PATH, 'The rule that shapes everything here:', 'not what was inferred.')
 GATE_QUALIFY_RULE = quote(GATES_PATH, 'Count QUALIFYING attempts only',
-                          'a failed demonstration does.')
+                          'nothing ever certified.')
 GRAPH_RULE = quote(GRAPH_PATH, 'Governing rule', 'about them.')
 VERIFY_RULE = quote(SEQUENCER_PATH, 'The dial holds practice at the band CENTRE',
                     'always 1.5 points too easy to count.')
 FADE_RULE = quote(HINTS_PATH, 'Help is a loan against mastery credit',
                   'someone should say so.')
+# The README is markdown; its emphasis markers are not part of the sentence.
 NO_LLM_RULE = quote(CONTROL_README, '**The control plane has no LLM in it',
-                    'rather than participants in it.')
+                    'rather than participants in it.').replace('**', '')
 DIAL_CLAMP_RULE = quote(DIAL_PATH, 'Order: session cap first', 'is the SAFETY bound;')
-SEQ_DEFENDS_RULE = quote(SEQUENCER_PATH, 'It is the layer where adaptive systems usually cheat',
+SEQ_DEFENDS_RULE = quote(SEQUENCER_PATH, 'the layer where adaptive systems usually cheat',
                          'a score and a reason.')
 IDENTITY_RULE = need(AUTH_HONESTY, 'local_identity_is_a_label', f'{AUTH_PATH}#honesty')
 NO_BACKEND_RULE = need(AUTH_HONESTY, 'no_backend', f'{AUTH_PATH}#honesty')
@@ -636,7 +637,7 @@ RUNG_ROWS = ''.join(
     f'<tr data-rung="{E(str(need(r, "rung", HINTS_PATH)))}" '
     f'data-credit="{E(str(need(r, "credit", HINTS_PATH)))}">'
     f'<td class="num">{E(str(r["rung"]))}</td><td class="k">{E(need(r, "name", HINTS_PATH))}</td>'
-    f'<td class="num">{E(f"{r["credit"]:.2f}")}</td><td>{E(need(r, "does", HINTS_PATH))}</td></tr>'
+    f'<td class="num">{E("%.2f" % r["credit"])}</td><td>{E(need(r, "does", HINTS_PATH))}</td></tr>'
     for r in RUNGS)
 
 HINT_ROWS = ''.join(
@@ -1182,12 +1183,13 @@ function paintLadder(R) {
   const gateOf = new Map(R.gates.map((g) => [g.id, g]));
   const g = svgEl('g', { class: 'nodes' });
   svg.appendChild(g);
-  let nReady = 0, nTouched = 0;
+  let nReady = 0, nTouched = 0, nAttempted = 0;
   for (const nd of R.nodes) {
     const gt = gateOf.get(nd.id);
     if (gt === undefined) throw new Error('progress: no gate record for ' + nd.id);
     if (nd.ready) nReady++;
     if (nd.touched) nTouched++;
+    if (nd.attempts) nAttempted++;
     const cls = 'cell' + (nd.touched ? ' touched' : '')
       + (nd.ready ? ' ready' : ' locked')
       + (R.pick && R.pick.skill === nd.id ? ' picked' : '');
@@ -1227,7 +1229,10 @@ function paintLadder(R) {
   const pairs = [
     ['cells', drawn.length, 'cells on this hall’s ladder'],
     ['edges', nEdges, 'prerequisite edges between them'],
-    ['touched', nTouched, 'cells your record has reached'],
+    ['attempted', nAttempted, 'cells you have actually attempted'],
+    ['touched', nTouched,
+     'cells the graph has moved at all \u2014 those, plus the neighbours one hop away that '
+     + 'propagated credit reached. Propagated credit moves \u03b8 and never counts toward a gate'],
     ['ready', nReady, 'cells whose prerequisites are met'],
     ['gates', svg.querySelectorAll('[data-gate-pass="true"]').length, 'skill gates passed'],
   ];
@@ -1237,3 +1242,639 @@ function paintLadder(R) {
   }
 }
 '''
+
+RENDER3 = r'''
+function paintPick(R) {
+  const line = document.getElementById('pickline');
+  clear(line);
+  const parts = document.getElementById('parttbl');
+  clear(parts);
+  const poolT = document.getElementById('pooltbl');
+  clear(poolT);
+
+  if (R.pickError !== null) {
+    line.setAttribute('data-pick', 'error');
+    line.appendChild(elem('p', { class: 'nonebox',
+      text: 'The sequencer threw rather than answering: ' + R.pickError }));
+    return;
+  }
+  if (R.pick === null) {
+    /* Sequencer.pick() returns null only when every skill in the hall already
+       carries an awarded gate. Nothing here can award one, so this branch is
+       not reachable from a replayed record - and it is still handled, by name,
+       rather than defaulted into something that looks like an answer. */
+    line.setAttribute('data-pick', 'none');
+    line.appendChild(elem('p', { class: 'nonebox',
+      text: 'The sequencer returned no task. It does that only when every skill in the hall '
+        + 'already carries an awarded gate, and nothing on this page can award one.' }));
+    return;
+  }
+
+  const p = R.pick;
+  line.setAttribute('data-pick', 'ok');
+  line.setAttribute('data-pick-skill', p.skill);
+  line.setAttribute('data-pick-mode', p.mode === undefined ? 'unset' : p.mode);
+  line.setAttribute('data-pick-difficulty', n1(p.difficulty));
+  line.setAttribute('data-pick-ceiling',
+    p.scaffold_ceiling === undefined ? 'unset' : String(p.scaffold_ceiling));
+  line.setAttribute('data-pick-scored', String(p.parts !== undefined));
+  const nd = R.nodes.find((x) => x.id === p.skill);
+  line.appendChild(elem('h3', { text: nd === undefined ? p.skill : nd.strand + ' · ' + nd.tier }));
+  line.appendChild(elem('p', { class: 'why', text: p.why }));
+  line.appendChild(elem('p', { class: 'muted',
+    text: p.skill + ' · mode ' + (p.mode === undefined ? 'unset' : p.mode)
+      + ' · difficulty ' + n1(p.difficulty)
+      + ' · hints allowed up to rung '
+      + (p.scaffold_ceiling === undefined ? 'unset' : p.scaffold_ceiling)
+      + (p.poolSize === undefined ? '' : ' · chosen from ' + p.poolSize + ' candidate(s)') }));
+  if (p.diagnosis) {
+    line.appendChild(elem('p', { class: 'muted', 'data-diagnosis': p.diagnosis.cause,
+      text: 'diagnosis: ' + p.diagnosis.cause + ' — ' + p.diagnosis.skill }));
+  }
+
+  /* the score, term by term, each one a share of the whole */
+  if (p.parts === undefined) {
+    parts.appendChild(row([elem('td', { class: 'muted', colspan: '5',
+      text: 'This pick did not come from scoring candidates. The ' + p.mode + ' rule took '
+        + 'priority over the score, and the sentence above is the rule’s own reason.' })],
+      { 'data-parts': 'none' }));
+  } else {
+    for (const term of Object.keys(WEIGHTS)) {
+      const v = p.parts[term];
+      const w = WEIGHTS[term];
+      parts.appendChild(row([
+        td(term, 'k'), td(n3(v), 'num'), td(n2(w), 'num'), td(n3(v * w), 'num'),
+        td(pc((v * w) / p.parts.total), 'num')],
+        { 'data-part': term, 'data-part-value': n3(v), 'data-part-weight': n2(w),
+          'data-part-contribution': n3(v * w) }));
+    }
+    parts.appendChild(row([td('total', 'k'), td('', 'num'), td('', 'num'),
+      td(n3(p.parts.total), 'num'), td('100%', 'num')],
+      { 'data-part': 'total', 'data-part-contribution': n3(p.parts.total) }));
+  }
+
+  /* what else was on the table */
+  const head = row([elem('th', { text: 'candidate' }), elem('th', { text: 'score' }),
+    elem('th', { text: 'zpd_fit' }), elem('th', { text: 'review' }),
+    elem('th', { text: 'leverage' }), elem('th', { text: 'novelty' })]);
+  poolT.appendChild(head);
+  for (const c of R.scored) {
+    poolT.appendChild(row([
+      td(c.id.split('.').slice(1).join(' · '), 'k'), td(n3(c.parts.total), 'num'),
+      td(n2(c.parts.zpd_fit), 'num'), td(n2(c.parts.review_urgency), 'num'),
+      td(n2(c.parts.graph_leverage), 'num'), td(n2(c.parts.novelty), 'num')],
+      { 'data-candidate': c.id, 'data-candidate-total': n3(c.parts.total),
+        'data-candidate-picked': String(c.id === p.skill) }));
+  }
+  const note = document.getElementById('poolnote');
+  clear(note);
+  note.setAttribute('data-pool-size', String(R.scored.length));
+  note.setAttribute('data-pool-from', R.poolFrom);
+  note.setAttribute('data-pool-used', String(p.parts !== undefined));
+  const shape = R.scored.length
+    ? 'Those ' + R.scored.length + ' candidate(s) came from ' + R.poolFrom + '. The working set '
+      + 'holds at most ' + POLICY.workingSetMax + ' skills open at once, and no more than '
+      + POLICY.maxConsecutiveSameSkill + ' tasks in a row may come from one skill.'
+    : 'The sequencer had no candidate pool at all on this profile.';
+  note.textContent = p.parts === undefined
+    ? shape + ' None of them is the task above: the ' + p.mode + ' rule runs before scoring and '
+      + 'took priority over all of them. This is what the sequencer would have scored otherwise.'
+    : shape;
+}
+
+function paintDial(R) {
+  const line = document.getElementById('dialline');
+  clear(line);
+  const tb = document.getElementById('dialstate');
+  clear(tb);
+  const last = document.getElementById('diallast');
+  clear(last);
+  const d = R.dialView;
+  if (d === null) {
+    line.setAttribute('data-dial', 'none');
+    line.appendChild(elem('p', { class: 'nonebox',
+      text: 'No task was picked, so there is no difficulty to set.' }));
+    return;
+  }
+  line.setAttribute('data-dial', 'ok');
+  line.setAttribute('data-dial-skill', d.skill);
+  line.setAttribute('data-dial-state', d.state);
+  line.setAttribute('data-dial-setpoint', n1(d.setpoint));
+  line.setAttribute('data-dial-served', n1(d.served));
+  line.setAttribute('data-dial-psuccess', n3(d.pAtServed));
+  line.appendChild(elem('p', { class: 'why',
+    text: 'The dial is ' + d.state + ' on this skill. It would serve difficulty '
+      + n1(d.setpoint) + ' against your level of ' + n1(d.theta) + ', which on the logistic it '
+      + 'uses is a ' + pc(d.pAtSetpoint) + ' chance of getting it unaided. The task above is '
+      + 'served at ' + n1(d.served) + ' — ' + pc(d.pAtServed) + '.' }));
+  line.appendChild(elem('p', { class: 'muted',
+    text: 'The target band is ' + pc(BAND.lo) + '–' + pc(BAND.hi) + '. The dial waits '
+      + d.windowNeeds + ' attempts before it moves at all; it has ' + d.windowFilled
+      + ' in the current window and has moved ' + d.moves + ' time(s) on this skill in your '
+      + 'record.' }));
+  const rows = [
+    ['your level (θ)', n1(d.theta), 'moved by every attempt, up on a success and down on a miss'],
+    ['uncertainty (σ)', n1(d.sigma),
+     'shrinks with evidence and re-inflates when you keep surprising the model'],
+    ['setpoint', n1(d.setpoint), 'where the dial would place the next task'],
+    ['dial state', d.state, 'one of ' + STATES.join(', ')],
+    ['window', d.windowFilled + ' of ' + d.windowNeeds, 'attempts until the dial may move again'],
+    ['failed windows', String(d.failedWindows),
+     'two in a row drops the setpoint to θ ' + DEFAULTS.recoveryDrop + ' and starts again '
+     + 'from a worked example'],
+    ['pinned', d.pinned === null ? 'no' : n1(d.pinned),
+     'an instructor may pin the difficulty; nothing on this page can'],
+  ];
+  for (const [k, v, why] of rows) {
+    tb.appendChild(row([td(k, 'k'), td(v, 'num'), td(why, 'muted')], { 'data-dial-row': k }));
+  }
+  if (d.last === null) {
+    last.setAttribute('data-dial-move', 'none');
+    last.textContent = 'The dial has not moved on this skill: it needs ' + d.windowNeeds
+      + ' attempts in a window before it will, and your record has ' + d.windowFilled + '.';
+  } else {
+    last.setAttribute('data-dial-move', d.last.action);
+    last.textContent = 'Last move — ' + d.last.action + ': ' + d.last.why
+      + ' (success rate over that window ' + pc(d.last.pHat) + ', affect ' + d.last.affect.state
+      + ', boredom ' + n2(d.last.affect.boredom) + ', anxiety ' + n2(d.last.affect.anxiety)
+      + '; setpoint ' + n1(d.last.before.c) + ' → ' + n1(d.last.after.c) + ').';
+  }
+}
+
+function paintGates(R) {
+  const tb = document.getElementById('gatetbl');
+  clear(tb);
+  tb.appendChild(row([elem('th', { text: 'skill' }), elem('th', { text: 'attempts' }),
+    elem('th', { text: 'gate-qualifying' }), elem('th', { text: 'believed' }),
+    elem('th', { text: 'demonstrated' }), elem('th', { text: 'gate' }),
+    elem('th', { text: 'why, in gates.mjs’s own words' })]));
+  for (const g of R.gates) {
+    if (g.attempts === 0 && !g.believed) continue;
+    tb.appendChild(row([
+      td(g.strand + ' · ' + g.tier, 'k'), td(g.attempts, 'num'), td(g.qualifying, 'num'),
+      td(g.believed ? 'yes' : 'no', 'num'), td(g.demonstrated ? 'yes' : 'no', 'num'),
+      td(g.pass ? 'PASSED' : 'not passed', 'num'), td(g.why, 'muted')],
+      { 'data-gate-skill': g.id, 'data-gate-pass': String(g.pass),
+        'data-gate-believed': String(g.believed),
+        'data-gate-demonstrated': String(g.demonstrated),
+        'data-gate-qualifying': String(g.qualifying),
+        'data-gate-attempts': String(g.attempts),
+        'data-gate-mastery': n3(g.mastery) }));
+  }
+  const sum = document.getElementById('gatesum');
+  clear(sum);
+  const passed = R.gates.filter((g) => g.pass).length;
+  const believed = R.gates.filter((g) => g.believed).length;
+  const shown = tb.querySelectorAll('[data-gate-skill]').length;
+  sum.setAttribute('data-gates-passed', String(passed));
+  sum.setAttribute('data-gates-believed', String(believed));
+  sum.setAttribute('data-gates-total', String(R.gates.length));
+  sum.setAttribute('data-gates-shown', String(shown));
+  sum.appendChild(elem('p', { class: 'why',
+    text: passed + ' of ' + R.gates.length + ' skill gates in this hall are passed. '
+      + believed + ' are believed on the posterior alone, which is not the same thing and never '
+      + 'stands in for it. The rows above are the skills your record has touched; the rest of '
+      + 'the ladder is untouched and reads the same way.' }));
+  sum.appendChild(elem('p', { class: 'muted',
+    text: 'Nothing in this record is gate-qualifying, and the column says so with a number. A '
+      + 'gate counts only demonstrations whose difficulty was stamped at serve time, and the '
+      + 'app that wrote this record never asked the dial for a difficulty, so there is nothing '
+      + 'to stamp. That is a gap in the app, not a judgement about you.' }));
+
+  const cert = document.getElementById('certline');
+  clear(cert);
+  cert.setAttribute('data-certified', String(R.cert));
+  cert.setAttribute('data-level-test', 'none');
+  cert.setAttribute('data-jobsite-final', 'none');
+  cert.appendChild(elem('p', { class: 'why',
+    text: 'certified() was called with these gates, with no level test and with no jobsite '
+      + 'final, because this bundle holds neither. It answered ' + String(R.cert) + '.' }));
+}
+
+function paintHints(R) {
+  const line = document.getElementById('hintline');
+  clear(line);
+  const tb = document.getElementById('hintstate');
+  clear(tb);
+  const asks = document.getElementById('hintasks');
+  clear(asks);
+  const h = R.hintView;
+  if (h === null) {
+    line.setAttribute('data-hint', 'none');
+    line.appendChild(elem('p', { class: 'nonebox',
+      text: 'No task was picked, so there is no help ladder to set.' }));
+    return;
+  }
+  line.setAttribute('data-hint', 'ok');
+  line.setAttribute('data-hint-skill', h.skill);
+  line.setAttribute('data-hint-ceiling', String(h.ceiling));
+  line.setAttribute('data-hint-from-mastery', String(h.fromMastery));
+  line.setAttribute('data-hint-task-ceiling', h.taskCeiling === null ? 'unset' : String(h.taskCeiling));
+  line.setAttribute('data-hint-contract', String(h.contract));
+  const rung = RUNGS[h.ceiling];
+  line.appendChild(elem('p', { class: 'why',
+    text: h.ceiling === 0
+      ? 'On this task the ladder is closed: no hint is available at all.'
+      : 'On this task the ladder reaches rung ' + h.ceiling + ' — ' + rung.name + ', which '
+        + rung.does + '. A success there is worth ' + n2(rung.credit) + ' of the mastery credit '
+        + 'an unaided one is worth.' }));
+  const rows = [
+    ['mastery on this skill', n3(h.mastery), 'the posterior the fading rule reads'],
+    ['ceiling from mastery', String(h.fromMastery),
+     'the fading rule: the better you know it, the shorter the ladder gets'],
+    ['ceiling from the task', h.taskCeiling === null ? 'unset' : String(h.taskCeiling),
+     'a mode bound: a verification run is hint-free because it is proof, not practice'],
+    ['ceiling served', String(h.ceiling), 'the tighter of the two, always'],
+    ['your hint dependence', pc(h.dependence),
+     'measured over the last ' + HINT_POLICY.fadeWindow + ' attempts here; '
+     + h.windowFilled + ' recorded so far'],
+    ['fading contract', h.contract ? h.contract + ' task(s) left' : 'none open',
+     'opened at a sustained dependence above ' + HINT_POLICY.fadeThreshold
+     + '; ' + h.contractsOpened + ' opened in this record'],
+  ];
+  for (const [k, v, why] of rows) {
+    tb.appendChild(row([td(k, 'k'), td(v, 'num'), td(why, 'muted')], { 'data-hint-row': k }));
+  }
+  for (const [what, r] of [['asked with no pause', h.noDwell],
+                           ['asked after the pause it requires', h.withDwell]]) {
+    asks.appendChild(row([
+      td(what, 'k'), td('rung ' + r.asked, 'num'),
+      td(r.refused ? 'refused: ' + r.refused : 'rung ' + r.granted, 'num'),
+      td(r.why, 'muted')],
+      { 'data-ask': what, 'data-ask-granted': String(r.granted),
+        'data-ask-refused': r.refused === null ? 'none' : r.refused }));
+  }
+}
+
+/* ------------------------------------------------------------------ the boot */
+function renderAll(slug) {
+  const rec = readRecord();
+  paintRecord(rec);
+  const seen = hallsInRecord(rec);
+  paintEmpty(rec, seen, slug);
+  const box = document.getElementById('profilebox');
+  box.setAttribute('data-hall', slug === null ? 'none' : slug);
+  if (slug === null) {
+    box.setAttribute('data-profile', 'unpicked');
+    box.setAttribute('data-shown', 'false');
+    return;
+  }
+  box.setAttribute('data-shown', 'true');
+  const R = replay(slug, rec);
+  box.setAttribute('data-profile', R.history.length ? 'record' : 'empty');
+  box.setAttribute('data-attempts', String(R.history.length));
+  paintReplay(R);
+  paintLadder(R);
+  paintPick(R);
+  paintDial(R);
+  paintGates(R);
+  paintHints(R);
+  window.__tcProgress = () => ({
+    hall: R.slug, attempts: R.history.length,
+    pick: R.pick, gatesPassed: R.gates.filter((g) => g.pass).length,
+    qualifying: R.history.filter((x) => x.gate_qualifying === true).length,
+    certified: R.cert,
+  });
+}
+
+/* The picker. There is no default hall: a page that opens on halls[0] because
+   nothing said otherwise is reporting a choice it made as a choice the reader
+   made. When the record names halls, the one with the most runs is offered and
+   the note says why it was offered; otherwise nothing is selected. */
+const sel = document.getElementById('hallpick');
+sel.appendChild(elem('option', { value: '', text: '— choose a hall —' }));
+for (const h of D.halls) sel.appendChild(elem('option', { value: h.slug, text: h.name }));
+
+const boot = readRecord();
+const bootSeen = hallsInRecord(boot);
+const fromUrl = new URLSearchParams(location.search).get('hall');
+let start = null, why = '';
+if (fromUrl !== null && HALLS.has(fromUrl)) { start = fromUrl; why = 'from the link you followed'; }
+else if (fromUrl !== null) { why = 'the link named a hall that is in no hall record: ' + fromUrl; }
+else if (bootSeen.size) {
+  start = [...bootSeen.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0][0];
+  why = 'this device has more runs recorded in this hall than in any other';
+}
+sel.value = start === null ? '' : start;
+const note = document.getElementById('picknote');
+note.setAttribute('data-picked-because', start === null ? 'nothing' : why);
+note.textContent = start === null
+  ? (why || 'No hall is selected, and none will be chosen for you.')
+  : 'Showing ' + start + ' — ' + why + '.';
+sel.addEventListener('change', (e) => {
+  const v = e.target.value;
+  renderAll(v === '' ? null : v);
+  const n = document.getElementById('picknote');
+  n.setAttribute('data-picked-because', v === '' ? 'nothing' : 'you chose it');
+  n.textContent = v === '' ? 'No hall is selected, and none will be chosen for you.'
+    : 'Showing ' + v + ' — you chose it.';
+  history.replaceState(null, '', v === '' ? location.pathname : location.pathname + '?hall=' + v);
+});
+renderAll(start);
+'''
+
+SCRIPT = CONTROL_BUNDLE + '\n\n/* ---- web/build_progress.py: the page ---- */\n' + RENDER + RENDER2 + RENDER3
+
+# ------------------------------------------------------------------------ page
+TITLE = PRODUCT.split('(')[0].strip()
+page = f'''<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230C1113'/%3E%3Cpath d='M7 21 L16 7 L25 21 Z' fill='none' stroke='%23E8A33D' stroke-width='2.6' stroke-linejoin='round'/%3E%3Cpath d='M11 21 h10' stroke='%2341C4D4' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E">
+<title>{E(TITLE)} — learner progression</title>
+<style>
+:root{{
+  --plate:#12181B; --panel:#182023; --sunk:#0C1113; --ink:#E8EDEC; --muted:#93A3A6;
+  --rule:#28353A; --mark:#E8A33D; --mark-ink:#12181B; --steel:#41C4D4;
+  --good:#5CB584; --crit:#E07C68; --warn:#E8A33D;
+}}
+*{{box-sizing:border-box}}
+body{{margin:0;background:var(--plate);color:var(--ink);
+  font:14px/1.55 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding:0 18px}}
+.wrap{{max-width:1020px;margin:0 auto}}
+a{{color:var(--steel)}}
+header.page{{padding:40px 0 10px;border-bottom:3px solid var(--mark)}}
+header.page h1{{font:700 34px/1.1 "Barlow Condensed",system-ui,sans-serif;margin:0}}
+header.page h1 .x{{color:var(--mark)}}
+header.page p{{color:var(--muted);margin:6px 0 14px}}
+h2{{font:700 22px/1.2 "Barlow Condensed",system-ui,sans-serif;margin:34px 0 10px;
+  color:var(--mark);letter-spacing:.02em}}
+h3{{font:700 18px/1.25 "Barlow Condensed",system-ui,sans-serif;margin:0 0 6px}}
+section{{margin:0 0 10px}}
+.lead{{background:var(--panel);border:1px solid var(--rule);border-left:4px solid var(--warn);
+  border-radius:8px;padding:14px 18px}}
+.lead ul{{margin:8px 0 0;padding-inline-start:20px}}
+.lead li{{margin:6px 0;color:var(--muted)}}
+.lead li b{{color:var(--ink);text-transform:uppercase;font-size:12px;letter-spacing:.06em;
+  margin-inline-end:6px;display:block}}
+.figs{{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0}}
+.fig{{background:var(--panel);border:1px solid var(--rule);border-radius:8px;
+  padding:10px 14px;min-width:132px;flex:1 1 132px}}
+.fig b{{display:block;font:600 24px/1.2 "Barlow Condensed",system-ui,sans-serif;color:var(--mark)}}
+.fig span{{color:var(--muted);font-size:13px}}
+table{{width:100%;border-collapse:collapse;background:var(--panel);border:1px solid var(--rule);
+  border-radius:8px;overflow:hidden;margin:8px 0}}
+td,th{{border-top:1px solid var(--rule);padding:8px 10px;vertical-align:top;font-size:13.5px;
+  text-align:start}}
+th{{color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;
+  letter-spacing:.05em}}
+tr:first-child td,tr:first-child th{{border-top:0}}
+td.k{{color:var(--ink);font-weight:600;white-space:nowrap}}
+td.num{{font:13px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--steel);
+  white-space:nowrap}}
+td.muted{{color:var(--muted)}}
+.tscroll{{overflow-x:auto}}
+@media (max-width:640px){{td.k,td.num{{white-space:normal}}}}
+code{{font:13px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--muted)}}
+pre{{background:var(--sunk);border:1px solid var(--rule);border-radius:6px;padding:10px 12px;
+  overflow-x:auto;font:12.5px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--ink)}}
+.chip{{display:inline-block;border-radius:4px;padding:1px 7px;font-size:12px;
+  border:1px solid var(--rule);background:var(--sunk);color:var(--muted);margin:0 6px 4px 0}}
+.prov{{display:inline-block;border-radius:4px;padding:1px 7px;font-size:11px;
+  border:1px solid var(--rule);margin:0 6px 4px 0;background:var(--sunk);color:var(--muted);
+  letter-spacing:.03em}}
+.why{{color:var(--ink);font-size:14px}}
+.muted{{color:var(--muted);font-size:13px}}
+.card{{background:var(--panel);border:1px solid var(--rule);border-radius:10px;
+  padding:14px 16px;margin:12px 0}}
+.nonebox{{background:var(--sunk);border:1px solid var(--crit);border-radius:8px;
+  padding:12px 14px;color:var(--ink)}}
+.toolbar{{position:sticky;top:0;background:var(--plate);padding:10px 0;z-index:2;
+  border-bottom:1px solid var(--rule);display:flex;gap:10px;flex-wrap:wrap;align-items:center}}
+.toolbar select{{background:var(--sunk);border:1px solid var(--rule);color:var(--ink);
+  border-radius:6px;padding:8px 12px;font:inherit;flex:1 1 280px}}
+.toolbar label{{color:var(--muted);font-size:13px}}
+#picknote{{color:var(--warn);font-size:13px;flex:1 1 100%}}
+#emptynote{{background:var(--sunk);border:1px solid var(--warn);border-radius:8px;
+  padding:12px 14px;margin:12px 0}}
+.gridwrap{{overflow-x:auto;background:var(--panel);border:1px solid var(--rule);
+  border-radius:8px;padding:8px}}
+svg#ladder{{display:block;max-width:100%;height:auto}}
+svg .colhead{{fill:var(--mark);font:600 12px system-ui,sans-serif;
+  text-transform:uppercase;letter-spacing:.08em}}
+svg .cell rect{{fill:var(--sunk);stroke:var(--rule);stroke-width:1}}
+svg .cell.ready rect{{stroke:var(--steel)}}
+svg .cell.touched rect{{fill:#141d20;stroke:var(--good);stroke-width:1.6}}
+svg .cell.picked rect{{stroke:var(--mark);stroke-width:2.6}}
+svg .cell .cname{{fill:var(--ink);font:600 12.5px system-ui,sans-serif}}
+svg .cell .cmark{{fill:var(--muted);font:11px ui-monospace,Menlo,monospace}}
+svg .cell .cgate{{fill:var(--muted);font:10.5px ui-monospace,Menlo,monospace}}
+svg .cell.touched .cmark{{fill:var(--good)}}
+svg .cell.locked .cmark{{fill:#5d6c70}}
+svg .edge{{fill:none;stroke:var(--rule);stroke-width:1.4}}
+svg .edge.requires{{stroke:var(--steel)}}
+svg .edge.supports{{stroke:var(--mark);stroke-dasharray:5 4}}
+svg .edge.interferes{{stroke:var(--crit);stroke-dasharray:2 4}}
+.legend span{{margin-inline-end:14px;font-size:12.5px;color:var(--muted)}}
+.legend i{{display:inline-block;width:22px;height:0;border-top-width:2px;
+  vertical-align:middle;margin-inline-end:6px}}
+.legend i.req{{border-top:2px solid var(--steel)}}
+.legend i.sup{{border-top:2px dashed var(--mark)}}
+.legend i.int{{border-top:2px dotted var(--crit)}}
+footer.page{{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px;
+  color:var(--muted);font-size:14px}}
+footer.page a{{margin-inline-end:10px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="page">
+  <h1>{E(TITLE)} — <span class="x">learner progression</span></h1>
+  <p>{E(PRODUCT)} · pack {E(PACK_VERSION)} · built {E(BUILT)} · the control plane in
+     <code>control/</code>, run in this page over the record this browser already keeps</p>
+</header>
+
+<section class="lead" id="limits">
+  <h2>What this page is, and what it is not</h2>
+  <p class="why">{E(F(N_CONTROL_LINES))} lines of tested adaptive-learning control plane sit in
+     <code>control/</code>. The 3D environment a learner actually plays names them
+     {E(F(N_APP_HITS))} times: it hands out a deterministic rubric score and nothing sequences
+     what comes next, nothing sets the difficulty, no gate opens or stays shut and no help fades.
+     This page runs that machinery — the real classes, carried in verbatim — over whatever
+     <code>{E(TRAINING_KEY)}</code> holds on this device, so you can see what it would do.
+     <b>It changes nothing and it certifies nobody.</b></p>
+  <ul>{LIMITS}</ul>
+  <p class="muted">{E(NO_LLM_RULE)}</p>
+</section>
+
+<section class="figs">{FIGS}</section>
+
+<section>
+  <h2>Where your record comes from</h2>
+  <p class="why">Two records, both written by the app, both in this browser and nowhere else.
+     This page reads them; it never writes them.</p>
+  <div class="tscroll"><table><tbody id="recstate"></tbody></table></div>
+  <div class="figs" id="recfigs"></div>
+  <p class="muted" id="idline"></p>
+  <p class="muted">A pass under <code>{E(PROGRESS_KEY)}</code> names a seat and no hall, and
+     {E(F(MULTI_HALL_SIMS))} of the {E(F(N_SIMS))} seats stand in more than one hall — one of them
+     in {E(F(MAX_SIM_HALLS))}. Attributing such a pass to the hall you are looking at would be
+     this page deciding which hall you were standing in. So it is counted above and fed to
+     nothing. <code>{E(TRAINING_KEY)}</code> records the hall on every episode, and that is the
+     only record below.</p>
+</section>
+
+<div class="toolbar">
+  <label for="hallpick">hall</label>
+  <select id="hallpick" aria-label="choose a union hall"></select>
+  <a href="trade_craft_ladder.html">see the whole ladder and its seats</a>
+  <span id="picknote"></span>
+</div>
+
+<div id="emptynote"></div>
+
+<div id="profilebox">
+
+<section>
+  <h2>What the replay fed the modules, and what it dropped</h2>
+  <p class="why">{E(VERIFY_RULE)}</p>
+  <div class="tscroll"><table><tbody id="replaytbl"></tbody></table></div>
+  <div id="replaynote"></div>
+  <p class="muted">One reconstruction, named rather than buried: the episode record stores no
+     serve difficulty — <code>{E(TRAINING_PATH)}</code> gives a sim episode the fields
+     {E(', '.join(SIM_FIELDS))}, and none of them is one — so the replay serves each recorded
+     outcome at the difficulty the dial would have chosen at that point, stepping the dial forward
+     as it goes. The record carries no hint rung either, so every attempt is replayed unaided, at
+     rung 0.</p>
+</section>
+
+<section>
+  <h2>Where am I?</h2>
+  <p class="why">Your hall's ladder, drawn from <code>{E(SKILLS_PATH)}</code> and read by the real
+     <code>SkillGraph</code>: {E(F(N_CELLS_PER_HALL))} cells, {E(F(N_STRANDS))} strands across
+     {E(F(N_TIERS))} tiers, every cell but the {E(F(N_ROOTS_PER_HALL))} root naming exactly one
+     prerequisite — so a hall's ladder is a tree and readiness is a fact about it, not an
+     opinion.</p>
+  <p class="legend">
+    <span><i class="req"></i>requires — the hard prerequisite</span>
+    <span><i class="sup"></i>supports — soft transfer</span>
+    <span><i class="int"></i>interferes — a confusable pair</span>
+  </p>
+  <div class="gridwrap"><svg id="ladder" role="img"
+    aria-label="this hall's skills by strand and tier, with your position on each"></svg></div>
+  <div class="figs" id="laddersum"></div>
+  <p class="muted">{E(GRAPH_RULE)}</p>
+</section>
+
+<section>
+  <h2>What should I do next, and why?</h2>
+  <p class="why">{E(SEQ_DEFENDS_RULE)}</p>
+  <div class="card" id="pickline"></div>
+  <p class="why">Its score, term by term. The five weights are the sequencer's own published
+     numbers and they sum to one, so the last column is each term's share of this pick:</p>
+  <div class="tscroll"><table><tbody id="parttbl"></tbody></table></div>
+  <div class="tscroll"><table><tbody id="pooltbl"></tbody></table></div>
+  <p class="muted" id="poolnote"></p>
+  <p class="why">What each term means, from <code>{E(SEQUENCER_PATH)}</code>:</p>
+  <div class="tscroll"><table><tbody>
+    <tr><th>term</th><th>weight</th><th>what it measures</th></tr>
+    {WEIGHT_ROWS}
+  </tbody></table></div>
+</section>
+
+<section>
+  <h2>How hard will it be?</h2>
+  <div class="card" id="dialline"></div>
+  <div class="tscroll"><table><tbody id="dialstate"></tbody></table></div>
+  <p class="muted" id="diallast"></p>
+  <p class="why">What moves it, from <code>{E(DIAL_PATH)}</code>:</p>
+  <div class="tscroll"><table><tbody>
+    <tr><th>constant</th><th>value</th><th>what it decides</th></tr>
+    {DIAL_ROWS}
+  </tbody></table></div>
+  <p class="muted">{E(DIAL_CLAMP_RULE)}</p>
+</section>
+
+<section>
+  <h2>What am I allowed to claim?</h2>
+  <p class="why">{E(GATES_RULE)}</p>
+  <div class="tscroll"><table><tbody id="gatetbl"></tbody></table></div>
+  <div id="gatesum"></div>
+  <p class="muted">{E(GATE_QUALIFY_RULE)}</p>
+  <p class="why">{E(CERTIFIED_DOC)} <code>{E(GATES_PATH)}</code> writes it as:</p>
+  <pre data-quote="certified" data-source="{E(GATES_PATH)}">{E(CERTIFIED_EXPR)}</pre>
+  <div class="card" id="certline"></div>
+  <p class="why">{E(JOBSITE_DOC)} That third component is not a number this bundle can produce:
+     the oral check is a person from the hall asking you to explain the why, and scoring it.
+     Nothing in this bundle, on this page or in the 3D environment, is that person.</p>
+  <pre data-quote="jobsite-final" data-source="{E(GATES_PATH)}">{E(JOBSITE_EXPR)}</pre>
+  <p class="why">The constants those three tiers run on:</p>
+  <div class="tscroll"><table><tbody>
+    <tr><th>constant</th><th>value</th><th>what it decides</th></tr>
+    {GATE_ROWS}
+  </tbody></table></div>
+</section>
+
+<section>
+  <h2>What help do I get?</h2>
+  <p class="why">{E(FADE_RULE)}</p>
+  <div class="card" id="hintline"></div>
+  <div class="tscroll"><table><tbody id="hintstate"></tbody></table></div>
+  <p class="why">And what the engine answers if you ask for a hint right now — twice, because the
+     first answer is the one most systems hide:</p>
+  <div class="tscroll"><table><tbody id="hintasks"></tbody></table></div>
+  <p class="why">The ladder itself, from <code>{E(HINTS_PATH)}</code>. `credit` is the mastery
+     evidence a success at that rung is worth, and it is the same schedule the dial uses to
+     discount its success rate — one table, so a hint cannot be cheap in one subsystem and
+     expensive in another:</p>
+  <div class="tscroll"><table><tbody>
+    <tr><th>rung</th><th>name</th><th>credit</th><th>what it does</th></tr>
+    {RUNG_ROWS}
+  </tbody></table></div>
+  <div class="tscroll"><table><tbody>
+    <tr><th>constant</th><th>value</th><th>what it decides</th></tr>
+    {HINT_ROWS}
+  </tbody></table></div>
+</section>
+
+</div>
+
+<section>
+  <h2>Which control plane this is</h2>
+  <p class="why">Not a description of it and not a second implementation of it: the modules below
+     are read by <code>web/build_progress.py</code> and carried into this page verbatim, with the
+     <code>import</code> lines dropped ({E(F(CONTROL_DROPPED))} of them, because the modules are
+     concatenated in dependency order) and a leading <code>export</code> stripped. Every other
+     byte — the arithmetic, the comments that say why each number is what it is, the sentences you
+     read above — is the module's.</p>
+  <div class="tscroll"><table><tbody>
+    <tr><th>module</th><th>lines</th><th>what it owns</th></tr>
+    {CONTROL_ROWS}
+  </tbody></table></div>
+  <p class="why">Those modules pass {E(F(N_CONTROL_CHECKS))} checks in this repository, counted by
+     running them:</p>
+  <div class="tscroll"><table><tbody>
+    <tr><th>suite</th><th>checks</th></tr>
+    {TEST_ROWS}
+  </tbody></table></div>
+  <p>{PROV_CHIPS}</p>
+</section>
+
+<section>
+  <h2>What this page read</h2>
+  <ul class="muted">{READS}</ul>
+  <p class="muted">Every number on this page is read from those files at build time, or computed
+     in this page by those modules from your own record. None is typed.</p>
+</section>
+
+<footer class="page">
+  <a href="trade_craft_ladder.html">training ladder</a>
+  <a href="trade_craft_3d.html">3D environment</a>
+  <a href="trade_craft_signin.html">who this device says you are</a>
+  <a href="trade_craft_landing.html">landing</a>
+</footer>
+</div>
+<script type="application/json" id="tcdata">{PAYLOAD}</script>
+<script type="module">
+{SCRIPT}</script>
+</body>
+</html>
+'''
+
+out = HERE / 'trade_craft_progress.html'
+emit(out, page,
+     f'{F(N_CONTROL_LINES)} lines of control plane over {F(N_CELLS_PER_HALL)} cells, '
+     f'{F(N_CONTROL_CHECKS)} control checks, certifies nobody')
