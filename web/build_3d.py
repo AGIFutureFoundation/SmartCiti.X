@@ -13834,7 +13834,15 @@ window.__tc3dDo = (fn, arg) => {
     const [what, which] = String(arg).split(':');
     if (what === 'region') showRegion();
     else if (what === 'campus') showCampus(which ?? campusKey);
-    else if (what === 'hall') showHall(which ?? D.halls[0].slug);
+    else if (what === 'hall') showHall(which ?? slug);
+    // `slug`, NOT D.halls[0].slug. This read D.halls[0] - ironworkers -
+    // which threw away the hall the learner had actually selected: the
+    // bar still said Welding Trades while the building drawn underneath
+    // it was the ironworkers'. The campus branch one line up already
+    // does the right thing with `campusKey`, and this is the same rule.
+    // It also meant every hall screenshot and every eval_scene hall
+    // measurement taken through this hook scored ironworkers rather than
+    // the hall under test, because both drive the view through here.
     else throw new Error('no such view: ' + arg);
   }
   // place the camera: "eyeX,eyeY,eyeZ|atX,atY,atZ" - used by the harnesses
@@ -13895,6 +13903,10 @@ window.__tc3dSim = {
     result: opRun.result } : null,
 };
 window.__tc3d = () => ({ view, buildings: buildings.length, plates: plates.length,
+  // Every hall's slug, so a harness can measure ALL of them instead of
+  // whichever one happens to be first. eval_scene scored only D.halls[0]
+  // and reported comfortable headroom while 11 halls were over the ceiling.
+  hallSlugs: D.halls.map((h) => h.slug),
   beacons: beacons.length, floors: floors.length, slug, campusKey, loc, walkActive,
   sim: curSimId && sim ? curSimId : null, roadFaults, roadCount,
   anchors: anchorPins, simCam: simView, audio: !!ac, city: cityPois,

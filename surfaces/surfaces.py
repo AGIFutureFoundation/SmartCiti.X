@@ -170,6 +170,176 @@ SURFACES = {
     'impact-mat':       ('Impact-absorbing mat', '#3f4e63', .94, .00, 'smooth', 1.2,
                          'a fall-arrest demonstration ends on the floor, and this is '
                          'the floor it should end on'),
+
+    # ------------------------------------------ the timber and trade catalogue --
+    # The first two passes built a working building out of concrete, resin and
+    # steel, which is most of what a shop floor is and almost none of what the
+    # rest of a union hall is. A hall has a bench room, a stock rack, a meeting
+    # room and a board room, and the trade that owns the hall puts its own
+    # material down in them: a carpenters' board room is not porcelain tile.
+    #
+    # So this pass is timber by species, the coloured coatings a bay is
+    # actually marked out in, the stone and fired clay the masonry trades lay,
+    # and the light metals a magazine or a battery room needs. Every one of
+    # them rides a pattern the renderer ALREADY paints (see the assert at the
+    # foot of this module and the two checks in the suite that hold this
+    # catalogue to the page's own footfall and relief tables), so a finish
+    # added here costs a texture and never a material.
+
+    # --- timber, by species. A species is not a shade of brown: oak, maple
+    # and fir differ in how they are finished and how hard they wear, and the
+    # roughness below is the finish each one is usually laid with.
+    'oak-strip':        ('White oak strip floor', '#9b7440', .78, .00, 'plank', .12,
+                         'the hardwood a joinery trade lays in its own meeting room, '
+                         'because the room is the first thing it is judged on'),
+    'ash-board':        ('Ash board floor', '#c3ab80', .82, .00, 'plank', .16,
+                         'pale, straight-grained and cheap to lift when the cable '
+                         'under the record room floor has to be got at'),
+    'heart-pine-reclaimed': ('Reclaimed heart pine', '#8e4f27', .86, .00, 'plank', .18,
+                         'lifted out of an old mill floor and laid again: the board '
+                         'room of a trade that argues for reuse should be made of it'),
+    'maple-strip':      ('Hard maple strip floor', '#cfa96a', .70, .00, 'plank', .10,
+                         'the hardest of the common shop timbers, and the one a '
+                         'bench room floor survives a dropped chisel on'),
+    'douglas-fir-plank':('Douglas fir plank', '#b07c4b', .88, .00, 'plank', .20,
+                         'the stock a framing trade racks, laid as the floor of the '
+                         'room it is racked in'),
+    'beech-block':      ('Beech end-grain block', '#c9a06a', .80, .00, 'block', .08,
+                         'end grain takes a blade point-first and closes behind it, '
+                         'which is why a cutting bench stands on it'),
+    'teak-deck':        ('Laid teak deck', '#a06c3b', .80, .00, 'plank', .09,
+                         'the deck a shipwright lays and caulks, and the one piece of '
+                         'their work anybody outside the yard ever walks on'),
+    'iroko-bench-deck': ('Iroko bench decking', '#7b5227', .84, .00, 'plank', .15,
+                         'oily enough to sit in salt water and not move, which is the '
+                         'whole reason a fitting-out bench is built of it'),
+    'bamboo-strand':    ('Strand-woven bamboo', '#a97640', .72, .00, 'plank', .13,
+                         'a floor-laying trade keeps a bay of the newest substrate it '
+                         'is asked to lay over, and this is currently that'),
+    'oak-end-block':    ('Oak end-grain block', '#8c5b2f', .86, .00, 'block', .09,
+                         'a fitter kneels at a stripped machine for an hour, and oak '
+                         'end grain is kinder to a knee than steel and harder than a mat'),
+    'larch-decking':    ('Open larch decking', '#a98452', .92, .00, 'plank', .14,
+                         'slatted and laid clear of the ground, so a store where '
+                         'everything arrives wet drains instead of rotting'),
+    'rail-timber-waybeam': ('Timber waybeam', '#6f5b45', .92, .00, 'plank', .30,
+                         'the longitudinal timber a rail sits on where there is no '
+                         'ballast to sit in, and the thing a signals hall racks'),
+
+    # --- resilient sheet, tile and the coloured coatings a bay is marked in.
+    # These are colour SHADES with a job: a floor coating is chosen for what
+    # the shade tells somebody walking in, and the trade names the colour.
+    'linoleum-sheet':   ('Welded linoleum sheet', '#6f8a5e', .55, .01, 'smooth', 2.0,
+                         'linseed oil and cork dust on jute: warm underfoot, and it '
+                         'takes a dropped instrument without chipping'),
+    'rubber-sheet-safety': ('Welded rubber sheet', '#3d4a44', .88, .00, 'smooth', 1.6,
+                         'a rescue drill puts people on the floor repeatedly, and '
+                         'rubber sheet is what stops that becoming the injury'),
+    'vct-tile':         ('Vinyl composition tile', '#cfc6b2', .45, .01, 'tile', .30,
+                         'cheap, replaceable one tile at a time, and the reason a '
+                         'record room floor can be repaired on a Friday afternoon'),
+    'safety-vinyl-grit':('Grit-grip safety vinyl', '#6d8f96', .65, .02, 'speckle', 1.8,
+                         'carborundum through the wear layer, for the floor between '
+                         'a wet plant room and a dry corridor'),
+    'esd-rubber':       ('Static-dissipative rubber', '#46505a', .86, .04, 'smooth', 1.4,
+                         'bleeds a charge away slowly enough not to be a shock path '
+                         'and fast enough not to let one build at a cell rack'),
+    'epoxy-oxide-red':  ('Oxide-red epoxy coating', '#8f3f33', .38, .03, 'smooth', 2.4,
+                         'red reads as the working bay in every yard that uses '
+                         'colour at all, and a trainee learns the convention by walking it'),
+    'epoxy-plant-green':('Plant-room green epoxy', '#3f6b4d', .36, .03, 'smooth', 2.4,
+                         'green is the safe route through a plant room, and the floor '
+                         'is where the route is drawn'),
+    'epoxy-slate-blue': ('Slate-blue epoxy coating', '#3f5a72', .34, .03, 'smooth', 2.4,
+                         'a cold blue under array work makes a dropped washer visible '
+                         'instead of lost'),
+    'urethane-aisle-yellow': ('Aisle-yellow urethane coat', '#c09a24', .40, .03, 'smooth', 1.2,
+                         'the aisle is the drawing: a plant yard is set out in yellow '
+                         'before it is set out on paper'),
+    'mma-fast-cure':    ('Fast-cure acrylic coating', '#6f6272', .30, .03, 'smooth', 2.2,
+                         'goes down and is walked on the same shift, which is the only '
+                         'reason a room in use can be recoated at all'),
+    'polyurea-deck':    ('Polyurea deck coating', '#55696d', .48, .04, 'smooth', 2.0,
+                         'sprayed thick over a steel deck and flexible enough to stay '
+                         'stuck to it while the deck works'),
+    'flake-terracotta': ('Terracotta flake resin', '#a4603f', .58, .03, 'flake', 2.0,
+                         'warm flake hides the overspray a coating bay makes every '
+                         'day without hiding a spill'),
+    'quartz-graphite':  ('Graphite quartz broadcast', '#4b5257', .62, .04, 'speckle', 2.4,
+                         'dark and hard: a shot-loading bench wants grip and wants '
+                         'nothing that sparks'),
+
+    # --- stone, fired clay and ground toppings. The masonry trades lay these
+    # for other people; a hall of theirs stands on them too.
+    'quarry-tile':      ('Unglazed quarry tile', '#9c5133', .70, .02, 'brick', .20,
+                         'fired through, so it wears to the same colour it started '
+                         'and a chipped corner is not a pale scar'),
+    'porcelain-charcoal': ('Charcoal porcelain tile', '#4c545a', .32, .02, 'tile', .60,
+                         'a dark, flat floor is the fairest ground to judge a light '
+                         'finish sample against'),
+    'porcelain-sand':   ('Sand porcelain tile', '#c4b49a', .34, .02, 'tile', .60,
+                         'warm and low-contrast, so a glazing trade reads the light '
+                         'coming through a bay rather than the floor bouncing it'),
+    'slate-flag':       ('Riven slate flag', '#4f5a5e', .80, .02, 'tile', .50,
+                         'split rather than sawn, so no two flags are the same '
+                         'thickness and bedding them is the skill'),
+    'limestone-flag':   ('Limestone flag', '#c0b89e', .76, .02, 'tile', .60,
+                         'the stone the banker shop cuts, laid whole where the hall '
+                         'wants to show what it cuts'),
+    'granite-sett':     ('Granite sett paving', '#6e7378', .90, .02, 'brick', .12,
+                         'small, square and laid to a cambered fall: the paving a '
+                         'crew still sets by eye and a string line'),
+    'clay-paver':       ('Clay paver floor', '#a45a3d', .86, .02, 'brick', .22,
+                         'lifted, stacked and relaid the same afternoon, which is '
+                         'the whole argument for a paved surface over a poured one'),
+    'terrazzo-marble':  ('Marble-chip terrazzo', '#d4cbb8', .38, .03, 'terrazzo', 1.2,
+                         'the chip is the finish: what is ground back decides the '
+                         'floor, and choosing it is the trade'),
+    'terrazzo-glass':   ('Recycled-glass terrazzo', '#7fa39a', .36, .04, 'terrazzo', 1.2,
+                         'crushed glass in the matrix instead of stone, which grinds '
+                         'differently and is the argument a sample bay exists to settle'),
+    'granolithic-screed': ('Granolithic screed', '#97907f', .84, .02, 'polish', 2.0,
+                         'a wearing topping laid monolithic with the slab under it, '
+                         'and the thing a stock bay actually needs'),
+    'polished-black':   ('Black-pigmented polished slab', '#33383c', .16, .04, 'polish', 2.4,
+                         'pigment through the pour and ground back: the finish a '
+                         'concrete trade puts in its own board room to end the argument'),
+
+    # --- the light metals. Aluminium is not steel: it is softer, lighter and
+    # it does not throw a spark, which is the only reason some of these rooms
+    # are floored in it at all.
+    'alu-tread':        ('Aluminium tread plate', '#b6bcc0', .40, .70, 'diamond', .40,
+                         'a magazine tool store wants a floor that cannot strike a '
+                         'spark off a dropped steel tool'),
+    'galv-checker':     ('Galvanised checkerplate', '#8c979c', .48, .78, 'checker', .30,
+                         'the zinc is why it can stand under a weld bay that gets '
+                         'hosed out and still be there in ten years'),
+    'stainless-deck':   ('Stainless plate deck', '#9aa4ab', .30, .82, 'plate', 1.2,
+                         'wiped down every shift and never rusts into the wipe, which '
+                         'is what a controlled room means by cleanable'),
+    'alu-bar-grating':  ('Aluminium bar grating', '#a2aeb4', .45, .65, 'grate', .30,
+                         'light enough that one person lifts a panel to get at the '
+                         'pipework the grating is there to cover'),
+    'perf-alu-tile':    ('Perforated aluminium tile', '#b0bec4', .42, .60, 'perf', .60,
+                         'open area, in a floor whose whole job is to hand cold air '
+                         'upward where somebody decided it should go'),
+
+    # --- the remaining working floors, each one a thing a trade lays or stands on.
+    'slot-drain-resin': ('Resin floor to falls with slot drain', '#7a8f86', .55, .04, 'trench', 2.4,
+                         'a wash bay is a floor with a decision in it: where the '
+                         'water goes, and how fast'),
+    'sprayed-fibrecrete': ('Sprayed fibre-reinforced concrete', '#8b8375', .95, .02, 'gunite', 2.0,
+                         'fibre instead of mesh, so the invert of a heading can be '
+                         'sprayed in one pass behind the face'),
+    'dry-shake-topping':('Metallic dry-shake topping', '#6b6f66', .70, .12, 'slab', 3.0,
+                         'iron aggregate floated into the green slab: the hardest '
+                         'wearing surface a demolition yard can put under tracked plant'),
+    'anhydrite-screed': ('Anhydrite flowing screed', '#b9ae98', .80, .02, 'slab', 3.0,
+                         'poured level by its own weight, which is why a long shop '
+                         'floor can be flat without anyone tamping it'),
+    'blast-grit-bed':   ('Blast-grit floor', '#55504a', .97, .03, 'sand', 1.6,
+                         'the spent grit IS the floor of a blast bay until it is '
+                         'swept and screened, and it is walked on in that state'),
 }
 
 # Function defaults: what each room gets when neither the trade's hazard nor
@@ -297,96 +467,154 @@ def hazard_of(name, focus):
 CRAFTS = [
     ('clean-process', ('classification, gowning', 'laminar', 'validation',
                        'zone valves'),
-        {'machines': 'welded-vinyl', 'materials': 'welded-vinyl'}),
+        {'machines': 'welded-vinyl', 'materials': 'welded-vinyl',
+         'inspection': 'stainless-deck', 'documentation': 'vct-tile'}),
     ('hot-shop', ('castables', 'gunning', 'pot lines', 'moulding',
                   'shakeout', 'furnace lining'),
-        {'tools': 'steel-plate', 'troubleshooting': 'steel-diamond'}),
+        {'tools': 'steel-plate', 'troubleshooting': 'steel-diamond',
+         'layout': 'dry-shake-topping', 'leadership': 'granolithic-screed'}),
     ('containment-craft', ('negative air', 'hepa', 'enclosures',
                            'waste characterisation', 'moisture mapping',
                            'incident command', 'permits, jhas',
                            'monitoring and disposal', 'rad-controlled'),
-        {'materials': 'spill-berm', 'tools': 'welded-vinyl'}),
+        {'materials': 'spill-berm', 'tools': 'welded-vinyl',
+         'inspection': 'mma-fast-cure', 'coordination': 'linoleum-sheet'}),
     ('precision-metal', ('turning, milling', 'cnc', 'metrology',
                          'jig and fixture', 'die build', 'tryout',
                          'precision alignment', 'machinery install'),
         {'inspection': 'tooling-plate', 'layout': 'tooling-plate',
-         'machines': 'steel-diamond'}),
+         'machines': 'steel-diamond', 'troubleshooting': 'beech-block',
+         'documentation': 'vct-tile'}),
     ('structural-steel', ('structural steel', 'rebar', 'plumbing up',
                           'bolting', 'connection safety', 'shear studs',
                           'weld-out', 'pressure vessel', 'detailing'),
-        {'materials': 'steel-plate', 'layout': 'tooling-plate'}),
+        {'materials': 'steel-plate', 'layout': 'tooling-plate',
+         'troubleshooting': 'oak-end-block', 'machines': 'dry-shake-topping'}),
     ('masonry-stone', ('masonry', 'banker work', 'lettering', 'tracery',
                        'repointing', 'dutchman', 'three-coat', 'veneer',
                        'ornamental', 'consolidation'),
-        {'procedure': 'broom-concrete', 'materials': 'crushed-stone'}),
+        {'procedure': 'broom-concrete', 'materials': 'crushed-stone',
+         'tools': 'quarry-tile', 'coordination': 'slate-flag',
+         'leadership': 'limestone-flag'}),
     ('finish-trade', ('terrazzo', 'divider strips', 'resilient', 'carpet',
                       'large format', 'substrates',
                       'level of finish', 'texture'),
-        {'procedure': 'terrazzo-divider', 'inspection': 'polished-slab'}),
+        {'procedure': 'terrazzo-divider', 'inspection': 'polished-slab',
+         'coordination': 'bamboo-strand', 'documentation': 'terrazzo-marble',
+         'materials': 'terrazzo-glass', 'leadership': 'porcelain-charcoal'}),
     ('concrete-craft', ('placement, finishing', 'curing', 'decorative concrete',
                         'boom setup', 'cleanout', 'tendon', 'stressing',
                         'elongation', 'grouting and tolerance'),
-        {'procedure': 'polished-slab', 'machines': 'broom-concrete'}),
+        {'procedure': 'polished-slab', 'machines': 'broom-concrete',
+         'materials': 'granolithic-screed', 'leadership': 'polished-black'}),
     ('glass-envelope', ('curtain wall', 'storefront', 'glazing', 'sealants',
                         'unitised', 'water test', 'structural silicone',
                         'heritage sash'),
-        {'procedure': 'polished-slab', 'materials': 'timber-plank'}),
+        {'procedure': 'polished-slab', 'materials': 'timber-plank',
+         'coordination': 'porcelain-sand'}),
     ('sheet-membrane', ('duct fabrication', 'architectural metal',
                         'cavity drainage', 'low-slope', 'membranes',
                         'substructure, panels', 'mechanical insulation',
                         'metal stud', 'ceiling grid', 'mass-loaded',
                         'penetrations'),
-        {'machines': 'steel-plate', 'materials': 'steel-diamond'}),
+        {'machines': 'steel-plate', 'materials': 'steel-diamond',
+         'procedure': 'anhydrite-screed'}),
     ('coatings', ('coatings, containment', 'decorative finish', 'surface prep',
                   'electroplating', 'anodis', 'booming, recovery',
                   'hydroblasting', 'vacuum trucks'),
-        {'machines': 'flake-resin', 'inspection': 'flake-resin'}),
+        {'machines': 'flake-resin', 'inspection': 'flake-resin',
+         'materials': 'flake-terracotta', 'tools': 'blast-grit-bed'}),
     ('rail-craft', ('ballast, ties', 'rail laying', 'interlocking',
                     'track circuit', 'contact wire', 'tensioning', 'crossings'),
-        {'procedure': 'rail-ballast', 'machines': 'rail-ballast'}),
+        {'procedure': 'rail-ballast', 'machines': 'rail-ballast',
+         'materials': 'rail-timber-waybeam'}),
     ('underground', ('ground support, ventilation', 'ventilation, haulage',
                      'needle beam',
                      'jacking', 'monitoring and sequencing', 'refusal',
                      'sheet piles'),
-        {'safety': 'shotcrete-invert', 'tools': 'shotcrete-invert'}),
+        {'safety': 'shotcrete-invert', 'tools': 'shotcrete-invert',
+         'machines': 'sprayed-fibrecrete'}),
     ('marine-craft', ('hull section', 'sea valves', 'loading arms', 'mooring',
                       'floating roof', 'shipboard'),
-        {'machines': 'steel-plate', 'materials': 'marine-deck'}),
+        {'machines': 'steel-plate', 'materials': 'marine-deck',
+         'tools': 'iroko-bench-deck', 'inspection': 'polyurea-deck',
+         'leadership': 'teak-deck'}),
     ('lifting-gear', ('load calculation', 'rigging hardware', 'spreaders',
                       'wire rope', 'traction and hydraulic', 'hoistway',
                       'tower and overhead'),
-        {'tools': 'steel-plate', 'machines': 'steel-diamond'}),
+        {'tools': 'steel-plate', 'machines': 'steel-diamond',
+         'troubleshooting': 'alu-tread'}),
     ('vehicle-shop', ('aftertreatment', 'propulsion, brakes',
                       'hydraulics, drivetrain', 'inspection cycles'),
-        {'machines': 'trench-drain', 'materials': 'steel-diamond'}),
+        {'machines': 'trench-drain', 'materials': 'steel-diamond',
+         'procedure': 'slot-drain-resin', 'tools': 'epoxy-oxide-red'}),
     ('hard-standing', ('pavement', 'markings', 'airside', 'ramp safety',
                        'de-icing', 'turnaround', 'gse'),
-        {'procedure': 'asphalt-apron', 'machines': 'interlock-paver'}),
+        {'procedure': 'asphalt-apron', 'machines': 'interlock-paver',
+         'materials': 'clay-paver', 'layout': 'granite-sett'}),
     ('digital-systems', ('ddc', 'bacnet', 'scada', 'historian', 'otdr',
                          'white space', 'busway', 'crac', 'teach pendant',
                          'ladder logic', 'loop checks', 'access control',
                          'cctv', 'notification circuits', 'copper and fibre'),
         {'procedure': 'access-perf', 'machines': 'esd-vinyl',
-         'troubleshooting': 'esd-vinyl'}),
+         'troubleshooting': 'esd-vinyl', 'materials': 'perf-alu-tile'}),
     ('power-network', ('distribution, transmission', 'relays, breakers',
                        'terminations', 'ehv', 'conductor stringing',
                        'metering', 'revenue accuracy', 'dcfc',
                        'service upgrades', 'code compliance', 'pv array',
                        'racking, inverters'),
-        {'machines': 'crushed-stone', 'materials': 'crushed-stone'}),
+        {'machines': 'crushed-stone', 'materials': 'crushed-stone',
+         'procedure': 'epoxy-slate-blue'}),
     ('process-fluid', ('process piping', 'hydronic', 'medical gas',
                        'refrigeration', 'air systems', 'treatment trains',
                        'steam and chilled', 'penstock', 'hangers, heads',
                        'mains, valves', 'sludge', 'blowers', 'wellhead',
                        'binary cycle', 'compression'),
-        {'procedure': 'trench-drain', 'machines': 'resin-screed'}),
+        {'procedure': 'trench-drain', 'machines': 'resin-screed',
+         'safety': 'safety-vinyl-grit', 'materials': 'epoxy-plant-green',
+         'tools': 'alu-bar-grating'}),
     ('buried-utility', ('mains, services', 'integrity digs', 'tie-ins',
                         'leak survey', 'hydrants', 'mainline welding'),
-        {'materials': 'interlock-paver', 'layout': 'interlock-paver'}),
+        {'materials': 'interlock-paver', 'layout': 'interlock-paver',
+         'tools': 'clay-paver'}),
     ('survey-control', ('control networks', 'gnss', 'as-builts',
                         'photogrammetry', 'airspace', 'flight planning',
                         'ndt', 'fracture-critical'),
-        {'inspection': 'polished-slab', 'machines': 'sealed-slab'}),
+        {'inspection': 'polished-slab', 'machines': 'sealed-slab',
+         'documentation': 'linoleum-sheet'}),
+
+    # ------------------------------------------- the crafts the first pass missed --
+    # Every hall the first two passes left with no craft at all does
+    # something all day that a floor and a wall answer; the registry's
+    # `no_craft` list is what says which halls those were, and it is empty
+    # now because of the entries below. These are read out of
+    # the same focus lines as the crafts above, on the same terms: a craft is
+    # what the trade DOES, never what the work can do to the person, so none
+    # of them appears in the conditions record.
+    ('timber-craft', ('framing, formwork', 'finish and layout',
+                      'system scaffold'),
+        {'coordination': 'oak-strip', 'documentation': 'ash-board',
+         'leadership': 'heart-pine-reclaimed', 'tools': 'maple-strip',
+         'materials': 'douglas-fir-plank'}),
+    ('rope-access', ('rope systems', 'climb rescue', 'suspended access',
+                     'edge management'),
+        {'tools': 'alu-tread', 'documentation': 'vct-tile'}),
+    ('earthmoving-craft', ('earthmoving', 'site prep', 'haul, delivery',
+                           'mowing, trimming'),
+        {'layout': 'urethane-aisle-yellow', 'tools': 'larch-decking'}),
+    ('demolition-craft', ('selective demo', 'structural takedown',
+                          'debris control'),
+        {'materials': 'dry-shake-topping', 'machines': 'galv-checker',
+         'coordination': 'anhydrite-screed'}),
+    ('weld-shop', ('smaw', 'gmaw', 'gtaw', 'fcaw',
+                   'procedure and qualification', 'underwater cutting'),
+        {'machines': 'galv-checker', 'materials': 'anhydrite-screed'}),
+    ('blast-craft', ('shot design', 'vibration control', 'loading, initiation'),
+        {'machines': 'quartz-graphite', 'tools': 'alu-tread'}),
+    ('battery-craft', ('racks, bms', 'thermal runaway'),
+        {'machines': 'esd-rubber', 'materials': 'vct-tile'}),
+    ('rescue-craft', ('atmospheric testing', 'patient packaging'),
+        {'safety': 'rubber-sheet-safety', 'materials': 'polyurea-deck'}),
 ]
 
 CRAFT_KEYS = tuple(c[0] for c in CRAFTS)
@@ -639,6 +867,127 @@ WALLS = {
                         '#5e4136', 1.40,
                         'you enter a vessel through a shell you can read: the laps, '
                         'the seams and where the primer has gone'),
+
+    # -------------------------------------------- the timber and trade walls --
+    # The same argument as the floors above, at shoulder height. A wall in a
+    # working building is a material somebody chose, and the choice is usually
+    # the trade's own: a joinery hall panels its board room, a masonry hall
+    # limewashes brick, a concrete hall leaves the board marks on.
+    #
+    # Every one of these names a pattern already in the vocabulary below, so
+    # the wall engine paints it with the recipe it already has.
+    'oak-panelled':    ('Oak-panelled board room', '#8a6136', .78, .00, 'plank', .60,
+                        '#5d3f22', 1.00,
+                        'the room where the trade argues about its own standards is '
+                        'panelled to that standard, and everyone in it can see the joint'),
+    'pine-boarded':    ('Whitewood board lining', '#c2a373', .85, .00, 'plank', .50,
+                        '#8c7448', 0.95,
+                        'a boarded wall can be cut into, patched and boarded again, '
+                        'which is what a room used for practice needs'),
+    'birch-ply-lined': ('Birch ply lining', '#c9a97a', .80, .00, 'plywood', 1.20,
+                        '#8e7047', 1.10,
+                        'the face veneer is good enough to leave unpainted, so the '
+                        'wall shows every screw somebody put in it'),
+    'limewashed-brick':('Limewashed brick', '#cfc8bb', .90, .02, 'brick', .23,
+                        '#8e887c', 1.30,
+                        'lime lets the brick behind it dry out, which is the argument '
+                        'a restoration trade has with paint every week'),
+    'engineering-brick':('Blue engineering brick', '#4a5560', .80, .02, 'brick', .23,
+                        '#2f3740', 1.30,
+                        'dense enough not to take up water, which is why it is the '
+                        'brick below ground and in a chamber that floods'),
+    'glazed-brick':    ('Glazed white brick', '#d5dbd8', .28, .02, 'brick', .23,
+                        '#8fa3a0', 1.40,
+                        'a fired glaze on a structural unit: it washes down like tile '
+                        'and takes a knock like brick'),
+    'fair-face-concrete': ('Fair-faced concrete', '#9aa0a2', .86, .02, 'slab', .90,
+                        '#6a7072', 1.20,
+                        'the pour is the finish, so the formwork, the release agent '
+                        'and the vibration are all on show and cannot be made good later'),
+    'board-marked-concrete': ('Board-marked concrete', '#a7a396', .88, .02, 'plank', .80,
+                        '#71705f', 1.30,
+                        'sawn boards used as form face leave their grain in the '
+                        'concrete, and setting them out is the whole of the work'),
+    'plaster-cream':   ('Painted plaster, cream', '#ded0b4', .82, .01, 'smooth', 1.50,
+                        '#a89a7c', 0.90,
+                        'a warm near-white throws light back into a room people read '
+                        'drawings in without glaring off the paper'),
+    'plaster-sage':    ('Painted plaster, sage', '#9aad93', .84, .01, 'smooth', 1.50,
+                        '#64775e', 0.90,
+                        'a muted green is the one wall colour a finish sample can be '
+                        'held against without the wall deciding the answer'),
+    'plaster-slate':   ('Painted plaster, slate', '#6a7885', .84, .01, 'smooth', 1.50,
+                        '#444f59', 0.95,
+                        'dark walls stop a screen-lit room reflecting itself back at '
+                        'the people reading the screens'),
+    'plaster-ochre':   ('Painted plaster, ochre', '#c79a4e', .84, .01, 'smooth', 1.50,
+                        '#8a682f', 0.95,
+                        'earth pigment on lime plaster is the oldest painted wall the '
+                        'trade still makes, and the one it is asked to match'),
+    'epoxy-wall-coat': ('Epoxy-coated wall', '#a7c1c8', .35, .03, 'smooth', 1.50,
+                        '#6e8a92', 1.50,
+                        'the coating a coatings trade puts on everyone else\'s walls, '
+                        'on its own, where the failures can be left up and looked at'),
+    'perforated-ply':  ('Perforated ply acoustic lining', '#b99a6c', .75, .00, 'perf', .60,
+                        '#7d6642', 1.10,
+                        'holes and a void behind them: the cheapest honest way to stop '
+                        'a hard room ringing, and visible enough to teach from'),
+    'terracotta-rainscreen': ('Terracotta rainscreen', '#a5613f', .70, .05, 'panel', .70,
+                        '#6d3f28', 1.20,
+                        'extruded and fired, hung on rails with an open joint, so the '
+                        'cavity behind it does the waterproofing'),
+    'zinc-standing-seam': ('Zinc standing seam', '#7d868c', .55, .45, 'corrugate', .70,
+                        '#4e565b', 1.20,
+                        'the seam is folded on site and is the only thing holding the '
+                        'weather out, which is why it is practised indoors first'),
+    'copper-panel':    ('Copper panel', '#8a6a4a', .45, .60, 'panel', .70,
+                        '#5c452f', 1.10,
+                        'it changes colour for thirty years after it is fixed, so a '
+                        'sample wall is the only way to argue about the finish'),
+    'anodised-alu-panel': ('Anodised aluminium panel', '#9fa8ad', .35, .55, 'panel', .70,
+                        '#6b7377', 1.10,
+                        'the colour is grown into the oxide rather than painted on, '
+                        'and a scratch cannot be touched in'),
+    'acoustic-oat':    ('Acoustic panel, oatmeal', '#bfae90', .95, .00, 'fabric', .60,
+                        '#857a62', 1.00,
+                        'a quiet room in a warm colour, because a room people write '
+                        'in all day should not feel like a booth'),
+    'acoustic-rust':   ('Acoustic panel, rust', '#9a5a44', .95, .00, 'fabric', .60,
+                        '#653a2c', 1.00,
+                        'the absorber has to be somewhere people look, so it is worth '
+                        'it being a colour they do not mind looking at'),
+    'metro-tile-white':('Glazed white wall tile', '#dde3e2', .25, .02, 'tile', .30,
+                        '#9aabaa', 1.50,
+                        'a small glazed tile has a lot of grout in it, and keeping '
+                        'that grout sound is the discipline the room is teaching'),
+    'quarry-tile-wall':('Green quarry tile', '#5f7f6a', .35, .02, 'tile', .30,
+                        '#3b5343', 1.50,
+                        'the splash-back behind a wet bench, in a colour that does '
+                        'not show every drip and does show a crack'),
+    'marker-glass':    ('Glass marker wall', '#b6c9cd', .10, .20, 'glazing', 1.50,
+                        '#7b9096', 1.00,
+                        'you can set out full size on glass, wipe it, and see the '
+                        'work through it while you do'),
+    'ashlar-grey':     ('Grey ashlar course', '#9aa19a', .88, .02, 'ashlar', .60,
+                        '#676d67', 1.40,
+                        'a second stone to match against, because matching one '
+                        'existing course teaches nothing about matching a different one'),
+    'brass-screen':    ('Brass-infilled screen', '#a08a4a', .55, .50, 'screen', .80,
+                        '#6a5a2c', 1.20,
+                        'rope and hardware have to be visible from outside the store '
+                        'without the store being open'),
+    'motor-control-face': ('Motor control centre face', '#7e8a80', .40, .40, 'cabinet', .90,
+                        '#4c554e', 1.10,
+                        'a wall of starters and their labels: the room is the '
+                        'equipment, and reading it is the lesson'),
+    'clear-sheet-curtain': ('Clear sheeted curtain', '#d9e2dc', .30, .02, 'sheet', 1.20,
+                        '#9fb0a8', 1.00,
+                        'you can watch a containment being used without being inside '
+                        'it, which is the only safe way to assess one'),
+    'gunned-insulating':('Gunned insulating lining', '#c0a882', .96, .02, 'gunite', .80,
+                        '#86704a', 1.60,
+                        'a practice lining, gunned onto a wall so it can be cut into, '
+                        'read and gunned again next week'),
 }
 
 # What each room's function asks of its walls when neither the trade's
@@ -688,27 +1037,50 @@ WALL_HAZARD = {
 # too: a fibre splicer's bench changes what is underfoot and nothing at
 # shoulder height.
 CRAFT_WALL = {
-    'clean-process':   {'machines': 'stainless-splash', 'materials': 'stainless-splash'},
-    'hot-shop':        {'tools': 'gunned-castable'},
-    'containment-craft': {'materials': 'coved-white', 'tools': 'coved-white'},
+    'clean-process':   {'machines': 'stainless-splash', 'materials': 'stainless-splash',
+                        'inspection': 'metro-tile-white'},
+    'hot-shop':        {'tools': 'gunned-castable',
+                        'troubleshooting': 'gunned-insulating'},
+    'containment-craft': {'materials': 'coved-white', 'tools': 'coved-white',
+                          'inspection': 'clear-sheet-curtain'},
     'structural-steel': {'materials': 'corrugated-steel'},
     'marine-craft':    {'machines': 'tank-plate'},
     'lifting-gear':    {'machines': 'mesh-guard'},
     'vehicle-shop':    {'machines': 'liner-panel'},
     'hard-standing':   {'procedure': 'corrugated-steel'},
-    'precision-metal': {'machines': 'perf-acoustic'},
-    'masonry-stone':   {'procedure': 'ashlar-stone', 'layout': 'brick-common'},
-    'finish-trade':    {'materials': 'ply-lined'},
-    'glass-envelope':  {'procedure': 'glazed-curtain', 'inspection': 'glazed-curtain'},
-    'sheet-membrane':  {'procedure': 'corrugated-steel', 'materials': 'corrugated-steel'},
-    'coatings':        {'machines': 'chem-tile'},
+    'precision-metal': {'machines': 'perf-acoustic', 'layout': 'marker-glass'},
+    'masonry-stone':   {'procedure': 'ashlar-stone', 'layout': 'brick-common',
+                        'coordination': 'limewashed-brick',
+                        'leadership': 'plaster-ochre', 'materials': 'ashlar-grey'},
+    'finish-trade':    {'materials': 'ply-lined', 'coordination': 'plaster-sage',
+                        'documentation': 'perforated-ply'},
+    'glass-envelope':  {'procedure': 'glazed-curtain', 'inspection': 'glazed-curtain',
+                        'leadership': 'copper-panel', 'machines': 'anodised-alu-panel'},
+    'sheet-membrane':  {'procedure': 'corrugated-steel', 'materials': 'corrugated-steel',
+                        'leadership': 'terracotta-rainscreen',
+                        'tools': 'zinc-standing-seam'},
+    'coatings':        {'machines': 'chem-tile', 'materials': 'epoxy-wall-coat'},
     'rail-craft':      {'procedure': 'mesh-guard', 'machines': 'mesh-guard'},
     'underground':     {'safety': 'rock-face', 'tools': 'rock-face'},
     'digital-systems': {'procedure': 'switchgear-lineup',
-                        'troubleshooting': 'switchgear-lineup'},
+                        'troubleshooting': 'switchgear-lineup',
+                        'coordination': 'plaster-slate'},
     'power-network':   {'machines': 'switchgear-lineup',
-                        'troubleshooting': 'switchgear-lineup'},
-    'process-fluid':   {'machines': 'liner-panel'},
+                        'troubleshooting': 'switchgear-lineup',
+                        'materials': 'motor-control-face'},
+    'process-fluid':   {'machines': 'liner-panel', 'materials': 'glazed-brick',
+                        'tools': 'quarry-tile-wall'},
+    # The walls the crafts above brought with them. A craft absent from this
+    # table still placed a floor and left the wall alone, which is a statement
+    # too - and these are the ones where the trade's own material is the wall.
+    'timber-craft':    {'leadership': 'oak-panelled', 'coordination': 'pine-boarded',
+                        'tools': 'birch-ply-lined'},
+    'rope-access':     {'coordination': 'acoustic-rust', 'materials': 'brass-screen'},
+    'concrete-craft':  {'materials': 'fair-face-concrete',
+                        'leadership': 'board-marked-concrete'},
+    'buried-utility':  {'materials': 'engineering-brick'},
+    'survey-control':  {'coordination': 'plaster-cream',
+                        'documentation': 'acoustic-oat'},
 }
 
 

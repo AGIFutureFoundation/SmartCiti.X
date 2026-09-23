@@ -70,6 +70,17 @@ const VIEWS = [
   { id: 'hall', go: (p) => p.evaluate(() => window.__tc3dDo('view', 'hall')),
     ...ceil('hall'),
     why: 'one hall interior: eleven rooms, their partitions and lamps' },
+  /* The SAME view, opened on the most expensive hall in the network rather
+     than the one that happens to be first.
+
+     This row exists because scoring `hall` alone was scoring ironworkers and
+     nothing else: it costs 164 calls and sits almost exactly at the median of
+     111, so it reported comfortable headroom while 11 halls were over the
+     ceiling, the worst at 238 (121%). A budget checked only against the
+     median case is not a budget. The sweep below finds the worst hall by
+     measuring every one, so this row cannot go stale as content changes. */
+  { id: 'hall-worst', worst: true, ...ceil('hall'),
+    why: 'the most expensive of the 111 hall interiors, found by measuring them all' },
 ];
 
 const pct = (v, lim) => `${((v / lim) * 100).toFixed(0)}%`;
@@ -90,7 +101,23 @@ async function main() {
 
   const rows = [];
   for (const v of VIEWS) {
-    if (v.go) { await v.go(pg).catch(() => {}); await pg.waitForTimeout(1800); }
+    if (v.worst) {
+      // Measure every hall, then leave the view standing on the dearest one
+      // so the block below scores it exactly like any other row.
+      const slugs = await pg.evaluate(() => window.__tc3d().hallSlugs);
+      let worst = null;
+      for (const s of slugs) {
+        await pg.evaluate((x) => window.__tc3dDo('view', 'hall:' + x), s);
+        await pg.waitForTimeout(600);
+        await pg.evaluate(() => new Promise((r) =>
+          requestAnimationFrame(() => requestAnimationFrame(r))));
+        const c = await pg.evaluate(() => window.__tc3d().perf.calls);
+        if (!worst || c > worst.calls) worst = { slug: s, calls: c };
+      }
+      v.why = `the dearest of ${slugs.length} halls: ${worst.slug}`;
+      await pg.evaluate((x) => window.__tc3dDo('view', 'hall:' + x), worst.slug);
+      await pg.waitForTimeout(1200);
+    } else if (v.go) { await v.go(pg).catch(() => {}); await pg.waitForTimeout(1800); }
     // a frame is rendered before reading renderer.info: the counters are
     // filled by the last draw, so reading them without one reports the
     // previous view's cost under this view's name
@@ -132,13 +159,13 @@ async function main() {
       + `${'triangles'.padStart(11)} ${'of'.padStart(5)} ${'meshes'.padStart(7)} `
       + `${'floor'.padStart(6)} ${'mats'.padStart(5)} ${'tex'.padStart(5)}  rung`);
     for (const r of line) {
-      console.log(`${r.view.padEnd(9)} ${String(r.calls).padStart(6)} ${pct(r.calls, r.maxCalls).padStart(5)} `
+      console.log(`${r.id.padEnd(11)} ${String(r.calls).padStart(6)} ${pct(r.calls, r.maxCalls).padStart(5)} `
         + `${r.tris.toLocaleString().padStart(11)} ${pct(r.tris, r.maxTris).padStart(5)} `
         + `${String(r.meshes).padStart(7)} ${String(r.minMeshes).padStart(6)} `
         + `${String(r.materials).padStart(5)} ${String(r.tex).padStart(5)}  ${r.quality}`
         + (r.fails.length ? '   <<< ' + r.fails.join('; ') : ''));
     }
-    for (const r of line) console.log(`  ${r.view}: ${r.why}`);
+    for (const r of line) console.log(`  ${r.id}: ${r.why}`);
     if (errs.length) {
       console.log('\npage errors:');
       for (const e of errs.slice(0, 6)) console.log('  ' + e);

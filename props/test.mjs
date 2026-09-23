@@ -313,12 +313,22 @@ ok('the ceiling is web/eval_scene.mjs\'s own, recomputed from its measured basel
       && reg.budget.baseline.draw_calls === calls
       && reg.budget.baseline.provenance === 'MEASURED-ELSEWHERE';
   })());
-ok('this pack takes half the unspent headroom and leaves half, because the eval names a second pack for it',
-  reg.budget.self_imposed.calls_per_hall
-    === Math.floor(reg.budget.ceiling_source.headroom_calls / 2)
-  && reg.budget.self_imposed.tris_per_hall
-    === Math.floor(reg.budget.ceiling_source.headroom_tris / 2)
-  && /leaves half/.test(reg.budget.self_imposed.calls_rationale));
+ok('this pack takes the whole unspent headroom of the HALL view, and the sibling pack the eval names for it budgets the CAMPUS view instead',
+  (() => {
+    const b = evalsrc.match(/campus:\s*\{ calls: ([\d_]+), tris: ([\d_]+), meshes: [\d_]+ \}/);
+    const calls = +b[1].replace(/_/g, ''), tris = +b[2].replace(/_/g, '');
+    const s = reg.budget.ceiling_source, k = reg.budget.self_imposed.kit_budgets;
+    const kit = JSON.parse(readFileSync(url('../kit/registry/kit.json')));
+    return reg.budget.self_imposed.calls_per_hall === s.headroom_calls
+      && reg.budget.self_imposed.tris_per_hall === s.headroom_tris
+      && k.view === 'campus'
+      && k.campus_call_headroom === Math.round(calls * s.call_headroom_x) - calls
+      && k.campus_tri_headroom === tris * s.tri_headroom_x - tris
+      && k.its_call_ceiling === kit.budget.draw_call_ceiling
+      && k.its_tri_headroom === kit.budget.triangle_headroom_total
+      && k.its_call_ceiling === k.campus_call_headroom
+      && k.its_tri_headroom === k.campus_tri_headroom;
+  })());
 ok('the worst hall stays under both self-imposed ceilings with a tenth of each still free',
   reg.budget.per_hall.calls_max <= reg.budget.self_imposed.calls_per_hall * 0.9
   && reg.budget.per_hall.tris_max <= reg.budget.self_imposed.tris_per_hall * 0.9);
@@ -391,6 +401,158 @@ ok('the triangle counts are the ones the recipes add up to, not a typed summary'
   && reg.counts.cylinder_parts
      === props.reduce((a, p) => a + p.recipe.cylinder_count, 0));
 
+/* ------------------------------------------ the catalogue and the crib --- */
+const cribs = JSON.parse(readFileSync(url('../tools/registry/toolcribs.json')));
+const unions = JSON.parse(readFileSync(url('../unions/registry/unions.json')));
+const kitPieces = reg.crib_furniture.pieces;
+const everything = [...props, ...kitPieces];
+const toolOf = new Map();
+for (const [d, crib] of Object.entries(cribs.cribs))
+  for (const t of crib.tools) toolOf.set(t.id, { ...t, district: d, crib: crib.name });
+
+ok('the catalogue is what the pack says it is: the pieces the page stands plus the district pieces it cannot, and nothing counted twice',
+  reg.counts.furniture === everything.length
+  && reg.counts.props === props.length
+  && reg.counts.crib_furniture === kitPieces.length
+  && new Set(everything.map((p) => p.id)).size === everything.length
+  && props.every((p) => p.catalogue === 'hall')
+  && kitPieces.every((p) => p.catalogue === 'district'));
+ok('NO PROP NAMES A TOOL THE CRIB DOES NOT CARRY: every tool id, name, district and use line a piece prints is the tool crib\'s own',
+  everything.filter((p) => p.crib).length === reg.counts.furniture_with_crib_link
+  && reg.counts.furniture_with_crib_link > 0
+  && everything.filter((p) => p.crib).every((p) => p.crib.tools.length > 0
+    && p.crib.source === 'tools/registry/toolcribs.json'
+    && p.crib.tools.every((t) => toolOf.has(t.id)
+      && toolOf.get(t.id).name === t.name
+      && toolOf.get(t.id).use === t.use
+      && toolOf.get(t.id).district === t.district
+      && toolOf.get(t.id).crib === t.crib)));
+ok('a district piece belongs to the district whose crib carries its tool - the district is read, never typed beside it',
+  kitPieces.every((p) => p.district && p.crib
+    && p.crib.tools.every((t) => toolOf.get(t.id).district === p.district))
+  && new Set(kitPieces.map((p) => p.district)).size === Object.keys(cribs.cribs).length
+  && new Set(kitPieces.map((p) => p.district)).size === reg.counts.districts);
+ok('the district catalogue covers every tool in every crib, the same number of pieces each, and names no tool twice over',
+  (() => {
+    const per = new Map();
+    for (const p of kitPieces) for (const t of p.crib.tools)
+      per.set(t.id, (per.get(t.id) ?? 0) + 1);
+    return per.size === toolOf.size && per.size === reg.counts.crib_tools
+      && reg.counts.crib_tools_referenced === toolOf.size
+      && [...per.values()].every((n) => n === reg.crib_furniture.pieces_per_tool)
+      && reg.crib_furniture.pieces_per_tool * toolOf.size === kitPieces.length;
+  })());
+ok('the sentence a district piece gives for itself is the crib\'s own use line for its tool, not a second opinion about the tool',
+  kitPieces.every((p) => p.crib.tools.every((t) =>
+    p.why.includes(t.use) && p.why.includes(t.name.toLowerCase()))));
+ok('every district a hall belongs to is a district the catalogue fits out, read from the unions roster',
+  (() => {
+    const halls = unions.unions;
+    const covered = new Set(Object.keys(reg.crib_furniture.districts));
+    return halls.length === reg.counts.halls
+      && halls.every((h) => covered.has(h.district))
+      && Object.entries(reg.crib_furniture.districts).every(([d, v]) =>
+        v.halls === halls.filter((h) => h.district === d).length
+        && v.pieces === kitPieces.filter((p) => p.district === d).length
+        && v.crib === cribs.cribs[d].name);
+  })());
+ok('the district catalogue is not in the strand table the page reads, because the page has no hall to choose it with',
+  (() => {
+    const placed = new Set(Object.values(reg.by_strand)
+      .flatMap((v) => v.props.map((m) => m.prop)));
+    return kitPieces.every((p) => !placed.has(p.id))
+      && reg.crib_furniture.drawn === false
+      && /by_strand\[r\.strand\]/.test(reg.honesty.district_catalogue_is_not_drawn)
+      && page.includes('const ids = Pk.by_strand[r.strand];')
+      && !/by_district/.test(page);
+  })());
+
+/* ---------------------------------------- the draw-call argument, checked - */
+ok('the whole catalogue of three hundred names the SAME seven materials the pack started with - no new material and no new draw call',
+  (() => {
+    const block = page.match(/const mat = \{([\s\S]*?)\n\};/);
+    const keys = new Set([...block[1].matchAll(/^ {2}(\w+):/gm)].map((m) => m[1]));
+    const used = new Set(everything.map((p) => p.material));
+    return used.size === reg.materials.allowed.length
+      && [...used].every((m) => keys.has(m) && reg.materials.allowed.includes(m))
+      && reg.materials.new_materials === 0 && reg.materials.new_draw_calls === 0
+      && reg.counts.materials_in_catalogue === used.size
+      && JSON.stringify(reg.materials.used_by_catalogue) === JSON.stringify([...used].sort());
+  })());
+ok('and standing the district catalogue too would add no draw call either, because a hall pays per material and per instanced type, never per piece',
+  reg.budget.district_plan.new_draw_calls_over_drawn === 0
+  && reg.budget.district_plan.new_materials_over_drawn === 0
+  && reg.budget.district_plan.calls_max === reg.budget.per_hall.calls_max
+  && reg.budget.district_plan.tris_max > reg.budget.per_hall.tris_max
+  && reg.budget.district_plan.draw_calls_after <= reg.budget.ceiling_source.max_calls
+  && reg.budget.district_plan.triangles_after <= reg.budget.ceiling_source.max_tris);
+
+/* ------------------------------------------------- the forms and the fit - */
+ok('every piece is cut from a form this pack declares, and every form it declares has something cut from it',
+  (() => {
+    const names = new Set(reg.forms.names);
+    const used = new Set(everything.map((p) => p.form));
+    return names.size === reg.forms.count && reg.forms.used === used.size
+      && used.size === names.size
+      && everything.every((p) => names.has(p.form))
+      && reg.forms.wall_forms.every((f) => names.has(f))
+      && everything.filter((p) => p.layout.anchor === 'wall-mounted')
+        .every((p) => reg.forms.wall_forms.includes(p.form))
+      && everything.filter((p) => p.layout.anchor !== 'wall-mounted')
+        .every((p) => !reg.forms.wall_forms.includes(p.form));
+  })());
+ok('NOTHING IN THE CATALOGUE IS PADDING: every one of the three hundred stands in at least one real room of one real hall',
+  everything.every((p) => p.fit_out.rooms >= 1 && p.fit_out.instances >= p.fit_out.rooms)
+  && props.every((p) => p.fit_out.from === 'the fit-out the page runs today')
+  && kitPieces.every((p) => p.fit_out.from
+    === 'the district plan, which the page cannot run yet'));
+ok('the instances the budget adds up are the instances the pieces themselves report standing',
+  props.reduce((a, p) => a + p.fit_out.instances, 0) === reg.counts.prop_instances
+  && reg.budget.bundle.prop_instances === reg.counts.prop_instances);
+ok('a room is offered more furniture than its walls hold, and the pack publishes both numbers rather than the flattering one',
+  reg.fit_out.offered_pieces_per_room_median
+    >= reg.fit_out.stood_instances_per_room_median
+  && reg.fit_out.stood_instances_per_hall_median > 0
+  && /SHARED/.test(reg.fit_out.how)
+  && /upper bound|stands fewer/.test(reg.fit_out.is_an_upper_bound));
+ok('every piece names the partition it would rather have and the other one after it, so a later piece stands across the room instead of nowhere',
+  everything.every((p) => p.layout.walls.length === 2
+    && p.layout.walls[0] !== p.layout.walls[1]
+    && p.layout.walls.every((w) => w === 'left' || w === 'right')));
+ok('a wall-hung piece hangs at the midpoint between the floor the page draws and the top of the partition it hangs on',
+  (() => {
+    const hang = reg.measured.page_constants_read.hang_height_m;
+    return near(hang, (FLOOR_TOP + PART_TOP) / 2)
+      && everything.filter((p) => p.layout.anchor === 'wall-mounted')
+        .every((p) => near(p.layout.base_y_m, hang));
+  })());
+ok('the order the strand table publishes is the order the props array declares, because that order is what the page fills a wall in',
+  (() => {
+    const rank = new Map(props.map((p, i) => [p.id, i]));
+    return Object.values(reg.by_strand).every((v) => v.props
+      .every((m, i) => i === 0 || rank.get(v.props[i - 1].prop) < rank.get(m.prop)));
+  })());
+ok('no two pieces of furniture in three hundred share a name',
+  new Set(everything.map((p) => p.name.toLowerCase())).size === everything.length);
+ok('every family and every form the pack declares is described, and a family nothing stands in is not declared',
+  Object.values(reg.families).every((d) => d.length > 25)
+  && Object.keys(reg.families).every((f) => props.some((p) => p.family === f))
+  && everything.every((p) => p.family in reg.families)
+  && reg.counts.families === Object.keys(reg.families).length);
+ok('the pack says plainly that the district catalogue is not standing anywhere and names the one page change it waits on',
+  /NOT standing in any hall/.test(reg.honesty.district_catalogue_is_not_drawn)
+  && /placeRoomProps\(\)/.test(reg.honesty.district_catalogue_is_not_drawn)
+  && /h\.district/.test(reg.page_contract.what_the_district_catalogue_needs)
+  && reg.crib_furniture.why_not_drawn
+    === reg.honesty.district_catalogue_is_not_drawn);
+ok('the conditions furniture - the part that makes one hall look unlike the next - states the same rule on the piece and in the hazard block, and keys on most of the kinds of work the surfaces registry knows',
+  hazardProps.length > 5
+  && hazardProps.every((p) => reg.hazard_props.props[p.id].rule === p.derive.rule
+    && (p.derive.ppe_any[0] === '*any*'
+      || p.derive.ppe_any.every((x) => p.derive.rule.includes(x))))
+  && new Set(hazardProps.flatMap((p) => p.derive.triggered_by_hazards)).size
+     >= Object.keys(finishes.hazard_conditions).length - 2);
+
 const src = readFileSync(url('./build.py'));
 ok('the registry was built from the current builder source (stamp check)',
   reg.source_stamp === createHash('sha256').update(src).digest('hex').slice(0, 16));
@@ -414,7 +576,10 @@ ok('the registry was built from the current builder source (stamp check)',
     rows > 0 && said !== null && NUM[said[1].toLowerCase()] === rows);
 }
 
-console.log(`props/test: ${n} checks passed — ${reg.counts.props} props in `
+console.log(`props/test: ${n} checks passed — ${reg.counts.furniture} pieces of `
+  + `furniture (${reg.counts.crib_furniture} of them district pieces cross-linked `
+  + `to ${reg.counts.crib_tools_referenced} real crib tools and not yet drawn), `
+  + `${reg.counts.props} props in `
   + `${reg.counts.families} families, ${reg.counts.tris_min}-${reg.counts.tris_max} tri `
   + `(median ${reg.counts.tris_median}) verified against the vendored three.js; `
   + `${reg.counts.placements} placements derived from interiors.py purposes over `

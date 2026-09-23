@@ -1851,4 +1851,30 @@ ok('neither panel puts anything in the scene: a panel is DOM, and this one '
     }));
 }
 
+/* The view hook honours the hall the learner picked.
+
+   This shipped wrong and nothing caught it, because every check in this file
+   reads the source and the fault only shows when you look at the running
+   page: `__tc3dDo('view', 'hall')` read `D.halls[0].slug` - ironworkers -
+   and threw away `slug`. The bar went on saying Welding Trades over an
+   ironworkers building. Worse, the doc screenshots and eval_scene both drive
+   the view through this same hook, so every hall figure and every hall
+   picture this project has taken was of ironworkers rather than of the hall
+   under test.
+
+   Scoped to the dispatcher's own body so the surrounding prose - including
+   the comment that now explains the bug, which quotes the broken expression -
+   cannot satisfy it. */
+// __tc3dDo is an arrow assigned to window, not a function declaration, so
+// fnCode() cannot find it. Slice the dispatcher out of the SHIPPED page by
+// its own opening and strip comments - including the one below that quotes
+// the broken expression, which would otherwise satisfy the check it explains.
+const _vi = builtPage.indexOf("window.__tc3dDo = (fn, arg) =>");
+const _view = _vi < 0 ? '' : strip(builtPage.slice(_vi, _vi + 2500));
+ok('the view hook opens the hall the learner has selected, not a hard-coded '
+   + 'first entry: `hall` falls back to the current `slug` the way `campus` '
+   + 'falls back to `campusKey`, so the selector and the building agree',
+  /what === 'hall'\) showHall\(which \?\? slug\)/.test(_view)
+  && !/showHall\(which \?\? D\.halls\[0\]/.test(_view));
+
 console.log(`web/test_3d: ${n} checks passed - teardown, draw-call and per-frame contracts held at the source`);

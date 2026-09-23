@@ -97,6 +97,78 @@ ok('every pattern a surface names is declared, and every declared pattern is use
 ok('§24.3 holds over the pattern vocabulary too',
   !/\b(ASTM|ANSI|ISO|EN|DIN|UL|NFPA)[\s-]?\d|®|™/i.test(JSON.stringify(pats)));
 
+/* ------------------------------------------- the page's own two closed sets --
+   A finish costs a TEXTURE, never a material: the page runs one surface
+   engine (surfaceMaps) that paints a pattern onto a canvas and reads a
+   normal map off the height field, and a room draws one floor mesh and one
+   merged partition per wall whatever the catalogue holds. That is only true
+   while every pattern this catalogue names is one the page already has a
+   recipe for, and the page closes two sets to keep it true:
+
+     PATTERN_RELIEF  - the relief depth per pattern. A pattern missing from
+                       it renders FLAT, and the page's build refuses it.
+     FLOOR_STEP      - the footfall family per FLOOR pattern. A floor
+                       pattern missing from it has no sound, and the page's
+                       build refuses that too.
+
+   Both live in web/build_3d.py, which this pack does not own. Finding out
+   from a failed page build that the vocabulary was closed is finding out
+   too late, so the two sets are read here, structurally, and the catalogue
+   is held to them in the pack that would have to change. `fabric` is the
+   worked example: the weave is declared for walls and has no floor step
+   family, so a broadloom carpet cannot be a floor in this engine today. */
+const pageSrc = readFileSync(new URL('../web/build_3d.py', import.meta.url), 'utf8');
+const declBlock = (re, keyRe, strip) => {
+  const m = pageSrc.match(re);
+  if (!m) return null;
+  return new Set([...m[1].replace(strip, '').matchAll(keyRe)].map((x) => x[1]));
+};
+const RELIEF = declBlock(/const PATTERN_RELIEF = \{([\s\S]*?)\n\};/,
+  /(\w[\w-]*)\s*:/g, /\/\/[^\n]*/g);
+const STEP = declBlock(/\nFLOOR_STEP = \{([\s\S]*?)\n\}/,
+  /'([\w-]+)':/g, /#[^\n]*/g);
+const floorPats = new Set(Object.values(cat).map((s) => s.pattern));
+
+ok('every pattern this catalogue names is one the page already declares a '
+  + 'relief for, so a finish added here costs a texture and never a material',
+  RELIEF !== null && RELIEF.size > 0
+  && [...patsUsed].every((p) => RELIEF.has(p)));
+ok('every FLOOR pattern is one the page has a footfall family for - the '
+  + 'wall-only patterns (the weave among them) stay off the floor',
+  STEP !== null && STEP.size > 0
+  && [...floorPats].every((p) => STEP.has(p))
+  && !STEP.has('fabric') && !floorPats.has('fabric'));
+
+/* ----------------------------------------------- what a surface is made of --
+   A catalogue this size is only worth having if the entries differ in the
+   properties the renderer actually READS. Two of those are decided by the
+   material and not by taste, so they are checked rather than trusted:
+   metalness, which a pattern that can only be pressed or cast out of metal
+   must carry and one that is fired, cast or ground out of mineral must not;
+   and roughness, which is how a floor of one pattern differs from the next
+   floor of the same pattern. A pattern whose every finish shares one
+   roughness is one material in several colours, which is the failure this
+   whole pass was meant to avoid. */
+const METAL_PATTERNS = ['checker', 'diamond', 'plate', 'grate', 'tslot'];
+const MINERAL_PATTERNS = ['brick', 'ashlar', 'terrazzo', 'sand', 'ballast'];
+const both = { ...cat, ...reg.wall_catalogue };
+ok('a pattern that can only be metal is metal, and one that is fired, cast '
+  + 'or ground out of mineral carries no metalness worth the name',
+  Object.values(both).filter((s) => METAL_PATTERNS.includes(s.pattern))
+    .every((s) => s.metalness >= .3)
+  && Object.values(both).filter((s) => MINERAL_PATTERNS.includes(s.pattern))
+    .every((s) => s.metalness < .1));
+
+const byPattern = {};
+for (const f of Object.values(cat)) (byPattern[f.pattern] ??= []).push(f.roughness);
+ok('no pattern is one material repainted: where more than one floor names a '
+  + 'pattern, they do not all share a roughness',
+  Object.values(byPattern).every((rs) => rs.length < 2
+    || new Set(rs).size > 1));
+ok('the catalogue spreads across its vocabulary: no single pattern carries '
+  + 'more than a quarter of the floors',
+  Object.values(byPattern).every((rs) => rs.length <= Object.keys(cat).length / 4));
+
 /* ------------------------------------------------------------- coverage --- */
 const halls = reg.halls;
 ok('every hall in the union roster is resolved, and no other',
@@ -428,6 +500,17 @@ ok('the registry was built from the current catalogue source (stamp check)',
 ok('the registry declares §24.3 honesty: practice, not a code reference',
   /not a code reference/.test(reg.honesty.status)
   && /local standard/.test(reg.honesty.status));
+
+/* A colour chosen by eye is AUTHORED, and the pack that chose it has to say
+   so in its own words - the sky pack's `colours_are_authored` is the
+   precedent. The catalogue's colours, roughnesses and metalnesses are all of
+   that kind, and growing the catalogue does not make any of them measured.
+   The field is read by name; a missing one reads as undefined and fails. */
+ok('the palette says what it is: chosen by eye, never sampled, and AUTHORED '
+  + 'in the pack that chose it',
+  /chosen by\s+eye/.test(reg.honesty.colours_are_authored)
+  && /never sampled/.test(reg.honesty.colours_are_authored)
+  && reg.provenance.catalogue === 'AUTHORED');
 
 ok('provenance is tagged and honest: SCHEMATIC geometry, DERIVED finish '
   + 'and conditions, nothing RECORDED (nothing was surveyed)',

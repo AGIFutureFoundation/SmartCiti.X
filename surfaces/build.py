@@ -110,6 +110,16 @@ doc = {
     'source_stamp': stamp,
     'spec': 'section 24 of the ACP suite',
     'honesty': {
+        # The sky pack's precedent, applied here: a colour chosen by eye is
+        # AUTHORED and has to say so, in the pack that chose it. This
+        # catalogue's colours, roughnesses and metalnesses are all of that
+        # kind, and the count of them changes nothing about the claim.
+        'colours_are_authored': 'every colour, roughness and metalness in '
+                  'both catalogues is AUTHORED - chosen by eye against what '
+                  'the material is, and never sampled from a photograph, a '
+                  'measured swatch or a supplier\'s data. What is DERIVED is '
+                  'only which hall stands on which, read from the trade\'s '
+                  'own words.',
         'status': 'general good practice, not a code reference; no figure '
                   'is read from any jurisdiction\'s standard and no surface '
                   'names a product, brand, fire rating or specification '
