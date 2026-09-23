@@ -362,10 +362,33 @@ ok('the page contract names every piece of wiring this pack needs and nothing it
   ['data', 'hall', 'room', 'hud', 'reads', 'steps', 'records', 'ladder', 'limits', 'episode']
     .every((k) => typeof reg.page_contract[k] === 'string' && reg.page_contract[k].length > 60)
   && Object.keys(reg.page_contract).length === 10);
-ok('the contract is grounded in what the page actually does today, not in what it might do',
+/* The 3D page as it actually ships, and the payload it hands the browser.
+   This is read rather than the generator's source on purpose: the builder
+   quotes `D.lessons` in its own notes, so a check over the source would
+   pass on a comment about the wiring instead of the wiring. */
+const hallPage = readFileSync(url('../web/trade_craft_3d.html'), 'utf8');
+const hallWire = JSON.parse(hallPage.match(
+  /<script id="data" type="application\/json">([\s\S]*?)<\/script>/)[1]);
+
+/* THIS CHECK USED TO ASSERT THE ABSENCE. It read `!page.includes('D.lessons')`
+   and it was right to: the contract described a return path that nothing
+   had built, and a contract grounded in a wish is not grounded. The link
+   ran one way - every lesson on web/trade_craft_lessons.html carries the
+   learner to trade_craft_3d.html?hall=<slug> - and a learner standing in
+   the hall had no way of seeing which lessons are taught there. Now the
+   registry reaches the scene whole, exactly as page_contract.data asks
+   (indexed by lesson id, no per-lesson preprocessing), so the assertion
+   flips: the wiring must be THERE, on the wire, in the bytes that ship. */
+ok('the contract is grounded in what the page actually does today, and the '
+  + 'return path it describes is wired: the 3D page ships D.lessons - the '
+  + 'whole registry, indexed by lesson id, byte for byte what this file '
+  + 'reads - so a learner standing in a hall can see which lessons are '
+  + 'taught there, instead of the link running one way only',
   ['curRoom', 'hfocus', 'hint', "view = 'hall'", 'condLine', 'condOf']
     .every((t) => page.includes(t))
-  && !page.includes('D.lessons'));
+  && page.includes('D.lessons')
+  && JSON.stringify(hallWire.lessons) === JSON.stringify(reg));
+
 ok('the contract tells the page to READ the names and to record nothing for opening a lesson',
   /READ and never copy/.test(reg.page_contract.reads)
   && /stores ids for all of those on purpose/.test(reg.page_contract.reads)
@@ -396,6 +419,33 @@ const SECTION = (() => {
   return out;
 })();
 const missingSections = lessons.map(([lid]) => lid).filter((lid) => !(lid in SECTION));
+
+/* The other end of the same link, held at the ELEMENT rather than at the
+   prose: the roster the hall draws is an anchor per lesson carrying that
+   lesson's id, and its href is the section web/build_lessons.py actually
+   publishes for that lesson. Matching a sentence here would fire on the
+   page's own honest explanation of what a chip is. */
+ok((() => {
+  const bad = [];
+  if (!hallPage.includes('<a class="lchip" data-lesson="'))
+    bad.push('the hall draws no lesson chip');
+  if (!hallPage.includes('href="trade_craft_lessons.html#lesson-'))
+    bad.push('a chip carries the learner nowhere');
+  const orphans = lessons.map(([lid]) => lid)
+    .filter((lid) => !learnerPage.includes(`<article class="lesson" id="lesson-${lid}"`));
+  if (orphans.length)
+    bad.push(`${orphans.length} chip target(s) land on no section: `
+      + orphans.slice(0, 3).join(', '));
+  return 'the hall roster and the lessons page reach each other from a '
+    + "learner's side: the hall draws one anchor per lesson standing in it, "
+    + 'and each one lands on that lesson\'s own section of '
+    + 'trade_craft_lessons.html'
+    + (bad.length ? ` \u2014 ${bad.join('; ')}` : '');
+})(),
+  hallPage.includes('<a class="lchip" data-lesson="')
+  && hallPage.includes('href="trade_craft_lessons.html#lesson-')
+  && lessons.every(([lid]) =>
+    learnerPage.includes(`<article class="lesson" id="lesson-${lid}"`)));
 
 ok((() => {
   const bad = [];

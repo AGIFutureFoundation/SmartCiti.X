@@ -69,6 +69,7 @@ labels_reg = json.load(open(ROOT / 'labels/registry/labels.json'))
 roadmap_reg = json.load(open(ROOT / 'roadmap/registry/roadmap.json'))
 restoration_reg = json.load(open(ROOT / 'restoration/registry/restoration.json'))
 guide_reg = json.load(open(ROOT / 'guide/registry/guide.json'))
+lessons_reg = json.load(open(ROOT / 'lessons/registry/lessons.json'))
 sky_reg = json.load(open(ROOT / 'sky/registry/sky.json'))
 terrain_reg = json.load(open(ROOT / 'terrain/registry/terrain.json'))
 kit_reg = json.load(open(ROOT / 'kit/registry/kit.json'))
@@ -573,6 +574,15 @@ DATA = json.dumps({
     'guide': {k: guide_reg[k] for k in
               ('honesty', 'counts', 'ask_set', 'places', 'controls',
                'voice', 'hands', 'page_contract')},
+    # the lessons pack, whole. Its own page_contract.data clause asks for
+    # the document as the registry holds it - indexed by lesson id, with no
+    # per-lesson preprocessing here and no field added at boot - the same
+    # way `guide` above and `crews` below arrive. Nothing in it is a second
+    # copy of a name this page already owns: the hall roster reads a
+    # lesson's title out of this record and its room label out of
+    # D.roomDefs, which is where every room in the building is labelled
+    # from, so the registry's own `room_label` is never the thing drawn.
+    'lessons': lessons_reg,
     'advisors': {'who': agents_reg['advisors'],
                  'honesty': agents_reg['honesty'],
                  'walk': geo_reg['walk']},
@@ -971,6 +981,7 @@ function startSim(simId, scenarioId) {
   if (curRestoSite) teardownRestoWalk();
   simTicks = []; traceClock = 0;
   curSimId = simId; view = 'sim';
+  renderHallLessons();
   if (hallGroup) hallGroup.visible = false;
   if (campusGroup) campusGroup.visible = false;
   if (regionGroup) regionGroup.visible = false;
@@ -4624,6 +4635,7 @@ function showAvatar() {
   if (sim) teardownSim();
   if (walkActive) exitWalkMode();
   view = 'avatar';
+  renderHallLessons();
   if (hallGroup) hallGroup.visible = false;
   if (campusGroup) campusGroup.visible = false;
   if (regionGroup) regionGroup.visible = false;
@@ -6673,6 +6685,19 @@ select{background:var(--panel);color:var(--ink);border:1px solid var(--rule);
 #hud h2{font:600 20px "Barlow Condensed",sans-serif;margin:0}
 #hud .focus{color:var(--muted);font-size:12.5px;margin:2px 0 0}
 #hud .hint{color:var(--muted);font-size:11.5px;margin:6px 0 0}
+/* the hall's lesson roster: the return half of the link web/build_lessons.py
+   already draws from every lesson to trade_craft_3d.html?hall=<slug>. A chip
+   is a way in, never a gate - nothing here disables, dims or locks one. */
+#hud .lessons{display:flex;flex-wrap:wrap;gap:5px;margin:7px 0 0}
+#hud .lchip{display:inline-flex;align-items:baseline;gap:6px;max-width:100%;
+  background:var(--sunk);border:1px solid var(--rule);border-radius:999px;
+  padding:3px 10px;font-size:11.5px;color:var(--ink);text-decoration:none}
+#hud .lchip:hover{border-color:var(--mark)}
+/* the room the learner is standing in is marked by shape AND colour, never
+   colour alone - same rule the dash warning follows */
+#hud .lchip.on{border-color:var(--mark);color:var(--mark)}
+#hud .lchip.on::before{content:"\25b8 "}
+#hud .lroom{color:var(--muted);font-size:10.5px;white-space:nowrap}
 #honesty{position:fixed;right:16px;bottom:14px;z-index:5;max-width:300px;
   color:var(--muted);font-size:10.5px;text-align:end;opacity:.85}
 #dash{position:fixed;left:50%;bottom:14px;transform:translateX(-50%);z-index:6;
@@ -6825,6 +6850,7 @@ body.open #bar > *:not(#guideBtn){pointer-events:none;opacity:.3}
 <button id="advBtn" class="fab wide" style="display:none"></button>
 <button id="actBtn" class="fab wide" style="display:none"></button>
 <div id="hud"><h2 id="hname"></h2><p class="focus" id="hfocus"></p><p class="hint" id="hint"></p>
+  <div class="lessons" id="hlessons" style="display:none"></div>
   <p class="hint" id="opCtl" style="display:none">🤖 scripted reference operator
     <select id="opLvl" aria-label="operator level" style="padding:2px 6px;font-size:11.5px"></select>
     <button id="opRefBtn" class="barbtn" style="padding:2px 8px;font-size:11.5px">▶ watch it drive</button></p></div>
@@ -9782,6 +9808,69 @@ function buildHall(sg) {
     // blanket flag would invent one for the 30 that no frame touches.
     + (D.respond.crossLinks[sg] ? ` <button class="barbtn" data-respond-hall="${esc(sg)}"
         style="font-size:10.5px;padding:1px 7px;vertical-align:2px">🚒 ${D.respond.crossLinks[sg].frames.length} responder frame${D.respond.crossLinks[sg].frames.length === 1 ? '' : 's'}</button>` : '');
+  // the hall's own lesson roster, the return half of the lessons page's
+  // hall links - DOM only, so the scene's draw-call budget is untouched
+  renderHallLessons();
+}
+
+/* ------------------------------------------------ lessons in this hall --- */
+/* The other half of a link that only ran one way. web/build_lessons.py sends
+   a learner from a lesson to trade_craft_3d.html?hall=<slug>, and until now
+   somebody standing in the hall had no way of seeing which lessons are
+   taught there. D.lessons.page_contract.hall asks for one chip per lesson
+   on the hall roster, and says what a chip is: a way in, not a gate. So it
+   grants nothing, hides nothing and disables nothing - a lesson whose
+   prerequisites are untouched gets the same chip as any other.
+
+   Every word on a chip is READ. The title comes out of the lesson record;
+   the room label comes out of D.roomDefs, the per-strand table every room
+   in this building is already labelled from, and NOT out of the lesson's
+   own `room_label`, which is that registry's copy of the same fact. The
+   number of chips is whatever the hall has - there is no count here to get
+   wrong. And nothing in here touches the scene: a chip is DOM, so the
+   roster costs no draw call, no geometry and no material. */
+const LESSONS = D.lessons.lessons;
+
+function lessonsOfHall(sg) {
+  return Object.values(LESSONS).filter((L) => L.hall === sg);
+}
+
+/* The room a lesson stands in, read from the strand rather than copied.
+   A missing strand is a broken build, not a blank chip: a default here
+   would be this page quietly deciding where a lesson happens. */
+function lessonRoomLabel(L) {
+  const def = D.roomDefs[L.strand];
+  if (!def) throw new Error('D.roomDefs[' + L.strand + ']: lesson ' + L.id
+    + ' stands in a strand this page lays out no room for');
+  return def.label;
+}
+
+function renderHallLessons() {
+  const el = document.getElementById('hlessons');
+  const mine = view === 'hall' ? lessonsOfHall(slug) : [];
+  el.innerHTML = '';
+  el.style.display = mine.length ? '' : 'none';
+  if (!mine.length) return;
+  const esc = (x) => String(x).replace(/[&<>"]/g,
+    (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  el.innerHTML = mine.map((L) =>
+    `<a class="lchip" data-lesson="${esc(L.id)}" data-strand="${esc(L.strand)}"`
+    + ` href="trade_craft_lessons.html#lesson-${esc(L.id)}">${esc(L.title)}`
+    + `<span class="lroom">${esc(lessonRoomLabel(L))}</span></a>`).join('');
+  markActiveLesson(curRoom ? curRoom.strand : null);
+}
+
+/* D.lessons.page_contract.room: the lesson standing in the room the learner
+   has walked into is the active one, and stops being active when they walk
+   out. That is the whole of the state - nothing is stored, nothing is
+   recorded, and walking somewhere finishes nothing. */
+function markActiveLesson(strand) {
+  for (const a of document.querySelectorAll('#hlessons .lchip')) {
+    const on = !!strand && a.dataset.strand === strand;
+    a.classList.toggle('on', on);
+    if (on) a.setAttribute('aria-current', 'true');
+    else a.removeAttribute('aria-current');
+  }
 }
 
 /* -------------------------------------------------------- campus view --- */
@@ -11481,6 +11570,7 @@ function showRegion() {
   if (sim) teardownSim();
   if (curRestoSite) teardownRestoWalk();
   view = 'region';
+  renderHallLessons();
   walkLeave();
   if (avatarGroup) avatarGroup.visible = false;
   wheelShow(false);
@@ -11536,6 +11626,7 @@ function showCampus(key) {
   if (sim) teardownSim();
   if (curRestoSite) teardownRestoWalk();
   campusKey = key; view = 'campus';
+  renderHallLessons();
   walkLeave();
   if (avatarGroup) avatarGroup.visible = false;
   wheelShow(false);
@@ -12037,6 +12128,7 @@ function walkStep(dt) {
       if (px >= r.x0 && px <= r.x1 && pz >= r.z0 && pz <= r.z1) { room = r; break; }
     if (room !== curRoom) {
       curRoom = room;
+      markActiveLesson(room ? room.strand : null);
       if (room) {
         const fin = D.finCat[D.finishes[slug][room.strand].surface];
         document.getElementById('hfocus').textContent =
@@ -12700,6 +12792,7 @@ function startRestorationWalk(siteId) {
   if (sim) teardownSim();
   if (curRestoSite) teardownRestoWalk();
   view = 'restoration'; curRestoSite = site; campusKey = site.campus;
+  renderHallLessons();
   if (hallGroup) hallGroup.visible = false;
   if (campusGroup) campusGroup.visible = false;
   if (regionGroup) regionGroup.visible = false;

@@ -22,14 +22,14 @@
   "computed_from_registry": 12,
   "measured_source_files": 11,
   "registries_scanned": 39,
-  "app_renderers_scanned": 13,
+  "app_renderers_scanned": 14,
   "doc_renderers_scanned": 3,
   "builders_scanned": 29,
   "suites_scanned": 42,
-  "declared_unbuilt": 7,
+  "declared_unbuilt": 5,
   "declared_unbuilt_by_their_own_words": 1,
-  "declared_unbuilt_not_drawn": 6,
-  "declared_unbuilt_documented_but_not_drawn": 4,
+  "declared_unbuilt_not_drawn": 4,
+  "declared_unbuilt_documented_but_not_drawn": 2,
   "declared_unbuilt_read_by_nothing": 2,
   "gaps": 17,
   "gaps_open": 16,
@@ -39,12 +39,12 @@
   "budget_currencies": 2,
   "budget_agreements": 7,
   "suites_run": 47,
-  "suite_checks_declared": 2095,
+  "suite_checks_declared": 2102,
   "open_questions": 12,
   "negative_findings": 9,
   "cross_checks": 2,
   "cross_checks_disagreeing": 0,
-  "files_read": 154
+  "files_read": 155
  },
  "tiers": [
   "MEASURED-IN-BROWSER",
@@ -1393,64 +1393,6 @@
    "drops_off_when": "a page generator under web/ opens this path, or the pack removes its own honesty.not_built_yet - either one, on the next build of rnd/, with no edit here"
   },
   {
-   "registry": "pack/registry/skills.json",
-   "pack": "pack",
-   "reasons": [
-    "no page generator under web/ names this path, so nothing a learner opens reads it",
-    "it is DOCUMENTED but not drawn: console/build_slice.py, wiki/build_wiki.py renders a description of it"
-   ],
-   "says": null,
-   "read_by_app_renderers": [],
-   "read_by_doc_renderers": [
-    "console/build_slice.py",
-    "wiki/build_wiki.py"
-   ],
-   "read_by_builders": [
-    "lessons/build.py",
-    "restoration/build.py",
-    "sims/build.py",
-    "tools/build.py"
-   ],
-   "read_by_suites": [
-    "bus/test.mjs",
-    "bus/test_safeguards.mjs",
-    "control/test_graph.mjs",
-    "i18n/test.mjs",
-    "lessons/test.mjs",
-    "restoration/test.mjs",
-    "sims/test.mjs",
-    "stations/test.mjs",
-    "tools/test.mjs"
-   ],
-   "read_by_its_own_pack": [
-    "pack/build.py",
-    "pack/registry.js"
-   ],
-   "drops_off_when": "a page generator under web/ opens this path, or the pack removes its own honesty.not_built_yet - either one, on the next build of rnd/, with no edit here"
-  },
-  {
-   "registry": "pack/registry/variants.json",
-   "pack": "pack",
-   "reasons": [
-    "no page generator under web/ names this path, so nothing a learner opens reads it",
-    "it is DOCUMENTED but not drawn: console/build_slice.py renders a description of it"
-   ],
-   "says": null,
-   "read_by_app_renderers": [],
-   "read_by_doc_renderers": [
-    "console/build_slice.py"
-   ],
-   "read_by_builders": [],
-   "read_by_suites": [
-    "i18n/test.mjs"
-   ],
-   "read_by_its_own_pack": [
-    "pack/build.py",
-    "pack/registry.js"
-   ],
-   "drops_off_when": "a page generator under web/ opens this path, or the pack removes its own honesty.not_built_yet - either one, on the next build of rnd/, with no edit here"
-  },
-  {
    "registry": "security/registry/sbom.cdx.json",
    "pack": "security",
    "reasons": [
@@ -1579,7 +1521,9 @@
    "app_renderers": [
     "web/build_auth.py"
    ],
-   "doc_renderers": [],
+   "doc_renderers": [
+    "wiki/build_wiki.py"
+   ],
    "builders": [],
    "suites": [],
    "own_pack": [
@@ -1709,6 +1653,7 @@
   },
   "lessons/registry/lessons.json": {
    "app_renderers": [
+    "web/build_3d.py",
     "web/build_lessons.py"
    ],
    "doc_renderers": [
@@ -1763,6 +1708,7 @@
    "app_renderers": [
     "web/build_3d.py",
     "web/build_interactive_map.py",
+    "web/build_ladder.py",
     "web/build_lessons.py",
     "web/build_map.py"
    ],
@@ -1804,7 +1750,9 @@
    ]
   },
   "pack/registry/skills.json": {
-   "app_renderers": [],
+   "app_renderers": [
+    "web/build_ladder.py"
+   ],
    "doc_renderers": [
     "console/build_slice.py",
     "wiki/build_wiki.py"
@@ -1832,7 +1780,9 @@
    ]
   },
   "pack/registry/variants.json": {
-   "app_renderers": [],
+   "app_renderers": [
+    "web/build_ladder.py"
+   ],
    "doc_renderers": [
     "console/build_slice.py"
    ],
@@ -1975,7 +1925,8 @@
     "web/build_3d.py",
     "web/build_dashboard.py",
     "web/build_home.py",
-    "web/build_interactive_map.py"
+    "web/build_interactive_map.py",
+    "web/build_ladder.py"
    ],
    "doc_renderers": [
     "wiki/build_wiki.py"
@@ -2359,6 +2310,7 @@
    "web/build_geomap.py",
    "web/build_home.py",
    "web/build_interactive_map.py",
+   "web/build_ladder.py",
    "web/build_landing.py",
    "web/build_languages.py",
    "web/build_lessons.py",
@@ -3126,7 +3078,7 @@
    {
     "suite": "lessons/test.mjs",
     "pack": "lessons",
-    "readme_checks": 62,
+    "readme_checks": 63,
     "declared": true,
     "in_readme_table": true
    },
@@ -3196,7 +3148,7 @@
    {
     "suite": "web/test_3d.mjs",
     "pack": "web",
-    "readme_checks": 251,
+    "readme_checks": 257,
     "declared": true,
     "in_readme_table": true
    },
@@ -3213,12 +3165,12 @@
   "suites_without_a_count": [
    "control/soak.mjs"
   ],
-  "declared_total": 2095,
-  "readme_headline": 2106,
+  "declared_total": 2102,
+  "readme_headline": 2113,
   "unaccounted_for": 11,
   "unaccounted_note": "the headline counts every `  ok ` line verify_all.sh sees, which includes suites the README table gives no number to and web/test_interiors.py, which the table does not list at all. The difference is that remainder and is computed, not reconciled by hand.",
   "min": 9,
-  "max": 251,
+  "max": 257,
   "median": 37.0,
   "thinnest": [
    {
@@ -3249,7 +3201,7 @@
   "thickest": [
    {
     "suite": "web/test_3d.mjs",
-    "checks": 251
+    "checks": 257
    },
    {
     "suite": "respond/test.mjs",
@@ -3604,6 +3556,7 @@
   "web/build_geomap.py",
   "web/build_home.py",
   "web/build_interactive_map.py",
+  "web/build_ladder.py",
   "web/build_landing.py",
   "web/build_languages.py",
   "web/build_lessons.py",

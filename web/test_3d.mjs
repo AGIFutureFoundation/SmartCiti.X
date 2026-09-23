@@ -1502,6 +1502,66 @@ ok('the city layer\'s pads, greens, avenues, dashes and tower caps pool '
   && /return out;/.test(fnCode('flushParts')));
 
 
+/* ----------------------------------------- the hall's lesson roster ----- */
+/* The link between the lessons pack and this scene ran one way. Every
+   lesson on web/trade_craft_lessons.html carries the learner to
+   trade_craft_3d.html?hall=<slug>, and a learner standing in the hall had
+   no way back: nothing in the hall named a lesson, and D.lessons was not
+   even on the wire. These hold the return half to the four rules the
+   bundle already lints everything else by - read the name, fail closed,
+   link both ways, and do not spend the scene's budget on DOM.
+
+   Every one reads a FUNCTION BODY with its comments cut out, never `src`.
+   The builder's own notes quote the strings below (that is what the notes
+   are for), and a check that matches its own explanation has answered a
+   different question - this file has been bitten by exactly that eight
+   times over. */
+ok('the hall roster READS each chip\'s room label out of D.roomDefs - the '
+  + 'per-strand table every room in this building is already labelled from - '
+  + 'and never out of the lesson record\'s own `room_label`, which is the '
+  + 'lessons registry\'s copy of that same fact',
+  /const def = D\.roomDefs\[L\.strand\];/.test(fnCode('lessonRoomLabel'))
+  && /return def\.label;/.test(fnCode('lessonRoomLabel'))
+  && !/room_label/.test(fnCode('lessonRoomLabel') + fnCode('renderHallLessons')));
+
+ok('a lesson standing in a strand this page lays out no room for fails '
+  + 'CLOSED, with the path that went missing named in the error - no `??`, '
+  + 'no substitute label, no blank chip: a default would be this page '
+  + 'quietly deciding where a lesson happens',
+  /throw new Error\('D\.roomDefs\[' \+ L\.strand \+ '\]/.test(fnCode('lessonRoomLabel'))
+  && !/\?\?/.test(fnCode('lessonRoomLabel') + fnCode('renderHallLessons')
+    + fnCode('lessonsOfHall') + fnCode('markActiveLesson')));
+
+ok('each chip is the return half of the lessons page\'s own hall link: it '
+  + 'takes the learner to that lesson\'s section on trade_craft_lessons.html, '
+  + 'so the two surfaces reach each other from a learner\'s side and not '
+  + 'only in the data',
+  /href="trade_craft_lessons\.html#lesson-\$\{esc\(L\.id\)\}"/
+    .test(fnCode('renderHallLessons')));
+
+ok('the number of chips is whatever the hall has: they are mapped straight '
+  + 'off the rows D.lessons files under that hall, so there is no count '
+  + 'here to type and none to drift',
+  /Object\.values\(LESSONS\)\.filter\(\(L\) => L\.hall === sg\)/
+    .test(fnCode('lessonsOfHall'))
+  && !/\d/.test(fnCode('lessonsOfHall'))
+  && /mine\.map\(/.test(fnCode('renderHallLessons')));
+
+ok('the active lesson is driven by the room the learner is standing in and '
+  + 'by nothing else: walkStep hands markActiveLesson() the strand of the '
+  + 'room it has just entered, and null when they walk out of one',
+  /markActiveLesson\(room \? room\.strand : null\);/.test(fnCode('walkStep'))
+  && /a\.dataset\.strand === strand/.test(fnCode('markActiveLesson'))
+  && /const on = !!strand && /.test(fnCode('markActiveLesson')));
+
+ok('the roster stands nothing up in the scene: no THREE object, no '
+  + 'geometry, no material, nothing added to hallGroup - a chip is DOM, so '
+  + 'the hall view\'s draw-call budget pays nothing for it',
+  !/new THREE\.|mergeGeometries\(|\.add\(|scene\./.test(
+    fnCode('renderHallLessons') + fnCode('markActiveLesson')
+    + fnCode('lessonsOfHall') + fnCode('lessonRoomLabel')));
+
+
 /* ------------------------------------------- first responders + EI ------ */
 /* Two packs that the bundle's own R&D register listed as DECLARED AND
    UNBUILT: nothing a learner opened read either registry. These checks hold
