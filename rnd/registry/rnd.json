@@ -21,16 +21,16 @@
   "measured_elsewhere": 51,
   "computed_from_registry": 12,
   "measured_source_files": 11,
-  "registries_scanned": 40,
-  "app_renderers_scanned": 14,
+  "registries_scanned": 41,
+  "app_renderers_scanned": 15,
   "doc_renderers_scanned": 3,
-  "builders_scanned": 30,
-  "suites_scanned": 44,
-  "declared_unbuilt": 6,
+  "builders_scanned": 31,
+  "suites_scanned": 45,
+  "declared_unbuilt": 7,
   "declared_unbuilt_by_their_own_words": 1,
-  "declared_unbuilt_not_drawn": 5,
+  "declared_unbuilt_not_drawn": 6,
   "declared_unbuilt_documented_but_not_drawn": 3,
-  "declared_unbuilt_read_by_nothing": 2,
+  "declared_unbuilt_read_by_nothing": 3,
   "gaps": 17,
   "gaps_open": 16,
   "gaps_closed": 1,
@@ -38,13 +38,13 @@
   "budget_views": 3,
   "budget_currencies": 2,
   "budget_agreements": 7,
-  "suites_run": 49,
-  "suite_checks_declared": 2248,
+  "suites_run": 50,
+  "suite_checks_declared": 2284,
   "open_questions": 12,
   "negative_findings": 9,
   "cross_checks": 2,
   "cross_checks_disagreeing": 0,
-  "files_read": 159
+  "files_read": 163
  },
  "tiers": [
   "MEASURED-IN-BROWSER",
@@ -1373,6 +1373,24 @@
  ],
  "declared_unbuilt": [
   {
+   "registry": "evals/registry/evals.json",
+   "pack": "evals",
+   "reasons": [
+    "no page generator under web/ names this path, so nothing a learner opens reads it",
+    "and nothing outside its own pack names it either - not a builder, not the wiki, not another pack's suite; inside it, evals/build.py, evals/test.mjs does"
+   ],
+   "says": null,
+   "read_by_app_renderers": [],
+   "read_by_doc_renderers": [],
+   "read_by_builders": [],
+   "read_by_suites": [],
+   "read_by_its_own_pack": [
+    "evals/build.py",
+    "evals/test.mjs"
+   ],
+   "drops_off_when": "a page generator under web/ opens this path, or the pack removes its own honesty.not_built_yet - either one, on the next build of rnd/, with no edit here"
+  },
+  {
    "registry": "pack/registry/library.json",
    "pack": "pack",
    "reasons": [
@@ -1540,13 +1558,18 @@
   "auth/registry/auth.json": {
    "app_renderers": [
     "web/build_auth.py",
-    "web/build_home.py"
+    "web/build_home.py",
+    "web/build_progress.py"
    ],
    "doc_renderers": [
     "wiki/build_wiki.py"
    ],
-   "builders": [],
-   "suites": [],
+   "builders": [
+    "evals/build.py"
+   ],
+   "suites": [
+    "evals/test.mjs"
+   ],
    "own_pack": [
     "auth/build.py",
     "auth/test.mjs"
@@ -1585,6 +1608,16 @@
    "own_pack": [
     "ei/build.py",
     "ei/test.mjs"
+   ]
+  },
+  "evals/registry/evals.json": {
+   "app_renderers": [],
+   "doc_renderers": [],
+   "builders": [],
+   "suites": [],
+   "own_pack": [
+    "evals/build.py",
+    "evals/test.mjs"
    ]
   },
   "geo/registry/campuses_geo.json": {
@@ -1736,7 +1769,8 @@
     "web/build_interactive_map.py",
     "web/build_ladder.py",
     "web/build_lessons.py",
-    "web/build_map.py"
+    "web/build_map.py",
+    "web/build_progress.py"
    ],
    "doc_renderers": [
     "console/build_slice.py",
@@ -1779,13 +1813,15 @@
   "pack/registry/skills.json": {
    "app_renderers": [
     "web/build_home.py",
-    "web/build_ladder.py"
+    "web/build_ladder.py",
+    "web/build_progress.py"
    ],
    "doc_renderers": [
     "console/build_slice.py",
     "wiki/build_wiki.py"
    ],
    "builders": [
+    "evals/build.py",
     "lessons/build.py",
     "restoration/build.py",
     "sims/build.py",
@@ -1795,6 +1831,7 @@
     "bus/test.mjs",
     "bus/test_safeguards.mjs",
     "control/test_graph.mjs",
+    "evals/test.mjs",
     "i18n/test.mjs",
     "lessons/test.mjs",
     "restoration/test.mjs",
@@ -1957,7 +1994,8 @@
     "web/build_dashboard.py",
     "web/build_home.py",
     "web/build_interactive_map.py",
-    "web/build_ladder.py"
+    "web/build_ladder.py",
+    "web/build_progress.py"
    ],
    "doc_renderers": [
     "wiki/build_wiki.py"
@@ -2146,7 +2184,8 @@
   "training/registry/training.json": {
    "app_renderers": [
     "web/build_3d.py",
-    "web/build_dashboard.py"
+    "web/build_dashboard.py",
+    "web/build_progress.py"
    ],
    "doc_renderers": [
     "wiki/build_wiki.py"
@@ -2363,6 +2402,7 @@
    "web/build_lessons.py",
    "web/build_map.py",
    "web/build_page.py",
+   "web/build_progress.py",
    "web/groundtruth.py",
    "web/interiors.py"
   ],
@@ -2376,6 +2416,7 @@
    "auth/build.py",
    "avatars/build.py",
    "ei/build.py",
+   "evals/build.py",
    "geo/build.py",
    "guide/build.py",
    "kit/build.py",
@@ -2414,6 +2455,7 @@
    "control/test_graph.mjs",
    "control/test_hints.mjs",
    "ei/test.mjs",
+   "evals/test.mjs",
    "fabric/test.mjs",
    "geo/test.mjs",
    "guide/test.mjs",
@@ -3203,6 +3245,13 @@
     "in_readme_table": true
    },
    {
+    "suite": "evals/test.mjs",
+    "pack": "evals",
+    "readme_checks": 36,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
     "suite": "web/test_ladder.mjs",
     "pack": "web",
     "readme_checks": 27,
@@ -3224,18 +3273,18 @@
     "in_readme_table": true
    }
   ],
-  "suites_run": 49,
-  "suites_declaring_a_count": 48,
+  "suites_run": 50,
+  "suites_declaring_a_count": 49,
   "suites_without_a_count": [
    "control/soak.mjs"
   ],
-  "declared_total": 2248,
-  "readme_headline": 2259,
+  "declared_total": 2284,
+  "readme_headline": 2295,
   "unaccounted_for": 11,
   "unaccounted_note": "the headline counts every `  ok ` line verify_all.sh sees, which includes suites the README table gives no number to and web/test_interiors.py, which the table does not list at all. The difference is that remainder and is computed, not reconciled by hand.",
   "min": 9,
   "max": 286,
-  "median": 37.0,
+  "median": 36,
   "thinnest": [
    {
     "suite": "ops/fuzz.mjs",
@@ -3507,6 +3556,9 @@
   "ei/build.py",
   "ei/registry/ei.json",
   "ei/test.mjs",
+  "evals/build.py",
+  "evals/registry/evals.json",
+  "evals/test.mjs",
   "fabric/test.mjs",
   "geo/build.py",
   "geo/registry/campuses_geo.json",
@@ -3629,6 +3681,7 @@
   "web/build_lessons.py",
   "web/build_map.py",
   "web/build_page.py",
+  "web/build_progress.py",
   "web/eval_scene.mjs",
   "web/groundtruth.py",
   "web/interiors.py",

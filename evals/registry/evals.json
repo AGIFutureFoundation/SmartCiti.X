@@ -1,0 +1,1698 @@
+{
+ "assumptions": {
+  "items": {
+   "A1": {
+    "id": "A1",
+    "text": "practice on a skill whose prerequisites are unmet yields little (0.25x)",
+    "validated_against_learners": false
+   },
+   "A2": {
+    "id": "A2",
+    "text": "what is learned decays with time since practice, and each successful spaced retrieval lengthens that half-life",
+    "validated_against_learners": false
+   },
+   "A3": {
+    "id": "A3",
+    "text": "a confusable pair practised back-to-back is learned less cleanly",
+    "validated_against_learners": false
+   }
+  },
+  "quoted_from": "control/sim_curriculum.mjs, header comment",
+  "status": "these are the platform's pedagogical beliefs. This pack records them as beliefs and tests none of them."
+ },
+ "counts": {
+  "assumptions_recorded": 3,
+  "assumptions_validated_against_learners": 0,
+  "attempts_per_run": 420,
+  "comparisons": 27,
+  "comparisons_overlapping": 7,
+  "comparisons_separating_on_every_seed": 20,
+  "metrics": 9,
+  "runs": 36,
+  "seeds": 12,
+  "sim_elapsed_ms": 827,
+  "strategies": 3,
+  "total_attempts_simulated": 15120,
+  "wall_ms": 944
+ },
+ "honesty": {
+  "blocked_wins_two_of_them": "This is not a clean win for the sequencer and the registry does not present one. Across every seed, blocked practice learned MORE skills than graph (14-14 against 6-8) and gained more raw ability (210.8-231 against 148.8-189.9). What graph does that blocked never does in this run is pass the skill gate (2-5 against a flat 0) and hold what was learned to the 30-day probe (0.647-0.802 against 0.281-0.404). Reporting either half alone would be a selected result.",
+  "determinism": "The subject seeds mulberry32 per run and touches no clock and no network. The 12 seeds are recorded, and evals/test.mjs re-runs every one of the 36 runs and compares field by field against what is written here. A result that cannot be reproduced is not a result.",
+  "no_cohort_claim": "Nothing in this registry licenses a statement about real learners, real halls, real apprentices or real outcomes. \"The sequencer beats blocked practice by X\" is not a sentence this pack supports in any form; the supported sentence names the simulation and its assumptions in the same breath as the number.",
+  "one_union": "Every run is the subject's default union, 'welders' - 33 skills. This pack does not sweep unions and says nothing about the other ladders in pack/registry/skills.json.",
+  "runtime": "The full 36-run sweep took 827 ms of simulation time inside node (944 ms wall including process start) on the machine that built this. Nothing was shortened to make it quick: attempts, per-day and session length are the subject's own constants, read out of the file rather than typed here.",
+  "status": "SCRIPTED: every number in this registry came out of running control/sim_curriculum.mjs, a hand-written deterministic simulation over an authored skill ladder and an authored learner model. Nothing here was observed of a person. Not one number is RECORDED, and the summary statistics are not promoted to DERIVED - see tier_is_not_derived.",
+  "the_limit_is_the_sources_own": "The limit is not this pack's summary of the subject. It is quoted verbatim from the header of control/sim_curriculum.mjs into limit.sentence, and evals/test.mjs re-extracts it from that file and fails if the two stop matching or if the quotation is softened.",
+  "the_one_field_that_is_not_reproducible": "counts.sim_elapsed_ms and counts.wall_ms are wall-clock timings of the machine that ran the build. They change on every build and no check holds them to a value; they are here so a reader knows the sweep is seconds rather than hours. Every other number in this registry is reproduced exactly by evals/test.mjs.",
+  "the_retention_interval_that_overlaps": "graph and flat retention intervals overlap across these seeds, and the reason is the denominator, not the finding: retentionAt30d is a mean over the skills a run actually learned, and flat learned none at all on 5 of 12 seeds, where the subject reports 0. A 0 there means there was nothing left to retain, not that everything decayed. flat's retention interval is not comparable with the other two and must not be read as one.",
+  "the_spread_is_the_result": "Across 12 seeds, 20 of the 27 metric-by-strategy-pair comparisons separate on every seed and 7 overlap. An overlapping interval is reported as an overlap in separation, not rounded away into a mean.",
+  "tier_is_not_derived": "DERIVED in this bundle means computed from something RECORDED, by a rule you can read. The min, max, median, mean and separation figures here are computed by a rule you can read, but from SCRIPTED output rather than from a recording. A summary cannot outrank what it summarises, so it keeps the SCRIPTED tier.",
+  "what_is_measured": "Whether the ACP-05 sequencer converts three stated beliefs into outcomes inside a simulation that assumes those beliefs. That is a question about code, and these numbers answer it.",
+  "what_is_not_measured": "Whether the three beliefs hold for a person. This pack runs no learner, observes no cohort and visits no hall. The simulation would produce these same numbers if every one of its assumptions were false about human beings."
+ },
+ "limit": {
+  "quoted_from": "control/sim_curriculum.mjs, header comment",
+  "quoted_verbatim": true,
+  "sentence": "LEARNER MODEL ASSUMPTIONS \u2014 stated, not hidden. These are the platform's pedagogical beliefs; the simulation tests whether the sequencer converts them into outcomes, and produces no evidence that the beliefs are true:",
+  "what_it_forbids": "any sentence that reports a strategy difference here as a difference for learners",
+  "why_it_is_a_field_and_not_prose": "so a check can hold one named string to what the source says, rather than scanning this pack's own sentences and firing on its honest explanations"
+ },
+ "metrics": [
+  "skillsGated",
+  "skillsLearned",
+  "totalAbilityGained",
+  "retentionAt30d",
+  "prereqViolationPct",
+  "remediations",
+  "reviews",
+  "verifies",
+  "distinctSkillsTouched"
+ ],
+ "pack": "evals",
+ "pack_version": "3.2.0",
+ "product": "the measured output of control/sim_curriculum.mjs across 12 seeds, published together with the limit the simulation states on itself",
+ "provenance": {
+  "not_ai_synthesized": "that tier belongs to orbis/ and describes generated video; no model runs anywhere in this pack or its subject",
+  "not_recorded": "nothing here was observed of a real learner",
+  "tier": "SCRIPTED",
+  "tier_set_read_from": "auth/registry/auth.json#provenance_tiers",
+  "tiers_available": [
+   "RECORDED",
+   "DERIVED",
+   "SCHEMATIC",
+   "AUTHORED",
+   "SCRIPTED"
+  ]
+ },
+ "retention_empty_denominator_runs": {
+  "blocked": 0,
+  "flat": 5,
+  "graph": 0
+ },
+ "runall_means": {
+  "blocked": {
+   "distinctSkillsTouched": 14,
+   "prereqViolationPct": 0,
+   "remediations": 0,
+   "retentionAt30d": 0.34,
+   "reviews": 0,
+   "skillsGated": 0,
+   "skillsLearned": 14,
+   "totalAbilityGained": 218.73,
+   "verifies": 0
+  },
+  "flat": {
+   "distinctSkillsTouched": 33,
+   "prereqViolationPct": 90.81,
+   "remediations": 0,
+   "retentionAt30d": 0.5,
+   "reviews": 0,
+   "skillsGated": 0,
+   "skillsLearned": 0.92,
+   "totalAbilityGained": 64.98,
+   "verifies": 0
+  },
+  "graph": {
+   "distinctSkillsTouched": 7.92,
+   "prereqViolationPct": 7.75,
+   "remediations": 26,
+   "retentionAt30d": 0.75,
+   "reviews": 13.75,
+   "skillsGated": 3.67,
+   "skillsLearned": 6.67,
+   "totalAbilityGained": 173.8,
+   "verifies": 22.33
+  }
+ },
+ "runs": [
+  {
+   "distinctSkillsTouched": 8,
+   "prereqViolationPct": 3.1,
+   "remediations": 26,
+   "retentionAt30d": 0.793,
+   "reviews": 19,
+   "seed": 3,
+   "skillsGated": 5,
+   "skillsLearned": 7,
+   "strategy": "graph",
+   "totalAbilityGained": 178.1,
+   "verifies": 27
+  },
+  {
+   "distinctSkillsTouched": 8,
+   "prereqViolationPct": 2.9,
+   "remediations": 26,
+   "retentionAt30d": 0.772,
+   "reviews": 15,
+   "seed": 11,
+   "skillsGated": 4,
+   "skillsLearned": 6,
+   "strategy": "graph",
+   "totalAbilityGained": 186.9,
+   "verifies": 21
+  },
+  {
+   "distinctSkillsTouched": 8,
+   "prereqViolationPct": 18.3,
+   "remediations": 25,
+   "retentionAt30d": 0.765,
+   "reviews": 8,
+   "seed": 29,
+   "skillsGated": 3,
+   "skillsLearned": 7,
+   "strategy": "graph",
+   "totalAbilityGained": 152.2,
+   "verifies": 19
+  },
+  {
+   "distinctSkillsTouched": 8,
+   "prereqViolationPct": 22.4,
+   "remediations": 26,
+   "retentionAt30d": 0.788,
+   "reviews": 14,
+   "seed": 47,
+   "skillsGated": 4,
+   "skillsLearned": 6,
+   "strategy": "graph",
+   "totalAbilityGained": 148.8,
+   "verifies": 23
+  },
+  {
+   "distinctSkillsTouched": 8,
+   "prereqViolationPct": 9.5,
+   "remediations": 27,
+   "retentionAt30d": 0.67,
+   "reviews": 14,
+   "seed": 101,
+   "skillsGated": 4,
+   "skillsLearned": 6,
+   "strategy": "graph",
+   "totalAbilityGained": 162.8,
+   "verifies": 24
+  },
+  {
+   "distinctSkillsTouched": 7,
+   "prereqViolationPct": 0,
+   "remediations": 28,
+   "retentionAt30d": 0.802,
+   "reviews": 17,
+   "seed": 233,
+   "skillsGated": 3,
+   "skillsLearned": 7,
+   "strategy": "graph",
+   "totalAbilityGained": 186.3,
+   "verifies": 19
+  },
+  {
+   "distinctSkillsTouched": 8,
+   "prereqViolationPct": 4,
+   "remediations": 28,
+   "retentionAt30d": 0.769,
+   "reviews": 14,
+   "seed": 404,
+   "skillsGated": 4,
+   "skillsLearned": 6,
+   "strategy": "graph",
+   "totalAbilityGained": 176.2,
+   "verifies": 24
+  },
+  {
+   "distinctSkillsTouched": 8,
+   "prereqViolationPct": 0,
+   "remediations": 22,
+   "retentionAt30d": 0.647,
+   "reviews": 19,
+   "seed": 777,
+   "skillsGated": 2,
+   "skillsLearned": 8,
+   "strategy": "graph",
+   "totalAbilityGained": 182.5,
+   "verifies": 15
+  },
+  {
+   "distinctSkillsTouched": 8,
+   "prereqViolationPct": 0,
+   "remediations": 25,
+   "retentionAt30d": 0.709,
+   "reviews": 8,
+   "seed": 1009,
+   "skillsGated": 3,
+   "skillsLearned": 7,
+   "strategy": "graph",
+   "totalAbilityGained": 189.1,
+   "verifies": 20
+  },
+  {
+   "distinctSkillsTouched": 8,
+   "prereqViolationPct": 3.1,
+   "remediations": 26,
+   "retentionAt30d": 0.786,
+   "reviews": 13,
+   "seed": 2027,
+   "skillsGated": 4,
+   "skillsLearned": 6,
+   "strategy": "graph",
+   "totalAbilityGained": 189.9,
+   "verifies": 25
+  },
+  {
+   "distinctSkillsTouched": 8,
+   "prereqViolationPct": 2.6,
+   "remediations": 28,
+   "retentionAt30d": 0.797,
+   "reviews": 22,
+   "seed": 4242,
+   "skillsGated": 5,
+   "skillsLearned": 7,
+   "strategy": "graph",
+   "totalAbilityGained": 181.6,
+   "verifies": 30
+  },
+  {
+   "distinctSkillsTouched": 8,
+   "prereqViolationPct": 27.1,
+   "remediations": 25,
+   "retentionAt30d": 0.701,
+   "reviews": 2,
+   "seed": 8191,
+   "skillsGated": 3,
+   "skillsLearned": 7,
+   "strategy": "graph",
+   "totalAbilityGained": 151.2,
+   "verifies": 21
+  },
+  {
+   "distinctSkillsTouched": 14,
+   "prereqViolationPct": 0,
+   "remediations": 0,
+   "retentionAt30d": 0.404,
+   "reviews": 0,
+   "seed": 3,
+   "skillsGated": 0,
+   "skillsLearned": 14,
+   "strategy": "blocked",
+   "totalAbilityGained": 225.5,
+   "verifies": 0
+  },
+  {
+   "distinctSkillsTouched": 14,
+   "prereqViolationPct": 0,
+   "remediations": 0,
+   "retentionAt30d": 0.291,
+   "reviews": 0,
+   "seed": 11,
+   "skillsGated": 0,
+   "skillsLearned": 14,
+   "strategy": "blocked",
+   "totalAbilityGained": 210.9,
+   "verifies": 0
+  },
+  {
+   "distinctSkillsTouched": 14,
+   "prereqViolationPct": 0,
+   "remediations": 0,
+   "retentionAt30d": 0.281,
+   "reviews": 0,
+   "seed": 29,
+   "skillsGated": 0,
+   "skillsLearned": 14,
+   "strategy": "blocked",
+   "totalAbilityGained": 212.4,
+   "verifies": 0
+  },
+  {
+   "distinctSkillsTouched": 14,
+   "prereqViolationPct": 0,
+   "remediations": 0,
+   "retentionAt30d": 0.347,
+   "reviews": 0,
+   "seed": 47,
+   "skillsGated": 0,
+   "skillsLearned": 14,
+   "strategy": "blocked",
+   "totalAbilityGained": 222.1,
+   "verifies": 0
+  },
+  {
+   "distinctSkillsTouched": 14,
+   "prereqViolationPct": 0,
+   "remediations": 0,
+   "retentionAt30d": 0.307,
+   "reviews": 0,
+   "seed": 101,
+   "skillsGated": 0,
+   "skillsLearned": 14,
+   "strategy": "blocked",
+   "totalAbilityGained": 223.9,
+   "verifies": 0
+  },
+  {
+   "distinctSkillsTouched": 14,
+   "prereqViolationPct": 0,
+   "remediations": 0,
+   "retentionAt30d": 0.342,
+   "reviews": 0,
+   "seed": 233,
+   "skillsGated": 0,
+   "skillsLearned": 14,
+   "strategy": "blocked",
+   "totalAbilityGained": 215.1,
+   "verifies": 0
+  },
+  {
+   "distinctSkillsTouched": 14,
+   "prereqViolationPct": 0,
+   "remediations": 0,
+   "retentionAt30d": 0.371,
+   "reviews": 0,
+   "seed": 404,
+   "skillsGated": 0,
+   "skillsLearned": 14,
+   "strategy": "blocked",
+   "totalAbilityGained": 224.5,
+   "verifies": 0
+  },
+  {
+   "distinctSkillsTouched": 14,
+   "prereqViolationPct": 0,
+   "remediations": 0,
+   "retentionAt30d": 0.34,
+   "reviews": 0,
+   "seed": 777,
+   "skillsGated": 0,
+   "skillsLearned": 14,
+   "strategy": "blocked",
+   "totalAbilityGained": 210.8,
+   "verifies": 0
+  },
+  {
+   "distinctSkillsTouched": 14,
+   "prereqViolationPct": 0,
+   "remediations": 0,
+   "retentionAt30d": 0.326,
+   "reviews": 0,
+   "seed": 1009,
+   "skillsGated": 0,
+   "skillsLearned": 14,
+   "strategy": "blocked",
+   "totalAbilityGained": 214.8,
+   "verifies": 0
+  },
+  {
+   "distinctSkillsTouched": 14,
+   "prereqViolationPct": 0,
+   "remediations": 0,
+   "retentionAt30d": 0.383,
+   "reviews": 0,
+   "seed": 2027,
+   "skillsGated": 0,
+   "skillsLearned": 14,
+   "strategy": "blocked",
+   "totalAbilityGained": 231,
+   "verifies": 0
+  },
+  {
+   "distinctSkillsTouched": 14,
+   "prereqViolationPct": 0,
+   "remediations": 0,
+   "retentionAt30d": 0.337,
+   "reviews": 0,
+   "seed": 4242,
+   "skillsGated": 0,
+   "skillsLearned": 14,
+   "strategy": "blocked",
+   "totalAbilityGained": 215.4,
+   "verifies": 0
+  },
+  {
+   "distinctSkillsTouched": 14,
+   "prereqViolationPct": 0,
+   "remediations": 0,
+   "retentionAt30d": 0.318,
+   "reviews": 0,
+   "seed": 8191,
+   "skillsGated": 0,
+   "skillsLearned": 14,
+   "strategy": "blocked",
+   "totalAbilityGained": 218.4,
+   "verifies": 0
+  },
+  {
+   "distinctSkillsTouched": 33,
+   "prereqViolationPct": 97.4,
+   "remediations": 0,
+   "retentionAt30d": 0,
+   "reviews": 0,
+   "seed": 3,
+   "skillsGated": 0,
+   "skillsLearned": 0,
+   "strategy": "flat",
+   "totalAbilityGained": 51.9,
+   "verifies": 0
+  },
+  {
+   "distinctSkillsTouched": 33,
+   "prereqViolationPct": 77.6,
+   "remediations": 0,
+   "retentionAt30d": 0.809,
+   "reviews": 0,
+   "seed": 11,
+   "skillsGated": 0,
+   "skillsLearned": 3,
+   "strategy": "flat",
+   "totalAbilityGained": 88.8,
+   "verifies": 0
+  },
+  {
+   "distinctSkillsTouched": 33,
+   "prereqViolationPct": 97.9,
+   "remediations": 0,
+   "retentionAt30d": 0,
+   "reviews": 0,
+   "seed": 29,
+   "skillsGated": 0,
+   "skillsLearned": 0,
+   "strategy": "flat",
+   "totalAbilityGained": 50.5,
+   "verifies": 0
+  },
+  {
+   "distinctSkillsTouched": 33,
+   "prereqViolationPct": 97.1,
+   "remediations": 0,
+   "retentionAt30d": 0,
+   "reviews": 0,
+   "seed": 47,
+   "skillsGated": 0,
+   "skillsLearned": 0,
+   "strategy": "flat",
+   "totalAbilityGained": 52.8,
+   "verifies": 0
+  },
+  {
+   "distinctSkillsTouched": 33,
+   "prereqViolationPct": 86,
+   "remediations": 0,
+   "retentionAt30d": 0.859,
+   "reviews": 0,
+   "seed": 101,
+   "skillsGated": 0,
+   "skillsLearned": 2,
+   "strategy": "flat",
+   "totalAbilityGained": 76.5,
+   "verifies": 0
+  },
+  {
+   "distinctSkillsTouched": 33,
+   "prereqViolationPct": 97.4,
+   "remediations": 0,
+   "retentionAt30d": 0,
+   "reviews": 0,
+   "seed": 233,
+   "skillsGated": 0,
+   "skillsLearned": 0,
+   "strategy": "flat",
+   "totalAbilityGained": 53.2,
+   "verifies": 0
+  },
+  {
+   "distinctSkillsTouched": 33,
+   "prereqViolationPct": 91,
+   "remediations": 0,
+   "retentionAt30d": 0.871,
+   "reviews": 0,
+   "seed": 404,
+   "skillsGated": 0,
+   "skillsLearned": 1,
+   "strategy": "flat",
+   "totalAbilityGained": 63.6,
+   "verifies": 0
+  },
+  {
+   "distinctSkillsTouched": 33,
+   "prereqViolationPct": 96.9,
+   "remediations": 0,
+   "retentionAt30d": 0,
+   "reviews": 0,
+   "seed": 777,
+   "skillsGated": 0,
+   "skillsLearned": 0,
+   "strategy": "flat",
+   "totalAbilityGained": 52.7,
+   "verifies": 0
+  },
+  {
+   "distinctSkillsTouched": 33,
+   "prereqViolationPct": 83.8,
+   "remediations": 0,
+   "retentionAt30d": 0.841,
+   "reviews": 0,
+   "seed": 1009,
+   "skillsGated": 0,
+   "skillsLearned": 1,
+   "strategy": "flat",
+   "totalAbilityGained": 81.9,
+   "verifies": 0
+  },
+  {
+   "distinctSkillsTouched": 33,
+   "prereqViolationPct": 88.6,
+   "remediations": 0,
+   "retentionAt30d": 0.878,
+   "reviews": 0,
+   "seed": 2027,
+   "skillsGated": 0,
+   "skillsLearned": 1,
+   "strategy": "flat",
+   "totalAbilityGained": 71.5,
+   "verifies": 0
+  },
+  {
+   "distinctSkillsTouched": 33,
+   "prereqViolationPct": 96.2,
+   "remediations": 0,
+   "retentionAt30d": 0.867,
+   "reviews": 0,
+   "seed": 4242,
+   "skillsGated": 0,
+   "skillsLearned": 1,
+   "strategy": "flat",
+   "totalAbilityGained": 53.9,
+   "verifies": 0
+  },
+  {
+   "distinctSkillsTouched": 33,
+   "prereqViolationPct": 79.8,
+   "remediations": 0,
+   "retentionAt30d": 0.86,
+   "reviews": 0,
+   "seed": 8191,
+   "skillsGated": 0,
+   "skillsLearned": 2,
+   "strategy": "flat",
+   "totalAbilityGained": 82.5,
+   "verifies": 0
+  }
+ ],
+ "seeds": [
+  3,
+  11,
+  29,
+  47,
+  101,
+  233,
+  404,
+  777,
+  1009,
+  2027,
+  4242,
+  8191
+ ],
+ "separation": {
+  "distinctSkillsTouched": {
+   "blocked_vs_flat": {
+    "gap_between_intervals": 19.0,
+    "higher": "flat",
+    "intervals": {
+     "blocked": [
+      14.0,
+      14.0
+     ],
+     "flat": [
+      33.0,
+      33.0
+     ]
+    },
+    "overlap": false,
+    "separates_across_every_seed": true
+   },
+   "graph_vs_blocked": {
+    "gap_between_intervals": 6.0,
+    "higher": "blocked",
+    "intervals": {
+     "blocked": [
+      14.0,
+      14.0
+     ],
+     "graph": [
+      7.0,
+      8.0
+     ]
+    },
+    "overlap": false,
+    "separates_across_every_seed": true
+   },
+   "graph_vs_flat": {
+    "gap_between_intervals": 25.0,
+    "higher": "flat",
+    "intervals": {
+     "flat": [
+      33.0,
+      33.0
+     ],
+     "graph": [
+      7.0,
+      8.0
+     ]
+    },
+    "overlap": false,
+    "separates_across_every_seed": true
+   }
+  },
+  "prereqViolationPct": {
+   "blocked_vs_flat": {
+    "gap_between_intervals": 77.6,
+    "higher": "flat",
+    "intervals": {
+     "blocked": [
+      0.0,
+      0.0
+     ],
+     "flat": [
+      77.6,
+      97.9
+     ]
+    },
+    "overlap": false,
+    "separates_across_every_seed": true
+   },
+   "graph_vs_blocked": {
+    "gap_between_intervals": 0.0,
+    "higher": null,
+    "intervals": {
+     "blocked": [
+      0.0,
+      0.0
+     ],
+     "graph": [
+      0.0,
+      27.1
+     ]
+    },
+    "overlap": true,
+    "separates_across_every_seed": false
+   },
+   "graph_vs_flat": {
+    "gap_between_intervals": 50.5,
+    "higher": "flat",
+    "intervals": {
+     "flat": [
+      77.6,
+      97.9
+     ],
+     "graph": [
+      0.0,
+      27.1
+     ]
+    },
+    "overlap": false,
+    "separates_across_every_seed": true
+   }
+  },
+  "remediations": {
+   "blocked_vs_flat": {
+    "gap_between_intervals": 0.0,
+    "higher": null,
+    "intervals": {
+     "blocked": [
+      0.0,
+      0.0
+     ],
+     "flat": [
+      0.0,
+      0.0
+     ]
+    },
+    "overlap": true,
+    "separates_across_every_seed": false
+   },
+   "graph_vs_blocked": {
+    "gap_between_intervals": 22.0,
+    "higher": "graph",
+    "intervals": {
+     "blocked": [
+      0.0,
+      0.0
+     ],
+     "graph": [
+      22.0,
+      28.0
+     ]
+    },
+    "overlap": false,
+    "separates_across_every_seed": true
+   },
+   "graph_vs_flat": {
+    "gap_between_intervals": 22.0,
+    "higher": "graph",
+    "intervals": {
+     "flat": [
+      0.0,
+      0.0
+     ],
+     "graph": [
+      22.0,
+      28.0
+     ]
+    },
+    "overlap": false,
+    "separates_across_every_seed": true
+   }
+  },
+  "retentionAt30d": {
+   "blocked_vs_flat": {
+    "gap_between_intervals": 0.0,
+    "higher": null,
+    "intervals": {
+     "blocked": [
+      0.281,
+      0.404
+     ],
+     "flat": [
+      0.0,
+      0.878
+     ]
+    },
+    "overlap": true,
+    "separates_across_every_seed": false
+   },
+   "graph_vs_blocked": {
+    "gap_between_intervals": 0.243,
+    "higher": "graph",
+    "intervals": {
+     "blocked": [
+      0.281,
+      0.404
+     ],
+     "graph": [
+      0.647,
+      0.802
+     ]
+    },
+    "overlap": false,
+    "separates_across_every_seed": true
+   },
+   "graph_vs_flat": {
+    "gap_between_intervals": 0.0,
+    "higher": null,
+    "intervals": {
+     "flat": [
+      0.0,
+      0.878
+     ],
+     "graph": [
+      0.647,
+      0.802
+     ]
+    },
+    "overlap": true,
+    "separates_across_every_seed": false
+   }
+  },
+  "reviews": {
+   "blocked_vs_flat": {
+    "gap_between_intervals": 0.0,
+    "higher": null,
+    "intervals": {
+     "blocked": [
+      0.0,
+      0.0
+     ],
+     "flat": [
+      0.0,
+      0.0
+     ]
+    },
+    "overlap": true,
+    "separates_across_every_seed": false
+   },
+   "graph_vs_blocked": {
+    "gap_between_intervals": 2.0,
+    "higher": "graph",
+    "intervals": {
+     "blocked": [
+      0.0,
+      0.0
+     ],
+     "graph": [
+      2.0,
+      22.0
+     ]
+    },
+    "overlap": false,
+    "separates_across_every_seed": true
+   },
+   "graph_vs_flat": {
+    "gap_between_intervals": 2.0,
+    "higher": "graph",
+    "intervals": {
+     "flat": [
+      0.0,
+      0.0
+     ],
+     "graph": [
+      2.0,
+      22.0
+     ]
+    },
+    "overlap": false,
+    "separates_across_every_seed": true
+   }
+  },
+  "skillsGated": {
+   "blocked_vs_flat": {
+    "gap_between_intervals": 0.0,
+    "higher": null,
+    "intervals": {
+     "blocked": [
+      0.0,
+      0.0
+     ],
+     "flat": [
+      0.0,
+      0.0
+     ]
+    },
+    "overlap": true,
+    "separates_across_every_seed": false
+   },
+   "graph_vs_blocked": {
+    "gap_between_intervals": 2.0,
+    "higher": "graph",
+    "intervals": {
+     "blocked": [
+      0.0,
+      0.0
+     ],
+     "graph": [
+      2.0,
+      5.0
+     ]
+    },
+    "overlap": false,
+    "separates_across_every_seed": true
+   },
+   "graph_vs_flat": {
+    "gap_between_intervals": 2.0,
+    "higher": "graph",
+    "intervals": {
+     "flat": [
+      0.0,
+      0.0
+     ],
+     "graph": [
+      2.0,
+      5.0
+     ]
+    },
+    "overlap": false,
+    "separates_across_every_seed": true
+   }
+  },
+  "skillsLearned": {
+   "blocked_vs_flat": {
+    "gap_between_intervals": 11.0,
+    "higher": "blocked",
+    "intervals": {
+     "blocked": [
+      14.0,
+      14.0
+     ],
+     "flat": [
+      0.0,
+      3.0
+     ]
+    },
+    "overlap": false,
+    "separates_across_every_seed": true
+   },
+   "graph_vs_blocked": {
+    "gap_between_intervals": 6.0,
+    "higher": "blocked",
+    "intervals": {
+     "blocked": [
+      14.0,
+      14.0
+     ],
+     "graph": [
+      6.0,
+      8.0
+     ]
+    },
+    "overlap": false,
+    "separates_across_every_seed": true
+   },
+   "graph_vs_flat": {
+    "gap_between_intervals": 3.0,
+    "higher": "graph",
+    "intervals": {
+     "flat": [
+      0.0,
+      3.0
+     ],
+     "graph": [
+      6.0,
+      8.0
+     ]
+    },
+    "overlap": false,
+    "separates_across_every_seed": true
+   }
+  },
+  "totalAbilityGained": {
+   "blocked_vs_flat": {
+    "gap_between_intervals": 122.0,
+    "higher": "blocked",
+    "intervals": {
+     "blocked": [
+      210.8,
+      231.0
+     ],
+     "flat": [
+      50.5,
+      88.8
+     ]
+    },
+    "overlap": false,
+    "separates_across_every_seed": true
+   },
+   "graph_vs_blocked": {
+    "gap_between_intervals": 20.9,
+    "higher": "blocked",
+    "intervals": {
+     "blocked": [
+      210.8,
+      231.0
+     ],
+     "graph": [
+      148.8,
+      189.9
+     ]
+    },
+    "overlap": false,
+    "separates_across_every_seed": true
+   },
+   "graph_vs_flat": {
+    "gap_between_intervals": 60.0,
+    "higher": "graph",
+    "intervals": {
+     "flat": [
+      50.5,
+      88.8
+     ],
+     "graph": [
+      148.8,
+      189.9
+     ]
+    },
+    "overlap": false,
+    "separates_across_every_seed": true
+   }
+  },
+  "verifies": {
+   "blocked_vs_flat": {
+    "gap_between_intervals": 0.0,
+    "higher": null,
+    "intervals": {
+     "blocked": [
+      0.0,
+      0.0
+     ],
+     "flat": [
+      0.0,
+      0.0
+     ]
+    },
+    "overlap": true,
+    "separates_across_every_seed": false
+   },
+   "graph_vs_blocked": {
+    "gap_between_intervals": 15.0,
+    "higher": "graph",
+    "intervals": {
+     "blocked": [
+      0.0,
+      0.0
+     ],
+     "graph": [
+      15.0,
+      30.0
+     ]
+    },
+    "overlap": false,
+    "separates_across_every_seed": true
+   },
+   "graph_vs_flat": {
+    "gap_between_intervals": 15.0,
+    "higher": "graph",
+    "intervals": {
+     "flat": [
+      0.0,
+      0.0
+     ],
+     "graph": [
+      15.0,
+      30.0
+     ]
+    },
+    "overlap": false,
+    "separates_across_every_seed": true
+   }
+  }
+ },
+ "source_stamp": "e87818a7c362ab43",
+ "spread": {
+  "blocked": {
+   "distinctSkillsTouched": {
+    "identical_across_every_seed": true,
+    "max": 14.0,
+    "mean": 14.0,
+    "median": 14.0,
+    "min": 14.0,
+    "per_seed": {
+     "1009": 14,
+     "101": 14,
+     "11": 14,
+     "2027": 14,
+     "233": 14,
+     "29": 14,
+     "3": 14,
+     "404": 14,
+     "4242": 14,
+     "47": 14,
+     "777": 14,
+     "8191": 14
+    },
+    "range": 0.0
+   },
+   "prereqViolationPct": {
+    "identical_across_every_seed": true,
+    "max": 0.0,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "per_seed": {
+     "1009": 0,
+     "101": 0,
+     "11": 0,
+     "2027": 0,
+     "233": 0,
+     "29": 0,
+     "3": 0,
+     "404": 0,
+     "4242": 0,
+     "47": 0,
+     "777": 0,
+     "8191": 0
+    },
+    "range": 0.0
+   },
+   "remediations": {
+    "identical_across_every_seed": true,
+    "max": 0.0,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "per_seed": {
+     "1009": 0,
+     "101": 0,
+     "11": 0,
+     "2027": 0,
+     "233": 0,
+     "29": 0,
+     "3": 0,
+     "404": 0,
+     "4242": 0,
+     "47": 0,
+     "777": 0,
+     "8191": 0
+    },
+    "range": 0.0
+   },
+   "retentionAt30d": {
+    "identical_across_every_seed": false,
+    "max": 0.404,
+    "mean": 0.34,
+    "median": 0.3385,
+    "min": 0.281,
+    "per_seed": {
+     "1009": 0.326,
+     "101": 0.307,
+     "11": 0.291,
+     "2027": 0.383,
+     "233": 0.342,
+     "29": 0.281,
+     "3": 0.404,
+     "404": 0.371,
+     "4242": 0.337,
+     "47": 0.347,
+     "777": 0.34,
+     "8191": 0.318
+    },
+    "range": 0.123
+   },
+   "reviews": {
+    "identical_across_every_seed": true,
+    "max": 0.0,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "per_seed": {
+     "1009": 0,
+     "101": 0,
+     "11": 0,
+     "2027": 0,
+     "233": 0,
+     "29": 0,
+     "3": 0,
+     "404": 0,
+     "4242": 0,
+     "47": 0,
+     "777": 0,
+     "8191": 0
+    },
+    "range": 0.0
+   },
+   "skillsGated": {
+    "identical_across_every_seed": true,
+    "max": 0.0,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "per_seed": {
+     "1009": 0,
+     "101": 0,
+     "11": 0,
+     "2027": 0,
+     "233": 0,
+     "29": 0,
+     "3": 0,
+     "404": 0,
+     "4242": 0,
+     "47": 0,
+     "777": 0,
+     "8191": 0
+    },
+    "range": 0.0
+   },
+   "skillsLearned": {
+    "identical_across_every_seed": true,
+    "max": 14.0,
+    "mean": 14.0,
+    "median": 14.0,
+    "min": 14.0,
+    "per_seed": {
+     "1009": 14,
+     "101": 14,
+     "11": 14,
+     "2027": 14,
+     "233": 14,
+     "29": 14,
+     "3": 14,
+     "404": 14,
+     "4242": 14,
+     "47": 14,
+     "777": 14,
+     "8191": 14
+    },
+    "range": 0.0
+   },
+   "totalAbilityGained": {
+    "identical_across_every_seed": false,
+    "max": 231.0,
+    "mean": 218.73,
+    "median": 216.9,
+    "min": 210.8,
+    "per_seed": {
+     "1009": 214.8,
+     "101": 223.9,
+     "11": 210.9,
+     "2027": 231,
+     "233": 215.1,
+     "29": 212.4,
+     "3": 225.5,
+     "404": 224.5,
+     "4242": 215.4,
+     "47": 222.1,
+     "777": 210.8,
+     "8191": 218.4
+    },
+    "range": 20.2
+   },
+   "verifies": {
+    "identical_across_every_seed": true,
+    "max": 0.0,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "per_seed": {
+     "1009": 0,
+     "101": 0,
+     "11": 0,
+     "2027": 0,
+     "233": 0,
+     "29": 0,
+     "3": 0,
+     "404": 0,
+     "4242": 0,
+     "47": 0,
+     "777": 0,
+     "8191": 0
+    },
+    "range": 0.0
+   }
+  },
+  "flat": {
+   "distinctSkillsTouched": {
+    "identical_across_every_seed": true,
+    "max": 33.0,
+    "mean": 33.0,
+    "median": 33.0,
+    "min": 33.0,
+    "per_seed": {
+     "1009": 33,
+     "101": 33,
+     "11": 33,
+     "2027": 33,
+     "233": 33,
+     "29": 33,
+     "3": 33,
+     "404": 33,
+     "4242": 33,
+     "47": 33,
+     "777": 33,
+     "8191": 33
+    },
+    "range": 0.0
+   },
+   "prereqViolationPct": {
+    "identical_across_every_seed": false,
+    "max": 97.9,
+    "mean": 90.81,
+    "median": 93.6,
+    "min": 77.6,
+    "per_seed": {
+     "1009": 83.8,
+     "101": 86,
+     "11": 77.6,
+     "2027": 88.6,
+     "233": 97.4,
+     "29": 97.9,
+     "3": 97.4,
+     "404": 91,
+     "4242": 96.2,
+     "47": 97.1,
+     "777": 96.9,
+     "8191": 79.8
+    },
+    "range": 20.3
+   },
+   "remediations": {
+    "identical_across_every_seed": true,
+    "max": 0.0,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "per_seed": {
+     "1009": 0,
+     "101": 0,
+     "11": 0,
+     "2027": 0,
+     "233": 0,
+     "29": 0,
+     "3": 0,
+     "404": 0,
+     "4242": 0,
+     "47": 0,
+     "777": 0,
+     "8191": 0
+    },
+    "range": 0.0
+   },
+   "retentionAt30d": {
+    "identical_across_every_seed": false,
+    "max": 0.878,
+    "mean": 0.5,
+    "median": 0.825,
+    "min": 0.0,
+    "per_seed": {
+     "1009": 0.841,
+     "101": 0.859,
+     "11": 0.809,
+     "2027": 0.878,
+     "233": 0,
+     "29": 0,
+     "3": 0,
+     "404": 0.871,
+     "4242": 0.867,
+     "47": 0,
+     "777": 0,
+     "8191": 0.86
+    },
+    "range": 0.878
+   },
+   "reviews": {
+    "identical_across_every_seed": true,
+    "max": 0.0,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "per_seed": {
+     "1009": 0,
+     "101": 0,
+     "11": 0,
+     "2027": 0,
+     "233": 0,
+     "29": 0,
+     "3": 0,
+     "404": 0,
+     "4242": 0,
+     "47": 0,
+     "777": 0,
+     "8191": 0
+    },
+    "range": 0.0
+   },
+   "skillsGated": {
+    "identical_across_every_seed": true,
+    "max": 0.0,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "per_seed": {
+     "1009": 0,
+     "101": 0,
+     "11": 0,
+     "2027": 0,
+     "233": 0,
+     "29": 0,
+     "3": 0,
+     "404": 0,
+     "4242": 0,
+     "47": 0,
+     "777": 0,
+     "8191": 0
+    },
+    "range": 0.0
+   },
+   "skillsLearned": {
+    "identical_across_every_seed": false,
+    "max": 3.0,
+    "mean": 0.92,
+    "median": 1.0,
+    "min": 0.0,
+    "per_seed": {
+     "1009": 1,
+     "101": 2,
+     "11": 3,
+     "2027": 1,
+     "233": 0,
+     "29": 0,
+     "3": 0,
+     "404": 1,
+     "4242": 1,
+     "47": 0,
+     "777": 0,
+     "8191": 2
+    },
+    "range": 3.0
+   },
+   "totalAbilityGained": {
+    "identical_across_every_seed": false,
+    "max": 88.8,
+    "mean": 64.98,
+    "median": 58.75,
+    "min": 50.5,
+    "per_seed": {
+     "1009": 81.9,
+     "101": 76.5,
+     "11": 88.8,
+     "2027": 71.5,
+     "233": 53.2,
+     "29": 50.5,
+     "3": 51.9,
+     "404": 63.6,
+     "4242": 53.9,
+     "47": 52.8,
+     "777": 52.7,
+     "8191": 82.5
+    },
+    "range": 38.3
+   },
+   "verifies": {
+    "identical_across_every_seed": true,
+    "max": 0.0,
+    "mean": 0.0,
+    "median": 0.0,
+    "min": 0.0,
+    "per_seed": {
+     "1009": 0,
+     "101": 0,
+     "11": 0,
+     "2027": 0,
+     "233": 0,
+     "29": 0,
+     "3": 0,
+     "404": 0,
+     "4242": 0,
+     "47": 0,
+     "777": 0,
+     "8191": 0
+    },
+    "range": 0.0
+   }
+  },
+  "graph": {
+   "distinctSkillsTouched": {
+    "identical_across_every_seed": false,
+    "max": 8.0,
+    "mean": 7.92,
+    "median": 8.0,
+    "min": 7.0,
+    "per_seed": {
+     "1009": 8,
+     "101": 8,
+     "11": 8,
+     "2027": 8,
+     "233": 7,
+     "29": 8,
+     "3": 8,
+     "404": 8,
+     "4242": 8,
+     "47": 8,
+     "777": 8,
+     "8191": 8
+    },
+    "range": 1.0
+   },
+   "prereqViolationPct": {
+    "identical_across_every_seed": false,
+    "max": 27.1,
+    "mean": 7.75,
+    "median": 3.1,
+    "min": 0.0,
+    "per_seed": {
+     "1009": 0,
+     "101": 9.5,
+     "11": 2.9,
+     "2027": 3.1,
+     "233": 0,
+     "29": 18.3,
+     "3": 3.1,
+     "404": 4,
+     "4242": 2.6,
+     "47": 22.4,
+     "777": 0,
+     "8191": 27.1
+    },
+    "range": 27.1
+   },
+   "remediations": {
+    "identical_across_every_seed": false,
+    "max": 28.0,
+    "mean": 26.0,
+    "median": 26.0,
+    "min": 22.0,
+    "per_seed": {
+     "1009": 25,
+     "101": 27,
+     "11": 26,
+     "2027": 26,
+     "233": 28,
+     "29": 25,
+     "3": 26,
+     "404": 28,
+     "4242": 28,
+     "47": 26,
+     "777": 22,
+     "8191": 25
+    },
+    "range": 6.0
+   },
+   "retentionAt30d": {
+    "identical_across_every_seed": false,
+    "max": 0.802,
+    "mean": 0.75,
+    "median": 0.7705,
+    "min": 0.647,
+    "per_seed": {
+     "1009": 0.709,
+     "101": 0.67,
+     "11": 0.772,
+     "2027": 0.786,
+     "233": 0.802,
+     "29": 0.765,
+     "3": 0.793,
+     "404": 0.769,
+     "4242": 0.797,
+     "47": 0.788,
+     "777": 0.647,
+     "8191": 0.701
+    },
+    "range": 0.155
+   },
+   "reviews": {
+    "identical_across_every_seed": false,
+    "max": 22.0,
+    "mean": 13.75,
+    "median": 14.0,
+    "min": 2.0,
+    "per_seed": {
+     "1009": 8,
+     "101": 14,
+     "11": 15,
+     "2027": 13,
+     "233": 17,
+     "29": 8,
+     "3": 19,
+     "404": 14,
+     "4242": 22,
+     "47": 14,
+     "777": 19,
+     "8191": 2
+    },
+    "range": 20.0
+   },
+   "skillsGated": {
+    "identical_across_every_seed": false,
+    "max": 5.0,
+    "mean": 3.67,
+    "median": 4.0,
+    "min": 2.0,
+    "per_seed": {
+     "1009": 3,
+     "101": 4,
+     "11": 4,
+     "2027": 4,
+     "233": 3,
+     "29": 3,
+     "3": 5,
+     "404": 4,
+     "4242": 5,
+     "47": 4,
+     "777": 2,
+     "8191": 3
+    },
+    "range": 3.0
+   },
+   "skillsLearned": {
+    "identical_across_every_seed": false,
+    "max": 8.0,
+    "mean": 6.67,
+    "median": 7.0,
+    "min": 6.0,
+    "per_seed": {
+     "1009": 7,
+     "101": 6,
+     "11": 6,
+     "2027": 6,
+     "233": 7,
+     "29": 7,
+     "3": 7,
+     "404": 6,
+     "4242": 7,
+     "47": 6,
+     "777": 8,
+     "8191": 7
+    },
+    "range": 2.0
+   },
+   "totalAbilityGained": {
+    "identical_across_every_seed": false,
+    "max": 189.9,
+    "mean": 173.8,
+    "median": 179.85,
+    "min": 148.8,
+    "per_seed": {
+     "1009": 189.1,
+     "101": 162.8,
+     "11": 186.9,
+     "2027": 189.9,
+     "233": 186.3,
+     "29": 152.2,
+     "3": 178.1,
+     "404": 176.2,
+     "4242": 181.6,
+     "47": 148.8,
+     "777": 182.5,
+     "8191": 151.2
+    },
+    "range": 41.1
+   },
+   "verifies": {
+    "identical_across_every_seed": false,
+    "max": 30.0,
+    "mean": 22.33,
+    "median": 22.0,
+    "min": 15.0,
+    "per_seed": {
+     "1009": 20,
+     "101": 24,
+     "11": 21,
+     "2027": 25,
+     "233": 19,
+     "29": 19,
+     "3": 27,
+     "404": 24,
+     "4242": 30,
+     "47": 23,
+     "777": 15,
+     "8191": 21
+    },
+    "range": 15.0
+   }
+  }
+ },
+ "strategies": [
+  "graph",
+  "blocked",
+  "flat"
+ ],
+ "subject": {
+  "exports_used": [
+   "run",
+   "runAll"
+  ],
+  "parameters": {
+   "attempts": 420,
+   "learned_threshold_points_above_baseline": 6,
+   "per_day": 6,
+   "retention_probe_days": 30,
+   "session_len": 25
+  },
+  "parameters_read_from": "the constants in control/sim_curriculum.mjs, matched out of the source at build time and never retyped",
+  "path": "control/sim_curriculum.mjs",
+  "prng": "mulberry32, seeded per run",
+  "sha256": "88e1ba786ebc506ded4337c393e96fa11635dc697eaa123ebe47bf37d3244ba9",
+  "skill_ladder": "pack/registry/skills.json",
+  "skill_ladder_tier": "AUTHORED",
+  "skills_in_union": 33,
+  "spec": "ACP-15",
+  "strategies": {
+   "blocked": "the traditional curriculum: prerequisite order, one skill worked to mastery before the next",
+   "flat": "any unmastered skill at random, prerequisites ignored (the control)",
+   "graph": "the ACP-05 sequencer: readiness, leverage, review, interleaving, wheel-spin diagnosis"
+  },
+  "union": "welders"
+ }
+}
