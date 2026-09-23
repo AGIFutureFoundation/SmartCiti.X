@@ -345,7 +345,11 @@ def quote(rel, start, end):
     if j < 0:
         raise LookupError(f'{rel}: cannot find the closing anchor {end!r} after {start!r}')
     run = text[i:j + len(end)]
-    run = re.sub(r'\n\s*(?:\*|//)\s?', ' ', run)
+    # a doc comment's `*` gutter and a line comment's `//` are the comment's
+    # shape, not the sentence's. Anchored at the start of every line, not
+    # after a newline: a bare `//` line between two prose lines otherwise
+    # left its marker behind in the middle of the quotation.
+    run = re.sub(r'(?m)^[ \t]*(?:\*|//)[ \t]?', ' ', run)
     return re.sub(r'\s+', ' ', run).strip()
 
 
@@ -1218,7 +1222,13 @@ function paintLadder(R) {
     box.appendChild(t2);
     const t3 = svgEl('text', { x: cx(nd.ti) + 9, y: cy(nd.si) + 43, class: 'cgate' });
     t3.textContent = gt.pass ? 'gate passed'
-      : (nd.seats.length ? 'no gate · seat: ' + nd.seats.join(', ') : 'no gate · no seat');
+      /* the box is a fixed width, so the label names the first seat and
+         counts the rest rather than running off the end of it into the
+         next column */
+      : !nd.seats.length ? 'no gate · no seat'
+      : nd.seats.length === 1 ? 'no gate · seat: ' + nd.seats[0]
+      : 'no gate · ' + nd.seats.length + ' seats: ' + nd.seats[0]
+        + ' +' + (nd.seats.length - 1);
     box.appendChild(t3);
     box.appendChild(svgEl('title', {})).textContent = nd.label;
     g.appendChild(box);
@@ -1231,8 +1241,7 @@ function paintLadder(R) {
     ['edges', nEdges, 'prerequisite edges between them'],
     ['attempted', nAttempted, 'cells you have actually attempted'],
     ['touched', nTouched,
-     'cells the graph has moved at all \u2014 those, plus the neighbours one hop away that '
-     + 'propagated credit reached. Propagated credit moves \u03b8 and never counts toward a gate'],
+     'cells the graph has moved: those, plus their neighbours one hop away'],
     ['ready', nReady, 'cells whose prerequisites are met'],
     ['gates', svg.querySelectorAll('[data-gate-pass="true"]').length, 'skill gates passed'],
   ];
@@ -1756,7 +1765,9 @@ footer.page a{{margin-inline-end:10px}}
   <div class="gridwrap"><svg id="ladder" role="img"
     aria-label="this hall's skills by strand and tier, with your position on each"></svg></div>
   <div class="figs" id="laddersum"></div>
-  <p class="muted">{E(GRAPH_RULE)}</p>
+  <p class="muted">A cell counts as <i>touched</i> when the graph moved it at all &mdash; the cells
+     you attempted, plus their neighbours one hop away that propagated credit reached.
+     {E(GRAPH_RULE)}</p>
 </section>
 
 <section>

@@ -25,7 +25,7 @@
   "app_renderers_scanned": 15,
   "doc_renderers_scanned": 3,
   "builders_scanned": 31,
-  "suites_scanned": 45,
+  "suites_scanned": 46,
   "declared_unbuilt": 7,
   "declared_unbuilt_by_their_own_words": 1,
   "declared_unbuilt_not_drawn": 6,
@@ -38,13 +38,13 @@
   "budget_views": 3,
   "budget_currencies": 2,
   "budget_agreements": 7,
-  "suites_run": 50,
-  "suite_checks_declared": 2284,
+  "suites_run": 51,
+  "suite_checks_declared": 2301,
   "open_questions": 12,
   "negative_findings": 9,
   "cross_checks": 2,
   "cross_checks_disagreeing": 0,
-  "files_read": 163
+  "files_read": 164
  },
  "tiers": [
   "MEASURED-IN-BROWSER",
@@ -1568,7 +1568,8 @@
     "evals/build.py"
    ],
    "suites": [
-    "evals/test.mjs"
+    "evals/test.mjs",
+    "web/test_progress.mjs"
    ],
    "own_pack": [
     "auth/build.py",
@@ -1790,7 +1791,8 @@
     "lessons/test.mjs",
     "respond/test.mjs",
     "unions/verify.mjs",
-    "web/test_ladder.mjs"
+    "web/test_ladder.mjs",
+    "web/test_progress.mjs"
    ],
    "own_pack": [
     "pack/build.py",
@@ -1838,7 +1840,8 @@
     "sims/test.mjs",
     "stations/test.mjs",
     "tools/test.mjs",
-    "web/test_ladder.mjs"
+    "web/test_ladder.mjs",
+    "web/test_progress.mjs"
    ],
    "own_pack": [
     "pack/build.py",
@@ -2018,7 +2021,8 @@
     "spatial/test.mjs",
     "training/test.mjs",
     "web/test_3d.mjs",
-    "web/test_ladder.mjs"
+    "web/test_ladder.mjs",
+    "web/test_progress.mjs"
    ],
    "own_pack": [
     "sims/build.py",
@@ -2198,7 +2202,8 @@
    "suites": [
     "auth/test.mjs",
     "guide/test.mjs",
-    "lessons/test.mjs"
+    "lessons/test.mjs",
+    "web/test_progress.mjs"
    ],
    "own_pack": [
     "training/build.py",
@@ -2487,6 +2492,7 @@
    "venue/test.mjs",
    "web/test_3d.mjs",
    "web/test_ladder.mjs",
+   "web/test_progress.mjs",
    "web/test_rtl.mjs",
    "world/test.mjs",
    "xr/test.mjs"
@@ -3252,6 +3258,13 @@
     "in_readme_table": true
    },
    {
+    "suite": "web/test_progress.mjs",
+    "pack": "web",
+    "readme_checks": 17,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
     "suite": "web/test_ladder.mjs",
     "pack": "web",
     "readme_checks": 27,
@@ -3273,18 +3286,18 @@
     "in_readme_table": true
    }
   ],
-  "suites_run": 50,
-  "suites_declaring_a_count": 49,
+  "suites_run": 51,
+  "suites_declaring_a_count": 50,
   "suites_without_a_count": [
    "control/soak.mjs"
   ],
-  "declared_total": 2284,
-  "readme_headline": 2295,
+  "declared_total": 2301,
+  "readme_headline": 2312,
   "unaccounted_for": 11,
   "unaccounted_note": "the headline counts every `  ok ` line verify_all.sh sees, which includes suites the README table gives no number to and web/test_interiors.py, which the table does not list at all. The difference is that remainder and is computed, not reconciled by hand.",
   "min": 9,
   "max": 286,
-  "median": 36,
+  "median": 35.5,
   "thinnest": [
    {
     "suite": "ops/fuzz.mjs",
@@ -3687,6 +3700,7 @@
   "web/interiors.py",
   "web/test_3d.mjs",
   "web/test_ladder.mjs",
+  "web/test_progress.mjs",
   "web/test_rtl.mjs",
   "wiki/build_wiki.py",
   "world/build.py",

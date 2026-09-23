@@ -118,7 +118,7 @@ footer.page a{margin-inline-end:10px}
      <code>tc-training</code> holds on this device, so you can see what it would do.
      <b>It changes nothing and it certifies nobody.</b></p>
   <ul><li><b>there is no server behind this</b>This bundle is static HTML generated from registries and served from a file or from GitHub Pages. There is no server, no session, no account and no database anywhere in it. Every consequence below follows from that one fact.</li><li><b>whose record this is</b>A local identity names whose training record this is, on this device. It is not a login. Anyone holding the device can type any name or edit the stored record directly. The page says this next to the field, not in a footnote.</li><li><b>where the record lives</b>this browser only - localStorage, wrapped so a blocked store never breaks the page, exactly like tc-progress</li><li><b>how coarse the record is</b>episode-level by default: the scenario and control scheme a run was attempted under, and how it ended. With TRACE on, also a coarse (~1 Hz) gauge trace across the run - still not a per-tick physics or joint trajectory; see TRACE below</li><li><b>what a run is scored against</b>deterministic: every rubric axis is computed from measured state; nothing narrative can change a score</li><li><b>what the seat is</b>schematic physics for practising control discipline - smooth inputs, swing management, ordered procedure. Not equipment certification; no seat time here counts toward one, and the assessment gates still demand unaided verification runs.</li><li><b>what the lesson content is</b>lesson content is unverified general practice pending authoring by journey-level practitioners</li></ul>
-  <p class="muted">The control plane has no LLM in it, deliberately. Every number here is arithmetic. That is what makes a dial decision auditable, sub-millisecond, and testable — and it is why the mentor agents are read-only consumers of dial state rather than participants in it.</p>
+  <p class="muted">*The control plane has no LLM in it, deliberately. Every number here is arithmetic. That is what makes a dial decision auditable, sub-millisecond, and testable — and it is why the mentor agents are read-only consumers of dial state rather than participants in it.</p>
 </section>
 
 <section class="figs"><div class="fig" data-fig="control-lines"><b>1,198</b><span>lines of control plane this page runs, across 6 modules</span></div><div class="fig" data-fig="control-checks"><b>56</b><span>checks those modules pass in this repo</span></div><div class="fig" data-fig="app-hits"><b>0</b><span>times web/build_3d.py names any of them</span></div><div class="fig" data-fig="cells"><b>33</b><span>cells on one hall&#x27;s ladder</span></div><div class="fig" data-fig="halls"><b>111</b><span>halls the ladder is drawn for</span></div><div class="fig" data-fig="sims"><b>11</b><span>simulator seats that can write a record</span></div><div class="fig" data-fig="unbound-halls"><b>66</b><span>halls with no seat, and so no way to record anything</span></div></section>
@@ -177,7 +177,9 @@ footer.page a{margin-inline-end:10px}
   <div class="gridwrap"><svg id="ladder" role="img"
     aria-label="this hall's skills by strand and tier, with your position on each"></svg></div>
   <div class="figs" id="laddersum"></div>
-  <p class="muted">Governing rule — INDIRECT EVIDENCE IS NEVER DIRECT EVIDENCE. Propagated credit moves theta but barely moves sigma, and never counts toward a gate. A learner is certified on what they demonstrated, not on what was inferred about them.</p>
+  <p class="muted">A cell counts as <i>touched</i> when the graph moved it at all &mdash; the cells
+     you attempted, plus their neighbours one hop away that propagated credit reached.
+     Governing rule — INDIRECT EVIDENCE IS NEVER DIRECT EVIDENCE. Propagated credit moves theta but barely moves sigma, and never counts toward a gate. A learner is certified on what they demonstrated, not on what was inferred about them.</p>
 </section>
 
 <section>
@@ -214,7 +216,7 @@ footer.page a{margin-inline-end:10px}
   <p class="why">The rule that shapes everything here: BKT alone never certifies. A posterior is a belief; a gate needs demonstrated, unaided performance at or above the learner&#x27;s own level. Propagated graph credit (ACP-15) explicitly does not count — a learner is certified on what they showed, not what was inferred.</p>
   <div class="tscroll"><table><tbody id="gatetbl"></tbody></table></div>
   <div id="gatesum"></div>
-  <p class="muted">Count QUALIFYING attempts only — unaided, served at gate difficulty. // Two rules, both learned the hard way in curriculum simulation: // 1. Ordinary practice sits at the band centre by design and can never qualify, so a practice item landing between two verifications must not break the streak. Practice does not invalidate proof; a failed demonstration does. 2. Qualification is stamped AT SERVE TIME (`h.gate_qualifying`), never recomputed against current theta. Recomputing meant that as a learner improved, theta rose and their own past demonstrations retroactively stopped counting — improvement disqualified the evidence for it, and nothing ever certified.</p>
+  <p class="muted">Count QUALIFYING attempts only — unaided, served at gate difficulty. Two rules, both learned the hard way in curriculum simulation: 1. Ordinary practice sits at the band centre by design and can never qualify, so a practice item landing between two verifications must not break the streak. Practice does not invalidate proof; a failed demonstration does. 2. Qualification is stamped AT SERVE TIME (`h.gate_qualifying`), never recomputed against current theta. Recomputing meant that as a learner improved, theta rose and their own past demonstrations retroactively stopped counting — improvement disqualified the evidence for it, and nothing ever certified.</p>
   <p class="why">Certification requires all three tiers — no shortcuts. <code>control/gates.mjs</code> writes it as:</p>
   <pre data-quote="certified" data-source="control/gates.mjs">return skillGates.every((g) =&gt; g.pass) &amp;&amp; levelTest?.pass === true &amp;&amp; jobsiteFinal?.pass === true;</pre>
   <div class="card" id="certline"></div>
@@ -2013,7 +2015,13 @@ function paintLadder(R) {
     box.appendChild(t2);
     const t3 = svgEl('text', { x: cx(nd.ti) + 9, y: cy(nd.si) + 43, class: 'cgate' });
     t3.textContent = gt.pass ? 'gate passed'
-      : (nd.seats.length ? 'no gate · seat: ' + nd.seats.join(', ') : 'no gate · no seat');
+      /* the box is a fixed width, so the label names the first seat and
+         counts the rest rather than running off the end of it into the
+         next column */
+      : !nd.seats.length ? 'no gate · no seat'
+      : nd.seats.length === 1 ? 'no gate · seat: ' + nd.seats[0]
+      : 'no gate · ' + nd.seats.length + ' seats: ' + nd.seats[0]
+        + ' +' + (nd.seats.length - 1);
     box.appendChild(t3);
     box.appendChild(svgEl('title', {})).textContent = nd.label;
     g.appendChild(box);
@@ -2026,8 +2034,7 @@ function paintLadder(R) {
     ['edges', nEdges, 'prerequisite edges between them'],
     ['attempted', nAttempted, 'cells you have actually attempted'],
     ['touched', nTouched,
-     'cells the graph has moved at all \u2014 those, plus the neighbours one hop away that '
-     + 'propagated credit reached. Propagated credit moves \u03b8 and never counts toward a gate'],
+     'cells the graph has moved: those, plus their neighbours one hop away'],
     ['ready', nReady, 'cells whose prerequisites are met'],
     ['gates', svg.querySelectorAll('[data-gate-pass="true"]').length, 'skill gates passed'],
   ];
