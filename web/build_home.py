@@ -280,6 +280,90 @@ def seat_strip(w=1040, h=96):
             + ''.join(out) + '</svg>')
 
 
+def esc(t):
+    return (' '.join(str(t).split())
+            .replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;'))
+
+
+def need(node, key, where):
+    """Read one registry field, or stop the build naming the path.
+
+    The front door prints a seat's task line and its rubric thresholds. A
+    `??` or a `.get(key, '')` here would put a blank where a threshold
+    belongs and ship it, which is worse than not shipping: a reader would
+    take the silence for "no limit". A default is a policy decision, and
+    the policy for a registry that has lost a field is to refuse the page
+    and say which field, in the path the reader has to go and open.
+    """
+    if not isinstance(node, dict) or key not in node:
+        raise KeyError(f'sims/registry/sims.json: {where}.{key} is missing, '
+                       'and the front door prints it - read it or remove the '
+                       'entry; there is no default for it')
+    return node[key]
+
+
+# ------------------------------------------------------------- the seats ---
+# One row per operable seat, read from the registry that owns them. Nothing
+# below is typed: not the count, not a name, not a task line, not a control
+# and not a threshold. The deep link is the seat's own slug, which is the
+# key the registry files it under and the value the walkable world
+# validates `?sim=` against - so a seat cannot be listed here under a name
+# that page would refuse.
+SEAT_ROWS = []
+for _slug in sims['sims']:
+    _s = sims['sims'][_slug]
+    _w = f'sims.{_slug}'
+    SEAT_ROWS.append({
+        'slug': _slug,
+        'name': need(_s, 'name', _w),
+        'kind': need(_s, 'kind', _w),
+        'tier': need(_s, 'skill_tier', _w),
+        'task': need(_s, 'task', _w),
+        'controls': [(need(c, 'keys', _w + '.controls'),
+                      need(c, 'action', _w + '.controls'))
+                     for c in need(_s, 'controls', _w)],
+        'rubric': [(need(r, 'axis', _w + '.rubric'),
+                    need(r, 'measure', _w + '.rubric'),
+                    need(r, 'pass', _w + '.rubric'))
+                   for r in need(_s, 'rubric', _w)],
+    })
+assert len(SEAT_ROWS) == SEATS, 'the seat index and the seat count disagree'
+# The honesty line the seats themselves carry, printed with them rather
+# than paraphrased here - the limit in the same breath as the capability.
+SEAT_HONESTY = need(need(sims, 'honesty', 'root'), 'status', 'honesty')
+
+
+# The seats named in prose. This clause used to type all of them out by
+# hand - a second copy of eleven names that no build could have corrected -
+# so it is read now, in the registry's own order, with the last one joined
+# by "and" the way a sentence wants it.
+_names = [esc(r['name']) for r in SEAT_ROWS]
+SEAT_LIST = ', '.join(_names[:-1]) + ' and ' + _names[-1]
+
+
+def seat_index():
+    """The deep-link index: every seat, what it asks, and what it measures."""
+    out = []
+    for r in SEAT_ROWS:
+        ctl = ' \u00b7 '.join(f'<kbd>{esc(k)}</kbd> {esc(a)}'
+                               for k, a in r['controls'])
+        axes = ''.join(
+            f'<li><b>{esc(ax)}</b> {esc(me)} '
+            f'<span class="pass">pass {esc(pa)}</span></li>'
+            for ax, me, pa in r['rubric'])
+        out.append(
+            f'<li class="seat-row" id="seat-{r["slug"]}">'
+            f'<div class="seat-head">'
+            f'<a class="seat-open" href="web/trade_craft_3d.html?sim={r["slug"]}">'
+            f'\u25b6 {esc(r["name"])}</a>'
+            f'<span class="seat-kind">{esc(r["kind"])} \u00b7 {esc(r["tier"])}'
+            f' \u00b7 <code>{esc(r["slug"])}</code></span></div>'
+            f'<p class="seat-task">{esc(r["task"])}</p>'
+            f'<p class="seat-ctl">{ctl}</p>'
+            f'<ul class="axes">{axes}</ul></li>')
+    return f'<ul class="seats">{"".join(out)}</ul>'
+
+
 def n(x):
     return f'{x:,}'
 
@@ -298,10 +382,9 @@ CARDS = [
         different regional surfaces - a former naval station's bleached
         apron, delta crushed shell, rail ballast, mill slag - and your
         footsteps take their sound from whatever the registry says is under
-        you. {n(SEATS)} operable training seats stand in the yard: a tower
-        crane, an excavator, a forklift, a weld bench, a scaffold bay, a
-        signal call, a load chart, a pressure washer, an airless sprayer, a
-        boom lift and an overhead crane.""",
+        you. {n(SEATS)} operable training seats stand in the yard, and
+        the index below links straight into each one:
+        {SEAT_LIST}.""",
      'limit': """The physics is schematic - the shape of a hydraulic drive,
         not any machine's response curve - and nothing here is equipment
         certification."""},
@@ -433,6 +516,33 @@ a.card .limit{margin-top:12px;padding-top:10px;border-top:1px dashed var(--rule)
 a.card .limit b2{display:none}
 .limit-tag{color:var(--dim);font:600 11px "IBM Plex Mono",monospace;
   letter-spacing:1px;text-transform:uppercase;display:block;margin-bottom:3px}
+/* the seat index: one card per operable seat, its task, its controls and
+   the axes it is scored on. Two columns where there is room, one where
+   there is not - a phone gets the whole of every entry, not a truncated
+   one, because the thresholds are the part worth reading. */
+.seats{list-style:none;margin:0;padding:0;display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px}
+.seat-row{background:var(--sunk);border:1px solid var(--rule);
+  border-radius:10px;padding:15px 17px}
+.seat-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px}
+.seat-open{font:600 16.5px/1.3 "IBM Plex Sans",system-ui,sans-serif;
+  color:var(--mark);text-decoration:none}
+.seat-open:hover,.seat-open:focus{text-decoration:underline}
+.seat-kind{color:var(--dim);font:11.5px "IBM Plex Mono",monospace;
+  letter-spacing:.4px}
+.seat-kind code{color:var(--dim)}
+.seat-task{margin:9px 0 0;color:var(--ink);font-size:14px}
+.seat-ctl{margin:9px 0 0;color:var(--muted);font-size:13px}
+.seat-ctl kbd{background:var(--panel);border:1px solid var(--rule);
+  border-radius:4px;padding:1px 5px;font:11.5px "IBM Plex Mono",monospace;
+  color:var(--ink)}
+.axes{list-style:none;margin:11px 0 0;padding:11px 0 0;
+  border-top:1px solid var(--rule)}
+.axes li{color:var(--muted);font-size:12.5px;margin:0 0 5px}
+.axes b{color:var(--ink);font:600 12.5px "IBM Plex Mono",monospace;
+  margin-right:6px}
+.axes .pass{color:var(--steel);font:12px "IBM Plex Mono",monospace;
+  white-space:nowrap}
 .prov{display:grid;grid-template-columns:repeat(auto-fit,minmax(196px,1fr));gap:14px}
 .pv{background:var(--sunk);border:1px solid var(--rule);border-radius:10px;padding:14px 16px}
 .pv b{display:block;font:600 13px "IBM Plex Mono",monospace;letter-spacing:1px;
@@ -496,11 +606,6 @@ footer p{color:var(--dim);font-size:13px;max-width:82ch;margin:0 0 10px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}
   html{scroll-behavior:auto}}
 """
-
-
-def esc(t):
-    return (' '.join(str(t).split())
-            .replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;'))
 
 
 def card(c):
@@ -606,6 +711,15 @@ BODY = f"""<body>
     you can read.</p>
   {seat_strip()}
 </section>
+<section id="seats">
+  <h2>Every seat, and the way in</h2>
+  <p class="lede">One link per seat, straight into the machine rather than
+    into the front of the world. Each says what it asks of you and what it
+    measures you against, because the rubric is the whole of the judgement:
+    every axis below is computed from measured state, and nothing you say
+    about a run can move it. {esc(SEAT_HONESTY)}</p>
+  {seat_index()}
+</section>
 <section>
   <h2>Where to start</h2>
   <p class="lede">{n(len(CARDS))} surfaces, each built from the same
@@ -698,6 +812,20 @@ def _figures_in(html):
     return {int(m.replace(',', ''))
             for m in found if len(m.replace(',', '')) > 1}
 
+
+# The seat index prints the registry's own rubric thresholds - `>= 90`,
+# `>= 95` and the rest - and those are figures too. They are admitted by
+# READING THEM BACK out of the very rows the entries were rendered from,
+# never by listing them here: retune a threshold in sims.json and the gate
+# moves with it, while a threshold typed into this file would still be
+# caught. The read is scoped to the exact fields the section renders, so
+# this stays a gate rather than a hole.
+_DERIVED |= {f for r in SEAT_ROWS
+             for txt in ([r['name'], r['kind'], r['tier'], r['task']]
+                         + [x for c in r['controls'] for x in c]
+                         + [x for a in r['rubric'] for x in a])
+             for f in _figures_in(txt)}
+_DERIVED |= _figures_in(SEAT_HONESTY)
 
 _loose = _figures_in(BODY) - _DERIVED
 assert not _loose, (

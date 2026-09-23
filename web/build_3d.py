@@ -6870,6 +6870,18 @@ D.avatars.tradeapes.apes = D.avatars.tradeapes.apes.map((a) => ({
 const params = new URLSearchParams(location.search);
 let loc = D.i18n[params.get('lang')] ? params.get('lang') : 'en';
 let slug = D.halls.some(h => h.slug === params.get('hall')) ? params.get('hall') : 'bricklayers';
+/* ?sim=<slug> - a deep link straight into one training seat, so the front
+   door can link to a machine rather than to the door of the world.
+   Validated against the registry exactly the way `hall` is validated
+   against D.halls, and for the same reason: a URL is typed by hand and a
+   typo must not be guessed at. An unknown seat name opens NO seat - the
+   world stands up as it otherwise would - rather than throwing, and rather
+   than quietly seating the learner in a different machine than the one the
+   link named. There is no default seat here on purpose: a default is a
+   policy decision, and the policy for an unreadable link is to open
+   nothing. */
+const simDeep = Object.keys(D.sims.sims).includes(params.get('sim'))
+  ? params.get('sim') : null;
 let view = 'region';
 const t = (k) => D.i18n[loc].strings[k] ?? D.i18n.en.strings[k] ?? k;
 const U = 3;                       // metres per grid unit
@@ -13678,6 +13690,32 @@ renderChrome();
 if (D.halls.some(h => h.slug === params.get('hall'))) showHall(params.get('hall'));
 else if (D.campuses[params.get('campus')]) showCampus(params.get('campus'));
 else showRegion();
+/* ...and then, if the link named a seat, take it. This runs AFTER the view
+   above so the seat opens onto a world that is already standing: startSim()
+   hides whichever group that call built and reads campusKey for the
+   scenario, both of which only exist once one of the three has run.
+
+   Opening a seat REQUIRES being in a hall that teaches it. startSim()
+   records the run against `slug`, so a seat entered from the region board
+   would be recorded against whatever hall the URL happened to leave behind
+   - which is why enterSeatFromYard() sets `slug` before it starts a seat
+   and why the test hook does the same. This drives that transition itself,
+   through the one door the rest of the app uses: showHall() to the first
+   hall the registry says teaches this seat, and then startSim(), the same
+   opener the hall's own seat chooser calls. No second way in. */
+if (simDeep) queueMicrotask(() => {
+  /* Deferred one microtask, and not for tidiness: this block sits about
+     six hundred lines above where `xrWalk` is declared, and startSim()
+     reads it on its first line. Called inline it threw
+     `Cannot access 'xrWalk' before initialization` in a real browser - the
+     scene stood up, the hall opened, and the seat silently did not. The
+     module body is synchronous, so a microtask is the first moment every
+     module-level binding below here is initialized: the world is standing
+     AND the seat's own dependencies exist. */
+  const simDef = D.sims.sims[simDeep];
+  if (!simDef.halls.includes(slug)) showHall(simDef.halls[0]);
+  startSim(simDeep, null);
+});
 // test hooks: state for assertions, and the two panel openers the toolroom
 // harness drives (module scope hides them from the page's own globals)
 // The scene graph itself. renderer.info counts what was DRAWN, which is

@@ -21,15 +21,15 @@
   "measured_elsewhere": 51,
   "computed_from_registry": 12,
   "measured_source_files": 11,
-  "registries_scanned": 38,
-  "app_renderers_scanned": 11,
+  "registries_scanned": 39,
+  "app_renderers_scanned": 13,
   "doc_renderers_scanned": 3,
-  "builders_scanned": 28,
-  "suites_scanned": 41,
-  "declared_unbuilt": 8,
+  "builders_scanned": 29,
+  "suites_scanned": 42,
+  "declared_unbuilt": 7,
   "declared_unbuilt_by_their_own_words": 1,
-  "declared_unbuilt_not_drawn": 7,
-  "declared_unbuilt_documented_but_not_drawn": 5,
+  "declared_unbuilt_not_drawn": 6,
+  "declared_unbuilt_documented_but_not_drawn": 4,
   "declared_unbuilt_read_by_nothing": 2,
   "gaps": 17,
   "gaps_open": 16,
@@ -39,12 +39,12 @@
   "budget_currencies": 2,
   "budget_agreements": 7,
   "suites_run": 46,
-  "suite_checks_declared": 2031,
+  "suite_checks_declared": 2045,
   "open_questions": 12,
   "negative_findings": 9,
   "cross_checks": 2,
   "cross_checks_disagreeing": 0,
-  "files_read": 149
+  "files_read": 154
  },
  "tiers": [
   "MEASURED-IN-BROWSER",
@@ -1373,26 +1373,6 @@
  ],
  "declared_unbuilt": [
   {
-   "registry": "lessons/registry/lessons.json",
-   "pack": "lessons",
-   "reasons": [
-    "no page generator under web/ names this path, so nothing a learner opens reads it",
-    "it is DOCUMENTED but not drawn: wiki/build_wiki.py renders a description of it"
-   ],
-   "says": null,
-   "read_by_app_renderers": [],
-   "read_by_doc_renderers": [
-    "wiki/build_wiki.py"
-   ],
-   "read_by_builders": [],
-   "read_by_suites": [],
-   "read_by_its_own_pack": [
-    "lessons/build.py",
-    "lessons/test.mjs"
-   ],
-   "drops_off_when": "a page generator under web/ opens this path, or the pack removes its own honesty.not_built_yet - either one, on the next build of rnd/, with no edit here"
-  },
-  {
    "registry": "pack/registry/library.json",
    "pack": "pack",
    "reasons": [
@@ -1595,6 +1575,18 @@
     "agents/test.mjs"
    ]
   },
+  "auth/registry/auth.json": {
+   "app_renderers": [
+    "web/build_auth.py"
+   ],
+   "doc_renderers": [],
+   "builders": [],
+   "suites": [],
+   "own_pack": [
+    "auth/build.py",
+    "auth/test.mjs"
+   ]
+  },
   "avatars/registry/avatars.json": {
    "app_renderers": [
     "web/build_3d.py",
@@ -1716,7 +1708,9 @@
    ]
   },
   "lessons/registry/lessons.json": {
-   "app_renderers": [],
+   "app_renderers": [
+    "web/build_lessons.py"
+   ],
    "doc_renderers": [
     "wiki/build_wiki.py"
    ],
@@ -1769,6 +1763,7 @@
    "app_renderers": [
     "web/build_3d.py",
     "web/build_interactive_map.py",
+    "web/build_lessons.py",
     "web/build_map.py"
    ],
    "doc_renderers": [
@@ -2001,7 +1996,8 @@
     "meta/test.mjs",
     "schools/test.mjs",
     "spatial/test.mjs",
-    "training/test.mjs"
+    "training/test.mjs",
+    "web/test_3d.mjs"
    ],
    "own_pack": [
     "sims/build.py",
@@ -2177,6 +2173,7 @@
     "spatial/build.py"
    ],
    "suites": [
+    "auth/test.mjs",
     "guide/test.mjs",
     "lessons/test.mjs"
    ],
@@ -2191,6 +2188,7 @@
     "web/build_home.py",
     "web/build_interactive_map.py",
     "web/build_languages.py",
+    "web/build_lessons.py",
     "web/build_map.py"
    ],
    "doc_renderers": [
@@ -2356,12 +2354,14 @@
  "scanned": {
   "app_renderers": [
    "web/build_3d.py",
+   "web/build_auth.py",
    "web/build_dashboard.py",
    "web/build_geomap.py",
    "web/build_home.py",
    "web/build_interactive_map.py",
    "web/build_landing.py",
    "web/build_languages.py",
+   "web/build_lessons.py",
    "web/build_map.py",
    "web/build_page.py",
    "web/groundtruth.py",
@@ -2374,6 +2374,7 @@
   ],
   "builders": [
    "agents/build.py",
+   "auth/build.py",
    "avatars/build.py",
    "ei/build.py",
    "geo/build.py",
@@ -2404,6 +2405,7 @@
   ],
   "suites": [
    "agents/test.mjs",
+   "auth/test.mjs",
    "avatars/test.mjs",
    "brand/test.mjs",
    "bus/test.mjs",
@@ -3124,7 +3126,7 @@
    {
     "suite": "lessons/test.mjs",
     "pack": "lessons",
-    "readme_checks": 53,
+    "readme_checks": 62,
     "declared": true,
     "in_readme_table": true
    },
@@ -3187,7 +3189,7 @@
    {
     "suite": "web/test_3d.mjs",
     "pack": "web",
-    "readme_checks": 246,
+    "readme_checks": 251,
     "declared": true,
     "in_readme_table": true
    },
@@ -3204,12 +3206,12 @@
   "suites_without_a_count": [
    "control/soak.mjs"
   ],
-  "declared_total": 2031,
-  "readme_headline": 2042,
+  "declared_total": 2045,
+  "readme_headline": 2056,
   "unaccounted_for": 11,
   "unaccounted_note": "the headline counts every `  ok ` line verify_all.sh sees, which includes suites the README table gives no number to and web/test_interiors.py, which the table does not list at all. The difference is that remainder and is computed, not reconciled by hand.",
   "min": 9,
-  "max": 246,
+  "max": 251,
   "median": 35,
   "thinnest": [
    {
@@ -3240,7 +3242,7 @@
   "thickest": [
    {
     "suite": "web/test_3d.mjs",
-    "checks": 246
+    "checks": 251
    },
    {
     "suite": "respond/test.mjs",
@@ -3465,6 +3467,9 @@
   "agents/registry/crews.json",
   "agents/test.mjs",
   "assets/REFERENCE.md",
+  "auth/build.py",
+  "auth/registry/auth.json",
+  "auth/test.mjs",
   "avatars/build.py",
   "avatars/registry/avatars.json",
   "avatars/test.mjs",
@@ -3587,12 +3592,14 @@
   "unions/verify.mjs",
   "verify_all.sh",
   "web/build_3d.py",
+  "web/build_auth.py",
   "web/build_dashboard.py",
   "web/build_geomap.py",
   "web/build_home.py",
   "web/build_interactive_map.py",
   "web/build_landing.py",
   "web/build_languages.py",
+  "web/build_lessons.py",
   "web/build_map.py",
   "web/build_page.py",
   "web/eval_scene.mjs",

@@ -372,6 +372,210 @@ ok('the contract tells the page to READ the names and to record nothing for open
   && /nothing about opening, reading or abandoning a lesson is recorded/i.test(reg.page_contract.episode)
   && /must not invent an episode/.test(reg.page_contract.records));
 
+/* --------------------------------- the page a learner actually opens --- */
+/* This pack sat in `rnd/registry/rnd.json` as declared-and-unbuilt for one
+   computed reason: no page generator under web/ named its path, so nothing
+   a learner could open read a line of it. The wiki described it; nothing
+   drew it. These checks hold the page that closes that to the same standard
+   as the registry: what is on the page must be what the registry holds, all
+   of it, in its order, with the limit beside the capability - because the
+   way this gap opened in the first place was checks that validated data
+   while nothing ever opened a page. */
+const generator = readFileSync(url('../web/build_lessons.py'), 'utf8');
+const PAGE_FILE = fileURLToPath(url('../web/trade_craft_lessons.html'));
+const learnerPage = existsSync(PAGE_FILE) ? readFileSync(PAGE_FILE, 'utf8') : '';
+/* Python's html.escape, which is how every string below reached the page.
+   An encoding, not a second copy of a fact. */
+const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+  .replace(/"/g, '&quot;').replace(/'/g, '&#x27;');
+/* each lesson's own slice of the page, keyed by id */
+const SECTION = (() => {
+  const out = {};
+  const parts = learnerPage.split('<article class="lesson" id="lesson-');
+  for (const p of parts.slice(1)) out[p.slice(0, p.indexOf('"'))] = p;
+  return out;
+})();
+const missingSections = lessons.map(([lid]) => lid).filter((lid) => !(lid in SECTION));
+
+ok((() => {
+  const bad = [];
+  if (!generator.includes('lessons/registry/lessons.json'))
+    bad.push('web/build_lessons.py does not name lessons/registry/lessons.json');
+  if (!generator.includes('trade_craft_lessons.html'))
+    bad.push('web/build_lessons.py does not write trade_craft_lessons.html');
+  if (!learnerPage.length) bad.push('web/trade_craft_lessons.html is missing or empty');
+  if (missingSections.length)
+    bad.push(`no section on the page for ${missingSections.slice(0, 3).join(', ')}`);
+  if (Object.keys(SECTION).length !== reg.counts.lessons)
+    bad.push(`${Object.keys(SECTION).length} lesson sections on the page, `
+      + `${reg.counts.lessons} lessons in the registry`);
+  return 'the registry is opened by a page generator under web/, and that page is built'
+    + (bad.length ? ` — ${bad.join('; ')}` : '');
+})(),
+  generator.includes('lessons/registry/lessons.json')
+  && generator.includes('trade_craft_lessons.html')
+  && learnerPage.length > 0 && missingSections.length === 0
+  && Object.keys(SECTION).length === reg.counts.lessons);
+
+ok((() => {
+  const bad = [];
+  for (const [lid, L] of lessons) {
+    const blocks = (SECTION[lid] || '').split('<li class="step"').slice(1);
+    if (blocks.length !== L.steps.length) {
+      bad.push(`${lid}: registry holds ${L.steps.length} steps, the page renders ${blocks.length}`);
+      continue;
+    }
+    L.steps.forEach((s, i) => {
+      if (!blocks[i].includes(esc(s.do)))
+        bad.push(`${lid} step ${s.n} is not the ${i + 1}${'st'} block on the page: ${s.do.slice(0, 48)}…`);
+    });
+  }
+  return `the page renders every one of the ${reg.counts.steps} steps, each in its own lesson's `
+    + 'section and in the registry\'s order, with none silently dropped'
+    + (bad.length ? ` — ${bad.length} wrong: ${bad.slice(0, 3).join(' | ')}` : '');
+})(), (() => {
+  for (const [lid, L] of lessons) {
+    const blocks = (SECTION[lid] || '').split('<li class="step"').slice(1);
+    if (blocks.length !== L.steps.length) return false;
+    if (!L.steps.every((s, i) => blocks[i].includes(esc(s.do)))) return false;
+  }
+  return true;
+})());
+
+ok((() => {
+  const bad = lessons.filter(([lid, L]) => {
+    const sec = SECTION[lid] || '';
+    return !(sec.includes(esc(L.title)) && sec.includes(esc(L.hall_name))
+      && sec.includes(esc(L.room_label)) && sec.includes(esc(L.why))
+      && sec.includes(esc(L.skill_id)));
+  }).map(([lid]) => lid);
+  return 'every lesson renders its own title, hall name, room label, reason and skill id'
+    + (bad.length ? ` — ${bad.length} incomplete: ${bad.slice(0, 3).join(', ')}` : '');
+})(), lessons.every(([lid, L]) => {
+  const sec = SECTION[lid] || '';
+  return sec.includes(esc(L.title)) && sec.includes(esc(L.hall_name))
+    && sec.includes(esc(L.room_label)) && sec.includes(esc(L.why))
+    && sec.includes(esc(L.skill_id));
+}));
+
+const limitPlaced = ([lid, L]) => {
+  const sec = SECTION[lid] || '';
+  const lim = sec.indexOf(esc(L.limits));
+  const sign = sec.indexOf(esc(reg.honesty.content));
+  const firstStep = sec.indexOf('<li class="step"');
+  return lim !== -1 && sign !== -1 && firstStep !== -1 && lim < firstStep && sign < firstStep;
+};
+ok((() => {
+  const bad = lessons.filter((e) => !limitPlaced(e)).map(([lid]) => lid);
+  return 'every lesson states its limit and its missing practitioner sign-off above its first '
+    + 'step, where the learner reads them, not in a footnote'
+    + (bad.length ? ` — ${bad.length} misplaced or absent: ${bad.slice(0, 3).join(', ')}` : '');
+})(), lessons.every(limitPlaced));
+
+ok((() => {
+  const bad = [];
+  for (const [lid, L] of lessons) {
+    const blocks = (SECTION[lid] || '').split('<li class="step"').slice(1);
+    L.steps.forEach((s, i) => {
+      const b = blocks[i];
+      if (b === undefined) { bad.push(`${lid} step ${s.n}: no block`); return; }
+      const want = s.records === null
+        ? esc(reg.step_kinds[s.kind].why_no_episode)
+        : `writes one ${esc(s.records)} episode`;
+      if (!b.includes(want)) bad.push(`${lid} step ${s.n} (${s.kind}) does not disclose: ${want.slice(0, 44)}…`);
+    });
+  }
+  return 'every step on the page discloses the episode it writes, or the registry\'s own reason '
+    + 'it writes none' + (bad.length ? ` — ${bad.length} silent: ${bad.slice(0, 3).join(' | ')}` : '');
+})(), (() => {
+  for (const [lid, L] of lessons) {
+    const blocks = (SECTION[lid] || '').split('<li class="step"').slice(1);
+    for (let i = 0; i < L.steps.length; i++) {
+      const s = L.steps[i];
+      const want = s.records === null
+        ? esc(reg.step_kinds[s.kind].why_no_episode)
+        : `writes one ${esc(s.records)} episode`;
+      if (blocks[i] === undefined || !blocks[i].includes(want)) return false;
+    }
+  }
+  return true;
+})());
+
+ok((() => {
+  const bad = edges.filter((e) => {
+    const sec = SECTION[e.lesson] || '';
+    return !(sec.includes(`href="#lesson-${e.needs}"`)
+      && sec.includes(esc(reg.lessons[e.needs].title))
+      && sec.includes(esc(reg.ladder.reasons[e.because])));
+  }).map((e) => `${e.lesson} → ${e.needs}`);
+  return `all ${edges.length} ladder edges render as named links to the prerequisite lesson with `
+    + 'the reason shown, and the page disables nothing'
+    + (bad.length ? ` — ${bad.length} unrendered: ${bad.slice(0, 3).join(', ')}` : '');
+})(), edges.every((e) => {
+  const sec = SECTION[e.lesson] || '';
+  return sec.includes(`href="#lesson-${e.needs}"`)
+    && sec.includes(esc(reg.lessons[e.needs].title))
+    && sec.includes(esc(reg.ladder.reasons[e.because]));
+}) && learnerPage.includes(esc(reg.ladder.enforcement))
+  && !/\bdisabled\b/.test(learnerPage) && !/aria-disabled/.test(learnerPage));
+
+ok((() => {
+  const bad = lessons.filter(([lid, L]) =>
+    !(SECTION[lid] || '').includes(`href="trade_craft_3d.html?hall=${L.hall}"`))
+    .map(([lid]) => lid);
+  return 'every lesson links through to the hall it stands in, by that hall\'s own slug'
+    + (bad.length ? ` — ${bad.length} with no way in: ${bad.slice(0, 3).join(', ')}` : '');
+})(), lessons.every(([lid, L]) =>
+  (SECTION[lid] || '').includes(`href="trade_craft_3d.html?hall=${L.hall}"`)));
+
+const STRAY_TIERS = (() => {
+  /* Narrow on purpose. An earlier version of this check read every
+     all-capitals word on the page and fired on two things that are not
+     defects: the registry's own sentence saying AI-SYNTHESIZED belongs to
+     orbis/ and not here, and the trade acronym HVAC. That is the trap
+     web/test_3d.mjs has been bitten by repeatedly - a check that matches
+     the prose QUOTING a string instead of the place the string would do
+     harm - and the answer is to look where a tier is actually rendered AS
+     a tier, not to keep an exception list. The generator emits a tier in
+     exactly one slot: the `data-tier` of a `.prov` chip. Every value in
+     that slot must be one of the five, so AI-SYNTHESIZED in a tier slot,
+     or a misspelled tier, fails while honest prose about either is left
+     alone. `names` is not a tier and has a slot of its own. */
+  const TIERS = ['RECORDED', 'DERIVED', 'SCHEMATIC', 'AUTHORED', 'SCRIPTED'];
+  const slots = [...learnerPage.matchAll(/data-tier="([^"]*)"/g)].map((m) => m[1]);
+  const sources = [...learnerPage.matchAll(/data-source="([^"]*)"/g)].map((m) => m[1]);
+  const bad = [...new Set(slots)].filter((v) => !TIERS.includes(v))
+    .map((v) => `tier slot holds ${v}`);
+  for (const v of new Set(sources)) if (v !== 'READ') bad.push(`names slot holds ${v}`);
+  /* and the slots exist at all: a check that scans nothing passes forever */
+  const wantTiers = lessons.reduce((a, [, L]) =>
+    a + Object.keys(L.provenance).filter((k) => k !== 'names').length, 0);
+  if (slots.length !== wantTiers)
+    bad.push(`${slots.length} tier slots on the page, ${wantTiers} in the registry`);
+  if (sources.length !== lessons.length)
+    bad.push(`${sources.length} names slots on the page, ${lessons.length} lessons`);
+  return bad;
+})();
+ok('every provenance tier rendered as a tier is one of the five, and the names slot says READ'
+  + (STRAY_TIERS.length ? ` — ${STRAY_TIERS.slice(0, 4).join('; ')}` : ''),
+  STRAY_TIERS.length === 0);
+
+const TYPED = (() => {
+  /* Every number a reader can see on the page, against every number the
+     registry holds or that follows from it. A typed count is the defect
+     this bundle lints 238 files for; the page must not be the 239th. */
+  const text = learnerPage.replace(/<script[\s\S]*?<\/script>/g, ' ')
+    .replace(/<style[\s\S]*?<\/style>/g, ' ').replace(/<[^>]*>/g, ' ');
+  const shown = [...new Set([...text.matchAll(/[0-9][0-9,]*/g)].map((m) => m[0].replace(/,/g, '')))];
+  const allowed = new Set([...readFileSync(url('./registry/lessons.json'), 'utf8')
+    .matchAll(/[0-9][0-9,]*/g)].map((m) => m[0].replace(/,/g, '')));
+  for (const ids of Object.values(reg.ladder.layers)) allowed.add(String(ids.length));
+  for (const [, L] of lessons) allowed.add(String(L.steps.length));
+  return shown.filter((x) => !allowed.has(x));
+})();
+ok('every number a reader can see on the page is one the registry holds or one derived from it'
+  + (TYPED.length ? ` — typed: ${TYPED.slice(0, 6).join(', ')}` : ''), TYPED.length === 0);
+
 /* -------------------------------------------------------------- the counts --- */
 ok('the counts the registry publishes are the counts it actually holds',
   reg.counts.lessons === lessons.length
