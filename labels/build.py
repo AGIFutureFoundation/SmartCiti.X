@@ -328,6 +328,88 @@ FOCUS = {
                   'where there is no cursor to have.',
 }
 
+# ------------------------------------------- when two signs land together ---
+# The focus rule above scores every sign ON ITS OWN. It can tell you how
+# centred a sign is and how far off it stands; it cannot tell you that two
+# signs have landed on the same pixels, because it never compares a pair.
+#
+# They do land on the same pixels, and it was not a near miss. Measured in
+# a browser at 1280x800 through the page's own rectangle hook, the default
+# hall view put twenty-two signs on screen and fifteen PAIRS of them
+# overlapped, five of those covering more than half of the smaller plate:
+# the Classroom plate, three training-ladder plates and seven advisor
+# bubbles piled into stacks you could not read a word of. The region board
+# was worse - a hundred and twenty-five signs and four hundred and
+# eighty-eight overlapping pairs.
+#
+# The cause is arithmetic, not carelessness. `screen.min_frac` promises
+# that a sign never shrinks below a readable band of the viewport, so at a
+# distance EVERY sign is drawn at the same minimum height. Signs a metre
+# apart in the world are then a few pixels apart on screen while each is
+# tens of pixels tall, and they cover each other however carefully they
+# were placed.
+#
+# So a sign that is covered steps back, and this declares WHICH ONE steps
+# back. The order is not "whichever scored higher this frame" - that is a
+# coin toss between a room plate and the advisor standing in the middle of
+# it, and it would flip as the view turned. It is a fixed precedence,
+# read from the top: the marquee over a place outranks the name of a room
+# inside it, a room outranks the person standing in it, and a measured
+# distance yields to all of them. Where you ARE beats who is there beats
+# what it is called beats what was measured.
+#
+# Nothing is deleted and nothing is dropped from the scene. A covered sign
+# fades, on the same easing as the focus score, and comes back the moment
+# the view moves enough to uncover it - which is why the two thresholds
+# differ: a sign hides when it is covered past `cover_hide` and does not
+# return until coverage falls under `cover_show`, so a sign sitting exactly
+# on the line cannot flicker.
+#
+# `cover_hide` is set where it is because of what a plate CONTAINS, not by
+# eye. A plate is a title with a second line under it, and that second line
+# is the lower third or so of the plate: a cover of a third of the plate's
+# area can therefore swallow the whole of it, which is what "Materials
+# Store / Materials" losing its strand name looked like. A cover of a
+# seventh is a corner or a rule's worth of one end - the plate still reads.
+# Measured at 1280x800 in the default hall, moving the threshold from a
+# third to a seventh took the surviving overlaps from four pairs (worst
+# 21%) to two (worst 11%), and the region board from 39 pairs to 12 with
+# nothing over 15%.
+PRECEDENCE = [
+    'brand', 'campus', 'district', 'hall',      # where you are
+    'egress', 'muster', 'hazard', 'placard',    # what you must do about it
+    'room', 'station', 'crib', 'door',          # what this is called
+    'advisor', 'anchor', 'schematic',           # who and what is out there
+    'asset', 'route', 'readout', 'fixture',     # what was measured
+]
+DECLUTTER = {
+    'precedence': PRECEDENCE,
+    'cover_hide': .95,
+    'cover_show': .9,
+    'min_op': .05,
+    'rule': 'two signs are compared as the rectangles they actually occupy '
+            'on screen. Taken in precedence order, a sign that is covered '
+            'by more than cover_hide of the smaller of the two plates by a '
+            'sign ahead of it steps back; it returns when coverage falls '
+            'under cover_show. Coverage is eased on the focus easing, so a '
+            'sign fades rather than blinks.',
+    'honest': 'a sign that steps back is still built, still in its group, '
+              'still in the label set and still scored every frame; what '
+              'changes is its opacity, held at min_op or under while '
+              'something ahead of it is sitting on top of it. It is NOT on '
+              'screen while that lasts, and a harness counting on-screen '
+              'signs will not count it, which is the honest cost and is '
+              'why the sign count is held to a floor as well as the '
+              'overlaps to a ceiling. No kind is removed, no sign is '
+              'deleted, and moving the view brings every one of them back.',
+    'measured': 'the count this exists to hold down is overlapping PAIRS of '
+                'on-screen sign rectangles, measured in a browser by '
+                'web/eval_scene.mjs through the page\'s own '
+                '__tc3dLabelRects() hook, against a ceiling declared there '
+                'per view.',
+}
+
+
 # ------------------------------------------------ what a sign may not say ---
 # A sign that wears a standards body's initials, a standard's designation or
 # a regulator's name is claiming an authority this bundle does not have, and
@@ -499,6 +581,29 @@ for kk in ('egress', 'muster', 'door', 'asset', 'hazard'):
         f'{kk} is read off a plan or a record, so it must say DERIVED'
 
 assert FOCUS['floor'] < 1 and FOCUS['cone_deg'] > 10, 'the cone must be a cone'
+
+# The precedence is a TOTAL order over the kinds: every kind names its place
+# exactly once. A kind missing from it would have no declared answer to
+# "what do you yield to?", and the page fails closed on one rather than
+# guessing, so the guess must not be possible here either.
+assert sorted(PRECEDENCE) == sorted(KINDS), (
+    'declutter.precedence must rank every kind exactly once - missing '
+    f'{sorted(set(KINDS) - set(PRECEDENCE))}, unknown '
+    f'{sorted(set(PRECEDENCE) - set(KINDS))}, '
+    f'{len(PRECEDENCE)} entries against {len(KINDS)} kinds')
+assert len(set(PRECEDENCE)) == len(PRECEDENCE), \
+    'declutter.precedence ranks a kind twice'
+assert 0 < DECLUTTER['cover_show'] < DECLUTTER['cover_hide'] < 1, (
+    'a sign must have to be covered MORE to hide than to stay hidden, or it '
+    'flickers on the threshold')
+assert 0 < DECLUTTER['min_op'] < FOCUS['floor'], (
+    'the opacity a stepped-back sign fades to must be under the floor a lit '
+    'sign is held above, or nothing ever reads as hidden')
+for _k, _v in DECLUTTER.items():
+    if isinstance(_v, str):
+        assert not borrowed_marks(_v), \
+            f'declutter.{_k} borrows {borrowed_marks(_v)}'
+
 assert 0 < FOCUS['screen']['min_frac'] < FOCUS['screen']['max_frac'] < .5, \
     'the on-screen clamp must be a sane band of the viewport'
 assert FOCUS['fade_from_rel'] < FOCUS['fade_to_rel'], 'fade runs outward'
@@ -586,6 +691,7 @@ doc = {
     'type': TYPE,
     'kinds': KINDS,
     'focus': FOCUS,
+    'declutter': DECLUTTER,
 }
 
 OUT = HERE / 'registry'

@@ -531,7 +531,15 @@ DATA = json.dumps({
                'palette': labels_reg['palette'],
                'type': trim(labels_reg['type'], 'note'),
                'kinds': trim(labels_reg['kinds'], 'what', 'provenance'),
-               'focus': trim(labels_reg['focus'], 'contract', 'focus_rule')},
+               'focus': trim(labels_reg['focus'], 'contract', 'focus_rule'),
+               # what yields to what when two signs cover each other. The
+               # page needs the order and the two thresholds to DRAW the
+               # rule; the paragraphs that argue for it are not rendered by
+               # anything, so they stay in labels/registry/labels.json
+               # where a reader checks them, exactly like `what` and
+               # `reads_as` on the lines above
+               'declutter': trim(labels_reg['declutter'],
+                                 'rule', 'honest', 'measured')},
     # the training-data recorder: only what the page needs to build the
     # UI and the export envelope - the essays stay in the registry, read
     # from the wiki, exactly like the world and label packs
@@ -8518,6 +8526,26 @@ for (const m of Object.values(mat)) m.userData.shared = true;
 const LBL = D.labels;
 const LKIND = LBL.kinds, LPAL = LBL.palette, LTYPE = LBL.type;
 const LFOCUS = LBL.focus;
+/* What yields to what when two signs land on the same pixels. Read out of
+   the registry and never defaulted: a sign whose kind has no declared
+   place in that order has no answer to "what do you step back for", and a
+   guess made here would be a second, unchecked convention. */
+const LDECL = (() => {
+  const d = LBL.declutter;
+  if (!d || !Array.isArray(d.precedence) || !d.precedence.length)
+    throw new Error('D.labels.declutter.precedence: the label registry reached '
+      + 'the page with no declared precedence, so two signs covering each '
+      + 'other would have no declared winner');
+  return d;
+})();
+const LRANK = new Map(LDECL.precedence.map((k, i) => [k, i]));
+const lblRank = (kindId) => {
+  const r = LRANK.get(kindId);
+  if (r === undefined)
+    throw new Error('D.labels.declutter.precedence ranks no sign of kind "'
+      + kindId + '", so nothing declares what it yields to');
+  return r;
+};
 let labelSet = [];
 
 const lblFace = (f) => LTYPE[f] ?? LTYPE.display;
@@ -8716,7 +8744,8 @@ function label(text, sub, scale = 1, opts = {}) {
     sp.scale.set(hit.w / 90 * scale, hit.h / 90 * scale, 1);
     sp.userData.lbl = { kind: kindId, base: sp.scale.clone(), baseY: null,
                         accent, focus: 0, hide: kind.hide_beyond_m || 0,
-                        floor: kind.min_focus, texKey, text, sub: sub ?? null };
+                        floor: kind.min_focus, texKey, text, sub: sub ?? null,
+                        rank: lblRank(kindId), cover: 0 };
     labelSet.push(sp);
     return sp;
   }
@@ -8780,7 +8809,8 @@ function label(text, sub, scale = 1, opts = {}) {
   sp.scale.set(w / 90 * scale, h / 90 * scale, 1);
   sp.userData.lbl = { kind: kindId, base: sp.scale.clone(), baseY: null,
                       accent, focus: 0, hide: kind.hide_beyond_m || 0,
-                      floor: kind.min_focus, texKey, text, sub: sub ?? null };
+                      floor: kind.min_focus, texKey, text, sub: sub ?? null,
+                      rank: lblRank(kindId), cover: 0 };
   labelSet.push(sp);
   return sp;
 }
@@ -8869,70 +8899,164 @@ function labelStep(dt) {
       best.position.y += LFOCUS.lift_m;
     }
   }
+  // scored, sized and lifted - now, and only now, whether any two of them
+  // have landed on the same pixels
+  labelDeclutter(ease);
 }
 
-/* ---- and what a harness outside the page may ask about them -----------
+/* ---- where a sign actually lands on the screen ------------------------
+
+   Two things need this and they must not each have their own copy of it:
+   the declutter pass below, which has to know whether two signs are
+   covering each other, and the harness hook under it, which has to report
+   the same rectangles to anything measuring legibility from outside. A
+   second, slightly different projection would let the page and the eval
+   disagree about the very thing the eval is checking.
+
+   The projection is the sprite's own, not an approximation of it: a sprite
+   is a camera-facing quad `scale` world units across, so its corners are
+   its centre in CAMERA space offset by half the scale in x and y, put
+   through the projection matrix. That is exactly what the renderer draws.
+
+   It reports the QUAD - the whole plate, including the transparent margin
+   the shadow needs - and not the inked glyphs, so two plates whose edges
+   touch count as touching. Returns false, and fills nothing, for a sign
+   that is not on the screen at all: behind the eye, or off the canvas. */
+const _lrC = new THREE.Vector3(), _lrA = new THREE.Vector3(),
+      _lrB = new THREE.Vector3();
+const _lrInv = new THREE.Matrix4();
+/* The view matrix these rectangles are projected through, brought up to
+   date by whoever is about to ask for them.
+
+   camera.matrixWorldInverse is the RENDERER's, refreshed inside
+   render() - so reading it from the animation loop, which runs before the
+   frame is drawn, projects this frame's sprites through last frame's
+   camera. That is the same one-frame lag trackSun() has a note about, and
+   here it would make the declutter pass answer about a view the learner
+   has already turned away from. Both callers sync first, so the pass and
+   the harness hook always agree about where the eye is. */
+function lblViewSync() {
+  camera.updateMatrixWorld();
+  _lrInv.copy(camera.matrixWorld).invert();
+}
+function lblOnStage(sp) {
+  if (!sp.parent || !sp.visible) return false;
+  for (let o = sp.parent; o && o !== scene; o = o.parent)
+    if (!o.visible) return false;
+  return true;
+}
+function lblRect(sp, vw, vh, out) {
+  sp.getWorldPosition(_lrC).applyMatrix4(_lrInv);
+  if (_lrC.z > -camera.near) return false;             // behind the eye
+  const hw = sp.scale.x / 2, hh = sp.scale.y / 2;
+  _lrA.set(_lrC.x - hw, _lrC.y + hh, _lrC.z).applyMatrix4(camera.projectionMatrix);
+  _lrB.set(_lrC.x + hw, _lrC.y - hh, _lrC.z).applyMatrix4(camera.projectionMatrix);
+  out.x = (_lrA.x + 1) / 2 * vw;
+  out.y = (1 - _lrA.y) / 2 * vh;
+  out.w = (_lrB.x + 1) / 2 * vw - out.x;
+  out.h = (1 - _lrB.y) / 2 * vh - out.y;
+  if (out.x + out.w < 0 || out.x > vw) return false;   // off the canvas
+  if (out.y + out.h < 0 || out.y > vh) return false;
+  return true;
+}
+const lblOverlap = (a, b) => {
+  const w = Math.min(a.x + a.w, b.x + b.w) - Math.max(a.x, b.x);
+  const h = Math.min(a.y + a.h, b.y + b.h) - Math.max(a.y, b.y);
+  if (w <= 0 || h <= 0) return 0;
+  // as a fraction of the SMALLER plate: a small sign swallowed whole by a
+  // big one is completely covered, however little of the big one it takes
+  return w * h / Math.min(a.w * a.h, b.w * b.h);
+};
+
+/* ---- and which of them is sitting on top of which -----------------------
+
+   labelStep() above scores every sign on its own and can never see a
+   collision, because it never compares a pair. It doesn't need to for the
+   score to be right, and the score being right is not the same as the
+   signage being readable: `screen.min_frac` holds every distant sign at
+   the same minimum height, so signs a metre apart in the world end up a
+   few pixels apart on screen while each is tens of pixels tall. Measured
+   in Chromium at 1280x800, the default hall put 22 signs on screen with 15
+   overlapping pairs and the region board 125 signs with 488.
+
+   So: take the signs in the order the registry declares - where you are
+   beats who is there beats what it is called beats what was measured - and
+   let one that is covered by a sign ahead of it step back. Not deleted,
+   not dropped from labelSet, not taken out of the scene: faded, on the
+   same easing as the focus score, and back the moment the view moves
+   enough to uncover it. The two thresholds differ so a sign resting on the
+   line cannot flicker between them. */
+const _lclRects = [];
+const _lclCand = [];
+const _lclKept = [];
+function labelDeclutter(ease) {
+  const el = renderer.domElement;
+  const vw = el.clientWidth || el.width, vh = el.clientHeight || el.height;
+  lblViewSync();
+  _lclCand.length = 0; _lclKept.length = 0;
+  for (let i = 0; i < labelSet.length; i++) {
+    const sp = labelSet[i], u = sp.userData.lbl;
+    if (!_lclRects[i]) _lclRects[i] = { x: 0, y: 0, w: 0, h: 0 };
+    if (!lblOnStage(sp) || !lblRect(sp, vw, vh, _lclRects[i])) { u.cover = 0; continue; }
+    _lclCand.push({ sp, u, r: _lclRects[i] });
+  }
+  // precedence first, and only then how centred it is: a coin toss between
+  // a room plate and the advisor standing in the middle of it would flip
+  // as the view turned, which is worse than either answer
+  _lclCand.sort((a, b) => a.u.rank - b.u.rank || b.u.focus - a.u.focus);
+  for (const c of _lclCand) {
+    let cover = 0;
+    for (const k of _lclKept) cover = Math.max(cover, lblOverlap(c.r, k));
+    const hidden = c.u.cover > .5;
+    const out = cover > (hidden ? LDECL.cover_show : LDECL.cover_hide);
+    c.u.cover += ((out ? 1 : 0) - c.u.cover) * ease;
+    if (!out) _lclKept.push(c.r);
+    c.sp.material.opacity *= 1 - c.u.cover;
+    if (c.sp.material.opacity <= LDECL.min_op) c.sp.visible = false;
+  }
+}
+
+/* ---- and what a harness outside the page may ask about all that --------
 
    A pile of signs is a fault you can SEE and, until this existed, could
-   not COUNT. Three rung plates and a room plate landed within a few pixels
-   of each other in the hall view and every check in the bundle was green,
-   because the only evidence was a screenshot and nobody had opened one.
-   "I looked and it seemed fine" is not a check.
+   not COUNT. Three ladder plates and a room plate landed within a few
+   pixels of each other in the hall view and every check in the bundle was
+   green, because the only evidence was a screenshot and nobody had opened
+   one. "I looked and it seemed fine" is not a check.
 
    What a harness needs to count that is each visible sign's rectangle on
    the screen - nothing more. The obvious hook is the camera, or three.js
    itself; both were rejected. Handing out the camera hands out a moving
-   target (its matrices are only correct between particular calls in the
-   frame), and makes every harness reimplement sprite projection - which
-   is exactly the kind of second, slightly-wrong copy of the page's own
-   maths that this bundle keeps deleting. Handing out THREE hands out
-   everything and promises nothing.
+   target - its matrices are only correct between particular calls in the
+   frame - and makes every harness reimplement sprite projection, which is
+   exactly the second slightly-wrong copy that lblRect() exists to prevent.
+   Handing out THREE hands out everything and promises nothing.
 
    So this is the whole surface: one call, one array, one row per sign that
    is actually on screen, in CSS pixels with the origin at the canvas's
    top-left. It reports; it decides nothing. What counts as too much
-   overlap is the harness's question to ask - see web/eval_scene.mjs, which
+   overlap is the harness's question - see web/eval_scene.mjs, which
    declares a ceiling for it the same way it declares one for draw calls.
 
-   The projection is the sprite's own, not an approximation of it: a sprite
-   is a camera-facing quad of `scale` world units, so its corners are the
-   centre in CAMERA space offset by half the scale in x and y, put through
-   the projection matrix. That is what the renderer draws, so the rectangle
-   is where the sign really is.
-
-   Limits, stated with the capability: it reports the QUAD, which is the
-   whole plate including its transparent margin, not the inked glyphs -
-   two signs whose quads touch at the edge are counted as touching. It is
-   a single frame's answer and says nothing about the next one. And a sign
-   under a hidden group, behind the eye, off the canvas, or faded below
-   LRECT_MIN_OP is not reported at all, because it is not on screen. */
-const LRECT_MIN_OP = .05;
-const _lrC = new THREE.Vector3(), _lrA = new THREE.Vector3(),
-      _lrB = new THREE.Vector3();
+   Limits, in the same breath as the capability: it is one frame's answer
+   and says nothing about the next; it reports plates and not glyphs; and a
+   sign under a hidden group, behind the eye, off the canvas or faded to
+   the registry's own min_op - including one the declutter above has just
+   stepped back - is not reported at all, because it is not on screen. */
+const _lrOut = { x: 0, y: 0, w: 0, h: 0 };
 window.__tc3dLabelRects = () => {
   const el = renderer.domElement;
   const vw = el.clientWidth || el.width, vh = el.clientHeight || el.height;
-  camera.updateMatrixWorld();
+  lblViewSync();
+  const r1 = (v) => Math.round(v * 10) / 10;
   const out = [];
   for (const sp of labelSet) {
-    if (!sp.parent || !sp.visible) continue;
-    let hid = false;
-    for (let o = sp.parent; o && o !== scene; o = o.parent)
-      if (!o.visible) { hid = true; break; }
-    if (hid) continue;
-    if (sp.material.opacity <= LRECT_MIN_OP) continue;
-    sp.getWorldPosition(_lrC).applyMatrix4(camera.matrixWorldInverse);
-    if (_lrC.z > -camera.near) continue;            // behind the eye
-    const hw = sp.scale.x / 2, hh = sp.scale.y / 2;
-    _lrA.set(_lrC.x - hw, _lrC.y + hh, _lrC.z).applyMatrix4(camera.projectionMatrix);
-    _lrB.set(_lrC.x + hw, _lrC.y - hh, _lrC.z).applyMatrix4(camera.projectionMatrix);
-    const x = (_lrA.x + 1) / 2 * vw, y = (1 - _lrA.y) / 2 * vh;
-    const w = (_lrB.x + 1) / 2 * vw - x, h = (1 - _lrB.y) / 2 * vh - y;
-    if (x + w < 0 || x > vw || y + h < 0 || y > vh) continue;   // off canvas
+    if (!lblOnStage(sp)) continue;
+    if (sp.material.opacity <= LDECL.min_op) continue;
+    if (!lblRect(sp, vw, vh, _lrOut)) continue;
     const u = sp.userData.lbl;
-    const r1 = (v) => Math.round(v * 10) / 10;
-    out.push({ kind: u.kind, text: u.text, sub: u.sub,
-      x: r1(x), y: r1(y), w: r1(w), h: r1(h),
+    out.push({ kind: u.kind, text: u.text, sub: u.sub, rank: u.rank,
+      x: r1(_lrOut.x), y: r1(_lrOut.y), w: r1(_lrOut.w), h: r1(_lrOut.h),
       op: Math.round(sp.material.opacity * 100) });
   }
   return out;
@@ -10180,20 +10304,36 @@ function buildHall(sg) {
           box(tread, hgt, 1.1, mat.steel, tx, .35 + hgt / 2, bz2, benchTop);
           box(tread - .16, .05, .06, mat.post, tx, .35 + hgt + .03,
               bz2 - .52, benchTop);            // the nosing on each tread
-          /* `route` is the sign the registry keeps for a way THROUGH
-             something rather than a name for it, which is what a ladder
-             is. The tier is named in the reader's language and the rung
-             carries the level the registry files it at. */
-          const rl2 = label(D.i18n[loc].tiers[rg.tier],
-            'level ' + rg.level, .3, { kind: 'route' });
-          /* The three plates stack over the MIDDLE of the rig rather than
-             one over each tread. Side by side they are 1.25 m apart and
-             each is wider than that, so they read as one illegible plate;
-             stacked, they climb, which is the shape of the thing they are
-             naming. */
-          rl2.position.set(bc, .35 + .62 + ti * .46, bz2);
-          hallGroup.add(rl2);
         });
+        /* ONE plate for the rig, not one per rung.
+
+           It was three, and they were tried both ways in the world and
+           both ways failed for the same reason. Side by side over their
+           own treads they stand 1.25 m apart and each is wider than that.
+           Stacked over the middle they climb, which is at least the shape
+           of the thing they name - but a stack 46 cm apart collapses to
+           nothing from a view that stands 57 m off, and the on-screen
+           clamp then holds each plate at the same minimum height, so the
+           three landed 8 px apart while each was 28 px tall. Measured
+           through __tc3dLabelRects(): three plates, three overlapping
+           pairs, the worst covering 72% of the smaller one, the bottom
+           line clipped to "Fu...ntals". No camera distance separates them,
+           because the clamp is what sets their height.
+
+           The ladder is one thing - three rungs of one rig - so it takes
+           one sign, and the sign says all three. Nothing is dropped: every
+           tier name and every level the registry files it at is still
+           read off D.strandmods and still on the plate. `route` is the
+           kind the registry keeps for a way THROUGH something rather than
+           a name for it, which is what a ladder is, and the rungs are set
+           in its mono face because a level is a value a machine assigned. */
+        const rl2 = label(
+          TIER_LADDER.map((rg) => D.i18n[loc].tiers[rg.tier]).join(' \u00b7 '),
+          'level ' + TIER_LADDER.map((rg) => rg.level).join(' \u00b7 '),
+          .3, { kind: 'route' });
+        rl2.position.set(bc, .35 + rung + (TIER_LADDER.length - 1) * step + .55,
+          bz2);
+        hallGroup.add(rl2);
         wallRect(bc, bz2, span / 2, .55);
         benches.push(hallSolids[0].rects[hallSolids[0].rects.length - 1]);
       }

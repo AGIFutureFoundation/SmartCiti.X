@@ -1709,8 +1709,8 @@ assert len({g['page_marker'] for g in GATE_GAPS}) == len(GATE_GAPS), \
     'two gaps at one marker is one gap'
 
 unions = json.load(open(ROOT / 'unions/registry/unions.json'))['unions']
-skills = {s['skill_id'] for s in
-          json.load(open(ROOT / 'pack/registry/skills.json'))['skills']}
+SKILL_ROWS = json.load(open(ROOT / 'pack/registry/skills.json'))['skills']
+skills = {s['skill_id'] for s in SKILL_ROWS}
 slugs = {u['slug'] for u in unions}
 
 bindings = {}
@@ -1721,6 +1721,111 @@ for sim_id, sim in SIMS.items():
         assert skill in skills, f'{sim_id}: no such skill {skill}'
         bindings.setdefault(hall, []).append(
             {'sim': sim_id, 'skill_id': skill})
+
+
+# ------------------------------------- what the seats do NOT reach --------
+# The loop above says which cells a seat proves. It has never said which
+# cells no seat reaches, and the difference is the whole product: a ladder
+# is only a ladder if a learner can climb it, and every rung above is
+# decoration if the rungs below carry nothing to stand on.
+#
+# So the same loop's output is measured here, from `pack/registry/skills.json`
+# and from `bindings` itself - never typed. Three facts come out of it and
+# all three are uncomfortable:
+#
+#   * a seat lands on very few cells. The pack declares thousands of cells
+#     across a hundred and eleven halls; the seats bind a double-digit
+#     handful of them. `cells.with_a_seat` over `cells.total` is that ratio
+#     and the page and the README read it from here.
+#
+#   * seats PILE UP. Several halls bind four seats and all four name the
+#     same cell, because `skill_strand` and `skill_tier` are properties of
+#     the SIMULATOR, not of the hall: every machine seat in a hall resolves
+#     to `<hall>.machines.applied` whatever the machine is. Four seats on
+#     one cell is one covered cell, not four, and `cells.carrying_more_than_
+#     one_seat` counts the collisions rather than letting the binding total
+#     flatter the coverage.
+#
+#   * and no bound cell is REACHED. For each bound cell this walks the whole
+#     `requires` closure and asks whether any cell in it carries a seat. A
+#     bound cell whose entire chain of prerequisites carries no seat cannot
+#     be earned inside this bundle: the prerequisites are declared, they are
+#     real, and there is nothing here that proves any of them. Those cells
+#     are named in `unreachable_seat_cells`.
+#
+# None of this is a defect in the control plane and fixing the sequencer
+# would not move any of these numbers. It is seat coverage, and the honest
+# thing is to publish the ratio beside the seats rather than beside nothing.
+BY_ID = {s['skill_id']: s for s in SKILL_ROWS}
+SEAT_CELLS = {}
+for _h, _bs in bindings.items():
+    for _b in _bs:
+        SEAT_CELLS[_b['skill_id']] = SEAT_CELLS.get(_b['skill_id'], 0) + 1
+
+
+def prereq_closure(cell):
+    """Every cell `cell` transitively requires. Fails closed on a dangling
+    prerequisite rather than silently treating it as no prerequisite."""
+    seen, stack = set(), [cell]
+    while stack:
+        here = stack.pop()
+        assert here in BY_ID, f'{cell}: requires {here}, which is not a skill'
+        for req in BY_ID[here]['requires']:
+            if req not in seen:
+                seen.add(req)
+                stack.append(req)
+    return seen
+
+
+unreachable = sorted(
+    c for c in SEAT_CELLS
+    if prereq_closure(c) and not (prereq_closure(c) & set(SEAT_CELLS)))
+piled = sorted(c for c, n in SEAT_CELLS.items() if n > 1)
+
+COVERAGE = {
+    'halls': {'total': len(slugs), 'with_a_seat': len(bindings)},
+    'strands': {
+        'total': len({(s['union'], s['strand']) for s in SKILL_ROWS}),
+        'with_a_seat': len({(BY_ID[c]['union'], BY_ID[c]['strand'])
+                            for c in SEAT_CELLS}),
+    },
+    'cells': {
+        'total': len(SKILL_ROWS),
+        'with_a_seat': len(SEAT_CELLS),
+        'carrying_more_than_one_seat': len(piled),
+        'seats_absorbed_by_those_cells': sum(SEAT_CELLS[c] for c in piled),
+    },
+    'seats': {'bound': sum(len(v) for v in bindings.values())},
+    'unreachable_seat_cells': unreachable,
+    'means': 'a cell is covered when at least one seat names it, and a '
+             'covered cell is REACHABLE when some cell in its prerequisite '
+             'closure is also covered. Every number here is counted from '
+             'pack/registry/skills.json and from hall_bindings in this same '
+             'build; none of them is typed.',
+    'honest': 'this is the ratio a training coordinator should read first. '
+              'The seats that exist are deterministic and their rubrics are '
+              'real, and they stand on a ladder whose lower rungs this '
+              'bundle cannot prove. Nothing here is a certification, and a '
+              'hall with no seat at all is not partially covered - it is '
+              'uncovered, and it is counted that way.',
+}
+
+# The arithmetic must hold or the block is decoration. A covered count that
+# exceeded the bindings, or a pile-up that absorbed more seats than were
+# ever bound, would be a number that had drifted from the thing it counts.
+assert COVERAGE['cells']['with_a_seat'] <= COVERAGE['seats']['bound'], \
+    'more covered cells than seats bound - a seat was counted twice'
+assert (COVERAGE['cells']['seats_absorbed_by_those_cells']
+        <= COVERAGE['seats']['bound']), \
+    'the pile-ups absorb more seats than exist'
+assert COVERAGE['cells']['with_a_seat'] <= COVERAGE['cells']['total'], \
+    'a seat lands on a cell the pack does not declare'
+assert COVERAGE['halls']['with_a_seat'] <= COVERAGE['halls']['total'], \
+    'a seat is bound to a hall that is not a union'
+assert set(unreachable) <= set(SEAT_CELLS), \
+    'an unreachable cell that carries no seat is not a seat gap'
+for _c in piled:
+    assert SEAT_CELLS[_c] > 1, 'a pile-up of one is not a pile-up'
 
 stamp = hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest()[:16]
 
@@ -1774,11 +1879,17 @@ doc = {
     'gate_gaps': GATE_GAPS,
     'sims': SIMS,
     'hall_bindings': bindings,
+    # what the seats reach and what they do not, counted from the pack
+    'coverage': COVERAGE,
 }
 
 OUT = HERE / 'registry'
 OUT.mkdir(exist_ok=True)
 (OUT / 'sims.json').write_text(json.dumps(doc, indent=1) + '\n')
 n_halls = len(bindings)
+cov = COVERAGE['cells']
 print(f"sim registry: {len(SIMS)} simulators bound to {n_halls} halls "
       f"(source stamp {stamp})")
+print(f"  seat coverage: {cov['with_a_seat']} of {cov['total']} cells carry "
+      f"a seat, {len(unreachable)} of them unreachable, "
+      f"{cov['carrying_more_than_one_seat']} cells carry more than one seat")

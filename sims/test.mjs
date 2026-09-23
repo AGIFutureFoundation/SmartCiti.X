@@ -14,8 +14,9 @@ const ok = (m, c) => { if (!c) { console.error('FAIL', m); process.exit(1); } n+
 
 const reg = JSON.parse(readFileSync(new URL('./registry/sims.json', import.meta.url)));
 const unions = JSON.parse(readFileSync(new URL('../unions/registry/unions.json', import.meta.url)));
-const skills = new Set(JSON.parse(readFileSync(
-  new URL('../pack/registry/skills.json', import.meta.url))).skills.map((s) => s.skill_id));
+const skillRows = JSON.parse(readFileSync(
+  new URL('../pack/registry/skills.json', import.meta.url))).skills;
+const skills = new Set(skillRows.map((s) => s.skill_id));
 const slugs = new Set(unions.unions.map((u) => u.slug));
 
 const sims = reg.sims;
@@ -450,6 +451,63 @@ ok('the welding seat stands on the floor the hot-work hazard puts it on',
       h.rooms.procedure.placed_by === 'hazard'
       && h.rooms.procedure.hazard === 'hot-work'
       && h.rooms.procedure.surface === 'bare-slab'));
+
+/* ------------------------------------------ what the seats do not reach --- */
+/* `coverage` is the only block in this registry that exists to say the
+   product is thin, so it is the one block a future edit is most tempted to
+   improve by typing a better number into the JSON. These checks make that
+   impossible: every figure is RECOMPUTED here from pack/registry/skills.json
+   and from hall_bindings, and compared. Editing the block without moving the
+   seats fails; adding seats moves both sides together and passes. */
+const byId = new Map(skillRows.map((s2) => [s2.skill_id, s2]));
+const seatCells = new Map();
+for (const list of Object.values(reg.hall_bindings)) {
+  for (const b of list) seatCells.set(b.skill_id, (seatCells.get(b.skill_id) || 0) + 1);
+}
+const closure = (cell) => {
+  const seen = new Set(); const stack = [cell];
+  while (stack.length) {
+    const here = stack.pop();
+    const row = byId.get(here);
+    if (!row) return null;            // dangling prerequisite: fail closed
+    for (const r of row.requires) if (!seen.has(r)) { seen.add(r); stack.push(r); }
+  }
+  return seen;
+};
+const cov = reg.coverage;
+/* Deleting the block is the cheapest way to stop it saying this, and a
+   deleted block would take every check below it out with a TypeError rather
+   than a named failure. So its presence and shape is held first, by name. */
+ok('the registry carries the seat-coverage block at all - deleting it is not a way to stop it saying this',
+  cov && ['halls', 'strands', 'cells', 'seats'].every((k) => cov[k]
+    && Object.values(cov[k]).every((v) => Number.isInteger(v) && v >= 0))
+  && Array.isArray(cov.unreachable_seat_cells));
+ok('the seat-coverage block recomputes: every count in it is the pack counted again, not a number typed into the registry',
+  cov.halls.total === slugs.size
+  && cov.halls.with_a_seat === Object.keys(reg.hall_bindings).length
+  && cov.cells.total === skillRows.length
+  && cov.cells.with_a_seat === seatCells.size
+  && cov.seats.bound === Object.values(reg.hall_bindings).reduce((a, l) => a + l.length, 0)
+  && cov.strands.total === new Set(skillRows.map((s2) => s2.union + '.' + s2.strand)).size
+  && cov.strands.with_a_seat === new Set([...seatCells.keys()]
+      .map((c) => byId.get(c).union + '.' + byId.get(c).strand)).size);
+ok('seats pile up, and the pile-ups are counted rather than left to flatter the coverage: a cell with four seats is one covered cell',
+  cov.cells.carrying_more_than_one_seat === [...seatCells.values()].filter((v) => v > 1).length
+  && cov.cells.seats_absorbed_by_those_cells === [...seatCells.values()].filter((v) => v > 1).reduce((a, v) => a + v, 0)
+  && cov.cells.with_a_seat < cov.seats.bound);
+ok('the unreachable list is exactly the bound cells whose whole prerequisite chain carries no seat - recomputed, and it is every one of them',
+  (() => {
+    const want = [...seatCells.keys()].filter((c) => {
+      const pre = closure(c);
+      return pre !== null && pre.size > 0 && ![...pre].some((p) => seatCells.has(p));
+    }).sort();
+    return JSON.stringify(want) === JSON.stringify(cov.unreachable_seat_cells);
+  })());
+ok('no prerequisite dangles: every cell a seat cell requires is a cell the pack declares',
+  [...seatCells.keys()].every((c) => closure(c) !== null));
+ok('the block says plainly what it measures and what it means, in more than a label’s worth of words',
+  cov.means.length > 120 && cov.honest.length > 120
+  && cov.means.includes('none of them is typed'));
 
 console.log(`sims/test: ${n} checks passed — ${Object.keys(sims).length} simulators, `
   + `${Object.keys(reg.hall_bindings).length} halls bound`);

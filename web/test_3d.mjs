@@ -2279,4 +2279,88 @@ ok('and the props registry covers every strand a room is keyed by, so '
   && /if \(!ids\) throw new Error\('props registry covers no strand named ' \+ r\.strand\);/
        .test(fnCode('placeRoomProps')));
 
+/* -------------------------------------------------- signage legibility ---
+   A screenshot of the default hall showed the Classroom plate, three
+   training-ladder plates and seven advisor bubbles collapsed into stacks
+   with the bottom line clipped to "Fu...ntals", and every check in this
+   file was green: nothing here could see a pixel. Measured afterwards in
+   Chromium at 1280x800 through the page's own __tc3dLabelRects(), that
+   view ran 15 overlapping pairs of 22 signs, five covering more than half
+   the smaller plate; the region board ran 488 pairs of 125 signs.
+
+   The COUNTING lives in web/eval_scene.mjs, which has a browser. What
+   lives here is the contract the page is built to: that the order a sign
+   yields in is the registry's and covers every kind, that the two
+   thresholds are two thresholds, that a sign which steps back is faded and
+   not taken out of the scene, and that a kind nobody ranked fails closed
+   instead of being given a rank by a `??`.
+
+   These read the BUILT PAGE, with its comments cut out, because every
+   string below is quoted in the builder's own notes beside the code that
+   uses it - which is the trap that has bitten this file nine times. */
+const pageCode = strip(builtPage);
+const pageFn = (name) => {
+  const i = pageCode.indexOf(`\nfunction ${name}(`);
+  if (i < 0) { console.error('FAIL the built page has no function', name); process.exit(1); }
+  const j = pageCode.indexOf('\n}\n', i + 1);
+  const body = pageCode.slice(i, j < 0 ? undefined : j + 2);
+  if (body.trim().split('\n').length < 3) {
+    console.error('FAIL the built page\'s', name, 'came back empty'); process.exit(1);
+  }
+  return body;
+};
+const wireDecl = wire.labels.declutter;
+
+ok('the order a sign yields in travels from the label registry to the page '
+   + 'unchanged, and it ranks every kind exactly once - so no sign can be '
+   + `drawn that nothing declares a precedence for (${wireDecl.precedence.length} kinds)`,
+  JSON.stringify(wireDecl.precedence)
+    === JSON.stringify(labelsReg.declutter.precedence)
+  && JSON.stringify([...wireDecl.precedence].sort())
+    === JSON.stringify(Object.keys(wire.labels.kinds).sort())
+  && new Set(wireDecl.precedence).size === wireDecl.precedence.length
+  && /_lclCand\.sort\(\(a, b\) => a\.u\.rank - b\.u\.rank \|\| b\.u\.focus - a\.u\.focus\);/
+    .test(pageFn('labelDeclutter')));
+
+ok('hiding and showing are two different thresholds in that order, and the '
+   + 'page reads whichever one applies to the state the sign is already in '
+   + `- the flicker guard (hide over ${wireDecl.cover_hide}, show under ${wireDecl.cover_show})`,
+  wireDecl.cover_show > 0 && wireDecl.cover_show < wireDecl.cover_hide
+  && wireDecl.cover_hide < 1
+  && /const hidden = c\.u\.cover > \.5;/.test(pageFn('labelDeclutter'))
+  && /const out = cover > \(hidden \? LDECL\.cover_show : LDECL\.cover_hide\);/
+    .test(pageFn('labelDeclutter')));
+
+ok('a sign that steps back is FADED and nothing more: the pass scales its '
+   + 'opacity down to the registry\'s own min_op and never removes it from '
+   + 'labelSet, from its group or from the scene, so legibility is not '
+   + 'bought by taking signage away',
+  /c\.sp\.material\.opacity \*= 1 - c\.u\.cover;/.test(pageFn('labelDeclutter'))
+  && /if \(c\.sp\.material\.opacity <= LDECL\.min_op\) c\.sp\.visible = false;/
+    .test(pageFn('labelDeclutter'))
+  && !/splice|\.remove\(|dispose|labelSet\.length =/.test(pageFn('labelDeclutter'))
+  && wireDecl.min_op > 0 && wireDecl.min_op < wire.labels.focus.floor);
+
+ok('a kind nobody ranked fails CLOSED, naming the registry path, rather '
+   + 'than being handed a rank by a default - and a registry that reaches '
+   + 'the page with no precedence at all stops the page instead of picking '
+   + 'a winner itself',
+  /const r = LRANK\.get\(kindId\);/.test(pageCode)
+  && /if \(r === undefined\)\s*throw new Error\('D\.labels\.declutter\.precedence ranks no sign of kind "'/
+    .test(pageCode)
+  && !/LRANK\.get\(kindId\) \?\?/.test(pageCode)
+  && /if \(!d \|\| !Array\.isArray\(d\.precedence\) \|\| !d\.precedence\.length\)\s*throw new Error\('D\.labels\.declutter\.precedence: /
+    .test(pageCode));
+
+ok('the page reports where each on-screen sign actually landed, through one '
+   + 'hook that projects the sprite the way the renderer draws it - so a '
+   + 'harness counts the same rectangles the declutter pass compared, '
+   + 'rather than keeping a second copy of the projection',
+  /window\.__tc3dLabelRects = \(\) => \{/.test(pageCode)
+  && /_lrA\.set\(_lrC\.x - hw, _lrC\.y \+ hh, _lrC\.z\)\.applyMatrix4\(camera\.projectionMatrix\);/
+    .test(pageFn('lblRect'))
+  && /if \(!lblRect\(sp, vw, vh, _lrOut\)\) continue;/.test(pageCode)
+  && /lblRect\(sp, vw, vh, _lclRects\[i\]\)/.test(pageFn('labelDeclutter'))
+  && /_lrInv\.copy\(camera\.matrixWorld\)\.invert\(\);/.test(pageFn('lblViewSync')));
+
 console.log(`web/test_3d: ${n} checks passed - teardown, draw-call and per-frame contracts held at the source`);

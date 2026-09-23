@@ -101,6 +101,26 @@ const TIERS = [...new Set(SKILLS.map((s) => s.tier))];
 const seatsOfHall = (hall) => (hall in BINDINGS ? BINDINGS[hall] : []);
 const coveredCells = new Set();
 for (const hall of Object.keys(BINDINGS)) for (const b of BINDINGS[hall]) coveredCells.add(b.skill_id);
+/* A covered cell is REACHED when some cell in its prerequisite closure also
+   carries a seat. Recomputed here rather than read from the registry block it
+   is compared against, because a figure that read its own source would agree
+   with anything. Fails closed on a dangling prerequisite: an unresolvable
+   chain is not an empty chain. */
+const byIdL = new Map(SKILLS.map((s2) => [s2.skill_id, s2]));
+const reachClosure = (cell) => {
+  const seen = new Set(); const stack = [cell];
+  while (stack.length) {
+    const row = byIdL.get(stack.pop());
+    if (!row) return null;
+    for (const r of row.requires) if (!seen.has(r)) { seen.add(r); stack.push(r); }
+  }
+  return seen;
+};
+const unreachedCells = [...coveredCells].filter((c) => {
+  const pre2 = reachClosure(c);
+  return pre2 !== null && pre2.size > 0 && ![...pre2].some((x) => coveredCells.has(x));
+}).sort();
+
 const R = {
   halls: hallsReg.halls.length,
   cells: SKILLS.length,
@@ -110,6 +130,7 @@ const R = {
   'covered-cells': coveredCells.size,
   'uncovered-cells': SKILLS.length - coveredCells.size,
   'unbound-halls': hallsReg.halls.length - Object.keys(BINDINGS).length,
+  'unreachable-seats': unreachedCells.length,
   'signed-off-halls': hallsReg.halls.filter((h) => claimsHallSignoff(h.content_status)).length,
 };
 
@@ -573,6 +594,30 @@ if (!WANT_BROWSER) {
     pageErrors.length === 0 && consoleErrors.length === 0,
     [...pageErrors.slice(0, 3), ...consoleErrors.slice(0, 3)]);
   await browser.close();
+}
+
+/* --------------------------------- coverage is not reach, and the page says so */
+/* The `unreachable-seats` figure above is already held to this suite's own
+   recomputation by the keyed-figure check. What is held HERE is the harder
+   thing: that the registry's list and this suite's list are the same CELLS and
+   not merely the same length, and that the page carries the number inside its
+   own marked element rather than only in a figure box a reader may not reach.
+   Two files walking one registry to different answers is a fault in one of
+   them, and it must not be possible for both to ship. */
+ok('[registry] the registry names the same unreachable seat cells this suite finds by walking the '
+  + 'prerequisite chains itself - the same cells, not just the same count',
+  JSON.stringify(simsReg.coverage.unreachable_seat_cells) === JSON.stringify(unreachedCells),
+  [`registry ${simsReg.coverage.unreachable_seat_cells.length}, recomputed ${unreachedCells.length}`]);
+ok('[registry] and it is not an empty finding dressed as one: every seat cell in the pack is on '
+  + 'that list, so no seat in this bundle can be earned by anything else in it',
+  unreachedCells.length === coveredCells.size && coveredCells.size > 0,
+  [`${unreachedCells.length} unreachable of ${coveredCells.size} covered`]);
+{
+  const m = html.match(/<b data-fig-inline="unreachable-seats">([^<]*)<\/b>/);
+  ok('[shipped] the page states the unreachable count in running text, inside its own marked '
+    + 'element, and the number there is the recomputed one',
+    m !== null && m[1].replace(/,/g, '') === String(unreachedCells.length),
+    [m ? `page says ${m[1]}` : 'no data-fig-inline="unreachable-seats" element on the page']);
 }
 
 console.log(`\nladder: ${n} checks, ${bad} failure${bad === 1 ? '' : 's'}`);

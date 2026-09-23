@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-16",
- "source_stamp": "01e2894a14805881",
+ "source_stamp": "7b31c3f5b79c1a49",
  "scoring_contract": "deterministic: every rubric axis is computed from measured state; nothing narrative can change a score",
  "honesty": {
   "status": "schematic physics for practising control discipline - smooth inputs, swing management, ordered procedure. Not equipment certification; no seat time here counts toward one, and the assessment gates still demand unaided verification runs.",
@@ -3390,5 +3390,73 @@
     "skill_id": "foundry.machines.applied"
    }
   ]
+ },
+ "coverage": {
+  "halls": {
+   "total": 111,
+   "with_a_seat": 45
+  },
+  "strands": {
+   "total": 1221,
+   "with_a_seat": 45
+  },
+  "cells": {
+   "total": 3663,
+   "with_a_seat": 45,
+   "carrying_more_than_one_seat": 17,
+   "seats_absorbed_by_those_cells": 51
+  },
+  "seats": {
+   "bound": 79
+  },
+  "unreachable_seat_cells": [
+   "boilermakers.machines.applied",
+   "bricklayers.machines.applied",
+   "carpenters.machines.applied",
+   "cement-masons.machines.applied",
+   "cladding.machines.applied",
+   "crane-ops.machines.applied",
+   "curtainwall.machines.applied",
+   "decking.machines.applied",
+   "demolition.machines.applied",
+   "electricians.machines.applied",
+   "fabricators.machines.applied",
+   "firestop.machines.applied",
+   "foundry.machines.applied",
+   "glaziers.machines.applied",
+   "hazmat.machines.applied",
+   "heavy-equip.machines.applied",
+   "insulators.machines.applied",
+   "ironworkers.machines.applied",
+   "laborers.machines.applied",
+   "lathers.machines.applied",
+   "machinists.machines.applied",
+   "marine-pipe.machines.applied",
+   "marine-terminal.machines.applied",
+   "masonry-restore.machines.applied",
+   "millwrights.machines.applied",
+   "operating-eng.machines.applied",
+   "painters.machines.applied",
+   "piling.machines.applied",
+   "pipeline.machines.applied",
+   "plasterers.machines.applied",
+   "port-crane.machines.applied",
+   "refractory.machines.applied",
+   "riggers.machines.applied",
+   "roofers.machines.applied",
+   "scaffold.machines.applied",
+   "sheetmetal.machines.applied",
+   "shipfitters.machines.applied",
+   "shoring.machines.applied",
+   "steel-erectors.machines.applied",
+   "stone-carvers.machines.applied",
+   "tank-erectors.machines.applied",
+   "teamsters.machines.applied",
+   "waterproofers.machines.applied",
+   "welders.machines.applied",
+   "window-glazing.machines.applied"
+  ],
+  "means": "a cell is covered when at least one seat names it, and a covered cell is REACHABLE when some cell in its prerequisite closure is also covered. Every number here is counted from pack/registry/skills.json and from hall_bindings in this same build; none of them is typed.",
+  "honest": "this is the ratio a training coordinator should read first. The seats that exist are deterministic and their rubrics are real, and they stand on a ladder whose lower rungs this bundle cannot prove. Nothing here is a certification, and a hall with no seat at all is not partially covered - it is uncovered, and it is counted that way."
  }
 }

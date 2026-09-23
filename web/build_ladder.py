@@ -131,6 +131,8 @@ BINDINGS = need(sims_reg, 'hall_bindings', SIMS_PATH)
 HONESTY = need(sims_reg, 'honesty', SIMS_PATH)
 OPERATOR_LEVELS = need(sims_reg, 'operator_levels', SIMS_PATH)
 SCORING_CONTRACT = need(sims_reg, 'scoring_contract', SIMS_PATH)
+COVERAGE = need(sims_reg, 'coverage', SIMS_PATH)
+UNREACHABLE = need(COVERAGE, 'unreachable_seat_cells', f'{SIMS_PATH}#coverage')
 PACK_HONESTY = need(manifest, 'honesty', MANIFEST_PATH)
 
 
@@ -317,6 +319,38 @@ N_UNBOUND_HALLS = N_HALLS - N_BOUND_HALLS
 COVERED_CELLS = sorted({b[1] for v in SEATS_BY_UNION.values() for b in v})
 N_COVERED_CELLS = len(COVERED_CELLS)
 N_UNCOVERED_CELLS = N_CELLS - N_COVERED_CELLS
+# ---------------------------------------- the rung nothing stands on -------
+# A covered cell is not a REACHED cell. Every cell above the first tier names
+# prerequisites, and a seat proves the cell it is bound to - not the cells
+# under it. So the question this page never asked is whether a learner could
+# arrive at a seat by doing anything in this bundle, and the answer is in
+# `sims/registry/sims.json#coverage`, counted where the bindings are made.
+#
+# It is not read here to be restated. It is read to be CHECKED against this
+# page's own derivation of the same bindings: two files walking the same
+# registry to different answers is a fault in one of them, and the build
+# stops rather than letting the page and the registry disagree in public.
+N_UNREACHABLE = len(UNREACHABLE)
+_w = f'{SIMS_PATH}#coverage'
+for _key, _mine, _theirs in (
+        ('cells.with_a_seat', N_COVERED_CELLS,
+         need(need(COVERAGE, 'cells', _w), 'with_a_seat', _w)),
+        ('cells.total', N_CELLS, need(need(COVERAGE, 'cells', _w), 'total', _w)),
+        ('halls.with_a_seat', N_BOUND_HALLS,
+         need(need(COVERAGE, 'halls', _w), 'with_a_seat', _w)),
+        ('halls.total', N_HALLS, need(need(COVERAGE, 'halls', _w), 'total', _w)),
+        ('seats.bound', N_BINDINGS,
+         need(need(COVERAGE, 'seats', _w), 'bound', _w))):
+    if _mine != _theirs:
+        raise AssertionError(
+            f'{_w}.{_key} says {_theirs} and this page counts {_mine} from the '
+            'same bindings - one of the two is wrong and the page will not '
+            'render a coverage figure it cannot agree with')
+if not set(UNREACHABLE) <= set(COVERED_CELLS):
+    raise AssertionError(
+        f'{_w}.unreachable_seat_cells names a cell no seat is bound to: '
+        f'{sorted(set(UNREACHABLE) - set(COVERED_CELLS))}')
+
 COVERED_POSITIONS = sorted({(SKILL_BY_ID[c]['strand'], SKILL_BY_ID[c]['tier'])
                             for c in COVERED_CELLS})
 N_POSITIONS = N_STRANDS * N_TIERS
@@ -452,6 +486,8 @@ NETWORK_FIGS = (
     ('covered-cells', N_COVERED_CELLS, 'cells a seat stands on'),
     ('uncovered-cells', N_UNCOVERED_CELLS, 'cells with no seat'),
     ('unbound-halls', N_UNBOUND_HALLS, 'halls with no seat at all'),
+    ('unreachable-seats', N_UNREACHABLE,
+     'of those cells whose prerequisites carry no seat'),
     ('signed-off-halls', SIGNED_OFF_HALLS, f'halls of {F(N_HALLS)} with a practitioner sign-off'),
 )
 FIGS = ''.join(
@@ -466,6 +502,7 @@ LIMITS = ''.join(
         ('who wrote the rubric', need(HONESTY, 'authoring', f'{SIMS_PATH}#honesty')),
         ('what the lesson content is', need(PACK_HONESTY, 'content', f'{MANIFEST_PATH}#honesty')),
         ('whose taxonomy this is', need(PACK_HONESTY, 'taxonomy', f'{MANIFEST_PATH}#honesty')),
+        ('what the seats do not reach', need(COVERAGE, 'honest', f'{SIMS_PATH}#coverage')),
     ))
 
 OPLEVELS = ''.join(
@@ -919,6 +956,12 @@ footer.page a{{margin-inline-end:10px}}
   <p class="why">Which means {E(F(len(UNCOVERED_STRANDS)))} of the {E(F(N_STRANDS))} strands carry
      no simulator anywhere in the network, in any hall, at any tier:</p>
   <p>{UNCOVERED_STRAND_CHIPS}</p>
+  <p class="why">And coverage is not reach. A seat proves the cell it is bound to, not the
+     cells under it — so of the {E(F(N_COVERED_CELLS))} cells a seat stands on,
+     <b data-fig-inline="unreachable-seats">{E(F(N_UNREACHABLE))}</b> have a prerequisite chain in
+     which no cell carries a seat at all. Nothing in this bundle proves what those seats ask for
+     first. That is a gap in seat coverage and not in the ladder: the prerequisites are declared,
+     they are real, and the seats to earn them have not been built.</p>
   <p class="muted">strands, in the registry's order: {STRAND_CHIPS}</p>
   <p class="muted">tiers, ordered by the registry's own prerequisite edges: {TIER_CHIPS}</p>
 </section>

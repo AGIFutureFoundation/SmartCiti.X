@@ -23,6 +23,18 @@
  *                    assets/REFERENCE.md, where the question is whether
  *                    this scene has enough distinct pieces to read as a
  *                    place rather than whether it is cheap enough.
+ *
+ * It also scores LEGIBILITY, for the same reason it scores draw calls. A
+ * screenshot of the default hall showed the Classroom plate, three
+ * training-ladder plates and seven advisor bubbles collapsed into stacks
+ * you could not read a word of, and nothing in the bundle could say so: a
+ * harness outside the page had no way to find out where a sign lands on
+ * the screen, so the only evidence was somebody opening a picture. A fault
+ * you can only see and never count comes back. The page now reports each
+ * on-screen sign's rectangle through __tc3dLabelRects(), and the two
+ * numbers below are scored against declared limits at both ends -
+ * overlapping pairs at the top, signs standing at the bottom, because
+ * legibility bought by taking signage away is not legibility.
  */
 import { chromium } from '/opt/node22/lib/node_modules/playwright/index.mjs';
 
@@ -55,11 +67,45 @@ const CALL_HEADROOM = 1.25;     // draw calls are the scarce currency
 const TRI_HEADROOM = 4;         // triangles are not, and are meant to grow
 const MESH_FLOOR = 0.9;         // losing a tenth of the visible pieces is a regression
 
-const ceil = (id) => ({
-  maxCalls: Math.round(BASE[id].calls * CALL_HEADROOM),
-  maxTris: BASE[id].tris * TRI_HEADROOM,
-  minMeshes: Math.round(BASE[id].meshes * MESH_FLOOR),
-});
+/* LEGIBILITY, per row, and held at BOTH ends.
+
+   `pairs` is how many PAIRS of on-screen sign rectangles overlap each
+   other at all, counted from __tc3dLabelRects(). `signs` is how many signs
+   are on the screen to begin with. Both are measured, not chosen, and they
+   are scored in opposite directions on purpose:
+
+     * a rising `pairs` is signage collapsing back into the piles this was
+       written after - the default hall ran 15 overlapping pairs of 22
+       signs, five of them covering more than half the smaller plate;
+     * a falling `signs` is the cheat that would make `pairs` look good.
+       Hiding signage until none of it collides scores a perfect zero and
+       leaves a building with nothing written on it, so the sign count has
+       a floor exactly as the visible-mesh count does.
+
+   The headroom on pairs is small - a quarter, and never fewer than one
+   extra pair, so a view that measures none is not held to a limit it
+   cannot round below. Signs are held to the same tenth the meshes are. */
+const LEGIBLE = {
+  region:       { signs: 32, pairs: 12 },
+  campus:       { signs: 26, pairs: 3 },
+  hall:         { signs: 15, pairs: 2 },
+  'hall-worst': { signs: 15, pairs: 2 },
+};
+const PAIR_HEADROOM = 1.25;
+const SIGN_FLOOR = 0.9;
+
+const ceil = (id, leg = id) => {
+  const g = LEGIBLE[leg];
+  if (!g) throw new Error(`LEGIBLE declares no sign baseline for the "${leg}" `
+    + 'row, so its legibility would be scored against nothing');
+  return {
+    maxCalls: Math.round(BASE[id].calls * CALL_HEADROOM),
+    maxTris: BASE[id].tris * TRI_HEADROOM,
+    minMeshes: Math.round(BASE[id].meshes * MESH_FLOOR),
+    maxPairs: Math.max(g.pairs + 1, Math.round(g.pairs * PAIR_HEADROOM)),
+    minSigns: Math.round(g.signs * SIGN_FLOOR),
+  };
+};
 
 const VIEWS = [
   { id: 'region', go: null, ...ceil('region'),
@@ -79,7 +125,7 @@ const VIEWS = [
      ceiling, the worst at 238 (121%). A budget checked only against the
      median case is not a budget. The sweep below finds the worst hall by
      measuring every one, so this row cannot go stale as content changes. */
-  { id: 'hall-worst', worst: true, ...ceil('hall'),
+  { id: 'hall-worst', worst: true, ...ceil('hall', 'hall-worst'),
     why: 'the most expensive of the 111 hall interiors, found by measuring them all' },
 ];
 
@@ -132,9 +178,38 @@ async function main() {
         for (const c of o.children) walk(c);
       };
       walk(window.__tc3dScene());
+      /* Where every sign actually landed this frame. The page projects its
+         own sprites - see lblRect() in web/build_3d.py - because a second
+         copy of that projection written here could disagree with the one
+         the renderer used, and then this would be scoring a picture the
+         page never drew. What is decided HERE is only what counts as an
+         overlap, which is the harness's question and not the page's. */
+      if (typeof window.__tc3dLabelRects !== 'function')
+        throw new Error('the page exposes no __tc3dLabelRects(), so where its '
+          + 'signs land on the screen cannot be measured from out here and '
+          + 'legibility would be a matter of opinion again');
+      const rects = window.__tc3dLabelRects();
+      let pairs = 0, worstCover = 0, worstPair = null;
+      for (let i = 0; i < rects.length; i++)
+        for (let j = i + 1; j < rects.length; j++) {
+          const a = rects[i], b2 = rects[j];
+          const w = Math.min(a.x + a.w, b2.x + b2.w) - Math.max(a.x, b2.x);
+          const h = Math.min(a.y + a.h, b2.y + b2.h) - Math.max(a.y, b2.y);
+          if (w <= 0 || h <= 0) continue;
+          pairs++;
+          // as a fraction of the SMALLER plate, so a small sign swallowed
+          // whole by a big one reads as covered rather than as a nibble
+          const cover = w * h / Math.min(a.w * a.h, b2.w * b2.h);
+          if (cover > worstCover) {
+            worstCover = cover;
+            worstPair = `${a.kind}:"${a.text}" / ${b2.kind}:"${b2.text}"`;
+          }
+        }
       return { view: d.view, calls: d.perf.calls, tris: d.perf.tris,
                tex: d.perf.tex, geoms: d.perf.geoms, quality: d.quality,
-               meshes, materials: mats.size };
+               meshes, materials: mats.size,
+               signs: rects.length, pairs,
+               worstCover: Math.round(worstCover * 100), worstPair };
     });
     rows.push({ ...v, ...m });
   }
@@ -147,6 +222,10 @@ async function main() {
     if (r.calls > r.maxCalls) fails.push(`draw calls ${r.calls} > ${r.maxCalls}`);
     if (r.tris > r.maxTris) fails.push(`triangles ${r.tris.toLocaleString()} > ${r.maxTris.toLocaleString()}`);
     if (r.meshes < r.minMeshes) fails.push(`only ${r.meshes} visible meshes, floor is ${r.minMeshes}`);
+    if (r.pairs > r.maxPairs) fails.push(`${r.pairs} overlapping label pairs > ${r.maxPairs}`
+      + (r.worstPair ? ` (worst ${r.worstCover}%: ${r.worstPair})` : ''));
+    if (r.signs < r.minSigns) fails.push(`only ${r.signs} signs on screen, floor is ${r.minSigns}`
+      + ' - legibility bought by taking signage away is not legibility');
     if (fails.length) bad++;
     line.push({ ...r, fails });
   }
@@ -157,14 +236,24 @@ async function main() {
     console.log('\nscene eval — measured in Chromium, one frame per view\n');
     console.log(`${'view'.padEnd(9)} ${'calls'.padStart(6)} ${'of'.padStart(5)} `
       + `${'triangles'.padStart(11)} ${'of'.padStart(5)} ${'meshes'.padStart(7)} `
-      + `${'floor'.padStart(6)} ${'mats'.padStart(5)} ${'tex'.padStart(5)}  rung`);
+      + `${'floor'.padStart(6)} ${'signs'.padStart(6)} ${'floor'.padStart(6)} `
+      + `${'pairs'.padStart(6)} ${'of'.padStart(4)} `
+      + `${'mats'.padStart(5)} ${'tex'.padStart(5)}  rung`);
     for (const r of line) {
       console.log(`${r.id.padEnd(11)} ${String(r.calls).padStart(6)} ${pct(r.calls, r.maxCalls).padStart(5)} `
         + `${r.tris.toLocaleString().padStart(11)} ${pct(r.tris, r.maxTris).padStart(5)} `
         + `${String(r.meshes).padStart(7)} ${String(r.minMeshes).padStart(6)} `
+        + `${String(r.signs).padStart(6)} ${String(r.minSigns).padStart(6)} `
+        + `${String(r.pairs).padStart(6)} ${String(r.maxPairs).padStart(4)} `
         + `${String(r.materials).padStart(5)} ${String(r.tex).padStart(5)}  ${r.quality}`
         + (r.fails.length ? '   <<< ' + r.fails.join('; ') : ''));
     }
+    // the worst pair per view, named, so a number crossing a line comes
+    // with the two signs that did it rather than sending somebody hunting
+    for (const r of line)
+      if (r.worstPair)
+        console.log(`  ${r.id}: worst overlap ${r.worstCover}% of the smaller `
+          + `plate - ${r.worstPair}`);
     for (const r of line) console.log(`  ${r.id}: ${r.why}`);
     if (errs.length) {
       console.log('\npage errors:');
