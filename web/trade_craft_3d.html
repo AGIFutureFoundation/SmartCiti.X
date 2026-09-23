@@ -1963,7 +1963,7 @@ function label(text, sub, scale = 1, opts = {}) {
     sp.scale.set(hit.w / 90 * scale, hit.h / 90 * scale, 1);
     sp.userData.lbl = { kind: kindId, base: sp.scale.clone(), baseY: null,
                         accent, focus: 0, hide: kind.hide_beyond_m || 0,
-                        floor: kind.min_focus, texKey };
+                        floor: kind.min_focus, texKey, text, sub: sub ?? null };
     labelSet.push(sp);
     return sp;
   }
@@ -2027,7 +2027,7 @@ function label(text, sub, scale = 1, opts = {}) {
   sp.scale.set(w / 90 * scale, h / 90 * scale, 1);
   sp.userData.lbl = { kind: kindId, base: sp.scale.clone(), baseY: null,
                       accent, focus: 0, hide: kind.hide_beyond_m || 0,
-                      floor: kind.min_focus, texKey };
+                      floor: kind.min_focus, texKey, text, sub: sub ?? null };
   labelSet.push(sp);
   return sp;
 }
@@ -2117,6 +2117,73 @@ function labelStep(dt) {
     }
   }
 }
+
+/* ---- and what a harness outside the page may ask about them -----------
+
+   A pile of signs is a fault you can SEE and, until this existed, could
+   not COUNT. Three rung plates and a room plate landed within a few pixels
+   of each other in the hall view and every check in the bundle was green,
+   because the only evidence was a screenshot and nobody had opened one.
+   "I looked and it seemed fine" is not a check.
+
+   What a harness needs to count that is each visible sign's rectangle on
+   the screen - nothing more. The obvious hook is the camera, or three.js
+   itself; both were rejected. Handing out the camera hands out a moving
+   target (its matrices are only correct between particular calls in the
+   frame), and makes every harness reimplement sprite projection - which
+   is exactly the kind of second, slightly-wrong copy of the page's own
+   maths that this bundle keeps deleting. Handing out THREE hands out
+   everything and promises nothing.
+
+   So this is the whole surface: one call, one array, one row per sign that
+   is actually on screen, in CSS pixels with the origin at the canvas's
+   top-left. It reports; it decides nothing. What counts as too much
+   overlap is the harness's question to ask - see web/eval_scene.mjs, which
+   declares a ceiling for it the same way it declares one for draw calls.
+
+   The projection is the sprite's own, not an approximation of it: a sprite
+   is a camera-facing quad of `scale` world units, so its corners are the
+   centre in CAMERA space offset by half the scale in x and y, put through
+   the projection matrix. That is what the renderer draws, so the rectangle
+   is where the sign really is.
+
+   Limits, stated with the capability: it reports the QUAD, which is the
+   whole plate including its transparent margin, not the inked glyphs -
+   two signs whose quads touch at the edge are counted as touching. It is
+   a single frame's answer and says nothing about the next one. And a sign
+   under a hidden group, behind the eye, off the canvas, or faded below
+   LRECT_MIN_OP is not reported at all, because it is not on screen. */
+const LRECT_MIN_OP = .05;
+const _lrC = new THREE.Vector3(), _lrA = new THREE.Vector3(),
+      _lrB = new THREE.Vector3();
+window.__tc3dLabelRects = () => {
+  const el = renderer.domElement;
+  const vw = el.clientWidth || el.width, vh = el.clientHeight || el.height;
+  camera.updateMatrixWorld();
+  const out = [];
+  for (const sp of labelSet) {
+    if (!sp.parent || !sp.visible) continue;
+    let hid = false;
+    for (let o = sp.parent; o && o !== scene; o = o.parent)
+      if (!o.visible) { hid = true; break; }
+    if (hid) continue;
+    if (sp.material.opacity <= LRECT_MIN_OP) continue;
+    sp.getWorldPosition(_lrC).applyMatrix4(camera.matrixWorldInverse);
+    if (_lrC.z > -camera.near) continue;            // behind the eye
+    const hw = sp.scale.x / 2, hh = sp.scale.y / 2;
+    _lrA.set(_lrC.x - hw, _lrC.y + hh, _lrC.z).applyMatrix4(camera.projectionMatrix);
+    _lrB.set(_lrC.x + hw, _lrC.y - hh, _lrC.z).applyMatrix4(camera.projectionMatrix);
+    const x = (_lrA.x + 1) / 2 * vw, y = (1 - _lrA.y) / 2 * vh;
+    const w = (_lrB.x + 1) / 2 * vw - x, h = (1 - _lrB.y) / 2 * vh - y;
+    if (x + w < 0 || x > vw || y + h < 0 || y > vh) continue;   // off canvas
+    const u = sp.userData.lbl;
+    const r1 = (v) => Math.round(v * 10) / 10;
+    out.push({ kind: u.kind, text: u.text, sub: u.sub,
+      x: r1(x), y: r1(y), w: r1(w), h: r1(h),
+      op: Math.round(sp.material.opacity * 100) });
+  }
+  return out;
+};
 
 /* Floor and wall surfaces: a colour map AND a normal map, both generated
    here from the registry's own pattern key.
