@@ -29,8 +29,8 @@
   "declared_unbuilt": 6,
   "declared_unbuilt_by_their_own_words": 1,
   "declared_unbuilt_not_drawn": 5,
-  "declared_unbuilt_documented_but_not_drawn": 2,
-  "declared_unbuilt_read_by_nothing": 3,
+  "declared_unbuilt_documented_but_not_drawn": 3,
+  "declared_unbuilt_read_by_nothing": 2,
   "gaps": 17,
   "gaps_open": 16,
   "gaps_closed": 1,
@@ -39,7 +39,7 @@
   "budget_currencies": 2,
   "budget_agreements": 7,
   "suites_run": 49,
-  "suite_checks_declared": 2216,
+  "suite_checks_declared": 2229,
   "open_questions": 12,
   "negative_findings": 9,
   "cross_checks": 2,
@@ -1459,11 +1459,13 @@
    "pack": "venue",
    "reasons": [
     "no page generator under web/ names this path, so nothing a learner opens reads it",
-    "and nothing outside its own pack names it either - not a builder, not the wiki, not another pack's suite; inside it, venue/build.py, venue/test.mjs does"
+    "it is DOCUMENTED but not drawn: wiki/build_wiki.py renders a description of it"
    ],
    "says": null,
    "read_by_app_renderers": [],
-   "read_by_doc_renderers": [],
+   "read_by_doc_renderers": [
+    "wiki/build_wiki.py"
+   ],
    "read_by_builders": [],
    "read_by_suites": [],
    "read_by_its_own_pack": [
@@ -2299,7 +2301,9 @@
   },
   "venue/registry/venue.json": {
    "app_renderers": [],
-   "doc_renderers": [],
+   "doc_renderers": [
+    "wiki/build_wiki.py"
+   ],
    "builders": [],
    "suites": [],
    "own_pack": [
@@ -2727,14 +2731,14 @@
       "ceiling": 196,
       "headroom": 39,
       "claimed_by": {
-       "props": 11
+       "props": 7
       },
       "allowance_by": {
        "props": 39
       },
-      "claimed_total": 11,
-      "left": 28,
-      "left_share": 0.7179,
+      "claimed_total": 7,
+      "left": 32,
+      "left_share": 0.8205,
       "claims": {
        "props": "the worst hall standing its full set of props in eleven rooms; a PREDICTION, nothing is drawn yet"
       }
@@ -2866,7 +2870,7 @@
   },
   {
    "figure": "the hall draw-call headroom left after props",
-   "value": 28,
+   "value": 32,
    "recomputed_from": "web/eval_scene.mjs",
    "agrees_with": "props/registry/props.json#budget.delta.draw_calls_headroom"
   }
@@ -2941,7 +2945,7 @@
    {
     "suite": "security/test_sbom.mjs",
     "pack": "security",
-    "readme_checks": 11,
+    "readme_checks": 13,
     "declared": true,
     "in_readme_table": true
    },
@@ -3137,7 +3141,7 @@
    {
     "suite": "props/test.mjs",
     "pack": "props",
-    "readme_checks": 70,
+    "readme_checks": 72,
     "declared": true,
     "in_readme_table": true
    },
@@ -3207,7 +3211,7 @@
    {
     "suite": "web/test_3d.mjs",
     "pack": "web",
-    "readme_checks": 258,
+    "readme_checks": 267,
     "declared": true,
     "in_readme_table": true
    },
@@ -3224,12 +3228,12 @@
   "suites_without_a_count": [
    "control/soak.mjs"
   ],
-  "declared_total": 2216,
-  "readme_headline": 2227,
+  "declared_total": 2229,
+  "readme_headline": 2240,
   "unaccounted_for": 11,
   "unaccounted_note": "the headline counts every `  ok ` line verify_all.sh sees, which includes suites the README table gives no number to and web/test_interiors.py, which the table does not list at all. The difference is that remainder and is computed, not reconciled by hand.",
   "min": 9,
-  "max": 258,
+  "max": 267,
   "median": 37.0,
   "thinnest": [
    {
@@ -3237,12 +3241,12 @@
     "checks": 9
    },
    {
-    "suite": "security/test_sbom.mjs",
-    "checks": 11
-   },
-   {
     "suite": "control/test.mjs",
     "checks": 12
+   },
+   {
+    "suite": "security/test_sbom.mjs",
+    "checks": 13
    },
    {
     "suite": "tools/test.mjs",
@@ -3260,7 +3264,7 @@
   "thickest": [
    {
     "suite": "web/test_3d.mjs",
-    "checks": 258
+    "checks": 267
    },
    {
     "suite": "respond/test.mjs",
@@ -3276,7 +3280,7 @@
    },
    {
     "suite": "props/test.mjs",
-    "checks": 70
+    "checks": 72
    },
    {
     "suite": "sky/test.mjs",

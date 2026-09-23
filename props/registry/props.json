@@ -3,16 +3,16 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-22",
- "source_stamp": "dc9746c772375570",
+ "source_stamp": "946b8a70c40718e8",
  "honesty": {
   "status": "SCHEMATIC: every piece in this pack is a handful of boxes and cylinders built in the browser from the recipe printed here. No mesh is loaded, no model is vendored, no texture is fetched, and nothing is generated at view time.",
   "not_a_specification": "These are shapes in a training environment. The eyewash stand is a cylinder and a bowl standing where a room record says corrosives are handled; the extinguisher is a cylinder on a plate; the press is a bed, a ram and a box with a dial on it. They are not fixture specifications, not rated appliances, not machine specifications, not compliance artefacts, and not evidence that any equipment has been provided anywhere. Nothing in this pack should be read as a safety-equipment specification, and a learner who has walked past one has not been trained on it.",
   "placement_is_derived": "No piece is placed by hand. A shop piece stands in a strand because a word it declares appears in that strand's own purpose line in web/interiors.py; a conditions piece stands in a room because that room's own record in surfaces/registry/finishes.json asks for the protective equipment it is keyed to, and the same registry's hazard table says which kind of work adds that equipment; a district piece belongs to the district whose crib carries the tool it names, read from tools/registry/toolcribs.json. The build fails if a room requiring PPE gets no PPE prop.",
   "one_truth": "No room label, purpose, footprint, illuminance figure, hazard, PPE item, tool name or tool use sentence is typed in this pack. The room table is imported from web/interiors.py, the conditions are read from surfaces/registry/finishes.json, the tools are read from tools/registry/toolcribs.json and the district of a hall from unions/registry/unions.json. The page's body radius, eye height, grid unit, floor height, partition height, room-label height and bench setback are parsed out of web/build_3d.py, so a piece cannot be sized against a constant the page does not use.",
   "measured_not_guessed": "The triangle band is taken from a measurement of six reference models made before anything here was drawn: the blocks that read as real places have a median mesh of 46 and 104 triangles. Nothing from those files is vendored, copied or named \u2014 what was taken is the finding that a place is made of many small distinct pieces rather than of dense ones.",
-  "the_scarce_currency": "A hall interior is draw-call bound, not triangle bound. Every piece here pools or instances, none takes a mesh of its own, and every one of the three hundred names one of seven materials the page already builds \u2014 so the catalogue grew more than tenfold for no new material and no new draw call at all. The budget block refuses a design that would change that.",
+  "the_scarce_currency": "A hall interior is draw-call bound, not triangle bound. Every piece here pools, none takes a mesh of its own, none is instanced any more, and every one of the three hundred names one of seven materials the page already builds \u2014 so the catalogue grew more than tenfold while the draw calls it costs went DOWN, from one per pooled material plus one per instanced fixture to one per pooled material. The budget block refuses a design that would change that.",
   "the_wall_is_the_budget": "A room has two partitions and about three metres of usable run on each, and that \u2014 not the GPU \u2014 is what decides how much furniture stands in it. The fit-out below is simulated against those metres with the run SHARED between pieces, the way the page shares it, so the triangle figure is what the walls hold rather than what the catalogue offers.",
-  "built": "BUILT. web/build_3d.py reads this registry and stands its props: placeRoomProps() lays them against the partitions buildHall() has just cut, pooled into one mesh per material for the whole hall and one InstancedMesh per safety fixture, and window.__tc3dProps() reports what was drawn beside what the count rule here wanted. The count rule knows nothing of doorways or of the tool crib, so a room stands fewer than it predicts; the probe names each prop that found no wall and why.",
+  "built": "BUILT. web/build_3d.py reads this registry and stands its props: placeRoomProps() lays them against the partitions buildHall() has just cut, pooled into one mesh per material for the whole hall \u2014 the five safety fixtures used to take an InstancedMesh each and now pool with everything else, which is five fewer draw calls in every hall \u2014 and window.__tc3dProps() reports what was drawn beside what the count rule here wanted. The count rule knows nothing of doorways or of the tool crib, so a room stands fewer than it predicts; the probe names each prop that found no wall and why.",
   "district_catalogue_is_not_drawn": "The 192 district pieces are NOT standing in any hall. placeRoomProps() chooses a room's furniture from D.props.by_strand[r.strand] and from that room's own PPE list, and neither of those has a hall in it \u2014 the eleven rooms are the same eleven rooms in all 111 halls. Putting a glazier's suction-cup rack in the strand table would stand it in every ironworkers' hall too, so it is not there. What is published instead is the fit-out computed per district and per room, its geometry, and its cost priced against the same ceiling as the drawn set. It waits on one change this pack does not own: a hall dimension on the furniture lookup in web/build_3d.py.",
   "unreviewed": "The vocabulary is AUTHORED \u2014 a judgement about what a trade-training room contains \u2014 and no journey-level practitioner has reviewed it. The sentence each district piece gives for itself is DERIVED from the crib's own use line for the tool it names, which makes it accurate about the tool and no more authoritative about the furniture."
  },
@@ -22,7 +22,8 @@
   "crib_furniture": 192,
   "families": 12,
   "forms": 36,
-  "distinct_silhouettes": 241,
+  "distinct_geometries": 247,
+  "repeated_geometries": 53,
   "strand_props": 56,
   "hazard_props": 52,
   "placements": 60,
@@ -30,8 +31,8 @@
   "strands_covered": 11,
   "anchors": 3,
   "merge_modes": 3,
-  "pooled": 103,
-  "instanced": 5,
+  "pooled": 108,
+  "instanced": 0,
   "own_mesh": 0,
   "materials_used": 7,
   "materials_allowed": 7,
@@ -76,7 +77,7 @@
  },
  "merge_modes": {
   "pooled": "its geometry is translated into hall space and merged by material with every other pooled prop in the hall, one mesh per material for all eleven rooms",
-  "instanced": "the same geometry repeats in many rooms of a hall, so it draws once as an InstancedMesh however many rooms have it",
+  "instanced": "RESERVED, and it used to be used. The five safety fixtures drew as one InstancedMesh each, which looked like the right answer for identical geometry repeated across eight rooms. It was not: an instanced type is a draw call of its own, and every one of the five names a material some pooled piece in the hall already merges, so pooling them costs a few hundred duplicated triangles and saves five calls. A piece may claim this mode again when it names a material nothing else in the hall uses, and the budget block will say whether that is cheaper",
   "own-mesh": "RESERVED. Only for a prop the hover/click raycast reads or one that moves; a prop that claims it must name the list it joins, because an unpooled prop is a whole draw call"
  },
  "materials": {
@@ -111,6 +112,13 @@
   ],
   "new_materials": 0,
   "new_draw_calls": 0
+ },
+ "geometry_spread": {
+  "distinct": 247,
+  "repeated": 53,
+  "of": 300,
+  "what_repeats": "a bin is a bin. Where two pieces of furniture really are the same solid \u2014 a bolt bin and a shackle bin, two four-shelf racks of the same span \u2014 this pack builds the same part list twice rather than nudging a dimension to make the count look better. The number of those is published beside the number of distinct ones so a reader can judge it.",
+  "key": "the recipe's part list exactly as it ships, positions, sizes and counts included"
  },
  "forms": {
   "source": "props/build.py",
@@ -284,8 +292,8 @@
     "tris": 132
    },
    "material": "paint",
-   "merges": "instanced",
-   "merges_why": "the same 11 boxes and 0 cylinders of mat.paint stand in many rooms of every hall, so one InstancedMesh draws every copy in the hall in a single call",
+   "merges": "pooled",
+   "merges_why": "11 boxes and 0 cylinders of mat.paint, cut from the wall-peg form; it is translated into hall space and merged into the one paint mesh this hall already builds for its props, so it adds no draw call of its own",
    "clearance_m": 1.35,
    "approach": true,
    "derive": {
@@ -433,8 +441,8 @@
     "tris": 96
    },
    "material": "post",
-   "merges": "instanced",
-   "merges_why": "the same 2 boxes and 2 cylinders of mat.post stand in many rooms of every hall, so one InstancedMesh draws every copy in the hall in a single call",
+   "merges": "pooled",
+   "merges_why": "2 boxes and 2 cylinders of mat.post, cut from the pedestal form; it is translated into hall space and merged into the one post mesh this hall already builds for its props, so it adds no draw call of its own",
    "clearance_m": 1.35,
    "approach": true,
    "derive": {
@@ -586,8 +594,8 @@
     "tris": 60
    },
    "material": "cone",
-   "merges": "instanced",
-   "merges_why": "the same 5 boxes and 0 cylinders of mat.cone stand in many rooms of every hall, so one InstancedMesh draws every copy in the hall in a single call",
+   "merges": "pooled",
+   "merges_why": "5 boxes and 0 cylinders of mat.cone, cut from the wall-cradle form; it is translated into hall space and merged into the one cone mesh this hall already builds for its props, so it adds no draw call of its own",
    "clearance_m": 0.9,
    "approach": false,
    "derive": {
@@ -769,8 +777,8 @@
     "tris": 72
    },
    "material": "cone",
-   "merges": "instanced",
-   "merges_why": "the same 6 boxes and 0 cylinders of mat.cone stand in many rooms of every hall, so one InstancedMesh draws every copy in the hall in a single call",
+   "merges": "pooled",
+   "merges_why": "6 boxes and 0 cylinders of mat.cone, cut from the cabinet form; it is translated into hall space and merged into the one cone mesh this hall already builds for its props, so it adds no draw call of its own",
    "clearance_m": 1.35,
    "approach": true,
    "derive": {
@@ -923,8 +931,8 @@
     "tris": 72
    },
    "material": "metal",
-   "merges": "instanced",
-   "merges_why": "the same 6 boxes and 0 cylinders of mat.metal stand in many rooms of every hall, so one InstancedMesh draws every copy in the hall in a single call",
+   "merges": "pooled",
+   "merges_why": "6 boxes and 0 cylinders of mat.metal, cut from the wall-shelf form; it is translated into hall space and merged into the one metal mesh this hall already builds for its props, so it adds no draw call of its own",
    "clearance_m": 0.9,
    "approach": false,
    "derive": {
@@ -47739,19 +47747,19 @@
    "tris_min": 7452,
    "tris_median": 7496,
    "tris_max": 8316,
-   "calls_min": 8,
-   "calls_max": 11,
-   "calls_are": "one per pooled material for the whole hall plus one per instanced prop type; never one per prop"
+   "calls_min": 6,
+   "calls_max": 7,
+   "calls_are": "one per pooled material for the whole hall, plus one per instanced prop type and this pack declares none; never one per prop"
   },
   "delta": {
-   "draw_calls": 11,
-   "draw_calls_after": 168,
-   "draw_calls_headroom": 28,
+   "draw_calls": 7,
+   "draw_calls_after": 164,
+   "draw_calls_headroom": 32,
    "triangles": 8316,
    "triangles_after": 12122,
    "triangles_headroom": 3102,
-   "props_per_draw_call": 7.6,
-   "reading": "the worst hall stands 84 props in eleven rooms and pays 11 draw calls for all of them \u2014 7% on top of what the hall already draws, for 218% more triangles"
+   "props_per_draw_call": 12.0,
+   "reading": "the worst hall stands 84 props in eleven rooms and pays 7 draw calls for all of them \u2014 4% on top of what the hall already draws, for 218% more triangles"
   },
   "district_plan": {
    "what": "what a hall would cost if the district catalogue were drawn too \u2014 the same rooms, the same walls, the same pool, with each hall offered its own district's pieces between its conditions fixtures and its shop furniture.",
@@ -47759,11 +47767,11 @@
    "props_median": 81,
    "tris_max": 9136,
    "tris_median": 8292,
-   "calls_max": 11,
+   "calls_max": 7,
    "new_draw_calls_over_drawn": 0,
    "new_materials_over_drawn": 0,
    "triangles_after": 12942,
-   "draw_calls_after": 168,
+   "draw_calls_after": 164,
    "reading": "the whole catalogue in every hall costs 0 more draw calls than the drawn set, because the pieces share its seven materials and a room's walls hold what they hold"
   },
   "bundle": {
@@ -47777,7 +47785,7 @@
   "symbol": "The page builds these with placeRoomProps(), called per room inside buildHall(), into one hall-wide pool flushed once by flushProps(). There is no ROOM_PROPS table: this pack reserved that name while the work was unbuilt, and the work was then done another way. The page does still have a `PROPS` const and it is the OUTDOOR yard dressing in front of a hall, which is a different thing and is left alone.",
   "where": "Inside buildHall(), in the existing `for (const r of h.rooms)` loop, after the partitions are merged and before the room label is added. The rectangle a prop is placed against is the one already computed as rx, rz, rw, rd in that loop.",
   "pooling": "Props accumulate into ONE Map for the whole hall, declared beside the existing wallPool pattern but hoisted out of the room loop, and flushed once after the loop through the page's own flushParts(pool, hallGroup). Pooling per room instead of per hall would multiply the draw calls in this budget by eleven.",
-  "instancing": "The safety-fixture family draws through the same InstancedMesh shape the page already uses in flushBeacons(): one instanced draw per prop type per hall, however many rooms hold it.",
+  "instancing": "The page can draw a prop type as one InstancedMesh per hall, the same shape it already uses in flushBeacons(), and nothing in this pack asks it to any more. An instanced type is one draw call; a pooled piece of a material the hall already merges is none. The five safety fixtures were instanced and are now pooled, which is five fewer calls in every hall for a few hundred more triangles. The page code is unchanged and still resolves the mode.",
   "geometry": "Boxes come from the page's own boxGeo(w, h, d) and are translated into hall space before being pushed to the pool, exactly as the partition slab() helper already does. Cylinders are THREE.CylinderGeometry with the radial segment count stated in each recipe. No loader is involved.",
   "materials": "A piece names one of seven keys of the page's existing `mat` table and nothing else. This build fails on an eighth, because a material is one more merged mesh in every hall and the draw call is the currency this view is short of.",
   "solidity": "Every floor-standing prop registers with the page's own wallRect(x, z, hw, hd) so the walker cannot pass through it, the same call the fixture benches already make. Wall-mounted props do not: they hang above nothing a walker occupies.",

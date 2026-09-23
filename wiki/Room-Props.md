@@ -5,7 +5,7 @@ from the bench a trade is learned at to the safety fixtures a room's own record
 asks for. Placed by rule across 111 halls and 1,221 rooms,
 that is 8,448 instances.
 
-**They are standing now.** BUILT. web/build_3d.py reads this registry and stands its props: placeRoomProps() lays them against the partitions buildHall() has just cut, pooled into one mesh per material for the whole hall and one InstancedMesh per safety fixture, and window.__tc3dProps() reports what was drawn beside what the count rule here wanted. The count rule knows nothing of doorways or of the tool crib, so a room stands fewer than it predicts; the probe names each prop that found no wall and why.
+**They are standing now.** BUILT. web/build_3d.py reads this registry and stands its props: placeRoomProps() lays them against the partitions buildHall() has just cut, pooled into one mesh per material for the whole hall — the five safety fixtures used to take an InstancedMesh each and now pool with everything else, which is five fewer draw calls in every hall — and window.__tc3dProps() reports what was drawn beside what the count rule here wanted. The count rule knows nothing of doorways or of the tool crib, so a room stands fewer than it predicts; the probe names each prop that found no wall and why.
 
 ## What a prop is
 
@@ -144,11 +144,11 @@ setback 0.8 m, all from `web/build_3d.py`.
 
 | Prop | Family | Triangles | Size | Material | Merge | Anchor | Why it is in the room |
 |---|---|---|---|---|---|---|---|
-| **PPE station** | safety-fixture | 132 | 1.0 × 1.0 × 0.12 m | `paint` | instanced | wall-mounted | the room record already says what this room requires of you and the page already hangs that list on the door; this is a schematic — a shape standing where a room record asks for it, not a fixture specification and not evidence that anything has been provided. It issues nothing and holds nothing |
-| **Eyewash stand** | safety-fixture | 96 | 0.32 × 1.22 × 0.32 m | `post` | instanced | back-corner | a shape standing where a room record says something can get in your eyes: schematic — a shape standing where a room record asks for it, not a fixture specification and not evidence that anything has been provided |
-| **Extinguisher bracket** | safety-fixture | 60 | 0.24 × 0.62 × 0.22 m | `cone` | instanced | wall-mounted | a shape standing where a room record asks for flame-resistant or anti-static clothing: schematic — a shape standing where a room record asks for it, not a fixture specification and not evidence that anything has been provided, and not a rated appliance |
-| **Spill kit cabinet** | safety-fixture | 72 | 0.62 × 0.88 × 0.38 m | `cone` | instanced | back-corner | a shape standing where a room record says something can be spilled: schematic — a shape standing where a room record asks for it, not a fixture specification and not evidence that anything has been provided. It contains nothing |
-| **Gas monitor dock** | safety-fixture | 72 | 0.42 × 0.46 × 0.14 m | `metal` | instanced | wall-mounted | a shape standing where a room record asks the person to carry a gas monitor: schematic — a shape standing where a room record asks for it, not a fixture specification and not evidence that anything has been provided. It docks nothing and measures nothing |
+| **PPE station** | safety-fixture | 132 | 1.0 × 1.0 × 0.12 m | `paint` | pooled | wall-mounted | the room record already says what this room requires of you and the page already hangs that list on the door; this is a schematic — a shape standing where a room record asks for it, not a fixture specification and not evidence that anything has been provided. It issues nothing and holds nothing |
+| **Eyewash stand** | safety-fixture | 96 | 0.32 × 1.22 × 0.32 m | `post` | pooled | back-corner | a shape standing where a room record says something can get in your eyes: schematic — a shape standing where a room record asks for it, not a fixture specification and not evidence that anything has been provided |
+| **Extinguisher bracket** | safety-fixture | 60 | 0.24 × 0.62 × 0.22 m | `cone` | pooled | wall-mounted | a shape standing where a room record asks for flame-resistant or anti-static clothing: schematic — a shape standing where a room record asks for it, not a fixture specification and not evidence that anything has been provided, and not a rated appliance |
+| **Spill kit cabinet** | safety-fixture | 72 | 0.62 × 0.88 × 0.38 m | `cone` | pooled | back-corner | a shape standing where a room record says something can be spilled: schematic — a shape standing where a room record asks for it, not a fixture specification and not evidence that anything has been provided. It contains nothing |
+| **Gas monitor dock** | safety-fixture | 72 | 0.42 × 0.46 × 0.14 m | `metal` | pooled | wall-mounted | a shape standing where a room record asks the person to carry a gas monitor: schematic — a shape standing where a room record asks for it, not a fixture specification and not evidence that anything has been provided. It docks nothing and measures nothing |
 | **Electrode rod oven** | machine | 144 | 0.52 × 1.1 × 0.46 m | `steel` | pooled | side-wall | electrodes that have drunk the air do not run, so a room where arcs are struck keeps them warm and dry in a cabinet by the bay |
 | **Welding screen** | screen | 124 | 1.5 × 1.75 × 0.22 m | `part` | pooled | side-wall | the flash off an arc burns the eyes of somebody who never looked at it, so the bay is screened from the rest of the room |
 | **Electrode stub bin** | waste | 84 | 0.48 × 0.7 × 0.48 m | `metal` | pooled | back-corner | a welder drops a stub every ninety seconds and they land hot; the bin for them is metal and it stands at the bay, not by the door |
@@ -255,7 +255,7 @@ setback 0.8 m, all from `web/build_3d.py`.
 
 ## What it would cost
 
-A hall interior is draw-call bound, not triangle bound. Every piece here pools or instances, none takes a mesh of its own, and every one of the three hundred names one of seven materials the page already builds — so the catalogue grew more than tenfold for no new material and no new draw call at all. The budget block refuses a design that would change that.
+A hall interior is draw-call bound, not triangle bound. Every piece here pools, none takes a mesh of its own, none is instanced any more, and every one of the three hundred names one of seven materials the page already builds — so the catalogue grew more than tenfold while the draw calls it costs went DOWN, from one per pooled material plus one per instanced fixture to one per pooled material. The budget block refuses a design that would change that.
 
 The ceiling comes from `web/eval_scene.mjs`: it is the only file in this repo that states what a rendered hall costs and what it may cost, and it states both with a reason; the multipliers are read from it too, so its policy moving moves this ceiling with it.
 
@@ -268,15 +268,15 @@ unspent.
 This pack takes half of that headroom and leaves half:
 39 draw calls and
 11,418 triangles a hall.
-The worst hall stands 84 props in eleven rooms and pays 11 draw calls for all of them — 7% on top of what the hall already draws, for 218% more triangles.
+The worst hall stands 84 props in eleven rooms and pays 7 draw calls for all of them — 4% on top of what the hall already draws, for 218% more triangles.
 
 | | Min | Median | Max |
 |---|---|---|---|
 | Props in a hall | 74 | 75 | 84 |
 | Triangles | 7,452 | 7,496 | 8,316 |
-| Draw calls | 8 | — | 11 |
+| Draw calls | 6 | — | 7 |
 
-One per pooled material for the whole hall plus one per instanced prop type; never one per prop. Across the bundle that is
+One per pooled material for the whole hall, plus one per instanced prop type and this pack declares none; never one per prop. Across the bundle that is
 8,448 props in 1,221 rooms
 for 849,656 triangles — a prediction of what the rules
 would place, not a measurement of anything drawn.

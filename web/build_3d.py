@@ -41,7 +41,7 @@ def _pack_root():
 
 ROOT = _pack_root()
 sys.path.insert(0, str(ROOT / 'web'))
-from interiors import build as build_interiors  # noqa: E402
+from interiors import build as build_interiors, FIXTURES as ROOM_FIXTURES  # noqa: E402
 from staleness import emit  # noqa: E402
 from mapdata import strand_modules, PIPELINE_JS, HUES, make_codes  # noqa: E402
 from groundtruth import GROUND_TRUTH_JS  # noqa: E402
@@ -139,6 +139,57 @@ for h in halls_json:
         assert ROOM_DEFS.setdefault(r['strand'], rd) == rd, \
             f"room def diverges for strand {r['strand']}"
 
+# HOW TALL A HALL IS, AND WHY NO TWO TRADES NEED STAND IN THE SAME SHED.
+#
+# Every one of the 111 halls was 3.2 m to the eaves, which put a rigging
+# loft, a hoistway trainer and a climbing tower under the same ceiling as a
+# records room - and put that ceiling 2.6 m over the floor, lower than the
+# plant the bay is meant to hold. The height is the hall's OWN now:
+#
+#   * CLEAR_BASE_M is what a training bay wants before anything tall stands
+#     in it, and every hall gets it. All 111 are taller than they were.
+#   * A trade whose fixtures include something you stand UNDER gets the
+#     headroom to stand under it, and takes the tallest one it earned.
+#
+# The words below are matched against the fixture strings web/interiors.py
+# ALREADY derived from each trade's own focus line - one derivation, read
+# twice, never restated - and each is asserted to appear in at least one of
+# them, so this table cannot ask for headroom over equipment no hall has.
+CLEAR_BASE_M = 4.2
+HEADROOM_M = {
+    'tower': 3.2,        # scaffold tower, rope tower, climb tower
+    'hoistway': 3.2,     # a hoistway trainer is a shaft
+    'climb': 3.2,        # climb tower, climb trees
+    'gantry': 2.6,
+    'crane': 2.6,        # a crane simulator cab sits high in the bay
+    'nacelle': 2.6,
+    'structure': 2.6,    # the EHV structure on the line-worker's floor
+    'loft': 2.4,         # the rigging loft over the equipment bay
+    'pole yard': 2.4,
+    'curtain-wall': 1.8,
+    'riser': 1.8,        # a sprinkler riser runs up through the bay
+    'shore stack': 1.2,
+    'grid rig': 1.2,     # the ceiling grid hangs off it
+}
+_fixture_text = ' | '.join(fx for _, fx in ROOM_FIXTURES.values()).lower()
+for _w in HEADROOM_M:
+    assert _w in _fixture_text, (
+        f'headroom word {_w!r} names equipment web/interiors.py FIXTURES '
+        'never gives any hall')
+
+
+def clear_height(fixtures):
+    """The clear height this hall's own fixtures ask for."""
+    extra = 0.0
+    for lst in fixtures.values():
+        for fx in lst:
+            low = fx.lower()
+            for w, m in HEADROOM_M.items():
+                if w in low and m > extra:
+                    extra = m
+    return round(CLEAR_BASE_M + extra, 2)
+
+
 HALLS = [{
     'slug': h['slug'], 'name': h['name'], 'focus': h['focus'],
     'index': h['index'], 'district': district_of[h['slug']],
@@ -146,6 +197,9 @@ HALLS = [{
                  for r in plans[h['slug']]['rooms'] if r['fixtures']},
     'lay': LAY_IDX[h['slug']],
     'depth': plans[h['slug']]['envelope']['d'],
+    # the eaves height this trade's own fixtures ask for - see clear_height
+    'clear': clear_height({r['strand']: r['fixtures']
+                           for r in plans[h['slug']]['rooms'] if r['fixtures']}),
     'stations': stations_by_hall.get(h['slug'], []),
 } for h in halls_json]
 
@@ -337,6 +391,25 @@ for _k, _expr in KIT_RUNS.items():
         'the page can run as written')
 KIT_RUNS_JS = ', '.join(f'{k}: (w, d) => {e.strip()}' for k, e in KIT_RUNS.items())
 
+# THE HALL'S DRAW-CALL CEILING IS READ, NOT TYPED.
+#
+# web/eval_scene.mjs holds the hall view to its measured baseline plus a
+# stated headroom, and until now that ceiling lived only in the eval: the
+# page drew whatever it drew and found out afterwards, in a browser nobody
+# runs on every change. Eleven halls were over it and the suite was green.
+#
+# So the number travels INTO the page, out of the eval's own source rather
+# than typed beside it, and buildHall() prices itself against it while it
+# builds. A hall that would draw more than the view is scored on throws
+# instead of opening - see priceHall(). One truth, in web/eval_scene.mjs.
+_eval_src = (ROOT / 'web/eval_scene.mjs').read_text()
+_eb = re.search(r'hall:\s*\{\s*calls:\s*([\d_]+)', _eval_src)
+assert _eb, 'web/eval_scene.mjs no longer states a measured hall call baseline'
+_eh = re.search(r'const CALL_HEADROOM = ([\d.]+);', _eval_src)
+assert _eh, 'web/eval_scene.mjs no longer states its draw-call headroom'
+HALL_CALL_BASE = int(_eb.group(1).replace('_', ''))
+HALL_CALL_CEILING = round(HALL_CALL_BASE * float(_eh.group(1)))
+
 DATA = json.dumps({
     'districts': {k: {'name': d['name'], 'halls': d['halls'], 'hue': HUES[k]}
                   for k, d in districts_reg.items()},
@@ -383,6 +456,11 @@ DATA = json.dumps({
         'lesson', 'checklist', 'doctrine', 'quiz')}
         for s in stations_reg['stations']},
     'yard': yard,
+    # the ceiling the page prices itself against, read out of the eval that
+    # scores it rather than restated here - see HALL_CALL_CEILING above
+    'budget': {'hall_draw_calls': HALL_CALL_CEILING,
+               'hall_calls_measured': HALL_CALL_BASE,
+               'from': 'web/eval_scene.mjs'},
     'sims': {'sims': sims_reg['sims'], 'bindings': sims_reg['hall_bindings'],
              'honesty': sims_reg['honesty']['status'],
              'walkHonesty': sims_reg['honesty']['walkaround'],
@@ -4895,6 +4973,21 @@ function clearAdvisors() {
 // reads as a person from across the floor. Only one is ever visible, and
 // the swap happens well outside conversation range.
 const ADV_DETAIL = 20;
+/* ...and at most this many of them at once.
+
+   Distance on its own bounds nothing. A hall is 36 m across and up to 48 m
+   deep, so a learner standing anywhere near the middle of it is inside
+   ADV_DETAIL of every advisor in the building at the same time, and the
+   hall would draw seven rigged bodies - about two hundred draw calls - on
+   top of a building that is already the most expensive view in the bundle.
+   The swap was written as a saving and was really a deferral.
+
+   You talk to one advisor at a time. The second is here so that a body
+   never pops while you turn between two of them, and the rest wear the
+   stand-in however close you stand. This is what makes a hall's cost a
+   number priceHall() can state rather than a function of where the
+   camera happens to be. */
+const ADV_DETAIL_MAX = 2;
 function proxyFigure() {
   const g = new THREE.Group();
   const torso = new THREE.Mesh(boxGeo(.44, .62, .26), mat.part);
@@ -4989,15 +5082,27 @@ function advisorProximity(dt) {
   const btn = advBtnEl ??= document.getElementById('advBtn');
   if (!advisorMeshes.length) { if (nearAdvisor) clearAdvisors(); return; }
   const t = clock.elapsedTime;
-  for (const m of advisorMeshes) {
-    // the Operator is asked via a button, never approached on foot - a
-    // sim's own orbitCam often sits well inside ADV_DETAIL, so distance
-    // alone would leave its full ~40-draw-call rigged body on screen for
-    // the whole run; it stays low-poly always, the same way it stays
-    // reachable without ever needing to be walked up to
-    const isOperator = m.userData.advisor === 'operator';
-    const near = !isOperator
-      && m.getWorldPosition(_advV).distanceTo(eyePos()) < ADV_DETAIL;
+  // how far each advisor is standing, once. The Operator is asked via a
+  // button, never approached on foot - a sim's own orbitCam often sits well
+  // inside ADV_DETAIL, so distance alone would leave its full ~40-draw-call
+  // rigged body on screen for the whole run; it stays low-poly always, the
+  // same way it stays reachable without ever needing to be walked up to.
+  const eye = eyePos();
+  for (const m of advisorMeshes)
+    m.userData.dist = m.userData.advisor === 'operator' ? Infinity
+      : m.getWorldPosition(_advV).distanceTo(eye);
+  // ...and only the ADV_DETAIL_MAX nearest of them are drawn in full. The
+  // rank is counted in place - no sort, no array, nothing allocated in a
+  // frame loop - and ties break on the order they were spawned in, so the
+  // count can never exceed the cap.
+  for (let i = 0; i < advisorMeshes.length; i++) {
+    const m = advisorMeshes[i], d = m.userData.dist;
+    let rank = 0;
+    for (let j = 0; j < advisorMeshes.length; j++) {
+      const e = advisorMeshes[j].userData.dist;
+      if (e < d || (e === d && j < i)) rank++;
+    }
+    const near = d < ADV_DETAIL && rank < ADV_DETAIL_MAX;
     m.userData.body.visible = near;
     m.userData.proxy.visible = !near;
     if (near) idleBreath(m.userData.body, t + m.position.x, dt);
@@ -9188,6 +9293,32 @@ function box(w, h, d, m, x, y, z, group, shadow = true) {
   group.add(b); return b;
 }
 
+/* A stand-in for a Group that collects geometry instead of hanging meshes.
+
+   Everything that draws into the scene here does it by handing a mesh to a
+   parent's .add(), which is what makes a recipe like PROPS.ladder - eight
+   boxes - cost eight draw calls wherever it is used. Hand it one of these
+   instead and the same recipe, unchanged, contributes eight geometries to a
+   pool keyed by material, which flushParts() then merges into one mesh per
+   material. The recipe does not know the difference and does not have to:
+   the cost is decided by the parent it is given, not by how it is written.
+
+   It takes the mesh's OWN matrix, so a recipe that rotates or scales a
+   piece (PROPS.mixer tilts its drum, PROPS.wheelbarrow turns its wheel)
+   merges exactly as it draws. The geometry is cloned first because boxGeo()
+   hands back a page-wide shared box - baking a translation into that would
+   move every box in the world. */
+function partCollector(pool) {
+  return { add(...objs) {
+    for (const o of objs) {
+      if (!o.isMesh) throw new Error('a part collector takes meshes; it was handed a ' + o.type);
+      o.updateMatrix();
+      const ge = o.geometry.clone().applyMatrix4(o.matrix);
+      (pool.get(o.material) ?? pool.set(o.material, []).get(o.material)).push(ge);
+    }
+  } };
+}
+
 /* ------------------------------------------------------- yard props ----- */
 const PROPS = {
   sawhorse: (g,x,z) => { box(1.6,.1,.25,mat.wood,x,.75,z,g);
@@ -9225,36 +9356,47 @@ let hallGroup = null, beacons = [], floors = [], roomRects = [], curRoom = null;
 // cannot use, and none you can use and cannot see.
 let hallSolids = [];
 let cribCount = 0;
+// what the hall standing in the view costs the renderer, counted by
+// priceHall() as the last act of building it
+let hallCost = null;
 
 /* ------------------------------------------------------- the tool crib --- */
 // The toolroom registry hangs a district's twelve tools on a pegboard in
 // every hall's tools room. Shapes are schematic render kinds the registry
 // declares; clicking the board opens the crib and its deterministic drill.
-function toolMesh(tl) {
-  const m = new THREE.MeshStandardMaterial({
-    color: new THREE.Color().setHSL(tl.hue / 360, .5, .55),
-    roughness: .45, metalness: .35 });
+/* One tool's shape, in its own frame, ALREADY CARRYING ITS COLOUR.
+
+   Each of the twelve tools on a crib board wears the hue its registry entry
+   declares, and a hue used to mean a material of its own, so a pegboard cost
+   twelve draw calls - in every one of the 111 halls, whether or not anybody
+   ever opened the crib. The colour is a vertex attribute now, so the twelve
+   shapes merge into one mesh wearing one shared material and the board costs
+   one. The hue on the peg is the registry's, unchanged; only where it is
+   stored moved, from a material to the vertices. */
+function toolGeo(tl) {
   let geo;
   switch (tl.shape) {
-    case 'bar': geo = boxGeo(.05, .46, .05); break;
-    case 'blade': geo = boxGeo(.02, .34, .16); break;
+    case 'bar': geo = new THREE.BoxGeometry(.05, .46, .05); break;
+    case 'blade': geo = new THREE.BoxGeometry(.02, .34, .16); break;
     case 'cyl': geo = new THREE.CylinderGeometry(.035, .035, .4, 8); break;
     case 'cone': geo = new THREE.ConeGeometry(.07, .3, 8); break;
-    case 'meter': geo = boxGeo(.09, .26, .18); break;
-    case 'case': geo = boxGeo(.12, .2, .3); break;
+    case 'meter': geo = new THREE.BoxGeometry(.09, .26, .18); break;
+    case 'case': geo = new THREE.BoxGeometry(.12, .2, .3); break;
     case 'coil': geo = new THREE.TorusGeometry(.13, .035, 8, 14); break;
     case 'hook': geo = new THREE.TorusGeometry(.1, .04, 8, 12, Math.PI * 1.5); break;
     default: {                                   // wrench: shaft + open head
-      const grp = new THREE.Group();
-      const bar = new THREE.Mesh(boxGeo(.045, .38, .045), m);
-      const head = new THREE.Mesh(boxGeo(.05, .09, .14), m);
-      head.position.y = .21; grp.add(bar, head);
-      grp.traverse((o) => { if (o.isMesh) o.castShadow = true; });
-      return grp;
+      const bar = new THREE.BoxGeometry(.045, .38, .045);
+      const head = new THREE.BoxGeometry(.05, .09, .14);
+      head.translate(0, .21, 0);
+      geo = mergeGeometries([bar, head]);
+      bar.dispose(); head.dispose();
     }
   }
-  const mesh = new THREE.Mesh(geo, m); mesh.castShadow = true;
-  return mesh;
+  const col = new THREE.Color().setHSL(tl.hue / 360, .5, .55);
+  const n = geo.attributes.position.count, arr = new Float32Array(n * 3);
+  for (let i = 0; i < n; i++) { arr[i * 3] = col.r; arr[i * 3 + 1] = col.g; arr[i * 3 + 2] = col.b; }
+  geo.setAttribute('color', new THREE.BufferAttribute(arr, 3));
+  return geo;
 }
 function buildCrib(h, rx, rz, rw, rd) {
   const dk = h.district, crib = D.tools.cribs[dk];
@@ -9264,14 +9406,24 @@ function buildCrib(h, rx, rz, rw, rd) {
   board.userData.crib = dk;
   beacons.push(board);
   box(.06, .08, bw, mat.post, bx - .06, 2.38, rz, hallGroup, false);  // rail
-  crib.tools.forEach((tl, i) => {
+  // the twelve pegs merge into ONE mesh: see toolGeo() on where the hue went
+  const pegs = crib.tools.map((tl, i) => {
     const row = i % 2, col = (i - row) / 2;
-    const tm = toolMesh(tl);
-    tm.position.set(bx - .16, row ? 1.02 : 1.9,
-      rz - bw / 2 + (col + .5) * bw / 6);
-    tm.rotation.x = .1;
-    hallGroup.add(tm);
+    const ge = toolGeo(tl);
+    ge.applyMatrix4(new THREE.Matrix4().makeRotationX(.1).setPosition(
+      bx - .16, row ? 1.02 : 1.9, rz - bw / 2 + (col + .5) * bw / 6));
+    return ge;
   });
+  /* One material for all twelve, and a HALL-OWNED one: the shared `mat`
+     table is a vocabulary other packs are held to (kit/test.mjs asserts
+     its own materials list is exactly that table), and a pegboard is not
+     a word in it. It is left unmarked, so disposeOf() frees it with the
+     hall, like the wainscots and luminaires around it. */
+  const peg = new THREE.Mesh(mergeGeometries(pegs),
+    new THREE.MeshStandardMaterial({ vertexColors: true, roughness: .45,
+                                     metalness: .35 }));
+  pegs.forEach((ge) => ge.dispose());
+  peg.castShadow = true; hallGroup.add(peg);
   // the crib chest below the board, and its check-out counter
   const chest = box(.8, .62, 1.1,
     new THREE.MeshStandardMaterial({ color: 0x8a2f22, roughness: .6 }),
@@ -9489,6 +9641,9 @@ function flushProps(g) {
   for (const ge of propGeoCache.values()) ge.dispose();  // clones went to the pool and the instances
   propGeoCache.clear();
 }
+// the hall's own price, and the ceiling it was held to - both read, neither
+// typed: the ceiling comes out of web/eval_scene.mjs at build time
+window.__tc3dHall = () => hallCost && { ...hallCost, by: { ...hallCost.by } };
 window.__tc3dProps = () => {
   if (!hallGroup || !propStat) return null;
   return { slug: propStat.slug, rooms: propStat.rooms, wanted: propStat.wanted,
@@ -9499,6 +9654,122 @@ window.__tc3dProps = () => {
            declared: { per_hall: D.props.budget.per_hall,
                        self_imposed: D.props.budget.self_imposed } };
 };
+
+/* ---------------------------------------------- the three training levels ---
+   Every hall teaches every one of its eleven strands at three levels -
+   level 0 fundamentals, level 40 applied, level 80 mastery - and
+   D.strandmods has carried them since the pack was built. They were
+   readable in one panel and standing nowhere in the building: a learner
+   could walk the whole hall without meeting the ladder they are on.
+
+   The rungs are read out of the registry, not restated here, and they are
+   read ONCE for the building because all eleven strands agree on them.
+   That agreement is the thing that makes a hall-wide ladder a fact rather
+   than a summary, so it is checked rather than assumed: if the strands ever
+   stop agreeing, this throws and the page does not open with a ladder that
+   is true of only one strand. */
+const TIER_LADDER = (() => {
+  const rungs = Object.entries(D.strandmods).map(([st, m]) =>
+    [st, m.samples.map((x) => x.level + ':' + x.tier).join(' | ')]);
+  const one = new Set(rungs.map(([, r]) => r));
+  if (one.size !== 1)
+    throw new Error('D.strandmods: the strands do not agree on one ladder, so a '
+      + 'hall-wide one would be a guess - '
+      + rungs.map(([st, r]) => st + ' = ' + r).join('; '));
+  return D.strandmods[rungs[0][0]].samples.map((x) => ({ level: x.level, tier: x.tier }));
+})();
+
+/* ------------------------------------------ what a hall costs to draw ---
+   Eleven of the 111 halls shipped over the draw-call ceiling and every
+   check in the bundle was green, because the only thing that measures draw
+   calls is web/eval_scene.mjs - a browser, a served page, an opt-in run -
+   and it had only ever measured D.halls[0]. Ironworkers costs 164 and sits
+   almost exactly at the median, so it reported comfortable headroom while
+   bricklayers, the hall a visitor with no ?hall= actually landed on, cost
+   238. A budget checked against the median case is not a budget.
+
+   The page prices itself now, while it builds, against the SAME ceiling the
+   eval scores it with - D.budget.hall_draw_calls, read out of
+   web/eval_scene.mjs by the builder rather than typed here. Measured in
+   this scene, `renderer.info.render.calls` in the hall view equals the
+   number of VISIBLE drawables standing in it, one call each, so counting
+   them is not a model of the cost, it is the cost.
+
+   Two deliberate choices:
+
+   * It counts the whole SCENE, not just the hall group, because that is
+     what the eval scores: the hall stands on a ground plane and under a
+     sky, and those draw too.
+   * It counts a sign whether or not the field-of-vision pass has hidden it
+     yet, so the figure is what the hall CAN draw, never less. That makes
+     it an over-count against a measured frame, which is the safe
+     direction for a ceiling to be wrong in.
+
+   And it FAILS CLOSED. A hall over its budget throws and does not open,
+   rather than opening and being found out by a browser run somebody may
+   not make. That is the whole lesson of the breach this replaces. */
+function priceHall(sg) {
+  const by = { mesh: 0, instanced: 0, sprite: 0 };
+  const drawn = (o) => o.isInstancedMesh || o.isSprite || o.isMesh;
+  // a whole subtree's drawables, IGNORING the visible flags inside it -
+  // used only for the two advisor bodies, which are swapped per frame
+  const sub = (o) => {
+    let k = drawn(o) ? 1 : 0;
+    for (const c of o.children) k += sub(c);
+    return k;
+  };
+  const swaps = [];
+  let total = 0, inHall = 0;
+  const walk = (o, hall) => {
+    if (!o.visible) return;
+    const mine = hall || o === hallGroup;
+    if (o.userData.advisor) {
+      /* An advisor carries two bodies and a name plate and draws exactly
+         one body, whichever advisorProximity() picked this frame. Price it
+         at its stand-in, and remember what the rigged body would add; the
+         dearest ADV_DETAIL_MAX of those are added back below, because that
+         is the most the cap can ever show at once. Counting the flags as
+         they stand here would price whatever the last frame happened to
+         choose, which is not a budget. */
+      const p = sub(o.userData.proxy), b = sub(o.userData.body);
+      const rest = sub(o) - p - b;             // the plate over their head
+      total += p + rest; if (mine) inHall += p + rest;
+      by.mesh += p; by.sprite += rest;
+      swaps.push(b - p);
+      return;
+    }
+    if (o.isInstancedMesh) { by.instanced++; total++; if (mine) inHall++; }
+    else if (o.isSprite) { by.sprite++; total++; if (mine) inHall++; }
+    else if (o.isMesh) { by.mesh++; total++; if (mine) inHall++; }
+    for (const c of o.children) walk(c, mine);
+  };
+  walk(scene, false);
+  /* What the hall costs when somebody walks up to its advisors. It is a
+     SWAP, not an addition - the stand-in priced above hides as the rigged
+     body shows - so it is stated on its own line rather than folded into
+     the figure the ceiling is about.
+
+     It is reported and NOT held to the ceiling, and that is a deliberate,
+     stated limit of this budget rather than an oversight. The 157 calls
+     the ceiling is derived from were measured on the orbit view that
+     web/eval_scene.mjs scores, where every advisor wears its stand-in;
+     holding the walk-up peak to a number measured without it would be
+     inventing a ceiling rather than reading one. What the cap above does
+     buy is that this figure is now BOUNDED and computable at all: before
+     it, every advisor in the building could be drawn in full at once. */
+  swaps.sort((a, b2) => b2 - a);
+  const peak = total + swaps.slice(0, ADV_DETAIL_MAX).reduce((a, b2) => a + b2, 0);
+  const ceiling = D.budget.hall_draw_calls;
+  if (total > ceiling)
+    throw new Error('hall ' + sg + ' stands ' + total + ' drawables in the view and '
+      + D.budget.from + ' holds the hall view to ' + ceiling + ' draw calls'
+      + ' (' + inHall + ' of them are the hall itself). A hall over its budget does'
+      + ' not open: merge or instance what is being drawn per item.');
+  return { slug: sg, drawCalls: total, hall: inHall, walkPeak: peak,
+           advisorsAtDetail: ADV_DETAIL_MAX, by,
+           ceiling, measuredBaseline: D.budget.hall_calls_measured,
+           from: D.budget.from };
+}
 
 function buildHall(sg) {
   if (hallGroup) { scene.remove(hallGroup); disposeOf(hallGroup); }
@@ -9519,6 +9790,19 @@ function buildHall(sg) {
   const h = D.halls.find(x => x.slug === sg);
   const hue = D.districts[h.district].hue;
   const W = 12 * U, DEP = h.depth * U;
+  /* The shed's clear height, and everything hung off it.
+
+     It used to be 3.2 in every hall, which is where the number 3.2 stopped
+     being a height and became a habit: a rigging loft, a hoistway trainer
+     and a climbing tower all stood under the same 2.6 m of clear air as a
+     records room. `clear` is derived per hall at build time from the
+     fixtures the trade's OWN focus line earned it - see clear_height() in
+     the builder - so it is read here, never defaulted: a hall that shipped
+     without one is a broken build, not a 3.2 m fallback. */
+  if (typeof h.clear !== 'number')
+    throw new Error('D.halls[' + sg + '].clear: no eaves height reached the page. '
+      + 'It is derived at build time from the fixtures this trade earned.');
+  const HT = h.clear, EAVE = .35 + HT;     // slab top is .35
   const cx = (x) => x - W/2, cz = (z) => z - DEP/2;   // centre the building
 
   // slab and perimeter (front face open).
@@ -9530,11 +9814,11 @@ function buildHall(sg) {
   // foundry is brick-faced to the eaves and a cleanroom is coved white.
   const wallRec = D.walls[h.slug];
   const shellW = D.wallCat[wallRec.procedure.wall];
-  const shellMat = wallMat(shellW, W / U * 2, 3.2);
+  const shellMat = wallMat(shellW, W / U * 2, HT);
   box(W + .6, .35, DEP + .6, mat.slab, 0, .17, 0, hallGroup);
-  box(W, 3.2, .25, shellMat, 0, 1.95, cz(DEP), hallGroup);          // back
-  box(.25, 3.2, DEP, shellMat, cx(0), 1.95, 0, hallGroup);          // left
-  box(.25, 3.2, DEP, shellMat, cx(W), 1.95, 0, hallGroup);          // right
+  box(W, HT, .25, shellMat, 0, .35 + HT / 2, cz(DEP), hallGroup);          // back
+  box(.25, HT, DEP, shellMat, cx(0), .35 + HT / 2, 0, hallGroup);          // left
+  box(.25, HT, DEP, shellMat, cx(W), .35 + HT / 2, 0, hallGroup);          // right
   // the shell is solid: the walker used to be held in a box 3 m wider than
   // the building on each side, so the side walls were scenery
   wallRect(0, cz(DEP), W / 2, .125);
@@ -9557,22 +9841,28 @@ function buildHall(sg) {
   const fascia = new THREE.Mesh(boxGeo(W + .8, .55, .5),
     new THREE.MeshStandardMaterial({
       color: new THREE.Color().setHSL(hue/360, .55, .5), roughness: .5 }));
-  fascia.position.set(0, 3.6, cz(0)); fascia.castShadow = true;
+  fascia.position.set(0, EAVE + .05, cz(0)); fascia.castShadow = true;
   hallGroup.add(fascia);
   const sign = label(h.name, D.i18n[loc].districts[h.district], 1.35,
     { kind: 'hall', hue: D.districts[h.district].hue });
-  sign.position.set(0, 5.1, cz(0)); hallGroup.add(sign);
+  sign.position.set(0, EAVE + 1.55, cz(0)); hallGroup.add(sign);
 
-  // roof trusses across the span, and lit strips along the side walls
+  /* Roof trusses across the span, and lit strips along the side walls.
+
+     A truss every six metres and a lamp under it is a cost that grows with
+     the building: the 12-unit halls hang six of each and the 16-unit halls
+     eight, so the roof alone was worth eight draw calls of difference
+     between the shallowest hall and the deepest. They are all one metal
+     and one glow, and a roof does not move, so they pool. */
+  const roofPool = new Map();
+  const roof = partCollector(roofPool);
   for (let tz = 4; tz < DEP - 1; tz += 6) {
-    box(W - .6, .18, .5, mat.metal, 0, 3.05, cz(tz), hallGroup, false);
-    const lamp = new THREE.Mesh(boxGeo(1.6, .1, .5), mat.win);
-    lamp.position.set(0, 2.9, cz(tz)); hallGroup.add(lamp);
+    box(W - .6, .18, .5, mat.metal, 0, EAVE - .5, cz(tz), roof, false);
+    box(1.6, .1, .5, mat.win, 0, EAVE - .65, cz(tz), roof, false);
   }
-  for (const wx of [cx(0) + .18, cx(W) - .18]) {
-    const strip = new THREE.Mesh(boxGeo(.06, .55, DEP * .8), mat.win);
-    strip.position.set(wx, 2.55, 0); hallGroup.add(strip);
-  }
+  for (const wx of [cx(0) + .18, cx(W) - .18])
+    box(.06, .55, DEP * .8, mat.win, wx, EAVE - 1, 0, roof, false);
+  flushParts(roofPool, hallGroup, false);
 
   // rooms: tinted floor + low partitions + label.
   // The rectangles are worked out FIRST, because a doorway belongs to the
@@ -9587,7 +9877,11 @@ function buildHall(sg) {
   propPool = new Map(); propInst = new Map();
   propStat = { slug: sg, rooms: h.rooms.length, wanted: 0, drawn: 0, tris: 0,
                byProp: {}, skipped: [], pooledCalls: 0, instancedCalls: 0 };
-  for (const r of h.rooms) {
+  // the trade's fixture benches, pooled across all eleven rooms
+  const benchPool = new Map(), benchTop = partCollector(benchPool);
+  // the room luminaires, one material per distinct illuminance in the record
+  const lumPool = new Map(), lumTop = partCollector(lumPool), lumMats = new Map();
+  h.rooms.forEach((r, ri) => {
     const rw = r.w * U, rd = r.h * U;
     const rx = cx(r.x * U + rw/2), rz = cz(r.y * U + rd/2);
     const fin = D.finCat[D.finishes[h.slug][r.strand].surface];
@@ -9628,15 +9922,66 @@ function buildHall(sg) {
     (r.fixtures || []).slice(0, 3).forEach((fx, fi) => {
       const bx = spots[fi] ?? rx;
       const bz = rz + rd/2 - .8;
-      box(1.3, .12, .7, mat.steel, bx, .95, bz, hallGroup);
-      box(.12, .5, .6, mat.part, bx - .5, .62, bz, hallGroup);
-      box(.12, .5, .6, mat.part, bx + .5, .62, bz, hallGroup);
-      box(.5, .35, .35, mat.metal, bx, 1.25, bz, hallGroup);
+      // four boxes a bench, and a hall benches as many fixtures as its own
+      // focus line names - one in the plainest trade, four in the busiest.
+      // They pool across the whole hall, so the bench a trade earns costs
+      // the same nothing whether it is the first or the sixteenth.
+      box(1.3, .12, .7, mat.steel, bx, .95, bz, benchTop);
+      box(.12, .5, .6, mat.part, bx - .5, .62, bz, benchTop);
+      box(.12, .5, .6, mat.part, bx + .5, .62, bz, benchTop);
+      box(.5, .35, .35, mat.metal, bx, 1.25, bz, benchTop);
       const fl = label(fx, null, .34, { kind: 'fixture' });
       fl.position.set(bx, 1.85, bz); hallGroup.add(fl);
       wallRect(bx, bz, .7, .4);          // you cannot walk through a bench
       benches.push(hallSolids[0].rects[hallSolids[0].rects.length - 1]);
     });
+
+    /* THE TRAINING LADDER, STOOD UP.
+
+       The Classroom's own purpose line is "Level tests and the instructor
+       track", and the levels it tests are real: TIER_LADDER above reads
+       three of them - 0, 40 and 80 - straight out of D.strandmods, which
+       every strand in every hall agrees on. They were a table in a panel.
+       They are a rig now, and a rig you can see is multi-level: one
+       platform per rung, each one higher than the one before it, so the
+       shape of the ladder is the shape of the thing.
+
+       It stands in a SOLID back bay - the same runSegments() pieces the
+       benches use, so it can no more close a doorway than a bench can -
+       and it takes the widest bay the fixtures have not already taken. A
+       Classroom too narrow for the rig gets none rather than a rig across
+       its door; `blast` is the only fixture any trade puts in this room,
+       so that is a handful of halls at most. It registers as solid and
+       joins `benches`, so the props that anchor to back corners stand
+       clear of it the way they stand clear of a bench. */
+    if (r.strand === 'leadership') {
+      const bay = bays[benches.length ? 1 : 0];
+      const rung = .16, step = .22;                  // first platform, then each
+      const tread = 1.15, joint = .1;
+      const span = TIER_LADDER.length * tread + (TIER_LADDER.length - 1) * joint;
+      if (bay && bay[1] >= span + .4) {
+        const [bc] = bay, bz2 = rz + rd / 2 - .95;
+        TIER_LADDER.forEach((rg, ti) => {
+          const tx = bc - span / 2 + tread / 2 + ti * (tread + joint);
+          const hgt = rung + ti * step;
+          box(tread, hgt, 1.1, mat.steel, tx, .35 + hgt / 2, bz2, benchTop);
+          box(tread - .16, .05, .06, mat.post, tx, .35 + hgt + .03,
+              bz2 - .52, benchTop);            // the nosing on each tread
+          /* `route` is the sign the registry keeps for a way THROUGH
+             something rather than a name for it, which is what a ladder
+             is. The tier is named in the reader's language and the rung
+             carries the level the registry files it at. */
+          const rl2 = label(D.i18n[loc].tiers[rg.tier],
+            'level ' + rg.level, .3, { kind: 'route' });
+          // the sign climbs with its own rung, and by more than the tread
+          // rises: three plates 22 cm apart are one illegible plate
+          rl2.position.set(tx, .35 + hgt + .5 + ti * .32, bz2);
+          hallGroup.add(rl2);
+        });
+        wallRect(bc, bz2, span / 2, .55);
+        benches.push(hallSolids[0].rects[hallSolids[0].rects.length - 1]);
+      }
+    }
     // The partitions used to be four boxes of one flat mat.part, in every
     // room of every hall. A room's partition now wears that ROOM's wall -
     // the marker panel in the layout room, the fabric-faced panel where
@@ -9706,21 +10051,28 @@ function buildHall(sg) {
     placeRoomProps(h, r, rx, rz, rw, rd, doors, benches, rc.ppe,
                    (rw - floor.geometry.parameters.width) / 2, reserved);
     const luxN = Math.max(0, Math.min(1, (rc.lux - 200) / 800));
-    const lmat = new THREE.MeshStandardMaterial({
-      color: 0x0b0f11, emissive: 0xffe6c0,
-      emissiveIntensity: .30 + luxN * .85, roughness: .4 });
-    const lum = new THREE.Mesh(boxGeo(Math.min(rw * .5, 2.2), .08, .34), lmat);
-    lum.position.set(rx, 2.86, rz); hallGroup.add(lum);
+    /* The fitting is as bright as the room's own lux record asks, and rooms
+       that ask for the same illuminance get the SAME material rather than a
+       private copy of it - so the eleven luminaires cost one draw call per
+       distinct illuminance in the building instead of eleven per building.
+       The key is the record's own figure: two rooms share a fitting only
+       when the registry says they are lit alike. */
+    const lmat = lumMats.get(rc.lux) ?? lumMats.set(rc.lux,
+      new THREE.MeshStandardMaterial({ color: 0x0b0f11, emissive: 0xffe6c0,
+        emissiveIntensity: .30 + luxN * .85, roughness: .4 })).get(rc.lux);
+    box(Math.min(rw * .5, 2.2), .08, .34, lmat, rx, EAVE - .69, rz, lumTop, false);
     // An emissive box is a bright OBJECT, not a light - it would have made
     // the luminaire look brighter over a room that was lit exactly the same
     // as its neighbour, which is a picture of the fix rather than the fix.
     // The lamp therefore carries a real light, reaching only its own room
     // (the decay and the range are the room's, not the hall's), so a 1000 lx
     // inspection bench genuinely reads brighter than a 300 lx briefing room.
+    // the fitting hangs at EAVE - .85 over a floor at .38, so the height
+    // the candela conversion is given rides up with the eaves
     const rl = new THREE.PointLight(0xffe9c8,
-      lampCd(.55 + luxN * 1.45, 2.32, 1.7),   // 2.7 m fitting over a .38 m floor
+      lampCd(.55 + luxN * 1.45, EAVE - 1.23, 1.7),
       Math.max(rw, rd) * .85, 1.7);
-    rl.position.set(rx, 2.7, rz);
+    rl.position.set(rx, EAVE - .85, rz);
     // a hall has eleven of these and a forward renderer pays for every one
     // of them on every fragment; roomLitStep() below lights the nearest few
     rl.userData.roomLight = true;
@@ -9745,6 +10097,57 @@ function buildHall(sg) {
       hallGroup.add(plac);
     }
 
+    /* The stencilled door number.
+
+       labels/registry declares a `door` sign - a stencil, mono, readable
+       only within 14 m - and nothing in the world had ever hung one. It
+       goes at a doorway this room ACTUALLY HAS: the openings below are the
+       ones planDoors() cut and the partitions were drawn around, so a
+       stencil can never mark a wall you cannot walk through. The number is
+       the room's own place in the hall's programme, and the line under it
+       is the strand, in the reader's language. */
+    const doorAt = () => {
+      for (const [key, along] of [['z@' + (rz - rd / 2).toFixed(2), 'x'],
+                                  ['z@' + (rz + rd / 2).toFixed(2), 'x'],
+                                  ['x@' + (rx - rw / 2).toFixed(2), 'z'],
+                                  ['x@' + (rx + rw / 2).toFixed(2), 'z']]) {
+        const cuts = doors.get(key);
+        if (!cuts) continue;          // this side of the room is solid wall
+        const lo = along === 'x' ? rx - rw / 2 : rz - rd / 2;
+        const hi = along === 'x' ? rx + rw / 2 : rz + rd / 2;
+        const d = cuts.find(([a, b]) => a >= lo - .02 && b <= hi + .02);
+        if (!d) continue;
+        const m = (d[0] + d[1]) / 2, at = Number(key.slice(2));
+        return along === 'x' ? [m, at] : [at, m];
+      }
+      return null;                    // a room with no opening at all
+    };
+    const dAt = doorAt();
+    if (dAt) {
+      const num = label(String(ri + 1).padStart(2, '0'),
+        D.i18n[loc].strands[r.strand], .3, { kind: 'door' });
+      // just inside the room, at the height a door number is stencilled
+      num.position.set(dAt[0] + (rx - dAt[0]) * .06, 2.05,
+                       dAt[1] + (rz - dAt[1]) * .06);
+      hallGroup.add(num);
+    }
+
+    /* And the hazard notice, where the room's OWN record names a hazard.
+
+       A room either records hazards or it does not - D.baseCond carries no
+       `hazards` key at all and D.condOver adds one only where the trade has
+       them - so the absence is an answer, not a missing fact, and it is
+       read as one. 63 of the 111 halls have at least one such room; the
+       other 48 get no notice rather than a notice saying there is nothing,
+       which is the same rule the PPE placard above follows. */
+    const hz = 'hazards' in rc ? rc.hazards : [];
+    if (hz.length) {
+      const note = label(hz.join(' \u00b7 '), D.i18n[loc].strands[r.strand],
+        .4, { kind: 'hazard' });
+      note.position.set(rx, 1.98, rz - rd / 2 + .3);
+      hallGroup.add(note);
+    }
+
     // stations standing in this room
     const here = stns.filter(s => s.room === r.label);
     here.forEach((s, i) => {
@@ -9756,10 +10159,49 @@ function buildHall(sg) {
       gem.userData.station = s.station_id; gem.userData.spin = true;
       post.userData.station = s.station_id;
       hallGroup.add(post, gem); beacons.push(gem, post);
+      /* The machine tag. `asset` is the fifth sign labels/registry declares
+         and the page never hung: a mono tag, readable within 18 m, carrying
+         the thing's own identifier rather than a name somebody wrote for
+         it. A station beacon stood here with no way to tell which seat it
+         was without clicking it. */
+      const tag = label(s.station_id, s.name, .3, { kind: 'asset' });
+      tag.position.set(px, 2.66, rz); hallGroup.add(tag);
     });
 
-  }
+  });
+  flushParts(benchPool, hallGroup);
+  flushParts(lumPool, hallGroup, false);      // a lamp does not shadow itself
   flushProps(hallGroup);
+
+  /* THE WAY OUT, AND WHERE YOU GO WHEN YOU TAKE IT.
+
+     `egress` and `muster` are the last two of the five signs
+     labels/registry declares and the world had never hung. Both are read
+     off the plan rather than placed by eye:
+
+       * The building has exactly ONE open face - the plan draws a back and
+         two sides and leaves the front open, and planDoors() treats that
+         frontage as a doorway for the same reason - so the way out is that
+         face, and a chevron stands in each back corner pointing down the
+         hall at it.
+       * What is through it is the campus this hall stands on, so that is
+         what both signs name.
+       * The muster point is the apron: the strip in front of the open face
+         that the plan keeps clear of building, which is the one piece of
+         ground here that is outside and not floor.
+
+     They are training signage in a drawn building. The registry says so in
+     its own honesty line, and neither is life-safety equipment nor an
+     approved sign. */
+  const outTo = D.campuses[campusKey].name;
+  for (const ex of [cx(0) + 1.6, cx(W) - 1.6]) {
+    const way = label(outTo, null, .5, { kind: 'egress' });
+    way.position.set(ex, 2.45, cz(DEP) - .6);
+    hallGroup.add(way);
+  }
+  const muster = label(outTo, h.name, .62, { kind: 'muster' });
+  muster.position.set(0, 2.3, cz(0) - 7);
+  hallGroup.add(muster);
 
   // the apron: recovered yard layout for seeded halls, a light deterministic
   // dressing for the rest. Original yard coords span ±16; fold them onto the
@@ -9770,17 +10212,33 @@ function buildHall(sg) {
         return { t: keys[(h.index * 7 + i * 3) % keys.length],
                  p: [((h.index + i * 5) % 13) - 6 + ((i % 2) ? 8 : -8), 0, -(4 + (i * 2.4) % 10)] };
       });
+  /* The apron pools per material, exactly as the district decoration and
+     the room props already do.
+
+     This was the single largest source of per-hall variance, and it was
+     invisible because only one hall was ever measured. A hall with seats
+     lays out D.yard - 25 recovered pieces, 72 meshes - and a hall without
+     lays out 7 generated ones, 17 to 26 meshes. So a seeded hall carried
+     about fifty more draw calls than an unseeded one for scenery nothing
+     raycasts, nothing moves and nothing picks: every hall over the 196
+     ceiling was a hall with a seat on its apron, and every hall under it
+     was one without. Merged, both cost one mesh per material used. */
+  const apronPool = new Map();
+  const apron = partCollector(apronPool);
   for (const pr of props) {
     const fn = PROPS[pr.t]; if (!fn) continue;
     const px = pr.p[0] * (h.stations.length ? .95 : 1);
     const pz = h.stations.length ? -(DEP/2 + 3 + (pr.p[2] + 16) * .42) : cz(0) + pr.p[2];
     if (Math.abs(px) > 60 || Math.abs(pz) > 60) continue;
-    fn(hallGroup, px, pz);
+    fn(apron, px, pz);
   }
+  flushParts(apronPool, hallGroup);
   clearAdvisors();
   clearFauna();
   spawnHallAdvisors(h, W, DEP);
   scene.add(hallGroup);
+  // the hall pays for itself before anybody sees it - see priceHall()
+  hallCost = priceHall(sg);
 
   document.getElementById('hname').textContent = h.name + scoreChip();
   // the regional chapter line: home region marked, chapters at the rest
@@ -10029,14 +10487,20 @@ function building(h, style, g, pool, ox = 0, oz = 0) {   // built at the local o
   else beaconAt.push(null);
   return { mesh: bld, w: wid, d: dep };
 }
-// the district's pooled decoration: one mesh per material, into the district group
-function flushParts(pool, g) {
+/* The district's pooled decoration: one mesh per material, into the group.
+
+   `shadow` is the pool's, not a per-piece flag, because a merged mesh has
+   only one: the pieces that went in can no longer each answer for
+   themselves. It matters - the hall roof pools its lamps with its trusses,
+   and a luminaire that casts a shadow puts a dark bar under the light it is
+   supposed to be giving - so it is stated at the flush rather than assumed. */
+function flushParts(pool, g, shadow = true) {
   const out = [];
   for (const [m2, list] of pool) {
     const merged = mergeGeometries(list);
     list.forEach((ge) => ge.dispose());
     const mesh = new THREE.Mesh(merged, m2);
-    mesh.castShadow = true; mesh.receiveShadow = true;
+    mesh.castShadow = shadow; mesh.receiveShadow = true;
     g.add(mesh); out.push(mesh);
   }
   pool.clear();

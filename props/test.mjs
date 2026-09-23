@@ -224,7 +224,7 @@ ok('no prop id collides with the page\'s EXISTING outdoor yard prop table, and t
       && !page.includes('ROOM_PROPS') && reg.page_contract.symbol.includes('ROOM_PROPS');
   })());
 ok('every page function the contract leans on is one the page actually has',
-  page.includes('function flushParts(pool, g)') && page.includes('function wallRect(')
+  /function flushParts\(pool, g[,)]/.test(page) && page.includes('function wallRect(')
   && page.includes('function boxGeo(') && page.includes('function buildHall(')
   && page.includes('function condOf(') && page.includes('mergeGeometries')
   && ['pooling', 'instancing', 'geometry', 'materials', 'solidity',
@@ -487,6 +487,15 @@ ok('and standing the district catalogue too would add no draw call either, becau
   && reg.budget.district_plan.draw_calls_after <= reg.budget.ceiling_source.max_calls
   && reg.budget.district_plan.triangles_after <= reg.budget.ceiling_source.max_tris);
 
+ok('instancing is a reserved mode too now, and the pack says why it stopped using it: an instanced type is a draw call and a pooled piece of a material the hall already merges is not',
+  reg.counts.instanced === 0 && reg.counts.own_mesh === 0
+  && reg.counts.pooled === props.length
+  && everything.every((p) => p.merges === 'pooled')
+  && /RESERVED/.test(reg.merge_modes.instanced)
+  && /saves five calls/.test(reg.merge_modes.instanced)
+  && /never one per prop/.test(reg.budget.per_hall.calls_are)
+  && reg.budget.per_hall.calls_max <= reg.materials.allowed.length);
+
 /* ------------------------------------------------- the forms and the fit - */
 ok('every piece is cut from a form this pack declares, and every form it declares has something cut from it',
   (() => {
@@ -500,6 +509,18 @@ ok('every piece is cut from a form this pack declares, and every form it declare
         .every((p) => reg.forms.wall_forms.includes(p.form))
       && everything.filter((p) => p.layout.anchor !== 'wall-mounted')
         .every((p) => !reg.forms.wall_forms.includes(p.form));
+  })());
+ok('the pack counts how many of the three hundred are really a different solid, and publishes the repeats rather than nudging a dimension to hide them',
+  (() => {
+    const key = (p) => JSON.stringify(p.recipe.parts);
+    const distinct = new Set(everything.map(key)).size;
+    return reg.geometry_spread.distinct === distinct
+      && reg.geometry_spread.of === everything.length
+      && reg.geometry_spread.repeated === everything.length - distinct
+      && reg.counts.distinct_geometries === distinct
+      && reg.counts.repeated_geometries === everything.length - distinct
+      && distinct > everything.length * 0.75
+      && /a bin is a bin/.test(reg.geometry_spread.what_repeats);
   })());
 ok('NOTHING IN THE CATALOGUE IS PADDING: every one of the three hundred stands in at least one real room of one real hall',
   everything.every((p) => p.fit_out.rooms >= 1 && p.fit_out.instances >= p.fit_out.rooms)

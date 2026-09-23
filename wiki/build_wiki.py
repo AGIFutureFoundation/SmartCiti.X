@@ -70,6 +70,7 @@ sky = json.load(open(ROOT / 'sky/registry/sky.json'))
 lessons = json.load(open(ROOT / 'lessons/registry/lessons.json'))
 kit = json.load(open(ROOT / 'kit/registry/kit.json'))
 props = json.load(open(ROOT / 'props/registry/props.json'))
+venue = json.load(open(ROOT / 'venue/registry/venue.json'))
 respond = json.load(open(ROOT / 'respond/registry/respond.json'))
 ei = json.load(open(ROOT / 'ei/registry/ei.json'))
 auth = json.load(open(ROOT / 'auth/registry/auth.json'))
@@ -167,6 +168,9 @@ content graph and details:
 | **The lessons** (`lessons/registry/lessons.json`) | {lessons['counts']['lessons']} walkable lessons, {lessons['counts']['steps']} steps in {lessons['counts']['step_kinds']} kinds, across all {lessons['counts']['strands_covered']} skill strands and {lessons['counts']['halls_covered']} of the {lessons['counts']['halls_total']} halls, ordered by a {lessons['counts']['prerequisite_edges']}-edge acyclic ladder that locks nothing — and certifying nobody | [Lessons](Lessons.md) |
 | **The building kit** (`kit/registry/kit.json`) | {kit['counts']['pieces']} exterior pieces in {kit['counts']['families']} families, median {kit['counts']['tri_budget_median']:.0f} triangles, arithmetic for {F(kit['budget']['campuses'][kit['budget']['budgeted_campus']]['pieces'])} pieces at {kit['budget']['campuses'][kit['budget']['budgeted_campus']]['draw_calls']} draw calls on the {campuses[kit['budget']['budgeted_campus']]['name']} — declared against a measured reference, and drawn by the page: a browser probe reports 1,117 pieces for 8 draw calls on that campus, the figure this row predicts | [Building-Kit](Building-Kit.md) |
 | **The room props** (`props/registry/props.json`) | {props['counts']['props']} interior props over all {props['counts']['strands_covered']} strands, {F(props['counts']['prop_instances'])} instances across {F(props['counts']['rooms'])} rooms, every hazard prop derived from that room's own protective-equipment record — read by the page: placeRoomProps() stands them against the partitions buildHall() cuts, and __tc3dProps() reports what was drawn beside what the count rule wanted | [Room-Props](Room-Props.md) |
+| **The surface finishes** (`surfaces/registry/finishes.json`) | {len(finishes["catalogue"])} floor and {len(finishes["wall_catalogue"])} wall finishes over {len(finishes["patterns"])} patterns, placed onto every room of every hall by hazard, then craft ({len(finishes["crafts_in_use"])} crafts in use, {len(finishes["no_craft"])} halls matching none), then function — and it cost no new material at all, because a hall builds one material per room and never one per catalogue row; the colours, roughnesses and metalnesses are AUTHORED, chosen by eye and never sampled | [Surface-Finishes](Surface-Finishes.md) |
+| **The furniture** (`props/registry/props.json`) | {props['counts']['furniture']} pieces in {props['counts']['families']} families cut from {props['counts']['forms']} forms — {props['counts']['props']} standing in halls now and {props['counts']['crib_furniture']} district pieces derived from the {props['counts']['crib_tools']} real tools the cribs issue, built and priced at {props['budget']['district_plan']['new_draw_calls_over_drawn']} new draw calls and deliberately not drawn; every shape is SCHEMATIC, the form of a tool's bench and no manufacturer's model | [Furniture](Furniture.md) |
+| **The measured venue** (`venue/registry/venue.json`) | a real multi-salon event building read for its proportions and never imported — {F(venue['recorded']['counts']['meshes'])} meshes is {venue['recorded']['counts']['meshes'] / props['budget']['ceiling_source']['max_calls']:.1f}× the whole hall draw-call ceiling, so it enters neither the scene nor the tree — {venue['attribution']['license_id']} by {venue['attribution']['author']}, with the unit left honestly {venue['unit_scale']['resolution']} and the ratios published as the part that transfers | [Measured-Venue](Measured-Venue.md) |
 | **First responders** (`respond/registry/respond.json`) | {respond['counts']['services']} services, {respond['counts']['role_tiers']} role tiers, {respond['counts']['competencies']} competency domains and {respond['counts']['scenario_frames']} scenario frames, cross-linked {respond['counts']['hall_cross_links']} times into {respond['counts']['halls_touched']} of the {respond['counts']['halls_total']} trade halls — a scaffold, not a protocol: {respond['counts']['signed_off_items']} of {respond['counts']['training_items']} items carry a practitioner sign-off and {respond['counts']['authority_documents_opened']} of the {respond['counts']['authorities']} standards bodies had a document opened | [First-Responders](First-Responders.md) |
 | **The simulator index** (`index.html`) | one entry per seat on the front door — {len(sims["sims"])} rows with the task line, controls and rubric axes each machine is judged on, each linking into that seat with `?sim=<slug>`, validated against the registry so an unknown seat opens no seat at all — and the deep link does not survive a reload | [Simulator-Index](Simulator-Index.md) |
 | **The lessons page** (`web/trade_craft_lessons.html`) | the {lessons['counts']['lessons']} walkable lessons and {lessons['counts']['steps']} steps finally drawn for a learner to work from, limits above the first lesson and the ladder rendered as advice that locks nothing — the page that took `lessons/registry/lessons.json` off the declared-and-unbuilt list | [Lessons-Page](Lessons-Page.md) |
@@ -2979,6 +2983,525 @@ The statement the wallet shows, verbatim: *{S["statement"]}*
 {FOOTER}'''
 
 
+# -------------------------------------------------------- Surface finishes ---
+def page_surfaces():
+    """The surfaces registry, and the reason its growth was free.
+
+    The one figure that must never be typed on this page is the size of the
+    catalogue, because the size of the catalogue is exactly what changed. Every
+    count below is a len() or a sum() over `surfaces/registry/finishes.json`,
+    including the two the engineering argument rests on: how many distinct
+    pattern+colour texture keys the whole catalogue collapses to, and how many
+    surface materials a hall builds - which is a function of its ROOMS and not
+    of the catalogue at all.
+    """
+    hon = finishes['honesty']
+    cat = finishes['catalogue']
+    wcat = finishes['wall_catalogue']
+    pats = finishes['patterns']
+    hs = finishes['halls']
+    rules = finishes['rules']
+    n_rooms = len(ROOMS)
+    floor_placements = sum(len(h['rooms']) for h in hs.values())
+    wall_placements = sum(len(h['walls']) for h in hs.values())
+    # dict.fromkeys, not a defaultdict: an unexpected placed_by value is a
+    # KeyError naming the key, which is what this pack wants it to be.
+    by_floor = dict.fromkeys(('function', 'craft', 'hazard'), 0)
+    by_wall = dict.fromkeys(('function', 'craft', 'hazard'), 0)
+    craft_halls = dict.fromkeys(finishes['crafts_in_use'], 0)
+    hazard_halls = dict.fromkeys(finishes['hazards_in_use'], 0)
+    for h in hs.values():
+        for r in h['rooms'].values():
+            by_floor[r['placed_by']] += 1
+        for r in h['walls'].values():
+            by_wall[r['placed_by']] += 1
+        for c in h['crafts']:
+            craft_halls[c] += 1
+        for z in h['hazards']:
+            hazard_halls[z] += 1
+    used_floor = {r['surface'] for h in hs.values() for r in h['rooms'].values()}
+    used_wall = {r['wall'] for h in hs.values() for r in h['walls'].values()}
+    # the page's texture cache is keyed on pattern + colour + canvas size, so
+    # this is the number of canvases the whole catalogue can ever paint
+    tex_keys = {(v['pattern'], v['color']) for v in (*cat.values(), *wcat.values())}
+    hall_floor_mats = max(len({r['surface'] for r in h['rooms'].values()})
+                          for h in hs.values())
+    hall_wall_mats = max(len({r['wall'] for r in h['walls'].values()})
+                         for h in hs.values())
+    pat_use = dict.fromkeys(pats, 0)
+    for v in (*cat.values(), *wcat.values()):
+        pat_use[v['pattern']] += 1
+    pat_rows = '\n'.join(f'| `{k}` | {v} | {pat_use[k]} |' for k, v in pats.items())
+    floor_rows = '\n'.join(
+        f"| **{v['name']}** | `{k}` | `{v['pattern']}` | {v['tile_m']} m "
+        f"| {v['roughness']} | {v['metalness']} | {v['why']} |"
+        for k, v in cat.items())
+    wall_rows = '\n'.join(
+        f"| **{v['name']}** | `{k}` | `{v['pattern']}` | {v['tile_m']} m "
+        f"| {v['roughness']} | {v['metalness']} | {v['why']} |"
+        for k, v in wcat.items())
+    default_rows = '\n'.join(
+        f"| {label} | `{finishes['function_defaults'][strand]}` "
+        f"| `{finishes['wall_defaults'][strand]}` |"
+        for strand, label, _, _, _ in ROOMS)
+    prov_rows = '\n'.join(f'| {k} | {v} |' for k, v in finishes['provenance'].items())
+    cw = rules['craft_walls']
+    craft_rows = '\n'.join(
+        f"| `{c}` | {craft_halls[c]} "
+        f"| {', '.join(f'{s} → `{f}`' for s, f in rules['craft_rooms'][c].items())} "
+        # an explicit membership test, not a silent default: a craft with no
+        # wall rule leaves its walls to the room's function default, and the
+        # dash says exactly that rather than hiding a missing key
+        + '| ' + (', '.join(f'{s} → `{w}`' for s, w in cw[c].items())
+                 if c in cw else '— (function default)') + ' |'
+        for c in finishes['crafts_in_use'])
+    hw = rules['hazard_walls']
+    haz_rows = '\n'.join(
+        f"| `{z}` | {hazard_halls[z]} "
+        f"| {', '.join(f'{s} → `{f}`' for s, f in rules['hazard_rooms'][z].items())} "
+        + '| ' + (', '.join(f'{s} → `{w}`' for s, w in hw[z].items())
+                 if z in hw else '— (function default)') + ' |'
+        for z in finishes['hazards_in_use'])
+    return f"""# The surface finishes
+
+Every room in every hall stands on a named floor and inside named walls.
+The catalogue is **{len(cat)} floor finishes** and **{len(wcat)} wall
+finishes** — {len(cat) + len(wcat)} rows — carrying renderer-ready colour,
+roughness, metalness, tile size and the reason each one exists, over
+{len(pats)} patterns. They are resolved onto all {F(floor_placements)} room
+floors and {F(wall_placements)} room walls in the {len(hs)} halls, and every
+row earns its place: {len(used_floor)} of the {len(cat)} floor finishes and
+{len(used_wall)} of the {len(wcat)} wall finishes stand somewhere, leaving
+{len(finishes['unplaced_finishes'])} floor rows and
+{len(finishes['unplaced_walls'])} wall rows unplaced.
+
+**And the colours are not measurements.** {up_first(hon['colours_are_authored'])}
+
+That limit is the whole of what this pack claims about appearance. What it
+claims about placement is a different tier, and the table at the foot of this
+page keeps the two apart.
+
+## The catalogue grew and the scene did not
+
+A hall builds **one material per room**, not one per catalogue row.
+`web/build_3d.py` calls `finishMat()` once for each of the {n_rooms} room
+floors inside its `for (const r of h.rooms)` loop and `wallMat()` once for
+that room's partitions, plus one for the hall shell — so the busiest hall in
+the bundle builds {hall_floor_mats} floor materials and {hall_wall_mats}
+partition-wall materials whatever the catalogue holds. The floor mesh and the
+partition mesh exist either way; a finish changes what they wear, never how
+many of them there are.
+
+Underneath, `surfaceMaps()` caches a painted canvas and its normal map on
+`pattern + colour + size`, so the {len(cat) + len(wcat)} rows collapse to
+{len(tex_keys)} distinct texture keys across the whole catalogue, and only the
+ones a walker actually reaches are ever painted. **A finish is a cached
+texture. It is not a draw call.** That is why the catalogue could grow without
+the hall view's draw-call budget moving at all.
+
+The same argument says why no pattern was added. A pattern is not decoration —
+it is the key the page's own `PATTERN_RELIEF` table is keyed on, and
+`web/build_3d.py` reads that table out of its own source at build time and
+asserts that every pattern in this registry has a relief declared and that no
+declaration is orphaned. A new pattern is therefore a change to the page, not
+a row in a registry: it would land looking like grey noise and the build
+refuses it instead. {len(pats)} patterns, every one declared.
+
+| Pattern | What it paints | Finishes using it |
+|---|---|---|
+{pat_rows}
+
+## How a surface is chosen
+
+Selection runs most-specific-first: the trade's **hazard**, then the trade's
+**craft**, then the room's **function**. The record says which rule placed each
+one, so the derivation can be read back rather than trusted.
+
+| Placed by | Floors | Walls |
+|---|---|---|
+| hazard | {F(by_floor['hazard'])} | {F(by_wall['hazard'])} |
+| craft | {F(by_floor['craft'])} | {F(by_wall['craft'])} |
+| function | {F(by_floor['function'])} | {F(by_wall['function'])} |
+
+The craft layer is the one that carries the growth. **{len(craft_halls)}
+crafts** are in use across the network and **{len(finishes['no_craft'])} halls
+match none of them** — every trade in the bundle is dressed by its own work,
+not by a fallback. A craft is read from the trade's own words; nothing here
+assigns a hall to a craft by hand.
+
+| Craft | Halls | Floor rules | Wall rules |
+|---|---|---|---|
+{craft_rows}
+
+{len(cw)} of the {len(craft_halls)} crafts also carry a wall rule; the rest
+leave their walls to the room's function default below.
+
+## The hazard layer
+
+A hazard is recorded only where it **changed** the outcome, which is why the
+{len(finishes['no_finish_driving_hazard'])} halls whose trade names no
+finish-driving hazard and the
+{len(finishes['no_wall_driving_hazard'])} whose trade names no wall-driving one
+say so explicitly instead of leaving a blank.
+
+| Hazard | Halls | Floor rules | Wall rules |
+|---|---|---|---|
+{haz_rows}
+
+## The function defaults
+
+Every room falls back to what the room is for. These are the {n_rooms} rooms
+of `web/interiors.py`, and the strand list is imported from it rather than
+retyped here.
+
+| Room | Floor | Wall |
+|---|---|---|
+{default_rows}
+
+## The {len(cat)} floor finishes
+
+| Finish | Key | Pattern | Tile | Roughness | Metalness | Why it exists |
+|---|---|---|---|---|---|---|
+{floor_rows}
+
+## The {len(wcat)} wall finishes
+
+| Finish | Key | Pattern | Tile | Roughness | Metalness | Why it exists |
+|---|---|---|---|---|---|---|
+{wall_rows}
+
+## Provenance, and what this is not
+
+| Field | Tier |
+|---|---|
+{prov_rows}
+
+- **Not a code reference.** {up_first(hon['status'])}
+- **Not sampled.** {up_first(hon['colours_are_authored'])}
+- **Not a survey.** A finish records what a room is for and what its trade
+  does. It records nothing about any real building, and no floor plan in this
+  bundle has collected an address.
+{FOOTER}"""
+
+
+# ------------------------------------------------------------- Furniture ---
+def page_furniture():
+    """The whole furniture catalogue, drawn and undrawn, at build time.
+
+    This page reads `props/registry/props.json` on every run, the way every
+    other page reads the registry that owns its facts. Nothing here is a
+    snapshot: the props pack is still moving, and a figure typed into this
+    prose would be a second opinion about it within the hour.
+
+    `Room-Props.md` is the page for what is standing in a hall right now. This
+    one is the page for the catalogue those pieces are cut from, including the
+    district pieces that are built, priced and deliberately not drawn.
+    """
+    c = props['counts']
+    hon = props['honesty']
+    cf = props['crib_furniture']
+    fm = props['forms']
+    gs = props['geometry_spread']
+    mt = props['materials']
+    dp = props['budget']['district_plan']
+    cs = props['budget']['ceiling_source']
+    fo = props['fit_out']
+    form_rows = ' · '.join(f'`{n}`' for n in fm['names'])
+    fam_rows = '\n'.join(f'| **{k}** | {v} |' for k, v in props['families'].items())
+    dist_rows = '\n'.join(
+        f"| **{districts[k]['name']}** | {v['crib']} | {len(tools['cribs'][k]['tools'])} "
+        f"| {v['halls']} | {v['pieces']} |"
+        for k, v in cf['districts'].items())
+    p0 = cf['pieces'][0]
+    p0_boxes = sum(q['count'] for q in p0['recipe']['parts'] if q['prim'] == 'box')
+    p0_cyls = sum(q['count'] for q in p0['recipe']['parts'] if q['prim'] == 'cylinder')
+    p0_tool = p0['crib']['tools'][0]
+    sample_rows = '\n'.join(
+        f"| **{p['name']}** | `{p['form']}` | {p['tri_budget']['tris']} "
+        f"| {' × '.join(str(x) for x in p['size_m'])} m | `{p['material']}` "
+        f"| {', '.join(t['name'] for t in p['crib']['tools'])} "
+        f"| {districts[p['district']]['name']} |"
+        for p in cf['pieces'])
+    return f"""# The furniture
+
+{c['furniture']} pieces of furniture in {c['families']} families, every one cut
+from one of {fm['count']} forms and built in the browser out of boxes and
+cylinders. {c['props']} of them are standing in halls today — that is
+[Room-Props](Room-Props.md)'s page. The other {cf['count']} are the district
+catalogue, and they are built, measured, priced and **not drawn**.
+
+**Nothing here is a model of anything.** {hon['status']}
+
+{hon['not_a_specification']}
+
+Read one off the registry rather than take that on trust. The first piece in
+the district catalogue is **{p0['name']}**: {p0_boxes} box{'' if p0_boxes == 1 else 'es'}
+and {p0_cyls} cylinder{'' if p0_cyls == 1 else 's'} cut from the
+`{p0['form']}` form, {p0['tri_budget']['tris']} triangles at
+{' × '.join(str(x) for x in p0['size_m'])} m, standing there because the
+{districts[p0['district']]['name']} crib issues the {p0_tool['name'].lower()},
+which {p0_tool['use']}. That is the *shape* of the work the tool is done at. It is not any manufacturer's model, it carries no
+rating, and it is not evidence that any hall has one.
+
+## Fitted from what the union actually issues
+
+The district catalogue is derived from the real tools the district cribs carry.
+{cf['tools']} tools across {len(tools['cribs'])} cribs, read from
+`{cf['source']}` — the same registry [Toolrooms](Toolrooms.md) draws — at
+{cf['pieces_per_tool']} pieces a tool. {up_first(cf['rule'])}
+
+So a hall is fitted from its own union's issue list rather than from a generic
+shop. {c['furniture_with_crib_link']} of the {c['furniture']} pieces name a
+tool, and {c['crib_tools_referenced']} of the {c['crib_tools']} tools in the
+cribs are named by at least one piece.
+
+| District | Crib | Tools | Halls | Pieces |
+|---|---|---|---|---|
+{dist_rows}
+
+## Why they are not standing
+
+{up_first(cf['why_not_drawn'])}
+
+## The forms
+
+{up_first(fm['why'])} The forms are read from `{fm['source']}`:
+
+{form_rows}
+
+{len(fm['wall_forms'])} of those hang on a wall rather than stand on the floor.
+
+| Family | What it is |
+|---|---|
+{fam_rows}
+
+## Distinct, and honestly repeated
+
+{gs['distinct']} of the {gs['of']} pieces are geometrically distinct and
+{gs['repeated']} repeat an earlier part list exactly. {up_first(gs['what_repeats'])}
+The key that decides it is {gs['key']}.
+
+## What the whole catalogue would cost
+
+{up_first(hon['the_scarce_currency'])}
+
+The ceiling is read from `{cs['file']}` ({cs['view']} view):
+{cs['measured_calls']} draw calls measured against {cs['max_calls']} permitted,
+{F(cs['measured_tris'])} triangles against {F(cs['max_tris'])}.
+
+{up_first(dp['what'])}
+
+| | Median | Max |
+|---|---|---|
+| Pieces in a hall | {dp['props_median']} | {dp['props_max']} |
+| Triangles | {F(dp['tris_median'])} | {F(dp['tris_max'])} |
+| Draw calls | — | {dp['calls_max']} |
+
+New materials: **{mt['new_materials']}**. New draw calls over the drawn set:
+**{dp['new_draw_calls_over_drawn']}**. {up_first(dp['reading'])}.
+
+{up_first(mt['why'])}
+
+## The wall is the budget
+
+{up_first(hon['the_wall_is_the_budget'])}
+
+{up_first(fo['how'])} {up_first(fo['why'])} And it is an upper bound:
+{fo['is_an_upper_bound']}
+
+| | Per hall | Per room |
+|---|---|---|
+| Pieces offered (median) | {fo['offered_pieces_per_hall_median']} | {fo['offered_pieces_per_room_median']} |
+| Instances stood (median) | {fo['stood_instances_per_hall_median']} | {fo['stood_instances_per_room_median']} |
+
+## The {cf['count']} district pieces
+
+Each row names the tool that admitted it and the district whose crib carries
+that tool. Neither is typed on the piece.
+
+| Piece | Form | Triangles | Size | Material | From the tool | District |
+|---|---|---|---|---|---|---|
+{sample_rows}
+
+## What this is not
+
+- **Not a specification.** {hon['not_a_specification']}
+- **Not reviewed.** {hon['unreviewed']}
+- **Not standing.** {hon['district_catalogue_is_not_drawn']}
+- **Not a second copy.** {hon['one_truth']}
+{FOOTER}"""
+
+
+# --------------------------------------------------------- Measured venue ---
+def page_venue():
+    """A real building measured for its proportions, and never imported.
+
+    Two things on this page would be easy to get wrong and are therefore read
+    rather than written: the CC-BY-4.0 attribution, which is four fields the
+    licence requires and not a sentence, and the unit question, which has no
+    answer and must not be given one. The registry publishes
+    `unit_scale.resolution` as UNRESOLVED and this page says so in those words.
+    """
+    at = venue['attribution']
+    rec = venue['recorded']
+    rc = rec['counts']
+    b = venue['building']
+    us = venue['unit_scale']
+    hon = venue['honesty']
+    op = venue['openings']
+    ch = venue['clear_heights']
+    ci = venue['circulation']
+    cc = venue['contents_clusters']
+    cs = props['budget']['ceiling_source']
+    metres = us['what_honouring_it_gives_if_read_as_metres']
+    undone = us['what_undoing_it_gives']
+    ratio_rows = '\n'.join(
+        f'| `{k}` | {v} |' for k, v in venue['ratios'].items()
+        if isinstance(v, (int, float)))
+    count_rows = '\n'.join(f'| {k} | {F(v)} |' for k, v in rc.items())
+    sens_rows = '\n'.join(
+        f"| {s['gap_mu']} mu | {s['clusters']} | {s['clusters_at_or_above_min']} |"
+        for s in cc['gap_sensitivity'])
+    param_rows = '\n'.join(
+        f'| `{k}` | {venue["parameters"][k]} | {venue["parameters"][k + "_means"]} |'
+        for k in ('plan_grid', 'cluster_gap', 'fabric_footprint_threshold',
+                  'horizontal_tolerance'))
+    return f"""# The measured venue
+
+*{venue['product']}*
+
+A real multi-salon event building was read, measured and left where it was.
+Nothing of it is in this repository: {F(rc['meshes'])} meshes and
+{F(b['triangles'])} triangles of it, {F(rec['file_bytes'])} bytes in one file
+that stays outside the tree. What this pack publishes is the measurement.
+
+## Measured, not imported
+
+{up_first(rec['why_not_shipped'])}
+
+The arithmetic is worth stating plainly: {F(rc['meshes'])} meshes against the
+{cs['max_calls']} draw calls a hall view is permitted by `{cs['file']}` is
+**{rc['meshes'] / cs['max_calls']:.1f}×** the entire ceiling, in one model,
+before a single hall is drawn. So it never enters the scene, and it never
+enters the scene tree. It is a reference, and a reference is read once.
+
+{up_first(hon['nothing_of_the_work_is_redistributed'])}
+
+## Attribution
+
+The licence is {at['license_name']} (`{at['license_id']}`), which requires
+attribution, a link to the work, a link to the licence and an indication of
+what was changed. Those are fields in the registry rather than a sentence
+somewhere, so a check can fail on a missing one — and `venue/test.mjs` does.
+
+| | |
+|---|---|
+| **Title** | {at['title']} |
+| **Author** | [{at['author']}]({at['author_profile_url']}) |
+| **Source** | <{at['source_url']}> |
+| **Licence** | [{at['license_name']}]({at['license_url']}) |
+| **Changes made** | {'yes' if at['changes_made'] else 'no'} |
+| **Indication of changes** | {at['changes_indication']} |
+| **Redistribution** | {at['redistribution']} |
+| **Tier** | {at['tier']} — {at['measured_by']} |
+
+{up_first(at['why_this_block_exists'])}
+
+## The unit question has no answer, and that is the answer
+
+This is the most interesting thing on the page, so it goes here rather than in
+a footnote.
+
+The file carries exactly one unit statement: a uniform scale of
+{us['declared_conversion']['uniform_scale']} on the node named
+`{us['declared_conversion']['node_name']}` — {us['declared_conversion']['reading']}
+Follow it and the whole building is
+{metres['building_extent'][0] * 100:.0f} cm across — {metres['verdict']} Undo
+it and the plan is {undone['building_extent_mu'][0]} by
+{undone['building_extent_mu'][2]} with a clear storey of
+{undone['clear_storey_mu']} — {undone['verdict']}
+
+Neither reading survives, and the reason is a ratio rather than a preference:
+{hon['the_unit_is_not_metres']}
+
+So the registry publishes `unit_scale.resolution` as **{us['resolution']}** and
+every dimension on this page is in {us['unit_published']}, symbol
+`{venue['unit']['symbol']}` — {venue['unit']['means']}
+
+If somebody needs metres: {us['if_someone_wants_metres']}
+
+## The ratios are the deliverable
+
+{up_first(venue['ratios']['why_these_are_the_useful_ones'])}
+
+{up_first(venue['ratios']['how_to_use_these'])}
+
+{up_first(venue['ratios']['measured_by'])}. Tier: {venue['ratios']['tier']}.
+
+| Ratio | Value |
+|---|---|
+{ratio_rows}
+
+## What was measured
+
+The building box is {b['extent_mu']['x']} × {b['extent_mu']['y']} ×
+{b['extent_mu']['z']} mu over a plan footprint of {b['plan_footprint_mu2']} mu²
+at aspect {b['plan_aspect']}, split into {F(venue['counts']['fabric_meshes'])}
+fabric meshes and {F(venue['counts']['contents_meshes'])} contents meshes.
+{up_first(b['measured_by'])}
+
+- **Clear storey.** Modal {ch['modal_clear_storey_mu']} mu over
+  {F(ch['cells_measured'])} measured plan cells, carrying
+  {ch['modal_share']} of them. {up_first(ch['note'])}
+- **Circulation.** {ci['cells_clear']:,} clear cells against
+  {ci['cells_occupied']:,} occupied, out of {F(ci['floor_cells'])} floor cells —
+  occupancy {ci['occupancy']}, median clear run {ci['clear_run_median_mu']} mu.
+  {up_first(ci['caveat'])}
+- **Openings.** {op['members']} panels at {op['family_height_mu']} mu high and
+  {op['family_thickness_mu']} mu thick, widths {op['width_min_mu']} to
+  {op['width_max_mu']} mu, median {op['width_median_mu']}.
+  {op['identification']}. {op['what_that_test_means']} What would settle it:
+  {op['what_would_settle_it'][0].lower()}{op['what_would_settle_it'][1:]}
+- **Contents clusters.** {venue['counts']['contents_clusters']} clusters at a
+  gap of {cc['gap_mu']} mu with at least {cc['min_members']} members.
+
+The cluster count has no natural answer, so the sensitivity is published beside
+it. {up_first(hon['the_clusters_depend_on_a_threshold'])}
+
+| Gap | Clusters | At or above the minimum |
+|---|---|---|
+{sens_rows}
+
+## What the file says about itself
+
+{up_first(rec['measured_by'])}. Tier: {rec['tier']}.
+
+| | |
+|---|---|
+{count_rows}
+| generator | {rec['generator']} |
+| glTF version | {rec['gltf_version']} (container {rec['glb_container_version']}) |
+| file bytes | {F(rec['file_bytes'])} |
+| sha256 | `{rec['file_sha256']}` |
+
+## The parameters every measurement depends on
+
+| Parameter | Value | What it means |
+|---|---|---|
+{param_rows}
+
+## What this is not
+
+- **Not a survey.** {up_first(hon['a_box_is_not_a_room'])}
+- **Not whole.** {up_first(hon['the_model_is_partial'])}
+- **Not labelled.** The openings are {op['identification'].lower()}.
+- **Not metres.** {hon['the_unit_is_not_metres']}
+- **Not redistributed.** {up_first(hon['nothing_of_the_work_is_redistributed'])}
+- **Recorded.** {up_first(hon['what_is_recorded'])}
+- **Derived.** {up_first(hon['what_is_derived'])}
+{FOOTER}"""
+
+
 PAGES = {
     'Home.md': page_home,
     'Campus-Map.md': page_campus,
@@ -3003,6 +3526,9 @@ PAGES = {
     'Lessons.md': page_lessons,
     'Building-Kit.md': page_kit,
     'Room-Props.md': page_props,
+    'Surface-Finishes.md': page_surfaces,
+    'Furniture.md': page_furniture,
+    'Measured-Venue.md': page_venue,
     'First-Responders.md': page_respond,
     'Emotional-Intelligence.md': page_ei,
     'Simulator-Index.md': page_sim_index,

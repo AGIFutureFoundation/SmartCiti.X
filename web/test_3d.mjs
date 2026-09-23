@@ -378,8 +378,19 @@ ok('there is one candela conversion, and it states the height it converts for',
 /* And the thing the conversion must not break: a brighter room stays
    brighter. The lux ratio is the fact; the candela is only how it is
    delivered. */
-ok('the room luminaire still scales with the room\'s own lux record',
-  /lampCd\(\.55 \+ luxN \* 1\.45, 2\.32, 1\.7\)/.test(src)
+/* The mounting height used to be the constant 2.32, which was the fitting's
+   real height above the floor for exactly as long as every hall in the
+   network was 3.2 m to the eaves. Halls carry their own clear height now,
+   so the constant would have under-lit every hall taller than the old one
+   while still calling itself a measured conversion. The negative below
+   reads CODE, not source: the comment beside the change quotes the number
+   it replaced. */
+ok('the room luminaire still scales with the room\'s own lux record, and the '
+   + 'candela conversion is given the fitting\'s real height above the floor '
+   + '- EAVE - 1.23, which rides up with the hall\'s own eaves - rather than '
+   + 'the 2.32 that was only true while all 111 halls were the same height',
+  /lampCd\(\.55 \+ luxN \* 1\.45, EAVE - 1\.23, 1\.7\)/.test(code)
+  && !/lampCd\([^)]*, 2\.32,/.test(code)
   && /const luxN = Math\.max\(0, Math\.min\(1, \(rc\.lux - 200\) \/ 800\)\);/.test(src));
 /* A seat is entered from a hall and inherits that campus's sky, and every
    campus here is authored at dusk or under a marine layer - so a yard needs
@@ -1420,7 +1431,7 @@ ok('the props of all eleven rooms pool into ONE map hoisted above the room '
   (() => {
     const b = fnCode('buildHall');
     const pool = b.indexOf('propPool = new Map(); propInst = new Map();');
-    const loop = b.indexOf('for (const r of h.rooms) {');
+    const loop = b.indexOf('h.rooms.forEach((r, ri) => {');
     const flush = b.indexOf('flushProps(hallGroup);');
     return pool > 0 && loop > pool && flush > loop
       && (b.match(/flushProps\(hallGroup\);/g) || []).length === 1;
@@ -1876,5 +1887,304 @@ ok('the view hook opens the hall the learner has selected, not a hard-coded '
    + 'falls back to `campusKey`, so the selector and the building agree',
   /what === 'hall'\) showHall\(which \?\? slug\)/.test(_view)
   && !/showHall\(which \?\? D\.halls\[0\]/.test(_view));
+
+/* ------------------------------------ the hall's own draw-call budget --- */
+/* Eleven of the 111 halls shipped over the draw-call ceiling with every
+   check in this bundle green.
+
+   Nothing here could have caught it: this file reads source and never opens
+   a browser, and the one thing that does measure draw calls - eval_scene -
+   had only ever driven `hall`, which is D.halls[0], ironworkers, 164 calls
+   at almost exactly the median of 111. The hall a visitor with no ?hall=
+   actually landed on cost 238.
+
+   So the page prices ITSELF now, while it builds, against the same number
+   the eval scores it with, and a hall over it throws instead of opening.
+   The checks below hold that arrangement at three joints: the ceiling is
+   read out of web/eval_scene.mjs rather than typed, the number that
+   reached the payload is the number that file states (computed here from
+   both sources, so a change to either that does not reach the other fails
+   this suite), and buildHall() actually calls the price and the price
+   actually throws. */
+const evalSrc = readFileSync(new URL('./eval_scene.mjs', import.meta.url), 'utf8');
+const evalHallCalls = Number(evalSrc.match(/hall:\s*\{\s*calls:\s*([\d_]+)/)[1].replace(/_/g, ''));
+const evalHeadroom = Number(evalSrc.match(/const CALL_HEADROOM = ([\d.]+);/)[1]);
+
+ok('the hall\'s draw-call ceiling reaches the page READ, not typed: the builder '
+   + 'parses web/eval_scene.mjs for the measured hall baseline and the stated '
+   + `headroom, and the ${wire.budget.hall_draw_calls} in the payload is `
+   + `exactly the ${evalHallCalls} x ${evalHeadroom} that file states`,
+  /_eval_src = \(ROOT \/ 'web\/eval_scene\.mjs'\)\.read_text\(\)/.test(src)
+  && /HALL_CALL_CEILING = round\(HALL_CALL_BASE \* float\(_eh\.group\(1\)\)\)/.test(src)
+  && wire.budget.from === 'web/eval_scene.mjs'
+  && wire.budget.hall_calls_measured === evalHallCalls
+  && wire.budget.hall_draw_calls === Math.round(evalHallCalls * evalHeadroom));
+
+ok('a hall that would draw more than that ceiling does NOT open: priceHall() '
+   + 'counts the drawables standing in the view, throws naming the hall, its '
+   + 'count and the ceiling, and buildHall() calls it as its last act - so the '
+   + 'breach cannot come back on a hall nobody happened to measure',
+  /const ceiling = D\.budget\.hall_draw_calls;/.test(fnCode('priceHall'))
+  && /if \(total > ceiling\)\s*throw new Error\('hall ' \+ sg \+ ' stands ' \+ total/
+       .test(fnCode('priceHall'))
+  && /hallCost = priceHall\(sg\);/.test(fnCode('buildHall'))
+  && /window\.__tc3dHall = \(\) => hallCost/.test(code));
+
+ok('the price counts what the eval counts - every visible mesh, sprite and '
+   + 'instanced mesh in the SCENE, not just the hall group, since the hall '
+   + 'stands on a ground plane that draws too',
+  /walk\(scene, false\);/.test(fnCode('priceHall'))
+  && /if \(!o\.visible\) return;/.test(fnCode('priceHall'))
+  && /o\.isInstancedMesh/.test(fnCode('priceHall'))
+  && /o\.isSprite/.test(fnCode('priceHall')) && /o\.isMesh/.test(fnCode('priceHall')));
+
+/* ---- and the four per-item drawers the breach was actually made of ----
+   Every one of these was a recipe drawing one mesh per piece, and each of
+   them varied with the hall: the apron with whether the hall has a seat,
+   the roof with how deep the building is, the benches with how many
+   fixtures the trade's focus line names, the luminaires with how many
+   distinct illuminances its rooms record. Merged, none of them varies. */
+ok('the apron pools per material instead of drawing one mesh per yard piece: '
+   + 'the PROPS recipes are handed a part collector, not the hall group, and '
+   + 'the pool is flushed once - this alone is the ~65 draw calls that put '
+   + 'every seeded hall over the ceiling',
+  /const apronPool = new Map\(\);\s*const apron = partCollector\(apronPool\);/
+    .test(fnCode('buildHall'))
+  && /fn\(apron, px, pz\);/.test(fnCode('buildHall'))
+  && /flushParts\(apronPool, hallGroup\);/.test(fnCode('buildHall'))
+  && !/fn\(hallGroup, px, pz\);/.test(fnCode('buildHall')));
+
+ok('a part collector takes a mesh\'s OWN matrix and clones its geometry '
+   + 'first, so a recipe that turns or tilts a piece merges exactly as it '
+   + 'draws and a shared cached box is never moved by baking into it',
+  /o\.updateMatrix\(\);/.test(fnCode('partCollector'))
+  && /o\.geometry\.clone\(\)\.applyMatrix4\(o\.matrix\)/.test(fnCode('partCollector'))
+  && /throw new Error\('a part collector takes meshes/.test(fnCode('partCollector')));
+
+ok('the crib\'s twelve pegs are ONE mesh: the hue each tool\'s registry entry '
+   + 'declares rides on the vertices instead of buying that tool a material '
+   + 'of its own, and the one material it does wear is hall-owned rather '
+   + 'than a new word in the shared `mat` vocabulary other packs are held to',
+  /geo\.setAttribute\('color', new THREE\.BufferAttribute\(arr, 3\)\)/.test(fnCode('toolGeo'))
+  && /new THREE\.Color\(\)\.setHSL\(tl\.hue \/ 360/.test(fnCode('toolGeo'))
+  && /const peg = new THREE\.Mesh\(mergeGeometries\(pegs\),\s*new THREE\.MeshStandardMaterial\(\{ vertexColors: true/
+       .test(fnCode('buildCrib'))
+  && !/mat\.tool/.test(code));
+
+ok('the roof trusses, their lamps and the wall strips pool into one mesh per '
+   + 'material - so a 16-unit hall pays no more for its roof than a 12-unit '
+   + 'one - and the pool is flushed WITHOUT shadows, because a merged mesh '
+   + 'has one castShadow flag and a luminaire that casts one darkens the '
+   + 'floor it is lighting',
+  /const roofPool = new Map\(\);\s*const roof = partCollector\(roofPool\);/
+    .test(fnCode('buildHall'))
+  && /flushParts\(roofPool, hallGroup, false\);/.test(fnCode('buildHall'))
+  && /function flushParts\(pool, g, shadow = true\)/.test(code)
+  && /mesh\.castShadow = shadow;/.test(fnCode('flushParts')));
+
+ok('the fixture benches pool across all eleven rooms, and the luminaires '
+   + 'share one material per distinct illuminance the rooms RECORD - so the '
+   + 'busiest trade pays for its fourth bench what the plainest pays for its '
+   + 'first, and two rooms share a fitting only where the registry says they '
+   + 'are lit alike',
+  /const benchPool = new Map\(\), benchTop = partCollector\(benchPool\);/
+    .test(fnCode('buildHall'))
+  && /box\(1\.3, \.12, \.7, mat\.steel, bx, \.95, bz, benchTop\);/.test(fnCode('buildHall'))
+  && /flushParts\(benchPool, hallGroup\);/.test(fnCode('buildHall'))
+  && /lumMats\.get\(rc\.lux\) \?\? lumMats\.set\(rc\.lux,/.test(fnCode('buildHall'))
+  && /flushParts\(lumPool, hallGroup, false\);/.test(fnCode('buildHall')));
+
+ok('at most ADV_DETAIL_MAX advisors are drawn as rigged bodies at once, '
+   + 'ranked in place with no allocation in the frame loop - distance alone '
+   + 'bounded nothing, because a learner in the middle of a 36 m hall is '
+   + 'inside ADV_DETAIL of every advisor in it - and priceHall() reports that '
+   + 'bounded walk-up peak rather than folding it into the figure the '
+   + 'ceiling is about',
+  /const ADV_DETAIL_MAX = \d+;/.test(code)
+  && /rank < ADV_DETAIL_MAX/.test(fnCode('advisorProximity'))
+  && !/\.sort\(/.test(fnCode('advisorProximity'))
+  && !/new THREE\.Vector3\(/.test(fnCode('advisorProximity'))
+  && /swaps\.slice\(0, ADV_DETAIL_MAX\)/.test(fnCode('priceHall'))
+  && /walkPeak: peak/.test(fnCode('priceHall')));
+
+/* -------------------------------- what the halls got for the headroom --- */
+/* The budget above is not the point of the budget. It was reclaimed so the
+   halls could carry more, and these hold what they carry. */
+
+const labelsReg = JSON.parse(readFileSync(new URL('../labels/registry/labels.json', import.meta.url), 'utf8'));
+const interiorsSrc = readFileSync(new URL('./interiors.py', import.meta.url), 'utf8');
+
+/* ---- every sign the registry declares is now on a wall ---------------- */
+/* labels/ declares nineteen kinds of sign and explains at length why a
+   chevron, a beacon, a stencil, a tag and a hatched notice are shapes of
+   their own rather than name-plates in another colour - "a sign that has to
+   be read before it can be told apart is the failure this whole registry
+   exists to fix". Five of the nineteen had never been drawn anywhere in the
+   world: egress, muster, door, asset and hazard. A shape nothing wears is a
+   claim, not a convention. The set below is COMPUTED from the registry, so
+   a kind added there and never hung fails this check rather than sitting
+   unnoticed the way these five did. */
+const kindsDrawn = new Set([...code.matchAll(/kind: '([a-z]+)'/g)].map((m) => m[1]));
+const kindsDeclared = Object.keys(labelsReg.kinds);
+ok(`all ${kindsDeclared.length} sign kinds labels/registry declares are hung `
+   + 'somewhere in the world - including the five that were declared and '
+   + 'never drawn: a chevron to the way out, a muster beacon on the apron, a '
+   + 'stencilled number at every door, a tag on every machine and a hatched '
+   + 'notice in every room whose own record names a hazard',
+  kindsDeclared.every((k) => kindsDrawn.has(k))
+  && ['egress', 'muster', 'door', 'asset', 'hazard'].every((k) => kindsDrawn.has(k)));
+
+ok('the stencilled door number goes at a doorway the room ACTUALLY HAS - it '
+   + 'reads the same planDoors() cuts the partitions were drawn around, '
+   + 'tries all four of the room\'s own lines, and a room with no opening at '
+   + 'all gets no stencil rather than one on a solid wall',
+  /const cuts = doors\.get\(key\);\s*if \(!cuts\) continue;/.test(fnCode('buildHall'))
+  && /const d = cuts\.find\(\(\[a, b\]\) => a >= lo - \.02 && b <= hi \+ \.02\);/
+       .test(fnCode('buildHall'))
+  && /const dAt = doorAt\(\);\s*if \(dAt\) \{/.test(fnCode('buildHall')));
+
+ok('the hazard notice reads the ABSENCE of a hazards list as the answer it '
+   + 'is - D.baseCond carries no such key and D.condOver adds one only where '
+   + 'the trade has hazards - so a room with none gets no sign rather than a '
+   + 'sign saying there is nothing, and no bare default stands in for a fact',
+  /const hz = 'hazards' in rc \? rc\.hazards : \[\];/.test(fnCode('buildHall'))
+  && /if \(hz\.length\) \{/.test(fnCode('buildHall'))
+  && !/rc\.hazards \?\?/.test(code) && !/rc\.hazards \|\|/.test(code));
+
+ok('the egress chevrons and the muster beacon are read off the plan, not '
+   + 'placed by eye: the chevrons stand in the two back corners and name the '
+   + 'campus through the building\'s one open face, and the beacon stands out '
+   + 'on the apron in front of it',
+  /const outTo = D\.campuses\[campusKey\]\.name;/.test(fnCode('buildHall'))
+  && /for \(const ex of \[cx\(0\) \+ 1\.6, cx\(W\) - 1\.6\]\)/.test(fnCode('buildHall'))
+  && /way\.position\.set\(ex, 2\.45, cz\(DEP\) - \.6\);/.test(fnCode('buildHall'))
+  && /muster\.position\.set\(0, 2\.3, cz\(0\) - 7\);/.test(fnCode('buildHall')));
+
+/* ---- the three levels, stood up ---------------------------------------- */
+ok('the training ladder is READ out of D.strandmods and is hall-wide only '
+   + 'because the strands agree on it: if they ever stop agreeing the page '
+   + 'throws naming each strand\'s rungs, rather than showing a ladder that '
+   + 'is true of one strand and printed over eleven',
+  /const rungs = Object\.entries\(D\.strandmods\)\.map/.test(code)
+  && /if \(one\.size !== 1\)\s*throw new Error\('D\.strandmods: the strands do not agree/
+       .test(code)
+  && /samples\.map\(\(x\) => \(\{ level: x\.level, tier: x\.tier \}\)\)/.test(code));
+
+ok('and it stands up in the Classroom - the one room whose own purpose line '
+   + 'is "Level tests and the instructor track" - as one platform per rung, '
+   + 'each higher than the last, in a SOLID back bay the benches found, so a '
+   + 'rig can no more close a doorway than a bench can; it registers as '
+   + 'solid and joins `benches`, so back-corner props stand clear of it',
+  /\("leadership", *"Classroom", *4, *2, *"Level tests and the instructor track"\)/
+    .test(interiorsSrc)
+  && /if \(r\.strand === 'leadership'\) \{/.test(fnCode('buildHall'))
+  && /const bay = bays\[benches\.length \? 1 : 0\];/.test(fnCode('buildHall'))
+  && /const hgt = rung \+ ti \* step;/.test(fnCode('buildHall'))
+  && /wallRect\(bc, bz2, span \/ 2, \.55\);/.test(fnCode('buildHall'))
+  && /benches\.push\(hallSolids\[0\]\.rects\[hallSolids\[0\]\.rects\.length - 1\]\);\s*\}\s*\}/
+       .test(fnCode('buildHall')));
+
+ok('the rig and its tread nosings pool into the bench pool rather than '
+   + 'buying the Classroom three more meshes, so the ladder costs the hall '
+   + 'one draw call in the halls that had no steel bench and none in those '
+   + 'that did',
+  /box\(tread, hgt, 1\.1, mat\.steel, tx, \.35 \+ hgt \/ 2, bz2, benchTop\);/
+    .test(fnCode('buildHall'))
+  && /box\(tread - \.16, \.05, \.06, mat\.post, tx, \.35 \+ hgt \+ \.03,\s*bz2 - \.52, benchTop\);/
+       .test(fnCode('buildHall')));
+
+/* ---- and the sheds themselves ------------------------------------------ */
+const clears = [...new Set(wire.halls.map((h) => h.clear))].sort((a, b) => a - b);
+ok(`every hall carries its own eaves height and no hall is 3.2 m any more: `
+   + `${clears.length} distinct clear heights across the 111, from `
+   + `${clears[0]} m to ${clears[clears.length - 1]} m, derived at build time `
+   + 'from the fixtures each trade\'s OWN focus line earned it, over a base '
+   + 'every hall gets',
+  wire.halls.length === 111
+  && wire.halls.every((h) => typeof h.clear === 'number' && h.clear >= 4.2)
+  && clears.length > 1
+  && /CLEAR_BASE_M = 4\.2/.test(src)
+  && /def clear_height\(fixtures\):/.test(src));
+
+ok('the headroom table cannot ask for height over equipment no hall has: '
+   + 'every word in it is asserted at build time to appear in a fixture '
+   + 'web/interiors.py already derived from some trade\'s focus line, so the '
+   + 'two readings of that one derivation cannot drift apart',
+  /from interiors import build as build_interiors, FIXTURES as ROOM_FIXTURES/.test(src)
+  && /_fixture_text = ' \| '\.join\(fx for _, fx in ROOM_FIXTURES\.values\(\)\)\.lower\(\)/.test(src)
+  && /assert _w in _fixture_text/.test(src)
+  && Object.keys(labelsReg.kinds).length > 0);
+
+ok('the shed is built to that height rather than to the old constant: the '
+   + 'shell, its texture run, the fascia, the name sign, the trusses, the '
+   + 'lamps, the wall strips, the luminaires and the room lights all hang '
+   + 'off EAVE, and the page fails closed on a hall that ships without one',
+  /const HT = h\.clear, EAVE = \.35 \+ HT;/.test(fnCode('buildHall'))
+  && /if \(typeof h\.clear !== 'number'\)\s*throw new Error/.test(fnCode('buildHall'))
+  && /box\(W, HT, \.25, shellMat, 0, \.35 \+ HT \/ 2, cz\(DEP\), hallGroup\);/.test(fnCode('buildHall'))
+  && /wallMat\(shellW, W \/ U \* 2, HT\)/.test(fnCode('buildHall'))
+  && /fascia\.position\.set\(0, EAVE \+ \.05, cz\(0\)\);/.test(fnCode('buildHall'))
+  && /sign\.position\.set\(0, EAVE \+ 1\.55, cz\(0\)\);/.test(fnCode('buildHall'))
+  && !/box\(W, 3\.2, \.25, shellMat/.test(code));
+
+/* ---- and the strand vocabulary they all still resolve through ---------- */
+/* THE TRAP. Rooms are keyed by STRAND: D.roomDefs[strand] is read by the
+   hall's lesson roster, the props resolve per strand, the lessons registry's
+   steps resolve to rooms by strand, and the hall->lesson cross-link uses it.
+   A strand cannot map to two rooms through a lookup that returns one.
+
+   So the halls got taller, not wider, and they got signs and a ladder
+   rather than more rooms: the eleven-room programme is untouched, every
+   strand still names exactly one room in every hall, and the two things
+   added that are NOT rooms are keyed by something else - a door stencil by
+   the room's own place in the plan, a ladder rung by its TIER. Checked over
+   the shipped payload, every hall, rather than argued. */
+ok('every strand still names exactly one room in every one of the 111 halls, '
+   + `all ${Object.keys(wire.roomDefs).length} of them, and every hall's room `
+   + 'list is that same strand set once over - so D.roomDefs[strand], the '
+   + 'props by_strand table, the finishes, the walls, the conditions and the '
+   + 'lesson roster all still resolve to one room each',
+  (() => {
+    const strands = Object.keys(wire.roomDefs);
+    if (strands.length !== 11) return false;
+    return wire.halls.every((h) => {
+      const lay = wire.layouts[h.lay];
+      const mine = lay.map((r) => r.strand);
+      return mine.length === 11 && new Set(mine).size === 11
+        && mine.every((st) => strands.includes(st));
+    });
+  })());
+
+ok('and nothing added since is keyed by strand: the ladder rung is keyed by '
+   + 'its TIER, read from D.strandmods, and the door stencil by the room\'s '
+   + 'own index in the plan - so neither can ever be asked to resolve a '
+   + 'strand to a second room',
+  /TIER_LADDER\.forEach\(\(rg, ti\) => \{/.test(code)
+  && /D\.i18n\[loc\]\.tiers\[rg\.tier\]/.test(code)
+  && /label\(String\(ri \+ 1\)\.padStart\(2, '0'\),/.test(code));
+
+ok('every lesson in the registry still resolves its room through the strand '
+   + 'table, and every strand it names is one of the eleven - the binding '
+   + 'the hall roster reads, checked over all '
+   + `${Object.keys(wire.lessons.lessons).length} lessons`,
+  Object.values(wire.lessons.lessons).every((L) =>
+    wire.roomDefs[L.strand] && wire.roomDefs[L.strand].label === L.room_label)
+  && /const def = D\.roomDefs\[L\.strand\];/.test(fnCode('lessonRoomLabel'))
+  && /if \(!def\) throw new Error/.test(fnCode('lessonRoomLabel')));
+
+ok('every station the registry stands in a hall still names a room that '
+   + 'hall has, by the label the strand table gives it',
+  Object.values(wire.stations).every((st) => {
+    const h = wire.halls.find((x) => x.slug === st.hall);
+    if (!h) return false;
+    return wire.layouts[h.lay].some((r) => wire.roomDefs[r.strand].label === st.room);
+  }));
+
+ok('and the props registry covers every strand a room is keyed by, so '
+   + 'placeRoomProps() can keep throwing on a strand it does not cover '
+   + 'instead of defaulting to an empty room',
+  Object.keys(wire.roomDefs).every((st) => Array.isArray(wire.props.by_strand[st]))
+  && /if \(!ids\) throw new Error\('props registry covers no strand named ' \+ r\.strand\);/
+       .test(fnCode('placeRoomProps')));
 
 console.log(`web/test_3d: ${n} checks passed - teardown, draw-call and per-frame contracts held at the source`);

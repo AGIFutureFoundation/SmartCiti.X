@@ -166,7 +166,11 @@ for _sym in ('function placeRoomProps(', 'function flushProps('):
         'web/build_3d.py no longer has %s, which is what stands these props. '
         'This pack describes a page that draws it; if the page stopped, the '
         'description is false and this build refuses to write it.' % _sym)
-assert 'function flushParts(pool, g)' in PAGE, \
+# the helper this pack is drawn through, matched on its name and its first
+# two parameters rather than on its whole signature: the page grew a third,
+# defaulted one (`shadow`) while this pack was being written, and a check
+# that breaks on a new optional argument is a check about punctuation.
+assert re.search(r'function flushParts\(pool, g[,)]', PAGE), \
     'the page no longer has the pooled-merge helper this pack is drawn through'
 assert 'function wallRect(' in PAGE, \
     'the page no longer has the solid-rectangle helper that makes a prop solid'
@@ -415,8 +419,16 @@ MERGES = {
     'pooled':    'its geometry is translated into hall space and merged by '
                  'material with every other pooled prop in the hall, one mesh '
                  'per material for all eleven rooms',
-    'instanced': 'the same geometry repeats in many rooms of a hall, so it '
-                 'draws once as an InstancedMesh however many rooms have it',
+    'instanced': 'RESERVED, and it used to be used. The five safety fixtures '
+                 'drew as one InstancedMesh each, which looked like the right '
+                 'answer for identical geometry repeated across eight rooms. '
+                 'It was not: an instanced type is a draw call of its own, and '
+                 'every one of the five names a material some pooled piece in '
+                 'the hall already merges, so pooling them costs a few hundred '
+                 'duplicated triangles and saves five calls. A piece may claim '
+                 'this mode again when it names a material nothing else in the '
+                 'hall uses, and the budget block will say whether that is '
+                 'cheaper',
     'own-mesh':  'RESERVED. Only for a prop the hover/click raycast reads or '
                  'one that moves; a prop that claims it must name the list it '
                  'joins, because an unpooled prop is a whole draw call',
@@ -982,34 +994,32 @@ COND_PROPS = [
           'the room record already says what this room requires of you and '
           'the page already hangs that list on the door; this is a '
           + SCHEM + '. It issues nothing and holds nothing',
-          ppe=['*any*'], anchor='wall-mounted', walls=['right'],
-          merges='instanced'),
+          ppe=['*any*'], anchor='wall-mounted', walls=['right']),
     piece('eyewash-stand', 'Eyewash stand', 'safety-fixture', 'pedestal',
           (.16, 1.22, [.30, .16, .24]), 'post',
           'a shape standing where a room record says something can get in '
           'your eyes: ' + SCHEM,
           ppe=['chemical gloves', 'apron', 'face shield'],
-          anchor='back-corner', walls=['right'], merges='instanced'),
+          anchor='back-corner', walls=['right']),
     piece('extinguisher-bracket', 'Extinguisher bracket', 'safety-fixture',
           'wall-cradle', (.24, .62), 'cone',
           'a shape standing where a room record asks for flame-resistant or '
           'anti-static clothing: ' + SCHEM + ', and not a rated appliance',
           ppe=['flame-resistant clothing', 'anti-static clothing',
                'welding hood'],
-          anchor='wall-mounted', walls=['left'], approach=False,
-          merges='instanced'),
+          anchor='wall-mounted', walls=['left'], approach=False),
     piece('spill-kit-cabinet', 'Spill kit cabinet', 'safety-fixture',
           'cabinet', (.62, .88, .38, 1, True), 'cone',
           'a shape standing where a room record says something can be '
           'spilled: ' + SCHEM + '. It contains nothing',
           ppe=['chemical gloves', 'waterproof boots', 'coveralls'],
-          anchor='back-corner', walls=['left'], merges='instanced'),
+          anchor='back-corner', walls=['left']),
     piece('gas-monitor-dock', 'Gas monitor dock', 'safety-fixture',
           'wall-shelf', (.42, .46, .14, 2), 'metal',
           'a shape standing where a room record asks the person to carry a '
           'gas monitor: ' + SCHEM + '. It docks nothing and measures nothing',
           ppe=['gas monitor'], anchor='wall-mounted', walls=['right'],
-          approach=False, merges='instanced'),
+          approach=False),
 
     # ---- hot work: the record asks for a welding hood ---------------------
     piece('rod-oven', 'Electrode rod oven', 'machine', 'oven',
@@ -2386,12 +2396,14 @@ HONESTY = {
                             'place is made of many small distinct pieces '
                             'rather than of dense ones.',
     'the_scarce_currency': 'A hall interior is draw-call bound, not triangle '
-                           'bound. Every piece here pools or instances, none '
-                           'takes a mesh of its own, and every one of the '
-                           'three hundred names one of seven materials the '
-                           'page already builds — so the catalogue grew more '
-                           'than tenfold for no new material and no new draw '
-                           'call at all. The budget block refuses a design '
+                           'bound. Every piece here pools, none takes a mesh '
+                           'of its own, none is instanced any more, and every '
+                           'one of the three hundred names one of seven '
+                           'materials the page already builds — so the '
+                           'catalogue grew more than tenfold while the draw '
+                           'calls it costs went DOWN, from one per pooled '
+                           'material plus one per instanced fixture to one per '
+                           'pooled material. The budget block refuses a design '
                            'that would change that.',
     'the_wall_is_the_budget': 'A room has two partitions and about three '
                               'metres of usable run on each, and that — not '
@@ -2404,12 +2416,13 @@ HONESTY = {
     'built': 'BUILT. web/build_3d.py reads this registry and stands '
              'its props: placeRoomProps() lays them against the '
              'partitions buildHall() has just cut, pooled into one '
-             'mesh per material for the whole hall and one '
-             'InstancedMesh per safety fixture, and '
-             'window.__tc3dProps() reports what was drawn beside '
-             'what the count rule here wanted. The count rule knows '
-             'nothing of doorways or of the tool crib, so a room '
-             'stands fewer than it predicts; the probe names each '
+             'mesh per material for the whole hall — the five safety '
+             'fixtures used to take an InstancedMesh each and now pool '
+             'with everything else, which is five fewer draw calls in '
+             'every hall — and window.__tc3dProps() reports what was '
+             'drawn beside what the count rule here wanted. The count '
+             'rule knows nothing of doorways or of the tool crib, so a '
+             'room stands fewer than it predicts; the probe names each '
              'prop that found no wall and why.',
     'district_catalogue_is_not_drawn': 'The 192 district pieces are NOT '
         'standing in any hall. placeRoomProps() chooses a room\'s furniture '
@@ -2448,10 +2461,14 @@ PAGE_CONTRACT = {
                'page\'s own flushParts(pool, hallGroup). Pooling per room '
                'instead of per hall would multiply the draw calls in this '
                'budget by eleven.',
-    'instancing': 'The safety-fixture family draws through the same '
-                  'InstancedMesh shape the page already uses in '
-                  'flushBeacons(): one instanced draw per prop type per hall, '
-                  'however many rooms hold it.',
+    'instancing': 'The page can draw a prop type as one InstancedMesh per '
+                  'hall, the same shape it already uses in flushBeacons(), and '
+                  'nothing in this pack asks it to any more. An instanced type '
+                  'is one draw call; a pooled piece of a material the hall '
+                  'already merges is none. The five safety fixtures were '
+                  'instanced and are now pooled, which is five fewer calls in '
+                  'every hall for a few hundred more triangles. The page code '
+                  'is unchanged and still resolves the mode.',
     'geometry': 'Boxes come from the page\'s own boxGeo(w, h, d) and are '
                 'translated into hall space before being pushed to the pool, '
                 'exactly as the partition slab() helper already does. '
@@ -2507,7 +2524,12 @@ _trigger_rooms = {p['id']: sum(1 for got in PLACED.values()
 _forms_used = {}
 for p in ALL_FURNITURE:
     _forms_used[p['recipe']['formula']] = 1
-_sil = len({(p['recipe']['formula'], tuple(p['size_m']))
+# how many of the three hundred are a DIFFERENT SHAPE, not the same shape
+# under another name: the part list itself, positions and all, keyed exactly
+# as it ships. Two pieces cut from one form at different sizes or with a
+# different number of shelves are two entries here; two that are the same
+# solid in a different colour are one, and the count says how many.
+_sil = len({json.dumps(p['recipe']['parts'], sort_keys=True)
             for p in ALL_FURNITURE})
 plan_props = [c['props'] for c in PLAN_COSTS.values()]
 plan_tris = [c['tris'] for c in PLAN_COSTS.values()]
@@ -2525,7 +2547,8 @@ doc = {
         'crib_furniture': len(CRIB_PROPS),
         'families': len(FAMILIES),
         'forms': len(FORMS),
-        'distinct_silhouettes': _sil,
+        'distinct_geometries': _sil,
+        'repeated_geometries': len(ALL_FURNITURE) - _sil,
         'strand_props': len(STRAND_PROPS),
         'hazard_props': len(HAZARD_PROPS),
         'placements': len(MATCHES),
@@ -2569,6 +2592,20 @@ doc = {
         'used_by_catalogue': sorted({p['material'] for p in ALL_FURNITURE}),
         'new_materials': 0,
         'new_draw_calls': 0,
+    },
+    'geometry_spread': {
+        'distinct': _sil,
+        'repeated': len(ALL_FURNITURE) - _sil,
+        'of': len(ALL_FURNITURE),
+        'what_repeats': 'a bin is a bin. Where two pieces of furniture really '
+                        'are the same solid — a bolt bin and a shackle bin, '
+                        'two four-shelf racks of the same span — this pack '
+                        'builds the same part list twice rather than nudging '
+                        'a dimension to make the count look better. The '
+                        'number of those is published beside the number of '
+                        'distinct ones so a reader can judge it.',
+        'key': 'the recipe\'s part list exactly as it ships, positions, '
+               'sizes and counts included',
     },
     'forms': {
         'source': 'props/build.py',
@@ -2713,8 +2750,9 @@ doc = {
             'tris_median': int(statistics.median(tris_per)),
             'tris_max': max(tris_per),
             'calls_min': min(calls_per), 'calls_max': max(calls_per),
-            'calls_are': 'one per pooled material for the whole hall plus one '
-                         'per instanced prop type; never one per prop',
+            'calls_are': 'one per pooled material for the whole hall, plus '
+                         'one per instanced prop type and this pack declares '
+                         'none; never one per prop',
         },
         'delta': {
             'draw_calls': max(calls_per),
