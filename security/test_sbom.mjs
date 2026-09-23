@@ -4,7 +4,7 @@
  */
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
-import { readFileSync, readdirSync, statSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -196,6 +196,78 @@ ok('every licence claim is backed by the banner in the file — or says plainly 
   }
   assert.ok(third.includes('sbom.cdx.json'), 'THIRD_PARTY.md points at the SBOM');
   ok('THIRD_PARTY.md, the human-readable statement of the same facts, names every vendored file and version');
+}
+
+/* ---------------- works the bundle MEASURES but does not redistribute ---- */
+// A measured work is not a component: no byte of it is here, so the walk
+// above must keep it out of doc.components. But CC-BY asks for credit
+// wherever the derived work is published, and the place a human looks for
+// credit is THIRD_PARTY.md — not a registry. So both surfaces are held to
+// the registry that owns the fields, and the set is found STRUCTURALLY: any
+// pack registry carrying an `attribution` block whose `license_id` is a
+// CC-BY licence. A pack that measures something next month is in this set
+// the moment it declares one, without anybody remembering to add it here.
+const CC_BY_FIELDS = ['author', 'title', 'source_url', 'license_id', 'license_url'];
+const registries = readdirSync(ROOT, { withFileTypes: true })
+  .filter((d) => d.isDirectory() && existsSync(join(ROOT, d.name, 'registry')))
+  .flatMap((d) => readdirSync(join(ROOT, d.name, 'registry'))
+    .filter((f) => f.endsWith('.json'))
+    .map((f) => `${d.name}/registry/${f}`))
+  .sort();
+assert.ok(registries.length >= 10,
+  `only ${registries.length} pack registries found — the attribution walk is broken, `
+  + 'and a walk that finds nothing credits nothing');
+const measured = [];
+for (const rel of registries) {
+  let reg;
+  try { reg = JSON.parse(readFileSync(join(ROOT, rel), 'utf8')); } catch { continue; }
+  if (!reg || typeof reg !== 'object' || !('attribution' in reg)) continue;
+  const a = reg.attribution;
+  assert.ok('license_id' in a, `${rel}: an attribution block with no license_id`);
+  if (!String(a.license_id).startsWith('CC-BY')) continue;
+  for (const f of CC_BY_FIELDS) {
+    assert.ok(f in a && String(a[f]).trim(), `${rel}: attribution.${f} is missing or empty`);
+  }
+  measured.push([rel, a]);
+}
+
+{
+  const third = readFileSync(join(ROOT, 'THIRD_PARTY.md'), 'utf8');
+  for (const [rel, a] of measured) {
+    for (const f of CC_BY_FIELDS) {
+      assert.ok(third.includes(a[f]),
+        `THIRD_PARTY.md does not credit the ${a.license_id} work measured in ${rel}: `
+        + `its attribution.${f} — "${a[f]}" — appears nowhere in the file`);
+    }
+    assert.ok(third.includes(rel),
+      `THIRD_PARTY.md credits the work measured in ${rel} but never says where the `
+      + 'measurements are, so a reader cannot check the credit against the registry');
+  }
+  ok(`THIRD_PARTY.md credits every CC-BY work the bundle measures (${measured.length}), `
+    + 'field by field, out of the registry that measured it');
+}
+
+{
+  // In metadata, where a statement about the bundle belongs — never in
+  // components, where a statement about shipped bytes belongs.
+  assert.ok(Array.isArray(doc.metadata.properties), 'the SBOM metadata carries properties');
+  assert.ok(doc.components.every((c) => c['bom-ref'].startsWith('web/vendor/')),
+    'a measured work is not a component: nothing of it ships, so nothing of it is listed');
+  const named = doc.metadata.properties
+    .filter((p) => p.name === 'smartcitix:measurement_sources').map((p) => p.value);
+  assert.equal(named.length, measured.length,
+    `the SBOM names ${named.length} measurement sources; ${measured.length} CC-BY works are measured`);
+  for (const [rel, a] of measured) {
+    const v = named.find((x) => x.includes(a.title));
+    assert.ok(v, `the SBOM does not name the ${a.license_id} work measured in ${rel}`);
+    for (const f of CC_BY_FIELDS) {
+      assert.ok(v.includes(a[f]), `smartcitix:measurement_sources omits attribution.${f} of ${rel}`);
+    }
+    assert.ok(v.includes(rel), `smartcitix:measurement_sources does not point at ${rel}`);
+    assert.match(v, /MEASURED, NOT REDISTRIBUTED/,
+      `smartcitix:measurement_sources for ${rel} does not say the work is not redistributed`);
+  }
+  ok('every measured CC-BY work is named in the SBOM metadata and in none of its components');
 }
 
 {

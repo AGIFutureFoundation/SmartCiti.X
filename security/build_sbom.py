@@ -13,6 +13,11 @@ Everything outside `web/vendor/` is first-party with zero runtime dependencies
 the component list IS the vendor tree: `security/test_sbom.mjs` walks the tree
 and fails if the two ever differ.
 
+Works the bundle MEASURES rather than ships - a CC-BY 3D scan read for its
+dimensions, say - are NOT components: no byte of them is here. They are named
+in metadata.properties as smartcitix:measurement_sources, read out of the
+registry of the pack that measured them.
+
 The human-readable statement of the same facts is THIRD_PARTY.md; the test
 holds the two to each other rather than letting either drift.
 """
@@ -162,6 +167,52 @@ def font_version(url):
     return None
 
 
+# The four fields CC-BY asks for, which a measuring pack records in its own
+# registry. Named here so the failure below can name the one that is missing.
+CC_BY_FIELDS = ('author', 'title', 'source_url', 'license_id', 'license_url')
+
+
+def measurement_sources():
+    """Works the bundle MEASURES but does not redistribute.
+
+    Not components, and deliberately so: no byte of such a work is vendored,
+    fetched or shipped, nothing derived from it runs, and `test_sbom.mjs`
+    holds the component list to `web/vendor/` exactly. But a BOM is where a
+    downstream reader looks for the obligations that ride along with the
+    bundle, and publishing measurements of a CC-BY work carries one. So the
+    work is named in metadata, where a statement about the bundle belongs,
+    and never in `components`, where a statement about shipped bytes belongs.
+
+    Found STRUCTURALLY - any pack registry with an `attribution` block whose
+    `license_id` is a CC-BY licence - so a pack added later is picked up
+    without editing this list. Nothing is typed here: every value is read out
+    of the registry that owns it, and a missing field is fatal rather than
+    defaulted, because a half-stated attribution is worse than a loud build.
+    """
+    out = []
+    for reg in sorted(ROOT.glob('*/registry/*.json')):
+        rel = reg.relative_to(ROOT).as_posix()
+        try:
+            doc = json.loads(reg.read_text(encoding='utf-8'))
+        except (ValueError, UnicodeDecodeError):
+            continue
+        if not isinstance(doc, dict) or 'attribution' not in doc:
+            continue
+        attr = doc['attribution']
+        if 'license_id' not in attr:
+            raise SystemExit(f'{rel}: attribution block with no license_id; a '
+                             'licence this build cannot read is one it cannot honour')
+        if not str(attr['license_id']).startswith('CC-BY'):
+            continue
+        for field in CC_BY_FIELDS:
+            if field not in attr or not str(attr[field]).strip():
+                raise SystemExit(f'{rel}: attribution.{field} is missing or empty; '
+                                 'CC-BY asks for the author, the work, the licence '
+                                 'and an indication of changes')
+        out.append((rel, attr))
+    return out
+
+
 def build():
     files = sorted(p for p in VENDOR.rglob('*') if p.is_file())
     assert files, 'web/vendor is empty'
@@ -266,6 +317,15 @@ def build():
         comps.append(comp)
 
     stamp = hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest()[:16]
+    measured = measurement_sources()
+    first_party = ('everything outside web/vendor/ is original to '
+                   'the bundle; orbis/runner-*/ carry their own '
+                   'LICENSE files and are first-party')
+    if measured:
+        first_party += ('. One exception, and it is measurement rather than code: '
+                        'the packs named in smartcitix:measurement_sources publish '
+                        "figures DERIVED from somebody else's licensed work while "
+                        'redistributing no part of that work')
     doc = {
         'bomFormat': 'CycloneDX',
         'specVersion': '1.5',
@@ -285,14 +345,22 @@ def build():
                 {'name': 'smartcitix:source_stamp', 'value': stamp},
                 {'name': 'smartcitix:scope', 'value': 'every file under web/vendor/, and nothing else — '
                                                       'the test walks the tree and holds the list to it'},
-                {'name': 'smartcitix:first_party', 'value': 'everything outside web/vendor/ is original to '
-                                                            'the bundle; orbis/runner-*/ carry their own '
-                                                            'LICENSE files and are first-party'},
+                {'name': 'smartcitix:first_party', 'value': first_party},
                 {'name': 'smartcitix:ci_scanning', 'value': 'dependency and container scanning in CI: not '
                                                             'configured — needs a workflow change the '
                                                             'maintainers must approve'},
                 {'name': 'smartcitix:reproducible', 'value': 'no timestamp and no serial number on purpose: '
                                                              'the same tree builds the same document'},
+                # One property per measured work - NOT a component. Every value
+                # comes out of the registry named at the end of it.
+                *[{'name': 'smartcitix:measurement_sources',
+                   'value': f"{a['title']} by {a['author']}, {a['license_id']}, {a['source_url']} "
+                            f"(licence deed {a['license_url']}). MEASURED, NOT REDISTRIBUTED: no "
+                            'geometry, no texture and no part of the file is in this bundle, and no '
+                            'component listed here comes from it. The measurements published from it, '
+                            "and the licence's four attribution fields, are in "
+                            f'{rel}; THIRD_PARTY.md credits it for a human reader.'}
+                  for rel, a in measured],
             ],
         },
         'components': comps,

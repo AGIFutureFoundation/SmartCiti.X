@@ -14,8 +14,23 @@
 | Web fonts: Barlow Condensed, Archivo, IBM Plex Sans, IBM Plex Mono | the four upstream projects (Barlow Project Authors; Omnibus-Type; IBM Corp., twice) by way of Google Fonts | SIL Open Font License 1.1 — each family's **full licence text is vendored** beside its files (`web/vendor/fonts/<family>-OFL.txt`), not merely named by URL | **vendored** under `web/vendor/fonts/`: 26 woff2 files (694 KB) covering the `latin` and `latin-ext` subsets at the weights the pages actually set, plus each family's OFL. Taken once by `web/fetch_fonts.py`, which records every file's sha256 and the exact URL it came from in `web/vendor/fonts/manifest.json` and re-verifies them offline with `--check`; every file is hashed again in `security/registry/sbom.cdx.json` as its own component under its own family's copyright. **No page contacts a font service any more** — the five pages that used to link `fonts.googleapis.com` now link `web/vendor/fonts/fonts.css`, so no learner's IP reaches Google on a page load. The Cyrillic, Greek and Vietnamese subsets were deliberately not taken: no locale here uses them. Arabic, Hindi and Chinese are in scripts none of these families covers at all, so those three locales fall back to the reader's own system fonts — as they did before. `web/lint_external.mjs` holds the built pages to this row |
 | OpenStreetMap permalink | openstreetmap.org | — | **not fetched** — the 3D environment's city-point panel builds a `?mlat=&mlon=` permalink from coordinates already on screen, so a reader can check a RECORDED point against a map that is not ours. Followed only if the reader clicks it |
 
-Everything else in this repository is original to the bundle. No Mapbox
-service, token or tile is used: the `geo/` registry ships plain WGS84
+## Measured, not redistributed
+
+A measured source is not a dependency. No byte of it is vendored, fetched,
+shipped or run: it is a work this bundle *read* in order to publish numbers
+about it. CC-BY-4.0 still asks for credit wherever those numbers are
+published, so the credit is here — and every value in the row below is the
+one the measuring pack's own registry holds. `security/test_sbom.mjs` reads
+that registry and fails if this table stops matching it, for this work and
+for any CC-BY work a future pack measures.
+
+| Work | Author | License | What this repository holds |
+|---|---|---|---|
+| `R+5_Salons Rive Gauche_Maison de la Mutualité` — <https://sketchfab.com/3d-models/r5-salons-rive-gauche-maison-de-la-mutualite-e9e40a09c82e42e8a145afa679ffac28> | GL events Paris Venues (<https://sketchfab.com/GLeventsParisVenues>) | `CC-BY-4.0` — Creative Commons Attribution 4.0 International, deed at <http://creativecommons.org/licenses/by/4.0/> | **measured, NOT redistributed** — no geometry, no texture and no part of the file is in this repository, and nothing derived from its geometry runs here. `venue/registry/venue.json` publishes dimensions, areas, counts and ratios computed by reading the file; the file itself stays outside the tree. The four fields this row states are RECORDED in that registry's `attribution` block, read out of the file's own `asset.extras`, and measuring is declared there as a change to the work (`attribution.changes_made`) rather than argued about |
+
+Everything else in this repository is original to the bundle — the two
+tables above are the whole of what is not. No Mapbox service, token or tile
+is used: the `geo/` registry ships plain WGS84
 coordinates and standard GeoJSON (`geo/registry/campuses.geojson` and the
 expanded `geo/registry/network.geojson`), the interchange format any
 Mapbox/MapLibre-compatible stack consumes directly — and the geomap page

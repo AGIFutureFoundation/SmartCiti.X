@@ -7,7 +7,7 @@ The Adaptive Stack: the packs implementing the ACP protocol suite (v3.2) —
 counted, like everything else here, by the table below rather than by a
 number that can drift from it.
 
-**2,227 checks, all passing from inside this bundle**, with no model credentials
+**2,229 checks, all passing from inside this bundle**, with no model credentials
 required.
 
 ```bash
@@ -27,7 +27,7 @@ node fabric/test.mjs               # 16 — mentor guards, eval harness, router
 node bus/test.mjs                  # 17 — bus contracts, telemetry guards, audit
 node bus/test_safeguards.mjs       # 20 — parity (including the §23.1 "measured nothing" fail-open), stop conditions, overrides
 node security/test.mjs             # 29 — authz, tenancy, rate limits, privacy, the contest and abuse routes, SECURITY.md held to the packs
-node security/test_sbom.mjs        # 11 — the SBOM: every one of the 41 files under `web/vendor/` hashed, versioned and licensed from evidence in the file — or, for the 26 self-hosted font faces, from the exact URL the fetcher recorded and the full SIL OFL committed beside them, each family its own component under its own copyright; the two files this bundle generated there are listed as first-party and forbidden to claim an upstream
+node security/test_sbom.mjs        # 13 — the SBOM: every one of the 41 files under `web/vendor/` hashed, versioned and licensed from evidence in the file — or, for the 26 self-hosted font faces, from the exact URL the fetcher recorded and the full SIL OFL committed beside them, each family its own component under its own copyright; the two files this bundle generated there are listed as first-party and forbidden to claim an upstream
 node ops/test.mjs                  # 48 — registries, rollout lanes (an unreported dwell opens nothing, a rollout manager refuses to run with no audit log), jobs, cost governor
 node ops/fuzz.mjs                  #  9 — side doors around the promotion gates
 node ops/rehearsal.mjs             # 15 — the wave 1 rehearsal: one content rollout walked through every ACP-13/ACP-08 gate against seeded synthetic cohorts (dwell, parity, halt, auto-rollback, the dial-params shadow run, a self-halting parity job driven through the real Scheduler, the full canary→wave→full walk) with the complete audit trail asserted, not just return values — proves the machinery, not that a wave shipped to real halls

@@ -22,7 +22,7 @@
   "properties": [
    {
     "name": "smartcitix:source_stamp",
-    "value": "12cbf883d874f15e"
+    "value": "7b3e9ff22503a41e"
    },
    {
     "name": "smartcitix:scope",
@@ -30,7 +30,7 @@
    },
    {
     "name": "smartcitix:first_party",
-    "value": "everything outside web/vendor/ is original to the bundle; orbis/runner-*/ carry their own LICENSE files and are first-party"
+    "value": "everything outside web/vendor/ is original to the bundle; orbis/runner-*/ carry their own LICENSE files and are first-party. One exception, and it is measurement rather than code: the packs named in smartcitix:measurement_sources publish figures DERIVED from somebody else's licensed work while redistributing no part of that work"
    },
    {
     "name": "smartcitix:ci_scanning",
@@ -39,6 +39,10 @@
    {
     "name": "smartcitix:reproducible",
     "value": "no timestamp and no serial number on purpose: the same tree builds the same document"
+   },
+   {
+    "name": "smartcitix:measurement_sources",
+    "value": "R+5_Salons Rive Gauche_Maison de la Mutualit\u00e9 by GL events Paris Venues, CC-BY-4.0, https://sketchfab.com/3d-models/r5-salons-rive-gauche-maison-de-la-mutualite-e9e40a09c82e42e8a145afa679ffac28 (licence deed http://creativecommons.org/licenses/by/4.0/). MEASURED, NOT REDISTRIBUTED: no geometry, no texture and no part of the file is in this bundle, and no component listed here comes from it. The measurements published from it, and the licence's four attribution fields, are in venue/registry/venue.json; THIRD_PARTY.md credits it for a human reader."
    }
   ]
  },

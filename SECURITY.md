@@ -7,7 +7,7 @@ and **the boundary between one organisation's learners and another's**.
 
 ## What is implemented and tested
 
-`security/` ships with 29 checks in `test.mjs` and 11 in `test_sbom.mjs`
+`security/` ships with 29 checks in `test.mjs` and 13 in `test_sbom.mjs`
 (both run by `verify_all.sh`; each suite asserts the count stated here). Each
 check is a refusal, or a hash held to the bytes in the tree:
 
