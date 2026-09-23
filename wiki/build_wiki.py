@@ -72,6 +72,8 @@ kit = json.load(open(ROOT / 'kit/registry/kit.json'))
 props = json.load(open(ROOT / 'props/registry/props.json'))
 respond = json.load(open(ROOT / 'respond/registry/respond.json'))
 ei = json.load(open(ROOT / 'ei/registry/ei.json'))
+auth = json.load(open(ROOT / 'auth/registry/auth.json'))
+rnd = json.load(open(ROOT / 'rnd/registry/rnd.json'))
 skills = json.load(open(ROOT / 'pack/registry/skills.json'))['skills']
 by_slug = {h['slug']: h for h in halls}
 
@@ -166,6 +168,9 @@ content graph and details:
 | **The building kit** (`kit/registry/kit.json`) | {kit['counts']['pieces']} exterior pieces in {kit['counts']['families']} families, median {kit['counts']['tri_budget_median']:.0f} triangles, arithmetic for {F(kit['budget']['campuses'][kit['budget']['budgeted_campus']]['pieces'])} pieces at {kit['budget']['campuses'][kit['budget']['budgeted_campus']]['draw_calls']} draw calls on the {campuses[kit['budget']['budgeted_campus']]['name']} — declared against a measured reference, and drawn by the page: a browser probe reports 1,117 pieces for 8 draw calls on that campus, the figure this row predicts | [Building-Kit](Building-Kit.md) |
 | **The room props** (`props/registry/props.json`) | {props['counts']['props']} interior props over all {props['counts']['strands_covered']} strands, {F(props['counts']['prop_instances'])} instances across {F(props['counts']['rooms'])} rooms, every hazard prop derived from that room's own protective-equipment record — read by the page: placeRoomProps() stands them against the partitions buildHall() cuts, and __tc3dProps() reports what was drawn beside what the count rule wanted | [Room-Props](Room-Props.md) |
 | **First responders** (`respond/registry/respond.json`) | {respond['counts']['services']} services, {respond['counts']['role_tiers']} role tiers, {respond['counts']['competencies']} competency domains and {respond['counts']['scenario_frames']} scenario frames, cross-linked {respond['counts']['hall_cross_links']} times into {respond['counts']['halls_touched']} of the {respond['counts']['halls_total']} trade halls — a scaffold, not a protocol: {respond['counts']['signed_off_items']} of {respond['counts']['training_items']} items carry a practitioner sign-off and {respond['counts']['authority_documents_opened']} of the {respond['counts']['authorities']} standards bodies had a document opened | [First-Responders](First-Responders.md) |
+| **The simulator index** (`index.html`) | one entry per seat on the front door — {len(sims["sims"])} rows with the task line, controls and rubric axes each machine is judged on, each linking into that seat with `?sim=<slug>`, validated against the registry so an unknown seat opens no seat at all — and the deep link does not survive a reload | [Simulator-Index](Simulator-Index.md) |
+| **The lessons page** (`web/trade_craft_lessons.html`) | the {lessons['counts']['lessons']} walkable lessons and {lessons['counts']['steps']} steps finally drawn for a learner to work from, limits above the first lesson and the ladder rendered as advice that locks nothing — the page that took `lessons/registry/lessons.json` off the declared-and-unbuilt list | [Lessons-Page](Lessons-Page.md) |
+| **Sign-in** (`web/trade_craft_signin.html`) | {auth['counts']['methods']} sign-in methods, {auth['counts']['configured_true']} that work here and {auth['counts']['configured_false']} issuer adapters that are off because an authorization-code exchange needs a server holding a client secret — and {auth['counts']['methods_that_authenticate']} of the {auth['counts']['methods']} authenticate anybody or gate anything | [Sign-In](Sign-In.md) |
 | **The emotional-intelligence layer** (`ei/registry/ei.json`) | {ei['counts']['records']} records binding {ei['counts']['agent_bindings']} of the advisors to what they may do when a learner is struggling — {ei['counts']['responses']} responses each with a stop condition, {ei['counts']['red_lines']} red lines, a {ei['counts']['handoff_rungs']}-rung ladder that names resource TYPES and no contact detail at all, and {ei['counts']['clinician_reviewed_records']} of {ei['counts']['records']} records read by a clinician | [Emotional-Intelligence](Emotional-Intelligence.md) |
 
 ## The districts at a glance
@@ -2612,6 +2617,368 @@ with what this bundle records today.
 {FOOTER}"""
 
 
+# --------------------------------------------------- the simulator index ---
+def page_sim_index():
+    """The front door's seat index, and the deep link that opens one seat.
+
+    Every name, task line, control row, rubric axis and count below is read
+    from `sims/registry/sims.json` - the same registry `web/build_home.py`
+    renders the index from and the same one `web/build_3d.py` validates
+    `?sim=` against. The known limitation at the foot of this page is not a
+    footnote: it is stated in the same breath as the capability, because a
+    deep link a reader cannot bookmark is a link that half works.
+    """
+    S = sims['sims']
+    n_controls = sum(len(s['controls']) for s in S.values())
+    n_axes = sum(len(s['rubric']) for s in S.values())
+    rows = '\n'.join(
+        f'| [**{s["name"]}**](../web/trade_craft_3d.html?sim={sid}) | `{sid}` '
+        f'| {s["kind"]} · `{s["skill_strand"]}.{s["skill_tier"]}` '
+        f'| {len(s["controls"])} | {len(s["rubric"])} | {len(s["halls"])} |'
+        for sid, s in S.items())
+    blocks = []
+    for sid, s in S.items():
+        ctl = ' · '.join(f'`{c["keys"]}` {c["action"]}' for c in s['controls'])
+        axes = '\n'.join(f'| {r["axis"]} | {r["measure"]} | `{r["pass"]}` |'
+                         for r in s['rubric'])
+        blocks.append(f'''### {s["name"]}
+
+[`web/trade_craft_3d.html?sim={sid}`](../web/trade_craft_3d.html?sim={sid}) —
+{s["kind"]}, {len(s["halls"])} halls, entered against
+`{s["skill_strand"]}.{s["skill_tier"]}`.
+
+{s["task"]}
+
+**Controls.** {ctl}
+
+| Rubric axis | Measured | Pass |
+|---|---|---|
+{axes}''')
+    return f'''# The simulator index
+
+The front door (`index.html`, built by `web/build_home.py`) carries **one
+entry per seat**: {len(S)} rows, each naming what the machine asks of you and
+what it measures you against, each linking straight into that machine rather
+than into the front of the world. The link is
+`web/trade_craft_3d.html?sim=<slug>`, and the slug is the key the registry
+files the seat under — so the index cannot offer a name the walkable world
+would refuse.
+
+Nothing on that index is typed: the {len(S)} names, {n_controls} control rows
+and {n_axes} rubric axes below are read out of
+`sims/registry/sims.json` by the page generator and by this page, from the
+same fields. The seats themselves — physics, scoring, the scripted reference
+operator — are described on [Simulators](Simulators.md); this page is about
+the way in.
+
+![The simulator index on the front door](img/simulator-index.png)
+
+## The {len(S)} seats and their links
+
+| Seat | `?sim=` | Kind · skill | Controls | Rubric axes | Halls |
+|---|---|---|---|---|---|
+{rows}
+
+Between them the seats bind {len(sims["hall_bindings"])} halls, each through a
+real skill id in [the skill graph](Skill-Graph.md).
+
+## How `?sim=` is validated
+
+The walkable world reads the parameter and checks it against the registry it
+was shipped — `Object.keys(D.sims.sims)` — exactly the way `?hall=` is checked
+against the hall roster, and for the same reason: a URL is typed by hand and a
+typo must not be guessed at.
+
+- **A known slug opens that seat.** The world stands up first — region, campus
+  or hall — and the seat opens one microtask later, through the same
+  `startSim()` the hall's own seat chooser calls. If the hall the URL left
+  behind does not teach that seat, the page walks to the first hall the
+  registry says does, so the run is recorded against a hall that teaches it.
+- **An unknown slug opens NO seat.** There is no default seat and no nearest
+  match: the world stands up as it otherwise would and nothing is entered.
+  Observed live against the running app: `?sim=not-a-seat` left the region
+  view standing with no seat open and no page error.
+
+A default would be a policy decision, and the policy for an unreadable link is
+to open nothing.
+
+## The known limitation: the link does not survive a reload
+
+`syncURL()` — the function that keeps the address bar agreeing with the view —
+has cases for the region, campus and hall views and **no `sim` case**. It runs
+when the deep link walks to the hall that teaches the seat, so the address bar
+is rewritten to `?hall=<slug>&lang=<locale>` the moment the seat opens, and the
+seat name is gone from the URL.
+
+Observed live: opening `?sim=crane-lift` left the address bar reading
+`?hall=crane-ops&lang=en`. **Reload that page, or copy the URL out of the bar
+after the seat opened, and you land in the Crane Operators hall — not in the
+seat.** The deep link works once, from the index or from anywhere it is
+written down; it does not round-trip through the address bar, and a learner
+who bookmarks what the bar shows has bookmarked the hall.
+
+The link in the index is unaffected, because the index writes the `?sim=` form
+itself. Nothing about this is recorded as fixed anywhere; it is recorded here
+as the limit it is.
+
+![A seat opened by deep link — `?sim=crane-lift`](img/seat-crane-lift.png)
+
+## The seats, as the index states them
+
+{chr(10).join(blocks)}
+
+## What a seat run is not
+
+{sims["honesty"]["status"]}
+
+**And the walkaround:** {sims["honesty"]["walkaround"]}
+{FOOTER}'''
+
+
+# ------------------------------------------------------- the lessons page ---
+def page_lessons_page():
+    """The walkable lessons, opened as a page a learner can work from.
+
+    The counts are `lessons/registry/lessons.json#counts` and the backlog
+    figure is `rnd/registry/rnd.json#counts.declared_unbuilt`; neither is
+    typed here. The before-figure is stated as one more than the current
+    one, because the entry that left the list is the lessons registry
+    itself.
+    """
+    c = lessons['counts']
+    hon = lessons['honesty']
+    pc = lessons['page_contract']
+    kinds = lessons['step_kinds']
+    kind_rows = '\n'.join(
+        f'| **{kid}** | {k["act"]} | {k["stage"]} | {c["steps_by_kind"][kid]} '
+        + (f'| writes {"an" if k["records"][0] in "aeiou" else "a"} '
+           f'`{k["records"]}` episode ' if k['records']
+           else '| records nothing — ' + k['why_no_episode'] + ' ')
+        + f'| `{k["reads"]}` |'
+        for kid, k in kinds.items())
+    unbuilt_now = rnd['counts']['declared_unbuilt']
+    reads = '\n'.join(f'- `{f}`' for f in lessons['reads'])
+    return f'''# The lessons page
+
+`web/trade_craft_lessons.html`, built by `web/build_lessons.py`, opens
+`lessons/registry/lessons.json`: **{c["lessons"]} walkable lessons**,
+**{c["steps"]} steps** across **{c["step_kinds"]} step kinds**, standing in
+{c["rooms_stood_in"]} rooms of {c["halls_covered"]} of the {c["halls_total"]}
+halls. [Lessons](Lessons.md) describes the pack; this page is about the
+surface that finally draws it.
+
+The limits come first on that page, above the lessons, because that is where
+the pack's own page contract puts them: {pc["limits"]}
+
+![The lessons page opens on its own limits](img/lessons-page.png)
+
+## What it draws
+
+- **The limits first** — the pack's own honesty block, rendered before the
+  first lesson rather than under it.
+- **The {c["step_kinds"]} step kinds**, each with what it records or the
+  registry's own reason for recording nothing.
+- **The ladder as advice.** {c["prerequisite_edges"]} prerequisite edges over
+  {c["lessons"]} lessons, rendered as named links with the edge reason shown
+  and nothing disabled. Enforcement: {lessons["ladder"]["enforcement"]}
+- **Every lesson in the registry's order**, with its hall linked through to
+  the walkable world, its room, its `why`, its `limits` sentence and every one
+  of its steps numbered — each step with the names it read and the file it
+  read them from.
+
+Every name on the page is read, never copied: {pc["reads"].split(":")[0]}.
+The registries it reads through the lesson pack:
+
+{reads}
+
+## The {c["step_kinds"]} step kinds
+
+{c["recording_steps"]} of the {c["steps"]} steps write an episode to the
+device-local training log; the other {c["silent_steps"]} write nothing at all,
+and each silent kind says why rather than leaving the blank to be discovered.
+
+| Kind | What it is | Stage | Steps | Records | Reads |
+|---|---|---|---|---|---|
+{kind_rows}
+
+The page itself records nothing of its own: {pc["episode"]} The step
+checkboxes are a tally in the open tab — the built page contains no
+`localStorage` call at all — so closing the tab loses the marks, which is the
+correct behaviour for a mark that was never anybody's score.
+
+## What closed in `rnd/`, and how
+
+`rnd/registry/rnd.json` keeps a computed backlog of registries that are
+declared and unbuilt. `lessons/registry/lessons.json` was on it for one
+computed reason: no page generator under `web/` named the path, so nothing a
+learner opens read it. The wiki described the pack; nothing drew it.
+
+**Declared-and-unbuilt is now {unbuilt_now} entries, down from
+{unbuilt_now + 1}**, and the lessons registry is the entry that left.
+
+It left the way that register says entries leave — by satisfying the condition
+each entry carries in its own `drops_off_when` field: *a page generator under
+`web/` opens this path*. `web/build_lessons.py` names
+`lessons/registry/lessons.json` in its source, the scan that builds the
+backlog found it there, and the entry was gone on the next build of `rnd/`.
+**No honesty flag was deleted to close it.** In the register's own words:
+{rnd["honesty"]["the_backlog_computes"]}
+
+The {unbuilt_now} registries still on that list are still on it, and this page
+claims nothing about them.
+
+## What a lesson is not
+
+- **Not a certificate.** {hon["not_certification"]}
+- **Not a gate.** {hon["not_a_gate"]}
+- **Not scored.** {hon["not_scored"]}
+- **Not reviewed.** {hon["content"]}
+- **Not a curriculum.** {hon["scope"]}
+- **Provenance.** {hon["status"].split(" The word ")[0].strip()}
+{FOOTER}'''
+
+
+# --------------------------------------------------------------- sign-in ---
+def page_signin():
+    """Sign-in: two methods that work, three that say why they cannot.
+
+    Every count, label, flow and missing-piece line is read from
+    `auth/registry/auth.json`. The three OFF adapters are the point of the
+    page: the reason they are off is a fact about a static bundle, not a
+    feature that has not been written yet.
+    """
+    A = auth
+    M = A['methods']
+    C = A['counts']
+    H = A['honesty']
+    S = A['siwe']
+    order = ['local-identity', 'siwe-ethereum'] + sorted(
+        k for k, m in M.items() if m['configured'] is not True)
+    rows = '\n'.join(
+        f'| **{M[k]["label"]}** | `{k}` | {M[k]["kind"]} '
+        f'| {"yes" if M[k]["configured"] else "**no**"} '
+        f'| {"yes" if M[k]["sets_identity"] else "no"} '
+        f'| {"yes" if M[k]["authenticates"] else "**no**"} '
+        f'| {"yes" if M[k]["gates_anything"] else "**no**"} |'
+        for k in order)
+    off = [k for k in order if M[k]['configured'] is not True]
+    off_blocks = '\n\n'.join(
+        f'''### {M[k]["label"]} — `configured: false`
+
+*{M[k]["flow"]}*
+
+{M[k]["disabled_label"]}
+
+What is missing, named rather than implied:
+
+'''
+        + '\n'.join(f'- {x}' for x in M[k]['missing_server_side'])
+        + f'\n\n{M[k]["what_it_does_not_claim"]} '
+          f'It becomes available when {M[k]["becomes_available_when"]}'
+        for k in off)
+    field_rows = '\n'.join(f'| {i + 1} | `{f}` | {S["field_notes"][f]} |'
+                           for i, f in enumerate(S['fields']))
+    oracles = '\n'.join(f'- {o}' for o in S['verification']['oracles'])
+    n_missing = sum(len(M[k]['missing_server_side']) for k in off)
+    return f'''# Sign-in, and what a bundle with no server cannot do
+
+`web/trade_craft_signin.html`, built by `web/build_auth.py` from
+`auth/registry/auth.json`: **{C["methods"]} sign-in methods described,
+{C["configured_true"]} that work here, {C["configured_false"]} that are off
+and say why** — and **{C["methods_that_authenticate"]} that authenticate
+anybody**.
+
+{H["no_backend"]}
+
+![The sign-in page states the limit before the first control](img/signin-page.png)
+
+## The {C["methods"]} methods
+
+| Method | id | Kind | Configured | Writes an identity | Authenticates | Gates anything |
+|---|---|---|---|---|---|---|
+{rows}
+
+The last two columns are the whole of it: every one of the {C["methods"]} methods carries `authenticates: false` and
+`gates_anything: false`, the wallet one included — {C["methods_that_authenticate"]} of them
+authenticate anybody and {C["methods_that_gate_anything"]} of them gate anything.
+
+One function in the page writes the identity record, and it refuses any method
+whose `configured` is not exactly `true`. That is the safety property, and
+`auth/test.mjs` drives it directly rather than reading the source for it.
+
+## Why {C["configured_false"]} of them are off
+
+{H["why_not_a_button_anyway"]}
+
+An authorization-code exchange needs a server that holds a client secret. A
+static page cannot hold a secret — shipping one publishes it — and it cannot
+receive a redirect, validate an `id_token` against an issuer's keys, or issue a
+session anybody could revoke. {H["issuers_fail_closed"]}
+
+Between them the {len(off)} adapters name **{n_missing} missing server-side
+pieces**, counted here off the records themselves; the registry's own
+`counts.missing_server_side_items` says {C["missing_server_side_items"]}, which
+is the same number arrived at twice rather than typed once:
+
+{off_blocks}
+
+{H["what_would_make_this_real"]}
+
+## The two that work, and exactly how far
+
+### {M["local-identity"]["label"]}
+
+*{M["local-identity"]["flow"]}*
+
+It claims {M["local-identity"]["what_it_claims"]}
+
+**What it is not.** {M["local-identity"]["what_it_does_not_claim"]}
+{H["local_identity_is_a_label"]}
+
+### {M["siwe-ethereum"]["label"]}
+
+*{M["siwe-ethereum"]["flow"]}*
+
+It claims {M["siwe-ethereum"]["what_it_claims"]}
+
+**What it is not.** {M["siwe-ethereum"]["what_it_does_not_claim"]}
+{H["wallet_proves_consent_not_access"]}
+
+The signature is verified **in the page**: {S["verification"]["method"]}
+Verified means one thing only — {S["verification"]["claims_verified_only_when"]}
+The check lives {S["verification"]["where"]}, and `auth/test.mjs` lifts that
+region out and runs it in node against oracles this pack did not write:
+
+{oracles}
+
+Needs a runtime, and says so when it is absent:
+{M["siwe-ethereum"]["needs_runtime"]} {S["no_wallet"]}
+
+## The EIP-4361 message, and where its shape came from
+
+{C["siwe_fields"]} fields, in this order, over a
+{S["nonce_bytes"]}-byte nonce, signed with {S["signing_method"]}:
+
+| # | Field | What it is |
+|---|---|---|
+{field_rows}
+
+**The field order is AUTHORED FROM RECOLLECTION.**
+{M["siwe-ethereum"]["spec_provenance"]}
+
+The statement the wallet shows, verbatim: *{S["statement"]}*
+
+## What this page is not
+
+- **Not a login.** {H["nothing_here_authenticates"]}
+- **Not a gate.** Every method carries `gates_anything: false`; there is
+  nothing here to protect and nothing here protecting it.
+- **Not a measurement.** {H["status"]}
+- **Storage.** `{A["storage"]["identity_key"]}`,
+  {A["storage"]["scope"]} — {A["storage"]["never_leaves_the_device"]}
+{FOOTER}'''
+
+
 PAGES = {
     'Home.md': page_home,
     'Campus-Map.md': page_campus,
@@ -2638,6 +3005,9 @@ PAGES = {
     'Room-Props.md': page_props,
     'First-Responders.md': page_respond,
     'Emotional-Intelligence.md': page_ei,
+    'Simulator-Index.md': page_sim_index,
+    'Lessons-Page.md': page_lessons_page,
+    'Sign-In.md': page_signin,
     'Provenance.md': page_provenance,
     **{f'District-{k}.md': (lambda k=k, d=d: page_district(k, d))
        for k, d in districts.items()},
