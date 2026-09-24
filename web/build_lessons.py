@@ -60,6 +60,14 @@ ROOT = _pack_root()
 # close the gap in the scan while leaving it open in the bundle.
 LESSONS_PATH = 'lessons/registry/lessons.json'
 
+# The two registries a COURSE has to consult to be honest about itself, named
+# here for the same reason: `sims/registry/sims.json` owns which cells a seat
+# stands on and what each seat is called, and `pack/registry/skills.json` owns
+# how many cells a trade's ladder has. A course page that said where a seat
+# exists without reading the registry that binds seats would be guessing.
+SIMS_PATH = 'sims/registry/sims.json'
+SKILLS_PATH = 'pack/registry/skills.json'
+
 
 def need(d, k, where):
     """Read a required field, or fail by name.
@@ -85,6 +93,8 @@ def item(seq, i, where):
 
 
 reg = json.load(open(ROOT / LESSONS_PATH))
+sims_reg = json.load(open(ROOT / SIMS_PATH))
+skills_reg = json.load(open(ROOT / SKILLS_PATH))
 manifest = json.load(open(ROOT / 'pack/manifest.json'))
 halls_reg = json.load(open(ROOT / 'pack/registry/halls.json'))
 campuses_reg = json.load(open(ROOT / 'unions/registry/campuses.json'))
@@ -203,6 +213,131 @@ if len(LESSONS) != need(COUNTS, 'lessons', f'{R}#counts'):
         f'{R}: counts.lessons says {COUNTS["lessons"]} but the registry holds {len(LESSONS)}')
 
 
+# ----------------------------------------------------------------- course ---
+# WHAT A COURSE IS HERE, and what it is not. A learner does not arrive
+# wanting "the lessons registry": they arrive wanting a trade and an order to
+# work it in. A COURSE is the lessons that stand in ONE hall, put in the
+# order the registry's own ladder layers put them, with every step numbered
+# straight through from the first to the last, each step linking to the
+# simulator seat it opens where the registry binds one and saying so plainly
+# where it does not.
+#
+# The order is not invented here. `ladder.layers` already declares which
+# layer every lesson sits in, and the registry's own key order breaks ties -
+# so the sequence is READ, and a course cannot disagree with the ladder
+# drawn further down this same page.
+#
+# The honest shape of it: `spread.halls` declares which halls a lesson stands
+# in at all, and it is checked against the lessons rather than trusted. The
+# rest of the halls have no course, and the page says which number that is
+# instead of implying a catalogue.
+SIMS = need(sims_reg, 'sims', SIMS_PATH)
+BINDINGS = need(sims_reg, 'hall_bindings', SIMS_PATH)
+SKILLS = need(skills_reg, 'skills', SKILLS_PATH)
+if need(skills_reg, 'count', SKILLS_PATH) != len(SKILLS):
+    raise AssertionError(f'{SKILLS_PATH}: count disagrees with the number of records')
+
+# Which ladder cells carry a seat, and which cells each hall's ladder has.
+# Both counted from the registry that owns them; neither typed.
+CELLS_WITH_SEAT = {need(b, 'skill_id', f'{SIMS_PATH}#hall_bindings.{h}')
+                   for h, bs in BINDINGS.items() for b in bs}
+HALL_CELLS = {}
+for s in SKILLS:
+    u = need(s, 'union', f'{SKILLS_PATH}#skills[]')
+    if u not in HALL_CELLS:
+        HALL_CELLS[u] = 0
+    HALL_CELLS[u] += 1
+
+LAYERS = need(LADDER, 'layers', f'{R}#ladder')
+LAYER_OF = {}
+for depth, ids in LAYERS.items():
+    for lid in ids:
+        if lid in LAYER_OF:
+            raise AssertionError(f'{R}#ladder.layers: lesson {lid!r} sits in two layers')
+        LAYER_OF[lid] = int(depth)
+for lid in LESSONS:
+    if lid not in LAYER_OF:
+        raise KeyError(f'{R}#ladder.layers: lesson {lid!r} sits in no layer')
+
+KEY_ORDER = {lid: i for i, lid in enumerate(LESSONS)}
+COURSE_HALLS = need(SPREAD, 'halls', f'{R}#spread')
+COURSE_OF = {}
+for lid, L in LESSONS.items():
+    COURSE_OF.setdefault(need(L, 'hall', f'{R}#lessons.{lid}'), []).append(lid)
+if sorted(COURSE_OF) != sorted(COURSE_HALLS):
+    raise AssertionError(
+        f'{R}#spread.halls lists {len(COURSE_HALLS)} halls but the lessons stand in '
+        f'{len(COURSE_OF)}; the spread block and the lessons disagree about which '
+        'halls a course exists for')
+for slug in COURSE_OF:
+    COURSE_OF[slug].sort(key=lambda lid: (LAYER_OF[lid], KEY_ORDER[lid]))
+
+HALLS_TOTAL = need(COUNTS, 'halls_total', f'{R}#counts')
+if len(COURSE_OF) != need(COUNTS, 'halls_covered', f'{R}#counts'):
+    raise AssertionError(
+        f'{R}#counts.halls_covered says {COUNTS["halls_covered"]} but the lessons '
+        f'stand in {len(COURSE_OF)} halls')
+
+
+def seat_of_step(s, kind, where):
+    """The seat a step opens, or None - decided by the registry, not guessed.
+
+    Which kinds of step reach a seat is not a list kept here: `step_kinds`
+    declares the file each kind READS, and the kinds that read the simulator
+    registry are exactly the kinds that stand a learner in a seat. So a step
+    of such a kind must carry a `sim`, and `need()` fails the build by name
+    if it does not; a step of any other kind must not carry one, and a
+    registry that grew one would stop this build rather than have the page
+    quietly ignore it. No `.get`, and no probing for a field to decide what a
+    page means.
+    """
+    reads = need(KINDS[kind], 'reads', f'{R}#step_kinds.{kind}')
+    if reads != SIMS_PATH:
+        if 'sim' in s:
+            raise AssertionError(
+                f'{where}: kind {kind!r} reads {reads!r} and reaches no seat, but the '
+                f'step names seat {s["sim"]!r}')
+        return None
+    slug = need(s, 'sim', where)
+    if slug not in SIMS:
+        raise KeyError(f'{where}: names seat {slug!r}, which {SIMS_PATH} does not hold')
+    return slug
+
+
+COURSE_ROWS = []
+for slug in COURSE_HALLS:
+    ids = COURSE_OF[slug]
+    steps = sum(len(need(LESSONS[lid], 'steps', f'{R}#lessons.{lid}')) for lid in ids)
+    seat_steps = sum(
+        1 for lid in ids
+        for i, s in enumerate(need(LESSONS[lid], 'steps', f'{R}#lessons.{lid}'))
+        if seat_of_step(s, need(s, 'kind', f'{R}#lessons.{lid}.steps[{i}]'),
+                        f'{R}#lessons.{lid}.steps[{i}]') is not None)
+    if slug not in HALL_CELLS:
+        raise KeyError(f'{SKILLS_PATH}: hall {slug!r} has no skill cells at all')
+    cells_with_seat = len({c for c in CELLS_WITH_SEAT if c.split('.')[0] == slug})
+    on_a_seat_cell = sum(1 for lid in ids
+                         if need(LESSONS[lid], 'skill_id', f'{R}#lessons.{lid}')
+                         in CELLS_WITH_SEAT)
+    COURSE_ROWS.append({
+        'hall': slug,
+        'name': HALL_NAME[slug],
+        'ids': ids,
+        'lessons': len(ids),
+        'steps': steps,
+        'seat_steps': seat_steps,
+        'cells': HALL_CELLS[slug],
+        'cells_with_seat': cells_with_seat,
+        'on_a_seat_cell': on_a_seat_cell,
+    })
+
+COURSE_STEPS_TOTAL = sum(c['steps'] for c in COURSE_ROWS)
+if COURSE_STEPS_TOTAL != TOTAL_STEPS:
+    raise AssertionError(
+        f'the courses hold {COURSE_STEPS_TOTAL} steps but the lessons hold '
+        f'{TOTAL_STEPS}; a step is in a course or it is in no course')
+
+
 # ------------------------------------------------------------- fragments ---
 
 def figure(value, label):
@@ -253,7 +388,6 @@ for k, spec in KINDS.items():
                   f'<td class="kr">{rec_cell}</td>'
                   f'<td class="kf"><code>{E(need(spec, "reads", w))}</code></td></tr>')
 
-LAYERS = need(LADDER, 'layers', f'{R}#ladder')
 REASONS = need(LADDER, 'reasons', f'{R}#ladder')
 
 
@@ -288,7 +422,7 @@ CONTRACT_ROWS = ''.join(
 READS_ROWS = ''.join(f'<li><code>{E(p)}</code></li>' for p in READS)
 
 
-def step_html(lid, L, s, i):
+def step_html(lid, L, s, i, cpos):
     w = f'{R}#lessons.{lid}.steps[{i}]'
     n = need(s, 'n', w)
     kind = need(s, 'kind', w)
@@ -312,20 +446,35 @@ def step_html(lid, L, s, i):
         place = need(L, 'room_label', f'{R}#lessons.{lid}')
     names = ''.join(f'<span class="name">{E(x)}</span>'
                     for x in need(s, 'names_read', w))
-    return (f'<li class="step" data-step="{E(str(n))}">'
+    # The seat, or the plain absence of one. `seat_of_step` decides from the
+    # step KIND's declared `reads`, so a step that reaches a seat always
+    # carries one and a step that does not says so in its own line rather
+    # than leaving a reader to assume a machine is behind every instruction.
+    seat = seat_of_step(s, kind, w)
+    if seat is None:
+        seat_line = ('<p class="sseat"><span class="noseat" data-seat="none">'
+                     'no simulator seat stands in this step</span></p>')
+    else:
+        seat_line = (f'<p class="sseat"><a class="seatlink" data-seat="{E(seat)}" '
+                     f'href="trade_craft_3d.html?hall={E(need(L, "hall", f"{R}#lessons.{lid}"))}'
+                     f'&amp;sim={E(seat)}">open this seat in the walkable world</a> '
+                     f'<code>{E(seat)}</code></p>')
+    return (f'<li class="step" data-step="{E(str(n))}" data-course-step="{E(str(cpos))}">'
             f'<label class="markbox"><input type="checkbox" class="mark" '
             f'aria-label="mark step {E(str(n))} worked"><span class="sn">{E(str(n))}</span></label>'
             f'<div class="sbody">'
             f'<p class="do">{E(need(s, "do", w))}</p>'
             f'<p class="note">{E(need(s, "note", w))}</p>'
-            f'<p class="smeta"><span class="kind">{E(kind)}</span>'
+            f'<p class="smeta"><span class="cpos">course step {E(str(cpos))}</span>'
+            f'<span class="kind">{E(kind)}</span>'
             f'<span class="stage">{E(need(s, "stage", w))}</span>'
             f'<span class="place">{E(place)}</span>{rec_line}</p>'
+            f'{seat_line}'
             f'<p class="sread">names READ from <code>{E(need(s, "reads", w))}</code>: {names}</p>'
             f'</div></li>')
 
 
-def lesson_html(lid, L):
+def lesson_html(lid, L, pos, of, cstep0):
     w = f'{R}#lessons.{lid}'
     hall = need(L, 'hall', w)
     campus = need(L, 'campus', w)
@@ -345,12 +494,23 @@ def lesson_html(lid, L):
         pre_block = ('<div class="pre"><h4>no prerequisites</h4>'
                      f'<p class="why">{E(need(LADDER, "enforcement", f"{R}#ladder"))}</p></div>')
     prov_chips = prov_html(prov, f'{w}.provenance')
+    # The rung this lesson stands on, and whether a simulator seat stands on
+    # that same rung. Read from hall_bindings rather than assumed: four of
+    # these lessons stand on a cell a seat is bound to and the rest do not,
+    # and a course that let a reader assume otherwise would be overstating
+    # the coverage the seats actually have.
+    cell = need(L, 'skill_id', w)
+    cell_seat = 'yes' if cell in CELLS_WITH_SEAT else 'no'
+    cell_line = ('a simulator seat is bound to this rung'
+                 if cell_seat == 'yes' else 'no simulator seat is bound to this rung')
     search = ' '.join([lid, need(L, 'title', w), need(L, 'hall_name', w),
                        need(L, 'strand', w), need(L, 'tier', w),
                        CAMPUS_NAME[campus], need(L, 'room_label', w)])
-    return (f'<article class="lesson" id="lesson-{E(lid)}" data-search="{E(search.lower())}">'
+    return (f'<article class="lesson" id="lesson-{E(lid)}" data-search="{E(search.lower())}" '
+            f'data-course-pos="{E(str(pos))}" data-cell-seat="{E(cell_seat)}">'
             f'<header class="lhead">'
-            f'<h3>{E(need(L, "title", w))}</h3>'
+            f'<h3><span class="cno">lesson {E(str(pos))} of {E(str(of))}</span> '
+            f'{E(need(L, "title", w))}</h3>'
             f'<p class="where">'
             f'<a class="hall" href="trade_craft_3d.html?hall={E(hall)}">'
             f'{E(need(L, "hall_name", w))}</a>'
@@ -358,7 +518,10 @@ def lesson_html(lid, L):
             f'<span class="chip">{E(need(L, "strand", w))}</span>'
             f'<span class="chip">{E(need(L, "tier", w))}</span>'
             f'<span class="chip">{E(CAMPUS_NAME[campus])}</span>'
-            f'<code>{E(need(L, "skill_id", w))}</code></p>'
+            f'<a class="ladderlink" href="trade_craft_ladder.html?hall={E(hall)}">'
+            f'its rung on this trade\'s ladder</a>'
+            f'<code>{E(cell)}</code>'
+            f'<span class="cellseat" data-cell-seat="{E(cell_seat)}">{cell_line}</span></p>'
             f'<p class="why">{E(need(L, "why", w))}</p>'
             f'<p class="limits"><span class="pill warn">{E(SIGNOFF_CHIP)}</span> '
             f'{E(need(L, "limits", w))}</p>'
@@ -369,14 +532,69 @@ def lesson_html(lid, L):
             f'<div class="steps"><h4>{len(steps)} steps, in this order '
             f'<span class="done">not marked</span></h4>'
             f'<ol class="steplist">'
-            + ''.join(step_html(lid, L, s, i) for i, s in enumerate(steps))
+            + ''.join(step_html(lid, L, s, i, cstep0 + i + 1)
+                      for i, s in enumerate(steps))
             + f'</ol></div>'
             f'<footer class="lfoot"><p class="provrow">{prov_chips}</p></footer>'
             f'</article>')
 
 
-LESSON_BLOCKS = '\n'.join(lesson_html(lid, L) for lid, L in LESSONS.items())
+def course_html(c):
+    """One trade's course: its lessons in ladder order, its steps numbered straight through.
+
+    The header states what the course is and, in the same breath, what the
+    seats under it actually cover - this trade's cell count, how many of
+    those cells a seat is bound to, and how many of the course's own lessons
+    stand on one. All four are counted above from the registries that own
+    them. A course that printed the first number without the other three
+    would be a prospectus.
+    """
+    ids = c['ids']
+    blocks = ''
+    cstep = 0
+    for pos, lid in enumerate(ids, start=1):
+        blocks += lesson_html(lid, LESSONS[lid], pos, len(ids), cstep)
+        cstep += len(need(LESSONS[lid], 'steps', f'{R}#lessons.{lid}'))
+    if cstep != c['steps']:
+        raise AssertionError(
+            f'course {c["hall"]!r} numbered {cstep} steps but holds {c["steps"]}')
+    seats = (f'<span class="chip" data-count="seat-steps">{c["seat_steps"]} of these steps '
+             f'open a simulator seat</span>')
+    return (f'<section class="course" id="course-{E(c["hall"])}" data-hall="{E(c["hall"])}" '
+            f'data-lessons="{c["lessons"]}" data-steps="{c["steps"]}" '
+            f'data-seat-steps="{c["seat_steps"]}" data-cells="{c["cells"]}" '
+            f'data-cells-with-seat="{c["cells_with_seat"]}" '
+            f'data-on-a-seat-cell="{c["on_a_seat_cell"]}">'
+            f'<header class="chead">'
+            f'<h2 class="ctitle">{E(c["name"])}</h2>'
+            f'<p class="cmeta">'
+            f'<span class="chip" data-count="lessons">{c["lessons"]} lessons</span>'
+            f'<span class="chip" data-count="steps">{c["steps"]} steps, in this order</span>'
+            f'{seats}'
+            f'<a class="clink" href="trade_craft_ladder.html?hall={E(c["hall"])}">'
+            f'this trade\'s ladder</a>'
+            f'<a class="clink" href="trade_craft_3d.html?hall={E(c["hall"])}">'
+            f'walk this hall</a></p>'
+            f'<p class="climits">This trade\'s ladder has {c["cells"]} rungs; '
+            f'{c["cells_with_seat"]} of them carry a simulator seat, and '
+            f'{c["on_a_seat_cell"]} of this course\'s {c["lessons"]} lessons stand on one. '
+            f'<a href="#limits">What working this course does not make you</a> is stated '
+            f'in the registry\'s own words at the top of this page.</p>'
+            f'</header>{blocks}</section>')
+
+
+COURSE_BLOCKS = '\n'.join(course_html(c) for c in COURSE_ROWS)
 INDEX_CHIPS = ' '.join(lesson_link(lid, f'{R}#lessons') for lid in LESSONS)
+
+# The way in: one link per course, each carrying the deep link the rest of
+# this bundle already uses - `?hall=<slug>` - so the front door, the ladder
+# and the walkable world all address a trade the same way. No new scheme.
+COURSE_LINKS = ' '.join(
+    f'<a class="coursepick" data-hall="{E(c["hall"])}" href="?hall={E(c["hall"])}">'
+    f'{E(c["name"])} <span class="cn">{c["steps"]}</span></a>' for c in COURSE_ROWS)
+
+COURSE_OPTIONS = ''.join(
+    f'<option value="{E(c["hall"])}">{E(c["name"])}</option>' for c in COURSE_ROWS)
 
 SPREAD_NOTE = need(SPREAD, 'note', f'{R}#spread')
 LOOP = need(PLUGS, 'loop', f'{R}#plugs_into')
@@ -398,7 +616,10 @@ SCRIPT = r'''/* Two behaviours, both local to the open tab. The marks are a tall
 const listEl = document.getElementById('lessons');
 const filterEl = document.getElementById('filter');
 const shownEl = document.getElementById('shown');
+const pickEl = document.getElementById('course-pick');
+const noteEl = document.getElementById('course-note');
 const lessonEls = Array.prototype.slice.call(listEl.querySelectorAll('article.lesson'));
+const courseEls = Array.prototype.slice.call(listEl.querySelectorAll('section.course'));
 
 function tally(article) {
   const boxes = article.querySelectorAll('input.mark');
@@ -416,20 +637,66 @@ listEl.addEventListener('change', function (ev) {
   tally(box.closest('article.lesson'));
 });
 
+/* The course route. `?hall=<slug>` is the deep link the ladder page and the
+   walkable world already answer to, so a trade is addressed one way across
+   the whole bundle and this page adds no second scheme. Every course is in
+   the markup already: choosing one HIDES the others, which is why the page
+   still works with scripting off - you get all of them rather than none.
+
+   A slug with no course is not guessed at and not silently swapped for a
+   near miss. The page says no course stands in that hall and shows them
+   all, because a front door that quietly redirected would be teaching the
+   reader that the link meant something it did not. */
+let course = '';
+
 function applyFilter() {
   const q = filterEl.value.trim().toLowerCase();
   let shown = 0;
   lessonEls.forEach(function (a) {
-    const hit = q === '' || a.dataset.search.indexOf(q) !== -1;
+    const inCourse = course === '' || a.closest('section.course').dataset.hall === course;
+    const hit = inCourse && (q === '' || a.dataset.search.indexOf(q) !== -1);
     a.hidden = !hit;
     if (hit) shown += 1;
+  });
+  courseEls.forEach(function (c) {
+    c.hidden = !c.querySelector('article.lesson:not([hidden])');
   });
   shownEl.textContent = shown + ' of ' + lessonEls.length + ' lessons shown';
 }
 
+function courseOf(slug) {
+  return courseEls.filter(function (c) { return c.dataset.hall === slug; })[0] || null;
+}
+
+function setCourse(slug) {
+  const found = slug === '' ? null : courseOf(slug);
+  course = found === null ? '' : slug;
+  pickEl.value = course;
+  if (slug === '') {
+    noteEl.textContent = 'showing all ' + courseEls.length + ' courses';
+  } else if (found === null) {
+    noteEl.textContent = 'no course stands in "' + slug + '": '
+      + courseEls.length + ' halls have a course and that is not one of them, '
+      + 'so all ' + courseEls.length + ' are shown';
+  } else {
+    noteEl.textContent = 'course: ' + found.dataset.lessons + ' lessons, '
+      + found.dataset.steps + ' steps in order, ' + found.dataset.seatSteps
+      + ' of them opening a simulator seat';
+  }
+  applyFilter();
+}
+
+pickEl.addEventListener('change', function () {
+  setCourse(pickEl.value);
+  history.replaceState(null, '', pickEl.value === ''
+    ? location.pathname
+    : location.pathname + '?hall=' + encodeURIComponent(pickEl.value));
+});
+
 filterEl.addEventListener('input', applyFilter);
 lessonEls.forEach(tally);
-applyFilter();
+const asked = new URLSearchParams(location.search).get('hall');
+setCourse(asked === null ? '' : asked);
 '''
 
 page = f'''<!doctype html>
@@ -495,6 +762,36 @@ code{{font:13px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--mute
 .toolbar input{{flex:1 1 260px;background:var(--sunk);border:1px solid var(--rule);
   color:var(--ink);border-radius:6px;padding:8px 12px;font:inherit}}
 .toolbar .shown{{color:var(--muted);font-size:13px}}
+/* ---- the course rail ------------------------------------------------
+   A course is a trade's lessons in ladder order, so it is drawn as one
+   framed run rather than as a heading over loose cards: the frame is what
+   tells a reader where the sequence starts and stops. */
+.course{{border:1px solid var(--rule);border-left:4px solid var(--steel);
+  border-radius:10px;margin:22px 0;padding:2px 12px 10px;background:rgba(65,196,212,.04)}}
+.course[hidden]{{display:none}}
+.chead{{padding:12px 4px 4px}}
+.ctitle{{margin:0;color:var(--ink)}}
+.cmeta{{margin:6px 0;display:flex;flex-wrap:wrap;align-items:center;gap:2px}}
+.cmeta .clink{{margin-inline-end:10px;font-size:13px}}
+.climits{{margin:4px 0 0;color:var(--muted);font-size:13px}}
+.courselist a{{display:inline-block;margin:0 8px 6px 0;border:1px solid var(--rule);
+  border-radius:6px;padding:3px 9px;background:var(--panel);text-decoration:none;font-size:13px}}
+.courselist a .cn{{color:var(--muted);font:12px/1 ui-monospace,monospace;margin-inline-start:6px}}
+.courselist a:hover{{border-color:var(--mark)}}
+.cno{{color:var(--steel);font:600 12px/1 ui-monospace,monospace;
+  letter-spacing:.04em;margin-inline-end:6px}}
+.cpos{{display:inline-block;border-radius:4px;padding:1px 7px;font-size:12px;
+  border:1px solid var(--rule);background:var(--sunk);color:var(--steel);
+  margin-inline-end:6px}}
+.sseat{{margin:0 0 4px;font-size:13px}}
+.sseat .noseat,.cellseat[data-cell-seat="no"]{{color:var(--muted)}}
+.cellseat{{display:inline-block;font-size:12px;margin-inline-start:6px}}
+.cellseat[data-cell-seat="yes"]{{color:var(--steel)}}
+.ladderlink{{margin-inline-end:8px;font-size:13px}}
+.toolbar .pick{{color:var(--muted);font-size:13px}}
+.toolbar select{{background:var(--sunk);border:1px solid var(--rule);color:var(--ink);
+  border-radius:6px;padding:8px 10px;font:inherit;max-width:100%}}
+#course-note{{margin:8px 0 0}}
 .lesson{{background:var(--panel);border:1px solid var(--rule);border-radius:10px;
   padding:16px 18px;margin:14px 0}}
 .lesson[hidden]{{display:none}}
@@ -576,20 +873,40 @@ footer.page a{{margin-inline-end:10px}}
   <ul class="lead">{CONTRACT_ROWS}</ul>
 </section>
 
+<section id="courses">
+  <h2>Take one trade's course, in the order the ladder puts it</h2>
+  <p>A course here is every lesson that stands in one hall, put in the order
+     this registry's own ladder layers put them, with the steps numbered
+     straight through. {len(COURSE_ROWS)} of the {HALLS_TOTAL} halls have one;
+     the rest have no lesson standing in them at all, and there is nothing to
+     work in those yet. Not every course reaches a simulator seat: each
+     course head below says how many of its own steps open one, and where
+     that reads zero the whole course is walked, read and asked rather than
+     driven.</p>
+  <p class="chips courselist">{COURSE_LINKS}</p>
+  <p class="why">The number beside each trade is that course's step count.
+     Every course is on this page already - picking one hides the others, and
+     with scripting off you get all {len(COURSE_ROWS)} in full.</p>
+</section>
+
 <section>
   <h2>Every lesson, every step</h2>
   <p class="chips">{INDEX_CHIPS}</p>
 </section>
 
 <div class="toolbar">
+  <label class="pick" for="course-pick">course</label>
+  <select id="course-pick" aria-label="choose a trade's course">
+    <option value="">every course</option>{COURSE_OPTIONS}</select>
   <input id="filter" type="search" placeholder="filter by hall, strand, tier, campus or title"
          aria-label="filter the lessons">
   <span class="shown" id="shown"></span>
   <span class="shown">marks live in this tab only: nothing here is stored, sent or recorded</span>
 </div>
+<p class="shown" id="course-note"></p>
 
 <main id="lessons">
-{LESSON_BLOCKS}
+{COURSE_BLOCKS}
 </main>
 
 <section>

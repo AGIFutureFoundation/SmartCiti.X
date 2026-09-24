@@ -18,6 +18,7 @@ the capability, not in a footnote.
 import json
 import pathlib
 import re
+import subprocess
 import sys
 
 HERE = pathlib.Path(__file__).resolve().parent
@@ -325,6 +326,172 @@ def need(node, key, where):
     return node[key]
 
 
+# ------------------------------------------------------- the way in ---------
+# WHY THIS BLOCK EXISTS. A visitor arrives with two questions - what can I
+# learn here, and where do I start - and an index of surfaces answers
+# neither. So the front door leads with a COURSE: one trade's lessons in the
+# order the lessons registry's own ladder puts them, reached by the deep link
+# the rest of this bundle already answers to (`?hall=<slug>`), and it names
+# in the same breath how thin the thing behind that door is.
+#
+# Every figure below is READ through this file's own `need()` - the one
+# web/build_ladder.py carries. A missing field fails here by name rather than
+# defaulting: a default is this script deciding, quietly, what a registry
+# meant, and on this page that decision would reach a reader as a promise.
+LESSONS_PATH = 'lessons/registry/lessons.json'
+SIMS_PATH = 'sims/registry/sims.json'
+SKILLS_PATH = 'pack/registry/skills.json'
+HALLS_PATH = 'pack/registry/halls.json'
+SIGNOFF_PATH = 'pack/hall_signoff.mjs'
+
+halls_reg = R(HALLS_PATH)
+
+# -- what a course is, counted from the registry that owns the lessons ------
+LESSON_ROWS = need(lessons, 'lessons', LESSONS_PATH)
+STEP_KINDS = need(lessons, 'step_kinds', LESSONS_PATH)
+LESSON_LADDER = need(lessons, 'ladder', LESSONS_PATH)
+LESSON_PREREQS = need(LESSON_LADDER, 'prerequisites', f'{LESSONS_PATH}#ladder')
+COURSE_HALLS = need(need(lessons, 'spread', LESSONS_PATH), 'halls', f'{LESSONS_PATH}#spread')
+
+# Which KINDS of step stand a learner in a seat is not a list typed here:
+# `step_kinds` declares the file each kind reads, and the kinds that read the
+# simulator registry are exactly the kinds that reach a seat.
+SEAT_KINDS = {k for k, spec in STEP_KINDS.items()
+              if need(spec, 'reads', f'{LESSONS_PATH}#step_kinds.{k}') == SIMS_PATH}
+if not SEAT_KINDS:
+    raise AssertionError(
+        f'{LESSONS_PATH}#step_kinds: no kind of step reads {SIMS_PATH}, so no step '
+        'on this page could reach a seat; the front door will not claim one')
+
+
+def _seat_steps(lid):
+    L = LESSON_ROWS[lid]
+    return len([s for s in need(L, 'steps', f'{LESSONS_PATH}#lessons.{lid}')
+                if need(s, 'kind', f'{LESSONS_PATH}#lessons.{lid}.steps[]') in SEAT_KINDS])
+
+
+COURSE_OF = {}
+for _lid, _L in LESSON_ROWS.items():
+    COURSE_OF.setdefault(need(_L, 'hall', f'{LESSONS_PATH}#lessons.{_lid}'), []).append(_lid)
+if sorted(COURSE_OF) != sorted(COURSE_HALLS):
+    raise AssertionError(
+        f'{LESSONS_PATH}: spread.halls and the lessons disagree about which halls '
+        'carry a course; the front door will not guess which list is right')
+
+HALL_NAME = {need(h, 'slug', f'{HALLS_PATH}#halls[]'): need(h, 'name', f'{HALLS_PATH}#halls[]')
+             for h in need(halls_reg, 'halls', HALLS_PATH)}
+COURSES = []
+for _slug in COURSE_HALLS:
+    if _slug not in HALL_NAME:
+        raise KeyError(f'{LESSONS_PATH}#spread.halls: {_slug!r} is in no record of {HALLS_PATH}')
+    COURSES.append({
+        'hall': _slug,
+        'name': HALL_NAME[_slug],
+        'lessons': len(COURSE_OF[_slug]),
+        'steps': sum(len(need(LESSON_ROWS[i], 'steps', f'{LESSONS_PATH}#lessons.{i}'))
+                     for i in COURSE_OF[_slug]),
+        'seat_steps': sum(_seat_steps(i) for i in COURSE_OF[_slug]),
+    })
+COURSE_COUNT = len(COURSES)
+HALLS_WITHOUT_COURSE = HALLS - COURSE_COUNT
+COURSES_WITH_A_SEAT = len([c for c in COURSES if c['seat_steps']])
+COURSES_WITHOUT_A_SEAT = COURSE_COUNT - COURSES_WITH_A_SEAT
+
+# -- the one lesson this page sends a first-time visitor to -------------------
+# Chosen by a RULE, not an opinion: the first lesson in the registry's own
+# order that sits at the foot of the ladder (nothing has to come before it)
+# and whose steps reach a simulator seat. If the registry ever holds no such
+# lesson, this build fails rather than picking a second-best one silently.
+START = None
+for _lid in LESSON_ROWS:
+    if _lid not in LESSON_PREREQS:
+        raise KeyError(f'{LESSONS_PATH}#ladder.prerequisites: lesson {_lid!r} has no record')
+    if not LESSON_PREREQS[_lid] and _seat_steps(_lid):
+        START = _lid
+        break
+if START is None:
+    raise AssertionError(
+        f'{LESSONS_PATH}: no lesson both stands at the foot of the ladder and reaches a '
+        'seat, so this page has no honest first step to offer')
+START_L = LESSON_ROWS[START]
+START_W = f'{LESSONS_PATH}#lessons.{START}'
+START_HALL = need(START_L, 'hall', START_W)
+START_STEPS = len(need(START_L, 'steps', START_W))
+START_SEAT_STEPS = _seat_steps(START)
+START_COURSE = [c for c in COURSES if c['hall'] == START_HALL][0]
+
+# -- how much of the ladder a seat actually stands on -------------------------
+# The two figures a training coordinator should read before any other: how
+# many of the ladder's rungs carry a seat at all, and how many of THOSE sit
+# on a prerequisite chain that carries one too. The second is recomputed here
+# from skills.json rather than read out of the block it is compared against,
+# because a figure that read its own source would agree with anything.
+COVERAGE = need(sims, 'coverage', SIMS_PATH)
+CELLS_TOTAL = SKILLS
+if need(need(COVERAGE, 'cells', f'{SIMS_PATH}#coverage'), 'total',
+        f'{SIMS_PATH}#coverage.cells') != CELLS_TOTAL:
+    raise AssertionError(
+        f'{SIMS_PATH}#coverage.cells.total disagrees with {SKILLS_PATH} count; the '
+        'front door will not choose between two owners of the same number')
+BINDINGS = need(sims, 'hall_bindings', SIMS_PATH)
+CELLS_WITH_SEAT = {need(b, 'skill_id', f'{SIMS_PATH}#hall_bindings.{h}')
+                   for h, bs in BINDINGS.items() for b in bs}
+_requires = {need(s, 'skill_id', f'{SKILLS_PATH}#skills[]'):
+             need(s, 'requires', f'{SKILLS_PATH}#skills[]')
+             for s in skills['skills']}
+
+
+def _closure(cell):
+    """Every cell below this one on the ladder, or fail on a dangling edge.
+
+    An unresolvable prerequisite chain is not an empty one, so this raises
+    rather than returning a short answer that would flatter the coverage.
+    """
+    seen, stack = set(), [cell]
+    while stack:
+        here = stack.pop()
+        if here not in _requires:
+            raise KeyError(f'{SKILLS_PATH}: cell {here!r} is required by a cell but has no record')
+        for r in _requires[here]:
+            if r not in seen:
+                seen.add(r)
+                stack.append(r)
+    return seen
+
+
+CELLS_WITH_SEAT_UNREACHED = len([c for c in CELLS_WITH_SEAT
+                                 if not (_closure(c) & CELLS_WITH_SEAT)])
+if CELLS_WITH_SEAT_UNREACHED != len(need(COVERAGE, 'unreachable_seat_cells',
+                                         f'{SIMS_PATH}#coverage')):
+    raise AssertionError(
+        f'{SIMS_PATH}#coverage.unreachable_seat_cells lists '
+        f'{len(COVERAGE["unreachable_seat_cells"])} cells; recomputing from {SKILLS_PATH} '
+        f'gives {CELLS_WITH_SEAT_UNREACHED}')
+
+# -- how many halls a practitioner has signed off -----------------------------
+# Read by IMPORTING pack/hall_signoff.mjs through node, the way
+# web/build_ladder.py does, rather than by matching a status string here: the
+# module owns which status counts as a sign-off claim, and a front door with
+# its own opinion about that would be a second policy.
+_signoff = subprocess.run(
+    ['node', '--input-type=module', '-e',
+     "import { createRequire } from 'node:module';"
+     "const require = createRequire(process.cwd() + '/x.js');"
+     "const hs = await import('./pack/hall_signoff.mjs');"
+     "const halls = JSON.parse(require('fs').readFileSync("
+     "  'pack/registry/halls.json','utf8')).halls;"
+     "console.log(JSON.stringify({ signed: halls.filter("
+     "  (h) => hs.claimsHallSignoff(h.content_status)).length, total: halls.length }));"],
+    cwd=str(ROOT), capture_output=True, text=True)
+if _signoff.returncode != 0:
+    raise RuntimeError(f'cannot read {SIGNOFF_PATH} through node:\n{_signoff.stderr.strip()}')
+_signoff = json.loads(_signoff.stdout)
+HALLS_SIGNED_OFF = need(_signoff, 'signed', SIGNOFF_PATH)
+if need(_signoff, 'total', SIGNOFF_PATH) != HALLS:
+    raise AssertionError(
+        f'{HALLS_PATH} holds {_signoff["total"]} halls, the union roster holds {HALLS}')
+
+
 # ------------------------------------------------------------- the seats ---
 # One row per operable seat, read from the registry that owns them. Nothing
 # below is typed: not the count, not a name, not a task line, not a control
@@ -521,6 +688,100 @@ CARDS = [
         works on people."""},
 ]
 
+
+# ------------------------------------------------------------ the way in ---
+# The markup for it. Three things a visitor can DO, one real first step, and
+# the whole list of trades that have a course - then the limits, in the same
+# breath rather than in a footer, because a reader who has already clicked
+# has not been told anything.
+def fig(key, value):
+    """One figure, in a slot of its own.
+
+    Every number a check has to find on this page is rendered here and only
+    here, as the text of a `data-fig`. A check that hunted these out of the
+    prose would match the page's own sentences - this bundle has watched a
+    prose check flag a trade acronym as a provenance tier - so the figures
+    get slots and the checks read slots.
+    """
+    return f'<b class="fig" data-fig="{esc(key)}">{n(value)}</b>'
+
+
+DOABLE = [
+    ('WORK A COURSE',
+     f'Take one trade\'s lessons in the order the ladder puts them - '
+     f'{fig("courses", COURSE_COUNT)} of the {fig("halls", HALLS)} halls have a '
+     f'course standing in them, and {fig("halls_without_course", HALLS_WITHOUT_COURSE)} '
+     f'have no lesson at all. Pick yours below.'),
+    ('WALK A HALL',
+     f'Stand in any of the {fig("halls_walkable", HALLS)} halls on foot and read '
+     f'what is on its walls: every hall has a floor plan you walk through, in '
+     f'one of {fig("campuses", CAMPUSES)} campuses.'),
+    ('DRIVE A SEAT',
+     f'Sit in {fig("seats", SEATS)} operable machine seats and be scored by a '
+     f'rubric you can read before you start. {fig("courses_with_a_seat", COURSES_WITH_A_SEAT)} '
+     f'of the {fig("courses_listed", COURSE_COUNT)} courses reach one at some step; '
+     f'{fig("courses_without_a_seat", COURSES_WITHOUT_A_SEAT)} never do.'),
+]
+
+START_CARD = (
+    f'<a class="card lead start" id="start-here" '
+    f'data-start-lesson="{esc(START)}" data-start-hall="{esc(START_HALL)}" '
+    f'href="web/trade_craft_lessons.html?hall={esc(START_HALL)}">'
+    f'<span class="kicker">start here &middot; {esc(need(START_L, "hall_name", START_W))} '
+    f'&middot; {START_STEPS} steps, {START_SEAT_STEPS} of them in a seat</span>'
+    f'<b>{esc(need(START_L, "title", START_W))}</b>'
+    f'<p>{esc(need(START_L, "why", START_W))}</p>'
+    f'<p class="limit"><span class="limit-tag">why this one, and not an editor\'s pick</span>'
+    f'It is the first lesson in the registry\'s own order that stands at the foot of the '
+    f'ladder - nothing has to be worked before it - and whose steps reach a simulator '
+    f'seat. Opening it opens the whole '
+    f'{esc(need(START_L, "hall_name", START_W))} course: '
+    f'{START_COURSE["lessons"]} lessons, {START_COURSE["steps"]} steps, in order.</p>'
+    f'<p class="limit"><span class="limit-tag">what finishing it is not</span>'
+    f'{esc(need(START_L, "limits", START_W))}</p></a>')
+
+TRADE_LINKS = ''.join(
+    f'<a class="trade" data-hall="{esc(c["hall"])}" '
+    f'data-course-lessons="{c["lessons"]}" data-course-steps="{c["steps"]}" '
+    f'data-course-seat-steps="{c["seat_steps"]}" '
+    f'href="web/trade_craft_lessons.html?hall={esc(c["hall"])}">'
+    f'<span class="tname">{esc(c["name"])}</span>'
+    f'<span class="tsteps">{c["steps"]} steps</span></a>' for c in COURSES)
+
+# The limits, where a visitor meets them. Two of these carry figures this
+# script computed above; the other three carry none, because they are not
+# quantities and a number invented to make them look measured would be the
+# same defect pointing the other way.
+LIMITS = [
+    ('certification', 'NOT CERTIFICATION',
+     'No seat, lesson or course here certifies anyone on anything. The '
+     'simulators carry schematic physics and deterministic rubrics; passing '
+     'one is practice, not a ticket. Where a trade has a real ticket it is '
+     'issued by a jurisdiction, an employer or a hall, and this bundle is '
+     'none of those.'),
+    ('signoff', 'NOT SIGNED OFF BY ANYONE WHO DOES THE WORK',
+     f'{fig("halls_signed_off", HALLS_SIGNED_OFF)} of {fig("halls_signoff_total", HALLS)} '
+     'halls carry a practitioner sign-off. Every lesson here is unverified '
+     'general practice, written to be argued with and corrected by '
+     'journey-level practitioners from the halls it names - and none of them '
+     'has reviewed a line of it yet.'),
+    ('coverage', 'THE SEATS COVER A THIN SLICE',
+     f'{fig("cells_with_seat", len(CELLS_WITH_SEAT))} of the ladder\'s '
+     f'{fig("cells_total", CELLS_TOTAL)} rungs carry a simulator seat, and all '
+     f'{fig("cells_with_seat_unreached", CELLS_WITH_SEAT_UNREACHED)} of those sit on a '
+     'prerequisite chain with no seat anywhere in it. A rung with no seat is '
+     'not partly covered; it is uncovered, and the ladder page draws the gaps '
+     'as plainly as the coverage.'),
+    ('roster', 'NOT A UNION ROSTER',
+     'A taxonomy of skilled trades, not a roster of chartered locals. No real '
+     'local is named and no real union\'s mark is drawn.'),
+    ('survey', 'NOT SURVEYED',
+     'No site has been surveyed and no real building is depicted. A campus is '
+     'composed from a place\'s own character, and the registry says so in each '
+     'record.'),
+]
+
+
 STATS = [
     (n(HALLS), 'union halls'),
     (n(CAMPUSES), 'campuses'),
@@ -604,6 +865,26 @@ a.card .limit b2{display:none}
 .axes b{color:var(--ink);font:600 12.5px "IBM Plex Mono",monospace;
   margin-right:6px}
 .axes .pass{color:var(--steel);font:12px "IBM Plex Mono",monospace;
+  white-space:nowrap}
+h3{font:600 20px "Barlow Condensed",sans-serif;margin:34px 0 6px;letter-spacing:.3px}
+h3 + p.lede{color:var(--muted);margin:0 0 18px;max-width:74ch}
+/* ---- the way in -----------------------------------------------------
+   The three things a visitor can do, the one first step, and the trades
+   that have a course. Every figure in here sits in its own `.fig` slot so
+   a check reads a slot rather than a sentence. */
+.fig{color:var(--mark);font:600 inherit "IBM Plex Mono",monospace;
+  font-variant-numeric:tabular-nums}
+.doable{margin-bottom:22px}
+.doable .pv b{color:var(--mark)}
+a.card.start{margin:0}
+a.card.start .limit + .limit{margin-top:8px}
+.trades{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));
+  gap:8px;margin:0 0 6px}
+a.trade{display:flex;justify-content:space-between;align-items:baseline;gap:10px;
+  background:var(--sunk);border:1px solid var(--rule);border-radius:8px;
+  padding:9px 12px;color:var(--ink);text-decoration:none;font-size:14.5px}
+a.trade:hover,a.trade:focus-visible{border-color:var(--mark)}
+a.trade .tsteps{color:var(--dim);font:11.5px "IBM Plex Mono",monospace;
   white-space:nowrap}
 .prov{display:grid;grid-template-columns:repeat(auto-fit,minmax(196px,1fr));gap:14px}
 .pv{background:var(--sunk);border:1px solid var(--rule);border-radius:10px;padding:14px 16px}
@@ -759,6 +1040,32 @@ BODY = f"""<body>
 </div></header>
 <div class="stripe"></div>
 <div class="wrap">
+<section id="start">
+  <h2>What you can do here, and where to start</h2>
+  <p class="lede">Three things, in plain words. Everything further down this
+    page is the index behind them, and the limits are here rather than in a
+    footer because a reader who has already clicked has not been told
+    anything.</p>
+  <div class="prov doable">
+    {''.join(f'<div class="pv" data-do="{esc(w)}"><b>{esc(w)}</b><span>{d}</span></div>'
+             for w, d in DOABLE)}
+  </div>
+  {START_CARD}
+  <h3 id="trades">Or take your own trade's course</h3>
+  <p class="lede">Each link opens that trade's lessons in the order the
+    lessons registry's own ladder puts them, with every step numbered straight
+    through, each step linking to the simulator seat it opens and saying so
+    where it opens none. The number beside a trade is that course's step
+    count.</p>
+  <nav class="trades" aria-label="courses by trade">{TRADE_LINKS}</nav>
+  <h3 id="limits">What none of this is</h3>
+  <p class="lede">The limits, stated once, plainly, where a visitor meets
+    them.</p>
+  <div class="prov">
+    {''.join(f'<div class="pv" data-limit="{esc(k)}"><b>{esc(w)}</b><span>{d}</span></div>'
+             for k, w, d in LIMITS)}
+  </div>
+</section>
 <section>
   <h2>Every hall, by district</h2>
   <p class="lede">All {n(HALLS)} halls, banded into the {len(districts)}
@@ -782,10 +1089,12 @@ BODY = f"""<body>
     about a run can move it. {esc(SEAT_HONESTY)}</p>
   {seat_index()}
 </section>
-<section>
-  <h2>Where to start</h2>
+<section id="surfaces">
+  <h2>Every surface in this bundle</h2>
   <p class="lede">{n(len(CARDS))} surfaces, each built from the same
-    registries. The walkable world is the one to open first.</p>
+    registries, for a reader who wants the whole thing rather than a course.
+    <a href="#start-here">The course above</a> is the way in if you do not
+    already know this architecture.</p>
   <div class="withguide">
     <div class="grid">{''.join(card(c) for c in CARDS)}</div>
     {GUIDE_HTML}
@@ -798,24 +1107,6 @@ BODY = f"""<body>
     that claims the wrong one, and the suites check it.</p>
   <div class="prov">
     {''.join(f'<div class="pv"><b>{w}</b><span>{esc(d)}</span></div>' for w, d in PROV)}
-  </div>
-</section>
-<section>
-  <h2>What this is not</h2>
-  <p class="lede">The limits, stated once, plainly.</p>
-  <div class="prov">
-    <div class="pv"><b>NOT CERTIFICATION</b><span>No seat here certifies
-      anyone on any equipment. The simulators carry schematic physics and
-      deterministic rubrics; passing one is practice, not a ticket.</span></div>
-    <div class="pv"><b>NOT A UNION ROSTER</b><span>A taxonomy of skilled
-      trades, not a roster of chartered locals. No real local is named and no
-      real union's mark is drawn.</span></div>
-    <div class="pv"><b>NOT SURVEYED</b><span>No site has been surveyed and no
-      real building is depicted. A campus is composed from a place's own
-      character, and the registry says so in each record.</span></div>
-    <div class="pv"><b>NOT YET REVIEWED</b><span>Lesson content is unverified
-      general practice, pending authoring by journey-level practitioners from
-      the halls each seat names.</span></div>
   </div>
 </section>
 </div>
@@ -867,7 +1158,21 @@ _DERIVED = {
     LESSONS, LESSON_STEPS, AUTH_METHODS, AUTH_WORKING, AUTH_AUTHENTICATES,
     SKILLS, STRANDS, TIERS, LADDER_CELLS, COVERED_POS, UNCOVERED_STRANDS,
     MODALITIES, BANDS, MODALITIES * BANDS,
+    # The course figures the front door now leads with. Every one is counted
+    # above from the registry that owns it - the courses and their steps from
+    # lessons.json, the rungs from skills.json, the rungs a seat stands on
+    # from the seats' own hall_bindings, the sign-off tally by importing
+    # pack/hall_signoff.mjs - so they belong here for exactly the reason the
+    # district hall counts do, and a number typed into the copy beside them
+    # is still caught.
+    COURSE_COUNT, HALLS_WITHOUT_COURSE, COURSES_WITH_A_SEAT,
+    COURSES_WITHOUT_A_SEAT, HALLS_SIGNED_OFF, CELLS_TOTAL, len(CELLS_WITH_SEAT),
+    CELLS_WITH_SEAT_UNREACHED, START_STEPS, START_SEAT_STEPS,
+    *(c['lessons'] for c in COURSES),
+    *(c['steps'] for c in COURSES),
+    *(c['seat_steps'] for c in COURSES),
 }
+
 
 
 def _figures_in(html):
@@ -903,6 +1208,17 @@ _DERIVED |= {f for r in SEAT_ROWS
                          + [x for a in r['rubric'] for x in a])
              for f in _figures_in(txt)}
 _DERIVED |= _figures_in(SEAT_HONESTY)
+
+# The start card prints the chosen lesson's own title, `why` and `limits`,
+# and those sentences are the registry's, not this script's. Any figure
+# inside them is admitted by READING IT BACK out of the very record the card
+# was rendered from - never by listing it here - so a rewritten lesson moves
+# the gate with it while a number typed into this file is still caught.
+_DERIVED |= {f for s in (need(START_L, 'title', START_W),
+                         need(START_L, 'why', START_W),
+                         need(START_L, 'limits', START_W),
+                         need(START_L, 'hall_name', START_W))
+             for f in _figures_in(s)}
 
 _loose = _figures_in(BODY) - _DERIVED
 assert not _loose, (

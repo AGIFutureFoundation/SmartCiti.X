@@ -1,0 +1,1605 @@
+{
+ "pack": "smartcitix-trade-craft-academy-bundles",
+ "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
+ "pack_version": "3.2.0",
+ "built": "2026-09-24",
+ "source_stamp": "02fb1b653184b079",
+ "honesty": {
+  "status": "AUTHORED filters, DERIVED contents. Each package below is a buyer and a filter written here, by us; everything it contains is resolved at build time from the registries in `reads`. No package names a ladder cell, a seat or a lesson - which is why no package can claim to contain something this bundle does not have.",
+  "not_certification": "no package here certifies, qualifies, licenses or authorises anybody to do anything. Buying every package in this registry would leave a crew with exactly the standing it started with. Where a trade has a real ticket, it is issued by a jurisdiction, an employer or a hall, and this bundle is none of those and speaks for none of them.",
+  "not_a_price": "nothing here is a quote. This pack sizes a package - trades, ladder cells, seats, scenarios, lesson steps - so that a price can be argued about against something real. It declares no price, no headcount, no term and no seat licence, because no registry in this bundle declares any of those either.",
+  "not_a_syllabus": "a package is a scope, not a plan. Nothing here sequences a week, assigns a cohort or schedules a crew; the ladder says what order the cells build in, and that is the whole of the ordering this pack has to offer.",
+  "seat_coverage": "every package carries the seat-coverage truth the sims registry publishes, narrowed to its own cells and never recomputed into a friendlier second opinion. Most cells in most packages carry no seat, and a cell with no seat is not partially covered - it is uncovered, and it is counted that way.",
+  "one_truth": "this pack holds no second copy of anything. Hall names, strand and tier vocabularies, seat names, scenario counts, lesson steps, the unreachable-cell list and the practitioner sign-off count are all read at build time from the registries and modules that own them, and bundles/test.mjs re-reads every one of them the same way.",
+  "not_built_yet": "no page in this bundle draws these packages. This registry is the data a scope or a quote would be built from; nothing renders it, and saying so here is cheaper than letting somebody discover it."
+ },
+ "duration": {
+  "declared": false,
+  "contact_hours": null,
+  "why": "no registry this pack reads declares a length of time for anything: not a lesson, not a step, not a seat run, not a scenario, not a ladder cell. There is no field to derive an hour from, so every package publishes null rather than a number somebody would plan a crew's week around.",
+  "checked": "this is not an assertion, it is a scan: the build walks the keys of every registry in `duration.registries_scanned` looking for a field that names a length of time, and fails if it finds one - because the moment a duration exists, a null here stops being honest and starts being stale.",
+  "registries_scanned": [
+   "pack/registry/skills.json",
+   "sims/registry/sims.json",
+   "lessons/registry/lessons.json",
+   "unions/registry/unions.json",
+   "pack/registry/halls.json",
+   "pack/manifest.json"
+  ],
+  "what_would_change_it": "a duration declared by the pack that owns the thing being timed - a step, a seat run or a cell - and read from there. Not a number typed into this file."
+ },
+ "coverage_contract": {
+  "source": "sims/registry/sims.json#coverage",
+  "means": "a ladder cell is covered when at least one seat this package sells names it, and a covered cell is REACHABLE when some cell in its prerequisite closure is also covered. The closure is walked over the WHOLE bundle's seats, not just this package's, which is the kinder of the two readings: a cell counted reachable here may be reachable only through a seat some other package sells.",
+  "honest": "this is the ratio a training coordinator should read before the package name. The seats that exist are deterministic and their rubrics are real, and they stand on a ladder whose lower rungs this bundle cannot prove. Every seat in every package sits on a chain of prerequisites that carries no seat at all, so nothing bought here can be earned from the bottom up inside this bundle.",
+  "seats_on_these_cells_not_sold": "the seats a package's own cells carry that its filter leaves out. A buyer is entitled to know what was in reach and not included."
+ },
+ "provenance": {
+  "filters": "AUTHORED",
+  "buyer_prose": "AUTHORED",
+  "contents": "DERIVED",
+  "counts": "DERIVED",
+  "seat_coverage": "DERIVED",
+  "note": "nothing in this pack is generated and nothing is fetched. The provenance word orbis/ uses for generated video appears nowhere in this pack and never will: it would be a false label for a filter somebody wrote and a count somebody resolved, and bundles/test.mjs checks for its absence."
+ },
+ "packages": {
+  "lift-and-signal-crew": {
+   "name": "Lift & Signal Crew",
+   "who": "a contractor putting a crane crew on a structural job: the operator, the signalperson and the connectors who work under the hook.",
+   "why": "the four seats a lift crew touches on the same pick - the chart before the lift, the hands that call it, the machine that makes it and the shop crane that moves what comes off the truck - with the coordination and safety rungs beside the machine rung rather than underneath it.",
+   "limits": "this is practice on schematic seats and a ladder to practise against. It qualifies nobody to rig, signal or operate a crane, it is not seat time toward anything, and the hall that would sign a rigger off has not reviewed a line of it.",
+   "filter": {
+    "trades": {
+     "kind": "halls",
+     "ids": [
+      "riggers",
+      "crane-ops",
+      "ironworkers",
+      "steel-erectors",
+      "port-crane"
+     ]
+    },
+    "strands": [
+     "machines",
+     "coordination",
+     "safety"
+    ],
+    "tiers": [
+     "fundamentals",
+     "applied"
+    ],
+    "seats": {
+     "kind": "named",
+     "ids": [
+      "crane-lift",
+      "rigging-signals",
+      "load-chart",
+      "overhead-crane"
+     ]
+    }
+   },
+   "contents": {
+    "trades": [
+     "crane-ops",
+     "ironworkers",
+     "port-crane",
+     "riggers",
+     "steel-erectors"
+    ],
+    "ladder_cells": [
+     "crane-ops.coordination.applied",
+     "crane-ops.coordination.fundamentals",
+     "crane-ops.machines.applied",
+     "crane-ops.machines.fundamentals",
+     "crane-ops.safety.applied",
+     "crane-ops.safety.fundamentals",
+     "ironworkers.coordination.applied",
+     "ironworkers.coordination.fundamentals",
+     "ironworkers.machines.applied",
+     "ironworkers.machines.fundamentals",
+     "ironworkers.safety.applied",
+     "ironworkers.safety.fundamentals",
+     "port-crane.coordination.applied",
+     "port-crane.coordination.fundamentals",
+     "port-crane.machines.applied",
+     "port-crane.machines.fundamentals",
+     "port-crane.safety.applied",
+     "port-crane.safety.fundamentals",
+     "riggers.coordination.applied",
+     "riggers.coordination.fundamentals",
+     "riggers.machines.applied",
+     "riggers.machines.fundamentals",
+     "riggers.safety.applied",
+     "riggers.safety.fundamentals",
+     "steel-erectors.coordination.applied",
+     "steel-erectors.coordination.fundamentals",
+     "steel-erectors.machines.applied",
+     "steel-erectors.machines.fundamentals",
+     "steel-erectors.safety.applied",
+     "steel-erectors.safety.fundamentals"
+    ],
+    "districts": [
+     "structural",
+     "transport"
+    ],
+    "strands": [
+     "coordination",
+     "machines",
+     "safety"
+    ],
+    "tiers": [
+     "applied",
+     "fundamentals"
+    ],
+    "seats": [
+     "crane-lift",
+     "load-chart",
+     "overhead-crane",
+     "rigging-signals"
+    ],
+    "seat_names": [
+     "Tower Crane Lift",
+     "Load Chart Judgment",
+     "Overhead Crane Shop Move",
+     "Rigging Signal Call"
+    ],
+    "lessons": [
+     "crane-ops-read-the-chart",
+     "ironworkers-plan-out-loud",
+     "riggers-carry-under-control",
+     "riggers-first-card"
+    ]
+   },
+   "size": {
+    "trades": 5,
+    "ladder_cells": 30,
+    "seats": 4,
+    "seat_scenarios": 12,
+    "lessons": 4,
+    "lesson_steps": 19,
+    "contact_hours": null
+   },
+   "coverage": {
+    "cells_with_a_seat": 5,
+    "cells_carrying_more_than_one_seat": 5,
+    "seats_absorbed_by_those_cells": 17,
+    "seat_bindings": 17,
+    "unreachable_seat_cells": [
+     "crane-ops.machines.applied",
+     "ironworkers.machines.applied",
+     "port-crane.machines.applied",
+     "riggers.machines.applied",
+     "steel-erectors.machines.applied"
+    ],
+    "reachable_seat_cells": [],
+    "seats_on_these_cells_not_sold": [
+     "boom-lift"
+    ]
+   },
+   "signoff": {
+    "practitioner_signed_off_halls": 0,
+    "of_halls_in_this_package": 5
+   }
+  },
+  "trench-and-locate": {
+   "name": "Trench & Locate",
+   "who": "a civil or utility contractor whose crews dig where somebody else's services already are.",
+   "why": "one seat and the strand it lives on: cutting to grade cell by cell while a flagged crossing stops the bucket shallow, with the procedure and safety rungs of the four halls that dig, shore and break out.",
+   "limits": "a schematic trench on a keyboard is not a locate, not a competent-person assessment and not excavation training anybody can sign. Nothing here speaks for a locate authority or a jurisdiction.",
+   "filter": {
+    "trades": {
+     "kind": "halls",
+     "ids": [
+      "operating-eng",
+      "shoring",
+      "laborers",
+      "demolition"
+     ]
+    },
+    "strands": [
+     "machines",
+     "safety",
+     "procedure"
+    ],
+    "tiers": [
+     "fundamentals",
+     "applied"
+    ],
+    "seats": {
+     "kind": "named",
+     "ids": [
+      "excavator-trench"
+     ]
+    }
+   },
+   "contents": {
+    "trades": [
+     "demolition",
+     "laborers",
+     "operating-eng",
+     "shoring"
+    ],
+    "ladder_cells": [
+     "demolition.machines.applied",
+     "demolition.machines.fundamentals",
+     "demolition.procedure.applied",
+     "demolition.procedure.fundamentals",
+     "demolition.safety.applied",
+     "demolition.safety.fundamentals",
+     "laborers.machines.applied",
+     "laborers.machines.fundamentals",
+     "laborers.procedure.applied",
+     "laborers.procedure.fundamentals",
+     "laborers.safety.applied",
+     "laborers.safety.fundamentals",
+     "operating-eng.machines.applied",
+     "operating-eng.machines.fundamentals",
+     "operating-eng.procedure.applied",
+     "operating-eng.procedure.fundamentals",
+     "operating-eng.safety.applied",
+     "operating-eng.safety.fundamentals",
+     "shoring.machines.applied",
+     "shoring.machines.fundamentals",
+     "shoring.procedure.applied",
+     "shoring.procedure.fundamentals",
+     "shoring.safety.applied",
+     "shoring.safety.fundamentals"
+    ],
+    "districts": [
+     "earthworks"
+    ],
+    "strands": [
+     "machines",
+     "procedure",
+     "safety"
+    ],
+    "tiers": [
+     "applied",
+     "fundamentals"
+    ],
+    "seats": [
+     "excavator-trench"
+    ],
+    "seat_names": [
+     "Excavator Trench Cut"
+    ],
+    "lessons": [
+     "demolition-stand-back"
+    ]
+   },
+   "size": {
+    "trades": 4,
+    "ladder_cells": 24,
+    "seats": 1,
+    "seat_scenarios": 3,
+    "lessons": 1,
+    "lesson_steps": 4,
+    "contact_hours": null
+   },
+   "coverage": {
+    "cells_with_a_seat": 4,
+    "cells_carrying_more_than_one_seat": 0,
+    "seats_absorbed_by_those_cells": 0,
+    "seat_bindings": 4,
+    "unreachable_seat_cells": [
+     "demolition.machines.applied",
+     "laborers.machines.applied",
+     "operating-eng.machines.applied",
+     "shoring.machines.applied"
+    ],
+    "reachable_seat_cells": [],
+    "seats_on_these_cells_not_sold": [
+     "airless-sprayer",
+     "forklift-run",
+     "load-chart",
+     "pressure-washer",
+     "scaffold-bay"
+    ]
+   },
+   "signoff": {
+    "practitioner_signed_off_halls": 0,
+    "of_halls_in_this_package": 4
+   }
+  },
+  "hot-work-bay": {
+   "name": "Hot Work Bay",
+   "who": "a fabricator or shipyard training a bench of welders, and the inspection habit that has to travel with them.",
+   "why": "the bead bench - full fusion, gap inside the band, no burn-through - with the inspection and safety rungs of every hall that runs a seam, from deck plate to tank shell.",
+   "limits": "no weld procedure, no qualification and no test coupon. A welder is qualified by a test to a procedure, witnessed by somebody with the standing to witness it, and this bundle is none of those things and speaks for none of them.",
+   "filter": {
+    "trades": {
+     "kind": "halls",
+     "ids": [
+      "welders",
+      "boilermakers",
+      "shipfitters",
+      "fabricators",
+      "pipeline",
+      "marine-pipe",
+      "tank-erectors"
+     ]
+    },
+    "strands": [
+     "machines",
+     "safety",
+     "inspection"
+    ],
+    "tiers": [
+     "fundamentals",
+     "applied"
+    ],
+    "seats": {
+     "kind": "named",
+     "ids": [
+      "weld-bead"
+     ]
+    }
+   },
+   "contents": {
+    "trades": [
+     "boilermakers",
+     "fabricators",
+     "marine-pipe",
+     "pipeline",
+     "shipfitters",
+     "tank-erectors",
+     "welders"
+    ],
+    "ladder_cells": [
+     "boilermakers.inspection.applied",
+     "boilermakers.inspection.fundamentals",
+     "boilermakers.machines.applied",
+     "boilermakers.machines.fundamentals",
+     "boilermakers.safety.applied",
+     "boilermakers.safety.fundamentals",
+     "fabricators.inspection.applied",
+     "fabricators.inspection.fundamentals",
+     "fabricators.machines.applied",
+     "fabricators.machines.fundamentals",
+     "fabricators.safety.applied",
+     "fabricators.safety.fundamentals",
+     "marine-pipe.inspection.applied",
+     "marine-pipe.inspection.fundamentals",
+     "marine-pipe.machines.applied",
+     "marine-pipe.machines.fundamentals",
+     "marine-pipe.safety.applied",
+     "marine-pipe.safety.fundamentals",
+     "pipeline.inspection.applied",
+     "pipeline.inspection.fundamentals",
+     "pipeline.machines.applied",
+     "pipeline.machines.fundamentals",
+     "pipeline.safety.applied",
+     "pipeline.safety.fundamentals",
+     "shipfitters.inspection.applied",
+     "shipfitters.inspection.fundamentals",
+     "shipfitters.machines.applied",
+     "shipfitters.machines.fundamentals",
+     "shipfitters.safety.applied",
+     "shipfitters.safety.fundamentals",
+     "tank-erectors.inspection.applied",
+     "tank-erectors.inspection.fundamentals",
+     "tank-erectors.machines.applied",
+     "tank-erectors.machines.fundamentals",
+     "tank-erectors.safety.applied",
+     "tank-erectors.safety.fundamentals",
+     "welders.inspection.applied",
+     "welders.inspection.fundamentals",
+     "welders.machines.applied",
+     "welders.machines.fundamentals",
+     "welders.safety.applied",
+     "welders.safety.fundamentals"
+    ],
+    "districts": [
+     "industry",
+     "structural"
+    ],
+    "strands": [
+     "inspection",
+     "machines",
+     "safety"
+    ],
+    "tiers": [
+     "applied",
+     "fundamentals"
+    ],
+    "seats": [
+     "weld-bead"
+    ],
+    "seat_names": [
+     "Weld Bead Run"
+    ],
+    "lessons": [
+     "welders-the-watch"
+    ]
+   },
+   "size": {
+    "trades": 7,
+    "ladder_cells": 42,
+    "seats": 1,
+    "seat_scenarios": 3,
+    "lessons": 1,
+    "lesson_steps": 5,
+    "contact_hours": null
+   },
+   "coverage": {
+    "cells_with_a_seat": 7,
+    "cells_carrying_more_than_one_seat": 0,
+    "seats_absorbed_by_those_cells": 0,
+    "seat_bindings": 7,
+    "unreachable_seat_cells": [
+     "boilermakers.machines.applied",
+     "fabricators.machines.applied",
+     "marine-pipe.machines.applied",
+     "pipeline.machines.applied",
+     "shipfitters.machines.applied",
+     "tank-erectors.machines.applied",
+     "welders.machines.applied"
+    ],
+    "reachable_seat_cells": [],
+    "seats_on_these_cells_not_sold": [
+     "crane-lift",
+     "load-chart",
+     "overhead-crane",
+     "rigging-signals"
+    ]
+   },
+   "signoff": {
+    "practitioner_signed_off_halls": 0,
+    "of_halls_in_this_package": 7
+   }
+  },
+  "access-at-height": {
+   "name": "Access at Height",
+   "who": "a general contractor whose trades all get to the work the same two ways: up a scaffold bay or out of a basket.",
+   "why": "the two access seats every envelope and systems trade shares - the legal build order of a bay, and a boom lift flown tied-off, inside its moment envelope and out of the overhead line - across the halls that stand on them.",
+   "limits": "a schematic bay and a schematic basket. Nothing here is a scaffold tag, a competent-person appointment, an aerial platform card or a fall-protection qualification, and building a bay in a browser signs nothing.",
+   "filter": {
+    "trades": {
+     "kind": "halls",
+     "ids": [
+      "scaffold",
+      "carpenters",
+      "roofers",
+      "glaziers",
+      "window-glazing",
+      "painters",
+      "insulators",
+      "sheetmetal",
+      "electricians"
+     ]
+    },
+    "strands": [
+     "machines",
+     "safety",
+     "procedure"
+    ],
+    "tiers": [
+     "fundamentals",
+     "applied"
+    ],
+    "seats": {
+     "kind": "named",
+     "ids": [
+      "scaffold-bay",
+      "boom-lift"
+     ]
+    }
+   },
+   "contents": {
+    "trades": [
+     "carpenters",
+     "electricians",
+     "glaziers",
+     "insulators",
+     "painters",
+     "roofers",
+     "scaffold",
+     "sheetmetal",
+     "window-glazing"
+    ],
+    "ladder_cells": [
+     "carpenters.machines.applied",
+     "carpenters.machines.fundamentals",
+     "carpenters.procedure.applied",
+     "carpenters.procedure.fundamentals",
+     "carpenters.safety.applied",
+     "carpenters.safety.fundamentals",
+     "electricians.machines.applied",
+     "electricians.machines.fundamentals",
+     "electricians.procedure.applied",
+     "electricians.procedure.fundamentals",
+     "electricians.safety.applied",
+     "electricians.safety.fundamentals",
+     "glaziers.machines.applied",
+     "glaziers.machines.fundamentals",
+     "glaziers.procedure.applied",
+     "glaziers.procedure.fundamentals",
+     "glaziers.safety.applied",
+     "glaziers.safety.fundamentals",
+     "insulators.machines.applied",
+     "insulators.machines.fundamentals",
+     "insulators.procedure.applied",
+     "insulators.procedure.fundamentals",
+     "insulators.safety.applied",
+     "insulators.safety.fundamentals",
+     "painters.machines.applied",
+     "painters.machines.fundamentals",
+     "painters.procedure.applied",
+     "painters.procedure.fundamentals",
+     "painters.safety.applied",
+     "painters.safety.fundamentals",
+     "roofers.machines.applied",
+     "roofers.machines.fundamentals",
+     "roofers.procedure.applied",
+     "roofers.procedure.fundamentals",
+     "roofers.safety.applied",
+     "roofers.safety.fundamentals",
+     "scaffold.machines.applied",
+     "scaffold.machines.fundamentals",
+     "scaffold.procedure.applied",
+     "scaffold.procedure.fundamentals",
+     "scaffold.safety.applied",
+     "scaffold.safety.fundamentals",
+     "sheetmetal.machines.applied",
+     "sheetmetal.machines.fundamentals",
+     "sheetmetal.procedure.applied",
+     "sheetmetal.procedure.fundamentals",
+     "sheetmetal.safety.applied",
+     "sheetmetal.safety.fundamentals",
+     "window-glazing.machines.applied",
+     "window-glazing.machines.fundamentals",
+     "window-glazing.procedure.applied",
+     "window-glazing.procedure.fundamentals",
+     "window-glazing.safety.applied",
+     "window-glazing.safety.fundamentals"
+    ],
+    "districts": [
+     "earthworks",
+     "envelope",
+     "systems"
+    ],
+    "strands": [
+     "machines",
+     "procedure",
+     "safety"
+    ],
+    "tiers": [
+     "applied",
+     "fundamentals"
+    ],
+    "seats": [
+     "boom-lift",
+     "scaffold-bay"
+    ],
+    "seat_names": [
+     "Boom Lift Basket Work",
+     "Scaffold Bay Build"
+    ],
+    "lessons": [
+     "electricians-clip-in-first",
+     "painters-contain-it",
+     "painters-lay-the-coat",
+     "scaffold-read-the-tag"
+    ]
+   },
+   "size": {
+    "trades": 9,
+    "ladder_cells": 54,
+    "seats": 2,
+    "seat_scenarios": 6,
+    "lessons": 4,
+    "lesson_steps": 16,
+    "contact_hours": null
+   },
+   "coverage": {
+    "cells_with_a_seat": 9,
+    "cells_carrying_more_than_one_seat": 4,
+    "seats_absorbed_by_those_cells": 8,
+    "seat_bindings": 13,
+    "unreachable_seat_cells": [
+     "carpenters.machines.applied",
+     "electricians.machines.applied",
+     "glaziers.machines.applied",
+     "insulators.machines.applied",
+     "painters.machines.applied",
+     "roofers.machines.applied",
+     "scaffold.machines.applied",
+     "sheetmetal.machines.applied",
+     "window-glazing.machines.applied"
+    ],
+    "reachable_seat_cells": [],
+    "seats_on_these_cells_not_sold": [
+     "airless-sprayer",
+     "pressure-washer"
+    ]
+   },
+   "signoff": {
+    "practitioner_signed_off_halls": 0,
+    "of_halls_in_this_package": 9
+   }
+  },
+  "coatings-and-containment": {
+   "name": "Coatings & Containment",
+   "who": "a coatings contractor who is judged on the finish and sued over the runoff.",
+   "why": "the two bench seats that share a panel and a standoff window - strip it without gouging the substrate, coat it without runs, holidays or overspray - and the containment that has to be set before either trigger is pulled.",
+   "limits": "containment practice on a schematic panel. It is not hazardous-materials training, not a respirator fit test and not a discharge permit; the hazmat rungs in the ladder here carry no seat at all.",
+   "filter": {
+    "trades": {
+     "kind": "halls",
+     "ids": [
+      "painters",
+      "laborers",
+      "hazmat"
+     ]
+    },
+    "strands": [
+     "machines",
+     "safety",
+     "materials"
+    ],
+    "tiers": [
+     "fundamentals",
+     "applied"
+    ],
+    "seats": {
+     "kind": "named",
+     "ids": [
+      "pressure-washer",
+      "airless-sprayer"
+     ]
+    }
+   },
+   "contents": {
+    "trades": [
+     "hazmat",
+     "laborers",
+     "painters"
+    ],
+    "ladder_cells": [
+     "hazmat.machines.applied",
+     "hazmat.machines.fundamentals",
+     "hazmat.materials.applied",
+     "hazmat.materials.fundamentals",
+     "hazmat.safety.applied",
+     "hazmat.safety.fundamentals",
+     "laborers.machines.applied",
+     "laborers.machines.fundamentals",
+     "laborers.materials.applied",
+     "laborers.materials.fundamentals",
+     "laborers.safety.applied",
+     "laborers.safety.fundamentals",
+     "painters.machines.applied",
+     "painters.machines.fundamentals",
+     "painters.materials.applied",
+     "painters.materials.fundamentals",
+     "painters.safety.applied",
+     "painters.safety.fundamentals"
+    ],
+    "districts": [
+     "control",
+     "earthworks",
+     "envelope"
+    ],
+    "strands": [
+     "machines",
+     "materials",
+     "safety"
+    ],
+    "tiers": [
+     "applied",
+     "fundamentals"
+    ],
+    "seats": [
+     "airless-sprayer",
+     "pressure-washer"
+    ],
+    "seat_names": [
+     "Airless Paint Sprayer Finish",
+     "Pressure Washer Surface Clean"
+    ],
+    "lessons": [
+     "hazmat-wash-and-decon",
+     "painters-contain-it"
+    ]
+   },
+   "size": {
+    "trades": 3,
+    "ladder_cells": 18,
+    "seats": 2,
+    "seat_scenarios": 6,
+    "lessons": 2,
+    "lesson_steps": 10,
+    "contact_hours": null
+   },
+   "coverage": {
+    "cells_with_a_seat": 3,
+    "cells_carrying_more_than_one_seat": 2,
+    "seats_absorbed_by_those_cells": 4,
+    "seat_bindings": 5,
+    "unreachable_seat_cells": [
+     "hazmat.machines.applied",
+     "laborers.machines.applied",
+     "painters.machines.applied"
+    ],
+    "reachable_seat_cells": [],
+    "seats_on_these_cells_not_sold": [
+     "boom-lift",
+     "excavator-trench",
+     "forklift-run",
+     "scaffold-bay"
+    ]
+   },
+   "signoff": {
+    "practitioner_signed_off_halls": 0,
+    "of_halls_in_this_package": 3
+   }
+  },
+  "yard-logistics": {
+   "name": "Yard Logistics",
+   "who": "a terminal, a plant or a builder's yard putting new drivers on a lift truck.",
+   "why": "one driving seat - the cone lane taken in order, the pallet picked square and set inside the bay - with the coordination and safety rungs of the halls that move material around a working yard.",
+   "limits": "a schematic yard run is not a powered-industrial-truck evaluation and carries no operator authorisation. This package also contains no walkable lesson: the seat and the ladder are what is in the box.",
+   "filter": {
+    "trades": {
+     "kind": "halls",
+     "ids": [
+      "teamsters",
+      "heavy-equip",
+      "marine-terminal",
+      "operating-eng",
+      "laborers"
+     ]
+    },
+    "strands": [
+     "machines",
+     "safety",
+     "coordination"
+    ],
+    "tiers": [
+     "fundamentals",
+     "applied"
+    ],
+    "seats": {
+     "kind": "named",
+     "ids": [
+      "forklift-run"
+     ]
+    }
+   },
+   "contents": {
+    "trades": [
+     "heavy-equip",
+     "laborers",
+     "marine-terminal",
+     "operating-eng",
+     "teamsters"
+    ],
+    "ladder_cells": [
+     "heavy-equip.coordination.applied",
+     "heavy-equip.coordination.fundamentals",
+     "heavy-equip.machines.applied",
+     "heavy-equip.machines.fundamentals",
+     "heavy-equip.safety.applied",
+     "heavy-equip.safety.fundamentals",
+     "laborers.coordination.applied",
+     "laborers.coordination.fundamentals",
+     "laborers.machines.applied",
+     "laborers.machines.fundamentals",
+     "laborers.safety.applied",
+     "laborers.safety.fundamentals",
+     "marine-terminal.coordination.applied",
+     "marine-terminal.coordination.fundamentals",
+     "marine-terminal.machines.applied",
+     "marine-terminal.machines.fundamentals",
+     "marine-terminal.safety.applied",
+     "marine-terminal.safety.fundamentals",
+     "operating-eng.coordination.applied",
+     "operating-eng.coordination.fundamentals",
+     "operating-eng.machines.applied",
+     "operating-eng.machines.fundamentals",
+     "operating-eng.safety.applied",
+     "operating-eng.safety.fundamentals",
+     "teamsters.coordination.applied",
+     "teamsters.coordination.fundamentals",
+     "teamsters.machines.applied",
+     "teamsters.machines.fundamentals",
+     "teamsters.safety.applied",
+     "teamsters.safety.fundamentals"
+    ],
+    "districts": [
+     "earthworks",
+     "transport"
+    ],
+    "strands": [
+     "coordination",
+     "machines",
+     "safety"
+    ],
+    "tiers": [
+     "applied",
+     "fundamentals"
+    ],
+    "seats": [
+     "forklift-run"
+    ],
+    "seat_names": [
+     "Forklift Yard Run"
+    ],
+    "lessons": []
+   },
+   "size": {
+    "trades": 5,
+    "ladder_cells": 30,
+    "seats": 1,
+    "seat_scenarios": 3,
+    "lessons": 0,
+    "lesson_steps": 0,
+    "contact_hours": null
+   },
+   "coverage": {
+    "cells_with_a_seat": 5,
+    "cells_carrying_more_than_one_seat": 0,
+    "seats_absorbed_by_those_cells": 0,
+    "seat_bindings": 5,
+    "unreachable_seat_cells": [
+     "heavy-equip.machines.applied",
+     "laborers.machines.applied",
+     "marine-terminal.machines.applied",
+     "operating-eng.machines.applied",
+     "teamsters.machines.applied"
+    ],
+    "reachable_seat_cells": [],
+    "seats_on_these_cells_not_sold": [
+     "airless-sprayer",
+     "excavator-trench",
+     "load-chart",
+     "pressure-washer",
+     "scaffold-bay"
+    ]
+   },
+   "signoff": {
+    "practitioner_signed_off_halls": 0,
+    "of_halls_in_this_package": 5
+   }
+  },
+  "shop-floor-move": {
+   "name": "Shop Floor Move",
+   "who": "a plant or fabrication shop where the bridge crane runs over people all day.",
+   "why": "the overhead crane seat - bridge then trolley, never the diagonal, nothing loaded over the pedestrian aisle - with the troubleshooting and safety rungs of the shop trades whose work arrives on that hook.",
+   "limits": "a schematic bay, a schematic pendant. No overhead-crane operator authorisation, no rigging qualification and no inspection record comes out of it.",
+   "filter": {
+    "trades": {
+     "kind": "halls",
+     "ids": [
+      "millwrights",
+      "machinists",
+      "foundry",
+      "boilermakers",
+      "riggers",
+      "crane-ops"
+     ]
+    },
+    "strands": [
+     "machines",
+     "safety",
+     "troubleshooting"
+    ],
+    "tiers": [
+     "fundamentals",
+     "applied"
+    ],
+    "seats": {
+     "kind": "named",
+     "ids": [
+      "overhead-crane"
+     ]
+    }
+   },
+   "contents": {
+    "trades": [
+     "boilermakers",
+     "crane-ops",
+     "foundry",
+     "machinists",
+     "millwrights",
+     "riggers"
+    ],
+    "ladder_cells": [
+     "boilermakers.machines.applied",
+     "boilermakers.machines.fundamentals",
+     "boilermakers.safety.applied",
+     "boilermakers.safety.fundamentals",
+     "boilermakers.troubleshooting.applied",
+     "boilermakers.troubleshooting.fundamentals",
+     "crane-ops.machines.applied",
+     "crane-ops.machines.fundamentals",
+     "crane-ops.safety.applied",
+     "crane-ops.safety.fundamentals",
+     "crane-ops.troubleshooting.applied",
+     "crane-ops.troubleshooting.fundamentals",
+     "foundry.machines.applied",
+     "foundry.machines.fundamentals",
+     "foundry.safety.applied",
+     "foundry.safety.fundamentals",
+     "foundry.troubleshooting.applied",
+     "foundry.troubleshooting.fundamentals",
+     "machinists.machines.applied",
+     "machinists.machines.fundamentals",
+     "machinists.safety.applied",
+     "machinists.safety.fundamentals",
+     "machinists.troubleshooting.applied",
+     "machinists.troubleshooting.fundamentals",
+     "millwrights.machines.applied",
+     "millwrights.machines.fundamentals",
+     "millwrights.safety.applied",
+     "millwrights.safety.fundamentals",
+     "millwrights.troubleshooting.applied",
+     "millwrights.troubleshooting.fundamentals",
+     "riggers.machines.applied",
+     "riggers.machines.fundamentals",
+     "riggers.safety.applied",
+     "riggers.safety.fundamentals",
+     "riggers.troubleshooting.applied",
+     "riggers.troubleshooting.fundamentals"
+    ],
+    "districts": [
+     "industry",
+     "structural"
+    ],
+    "strands": [
+     "machines",
+     "safety",
+     "troubleshooting"
+    ],
+    "tiers": [
+     "applied",
+     "fundamentals"
+    ],
+    "seats": [
+     "overhead-crane"
+    ],
+    "seat_names": [
+     "Overhead Crane Shop Move"
+    ],
+    "lessons": [
+     "crane-ops-read-the-chart",
+     "millwrights-shop-move",
+     "riggers-carry-under-control"
+    ]
+   },
+   "size": {
+    "trades": 6,
+    "ladder_cells": 36,
+    "seats": 1,
+    "seat_scenarios": 3,
+    "lessons": 3,
+    "lesson_steps": 13,
+    "contact_hours": null
+   },
+   "coverage": {
+    "cells_with_a_seat": 6,
+    "cells_carrying_more_than_one_seat": 0,
+    "seats_absorbed_by_those_cells": 0,
+    "seat_bindings": 6,
+    "unreachable_seat_cells": [
+     "boilermakers.machines.applied",
+     "crane-ops.machines.applied",
+     "foundry.machines.applied",
+     "machinists.machines.applied",
+     "millwrights.machines.applied",
+     "riggers.machines.applied"
+    ],
+    "reachable_seat_cells": [],
+    "seats_on_these_cells_not_sold": [
+     "crane-lift",
+     "load-chart",
+     "rigging-signals",
+     "weld-bead"
+    ]
+   },
+   "signoff": {
+    "practitioner_signed_off_halls": 0,
+    "of_halls_in_this_package": 6
+   }
+  },
+  "one-hall-ladder": {
+   "name": "One Hall, Whole Ladder",
+   "who": "a single hall or a JATC that wants its own trade end to end rather than a slice across everybody's.",
+   "why": "one hall's complete ladder - every strand, every tier, the lessons that stand in its rooms and whatever seats its cells carry - which is also the honest way to see how much of a trade this bundle has actually built.",
+   "limits": "a whole ladder is not a whole apprenticeship. Most of the cells in it carry no seat, no lesson and no assessment, and the ones that do carry practice rather than proof.",
+   "filter": {
+    "trades": {
+     "kind": "halls",
+     "ids": [
+      "scaffold"
+     ]
+    },
+    "strands": [
+     "coordination",
+     "documentation",
+     "inspection",
+     "layout",
+     "leadership",
+     "machines",
+     "materials",
+     "procedure",
+     "safety",
+     "tools",
+     "troubleshooting"
+    ],
+    "tiers": [
+     "applied",
+     "fundamentals",
+     "mastery"
+    ],
+    "seats": {
+     "kind": "whatever-the-cells-carry",
+     "ids": []
+    }
+   },
+   "contents": {
+    "trades": [
+     "scaffold"
+    ],
+    "ladder_cells": [
+     "scaffold.coordination.applied",
+     "scaffold.coordination.fundamentals",
+     "scaffold.coordination.mastery",
+     "scaffold.documentation.applied",
+     "scaffold.documentation.fundamentals",
+     "scaffold.documentation.mastery",
+     "scaffold.inspection.applied",
+     "scaffold.inspection.fundamentals",
+     "scaffold.inspection.mastery",
+     "scaffold.layout.applied",
+     "scaffold.layout.fundamentals",
+     "scaffold.layout.mastery",
+     "scaffold.leadership.applied",
+     "scaffold.leadership.fundamentals",
+     "scaffold.leadership.mastery",
+     "scaffold.machines.applied",
+     "scaffold.machines.fundamentals",
+     "scaffold.machines.mastery",
+     "scaffold.materials.applied",
+     "scaffold.materials.fundamentals",
+     "scaffold.materials.mastery",
+     "scaffold.procedure.applied",
+     "scaffold.procedure.fundamentals",
+     "scaffold.procedure.mastery",
+     "scaffold.safety.applied",
+     "scaffold.safety.fundamentals",
+     "scaffold.safety.mastery",
+     "scaffold.tools.applied",
+     "scaffold.tools.fundamentals",
+     "scaffold.tools.mastery",
+     "scaffold.troubleshooting.applied",
+     "scaffold.troubleshooting.fundamentals",
+     "scaffold.troubleshooting.mastery"
+    ],
+    "districts": [
+     "earthworks"
+    ],
+    "strands": [
+     "coordination",
+     "documentation",
+     "inspection",
+     "layout",
+     "leadership",
+     "machines",
+     "materials",
+     "procedure",
+     "safety",
+     "tools",
+     "troubleshooting"
+    ],
+    "tiers": [
+     "applied",
+     "fundamentals",
+     "mastery"
+    ],
+    "seats": [
+     "scaffold-bay"
+    ],
+    "seat_names": [
+     "Scaffold Bay Build"
+    ],
+    "lessons": [
+     "scaffold-build-in-order",
+     "scaffold-read-the-tag"
+    ]
+   },
+   "size": {
+    "trades": 1,
+    "ladder_cells": 33,
+    "seats": 1,
+    "seat_scenarios": 3,
+    "lessons": 2,
+    "lesson_steps": 9,
+    "contact_hours": null
+   },
+   "coverage": {
+    "cells_with_a_seat": 1,
+    "cells_carrying_more_than_one_seat": 0,
+    "seats_absorbed_by_those_cells": 0,
+    "seat_bindings": 1,
+    "unreachable_seat_cells": [
+     "scaffold.machines.applied"
+    ],
+    "reachable_seat_cells": [],
+    "seats_on_these_cells_not_sold": []
+   },
+   "signoff": {
+    "practitioner_signed_off_halls": 0,
+    "of_halls_in_this_package": 1
+   }
+  },
+  "safety-first-rung": {
+   "name": "Safety, First Rung, Every Trade",
+   "who": "a multi-trade employer or an owner who wants one safety starting point across a whole workforce rather than a per-trade course.",
+   "why": "the first safety rung of every hall in the taxonomy, bought as one thing: the widest package this bundle can honestly offer, and the one that shows most plainly where the seats are not.",
+   "limits": "this package contains no simulator seat. Not one hall's safety strand carries a seat in this bundle - every seat that exists sits on a machines rung - so what is bought here is a ladder and, in one hall, a lesson. It is not safety training, not an orientation and not an induction.",
+   "filter": {
+    "trades": {
+     "kind": "districts",
+     "ids": [
+      "control",
+      "earthworks",
+      "energy",
+      "envelope",
+      "industry",
+      "structural",
+      "systems",
+      "transport"
+     ]
+    },
+    "strands": [
+     "safety"
+    ],
+    "tiers": [
+     "fundamentals"
+    ],
+    "seats": {
+     "kind": "whatever-the-cells-carry",
+     "ids": []
+    }
+   },
+   "contents": {
+    "trades": [
+     "acoustic",
+     "airfield",
+     "asbestos",
+     "automation-int",
+     "aviation-ground",
+     "bas-controls",
+     "battery-storage",
+     "blasters",
+     "boilermakers",
+     "bricklayers",
+     "bridge-inspect",
+     "cable-splicers",
+     "carpenters",
+     "catenary",
+     "cement-masons",
+     "cladding",
+     "cleanroom",
+     "concrete-pump",
+     "confined-space",
+     "crane-ops",
+     "curtainwall",
+     "data-center",
+     "decking",
+     "demolition",
+     "district-energy",
+     "divers",
+     "drywall",
+     "electricians",
+     "elevator",
+     "ev-charging",
+     "fabricators",
+     "fiber-splicers",
+     "fire-alarm",
+     "fire-sprinkler",
+     "firestop",
+     "fleet-diesel",
+     "flooring",
+     "foundry",
+     "gas-distrib",
+     "geothermal",
+     "glaziers",
+     "grounds",
+     "hazmat",
+     "heavy-equip",
+     "high-angle",
+     "hvacr",
+     "hydro",
+     "hydrogen",
+     "industrial-clean",
+     "instrumentation",
+     "insulators",
+     "ironworkers",
+     "laborers",
+     "lathers",
+     "lead-abatement",
+     "line-workers",
+     "machinists",
+     "marine-pipe",
+     "marine-terminal",
+     "masonry-restore",
+     "medical-gas",
+     "meter-techs",
+     "millwrights",
+     "miners",
+     "mold-remediation",
+     "network-cabling",
+     "nuclear",
+     "operating-eng",
+     "painters",
+     "piling",
+     "pipefitters",
+     "pipeline",
+     "plasterers",
+     "platers",
+     "plc-techs",
+     "port-crane",
+     "post-tension",
+     "precast",
+     "rail-signals",
+     "rail-track",
+     "refractory",
+     "riggers",
+     "robotics",
+     "roofers",
+     "scaffold",
+     "security-sys",
+     "sheetmetal",
+     "shipfitters",
+     "shoring",
+     "site-safety",
+     "smelter",
+     "solar",
+     "spill-response",
+     "steel-erectors",
+     "stone-carvers",
+     "substation",
+     "survey-drone",
+     "surveyors",
+     "tank-erectors",
+     "teamsters",
+     "terrazzo",
+     "tilesetters",
+     "toolmakers",
+     "transit-vehicle",
+     "transmission",
+     "wastewater",
+     "water-distrib",
+     "waterproofers",
+     "welders",
+     "wind",
+     "window-glazing"
+    ],
+    "ladder_cells": [
+     "acoustic.safety.fundamentals",
+     "airfield.safety.fundamentals",
+     "asbestos.safety.fundamentals",
+     "automation-int.safety.fundamentals",
+     "aviation-ground.safety.fundamentals",
+     "bas-controls.safety.fundamentals",
+     "battery-storage.safety.fundamentals",
+     "blasters.safety.fundamentals",
+     "boilermakers.safety.fundamentals",
+     "bricklayers.safety.fundamentals",
+     "bridge-inspect.safety.fundamentals",
+     "cable-splicers.safety.fundamentals",
+     "carpenters.safety.fundamentals",
+     "catenary.safety.fundamentals",
+     "cement-masons.safety.fundamentals",
+     "cladding.safety.fundamentals",
+     "cleanroom.safety.fundamentals",
+     "concrete-pump.safety.fundamentals",
+     "confined-space.safety.fundamentals",
+     "crane-ops.safety.fundamentals",
+     "curtainwall.safety.fundamentals",
+     "data-center.safety.fundamentals",
+     "decking.safety.fundamentals",
+     "demolition.safety.fundamentals",
+     "district-energy.safety.fundamentals",
+     "divers.safety.fundamentals",
+     "drywall.safety.fundamentals",
+     "electricians.safety.fundamentals",
+     "elevator.safety.fundamentals",
+     "ev-charging.safety.fundamentals",
+     "fabricators.safety.fundamentals",
+     "fiber-splicers.safety.fundamentals",
+     "fire-alarm.safety.fundamentals",
+     "fire-sprinkler.safety.fundamentals",
+     "firestop.safety.fundamentals",
+     "fleet-diesel.safety.fundamentals",
+     "flooring.safety.fundamentals",
+     "foundry.safety.fundamentals",
+     "gas-distrib.safety.fundamentals",
+     "geothermal.safety.fundamentals",
+     "glaziers.safety.fundamentals",
+     "grounds.safety.fundamentals",
+     "hazmat.safety.fundamentals",
+     "heavy-equip.safety.fundamentals",
+     "high-angle.safety.fundamentals",
+     "hvacr.safety.fundamentals",
+     "hydro.safety.fundamentals",
+     "hydrogen.safety.fundamentals",
+     "industrial-clean.safety.fundamentals",
+     "instrumentation.safety.fundamentals",
+     "insulators.safety.fundamentals",
+     "ironworkers.safety.fundamentals",
+     "laborers.safety.fundamentals",
+     "lathers.safety.fundamentals",
+     "lead-abatement.safety.fundamentals",
+     "line-workers.safety.fundamentals",
+     "machinists.safety.fundamentals",
+     "marine-pipe.safety.fundamentals",
+     "marine-terminal.safety.fundamentals",
+     "masonry-restore.safety.fundamentals",
+     "medical-gas.safety.fundamentals",
+     "meter-techs.safety.fundamentals",
+     "millwrights.safety.fundamentals",
+     "miners.safety.fundamentals",
+     "mold-remediation.safety.fundamentals",
+     "network-cabling.safety.fundamentals",
+     "nuclear.safety.fundamentals",
+     "operating-eng.safety.fundamentals",
+     "painters.safety.fundamentals",
+     "piling.safety.fundamentals",
+     "pipefitters.safety.fundamentals",
+     "pipeline.safety.fundamentals",
+     "plasterers.safety.fundamentals",
+     "platers.safety.fundamentals",
+     "plc-techs.safety.fundamentals",
+     "port-crane.safety.fundamentals",
+     "post-tension.safety.fundamentals",
+     "precast.safety.fundamentals",
+     "rail-signals.safety.fundamentals",
+     "rail-track.safety.fundamentals",
+     "refractory.safety.fundamentals",
+     "riggers.safety.fundamentals",
+     "robotics.safety.fundamentals",
+     "roofers.safety.fundamentals",
+     "scaffold.safety.fundamentals",
+     "security-sys.safety.fundamentals",
+     "sheetmetal.safety.fundamentals",
+     "shipfitters.safety.fundamentals",
+     "shoring.safety.fundamentals",
+     "site-safety.safety.fundamentals",
+     "smelter.safety.fundamentals",
+     "solar.safety.fundamentals",
+     "spill-response.safety.fundamentals",
+     "steel-erectors.safety.fundamentals",
+     "stone-carvers.safety.fundamentals",
+     "substation.safety.fundamentals",
+     "survey-drone.safety.fundamentals",
+     "surveyors.safety.fundamentals",
+     "tank-erectors.safety.fundamentals",
+     "teamsters.safety.fundamentals",
+     "terrazzo.safety.fundamentals",
+     "tilesetters.safety.fundamentals",
+     "toolmakers.safety.fundamentals",
+     "transit-vehicle.safety.fundamentals",
+     "transmission.safety.fundamentals",
+     "wastewater.safety.fundamentals",
+     "water-distrib.safety.fundamentals",
+     "waterproofers.safety.fundamentals",
+     "welders.safety.fundamentals",
+     "wind.safety.fundamentals",
+     "window-glazing.safety.fundamentals"
+    ],
+    "districts": [
+     "control",
+     "earthworks",
+     "energy",
+     "envelope",
+     "industry",
+     "structural",
+     "systems",
+     "transport"
+    ],
+    "strands": [
+     "safety"
+    ],
+    "tiers": [
+     "fundamentals"
+    ],
+    "seats": [],
+    "seat_names": [],
+    "lessons": [
+     "bricklayers-gear-that-stays-on"
+    ]
+   },
+   "size": {
+    "trades": 111,
+    "ladder_cells": 111,
+    "seats": 0,
+    "seat_scenarios": 0,
+    "lessons": 1,
+    "lesson_steps": 4,
+    "contact_hours": null
+   },
+   "coverage": {
+    "cells_with_a_seat": 0,
+    "cells_carrying_more_than_one_seat": 0,
+    "seats_absorbed_by_those_cells": 0,
+    "seat_bindings": 0,
+    "unreachable_seat_cells": [],
+    "reachable_seat_cells": [],
+    "seats_on_these_cells_not_sold": []
+   },
+   "signoff": {
+    "practitioner_signed_off_halls": 0,
+    "of_halls_in_this_package": 111
+   }
+  },
+  "environmental-control": {
+   "name": "Environmental & Site Control",
+   "who": "a remediation or site-safety contractor staffing the trades that are called in because of a hazard rather than a build.",
+   "why": "one district bought whole - the control trades - on the three strands their work is actually judged on: the procedure they follow, the safety it exists for, and the documentation that is the only trace either one leaves.",
+   "limits": "this package contains no simulator seat: no control-trade cell on these strands carries one. It is a ladder and its lessons, and no line of it is a licence, an accreditation or a competent-person appointment.",
+   "filter": {
+    "trades": {
+     "kind": "districts",
+     "ids": [
+      "control"
+     ]
+    },
+    "strands": [
+     "procedure",
+     "safety",
+     "documentation"
+    ],
+    "tiers": [
+     "fundamentals",
+     "applied"
+    ],
+    "seats": {
+     "kind": "whatever-the-cells-carry",
+     "ids": []
+    }
+   },
+   "contents": {
+    "trades": [
+     "asbestos",
+     "confined-space",
+     "hazmat",
+     "high-angle",
+     "industrial-clean",
+     "lead-abatement",
+     "mold-remediation",
+     "site-safety",
+     "spill-response",
+     "survey-drone",
+     "surveyors"
+    ],
+    "ladder_cells": [
+     "asbestos.documentation.applied",
+     "asbestos.documentation.fundamentals",
+     "asbestos.procedure.applied",
+     "asbestos.procedure.fundamentals",
+     "asbestos.safety.applied",
+     "asbestos.safety.fundamentals",
+     "confined-space.documentation.applied",
+     "confined-space.documentation.fundamentals",
+     "confined-space.procedure.applied",
+     "confined-space.procedure.fundamentals",
+     "confined-space.safety.applied",
+     "confined-space.safety.fundamentals",
+     "hazmat.documentation.applied",
+     "hazmat.documentation.fundamentals",
+     "hazmat.procedure.applied",
+     "hazmat.procedure.fundamentals",
+     "hazmat.safety.applied",
+     "hazmat.safety.fundamentals",
+     "high-angle.documentation.applied",
+     "high-angle.documentation.fundamentals",
+     "high-angle.procedure.applied",
+     "high-angle.procedure.fundamentals",
+     "high-angle.safety.applied",
+     "high-angle.safety.fundamentals",
+     "industrial-clean.documentation.applied",
+     "industrial-clean.documentation.fundamentals",
+     "industrial-clean.procedure.applied",
+     "industrial-clean.procedure.fundamentals",
+     "industrial-clean.safety.applied",
+     "industrial-clean.safety.fundamentals",
+     "lead-abatement.documentation.applied",
+     "lead-abatement.documentation.fundamentals",
+     "lead-abatement.procedure.applied",
+     "lead-abatement.procedure.fundamentals",
+     "lead-abatement.safety.applied",
+     "lead-abatement.safety.fundamentals",
+     "mold-remediation.documentation.applied",
+     "mold-remediation.documentation.fundamentals",
+     "mold-remediation.procedure.applied",
+     "mold-remediation.procedure.fundamentals",
+     "mold-remediation.safety.applied",
+     "mold-remediation.safety.fundamentals",
+     "site-safety.documentation.applied",
+     "site-safety.documentation.fundamentals",
+     "site-safety.procedure.applied",
+     "site-safety.procedure.fundamentals",
+     "site-safety.safety.applied",
+     "site-safety.safety.fundamentals",
+     "spill-response.documentation.applied",
+     "spill-response.documentation.fundamentals",
+     "spill-response.procedure.applied",
+     "spill-response.procedure.fundamentals",
+     "spill-response.safety.applied",
+     "spill-response.safety.fundamentals",
+     "survey-drone.documentation.applied",
+     "survey-drone.documentation.fundamentals",
+     "survey-drone.procedure.applied",
+     "survey-drone.procedure.fundamentals",
+     "survey-drone.safety.applied",
+     "survey-drone.safety.fundamentals",
+     "surveyors.documentation.applied",
+     "surveyors.documentation.fundamentals",
+     "surveyors.procedure.applied",
+     "surveyors.procedure.fundamentals",
+     "surveyors.safety.applied",
+     "surveyors.safety.fundamentals"
+    ],
+    "districts": [
+     "control"
+    ],
+    "strands": [
+     "documentation",
+     "procedure",
+     "safety"
+    ],
+    "tiers": [
+     "applied",
+     "fundamentals"
+    ],
+    "seats": [],
+    "seat_names": [],
+    "lessons": [
+     "hazmat-wash-and-decon"
+    ]
+   },
+   "size": {
+    "trades": 11,
+    "ladder_cells": 66,
+    "seats": 0,
+    "seat_scenarios": 0,
+    "lessons": 1,
+    "lesson_steps": 5,
+    "contact_hours": null
+   },
+   "coverage": {
+    "cells_with_a_seat": 0,
+    "cells_carrying_more_than_one_seat": 0,
+    "seats_absorbed_by_those_cells": 0,
+    "seat_bindings": 0,
+    "unreachable_seat_cells": [],
+    "reachable_seat_cells": [],
+    "seats_on_these_cells_not_sold": []
+   },
+   "signoff": {
+    "practitioner_signed_off_halls": 0,
+    "of_halls_in_this_package": 11
+   }
+  }
+ },
+ "counts": {
+  "packages": 10,
+  "trades_offered": 111,
+  "seats_offered": 11,
+  "cells_offered": 366,
+  "lessons_offered": 14,
+  "packages_with_no_seat": 2
+ },
+ "reads": [
+  "lessons/registry/lessons.json",
+  "pack/hall_signoff.mjs",
+  "pack/manifest.json",
+  "pack/registry/halls.json",
+  "pack/registry/skills.json",
+  "sims/registry/sims.json",
+  "unions/registry/unions.json"
+ ]
+}
