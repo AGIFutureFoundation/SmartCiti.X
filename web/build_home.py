@@ -872,8 +872,8 @@ h3 + p.lede{color:var(--muted);margin:0 0 18px;max-width:74ch}
    The three things a visitor can do, the one first step, and the trades
    that have a course. Every figure in here sits in its own `.fig` slot so
    a check reads a slot rather than a sentence. */
-.fig{color:var(--mark);font:600 inherit "IBM Plex Mono",monospace;
-  font-variant-numeric:tabular-nums}
+.fig{color:var(--mark);font-family:"IBM Plex Mono",monospace;
+  font-weight:600;font-variant-numeric:tabular-nums}
 .doable{margin-bottom:22px}
 .doable .pv b{color:var(--mark)}
 a.card.start{margin:0}
@@ -886,10 +886,21 @@ a.trade{display:flex;justify-content:space-between;align-items:baseline;gap:10px
 a.trade:hover,a.trade:focus-visible{border-color:var(--mark)}
 a.trade .tsteps{color:var(--dim);font:11.5px "IBM Plex Mono",monospace;
   white-space:nowrap}
+/* the limits carry the longest headings on the page, so they get wider
+   columns than the five-word provenance words do */
+.prov.limitrow{grid-template-columns:repeat(auto-fit,minmax(272px,1fr))}
 .prov{display:grid;grid-template-columns:repeat(auto-fit,minmax(196px,1fr));gap:14px}
 .pv{background:var(--sunk);border:1px solid var(--rule);border-radius:10px;padding:14px 16px}
 .pv b{display:block;font:600 13px "IBM Plex Mono",monospace;letter-spacing:1px;
   color:var(--steel);margin-bottom:5px}
+/* A `.pv b` is the HEADING of a card and is a block. A figure inside a
+   card's prose is also a `<b>`, and without this it takes the heading's
+   display, letter-spacing and size - every number on its own line, in the
+   wrong colour. Found by opening the page in a browser and looking at it,
+   not by reading this file. */
+.pv b.fig{display:inline;font:600 inherit/inherit "IBM Plex Mono",monospace;
+  letter-spacing:0;margin-bottom:0;color:var(--mark);
+  font-variant-numeric:tabular-nums}
 .pv span{color:var(--muted);font-size:13.5px}
 footer{margin-top:56px;border-top:1px solid var(--rule);background:var(--sunk)}
 footer .wrap{padding:26px 20px 40px}
@@ -961,6 +972,12 @@ def card(c):
         f'{esc(c["limit"])}</p></a>')
 
 
+# The five words, each in a slot of its own. A tier is rendered ONLY here, as
+# the `data-tier` of a `.pv`, so there is exactly one place on this page where
+# a word claims to be a provenance tier and exactly one place a check has to
+# look - the same discipline web/build_lessons.py holds its chips to. A check
+# that read the prose instead would flag the trade acronym HVAC, which has
+# happened in this bundle.
 PROV = [
     ('RECORDED', 'taken from a public source and cited where it is used'),
     ('DERIVED', 'computed from something recorded, by a rule you can read'),
@@ -1061,7 +1078,7 @@ BODY = f"""<body>
   <h3 id="limits">What none of this is</h3>
   <p class="lede">The limits, stated once, plainly, where a visitor meets
     them.</p>
-  <div class="prov">
+  <div class="prov limitrow">
     {''.join(f'<div class="pv" data-limit="{esc(k)}"><b>{esc(w)}</b><span>{d}</span></div>'
              for k, w, d in LIMITS)}
   </div>
@@ -1106,7 +1123,8 @@ BODY = f"""<body>
     how it was come by. They are not decoration: a build refuses a record
     that claims the wrong one, and the suites check it.</p>
   <div class="prov">
-    {''.join(f'<div class="pv"><b>{w}</b><span>{esc(d)}</span></div>' for w, d in PROV)}
+    {''.join(f'<div class="pv" data-tier="{w}"><b>{w}</b><span>{esc(d)}</span></div>'
+             for w, d in PROV)}
   </div>
 </section>
 </div>

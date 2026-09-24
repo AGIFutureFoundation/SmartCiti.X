@@ -788,13 +788,18 @@ OUT = HERE / 'registry'
 OUT.mkdir(exist_ok=True)
 (OUT / 'bundles.json').write_text(json.dumps(doc, indent=1) + '\n')
 
+def plural(count, one, many):
+    return f'{count} {one if count == 1 else many}'
+
+
 print(f'bundle registry: {len(PACKS)} packages resolved from '
       f'{len(doc["reads"])} registries (source stamp {stamp})')
 for _pid, _p in PACKS.items():
-    _c = _p['coverage']
-    print(f'  {_pid}: {_p["size"]["trades"]} trades, '
-          f'{_p["size"]["ladder_cells"]} ladder cells, {_p["size"]["seats"]} seats, '
-          f'{_p["size"]["lesson_steps"]} lesson steps; '
-          f'{_c["cells_with_a_seat"]} cells carry a seat, '
-          f'{len(_c["unreachable_seat_cells"])} of those unreachable; '
-          'contact hours undeclared')
+    _s, _c = _p['size'], _p['coverage']
+    print(f'  {_pid}: ' + plural(_s['trades'], 'trade', 'trades')
+          + ', ' + plural(_s['ladder_cells'], 'ladder cell', 'ladder cells')
+          + ', ' + plural(_s['seats'], 'seat', 'seats')
+          + ', ' + plural(_s['lesson_steps'], 'lesson step', 'lesson steps')
+          + '; ' + plural(_c['cells_with_a_seat'], 'cell carries', 'cells carry')
+          + ' a seat, ' + str(len(_c['unreachable_seat_cells']))
+          + ' of those unreachable; contact hours undeclared')

@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-24",
- "source_stamp": "02fb1b653184b079",
+ "source_stamp": "2f33ecc4b7b10606",
  "honesty": {
   "status": "AUTHORED filters, DERIVED contents. Each package below is a buyer and a filter written here, by us; everything it contains is resolved at build time from the registries in `reads`. No package names a ladder cell, a seat or a lesson - which is why no package can claim to contain something this bundle does not have.",
   "not_certification": "no package here certifies, qualifies, licenses or authorises anybody to do anything. Buying every package in this registry would leave a crew with exactly the standing it started with. Where a trade has a real ticket, it is issued by a jurisdiction, an employer or a hall, and this bundle is none of those and speaks for none of them.",

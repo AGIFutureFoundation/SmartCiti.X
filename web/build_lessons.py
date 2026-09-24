@@ -144,6 +144,15 @@ E = html.escape
 F = lambda x: f"{x:,}"
 
 
+def plural(count, one, many):
+    """One count, one word, agreeing with it.
+
+    A course of one lesson is not "1 lessons". The count is still the
+    registry's; only the word around it is chosen here.
+    """
+    return f'{count} {one if count == 1 else many}'
+
+
 def tier(v, where):
     if v not in TIERS:
         raise ValueError(f'{where}: provenance tier {v!r} is not one of {", ".join(TIERS)}')
@@ -559,7 +568,7 @@ def course_html(c):
         raise AssertionError(
             f'course {c["hall"]!r} numbered {cstep} steps but holds {c["steps"]}')
     seats = (f'<span class="chip" data-count="seat-steps">{c["seat_steps"]} of these steps '
-             f'open a simulator seat</span>')
+             f'{"opens" if c["seat_steps"] == 1 else "open"} a simulator seat</span>')
     return (f'<section class="course" id="course-{E(c["hall"])}" data-hall="{E(c["hall"])}" '
             f'data-lessons="{c["lessons"]}" data-steps="{c["steps"]}" '
             f'data-seat-steps="{c["seat_steps"]}" data-cells="{c["cells"]}" '
@@ -568,16 +577,19 @@ def course_html(c):
             f'<header class="chead">'
             f'<h2 class="ctitle">{E(c["name"])}</h2>'
             f'<p class="cmeta">'
-            f'<span class="chip" data-count="lessons">{c["lessons"]} lessons</span>'
-            f'<span class="chip" data-count="steps">{c["steps"]} steps, in this order</span>'
+            f'<span class="chip" data-count="lessons">'
+            f'{plural(c["lessons"], "lesson", "lessons")}</span>'
+            f'<span class="chip" data-count="steps">'
+            f'{plural(c["steps"], "step", "steps")}, in this order</span>'
             f'{seats}'
             f'<a class="clink" href="trade_craft_ladder.html?hall={E(c["hall"])}">'
             f'this trade\'s ladder</a>'
             f'<a class="clink" href="trade_craft_3d.html?hall={E(c["hall"])}">'
             f'walk this hall</a></p>'
-            f'<p class="climits">This trade\'s ladder has {c["cells"]} rungs; '
-            f'{c["cells_with_seat"]} of them carry a simulator seat, and '
-            f'{c["on_a_seat_cell"]} of this course\'s {c["lessons"]} lessons stand on one. '
+            f'<p class="climits">This trade\'s ladder: {c["cells"]} rungs, '
+            f'{c["cells_with_seat"]} of them carrying a simulator seat, with '
+            f'{c["on_a_seat_cell"]} of this course\'s '
+            f'{plural(c["lessons"], "lesson", "lessons")} standing on one. '
             f'<a href="#limits">What working this course does not make you</a> is stated '
             f'in the registry\'s own words at the top of this page.</p>'
             f'</header>{blocks}</section>')
@@ -679,8 +691,10 @@ function setCourse(slug) {
       + courseEls.length + ' halls have a course and that is not one of them, '
       + 'so all ' + courseEls.length + ' are shown';
   } else {
-    noteEl.textContent = 'course: ' + found.dataset.lessons + ' lessons, '
-      + found.dataset.steps + ' steps in order, ' + found.dataset.seatSteps
+    noteEl.textContent = 'course: '
+      + found.dataset.lessons + (found.dataset.lessons === '1' ? ' lesson, ' : ' lessons, ')
+      + found.dataset.steps + (found.dataset.steps === '1' ? ' step' : ' steps')
+      + ' in order, ' + found.dataset.seatSteps
       + ' of them opening a simulator seat';
   }
   applyFilter();
@@ -767,7 +781,12 @@ code{{font:13px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--mute
    framed run rather than as a heading over loose cards: the frame is what
    tells a reader where the sequence starts and stops. */
 .course{{border:1px solid var(--rule);border-left:4px solid var(--steel);
-  border-radius:10px;margin:22px 0;padding:2px 12px 10px;background:rgba(65,196,212,.04)}}
+  border-radius:10px;margin:22px 0;padding:2px 12px 10px;background:rgba(65,196,212,.04);
+  scroll-margin-top:86px}}
+/* The toolbar is sticky, so anything jumped to by anchor has to reserve the
+   toolbar's height or it lands underneath it - the course head did, and the
+   fault was visible in a screenshot and invisible in the source. */
+.lesson{{scroll-margin-top:86px}}
 .course[hidden]{{display:none}}
 .chead{{padding:12px 4px 4px}}
 .ctitle{{margin:0;color:var(--ink)}}

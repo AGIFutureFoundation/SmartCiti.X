@@ -87,8 +87,8 @@ h3 + p.lede{color:var(--muted);margin:0 0 18px;max-width:74ch}
    The three things a visitor can do, the one first step, and the trades
    that have a course. Every figure in here sits in its own `.fig` slot so
    a check reads a slot rather than a sentence. */
-.fig{color:var(--mark);font:600 inherit "IBM Plex Mono",monospace;
-  font-variant-numeric:tabular-nums}
+.fig{color:var(--mark);font-family:"IBM Plex Mono",monospace;
+  font-weight:600;font-variant-numeric:tabular-nums}
 .doable{margin-bottom:22px}
 .doable .pv b{color:var(--mark)}
 a.card.start{margin:0}
@@ -101,10 +101,21 @@ a.trade{display:flex;justify-content:space-between;align-items:baseline;gap:10px
 a.trade:hover,a.trade:focus-visible{border-color:var(--mark)}
 a.trade .tsteps{color:var(--dim);font:11.5px "IBM Plex Mono",monospace;
   white-space:nowrap}
+/* the limits carry the longest headings on the page, so they get wider
+   columns than the five-word provenance words do */
+.prov.limitrow{grid-template-columns:repeat(auto-fit,minmax(272px,1fr))}
 .prov{display:grid;grid-template-columns:repeat(auto-fit,minmax(196px,1fr));gap:14px}
 .pv{background:var(--sunk);border:1px solid var(--rule);border-radius:10px;padding:14px 16px}
 .pv b{display:block;font:600 13px "IBM Plex Mono",monospace;letter-spacing:1px;
   color:var(--steel);margin-bottom:5px}
+/* A `.pv b` is the HEADING of a card and is a block. A figure inside a
+   card's prose is also a `<b>`, and without this it takes the heading's
+   display, letter-spacing and size - every number on its own line, in the
+   wrong colour. Found by opening the page in a browser and looking at it,
+   not by reading this file. */
+.pv b.fig{display:inline;font:600 inherit/inherit "IBM Plex Mono",monospace;
+  letter-spacing:0;margin-bottom:0;color:var(--mark);
+  font-variant-numeric:tabular-nums}
 .pv span{color:var(--muted);font-size:13.5px}
 footer{margin-top:56px;border-top:1px solid var(--rule);background:var(--sunk)}
 footer .wrap{padding:26px 20px 40px}
@@ -206,7 +217,7 @@ footer p{color:var(--dim);font-size:13px;max-width:82ch;margin:0 0 10px}
   <h3 id="limits">What none of this is</h3>
   <p class="lede">The limits, stated once, plainly, where a visitor meets
     them.</p>
-  <div class="prov">
+  <div class="prov limitrow">
     <div class="pv" data-limit="certification"><b>NOT CERTIFICATION</b><span>No seat, lesson or course here certifies anyone on anything. The simulators carry schematic physics and deterministic rubrics; passing one is practice, not a ticket. Where a trade has a real ticket it is issued by a jurisdiction, an employer or a hall, and this bundle is none of those.</span></div><div class="pv" data-limit="signoff"><b>NOT SIGNED OFF BY ANYONE WHO DOES THE WORK</b><span><b class="fig" data-fig="halls_signed_off">0</b> of <b class="fig" data-fig="halls_signoff_total">111</b> halls carry a practitioner sign-off. Every lesson here is unverified general practice, written to be argued with and corrected by journey-level practitioners from the halls it names - and none of them has reviewed a line of it yet.</span></div><div class="pv" data-limit="coverage"><b>THE SEATS COVER A THIN SLICE</b><span><b class="fig" data-fig="cells_with_seat">45</b> of the ladder's <b class="fig" data-fig="cells_total">3,663</b> rungs carry a simulator seat, and all <b class="fig" data-fig="cells_with_seat_unreached">45</b> of those sit on a prerequisite chain with no seat anywhere in it. A rung with no seat is not partly covered; it is uncovered, and the ladder page draws the gaps as plainly as the coverage.</span></div><div class="pv" data-limit="roster"><b>NOT A UNION ROSTER</b><span>A taxonomy of skilled trades, not a roster of chartered locals. No real local is named and no real union's mark is drawn.</span></div><div class="pv" data-limit="survey"><b>NOT SURVEYED</b><span>No site has been surveyed and no real building is depicted. A campus is composed from a place's own character, and the registry says so in each record.</span></div>
   </div>
 </section>
@@ -261,7 +272,7 @@ footer p{color:var(--dim);font-size:13px;max-width:82ch;margin:0 0 10px}
     how it was come by. They are not decoration: a build refuses a record
     that claims the wrong one, and the suites check it.</p>
   <div class="prov">
-    <div class="pv"><b>RECORDED</b><span>taken from a public source and cited where it is used</span></div><div class="pv"><b>DERIVED</b><span>computed from something recorded, by a rule you can read</span></div><div class="pv"><b>AUTHORED</b><span>written by us, and labelled as written rather than found</span></div><div class="pv"><b>SCHEMATIC</b><span>the shape of a thing, not a measurement of one</span></div><div class="pv"><b>SCRIPTED</b><span>a hand-written deterministic policy, with no model behind it</span></div>
+    <div class="pv" data-tier="RECORDED"><b>RECORDED</b><span>taken from a public source and cited where it is used</span></div><div class="pv" data-tier="DERIVED"><b>DERIVED</b><span>computed from something recorded, by a rule you can read</span></div><div class="pv" data-tier="AUTHORED"><b>AUTHORED</b><span>written by us, and labelled as written rather than found</span></div><div class="pv" data-tier="SCHEMATIC"><b>SCHEMATIC</b><span>the shape of a thing, not a measurement of one</span></div><div class="pv" data-tier="SCRIPTED"><b>SCRIPTED</b><span>a hand-written deterministic policy, with no model behind it</span></div>
   </div>
 </section>
 </div>
