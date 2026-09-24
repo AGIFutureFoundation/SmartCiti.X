@@ -384,8 +384,8 @@ PRECEDENCE = [
 ]
 DECLUTTER = {
     'precedence': PRECEDENCE,
-    'cover_hide': .95,
-    'cover_show': .9,
+    'cover_hide': .15,
+    'cover_show': .07,
     'min_op': .05,
     'rule': 'two signs are compared as the rectangles they actually occupy '
             'on screen. Taken in precedence order, a sign that is covered '
@@ -393,15 +393,18 @@ DECLUTTER = {
             'sign ahead of it steps back; it returns when coverage falls '
             'under cover_show. Coverage is eased on the focus easing, so a '
             'sign fades rather than blinks.',
-    'honest': 'a sign that steps back is still built, still in its group, '
-              'still in the label set and still scored every frame; what '
-              'changes is its opacity, held at min_op or under while '
-              'something ahead of it is sitting on top of it. It is NOT on '
-              'screen while that lasts, and a harness counting on-screen '
-              'signs will not count it, which is the honest cost and is '
-              'why the sign count is held to a floor as well as the '
-              'overlaps to a ceiling. No kind is removed, no sign is '
-              'deleted, and moving the view brings every one of them back.',
+    'honest': 'a sign that steps back is not deleted, not disposed and not '
+              'dropped from the label set or from its group; it is still '
+              'scored every frame and it comes back as soon as the view '
+              'moves enough to uncover it. What changes is its opacity, '
+              'and a sign faded to min_op is switched off, so while it is '
+              'covered it is NOT drawn and NOT on screen. That is the '
+              'honest cost of the rule and a harness counting on-screen '
+              'signs will not count it. The visible-MESH count cannot see '
+              'this either way - a sign is a sprite and a sprite was never '
+              'one of those meshes - so it is the SIGN floor in '
+              'web/eval_scene.mjs, and not the mesh floor, that stops this '
+              'rule being turned into a way of emptying a building.',
     'measured': 'the count this exists to hold down is overlapping PAIRS of '
                 'on-screen sign rectangles, measured in a browser by '
                 'web/eval_scene.mjs through the page\'s own '
