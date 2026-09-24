@@ -8568,6 +8568,39 @@ const LHEAD = { beacon: 22, stencil: 20, tag: 12 };
 const LTIP = { chevron: 18 };
 const lblHead = (shape) => LHEAD[shape] ?? 0;
 const lblTip = (shape) => LTIP[shape] ?? 0;
+/* How deep the band across a board's head is. It is a drawn dimension the
+   plate and the text layout must AGREE on - labelShape() fills it and
+   label() lays the caption under it - so it is one number, and it is the
+   registry's: a page that picked its own would be a second convention with
+   nothing holding it to the first. §23.1 - no default: a registry that
+   reached the page without it is a broken build, not a guess. */
+/* Which jamb a board takes when a doorway sits exactly on the hall's
+   centre line and its two jambs are therefore the same distance from it.
+
+   That is 47 of the 795 boards in this world that hang beside a jamb, so
+   it is a case and not a hypothetical, and it is a POLICY: named in
+   the label registry with its reason (see KINDS['placard'] in
+   labels/build.py) rather than decided here by whichever way a comparison
+   of two equal numbers falls. That is precisely the mistake the rule this
+   supports was written to end - §23.1, and no default: a registry that
+   reaches the page without a side stops the page. */
+function lblTieJamb() {
+  const v = LKIND.placard.jamb_on_centre;
+  if (v !== '-x' && v !== '+x')
+    throw new Error('D.labels.kinds.placard.jamb_on_centre: the label '
+      + 'registry names no jamb for a doorway centred on the hall axis, so '
+      + 'the boards in those rooms would be placed by whichever way a '
+      + 'comparison of two equal numbers fell');
+  return v;
+}
+function lblBoardHead() {
+  const v = LBL.shapes.board && LBL.shapes.board.head_px;
+  if (typeof v !== 'number')
+    throw new Error('D.labels.shapes.board.head_px: the label registry '
+      + 'declares no head band for a board, so how deep it is drawn would '
+      + 'be an invention of this page');
+  return v;
+}
 
 function labelShape(g, shape, w, h, accent, dashed) {
   const S = LBL.shapes[shape] ?? LBL.shapes.plate;
@@ -8697,6 +8730,32 @@ function labelShape(g, shape, w, h, accent, dashed) {
       g.restore();
       break;
     }
+
+    /* A BOARD, which is the one shape in this registry that is not a
+       name-plate with a longer word on it.
+
+       The PPE placard was a `plate`: one line of text, however long the
+       list, so a room requiring seven things wore a sign twenty-two times
+       wider than it was tall. Measured at eye level in the bricklayers'
+       hall at 1280x800 - a learner standing at (0, 1.7, 14) looking down
+       the aisle - the two widest ran 670 and 678 CSS px across a 1280 px
+       screen and took six of that view's ten overlapping sign pairs with
+       them. The cause was never the threshold the declutter pass uses; it
+       was the aspect ratio, because labelStep()'s on-screen clamp fixes a
+       sign's HEIGHT and the width follows from the bitmap.
+
+       A list of requirements is read down a board, one item to a line.
+       That is the real thing and it is also the narrow thing: the board's
+       width is its widest single item rather than all of them end to end.
+       The accent band runs across its head instead of down its left edge,
+       because a board is portrait and a stripe down the side of a portrait
+       plate reads as a margin. */
+    case 'board': {
+      g.beginPath(); g.roundRect(0, 0, w, body, r); g.fill();
+      g.shadowBlur = 0; g.shadowOffsetY = 0;
+      g.fillStyle = accent; g.fillRect(0, 0, w, lblBoardHead());
+      break;
+    }
   }
   g.restore();
   // the accent: a stripe for the wide shapes, a dashed outline where the
@@ -8750,6 +8809,20 @@ function label(text, sub, scale = 1, opts = {}) {
     return sp;
   }
   const marquee = shape === 'marquee';
+  /* A board is stacked, so it is laid out from the LIST and not from the
+     sentence. `text` is that same list joined and is kept exactly as every
+     other sign keeps it - it is what the texture cache keys on and what
+     __tc3dLabelRects() names the sign by - but nothing here splits it
+     back apart: parsing a string into the fields it was built from is how
+     one fact becomes two that can disagree. A board with no items is a
+     broken build and says so, rather than drawing an empty board. */
+  const items = shape === 'board' ? (() => {
+    if (!Array.isArray(opts.items) || !opts.items.length)
+      throw new Error('label(): the "' + kindId + '" kind is drawn as a '
+        + 'board - a list read one item to a line - and no items reached '
+        + 'it, so there is nothing to stack. Pass opts.items.');
+    return opts.items;
+  })() : null;
   const dpr = Math.min(2, devicePixelRatio || 1);
 
   const c = document.createElement('canvas');
@@ -8771,10 +8844,26 @@ function label(text, sub, scale = 1, opts = {}) {
   // the dot, the hole, the eyelet and the point all take width the text
   // must not be laid into - see LHEAD / LTIP above labelShape()
   const head = lblHead(shape), tip = lblTip(shape);
-  const w = Math.max(tw, sw, shape === 'chip' ? 48 : 110) + padX * 2
-    + (shape === 'plate' || shape === 'banner' ? 10 : 0) + head + tip;
-  const bodyH = (sub ? 104 : shape === 'chip' ? 54 : 68)
-    + (marquee ? 14 : 0);
+  /* A board's width is its WIDEST SINGLE ITEM, not the whole list end to
+     end, and that is the entire point of stacking it: the widest word in
+     the PPE vocabulary is 24 characters, so no board can ever run away
+     the way a joined line of eleven of them did. Its height is the head
+     band, the caption under it and one line per item. */
+  const bandH = items ? lblBoardHead() : 0;
+  const capH = items && sub ? Math.round(LTYPE.sub_px * 1.3) : 0;
+  const lineH = items ? Math.round(LTYPE.title_px * 1.24) : 0;
+  let itemW = 0;
+  if (items) {
+    g.font = titleFont;
+    for (const it of items) itemW = Math.max(itemW, g.measureText(it).width);
+  }
+  const w = items
+    ? Math.max(itemW, sw, 150) + padX * 2
+    : Math.max(tw, sw, shape === 'chip' ? 48 : 110) + padX * 2
+      + (shape === 'plate' || shape === 'banner' ? 10 : 0) + head + tip;
+  const bodyH = items
+    ? bandH + 10 + capH + items.length * lineH + 16
+    : (sub ? 104 : shape === 'chip' ? 54 : 68) + (marquee ? 14 : 0);
   const h = bodyH + (LBL.shapes[shape].tail ? 14 : 0)
     + (LBL.shapes[shape].stem ? 22 : 0);
 
@@ -8786,6 +8875,22 @@ function label(text, sub, scale = 1, opts = {}) {
   const baseline = sub ? (marquee ? 62 : 52) : body / 2 + titlePx * .35;
   g.save();
   g.shadowColor = 'rgba(0,0,0,.75)'; g.shadowBlur = 6;
+  if (items) {
+    /* Down the board: the band, the caption that says whose board it is,
+       then one requirement to a line in the title face - because on a
+       board the requirement is the message and the room name is the
+       caption, which is the opposite of the rank a name-plate gives them. */
+    if (sub) {
+      g.fillStyle = LPAL.muted;
+      g.font = LTYPE.sub_px + 'px ' + lblFace('body');
+      g.fillText(sub, padX, bandH + 10 + LTYPE.sub_px * .82);
+    }
+    g.fillStyle = LPAL.ink;
+    g.font = titleFont;
+    for (let i = 0; i < items.length; i++)
+      g.fillText(items[i], padX,
+        bandH + 10 + capH + i * lineH + lineH * .76);
+  } else {
   g.fillStyle = shape === 'readout' ? accent : LPAL.ink;
   g.font = titleFont;
   if (track) {                              // letter-spaced caps, by hand
@@ -8798,6 +8903,7 @@ function label(text, sub, scale = 1, opts = {}) {
     g.font = LTYPE.sub_px + 'px '
       + lblFace(kind.face === 'mono' ? 'mono' : 'body');
     g.fillText(sub, left, baseline + 36);
+  }
   }
   g.restore();
 
@@ -10052,6 +10158,35 @@ function priceHall(sg) {
            from: D.budget.from };
 }
 
+/* WHERE A PPE BOARD HANGS, AND HOW BIG IT IS.
+
+   Both were a floating banner's numbers and neither survived being looked
+   at. The placard hung at 1.62 m on a 1.1 m partition - above the wall it
+   was supposed to be fixed to, with clear air under it - at a scale that
+   made a seven-item list 14.4 metres wide in the world. Standing at eye
+   level in the aisle you did not see a board at a door; you saw two
+   ribbons of text crossing the whole building.
+
+   A board is a board: it hangs ON the partition, its head at reading
+   height, and it is the size a board is. `BOARD_SCALE` is set from the
+   two ends of the real range, measured off the built page rather than
+   estimated: the longest list in the network - eleven items, in one room
+   of one hall - stands 1.05 m tall, so its foot lands at 0.50 m and stays
+   clear of the 0.35 m slab; the commonest board, two items in 323 rooms,
+   is 0.62 m wide and 0.28 m tall.
+
+   Heads align at BOARD_HEAD_M because signs on a wall line up at their
+   tops. That does NOT buy a metre of clear air under the room plate
+   above, and an earlier draft of this comment claimed it did: the room
+   plate hangs at 2.20 m and the widest one measured reaches down to about
+   1.81 m, so the gap is nearer 0.26 m, and it closes further on a long
+   room name. The separation that decides whether these two signs collide
+   is the one on SCREEN, not the one in the world, because labelStep()'s
+   clamp rescales both - which is why it is measured by the `hall-eye` row
+   in web/eval_scene.mjs and not asserted here. */
+const BOARD_SCALE = .14;
+const BOARD_HEAD_M = 1.55;
+
 function buildHall(sg) {
   if (hallGroup) { scene.remove(hallGroup); disposeOf(hallGroup); }
   hallGroup = new THREE.Group(); beacons = []; floors = []; roomRects = []; curRoom = null;
@@ -10448,8 +10583,129 @@ function buildHall(sg) {
        have to invent one. */
     if (rc.ppe.length) {
       const plac = label(rc.ppe.join(' \u00b7 '),
-        D.i18n[loc].strands[r.strand], .42, { kind: 'placard' });
-      plac.position.set(rx, 1.62, rz + rd/2 + .09);
+        D.i18n[loc].strands[r.strand], BOARD_SCALE,
+        { kind: 'placard', items: rc.ppe });
+      const bw = plac.userData.lbl.base.x, bh2 = plac.userData.lbl.base.y;
+      /* Beside the jamb, not across the middle of the wall. The registry
+         says this sign is "read at its door", and the doorway is where
+         planDoors() cut one: the opening nearest the room's centre is the
+         one this room is entered by, and the board goes on whichever of
+         its two jambs has more wall behind it. A room whose back wall is
+         the building's own has no opening in it and no jamb to hang
+         beside, so that board hangs centred - which is a fact about the
+         wall, not a preference about boards. */
+      const cuts = (doors.get('z@' + (rz + rd / 2).toFixed(2)) || [])
+        .filter(([a, b2]) => a >= rx - rw / 2 - .01 && b2 <= rx + rw / 2 + .01);
+      /* Every jamb of every way into this room, and ONE criterion to pick
+         between them: the one nearest the hall's centre line.
+
+         The first version of this had two criteria and they fought. It
+         chose the doorway nearest the ROOM's centre and then the jamb
+         nearest the HALL's centre, which is not a rule - it is two rules
+         whose answers have nothing to do with each other. These rooms are
+         not small: the bricklayers' Practice Bays is 21 m wide with two
+         ways into its back wall, so "beside its door" chose a jamb 10.5 m
+         off the hall axis, 21.2 m from somebody standing in the aisle -
+         past the 20 m the registry declares a placard is read from, so it
+         was not drawn at all. Measured over that hall, one criterion
+         throughout puts every board nearer the eye than either of the two
+         rules it replaces: 18.4 / 12.8 / 11.2 / 6.4 / 3.2 m, none of them
+         out of range.
+
+         So: no sort by one measure and choose by another. Collect the
+         jambs, take the one nearest x = 0, and let that single sentence be
+         the whole rule. */
+        /* WHICH jamb - decided by a rule somebody chose, not by a rounding.
+
+           The first version asked which jamb had more wall behind it. For a
+           doorway planDoors() centres on a room its neighbour fully
+           overlaps, those two widths are the SAME QUANTITY reached by two
+           different roundings - so the comparison is between two numbers
+           that are bit-for-bit equal, `>` answers false, and the board goes
+           to the +x jamb with nobody having chosen it.
+
+           Replayed over the shipped payload: 393 of the 795 boards that
+           hang beside a jamb in this world - 49%, in every one of the 111
+           halls - compared two exactly equal numbers.
+
+           THOSE FIGURES CORRECT AN EARLIER PAIR. 479 of 881 was reported
+           first, and it is in the commit message of 91d27e0, which is
+           pushed and will not be rewritten. It counted every room with a
+           cut in its back wall and called the total boards; 86 of those
+           rooms require no PPE and hang nothing. If you find 479/881 in
+           the log and 393/795 here, HERE is right - the denominator there
+           was rooms, and the sentence around it said boards.
+
+           That error is worth a line because of its shape, not its size.
+           Three faults were found in this one rule in one afternoon and
+           all three are the same move: a quantity standing in for a
+           different quantity. Two wall widths equal by construction
+           standing in for a choice. Distance to the room's centre
+           standing in for distance to the hall's. Rooms standing in for
+           boards. If you are about to change this code, the question to
+           ask first is whether the number you are comparing is the number
+           you mean.
+
+           The other 402 landed
+           correctly by accident of a partial overlap giving the comparison
+           something real to answer. That is the number to keep in mind
+           before restoring anything like it: at 54% density, in every
+           hall, a uniform lean does not read as a bug. It reads as a
+           decision, and the next reader defends it. It was never chosen,
+           and it was one ulp from flipping the moment any arithmetic
+           upstream of it moved.
+
+           It had symptoms that looked unrelated to each other. The
+           bricklayers' Practice Bays board was pushed out to 20.49 m from
+           a camera standing in the aisle, against the 20 m the registry
+           itself declares a placard is read from, so it was simply not
+           drawn - one hall's visible instance of a fault running through
+           all of them.
+
+           The rule, stated so it does not overclaim: the board hangs
+           beside the jamb nearest the hall's centre line, EXCEPT for the
+           31 of 795 whose width would carry them outside their own room,
+           which the clamp below pulls back inside it. For those 31 the
+           placement is "inside the room" and not "beside the doorway",
+           and that is the honest limit of this rule.
+
+           The jamb is the one NEARER THE HALL'S CENTRE LINE. The hall
+           is built centred on x = 0, so that is the jamb somebody walking
+           up the middle of the shed meets first, and - the point - it
+           compares two DISTANCES that are equal only when the doorway sits
+           exactly on the centre line, or two jambs of different doorways
+           falling the same distance either side of it. That case is 47 of
+           the 795, it is legitimate geometry rather than a hypothetical,
+           and the side it takes is named in the label registry with its
+           reason instead of being left to an operator a second time.
+
+           One thing this rule does NOT get to decide, said here so the
+           comment does not overclaim: 31 of those 795 boards land outside
+           their own room once the board's width is added to the jamb, and
+           the clamp below pulls them back inside it. For those 31 the
+           placement is "inside the room" and not "beside the doorway". */
+      const jambs = [];
+      for (const [ca, cb] of cuts)
+        jambs.push(ca - .12 - bw / 2, cb + .12 + bw / 2);
+      // a room whose back wall is the building's own has no way through it
+      // and so no jamb to hang beside; that board hangs on the middle of
+      // the wall, which is a fact about the wall and not a preference
+      let bx2 = jambs.length ? jambs[0] : rx;
+      for (let ji = 1; ji < jambs.length; ji++) {
+        const j = jambs[ji], d = Math.abs(j) - Math.abs(bx2);
+        /* The tie is two jambs the same distance either side of the centre
+           line - 47 of the 795 boards that hang beside a jamb. It
+           is legitimate geometry, so it is not a build error; it is a
+           POLICY, and the side is the registry's, named there with its
+           reason rather than resolved here by whichever way a comparison
+           of two equal numbers falls. That is the mistake this whole rule
+           exists to end, and it must not be made again one line lower. */
+        if (d < 0 || (d === 0
+              && (lblTieJamb() === '-x' ? j < bx2 : j > bx2))) bx2 = j;
+      }
+      bx2 = Math.min(Math.max(bx2, rx - rw / 2 + bw / 2 + .1),
+                     rx + rw / 2 - bw / 2 - .1);
+      plac.position.set(bx2, BOARD_HEAD_M - bh2 / 2, rz + rd / 2 + .09);
       hallGroup.add(plac);
     }
 

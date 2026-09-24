@@ -164,6 +164,34 @@ ok('a door number and an asset tag are identifiers, so they are set in mono like
     && reg.kinds[id].provenance === 'DERIVED')
   && /set in mono because an identifier is a value a\s+machine assigned/
     .test(reg.honesty.identification));
+/* A LIST IS NOT A NAME. Every other kind in this registry is a name-plate
+   or a mark - one line of words, as wide as those words are. The placard
+   is the only kind whose content is a LIST, and while it wore a `plate` a
+   room requiring seven things wore a sign twenty-two times wider than it
+   was tall: 670 px across a 1280 px screen, measured at eye level in a
+   hall. The shape is the fix, not a threshold. */
+ok('the one kind that carries a list is drawn as a board and not as a '
+   + 'name-plate, and the board is a shape of its own that no other kind '
+   + 'wears',
+  reg.kinds.placard.shape === 'board'
+  && reg.shapes.board.reads_as.includes('down rather than across')
+  && kinds.filter(([, k]) => k.shape === 'board').length === 1
+  && typeof reg.shapes.board.head_px === 'number'
+  && reg.shapes.board.head_px > 0);
+
+/* WHERE IT HANGS IS A DECISION, AND SO IS THE TIE. A board hangs beside
+   the way into its room nearest the hall's centre line. Two jambs are the
+   same distance from that line when the doorway sits exactly on it - 15
+   of the 881 rooms that hang a board - and that side is NAMED here with
+   its reason rather than left to whichever way a comparison of two equal
+   numbers falls, which is the fault the rule itself was written to end. */
+ok('the placard says where it hangs, and the one tie that leaves names a '
+   + 'side with a reason beside it rather than a preference',
+  reg.kinds.placard.hangs.includes('centre line')
+  && ['-x', '+x'].includes(reg.kinds.placard.jamb_on_centre)
+  && reg.kinds.placard.jamb_on_centre_why.length > 80
+  && /\bevidence\b/.test(reg.kinds.placard.jamb_on_centre_why));
+
 ok('a hazard notice is a different shape from the PPE placard, not a recolour of it: one is a condition, the other a dress code',
   reg.kinds.hazard.shape !== reg.kinds.placard.shape
   && reg.kinds.hazard.accent === reg.kinds.placard.accent

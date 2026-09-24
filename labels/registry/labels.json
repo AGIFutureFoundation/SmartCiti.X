@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-17",
- "source_stamp": "a9f301c10a6e0776",
+ "source_stamp": "a96b0c7df33f5982",
  "honesty": {
   "convention": "these shapes are a convention this bundle invented, not a standard anyone else uses; the legend is in the wiki and on the page rather than assumed.",
   "presentation_only": "focus is presentation. Looking at a label changes nothing: no label is a score, none gates anything, and no grader reads which sign a learner faced.",
@@ -12,13 +12,14 @@
   "reduced_motion": "viewers who ask for reduced motion keep the shapes and the colours and lose the easing: labels sit at full opacity rather than breathing as the head turns.",
   "wayfinding": "an exit chevron, a muster beacon and a door number are a reading of the floor plan this bundle drew, in a building that does not exist. They are training signage: not life-safety equipment, not an inspected route, not an approved sign, and not a substitute for the signs on the wall of the hall a learner is actually standing in.",
   "identification": "a door number and an asset tag are identifiers this bundle assigned, not numbers anybody else uses: they are derived from the hall, the room and the fixture that already exist in the registries, and they are set in mono because an identifier is a value a machine assigned, which is the rank this type scale already gives such things.",
+  "boards": "the PPE placard is a board: its items are stacked one to a line, it hangs on the partition beside the room's own doorway with its head at reading height, and its width is its widest single item. What it cannot do is beat the on-screen clamp: a sign may never take more than focus.screen.max_frac of the viewport height, so the one room in the network that requires eleven things draws eleven lines inside that band and is a shape you read as \"a long list\" rather than eleven words you can read. The full list is text in the room panel, which is where it can be read; the board is signage.",
   "notices": "a hazard notice states the condition the room's own conditions record holds. It does not classify, rate or permit anything, it cites nobody, and a space with no recorded condition gets no notice rather than one that says there is nothing to say.",
   "no_marks": "no sign in this world borrows a standards body, a standard's designation, a regulator or a real trade organisation: the shapes are this bundle's own convention and the words are plain practice, so nothing here can be mistaken for an inspected, approved or certified sign.",
   "xr_panel": "in a WebXR session the readout kind is reused for the wrist panel: one sign per dash gauge, drawn by the same label() the world signs use, off the same gauges() values the dash reads, with a warning readout wearing the crit accent the dash uses. Those signs ride the left controller (or hang ahead of the rig without one) at a fixed size and full opacity - they are on the hand, not in the world, so the view-direction scoring above does not apply to them. Verified against a mocked WebXR session only, never a physical headset."
  },
  "counts": {
   "kinds": 19,
-  "shapes": 15,
+  "shapes": 16,
   "ornaments": 1,
   "district_hues": 8,
   "drawn": 19
@@ -154,6 +155,13 @@
    "radius": 5,
    "tail": false,
    "reads_as": "a condition in force in this space, not a name"
+  },
+  "board": {
+   "draws": "a portrait board with an accent band across its head, a caption under the band and its items stacked one to a line",
+   "radius": 5,
+   "tail": false,
+   "head_px": 12,
+   "reads_as": "a list of requirements posted at a door, read down rather than across"
   }
  },
  "ornaments": {
@@ -293,12 +301,15 @@
    "what": "the Academy itself"
   },
   "placard": {
-   "shape": "plate",
+   "shape": "board",
    "accent": "crit",
    "face": "body",
    "min_focus": 0.18,
    "hide_beyond_m": 20,
    "provenance": "DERIVED",
+   "hangs": "on the partition beside the room's own doorway, on the jamb nearer the hall's centre line, with its head at reading height",
+   "jamb_on_centre": "-x",
+   "jamb_on_centre_why": "a doorway that sits exactly on the hall's centre line has two jambs the same distance from it - 47 of the 795 boards that hang beside a jamb are that case. The side is named here so that every hall takes the same one, and it is -x because +x is the side the rule this replaced silently leant on: a board still on +x in a centred doorway is evidence that rule survived somewhere.",
    "what": "what a room requires of you, read at its door"
   },
   "egress": {

@@ -119,6 +119,38 @@ SHAPES = {
     'notice': {'draws': 'a plate banded top and bottom with diagonal hatching '
                         'in the accent colour', 'radius': 5, 'tail': False,
                'reads_as': 'a condition in force in this space, not a name'},
+
+    # A BOARD. Every shape above is a name-plate or a mark: one line of
+    # words, as wide as those words happen to be. That is the wrong shape
+    # for the one sign in this registry that carries a LIST, and it was
+    # wrong in a way you could measure. The PPE placard was a `plate`, and
+    # a room that requires seven things wore a sign twenty-two times wider
+    # than it was tall: measured in a browser at 1280x800, standing at eye
+    # level in a hall - (0, 1.7, 14), looking down the aisle - the two
+    # widest ran 670 and 678 px across a 1280 px screen and took six of
+    # that view's ten overlapping sign pairs with them.
+    #
+    # The cause was the aspect ratio and nothing else. `screen.min_frac`
+    # and `screen.max_frac` fix what a sign's HEIGHT is allowed to be on
+    # screen; its width then follows from the bitmap, so a sign laid out
+    # end to end is a banner at every distance and no threshold in the
+    # declutter block can make it not one.
+    #
+    # A list of requirements is read DOWN, one item to a line, which is
+    # both the shape of the real thing on a real door and the shape whose
+    # width is its widest single item rather than all of them joined. The
+    # accent runs across the head rather than down the left edge, because
+    # a stripe down the side of a portrait plate reads as a margin.
+    #
+    # `head_px` is a drawn dimension two places must agree on - the page
+    # fills the band and lays the caption under it - so it is declared
+    # once, here, and the page fails closed without it.
+    'board': {'draws': 'a portrait board with an accent band across its head, '
+                       'a caption under the band and its items stacked one '
+                       'to a line', 'radius': 5, 'tail': False,
+              'head_px': 12,
+              'reads_as': 'a list of requirements posted at a door, read '
+                          'down rather than across'},
 }
 
 # ------------------------------------------------------------ ornaments ---
@@ -217,9 +249,64 @@ KINDS = {
     # what it expects them to be wearing. It reads in `crit` because it is
     # the one sign in this world that is a REQUIREMENT rather than a name,
     # and it sits low, at the door, where it would actually be hung.
-    'placard': {'shape': 'plate', 'accent': 'crit', 'face': 'body',
+    # It is a BOARD and not a plate. See SHAPES['board'] above for the
+    # measurement that moved it: a plate holds one line however long the
+    # list, and this is the one kind in the registry whose content is a
+    # list, so a seven-item room wore a 670 px banner across an eye-level
+    # view and took six overlapping pairs with it. Stacked, its width is
+    # its widest single item - the longest word in the PPE vocabulary is
+    # 24 characters - and it can never run away again.
+    # WHERE IT HANGS, and the one tie that decision leaves behind.
+    #
+    # A board hangs on the partition beside the room's own doorway, on the
+    # jamb NEARER THE HALL'S CENTRE LINE - the jamb somebody walking up the
+    # middle of the shed meets first. The rule it replaces asked which jamb
+    # had more wall behind it, and for a doorway centred on a room its
+    # neighbour fully overlaps those two widths are the same quantity
+    # reached by two roundings: replayed over the shipped payload, 393 of
+    # the 795 boards that hang beside a jamb in this world - 49%, in all 111
+    # halls - compared two EXACTLY equal numbers, which `>` answers
+    # "false", which sent every one of them to the +x jamb. Not a scatter
+    # somebody would have noticed: a uniform lean that reads as a decision.
+    #
+    # 393 of 795 CORRECTS an earlier 479 of 881, which is in the commit
+    # message of 91d27e0 and cannot be rewritten. That count took every
+    # room with a cut in its back wall as a board; 86 of them require no
+    # PPE and hang nothing. Where the two disagree, this is the right one.
+    #
+    # And the rule has a stated limit rather than being absolute: 31 of
+    # the 795 are carried outside their own room by the board's width and
+    # are clamped back inside it, so for those the placement is "inside
+    # the room" and not "beside the doorway".
+    #
+    # The centre-line rule compares two distances that differ unless the
+    # doorway sits exactly on the hall axis. 47 of those 795 boards are that
+    # case, so it is real and it is named here rather than left to an
+    # operator - the same mistake one layer down. The side is '-x'.
+    #
+    # WHY '-x', honestly: not because that side is better, because it is
+    # not. Because ONE side has to be written down so that every hall and
+    # every locale takes the same one, and because +x is the side the
+    # broken rule silently leant on - so choosing -x makes the fix
+    # OBSERVABLE. After this, a board on the +x jamb of a doorway centred
+    # on the hall axis is evidence the old rule survived somewhere, rather
+    # than being indistinguishable from the new one working.
+    'placard': {'shape': 'board', 'accent': 'crit', 'face': 'body',
                 'min_focus': .18, 'hide_beyond_m': 20,
                 'provenance': 'DERIVED',
+                'hangs': 'on the partition beside the room\'s own doorway, '
+                         'on the jamb nearer the hall\'s centre line, with '
+                         'its head at reading height',
+                'jamb_on_centre': '-x',
+                'jamb_on_centre_why': 'a doorway that sits exactly on the '
+                    'hall\'s centre line has two jambs the same distance '
+                    'from it - 47 of the 795 boards that hang beside a '
+                    'jamb are that case. The side is named here so that '
+                    'every hall '
+                    'takes the same one, and it is -x because +x is the '
+                    'side the rule this replaced silently leant on: a '
+                    'board still on +x in a centred doorway is evidence '
+                    'that rule survived somewhere.',
                 'what': 'what a room requires of you, read at its door'},
 
     # ---- wayfinding ------------------------------------------------------
@@ -503,6 +590,17 @@ HONESTY = {
                       'set in mono because an identifier is a value a '
                       'machine assigned, which is the rank this type scale '
                       'already gives such things.',
+    'boards': 'the PPE placard is a board: its items are stacked one to a '
+              'line, it hangs on the partition beside the room\'s own '
+              'doorway with its head at reading height, and its width is '
+              'its widest single item. What it cannot do is beat the '
+              'on-screen clamp: a sign may never take more than '
+              'focus.screen.max_frac of the viewport height, so the one '
+              'room in the network that requires eleven things draws '
+              'eleven lines inside that band and is a shape you read as '
+              '"a long list" rather than eleven words you can read. The '
+              'full list is text in the room panel, which is where it can '
+              'be read; the board is signage.',
     'notices': 'a hazard notice states the condition the room\'s own '
                'conditions record holds. It does not classify, rate or '
                'permit anything, it cites nobody, and a space with no '
@@ -582,6 +680,17 @@ for kk, k in KINDS.items():
 for kk in ('egress', 'muster', 'door', 'asset', 'hazard'):
     assert KINDS[kk].get('provenance') == 'DERIVED', \
         f'{kk} is read off a plan or a record, so it must say DERIVED'
+
+# The one tie the placard's hanging rule leaves: a doorway on the hall
+# axis. It is a POLICY, so it is named and it carries its reason; a side
+# with no reason beside it is a coin flip somebody wrote down.
+assert KINDS['placard']['jamb_on_centre'] in ('-x', '+x'), \
+    'placard.jamb_on_centre must name a side: a doorway centred on the ' \
+    'hall axis has two jambs the same distance from it, and the page ' \
+    'must not be left to resolve that with a comparison operator'
+assert len(KINDS['placard']['jamb_on_centre_why']) > 80, \
+    'placard.jamb_on_centre names a side with no reason beside it'
+assert KINDS['placard']['hangs'], 'a placard that does not say where it hangs'
 
 assert FOCUS['floor'] < 1 and FOCUS['cone_deg'] > 10, 'the cone must be a cone'
 

@@ -62,6 +62,9 @@ const BASE = {
   region: { calls: 249, tris: 4_508, meshes: 80 },
   campus: { calls: 273, tris: 15_850, meshes: 250 },
   hall:   { calls: 157, tris: 3_806, meshes: 137 },
+  /* The same hall as the row above, from inside it. Measured 2026-09-24,
+     same browser, same viewport, same rung. */
+  'hall-eye': { calls: 123, tris: 12_146, meshes: 223 },
 };
 const CALL_HEADROOM = 1.25;     // draw calls are the scarce currency
 const TRI_HEADROOM = 4;         // triangles are not, and are meant to grow
@@ -90,6 +93,29 @@ const LEGIBLE = {
   campus:       { signs: 26, pairs: 3 },
   hall:         { signs: 15, pairs: 2 },
   'hall-worst': { signs: 15, pairs: 2 },
+  /* Standing on the floor of a hall. These two numbers are the reason the
+     row below exists, and they are worth writing down in the order they
+     were measured:
+
+       15 signs / 10 pairs   the view as the declutter work left it. Six of
+                             the ten pairs were against two PPE placards
+                             670 and 678 px wide on a 1280 px screen - a
+                             sign fourteen metres wide in the world.
+       14 signs /  5 pairs   the placard redrawn as a stacked board. Pairs
+                             halved, but a sign was LOST: the board hung
+                             beside a doorway chosen by one measure and a
+                             jamb chosen by another, which put it 21.2 m
+                             from the eye, past the 20 m the label registry
+                             says a placard is read from.
+       16 signs /  6 pairs   the placement rule made one measure throughout.
+                             Both of those boards come back, and a third
+                             that was never on screen before.
+
+     So the floor is set from SIXTEEN, one more than the view carried
+     before any of this - which is the only shape of this result worth
+     accepting. A pair count that falls while the sign count falls with it
+     is signage being taken away, and the floor below is what says so. */
+  'hall-eye':   { signs: 16, pairs: 6 },
 };
 const PAIR_HEADROOM = 1.25;
 const SIGN_FLOOR = 0.9;
@@ -125,6 +151,29 @@ const VIEWS = [
      ceiling, the worst at 238 (121%). A budget checked only against the
      median case is not a budget. The sweep below finds the worst hall by
      measuring every one, so this row cannot go stale as content changes. */
+  /* THE VIEW A LEARNER IS ACTUALLY IN.
+
+     Every row above is an orbit view: a board, a green, and a building seen
+     from outside it. None of them is where somebody using this spends their
+     time, which is standing on the floor of a hall looking down it - and
+     that view was not scored, so the declutter pass that cleaned up the
+     four orbit views left the one people use holding fifteen signs with ten
+     overlapping pairs. A guard that measures every view except the one the
+     work is for is not measuring the work.
+
+     1.7 m is a standing eye. (0, 1.7, 14) is on the hall's own centre line,
+     back from the middle, looking down the aisle towards the open front -
+     the way the building is entered and the way its rooms are addressed.
+     The camera is placed through the page's own `cam` hook for the same
+     reason every other row moves through `view`: a harness that got there
+     by dragging would be scoring wherever the drag happened to stop. */
+  { id: 'hall-eye', go: async (p) => {
+      await p.evaluate(() => window.__tc3dDo('view', 'hall'));
+      await p.waitForTimeout(1400);
+      await p.evaluate(() => window.__tc3dDo('cam', '0,1.7,14|0,1.7,0'));
+    },
+    ...ceil('hall-eye'),
+    why: 'standing on the floor of a hall at eye level, looking down the aisle' },
   { id: 'hall-worst', worst: true, ...ceil('hall', 'hall-worst'),
     why: 'the most expensive of the 111 hall interiors, found by measuring them all' },
 ];

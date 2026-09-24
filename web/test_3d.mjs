@@ -2363,4 +2363,74 @@ ok('the page reports where each on-screen sign actually landed, through one '
   && /lblRect\(sp, vw, vh, _lclRects\[i\]\)/.test(pageFn('labelDeclutter'))
   && /_lrInv\.copy\(camera\.matrixWorld\)\.invert\(\);/.test(pageFn('lblViewSync')));
 
+/* ---- what a room requires of you, and where that sign hangs ----------
+
+   These read the BUILT PAGE, like everything else in this block, because
+   every string below is quoted in the builder's notes beside the code
+   that uses it. */
+
+ok('what a room requires of you is a BOARD and not a name-plate: the '
+   + 'registry says so, the page has a branch that draws one, and the band '
+   + 'across its head is the registry\'s own number rather than a second '
+   + 'convention the page invented - a plate held one line however long the '
+   + 'list, which is what made a seven-item PPE sign 670 px wide across a '
+   + '1280 px screen',
+  wire.labels.kinds.placard.shape === 'board'
+  && typeof wire.labels.shapes.board.head_px === 'number'
+  && /case 'board': \{/.test(pageCode)
+  && /g\.fillRect\(0, 0, w, lblBoardHead\(\)\);/.test(pageCode)
+  && /throw new Error\('D\.labels\.shapes\.board\.head_px: /.test(pageFn('lblBoardHead'))
+  && !/shapes\.board\.head_px \?\?/.test(pageCode));
+
+ok('a board is laid out from the LIST it carries and never by splitting the '
+   + 'sentence back apart, so its width is its widest SINGLE item rather '
+   + 'than all of them end to end - and a board kind reaching label() with '
+   + 'no items stops the page instead of drawing an empty frame',
+  /for \(const it of items\) itemW = Math\.max\(itemW, g\.measureText\(it\)\.width\);/
+    .test(pageFn('label'))
+  && /\? Math\.max\(itemW, sw, 150\) \+ padX \* 2/.test(pageFn('label'))
+  && /if \(!Array\.isArray\(opts\.items\) \|\| !opts\.items\.length\)/.test(pageFn('label'))
+  && !/text\.split\(/.test(pageFn('label')));
+
+/* THE PLACEMENT RULE, and why this check is about the COMPARISON rather
+   than about the answer.
+
+   A check that asserted "the board is on the centre-line side" would have
+   passed on the rule this replaced for every room at negative x, because
+   +x IS the centre-line side there - green on exactly the code it exists
+   to reject, and green across half the network while the other half
+   stayed wrong. So what is asserted is what the rule COMPARES: each
+   jamb's distance to the hall's centre line, two quantities that differ
+   unless the doorway sits on the axis, and not the two wall widths that a
+   doorway centred on a room makes exactly equal.
+
+   Replayed over the shipped payload, 393 of the 795 boards that hang
+   beside a jamb - 49%, in every one of the 111 halls - compared two
+   bit-for-bit equal numbers, and `>` sent every one of them to the +x
+   jamb. */
+ok('which jamb a PPE board hangs on is decided by ONE measure, each jamb\'s '
+   + 'distance to the hall\'s centre line, and never again by the two wall '
+   + 'widths a centred doorway makes exactly equal - 393 of the 795 boards '
+   + 'that hang beside a jamb compared two bit-for-bit equal numbers and leant to '
+   + '+x with nobody having chosen it',
+  /jambs\.push\(ca - \.12 - bw \/ 2, cb \+ \.12 \+ bw \/ 2\);/.test(pageCode)
+  && /const j = jambs\[ji\], d = Math\.abs\(j\) - Math\.abs\(bx2\);/.test(pageCode)
+  && !/\(ca - \(rx - rw \/ 2\)\) > \(\(rx \+ rw \/ 2\) - cb\)/.test(pageCode)
+  && !/Math\.abs\(\(a\[0\] \+ a\[1\]\) \/ 2 - rx\)/.test(pageCode));
+
+ok('the one tie that rule leaves - a doorway sitting exactly on the hall\'s '
+   + 'centre line, which is 47 of those 795 boards and so legitimate '
+   + 'geometry rather than a build error - is broken by a side the label '
+   + 'registry NAMES with its reason, and a registry that reaches the page '
+   + 'without one stops the page rather than letting a comparison of two '
+   + 'equal numbers decide it a second time',
+  /d === 0\s*&& \(lblTieJamb\(\) === '-x' \? j < bx2 : j > bx2\)/.test(pageCode)
+  && /throw new Error\('D\.labels\.kinds\.placard\.jamb_on_centre: /
+    .test(pageFn('lblTieJamb'))
+  && !/jamb_on_centre \?\?/.test(pageCode)
+  && ['-x', '+x'].includes(wire.labels.kinds.placard.jamb_on_centre)
+  && wire.labels.kinds.placard.jamb_on_centre_why.length > 80
+  && wire.labels.kinds.placard.jamb_on_centre
+    === labelsReg.kinds.placard.jamb_on_centre);
+
 console.log(`web/test_3d: ${n} checks passed - teardown, draw-call and per-frame contracts held at the source`);
