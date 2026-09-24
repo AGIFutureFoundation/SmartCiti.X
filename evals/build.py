@@ -220,6 +220,126 @@ if len(RUNS) != len(SEEDS) * len(STRATEGIES):
                      % (len(SEEDS) * len(STRATEGIES), len(RUNS)))
 
 # ---------------------------------------------------------------------------
+# DOES THE SIMULATION KNOW WHICH HALL IT IS IN?
+#
+# Everything above compares three strategies inside ONE union - the subject's
+# own default, welders. That is the question the subject was written to ask.
+# It is not the question a buyer asks. A buyer asks what their crew, in their
+# trade, would get, and the answer this pack has been publishing invites them
+# to read a welders number as a crane-ops number.
+#
+# So this asks the prior question outright: run the SAME strategy and the SAME
+# seed in every one of the 111 halls and count how many distinct outcomes come
+# back. If the simulation modelled a hall at all - its seats, its equipment,
+# the evidence available in it - the count would be larger than one.
+#
+# It is one. Every hall, every seed, one outcome. The reason is structural and
+# is visible in `loadUnionGraph`: every union carries the same 11 strands by 3
+# tiers, wired by the same `requires` edges, so the graph handed to the
+# sequencer is isomorphic in all 111 halls and the seeded PRNG is the only
+# thing that varies. Nothing in control/ reads sims/registry/sims.json. The
+# simulation does not know that crane-ops has four simulator seats and that
+# painters has none, and it returns the same ability, the same retention and
+# the same gate count for both.
+#
+# That is worth publishing rather than hiding, because of what it does NOT
+# mean. It does not mean the halls are interchangeable in real life. It means
+# this simulation is a study of a CURRICULUM SHAPE, not of a trade, and any
+# number it produces describes the shape. Read as a per-trade training
+# outcome - which is exactly how a package sold to an employer would invite
+# it to be read - it would be a claim the simulation never made.
+HALL_SEEDS = [SEEDS[0], SEEDS[4], SEEDS[10]]
+HALL_STRATEGY = 'graph'
+ALL_HALLS = sorted({need(s2, 'union', 'pack/registry/skills.json#skills')
+                    for s2 in need(ALL_SKILLS, 'skills',
+                                   'pack/registry/skills.json')})
+
+HALL_DRIVER = '''
+import { run } from %s;
+const halls = %s, seeds = %s, kind = %s;
+const out = {};
+for (const s of seeds) {
+  const seen = {};
+  for (const h of halls) {
+    const j = JSON.stringify(run(kind, s, { union: h }));
+    (seen[j] = seen[j] || []).push(h);
+  }
+  out[s] = Object.entries(seen).map(([j, hs]) => ({ outcome: JSON.parse(j), halls: hs }));
+}
+process.stdout.write(JSON.stringify(out));
+''' % (json.dumps(SUBJECT.as_uri()), json.dumps(ALL_HALLS),
+        json.dumps(HALL_SEEDS), json.dumps(HALL_STRATEGY))
+
+_h0 = time.time()
+_hp = subprocess.run(['node', '--input-type=module', '-e', HALL_DRIVER],
+                     capture_output=True, text=True, cwd=str(ROOT))
+HALL_MS = int((time.time() - _h0) * 1000)
+if _hp.returncode != 0:
+    raise RuntimeError('evals: the per-hall sweep failed (exit %d)\n%s'
+                       % (_hp.returncode, _hp.stderr.strip()))
+HALL_SWEEP = json.loads(_hp.stdout)
+
+_groups = {str(s): len(HALL_SWEEP[str(s)]) for s in HALL_SEEDS}
+for _s, _n in _groups.items():
+    if _n < 1:
+        raise ValueError('evals: seed %s produced no outcome at all' % _s)
+
+# The contrast, named rather than left as a statistic. The richest hall by
+# seat count against a hall with no seat at all, read from the sims registry
+# so this cannot drift from the bindings it describes.
+SIMS_REG = json.loads((ROOT / 'sims' / 'registry' / 'sims.json').read_text())
+_bind = need(SIMS_REG, 'hall_bindings', 'sims/registry/sims.json')
+RICHEST = max(sorted(_bind), key=lambda h: len(_bind[h]))
+_unbound = [h for h in ALL_HALLS if h not in _bind]
+if not _unbound:
+    raise ValueError('evals: every hall now carries a seat, so the contrast '
+                     'this block is built on no longer exists and the text '
+                     'must be rewritten rather than quietly kept')
+POOREST = _unbound[0]
+
+
+def _outcome_of(seed, hall):
+    for g in HALL_SWEEP[str(seed)]:
+        if hall in g['halls']:
+            return g['outcome']
+    raise ValueError('evals: %s is missing from the seed %s sweep' % (hall, seed))
+
+
+_s0 = HALL_SEEDS[0]
+CONTRAST = {
+    'seed': _s0,
+    'richest': {'hall': RICHEST, 'seats': len(_bind[RICHEST]),
+                'outcome': _outcome_of(_s0, RICHEST)},
+    'poorest': {'hall': POOREST, 'seats': 0,
+                'outcome': _outcome_of(_s0, POOREST)},
+}
+CONTRAST['identical'] = CONTRAST['richest']['outcome'] == CONTRAST['poorest']['outcome']
+
+HALL_INDEPENDENCE = {
+    'halls_swept': len(ALL_HALLS),
+    'seeds': HALL_SEEDS,
+    'strategy': HALL_STRATEGY,
+    'distinct_outcomes_per_seed': _groups,
+    'contrast': CONTRAST,
+    'sweep_ms': HALL_MS,
+    'means': 'the same strategy and seed were run in every hall the skills '
+             'registry declares, and the distinct outcomes counted. One '
+             'distinct outcome for a seed means the simulation returned the '
+             'same result in all of them.',
+    'why': 'every union carries the same eleven strands by three tiers wired '
+           'by the same requires edges, so the graph handed to the sequencer '
+           'is isomorphic across halls and the seeded generator is the only '
+           'source of variation. Nothing in control/ reads the simulator '
+           'registry, so no seat, no piece of equipment and no difference in '
+           'available evidence reaches this simulation.',
+    'honest': 'this is a study of a curriculum SHAPE, not of a trade. A '
+              'number here describes the shape every hall shares. It is not '
+              'a per-trade training outcome and must not be sold as one: the '
+              'hall with the most simulator seats and a hall with none return '
+              'the same ability, the same retention and the same gate count.',
+}
+
+# ---------------------------------------------------------------------------
 # The spread. One seed is an anecdote; no mean is published without it.
 
 
@@ -503,6 +623,7 @@ payload = {
     'runall_means': RUNALL_ROWS,
     'separation': SEPARATION,
     'retention_empty_denominator_runs': EMPTY_DENOM,
+    'hall_independence': HALL_INDEPENDENCE,
     'counts': {
         'seeds': len(SEEDS),
         'strategies': len(STRATEGIES),
@@ -516,6 +637,8 @@ payload = {
         'attempts_per_run': PARAMS['attempts'],
         'total_attempts_simulated': PARAMS['attempts'] * len(RUNS),
         'sim_elapsed_ms': need(SIM, 'elapsed_ms', 'the driver output'),
+        'halls_swept': len(ALL_HALLS),
+        'distinct_outcomes_across_all_halls': max(_groups.values()),
         'wall_ms': WALL_MS,
     },
     'honesty': HONESTY,

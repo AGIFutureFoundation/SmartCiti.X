@@ -27,20 +27,76 @@
   "comparisons": 27,
   "comparisons_overlapping": 7,
   "comparisons_separating_on_every_seed": 20,
+  "distinct_outcomes_across_all_halls": 1,
+  "halls_swept": 111,
   "metrics": 9,
   "runs": 36,
   "seeds": 12,
-  "sim_elapsed_ms": 827,
+  "sim_elapsed_ms": 629,
   "strategies": 3,
   "total_attempts_simulated": 15120,
-  "wall_ms": 944
+  "wall_ms": 682
+ },
+ "hall_independence": {
+  "contrast": {
+   "identical": true,
+   "poorest": {
+    "hall": "acoustic",
+    "outcome": {
+     "distinctSkillsTouched": 8,
+     "prereqViolationPct": 3.1,
+     "remediations": 26,
+     "retentionAt30d": 0.793,
+     "reviews": 19,
+     "skillsGated": 5,
+     "skillsLearned": 7,
+     "strategy": "graph",
+     "totalAbilityGained": 178.1,
+     "verifies": 27
+    },
+    "seats": 0
+   },
+   "richest": {
+    "hall": "laborers",
+    "outcome": {
+     "distinctSkillsTouched": 8,
+     "prereqViolationPct": 3.1,
+     "remediations": 26,
+     "retentionAt30d": 0.793,
+     "reviews": 19,
+     "skillsGated": 5,
+     "skillsLearned": 7,
+     "strategy": "graph",
+     "totalAbilityGained": 178.1,
+     "verifies": 27
+    },
+    "seats": 5
+   },
+   "seed": 3
+  },
+  "distinct_outcomes_per_seed": {
+   "101": 1,
+   "3": 1,
+   "4242": 1
+  },
+  "halls_swept": 111,
+  "honest": "this is a study of a curriculum SHAPE, not of a trade. A number here describes the shape every hall shares. It is not a per-trade training outcome and must not be sold as one: the hall with the most simulator seats and a hall with none return the same ability, the same retention and the same gate count.",
+  "means": "the same strategy and seed were run in every hall the skills registry declares, and the distinct outcomes counted. One distinct outcome for a seed means the simulation returned the same result in all of them.",
+  "seeds": [
+   3,
+   101,
+   4242
+  ],
+  "strategy": "graph",
+  "sweep_ms": 2705,
+  "why": "every union carries the same eleven strands by three tiers wired by the same requires edges, so the graph handed to the sequencer is isomorphic across halls and the seeded generator is the only source of variation. Nothing in control/ reads the simulator registry, so no seat, no piece of equipment and no difference in available evidence reaches this simulation."
  },
  "honesty": {
   "blocked_wins_two_of_them": "This is not a clean win for the sequencer and the registry does not present one. Across every seed, blocked practice learned MORE skills than graph (14-14 against 6-8) and gained more raw ability (210.8-231 against 148.8-189.9). What graph does that blocked never does in this run is pass the skill gate (2-5 against a flat 0) and hold what was learned to the 30-day probe (0.647-0.802 against 0.281-0.404). Reporting either half alone would be a selected result.",
   "determinism": "The subject seeds mulberry32 per run and touches no clock and no network. The 12 seeds are recorded, and evals/test.mjs re-runs every one of the 36 runs and compares field by field against what is written here. A result that cannot be reproduced is not a result.",
   "no_cohort_claim": "Nothing in this registry licenses a statement about real learners, real halls, real apprentices or real outcomes. \"The sequencer beats blocked practice by X\" is not a sentence this pack supports in any form; the supported sentence names the simulation and its assumptions in the same breath as the number.",
   "one_union": "Every run is the subject's default union, 'welders' - 33 skills. This pack does not sweep unions and says nothing about the other ladders in pack/registry/skills.json.",
-  "runtime": "The full 36-run sweep took 827 ms of simulation time inside node (944 ms wall including process start) on the machine that built this. Nothing was shortened to make it quick: attempts, per-day and session length are the subject's own constants, read out of the file rather than typed here.",
+  "runtime": "The full 36-run sweep took 629 ms of simulation time inside node (682 ms wall including process start) on the machine that built this. Nothing was shortened to make it quick: attempts, per-day and session length are the subject's own constants, read out of the file rather than typed here.",
   "status": "SCRIPTED: every number in this registry came out of running control/sim_curriculum.mjs, a hand-written deterministic simulation over an authored skill ladder and an authored learner model. Nothing here was observed of a person. Not one number is RECORDED, and the summary statistics are not promoted to DERIVED - see tier_is_not_derived.",
   "the_limit_is_the_sources_own": "The limit is not this pack's summary of the subject. It is quoted verbatim from the header of control/sim_curriculum.mjs into limit.sentence, and evals/test.mjs re-extracts it from that file and fails if the two stop matching or if the quotation is softened.",
   "the_one_field_that_is_not_reproducible": "counts.sim_elapsed_ms and counts.wall_ms are wall-clock timings of the machine that ran the build. They change on every build and no check holds them to a value; they are here so a reader knows the sweep is seconds rather than hours. Every other number in this registry is reproduced exactly by evals/test.mjs.",
@@ -1060,7 +1116,7 @@
    }
   }
  },
- "source_stamp": "e87818a7c362ab43",
+ "source_stamp": "b490eafdf2af1730",
  "spread": {
   "blocked": {
    "distinctSkillsTouched": {

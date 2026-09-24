@@ -366,6 +366,85 @@ const r4 = (x) => Math.round(x * 1e4) / 1e4;
      'and the determinism note quotes the seeds and runs actually made');
 }
 
+/* ---------------------- does the simulation know which hall it is in? ---- */
+/* The registry's answer is no, and that answer is only worth anything if it
+   is REMADE here rather than read back. So this re-runs the sweep: the same
+   strategy and the same seeds in every hall the skills registry declares,
+   grouping identical outcomes, and holds the registry to what comes out.
+
+   This is also the guard on the finding going stale in the direction that
+   would matter most. If somebody wires the simulation to the simulator
+   registry - which would be an improvement - the sweep starts returning more
+   than one outcome per seed, and this fails rather than leaving a published
+   claim that the halls are indistinguishable. The finding would then have to
+   be rewritten, which is the point. */
+{
+  const hi = at(E, 'hall_independence');
+  const halls = [...new Set(J('pack/registry/skills.json').skills.map((r) => r.union))].sort();
+  const seeds = at(hi, 'seeds');
+  const kind = at(hi, 'strategy');
+
+  const groups = {};
+  for (const sd of seeds) {
+    const seen = new Map();
+    for (const h of halls) {
+      const j = JSON.stringify(run(kind, sd, { union: h }));
+      if (!seen.has(j)) seen.set(j, []);
+      seen.get(j).push(h);
+    }
+    groups[String(sd)] = seen;
+  }
+
+  ok(at(hi, 'halls_swept') === halls.length && halls.length > 0,
+     `the sweep covers every hall the skills registry declares (${halls.length})`);
+  ok(seeds.every((sd) => at(hi, 'distinct_outcomes_per_seed')[String(sd)]
+       === groups[String(sd)].size),
+     'the distinct-outcome count per seed is reproduced here by re-running the '
+     + 'sweep, not read back out of the registry');
+  ok(seeds.every((sd) => groups[String(sd)].size === 1),
+     'and it is ONE outcome per seed: the same strategy and seed return the '
+     + 'same result in all 111 halls, so this simulation does not know which '
+     + 'hall it is in');
+
+  /* The named contrast. A statistic that says "indistinguishable" is easy to
+     skim past; two named halls with their seat counts beside identical
+     numbers is not. Both halves are re-derived - the seat counts from the
+     sims registry that owns the bindings, the outcomes by running them. */
+  const c = at(hi, 'contrast');
+  const bind = J('sims/registry/sims.json').hall_bindings;
+  const rich = at(c, 'richest'), poor = at(c, 'poorest');
+  ok((bind[at(rich, 'hall')] || []).length === at(rich, 'seats')
+     && at(rich, 'seats') === Math.max(...Object.values(bind).map((v) => v.length)),
+     `the hall named as richest (${at(rich, 'hall')}) really does carry the most `
+     + `simulator seats in the registry (${at(rich, 'seats')})`);
+  ok(!(at(poor, 'hall') in bind) && at(poor, 'seats') === 0
+     && halls.includes(at(poor, 'hall')),
+     `the hall named as having none (${at(poor, 'hall')}) really is a declared hall `
+     + 'with no seat bound to it at all');
+  /* Compared as VALUES with keys sorted, not as serialisations: the registry
+     is written with sorted keys and run() returns them in declaration order,
+     so a raw string compare fails on key order alone and says nothing about
+     whether the two halls differ. */
+  const norm = (o) => JSON.stringify(Object.fromEntries(
+    Object.entries(o).sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0))));
+  const ro = norm(run(kind, at(c, 'seed'), { union: at(rich, 'hall') }));
+  const po = norm(run(kind, at(c, 'seed'), { union: at(poor, 'hall') }));
+  ok(ro === po && at(c, 'identical') === true
+     && ro === norm(at(rich, 'outcome'))
+     && po === norm(at(poor, 'outcome')),
+     `re-run here, ${at(rich, 'hall')} with ${at(rich, 'seats')} seats and `
+     + `${at(poor, 'hall')} with none return byte-identical outcomes, and both match `
+     + 'what the registry recorded');
+
+  /* And the sentence that stops the number being sold as something it is
+     not. One named field, never this pack's prose. */
+  const hon = at(hi, 'honest');
+  ok(hon.length > 140 && /curriculum shape/i.test(hon)
+     && /not a per-trade training outcome|must not be sold/i.test(hon),
+     'the finding carries, in one named field, the thing a buyer needs: this '
+     + 'measures a curriculum shape and is not a per-trade training outcome');
+}
+
 console.log(`\n${pass} ok, ${fail} failed`);
 console.log(`evals: ${pass} checks passed - ${RUNS.length} simulation runs `
   + `reproduced exactly from ${SEEDS.length} recorded seeds, every spread and `

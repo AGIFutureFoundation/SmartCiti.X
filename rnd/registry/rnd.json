@@ -39,7 +39,7 @@
   "budget_currencies": 2,
   "budget_agreements": 7,
   "suites_run": 51,
-  "suite_checks_declared": 2315,
+  "suite_checks_declared": 2322,
   "open_questions": 12,
   "negative_findings": 9,
   "cross_checks": 2,
@@ -1816,6 +1816,7 @@
    "app_renderers": [
     "web/build_home.py",
     "web/build_ladder.py",
+    "web/build_lessons.py",
     "web/build_progress.py"
    ],
    "doc_renderers": [
@@ -1998,6 +1999,7 @@
     "web/build_home.py",
     "web/build_interactive_map.py",
     "web/build_ladder.py",
+    "web/build_lessons.py",
     "web/build_progress.py"
    ],
    "doc_renderers": [
@@ -2005,6 +2007,7 @@
    ],
    "builders": [
     "agents/build.py",
+    "evals/build.py",
     "guide/build.py",
     "lessons/build.py",
     "meta/build.py",
@@ -2014,6 +2017,7 @@
    ],
    "suites": [
     "agents/test.mjs",
+    "evals/test.mjs",
     "guide/test.mjs",
     "lessons/test.mjs",
     "meta/test.mjs",
@@ -3253,7 +3257,7 @@
    {
     "suite": "evals/test.mjs",
     "pack": "evals",
-    "readme_checks": 36,
+    "readme_checks": 43,
     "declared": true,
     "in_readme_table": true
    },
@@ -3291,13 +3295,13 @@
   "suites_without_a_count": [
    "control/soak.mjs"
   ],
-  "declared_total": 2315,
-  "readme_headline": 2326,
+  "declared_total": 2322,
+  "readme_headline": 2333,
   "unaccounted_for": 11,
   "unaccounted_note": "the headline counts every `  ok ` line verify_all.sh sees, which includes suites the README table gives no number to and web/test_interiors.py, which the table does not list at all. The difference is that remainder and is computed, not reconciled by hand.",
   "min": 9,
   "max": 291,
-  "median": 35.5,
+  "median": 37.0,
   "thinnest": [
    {
     "suite": "ops/fuzz.mjs",
