@@ -6,8 +6,8 @@ Gamified training to enhance robotic and human integrations.
 The Adaptive Stack: the packs implementing the ACP protocol suite (v3.2) —
 counted, like everything else here, by the table below rather than by a
 number that can drift from it.
+**2,388 checks, all passing from inside this bundle**, with no model credentials
 
-**2,387 checks, all passing from inside this bundle**, with no model credentials
 required.
 
 ```bash
@@ -18,7 +18,7 @@ Or individually — every path inside a pack resolves against its own module
 location, so these run from any working directory (v2.6 defect 13):
 
 ```bash
-node unions/verify.mjs             # 28 — roster, districts, campuses, chapters, pack agreement, and the interactive map's chapter-seats chip (every hall, home marked, never a link)
+node unions/verify.mjs             # 29 — roster, districts, campuses, chapters, pack agreement, and the interactive map's chapter-seats chip (every hall, home marked, never a link)
 node pack/verify.mjs               # 29 — the registry, all 11,000,000 IDs, and per-hall practitioner sign-off (pack/hall_signoff.mjs)
 node control/test.mjs              # 12 — learner profile, ZPD dial, affect
 node control/test_graph.mjs        # 20 — skill graph, sequencer, gates

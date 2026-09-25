@@ -91,6 +91,18 @@ for ckey, (_n, _city, _region, _tag, dists) in CAMPUSES.items():
     for d in dists:
         campus_of[d] = ckey
 
+# One campus is the flagship. It was only ever said in prose - in a tagline -
+# while a builder elsewhere (spatial/) typed the slug and anchored 16 of 23
+# services and 51 of 112 anchored content on it. A fact that decides where
+# 45% of a fabric sits is not a tagline's job. It is declared here, once,
+# and the tagline has to agree with it or the build stops.
+FLAGSHIP = "treasure-island"
+assert FLAGSHIP in CAMPUSES, f"flagship {FLAGSHIP!r} is not a campus"
+assert "flagship" in CAMPUSES[FLAGSHIP][3].lower(), \
+    "the flagship campus's tagline no longer says so - prose and structure disagree"
+assert sum("flagship" in v[3].lower() for v in CAMPUSES.values()) == 1, \
+    "more than one tagline calls its campus the flagship"
+
 campuses_doc = {
     "pack": "smartcitix-trade-craft-academy-union-registry",
     "pack_version": PACK_VERSION,
@@ -104,6 +116,7 @@ campuses_doc = {
     },
     "campuses": {
         ckey: {"name": n, "city": city, "region": region, "tagline": tag,
+               "flagship": ckey == FLAGSHIP,
                "districts": dists,
                "halls": [s for d in dists for s in DISTRICTS[d][2]]}
         for ckey, (n, city, region, tag, dists) in CAMPUSES.items()

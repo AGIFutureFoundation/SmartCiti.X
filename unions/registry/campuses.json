@@ -13,6 +13,7 @@
    "city": "San Francisco",
    "region": "California",
    "tagline": "The flagship: structure, systems and finish on the bay",
+   "flagship": true,
    "districts": [
     "structural",
     "systems",
@@ -77,6 +78,7 @@
    "city": "Oakland",
    "region": "California",
    "tagline": "Port, plant and heavy industry on the working estuary",
+   "flagship": false,
    "districts": [
     "industry",
     "transport",
@@ -122,6 +124,7 @@
    "city": "New Orleans",
    "region": "Louisiana",
    "tagline": "Energy, water and environmental response on the Gulf",
+   "flagship": false,
    "districts": [
     "energy",
     "control"
@@ -162,6 +165,7 @@
    "city": "Houston",
    "region": "Texas",
    "tagline": "The network's first hub: no home district of its own, and a regional chapter seat for every one of the 111 trades",
+   "flagship": false,
    "districts": [],
    "halls": []
   },
@@ -170,6 +174,7 @@
    "city": "Chicago",
    "region": "Illinois",
    "tagline": "The network's second hub: no home district of its own, and a regional chapter seat for every one of the 111 trades",
+   "flagship": false,
    "districts": [],
    "halls": []
   },
@@ -178,6 +183,7 @@
    "city": "Seattle",
    "region": "Washington",
    "tagline": "The network's third hub: no home district of its own, and a regional chapter seat for every one of the 111 trades",
+   "flagship": false,
    "districts": [],
    "halls": []
   },
@@ -186,6 +192,7 @@
    "city": "Pittsburgh",
    "region": "Pennsylvania",
    "tagline": "The network's fourth hub: no home district of its own, and a regional chapter seat for every one of the 111 trades",
+   "flagship": false,
    "districts": [],
    "halls": []
   },
@@ -194,6 +201,7 @@
    "city": "Denver",
    "region": "Colorado",
    "tagline": "The network's fifth hub: no home district of its own, and a regional chapter seat for every one of the 111 trades",
+   "flagship": false,
    "districts": [],
    "halls": []
   },
@@ -202,6 +210,7 @@
    "city": "Miami",
    "region": "Florida",
    "tagline": "The network's sixth hub: no home district of its own, and a regional chapter seat for every one of the 111 trades",
+   "flagship": false,
    "districts": [],
    "halls": []
   },
@@ -210,6 +219,7 @@
    "city": "Detroit",
    "region": "Michigan",
    "tagline": "The network's seventh and final hub: no home district of its own, and a regional chapter seat for every one of the 111 trades",
+   "flagship": false,
    "districts": [],
    "halls": []
   }

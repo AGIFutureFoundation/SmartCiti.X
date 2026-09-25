@@ -147,6 +147,11 @@ ok('all four registry files came from the same build',
   && campuses.pack_version === unions.pack_version && campuses.built === unions.built
   && chapters.pack_version === unions.pack_version && chapters.built === unions.built);
 
+ok('exactly one campus is the flagship, said as a FIELD and not only as a tagline, and its tagline agrees',
+  clists.filter((c) => c.flagship === true).length === 1
+  && clists.every((c) => typeof c.flagship === 'boolean')
+  && /flagship/i.test(clists.find((c) => c.flagship === true).tagline)
+  && clists.filter((c) => /flagship/i.test(c.tagline)).length === 1);
 console.log(`unions/verify: ${n} checks passed — ${unions.count} unions, `
   + `${districts.count} districts, ${campuses.count} campuses, `
   + `${chapters.count} chapter seats`);
