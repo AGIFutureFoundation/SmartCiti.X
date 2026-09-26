@@ -162,8 +162,8 @@ a{color:var(--steel)}
  "pack": "smartcitix-trade-craft-academy-spatial-fabric",
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
- "built": "2026-09-16",
- "source_stamp": "4042572cdc54051f",
+ "built": "2026-09-26",
+ "source_stamp": "44791c03a34daad7",
  "encoding": "OGC GeoPose 1.0 Basic-YPR, OGC 21-056r11, application/geopose+json",
  "media_type": "application/geopose+json",
  "crs": "WGS84 (EPSG:4326)",
@@ -174,13 +174,90 @@ a{color:var(--steel)}
   "total": 89,
   "unposed": 1
  },
+ "coverage": {
+  "poses": 89,
+  "poses_with_horizontal_position": 89,
+  "poses_with_height": 0,
+  "poses_with_heading": 0,
+  "how": "counted from the poses in this file: a pose has a height when its h_provenance is not the UNKNOWN placeholder, a heading when its orientation_provenance is not; a zero in the encoding is never read as a value",
+  "why": {
+   "terrain": {
+    "registry": "terrain/registry/terrain.json",
+    "holds": "a land/water mask and shoreline outlines, in local metres - no elevation",
+    "source": "Natural Earth (naturalearthdata.com), 10m physical vectors",
+    "cell_m": 125.0,
+    "no_elevation": "There is no height in this pack. Natural Earth is an outline set. The ground is still flat; what changed is where it stops being ground."
+   },
+   "usgs": {
+    "registry": "parcels/registry/parcels.json#elevation",
+    "id": "usgs-epqs",
+    "name": "USGS Elevation Point Query Service (3DEP)",
+    "runs_in": "the learner's own browser, on request, one coordinate per opened card",
+    "scope": "one coordinate per request - a RECORDED anchor or a campus siting point, fetched when its card is opened, cached for the session, never pre-fetched and never bulk",
+    "verified_from_build": false,
+    "stored_by_this_bundle": false
+   },
+   "so": "no registry in this bundle holds a height or a heading for any subject, and this build invents none: h and yaw/pitch/roll stay 0 with the UNKNOWN sidecar until a registry that owns a measurement exists"
+  },
+  "provenance": "DERIVED - recounted from the emitted poses on every build"
+ },
  "honesty": {
   "geopose_claimed": "OGC GeoPose 1.0 (OGC 21-056r11) is a published standard with a confirmed Basic-YPR JSON encoding, and it is claimed outright: every pose in geopose.json is exactly {position: {lat, lon, h}, orientation: {yaw, pitch, roll}}, lat/lon in degrees, h in metres, angles in degrees, LTP-ENU inner frame. The horizontal position is copied at build time from the registry that owns it and carries that registry's own provenance word (RECORDED / DERIVED / AUTHORED) and source string.",
   "no_heights_or_headings": "this bundle holds no height and no heading for any campus, anchor or site - elevation exists only as an on-request live USGS 3DEP lookup in the learner's own browser, never stored - so every pose emits h = 0.0 and yaw = pitch = roll = 0 with an explicit UNKNOWN sidecar beside it. A zero here is a placeholder, never a measurement, and no height or heading is invented to fill the slot.",
   "ombi_not_claimed": "the OMBI spatial-fabric manifest, the Scene Object Model (SOM) and RMAP are marked \"OMBI - New\" in the public deck and their normative texts were not reachable from this build, so fabric.json and som.json are SHAPED after the deck's vocabulary, not validated against a specification. They are registered in meta/registry/metaverse.json under not_claimed, with the reason, and never under standards.",
-  "static_files_only_no_rmap": "this fabric is static files a plain web server serves next to the site - the deck's own \"publish 3D content like a website\" point. No RMAP endpoint, no server, no WebSocket, no fetch at build time, no DID minted: the identity field is honestly null. Every service listed runs in-page with no network, and every anchored .glb is produced on demand by the learner's browser, not a file sitting on disk.",
+  "static_files_only_no_rmap": "this fabric is static files a plain web server serves next to the site - the deck's own \"publish 3D content like a website\" point. No RMAP endpoint, no server, no WebSocket, no fetch at build time, no DID minted: the identity field is honestly null. Every service listed runs in-page with no network, and every anchored .glb is produced on demand by the learner's browser, not a file sitting on disk. Anchoring the bundle-wide services (advisors, Schools panel, restoration panel, training recorder) at the flagship campus is a DESIGN decision unions/registry/campuses.json owns (flagship: true on exactly one campus), not a fact about where anything physically is.",
   "external_origins": "every other operator this fabric points at - a restoration site's own organization, the US Navy, EPA Region 9 and California DTSC at Hunters Point, the US Navy, California DTSC and CDPH at Former Naval Station Treasure Island, a port authority, a university, a museum, a neighbouring city - is a separate origin: named, located by its own pose, and never content this fabric serves for them (served_by_this_fabric is false on every one). That is the SOM's per-branch ownership idea, and it is the same \"not affiliated\" line restoration/ and geo/ already hold. The 111 union halls' real organizations are deliberately NOT listed as origins: the halls here are SCHEMATIC training buildings named after a craft, not a union's premises.",
-  "not_loaded_in_any_browser": "nothing here has been opened in Sneeze, Artemis or any other metaverse browser. The only consumers this pack can defend are a reader of application/geopose+json and this bundle's own suite (spatial/test.mjs), which holds every pose against its source registry on every run."
+  "not_loaded_in_any_browser": "nothing here has been opened in Sneeze, Artemis or any other metaverse browser. The only consumers this pack can defend are a reader of application/geopose+json and this bundle's own suite (spatial/test.mjs), which holds every pose against its source registry on every run.",
+  "reachability_probe": {
+   "date": "2026-09-26",
+   "dates": [
+    "2026-09-25",
+    "2026-09-26"
+   ],
+   "same_codes_on_every_date": true,
+   "how": "curl -sS -o /dev/null -w '%{http_code}' --max-time 20 <url>, once per URL per date, from the build container through its egress proxy with TLS verification on and HTTPS_PROXY as configured; no retry loop, no proxy bypass, no TLS switched off",
+   "tried": [
+    {
+     "url": "https://github.com/rp1-com",
+     "sought": "the RP1 organization - OMBI lead architect and maintainer",
+     "http_code": "403",
+     "curl_exit": 0,
+     "meaning": "HTTP 403 from the egress proxy: the CONNECT was refused (organization policy denial), nothing from the host itself"
+    },
+    {
+     "url": "https://github.com/open-metaverse-browser",
+     "sought": "the Open Metaverse Browser Initiative organization",
+     "http_code": "403",
+     "curl_exit": 0,
+     "meaning": "HTTP 403 from the egress proxy: the CONNECT was refused (organization policy denial), nothing from the host itself"
+    },
+    {
+     "url": "https://api.github.com/search/repositories?q=ombi+spatial+fabric",
+     "sought": "a repository search for the fabric-manifest / SOM / RMAP texts",
+     "http_code": "403",
+     "curl_exit": 0,
+     "meaning": "HTTP 403 from the egress proxy: the CONNECT was refused (organization policy denial), nothing from the host itself"
+    },
+    {
+     "url": "https://metaverse-standards.org/",
+     "sought": "the Metaverse Standards Forum's own site, OMBI's home",
+     "http_code": "000",
+     "curl_exit": 56,
+     "meaning": "no HTTP response at all: curl exited 56, \"CONNECT tunnel failed, response 403\", so %{http_code} printed 000; the proxy status log records \"gateway answered 403 to CONNECT\" for this host"
+    },
+    {
+     "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+     "sought": "OGC GeoPose 1.0 (21-056r11), the one CLAIMED standard - its text was not readable from here either; the Basic-YPR encoding used is the one confirmed in the brief and in the OSCP GeoPose Protocol",
+     "http_code": "000",
+     "curl_exit": 56,
+     "meaning": "no HTTP response at all: curl exited 56, \"CONNECT tunnel failed, response 403\", so %{http_code} printed 000; the proxy status log records \"gateway answered 403 to CONNECT\" for this host"
+    }
+   ],
+   "answered_2xx": 0,
+   "so": "this is why OMBI is not claimed: none of the hosts that would hold the fabric-manifest, SOM or RMAP normative text answered from this build, so fabric.json and som.json remain SHAPED after the deck and are registered in meta/ under not_claimed",
+   "revisit_rule": "if any URL above ever answers 2xx the pack must be REVISITED: spatial/build.py refuses to build and spatial/test.mjs fails by URL, rather than quietly keep saying unreachable",
+   "provenance": "RECORDED - each code is what curl returned on the date given; nothing here is assumed, and the build itself fetched nothing"
+  }
  },
  "poses": [
   {
@@ -3011,8 +3088,8 @@ a{color:var(--steel)}
  "pack": "smartcitix-trade-craft-academy-spatial-fabric",
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
- "built": "2026-09-16",
- "source_stamp": "4042572cdc54051f",
+ "built": "2026-09-26",
+ "source_stamp": "44791c03a34daad7",
  "fabric": {
   "name": "SmartCiti.X : Trade Craft Academy - spatial fabric",
   "operator": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
@@ -3028,7 +3105,20 @@ a{color:var(--steel)}
   "content_formats": [
    "glTF 2.0 binary"
   ],
-  "transport": "none - no RMAP endpoint, no server, no network; a plain web server serving these files next to the site is the whole deployment"
+  "transport": "none - no RMAP endpoint, no server, no network; a plain web server serving these files next to the site is the whole deployment",
+  "flagship": {
+   "campus": "treasure-island",
+   "decided_by": "unions/registry/campuses.json#campuses.treasure-island.flagship",
+   "claimants": 1,
+   "anchors_services": [
+    "advisors",
+    "restoration-panel",
+    "schools-panel",
+    "training-recorder"
+   ],
+   "why": "a DESIGN decision the campus registry owns, not a fact about where anything physically is; the page-wide services stand here because they open from the bar on every campus"
+  },
+  "doors": "spatial/registry/som.json#doors"
  },
  "places": [
   {
@@ -3045,7 +3135,14 @@ a{color:var(--steel)}
    "atmosphere": "treasure-island",
    "atmosphere_character": "marine layer off the Pacific; cool, grey and bright at once, and the thickest air on the network - authored by reputation, not measured",
    "walk": true,
-   "walk_why": "a BUILT entry in roadmap/registry/roadmap.json: a walkable campus city in web/trade_craft_3d.html"
+   "walk_why": "a BUILT entry in roadmap/registry/roadmap.json: a walkable campus city in web/trade_craft_3d.html",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "campus",
+    "value": "treasure-island",
+    "href": "web/trade_craft_3d.html?campus=treasure-island",
+    "resolves": true
+   }
   },
   {
    "id": "place:oakland",
@@ -3061,7 +3158,14 @@ a{color:var(--steel)}
    "atmosphere": "oakland",
    "atmosphere_character": "the estuary side, warmer and harder-edged than the island, with one thin bank off the water that is gone by the time the yard is working - authored by reputation, not measured",
    "walk": true,
-   "walk_why": "a BUILT entry in roadmap/registry/roadmap.json: a walkable campus city in web/trade_craft_3d.html"
+   "walk_why": "a BUILT entry in roadmap/registry/roadmap.json: a walkable campus city in web/trade_craft_3d.html",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "campus",
+    "value": "oakland",
+    "href": "web/trade_craft_3d.html?campus=oakland",
+    "resolves": true
+   }
   },
   {
    "id": "place:new-orleans",
@@ -3076,7 +3180,14 @@ a{color:var(--steel)}
    "atmosphere": "new-orleans",
    "atmosphere_character": "Gulf humidity and a low warm haze that does not lift with the morning, and river fog off the water before it - authored by reputation, not measured",
    "walk": true,
-   "walk_why": "a BUILT entry in roadmap/registry/roadmap.json: a walkable campus city in web/trade_craft_3d.html"
+   "walk_why": "a BUILT entry in roadmap/registry/roadmap.json: a walkable campus city in web/trade_craft_3d.html",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "campus",
+    "value": "new-orleans",
+    "href": "web/trade_craft_3d.html?campus=new-orleans",
+    "resolves": true
+   }
   },
   {
    "id": "place:houston",
@@ -3088,7 +3199,14 @@ a{color:var(--steel)}
    "atmosphere": "houston",
    "atmosphere_character": "Gulf-coast heat haze over a working ship channel that never clears the way a sea breeze clears, and a refinery glow at the sky's edge after dark - authored by reputation, not measured",
    "walk": true,
-   "walk_why": "a BUILT entry in roadmap/registry/roadmap.json: a walkable campus city in web/trade_craft_3d.html"
+   "walk_why": "a BUILT entry in roadmap/registry/roadmap.json: a walkable campus city in web/trade_craft_3d.html",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "campus",
+    "value": "houston",
+    "href": "web/trade_craft_3d.html?campus=houston",
+    "resolves": true
+   }
   },
   {
    "id": "place:chicago",
@@ -3100,7 +3218,14 @@ a{color:var(--steel)}
    "atmosphere": "chicago",
    "atmosphere_character": "a flat lakefront wind that never really stops, cold and grey off the water most of the year - authored by reputation, not measured",
    "walk": true,
-   "walk_why": "a BUILT entry in roadmap/registry/roadmap.json: a walkable campus city in web/trade_craft_3d.html"
+   "walk_why": "a BUILT entry in roadmap/registry/roadmap.json: a walkable campus city in web/trade_craft_3d.html",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "campus",
+    "value": "chicago",
+    "href": "web/trade_craft_3d.html?campus=chicago",
+    "resolves": true
+   }
   },
   {
    "id": "place:seattle",
@@ -3112,7 +3237,14 @@ a{color:var(--steel)}
    "atmosphere": "seattle",
    "atmosphere_character": "a low marine overcast off the Sound that sits on the cranes rather than above them, a working waterfront and the hum of aerospace manufacturing just south of the green - authored by reputation, not measured",
    "walk": true,
-   "walk_why": "a BUILT entry in roadmap/registry/roadmap.json: a walkable campus city in web/trade_craft_3d.html"
+   "walk_why": "a BUILT entry in roadmap/registry/roadmap.json: a walkable campus city in web/trade_craft_3d.html",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "campus",
+    "value": "seattle",
+    "href": "web/trade_craft_3d.html?campus=seattle",
+    "resolves": true
+   }
   },
   {
    "id": "place:pittsburgh",
@@ -3124,7 +3256,14 @@ a{color:var(--steel)}
    "atmosphere": "pittsburgh",
    "atmosphere_character": "a river haze that settles in the valley overnight and burns off late, over three confluent rivers crossed by more bridges than any other American city, and a post-industrial skyline standing where the mills once were - authored by reputation, not measured",
    "walk": true,
-   "walk_why": "a BUILT entry in roadmap/registry/roadmap.json: a walkable campus city in web/trade_craft_3d.html"
+   "walk_why": "a BUILT entry in roadmap/registry/roadmap.json: a walkable campus city in web/trade_craft_3d.html",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "campus",
+    "value": "pittsburgh",
+    "href": "web/trade_craft_3d.html?campus=pittsburgh",
+    "resolves": true
+   }
   },
   {
    "id": "place:denver",
@@ -3136,7 +3275,14 @@ a{color:var(--steel)}
    "atmosphere": "denver",
    "atmosphere_character": "thin, dry high-altitude light off the Front Range with a view that goes as far as the ground allows, a mining and energy heritage at 5,280 feet, and the Rockies standing on the western horizon - authored by reputation, not measured",
    "walk": true,
-   "walk_why": "a BUILT entry in roadmap/registry/roadmap.json: a walkable campus city in web/trade_craft_3d.html"
+   "walk_why": "a BUILT entry in roadmap/registry/roadmap.json: a walkable campus city in web/trade_craft_3d.html",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "campus",
+    "value": "denver",
+    "href": "web/trade_craft_3d.html?campus=denver",
+    "resolves": true
+   }
   },
   {
    "id": "place:miami",
@@ -3148,7 +3294,14 @@ a{color:var(--steel)}
    "atmosphere": "miami",
    "atmosphere_character": "subtropical coastal heat and humidity off Biscayne Bay, afternoon thunderheads stacking through hurricane season, and a working seaport at the harbor's edge - authored by reputation, not measured",
    "walk": true,
-   "walk_why": "a BUILT entry in roadmap/registry/roadmap.json: a walkable campus city in web/trade_craft_3d.html"
+   "walk_why": "a BUILT entry in roadmap/registry/roadmap.json: a walkable campus city in web/trade_craft_3d.html",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "campus",
+    "value": "miami",
+    "href": "web/trade_craft_3d.html?campus=miami",
+    "resolves": true
+   }
   },
   {
    "id": "place:detroit",
@@ -3160,7 +3313,14 @@ a{color:var(--steel)}
    "atmosphere": "detroit",
    "atmosphere_character": "a Great Lakes river haze off the Detroit River, a working industrial waterfront across from Windsor, Ontario, and a century of automotive manufacturing standing behind the skyline - authored by reputation, not measured",
    "walk": true,
-   "walk_why": "a BUILT entry in roadmap/registry/roadmap.json: a walkable campus city in web/trade_craft_3d.html"
+   "walk_why": "a BUILT entry in roadmap/registry/roadmap.json: a walkable campus city in web/trade_craft_3d.html",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "campus",
+    "value": "detroit",
+    "href": "web/trade_craft_3d.html?campus=detroit",
+    "resolves": true
+   }
   }
  ],
  "anchored_content": [
@@ -3173,6 +3333,14 @@ a{color:var(--steel)}
    "how": "exported by the learner's own browser from the running page (the .glb button), not a file sitting on disk",
    "anchored_at": null,
    "why_unanchored": "the avatar is the learner's own and travels with them; it stands nowhere on the map",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": null,
+    "value": null,
+    "href": "web/trade_craft_3d.html",
+    "resolves": true
+   },
+   "door_scope": "the entry page: the locker opens from its bar, no URL parameter names it",
    "provenance": "SCHEMATIC"
   },
   {
@@ -3185,6 +3353,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:treasure-island",
    "hall": "ironworkers",
    "name": "Ironworkers",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "ironworkers",
+    "href": "web/trade_craft_3d.html?hall=ironworkers",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3197,6 +3372,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:treasure-island",
    "hall": "electricians",
    "name": "Electrical Workers",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "electricians",
+    "href": "web/trade_craft_3d.html?hall=electricians",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3209,6 +3391,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:treasure-island",
    "hall": "pipefitters",
    "name": "Plumbers & Pipefitters",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "pipefitters",
+    "href": "web/trade_craft_3d.html?hall=pipefitters",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3221,6 +3410,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:treasure-island",
    "hall": "carpenters",
    "name": "Carpenters",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "carpenters",
+    "href": "web/trade_craft_3d.html?hall=carpenters",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3233,6 +3429,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:oakland",
    "hall": "operating-eng",
    "name": "Operating Engineers",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "operating-eng",
+    "href": "web/trade_craft_3d.html?hall=operating-eng",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3245,6 +3448,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:oakland",
    "hall": "laborers",
    "name": "Laborers",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "laborers",
+    "href": "web/trade_craft_3d.html?hall=laborers",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3257,6 +3467,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:treasure-island",
    "hall": "sheetmetal",
    "name": "Sheet Metal Workers",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "sheetmetal",
+    "href": "web/trade_craft_3d.html?hall=sheetmetal",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3269,6 +3486,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:treasure-island",
    "hall": "bricklayers",
    "name": "Bricklayers & Allied Craft",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "bricklayers",
+    "href": "web/trade_craft_3d.html?hall=bricklayers",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3281,6 +3505,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:treasure-island",
    "hall": "cement-masons",
    "name": "Cement Masons",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "cement-masons",
+    "href": "web/trade_craft_3d.html?hall=cement-masons",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3293,6 +3524,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:treasure-island",
    "hall": "roofers",
    "name": "Roofers & Waterproofers",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "roofers",
+    "href": "web/trade_craft_3d.html?hall=roofers",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3305,6 +3543,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:treasure-island",
    "hall": "painters",
    "name": "Painters & Allied Trades",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "painters",
+    "href": "web/trade_craft_3d.html?hall=painters",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3317,6 +3562,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:treasure-island",
    "hall": "glaziers",
    "name": "Glaziers",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "glaziers",
+    "href": "web/trade_craft_3d.html?hall=glaziers",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3329,6 +3581,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:treasure-island",
    "hall": "insulators",
    "name": "Heat & Frost Insulators",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "insulators",
+    "href": "web/trade_craft_3d.html?hall=insulators",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3341,6 +3600,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:treasure-island",
    "hall": "millwrights",
    "name": "Millwrights",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "millwrights",
+    "href": "web/trade_craft_3d.html?hall=millwrights",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3353,6 +3619,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:treasure-island",
    "hall": "boilermakers",
    "name": "Boilermakers",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "boilermakers",
+    "href": "web/trade_craft_3d.html?hall=boilermakers",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3365,6 +3638,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:treasure-island",
    "hall": "elevator",
    "name": "Elevator Constructors",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "elevator",
+    "href": "web/trade_craft_3d.html?hall=elevator",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3377,6 +3657,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:oakland",
    "hall": "teamsters",
    "name": "Teamsters",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "teamsters",
+    "href": "web/trade_craft_3d.html?hall=teamsters",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3389,6 +3676,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:treasure-island",
    "hall": "welders",
    "name": "Welding Trades",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "welders",
+    "href": "web/trade_craft_3d.html?hall=welders",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3401,6 +3695,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:treasure-island",
    "hall": "hvacr",
    "name": "HVAC/R Technicians",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "hvacr",
+    "href": "web/trade_craft_3d.html?hall=hvacr",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3413,6 +3714,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:treasure-island",
    "hall": "crane-ops",
    "name": "Crane Operators",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "crane-ops",
+    "href": "web/trade_craft_3d.html?hall=crane-ops",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3425,6 +3733,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:treasure-island",
    "hall": "riggers",
    "name": "Riggers & Signalpersons",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "riggers",
+    "href": "web/trade_craft_3d.html?hall=riggers",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3437,6 +3752,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:oakland",
    "hall": "heavy-equip",
    "name": "Heavy Equipment Technicians",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "heavy-equip",
+    "href": "web/trade_craft_3d.html?hall=heavy-equip",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3449,6 +3771,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:treasure-island",
    "hall": "drywall",
    "name": "Drywall Finishers",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "drywall",
+    "href": "web/trade_craft_3d.html?hall=drywall",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3461,6 +3790,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:treasure-island",
    "hall": "flooring",
    "name": "Floor Coverers",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "flooring",
+    "href": "web/trade_craft_3d.html?hall=flooring",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3473,6 +3809,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:oakland",
    "hall": "grounds",
    "name": "Grounds & Landscape",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "grounds",
+    "href": "web/trade_craft_3d.html?hall=grounds",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3485,6 +3828,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:new-orleans",
    "hall": "line-workers",
    "name": "Utility Line Workers",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "line-workers",
+    "href": "web/trade_craft_3d.html?hall=line-workers",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3497,6 +3847,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:new-orleans",
    "hall": "solar",
    "name": "Solar Installers",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "solar",
+    "href": "web/trade_craft_3d.html?hall=solar",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3509,6 +3866,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:new-orleans",
    "hall": "wind",
    "name": "Wind Turbine Technicians",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "wind",
+    "href": "web/trade_craft_3d.html?hall=wind",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3521,6 +3885,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:oakland",
    "hall": "demolition",
    "name": "Demolition Workers",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "demolition",
+    "href": "web/trade_craft_3d.html?hall=demolition",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3533,6 +3904,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:oakland",
    "hall": "scaffold",
    "name": "Scaffold Erectors",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "scaffold",
+    "href": "web/trade_craft_3d.html?hall=scaffold",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3545,6 +3923,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:new-orleans",
    "hall": "surveyors",
    "name": "Construction Surveyors",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "surveyors",
+    "href": "web/trade_craft_3d.html?hall=surveyors",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3557,6 +3942,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:treasure-island",
    "hall": "fire-sprinkler",
    "name": "Fire Sprinkler Fitters",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "fire-sprinkler",
+    "href": "web/trade_craft_3d.html?hall=fire-sprinkler",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3569,6 +3961,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:new-orleans",
    "hall": "hazmat",
    "name": "Hazmat & Environmental",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "hazmat",
+    "href": "web/trade_craft_3d.html?hall=hazmat",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3581,6 +3980,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:oakland",
    "hall": "refractory",
    "name": "Refractory Masons",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "refractory",
+    "href": "web/trade_craft_3d.html?hall=refractory",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3593,6 +3999,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:oakland",
    "hall": "pipeline",
    "name": "Pipeline Trades",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "pipeline",
+    "href": "web/trade_craft_3d.html?hall=pipeline",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3605,6 +4018,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:oakland",
    "hall": "tank-erectors",
    "name": "Tank Erectors",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "tank-erectors",
+    "href": "web/trade_craft_3d.html?hall=tank-erectors",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3617,6 +4037,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:treasure-island",
    "hall": "shipfitters",
    "name": "Shipfitters",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "shipfitters",
+    "href": "web/trade_craft_3d.html?hall=shipfitters",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3629,6 +4056,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:oakland",
    "hall": "marine-pipe",
    "name": "Marine Pipefitters",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "marine-pipe",
+    "href": "web/trade_craft_3d.html?hall=marine-pipe",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3641,6 +4075,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:oakland",
    "hall": "divers",
    "name": "Commercial Divers",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "divers",
+    "href": "web/trade_craft_3d.html?hall=divers",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3653,6 +4094,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:oakland",
    "hall": "blasters",
    "name": "Drillers & Blasters",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "blasters",
+    "href": "web/trade_craft_3d.html?hall=blasters",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3665,6 +4113,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:oakland",
    "hall": "miners",
    "name": "Underground Miners",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "miners",
+    "href": "web/trade_craft_3d.html?hall=miners",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3677,6 +4132,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:oakland",
    "hall": "smelter",
    "name": "Smelter Operators",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "smelter",
+    "href": "web/trade_craft_3d.html?hall=smelter",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3689,6 +4151,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:oakland",
    "hall": "foundry",
    "name": "Foundry Workers",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "foundry",
+    "href": "web/trade_craft_3d.html?hall=foundry",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3701,6 +4170,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:oakland",
    "hall": "machinists",
    "name": "Machinists",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "machinists",
+    "href": "web/trade_craft_3d.html?hall=machinists",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3713,6 +4189,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:oakland",
    "hall": "toolmakers",
    "name": "Tool & Die Makers",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "toolmakers",
+    "href": "web/trade_craft_3d.html?hall=toolmakers",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3725,6 +4208,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:treasure-island",
    "hall": "fabricators",
    "name": "Structural Fabricators",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "fabricators",
+    "href": "web/trade_craft_3d.html?hall=fabricators",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3737,6 +4227,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:oakland",
    "hall": "platers",
    "name": "Platers & Coaters",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "platers",
+    "href": "web/trade_craft_3d.html?hall=platers",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3749,6 +4246,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:new-orleans",
    "hall": "substation",
    "name": "Substation Technicians",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "substation",
+    "href": "web/trade_craft_3d.html?hall=substation",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3761,6 +4265,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:new-orleans",
    "hall": "cable-splicers",
    "name": "Cable Splicers",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "cable-splicers",
+    "href": "web/trade_craft_3d.html?hall=cable-splicers",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3773,6 +4284,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:new-orleans",
    "hall": "meter-techs",
    "name": "Meter Technicians",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "meter-techs",
+    "href": "web/trade_craft_3d.html?hall=meter-techs",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3785,6 +4303,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:new-orleans",
    "hall": "gas-distrib",
    "name": "Gas Distribution Fitters",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "gas-distrib",
+    "href": "web/trade_craft_3d.html?hall=gas-distrib",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3797,6 +4322,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:new-orleans",
    "hall": "water-distrib",
    "name": "Water Distribution Fitters",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "water-distrib",
+    "href": "web/trade_craft_3d.html?hall=water-distrib",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3809,6 +4341,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:new-orleans",
    "hall": "wastewater",
    "name": "Wastewater Operators",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "wastewater",
+    "href": "web/trade_craft_3d.html?hall=wastewater",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3821,6 +4360,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:new-orleans",
    "hall": "nuclear",
    "name": "Nuclear Plant Trades",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "nuclear",
+    "href": "web/trade_craft_3d.html?hall=nuclear",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3833,6 +4379,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:new-orleans",
    "hall": "hydro",
    "name": "Hydro Plant Trades",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "hydro",
+    "href": "web/trade_craft_3d.html?hall=hydro",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3845,6 +4398,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:new-orleans",
    "hall": "geothermal",
    "name": "Geothermal Technicians",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "geothermal",
+    "href": "web/trade_craft_3d.html?hall=geothermal",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3857,6 +4417,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:new-orleans",
    "hall": "battery-storage",
    "name": "Battery Storage Technicians",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "battery-storage",
+    "href": "web/trade_craft_3d.html?hall=battery-storage",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3869,6 +4436,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:new-orleans",
    "hall": "ev-charging",
    "name": "EV Charging Installers",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "ev-charging",
+    "href": "web/trade_craft_3d.html?hall=ev-charging",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3881,6 +4455,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:new-orleans",
    "hall": "hydrogen",
    "name": "Hydrogen Systems Trades",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "hydrogen",
+    "href": "web/trade_craft_3d.html?hall=hydrogen",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3893,6 +4474,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:new-orleans",
    "hall": "transmission",
    "name": "Transmission Linemen",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "transmission",
+    "href": "web/trade_craft_3d.html?hall=transmission",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3905,6 +4493,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:new-orleans",
    "hall": "district-energy",
    "name": "District Energy Operators",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "district-energy",
+    "href": "web/trade_craft_3d.html?hall=district-energy",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3917,6 +4512,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:treasure-island",
    "hall": "masonry-restore",
    "name": "Masonry Restoration",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "masonry-restore",
+    "href": "web/trade_craft_3d.html?hall=masonry-restore",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3929,6 +4531,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:treasure-island",
    "hall": "stone-carvers",
    "name": "Stone Carvers",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "stone-carvers",
+    "href": "web/trade_craft_3d.html?hall=stone-carvers",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3941,6 +4550,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:treasure-island",
    "hall": "plasterers",
    "name": "Plasterers",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "plasterers",
+    "href": "web/trade_craft_3d.html?hall=plasterers",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3953,6 +4569,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:treasure-island",
    "hall": "terrazzo",
    "name": "Terrazzo Workers",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "terrazzo",
+    "href": "web/trade_craft_3d.html?hall=terrazzo",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3965,6 +4588,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:treasure-island",
    "hall": "tilesetters",
    "name": "Tile Setters",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "tilesetters",
+    "href": "web/trade_craft_3d.html?hall=tilesetters",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3977,6 +4607,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:treasure-island",
    "hall": "lathers",
    "name": "Lathers & Metal Framers",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "lathers",
+    "href": "web/trade_craft_3d.html?hall=lathers",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -3989,6 +4626,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:treasure-island",
    "hall": "curtainwall",
    "name": "Curtain Wall Erectors",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "curtainwall",
+    "href": "web/trade_craft_3d.html?hall=curtainwall",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -4001,6 +4645,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:treasure-island",
    "hall": "waterproofers",
    "name": "Below-Grade Waterproofers",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "waterproofers",
+    "href": "web/trade_craft_3d.html?hall=waterproofers",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -4013,6 +4664,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:treasure-island",
    "hall": "firestop",
    "name": "Firestop Installers",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "firestop",
+    "href": "web/trade_craft_3d.html?hall=firestop",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -4025,6 +4683,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:treasure-island",
    "hall": "acoustic",
    "name": "Acoustic Specialists",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "acoustic",
+    "href": "web/trade_craft_3d.html?hall=acoustic",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -4037,6 +4702,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:treasure-island",
    "hall": "cladding",
    "name": "Rainscreen Cladding Fitters",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "cladding",
+    "href": "web/trade_craft_3d.html?hall=cladding",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -4049,6 +4721,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:oakland",
    "hall": "shoring",
    "name": "Shoring & Underpinning",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "shoring",
+    "href": "web/trade_craft_3d.html?hall=shoring",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -4061,6 +4740,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:treasure-island",
    "hall": "piling",
    "name": "Piling Crews",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "piling",
+    "href": "web/trade_craft_3d.html?hall=piling",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -4073,6 +4759,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:oakland",
    "hall": "concrete-pump",
    "name": "Concrete Pump Operators",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "concrete-pump",
+    "href": "web/trade_craft_3d.html?hall=concrete-pump",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -4085,6 +4778,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:oakland",
    "hall": "post-tension",
    "name": "Post-Tension Technicians",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "post-tension",
+    "href": "web/trade_craft_3d.html?hall=post-tension",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -4097,6 +4797,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:treasure-island",
    "hall": "precast",
    "name": "Precast Erectors",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "precast",
+    "href": "web/trade_craft_3d.html?hall=precast",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -4109,6 +4816,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:treasure-island",
    "hall": "steel-erectors",
    "name": "Steel Erectors",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "steel-erectors",
+    "href": "web/trade_craft_3d.html?hall=steel-erectors",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -4121,6 +4835,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:treasure-island",
    "hall": "decking",
    "name": "Metal Deck Installers",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "decking",
+    "href": "web/trade_craft_3d.html?hall=decking",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -4133,6 +4854,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:treasure-island",
    "hall": "window-glazing",
    "name": "Architectural Glaziers",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "window-glazing",
+    "href": "web/trade_craft_3d.html?hall=window-glazing",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -4145,6 +4873,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:treasure-island",
    "hall": "bas-controls",
    "name": "Building Automation Techs",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "bas-controls",
+    "href": "web/trade_craft_3d.html?hall=bas-controls",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -4157,6 +4892,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:treasure-island",
    "hall": "fire-alarm",
    "name": "Fire Alarm Technicians",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "fire-alarm",
+    "href": "web/trade_craft_3d.html?hall=fire-alarm",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -4169,6 +4911,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:treasure-island",
    "hall": "security-sys",
    "name": "Security Systems Installers",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "security-sys",
+    "href": "web/trade_craft_3d.html?hall=security-sys",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -4181,6 +4930,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:treasure-island",
    "hall": "network-cabling",
    "name": "Structured Cabling Techs",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "network-cabling",
+    "href": "web/trade_craft_3d.html?hall=network-cabling",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -4193,6 +4949,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:treasure-island",
    "hall": "fiber-splicers",
    "name": "Fiber Splicers",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "fiber-splicers",
+    "href": "web/trade_craft_3d.html?hall=fiber-splicers",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -4205,6 +4968,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:treasure-island",
    "hall": "data-center",
    "name": "Data Centre Technicians",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "data-center",
+    "href": "web/trade_craft_3d.html?hall=data-center",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -4217,6 +4987,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:treasure-island",
    "hall": "instrumentation",
    "name": "Instrumentation Technicians",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "instrumentation",
+    "href": "web/trade_craft_3d.html?hall=instrumentation",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -4229,6 +5006,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:treasure-island",
    "hall": "plc-techs",
    "name": "PLC & Controls Technicians",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "plc-techs",
+    "href": "web/trade_craft_3d.html?hall=plc-techs",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -4241,6 +5025,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:treasure-island",
    "hall": "robotics",
    "name": "Industrial Robotics Techs",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "robotics",
+    "href": "web/trade_craft_3d.html?hall=robotics",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -4253,6 +5044,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:treasure-island",
    "hall": "automation-int",
    "name": "Automation Integrators",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "automation-int",
+    "href": "web/trade_craft_3d.html?hall=automation-int",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -4265,6 +5063,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:treasure-island",
    "hall": "cleanroom",
    "name": "Cleanroom Trades",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "cleanroom",
+    "href": "web/trade_craft_3d.html?hall=cleanroom",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -4277,6 +5082,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:treasure-island",
    "hall": "medical-gas",
    "name": "Medical Gas Installers",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "medical-gas",
+    "href": "web/trade_craft_3d.html?hall=medical-gas",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -4289,6 +5101,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:oakland",
    "hall": "rail-track",
    "name": "Rail Track Workers",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "rail-track",
+    "href": "web/trade_craft_3d.html?hall=rail-track",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -4301,6 +5120,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:oakland",
    "hall": "rail-signals",
    "name": "Rail Signal Technicians",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "rail-signals",
+    "href": "web/trade_craft_3d.html?hall=rail-signals",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -4313,6 +5139,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:oakland",
    "hall": "catenary",
    "name": "Overhead Catenary Linemen",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "catenary",
+    "href": "web/trade_craft_3d.html?hall=catenary",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -4325,6 +5158,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:oakland",
    "hall": "transit-vehicle",
    "name": "Transit Vehicle Technicians",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "transit-vehicle",
+    "href": "web/trade_craft_3d.html?hall=transit-vehicle",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -4337,6 +5177,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:oakland",
    "hall": "aviation-ground",
    "name": "Aviation Ground Support",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "aviation-ground",
+    "href": "web/trade_craft_3d.html?hall=aviation-ground",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -4349,6 +5196,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:oakland",
    "hall": "airfield",
    "name": "Airfield Trades",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "airfield",
+    "href": "web/trade_craft_3d.html?hall=airfield",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -4361,6 +5215,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:oakland",
    "hall": "port-crane",
    "name": "Port Crane Technicians",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "port-crane",
+    "href": "web/trade_craft_3d.html?hall=port-crane",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -4373,6 +5234,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:oakland",
    "hall": "marine-terminal",
    "name": "Marine Terminal Operators",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "marine-terminal",
+    "href": "web/trade_craft_3d.html?hall=marine-terminal",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -4385,6 +5253,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:oakland",
    "hall": "fleet-diesel",
    "name": "Fleet Diesel Technicians",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "fleet-diesel",
+    "href": "web/trade_craft_3d.html?hall=fleet-diesel",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -4397,6 +5272,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:oakland",
    "hall": "bridge-inspect",
    "name": "Bridge Inspection Crews",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "bridge-inspect",
+    "href": "web/trade_craft_3d.html?hall=bridge-inspect",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -4409,6 +5291,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:new-orleans",
    "hall": "asbestos",
    "name": "Asbestos Abatement Workers",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "asbestos",
+    "href": "web/trade_craft_3d.html?hall=asbestos",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -4421,6 +5310,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:new-orleans",
    "hall": "lead-abatement",
    "name": "Lead Abatement Workers",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "lead-abatement",
+    "href": "web/trade_craft_3d.html?hall=lead-abatement",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -4433,6 +5329,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:new-orleans",
    "hall": "mold-remediation",
    "name": "Mould Remediation Techs",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "mold-remediation",
+    "href": "web/trade_craft_3d.html?hall=mold-remediation",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -4445,6 +5348,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:new-orleans",
    "hall": "spill-response",
    "name": "Spill Response Technicians",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "spill-response",
+    "href": "web/trade_craft_3d.html?hall=spill-response",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -4457,6 +5367,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:new-orleans",
    "hall": "confined-space",
    "name": "Confined Space Rescue",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "confined-space",
+    "href": "web/trade_craft_3d.html?hall=confined-space",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -4469,6 +5386,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:new-orleans",
    "hall": "high-angle",
    "name": "High-Angle Rescue",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "high-angle",
+    "href": "web/trade_craft_3d.html?hall=high-angle",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -4481,6 +5405,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:new-orleans",
    "hall": "site-safety",
    "name": "Site Safety Coordinators",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "site-safety",
+    "href": "web/trade_craft_3d.html?hall=site-safety",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -4493,6 +5424,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:new-orleans",
    "hall": "industrial-clean",
    "name": "Industrial Cleaning Crews",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "industrial-clean",
+    "href": "web/trade_craft_3d.html?hall=industrial-clean",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   },
   {
@@ -4505,6 +5443,13 @@ a{color:var(--steel)}
    "anchored_at": "campus:new-orleans",
    "hall": "survey-drone",
    "name": "Aerial Survey Operators",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "hall",
+    "value": "survey-drone",
+    "href": "web/trade_craft_3d.html?hall=survey-drone",
+    "resolves": true
+   },
    "provenance": "SCHEMATIC"
   }
  ],
@@ -4528,6 +5473,14 @@ a{color:var(--steel)}
     ],
     "scripted_reference": true
    },
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "sim",
+    "value": "crane-lift",
+    "href": "web/trade_craft_3d.html?sim=crane-lift",
+    "resolves": true
+   },
+   "door_scope": "the seat itself: the door lands in the simulator, on the campus that homes the first of its bound halls",
    "provenance": "SCHEMATIC"
   },
   {
@@ -4547,6 +5500,14 @@ a{color:var(--steel)}
     ],
     "scripted_reference": true
    },
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "sim",
+    "value": "excavator-trench",
+    "href": "web/trade_craft_3d.html?sim=excavator-trench",
+    "resolves": true
+   },
+   "door_scope": "the seat itself: the door lands in the simulator, on the campus that homes the first of its bound halls",
    "provenance": "SCHEMATIC"
   },
   {
@@ -4566,6 +5527,14 @@ a{color:var(--steel)}
     ],
     "scripted_reference": true
    },
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "sim",
+    "value": "forklift-run",
+    "href": "web/trade_craft_3d.html?sim=forklift-run",
+    "resolves": true
+   },
+   "door_scope": "the seat itself: the door lands in the simulator, on the campus that homes the first of its bound halls",
    "provenance": "SCHEMATIC"
   },
   {
@@ -4587,6 +5556,14 @@ a{color:var(--steel)}
     ],
     "scripted_reference": true
    },
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "sim",
+    "value": "weld-bead",
+    "href": "web/trade_craft_3d.html?sim=weld-bead",
+    "resolves": true
+   },
+   "door_scope": "the seat itself: the door lands in the simulator, on the campus that homes the first of its bound halls",
    "provenance": "SCHEMATIC"
   },
   {
@@ -4608,6 +5585,14 @@ a{color:var(--steel)}
     ],
     "scripted_reference": true
    },
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "sim",
+    "value": "scaffold-bay",
+    "href": "web/trade_craft_3d.html?sim=scaffold-bay",
+    "resolves": true
+   },
+   "door_scope": "the seat itself: the door lands in the simulator, on the campus that homes the first of its bound halls",
    "provenance": "SCHEMATIC"
   },
   {
@@ -4629,6 +5614,14 @@ a{color:var(--steel)}
     ],
     "scripted_reference": true
    },
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "sim",
+    "value": "rigging-signals",
+    "href": "web/trade_craft_3d.html?sim=rigging-signals",
+    "resolves": true
+   },
+   "door_scope": "the seat itself: the door lands in the simulator, on the campus that homes the first of its bound halls",
    "provenance": "SCHEMATIC"
   },
   {
@@ -4650,6 +5643,14 @@ a{color:var(--steel)}
     ],
     "scripted_reference": true
    },
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "sim",
+    "value": "load-chart",
+    "href": "web/trade_craft_3d.html?sim=load-chart",
+    "resolves": true
+   },
+   "door_scope": "the seat itself: the door lands in the simulator, on the campus that homes the first of its bound halls",
    "provenance": "SCHEMATIC"
   },
   {
@@ -4672,6 +5673,14 @@ a{color:var(--steel)}
     ],
     "scripted_reference": true
    },
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "sim",
+    "value": "pressure-washer",
+    "href": "web/trade_craft_3d.html?sim=pressure-washer",
+    "resolves": true
+   },
+   "door_scope": "the seat itself: the door lands in the simulator, on the campus that homes the first of its bound halls",
    "provenance": "SCHEMATIC"
   },
   {
@@ -4693,6 +5702,14 @@ a{color:var(--steel)}
     ],
     "scripted_reference": true
    },
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "sim",
+    "value": "airless-sprayer",
+    "href": "web/trade_craft_3d.html?sim=airless-sprayer",
+    "resolves": true
+   },
+   "door_scope": "the seat itself: the door lands in the simulator, on the campus that homes the first of its bound halls",
    "provenance": "SCHEMATIC"
   },
   {
@@ -4712,6 +5729,14 @@ a{color:var(--steel)}
     ],
     "scripted_reference": true
    },
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "sim",
+    "value": "boom-lift",
+    "href": "web/trade_craft_3d.html?sim=boom-lift",
+    "resolves": true
+   },
+   "door_scope": "the seat itself: the door lands in the simulator, on the campus that homes the first of its bound halls",
    "provenance": "SCHEMATIC"
   },
   {
@@ -4733,6 +5758,14 @@ a{color:var(--steel)}
     ],
     "scripted_reference": true
    },
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "sim",
+    "value": "overhead-crane",
+    "href": "web/trade_craft_3d.html?sim=overhead-crane",
+    "resolves": true
+   },
+   "door_scope": "the seat itself: the door lands in the simulator, on the campus that homes the first of its bound halls",
    "provenance": "SCHEMATIC"
   },
   {
@@ -4742,6 +5775,7 @@ a{color:var(--steel)}
    "registry": "agents/registry/advisors.json",
    "transport": "in-page, no network",
    "anchored_at": "campus:treasure-island",
+   "also_at": [],
    "scope": "every hall on every campus (each advisor stands in a named room or on the green)",
    "advisors": [
     "guide",
@@ -4754,6 +5788,14 @@ a{color:var(--steel)}
     "operator",
     "dispatcher"
    ],
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "campus",
+    "value": "treasure-island",
+    "href": "web/trade_craft_3d.html?campus=treasure-island",
+    "resolves": true
+   },
+   "door_scope": "page-wide: opens from the bar on every campus; the door lands on the campus the service is anchored at",
    "provenance": "AUTHORED"
   },
   {
@@ -4763,7 +5805,16 @@ a{color:var(--steel)}
    "registry": "schools/registry/schools.json",
    "transport": "in-page, no network",
    "anchored_at": "campus:treasure-island",
+   "also_at": [],
    "scope": "page-wide",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "campus",
+    "value": "treasure-island",
+    "href": "web/trade_craft_3d.html?campus=treasure-island",
+    "resolves": true
+   },
+   "door_scope": "page-wide: opens from the bar on every campus; the door lands on the campus the service is anchored at",
    "provenance": "AUTHORED"
   },
   {
@@ -4773,7 +5824,16 @@ a{color:var(--steel)}
    "registry": "tools/registry/toolcribs.json",
    "transport": "in-page, no network",
    "anchored_at": "campus:treasure-island",
+   "also_at": [],
    "tools": 12,
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "campus",
+    "value": "treasure-island",
+    "href": "web/trade_craft_3d.html?campus=treasure-island",
+    "resolves": true
+   },
+   "door_scope": "the crib opens from the toolroom of its district's halls; the door lands on the campus that homes them",
    "provenance": "SCHEMATIC"
   },
   {
@@ -4783,7 +5843,16 @@ a{color:var(--steel)}
    "registry": "tools/registry/toolcribs.json",
    "transport": "in-page, no network",
    "anchored_at": "campus:treasure-island",
+   "also_at": [],
    "tools": 12,
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "campus",
+    "value": "treasure-island",
+    "href": "web/trade_craft_3d.html?campus=treasure-island",
+    "resolves": true
+   },
+   "door_scope": "the crib opens from the toolroom of its district's halls; the door lands on the campus that homes them",
    "provenance": "SCHEMATIC"
   },
   {
@@ -4793,7 +5862,16 @@ a{color:var(--steel)}
    "registry": "tools/registry/toolcribs.json",
    "transport": "in-page, no network",
    "anchored_at": "campus:treasure-island",
+   "also_at": [],
    "tools": 12,
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "campus",
+    "value": "treasure-island",
+    "href": "web/trade_craft_3d.html?campus=treasure-island",
+    "resolves": true
+   },
+   "door_scope": "the crib opens from the toolroom of its district's halls; the door lands on the campus that homes them",
    "provenance": "SCHEMATIC"
   },
   {
@@ -4803,7 +5881,16 @@ a{color:var(--steel)}
    "registry": "tools/registry/toolcribs.json",
    "transport": "in-page, no network",
    "anchored_at": "campus:new-orleans",
+   "also_at": [],
    "tools": 12,
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "campus",
+    "value": "new-orleans",
+    "href": "web/trade_craft_3d.html?campus=new-orleans",
+    "resolves": true
+   },
+   "door_scope": "the crib opens from the toolroom of its district's halls; the door lands on the campus that homes them",
    "provenance": "SCHEMATIC"
   },
   {
@@ -4813,7 +5900,16 @@ a{color:var(--steel)}
    "registry": "tools/registry/toolcribs.json",
    "transport": "in-page, no network",
    "anchored_at": "campus:oakland",
+   "also_at": [],
    "tools": 12,
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "campus",
+    "value": "oakland",
+    "href": "web/trade_craft_3d.html?campus=oakland",
+    "resolves": true
+   },
+   "door_scope": "the crib opens from the toolroom of its district's halls; the door lands on the campus that homes them",
    "provenance": "SCHEMATIC"
   },
   {
@@ -4823,7 +5919,16 @@ a{color:var(--steel)}
    "registry": "tools/registry/toolcribs.json",
    "transport": "in-page, no network",
    "anchored_at": "campus:oakland",
+   "also_at": [],
    "tools": 12,
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "campus",
+    "value": "oakland",
+    "href": "web/trade_craft_3d.html?campus=oakland",
+    "resolves": true
+   },
+   "door_scope": "the crib opens from the toolroom of its district's halls; the door lands on the campus that homes them",
    "provenance": "SCHEMATIC"
   },
   {
@@ -4833,7 +5938,16 @@ a{color:var(--steel)}
    "registry": "tools/registry/toolcribs.json",
    "transport": "in-page, no network",
    "anchored_at": "campus:oakland",
+   "also_at": [],
    "tools": 12,
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "campus",
+    "value": "oakland",
+    "href": "web/trade_craft_3d.html?campus=oakland",
+    "resolves": true
+   },
+   "door_scope": "the crib opens from the toolroom of its district's halls; the door lands on the campus that homes them",
    "provenance": "SCHEMATIC"
   },
   {
@@ -4843,7 +5957,16 @@ a{color:var(--steel)}
    "registry": "tools/registry/toolcribs.json",
    "transport": "in-page, no network",
    "anchored_at": "campus:new-orleans",
+   "also_at": [],
    "tools": 12,
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "campus",
+    "value": "new-orleans",
+    "href": "web/trade_craft_3d.html?campus=new-orleans",
+    "resolves": true
+   },
+   "door_scope": "the crib opens from the toolroom of its district's halls; the door lands on the campus that homes them",
    "provenance": "SCHEMATIC"
   },
   {
@@ -4853,61 +5976,92 @@ a{color:var(--steel)}
    "registry": "restoration/registry/restoration.json",
    "transport": "in-page, no network",
    "anchored_at": "campus:treasure-island",
+   "also_at": [],
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "campus",
+    "value": "treasure-island",
+    "href": "web/trade_craft_3d.html?campus=treasure-island",
+    "resolves": true
+   },
+   "door_scope": "page-wide: opens from the bar on every campus; the door lands on the campus the service is anchored at",
    "site_panels": [
     {
      "site": "herons-head",
      "anchored_at": "restoration-site:herons-head",
-     "walkable": true
+     "walkable": true,
+     "door": null,
+     "why_no_door": "no page in this bundle reads a site parameter from its URL (the 3D page reads: campus, hall, hour, imagery, lang, sim, wx)"
     },
     {
      "site": "candlestick-point",
      "anchored_at": "restoration-site:candlestick-point",
-     "walkable": true
+     "walkable": true,
+     "door": null,
+     "why_no_door": "no page in this bundle reads a site parameter from its URL (the 3D page reads: campus, hall, hour, imagery, lang, sim, wx)"
     },
     {
      "site": "east-oakland-youth",
      "anchored_at": "restoration-site:east-oakland-youth",
-     "walkable": true
+     "walkable": true,
+     "door": null,
+     "why_no_door": "no page in this bundle reads a site parameter from its URL (the 3D page reads: campus, hall, hour, imagery, lang, sim, wx)"
     },
     {
      "site": "alviso-shoreline",
      "anchored_at": "restoration-site:alviso-shoreline",
-     "walkable": true
+     "walkable": true,
+     "door": null,
+     "why_no_door": "no page in this bundle reads a site parameter from its URL (the 3D page reads: campus, hall, hour, imagery, lang, sim, wx)"
     },
     {
      "site": "south-bay-salt-ponds",
      "anchored_at": "restoration-site:south-bay-salt-ponds",
-     "walkable": true
+     "walkable": true,
+     "door": null,
+     "why_no_door": "no page in this bundle reads a site parameter from its URL (the 3D page reads: campus, hall, hour, imagery, lang, sim, wx)"
     },
     {
      "site": "montezuma-wetlands",
      "anchored_at": "restoration-site:montezuma-wetlands",
-     "walkable": true
+     "walkable": true,
+     "door": null,
+     "why_no_door": "no page in this bundle reads a site parameter from its URL (the 3D page reads: campus, hall, hour, imagery, lang, sim, wx)"
     },
     {
      "site": "american-canyon",
      "anchored_at": "restoration-site:american-canyon",
-     "walkable": true
+     "walkable": true,
+     "door": null,
+     "why_no_door": "no page in this bundle reads a site parameter from its URL (the 3D page reads: campus, hall, hour, imagery, lang, sim, wx)"
     },
     {
      "site": "straw-north-bay",
      "anchored_at": "restoration-site:straw-north-bay",
-     "walkable": true
+     "walkable": true,
+     "door": null,
+     "why_no_door": "no page in this bundle reads a site parameter from its URL (the 3D page reads: campus, hall, hour, imagery, lang, sim, wx)"
     },
     {
      "site": "spartina-removal",
      "anchored_at": null,
-     "walkable": false
+     "walkable": false,
+     "door": null,
+     "why_no_door": "no page in this bundle reads a site parameter from its URL (the 3D page reads: campus, hall, hour, imagery, lang, sim, wx)"
     },
     {
      "site": "hunters-point-shipyard",
      "anchored_at": "restoration-site:hunters-point-shipyard",
-     "walkable": false
+     "walkable": false,
+     "door": null,
+     "why_no_door": "no page in this bundle reads a site parameter from its URL (the 3D page reads: campus, hall, hour, imagery, lang, sim, wx)"
     },
     {
      "site": "treasure-island-nsti",
      "anchored_at": "restoration-site:treasure-island-nsti",
-     "walkable": false
+     "walkable": false,
+     "door": null,
+     "why_no_door": "no page in this bundle reads a site parameter from its URL (the 3D page reads: campus, hall, hour, imagery, lang, sim, wx)"
     }
    ],
    "provenance": "AUTHORED"
@@ -4919,10 +6073,50 @@ a{color:var(--steel)}
    "registry": "training/registry/training.json",
    "transport": "in-page, no network",
    "anchored_at": "campus:treasure-island",
+   "also_at": [],
    "scope": "page-wide; device-local storage only",
+   "door": {
+    "page": "web/trade_craft_3d.html",
+    "param": "campus",
+    "value": "treasure-island",
+    "href": "web/trade_craft_3d.html?campus=treasure-island",
+    "resolves": true
+   },
+   "door_scope": "page-wide: opens from the bar on every campus; the door lands on the campus the service is anchored at",
    "provenance": "SCHEMATIC"
   }
  ],
+ "export_door": {
+  "id": "export:gltf",
+  "kind": "export",
+  "name": "glTF 2.0 binary export door - three.js GLTFExporter in the running page",
+  "format": "glTF 2.0 binary",
+  "exports": [
+   {
+    "id": "avatar-glb",
+    "from": "the locker view (the .glb button)",
+    "file": "tc-avatar.glb"
+   },
+   {
+    "id": "hall-glb",
+    "from": "any hall view (the .glb button)",
+    "file": "tc-hall-<slug>.glb"
+   }
+  ],
+  "transport": "learner-triggered, in the learner's own browser: the running page serialises the live scene with three.js GLTFExporter ({binary: true}) and hands the bytes to the browser as a model/gltf-binary download - wrapped in a STORE-method .zip where a host mediates saves. No server, no network, no file on disk, nothing fetched.",
+  "anchored_at": null,
+  "why_unanchored": "a door in the page bar, opened from the locker and from any hall view; it stands nowhere on the map",
+  "door": {
+   "page": "web/trade_craft_3d.html",
+   "param": null,
+   "value": null,
+   "href": "web/trade_craft_3d.html",
+   "resolves": true
+  },
+  "door_scope": "the entry page: the .glb button shows in the locker and in every hall view (any ?hall= door), never from a URL parameter of its own",
+  "served_by_this_fabric": true,
+  "provenance": "SCRIPTED"
+ },
  "external_origins": [
   {
    "operator": "San Francisco",
@@ -4934,6 +6128,7 @@ a{color:var(--steel)}
     "anchor:treasure-island/san-francisco",
     "anchor:oakland/san-francisco"
    ],
+   "unposed": [],
    "provenance": [
     "RECORDED"
    ]
@@ -4948,6 +6143,7 @@ a{color:var(--steel)}
     "anchor:treasure-island/emeryville",
     "anchor:oakland/emeryville"
    ],
+   "unposed": [],
    "provenance": [
     "RECORDED"
    ]
@@ -4961,6 +6157,7 @@ a{color:var(--steel)}
    "geoposes": [
     "anchor:treasure-island/oakland"
    ],
+   "unposed": [],
    "provenance": [
     "RECORDED"
    ]
@@ -4975,6 +6172,7 @@ a{color:var(--steel)}
     "anchor:treasure-island/tiburon",
     "anchor:oakland/tiburon"
    ],
+   "unposed": [],
    "provenance": [
     "RECORDED"
    ]
@@ -4989,6 +6187,7 @@ a{color:var(--steel)}
     "anchor:treasure-island/albany",
     "anchor:oakland/albany"
    ],
+   "unposed": [],
    "provenance": [
     "RECORDED"
    ]
@@ -5003,6 +6202,7 @@ a{color:var(--steel)}
     "anchor:treasure-island/berkeley",
     "anchor:oakland/berkeley"
    ],
+   "unposed": [],
    "provenance": [
     "RECORDED"
    ]
@@ -5017,6 +6217,7 @@ a{color:var(--steel)}
     "anchor:treasure-island/sausalito",
     "anchor:oakland/sausalito"
    ],
+   "unposed": [],
    "provenance": [
     "RECORDED"
    ]
@@ -5031,6 +6232,7 @@ a{color:var(--steel)}
     "anchor:treasure-island/el-cerrito",
     "anchor:oakland/el-cerrito"
    ],
+   "unposed": [],
    "provenance": [
     "RECORDED"
    ]
@@ -5045,6 +6247,7 @@ a{color:var(--steel)}
     "anchor:treasure-island/piedmont",
     "anchor:oakland/piedmont"
    ],
+   "unposed": [],
    "provenance": [
     "RECORDED"
    ]
@@ -5059,6 +6262,7 @@ a{color:var(--steel)}
     "anchor:treasure-island/richmond",
     "anchor:oakland/richmond"
    ],
+   "unposed": [],
    "provenance": [
     "RECORDED"
    ]
@@ -5073,6 +6277,7 @@ a{color:var(--steel)}
     "anchor:treasure-island/alameda",
     "anchor:oakland/alameda"
    ],
+   "unposed": [],
    "provenance": [
     "RECORDED"
    ]
@@ -5087,6 +6292,7 @@ a{color:var(--steel)}
     "anchor:treasure-island/daly-city",
     "anchor:oakland/daly-city"
    ],
+   "unposed": [],
    "provenance": [
     "RECORDED"
    ]
@@ -5101,6 +6307,7 @@ a{color:var(--steel)}
     "anchor:treasure-island/orinda",
     "anchor:oakland/orinda"
    ],
+   "unposed": [],
    "provenance": [
     "RECORDED"
    ]
@@ -5114,6 +6321,7 @@ a{color:var(--steel)}
    "geoposes": [
     "anchor:treasure-island/mill-valley"
    ],
+   "unposed": [],
    "provenance": [
     "RECORDED"
    ]
@@ -5128,6 +6336,7 @@ a{color:var(--steel)}
     "anchor:treasure-island/south-san-francisco",
     "anchor:oakland/south-san-francisco"
    ],
+   "unposed": [],
    "provenance": [
     "RECORDED"
    ]
@@ -5142,6 +6351,7 @@ a{color:var(--steel)}
     "anchor:treasure-island/san-leandro",
     "anchor:oakland/san-leandro"
    ],
+   "unposed": [],
    "provenance": [
     "RECORDED"
    ]
@@ -5155,6 +6365,7 @@ a{color:var(--steel)}
    "geoposes": [
     "anchor:treasure-island/san-rafael"
    ],
+   "unposed": [],
    "provenance": [
     "RECORDED"
    ]
@@ -5168,6 +6379,7 @@ a{color:var(--steel)}
    "geoposes": [
     "anchor:oakland/lafayette"
    ],
+   "unposed": [],
    "provenance": [
     "RECORDED"
    ]
@@ -5181,6 +6393,7 @@ a{color:var(--steel)}
    "geoposes": [
     "anchor:oakland/castro-valley"
    ],
+   "unposed": [],
    "provenance": [
     "RECORDED"
    ]
@@ -5194,6 +6407,7 @@ a{color:var(--steel)}
    "geoposes": [
     "anchor:oakland/walnut-creek"
    ],
+   "unposed": [],
    "provenance": [
     "RECORDED"
    ]
@@ -5207,6 +6421,7 @@ a{color:var(--steel)}
    "geoposes": [
     "anchor:new-orleans/tulane-university"
    ],
+   "unposed": [],
    "provenance": [
     "RECORDED"
    ]
@@ -5220,6 +6435,7 @@ a{color:var(--steel)}
    "geoposes": [
     "anchor:new-orleans/xavier-university"
    ],
+   "unposed": [],
    "provenance": [
     "RECORDED"
    ]
@@ -5233,6 +6449,7 @@ a{color:var(--steel)}
    "geoposes": [
     "anchor:new-orleans/university-of-new-orleans"
    ],
+   "unposed": [],
    "provenance": [
     "RECORDED"
    ]
@@ -5246,6 +6463,7 @@ a{color:var(--steel)}
    "geoposes": [
     "anchor:new-orleans/delgado-community-college"
    ],
+   "unposed": [],
    "provenance": [
     "RECORDED"
    ]
@@ -5259,6 +6477,7 @@ a{color:var(--steel)}
    "geoposes": [
     "anchor:new-orleans/loyola-university"
    ],
+   "unposed": [],
    "provenance": [
     "RECORDED"
    ]
@@ -5272,6 +6491,7 @@ a{color:var(--steel)}
    "geoposes": [
     "anchor:new-orleans/dillard-university"
    ],
+   "unposed": [],
    "provenance": [
     "RECORDED"
    ]
@@ -5285,6 +6505,7 @@ a{color:var(--steel)}
    "geoposes": [
     "anchor:new-orleans/suno"
    ],
+   "unposed": [],
    "provenance": [
     "RECORDED"
    ]
@@ -5298,6 +6519,7 @@ a{color:var(--steel)}
    "geoposes": [
     "anchor:houston/port-of-houston-authority"
    ],
+   "unposed": [],
    "provenance": [
     "AUTHORED"
    ]
@@ -5311,6 +6533,7 @@ a{color:var(--steel)}
    "geoposes": [
     "anchor:houston/university-of-houston"
    ],
+   "unposed": [],
    "provenance": [
     "AUTHORED"
    ]
@@ -5324,6 +6547,7 @@ a{color:var(--steel)}
    "geoposes": [
     "anchor:houston/san-jacinto-college"
    ],
+   "unposed": [],
    "provenance": [
     "AUTHORED"
    ]
@@ -5337,6 +6561,7 @@ a{color:var(--steel)}
    "geoposes": [
     "anchor:houston/houston-community-college"
    ],
+   "unposed": [],
    "provenance": [
     "AUTHORED"
    ]
@@ -5350,6 +6575,7 @@ a{color:var(--steel)}
    "geoposes": [
     "anchor:chicago/chicago-union-station"
    ],
+   "unposed": [],
    "provenance": [
     "AUTHORED"
    ]
@@ -5363,6 +6589,7 @@ a{color:var(--steel)}
    "geoposes": [
     "anchor:chicago/navy-pier"
    ],
+   "unposed": [],
    "provenance": [
     "AUTHORED"
    ]
@@ -5376,6 +6603,7 @@ a{color:var(--steel)}
    "geoposes": [
     "anchor:chicago/university-of-illinois-chicago"
    ],
+   "unposed": [],
    "provenance": [
     "AUTHORED"
    ]
@@ -5389,6 +6617,7 @@ a{color:var(--steel)}
    "geoposes": [
     "anchor:chicago/richard-j-daley-college"
    ],
+   "unposed": [],
    "provenance": [
     "AUTHORED"
    ]
@@ -5402,6 +6631,7 @@ a{color:var(--steel)}
    "geoposes": [
     "anchor:seattle/port-of-seattle"
    ],
+   "unposed": [],
    "provenance": [
     "AUTHORED"
    ]
@@ -5415,6 +6645,7 @@ a{color:var(--steel)}
    "geoposes": [
     "anchor:seattle/university-of-washington"
    ],
+   "unposed": [],
    "provenance": [
     "AUTHORED"
    ]
@@ -5428,6 +6659,7 @@ a{color:var(--steel)}
    "geoposes": [
     "anchor:seattle/museum-of-flight"
    ],
+   "unposed": [],
    "provenance": [
     "AUTHORED"
    ]
@@ -5441,6 +6673,7 @@ a{color:var(--steel)}
    "geoposes": [
     "anchor:seattle/south-seattle-college"
    ],
+   "unposed": [],
    "provenance": [
     "AUTHORED"
    ]
@@ -5454,6 +6687,7 @@ a{color:var(--steel)}
    "geoposes": [
     "anchor:pittsburgh/port-of-pittsburgh-commission"
    ],
+   "unposed": [],
    "provenance": [
     "AUTHORED"
    ]
@@ -5467,6 +6701,7 @@ a{color:var(--steel)}
    "geoposes": [
     "anchor:pittsburgh/carnegie-mellon-university"
    ],
+   "unposed": [],
    "provenance": [
     "AUTHORED"
    ]
@@ -5480,6 +6715,7 @@ a{color:var(--steel)}
    "geoposes": [
     "anchor:pittsburgh/carrie-blast-furnaces-national-historic-landmark"
    ],
+   "unposed": [],
    "provenance": [
     "AUTHORED"
    ]
@@ -5493,6 +6729,7 @@ a{color:var(--steel)}
    "geoposes": [
     "anchor:pittsburgh/community-college-of-allegheny-county"
    ],
+   "unposed": [],
    "provenance": [
     "AUTHORED"
    ]
@@ -5506,6 +6743,7 @@ a{color:var(--steel)}
    "geoposes": [
     "anchor:denver/colorado-school-of-mines"
    ],
+   "unposed": [],
    "provenance": [
     "AUTHORED"
    ]
@@ -5519,6 +6757,7 @@ a{color:var(--steel)}
    "geoposes": [
     "anchor:denver/national-renewable-energy-laboratory"
    ],
+   "unposed": [],
    "provenance": [
     "AUTHORED"
    ]
@@ -5532,6 +6771,7 @@ a{color:var(--steel)}
    "geoposes": [
     "anchor:denver/denver-union-station"
    ],
+   "unposed": [],
    "provenance": [
     "AUTHORED"
    ]
@@ -5545,6 +6785,7 @@ a{color:var(--steel)}
    "geoposes": [
     "anchor:denver/community-college-of-denver"
    ],
+   "unposed": [],
    "provenance": [
     "AUTHORED"
    ]
@@ -5558,6 +6799,7 @@ a{color:var(--steel)}
    "geoposes": [
     "anchor:miami/portmiami"
    ],
+   "unposed": [],
    "provenance": [
     "AUTHORED"
    ]
@@ -5571,6 +6813,7 @@ a{color:var(--steel)}
    "geoposes": [
     "anchor:miami/noaa-atlantic-oceanographic-and-meteorological-laboratory"
    ],
+   "unposed": [],
    "provenance": [
     "AUTHORED"
    ]
@@ -5584,6 +6827,7 @@ a{color:var(--steel)}
    "geoposes": [
     "anchor:miami/university-of-miami"
    ],
+   "unposed": [],
    "provenance": [
     "AUTHORED"
    ]
@@ -5597,6 +6841,7 @@ a{color:var(--steel)}
    "geoposes": [
     "anchor:miami/miami-dade-college"
    ],
+   "unposed": [],
    "provenance": [
     "AUTHORED"
    ]
@@ -5610,6 +6855,7 @@ a{color:var(--steel)}
    "geoposes": [
     "anchor:detroit/detroit-wayne-county-port-authority"
    ],
+   "unposed": [],
    "provenance": [
     "AUTHORED"
    ]
@@ -5623,6 +6869,7 @@ a{color:var(--steel)}
    "geoposes": [
     "anchor:detroit/wayne-state-university"
    ],
+   "unposed": [],
    "provenance": [
     "AUTHORED"
    ]
@@ -5636,6 +6883,7 @@ a{color:var(--steel)}
    "geoposes": [
     "anchor:detroit/the-henry-ford"
    ],
+   "unposed": [],
    "provenance": [
     "AUTHORED"
    ]
@@ -5649,6 +6897,7 @@ a{color:var(--steel)}
    "geoposes": [
     "anchor:detroit/wayne-county-community-college-district"
    ],
+   "unposed": [],
    "provenance": [
     "AUTHORED"
    ]
@@ -5662,6 +6911,7 @@ a{color:var(--steel)}
    "geoposes": [
     "restoration-site:herons-head"
    ],
+   "unposed": [],
    "provenance": [
     "AUTHORED"
    ]
@@ -5675,6 +6925,7 @@ a{color:var(--steel)}
    "geoposes": [
     "restoration-site:candlestick-point"
    ],
+   "unposed": [],
    "provenance": [
     "AUTHORED"
    ]
@@ -5688,6 +6939,7 @@ a{color:var(--steel)}
    "geoposes": [
     "restoration-site:east-oakland-youth"
    ],
+   "unposed": [],
    "provenance": [
     "AUTHORED"
    ]
@@ -5701,6 +6953,7 @@ a{color:var(--steel)}
    "geoposes": [
     "restoration-site:alviso-shoreline"
    ],
+   "unposed": [],
    "provenance": [
     "AUTHORED"
    ]
@@ -5714,6 +6967,7 @@ a{color:var(--steel)}
    "geoposes": [
     "restoration-site:south-bay-salt-ponds"
    ],
+   "unposed": [],
    "provenance": [
     "AUTHORED"
    ]
@@ -5727,6 +6981,7 @@ a{color:var(--steel)}
    "geoposes": [
     "restoration-site:montezuma-wetlands"
    ],
+   "unposed": [],
    "provenance": [
     "AUTHORED"
    ]
@@ -5740,6 +6995,7 @@ a{color:var(--steel)}
    "geoposes": [
     "restoration-site:american-canyon"
    ],
+   "unposed": [],
    "provenance": [
     "AUTHORED"
    ]
@@ -5753,6 +7009,7 @@ a{color:var(--steel)}
    "geoposes": [
     "restoration-site:straw-north-bay"
    ],
+   "unposed": [],
    "provenance": [
     "AUTHORED"
    ]
@@ -5764,10 +7021,10 @@ a{color:var(--steel)}
    "served_by_this_fabric": false,
    "note": "SmartCiti.X : Trade Craft Academy is not affiliated with, and does not certify, endorse or claim to fund, any site or organization named in this pack. Every site and program below is real and independently run by its own listed organization - this extends explicitly to Hunters Point Naval Shipyard: SmartCiti.X has no role in the actual cleanup, the litigation over it, or the Marie Harrison Bayview Air Monitoring Project; and to Former Naval Station Treasure Island: SmartCiti.X has no role in the Navy cleanup, the Restoration Advisory Board, the property transfers to TIDA, or One Treasure Island's Construction Training Program.",
    "geoposes": [],
-   "provenance": [],
    "unposed": [
     "restoration-site:spartina-removal"
-   ]
+   ],
+   "provenance": []
   },
   {
    "operator": "US Navy (CERCLA lead agency for investigation and cleanup); US EPA Region 9 and California DTSC (oversight and enforcement of Navy cleanup activities)",
@@ -5778,6 +7035,7 @@ a{color:var(--steel)}
    "geoposes": [
     "restoration-site:hunters-point-shipyard"
    ],
+   "unposed": [],
    "provenance": [
     "AUTHORED"
    ]
@@ -5791,6 +7049,7 @@ a{color:var(--steel)}
    "geoposes": [
     "restoration-site:treasure-island-nsti"
    ],
+   "unposed": [],
    "provenance": [
     "AUTHORED"
    ]
@@ -5800,9 +7059,59 @@ a{color:var(--steel)}
   "geopose_claimed": "OGC GeoPose 1.0 (OGC 21-056r11) is a published standard with a confirmed Basic-YPR JSON encoding, and it is claimed outright: every pose in geopose.json is exactly {position: {lat, lon, h}, orientation: {yaw, pitch, roll}}, lat/lon in degrees, h in metres, angles in degrees, LTP-ENU inner frame. The horizontal position is copied at build time from the registry that owns it and carries that registry's own provenance word (RECORDED / DERIVED / AUTHORED) and source string.",
   "no_heights_or_headings": "this bundle holds no height and no heading for any campus, anchor or site - elevation exists only as an on-request live USGS 3DEP lookup in the learner's own browser, never stored - so every pose emits h = 0.0 and yaw = pitch = roll = 0 with an explicit UNKNOWN sidecar beside it. A zero here is a placeholder, never a measurement, and no height or heading is invented to fill the slot.",
   "ombi_not_claimed": "the OMBI spatial-fabric manifest, the Scene Object Model (SOM) and RMAP are marked \"OMBI - New\" in the public deck and their normative texts were not reachable from this build, so fabric.json and som.json are SHAPED after the deck's vocabulary, not validated against a specification. They are registered in meta/registry/metaverse.json under not_claimed, with the reason, and never under standards.",
-  "static_files_only_no_rmap": "this fabric is static files a plain web server serves next to the site - the deck's own \"publish 3D content like a website\" point. No RMAP endpoint, no server, no WebSocket, no fetch at build time, no DID minted: the identity field is honestly null. Every service listed runs in-page with no network, and every anchored .glb is produced on demand by the learner's browser, not a file sitting on disk.",
+  "static_files_only_no_rmap": "this fabric is static files a plain web server serves next to the site - the deck's own \"publish 3D content like a website\" point. No RMAP endpoint, no server, no WebSocket, no fetch at build time, no DID minted: the identity field is honestly null. Every service listed runs in-page with no network, and every anchored .glb is produced on demand by the learner's browser, not a file sitting on disk. Anchoring the bundle-wide services (advisors, Schools panel, restoration panel, training recorder) at the flagship campus is a DESIGN decision unions/registry/campuses.json owns (flagship: true on exactly one campus), not a fact about where anything physically is.",
   "external_origins": "every other operator this fabric points at - a restoration site's own organization, the US Navy, EPA Region 9 and California DTSC at Hunters Point, the US Navy, California DTSC and CDPH at Former Naval Station Treasure Island, a port authority, a university, a museum, a neighbouring city - is a separate origin: named, located by its own pose, and never content this fabric serves for them (served_by_this_fabric is false on every one). That is the SOM's per-branch ownership idea, and it is the same \"not affiliated\" line restoration/ and geo/ already hold. The 111 union halls' real organizations are deliberately NOT listed as origins: the halls here are SCHEMATIC training buildings named after a craft, not a union's premises.",
-  "not_loaded_in_any_browser": "nothing here has been opened in Sneeze, Artemis or any other metaverse browser. The only consumers this pack can defend are a reader of application/geopose+json and this bundle's own suite (spatial/test.mjs), which holds every pose against its source registry on every run."
+  "not_loaded_in_any_browser": "nothing here has been opened in Sneeze, Artemis or any other metaverse browser. The only consumers this pack can defend are a reader of application/geopose+json and this bundle's own suite (spatial/test.mjs), which holds every pose against its source registry on every run.",
+  "reachability_probe": {
+   "date": "2026-09-26",
+   "dates": [
+    "2026-09-25",
+    "2026-09-26"
+   ],
+   "same_codes_on_every_date": true,
+   "how": "curl -sS -o /dev/null -w '%{http_code}' --max-time 20 <url>, once per URL per date, from the build container through its egress proxy with TLS verification on and HTTPS_PROXY as configured; no retry loop, no proxy bypass, no TLS switched off",
+   "tried": [
+    {
+     "url": "https://github.com/rp1-com",
+     "sought": "the RP1 organization - OMBI lead architect and maintainer",
+     "http_code": "403",
+     "curl_exit": 0,
+     "meaning": "HTTP 403 from the egress proxy: the CONNECT was refused (organization policy denial), nothing from the host itself"
+    },
+    {
+     "url": "https://github.com/open-metaverse-browser",
+     "sought": "the Open Metaverse Browser Initiative organization",
+     "http_code": "403",
+     "curl_exit": 0,
+     "meaning": "HTTP 403 from the egress proxy: the CONNECT was refused (organization policy denial), nothing from the host itself"
+    },
+    {
+     "url": "https://api.github.com/search/repositories?q=ombi+spatial+fabric",
+     "sought": "a repository search for the fabric-manifest / SOM / RMAP texts",
+     "http_code": "403",
+     "curl_exit": 0,
+     "meaning": "HTTP 403 from the egress proxy: the CONNECT was refused (organization policy denial), nothing from the host itself"
+    },
+    {
+     "url": "https://metaverse-standards.org/",
+     "sought": "the Metaverse Standards Forum's own site, OMBI's home",
+     "http_code": "000",
+     "curl_exit": 56,
+     "meaning": "no HTTP response at all: curl exited 56, \"CONNECT tunnel failed, response 403\", so %{http_code} printed 000; the proxy status log records \"gateway answered 403 to CONNECT\" for this host"
+    },
+    {
+     "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+     "sought": "OGC GeoPose 1.0 (21-056r11), the one CLAIMED standard - its text was not readable from here either; the Basic-YPR encoding used is the one confirmed in the brief and in the OSCP GeoPose Protocol",
+     "http_code": "000",
+     "curl_exit": 56,
+     "meaning": "no HTTP response at all: curl exited 56, \"CONNECT tunnel failed, response 403\", so %{http_code} printed 000; the proxy status log records \"gateway answered 403 to CONNECT\" for this host"
+    }
+   ],
+   "answered_2xx": 0,
+   "so": "this is why OMBI is not claimed: none of the hosts that would hold the fabric-manifest, SOM or RMAP normative text answered from this build, so fabric.json and som.json remain SHAPED after the deck and are registered in meta/ under not_claimed",
+   "revisit_rule": "if any URL above ever answers 2xx the pack must be REVISITED: spatial/build.py refuses to build and spatial/test.mjs fails by URL, rather than quietly keep saying unreachable",
+   "provenance": "RECORDED - each code is what curl returned on the date given; nothing here is assumed, and the build itself fetched nothing"
+  }
  },
  "sources": [
   {

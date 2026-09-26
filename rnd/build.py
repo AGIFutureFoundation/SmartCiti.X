@@ -885,6 +885,40 @@ gap('spatial.posed',
     'the one unposed subject is a bay-wide program that pins no single '
     'coordinate, and the pack refuses to invent one for it')
 
+SOM = 'spatial/registry/som.json'
+
+# The fabric after the RP1 loop: what it says about its own poses and
+# doors. Both blocks were written by the pack that owns them and are read
+# here; if either is renamed this build stops by name rather than guessing.
+_cov = need(reg(GEOPOSE), 'coverage', GEOPOSE)
+gap('spatial.poses_with_height',
+    'how many GeoPoses carry a real height rather than h = 0 UNKNOWN',
+    need(_cov, 'poses_with_height', f'{GEOPOSE}#coverage'),
+    need(_cov, 'poses', f'{GEOPOSE}#coverage'),
+    'poses', [GEOPOSE],
+    'spatial/registry/geopose.json#coverage.poses_with_height over #coverage.poses',
+    'zero on purpose: terrain/ is a Natural Earth water mask with no '
+    'elevation, and USGS elevation is a browser-only lookup never stored, '
+    'so every pose emits h = 0 with an UNKNOWN sidecar rather than a number')
+gap('spatial.poses_with_heading',
+    'how many GeoPoses carry a real heading rather than yaw = 0 UNKNOWN',
+    need(_cov, 'poses_with_heading', f'{GEOPOSE}#coverage'),
+    need(_cov, 'poses', f'{GEOPOSE}#coverage'),
+    'poses', [GEOPOSE],
+    'spatial/registry/geopose.json#coverage.poses_with_heading over #coverage.poses',
+    'zero on purpose: no registry in this bundle records which way anything '
+    'faces, so no heading is invented to fill the slot')
+_doors = need(reg(SOM), 'doors', SOM)
+gap('spatial.doors_resolving',
+    'how many Scene Object Model leaves open a door that resolves to a page target',
+    need(_doors, 'branches_whose_door_resolves', f'{SOM}#doors'),
+    need(_doors, 'leaves', f'{SOM}#doors'),
+    'leaves', [SOM],
+    'spatial/registry/som.json#doors.branches_whose_door_resolves over #doors.leaves',
+    'the rest can only be named: external origins - institutions, sites, a '
+    'bay-wide program - this fabric points at and does not serve, which is '
+    'per-branch ownership working rather than a hole')
+
 if len({g['id'] for g in GAPS}) != len(GAPS):
     raise ValueError('rnd: two gaps share an id')
 

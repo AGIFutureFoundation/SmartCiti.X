@@ -2,8 +2,8 @@
  "pack": "smartcitix-trade-craft-academy-spatial-fabric",
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
- "built": "2026-09-16",
- "source_stamp": "4042572cdc54051f",
+ "built": "2026-09-26",
+ "source_stamp": "44791c03a34daad7",
  "encoding": "OGC GeoPose 1.0 Basic-YPR, OGC 21-056r11, application/geopose+json",
  "media_type": "application/geopose+json",
  "crs": "WGS84 (EPSG:4326)",
@@ -14,13 +14,90 @@
   "total": 89,
   "unposed": 1
  },
+ "coverage": {
+  "poses": 89,
+  "poses_with_horizontal_position": 89,
+  "poses_with_height": 0,
+  "poses_with_heading": 0,
+  "how": "counted from the poses in this file: a pose has a height when its h_provenance is not the UNKNOWN placeholder, a heading when its orientation_provenance is not; a zero in the encoding is never read as a value",
+  "why": {
+   "terrain": {
+    "registry": "terrain/registry/terrain.json",
+    "holds": "a land/water mask and shoreline outlines, in local metres - no elevation",
+    "source": "Natural Earth (naturalearthdata.com), 10m physical vectors",
+    "cell_m": 125.0,
+    "no_elevation": "There is no height in this pack. Natural Earth is an outline set. The ground is still flat; what changed is where it stops being ground."
+   },
+   "usgs": {
+    "registry": "parcels/registry/parcels.json#elevation",
+    "id": "usgs-epqs",
+    "name": "USGS Elevation Point Query Service (3DEP)",
+    "runs_in": "the learner's own browser, on request, one coordinate per opened card",
+    "scope": "one coordinate per request - a RECORDED anchor or a campus siting point, fetched when its card is opened, cached for the session, never pre-fetched and never bulk",
+    "verified_from_build": false,
+    "stored_by_this_bundle": false
+   },
+   "so": "no registry in this bundle holds a height or a heading for any subject, and this build invents none: h and yaw/pitch/roll stay 0 with the UNKNOWN sidecar until a registry that owns a measurement exists"
+  },
+  "provenance": "DERIVED - recounted from the emitted poses on every build"
+ },
  "honesty": {
   "geopose_claimed": "OGC GeoPose 1.0 (OGC 21-056r11) is a published standard with a confirmed Basic-YPR JSON encoding, and it is claimed outright: every pose in geopose.json is exactly {position: {lat, lon, h}, orientation: {yaw, pitch, roll}}, lat/lon in degrees, h in metres, angles in degrees, LTP-ENU inner frame. The horizontal position is copied at build time from the registry that owns it and carries that registry's own provenance word (RECORDED / DERIVED / AUTHORED) and source string.",
   "no_heights_or_headings": "this bundle holds no height and no heading for any campus, anchor or site - elevation exists only as an on-request live USGS 3DEP lookup in the learner's own browser, never stored - so every pose emits h = 0.0 and yaw = pitch = roll = 0 with an explicit UNKNOWN sidecar beside it. A zero here is a placeholder, never a measurement, and no height or heading is invented to fill the slot.",
   "ombi_not_claimed": "the OMBI spatial-fabric manifest, the Scene Object Model (SOM) and RMAP are marked \"OMBI - New\" in the public deck and their normative texts were not reachable from this build, so fabric.json and som.json are SHAPED after the deck's vocabulary, not validated against a specification. They are registered in meta/registry/metaverse.json under not_claimed, with the reason, and never under standards.",
-  "static_files_only_no_rmap": "this fabric is static files a plain web server serves next to the site - the deck's own \"publish 3D content like a website\" point. No RMAP endpoint, no server, no WebSocket, no fetch at build time, no DID minted: the identity field is honestly null. Every service listed runs in-page with no network, and every anchored .glb is produced on demand by the learner's browser, not a file sitting on disk.",
+  "static_files_only_no_rmap": "this fabric is static files a plain web server serves next to the site - the deck's own \"publish 3D content like a website\" point. No RMAP endpoint, no server, no WebSocket, no fetch at build time, no DID minted: the identity field is honestly null. Every service listed runs in-page with no network, and every anchored .glb is produced on demand by the learner's browser, not a file sitting on disk. Anchoring the bundle-wide services (advisors, Schools panel, restoration panel, training recorder) at the flagship campus is a DESIGN decision unions/registry/campuses.json owns (flagship: true on exactly one campus), not a fact about where anything physically is.",
   "external_origins": "every other operator this fabric points at - a restoration site's own organization, the US Navy, EPA Region 9 and California DTSC at Hunters Point, the US Navy, California DTSC and CDPH at Former Naval Station Treasure Island, a port authority, a university, a museum, a neighbouring city - is a separate origin: named, located by its own pose, and never content this fabric serves for them (served_by_this_fabric is false on every one). That is the SOM's per-branch ownership idea, and it is the same \"not affiliated\" line restoration/ and geo/ already hold. The 111 union halls' real organizations are deliberately NOT listed as origins: the halls here are SCHEMATIC training buildings named after a craft, not a union's premises.",
-  "not_loaded_in_any_browser": "nothing here has been opened in Sneeze, Artemis or any other metaverse browser. The only consumers this pack can defend are a reader of application/geopose+json and this bundle's own suite (spatial/test.mjs), which holds every pose against its source registry on every run."
+  "not_loaded_in_any_browser": "nothing here has been opened in Sneeze, Artemis or any other metaverse browser. The only consumers this pack can defend are a reader of application/geopose+json and this bundle's own suite (spatial/test.mjs), which holds every pose against its source registry on every run.",
+  "reachability_probe": {
+   "date": "2026-09-26",
+   "dates": [
+    "2026-09-25",
+    "2026-09-26"
+   ],
+   "same_codes_on_every_date": true,
+   "how": "curl -sS -o /dev/null -w '%{http_code}' --max-time 20 <url>, once per URL per date, from the build container through its egress proxy with TLS verification on and HTTPS_PROXY as configured; no retry loop, no proxy bypass, no TLS switched off",
+   "tried": [
+    {
+     "url": "https://github.com/rp1-com",
+     "sought": "the RP1 organization - OMBI lead architect and maintainer",
+     "http_code": "403",
+     "curl_exit": 0,
+     "meaning": "HTTP 403 from the egress proxy: the CONNECT was refused (organization policy denial), nothing from the host itself"
+    },
+    {
+     "url": "https://github.com/open-metaverse-browser",
+     "sought": "the Open Metaverse Browser Initiative organization",
+     "http_code": "403",
+     "curl_exit": 0,
+     "meaning": "HTTP 403 from the egress proxy: the CONNECT was refused (organization policy denial), nothing from the host itself"
+    },
+    {
+     "url": "https://api.github.com/search/repositories?q=ombi+spatial+fabric",
+     "sought": "a repository search for the fabric-manifest / SOM / RMAP texts",
+     "http_code": "403",
+     "curl_exit": 0,
+     "meaning": "HTTP 403 from the egress proxy: the CONNECT was refused (organization policy denial), nothing from the host itself"
+    },
+    {
+     "url": "https://metaverse-standards.org/",
+     "sought": "the Metaverse Standards Forum's own site, OMBI's home",
+     "http_code": "000",
+     "curl_exit": 56,
+     "meaning": "no HTTP response at all: curl exited 56, \"CONNECT tunnel failed, response 403\", so %{http_code} printed 000; the proxy status log records \"gateway answered 403 to CONNECT\" for this host"
+    },
+    {
+     "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+     "sought": "OGC GeoPose 1.0 (21-056r11), the one CLAIMED standard - its text was not readable from here either; the Basic-YPR encoding used is the one confirmed in the brief and in the OSCP GeoPose Protocol",
+     "http_code": "000",
+     "curl_exit": 56,
+     "meaning": "no HTTP response at all: curl exited 56, \"CONNECT tunnel failed, response 403\", so %{http_code} printed 000; the proxy status log records \"gateway answered 403 to CONNECT\" for this host"
+    }
+   ],
+   "answered_2xx": 0,
+   "so": "this is why OMBI is not claimed: none of the hosts that would hold the fabric-manifest, SOM or RMAP normative text answered from this build, so fabric.json and som.json remain SHAPED after the deck and are registered in meta/ under not_claimed",
+   "revisit_rule": "if any URL above ever answers 2xx the pack must be REVISITED: spatial/build.py refuses to build and spatial/test.mjs fails by URL, rather than quietly keep saying unreachable",
+   "provenance": "RECORDED - each code is what curl returned on the date given; nothing here is assumed, and the build itself fetched nothing"
+  }
  },
  "poses": [
   {

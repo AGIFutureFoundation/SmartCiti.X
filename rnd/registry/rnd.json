@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-22",
- "source_stamp": "4524991db5241c73",
+ "source_stamp": "bcae2d45c2d5c5b0",
  "contract": "this pack states no fact of its own. Every value in it is read out of another file at build time and carries the path and the locator it was read with, so a reader can resolve any entry back to its source and disagree with it there rather than here. Three questions are answered: what has been measured, what is declared and unbuilt, and where the known gaps are - plus the budgets those measurements govern, the suites that hold the assurance, and the questions this bundle records as open.",
  "honesty": {
   "status": "DERIVED: nothing in this registry was authored as a fact about the bundle. Every number is read from a named file through a named locator, and the suite re-resolves every pointer against the live file rather than trusting the value stored here.",
@@ -31,15 +31,15 @@
   "declared_unbuilt_not_drawn": 7,
   "declared_unbuilt_documented_but_not_drawn": 3,
   "declared_unbuilt_read_by_nothing": 4,
-  "gaps": 17,
-  "gaps_open": 16,
+  "gaps": 20,
+  "gaps_open": 19,
   "gaps_closed": 1,
   "widest_gap_share": 0.0,
   "budget_views": 3,
   "budget_currencies": 2,
   "budget_agreements": 7,
   "suites_run": 53,
-  "suite_checks_declared": 2377,
+  "suite_checks_declared": 2387,
   "open_questions": 12,
   "negative_findings": 9,
   "cross_checks": 2,
@@ -1349,7 +1349,7 @@
     "kind": "json",
     "path": "counts.total"
    },
-   "when": "2026-09-16",
+   "when": "2026-09-26",
    "conditions": "computed by spatial/build.py from the registries it reads; re-computed on every build of that pack",
    "method": "derived arithmetic over another pack's registry, not an observation of anything rendered",
    "why": "every one is height-zero and heading-zero with UNKNOWN, which the pack states rather than implies"
@@ -1918,9 +1918,12 @@
    "doc_renderers": [
     "wiki/build_wiki.py"
    ],
-   "builders": [],
+   "builders": [
+    "spatial/build.py"
+   ],
    "suites": [
-    "roadmap/test.mjs"
+    "roadmap/test.mjs",
+    "spatial/test.mjs"
    ],
    "own_pack": [
     "parcels/build.py",
@@ -2199,8 +2202,12 @@
     "web/build_3d.py"
    ],
    "doc_renderers": [],
-   "builders": [],
-   "suites": [],
+   "builders": [
+    "spatial/build.py"
+   ],
+   "suites": [
+    "spatial/test.mjs"
+   ],
    "own_pack": [
     "terrain/build.py",
     "terrain/test.mjs"
@@ -2806,6 +2813,48 @@
    ],
    "how": "spatial/registry/geopose.json#counts.total over that plus #counts.unposed",
    "note": "the one unposed subject is a bay-wide program that pins no single coordinate, and the pack refuses to invent one for it"
+  },
+  {
+   "id": "spatial.poses_with_height",
+   "question": "how many GeoPoses carry a real height rather than h = 0 UNKNOWN",
+   "have": 0,
+   "of": 89,
+   "unit": "poses",
+   "share": 0.0,
+   "missing": 89,
+   "sources": [
+    "spatial/registry/geopose.json"
+   ],
+   "how": "spatial/registry/geopose.json#coverage.poses_with_height over #coverage.poses",
+   "note": "zero on purpose: terrain/ is a Natural Earth water mask with no elevation, and USGS elevation is a browser-only lookup never stored, so every pose emits h = 0 with an UNKNOWN sidecar rather than a number"
+  },
+  {
+   "id": "spatial.poses_with_heading",
+   "question": "how many GeoPoses carry a real heading rather than yaw = 0 UNKNOWN",
+   "have": 0,
+   "of": 89,
+   "unit": "poses",
+   "share": 0.0,
+   "missing": 89,
+   "sources": [
+    "spatial/registry/geopose.json"
+   ],
+   "how": "spatial/registry/geopose.json#coverage.poses_with_heading over #coverage.poses",
+   "note": "zero on purpose: no registry in this bundle records which way anything faces, so no heading is invented to fill the slot"
+  },
+  {
+   "id": "spatial.doors_resolving",
+   "question": "how many Scene Object Model leaves open a door that resolves to a page target",
+   "have": 146,
+   "of": 226,
+   "unit": "leaves",
+   "share": 0.646,
+   "missing": 80,
+   "sources": [
+    "spatial/registry/som.json"
+   ],
+   "how": "spatial/registry/som.json#doors.branches_whose_door_resolves over #doors.leaves",
+   "note": "the rest can only be named: external origins - institutions, sites, a bay-wide program - this fabric points at and does not serve, which is per-branch ownership working rather than a hole"
   }
  ],
  "budgets": {
@@ -3287,7 +3336,7 @@
    {
     "suite": "spatial/test.mjs",
     "pack": "spatial",
-    "readme_checks": 45,
+    "readme_checks": 55,
     "declared": true,
     "in_readme_table": true
    },
@@ -3360,8 +3409,8 @@
   "suites_without_a_count": [
    "control/soak.mjs"
   ],
-  "declared_total": 2377,
-  "readme_headline": 2388,
+  "declared_total": 2387,
+  "readme_headline": 2398,
   "unaccounted_for": 11,
   "unaccounted_note": "the headline counts every `  ok ` line verify_all.sh sees, which includes suites the README table gives no number to and web/test_interiors.py, which the table does not list at all. The difference is that remainder and is computed, not reconciled by hand.",
   "min": 9,

@@ -168,7 +168,7 @@ demand by the learner's own browser — never files sitting on disk),
 23 embedded services and
 66 external origins.
 
-this fabric is static files a plain web server serves next to the site - the deck's own "publish 3D content like a website" point. No RMAP endpoint, no server, no WebSocket, no fetch at build time, no DID minted: the identity field is honestly null. Every service listed runs in-page with no network, and every anchored .glb is produced on demand by the learner's browser, not a file sitting on disk.
+this fabric is static files a plain web server serves next to the site - the deck's own "publish 3D content like a website" point. No RMAP endpoint, no server, no WebSocket, no fetch at build time, no DID minted: the identity field is honestly null. Every service listed runs in-page with no network, and every anchored .glb is produced on demand by the learner's browser, not a file sitting on disk. Anchoring the bundle-wide services (advisors, Schools panel, restoration panel, training recorder) at the flagship campus is a DESIGN decision unions/registry/campuses.json owns (flagship: true on exactly one campus), not a fact about where anything physically is.
 
 ### The services — every one in-page, no network
 
@@ -205,8 +205,8 @@ every other operator this fabric points at - a restoration site's own organizati
 **The SOM-shaped scene graph** (`spatial/registry/som.json`) has one
 branch per origin: this fabric's own branch (owner
 *SmartCiti.X : Trade Craft Academy (powered by AGI Corp)*, provenance tiers
-AUTHORED, DERIVED, RECORDED, SCHEMATIC,
-145 nodes) and
+AUTHORED, DERIVED, RECORDED, SCHEMATIC, SCRIPTED,
+146 nodes) and
 66 external branches. The invariant the
 build and the suite both assert: every branch has exactly one owner; no external branch contains a place, content or service this fabric serves, and every node this fabric serves sits under its own branch - asserted by spatial/build.py and spatial/test.mjs
 

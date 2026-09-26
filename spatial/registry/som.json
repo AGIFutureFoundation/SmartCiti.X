@@ -2,8 +2,8 @@
  "pack": "smartcitix-trade-craft-academy-spatial-fabric",
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
- "built": "2026-09-16",
- "source_stamp": "4042572cdc54051f",
+ "built": "2026-09-26",
+ "source_stamp": "44791c03a34daad7",
  "shape": "authored from the public OMBI deck and press, Q3 2026 - not validated against a normative specification, and not loaded in any metaverse browser (Sneeze, Artemis) by this build",
  "root": {
   "id": "som:root",
@@ -18,7 +18,8 @@
      "AUTHORED",
      "DERIVED",
      "RECORDED",
-     "SCHEMATIC"
+     "SCHEMATIC",
+     "SCRIPTED"
     ],
     "children": [
      {
@@ -27,6 +28,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "DERIVED",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "campus",
+       "value": "treasure-island",
+       "href": "web/trade_craft_3d.html?campus=treasure-island",
+       "resolves": true
+      },
       "place": "place:treasure-island",
       "walk": true
      },
@@ -36,6 +44,13 @@
       "geopose": "campus:oakland",
       "provenance": "RECORDED",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "campus",
+       "value": "oakland",
+       "href": "web/trade_craft_3d.html?campus=oakland",
+       "resolves": true
+      },
       "place": "place:oakland",
       "walk": true
      },
@@ -45,6 +60,13 @@
       "geopose": "campus:new-orleans",
       "provenance": "DERIVED",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "campus",
+       "value": "new-orleans",
+       "href": "web/trade_craft_3d.html?campus=new-orleans",
+       "resolves": true
+      },
       "place": "place:new-orleans",
       "walk": true
      },
@@ -54,6 +76,13 @@
       "geopose": "campus:houston",
       "provenance": "AUTHORED",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "campus",
+       "value": "houston",
+       "href": "web/trade_craft_3d.html?campus=houston",
+       "resolves": true
+      },
       "place": "place:houston",
       "walk": true
      },
@@ -63,6 +92,13 @@
       "geopose": "campus:chicago",
       "provenance": "AUTHORED",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "campus",
+       "value": "chicago",
+       "href": "web/trade_craft_3d.html?campus=chicago",
+       "resolves": true
+      },
       "place": "place:chicago",
       "walk": true
      },
@@ -72,6 +108,13 @@
       "geopose": "campus:seattle",
       "provenance": "AUTHORED",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "campus",
+       "value": "seattle",
+       "href": "web/trade_craft_3d.html?campus=seattle",
+       "resolves": true
+      },
       "place": "place:seattle",
       "walk": true
      },
@@ -81,6 +124,13 @@
       "geopose": "campus:pittsburgh",
       "provenance": "AUTHORED",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "campus",
+       "value": "pittsburgh",
+       "href": "web/trade_craft_3d.html?campus=pittsburgh",
+       "resolves": true
+      },
       "place": "place:pittsburgh",
       "walk": true
      },
@@ -90,6 +140,13 @@
       "geopose": "campus:denver",
       "provenance": "AUTHORED",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "campus",
+       "value": "denver",
+       "href": "web/trade_craft_3d.html?campus=denver",
+       "resolves": true
+      },
       "place": "place:denver",
       "walk": true
      },
@@ -99,6 +156,13 @@
       "geopose": "campus:miami",
       "provenance": "AUTHORED",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "campus",
+       "value": "miami",
+       "href": "web/trade_craft_3d.html?campus=miami",
+       "resolves": true
+      },
       "place": "place:miami",
       "walk": true
      },
@@ -108,6 +172,13 @@
       "geopose": "campus:detroit",
       "provenance": "AUTHORED",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "campus",
+       "value": "detroit",
+       "href": "web/trade_craft_3d.html?campus=detroit",
+       "resolves": true
+      },
       "place": "place:detroit",
       "walk": true
      },
@@ -117,6 +188,13 @@
       "geopose": null,
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": null,
+       "value": null,
+       "href": "web/trade_craft_3d.html",
+       "resolves": true
+      },
       "export": "avatar-glb",
       "produced_on_demand": true
      },
@@ -126,6 +204,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "ironworkers",
+       "href": "web/trade_craft_3d.html?hall=ironworkers",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -135,6 +220,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "electricians",
+       "href": "web/trade_craft_3d.html?hall=electricians",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -144,6 +236,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "pipefitters",
+       "href": "web/trade_craft_3d.html?hall=pipefitters",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -153,6 +252,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "carpenters",
+       "href": "web/trade_craft_3d.html?hall=carpenters",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -162,6 +268,13 @@
       "geopose": "campus:oakland",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "operating-eng",
+       "href": "web/trade_craft_3d.html?hall=operating-eng",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -171,6 +284,13 @@
       "geopose": "campus:oakland",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "laborers",
+       "href": "web/trade_craft_3d.html?hall=laborers",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -180,6 +300,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "sheetmetal",
+       "href": "web/trade_craft_3d.html?hall=sheetmetal",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -189,6 +316,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "bricklayers",
+       "href": "web/trade_craft_3d.html?hall=bricklayers",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -198,6 +332,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "cement-masons",
+       "href": "web/trade_craft_3d.html?hall=cement-masons",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -207,6 +348,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "roofers",
+       "href": "web/trade_craft_3d.html?hall=roofers",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -216,6 +364,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "painters",
+       "href": "web/trade_craft_3d.html?hall=painters",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -225,6 +380,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "glaziers",
+       "href": "web/trade_craft_3d.html?hall=glaziers",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -234,6 +396,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "insulators",
+       "href": "web/trade_craft_3d.html?hall=insulators",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -243,6 +412,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "millwrights",
+       "href": "web/trade_craft_3d.html?hall=millwrights",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -252,6 +428,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "boilermakers",
+       "href": "web/trade_craft_3d.html?hall=boilermakers",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -261,6 +444,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "elevator",
+       "href": "web/trade_craft_3d.html?hall=elevator",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -270,6 +460,13 @@
       "geopose": "campus:oakland",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "teamsters",
+       "href": "web/trade_craft_3d.html?hall=teamsters",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -279,6 +476,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "welders",
+       "href": "web/trade_craft_3d.html?hall=welders",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -288,6 +492,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "hvacr",
+       "href": "web/trade_craft_3d.html?hall=hvacr",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -297,6 +508,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "crane-ops",
+       "href": "web/trade_craft_3d.html?hall=crane-ops",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -306,6 +524,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "riggers",
+       "href": "web/trade_craft_3d.html?hall=riggers",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -315,6 +540,13 @@
       "geopose": "campus:oakland",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "heavy-equip",
+       "href": "web/trade_craft_3d.html?hall=heavy-equip",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -324,6 +556,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "drywall",
+       "href": "web/trade_craft_3d.html?hall=drywall",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -333,6 +572,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "flooring",
+       "href": "web/trade_craft_3d.html?hall=flooring",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -342,6 +588,13 @@
       "geopose": "campus:oakland",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "grounds",
+       "href": "web/trade_craft_3d.html?hall=grounds",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -351,6 +604,13 @@
       "geopose": "campus:new-orleans",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "line-workers",
+       "href": "web/trade_craft_3d.html?hall=line-workers",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -360,6 +620,13 @@
       "geopose": "campus:new-orleans",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "solar",
+       "href": "web/trade_craft_3d.html?hall=solar",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -369,6 +636,13 @@
       "geopose": "campus:new-orleans",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "wind",
+       "href": "web/trade_craft_3d.html?hall=wind",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -378,6 +652,13 @@
       "geopose": "campus:oakland",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "demolition",
+       "href": "web/trade_craft_3d.html?hall=demolition",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -387,6 +668,13 @@
       "geopose": "campus:oakland",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "scaffold",
+       "href": "web/trade_craft_3d.html?hall=scaffold",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -396,6 +684,13 @@
       "geopose": "campus:new-orleans",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "surveyors",
+       "href": "web/trade_craft_3d.html?hall=surveyors",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -405,6 +700,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "fire-sprinkler",
+       "href": "web/trade_craft_3d.html?hall=fire-sprinkler",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -414,6 +716,13 @@
       "geopose": "campus:new-orleans",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "hazmat",
+       "href": "web/trade_craft_3d.html?hall=hazmat",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -423,6 +732,13 @@
       "geopose": "campus:oakland",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "refractory",
+       "href": "web/trade_craft_3d.html?hall=refractory",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -432,6 +748,13 @@
       "geopose": "campus:oakland",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "pipeline",
+       "href": "web/trade_craft_3d.html?hall=pipeline",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -441,6 +764,13 @@
       "geopose": "campus:oakland",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "tank-erectors",
+       "href": "web/trade_craft_3d.html?hall=tank-erectors",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -450,6 +780,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "shipfitters",
+       "href": "web/trade_craft_3d.html?hall=shipfitters",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -459,6 +796,13 @@
       "geopose": "campus:oakland",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "marine-pipe",
+       "href": "web/trade_craft_3d.html?hall=marine-pipe",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -468,6 +812,13 @@
       "geopose": "campus:oakland",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "divers",
+       "href": "web/trade_craft_3d.html?hall=divers",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -477,6 +828,13 @@
       "geopose": "campus:oakland",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "blasters",
+       "href": "web/trade_craft_3d.html?hall=blasters",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -486,6 +844,13 @@
       "geopose": "campus:oakland",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "miners",
+       "href": "web/trade_craft_3d.html?hall=miners",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -495,6 +860,13 @@
       "geopose": "campus:oakland",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "smelter",
+       "href": "web/trade_craft_3d.html?hall=smelter",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -504,6 +876,13 @@
       "geopose": "campus:oakland",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "foundry",
+       "href": "web/trade_craft_3d.html?hall=foundry",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -513,6 +892,13 @@
       "geopose": "campus:oakland",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "machinists",
+       "href": "web/trade_craft_3d.html?hall=machinists",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -522,6 +908,13 @@
       "geopose": "campus:oakland",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "toolmakers",
+       "href": "web/trade_craft_3d.html?hall=toolmakers",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -531,6 +924,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "fabricators",
+       "href": "web/trade_craft_3d.html?hall=fabricators",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -540,6 +940,13 @@
       "geopose": "campus:oakland",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "platers",
+       "href": "web/trade_craft_3d.html?hall=platers",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -549,6 +956,13 @@
       "geopose": "campus:new-orleans",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "substation",
+       "href": "web/trade_craft_3d.html?hall=substation",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -558,6 +972,13 @@
       "geopose": "campus:new-orleans",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "cable-splicers",
+       "href": "web/trade_craft_3d.html?hall=cable-splicers",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -567,6 +988,13 @@
       "geopose": "campus:new-orleans",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "meter-techs",
+       "href": "web/trade_craft_3d.html?hall=meter-techs",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -576,6 +1004,13 @@
       "geopose": "campus:new-orleans",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "gas-distrib",
+       "href": "web/trade_craft_3d.html?hall=gas-distrib",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -585,6 +1020,13 @@
       "geopose": "campus:new-orleans",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "water-distrib",
+       "href": "web/trade_craft_3d.html?hall=water-distrib",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -594,6 +1036,13 @@
       "geopose": "campus:new-orleans",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "wastewater",
+       "href": "web/trade_craft_3d.html?hall=wastewater",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -603,6 +1052,13 @@
       "geopose": "campus:new-orleans",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "nuclear",
+       "href": "web/trade_craft_3d.html?hall=nuclear",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -612,6 +1068,13 @@
       "geopose": "campus:new-orleans",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "hydro",
+       "href": "web/trade_craft_3d.html?hall=hydro",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -621,6 +1084,13 @@
       "geopose": "campus:new-orleans",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "geothermal",
+       "href": "web/trade_craft_3d.html?hall=geothermal",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -630,6 +1100,13 @@
       "geopose": "campus:new-orleans",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "battery-storage",
+       "href": "web/trade_craft_3d.html?hall=battery-storage",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -639,6 +1116,13 @@
       "geopose": "campus:new-orleans",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "ev-charging",
+       "href": "web/trade_craft_3d.html?hall=ev-charging",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -648,6 +1132,13 @@
       "geopose": "campus:new-orleans",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "hydrogen",
+       "href": "web/trade_craft_3d.html?hall=hydrogen",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -657,6 +1148,13 @@
       "geopose": "campus:new-orleans",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "transmission",
+       "href": "web/trade_craft_3d.html?hall=transmission",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -666,6 +1164,13 @@
       "geopose": "campus:new-orleans",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "district-energy",
+       "href": "web/trade_craft_3d.html?hall=district-energy",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -675,6 +1180,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "masonry-restore",
+       "href": "web/trade_craft_3d.html?hall=masonry-restore",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -684,6 +1196,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "stone-carvers",
+       "href": "web/trade_craft_3d.html?hall=stone-carvers",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -693,6 +1212,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "plasterers",
+       "href": "web/trade_craft_3d.html?hall=plasterers",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -702,6 +1228,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "terrazzo",
+       "href": "web/trade_craft_3d.html?hall=terrazzo",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -711,6 +1244,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "tilesetters",
+       "href": "web/trade_craft_3d.html?hall=tilesetters",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -720,6 +1260,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "lathers",
+       "href": "web/trade_craft_3d.html?hall=lathers",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -729,6 +1276,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "curtainwall",
+       "href": "web/trade_craft_3d.html?hall=curtainwall",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -738,6 +1292,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "waterproofers",
+       "href": "web/trade_craft_3d.html?hall=waterproofers",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -747,6 +1308,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "firestop",
+       "href": "web/trade_craft_3d.html?hall=firestop",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -756,6 +1324,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "acoustic",
+       "href": "web/trade_craft_3d.html?hall=acoustic",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -765,6 +1340,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "cladding",
+       "href": "web/trade_craft_3d.html?hall=cladding",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -774,6 +1356,13 @@
       "geopose": "campus:oakland",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "shoring",
+       "href": "web/trade_craft_3d.html?hall=shoring",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -783,6 +1372,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "piling",
+       "href": "web/trade_craft_3d.html?hall=piling",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -792,6 +1388,13 @@
       "geopose": "campus:oakland",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "concrete-pump",
+       "href": "web/trade_craft_3d.html?hall=concrete-pump",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -801,6 +1404,13 @@
       "geopose": "campus:oakland",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "post-tension",
+       "href": "web/trade_craft_3d.html?hall=post-tension",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -810,6 +1420,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "precast",
+       "href": "web/trade_craft_3d.html?hall=precast",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -819,6 +1436,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "steel-erectors",
+       "href": "web/trade_craft_3d.html?hall=steel-erectors",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -828,6 +1452,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "decking",
+       "href": "web/trade_craft_3d.html?hall=decking",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -837,6 +1468,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "window-glazing",
+       "href": "web/trade_craft_3d.html?hall=window-glazing",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -846,6 +1484,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "bas-controls",
+       "href": "web/trade_craft_3d.html?hall=bas-controls",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -855,6 +1500,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "fire-alarm",
+       "href": "web/trade_craft_3d.html?hall=fire-alarm",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -864,6 +1516,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "security-sys",
+       "href": "web/trade_craft_3d.html?hall=security-sys",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -873,6 +1532,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "network-cabling",
+       "href": "web/trade_craft_3d.html?hall=network-cabling",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -882,6 +1548,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "fiber-splicers",
+       "href": "web/trade_craft_3d.html?hall=fiber-splicers",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -891,6 +1564,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "data-center",
+       "href": "web/trade_craft_3d.html?hall=data-center",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -900,6 +1580,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "instrumentation",
+       "href": "web/trade_craft_3d.html?hall=instrumentation",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -909,6 +1596,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "plc-techs",
+       "href": "web/trade_craft_3d.html?hall=plc-techs",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -918,6 +1612,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "robotics",
+       "href": "web/trade_craft_3d.html?hall=robotics",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -927,6 +1628,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "automation-int",
+       "href": "web/trade_craft_3d.html?hall=automation-int",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -936,6 +1644,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "cleanroom",
+       "href": "web/trade_craft_3d.html?hall=cleanroom",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -945,6 +1660,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "medical-gas",
+       "href": "web/trade_craft_3d.html?hall=medical-gas",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -954,6 +1676,13 @@
       "geopose": "campus:oakland",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "rail-track",
+       "href": "web/trade_craft_3d.html?hall=rail-track",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -963,6 +1692,13 @@
       "geopose": "campus:oakland",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "rail-signals",
+       "href": "web/trade_craft_3d.html?hall=rail-signals",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -972,6 +1708,13 @@
       "geopose": "campus:oakland",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "catenary",
+       "href": "web/trade_craft_3d.html?hall=catenary",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -981,6 +1724,13 @@
       "geopose": "campus:oakland",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "transit-vehicle",
+       "href": "web/trade_craft_3d.html?hall=transit-vehicle",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -990,6 +1740,13 @@
       "geopose": "campus:oakland",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "aviation-ground",
+       "href": "web/trade_craft_3d.html?hall=aviation-ground",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -999,6 +1756,13 @@
       "geopose": "campus:oakland",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "airfield",
+       "href": "web/trade_craft_3d.html?hall=airfield",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -1008,6 +1772,13 @@
       "geopose": "campus:oakland",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "port-crane",
+       "href": "web/trade_craft_3d.html?hall=port-crane",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -1017,6 +1788,13 @@
       "geopose": "campus:oakland",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "marine-terminal",
+       "href": "web/trade_craft_3d.html?hall=marine-terminal",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -1026,6 +1804,13 @@
       "geopose": "campus:oakland",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "fleet-diesel",
+       "href": "web/trade_craft_3d.html?hall=fleet-diesel",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -1035,6 +1820,13 @@
       "geopose": "campus:oakland",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "bridge-inspect",
+       "href": "web/trade_craft_3d.html?hall=bridge-inspect",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -1044,6 +1836,13 @@
       "geopose": "campus:new-orleans",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "asbestos",
+       "href": "web/trade_craft_3d.html?hall=asbestos",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -1053,6 +1852,13 @@
       "geopose": "campus:new-orleans",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "lead-abatement",
+       "href": "web/trade_craft_3d.html?hall=lead-abatement",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -1062,6 +1868,13 @@
       "geopose": "campus:new-orleans",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "mold-remediation",
+       "href": "web/trade_craft_3d.html?hall=mold-remediation",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -1071,6 +1884,13 @@
       "geopose": "campus:new-orleans",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "spill-response",
+       "href": "web/trade_craft_3d.html?hall=spill-response",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -1080,6 +1900,13 @@
       "geopose": "campus:new-orleans",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "confined-space",
+       "href": "web/trade_craft_3d.html?hall=confined-space",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -1089,6 +1916,13 @@
       "geopose": "campus:new-orleans",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "high-angle",
+       "href": "web/trade_craft_3d.html?hall=high-angle",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -1098,6 +1932,13 @@
       "geopose": "campus:new-orleans",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "site-safety",
+       "href": "web/trade_craft_3d.html?hall=site-safety",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -1107,6 +1948,13 @@
       "geopose": "campus:new-orleans",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "industrial-clean",
+       "href": "web/trade_craft_3d.html?hall=industrial-clean",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -1116,6 +1964,13 @@
       "geopose": "campus:new-orleans",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "hall",
+       "value": "survey-drone",
+       "href": "web/trade_craft_3d.html?hall=survey-drone",
+       "resolves": true
+      },
       "export": "hall-glb",
       "produced_on_demand": true
      },
@@ -1125,6 +1980,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "sim",
+       "value": "crane-lift",
+       "href": "web/trade_craft_3d.html?sim=crane-lift",
+       "resolves": true
+      },
       "transport": "in-page, no network"
      },
      {
@@ -1133,6 +1995,13 @@
       "geopose": "campus:oakland",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "sim",
+       "value": "excavator-trench",
+       "href": "web/trade_craft_3d.html?sim=excavator-trench",
+       "resolves": true
+      },
       "transport": "in-page, no network"
      },
      {
@@ -1141,6 +2010,13 @@
       "geopose": "campus:oakland",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "sim",
+       "value": "forklift-run",
+       "href": "web/trade_craft_3d.html?sim=forklift-run",
+       "resolves": true
+      },
       "transport": "in-page, no network"
      },
      {
@@ -1149,6 +2025,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "sim",
+       "value": "weld-bead",
+       "href": "web/trade_craft_3d.html?sim=weld-bead",
+       "resolves": true
+      },
       "transport": "in-page, no network"
      },
      {
@@ -1157,6 +2040,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "sim",
+       "value": "scaffold-bay",
+       "href": "web/trade_craft_3d.html?sim=scaffold-bay",
+       "resolves": true
+      },
       "transport": "in-page, no network"
      },
      {
@@ -1165,6 +2055,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "sim",
+       "value": "rigging-signals",
+       "href": "web/trade_craft_3d.html?sim=rigging-signals",
+       "resolves": true
+      },
       "transport": "in-page, no network"
      },
      {
@@ -1173,6 +2070,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "sim",
+       "value": "load-chart",
+       "href": "web/trade_craft_3d.html?sim=load-chart",
+       "resolves": true
+      },
       "transport": "in-page, no network"
      },
      {
@@ -1181,6 +2085,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "sim",
+       "value": "pressure-washer",
+       "href": "web/trade_craft_3d.html?sim=pressure-washer",
+       "resolves": true
+      },
       "transport": "in-page, no network"
      },
      {
@@ -1189,6 +2100,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "sim",
+       "value": "airless-sprayer",
+       "href": "web/trade_craft_3d.html?sim=airless-sprayer",
+       "resolves": true
+      },
       "transport": "in-page, no network"
      },
      {
@@ -1197,6 +2115,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "sim",
+       "value": "boom-lift",
+       "href": "web/trade_craft_3d.html?sim=boom-lift",
+       "resolves": true
+      },
       "transport": "in-page, no network"
      },
      {
@@ -1205,6 +2130,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "sim",
+       "value": "overhead-crane",
+       "href": "web/trade_craft_3d.html?sim=overhead-crane",
+       "resolves": true
+      },
       "transport": "in-page, no network"
      },
      {
@@ -1213,6 +2145,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "AUTHORED",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "campus",
+       "value": "treasure-island",
+       "href": "web/trade_craft_3d.html?campus=treasure-island",
+       "resolves": true
+      },
       "transport": "in-page, no network"
      },
      {
@@ -1221,6 +2160,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "AUTHORED",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "campus",
+       "value": "treasure-island",
+       "href": "web/trade_craft_3d.html?campus=treasure-island",
+       "resolves": true
+      },
       "transport": "in-page, no network"
      },
      {
@@ -1229,6 +2175,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "campus",
+       "value": "treasure-island",
+       "href": "web/trade_craft_3d.html?campus=treasure-island",
+       "resolves": true
+      },
       "transport": "in-page, no network"
      },
      {
@@ -1237,6 +2190,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "campus",
+       "value": "treasure-island",
+       "href": "web/trade_craft_3d.html?campus=treasure-island",
+       "resolves": true
+      },
       "transport": "in-page, no network"
      },
      {
@@ -1245,6 +2205,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "campus",
+       "value": "treasure-island",
+       "href": "web/trade_craft_3d.html?campus=treasure-island",
+       "resolves": true
+      },
       "transport": "in-page, no network"
      },
      {
@@ -1253,6 +2220,13 @@
       "geopose": "campus:new-orleans",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "campus",
+       "value": "new-orleans",
+       "href": "web/trade_craft_3d.html?campus=new-orleans",
+       "resolves": true
+      },
       "transport": "in-page, no network"
      },
      {
@@ -1261,6 +2235,13 @@
       "geopose": "campus:oakland",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "campus",
+       "value": "oakland",
+       "href": "web/trade_craft_3d.html?campus=oakland",
+       "resolves": true
+      },
       "transport": "in-page, no network"
      },
      {
@@ -1269,6 +2250,13 @@
       "geopose": "campus:oakland",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "campus",
+       "value": "oakland",
+       "href": "web/trade_craft_3d.html?campus=oakland",
+       "resolves": true
+      },
       "transport": "in-page, no network"
      },
      {
@@ -1277,6 +2265,13 @@
       "geopose": "campus:oakland",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "campus",
+       "value": "oakland",
+       "href": "web/trade_craft_3d.html?campus=oakland",
+       "resolves": true
+      },
       "transport": "in-page, no network"
      },
      {
@@ -1285,6 +2280,13 @@
       "geopose": "campus:new-orleans",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "campus",
+       "value": "new-orleans",
+       "href": "web/trade_craft_3d.html?campus=new-orleans",
+       "resolves": true
+      },
       "transport": "in-page, no network"
      },
      {
@@ -1293,6 +2295,13 @@
       "geopose": "campus:treasure-island",
       "provenance": "AUTHORED",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "campus",
+       "value": "treasure-island",
+       "href": "web/trade_craft_3d.html?campus=treasure-island",
+       "resolves": true
+      },
       "transport": "in-page, no network"
      },
      {
@@ -1301,7 +2310,33 @@
       "geopose": "campus:treasure-island",
       "provenance": "SCHEMATIC",
       "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": "campus",
+       "value": "treasure-island",
+       "href": "web/trade_craft_3d.html?campus=treasure-island",
+       "resolves": true
+      },
       "transport": "in-page, no network"
+     },
+     {
+      "kind": "export",
+      "name": "export:gltf",
+      "geopose": null,
+      "provenance": "SCRIPTED",
+      "served_by_this_fabric": true,
+      "door": {
+       "page": "web/trade_craft_3d.html",
+       "param": null,
+       "value": null,
+       "href": "web/trade_craft_3d.html",
+       "resolves": true
+      },
+      "transport": "learner-triggered, in the learner's own browser: the running page serialises the live scene with three.js GLTFExporter ({binary: true}) and hands the bytes to the browser as a model/gltf-binary download - wrapped in a STORE-method .zip where a host mediates saves. No server, no network, no file on disk, nothing fetched.",
+      "exports": [
+       "avatar-glb",
+       "hall-glb"
+      ]
      }
     ]
    },
@@ -1319,14 +2354,20 @@
       "name": "San Francisco",
       "geopose": "anchor:treasure-island/san-francisco",
       "provenance": "RECORDED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      },
      {
       "kind": "anchor",
       "name": "San Francisco",
       "geopose": "anchor:oakland/san-francisco",
       "provenance": "RECORDED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      }
     ]
    },
@@ -1344,14 +2385,20 @@
       "name": "Emeryville",
       "geopose": "anchor:treasure-island/emeryville",
       "provenance": "RECORDED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      },
      {
       "kind": "anchor",
       "name": "Emeryville",
       "geopose": "anchor:oakland/emeryville",
       "provenance": "RECORDED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      }
     ]
    },
@@ -1369,7 +2416,10 @@
       "name": "Oakland",
       "geopose": "anchor:treasure-island/oakland",
       "provenance": "RECORDED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      }
     ]
    },
@@ -1387,14 +2437,20 @@
       "name": "Tiburon",
       "geopose": "anchor:treasure-island/tiburon",
       "provenance": "RECORDED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      },
      {
       "kind": "anchor",
       "name": "Tiburon",
       "geopose": "anchor:oakland/tiburon",
       "provenance": "RECORDED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      }
     ]
    },
@@ -1412,14 +2468,20 @@
       "name": "Albany",
       "geopose": "anchor:treasure-island/albany",
       "provenance": "RECORDED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      },
      {
       "kind": "anchor",
       "name": "Albany",
       "geopose": "anchor:oakland/albany",
       "provenance": "RECORDED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      }
     ]
    },
@@ -1437,14 +2499,20 @@
       "name": "Berkeley",
       "geopose": "anchor:treasure-island/berkeley",
       "provenance": "RECORDED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      },
      {
       "kind": "anchor",
       "name": "Berkeley",
       "geopose": "anchor:oakland/berkeley",
       "provenance": "RECORDED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      }
     ]
    },
@@ -1462,14 +2530,20 @@
       "name": "Sausalito",
       "geopose": "anchor:treasure-island/sausalito",
       "provenance": "RECORDED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      },
      {
       "kind": "anchor",
       "name": "Sausalito",
       "geopose": "anchor:oakland/sausalito",
       "provenance": "RECORDED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      }
     ]
    },
@@ -1487,14 +2561,20 @@
       "name": "El Cerrito",
       "geopose": "anchor:treasure-island/el-cerrito",
       "provenance": "RECORDED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      },
      {
       "kind": "anchor",
       "name": "El Cerrito",
       "geopose": "anchor:oakland/el-cerrito",
       "provenance": "RECORDED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      }
     ]
    },
@@ -1512,14 +2592,20 @@
       "name": "Piedmont",
       "geopose": "anchor:treasure-island/piedmont",
       "provenance": "RECORDED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      },
      {
       "kind": "anchor",
       "name": "Piedmont",
       "geopose": "anchor:oakland/piedmont",
       "provenance": "RECORDED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      }
     ]
    },
@@ -1537,14 +2623,20 @@
       "name": "Richmond",
       "geopose": "anchor:treasure-island/richmond",
       "provenance": "RECORDED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      },
      {
       "kind": "anchor",
       "name": "Richmond",
       "geopose": "anchor:oakland/richmond",
       "provenance": "RECORDED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      }
     ]
    },
@@ -1562,14 +2654,20 @@
       "name": "Alameda",
       "geopose": "anchor:treasure-island/alameda",
       "provenance": "RECORDED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      },
      {
       "kind": "anchor",
       "name": "Alameda",
       "geopose": "anchor:oakland/alameda",
       "provenance": "RECORDED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      }
     ]
    },
@@ -1587,14 +2685,20 @@
       "name": "Daly City",
       "geopose": "anchor:treasure-island/daly-city",
       "provenance": "RECORDED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      },
      {
       "kind": "anchor",
       "name": "Daly City",
       "geopose": "anchor:oakland/daly-city",
       "provenance": "RECORDED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      }
     ]
    },
@@ -1612,14 +2716,20 @@
       "name": "Orinda",
       "geopose": "anchor:treasure-island/orinda",
       "provenance": "RECORDED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      },
      {
       "kind": "anchor",
       "name": "Orinda",
       "geopose": "anchor:oakland/orinda",
       "provenance": "RECORDED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      }
     ]
    },
@@ -1637,7 +2747,10 @@
       "name": "Mill Valley",
       "geopose": "anchor:treasure-island/mill-valley",
       "provenance": "RECORDED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      }
     ]
    },
@@ -1655,14 +2768,20 @@
       "name": "South San Francisco",
       "geopose": "anchor:treasure-island/south-san-francisco",
       "provenance": "RECORDED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      },
      {
       "kind": "anchor",
       "name": "South San Francisco",
       "geopose": "anchor:oakland/south-san-francisco",
       "provenance": "RECORDED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      }
     ]
    },
@@ -1680,14 +2799,20 @@
       "name": "San Leandro",
       "geopose": "anchor:treasure-island/san-leandro",
       "provenance": "RECORDED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      },
      {
       "kind": "anchor",
       "name": "San Leandro",
       "geopose": "anchor:oakland/san-leandro",
       "provenance": "RECORDED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      }
     ]
    },
@@ -1705,7 +2830,10 @@
       "name": "San Rafael",
       "geopose": "anchor:treasure-island/san-rafael",
       "provenance": "RECORDED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      }
     ]
    },
@@ -1723,7 +2851,10 @@
       "name": "Lafayette",
       "geopose": "anchor:oakland/lafayette",
       "provenance": "RECORDED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      }
     ]
    },
@@ -1741,7 +2872,10 @@
       "name": "Castro Valley",
       "geopose": "anchor:oakland/castro-valley",
       "provenance": "RECORDED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      }
     ]
    },
@@ -1759,7 +2893,10 @@
       "name": "Walnut Creek",
       "geopose": "anchor:oakland/walnut-creek",
       "provenance": "RECORDED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      }
     ]
    },
@@ -1777,7 +2914,10 @@
       "name": "Tulane University",
       "geopose": "anchor:new-orleans/tulane-university",
       "provenance": "RECORDED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      }
     ]
    },
@@ -1795,7 +2935,10 @@
       "name": "Xavier University",
       "geopose": "anchor:new-orleans/xavier-university",
       "provenance": "RECORDED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      }
     ]
    },
@@ -1813,7 +2956,10 @@
       "name": "University of New Orleans",
       "geopose": "anchor:new-orleans/university-of-new-orleans",
       "provenance": "RECORDED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      }
     ]
    },
@@ -1831,7 +2977,10 @@
       "name": "Delgado Community College",
       "geopose": "anchor:new-orleans/delgado-community-college",
       "provenance": "RECORDED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      }
     ]
    },
@@ -1849,7 +2998,10 @@
       "name": "Loyola University",
       "geopose": "anchor:new-orleans/loyola-university",
       "provenance": "RECORDED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      }
     ]
    },
@@ -1867,7 +3019,10 @@
       "name": "Dillard University",
       "geopose": "anchor:new-orleans/dillard-university",
       "provenance": "RECORDED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      }
     ]
    },
@@ -1885,7 +3040,10 @@
       "name": "SUNO",
       "geopose": "anchor:new-orleans/suno",
       "provenance": "RECORDED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      }
     ]
    },
@@ -1903,7 +3061,10 @@
       "name": "Port of Houston Authority",
       "geopose": "anchor:houston/port-of-houston-authority",
       "provenance": "AUTHORED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      }
     ]
    },
@@ -1921,7 +3082,10 @@
       "name": "University of Houston",
       "geopose": "anchor:houston/university-of-houston",
       "provenance": "AUTHORED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      }
     ]
    },
@@ -1939,7 +3103,10 @@
       "name": "San Jacinto College",
       "geopose": "anchor:houston/san-jacinto-college",
       "provenance": "AUTHORED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      }
     ]
    },
@@ -1957,7 +3124,10 @@
       "name": "Houston Community College",
       "geopose": "anchor:houston/houston-community-college",
       "provenance": "AUTHORED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      }
     ]
    },
@@ -1975,7 +3145,10 @@
       "name": "Chicago Union Station",
       "geopose": "anchor:chicago/chicago-union-station",
       "provenance": "AUTHORED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      }
     ]
    },
@@ -1993,7 +3166,10 @@
       "name": "Navy Pier",
       "geopose": "anchor:chicago/navy-pier",
       "provenance": "AUTHORED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      }
     ]
    },
@@ -2011,7 +3187,10 @@
       "name": "University of Illinois Chicago",
       "geopose": "anchor:chicago/university-of-illinois-chicago",
       "provenance": "AUTHORED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      }
     ]
    },
@@ -2029,7 +3208,10 @@
       "name": "Richard J. Daley College",
       "geopose": "anchor:chicago/richard-j-daley-college",
       "provenance": "AUTHORED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      }
     ]
    },
@@ -2047,7 +3229,10 @@
       "name": "Port of Seattle",
       "geopose": "anchor:seattle/port-of-seattle",
       "provenance": "AUTHORED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      }
     ]
    },
@@ -2065,7 +3250,10 @@
       "name": "University of Washington",
       "geopose": "anchor:seattle/university-of-washington",
       "provenance": "AUTHORED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      }
     ]
    },
@@ -2083,7 +3271,10 @@
       "name": "Museum of Flight",
       "geopose": "anchor:seattle/museum-of-flight",
       "provenance": "AUTHORED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      }
     ]
    },
@@ -2101,7 +3292,10 @@
       "name": "South Seattle College",
       "geopose": "anchor:seattle/south-seattle-college",
       "provenance": "AUTHORED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      }
     ]
    },
@@ -2119,7 +3313,10 @@
       "name": "Port of Pittsburgh Commission",
       "geopose": "anchor:pittsburgh/port-of-pittsburgh-commission",
       "provenance": "AUTHORED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      }
     ]
    },
@@ -2137,7 +3334,10 @@
       "name": "Carnegie Mellon University",
       "geopose": "anchor:pittsburgh/carnegie-mellon-university",
       "provenance": "AUTHORED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      }
     ]
    },
@@ -2155,7 +3355,10 @@
       "name": "Carrie Blast Furnaces National Historic Landmark",
       "geopose": "anchor:pittsburgh/carrie-blast-furnaces-national-historic-landmark",
       "provenance": "AUTHORED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      }
     ]
    },
@@ -2173,7 +3376,10 @@
       "name": "Community College of Allegheny County",
       "geopose": "anchor:pittsburgh/community-college-of-allegheny-county",
       "provenance": "AUTHORED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      }
     ]
    },
@@ -2191,7 +3397,10 @@
       "name": "Colorado School of Mines",
       "geopose": "anchor:denver/colorado-school-of-mines",
       "provenance": "AUTHORED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      }
     ]
    },
@@ -2209,7 +3418,10 @@
       "name": "National Renewable Energy Laboratory",
       "geopose": "anchor:denver/national-renewable-energy-laboratory",
       "provenance": "AUTHORED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      }
     ]
    },
@@ -2227,7 +3439,10 @@
       "name": "Denver Union Station",
       "geopose": "anchor:denver/denver-union-station",
       "provenance": "AUTHORED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      }
     ]
    },
@@ -2245,7 +3460,10 @@
       "name": "Community College of Denver",
       "geopose": "anchor:denver/community-college-of-denver",
       "provenance": "AUTHORED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      }
     ]
    },
@@ -2263,7 +3481,10 @@
       "name": "PortMiami",
       "geopose": "anchor:miami/portmiami",
       "provenance": "AUTHORED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      }
     ]
    },
@@ -2281,7 +3502,10 @@
       "name": "NOAA Atlantic Oceanographic and Meteorological Laboratory",
       "geopose": "anchor:miami/noaa-atlantic-oceanographic-and-meteorological-laboratory",
       "provenance": "AUTHORED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      }
     ]
    },
@@ -2299,7 +3523,10 @@
       "name": "University of Miami",
       "geopose": "anchor:miami/university-of-miami",
       "provenance": "AUTHORED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      }
     ]
    },
@@ -2317,7 +3544,10 @@
       "name": "Miami Dade College",
       "geopose": "anchor:miami/miami-dade-college",
       "provenance": "AUTHORED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      }
     ]
    },
@@ -2335,7 +3565,10 @@
       "name": "Detroit/Wayne County Port Authority",
       "geopose": "anchor:detroit/detroit-wayne-county-port-authority",
       "provenance": "AUTHORED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      }
     ]
    },
@@ -2353,7 +3586,10 @@
       "name": "Wayne State University",
       "geopose": "anchor:detroit/wayne-state-university",
       "provenance": "AUTHORED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      }
     ]
    },
@@ -2371,7 +3607,10 @@
       "name": "The Henry Ford",
       "geopose": "anchor:detroit/the-henry-ford",
       "provenance": "AUTHORED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      }
     ]
    },
@@ -2389,7 +3628,10 @@
       "name": "Wayne County Community College District",
       "geopose": "anchor:detroit/wayne-county-community-college-district",
       "provenance": "AUTHORED",
-      "served_by_this_fabric": false
+      "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed"
      }
     ]
    },
@@ -2408,6 +3650,9 @@
       "geopose": "restoration-site:herons-head",
       "provenance": "AUTHORED",
       "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed",
       "walkable": true,
       "category": "habitat-restoration"
      }
@@ -2428,6 +3673,9 @@
       "geopose": "restoration-site:candlestick-point",
       "provenance": "AUTHORED",
       "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed",
       "walkable": true,
       "category": "habitat-restoration"
      }
@@ -2448,6 +3696,9 @@
       "geopose": "restoration-site:east-oakland-youth",
       "provenance": "AUTHORED",
       "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed",
       "walkable": true,
       "category": "habitat-restoration"
      }
@@ -2468,6 +3719,9 @@
       "geopose": "restoration-site:alviso-shoreline",
       "provenance": "AUTHORED",
       "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed",
       "walkable": true,
       "category": "habitat-restoration"
      }
@@ -2488,6 +3742,9 @@
       "geopose": "restoration-site:south-bay-salt-ponds",
       "provenance": "AUTHORED",
       "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed",
       "walkable": true,
       "category": "habitat-restoration"
      }
@@ -2508,6 +3765,9 @@
       "geopose": "restoration-site:montezuma-wetlands",
       "provenance": "AUTHORED",
       "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed",
       "walkable": true,
       "category": "habitat-restoration"
      }
@@ -2528,6 +3788,9 @@
       "geopose": "restoration-site:american-canyon",
       "provenance": "AUTHORED",
       "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed",
       "walkable": true,
       "category": "habitat-restoration"
      }
@@ -2548,6 +3811,9 @@
       "geopose": "restoration-site:straw-north-bay",
       "provenance": "AUTHORED",
       "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed",
       "walkable": true,
       "category": "habitat-restoration"
      }
@@ -2568,6 +3834,9 @@
       "geopose": null,
       "provenance": "AUTHORED",
       "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed",
       "why_no_geopose": "no GeoPose: the registry pins no single coordinate for this bay-wide program (pin: false, lat/lng null), and this build invents none"
      }
     ]
@@ -2587,6 +3856,9 @@
       "geopose": "restoration-site:hunters-point-shipyard",
       "provenance": "AUTHORED",
       "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed",
       "walkable": false,
       "category": "environmental-monitoring"
      }
@@ -2607,6 +3879,9 @@
       "geopose": "restoration-site:treasure-island-nsti",
       "provenance": "AUTHORED",
       "served_by_this_fabric": false,
+      "door": null,
+      "named_only": true,
+      "why_no_door": "an external origin: this fabric names it and locates it by its own pose, and serves nothing for it, so there is no door - a browser would compose that operator's own fabric here, if one existed",
       "walkable": false,
       "category": "environmental-monitoring"
      }
@@ -2619,15 +3894,103 @@
   "counts": {
    "branches": 67,
    "external_branches": 66,
-   "fabric_nodes": 145
+   "fabric_nodes": 146
   }
+ },
+ "doors": {
+  "unit": "leaves of som:root - the children of every branch, never the branches themselves (those are owners; see invariants.counts)",
+  "page": "web/trade_craft_3d.html",
+  "measured_against": "the <script id=\"data\"> payload of the built page: D.halls[].slug for ?hall=, Object.keys(D.sims.sims) for ?sim=, Object.keys(D.campuses) for ?campus=; the page itself for a door with no parameter",
+  "roster_sizes": {
+   "hall": 111,
+   "sim": 11,
+   "campus": 10
+  },
+  "leaves": 226,
+  "branches_with_a_door": 146,
+  "branches_whose_door_resolves": 146,
+  "branches_that_can_only_be_named": 80,
+  "doors_by_parameter": {
+   "campus": 22,
+   "entry-page": 2,
+   "hall": 111,
+   "sim": 11
+  },
+  "rule": "a door to nothing fails the build by name (spatial/build.py) and the suite by href (spatial/test.mjs); every leaf this fabric serves has a door, and every leaf it only names has none"
+ },
+ "ownership": {
+  "rule": "one owner per branch: every leaf this fabric serves stands on a pose of its own (a campus), every external leaf stands on the pose of the operator it names (an anchor or a restoration site), and no pose is shared between the two",
+  "this_fabric_pose_kinds": [
+   "campus"
+  ],
+  "external_pose_kinds": [
+   "anchor",
+   "restoration-site"
+  ],
+  "poses_shared_between_this_fabric_and_an_external_branch": 0,
+  "external_origins": 66,
+  "external_origins_served_by_this_fabric": 0,
+  "external_origins_without_a_named_operator": 0,
+  "fabric_leaves_on_an_external_pose": 0,
+  "site_panels_anchored_at_external_poses": 10,
+  "site_panels_note": "these are fabric.json#services[restoration-panel].site_panels: this fabric's own AUTHORED panels about a site, each anchored at the site's pose; they are not SOM leaves and serve nothing for the operator"
  },
  "honesty": {
   "geopose_claimed": "OGC GeoPose 1.0 (OGC 21-056r11) is a published standard with a confirmed Basic-YPR JSON encoding, and it is claimed outright: every pose in geopose.json is exactly {position: {lat, lon, h}, orientation: {yaw, pitch, roll}}, lat/lon in degrees, h in metres, angles in degrees, LTP-ENU inner frame. The horizontal position is copied at build time from the registry that owns it and carries that registry's own provenance word (RECORDED / DERIVED / AUTHORED) and source string.",
   "no_heights_or_headings": "this bundle holds no height and no heading for any campus, anchor or site - elevation exists only as an on-request live USGS 3DEP lookup in the learner's own browser, never stored - so every pose emits h = 0.0 and yaw = pitch = roll = 0 with an explicit UNKNOWN sidecar beside it. A zero here is a placeholder, never a measurement, and no height or heading is invented to fill the slot.",
   "ombi_not_claimed": "the OMBI spatial-fabric manifest, the Scene Object Model (SOM) and RMAP are marked \"OMBI - New\" in the public deck and their normative texts were not reachable from this build, so fabric.json and som.json are SHAPED after the deck's vocabulary, not validated against a specification. They are registered in meta/registry/metaverse.json under not_claimed, with the reason, and never under standards.",
-  "static_files_only_no_rmap": "this fabric is static files a plain web server serves next to the site - the deck's own \"publish 3D content like a website\" point. No RMAP endpoint, no server, no WebSocket, no fetch at build time, no DID minted: the identity field is honestly null. Every service listed runs in-page with no network, and every anchored .glb is produced on demand by the learner's browser, not a file sitting on disk.",
+  "static_files_only_no_rmap": "this fabric is static files a plain web server serves next to the site - the deck's own \"publish 3D content like a website\" point. No RMAP endpoint, no server, no WebSocket, no fetch at build time, no DID minted: the identity field is honestly null. Every service listed runs in-page with no network, and every anchored .glb is produced on demand by the learner's browser, not a file sitting on disk. Anchoring the bundle-wide services (advisors, Schools panel, restoration panel, training recorder) at the flagship campus is a DESIGN decision unions/registry/campuses.json owns (flagship: true on exactly one campus), not a fact about where anything physically is.",
   "external_origins": "every other operator this fabric points at - a restoration site's own organization, the US Navy, EPA Region 9 and California DTSC at Hunters Point, the US Navy, California DTSC and CDPH at Former Naval Station Treasure Island, a port authority, a university, a museum, a neighbouring city - is a separate origin: named, located by its own pose, and never content this fabric serves for them (served_by_this_fabric is false on every one). That is the SOM's per-branch ownership idea, and it is the same \"not affiliated\" line restoration/ and geo/ already hold. The 111 union halls' real organizations are deliberately NOT listed as origins: the halls here are SCHEMATIC training buildings named after a craft, not a union's premises.",
-  "not_loaded_in_any_browser": "nothing here has been opened in Sneeze, Artemis or any other metaverse browser. The only consumers this pack can defend are a reader of application/geopose+json and this bundle's own suite (spatial/test.mjs), which holds every pose against its source registry on every run."
+  "not_loaded_in_any_browser": "nothing here has been opened in Sneeze, Artemis or any other metaverse browser. The only consumers this pack can defend are a reader of application/geopose+json and this bundle's own suite (spatial/test.mjs), which holds every pose against its source registry on every run.",
+  "reachability_probe": {
+   "date": "2026-09-26",
+   "dates": [
+    "2026-09-25",
+    "2026-09-26"
+   ],
+   "same_codes_on_every_date": true,
+   "how": "curl -sS -o /dev/null -w '%{http_code}' --max-time 20 <url>, once per URL per date, from the build container through its egress proxy with TLS verification on and HTTPS_PROXY as configured; no retry loop, no proxy bypass, no TLS switched off",
+   "tried": [
+    {
+     "url": "https://github.com/rp1-com",
+     "sought": "the RP1 organization - OMBI lead architect and maintainer",
+     "http_code": "403",
+     "curl_exit": 0,
+     "meaning": "HTTP 403 from the egress proxy: the CONNECT was refused (organization policy denial), nothing from the host itself"
+    },
+    {
+     "url": "https://github.com/open-metaverse-browser",
+     "sought": "the Open Metaverse Browser Initiative organization",
+     "http_code": "403",
+     "curl_exit": 0,
+     "meaning": "HTTP 403 from the egress proxy: the CONNECT was refused (organization policy denial), nothing from the host itself"
+    },
+    {
+     "url": "https://api.github.com/search/repositories?q=ombi+spatial+fabric",
+     "sought": "a repository search for the fabric-manifest / SOM / RMAP texts",
+     "http_code": "403",
+     "curl_exit": 0,
+     "meaning": "HTTP 403 from the egress proxy: the CONNECT was refused (organization policy denial), nothing from the host itself"
+    },
+    {
+     "url": "https://metaverse-standards.org/",
+     "sought": "the Metaverse Standards Forum's own site, OMBI's home",
+     "http_code": "000",
+     "curl_exit": 56,
+     "meaning": "no HTTP response at all: curl exited 56, \"CONNECT tunnel failed, response 403\", so %{http_code} printed 000; the proxy status log records \"gateway answered 403 to CONNECT\" for this host"
+    },
+    {
+     "url": "https://docs.ogc.org/is/21-056r11/21-056r11.html",
+     "sought": "OGC GeoPose 1.0 (21-056r11), the one CLAIMED standard - its text was not readable from here either; the Basic-YPR encoding used is the one confirmed in the brief and in the OSCP GeoPose Protocol",
+     "http_code": "000",
+     "curl_exit": 56,
+     "meaning": "no HTTP response at all: curl exited 56, \"CONNECT tunnel failed, response 403\", so %{http_code} printed 000; the proxy status log records \"gateway answered 403 to CONNECT\" for this host"
+    }
+   ],
+   "answered_2xx": 0,
+   "so": "this is why OMBI is not claimed: none of the hosts that would hold the fabric-manifest, SOM or RMAP normative text answered from this build, so fabric.json and som.json remain SHAPED after the deck and are registered in meta/ under not_claimed",
+   "revisit_rule": "if any URL above ever answers 2xx the pack must be REVISITED: spatial/build.py refuses to build and spatial/test.mjs fails by URL, rather than quietly keep saying unreachable",
+   "provenance": "RECORDED - each code is what curl returned on the date given; nothing here is assumed, and the build itself fetched nothing"
+  }
  }
 }
