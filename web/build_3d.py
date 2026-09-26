@@ -333,6 +333,11 @@ DATA = json.dumps({
     'roomDefs': ROOM_DEFS,
     'layouts': [lay for _, lay in LAY_LIST],
     'finCat': finishes_reg['catalogue'],
+    # the state rule's axes, and only the axes: the page derives a room's
+    # state from its base with surfaces/states.js, the same function the
+    # surfaces suite holds every emitted state to, rather than carrying
+    # 1,220 rows it can compute (§24.4)
+    'stateAxes': finishes_reg['states']['axes'],
     'step': {'fam': STEP_FAMILIES, 'floor': FLOOR_STEP, 'ground': GROUND_STEP},
     'wallCat': finishes_reg['wall_catalogue'],
     'wallMaps': [m for _, m in WALL_MAPS],
@@ -1021,7 +1026,7 @@ function simYard(g, hw, hd, cx = 0, cz = 0, simId = curSimId) {
      laid here with the same relief every hall floor got. */
   const yard = D.sims.sims[simId]?.yard;
   if (yard) {
-    const fin = D.finCat[yard.surface];
+    const fin = yardFin(yard);
     const fmat = finishMat(fin, hw * 2 / U * 2, hd * 2 / U * 2);
     const floor = new THREE.Mesh(boxGeo(hw * 2, .12, hd * 2), fmat);
     floor.position.set(cx, -.06, cz); floor.receiveShadow = true;
@@ -8071,6 +8076,26 @@ function surfaceMaps(color, pattern) {
   return out;
 }
 
+__STATES_JS__
+/* A room shows the STATE of its finish, not the catalogue entry: what its
+   governing hazards have done to the floor it was given (the registry
+   wrote the state id per room), derived here from the same axes the
+   registry published. A yard is outdoors, so it also takes the weather:
+   the wet fraction the world pack declares per weather, against the
+   threshold the surfaces pack declares, decides whether the yard's
+   finish is shown wet - the same arithmetic wetGround() applies to the
+   campus ground, read from one rule instead of written twice. */
+function roomFin(pf) {
+  const base = D.finCat[pf.surface];
+  const st = parseStateId(pf.state);
+  return st ? stateOf(base, st.wear, st.intensity, st.wet, D.stateAxes) : base;
+}
+function yardFin(yard) {
+  const base = D.finCat[yard.surface];
+  const wet = (WX[wx]?.wet ?? 0) >= D.stateAxes.wet.weather_wet_at_least;
+  return stateOf(base, 'worn', 'heavy', wet, D.stateAxes);
+}
+
 /* A room's floor material, at the repeat its own tile size asks for. The
    canvas underneath is shared through surfaceMaps; only the repeat differs
    per room, so the texture pair is cloned and the clone carries the
@@ -8393,7 +8418,7 @@ function buildHall(sg) {
   for (const r of h.rooms) {
     const rw = r.w * U, rd = r.h * U;
     const rx = cx(r.x * U + rw/2), rz = cz(r.y * U + rd/2);
-    const fin = D.finCat[D.finishes[h.slug][r.strand].surface];
+    const fin = roomFin(D.finishes[h.slug][r.strand]);
     const fmat = finishMat(fin, (rw - .3) / U * 2, (rd - .3) / U * 2);
     const floor = new THREE.Mesh(boxGeo(rw - .3, .06, rd - .3), fmat);
     floor.position.set(rx, .38, rz); floor.receiveShadow = true;
@@ -11652,7 +11677,16 @@ function openRoom(roomLabel) {
           ? ` <span class="chip">${pf.hazard}</span>`
           : pf.placed_by === 'craft'
             ? ` <span class="chip">${pf.craft}</span>` : '') +
-        `<br><span style="color:var(--muted)">${fin.why}.</span></p>` +
+        `<br><span style="color:var(--muted)">${fin.why}.</span>` +
+        /* the state the room shows, and the driver that put it there: the
+           registry's own words for the wear, the intensity and the wet */
+        (() => { const st = parseStateId(pf.state); if (!st) return '';
+          const ax = D.stateAxes;
+          return `<br><span class="chip">${st.wear}</span> <span class="chip">${st.intensity}</span>`
+            + (st.wet ? ' <span class="chip">wet</span>' : '')
+            + `<br><span style="color:var(--muted);font-size:12px">${ax.wear[st.wear].mark}; `
+            + `${ax.intensity[st.intensity].how}${st.wet ? '; ' + ax.wet.why : ''}. state: DERIVED</span>`; })() +
+        `</p>` +
         (() => { const c = condOf(h.slug, r.strand);
           return `<p style="color:var(--muted);font-size:13px">${condLine(c)}` +
             (c.hazards?.length
@@ -12610,6 +12644,12 @@ page = page.replace('__GUIDE_JS__', GUIDE_JS)
 page = page.replace('__AVATAR_JS__', AVATAR_JS)
 page = page.replace('__ADVISOR_JS__', ADVISOR_JS)
 page = page.replace('__GROUND_TRUTH_JS__', GROUND_TRUTH_JS)
+# The state rule's JS twin, read from the file the surfaces suite imports,
+# so the page derives with the function the suite verified and not a copy.
+STATES_JS = (ROOT / 'surfaces/states.js').read_text().replace('export function', 'function')
+page = page.replace('__STATES_JS__', STATES_JS)
+assert 'function stateOf(base, wear, intensity, wet, axes)' in page, 'the state twin is not on the page'
+assert page.count('roomFin(') >= 2 and 'yardFin(yard)' in page, 'a room or a yard is not reading its state'
 
 # ---------------------------------------------------------- guide gate ---
 # The guide answers about wherever you are standing, and it routes by the

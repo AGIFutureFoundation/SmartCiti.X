@@ -64,6 +64,8 @@ CAMPUSES = len(world['atmos'])
 SEATS = len(sims['sims'])
 FLOORS = len(surfaces['catalogue'])
 WALLS = len(surfaces['wall_catalogue'])
+STATES = surfaces['states']['count']
+STATES_IN_ROOMS = surfaces['states']['in_rooms']
 PATTERNS = len(surfaces['patterns'])
 GROUNDS = len(world['ground'])
 WEATHER = len(world['weather'])
@@ -646,7 +648,8 @@ BODY = f"""<body>
 <footer><div class="wrap">
   <p>{esc(i18n_en['strings'].get('honesty.modules', ''))}</p>
   <p>Built from {n(FLOORS)} floor finishes, {n(WALLS)} wall finishes and
-    {n(PATTERNS)} surface patterns over {n(GROUNDS)} ground recipes and
+    {n(PATTERNS)} surface patterns, shown in {n(STATES)} rule-derived surface states
+    ({n(STATES_IN_ROOMS)} standing in a room today), over {n(GROUNDS)} ground recipes and
     {n(WEATHER)} weather states; {n(STATIONS)} training stations;
     {n(ADVISORS)} advisors and {n(CREWS)} crews of {n(CREW_ROLES)} roles;
     {n(LABEL_KINDS)} kinds of sign; a locker of {n(AV_ALL)} options across
@@ -671,6 +674,7 @@ BODY = f"""<body>
 # needs to go and find it.
 _DERIVED = {
     HALLS, CAMPUSES, SEATS, FLOORS, WALLS, PATTERNS, GROUNDS, WEATHER,
+    STATES, STATES_IN_ROOMS,   # the surface states, read off the surfaces registry
     STATIONS, ADVISORS, CREWS, CREW_ROLES, LABEL_KINDS, LOCALES, SITES,
     WALKABLE, AV_SECTIONS, AV_ALL, ROOMS, MODULES, len(CARDS), len(PROV),
     FLOORS + WALLS,   # the "built surfaces" stat, a sum of two read figures

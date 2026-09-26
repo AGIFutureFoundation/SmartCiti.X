@@ -20,6 +20,7 @@
  */
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
+import { stateOf, parseStateId, mixHex } from './states.js';
 
 let n = 0;
 const ok = (m, c) => { if (!c) { console.error('FAIL', m); process.exit(1); } n++; console.log('  ok ', m); };
@@ -172,9 +173,14 @@ const deriveWall = (h, st) => {
 };
 ok('every floor and wall in the registry is exactly what the published '
   + 'rules say, hazard before craft before function',
-  Object.values(halls).every((h) => ROOM_STRANDS.every((st) =>
-    JSON.stringify(h.rooms[st]) === JSON.stringify(deriveFloor(h, st))
-    && JSON.stringify(h.walls[st]) === JSON.stringify(deriveWall(h, st)))));
+  Object.values(halls).every((h) => ROOM_STRANDS.every((st) => {
+    // the placement fields only: `state` is a separate claim, re-derived
+    // from its own rule in the states block below
+    const { state: _s, ...room } = h.rooms[st];
+    const { state: _w, ...wall } = h.walls[st];
+    return JSON.stringify(room) === JSON.stringify(deriveFloor(h, st))
+      && JSON.stringify(wall) === JSON.stringify(deriveWall(h, st));
+  })));
 
 /* The rule tables have to be about rooms and surfaces that exist, or the
    check above would be re-deriving the registry from nonsense and agreeing
@@ -472,8 +478,80 @@ ok('every hazard named anywhere carries its condition demands',
     ...Object.values(halls).flatMap((h) => h.hazards)])]
     .every((k) => k in reg.hazard_conditions));
 
+/* ------------------------------------------------------------- states --- */
+/* A finish is what a floor IS; a state is what the work has done to it.
+   The rule has three axes and every axis has a driver in data the pack
+   already holds, so a state is derived the way a placement is - and the
+   closure is held to the JS twin the page derives with, value for value,
+   so the Python and the JS cannot drift apart without this saying so. */
+const ST = reg.states, AX = ST.axes, CL = ST.closure;
+const bases = { ...cat, ...wcat };
+ok('the state rule is published once: its axes, its id form, and the closure it produces',
+  AX.wear && AX.intensity && AX.wet && ST.id_form === '<base>~<wear>-<intensity>~<wet|dry>'
+  && ST.count === Object.keys(CL).length && ST.count >= 1000);
+ok('the closure is exactly every base x wear x intensity x wet, and nothing else',
+  ST.count === Object.keys(bases).length * Object.keys(AX.wear).length
+    * Object.keys(AX.intensity).length * 2
+  && Object.entries(CL).every(([id, st]) => {
+    const p = parseStateId(id);
+    return p && bases[p.base] && p.base === st.base && p.wear === st.wear
+      && p.intensity === st.intensity && p.wet === st.wet
+      && st.kind === (cat[p.base] ? 'floor' : 'wall');
+  }));
+ok('every emitted state is exactly what surfaces/states.js derives from its base and the axes',
+  Object.entries(CL).every(([id, st]) => {
+    const p = parseStateId(id);
+    const d = stateOf(bases[p.base], p.wear, p.intensity, p.wet, AX);
+    return d.color === st.color && d.roughness === st.roughness
+      && d.metalness === st.metalness && d.pattern === st.pattern
+      && d.tile_m === st.tile_m && d.name === st.name;
+  }));
+ok('a state changes what a floor looks like, never what it is made of: pattern and tile size are inherited',
+  Object.values(CL).every((st) => st.pattern === bases[st.base].pattern
+    && st.tile_m === bases[st.base].tile_m && st.metalness === bases[st.base].metalness));
+ok('within one base every state is distinguishable, and every value stays in range',
+  Object.keys(bases).every((b) => {
+    const rows = Object.values(CL).filter((st) => st.base === b);
+    return new Set(rows.map((st) => st.color + '|' + st.roughness)).size === rows.length;
+  })
+  && Object.values(CL).every((st) => /^#[0-9a-f]{6}$/.test(st.color)
+    && st.roughness >= 0 && st.roughness <= 1 && st.why.length > 10));
+ok('every hazard class drives exactly one wear, and every strand exactly one intensity',
+  Object.keys(reg.hazard_conditions).every((h) => AX.wear_of_hazard[h] in AX.wear)
+  && ROOM_STRANDS.every((s) => AX.intensity_of_strand[s] in AX.intensity)
+  && Object.values(AX.wear).flatMap((w) => w.hazards).every((h) => AX.wear_of_hazard[h] !== 'worn'));
+ok('the wet rule is the page’s own wetGround arithmetic at a wet fraction of one, and names the weather threshold it reads',
+  AX.wet.roughness_pct === 55 && AX.wet.mix_pct === 38 && AX.wet.tint === '#2b3236'
+  && AX.wet.weather_wet_at_least > 0 && AX.wet.weather_wet_at_least < 1
+  && AX.wet.hazards.every((h) => h in reg.hazard_conditions));
+/* Re-derive every room's state from the rule rather than trusting the id
+   the builder wrote: the first governing hazard that leaves a mark sets
+   the wear, a wet hazard wets it, the strand sets how heavily. */
+const governing = (h, strand) => h.hazards.filter((k) => strand in R.hazard_rooms[k]);
+ok('every room’s state re-derives from its governing hazards and strand, for its floor and its wall',
+  Object.values(halls).every((h) => Object.entries(h.rooms).every(([strand, r]) => {
+    const g = governing(h, strand);
+    const wear = g.map((k) => AX.wear_of_hazard[k]).find((w) => w !== 'worn') ?? 'worn';
+    const wet = g.some((k) => AX.wet.hazards.includes(k));
+    const want = `${wear}-${AX.intensity_of_strand[strand]}~${wet ? 'wet' : 'dry'}`;
+    return r.state === `${r.surface}~${want}` && CL[r.state]
+      && h.walls[strand].state === `${h.walls[strand].wall}~${want}` && CL[h.walls[strand].state];
+  })));
+const inRooms = new Set(Object.values(halls).flatMap((h) =>
+  [...Object.values(h.rooms).map((r) => r.state), ...Object.values(h.walls).map((w) => w.state)]));
+ok('the record says how much of the closure a room stands in today, and every wear is reached',
+  ST.in_rooms === inRooms.size && ST.in_rooms < ST.count
+  && Object.keys(AX.wear).every((w) => [...inRooms].some((id) => CL[id].wear === w)));
+ok('§24.3 holds over the states too: no product, brand, standard or spec number',
+  !/\b(ASTM|ANSI|ISO|EN|DIN|UL|NFPA)[\s-]?\d|®|™|\bclass\s+[A-Z0-9]\b/i.test(JSON.stringify(CL)));
+ok('states are DERIVED, and the honesty note says no state was drawn, photographed or picked',
+  reg.provenance.states === 'DERIVED' && /No state was drawn, photographed or picked/.test(reg.honesty.states));
+ok('the integer mix is exact: a 100% mix is the target and a 0% mix is the base',
+  mixHex('#123456', '#abcdef', 100) === '#abcdef' && mixHex('#123456', '#abcdef', 0) === '#123456');
+
 console.log(`surfaces/test: ${n} checks passed — ${Object.keys(cat).length} finishes, `
   + `${Object.keys(wcat).length} walls, ${Object.keys(pats).length} patterns, `
   + `${Object.keys(halls).length} halls, `
   + `${reg.hazards_in_use.length} hazard classes, `
-  + `${reg.crafts_in_use.length} crafts, ${sigs.size} halls that read apart`);
+  + `${reg.crafts_in_use.length} crafts, ${sigs.size} halls that read apart, `
+  + `${ST.count} derived states (${ST.in_rooms} in a room)`);

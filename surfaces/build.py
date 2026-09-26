@@ -25,7 +25,9 @@ from surfaces import (SURFACES, FUNCTION_DEFAULT, HAZARD_KEYS, hazard_of,  # noq
                       BASE_CONDITIONS, HAZARD_CONDITIONS, hazards_of,
                       merge_conditions, WALLS, WALL_DEFAULT, wall_of,
                       PATTERNS, CRAFT_KEYS, crafts_of, finish_of,
-                      HAZARD_ROOMS, CRAFT_ROOMS, WALL_HAZARD, CRAFT_WALL)
+                      HAZARD_ROOMS, CRAFT_ROOMS, WALL_HAZARD, CRAFT_WALL,
+                      WEAR, WEAR_OF_HAZARD, INTENSITY, INTENSITY_OF_STRAND,
+                      WET, all_states, room_state, state_id)
 from interiors import ROOMS  # noqa: E402
 
 # One bundle version, read from the manifest rather than typed here.
@@ -61,6 +63,14 @@ for u in unions:
         # lighting, air changes or PPE.
         governing = [k for k, hrooms in all_hz if strand in hrooms]
         conditions[strand] = merge_conditions(strand, governing)
+        # The state the room shows: what its governing hazards do to the
+        # floor and the wall it was given, how heavily its strand does it,
+        # and whether a wet hazard has just been over it. The weather's
+        # wetting is the page's to apply (a yard is outdoors; a room is
+        # not), by the same rule, from the same axes.
+        wear, intensity, wet = room_state(governing, strand)
+        rooms[strand]['state'] = state_id(rooms[strand]['surface'], wear, intensity, wet)
+        walls[strand]['state'] = state_id(walls[strand]['wall'], wear, intensity, wet)
     halls[u['slug']] = {'hazard': hz, 'hazards': [k for k, _ in all_hz],
                         'craft': craft_keys[0] if craft_keys else None,
                         'crafts': craft_keys,
@@ -100,6 +110,17 @@ for _h in halls.values():
     for _w in _h['walls'].values():
         assert _w['placed_by'] in ('hazard', 'craft', 'function'), _w
 
+# The closure of the state rule, and how much of it a room stands in today.
+# A wear no room reaches would be a rule with no driver on this network,
+# and the build refuses that the way it refuses an unplaced finish.
+STATES = all_states()
+states_in_rooms = sorted({r['state'] for h in halls.values() for r in h['rooms'].values()}
+                         | {w['state'] for h in halls.values() for w in h['walls'].values()})
+wears_reached = {STATES[sid]['wear'] for sid in states_in_rooms}
+assert wears_reached == set(WEAR), \
+    f'wear states no room on this network reaches: {sorted(set(WEAR) - wears_reached)}'
+assert all(sid in STATES for sid in states_in_rooms), 'a room names a state the rule cannot make'
+
 stamp = hashlib.sha256((HERE / 'surfaces.py').read_bytes()).hexdigest()[:16]
 
 doc = {
@@ -115,6 +136,12 @@ doc = {
                   'names a product, brand, fire rating or specification '
                   'number. A real deployment replaces these with the local '
                   'standard.',
+        'states': 'a state is what a declared rule does to an authored '
+                  'finish: wear from the room\'s hazards, intensity from '
+                  'its strand, wetting from a wet hazard or the weather. '
+                  'No state was drawn, photographed or picked; the full '
+                  'closure of the rule is emitted so any combination reads '
+                  'one value, and in_rooms says how many a room shows today.',
     },
     'catalogue': {
         sid: {'name': n, 'color': c, 'roughness': r, 'metalness': m,
@@ -183,8 +210,37 @@ doc = {
         'catalogue': 'AUTHORED',
         'placement': 'DERIVED',
         'conditions': 'DERIVED',
+        # A state is a rule applied to an authored base with a driver read
+        # from the room: derived, like the placement, and nothing more.
+        'states': 'DERIVED',
         'discipline': 'RECORDED/DERIVED/SCHEMATIC tagging after the '
                       'Locator.X rooms module (Apache-2.0)',
+    },
+    # The states: the rule's axes, published once so the page derives a
+    # state from its base the way surfaces/states.js does, and the closure
+    # of the rule, so a schedule that meets a state id reads the same value
+    # a renderer computes. `in_rooms` is how many of them stand in a room on
+    # this network today; the rest are the rule's answer to a combination
+    # no hall currently has, not a preference somebody picked.
+    'states': {
+        'axes': {
+            'wear': {w: {'target': t, 'mix_pct': p, 'roughness_delta': d,
+                         'mark': mark, 'hazards': list(hzs)}
+                     for w, (t, p, d, mark, hzs) in WEAR.items()},
+            'wear_of_hazard': dict(WEAR_OF_HAZARD),
+            'intensity': {i: {'scale_pct': sc, 'how': how}
+                          for i, (sc, how) in INTENSITY.items()},
+            'intensity_of_strand': dict(INTENSITY_OF_STRAND),
+            'wet': {'tint': WET['tint'], 'mix_pct': WET['mix_pct'],
+                    'roughness_pct': WET['roughness_pct'],
+                    'hazards': list(WET['hazards']),
+                    'weather_wet_at_least': WET['weather_wet_at_least'],
+                    'why': WET['why']},
+        },
+        'id_form': '<base>~<wear>-<intensity>~<wet|dry>',
+        'count': len(STATES),
+        'in_rooms': len(states_in_rooms),
+        'closure': STATES,
     },
     'base_conditions': {k: {'lux': v[0], 'ach': v[1], 'noise_db': v[2],
                             'temp_c': list(v[3]), 'ppe': list(v[4])}
@@ -208,4 +264,5 @@ print(f"surfaces registry: {len(SURFACES)} finishes and {len(WALLS)} walls over 
       f"{hazard_count} hazard-placed and {craft_count} craft-placed finishes, "
       f"{wall_hazard_count} hazard-placed and {wall_craft_count} craft-placed "
       f"walls, {n_none} halls with no finish-driving hazard, "
-      f"{n_wall_none} with no wall-driving hazard (source stamp {stamp})")
+      f"{n_wall_none} with no wall-driving hazard; {len(STATES)} derived states, "
+      f"{len(states_in_rooms)} standing in a room (source stamp {stamp})")

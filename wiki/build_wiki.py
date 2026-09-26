@@ -431,6 +431,15 @@ recorded only where it **changed** the outcome, and the
 finish-driving hazard say so explicitly rather than leaving a blank. The 3D
 environment renders these finishes as the room floors, pattern and all.
 
+A finish is what a floor is; a **state** is what the work has done to it.
+The same builder derives {finishes['states']['count']} states from the
+{len(finishes['catalogue']) + len(finishes['wall_catalogue'])} authored
+floors and walls by one declared rule — wear from the room's governing
+hazards, intensity from its strand, wetting from a wet hazard or the
+weather — and {finishes['states']['in_rooms']} of them stand in a room on
+this network today. No state was drawn or picked; `surfaces/states.js`
+is the rule's JS twin, and the suite holds every emitted value to it.
+
 ## Fixtures and honesty
 
 A fixture is placed only when the hall's own focus line names it — no hall

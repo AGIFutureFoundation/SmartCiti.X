@@ -139,6 +139,17 @@ ok('one surface engine serves floors and walls, and it returns a normal map besi
   && /const out = \{ map, normalMap \};/.test(fn('surfaceMaps'))
   && /function finishMat\(fin, w, d\)/.test(src)
   && /function wallMat\(wal, runM, hM\)/.test(src));
+ok('a room floor shows the STATE of its finish, derived on the page from the same axes the registry published, by the same function the surfaces suite verifies',
+  /const fin = roomFin\(D\.finishes\[h\.slug\]\[r\.strand\]\);/.test(fn('buildHall'))
+  && /return st \? stateOf\(base, st\.wear, st\.intensity, st\.wet, D\.stateAxes\) : base;/.test(fn('roomFin'))
+  && /function stateOf\(base, wear, intensity, wet, axes\)/.test(src)
+  && /'stateAxes': finishes_reg\['states'\]\['axes'\],/.test(src)
+  && !/'closure'/.test(src));
+ok('a sim yard takes the weather: wet past the threshold the surfaces pack declares, never a literal typed here',
+  /const fin = yardFin\(yard\);/.test(src)
+  && /const wet = \(WX\[wx\]\?\.wet \?\? 0\) >= D\.stateAxes\.wet\.weather_wet_at_least;/.test(fn('yardFin')));
+ok('the room panel names the state and the driver that put it there, in the registry\u2019s own words',
+  /ax\.wear\[st\.wear\]\.mark/.test(fn('openRoom')) && /state: DERIVED/.test(fn('openRoom')));
 ok('the relief is read off a height field the pattern pass drew, not off a second table that could disagree with it',
   /function paintPattern\(g, hg, pat, S2\)/.test(src)
   && /const normalMap = normalFromHeight\(h, S2, PATTERN_RELIEF\[pattern\] \?\? 0\);/.test(src)

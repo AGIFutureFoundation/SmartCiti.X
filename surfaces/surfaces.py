@@ -830,3 +830,152 @@ for _label, _table, _ix in (('finishes', SURFACES, 1), ('walls', WALLS, 1)):
     _warm = sum(1 for c in _cols if is_warm(c))
     assert len(_cols) // 4 <= _warm <= len(_cols) * 3 // 4, \
         f'the {_label} palette is all one temperature ({_warm} of {len(_cols)} warm)'
+
+
+# ------------------------------------------------------------- states -----
+# §24 gave a room a finish. A finish is what the floor IS; a room in use
+# shows what the work has DONE to it, and a yard shows what the sky has.
+# Every state below is derived from an authored base by a declared rule,
+# and every axis of the rule has a driver in data this pack already holds:
+#
+#   wear       which mark the work leaves     <- the room's governing hazards
+#   intensity  how heavily it is left         <- the room's strand
+#   wet        whether it has just been wetted <- a wet hazard, or the weather
+#
+# A state nothing drives would be a preference, which §24.1 forbids, so
+# the driver tables are closed (every hazard class maps to exactly one
+# wear, every strand to exactly one intensity) and the builder asserts that
+# every wear is reached by a room on this network. The closure of the rule
+# is emitted in full so a renderer meeting any (finish, hazard, strand,
+# weather) combination reads the same value the schedule reads; the record
+# also says how many of those states a room actually stands in today.
+#
+# Colour arithmetic is integer, per channel, toward a declared target:
+# mixed = (base * (100 - pct) + target * pct) // 100. Roughness is held in
+# hundredths. Both are so surfaces/states.js can reproduce every value
+# exactly, and the suite holds the two to each other.
+
+# wear: (target colour, mix pct at heavy, roughness delta at heavy in
+#        hundredths, the mark in words, the hazard classes that leave it)
+WEAR = {
+    'worn':     ('#8c8c8c', 16,  4, 'traffic alone marks it', ()),
+    'scuffed':  ('#3e3e3c', 20,  6, 'plant and loads track and drag across it',
+                 ('mobile-plant', 'suspended-load', 'rotating-machinery',
+                  'confined-space')),
+    'scorched': ('#3a2a22', 22,  8, 'spark and spatter reach it',
+                 ('hot-work', 'molten-metal')),
+    'stained':  ('#55604a', 18,  3, 'the process leaves its mark on it',
+                 ('corrosive', 'wet-process', 'contaminant', 'immersion',
+                  'stored-energy')),
+    'dusted':   ('#d2c9b2', 24, 10, 'what the work throws settles on it',
+                 ('particulate', 'timber-trade', 'explosives')),
+}
+WEAR_OF_HAZARD = {hz: w for w, (_, _, _, _, hzs) in WEAR.items() for hz in hzs}
+# The hazards that drive no particular mark wear the way any floor does:
+# by being walked on. Named here so the fallback is a decision, not a gap.
+for _hz in HAZARD_KEYS:
+    WEAR_OF_HAZARD.setdefault(_hz, 'worn')
+assert set(WEAR_OF_HAZARD) == set(HAZARD_KEYS), 'one wear per hazard class, exactly'
+assert all(hz in HAZARD_KEYS for w in WEAR.values() for hz in w[4]), \
+    'a wear driver must name a hazard class that exists'
+
+# intensity: the rooms the work happens in take the full mark; the rooms
+# that are walked through take half of it (integer halves, so the JS twin
+# can match).
+HEAVY_STRANDS = ('procedure', 'machines', 'materials', 'tools')
+INTENSITY = {
+    'heavy': (100, 'the work happens in this room'),
+    'light': (50, 'the room is walked through more than worked in'),
+}
+INTENSITY_OF_STRAND = {s: ('heavy' if s in HEAVY_STRANDS else 'light')
+                       for s in FUNCTION_DEFAULT}
+assert set(HEAVY_STRANDS) <= set(FUNCTION_DEFAULT), 'a heavy strand must exist'
+
+# wet: the same arithmetic the page's wetGround() applies to the campus
+# ground at a wet fraction of 1 (roughness x 0.55, colour 38% toward the
+# wet tint), so a wet yard and a wet ground agree on what water does.
+WET = {
+    'tint': '#2b3236', 'mix_pct': 38, 'roughness_pct': 55,
+    'hazards': ('wet-process', 'immersion', 'corrosive'),
+    'weather_wet_at_least': 0.4,
+    'why': 'the process or the weather has just been over it',
+}
+assert all(hz in HAZARD_KEYS for hz in WET['hazards'])
+
+
+def _rgb(h):
+    return tuple(int(h[i:i + 2], 16) for i in (1, 3, 5))
+
+
+def _hex(rgb):
+    return '#%02x%02x%02x' % rgb
+
+
+def _mix(color, target, pct):
+    a, b = _rgb(color), _rgb(target)
+    return _hex(tuple((x * (100 - pct) + y * pct) // 100 for x, y in zip(a, b)))
+
+
+def state_id(base, wear, intensity, wet):
+    return f"{base}~{wear}-{intensity}~{'wet' if wet else 'dry'}"
+
+
+def state_of(base_id, base, wear, intensity, wet):
+    """One derived state of an authored finish or wall. `base` is the
+    catalogue tuple; the result carries renderer-ready values with the
+    pattern and tile size inherited, because wear changes what a floor
+    looks like and never what it is made of."""
+    name, color, rough, metal, pattern, tile = base[:6]
+    target, pct, dr, mark, _ = WEAR[wear]
+    scale, how = INTENSITY[intensity]
+    pct_i = pct * scale // 100
+    dr_i = dr * scale // 100
+    c = _mix(color, target, pct_i)
+    r100 = min(100, max(0, round(rough * 100) + dr_i))
+    if wet:
+        c = _mix(c, WET['tint'], WET['mix_pct'])
+        r100 = r100 * WET['roughness_pct'] // 100
+    adverb = 'heavily' if intensity == 'heavy' else 'lightly'
+    return {
+        'base': base_id, 'wear': wear, 'intensity': intensity,
+        'wet': bool(wet),
+        'name': f"{name}, {adverb} {wear}{', wet' if wet else ''}",
+        'color': c, 'roughness': r100 / 100, 'metalness': metal,
+        'pattern': pattern, 'tile_m': tile,
+        'why': f"{mark}; {how}" + (f"; {WET['why']}" if wet else ''),
+    }
+
+
+def room_state(governing_hazards, strand):
+    """Which state a room shows: the first governing hazard that leaves a
+    particular mark decides the wear (order is the hazard table's, most
+    specific first); a room no hazard marks is worn by traffic; a wet
+    hazard wets it; the strand sets how heavily."""
+    wear = next((WEAR_OF_HAZARD[h] for h in governing_hazards
+                 if WEAR_OF_HAZARD[h] != 'worn'), 'worn')
+    wet = any(h in WET['hazards'] for h in governing_hazards)
+    return wear, INTENSITY_OF_STRAND[strand], wet
+
+
+def all_states():
+    """The closure of the rule over both catalogues: every base x wear x
+    intensity x wet, keyed by state id."""
+    out = {}
+    for kind, table in (('floor', SURFACES), ('wall', WALLS)):
+        for bid, base in table.items():
+            for wear in WEAR:
+                for intensity in INTENSITY:
+                    for wet in (False, True):
+                        s = state_of(bid, base, wear, intensity, wet)
+                        s['kind'] = kind
+                        out[state_id(bid, wear, intensity, wet)] = s
+    return out
+
+
+_STATES = all_states()
+assert len(_STATES) == (len(SURFACES) + len(WALLS)) * len(WEAR) * len(INTENSITY) * 2
+# Within one base every state must look different, or the axis that
+# produced the duplicate is doing no work.
+for _bid in list(SURFACES) + list(WALLS):
+    _cols = [(s['color'], s['roughness']) for s in _STATES.values() if s['base'] == _bid]
+    assert len(set(_cols)) == len(_cols), f'{_bid}: two states are indistinguishable'
