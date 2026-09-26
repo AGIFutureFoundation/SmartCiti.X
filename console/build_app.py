@@ -1076,13 +1076,18 @@ function renderCrews() {
 }
 
 /* ---------------- wiring ---------------- */
+const VIEWS = ['learn', 'graph', 'cert', 'ops', 'crews'];
+function showView(name) {
+  document.querySelectorAll('nav.views button').forEach(o => o.setAttribute('aria-selected', String(o.dataset.view === name)));
+  VIEWS.forEach(v => document.getElementById('view-' + v).classList.toggle('hidden', v !== name));
+  if (location.hash !== '#' + name) history.replaceState(null, '', '#' + name);
+}
 document.querySelectorAll('nav.views button').forEach(b => {
-  b.addEventListener('click', () => {
-    document.querySelectorAll('nav.views button').forEach(o => o.setAttribute('aria-selected', String(o === b)));
-    ['learn', 'graph', 'cert', 'ops', 'crews'].forEach(v =>
-      document.getElementById('view-' + v).classList.toggle('hidden', v !== b.dataset.view));
-  });
+  b.addEventListener('click', () => showView(b.dataset.view));
 });
+// a link can land on a view: the front door's "open a crew console" arrives at #crews
+const wantView = location.hash.replace('#', '');
+if (VIEWS.includes(wantView)) showView(wantView);
 $('#btn-solve').addEventListener('click', () => { step(true); advance(); });
 $('#btn-fail').addEventListener('click', () => { step(false); advance(); });
 $('#btn-run10').addEventListener('click', () => { for (let k = 0; k < 10; k++) step(null); advance(); });

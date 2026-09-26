@@ -120,8 +120,8 @@ ok('every view the page can set has exactly one place speaking for it',
     return new Set(mine).size === mine.length
       && mine.length === pageViews.size && mine.every((v) => pageViews.has(v));
   })());
-ok('the four panels are panels: no view, and the same close answer shape',
-  places.filter(([, p]) => p.kind === 'panel').length === 4
+ok('the five panels are panels: no view, and the same close answer shape',
+  places.filter(([, p]) => p.kind === 'panel').length === 5
   && places.filter(([, p]) => p.kind === 'panel')
     .every(([, p]) => p.topics.every((t) => t.id !== 'move' || t.scheme === 'panel')));
 

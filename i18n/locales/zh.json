@@ -205,7 +205,15 @@
   "map.aria.plan": "网络规划图：{n} 个工会大厅，按八个辖区分组，分布在 {c} 个已建成校区",
   "map.aria.floor": "{name} 大厅平面图：{n} 个房间",
   "map.aria.hall": "{name} — {district} 辖区，网格 {ref}",
-  "map.page_title": "网络规划图"
+  "map.page_title": "网络规划图",
+  "plaza.name": "广场",
+  "plaza.halls": "本校区的工会大厅",
+  "plaza.yard": "训练场",
+  "plaza.crews": "班组",
+  "plaza.console": "自适应控制台",
+  "plaza.network": "网络",
+  "plaza.about": "这里是什么地方",
+  "plaza.hint": "广场上的信息亭：点击一个即可打开它的面板。"
  },
  "districts": {
   "structural": {

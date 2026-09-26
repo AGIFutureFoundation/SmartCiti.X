@@ -205,7 +205,15 @@
   "map.aria.plan": "नेटवर्क योजना: {n} यूनियन हॉल, आठ जिलों में समूहीकृत, {c} निर्मित कैंपस में फैले",
   "map.aria.floor": "{name} हॉल की फ़्लोर योजना: {n} कमरे",
   "map.aria.hall": "{name} — {district} जिला, ग्रिड {ref}",
-  "map.page_title": "नेटवर्क योजना"
+  "map.page_title": "नेटवर्क योजना",
+  "plaza.name": "चौक",
+  "plaza.halls": "इस परिसर के हॉल",
+  "plaza.yard": "प्रशिक्षण यार्ड",
+  "plaza.crews": "टोलियाँ",
+  "plaza.console": "अनुकूली कंसोल",
+  "plaza.network": "नेटवर्क",
+  "plaza.about": "यह जगह क्या है",
+  "plaza.hint": "चौक पर एक कियोस्क: उसका बोर्ड खोलने के लिए किसी एक पर क्लिक करें।"
  },
  "districts": {
   "structural": {

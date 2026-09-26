@@ -205,7 +205,15 @@
   "map.aria.plan": "Plano de la red: {n} salas gremiales agrupadas en ocho distritos en {c} campus construidos",
   "map.aria.floor": "Plano de planta de la sala {name}: {n} habitaciones",
   "map.aria.hall": "{name} — distrito {district}, cuadrícula {ref}",
-  "map.page_title": "Plano de la red"
+  "map.page_title": "Plano de la red",
+  "plaza.name": "La plaza",
+  "plaza.halls": "Salas en este campus",
+  "plaza.yard": "El patio de formación",
+  "plaza.crews": "Cuadrillas",
+  "plaza.console": "La consola adaptativa",
+  "plaza.network": "La red",
+  "plaza.about": "Qué es este lugar",
+  "plaza.hint": "Un quiosco en la plaza: haz clic en uno para abrir su panel."
  },
  "districts": {
   "structural": {

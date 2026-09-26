@@ -188,7 +188,9 @@ for f in sorted((ROOT / 'i18n/locales').glob('*.json')):
             'sim.start', 'sim.results', 'sim.pass', 'sim.retry',
             'sim.sound', 'sim.view', 'sim.choose', 'progress.local',
             'city.note', 'avatar.title', 'chapters.hall',
-            'honesty.taxonomy', 'honesty.content')},
+            'honesty.taxonomy', 'honesty.content',
+            'plaza.name', 'plaza.halls', 'plaza.yard', 'plaza.crews',
+            'plaza.console', 'plaza.network', 'plaza.about', 'plaza.hint')},
         'districts': {k: v['name'] for k, v in c['districts'].items()},
         'strands': c['strands'], 'tiers': c['tiers'], 'states': c['states'],
     }
@@ -9110,7 +9112,7 @@ function dressCampus(key, g, R) {
 // the POI table stands at its true east/north offset (13 units per km,
 // walkable), joined to the ring road by SCHEMATIC avenues; the river and
 // lake bands are schematic too, and the labels say which is which.
-let cityPois = 0, walkLim = 169, cityHits = [], chapterHit = [], restorationHits = [];
+let cityPois = 0, walkLim = 169, cityHits = [], chapterHit = [], restorationHits = [], plazaHits = [];
 
 /* The regional chapter hall: one pavilion on each plaza carrying every
    union homed elsewhere - the 111-trade network made visible per campus.
@@ -9246,6 +9248,83 @@ function buildChapterHall(g, key) {
     { kind: 'district' });
   cl.position.y = 12; pav.add(cl);
 }
+/* ------------------------------------------------------------ the plaza --
+   The plaza was a paved disc with a chapter hall in the middle and nothing
+   to do on it. Five kiosks now stand in a ring between the chapter hall
+   and the walkway - halls, yard, crews, network, and what this place is -
+   and each opens a board that holds only doors: a hall on it opens as a
+   building, a seat starts from the yard, a campus takes you there, and the
+   crews board links to the console where every crew has its own page.
+   Every list is read from the registry that owns it (the roster, the sims
+   bindings, the crews), never typed; a hub campus, which hosts no halls,
+   gets the same kiosks and each board says so. */
+const PLAZA_KIOSKS = ['halls', 'yard', 'crews', 'network', 'about'];
+const PLAZA_R = 17;          // inside the 24 m walkway, clear of the chapter hall
+function buildPlaza(g, key, R) {
+  const fab = fabricOf(key);
+  plazaHits = [];
+  PLAZA_KIOSKS.forEach((kind, i) => {
+    // five around the ring starting east, so none stands on the green's
+    // dispatcher line (south) and none on the chapter hall's doorway
+    const a = i / PLAZA_KIOSKS.length * Math.PI * 2;
+    const kx = Math.cos(a) * PLAZA_R, kz = Math.sin(a) * PLAZA_R;
+    const k = new THREE.Group(); k.position.set(kx, 0, kz);
+    k.lookAt(0, 0, 0);                       // the board faces the centre
+    box(1.4, .95, .5, mat.slab, 0, .48, 0, k);           // the pedestal
+    const board = box(1.7, 1.1, .12, fab.trim, 0, 1.55, .2, k);
+    board.userData.plaza = kind; plazaHits.push(board);
+    const lb = label(t('plaza.' + kind), t('plaza.name'), 1.1, { kind: 'district' });
+    lb.position.y = 2.7; k.add(lb);
+    campusSolid(kx, kz, 1.1);
+    g.add(k);
+  });
+}
+function openPlaza(kind) {
+  // the guide answers about the board you are reading, not the plaza
+  document.getElementById('panel').dataset.guidePlace = 'panel-plaza';
+  const E = (x) => String(x).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const camp = D.campuses[campusKey];
+  const halls = camp.halls.map((sg) => D.halls.find((h) => h.slug === sg)).filter(Boolean);
+  const seats = [...new Set(camp.halls.flatMap((sg) => (D.sims.bindings[sg] ?? []).map((b) => b.sim)))];
+  const btn = (attr, val, text) =>
+    `<button class="barbtn" ${attr}="${E(val)}" style="font-size:11px;padding:2px 8px;margin:2px 4px 2px 0">${text}</button>`;
+  let body = '';
+  if (kind === 'halls') {
+    const byD = {};
+    for (const h of halls) (byD[h.district] ??= []).push(h);
+    body = halls.length
+      ? Object.entries(byD).map(([dk, hs]) => `<h3>${E(D.districts[dk]?.name ?? dk)}</h3><p>`
+          + hs.map((h) => btn('data-hall-goto', h.slug, '\u2192 ' + E(h.name))).join('') + '</p>').join('')
+      : `<p style="color:var(--muted);font-size:13px">${E(D.chapters.honesty)}</p>`;
+  } else if (kind === 'yard') {
+    body = seats.length
+      ? '<p>' + seats.map((id) => btn('data-yard-seat', id, '\u25b6 ' + E(D.sims.sims[id].name))).join('') + '</p>'
+      : `<p style="color:var(--muted)">0 ${E(t('yard.seats'))}</p>`;
+  } else if (kind === 'crews') {
+    const CR = D.crews?.crews ?? {};
+    const here = Object.entries(CR).filter(([, c]) => seats.includes(c.seat));
+    body = (here.length
+      ? here.map(([, c]) => `<h3>${E(c.name)}</h3><p style="color:var(--muted);font-size:13px">${E(c.job)}</p>`
+          + `<p>${Object.values(c.roles).map((r) => `<span class="chip">${r.glyph} ${E(r.name)}</span>`).join(' ')}</p>`).join('')
+      : `<p style="color:var(--muted)">0 ${E(t('yard.seats'))}</p>`)
+      + `<p><a class="barbtn" href="../console/trade_craft_console.html#crews">${E(t('plaza.console'))} \u2192</a></p>`;
+  } else if (kind === 'network') {
+    body = '<p>' + Object.entries(D.campuses).filter(([k]) => k !== campusKey)
+      .map(([k, c]) => btn('data-campus-goto', k, '\u2192 ' + E(c.name) + ' \u00b7 ' + c.halls.length)).join('') + '</p>';
+  } else {
+    const pl = G.places['panel-plaza'];
+    body = `<p>${E(pl.what_line)}</p>`
+      + `<p style="color:var(--muted);font-size:13px">${E(pl.topics.find((x) => x.id === 'limits').answer)}</p>`;
+  }
+  document.getElementById('pbody').innerHTML = `
+    <h2>${E(t('plaza.' + kind))}</h2>
+    <span class="chip">${E(camp.name)}</span>
+    <span class="chip">${E(t('plaza.name'))}</span>
+    ${body}`;
+  document.body.classList.add('open');
+}
+window.__tc3dPlaza = openPlaza;
+
 const CITY_S = 13;   // units per real kilometre in the city layer
 
 /* An institution's panel: the RECORDED coordinate with a live-map link
@@ -9648,7 +9727,7 @@ function buildCampus(key) {
   if (campusGroup) { scene.remove(campusGroup); disposeOf(campusGroup); }
   campusGroup = new THREE.Group(); buildings = []; beaconAt = []; solids = [];
   campusGroup.userData.key = key; campusGroup.userData.loc = loc;
-  roadFaults = 0; roadCount = 0; cityPois = 0; cityHits = []; restorationHits = [];
+  roadFaults = 0; roadCount = 0; cityPois = 0; cityHits = []; restorationHits = []; plazaHits = [];
   const camp = D.campuses[key];
   const dk = camp.districts;
   const R = dk.length === 2 ? 124 : 168;   // the campus scale: districts this far out
@@ -9769,6 +9848,7 @@ function buildCampus(key) {
   const plaza = new THREE.Mesh(new THREE.CylinderGeometry(24, 24, .3, 48),
     new THREE.MeshStandardMaterial({ map: concreteTex, color: 0xb8bdbd, roughness: .95 }));
   plaza.position.y = .15; plaza.receiveShadow = true; campusGroup.add(plaza);
+  buildPlaza(campusGroup, key, R);
   const sign = label(camp.name, camp.city + ', ' + camp.region, 3.2,
     { kind: 'campus' });
   sign.position.set(0, 18, 0); campusGroup.add(sign);
@@ -11819,6 +11899,11 @@ function pickWith(ray) {
     return;
   }
   if (view === 'campus') {
+    const khit = ray.intersectObjects(plazaHits, false)[0];
+    if (khit?.object.userData.plaza) {
+      if (walkActive) plc.unlock();
+      return openPlaza(khit.object.userData.plaza);
+    }
     const phit = ray.intersectObjects(chapterHit, false)[0];
     if (phit?.object.userData.chapters) {
       if (walkActive) plc.unlock();
@@ -11929,6 +12014,16 @@ document.addEventListener('click', (e) => {
   if (hg) {
     document.body.classList.remove('open');
     showHall(hg.dataset.hallGoto); return;
+  }
+  const cg = e.target.closest('[data-campus-goto]');
+  if (cg) {
+    document.body.classList.remove('open');
+    showCampus(cg.dataset.campusGoto); return;
+  }
+  const ys = e.target.closest('[data-yard-seat]');
+  if (ys) {
+    document.body.classList.remove('open');
+    enterSeatFromYard(ys.dataset.yardSeat); return;
   }
   const sh = e.target.closest('[data-schools-hall]');
   if (sh) { openSchools(sh.dataset.schoolsHall); return; }

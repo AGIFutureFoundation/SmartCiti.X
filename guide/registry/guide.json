@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-20",
- "source_stamp": "7e010962496b4d76",
+ "source_stamp": "7cd9290bfffd4886",
  "contract": "the guide answers six fixed questions about the place the learner is already in, and nothing else. Every answer is a sentence written in this registry with the repo file it is grounded in named in `cites`; the only thing read at view time is a control scheme, and the biggest one - a seat's own keys and its XR mapping - is read from the simulator registry rather than copied here. Nothing is generated, no model runs behind it, and the guide itself reaches no network.",
  "honesty": {
   "status": "SCRIPTED: the guide is a hand-written, deterministic script - a fixed set of places, six fixed questions each, and one fixed answer to each. No model runs behind it, nothing is generated at view time, and the guide reaches no network of its own.",
@@ -15,12 +15,12 @@
   "hands": "the hand gestures are declared, not proved: no headset has been available to this build, and they are declared to be implemented and tested against a mocked XR session only."
  },
  "counts": {
-  "places": 11,
+  "places": 12,
   "world_places": 6,
-  "panel_places": 4,
+  "panel_places": 5,
   "page_places": 1,
   "asks": 6,
-  "topics": 66,
+  "topics": 72,
   "cited_files": 15,
   "control_schemes": 5,
   "seat_schemes": 11,
@@ -482,6 +482,53 @@
     }
    ]
   },
+  "panel-plaza": {
+   "name": "The plaza kiosks",
+   "kind": "panel",
+   "view": null,
+   "walkable": false,
+   "opened_by": "clicking a kiosk on the campus plaza",
+   "what_line": "the campus at a glance: its halls, its yard, its crews, the network",
+   "topics": [
+    {
+     "id": "what",
+     "ask": "What is this panel showing me?",
+     "cites": "web/build_3d.py",
+     "answer": "Whatever the kiosk you clicked keeps: the halls on this campus by district, the seats in its training yard, the crews that muster at those seats, the other campuses of the network, or what this place is. Five kiosks stand in a ring on the plaza, between the chapter hall and the walkway."
+    },
+    {
+     "id": "do",
+     "ask": "What can I do with it?",
+     "cites": "unions/registry/campuses.json",
+     "answer": "Go somewhere. Every hall on the board opens as a building you can walk into, every seat starts its simulator, every campus on the network board takes you there, and the crews board links to the console where each crew has its own page. Nothing on a kiosk is decoration."
+    },
+    {
+     "id": "move",
+     "ask": "Where am I while this is open?",
+     "scheme": "panel",
+     "cites": "web/build_3d.py",
+     "answer": "On the plaza, exactly where you clicked. A panel slides in over the view and the view underneath is untouched. Close it and you are back on the same paving, facing the same way."
+    },
+    {
+     "id": "back",
+     "ask": "How do I close it?",
+     "cites": "web/build_3d.py",
+     "answer": "The close button in the corner of the panel. If you took a door on the board instead, you are already there; the back button in the top bar returns you to the campus, and the plaza is at its centre."
+    },
+    {
+     "id": "measures",
+     "ask": "Where do these lists come from?",
+     "cites": "sims/registry/sims.json",
+     "answer": "From the registries that own them, read when the page was built: the union roster for the halls, the simulator registry for which seats a campus hosts, the agents registry for the crews. The kiosks type no name and no count of their own."
+    },
+    {
+     "id": "limits",
+     "ask": "Is a campus on this board a real place?",
+     "cites": "unions/registry/campuses.json",
+     "answer": "It is a composition. A campus stands at a real coordinate and borrows the character of its region, but no site has been surveyed and no building here depicts one that exists. The board says which halls and seats the Academy hosts there, not what stands on the ground."
+    }
+   ]
+  },
   "panel-chapters": {
    "name": "The chapters panel",
    "kind": "panel",
@@ -758,7 +805,7 @@
    },
    "panel": {
     "name": "A panel",
-    "where": "any of the four panels, which overlay whichever view you were in",
+    "where": "any of the five panels, which overlay whichever view you were in",
     "source": "web/build_3d.py",
     "rows": [
      {

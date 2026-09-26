@@ -70,7 +70,9 @@ ok('the liveness log reads the same audit log the dial writes, filtered by actor
   /S\.audit\.entries\(\{ actor: 'heartbeat' \}\)/.test(app) && !/new AuditLog\(\)/.test(app.split('bootCrews')[1] ?? ''));
 ok('the Crews view is wired like the other four: a tab, a section, and the toggle list',
   /data-view="crews"/.test(html) && /id="view-crews"/.test(html)
-  && /\['learn', 'graph', 'cert', 'ops', 'crews'\]/.test(app));
+  && /const VIEWS = \['learn', 'graph', 'cert', 'ops', 'crews'\];/.test(app));
+ok('a link can land on a view: the page opens the view its hash names, so the front door reaches the crew consoles directly',
+  /const wantView = location\.hash\.replace\('#', ''\);\s*\n\s*if \(VIEWS\.includes\(wantView\)\) showView\(wantView\);/.test(app));
 /* Spec §25.4: the console runs in a browser, where node:fs does not exist.
    No static node: import may survive bundling and nothing may require();
    the pack library's one dynamic file read is behind its own isNode guard,

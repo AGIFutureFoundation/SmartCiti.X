@@ -5,7 +5,7 @@ SmartCiti.X : Trade Craft Academy — the guide registry builder.
 An advisor stands in a room and answers for that room. This pack declares
 the other half of the same idea: a GUIDE, one helper a learner opens from
 anywhere in the app - the region board, a campus green, a hall interior, a
-seat, a restoration site, the avatar locker, or any of the four panels -
+seat, a restoration site, the avatar locker, or any of the five panels -
 and asks the questions a person actually asks on arriving somewhere.
 
 WHAT THE GUIDE IS. A scripted helper. No model runs behind it, nothing is
@@ -121,7 +121,7 @@ ASK_SET = [
 ASK_IDS = [a['id'] for a in ASK_SET]
 
 # ----------------------------------------------------------- the places ---
-# A place is a VIEW the page already has, or one of the four panels that
+# A place is a VIEW the page already has, or one of the five panels that
 # overlay whichever view the learner was in. `view` names the page's own
 # `view` variable value and is asserted against the page source; a panel
 # carries no view because it does not change one.
@@ -599,6 +599,61 @@ PLACES = {
         ],
     },
 
+    'panel-plaza': {
+        'name': 'The plaza kiosks',
+        'kind': 'panel',
+        'view': None,
+        'walkable': False,
+        'opened_by': 'clicking a kiosk on the campus plaza',
+        'what_line': 'the campus at a glance: its halls, its yard, its crews, the network',
+        'topics': [
+            {'id': 'what', 'ask': 'What is this panel showing me?',
+             'cites': 'web/build_3d.py',
+             'answer': 'Whatever the kiosk you clicked keeps: the halls on '
+                       'this campus by district, the seats in its training '
+                       'yard, the crews that muster at those seats, the other '
+                       'campuses of the network, or what this place is. Five '
+                       'kiosks stand in a ring on the plaza, between the '
+                       'chapter hall and the walkway.'},
+            {'id': 'do', 'ask': 'What can I do with it?',
+             'cites': 'unions/registry/campuses.json',
+             'answer': 'Go somewhere. Every hall on the board opens as a '
+                       'building you can walk into, every seat starts its '
+                       'simulator, every campus on the network board takes '
+                       'you there, and the crews board links to the console '
+                       'where each crew has its own page. Nothing on a kiosk '
+                       'is decoration.'},
+            {'id': 'move', 'ask': 'Where am I while this is open?',
+             'scheme': 'panel',
+             'cites': 'web/build_3d.py',
+             'answer': 'On the plaza, exactly where you clicked. A panel '
+                       'slides in over the view and the view underneath is '
+                       'untouched. Close it and you are back on the same '
+                       'paving, facing the same way.'},
+            {'id': 'back', 'ask': 'How do I close it?',
+             'cites': 'web/build_3d.py',
+             'answer': 'The close button in the corner of the panel. If you '
+                       'took a door on the board instead, you are already '
+                       'there; the back button in the top bar returns you to '
+                       'the campus, and the plaza is at its centre.'},
+            {'id': 'measures', 'ask': 'Where do these lists come from?',
+             'cites': 'sims/registry/sims.json',
+             'answer': 'From the registries that own them, read when the '
+                       'page was built: the union roster for the halls, the '
+                       'simulator registry for which seats a campus hosts, '
+                       'the agents registry for the crews. The kiosks type no '
+                       'name and no count of their own.'},
+            {'id': 'limits', 'ask': 'Is a campus on this board a real place?',
+             'cites': 'unions/registry/campuses.json',
+             'answer': 'It is a composition. A campus stands at a real '
+                       'coordinate and borrows the character of its region, '
+                       'but no site has been surveyed and no building here '
+                       'depicts one that exists. The board says which halls '
+                       'and seats the Academy hosts there, not what stands on '
+                       'the ground.'},
+        ],
+    },
+
     'panel-chapters': {
         'name': 'The chapters panel',
         'kind': 'panel',
@@ -794,7 +849,7 @@ SHARED_CONTROLS = {
     },
     'panel': {
         'name': 'A panel',
-        'where': 'any of the four panels, which overlay whichever view you were in',
+        'where': 'any of the five panels, which overlay whichever view you were in',
         'source': 'web/build_3d.py',
         'rows': [
             {'input': 'The close button in the panel corner',

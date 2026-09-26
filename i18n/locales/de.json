@@ -205,7 +205,15 @@
   "map.aria.plan": "Netzwerkplan: {n} Gewerkschaftshallen, gruppiert in acht Distrikte auf {c} gebauten Campus",
   "map.aria.floor": "Grundriss der Halle {name}: {n} Räume",
   "map.aria.hall": "{name} — Distrikt {district}, Raster {ref}",
-  "map.page_title": "Netzwerkplan"
+  "map.page_title": "Netzwerkplan",
+  "plaza.name": "Der Platz",
+  "plaza.halls": "Hallen auf diesem Campus",
+  "plaza.yard": "Der Übungshof",
+  "plaza.crews": "Trupps",
+  "plaza.console": "Die adaptive Konsole",
+  "plaza.network": "Das Netzwerk",
+  "plaza.about": "Was dieser Ort ist",
+  "plaza.hint": "Ein Kiosk auf dem Platz: anklicken, um seine Tafel zu öffnen."
  },
  "districts": {
   "structural": {

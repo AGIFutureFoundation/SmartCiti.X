@@ -205,7 +205,15 @@
   "map.aria.plan": "مخطط الشبكة: {n} قاعة نقابية مجمَّعة في ثمانية أحياء عبر {c} حرم جامعي مبني",
   "map.aria.floor": "المخطط الأرضي لقاعة {name}: {n} غرفة",
   "map.aria.hall": "{name} — حي {district}، الشبكة {ref}",
-  "map.page_title": "مخطط الشبكة"
+  "map.page_title": "مخطط الشبكة",
+  "plaza.name": "الساحة",
+  "plaza.halls": "القاعات في هذا الحرم",
+  "plaza.yard": "ساحة التدريب",
+  "plaza.crews": "الأطقم",
+  "plaza.console": "وحدة التحكم التكيفية",
+  "plaza.network": "الشبكة",
+  "plaza.about": "ما هذا المكان",
+  "plaza.hint": "كشك في الساحة: انقر على أحدها لفتح لوحته."
  },
  "districts": {
   "structural": {

@@ -205,7 +205,15 @@
   "map.aria.plan": "Network plan: {n} union halls grouped into eight districts across {c} built campuses",
   "map.aria.floor": "Floor plan of the {name} hall: {n} rooms",
   "map.aria.hall": "{name} — {district} district, grid {ref}",
-  "map.page_title": "Network Plan"
+  "map.page_title": "Network Plan",
+  "plaza.name": "The plaza",
+  "plaza.halls": "Halls on this campus",
+  "plaza.yard": "The training yard",
+  "plaza.crews": "Crews",
+  "plaza.console": "The adaptive console",
+  "plaza.network": "The network",
+  "plaza.about": "What this place is",
+  "plaza.hint": "A kiosk on the plaza: click one to open its board."
  },
  "districts": {
   "structural": {

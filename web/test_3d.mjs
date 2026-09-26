@@ -125,6 +125,28 @@ ok('the quality ladder steps back up once - a 10 s window at or above 45 fps - a
   && /if \(!qAuto \|\| reduced \|\| navigator\.webdriver\) return;/.test(fn('qStep'))
   && /qLadder\(dt\);/.test(fn('qStep')));
 
+/* --------------------------------------------------------- the plaza --- */
+/* The plaza was a paved disc with nothing to do on it. Each of these is one
+   thing a visitor can now do there, held at the source. */
+ok('five kiosks ring the plaza inside the walkway, each solid to the walker and built with the campus',
+  /const PLAZA_KIOSKS = \['halls', 'yard', 'crews', 'network', 'about'\];/.test(src)
+  && /buildPlaza\(campusGroup, key, R\);/.test(fn('buildCampus'))
+  && /campusSolid\(kx, kz, 1\.1\);/.test(fn('buildPlaza'))
+  && /board\.userData\.plaza = kind; plazaHits\.push\(board\);/.test(fn('buildPlaza')));
+ok('a kiosk opens on a click, in walk mode too, and its panel names the guide place that answers for it',
+  /ray\.intersectObjects\(plazaHits, false\)/.test(fn('pickWith'))
+  && /dataset\.guidePlace = 'panel-plaza'/.test(fn('openPlaza')));
+ok('every board holds doors, not text: halls open, seats start from the yard, campuses show, crews link to the console',
+  /data-hall-goto/.test(fn('openPlaza')) && /data-yard-seat/.test(fn('openPlaza'))
+  && /data-campus-goto/.test(fn('openPlaza')) && /trade_craft_console\.html#crews/.test(fn('openPlaza'))
+  && /closest\('\[data-campus-goto\]'\)/.test(src) && /closest\('\[data-yard-seat\]'\)/.test(src)
+  && /enterSeatFromYard\(ys\.dataset\.yardSeat\)/.test(src));
+ok('the boards read their lists from the registries - the roster, the sims bindings, the crews - and type no name',
+  /camp\.halls\.map\(\(sg\) => D\.halls\.find/.test(fn('openPlaza'))
+  && /D\.sims\.bindings\[sg\]/.test(fn('openPlaza'))
+  && /D\.crews\?\.crews/.test(fn('openPlaza'))
+  && /t\('plaza\.' \+ kind\)/.test(fn('openPlaza')));
+
 /* ------------------------------------------------- surfaces and light --- */
 /* The world read as a rendering rather than a place, and each of these is
    the specific reason. Floors carried twenty-two finishes and walls carried

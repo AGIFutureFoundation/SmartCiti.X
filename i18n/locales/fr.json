@@ -205,7 +205,15 @@
   "map.aria.plan": "Plan du réseau : {n} salles syndicales regroupées en huit districts sur {c} campus construits",
   "map.aria.floor": "Plan d’étage de la salle {name} : {n} pièces",
   "map.aria.hall": "{name} — district {district}, grille {ref}",
-  "map.page_title": "Plan du réseau"
+  "map.page_title": "Plan du réseau",
+  "plaza.name": "La place",
+  "plaza.halls": "Salles sur ce campus",
+  "plaza.yard": "La cour de formation",
+  "plaza.crews": "Équipes",
+  "plaza.console": "La console adaptative",
+  "plaza.network": "Le réseau",
+  "plaza.about": "Ce que ce lieu est",
+  "plaza.hint": "Un kiosque sur la place : cliquez pour ouvrir son tableau."
  },
  "districts": {
   "structural": {

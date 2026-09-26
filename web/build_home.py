@@ -81,6 +81,14 @@ AV_SECTIONS = len(avatars['sections'])
 AV_ALL = sum(len(sec['options']) for sec in avatars['sections'])
 ROOMS = HALLS * len(surfaces['halls'][next(iter(surfaces['halls']))]['conditions'])
 MODULES = 11_000_000          # the pack's own headline, asserted below
+# The quick path's deep links: the flagship campus (the one the hero map
+# flags), its first hall in roster order, and the wettest weather short of
+# a storm - each read from the registry that owns it, never typed.
+FLAGSHIP = 'treasure-island'
+assert FLAGSHIP in campuses and FLAGSHIP in geo['campuses'], 'the flagship is not a campus'
+FIRST_HALL = campuses[FLAGSHIP]['halls'][0]
+FIRST_HALL_NAME = next(u['name'] for u in unions['unions'] if u['slug'] == FIRST_HALL)
+RAINY = max((k for k, w in world['weather'].items() if w['wet'] < 1), key=lambda k: world['weather'][k]['wet'])
 assert unions['honesty'], 'the union roster must carry its honesty block'
 assert HALLS == len(unions['unions']), 'the roster and its own count disagree'
 # The campus count has two owners - world/ draws the atmospheres, geo/ carries
@@ -177,9 +185,12 @@ def hero_map(w=1040, h=340):
             routes.append(f'<path d="M{fx:.1f} {fy:.1f} Q{mx:.1f} {my:.1f} '
                           f'{cx:.1f} {cy:.1f}" class="route"/>')
         cls = 'dot flag' if k == flag else 'dot'
-        dots.append(f'<circle cx="{cx:.1f}" cy="{cy:.1f}" r="{r:.1f}" class="{cls}">'
+        # a dot is a door: it opens that campus in the walkable world
+        dots.append(f'<a href="web/trade_craft_3d.html?campus={k}" '
+                    f'aria-label="{esc(campuses[k]["name"])}, {halls} halls: open in the walkable world">'
+                    f'<circle cx="{cx:.1f}" cy="{cy:.1f}" r="{r:.1f}" class="{cls}">'
                     f'<title>{esc(campuses[k]["name"])} \u2014 {halls} halls, '
-                    f'{esc(campuses[k]["city"])}</title></circle>')
+                    f'{esc(campuses[k]["city"])} \u00b7 click to walk it</title></circle></a>')
         anchor, dx = ('end', -r - 7) if cx > w * .6 else ('start', r + 7)
         ly = label_y[k]
         # a leader line where the label had to move, so the pairing stays
@@ -190,9 +201,9 @@ def hero_map(w=1040, h=340):
         names.append(f'<text x="{cx+dx:.1f}" y="{ly+4:.1f}" text-anchor="{anchor}" '
                      f'class="cname">{esc(campuses[k]["city"])}</text>')
 
-    return (f'<svg viewBox="0 0 {w} {h}" class="hero" role="img" '
+    return (f'<svg viewBox="0 0 {w} {h}" class="hero" role="group" '
             f'aria-label="The ten campuses at their real coordinates, '
-            f'{n(HALLS)} halls between them">'
+            f'{n(HALLS)} halls between them; each dot opens its campus">'
             f'<rect width="{w}" height="{h}" class="plate"/>'
             + ''.join(grid) + ''.join(routes) + ''.join(dots) + ''.join(names)
             + f'<text x="{pad*.5:.0f}" y="{h-14}" class="cap">WGS84 \u00b7 '
@@ -279,7 +290,10 @@ def seat_strip(w=1040, h=96):
                    f'<title>{esc(sm["name"])}</title></g>')
     return (f'<svg viewBox="0 0 {w} {h}" class="strip" role="img" '
             f'aria-label="{n(SEATS)} operable training seats">'
-            + ''.join(out) + '</svg>')
+            + ''.join(out) + '</svg>'
+            + '<ul class="seatlist" aria-label="the training seats">'
+            + ''.join(f'<li>{esc(sims["sims"][sid]["name"])}</li>' for sid in ids)
+            + '</ul>')
 
 
 def n(x):
@@ -378,6 +392,31 @@ CARDS = [
         works on people."""},
 ]
 
+def _lum(hexcol):
+    def ch(c):
+        c = int(hexcol[c:c + 2], 16) / 255
+        return c / 12.92 if c <= .03928 else ((c + .055) / 1.055) ** 2.4
+    return .2126 * ch(1) + .7152 * ch(3) + .0722 * ch(5)
+
+
+def contrast(fg, bg):
+    a, b = _lum(fg), _lum(bg)
+    return (max(a, b) + .05) / (min(a, b) + .05)
+
+
+# The palette, asserted against WCAG 2.2 AA (4.5:1 for text) on every
+# surface it is printed on. `--dim` used to be #6E7E82, which measured
+# 3.96:1 on a card - the limits text under every card, the smallest text
+# on the page, failed the one contrast rule a training product for the
+# trades cannot fail. The build refuses the next such colour.
+PALETTE = {'plate': '#0E1417', 'panel': '#161F23', 'sunk': '#0A0E10',
+           'ink': '#E8EDEC', 'muted': '#93A3A6', 'dim': '#8797A0',
+           'mark': '#E8A33D', 'steel': '#41C4D4'}
+for _fg in ('ink', 'muted', 'dim', 'mark', 'steel'):
+    for _bg in ('plate', 'panel', 'sunk'):
+        _c = contrast(PALETTE[_fg], PALETTE[_bg])
+        assert _c >= 4.5, f'--{_fg} on --{_bg} measures {_c:.2f}:1, below AA 4.5:1'
+
 STATS = [
     (n(HALLS), 'union halls'),
     (n(CAMPUSES), 'campuses'),
@@ -390,14 +429,50 @@ STATS = [
 
 # ------------------------------------------------------------------ page ---
 CSS = """
-:root{--plate:#0E1417;--panel:#161F23;--sunk:#0A0E10;--ink:#E8EDEC;
-  --muted:#93A3A6;--dim:#6E7E82;--rule:#25333A;--mark:#E8A33D;--steel:#41C4D4}
+:root{--plate:__PLATE__;--panel:__PANEL__;--sunk:__SUNK__;--ink:__INK__;
+  --muted:__MUTED__;--dim:__DIM__;--rule:#25333A;--mark:__MARK__;--steel:__STEEL__}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{margin:0;background:var(--plate);color:var(--ink);
   font:16px/1.65 "IBM Plex Sans",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
 .wrap{max-width:1080px;margin:0 auto;padding:0 20px}
 a{color:var(--steel)}
+a:focus-visible,button:focus-visible{outline:2px solid var(--mark);outline-offset:3px}
+.skip{position:absolute;left:-999px;top:8px;background:var(--mark);color:#0E1417;
+  padding:8px 12px;border-radius:6px;font-weight:600;z-index:10}
+.skip:focus{left:12px}
+nav.topnav{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--plate) 92%,transparent);
+  backdrop-filter:blur(6px);border-bottom:1px solid var(--rule)}
+nav.topnav .wrap{display:flex;align-items:center;gap:6px 18px;flex-wrap:wrap;
+  padding-top:10px;padding-bottom:10px}
+nav.topnav .home{font:700 15px "Barlow Condensed",sans-serif;color:var(--ink);
+  text-decoration:none;letter-spacing:.3px;margin-inline-end:auto}
+nav.topnav .home .x{color:var(--mark)}
+nav.topnav a.sec{color:var(--muted);text-decoration:none;font-size:13.5px}
+nav.topnav a.sec:hover{color:var(--ink)}
+a.cta{display:inline-block;background:var(--mark);color:#0E1417;text-decoration:none;
+  font:600 14px "IBM Plex Sans",sans-serif;padding:9px 14px;border-radius:8px}
+a.cta:hover{filter:brightness(1.08)}
+a.cta.ghost{background:transparent;color:var(--mark);border:1px solid var(--mark)}
+.ctas{display:flex;gap:10px;flex-wrap:wrap;margin:22px 0 0}
+.steps{list-style:none;counter-reset:step;margin:0;padding:0;display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.steps li{counter-increment:step;background:var(--panel);border:1px solid var(--rule);
+  border-radius:12px;padding:18px 18px 16px;position:relative}
+.steps li::before{content:counter(step);position:absolute;top:-12px;left:16px;
+  background:var(--mark);color:#0E1417;font:700 13px "IBM Plex Mono",monospace;
+  width:26px;height:26px;border-radius:50%;display:grid;place-items:center}
+.steps a{display:block;font:600 18px "Barlow Condensed",sans-serif;color:var(--ink);
+  text-decoration:none;margin:4px 0 6px}
+.steps a:hover{color:var(--mark)}
+.steps p{margin:0;color:var(--muted);font-size:14px}
+.before{margin:18px 0 0;padding:14px 16px;background:var(--sunk);border:1px solid var(--rule);
+  border-radius:10px;color:var(--muted);font-size:14px}
+.before b{color:var(--ink)}
+.seatlist{display:none;list-style:none;margin:14px 0 0;padding:0;
+  grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.seatlist li{background:var(--panel);border:1px solid var(--rule);border-radius:8px;
+  padding:9px 11px;font-size:14px;color:var(--muted)}
 header.top{border-bottom:1px solid var(--rule);background:
   linear-gradient(180deg,#121A1E 0%,var(--plate) 100%)}
 header.top .wrap{padding-top:58px;padding-bottom:40px}
@@ -425,14 +500,13 @@ a.card{display:flex;flex-direction:column;background:var(--panel);
   color:inherit;text-decoration:none;transition:border-color .15s,transform .15s}
 a.card:hover,a.card:focus-visible{border-color:var(--mark);transform:translateY(-2px)}
 a.card.lead{grid-column:1/-1;border-color:#3A4B52}
-a.card.lead b{font-size:26px}
-a.card b{font:600 20px "Barlow Condensed",sans-serif;color:var(--ink);margin-bottom:2px}
+a.card.lead h3{font-size:26px}
+a.card h3{font:600 20px "Barlow Condensed",sans-serif;color:var(--ink);margin:0 0 2px}
 a.card .kicker{color:var(--mark);font:600 12px "IBM Plex Mono",monospace;
   letter-spacing:.8px;text-transform:uppercase;margin-bottom:10px}
 a.card p{margin:0;color:var(--muted);font-size:14.5px}
 a.card .limit{margin-top:12px;padding-top:10px;border-top:1px dashed var(--rule);
   color:var(--dim);font-size:13px}
-a.card .limit b2{display:none}
 .limit-tag{color:var(--dim);font:600 11px "IBM Plex Mono",monospace;
   letter-spacing:1px;text-transform:uppercase;display:block;margin-bottom:3px}
 .prov{display:grid;grid-template-columns:repeat(auto-fit,minmax(196px,1fr));gap:14px}
@@ -495,9 +569,19 @@ footer p{color:var(--dim);font-size:13px;max-width:82ch;margin:0 0 10px}
   #guide{position:static}
   .hero .cname,.bar .dname,.bar .dcount,.strip .sname{font-size:13px}
 }
+@media(max-width:600px){
+  /* eleven tiles across a phone are eleven unreadable tiles: the strip
+     stands aside and the same seats read as a list */
+  .strip{display:none}
+  .seatlist{display:grid}
+  nav.topnav a.sec{display:none}
+}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}
   html{scroll-behavior:auto}}
 """
+for _k, _v in PALETTE.items():
+    CSS = CSS.replace('__' + _k.upper() + '__', _v)
+assert '__' not in CSS, 'a palette token went unfilled'
 
 
 def esc(t):
@@ -509,7 +593,7 @@ def card(c):
     return (
         f'<a class="card{" lead" if c.get("lead") else ""}" href="{c["href"]}">'
         f'<span class="kicker">{esc(c["kicker"])}</span>'
-        f'<b>{esc(c["title"])}</b>'
+        f'<h3>{esc(c["title"])}</h3>'
         f'<p>{esc(c["body"])}</p>'
         f'<p class="limit"><span class="limit-tag">What it does not claim</span>'
         f'{esc(c["limit"])}</p></a>')
@@ -541,8 +625,8 @@ GUIDE_HTML = f"""<aside id="guide" aria-label="guide">
   </div>
   <p class="gwhat">{esc(GUIDE_HOME['what_line'])}</p>
   <div class="gasks">
-    {''.join(f'<button class="gask" data-a="{t["id"]}"'
-             f'{" aria-expanded=true" if i == 0 else ""}>{esc(t["ask"])}</button>'
+    {''.join(f'<button class="gask" data-a="{t["id"]}" aria-controls="ga-{t["id"]}"'
+             f' aria-expanded="{"true" if i == 0 else "false"}">{esc(t["ask"])}</button>'
              for i, t in enumerate(GUIDE_HOME['topics']))}
   </div>
   {''.join(f'<div class="gans" id="ga-{t["id"]}"{"" if i == 0 else " hidden"}>'
@@ -574,7 +658,18 @@ GUIDE_JS = """<script>
 </script>"""
 
 BODY = f"""<body>
-<header class="top"><div class="wrap">
+<a class="skip" href="#main">Skip to the content</a>
+<nav class="topnav" aria-label="On this page"><div class="wrap">
+  <a class="home" href="#top">SmartCiti<span class="x">.X</span></a>
+  <a class="sec" href="#begin">Five minutes in</a>
+  <a class="sec" href="#halls">Halls</a>
+  <a class="sec" href="#yard">The yard</a>
+  <a class="sec" href="#start">Surfaces</a>
+  <a class="sec" href="#claims">How to read a claim</a>
+  <a class="sec" href="web/trade_craft_languages.html">Languages</a>
+  <a class="cta" href="web/trade_craft_3d.html?campus={FLAGSHIP}">Enter the world</a>
+</div></nav>
+<header class="top" id="top"><div class="wrap">
   <div class="brandline">
     <h1>SmartCiti<span class="x">.X</span> : Trade Craft Academy</h1>
     <span class="by">powered by AGI Corp</span>
@@ -587,29 +682,57 @@ BODY = f"""<body>
     Nothing is fetched at run time; nothing is generated when you look at it.
     Where a thing is unverified, it says so &mdash; on the page, not in an
     appendix.</p>
+  <div class="ctas">
+    <a class="cta" href="web/trade_craft_3d.html?campus={FLAGSHIP}">Enter the flagship campus</a>
+    <a class="cta ghost" href="#begin">Five minutes in</a>
+    <a class="cta ghost" href="console/trade_craft_console.html#crews">Open a crew console</a>
+  </div>
   <div class="stats">
     {''.join(f'<div class="stat"><b>{v}</b><span>{esc(k)}</span></div>' for v, k in STATS)}
   </div>
   {hero_map()}
 </div></header>
 <div class="stripe"></div>
-<div class="wrap">
-<section>
+<main id="main" class="wrap">
+<section id="begin">
+  <h2>Five minutes in</h2>
+  <p class="lede">Four doors, in the order a first visit should take them.
+    Every one is a link into a page this bundle already built.</p>
+  <ol class="steps">
+    <li><a href="web/trade_craft_3d.html?campus={FLAGSHIP}">Stand on {esc(campuses[FLAGSHIP]['name'])}</a>
+      <p>The flagship campus, {n(len(campuses[FLAGSHIP]['halls']))} halls around one green.
+        Orbit, then press walk and cross it on foot.</p></li>
+    <li><a href="web/trade_craft_3d.html?hall={FIRST_HALL}">Walk into {esc(FIRST_HALL_NAME)}</a>
+      <p>A hall stands up from its own floor plan. Every room names its finish,
+        the state the work has left it in, and the conditions it is designed around.</p></li>
+    <li><a href="web/trade_craft_3d.html?campus={FLAGSHIP}&amp;wx={RAINY}">Bring the {esc(world['weather'][RAINY]['name'].lower())} in</a>
+      <p>The yard takes the weather: the ground wets, the fog banks in, and every
+        seat in the yard is still there to be driven.</p></li>
+    <li><a href="console/trade_craft_console.html#crews">Open a crew console</a>
+      <p>{n(CREWS)} crews of scripted agents, each with a roster, a run of hand-offs and a
+        heartbeat board. Silence a role and watch the record say so.</p></li>
+  </ol>
+  <p class="before"><b>Before you go in.</b> The walkable world needs a browser with
+    WebGL. On a desktop, click to walk and the pointer locks to the view; on a phone
+    or tablet, drag to look and use the on-screen stick. Everything is served from
+    this bundle, so it works with no network once the page has loaded.</p>
+</section>
+<section id="halls">
   <h2>Every hall, by district</h2>
   <p class="lede">All {n(HALLS)} halls, banded into the {len(districts)}
     districts that organise them. Each tick is one hall; the colours are the
     same eight the campus map and the walkable world use.</p>
   {district_bar()}
 </section>
-<section>
+<section id="yard">
   <h2>The yard</h2>
   <p class="lede">{n(SEATS)} operable training seats stand in the campus
     yard. Every one is a machine you sit in and drive, scored by a rubric
     you can read.</p>
   {seat_strip()}
 </section>
-<section>
-  <h2>Where to start</h2>
+<section id="start">
+  <h2>Every surface</h2>
   <p class="lede">{n(len(CARDS))} surfaces, each built from the same
     registries. The walkable world is the one to open first.</p>
   <div class="withguide">
@@ -617,7 +740,7 @@ BODY = f"""<body>
     {GUIDE_HTML}
   </div>
 </section>
-<section>
+<section id="claims">
   <h2>How to read a claim here</h2>
   <p class="lede">Every record in this bundle carries one of five words for
     how it was come by. They are not decoration: a build refuses a record
@@ -626,7 +749,7 @@ BODY = f"""<body>
     {''.join(f'<div class="pv"><b>{w}</b><span>{esc(d)}</span></div>' for w, d in PROV)}
   </div>
 </section>
-<section>
+<section id="limits">
   <h2>What this is not</h2>
   <p class="lede">The limits, stated once, plainly.</p>
   <div class="prov">
@@ -644,7 +767,7 @@ BODY = f"""<body>
       the halls each seat names.</span></div>
   </div>
 </section>
-</div>
+</main>
 <footer><div class="wrap">
   <p>{esc(i18n_en['strings'].get('honesty.modules', ''))}</p>
   <p>Built from {n(FLOORS)} floor finishes, {n(WALLS)} wall finishes and

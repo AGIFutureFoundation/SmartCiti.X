@@ -205,7 +205,15 @@
   "map.aria.plan": "Planta da rede: {n} salões sindicais agrupados em oito distritos em {c} campi construídos",
   "map.aria.floor": "Planta baixa do salão {name}: {n} salas",
   "map.aria.hall": "{name} — distrito {district}, grade {ref}",
-  "map.page_title": "Planta da rede"
+  "map.page_title": "Planta da rede",
+  "plaza.name": "A praça",
+  "plaza.halls": "Salas neste campus",
+  "plaza.yard": "O pátio de treino",
+  "plaza.crews": "Equipes",
+  "plaza.console": "O console adaptativo",
+  "plaza.network": "A rede",
+  "plaza.about": "O que é este lugar",
+  "plaza.hint": "Um quiosque na praça: clique em um para abrir seu painel."
  },
  "districts": {
   "structural": {
