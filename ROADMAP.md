@@ -424,6 +424,43 @@ gates doing their job on real halls.
 
 ---
 
+## v3.5 — verifiable training (shipped in this pass, 2026-09-26)
+
+Everything below is measured by a suite in `verify_all.sh` and was verified
+from the exact archived tree of the commit that shipped it. Numbers are the
+registries' own; none is typed here from memory.
+
+| What shipped | Where | Status |
+| --- | --- | --- |
+| A completion record (`tc-completion/1`) exported from device-local progress, digest-bound, held to the registries by fifteen named rules, optionally signed by the learner's wallet (EIP-191 over a structured message; the address recovered through the sign-in page's own secp256k1 and keccak) | `completion/`, `web/build_progress.py`, `auth/recover.mjs` | shipped; 24 of 32 lessons completable, 8 not (the crew episode records neither seat nor muster); signature = a key, not a person; nothing on any chain |
+| An eval of whether completion can be verified at all: 65 of 135 lesson steps record an episode, 70 do not; 0 lessons fully verifiable by episode, 32 partly; 27 of 111 halls have any lesson | `evals/registry/evals.json#completion_evidence` | shipped |
+| Training depth on all three map surfaces: lessons, seats, flipped units, sign-off (0 of 111), completability per hall; lesson paths and ladder edges drawn; campus rollups and anchor provenance (41 RECORDED of 69) on the geomap | `web/build_map.py`, `web/build_interactive_map.py`, `web/build_geomap.py` | shipped; layer labels on two surfaces are registry field paths until the catalogs hold keys |
+| Every campus scored in a browser (all ten under every cap); floors judged only on the flagship where they were calibrated | `web/eval_campuses.mjs`, `rnd#eval.campuses_scored` 10/10, `#eval.campus_floors_judged` 1/10 | shipped; New Orleans shows 9 signs for 28 halls (recorded, under investigation) |
+| Colour legibility measured over 2,046 finish-by-sign pairs; the text-on-plate rule passes everywhere; nothing recoloured by taste | `surfaces/`, `labels/` | shipped |
+| Six custom training spaces composed only from the bundle's own assets, validated against the rooms the 3D builder lays out, with derived PPE and cost | `spaces/`, `web/build_spaces.py` | shipped; declared, not yet walkable |
+| The headset layer reviewed by mutation: two headset-only faults fixed, fourteen source checks added, and one truth everywhere - no session, mocked or real, has been driven | `web/build_3d.py`, `meta/`, §v4.0 above | shipped; the mocked-session harness is the next step and is not claimed |
+| A consented, digest-bound, optionally wallet-signed contribution package of recorded episodes for agent and robot training, with a 16-rule verifier and a page that uploads nothing | `contrib/`, `web/build_contribute.py` | shipped; no platform reached |
+| An honest roster of agent protocols and wallet rails, every entry configured false, every spec probe refused by the proxy; two names recorded as unidentified rather than guessed | `protocols/` | shipped; nothing integrates |
+| A robot-readiness eval: every seat "observation-only" (a 1 Hz trace of gauges with no control state per sample), with the fields named that would move it up | `evals/registry/evals.json#robot_readiness` | shipped; no episode recorded from a learner, no agent trained |
+
+### Open after this pass
+
+- The eight lessons that hold a crew step cannot complete until the crew
+  episode records `seat` and `muster` (`training/`), or the lesson step stops
+  carrying them (`lessons/`). Not a verifier problem.
+- No page links to the spaces or contribute pages yet.
+- The map layers' labels on two surfaces are registry field paths, and the
+  XR HUD's 15 new keys are machine-drafted in seven locales, as those catalogs
+  already declare.
+- A mocked WebXR session harness driving `renderer.xr` in headless Chromium
+  does not exist; every XR contract is held at the source by regex.
+- The jurisdiction overlay stays deliberately not started (see v3.4). The
+  compliance ledger this pass adds is the bundle's own rules, not a code
+  reference.
+- No cohort, no learner record, no agent or robot trained, no platform
+  reached, nothing on any chain. Every registry that could be read as
+  claiming otherwise says this in its own honesty block.
+
 ## Standing rules, every release
 
 These are not phase work; they are the floor.
