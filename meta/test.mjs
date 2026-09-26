@@ -229,6 +229,38 @@ if (rev && existsSync(rev))
     }));
 else ok('cross-check skipped: TC_AVATAR_REVIEW not set (avatar licences not re-held this run)', true);
 
+/* ------------------------------------------------- structural validation --- */
+// The export is opened and checked by web/test_gltf.mjs. ONE TRUTH: the
+// rule list is that file's RULES table; the registry carries a built copy
+// (meta/build.py reads it with the same regex), and this holds the two
+// equal, so the registry can never name a rule the suite does not run.
+const sv = reg.structural_validation;
+const gltfSuite = readFileSync(new URL('../web/test_gltf.mjs', import.meta.url), 'utf8');
+const rulesSrc = gltfSuite.split('const RULES = [')[1].split('\n];')[0];
+const suiteRules = [...rulesSrc.matchAll(/\{ id: '([^']+)', what: '([^']+)' \}/g)].map((m) => ({ id: m[1], what: m[2] }));
+ok('the registry names web/test_gltf.mjs as the structural validator of the export, and that suite exists',
+  sv.suite === 'web/test_gltf.mjs' && existsSync(new URL('../web/test_gltf.mjs', import.meta.url)));
+ok(`the registry's rule list is the suite's RULES table, id for id and word for word, in order (${suiteRules.length} rules read from the suite, every entry of the table; one truth)`,
+  suiteRules.length >= 10
+  && suiteRules.length === rulesSrc.split("{ id: '").length - 1
+  && JSON.stringify(sv.rules) === JSON.stringify(suiteRules));
+ok('every rule the registry names is one the suite runs (rule(<id>, ...)) AND one a mutation drill expects to fail by name (expect: <id>)',
+  sv.rules.every((r) => gltfSuite.includes(`rule('${r.id}',`) && gltfSuite.includes(`expect: '${r.id}'`)));
+ok('the scope says what the check is - container-and-references - and what it is not: Khronos conformance; and how static mode differs from --browser',
+  /container-and-references/.test(sv.scope) && /not Khronos conformance/.test(sv.scope)
+  && /no export was captured/.test(sv.scope) && /--browser/.test(sv.scope) && /--all/.test(sv.scope));
+ok('the not-covered list names the schema, gltf-validator, material and texture semantics, animation, geometry semantics and a physical consumer, each with a reason',
+  ['JSON schema', 'gltf-validator', 'material and texture', 'animation', 'min/max', 'physical consumer']
+    .every((w) => sv.not_covered.some((x) => x.includes(w)))
+  && sv.not_covered.every((x) => x.length > 60));
+ok('no count of the export is typed in the registry: bytes, accessors and nodes are facts of a capture and live in the suite output',
+  (function noNumbers(v) {
+    if (typeof v === 'number') return false;
+    if (Array.isArray(v)) return v.every(noNumbers);
+    if (v && typeof v === 'object') return Object.values(v).every(noNumbers);
+    return true;
+  })(sv) && /never recorded here/.test(sv.counts));
+
 /* -------------------------------------------------------------- honesty --- */
 ok('the honesty line refuses the hype: files not a place, no tokens, no upload, graceful degrade',
   /file formats and honesty, not a\s+place/.test(reg.honesty.status)

@@ -20,6 +20,7 @@ against the page source that implements it.
 import hashlib
 import json
 import pathlib
+import re
 
 HERE = pathlib.Path(__file__).resolve().parent
 ROOT = HERE.parent
@@ -260,6 +261,58 @@ DOC = {
                   'door exists do the buttons degrade to a HUD line '
                   'instead of failing.',
     },
+}
+
+# The export is VALIDATED, structurally, by web/test_gltf.mjs: it captures
+# the .glb the built page hands the learner and holds the bytes to the glTF
+# 2.0 container rules and referential integrity. ONE TRUTH: the rule list
+# is that file's RULES table, read out of it here - never retyped - and
+# meta/test.mjs holds the two equal. What the check does NOT cover is said
+# here, once, and printed by the suite on every run. No count is recorded:
+# the registry is built without a browser, so bytes, accessors and nodes
+# are facts of a capture and live only in the suite's output.
+_gltf_suite = (ROOT / 'web/test_gltf.mjs').read_text()
+_rules_src = _gltf_suite.split('const RULES = [', 1)[1].split('\n];', 1)[0]
+_rules = [{'id': m.group(1), 'what': m.group(2)} for m in
+          re.finditer(r"\{ id: '([^']+)', what: '([^']+)' \}", _rules_src)]
+assert len(_rules) >= 10, 'web/test_gltf.mjs RULES table not readable'
+# every entry of the table must have been read: a `what` the regex cannot
+# take (an apostrophe) would drop a rule from the registry silently
+assert len(_rules) == _rules_src.count("{ id: '"), \
+    'a RULES entry in web/test_gltf.mjs was not readable by the builder regex'
+assert len({r['id'] for r in _rules}) == len(_rules), 'duplicate rule id in web/test_gltf.mjs'
+DOC['structural_validation'] = {
+    'suite': 'web/test_gltf.mjs',
+    'scope': 'a container-and-references check of the exported .glb, '
+             'written from the glTF 2.0 rules the suite states: the GLB '
+             'header, chunk lengths and alignment, the JSON chunk, and every '
+             'index one glTF object holds to another. It is not Khronos '
+             'conformance. Static mode holds the export path in the built '
+             'page and proves the validator on a synthetic file, and says '
+             'that no export was captured; --browser captures the bytes the '
+             'page produces for one hall (the first of its roster, or '
+             '--hall=<slug>) and for the locker avatar at '
+             'URL.createObjectURL, validates each, and watches every rule '
+             'fail by name on the real bytes; --all drives every hall of '
+             'the roster before the locker.',
+    'rules': _rules,
+    'not_covered': [
+        'the Khronos glTF 2.0 JSON schema: not reachable from the build '
+        'that wrote this (network blocked), so no schema validation is applied',
+        'Khronos gltf-validator conformance: the official validator was not '
+        'reachable, so no conformance is claimed',
+        'material and texture semantics: PBR factors, sampler settings and '
+        'the decoded image bytes are not inspected, only their references',
+        'animation, skins and morph targets: none is exported (the rule only '
+        'asserts the animations array is absent), so nothing is validated',
+        'accessor min/max against the data, normal unit length and other '
+        'geometry semantics beyond index range',
+        'a run on a physical consumer: no Unity, Blender, Godot or Sketchfab '
+        'import of a captured file was performed by the build',
+    ],
+    'counts': 'never recorded here: bytes, chunk lengths, accessors, nodes '
+              'and per-rule checked counts are facts of a capture and live '
+              'in the output of node web/test_gltf.mjs --browser',
 }
 
 # every claim above that names page behavior is held against the page

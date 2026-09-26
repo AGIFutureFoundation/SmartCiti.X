@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-17",
- "source_stamp": "3ed309af9745a2bb",
+ "source_stamp": "c8adbd99c35ef372",
  "baseline": {
   "note": "built to the open interchange baseline. No private \"metaverse standard\" is referenced or claimed: what is listed under standards is implemented and tested, and what is listed under not_claimed is honestly not. The Open Metaverse Browser Initiative (OMBI) is an open initiative, but its spatial-fabric, SOM and RMAP shapes are unverified against any normative text this build could read, so they sit under not_claimed, not standards.",
   "standards": [
@@ -193,6 +193,85 @@
  },
  "honesty": {
   "status": "a metaverse layer is file formats and honesty, not a place: exports are plain Khronos glTF of this bundle's own original meshes; imports never leave the device; no service, account, token or blockchain is involved, nothing here is an NFT. The single-file artifact build carries the exporter and loader inline and delivers exports as a viewer-confirmed .zip; only where neither door exists do the buttons degrade to a HUD line instead of failing."
+ },
+ "structural_validation": {
+  "suite": "web/test_gltf.mjs",
+  "scope": "a container-and-references check of the exported .glb, written from the glTF 2.0 rules the suite states: the GLB header, chunk lengths and alignment, the JSON chunk, and every index one glTF object holds to another. It is not Khronos conformance. Static mode holds the export path in the built page and proves the validator on a synthetic file, and says that no export was captured; --browser captures the bytes the page produces for one hall (the first of its roster, or --hall=<slug>) and for the locker avatar at URL.createObjectURL, validates each, and watches every rule fail by name on the real bytes; --all drives every hall of the roster before the locker.",
+  "rules": [
+   {
+    "id": "glb-magic",
+    "what": "the first four header bytes are the ASCII magic glTF (0x46546C67, little-endian)"
+   },
+   {
+    "id": "glb-version",
+    "what": "the header version field is 2"
+   },
+   {
+    "id": "glb-total-length",
+    "what": "the header length field equals the byte count of the file, and that count is a multiple of 4"
+   },
+   {
+    "id": "chunk-tiling",
+    "what": "every chunk declares a length that is a multiple of 4 and fits inside the file, and the chunks tile the file exactly from byte 12 to the end with nothing left over"
+   },
+   {
+    "id": "chunk-order",
+    "what": "the first chunk is JSON, the second is BIN, no other BIN chunk exists, and the JSON chunk is padded with spaces (0x20) only"
+   },
+   {
+    "id": "json-asset",
+    "what": "the JSON chunk decodes as UTF-8 to an object whose asset.version is the string 2.0"
+   },
+   {
+    "id": "buffer-bin",
+    "what": "exactly one buffer, with no uri; the BIN chunk is at least buffers[0].byteLength long and at most 3 bytes longer (the alignment padding the spec allows), and those padding bytes are zero"
+   },
+   {
+    "id": "bufferview-bounds",
+    "what": "every bufferView names a buffer that exists and lies inside it (byteOffset plus byteLength within the buffer byteLength); a byteStride, when present, is a multiple of 4 between 4 and 252"
+   },
+   {
+    "id": "accessor-bounds",
+    "what": "every accessor names a bufferView that exists, has a known componentType and type, a count of at least 1, its last element ends inside the bufferView, and its absolute byte offset is aligned to its component size"
+   },
+   {
+    "id": "primitive-refs",
+    "what": "every mesh primitive carries a POSITION attribute, every attribute and indices accessor it names exists, its material (when named) exists, and its mode (when present) is 0 to 6"
+   },
+   {
+    "id": "index-range",
+    "what": "for every indexed primitive, every index read from the BIN chunk is below the count of its POSITION accessor"
+   },
+   {
+    "id": "node-refs",
+    "what": "every node names a mesh that exists (when it has one) and children that exist and are not itself, and no node is the child of two parents"
+   },
+   {
+    "id": "scene-refs",
+    "what": "every scene names nodes that exist and that have no parent, and the default scene index (when present) exists"
+   },
+   {
+    "id": "material-texture-refs",
+    "what": "every texture reference in a material names a texture that exists, every texture names an image that exists, and every image names a bufferView that exists with a mimeType and carries no uri"
+   },
+   {
+    "id": "no-required-extensions",
+    "what": "extensionsRequired is absent or empty, so no consumer must reject the file for an extension it lacks; every extensionsUsed entry is a string"
+   },
+   {
+    "id": "no-animations",
+    "what": "no animations array is present - the registry claims a rest-pose export with no clip"
+   }
+  ],
+  "not_covered": [
+   "the Khronos glTF 2.0 JSON schema: not reachable from the build that wrote this (network blocked), so no schema validation is applied",
+   "Khronos gltf-validator conformance: the official validator was not reachable, so no conformance is claimed",
+   "material and texture semantics: PBR factors, sampler settings and the decoded image bytes are not inspected, only their references",
+   "animation, skins and morph targets: none is exported (the rule only asserts the animations array is absent), so nothing is validated",
+   "accessor min/max against the data, normal unit length and other geometry semantics beyond index range",
+   "a run on a physical consumer: no Unity, Blender, Godot or Sketchfab import of a captured file was performed by the build"
+  ],
+  "counts": "never recorded here: bytes, chunk lengths, accessors, nodes and per-rule checked counts are facts of a capture and live in the output of node web/test_gltf.mjs --browser"
  },
  "avatar_review_check": {
   "contract": "cross-checked against the reviewed checkouts when TC_AVATAR_REVIEW names the directory that holds them",
