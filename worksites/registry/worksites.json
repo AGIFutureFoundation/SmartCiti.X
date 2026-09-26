@@ -1,0 +1,4783 @@
+{
+ "pack": "smartcitix-trade-craft-academy-worksites",
+ "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
+ "pack_version": "3.2.0",
+ "built": "2026-09-26",
+ "source_stamp": "ca18d283b7935e0f",
+ "authored_stamp": "4fc3c55d8b8e1198",
+ "provenance": {
+  "declarations": "AUTHORED (worksites/authored/*.json: id, title, job, place, crew, role unions, hand-off evidence, gates)",
+  "everything_else": "DERIVED (names, halls, seats, PPE, verifiability, rollups, fixture)"
+ },
+ "contract": "a work site is a scenario where a crew drawn from at least two unions works one job with hand-offs; its completion is checked offline by worksites/verify.mjs from the members' own exported tc-completion/1 records and tc-contribution/1 packages, one distinct record per role, each verified by its own pack's verifier first, with the hand-offs held in order by the episodes' timestamps",
+ "honesty": {
+  "authored": "these are AUTHORED scenarios, hand-written and validated against the registries; none is a record of a job anyone ran",
+  "no_multi_user": "no two learners have ever been on a site together here: this bundle has no multi-user session, no shared world state and no server. A crew completion is N separate records, each made alone on its own device, read side by side",
+  "not_a_certification": "a crew completion proves that N records, each internally consistent, together cover the roles and the order; not that these people stood on one site at one time; nothing here is a certification",
+  "unverified": "the roles, the hand-offs and the stop conditions written here are unverified general practice, pending authoring by journey-level practitioners of each trade. Where a role is marked commonly-required that is a statement about widespread practice as this Academy understands it, not a reading of any jurisdiction's rule, and every distance, period and threshold a role mentions is deliberately left to the reader's own jurisdiction rather than given a number here.",
+  "not_a_permit": "nothing a crew role says is a permit, an entry authorisation, a tag, a certificate or a code ruling. The permits, tags and authorisations named here are the names of real artefacts, and this bundle issues none of them and stands in for none of them.",
+  "not_stated": "no duration and no price is stated anywhere in this registry",
+  "ppe": "never typed: derived from surfaces/ for a custom space's finishes; a campus or a restoration site has no finishes here and the registry says so"
+ },
+ "evidence_kinds": {
+  "sim": {
+   "names": [
+    "sim",
+    "scenario"
+   ],
+   "episode_kind": "sim"
+  },
+  "walkaround": {
+   "names": [
+    "sim",
+    "point"
+   ],
+   "episode_kind": "walkaround"
+  },
+  "crew": {
+   "names": [
+    "crew",
+    "role",
+    "topic"
+   ],
+   "episode_kind": "crew"
+  },
+  "station": {
+   "names": [
+    "station"
+   ],
+   "episode_kind": null
+  }
+ },
+ "episode_kinds_read_from": "training/registry/training.json#episode_kinds",
+ "place_kinds": [
+  "campus",
+  "restoration-site",
+  "space"
+ ],
+ "verifier": {
+  "run": "node worksites/verify.mjs <site-id> <record.json>...",
+  "rules": [
+   "record.verifies",
+   "role.covered",
+   "role.distinct",
+   "handoff.order",
+   "handoff.verifiable",
+   "identity.attested"
+  ],
+  "last_line": "a crew completion proves that N records, each internally consistent, together cover the roles and the order; not that these people stood on one site at one time; nothing here is a certification"
+ },
+ "fixture": {
+  "site": "ti-tower-steel-pick",
+  "label": "fixture crew A..D - not learners; four labels because four records, not four people",
+  "good": "fixture/good/",
+  "mutants": {
+   "role-uncovered": {
+    "dir": "fixture/mutant-role-uncovered/",
+    "fails": "role crane-operator"
+   },
+   "two-roles-one-identity": {
+    "dir": "fixture/mutant-two-roles-one-identity/",
+    "fails": "one identity cannot hold two roles"
+   },
+   "handoff-out-of-order": {
+    "dir": "fixture/mutant-handoff-out-of-order/",
+    "fails": "handoff 3 signalperson->crane-operator"
+   },
+   "bad-digest": {
+    "dir": "fixture/mutant-bad-digest/",
+    "fails": "record member-a-lift-director.json: digest"
+   },
+   "wrong-scenario": {
+    "dir": "fixture/mutant-wrong-scenario/",
+    "fails": "role signalperson"
+   },
+   "sim-not-passed": {
+    "dir": "fixture/mutant-sim-not-passed/",
+    "fails": "role crane-operator"
+   }
+  },
+  "signed": {
+   "built_by": "worksites/test.mjs, in memory, from fixture/good/",
+   "why_not_on_disk": "python3 has no keccak-256 and no secp256k1; the throwaway-key signing is imported from completion/test.mjs ONLY in the test, and a build must be deterministic",
+   "signs": [
+    "member-a-lift-director.json",
+    "member-b-rigger.json",
+    "member-b-rigger-completion.json"
+   ]
+  }
+ },
+ "counts": {
+  "sites": 8,
+  "unions_covered": 16,
+  "unions_total": 111,
+  "halls_involved": 39,
+  "crews_used": 6,
+  "crews_total": 6,
+  "roles": 28,
+  "handoffs": 44,
+  "handoffs_verifiable": 42,
+  "handoffs_unverifiable": 2,
+  "places_by_kind": {
+   "campus": 3,
+   "restoration-site": 2,
+   "space": 3
+  },
+  "seats_involved": 7,
+  "fixture_files": 34
+ },
+ "unions_covered": [
+  "boilermakers",
+  "crane-ops",
+  "electricians",
+  "fabricators",
+  "glaziers",
+  "ironworkers",
+  "laborers",
+  "operating-eng",
+  "port-crane",
+  "riggers",
+  "scaffold",
+  "shoring",
+  "steel-erectors",
+  "surveyors",
+  "tank-erectors",
+  "welders"
+ ],
+ "sites": [
+  {
+   "id": "herons-head-shoreline-cut",
+   "title": "Shoreline drainage cut, Heron's Head",
+   "job": "Cut a shallow drainage run through the upland fill above the tide line, cell by cell, with the ground inspected before the first bite and after anything that changes it.",
+   "place": {
+    "kind": "restoration-site",
+    "id": "herons-head",
+    "name": "Heron's Head Park Shoreline Resilience Project (Phases 1 and 2)",
+    "campus": "treasure-island",
+    "trade_needs": [
+     "laborers",
+     "operating-eng"
+    ],
+    "ground": "upland",
+    "plan": {
+     "kind": "site-tile",
+     "habitat": "shoreline & green infrastructure"
+    },
+    "href": null
+   },
+   "crew": {
+    "id": "trench-crew",
+    "name": "Trench crew",
+    "seat": "excavator-trench",
+    "muster": "layout",
+    "halls": [
+     "operating-eng",
+     "shoring",
+     "laborers",
+     "demolition"
+    ]
+   },
+   "roles": {
+    "excavator-operator": {
+     "name": "Excavator operator",
+     "job": "runs the machine, and stops the moment the spotter goes out of sight",
+     "standing": "commonly-required",
+     "stops": "a spotter I can no longer see",
+     "glyph": "👷",
+     "post": {
+      "r": 3.4,
+      "deg": 350
+     },
+     "union": "operating-eng",
+     "union_name": "Operating Engineers",
+     "hall_reached_by_crew": true,
+     "why_not_reached": null
+    },
+    "trench-competent-person": {
+     "name": "Competent person",
+     "job": "inspects the ground and the cut, and sets what may be taken without support",
+     "standing": "commonly-required",
+     "stops": "water, spoil or vibration changing the ground since the last inspection",
+     "glyph": "🪨",
+     "post": {
+      "r": 6.4,
+      "deg": 210
+     },
+     "union": "operating-eng",
+     "union_name": "Operating Engineers",
+     "hall_reached_by_crew": true,
+     "why_not_reached": null
+    },
+    "spotter": {
+     "name": "Spotter",
+     "job": "stands where the operator cannot see and owns the swing radius",
+     "standing": "commonly-required",
+     "stops": "anyone entering the swing radius",
+     "glyph": "🦺",
+     "post": {
+      "r": 5.6,
+      "deg": 300
+     },
+     "union": "laborers",
+     "union_name": "Laborers",
+     "hall_reached_by_crew": true,
+     "why_not_reached": null
+    },
+    "locator": {
+     "name": "Utility locator",
+     "job": "marks what is buried before the first cut, and re-marks it when marks are lost",
+     "standing": "commonly-required",
+     "stops": "a cut near a mark that nobody has proved",
+     "glyph": "📡",
+     "post": {
+      "r": 7.4,
+      "deg": 140
+     },
+     "union": "laborers",
+     "union_name": "Laborers",
+     "hall_reached_by_crew": true,
+     "why_not_reached": null
+    }
+   },
+   "handoffs": [
+    {
+     "n": 1,
+     "by": "locator",
+     "to": "trench-competent-person",
+     "step": "marks what is buried and says which marks are proved and which are only painted",
+     "from_evidence": {
+      "kind": "crew",
+      "crew": "trench-crew",
+      "role": "locator",
+      "topic": "marks",
+      "ask": "How good are the marks?",
+      "verifiable": true,
+      "episode_kind": "crew",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "crew",
+       "role",
+       "topic",
+       "answer_kind"
+      ]
+     },
+     "to_evidence": {
+      "kind": "walkaround",
+      "sim": "excavator-trench",
+      "point": "edge",
+      "check": "spoil set back, no load surcharging the cut",
+      "verifiable": true,
+      "episode_kind": "walkaround",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "sim",
+       "point"
+      ]
+     },
+     "verifiable": true,
+     "why_unverifiable": null
+    },
+    {
+     "n": 2,
+     "by": "trench-competent-person",
+     "to": "excavator-operator",
+     "step": "inspects the ground and sets the depth the machine may take without support",
+     "from_evidence": {
+      "kind": "walkaround",
+      "sim": "excavator-trench",
+      "point": "edge",
+      "check": "spoil set back, no load surcharging the cut",
+      "verifiable": true,
+      "episode_kind": "walkaround",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "sim",
+       "point"
+      ]
+     },
+     "to_evidence": {
+      "kind": "walkaround",
+      "sim": "excavator-trench",
+      "point": "bucket",
+      "check": "teeth tight, pins keepered, no cracks at the ears",
+      "verifiable": true,
+      "episode_kind": "walkaround",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "sim",
+       "point"
+      ]
+     },
+     "verifiable": true,
+     "why_unverifiable": null
+    },
+    {
+     "n": 3,
+     "by": "excavator-operator",
+     "to": "spotter",
+     "step": "sets up on level ground and asks for the swing radius to be walked and held",
+     "from_evidence": {
+      "kind": "walkaround",
+      "sim": "excavator-trench",
+      "point": "bucket",
+      "check": "teeth tight, pins keepered, no cracks at the ears",
+      "verifiable": true,
+      "episode_kind": "walkaround",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "sim",
+       "point"
+      ]
+     },
+     "to_evidence": {
+      "kind": "crew",
+      "crew": "trench-crew",
+      "role": "spotter",
+      "topic": "call",
+      "ask": "What is your one call?",
+      "verifiable": true,
+      "episode_kind": "crew",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "crew",
+       "role",
+       "topic",
+       "answer_kind"
+      ]
+     },
+     "verifiable": true,
+     "why_unverifiable": null
+    },
+    {
+     "n": 4,
+     "by": "spotter",
+     "to": "excavator-operator",
+     "step": "takes station in the operator’s eyeline, keeps the radius clear, and holds the one call",
+     "from_evidence": {
+      "kind": "crew",
+      "crew": "trench-crew",
+      "role": "spotter",
+      "topic": "call",
+      "ask": "What is your one call?",
+      "verifiable": true,
+      "episode_kind": "crew",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "crew",
+       "role",
+       "topic",
+       "answer_kind"
+      ]
+     },
+     "to_evidence": {
+      "kind": "sim",
+      "sim": "excavator-trench",
+      "scenario": "bay-retrofit",
+      "seat_halls": [
+       "operating-eng",
+       "shoring",
+       "laborers",
+       "demolition"
+      ],
+      "passes_when": [
+       {
+        "axis": "grade",
+        "pass": "== all"
+       },
+       {
+        "axis": "utility",
+        "pass": "== 0"
+       },
+       {
+        "axis": "spoil",
+        "pass": "== all"
+       },
+       {
+        "axis": "time",
+        "pass": "informational"
+       }
+      ],
+      "verifiable": true,
+      "episode_kind": "sim",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "sim",
+       "scenario",
+       "controls",
+       "actor",
+       "operator",
+       "outcome"
+      ]
+     },
+     "verifiable": true,
+     "why_unverifiable": null
+    },
+    {
+     "n": 5,
+     "by": "excavator-operator",
+     "to": "trench-competent-person",
+     "step": "cuts cell by cell and stops shallow where the marked service runs",
+     "from_evidence": {
+      "kind": "sim",
+      "sim": "excavator-trench",
+      "scenario": "bay-retrofit",
+      "seat_halls": [
+       "operating-eng",
+       "shoring",
+       "laborers",
+       "demolition"
+      ],
+      "passes_when": [
+       {
+        "axis": "grade",
+        "pass": "== all"
+       },
+       {
+        "axis": "utility",
+        "pass": "== 0"
+       },
+       {
+        "axis": "spoil",
+        "pass": "== all"
+       },
+       {
+        "axis": "time",
+        "pass": "informational"
+       }
+      ],
+      "verifiable": true,
+      "episode_kind": "sim",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "sim",
+       "scenario",
+       "controls",
+       "actor",
+       "operator",
+       "outcome"
+      ]
+     },
+     "to_evidence": {
+      "kind": "crew",
+      "crew": "trench-crew",
+      "role": "trench-competent-person",
+      "topic": "again",
+      "ask": "How often does it get inspected?",
+      "verifiable": true,
+      "episode_kind": "crew",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "crew",
+       "role",
+       "topic",
+       "answer_kind"
+      ]
+     },
+     "verifiable": true,
+     "why_unverifiable": null
+    },
+    {
+     "n": 6,
+     "by": "trench-competent-person",
+     "to": "locator",
+     "step": "re-inspects after anything that changed the ground, and sends the locator back when a mark is gone",
+     "from_evidence": {
+      "kind": "crew",
+      "crew": "trench-crew",
+      "role": "trench-competent-person",
+      "topic": "again",
+      "ask": "How often does it get inspected?",
+      "verifiable": true,
+      "episode_kind": "crew",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "crew",
+       "role",
+       "topic",
+       "answer_kind"
+      ]
+     },
+     "to_evidence": {
+      "kind": "crew",
+      "crew": "trench-crew",
+      "role": "locator",
+      "topic": "prove",
+      "ask": "What does proving a mark mean?",
+      "verifiable": true,
+      "episode_kind": "crew",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "crew",
+       "role",
+       "topic",
+       "answer_kind"
+      ]
+     },
+     "verifiable": true,
+     "why_unverifiable": null
+    }
+   ],
+   "stop_work": "The spotter stops this machine with one call and does not explain it first; the locator stops the cut when a mark is lost rather than when it is proved wrong.",
+   "gates": {
+    "ppe": {
+     "required": null,
+     "derived_from": null,
+     "why_none": "a restoration-site declares no finishes in this bundle, so surfaces/ derives no PPE for it; nothing is typed in its place"
+    },
+    "walkaround_before_first_move": [
+     {
+      "sim": "excavator-trench",
+      "point": "tracks",
+      "label": "Tracks and rollers",
+      "check": "tension right, no cut pads or leaking rollers",
+      "on_fault": "park it - a leaking roller or a cut pad gets fixed between shifts, not during one"
+     }
+    ]
+   },
+   "derived": {
+    "unions": [
+     "laborers",
+     "operating-eng"
+    ],
+    "halls": [
+     "demolition",
+     "laborers",
+     "operating-eng",
+     "shoring"
+    ],
+    "seats": [
+     "excavator-trench"
+    ],
+    "evidence_kinds_by_role": {
+     "excavator-operator": [
+      "sim",
+      "walkaround"
+     ],
+     "locator": [
+      "crew"
+     ],
+     "spotter": [
+      "crew"
+     ],
+     "trench-competent-person": [
+      "crew",
+      "walkaround"
+     ]
+    },
+    "handoffs": 6,
+    "handoffs_verifiable": 6,
+    "handoffs_unverifiable": 0,
+    "roles": 4,
+    "lessons_with_this_crew": [
+     "operating-eng-locate-first"
+    ]
+   }
+  },
+  {
+   "id": "nola-tank-entry",
+   "title": "Tank seam entry, New Orleans",
+   "job": "Put one welder inside a tank to run a seam, with the space isolated and tested first, an attendant who never goes in, and a count out by name.",
+   "place": {
+    "kind": "campus",
+    "id": "new-orleans",
+    "name": "Crescent Works Campus",
+    "campus": "new-orleans",
+    "halls": [
+     "line-workers",
+     "solar",
+     "wind",
+     "substation",
+     "cable-splicers",
+     "meter-techs",
+     "gas-distrib",
+     "water-distrib",
+     "wastewater",
+     "nuclear",
+     "hydro",
+     "geothermal",
+     "battery-storage",
+     "ev-charging",
+     "hydrogen",
+     "transmission",
+     "district-energy",
+     "surveyors",
+     "hazmat",
+     "asbestos",
+     "lead-abatement",
+     "mold-remediation",
+     "spill-response",
+     "confined-space",
+     "high-angle",
+     "site-safety",
+     "industrial-clean",
+     "survey-drone"
+    ],
+    "plan": {
+     "kind": "campus-tile",
+     "districts": [
+      "energy",
+      "control"
+     ]
+    },
+    "href": null
+   },
+   "crew": {
+    "id": "confined-space-crew",
+    "name": "Confined space entry crew",
+    "seat": "weld-bead",
+    "muster": "procedure",
+    "halls": [
+     "welders",
+     "boilermakers",
+     "shipfitters",
+     "fabricators",
+     "pipeline",
+     "marine-pipe",
+     "tank-erectors"
+    ]
+   },
+   "roles": {
+    "entry-supervisor": {
+     "name": "Entry supervisor",
+     "job": "authorises the entry against tested conditions, and closes it",
+     "standing": "commonly-required",
+     "stops": "an entry whose conditions no longer describe the space",
+     "glyph": "📝",
+     "post": {
+      "r": 7.0,
+      "deg": 160
+     },
+     "union": "boilermakers",
+     "union_name": "Boilermakers",
+     "hall_reached_by_crew": true,
+     "why_not_reached": null
+    },
+    "attendant": {
+     "name": "Attendant",
+     "job": "stays outside, counts who is in, keeps contact, and never enters",
+     "standing": "commonly-required",
+     "stops": "losing contact with the entrant, for any reason at all",
+     "glyph": "👁️",
+     "post": {
+      "r": 4.6,
+      "deg": 250
+     },
+     "union": "tank-erectors",
+     "union_name": "Tank Erectors",
+     "hall_reached_by_crew": true,
+     "why_not_reached": null
+    },
+    "entrant": {
+     "name": "Entrant",
+     "job": "does the work inside, and leaves the moment they are told to",
+     "standing": "commonly-required",
+     "stops": "any change in the air, the light or the way out",
+     "glyph": "🔦",
+     "post": {
+      "r": 3.0,
+      "deg": 40
+     },
+     "union": "welders",
+     "union_name": "Welding Trades",
+     "hall_reached_by_crew": true,
+     "why_not_reached": null
+    }
+   },
+   "handoffs": [
+    {
+     "n": 1,
+     "by": "entry-supervisor",
+     "to": "attendant",
+     "step": "isolates the space, has it tested, and authorises the entry against what the test found",
+     "from_evidence": {
+      "kind": "crew",
+      "crew": "confined-space-crew",
+      "role": "entry-supervisor",
+      "topic": "authorise",
+      "ask": "What are you authorising?",
+      "verifiable": true,
+      "episode_kind": "crew",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "crew",
+       "role",
+       "topic",
+       "answer_kind"
+      ]
+     },
+     "to_evidence": {
+      "kind": "crew",
+      "crew": "confined-space-crew",
+      "role": "attendant",
+      "topic": "contact",
+      "ask": "What counts as contact?",
+      "verifiable": true,
+      "episode_kind": "crew",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "crew",
+       "role",
+       "topic",
+       "answer_kind"
+      ]
+     },
+     "verifiable": true,
+     "why_unverifiable": null
+    },
+    {
+     "n": 2,
+     "by": "attendant",
+     "to": "entrant",
+     "step": "logs who is going in, sets the means of contact, and takes station at the opening",
+     "from_evidence": {
+      "kind": "crew",
+      "crew": "confined-space-crew",
+      "role": "attendant",
+      "topic": "contact",
+      "ask": "What counts as contact?",
+      "verifiable": true,
+      "episode_kind": "crew",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "crew",
+       "role",
+       "topic",
+       "answer_kind"
+      ]
+     },
+     "to_evidence": {
+      "kind": "walkaround",
+      "sim": "weld-bead",
+      "point": "extraction",
+      "check": "running and pulling at the work, not past your face",
+      "verifiable": true,
+      "episode_kind": "walkaround",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "sim",
+       "point"
+      ]
+     },
+     "verifiable": true,
+     "why_unverifiable": null
+    },
+    {
+     "n": 3,
+     "by": "entrant",
+     "to": "attendant",
+     "step": "enters and reports that the space matches what was authorised before touching the work",
+     "from_evidence": {
+      "kind": "walkaround",
+      "sim": "weld-bead",
+      "point": "extraction",
+      "check": "running and pulling at the work, not past your face",
+      "verifiable": true,
+      "episode_kind": "walkaround",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "sim",
+       "point"
+      ]
+     },
+     "to_evidence": {
+      "kind": "crew",
+      "crew": "confined-space-crew",
+      "role": "attendant",
+      "topic": "never",
+      "ask": "Why do you never go in?",
+      "verifiable": true,
+      "episode_kind": "crew",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "crew",
+       "role",
+       "topic",
+       "answer_kind"
+      ]
+     },
+     "verifiable": true,
+     "why_unverifiable": null
+    },
+    {
+     "n": 4,
+     "by": "attendant",
+     "to": "entry-supervisor",
+     "step": "raises anything that changed - the air, the contact, a second body at the opening",
+     "from_evidence": {
+      "kind": "crew",
+      "crew": "confined-space-crew",
+      "role": "attendant",
+      "topic": "never",
+      "ask": "Why do you never go in?",
+      "verifiable": true,
+      "episode_kind": "crew",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "crew",
+       "role",
+       "topic",
+       "answer_kind"
+      ]
+     },
+     "to_evidence": {
+      "kind": "crew",
+      "crew": "confined-space-crew",
+      "role": "entry-supervisor",
+      "topic": "isolate",
+      "ask": "Why isolate before testing?",
+      "verifiable": true,
+      "episode_kind": "crew",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "crew",
+       "role",
+       "topic",
+       "answer_kind"
+      ]
+     },
+     "verifiable": true,
+     "why_unverifiable": null
+    },
+    {
+     "n": 5,
+     "by": "entrant",
+     "to": "attendant",
+     "step": "comes out on the word, and is counted out by name",
+     "from_evidence": {
+      "kind": "sim",
+      "sim": "weld-bead",
+      "scenario": "nola-tank-seam",
+      "seat_halls": [
+       "welders",
+       "boilermakers",
+       "shipfitters",
+       "fabricators",
+       "pipeline",
+       "marine-pipe",
+       "tank-erectors"
+      ],
+      "passes_when": [
+       {
+        "axis": "fusion",
+        "pass": "== all"
+       },
+       {
+        "axis": "band",
+        "pass": ">= 90"
+       },
+       {
+        "axis": "burns",
+        "pass": "== 0"
+       },
+       {
+        "axis": "time",
+        "pass": "informational"
+       }
+      ],
+      "verifiable": true,
+      "episode_kind": "sim",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "sim",
+       "scenario",
+       "controls",
+       "actor",
+       "operator",
+       "outcome"
+      ]
+     },
+     "to_evidence": {
+      "kind": "crew",
+      "crew": "confined-space-crew",
+      "role": "attendant",
+      "topic": "walk",
+      "ask": "What gets walked before an entry?",
+      "verifiable": true,
+      "episode_kind": "crew",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "crew",
+       "role",
+       "topic",
+       "answer_kind"
+      ]
+     },
+     "verifiable": true,
+     "why_unverifiable": null
+    }
+   ],
+   "stop_work": "The attendant ends this entry alone and without discussion, and the entrant leaves on the attendant’s word rather than on their own judgement.",
+   "gates": {
+    "ppe": {
+     "required": null,
+     "derived_from": null,
+     "why_none": "a campus declares no finishes in this bundle, so surfaces/ derives no PPE for it; nothing is typed in its place"
+    },
+    "walkaround_before_first_move": [
+     {
+      "sim": "weld-bead",
+      "point": "gas",
+      "label": "Gas and regulator",
+      "check": "no leaks at the test pressure, flow set to the procedure",
+      "on_fault": "shut the bottle and fix the leak before anything is struck, and ventilate what has already collected"
+     },
+     {
+      "sim": "weld-bead",
+      "point": "extraction",
+      "label": "Fume extraction",
+      "check": "running and pulling at the work, not past your face",
+      "on_fault": "no extraction, no hot work here; move the work or fix the extraction, do not just turn your head"
+     }
+    ]
+   },
+   "derived": {
+    "unions": [
+     "boilermakers",
+     "tank-erectors",
+     "welders"
+    ],
+    "halls": [
+     "boilermakers",
+     "fabricators",
+     "marine-pipe",
+     "pipeline",
+     "shipfitters",
+     "tank-erectors",
+     "welders"
+    ],
+    "seats": [
+     "weld-bead"
+    ],
+    "evidence_kinds_by_role": {
+     "attendant": [
+      "crew"
+     ],
+     "entrant": [
+      "sim",
+      "walkaround"
+     ],
+     "entry-supervisor": [
+      "crew"
+     ]
+    },
+    "handoffs": 5,
+    "handoffs_verifiable": 5,
+    "handoffs_unverifiable": 0,
+    "roles": 3,
+    "lessons_with_this_crew": [
+     "boilermakers-get-them-out"
+    ]
+   }
+  },
+  {
+   "id": "oak-terminal-blind-pick",
+   "title": "Blind pick between the container stacks, Oakland",
+   "job": "Carry a load the cab cannot see land, high over the stacks, on one signaller's hands and one rigger's weight.",
+   "place": {
+    "kind": "campus",
+    "id": "oakland",
+    "name": "Oakland Waterfront Campus",
+    "campus": "oakland",
+    "halls": [
+     "refractory",
+     "pipeline",
+     "tank-erectors",
+     "marine-pipe",
+     "divers",
+     "smelter",
+     "foundry",
+     "machinists",
+     "toolmakers",
+     "platers",
+     "rail-track",
+     "rail-signals",
+     "catenary",
+     "transit-vehicle",
+     "aviation-ground",
+     "airfield",
+     "port-crane",
+     "marine-terminal",
+     "fleet-diesel",
+     "bridge-inspect",
+     "operating-eng",
+     "heavy-equip",
+     "laborers",
+     "demolition",
+     "teamsters",
+     "scaffold",
+     "grounds",
+     "shoring",
+     "concrete-pump",
+     "post-tension",
+     "blasters",
+     "miners"
+    ],
+    "plan": {
+     "kind": "campus-tile",
+     "districts": [
+      "industry",
+      "transport",
+      "earthworks"
+     ]
+    },
+    "href": null
+   },
+   "crew": {
+    "id": "crane-lift-crew",
+    "name": "Crane lift crew",
+    "seat": "crane-lift",
+    "muster": "coordination",
+    "halls": [
+     "crane-ops",
+     "riggers",
+     "steel-erectors",
+     "port-crane",
+     "ironworkers",
+     "decking",
+     "tank-erectors",
+     "piling"
+    ]
+   },
+   "roles": {
+    "lift-director": {
+     "name": "Lift director",
+     "job": "owns the lift plan and is the only voice that changes it",
+     "standing": "commonly-required",
+     "stops": "the plan changed on the ground and nobody wrote the new one",
+     "glyph": "📋",
+     "post": {
+      "r": 7.2,
+      "deg": 200
+     },
+     "union": "steel-erectors",
+     "union_name": "Steel Erectors",
+     "hall_reached_by_crew": true,
+     "why_not_reached": null
+    },
+    "crane-operator": {
+     "name": "Crane operator",
+     "job": "runs the machine and takes moves from one set of hands only",
+     "standing": "commonly-required",
+     "stops": "a signal I did not understand",
+     "glyph": "👷",
+     "post": {
+      "r": 3.4,
+      "deg": 20
+     },
+     "union": "port-crane",
+     "union_name": "Port Crane Technicians",
+     "hall_reached_by_crew": true,
+     "why_not_reached": null
+    },
+    "signalperson": {
+     "name": "Signalperson",
+     "job": "gives the crane its moves and owns the path the load travels",
+     "standing": "commonly-required",
+     "stops": "the load’s path crossing a person",
+     "glyph": "📣",
+     "post": {
+      "r": 6.0,
+      "deg": 300
+     },
+     "union": "riggers",
+     "union_name": "Riggers & Signalpersons",
+     "hall_reached_by_crew": true,
+     "why_not_reached": null
+    },
+    "rigger": {
+     "name": "Rigger",
+     "job": "chooses and makes the hitch, and knows what the load weighs",
+     "standing": "commonly-required",
+     "stops": "a load whose weight nobody can tell me",
+     "glyph": "⛓️",
+     "post": {
+      "r": 5.4,
+      "deg": 120
+     },
+     "union": "riggers",
+     "union_name": "Riggers & Signalpersons",
+     "hall_reached_by_crew": true,
+     "why_not_reached": null
+    }
+   },
+   "handoffs": [
+    {
+     "n": 1,
+     "by": "lift-director",
+     "to": "rigger",
+     "step": "reads the plan out: weight, radius, hitch, path, and who stands where",
+     "from_evidence": {
+      "kind": "crew",
+      "crew": "crane-lift-crew",
+      "role": "lift-director",
+      "topic": "plan",
+      "ask": "What is in a lift plan?",
+      "verifiable": true,
+      "episode_kind": "crew",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "crew",
+       "role",
+       "topic",
+       "answer_kind"
+      ]
+     },
+     "to_evidence": {
+      "kind": "station",
+      "station": "st005",
+      "station_name": "Rigging & Material Handling",
+      "station_hall": "riggers",
+      "verifiable": false,
+      "why_unverifiable": "no episode kind in training.json#episode_kinds records a station; a tc-completion/1 record lists a station as a device-local mark with no time, so presence can be read but the hand-off order cannot"
+     },
+     "verifiable": false,
+     "why_unverifiable": "to: no episode kind in training.json#episode_kinds records a station; a tc-completion/1 record lists a station as a device-local mark with no time, so presence can be read but the hand-off order cannot"
+    },
+    {
+     "n": 2,
+     "by": "rigger",
+     "to": "signalperson",
+     "step": "makes the hitch, checks the sling angles and calls the load rigged",
+     "from_evidence": {
+      "kind": "sim",
+      "sim": "load-chart",
+      "scenario": "oak-heavy-list",
+      "seat_halls": [
+       "crane-ops",
+       "riggers",
+       "port-crane",
+       "heavy-equip",
+       "operating-eng",
+       "ironworkers",
+       "tank-erectors"
+      ],
+      "passes_when": [
+       {
+        "axis": "judgments",
+        "pass": "== all"
+       },
+       {
+        "axis": "overloads",
+        "pass": "== 0"
+       },
+       {
+        "axis": "time",
+        "pass": "informational"
+       }
+      ],
+      "verifiable": true,
+      "episode_kind": "sim",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "sim",
+       "scenario",
+       "controls",
+       "actor",
+       "operator",
+       "outcome"
+      ]
+     },
+     "to_evidence": {
+      "kind": "walkaround",
+      "sim": "rigging-signals",
+      "point": "radio",
+      "check": "checked both ways on a working channel before the first pick, and the channel is one nobody else on the site is on",
+      "verifiable": true,
+      "episode_kind": "walkaround",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "sim",
+       "point"
+      ]
+     },
+     "verifiable": true,
+     "why_unverifiable": null
+    },
+    {
+     "n": 3,
+     "by": "signalperson",
+     "to": "crane-operator",
+     "step": "takes the load’s path, clears it of people, and gives the first move",
+     "from_evidence": {
+      "kind": "sim",
+      "sim": "rigging-signals",
+      "scenario": "oak-blind-pick",
+      "seat_halls": [
+       "riggers",
+       "crane-ops",
+       "steel-erectors",
+       "port-crane",
+       "millwrights",
+       "ironworkers",
+       "decking",
+       "tank-erectors",
+       "piling"
+      ],
+      "passes_when": [
+       {
+        "axis": "calls",
+        "pass": "== all"
+       },
+       {
+        "axis": "wrong",
+        "pass": "== 0"
+       },
+       {
+        "axis": "time",
+        "pass": "informational"
+       }
+      ],
+      "verifiable": true,
+      "episode_kind": "sim",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "sim",
+       "scenario",
+       "controls",
+       "actor",
+       "operator",
+       "outcome"
+      ]
+     },
+     "to_evidence": {
+      "kind": "sim",
+      "sim": "crane-lift",
+      "scenario": "oak-terminal",
+      "seat_halls": [
+       "crane-ops",
+       "riggers",
+       "steel-erectors",
+       "port-crane",
+       "ironworkers",
+       "decking",
+       "tank-erectors",
+       "piling"
+      ],
+      "passes_when": [
+       {
+        "axis": "placement",
+        "pass": "<= 1.2"
+       },
+       {
+        "axis": "swing",
+        "pass": "<= 2.0"
+       },
+       {
+        "axis": "strikes",
+        "pass": "== 0"
+       },
+       {
+        "axis": "time",
+        "pass": "informational"
+       }
+      ],
+      "verifiable": true,
+      "episode_kind": "sim",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "sim",
+       "scenario",
+       "controls",
+       "actor",
+       "operator",
+       "outcome"
+      ]
+     },
+     "verifiable": true,
+     "why_unverifiable": null
+    },
+    {
+     "n": 4,
+     "by": "crane-operator",
+     "to": "signalperson",
+     "step": "moves only on a signal, and calls a hold the moment one is unclear",
+     "from_evidence": {
+      "kind": "sim",
+      "sim": "crane-lift",
+      "scenario": "oak-terminal",
+      "seat_halls": [
+       "crane-ops",
+       "riggers",
+       "steel-erectors",
+       "port-crane",
+       "ironworkers",
+       "decking",
+       "tank-erectors",
+       "piling"
+      ],
+      "passes_when": [
+       {
+        "axis": "placement",
+        "pass": "<= 1.2"
+       },
+       {
+        "axis": "swing",
+        "pass": "<= 2.0"
+       },
+       {
+        "axis": "strikes",
+        "pass": "== 0"
+       },
+       {
+        "axis": "time",
+        "pass": "informational"
+       }
+      ],
+      "verifiable": true,
+      "episode_kind": "sim",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "sim",
+       "scenario",
+       "controls",
+       "actor",
+       "operator",
+       "outcome"
+      ]
+     },
+     "to_evidence": {
+      "kind": "crew",
+      "crew": "crane-lift-crew",
+      "role": "signalperson",
+      "topic": "one",
+      "ask": "Can two of you signal at once?",
+      "verifiable": true,
+      "episode_kind": "crew",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "crew",
+       "role",
+       "topic",
+       "answer_kind"
+      ]
+     },
+     "verifiable": true,
+     "why_unverifiable": null
+    },
+    {
+     "n": 5,
+     "by": "signalperson",
+     "to": "rigger",
+     "step": "walks the load to the set and holds it still until hands are on it",
+     "from_evidence": {
+      "kind": "crew",
+      "crew": "crane-lift-crew",
+      "role": "signalperson",
+      "topic": "one",
+      "ask": "Can two of you signal at once?",
+      "verifiable": true,
+      "episode_kind": "crew",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "crew",
+       "role",
+       "topic",
+       "answer_kind"
+      ]
+     },
+     "to_evidence": {
+      "kind": "crew",
+      "crew": "crane-lift-crew",
+      "role": "rigger",
+      "topic": "hitch",
+      "ask": "Why this hitch and not another?",
+      "verifiable": true,
+      "episode_kind": "crew",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "crew",
+       "role",
+       "topic",
+       "answer_kind"
+      ]
+     },
+     "verifiable": true,
+     "why_unverifiable": null
+    },
+    {
+     "n": 6,
+     "by": "rigger",
+     "to": "lift-director",
+     "step": "unhooks clear of the load and reports the pick closed against the plan",
+     "from_evidence": {
+      "kind": "crew",
+      "crew": "crane-lift-crew",
+      "role": "rigger",
+      "topic": "hitch",
+      "ask": "Why this hitch and not another?",
+      "verifiable": true,
+      "episode_kind": "crew",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "crew",
+       "role",
+       "topic",
+       "answer_kind"
+      ]
+     },
+     "to_evidence": {
+      "kind": "crew",
+      "crew": "crane-lift-crew",
+      "role": "lift-director",
+      "topic": "change",
+      "ask": "What if the lift changes?",
+      "verifiable": true,
+      "episode_kind": "crew",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "crew",
+       "role",
+       "topic",
+       "answer_kind"
+      ]
+     },
+     "verifiable": true,
+     "why_unverifiable": null
+    }
+   ],
+   "stop_work": "Every one of the four can stop this lift, and the crane holds on a stop signal from anyone at all - that is the one signal nobody needs standing to give.",
+   "gates": {
+    "ppe": {
+     "required": null,
+     "derived_from": null,
+     "why_none": "a campus declares no finishes in this bundle, so surfaces/ derives no PPE for it; nothing is typed in its place"
+    },
+    "walkaround_before_first_move": [
+     {
+      "sim": "crane-lift",
+      "point": "counterweight",
+      "label": "Counterweight",
+      "check": "seated and pinned exactly as the configuration the chart on the board is written for - blocks counted, not glanced at",
+      "on_fault": "nothing lifts, because a counterweight that is not the configured one makes the chart on the board the wrong chart"
+     },
+     {
+      "sim": "load-chart",
+      "point": "wind",
+      "label": "Wind check",
+      "check": "inside the chart notes for the largest sail area",
+      "on_fault": "over the chart note, the pick waits - the wind is not something the foreman can overrule"
+     }
+    ]
+   },
+   "derived": {
+    "unions": [
+     "port-crane",
+     "riggers",
+     "steel-erectors"
+    ],
+    "halls": [
+     "crane-ops",
+     "decking",
+     "ironworkers",
+     "piling",
+     "port-crane",
+     "riggers",
+     "steel-erectors",
+     "tank-erectors"
+    ],
+    "seats": [
+     "crane-lift",
+     "load-chart",
+     "rigging-signals"
+    ],
+    "evidence_kinds_by_role": {
+     "crane-operator": [
+      "sim"
+     ],
+     "lift-director": [
+      "crew"
+     ],
+     "rigger": [
+      "crew",
+      "sim",
+      "station"
+     ],
+     "signalperson": [
+      "crew",
+      "sim",
+      "walkaround"
+     ]
+    },
+    "handoffs": 6,
+    "handoffs_verifiable": 5,
+    "handoffs_unverifiable": 1,
+    "roles": 4,
+    "lessons_with_this_crew": [
+     "ironworkers-plan-out-loud",
+     "riggers-carry-under-control"
+    ]
+   }
+  },
+  {
+   "id": "salt-ponds-levee-trench",
+   "title": "Levee toe trench, South Bay salt ponds",
+   "job": "Open one trench cell along the levee toe with the buried services marked and proved first, a spotter in the operator's eyeline, and the cut held shallow where the marks run.",
+   "place": {
+    "kind": "restoration-site",
+    "id": "south-bay-salt-ponds",
+    "name": "South Bay Salt Pond Restoration — ecotone levee (Phase 1)",
+    "campus": "oakland",
+    "trade_needs": [
+     "operating-eng",
+     "laborers",
+     "surveyors"
+    ],
+    "ground": "mudflat",
+    "plan": {
+     "kind": "site-tile",
+     "habitat": "managed pond to tidal marsh"
+    },
+    "href": null
+   },
+   "crew": {
+    "id": "trench-crew",
+    "name": "Trench crew",
+    "seat": "excavator-trench",
+    "muster": "layout",
+    "halls": [
+     "operating-eng",
+     "shoring",
+     "laborers",
+     "demolition"
+    ]
+   },
+   "roles": {
+    "excavator-operator": {
+     "name": "Excavator operator",
+     "job": "runs the machine, and stops the moment the spotter goes out of sight",
+     "standing": "commonly-required",
+     "stops": "a spotter I can no longer see",
+     "glyph": "👷",
+     "post": {
+      "r": 3.4,
+      "deg": 350
+     },
+     "union": "operating-eng",
+     "union_name": "Operating Engineers",
+     "hall_reached_by_crew": true,
+     "why_not_reached": null
+    },
+    "trench-competent-person": {
+     "name": "Competent person",
+     "job": "inspects the ground and the cut, and sets what may be taken without support",
+     "standing": "commonly-required",
+     "stops": "water, spoil or vibration changing the ground since the last inspection",
+     "glyph": "🪨",
+     "post": {
+      "r": 6.4,
+      "deg": 210
+     },
+     "union": "shoring",
+     "union_name": "Shoring & Underpinning",
+     "hall_reached_by_crew": true,
+     "why_not_reached": null
+    },
+    "spotter": {
+     "name": "Spotter",
+     "job": "stands where the operator cannot see and owns the swing radius",
+     "standing": "commonly-required",
+     "stops": "anyone entering the swing radius",
+     "glyph": "🦺",
+     "post": {
+      "r": 5.6,
+      "deg": 300
+     },
+     "union": "laborers",
+     "union_name": "Laborers",
+     "hall_reached_by_crew": true,
+     "why_not_reached": null
+    },
+    "locator": {
+     "name": "Utility locator",
+     "job": "marks what is buried before the first cut, and re-marks it when marks are lost",
+     "standing": "commonly-required",
+     "stops": "a cut near a mark that nobody has proved",
+     "glyph": "📡",
+     "post": {
+      "r": 7.4,
+      "deg": 140
+     },
+     "union": "surveyors",
+     "union_name": "Construction Surveyors",
+     "hall_reached_by_crew": false,
+     "why_not_reached": "the restoration registry names surveyors among this site's own trade_needs, and the excavator-trench seat binds no surveyors hall; the locator here can only be evidenced by crew exchanges, never by a seat run"
+    }
+   },
+   "handoffs": [
+    {
+     "n": 1,
+     "by": "locator",
+     "to": "trench-competent-person",
+     "step": "marks what is buried and says which marks are proved and which are only painted",
+     "from_evidence": {
+      "kind": "crew",
+      "crew": "trench-crew",
+      "role": "locator",
+      "topic": "marks",
+      "ask": "How good are the marks?",
+      "verifiable": true,
+      "episode_kind": "crew",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "crew",
+       "role",
+       "topic",
+       "answer_kind"
+      ]
+     },
+     "to_evidence": {
+      "kind": "crew",
+      "crew": "trench-crew",
+      "role": "trench-competent-person",
+      "topic": "soil",
+      "ask": "What are you reading the ground for?",
+      "verifiable": true,
+      "episode_kind": "crew",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "crew",
+       "role",
+       "topic",
+       "answer_kind"
+      ]
+     },
+     "verifiable": true,
+     "why_unverifiable": null
+    },
+    {
+     "n": 2,
+     "by": "trench-competent-person",
+     "to": "excavator-operator",
+     "step": "inspects the ground and sets the depth the machine may take without support",
+     "from_evidence": {
+      "kind": "crew",
+      "crew": "trench-crew",
+      "role": "trench-competent-person",
+      "topic": "soil",
+      "ask": "What are you reading the ground for?",
+      "verifiable": true,
+      "episode_kind": "crew",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "crew",
+       "role",
+       "topic",
+       "answer_kind"
+      ]
+     },
+     "to_evidence": {
+      "kind": "walkaround",
+      "sim": "excavator-trench",
+      "point": "tracks",
+      "check": "tension right, no cut pads or leaking rollers",
+      "verifiable": true,
+      "episode_kind": "walkaround",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "sim",
+       "point"
+      ]
+     },
+     "verifiable": true,
+     "why_unverifiable": null
+    },
+    {
+     "n": 3,
+     "by": "excavator-operator",
+     "to": "spotter",
+     "step": "sets up on level ground and asks for the swing radius to be walked and held",
+     "from_evidence": {
+      "kind": "walkaround",
+      "sim": "excavator-trench",
+      "point": "tracks",
+      "check": "tension right, no cut pads or leaking rollers",
+      "verifiable": true,
+      "episode_kind": "walkaround",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "sim",
+       "point"
+      ]
+     },
+     "to_evidence": {
+      "kind": "crew",
+      "crew": "trench-crew",
+      "role": "spotter",
+      "topic": "where",
+      "ask": "Where do you stand?",
+      "verifiable": true,
+      "episode_kind": "crew",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "crew",
+       "role",
+       "topic",
+       "answer_kind"
+      ]
+     },
+     "verifiable": true,
+     "why_unverifiable": null
+    },
+    {
+     "n": 4,
+     "by": "spotter",
+     "to": "excavator-operator",
+     "step": "takes station in the operator’s eyeline, keeps the radius clear, and holds the one call",
+     "from_evidence": {
+      "kind": "crew",
+      "crew": "trench-crew",
+      "role": "spotter",
+      "topic": "where",
+      "ask": "Where do you stand?",
+      "verifiable": true,
+      "episode_kind": "crew",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "crew",
+       "role",
+       "topic",
+       "answer_kind"
+      ]
+     },
+     "to_evidence": {
+      "kind": "sim",
+      "sim": "excavator-trench",
+      "scenario": "oak-fill",
+      "seat_halls": [
+       "operating-eng",
+       "shoring",
+       "laborers",
+       "demolition"
+      ],
+      "passes_when": [
+       {
+        "axis": "grade",
+        "pass": "== all"
+       },
+       {
+        "axis": "utility",
+        "pass": "== 0"
+       },
+       {
+        "axis": "spoil",
+        "pass": "== all"
+       },
+       {
+        "axis": "time",
+        "pass": "informational"
+       }
+      ],
+      "verifiable": true,
+      "episode_kind": "sim",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "sim",
+       "scenario",
+       "controls",
+       "actor",
+       "operator",
+       "outcome"
+      ]
+     },
+     "verifiable": true,
+     "why_unverifiable": null
+    },
+    {
+     "n": 5,
+     "by": "excavator-operator",
+     "to": "trench-competent-person",
+     "step": "cuts cell by cell and stops shallow where the marked service runs",
+     "from_evidence": {
+      "kind": "sim",
+      "sim": "excavator-trench",
+      "scenario": "oak-fill",
+      "seat_halls": [
+       "operating-eng",
+       "shoring",
+       "laborers",
+       "demolition"
+      ],
+      "passes_when": [
+       {
+        "axis": "grade",
+        "pass": "== all"
+       },
+       {
+        "axis": "utility",
+        "pass": "== 0"
+       },
+       {
+        "axis": "spoil",
+        "pass": "== all"
+       },
+       {
+        "axis": "time",
+        "pass": "informational"
+       }
+      ],
+      "verifiable": true,
+      "episode_kind": "sim",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "sim",
+       "scenario",
+       "controls",
+       "actor",
+       "operator",
+       "outcome"
+      ]
+     },
+     "to_evidence": {
+      "kind": "walkaround",
+      "sim": "excavator-trench",
+      "point": "edge",
+      "check": "spoil set back, no load surcharging the cut",
+      "verifiable": true,
+      "episode_kind": "walkaround",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "sim",
+       "point"
+      ]
+     },
+     "verifiable": true,
+     "why_unverifiable": null
+    },
+    {
+     "n": 6,
+     "by": "trench-competent-person",
+     "to": "locator",
+     "step": "re-inspects after anything that changed the ground, and sends the locator back when a mark is gone",
+     "from_evidence": {
+      "kind": "walkaround",
+      "sim": "excavator-trench",
+      "point": "edge",
+      "check": "spoil set back, no load surcharging the cut",
+      "verifiable": true,
+      "episode_kind": "walkaround",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "sim",
+       "point"
+      ]
+     },
+     "to_evidence": {
+      "kind": "crew",
+      "crew": "trench-crew",
+      "role": "locator",
+      "topic": "prove",
+      "ask": "What does proving a mark mean?",
+      "verifiable": true,
+      "episode_kind": "crew",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "crew",
+       "role",
+       "topic",
+       "answer_kind"
+      ]
+     },
+     "verifiable": true,
+     "why_unverifiable": null
+    }
+   ],
+   "stop_work": "The spotter stops this machine with one call and does not explain it first; the locator stops the cut when a mark is lost rather than when it is proved wrong.",
+   "gates": {
+    "ppe": {
+     "required": null,
+     "derived_from": null,
+     "why_none": "a restoration-site declares no finishes in this bundle, so surfaces/ derives no PPE for it; nothing is typed in its place"
+    },
+    "walkaround_before_first_move": [
+     {
+      "sim": "excavator-trench",
+      "point": "hoses",
+      "label": "Boom hydraulics",
+      "check": "no weeping hoses or chafed lines on the boom",
+      "on_fault": "shut it down, and nobody feels for a hydraulic leak with a hand - the weep is the warning"
+     },
+     {
+      "sim": "excavator-trench",
+      "point": "slew-brake",
+      "label": "Slew brake",
+      "check": "holds the house still on a test swing with the boom out, where the moment on it is worst",
+      "on_fault": "do not dig: a house that creeps under load is a machine nobody should be sitting in"
+     }
+    ]
+   },
+   "derived": {
+    "unions": [
+     "laborers",
+     "operating-eng",
+     "shoring",
+     "surveyors"
+    ],
+    "halls": [
+     "demolition",
+     "laborers",
+     "operating-eng",
+     "shoring",
+     "surveyors"
+    ],
+    "seats": [
+     "excavator-trench"
+    ],
+    "evidence_kinds_by_role": {
+     "excavator-operator": [
+      "sim",
+      "walkaround"
+     ],
+     "locator": [
+      "crew"
+     ],
+     "spotter": [
+      "crew"
+     ],
+     "trench-competent-person": [
+      "crew",
+      "walkaround"
+     ]
+    },
+    "handoffs": 6,
+    "handoffs_verifiable": 6,
+    "handoffs_unverifiable": 0,
+    "roles": 4,
+    "lessons_with_this_crew": [
+     "operating-eng-locate-first"
+    ]
+   }
+  },
+  {
+   "id": "ti-curtainwall-boom-run",
+   "title": "Curtainwall run under the line, Treasure Island",
+   "job": "Take a basket to each curtainwall work point in order, clipped before it leaves the ground, with an observer who owns the overhead line and a ground attendant who can bring it down.",
+   "place": {
+    "kind": "campus",
+    "id": "treasure-island",
+    "name": "Treasure Island Campus",
+    "campus": "treasure-island",
+    "halls": [
+     "ironworkers",
+     "welders",
+     "boilermakers",
+     "millwrights",
+     "riggers",
+     "crane-ops",
+     "steel-erectors",
+     "fabricators",
+     "shipfitters",
+     "decking",
+     "precast",
+     "piling",
+     "electricians",
+     "pipefitters",
+     "hvacr",
+     "sheetmetal",
+     "fire-sprinkler",
+     "elevator",
+     "bas-controls",
+     "fire-alarm",
+     "security-sys",
+     "network-cabling",
+     "fiber-splicers",
+     "data-center",
+     "instrumentation",
+     "plc-techs",
+     "robotics",
+     "automation-int",
+     "cleanroom",
+     "medical-gas",
+     "carpenters",
+     "drywall",
+     "glaziers",
+     "roofers",
+     "bricklayers",
+     "cement-masons",
+     "flooring",
+     "painters",
+     "insulators",
+     "plasterers",
+     "terrazzo",
+     "tilesetters",
+     "lathers",
+     "curtainwall",
+     "waterproofers",
+     "firestop",
+     "acoustic",
+     "cladding",
+     "masonry-restore",
+     "stone-carvers",
+     "window-glazing"
+    ],
+    "plan": {
+     "kind": "campus-tile",
+     "districts": [
+      "structural",
+      "systems",
+      "envelope"
+     ]
+    },
+    "href": null
+   },
+   "crew": {
+    "id": "aerial-lift-crew",
+    "name": "Aerial lift crew",
+    "seat": "boom-lift",
+    "muster": "inspection",
+    "halls": [
+     "electricians",
+     "glaziers",
+     "window-glazing",
+     "painters",
+     "ironworkers",
+     "steel-erectors",
+     "sheetmetal",
+     "insulators"
+    ]
+   },
+   "roles": {
+    "basket-operator": {
+     "name": "Basket operator",
+     "job": "works from the platform, clipped to the basket and nothing else",
+     "standing": "commonly-required",
+     "stops": "a basket I cannot level or a harness I cannot clip",
+     "glyph": "🧗",
+     "post": {
+      "r": 3.2,
+      "deg": 30
+     },
+     "union": "glaziers",
+     "union_name": "Glaziers",
+     "hall_reached_by_crew": true,
+     "why_not_reached": null
+    },
+    "ground-attendant": {
+     "name": "Ground attendant",
+     "job": "mans the ground controls and can bring the basket down without help from it",
+     "standing": "commonly-required",
+     "stops": "an operator who has stopped answering",
+     "glyph": "🆘",
+     "post": {
+      "r": 5.4,
+      "deg": 250
+     },
+     "union": "electricians",
+     "union_name": "Electrical Workers",
+     "hall_reached_by_crew": true,
+     "why_not_reached": null
+    },
+    "line-observer": {
+     "name": "Line observer",
+     "job": "watches the clearance to the overhead conductor and nothing else",
+     "standing": "academy-practice",
+     "stops": "any part of the machine closing on the exclusion zone",
+     "glyph": "⚡",
+     "post": {
+      "r": 6.8,
+      "deg": 330
+     },
+     "union": "electricians",
+     "union_name": "Electrical Workers",
+     "hall_reached_by_crew": true,
+     "why_not_reached": null
+    }
+   },
+   "handoffs": [
+    {
+     "n": 1,
+     "by": "line-observer",
+     "to": "basket-operator",
+     "step": "walks the overhead line, sets the exclusion zone on the ground and says where it is",
+     "from_evidence": {
+      "kind": "walkaround",
+      "sim": "boom-lift",
+      "point": "overhead",
+      "check": "every line, beam and canopy on the run found and its clearance called before the first lift",
+      "verifiable": true,
+      "episode_kind": "walkaround",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "sim",
+       "point"
+      ]
+     },
+     "to_evidence": {
+      "kind": "walkaround",
+      "sim": "boom-lift",
+      "point": "harness",
+      "check": "webbing and stitching whole, lanyard in date, the basket anchor rated and unbent",
+      "verifiable": true,
+      "episode_kind": "walkaround",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "sim",
+       "point"
+      ]
+     },
+     "verifiable": true,
+     "why_unverifiable": null
+    },
+    {
+     "n": 2,
+     "by": "basket-operator",
+     "to": "ground-attendant",
+     "step": "sets the stabilizers on the level pad, clips to the basket anchor, and calls for the ground controls to be manned",
+     "from_evidence": {
+      "kind": "walkaround",
+      "sim": "boom-lift",
+      "point": "harness",
+      "check": "webbing and stitching whole, lanyard in date, the basket anchor rated and unbent",
+      "verifiable": true,
+      "episode_kind": "walkaround",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "sim",
+       "point"
+      ]
+     },
+     "to_evidence": {
+      "kind": "walkaround",
+      "sim": "boom-lift",
+      "point": "controls",
+      "check": "every function answers at the basket and the ground station, and the manual lowering valve works",
+      "verifiable": true,
+      "episode_kind": "walkaround",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "sim",
+       "point"
+      ]
+     },
+     "verifiable": true,
+     "why_unverifiable": null
+    },
+    {
+     "n": 3,
+     "by": "ground-attendant",
+     "to": "basket-operator",
+     "step": "proves the ground controls, then stays in sight and sound for the whole run",
+     "from_evidence": {
+      "kind": "walkaround",
+      "sim": "boom-lift",
+      "point": "controls",
+      "check": "every function answers at the basket and the ground station, and the manual lowering valve works",
+      "verifiable": true,
+      "episode_kind": "walkaround",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "sim",
+       "point"
+      ]
+     },
+     "to_evidence": {
+      "kind": "sim",
+      "sim": "boom-lift",
+      "scenario": "bay-curtainwall-run",
+      "seat_halls": [
+       "electricians",
+       "glaziers",
+       "window-glazing",
+       "painters",
+       "ironworkers",
+       "steel-erectors",
+       "sheetmetal",
+       "insulators"
+      ],
+      "passes_when": [
+       {
+        "axis": "reach",
+        "pass": "== all"
+       },
+       {
+        "axis": "envelope",
+        "pass": "== 0"
+       },
+       {
+        "axis": "tie-off",
+        "pass": "required"
+       },
+       {
+        "axis": "slope",
+        "pass": "required"
+       },
+       {
+        "axis": "strikes",
+        "pass": "== 0"
+       },
+       {
+        "axis": "time",
+        "pass": "informational"
+       }
+      ],
+      "verifiable": true,
+      "episode_kind": "sim",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "sim",
+       "scenario",
+       "controls",
+       "actor",
+       "operator",
+       "outcome"
+      ]
+     },
+     "verifiable": true,
+     "why_unverifiable": null
+    },
+    {
+     "n": 4,
+     "by": "basket-operator",
+     "to": "line-observer",
+     "step": "takes the basket to each work point and asks for a clearance call before every move toward the line",
+     "from_evidence": {
+      "kind": "sim",
+      "sim": "boom-lift",
+      "scenario": "bay-curtainwall-run",
+      "seat_halls": [
+       "electricians",
+       "glaziers",
+       "window-glazing",
+       "painters",
+       "ironworkers",
+       "steel-erectors",
+       "sheetmetal",
+       "insulators"
+      ],
+      "passes_when": [
+       {
+        "axis": "reach",
+        "pass": "== all"
+       },
+       {
+        "axis": "envelope",
+        "pass": "== 0"
+       },
+       {
+        "axis": "tie-off",
+        "pass": "required"
+       },
+       {
+        "axis": "slope",
+        "pass": "required"
+       },
+       {
+        "axis": "strikes",
+        "pass": "== 0"
+       },
+       {
+        "axis": "time",
+        "pass": "informational"
+       }
+      ],
+      "verifiable": true,
+      "episode_kind": "sim",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "sim",
+       "scenario",
+       "controls",
+       "actor",
+       "operator",
+       "outcome"
+      ]
+     },
+     "to_evidence": {
+      "kind": "crew",
+      "crew": "aerial-lift-crew",
+      "role": "line-observer",
+      "topic": "zone",
+      "ask": "What is the exclusion zone?",
+      "verifiable": true,
+      "episode_kind": "crew",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "crew",
+       "role",
+       "topic",
+       "answer_kind"
+      ]
+     },
+     "verifiable": true,
+     "why_unverifiable": null
+    },
+    {
+     "n": 5,
+     "by": "line-observer",
+     "to": "ground-attendant",
+     "step": "calls the clearance, and calls the stop the moment the machine closes on the zone",
+     "from_evidence": {
+      "kind": "crew",
+      "crew": "aerial-lift-crew",
+      "role": "line-observer",
+      "topic": "zone",
+      "ask": "What is the exclusion zone?",
+      "verifiable": true,
+      "episode_kind": "crew",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "crew",
+       "role",
+       "topic",
+       "answer_kind"
+      ]
+     },
+     "to_evidence": {
+      "kind": "crew",
+      "crew": "aerial-lift-crew",
+      "role": "ground-attendant",
+      "topic": "rescue",
+      "ask": "What happens if they collapse up there?",
+      "verifiable": true,
+      "episode_kind": "crew",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "crew",
+       "role",
+       "topic",
+       "answer_kind"
+      ]
+     },
+     "verifiable": true,
+     "why_unverifiable": null
+    }
+   ],
+   "stop_work": "The line observer stops every move toward the conductor, and the ground attendant brings the basket down without waiting for agreement from the person in it.",
+   "gates": {
+    "ppe": {
+     "required": null,
+     "derived_from": null,
+     "why_none": "a campus declares no finishes in this bundle, so surfaces/ derives no PPE for it; nothing is typed in its place"
+    },
+    "walkaround_before_first_move": [
+     {
+      "sim": "boom-lift",
+      "point": "tires-level",
+      "label": "Tires, outriggers and the pad",
+      "check": "tires sound, outrigger pads whole, the pad level and firm under every foot",
+      "on_fault": "nothing lifts: an outrigger on soft or sloping ground is the commonest way one of these goes over"
+     },
+     {
+      "sim": "boom-lift",
+      "point": "guardrails",
+      "label": "Guardrails and gate",
+      "check": "rails tight, the gate self-closes and latches behind you",
+      "on_fault": "fix the gate before anyone steps in; the rail is what you stand behind, not what you clip to"
+     }
+    ]
+   },
+   "derived": {
+    "unions": [
+     "electricians",
+     "glaziers"
+    ],
+    "halls": [
+     "electricians",
+     "glaziers",
+     "insulators",
+     "ironworkers",
+     "painters",
+     "sheetmetal",
+     "steel-erectors",
+     "window-glazing"
+    ],
+    "seats": [
+     "boom-lift"
+    ],
+    "evidence_kinds_by_role": {
+     "basket-operator": [
+      "sim",
+      "walkaround"
+     ],
+     "ground-attendant": [
+      "crew",
+      "walkaround"
+     ],
+     "line-observer": [
+      "crew",
+      "walkaround"
+     ]
+    },
+    "handoffs": 5,
+    "handoffs_verifiable": 5,
+    "handoffs_unverifiable": 0,
+    "roles": 3,
+    "lessons_with_this_crew": [
+     "electricians-clip-in-first",
+     "glaziers-watch-the-line"
+    ]
+   }
+  },
+  {
+   "id": "ti-scaffold-court-bay",
+   "title": "One bay up and tagged, scaffold court",
+   "job": "Build one scaffold bay in stage order from bedded sills to guardrails, hold the drop zone, and hand it to a competent person to inspect and tag before anyone stands on it.",
+   "place": {
+    "kind": "space",
+    "id": "scaffold-court",
+    "name": "Scaffold court",
+    "campus": null,
+    "plan": {
+     "kind": "space-plan",
+     "footprint_m": {
+      "area_m2": 112.0,
+      "d": 8.0,
+      "w": 14.0
+     },
+     "items": [
+      {
+       "i": 0,
+       "id": "harness-rail",
+       "kind": "prop",
+       "x": 2.0,
+       "y": 7.7,
+       "rect": [
+        1.3,
+        7.5,
+        2.7,
+        7.9
+       ]
+      },
+      {
+       "i": 1,
+       "id": "lanyard-locker",
+       "kind": "prop",
+       "x": 4.0,
+       "y": 7.7,
+       "rect": [
+        3.5,
+        7.475,
+        4.5,
+        7.925
+       ]
+      },
+      {
+       "i": 2,
+       "id": "helmet-shelf",
+       "kind": "prop",
+       "x": 6.0,
+       "y": 7.8,
+       "rect": [
+        5.5,
+        7.65,
+        6.5,
+        7.95
+       ]
+      },
+      {
+       "i": 3,
+       "id": "edge-stack",
+       "kind": "prop",
+       "x": 8.5,
+       "y": 7.6,
+       "rect": [
+        7.9,
+        7.325,
+        9.1,
+        7.875
+       ]
+      },
+      {
+       "i": 4,
+       "id": "rope-grab-frame",
+       "kind": "furniture",
+       "x": 11.0,
+       "y": 7.7,
+       "rect": [
+        10.3,
+        7.5,
+        11.7,
+        7.9
+       ]
+      },
+      {
+       "i": 5,
+       "id": "rope-grab-rack",
+       "kind": "furniture",
+       "x": 13.0,
+       "y": 7.7,
+       "rect": [
+        12.45,
+        7.475,
+        13.55,
+        7.925
+       ]
+      },
+      {
+       "i": 6,
+       "id": "work-trestle",
+       "kind": "prop",
+       "x": 3.0,
+       "y": 3.0,
+       "rect": [
+        2.1,
+        2.75,
+        3.9,
+        3.25
+       ]
+      },
+      {
+       "i": 7,
+       "id": "work-trestle",
+       "kind": "prop",
+       "x": 7.0,
+       "y": 3.0,
+       "rect": [
+        6.1,
+        2.75,
+        7.9,
+        3.25
+       ]
+      },
+      {
+       "i": 8,
+       "id": "task-board",
+       "kind": "prop",
+       "x": 0.5,
+       "y": 4.0,
+       "rect": [
+        0.46,
+        3.35,
+        0.54,
+        4.65
+       ]
+      },
+      {
+       "i": 9,
+       "id": "ppe-station",
+       "kind": "prop",
+       "x": 13.9,
+       "y": 4.0,
+       "rect": [
+        13.84,
+        3.5,
+        13.96,
+        4.5
+       ]
+      },
+      {
+       "i": 10,
+       "id": "scaffold-bay",
+       "kind": "seat",
+       "x": 5.0,
+       "y": 5.5,
+       "rect": [
+        5.0,
+        5.5,
+        5.0,
+        5.5
+       ]
+      },
+      {
+       "i": 11,
+       "id": "boom-lift",
+       "kind": "seat",
+       "x": 10.0,
+       "y": 4.0,
+       "rect": [
+        10.0,
+        4.0,
+        10.0,
+        4.0
+       ]
+      },
+      {
+       "i": 12,
+       "id": "st003",
+       "kind": "station",
+       "x": 1.5,
+       "y": 1.0,
+       "rect": [
+        1.5,
+        1.0,
+        1.5,
+        1.0
+       ]
+      },
+      {
+       "i": 13,
+       "id": "earthworks",
+       "kind": "crib",
+       "x": 12.5,
+       "y": 1.0,
+       "rect": [
+        12.5,
+        1.0,
+        12.5,
+        1.0
+       ]
+      },
+      {
+       "i": 14,
+       "id": "placard",
+       "kind": "sign",
+       "x": 0.3,
+       "y": 0.3,
+       "rect": [
+        0.3,
+        0.3,
+        0.3,
+        0.3
+       ]
+      },
+      {
+       "i": 15,
+       "id": "hazard",
+       "kind": "sign",
+       "x": 0.3,
+       "y": 7.5,
+       "rect": [
+        0.3,
+        7.5,
+        0.3,
+        7.5
+       ]
+      },
+      {
+       "i": 16,
+       "id": "station",
+       "kind": "sign",
+       "x": 1.5,
+       "y": 0.3,
+       "rect": [
+        1.5,
+        0.3,
+        1.5,
+        0.3
+       ]
+      }
+     ]
+    },
+    "href": "trade_craft_spaces.html#space-scaffold-court"
+   },
+   "crew": {
+    "id": "scaffold-crew",
+    "name": "Scaffold crew",
+    "seat": "scaffold-bay",
+    "muster": "materials",
+    "halls": [
+     "scaffold",
+     "carpenters",
+     "laborers",
+     "bricklayers",
+     "painters",
+     "glaziers",
+     "roofers",
+     "cement-masons",
+     "insulators",
+     "plasterers",
+     "waterproofers",
+     "firestop",
+     "cladding",
+     "masonry-restore",
+     "curtainwall",
+     "window-glazing",
+     "lathers",
+     "stone-carvers",
+     "refractory"
+    ]
+   },
+   "roles": {
+    "scaffold-competent-person": {
+     "name": "Competent person",
+     "job": "inspects the bay and tags it before anyone else stands on it",
+     "standing": "commonly-required",
+     "stops": "a bay that has been altered since it was tagged",
+     "glyph": "🔍",
+     "post": {
+      "r": 6.6,
+      "deg": 190
+     },
+     "union": "scaffold",
+     "union_name": "Scaffold Erectors",
+     "hall_reached_by_crew": true,
+     "why_not_reached": null
+    },
+    "erector": {
+     "name": "Erector",
+     "job": "sets sills, frames, braces, planks and rails, in that order",
+     "standing": "commonly-required",
+     "stops": "a part handed up out of its stage",
+     "glyph": "🔩",
+     "post": {
+      "r": 3.6,
+      "deg": 10
+     },
+     "union": "scaffold",
+     "union_name": "Scaffold Erectors",
+     "hall_reached_by_crew": true,
+     "why_not_reached": null
+    },
+    "ground-tender": {
+     "name": "Ground tender",
+     "job": "keeps the drop zone, and passes material up in the order it is called for",
+     "standing": "academy-practice",
+     "stops": "somebody walking under the bay while a part is moving",
+     "glyph": "🪜",
+     "post": {
+      "r": 5.8,
+      "deg": 110
+     },
+     "union": "laborers",
+     "union_name": "Laborers",
+     "hall_reached_by_crew": true,
+     "why_not_reached": null
+    }
+   },
+   "handoffs": [
+    {
+     "n": 1,
+     "by": "ground-tender",
+     "to": "erector",
+     "step": "levels and beds the sills, then passes the first frames up",
+     "from_evidence": {
+      "kind": "walkaround",
+      "sim": "scaffold-bay",
+      "point": "sills",
+      "check": "full bearing on grade, no blocks or debris packing",
+      "verifiable": true,
+      "episode_kind": "walkaround",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "sim",
+       "point"
+      ]
+     },
+     "to_evidence": {
+      "kind": "walkaround",
+      "sim": "scaffold-bay",
+      "point": "plumb",
+      "check": "plumb both ways, level across the bay",
+      "verifiable": true,
+      "episode_kind": "walkaround",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "sim",
+       "point"
+      ]
+     },
+     "verifiable": true,
+     "why_unverifiable": null
+    },
+    {
+     "n": 2,
+     "by": "erector",
+     "to": "ground-tender",
+     "step": "sets frames and braces, and calls for the next stage only once the one below is complete",
+     "from_evidence": {
+      "kind": "walkaround",
+      "sim": "scaffold-bay",
+      "point": "plumb",
+      "check": "plumb both ways, level across the bay",
+      "verifiable": true,
+      "episode_kind": "walkaround",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "sim",
+       "point"
+      ]
+     },
+     "to_evidence": {
+      "kind": "crew",
+      "crew": "scaffold-crew",
+      "role": "ground-tender",
+      "topic": "order",
+      "ask": "Why not just send everything up at once?",
+      "verifiable": true,
+      "episode_kind": "crew",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "crew",
+       "role",
+       "topic",
+       "answer_kind"
+      ]
+     },
+     "verifiable": true,
+     "why_unverifiable": null
+    },
+    {
+     "n": 3,
+     "by": "ground-tender",
+     "to": "erector",
+     "step": "holds the drop zone and passes planks and rails in the order they were called",
+     "from_evidence": {
+      "kind": "crew",
+      "crew": "scaffold-crew",
+      "role": "ground-tender",
+      "topic": "order",
+      "ask": "Why not just send everything up at once?",
+      "verifiable": true,
+      "episode_kind": "crew",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "crew",
+       "role",
+       "topic",
+       "answer_kind"
+      ]
+     },
+     "to_evidence": {
+      "kind": "sim",
+      "sim": "scaffold-bay",
+      "scenario": "bay-training-bay",
+      "seat_halls": [
+       "scaffold",
+       "carpenters",
+       "laborers",
+       "bricklayers",
+       "painters",
+       "glaziers",
+       "roofers",
+       "cement-masons",
+       "insulators",
+       "plasterers",
+       "waterproofers",
+       "firestop",
+       "cladding",
+       "masonry-restore",
+       "curtainwall",
+       "window-glazing",
+       "lathers",
+       "stone-carvers",
+       "refractory"
+      ],
+      "passes_when": [
+       {
+        "axis": "sequence",
+        "pass": "== 0"
+       },
+       {
+        "axis": "complete",
+        "pass": "informational"
+       },
+       {
+        "axis": "time",
+        "pass": "informational"
+       }
+      ],
+      "verifiable": true,
+      "episode_kind": "sim",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "sim",
+       "scenario",
+       "controls",
+       "actor",
+       "operator",
+       "outcome"
+      ]
+     },
+     "verifiable": true,
+     "why_unverifiable": null
+    },
+    {
+     "n": 4,
+     "by": "erector",
+     "to": "scaffold-competent-person",
+     "step": "lands the guardrails and hands the finished bay over to be inspected",
+     "from_evidence": {
+      "kind": "sim",
+      "sim": "scaffold-bay",
+      "scenario": "bay-training-bay",
+      "seat_halls": [
+       "scaffold",
+       "carpenters",
+       "laborers",
+       "bricklayers",
+       "painters",
+       "glaziers",
+       "roofers",
+       "cement-masons",
+       "insulators",
+       "plasterers",
+       "waterproofers",
+       "firestop",
+       "cladding",
+       "masonry-restore",
+       "curtainwall",
+       "window-glazing",
+       "lathers",
+       "stone-carvers",
+       "refractory"
+      ],
+      "passes_when": [
+       {
+        "axis": "sequence",
+        "pass": "== 0"
+       },
+       {
+        "axis": "complete",
+        "pass": "informational"
+       },
+       {
+        "axis": "time",
+        "pass": "informational"
+       }
+      ],
+      "verifiable": true,
+      "episode_kind": "sim",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "sim",
+       "scenario",
+       "controls",
+       "actor",
+       "operator",
+       "outcome"
+      ]
+     },
+     "to_evidence": {
+      "kind": "walkaround",
+      "sim": "scaffold-bay",
+      "point": "brace-pins",
+      "check": "every brace pinned home, none sprung",
+      "verifiable": true,
+      "episode_kind": "walkaround",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "sim",
+       "point"
+      ]
+     },
+     "verifiable": true,
+     "why_unverifiable": null
+    },
+    {
+     "n": 5,
+     "by": "scaffold-competent-person",
+     "to": "ground-tender",
+     "step": "inspects, tags the bay, and says out loud who may now stand on it",
+     "from_evidence": {
+      "kind": "station",
+      "station": "st003",
+      "station_name": "Scaffold & Fall Protection",
+      "station_hall": "scaffold",
+      "verifiable": false,
+      "why_unverifiable": "no episode kind in training.json#episode_kinds records a station; a tc-completion/1 record lists a station as a device-local mark with no time, so presence can be read but the hand-off order cannot"
+     },
+     "to_evidence": {
+      "kind": "crew",
+      "crew": "scaffold-crew",
+      "role": "ground-tender",
+      "topic": "zone",
+      "ask": "What is a drop zone?",
+      "verifiable": true,
+      "episode_kind": "crew",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "crew",
+       "role",
+       "topic",
+       "answer_kind"
+      ]
+     },
+     "verifiable": false,
+     "why_unverifiable": "from: no episode kind in training.json#episode_kinds records a station; a tc-completion/1 record lists a station as a device-local mark with no time, so presence can be read but the hand-off order cannot"
+    }
+   ],
+   "stop_work": "The ground tender stops this build when anyone walks under it, and the competent person stops it when the bay has changed since it was tagged.",
+   "gates": {
+    "ppe": {
+     "required": [
+      "chinstrap helmet",
+      "full-body harness",
+      "gloves",
+      "hard hat",
+      "hi-vis",
+      "safety boots",
+      "safety glasses"
+     ],
+     "derived_from": {
+      "strand": "procedure",
+      "base_conditions": [
+       "hard hat",
+       "safety glasses",
+       "safety boots",
+       "gloves",
+       "hi-vis"
+      ],
+      "hazards": [
+       "work-at-height"
+      ],
+      "finishes": {
+       "floor": "impact-mat",
+       "wall": "impact-block"
+      },
+      "rule": "surfaces base_conditions[strand].ppe + hazard_conditions[h].ppe for each hazard the space's finishes stand for"
+     },
+     "why_none": null
+    },
+    "walkaround_before_first_move": [
+     {
+      "sim": "scaffold-bay",
+      "point": "planks",
+      "label": "Plank condition",
+      "check": "no cracks, full bearing, cleats where the spec asks",
+      "on_fault": "pull the plank out of the deck and replace it, and nobody stands on that bay until it is back"
+     }
+    ]
+   },
+   "derived": {
+    "unions": [
+     "laborers",
+     "scaffold"
+    ],
+    "halls": [
+     "bricklayers",
+     "carpenters",
+     "cement-masons",
+     "cladding",
+     "curtainwall",
+     "firestop",
+     "glaziers",
+     "insulators",
+     "laborers",
+     "lathers",
+     "masonry-restore",
+     "painters",
+     "plasterers",
+     "refractory",
+     "roofers",
+     "scaffold",
+     "stone-carvers",
+     "waterproofers",
+     "window-glazing"
+    ],
+    "seats": [
+     "scaffold-bay"
+    ],
+    "evidence_kinds_by_role": {
+     "erector": [
+      "sim",
+      "walkaround"
+     ],
+     "ground-tender": [
+      "crew",
+      "walkaround"
+     ],
+     "scaffold-competent-person": [
+      "station",
+      "walkaround"
+     ]
+    },
+    "handoffs": 5,
+    "handoffs_verifiable": 4,
+    "handoffs_unverifiable": 1,
+    "roles": 3,
+    "lessons_with_this_crew": [
+     "scaffold-build-in-order"
+    ]
+   }
+  },
+  {
+   "id": "ti-tower-steel-pick",
+   "title": "Tower steel pick, crane simulator bay",
+   "job": "Pick one steel member off the supply pad and set it in the ring with the plan read out loud first, one signaller, and nobody under the load.",
+   "place": {
+    "kind": "space",
+    "id": "crane-sim-bay",
+    "name": "Crane simulator bay",
+    "campus": null,
+    "plan": {
+     "kind": "space-plan",
+     "footprint_m": {
+      "area_m2": 112.0,
+      "d": 8.0,
+      "w": 14.0
+     },
+     "items": [
+      {
+       "i": 0,
+       "id": "crane-lift",
+       "kind": "seat",
+       "x": 4.0,
+       "y": 4.5,
+       "rect": [
+        4.0,
+        4.5,
+        4.0,
+        4.5
+       ]
+      },
+      {
+       "i": 1,
+       "id": "overhead-crane",
+       "kind": "seat",
+       "x": 10.0,
+       "y": 4.5,
+       "rect": [
+        10.0,
+        4.5,
+        10.0,
+        4.5
+       ]
+      },
+      {
+       "i": 2,
+       "id": "load-chart",
+       "kind": "seat",
+       "x": 7.0,
+       "y": 1.5,
+       "rect": [
+        7.0,
+        1.5,
+        7.0,
+        1.5
+       ]
+      },
+      {
+       "i": 3,
+       "id": "checkout-board",
+       "kind": "prop",
+       "x": 1.0,
+       "y": 7.9,
+       "rect": [
+        0.33,
+        7.87,
+        1.67,
+        7.93
+       ]
+      },
+      {
+       "i": 4,
+       "id": "bay-guard-rail",
+       "kind": "prop",
+       "x": 4.0,
+       "y": 7.5,
+       "rect": [
+        3.0,
+        7.39,
+        5.0,
+        7.61
+       ]
+      },
+      {
+       "i": 5,
+       "id": "bay-guard-rail",
+       "kind": "prop",
+       "x": 10.0,
+       "y": 7.5,
+       "rect": [
+        9.0,
+        7.39,
+        11.0,
+        7.61
+       ]
+      },
+      {
+       "i": 6,
+       "id": "machine-log-desk",
+       "kind": "prop",
+       "x": 7.0,
+       "y": 7.5,
+       "rect": [
+        6.45,
+        7.2,
+        7.55,
+        7.8
+       ]
+      },
+      {
+       "i": 7,
+       "id": "plant-service-bench",
+       "kind": "prop",
+       "x": 12.5,
+       "y": 7.4,
+       "rect": [
+        11.6,
+        7.025,
+        13.4,
+        7.775
+       ]
+      },
+      {
+       "i": 8,
+       "id": "chock-bin",
+       "kind": "prop",
+       "x": 13.5,
+       "y": 4.0,
+       "rect": [
+        13.05,
+        3.7,
+        13.95,
+        4.3
+       ]
+      },
+      {
+       "i": 9,
+       "id": "learner-stool",
+       "kind": "prop",
+       "x": 1.0,
+       "y": 1.0,
+       "rect": [
+        0.78,
+        0.78,
+        1.22,
+        1.22
+       ]
+      },
+      {
+       "i": 10,
+       "id": "learner-stool",
+       "kind": "prop",
+       "x": 2.0,
+       "y": 1.0,
+       "rect": [
+        1.78,
+        0.78,
+        2.22,
+        1.22
+       ]
+      },
+      {
+       "i": 11,
+       "id": "learner-stool",
+       "kind": "prop",
+       "x": 1.0,
+       "y": 2.0,
+       "rect": [
+        0.78,
+        1.78,
+        1.22,
+        2.22
+       ]
+      },
+      {
+       "i": 12,
+       "id": "learner-stool",
+       "kind": "prop",
+       "x": 2.0,
+       "y": 2.0,
+       "rect": [
+        1.78,
+        1.78,
+        2.22,
+        2.22
+       ]
+      },
+      {
+       "i": 13,
+       "id": "ppe-station",
+       "kind": "prop",
+       "x": 13.9,
+       "y": 1.5,
+       "rect": [
+        13.84,
+        1.0,
+        13.96,
+        2.0
+       ]
+      },
+      {
+       "i": 14,
+       "id": "plug-dispenser",
+       "kind": "prop",
+       "x": 0.3,
+       "y": 5.0,
+       "rect": [
+        0.22,
+        4.75,
+        0.38,
+        5.25
+       ]
+      },
+      {
+       "i": 15,
+       "id": "structural",
+       "kind": "crib",
+       "x": 12.5,
+       "y": 1.0,
+       "rect": [
+        12.5,
+        1.0,
+        12.5,
+        1.0
+       ]
+      },
+      {
+       "i": 16,
+       "id": "placard",
+       "kind": "sign",
+       "x": 0.3,
+       "y": 0.3,
+       "rect": [
+        0.3,
+        0.3,
+        0.3,
+        0.3
+       ]
+      },
+      {
+       "i": 17,
+       "id": "hazard",
+       "kind": "sign",
+       "x": 0.3,
+       "y": 4.0,
+       "rect": [
+        0.3,
+        4.0,
+        0.3,
+        4.0
+       ]
+      },
+      {
+       "i": 18,
+       "id": "station",
+       "kind": "sign",
+       "x": 7.0,
+       "y": 2.6,
+       "rect": [
+        7.0,
+        2.6,
+        7.0,
+        2.6
+       ]
+      }
+     ]
+    },
+    "href": "trade_craft_spaces.html#space-crane-sim-bay"
+   },
+   "crew": {
+    "id": "crane-lift-crew",
+    "name": "Crane lift crew",
+    "seat": "crane-lift",
+    "muster": "coordination",
+    "halls": [
+     "crane-ops",
+     "riggers",
+     "steel-erectors",
+     "port-crane",
+     "ironworkers",
+     "decking",
+     "tank-erectors",
+     "piling"
+    ]
+   },
+   "roles": {
+    "lift-director": {
+     "name": "Lift director",
+     "job": "owns the lift plan and is the only voice that changes it",
+     "standing": "commonly-required",
+     "stops": "the plan changed on the ground and nobody wrote the new one",
+     "glyph": "📋",
+     "post": {
+      "r": 7.2,
+      "deg": 200
+     },
+     "union": "ironworkers",
+     "union_name": "Ironworkers",
+     "hall_reached_by_crew": true,
+     "why_not_reached": null
+    },
+    "crane-operator": {
+     "name": "Crane operator",
+     "job": "runs the machine and takes moves from one set of hands only",
+     "standing": "commonly-required",
+     "stops": "a signal I did not understand",
+     "glyph": "👷",
+     "post": {
+      "r": 3.4,
+      "deg": 20
+     },
+     "union": "crane-ops",
+     "union_name": "Crane Operators",
+     "hall_reached_by_crew": true,
+     "why_not_reached": null
+    },
+    "signalperson": {
+     "name": "Signalperson",
+     "job": "gives the crane its moves and owns the path the load travels",
+     "standing": "commonly-required",
+     "stops": "the load’s path crossing a person",
+     "glyph": "📣",
+     "post": {
+      "r": 6.0,
+      "deg": 300
+     },
+     "union": "riggers",
+     "union_name": "Riggers & Signalpersons",
+     "hall_reached_by_crew": true,
+     "why_not_reached": null
+    },
+    "rigger": {
+     "name": "Rigger",
+     "job": "chooses and makes the hitch, and knows what the load weighs",
+     "standing": "commonly-required",
+     "stops": "a load whose weight nobody can tell me",
+     "glyph": "⛓️",
+     "post": {
+      "r": 5.4,
+      "deg": 120
+     },
+     "union": "riggers",
+     "union_name": "Riggers & Signalpersons",
+     "hall_reached_by_crew": true,
+     "why_not_reached": null
+    }
+   },
+   "handoffs": [
+    {
+     "n": 1,
+     "by": "lift-director",
+     "to": "rigger",
+     "step": "reads the plan out: weight, radius, hitch, path, and who stands where",
+     "from_evidence": {
+      "kind": "crew",
+      "crew": "crane-lift-crew",
+      "role": "lift-director",
+      "topic": "plan",
+      "ask": "What is in a lift plan?",
+      "verifiable": true,
+      "episode_kind": "crew",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "crew",
+       "role",
+       "topic",
+       "answer_kind"
+      ]
+     },
+     "to_evidence": {
+      "kind": "sim",
+      "sim": "load-chart",
+      "scenario": "bay-pick-list",
+      "seat_halls": [
+       "crane-ops",
+       "riggers",
+       "port-crane",
+       "heavy-equip",
+       "operating-eng",
+       "ironworkers",
+       "tank-erectors"
+      ],
+      "passes_when": [
+       {
+        "axis": "judgments",
+        "pass": "== all"
+       },
+       {
+        "axis": "overloads",
+        "pass": "== 0"
+       },
+       {
+        "axis": "time",
+        "pass": "informational"
+       }
+      ],
+      "verifiable": true,
+      "episode_kind": "sim",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "sim",
+       "scenario",
+       "controls",
+       "actor",
+       "operator",
+       "outcome"
+      ]
+     },
+     "verifiable": true,
+     "why_unverifiable": null
+    },
+    {
+     "n": 2,
+     "by": "rigger",
+     "to": "signalperson",
+     "step": "makes the hitch, checks the sling angles and calls the load rigged",
+     "from_evidence": {
+      "kind": "sim",
+      "sim": "load-chart",
+      "scenario": "bay-pick-list",
+      "seat_halls": [
+       "crane-ops",
+       "riggers",
+       "port-crane",
+       "heavy-equip",
+       "operating-eng",
+       "ironworkers",
+       "tank-erectors"
+      ],
+      "passes_when": [
+       {
+        "axis": "judgments",
+        "pass": "== all"
+       },
+       {
+        "axis": "overloads",
+        "pass": "== 0"
+       },
+       {
+        "axis": "time",
+        "pass": "informational"
+       }
+      ],
+      "verifiable": true,
+      "episode_kind": "sim",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "sim",
+       "scenario",
+       "controls",
+       "actor",
+       "operator",
+       "outcome"
+      ]
+     },
+     "to_evidence": {
+      "kind": "walkaround",
+      "sim": "rigging-signals",
+      "point": "sightline",
+      "check": "the operator can read your hands from every planned position",
+      "verifiable": true,
+      "episode_kind": "walkaround",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "sim",
+       "point"
+      ]
+     },
+     "verifiable": true,
+     "why_unverifiable": null
+    },
+    {
+     "n": 3,
+     "by": "signalperson",
+     "to": "crane-operator",
+     "step": "takes the load’s path, clears it of people, and gives the first move",
+     "from_evidence": {
+      "kind": "sim",
+      "sim": "rigging-signals",
+      "scenario": "bay-first-card",
+      "seat_halls": [
+       "riggers",
+       "crane-ops",
+       "steel-erectors",
+       "port-crane",
+       "millwrights",
+       "ironworkers",
+       "decking",
+       "tank-erectors",
+       "piling"
+      ],
+      "passes_when": [
+       {
+        "axis": "calls",
+        "pass": "== all"
+       },
+       {
+        "axis": "wrong",
+        "pass": "== 0"
+       },
+       {
+        "axis": "time",
+        "pass": "informational"
+       }
+      ],
+      "verifiable": true,
+      "episode_kind": "sim",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "sim",
+       "scenario",
+       "controls",
+       "actor",
+       "operator",
+       "outcome"
+      ]
+     },
+     "to_evidence": {
+      "kind": "sim",
+      "sim": "crane-lift",
+      "scenario": "bay-steel",
+      "seat_halls": [
+       "crane-ops",
+       "riggers",
+       "steel-erectors",
+       "port-crane",
+       "ironworkers",
+       "decking",
+       "tank-erectors",
+       "piling"
+      ],
+      "passes_when": [
+       {
+        "axis": "placement",
+        "pass": "<= 1.2"
+       },
+       {
+        "axis": "swing",
+        "pass": "<= 2.0"
+       },
+       {
+        "axis": "strikes",
+        "pass": "== 0"
+       },
+       {
+        "axis": "time",
+        "pass": "informational"
+       }
+      ],
+      "verifiable": true,
+      "episode_kind": "sim",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "sim",
+       "scenario",
+       "controls",
+       "actor",
+       "operator",
+       "outcome"
+      ]
+     },
+     "verifiable": true,
+     "why_unverifiable": null
+    },
+    {
+     "n": 4,
+     "by": "crane-operator",
+     "to": "signalperson",
+     "step": "moves only on a signal, and calls a hold the moment one is unclear",
+     "from_evidence": {
+      "kind": "sim",
+      "sim": "crane-lift",
+      "scenario": "bay-steel",
+      "seat_halls": [
+       "crane-ops",
+       "riggers",
+       "steel-erectors",
+       "port-crane",
+       "ironworkers",
+       "decking",
+       "tank-erectors",
+       "piling"
+      ],
+      "passes_when": [
+       {
+        "axis": "placement",
+        "pass": "<= 1.2"
+       },
+       {
+        "axis": "swing",
+        "pass": "<= 2.0"
+       },
+       {
+        "axis": "strikes",
+        "pass": "== 0"
+       },
+       {
+        "axis": "time",
+        "pass": "informational"
+       }
+      ],
+      "verifiable": true,
+      "episode_kind": "sim",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "sim",
+       "scenario",
+       "controls",
+       "actor",
+       "operator",
+       "outcome"
+      ]
+     },
+     "to_evidence": {
+      "kind": "walkaround",
+      "sim": "rigging-signals",
+      "point": "path",
+      "check": "walked end to end, nothing and nobody under it",
+      "verifiable": true,
+      "episode_kind": "walkaround",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "sim",
+       "point"
+      ]
+     },
+     "verifiable": true,
+     "why_unverifiable": null
+    },
+    {
+     "n": 5,
+     "by": "signalperson",
+     "to": "rigger",
+     "step": "walks the load to the set and holds it still until hands are on it",
+     "from_evidence": {
+      "kind": "walkaround",
+      "sim": "rigging-signals",
+      "point": "path",
+      "check": "walked end to end, nothing and nobody under it",
+      "verifiable": true,
+      "episode_kind": "walkaround",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "sim",
+       "point"
+      ]
+     },
+     "to_evidence": {
+      "kind": "crew",
+      "crew": "crane-lift-crew",
+      "role": "rigger",
+      "topic": "weight",
+      "ask": "How do you know what it weighs?",
+      "verifiable": true,
+      "episode_kind": "crew",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "crew",
+       "role",
+       "topic",
+       "answer_kind"
+      ]
+     },
+     "verifiable": true,
+     "why_unverifiable": null
+    },
+    {
+     "n": 6,
+     "by": "rigger",
+     "to": "lift-director",
+     "step": "unhooks clear of the load and reports the pick closed against the plan",
+     "from_evidence": {
+      "kind": "crew",
+      "crew": "crane-lift-crew",
+      "role": "rigger",
+      "topic": "weight",
+      "ask": "How do you know what it weighs?",
+      "verifiable": true,
+      "episode_kind": "crew",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "crew",
+       "role",
+       "topic",
+       "answer_kind"
+      ]
+     },
+     "to_evidence": {
+      "kind": "crew",
+      "crew": "crane-lift-crew",
+      "role": "lift-director",
+      "topic": "change",
+      "ask": "What if the lift changes?",
+      "verifiable": true,
+      "episode_kind": "crew",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "crew",
+       "role",
+       "topic",
+       "answer_kind"
+      ]
+     },
+     "verifiable": true,
+     "why_unverifiable": null
+    }
+   ],
+   "stop_work": "Every one of the four can stop this lift, and the crane holds on a stop signal from anyone at all - that is the one signal nobody needs standing to give.",
+   "gates": {
+    "ppe": {
+     "required": [
+      "gloves",
+      "hard hat",
+      "hearing protection",
+      "hi-vis",
+      "safety boots",
+      "safety glasses"
+     ],
+     "derived_from": {
+      "strand": "machines",
+      "base_conditions": [
+       "hard hat",
+       "safety glasses",
+       "safety boots",
+       "gloves",
+       "hi-vis",
+       "hearing protection"
+      ],
+      "hazards": [
+       "mobile-plant"
+      ],
+      "finishes": {
+       "floor": "broom-concrete",
+       "wall": "mesh-guard"
+      },
+      "rule": "surfaces base_conditions[strand].ppe + hazard_conditions[h].ppe for each hazard the space's finishes stand for"
+     },
+     "why_none": null
+    },
+    "walkaround_before_first_move": [
+     {
+      "sim": "crane-lift",
+      "point": "rope",
+      "label": "Hoist rope and hook",
+      "check": "no broken wires or kinks, and the safety latch closes",
+      "on_fault": "the hook is out of service until the rope is changed - broken wires and a latch that will not close are not run out"
+     },
+     {
+      "sim": "load-chart",
+      "point": "chart",
+      "label": "The chart itself",
+      "check": "legible, this machine's own configuration, not another's",
+      "on_fault": "stop - the wrong chart is the most expensive piece of paper on the job"
+     }
+    ]
+   },
+   "derived": {
+    "unions": [
+     "crane-ops",
+     "ironworkers",
+     "riggers"
+    ],
+    "halls": [
+     "crane-ops",
+     "decking",
+     "ironworkers",
+     "piling",
+     "port-crane",
+     "riggers",
+     "steel-erectors",
+     "tank-erectors"
+    ],
+    "seats": [
+     "crane-lift",
+     "load-chart",
+     "rigging-signals"
+    ],
+    "evidence_kinds_by_role": {
+     "crane-operator": [
+      "sim"
+     ],
+     "lift-director": [
+      "crew"
+     ],
+     "rigger": [
+      "crew",
+      "sim"
+     ],
+     "signalperson": [
+      "sim",
+      "walkaround"
+     ]
+    },
+    "handoffs": 6,
+    "handoffs_verifiable": 6,
+    "handoffs_unverifiable": 0,
+    "roles": 4,
+    "lessons_with_this_crew": [
+     "ironworkers-plan-out-loud",
+     "riggers-carry-under-control"
+    ]
+   }
+  },
+  {
+   "id": "ti-welding-bay-hot-work",
+   "title": "Deck seam under permit, welding bay",
+   "job": "Run one deck seam under a hot-work permit that names this bay only, with a fire watch posted where the sparks land and held through the post-work period.",
+   "place": {
+    "kind": "space",
+    "id": "welding-bay",
+    "name": "Welding bay",
+    "campus": null,
+    "plan": {
+     "kind": "space-plan",
+     "footprint_m": {
+      "area_m2": 96.0,
+      "d": 8.0,
+      "w": 12.0
+     },
+     "items": [
+      {
+       "i": 0,
+       "id": "weld-screen",
+       "kind": "prop",
+       "x": 2.0,
+       "y": 4.0,
+       "rect": [
+        1.25,
+        3.89,
+        2.75,
+        4.11
+       ]
+      },
+      {
+       "i": 1,
+       "id": "weld-screen",
+       "kind": "prop",
+       "x": 5.0,
+       "y": 4.0,
+       "rect": [
+        4.25,
+        3.89,
+        5.75,
+        4.11
+       ]
+      },
+      {
+       "i": 2,
+       "id": "weld-screen",
+       "kind": "prop",
+       "x": 8.0,
+       "y": 4.0,
+       "rect": [
+        7.25,
+        3.89,
+        8.75,
+        4.11
+       ]
+      },
+      {
+       "i": 3,
+       "id": "practice-bench",
+       "kind": "prop",
+       "x": 2.0,
+       "y": 2.5,
+       "rect": [
+        1.15,
+        2.15,
+        2.85,
+        2.85
+       ]
+      },
+      {
+       "i": 4,
+       "id": "practice-bench",
+       "kind": "prop",
+       "x": 5.0,
+       "y": 2.5,
+       "rect": [
+        4.15,
+        2.15,
+        5.85,
+        2.85
+       ]
+      },
+      {
+       "i": 5,
+       "id": "practice-bench",
+       "kind": "prop",
+       "x": 8.0,
+       "y": 2.5,
+       "rect": [
+        7.15,
+        2.15,
+        8.85,
+        2.85
+       ]
+      },
+      {
+       "i": 6,
+       "id": "rod-oven",
+       "kind": "prop",
+       "x": 10.5,
+       "y": 1.0,
+       "rect": [
+        10.24,
+        0.77,
+        10.76,
+        1.23
+       ]
+      },
+      {
+       "i": 7,
+       "id": "stub-bin",
+       "kind": "prop",
+       "x": 10.5,
+       "y": 2.2,
+       "rect": [
+        10.26,
+        1.96,
+        10.74,
+        2.44
+       ]
+      },
+      {
+       "i": 8,
+       "id": "quench-tank",
+       "kind": "prop",
+       "x": 10.5,
+       "y": 3.6,
+       "rect": [
+        10.16,
+        3.26,
+        10.84,
+        3.94
+       ]
+      },
+      {
+       "i": 9,
+       "id": "fire-blanket-cabinet",
+       "kind": "prop",
+       "x": 11.5,
+       "y": 0.3,
+       "rect": [
+        11.29,
+        0.21,
+        11.71,
+        0.39
+       ]
+      },
+      {
+       "i": 10,
+       "id": "extinguisher-bracket",
+       "kind": "prop",
+       "x": 0.5,
+       "y": 0.3,
+       "rect": [
+        0.38,
+        0.19,
+        0.62,
+        0.41
+       ]
+      },
+      {
+       "i": 11,
+       "id": "ppe-station",
+       "kind": "prop",
+       "x": 1.5,
+       "y": 7.9,
+       "rect": [
+        1.0,
+        7.84,
+        2.0,
+        7.96
+       ]
+      },
+      {
+       "i": 12,
+       "id": "fire-watch-post",
+       "kind": "prop",
+       "x": 6.0,
+       "y": 6.5,
+       "rect": [
+        5.82,
+        6.32,
+        6.18,
+        6.68
+       ]
+      },
+      {
+       "i": 13,
+       "id": "chipping-hammer-bench",
+       "kind": "furniture",
+       "x": 10.5,
+       "y": 6.0,
+       "rect": [
+        9.775,
+        5.625,
+        11.225,
+        6.375
+       ]
+      },
+      {
+       "i": 14,
+       "id": "weld-bead",
+       "kind": "seat",
+       "x": 6.0,
+       "y": 7.2,
+       "rect": [
+        6.0,
+        7.2,
+        6.0,
+        7.2
+       ]
+      },
+      {
+       "i": 15,
+       "id": "structural",
+       "kind": "crib",
+       "x": 11.3,
+       "y": 7.2,
+       "rect": [
+        11.3,
+        7.2,
+        11.3,
+        7.2
+       ]
+      },
+      {
+       "i": 16,
+       "id": "placard",
+       "kind": "sign",
+       "x": 0.3,
+       "y": 7.5,
+       "rect": [
+        0.3,
+        7.5,
+        0.3,
+        7.5
+       ]
+      },
+      {
+       "i": 17,
+       "id": "hazard",
+       "kind": "sign",
+       "x": 11.7,
+       "y": 7.5,
+       "rect": [
+        11.7,
+        7.5,
+        11.7,
+        7.5
+       ]
+      }
+     ]
+    },
+    "href": "trade_craft_spaces.html#space-welding-bay"
+   },
+   "crew": {
+    "id": "hot-work-crew",
+    "name": "Hot work crew",
+    "seat": "weld-bead",
+    "muster": "safety",
+    "halls": [
+     "welders",
+     "boilermakers",
+     "shipfitters",
+     "fabricators",
+     "pipeline",
+     "marine-pipe",
+     "tank-erectors"
+    ]
+   },
+   "roles": {
+    "permit-holder": {
+     "name": "Permit holder",
+     "job": "issues the hot work permit and owns the boundary of the area it covers",
+     "standing": "commonly-required",
+     "stops": "work drifting outside the area the permit describes",
+     "glyph": "🗂️",
+     "post": {
+      "r": 6.8,
+      "deg": 210
+     },
+     "union": "boilermakers",
+     "union_name": "Boilermakers",
+     "hall_reached_by_crew": true,
+     "why_not_reached": null
+    },
+    "welder": {
+     "name": "Welder",
+     "job": "runs the bead, and can see almost nothing while doing it",
+     "standing": "commonly-required",
+     "stops": "a bead I cannot run without moving a screen or a fuel source",
+     "glyph": "🔥",
+     "post": {
+      "r": 3.2,
+      "deg": 350
+     },
+     "union": "welders",
+     "union_name": "Welding Trades",
+     "hall_reached_by_crew": true,
+     "why_not_reached": null
+    },
+    "fire-watch": {
+     "name": "Fire watch",
+     "job": "watches where the sparks land, not the arc, and stays after the arc stops",
+     "standing": "commonly-required",
+     "stops": "a spark landing somewhere I cannot see where it went",
+     "glyph": "🧯",
+     "post": {
+      "r": 5.6,
+      "deg": 80
+     },
+     "union": "fabricators",
+     "union_name": "Structural Fabricators",
+     "hall_reached_by_crew": true,
+     "why_not_reached": null
+    }
+   },
+   "handoffs": [
+    {
+     "n": 1,
+     "by": "permit-holder",
+     "to": "welder",
+     "step": "walks the area, clears or covers what can burn, and issues for that area only",
+     "from_evidence": {
+      "kind": "crew",
+      "crew": "hot-work-crew",
+      "role": "permit-holder",
+      "topic": "covers",
+      "ask": "What does a hot work permit cover?",
+      "verifiable": true,
+      "episode_kind": "crew",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "crew",
+       "role",
+       "topic",
+       "answer_kind"
+      ]
+     },
+     "to_evidence": {
+      "kind": "walkaround",
+      "sim": "weld-bead",
+      "point": "screens",
+      "check": "standing and closed - nobody flashes off your arc",
+      "verifiable": true,
+      "episode_kind": "walkaround",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "sim",
+       "point"
+      ]
+     },
+     "verifiable": true,
+     "why_unverifiable": null
+    },
+    {
+     "n": 2,
+     "by": "welder",
+     "to": "fire-watch",
+     "step": "sets the screens and the leads, then says the arc is about to be struck",
+     "from_evidence": {
+      "kind": "walkaround",
+      "sim": "weld-bead",
+      "point": "screens",
+      "check": "standing and closed - nobody flashes off your arc",
+      "verifiable": true,
+      "episode_kind": "walkaround",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "sim",
+       "point"
+      ]
+     },
+     "to_evidence": {
+      "kind": "walkaround",
+      "sim": "weld-bead",
+      "point": "firewatch",
+      "check": "extinguisher charged and in reach, combustibles cleared",
+      "verifiable": true,
+      "episode_kind": "walkaround",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "sim",
+       "point"
+      ]
+     },
+     "verifiable": true,
+     "why_unverifiable": null
+    },
+    {
+     "n": 3,
+     "by": "fire-watch",
+     "to": "welder",
+     "step": "takes station where the sparks land, not where the arc is, and says the watch is set",
+     "from_evidence": {
+      "kind": "walkaround",
+      "sim": "weld-bead",
+      "point": "firewatch",
+      "check": "extinguisher charged and in reach, combustibles cleared",
+      "verifiable": true,
+      "episode_kind": "walkaround",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "sim",
+       "point"
+      ]
+     },
+     "to_evidence": {
+      "kind": "sim",
+      "sim": "weld-bead",
+      "scenario": "bay-deck-seam",
+      "seat_halls": [
+       "welders",
+       "boilermakers",
+       "shipfitters",
+       "fabricators",
+       "pipeline",
+       "marine-pipe",
+       "tank-erectors"
+      ],
+      "passes_when": [
+       {
+        "axis": "fusion",
+        "pass": "== all"
+       },
+       {
+        "axis": "band",
+        "pass": ">= 90"
+       },
+       {
+        "axis": "burns",
+        "pass": "== 0"
+       },
+       {
+        "axis": "time",
+        "pass": "informational"
+       }
+      ],
+      "verifiable": true,
+      "episode_kind": "sim",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "sim",
+       "scenario",
+       "controls",
+       "actor",
+       "operator",
+       "outcome"
+      ]
+     },
+     "verifiable": true,
+     "why_unverifiable": null
+    },
+    {
+     "n": 4,
+     "by": "welder",
+     "to": "fire-watch",
+     "step": "runs the bead, and says out loud when the arc is out",
+     "from_evidence": {
+      "kind": "sim",
+      "sim": "weld-bead",
+      "scenario": "bay-deck-seam",
+      "seat_halls": [
+       "welders",
+       "boilermakers",
+       "shipfitters",
+       "fabricators",
+       "pipeline",
+       "marine-pipe",
+       "tank-erectors"
+      ],
+      "passes_when": [
+       {
+        "axis": "fusion",
+        "pass": "== all"
+       },
+       {
+        "axis": "band",
+        "pass": ">= 90"
+       },
+       {
+        "axis": "burns",
+        "pass": "== 0"
+       },
+       {
+        "axis": "time",
+        "pass": "informational"
+       }
+      ],
+      "verifiable": true,
+      "episode_kind": "sim",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "sim",
+       "scenario",
+       "controls",
+       "actor",
+       "operator",
+       "outcome"
+      ]
+     },
+     "to_evidence": {
+      "kind": "crew",
+      "crew": "hot-work-crew",
+      "role": "fire-watch",
+      "topic": "after",
+      "ask": "How long do you stay after?",
+      "verifiable": true,
+      "episode_kind": "crew",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "crew",
+       "role",
+       "topic",
+       "answer_kind"
+      ]
+     },
+     "verifiable": true,
+     "why_unverifiable": null
+    },
+    {
+     "n": 5,
+     "by": "fire-watch",
+     "to": "permit-holder",
+     "step": "holds the watch through the whole post-work period, then hands the permit back to be closed",
+     "from_evidence": {
+      "kind": "crew",
+      "crew": "hot-work-crew",
+      "role": "fire-watch",
+      "topic": "after",
+      "ask": "How long do you stay after?",
+      "verifiable": true,
+      "episode_kind": "crew",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "crew",
+       "role",
+       "topic",
+       "answer_kind"
+      ]
+     },
+     "to_evidence": {
+      "kind": "crew",
+      "crew": "hot-work-crew",
+      "role": "permit-holder",
+      "topic": "close",
+      "ask": "What closes it?",
+      "verifiable": true,
+      "episode_kind": "crew",
+      "episode_fields": [
+       "t",
+       "kind",
+       "campus",
+       "hall",
+       "crew",
+       "role",
+       "topic",
+       "answer_kind"
+      ]
+     },
+     "verifiable": true,
+     "why_unverifiable": null
+    }
+   ],
+   "stop_work": "The fire watch stops this job without asking anyone, and the permit holder stops it the moment the work leaves the area the permit describes.",
+   "gates": {
+    "ppe": {
+     "required": [
+      "flame-resistant clothing",
+      "gloves",
+      "hard hat",
+      "hi-vis",
+      "safety boots",
+      "safety glasses",
+      "welding hood"
+     ],
+     "derived_from": {
+      "strand": "procedure",
+      "base_conditions": [
+       "hard hat",
+       "safety glasses",
+       "safety boots",
+       "gloves",
+       "hi-vis"
+      ],
+      "hazards": [
+       "hot-work"
+      ],
+      "finishes": {
+       "floor": "bare-slab",
+       "wall": "weld-screen"
+      },
+      "rule": "surfaces base_conditions[strand].ppe + hazard_conditions[h].ppe for each hazard the space's finishes stand for"
+     },
+     "why_none": null
+    },
+    "walkaround_before_first_move": [
+     {
+      "sim": "weld-bead",
+      "point": "leads",
+      "label": "Leads and clamps",
+      "check": "insulation whole end to end, ground clamp bites clean metal",
+      "on_fault": "no arc until it is changed: damaged insulation and a poor ground are the two faults that put current where nobody wants it"
+     },
+     {
+      "sim": "weld-bead",
+      "point": "gas",
+      "label": "Gas and regulator",
+      "check": "no leaks at the test pressure, flow set to the procedure",
+      "on_fault": "shut the bottle and fix the leak before anything is struck, and ventilate what has already collected"
+     }
+    ]
+   },
+   "derived": {
+    "unions": [
+     "boilermakers",
+     "fabricators",
+     "welders"
+    ],
+    "halls": [
+     "boilermakers",
+     "fabricators",
+     "marine-pipe",
+     "pipeline",
+     "shipfitters",
+     "tank-erectors",
+     "welders"
+    ],
+    "seats": [
+     "weld-bead"
+    ],
+    "evidence_kinds_by_role": {
+     "fire-watch": [
+      "crew",
+      "walkaround"
+     ],
+     "permit-holder": [
+      "crew"
+     ],
+     "welder": [
+      "sim",
+      "walkaround"
+     ]
+    },
+    "handoffs": 5,
+    "handoffs_verifiable": 5,
+    "handoffs_unverifiable": 0,
+    "roles": 3,
+    "lessons_with_this_crew": [
+     "welders-the-watch"
+    ]
+   }
+  }
+ ]
+}

@@ -1,0 +1,38 @@
+{
+ "id": "herons-head-shoreline-cut",
+ "title": "Shoreline drainage cut, Heron's Head",
+ "job": "Cut a shallow drainage run through the upland fill above the tide line, cell by cell, with the ground inspected before the first bite and after anything that changes it.",
+ "place": {"kind": "restoration-site", "id": "herons-head"},
+ "crew": "trench-crew",
+ "roles": {
+  "excavator-operator": {"union": "operating-eng"},
+  "trench-competent-person": {"union": "operating-eng"},
+  "spotter": {"union": "laborers"},
+  "locator": {"union": "laborers"}
+ },
+ "handoffs": [
+  {"by": "locator", "to": "trench-competent-person",
+   "from_evidence": {"kind": "crew", "crew": "trench-crew", "role": "locator", "topic": "marks"},
+   "to_evidence": {"kind": "walkaround", "sim": "excavator-trench", "point": "edge"}},
+  {"by": "trench-competent-person", "to": "excavator-operator",
+   "from_evidence": {"kind": "walkaround", "sim": "excavator-trench", "point": "edge"},
+   "to_evidence": {"kind": "walkaround", "sim": "excavator-trench", "point": "bucket"}},
+  {"by": "excavator-operator", "to": "spotter",
+   "from_evidence": {"kind": "walkaround", "sim": "excavator-trench", "point": "bucket"},
+   "to_evidence": {"kind": "crew", "crew": "trench-crew", "role": "spotter", "topic": "call"}},
+  {"by": "spotter", "to": "excavator-operator",
+   "from_evidence": {"kind": "crew", "crew": "trench-crew", "role": "spotter", "topic": "call"},
+   "to_evidence": {"kind": "sim", "sim": "excavator-trench", "scenario": "bay-retrofit"}},
+  {"by": "excavator-operator", "to": "trench-competent-person",
+   "from_evidence": {"kind": "sim", "sim": "excavator-trench", "scenario": "bay-retrofit"},
+   "to_evidence": {"kind": "crew", "crew": "trench-crew", "role": "trench-competent-person", "topic": "again"}},
+  {"by": "trench-competent-person", "to": "locator",
+   "from_evidence": {"kind": "crew", "crew": "trench-crew", "role": "trench-competent-person", "topic": "again"},
+   "to_evidence": {"kind": "crew", "crew": "trench-crew", "role": "locator", "topic": "prove"}}
+ ],
+ "stop_work": "The spotter stops this machine with one call and does not explain it first; the locator stops the cut when a mark is lost rather than when it is proved wrong.",
+ "gates": {
+  "walkaround_before_first_move": [{"sim": "excavator-trench", "point": "tracks"}],
+  "ppe": "derived"
+ }
+}

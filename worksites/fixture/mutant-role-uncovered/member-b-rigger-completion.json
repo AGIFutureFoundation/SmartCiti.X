@@ -1,0 +1,44 @@
+{
+ "digest": {
+  "alg": "SHA-256",
+  "hex": "46588ee453e5b779dcac6ee899ab96991d13533f6e3b100ea5691c3a7d9e788f",
+  "over": "canonical JSON of every top-level field except digest, with identity.signature forced to null: keys sorted recursively, no whitespace, UTF-8"
+ },
+ "exported_at": "2026-09-26T00:00:00Z",
+ "honesty": {
+  "does_not_prove": [
+   "who the learner is: identity.claimed is typed by the person, attested by this device only, and nothing checks it - unless a wallet signed, in which case it is the identity of a key, not of a person; a stolen key signs just as well",
+   "anything on any blockchain: a wallet signature is computed in the browser and carried in the file; nothing is written to any chain, nothing is anchored, and no one can look it up",
+   "that the device was honest: a record can be written by hand and will verify if it is internally consistent",
+   "that a self-reported step (walk, placard) happened at all",
+   "a station or crib mark is a device-local mark, not a recorded episode",
+   "that the seat was passed under supervision, or that any score means anything outside this bundle",
+   "any accreditation, ticket, licence or credential; no hall, employer or authority has signed anything",
+   "any duration of training, and no price is claimed"
+  ],
+  "proves": [
+   "the record has not changed since it was exported: its SHA-256 digest recomputes over the canonical form",
+   "every lesson, step, hall, seat, scenario, station and district it names exists in this bundle at the stated pack version",
+   "every step marked done whose kind writes a training episode carries that episode as evidence",
+   "no lesson is marked complete with a step still undone, and none ahead of its ladder prerequisite"
+  ]
+ },
+ "identity": {
+  "attested_by": "this device only",
+  "claimed": "fixture crew B - not a learner",
+  "signature": null
+ },
+ "lessons": [],
+ "pack_version": "3.2.0",
+ "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
+ "record": "tc-completion/1",
+ "sims": {
+  "load-chart": {
+   "attempts": 1,
+   "passed": true,
+   "score": 2
+  }
+ },
+ "stations": [],
+ "tools": {}
+}

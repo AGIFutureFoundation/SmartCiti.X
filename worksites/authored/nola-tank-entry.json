@@ -1,0 +1,34 @@
+{
+ "id": "nola-tank-entry",
+ "title": "Tank seam entry, New Orleans",
+ "job": "Put one welder inside a tank to run a seam, with the space isolated and tested first, an attendant who never goes in, and a count out by name.",
+ "place": {"kind": "campus", "id": "new-orleans"},
+ "crew": "confined-space-crew",
+ "roles": {
+  "entry-supervisor": {"union": "boilermakers"},
+  "attendant": {"union": "tank-erectors"},
+  "entrant": {"union": "welders"}
+ },
+ "handoffs": [
+  {"by": "entry-supervisor", "to": "attendant",
+   "from_evidence": {"kind": "crew", "crew": "confined-space-crew", "role": "entry-supervisor", "topic": "authorise"},
+   "to_evidence": {"kind": "crew", "crew": "confined-space-crew", "role": "attendant", "topic": "contact"}},
+  {"by": "attendant", "to": "entrant",
+   "from_evidence": {"kind": "crew", "crew": "confined-space-crew", "role": "attendant", "topic": "contact"},
+   "to_evidence": {"kind": "walkaround", "sim": "weld-bead", "point": "extraction"}},
+  {"by": "entrant", "to": "attendant",
+   "from_evidence": {"kind": "walkaround", "sim": "weld-bead", "point": "extraction"},
+   "to_evidence": {"kind": "crew", "crew": "confined-space-crew", "role": "attendant", "topic": "never"}},
+  {"by": "attendant", "to": "entry-supervisor",
+   "from_evidence": {"kind": "crew", "crew": "confined-space-crew", "role": "attendant", "topic": "never"},
+   "to_evidence": {"kind": "crew", "crew": "confined-space-crew", "role": "entry-supervisor", "topic": "isolate"}},
+  {"by": "entrant", "to": "attendant",
+   "from_evidence": {"kind": "sim", "sim": "weld-bead", "scenario": "nola-tank-seam"},
+   "to_evidence": {"kind": "crew", "crew": "confined-space-crew", "role": "attendant", "topic": "walk"}}
+ ],
+ "stop_work": "The attendant ends this entry alone and without discussion, and the entrant leaves on the attendant’s word rather than on their own judgement.",
+ "gates": {
+  "walkaround_before_first_move": [{"sim": "weld-bead", "point": "gas"}, {"sim": "weld-bead", "point": "extraction"}],
+  "ppe": "derived"
+ }
+}

@@ -21,11 +21,11 @@
   "measured_elsewhere": 51,
   "computed_from_registry": 12,
   "measured_source_files": 11,
-  "registries_scanned": 47,
-  "app_renderers_scanned": 18,
+  "registries_scanned": 48,
+  "app_renderers_scanned": 19,
   "doc_renderers_scanned": 3,
-  "builders_scanned": 37,
-  "suites_scanned": 63,
+  "builders_scanned": 38,
+  "suites_scanned": 66,
   "declared_unbuilt": 8,
   "declared_unbuilt_by_their_own_words": 2,
   "declared_unbuilt_not_drawn": 7,
@@ -38,13 +38,13 @@
   "budget_views": 3,
   "budget_currencies": 2,
   "budget_agreements": 7,
-  "suites_run": 65,
-  "suite_checks_declared": 2954,
+  "suites_run": 67,
+  "suite_checks_declared": 3210,
   "open_questions": 12,
   "negative_findings": 9,
   "cross_checks": 2,
   "cross_checks_disagreeing": 0,
-  "files_read": 198
+  "files_read": 204
  },
  "tiers": [
   "MEASURED-IN-BROWSER",
@@ -1561,10 +1561,13 @@
    ],
    "doc_renderers": [],
    "builders": [
-    "lessons/build.py"
+    "lessons/build.py",
+    "worksites/build.py"
    ],
    "suites": [
-    "lessons/test.mjs"
+    "lessons/test.mjs",
+    "web/test_worksites.mjs",
+    "worksites/test.mjs"
    ],
    "own_pack": [
     "agents/build.py",
@@ -1639,7 +1642,8 @@
    ],
    "doc_renderers": [],
    "builders": [
-    "compliance/build.py"
+    "compliance/build.py",
+    "worksites/build.py"
    ],
    "suites": [
     "web/test_interactive.mjs",
@@ -1668,7 +1672,8 @@
    ],
    "doc_renderers": [],
    "builders": [
-    "protocols/build.py"
+    "protocols/build.py",
+    "worksites/build.py"
    ],
    "suites": [
     "protocols/test.mjs",
@@ -1818,7 +1823,8 @@
     "bundles/build.py",
     "completion/build.py",
     "compliance/build.py",
-    "evals/build.py"
+    "evals/build.py",
+    "worksites/build.py"
    ],
    "suites": [
     "bundles/test.mjs",
@@ -1829,7 +1835,8 @@
     "web/test_home.mjs",
     "web/test_interactive.mjs",
     "web/test_map.mjs",
-    "web/test_progress.mjs"
+    "web/test_progress.mjs",
+    "worksites/test.mjs"
    ],
    "own_pack": [
     "lessons/build.py",
@@ -1907,7 +1914,8 @@
     "props/build.py",
     "respond/build.py",
     "roadmap/build.py",
-    "spaces/build.py"
+    "spaces/build.py",
+    "worksites/build.py"
    ],
    "suites": [
     "bundles/test.mjs",
@@ -2088,11 +2096,13 @@
    ],
    "builders": [
     "guide/build.py",
-    "spatial/build.py"
+    "spatial/build.py",
+    "worksites/build.py"
    ],
    "suites": [
     "spatial/test.mjs",
-    "web/test_geomap.mjs"
+    "web/test_geomap.mjs",
+    "worksites/test.mjs"
    ],
    "own_pack": [
     "restoration/build.py",
@@ -2184,7 +2194,8 @@
     "schools/build.py",
     "spaces/build.py",
     "spatial/build.py",
-    "training/build.py"
+    "training/build.py",
+    "worksites/build.py"
    ],
    "suites": [
     "agents/test.mjs",
@@ -2207,7 +2218,8 @@
     "web/test_home.mjs",
     "web/test_ladder.mjs",
     "web/test_map.mjs",
-    "web/test_progress.mjs"
+    "web/test_progress.mjs",
+    "worksites/test.mjs"
    ],
    "own_pack": [
     "sims/build.py",
@@ -2233,9 +2245,12 @@
     "web/build_spaces.py"
    ],
    "doc_renderers": [],
-   "builders": [],
+   "builders": [
+    "worksites/build.py"
+   ],
    "suites": [
-    "web/test_spaces.mjs"
+    "web/test_spaces.mjs",
+    "worksites/test.mjs"
    ],
    "own_pack": [
     "spaces/build.py",
@@ -2313,14 +2328,16 @@
     "lessons/build.py",
     "props/build.py",
     "schools/build.py",
-    "spaces/build.py"
+    "spaces/build.py",
+    "worksites/build.py"
    ],
    "suites": [
     "completion/verify.mjs",
     "lessons/test.mjs",
     "props/test.mjs",
     "schools/test.mjs",
-    "spaces/test.mjs"
+    "spaces/test.mjs",
+    "worksites/test.mjs"
    ],
    "own_pack": [
     "stations/build.py",
@@ -2344,7 +2361,8 @@
     "props/build.py",
     "respond/build.py",
     "sims/build.py",
-    "spaces/build.py"
+    "spaces/build.py",
+    "worksites/build.py"
    ],
    "suites": [
     "agents/test.mjs",
@@ -2357,6 +2375,7 @@
     "spaces/test.mjs",
     "stations/test.mjs",
     "web/test_spaces.mjs",
+    "worksites/test.mjs",
     "xr/test.mjs"
    ],
    "own_pack": [
@@ -2428,7 +2447,8 @@
     "evals/build.py",
     "guide/build.py",
     "lessons/build.py",
-    "spatial/build.py"
+    "spatial/build.py",
+    "worksites/build.py"
    ],
    "suites": [
     "auth/test.mjs",
@@ -2439,7 +2459,8 @@
     "guide/test.mjs",
     "lessons/test.mjs",
     "web/test_contribute.mjs",
-    "web/test_progress.mjs"
+    "web/test_progress.mjs",
+    "worksites/test.mjs"
    ],
    "own_pack": [
     "training/build.py",
@@ -2474,6 +2495,7 @@
     "roadmap/build.py",
     "schools/build.py",
     "spatial/build.py",
+    "worksites/build.py",
     "world/build.py"
    ],
    "suites": [
@@ -2491,6 +2513,7 @@
     "sims/test.mjs",
     "spatial/test.mjs",
     "web/test_geomap.mjs",
+    "worksites/test.mjs",
     "world/test.mjs"
    ],
    "own_pack": [
@@ -2569,7 +2592,8 @@
     "spaces/build.py",
     "spatial/build.py",
     "surfaces/build.py",
-    "tools/build.py"
+    "tools/build.py",
+    "worksites/build.py"
    ],
    "suites": [
     "agents/test.mjs",
@@ -2587,7 +2611,9 @@
     "stations/test.mjs",
     "surfaces/test.mjs",
     "tools/test.mjs",
-    "web/test_home.mjs"
+    "web/test_home.mjs",
+    "web/test_worksites.mjs",
+    "worksites/test.mjs"
    ],
    "own_pack": [
     "unions/build.py",
@@ -2604,6 +2630,21 @@
    "own_pack": [
     "venue/build.py",
     "venue/test.mjs"
+   ]
+  },
+  "worksites/registry/worksites.json": {
+   "app_renderers": [
+    "web/build_worksites.py"
+   ],
+   "doc_renderers": [],
+   "builders": [],
+   "suites": [
+    "web/test_worksites.mjs"
+   ],
+   "own_pack": [
+    "worksites/build.py",
+    "worksites/test.mjs",
+    "worksites/verify.mjs"
    ]
   },
   "world/registry/world.json": {
@@ -2661,6 +2702,7 @@
    "web/build_page.py",
    "web/build_progress.py",
    "web/build_spaces.py",
+   "web/build_worksites.py",
    "web/groundtruth.py",
    "web/interiors.py"
   ],
@@ -2705,6 +2747,7 @@
    "training/build.py",
    "unions/build.py",
    "venue/build.py",
+   "worksites/build.py",
    "world/build.py",
    "xr/build.py"
   ],
@@ -2770,6 +2813,9 @@
    "web/test_progress.mjs",
    "web/test_rtl.mjs",
    "web/test_spaces.mjs",
+   "web/test_worksites.mjs",
+   "worksites/test.mjs",
+   "worksites/verify.mjs",
    "world/test.mjs",
    "xr/test.mjs"
   ],
@@ -3649,6 +3695,20 @@
     "in_readme_table": true
    },
    {
+    "suite": "worksites/test.mjs",
+    "pack": "worksites",
+    "readme_checks": 116,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "web/test_worksites.mjs",
+    "pack": "web",
+    "readme_checks": 140,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
     "suite": "web/test_interactive.mjs",
     "pack": "web",
     "readme_checks": 25,
@@ -3719,18 +3779,18 @@
     "in_readme_table": true
    }
   ],
-  "suites_run": 65,
-  "suites_declaring_a_count": 64,
+  "suites_run": 67,
+  "suites_declaring_a_count": 66,
   "suites_without_a_count": [
    "control/soak.mjs"
   ],
-  "declared_total": 2954,
-  "readme_headline": 2965,
+  "declared_total": 3210,
+  "readme_headline": 3221,
   "unaccounted_for": 11,
   "unaccounted_note": "the headline counts every `  ok ` line verify_all.sh sees, which includes suites the README table gives no number to and web/test_interiors.py, which the table does not list at all. The difference is that remainder and is computed, not reconciled by hand.",
   "min": 9,
   "max": 309,
-  "median": 37.5,
+  "median": 40.0,
   "thinnest": [
    {
     "suite": "ops/fuzz.mjs",
@@ -3763,8 +3823,16 @@
     "checks": 309
    },
    {
+    "suite": "web/test_worksites.mjs",
+    "checks": 140
+   },
+   {
     "suite": "respond/test.mjs",
     "checks": 118
+   },
+   {
+    "suite": "worksites/test.mjs",
+    "checks": 116
    },
    {
     "suite": "ei/test.mjs",
@@ -3773,14 +3841,6 @@
    {
     "suite": "restoration/test.mjs",
     "checks": 84
-   },
-   {
-    "suite": "evals/test.mjs",
-    "checks": 75
-   },
-   {
-    "suite": "surfaces/test.mjs",
-    "checks": 74
    }
   ],
   "note": "a thin suite is not automatically a bad one - tools/ has 13 checks over a registry of twelve hand tools - but a thin suite over a large surface is where an unfound defect is most likely to be sitting, and this table is the only place the two are shown side by side."
@@ -4153,6 +4213,7 @@
   "web/build_page.py",
   "web/build_progress.py",
   "web/build_spaces.py",
+  "web/build_worksites.py",
   "web/eval_campuses.mjs",
   "web/eval_scene.mjs",
   "web/groundtruth.py",
@@ -4169,7 +4230,12 @@
   "web/test_progress.mjs",
   "web/test_rtl.mjs",
   "web/test_spaces.mjs",
+  "web/test_worksites.mjs",
   "wiki/build_wiki.py",
+  "worksites/build.py",
+  "worksites/registry/worksites.json",
+  "worksites/test.mjs",
+  "worksites/verify.mjs",
   "world/build.py",
   "world/registry/world.json",
   "world/test.mjs",

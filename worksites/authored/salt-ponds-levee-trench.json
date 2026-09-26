@@ -1,0 +1,38 @@
+{
+ "id": "salt-ponds-levee-trench",
+ "title": "Levee toe trench, South Bay salt ponds",
+ "job": "Open one trench cell along the levee toe with the buried services marked and proved first, a spotter in the operator's eyeline, and the cut held shallow where the marks run.",
+ "place": {"kind": "restoration-site", "id": "south-bay-salt-ponds"},
+ "crew": "trench-crew",
+ "roles": {
+  "excavator-operator": {"union": "operating-eng"},
+  "trench-competent-person": {"union": "shoring"},
+  "spotter": {"union": "laborers"},
+  "locator": {"union": "surveyors", "why_not_reached": "the restoration registry names surveyors among this site's own trade_needs, and the excavator-trench seat binds no surveyors hall; the locator here can only be evidenced by crew exchanges, never by a seat run"}
+ },
+ "handoffs": [
+  {"by": "locator", "to": "trench-competent-person",
+   "from_evidence": {"kind": "crew", "crew": "trench-crew", "role": "locator", "topic": "marks"},
+   "to_evidence": {"kind": "crew", "crew": "trench-crew", "role": "trench-competent-person", "topic": "soil"}},
+  {"by": "trench-competent-person", "to": "excavator-operator",
+   "from_evidence": {"kind": "crew", "crew": "trench-crew", "role": "trench-competent-person", "topic": "soil"},
+   "to_evidence": {"kind": "walkaround", "sim": "excavator-trench", "point": "tracks"}},
+  {"by": "excavator-operator", "to": "spotter",
+   "from_evidence": {"kind": "walkaround", "sim": "excavator-trench", "point": "tracks"},
+   "to_evidence": {"kind": "crew", "crew": "trench-crew", "role": "spotter", "topic": "where"}},
+  {"by": "spotter", "to": "excavator-operator",
+   "from_evidence": {"kind": "crew", "crew": "trench-crew", "role": "spotter", "topic": "where"},
+   "to_evidence": {"kind": "sim", "sim": "excavator-trench", "scenario": "oak-fill"}},
+  {"by": "excavator-operator", "to": "trench-competent-person",
+   "from_evidence": {"kind": "sim", "sim": "excavator-trench", "scenario": "oak-fill"},
+   "to_evidence": {"kind": "walkaround", "sim": "excavator-trench", "point": "edge"}},
+  {"by": "trench-competent-person", "to": "locator",
+   "from_evidence": {"kind": "walkaround", "sim": "excavator-trench", "point": "edge"},
+   "to_evidence": {"kind": "crew", "crew": "trench-crew", "role": "locator", "topic": "prove"}}
+ ],
+ "stop_work": "The spotter stops this machine with one call and does not explain it first; the locator stops the cut when a mark is lost rather than when it is proved wrong.",
+ "gates": {
+  "walkaround_before_first_move": [{"sim": "excavator-trench", "point": "hoses"}, {"sim": "excavator-trench", "point": "slew-brake"}],
+  "ppe": "derived"
+ }
+}

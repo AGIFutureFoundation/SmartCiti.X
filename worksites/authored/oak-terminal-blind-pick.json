@@ -1,0 +1,38 @@
+{
+ "id": "oak-terminal-blind-pick",
+ "title": "Blind pick between the container stacks, Oakland",
+ "job": "Carry a load the cab cannot see land, high over the stacks, on one signaller's hands and one rigger's weight.",
+ "place": {"kind": "campus", "id": "oakland"},
+ "crew": "crane-lift-crew",
+ "roles": {
+  "lift-director": {"union": "steel-erectors"},
+  "crane-operator": {"union": "port-crane"},
+  "signalperson": {"union": "riggers"},
+  "rigger": {"union": "riggers"}
+ },
+ "handoffs": [
+  {"by": "lift-director", "to": "rigger",
+   "from_evidence": {"kind": "crew", "crew": "crane-lift-crew", "role": "lift-director", "topic": "plan"},
+   "to_evidence": {"kind": "station", "station": "st005"}},
+  {"by": "rigger", "to": "signalperson",
+   "from_evidence": {"kind": "sim", "sim": "load-chart", "scenario": "oak-heavy-list"},
+   "to_evidence": {"kind": "walkaround", "sim": "rigging-signals", "point": "radio"}},
+  {"by": "signalperson", "to": "crane-operator",
+   "from_evidence": {"kind": "sim", "sim": "rigging-signals", "scenario": "oak-blind-pick"},
+   "to_evidence": {"kind": "sim", "sim": "crane-lift", "scenario": "oak-terminal"}},
+  {"by": "crane-operator", "to": "signalperson",
+   "from_evidence": {"kind": "sim", "sim": "crane-lift", "scenario": "oak-terminal"},
+   "to_evidence": {"kind": "crew", "crew": "crane-lift-crew", "role": "signalperson", "topic": "one"}},
+  {"by": "signalperson", "to": "rigger",
+   "from_evidence": {"kind": "crew", "crew": "crane-lift-crew", "role": "signalperson", "topic": "one"},
+   "to_evidence": {"kind": "crew", "crew": "crane-lift-crew", "role": "rigger", "topic": "hitch"}},
+  {"by": "rigger", "to": "lift-director",
+   "from_evidence": {"kind": "crew", "crew": "crane-lift-crew", "role": "rigger", "topic": "hitch"},
+   "to_evidence": {"kind": "crew", "crew": "crane-lift-crew", "role": "lift-director", "topic": "change"}}
+ ],
+ "stop_work": "Every one of the four can stop this lift, and the crane holds on a stop signal from anyone at all - that is the one signal nobody needs standing to give.",
+ "gates": {
+  "walkaround_before_first_move": [{"sim": "crane-lift", "point": "counterweight"}, {"sim": "load-chart", "point": "wind"}],
+  "ppe": "derived"
+ }
+}
