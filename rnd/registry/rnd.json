@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-22",
- "source_stamp": "bcae2d45c2d5c5b0",
+ "source_stamp": "c7c0363ef9743d29",
  "contract": "this pack states no fact of its own. Every value in it is read out of another file at build time and carries the path and the locator it was read with, so a reader can resolve any entry back to its source and disagree with it there rather than here. Three questions are answered: what has been measured, what is declared and unbuilt, and where the known gaps are - plus the budgets those measurements govern, the suites that hold the assurance, and the questions this bundle records as open.",
  "honesty": {
   "status": "DERIVED: nothing in this registry was authored as a fact about the bundle. Every number is read from a named file through a named locator, and the suite re-resolves every pointer against the live file rather than trusting the value stored here.",
@@ -31,9 +31,9 @@
   "declared_unbuilt_not_drawn": 7,
   "declared_unbuilt_documented_but_not_drawn": 2,
   "declared_unbuilt_read_by_nothing": 5,
-  "gaps": 20,
+  "gaps": 21,
   "gaps_open": 19,
-  "gaps_closed": 1,
+  "gaps_closed": 2,
   "widest_gap_share": 0.0,
   "budget_views": 3,
   "budget_currencies": 2,
@@ -44,7 +44,7 @@
   "negative_findings": 9,
   "cross_checks": 2,
   "cross_checks_disagreeing": 0,
-  "files_read": 175
+  "files_read": 176
  },
  "tiers": [
   "MEASURED-IN-BROWSER",
@@ -2807,7 +2807,23 @@
   },
   {
    "id": "eval.campuses_scored",
-   "question": "how many campuses the scene harness has ever driven to",
+   "question": "how many campuses a scene harness has ever driven to and measured",
+   "have": 10,
+   "of": 10,
+   "unit": "campuses",
+   "share": 1.0,
+   "missing": 0,
+   "sources": [
+    "unions/registry/campuses.json",
+    "web/eval_campuses.mjs",
+    "web/eval_scene.mjs"
+   ],
+   "how": "the campus roster in unions/registry/campuses.json, every slug of which web/eval_campuses.mjs navigates to and measures (held by structure: the harness reads the roster and drives to each); web/eval_scene.mjs alone drives to one",
+   "note": "measured is not judged: the draw-call, triangle and overlapping-pair caps are held on all ten, but the visible-mesh and sign floors were calibrated on the flagship (51 of the 111 halls) and are applied to it alone - the seven hubs host no halls by design, so the next row counts the floors"
+  },
+  {
+   "id": "eval.campus_floors_judged",
+   "question": "how many campuses are held to the visible-mesh and sign floors, not only measured",
    "have": 1,
    "of": 10,
    "unit": "campuses",
@@ -2815,10 +2831,11 @@
    "missing": 9,
    "sources": [
     "unions/registry/campuses.json",
+    "web/eval_campuses.mjs",
     "web/eval_scene.mjs"
    ],
-   "how": "the campus slugs web/eval_scene.mjs navigates to, over the campus roster in unions/registry/campuses.json",
-   "note": "kit/ says this in its own words: the baseline its whole-campus arithmetic is added to is a measurement of one campus, and the other nine are unmeasured ground"
+   "how": "the campuses whose `flagship` flag is true in unions/registry/campuses.json, which is where the floors in web/eval_scene.mjs were measured; web/eval_campuses.mjs judges floors on those alone",
+   "note": "a floor set by fifty-one halls would fail a hub that hosts none by design, and the first run of the campus harness did exactly that - nine of ten \"failing\" - so the other nine campuses are measured and reported beside their own hall counts, and a floor of their own waits on a decision about what a hub with no halls should show"
   },
   {
    "id": "restoration.walkable",
@@ -3890,6 +3907,7 @@
   "web/build_map.py",
   "web/build_page.py",
   "web/build_progress.py",
+  "web/eval_campuses.mjs",
   "web/eval_scene.mjs",
   "web/groundtruth.py",
   "web/interiors.py",

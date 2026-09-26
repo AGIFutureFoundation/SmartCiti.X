@@ -244,6 +244,7 @@ def jsround(x):
 
 # ------------------------------------------------------------- the files ---
 EVAL = 'web/eval_scene.mjs'
+EVAL_CAMPUSES = 'web/eval_campuses.mjs'
 REFERENCE = 'assets/REFERENCE.md'
 KIT = 'kit/registry/kit.json'
 PROPS = 'props/registry/props.json'
@@ -838,17 +839,43 @@ gap('eval.views_scored',
     'measured cost at all: every budget in this bundle is an argument about '
     'three views out of six')
 
+# web/eval_campuses.mjs drives every campus the roster declares, by reading
+# the roster - held here by structure: it must take its slugs from the
+# registry and navigate to each, or this row would count a promise.
+_CAMPUS_ROSTER = need(reg(CAMPUSES), 'campuses', CAMPUSES)
+_CAMPUS_HARNESS_READS_ROSTER = (
+    "unions/registry/campuses.json" in text(EVAL_CAMPUSES)
+    and re.search(r"Object\.keys\(CAMPUSES\)", text(EVAL_CAMPUSES)) is not None
+    and re.search(r"__tc3dDo\('view', 'campus:' \+ s\)", text(EVAL_CAMPUSES)) is not None)
 gap('eval.campuses_scored',
-    'how many campuses the scene harness has ever driven to',
-    len({one(EVAL, r"__tc3dDo\('view', 'campus:([a-z-]+)'\)",
-             'the campus the harness drives to')}),
-    len(need(reg(CAMPUSES), 'campuses', CAMPUSES)), 'campuses',
-    [EVAL, CAMPUSES],
-    'the campus slugs web/eval_scene.mjs navigates to, over the campus roster '
-    'in unions/registry/campuses.json',
-    'kit/ says this in its own words: the baseline its whole-campus arithmetic '
-    'is added to is a measurement of one campus, and the other nine are '
-    'unmeasured ground')
+    'how many campuses a scene harness has ever driven to and measured',
+    len(_CAMPUS_ROSTER) if _CAMPUS_HARNESS_READS_ROSTER
+    else len({one(EVAL, r"__tc3dDo\('view', 'campus:([a-z-]+)'\)",
+                  'the campus the harness drives to')}),
+    len(_CAMPUS_ROSTER), 'campuses',
+    [EVAL, EVAL_CAMPUSES, CAMPUSES],
+    'the campus roster in unions/registry/campuses.json, every slug of which '
+    'web/eval_campuses.mjs navigates to and measures (held by structure: the '
+    'harness reads the roster and drives to each); web/eval_scene.mjs alone '
+    'drives to one',
+    'measured is not judged: the draw-call, triangle and overlapping-pair caps '
+    'are held on all ten, but the visible-mesh and sign floors were calibrated '
+    'on the flagship (51 of the 111 halls) and are applied to it alone - the '
+    'seven hubs host no halls by design, so the next row counts the floors')
+
+gap('eval.campus_floors_judged',
+    'how many campuses are held to the visible-mesh and sign floors, not only measured',
+    sum(1 for c in _CAMPUS_ROSTER.values() if need(c, 'flagship', CAMPUSES) is True),
+    len(_CAMPUS_ROSTER), 'campuses',
+    [EVAL, EVAL_CAMPUSES, CAMPUSES],
+    'the campuses whose `flagship` flag is true in unions/registry/campuses.json, '
+    'which is where the floors in web/eval_scene.mjs were measured; '
+    'web/eval_campuses.mjs judges floors on those alone',
+    'a floor set by fifty-one halls would fail a hub that hosts none by design, '
+    'and the first run of the campus harness did exactly that - nine of ten '
+    '"failing" - so the other nine campuses are measured and reported beside '
+    'their own hall counts, and a floor of their own waits on a decision about '
+    'what a hub with no halls should show')
 
 gap('restoration.walkable',
     'how many restoration sites a learner can walk into',
