@@ -25,7 +25,7 @@
   "app_renderers_scanned": 16,
   "doc_renderers_scanned": 3,
   "builders_scanned": 33,
-  "suites_scanned": 54,
+  "suites_scanned": 55,
   "declared_unbuilt": 7,
   "declared_unbuilt_by_their_own_words": 2,
   "declared_unbuilt_not_drawn": 6,
@@ -38,13 +38,13 @@
   "budget_views": 3,
   "budget_currencies": 2,
   "budget_agreements": 7,
-  "suites_run": 58,
-  "suite_checks_declared": 2612,
+  "suites_run": 59,
+  "suite_checks_declared": 2647,
   "open_questions": 12,
   "negative_findings": 9,
   "cross_checks": 2,
   "cross_checks_disagreeing": 0,
-  "files_read": 178
+  "files_read": 179
  },
  "tiers": [
   "MEASURED-IN-BROWSER",
@@ -1604,12 +1604,14 @@
   },
   "completion/registry/completion.json": {
    "app_renderers": [
-    "web/build_interactive_map.py"
+    "web/build_interactive_map.py",
+    "web/build_map.py"
    ],
    "doc_renderers": [],
    "builders": [],
    "suites": [
-    "web/test_interactive.mjs"
+    "web/test_interactive.mjs",
+    "web/test_map.mjs"
    ],
    "own_pack": [
     "completion/build.py",
@@ -1741,6 +1743,7 @@
     "web/build_home.py",
     "web/build_interactive_map.py",
     "web/build_lessons.py",
+    "web/build_map.py",
     "web/build_progress.py"
    ],
    "doc_renderers": [
@@ -1759,6 +1762,7 @@
     "web/test_geomap.mjs",
     "web/test_home.mjs",
     "web/test_interactive.mjs",
+    "web/test_map.mjs",
     "web/test_progress.mjs"
    ],
    "own_pack": [
@@ -1844,6 +1848,7 @@
     "web/test_home.mjs",
     "web/test_interactive.mjs",
     "web/test_ladder.mjs",
+    "web/test_map.mjs",
     "web/test_progress.mjs"
    ],
    "own_pack": [
@@ -2022,7 +2027,8 @@
     "web/build_3d.py",
     "web/build_dashboard.py",
     "web/build_geomap.py",
-    "web/build_interactive_map.py"
+    "web/build_interactive_map.py",
+    "web/build_map.py"
    ],
    "doc_renderers": [
     "wiki/build_wiki.py"
@@ -2035,7 +2041,8 @@
    ],
    "suites": [
     "lessons/test.mjs",
-    "web/test_geomap.mjs"
+    "web/test_geomap.mjs",
+    "web/test_map.mjs"
    ],
    "own_pack": [
     "schools/build.py",
@@ -2062,6 +2069,7 @@
     "web/build_interactive_map.py",
     "web/build_ladder.py",
     "web/build_lessons.py",
+    "web/build_map.py",
     "web/build_progress.py"
    ],
    "doc_renderers": [
@@ -2095,6 +2103,7 @@
     "web/test_geomap.mjs",
     "web/test_home.mjs",
     "web/test_ladder.mjs",
+    "web/test_map.mjs",
     "web/test_progress.mjs"
    ],
    "own_pack": [
@@ -2605,6 +2614,7 @@
    "web/test_home.mjs",
    "web/test_interactive.mjs",
    "web/test_ladder.mjs",
+   "web/test_map.mjs",
    "web/test_progress.mjs",
    "web/test_rtl.mjs",
    "world/test.mjs",
@@ -3458,6 +3468,13 @@
     "in_readme_table": true
    },
    {
+    "suite": "web/test_map.mjs",
+    "pack": "web",
+    "readme_checks": 35,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
     "suite": "web/test_home.mjs",
     "pack": "web",
     "readme_checks": 27,
@@ -3507,18 +3524,18 @@
     "in_readme_table": true
    }
   ],
-  "suites_run": 58,
-  "suites_declaring_a_count": 57,
+  "suites_run": 59,
+  "suites_declaring_a_count": 58,
   "suites_without_a_count": [
    "control/soak.mjs"
   ],
-  "declared_total": 2612,
-  "readme_headline": 2623,
+  "declared_total": 2647,
+  "readme_headline": 2658,
   "unaccounted_for": 11,
   "unaccounted_note": "the headline counts every `  ok ` line verify_all.sh sees, which includes suites the README table gives no number to and web/test_interiors.py, which the table does not list at all. The difference is that remainder and is computed, not reconciled by hand.",
   "min": 9,
   "max": 295,
-  "median": 40,
+  "median": 37.5,
   "thinnest": [
    {
     "suite": "ops/fuzz.mjs",
@@ -3935,6 +3952,7 @@
   "web/test_home.mjs",
   "web/test_interactive.mjs",
   "web/test_ladder.mjs",
+  "web/test_map.mjs",
   "web/test_progress.mjs",
   "web/test_rtl.mjs",
   "wiki/build_wiki.py",
