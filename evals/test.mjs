@@ -557,6 +557,220 @@ const r4 = (x) => Math.round(x * 1e4) / 1e4;
      + 'learner, and that a hall with no lesson has no course to complete');
 }
 
+/* ------------------------- robot readiness: recomputed by structure ------ */
+/* Every per-seat row is remade here from the same sources the builder read -
+   the gauges() literals and the recorder lines of web/build_3d.py by the same
+   structural regexes, the policies from the page's OPERATORS table and the
+   sims registry, the orbis flags from orbis.json - and held to the registry.
+   The class is recomputed from the rule the registry states. Nothing is read
+   back and believed. */
+{
+  const rr = at(E, 'robot_readiness');
+  const T = J('training/registry/training.json');
+  const S = J('sims/registry/sims.json');
+  const O = J('orbis/registry/orbis.json');
+  const M = J('meta/registry/metaverse.json');
+  const PAGE_PATH = 'web/build_3d.py';
+  const PAGE = readFileSync(join(ROOT, PAGE_PATH), 'utf8');
+  const sha = (p) => createHash('sha256').update(readFileSync(join(ROOT, p))).digest('hex');
+
+  /* the stamps: every input named, its source_stamp and sha256 as on disk now */
+  const stamped = [['training', T], ['sims', S], ['orbis', O], ['metaverse', M]];
+  ok(stamped.every(([k, reg]) => at(rr, `inputs.${k}.source_stamp`) === at(reg, 'source_stamp')
+       && at(rr, `inputs.${k}.sha256`) === sha(at(rr, `inputs.${k}.path`)))
+     && at(rr, 'inputs.page.path') === PAGE_PATH && at(rr, 'inputs.page.sha256') === sha(PAGE_PATH)
+     && at(rr, 'inputs.page.source_stamp') === null,
+     'robot_readiness exists and every input stamp and sha256 matches what is on disk '
+     + '(training, sims, orbis, metaverse registries; the page builder by sha256 alone)');
+
+  /* the seat factories, from the startSim chain */
+  const chain = PAGE.match(/\n  sim = simId === '[a-z-]+' \? \w+Sim\(P\)\n(?:    : simId === '[a-z-]+' \? \w+Sim\(P\)\n)* *: simId === '[a-z-]+' \? \w+Sim\(P\) : (\w+Sim)\(P\);/);
+  if (!chain) throw new Error('evals/test.mjs: the seat factory chain is gone from web/build_3d.py');
+  const factoryOf = Object.fromEntries([...chain[0].matchAll(/simId === '([a-z-]+)' \? (\w+Sim)\(P\)/g)]
+    .map((m) => [m[1], m[2]]));
+  const simIds = Object.keys(at(S, 'sims')).sort();
+  const fallback = simIds.filter((s) => !(s in factoryOf));
+  if (fallback.length === 1) factoryOf[fallback[0]] = chain[1];
+
+  /* gauges(): the same structural reader as the builder, in a second language */
+  const gaugeFields = (body) => {
+    const m = body.match(/\n( +)gauges: \(\) => (\(\{|\{)\n/);
+    if (!m) return null;
+    let ind = m[1];
+    let rest = body.slice(m.index + m[0].length);
+    if (m[2] === '{') {
+      const r = rest.match(/^( +)return \{\n/m);
+      if (!r) return null;
+      ind = r[1];
+      rest = rest.slice(r.index + r[0].length);
+    }
+    const keys = [];
+    for (const ln of rest.split('\n')) {
+      const km = ln.match(new RegExp(`^${ind}  ([A-Za-z_]\\w*): `));
+      if (km) { keys.push(km[1]); continue; }
+      if (new RegExp(`^${ind}(\\}\\)|\\})`).test(ln)) break;
+      return null;
+    }
+    return keys.length ? keys : null;
+  };
+  const mine = {};
+  for (const id of simIds) {
+    const fn = factoryOf[id] ?? null;
+    const fm = fn && PAGE.match(new RegExp(`\\nfunction ${fn}\\(P = \\{\\}\\) \\{\\n([\\s\\S]*?)\\n\\}\\n`));
+    mine[id] = { fn, gauges: fm ? gaugeFields(fm[1]) : null };
+  }
+  const ps = at(rr, 'per_sim');
+  ok(Object.keys(ps).sort().join(',') === simIds.join(',') && simIds.length > 0
+     && at(rr, 'rollup.seats_in_registry') === simIds.length,
+     `one row per seat in sims/registry/sims.json (${simIds.length}), and the seat count is those rows, counted`);
+  ok(simIds.every((id) => at(ps[id], 'factory') === mine[id].fn && at(ps[id], 'has_seat') === (mine[id].fn !== null)),
+     'each row names the factory function the startSim chain builds that seat with, re-read here'
+     + (fallback.length === 1 ? ` (${fallback[0]} is the chain's fallback)` : ''));
+  ok(simIds.every((id) => JSON.stringify(at(ps[id], 'gauges')) === JSON.stringify(mine[id].gauges)
+       && at(ps[id], 'gauges_count') === (mine[id].gauges ? mine[id].gauges.length : 0)
+       && (mine[id].gauges !== null || typeof at(ps[id], 'gauges_why_null') === 'string')),
+     'every seat\'s gauges field list is re-extracted from web/build_3d.py with the same structural '
+     + 'reader and is equal - a field the page does not return cannot be listed, and a null carries its why');
+  ok(simIds.every((id) => at(ps[id], 'gauges_equal_dash_ids')
+       === (JSON.stringify(mine[id].gauges) === JSON.stringify(at(S, `sims.${id}.dash`).map((d) => at(d, 'id'))))),
+     'and each row says whether those fields are exactly the dash ids sims.json declares for the seat');
+
+  /* the recorder: controls once per episode, {t, gauges} once per sample */
+  const rc = PAGE.match(/controls: def\.controls\.map\(\(c\) => c\.(\w+)\),/);
+  const push = PAGE.match(/simTicks\.push\((\{.*\})\);/);
+  if (!rc || !push) throw new Error('evals/test.mjs: the recorder lines are gone from web/build_3d.py');
+  const sampleFields = [...push[1].matchAll(/(?:^\{ |, )([A-Za-z_]\w*): /g)].map((m) => m[1]);
+  const ctlNames = ['keys', 'controls', 'action', 'inputs'];
+  const actionPerSample = sampleFields.some((f) => ctlNames.includes(f));
+  ok(simIds.every((id) => at(ps[id], 'controls_captured').join('|')
+       === at(S, `sims.${id}.controls`).map((c) => at(c, rc[1])).join('|')),
+     `the controls an episode captures are each declared control's \`${rc[1]}\` string from sims.json, `
+     + 'the field the recorder line names - recomputed per seat');
+  ok(at(rr, 'trace.sample_fields').join(',') === sampleFields.join(',')
+     && at(rr, 'trace.action_per_sample') === actionPerSample
+     && simIds.every((id) => at(ps[id], 'action_per_sample') === actionPerSample
+          && at(ps[id], 'trace_sample_fields').join(',') === sampleFields.join(',')),
+     `a TRACE sample carries {${sampleFields.join(', ')}} - re-read from the sampler line - and `
+     + `action_per_sample is ${actionPerSample} on every seat accordingly`);
+  ok(actionPerSample === false && simIds.every((id) => typeof at(ps[id], 'action_per_sample_why') === 'string'
+       && at(ps[id], 'action_per_sample_why').includes('keys[e.code]')),
+     'no sample carries a control state, and every row says why in a named field that points at '
+     + 'the page\'s key-state object rather than at a guess');
+  const opKeys = PAGE.match(/const OP_KEYS = \[([^\]]*)\];/);
+  ok(!!opKeys && at(rr, 'trace.key_codes_the_policies_drive').join(',')
+       === [...opKeys[1].matchAll(/'(\w+)'/g)].map((m) => m[1]).join(','),
+     'the key codes a device would have to record are the page\'s own OP_KEYS list, re-read');
+  ok(at(rr, 'trace.sample_hz') === at(T, 'trace.sample_hz')
+     && at(rr, 'trace.max_samples') === at(T, 'trace.max_samples')
+     && simIds.every((id) => at(ps[id], 'trace_sample_hz') === at(T, 'trace.sample_hz')
+          && at(ps[id], 'trace_max_samples') === at(T, 'trace.max_samples'))
+     && /TRACE_MS = Math\.round\(1000 \/ D\.training\.trace\.sample_hz\)/.test(PAGE)
+     && /TRACE_MAX = D\.training\.trace\.max_samples/.test(PAGE),
+     `the trace rate (${at(T, 'trace.sample_hz')} Hz) and cap (${at(T, 'trace.max_samples')}) are `
+     + 'training.json\'s, and the page reads both from that registry rather than typing them');
+
+  /* the reference policies: page OPERATORS x sims.json operator; orbis has none */
+  const ops = PAGE.match(/\nconst OPERATORS = \{\n([\s\S]*?)\n\};\n/);
+  if (!ops) throw new Error('evals/test.mjs: the OPERATORS table is gone from web/build_3d.py');
+  const heads = [...ops[1].matchAll(/^  '([a-z-]+)': \{/gm)];
+  const pagePolicy = {};
+  heads.forEach((h, i) => {
+    const end = i + 1 < heads.length ? heads[i + 1].index : ops[1].length;
+    pagePolicy[h[1]] = /^    step\(/m.test(ops[1].slice(h.index, end));
+  });
+  const policyOf = (id) => {
+    const op = at(S, `sims.${id}.operator`);
+    return at(op, 'levels').length > 0 && at(op, 'procedure').length > 0 && pagePolicy[id] === true;
+  };
+  ok(simIds.every((id) => at(ps[id], 'reference_policy') === policyOf(id)
+       && at(ps[id], 'reference_policy_in_page_operators') === (pagePolicy[id] === true)),
+     'each seat\'s reference-policy flag is recomputed: a step() entry in the page\'s OPERATORS '
+     + 'table AND a declared operator (levels, procedure) in sims.json');
+  const orbisText = JSON.stringify(O);
+  ok(simIds.every((id) => at(ps[id], 'reference_policy_in_orbis') === orbisText.includes(id))
+     && at(rr, 'rollup.seats_with_reference_policy_in_orbis')
+        === simIds.filter((id) => orbisText.includes(id)).length
+     && at(rr, 'rollup.orbis_carries_no_seat_policy') === !simIds.some((id) => orbisText.includes(id)),
+     'the orbis flag per seat is recomputed from orbis/registry/orbis.json (a seat id occurring '
+     + 'anywhere in it) - a policy claimed for a seat orbis lacks fails here by name');
+  ok(at(rr, 'rollup.orbis_runners').map((r) => `${r.path}=${r.model}`).join(',')
+     === at(O, 'runners').map((r) => `${at(r, 'path')}=${at(r, 'model')}`).join(','),
+     'and the orbis runners listed are that registry\'s, path and model');
+
+  /* the class, from the rule */
+  const ladder = at(rr, 'classes.ladder');
+  const cls = (id) => {
+    const g = mine[id].gauges;
+    if (!g || !g.length) return ladder[0];
+    if (!actionPerSample) return ladder[1];
+    if (!policyOf(id)) return ladder[2];
+    return ladder[3];
+  };
+  ok(ladder.length === 4 && ladder.every((c) => typeof at(rr, `classes.rule.${c}`) === 'string')
+     && at(rr, 'classes.is_a_score') === false,
+     'the class ladder is stated in the registry with a rule per class, and it says it is not a score');
+  ok(simIds.every((id) => at(ps[id], 'readiness_class') === cls(id)
+       && at(ps[id], 'next_class') === (cls(id) === ladder[3] ? null : ladder[ladder.indexOf(cls(id)) + 1])),
+     'every seat\'s readiness class is recomputed from the rule and equal - a class upgraded by hand fails here');
+  const byClass = at(rr, 'rollup.seats_by_class');
+  ok(ladder.every((c) => byClass[c] === simIds.filter((id) => cls(id) === c).length
+       && at(rr, 'rollup.seats_by_class_list')[c].join(',') === simIds.filter((id) => cls(id) === c).join(','))
+     && ladder.reduce((a, c) => a + byClass[c], 0) === simIds.length,
+     `the by-class counts are recomputed and partition the ${simIds.length} seats `
+     + `(${ladder.map((c) => `${byClass[c]} ${c}`).join(', ')})`);
+
+  /* the rollups sum, and nothing in them is typed */
+  const kinds = at(T, 'episode_kinds');
+  const traceKinds = Object.keys(kinds).filter((k) => {
+    const o = at(kinds[k], 'outcome_shape');
+    return o !== null && typeof o === 'object' && 'trace' in o;
+  }).sort();
+  ok(at(rr, 'kinds_that_can_carry_a_trace').join(',') === traceKinds.join(',')
+     && at(rr, 'rollup.episode_kinds') === Object.keys(kinds).length
+     && at(rr, 'rollup.episode_kinds_that_can_carry_a_trace') === traceKinds.length
+     && Object.keys(kinds).every((k) => at(rr, `episode_kinds.${k}.can_carry_trace`) === traceKinds.includes(k)
+          && at(rr, `episode_kinds.${k}.fields`).join(',') === at(kinds[k], 'fields').join(',')),
+     `the episode kinds that can carry a trace are read from training.json outcome_shape `
+     + `(${traceKinds.join(', ')} of ${Object.keys(kinds).length} kinds)`);
+  ok(at(rr, 'rollup.seats_with_a_factory_in_the_page') === simIds.filter((id) => mine[id].fn).length
+     && at(rr, 'rollup.seats_with_gauges_found') === simIds.filter((id) => mine[id].gauges).length
+     && at(rr, 'rollup.seats_with_gauges_null') === simIds.filter((id) => !mine[id].gauges).length
+     && at(rr, 'rollup.seats_with_traces_possible')
+        === simIds.filter((id) => mine[id].gauges && traceKinds.length > 0).length
+     && at(rr, 'rollup.seats_with_reference_policy') === simIds.filter(policyOf).length
+     && at(rr, 'rollup.seats_with_observation_and_action') === (actionPerSample ? simIds.length : 0)
+     && at(rr, 'rollup.scenarios_total') === simIds.reduce((a, id) => a + at(S, `sims.${id}.scenarios`).length, 0)
+     && at(rr, 'rollup.gauge_fields_total') === simIds.reduce((a, id) => a + (mine[id].gauges ? mine[id].gauges.length : 0), 0)
+     && at(rr, 'rollup.controls_captured_total') === simIds.reduce((a, id) => a + at(S, `sims.${id}.controls`).length, 0)
+     && at(rr, 'rollup.seats_whose_gauges_equal_their_dash_ids')
+        === simIds.filter((id) => at(ps[id], 'gauges_equal_dash_ids')).length
+     && simIds.every((id) => at(ps[id], 'scenarios') === at(S, `sims.${id}.scenarios`).length
+          && at(ps[id], 'halls_bound') === at(S, `sims.${id}.halls`).length),
+     'every rollup is recomputed here from the sources - seats with a factory, with gauges, with a '
+     + 'trace possible, with a policy, with observation+action, and the scenario, gauge-field and '
+     + 'control totals - so no count is typed');
+
+  /* the honest fields: what must be recorded next, and what has not happened */
+  const next = at(rr, 'to_reach_next_class.from_observation-only_to_observation+action.record_per_sample');
+  ok(sampleFields.every((f) => f in next) && 'keys' in next && 'action' in next
+     && next.keys.includes(at(rr, 'trace.key_codes_the_policies_drive').join(', '))
+     && next.action.includes(at(rr, 'trace.action_edge_key')),
+     'the next class is named field by field: the fields a sample already carries, the key state '
+     + 'by its page codes, and the action edge - nothing invented');
+  ok(at(rr, 'ml_agents_fork.repo') === at(M, 'unity_bridge.repo')
+     && at(rr, 'ml_agents_fork.no_agent_trained') === at(T, 'export_format.no_agent_trained')
+     && at(rr, 'ml_agents_fork.not_a_demo_file') === at(T, 'export_format.not_a_demo_file'),
+     'the ml-agents fork is the one metaverse.json records, and the export-format limits are '
+     + 'quoted from training.json, not paraphrased');
+  const hon = at(rr, 'honest');
+  ok(/no episode has been recorded from a learner/.test(hon) && /no cohort/.test(hon)
+     && /no agent and no robot has been trained/.test(hon)
+     && hon.includes(`${at(rr, 'rollup.seats_with_gauges_found')} of ${simIds.length} seats`)
+     && hon.includes(`${at(rr, 'rollup.seats_with_observation_and_action')} write the control state`),
+     'the block says in one named field that no learner episode exists, that there is no cohort, '
+     + 'that no agent or robot has been trained, and it quotes the counts this build produced');
+}
+
 console.log(`\n${pass} ok, ${fail} failed`);
 console.log(`evals: ${pass} checks passed - ${RUNS.length} simulation runs `
   + `reproduced exactly from ${SEEDS.length} recorded seeds, every spread and `

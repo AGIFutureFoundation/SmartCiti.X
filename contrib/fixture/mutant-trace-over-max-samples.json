@@ -1,0 +1,1070 @@
+{
+ "record": "tc-contribution/1",
+ "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
+ "pack_version": "3.2.0",
+ "exported_at": "2026-09-26T00:00:00Z",
+ "contributor": {
+  "claimed": "fixture - not a learner",
+  "attested_by": "this device only",
+  "signature": null
+ },
+ "consent": {
+  "statement": "I share the training episodes in this package, recorded by this device, for the scopes named in consent.scope under the licence named in consent.license. I can withdraw by not sharing the file again; copies already given away are governed by that licence. Nothing in this package names me: it carries scenario ids, control schemes and measured outcomes, and the label or wallet address I chose to attach.",
+  "granted_at": "2026-09-26T00:00:00Z",
+  "scope": [
+   "agent-training",
+   "robot-training"
+  ],
+  "revocable": true,
+  "license": "CC-BY-4.0"
+ },
+ "dataset": {
+  "episodes": [
+   {
+    "t": "2026-09-26T03:00:00.000Z",
+    "kind": "walkaround",
+    "campus": "treasure-island",
+    "hall": "painters",
+    "sim": "airless-sprayer",
+    "point": "Respirator and ventilation"
+   },
+   {
+    "t": "2026-09-26T03:00:01.000Z",
+    "kind": "sim",
+    "campus": "treasure-island",
+    "hall": "painters",
+    "sim": "airless-sprayer",
+    "scenario": "bay-terminal-finish",
+    "controls": [
+     "sweep the gun left / right across the panel",
+     "sweep the gun up / down across the panel",
+     "stand off farther / move closer to the surface",
+     "pull / release the spray trigger"
+    ],
+    "actor": "human",
+    "outcome": {
+     "passed": true,
+     "rows": [
+      {
+       "axis": "coverage",
+       "value": 1,
+       "ok": true
+      },
+      {
+       "axis": "runs",
+       "value": 1,
+       "ok": true
+      },
+      {
+       "axis": "holidays",
+       "value": 1,
+       "ok": true
+      },
+      {
+       "axis": "overspray",
+       "value": 1,
+       "ok": true
+      },
+      {
+       "axis": "time",
+       "value": 1,
+       "ok": true
+      }
+     ],
+     "trace": [
+      {
+       "t": 0,
+       "gauges": {
+        "load_pct": 30,
+        "hook_cm": 150,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 1000,
+       "gauges": {
+        "load_pct": 35,
+        "hook_cm": 175,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 2000,
+       "gauges": {
+        "load_pct": 40,
+        "hook_cm": 200,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 3000,
+       "gauges": {
+        "load_pct": 45,
+        "hook_cm": 225,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 4000,
+       "gauges": {
+        "load_pct": 50,
+        "hook_cm": 250,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 5000,
+       "gauges": {
+        "load_pct": 55,
+        "hook_cm": 275,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 6000,
+       "gauges": {
+        "load_pct": 60,
+        "hook_cm": 300,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 7000,
+       "gauges": {
+        "load_pct": 65,
+        "hook_cm": 325,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 8000,
+       "gauges": {
+        "load_pct": 70,
+        "hook_cm": 350,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 9000,
+       "gauges": {
+        "load_pct": 75,
+        "hook_cm": 375,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 10000,
+       "gauges": {
+        "load_pct": 80,
+        "hook_cm": 400,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 11000,
+       "gauges": {
+        "load_pct": 85,
+        "hook_cm": 425,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 12000,
+       "gauges": {
+        "load_pct": 90,
+        "hook_cm": 450,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 13000,
+       "gauges": {
+        "load_pct": 95,
+        "hook_cm": 475,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 14000,
+       "gauges": {
+        "load_pct": 100,
+        "hook_cm": 500,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 15000,
+       "gauges": {
+        "load_pct": 105,
+        "hook_cm": 525,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 16000,
+       "gauges": {
+        "load_pct": 110,
+        "hook_cm": 550,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 17000,
+       "gauges": {
+        "load_pct": 115,
+        "hook_cm": 575,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 18000,
+       "gauges": {
+        "load_pct": 120,
+        "hook_cm": 600,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 19000,
+       "gauges": {
+        "load_pct": 125,
+        "hook_cm": 625,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 20000,
+       "gauges": {
+        "load_pct": 130,
+        "hook_cm": 650,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 21000,
+       "gauges": {
+        "load_pct": 135,
+        "hook_cm": 675,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 22000,
+       "gauges": {
+        "load_pct": 140,
+        "hook_cm": 700,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 23000,
+       "gauges": {
+        "load_pct": 145,
+        "hook_cm": 725,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 24000,
+       "gauges": {
+        "load_pct": 150,
+        "hook_cm": 750,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 25000,
+       "gauges": {
+        "load_pct": 155,
+        "hook_cm": 775,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 26000,
+       "gauges": {
+        "load_pct": 160,
+        "hook_cm": 800,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 27000,
+       "gauges": {
+        "load_pct": 165,
+        "hook_cm": 825,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 28000,
+       "gauges": {
+        "load_pct": 170,
+        "hook_cm": 850,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 29000,
+       "gauges": {
+        "load_pct": 175,
+        "hook_cm": 875,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 30000,
+       "gauges": {
+        "load_pct": 180,
+        "hook_cm": 900,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 31000,
+       "gauges": {
+        "load_pct": 185,
+        "hook_cm": 925,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 32000,
+       "gauges": {
+        "load_pct": 190,
+        "hook_cm": 950,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 33000,
+       "gauges": {
+        "load_pct": 195,
+        "hook_cm": 975,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 34000,
+       "gauges": {
+        "load_pct": 200,
+        "hook_cm": 1000,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 35000,
+       "gauges": {
+        "load_pct": 205,
+        "hook_cm": 1025,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 36000,
+       "gauges": {
+        "load_pct": 210,
+        "hook_cm": 1050,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 37000,
+       "gauges": {
+        "load_pct": 215,
+        "hook_cm": 1075,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 38000,
+       "gauges": {
+        "load_pct": 220,
+        "hook_cm": 1100,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 39000,
+       "gauges": {
+        "load_pct": 225,
+        "hook_cm": 1125,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 40000,
+       "gauges": {
+        "load_pct": 230,
+        "hook_cm": 1150,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 41000,
+       "gauges": {
+        "load_pct": 235,
+        "hook_cm": 1175,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 42000,
+       "gauges": {
+        "load_pct": 240,
+        "hook_cm": 1200,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 43000,
+       "gauges": {
+        "load_pct": 245,
+        "hook_cm": 1225,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 44000,
+       "gauges": {
+        "load_pct": 250,
+        "hook_cm": 1250,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 45000,
+       "gauges": {
+        "load_pct": 255,
+        "hook_cm": 1275,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 46000,
+       "gauges": {
+        "load_pct": 260,
+        "hook_cm": 1300,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 47000,
+       "gauges": {
+        "load_pct": 265,
+        "hook_cm": 1325,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 48000,
+       "gauges": {
+        "load_pct": 270,
+        "hook_cm": 1350,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 49000,
+       "gauges": {
+        "load_pct": 275,
+        "hook_cm": 1375,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 50000,
+       "gauges": {
+        "load_pct": 280,
+        "hook_cm": 1400,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 51000,
+       "gauges": {
+        "load_pct": 285,
+        "hook_cm": 1425,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 52000,
+       "gauges": {
+        "load_pct": 290,
+        "hook_cm": 1450,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 53000,
+       "gauges": {
+        "load_pct": 295,
+        "hook_cm": 1475,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 54000,
+       "gauges": {
+        "load_pct": 300,
+        "hook_cm": 1500,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 55000,
+       "gauges": {
+        "load_pct": 305,
+        "hook_cm": 1525,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 56000,
+       "gauges": {
+        "load_pct": 310,
+        "hook_cm": 1550,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 57000,
+       "gauges": {
+        "load_pct": 315,
+        "hook_cm": 1575,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 58000,
+       "gauges": {
+        "load_pct": 320,
+        "hook_cm": 1600,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 59000,
+       "gauges": {
+        "load_pct": 325,
+        "hook_cm": 1625,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 60000,
+       "gauges": {
+        "load_pct": 330,
+        "hook_cm": 1650,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 61000,
+       "gauges": {
+        "load_pct": 335,
+        "hook_cm": 1675,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 62000,
+       "gauges": {
+        "load_pct": 340,
+        "hook_cm": 1700,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 63000,
+       "gauges": {
+        "load_pct": 345,
+        "hook_cm": 1725,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 64000,
+       "gauges": {
+        "load_pct": 350,
+        "hook_cm": 1750,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 65000,
+       "gauges": {
+        "load_pct": 355,
+        "hook_cm": 1775,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 66000,
+       "gauges": {
+        "load_pct": 360,
+        "hook_cm": 1800,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 67000,
+       "gauges": {
+        "load_pct": 365,
+        "hook_cm": 1825,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 68000,
+       "gauges": {
+        "load_pct": 370,
+        "hook_cm": 1850,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 69000,
+       "gauges": {
+        "load_pct": 375,
+        "hook_cm": 1875,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 70000,
+       "gauges": {
+        "load_pct": 380,
+        "hook_cm": 1900,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 71000,
+       "gauges": {
+        "load_pct": 385,
+        "hook_cm": 1925,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 72000,
+       "gauges": {
+        "load_pct": 390,
+        "hook_cm": 1950,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 73000,
+       "gauges": {
+        "load_pct": 395,
+        "hook_cm": 1975,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 74000,
+       "gauges": {
+        "load_pct": 400,
+        "hook_cm": 2000,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 75000,
+       "gauges": {
+        "load_pct": 405,
+        "hook_cm": 2025,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 76000,
+       "gauges": {
+        "load_pct": 410,
+        "hook_cm": 2050,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 77000,
+       "gauges": {
+        "load_pct": 415,
+        "hook_cm": 2075,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 78000,
+       "gauges": {
+        "load_pct": 420,
+        "hook_cm": 2100,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 79000,
+       "gauges": {
+        "load_pct": 425,
+        "hook_cm": 2125,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 80000,
+       "gauges": {
+        "load_pct": 430,
+        "hook_cm": 2150,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 81000,
+       "gauges": {
+        "load_pct": 435,
+        "hook_cm": 2175,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 82000,
+       "gauges": {
+        "load_pct": 440,
+        "hook_cm": 2200,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 83000,
+       "gauges": {
+        "load_pct": 445,
+        "hook_cm": 2225,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 84000,
+       "gauges": {
+        "load_pct": 450,
+        "hook_cm": 2250,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 85000,
+       "gauges": {
+        "load_pct": 455,
+        "hook_cm": 2275,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 86000,
+       "gauges": {
+        "load_pct": 460,
+        "hook_cm": 2300,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 87000,
+       "gauges": {
+        "load_pct": 465,
+        "hook_cm": 2325,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 88000,
+       "gauges": {
+        "load_pct": 470,
+        "hook_cm": 2350,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 89000,
+       "gauges": {
+        "load_pct": 475,
+        "hook_cm": 2375,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      },
+      {
+       "t": 90000,
+       "gauges": {
+        "load_pct": 480,
+        "hook_cm": 2400,
+        "wind": "calm",
+        "note": "fixture gauges - not a machine"
+       }
+      }
+     ]
+    }
+   },
+   {
+    "t": "2026-09-26T03:00:02.000Z",
+    "kind": "sim",
+    "campus": "treasure-island",
+    "hall": "electricians",
+    "sim": "boom-lift",
+    "scenario": null,
+    "controls": [
+     "swing the turret",
+     "extend / retract the boom",
+     "raise / lower the boom",
+     "clip the harness (on the ground) / do the task at the work point",
+     "set the stabilizers on the pad"
+    ],
+    "actor": "human",
+    "outcome": {
+     "passed": false,
+     "rows": []
+    }
+   },
+   {
+    "t": "2026-09-26T03:00:03.000Z",
+    "kind": "sim",
+    "campus": "treasure-island",
+    "hall": "painters",
+    "sim": "airless-sprayer",
+    "scenario": "bay-terminal-finish",
+    "controls": [
+     "sweep the gun left / right across the panel",
+     "sweep the gun up / down across the panel",
+     "stand off farther / move closer to the surface",
+     "pull / release the spray trigger"
+    ],
+    "actor": "scripted-reference",
+    "operator": {
+     "level": "fixture-level",
+     "seed": 7,
+     "scenario": "bay-terminal-finish",
+     "steps": 120,
+     "dt": 0.05
+    },
+    "outcome": {
+     "passed": true,
+     "rows": [
+      {
+       "axis": "coverage",
+       "value": 1,
+       "ok": true
+      },
+      {
+       "axis": "runs",
+       "value": 1,
+       "ok": true
+      },
+      {
+       "axis": "holidays",
+       "value": 1,
+       "ok": true
+      },
+      {
+       "axis": "overspray",
+       "value": 1,
+       "ok": true
+      },
+      {
+       "axis": "time",
+       "value": 1,
+       "ok": true
+      }
+     ]
+    }
+   },
+   {
+    "t": "2026-09-26T03:00:04.000Z",
+    "kind": "advisor",
+    "campus": "treasure-island",
+    "hall": "painters",
+    "advisor": "fixture-advisor",
+    "topic": "fixture-topic",
+    "answer_kind": "record"
+   },
+   {
+    "t": "2026-09-26T03:00:05.000Z",
+    "kind": "crew",
+    "campus": "treasure-island",
+    "hall": "painters",
+    "crew": "fixture-crew",
+    "role": "fixture-role",
+    "topic": "fixture-topic",
+    "answer_kind": "registry"
+   }
+  ],
+  "traces_attached": 1,
+  "episode_counts_by_kind": {
+   "advisor": 1,
+   "crew": 1,
+   "sim": 3,
+   "walkaround": 1
+  },
+  "sims_covered": [
+   "airless-sprayer",
+   "boom-lift"
+  ],
+  "fields_by_kind": {
+   "sim": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "sim",
+    "scenario",
+    "controls",
+    "actor",
+    "operator",
+    "outcome"
+   ],
+   "advisor": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "advisor",
+    "topic",
+    "answer_kind"
+   ],
+   "crew": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "crew",
+    "role",
+    "topic",
+    "answer_kind"
+   ],
+   "walkaround": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "sim",
+    "point"
+   ]
+  }
+ },
+ "honesty": {
+  "proves": [
+   "the package has not changed since it was exported: its SHA-256 digest recomputes over the canonical form",
+   "every episode is of a kind training/ declares and carries exactly that kind's fields - no field more, none fewer",
+   "every sim, scenario, hall and campus an episode names exists in this bundle at the stated pack version",
+   "a trace, where attached, has no more samples than training/ caps and each sample has the declared keys",
+   "the consent scope is a non-empty subset of the scopes this registry declares, the statement is this registry's and the licence is this registry's one licence",
+   "the counts the package states about itself (episodes by kind, traces attached, sims covered) recompute from its episodes"
+  ],
+  "does_not_prove": [
+   "who the contributor is: contributor.claimed is a label this device stored, attested by this device only, and nothing checks it - unless a wallet signed, in which case it is the identity of a key, not of a person; a stolen key signs just as well",
+   "that any agent or robot learned from this package: exporting this file trains nothing by itself: no agent exists in this bundle and none is claimed to, until one is actually trained against this data outside it",
+   "that the package reached anyone: nothing in this bundle sends it anywhere; the learner keeps the file and hands it over, or does not",
+   "anything on any blockchain: a wallet signature is computed in the browser and carried in the file; nothing is written to any chain, nothing is anchored, and no one can look it up",
+   "that the device was honest: a package can be written by hand and will verify if it is internally consistent",
+   "that the gauges inside a trace sample mean anything: training/ describes them as display-shaped scalars and short labels and enumerates none, so the verifier holds a trace to its count and sample keys only",
+   "that an advisor, crew role, topic or walkaround point an episode names exists: only seats, scenarios, halls and campuses are resolved",
+   "that the episodes came from real equipment: every episode comes from SCHEMATIC physics and deterministic rubrics, not a real robot or a real machine: useful for exercising a training pipeline's plumbing and export format, not for training a controller that will run on real equipment."
+  ],
+  "nothing_sent": "nothing is sent anywhere by this bundle: no platform is integrated, no destination is validated, no upload exists. The contribute page writes a file to the learner's own downloads and stops.",
+  "no_agent_trained": "exporting this file trains nothing by itself: no agent exists in this bundle and none is claimed to, until one is actually trained against this data outside it",
+  "fixture": "this package is SCRIPTED by contrib/build.py from synthetic episodes shaped by training/registry/training.json; it is not a learner and its gauges are not a machine"
+ },
+ "digest": {
+  "alg": "SHA-256",
+  "over": "canonical JSON of every top-level field except digest, with contributor.signature forced to null: keys sorted recursively, no whitespace, UTF-8",
+  "hex": "e805c242f93da5197545d400582526975206d3e8e7c9b6c925ce2716932d608e"
+ }
+}

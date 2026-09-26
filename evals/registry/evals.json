@@ -1099,10 +1099,10 @@
   "metrics": 9,
   "runs": 36,
   "seeds": 12,
-  "sim_elapsed_ms": 754,
+  "sim_elapsed_ms": 866,
   "strategies": 3,
   "total_attempts_simulated": 15120,
-  "wall_ms": 810
+  "wall_ms": 929
  },
  "hall_independence": {
   "contrast": {
@@ -1155,7 +1155,7 @@
    4242
   ],
   "strategy": "graph",
-  "sweep_ms": 3415,
+  "sweep_ms": 3389,
   "why": "every union carries the same eleven strands by three tiers wired by the same requires edges, so the graph handed to the sequencer is isomorphic across halls and the seeded generator is the only source of variation. Nothing in control/ reads the simulator registry, so no seat, no piece of equipment and no difference in available evidence reaches this simulation."
  },
  "honesty": {
@@ -1163,7 +1163,7 @@
   "determinism": "The subject seeds mulberry32 per run and touches no clock and no network. The 12 seeds are recorded, and evals/test.mjs re-runs every one of the 36 runs and compares field by field against what is written here. A result that cannot be reproduced is not a result.",
   "no_cohort_claim": "Nothing in this registry licenses a statement about real learners, real halls, real apprentices or real outcomes. \"The sequencer beats blocked practice by X\" is not a sentence this pack supports in any form; the supported sentence names the simulation and its assumptions in the same breath as the number.",
   "one_union": "Every run is the subject's default union, 'welders' - 33 skills. This pack does not sweep unions and says nothing about the other ladders in pack/registry/skills.json.",
-  "runtime": "The full 36-run sweep took 754 ms of simulation time inside node (810 ms wall including process start) on the machine that built this. Nothing was shortened to make it quick: attempts, per-day and session length are the subject's own constants, read out of the file rather than typed here.",
+  "runtime": "The full 36-run sweep took 866 ms of simulation time inside node (929 ms wall including process start) on the machine that built this. Nothing was shortened to make it quick: attempts, per-day and session length are the subject's own constants, read out of the file rather than typed here.",
   "status": "SCRIPTED: every number in this registry came out of running control/sim_curriculum.mjs, a hand-written deterministic simulation over an authored skill ladder and an authored learner model. Nothing here was observed of a person. Not one number is RECORDED, and the summary statistics are not promoted to DERIVED - see tier_is_not_derived.",
   "the_limit_is_the_sources_own": "The limit is not this pack's summary of the subject. It is quoted verbatim from the header of control/sim_curriculum.mjs into limit.sentence, and evals/test.mjs re-extracts it from that file and fails if the two stop matching or if the quotation is softened.",
   "the_one_field_that_is_not_reproducible": "counts.sim_elapsed_ms and counts.wall_ms are wall-clock timings of the machine that ran the build. They change on every build and no check holds them to a value; they are here so a reader knows the sweep is seconds rather than hours. Every other number in this registry is reproduced exactly by evals/test.mjs.",
@@ -1211,6 +1211,1288 @@
   "blocked": 0,
   "flat": 5,
   "graph": 0
+ },
+ "robot_readiness": {
+  "classes": {
+   "is_a_score": false,
+   "ladder": [
+    "no-observation",
+    "observation-only",
+    "observation+action",
+    "observation+action+reference-policy"
+   ],
+   "means": "a class names which of three facts hold for a seat - an observation per sample, an action per sample, a scripted policy to compare against. It orders nothing else and ranks no seat above another.",
+   "rule": {
+    "no-observation": "the seat's gauges() could not be found by structure, or returns nothing",
+    "observation+action": "a TRACE sample carries both the gauge reading and the control state at that second (a field named one of keys, controls, action, inputs)",
+    "observation+action+reference-policy": "observation+action, and the page's OPERATORS table holds a step() policy for the seat that sims/registry/sims.json#sims[id].operator declares",
+    "observation-only": "gauges() found, and a TRACE sample carries a gauge reading but no control state - what the learner did at that second is not in the sample"
+   }
+  },
+  "episode_kinds": {
+   "advisor": {
+    "can_carry_trace": false,
+    "fields": [
+     "t",
+     "kind",
+     "campus",
+     "hall",
+     "advisor",
+     "topic",
+     "answer_kind"
+    ],
+    "has_outcome": false,
+    "outcome_shape": null
+   },
+   "crew": {
+    "can_carry_trace": false,
+    "fields": [
+     "t",
+     "kind",
+     "campus",
+     "hall",
+     "crew",
+     "role",
+     "topic",
+     "answer_kind"
+    ],
+    "has_outcome": false,
+    "outcome_shape": null
+   },
+   "sim": {
+    "can_carry_trace": true,
+    "fields": [
+     "t",
+     "kind",
+     "campus",
+     "hall",
+     "sim",
+     "scenario",
+     "controls",
+     "actor",
+     "operator",
+     "outcome"
+    ],
+    "has_outcome": true,
+    "outcome_shape": {
+     "passed": "bool",
+     "rows": "[{axis, value, ok}] - the rubric rows",
+     "trace": "[{t, gauges}] - OPTIONAL, present only when TRACE is on: ~1 Hz samples of the sim's own gauges() readout across the run, capped at TRACE['max_samples']"
+    }
+   },
+   "walkaround": {
+    "can_carry_trace": false,
+    "fields": [
+     "t",
+     "kind",
+     "campus",
+     "hall",
+     "sim",
+     "point"
+    ],
+    "has_outcome": false,
+    "outcome_shape": null
+   }
+  },
+  "honest": "no episode has been recorded from a learner - there is no cohort, and the recorder writes only to the browser that runs it; no agent and no robot has been trained from this data, here or in the ml-agents fork recorded in meta/registry/metaverse.json. Every row above is what the registries DECLARE and what the page source RETURNS, read by structure: 11 of 11 seats expose a gauges() readout a TRACE could sample, 11 carry a scripted reference policy, and 0 write the control state into a sample - so a trace today is an observation stream without the action beside it, and no controller can be learned from it by imitation.",
+  "inputs": {
+   "metaverse": {
+    "path": "meta/registry/metaverse.json",
+    "sha256": "7f08973a3b757910a2323f8ed241376ad4bf3c9fe59fcaf462f58993f3c7200f",
+    "source_stamp": "5f7b626f5843bd26"
+   },
+   "orbis": {
+    "path": "orbis/registry/orbis.json",
+    "sha256": "ebbd3a8a5d8e6e74659bea02ff00a658ca90b574d1cd76597d3c324d69d76c67",
+    "source_stamp": "711277f8deb30c84"
+   },
+   "page": {
+    "path": "web/build_3d.py",
+    "sha256": "d5c2777a2b451a00d0275ddf0fbe62cf0289dde7fa4f914db7280f7d3f4d0b22",
+    "source_stamp": null,
+    "why_no_stamp": "web/build_3d.py is a builder, not a registry, and carries no source_stamp; its sha256 is the guard"
+   },
+   "sims": {
+    "path": "sims/registry/sims.json",
+    "sha256": "987a9d4812b4c73baaaaa2ede0eaf57834ad8186489892ad88df33b4979f0eaa",
+    "source_stamp": "8695efefa336b10d"
+   },
+   "training": {
+    "path": "training/registry/training.json",
+    "sha256": "35bb9a99a6f0783918c92bdc321b22bbc87d5d3da46a08929345fb2f97c8a98e",
+    "source_stamp": "f2ee35389d8386e5"
+   }
+  },
+  "kinds_that_can_carry_a_trace": [
+   "sim"
+  ],
+  "ml_agents_fork": {
+   "export_shape": "{ \"pack\": \"smartcitix-trade-craft-academy-training-data\", \"exported\": ISO-8601, \"episodes\": [episode, ...] }",
+   "no_agent_trained": "exporting this file trains nothing by itself: no agent exists in this bundle and none is claimed to, until one is actually trained against this data outside it",
+   "not_a_demo_file": "not a native Unity ML-Agents .demo (protobuf) file - this bundle has never produced or tested one, and does not claim to",
+   "repo": "AGIFutureFoundation/ml-agents",
+   "status_as_recorded_there": "export-ready: the .glb files open in Unity today. No trained agent, scene integration or benchmark is claimed until it exists in that repository."
+  },
+  "per_sim": {
+   "airless-sprayer": {
+    "action_per_sample": false,
+    "action_per_sample_why": "the sampler in web/build_3d.py pushes {t, gauges} once a second: the gauge reading alone. The key state the seat reads that same frame (`keys[e.code]`, codes KeyW, KeyS, KeyA, KeyD, KeyQ, KeyE, KeyR, KeyX, KeyC) and the Space press edge that calls sim.action() are not written into the sample.",
+    "controls_captured": [
+     "sweep the gun left / right across the panel",
+     "sweep the gun up / down across the panel",
+     "stand off farther / move closer to the surface",
+     "pull / release the spray trigger"
+    ],
+    "controls_captured_means": "the declared control scheme (each control's `action` string), written once per episode - not the state of any control at any moment of the run",
+    "controls_declared": [
+     {
+      "action": "sweep the gun left / right across the panel",
+      "keys": "A / D"
+     },
+     {
+      "action": "sweep the gun up / down across the panel",
+      "keys": "W / S"
+     },
+     {
+      "action": "stand off farther / move closer to the surface",
+      "keys": "Q / E"
+     },
+     {
+      "action": "pull / release the spray trigger",
+      "keys": "Space"
+     }
+    ],
+    "dash_ids": [
+     "u",
+     "v",
+     "gap",
+     "coverage",
+     "runs",
+     "holidays",
+     "overspray",
+     "time"
+    ],
+    "episode_kinds_that_can_carry_a_trace": [
+     "sim"
+    ],
+    "factory": "paintSprayerSim",
+    "gauges": [
+     "u",
+     "v",
+     "gap",
+     "coverage",
+     "runs",
+     "holidays",
+     "overspray",
+     "time"
+    ],
+    "gauges_count": 8,
+    "gauges_equal_dash_ids": true,
+    "gauges_why_null": null,
+    "halls_bound": 2,
+    "has_seat": true,
+    "kind": "process",
+    "name": "Airless Paint Sprayer Finish",
+    "next_class": "observation+action",
+    "outcome_shape": {
+     "passed": "bool",
+     "rows": "[{axis, value, ok}] - the rubric rows",
+     "trace": "[{t, gauges}] - OPTIONAL, present only when TRACE is on: ~1 Hz samples of the sim's own gauges() readout across the run, capped at TRACE['max_samples']"
+    },
+    "readiness_class": "observation-only",
+    "reference_policy": true,
+    "reference_policy_declared_in_sims_registry": true,
+    "reference_policy_guarantees": [
+     "coverage",
+     "runs",
+     "holidays",
+     "overspray"
+    ],
+    "reference_policy_in_orbis": false,
+    "reference_policy_in_page_operators": true,
+    "reference_policy_levels": [
+     "optimal",
+     "novice",
+     "hurried"
+    ],
+    "rubric_axes": [
+     "coverage",
+     "runs",
+     "holidays",
+     "overspray",
+     "time"
+    ],
+    "scenario_ids": [
+     "bay-terminal-finish",
+     "oak-warehouse-finish",
+     "nola-shotgun-finish"
+    ],
+    "scenarios": 3,
+    "trace_max_samples": 90,
+    "trace_sample_fields": [
+     "t",
+     "gauges"
+    ],
+    "trace_sample_hz": 1
+   },
+   "boom-lift": {
+    "action_per_sample": false,
+    "action_per_sample_why": "the sampler in web/build_3d.py pushes {t, gauges} once a second: the gauge reading alone. The key state the seat reads that same frame (`keys[e.code]`, codes KeyW, KeyS, KeyA, KeyD, KeyQ, KeyE, KeyR, KeyX, KeyC) and the Space press edge that calls sim.action() are not written into the sample.",
+    "controls_captured": [
+     "swing the turret",
+     "extend / retract the boom",
+     "raise / lower the boom",
+     "clip the harness (on the ground) / do the task at the work point",
+     "set the stabilizers on the pad"
+    ],
+    "controls_captured_means": "the declared control scheme (each control's `action` string), written once per episode - not the state of any control at any moment of the run",
+    "controls_declared": [
+     {
+      "action": "swing the turret",
+      "keys": "A / D"
+     },
+     {
+      "action": "extend / retract the boom",
+      "keys": "W / S"
+     },
+     {
+      "action": "raise / lower the boom",
+      "keys": "Q / E"
+     },
+     {
+      "action": "clip the harness (on the ground) / do the task at the work point",
+      "keys": "Space"
+     },
+     {
+      "action": "set the stabilizers on the pad",
+      "keys": "C"
+     }
+    ],
+    "dash_ids": [
+     "height",
+     "outreach",
+     "swing",
+     "elev",
+     "moment",
+     "tieoff",
+     "stab",
+     "points",
+     "time"
+    ],
+    "episode_kinds_that_can_carry_a_trace": [
+     "sim"
+    ],
+    "factory": "boomLiftSim",
+    "gauges": [
+     "height",
+     "outreach",
+     "swing",
+     "elev",
+     "moment",
+     "tieoff",
+     "stab",
+     "points",
+     "time"
+    ],
+    "gauges_count": 9,
+    "gauges_equal_dash_ids": true,
+    "gauges_why_null": null,
+    "halls_bound": 8,
+    "has_seat": true,
+    "kind": "machine",
+    "name": "Boom Lift Basket Work",
+    "next_class": "observation+action",
+    "outcome_shape": {
+     "passed": "bool",
+     "rows": "[{axis, value, ok}] - the rubric rows",
+     "trace": "[{t, gauges}] - OPTIONAL, present only when TRACE is on: ~1 Hz samples of the sim's own gauges() readout across the run, capped at TRACE['max_samples']"
+    },
+    "readiness_class": "observation-only",
+    "reference_policy": true,
+    "reference_policy_declared_in_sims_registry": true,
+    "reference_policy_guarantees": [
+     "reach",
+     "envelope",
+     "tie-off",
+     "slope",
+     "strikes"
+    ],
+    "reference_policy_in_orbis": false,
+    "reference_policy_in_page_operators": true,
+    "reference_policy_levels": [
+     "optimal",
+     "novice",
+     "hurried"
+    ],
+    "rubric_axes": [
+     "reach",
+     "envelope",
+     "tie-off",
+     "slope",
+     "strikes",
+     "time"
+    ],
+    "scenario_ids": [
+     "bay-curtainwall-run",
+     "oak-terminal-fixtures",
+     "nola-storm-shutters"
+    ],
+    "scenarios": 3,
+    "trace_max_samples": 90,
+    "trace_sample_fields": [
+     "t",
+     "gauges"
+    ],
+    "trace_sample_hz": 1
+   },
+   "crane-lift": {
+    "action_per_sample": false,
+    "action_per_sample_why": "the sampler in web/build_3d.py pushes {t, gauges} once a second: the gauge reading alone. The key state the seat reads that same frame (`keys[e.code]`, codes KeyW, KeyS, KeyA, KeyD, KeyQ, KeyE, KeyR, KeyX, KeyC) and the Space press edge that calls sim.action() are not written into the sample.",
+    "controls_captured": [
+     "slew the jib",
+     "trolley out / in",
+     "hoist up / down",
+     "hook / release the load"
+    ],
+    "controls_captured_means": "the declared control scheme (each control's `action` string), written once per episode - not the state of any control at any moment of the run",
+    "controls_declared": [
+     {
+      "action": "slew the jib",
+      "keys": "A / D"
+     },
+     {
+      "action": "trolley out / in",
+      "keys": "W / S"
+     },
+     {
+      "action": "hoist up / down",
+      "keys": "Q / E"
+     },
+     {
+      "action": "hook / release the load",
+      "keys": "Space"
+     }
+    ],
+    "dash_ids": [
+     "slew",
+     "radius",
+     "hook",
+     "swing",
+     "strikes",
+     "time"
+    ],
+    "episode_kinds_that_can_carry_a_trace": [
+     "sim"
+    ],
+    "factory": "craneSim",
+    "gauges": [
+     "slew",
+     "radius",
+     "hook",
+     "swing",
+     "strikes",
+     "time"
+    ],
+    "gauges_count": 6,
+    "gauges_equal_dash_ids": true,
+    "gauges_why_null": null,
+    "halls_bound": 8,
+    "has_seat": true,
+    "kind": "machine",
+    "name": "Tower Crane Lift",
+    "next_class": "observation+action",
+    "outcome_shape": {
+     "passed": "bool",
+     "rows": "[{axis, value, ok}] - the rubric rows",
+     "trace": "[{t, gauges}] - OPTIONAL, present only when TRACE is on: ~1 Hz samples of the sim's own gauges() readout across the run, capped at TRACE['max_samples']"
+    },
+    "readiness_class": "observation-only",
+    "reference_policy": true,
+    "reference_policy_declared_in_sims_registry": true,
+    "reference_policy_guarantees": [
+     "placement",
+     "swing",
+     "strikes"
+    ],
+    "reference_policy_in_orbis": false,
+    "reference_policy_in_page_operators": true,
+    "reference_policy_levels": [
+     "optimal",
+     "novice",
+     "hurried"
+    ],
+    "rubric_axes": [
+     "placement",
+     "swing",
+     "strikes",
+     "time"
+    ],
+    "scenario_ids": [
+     "bay-steel",
+     "oak-terminal",
+     "nola-wharf"
+    ],
+    "scenarios": 3,
+    "trace_max_samples": 90,
+    "trace_sample_fields": [
+     "t",
+     "gauges"
+    ],
+    "trace_sample_hz": 1
+   },
+   "excavator-trench": {
+    "action_per_sample": false,
+    "action_per_sample_why": "the sampler in web/build_3d.py pushes {t, gauges} once a second: the gauge reading alone. The key state the seat reads that same frame (`keys[e.code]`, codes KeyW, KeyS, KeyA, KeyD, KeyQ, KeyE, KeyR, KeyX, KeyC) and the Space press edge that calls sim.action() are not written into the sample.",
+    "controls_captured": [
+     "slew the house",
+     "reach out / in",
+     "bucket up / down",
+     "dig / dump the bucket"
+    ],
+    "controls_captured_means": "the declared control scheme (each control's `action` string), written once per episode - not the state of any control at any moment of the run",
+    "controls_declared": [
+     {
+      "action": "slew the house",
+      "keys": "A / D"
+     },
+     {
+      "action": "reach out / in",
+      "keys": "W / S"
+     },
+     {
+      "action": "bucket up / down",
+      "keys": "Q / E"
+     },
+     {
+      "action": "dig / dump the bucket",
+      "keys": "Space"
+     }
+    ],
+    "dash_ids": [
+     "slew",
+     "reach",
+     "depth",
+     "grade",
+     "spoil",
+     "utility",
+     "time"
+    ],
+    "episode_kinds_that_can_carry_a_trace": [
+     "sim"
+    ],
+    "factory": "excavatorSim",
+    "gauges": [
+     "slew",
+     "reach",
+     "depth",
+     "grade",
+     "spoil",
+     "utility",
+     "time"
+    ],
+    "gauges_count": 7,
+    "gauges_equal_dash_ids": true,
+    "gauges_why_null": null,
+    "halls_bound": 4,
+    "has_seat": true,
+    "kind": "machine",
+    "name": "Excavator Trench Cut",
+    "next_class": "observation+action",
+    "outcome_shape": {
+     "passed": "bool",
+     "rows": "[{axis, value, ok}] - the rubric rows",
+     "trace": "[{t, gauges}] - OPTIONAL, present only when TRACE is on: ~1 Hz samples of the sim's own gauges() readout across the run, capped at TRACE['max_samples']"
+    },
+    "readiness_class": "observation-only",
+    "reference_policy": true,
+    "reference_policy_declared_in_sims_registry": true,
+    "reference_policy_guarantees": [
+     "grade",
+     "utility",
+     "spoil"
+    ],
+    "reference_policy_in_orbis": false,
+    "reference_policy_in_page_operators": true,
+    "reference_policy_levels": [
+     "optimal",
+     "novice",
+     "hurried"
+    ],
+    "rubric_axes": [
+     "grade",
+     "utility",
+     "spoil",
+     "time"
+    ],
+    "scenario_ids": [
+     "bay-retrofit",
+     "oak-fill",
+     "nola-below-sea"
+    ],
+    "scenarios": 3,
+    "trace_max_samples": 90,
+    "trace_sample_fields": [
+     "t",
+     "gauges"
+    ],
+    "trace_sample_hz": 1
+   },
+   "forklift-run": {
+    "action_per_sample": false,
+    "action_per_sample_why": "the sampler in web/build_3d.py pushes {t, gauges} once a second: the gauge reading alone. The key state the seat reads that same frame (`keys[e.code]`, codes KeyW, KeyS, KeyA, KeyD, KeyQ, KeyE, KeyR, KeyX, KeyC) and the Space press edge that calls sim.action() are not written into the sample.",
+    "controls_captured": [
+     "drive / reverse",
+     "steer",
+     "lift / set the pallet"
+    ],
+    "controls_captured_means": "the declared control scheme (each control's `action` string), written once per episode - not the state of any control at any moment of the run",
+    "controls_declared": [
+     {
+      "action": "drive / reverse",
+      "keys": "W / S"
+     },
+     {
+      "action": "steer",
+      "keys": "A / D"
+     },
+     {
+      "action": "lift / set the pallet",
+      "keys": "Space"
+     }
+    ],
+    "dash_ids": [
+     "speed",
+     "steer",
+     "heading",
+     "x",
+     "z",
+     "load",
+     "gates",
+     "cones",
+     "time"
+    ],
+    "episode_kinds_that_can_carry_a_trace": [
+     "sim"
+    ],
+    "factory": "forkliftSim",
+    "gauges": [
+     "speed",
+     "steer",
+     "heading",
+     "x",
+     "z",
+     "load",
+     "gates",
+     "cones",
+     "time"
+    ],
+    "gauges_count": 9,
+    "gauges_equal_dash_ids": true,
+    "gauges_why_null": null,
+    "halls_bound": 5,
+    "has_seat": true,
+    "kind": "driving",
+    "name": "Forklift Yard Run",
+    "next_class": "observation+action",
+    "outcome_shape": {
+     "passed": "bool",
+     "rows": "[{axis, value, ok}] - the rubric rows",
+     "trace": "[{t, gauges}] - OPTIONAL, present only when TRACE is on: ~1 Hz samples of the sim's own gauges() readout across the run, capped at TRACE['max_samples']"
+    },
+    "readiness_class": "observation-only",
+    "reference_policy": true,
+    "reference_policy_declared_in_sims_registry": true,
+    "reference_policy_guarantees": [
+     "gates",
+     "cones",
+     "docking"
+    ],
+    "reference_policy_in_orbis": false,
+    "reference_policy_in_page_operators": true,
+    "reference_policy_levels": [
+     "optimal",
+     "novice",
+     "hurried"
+    ],
+    "rubric_axes": [
+     "gates",
+     "cones",
+     "docking",
+     "time"
+    ],
+    "scenario_ids": [
+     "bay-yard",
+     "oak-lane",
+     "nola-dock"
+    ],
+    "scenarios": 3,
+    "trace_max_samples": 90,
+    "trace_sample_fields": [
+     "t",
+     "gauges"
+    ],
+    "trace_sample_hz": 1
+   },
+   "load-chart": {
+    "action_per_sample": false,
+    "action_per_sample_why": "the sampler in web/build_3d.py pushes {t, gauges} once a second: the gauge reading alone. The key state the seat reads that same frame (`keys[e.code]`, codes KeyW, KeyS, KeyA, KeyD, KeyQ, KeyE, KeyR, KeyX, KeyC) and the Space press edge that calls sim.action() are not written into the sample.",
+    "controls_captured": [
+     "accept the pick - hook it",
+     "refuse the pick - over the chart",
+     "walk the chart rows"
+    ],
+    "controls_captured_means": "the declared control scheme (each control's `action` string), written once per episode - not the state of any control at any moment of the run",
+    "controls_declared": [
+     {
+      "action": "accept the pick - hook it",
+      "keys": "Space"
+     },
+     {
+      "action": "refuse the pick - over the chart",
+      "keys": "X"
+     },
+     {
+      "action": "walk the chart rows",
+      "keys": "Q / E"
+     }
+    ],
+    "dash_ids": [
+     "pick",
+     "load",
+     "radius",
+     "chart",
+     "errors",
+     "time"
+    ],
+    "episode_kinds_that_can_carry_a_trace": [
+     "sim"
+    ],
+    "factory": "loadChartSim",
+    "gauges": [
+     "pick",
+     "load",
+     "radius",
+     "chart",
+     "errors",
+     "time"
+    ],
+    "gauges_count": 6,
+    "gauges_equal_dash_ids": true,
+    "gauges_why_null": null,
+    "halls_bound": 7,
+    "has_seat": true,
+    "kind": "process",
+    "name": "Load Chart Judgment",
+    "next_class": "observation+action",
+    "outcome_shape": {
+     "passed": "bool",
+     "rows": "[{axis, value, ok}] - the rubric rows",
+     "trace": "[{t, gauges}] - OPTIONAL, present only when TRACE is on: ~1 Hz samples of the sim's own gauges() readout across the run, capped at TRACE['max_samples']"
+    },
+    "readiness_class": "observation-only",
+    "reference_policy": true,
+    "reference_policy_declared_in_sims_registry": true,
+    "reference_policy_guarantees": [
+     "judgments",
+     "overloads"
+    ],
+    "reference_policy_in_orbis": false,
+    "reference_policy_in_page_operators": true,
+    "reference_policy_levels": [
+     "optimal",
+     "novice",
+     "hurried"
+    ],
+    "rubric_axes": [
+     "judgments",
+     "overloads",
+     "time"
+    ],
+    "scenario_ids": [
+     "bay-pick-list",
+     "oak-heavy-list",
+     "nola-barge-list"
+    ],
+    "scenarios": 3,
+    "trace_max_samples": 90,
+    "trace_sample_fields": [
+     "t",
+     "gauges"
+    ],
+    "trace_sample_hz": 1
+   },
+   "overhead-crane": {
+    "action_per_sample": false,
+    "action_per_sample_why": "the sampler in web/build_3d.py pushes {t, gauges} once a second: the gauge reading alone. The key state the seat reads that same frame (`keys[e.code]`, codes KeyW, KeyS, KeyA, KeyD, KeyQ, KeyE, KeyR, KeyX, KeyC) and the Space press edge that calls sim.action() are not written into the sample.",
+    "controls_captured": [
+     "travel the bridge",
+     "traverse the trolley",
+     "hoist up / down",
+     "hook / release the load"
+    ],
+    "controls_captured_means": "the declared control scheme (each control's `action` string), written once per episode - not the state of any control at any moment of the run",
+    "controls_declared": [
+     {
+      "action": "travel the bridge",
+      "keys": "A / D"
+     },
+     {
+      "action": "traverse the trolley",
+      "keys": "W / S"
+     },
+     {
+      "action": "hoist up / down",
+      "keys": "Q / E"
+     },
+     {
+      "action": "hook / release the load",
+      "keys": "Space"
+     }
+    ],
+    "dash_ids": [
+     "bridge",
+     "trolley",
+     "hook",
+     "sway",
+     "load",
+     "time"
+    ],
+    "episode_kinds_that_can_carry_a_trace": [
+     "sim"
+    ],
+    "factory": "overheadCraneSim",
+    "gauges": [
+     "bridge",
+     "trolley",
+     "hook",
+     "sway",
+     "load",
+     "time"
+    ],
+    "gauges_count": 6,
+    "gauges_equal_dash_ids": true,
+    "gauges_why_null": null,
+    "halls_bound": 7,
+    "has_seat": true,
+    "kind": "machine",
+    "name": "Overhead Crane Shop Move",
+    "next_class": "observation+action",
+    "outcome_shape": {
+     "passed": "bool",
+     "rows": "[{axis, value, ok}] - the rubric rows",
+     "trace": "[{t, gauges}] - OPTIONAL, present only when TRACE is on: ~1 Hz samples of the sim's own gauges() readout across the run, capped at TRACE['max_samples']"
+    },
+    "readiness_class": "observation-only",
+    "reference_policy": true,
+    "reference_policy_declared_in_sims_registry": true,
+    "reference_policy_guarantees": [
+     "placement",
+     "sway",
+     "path",
+     "limits",
+     "clear"
+    ],
+    "reference_policy_in_orbis": false,
+    "reference_policy_in_page_operators": true,
+    "reference_policy_levels": [
+     "optimal",
+     "novice",
+     "hurried"
+    ],
+    "rubric_axes": [
+     "placement",
+     "sway",
+     "path",
+     "limits",
+     "clear",
+     "time"
+    ],
+    "scenario_ids": [
+     "bay-fab-coil",
+     "oak-foundry-ladle",
+     "nola-boatshed-engine"
+    ],
+    "scenarios": 3,
+    "trace_max_samples": 90,
+    "trace_sample_fields": [
+     "t",
+     "gauges"
+    ],
+    "trace_sample_hz": 1
+   },
+   "pressure-washer": {
+    "action_per_sample": false,
+    "action_per_sample_why": "the sampler in web/build_3d.py pushes {t, gauges} once a second: the gauge reading alone. The key state the seat reads that same frame (`keys[e.code]`, codes KeyW, KeyS, KeyA, KeyD, KeyQ, KeyE, KeyR, KeyX, KeyC) and the Space press edge that calls sim.action() are not written into the sample.",
+    "controls_captured": [
+     "sweep the wand left / right across the panel",
+     "sweep the wand up / down across the panel",
+     "stand off farther / move closer to the surface",
+     "pull / release the spray trigger",
+     "deploy the containment berm / drain cover"
+    ],
+    "controls_captured_means": "the declared control scheme (each control's `action` string), written once per episode - not the state of any control at any moment of the run",
+    "controls_declared": [
+     {
+      "action": "sweep the wand left / right across the panel",
+      "keys": "A / D"
+     },
+     {
+      "action": "sweep the wand up / down across the panel",
+      "keys": "W / S"
+     },
+     {
+      "action": "stand off farther / move closer to the surface",
+      "keys": "Q / E"
+     },
+     {
+      "action": "pull / release the spray trigger",
+      "keys": "Space"
+     },
+     {
+      "action": "deploy the containment berm / drain cover",
+      "keys": "C"
+     }
+    ],
+    "dash_ids": [
+     "u",
+     "v",
+     "gap",
+     "coverage",
+     "damage",
+     "containment",
+     "time"
+    ],
+    "episode_kinds_that_can_carry_a_trace": [
+     "sim"
+    ],
+    "factory": "pressureWasherSim",
+    "gauges": [
+     "u",
+     "v",
+     "gap",
+     "coverage",
+     "damage",
+     "containment",
+     "time"
+    ],
+    "gauges_count": 7,
+    "gauges_equal_dash_ids": true,
+    "gauges_why_null": null,
+    "halls_bound": 3,
+    "has_seat": true,
+    "kind": "process",
+    "name": "Pressure Washer Surface Clean",
+    "next_class": "observation+action",
+    "outcome_shape": {
+     "passed": "bool",
+     "rows": "[{axis, value, ok}] - the rubric rows",
+     "trace": "[{t, gauges}] - OPTIONAL, present only when TRACE is on: ~1 Hz samples of the sim's own gauges() readout across the run, capped at TRACE['max_samples']"
+    },
+    "readiness_class": "observation-only",
+    "reference_policy": true,
+    "reference_policy_declared_in_sims_registry": true,
+    "reference_policy_guarantees": [
+     "coverage",
+     "damage",
+     "containment"
+    ],
+    "reference_policy_in_orbis": false,
+    "reference_policy_in_page_operators": true,
+    "reference_policy_levels": [
+     "optimal",
+     "novice",
+     "hurried"
+    ],
+    "rubric_axes": [
+     "coverage",
+     "damage",
+     "containment",
+     "time"
+    ],
+    "scenario_ids": [
+     "bay-seawall-clean",
+     "oak-bulkhead-clean",
+     "nola-floodwall-clean"
+    ],
+    "scenarios": 3,
+    "trace_max_samples": 90,
+    "trace_sample_fields": [
+     "t",
+     "gauges"
+    ],
+    "trace_sample_hz": 1
+   },
+   "rigging-signals": {
+    "action_per_sample": false,
+    "action_per_sample_why": "the sampler in web/build_3d.py pushes {t, gauges} once a second: the gauge reading alone. The key state the seat reads that same frame (`keys[e.code]`, codes KeyW, KeyS, KeyA, KeyD, KeyQ, KeyE, KeyR, KeyX, KeyC) and the Space press edge that calls sim.action() are not written into the sample.",
+    "controls_captured": [
+     "signal hoist up / hoist down",
+     "signal swing left / swing right",
+     "signal trolley out / trolley in",
+     "signal STOP"
+    ],
+    "controls_captured_means": "the declared control scheme (each control's `action` string), written once per episode - not the state of any control at any moment of the run",
+    "controls_declared": [
+     {
+      "action": "signal hoist up / hoist down",
+      "keys": "Q / E"
+     },
+     {
+      "action": "signal swing left / swing right",
+      "keys": "A / D"
+     },
+     {
+      "action": "signal trolley out / trolley in",
+      "keys": "W / S"
+     },
+     {
+      "action": "signal STOP",
+      "keys": "Space"
+     }
+    ],
+    "dash_ids": [
+     "step",
+     "called",
+     "given",
+     "wrong",
+     "time"
+    ],
+    "episode_kinds_that_can_carry_a_trace": [
+     "sim"
+    ],
+    "factory": "riggingSim",
+    "gauges": [
+     "step",
+     "called",
+     "given",
+     "wrong",
+     "time"
+    ],
+    "gauges_count": 5,
+    "gauges_equal_dash_ids": true,
+    "gauges_why_null": null,
+    "halls_bound": 9,
+    "has_seat": true,
+    "kind": "process",
+    "name": "Rigging Signal Call",
+    "next_class": "observation+action",
+    "outcome_shape": {
+     "passed": "bool",
+     "rows": "[{axis, value, ok}] - the rubric rows",
+     "trace": "[{t, gauges}] - OPTIONAL, present only when TRACE is on: ~1 Hz samples of the sim's own gauges() readout across the run, capped at TRACE['max_samples']"
+    },
+    "readiness_class": "observation-only",
+    "reference_policy": true,
+    "reference_policy_declared_in_sims_registry": true,
+    "reference_policy_guarantees": [
+     "calls",
+     "wrong"
+    ],
+    "reference_policy_in_orbis": false,
+    "reference_policy_in_page_operators": true,
+    "reference_policy_levels": [
+     "optimal",
+     "novice",
+     "hurried"
+    ],
+    "rubric_axes": [
+     "calls",
+     "wrong",
+     "time"
+    ],
+    "scenario_ids": [
+     "bay-first-card",
+     "oak-blind-pick",
+     "nola-wind-card"
+    ],
+    "scenarios": 3,
+    "trace_max_samples": 90,
+    "trace_sample_fields": [
+     "t",
+     "gauges"
+    ],
+    "trace_sample_hz": 1
+   },
+   "scaffold-bay": {
+    "action_per_sample": false,
+    "action_per_sample_why": "the sampler in web/build_3d.py pushes {t, gauges} once a second: the gauge reading alone. The key state the seat reads that same frame (`keys[e.code]`, codes KeyW, KeyS, KeyA, KeyD, KeyQ, KeyE, KeyR, KeyX, KeyC) and the Space press edge that calls sim.action() are not written into the sample.",
+    "controls_captured": [
+     "choose the part rack",
+     "place the next part",
+     "jump the rack to the legal stage"
+    ],
+    "controls_captured_means": "the declared control scheme (each control's `action` string), written once per episode - not the state of any control at any moment of the run",
+    "controls_declared": [
+     {
+      "action": "choose the part rack",
+      "keys": "A / D"
+     },
+     {
+      "action": "place the next part",
+      "keys": "Space"
+     },
+     {
+      "action": "jump the rack to the legal stage",
+      "keys": "R"
+     }
+    ],
+    "dash_ids": [
+     "rack",
+     "stage",
+     "placed",
+     "faults",
+     "time"
+    ],
+    "episode_kinds_that_can_carry_a_trace": [
+     "sim"
+    ],
+    "factory": "scaffoldSim",
+    "gauges": [
+     "rack",
+     "stage",
+     "placed",
+     "faults",
+     "time"
+    ],
+    "gauges_count": 5,
+    "gauges_equal_dash_ids": true,
+    "gauges_why_null": null,
+    "halls_bound": 19,
+    "has_seat": true,
+    "kind": "process",
+    "name": "Scaffold Bay Build",
+    "next_class": "observation+action",
+    "outcome_shape": {
+     "passed": "bool",
+     "rows": "[{axis, value, ok}] - the rubric rows",
+     "trace": "[{t, gauges}] - OPTIONAL, present only when TRACE is on: ~1 Hz samples of the sim's own gauges() readout across the run, capped at TRACE['max_samples']"
+    },
+    "readiness_class": "observation-only",
+    "reference_policy": true,
+    "reference_policy_declared_in_sims_registry": true,
+    "reference_policy_guarantees": [
+     "sequence"
+    ],
+    "reference_policy_in_orbis": false,
+    "reference_policy_in_page_operators": true,
+    "reference_policy_levels": [
+     "optimal",
+     "novice",
+     "hurried"
+    ],
+    "rubric_axes": [
+     "sequence",
+     "complete",
+     "time"
+    ],
+    "scenario_ids": [
+     "bay-training-bay",
+     "oak-plant-bay",
+     "nola-storm-bay"
+    ],
+    "scenarios": 3,
+    "trace_max_samples": 90,
+    "trace_sample_fields": [
+     "t",
+     "gauges"
+    ],
+    "trace_sample_hz": 1
+   },
+   "weld-bead": {
+    "action_per_sample": false,
+    "action_per_sample_why": "the sampler in web/build_3d.py pushes {t, gauges} once a second: the gauge reading alone. The key state the seat reads that same frame (`keys[e.code]`, codes KeyW, KeyS, KeyA, KeyD, KeyQ, KeyE, KeyR, KeyX, KeyC) and the Space press edge that calls sim.action() are not written into the sample.",
+    "controls_captured": [
+     "travel the torch along the seam",
+     "raise / lower the torch (arc gap)",
+     "strike / break the arc"
+    ],
+    "controls_captured_means": "the declared control scheme (each control's `action` string), written once per episode - not the state of any control at any moment of the run",
+    "controls_declared": [
+     {
+      "action": "travel the torch along the seam",
+      "keys": "W / S"
+     },
+     {
+      "action": "raise / lower the torch (arc gap)",
+      "keys": "Q / E"
+     },
+     {
+      "action": "strike / break the arc",
+      "keys": "Space"
+     }
+    ],
+    "dash_ids": [
+     "gap",
+     "heat",
+     "seam",
+     "band",
+     "burns",
+     "time"
+    ],
+    "episode_kinds_that_can_carry_a_trace": [
+     "sim"
+    ],
+    "factory": "weldSim",
+    "gauges": [
+     "gap",
+     "heat",
+     "seam",
+     "band",
+     "burns",
+     "time"
+    ],
+    "gauges_count": 6,
+    "gauges_equal_dash_ids": true,
+    "gauges_why_null": null,
+    "halls_bound": 7,
+    "has_seat": true,
+    "kind": "process",
+    "name": "Weld Bead Run",
+    "next_class": "observation+action",
+    "outcome_shape": {
+     "passed": "bool",
+     "rows": "[{axis, value, ok}] - the rubric rows",
+     "trace": "[{t, gauges}] - OPTIONAL, present only when TRACE is on: ~1 Hz samples of the sim's own gauges() readout across the run, capped at TRACE['max_samples']"
+    },
+    "readiness_class": "observation-only",
+    "reference_policy": true,
+    "reference_policy_declared_in_sims_registry": true,
+    "reference_policy_guarantees": [
+     "fusion",
+     "band",
+     "burns"
+    ],
+    "reference_policy_in_orbis": false,
+    "reference_policy_in_page_operators": true,
+    "reference_policy_levels": [
+     "optimal",
+     "novice",
+     "hurried"
+    ],
+    "rubric_axes": [
+     "fusion",
+     "band",
+     "burns",
+     "time"
+    ],
+    "scenario_ids": [
+     "bay-deck-seam",
+     "oak-flange-bead",
+     "nola-tank-seam"
+    ],
+    "scenarios": 3,
+    "trace_max_samples": 90,
+    "trace_sample_fields": [
+     "t",
+     "gauges"
+    ],
+    "trace_sample_hz": 1
+   }
+  },
+  "read_by_structure": {
+   "controls_captured": "the recorder's `controls: def.controls.map((c) => c.action)`",
+   "gauges": "inside `function <factory>(P = {}) {` up to the next column-0 `}`, the keys one indent step inside the literal that `gauges: () =>` returns",
+   "policy_input": "opStep calls OPERATORS[sim].step(sim.gauges(), run): the policy sees the same gauges a TRACE sample keeps, nothing the seat keeps private",
+   "reference_policy": "the keys of `const OPERATORS = {...}` that carry a `step(` function, intersected with sims.json#sims[id].operator declaring levels and a procedure",
+   "reference_policy_in_orbis": "whether the seat id occurs anywhere in orbis/registry/orbis.json",
+   "seat_factories": "the `sim = simId === ... ? ...Sim(P)` chain in startSim; the seat missing from the chain is the chain's fallback",
+   "seat_factory_fallback": "forklift-run",
+   "trace_sample": "the fields of the object `simTicks.push({...})` writes"
+  },
+  "rollup": {
+   "controls_captured_total": 42,
+   "episode_kinds": 4,
+   "episode_kinds_that_can_carry_a_trace": 1,
+   "gauge_fields_total": 74,
+   "orbis_carries_no_seat_policy": true,
+   "orbis_carries_no_seat_policy_why": "orbis/registry/orbis.json names no seat: its product is a text prompt per module and its runners are video runners; the scripted reference policy of a seat lives in the page's OPERATORS table and is declared in sims/registry/sims.json#sims[id].operator",
+   "orbis_runners": [
+    {
+     "model": "reactor/helios",
+     "path": "orbis/runner-helios"
+    },
+    {
+     "model": "reactor/visko-orbis-stable",
+     "path": "orbis/runner-visko-orbis-stable"
+    }
+   ],
+   "scenarios_total": 33,
+   "seats_by_class": {
+    "no-observation": 0,
+    "observation+action": 0,
+    "observation+action+reference-policy": 0,
+    "observation-only": 11
+   },
+   "seats_by_class_list": {
+    "no-observation": [],
+    "observation+action": [],
+    "observation+action+reference-policy": [],
+    "observation-only": [
+     "airless-sprayer",
+     "boom-lift",
+     "crane-lift",
+     "excavator-trench",
+     "forklift-run",
+     "load-chart",
+     "overhead-crane",
+     "pressure-washer",
+     "rigging-signals",
+     "scaffold-bay",
+     "weld-bead"
+    ]
+   },
+   "seats_in_registry": 11,
+   "seats_whose_gauges_equal_their_dash_ids": 11,
+   "seats_with_a_factory_in_the_page": 11,
+   "seats_with_gauges_found": 11,
+   "seats_with_gauges_null": 0,
+   "seats_with_observation_and_action": 0,
+   "seats_with_reference_policy": 11,
+   "seats_with_reference_policy_in_orbis": 0,
+   "seats_with_traces_possible": 11
+  },
+  "to_reach_next_class": {
+   "from_observation+action_to_observation+action+reference-policy": {
+    "needs": "nothing further to record: every seat already has a step() policy in the page and a declared operator in sims.json (11 of 11), so the class would follow from the action field alone"
+   },
+   "from_observation-only_to_observation+action": {
+    "record_per_sample": {
+     "action": "NOT in the sample: whether the Space press edge (sim.action()) fired since the previous sample",
+     "gauges": "already in the sample (the seat's own gauges() readout)",
+     "keys": "NOT in the sample: the state of the page's `keys` object at the sampled frame for the codes the seat reads - KeyW, KeyS, KeyA, KeyD, KeyQ, KeyE, KeyR, KeyX, KeyC - which are the sims.json#sims[id].controls[].keys of that seat as key codes",
+     "t": "already in the sample (training.json#trace: sample_hz 1, cap 90)"
+    },
+    "scripted_actions_recoverable_by_replay": "a scripted-reference episode carries operator {level, seed, scenario, steps, dt}, and the page replays it deterministically (opRunHeadless), so that policy's key output at each step can be regenerated inside the page - the exported file does not carry it and no consumer outside the page can obtain it without the page",
+    "where_it_would_land": "training.json#episode_kinds.sim.outcome_shape.trace, today \"[{t, gauges}] - OPTIONAL, present only when TRACE is on: ~1 Hz samples of the sim's own gauges() readout across the run, capped at TRACE['max_samples']\""
+   }
+  },
+  "trace": {
+   "action_edge_key": "Space",
+   "action_per_sample": false,
+   "default": "off - heavier than an episode record, so it needs its own opt-in rather than riding the base recorder's",
+   "granularity_as_training_registry_states_it": "episode-level by default. TRACE, its own off-by-default toggle, adds a coarse (~1 Hz) sample of a running sim's own gauges() readout - still not a per-tick physics or joint trajectory a real controller would train on: these are schematic single-machine simulators, not articulated robots, and gauges() returns display-shaped scalars and short labels, the same numbers the dashboard already reads out - sampled once a second instead of every frame, computed nowhere new for this purpose.",
+   "key_codes_the_policies_drive": [
+    "KeyW",
+    "KeyS",
+    "KeyA",
+    "KeyD",
+    "KeyQ",
+    "KeyE",
+    "KeyR",
+    "KeyX",
+    "KeyC"
+   ],
+   "key_state_object": "keys (web/build_3d.py: `const keys = {}`; keydown sets keys[e.code])",
+   "max_samples": 90,
+   "max_seconds_covered": 90.0,
+   "page_reads_hz_and_cap_from": "training/registry/training.json#trace (D.training.trace)",
+   "sample_fields": [
+    "t",
+    "gauges"
+   ],
+   "sample_hz": 1,
+   "sampled_from": "the running sim's own gauges() function - the exact numbers the on-screen dashboard already reads out every frame, sampled once a second rather than every frame, and computed nowhere new for this purpose"
+  }
  },
  "runall_means": {
   "blocked": {
@@ -2183,7 +3465,7 @@
    }
   }
  },
- "source_stamp": "c3904c11ca48e9a5",
+ "source_stamp": "7ffe52503a5e16e5",
  "spread": {
   "blocked": {
    "distinctSkillsTouched": {

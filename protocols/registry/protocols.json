@@ -1,0 +1,469 @@
+{
+ "built": "2026-09-26",
+ "contribution_package": {
+  "id": "tc-contribution/1",
+  "provenance": "AUTHORED",
+  "source": "read from contrib/registry/contrib.json#record_tag at build time; that pack in turn reads this registry for its destinations, and says on every row that nothing is sent",
+  "what_it_is": "a learner's training-data contribution, packaged in the browser from records this bundle already keeps (completions, sim episodes) - a file a learner holds, not something any server has received",
+  "what_it_is_not": "not sent anywhere by this bundle, not signed for any chain, not hashed to any IPFS CID, not registered with any protocol below"
+ },
+ "counts": {
+  "configured": 0,
+  "identified": 6,
+  "integrated": 0,
+  "probe_answered_2xx": 0,
+  "probe_urls_tried": 8,
+  "protocols": 8,
+  "roster_entries_probed": 7,
+  "specs_fetched": 0,
+  "unidentified": 2,
+  "validated_against_spec": 0,
+  "wallet_rails_candidate": 5,
+  "wallet_rails_configured": 1,
+  "wallet_rails_supported": 1
+ },
+ "honesty": {
+  "descriptions_may_be_wrong": "None of the eight hosts answered the probe on 2026-09-26, so no site, spec or SDK document was read. Names of tokens, chains, contracts and tooling are recollection and may be stale: the signal that one is wrong is a human with the spec open, not a passing test.",
+  "no_backend": "This bundle is static HTML built from registries and served from a file or from GitHub Pages. Every protocol above needs a running process on the provider side - a daemon, an agent, an operator, a miner, a data provider - and this bundle has none.",
+  "nothing_integrates": "all 8 entries carry configured false, integrated false and validated_against_spec false. This bundle integrates with, sends to, mints on, registers with or lists on none of them: no SDK is vendored, no key is held, no contract address is typed, no RPC is called, no transaction is built.",
+  "status": "AUTHORED. Every description in this roster is written from general knowledge by this build and says so on the entry; the only RECORDED facts are the probe codes, and they record that nothing answered.",
+  "unidentified_are_unidentified": "2 of 8 names the brief gave could not be identified with confidence and are recorded unidentified with the reason, rather than mapped to a plausible product: virtual-ventures, cloudflare-wallets.",
+  "wallets": "one rail is supported and it signs a sentence, not a transaction; it is read from auth/, not restated. Every other rail is a candidate, off, with what it would take.",
+  "what_would_make_one_real": "for any entry: a human reads that protocol's current documentation, a server-side process is stood up under somebody's custody, keys and funds are held by that somebody, a transaction is built and tested against a testnet, and only then is the entry's configured flag flipped - a configuration change after real work, never a flag flipped here."
+ },
+ "pack": "protocols",
+ "pack_version": "3.2.0",
+ "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
+ "protocols": {
+  "bittensor": {
+   "configured": false,
+   "contribution_would_become": "a miner's submission scored by that subnet's validators - the contribution earns nothing and exists nowhere on the network unless a registered miner serves it",
+   "description_provenance": "AUTHORED from general knowledge - this build read none of the protocol's own text (see spec_fetched) and the description may be stale or wrong in detail",
+   "id": "bittensor",
+   "integrated": false,
+   "name": "Bittensor subnets",
+   "provenance": "AUTHORED",
+   "server_side_missing": [
+    "a running miner (an axon the validators can query) - a running process this bundle does not have: static files served from file:// or GitHub Pages cannot host one",
+    "the subnet's own validator/miner code, which is per-subnet and was not read"
+   ],
+   "spec_fetched": {
+    "curl_exit": 56,
+    "date": "2026-09-26",
+    "fetched": false,
+    "how": "curl -sS -o /dev/null -w '%{http_code}' --max-time 10 <url>, once per host, no retry, TLS verification on, HTTPS_PROXY as configured, no proxy bypass; the body was discarded (-o /dev/null), so even a 2xx here would mean 'the host answered', never 'the spec was read'",
+    "http_code": "000",
+    "meaning": "no HTTP response from the host at all: curl exited 56 with 'CONNECT tunnel failed, response 403', so %{http_code} printed 000 - the egress proxy refused the CONNECT (organization policy denial); nothing came from the host itself",
+    "provenance": "RECORDED",
+    "url_tried": "https://bittensor.com/"
+   },
+   "this_bundle_would_need": [
+    "a coldkey/hotkey wallet pair holding TAO for neuron registration on a named subnet (a netuid) - none is held",
+    "the bittensor SDK / btcli and a subtensor RPC endpoint - none is installed or called"
+   ],
+   "unidentified": false,
+   "unit": "a subnet dataset - work a miner submits to a data-oriented subnet's incentive mechanism, or a dataset a subnet owner defines the mechanism around",
+   "url": "https://bittensor.com/",
+   "url_status": "NOT fetched - the probe below is what happened when the host was asked",
+   "validated_against_spec": false,
+   "what_it_is": "a Substrate-based network of subnets, each defining its own incentive mechanism: miners produce work (models, inference, data), validators score it, and TAO is emitted to both according to the scores; subnet registration and neuron registration cost TAO, and btcli / the bittensor Python SDK are the tooling",
+   "why_off": "this bundle is static files with no server, holds no key, no SDK, no contract address and no RPC, and this build read none of the protocol's own text; flipping any of these three flags would be a lie until a human has done the work named under `this_bundle_would_need` and read the spec"
+  },
+  "cloudflare-wallets": {
+   "configured": false,
+   "contribution_would_become": "nothing on its own; a gateway could at most be the RPC or IPFS endpoint another protocol above is reached through",
+   "description_provenance": "AUTHORED from general knowledge - this build read none of the protocol's own text (see spec_fetched) and the description may be stale or wrong in detail",
+   "id": "cloudflare-wallets",
+   "integrated": false,
+   "name": "Cloudflare wallets",
+   "nearest_real_offering": {
+    "caveat": "AUTHORED from recollection - the developer docs were probed and did not answer, so the current status of these gateways (this author recalls the public IPFS gateway being wound down) is not known to this build",
+    "is_a_wallet": false,
+    "name": "Cloudflare Web3 Gateways (Ethereum Gateway, IPFS Gateway)",
+    "provenance": "AUTHORED",
+    "what": "hosted read/relay endpoints for the Ethereum JSON-RPC API and for IPFS content, run by Cloudflare; a wallet holds keys and signs, a gateway does neither"
+   },
+   "provenance": "AUTHORED",
+   "server_side_missing": [
+    "not applicable until the product is identified; the gateways are Cloudflare's servers, not this bundle's"
+   ],
+   "spec_fetched": {
+    "curl_exit": 56,
+    "date": "2026-09-26",
+    "fetched": false,
+    "how": "curl -sS -o /dev/null -w '%{http_code}' --max-time 10 <url>, once per host, no retry, TLS verification on, HTTPS_PROXY as configured, no proxy bypass; the body was discarded (-o /dev/null), so even a 2xx here would mean 'the host answered', never 'the spec was read'",
+    "http_code": "000",
+    "meaning": "no HTTP response from the host at all: curl exited 56 with 'CONNECT tunnel failed, response 403', so %{http_code} printed 000 - the egress proxy refused the CONNECT (organization policy denial); nothing came from the host itself",
+    "provenance": "RECORDED",
+    "url_tried": "https://developers.cloudflare.com/web3/"
+   },
+   "this_bundle_would_need": [
+    "an identification first: if \"Cloudflare wallets\" names a product this author does not know, a URL for it; if it means the gateways, a Cloudflare account and a gateway hostname, which would still not be a wallet"
+   ],
+   "unidentified": true,
+   "unidentified_why": "no Cloudflare product called a wallet could be identified with confidence; the nearest real offering is named beside this entry and is a gateway, not a wallet. Recording it as a wallet rail would invent a product.",
+   "unit": "none - a gateway is a read/relay endpoint, not a unit a contribution can become",
+   "url": "https://developers.cloudflare.com/web3/",
+   "url_status": "NOT fetched - the probe below is what happened when the host was asked",
+   "validated_against_spec": false,
+   "what_it_is": "not identified as a product: this author knows of no Cloudflare wallet. Cloudflare's real Web3 offering, from recollection, is a set of gateways - an Ethereum JSON-RPC gateway and an IPFS gateway - which hold no keys and sign nothing",
+   "why_off": "this bundle is static files with no server, holds no key, no SDK, no contract address and no RPC, and this build read none of the protocol's own text; flipping any of these three flags would be a lie until a human has done the work named under `this_bundle_would_need` and read the spec"
+  },
+  "fetch-ai-asi": {
+   "configured": false,
+   "contribution_would_become": "a dataset an agent serves or trains on, or a protocol message the agent handles - the contribution needs an agent around it",
+   "description_provenance": "AUTHORED from general knowledge - this build read none of the protocol's own text (see spec_fetched) and the description may be stale or wrong in detail",
+   "id": "fetch-ai-asi",
+   "integrated": false,
+   "name": "Fetch.ai / ASI Alliance agents",
+   "provenance": "AUTHORED",
+   "server_side_missing": [
+    "the running agent process (or an Agentverse-hosted one) - a running process this bundle does not have: static files served from file:// or GitHub Pages cannot host one",
+    "a mailbox or endpoint the agent receives messages at"
+   ],
+   "spec_fetched": {
+    "curl_exit": 56,
+    "date": "2026-09-26",
+    "fetched": false,
+    "how": "curl -sS -o /dev/null -w '%{http_code}' --max-time 10 <url>, once per host, no retry, TLS verification on, HTTPS_PROXY as configured, no proxy bypass; the body was discarded (-o /dev/null), so even a 2xx here would mean 'the host answered', never 'the spec was read'",
+    "http_code": "000",
+    "meaning": "no HTTP response from the host at all: curl exited 56 with 'CONNECT tunnel failed, response 403', so %{http_code} printed 000 - the egress proxy refused the CONNECT (organization policy denial); nothing came from the host itself",
+    "provenance": "RECORDED",
+    "url_tried": "https://fetch.ai/"
+   },
+   "this_bundle_would_need": [
+    "a uAgents runtime and an agent seed/key, and an Agentverse API key if hosted there - none is held",
+    "an Almanac registration paid in FET from a Cosmos wallet, and the Almanac contract address and a chain RPC/REST endpoint - none is held, typed or called"
+   ],
+   "unidentified": false,
+   "unit": "a registered agent (a uAgent with an Almanac entry and, usually, an Agentverse listing)",
+   "url": "https://fetch.ai/",
+   "url_status": "NOT fetched - the probe below is what happened when the host was asked",
+   "validated_against_spec": false,
+   "what_it_is": "autonomous agents written with the uAgents Python framework, registered in the Almanac contract on the Fetch.ai Cosmos-SDK chain and discoverable through Agentverse; Fetch.ai, SingularityNET and Ocean Protocol combined into the Artificial Superintelligence (ASI) Alliance with FET as the shared token (superintelligence.io was probed too and did not answer)",
+   "why_off": "this bundle is static files with no server, holds no key, no SDK, no contract address and no RPC, and this build read none of the protocol's own text; flipping any of these three flags would be a lie until a human has done the work named under `this_bundle_would_need` and read the spec"
+  },
+  "ocean-protocol": {
+   "configured": false,
+   "contribution_would_become": "the asset behind one data NFT: the contribution file hosted at a URL a Provider can serve, its DDO published, access sold as datatokens",
+   "description_provenance": "AUTHORED from general knowledge - this build read none of the protocol's own text (see spec_fetched) and the description may be stale or wrong in detail",
+   "id": "ocean-protocol",
+   "integrated": false,
+   "name": "Ocean Protocol data NFTs",
+   "provenance": "AUTHORED",
+   "server_side_missing": [
+    "a Provider and Aquarius (or the use of hosted ones, which still needs the asset hosted somewhere) - a running process this bundle does not have: static files served from file:// or GitHub Pages cannot host one"
+   ],
+   "spec_fetched": {
+    "curl_exit": 56,
+    "date": "2026-09-26",
+    "fetched": false,
+    "how": "curl -sS -o /dev/null -w '%{http_code}' --max-time 10 <url>, once per host, no retry, TLS verification on, HTTPS_PROXY as configured, no proxy bypass; the body was discarded (-o /dev/null), so even a 2xx here would mean 'the host answered', never 'the spec was read'",
+    "http_code": "000",
+    "meaning": "no HTTP response from the host at all: curl exited 56 with 'CONNECT tunnel failed, response 403', so %{http_code} printed 000 - the egress proxy refused the CONNECT (organization policy denial); nothing came from the host itself",
+    "provenance": "RECORDED",
+    "url_tried": "https://oceanprotocol.com/"
+   },
+   "this_bundle_would_need": [
+    "a wallet on a supported chain holding gas (and OCEAN for pricing) - none is held",
+    "ocean.py or ocean.js, the ERC-721 factory contract address on that chain, and a chain RPC - none is vendored, typed or called",
+    "a URL where the contribution file is hosted for the Provider to serve - this bundle serves nothing"
+   ],
+   "unidentified": false,
+   "unit": "a data NFT plus a datatoken (the on-chain pair that represents one published dataset)",
+   "url": "https://oceanprotocol.com/",
+   "url_status": "NOT fetched - the probe below is what happened when the host was asked",
+   "validated_against_spec": false,
+   "what_it_is": "a data-exchange protocol where a dataset is published as an ERC-721 data NFT with ERC-20 datatokens that grant access, its metadata (a DDO) indexed by Aquarius and access served by a Provider, optionally as compute-to-data; ocean.py and ocean.js are the libraries and Ocean Market the storefront; Ocean is a member of the ASI Alliance",
+   "why_off": "this bundle is static files with no server, holds no key, no SDK, no contract address and no RPC, and this build read none of the protocol's own text; flipping any of these three flags would be a lie until a human has done the work named under `this_bundle_would_need` and read the spec"
+  },
+  "olas": {
+   "configured": false,
+   "contribution_would_become": "a package - a dataset component or a skill inside an agent - hashed to IPFS and minted into the component registry, or an input to a service an operator runs",
+   "description_provenance": "AUTHORED from general knowledge - this build read none of the protocol's own text (see spec_fetched) and the description may be stale or wrong in detail",
+   "id": "olas",
+   "integrated": false,
+   "name": "Olas (Autonolas)",
+   "provenance": "AUTHORED",
+   "server_side_missing": [
+    "an operator running the agent service - a running process this bundle does not have: static files served from file:// or GitHub Pages cannot host one",
+    "a key custodian for the operator and the service safe"
+   ],
+   "spec_fetched": {
+    "curl_exit": 56,
+    "date": "2026-09-26",
+    "fetched": false,
+    "how": "curl -sS -o /dev/null -w '%{http_code}' --max-time 10 <url>, once per host, no retry, TLS verification on, HTTPS_PROXY as configured, no proxy bypass; the body was discarded (-o /dev/null), so even a 2xx here would mean 'the host answered', never 'the spec was read'",
+    "http_code": "000",
+    "meaning": "no HTTP response from the host at all: curl exited 56 with 'CONNECT tunnel failed, response 403', so %{http_code} printed 000 - the egress proxy refused the CONNECT (organization policy denial); nothing came from the host itself",
+    "provenance": "RECORDED",
+    "url_tried": "https://olas.network/"
+   },
+   "this_bundle_would_need": [
+    "the Open Autonomy tooling to package and hash the contribution, and an IPFS node or pinning service - none is vendored or reachable",
+    "an owner wallet on the chosen chain holding gas for the registry mint, and the registry contract addresses and a chain RPC - none is held, typed or called"
+   ],
+   "unidentified": false,
+   "unit": "a registered component, agent or service (an NFT in the Olas registries, its package hashed to IPFS)",
+   "url": "https://olas.network/",
+   "url_status": "NOT fetched - the probe below is what happened when the host was asked",
+   "validated_against_spec": false,
+   "what_it_is": "a network for autonomous agent services co-owned on-chain: components, agents and services are registered as NFTs in on-chain registries (Ethereum, Gnosis and other chains), built with the Open Autonomy / open-aea frameworks, run by operators, and rewarded through staking programmes",
+   "why_off": "this bundle is static files with no server, holds no key, no SDK, no contract address and no RPC, and this build read none of the protocol's own text; flipping any of these three flags would be a lie until a human has done the work named under `this_bundle_would_need` and read the spec"
+  },
+  "singularitynet": {
+   "configured": false,
+   "contribution_would_become": "an input to a service somebody hosts - a contribution is not itself a service; it would have to be wrapped by a model or an endpoint that answers gRPC calls",
+   "description_provenance": "AUTHORED from general knowledge - this build read none of the protocol's own text (see spec_fetched) and the description may be stale or wrong in detail",
+   "id": "singularitynet",
+   "integrated": false,
+   "name": "SingularityNET",
+   "provenance": "AUTHORED",
+   "server_side_missing": [
+    "the snet-daemon and the service endpoint it fronts - a running process this bundle does not have: static files served from file:// or GitHub Pages cannot host one",
+    "a payment-channel signer for the provider side"
+   ],
+   "spec_fetched": {
+    "curl_exit": 56,
+    "date": "2026-09-26",
+    "fetched": false,
+    "how": "curl -sS -o /dev/null -w '%{http_code}' --max-time 10 <url>, once per host, no retry, TLS verification on, HTTPS_PROXY as configured, no proxy bypass; the body was discarded (-o /dev/null), so even a 2xx here would mean 'the host answered', never 'the spec was read'",
+    "http_code": "000",
+    "meaning": "no HTTP response from the host at all: curl exited 56 with 'CONNECT tunnel failed, response 403', so %{http_code} printed 000 - the egress proxy refused the CONNECT (organization policy denial); nothing came from the host itself",
+    "provenance": "RECORDED",
+    "url_tried": "https://singularitynet.io/"
+   },
+   "this_bundle_would_need": [
+    "an organisation and a service id registered through snet-cli or the AI Publisher, by a wallet holding ETH and the network token - this bundle holds neither",
+    "service metadata and a protobuf definition pinned to IPFS, and the registry contract address on Ethereum - none is held or typed here",
+    "snet-cli / snet-sdk and an Ethereum JSON-RPC endpoint - none is vendored, installed or called"
+   ],
+   "unidentified": false,
+   "unit": "a marketplace service (an organisation + service id in the registry, with a live endpoint behind the daemon)",
+   "url": "https://singularitynet.io/",
+   "url_status": "NOT fetched - the probe below is what happened when the host was asked",
+   "validated_against_spec": false,
+   "what_it_is": "a decentralised marketplace for AI services: a service is published with a protobuf/gRPC interface and metadata pinned to IPFS, registered under an organisation in an on-chain registry contract, served by the project's daemon in front of the provider's own endpoint, and paid for in the network token (AGIX, migrating to FET under the ASI Alliance) through payment channels; the AI Publisher portal and snet-cli are the publishing surfaces",
+   "why_off": "this bundle is static files with no server, holds no key, no SDK, no contract address and no RPC, and this build read none of the protocol's own text; flipping any of these three flags would be a lie until a human has done the work named under `this_bundle_would_need` and read the spec"
+  },
+  "virtual-ventures": {
+   "configured": false,
+   "contribution_would_become": "unknown",
+   "description_provenance": "AUTHORED from general knowledge - this build read none of the protocol's own text (see spec_fetched) and the description may be stale or wrong in detail",
+   "id": "virtual-ventures",
+   "integrated": false,
+   "name": "Virtual Ventures",
+   "provenance": "AUTHORED",
+   "server_side_missing": [
+    "unknown until the product is identified"
+   ],
+   "spec_fetched": {
+    "curl_exit": null,
+    "date": "2026-09-26",
+    "fetched": false,
+    "how": "not probed: no URL could be named with confidence for this entry, so there was nothing to ask",
+    "http_code": null,
+    "meaning": "nothing was tried, so nothing was recorded",
+    "provenance": "RECORDED",
+    "url_tried": null
+   },
+   "this_bundle_would_need": [
+    "first, an identification: a URL or a document that says what \"Virtual Ventures\" is"
+   ],
+   "unidentified": true,
+   "unidentified_why": "\"Virtual Ventures\" could be an ecosystem or venture arm around Virtuals Protocol, a generically named venture fund, or a product this author has never seen; with no network to check and no confident recollection, recording a guess as a product would invent one, so it is recorded unidentified. The lead can replace this entry the day a URL is supplied.",
+   "unit": "unknown - no unit can be named for a product that was not identified",
+   "url": null,
+   "url_status": "none given",
+   "validated_against_spec": false,
+   "what_it_is": "not identified: the name does not match a protocol, product or SDK this author can place with confidence",
+   "why_off": "this bundle is static files with no server, holds no key, no SDK, no contract address and no RPC, and this build read none of the protocol's own text; flipping any of these three flags would be a lie until a human has done the work named under `this_bundle_would_need` and read the spec"
+  },
+  "virtuals-protocol": {
+   "configured": false,
+   "contribution_would_become": "training data or a persona/knowledge module behind one launched agent, gated by that agent's token - the contribution itself is not a chain object; the agent and its token are",
+   "description_provenance": "AUTHORED from general knowledge - this build read none of the protocol's own text (see spec_fetched) and the description may be stale or wrong in detail",
+   "id": "virtuals-protocol",
+   "integrated": false,
+   "name": "Virtuals Protocol",
+   "provenance": "AUTHORED",
+   "server_side_missing": [
+    "a process that runs the agent and answers holders - a running process this bundle does not have: static files served from file:// or GitHub Pages cannot host one",
+    "a key custodian for the agent's treasury and signing key"
+   ],
+   "spec_fetched": {
+    "curl_exit": 56,
+    "date": "2026-09-26",
+    "fetched": false,
+    "how": "curl -sS -o /dev/null -w '%{http_code}' --max-time 10 <url>, once per host, no retry, TLS verification on, HTTPS_PROXY as configured, no proxy bypass; the body was discarded (-o /dev/null), so even a 2xx here would mean 'the host answered', never 'the spec was read'",
+    "http_code": "000",
+    "meaning": "no HTTP response from the host at all: curl exited 56 with 'CONNECT tunnel failed, response 403', so %{http_code} printed 000 - the egress proxy refused the CONNECT (organization policy denial); nothing came from the host itself",
+    "provenance": "RECORDED",
+    "url_tried": "https://virtuals.io/"
+   },
+   "this_bundle_would_need": [
+    "an agent launched through the Virtuals launchpad, which means a wallet on Base holding ETH for gas and VIRTUAL for the bonding curve - this bundle holds no wallet and no funds",
+    "the launched agent's token contract address and the launchpad's factory address on Base - none is typed here because none was read from the protocol",
+    "the agent framework SDK and an API key for it, plus a Base JSON-RPC endpoint - none is vendored, held or called"
+   ],
+   "unidentified": false,
+   "unit": "a token-gated agent (an agent with its own token, whose holders gate access to it)",
+   "url": "https://virtuals.io/",
+   "url_status": "NOT fetched - the probe below is what happened when the host was asked",
+   "validated_against_spec": false,
+   "what_it_is": "a launchpad and framework for tokenised AI agents, mainly on the Base chain, where each agent is issued its own ERC-20 token through a bonding curve against VIRTUAL, and agents transact with one another through the project's own agent commerce protocol",
+   "why_off": "this bundle is static files with no server, holds no key, no SDK, no contract address and no RPC, and this build read none of the protocol's own text; flipping any of these three flags would be a lie until a human has done the work named under `this_bundle_would_need` and read the spec"
+  }
+ },
+ "provenance_tiers": [
+  "RECORDED",
+  "DERIVED",
+  "SCHEMATIC",
+  "AUTHORED",
+  "SCRIPTED"
+ ],
+ "reachability_probe": {
+  "answered_2xx": 0,
+  "date": "2026-09-26",
+  "file": "protocols/authored/probe.json",
+  "how": "curl -sS -o /dev/null -w '%{http_code}' --max-time 10 <url>, once per host, no retry, TLS verification on, HTTPS_PROXY as configured, no proxy bypass; the body was discarded (-o /dev/null), so even a 2xx here would mean 'the host answered', never 'the spec was read'",
+  "provenance": "RECORDED - each code and exit is what curl printed on the date given",
+  "tried": [
+   {
+    "curl_exit": 56,
+    "host": "bittensor.com",
+    "http_code": "000",
+    "url": "https://bittensor.com/"
+   },
+   {
+    "curl_exit": 56,
+    "host": "developers.cloudflare.com",
+    "http_code": "000",
+    "url": "https://developers.cloudflare.com/web3/"
+   },
+   {
+    "curl_exit": 56,
+    "host": "fetch.ai",
+    "http_code": "000",
+    "url": "https://fetch.ai/"
+   },
+   {
+    "curl_exit": 56,
+    "host": "oceanprotocol.com",
+    "http_code": "000",
+    "url": "https://oceanprotocol.com/"
+   },
+   {
+    "curl_exit": 56,
+    "host": "olas.network",
+    "http_code": "000",
+    "url": "https://olas.network/"
+   },
+   {
+    "curl_exit": 56,
+    "host": "singularitynet.io",
+    "http_code": "000",
+    "url": "https://singularitynet.io/"
+   },
+   {
+    "curl_exit": 56,
+    "host": "superintelligence.io",
+    "http_code": "000",
+    "url": "https://superintelligence.io/"
+   },
+   {
+    "curl_exit": 56,
+    "host": "virtuals.io",
+    "http_code": "000",
+    "url": "https://virtuals.io/"
+   }
+  ],
+  "why_a_file": "the probe was run once by hand and copied into a stamped file; the build reads that file and fetches nothing, so a rebuild is byte-identical and the date is the date of the measurement"
+ },
+ "source_stamp": "115126ae48fb2ff7",
+ "wallets": {
+  "candidates": [
+   {
+    "configured": false,
+    "id": "walletconnect",
+    "integrated": false,
+    "name": "WalletConnect (a relay to mobile and remote wallets)",
+    "provenance": "AUTHORED",
+    "reaches": "the same EIP-4361 flow, so the protocols on Base and Ethereum (Virtuals, SingularityNET, Olas, Ocean) - for signing a message, still not for any transaction this bundle does not build",
+    "would_take": [
+     "a WalletConnect project id registered with its cloud - an account this bundle does not have",
+     "the WalletConnect client library, vendored or fetched - web/lint_external.mjs polices what a page may fetch, so this is a decision, not a script tag",
+     "a relay server the page talks to, which is a network dependency the sign-in page today does not have"
+    ]
+   },
+   {
+    "configured": false,
+    "id": "solana-wallet-standard",
+    "integrated": false,
+    "name": "Sign-In with Solana over the Wallet Standard (ed25519)",
+    "provenance": "AUTHORED",
+    "reaches": "the Solana side of Virtuals Protocol, if a learner's agent lives there",
+    "would_take": [
+     "an ed25519 signature verifier in the page, held to an oracle the way auth/test.mjs holds secp256k1 - written and tested, not assumed",
+     "a Wallet Standard / window.solana provider detection and a sign-in message format authored from the spec, which this build could not read"
+    ]
+   },
+   {
+    "configured": false,
+    "id": "cosmos-adr36",
+    "integrated": false,
+    "name": "Cosmos arbitrary-message signing (ADR-36) via a Keplr-style provider (secp256k1)",
+    "provenance": "AUTHORED",
+    "reaches": "Fetch.ai / ASI Alliance agents, whose chain is Cosmos-SDK",
+    "would_take": [
+     "bech32 address derivation and the ADR-36 sign-doc shape, authored from a spec this build could not read",
+     "a provider detection for window.keplr or the Cosmos wallet standard"
+    ]
+   },
+   {
+    "configured": false,
+    "id": "substrate-sr25519",
+    "integrated": false,
+    "name": "Substrate signing via a polkadot.js-style extension (sr25519)",
+    "provenance": "AUTHORED",
+    "reaches": "Bittensor, whose wallets are Substrate keys",
+    "would_take": [
+     "an sr25519 verifier - a Schnorr scheme over Ristretto255 that no page in this bundle implements, and that would need an oracle to be trusted",
+     "SS58 address handling and the extension's injected provider API"
+    ]
+   },
+   {
+    "configured": false,
+    "id": "cloudflare-wallets",
+    "integrated": false,
+    "name": "Cloudflare wallets",
+    "provenance": "AUTHORED",
+    "reaches": "nothing that can be named",
+    "unidentified": true,
+    "unidentified_why": "see the roster entry of the same id: no Cloudflare wallet product could be identified, and its Web3 gateways are not a wallet, so there is no rail to describe",
+    "would_take": [
+     "an identification first"
+    ]
+   }
+  ],
+  "none_sends_anything": "no rail, supported or candidate, builds or sends a transaction; the supported one signs a sentence and the page verifies it. Handing a contribution to any protocol above would need a transaction built for that protocol's contracts, and none is built here.",
+  "rule": "a rail is supported only when auth/registry/auth.json carries it with configured true and auth/test.mjs holds its verifier to an oracle; every candidate here is OFF, and adding one is a code change in auth/ plus a suite, not a flag here",
+  "supported": [
+   {
+    "authenticates": false,
+    "chain_id": 1,
+    "configured": true,
+    "could_it_hand_a_contribution_to_a_protocol": "no - it signs a message, not a transaction, and this bundle builds no transaction for any protocol above",
+    "gates_anything": false,
+    "id": "siwe-ethereum",
+    "name": "Sign-In with Ethereum (EIP-4361) over any EIP-1193 provider",
+    "provenance": "DERIVED from auth/registry/auth.json",
+    "provider": "window.ethereum - any EIP-1193 injected provider (a browser-extension or in-app wallet); no specific wallet vendor is named, required or detected",
+    "read_from": "auth/registry/auth.json#methods.siwe-ethereum",
+    "signing_method": "personal_sign (EIP-191), requested from window.ethereum",
+    "verified_in_page": true,
+    "what_it_is_for_here": "naming which address a training record on this device belongs to - consent to a sentence, verified in the page; it sends no transaction, holds no funds and reaches no chain"
+   }
+  ]
+ }
+}

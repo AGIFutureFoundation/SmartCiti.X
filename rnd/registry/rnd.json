@@ -21,11 +21,11 @@
   "measured_elsewhere": 51,
   "computed_from_registry": 12,
   "measured_source_files": 11,
-  "registries_scanned": 44,
-  "app_renderers_scanned": 17,
+  "registries_scanned": 46,
+  "app_renderers_scanned": 18,
   "doc_renderers_scanned": 3,
-  "builders_scanned": 34,
-  "suites_scanned": 57,
+  "builders_scanned": 36,
+  "suites_scanned": 61,
   "declared_unbuilt": 7,
   "declared_unbuilt_by_their_own_words": 2,
   "declared_unbuilt_not_drawn": 6,
@@ -38,13 +38,13 @@
   "budget_views": 3,
   "budget_currencies": 2,
   "budget_agreements": 7,
-  "suites_run": 61,
-  "suite_checks_declared": 2756,
+  "suites_run": 64,
+  "suite_checks_declared": 2889,
   "open_questions": 12,
   "negative_findings": 9,
   "cross_checks": 2,
   "cross_checks_disagreeing": 0,
-  "files_read": 185
+  "files_read": 194
  },
  "tiers": [
   "MEASURED-IN-BROWSER",
@@ -1555,6 +1555,7 @@
   "auth/registry/auth.json": {
    "app_renderers": [
     "web/build_auth.py",
+    "web/build_contribute.py",
     "web/build_home.py",
     "web/build_progress.py"
    ],
@@ -1563,12 +1564,18 @@
    ],
    "builders": [
     "completion/build.py",
-    "evals/build.py"
+    "contrib/build.py",
+    "evals/build.py",
+    "protocols/build.py"
    ],
    "suites": [
     "completion/test.mjs",
     "completion/verify.mjs",
+    "contrib/test.mjs",
+    "contrib/verify.mjs",
     "evals/test.mjs",
+    "protocols/test.mjs",
+    "web/test_contribute.mjs",
     "web/test_progress.mjs"
    ],
    "own_pack": [
@@ -1621,6 +1628,24 @@
     "completion/build.py",
     "completion/test.mjs",
     "completion/verify.mjs"
+   ]
+  },
+  "contrib/registry/contrib.json": {
+   "app_renderers": [
+    "web/build_contribute.py"
+   ],
+   "doc_renderers": [],
+   "builders": [
+    "protocols/build.py"
+   ],
+   "suites": [
+    "protocols/test.mjs",
+    "web/test_contribute.mjs"
+   ],
+   "own_pack": [
+    "contrib/build.py",
+    "contrib/test.mjs",
+    "contrib/verify.mjs"
    ]
   },
   "ei/registry/ei.json": {
@@ -1787,10 +1812,12 @@
     "wiki/build_wiki.py"
    ],
    "builders": [
+    "evals/build.py",
     "spatial/build.py",
     "training/build.py"
    ],
    "suites": [
+    "evals/test.mjs",
     "spatial/test.mjs",
     "training/test.mjs",
     "web/test_gltf.mjs"
@@ -1809,9 +1836,12 @@
     "wiki/build_wiki.py"
    ],
    "builders": [
+    "evals/build.py",
     "guide/build.py"
    ],
-   "suites": [],
+   "suites": [
+    "evals/test.mjs"
+   ],
    "own_pack": [
     "orbis/build.py",
     "orbis/test.mjs"
@@ -1836,6 +1866,7 @@
     "avatars/build.py",
     "bundles/build.py",
     "completion/build.py",
+    "contrib/build.py",
     "ei/build.py",
     "evals/build.py",
     "lessons/build.py",
@@ -1847,6 +1878,8 @@
    "suites": [
     "bundles/test.mjs",
     "completion/verify.mjs",
+    "contrib/test.mjs",
+    "contrib/verify.mjs",
     "ei/test.mjs",
     "evals/test.mjs",
     "i18n/test.mjs",
@@ -1976,6 +2009,23 @@
     "props/test.mjs"
    ]
   },
+  "protocols/registry/protocols.json": {
+   "app_renderers": [
+    "web/build_contribute.py"
+   ],
+   "doc_renderers": [],
+   "builders": [
+    "contrib/build.py"
+   ],
+   "suites": [
+    "contrib/test.mjs",
+    "web/test_contribute.mjs"
+   ],
+   "own_pack": [
+    "protocols/build.py",
+    "protocols/test.mjs"
+   ]
+  },
   "respond/registry/respond.json": {
    "app_renderers": [
     "web/build_3d.py"
@@ -2091,6 +2141,7 @@
     "agents/build.py",
     "bundles/build.py",
     "completion/build.py",
+    "contrib/build.py",
     "evals/build.py",
     "guide/build.py",
     "lessons/build.py",
@@ -2105,6 +2156,8 @@
     "bundles/test.mjs",
     "completion/test.mjs",
     "completion/verify.mjs",
+    "contrib/test.mjs",
+    "contrib/verify.mjs",
     "evals/test.mjs",
     "guide/test.mjs",
     "lessons/test.mjs",
@@ -2114,6 +2167,7 @@
     "spatial/test.mjs",
     "training/test.mjs",
     "web/test_3d.mjs",
+    "web/test_contribute.mjs",
     "web/test_geomap.mjs",
     "web/test_home.mjs",
     "web/test_ladder.mjs",
@@ -2325,6 +2379,7 @@
   "training/registry/training.json": {
    "app_renderers": [
     "web/build_3d.py",
+    "web/build_contribute.py",
     "web/build_dashboard.py",
     "web/build_progress.py"
    ],
@@ -2333,6 +2388,8 @@
    ],
    "builders": [
     "completion/build.py",
+    "contrib/build.py",
+    "evals/build.py",
     "guide/build.py",
     "lessons/build.py",
     "spatial/build.py"
@@ -2340,8 +2397,12 @@
    "suites": [
     "auth/test.mjs",
     "completion/test.mjs",
+    "contrib/test.mjs",
+    "contrib/verify.mjs",
+    "evals/test.mjs",
     "guide/test.mjs",
     "lessons/test.mjs",
+    "web/test_contribute.mjs",
     "web/test_progress.mjs"
    ],
    "own_pack": [
@@ -2364,6 +2425,7 @@
    ],
    "builders": [
     "agents/build.py",
+    "contrib/build.py",
     "evals/build.py",
     "geo/build.py",
     "guide/build.py",
@@ -2379,6 +2441,8 @@
     "world/build.py"
    ],
    "suites": [
+    "contrib/test.mjs",
+    "contrib/verify.mjs",
     "evals/test.mjs",
     "geo/test.mjs",
     "kit/test.mjs",
@@ -2547,6 +2611,7 @@
   "app_renderers": [
    "web/build_3d.py",
    "web/build_auth.py",
+   "web/build_contribute.py",
    "web/build_dashboard.py",
    "web/build_fabric.py",
    "web/build_geomap.py",
@@ -2574,6 +2639,7 @@
    "avatars/build.py",
    "bundles/build.py",
    "completion/build.py",
+   "contrib/build.py",
    "ei/build.py",
    "evals/build.py",
    "geo/build.py",
@@ -2586,6 +2652,7 @@
    "pack/build.py",
    "parcels/build.py",
    "props/build.py",
+   "protocols/build.py",
    "respond/build.py",
    "restoration/build.py",
    "roadmap/build.py",
@@ -2614,6 +2681,8 @@
    "bus/test_safeguards.mjs",
    "completion/test.mjs",
    "completion/verify.mjs",
+   "contrib/test.mjs",
+   "contrib/verify.mjs",
    "control/test.mjs",
    "control/test_graph.mjs",
    "control/test_hints.mjs",
@@ -2632,6 +2701,7 @@
    "pack/verify.mjs",
    "parcels/test.mjs",
    "props/test.mjs",
+   "protocols/test.mjs",
    "respond/test.mjs",
    "restoration/test.mjs",
    "roadmap/test.mjs",
@@ -2650,6 +2720,7 @@
    "unions/verify.mjs",
    "venue/test.mjs",
    "web/test_3d.mjs",
+   "web/test_contribute.mjs",
    "web/test_fabric.mjs",
    "web/test_geomap.mjs",
    "web/test_gltf.mjs",
@@ -3478,7 +3549,7 @@
    {
     "suite": "evals/test.mjs",
     "pack": "evals",
-    "readme_checks": 54,
+    "readme_checks": 75,
     "declared": true,
     "in_readme_table": true
    },
@@ -3493,6 +3564,27 @@
     "suite": "completion/test.mjs",
     "pack": "completion",
     "readme_checks": 74,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "contrib/test.mjs",
+    "pack": "contrib",
+    "readme_checks": 53,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "web/test_contribute.mjs",
+    "pack": "web",
+    "readme_checks": 27,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "protocols/test.mjs",
+    "pack": "protocols",
+    "readme_checks": 32,
     "declared": true,
     "in_readme_table": true
    },
@@ -3581,18 +3673,18 @@
     "in_readme_table": true
    }
   ],
-  "suites_run": 61,
-  "suites_declaring_a_count": 60,
+  "suites_run": 64,
+  "suites_declaring_a_count": 63,
   "suites_without_a_count": [
    "control/soak.mjs"
   ],
-  "declared_total": 2756,
-  "readme_headline": 2767,
+  "declared_total": 2889,
+  "readme_headline": 2900,
   "unaccounted_for": 11,
   "unaccounted_note": "the headline counts every `  ok ` line verify_all.sh sees, which includes suites the README table gives no number to and web/test_interiors.py, which the table does not list at all. The difference is that remainder and is computed, not reconciled by hand.",
   "min": 9,
   "max": 309,
-  "median": 37.5,
+  "median": 35,
   "thinnest": [
    {
     "suite": "ops/fuzz.mjs",
@@ -3637,11 +3729,11 @@
     "checks": 84
    },
    {
-    "suite": "surfaces/test.mjs",
-    "checks": 74
+    "suite": "evals/test.mjs",
+    "checks": 75
    },
    {
-    "suite": "completion/test.mjs",
+    "suite": "surfaces/test.mjs",
     "checks": 74
    }
   ],
@@ -3866,6 +3958,10 @@
   "completion/verify.mjs",
   "console/build_app.py",
   "console/build_slice.py",
+  "contrib/build.py",
+  "contrib/registry/contrib.json",
+  "contrib/test.mjs",
+  "contrib/verify.mjs",
   "control/test.mjs",
   "control/test_graph.mjs",
   "control/test_hints.mjs",
@@ -3926,6 +4022,9 @@
   "props/build.py",
   "props/registry/props.json",
   "props/test.mjs",
+  "protocols/build.py",
+  "protocols/registry/protocols.json",
+  "protocols/test.mjs",
   "respond/build.py",
   "respond/registry/respond.json",
   "respond/test.mjs",
@@ -3990,6 +4089,7 @@
   "verify_all.sh",
   "web/build_3d.py",
   "web/build_auth.py",
+  "web/build_contribute.py",
   "web/build_dashboard.py",
   "web/build_fabric.py",
   "web/build_geomap.py",
@@ -4008,6 +4108,7 @@
   "web/groundtruth.py",
   "web/interiors.py",
   "web/test_3d.mjs",
+  "web/test_contribute.mjs",
   "web/test_fabric.mjs",
   "web/test_geomap.mjs",
   "web/test_gltf.mjs",

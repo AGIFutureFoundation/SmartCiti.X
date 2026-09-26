@@ -1,0 +1,397 @@
+{
+ "pack": "smartcitix-trade-craft-academy-contribution",
+ "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
+ "pack_version": "3.2.0",
+ "built": "2026-09-26",
+ "source_stamp": "184046fab2c6740c",
+ "provenance": "DERIVED",
+ "provenance_note": "every fact here is read from the registry that owns it and re-derivable by build.py; the episode shapes are training/registry/training.json#episode_kinds verbatim; the fixture package is SCRIPTED and labelled as not a learner",
+ "honesty": {
+  "proves": [
+   "the package has not changed since it was exported: its SHA-256 digest recomputes over the canonical form",
+   "every episode is of a kind training/ declares and carries exactly that kind's fields - no field more, none fewer",
+   "every sim, scenario, hall and campus an episode names exists in this bundle at the stated pack version",
+   "a trace, where attached, has no more samples than training/ caps and each sample has the declared keys",
+   "the consent scope is a non-empty subset of the scopes this registry declares, the statement is this registry's and the licence is this registry's one licence",
+   "the counts the package states about itself (episodes by kind, traces attached, sims covered) recompute from its episodes"
+  ],
+  "does_not_prove": [
+   "who the contributor is: contributor.claimed is a label this device stored, attested by this device only, and nothing checks it - unless a wallet signed, in which case it is the identity of a key, not of a person; a stolen key signs just as well",
+   "that any agent or robot learned from this package: exporting this file trains nothing by itself: no agent exists in this bundle and none is claimed to, until one is actually trained against this data outside it",
+   "that the package reached anyone: nothing in this bundle sends it anywhere; the learner keeps the file and hands it over, or does not",
+   "anything on any blockchain: a wallet signature is computed in the browser and carried in the file; nothing is written to any chain, nothing is anchored, and no one can look it up",
+   "that the device was honest: a package can be written by hand and will verify if it is internally consistent",
+   "that the gauges inside a trace sample mean anything: training/ describes them as display-shaped scalars and short labels and enumerates none, so the verifier holds a trace to its count and sample keys only",
+   "that an advisor, crew role, topic or walkaround point an episode names exists: only seats, scenarios, halls and campuses are resolved",
+   "that the episodes came from real equipment: every episode comes from SCHEMATIC physics and deterministic rubrics, not a real robot or a real machine: useful for exercising a training pipeline's plumbing and export format, not for training a controller that will run on real equipment."
+  ],
+  "digest": "a digest proves integrity since export, not identity",
+  "signature": "null unless a wallet signed: this bundle has no key of its own and no server, so an unsigned package is attested by this device only. A signed package carries an EIP-191 personal_sign signature by the connected wallet over this package's digest and consent scope; it proves that the holder of that key signed this digest at export - the identity of a key, not of a person. A signature that does not recover to the address it claims, or that signs any other message, is refused as a forgery. Nothing is written to any chain and nothing is anchored.",
+  "nothing_sent": "nothing is sent anywhere by this bundle: no platform is integrated, no destination is validated, no upload exists. The contribute page writes a file to the learner's own downloads and stops.",
+  "no_agent_trained": "exporting this file trains nothing by itself: no agent exists in this bundle and none is claimed to, until one is actually trained against this data outside it",
+  "anonymous": "no name, no email, no biometric or device-identifying data is ever recorded - an episode carries only a scenario id, the control scheme the registry already declares, and the measured outcome."
+ },
+ "record_tag": "tc-contribution/1",
+ "training_source": {
+  "key": "tc-training",
+  "where": "localStorage of the built 3D page",
+  "registry": "training/registry/training.json",
+  "cap": 500,
+  "export_format_this_wraps": {
+   "shape": "{ \"pack\": \"smartcitix-trade-craft-academy-training-data\", \"exported\": ISO-8601, \"episodes\": [episode, ...] }",
+   "consumer": "shaped to hand to the ml-agents fork RECORDED in meta/registry/metaverse.json as example JSON a conversion script could read",
+   "not_a_demo_file": "not a native Unity ML-Agents .demo (protobuf) file - this bundle has never produced or tested one, and does not claim to",
+   "no_agent_trained": "exporting this file trains nothing by itself: no agent exists in this bundle and none is claimed to, until one is actually trained against this data outside it"
+  }
+ },
+ "contract": {
+  "record": {
+   "is": "the literal string tc-contribution/1",
+   "proves": "which contract the verifier applies"
+  },
+  "product": {
+   "is": "pack/manifest.json product",
+   "proves": "which product wrote it; nothing about the learner"
+  },
+  "pack_version": {
+   "is": "pack/manifest.json pack_version",
+   "proves": "which registries the ids resolve against"
+  },
+  "exported_at": {
+   "is": "ISO-8601 string, device clock",
+   "proves": "nothing: a device clock is not attested"
+  },
+  "contributor": {
+   "is": "{claimed: string|null, attested_by: \"this device only\" | \"wallet signature over the digest\", signature: null | {scheme: \"eip191-personal_sign\", address, message, sig}}",
+   "proves": "unsigned: nothing about who contributed; claimed is a stored label, not checked. Signed: that the holder of the key for `address` signed this digest and scope at export - a key, not a person; see registry#signature"
+  },
+  "consent": {
+   "is": "{statement: registry#consent.statement verbatim, granted_at: ISO-8601 string that parses, scope: non-empty subset of registry#consent.scopes, revocable: true, license: registry#consent.license.spdx}",
+   "proves": "what the device recorded the learner ticking, under which fixed text and licence; signed, the scope is inside the signed message"
+  },
+  "dataset": {
+   "is": "{episodes: the tc-training array verbatim, traces_attached: n, episode_counts_by_kind: {kind: n}, sims_covered: [sim ids, sorted, unique], fields_by_kind: training/registry/training.json#episode_kinds[kind].fields verbatim}",
+   "proves": "the shape of every episode against training/, every place and seat id against the bundle, and that the counts recompute; nothing about what the episodes are worth"
+  },
+  "honesty": {
+   "is": "the proves / does_not_prove lists of this registry, carried in the package",
+   "proves": "that the package says of itself what this registry says of it"
+  },
+  "digest": {
+   "alg": "SHA-256",
+   "over": "canonical JSON of every top-level field except digest, with contributor.signature forced to null: keys sorted recursively, no whitespace, UTF-8",
+   "excludes_signature_why": "the signature is a signature OVER the digest, made after it; a digest that covered it would be circular. Every other byte of contributor (claimed, attested_by) and of consent is covered, so a scope or licence edited after signing breaks the digest.",
+   "numbers": "exporters write integers for counts and trace sample times so Python and JavaScript canonicalise alike"
+  }
+ },
+ "consent": {
+  "statement": "I share the training episodes in this package, recorded by this device, for the scopes named in consent.scope under the licence named in consent.license. I can withdraw by not sharing the file again; copies already given away are governed by that licence. Nothing in this package names me: it carries scenario ids, control schemes and measured outcomes, and the label or wallet address I chose to attach.",
+  "scopes": {
+   "agent-training": "the episodes may be used to train, evaluate or benchmark a software agent (for example the ml-agents conversion the training pack describes); this bundle has trained none",
+   "robot-training": "the episodes may be used to train, evaluate or benchmark a controller for a physical robot; training/ says these are schematic single-machine simulators and no such controller should be trained on them for real equipment, and this bundle has trained none"
+  },
+  "license": {
+   "spdx": "CC-BY-4.0",
+   "name": "Creative Commons Attribution 4.0 International",
+   "why": "one licence for every package, chosen here and never per record: attribution keeps the contributor named (by the label or key they attached) when a package is passed on, and a permissive data licence is the only one under which the ml-agents-shaped export training/ describes could actually be used by anyone. A share-alike or non-commercial clause would need a party to enforce it and this bundle has no server and no party. A package under any other SPDX id fails consent.license by name.",
+   "chosen_by": "this registry (contrib/build.py), once"
+  },
+  "revocable": true,
+  "revocable_means": "revocable: true means the learner keeps the file and decides each time whether to hand it to anyone. Nothing here is uploaded, so there is nothing to recall from a server; a copy already given away is governed by the licence and by the recipient, not by this bundle.",
+  "granted_at": "ISO-8601 string the page writes at the moment the export button is pressed with the boxes ticked; Date.parse must be finite. A device clock is not attested.",
+  "recorder_consent": "the recorder ships on, with a visible toggle: turning it off stops new episodes without touching ones already kept, and clearing them is a separate, deliberate action."
+ },
+ "episode_kinds": {
+  "sim": {
+   "fields": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "sim",
+    "scenario",
+    "controls",
+    "actor",
+    "operator",
+    "outcome"
+   ],
+   "conditional_fields": {
+    "operator": {
+     "present_only_when": {
+      "actor": "scripted-reference"
+     },
+     "why": "{level, seed, scenario, steps, dt} - present ONLY when actor is scripted-reference: the closed level name, the integer seed of its fixed-seed generator, the scenario id, the number of control steps the run took, and the fixed step length when the run was headless (steps x dt is then its deterministic sim time - the `time` axis itself is wall-clock and informational) or null when a learner watched it at real time; absent on a human episode"
+    }
+   },
+   "what": "one completed simulator run"
+  },
+  "advisor": {
+   "fields": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "advisor",
+    "topic",
+    "answer_kind"
+   ],
+   "conditional_fields": {},
+   "what": "one advisor question asked and answered"
+  },
+  "crew": {
+   "fields": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "crew",
+    "role",
+    "topic",
+    "answer_kind"
+   ],
+   "conditional_fields": {},
+   "what": "one crew role asked one question while its seat was running"
+  },
+  "walkaround": {
+   "fields": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "sim",
+    "point"
+   ],
+   "conditional_fields": {},
+   "what": "one pre-shift walkaround point checked"
+  }
+ },
+ "actors": {
+  "human": "a learner at the keys - the episode carries nothing new; consumers that ignore `actor` read it exactly as before",
+  "scripted-reference": "the scripted reference operator sims/ declares for every seat - a hand-written, deterministic control policy driven from the seat's own gauges, no model, no network; the episode also carries `operator: {level, seed, scenario}`, the handle that replays it"
+ },
+ "trace": {
+  "max_samples": 90,
+  "max_samples_policy": "a hard cap per episode, not a rolling window: sampling simply stops once a run passes max_samples seconds - the run's outcome is unaffected either way",
+  "attached_at": "dataset.episodes[].outcome.trace on a sim episode, optional",
+  "outcome_keys_always": [
+   "passed",
+   "rows"
+  ],
+  "sample_keys": [
+   "t",
+   "gauges"
+  ],
+  "sample_keys_from": "training/registry/training.json#episode_kinds.sim.outcome_shape.trace",
+  "gauge_fields_enumerated": false,
+  "gauge_fields_why": "training/ describes gauges() as display-shaped scalars and short labels sampled from the running sim and enumerates no field names, so the verifier holds a trace to its sample COUNT (at most max_samples) and to the sample keys t, gauges - and says it checks nothing inside gauges",
+  "sampled_from": "the running sim's own gauges() function - the exact numbers the on-screen dashboard already reads out every frame, sampled once a second rather than every frame, and computed nowhere new for this purpose"
+ },
+ "id_sources": {
+  "sim": {
+   "registry": "sims/registry/sims.json#sims",
+   "keys": "sim ids",
+   "count": 11
+  },
+  "scenario": {
+   "registry": "sims/registry/sims.json#sims[sim].scenarios[].id",
+   "keys": "scenario ids of that seat",
+   "null_allowed": true,
+   "null_why": "the 3D page writes scenario null when a seat was run with no scenario chosen; a null names nothing and resolves nothing, and is not a foreign id"
+  },
+  "hall": {
+   "registry": "pack/registry/halls.json#halls[].slug",
+   "keys": "hall slugs",
+   "count": 111
+  },
+  "campus": {
+   "registry": "unions/registry/campuses.json#campuses",
+   "keys": "campus ids",
+   "count": 10
+  },
+  "not_resolved": {
+   "fields": [
+    "advisor",
+    "crew",
+    "role",
+    "topic",
+    "answer_kind",
+    "point",
+    "controls",
+    "operator"
+   ],
+   "why": "this verifier resolves the ids that name a PLACE or a SEAT (sim, scenario, hall, campus). An advisor, a crew role, a topic, a walkaround point or a control scheme is carried verbatim and its shape is held to the episode field list; whether it names a real registry entry is not checked here and the verifier says so"
+  }
+ },
+ "digest": {
+  "alg": "SHA-256",
+  "over": "canonical JSON of every top-level field except digest, with contributor.signature forced to null: keys sorted recursively, no whitespace, UTF-8",
+  "excludes_signature_why": "the signature is a signature OVER the digest, made after it; a digest that covered it would be circular. Every other byte of contributor (claimed, attested_by) and of consent is covered, so a scope or licence edited after signing breaks the digest.",
+  "numbers": "exporters write integers for counts and trace sample times so Python and JavaScript canonicalise alike"
+ },
+ "signature": {
+  "field": "contributor.signature",
+  "null_means": "unsigned: this device only. Then contributor.attested_by must be exactly \"this device only\" and contributor.claimed is whatever label was on the device, or null.",
+  "object_shape": {
+   "scheme": "eip191-personal_sign",
+   "address": "0x + 40 hex, the signer the wallet reported",
+   "message": "the exact string signed (below)",
+   "sig": "0x + 130 hex: r | s | v, 65 bytes"
+  },
+  "scheme": "eip191-personal_sign",
+  "signing_method": "personal_sign (EIP-191), requested from window.ethereum",
+  "message": {
+   "structure": "<statement>\\ndigest: <digest.hex>\\nexported_at: <exported_at>\\nconsent: <consent.scope joined by comma>",
+   "statement": "I am naming this Ethereum account as the owner of the Trade Craft Academy training record kept in this browser. This signature does not log me in, does not reach any server, and protects nothing: this bundle has no backend.",
+   "statement_from": "auth/registry/auth.json#siwe.statement - the line auth/ already puts in front of the human",
+   "why_fixed": "the verifier rebuilds this message from THIS package's digest.hex, exported_at and consent.scope and requires equality, so a signature over any other text - another package, another scope, a friendly sentence - is refused by name"
+  },
+  "when_signed": "contributor.attested_by must be exactly \"wallet signature over the digest\", contributor.claimed must equal signature.address, and the address recovered from (message, sig) must equal both - compared as lowercase hex, so EIP-55 casing differences are not a mismatch",
+  "order": "digest first: a tampered digest under a valid signature fails `digest` (and the signature no longer matches the rebuilt message); a tampered message or sig with an intact digest fails `contributor.signature` alone",
+  "recovery": "auth/recover.mjs, the sign-in page's own keccak-256 and secp256k1 recovery, lifted from the built page. No second keccak and no second curve exist in this pack, and no signing routine: a verifier that could sign could forge.",
+  "where_the_wallet_comes_from": "the contribute page reads the identity the sign-in page stored under tc-identity; only a record whose method is siwe-ethereum carries an address, and only then is signing offered. No wallet, no signature: the package stays unsigned and says so. A signature is never fabricated by the page.",
+  "proves": "that the holder of the private key for signature.address signed this package's digest and consent scope at export. The identity of a key, not of a person.",
+  "does_not_prove": [
+   "who the person is: a key is held, lent, shared and stolen",
+   "anything about any chain: nothing is written to any chain, nothing is anchored, no transaction exists",
+   "that the episodes are true: the digest covers what the device exported, and the device can be edited",
+   "that any agent or robot learned from the package, or that any destination received it"
+  ]
+ },
+ "verifier": {
+  "file": "contrib/verify.mjs",
+  "usage": "node contrib/verify.mjs <package.json>",
+  "rules": [
+   "record.fields",
+   "digest",
+   "contributor.signature",
+   "consent.statement",
+   "consent.scope",
+   "consent.license",
+   "consent.granted_at",
+   "episode.kind",
+   "episode.fields",
+   "episode.t",
+   "trace",
+   "ids.sim",
+   "ids.scenario",
+   "ids.hall",
+   "ids.campus",
+   "dataset.counts"
+  ],
+  "last_line": "a contribution proves what a device recorded and, if signed, which key vouched for it - not who, and not that any agent or robot learned from it; nothing is sent anywhere by this bundle"
+ },
+ "destinations": {
+  "source": "protocols/registry/protocols.json, read by web/build_contribute.py at build time if present",
+  "rule": "the contribute page lists whatever agent-protocol destinations that registry names, and says on every row: not integrated, not validated, nothing sent by this bundle. With no such registry the section renders from an empty list and says no destination is configured. No platform name is typed by this pack."
+ },
+ "fixture": {
+  "label": "fixture - not a learner",
+  "good": "fixture/good.json",
+  "mutants": {
+   "bad-digest": {
+    "file": "fixture/mutant-bad-digest.json",
+    "fails": "digest"
+   },
+   "foreign-field-on-episode": {
+    "file": "fixture/mutant-foreign-field-on-episode.json",
+    "fails": "episode.fields"
+   },
+   "missing-field-on-episode": {
+    "file": "fixture/mutant-missing-field-on-episode.json",
+    "fails": "episode.fields"
+   },
+   "operator-on-human-episode": {
+    "file": "fixture/mutant-operator-on-human-episode.json",
+    "fails": "episode.fields"
+   },
+   "unknown-kind": {
+    "file": "fixture/mutant-unknown-kind.json",
+    "fails": "episode.kind"
+   },
+   "unknown-sim": {
+    "file": "fixture/mutant-unknown-sim.json",
+    "fails": "ids.sim"
+   },
+   "unknown-scenario": {
+    "file": "fixture/mutant-unknown-scenario.json",
+    "fails": "ids.scenario"
+   },
+   "unknown-hall": {
+    "file": "fixture/mutant-unknown-hall.json",
+    "fails": "ids.hall"
+   },
+   "unknown-campus": {
+    "file": "fixture/mutant-unknown-campus.json",
+    "fails": "ids.campus"
+   },
+   "empty-scope": {
+    "file": "fixture/mutant-empty-scope.json",
+    "fails": "consent.scope"
+   },
+   "foreign-scope": {
+    "file": "fixture/mutant-foreign-scope.json",
+    "fails": "consent.scope"
+   },
+   "wrong-license": {
+    "file": "fixture/mutant-wrong-license.json",
+    "fails": "consent.license"
+   },
+   "wrong-statement": {
+    "file": "fixture/mutant-wrong-statement.json",
+    "fails": "consent.statement"
+   },
+   "consent-granted-at-unparseable": {
+    "file": "fixture/mutant-consent-granted-at-unparseable.json",
+    "fails": "consent.granted_at"
+   },
+   "trace-over-max-samples": {
+    "file": "fixture/mutant-trace-over-max-samples.json",
+    "fails": "trace"
+   },
+   "trace-sample-foreign-key": {
+    "file": "fixture/mutant-trace-sample-foreign-key.json",
+    "fails": "trace"
+   },
+   "forged-signature": {
+    "file": "fixture/mutant-forged-signature.json",
+    "fails": "contributor.signature"
+   },
+   "attested-by-wallet-unsigned": {
+    "file": "fixture/mutant-attested-by-wallet-unsigned.json",
+    "fails": "contributor.signature"
+   },
+   "counts-drift": {
+    "file": "fixture/mutant-counts-drift.json",
+    "fails": "dataset.counts"
+   },
+   "episode-t-unparseable": {
+    "file": "fixture/mutant-episode-t-unparseable.json",
+    "fails": "episode.t"
+   },
+   "missing-field": {
+    "file": "fixture/mutant-missing-field.json",
+    "fails": "record.fields"
+   }
+  },
+  "episodes": {
+   "advisor": 1,
+   "crew": 1,
+   "sim": 3,
+   "walkaround": 1
+  },
+  "traces_attached": 1,
+  "sims_covered": [
+   "airless-sprayer",
+   "boom-lift"
+  ]
+ },
+ "counts": {
+  "episode_kinds": 4,
+  "scopes": 2,
+  "rules": 16,
+  "mutants": 21,
+  "sims": 11,
+  "halls": 111,
+  "campuses": 10
+ }
+}

@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230C1113'/%3E%3Cpath d='M7 21 L16 7 L25 21 Z' fill='none' stroke='%23E8A33D' stroke-width='2.6' stroke-linejoin='round'/%3E%3Cpath d='M11 21 h10' stroke='%2341C4D4' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E">
+<title>SmartCiti.X : Trade Craft Academy — contribute training data</title>
+<style>
+:root{
+  --plate:#12181B; --panel:#182023; --sunk:#0C1113; --ink:#E8EDEC; --muted:#93A3A6;
+  --rule:#28353A; --mark:#E8A33D; --mark-ink:#12181B; --steel:#41C4D4;
+  --good:#5CB584; --crit:#E07C68; --warn:#E8A33D;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--plate);color:var(--ink);
+  font:14px/1.55 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;padding:0 18px}
+.wrap{max-width:1020px;margin:0 auto}
+a{color:var(--steel)}
+header.page{padding:40px 0 10px;border-bottom:3px solid var(--mark)}
+header.page h1{font:700 34px/1.1 "Barlow Condensed",system-ui,sans-serif;margin:0}
+header.page h1 .x{color:var(--mark)}
+header.page p{color:var(--muted);margin:6px 0 14px}
+h2{font:700 22px/1.2 "Barlow Condensed",system-ui,sans-serif;margin:34px 0 10px;
+  color:var(--mark);letter-spacing:.02em}
+section{margin:0 0 10px}
+.lead{background:var(--panel);border:1px solid var(--rule);border-left:4px solid var(--warn);
+  border-radius:8px;padding:14px 18px}
+.lead ul,.card ul{margin:8px 0 0;padding-inline-start:20px}
+.lead li,.card li{margin:6px 0;color:var(--muted)}
+table{width:100%;border-collapse:collapse;background:var(--panel);border:1px solid var(--rule);
+  border-radius:8px;overflow:hidden;margin:8px 0}
+td,th{border-top:1px solid var(--rule);padding:8px 10px;vertical-align:top;font-size:13.5px;
+  text-align:start}
+th{color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;
+  letter-spacing:.05em}
+tr:first-child td,tr:first-child th{border-top:0}
+td.k{color:var(--ink);font-weight:600;white-space:nowrap}
+td.num{font:13px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--crit);white-space:nowrap}
+td.muted{color:var(--muted)}
+.tscroll{overflow-x:auto}
+@media (max-width:640px){td.k,td.num{white-space:normal}}
+code{font:13px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--muted)}
+.why{color:var(--ink);font-size:14px}
+.muted{color:var(--muted);font-size:13px}
+.card{background:var(--panel);border:1px solid var(--rule);border-radius:10px;
+  padding:14px 16px;margin:12px 0}
+.nonebox{background:var(--sunk);border:1px solid var(--crit);border-radius:8px;
+  padding:12px 14px;color:var(--ink)}
+.statement{background:var(--sunk);border:1px solid var(--rule);border-radius:6px;padding:10px 12px;
+  color:var(--ink);font-size:14px}
+label.scope{display:block;margin:8px 0;color:var(--muted)}
+label.scope b{color:var(--ink)}
+label.scope input{margin-inline-end:8px;accent-color:var(--mark)}
+button{background:var(--mark);color:var(--mark-ink);border:0;border-radius:7px;padding:8px 14px;font:inherit;font-weight:600;cursor:pointer}
+button:disabled{background:var(--rule);color:var(--muted);cursor:not-allowed}
+footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px;
+  color:var(--muted);font-size:14px}
+footer.page a{margin-inline-end:10px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="page">
+  <h1>SmartCiti.X : Trade Craft Academy — <span class="x">contribute training data</span></h1>
+  <p>SmartCiti.X : Trade Craft Academy (powered by AGI Corp) · pack 3.2.0 · built 2026-09-26 · share what this device recorded, on purpose,
+     in a file <code>contrib/verify.mjs</code> can check</p>
+</header>
+
+<section class="lead" id="limits">
+  <h2>What this page is, and what it is not</h2>
+  <p class="why">The 3D environment records your episodes under <code>tc-training</code> when you leave the
+     recorder on, and a coarse gauge trace of a running seat when you turn TRACE on. This page builds a
+     <code>tc-contribution/1</code> package from that log and from nothing else: your episodes verbatim, the scope you tick,
+     a fixed consent statement, one fixed licence, a digest so an edit is detectable, and — only if this device names
+     a wallet — a signature. <b>It uploads nothing.</b> The file lands in your downloads and this page stops.</p>
+  <ul>
+    <li><b>NOTHING SENT.</b> nothing is sent anywhere by this bundle: no platform is integrated, no destination is validated, no upload exists. The contribute page writes a file to the learner&#x27;s own downloads and stops.</li>
+    <li><b>NO AGENT TRAINED.</b> exporting this file trains nothing by itself: no agent exists in this bundle and none is claimed to, until one is actually trained against this data outside it</li>
+    <li><b>A KEY, NOT A PERSON.</b> A wallet signature, if any, proves the holder of a key signed this digest and scope at
+        export. It is not who you are; a key is held, lent and stolen. Nothing is written to any chain.</li>
+    <li><b>YOU KEEP THE FILE.</b> revocable: true means the learner keeps the file and decides each time whether to hand it to anyone. Nothing here is uploaded, so there is nothing to recall from a server; a copy already given away is governed by the licence and by the recipient, not by this bundle.</li>
+  </ul>
+</section>
+
+<section id="consent">
+  <h2>Consent</h2>
+  <p class="why">Tick what you are sharing this for. The statement and the licence are fixed by
+     <code>contrib/registry/contrib.json</code>, once, and never chosen per file; a package under any other text or licence is
+     refused by the verifier. the recorder ships on, with a visible toggle: turning it off stops new episodes without touching ones already kept, and clearing them is a separate, deliberate action.</p>
+  <div class="card" id="consent-panel">
+    <label class="scope"><input type="checkbox" data-scope="agent-training"> <b>agent-training</b> — the episodes may be used to train, evaluate or benchmark a software agent (for example the ml-agents conversion the training pack describes); this bundle has trained none</label>
+<label class="scope"><input type="checkbox" data-scope="robot-training"> <b>robot-training</b> — the episodes may be used to train, evaluate or benchmark a controller for a physical robot; training/ says these are schematic single-machine simulators and no such controller should be trained on them for real equipment, and this bundle has trained none</label>
+
+    <p class="muted">Statement carried in the file, verbatim:</p>
+    <p class="statement" id="consent-statement">I share the training episodes in this package, recorded by this device, for the scopes named in consent.scope under the licence named in consent.license. I can withdraw by not sharing the file again; copies already given away are governed by that licence. Nothing in this package names me: it carries scenario ids, control schemes and measured outcomes, and the label or wallet address I chose to attach.</p>
+    <p class="muted" id="consent-license" data-license="CC-BY-4.0">Licence: <b>CC-BY-4.0</b> (Creative Commons Attribution 4.0 International). one licence for every package, chosen here and never per record: attribution keeps the contributor named (by the label or key they attached) when a package is passed on, and a permissive data licence is the only one under which the ml-agents-shaped export training/ describes could actually be used by anyone. A share-alike or non-commercial clause would need a party to enforce it and this bundle has no server and no party. A package under any other SPDX id fails consent.license by name.</p>
+    <p class="muted" id="consent-revocable" data-revocable="true">Revocable: you keep the file; nothing is uploaded by this page.</p>
+  </div>
+</section>
+
+<section id="device-section">
+  <h2>What this device holds</h2>
+  <div class="card" id="device" data-training-state="unpainted" data-identity-state="unpainted"></div>
+  <p class="muted">A local identity names whose training record this is, on this device. It is not a login. Anyone holding the device can type any name or edit the stored record directly. The page says this next to the field, not in a footnote.</p>
+</section>
+
+<section id="export">
+  <h2>Build the package</h2>
+  <p><button id="expPackage" type="button" disabled>Export contribution package</button>
+     <button id="signPackage" type="button" disabled hidden>Sign this package with the connected wallet</button></p>
+  <p class="why" id="expStatus" data-export-state="unpainted"></p>
+  <p class="why" id="signStatus" data-sign-state="unpainted"></p>
+  <p class="why" id="signHonesty" data-sign-honesty="1">What a wallet signature is: proof that the holder of that key
+     signed this digest and consent scope at export — the identity of a key, not of a person; a key is held, lent and
+     stolen. What it is not: nothing is written to any chain, nothing is anchored, no transaction exists, and no agent
+     or robot has learned anything from it. The page never fabricates a signature: no wallet, no signature, and the
+     package says <code>this device only</code>. It is offered only when the sign-in page stored
+     <code>Sign in with an Ethereum wallet (EIP-4361)</code> under <code>tc-identity</code>. Verify a file with
+     <code>node contrib/verify.mjs &lt;package.json&gt;</code>, which recovers the signer with the sign-in page's own code.</p>
+  <div class="card" id="summary"><p class="muted">The summary of the last package built appears here, computed from the
+     package itself.</p></div>
+</section>
+
+<section id="shape">
+  <h2>What an episode carries</h2>
+  <p class="why">Read from <code>training/registry/training.json</code> through <code>contrib/registry/contrib.json</code>. The verifier holds every
+     episode to exactly these fields for its kind; a trace on a sim episode may hold at most
+     90 samples of <code>{t, gauges}</code>, and nothing inside <code>gauges</code> is checked because
+     the registry enumerates no gauge field.</p>
+  <div class="tscroll"><table id="kinds"><tbody>
+    <tr><th>kind</th><th>fields</th><th>what</th></tr>
+    <tr><td class="k">sim</td><td>t, kind, campus, hall, sim, scenario, controls, actor, operator, outcome</td><td class="muted">one completed simulator run</td></tr>
+<tr><td class="k">advisor</td><td>t, kind, campus, hall, advisor, topic, answer_kind</td><td class="muted">one advisor question asked and answered</td></tr>
+<tr><td class="k">crew</td><td>t, kind, campus, hall, crew, role, topic, answer_kind</td><td class="muted">one crew role asked one question while its seat was running</td></tr>
+<tr><td class="k">walkaround</td><td>t, kind, campus, hall, sim, point</td><td class="muted">one pre-shift walkaround point checked</td></tr>
+
+  </tbody></table></div>
+</section>
+
+<section id="proves">
+  <h2>What a package proves, and does not</h2>
+  <div class="card"><p class="why">Proves</p><ul id="proves-list"><li>the package has not changed since it was exported: its SHA-256 digest recomputes over the canonical form</li><li>every episode is of a kind training/ declares and carries exactly that kind&#x27;s fields - no field more, none fewer</li><li>every sim, scenario, hall and campus an episode names exists in this bundle at the stated pack version</li><li>a trace, where attached, has no more samples than training/ caps and each sample has the declared keys</li><li>the consent scope is a non-empty subset of the scopes this registry declares, the statement is this registry&#x27;s and the licence is this registry&#x27;s one licence</li><li>the counts the package states about itself (episodes by kind, traces attached, sims covered) recompute from its episodes</li></ul>
+  <p class="why">Does not prove</p><ul id="not-proves-list"><li>who the contributor is: contributor.claimed is a label this device stored, attested by this device only, and nothing checks it - unless a wallet signed, in which case it is the identity of a key, not of a person; a stolen key signs just as well</li><li>that any agent or robot learned from this package: exporting this file trains nothing by itself: no agent exists in this bundle and none is claimed to, until one is actually trained against this data outside it</li><li>that the package reached anyone: nothing in this bundle sends it anywhere; the learner keeps the file and hands it over, or does not</li><li>anything on any blockchain: a wallet signature is computed in the browser and carried in the file; nothing is written to any chain, nothing is anchored, and no one can look it up</li><li>that the device was honest: a package can be written by hand and will verify if it is internally consistent</li><li>that the gauges inside a trace sample mean anything: training/ describes them as display-shaped scalars and short labels and enumerates none, so the verifier holds a trace to its count and sample keys only</li><li>that an advisor, crew role, topic or walkaround point an episode names exists: only seats, scenarios, halls and campuses are resolved</li><li>that the episodes came from real equipment: every episode comes from SCHEMATIC physics and deterministic rubrics, not a real robot or a real machine: useful for exercising a training pipeline&#x27;s plumbing and export format, not for training a controller that will run on real equipment.</li></ul></div>
+</section>
+
+<section id="where">
+  <h2>Where this could go</h2>
+  <p class="why">8 destination(s) are named by <code>protocols/registry/protocols.json</code> at build time. Every one of them is not integrated, not validated, nothing sent by this bundle: this page writes a file and stops.</p>
+  <div class="tscroll"><table id="destinations" data-destinations="8"><tbody><tr><th>destination named by protocols/registry/protocols.json</th><th>what it says</th><th>reached by this bundle</th></tr><tr data-destination="bittensor"><td class="k">Bittensor subnets</td><td class="muted">a Substrate-based network of subnets, each defining its own incentive mechanism: miners produce work (models, inference, data), validators score it, and TAO is emitted to both according to the scores; subnet registration and neuron registration cost TAO, and btcli / the bittensor Python SDK are the tooling</td><td class="num" data-reach="none">not integrated · not validated · nothing sent by this bundle</td></tr>
+<tr data-destination="cloudflare-wallets"><td class="k">Cloudflare wallets</td><td class="muted">not identified as a product: this author knows of no Cloudflare wallet. Cloudflare&#x27;s real Web3 offering, from recollection, is a set of gateways - an Ethereum JSON-RPC gateway and an IPFS gateway - which hold no keys and sign nothing</td><td class="num" data-reach="none">not integrated · not validated · nothing sent by this bundle</td></tr>
+<tr data-destination="fetch-ai-asi"><td class="k">Fetch.ai / ASI Alliance agents</td><td class="muted">autonomous agents written with the uAgents Python framework, registered in the Almanac contract on the Fetch.ai Cosmos-SDK chain and discoverable through Agentverse; Fetch.ai, SingularityNET and Ocean Protocol combined into the Artificial Superintelligence (ASI) Alliance with FET as the shared token (superintelligence.io was probed too and did not answer)</td><td class="num" data-reach="none">not integrated · not validated · nothing sent by this bundle</td></tr>
+<tr data-destination="ocean-protocol"><td class="k">Ocean Protocol data NFTs</td><td class="muted">a data-exchange protocol where a dataset is published as an ERC-721 data NFT with ERC-20 datatokens that grant access, its metadata (a DDO) indexed by Aquarius and access served by a Provider, optionally as compute-to-data; ocean.py and ocean.js are the libraries and Ocean Market the storefront; Ocean is a member of the ASI Alliance</td><td class="num" data-reach="none">not integrated · not validated · nothing sent by this bundle</td></tr>
+<tr data-destination="olas"><td class="k">Olas (Autonolas)</td><td class="muted">a network for autonomous agent services co-owned on-chain: components, agents and services are registered as NFTs in on-chain registries (Ethereum, Gnosis and other chains), built with the Open Autonomy / open-aea frameworks, run by operators, and rewarded through staking programmes</td><td class="num" data-reach="none">not integrated · not validated · nothing sent by this bundle</td></tr>
+<tr data-destination="singularitynet"><td class="k">SingularityNET</td><td class="muted">a decentralised marketplace for AI services: a service is published with a protobuf/gRPC interface and metadata pinned to IPFS, registered under an organisation in an on-chain registry contract, served by the project&#x27;s daemon in front of the provider&#x27;s own endpoint, and paid for in the network token (AGIX, migrating to FET under the ASI Alliance) through payment channels; the AI Publisher portal and snet-cli are the publishing surfaces</td><td class="num" data-reach="none">not integrated · not validated · nothing sent by this bundle</td></tr>
+<tr data-destination="virtual-ventures"><td class="k">Virtual Ventures</td><td class="muted">not identified: the name does not match a protocol, product or SDK this author can place with confidence</td><td class="num" data-reach="none">not integrated · not validated · nothing sent by this bundle</td></tr>
+<tr data-destination="virtuals-protocol"><td class="k">Virtuals Protocol</td><td class="muted">a launchpad and framework for tokenised AI agents, mainly on the Base chain, where each agent is issued its own ERC-20 token through a bonding curve against VIRTUAL, and agents transact with one another through the project&#x27;s own agent commerce protocol</td><td class="num" data-reach="none">not integrated · not validated · nothing sent by this bundle</td></tr>
+</tbody></table></div>
+</section>
+
+<section>
+  <h2>What this page read</h2>
+  <ul class="muted"><li><code>contrib/registry/contrib.json</code></li><li><code>training/registry/training.json</code></li><li><code>auth/registry/auth.json</code></li><li><code>pack/manifest.json</code></li><li><code>protocols/registry/protocols.json</code> — present</li></ul>
+  <p class="muted">Every figure on this page is read from those files at build time or computed in this page from
+     the package it built. None is typed. a contribution proves what a device recorded and, if signed, which key vouched for it - not who, and not that any agent or robot learned from it; nothing is sent anywhere by this bundle</p>
+</section>
+
+<footer class="page">
+  <a href="trade_craft_progress.html">learner progression</a>
+  <a href="trade_craft_3d.html">3D environment</a>
+  <a href="trade_craft_signin.html">who this device says you are</a>
+  <a href="trade_craft_landing.html">landing</a>
+</footer>
+</div>
+<script type="application/json" id="tcdata">{"product":"SmartCiti.X : Trade Craft Academy (powered by AGI Corp)","pack_version":"3.2.0","record_tag":"tc-contribution/1","keys":{"training":"tc-training","identity":"tc-identity"},"consent":{"statement":"I share the training episodes in this package, recorded by this device, for the scopes named in consent.scope under the licence named in consent.license. I can withdraw by not sharing the file again; copies already given away are governed by that licence. Nothing in this package names me: it carries scenario ids, control schemes and measured outcomes, and the label or wallet address I chose to attach.","scopes":["agent-training","robot-training"],"license":"CC-BY-4.0","revocable":true},"fields_by_kind":{"sim":["t","kind","campus","hall","sim","scenario","controls","actor","operator","outcome"],"advisor":["t","kind","campus","hall","advisor","topic","answer_kind"],"crew":["t","kind","campus","hall","crew","role","topic","answer_kind"],"walkaround":["t","kind","campus","hall","sim","point"]},"trace_max_samples":90,"digest_over":"canonical JSON of every top-level field except digest, with contributor.signature forced to null: keys sorted recursively, no whitespace, UTF-8","honesty":{"proves":["the package has not changed since it was exported: its SHA-256 digest recomputes over the canonical form","every episode is of a kind training/ declares and carries exactly that kind's fields - no field more, none fewer","every sim, scenario, hall and campus an episode names exists in this bundle at the stated pack version","a trace, where attached, has no more samples than training/ caps and each sample has the declared keys","the consent scope is a non-empty subset of the scopes this registry declares, the statement is this registry's and the licence is this registry's one licence","the counts the package states about itself (episodes by kind, traces attached, sims covered) recompute from its episodes"],"does_not_prove":["who the contributor is: contributor.claimed is a label this device stored, attested by this device only, and nothing checks it - unless a wallet signed, in which case it is the identity of a key, not of a person; a stolen key signs just as well","that any agent or robot learned from this package: exporting this file trains nothing by itself: no agent exists in this bundle and none is claimed to, until one is actually trained against this data outside it","that the package reached anyone: nothing in this bundle sends it anywhere; the learner keeps the file and hands it over, or does not","anything on any blockchain: a wallet signature is computed in the browser and carried in the file; nothing is written to any chain, nothing is anchored, and no one can look it up","that the device was honest: a package can be written by hand and will verify if it is internally consistent","that the gauges inside a trace sample mean anything: training/ describes them as display-shaped scalars and short labels and enumerates none, so the verifier holds a trace to its count and sample keys only","that an advisor, crew role, topic or walkaround point an episode names exists: only seats, scenarios, halls and campuses are resolved","that the episodes came from real equipment: every episode comes from SCHEMATIC physics and deterministic rubrics, not a real robot or a real machine: useful for exercising a training pipeline's plumbing and export format, not for training a controller that will run on real equipment."],"nothing_sent":"nothing is sent anywhere by this bundle: no platform is integrated, no destination is validated, no upload exists. The contribute page writes a file to the learner's own downloads and stops.","no_agent_trained":"exporting this file trains nothing by itself: no agent exists in this bundle and none is claimed to, until one is actually trained against this data outside it"},"signing":{"scheme":"eip191-personal_sign","statement":"I am naming this Ethereum account as the owner of the Trade Craft Academy training record kept in this browser. This signature does not log me in, does not reach any server, and protects nothing: this bundle has no backend.","attested_signed":"wallet signature over the digest","attested_unsigned":"this device only","wallet_method":"siwe-ethereum"},"destinations":[{"id":"bittensor","name":"Bittensor subnets","what":"a Substrate-based network of subnets, each defining its own incentive mechanism: miners produce work (models, inference, data), validators score it, and TAO is emitted to both according to the scores; subnet registration and neuron registration cost TAO, and btcli / the bittensor Python SDK are the tooling"},{"id":"cloudflare-wallets","name":"Cloudflare wallets","what":"not identified as a product: this author knows of no Cloudflare wallet. Cloudflare's real Web3 offering, from recollection, is a set of gateways - an Ethereum JSON-RPC gateway and an IPFS gateway - which hold no keys and sign nothing"},{"id":"fetch-ai-asi","name":"Fetch.ai / ASI Alliance agents","what":"autonomous agents written with the uAgents Python framework, registered in the Almanac contract on the Fetch.ai Cosmos-SDK chain and discoverable through Agentverse; Fetch.ai, SingularityNET and Ocean Protocol combined into the Artificial Superintelligence (ASI) Alliance with FET as the shared token (superintelligence.io was probed too and did not answer)"},{"id":"ocean-protocol","name":"Ocean Protocol data NFTs","what":"a data-exchange protocol where a dataset is published as an ERC-721 data NFT with ERC-20 datatokens that grant access, its metadata (a DDO) indexed by Aquarius and access served by a Provider, optionally as compute-to-data; ocean.py and ocean.js are the libraries and Ocean Market the storefront; Ocean is a member of the ASI Alliance"},{"id":"olas","name":"Olas (Autonolas)","what":"a network for autonomous agent services co-owned on-chain: components, agents and services are registered as NFTs in on-chain registries (Ethereum, Gnosis and other chains), built with the Open Autonomy / open-aea frameworks, run by operators, and rewarded through staking programmes"},{"id":"singularitynet","name":"SingularityNET","what":"a decentralised marketplace for AI services: a service is published with a protobuf/gRPC interface and metadata pinned to IPFS, registered under an organisation in an on-chain registry contract, served by the project's daemon in front of the provider's own endpoint, and paid for in the network token (AGIX, migrating to FET under the ASI Alliance) through payment channels; the AI Publisher portal and snet-cli are the publishing surfaces"},{"id":"virtual-ventures","name":"Virtual Ventures","what":"not identified: the name does not match a protocol, product or SDK this author can place with confidence"},{"id":"virtuals-protocol","name":"Virtuals Protocol","what":"a launchpad and framework for tokenised AI agents, mainly on the Base chain, where each agent is issued its own ERC-20 token through a bonding curve against VIRTUAL, and agents transact with one another through the project's own agent commerce protocol"}],"protocols_state":"present"}</script>
+<script id="contrib-js">
+
+/* CONTRIB:BEGIN - buildContribution(training, identity, consent, meta, now)
+   training : the parsed tc-training array, verbatim (an array of objects, or the build refuses)
+   identity : the parsed tc-identity record, or null when absent/blocked/unreadable
+   consent  : { scope: [scopes ticked], granted_at: ISO string }
+   meta     : { product, pack_version, record_tag, consent: {statement, scopes, license}, fields_by_kind,
+                honesty: {proves, does_not_prove, nothing_sent, no_agent_trained}, wallet? }
+              wallet: the address a wallet will sign with; then contributor.claimed is that address,
+              attested_by names the wallet, and the package is NOT valid until attachSignature fills
+              contributor.signature with what the wallet returned
+   now      : a Date
+   Returns a Promise of the package, digest stamped. Pure: same inputs, same bytes. */
+const SIGNED_ATTESTATION = 'wallet signature over the digest';
+const UNSIGNED_ATTESTATION = 'this device only';
+
+function canonicalJSON(v) {
+  if (v === null || typeof v === 'number' || typeof v === 'boolean' || typeof v === 'string') {
+    if (typeof v === 'number' && !isFinite(v)) throw new Error('contrib: a non-finite number cannot be canonical');
+    return JSON.stringify(v);
+  }
+  if (Array.isArray(v)) return '[' + v.map(canonicalJSON).join(',') + ']';
+  if (typeof v === 'object') {
+    return '{' + Object.keys(v).sort().map((k) => JSON.stringify(k) + ':' + canonicalJSON(v[k])).join(',') + '}';
+  }
+  throw new Error('contrib: a ' + typeof v + ' cannot be canonical');
+}
+/* the digest input: every top-level field except digest, with
+   contributor.signature forced to null - the signature is made OVER the
+   digest, after it, so it cannot be inside it (contrib/registry/contrib.json#digest) */
+function digestBody(record) {
+  const body = {};
+  for (const k of Object.keys(record)) if (k !== 'digest') body[k] = record[k];
+  if (body.contributor && typeof body.contributor === 'object') body.contributor = { ...body.contributor, signature: null };
+  return body;
+}
+/* the exact string a wallet signs, fixed by structure: auth/'s statement line,
+   this package's digest, its export time, its consent scope. contrib/verify.mjs rebuilds it. */
+function signatureMessage(record, statement) {
+  if (typeof statement !== 'string' || statement === '') throw new Error('contrib: no statement to sign; auth/registry/auth.json#siwe.statement is the one');
+  if (!record || !record.digest || typeof record.digest.hex !== 'string' || typeof record.exported_at !== 'string'
+      || !record.consent || !Array.isArray(record.consent.scope)) throw new Error('contrib: a package must carry digest.hex, exported_at and consent.scope before it can be signed');
+  return statement + '\ndigest: ' + record.digest.hex + '\nexported_at: ' + record.exported_at + '\nconsent: ' + record.consent.scope.join(',');
+}
+/* fills contributor.signature with what a wallet RETURNED. It checks shape and
+   that the package was built for this address; it computes nothing and it
+   never invents a signature: with no wallet there is nothing to call it with. */
+function attachSignature(record, address, sig, signing) {
+  if (!signing || typeof signing.scheme !== 'string' || typeof signing.statement !== 'string') throw new Error('contrib: attachSignature needs the signing contract (scheme, statement)');
+  if (typeof address !== 'string' || !/^0x[0-9a-fA-F]{40}$/.test(address)) throw new Error('contrib: not an address: ' + String(address));
+  if (typeof sig !== 'string' || !/^0x[0-9a-fA-F]{130}$/.test(sig)) throw new Error('contrib: the wallet did not return a 65-byte signature; nothing attached');
+  if (!record || !record.contributor || record.contributor.signature !== null) throw new Error('contrib: the package already carries a signature, or has no contributor');
+  if (record.contributor.attested_by !== SIGNED_ATTESTATION || typeof record.contributor.claimed !== 'string'
+      || record.contributor.claimed.toLowerCase() !== address.toLowerCase()) {
+    throw new Error('contrib: the package was not built for the wallet ' + address + '; build it with meta.wallet first so the digest covers the claim');
+  }
+  return { ...record, contributor: { ...record.contributor,
+    signature: { scheme: signing.scheme, address, message: signatureMessage(record, signing.statement), sig } } };
+}
+
+/* the counts a package states about itself, recomputed from its episodes -
+   the verifier recomputes them the same way and refuses a drift */
+function countEpisodes(episodes) {
+  const byKind = {}, sims = new Set();
+  let traces = 0, samples = 0;
+  for (const ep of episodes) {
+    const k = typeof ep.kind === 'string' ? ep.kind : '(no kind)';
+    byKind[k] = (k in byKind ? byKind[k] : 0) + 1;
+    if (typeof ep.sim === 'string') sims.add(ep.sim);
+    if (ep.kind === 'sim' && ep.outcome && typeof ep.outcome === 'object' && Array.isArray(ep.outcome.trace)) { traces++; samples += ep.outcome.trace.length; }
+  }
+  const sorted = {};
+  for (const k of Object.keys(byKind).sort()) sorted[k] = byKind[k];
+  return { episode_counts_by_kind: sorted, traces_attached: traces, sims_covered: [...sims].sort(), samples };
+}
+
+async function buildContribution(training, identity, consent, meta, now) {
+  if (!Array.isArray(training) || !training.every((e) => e !== null && typeof e === 'object' && !Array.isArray(e)))
+    throw new Error('contrib: the training log must be an array of episode objects; nothing is exported from a record that cannot be read');
+  if (!meta || typeof meta.product !== 'string' || typeof meta.pack_version !== 'string' || typeof meta.record_tag !== 'string'
+      || !meta.consent || typeof meta.consent.statement !== 'string' || !Array.isArray(meta.consent.scopes) || typeof meta.consent.license !== 'string'
+      || !meta.fields_by_kind || !meta.honesty) throw new Error('contrib: meta must carry product, pack_version, record_tag, consent (statement, scopes, license), fields_by_kind and honesty');
+  if (!consent || !Array.isArray(consent.scope) || consent.scope.length === 0)
+    throw new Error('contrib: no scope ticked, no consent, no package');
+  for (const s of consent.scope) if (!meta.consent.scopes.includes(s)) throw new Error('contrib: scope ' + JSON.stringify(s) + ' is not one this registry declares; nothing is exported under it');
+  if (new Set(consent.scope).size !== consent.scope.length) throw new Error('contrib: a scope is ticked twice');
+  if (typeof consent.granted_at !== 'string' || !isFinite(Date.parse(consent.granted_at))) throw new Error('contrib: consent.granted_at must be an ISO-8601 string');
+  if (meta.wallet !== undefined && meta.wallet !== null && (typeof meta.wallet !== 'string' || !/^0x[0-9a-fA-F]{40}$/.test(meta.wallet)))
+    throw new Error('contrib: meta.wallet must be an address or absent; a package is never attested to a wallet it cannot name');
+  const wallet = typeof meta.wallet === 'string' ? meta.wallet : null;
+  const label = (identity && typeof identity === 'object' && typeof identity.label === 'string') ? identity.label : null;
+  const c = countEpisodes(training);
+  const record = {
+    record: meta.record_tag,
+    product: meta.product,
+    pack_version: meta.pack_version,
+    exported_at: now.toISOString(),
+    contributor: wallet === null
+      ? { claimed: label, attested_by: UNSIGNED_ATTESTATION, signature: null }
+      : { claimed: wallet, attested_by: SIGNED_ATTESTATION, signature: null },
+    consent: {
+      statement: meta.consent.statement,
+      granted_at: consent.granted_at,
+      scope: meta.consent.scopes.filter((s) => consent.scope.includes(s)),
+      revocable: true,
+      license: meta.consent.license,
+    },
+    dataset: {
+      episodes: training,
+      traces_attached: c.traces_attached,
+      episode_counts_by_kind: c.episode_counts_by_kind,
+      sims_covered: c.sims_covered,
+      fields_by_kind: meta.fields_by_kind,
+    },
+    honesty: {
+      proves: meta.honesty.proves,
+      does_not_prove: meta.honesty.does_not_prove,
+      nothing_sent: meta.honesty.nothing_sent,
+      no_agent_trained: meta.honesty.no_agent_trained,
+      contributor: wallet === null
+        ? 'the contributor label is what this device stores under its identity key, or null; nobody has verified it and the signature is null'
+        : 'contributor.signature, when filled, is an EIP-191 personal_sign by the wallet ' + wallet + ' over this digest and consent scope: the holder of that key signed at export - the identity of a key, not of a person',
+    },
+  };
+  const bytes = new TextEncoder().encode(canonicalJSON(digestBody(record)));
+  const buf = await globalThis.crypto.subtle.digest('SHA-256', bytes);
+  const hex = [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
+  record.digest = { alg: 'SHA-256', over: meta.digest_over, hex };
+  return record;
+}
+
+/* the on-page figures, computed from a package and never typed */
+function summarizePackage(record) {
+  const c = countEpisodes(record.dataset.episodes);
+  return {
+    episodes: record.dataset.episodes.length,
+    by_kind: c.episode_counts_by_kind,
+    traces: c.traces_attached,
+    samples: c.samples,
+    sims: c.sims_covered,
+    scope: record.consent.scope,
+    license: record.consent.license,
+    attested_by: record.contributor.attested_by,
+    claimed: record.contributor.claimed,
+    digest: record.digest.hex,
+  };
+}
+/* CONTRIB:END */
+</script>
+<script type="module">
+
+const D = JSON.parse(document.getElementById('tcdata').textContent);
+const KEYS = D.keys;
+const elem = (tag, opts = {}) => {
+  const e = document.createElement(tag);
+  if (opts.text !== undefined) e.textContent = opts.text;
+  if (opts.cls) e.className = opts.cls;
+  if (opts.attrs) for (const [k, v] of Object.entries(opts.attrs)) e.setAttribute(k, v);
+  return e;
+};
+
+/* ------------------------------------------------------- the device record */
+/* Absent, blocked and unreadable are three different answers and the panel
+   says which one it got. A record that cannot be read is NOT an empty record. */
+function readRaw(key) {
+  try { return { ok: true, raw: localStorage.getItem(key) }; }
+  catch (e) { return { ok: false, raw: null, note: String((e && e.message) || e) }; }
+}
+function readJson(key) {
+  const r = readRaw(key);
+  if (!r.ok) return { state: 'blocked', value: null, note: r.note };
+  if (r.raw === null) return { state: 'absent', value: null, note: '' };
+  try { return { state: 'present', value: JSON.parse(r.raw), note: '', bytes: r.raw.length }; }
+  catch (e) { return { state: 'unreadable', value: null, note: String((e && e.message) || e) }; }
+}
+const rec = { training: readJson(KEYS.training), identity: readJson(KEYS.identity) };
+
+function paintDevice() {
+  const box = document.getElementById('device');
+  box.textContent = '';
+  box.setAttribute('data-training-state', rec.training.state);
+  box.setAttribute('data-identity-state', rec.identity.state);
+  const t = rec.training;
+  const nEp = t.state === 'present' && Array.isArray(t.value) ? t.value.length : 0;
+  box.appendChild(elem('p', { text: 'Training log under ' + KEYS.training + ': ' + t.state
+    + (t.state === 'present' ? (Array.isArray(t.value) ? ', ' + nEp + ' episode(s)' : ', but not an array - nothing is exported from it') : '')
+    + (t.note ? ' (' + t.note + ')' : '') + '.' }));
+  const idv = rec.identity.value;
+  const label = (idv && typeof idv === 'object' && typeof idv.label === 'string') ? idv.label : null;
+  box.appendChild(elem('p', { text: 'Identity under ' + KEYS.identity + ': ' + rec.identity.state
+    + (label === null ? ' - no label, so contributor.claimed will be null' : ' - label "' + label + '", a label this device stores and nobody has verified')
+    + '.' }));
+}
+
+/* ----------------------------------------------------------- the consent panel */
+const boxes = [...document.querySelectorAll('input[data-scope]')];
+const ticked = () => boxes.filter((b) => b.checked).map((b) => b.getAttribute('data-scope'));
+const btn = document.getElementById('expPackage');
+const sbtn = document.getElementById('signPackage');
+const sst = document.getElementById('signStatus');
+const est = document.getElementById('expStatus');
+const sayS = (t, state) => { sst.textContent = t; sst.setAttribute('data-sign-state', state); };
+const sayE = (t, state) => { est.textContent = t; est.setAttribute('data-export-state', state); };
+
+const idv = rec.identity.value;
+/* a wallet identity is the one the sign-in page wrote with method siwe-ethereum
+   AND an address; a label alone is not a wallet and gets no signature */
+const walletAddress = (idv && typeof idv === 'object' && idv.method === D.signing.wallet_method
+  && typeof idv.address === 'string' && /^0x[0-9a-fA-F]{40}$/.test(idv.address)) ? idv.address : null;
+const wallet = (typeof window.ethereum === 'undefined') ? null : window.ethereum;
+const canExport = () => rec.training.state === 'present' && Array.isArray(rec.training.value) && ticked().length > 0;
+const meta = { product: D.product, pack_version: D.pack_version, record_tag: D.record_tag, consent: D.consent,
+  fields_by_kind: D.fields_by_kind, honesty: D.honesty, digest_over: D.digest_over };
+
+function refresh() {
+  const ok = canExport();
+  btn.disabled = !ok;
+  if (rec.training.state !== 'present') sayE('Nothing to export: the training log is ' + rec.training.state + '.', 'no-log');
+  else if (!Array.isArray(rec.training.value)) sayE('Nothing to export: the training log is not an array.', 'no-log');
+  else if (ticked().length === 0) sayE('Tick at least one scope to build a package. No scope, no consent, no package.', 'no-scope');
+  else sayE('Ready: ' + rec.training.value.length + ' episode(s) under scope ' + ticked().join(', ') + '. The file is downloaded to this device and sent nowhere.', 'ready');
+  if (walletAddress === null) {
+    sbtn.hidden = true; sbtn.disabled = true;
+    sayS('No wallet identity is stored under ' + KEYS.identity + ' on this device, so no signature is offered: a package exported here stays unsigned and says so.', 'no-wallet-identity');
+  } else if (wallet === null) {
+    sbtn.hidden = false; sbtn.disabled = true;
+    sayS('This device names the wallet ' + walletAddress + ', but no wallet is present in this browser (there is no window.ethereum), so nothing can sign. The package stays unsigned.', 'no-provider');
+  } else {
+    sbtn.hidden = false; sbtn.disabled = !ok;
+    sayS('This device names the wallet ' + walletAddress + '. Signing asks that wallet for a personal_sign over this package\'s digest and consent scope. It proves the holder of that key signed now - a key, not a person. Nothing is written to any chain and nothing is sent anywhere.', 'ready');
+  }
+}
+for (const b of boxes) b.addEventListener('change', refresh);
+
+async function paintSummary(pkg) {
+  const box = document.getElementById('summary');
+  box.textContent = '';
+  const S = summarizePackage(pkg);
+  const figs = [
+    ['episodes', S.episodes, 'episodes'],
+    ['by kind', Object.keys(S.by_kind).map((k) => k + ' ' + S.by_kind[k]).join(', ') || 'none', 'by-kind'],
+    ['traces attached / samples', S.traces + ' / ' + S.samples, 'traces'],
+    ['sims covered', S.sims.length ? S.sims.join(', ') : 'none', 'sims'],
+    ['consent scope', S.scope.join(', '), 'scope'],
+    ['licence', S.license, 'license'],
+    ['contributor', (S.claimed === null ? 'no label' : S.claimed) + ' - ' + S.attested_by, 'contributor'],
+    ['digest', S.digest.slice(0, 16) + '…', 'digest'],
+  ];
+  const tb = elem('table'); const body = elem('tbody');
+  for (const [k, v, key] of figs) {
+    const tr = elem('tr'); tr.appendChild(elem('th', { text: k }));
+    const td = elem('td', { text: String(v) }); td.setAttribute('data-contrib-fig', key); tr.appendChild(td);
+    body.appendChild(tr);
+  }
+  tb.appendChild(body); box.appendChild(tb);
+}
+
+const download = (fresh, suffix) => {
+  const blob = new Blob([JSON.stringify(fresh, null, 1)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'tc-contribution-' + fresh.exported_at.slice(0, 19).replace(/[:T]/g, '-') + suffix + '.json';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+};
+const consentNow = () => ({ scope: ticked(), granted_at: new Date().toISOString() });
+
+btn.onclick = async () => {
+  try {
+    const pkg = await buildContribution(rec.training.value, rec.identity.value, consentNow(), meta, new Date());
+    await paintSummary(pkg);
+    download(pkg, '');
+    sayE('Exported ' + pkg.dataset.episodes.length + ' episode(s), unsigned, attested by this device only. Digest ' + pkg.digest.hex.slice(0, 16) + '…. Verify with node contrib/verify.mjs on the file. Nothing was sent anywhere.', 'exported');
+  } catch (e) {
+    sayE('Not exported: ' + String(e && e.message !== undefined ? e.message : e), 'refused');
+  }
+};
+
+/* ---- the wallet signature. Offered ONLY when the sign-in page stored a
+   wallet identity with an address, and only a real window.ethereum can
+   produce one: the page never fabricates a signature. */
+sbtn.onclick = async () => {
+  try {
+    sayS('Building the package and asking the wallet…', 'asking');
+    const fresh = await buildContribution(rec.training.value, rec.identity.value, consentNow(), { ...meta, wallet: walletAddress }, new Date());
+    const message = signatureMessage(fresh, D.signing.statement);
+    const accounts = await wallet.request({ method: 'eth_requestAccounts' });
+    const account = (Array.isArray(accounts) ? accounts : []).find((a) => typeof a === 'string' && a.toLowerCase() === walletAddress.toLowerCase());
+    if (account === undefined) throw new Error('the connected wallet does not hold ' + walletAddress + ', the address this device named; nothing was signed');
+    const sig = await wallet.request({ method: 'personal_sign', params: [message, account] });
+    const signed = attachSignature(fresh, walletAddress, sig, D.signing);
+    await paintSummary(signed);
+    sayS('Signed by the wallet ' + walletAddress + ' over digest ' + signed.digest.hex.slice(0, 16) + '… and scope ' + signed.consent.scope.join(', ') + '. Not verified in this page: run node contrib/verify.mjs on the file to recover the signer. A key signed, not a person; nothing is on any chain; nothing was sent.', 'signed');
+    download(signed, '-signed');
+  } catch (e) {
+    sayS('Not signed: ' + String(e && e.message !== undefined ? e.message : e) + '. Nothing was downloaded.', 'refused');
+  }
+};
+
+paintDevice();
+refresh();
+</script>
+</body>
+</html>
