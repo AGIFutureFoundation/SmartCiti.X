@@ -1288,8 +1288,11 @@ question(
     'xr.no-headset-has-ever-run-this',
     'unproved',
     'four hand gestures, 25 joints and every hysteresis band are declared and '
-    'proved against a mocked WebXR session. Do they work on hardware?',
-    GUIDE, 'UNVERIFIED-ON-HARDWARE', 'MOCKED WebXR session only.',
+    'proven against synthetic joint positions only; every XR contract is held '
+    'at the source by regex, no session, mocked or real, has been driven in '
+    'this tree, and a mocked-session harness is not claimed. Do they work on '
+    'hardware?',
+    GUIDE, 'UNVERIFIED-ON-HARDWARE', 'a mocked-session harness is not claimed.',
     'the largest unproved claim in the bundle, and the pack that makes it '
     'says so in its own status line rather than in a footnote. No amount of '
     'passing checks can close this one.')

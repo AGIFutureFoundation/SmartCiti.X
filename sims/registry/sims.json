@@ -3,14 +3,14 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-16",
- "source_stamp": "7b31c3f5b79c1a49",
+ "source_stamp": "8695efefa336b10d",
  "scoring_contract": "deterministic: every rubric axis is computed from measured state; nothing narrative can change a score",
  "honesty": {
   "status": "schematic physics for practising control discipline - smooth inputs, swing management, ordered procedure. Not equipment certification; no seat time here counts toward one, and the assessment gates still demand unaided verification runs.",
   "walkaround": "a habit-builder, not a gate: no seat is locked behind the walkaround, completing it changes no score, and it is not an equipment inspection record. Each point also names what a crew would do when the check fails, which is the half of the habit worth having; that is unverified general practice, not a release anybody can sign from here and not a permission this seat grants.",
   "operator": "SCRIPTED: a demonstration of a hand-written, deterministic control policy on a schematic single-machine simulator - a function of the seat's own gauges, the scenario's params and a level, no model behind it and no network reached. Not a learned policy, not real equipment, and not a claim about any physical robot; its runs are its own record, never credited to the learner watching it.",
   "authoring": "unverified general practice, written to be reviewed, corrected and replaced by journey-level practitioners from the halls each seat names. Nothing here cites a jurisdiction, a standard or an authority, nothing here speaks for one, and no rubric line, walkaround point or fault action is an instruction from one - a hall that adopts a seat owns what it says.",
-  "xr": "every seat is operable inside a WebXR session through the `xr` mapping it carries: thumbsticks, trigger, grip and the two face buttons land in the same key state a keyboard fills, so a seat cannot tell the two apart and no rubric changes in a headset. The mapping is verified against a mocked WebXR session in headless Chromium only - no physical headset has run these seats in this build."
+  "xr": "every seat is operable inside a WebXR session through the `xr` mapping it carries: thumbsticks, trigger, grip and the two face buttons land in the same key state a keyboard fills, so a seat cannot tell the two apart and no rubric changes in a headset. The mapping is held at the source by regex (web/test_3d.mjs, meta/test.mjs); no session, mocked or real, has been driven in this tree, no physical headset has run these seats in this build, and a mocked-session harness is the next step and is not claimed."
  },
  "operator_levels": {
   "optimal": "the reference: the written procedure with its checks and waits intact - passes every pass-gated rubric axis on every regional scenario, proven by the build",

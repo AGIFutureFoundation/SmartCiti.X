@@ -112,9 +112,9 @@ The guide keeps two things in this browser and nothing else: whether each of the
 
 ## Hands in a headset: declared, not proved
 
-UNVERIFIED-ON-HARDWARE: no headset has been available to this build, so not one of these gestures has been made by a real hand in a real session. They are declared to be implemented and tested against a MOCKED WebXR session only.
+UNVERIFIED-ON-HARDWARE: no headset has been available to this build, so not one of these gestures has been made by a real hand in a real session. The recogniser is proven against synthetic joint positions only; every XR contract is held at the source by regex; no session, mocked or real, has been driven in this tree, and a mocked-session harness is not claimed.
 
-a mocked session reports whatever joint poses the test hands it, which proves the arithmetic - the distances, the hysteresis, the hold timers - and proves nothing whatever about tracking quality, occlusion, latency, or whether a person can comfortably hold the shape.
+synthetic joint positions fed through the recogniser report whatever the test hands it, which proves the arithmetic - the distances, the hysteresis, the hold timers - and proves nothing whatever about tracking quality, occlusion, latency, or whether a person can comfortably hold the shape. No session, mocked or real, stands behind that arithmetic.
 
 this table is a contract for the page to implement, not a description of what the page does today: its own XR note lists hand tracking among the things that do not exist in it yet, and this registry does not claim otherwise.
 

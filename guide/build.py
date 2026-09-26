@@ -62,16 +62,19 @@ a default that fails closed, which is the same rule every other default in
 this bundle is held to.
 
 HANDS, DECLARED AND UNVERIFIED. The page's own XR note says what the XR
-layer has and what it does not: no hand tracking, no rendered hands, and
-no run on a physical headset - the layer is proved against a MOCKED WebXR
-session in headless Chromium only. This pack does not pretend otherwise.
+layer has and what it does not: hand JOINTS are read for four gestures
+proven against synthetic joint positions only, hands are not rendered, and
+no run on a physical headset - every XR contract is held at the source by
+regex, and no session, mocked or real, has been driven in this tree. This
+pack does not pretend otherwise.
 It declares the gestures a recogniser should implement - the joints, the
 distance measured, the threshold that fires it and the separate distance
 that releases it, so the thing that gets built is a declared gesture
 rather than an invented one - and it labels every distance in the table
 AUTHORED and the whole feature UNVERIFIED-ON-HARDWARE, because no headset
-has been available to this build and a mocked session proves arithmetic
-and nothing about a real hand.
+has been available to this build, synthetic joint positions prove
+arithmetic and nothing about a real hand, and a mocked-session harness is
+the next step and is not claimed.
 
 WHAT THE GUIDE IS NOT. Not an instructor, not a certification, not a code
 ruling, not a search box and not a chat: it cannot be asked an open
@@ -994,13 +997,18 @@ GESTURES = {
 HAND_HONESTY = {
     'status': 'UNVERIFIED-ON-HARDWARE: no headset has been available to '
               'this build, so not one of these gestures has been made by a '
-              'real hand in a real session. They are declared to be '
-              'implemented and tested against a MOCKED WebXR session only.',
-    'mocked_only': 'a mocked session reports whatever joint poses the test '
-                   'hands it, which proves the arithmetic - the distances, '
-                   'the hysteresis, the hold timers - and proves nothing '
-                   'whatever about tracking quality, occlusion, latency, or '
-                   'whether a person can comfortably hold the shape.',
+              'real hand in a real session. The recogniser is proven '
+              'against synthetic joint positions only; every XR contract '
+              'is held at the source by regex; no session, mocked or real, '
+              'has been driven in this tree, and a mocked-session harness '
+              'is not claimed.',
+    'mocked_only': 'synthetic joint positions fed through the recogniser '
+                   'report whatever the test hands it, which proves the '
+                   'arithmetic - the distances, the hysteresis, the hold '
+                   'timers - and proves nothing whatever about tracking '
+                   'quality, occlusion, latency, or whether a person can '
+                   'comfortably hold the shape. No session, mocked or real, '
+                   'stands behind that arithmetic.',
     'declared_not_built': 'this table is a contract for the page to '
                           'implement, not a description of what the page '
                           'does today: its own XR note lists hand tracking '
@@ -1055,8 +1063,11 @@ HONESTY = {
              'speech service run by the browser\'s vendor, which this '
              'bundle neither operates nor can see.',
     'hands': 'the hand gestures are declared, not proved: no headset has '
-             'been available to this build, and they are declared to be '
-             'implemented and tested against a mocked XR session only.',
+             'been available to this build; the recogniser is proven '
+             'against synthetic joint positions only, every XR contract is '
+             'held at the source by regex, no session, mocked or real, has '
+             'been driven in this tree, and a mocked-session harness is '
+             'the next step and is not claimed.',
 }
 
 PAGE_CONTRACT = {
@@ -1297,12 +1308,21 @@ assert sum(1 for g in GESTURES.values() if 'open this guide' in g['does']) == 1,
 
 # -- the hand claim is grounded in the page's own admission rather than in
 # -- this pack's good intentions
-assert 'mocked WebXR session' in PAGE_SRC, \
-    'the page no longer says its XR layer is proved against a mocked session'
+assert 'No session - mocked or real - has been driven in this tree' in PAGE_SRC \
+    and 'is the next step and is NOT claimed' in PAGE_SRC, \
+    'the page no longer says no session, mocked or real, has been driven ' \
+    'and that a mocked-session harness is NOT claimed'
 assert 'UNVERIFIED-ON-HARDWARE' in HAND_HONESTY['status'], \
     'the hand table must carry its unverified status in the status line'
-assert 'MOCKED' in HAND_HONESTY['status'], \
-    'the hand table must say what it WAS tested against'
+assert 'synthetic joint positions only' in HAND_HONESTY['status'] \
+    and 'held at the source by regex' in HAND_HONESTY['status'] \
+    and 'no session, mocked or real, has been driven' in HAND_HONESTY['status'] \
+    and 'mocked-session harness is not claimed' in HAND_HONESTY['status'], \
+    'the hand table must say what it WAS tested against and what is not claimed'
+for _blob in (HAND_HONESTY['status'], HAND_HONESTY['mocked_only'], HONESTY['hands']):
+    assert not re.search(r'verified against a mocked|MOCKED WebXR session only|'
+                         r'tested against a mocked', _blob, re.I), \
+        'the old false claim of a mocked WebXR session is back: ' + _blob[:60]
 
 # -- provenance. SCRIPTED is this pack's word; AI-SYNTHESIZED is orbis's,
 # -- and the only place it may appear here is in the topic that explains

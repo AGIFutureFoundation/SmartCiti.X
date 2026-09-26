@@ -557,8 +557,8 @@ const walk = fn('walkStep');
 ok('a corner is not a speed-up: the walk command lands on the unit circle '
   + 'before it is spooled, rather than two full-speed vectors being added',
   /const m = Math\.hypot\(fwd, str\);/.test(walk)
-  && /wkF = drive\(wkF, m \? fwd \/ m : 0, dt, WALK_SPOOL\);/.test(walk)
-  && /wkS = drive\(wkS, m \? str \/ m : 0, dt, WALK_SPOOL\);/.test(walk));
+  && /wkF = drive\(wkF, m > 1 \? fwd \/ m : fwd, dt, WALK_SPOOL\);/.test(walk)
+  && /wkS = drive\(wkS, m > 1 \? str \/ m : str, dt, WALK_SPOOL\);/.test(walk));
 ok('the walker leans into a stride and settles out of one, on the same drive '
   + 'the machines use, with a body\'s rates rather than a hydraulic drive\'s',
   /const WALK_SPOOL = \{ up: 6\.5, down: 9\.5 \};/.test(src)
@@ -2432,5 +2432,81 @@ ok('the one tie that rule leaves - a doorway sitting exactly on the hall\'s '
   && wire.labels.kinds.placard.jamb_on_centre_why.length > 80
   && wire.labels.kinds.placard.jamb_on_centre
     === labelsReg.kinds.placard.jamb_on_centre);
+
+
+/* ------------------------------------------------ the WebXR layer, held --
+   A read-only review of the walkable/XR layer verified each of these by
+   mutation in a sandbox: the page passed every suite with the bug put
+   back. No browser and no session - mocked or real - runs here, so each
+   contract is held at the source, and each check below was watched failing
+   on its own mutation before it was trusted. */
+ok('a hand is read off the controller slot whose \'connected\' event recorded that handedness - three r160 fills slots in connection order, not by hand - and a side with no slot is skipped',
+  /const slot = xrCtl\.hands\[0\] === side \? 0 : xrCtl\.hands\[1\] === side \? 1 : -1;\s*if \(slot < 0\) continue;\s*const hand = renderer\.xr\.getHand\(slot\);/.test(fnCode('xrHands'))
+  && !/getHand\(side === 'left' \? 0 : 1\)/.test(code));
+ok('page and layer agree on foveation at session start: xrBegan writes the page\'s number to the layer, reads the layer\'s back, and keeps its own only when three r160 returns undefined - so the ladder\'s first step can never LOWER foveation',
+  /renderer\.xr\.setFoveation\(xrFov\);\s*const fov = renderer\.xr\.getFoveation\(\);\s*xrFov = fov === undefined \? xrFov : fov;/.test(fnCode('xrBegan'))
+  && /r160/.test(fn('xrBegan')) && /undefined/.test(fn('xrBegan')));
+ok('the wrist panel mounts on the grip of a left CONTROLLER only: a hand input source has no gripSpace, so a left hand mounts it head-locked on the rig',
+  /if \(h === 'left'\) \{[^\n]*if \(e\.data && e\.data\.hand\) xrHudMount\(null\); else xrHudMount\(grip\); \}/.test(fnCode('xrCtlBuild')));
+ok('a restoration site is placed as a walkable-city marker only when its registry says walkable: true - a missing flag fails CLOSED, never open',
+  /s\.get\('walkable'\) is True else \{\}/.test(src) && !/s\.get\('walkable', True\)/.test(src));
+ok('the restoration panel renders a non-walkable site\'s walkable_reason verbatim after the catalog\'s "not a walkable scene" line, and never a walk control for it - the walk button lives in the e-offset branch alone',
+  (() => {
+    const i = code.indexOf('const walk = s.e !== undefined');
+    const stmt = code.slice(i, code.indexOf(";\n", i));
+    const nw = stmt.indexOf(': (s.walkable === false && s.walkable_reason');
+    return i > 0 && nw > 0
+      && (stmt.match(/data-resto-walk/g) || []).length === 1
+      && stmt.indexOf('data-resto-walk') < nw
+      && /\$\{t\('xr\.notWalkable'\)\}\$\{esc\(s\.walkable_reason\)\}<\/span>` : ''\)$/.test(stmt)
+      && !/(?:barbtn|data-resto-walk|<button)/.test(stmt.slice(nw));
+  })());
+ok('a headset walks at the README\'s speeds: the left stick is a COMMAND that walkStep drives through WALK_MS/RUN_MS and WALK_SPOOL - xrMove hands it back and never moves the rig itself',
+  /const \[xf, xs\] = xrMove\(dt\);\s*fwd = xf \|\| fwd; str = xs \|\| str;/.test(fnCode('walkStep'))
+  && fnCode('walkStep').indexOf('xrMove(dt)') < fnCode('walkStep').indexOf('wkF = drive(wkF')
+  && /const cmd = mag > \.15 \? \[-ly, lx\] : \[0, 0\];/.test(fnCode('xrMove'))
+  && /return cmd;/.test(fnCode('xrMove'))
+  && !/addScaledVector|3 \* dt|xrRig\.position/.test(fnCode('xrMove'))
+  && !/xrRig\.position\.addScaledVector|rig\.addScaledVector\([^)]*xrPad/.test(fnCode('walkStep').split('wkF = drive(')[0]));
+ok('the reference space is asked for in order - local-floor first with xrFloor = true, plain local as the fallback with xrFloor = false - and the rig lift (xrWalkStart, walkStep) is decided by xrFloor',
+  (() => {
+    const st = fnCode('xrStart');
+    const a = st.search(/requiredFeatures: \['local-floor'\], optionalFeatures: \[XR_HANDS\] \}\);\s*xrFloor = true;/);
+    const b = st.search(/requiredFeatures: \['local'\], optionalFeatures: \[XR_HANDS\] \}\);\s*xrFloor = false;/);
+    return a > 0 && b > a && /catch \(e1\)/.test(st)
+      && /setReferenceSpaceType\(xrFloor \? 'local-floor' : 'local'\)/.test(st)
+      && /xrRig\.position\.set\(sx, xrFloor \? 0 : XR_LOCAL_EYE, sz\);/.test(fnCode('xrWalkStart'))
+      && /if \(inXR\) rig\.y = xrFloor \? 0 : XR_LOCAL_EYE;/.test(fnCode('walkStep'));
+  })());
+ok('passthrough hides the ground and the grid around the draw only, and puts both back',
+  /if \(renderer\.xr\.isPresenting && xrBlend !== 'opaque'\) \{[\s\S]*?ground\.visible = false; grid\.visible = false;[\s\S]*?renderer\.render\(scene, camera\);[\s\S]*?ground\.visible = gv; grid\.visible = grv;/.test(fnCode('xrRender')));
+ok('a snap turn keeps the head where it was: the head\'s world position is taken before the rig turns and the rig is moved back under it after',
+  /camera\.getWorldPosition\(_xh\);\s*xrRig\.rotation\.y \+= a; xrRig\.updateMatrixWorld\(true\);\s*const after = camera\.getWorldPosition\(_xf\);\s*xrRig\.position\.add\(_xh\.sub\(after\)\);/.test(fnCode('xrSnap')));
+ok('thumbstick axes 2/3 are read only under the xr-standard gamepad mapping; any other mapping falls back to axes 0/1',
+  /gp\.mapping === 'xr-standard' && gp\.axes\.length >= 4 \? \[gp\.axes\[2\] \|\| 0, gp\.axes\[3\] \|\| 0\] : \[gp\.axes\[0\] \|\| 0, gp\.axes\[1\] \|\| 0\]/.test(fnCode('xrInput')));
+ok('the wrist panel is cleared when the session ends, and the framebuffer scale is set before the session is handed to three',
+  /xrHudClear\(\);/.test(fnCode('xrEnded'))
+  && fnCode('xrStart').indexOf('renderer.xr.setFramebufferScaleFactor(XR_SCALES[xrScaleIdx]);') > 0
+  && fnCode('xrStart').indexOf('setFramebufferScaleFactor(XR_SCALES[xrScaleIdx])') < fnCode('xrStart').indexOf('await renderer.xr.setSession(session)'));
+ok('a missing environmentBlendMode is closed by the mode asked for: alpha-blend for immersive-ar, opaque otherwise - never opaque over a passthrough room',
+  /xrBlend = session\.environmentBlendMode \?\? \(mode === 'immersive-ar' \? 'alpha-blend' : 'opaque'\);/.test(fnCode('xrStart'))
+  && !/environmentBlendMode \?\? 'opaque'/.test(code));
+ok('one truth on the XR layer, in the page\'s own words: joints read for gestures proven on synthetic positions, hands not rendered, every contract held at the source, no session mocked or real driven, a harness the next step and NOT claimed',
+  /No session - mocked or real - has been driven in this tree/.test(src)
+  && /mocked WebXR session harness[\s\S]{0,160}is the next step and is NOT claimed/.test(src)
+  && /hand joints are read, hands are not\s+rendered/.test(src)
+  && !/proves the layer against a mocked/.test(src)
+  && !/proven against a mocked/.test(src));
+ok('the XR HUD speaks from the catalog: every XR string reaches the page through t(\'xr.*\'), each key rides the i18n wire and exists in en.json, and none of the old English literals is left in the code',
+  (() => {
+    const used = [...new Set([...code.matchAll(/t\('(xr\.[A-Za-z]+)'\)/g)].map((m) => m[1]))];
+    const wire = src.slice(src.indexOf("'strings': {k: s[k] for k in ("), src.indexOf(")},", src.indexOf("'strings': {k: s[k] for k in (")));
+    const en = JSON.parse(readFileSync(new URL('../i18n/locales/en.json', import.meta.url), 'utf8')).strings;
+    return used.length >= 15
+      && ['xr.ended', 'xr.unavailable', 'xr.noNavigatorXr', 'xr.banner', 'xr.seatYours', 'xr.handsOnSeat',
+          'xr.operator', 'xr.perf', 'xr.notWalkable', 'xr.walkableCity'].every((k) => used.includes(k))
+      && used.every((k) => wire.includes(`'${k}'`) && typeof en[k] === 'string')
+      && !/'XR session ended'|'XR session unavailable: '|'navigator\.xr is not offered|left stick walks, right stick snaps|'the seat is yours again'|'your hands on the seat'|'reference operator · '|'XR performance: '|not a walkable scene: |walkable in the city layer</.test(code);
+  })());
 
 console.log(`web/test_3d: ${n} checks passed - teardown, draw-call and per-frame contracts held at the source`);

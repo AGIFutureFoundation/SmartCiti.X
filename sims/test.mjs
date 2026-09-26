@@ -291,7 +291,12 @@ ok('every seat carries its in-headset control mapping, declared once: thumbstick
   && sims['scaffold-bay'].xr.grip_key === 'KeyR'
   && sims['boom-lift'].xr.grip_key === 'KeyC'
   && sims['crane-lift'].xr.grip_key === null
-  && /mocked WebXR session/.test(reg.honesty.xr)
+  && /held at the source by\s+regex/.test(reg.honesty.xr)
+  && /no session, mocked or\s+real, has been driven in this tree/.test(reg.honesty.xr)
+  && /mocked-session harness\s+is the next step and is not claimed/.test(reg.honesty.xr)
+  && !/verified against a mocked/i.test(reg.honesty.xr)
+  && !/MOCKED WebXR session only/i.test(reg.honesty.xr)
+  && !/mocked WebXR session in headless/i.test(reg.honesty.xr)
   && /no physical\s+headset/.test(reg.honesty.xr));
 
 /* --------------------------------------- the scripted reference operator --- */

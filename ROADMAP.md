@@ -41,7 +41,7 @@ The consolidation release: one repository, one version, one truth per fact.
 | The schools flipped-classroom pack — the model, four grade bands, proposed district partnerships (public-record names only, every one PROPOSED), 45 live flipped units (one per sim-bound hall, so the roster moves with `sims/`) — with an in-app 🎓 Schools panel bidirectionally linked to every hall it names | `schools/` |
 | The humanoid avatar locker — 18 standard sections / 336 options plus a 111-look crew section (447 options in 19 sections), a crew look stamping all 111 halls, 22 one-tap character presets, 19 costumes, the original **SmartCiti.X TradeApes** (111, one per hall), 12 emotes — cosmetic only, none graded | `avatars/` |
 | The city-records GIS contract (real parcel/footprint authorities, licences and bounded queries) for the three district campuses, plus on-demand real USGS 3DEP elevation lookups — no record copied into the repo, fetched live in the learner's own browser | `parcels/` |
-| The metaverse-interchange layer — glTF 2.0 export/import of the avatar and any hall, a complete VRM-compatible humanoid bone skeleton with a driven (not decorative) walk/idle/head-track, and a WebXR layer that is more than an entry button: an XR rig, `local-floor` with a `local` fallback, AR passthrough, controller input into every simulator, snap-turn locomotion and a wrist panel of readouts — verified against a mocked session in headless Chromium, not yet on a physical headset | `meta/` |
+| The metaverse-interchange layer — glTF 2.0 export/import of the avatar and any hall, a complete VRM-compatible humanoid bone skeleton with a driven (not decorative) walk/idle/head-track, and a WebXR layer that is more than an entry button: an XR rig, `local-floor` with a `local` fallback, AR passthrough, controller input into every simulator, snap-turn locomotion and a wrist panel of readouts — every contract held at the source by regex; no session — mocked or real — has been driven in this tree, a mocked-session harness is the next step and is NOT claimed, and no physical headset has run it | `meta/` |
 | Nine scripted advisors — eight room- or green-bound guides plus **the Operator**, who lives inside a simulator's own yard and resolves against whichever seat is actually running — a closed 35-question list (the Operator now also quotes the scripted reference procedure), no model, no network, changes no score | `agents/` |
 | Generated sky, six weather states, browser-generated ground recipes (zero third-party texture files) and 101 ambient animals across all ten campuses | `world/` |
 | The in-world signage system — 19 kinds over 15 shapes, shape-carries-category / colour-carries-provenance / type-carries-rank, view-direction-and-distance scored with one field-of-vision focus target | `labels/` |
@@ -374,12 +374,16 @@ gates doing their job on real halls.
    gauges the dash shows, and the scripted operator watchable from inside
    the session — so every seat, the campus, the halls and the restoration
    walks run in-session against the interiors/§24 environment packages.
-   **What is honestly not done:** this was verified against a mocked WebXR
-   session in headless Chromium (three.js's own `WebXRManager` driven by a
-   fake session, frame and input sources); no physical headset has run it,
-   no hands are tracked or rendered, and three.js r160 cannot resize the
-   XR framebuffer mid-session, so the resolution ladder applies at the next
-   session start while foveation steps live. Simulator results stay
+   **What is honestly not done:** every XR contract is held at the source
+   by regex (`web/test_3d.mjs`, `meta/test.mjs`); no session — mocked or
+   real — has been driven in this tree, and a mocked-session harness
+   (three.js's `WebXRManager` under a fake session, frame and input sources)
+   is the next step and is NOT claimed. No physical headset has run it. Hand
+   JOINTS are read for four gestures (pinch, point, open palm, palm up),
+   proven against synthetic joint positions only; hands are not rendered.
+   three.js r160 cannot resize the XR framebuffer mid-session, so the
+   resolution ladder applies at the next session start while foveation
+   steps live. Simulator results stay
    formative until the assessment gates' unaided verification contract
    says otherwise, and a scripted operator's run is never a learner's
    result at all.
@@ -412,10 +416,11 @@ gates doing their job on real halls.
   external infrastructure, people or a maintainer-approved CI change, and its
   "Accepted by" column is empty because this pass names no owner.
 - One VR sim module running against a §24 environment package end to end.
-  *Status:* every sim module runs in a WebXR session against the
-  interiors/§24 environment packages, verified against a mocked session in
-  headless Chromium; verification on a physical headset is the remaining
-  step, so this criterion is **not yet met**.
+  *Status:* every sim module is wired to run in a WebXR session against the
+  interiors/§24 environment packages, held at the source by regex only; no
+  session — mocked or real — has been driven in this tree. A mocked-session
+  harness is the next step and is NOT claimed; verification on a physical
+  headset the step after, so this criterion is **not yet met**.
 
 ---
 

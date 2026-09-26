@@ -249,7 +249,11 @@ for f in sorted((ROOT / 'i18n/locales').glob('*.json')):
             'sim.start', 'sim.results', 'sim.pass', 'sim.retry',
             'sim.sound', 'sim.view', 'sim.choose', 'progress.local',
             'city.note', 'avatar.title', 'chapters.hall',
-            'honesty.taxonomy', 'honesty.content')},
+            'honesty.taxonomy', 'honesty.content',
+            'xr.ended', 'xr.unavailable', 'xr.noNavigatorXr', 'xr.banner',
+            'xr.spaceFloor', 'xr.spaceLocal', 'xr.seatYours', 'xr.handsOnSeat',
+            'xr.operator', 'xr.operatorDone', 'xr.operatorWatching',
+            'xr.perf', 'xr.perfNextSession', 'xr.notWalkable', 'xr.walkableCity')},
         'districts': {k: v['name'] for k, v in c['districts'].items()},
         'strands': c['strands'], 'tiers': c['tiers'], 'states': c['states'],
     }
@@ -713,7 +717,7 @@ DATA = json.dumps({
                                   geo_reg['campuses'][s['campus']]['lat'])), 2),
                   'n': round((s['lat'] - geo_reg['campuses'][s['campus']]['lat'])
                              * 110.574, 2)}
-           if s.get('pin') and s.get('campus') and s.get('walkable', True) else {})}
+           if s.get('pin') and s.get('campus') and s.get('walkable') is True else {})}
         for s in restoration_reg['sites']],
                     'tracks': restoration_reg['tracks'],
                     'honesty': restoration_reg['honesty']},
@@ -6190,10 +6194,14 @@ XR_JS = r"""/* ------------------------------------------------------------- Web
    hysteresis band and a dwell, all four thresholds AUTHORED in
    guide/registry/guide.json and labelled there as authored. What does NOT
    exist: rendered hands or a body beyond two schematic controllers, and any
-   run on a physical headset - this build proves the layer against a mocked
-   WebXR session in headless Chromium only, and the gesture recogniser
-   against synthetic joint positions fed straight through it
-   (__tc3dHandProbe). Nobody has held a real hand up to these distances. */
+   run on a physical headset. How it is held: every XR contract is held at
+   the SOURCE by regex (web/test_3d.mjs, meta/test.mjs), and the gesture
+   recogniser is proven against synthetic joint positions fed straight
+   through it (__tc3dHandProbe) - hand joints are read, hands are not
+   rendered. No session - mocked or real - has been driven in this tree; a
+   mocked WebXR session harness (three.js's WebXRManager under a fake
+   session, frame and input sources) is the next step and is NOT claimed.
+   Nobody has held a real hand up to these distances. */
 let xrMode = null, vrSupported = false, arSupported = false, xrProbeNote = null;
 let xrBlend = 'opaque', xrFloor = true, xrWalk = false, xrWalkKey = null;
 const XR_LOCAL_EYE = 1.6;              // rig lift in a plain `local` space
@@ -6206,7 +6214,7 @@ const xrStat = { frames: 0, arHidden: null, lastInput: null, picks: 0 };
 
 async function xrProbe() {
   if (!navigator.xr?.isSessionSupported) {
-    xrProbeNote = 'navigator.xr is not offered by this browser'; return;
+    xrProbeNote = t('xr.noNavigatorXr'); return;
   }
   for (const [mode, id, set] of [
     ['immersive-vr', 'vrBtn', (v) => { vrSupported = v; }],
@@ -6244,7 +6252,11 @@ async function xrStart(mode) {
     renderer.xr.setReferenceSpaceType(xrFloor ? 'local-floor' : 'local');
     renderer.xr.setFramebufferScaleFactor(XR_SCALES[xrScaleIdx]);
     xrMode = mode;
-    xrBlend = session.environmentBlendMode ?? 'opaque';
+    // a browser that reports no blend mode: an immersive-ar session is by
+    // definition composited over the room (WebXR AR Module - an AR session
+    // never has an 'opaque' environment), so the closed default for it is
+    // 'alpha-blend'; only a VR session defaults to 'opaque'
+    xrBlend = session.environmentBlendMode ?? (mode === 'immersive-ar' ? 'alpha-blend' : 'opaque');
     xrHeadY = xrFloor ? XR_LOCAL_EYE : 0;
     session.addEventListener('end', xrEnded);
     // the controllers exist before the session does: three.js maps input
@@ -6255,7 +6267,7 @@ async function xrStart(mode) {
     return session;
   } catch (e) {
     xrMode = null;
-    xrSay('XR session unavailable: ' + (e?.message ?? e));
+    xrSay(t('xr.unavailable').replace('{err}', e?.message ?? e));
     return null;
   }
 }
@@ -6268,6 +6280,13 @@ function xrBegan() {
   xrCtlBuild();
   xrHudBuild();
   walkLeave();
+  // page and layer agree on foveation: three r160 initialises the layer's
+  // at 1.0 in setSession, so a page counting from 0 would LOWER it on its
+  // first quality step. Write the page's, read back the layer's (r160
+  // returns undefined with no layer - the page's number stands then)
+  renderer.xr.setFoveation(xrFov);
+  const fov = renderer.xr.getFoveation();
+  xrFov = fov === undefined ? xrFov : fov;
   if (sim) {
     if (simView === 'orbit') {
       const oc = sim.orbitCam;
@@ -6280,9 +6299,9 @@ function xrBegan() {
     xrRig.position.set(camera.position.x, camera.position.y - xrHeadY, camera.position.z);
     xrRig.rotation.set(0, 0, 0); camera.position.set(0, 0, 0);
   }
-  xrSay((xrMode === 'immersive-ar' ? 'AR' : 'VR') + ' session · '
-    + (xrFloor ? 'local-floor space' : 'local space - rig lifted ' + XR_LOCAL_EYE + ' m, no floor tracking')
-    + ' · ' + xrBlend + ' · left stick walks, right stick snaps 30°, B/Y leaves');
+  xrSay(t('xr.banner').replace('{mode}', xrMode === 'immersive-ar' ? 'AR' : 'VR')
+    .replace('{space}', xrFloor ? t('xr.spaceFloor') : t('xr.spaceLocal').replace('{m}', XR_LOCAL_EYE))
+    .replace('{blend}', xrBlend));
 }
 // presenting, and not on the way out: the session's 'end' event reaches
 // this page's listener BEFORE three.js's own (registered later, in
@@ -6312,7 +6331,7 @@ function xrEnded() {
     xrRig.position.set(0, 0, 0); xrRig.rotation.set(0, 0, 0);
     if (simView === 'orbit') setSimView('orbit');
   } else rigCollapse();
-  document.getElementById('hint').textContent = 'XR session ended';
+  document.getElementById('hint').textContent = t('xr.ended');
 }
 // fold the rig into the camera: the camera keeps its world pose, the rig
 // returns to the identity, and every desktop control sees the camera alone
@@ -6336,19 +6355,18 @@ function xrWalkStart() {
   nearSlug = null; nearPoi = null; nearTrack = null;
 }
 const _xf = new THREE.Vector3(), _xr = new THREE.Vector3(), _xh = new THREE.Vector3();
-// smooth locomotion on the left stick, relative to where the head looks;
+// smooth locomotion on the left stick, relative to where the head looks:
+// the stick is a COMMAND handed back to walkStep, which drives it through
+// the same WALK_MS / RUN_MS top and WALK_SPOOL a keyboard walk has - a
+// headset walks at the speeds the README claims, not at its own flat rate;
 // a snap turn on the right stick, about the head, re-armed near centre
 function xrMove(dt) {
   const [lx, ly] = xrPad.l, mag = Math.hypot(lx, ly);
-  if (mag > .15) {
-    camera.getWorldDirection(_xf); _xf.y = 0; _xf.normalize();
-    _xr.set(-_xf.z, 0, _xf.x);
-    const sp = 3 * dt * Math.min(1, mag);
-    xrRig.position.addScaledVector(_xf, -ly * sp).addScaledVector(_xr, lx * sp);
-  }
+  const cmd = mag > .15 ? [-ly, lx] : [0, 0];
   const rx = xrPad.r[0];
   if (xrPad.snapArmed && Math.abs(rx) > .6) { xrSnap(-Math.sign(rx) * XR_SNAP); xrPad.snapArmed = false; }
   else if (Math.abs(rx) < .3) xrPad.snapArmed = true;
+  return cmd;
 }
 function xrSnap(a) {
   camera.getWorldPosition(_xh);
@@ -6378,8 +6396,8 @@ const xrPad = { l: [0, 0], r: [0, 0], trig: false, lTrig: false, grip: false,
    Four gestures, read off WebXR Hand Input joints. Every distance, every
    release distance and every hold below is the guide registry's - AUTHORED,
    and stated there as authored: nobody has held a real headset up to these
-   numbers, and this build proves the layer against a mocked WebXR session
-   in headless Chromium only. What IS proven here is the shape: a gesture
+   numbers, and no session - mocked or real - has driven this layer in this
+   tree; the contracts are held at the source. What IS proven here is the shape: a gesture
    fires on its threshold and releases on a separate, looser one, because a
    single threshold on a stop gesture chatters at the boundary and a stop
    that chatters is worse than no stop at all.
@@ -6449,7 +6467,11 @@ function xrHands(dt, ses) {
   for (const src of ses.inputSources) {
     if (!src.hand) continue;                 // a controller, not a hand
     const side = src.handedness === 'left' ? 'left' : 'right';
-    const hand = renderer.xr.getHand(side === 'left' ? 0 : 1);
+    // three r160 fills controller slots in connection order, not by hand:
+    // the slot is the one whose 'connected' event recorded this handedness
+    const slot = xrCtl.hands[0] === side ? 0 : xrCtl.hands[1] === side ? 1 : -1;
+    if (slot < 0) continue;
+    const hand = renderer.xr.getHand(slot);
     const st = xrGest[side];
     for (const [id, g] of Object.entries(HANDS.gestures)) {
       const prev = st[id] ?? { on: false, since: 0, fired: false };
@@ -6527,7 +6549,7 @@ function xrInput(dt) {
   // xr-standard mapping: axes 2/3 are the thumbstick (0/1 a touchpad),
   // buttons 0 trigger, 1 squeeze, 4 A/X, 5 B/Y
   const stick = (gp) => !gp ? [0, 0]
-    : gp.axes.length >= 4 ? [gp.axes[2] || 0, gp.axes[3] || 0] : [gp.axes[0] || 0, gp.axes[1] || 0];
+    : gp.mapping === 'xr-standard' && gp.axes.length >= 4 ? [gp.axes[2] || 0, gp.axes[3] || 0] : [gp.axes[0] || 0, gp.axes[1] || 0];
   const btn = (gp, i) => !!gp?.buttons?.[i]?.pressed;
   xrPad.l = stick(L); xrPad.r = stick(R);
   const trig = btn(R, 0), lTrig = btn(L, 0), grip = btn(R, 1) || btn(L, 1);
@@ -6565,7 +6587,7 @@ function xrInput(dt) {
 function xrWatchToggle() {
   if (!sim) return;
   const id = curSimId, sc = curScenario?.id;
-  if (opRun) { startSim(id, sc); xrSay('the seat is yours again'); return; }
+  if (opRun) { startSim(id, sc); xrSay(t('xr.seatYours')); return; }
   const level = document.getElementById('opLvl').value || 'optimal';
   startSim(id, sc); opAttach(level, 1, false);
 }
@@ -6604,7 +6626,9 @@ function xrCtlBuild() {
     ctl.addEventListener('connected', (e) => {
       const h = e.data?.handedness ?? 'none';
       xrCtl.hands[i] = h; grip.userData.hand = h;
-      if (h === 'left') { xrCtl.rays.left = ctl; line.visible = true; xrHudMount(grip); }
+      // a hand input source has no gripSpace, so its grip never moves: the
+      // panel mounts head-locked on the rig for a hand, on the grip for a controller
+      if (h === 'left') { xrCtl.rays.left = ctl; line.visible = true; if (e.data && e.data.hand) xrHudMount(null); else xrHudMount(grip); }
     });
     ctl.addEventListener('disconnected', () => {
       if (xrCtl.hands[i] === 'left') { xrCtl.rays.left = null; line.visible = false; xrHudMount(null); }
@@ -6666,10 +6690,10 @@ function setXRDash(def, vals) {
 }
 function xrOpStatus() {
   if (!sim) return null;
-  if (!opRun || opRun.sweep) return 'your hands on the seat';
+  if (!opRun || opRun.sweep) return t('xr.handsOnSeat');
   const proc = opRun.def.operator.procedure, p = proc[opRun.m.phase];
-  return 'reference operator · ' + opRun.level + ' · '
-    + (opRun.result ? 'done' : 'watching')
+  return t('xr.operator') + ' · ' + opRun.level + ' · '
+    + (opRun.result ? t('xr.operatorDone') : t('xr.operatorWatching'))
     + (p && !opRun.result ? ' · ' + (opRun.m.phase + 1) + '/' + proc.length + ' ' + p.step.slice(0, 48) : '');
 }
 function xrHudLines(force) {
@@ -6731,13 +6755,13 @@ function xrQDrop(fps) {
     for (const b of fogBanks) b.m.visible = false;
   } else if (xrScaleIdx < XR_SCALES.length - 1) xrScaleIdx++;
   else return;
-  xrQNote = 'XR performance: ' + Math.round(fps) + ' fps · foveation ' + xrFov
-    + ' · framebuffer scale ' + XR_SCALES[xrScaleIdx]
-    + (xrScaleIdx ? ' (applied at the next session start)' : '');
+  xrQNote = t('xr.perf').replace('{fps}', Math.round(fps)).replace('{fov}', xrFov)
+    .replace('{scale}', XR_SCALES[xrScaleIdx])
+    + (xrScaleIdx ? ' ' + t('xr.perfNextSession') : '');
   xrSay(xrQNote);
 }
-// what a harness can read and drive - the layer is proven against a mocked
-// session, and this is the surface it reads
+// what a harness could read and drive - no harness, mocked or real, has
+// driven this layer yet; this is the surface one would read
 window.__tc3dXR = {
   start: xrStart,
   end: () => renderer.xr.getSession()?.end(),
@@ -13159,13 +13183,8 @@ const _wf = new THREE.Vector3(), _wr = new THREE.Vector3();
 const _wp = new THREE.Vector3(), _twWas = new THREE.Vector3(), _twF = new THREE.Vector3();
 const _twR = new THREE.Vector3(), _twEye = new THREE.Vector3();
 function walkStep(dt) {
-  const rig = xrRig.position;
-  if (renderer.xr.isPresenting) {
-    xrMove(dt);
-    // a local-floor space puts the floor at the rig; a plain local space
-    // reports the head near zero, so the rig itself stands at eye height
-    rig.y = xrFloor ? 0 : XR_LOCAL_EYE;
-  } else {
+  const rig = xrRig.position, inXR = renderer.xr.isPresenting;
+  {
     // forward is where the camera looks, flattened; right is its x axis -
     // the same vectors PointerLockControls.moveForward/moveRight use, on
     // the rig instead of the camera
@@ -13176,12 +13195,19 @@ function walkStep(dt) {
        out of one, does not gain speed by facing a corner, and moves at a
        speed a person moves at. Same doctrine as the machine drives, with a
        body's rates rather than a hydraulic drive's. */
-    const fwd = axis(keys.KeyS || keys.ArrowDown, keys.KeyW || keys.ArrowUp);
-    const str = axis(keys.KeyA || keys.ArrowLeft, keys.KeyD || keys.ArrowRight);
-    // a corner is not a speed-up: the command lands on the unit circle
+    let fwd = axis(keys.KeyS || keys.ArrowDown, keys.KeyW || keys.ArrowUp);
+    let str = axis(keys.KeyA || keys.ArrowLeft, keys.KeyD || keys.ArrowRight);
+    if (inXR) {
+      // a headset: the left stick's command (or a pointing hand's, which
+      // writes xrPad.l) goes through the SAME drive below - no second speed
+      const [xf, xs] = xrMove(dt);
+      fwd = xf || fwd; str = xs || str;
+    }
+    // a corner is not a speed-up: the command lands on the unit circle (a
+    // stick inside it keeps its partial deflection)
     const m = Math.hypot(fwd, str);
-    wkF = drive(wkF, m ? fwd / m : 0, dt, WALK_SPOOL);
-    wkS = drive(wkS, m ? str / m : 0, dt, WALK_SPOOL);
+    wkF = drive(wkF, m > 1 ? fwd / m : fwd, dt, WALK_SPOOL);
+    wkS = drive(wkS, m > 1 ? str / m : str, dt, WALK_SPOOL);
     const top = (keys.ShiftLeft || keys.ShiftRight) ? RUN_MS : WALK_MS;
     // nobody walks backwards as fast as forwards, and nobody runs backwards:
     // the reverse component is held to a back-pedal off the WALK speed, so
@@ -13191,7 +13217,11 @@ function walkStep(dt) {
     _wr.set(-_wf.z, 0, _wf.x);
     rig.addScaledVector(_wf, wkF * fTop * dt);
     rig.addScaledVector(_wr, wkS * top * dt);
-    rig.y = EYE_H + strideStep(Math.hypot(wkF * fTop, wkS * top), dt);
+    // a local-floor space puts the floor at the rig; a plain local space
+    // reports the head near zero, so the rig itself stands at eye height;
+    // on a desktop the rig is the eye, and it strides
+    if (inXR) rig.y = xrFloor ? 0 : XR_LOCAL_EYE;
+    else rig.y = EYE_H + strideStep(Math.hypot(wkF * fTop, wkS * top), dt);
   }
   if (view === 'hall') {
     // the shell and the partitions are solid; the box below is the backstop
@@ -13576,11 +13606,11 @@ function openRestoration(focusHall, focusSite) {
     const dis = s.disambiguation
       ? `<br><span style="font-size:11px;color:var(--steel)">\u26a0 ${esc(s.disambiguation)}</span>` : '';
     const walk = s.e !== undefined
-      ? `<span class="chip" style="font-size:10.5px">\U0001f6b6 walkable in the city layer</span>
+      ? `<span class="chip" style="font-size:10.5px">\U0001f6b6 ${t('xr.walkableCity')}</span>
          <button class="barbtn" data-resto-walk="${esc(s.id)}"
            style="font-size:11px;padding:2px 8px;margin:2px 0 2px 6px">\U0001f6b6 Walk this site</button>`
       : (s.walkable === false && s.walkable_reason
-        ? `<span class="chip" style="font-size:10.5px;color:var(--muted)">not a walkable scene: ${esc(s.walkable_reason)}</span>` : '');
+        ? `<span class="chip" style="font-size:10.5px;color:var(--muted)">${t('xr.notWalkable')}${esc(s.walkable_reason)}</span>` : '');
     // real data at the site's own RECORDED-by-org coordinate, fetched live
     // in the learner's own browser only on request - the same two sources
     // (USGS 3DEP elevation, USGS National Map imagery) the city layer's

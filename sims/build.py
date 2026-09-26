@@ -1869,9 +1869,11 @@ doc = {
               '`xr` mapping it carries: thumbsticks, trigger, grip and the '
               'two face buttons land in the same key state a keyboard '
               'fills, so a seat cannot tell the two apart and no rubric '
-              'changes in a headset. The mapping is verified against a '
-              'mocked WebXR session in headless Chromium only - no physical '
-              'headset has run these seats in this build.',
+              'changes in a headset. The mapping is held at the source by '
+              'regex (web/test_3d.mjs, meta/test.mjs); no session, mocked or '
+              'real, has been driven in this tree, no physical headset has '
+              'run these seats in this build, and a mocked-session harness '
+              'is the next step and is not claimed.',
     },
     'operator_levels': OPERATOR_LEVELS,
     # the gates the current seat cannot fail, and the seat change that would

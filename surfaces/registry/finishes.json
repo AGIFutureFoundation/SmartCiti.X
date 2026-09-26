@@ -1787,7 +1787,7 @@
  },
  "legibility": {
   "method": "WCAG 2.x relative luminance (sRGB, D65 coefficients .2126/.7152/.0722) and contrast (L1+.05)/(L2+.05); a translucent plate is composited source-over onto the finish and then compared with it; an opaque text or accent colour is compared straight on the finish (the no-plate case)",
-  "labels_stamp": "74a8a80adcd1a875",
+  "labels_stamp": "f8bc3a6d7f595a0d",
   "palette_sha": "ec3ca04d1520d4ac",
   "palette_read": {
    "ink": {

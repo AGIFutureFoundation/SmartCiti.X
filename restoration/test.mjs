@@ -242,7 +242,7 @@ ok('the wiki\'s Bay Restoration page carries an NSTI section with its facts, the
 // wherever the walkable-scene list is asserted below - the single most
 // load-bearing constraint in this pack
 const envSites = reg.sites.filter((s) => s.category === 'environmental-monitoring');
-const walkable = pinned.filter((s) => s.campus && s.walkable !== false);
+const walkable = pinned.filter((s) => s.campus && s.walkable === true);
 ok('walkable=false sites are excluded from the walkable-scene set entirely',
   !walkable.some((s) => s.id === 'hunters-point-shipyard')
   && !walkable.some((s) => s.id === 'treasure-island-nsti')
@@ -252,9 +252,10 @@ ok('walkable=false sites are excluded from the walkable-scene set entirely',
 const builder3d = readFileSync(new URL('../web/build_3d.py', import.meta.url), 'utf8');
 ok('every pinned, campus-grouped site gets a true east/north km offset (the same '
   + 'formula D.geo.cityPois already uses) for the walkable city layer, but only '
-  + 'when walkable is not explicitly false',
+  + 'when walkable is explicitly true - a missing flag is closed, never open',
   builder3d.includes("s.get('pin') and s.get('campus')")
-  && builder3d.includes("s.get('walkable', True)")
+  && builder3d.includes("s.get('walkable') is True")
+  && !builder3d.includes("s.get('walkable', True)")
   && walkable.length > 0);
 ok('the page\'s own embedded data proves it at runtime: Hunters Point and NSTI carry no '
   + 'e/n walkable offset, while every other walkable site does',

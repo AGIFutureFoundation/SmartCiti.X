@@ -72,13 +72,18 @@ DOC = {
                      'ladder is honest about three.js r160: fixed foveation '
                      'and the fog banks step live, the framebuffer scale '
                      '(1.0 / 0.8 / 0.65) is recorded in-session and applied '
-                     'at the next session start. What does NOT exist: hand '
-                     'tracking, rendered hands or a body beyond two '
+                     'at the next session start. Hand JOINTS are read for '
+                     'four gestures (pinch, point, open palm, palm up) '
+                     'proven against synthetic joint positions only. What '
+                     'does NOT exist: rendered hands or a body beyond two '
                      'schematic controllers, and any run on a physical '
-                     'headset - this build verified the layer against a '
-                     'mocked WebXR session in headless Chromium (three.js\'s '
-                     'own WebXRManager driven by a fake session, frame and '
-                     'input sources) only.'},
+                     'headset. How this is held: every XR contract is held '
+                     'at the source by regex (web/test_3d.mjs, '
+                     'meta/test.mjs); no session - mocked or real - has been '
+                     'driven in this tree. A mocked WebXR session harness '
+                     '(three.js\'s WebXRManager under a fake session, frame '
+                     'and input sources) is the next step and is NOT '
+                     'claimed.'},
             {'id': 'geojson-wgs84', 'body': 'IETF RFC 7946',
              'role': 'the geo registry interchange (campuses.geojson, '
                      'network.geojson) that the geomap and any '
@@ -347,8 +352,10 @@ for token in ("const xrRig = new THREE.Group()", 'function seatPose(',
               'setFramebufferScaleFactor(XR_SCALES[xrScaleIdx])', 'setFoveation(xrFov)'):
     assert token in page_src, f'WebXR role claims {token!r} but the page lacks it'
 _xr_role = next(s for s in DOC['baseline']['standards'] if s['id'] == 'webxr')['role']
-assert 'mocked WebXR session' in _xr_role and 'physical' in _xr_role, \
-    'the WebXR role must say how it was verified, and what it was not'
+assert 'held at the source by regex' in _xr_role and 'physical' in _xr_role \
+    and 'no session - mocked or real - has been driven' in _xr_role \
+    and 'is NOT claimed' in _xr_role, \
+    'the WebXR role must say how it is held, and what has not been run'
 for fname in ('gltf/GLTFExporter.js', 'gltf/GLTFLoader.js',
               'utils/TextureUtils.js', 'utils/BufferGeometryUtils.js'):
     assert (ROOT / 'web/vendor/addons' / fname).exists(), f'{fname} not vendored'

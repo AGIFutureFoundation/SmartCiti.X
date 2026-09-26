@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-20",
- "source_stamp": "7e010962496b4d76",
+ "source_stamp": "301e25533f4417e7",
  "contract": "the guide answers six fixed questions about the place the learner is already in, and nothing else. Every answer is a sentence written in this registry with the repo file it is grounded in named in `cites`; the only thing read at view time is a control scheme, and the biggest one - a seat's own keys and its XR mapping - is read from the simulator registry rather than copied here. Nothing is generated, no model runs behind it, and the guide itself reaches no network.",
  "honesty": {
   "status": "SCRIPTED: the guide is a hand-written, deterministic script - a fixed set of places, six fixed questions each, and one fixed answer to each. No model runs behind it, nothing is generated at view time, and the guide reaches no network of its own.",
@@ -12,7 +12,7 @@
   "not_scored": "opening the guide changes no score and unlocks nothing: no grader reads guide state, and there is no guide state for one to read.",
   "device_local": "the guide keeps two things in this browser and nothing else: whether each of the two voice switches is on. No question you ask it, by hand or by voice, is recorded anywhere.",
   "voice": "both voice features are off by default and opt-in, and each carries its own banner stating exactly what leaves the device when it is on. Asking by voice sends captured audio to a speech service run by the browser's vendor, which this bundle neither operates nor can see.",
-  "hands": "the hand gestures are declared, not proved: no headset has been available to this build, and they are declared to be implemented and tested against a mocked XR session only."
+  "hands": "the hand gestures are declared, not proved: no headset has been available to this build; the recogniser is proven against synthetic joint positions only, every XR contract is held at the source by regex, no session, mocked or real, has been driven in this tree, and a mocked-session harness is the next step and is not claimed."
  },
  "counts": {
   "places": 11,
@@ -1315,8 +1315,8 @@
  },
  "hands": {
   "honesty": {
-   "status": "UNVERIFIED-ON-HARDWARE: no headset has been available to this build, so not one of these gestures has been made by a real hand in a real session. They are declared to be implemented and tested against a MOCKED WebXR session only.",
-   "mocked_only": "a mocked session reports whatever joint poses the test hands it, which proves the arithmetic - the distances, the hysteresis, the hold timers - and proves nothing whatever about tracking quality, occlusion, latency, or whether a person can comfortably hold the shape.",
+   "status": "UNVERIFIED-ON-HARDWARE: no headset has been available to this build, so not one of these gestures has been made by a real hand in a real session. The recogniser is proven against synthetic joint positions only; every XR contract is held at the source by regex; no session, mocked or real, has been driven in this tree, and a mocked-session harness is not claimed.",
+   "mocked_only": "synthetic joint positions fed through the recogniser report whatever the test hands it, which proves the arithmetic - the distances, the hysteresis, the hold timers - and proves nothing whatever about tracking quality, occlusion, latency, or whether a person can comfortably hold the shape. No session, mocked or real, stands behind that arithmetic.",
    "declared_not_built": "this table is a contract for the page to implement, not a description of what the page does today: its own XR note lists hand tracking among the things that do not exist in it yet, and this registry does not claim otherwise.",
    "thresholds_are_authored": "every distance and angle here is AUTHORED - typed from general practice, not measured against a hand on hardware - and is expected to move once a headset is available to check it against.",
    "not_a_gate": "no gesture scores anything, unlocks anything or is recorded: the recogniser runs only inside a session that was granted hand tracking, and off entirely otherwise."

@@ -29,17 +29,31 @@ ok('four standards are claimed - glTF 2.0, WebXR, GeoJSON, OGC GeoPose 1.0 - eac
       reg.baseline.standards.some((s) => s.id === id && s.body && s.role))
   && reg.baseline.standards.find((s) => s.id === 'gltf-2.0')
       .consumers.includes('Unity'));
-ok('the WebXR role says what exists (rig, local-floor with local fallback, passthrough, controllers, snap turn, wrist readouts, every seat) and what does not (hand tracking, rendered hands, a physical headset run) - and names the mocked session it was verified against',
+ok('the WebXR role says what exists (rig, local-floor with local fallback, passthrough, controllers, snap turn, wrist readouts, every seat, hand joints read for four gestures) and what does not (rendered hands, a physical headset run) - and says how it is held: at the source by regex, no session mocked or real driven, a mocked-session harness the next step and NOT claimed',
   (() => {
     const r = reg.baseline.standards.find((s) => s.id === 'webxr').role;
     return /XR rig/.test(r) && /local-floor/.test(r) && /local fallback/.test(r)
       && /passthrough/.test(r) && /clear alpha 0/.test(r) && /thumbsticks, trigger, grip/.test(r)
       && /snap-turn/.test(r) && /wrist panel/.test(r) && new RegExp(`${simsN} simulators`).test(r)
       && /experimental/.test(r) && /a viewpoint, not a second world/.test(r)
-      && /NOT exist: hand\s+tracking, rendered hands/.test(r)
-      && /mocked WebXR session in headless Chromium/.test(r)
+      && /Hand JOINTS are read for four gestures/.test(r)
+      && /proven against synthetic joint positions only/.test(r)
+      && /NOT exist: rendered hands/.test(r)
+      && !/NOT exist: hand\s+tracking/.test(r)
+      && /held at the source by regex/.test(r)
+      && /no session - mocked or real - has been driven in this tree/.test(r)
+      && /mocked WebXR session harness[\s\S]*is the next step and is NOT claimed/.test(r)
+      && !/verified (the layer )?against a mocked/.test(r)
       && /any run on a physical\s+headset/.test(r)
       && /applied\s+at the next session start/.test(r);
+  })());
+ok('ROADMAP.md tells the same truth as the role: no session, mocked or real, driven in this tree; a mocked-session harness the next step and NOT claimed; hand joints read, hands not rendered - and no longer claims a mocked-session verification',
+  (() => {
+    const rm = readFileSync(new URL('../ROADMAP.md', import.meta.url), 'utf8');
+    return (rm.match(/no\s+session — mocked or\s+real — has been driven in this tree/g) || []).length >= 2
+      && (rm.match(/is NOT claimed/g) || []).length >= 2
+      && /Hand\s+JOINTS are read for four gestures[\s\S]{0,200}hands are not rendered/.test(rm)
+      && !/verified against a mocked/.test(rm) && !/no hands are tracked or rendered/.test(rm);
   })());
 ok('and the page builds what that role names: the rig, the seat pose, the reference-space choice, the AR clear alpha, the adapter, the snap turn, the wrist dash',
   ['const xrRig = new THREE.Group()', 'function seatPose(', 'function xrInput(',

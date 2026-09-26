@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-22",
- "source_stamp": "c7c0363ef9743d29",
+ "source_stamp": "5e942500dea821d6",
  "contract": "this pack states no fact of its own. Every value in it is read out of another file at build time and carries the path and the locator it was read with, so a reader can resolve any entry back to its source and disagree with it there rather than here. Three questions are answered: what has been measured, what is declared and unbuilt, and where the known gaps are - plus the budgets those measurements govern, the suites that hold the assurance, and the questions this bundle records as open.",
  "honesty": {
   "status": "DERIVED: nothing in this registry was authored as a fact about the bundle. Every number is read from a named file through a named locator, and the suite re-resolves every pointer against the live file rather than trusting the value stored here.",
@@ -39,7 +39,7 @@
   "budget_currencies": 2,
   "budget_agreements": 7,
   "suites_run": 61,
-  "suite_checks_declared": 2741,
+  "suite_checks_declared": 2756,
   "open_questions": 12,
   "negative_findings": 9,
   "cross_checks": 2,
@@ -3331,7 +3331,7 @@
    {
     "suite": "meta/test.mjs",
     "pack": "meta",
-    "readme_checks": 40,
+    "readme_checks": 41,
     "declared": true,
     "in_readme_table": true
    },
@@ -3569,7 +3569,7 @@
    {
     "suite": "web/test_3d.mjs",
     "pack": "web",
-    "readme_checks": 295,
+    "readme_checks": 309,
     "declared": true,
     "in_readme_table": true
    },
@@ -3586,12 +3586,12 @@
   "suites_without_a_count": [
    "control/soak.mjs"
   ],
-  "declared_total": 2741,
-  "readme_headline": 2752,
+  "declared_total": 2756,
+  "readme_headline": 2767,
   "unaccounted_for": 11,
   "unaccounted_note": "the headline counts every `  ok ` line verify_all.sh sees, which includes suites the README table gives no number to and web/test_interiors.py, which the table does not list at all. The difference is that remainder and is computed, not reconciled by hand.",
   "min": 9,
-  "max": 295,
+  "max": 309,
   "median": 37.5,
   "thinnest": [
    {
@@ -3622,7 +3622,7 @@
   "thickest": [
    {
     "suite": "web/test_3d.mjs",
-    "checks": 295
+    "checks": 309
    },
    {
     "suite": "respond/test.mjs",
@@ -3771,13 +3771,13 @@
   {
    "id": "xr.no-headset-has-ever-run-this",
    "kind": "unproved",
-   "asks": "four hand gestures, 25 joints and every hysteresis band are declared and proved against a mocked WebXR session. Do they work on hardware?",
+   "asks": "four hand gestures, 25 joints and every hysteresis band are declared and proven against synthetic joint positions only; every XR contract is held at the source by regex, no session, mocked or real, has been driven in this tree, and a mocked-session harness is not claimed. Do they work on hardware?",
    "file": "guide/registry/guide.json",
    "anchors": {
     "from": "UNVERIFIED-ON-HARDWARE",
-    "to": "MOCKED WebXR session only."
+    "to": "a mocked-session harness is not claimed."
    },
-   "quote": "UNVERIFIED-ON-HARDWARE: no headset has been available to this build, so not one of these gestures has been made by a real hand in a real session. They are declared to be implemented and tested against a MOCKED WebXR session only.",
+   "quote": "UNVERIFIED-ON-HARDWARE: no headset has been available to this build, so not one of these gestures has been made by a real hand in a real session. The recogniser is proven against synthetic joint positions only; every XR contract is held at the source by regex; no session, mocked or real, has been driven in this tree, and a mocked-session harness is not claimed.",
    "why_it_matters": "the largest unproved claim in the bundle, and the pack that makes it says so in its own status line rather than in a footnote. No amount of passing checks can close this one."
   },
   {

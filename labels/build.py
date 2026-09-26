@@ -650,8 +650,9 @@ HONESTY = {
                 '(or hang ahead of the rig without one) at a fixed size and '
                 'full opacity - they are on the hand, not in the world, so '
                 'the view-direction scoring above does not apply to them. '
-                'Verified against a mocked WebXR session only, never a '
-                'physical headset.',
+                'Held at the source by regex; no session, mocked or real, '
+                'has been driven in this tree, never a physical headset, '
+                'and a mocked-session harness is not claimed.',
 }
 
 # ---------------------------------------------------------------- checks ---
