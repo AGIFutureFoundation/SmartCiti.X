@@ -86,24 +86,20 @@ Mapping to obligations, with what is actually done versus what a launch requires
 **Nothing here is certified.** The controls exist and are tested; certification
 is an external process that has not been undertaken.
 
-### One open item a deployment must decide: the font CDN
+### The font CDN, closed
 
-Four pages (`trade_craft_landing`, `trade_craft_map`,
-`smartcitix_trade_craft_academy`, `trade_craft_console`) load their typefaces
-from Google Fonts. That is a third-party request made by the learner's
-browser before the page renders, and it carries their IP address and user
-agent to Google. It is now disclosed in `THIRD_PARTY.md` and pinned by
-`web/lint_external.mjs`, but disclosure is not consent: under GDPR this is
-the kind of transfer a DPIA has to cover, and it is the one place where a
-bundle that otherwise reaches no network at runtime does.
-
-The faces are Open Font License and every one already has a `system-ui`
-fallback, so **self-hosting them removes the transfer without changing the
-design** — it needs the font files fetched once, vendored under
-`web/vendor/fonts/`, added to the SBOM, and the four `<link>` tags swapped
-for a local `@font-face` block. That has not been done here: this
-environment reaches no network, so the files cannot be fetched. Until it is,
-the four pages contact Google and the other six do not.
+Five pages used to load their typefaces from Google Fonts: a third-party
+request made by the learner's browser before the page rendered, carrying
+their IP address and user agent to Google, and the one place where a bundle
+that otherwise reaches no network at runtime did. The faces are Open Font
+License, so they are now self-hosted: `web/fetch_fonts.py` fetched the
+`latin` and `latin-ext` subsets once, by hand, into `web/vendor/fonts/` with
+a manifest of exactly what was taken, the pages carry a local `@font-face`
+block, and `verify_all.sh` re-verifies the vendored files against that
+manifest on every run without reaching the network (`web/fetch_fonts.py
+--check`). `web/lint_external.mjs` now counts zero fetched origins across the
+built pages. Scripts the three families do not cover (Arabic, Hindi,
+Chinese) fall back to the reader's system fonts, as they did before.
 
 ## Launch checklist — status
 
