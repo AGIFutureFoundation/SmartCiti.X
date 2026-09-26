@@ -12,9 +12,8 @@ is committed. `--check` re-verifies the committed files against the
 manifest without reaching the network, which is what verify_all.sh runs.
 
 What is taken, and what is deliberately not: the `latin` and `latin-ext`
-subsets only. This bundle ships eight locales, three of which - Arabic,
-Hindi and Chinese - are in scripts none of these three families covers at
-all. Those locales fell back to the reader's system fonts before this
+subsets only. Of the locales this bundle ships, three - Arabic, Hindi and
+Chinese - are in scripts none of these three families covers at all. Those locales fell back to the reader's system fonts before this
 change and they fall back to the reader's system fonts after it; taking the
 Cyrillic, Greek and Vietnamese subsets would have added bytes for scripts
 no locale here uses. The fallback stack in every page's CSS is what serves

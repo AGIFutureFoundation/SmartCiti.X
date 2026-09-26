@@ -55,6 +55,8 @@ export function claimsReview(status) {
  */
 export function validateCatalog(locale, doc) {
   const problems = [];
+  const wantDir = RTL_LOCALES.includes(locale) ? 'rtl' : 'ltr';
+  if (doc.dir !== wantDir) problems.push(`${locale}: dir is ${JSON.stringify(doc.dir)}; its script runs ${wantDir}`);
   const status = doc?.translation_status;
   if (!STATUSES.includes(status)) {
     problems.push(`${locale}: translation_status ${JSON.stringify(status)} is not one of `
@@ -122,6 +124,11 @@ export function hallNameLocales() {
 export function loadHallNames(locale) {
   return JSON.parse(readFileSync(new URL(`${locale}.json`, HALL_NAMES_DIR)));
 }
+
+/** The locales whose script runs right-to-left. A catalog's `dir` is held
+ *  to this set by the validator, so a new right-to-left locale cannot ship
+ *  left-to-right by omission, and a left-to-right one cannot claim rtl. */
+export const RTL_LOCALES = Object.freeze(['ar', 'he', 'fa', 'ur']);
 
 /** Every locale shipped, discovered rather than listed (one truth). */
 export const LOCALES = readdirSync(DIR)

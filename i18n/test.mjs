@@ -2,16 +2,13 @@
  * Locale catalog verification.
  *
  * The catalogs are one more set of surfaces that can disagree — with each
- * other (a key translated in five languages and missing in the sixth) and
+ * other (a key translated in most catalogs and missing in one) and
  * with the pack (a district renamed in the roster but not in the strings).
  * Both failure classes are the bundle's oldest defect shape, so both are
  * checked here rather than trusted.
  */
-import { readFileSync } from 'node:fs';
-import {
-  LOCALES, load, t, fmt, STATUSES, claimsReview, validateCatalog,
-  hallNameLocales, loadHallNames, validateHallNames,
-} from './catalog.mjs';
+import { readFileSync, readdirSync } from 'node:fs';
+import { LOCALES, load, t, fmt, STATUSES, claimsReview, validateCatalog, hallNameLocales, loadHallNames, validateHallNames, RTL_LOCALES } from './catalog.mjs';
 
 let n = 0;
 const ok = (m, c) => { if (!c) { console.error('FAIL', m); process.exit(1); } n++; console.log('  ok ', m); };
@@ -23,12 +20,15 @@ const manifest = JSON.parse(readFileSync(new URL('../pack/manifest.json', import
 const skills = JSON.parse(readFileSync(new URL('../pack/registry/skills.json', import.meta.url))).skills;
 
 /* -------------------------------------------------------------- roster --- */
-ok(`eight locales ship: ${LOCALES.join(', ')}`,
-  LOCALES.length === 8 && LOCALES.includes('en'));
+ok(`${LOCALES.length} locales ship, discovered from the directory rather than counted here: ${LOCALES.join(', ')}`,
+  LOCALES.length === readdirSync(new URL('./locales/', import.meta.url)).filter((f) => f.endsWith('.json')).length
+  && LOCALES.includes('en') && LOCALES.length >= 2);
 ok('every locale file names itself correctly and declares a direction',
   LOCALES.every((l) => load(l).locale === l && ['ltr', 'rtl'].includes(load(l).dir)));
-ok('Arabic is right-to-left; every other shipped locale is left-to-right',
-  load('ar').dir === 'rtl' && LOCALES.filter((l) => l !== 'ar').every((l) => load(l).dir === 'ltr'));
+ok('direction follows the script: every right-to-left locale the catalog module declares is rtl, every other is ltr, and the validator refuses the reverse',
+  LOCALES.every((l) => load(l).dir === (RTL_LOCALES.includes(l) ? 'rtl' : 'ltr'))
+  && validateCatalog('ar', { ...load('ar'), dir: 'ltr' }).some((p) => /runs rtl/.test(p))
+  && validateCatalog('en', { ...load('en'), dir: 'rtl' }).some((p) => /runs ltr/.test(p)));
 ok('every non-source locale declares its review status honestly',
   LOCALES.filter((l) => l !== 'en').every((l) => /pending .*review/.test(load(l).translation_status))
   && en.translation_status === 'source language');

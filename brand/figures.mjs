@@ -64,6 +64,10 @@ const N_AV_STD_OPTIONS = AV_STD.reduce((n, s) => n + s.options.length, 0);
 const N_AV_CREW_LOOKS = AV_CREW.options.length;
 const N_AV_OPTIONS = N_AV_STD_OPTIONS + N_AV_CREW_LOOKS;
 const N_SCHOOL_DISTRICTS = schoolsReg.districts.length;
+// The locale count: README, ROADMAP and the wiki each typed "8 languages" /
+// "8 locales" while nothing held them to the directory that ships them.
+// Read from i18n/locales, the one place a locale can be added.
+const N_LOCALES = readdirSync(join(ROOT, 'i18n/locales')).filter((f) => f.endsWith('.json')).length;
 const WORDS = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight',
   'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen',
   'seventeen', 'eighteen', 'nineteen', 'twenty'];
@@ -154,6 +158,12 @@ const RULES = [
   { wrong: new RegExp(`\\b(?!(?:${N_AV_STD_OPTIONS}|${N_AV_CREW_LOOKS}|${N_AV_OPTIONS})\\b)\\d{3}\\s+options\\b`, 'g'),
     right: `${N_AV_STD_OPTIONS} options (standard) / ${N_AV_OPTIONS} options (with the ${N_AV_CREW_LOOKS}-look crew section)`,
     why: `the locker holds ${N_AV_STD_OPTIONS} standard options + ${N_AV_CREW_LOOKS} crew looks = ${N_AV_OPTIONS} (avatars/registry/avatars.json)` },
+  // The locale count, on any surface that states it: "N languages", "N
+  // locales", "N locale catalogs". Backtick text is exempt like everything
+  // else, and a sentence with no number ("in any language") is not a claim.
+  { wrong: new RegExp(`\\b(?:${notN(N_LOCALES)})\\s+(?:locales|languages|locale catalogs)\\b`, 'gi'),
+    right: `${N_LOCALES} locales`,
+    why: `the bundle ships ${N_LOCALES} locale catalogs (i18n/locales/*.json)` },
   // The schools pack's proposed-district records: four records across the
   // three district-campus regions, and the count is the records, not the
   // regions. Same whitespace tolerance as the rules above.

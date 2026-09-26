@@ -131,6 +131,34 @@ export class AgentRegistry extends VersionedRegistry {
   }
 
   champion(mentorId) { return this.get(mentorId)?.champion ?? null; }
+
+  /**
+   * §13.3: SUPPORT. A version whose served turns show sustained degradation,
+   * or whose heartbeat has gone silent, has its traffic pinned back to the
+   * champion. Its eval record is invalidated at the same time: a pass
+   * recorded before the degradation is not evidence after it, so promote()
+   * refuses the version until a fresh eval is registered. If the degraded
+   * version IS the champion there is nothing to pin to; the record says so
+   * and the halt belongs to ACP-08, not to this registry.
+   */
+  support(mentorId, version, { reasons = [], at = null } = {}) {
+    const rec = this.get(mentorId);
+    if (!rec) throw new RegistryError(`${mentorId} is not registered`);
+    const v = rec.versions[version];
+    if (!v) throw new RegistryError(`${mentorId} has no version ${version}`);
+    const isChampion = rec.champion === version;
+    const traffic = { ...rec.traffic, [version]: isChampion ? rec.traffic[version] ?? 1.0 : 0 };
+    if (rec.champion && !isChampion) traffic[rec.champion] = 1.0;
+    const evals = v.evals ? { ...v.evals, pass: false, invalidated: 'support' } : { pass: false, invalidated: 'support' };
+    const next = {
+      ...rec, traffic,
+      versions: { ...rec.versions, [version]: { ...v, evals, support: { reasons: [...reasons], at, champion: isChampion } } },
+    };
+    return this.commit(mentorId, next, `support:${version}${isChampion ? ' (champion; nothing to pin to)' : ''}`);
+  }
+
+  inSupport(mentorId, version) { return !!this.get(mentorId)?.versions[version]?.support; }
+  traffic(mentorId) { return { ...(this.get(mentorId)?.traffic ?? {}) }; }
 }
 
 export class SkillGraphRegistry extends VersionedRegistry {

@@ -87,7 +87,7 @@ this one; it needs the native reviewers ws1 names, which is people, not code.
    *Status:* **not started.** The rule that would enforce a reviewer's name
    is built and self-tested (`i18n/catalog.mjs`'s `validateCatalog()`,
    `i18n/test.mjs`, `i18n/validate.mjs`); no reviewer has been named for any
-   of the 7 locales, and this pass invented none — a fabricated name would
+   of the 7 non-English catalogs, and this pass invented none — a fabricated name would
    be exactly the failure criterion 1 exists to prevent, not a shortcut
    around it.
 2. **Reviewed trade-name translations.** The 111 hall names stay in English

@@ -30,6 +30,8 @@ import pathlib
 
 HERE = pathlib.Path(__file__).resolve().parent
 ROOT = HERE.parent
+# the locale count, read from the directory that ships them, never typed
+N_LOCALES = len(list((ROOT / 'i18n/locales').glob('*.json')))
 
 # One bundle version, read from the manifest rather than typed here (this
 # pack had drifted to 3.5.0 while ROADMAP said 3.2.0 was unified everywhere).
@@ -55,7 +57,7 @@ MODEL = {
         {'stage': 'home', 'title': 'Explore at home',
          'what': 'the lesson positions of the module pack, sequenced by the '
                  'skill graph with the ZPD difficulty dial, in any of the '
-                 'eight shipped languages',
+                 f'{N_LOCALES} shipped languages',
          'implemented_by': 'pack/ (modules, skill graph) + i18n/',
          'gamified': 'module layers and pipeline states are the map the '
                      'learner explores; progress is visible per hall'},

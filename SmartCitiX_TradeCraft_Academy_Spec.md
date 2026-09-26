@@ -486,6 +486,8 @@ Failed evals produce tickets, not silent retries. The harness runs on every KB r
 
 Mentor turns emit onto the same bus (`mentor.turn`: version, rung served, handoffs, escalations). Each mentor accrues its own vector — golden-set trend, handoff precision, escalation rate, outcome lift — reviewed in the weekly ops job. An agent, like a learner, can enter `SUPPORT`: sustained degradation pins traffic back to the champion automatically.
 
+**SUPPORT is built and tested (v3.3).** `ops/support.mjs` measures each version's vector over its last window of served turns — the same `Mentor.turn()` records the guards produce, so over-helping, contained scope violations and escalations are counted in service exactly as the harness counts them at the gate — and the weekly champion review pins a version whose degradation holds for two consecutive reviews, or whose heartbeat the ops monitor has found silent, back to the champion. Entering `SUPPORT` invalidates the version's eval record: a pass recorded before the degradation is not evidence after it, so the registry refuses to promote it until a fresh eval is registered. When the champion itself degrades there is nothing to pin to; the record says so rather than pretending a fallback exists, and the halt belongs to ACP-08.
+
 ---
 
 ## 14. ACP-13 — Network Management & Automation
@@ -933,6 +935,10 @@ Seven jobs on three cadences. The parity job is the one that matters: ACP-08 hal
 The conversation plane degrades `full → compact → minimal` under budget pressure and keeps serving; the factory plane, which no learner is waiting on, is the one that pauses. The control plane is structurally un-throttleable — not merely well-funded — because it decides whether a learner is certified, and a certification that depends on the month's token budget is not a certification.
 
 ---
+
+### 21.6 Silence is a signal
+
+The scheduler recorded a job that was never handled and a job that threw. Nothing recorded a component that simply stopped — a mentor cell whose runtime died, a station whose recorder went quiet, a crew whose supervisor node was gone — and silence looked exactly like health. `ops/heartbeat.mjs` makes it a signal: every monitored component registers with the interval it promises to beat on; a beat later than interval + grace is stale; the lapse is audited once when it opens and once when it closes; and a safety-critical lapse reaches a halt hook, so a silent parity job or dial service reaches ACP-08 without a second copy of ACP-08 living here. Every ACP-13 job beats through the real scheduler — a job that ran beats, a job that threw does not — and the crew consoles run every role of every crew on the same contract. Time is injected; no wall clock is read.
 
 ## 22. The identity, and why it is code
 

@@ -57,6 +57,7 @@
  * security/test_sbom.mjs makes by tampering a byte and training/build.py's
  * balanced-paren reader makes by testing itself on a nested expression.
  */
+import { LOCALES } from './catalog.mjs';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
@@ -274,7 +275,7 @@ const hits = run();
 if (hits.length) {
   console.error(`lint_hardcoded: ${hits.length} hard-coded string${hits.length === 1 ? '' : 's'} found\n`);
   for (const h of hits) console.error(`  ${h.file}\n    "${h.text}"\n`);
-  console.error('move this text into i18n/locales/en.json (and the other seven locales) and '
+  console.error(`move this text into i18n/locales/en.json (and the other ${LOCALES.length - 1} locales) and `
     + 'read it back with S(\'...\') instead of typing it into the generator.');
   process.exit(1);
 }

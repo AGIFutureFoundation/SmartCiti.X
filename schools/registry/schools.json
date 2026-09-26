@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-13",
- "source_stamp": "691a8eb593248b6e",
+ "source_stamp": "73a075340957b8da",
  "honesty": {
   "districts": "district names are public-record identities only; every record is a PROPOSED partner - no district has reviewed or agreed, and no agreement exists",
   "certification": "nothing in the school program certifies equipment operation; the assessment gates demand unaided verification and simulator hours never count toward certification"
@@ -15,7 +15,7 @@
    {
     "stage": "home",
     "title": "Explore at home",
-    "what": "the lesson positions of the module pack, sequenced by the skill graph with the ZPD difficulty dial, in any of the eight shipped languages",
+    "what": "the lesson positions of the module pack, sequenced by the skill graph with the ZPD difficulty dial, in any of the 8 shipped languages",
     "implemented_by": "pack/ (modules, skill graph) + i18n/",
     "gamified": "module layers and pipeline states are the map the learner explores; progress is visible per hall"
    },
