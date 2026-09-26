@@ -1,0 +1,1096 @@
+{
+ "pack": "smartcitix-trade-craft-academy-completion",
+ "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
+ "pack_version": "3.2.0",
+ "built": "2026-09-26",
+ "source_stamp": "316b71485121ecb9",
+ "provenance": "DERIVED",
+ "provenance_note": "every fact here is read from the registry that owns it and re-derivable by build.py; the fixture record is SCRIPTED and labelled as not a learner",
+ "honesty": {
+  "proves": [
+   "the record has not changed since it was exported: its SHA-256 digest recomputes over the canonical form",
+   "every lesson, step, hall, seat, scenario, station and district it names exists in this bundle at the stated pack version",
+   "every step marked done whose kind writes a training episode carries that episode as evidence",
+   "no lesson is marked complete with a step still undone, and none ahead of its ladder prerequisite"
+  ],
+  "does_not_prove": [
+   "who the learner is: identity.claimed is typed by the person, attested by this device only, and nothing checks it",
+   "that the device was honest: a record can be written by hand and will verify if it is internally consistent",
+   "that a self-reported step (walk, placard) happened at all",
+   "a station or crib mark is a device-local mark, not a recorded episode",
+   "that the seat was passed under supervision, or that any score means anything outside this bundle",
+   "any accreditation, ticket, licence or credential; no hall, employer or authority has signed anything",
+   "any duration of training, and no price is claimed"
+  ],
+  "digest": "a digest proves integrity since export, not identity",
+  "signature": "null, always: this bundle has no signing key and no server; a non-null signature is refused as a forgery",
+  "accreditation": "nothing here is an accreditation"
+ },
+ "record_tag": "tc-completion/1",
+ "progress_source": {
+  "key": "tc-progress",
+  "where": "localStorage of the built page (web/build_3d.py)",
+  "fields": [
+   "sims[id].passed",
+   "tools[district].passed",
+   "stations[]"
+  ]
+ },
+ "contract": {
+  "record": {
+   "is": "the literal string tc-completion/1",
+   "proves": "which contract the verifier applies"
+  },
+  "product": {
+   "is": "pack/manifest.json product",
+   "proves": "which product wrote it; nothing about the learner"
+  },
+  "pack_version": {
+   "is": "pack/manifest.json pack_version",
+   "proves": "which registries the ids resolve against"
+  },
+  "exported_at": {
+   "is": "ISO-8601 string, device clock",
+   "proves": "nothing: a device clock is not attested"
+  },
+  "identity": {
+   "is": "{claimed: string|null, attested_by: \"this device only\", signature: null}",
+   "proves": "nothing about who the learner is; claimed is typed, not checked"
+  },
+  "lessons": {
+   "is": "one entry per lesson the export covers: lesson id, hall, complete, steps[]",
+   "proves": "per step: done and its evidence per the evidence rule of its kind"
+  },
+  "sims": {
+   "is": "{sim id: {passed, score, attempts}} from tc-progress.sims",
+   "proves": "the page marked the seat passed; the score has no registry threshold"
+  },
+  "tools": {
+   "is": "{district: {passed}} from tc-progress.tools",
+   "proves": "the crib check was graded passed on this device"
+  },
+  "stations": {
+   "is": "station ids from tc-progress.stations",
+   "proves": "a station was taken at its bench on this device"
+  },
+  "honesty": {
+   "is": "the proves / does_not_prove lists of this registry, carried in the record",
+   "proves": "that the record says of itself what this registry says of it"
+  },
+  "digest": {
+   "alg": "SHA-256",
+   "over": "canonical JSON of every top-level field except digest: keys sorted recursively, no whitespace, UTF-8",
+   "numbers": "exporters write integers for score and attempts so Python and JavaScript canonicalise alike"
+  }
+ },
+ "digest": {
+  "alg": "SHA-256",
+  "over": "canonical JSON of every top-level field except digest: keys sorted recursively, no whitespace, UTF-8",
+  "numbers": "exporters write integers for score and attempts so Python and JavaScript canonicalise alike"
+ },
+ "evidence_classes": {
+  "episode-backed": "the step kind records a training episode; only this class is called evidence-backed",
+  "device-mark": "station or crib: a mark in the device-local progress record, not a recorded episode",
+  "self-reported": "walk or placard: no mark at all; done is the learner's word"
+ },
+ "evidence_rule": {
+  "walk": {
+   "class": "self-reported",
+   "records": null,
+   "evidence_required_when_done": false,
+   "evidence_shape": null,
+   "why_no_episode": "arriving somewhere is not an achievement, and a bundle that logged footsteps would be counting attendance while claiming to teach"
+  },
+  "placard": {
+   "class": "self-reported",
+   "records": null,
+   "evidence_required_when_done": false,
+   "evidence_shape": null,
+   "why_no_episode": "the placard states the room condition record; reading a record changes nothing and is nobody's score"
+  },
+  "station": {
+   "class": "device-mark",
+   "records": null,
+   "evidence_required_when_done": false,
+   "evidence_shape": {
+    "station": "station id"
+   },
+   "from": "tc-progress.stations",
+   "why_no_episode": "a station mark lands in the device-local progress record the halls already keep; the training log holds simulator, advisor, crew and walkaround episodes and this pack adds no fifth kind to it"
+  },
+  "crib": {
+   "class": "device-mark",
+   "records": null,
+   "evidence_required_when_done": false,
+   "evidence_shape": {
+    "crib": "district",
+    "passed": "bool"
+   },
+   "from": "tc-progress.tools[district].passed",
+   "why_no_episode": "the crib check is graded deterministically against the crib record and kept with the progress record, not as a training episode"
+  },
+  "walkaround": {
+   "class": "episode-backed",
+   "records": "walkaround",
+   "evidence_required_when_done": true,
+   "evidence_shape": {
+    "episode": "walkaround",
+    "t": "finite number",
+    "hall": "the step's own hall, verbatim",
+    "point": "the step's own point, verbatim",
+    "sim": "the step's own sim, verbatim"
+   },
+   "episode_fields": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "sim",
+    "point"
+   ],
+   "checkable": [
+    "hall",
+    "point",
+    "sim"
+   ],
+   "not_checkable": [],
+   "not_checkable_why": "the episode kind never records these step references (training.json#episode_kinds), so no export can carry them and the verifier does not pretend to check them",
+   "rule": "step.episode-evidence: episode == step kind, t finite, every checkable field equals the step's own value"
+  },
+  "sim": {
+   "class": "episode-backed",
+   "records": "sim",
+   "evidence_required_when_done": true,
+   "evidence_shape": {
+    "sim": "sim id",
+    "scenario": "scenario id",
+    "score": "number",
+    "passed": "bool"
+   },
+   "episode_fields": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "sim",
+    "scenario",
+    "controls",
+    "actor",
+    "operator",
+    "outcome"
+   ],
+   "checkable": [
+    "campus",
+    "hall",
+    "scenario",
+    "sim"
+   ],
+   "not_checkable": [],
+   "not_checkable_why": "the episode kind never records these step references (training.json#episode_kinds), so no export can carry them and the verifier does not pretend to check them",
+   "rule": "ids.sim / ids.scenario: the evidence sim and scenario must be the step's own"
+  },
+  "advisor": {
+   "class": "episode-backed",
+   "records": "advisor",
+   "evidence_required_when_done": true,
+   "evidence_shape": {
+    "episode": "advisor",
+    "t": "finite number",
+    "advisor": "the step's own advisor, verbatim",
+    "answer_kind": "the step's own answer_kind, verbatim",
+    "hall": "the step's own hall, verbatim",
+    "topic": "the step's own topic, verbatim"
+   },
+   "episode_fields": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "advisor",
+    "topic",
+    "answer_kind"
+   ],
+   "checkable": [
+    "advisor",
+    "answer_kind",
+    "hall",
+    "topic"
+   ],
+   "not_checkable": [],
+   "not_checkable_why": "the episode kind never records these step references (training.json#episode_kinds), so no export can carry them and the verifier does not pretend to check them",
+   "rule": "step.episode-evidence: episode == step kind, t finite, every checkable field equals the step's own value"
+  },
+  "crew": {
+   "class": "episode-backed",
+   "records": "crew",
+   "evidence_required_when_done": true,
+   "evidence_shape": {
+    "episode": "crew",
+    "t": "finite number",
+    "answer_kind": "the step's own answer_kind, verbatim",
+    "crew": "the step's own crew, verbatim",
+    "hall": "the step's own hall, verbatim",
+    "role": "the step's own role, verbatim",
+    "topic": "the step's own topic, verbatim"
+   },
+   "episode_fields": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "crew",
+    "role",
+    "topic",
+    "answer_kind"
+   ],
+   "checkable": [
+    "answer_kind",
+    "crew",
+    "hall",
+    "role",
+    "topic"
+   ],
+   "not_checkable": [
+    "muster",
+    "seat"
+   ],
+   "not_checkable_why": "the episode kind never records these step references (training.json#episode_kinds), so no export can carry them and the verifier does not pretend to check them",
+   "rule": "step.episode-evidence: episode == step kind, t finite, every checkable field equals the step's own value"
+  }
+ },
+ "recording_kinds": [
+  "advisor",
+  "crew",
+  "sim",
+  "walkaround"
+ ],
+ "silent_kinds": [
+  "crib",
+  "placard",
+  "station",
+  "walk"
+ ],
+ "counts": {
+  "lessons": 32,
+  "recording_steps": 65,
+  "silent_steps": 70,
+  "episode_backed_steps": 65,
+  "device_mark_steps": 21,
+  "self_reported_steps": 49,
+  "sims": 11,
+  "sims_with_threshold": 0,
+  "ladder_edges": 16,
+  "fixture_mutants": 12
+ },
+ "lessons": {
+  "riggers-first-card": {
+   "hall": "riggers",
+   "steps": 5,
+   "recording_steps": 3,
+   "silent_steps": 2,
+   "episode_backed_steps": 3,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "riggers-carry-under-control": {
+   "hall": "riggers",
+   "steps": 5,
+   "recording_steps": 4,
+   "silent_steps": 1,
+   "episode_backed_steps": 4,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": [
+    "riggers-first-card"
+   ]
+  },
+  "crane-ops-read-the-chart": {
+   "hall": "crane-ops",
+   "steps": 4,
+   "recording_steps": 3,
+   "silent_steps": 1,
+   "episode_backed_steps": 3,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": [
+    "riggers-first-card"
+   ]
+  },
+  "ironworkers-plan-out-loud": {
+   "hall": "ironworkers",
+   "steps": 5,
+   "recording_steps": 3,
+   "silent_steps": 2,
+   "episode_backed_steps": 3,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": [
+    "riggers-carry-under-control"
+   ]
+  },
+  "millwrights-shop-move": {
+   "hall": "millwrights",
+   "steps": 4,
+   "recording_steps": 3,
+   "silent_steps": 1,
+   "episode_backed_steps": 3,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": [
+    "crane-ops-read-the-chart"
+   ]
+  },
+  "welders-the-watch": {
+   "hall": "welders",
+   "steps": 5,
+   "recording_steps": 3,
+   "silent_steps": 2,
+   "episode_backed_steps": 3,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "boilermakers-get-them-out": {
+   "hall": "boilermakers",
+   "steps": 4,
+   "recording_steps": 3,
+   "silent_steps": 1,
+   "episode_backed_steps": 3,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": [
+    "welders-the-watch"
+   ]
+  },
+  "operating-eng-locate-first": {
+   "hall": "operating-eng",
+   "steps": 5,
+   "recording_steps": 4,
+   "silent_steps": 1,
+   "episode_backed_steps": 4,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": []
+  },
+  "demolition-stand-back": {
+   "hall": "demolition",
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": [
+    "operating-eng-locate-first"
+   ]
+  },
+  "scaffold-read-the-tag": {
+   "hall": "scaffold",
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 1,
+   "self_reported_steps": 1,
+   "needs": []
+  },
+  "scaffold-build-in-order": {
+   "hall": "scaffold",
+   "steps": 5,
+   "recording_steps": 3,
+   "silent_steps": 2,
+   "episode_backed_steps": 3,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": [
+    "scaffold-read-the-tag"
+   ]
+  },
+  "waterproofers-flash-it-right": {
+   "hall": "waterproofers",
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 1,
+   "self_reported_steps": 1,
+   "needs": [
+    "scaffold-build-in-order"
+   ]
+  },
+  "bricklayers-gear-that-stays-on": {
+   "hall": "bricklayers",
+   "steps": 4,
+   "recording_steps": 1,
+   "silent_steps": 3,
+   "episode_backed_steps": 1,
+   "device_mark_steps": 1,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "bricklayers-grout-the-lift": {
+   "hall": "bricklayers",
+   "steps": 3,
+   "recording_steps": 1,
+   "silent_steps": 2,
+   "episode_backed_steps": 1,
+   "device_mark_steps": 1,
+   "self_reported_steps": 1,
+   "needs": [
+    "bricklayers-gear-that-stays-on"
+   ]
+  },
+  "cement-masons-mind-the-weather": {
+   "hall": "cement-masons",
+   "steps": 6,
+   "recording_steps": 1,
+   "silent_steps": 5,
+   "episode_backed_steps": 1,
+   "device_mark_steps": 2,
+   "self_reported_steps": 3,
+   "needs": [
+    "bricklayers-gear-that-stays-on"
+   ]
+  },
+  "stone-carvers-hang-it-safely": {
+   "hall": "stone-carvers",
+   "steps": 3,
+   "recording_steps": 1,
+   "silent_steps": 2,
+   "episode_backed_steps": 1,
+   "device_mark_steps": 1,
+   "self_reported_steps": 1,
+   "needs": [
+    "bricklayers-gear-that-stays-on"
+   ]
+  },
+  "tilesetters-start-underneath": {
+   "hall": "tilesetters",
+   "steps": 4,
+   "recording_steps": 1,
+   "silent_steps": 3,
+   "episode_backed_steps": 1,
+   "device_mark_steps": 2,
+   "self_reported_steps": 1,
+   "needs": [
+    "bricklayers-gear-that-stays-on"
+   ]
+  },
+  "lathers-frame-for-the-next-trade": {
+   "hall": "lathers",
+   "steps": 4,
+   "recording_steps": 1,
+   "silent_steps": 3,
+   "episode_backed_steps": 1,
+   "device_mark_steps": 2,
+   "self_reported_steps": 1,
+   "needs": []
+  },
+  "restore-point-the-joint": {
+   "hall": "masonry-restore",
+   "steps": 4,
+   "recording_steps": 1,
+   "silent_steps": 3,
+   "episode_backed_steps": 1,
+   "device_mark_steps": 2,
+   "self_reported_steps": 1,
+   "needs": []
+  },
+  "restore-write-it-down": {
+   "hall": "masonry-restore",
+   "steps": 3,
+   "recording_steps": 1,
+   "silent_steps": 2,
+   "episode_backed_steps": 1,
+   "device_mark_steps": 1,
+   "self_reported_steps": 1,
+   "needs": [
+    "restore-point-the-joint"
+   ]
+  },
+  "refractory-dry-it-slowly": {
+   "hall": "refractory",
+   "steps": 4,
+   "recording_steps": 1,
+   "silent_steps": 3,
+   "episode_backed_steps": 1,
+   "device_mark_steps": 2,
+   "self_reported_steps": 1,
+   "needs": []
+  },
+  "painters-contain-it": {
+   "hall": "painters",
+   "steps": 5,
+   "recording_steps": 3,
+   "silent_steps": 2,
+   "episode_backed_steps": 3,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "painters-lay-the-coat": {
+   "hall": "painters",
+   "steps": 3,
+   "recording_steps": 2,
+   "silent_steps": 1,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": [
+    "painters-contain-it"
+   ]
+  },
+  "hazmat-wash-and-decon": {
+   "hall": "hazmat",
+   "steps": 5,
+   "recording_steps": 3,
+   "silent_steps": 2,
+   "episode_backed_steps": 3,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": [
+    "painters-contain-it"
+   ]
+  },
+  "electricians-clip-in-first": {
+   "hall": "electricians",
+   "steps": 4,
+   "recording_steps": 3,
+   "silent_steps": 1,
+   "episode_backed_steps": 3,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": []
+  },
+  "glaziers-watch-the-line": {
+   "hall": "glaziers",
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": [
+    "electricians-clip-in-first"
+   ]
+  },
+  "site-safety-make-it-normal": {
+   "hall": "site-safety",
+   "steps": 3,
+   "recording_steps": 1,
+   "silent_steps": 2,
+   "episode_backed_steps": 1,
+   "device_mark_steps": 1,
+   "self_reported_steps": 1,
+   "needs": []
+  },
+  "surveyors-trust-the-control": {
+   "hall": "surveyors",
+   "steps": 5,
+   "recording_steps": 2,
+   "silent_steps": 3,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 1,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "line-workers-find-the-fault": {
+   "hall": "line-workers",
+   "steps": 5,
+   "recording_steps": 1,
+   "silent_steps": 4,
+   "episode_backed_steps": 1,
+   "device_mark_steps": 1,
+   "self_reported_steps": 3,
+   "needs": []
+  },
+  "hvacr-prove-the-sequence": {
+   "hall": "hvacr",
+   "steps": 4,
+   "recording_steps": 1,
+   "silent_steps": 3,
+   "episode_backed_steps": 1,
+   "device_mark_steps": 1,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "fiber-splicers-keep-the-trace": {
+   "hall": "fiber-splicers",
+   "steps": 4,
+   "recording_steps": 2,
+   "silent_steps": 2,
+   "episode_backed_steps": 2,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "carpenters-return-it-the-same": {
+   "hall": "carpenters",
+   "steps": 4,
+   "recording_steps": 1,
+   "silent_steps": 3,
+   "episode_backed_steps": 1,
+   "device_mark_steps": 1,
+   "self_reported_steps": 2,
+   "needs": []
+  }
+ },
+ "sims": {
+  "crane-lift": {
+   "name": "Tower Crane Lift",
+   "scenarios": [
+    "bay-steel",
+    "oak-terminal",
+    "nola-wharf"
+   ],
+   "threshold": null,
+   "why": "sims/registry/sims.json scores this seat per rubric axis (\"pass\" rule per axis below) and publishes no scalar score threshold; none is invented here. The page sets tc-progress.sims[id].passed from the axes, and the verifier takes `passed` from the record without re-deriving it.",
+   "rubric_axes": [
+    {
+     "axis": "placement",
+     "pass": "<= 1.2"
+    },
+    {
+     "axis": "swing",
+     "pass": "<= 2.0"
+    },
+    {
+     "axis": "strikes",
+     "pass": "== 0"
+    },
+    {
+     "axis": "time",
+     "pass": "informational"
+    }
+   ],
+   "scoring_contract": "deterministic: every rubric axis is computed from measured state; nothing narrative can change a score"
+  },
+  "excavator-trench": {
+   "name": "Excavator Trench Cut",
+   "scenarios": [
+    "bay-retrofit",
+    "oak-fill",
+    "nola-below-sea"
+   ],
+   "threshold": null,
+   "why": "sims/registry/sims.json scores this seat per rubric axis (\"pass\" rule per axis below) and publishes no scalar score threshold; none is invented here. The page sets tc-progress.sims[id].passed from the axes, and the verifier takes `passed` from the record without re-deriving it.",
+   "rubric_axes": [
+    {
+     "axis": "grade",
+     "pass": "== all"
+    },
+    {
+     "axis": "utility",
+     "pass": "== 0"
+    },
+    {
+     "axis": "spoil",
+     "pass": "== all"
+    },
+    {
+     "axis": "time",
+     "pass": "informational"
+    }
+   ],
+   "scoring_contract": "deterministic: every rubric axis is computed from measured state; nothing narrative can change a score"
+  },
+  "forklift-run": {
+   "name": "Forklift Yard Run",
+   "scenarios": [
+    "bay-yard",
+    "oak-lane",
+    "nola-dock"
+   ],
+   "threshold": null,
+   "why": "sims/registry/sims.json scores this seat per rubric axis (\"pass\" rule per axis below) and publishes no scalar score threshold; none is invented here. The page sets tc-progress.sims[id].passed from the axes, and the verifier takes `passed` from the record without re-deriving it.",
+   "rubric_axes": [
+    {
+     "axis": "gates",
+     "pass": "== all"
+    },
+    {
+     "axis": "cones",
+     "pass": "== 0"
+    },
+    {
+     "axis": "docking",
+     "pass": "required"
+    },
+    {
+     "axis": "time",
+     "pass": "informational"
+    }
+   ],
+   "scoring_contract": "deterministic: every rubric axis is computed from measured state; nothing narrative can change a score"
+  },
+  "weld-bead": {
+   "name": "Weld Bead Run",
+   "scenarios": [
+    "bay-deck-seam",
+    "oak-flange-bead",
+    "nola-tank-seam"
+   ],
+   "threshold": null,
+   "why": "sims/registry/sims.json scores this seat per rubric axis (\"pass\" rule per axis below) and publishes no scalar score threshold; none is invented here. The page sets tc-progress.sims[id].passed from the axes, and the verifier takes `passed` from the record without re-deriving it.",
+   "rubric_axes": [
+    {
+     "axis": "fusion",
+     "pass": "== all"
+    },
+    {
+     "axis": "band",
+     "pass": ">= 90"
+    },
+    {
+     "axis": "burns",
+     "pass": "== 0"
+    },
+    {
+     "axis": "time",
+     "pass": "informational"
+    }
+   ],
+   "scoring_contract": "deterministic: every rubric axis is computed from measured state; nothing narrative can change a score"
+  },
+  "scaffold-bay": {
+   "name": "Scaffold Bay Build",
+   "scenarios": [
+    "bay-training-bay",
+    "oak-plant-bay",
+    "nola-storm-bay"
+   ],
+   "threshold": null,
+   "why": "sims/registry/sims.json scores this seat per rubric axis (\"pass\" rule per axis below) and publishes no scalar score threshold; none is invented here. The page sets tc-progress.sims[id].passed from the axes, and the verifier takes `passed` from the record without re-deriving it.",
+   "rubric_axes": [
+    {
+     "axis": "sequence",
+     "pass": "== 0"
+    },
+    {
+     "axis": "complete",
+     "pass": "informational"
+    },
+    {
+     "axis": "time",
+     "pass": "informational"
+    }
+   ],
+   "scoring_contract": "deterministic: every rubric axis is computed from measured state; nothing narrative can change a score"
+  },
+  "rigging-signals": {
+   "name": "Rigging Signal Call",
+   "scenarios": [
+    "bay-first-card",
+    "oak-blind-pick",
+    "nola-wind-card"
+   ],
+   "threshold": null,
+   "why": "sims/registry/sims.json scores this seat per rubric axis (\"pass\" rule per axis below) and publishes no scalar score threshold; none is invented here. The page sets tc-progress.sims[id].passed from the axes, and the verifier takes `passed` from the record without re-deriving it.",
+   "rubric_axes": [
+    {
+     "axis": "calls",
+     "pass": "== all"
+    },
+    {
+     "axis": "wrong",
+     "pass": "== 0"
+    },
+    {
+     "axis": "time",
+     "pass": "informational"
+    }
+   ],
+   "scoring_contract": "deterministic: every rubric axis is computed from measured state; nothing narrative can change a score"
+  },
+  "load-chart": {
+   "name": "Load Chart Judgment",
+   "scenarios": [
+    "bay-pick-list",
+    "oak-heavy-list",
+    "nola-barge-list"
+   ],
+   "threshold": null,
+   "why": "sims/registry/sims.json scores this seat per rubric axis (\"pass\" rule per axis below) and publishes no scalar score threshold; none is invented here. The page sets tc-progress.sims[id].passed from the axes, and the verifier takes `passed` from the record without re-deriving it.",
+   "rubric_axes": [
+    {
+     "axis": "judgments",
+     "pass": "== all"
+    },
+    {
+     "axis": "overloads",
+     "pass": "== 0"
+    },
+    {
+     "axis": "time",
+     "pass": "informational"
+    }
+   ],
+   "scoring_contract": "deterministic: every rubric axis is computed from measured state; nothing narrative can change a score"
+  },
+  "pressure-washer": {
+   "name": "Pressure Washer Surface Clean",
+   "scenarios": [
+    "bay-seawall-clean",
+    "oak-bulkhead-clean",
+    "nola-floodwall-clean"
+   ],
+   "threshold": null,
+   "why": "sims/registry/sims.json scores this seat per rubric axis (\"pass\" rule per axis below) and publishes no scalar score threshold; none is invented here. The page sets tc-progress.sims[id].passed from the axes, and the verifier takes `passed` from the record without re-deriving it.",
+   "rubric_axes": [
+    {
+     "axis": "coverage",
+     "pass": ">= 95"
+    },
+    {
+     "axis": "damage",
+     "pass": "== 0"
+    },
+    {
+     "axis": "containment",
+     "pass": "required"
+    },
+    {
+     "axis": "time",
+     "pass": "informational"
+    }
+   ],
+   "scoring_contract": "deterministic: every rubric axis is computed from measured state; nothing narrative can change a score"
+  },
+  "airless-sprayer": {
+   "name": "Airless Paint Sprayer Finish",
+   "scenarios": [
+    "bay-terminal-finish",
+    "oak-warehouse-finish",
+    "nola-shotgun-finish"
+   ],
+   "threshold": null,
+   "why": "sims/registry/sims.json scores this seat per rubric axis (\"pass\" rule per axis below) and publishes no scalar score threshold; none is invented here. The page sets tc-progress.sims[id].passed from the axes, and the verifier takes `passed` from the record without re-deriving it.",
+   "rubric_axes": [
+    {
+     "axis": "coverage",
+     "pass": ">= 95"
+    },
+    {
+     "axis": "runs",
+     "pass": "== 0"
+    },
+    {
+     "axis": "holidays",
+     "pass": "== 0"
+    },
+    {
+     "axis": "overspray",
+     "pass": "== 0"
+    },
+    {
+     "axis": "time",
+     "pass": "informational"
+    }
+   ],
+   "scoring_contract": "deterministic: every rubric axis is computed from measured state; nothing narrative can change a score"
+  },
+  "boom-lift": {
+   "name": "Boom Lift Basket Work",
+   "scenarios": [
+    "bay-curtainwall-run",
+    "oak-terminal-fixtures",
+    "nola-storm-shutters"
+   ],
+   "threshold": null,
+   "why": "sims/registry/sims.json scores this seat per rubric axis (\"pass\" rule per axis below) and publishes no scalar score threshold; none is invented here. The page sets tc-progress.sims[id].passed from the axes, and the verifier takes `passed` from the record without re-deriving it.",
+   "rubric_axes": [
+    {
+     "axis": "reach",
+     "pass": "== all"
+    },
+    {
+     "axis": "envelope",
+     "pass": "== 0"
+    },
+    {
+     "axis": "tie-off",
+     "pass": "required"
+    },
+    {
+     "axis": "slope",
+     "pass": "required"
+    },
+    {
+     "axis": "strikes",
+     "pass": "== 0"
+    },
+    {
+     "axis": "time",
+     "pass": "informational"
+    }
+   ],
+   "scoring_contract": "deterministic: every rubric axis is computed from measured state; nothing narrative can change a score"
+  },
+  "overhead-crane": {
+   "name": "Overhead Crane Shop Move",
+   "scenarios": [
+    "bay-fab-coil",
+    "oak-foundry-ladle",
+    "nola-boatshed-engine"
+   ],
+   "threshold": null,
+   "why": "sims/registry/sims.json scores this seat per rubric axis (\"pass\" rule per axis below) and publishes no scalar score threshold; none is invented here. The page sets tc-progress.sims[id].passed from the axes, and the verifier takes `passed` from the record without re-deriving it.",
+   "rubric_axes": [
+    {
+     "axis": "placement",
+     "pass": "<= 0.5"
+    },
+    {
+     "axis": "sway",
+     "pass": "<= 0.6"
+    },
+    {
+     "axis": "path",
+     "pass": "== 0"
+    },
+    {
+     "axis": "limits",
+     "pass": "== 0"
+    },
+    {
+     "axis": "clear",
+     "pass": "required"
+    },
+    {
+     "axis": "time",
+     "pass": "informational"
+    }
+   ],
+   "scoring_contract": "deterministic: every rubric axis is computed from measured state; nothing narrative can change a score"
+  }
+ },
+ "ladder": [
+  {
+   "lesson": "riggers-carry-under-control",
+   "needs": "riggers-first-card",
+   "because": "same-hall"
+  },
+  {
+   "lesson": "crane-ops-read-the-chart",
+   "needs": "riggers-first-card",
+   "because": "same-district-crib"
+  },
+  {
+   "lesson": "ironworkers-plan-out-loud",
+   "needs": "riggers-carry-under-control",
+   "because": "same-seat"
+  },
+  {
+   "lesson": "millwrights-shop-move",
+   "needs": "crane-ops-read-the-chart",
+   "because": "same-district-crib"
+  },
+  {
+   "lesson": "boilermakers-get-them-out",
+   "needs": "welders-the-watch",
+   "because": "same-seat"
+  },
+  {
+   "lesson": "demolition-stand-back",
+   "needs": "operating-eng-locate-first",
+   "because": "same-seat"
+  },
+  {
+   "lesson": "scaffold-build-in-order",
+   "needs": "scaffold-read-the-tag",
+   "because": "same-hall"
+  },
+  {
+   "lesson": "waterproofers-flash-it-right",
+   "needs": "scaffold-build-in-order",
+   "because": "same-seat"
+  },
+  {
+   "lesson": "bricklayers-grout-the-lift",
+   "needs": "bricklayers-gear-that-stays-on",
+   "because": "same-hall"
+  },
+  {
+   "lesson": "cement-masons-mind-the-weather",
+   "needs": "bricklayers-gear-that-stays-on",
+   "because": "same-district-crib"
+  },
+  {
+   "lesson": "stone-carvers-hang-it-safely",
+   "needs": "bricklayers-gear-that-stays-on",
+   "because": "same-district-crib"
+  },
+  {
+   "lesson": "tilesetters-start-underneath",
+   "needs": "bricklayers-gear-that-stays-on",
+   "because": "same-district-crib"
+  },
+  {
+   "lesson": "restore-write-it-down",
+   "needs": "restore-point-the-joint",
+   "because": "same-hall"
+  },
+  {
+   "lesson": "painters-lay-the-coat",
+   "needs": "painters-contain-it",
+   "because": "same-hall"
+  },
+  {
+   "lesson": "hazmat-wash-and-decon",
+   "needs": "painters-contain-it",
+   "because": "same-seat"
+  },
+  {
+   "lesson": "glaziers-watch-the-line",
+   "needs": "electricians-clip-in-first",
+   "because": "same-seat"
+  }
+ ],
+ "resolves_against": {
+  "lessons": "lessons/registry/lessons.json",
+  "sims": "sims/registry/sims.json",
+  "halls": "pack/registry/halls.json",
+  "stations": "stations/registry/stations.json",
+  "tools": "tools/registry/toolcribs.json",
+  "manifest": "pack/manifest.json",
+  "training": "training/registry/training.json"
+ },
+ "verifier": {
+  "run": "node completion/verify.mjs <record.json>",
+  "rules": [
+   "record.fields",
+   "digest",
+   "identity.signature",
+   "ids.lesson",
+   "ids.hall",
+   "ids.step",
+   "ids.sim",
+   "ids.scenario",
+   "ids.station",
+   "ids.district",
+   "step.recording-evidence",
+   "step.episode-evidence",
+   "lesson.complete-all-steps",
+   "sim.threshold",
+   "ladder.prerequisite"
+  ]
+ },
+ "fixture": {
+  "good": "fixture/good.json",
+  "mutants": {
+   "fixture/mutant-bad-digest.json": "digest",
+   "fixture/mutant-forged-signature.json": "identity.signature",
+   "fixture/mutant-recording-step-without-evidence.json": "step.recording-evidence",
+   "fixture/mutant-complete-lesson-with-undone-step.json": "lesson.complete-all-steps",
+   "fixture/mutant-unknown-sim.json": "ids.sim",
+   "fixture/mutant-prerequisite-not-met.json": "ladder.prerequisite",
+   "fixture/mutant-episode-wrong-kind.json": "step.episode-evidence",
+   "fixture/mutant-episode-wrong-point.json": "step.episode-evidence",
+   "fixture/mutant-unknown-lesson.json": "ids.lesson",
+   "fixture/mutant-unknown-station.json": "ids.station",
+   "fixture/mutant-missing-field.json": "record.fields",
+   "fixture/mutant-unknown-scenario.json": "ids.scenario"
+  }
+ }
+}

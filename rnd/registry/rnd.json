@@ -21,16 +21,16 @@
   "measured_elsewhere": 51,
   "computed_from_registry": 12,
   "measured_source_files": 11,
-  "registries_scanned": 42,
+  "registries_scanned": 43,
   "app_renderers_scanned": 16,
   "doc_renderers_scanned": 3,
-  "builders_scanned": 32,
-  "suites_scanned": 50,
-  "declared_unbuilt": 7,
+  "builders_scanned": 33,
+  "suites_scanned": 52,
+  "declared_unbuilt": 8,
   "declared_unbuilt_by_their_own_words": 2,
-  "declared_unbuilt_not_drawn": 6,
+  "declared_unbuilt_not_drawn": 7,
   "declared_unbuilt_documented_but_not_drawn": 2,
-  "declared_unbuilt_read_by_nothing": 4,
+  "declared_unbuilt_read_by_nothing": 5,
   "gaps": 20,
   "gaps_open": 19,
   "gaps_closed": 1,
@@ -38,13 +38,13 @@
   "budget_views": 3,
   "budget_currencies": 2,
   "budget_agreements": 7,
-  "suites_run": 55,
-  "suite_checks_declared": 2476,
+  "suites_run": 56,
+  "suite_checks_declared": 2525,
   "open_questions": 12,
   "negative_findings": 9,
   "cross_checks": 2,
   "cross_checks_disagreeing": 0,
-  "files_read": 171
+  "files_read": 175
  },
  "tiers": [
   "MEASURED-IN-BROWSER",
@@ -1392,6 +1392,25 @@
    "drops_off_when": "a page generator under web/ opens this path, or the pack removes its own honesty.not_built_yet - either one, on the next build of rnd/, with no edit here"
   },
   {
+   "registry": "completion/registry/completion.json",
+   "pack": "completion",
+   "reasons": [
+    "no page generator under web/ names this path, so nothing a learner opens reads it",
+    "and nothing outside its own pack names it either - not a builder, not the wiki, not another pack's suite; inside it, completion/build.py, completion/test.mjs, completion/verify.mjs does"
+   ],
+   "says": null,
+   "read_by_app_renderers": [],
+   "read_by_doc_renderers": [],
+   "read_by_builders": [],
+   "read_by_suites": [],
+   "read_by_its_own_pack": [
+    "completion/build.py",
+    "completion/test.mjs",
+    "completion/verify.mjs"
+   ],
+   "drops_off_when": "a page generator under web/ opens this path, or the pack removes its own honesty.not_built_yet - either one, on the next build of rnd/, with no edit here"
+  },
+  {
    "registry": "evals/registry/evals.json",
    "pack": "evals",
    "reasons": [
@@ -1602,6 +1621,17 @@
     "bundles/test.mjs"
    ]
   },
+  "completion/registry/completion.json": {
+   "app_renderers": [],
+   "doc_renderers": [],
+   "builders": [],
+   "suites": [],
+   "own_pack": [
+    "completion/build.py",
+    "completion/test.mjs",
+    "completion/verify.mjs"
+   ]
+  },
   "ei/registry/ei.json": {
    "app_renderers": [
     "web/build_3d.py"
@@ -1729,10 +1759,13 @@
    ],
    "builders": [
     "bundles/build.py",
+    "completion/build.py",
     "evals/build.py"
    ],
    "suites": [
     "bundles/test.mjs",
+    "completion/test.mjs",
+    "completion/verify.mjs",
     "evals/test.mjs",
     "web/test_home.mjs"
    ],
@@ -1797,6 +1830,7 @@
    "builders": [
     "avatars/build.py",
     "bundles/build.py",
+    "completion/build.py",
     "ei/build.py",
     "evals/build.py",
     "lessons/build.py",
@@ -1806,6 +1840,7 @@
    ],
    "suites": [
     "bundles/test.mjs",
+    "completion/verify.mjs",
     "ei/test.mjs",
     "evals/test.mjs",
     "i18n/test.mjs",
@@ -2036,6 +2071,7 @@
    "builders": [
     "agents/build.py",
     "bundles/build.py",
+    "completion/build.py",
     "evals/build.py",
     "guide/build.py",
     "lessons/build.py",
@@ -2047,6 +2083,8 @@
    "suites": [
     "agents/test.mjs",
     "bundles/test.mjs",
+    "completion/test.mjs",
+    "completion/verify.mjs",
     "evals/test.mjs",
     "guide/test.mjs",
     "lessons/test.mjs",
@@ -2144,11 +2182,13 @@
    ],
    "doc_renderers": [],
    "builders": [
+    "completion/build.py",
     "lessons/build.py",
     "props/build.py",
     "schools/build.py"
    ],
    "suites": [
+    "completion/verify.mjs",
     "lessons/test.mjs",
     "props/test.mjs",
     "schools/test.mjs"
@@ -2216,6 +2256,7 @@
    ],
    "builders": [
     "agents/build.py",
+    "completion/build.py",
     "guide/build.py",
     "lessons/build.py",
     "props/build.py",
@@ -2223,6 +2264,7 @@
     "spatial/build.py"
    ],
    "suites": [
+    "completion/verify.mjs",
     "lessons/test.mjs",
     "props/test.mjs",
     "schools/test.mjs",
@@ -2243,12 +2285,14 @@
     "wiki/build_wiki.py"
    ],
    "builders": [
+    "completion/build.py",
     "guide/build.py",
     "lessons/build.py",
     "spatial/build.py"
    ],
    "suites": [
     "auth/test.mjs",
+    "completion/test.mjs",
     "guide/test.mjs",
     "lessons/test.mjs",
     "web/test_progress.mjs"
@@ -2477,6 +2521,7 @@
    "auth/build.py",
    "avatars/build.py",
    "bundles/build.py",
+   "completion/build.py",
    "ei/build.py",
    "evals/build.py",
    "geo/build.py",
@@ -2514,6 +2559,8 @@
    "bundles/test.mjs",
    "bus/test.mjs",
    "bus/test_safeguards.mjs",
+   "completion/test.mjs",
+   "completion/verify.mjs",
    "control/test.mjs",
    "control/test_graph.mjs",
    "control/test_hints.mjs",
@@ -3368,6 +3415,13 @@
     "in_readme_table": true
    },
    {
+    "suite": "completion/test.mjs",
+    "pack": "completion",
+    "readme_checks": 49,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
     "suite": "web/test_home.mjs",
     "pack": "web",
     "readme_checks": 27,
@@ -3417,18 +3471,18 @@
     "in_readme_table": true
    }
   ],
-  "suites_run": 55,
-  "suites_declaring_a_count": 54,
+  "suites_run": 56,
+  "suites_declaring_a_count": 55,
   "suites_without_a_count": [
    "control/soak.mjs"
   ],
-  "declared_total": 2476,
-  "readme_headline": 2487,
+  "declared_total": 2525,
+  "readme_headline": 2536,
   "unaccounted_for": 11,
   "unaccounted_note": "the headline counts every `  ok ` line verify_all.sh sees, which includes suites the README table gives no number to and web/test_interiors.py, which the table does not list at all. The difference is that remainder and is computed, not reconciled by hand.",
   "min": 9,
   "max": 295,
-  "median": 37.5,
+  "median": 40,
   "thinnest": [
    {
     "suite": "ops/fuzz.mjs",
@@ -3695,6 +3749,10 @@
   "bundles/test.mjs",
   "bus/test.mjs",
   "bus/test_safeguards.mjs",
+  "completion/build.py",
+  "completion/registry/completion.json",
+  "completion/test.mjs",
+  "completion/verify.mjs",
   "console/build_app.py",
   "console/build_slice.py",
   "control/test.mjs",

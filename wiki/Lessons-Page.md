@@ -66,8 +66,8 @@ declared and unbuilt. `lessons/registry/lessons.json` was on it for one
 computed reason: no page generator under `web/` named the path, so nothing a
 learner opens read it. The wiki described the pack; nothing drew it.
 
-**Declared-and-unbuilt is now 7 entries, down from
-8**, and the lessons registry is the entry that left.
+**Declared-and-unbuilt is now 8 entries, down from
+9**, and the lessons registry is the entry that left.
 
 It left the way that register says entries leave — by satisfying the condition
 each entry carries in its own `drops_off_when` field: *a page generator under
@@ -77,7 +77,7 @@ backlog found it there, and the entry was gone on the next build of `rnd/`.
 **No honesty flag was deleted to close it.** In the register's own words:
 a pack that gets wired up drops off declared_unbuilt on the next build of this file, because the entry is computed from whether a renderer names its registry path - not from a note here saying it is unbuilt.
 
-The 7 registries still on that list are still on it, and this page
+The 8 registries still on that list are still on it, and this page
 claims nothing about them.
 
 ## What a lesson is not
