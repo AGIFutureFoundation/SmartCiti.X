@@ -92,10 +92,18 @@ for kind, spec in STEP_KINDS.items():
             shape = {'sim': 'sim id', 'scenario': 'scenario id', 'score': 'number', 'passed': 'bool'}
             rule = 'ids.sim / ids.scenario: the evidence sim and scenario must be the step\'s own'
         else:
-            shape = {'episode': kind, 't': 'finite number', **{f: f'the step\'s own {f}, verbatim' for f in checkable}}
-            rule = 'step.episode-evidence: episode == step kind, t finite, every checkable field equals the step\'s own value'
+            shape = {'episode': kind, 't': 'ISO-8601 string (the page writes new Date().toISOString()); Date.parse must be finite', **{f: f'the step\'s own {f}, verbatim' for f in checkable}}
+            rule = 'step.episode-evidence: episode == step kind, t an ISO-8601 string that parses, every checkable field equals the step\'s own value'
+        # evidenceable: every reference the step carries is recorded by its
+        # episode. A kind with any unrecorded reference cannot be evidenced by
+        # this bundle, so a done step of that kind is refused, not trusted.
+        evidenceable = not not_checkable
         EVIDENCE_RULE[kind] = {
             'class': 'episode-backed', 'records': records, 'evidence_required_when_done': True,
+            'evidenceable': evidenceable,
+            'evidenceable_why': ('every reference field the step carries is recorded by the episode' if evidenceable else
+                                 f'a {kind} step cannot be evidenced by this bundle: the {records} episode records '
+                                 + ' and '.join(f'no {f}' for f in not_checkable)),
             'evidence_shape': shape, 'episode_fields': ep_fields,
             'checkable': checkable, 'not_checkable': not_checkable,
             'not_checkable_why': 'the episode kind never records these step references (training.json#episode_kinds), so no export can carry them and the verifier does not pretend to check them',
@@ -126,8 +134,15 @@ for lid, L in LESSON_MAP.items():
     by = {'episode-backed': 0, 'device-mark': 0, 'self-reported': 0}
     for s in steps:
         by[EVIDENCE_RULE[req(s, 'kind', f'{lid} step')]['class']] += 1
+    unevidenceable = sorted({req(st, 'kind', lid) for st in steps
+                             if EVIDENCE_RULE[st['kind']]['class'] == 'episode-backed'
+                             and not EVIDENCE_RULE[st['kind']]['evidenceable']})
     PER_LESSON[lid] = {
         'hall': req(L, 'hall', lid),
+        # a lesson with a step of a non-evidenceable kind can never verify as complete
+        'completable': not unevidenceable,
+        'not_completable_why': None if not unevidenceable else
+            'carries a step of a kind this bundle cannot evidence: ' + ', '.join(unevidenceable),
         'steps': len(steps),
         'recording_steps': by['episode-backed'],
         'silent_steps': by['device-mark'] + by['self-reported'],
@@ -223,9 +238,15 @@ def stamp_digest(record):
     return record
 
 
-COMPLETE = ['riggers-first-card', 'riggers-carry-under-control']
+# The fixture completes a ladder pair: the first completable lesson that
+# needs nothing, and the first completable lesson that needs exactly it.
+# Computed, so a lesson that stops being completable drops out by itself.
+ROOT_LESSON = next(lid for lid, p in PER_LESSON.items() if p['completable'] and not p['needs'])
+NEXT_LESSON = next(lid for lid, p in PER_LESSON.items() if p['completable'] and p['needs'] == [ROOT_LESSON])
+COMPLETE = [ROOT_LESSON, NEXT_LESSON]
 PARTIAL = {'scaffold-read-the-tag': 2}  # first N steps done, the rest not
 for lid in COMPLETE:
+    assert PER_LESSON[lid]['completable'], f'fixture: {lid} is not completable'
     for need in PER_LESSON[lid]['needs']:
         assert need in COMPLETE, f'fixture: {lid} needs {need}, which the fixture does not complete'
 
@@ -242,7 +263,7 @@ def evidence_for(step, done, hall):
     if kind == 'crib':
         return {'crib': step['crib'], 'passed': True}
     if kind in ('walkaround', 'advisor', 'crew'):
-        ev = {'episode': kind, 't': 1000 + step['n']}
+        ev = {'episode': kind, 't': f'{BUILT}T03:00:{step["n"]:02d}.000Z'}
         for f in EVIDENCE_RULE[kind]['checkable']:
             ev[f] = hall if f == 'hall' else step[f]
         return ev
@@ -333,6 +354,21 @@ def mutants(good):
     out['episode-wrong-point'] = ('step.episode-evidence', stamp_digest(m))
 
     m = copy.deepcopy(good)
+    lesson = find_lesson(m, COMPLETE[0])
+    st = next(s for s in lesson['steps'] if s['kind'] == 'walkaround')
+    st['evidence']['t'] = 'yesterday'
+    out['episode-t-unparseable'] = ('step.episode-evidence', stamp_digest(m))
+
+    m = copy.deepcopy(good)
+    crew_lid, crew_step = next((lid, st) for lid, L in LESSON_MAP.items() for st in L['steps'] if st['kind'] == 'crew')
+    entry = next(x for x in find_lesson(m, crew_lid)['steps'] if x['step'] == crew_step['n'])
+    entry['done'] = True
+    entry['evidence'] = {'episode': 'crew', 't': f'{BUILT}T03:00:{crew_step["n"]:02d}.000Z', 'hall': LESSON_MAP[crew_lid]['hall'],
+                         'crew': crew_step['crew'], 'role': crew_step['role'], 'topic': crew_step['topic'],
+                         'answer_kind': crew_step['answer_kind']}
+    out['crew-done-unrecordable'] = ('step.episode-evidence', stamp_digest(m))
+
+    m = copy.deepcopy(good)
     m['lessons'].append({'lesson': 'no-such-lesson', 'hall': HALL_SLUGS[0], 'complete': False, 'steps': []})
     out['unknown-lesson'] = ('ids.lesson', stamp_digest(m))
 
@@ -391,6 +427,8 @@ registry = {
         'sims': len(SIM_RULES),
         'sims_with_threshold': sum(1 for s in SIM_RULES.values() if s['threshold'] is not None),
         'ladder_edges': len(LADDER),
+        'lessons_completable': sum(1 for p in PER_LESSON.values() if p['completable']),
+        'lessons_not_completable': sum(1 for p in PER_LESSON.values() if not p['completable']),
         'fixture_mutants': len(muts),
     },
     'lessons': PER_LESSON,

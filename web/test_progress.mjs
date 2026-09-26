@@ -781,5 +781,196 @@ if (!WANT_BROWSER) {
   await browser.close();
 }
 
+/* ---------------------------------------------- the completion record, in node */
+/* [shipped] buildCompletionRecord is lifted out of the built page's own
+   <script id="completion-js"> block and run here over a synthetic progress
+   record, so what is asserted is the function the page ships. */
+{
+  const LESSONS_PATH = 'lessons/registry/lessons.json';
+  const lessonsReg = readJSON(LESSONS_PATH);
+  const manifest = readJSON('pack/manifest.json');
+  const m = html.match(/<script id="completion-js">([\s\S]*?)<\/script>/);
+  ok('[shipped] the page carries a <script id="completion-js"> block, and it is a classic script '
+    + 'that names buildCompletionRecord, canonicalJSON and summarizeRecord',
+    m !== null && /async function buildCompletionRecord\(prog, lessons, ladder, meta, now, training\)/.test(m[1])
+    && /function canonicalJSON\(/.test(m[1]) && /function summarizeRecord\(/.test(m[1]));
+  const C = m === null ? null : new Function(m[1] + '\nreturn { buildCompletionRecord, canonicalJSON, summarizeRecord };')();
+  const data = JSON.parse(html.match(/<script type="application\/json" id="tcdata">([\s\S]*?)<\/script>/)[1]);
+  ok(`[shipped] the page carries ${LESSONS_PATH}#lessons, #ladder and #step_kinds verbatim, and `
+    + 'the product name from pack/manifest.json',
+    JSON.stringify(data.lessons) === JSON.stringify(lessonsReg.lessons)
+    && JSON.stringify(data.ladder) === JSON.stringify(lessonsReg.ladder)
+    && JSON.stringify(data.step_kinds) === JSON.stringify(lessonsReg.step_kinds)
+    && data.product === manifest.product && data.pack_version === manifest.pack_version);
+  if (C !== null) {
+    if (!globalThis.crypto || !globalThis.crypto.subtle) globalThis.crypto = (await import('node:crypto')).webcrypto;
+    const { createHash } = await import('node:crypto');
+    const { writeFileSync, mkdirSync } = await import('node:fs');
+    const meta = { product: data.product, pack_version: data.pack_version, step_kinds: data.step_kinds,
+      episode_kinds: data.episode_kinds, identity: 'test label', training_state: 'present', human_actor: data.human_actor };
+    ok('[shipped] the page carries training/registry/training.json#episode_kinds verbatim',
+      JSON.stringify(data.episode_kinds) === JSON.stringify(trainingReg.episode_kinds));
+    const NOW = new Date('2026-09-26T12:00:00.000Z');
+    /* a synthetic record shaped as the app writes it (web/build_3d.py: prog.sims[id] =
+       {runs, passed, best}, prog.tools[district] = {runs, passed, best}, prog.stations = [...]) */
+    const L = lessonsReg.lessons;
+    const firstSim = Object.values(L).flatMap((l) => l.steps).find((s) => s.kind === 'sim');
+    const firstStation = Object.values(L).flatMap((l) => l.steps).find((s) => s.kind === 'station');
+    const firstCrib = Object.values(L).flatMap((l) => l.steps).find((s) => s.kind === 'crib');
+    const secondSim = Object.values(L).flatMap((l) => l.steps).find((s) => s.kind === 'sim' && s.sim !== firstSim.sim);
+    const prog = {
+      sims: { [firstSim.sim]: { runs: 3, passed: true, best: 41.2 }, [secondSim.sim]: { runs: 2 } },
+      tools: { [firstCrib.crib]: { runs: 1, passed: true, best: 20.5 } },
+      stations: [firstStation.station], walk: { [firstSim.sim]: 2 },
+    };
+    const firstWalk = Object.values(L).flatMap((l) => l.steps.map((s) => ({ ...s, hall: l.hall }))).find((s) => s.kind === 'walkaround');
+    const firstAdv = Object.values(L).flatMap((l) => l.steps.map((s) => ({ ...s, hall: l.hall }))).find((s) => s.kind === 'advisor');
+    const firstCrew = Object.values(L).flatMap((l) => l.steps.map((s) => ({ ...s, hall: l.hall }))).find((s) => s.kind === 'crew');
+    /* decoys FIRST, so a matcher that ignores kind, hall or a reference field picks a decoy */
+    const training = [
+      { t: '2026-09-26T03:00:00.000Z', kind: 'walkaround', campus: 'x', hall: 'some-other-hall', sim: firstWalk.sim, point: firstWalk.point },
+      { t: '2026-09-26T03:02:00.000Z', kind: 'walkaround', campus: 'x', hall: firstWalk.hall, sim: firstWalk.sim, point: 'not-' + firstWalk.point },
+      { t: '2026-09-26T03:03:00.000Z', kind: 'sim', campus: 'x', hall: firstWalk.hall, sim: firstWalk.sim, point: firstWalk.point },
+      { t: '2026-09-26T03:05:00.000Z', kind: 'advisor', campus: 'x', hall: 'some-other-hall', advisor: firstAdv.advisor, topic: firstAdv.topic, answer_kind: firstAdv.answer_kind },
+      { t: '2026-09-26T03:01:00.000Z', kind: 'walkaround', campus: 'x', hall: firstWalk.hall, sim: firstWalk.sim, point: firstWalk.point },
+      { t: '2026-09-26T03:04:00.000Z', kind: 'advisor', campus: 'x', hall: firstAdv.hall, advisor: firstAdv.advisor, topic: firstAdv.topic, answer_kind: firstAdv.answer_kind },
+      { t: '2026-09-26T03:06:00.000Z', kind: 'crew', campus: 'x', hall: firstCrew.hall, crew: firstCrew.crew, role: firstCrew.role, topic: firstCrew.topic, answer_kind: firstCrew.answer_kind },
+    ];
+    const rec = await C.buildCompletionRecord(prog, L, lessonsReg.ladder, meta, NOW, training);
+    const wa = rec.lessons.flatMap((l) => l.steps.map((s) => ({ ...s, hall: l.hall }))).filter((s) => s.kind === 'walkaround');
+    const adv = rec.lessons.flatMap((l) => l.steps.map((s) => ({ ...s, hall: l.hall }))).filter((s) => s.kind === 'advisor');
+    const waDone = wa.filter((s) => s.done);
+    ok('[shipped] a walkaround or advisor step is done only from a training episode of that kind in '
+      + 'that hall with the step\'s own reference fields: the matching walkaround episode marks its '
+      + 'step, the same point under kind sim does not, a wrong point does not, the matching advisor '
+      + 'episode marks its step and the same advisor+topic in another hall does not',
+      waDone.length >= 1 && waDone.every((s) => s.hall === firstWalk.hall && s.evidence.episode === 'walkaround'
+        && s.evidence.t === '2026-09-26T03:01:00.000Z' && s.evidence.sim === firstWalk.sim && s.evidence.point === firstWalk.point && s.evidence.hall === firstWalk.hall)
+      && wa.filter((s) => s.done && s.evidence.point !== firstWalk.point).length === 0
+      && adv.filter((s) => s.done).every((s) => s.hall === firstAdv.hall && s.evidence.episode === 'advisor' && s.evidence.t === '2026-09-26T03:04:00.000Z')
+      && adv.filter((s) => s.done).length >= 1
+      && adv.filter((s) => s.hall !== firstAdv.hall && s.advisor === firstAdv.advisor && s.done).length === 0,
+      [JSON.stringify(waDone.slice(0, 2)), JSON.stringify(adv.filter((s) => s.done).slice(0, 2))]);
+    const badT = await C.buildCompletionRecord(prog, L, lessonsReg.ladder, meta, NOW, [
+      { t: 'not a time', kind: 'walkaround', campus: 'x', hall: firstWalk.hall, sim: firstWalk.sim, point: firstWalk.point },
+      { t: 1758855600000, kind: 'walkaround', campus: 'x', hall: firstWalk.hall, sim: firstWalk.sim, point: firstWalk.point },
+      { kind: 'walkaround', campus: 'x', hall: firstWalk.hall, sim: firstWalk.sim, point: firstWalk.point },
+    ]);
+    ok('[shipped] an episode whose t is not an ISO-8601 time string as the app writes it (unparseable, '
+      + 'a number, or missing) does not mark the step done, and honesty says episodes were skipped for it',
+      badT.lessons.flatMap((l) => l.steps).filter((s) => s.kind === 'walkaround').every((s) => !s.done && s.evidence === null)
+      && badT.honesty.does_not_prove.some((x) => /3 training episode\(s\).*skipped/.test(x))
+      && !rec.honesty.does_not_prove.some((x) => /skipped/.test(x)),
+      badT.honesty.does_not_prove);
+    const noTrain = await C.buildCompletionRecord(prog, L, lessonsReg.ladder, { ...meta, training_state: 'absent' }, NOW, null);
+    ok('[shipped] with no training log nothing of an episode kind is done, and honesty says the log was absent',
+      noTrain.lessons.flatMap((l) => l.steps).filter((s) => ['walkaround', 'advisor', 'crew'].includes(s.kind)).every((s) => !s.done && s.evidence === null)
+      && noTrain.honesty.does_not_prove.some((x) => x.includes('absent')),
+      noTrain.honesty.does_not_prove);
+    const crewSteps = rec.lessons.flatMap((l) => l.steps).filter((s) => s.kind === 'crew');
+    const crewMissing = ['seat', 'muster'].filter((f) => !trainingReg.episode_kinds.crew.fields.includes(f));
+    ok('[shipped] a crew step carries seat and muster, which the crew episode does not record, so no crew '
+      + 'step is done even with a crew episode matching every field the episode does record, and honesty '
+      + 'names the kind and the missing fields',
+      crewMissing.length === 2 && crewSteps.every((s) => !s.done && s.evidence === null)
+      && rec.honesty.does_not_prove.some((x) => x.includes('crew step can never be done') && crewMissing.every((f) => x.includes(f))),
+      rec.honesty.does_not_prove);
+    const TOP = ['record', 'product', 'pack_version', 'exported_at', 'identity', 'lessons', 'sims', 'tools', 'stations', 'honesty', 'digest'];
+    ok('[shipped] the record has exactly the contracted top-level fields, record tc-completion/1, '
+      + 'an unsigned device-only identity carrying the claimed label, and one entry per lesson with one per step',
+      Object.keys(rec).sort().join() === TOP.slice().sort().join() && rec.record === 'tc-completion/1'
+      && rec.identity.claimed === 'test label' && rec.identity.signature === null
+      && rec.identity.attested_by === 'this device only' && rec.exported_at === NOW.toISOString()
+      && rec.lessons.length === Object.keys(L).length
+      && rec.lessons.every((l) => l.steps.length === L[l.lesson].steps.length && l.hall === L[l.lesson].hall
+        && l.steps.every((s) => typeof s.done === 'boolean' && typeof s.step === 'number' && 'evidence' in s))
+      && Array.isArray(rec.honesty.proves) && Array.isArray(rec.honesty.does_not_prove),
+      [Object.keys(rec).join(), JSON.stringify(rec.identity)]);
+    const allSteps = rec.lessons.flatMap((l) => l.steps);
+    const simDone = allSteps.filter((s) => s.kind === 'sim' && s.done);
+    ok('[shipped] a step is done only with evidence: every done step carries evidence, every sim step '
+      + 'on the unpassed seat (runs but no pass) is not done, every silent or training-log step is '
+      + 'not done, and the passed seat, the done station and the passed crib are the only evidence',
+      allSteps.every((s) => s.done === (s.evidence !== null))
+      && allSteps.filter((s) => s.kind === 'sim' && s.evidence && s.evidence.sim === secondSim.sim).length === 0
+      && allSteps.filter((s) => ['walk', 'placard', 'crew'].includes(s.kind)).every((s) => !s.done && s.evidence === null)
+      && simDone.length > 0 && simDone.every((s) => s.evidence.sim === firstSim.sim && s.evidence.passed === true && s.evidence.score === null)
+      && allSteps.filter((s) => s.kind === 'station' && s.done).every((s) => s.evidence.station === firstStation.station)
+      && allSteps.filter((s) => s.kind === 'crib' && s.done).every((s) => s.evidence.crib === firstCrib.crib && s.evidence.passed === true),
+      [JSON.stringify(simDone.slice(0, 2))]);
+    ok('[shipped] sims, tools and stations are written as the record holds them: attempts from runs, '
+      + 'score null because the app keeps none, no number invented for the seat that holds only runs',
+      rec.sims[firstSim.sim].passed === true && rec.sims[firstSim.sim].attempts === 3 && rec.sims[firstSim.sim].score === null
+      && rec.sims[secondSim.sim].passed === false && rec.sims[secondSim.sim].attempts === 2
+      && rec.tools[firstCrib.crib].passed === true && rec.stations.join() === firstStation.station,
+      [JSON.stringify(rec.sims), JSON.stringify(rec.tools), JSON.stringify(rec.stations)]);
+    /* a synthetic lesson set of evidenced kinds only: complete when all done, not when one is undone */
+    const synth = {
+      'a-all': { id: 'a-all', hall: 'x', steps: [
+        { n: 1, kind: 'sim', sim: firstSim.sim, scenario: firstSim.scenario },
+        { n: 2, kind: 'station', station: firstStation.station },
+        { n: 3, kind: 'crib', crib: firstCrib.crib }] },
+      'b-one-short': { id: 'b-one-short', hall: 'x', steps: [
+        { n: 1, kind: 'sim', sim: firstSim.sim, scenario: firstSim.scenario },
+        { n: 2, kind: 'station', station: firstStation.station },
+        { n: 3, kind: 'sim', sim: secondSim.sim, scenario: secondSim.scenario }] },
+      'c-silent': { id: 'c-silent', hall: 'x', steps: [
+        { n: 1, kind: 'crib', crib: firstCrib.crib }, { n: 2, kind: 'walk' }] },
+    };
+    const srec = await C.buildCompletionRecord(prog, synth, { edges: [{ lesson: 'b-one-short', needs: 'a-all', because: 't' }] }, meta, NOW, training);
+    const by = Object.fromEntries(srec.lessons.map((l) => [l.lesson, l]));
+    ok('[shipped] a lesson is complete only when every step is done: all-evidenced is complete, '
+      + 'one undone step makes it incomplete, and a silent step keeps a lesson incomplete',
+      by['a-all'].complete === true && by['b-one-short'].complete === false
+      && by['b-one-short'].steps.filter((s) => s.done).length === 2 && by['c-silent'].complete === false
+      && by['c-silent'].steps[0].done === true && by['c-silent'].steps[1].done === false,
+      [JSON.stringify(srec.lessons.map((l) => [l.lesson, l.complete, l.steps.map((s) => s.done)]))]);
+    const S = C.summarizeRecord(srec, data.step_kinds, data.episode_kinds);
+    const R = C.summarizeRecord(rec, data.step_kinds, data.episode_kinds);
+    const recKinds = Object.keys(data.step_kinds).filter((k) => data.step_kinds[k].records !== null);
+    ok('[shipped] the summary is computed from the record and keeps three counts apart by what '
+      + 'stands behind a step: recorded-episode kinds (' + recKinds.join(', ') + ') done only where the '
+      + 'mark exists, device-mark-only kinds (station, crib), and self-reported/unrecorded kinds '
+      + '(walk, placard) - a station mark is never counted as an episode',
+      S.complete === 1 && S.evidence_backed === 1 && S.steps_done === 6 && S.lessons === 3 && S.steps === 8
+      && S.episode_steps_done === 2 && S.episode_steps === 3
+      && S.device_mark_steps_done === 4 && S.device_mark_steps === 4
+      && S.self_reported_steps_done === 0 && S.self_reported_steps === 1
+      && S.episode_kinds.join() === recKinds.join()
+      && S.device_mark_kinds.join() === 'station,crib' && S.self_reported_kinds.join() === 'walk,placard'
+      && S.episode_kinds_unmarked_here.join() === 'crew'
+      && R.lessons === Object.keys(L).length && R.steps_done === allSteps.filter((s) => s.done).length
+      && R.episode_steps_done === allSteps.filter((s) => recKinds.includes(s.kind) && s.done).length && R.episode_steps_done > allSteps.filter((s) => s.kind === 'sim' && s.done).length
+      && R.episode_steps === allSteps.filter((s) => recKinds.includes(s.kind)).length
+      && R.device_mark_steps_done === allSteps.filter((s) => ['station', 'crib'].includes(s.kind) && s.done).length
+      && R.self_reported_steps === allSteps.filter((s) => ['walk', 'placard'].includes(s.kind)).length
+      && R.self_reported_steps_done === 0
+      && R.episode_steps_done + R.device_mark_steps_done + R.self_reported_steps_done === R.steps_done,
+      [JSON.stringify(S), JSON.stringify(R)]);
+    const { digest, ...rest } = rec;
+    const want = createHash('sha256').update(Buffer.from(C.canonicalJSON(rest), 'utf8')).digest('hex');
+    const tampered = JSON.parse(JSON.stringify(rest)); tampered.lessons[0].steps[0].done = true;
+    ok('[shipped] the digest is SHA-256 over the canonical JSON of every other top-level field, '
+      + 'recomputed here with node crypto, and it moves when one step is edited',
+      digest.alg === 'SHA-256' && /^[0-9a-f]{64}$/.test(digest.hex) && digest.hex === want
+      && createHash('sha256').update(C.canonicalJSON(tampered)).digest('hex') !== want
+      && C.canonicalJSON({ b: 1, a: [true, null, 'x'] }) === '{"a":[true,null,"x"],"b":1}',
+      [`page=${digest.hex}`, `node=${want}`]);
+    const noEvidence = await C.buildCompletionRecord({ sims: {}, tools: {}, stations: [] }, L, lessonsReg.ladder, { ...meta, identity: null }, NOW, []);
+    ok('[shipped] an empty progress record marks nothing done, completes nothing, claims no identity '
+      + 'and holds no seat, crib or station',
+      noEvidence.lessons.every((l) => !l.complete && l.steps.every((s) => !s.done && s.evidence === null))
+      && noEvidence.identity.claimed === null && Object.keys(noEvidence.sims).length === 0
+      && Object.keys(noEvidence.tools).length === 0 && noEvidence.stations.length === 0
+      && C.summarizeRecord(noEvidence, data.step_kinds, data.episode_kinds).complete === 0
+      && C.summarizeRecord(noEvidence, data.step_kinds, data.episode_kinds).evidence_backed === 0
+      && C.summarizeRecord(noEvidence, data.step_kinds, data.episode_kinds).steps_done === 0
+      && C.summarizeRecord(noEvidence, data.step_kinds, data.episode_kinds).episode_steps_done === 0
+      && C.summarizeRecord(noEvidence, data.step_kinds, data.episode_kinds).device_mark_steps_done === 0);
+    const sample = arg('sample');
+    if (sample !== null) { mkdirSync(dirname(sample), { recursive: true }); writeFileSync(sample, JSON.stringify(rec, null, 1) + '\n'); }
+  }
+}
+
 console.log(`\nprogress: ${n} checks, ${bad} failure${bad === 1 ? '' : 's'}`);
 process.exit(bad ? 1 : 0);

@@ -84,8 +84,16 @@
     {
      "step": 3,
      "kind": "crew",
-     "done": false,
-     "evidence": null
+     "done": true,
+     "evidence": {
+      "episode": "crew",
+      "t": "2026-09-26T03:00:03.000Z",
+      "hall": "riggers",
+      "crew": "crane-lift-crew",
+      "role": "rigger",
+      "topic": "weight",
+      "answer_kind": "say"
+     }
     },
     {
      "step": 4,
@@ -138,8 +146,15 @@
     {
      "step": 4,
      "kind": "advisor",
-     "done": false,
-     "evidence": null
+     "done": true,
+     "evidence": {
+      "episode": "advisor",
+      "t": "2026-09-26T03:00:04.000Z",
+      "advisor": "operator",
+      "answer_kind": "read",
+      "hall": "crane-ops",
+      "topic": "task"
+     }
     }
    ]
   },
@@ -1111,6 +1126,6 @@
  "digest": {
   "alg": "SHA-256",
   "over": "canonical JSON of every top-level field except digest: keys sorted recursively, no whitespace, UTF-8",
-  "hex": "a480f0bcaa5db0d8a5b39f17c3794c9df95853e29343cc6f6b07710da62979f8"
+  "hex": "00b81f9983600309f7d14091a0783e59943e51aa29f110b08cf56a1546262853"
  }
 }

@@ -155,11 +155,15 @@ export function verify(record) {
           check('ids.scenario', esc === known_step.scenario && es in SIM_RULES && SIM_RULES[es].scenarios.includes(esc),
             `${lid} step ${n}: scenario ${esc} is not the step's scenario of seat ${es}`);
         }
-        if (done === true && ev !== null && typeof ev === 'object' && kind !== 'sim') {
+        if (done === true && kind !== 'sim') {
+          check('step.episode-evidence', need(rule, 'evidenceable', `evidence_rule.${kind}`) === true,
+            `${lid} step ${n}: ${need(rule, 'evidenceable_why', `evidence_rule.${kind}`)}`);
+        }
+        if (done === true && ev !== null && typeof ev === 'object' && kind !== 'sim' && rule.evidenceable === true) {
           const epk = need(ev, 'episode', `${lid} step ${n} evidence`);
           check('step.episode-evidence', epk === kind, `${lid} step ${n}: evidence episode ${epk} is not a ${kind} episode`);
           const t = need(ev, 't', `${lid} step ${n} evidence`);
-          check('step.episode-evidence', typeof t === 'number' && Number.isFinite(t), `${lid} step ${n}: episode t is not a finite number`);
+          check('step.episode-evidence', typeof t === 'string' && Number.isFinite(Date.parse(t)), `${lid} step ${n}: episode t ${JSON.stringify(t)} is not a parseable ISO-8601 string`);
           for (const f of need(rule, 'checkable', `evidence_rule.${kind}`)) {
             const want = f === 'hall' ? known.hall : need(known_step, f, `${lid} step ${n}`);
             const got = need(ev, f, `${lid} step ${n} evidence`);

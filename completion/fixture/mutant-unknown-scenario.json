@@ -32,7 +32,7 @@
      "done": true,
      "evidence": {
       "episode": "advisor",
-      "t": 1003,
+      "t": "2026-09-26T03:00:03.000Z",
       "advisor": "foreman",
       "answer_kind": "read",
       "hall": "riggers",
@@ -45,7 +45,7 @@
      "done": true,
      "evidence": {
       "episode": "walkaround",
-      "t": 1004,
+      "t": "2026-09-26T03:00:04.000Z",
       "hall": "riggers",
       "point": "sightline",
       "sim": "rigging-signals"
@@ -67,69 +67,6 @@
   {
    "lesson": "riggers-carry-under-control",
    "hall": "riggers",
-   "complete": true,
-   "steps": [
-    {
-     "step": 1,
-     "kind": "walk",
-     "done": true,
-     "evidence": null
-    },
-    {
-     "step": 2,
-     "kind": "walkaround",
-     "done": true,
-     "evidence": {
-      "episode": "walkaround",
-      "t": 1002,
-      "hall": "riggers",
-      "point": "rope",
-      "sim": "crane-lift"
-     }
-    },
-    {
-     "step": 3,
-     "kind": "crew",
-     "done": true,
-     "evidence": {
-      "episode": "crew",
-      "t": 1003,
-      "answer_kind": "say",
-      "crew": "crane-lift-crew",
-      "hall": "riggers",
-      "role": "rigger",
-      "topic": "weight"
-     }
-    },
-    {
-     "step": 4,
-     "kind": "sim",
-     "done": true,
-     "evidence": {
-      "sim": "crane-lift",
-      "scenario": "bay-steel",
-      "score": 3,
-      "passed": true
-     }
-    },
-    {
-     "step": 5,
-     "kind": "advisor",
-     "done": true,
-     "evidence": {
-      "episode": "advisor",
-      "t": 1005,
-      "advisor": "operator",
-      "answer_kind": "read",
-      "hall": "riggers",
-      "topic": "rubric"
-     }
-    }
-   ]
-  },
-  {
-   "lesson": "crane-ops-read-the-chart",
-   "hall": "crane-ops",
    "complete": false,
    "steps": [
     {
@@ -146,15 +83,70 @@
     },
     {
      "step": 3,
-     "kind": "sim",
+     "kind": "crew",
      "done": false,
      "evidence": null
     },
     {
      "step": 4,
+     "kind": "sim",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 5,
      "kind": "advisor",
      "done": false,
      "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "crane-ops-read-the-chart",
+   "hall": "crane-ops",
+   "complete": true,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": true,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "walkaround",
+     "done": true,
+     "evidence": {
+      "episode": "walkaround",
+      "t": "2026-09-26T03:00:02.000Z",
+      "hall": "crane-ops",
+      "point": "chart",
+      "sim": "load-chart"
+     }
+    },
+    {
+     "step": 3,
+     "kind": "sim",
+     "done": true,
+     "evidence": {
+      "sim": "load-chart",
+      "scenario": "bay-pick-list",
+      "score": 2,
+      "passed": true
+     }
+    },
+    {
+     "step": 4,
+     "kind": "advisor",
+     "done": true,
+     "evidence": {
+      "episode": "advisor",
+      "t": "2026-09-26T03:00:04.000Z",
+      "advisor": "operator",
+      "answer_kind": "read",
+      "hall": "crane-ops",
+      "topic": "task"
+     }
     }
    ]
   },
@@ -1096,9 +1088,9 @@
    "score": 2,
    "attempts": 1
   },
-  "crane-lift": {
+  "load-chart": {
    "passed": true,
-   "score": 3,
+   "score": 2,
    "attempts": 1
   }
  },
@@ -1126,6 +1118,6 @@
  "digest": {
   "alg": "SHA-256",
   "over": "canonical JSON of every top-level field except digest: keys sorted recursively, no whitespace, UTF-8",
-  "hex": "aac7115b0804221ec3be2bd3c73682ee01b5e1a02f0713f267cb1996d3fded2f"
+  "hex": "d4c39ab9fd12f6c73e3c6d07b3aca596feae25ca5b41b94d258a300a7a394ce3"
  }
 }

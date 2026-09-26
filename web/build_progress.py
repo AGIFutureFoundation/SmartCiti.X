@@ -92,6 +92,7 @@ DIAL_PATH = 'control/dial.mjs'
 SEQUENCER_PATH = 'control/sequencer.mjs'
 CONTROL_README = 'control/README.md'
 APP_PATH = 'web/build_3d.py'
+LESSONS_PATH = 'lessons/registry/lessons.json'
 
 # Dependency order: a module's names must already be declared when the next
 # one's top-level code is evaluated.
@@ -119,12 +120,17 @@ halls_reg = load(HALLS_PATH)
 manifest = load(MANIFEST_PATH)
 auth_reg = load(AUTH_PATH)
 training_reg = load(TRAINING_PATH)
+lessons_reg = load(LESSONS_PATH)
 
 PACK_VERSION = need(manifest, 'pack_version', MANIFEST_PATH)
 PRODUCT = need(sims_reg, 'product', SIMS_PATH)
+MANIFEST_PRODUCT = need(manifest, 'product', MANIFEST_PATH)
+if MANIFEST_PRODUCT != PRODUCT:
+    raise AssertionError(f'{SIMS_PATH}: product disagrees with {MANIFEST_PATH}')
 BUILT = need(sims_reg, 'built', SIMS_PATH)
 for rel, reg in ((SIMS_PATH, sims_reg), (HALLS_PATH, halls_reg),
-                 (AUTH_PATH, auth_reg), (TRAINING_PATH, training_reg)):
+                 (AUTH_PATH, auth_reg), (TRAINING_PATH, training_reg),
+                 (LESSONS_PATH, lessons_reg)):
     if need(reg, 'pack_version', rel) != PACK_VERSION:
         raise AssertionError(f'{rel}: pack_version disagrees with {MANIFEST_PATH}')
 
@@ -147,6 +153,16 @@ BINDINGS = need(sims_reg, 'hall_bindings', SIMS_PATH)
 SCORING_CONTRACT = need(sims_reg, 'scoring_contract', SIMS_PATH)
 SIMS_HONESTY = need(sims_reg, 'honesty', SIMS_PATH)
 PACK_HONESTY = need(manifest, 'honesty', MANIFEST_PATH)
+# The lesson registry, carried verbatim: the completion record is built from
+# these definitions and the device's tc-progress, and from nothing else.
+LESSONS = need(lessons_reg, 'lessons', LESSONS_PATH)
+LADDER = need(lessons_reg, 'ladder', LESSONS_PATH)
+STEP_KINDS = need(lessons_reg, 'step_kinds', LESSONS_PATH)
+LESSONS_HONESTY = need(lessons_reg, 'honesty', LESSONS_PATH)
+for _lid, _l in LESSONS.items():
+    for _st in need(_l, 'steps', f'{LESSONS_PATH}#lessons.{_lid}'):
+        if need(_st, 'kind', f'{LESSONS_PATH}#lessons.{_lid}.steps[]') not in STEP_KINDS:
+            raise KeyError(f'{LESSONS_PATH}: lesson {_lid} uses a step kind not in step_kinds')
 
 # ------------------------------------------------- the storage keys, read once
 # The two records the app already keeps, and the identity label that names
@@ -503,9 +519,13 @@ F = lambda x: f'{x:,}'
 
 # ---------------------------------------------------------------- the payload
 DATA = {
-    'product': PRODUCT,
+    'product': MANIFEST_PRODUCT,
     'pack_version': PACK_VERSION,
     'built': BUILT,
+    'lessons': LESSONS,
+    'ladder': LADDER,
+    'step_kinds': STEP_KINDS,
+    'episode_kinds': need(training_reg, 'episode_kinds', TRAINING_PATH),
     'strands': STRANDS,
     'tiers': TIERS,
     'keys': {'progress': PROGRESS_KEY, 'training': TRAINING_KEY,
@@ -678,7 +698,9 @@ READS = ''.join(f'<li><code>{E(p)}</code> — {E(why)}</li>' for p, why in (
     (AUTH_PATH, f'the record key names {PROGRESS_KEY} and {TRAINING_KEY}, the identity key '
                 f'{IDENTITY_KEY}, and what a local identity is and is not'),
     (TRAINING_PATH, 'the episode shape, the actor names, the rolling cap and the recorder toggle'),
-    (MANIFEST_PATH, 'the pack version and the pack\'s own honesty block'),
+    (MANIFEST_PATH, 'the product name, the pack version and the pack\'s own honesty block'),
+    (LESSONS_PATH, 'every lesson, its steps and the ladder, carried verbatim: the completion '
+                   'record is built from them and this device\'s progress record'),
     (LPA_PATH, 'LearnerProfile and pSuccess — carried into the page and run, not quoted'),
     (HINTS_PATH, 'HintEngine, RUNGS and the fading policy — carried in and run'),
     (GRAPH_PATH, 'SkillGraph — carried in and run'),
@@ -1580,7 +1602,297 @@ sel.addEventListener('change', (e) => {
   history.replaceState(null, '', v === '' ? location.pathname : location.pathname + '?hall=' + v);
 });
 renderAll(start);
+
+/* ---- the completion record: built from the progress record and the lesson
+   definitions the page carries, summarised on the page from the record itself,
+   and downloaded on request. No figure below is typed. */
+async function paintCompletion() {
+  const rec = readRecord();
+  const box = document.getElementById('completion-summary');
+  const btn = document.getElementById('expRecord');
+  clear(box);
+  box.setAttribute('data-completion', rec.progress.state);
+  if (rec.progress.state !== 'present' || !rec.progress.value || typeof rec.progress.value !== 'object'
+      || Array.isArray(rec.progress.value)) {
+    btn.disabled = true;
+    box.appendChild(elem('p', { text: rec.progress.state === 'absent'
+      ? 'This device holds no progress record under ' + KEYS.progress + ', so there is nothing to export.'
+      : 'The progress record under ' + KEYS.progress + ' is ' + rec.progress.state
+        + (rec.progress.note ? ': ' + rec.progress.note : '') + '. Nothing is exported from a record that cannot be read.' }));
+    return;
+  }
+  const idv = rec.identity.value;
+  const claimed = (idv && typeof idv === 'object' && typeof idv.label === 'string') ? idv.label : null;
+  const training = rec.training.state === 'present' ? rec.training.value : null;
+  const meta = { product: D.product, pack_version: D.pack_version, step_kinds: D.step_kinds,
+    episode_kinds: D.episode_kinds, identity: claimed, training_state: rec.training.state, human_actor: D.human_actor };
+  const record = await buildCompletionRecord(rec.progress.value, D.lessons, D.ladder, meta, new Date(), training);
+  const S = summarizeRecord(record, D.step_kinds, D.episode_kinds);
+  const figs = [
+    ['lessons complete (every step done)', S.complete, 'complete-lessons'],
+    ['of which evidence-backed', S.evidence_backed, 'evidence-backed'],
+    ['steps with a recorded episode kind (' + S.episode_kinds.join(', ') + '), done only where '
+      + KEYS.progress + ' or ' + KEYS.training + ' holds that mark', S.episode_steps_done + ' of ' + S.episode_steps, 'episode-steps'],
+    ['steps with a device mark only (' + S.device_mark_kinds.join(', ') + ')',
+      S.device_mark_steps_done + ' of ' + S.device_mark_steps, 'device-mark-steps'],
+    ['self-reported / unrecorded steps (' + S.self_reported_kinds.join(', ') + ')',
+      S.self_reported_steps_done + ' of ' + S.self_reported_steps, 'self-reported-steps'],
+  ];
+  const tb = elem('table'); const body = elem('tbody');
+  for (const [k, v, key] of figs) {
+    const tr = elem('tr'); tr.appendChild(elem('th', { text: k }));
+    const td = elem('td', { text: String(v) }); td.setAttribute('data-completion-fig', key); tr.appendChild(td);
+    body.appendChild(tr);
+  }
+  tb.appendChild(body); box.appendChild(tb);
+  box.appendChild(elem('p', { text: (training === null
+    ? 'The training log under ' + KEYS.training + ' is ' + rec.training.state + ', so no advisor, crew or walkaround step is done here. '
+    : '') + (S.episode_kinds_unmarked_here.length
+    ? 'A ' + S.episode_kinds_unmarked_here.map((k) => k + ' step can never be matched: the 3D page records no ' + S.episode_kinds_missing_fields[k].join(', ') + ' in that episode').join('; ') + '. '
+    : '') + 'Nothing records ' + S.self_reported_kinds.join(', ') + ' steps at all; none of those is ever marked '
+    + 'done here and a lesson holding one cannot be complete. A device mark is a mark this device wrote, '
+    + 'not evidence. Identity: '
+    + (record.identity.claimed === null ? 'no label on this device' : record.identity.claimed)
+    + ' — attested by this device only, unsigned. Digest ' + record.digest.hex.slice(0, 16) + '…' }));
+  btn.disabled = false;
+  btn.onclick = async () => {
+    const fresh = await buildCompletionRecord(rec.progress.value, D.lessons, D.ladder, meta, new Date(), training);
+    const blob = new Blob([JSON.stringify(fresh, null, 1)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'tc-completion-' + fresh.exported_at.slice(0, 19).replace(/[:T]/g, '-') + '.json';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  };
+}
+paintCompletion();
 '''
+
+# --------------------------------------------------------- the completion record
+# One pure function builds the record a learner can carry off this device. It
+# is a classic script in its own <script id="completion-js"> block so that
+# web/test_progress.mjs can lift it out of the built page and run it in node
+# over a synthetic progress record. Nothing in it reads the DOM or storage.
+COMPLETION_JS = r"""
+/* COMPLETION:BEGIN - buildCompletionRecord(prog, lessons, ladder, meta, now, training)
+   prog    : whatever this device holds under the progress key, parsed
+   training: the parsed tc-training array, or null when absent/blocked/unreadable
+             (meta.training_state says which)
+   lessons : lessons/registry/lessons.json#lessons, verbatim
+   ladder  : lessons/registry/lessons.json#ladder, verbatim
+   meta    : { product, pack_version, step_kinds, episode_kinds, identity, training_state, human_actor }
+   now     : a Date
+   Returns a Promise of the record. A step is done ONLY when tc-progress holds
+   its evidence; nothing is marked done from nothing, and no number is
+   invented for a field the record does not hold. */
+const COMPLETION_RECORD = 'tc-completion/1';
+/* the kinds whose evidence tc-progress can hold, and where it holds it */
+const EVIDENCED_KINDS = ['sim', 'station', 'crib'];
+/* the reference a step of an episode kind carries, as lessons.json spells it;
+   a training episode must equal every one of these AND the lesson's hall */
+const REF_FIELDS = { walkaround: ['sim', 'point'], advisor: ['advisor', 'topic', 'answer_kind'],
+  crew: ['crew', 'role', 'topic', 'answer_kind', 'seat', 'muster'] };
+/* an episode kind whose recorded fields do not cover the step's reference can
+   never mark a step done; the missing fields are named, not skipped */
+function unmatchableKinds(episodeKinds) {
+  const out = {};
+  for (const k of Object.keys(REF_FIELDS)) {
+    const fields = episodeKinds && episodeKinds[k] && Array.isArray(episodeKinds[k].fields) ? episodeKinds[k].fields : [];
+    const missing = REF_FIELDS[k].filter((f) => !fields.includes(f));
+    if (!fields.includes('hall')) missing.push('hall');
+    if (missing.length) out[k] = missing;
+  }
+  return out;
+}
+/* the app stamps t as new Date().toISOString() (web/build_3d.py, recordEpisode);
+   an episode whose t is not a string that parses to a finite time is no match */
+function episodeTimeOk(ep) { return typeof ep.t === 'string' && isFinite(Date.parse(ep.t)); }
+function episodeEvidence(step, hall, training, meta, skipped) {
+  if (!(step.kind in REF_FIELDS) || !Array.isArray(training)) return null;
+  if (step.kind in unmatchableKinds(meta.episode_kinds)) return null;
+  for (const ep of training) {
+    if (!ep || typeof ep !== 'object' || ep.kind !== step.kind || ep.hall !== hall) continue;
+    if (!episodeTimeOk(ep)) { if (skipped) skipped.add(ep); continue; }
+    if (ep.actor !== undefined && ep.actor !== meta.human_actor) continue;
+    if (!REF_FIELDS[step.kind].every((f) => step[f] !== undefined && ep[f] === step[f])) continue;
+    const ev = { episode: step.kind, t: ep.t, hall };
+    for (const f of REF_FIELDS[step.kind]) ev[f] = step[f];
+    return ev;
+  }
+  return null;
+}
+
+function canonicalJSON(v) {
+  if (v === null || typeof v === 'number' || typeof v === 'boolean' || typeof v === 'string') {
+    if (typeof v === 'number' && !isFinite(v)) throw new Error('completion: a non-finite number cannot be canonical');
+    return JSON.stringify(v);
+  }
+  if (Array.isArray(v)) return '[' + v.map(canonicalJSON).join(',') + ']';
+  if (typeof v === 'object') {
+    return '{' + Object.keys(v).sort().map((k) => JSON.stringify(k) + ':' + canonicalJSON(v[k])).join(',') + '}';
+  }
+  throw new Error('completion: ' + typeof v + ' cannot be canonical');
+}
+
+function stepEvidence(step, prog, hall, training, meta, skipped) {
+  if (step.kind in REF_FIELDS) return episodeEvidence(step, hall, training, meta, skipped);
+  const sims = (prog && typeof prog.sims === 'object' && prog.sims) ? prog.sims : {};
+  const tools = (prog && typeof prog.tools === 'object' && prog.tools) ? prog.tools : {};
+  const stations = (prog && Array.isArray(prog.stations)) ? prog.stations : [];
+  if (step.kind === 'sim') {
+    const rec = Object.prototype.hasOwnProperty.call(sims, step.sim) ? sims[step.sim] : null;
+    if (!rec || typeof rec !== 'object') return null;
+    /* the app keeps one record per seat; a record that names scenarios is
+       held to the scenario the step names, one that does not is held to the seat */
+    let src = rec;
+    if (rec.scenarios && typeof rec.scenarios === 'object') {
+      if (!Object.prototype.hasOwnProperty.call(rec.scenarios, step.scenario)) return null;
+      src = rec.scenarios[step.scenario];
+      if (!src || typeof src !== 'object') return null;
+    }
+    if (src.passed !== true) return null;
+    return { sim: step.sim, scenario: step.scenario,
+      score: typeof src.score === 'number' ? src.score : null, passed: true };
+  }
+  if (step.kind === 'station') {
+    return stations.includes(step.station) ? { station: step.station } : null;
+  }
+  if (step.kind === 'crib') {
+    const rec = Object.prototype.hasOwnProperty.call(tools, step.crib) ? tools[step.crib] : null;
+    if (!rec || typeof rec !== 'object' || rec.passed !== true) return null;
+    return { crib: step.crib, passed: true };
+  }
+  /* walk and placard record nothing anywhere; walkaround, advisor and crew
+     write episodes to the training log, which is not the record this is
+     built from, and the seat-level walkaround tally names no point */
+  return null;
+}
+
+async function buildCompletionRecord(prog, lessons, ladder, meta, now, training) {
+  if (!lessons || typeof lessons !== 'object') throw new Error('completion: no lesson definitions');
+  if (!ladder || !Array.isArray(ladder.edges)) throw new Error('completion: no ladder');
+  if (!meta || typeof meta.product !== 'string' || typeof meta.pack_version !== 'string')
+    throw new Error('completion: meta must name the product and pack version');
+  if (!meta.step_kinds || typeof meta.step_kinds !== 'object') throw new Error('completion: meta.step_kinds missing');
+  if (!(now instanceof Date) || isNaN(now.getTime())) throw new Error('completion: now must be a valid Date');
+  if (!prog || typeof prog !== 'object' || Array.isArray(prog)) throw new Error('completion: no progress record');
+  if (training !== null && !Array.isArray(training)) throw new Error('completion: training must be the episode array or null');
+  if (!meta.episode_kinds || typeof meta.episode_kinds !== 'object') throw new Error('completion: meta.episode_kinds missing');
+  if (training === null && typeof meta.training_state !== 'string') throw new Error('completion: training is null and meta.training_state does not say why');
+  const unmatchable = unmatchableKinds(meta.episode_kinds);
+  const skipped = new Set();
+  for (const e of ladder.edges) {
+    if (!(e.lesson in lessons) || !(e.needs in lessons))
+      throw new Error('completion: the ladder names a lesson that is not defined: ' + e.lesson + ' needs ' + e.needs);
+  }
+  const silent = Object.keys(meta.step_kinds).filter((k) => meta.step_kinds[k].records === null);
+  const fromTraining = Object.keys(REF_FIELDS).filter((k) => !(k in unmatchable));
+
+  const out = [];
+  for (const id of Object.keys(lessons).sort()) {
+    const L = lessons[id];
+    if (L.id !== id) throw new Error('completion: lesson ' + id + ' is indexed under another id');
+    const steps = L.steps.map((st) => {
+      if (!(st.kind in meta.step_kinds)) throw new Error('completion: unknown step kind ' + st.kind);
+      const evidence = stepEvidence(st, prog, L.hall, training, meta, skipped);
+      return { step: st.n, kind: st.kind, done: evidence !== null, evidence };
+    });
+    out.push({ lesson: id, hall: L.hall, complete: steps.length > 0 && steps.every((s) => s.done), steps });
+  }
+
+  const sims = {};
+  const psims = (typeof prog.sims === 'object' && prog.sims) ? prog.sims : {};
+  for (const k of Object.keys(psims).sort()) {
+    const r = psims[k];
+    if (!r || typeof r !== 'object') continue;
+    sims[k] = { passed: r.passed === true,
+      score: typeof r.score === 'number' ? r.score : null,
+      attempts: typeof r.runs === 'number' ? r.runs : null };
+  }
+  const tools = {};
+  const ptools = (typeof prog.tools === 'object' && prog.tools) ? prog.tools : {};
+  for (const k of Object.keys(ptools).sort()) {
+    const r = ptools[k];
+    if (!r || typeof r !== 'object') continue;
+    tools[k] = { passed: r.passed === true };
+  }
+  const stations = (Array.isArray(prog.stations) ? prog.stations : [])
+    .filter((x) => typeof x === 'string').slice().sort();
+
+  const record = {
+    record: COMPLETION_RECORD,
+    product: meta.product,
+    pack_version: meta.pack_version,
+    exported_at: now.toISOString(),
+    identity: { claimed: typeof meta.identity === 'string' ? meta.identity : null,
+      attested_by: 'this device only', signature: null },
+    lessons: out,
+    sims, tools, stations,
+    honesty: {
+      proves: [
+        'a step of kind sim, station or crib is marked done only where this device\'s progress record holds a pass for that seat, that station or that district crib; no step is marked done from nothing',
+        'a lesson is complete only when every one of its steps is done',
+        'the digest is SHA-256 over the canonical JSON of every other top-level field, so an edit to any of them is detectable',
+      ],
+      does_not_prove: [
+        'who did the work: the identity is a label this device stores and nobody has verified it, the signature is null, and anyone holding the device can edit the record it was built from',
+        'silent steps (' + silent.join(', ') + ') are recorded by nothing in this bundle, so they are never done here and no lesson that has one can be complete',
+        training === null
+          ? 'the training log was ' + meta.training_state + ' on this device, so no ' + Object.keys(REF_FIELDS).join(', ') + ' step is done here'
+          : 'a ' + fromTraining.join(', ') + ' step is done only where the training log holds an episode of that kind in the lesson\'s hall whose reference fields equal the step\'s own (' + fromTraining.map((k) => k + ': hall, ' + REF_FIELDS[k].join(', ')).join('; ') + '); a hall alone matches nothing',
+        ...Object.keys(unmatchable).map((k) => 'a ' + k + ' step can never be done here: the step carries ' + unmatchable[k].join(', ') + ' and the training episode records none of them'),
+        ...(skipped.size ? [skipped.size + ' training episode(s) of a matching kind and hall were skipped because their t is not an ISO-8601 time string as the app writes it; they marked nothing'] : []),
+        'the progress record keeps no score and no scenario for a seat, only runs, a pass and a best time; score is therefore null and a sim step is held to the seat, not to its scenario',
+        'the ladder (' + ladder.edges.length + ' edges) is guidance about order and not a gate; nothing here certifies, qualifies or permits anybody to do anything',
+      ],
+    },
+  };
+  const bytes = new TextEncoder().encode(canonicalJSON(record));
+  const buf = await globalThis.crypto.subtle.digest('SHA-256', bytes);
+  const hex = [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
+  record.digest = { alg: 'SHA-256',
+    over: 'canonical JSON of every top-level field except digest: keys sorted recursively, no whitespace, UTF-8',
+    hex };
+  return record;
+}
+
+/* the on-page figures, computed from a record and never typed. Three counts,
+   named by what stands behind each step: an episode kind (step_kinds.records
+   != null: sim, advisor, crew, walkaround) counts only where tc-progress
+   actually holds that mark; a device mark only (station done, crib passed);
+   self-reported or unrecorded (walk, placard), which nothing writes anywhere. */
+function summarizeRecord(record, stepKinds, episodeKinds) {
+  const unmatchable = unmatchableKinds(episodeKinds);
+  const epKinds = Object.keys(stepKinds).filter((k) => stepKinds[k].records !== null);
+  const deviceKinds = Object.keys(stepKinds).filter((k) => stepKinds[k].records === null && EVIDENCED_KINDS.includes(k));
+  const unrecordedKinds = Object.keys(stepKinds).filter((k) => stepKinds[k].records === null && !EVIDENCED_KINDS.includes(k));
+  const steps = record.lessons.flatMap((l) => l.steps);
+  const complete = record.lessons.filter((l) => l.complete);
+  const evidenced = complete.filter((l) => l.steps.every((s) => s.evidence !== null));
+  const isDoneOf = (kinds) => steps.filter((s) => kinds.includes(s.kind) && s.done && s.evidence !== null).length;
+  return {
+    lessons: record.lessons.length,
+    complete: complete.length,
+    evidence_backed: evidenced.length,
+    steps: steps.length,
+    steps_done: steps.filter((s) => s.done).length,
+    episode_steps_done: isDoneOf(epKinds),
+    episode_steps: steps.filter((s) => epKinds.includes(s.kind)).length,
+    device_mark_steps_done: isDoneOf(deviceKinds),
+    device_mark_steps: steps.filter((s) => deviceKinds.includes(s.kind)).length,
+    self_reported_steps: steps.filter((s) => unrecordedKinds.includes(s.kind)).length,
+    self_reported_steps_done: steps.filter((s) => unrecordedKinds.includes(s.kind) && s.done).length,
+    episode_kinds: epKinds,
+    episode_kinds_unmarked_here: Object.keys(unmatchable),
+    episode_kinds_missing_fields: unmatchable,
+    device_mark_kinds: deviceKinds,
+    self_reported_kinds: unrecordedKinds,
+  };
+}
+/* COMPLETION:END */
+"""
+if '</script' in COMPLETION_JS:
+    raise AssertionError('the completion script contains a </script close')
 
 SCRIPT = CONTROL_BUNDLE + '\n\n/* ---- web/build_progress.py: the page ---- */\n' + RENDER + RENDER2 + RENDER3
 
@@ -1652,6 +1964,8 @@ pre{{background:var(--sunk);border:1px solid var(--rule);border-radius:6px;paddi
   padding:12px 14px;color:var(--ink)}}
 .toolbar{{position:sticky;top:0;background:var(--plate);padding:10px 0;z-index:2;
   border-bottom:1px solid var(--rule);display:flex;gap:10px;flex-wrap:wrap;align-items:center}}
+#expRecord{{background:var(--mark);color:var(--mark-ink);border:0;border-radius:7px;padding:8px 14px;font:inherit;font-weight:600;cursor:pointer}}
+#expRecord:disabled{{background:var(--rule);color:var(--muted);cursor:not-allowed}}
 .toolbar select{{background:var(--sunk);border:1px solid var(--rule);color:var(--ink);
   border-radius:6px;padding:8px 12px;font:inherit;flex:1 1 280px}}
 .toolbar label{{color:var(--muted);font-size:13px}}
@@ -1843,6 +2157,18 @@ footer.page a{{margin-inline-end:10px}}
 
 </div>
 
+<section id="completion">
+  <h2>Carry your record off this device</h2>
+  <p class="why">A completion record is built here from the progress record under
+     <code>{E(PROGRESS_KEY)}</code> and the lesson definitions in <code>{E(LESSONS_PATH)}</code>, and
+     from nothing else. A step counts as done only where that record holds its evidence; a lesson is
+     complete only when every step is done. The record names what it proves and what it does not,
+     and carries a digest so an edit is detectable. It is attested by this device alone and signed
+     by nobody. {E(need(LESSONS_HONESTY, 'not_certification', LESSONS_PATH + '#honesty'))}</p>
+  <div class="card" id="completion-summary"></div>
+  <p><button id="expRecord" type="button" disabled>Export completion record</button></p>
+</section>
+
 <section>
   <h2>Which control plane this is</h2>
   <p class="why">Not a description of it and not a second implementation of it: the modules below
@@ -1879,6 +2205,8 @@ footer.page a{{margin-inline-end:10px}}
 </footer>
 </div>
 <script type="application/json" id="tcdata">{PAYLOAD}</script>
+<script id="completion-js">
+{COMPLETION_JS}</script>
 <script type="module">
 {SCRIPT}</script>
 </body>

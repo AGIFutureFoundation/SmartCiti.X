@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-26",
- "source_stamp": "316b71485121ecb9",
+ "source_stamp": "f61aa9bedfa55f82",
  "provenance": "DERIVED",
  "provenance_note": "every fact here is read from the registry that owns it and re-derivable by build.py; the fixture record is SCRIPTED and labelled as not a learner",
  "honesty": {
@@ -133,9 +133,11 @@
    "class": "episode-backed",
    "records": "walkaround",
    "evidence_required_when_done": true,
+   "evidenceable": true,
+   "evidenceable_why": "every reference field the step carries is recorded by the episode",
    "evidence_shape": {
     "episode": "walkaround",
-    "t": "finite number",
+    "t": "ISO-8601 string (the page writes new Date().toISOString()); Date.parse must be finite",
     "hall": "the step's own hall, verbatim",
     "point": "the step's own point, verbatim",
     "sim": "the step's own sim, verbatim"
@@ -155,12 +157,14 @@
    ],
    "not_checkable": [],
    "not_checkable_why": "the episode kind never records these step references (training.json#episode_kinds), so no export can carry them and the verifier does not pretend to check them",
-   "rule": "step.episode-evidence: episode == step kind, t finite, every checkable field equals the step's own value"
+   "rule": "step.episode-evidence: episode == step kind, t an ISO-8601 string that parses, every checkable field equals the step's own value"
   },
   "sim": {
    "class": "episode-backed",
    "records": "sim",
    "evidence_required_when_done": true,
+   "evidenceable": true,
+   "evidenceable_why": "every reference field the step carries is recorded by the episode",
    "evidence_shape": {
     "sim": "sim id",
     "scenario": "scenario id",
@@ -193,9 +197,11 @@
    "class": "episode-backed",
    "records": "advisor",
    "evidence_required_when_done": true,
+   "evidenceable": true,
+   "evidenceable_why": "every reference field the step carries is recorded by the episode",
    "evidence_shape": {
     "episode": "advisor",
-    "t": "finite number",
+    "t": "ISO-8601 string (the page writes new Date().toISOString()); Date.parse must be finite",
     "advisor": "the step's own advisor, verbatim",
     "answer_kind": "the step's own answer_kind, verbatim",
     "hall": "the step's own hall, verbatim",
@@ -218,15 +224,17 @@
    ],
    "not_checkable": [],
    "not_checkable_why": "the episode kind never records these step references (training.json#episode_kinds), so no export can carry them and the verifier does not pretend to check them",
-   "rule": "step.episode-evidence: episode == step kind, t finite, every checkable field equals the step's own value"
+   "rule": "step.episode-evidence: episode == step kind, t an ISO-8601 string that parses, every checkable field equals the step's own value"
   },
   "crew": {
    "class": "episode-backed",
    "records": "crew",
    "evidence_required_when_done": true,
+   "evidenceable": false,
+   "evidenceable_why": "a crew step cannot be evidenced by this bundle: the crew episode records no muster and no seat",
    "evidence_shape": {
     "episode": "crew",
-    "t": "finite number",
+    "t": "ISO-8601 string (the page writes new Date().toISOString()); Date.parse must be finite",
     "answer_kind": "the step's own answer_kind, verbatim",
     "crew": "the step's own crew, verbatim",
     "hall": "the step's own hall, verbatim",
@@ -255,7 +263,7 @@
     "seat"
    ],
    "not_checkable_why": "the episode kind never records these step references (training.json#episode_kinds), so no export can carry them and the verifier does not pretend to check them",
-   "rule": "step.episode-evidence: episode == step kind, t finite, every checkable field equals the step's own value"
+   "rule": "step.episode-evidence: episode == step kind, t an ISO-8601 string that parses, every checkable field equals the step's own value"
   }
  },
  "recording_kinds": [
@@ -280,11 +288,15 @@
   "sims": 11,
   "sims_with_threshold": 0,
   "ladder_edges": 16,
-  "fixture_mutants": 12
+  "lessons_completable": 24,
+  "lessons_not_completable": 8,
+  "fixture_mutants": 14
  },
  "lessons": {
   "riggers-first-card": {
    "hall": "riggers",
+   "completable": true,
+   "not_completable_why": null,
    "steps": 5,
    "recording_steps": 3,
    "silent_steps": 2,
@@ -295,6 +307,8 @@
   },
   "riggers-carry-under-control": {
    "hall": "riggers",
+   "completable": false,
+   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
    "steps": 5,
    "recording_steps": 4,
    "silent_steps": 1,
@@ -307,6 +321,8 @@
   },
   "crane-ops-read-the-chart": {
    "hall": "crane-ops",
+   "completable": true,
+   "not_completable_why": null,
    "steps": 4,
    "recording_steps": 3,
    "silent_steps": 1,
@@ -319,6 +335,8 @@
   },
   "ironworkers-plan-out-loud": {
    "hall": "ironworkers",
+   "completable": false,
+   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
    "steps": 5,
    "recording_steps": 3,
    "silent_steps": 2,
@@ -331,6 +349,8 @@
   },
   "millwrights-shop-move": {
    "hall": "millwrights",
+   "completable": true,
+   "not_completable_why": null,
    "steps": 4,
    "recording_steps": 3,
    "silent_steps": 1,
@@ -343,6 +363,8 @@
   },
   "welders-the-watch": {
    "hall": "welders",
+   "completable": false,
+   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
    "steps": 5,
    "recording_steps": 3,
    "silent_steps": 2,
@@ -353,6 +375,8 @@
   },
   "boilermakers-get-them-out": {
    "hall": "boilermakers",
+   "completable": false,
+   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
    "steps": 4,
    "recording_steps": 3,
    "silent_steps": 1,
@@ -365,6 +389,8 @@
   },
   "operating-eng-locate-first": {
    "hall": "operating-eng",
+   "completable": false,
+   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
    "steps": 5,
    "recording_steps": 4,
    "silent_steps": 1,
@@ -375,6 +401,8 @@
   },
   "demolition-stand-back": {
    "hall": "demolition",
+   "completable": true,
+   "not_completable_why": null,
    "steps": 4,
    "recording_steps": 2,
    "silent_steps": 2,
@@ -387,6 +415,8 @@
   },
   "scaffold-read-the-tag": {
    "hall": "scaffold",
+   "completable": true,
+   "not_completable_why": null,
    "steps": 4,
    "recording_steps": 2,
    "silent_steps": 2,
@@ -397,6 +427,8 @@
   },
   "scaffold-build-in-order": {
    "hall": "scaffold",
+   "completable": false,
+   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
    "steps": 5,
    "recording_steps": 3,
    "silent_steps": 2,
@@ -409,6 +441,8 @@
   },
   "waterproofers-flash-it-right": {
    "hall": "waterproofers",
+   "completable": true,
+   "not_completable_why": null,
    "steps": 4,
    "recording_steps": 2,
    "silent_steps": 2,
@@ -421,6 +455,8 @@
   },
   "bricklayers-gear-that-stays-on": {
    "hall": "bricklayers",
+   "completable": true,
+   "not_completable_why": null,
    "steps": 4,
    "recording_steps": 1,
    "silent_steps": 3,
@@ -431,6 +467,8 @@
   },
   "bricklayers-grout-the-lift": {
    "hall": "bricklayers",
+   "completable": true,
+   "not_completable_why": null,
    "steps": 3,
    "recording_steps": 1,
    "silent_steps": 2,
@@ -443,6 +481,8 @@
   },
   "cement-masons-mind-the-weather": {
    "hall": "cement-masons",
+   "completable": true,
+   "not_completable_why": null,
    "steps": 6,
    "recording_steps": 1,
    "silent_steps": 5,
@@ -455,6 +495,8 @@
   },
   "stone-carvers-hang-it-safely": {
    "hall": "stone-carvers",
+   "completable": true,
+   "not_completable_why": null,
    "steps": 3,
    "recording_steps": 1,
    "silent_steps": 2,
@@ -467,6 +509,8 @@
   },
   "tilesetters-start-underneath": {
    "hall": "tilesetters",
+   "completable": true,
+   "not_completable_why": null,
    "steps": 4,
    "recording_steps": 1,
    "silent_steps": 3,
@@ -479,6 +523,8 @@
   },
   "lathers-frame-for-the-next-trade": {
    "hall": "lathers",
+   "completable": true,
+   "not_completable_why": null,
    "steps": 4,
    "recording_steps": 1,
    "silent_steps": 3,
@@ -489,6 +535,8 @@
   },
   "restore-point-the-joint": {
    "hall": "masonry-restore",
+   "completable": true,
+   "not_completable_why": null,
    "steps": 4,
    "recording_steps": 1,
    "silent_steps": 3,
@@ -499,6 +547,8 @@
   },
   "restore-write-it-down": {
    "hall": "masonry-restore",
+   "completable": true,
+   "not_completable_why": null,
    "steps": 3,
    "recording_steps": 1,
    "silent_steps": 2,
@@ -511,6 +561,8 @@
   },
   "refractory-dry-it-slowly": {
    "hall": "refractory",
+   "completable": true,
+   "not_completable_why": null,
    "steps": 4,
    "recording_steps": 1,
    "silent_steps": 3,
@@ -521,6 +573,8 @@
   },
   "painters-contain-it": {
    "hall": "painters",
+   "completable": true,
+   "not_completable_why": null,
    "steps": 5,
    "recording_steps": 3,
    "silent_steps": 2,
@@ -531,6 +585,8 @@
   },
   "painters-lay-the-coat": {
    "hall": "painters",
+   "completable": true,
+   "not_completable_why": null,
    "steps": 3,
    "recording_steps": 2,
    "silent_steps": 1,
@@ -543,6 +599,8 @@
   },
   "hazmat-wash-and-decon": {
    "hall": "hazmat",
+   "completable": true,
+   "not_completable_why": null,
    "steps": 5,
    "recording_steps": 3,
    "silent_steps": 2,
@@ -555,6 +613,8 @@
   },
   "electricians-clip-in-first": {
    "hall": "electricians",
+   "completable": false,
+   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
    "steps": 4,
    "recording_steps": 3,
    "silent_steps": 1,
@@ -565,6 +625,8 @@
   },
   "glaziers-watch-the-line": {
    "hall": "glaziers",
+   "completable": false,
+   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
    "steps": 4,
    "recording_steps": 2,
    "silent_steps": 2,
@@ -577,6 +639,8 @@
   },
   "site-safety-make-it-normal": {
    "hall": "site-safety",
+   "completable": true,
+   "not_completable_why": null,
    "steps": 3,
    "recording_steps": 1,
    "silent_steps": 2,
@@ -587,6 +651,8 @@
   },
   "surveyors-trust-the-control": {
    "hall": "surveyors",
+   "completable": true,
+   "not_completable_why": null,
    "steps": 5,
    "recording_steps": 2,
    "silent_steps": 3,
@@ -597,6 +663,8 @@
   },
   "line-workers-find-the-fault": {
    "hall": "line-workers",
+   "completable": true,
+   "not_completable_why": null,
    "steps": 5,
    "recording_steps": 1,
    "silent_steps": 4,
@@ -607,6 +675,8 @@
   },
   "hvacr-prove-the-sequence": {
    "hall": "hvacr",
+   "completable": true,
+   "not_completable_why": null,
    "steps": 4,
    "recording_steps": 1,
    "silent_steps": 3,
@@ -617,6 +687,8 @@
   },
   "fiber-splicers-keep-the-trace": {
    "hall": "fiber-splicers",
+   "completable": true,
+   "not_completable_why": null,
    "steps": 4,
    "recording_steps": 2,
    "silent_steps": 2,
@@ -627,6 +699,8 @@
   },
   "carpenters-return-it-the-same": {
    "hall": "carpenters",
+   "completable": true,
+   "not_completable_why": null,
    "steps": 4,
    "recording_steps": 1,
    "silent_steps": 3,
@@ -1087,6 +1161,8 @@
    "fixture/mutant-prerequisite-not-met.json": "ladder.prerequisite",
    "fixture/mutant-episode-wrong-kind.json": "step.episode-evidence",
    "fixture/mutant-episode-wrong-point.json": "step.episode-evidence",
+   "fixture/mutant-episode-t-unparseable.json": "step.episode-evidence",
+   "fixture/mutant-crew-done-unrecordable.json": "step.episode-evidence",
    "fixture/mutant-unknown-lesson.json": "ids.lesson",
    "fixture/mutant-unknown-station.json": "ids.station",
    "fixture/mutant-missing-field.json": "record.fields",
