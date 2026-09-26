@@ -556,6 +556,225 @@ HONESTY = {
                  % (UNION, len(UNION_SKILLS)),
 }
 
+# ---------------------------------------------------------------------------
+# Is "course completion" VERIFIABLE? A lesson is a list of steps; only some
+# step kinds record an episode (lessons.json#step_kinds[k].records is a kind
+# name; null means the step leaves nothing behind). Read, counted, never typed.
+
+def _reg(rel):
+    p = ROOT / rel
+    d = json.loads(p.read_text())
+    return d, {'path': rel,
+               'source_stamp': need(d, 'source_stamp', rel),
+               'sha256': hashlib.sha256(p.read_bytes()).hexdigest()}
+
+
+LESSONS_REG, _lessons_in = _reg('lessons/registry/lessons.json')
+SIMS_FULL, _sims_in = _reg('sims/registry/sims.json')
+CAMPUSES_REG, _campuses_in = _reg('unions/registry/campuses.json')
+UNIONS_REG, _unions_in = _reg('unions/registry/unions.json')
+HALLS_REG = json.loads((ROOT / 'pack' / 'registry' / 'halls.json').read_text())
+_halls_in = {'path': 'pack/registry/halls.json',
+             'source_stamp': None,
+             'why_no_stamp': 'pack/registry/halls.json carries no source_stamp '
+                             'field; its sha256 is the guard',
+             'sha256': hashlib.sha256(
+                 (ROOT / 'pack' / 'registry' / 'halls.json').read_bytes()).hexdigest()}
+
+_KINDS = need(LESSONS_REG, 'step_kinds', 'lessons/registry/lessons.json')
+RECORDING_KINDS = sorted(k for k in _KINDS
+                         if need(_KINDS[k], 'records', 'lessons.json#step_kinds[%s]' % k) is not None)
+SILENT_KINDS = sorted(k for k in _KINDS if k not in RECORDING_KINDS)
+_LESSONS = need(LESSONS_REG, 'lessons', 'lessons/registry/lessons.json')
+_EDGES = need(need(LESSONS_REG, 'ladder', 'lessons.json'), 'edges', 'lessons.json#ladder')
+_SIMS = need(SIMS_FULL, 'sims', 'sims/registry/sims.json')
+_ALL_HALL_SLUGS = sorted(need(h, 'slug', 'pack/registry/halls.json#halls[]')
+                         for h in need(HALLS_REG, 'halls', 'pack/registry/halls.json'))
+_UNION_SLUGS = sorted(need(u, 'slug', 'unions.json#unions[]')
+                      for u in need(UNIONS_REG, 'unions', 'unions/registry/unions.json'))
+_CAMPUS_OF = {}
+for _cid, _c in need(CAMPUSES_REG, 'campuses', 'unions/registry/campuses.json').items():
+    for _h in need(_c, 'halls', 'campuses.json#campuses[%s]' % _cid):
+        _CAMPUS_OF[_h] = _cid
+
+PER_LESSON = {}
+for _lid in sorted(_LESSONS):
+    _l = _LESSONS[_lid]
+    _steps = need(_l, 'steps', 'lessons.json#lessons[%s]' % _lid)
+    _rec = [s for s in _steps if need(s, 'kind', 'a step of %s' % _lid) in RECORDING_KINDS]
+    _sil = [s for s in _steps if s['kind'] in SILENT_KINDS]
+    if len(_rec) + len(_sil) != len(_steps):
+        raise ValueError('evals: lesson %s uses a step kind lessons.json#step_kinds '
+                         'does not declare' % _lid)
+    _hall = need(_l, 'hall', 'lessons.json#lessons[%s]' % _lid)
+    if _hall not in _ALL_HALL_SLUGS:
+        raise ValueError('evals: lesson %s names hall %r, absent from pack/registry/halls.json'
+                         % (_lid, _hall))
+    _cls = ('full' if len(_sil) == 0 and len(_rec) > 0
+            else 'partial' if len(_rec) > 0 else 'none')
+    PER_LESSON[_lid] = {
+        'hall': _hall,
+        'campus': need(_l, 'campus', 'lessons.json#lessons[%s]' % _lid),
+        'steps': len(_steps),
+        'evidence_backed_steps': len(_rec),
+        'self_reported_steps': len(_sil),
+        'evidence_kinds': sorted({s['kind'] for s in _rec}),
+        'silent_kinds': sorted({s['kind'] for s in _sil}),
+        'sims_run': sorted({need(s, 'sim', 'a sim step of %s' % _lid)
+                            for s in _steps if s['kind'] == 'sim'}),
+        'can_be_evidence_backed': len(_rec) >= 1,
+        'fully_evidence_backed': _cls == 'full',
+        'classification': _cls,
+    }
+
+_by_cls = {c: sorted(k for k in PER_LESSON if PER_LESSON[k]['classification'] == c)
+           for c in ('full', 'partial', 'none')}
+_halls_with = sorted({v['hall'] for v in PER_LESSON.values()})
+_halls_without = [h for h in _ALL_HALL_SLUGS if h not in set(_halls_with)]
+_verifiable = {k for k in PER_LESSON if PER_LESSON[k]['can_be_evidence_backed']}
+
+PER_UNION = {}
+for _u in _UNION_SLUGS:
+    _mine = [k for k in PER_LESSON if PER_LESSON[k]['hall'] == _u]
+    if _mine:
+        PER_UNION[_u] = {'lessons': len(_mine),
+                         'verifiable': sum(1 for k in _mine if k in _verifiable),
+                         'fully_verifiable': sum(1 for k in _mine
+                                                 if PER_LESSON[k]['fully_evidence_backed'])}
+if sorted(PER_UNION) != _halls_with:
+    raise ValueError('evals: lesson halls and unions.json slugs disagree: %r'
+                     % sorted(set(_halls_with) ^ set(PER_UNION)))
+
+# Sim thresholds: sims.json has no seat-level pass threshold; it has a rubric
+# per sim whose axes each carry a `pass` rule ("informational" is not one).
+SIM_THRESHOLDS = {}
+for _sid in sorted({s for v in PER_LESSON.values() for s in v['sims_run']}):
+    if _sid not in _SIMS:
+        raise KeyError('evals: sims/registry/sims.json#sims is missing %r, which a '
+                       'sim step runs' % _sid)
+    _rub = need(_SIMS[_sid], 'rubric', 'sims.json#sims[%s]' % _sid)
+    _axes = {}
+    for _a in _rub:
+        _ax = need(_a, 'axis', 'a rubric axis of %s' % _sid)
+        _axes[_ax] = need(_a, 'pass', 'sims.json#sims[%s].rubric[%s]' % (_sid, _ax))
+    _thr = {k: v for k, v in _axes.items() if v != 'informational'}
+    SIM_THRESHOLDS[_sid] = {'rubric_axes': len(_axes),
+                            'thresholded_axes': len(_thr),
+                            'informational_axes': len(_axes) - len(_thr),
+                            'pass_rules': _thr}
+_thr_declared = sum(1 for v in SIM_THRESHOLDS.values() if v['thresholded_axes'] > 0)
+
+# Ladder: cycles and prerequisites that are themselves not verifiable.
+_needs = {}
+for _e in _EDGES:
+    _a = need(_e, 'lesson', 'lessons.json#ladder.edges[]')
+    _b = need(_e, 'needs', 'lessons.json#ladder.edges[]')
+    for _x in (_a, _b):
+        if _x not in PER_LESSON:
+            raise KeyError('evals: ladder edge names %r, absent from lessons.json#lessons' % _x)
+    _needs.setdefault(_a, []).append(_b)
+
+
+def _count_cycles(needs):
+    """Number of nodes that sit on a cycle (0 when acyclic). Iterative DFS."""
+    WHITE, GREY, BLACK = 0, 1, 2
+    colour = {k: WHITE for k in PER_LESSON}
+    on_cycle = set()
+    for root in sorted(PER_LESSON):
+        if colour[root] != WHITE:
+            continue
+        stack = [(root, iter(sorted((needs[root] if root in needs else []))))]
+        colour[root] = GREY
+        path = [root]
+        while stack:
+            node, it = stack[-1]
+            nxt = next(it, None)
+            if nxt is None:
+                colour[node] = BLACK
+                stack.pop()
+                path.pop()
+                continue
+            if colour[nxt] == GREY:
+                on_cycle.update(path[path.index(nxt):])
+            elif colour[nxt] == WHITE:
+                colour[nxt] = GREY
+                path.append(nxt)
+                stack.append((nxt, iter(sorted((needs[nxt] if nxt in needs else [])))))
+    return len(on_cycle)
+
+
+_cycle_nodes = _count_cycles(_needs)
+_unverifiable_prereqs = sorted({b for a in _needs for b in _needs[a] if b not in _verifiable})
+_edges_into_unverifiable = sum(1 for a in _needs for b in _needs[a] if b not in _verifiable)
+
+COMPLETION_EVIDENCE = {
+    'inputs': {'lessons': _lessons_in, 'sims': _sims_in, 'campuses': _campuses_in,
+               'unions': _unions_in, 'halls': _halls_in},
+    'recording_kinds': RECORDING_KINDS,
+    'silent_kinds': SILENT_KINDS,
+    'kinds_read_from': 'lessons/registry/lessons.json#step_kinds[k].records; a '
+                       'kind records when that field is a kind name, and is '
+                       'silent when it is null. station and crib are silent '
+                       'by that field, whatever their name suggests.',
+    'per_lesson': PER_LESSON,
+    'rollup': {
+        'lessons': len(PER_LESSON),
+        'steps': sum(v['steps'] for v in PER_LESSON.values()),
+        'evidence_backed_steps': sum(v['evidence_backed_steps'] for v in PER_LESSON.values()),
+        'self_reported_steps': sum(v['self_reported_steps'] for v in PER_LESSON.values()),
+        'fully_verifiable': len(_by_cls['full']),
+        'partly_verifiable': len(_by_cls['partial']),
+        'not_verifiable': len(_by_cls['none']),
+        'lessons_by_class': _by_cls,
+        'halls_total': len(_ALL_HALL_SLUGS),
+        'halls_with_a_lesson': len(_halls_with),
+        'halls_with_no_lesson': len(_halls_without),
+        'halls_with_no_lesson_list': _halls_without,
+        'halls_with_no_lesson_means': 'a hall with no lesson has NO course to '
+                                      'complete; nothing about completion can be '
+                                      'verified or falsified there because nothing '
+                                      'is offered',
+        'campuses_of_lesson_halls': sorted({_CAMPUS_OF[h] for h in _halls_with if h in _CAMPUS_OF}),
+        'lesson_halls_absent_from_campus_rosters': sorted(h for h in _halls_with if h not in _CAMPUS_OF),
+    },
+    'per_union': PER_UNION,
+    'unions_total': len(_UNION_SLUGS),
+    'unions_with_a_lesson': len(PER_UNION),
+    'sim_thresholds': {
+        'sims_run_by_a_sim_step': len(SIM_THRESHOLDS),
+        'thresholds_declared': _thr_declared,
+        'per_sim': SIM_THRESHOLDS,
+        'where': 'sims/registry/sims.json#sims[id].rubric[].pass, one rule per '
+                 'axis; there is no seat-level or scenario-level pass threshold '
+                 'field anywhere in sims.json',
+        're_derivable': _thr_declared == len(SIM_THRESHOLDS),
+        'passed_is_recorded_by': 'the seat, at run time, against those axis rules; '
+                                 'a "passed" flag in an episode is the seat\'s '
+                                 'statement and this pack re-derives none of them '
+                                 'from a recording, because no recording is shipped',
+    },
+    'ladder': {
+        'edges': len(_EDGES),
+        'lessons_on_a_cycle': _cycle_nodes,
+        'acyclic': _cycle_nodes == 0,
+        'prerequisites_not_verifiable': _unverifiable_prereqs,
+        'edges_into_unverifiable_prerequisite': _edges_into_unverifiable,
+    },
+    'means': 'a lesson is verifiable when at least one of its steps records an '
+             'episode; fully verifiable when every step does. A self-reported '
+             'step is one the learner marks done and nothing else records.',
+    'honest': 'this measures what the registries DECLARE, not what any learner '
+              'did: no episode has been recorded and no seat has been run. '
+              'Every count here is of steps and rules, and it says nothing '
+              'about whether the recorded episodes, when they exist, prove '
+              'competence.',
+}
+if COMPLETION_EVIDENCE['ladder']['lessons_on_a_cycle'] != 0:
+    raise ValueError('evals: the lesson ladder has a cycle; completion order is undefined')
+if COMPLETION_EVIDENCE['rollup']['fully_verifiable'] + COMPLETION_EVIDENCE['rollup']['partly_verifiable'] + COMPLETION_EVIDENCE['rollup']['not_verifiable'] != len(PER_LESSON):
+    raise ValueError('evals: lesson classes do not partition the lessons')
+
+
 payload = {
     'pack': 'evals',
     'product': 'the measured output of control/sim_curriculum.mjs across %d '
@@ -624,6 +843,7 @@ payload = {
     'separation': SEPARATION,
     'retention_empty_denominator_runs': EMPTY_DENOM,
     'hall_independence': HALL_INDEPENDENCE,
+    'completion_evidence': COMPLETION_EVIDENCE,
     'counts': {
         'seeds': len(SEEDS),
         'strategies': len(STRATEGIES),

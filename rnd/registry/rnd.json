@@ -39,7 +39,7 @@
   "budget_currencies": 2,
   "budget_agreements": 7,
   "suites_run": 55,
-  "suite_checks_declared": 2465,
+  "suite_checks_declared": 2476,
   "open_questions": 12,
   "negative_findings": 9,
   "cross_checks": 2,
@@ -1728,10 +1728,12 @@
     "wiki/build_wiki.py"
    ],
    "builders": [
-    "bundles/build.py"
+    "bundles/build.py",
+    "evals/build.py"
    ],
    "suites": [
     "bundles/test.mjs",
+    "evals/test.mjs",
     "web/test_home.mjs"
    ],
    "own_pack": [
@@ -1796,6 +1798,7 @@
     "avatars/build.py",
     "bundles/build.py",
     "ei/build.py",
+    "evals/build.py",
     "lessons/build.py",
     "props/build.py",
     "respond/build.py",
@@ -1804,6 +1807,7 @@
    "suites": [
     "bundles/test.mjs",
     "ei/test.mjs",
+    "evals/test.mjs",
     "i18n/test.mjs",
     "lessons/test.mjs",
     "respond/test.mjs",
@@ -2268,6 +2272,7 @@
    ],
    "builders": [
     "agents/build.py",
+    "evals/build.py",
     "geo/build.py",
     "guide/build.py",
     "kit/build.py",
@@ -2282,6 +2287,7 @@
     "world/build.py"
    ],
    "suites": [
+    "evals/test.mjs",
     "geo/test.mjs",
     "kit/test.mjs",
     "lessons/test.mjs",
@@ -2359,6 +2365,7 @@
     "agents/build.py",
     "avatars/build.py",
     "bundles/build.py",
+    "evals/build.py",
     "guide/build.py",
     "kit/build.py",
     "orbis/build.py",
@@ -2374,6 +2381,7 @@
     "agents/test.mjs",
     "avatars/test.mjs",
     "bundles/test.mjs",
+    "evals/test.mjs",
     "kit/test.mjs",
     "orbis/test.mjs",
     "props/test.mjs",
@@ -3348,7 +3356,7 @@
    {
     "suite": "evals/test.mjs",
     "pack": "evals",
-    "readme_checks": 43,
+    "readme_checks": 54,
     "declared": true,
     "in_readme_table": true
    },
@@ -3414,8 +3422,8 @@
   "suites_without_a_count": [
    "control/soak.mjs"
   ],
-  "declared_total": 2465,
-  "readme_headline": 2476,
+  "declared_total": 2476,
+  "readme_headline": 2487,
   "unaccounted_for": 11,
   "unaccounted_note": "the headline counts every `  ok ` line verify_all.sh sees, which includes suites the README table gives no number to and web/test_interiors.py, which the table does not list at all. The difference is that remainder and is computed, not reconciled by hand.",
   "min": 9,

@@ -445,9 +445,122 @@ const r4 = (x) => Math.round(x * 1e4) / 1e4;
      + 'measures a curriculum shape and is not a per-trade training outcome');
 }
 
+/* ------------------- is "course completion" verifiable? ------------------ */
+/* Recomputed from lessons.json here - the classification, the rollups, the
+   ladder walk - and held to what the registry says. Structure, not prose. */
+{
+  const ce = at(E, 'completion_evidence');
+  const L = J('lessons/registry/lessons.json');
+  const S = J('sims/registry/sims.json');
+  const C = J('unions/registry/campuses.json');
+  const U = J('unions/registry/unions.json');
+  const sha = (p) => createHash('sha256').update(readFileSync(join(ROOT, p))).digest('hex');
+
+  const stampsOk = [['lessons', L], ['sims', S], ['campuses', C], ['unions', U]].every(
+    ([k, reg]) => at(ce, `inputs.${k}.source_stamp`) === at(reg, 'source_stamp')
+      && at(ce, `inputs.${k}.sha256`) === sha(at(ce, `inputs.${k}.path`)));
+  ok(stampsOk && at(ce, 'inputs.halls.sha256') === sha('pack/registry/halls.json'),
+     'completion_evidence exists and every input stamp and sha256 matches the '
+     + 'registry it was read from (lessons, sims, campuses, unions, halls)');
+
+  const kinds = at(L, 'step_kinds');
+  const recKinds = Object.keys(kinds).filter((k) => at(kinds[k], 'records') !== null).sort();
+  ok(recKinds.join(',') === at(ce, 'recording_kinds').join(','),
+     `the recording kinds are the ones step_kinds[k].records names (${recKinds.join(', ')})`);
+
+  const lessons = at(L, 'lessons');
+  const mine = {};
+  for (const id of Object.keys(lessons).sort()) {
+    const steps = at(lessons[id], 'steps');
+    const rec = steps.filter((s) => recKinds.includes(at(s, 'kind'))).length;
+    const sil = steps.length - rec;
+    mine[id] = { steps: steps.length, rec, sil,
+                 cls: sil === 0 && rec > 0 ? 'full' : rec > 0 ? 'partial' : 'none' };
+  }
+  const pl = at(ce, 'per_lesson');
+  ok(Object.keys(pl).sort().join(',') === Object.keys(mine).join(',')
+     && Object.keys(mine).every((id) => at(pl[id], 'steps') === mine[id].steps
+        && at(pl[id], 'evidence_backed_steps') === mine[id].rec
+        && at(pl[id], 'self_reported_steps') === mine[id].sil
+        && at(pl[id], 'classification') === mine[id].cls
+        && at(pl[id], 'can_be_evidence_backed') === (mine[id].rec >= 1)
+        && at(pl[id], 'fully_evidence_backed') === (mine[id].cls === 'full')),
+     'every lesson\'s step counts and classification are recomputed here from '
+     + 'lessons.json and equal the registry\'s');
+  ok(Object.keys(mine).every((id) => mine[id].rec > 0 || at(pl[id], 'classification') === 'none'),
+     'a lesson with zero recording steps is classed not-verifiable');
+
+  const r = at(ce, 'rollup');
+  const n = (c) => Object.values(mine).filter((v) => v.cls === c).length;
+  ok(at(r, 'fully_verifiable') === n('full') && at(r, 'partly_verifiable') === n('partial')
+     && at(r, 'not_verifiable') === n('none')
+     && at(r, 'fully_verifiable') + at(r, 'partly_verifiable') + at(r, 'not_verifiable') === 32
+     && at(r, 'lessons') === 32 && at(L, 'counts.lessons') === 32,
+     `the three classes are recomputed and sum to 32 lessons (${n('full')} full, `
+     + `${n('partial')} partial, ${n('none')} none)`);
+  const hallsAll = J('pack/registry/halls.json').halls.map((h) => at(h, 'slug'));
+  const hallsWith = new Set(Object.values(lessons).map((l) => at(l, 'hall')));
+  ok(at(r, 'halls_with_a_lesson') === hallsWith.size
+     && at(r, 'halls_with_no_lesson') === hallsAll.length - hallsWith.size
+     && at(r, 'halls_with_a_lesson') + at(r, 'halls_with_no_lesson') === 111
+     && at(r, 'halls_with_no_lesson_list').length === at(r, 'halls_with_no_lesson')
+     && at(r, 'halls_with_no_lesson_list').every((h) => hallsAll.includes(h) && !hallsWith.has(h)),
+     `halls with a lesson (${hallsWith.size}) plus halls with none sum to 111, and the `
+     + 'no-lesson list is exactly the declared halls no lesson names');
+  ok(at(r, 'evidence_backed_steps') === at(L, 'counts.recording_steps')
+     && at(r, 'self_reported_steps') === at(L, 'counts.silent_steps')
+     && at(r, 'steps') === at(L, 'counts.steps'),
+     'the step rollups equal the lessons registry\'s own recording/silent counts');
+
+  const pu = at(ce, 'per_union');
+  const unionSlugs = at(U, 'unions').map((u) => at(u, 'slug'));
+  ok(Object.keys(pu).every((u) => unionSlugs.includes(u))
+     && Object.values(pu).reduce((a, v) => a + at(v, 'verifiable'), 0)
+        === Object.values(mine).filter((v) => v.rec > 0).length
+     && Object.keys(pu).length === at(ce, 'unions_with_a_lesson')
+     && at(ce, 'unions_total') === unionSlugs.length,
+     'per-union verifiable counts name real union slugs and sum to the verifiable lessons');
+
+  const st = at(ce, 'sim_thresholds');
+  const simsRun = new Set(Object.values(lessons).flatMap((l) => at(l, 'steps')
+    .filter((s) => at(s, 'kind') === 'sim').map((s) => at(s, 'sim'))));
+  const declared = [...simsRun].filter((id) => at(S, `sims.${id}.rubric`)
+    .some((a) => at(a, 'pass') !== 'informational')).length;
+  ok(at(st, 'sims_run_by_a_sim_step') === simsRun.size && at(st, 'thresholds_declared') === declared
+     && at(st, 're_derivable') === (declared === simsRun.size),
+     `every sim a sim step runs is checked for a rubric pass rule in sims.json `
+     + `(${declared} of ${simsRun.size} declare one)`);
+
+  const edges = at(L, 'ladder.edges');
+  const needs = {};
+  for (const e of edges) (needs[at(e, 'lesson')] ||= []).push(at(e, 'needs'));
+  const colour = {};
+  let cyc = 0;
+  const visit = (nd, path) => {
+    if (colour[nd] === 1) { cyc++; return; }
+    if (colour[nd] === 2) return;
+    colour[nd] = 1;
+    for (const m of needs[nd] || []) visit(m, path.concat(nd));
+    colour[nd] = 2;
+  };
+  for (const id of Object.keys(mine)) visit(id, []);
+  const badPre = [...new Set(Object.values(needs).flat())].filter((p) => mine[p].rec === 0).sort();
+  ok(cyc === 0 && at(ce, 'ladder.acyclic') === true && at(ce, 'ladder.lessons_on_a_cycle') === 0
+     && at(ce, 'ladder.edges') === edges.length
+     && at(ce, 'ladder.prerequisites_not_verifiable').join(',') === badPre.join(','),
+     `the ladder is walked here: ${edges.length} edges, no cycle, and the `
+     + 'prerequisites that are themselves not verifiable match the registry\'s');
+  const hon = at(ce, 'honest');
+  ok(/DECLARE/.test(hon) && /no episode has been recorded/i.test(hon)
+     && /NO course to complete/.test(at(r, 'halls_with_no_lesson_means')),
+     'the block says in named fields that it measures declarations, not a '
+     + 'learner, and that a hall with no lesson has no course to complete');
+}
+
 console.log(`\n${pass} ok, ${fail} failed`);
 console.log(`evals: ${pass} checks passed - ${RUNS.length} simulation runs `
   + `reproduced exactly from ${SEEDS.length} recorded seeds, every spread and `
   + `separation recomputed, and the source's own "produces no evidence that `
   + `the beliefs are true" limit still quoted verbatim.`);
+console.log(`evals/test: ${pass} checks passed`);
 process.exit(fail ? 1 : 0);

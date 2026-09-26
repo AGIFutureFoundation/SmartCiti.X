@@ -20,6 +20,1073 @@
   "quoted_from": "control/sim_curriculum.mjs, header comment",
   "status": "these are the platform's pedagogical beliefs. This pack records them as beliefs and tests none of them."
  },
+ "completion_evidence": {
+  "honest": "this measures what the registries DECLARE, not what any learner did: no episode has been recorded and no seat has been run. Every count here is of steps and rules, and it says nothing about whether the recorded episodes, when they exist, prove competence.",
+  "inputs": {
+   "campuses": {
+    "path": "unions/registry/campuses.json",
+    "sha256": "80eef152a4cb9d760217564c08df00211c2bce6572e02f6eccaa29b6b66e1388",
+    "source_stamp": "4e1f67226afa78af"
+   },
+   "halls": {
+    "path": "pack/registry/halls.json",
+    "sha256": "3807e54afe6abfe69da1abef93847293a727a7dbc39bcb3029e35b31621ed423",
+    "source_stamp": null,
+    "why_no_stamp": "pack/registry/halls.json carries no source_stamp field; its sha256 is the guard"
+   },
+   "lessons": {
+    "path": "lessons/registry/lessons.json",
+    "sha256": "37286d1c7d4b4d85170381f90ef981264dc710acce0665aed43074fcf5c9429a",
+    "source_stamp": "55346d76c8991f31"
+   },
+   "sims": {
+    "path": "sims/registry/sims.json",
+    "sha256": "814c5f5afd8c39863a064e3bc9050ffc6e1b1da046d7298c64baa1bf594d909d",
+    "source_stamp": "7b31c3f5b79c1a49"
+   },
+   "unions": {
+    "path": "unions/registry/unions.json",
+    "sha256": "619bc8ea7328f5ea46e52b988a5f8407df01c2cd854e247060f9abd4c836cbf4",
+    "source_stamp": "4e1f67226afa78af"
+   }
+  },
+  "kinds_read_from": "lessons/registry/lessons.json#step_kinds[k].records; a kind records when that field is a kind name, and is silent when it is null. station and crib are silent by that field, whatever their name suggests.",
+  "ladder": {
+   "acyclic": true,
+   "edges": 16,
+   "edges_into_unverifiable_prerequisite": 0,
+   "lessons_on_a_cycle": 0,
+   "prerequisites_not_verifiable": []
+  },
+  "means": "a lesson is verifiable when at least one of its steps records an episode; fully verifiable when every step does. A self-reported step is one the learner marks done and nothing else records.",
+  "per_lesson": {
+   "boilermakers-get-them-out": {
+    "campus": "treasure-island",
+    "can_be_evidence_backed": true,
+    "classification": "partial",
+    "evidence_backed_steps": 3,
+    "evidence_kinds": [
+     "advisor",
+     "crew",
+     "walkaround"
+    ],
+    "fully_evidence_backed": false,
+    "hall": "boilermakers",
+    "self_reported_steps": 1,
+    "silent_kinds": [
+     "walk"
+    ],
+    "sims_run": [],
+    "steps": 4
+   },
+   "bricklayers-gear-that-stays-on": {
+    "campus": "treasure-island",
+    "can_be_evidence_backed": true,
+    "classification": "partial",
+    "evidence_backed_steps": 1,
+    "evidence_kinds": [
+     "advisor"
+    ],
+    "fully_evidence_backed": false,
+    "hall": "bricklayers",
+    "self_reported_steps": 3,
+    "silent_kinds": [
+     "placard",
+     "station",
+     "walk"
+    ],
+    "sims_run": [],
+    "steps": 4
+   },
+   "bricklayers-grout-the-lift": {
+    "campus": "treasure-island",
+    "can_be_evidence_backed": true,
+    "classification": "partial",
+    "evidence_backed_steps": 1,
+    "evidence_kinds": [
+     "advisor"
+    ],
+    "fully_evidence_backed": false,
+    "hall": "bricklayers",
+    "self_reported_steps": 2,
+    "silent_kinds": [
+     "station",
+     "walk"
+    ],
+    "sims_run": [],
+    "steps": 3
+   },
+   "carpenters-return-it-the-same": {
+    "campus": "treasure-island",
+    "can_be_evidence_backed": true,
+    "classification": "partial",
+    "evidence_backed_steps": 1,
+    "evidence_kinds": [
+     "advisor"
+    ],
+    "fully_evidence_backed": false,
+    "hall": "carpenters",
+    "self_reported_steps": 3,
+    "silent_kinds": [
+     "crib",
+     "placard",
+     "walk"
+    ],
+    "sims_run": [],
+    "steps": 4
+   },
+   "cement-masons-mind-the-weather": {
+    "campus": "treasure-island",
+    "can_be_evidence_backed": true,
+    "classification": "partial",
+    "evidence_backed_steps": 1,
+    "evidence_kinds": [
+     "advisor"
+    ],
+    "fully_evidence_backed": false,
+    "hall": "cement-masons",
+    "self_reported_steps": 5,
+    "silent_kinds": [
+     "crib",
+     "placard",
+     "station",
+     "walk"
+    ],
+    "sims_run": [],
+    "steps": 6
+   },
+   "crane-ops-read-the-chart": {
+    "campus": "treasure-island",
+    "can_be_evidence_backed": true,
+    "classification": "partial",
+    "evidence_backed_steps": 3,
+    "evidence_kinds": [
+     "advisor",
+     "sim",
+     "walkaround"
+    ],
+    "fully_evidence_backed": false,
+    "hall": "crane-ops",
+    "self_reported_steps": 1,
+    "silent_kinds": [
+     "walk"
+    ],
+    "sims_run": [
+     "load-chart"
+    ],
+    "steps": 4
+   },
+   "demolition-stand-back": {
+    "campus": "oakland",
+    "can_be_evidence_backed": true,
+    "classification": "partial",
+    "evidence_backed_steps": 2,
+    "evidence_kinds": [
+     "advisor",
+     "walkaround"
+    ],
+    "fully_evidence_backed": false,
+    "hall": "demolition",
+    "self_reported_steps": 2,
+    "silent_kinds": [
+     "placard",
+     "walk"
+    ],
+    "sims_run": [],
+    "steps": 4
+   },
+   "electricians-clip-in-first": {
+    "campus": "treasure-island",
+    "can_be_evidence_backed": true,
+    "classification": "partial",
+    "evidence_backed_steps": 3,
+    "evidence_kinds": [
+     "crew",
+     "sim",
+     "walkaround"
+    ],
+    "fully_evidence_backed": false,
+    "hall": "electricians",
+    "self_reported_steps": 1,
+    "silent_kinds": [
+     "walk"
+    ],
+    "sims_run": [
+     "boom-lift"
+    ],
+    "steps": 4
+   },
+   "fiber-splicers-keep-the-trace": {
+    "campus": "treasure-island",
+    "can_be_evidence_backed": true,
+    "classification": "partial",
+    "evidence_backed_steps": 2,
+    "evidence_kinds": [
+     "advisor"
+    ],
+    "fully_evidence_backed": false,
+    "hall": "fiber-splicers",
+    "self_reported_steps": 2,
+    "silent_kinds": [
+     "placard",
+     "walk"
+    ],
+    "sims_run": [],
+    "steps": 4
+   },
+   "glaziers-watch-the-line": {
+    "campus": "treasure-island",
+    "can_be_evidence_backed": true,
+    "classification": "partial",
+    "evidence_backed_steps": 2,
+    "evidence_kinds": [
+     "crew",
+     "walkaround"
+    ],
+    "fully_evidence_backed": false,
+    "hall": "glaziers",
+    "self_reported_steps": 2,
+    "silent_kinds": [
+     "placard",
+     "walk"
+    ],
+    "sims_run": [],
+    "steps": 4
+   },
+   "hazmat-wash-and-decon": {
+    "campus": "new-orleans",
+    "can_be_evidence_backed": true,
+    "classification": "partial",
+    "evidence_backed_steps": 3,
+    "evidence_kinds": [
+     "advisor",
+     "sim",
+     "walkaround"
+    ],
+    "fully_evidence_backed": false,
+    "hall": "hazmat",
+    "self_reported_steps": 2,
+    "silent_kinds": [
+     "placard",
+     "walk"
+    ],
+    "sims_run": [
+     "pressure-washer"
+    ],
+    "steps": 5
+   },
+   "hvacr-prove-the-sequence": {
+    "campus": "treasure-island",
+    "can_be_evidence_backed": true,
+    "classification": "partial",
+    "evidence_backed_steps": 1,
+    "evidence_kinds": [
+     "advisor"
+    ],
+    "fully_evidence_backed": false,
+    "hall": "hvacr",
+    "self_reported_steps": 3,
+    "silent_kinds": [
+     "crib",
+     "placard",
+     "walk"
+    ],
+    "sims_run": [],
+    "steps": 4
+   },
+   "ironworkers-plan-out-loud": {
+    "campus": "treasure-island",
+    "can_be_evidence_backed": true,
+    "classification": "partial",
+    "evidence_backed_steps": 3,
+    "evidence_kinds": [
+     "advisor",
+     "crew",
+     "walkaround"
+    ],
+    "fully_evidence_backed": false,
+    "hall": "ironworkers",
+    "self_reported_steps": 2,
+    "silent_kinds": [
+     "placard",
+     "walk"
+    ],
+    "sims_run": [],
+    "steps": 5
+   },
+   "lathers-frame-for-the-next-trade": {
+    "campus": "treasure-island",
+    "can_be_evidence_backed": true,
+    "classification": "partial",
+    "evidence_backed_steps": 1,
+    "evidence_kinds": [
+     "advisor"
+    ],
+    "fully_evidence_backed": false,
+    "hall": "lathers",
+    "self_reported_steps": 3,
+    "silent_kinds": [
+     "crib",
+     "station",
+     "walk"
+    ],
+    "sims_run": [],
+    "steps": 4
+   },
+   "line-workers-find-the-fault": {
+    "campus": "new-orleans",
+    "can_be_evidence_backed": true,
+    "classification": "partial",
+    "evidence_backed_steps": 1,
+    "evidence_kinds": [
+     "advisor"
+    ],
+    "fully_evidence_backed": false,
+    "hall": "line-workers",
+    "self_reported_steps": 4,
+    "silent_kinds": [
+     "crib",
+     "placard",
+     "walk"
+    ],
+    "sims_run": [],
+    "steps": 5
+   },
+   "millwrights-shop-move": {
+    "campus": "treasure-island",
+    "can_be_evidence_backed": true,
+    "classification": "partial",
+    "evidence_backed_steps": 3,
+    "evidence_kinds": [
+     "advisor",
+     "sim",
+     "walkaround"
+    ],
+    "fully_evidence_backed": false,
+    "hall": "millwrights",
+    "self_reported_steps": 1,
+    "silent_kinds": [
+     "walk"
+    ],
+    "sims_run": [
+     "overhead-crane"
+    ],
+    "steps": 4
+   },
+   "operating-eng-locate-first": {
+    "campus": "oakland",
+    "can_be_evidence_backed": true,
+    "classification": "partial",
+    "evidence_backed_steps": 4,
+    "evidence_kinds": [
+     "advisor",
+     "crew",
+     "sim",
+     "walkaround"
+    ],
+    "fully_evidence_backed": false,
+    "hall": "operating-eng",
+    "self_reported_steps": 1,
+    "silent_kinds": [
+     "walk"
+    ],
+    "sims_run": [
+     "excavator-trench"
+    ],
+    "steps": 5
+   },
+   "painters-contain-it": {
+    "campus": "treasure-island",
+    "can_be_evidence_backed": true,
+    "classification": "partial",
+    "evidence_backed_steps": 3,
+    "evidence_kinds": [
+     "advisor",
+     "sim",
+     "walkaround"
+    ],
+    "fully_evidence_backed": false,
+    "hall": "painters",
+    "self_reported_steps": 2,
+    "silent_kinds": [
+     "placard",
+     "walk"
+    ],
+    "sims_run": [
+     "pressure-washer"
+    ],
+    "steps": 5
+   },
+   "painters-lay-the-coat": {
+    "campus": "treasure-island",
+    "can_be_evidence_backed": true,
+    "classification": "partial",
+    "evidence_backed_steps": 2,
+    "evidence_kinds": [
+     "sim",
+     "walkaround"
+    ],
+    "fully_evidence_backed": false,
+    "hall": "painters",
+    "self_reported_steps": 1,
+    "silent_kinds": [
+     "walk"
+    ],
+    "sims_run": [
+     "airless-sprayer"
+    ],
+    "steps": 3
+   },
+   "refractory-dry-it-slowly": {
+    "campus": "oakland",
+    "can_be_evidence_backed": true,
+    "classification": "partial",
+    "evidence_backed_steps": 1,
+    "evidence_kinds": [
+     "advisor"
+    ],
+    "fully_evidence_backed": false,
+    "hall": "refractory",
+    "self_reported_steps": 3,
+    "silent_kinds": [
+     "crib",
+     "station",
+     "walk"
+    ],
+    "sims_run": [],
+    "steps": 4
+   },
+   "restore-point-the-joint": {
+    "campus": "treasure-island",
+    "can_be_evidence_backed": true,
+    "classification": "partial",
+    "evidence_backed_steps": 1,
+    "evidence_kinds": [
+     "advisor"
+    ],
+    "fully_evidence_backed": false,
+    "hall": "masonry-restore",
+    "self_reported_steps": 3,
+    "silent_kinds": [
+     "crib",
+     "station",
+     "walk"
+    ],
+    "sims_run": [],
+    "steps": 4
+   },
+   "restore-write-it-down": {
+    "campus": "treasure-island",
+    "can_be_evidence_backed": true,
+    "classification": "partial",
+    "evidence_backed_steps": 1,
+    "evidence_kinds": [
+     "advisor"
+    ],
+    "fully_evidence_backed": false,
+    "hall": "masonry-restore",
+    "self_reported_steps": 2,
+    "silent_kinds": [
+     "station",
+     "walk"
+    ],
+    "sims_run": [],
+    "steps": 3
+   },
+   "riggers-carry-under-control": {
+    "campus": "treasure-island",
+    "can_be_evidence_backed": true,
+    "classification": "partial",
+    "evidence_backed_steps": 4,
+    "evidence_kinds": [
+     "advisor",
+     "crew",
+     "sim",
+     "walkaround"
+    ],
+    "fully_evidence_backed": false,
+    "hall": "riggers",
+    "self_reported_steps": 1,
+    "silent_kinds": [
+     "walk"
+    ],
+    "sims_run": [
+     "crane-lift"
+    ],
+    "steps": 5
+   },
+   "riggers-first-card": {
+    "campus": "treasure-island",
+    "can_be_evidence_backed": true,
+    "classification": "partial",
+    "evidence_backed_steps": 3,
+    "evidence_kinds": [
+     "advisor",
+     "sim",
+     "walkaround"
+    ],
+    "fully_evidence_backed": false,
+    "hall": "riggers",
+    "self_reported_steps": 2,
+    "silent_kinds": [
+     "placard",
+     "walk"
+    ],
+    "sims_run": [
+     "rigging-signals"
+    ],
+    "steps": 5
+   },
+   "scaffold-build-in-order": {
+    "campus": "oakland",
+    "can_be_evidence_backed": true,
+    "classification": "partial",
+    "evidence_backed_steps": 3,
+    "evidence_kinds": [
+     "crew",
+     "sim",
+     "walkaround"
+    ],
+    "fully_evidence_backed": false,
+    "hall": "scaffold",
+    "self_reported_steps": 2,
+    "silent_kinds": [
+     "placard",
+     "walk"
+    ],
+    "sims_run": [
+     "scaffold-bay"
+    ],
+    "steps": 5
+   },
+   "scaffold-read-the-tag": {
+    "campus": "oakland",
+    "can_be_evidence_backed": true,
+    "classification": "partial",
+    "evidence_backed_steps": 2,
+    "evidence_kinds": [
+     "advisor",
+     "walkaround"
+    ],
+    "fully_evidence_backed": false,
+    "hall": "scaffold",
+    "self_reported_steps": 2,
+    "silent_kinds": [
+     "station",
+     "walk"
+    ],
+    "sims_run": [],
+    "steps": 4
+   },
+   "site-safety-make-it-normal": {
+    "campus": "new-orleans",
+    "can_be_evidence_backed": true,
+    "classification": "partial",
+    "evidence_backed_steps": 1,
+    "evidence_kinds": [
+     "advisor"
+    ],
+    "fully_evidence_backed": false,
+    "hall": "site-safety",
+    "self_reported_steps": 2,
+    "silent_kinds": [
+     "station",
+     "walk"
+    ],
+    "sims_run": [],
+    "steps": 3
+   },
+   "stone-carvers-hang-it-safely": {
+    "campus": "treasure-island",
+    "can_be_evidence_backed": true,
+    "classification": "partial",
+    "evidence_backed_steps": 1,
+    "evidence_kinds": [
+     "advisor"
+    ],
+    "fully_evidence_backed": false,
+    "hall": "stone-carvers",
+    "self_reported_steps": 2,
+    "silent_kinds": [
+     "station",
+     "walk"
+    ],
+    "sims_run": [],
+    "steps": 3
+   },
+   "surveyors-trust-the-control": {
+    "campus": "new-orleans",
+    "can_be_evidence_backed": true,
+    "classification": "partial",
+    "evidence_backed_steps": 2,
+    "evidence_kinds": [
+     "advisor"
+    ],
+    "fully_evidence_backed": false,
+    "hall": "surveyors",
+    "self_reported_steps": 3,
+    "silent_kinds": [
+     "crib",
+     "placard",
+     "walk"
+    ],
+    "sims_run": [],
+    "steps": 5
+   },
+   "tilesetters-start-underneath": {
+    "campus": "treasure-island",
+    "can_be_evidence_backed": true,
+    "classification": "partial",
+    "evidence_backed_steps": 1,
+    "evidence_kinds": [
+     "advisor"
+    ],
+    "fully_evidence_backed": false,
+    "hall": "tilesetters",
+    "self_reported_steps": 3,
+    "silent_kinds": [
+     "crib",
+     "station",
+     "walk"
+    ],
+    "sims_run": [],
+    "steps": 4
+   },
+   "waterproofers-flash-it-right": {
+    "campus": "treasure-island",
+    "can_be_evidence_backed": true,
+    "classification": "partial",
+    "evidence_backed_steps": 2,
+    "evidence_kinds": [
+     "advisor",
+     "walkaround"
+    ],
+    "fully_evidence_backed": false,
+    "hall": "waterproofers",
+    "self_reported_steps": 2,
+    "silent_kinds": [
+     "station",
+     "walk"
+    ],
+    "sims_run": [],
+    "steps": 4
+   },
+   "welders-the-watch": {
+    "campus": "treasure-island",
+    "can_be_evidence_backed": true,
+    "classification": "partial",
+    "evidence_backed_steps": 3,
+    "evidence_kinds": [
+     "advisor",
+     "crew",
+     "walkaround"
+    ],
+    "fully_evidence_backed": false,
+    "hall": "welders",
+    "self_reported_steps": 2,
+    "silent_kinds": [
+     "placard",
+     "walk"
+    ],
+    "sims_run": [],
+    "steps": 5
+   }
+  },
+  "per_union": {
+   "boilermakers": {
+    "fully_verifiable": 0,
+    "lessons": 1,
+    "verifiable": 1
+   },
+   "bricklayers": {
+    "fully_verifiable": 0,
+    "lessons": 2,
+    "verifiable": 2
+   },
+   "carpenters": {
+    "fully_verifiable": 0,
+    "lessons": 1,
+    "verifiable": 1
+   },
+   "cement-masons": {
+    "fully_verifiable": 0,
+    "lessons": 1,
+    "verifiable": 1
+   },
+   "crane-ops": {
+    "fully_verifiable": 0,
+    "lessons": 1,
+    "verifiable": 1
+   },
+   "demolition": {
+    "fully_verifiable": 0,
+    "lessons": 1,
+    "verifiable": 1
+   },
+   "electricians": {
+    "fully_verifiable": 0,
+    "lessons": 1,
+    "verifiable": 1
+   },
+   "fiber-splicers": {
+    "fully_verifiable": 0,
+    "lessons": 1,
+    "verifiable": 1
+   },
+   "glaziers": {
+    "fully_verifiable": 0,
+    "lessons": 1,
+    "verifiable": 1
+   },
+   "hazmat": {
+    "fully_verifiable": 0,
+    "lessons": 1,
+    "verifiable": 1
+   },
+   "hvacr": {
+    "fully_verifiable": 0,
+    "lessons": 1,
+    "verifiable": 1
+   },
+   "ironworkers": {
+    "fully_verifiable": 0,
+    "lessons": 1,
+    "verifiable": 1
+   },
+   "lathers": {
+    "fully_verifiable": 0,
+    "lessons": 1,
+    "verifiable": 1
+   },
+   "line-workers": {
+    "fully_verifiable": 0,
+    "lessons": 1,
+    "verifiable": 1
+   },
+   "masonry-restore": {
+    "fully_verifiable": 0,
+    "lessons": 2,
+    "verifiable": 2
+   },
+   "millwrights": {
+    "fully_verifiable": 0,
+    "lessons": 1,
+    "verifiable": 1
+   },
+   "operating-eng": {
+    "fully_verifiable": 0,
+    "lessons": 1,
+    "verifiable": 1
+   },
+   "painters": {
+    "fully_verifiable": 0,
+    "lessons": 2,
+    "verifiable": 2
+   },
+   "refractory": {
+    "fully_verifiable": 0,
+    "lessons": 1,
+    "verifiable": 1
+   },
+   "riggers": {
+    "fully_verifiable": 0,
+    "lessons": 2,
+    "verifiable": 2
+   },
+   "scaffold": {
+    "fully_verifiable": 0,
+    "lessons": 2,
+    "verifiable": 2
+   },
+   "site-safety": {
+    "fully_verifiable": 0,
+    "lessons": 1,
+    "verifiable": 1
+   },
+   "stone-carvers": {
+    "fully_verifiable": 0,
+    "lessons": 1,
+    "verifiable": 1
+   },
+   "surveyors": {
+    "fully_verifiable": 0,
+    "lessons": 1,
+    "verifiable": 1
+   },
+   "tilesetters": {
+    "fully_verifiable": 0,
+    "lessons": 1,
+    "verifiable": 1
+   },
+   "waterproofers": {
+    "fully_verifiable": 0,
+    "lessons": 1,
+    "verifiable": 1
+   },
+   "welders": {
+    "fully_verifiable": 0,
+    "lessons": 1,
+    "verifiable": 1
+   }
+  },
+  "recording_kinds": [
+   "advisor",
+   "crew",
+   "sim",
+   "walkaround"
+  ],
+  "rollup": {
+   "campuses_of_lesson_halls": [
+    "new-orleans",
+    "oakland",
+    "treasure-island"
+   ],
+   "evidence_backed_steps": 65,
+   "fully_verifiable": 0,
+   "halls_total": 111,
+   "halls_with_a_lesson": 27,
+   "halls_with_no_lesson": 84,
+   "halls_with_no_lesson_list": [
+    "acoustic",
+    "airfield",
+    "asbestos",
+    "automation-int",
+    "aviation-ground",
+    "bas-controls",
+    "battery-storage",
+    "blasters",
+    "bridge-inspect",
+    "cable-splicers",
+    "catenary",
+    "cladding",
+    "cleanroom",
+    "concrete-pump",
+    "confined-space",
+    "curtainwall",
+    "data-center",
+    "decking",
+    "district-energy",
+    "divers",
+    "drywall",
+    "elevator",
+    "ev-charging",
+    "fabricators",
+    "fire-alarm",
+    "fire-sprinkler",
+    "firestop",
+    "fleet-diesel",
+    "flooring",
+    "foundry",
+    "gas-distrib",
+    "geothermal",
+    "grounds",
+    "heavy-equip",
+    "high-angle",
+    "hydro",
+    "hydrogen",
+    "industrial-clean",
+    "instrumentation",
+    "insulators",
+    "laborers",
+    "lead-abatement",
+    "machinists",
+    "marine-pipe",
+    "marine-terminal",
+    "medical-gas",
+    "meter-techs",
+    "miners",
+    "mold-remediation",
+    "network-cabling",
+    "nuclear",
+    "piling",
+    "pipefitters",
+    "pipeline",
+    "plasterers",
+    "platers",
+    "plc-techs",
+    "port-crane",
+    "post-tension",
+    "precast",
+    "rail-signals",
+    "rail-track",
+    "robotics",
+    "roofers",
+    "security-sys",
+    "sheetmetal",
+    "shipfitters",
+    "shoring",
+    "smelter",
+    "solar",
+    "spill-response",
+    "steel-erectors",
+    "substation",
+    "survey-drone",
+    "tank-erectors",
+    "teamsters",
+    "terrazzo",
+    "toolmakers",
+    "transit-vehicle",
+    "transmission",
+    "wastewater",
+    "water-distrib",
+    "wind",
+    "window-glazing"
+   ],
+   "halls_with_no_lesson_means": "a hall with no lesson has NO course to complete; nothing about completion can be verified or falsified there because nothing is offered",
+   "lesson_halls_absent_from_campus_rosters": [],
+   "lessons": 32,
+   "lessons_by_class": {
+    "full": [],
+    "none": [],
+    "partial": [
+     "boilermakers-get-them-out",
+     "bricklayers-gear-that-stays-on",
+     "bricklayers-grout-the-lift",
+     "carpenters-return-it-the-same",
+     "cement-masons-mind-the-weather",
+     "crane-ops-read-the-chart",
+     "demolition-stand-back",
+     "electricians-clip-in-first",
+     "fiber-splicers-keep-the-trace",
+     "glaziers-watch-the-line",
+     "hazmat-wash-and-decon",
+     "hvacr-prove-the-sequence",
+     "ironworkers-plan-out-loud",
+     "lathers-frame-for-the-next-trade",
+     "line-workers-find-the-fault",
+     "millwrights-shop-move",
+     "operating-eng-locate-first",
+     "painters-contain-it",
+     "painters-lay-the-coat",
+     "refractory-dry-it-slowly",
+     "restore-point-the-joint",
+     "restore-write-it-down",
+     "riggers-carry-under-control",
+     "riggers-first-card",
+     "scaffold-build-in-order",
+     "scaffold-read-the-tag",
+     "site-safety-make-it-normal",
+     "stone-carvers-hang-it-safely",
+     "surveyors-trust-the-control",
+     "tilesetters-start-underneath",
+     "waterproofers-flash-it-right",
+     "welders-the-watch"
+    ]
+   },
+   "not_verifiable": 0,
+   "partly_verifiable": 32,
+   "self_reported_steps": 70,
+   "steps": 135
+  },
+  "silent_kinds": [
+   "crib",
+   "placard",
+   "station",
+   "walk"
+  ],
+  "sim_thresholds": {
+   "passed_is_recorded_by": "the seat, at run time, against those axis rules; a \"passed\" flag in an episode is the seat's statement and this pack re-derives none of them from a recording, because no recording is shipped",
+   "per_sim": {
+    "airless-sprayer": {
+     "informational_axes": 1,
+     "pass_rules": {
+      "coverage": ">= 95",
+      "holidays": "== 0",
+      "overspray": "== 0",
+      "runs": "== 0"
+     },
+     "rubric_axes": 5,
+     "thresholded_axes": 4
+    },
+    "boom-lift": {
+     "informational_axes": 1,
+     "pass_rules": {
+      "envelope": "== 0",
+      "reach": "== all",
+      "slope": "required",
+      "strikes": "== 0",
+      "tie-off": "required"
+     },
+     "rubric_axes": 6,
+     "thresholded_axes": 5
+    },
+    "crane-lift": {
+     "informational_axes": 1,
+     "pass_rules": {
+      "placement": "<= 1.2",
+      "strikes": "== 0",
+      "swing": "<= 2.0"
+     },
+     "rubric_axes": 4,
+     "thresholded_axes": 3
+    },
+    "excavator-trench": {
+     "informational_axes": 1,
+     "pass_rules": {
+      "grade": "== all",
+      "spoil": "== all",
+      "utility": "== 0"
+     },
+     "rubric_axes": 4,
+     "thresholded_axes": 3
+    },
+    "load-chart": {
+     "informational_axes": 1,
+     "pass_rules": {
+      "judgments": "== all",
+      "overloads": "== 0"
+     },
+     "rubric_axes": 3,
+     "thresholded_axes": 2
+    },
+    "overhead-crane": {
+     "informational_axes": 1,
+     "pass_rules": {
+      "clear": "required",
+      "limits": "== 0",
+      "path": "== 0",
+      "placement": "<= 0.5",
+      "sway": "<= 0.6"
+     },
+     "rubric_axes": 6,
+     "thresholded_axes": 5
+    },
+    "pressure-washer": {
+     "informational_axes": 1,
+     "pass_rules": {
+      "containment": "required",
+      "coverage": ">= 95",
+      "damage": "== 0"
+     },
+     "rubric_axes": 4,
+     "thresholded_axes": 3
+    },
+    "rigging-signals": {
+     "informational_axes": 1,
+     "pass_rules": {
+      "calls": "== all",
+      "wrong": "== 0"
+     },
+     "rubric_axes": 3,
+     "thresholded_axes": 2
+    },
+    "scaffold-bay": {
+     "informational_axes": 2,
+     "pass_rules": {
+      "sequence": "== 0"
+     },
+     "rubric_axes": 3,
+     "thresholded_axes": 1
+    }
+   },
+   "re_derivable": true,
+   "sims_run_by_a_sim_step": 9,
+   "thresholds_declared": 9,
+   "where": "sims/registry/sims.json#sims[id].rubric[].pass, one rule per axis; there is no seat-level or scenario-level pass threshold field anywhere in sims.json"
+  },
+  "unions_total": 111,
+  "unions_with_a_lesson": 27
+ },
  "counts": {
   "assumptions_recorded": 3,
   "assumptions_validated_against_learners": 0,
@@ -32,10 +1099,10 @@
   "metrics": 9,
   "runs": 36,
   "seeds": 12,
-  "sim_elapsed_ms": 629,
+  "sim_elapsed_ms": 730,
   "strategies": 3,
   "total_attempts_simulated": 15120,
-  "wall_ms": 682
+  "wall_ms": 801
  },
  "hall_independence": {
   "contrast": {
@@ -88,7 +1155,7 @@
    4242
   ],
   "strategy": "graph",
-  "sweep_ms": 2705,
+  "sweep_ms": 2876,
   "why": "every union carries the same eleven strands by three tiers wired by the same requires edges, so the graph handed to the sequencer is isomorphic across halls and the seeded generator is the only source of variation. Nothing in control/ reads the simulator registry, so no seat, no piece of equipment and no difference in available evidence reaches this simulation."
  },
  "honesty": {
@@ -96,7 +1163,7 @@
   "determinism": "The subject seeds mulberry32 per run and touches no clock and no network. The 12 seeds are recorded, and evals/test.mjs re-runs every one of the 36 runs and compares field by field against what is written here. A result that cannot be reproduced is not a result.",
   "no_cohort_claim": "Nothing in this registry licenses a statement about real learners, real halls, real apprentices or real outcomes. \"The sequencer beats blocked practice by X\" is not a sentence this pack supports in any form; the supported sentence names the simulation and its assumptions in the same breath as the number.",
   "one_union": "Every run is the subject's default union, 'welders' - 33 skills. This pack does not sweep unions and says nothing about the other ladders in pack/registry/skills.json.",
-  "runtime": "The full 36-run sweep took 629 ms of simulation time inside node (682 ms wall including process start) on the machine that built this. Nothing was shortened to make it quick: attempts, per-day and session length are the subject's own constants, read out of the file rather than typed here.",
+  "runtime": "The full 36-run sweep took 730 ms of simulation time inside node (801 ms wall including process start) on the machine that built this. Nothing was shortened to make it quick: attempts, per-day and session length are the subject's own constants, read out of the file rather than typed here.",
   "status": "SCRIPTED: every number in this registry came out of running control/sim_curriculum.mjs, a hand-written deterministic simulation over an authored skill ladder and an authored learner model. Nothing here was observed of a person. Not one number is RECORDED, and the summary statistics are not promoted to DERIVED - see tier_is_not_derived.",
   "the_limit_is_the_sources_own": "The limit is not this pack's summary of the subject. It is quoted verbatim from the header of control/sim_curriculum.mjs into limit.sentence, and evals/test.mjs re-extracts it from that file and fails if the two stop matching or if the quotation is softened.",
   "the_one_field_that_is_not_reproducible": "counts.sim_elapsed_ms and counts.wall_ms are wall-clock timings of the machine that ran the build. They change on every build and no check holds them to a value; they are here so a reader knows the sweep is seconds rather than hours. Every other number in this registry is reproduced exactly by evals/test.mjs.",
@@ -1116,7 +2183,7 @@
    }
   }
  },
- "source_stamp": "b490eafdf2af1730",
+ "source_stamp": "c3904c11ca48e9a5",
  "spread": {
   "blocked": {
    "distinctSkillsTouched": {
