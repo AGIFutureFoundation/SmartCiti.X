@@ -1,0 +1,3548 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230C1113'/%3E%3Cpath d='M7 21 L16 7 L25 21 Z' fill='none' stroke='%23E8A33D' stroke-width='2.6' stroke-linejoin='round'/%3E%3Cpath d='M11 21 h10' stroke='%2341C4D4' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E">
+<title>SmartCiti.X : Trade Craft Academy — custom spaces</title>
+<style>
+:root{
+  --plate:#12181B; --panel:#182023; --sunk:#0C1113; --ink:#E8EDEC; --muted:#93A3A6;
+  --rule:#28353A; --mark:#E8A33D; --mark-ink:#12181B; --steel:#41C4D4; --good:#5FBF7A; --crit:#E0655B;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--plate);color:var(--ink);
+  font:16px/1.6 "IBM Plex Sans",system-ui,sans-serif;padding:0 16px 48px}
+.wrap{max-width:1180px;margin:0 auto}
+header{padding:40px 0 8px;border-bottom:3px solid var(--mark)}
+header h1{font:700 34px/1.1 "Barlow Condensed",system-ui,sans-serif;margin:0}
+header h1 .x{color:var(--mark)}
+header p{color:var(--muted);margin:6px 0 14px}
+a{color:var(--steel)}
+.toc{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0}
+.toc a{background:var(--panel);border:1px solid var(--rule);border-radius:6px;padding:6px 12px;text-decoration:none;color:var(--ink)}
+.figs{display:flex;flex-wrap:wrap;gap:12px;margin:14px 0}
+.fig{background:var(--panel);border:1px solid var(--rule);border-radius:8px;padding:10px 16px;min-width:120px}
+.fig b{display:block;font:600 24px/1.2 "Barlow Condensed",system-ui,sans-serif;color:var(--mark)}
+.fig span{color:var(--muted);font-size:13px}
+.honesty{background:var(--sunk);border-inline-start:3px solid var(--mark);border-radius:6px;padding:14px 26px;color:var(--muted);font-size:14px}
+.space{border-top:1px solid var(--rule);padding:28px 0}
+.space h2{font:700 28px/1.1 "Barlow Condensed",system-ui,sans-serif;margin:0 0 6px}
+.status{font:600 13px/1 "IBM Plex Mono",monospace;color:var(--mark-ink);background:var(--mark);border-radius:4px;padding:4px 8px;vertical-align:middle;text-transform:uppercase}
+.purpose{margin:4px 0}
+.serves{color:var(--muted);font-size:14px}
+.hall{margin-inline-end:6px}
+.cols{display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start}
+.planwrap{overflow-x:auto;max-width:100%;background:var(--sunk);border:1px solid var(--rule);border-radius:8px;padding:8px}
+.plan .dim{fill:var(--muted);font:11px "IBM Plex Mono",monospace}
+.plan .item text{fill:var(--ink);font:9px "IBM Plex Mono",monospace;pointer-events:none}
+.plan .item.unknown text{fill:var(--muted)}
+.facts{flex:1 1 340px;min-width:0}
+.facts h3{font:600 16px/1.2 "Barlow Condensed",system-ui,sans-serif;margin:16px 0 6px;text-transform:uppercase;letter-spacing:.04em}
+.facts h3 small{color:var(--muted);text-transform:none;letter-spacing:0;font-weight:400}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip,.lg{background:var(--panel);border:1px solid var(--rule);border-radius:999px;padding:2px 10px;font-size:13px;color:var(--muted)}
+.lg i,.swatch i{display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:-2px;margin-inline-end:6px;border:1px solid var(--rule)}
+.swatches{display:flex;flex-direction:column;gap:6px;font-size:14px}
+.ppe{margin:0;padding-inline-start:20px;columns:2}
+.ppe .none{color:var(--muted);font-style:italic;columns:1}
+.hz,.fits,.notest{color:var(--muted);font-size:14px}
+.fits,.notest{margin:0;padding-inline-start:20px}
+details{margin-top:14px}
+summary{cursor:pointer;color:var(--steel)}
+.sched{border-collapse:collapse;width:100%;font-size:13px;margin-top:8px}
+.sched th,.sched td{border-top:1px solid var(--rule);padding:4px 8px;text-align:start;vertical-align:top}
+.sched th{color:var(--muted);font-weight:600}
+.num{font-variant-numeric:tabular-nums;white-space:nowrap}
+code{font:13px "IBM Plex Mono",monospace;color:var(--steel)}
+.legend{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+</style>
+</head>
+<body><div class="wrap">
+<header>
+  <h1>SmartCiti<span class="x">.X</span> : Trade Craft Academy</h1>
+  <p>powered by AGI Corp · custom spaces</p>
+</header>
+<p class="intro">Purpose-built training spaces a union or a programme declares, composed only from assets this bundle already holds and validated at build. Every space here is <b data-pack-status>declared, not yet walkable</b>: an authored proposal drawn as a floor plan, not a room anyone can walk into yet, and no dimension is a measurement of a real venue.</p>
+<div class="figs">
+ <div class="fig"><b data-fig="spaces">6</b><span>spaces declared</span></div>
+ <div class="fig"><b data-fig="items">102</b><span>items placed</span></div>
+ <div class="fig"><b data-fig="unions_served">7</b><span>unions served</span></div>
+ <div class="fig"><b data-fig="ppe_items">12</b><span>distinct PPE items derived</span></div>
+ <div class="fig"><b data-fig="tris">7260</b><span>triangles, declared budgets</span></div>
+ <div class="fig"><b data-fig="draw_calls">26</b><span>draw calls estimated</span></div>
+ <div class="fig"><b data-fig="cost_estimated_items">73</b><span>items with a declared figure</span></div>
+ <div class="fig"><b data-fig="cost_not_estimated_items">29</b><span>items not estimated</span></div>
+ <div class="fig"><b data-fig="footprint_unknown">29</b><span>items with footprint unknown</span></div>
+ <div class="fig"><b data-fig="area_m2">501.5</b><span>m² declared in all</span></div>
+</div>
+<p class="legend"><span class="lg"><i style="background:var(--steel)"></i>prop</span><span class="lg"><i style="background:var(--mark)"></i>furniture</span><span class="lg"><i style="background:var(--good)"></i>seat</span><span class="lg"><i style="background:var(--crit)"></i>station</span><span class="lg"><i style="background:var(--mark)"></i>crib</span><span class="lg"><i style="background:var(--muted)"></i>sign</span> <span class="lg">scale: 1 m = <span data-px-per-m>40</span> px</span></p>
+<nav class="toc"><a href="#space-crane-sim-bay">Crane simulator bay</a><a href="#space-electrical-lab">Electrical lab</a><a href="#space-flipped-classroom">Flipped classroom</a><a href="#space-rigging-yard">Rigging yard</a><a href="#space-scaffold-court">Scaffold court</a><a href="#space-welding-bay">Welding bay</a></nav>
+<ul class="honesty">
+<li>declared, not yet walkable: an AUTHORED proposal composed from this bundle's own assets; nothing here is built into the 3D world, no dimension is a measurement of a real venue, and no duration, price or accreditation is stated</li>
+<li>a space must fit the room of its strand in every serving hall, read from web/interiors.py plan_for exactly as web/build_3d.py lays it out (3 m per grid unit); the room is a functional programme, not a survey of a building</li>
+<li>never typed: strand base PPE plus the PPE of every hazard the surfaces rules say the chosen floor and wall stand for in that strand's room; a hazard prop is admitted only when the finishes already derive a hazard it is keyed to</li>
+<li>an item with no size_m in its registry is recorded as footprint unknown and its overlap is not checked; nothing is assumed</li>
+<li>a prediction summed from declared per-piece figures, not a measurement</li>
+<li>no duration, price, accreditation or venue</li>
+</ul>
+<section class="space" id="space-crane-sim-bay" data-space="crane-sim-bay">
+<h2>Crane simulator bay <span class="status" data-status>declared, not yet walkable</span></h2>
+<p class="purpose">The tower crane, overhead crane and load chart seats behind two guard rails, with the checkout board and log desk a plant bay signs in and out on.</p>
+<p class="serves">Serves <a class="hall" href="trade_craft_3d.html?hall=crane-ops" data-hall="crane-ops">Crane Operators hall (3D)</a><a class="hall" href="trade_craft_3d.html?hall=riggers" data-hall="riggers">Riggers &amp; Signalpersons hall (3D)</a> · <a href="trade_craft_lessons.html" data-lessons>lessons</a>
+ · would stand in the <b>Equipment Bay</b> (machines strand)</p>
+<div class="cols">
+<div class="planwrap"><svg class="plan" viewBox="0 0 608.0 368.0" width="608.0" height="368.0" role="img" aria-label="Crane simulator bay floor plan" data-plan="crane-sim-bay" data-px-per-m="40"><rect class="floor" x="24" y="24" width="560.0" height="320.0" fill="#8e9aa0" stroke="#8a8452" stroke-width="6" data-floor="broom-concrete" data-wall="mesh-guard"/><text class="dim" x="304.0" y="16" text-anchor="middle" data-dim="w">14.0 m</text><text class="dim" x="16" y="184.0" text-anchor="middle" transform="rotate(-90 16 184.0)" data-dim="d">8.0 m</text><g class="item unknown" data-item="0" data-kind="seat" data-id="crane-lift"><circle cx="184.0" cy="164.0" r="9" fill="none" stroke="var(--good)" stroke-width="1.5" stroke-dasharray="3 2"/><text x="184.0" y="184.0" text-anchor="middle">Tower Crane Lift</text><title>Tower Crane Lift (seat crane-lift) - footprint unknown, overlap not checked</title></g><g class="item unknown" data-item="1" data-kind="seat" data-id="overhead-crane"><circle cx="424.0" cy="164.0" r="9" fill="none" stroke="var(--good)" stroke-width="1.5" stroke-dasharray="3 2"/><text x="424.0" y="184.0" text-anchor="middle">Overhead Crane Shop Move</text><title>Overhead Crane Shop Move (seat overhead-crane) - footprint unknown, overlap not checked</title></g><g class="item unknown" data-item="2" data-kind="seat" data-id="load-chart"><circle cx="304.0" cy="284.0" r="9" fill="none" stroke="var(--good)" stroke-width="1.5" stroke-dasharray="3 2"/><text x="304.0" y="304.0" text-anchor="middle">Load Chart Judgment</text><title>Load Chart Judgment (seat load-chart) - footprint unknown, overlap not checked</title></g><g class="item" data-item="3" data-kind="prop" data-id="checkout-board"><rect x="37.2" y="26.80000000000001" width="53.6" height="2.4" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="64.0" y="31.00000000000001" text-anchor="middle">Plant checkout board</text><title>Plant checkout board (prop checkout-board) - 1.34 x 0.06 m</title></g><g class="item" data-item="4" data-kind="prop" data-id="bay-guard-rail"><rect x="144.0" y="39.60000000000002" width="80.0" height="8.8" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="184.0" y="47.00000000000002" text-anchor="middle">Bay guard rail</text><title>Bay guard rail (prop bay-guard-rail) - 2.0 x 0.22 m</title></g><g class="item" data-item="5" data-kind="prop" data-id="bay-guard-rail"><rect x="384.0" y="39.60000000000002" width="80.0" height="8.8" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="424.0" y="47.00000000000002" text-anchor="middle">Bay guard rail</text><title>Bay guard rail (prop bay-guard-rail) - 2.0 x 0.22 m</title></g><g class="item" data-item="6" data-kind="prop" data-id="machine-log-desk"><rect x="282.0" y="32.0" width="44.0" height="24.0" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="304.0" y="47.0" text-anchor="middle">Machine log desk</text><title>Machine log desk (prop machine-log-desk) - 1.1 x 0.6 m</title></g><g class="item" data-item="7" data-kind="prop" data-id="plant-service-bench"><rect x="488.0" y="33.0" width="72.0" height="30.0" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="524.0" y="51.0" text-anchor="middle">Plant service bench</text><title>Plant service bench (prop plant-service-bench) - 1.8 x 0.75 m</title></g><g class="item" data-item="8" data-kind="prop" data-id="chock-bin"><rect x="546.0" y="172.0" width="36.0" height="24.0" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="564.0" y="187.0" text-anchor="middle">Chock and block bin</text><title>Chock and block bin (prop chock-bin) - 0.9 x 0.6 m</title></g><g class="item" data-item="9" data-kind="prop" data-id="learner-stool"><rect x="55.2" y="295.2" width="17.6" height="17.6" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="64.0" y="307.0" text-anchor="middle">Learner stool</text><title>Learner stool (prop learner-stool) - 0.44 x 0.44 m</title></g><g class="item" data-item="10" data-kind="prop" data-id="learner-stool"><rect x="95.2" y="295.2" width="17.6" height="17.6" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="104.0" y="307.0" text-anchor="middle">Learner stool</text><title>Learner stool (prop learner-stool) - 0.44 x 0.44 m</title></g><g class="item" data-item="11" data-kind="prop" data-id="learner-stool"><rect x="55.2" y="255.2" width="17.6" height="17.6" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="64.0" y="267.0" text-anchor="middle">Learner stool</text><title>Learner stool (prop learner-stool) - 0.44 x 0.44 m</title></g><g class="item" data-item="12" data-kind="prop" data-id="learner-stool"><rect x="95.2" y="255.2" width="17.6" height="17.6" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="104.0" y="267.0" text-anchor="middle">Learner stool</text><title>Learner stool (prop learner-stool) - 0.44 x 0.44 m</title></g><g class="item" data-item="13" data-kind="prop" data-id="ppe-station"><rect x="577.6" y="264.0" width="4.8" height="40.0" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="580.0" y="287.0" text-anchor="middle">PPE station</text><title>PPE station (prop ppe-station) - 0.12 x 1.0 m</title></g><g class="item" data-item="14" data-kind="prop" data-id="plug-dispenser"><rect x="32.8" y="134.0" width="6.4" height="20.0" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="36.0" y="147.0" text-anchor="middle">Ear plug dispenser</text><title>Ear plug dispenser (prop plug-dispenser) - 0.16 x 0.5 m</title></g><g class="item unknown" data-item="15" data-kind="crib" data-id="structural"><circle cx="524.0" cy="304.0" r="9" fill="none" stroke="var(--mark)" stroke-width="1.5" stroke-dasharray="3 2"/><text x="524.0" y="324.0" text-anchor="middle">Structural tool crib</text><title>Structural tool crib (crib structural) - footprint unknown, overlap not checked</title></g><g class="item unknown" data-item="16" data-kind="sign" data-id="placard"><circle cx="36.0" cy="332.0" r="9" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="3 2"/><text x="36.0" y="352.0" text-anchor="middle">what a room requires of you, read at its door</text><title>what a room requires of you, read at its door (sign placard) - footprint unknown, overlap not checked</title></g><g class="item unknown" data-item="17" data-kind="sign" data-id="hazard"><circle cx="36.0" cy="184.0" r="9" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="3 2"/><text x="36.0" y="204.0" text-anchor="middle">a condition in force in a space, off the hazards its own conditions record already holds</text><title>a condition in force in a space, off the hazards its own conditions record already holds (sign hazard) - footprint unknown, overlap not checked</title></g><g class="item unknown" data-item="18" data-kind="sign" data-id="station"><circle cx="304.0" cy="240.0" r="9" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="3 2"/><text x="304.0" y="260.0" text-anchor="middle">a training station</text><title>a training station (sign station) - footprint unknown, overlap not checked</title></g></svg></div>
+<div class="facts">
+<div class="figs">
+ <div class="fig"><b data-fig="area" data-space-fig="crane-sim-bay">112.0</b><span>m² · 14.0 x 8.0 m</span></div>
+ <div class="fig"><b data-fig="items" data-space-fig="crane-sim-bay">19</b><span>items</span></div>
+ <div class="fig"><b data-fig="tris" data-space-fig="crane-sim-bay">1196</b><span>triangles (declared budgets)</span></div>
+ <div class="fig"><b data-fig="draw_calls" data-space-fig="crane-sim-bay">5</b><span>draw calls (pooled by material)</span></div>
+ <div class="fig"><b data-fig="not_estimated" data-space-fig="crane-sim-bay">7</b><span>items not estimated</span></div>
+</div>
+<p class="chips"><span class="chip" data-kind-count="crib">1 crib</span><span class="chip" data-kind-count="prop">12 prop</span><span class="chip" data-kind-count="seat">3 seat</span><span class="chip" data-kind-count="sign">3 sign</span></p>
+<h3>Finishes</h3>
+<p class="swatches">
+ <span class="swatch"><i style="background:#8e9aa0" data-swatch="floor" data-finish="broom-concrete"></i>floor: Broom-finish concrete <code>broom-concrete</code> (broom)</span>
+ <span class="swatch"><i style="background:#8a8452" data-swatch="wall" data-finish="mesh-guard"></i>wall: Guarded mesh partition <code>mesh-guard</code> (mesh)</span>
+</p>
+<h3>PPE required <small>(derived, never typed)</small></h3>
+<ul class="ppe" data-ppe-list="crane-sim-bay"><li data-ppe="gloves">gloves</li><li data-ppe="hard hat">hard hat</li><li data-ppe="hearing protection">hearing protection</li><li data-ppe="hi-vis">hi-vis</li><li data-ppe="safety boots">safety boots</li><li data-ppe="safety glasses">safety glasses</li></ul>
+<p class="hz">Hazards the finishes stand for: mobile-plant (floor broom-concrete), mobile-plant (wall mesh-guard)</p>
+<h3>Fits the room the 3D builder lays out</h3>
+<ul class="fits"><li>Equipment Bay of crane-ops: <span data-env="crane-ops">18 x 9 m</span></li><li>Equipment Bay of riggers: <span data-env="riggers">18 x 9 m</span></li></ul>
+<h3>Not estimated</h3>
+<ul class="notest" data-not-estimated="crane-sim-bay"><li>seat crane-lift: sims/registry/sims.json#sims declares no triangle figure</li><li>seat overhead-crane: sims/registry/sims.json#sims declares no triangle figure</li><li>seat load-chart: sims/registry/sims.json#sims declares no triangle figure</li><li>crib structural: tools/registry/toolcribs.json#cribs declares no triangle figure</li><li>sign placard: labels/registry/labels.json#kinds declares no triangle figure</li><li>sign hazard: labels/registry/labels.json#kinds declares no triangle figure</li><li>sign station: labels/registry/labels.json#kinds declares no triangle figure</li></ul>
+</div>
+</div>
+<details><summary>Item schedule (19)</summary>
+<table class="sched"><thead><tr><th>#</th><th>kind</th><th>id</th><th>name</th><th>x, y (m)</th><th>rot</th><th>footprint (m)</th></tr></thead>
+<tbody><tr data-row="0"><td>0</td><td>seat</td><td><code>crane-lift</code></td><td>Tower Crane Lift</td><td class="num">4.0, 4.5</td><td class="num">0</td><td class="num"><em>footprint unknown, overlap not checked</em></td></tr><tr data-row="1"><td>1</td><td>seat</td><td><code>overhead-crane</code></td><td>Overhead Crane Shop Move</td><td class="num">10.0, 4.5</td><td class="num">0</td><td class="num"><em>footprint unknown, overlap not checked</em></td></tr><tr data-row="2"><td>2</td><td>seat</td><td><code>load-chart</code></td><td>Load Chart Judgment</td><td class="num">7.0, 1.5</td><td class="num">0</td><td class="num"><em>footprint unknown, overlap not checked</em></td></tr><tr data-row="3"><td>3</td><td>prop</td><td><code>checkout-board</code></td><td>Plant checkout board</td><td class="num">1.0, 7.9</td><td class="num">0</td><td class="num">1.34 x 0.06</td></tr><tr data-row="4"><td>4</td><td>prop</td><td><code>bay-guard-rail</code></td><td>Bay guard rail</td><td class="num">4.0, 7.5</td><td class="num">0</td><td class="num">2.0 x 0.22</td></tr><tr data-row="5"><td>5</td><td>prop</td><td><code>bay-guard-rail</code></td><td>Bay guard rail</td><td class="num">10.0, 7.5</td><td class="num">0</td><td class="num">2.0 x 0.22</td></tr><tr data-row="6"><td>6</td><td>prop</td><td><code>machine-log-desk</code></td><td>Machine log desk</td><td class="num">7.0, 7.5</td><td class="num">0</td><td class="num">1.1 x 0.6</td></tr><tr data-row="7"><td>7</td><td>prop</td><td><code>plant-service-bench</code></td><td>Plant service bench</td><td class="num">12.5, 7.4</td><td class="num">0</td><td class="num">1.8 x 0.75</td></tr><tr data-row="8"><td>8</td><td>prop</td><td><code>chock-bin</code></td><td>Chock and block bin</td><td class="num">13.5, 4.0</td><td class="num">0</td><td class="num">0.9 x 0.6</td></tr><tr data-row="9"><td>9</td><td>prop</td><td><code>learner-stool</code></td><td>Learner stool</td><td class="num">1.0, 1.0</td><td class="num">0</td><td class="num">0.44 x 0.44</td></tr><tr data-row="10"><td>10</td><td>prop</td><td><code>learner-stool</code></td><td>Learner stool</td><td class="num">2.0, 1.0</td><td class="num">0</td><td class="num">0.44 x 0.44</td></tr><tr data-row="11"><td>11</td><td>prop</td><td><code>learner-stool</code></td><td>Learner stool</td><td class="num">1.0, 2.0</td><td class="num">0</td><td class="num">0.44 x 0.44</td></tr><tr data-row="12"><td>12</td><td>prop</td><td><code>learner-stool</code></td><td>Learner stool</td><td class="num">2.0, 2.0</td><td class="num">0</td><td class="num">0.44 x 0.44</td></tr><tr data-row="13"><td>13</td><td>prop</td><td><code>ppe-station</code></td><td>PPE station</td><td class="num">13.9, 1.5</td><td class="num">90</td><td class="num">0.12 x 1.0</td></tr><tr data-row="14"><td>14</td><td>prop</td><td><code>plug-dispenser</code></td><td>Ear plug dispenser</td><td class="num">0.3, 5.0</td><td class="num">90</td><td class="num">0.16 x 0.5</td></tr><tr data-row="15"><td>15</td><td>crib</td><td><code>structural</code></td><td>Structural tool crib</td><td class="num">12.5, 1.0</td><td class="num">0</td><td class="num"><em>footprint unknown, overlap not checked</em></td></tr><tr data-row="16"><td>16</td><td>sign</td><td><code>placard</code></td><td>what a room requires of you, read at its door</td><td class="num">0.3, 0.3</td><td class="num">0</td><td class="num"><em>footprint unknown, overlap not checked</em></td></tr><tr data-row="17"><td>17</td><td>sign</td><td><code>hazard</code></td><td>a condition in force in a space, off the hazards its own conditions record already holds</td><td class="num">0.3, 4.0</td><td class="num">0</td><td class="num"><em>footprint unknown, overlap not checked</em></td></tr><tr data-row="18"><td>18</td><td>sign</td><td><code>station</code></td><td>a training station</td><td class="num">7.0, 2.6</td><td class="num">0</td><td class="num"><em>footprint unknown, overlap not checked</em></td></tr></tbody></table></details>
+</section>
+<section class="space" id="space-electrical-lab" data-space="electrical-lab">
+<h2>Electrical lab <span class="status" data-status>declared, not yet walkable</span></h2>
+<p class="purpose">Two fault-finding benches under a live rig frame, a prove-dead post and the rubber goods and lockout fixtures a live-electrical room hangs on its wall.</p>
+<p class="serves">Serves <a class="hall" href="trade_craft_3d.html?hall=electricians" data-hall="electricians">Electrical Workers hall (3D)</a> · <a href="trade_craft_lessons.html" data-lessons>lessons</a>
+ · would stand in the <b>Diagnostic Bench</b> (troubleshooting strand)</p>
+<div class="cols">
+<div class="planwrap"><svg class="plan" viewBox="0 0 448.0 268.0" width="448.0" height="268.0" role="img" aria-label="Electrical lab floor plan" data-plan="electrical-lab" data-px-per-m="40"><rect class="floor" x="24" y="24" width="400.0" height="220.0" fill="#2c333c" stroke="#a8834f" stroke-width="6" data-floor="rubber-dielectric" data-wall="ply-lined"/><text class="dim" x="224.0" y="16" text-anchor="middle" data-dim="w">10.0 m</text><text class="dim" x="16" y="134.0" text-anchor="middle" transform="rotate(-90 16 134.0)" data-dim="d">5.5 m</text><g class="item" data-item="0" data-kind="prop" data-id="rig-frame"><rect x="74.0" y="29.0" width="60.0" height="14.0" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="104.0" y="39.0" text-anchor="middle">Live rig frame</text><title>Live rig frame (prop rig-frame) - 1.5 x 0.35 m</title></g><g class="item" data-item="1" data-kind="prop" data-id="test-bench"><rect x="74.0" y="110.0" width="60.0" height="28.0" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="104.0" y="127.0" text-anchor="middle">Fault-finding bench</text><title>Fault-finding bench (prop test-bench) - 1.5 x 0.7 m</title></g><g class="item" data-item="2" data-kind="prop" data-id="test-bench"><rect x="194.0" y="110.0" width="60.0" height="28.0" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="224.0" y="127.0" text-anchor="middle">Fault-finding bench</text><title>Fault-finding bench (prop test-bench) - 1.5 x 0.7 m</title></g><g class="item" data-item="3" data-kind="prop" data-id="instrument-cabinet"><rect x="187.0" y="27.0" width="34.0" height="18.0" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="204.0" y="39.0" text-anchor="middle">Instrument cabinet</text><title>Instrument cabinet (prop instrument-cabinet) - 0.85 x 0.45 m</title></g><g class="item" data-item="4" data-kind="prop" data-id="fault-log-board"><rect x="286.8" y="26.400000000000006" width="34.4" height="3.2" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="304.0" y="31.000000000000007" text-anchor="middle">Fault log board</text><title>Fault log board (prop fault-log-board) - 0.86 x 0.08 m</title></g><g class="item" data-item="5" data-kind="prop" data-id="isolation-post"><rect x="356.8" y="36.80000000000001" width="14.4" height="14.4" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="364.0" y="47.000000000000014" text-anchor="middle">Isolation post</text><title>Isolation post (prop isolation-post) - 0.36 x 0.36 m</title></g><g class="item" data-item="6" data-kind="prop" data-id="rubber-goods-rack"><rect x="395.0" y="104.0" width="18.0" height="40.0" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="404.0" y="127.0" text-anchor="middle">Rubber goods rack</text><title>Rubber goods rack (prop rubber-goods-rack) - 0.45 x 1.0 m</title></g><g class="item" data-item="7" data-kind="prop" data-id="lockout-station"><rect x="402.8" y="184.0" width="2.4" height="40.0" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="404.0" y="207.0" text-anchor="middle">Lockout station</text><title>Lockout station (prop lockout-station) - 0.06 x 1.0 m</title></g><g class="item" data-item="8" data-kind="furniture" data-id="multimeter-bench"><rect x="75.0" y="190.0" width="58.0" height="28.0" fill="var(--mark)" fill-opacity="0.55" stroke="var(--mark)" stroke-width="1"/><text x="104.0" y="207.0" text-anchor="middle">Meter test bench</text><title>Meter test bench (furniture multimeter-bench) - 1.45 x 0.7 m</title></g><g class="item" data-item="9" data-kind="furniture" data-id="voltage-tester-post"><rect x="216.8" y="196.8" width="14.4" height="14.4" fill="var(--mark)" fill-opacity="0.55" stroke="var(--mark)" stroke-width="1"/><text x="224.0" y="207.0" text-anchor="middle">Prove-dead post</text><title>Prove-dead post (furniture voltage-tester-post) - 0.36 x 0.36 m</title></g><g class="item" data-item="10" data-kind="prop" data-id="learner-stool"><rect x="95.2" y="151.2" width="17.6" height="17.6" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="104.0" y="163.0" text-anchor="middle">Learner stool</text><title>Learner stool (prop learner-stool) - 0.44 x 0.44 m</title></g><g class="item" data-item="11" data-kind="prop" data-id="learner-stool"><rect x="215.2" y="151.2" width="17.6" height="17.6" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="224.0" y="163.0" text-anchor="middle">Learner stool</text><title>Learner stool (prop learner-stool) - 0.44 x 0.44 m</title></g><g class="item unknown" data-item="12" data-kind="crib" data-id="systems"><circle cx="344.0" cy="204.0" r="9" fill="none" stroke="var(--mark)" stroke-width="1.5" stroke-dasharray="3 2"/><text x="344.0" y="224.0" text-anchor="middle">Building-systems tool crib</text><title>Building-systems tool crib (crib systems) - footprint unknown, overlap not checked</title></g><g class="item unknown" data-item="13" data-kind="sign" data-id="placard"><circle cx="36.0" cy="232.0" r="9" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="3 2"/><text x="36.0" y="252.0" text-anchor="middle">what a room requires of you, read at its door</text><title>what a room requires of you, read at its door (sign placard) - footprint unknown, overlap not checked</title></g><g class="item unknown" data-item="14" data-kind="sign" data-id="hazard"><circle cx="36.0" cy="64.0" r="9" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="3 2"/><text x="36.0" y="84.0" text-anchor="middle">a condition in force in a space, off the hazards its own conditions record already holds</text><title>a condition in force in a space, off the hazards its own conditions record already holds (sign hazard) - footprint unknown, overlap not checked</title></g></svg></div>
+<div class="facts">
+<div class="figs">
+ <div class="fig"><b data-fig="area" data-space-fig="electrical-lab">55.0</b><span>m² · 10.0 x 5.5 m</span></div>
+ <div class="fig"><b data-fig="items" data-space-fig="electrical-lab">15</b><span>items</span></div>
+ <div class="fig"><b data-fig="tris" data-space-fig="electrical-lab">1092</b><span>triangles (declared budgets)</span></div>
+ <div class="fig"><b data-fig="draw_calls" data-space-fig="electrical-lab">4</b><span>draw calls (pooled by material)</span></div>
+ <div class="fig"><b data-fig="not_estimated" data-space-fig="electrical-lab">3</b><span>items not estimated</span></div>
+</div>
+<p class="chips"><span class="chip" data-kind-count="crib">1 crib</span><span class="chip" data-kind-count="furniture">2 furniture</span><span class="chip" data-kind-count="prop">10 prop</span><span class="chip" data-kind-count="sign">2 sign</span></p>
+<h3>Finishes</h3>
+<p class="swatches">
+ <span class="swatch"><i style="background:#2c333c" data-swatch="floor" data-finish="rubber-dielectric"></i>floor: Dielectric rubber matting <code>rubber-dielectric</code> (smooth)</span>
+ <span class="swatch"><i style="background:#a8834f" data-swatch="wall" data-finish="ply-lined"></i>wall: Plywood-lined shop wall <code>ply-lined</code> (plywood)</span>
+</p>
+<h3>PPE required <small>(derived, never typed)</small></h3>
+<ul class="ppe" data-ppe-list="electrical-lab"><li data-ppe="arc-flash face shield">arc-flash face shield</li><li data-ppe="dielectric gloves">dielectric gloves</li><li data-ppe="safety boots">safety boots</li><li data-ppe="safety glasses">safety glasses</li></ul>
+<p class="hz">Hazards the finishes stand for: live-electrical (floor rubber-dielectric)</p>
+<h3>Fits the room the 3D builder lays out</h3>
+<ul class="fits"><li>Diagnostic Bench of electricians: <span data-env="electricians">21 x 6 m</span></li></ul>
+<h3>Not estimated</h3>
+<ul class="notest" data-not-estimated="electrical-lab"><li>crib systems: tools/registry/toolcribs.json#cribs declares no triangle figure</li><li>sign placard: labels/registry/labels.json#kinds declares no triangle figure</li><li>sign hazard: labels/registry/labels.json#kinds declares no triangle figure</li></ul>
+</div>
+</div>
+<details><summary>Item schedule (15)</summary>
+<table class="sched"><thead><tr><th>#</th><th>kind</th><th>id</th><th>name</th><th>x, y (m)</th><th>rot</th><th>footprint (m)</th></tr></thead>
+<tbody><tr data-row="0"><td>0</td><td>prop</td><td><code>rig-frame</code></td><td>Live rig frame</td><td class="num">2.0, 5.2</td><td class="num">0</td><td class="num">1.5 x 0.35</td></tr><tr data-row="1"><td>1</td><td>prop</td><td><code>test-bench</code></td><td>Fault-finding bench</td><td class="num">2.0, 3.0</td><td class="num">0</td><td class="num">1.5 x 0.7</td></tr><tr data-row="2"><td>2</td><td>prop</td><td><code>test-bench</code></td><td>Fault-finding bench</td><td class="num">5.0, 3.0</td><td class="num">0</td><td class="num">1.5 x 0.7</td></tr><tr data-row="3"><td>3</td><td>prop</td><td><code>instrument-cabinet</code></td><td>Instrument cabinet</td><td class="num">4.5, 5.2</td><td class="num">0</td><td class="num">0.85 x 0.45</td></tr><tr data-row="4"><td>4</td><td>prop</td><td><code>fault-log-board</code></td><td>Fault log board</td><td class="num">7.0, 5.4</td><td class="num">0</td><td class="num">0.86 x 0.08</td></tr><tr data-row="5"><td>5</td><td>prop</td><td><code>isolation-post</code></td><td>Isolation post</td><td class="num">8.5, 5.0</td><td class="num">0</td><td class="num">0.36 x 0.36</td></tr><tr data-row="6"><td>6</td><td>prop</td><td><code>rubber-goods-rack</code></td><td>Rubber goods rack</td><td class="num">9.5, 3.0</td><td class="num">90</td><td class="num">0.45 x 1.0</td></tr><tr data-row="7"><td>7</td><td>prop</td><td><code>lockout-station</code></td><td>Lockout station</td><td class="num">9.5, 1.0</td><td class="num">90</td><td class="num">0.06 x 1.0</td></tr><tr data-row="8"><td>8</td><td>furniture</td><td><code>multimeter-bench</code></td><td>Meter test bench</td><td class="num">2.0, 1.0</td><td class="num">0</td><td class="num">1.45 x 0.7</td></tr><tr data-row="9"><td>9</td><td>furniture</td><td><code>voltage-tester-post</code></td><td>Prove-dead post</td><td class="num">5.0, 1.0</td><td class="num">0</td><td class="num">0.36 x 0.36</td></tr><tr data-row="10"><td>10</td><td>prop</td><td><code>learner-stool</code></td><td>Learner stool</td><td class="num">2.0, 2.1</td><td class="num">0</td><td class="num">0.44 x 0.44</td></tr><tr data-row="11"><td>11</td><td>prop</td><td><code>learner-stool</code></td><td>Learner stool</td><td class="num">5.0, 2.1</td><td class="num">0</td><td class="num">0.44 x 0.44</td></tr><tr data-row="12"><td>12</td><td>crib</td><td><code>systems</code></td><td>Building-systems tool crib</td><td class="num">8.0, 1.0</td><td class="num">0</td><td class="num"><em>footprint unknown, overlap not checked</em></td></tr><tr data-row="13"><td>13</td><td>sign</td><td><code>placard</code></td><td>what a room requires of you, read at its door</td><td class="num">0.3, 0.3</td><td class="num">0</td><td class="num"><em>footprint unknown, overlap not checked</em></td></tr><tr data-row="14"><td>14</td><td>sign</td><td><code>hazard</code></td><td>a condition in force in a space, off the hazards its own conditions record already holds</td><td class="num">0.3, 4.5</td><td class="num">0</td><td class="num"><em>footprint unknown, overlap not checked</em></td></tr></tbody></table></details>
+</section>
+<section class="space" id="space-flipped-classroom" data-space="flipped-classroom">
+<h2>Flipped classroom <span class="status" data-status>declared, not yet walkable</span></h2>
+<p class="purpose">Six desks in two rows facing a lectern, an easel and a progress board, so the reading is done before the room and the room is spent on the questions.</p>
+<p class="serves">Serves <a class="hall" href="trade_craft_3d.html?hall=carpenters" data-hall="carpenters">Carpenters hall (3D)</a><a class="hall" href="trade_craft_3d.html?hall=electricians" data-hall="electricians">Electrical Workers hall (3D)</a> · <a href="trade_craft_lessons.html" data-lessons>lessons</a>
+ · would stand in the <b>Classroom</b> (leadership strand)</p>
+<div class="cols">
+<div class="planwrap"><svg class="plan" viewBox="0 0 488.0 268.0" width="488.0" height="268.0" role="img" aria-label="Flipped classroom floor plan" data-plan="flipped-classroom" data-px-per-m="40"><rect class="floor" x="24" y="24" width="440.0" height="220.0" fill="#bfc9cf" stroke="#dce4e8" stroke-width="6" data-floor="porcelain-tile" data-wall="whiteboard-panel"/><text class="dim" x="244.0" y="16" text-anchor="middle" data-dim="w">11.0 m</text><text class="dim" x="16" y="134.0" text-anchor="middle" transform="rotate(-90 16 134.0)" data-dim="d">5.5 m</text><g class="item" data-item="0" data-kind="prop" data-id="instructor-lectern"><rect x="229.0" y="35.19999999999999" width="30.0" height="17.6" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="244.0" y="46.999999999999986" text-anchor="middle">Instructor lectern</text><title>Instructor lectern (prop instructor-lectern) - 0.75 x 0.44 m</title></g><g class="item" data-item="1" data-kind="prop" data-id="exam-desk"><rect x="80.0" y="104.0" width="48.0" height="24.0" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="104.0" y="119.0" text-anchor="middle">Exam desk</text><title>Exam desk (prop exam-desk) - 1.2 x 0.6 m</title></g><g class="item" data-item="2" data-kind="prop" data-id="exam-desk"><rect x="220.0" y="104.0" width="48.0" height="24.0" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="244.0" y="119.0" text-anchor="middle">Exam desk</text><title>Exam desk (prop exam-desk) - 1.2 x 0.6 m</title></g><g class="item" data-item="3" data-kind="prop" data-id="exam-desk"><rect x="360.0" y="104.0" width="48.0" height="24.0" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="384.0" y="119.0" text-anchor="middle">Exam desk</text><title>Exam desk (prop exam-desk) - 1.2 x 0.6 m</title></g><g class="item" data-item="4" data-kind="prop" data-id="exam-desk"><rect x="80.0" y="176.0" width="48.0" height="24.0" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="104.0" y="191.0" text-anchor="middle">Exam desk</text><title>Exam desk (prop exam-desk) - 1.2 x 0.6 m</title></g><g class="item" data-item="5" data-kind="prop" data-id="exam-desk"><rect x="220.0" y="176.0" width="48.0" height="24.0" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="244.0" y="191.0" text-anchor="middle">Exam desk</text><title>Exam desk (prop exam-desk) - 1.2 x 0.6 m</title></g><g class="item" data-item="6" data-kind="prop" data-id="exam-desk"><rect x="360.0" y="176.0" width="48.0" height="24.0" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="384.0" y="191.0" text-anchor="middle">Exam desk</text><title>Exam desk (prop exam-desk) - 1.2 x 0.6 m</title></g><g class="item" data-item="7" data-kind="prop" data-id="classroom-stool"><rect x="96.0" y="140.0" width="16.0" height="16.0" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="104.0" y="151.0" text-anchor="middle">Classroom stool</text><title>Classroom stool (prop classroom-stool) - 0.4 x 0.4 m</title></g><g class="item" data-item="8" data-kind="prop" data-id="classroom-stool"><rect x="236.0" y="140.0" width="16.0" height="16.0" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="244.0" y="151.0" text-anchor="middle">Classroom stool</text><title>Classroom stool (prop classroom-stool) - 0.4 x 0.4 m</title></g><g class="item" data-item="9" data-kind="prop" data-id="classroom-stool"><rect x="376.0" y="140.0" width="16.0" height="16.0" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="384.0" y="151.0" text-anchor="middle">Classroom stool</text><title>Classroom stool (prop classroom-stool) - 0.4 x 0.4 m</title></g><g class="item" data-item="10" data-kind="prop" data-id="classroom-stool"><rect x="96.0" y="212.0" width="16.0" height="16.0" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="104.0" y="223.0" text-anchor="middle">Classroom stool</text><title>Classroom stool (prop classroom-stool) - 0.4 x 0.4 m</title></g><g class="item" data-item="11" data-kind="prop" data-id="classroom-stool"><rect x="236.0" y="212.0" width="16.0" height="16.0" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="244.0" y="223.0" text-anchor="middle">Classroom stool</text><title>Classroom stool (prop classroom-stool) - 0.4 x 0.4 m</title></g><g class="item" data-item="12" data-kind="prop" data-id="classroom-stool"><rect x="376.0" y="212.0" width="16.0" height="16.0" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="384.0" y="223.0" text-anchor="middle">Classroom stool</text><title>Classroom stool (prop classroom-stool) - 0.4 x 0.4 m</title></g><g class="item" data-item="13" data-kind="prop" data-id="progress-board"><rect x="46.8" y="26.400000000000006" width="34.4" height="3.2" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="64.0" y="31.000000000000007" text-anchor="middle">Progress board</text><title>Progress board (prop progress-board) - 0.86 x 0.08 m</title></g><g class="item" data-item="14" data-kind="prop" data-id="reference-shelf"><rect x="406.8" y="26.400000000000006" width="34.4" height="11.2" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="424.0" y="35.00000000000001" text-anchor="middle">Reference shelf</text><title>Reference shelf (prop reference-shelf) - 0.86 x 0.28 m</title></g><g class="item" data-item="15" data-kind="prop" data-id="drawing-easel"><rect x="346.0" y="35.19999999999999" width="36.0" height="17.6" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="364.0" y="46.999999999999986" text-anchor="middle">Drawing easel</text><title>Drawing easel (prop drawing-easel) - 0.9 x 0.44 m</title></g><g class="item unknown" data-item="16" data-kind="sign" data-id="room"><circle cx="36.0" cy="36.0" r="9" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="3 2"/><text x="36.0" y="56.0" text-anchor="middle">a room inside a hall</text><title>a room inside a hall (sign room) - footprint unknown, overlap not checked</title></g><g class="item unknown" data-item="17" data-kind="sign" data-id="placard"><circle cx="36.0" cy="232.0" r="9" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="3 2"/><text x="36.0" y="252.0" text-anchor="middle">what a room requires of you, read at its door</text><title>what a room requires of you, read at its door (sign placard) - footprint unknown, overlap not checked</title></g></svg></div>
+<div class="facts">
+<div class="figs">
+ <div class="fig"><b data-fig="area" data-space-fig="flipped-classroom">60.5</b><span>m² · 11.0 x 5.5 m</span></div>
+ <div class="fig"><b data-fig="items" data-space-fig="flipped-classroom">18</b><span>items</span></div>
+ <div class="fig"><b data-fig="tris" data-space-fig="flipped-classroom">1500</b><span>triangles (declared budgets)</span></div>
+ <div class="fig"><b data-fig="draw_calls" data-space-fig="flipped-classroom">2</b><span>draw calls (pooled by material)</span></div>
+ <div class="fig"><b data-fig="not_estimated" data-space-fig="flipped-classroom">2</b><span>items not estimated</span></div>
+</div>
+<p class="chips"><span class="chip" data-kind-count="prop">16 prop</span><span class="chip" data-kind-count="sign">2 sign</span></p>
+<h3>Finishes</h3>
+<p class="swatches">
+ <span class="swatch"><i style="background:#bfc9cf" data-swatch="floor" data-finish="porcelain-tile"></i>floor: Porcelain tile <code>porcelain-tile</code> (tile)</span>
+ <span class="swatch"><i style="background:#dce4e8" data-swatch="wall" data-finish="whiteboard-panel"></i>wall: Full-height marker panel <code>whiteboard-panel</code> (board)</span>
+</p>
+<h3>PPE required <small>(derived, never typed)</small></h3>
+<ul class="ppe" data-ppe-list="flipped-classroom"><li class="none" data-ppe-none="1">none derived: the strand names no base PPE and the finishes stand for no hazard</li></ul>
+<p class="hz">Hazards the finishes stand for: none</p>
+<h3>Fits the room the 3D builder lays out</h3>
+<ul class="fits"><li>Classroom of carpenters: <span data-env="carpenters">27 x 6 m</span></li><li>Classroom of electricians: <span data-env="electricians">27 x 6 m</span></li></ul>
+<h3>Not estimated</h3>
+<ul class="notest" data-not-estimated="flipped-classroom"><li>sign room: labels/registry/labels.json#kinds declares no triangle figure</li><li>sign placard: labels/registry/labels.json#kinds declares no triangle figure</li></ul>
+</div>
+</div>
+<details><summary>Item schedule (18)</summary>
+<table class="sched"><thead><tr><th>#</th><th>kind</th><th>id</th><th>name</th><th>x, y (m)</th><th>rot</th><th>footprint (m)</th></tr></thead>
+<tbody><tr data-row="0"><td>0</td><td>prop</td><td><code>instructor-lectern</code></td><td>Instructor lectern</td><td class="num">5.5, 5.0</td><td class="num">0</td><td class="num">0.75 x 0.44</td></tr><tr data-row="1"><td>1</td><td>prop</td><td><code>exam-desk</code></td><td>Exam desk</td><td class="num">2.0, 3.2</td><td class="num">0</td><td class="num">1.2 x 0.6</td></tr><tr data-row="2"><td>2</td><td>prop</td><td><code>exam-desk</code></td><td>Exam desk</td><td class="num">5.5, 3.2</td><td class="num">0</td><td class="num">1.2 x 0.6</td></tr><tr data-row="3"><td>3</td><td>prop</td><td><code>exam-desk</code></td><td>Exam desk</td><td class="num">9.0, 3.2</td><td class="num">0</td><td class="num">1.2 x 0.6</td></tr><tr data-row="4"><td>4</td><td>prop</td><td><code>exam-desk</code></td><td>Exam desk</td><td class="num">2.0, 1.4</td><td class="num">0</td><td class="num">1.2 x 0.6</td></tr><tr data-row="5"><td>5</td><td>prop</td><td><code>exam-desk</code></td><td>Exam desk</td><td class="num">5.5, 1.4</td><td class="num">0</td><td class="num">1.2 x 0.6</td></tr><tr data-row="6"><td>6</td><td>prop</td><td><code>exam-desk</code></td><td>Exam desk</td><td class="num">9.0, 1.4</td><td class="num">0</td><td class="num">1.2 x 0.6</td></tr><tr data-row="7"><td>7</td><td>prop</td><td><code>classroom-stool</code></td><td>Classroom stool</td><td class="num">2.0, 2.4</td><td class="num">0</td><td class="num">0.4 x 0.4</td></tr><tr data-row="8"><td>8</td><td>prop</td><td><code>classroom-stool</code></td><td>Classroom stool</td><td class="num">5.5, 2.4</td><td class="num">0</td><td class="num">0.4 x 0.4</td></tr><tr data-row="9"><td>9</td><td>prop</td><td><code>classroom-stool</code></td><td>Classroom stool</td><td class="num">9.0, 2.4</td><td class="num">0</td><td class="num">0.4 x 0.4</td></tr><tr data-row="10"><td>10</td><td>prop</td><td><code>classroom-stool</code></td><td>Classroom stool</td><td class="num">2.0, 0.6</td><td class="num">0</td><td class="num">0.4 x 0.4</td></tr><tr data-row="11"><td>11</td><td>prop</td><td><code>classroom-stool</code></td><td>Classroom stool</td><td class="num">5.5, 0.6</td><td class="num">0</td><td class="num">0.4 x 0.4</td></tr><tr data-row="12"><td>12</td><td>prop</td><td><code>classroom-stool</code></td><td>Classroom stool</td><td class="num">9.0, 0.6</td><td class="num">0</td><td class="num">0.4 x 0.4</td></tr><tr data-row="13"><td>13</td><td>prop</td><td><code>progress-board</code></td><td>Progress board</td><td class="num">1.0, 5.4</td><td class="num">0</td><td class="num">0.86 x 0.08</td></tr><tr data-row="14"><td>14</td><td>prop</td><td><code>reference-shelf</code></td><td>Reference shelf</td><td class="num">10.0, 5.3</td><td class="num">0</td><td class="num">0.86 x 0.28</td></tr><tr data-row="15"><td>15</td><td>prop</td><td><code>drawing-easel</code></td><td>Drawing easel</td><td class="num">8.5, 5.0</td><td class="num">0</td><td class="num">0.9 x 0.44</td></tr><tr data-row="16"><td>16</td><td>sign</td><td><code>room</code></td><td>a room inside a hall</td><td class="num">0.3, 5.2</td><td class="num">0</td><td class="num"><em>footprint unknown, overlap not checked</em></td></tr><tr data-row="17"><td>17</td><td>sign</td><td><code>placard</code></td><td>what a room requires of you, read at its door</td><td class="num">0.3, 0.3</td><td class="num">0</td><td class="num"><em>footprint unknown, overlap not checked</em></td></tr></tbody></table></details>
+</section>
+<section class="space" id="space-rigging-yard" data-space="rigging-yard">
+<h2>Rigging yard <span class="status" data-status>declared, not yet walkable</span></h2>
+<p class="purpose">A lay-down table, sling and hoist inspection rails and a trial flange beam, with the two rigging seats standing in the open floor between them.</p>
+<p class="serves">Serves <a class="hall" href="trade_craft_3d.html?hall=riggers" data-hall="riggers">Riggers &amp; Signalpersons hall (3D)</a><a class="hall" href="trade_craft_3d.html?hall=ironworkers" data-hall="ironworkers">Ironworkers hall (3D)</a> · <a href="trade_craft_lessons.html" data-lessons>lessons</a>
+ · would stand in the <b>Materials Store</b> (materials strand)</p>
+<div class="cols">
+<div class="planwrap"><svg class="plan" viewBox="0 0 528.0 268.0" width="528.0" height="268.0" role="img" aria-label="Rigging yard floor plan" data-plan="rigging-yard" data-px-per-m="40"><rect class="floor" x="24" y="24" width="480.0" height="220.0" fill="#59656f" stroke="#8a8452" stroke-width="6" data-floor="steel-plate" data-wall="mesh-guard"/><text class="dim" x="264.0" y="16" text-anchor="middle" data-dim="w">12.0 m</text><text class="dim" x="16" y="134.0" text-anchor="middle" transform="rotate(-90 16 134.0)" data-dim="d">5.5 m</text><g class="item" data-item="0" data-kind="furniture" data-id="shackle-table"><rect x="75.0" y="176.0" width="58.0" height="40.0" fill="var(--mark)" fill-opacity="0.55" stroke="var(--mark)" stroke-width="1"/><text x="104.0" y="199.0" text-anchor="middle">Rigging lay-down table</text><title>Rigging lay-down table (furniture shackle-table) - 1.45 x 1.0 m</title></g><g class="item" data-item="1" data-kind="furniture" data-id="wire-sling-rail"><rect x="76.0" y="28.0" width="56.0" height="16.0" fill="var(--mark)" fill-opacity="0.55" stroke="var(--mark)" stroke-width="1"/><text x="104.0" y="39.0" text-anchor="middle">Sling inspection rail</text><title>Sling inspection rail (furniture wire-sling-rail) - 1.4 x 0.4 m</title></g><g class="item" data-item="2" data-kind="furniture" data-id="wire-sling-tree"><rect x="170.4" y="30.400000000000006" width="27.2" height="27.2" fill="var(--mark)" fill-opacity="0.55" stroke="var(--mark)" stroke-width="1"/><text x="184.0" y="47.00000000000001" text-anchor="middle">Sling storage tree</text><title>Sling storage tree (furniture wire-sling-tree) - 0.68 x 0.68 m</title></g><g class="item" data-item="3" data-kind="furniture" data-id="lever-hoist-frame"><rect x="236.0" y="28.0" width="56.0" height="16.0" fill="var(--mark)" fill-opacity="0.55" stroke="var(--mark)" stroke-width="1"/><text x="264.0" y="39.0" text-anchor="middle">Hoist proof frame</text><title>Hoist proof frame (furniture lever-hoist-frame) - 1.4 x 0.4 m</title></g><g class="item" data-item="4" data-kind="furniture" data-id="lever-hoist-rack"><rect x="320.0" y="28.0" width="48.0" height="20.0" fill="var(--mark)" fill-opacity="0.55" stroke="var(--mark)" stroke-width="1"/><text x="344.0" y="41.0" text-anchor="middle">Chain hoist rack</text><title>Chain hoist rack (furniture lever-hoist-rack) - 1.2 x 0.5 m</title></g><g class="item" data-item="5" data-kind="furniture" data-id="beam-clamp-beam"><rect x="195.0" y="186.0" width="58.0" height="20.0" fill="var(--mark)" fill-opacity="0.55" stroke="var(--mark)" stroke-width="1"/><text x="224.0" y="199.0" text-anchor="middle">Trial flange beam</text><title>Trial flange beam (furniture beam-clamp-beam) - 1.45 x 0.5 m</title></g><g class="item" data-item="6" data-kind="prop" data-id="stock-rack"><rect x="408.0" y="30.0" width="72.0" height="28.0" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="444.0" y="47.0" text-anchor="middle">Stock rack</text><title>Stock rack (prop stock-rack) - 1.8 x 0.7 m</title></g><g class="item" data-item="7" data-kind="prop" data-id="bar-stock-cradle"><rect x="319.0" y="186.4" width="50.0" height="19.2" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="344.0" y="199.0" text-anchor="middle">Bar stock cradle</text><title>Bar stock cradle (prop bar-stock-cradle) - 1.25 x 0.48 m</title></g><g class="item" data-item="8" data-kind="prop" data-id="ppe-station"><rect x="481.6" y="124.0" width="4.8" height="40.0" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="484.0" y="147.0" text-anchor="middle">PPE station</text><title>PPE station (prop ppe-station) - 0.12 x 1.0 m</title></g><g class="item unknown" data-item="9" data-kind="seat" data-id="rigging-signals"><circle cx="224.0" cy="124.0" r="9" fill="none" stroke="var(--good)" stroke-width="1.5" stroke-dasharray="3 2"/><text x="224.0" y="144.0" text-anchor="middle">Rigging Signal Call</text><title>Rigging Signal Call (seat rigging-signals) - footprint unknown, overlap not checked</title></g><g class="item unknown" data-item="10" data-kind="seat" data-id="load-chart"><circle cx="384.0" cy="124.0" r="9" fill="none" stroke="var(--good)" stroke-width="1.5" stroke-dasharray="3 2"/><text x="384.0" y="144.0" text-anchor="middle">Load Chart Judgment</text><title>Load Chart Judgment (seat load-chart) - footprint unknown, overlap not checked</title></g><g class="item unknown" data-item="11" data-kind="crib" data-id="structural"><circle cx="476.0" cy="220.0" r="9" fill="none" stroke="var(--mark)" stroke-width="1.5" stroke-dasharray="3 2"/><text x="476.0" y="240.0" text-anchor="middle">Structural tool crib</text><title>Structural tool crib (crib structural) - footprint unknown, overlap not checked</title></g><g class="item unknown" data-item="12" data-kind="station" data-id="st005"><circle cx="48.0" cy="196.0" r="9" fill="none" stroke="var(--crit)" stroke-width="1.5" stroke-dasharray="3 2"/><text x="48.0" y="216.0" text-anchor="middle">Rigging &amp; Material Handling</text><title>Rigging &amp; Material Handling (station st005) - footprint unknown, overlap not checked</title></g><g class="item unknown" data-item="13" data-kind="sign" data-id="placard"><circle cx="36.0" cy="124.0" r="9" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="3 2"/><text x="36.0" y="144.0" text-anchor="middle">what a room requires of you, read at its door</text><title>what a room requires of you, read at its door (sign placard) - footprint unknown, overlap not checked</title></g><g class="item unknown" data-item="14" data-kind="sign" data-id="hazard"><circle cx="36.0" cy="64.0" r="9" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="3 2"/><text x="36.0" y="84.0" text-anchor="middle">a condition in force in a space, off the hazards its own conditions record already holds</text><title>a condition in force in a space, off the hazards its own conditions record already holds (sign hazard) - footprint unknown, overlap not checked</title></g></svg></div>
+<div class="facts">
+<div class="figs">
+ <div class="fig"><b data-fig="area" data-space-fig="rigging-yard">66.0</b><span>m² · 12.0 x 5.5 m</span></div>
+ <div class="fig"><b data-fig="items" data-space-fig="rigging-yard">15</b><span>items</span></div>
+ <div class="fig"><b data-fig="tris" data-space-fig="rigging-yard">884</b><span>triangles (declared budgets)</span></div>
+ <div class="fig"><b data-fig="draw_calls" data-space-fig="rigging-yard">4</b><span>draw calls (pooled by material)</span></div>
+ <div class="fig"><b data-fig="not_estimated" data-space-fig="rigging-yard">6</b><span>items not estimated</span></div>
+</div>
+<p class="chips"><span class="chip" data-kind-count="crib">1 crib</span><span class="chip" data-kind-count="furniture">6 furniture</span><span class="chip" data-kind-count="prop">3 prop</span><span class="chip" data-kind-count="seat">2 seat</span><span class="chip" data-kind-count="sign">2 sign</span><span class="chip" data-kind-count="station">1 station</span></p>
+<h3>Finishes</h3>
+<p class="swatches">
+ <span class="swatch"><i style="background:#59656f" data-swatch="floor" data-finish="steel-plate"></i>floor: Sealed steel plate deck <code>steel-plate</code> (plate)</span>
+ <span class="swatch"><i style="background:#8a8452" data-swatch="wall" data-finish="mesh-guard"></i>wall: Guarded mesh partition <code>mesh-guard</code> (mesh)</span>
+</p>
+<h3>PPE required <small>(derived, never typed)</small></h3>
+<ul class="ppe" data-ppe-list="rigging-yard"><li data-ppe="gloves">gloves</li><li data-ppe="hard hat">hard hat</li><li data-ppe="hi-vis">hi-vis</li><li data-ppe="safety boots">safety boots</li></ul>
+<p class="hz">Hazards the finishes stand for: suspended-load (floor steel-plate), suspended-load (wall mesh-guard)</p>
+<h3>Fits the room the 3D builder lays out</h3>
+<ul class="fits"><li>Materials Store of riggers: <span data-env="riggers">18 x 6 m</span></li><li>Materials Store of ironworkers: <span data-env="ironworkers">18 x 6 m</span></li></ul>
+<h3>Not estimated</h3>
+<ul class="notest" data-not-estimated="rigging-yard"><li>seat rigging-signals: sims/registry/sims.json#sims declares no triangle figure</li><li>seat load-chart: sims/registry/sims.json#sims declares no triangle figure</li><li>crib structural: tools/registry/toolcribs.json#cribs declares no triangle figure</li><li>station st005: stations/registry/stations.json#stations declares no triangle figure</li><li>sign placard: labels/registry/labels.json#kinds declares no triangle figure</li><li>sign hazard: labels/registry/labels.json#kinds declares no triangle figure</li></ul>
+</div>
+</div>
+<details><summary>Item schedule (15)</summary>
+<table class="sched"><thead><tr><th>#</th><th>kind</th><th>id</th><th>name</th><th>x, y (m)</th><th>rot</th><th>footprint (m)</th></tr></thead>
+<tbody><tr data-row="0"><td>0</td><td>furniture</td><td><code>shackle-table</code></td><td>Rigging lay-down table</td><td class="num">2.0, 1.2</td><td class="num">0</td><td class="num">1.45 x 1.0</td></tr><tr data-row="1"><td>1</td><td>furniture</td><td><code>wire-sling-rail</code></td><td>Sling inspection rail</td><td class="num">2.0, 5.2</td><td class="num">0</td><td class="num">1.4 x 0.4</td></tr><tr data-row="2"><td>2</td><td>furniture</td><td><code>wire-sling-tree</code></td><td>Sling storage tree</td><td class="num">4.0, 5.0</td><td class="num">0</td><td class="num">0.68 x 0.68</td></tr><tr data-row="3"><td>3</td><td>furniture</td><td><code>lever-hoist-frame</code></td><td>Hoist proof frame</td><td class="num">6.0, 5.2</td><td class="num">0</td><td class="num">1.4 x 0.4</td></tr><tr data-row="4"><td>4</td><td>furniture</td><td><code>lever-hoist-rack</code></td><td>Chain hoist rack</td><td class="num">8.0, 5.15</td><td class="num">0</td><td class="num">1.2 x 0.5</td></tr><tr data-row="5"><td>5</td><td>furniture</td><td><code>beam-clamp-beam</code></td><td>Trial flange beam</td><td class="num">5.0, 1.2</td><td class="num">0</td><td class="num">1.45 x 0.5</td></tr><tr data-row="6"><td>6</td><td>prop</td><td><code>stock-rack</code></td><td>Stock rack</td><td class="num">10.5, 5.0</td><td class="num">0</td><td class="num">1.8 x 0.7</td></tr><tr data-row="7"><td>7</td><td>prop</td><td><code>bar-stock-cradle</code></td><td>Bar stock cradle</td><td class="num">8.0, 1.2</td><td class="num">0</td><td class="num">1.25 x 0.48</td></tr><tr data-row="8"><td>8</td><td>prop</td><td><code>ppe-station</code></td><td>PPE station</td><td class="num">11.5, 2.5</td><td class="num">90</td><td class="num">0.12 x 1.0</td></tr><tr data-row="9"><td>9</td><td>seat</td><td><code>rigging-signals</code></td><td>Rigging Signal Call</td><td class="num">5.0, 3.0</td><td class="num">0</td><td class="num"><em>footprint unknown, overlap not checked</em></td></tr><tr data-row="10"><td>10</td><td>seat</td><td><code>load-chart</code></td><td>Load Chart Judgment</td><td class="num">9.0, 3.0</td><td class="num">0</td><td class="num"><em>footprint unknown, overlap not checked</em></td></tr><tr data-row="11"><td>11</td><td>crib</td><td><code>structural</code></td><td>Structural tool crib</td><td class="num">11.3, 0.6</td><td class="num">0</td><td class="num"><em>footprint unknown, overlap not checked</em></td></tr><tr data-row="12"><td>12</td><td>station</td><td><code>st005</code></td><td>Rigging &amp; Material Handling</td><td class="num">0.6, 1.2</td><td class="num">0</td><td class="num"><em>footprint unknown, overlap not checked</em></td></tr><tr data-row="13"><td>13</td><td>sign</td><td><code>placard</code></td><td>what a room requires of you, read at its door</td><td class="num">0.3, 3.0</td><td class="num">0</td><td class="num"><em>footprint unknown, overlap not checked</em></td></tr><tr data-row="14"><td>14</td><td>sign</td><td><code>hazard</code></td><td>a condition in force in a space, off the hazards its own conditions record already holds</td><td class="num">0.3, 4.5</td><td class="num">0</td><td class="num"><em>footprint unknown, overlap not checked</em></td></tr></tbody></table></details>
+</section>
+<section class="space" id="space-scaffold-court" data-space="scaffold-court">
+<h2>Scaffold court <span class="status" data-status>declared, not yet walkable</span></h2>
+<p class="purpose">An open matted floor for the scaffold and boom-lift seats, with harness, lanyard, helmet and edge-protection fixtures along the back wall and two trestles for the tie-in work.</p>
+<p class="serves">Serves <a class="hall" href="trade_craft_3d.html?hall=scaffold" data-hall="scaffold">Scaffold Erectors hall (3D)</a><a class="hall" href="trade_craft_3d.html?hall=carpenters" data-hall="carpenters">Carpenters hall (3D)</a> · <a href="trade_craft_lessons.html" data-lessons>lessons</a>
+ · would stand in the <b>Practice Bays</b> (procedure strand)</p>
+<div class="cols">
+<div class="planwrap"><svg class="plan" viewBox="0 0 608.0 368.0" width="608.0" height="368.0" role="img" aria-label="Scaffold court floor plan" data-plan="scaffold-court" data-px-per-m="40"><rect class="floor" x="24" y="24" width="560.0" height="320.0" fill="#3f4e63" stroke="#948877" stroke-width="6" data-floor="impact-mat" data-wall="impact-block"/><text class="dim" x="304.0" y="16" text-anchor="middle" data-dim="w">14.0 m</text><text class="dim" x="16" y="184.0" text-anchor="middle" transform="rotate(-90 16 184.0)" data-dim="d">8.0 m</text><g class="item" data-item="0" data-kind="prop" data-id="harness-rail"><rect x="76.0" y="28.0" width="56.0" height="16.0" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="104.0" y="39.0" text-anchor="middle">Harness inspection rail</text><title>Harness inspection rail (prop harness-rail) - 1.4 x 0.4 m</title></g><g class="item" data-item="1" data-kind="prop" data-id="lanyard-locker"><rect x="164.0" y="27.0" width="40.0" height="18.0" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="184.0" y="39.0" text-anchor="middle">Lanyard locker</text><title>Lanyard locker (prop lanyard-locker) - 1.0 x 0.45 m</title></g><g class="item" data-item="2" data-kind="prop" data-id="helmet-shelf"><rect x="244.0" y="26.0" width="40.0" height="12.0" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="264.0" y="35.0" text-anchor="middle">Helmet shelf</text><title>Helmet shelf (prop helmet-shelf) - 1.0 x 0.3 m</title></g><g class="item" data-item="3" data-kind="prop" data-id="edge-stack"><rect x="340.0" y="29.0" width="48.0" height="22.0" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="364.0" y="43.0" text-anchor="middle">Edge protection stack</text><title>Edge protection stack (prop edge-stack) - 1.2 x 0.55 m</title></g><g class="item" data-item="4" data-kind="furniture" data-id="rope-grab-frame"><rect x="436.0" y="28.0" width="56.0" height="16.0" fill="var(--mark)" fill-opacity="0.55" stroke="var(--mark)" stroke-width="1"/><text x="464.0" y="39.0" text-anchor="middle">Fall arrest practice frame</text><title>Fall arrest practice frame (furniture rope-grab-frame) - 1.4 x 0.4 m</title></g><g class="item" data-item="5" data-kind="furniture" data-id="rope-grab-rack"><rect x="522.0" y="27.0" width="44.0" height="18.0" fill="var(--mark)" fill-opacity="0.55" stroke="var(--mark)" stroke-width="1"/><text x="544.0" y="39.0" text-anchor="middle">Rope and grab rack</text><title>Rope and grab rack (furniture rope-grab-rack) - 1.1 x 0.45 m</title></g><g class="item" data-item="6" data-kind="prop" data-id="work-trestle"><rect x="108.0" y="214.0" width="72.0" height="20.0" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="144.0" y="227.0" text-anchor="middle">Work trestle</text><title>Work trestle (prop work-trestle) - 1.8 x 0.5 m</title></g><g class="item" data-item="7" data-kind="prop" data-id="work-trestle"><rect x="268.0" y="214.0" width="72.0" height="20.0" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="304.0" y="227.0" text-anchor="middle">Work trestle</text><title>Work trestle (prop work-trestle) - 1.8 x 0.5 m</title></g><g class="item" data-item="8" data-kind="prop" data-id="task-board"><rect x="42.4" y="158.0" width="3.2" height="52.0" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="44.0" y="187.0" text-anchor="middle">Task board</text><title>Task board (prop task-board) - 0.08 x 1.3 m</title></g><g class="item" data-item="9" data-kind="prop" data-id="ppe-station"><rect x="577.6" y="164.0" width="4.8" height="40.0" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="580.0" y="187.0" text-anchor="middle">PPE station</text><title>PPE station (prop ppe-station) - 0.12 x 1.0 m</title></g><g class="item unknown" data-item="10" data-kind="seat" data-id="scaffold-bay"><circle cx="224.0" cy="124.0" r="9" fill="none" stroke="var(--good)" stroke-width="1.5" stroke-dasharray="3 2"/><text x="224.0" y="144.0" text-anchor="middle">Scaffold Bay Build</text><title>Scaffold Bay Build (seat scaffold-bay) - footprint unknown, overlap not checked</title></g><g class="item unknown" data-item="11" data-kind="seat" data-id="boom-lift"><circle cx="424.0" cy="184.0" r="9" fill="none" stroke="var(--good)" stroke-width="1.5" stroke-dasharray="3 2"/><text x="424.0" y="204.0" text-anchor="middle">Boom Lift Basket Work</text><title>Boom Lift Basket Work (seat boom-lift) - footprint unknown, overlap not checked</title></g><g class="item unknown" data-item="12" data-kind="station" data-id="st003"><circle cx="84.0" cy="304.0" r="9" fill="none" stroke="var(--crit)" stroke-width="1.5" stroke-dasharray="3 2"/><text x="84.0" y="324.0" text-anchor="middle">Scaffold &amp; Fall Protection</text><title>Scaffold &amp; Fall Protection (station st003) - footprint unknown, overlap not checked</title></g><g class="item unknown" data-item="13" data-kind="crib" data-id="earthworks"><circle cx="524.0" cy="304.0" r="9" fill="none" stroke="var(--mark)" stroke-width="1.5" stroke-dasharray="3 2"/><text x="524.0" y="324.0" text-anchor="middle">Earthworks &amp; plant tool crib</text><title>Earthworks &amp; plant tool crib (crib earthworks) - footprint unknown, overlap not checked</title></g><g class="item unknown" data-item="14" data-kind="sign" data-id="placard"><circle cx="36.0" cy="332.0" r="9" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="3 2"/><text x="36.0" y="352.0" text-anchor="middle">what a room requires of you, read at its door</text><title>what a room requires of you, read at its door (sign placard) - footprint unknown, overlap not checked</title></g><g class="item unknown" data-item="15" data-kind="sign" data-id="hazard"><circle cx="36.0" cy="44.0" r="9" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="3 2"/><text x="36.0" y="64.0" text-anchor="middle">a condition in force in a space, off the hazards its own conditions record already holds</text><title>a condition in force in a space, off the hazards its own conditions record already holds (sign hazard) - footprint unknown, overlap not checked</title></g><g class="item unknown" data-item="16" data-kind="sign" data-id="station"><circle cx="84.0" cy="332.0" r="9" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="3 2"/><text x="84.0" y="352.0" text-anchor="middle">a training station</text><title>a training station (sign station) - footprint unknown, overlap not checked</title></g></svg></div>
+<div class="facts">
+<div class="figs">
+ <div class="fig"><b data-fig="area" data-space-fig="scaffold-court">112.0</b><span>m² · 14.0 x 8.0 m</span></div>
+ <div class="fig"><b data-fig="items" data-space-fig="scaffold-court">17</b><span>items</span></div>
+ <div class="fig"><b data-fig="tris" data-space-fig="scaffold-court">912</b><span>triangles (declared budgets)</span></div>
+ <div class="fig"><b data-fig="draw_calls" data-space-fig="scaffold-court">5</b><span>draw calls (pooled by material)</span></div>
+ <div class="fig"><b data-fig="not_estimated" data-space-fig="scaffold-court">7</b><span>items not estimated</span></div>
+</div>
+<p class="chips"><span class="chip" data-kind-count="crib">1 crib</span><span class="chip" data-kind-count="furniture">2 furniture</span><span class="chip" data-kind-count="prop">8 prop</span><span class="chip" data-kind-count="seat">2 seat</span><span class="chip" data-kind-count="sign">3 sign</span><span class="chip" data-kind-count="station">1 station</span></p>
+<h3>Finishes</h3>
+<p class="swatches">
+ <span class="swatch"><i style="background:#3f4e63" data-swatch="floor" data-finish="impact-mat"></i>floor: Impact-absorbing mat <code>impact-mat</code> (smooth)</span>
+ <span class="swatch"><i style="background:#948877" data-swatch="wall" data-finish="impact-block"></i>wall: Impact-faced block with kerb <code>impact-block</code> (block)</span>
+</p>
+<h3>PPE required <small>(derived, never typed)</small></h3>
+<ul class="ppe" data-ppe-list="scaffold-court"><li data-ppe="chinstrap helmet">chinstrap helmet</li><li data-ppe="full-body harness">full-body harness</li><li data-ppe="gloves">gloves</li><li data-ppe="hard hat">hard hat</li><li data-ppe="hi-vis">hi-vis</li><li data-ppe="safety boots">safety boots</li><li data-ppe="safety glasses">safety glasses</li></ul>
+<p class="hz">Hazards the finishes stand for: work-at-height (floor impact-mat), work-at-height (wall impact-block)</p>
+<h3>Fits the room the 3D builder lays out</h3>
+<ul class="fits"><li>Practice Bays of scaffold: <span data-env="scaffold">36 x 9 m</span></li><li>Practice Bays of carpenters: <span data-env="carpenters">21 x 9 m</span></li></ul>
+<h3>Not estimated</h3>
+<ul class="notest" data-not-estimated="scaffold-court"><li>seat scaffold-bay: sims/registry/sims.json#sims declares no triangle figure</li><li>seat boom-lift: sims/registry/sims.json#sims declares no triangle figure</li><li>station st003: stations/registry/stations.json#stations declares no triangle figure</li><li>crib earthworks: tools/registry/toolcribs.json#cribs declares no triangle figure</li><li>sign placard: labels/registry/labels.json#kinds declares no triangle figure</li><li>sign hazard: labels/registry/labels.json#kinds declares no triangle figure</li><li>sign station: labels/registry/labels.json#kinds declares no triangle figure</li></ul>
+</div>
+</div>
+<details><summary>Item schedule (17)</summary>
+<table class="sched"><thead><tr><th>#</th><th>kind</th><th>id</th><th>name</th><th>x, y (m)</th><th>rot</th><th>footprint (m)</th></tr></thead>
+<tbody><tr data-row="0"><td>0</td><td>prop</td><td><code>harness-rail</code></td><td>Harness inspection rail</td><td class="num">2.0, 7.7</td><td class="num">0</td><td class="num">1.4 x 0.4</td></tr><tr data-row="1"><td>1</td><td>prop</td><td><code>lanyard-locker</code></td><td>Lanyard locker</td><td class="num">4.0, 7.7</td><td class="num">0</td><td class="num">1.0 x 0.45</td></tr><tr data-row="2"><td>2</td><td>prop</td><td><code>helmet-shelf</code></td><td>Helmet shelf</td><td class="num">6.0, 7.8</td><td class="num">0</td><td class="num">1.0 x 0.3</td></tr><tr data-row="3"><td>3</td><td>prop</td><td><code>edge-stack</code></td><td>Edge protection stack</td><td class="num">8.5, 7.6</td><td class="num">0</td><td class="num">1.2 x 0.55</td></tr><tr data-row="4"><td>4</td><td>furniture</td><td><code>rope-grab-frame</code></td><td>Fall arrest practice frame</td><td class="num">11.0, 7.7</td><td class="num">0</td><td class="num">1.4 x 0.4</td></tr><tr data-row="5"><td>5</td><td>furniture</td><td><code>rope-grab-rack</code></td><td>Rope and grab rack</td><td class="num">13.0, 7.7</td><td class="num">0</td><td class="num">1.1 x 0.45</td></tr><tr data-row="6"><td>6</td><td>prop</td><td><code>work-trestle</code></td><td>Work trestle</td><td class="num">3.0, 3.0</td><td class="num">0</td><td class="num">1.8 x 0.5</td></tr><tr data-row="7"><td>7</td><td>prop</td><td><code>work-trestle</code></td><td>Work trestle</td><td class="num">7.0, 3.0</td><td class="num">0</td><td class="num">1.8 x 0.5</td></tr><tr data-row="8"><td>8</td><td>prop</td><td><code>task-board</code></td><td>Task board</td><td class="num">0.5, 4.0</td><td class="num">90</td><td class="num">0.08 x 1.3</td></tr><tr data-row="9"><td>9</td><td>prop</td><td><code>ppe-station</code></td><td>PPE station</td><td class="num">13.9, 4.0</td><td class="num">90</td><td class="num">0.12 x 1.0</td></tr><tr data-row="10"><td>10</td><td>seat</td><td><code>scaffold-bay</code></td><td>Scaffold Bay Build</td><td class="num">5.0, 5.5</td><td class="num">0</td><td class="num"><em>footprint unknown, overlap not checked</em></td></tr><tr data-row="11"><td>11</td><td>seat</td><td><code>boom-lift</code></td><td>Boom Lift Basket Work</td><td class="num">10.0, 4.0</td><td class="num">0</td><td class="num"><em>footprint unknown, overlap not checked</em></td></tr><tr data-row="12"><td>12</td><td>station</td><td><code>st003</code></td><td>Scaffold &amp; Fall Protection</td><td class="num">1.5, 1.0</td><td class="num">0</td><td class="num"><em>footprint unknown, overlap not checked</em></td></tr><tr data-row="13"><td>13</td><td>crib</td><td><code>earthworks</code></td><td>Earthworks &amp; plant tool crib</td><td class="num">12.5, 1.0</td><td class="num">0</td><td class="num"><em>footprint unknown, overlap not checked</em></td></tr><tr data-row="14"><td>14</td><td>sign</td><td><code>placard</code></td><td>what a room requires of you, read at its door</td><td class="num">0.3, 0.3</td><td class="num">0</td><td class="num"><em>footprint unknown, overlap not checked</em></td></tr><tr data-row="15"><td>15</td><td>sign</td><td><code>hazard</code></td><td>a condition in force in a space, off the hazards its own conditions record already holds</td><td class="num">0.3, 7.5</td><td class="num">0</td><td class="num"><em>footprint unknown, overlap not checked</em></td></tr><tr data-row="16"><td>16</td><td>sign</td><td><code>station</code></td><td>a training station</td><td class="num">1.5, 0.3</td><td class="num">0</td><td class="num"><em>footprint unknown, overlap not checked</em></td></tr></tbody></table></details>
+</section>
+<section class="space" id="space-welding-bay" data-space="welding-bay">
+<h2>Welding bay <span class="status" data-status>declared, not yet walkable</span></h2>
+<p class="purpose">Three screened arc positions with the rod oven, stub bin and quench tank a run of practice beads needs, and a fire watch post at the back.</p>
+<p class="serves">Serves <a class="hall" href="trade_craft_3d.html?hall=welders" data-hall="welders">Welding Trades hall (3D)</a> · <a href="trade_craft_lessons.html" data-lessons>lessons</a>
+ · would stand in the <b>Practice Bays</b> (procedure strand)</p>
+<div class="cols">
+<div class="planwrap"><svg class="plan" viewBox="0 0 528.0 368.0" width="528.0" height="368.0" role="img" aria-label="Welding bay floor plan" data-plan="welding-bay" data-px-per-m="40"><rect class="floor" x="24" y="24" width="480.0" height="320.0" fill="#848d94" stroke="#566269" stroke-width="6" data-floor="bare-slab" data-wall="weld-screen"/><text class="dim" x="264.0" y="16" text-anchor="middle" data-dim="w">12.0 m</text><text class="dim" x="16" y="184.0" text-anchor="middle" transform="rotate(-90 16 184.0)" data-dim="d">8.0 m</text><g class="item" data-item="0" data-kind="prop" data-id="weld-screen"><rect x="74.0" y="179.6" width="60.0" height="8.8" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="104.0" y="187.0" text-anchor="middle">Welding screen</text><title>Welding screen (prop weld-screen) - 1.5 x 0.22 m</title></g><g class="item" data-item="1" data-kind="prop" data-id="weld-screen"><rect x="194.0" y="179.6" width="60.0" height="8.8" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="224.0" y="187.0" text-anchor="middle">Welding screen</text><title>Welding screen (prop weld-screen) - 1.5 x 0.22 m</title></g><g class="item" data-item="2" data-kind="prop" data-id="weld-screen"><rect x="314.0" y="179.6" width="60.0" height="8.8" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="344.0" y="187.0" text-anchor="middle">Welding screen</text><title>Welding screen (prop weld-screen) - 1.5 x 0.22 m</title></g><g class="item" data-item="3" data-kind="prop" data-id="practice-bench"><rect x="70.0" y="230.0" width="68.0" height="28.0" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="104.0" y="247.0" text-anchor="middle">Practice bench</text><title>Practice bench (prop practice-bench) - 1.7 x 0.7 m</title></g><g class="item" data-item="4" data-kind="prop" data-id="practice-bench"><rect x="190.0" y="230.0" width="68.0" height="28.0" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="224.0" y="247.0" text-anchor="middle">Practice bench</text><title>Practice bench (prop practice-bench) - 1.7 x 0.7 m</title></g><g class="item" data-item="5" data-kind="prop" data-id="practice-bench"><rect x="310.0" y="230.0" width="68.0" height="28.0" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="344.0" y="247.0" text-anchor="middle">Practice bench</text><title>Practice bench (prop practice-bench) - 1.7 x 0.7 m</title></g><g class="item" data-item="6" data-kind="prop" data-id="rod-oven"><rect x="433.6" y="294.8" width="20.8" height="18.4" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="444.0" y="307.0" text-anchor="middle">Electrode rod oven</text><title>Electrode rod oven (prop rod-oven) - 0.52 x 0.46 m</title></g><g class="item" data-item="7" data-kind="prop" data-id="stub-bin"><rect x="434.4" y="246.4" width="19.2" height="19.2" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="444.0" y="259.0" text-anchor="middle">Electrode stub bin</text><title>Electrode stub bin (prop stub-bin) - 0.48 x 0.48 m</title></g><g class="item" data-item="8" data-kind="prop" data-id="quench-tank"><rect x="430.4" y="186.4" width="27.2" height="27.2" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="444.0" y="203.0" text-anchor="middle">Quench tank</text><title>Quench tank (prop quench-tank) - 0.68 x 0.68 m</title></g><g class="item" data-item="9" data-kind="prop" data-id="fire-blanket-cabinet"><rect x="475.6" y="328.4" width="16.8" height="7.2" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="484.0" y="335.0" text-anchor="middle">Fire blanket cabinet</text><title>Fire blanket cabinet (prop fire-blanket-cabinet) - 0.42 x 0.18 m</title></g><g class="item" data-item="10" data-kind="prop" data-id="extinguisher-bracket"><rect x="39.2" y="327.6" width="9.6" height="8.8" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="44.0" y="335.0" text-anchor="middle">Extinguisher bracket</text><title>Extinguisher bracket (prop extinguisher-bracket) - 0.24 x 0.22 m</title></g><g class="item" data-item="11" data-kind="prop" data-id="ppe-station"><rect x="64.0" y="25.600000000000023" width="40.0" height="4.8" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="84.0" y="31.00000000000002" text-anchor="middle">PPE station</text><title>PPE station (prop ppe-station) - 1.0 x 0.12 m</title></g><g class="item" data-item="12" data-kind="prop" data-id="fire-watch-post"><rect x="256.8" y="76.80000000000001" width="14.4" height="14.4" fill="var(--steel)" fill-opacity="0.55" stroke="var(--steel)" stroke-width="1"/><text x="264.0" y="87.00000000000001" text-anchor="middle">Fire watch post</text><title>Fire watch post (prop fire-watch-post) - 0.36 x 0.36 m</title></g><g class="item" data-item="13" data-kind="furniture" data-id="chipping-hammer-bench"><rect x="415.0" y="89.0" width="58.0" height="30.0" fill="var(--mark)" fill-opacity="0.55" stroke="var(--mark)" stroke-width="1"/><text x="444.0" y="107.0" text-anchor="middle">Weld dressing bench</text><title>Weld dressing bench (furniture chipping-hammer-bench) - 1.45 x 0.75 m</title></g><g class="item unknown" data-item="14" data-kind="seat" data-id="weld-bead"><circle cx="264.0" cy="56.0" r="9" fill="none" stroke="var(--good)" stroke-width="1.5" stroke-dasharray="3 2"/><text x="264.0" y="76.0" text-anchor="middle">Weld Bead Run</text><title>Weld Bead Run (seat weld-bead) - footprint unknown, overlap not checked</title></g><g class="item unknown" data-item="15" data-kind="crib" data-id="structural"><circle cx="476.0" cy="56.0" r="9" fill="none" stroke="var(--mark)" stroke-width="1.5" stroke-dasharray="3 2"/><text x="476.0" y="76.0" text-anchor="middle">Structural tool crib</text><title>Structural tool crib (crib structural) - footprint unknown, overlap not checked</title></g><g class="item unknown" data-item="16" data-kind="sign" data-id="placard"><circle cx="36.0" cy="44.0" r="9" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="3 2"/><text x="36.0" y="64.0" text-anchor="middle">what a room requires of you, read at its door</text><title>what a room requires of you, read at its door (sign placard) - footprint unknown, overlap not checked</title></g><g class="item unknown" data-item="17" data-kind="sign" data-id="hazard"><circle cx="492.0" cy="44.0" r="9" fill="none" stroke="var(--muted)" stroke-width="1.5" stroke-dasharray="3 2"/><text x="492.0" y="64.0" text-anchor="middle">a condition in force in a space, off the hazards its own conditions record already holds</text><title>a condition in force in a space, off the hazards its own conditions record already holds (sign hazard) - footprint unknown, overlap not checked</title></g></svg></div>
+<div class="facts">
+<div class="figs">
+ <div class="fig"><b data-fig="area" data-space-fig="welding-bay">96.0</b><span>m² · 12.0 x 8.0 m</span></div>
+ <div class="fig"><b data-fig="items" data-space-fig="welding-bay">18</b><span>items</span></div>
+ <div class="fig"><b data-fig="tris" data-space-fig="welding-bay">1676</b><span>triangles (declared budgets)</span></div>
+ <div class="fig"><b data-fig="draw_calls" data-space-fig="welding-bay">6</b><span>draw calls (pooled by material)</span></div>
+ <div class="fig"><b data-fig="not_estimated" data-space-fig="welding-bay">4</b><span>items not estimated</span></div>
+</div>
+<p class="chips"><span class="chip" data-kind-count="crib">1 crib</span><span class="chip" data-kind-count="furniture">1 furniture</span><span class="chip" data-kind-count="prop">13 prop</span><span class="chip" data-kind-count="seat">1 seat</span><span class="chip" data-kind-count="sign">2 sign</span></p>
+<h3>Finishes</h3>
+<p class="swatches">
+ <span class="swatch"><i style="background:#848d94" data-swatch="floor" data-finish="bare-slab"></i>floor: Power-floated bare slab <code>bare-slab</code> (slab)</span>
+ <span class="swatch"><i style="background:#566269" data-swatch="wall" data-finish="weld-screen"></i>wall: Non-combustible screened bay <code>weld-screen</code> (screen)</span>
+</p>
+<h3>PPE required <small>(derived, never typed)</small></h3>
+<ul class="ppe" data-ppe-list="welding-bay"><li data-ppe="flame-resistant clothing">flame-resistant clothing</li><li data-ppe="gloves">gloves</li><li data-ppe="hard hat">hard hat</li><li data-ppe="hi-vis">hi-vis</li><li data-ppe="safety boots">safety boots</li><li data-ppe="safety glasses">safety glasses</li><li data-ppe="welding hood">welding hood</li></ul>
+<p class="hz">Hazards the finishes stand for: hot-work (floor bare-slab), hot-work (wall weld-screen)</p>
+<h3>Fits the room the 3D builder lays out</h3>
+<ul class="fits"><li>Practice Bays of welders: <span data-env="welders">21 x 9 m</span></li></ul>
+<h3>Not estimated</h3>
+<ul class="notest" data-not-estimated="welding-bay"><li>seat weld-bead: sims/registry/sims.json#sims declares no triangle figure</li><li>crib structural: tools/registry/toolcribs.json#cribs declares no triangle figure</li><li>sign placard: labels/registry/labels.json#kinds declares no triangle figure</li><li>sign hazard: labels/registry/labels.json#kinds declares no triangle figure</li></ul>
+</div>
+</div>
+<details><summary>Item schedule (18)</summary>
+<table class="sched"><thead><tr><th>#</th><th>kind</th><th>id</th><th>name</th><th>x, y (m)</th><th>rot</th><th>footprint (m)</th></tr></thead>
+<tbody><tr data-row="0"><td>0</td><td>prop</td><td><code>weld-screen</code></td><td>Welding screen</td><td class="num">2.0, 4.0</td><td class="num">0</td><td class="num">1.5 x 0.22</td></tr><tr data-row="1"><td>1</td><td>prop</td><td><code>weld-screen</code></td><td>Welding screen</td><td class="num">5.0, 4.0</td><td class="num">0</td><td class="num">1.5 x 0.22</td></tr><tr data-row="2"><td>2</td><td>prop</td><td><code>weld-screen</code></td><td>Welding screen</td><td class="num">8.0, 4.0</td><td class="num">0</td><td class="num">1.5 x 0.22</td></tr><tr data-row="3"><td>3</td><td>prop</td><td><code>practice-bench</code></td><td>Practice bench</td><td class="num">2.0, 2.5</td><td class="num">0</td><td class="num">1.7 x 0.7</td></tr><tr data-row="4"><td>4</td><td>prop</td><td><code>practice-bench</code></td><td>Practice bench</td><td class="num">5.0, 2.5</td><td class="num">0</td><td class="num">1.7 x 0.7</td></tr><tr data-row="5"><td>5</td><td>prop</td><td><code>practice-bench</code></td><td>Practice bench</td><td class="num">8.0, 2.5</td><td class="num">0</td><td class="num">1.7 x 0.7</td></tr><tr data-row="6"><td>6</td><td>prop</td><td><code>rod-oven</code></td><td>Electrode rod oven</td><td class="num">10.5, 1.0</td><td class="num">0</td><td class="num">0.52 x 0.46</td></tr><tr data-row="7"><td>7</td><td>prop</td><td><code>stub-bin</code></td><td>Electrode stub bin</td><td class="num">10.5, 2.2</td><td class="num">0</td><td class="num">0.48 x 0.48</td></tr><tr data-row="8"><td>8</td><td>prop</td><td><code>quench-tank</code></td><td>Quench tank</td><td class="num">10.5, 3.6</td><td class="num">0</td><td class="num">0.68 x 0.68</td></tr><tr data-row="9"><td>9</td><td>prop</td><td><code>fire-blanket-cabinet</code></td><td>Fire blanket cabinet</td><td class="num">11.5, 0.3</td><td class="num">0</td><td class="num">0.42 x 0.18</td></tr><tr data-row="10"><td>10</td><td>prop</td><td><code>extinguisher-bracket</code></td><td>Extinguisher bracket</td><td class="num">0.5, 0.3</td><td class="num">0</td><td class="num">0.24 x 0.22</td></tr><tr data-row="11"><td>11</td><td>prop</td><td><code>ppe-station</code></td><td>PPE station</td><td class="num">1.5, 7.9</td><td class="num">0</td><td class="num">1.0 x 0.12</td></tr><tr data-row="12"><td>12</td><td>prop</td><td><code>fire-watch-post</code></td><td>Fire watch post</td><td class="num">6.0, 6.5</td><td class="num">0</td><td class="num">0.36 x 0.36</td></tr><tr data-row="13"><td>13</td><td>furniture</td><td><code>chipping-hammer-bench</code></td><td>Weld dressing bench</td><td class="num">10.5, 6.0</td><td class="num">0</td><td class="num">1.45 x 0.75</td></tr><tr data-row="14"><td>14</td><td>seat</td><td><code>weld-bead</code></td><td>Weld Bead Run</td><td class="num">6.0, 7.2</td><td class="num">0</td><td class="num"><em>footprint unknown, overlap not checked</em></td></tr><tr data-row="15"><td>15</td><td>crib</td><td><code>structural</code></td><td>Structural tool crib</td><td class="num">11.3, 7.2</td><td class="num">0</td><td class="num"><em>footprint unknown, overlap not checked</em></td></tr><tr data-row="16"><td>16</td><td>sign</td><td><code>placard</code></td><td>what a room requires of you, read at its door</td><td class="num">0.3, 7.5</td><td class="num">0</td><td class="num"><em>footprint unknown, overlap not checked</em></td></tr><tr data-row="17"><td>17</td><td>sign</td><td><code>hazard</code></td><td>a condition in force in a space, off the hazards its own conditions record already holds</td><td class="num">11.7, 7.5</td><td class="num">0</td><td class="num"><em>footprint unknown, overlap not checked</em></td></tr></tbody></table></details>
+</section>
+<footer class="serves">Registry: <code>spaces/registry/spaces.json</code> · stamp <code data-stamp>3965c62e082f2af3</code> · authored <code data-authored-stamp>adf72518ba64f34d</code> · embedded verbatim below.</footer>
+<script type="application/json" id="spaces-registry">{
+ "authored_stamp": "adf72518ba64f34d",
+ "counts": {
+  "area_m2": 501.5,
+  "cost_estimated_items": 73,
+  "cost_not_estimated_items": 29,
+  "draw_calls": 26,
+  "footprint_known": 73,
+  "footprint_unknown": 29,
+  "hazards": 5,
+  "items": 102,
+  "items_by_kind": {
+   "crib": 5,
+   "furniture": 11,
+   "prop": 62,
+   "seat": 8,
+   "sign": 14,
+   "station": 2
+  },
+  "ppe_items": 12,
+  "spaces": 6,
+  "tris": 7260,
+  "unions_served": 7
+ },
+ "honesty": {
+  "composed_only_from": [
+   "labels/registry/labels.json#kinds",
+   "props/registry/props.json#crib_furniture.pieces",
+   "props/registry/props.json#props",
+   "sims/registry/sims.json#sims",
+   "stations/registry/stations.json#stations",
+   "tools/registry/toolcribs.json#cribs",
+   "surfaces/registry/finishes.json#catalogue",
+   "surfaces/registry/finishes.json#wall_catalogue"
+  ],
+  "cost": "a prediction summed from declared per-piece figures, not a measurement",
+  "envelope": "a space must fit the room of its strand in every serving hall, read from web/interiors.py plan_for exactly as web/build_3d.py lays it out (3 m per grid unit); the room is a functional programme, not a survey of a building",
+  "footprints": "an item with no size_m in its registry is recorded as footprint unknown and its overlap is not checked; nothing is assumed",
+  "not_stated": "no duration, price, accreditation or venue",
+  "ppe": "never typed: strand base PPE plus the PPE of every hazard the surfaces rules say the chosen floor and wall stand for in that strand's room; a hazard prop is admitted only when the finishes already derive a hazard it is keyed to",
+  "status": "declared, not yet walkable: an AUTHORED proposal composed from this bundle's own assets; nothing here is built into the 3D world, no dimension is a measurement of a real venue, and no duration, price or accreditation is stated"
+ },
+ "kinds": [
+  "prop",
+  "furniture",
+  "seat",
+  "station",
+  "crib",
+  "sign"
+ ],
+ "pack": "smartcitix-trade-craft-academy-spaces",
+ "pack_version": "3.2.0",
+ "ppe_items": [
+  "arc-flash face shield",
+  "chinstrap helmet",
+  "dielectric gloves",
+  "flame-resistant clothing",
+  "full-body harness",
+  "gloves",
+  "hard hat",
+  "hearing protection",
+  "hi-vis",
+  "safety boots",
+  "safety glasses",
+  "welding hood"
+ ],
+ "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
+ "provenance": {
+  "colours": "AUTHORED (surfaces catalogue, copied by id)",
+  "declarations": "AUTHORED",
+  "everything_else": "DERIVED"
+ },
+ "registry_of": {
+  "crib": "tools/registry/toolcribs.json#cribs",
+  "furniture": "props/registry/props.json#crib_furniture.pieces",
+  "prop": "props/registry/props.json#props",
+  "seat": "sims/registry/sims.json#sims",
+  "sign": "labels/registry/labels.json#kinds",
+  "station": "stations/registry/stations.json#stations"
+ },
+ "source_stamp": "3965c62e082f2af3",
+ "spaces": [
+  {
+   "cost": {
+    "draw_calls": 5,
+    "estimated_items": 12,
+    "how": "tris = sum of props tri_budget.tris over prop and furniture items; draw_calls = one per distinct material among pooled items, plus one per own-mesh item and one per distinct instanced id (props page_contract); seats, stations, cribs and signs declare no figure and are not estimated",
+    "instanced": 0,
+    "not_estimated": [
+     {
+      "i": 0,
+      "id": "crane-lift",
+      "kind": "seat",
+      "why": "sims/registry/sims.json#sims declares no triangle figure"
+     },
+     {
+      "i": 1,
+      "id": "overhead-crane",
+      "kind": "seat",
+      "why": "sims/registry/sims.json#sims declares no triangle figure"
+     },
+     {
+      "i": 2,
+      "id": "load-chart",
+      "kind": "seat",
+      "why": "sims/registry/sims.json#sims declares no triangle figure"
+     },
+     {
+      "i": 15,
+      "id": "structural",
+      "kind": "crib",
+      "why": "tools/registry/toolcribs.json#cribs declares no triangle figure"
+     },
+     {
+      "i": 16,
+      "id": "placard",
+      "kind": "sign",
+      "why": "labels/registry/labels.json#kinds declares no triangle figure"
+     },
+     {
+      "i": 17,
+      "id": "hazard",
+      "kind": "sign",
+      "why": "labels/registry/labels.json#kinds declares no triangle figure"
+     },
+     {
+      "i": 18,
+      "id": "station",
+      "kind": "sign",
+      "why": "labels/registry/labels.json#kinds declares no triangle figure"
+     }
+    ],
+    "own_mesh": 0,
+    "pooled_materials": [
+     "metal",
+     "paint",
+     "post",
+     "steel",
+     "wood"
+    ],
+    "provenance": "DERIVED",
+    "tris": 1196
+   },
+   "counts": {
+    "by_kind": {
+     "crib": 1,
+     "furniture": 0,
+     "prop": 12,
+     "seat": 3,
+     "sign": 3,
+     "station": 0
+    },
+    "footprint_known": 12,
+    "footprint_unknown": 7,
+    "items": 19
+   },
+   "fits_in": [
+    {
+     "d_m": 9,
+     "hall": "crane-ops",
+     "label": "Equipment Bay",
+     "strand": "machines",
+     "w_m": 18
+    },
+    {
+     "d_m": 9,
+     "hall": "riggers",
+     "label": "Equipment Bay",
+     "strand": "machines",
+     "w_m": 18
+    }
+   ],
+   "floor": {
+    "color": "#8e9aa0",
+    "id": "broom-concrete",
+    "name": "Broom-finish concrete",
+    "pattern": "broom"
+   },
+   "footprint_m": {
+    "area_m2": 112.0,
+    "d": 8.0,
+    "w": 14.0
+   },
+   "hazards": [
+    {
+     "finish": "broom-concrete",
+     "from": "floor",
+     "hazard": "mobile-plant",
+     "rule": "surfaces rules.hazard_rooms.mobile-plant.machines = broom-concrete"
+    },
+    {
+     "finish": "mesh-guard",
+     "from": "wall",
+     "hazard": "mobile-plant",
+     "rule": "surfaces rules.hazard_walls.mobile-plant.machines = mesh-guard"
+    }
+   ],
+   "id": "crane-sim-bay",
+   "items": [
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 0,
+     "id": "crane-lift",
+     "kind": "seat",
+     "name": "Tower Crane Lift",
+     "rect": [
+      4.0,
+      4.5,
+      4.0,
+      4.5
+     ],
+     "registry": "sims/registry/sims.json#sims",
+     "rotation": 0,
+     "x": 4.0,
+     "y": 4.5
+    },
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 1,
+     "id": "overhead-crane",
+     "kind": "seat",
+     "name": "Overhead Crane Shop Move",
+     "rect": [
+      10.0,
+      4.5,
+      10.0,
+      4.5
+     ],
+     "registry": "sims/registry/sims.json#sims",
+     "rotation": 0,
+     "x": 10.0,
+     "y": 4.5
+    },
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 2,
+     "id": "load-chart",
+     "kind": "seat",
+     "name": "Load Chart Judgment",
+     "rect": [
+      7.0,
+      1.5,
+      7.0,
+      1.5
+     ],
+     "registry": "sims/registry/sims.json#sims",
+     "rotation": 0,
+     "x": 7.0,
+     "y": 1.5
+    },
+    {
+     "footprint": {
+      "d": 0.06,
+      "from": "props/registry/props.json#props[checkout-board].size_m",
+      "w": 1.34
+     },
+     "i": 3,
+     "id": "checkout-board",
+     "kind": "prop",
+     "name": "Plant checkout board",
+     "rect": [
+      0.33,
+      7.87,
+      1.67,
+      7.93
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 1.0,
+     "y": 7.9
+    },
+    {
+     "footprint": {
+      "d": 0.22,
+      "from": "props/registry/props.json#props[bay-guard-rail].size_m",
+      "w": 2.0
+     },
+     "i": 4,
+     "id": "bay-guard-rail",
+     "kind": "prop",
+     "name": "Bay guard rail",
+     "rect": [
+      3.0,
+      7.39,
+      5.0,
+      7.61
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 4.0,
+     "y": 7.5
+    },
+    {
+     "footprint": {
+      "d": 0.22,
+      "from": "props/registry/props.json#props[bay-guard-rail].size_m",
+      "w": 2.0
+     },
+     "i": 5,
+     "id": "bay-guard-rail",
+     "kind": "prop",
+     "name": "Bay guard rail",
+     "rect": [
+      9.0,
+      7.39,
+      11.0,
+      7.61
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 10.0,
+     "y": 7.5
+    },
+    {
+     "footprint": {
+      "d": 0.6,
+      "from": "props/registry/props.json#props[machine-log-desk].size_m",
+      "w": 1.1
+     },
+     "i": 6,
+     "id": "machine-log-desk",
+     "kind": "prop",
+     "name": "Machine log desk",
+     "rect": [
+      6.45,
+      7.2,
+      7.55,
+      7.8
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 7.0,
+     "y": 7.5
+    },
+    {
+     "footprint": {
+      "d": 0.75,
+      "from": "props/registry/props.json#props[plant-service-bench].size_m",
+      "w": 1.8
+     },
+     "i": 7,
+     "id": "plant-service-bench",
+     "kind": "prop",
+     "name": "Plant service bench",
+     "rect": [
+      11.6,
+      7.025,
+      13.4,
+      7.775
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 12.5,
+     "y": 7.4
+    },
+    {
+     "footprint": {
+      "d": 0.6,
+      "from": "props/registry/props.json#props[chock-bin].size_m",
+      "w": 0.9
+     },
+     "i": 8,
+     "id": "chock-bin",
+     "kind": "prop",
+     "name": "Chock and block bin",
+     "rect": [
+      13.05,
+      3.7,
+      13.95,
+      4.3
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 13.5,
+     "y": 4.0
+    },
+    {
+     "footprint": {
+      "d": 0.44,
+      "from": "props/registry/props.json#props[learner-stool].size_m",
+      "w": 0.44
+     },
+     "i": 9,
+     "id": "learner-stool",
+     "kind": "prop",
+     "name": "Learner stool",
+     "rect": [
+      0.78,
+      0.78,
+      1.22,
+      1.22
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 1.0,
+     "y": 1.0
+    },
+    {
+     "footprint": {
+      "d": 0.44,
+      "from": "props/registry/props.json#props[learner-stool].size_m",
+      "w": 0.44
+     },
+     "i": 10,
+     "id": "learner-stool",
+     "kind": "prop",
+     "name": "Learner stool",
+     "rect": [
+      1.78,
+      0.78,
+      2.22,
+      1.22
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 2.0,
+     "y": 1.0
+    },
+    {
+     "footprint": {
+      "d": 0.44,
+      "from": "props/registry/props.json#props[learner-stool].size_m",
+      "w": 0.44
+     },
+     "i": 11,
+     "id": "learner-stool",
+     "kind": "prop",
+     "name": "Learner stool",
+     "rect": [
+      0.78,
+      1.78,
+      1.22,
+      2.22
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 1.0,
+     "y": 2.0
+    },
+    {
+     "footprint": {
+      "d": 0.44,
+      "from": "props/registry/props.json#props[learner-stool].size_m",
+      "w": 0.44
+     },
+     "i": 12,
+     "id": "learner-stool",
+     "kind": "prop",
+     "name": "Learner stool",
+     "rect": [
+      1.78,
+      1.78,
+      2.22,
+      2.22
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 2.0,
+     "y": 2.0
+    },
+    {
+     "footprint": {
+      "d": 1.0,
+      "from": "props/registry/props.json#props[ppe-station].size_m",
+      "w": 0.12
+     },
+     "i": 13,
+     "id": "ppe-station",
+     "kind": "prop",
+     "name": "PPE station",
+     "rect": [
+      13.84,
+      1.0,
+      13.96,
+      2.0
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 90,
+     "x": 13.9,
+     "y": 1.5
+    },
+    {
+     "footprint": {
+      "d": 0.5,
+      "from": "props/registry/props.json#props[plug-dispenser].size_m",
+      "w": 0.16
+     },
+     "i": 14,
+     "id": "plug-dispenser",
+     "kind": "prop",
+     "name": "Ear plug dispenser",
+     "rect": [
+      0.22,
+      4.75,
+      0.38,
+      5.25
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 90,
+     "x": 0.3,
+     "y": 5.0
+    },
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 15,
+     "id": "structural",
+     "kind": "crib",
+     "name": "Structural tool crib",
+     "rect": [
+      12.5,
+      1.0,
+      12.5,
+      1.0
+     ],
+     "registry": "tools/registry/toolcribs.json#cribs",
+     "rotation": 0,
+     "x": 12.5,
+     "y": 1.0
+    },
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 16,
+     "id": "placard",
+     "kind": "sign",
+     "name": "what a room requires of you, read at its door",
+     "rect": [
+      0.3,
+      0.3,
+      0.3,
+      0.3
+     ],
+     "registry": "labels/registry/labels.json#kinds",
+     "rotation": 0,
+     "x": 0.3,
+     "y": 0.3
+    },
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 17,
+     "id": "hazard",
+     "kind": "sign",
+     "name": "a condition in force in a space, off the hazards its own conditions record already holds",
+     "rect": [
+      0.3,
+      4.0,
+      0.3,
+      4.0
+     ],
+     "registry": "labels/registry/labels.json#kinds",
+     "rotation": 0,
+     "x": 0.3,
+     "y": 4.0
+    },
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 18,
+     "id": "station",
+     "kind": "sign",
+     "name": "a training station",
+     "rect": [
+      7.0,
+      2.6,
+      7.0,
+      2.6
+     ],
+     "registry": "labels/registry/labels.json#kinds",
+     "rotation": 0,
+     "x": 7.0,
+     "y": 2.6
+    }
+   ],
+   "ppe": {
+    "base_from": "surfaces base_conditions.machines.ppe",
+    "hazard_props_placed": [
+     {
+      "admitted_by": "props hazard_props: admitted when the PPE set is non-empty",
+      "i": 13,
+      "id": "ppe-station",
+      "keyed_to": [],
+      "ppe_any": [
+       "*any*"
+      ]
+     },
+     {
+      "admitted_by": "props hazard_props: keyed to ['explosives', 'mobile-plant', 'rotating-machinery', 'timber-trade'], ppe_any ['hearing protection']",
+      "i": 14,
+      "id": "plug-dispenser",
+      "keyed_to": [
+       "explosives",
+       "mobile-plant",
+       "rotating-machinery",
+       "timber-trade"
+      ],
+      "ppe_any": [
+       "hearing protection"
+      ]
+     }
+    ],
+    "hazards_from": [
+     "surfaces hazard_conditions.mobile-plant.ppe"
+    ],
+    "provenance": "DERIVED",
+    "required": [
+     "gloves",
+     "hard hat",
+     "hearing protection",
+     "hi-vis",
+     "safety boots",
+     "safety glasses"
+    ]
+   },
+   "provenance": {
+    "cost": "DERIVED",
+    "declaration": "AUTHORED",
+    "fits_in": "DERIVED",
+    "footprints": "DERIVED",
+    "names": "DERIVED",
+    "ppe": "DERIVED"
+   },
+   "purpose": "The tower crane, overhead crane and load chart seats behind two guard rails, with the checkout board and log desk a plant bay signs in and out on.",
+   "room_label": "Equipment Bay",
+   "source": "spaces/authored/crane-sim-bay.json",
+   "status": "declared, not yet walkable",
+   "strand": "machines",
+   "title": "Crane simulator bay",
+   "unions": [
+    {
+     "district": "structural",
+     "name": "Crane Operators",
+     "slug": "crane-ops"
+    },
+    {
+     "district": "structural",
+     "name": "Riggers & Signalpersons",
+     "slug": "riggers"
+    }
+   ],
+   "wall": {
+    "color": "#8a8452",
+    "id": "mesh-guard",
+    "name": "Guarded mesh partition",
+    "pattern": "mesh",
+    "wainscot": "#4a4626"
+   }
+  },
+  {
+   "cost": {
+    "draw_calls": 4,
+    "estimated_items": 12,
+    "how": "tris = sum of props tri_budget.tris over prop and furniture items; draw_calls = one per distinct material among pooled items, plus one per own-mesh item and one per distinct instanced id (props page_contract); seats, stations, cribs and signs declare no figure and are not estimated",
+    "instanced": 0,
+    "not_estimated": [
+     {
+      "i": 12,
+      "id": "systems",
+      "kind": "crib",
+      "why": "tools/registry/toolcribs.json#cribs declares no triangle figure"
+     },
+     {
+      "i": 13,
+      "id": "placard",
+      "kind": "sign",
+      "why": "labels/registry/labels.json#kinds declares no triangle figure"
+     },
+     {
+      "i": 14,
+      "id": "hazard",
+      "kind": "sign",
+      "why": "labels/registry/labels.json#kinds declares no triangle figure"
+     }
+    ],
+    "own_mesh": 0,
+    "pooled_materials": [
+     "metal",
+     "paint",
+     "post",
+     "steel"
+    ],
+    "provenance": "DERIVED",
+    "tris": 1092
+   },
+   "counts": {
+    "by_kind": {
+     "crib": 1,
+     "furniture": 2,
+     "prop": 10,
+     "seat": 0,
+     "sign": 2,
+     "station": 0
+    },
+    "footprint_known": 12,
+    "footprint_unknown": 3,
+    "items": 15
+   },
+   "fits_in": [
+    {
+     "d_m": 6,
+     "hall": "electricians",
+     "label": "Diagnostic Bench",
+     "strand": "troubleshooting",
+     "w_m": 21
+    }
+   ],
+   "floor": {
+    "color": "#2c333c",
+    "id": "rubber-dielectric",
+    "name": "Dielectric rubber matting",
+    "pattern": "smooth"
+   },
+   "footprint_m": {
+    "area_m2": 55.0,
+    "d": 5.5,
+    "w": 10.0
+   },
+   "hazards": [
+    {
+     "finish": "rubber-dielectric",
+     "from": "floor",
+     "hazard": "live-electrical",
+     "rule": "surfaces rules.hazard_rooms.live-electrical.troubleshooting = rubber-dielectric"
+    }
+   ],
+   "id": "electrical-lab",
+   "items": [
+    {
+     "footprint": {
+      "d": 0.35,
+      "from": "props/registry/props.json#props[rig-frame].size_m",
+      "w": 1.5
+     },
+     "i": 0,
+     "id": "rig-frame",
+     "kind": "prop",
+     "name": "Live rig frame",
+     "rect": [
+      1.25,
+      5.025,
+      2.75,
+      5.375
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 2.0,
+     "y": 5.2
+    },
+    {
+     "footprint": {
+      "d": 0.7,
+      "from": "props/registry/props.json#props[test-bench].size_m",
+      "w": 1.5
+     },
+     "i": 1,
+     "id": "test-bench",
+     "kind": "prop",
+     "name": "Fault-finding bench",
+     "rect": [
+      1.25,
+      2.65,
+      2.75,
+      3.35
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 2.0,
+     "y": 3.0
+    },
+    {
+     "footprint": {
+      "d": 0.7,
+      "from": "props/registry/props.json#props[test-bench].size_m",
+      "w": 1.5
+     },
+     "i": 2,
+     "id": "test-bench",
+     "kind": "prop",
+     "name": "Fault-finding bench",
+     "rect": [
+      4.25,
+      2.65,
+      5.75,
+      3.35
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 5.0,
+     "y": 3.0
+    },
+    {
+     "footprint": {
+      "d": 0.45,
+      "from": "props/registry/props.json#props[instrument-cabinet].size_m",
+      "w": 0.85
+     },
+     "i": 3,
+     "id": "instrument-cabinet",
+     "kind": "prop",
+     "name": "Instrument cabinet",
+     "rect": [
+      4.075,
+      4.975,
+      4.925,
+      5.425
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 4.5,
+     "y": 5.2
+    },
+    {
+     "footprint": {
+      "d": 0.08,
+      "from": "props/registry/props.json#props[fault-log-board].size_m",
+      "w": 0.86
+     },
+     "i": 4,
+     "id": "fault-log-board",
+     "kind": "prop",
+     "name": "Fault log board",
+     "rect": [
+      6.57,
+      5.36,
+      7.43,
+      5.44
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 7.0,
+     "y": 5.4
+    },
+    {
+     "footprint": {
+      "d": 0.36,
+      "from": "props/registry/props.json#props[isolation-post].size_m",
+      "w": 0.36
+     },
+     "i": 5,
+     "id": "isolation-post",
+     "kind": "prop",
+     "name": "Isolation post",
+     "rect": [
+      8.32,
+      4.82,
+      8.68,
+      5.18
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 8.5,
+     "y": 5.0
+    },
+    {
+     "footprint": {
+      "d": 1.0,
+      "from": "props/registry/props.json#props[rubber-goods-rack].size_m",
+      "w": 0.45
+     },
+     "i": 6,
+     "id": "rubber-goods-rack",
+     "kind": "prop",
+     "name": "Rubber goods rack",
+     "rect": [
+      9.275,
+      2.5,
+      9.725,
+      3.5
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 90,
+     "x": 9.5,
+     "y": 3.0
+    },
+    {
+     "footprint": {
+      "d": 1.0,
+      "from": "props/registry/props.json#props[lockout-station].size_m",
+      "w": 0.06
+     },
+     "i": 7,
+     "id": "lockout-station",
+     "kind": "prop",
+     "name": "Lockout station",
+     "rect": [
+      9.47,
+      0.5,
+      9.53,
+      1.5
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 90,
+     "x": 9.5,
+     "y": 1.0
+    },
+    {
+     "footprint": {
+      "d": 0.7,
+      "from": "props/registry/props.json#crib_furniture.pieces[multimeter-bench].size_m",
+      "w": 1.45
+     },
+     "i": 8,
+     "id": "multimeter-bench",
+     "kind": "furniture",
+     "name": "Meter test bench",
+     "rect": [
+      1.275,
+      0.65,
+      2.725,
+      1.35
+     ],
+     "registry": "props/registry/props.json#crib_furniture.pieces",
+     "rotation": 0,
+     "x": 2.0,
+     "y": 1.0
+    },
+    {
+     "footprint": {
+      "d": 0.36,
+      "from": "props/registry/props.json#crib_furniture.pieces[voltage-tester-post].size_m",
+      "w": 0.36
+     },
+     "i": 9,
+     "id": "voltage-tester-post",
+     "kind": "furniture",
+     "name": "Prove-dead post",
+     "rect": [
+      4.82,
+      0.82,
+      5.18,
+      1.18
+     ],
+     "registry": "props/registry/props.json#crib_furniture.pieces",
+     "rotation": 0,
+     "x": 5.0,
+     "y": 1.0
+    },
+    {
+     "footprint": {
+      "d": 0.44,
+      "from": "props/registry/props.json#props[learner-stool].size_m",
+      "w": 0.44
+     },
+     "i": 10,
+     "id": "learner-stool",
+     "kind": "prop",
+     "name": "Learner stool",
+     "rect": [
+      1.78,
+      1.88,
+      2.22,
+      2.32
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 2.0,
+     "y": 2.1
+    },
+    {
+     "footprint": {
+      "d": 0.44,
+      "from": "props/registry/props.json#props[learner-stool].size_m",
+      "w": 0.44
+     },
+     "i": 11,
+     "id": "learner-stool",
+     "kind": "prop",
+     "name": "Learner stool",
+     "rect": [
+      4.78,
+      1.88,
+      5.22,
+      2.32
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 5.0,
+     "y": 2.1
+    },
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 12,
+     "id": "systems",
+     "kind": "crib",
+     "name": "Building-systems tool crib",
+     "rect": [
+      8.0,
+      1.0,
+      8.0,
+      1.0
+     ],
+     "registry": "tools/registry/toolcribs.json#cribs",
+     "rotation": 0,
+     "x": 8.0,
+     "y": 1.0
+    },
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 13,
+     "id": "placard",
+     "kind": "sign",
+     "name": "what a room requires of you, read at its door",
+     "rect": [
+      0.3,
+      0.3,
+      0.3,
+      0.3
+     ],
+     "registry": "labels/registry/labels.json#kinds",
+     "rotation": 0,
+     "x": 0.3,
+     "y": 0.3
+    },
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 14,
+     "id": "hazard",
+     "kind": "sign",
+     "name": "a condition in force in a space, off the hazards its own conditions record already holds",
+     "rect": [
+      0.3,
+      4.5,
+      0.3,
+      4.5
+     ],
+     "registry": "labels/registry/labels.json#kinds",
+     "rotation": 0,
+     "x": 0.3,
+     "y": 4.5
+    }
+   ],
+   "ppe": {
+    "base_from": "surfaces base_conditions.troubleshooting.ppe",
+    "hazard_props_placed": [
+     {
+      "admitted_by": "props hazard_props: keyed to ['live-electrical'], ppe_any ['dielectric gloves']",
+      "i": 6,
+      "id": "rubber-goods-rack",
+      "keyed_to": [
+       "live-electrical"
+      ],
+      "ppe_any": [
+       "dielectric gloves"
+      ]
+     },
+     {
+      "admitted_by": "props hazard_props: keyed to ['live-electrical'], ppe_any ['arc-flash face shield']",
+      "i": 7,
+      "id": "lockout-station",
+      "keyed_to": [
+       "live-electrical"
+      ],
+      "ppe_any": [
+       "arc-flash face shield"
+      ]
+     }
+    ],
+    "hazards_from": [
+     "surfaces hazard_conditions.live-electrical.ppe"
+    ],
+    "provenance": "DERIVED",
+    "required": [
+     "arc-flash face shield",
+     "dielectric gloves",
+     "safety boots",
+     "safety glasses"
+    ]
+   },
+   "provenance": {
+    "cost": "DERIVED",
+    "declaration": "AUTHORED",
+    "fits_in": "DERIVED",
+    "footprints": "DERIVED",
+    "names": "DERIVED",
+    "ppe": "DERIVED"
+   },
+   "purpose": "Two fault-finding benches under a live rig frame, a prove-dead post and the rubber goods and lockout fixtures a live-electrical room hangs on its wall.",
+   "room_label": "Diagnostic Bench",
+   "source": "spaces/authored/electrical-lab.json",
+   "status": "declared, not yet walkable",
+   "strand": "troubleshooting",
+   "title": "Electrical lab",
+   "unions": [
+    {
+     "district": "systems",
+     "name": "Electrical Workers",
+     "slug": "electricians"
+    }
+   ],
+   "wall": {
+    "color": "#a8834f",
+    "id": "ply-lined",
+    "name": "Plywood-lined shop wall",
+    "pattern": "plywood",
+    "wainscot": "#6d4e2b"
+   }
+  },
+  {
+   "cost": {
+    "draw_calls": 2,
+    "estimated_items": 16,
+    "how": "tris = sum of props tri_budget.tris over prop and furniture items; draw_calls = one per distinct material among pooled items, plus one per own-mesh item and one per distinct instanced id (props page_contract); seats, stations, cribs and signs declare no figure and are not estimated",
+    "instanced": 0,
+    "not_estimated": [
+     {
+      "i": 16,
+      "id": "room",
+      "kind": "sign",
+      "why": "labels/registry/labels.json#kinds declares no triangle figure"
+     },
+     {
+      "i": 17,
+      "id": "placard",
+      "kind": "sign",
+      "why": "labels/registry/labels.json#kinds declares no triangle figure"
+     }
+    ],
+    "own_mesh": 0,
+    "pooled_materials": [
+     "paint",
+     "wood"
+    ],
+    "provenance": "DERIVED",
+    "tris": 1500
+   },
+   "counts": {
+    "by_kind": {
+     "crib": 0,
+     "furniture": 0,
+     "prop": 16,
+     "seat": 0,
+     "sign": 2,
+     "station": 0
+    },
+    "footprint_known": 16,
+    "footprint_unknown": 2,
+    "items": 18
+   },
+   "fits_in": [
+    {
+     "d_m": 6,
+     "hall": "carpenters",
+     "label": "Classroom",
+     "strand": "leadership",
+     "w_m": 27
+    },
+    {
+     "d_m": 6,
+     "hall": "electricians",
+     "label": "Classroom",
+     "strand": "leadership",
+     "w_m": 27
+    }
+   ],
+   "floor": {
+    "color": "#bfc9cf",
+    "id": "porcelain-tile",
+    "name": "Porcelain tile",
+    "pattern": "tile"
+   },
+   "footprint_m": {
+    "area_m2": 60.5,
+    "d": 5.5,
+    "w": 11.0
+   },
+   "hazards": [],
+   "id": "flipped-classroom",
+   "items": [
+    {
+     "footprint": {
+      "d": 0.44,
+      "from": "props/registry/props.json#props[instructor-lectern].size_m",
+      "w": 0.75
+     },
+     "i": 0,
+     "id": "instructor-lectern",
+     "kind": "prop",
+     "name": "Instructor lectern",
+     "rect": [
+      5.125,
+      4.78,
+      5.875,
+      5.22
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 5.5,
+     "y": 5.0
+    },
+    {
+     "footprint": {
+      "d": 0.6,
+      "from": "props/registry/props.json#props[exam-desk].size_m",
+      "w": 1.2
+     },
+     "i": 1,
+     "id": "exam-desk",
+     "kind": "prop",
+     "name": "Exam desk",
+     "rect": [
+      1.4,
+      2.9,
+      2.6,
+      3.5
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 2.0,
+     "y": 3.2
+    },
+    {
+     "footprint": {
+      "d": 0.6,
+      "from": "props/registry/props.json#props[exam-desk].size_m",
+      "w": 1.2
+     },
+     "i": 2,
+     "id": "exam-desk",
+     "kind": "prop",
+     "name": "Exam desk",
+     "rect": [
+      4.9,
+      2.9,
+      6.1,
+      3.5
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 5.5,
+     "y": 3.2
+    },
+    {
+     "footprint": {
+      "d": 0.6,
+      "from": "props/registry/props.json#props[exam-desk].size_m",
+      "w": 1.2
+     },
+     "i": 3,
+     "id": "exam-desk",
+     "kind": "prop",
+     "name": "Exam desk",
+     "rect": [
+      8.4,
+      2.9,
+      9.6,
+      3.5
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 9.0,
+     "y": 3.2
+    },
+    {
+     "footprint": {
+      "d": 0.6,
+      "from": "props/registry/props.json#props[exam-desk].size_m",
+      "w": 1.2
+     },
+     "i": 4,
+     "id": "exam-desk",
+     "kind": "prop",
+     "name": "Exam desk",
+     "rect": [
+      1.4,
+      1.1,
+      2.6,
+      1.7
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 2.0,
+     "y": 1.4
+    },
+    {
+     "footprint": {
+      "d": 0.6,
+      "from": "props/registry/props.json#props[exam-desk].size_m",
+      "w": 1.2
+     },
+     "i": 5,
+     "id": "exam-desk",
+     "kind": "prop",
+     "name": "Exam desk",
+     "rect": [
+      4.9,
+      1.1,
+      6.1,
+      1.7
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 5.5,
+     "y": 1.4
+    },
+    {
+     "footprint": {
+      "d": 0.6,
+      "from": "props/registry/props.json#props[exam-desk].size_m",
+      "w": 1.2
+     },
+     "i": 6,
+     "id": "exam-desk",
+     "kind": "prop",
+     "name": "Exam desk",
+     "rect": [
+      8.4,
+      1.1,
+      9.6,
+      1.7
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 9.0,
+     "y": 1.4
+    },
+    {
+     "footprint": {
+      "d": 0.4,
+      "from": "props/registry/props.json#props[classroom-stool].size_m",
+      "w": 0.4
+     },
+     "i": 7,
+     "id": "classroom-stool",
+     "kind": "prop",
+     "name": "Classroom stool",
+     "rect": [
+      1.8,
+      2.2,
+      2.2,
+      2.6
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 2.0,
+     "y": 2.4
+    },
+    {
+     "footprint": {
+      "d": 0.4,
+      "from": "props/registry/props.json#props[classroom-stool].size_m",
+      "w": 0.4
+     },
+     "i": 8,
+     "id": "classroom-stool",
+     "kind": "prop",
+     "name": "Classroom stool",
+     "rect": [
+      5.3,
+      2.2,
+      5.7,
+      2.6
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 5.5,
+     "y": 2.4
+    },
+    {
+     "footprint": {
+      "d": 0.4,
+      "from": "props/registry/props.json#props[classroom-stool].size_m",
+      "w": 0.4
+     },
+     "i": 9,
+     "id": "classroom-stool",
+     "kind": "prop",
+     "name": "Classroom stool",
+     "rect": [
+      8.8,
+      2.2,
+      9.2,
+      2.6
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 9.0,
+     "y": 2.4
+    },
+    {
+     "footprint": {
+      "d": 0.4,
+      "from": "props/registry/props.json#props[classroom-stool].size_m",
+      "w": 0.4
+     },
+     "i": 10,
+     "id": "classroom-stool",
+     "kind": "prop",
+     "name": "Classroom stool",
+     "rect": [
+      1.8,
+      0.4,
+      2.2,
+      0.8
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 2.0,
+     "y": 0.6
+    },
+    {
+     "footprint": {
+      "d": 0.4,
+      "from": "props/registry/props.json#props[classroom-stool].size_m",
+      "w": 0.4
+     },
+     "i": 11,
+     "id": "classroom-stool",
+     "kind": "prop",
+     "name": "Classroom stool",
+     "rect": [
+      5.3,
+      0.4,
+      5.7,
+      0.8
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 5.5,
+     "y": 0.6
+    },
+    {
+     "footprint": {
+      "d": 0.4,
+      "from": "props/registry/props.json#props[classroom-stool].size_m",
+      "w": 0.4
+     },
+     "i": 12,
+     "id": "classroom-stool",
+     "kind": "prop",
+     "name": "Classroom stool",
+     "rect": [
+      8.8,
+      0.4,
+      9.2,
+      0.8
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 9.0,
+     "y": 0.6
+    },
+    {
+     "footprint": {
+      "d": 0.08,
+      "from": "props/registry/props.json#props[progress-board].size_m",
+      "w": 0.86
+     },
+     "i": 13,
+     "id": "progress-board",
+     "kind": "prop",
+     "name": "Progress board",
+     "rect": [
+      0.57,
+      5.36,
+      1.43,
+      5.44
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 1.0,
+     "y": 5.4
+    },
+    {
+     "footprint": {
+      "d": 0.28,
+      "from": "props/registry/props.json#props[reference-shelf].size_m",
+      "w": 0.86
+     },
+     "i": 14,
+     "id": "reference-shelf",
+     "kind": "prop",
+     "name": "Reference shelf",
+     "rect": [
+      9.57,
+      5.16,
+      10.43,
+      5.44
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 10.0,
+     "y": 5.3
+    },
+    {
+     "footprint": {
+      "d": 0.44,
+      "from": "props/registry/props.json#props[drawing-easel].size_m",
+      "w": 0.9
+     },
+     "i": 15,
+     "id": "drawing-easel",
+     "kind": "prop",
+     "name": "Drawing easel",
+     "rect": [
+      8.05,
+      4.78,
+      8.95,
+      5.22
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 8.5,
+     "y": 5.0
+    },
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 16,
+     "id": "room",
+     "kind": "sign",
+     "name": "a room inside a hall",
+     "rect": [
+      0.3,
+      5.2,
+      0.3,
+      5.2
+     ],
+     "registry": "labels/registry/labels.json#kinds",
+     "rotation": 0,
+     "x": 0.3,
+     "y": 5.2
+    },
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 17,
+     "id": "placard",
+     "kind": "sign",
+     "name": "what a room requires of you, read at its door",
+     "rect": [
+      0.3,
+      0.3,
+      0.3,
+      0.3
+     ],
+     "registry": "labels/registry/labels.json#kinds",
+     "rotation": 0,
+     "x": 0.3,
+     "y": 0.3
+    }
+   ],
+   "ppe": {
+    "base_from": "surfaces base_conditions.leadership.ppe",
+    "hazard_props_placed": [],
+    "hazards_from": [],
+    "provenance": "DERIVED",
+    "required": []
+   },
+   "provenance": {
+    "cost": "DERIVED",
+    "declaration": "AUTHORED",
+    "fits_in": "DERIVED",
+    "footprints": "DERIVED",
+    "names": "DERIVED",
+    "ppe": "DERIVED"
+   },
+   "purpose": "Six desks in two rows facing a lectern, an easel and a progress board, so the reading is done before the room and the room is spent on the questions.",
+   "room_label": "Classroom",
+   "source": "spaces/authored/flipped-classroom.json",
+   "status": "declared, not yet walkable",
+   "strand": "leadership",
+   "title": "Flipped classroom",
+   "unions": [
+    {
+     "district": "envelope",
+     "name": "Carpenters",
+     "slug": "carpenters"
+    },
+    {
+     "district": "systems",
+     "name": "Electrical Workers",
+     "slug": "electricians"
+    }
+   ],
+   "wall": {
+    "color": "#dce4e8",
+    "id": "whiteboard-panel",
+    "name": "Full-height marker panel",
+    "pattern": "board",
+    "wainscot": "#6f818e"
+   }
+  },
+  {
+   "cost": {
+    "draw_calls": 4,
+    "estimated_items": 9,
+    "how": "tris = sum of props tri_budget.tris over prop and furniture items; draw_calls = one per distinct material among pooled items, plus one per own-mesh item and one per distinct instanced id (props page_contract); seats, stations, cribs and signs declare no figure and are not estimated",
+    "instanced": 0,
+    "not_estimated": [
+     {
+      "i": 9,
+      "id": "rigging-signals",
+      "kind": "seat",
+      "why": "sims/registry/sims.json#sims declares no triangle figure"
+     },
+     {
+      "i": 10,
+      "id": "load-chart",
+      "kind": "seat",
+      "why": "sims/registry/sims.json#sims declares no triangle figure"
+     },
+     {
+      "i": 11,
+      "id": "structural",
+      "kind": "crib",
+      "why": "tools/registry/toolcribs.json#cribs declares no triangle figure"
+     },
+     {
+      "i": 12,
+      "id": "st005",
+      "kind": "station",
+      "why": "stations/registry/stations.json#stations declares no triangle figure"
+     },
+     {
+      "i": 13,
+      "id": "placard",
+      "kind": "sign",
+      "why": "labels/registry/labels.json#kinds declares no triangle figure"
+     },
+     {
+      "i": 14,
+      "id": "hazard",
+      "kind": "sign",
+      "why": "labels/registry/labels.json#kinds declares no triangle figure"
+     }
+    ],
+    "own_mesh": 0,
+    "pooled_materials": [
+     "metal",
+     "paint",
+     "steel",
+     "wood"
+    ],
+    "provenance": "DERIVED",
+    "tris": 884
+   },
+   "counts": {
+    "by_kind": {
+     "crib": 1,
+     "furniture": 6,
+     "prop": 3,
+     "seat": 2,
+     "sign": 2,
+     "station": 1
+    },
+    "footprint_known": 9,
+    "footprint_unknown": 6,
+    "items": 15
+   },
+   "fits_in": [
+    {
+     "d_m": 6,
+     "hall": "riggers",
+     "label": "Materials Store",
+     "strand": "materials",
+     "w_m": 18
+    },
+    {
+     "d_m": 6,
+     "hall": "ironworkers",
+     "label": "Materials Store",
+     "strand": "materials",
+     "w_m": 18
+    }
+   ],
+   "floor": {
+    "color": "#59656f",
+    "id": "steel-plate",
+    "name": "Sealed steel plate deck",
+    "pattern": "plate"
+   },
+   "footprint_m": {
+    "area_m2": 66.0,
+    "d": 5.5,
+    "w": 12.0
+   },
+   "hazards": [
+    {
+     "finish": "steel-plate",
+     "from": "floor",
+     "hazard": "suspended-load",
+     "rule": "surfaces rules.hazard_rooms.suspended-load.materials = steel-plate"
+    },
+    {
+     "finish": "mesh-guard",
+     "from": "wall",
+     "hazard": "suspended-load",
+     "rule": "surfaces rules.hazard_walls.suspended-load.materials = mesh-guard"
+    }
+   ],
+   "id": "rigging-yard",
+   "items": [
+    {
+     "footprint": {
+      "d": 1.0,
+      "from": "props/registry/props.json#crib_furniture.pieces[shackle-table].size_m",
+      "w": 1.45
+     },
+     "i": 0,
+     "id": "shackle-table",
+     "kind": "furniture",
+     "name": "Rigging lay-down table",
+     "rect": [
+      1.275,
+      0.7,
+      2.725,
+      1.7
+     ],
+     "registry": "props/registry/props.json#crib_furniture.pieces",
+     "rotation": 0,
+     "x": 2.0,
+     "y": 1.2
+    },
+    {
+     "footprint": {
+      "d": 0.4,
+      "from": "props/registry/props.json#crib_furniture.pieces[wire-sling-rail].size_m",
+      "w": 1.4
+     },
+     "i": 1,
+     "id": "wire-sling-rail",
+     "kind": "furniture",
+     "name": "Sling inspection rail",
+     "rect": [
+      1.3,
+      5.0,
+      2.7,
+      5.4
+     ],
+     "registry": "props/registry/props.json#crib_furniture.pieces",
+     "rotation": 0,
+     "x": 2.0,
+     "y": 5.2
+    },
+    {
+     "footprint": {
+      "d": 0.68,
+      "from": "props/registry/props.json#crib_furniture.pieces[wire-sling-tree].size_m",
+      "w": 0.68
+     },
+     "i": 2,
+     "id": "wire-sling-tree",
+     "kind": "furniture",
+     "name": "Sling storage tree",
+     "rect": [
+      3.66,
+      4.66,
+      4.34,
+      5.34
+     ],
+     "registry": "props/registry/props.json#crib_furniture.pieces",
+     "rotation": 0,
+     "x": 4.0,
+     "y": 5.0
+    },
+    {
+     "footprint": {
+      "d": 0.4,
+      "from": "props/registry/props.json#crib_furniture.pieces[lever-hoist-frame].size_m",
+      "w": 1.4
+     },
+     "i": 3,
+     "id": "lever-hoist-frame",
+     "kind": "furniture",
+     "name": "Hoist proof frame",
+     "rect": [
+      5.3,
+      5.0,
+      6.7,
+      5.4
+     ],
+     "registry": "props/registry/props.json#crib_furniture.pieces",
+     "rotation": 0,
+     "x": 6.0,
+     "y": 5.2
+    },
+    {
+     "footprint": {
+      "d": 0.5,
+      "from": "props/registry/props.json#crib_furniture.pieces[lever-hoist-rack].size_m",
+      "w": 1.2
+     },
+     "i": 4,
+     "id": "lever-hoist-rack",
+     "kind": "furniture",
+     "name": "Chain hoist rack",
+     "rect": [
+      7.4,
+      4.9,
+      8.6,
+      5.4
+     ],
+     "registry": "props/registry/props.json#crib_furniture.pieces",
+     "rotation": 0,
+     "x": 8.0,
+     "y": 5.15
+    },
+    {
+     "footprint": {
+      "d": 0.5,
+      "from": "props/registry/props.json#crib_furniture.pieces[beam-clamp-beam].size_m",
+      "w": 1.45
+     },
+     "i": 5,
+     "id": "beam-clamp-beam",
+     "kind": "furniture",
+     "name": "Trial flange beam",
+     "rect": [
+      4.275,
+      0.95,
+      5.725,
+      1.45
+     ],
+     "registry": "props/registry/props.json#crib_furniture.pieces",
+     "rotation": 0,
+     "x": 5.0,
+     "y": 1.2
+    },
+    {
+     "footprint": {
+      "d": 0.7,
+      "from": "props/registry/props.json#props[stock-rack].size_m",
+      "w": 1.8
+     },
+     "i": 6,
+     "id": "stock-rack",
+     "kind": "prop",
+     "name": "Stock rack",
+     "rect": [
+      9.6,
+      4.65,
+      11.4,
+      5.35
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 10.5,
+     "y": 5.0
+    },
+    {
+     "footprint": {
+      "d": 0.48,
+      "from": "props/registry/props.json#props[bar-stock-cradle].size_m",
+      "w": 1.25
+     },
+     "i": 7,
+     "id": "bar-stock-cradle",
+     "kind": "prop",
+     "name": "Bar stock cradle",
+     "rect": [
+      7.375,
+      0.96,
+      8.625,
+      1.44
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 8.0,
+     "y": 1.2
+    },
+    {
+     "footprint": {
+      "d": 1.0,
+      "from": "props/registry/props.json#props[ppe-station].size_m",
+      "w": 0.12
+     },
+     "i": 8,
+     "id": "ppe-station",
+     "kind": "prop",
+     "name": "PPE station",
+     "rect": [
+      11.44,
+      2.0,
+      11.56,
+      3.0
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 90,
+     "x": 11.5,
+     "y": 2.5
+    },
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 9,
+     "id": "rigging-signals",
+     "kind": "seat",
+     "name": "Rigging Signal Call",
+     "rect": [
+      5.0,
+      3.0,
+      5.0,
+      3.0
+     ],
+     "registry": "sims/registry/sims.json#sims",
+     "rotation": 0,
+     "x": 5.0,
+     "y": 3.0
+    },
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 10,
+     "id": "load-chart",
+     "kind": "seat",
+     "name": "Load Chart Judgment",
+     "rect": [
+      9.0,
+      3.0,
+      9.0,
+      3.0
+     ],
+     "registry": "sims/registry/sims.json#sims",
+     "rotation": 0,
+     "x": 9.0,
+     "y": 3.0
+    },
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 11,
+     "id": "structural",
+     "kind": "crib",
+     "name": "Structural tool crib",
+     "rect": [
+      11.3,
+      0.6,
+      11.3,
+      0.6
+     ],
+     "registry": "tools/registry/toolcribs.json#cribs",
+     "rotation": 0,
+     "x": 11.3,
+     "y": 0.6
+    },
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 12,
+     "id": "st005",
+     "kind": "station",
+     "name": "Rigging & Material Handling",
+     "rect": [
+      0.6,
+      1.2,
+      0.6,
+      1.2
+     ],
+     "registry": "stations/registry/stations.json#stations",
+     "rotation": 0,
+     "x": 0.6,
+     "y": 1.2
+    },
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 13,
+     "id": "placard",
+     "kind": "sign",
+     "name": "what a room requires of you, read at its door",
+     "rect": [
+      0.3,
+      3.0,
+      0.3,
+      3.0
+     ],
+     "registry": "labels/registry/labels.json#kinds",
+     "rotation": 0,
+     "x": 0.3,
+     "y": 3.0
+    },
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 14,
+     "id": "hazard",
+     "kind": "sign",
+     "name": "a condition in force in a space, off the hazards its own conditions record already holds",
+     "rect": [
+      0.3,
+      4.5,
+      0.3,
+      4.5
+     ],
+     "registry": "labels/registry/labels.json#kinds",
+     "rotation": 0,
+     "x": 0.3,
+     "y": 4.5
+    }
+   ],
+   "ppe": {
+    "base_from": "surfaces base_conditions.materials.ppe",
+    "hazard_props_placed": [
+     {
+      "admitted_by": "props hazard_props: admitted when the PPE set is non-empty",
+      "i": 8,
+      "id": "ppe-station",
+      "keyed_to": [],
+      "ppe_any": [
+       "*any*"
+      ]
+     }
+    ],
+    "hazards_from": [
+     "surfaces hazard_conditions.suspended-load.ppe"
+    ],
+    "provenance": "DERIVED",
+    "required": [
+     "gloves",
+     "hard hat",
+     "hi-vis",
+     "safety boots"
+    ]
+   },
+   "provenance": {
+    "cost": "DERIVED",
+    "declaration": "AUTHORED",
+    "fits_in": "DERIVED",
+    "footprints": "DERIVED",
+    "names": "DERIVED",
+    "ppe": "DERIVED"
+   },
+   "purpose": "A lay-down table, sling and hoist inspection rails and a trial flange beam, with the two rigging seats standing in the open floor between them.",
+   "room_label": "Materials Store",
+   "source": "spaces/authored/rigging-yard.json",
+   "status": "declared, not yet walkable",
+   "strand": "materials",
+   "title": "Rigging yard",
+   "unions": [
+    {
+     "district": "structural",
+     "name": "Riggers & Signalpersons",
+     "slug": "riggers"
+    },
+    {
+     "district": "structural",
+     "name": "Ironworkers",
+     "slug": "ironworkers"
+    }
+   ],
+   "wall": {
+    "color": "#8a8452",
+    "id": "mesh-guard",
+    "name": "Guarded mesh partition",
+    "pattern": "mesh",
+    "wainscot": "#4a4626"
+   }
+  },
+  {
+   "cost": {
+    "draw_calls": 5,
+    "estimated_items": 10,
+    "how": "tris = sum of props tri_budget.tris over prop and furniture items; draw_calls = one per distinct material among pooled items, plus one per own-mesh item and one per distinct instanced id (props page_contract); seats, stations, cribs and signs declare no figure and are not estimated",
+    "instanced": 0,
+    "not_estimated": [
+     {
+      "i": 10,
+      "id": "scaffold-bay",
+      "kind": "seat",
+      "why": "sims/registry/sims.json#sims declares no triangle figure"
+     },
+     {
+      "i": 11,
+      "id": "boom-lift",
+      "kind": "seat",
+      "why": "sims/registry/sims.json#sims declares no triangle figure"
+     },
+     {
+      "i": 12,
+      "id": "st003",
+      "kind": "station",
+      "why": "stations/registry/stations.json#stations declares no triangle figure"
+     },
+     {
+      "i": 13,
+      "id": "earthworks",
+      "kind": "crib",
+      "why": "tools/registry/toolcribs.json#cribs declares no triangle figure"
+     },
+     {
+      "i": 14,
+      "id": "placard",
+      "kind": "sign",
+      "why": "labels/registry/labels.json#kinds declares no triangle figure"
+     },
+     {
+      "i": 15,
+      "id": "hazard",
+      "kind": "sign",
+      "why": "labels/registry/labels.json#kinds declares no triangle figure"
+     },
+     {
+      "i": 16,
+      "id": "station",
+      "kind": "sign",
+      "why": "labels/registry/labels.json#kinds declares no triangle figure"
+     }
+    ],
+    "own_mesh": 0,
+    "pooled_materials": [
+     "metal",
+     "paint",
+     "part",
+     "steel",
+     "wood"
+    ],
+    "provenance": "DERIVED",
+    "tris": 912
+   },
+   "counts": {
+    "by_kind": {
+     "crib": 1,
+     "furniture": 2,
+     "prop": 8,
+     "seat": 2,
+     "sign": 3,
+     "station": 1
+    },
+    "footprint_known": 10,
+    "footprint_unknown": 7,
+    "items": 17
+   },
+   "fits_in": [
+    {
+     "d_m": 9,
+     "hall": "scaffold",
+     "label": "Practice Bays",
+     "strand": "procedure",
+     "w_m": 36
+    },
+    {
+     "d_m": 9,
+     "hall": "carpenters",
+     "label": "Practice Bays",
+     "strand": "procedure",
+     "w_m": 21
+    }
+   ],
+   "floor": {
+    "color": "#3f4e63",
+    "id": "impact-mat",
+    "name": "Impact-absorbing mat",
+    "pattern": "smooth"
+   },
+   "footprint_m": {
+    "area_m2": 112.0,
+    "d": 8.0,
+    "w": 14.0
+   },
+   "hazards": [
+    {
+     "finish": "impact-mat",
+     "from": "floor",
+     "hazard": "work-at-height",
+     "rule": "surfaces rules.hazard_rooms.work-at-height.procedure = impact-mat"
+    },
+    {
+     "finish": "impact-block",
+     "from": "wall",
+     "hazard": "work-at-height",
+     "rule": "surfaces rules.hazard_walls.work-at-height.procedure = impact-block"
+    }
+   ],
+   "id": "scaffold-court",
+   "items": [
+    {
+     "footprint": {
+      "d": 0.4,
+      "from": "props/registry/props.json#props[harness-rail].size_m",
+      "w": 1.4
+     },
+     "i": 0,
+     "id": "harness-rail",
+     "kind": "prop",
+     "name": "Harness inspection rail",
+     "rect": [
+      1.3,
+      7.5,
+      2.7,
+      7.9
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 2.0,
+     "y": 7.7
+    },
+    {
+     "footprint": {
+      "d": 0.45,
+      "from": "props/registry/props.json#props[lanyard-locker].size_m",
+      "w": 1.0
+     },
+     "i": 1,
+     "id": "lanyard-locker",
+     "kind": "prop",
+     "name": "Lanyard locker",
+     "rect": [
+      3.5,
+      7.475,
+      4.5,
+      7.925
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 4.0,
+     "y": 7.7
+    },
+    {
+     "footprint": {
+      "d": 0.3,
+      "from": "props/registry/props.json#props[helmet-shelf].size_m",
+      "w": 1.0
+     },
+     "i": 2,
+     "id": "helmet-shelf",
+     "kind": "prop",
+     "name": "Helmet shelf",
+     "rect": [
+      5.5,
+      7.65,
+      6.5,
+      7.95
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 6.0,
+     "y": 7.8
+    },
+    {
+     "footprint": {
+      "d": 0.55,
+      "from": "props/registry/props.json#props[edge-stack].size_m",
+      "w": 1.2
+     },
+     "i": 3,
+     "id": "edge-stack",
+     "kind": "prop",
+     "name": "Edge protection stack",
+     "rect": [
+      7.9,
+      7.325,
+      9.1,
+      7.875
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 8.5,
+     "y": 7.6
+    },
+    {
+     "footprint": {
+      "d": 0.4,
+      "from": "props/registry/props.json#crib_furniture.pieces[rope-grab-frame].size_m",
+      "w": 1.4
+     },
+     "i": 4,
+     "id": "rope-grab-frame",
+     "kind": "furniture",
+     "name": "Fall arrest practice frame",
+     "rect": [
+      10.3,
+      7.5,
+      11.7,
+      7.9
+     ],
+     "registry": "props/registry/props.json#crib_furniture.pieces",
+     "rotation": 0,
+     "x": 11.0,
+     "y": 7.7
+    },
+    {
+     "footprint": {
+      "d": 0.45,
+      "from": "props/registry/props.json#crib_furniture.pieces[rope-grab-rack].size_m",
+      "w": 1.1
+     },
+     "i": 5,
+     "id": "rope-grab-rack",
+     "kind": "furniture",
+     "name": "Rope and grab rack",
+     "rect": [
+      12.45,
+      7.475,
+      13.55,
+      7.925
+     ],
+     "registry": "props/registry/props.json#crib_furniture.pieces",
+     "rotation": 0,
+     "x": 13.0,
+     "y": 7.7
+    },
+    {
+     "footprint": {
+      "d": 0.5,
+      "from": "props/registry/props.json#props[work-trestle].size_m",
+      "w": 1.8
+     },
+     "i": 6,
+     "id": "work-trestle",
+     "kind": "prop",
+     "name": "Work trestle",
+     "rect": [
+      2.1,
+      2.75,
+      3.9,
+      3.25
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 3.0,
+     "y": 3.0
+    },
+    {
+     "footprint": {
+      "d": 0.5,
+      "from": "props/registry/props.json#props[work-trestle].size_m",
+      "w": 1.8
+     },
+     "i": 7,
+     "id": "work-trestle",
+     "kind": "prop",
+     "name": "Work trestle",
+     "rect": [
+      6.1,
+      2.75,
+      7.9,
+      3.25
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 7.0,
+     "y": 3.0
+    },
+    {
+     "footprint": {
+      "d": 1.3,
+      "from": "props/registry/props.json#props[task-board].size_m",
+      "w": 0.08
+     },
+     "i": 8,
+     "id": "task-board",
+     "kind": "prop",
+     "name": "Task board",
+     "rect": [
+      0.46,
+      3.35,
+      0.54,
+      4.65
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 90,
+     "x": 0.5,
+     "y": 4.0
+    },
+    {
+     "footprint": {
+      "d": 1.0,
+      "from": "props/registry/props.json#props[ppe-station].size_m",
+      "w": 0.12
+     },
+     "i": 9,
+     "id": "ppe-station",
+     "kind": "prop",
+     "name": "PPE station",
+     "rect": [
+      13.84,
+      3.5,
+      13.96,
+      4.5
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 90,
+     "x": 13.9,
+     "y": 4.0
+    },
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 10,
+     "id": "scaffold-bay",
+     "kind": "seat",
+     "name": "Scaffold Bay Build",
+     "rect": [
+      5.0,
+      5.5,
+      5.0,
+      5.5
+     ],
+     "registry": "sims/registry/sims.json#sims",
+     "rotation": 0,
+     "x": 5.0,
+     "y": 5.5
+    },
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 11,
+     "id": "boom-lift",
+     "kind": "seat",
+     "name": "Boom Lift Basket Work",
+     "rect": [
+      10.0,
+      4.0,
+      10.0,
+      4.0
+     ],
+     "registry": "sims/registry/sims.json#sims",
+     "rotation": 0,
+     "x": 10.0,
+     "y": 4.0
+    },
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 12,
+     "id": "st003",
+     "kind": "station",
+     "name": "Scaffold & Fall Protection",
+     "rect": [
+      1.5,
+      1.0,
+      1.5,
+      1.0
+     ],
+     "registry": "stations/registry/stations.json#stations",
+     "rotation": 0,
+     "x": 1.5,
+     "y": 1.0
+    },
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 13,
+     "id": "earthworks",
+     "kind": "crib",
+     "name": "Earthworks & plant tool crib",
+     "rect": [
+      12.5,
+      1.0,
+      12.5,
+      1.0
+     ],
+     "registry": "tools/registry/toolcribs.json#cribs",
+     "rotation": 0,
+     "x": 12.5,
+     "y": 1.0
+    },
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 14,
+     "id": "placard",
+     "kind": "sign",
+     "name": "what a room requires of you, read at its door",
+     "rect": [
+      0.3,
+      0.3,
+      0.3,
+      0.3
+     ],
+     "registry": "labels/registry/labels.json#kinds",
+     "rotation": 0,
+     "x": 0.3,
+     "y": 0.3
+    },
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 15,
+     "id": "hazard",
+     "kind": "sign",
+     "name": "a condition in force in a space, off the hazards its own conditions record already holds",
+     "rect": [
+      0.3,
+      7.5,
+      0.3,
+      7.5
+     ],
+     "registry": "labels/registry/labels.json#kinds",
+     "rotation": 0,
+     "x": 0.3,
+     "y": 7.5
+    },
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 16,
+     "id": "station",
+     "kind": "sign",
+     "name": "a training station",
+     "rect": [
+      1.5,
+      0.3,
+      1.5,
+      0.3
+     ],
+     "registry": "labels/registry/labels.json#kinds",
+     "rotation": 0,
+     "x": 1.5,
+     "y": 0.3
+    }
+   ],
+   "ppe": {
+    "base_from": "surfaces base_conditions.procedure.ppe",
+    "hazard_props_placed": [
+     {
+      "admitted_by": "props hazard_props: keyed to ['work-at-height'], ppe_any ['full-body harness']",
+      "i": 0,
+      "id": "harness-rail",
+      "keyed_to": [
+       "work-at-height"
+      ],
+      "ppe_any": [
+       "full-body harness"
+      ]
+     },
+     {
+      "admitted_by": "props hazard_props: keyed to ['work-at-height'], ppe_any ['full-body harness']",
+      "i": 1,
+      "id": "lanyard-locker",
+      "keyed_to": [
+       "work-at-height"
+      ],
+      "ppe_any": [
+       "full-body harness"
+      ]
+     },
+     {
+      "admitted_by": "props hazard_props: keyed to ['work-at-height'], ppe_any ['chinstrap helmet']",
+      "i": 2,
+      "id": "helmet-shelf",
+      "keyed_to": [
+       "work-at-height"
+      ],
+      "ppe_any": [
+       "chinstrap helmet"
+      ]
+     },
+     {
+      "admitted_by": "props hazard_props: keyed to ['work-at-height'], ppe_any ['chinstrap helmet']",
+      "i": 3,
+      "id": "edge-stack",
+      "keyed_to": [
+       "work-at-height"
+      ],
+      "ppe_any": [
+       "chinstrap helmet"
+      ]
+     },
+     {
+      "admitted_by": "props hazard_props: admitted when the PPE set is non-empty",
+      "i": 9,
+      "id": "ppe-station",
+      "keyed_to": [],
+      "ppe_any": [
+       "*any*"
+      ]
+     }
+    ],
+    "hazards_from": [
+     "surfaces hazard_conditions.work-at-height.ppe"
+    ],
+    "provenance": "DERIVED",
+    "required": [
+     "chinstrap helmet",
+     "full-body harness",
+     "gloves",
+     "hard hat",
+     "hi-vis",
+     "safety boots",
+     "safety glasses"
+    ]
+   },
+   "provenance": {
+    "cost": "DERIVED",
+    "declaration": "AUTHORED",
+    "fits_in": "DERIVED",
+    "footprints": "DERIVED",
+    "names": "DERIVED",
+    "ppe": "DERIVED"
+   },
+   "purpose": "An open matted floor for the scaffold and boom-lift seats, with harness, lanyard, helmet and edge-protection fixtures along the back wall and two trestles for the tie-in work.",
+   "room_label": "Practice Bays",
+   "source": "spaces/authored/scaffold-court.json",
+   "status": "declared, not yet walkable",
+   "strand": "procedure",
+   "title": "Scaffold court",
+   "unions": [
+    {
+     "district": "earthworks",
+     "name": "Scaffold Erectors",
+     "slug": "scaffold"
+    },
+    {
+     "district": "envelope",
+     "name": "Carpenters",
+     "slug": "carpenters"
+    }
+   ],
+   "wall": {
+    "color": "#948877",
+    "id": "impact-block",
+    "name": "Impact-faced block with kerb",
+    "pattern": "block",
+    "wainscot": "#584a2f"
+   }
+  },
+  {
+   "cost": {
+    "draw_calls": 6,
+    "estimated_items": 14,
+    "how": "tris = sum of props tri_budget.tris over prop and furniture items; draw_calls = one per distinct material among pooled items, plus one per own-mesh item and one per distinct instanced id (props page_contract); seats, stations, cribs and signs declare no figure and are not estimated",
+    "instanced": 0,
+    "not_estimated": [
+     {
+      "i": 14,
+      "id": "weld-bead",
+      "kind": "seat",
+      "why": "sims/registry/sims.json#sims declares no triangle figure"
+     },
+     {
+      "i": 15,
+      "id": "structural",
+      "kind": "crib",
+      "why": "tools/registry/toolcribs.json#cribs declares no triangle figure"
+     },
+     {
+      "i": 16,
+      "id": "placard",
+      "kind": "sign",
+      "why": "labels/registry/labels.json#kinds declares no triangle figure"
+     },
+     {
+      "i": 17,
+      "id": "hazard",
+      "kind": "sign",
+      "why": "labels/registry/labels.json#kinds declares no triangle figure"
+     }
+    ],
+    "own_mesh": 0,
+    "pooled_materials": [
+     "cone",
+     "metal",
+     "paint",
+     "part",
+     "post",
+     "steel"
+    ],
+    "provenance": "DERIVED",
+    "tris": 1676
+   },
+   "counts": {
+    "by_kind": {
+     "crib": 1,
+     "furniture": 1,
+     "prop": 13,
+     "seat": 1,
+     "sign": 2,
+     "station": 0
+    },
+    "footprint_known": 14,
+    "footprint_unknown": 4,
+    "items": 18
+   },
+   "fits_in": [
+    {
+     "d_m": 9,
+     "hall": "welders",
+     "label": "Practice Bays",
+     "strand": "procedure",
+     "w_m": 21
+    }
+   ],
+   "floor": {
+    "color": "#848d94",
+    "id": "bare-slab",
+    "name": "Power-floated bare slab",
+    "pattern": "slab"
+   },
+   "footprint_m": {
+    "area_m2": 96.0,
+    "d": 8.0,
+    "w": 12.0
+   },
+   "hazards": [
+    {
+     "finish": "bare-slab",
+     "from": "floor",
+     "hazard": "hot-work",
+     "rule": "surfaces rules.hazard_rooms.hot-work.procedure = bare-slab"
+    },
+    {
+     "finish": "weld-screen",
+     "from": "wall",
+     "hazard": "hot-work",
+     "rule": "surfaces rules.hazard_walls.hot-work.procedure = weld-screen"
+    }
+   ],
+   "id": "welding-bay",
+   "items": [
+    {
+     "footprint": {
+      "d": 0.22,
+      "from": "props/registry/props.json#props[weld-screen].size_m",
+      "w": 1.5
+     },
+     "i": 0,
+     "id": "weld-screen",
+     "kind": "prop",
+     "name": "Welding screen",
+     "rect": [
+      1.25,
+      3.89,
+      2.75,
+      4.11
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 2.0,
+     "y": 4.0
+    },
+    {
+     "footprint": {
+      "d": 0.22,
+      "from": "props/registry/props.json#props[weld-screen].size_m",
+      "w": 1.5
+     },
+     "i": 1,
+     "id": "weld-screen",
+     "kind": "prop",
+     "name": "Welding screen",
+     "rect": [
+      4.25,
+      3.89,
+      5.75,
+      4.11
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 5.0,
+     "y": 4.0
+    },
+    {
+     "footprint": {
+      "d": 0.22,
+      "from": "props/registry/props.json#props[weld-screen].size_m",
+      "w": 1.5
+     },
+     "i": 2,
+     "id": "weld-screen",
+     "kind": "prop",
+     "name": "Welding screen",
+     "rect": [
+      7.25,
+      3.89,
+      8.75,
+      4.11
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 8.0,
+     "y": 4.0
+    },
+    {
+     "footprint": {
+      "d": 0.7,
+      "from": "props/registry/props.json#props[practice-bench].size_m",
+      "w": 1.7
+     },
+     "i": 3,
+     "id": "practice-bench",
+     "kind": "prop",
+     "name": "Practice bench",
+     "rect": [
+      1.15,
+      2.15,
+      2.85,
+      2.85
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 2.0,
+     "y": 2.5
+    },
+    {
+     "footprint": {
+      "d": 0.7,
+      "from": "props/registry/props.json#props[practice-bench].size_m",
+      "w": 1.7
+     },
+     "i": 4,
+     "id": "practice-bench",
+     "kind": "prop",
+     "name": "Practice bench",
+     "rect": [
+      4.15,
+      2.15,
+      5.85,
+      2.85
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 5.0,
+     "y": 2.5
+    },
+    {
+     "footprint": {
+      "d": 0.7,
+      "from": "props/registry/props.json#props[practice-bench].size_m",
+      "w": 1.7
+     },
+     "i": 5,
+     "id": "practice-bench",
+     "kind": "prop",
+     "name": "Practice bench",
+     "rect": [
+      7.15,
+      2.15,
+      8.85,
+      2.85
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 8.0,
+     "y": 2.5
+    },
+    {
+     "footprint": {
+      "d": 0.46,
+      "from": "props/registry/props.json#props[rod-oven].size_m",
+      "w": 0.52
+     },
+     "i": 6,
+     "id": "rod-oven",
+     "kind": "prop",
+     "name": "Electrode rod oven",
+     "rect": [
+      10.24,
+      0.77,
+      10.76,
+      1.23
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 10.5,
+     "y": 1.0
+    },
+    {
+     "footprint": {
+      "d": 0.48,
+      "from": "props/registry/props.json#props[stub-bin].size_m",
+      "w": 0.48
+     },
+     "i": 7,
+     "id": "stub-bin",
+     "kind": "prop",
+     "name": "Electrode stub bin",
+     "rect": [
+      10.26,
+      1.96,
+      10.74,
+      2.44
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 10.5,
+     "y": 2.2
+    },
+    {
+     "footprint": {
+      "d": 0.68,
+      "from": "props/registry/props.json#props[quench-tank].size_m",
+      "w": 0.68
+     },
+     "i": 8,
+     "id": "quench-tank",
+     "kind": "prop",
+     "name": "Quench tank",
+     "rect": [
+      10.16,
+      3.26,
+      10.84,
+      3.94
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 10.5,
+     "y": 3.6
+    },
+    {
+     "footprint": {
+      "d": 0.18,
+      "from": "props/registry/props.json#props[fire-blanket-cabinet].size_m",
+      "w": 0.42
+     },
+     "i": 9,
+     "id": "fire-blanket-cabinet",
+     "kind": "prop",
+     "name": "Fire blanket cabinet",
+     "rect": [
+      11.29,
+      0.21,
+      11.71,
+      0.39
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 11.5,
+     "y": 0.3
+    },
+    {
+     "footprint": {
+      "d": 0.22,
+      "from": "props/registry/props.json#props[extinguisher-bracket].size_m",
+      "w": 0.24
+     },
+     "i": 10,
+     "id": "extinguisher-bracket",
+     "kind": "prop",
+     "name": "Extinguisher bracket",
+     "rect": [
+      0.38,
+      0.19,
+      0.62,
+      0.41
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 0.5,
+     "y": 0.3
+    },
+    {
+     "footprint": {
+      "d": 0.12,
+      "from": "props/registry/props.json#props[ppe-station].size_m",
+      "w": 1.0
+     },
+     "i": 11,
+     "id": "ppe-station",
+     "kind": "prop",
+     "name": "PPE station",
+     "rect": [
+      1.0,
+      7.84,
+      2.0,
+      7.96
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 1.5,
+     "y": 7.9
+    },
+    {
+     "footprint": {
+      "d": 0.36,
+      "from": "props/registry/props.json#props[fire-watch-post].size_m",
+      "w": 0.36
+     },
+     "i": 12,
+     "id": "fire-watch-post",
+     "kind": "prop",
+     "name": "Fire watch post",
+     "rect": [
+      5.82,
+      6.32,
+      6.18,
+      6.68
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 6.0,
+     "y": 6.5
+    },
+    {
+     "footprint": {
+      "d": 0.75,
+      "from": "props/registry/props.json#crib_furniture.pieces[chipping-hammer-bench].size_m",
+      "w": 1.45
+     },
+     "i": 13,
+     "id": "chipping-hammer-bench",
+     "kind": "furniture",
+     "name": "Weld dressing bench",
+     "rect": [
+      9.775,
+      5.625,
+      11.225,
+      6.375
+     ],
+     "registry": "props/registry/props.json#crib_furniture.pieces",
+     "rotation": 0,
+     "x": 10.5,
+     "y": 6.0
+    },
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 14,
+     "id": "weld-bead",
+     "kind": "seat",
+     "name": "Weld Bead Run",
+     "rect": [
+      6.0,
+      7.2,
+      6.0,
+      7.2
+     ],
+     "registry": "sims/registry/sims.json#sims",
+     "rotation": 0,
+     "x": 6.0,
+     "y": 7.2
+    },
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 15,
+     "id": "structural",
+     "kind": "crib",
+     "name": "Structural tool crib",
+     "rect": [
+      11.3,
+      7.2,
+      11.3,
+      7.2
+     ],
+     "registry": "tools/registry/toolcribs.json#cribs",
+     "rotation": 0,
+     "x": 11.3,
+     "y": 7.2
+    },
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 16,
+     "id": "placard",
+     "kind": "sign",
+     "name": "what a room requires of you, read at its door",
+     "rect": [
+      0.3,
+      7.5,
+      0.3,
+      7.5
+     ],
+     "registry": "labels/registry/labels.json#kinds",
+     "rotation": 0,
+     "x": 0.3,
+     "y": 7.5
+    },
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 17,
+     "id": "hazard",
+     "kind": "sign",
+     "name": "a condition in force in a space, off the hazards its own conditions record already holds",
+     "rect": [
+      11.7,
+      7.5,
+      11.7,
+      7.5
+     ],
+     "registry": "labels/registry/labels.json#kinds",
+     "rotation": 0,
+     "x": 11.7,
+     "y": 7.5
+    }
+   ],
+   "ppe": {
+    "base_from": "surfaces base_conditions.procedure.ppe",
+    "hazard_props_placed": [
+     {
+      "admitted_by": "props hazard_props: keyed to ['hot-work'], ppe_any ['welding hood']",
+      "i": 0,
+      "id": "weld-screen",
+      "keyed_to": [
+       "hot-work"
+      ],
+      "ppe_any": [
+       "welding hood"
+      ]
+     },
+     {
+      "admitted_by": "props hazard_props: keyed to ['hot-work'], ppe_any ['welding hood']",
+      "i": 1,
+      "id": "weld-screen",
+      "keyed_to": [
+       "hot-work"
+      ],
+      "ppe_any": [
+       "welding hood"
+      ]
+     },
+     {
+      "admitted_by": "props hazard_props: keyed to ['hot-work'], ppe_any ['welding hood']",
+      "i": 2,
+      "id": "weld-screen",
+      "keyed_to": [
+       "hot-work"
+      ],
+      "ppe_any": [
+       "welding hood"
+      ]
+     },
+     {
+      "admitted_by": "props hazard_props: keyed to ['hot-work'], ppe_any ['welding hood']",
+      "i": 6,
+      "id": "rod-oven",
+      "keyed_to": [
+       "hot-work"
+      ],
+      "ppe_any": [
+       "welding hood"
+      ]
+     },
+     {
+      "admitted_by": "props hazard_props: keyed to ['hot-work'], ppe_any ['welding hood']",
+      "i": 7,
+      "id": "stub-bin",
+      "keyed_to": [
+       "hot-work"
+      ],
+      "ppe_any": [
+       "welding hood"
+      ]
+     },
+     {
+      "admitted_by": "props hazard_props: keyed to ['hot-work', 'molten-metal'], ppe_any ['flame-resistant clothing']",
+      "i": 8,
+      "id": "quench-tank",
+      "keyed_to": [
+       "hot-work",
+       "molten-metal"
+      ],
+      "ppe_any": [
+       "flame-resistant clothing"
+      ]
+     },
+     {
+      "admitted_by": "props hazard_props: keyed to ['hot-work', 'molten-metal'], ppe_any ['flame-resistant clothing']",
+      "i": 9,
+      "id": "fire-blanket-cabinet",
+      "keyed_to": [
+       "hot-work",
+       "molten-metal"
+      ],
+      "ppe_any": [
+       "flame-resistant clothing"
+      ]
+     },
+     {
+      "admitted_by": "props hazard_props: keyed to ['explosives', 'flammable-atmosphere', 'hot-work', 'molten-metal'], ppe_any ['flame-resistant clothing', 'anti-static clothing', 'welding hood']",
+      "i": 10,
+      "id": "extinguisher-bracket",
+      "keyed_to": [
+       "explosives",
+       "flammable-atmosphere",
+       "hot-work",
+       "molten-metal"
+      ],
+      "ppe_any": [
+       "flame-resistant clothing",
+       "anti-static clothing",
+       "welding hood"
+      ]
+     },
+     {
+      "admitted_by": "props hazard_props: admitted when the PPE set is non-empty",
+      "i": 11,
+      "id": "ppe-station",
+      "keyed_to": [],
+      "ppe_any": [
+       "*any*"
+      ]
+     },
+     {
+      "admitted_by": "props hazard_props: keyed to ['hot-work', 'molten-metal'], ppe_any ['flame-resistant clothing']",
+      "i": 12,
+      "id": "fire-watch-post",
+      "keyed_to": [
+       "hot-work",
+       "molten-metal"
+      ],
+      "ppe_any": [
+       "flame-resistant clothing"
+      ]
+     }
+    ],
+    "hazards_from": [
+     "surfaces hazard_conditions.hot-work.ppe"
+    ],
+    "provenance": "DERIVED",
+    "required": [
+     "flame-resistant clothing",
+     "gloves",
+     "hard hat",
+     "hi-vis",
+     "safety boots",
+     "safety glasses",
+     "welding hood"
+    ]
+   },
+   "provenance": {
+    "cost": "DERIVED",
+    "declaration": "AUTHORED",
+    "fits_in": "DERIVED",
+    "footprints": "DERIVED",
+    "names": "DERIVED",
+    "ppe": "DERIVED"
+   },
+   "purpose": "Three screened arc positions with the rod oven, stub bin and quench tank a run of practice beads needs, and a fire watch post at the back.",
+   "room_label": "Practice Bays",
+   "source": "spaces/authored/welding-bay.json",
+   "status": "declared, not yet walkable",
+   "strand": "procedure",
+   "title": "Welding bay",
+   "unions": [
+    {
+     "district": "structural",
+     "name": "Welding Trades",
+     "slug": "welders"
+    }
+   ],
+   "wall": {
+    "color": "#566269",
+    "id": "weld-screen",
+    "name": "Non-combustible screened bay",
+    "pattern": "screen",
+    "wainscot": "#7a4326"
+   }
+  }
+ ],
+ "status": "declared, not yet walkable",
+ "unions_served": [
+  "carpenters",
+  "crane-ops",
+  "electricians",
+  "ironworkers",
+  "riggers",
+  "scaffold",
+  "welders"
+ ],
+ "units": {
+  "grid_unit_m": 3,
+  "metres": "x, y are the item centre from the space's bottom-left corner; rotation in degrees, 90/270 swap the footprint axes"
+ }
+}</script>
+</div></body>
+</html>

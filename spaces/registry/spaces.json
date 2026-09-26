@@ -1,0 +1,3253 @@
+{
+ "authored_stamp": "adf72518ba64f34d",
+ "counts": {
+  "area_m2": 501.5,
+  "cost_estimated_items": 73,
+  "cost_not_estimated_items": 29,
+  "draw_calls": 26,
+  "footprint_known": 73,
+  "footprint_unknown": 29,
+  "hazards": 5,
+  "items": 102,
+  "items_by_kind": {
+   "crib": 5,
+   "furniture": 11,
+   "prop": 62,
+   "seat": 8,
+   "sign": 14,
+   "station": 2
+  },
+  "ppe_items": 12,
+  "spaces": 6,
+  "tris": 7260,
+  "unions_served": 7
+ },
+ "honesty": {
+  "composed_only_from": [
+   "labels/registry/labels.json#kinds",
+   "props/registry/props.json#crib_furniture.pieces",
+   "props/registry/props.json#props",
+   "sims/registry/sims.json#sims",
+   "stations/registry/stations.json#stations",
+   "tools/registry/toolcribs.json#cribs",
+   "surfaces/registry/finishes.json#catalogue",
+   "surfaces/registry/finishes.json#wall_catalogue"
+  ],
+  "cost": "a prediction summed from declared per-piece figures, not a measurement",
+  "envelope": "a space must fit the room of its strand in every serving hall, read from web/interiors.py plan_for exactly as web/build_3d.py lays it out (3 m per grid unit); the room is a functional programme, not a survey of a building",
+  "footprints": "an item with no size_m in its registry is recorded as footprint unknown and its overlap is not checked; nothing is assumed",
+  "not_stated": "no duration, price, accreditation or venue",
+  "ppe": "never typed: strand base PPE plus the PPE of every hazard the surfaces rules say the chosen floor and wall stand for in that strand's room; a hazard prop is admitted only when the finishes already derive a hazard it is keyed to",
+  "status": "declared, not yet walkable: an AUTHORED proposal composed from this bundle's own assets; nothing here is built into the 3D world, no dimension is a measurement of a real venue, and no duration, price or accreditation is stated"
+ },
+ "kinds": [
+  "prop",
+  "furniture",
+  "seat",
+  "station",
+  "crib",
+  "sign"
+ ],
+ "pack": "smartcitix-trade-craft-academy-spaces",
+ "pack_version": "3.2.0",
+ "ppe_items": [
+  "arc-flash face shield",
+  "chinstrap helmet",
+  "dielectric gloves",
+  "flame-resistant clothing",
+  "full-body harness",
+  "gloves",
+  "hard hat",
+  "hearing protection",
+  "hi-vis",
+  "safety boots",
+  "safety glasses",
+  "welding hood"
+ ],
+ "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
+ "provenance": {
+  "colours": "AUTHORED (surfaces catalogue, copied by id)",
+  "declarations": "AUTHORED",
+  "everything_else": "DERIVED"
+ },
+ "registry_of": {
+  "crib": "tools/registry/toolcribs.json#cribs",
+  "furniture": "props/registry/props.json#crib_furniture.pieces",
+  "prop": "props/registry/props.json#props",
+  "seat": "sims/registry/sims.json#sims",
+  "sign": "labels/registry/labels.json#kinds",
+  "station": "stations/registry/stations.json#stations"
+ },
+ "source_stamp": "3965c62e082f2af3",
+ "spaces": [
+  {
+   "cost": {
+    "draw_calls": 5,
+    "estimated_items": 12,
+    "how": "tris = sum of props tri_budget.tris over prop and furniture items; draw_calls = one per distinct material among pooled items, plus one per own-mesh item and one per distinct instanced id (props page_contract); seats, stations, cribs and signs declare no figure and are not estimated",
+    "instanced": 0,
+    "not_estimated": [
+     {
+      "i": 0,
+      "id": "crane-lift",
+      "kind": "seat",
+      "why": "sims/registry/sims.json#sims declares no triangle figure"
+     },
+     {
+      "i": 1,
+      "id": "overhead-crane",
+      "kind": "seat",
+      "why": "sims/registry/sims.json#sims declares no triangle figure"
+     },
+     {
+      "i": 2,
+      "id": "load-chart",
+      "kind": "seat",
+      "why": "sims/registry/sims.json#sims declares no triangle figure"
+     },
+     {
+      "i": 15,
+      "id": "structural",
+      "kind": "crib",
+      "why": "tools/registry/toolcribs.json#cribs declares no triangle figure"
+     },
+     {
+      "i": 16,
+      "id": "placard",
+      "kind": "sign",
+      "why": "labels/registry/labels.json#kinds declares no triangle figure"
+     },
+     {
+      "i": 17,
+      "id": "hazard",
+      "kind": "sign",
+      "why": "labels/registry/labels.json#kinds declares no triangle figure"
+     },
+     {
+      "i": 18,
+      "id": "station",
+      "kind": "sign",
+      "why": "labels/registry/labels.json#kinds declares no triangle figure"
+     }
+    ],
+    "own_mesh": 0,
+    "pooled_materials": [
+     "metal",
+     "paint",
+     "post",
+     "steel",
+     "wood"
+    ],
+    "provenance": "DERIVED",
+    "tris": 1196
+   },
+   "counts": {
+    "by_kind": {
+     "crib": 1,
+     "furniture": 0,
+     "prop": 12,
+     "seat": 3,
+     "sign": 3,
+     "station": 0
+    },
+    "footprint_known": 12,
+    "footprint_unknown": 7,
+    "items": 19
+   },
+   "fits_in": [
+    {
+     "d_m": 9,
+     "hall": "crane-ops",
+     "label": "Equipment Bay",
+     "strand": "machines",
+     "w_m": 18
+    },
+    {
+     "d_m": 9,
+     "hall": "riggers",
+     "label": "Equipment Bay",
+     "strand": "machines",
+     "w_m": 18
+    }
+   ],
+   "floor": {
+    "color": "#8e9aa0",
+    "id": "broom-concrete",
+    "name": "Broom-finish concrete",
+    "pattern": "broom"
+   },
+   "footprint_m": {
+    "area_m2": 112.0,
+    "d": 8.0,
+    "w": 14.0
+   },
+   "hazards": [
+    {
+     "finish": "broom-concrete",
+     "from": "floor",
+     "hazard": "mobile-plant",
+     "rule": "surfaces rules.hazard_rooms.mobile-plant.machines = broom-concrete"
+    },
+    {
+     "finish": "mesh-guard",
+     "from": "wall",
+     "hazard": "mobile-plant",
+     "rule": "surfaces rules.hazard_walls.mobile-plant.machines = mesh-guard"
+    }
+   ],
+   "id": "crane-sim-bay",
+   "items": [
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 0,
+     "id": "crane-lift",
+     "kind": "seat",
+     "name": "Tower Crane Lift",
+     "rect": [
+      4.0,
+      4.5,
+      4.0,
+      4.5
+     ],
+     "registry": "sims/registry/sims.json#sims",
+     "rotation": 0,
+     "x": 4.0,
+     "y": 4.5
+    },
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 1,
+     "id": "overhead-crane",
+     "kind": "seat",
+     "name": "Overhead Crane Shop Move",
+     "rect": [
+      10.0,
+      4.5,
+      10.0,
+      4.5
+     ],
+     "registry": "sims/registry/sims.json#sims",
+     "rotation": 0,
+     "x": 10.0,
+     "y": 4.5
+    },
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 2,
+     "id": "load-chart",
+     "kind": "seat",
+     "name": "Load Chart Judgment",
+     "rect": [
+      7.0,
+      1.5,
+      7.0,
+      1.5
+     ],
+     "registry": "sims/registry/sims.json#sims",
+     "rotation": 0,
+     "x": 7.0,
+     "y": 1.5
+    },
+    {
+     "footprint": {
+      "d": 0.06,
+      "from": "props/registry/props.json#props[checkout-board].size_m",
+      "w": 1.34
+     },
+     "i": 3,
+     "id": "checkout-board",
+     "kind": "prop",
+     "name": "Plant checkout board",
+     "rect": [
+      0.33,
+      7.87,
+      1.67,
+      7.93
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 1.0,
+     "y": 7.9
+    },
+    {
+     "footprint": {
+      "d": 0.22,
+      "from": "props/registry/props.json#props[bay-guard-rail].size_m",
+      "w": 2.0
+     },
+     "i": 4,
+     "id": "bay-guard-rail",
+     "kind": "prop",
+     "name": "Bay guard rail",
+     "rect": [
+      3.0,
+      7.39,
+      5.0,
+      7.61
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 4.0,
+     "y": 7.5
+    },
+    {
+     "footprint": {
+      "d": 0.22,
+      "from": "props/registry/props.json#props[bay-guard-rail].size_m",
+      "w": 2.0
+     },
+     "i": 5,
+     "id": "bay-guard-rail",
+     "kind": "prop",
+     "name": "Bay guard rail",
+     "rect": [
+      9.0,
+      7.39,
+      11.0,
+      7.61
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 10.0,
+     "y": 7.5
+    },
+    {
+     "footprint": {
+      "d": 0.6,
+      "from": "props/registry/props.json#props[machine-log-desk].size_m",
+      "w": 1.1
+     },
+     "i": 6,
+     "id": "machine-log-desk",
+     "kind": "prop",
+     "name": "Machine log desk",
+     "rect": [
+      6.45,
+      7.2,
+      7.55,
+      7.8
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 7.0,
+     "y": 7.5
+    },
+    {
+     "footprint": {
+      "d": 0.75,
+      "from": "props/registry/props.json#props[plant-service-bench].size_m",
+      "w": 1.8
+     },
+     "i": 7,
+     "id": "plant-service-bench",
+     "kind": "prop",
+     "name": "Plant service bench",
+     "rect": [
+      11.6,
+      7.025,
+      13.4,
+      7.775
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 12.5,
+     "y": 7.4
+    },
+    {
+     "footprint": {
+      "d": 0.6,
+      "from": "props/registry/props.json#props[chock-bin].size_m",
+      "w": 0.9
+     },
+     "i": 8,
+     "id": "chock-bin",
+     "kind": "prop",
+     "name": "Chock and block bin",
+     "rect": [
+      13.05,
+      3.7,
+      13.95,
+      4.3
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 13.5,
+     "y": 4.0
+    },
+    {
+     "footprint": {
+      "d": 0.44,
+      "from": "props/registry/props.json#props[learner-stool].size_m",
+      "w": 0.44
+     },
+     "i": 9,
+     "id": "learner-stool",
+     "kind": "prop",
+     "name": "Learner stool",
+     "rect": [
+      0.78,
+      0.78,
+      1.22,
+      1.22
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 1.0,
+     "y": 1.0
+    },
+    {
+     "footprint": {
+      "d": 0.44,
+      "from": "props/registry/props.json#props[learner-stool].size_m",
+      "w": 0.44
+     },
+     "i": 10,
+     "id": "learner-stool",
+     "kind": "prop",
+     "name": "Learner stool",
+     "rect": [
+      1.78,
+      0.78,
+      2.22,
+      1.22
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 2.0,
+     "y": 1.0
+    },
+    {
+     "footprint": {
+      "d": 0.44,
+      "from": "props/registry/props.json#props[learner-stool].size_m",
+      "w": 0.44
+     },
+     "i": 11,
+     "id": "learner-stool",
+     "kind": "prop",
+     "name": "Learner stool",
+     "rect": [
+      0.78,
+      1.78,
+      1.22,
+      2.22
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 1.0,
+     "y": 2.0
+    },
+    {
+     "footprint": {
+      "d": 0.44,
+      "from": "props/registry/props.json#props[learner-stool].size_m",
+      "w": 0.44
+     },
+     "i": 12,
+     "id": "learner-stool",
+     "kind": "prop",
+     "name": "Learner stool",
+     "rect": [
+      1.78,
+      1.78,
+      2.22,
+      2.22
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 2.0,
+     "y": 2.0
+    },
+    {
+     "footprint": {
+      "d": 1.0,
+      "from": "props/registry/props.json#props[ppe-station].size_m",
+      "w": 0.12
+     },
+     "i": 13,
+     "id": "ppe-station",
+     "kind": "prop",
+     "name": "PPE station",
+     "rect": [
+      13.84,
+      1.0,
+      13.96,
+      2.0
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 90,
+     "x": 13.9,
+     "y": 1.5
+    },
+    {
+     "footprint": {
+      "d": 0.5,
+      "from": "props/registry/props.json#props[plug-dispenser].size_m",
+      "w": 0.16
+     },
+     "i": 14,
+     "id": "plug-dispenser",
+     "kind": "prop",
+     "name": "Ear plug dispenser",
+     "rect": [
+      0.22,
+      4.75,
+      0.38,
+      5.25
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 90,
+     "x": 0.3,
+     "y": 5.0
+    },
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 15,
+     "id": "structural",
+     "kind": "crib",
+     "name": "Structural tool crib",
+     "rect": [
+      12.5,
+      1.0,
+      12.5,
+      1.0
+     ],
+     "registry": "tools/registry/toolcribs.json#cribs",
+     "rotation": 0,
+     "x": 12.5,
+     "y": 1.0
+    },
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 16,
+     "id": "placard",
+     "kind": "sign",
+     "name": "what a room requires of you, read at its door",
+     "rect": [
+      0.3,
+      0.3,
+      0.3,
+      0.3
+     ],
+     "registry": "labels/registry/labels.json#kinds",
+     "rotation": 0,
+     "x": 0.3,
+     "y": 0.3
+    },
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 17,
+     "id": "hazard",
+     "kind": "sign",
+     "name": "a condition in force in a space, off the hazards its own conditions record already holds",
+     "rect": [
+      0.3,
+      4.0,
+      0.3,
+      4.0
+     ],
+     "registry": "labels/registry/labels.json#kinds",
+     "rotation": 0,
+     "x": 0.3,
+     "y": 4.0
+    },
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 18,
+     "id": "station",
+     "kind": "sign",
+     "name": "a training station",
+     "rect": [
+      7.0,
+      2.6,
+      7.0,
+      2.6
+     ],
+     "registry": "labels/registry/labels.json#kinds",
+     "rotation": 0,
+     "x": 7.0,
+     "y": 2.6
+    }
+   ],
+   "ppe": {
+    "base_from": "surfaces base_conditions.machines.ppe",
+    "hazard_props_placed": [
+     {
+      "admitted_by": "props hazard_props: admitted when the PPE set is non-empty",
+      "i": 13,
+      "id": "ppe-station",
+      "keyed_to": [],
+      "ppe_any": [
+       "*any*"
+      ]
+     },
+     {
+      "admitted_by": "props hazard_props: keyed to ['explosives', 'mobile-plant', 'rotating-machinery', 'timber-trade'], ppe_any ['hearing protection']",
+      "i": 14,
+      "id": "plug-dispenser",
+      "keyed_to": [
+       "explosives",
+       "mobile-plant",
+       "rotating-machinery",
+       "timber-trade"
+      ],
+      "ppe_any": [
+       "hearing protection"
+      ]
+     }
+    ],
+    "hazards_from": [
+     "surfaces hazard_conditions.mobile-plant.ppe"
+    ],
+    "provenance": "DERIVED",
+    "required": [
+     "gloves",
+     "hard hat",
+     "hearing protection",
+     "hi-vis",
+     "safety boots",
+     "safety glasses"
+    ]
+   },
+   "provenance": {
+    "cost": "DERIVED",
+    "declaration": "AUTHORED",
+    "fits_in": "DERIVED",
+    "footprints": "DERIVED",
+    "names": "DERIVED",
+    "ppe": "DERIVED"
+   },
+   "purpose": "The tower crane, overhead crane and load chart seats behind two guard rails, with the checkout board and log desk a plant bay signs in and out on.",
+   "room_label": "Equipment Bay",
+   "source": "spaces/authored/crane-sim-bay.json",
+   "status": "declared, not yet walkable",
+   "strand": "machines",
+   "title": "Crane simulator bay",
+   "unions": [
+    {
+     "district": "structural",
+     "name": "Crane Operators",
+     "slug": "crane-ops"
+    },
+    {
+     "district": "structural",
+     "name": "Riggers & Signalpersons",
+     "slug": "riggers"
+    }
+   ],
+   "wall": {
+    "color": "#8a8452",
+    "id": "mesh-guard",
+    "name": "Guarded mesh partition",
+    "pattern": "mesh",
+    "wainscot": "#4a4626"
+   }
+  },
+  {
+   "cost": {
+    "draw_calls": 4,
+    "estimated_items": 12,
+    "how": "tris = sum of props tri_budget.tris over prop and furniture items; draw_calls = one per distinct material among pooled items, plus one per own-mesh item and one per distinct instanced id (props page_contract); seats, stations, cribs and signs declare no figure and are not estimated",
+    "instanced": 0,
+    "not_estimated": [
+     {
+      "i": 12,
+      "id": "systems",
+      "kind": "crib",
+      "why": "tools/registry/toolcribs.json#cribs declares no triangle figure"
+     },
+     {
+      "i": 13,
+      "id": "placard",
+      "kind": "sign",
+      "why": "labels/registry/labels.json#kinds declares no triangle figure"
+     },
+     {
+      "i": 14,
+      "id": "hazard",
+      "kind": "sign",
+      "why": "labels/registry/labels.json#kinds declares no triangle figure"
+     }
+    ],
+    "own_mesh": 0,
+    "pooled_materials": [
+     "metal",
+     "paint",
+     "post",
+     "steel"
+    ],
+    "provenance": "DERIVED",
+    "tris": 1092
+   },
+   "counts": {
+    "by_kind": {
+     "crib": 1,
+     "furniture": 2,
+     "prop": 10,
+     "seat": 0,
+     "sign": 2,
+     "station": 0
+    },
+    "footprint_known": 12,
+    "footprint_unknown": 3,
+    "items": 15
+   },
+   "fits_in": [
+    {
+     "d_m": 6,
+     "hall": "electricians",
+     "label": "Diagnostic Bench",
+     "strand": "troubleshooting",
+     "w_m": 21
+    }
+   ],
+   "floor": {
+    "color": "#2c333c",
+    "id": "rubber-dielectric",
+    "name": "Dielectric rubber matting",
+    "pattern": "smooth"
+   },
+   "footprint_m": {
+    "area_m2": 55.0,
+    "d": 5.5,
+    "w": 10.0
+   },
+   "hazards": [
+    {
+     "finish": "rubber-dielectric",
+     "from": "floor",
+     "hazard": "live-electrical",
+     "rule": "surfaces rules.hazard_rooms.live-electrical.troubleshooting = rubber-dielectric"
+    }
+   ],
+   "id": "electrical-lab",
+   "items": [
+    {
+     "footprint": {
+      "d": 0.35,
+      "from": "props/registry/props.json#props[rig-frame].size_m",
+      "w": 1.5
+     },
+     "i": 0,
+     "id": "rig-frame",
+     "kind": "prop",
+     "name": "Live rig frame",
+     "rect": [
+      1.25,
+      5.025,
+      2.75,
+      5.375
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 2.0,
+     "y": 5.2
+    },
+    {
+     "footprint": {
+      "d": 0.7,
+      "from": "props/registry/props.json#props[test-bench].size_m",
+      "w": 1.5
+     },
+     "i": 1,
+     "id": "test-bench",
+     "kind": "prop",
+     "name": "Fault-finding bench",
+     "rect": [
+      1.25,
+      2.65,
+      2.75,
+      3.35
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 2.0,
+     "y": 3.0
+    },
+    {
+     "footprint": {
+      "d": 0.7,
+      "from": "props/registry/props.json#props[test-bench].size_m",
+      "w": 1.5
+     },
+     "i": 2,
+     "id": "test-bench",
+     "kind": "prop",
+     "name": "Fault-finding bench",
+     "rect": [
+      4.25,
+      2.65,
+      5.75,
+      3.35
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 5.0,
+     "y": 3.0
+    },
+    {
+     "footprint": {
+      "d": 0.45,
+      "from": "props/registry/props.json#props[instrument-cabinet].size_m",
+      "w": 0.85
+     },
+     "i": 3,
+     "id": "instrument-cabinet",
+     "kind": "prop",
+     "name": "Instrument cabinet",
+     "rect": [
+      4.075,
+      4.975,
+      4.925,
+      5.425
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 4.5,
+     "y": 5.2
+    },
+    {
+     "footprint": {
+      "d": 0.08,
+      "from": "props/registry/props.json#props[fault-log-board].size_m",
+      "w": 0.86
+     },
+     "i": 4,
+     "id": "fault-log-board",
+     "kind": "prop",
+     "name": "Fault log board",
+     "rect": [
+      6.57,
+      5.36,
+      7.43,
+      5.44
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 7.0,
+     "y": 5.4
+    },
+    {
+     "footprint": {
+      "d": 0.36,
+      "from": "props/registry/props.json#props[isolation-post].size_m",
+      "w": 0.36
+     },
+     "i": 5,
+     "id": "isolation-post",
+     "kind": "prop",
+     "name": "Isolation post",
+     "rect": [
+      8.32,
+      4.82,
+      8.68,
+      5.18
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 8.5,
+     "y": 5.0
+    },
+    {
+     "footprint": {
+      "d": 1.0,
+      "from": "props/registry/props.json#props[rubber-goods-rack].size_m",
+      "w": 0.45
+     },
+     "i": 6,
+     "id": "rubber-goods-rack",
+     "kind": "prop",
+     "name": "Rubber goods rack",
+     "rect": [
+      9.275,
+      2.5,
+      9.725,
+      3.5
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 90,
+     "x": 9.5,
+     "y": 3.0
+    },
+    {
+     "footprint": {
+      "d": 1.0,
+      "from": "props/registry/props.json#props[lockout-station].size_m",
+      "w": 0.06
+     },
+     "i": 7,
+     "id": "lockout-station",
+     "kind": "prop",
+     "name": "Lockout station",
+     "rect": [
+      9.47,
+      0.5,
+      9.53,
+      1.5
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 90,
+     "x": 9.5,
+     "y": 1.0
+    },
+    {
+     "footprint": {
+      "d": 0.7,
+      "from": "props/registry/props.json#crib_furniture.pieces[multimeter-bench].size_m",
+      "w": 1.45
+     },
+     "i": 8,
+     "id": "multimeter-bench",
+     "kind": "furniture",
+     "name": "Meter test bench",
+     "rect": [
+      1.275,
+      0.65,
+      2.725,
+      1.35
+     ],
+     "registry": "props/registry/props.json#crib_furniture.pieces",
+     "rotation": 0,
+     "x": 2.0,
+     "y": 1.0
+    },
+    {
+     "footprint": {
+      "d": 0.36,
+      "from": "props/registry/props.json#crib_furniture.pieces[voltage-tester-post].size_m",
+      "w": 0.36
+     },
+     "i": 9,
+     "id": "voltage-tester-post",
+     "kind": "furniture",
+     "name": "Prove-dead post",
+     "rect": [
+      4.82,
+      0.82,
+      5.18,
+      1.18
+     ],
+     "registry": "props/registry/props.json#crib_furniture.pieces",
+     "rotation": 0,
+     "x": 5.0,
+     "y": 1.0
+    },
+    {
+     "footprint": {
+      "d": 0.44,
+      "from": "props/registry/props.json#props[learner-stool].size_m",
+      "w": 0.44
+     },
+     "i": 10,
+     "id": "learner-stool",
+     "kind": "prop",
+     "name": "Learner stool",
+     "rect": [
+      1.78,
+      1.88,
+      2.22,
+      2.32
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 2.0,
+     "y": 2.1
+    },
+    {
+     "footprint": {
+      "d": 0.44,
+      "from": "props/registry/props.json#props[learner-stool].size_m",
+      "w": 0.44
+     },
+     "i": 11,
+     "id": "learner-stool",
+     "kind": "prop",
+     "name": "Learner stool",
+     "rect": [
+      4.78,
+      1.88,
+      5.22,
+      2.32
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 5.0,
+     "y": 2.1
+    },
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 12,
+     "id": "systems",
+     "kind": "crib",
+     "name": "Building-systems tool crib",
+     "rect": [
+      8.0,
+      1.0,
+      8.0,
+      1.0
+     ],
+     "registry": "tools/registry/toolcribs.json#cribs",
+     "rotation": 0,
+     "x": 8.0,
+     "y": 1.0
+    },
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 13,
+     "id": "placard",
+     "kind": "sign",
+     "name": "what a room requires of you, read at its door",
+     "rect": [
+      0.3,
+      0.3,
+      0.3,
+      0.3
+     ],
+     "registry": "labels/registry/labels.json#kinds",
+     "rotation": 0,
+     "x": 0.3,
+     "y": 0.3
+    },
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 14,
+     "id": "hazard",
+     "kind": "sign",
+     "name": "a condition in force in a space, off the hazards its own conditions record already holds",
+     "rect": [
+      0.3,
+      4.5,
+      0.3,
+      4.5
+     ],
+     "registry": "labels/registry/labels.json#kinds",
+     "rotation": 0,
+     "x": 0.3,
+     "y": 4.5
+    }
+   ],
+   "ppe": {
+    "base_from": "surfaces base_conditions.troubleshooting.ppe",
+    "hazard_props_placed": [
+     {
+      "admitted_by": "props hazard_props: keyed to ['live-electrical'], ppe_any ['dielectric gloves']",
+      "i": 6,
+      "id": "rubber-goods-rack",
+      "keyed_to": [
+       "live-electrical"
+      ],
+      "ppe_any": [
+       "dielectric gloves"
+      ]
+     },
+     {
+      "admitted_by": "props hazard_props: keyed to ['live-electrical'], ppe_any ['arc-flash face shield']",
+      "i": 7,
+      "id": "lockout-station",
+      "keyed_to": [
+       "live-electrical"
+      ],
+      "ppe_any": [
+       "arc-flash face shield"
+      ]
+     }
+    ],
+    "hazards_from": [
+     "surfaces hazard_conditions.live-electrical.ppe"
+    ],
+    "provenance": "DERIVED",
+    "required": [
+     "arc-flash face shield",
+     "dielectric gloves",
+     "safety boots",
+     "safety glasses"
+    ]
+   },
+   "provenance": {
+    "cost": "DERIVED",
+    "declaration": "AUTHORED",
+    "fits_in": "DERIVED",
+    "footprints": "DERIVED",
+    "names": "DERIVED",
+    "ppe": "DERIVED"
+   },
+   "purpose": "Two fault-finding benches under a live rig frame, a prove-dead post and the rubber goods and lockout fixtures a live-electrical room hangs on its wall.",
+   "room_label": "Diagnostic Bench",
+   "source": "spaces/authored/electrical-lab.json",
+   "status": "declared, not yet walkable",
+   "strand": "troubleshooting",
+   "title": "Electrical lab",
+   "unions": [
+    {
+     "district": "systems",
+     "name": "Electrical Workers",
+     "slug": "electricians"
+    }
+   ],
+   "wall": {
+    "color": "#a8834f",
+    "id": "ply-lined",
+    "name": "Plywood-lined shop wall",
+    "pattern": "plywood",
+    "wainscot": "#6d4e2b"
+   }
+  },
+  {
+   "cost": {
+    "draw_calls": 2,
+    "estimated_items": 16,
+    "how": "tris = sum of props tri_budget.tris over prop and furniture items; draw_calls = one per distinct material among pooled items, plus one per own-mesh item and one per distinct instanced id (props page_contract); seats, stations, cribs and signs declare no figure and are not estimated",
+    "instanced": 0,
+    "not_estimated": [
+     {
+      "i": 16,
+      "id": "room",
+      "kind": "sign",
+      "why": "labels/registry/labels.json#kinds declares no triangle figure"
+     },
+     {
+      "i": 17,
+      "id": "placard",
+      "kind": "sign",
+      "why": "labels/registry/labels.json#kinds declares no triangle figure"
+     }
+    ],
+    "own_mesh": 0,
+    "pooled_materials": [
+     "paint",
+     "wood"
+    ],
+    "provenance": "DERIVED",
+    "tris": 1500
+   },
+   "counts": {
+    "by_kind": {
+     "crib": 0,
+     "furniture": 0,
+     "prop": 16,
+     "seat": 0,
+     "sign": 2,
+     "station": 0
+    },
+    "footprint_known": 16,
+    "footprint_unknown": 2,
+    "items": 18
+   },
+   "fits_in": [
+    {
+     "d_m": 6,
+     "hall": "carpenters",
+     "label": "Classroom",
+     "strand": "leadership",
+     "w_m": 27
+    },
+    {
+     "d_m": 6,
+     "hall": "electricians",
+     "label": "Classroom",
+     "strand": "leadership",
+     "w_m": 27
+    }
+   ],
+   "floor": {
+    "color": "#bfc9cf",
+    "id": "porcelain-tile",
+    "name": "Porcelain tile",
+    "pattern": "tile"
+   },
+   "footprint_m": {
+    "area_m2": 60.5,
+    "d": 5.5,
+    "w": 11.0
+   },
+   "hazards": [],
+   "id": "flipped-classroom",
+   "items": [
+    {
+     "footprint": {
+      "d": 0.44,
+      "from": "props/registry/props.json#props[instructor-lectern].size_m",
+      "w": 0.75
+     },
+     "i": 0,
+     "id": "instructor-lectern",
+     "kind": "prop",
+     "name": "Instructor lectern",
+     "rect": [
+      5.125,
+      4.78,
+      5.875,
+      5.22
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 5.5,
+     "y": 5.0
+    },
+    {
+     "footprint": {
+      "d": 0.6,
+      "from": "props/registry/props.json#props[exam-desk].size_m",
+      "w": 1.2
+     },
+     "i": 1,
+     "id": "exam-desk",
+     "kind": "prop",
+     "name": "Exam desk",
+     "rect": [
+      1.4,
+      2.9,
+      2.6,
+      3.5
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 2.0,
+     "y": 3.2
+    },
+    {
+     "footprint": {
+      "d": 0.6,
+      "from": "props/registry/props.json#props[exam-desk].size_m",
+      "w": 1.2
+     },
+     "i": 2,
+     "id": "exam-desk",
+     "kind": "prop",
+     "name": "Exam desk",
+     "rect": [
+      4.9,
+      2.9,
+      6.1,
+      3.5
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 5.5,
+     "y": 3.2
+    },
+    {
+     "footprint": {
+      "d": 0.6,
+      "from": "props/registry/props.json#props[exam-desk].size_m",
+      "w": 1.2
+     },
+     "i": 3,
+     "id": "exam-desk",
+     "kind": "prop",
+     "name": "Exam desk",
+     "rect": [
+      8.4,
+      2.9,
+      9.6,
+      3.5
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 9.0,
+     "y": 3.2
+    },
+    {
+     "footprint": {
+      "d": 0.6,
+      "from": "props/registry/props.json#props[exam-desk].size_m",
+      "w": 1.2
+     },
+     "i": 4,
+     "id": "exam-desk",
+     "kind": "prop",
+     "name": "Exam desk",
+     "rect": [
+      1.4,
+      1.1,
+      2.6,
+      1.7
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 2.0,
+     "y": 1.4
+    },
+    {
+     "footprint": {
+      "d": 0.6,
+      "from": "props/registry/props.json#props[exam-desk].size_m",
+      "w": 1.2
+     },
+     "i": 5,
+     "id": "exam-desk",
+     "kind": "prop",
+     "name": "Exam desk",
+     "rect": [
+      4.9,
+      1.1,
+      6.1,
+      1.7
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 5.5,
+     "y": 1.4
+    },
+    {
+     "footprint": {
+      "d": 0.6,
+      "from": "props/registry/props.json#props[exam-desk].size_m",
+      "w": 1.2
+     },
+     "i": 6,
+     "id": "exam-desk",
+     "kind": "prop",
+     "name": "Exam desk",
+     "rect": [
+      8.4,
+      1.1,
+      9.6,
+      1.7
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 9.0,
+     "y": 1.4
+    },
+    {
+     "footprint": {
+      "d": 0.4,
+      "from": "props/registry/props.json#props[classroom-stool].size_m",
+      "w": 0.4
+     },
+     "i": 7,
+     "id": "classroom-stool",
+     "kind": "prop",
+     "name": "Classroom stool",
+     "rect": [
+      1.8,
+      2.2,
+      2.2,
+      2.6
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 2.0,
+     "y": 2.4
+    },
+    {
+     "footprint": {
+      "d": 0.4,
+      "from": "props/registry/props.json#props[classroom-stool].size_m",
+      "w": 0.4
+     },
+     "i": 8,
+     "id": "classroom-stool",
+     "kind": "prop",
+     "name": "Classroom stool",
+     "rect": [
+      5.3,
+      2.2,
+      5.7,
+      2.6
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 5.5,
+     "y": 2.4
+    },
+    {
+     "footprint": {
+      "d": 0.4,
+      "from": "props/registry/props.json#props[classroom-stool].size_m",
+      "w": 0.4
+     },
+     "i": 9,
+     "id": "classroom-stool",
+     "kind": "prop",
+     "name": "Classroom stool",
+     "rect": [
+      8.8,
+      2.2,
+      9.2,
+      2.6
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 9.0,
+     "y": 2.4
+    },
+    {
+     "footprint": {
+      "d": 0.4,
+      "from": "props/registry/props.json#props[classroom-stool].size_m",
+      "w": 0.4
+     },
+     "i": 10,
+     "id": "classroom-stool",
+     "kind": "prop",
+     "name": "Classroom stool",
+     "rect": [
+      1.8,
+      0.4,
+      2.2,
+      0.8
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 2.0,
+     "y": 0.6
+    },
+    {
+     "footprint": {
+      "d": 0.4,
+      "from": "props/registry/props.json#props[classroom-stool].size_m",
+      "w": 0.4
+     },
+     "i": 11,
+     "id": "classroom-stool",
+     "kind": "prop",
+     "name": "Classroom stool",
+     "rect": [
+      5.3,
+      0.4,
+      5.7,
+      0.8
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 5.5,
+     "y": 0.6
+    },
+    {
+     "footprint": {
+      "d": 0.4,
+      "from": "props/registry/props.json#props[classroom-stool].size_m",
+      "w": 0.4
+     },
+     "i": 12,
+     "id": "classroom-stool",
+     "kind": "prop",
+     "name": "Classroom stool",
+     "rect": [
+      8.8,
+      0.4,
+      9.2,
+      0.8
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 9.0,
+     "y": 0.6
+    },
+    {
+     "footprint": {
+      "d": 0.08,
+      "from": "props/registry/props.json#props[progress-board].size_m",
+      "w": 0.86
+     },
+     "i": 13,
+     "id": "progress-board",
+     "kind": "prop",
+     "name": "Progress board",
+     "rect": [
+      0.57,
+      5.36,
+      1.43,
+      5.44
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 1.0,
+     "y": 5.4
+    },
+    {
+     "footprint": {
+      "d": 0.28,
+      "from": "props/registry/props.json#props[reference-shelf].size_m",
+      "w": 0.86
+     },
+     "i": 14,
+     "id": "reference-shelf",
+     "kind": "prop",
+     "name": "Reference shelf",
+     "rect": [
+      9.57,
+      5.16,
+      10.43,
+      5.44
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 10.0,
+     "y": 5.3
+    },
+    {
+     "footprint": {
+      "d": 0.44,
+      "from": "props/registry/props.json#props[drawing-easel].size_m",
+      "w": 0.9
+     },
+     "i": 15,
+     "id": "drawing-easel",
+     "kind": "prop",
+     "name": "Drawing easel",
+     "rect": [
+      8.05,
+      4.78,
+      8.95,
+      5.22
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 8.5,
+     "y": 5.0
+    },
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 16,
+     "id": "room",
+     "kind": "sign",
+     "name": "a room inside a hall",
+     "rect": [
+      0.3,
+      5.2,
+      0.3,
+      5.2
+     ],
+     "registry": "labels/registry/labels.json#kinds",
+     "rotation": 0,
+     "x": 0.3,
+     "y": 5.2
+    },
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 17,
+     "id": "placard",
+     "kind": "sign",
+     "name": "what a room requires of you, read at its door",
+     "rect": [
+      0.3,
+      0.3,
+      0.3,
+      0.3
+     ],
+     "registry": "labels/registry/labels.json#kinds",
+     "rotation": 0,
+     "x": 0.3,
+     "y": 0.3
+    }
+   ],
+   "ppe": {
+    "base_from": "surfaces base_conditions.leadership.ppe",
+    "hazard_props_placed": [],
+    "hazards_from": [],
+    "provenance": "DERIVED",
+    "required": []
+   },
+   "provenance": {
+    "cost": "DERIVED",
+    "declaration": "AUTHORED",
+    "fits_in": "DERIVED",
+    "footprints": "DERIVED",
+    "names": "DERIVED",
+    "ppe": "DERIVED"
+   },
+   "purpose": "Six desks in two rows facing a lectern, an easel and a progress board, so the reading is done before the room and the room is spent on the questions.",
+   "room_label": "Classroom",
+   "source": "spaces/authored/flipped-classroom.json",
+   "status": "declared, not yet walkable",
+   "strand": "leadership",
+   "title": "Flipped classroom",
+   "unions": [
+    {
+     "district": "envelope",
+     "name": "Carpenters",
+     "slug": "carpenters"
+    },
+    {
+     "district": "systems",
+     "name": "Electrical Workers",
+     "slug": "electricians"
+    }
+   ],
+   "wall": {
+    "color": "#dce4e8",
+    "id": "whiteboard-panel",
+    "name": "Full-height marker panel",
+    "pattern": "board",
+    "wainscot": "#6f818e"
+   }
+  },
+  {
+   "cost": {
+    "draw_calls": 4,
+    "estimated_items": 9,
+    "how": "tris = sum of props tri_budget.tris over prop and furniture items; draw_calls = one per distinct material among pooled items, plus one per own-mesh item and one per distinct instanced id (props page_contract); seats, stations, cribs and signs declare no figure and are not estimated",
+    "instanced": 0,
+    "not_estimated": [
+     {
+      "i": 9,
+      "id": "rigging-signals",
+      "kind": "seat",
+      "why": "sims/registry/sims.json#sims declares no triangle figure"
+     },
+     {
+      "i": 10,
+      "id": "load-chart",
+      "kind": "seat",
+      "why": "sims/registry/sims.json#sims declares no triangle figure"
+     },
+     {
+      "i": 11,
+      "id": "structural",
+      "kind": "crib",
+      "why": "tools/registry/toolcribs.json#cribs declares no triangle figure"
+     },
+     {
+      "i": 12,
+      "id": "st005",
+      "kind": "station",
+      "why": "stations/registry/stations.json#stations declares no triangle figure"
+     },
+     {
+      "i": 13,
+      "id": "placard",
+      "kind": "sign",
+      "why": "labels/registry/labels.json#kinds declares no triangle figure"
+     },
+     {
+      "i": 14,
+      "id": "hazard",
+      "kind": "sign",
+      "why": "labels/registry/labels.json#kinds declares no triangle figure"
+     }
+    ],
+    "own_mesh": 0,
+    "pooled_materials": [
+     "metal",
+     "paint",
+     "steel",
+     "wood"
+    ],
+    "provenance": "DERIVED",
+    "tris": 884
+   },
+   "counts": {
+    "by_kind": {
+     "crib": 1,
+     "furniture": 6,
+     "prop": 3,
+     "seat": 2,
+     "sign": 2,
+     "station": 1
+    },
+    "footprint_known": 9,
+    "footprint_unknown": 6,
+    "items": 15
+   },
+   "fits_in": [
+    {
+     "d_m": 6,
+     "hall": "riggers",
+     "label": "Materials Store",
+     "strand": "materials",
+     "w_m": 18
+    },
+    {
+     "d_m": 6,
+     "hall": "ironworkers",
+     "label": "Materials Store",
+     "strand": "materials",
+     "w_m": 18
+    }
+   ],
+   "floor": {
+    "color": "#59656f",
+    "id": "steel-plate",
+    "name": "Sealed steel plate deck",
+    "pattern": "plate"
+   },
+   "footprint_m": {
+    "area_m2": 66.0,
+    "d": 5.5,
+    "w": 12.0
+   },
+   "hazards": [
+    {
+     "finish": "steel-plate",
+     "from": "floor",
+     "hazard": "suspended-load",
+     "rule": "surfaces rules.hazard_rooms.suspended-load.materials = steel-plate"
+    },
+    {
+     "finish": "mesh-guard",
+     "from": "wall",
+     "hazard": "suspended-load",
+     "rule": "surfaces rules.hazard_walls.suspended-load.materials = mesh-guard"
+    }
+   ],
+   "id": "rigging-yard",
+   "items": [
+    {
+     "footprint": {
+      "d": 1.0,
+      "from": "props/registry/props.json#crib_furniture.pieces[shackle-table].size_m",
+      "w": 1.45
+     },
+     "i": 0,
+     "id": "shackle-table",
+     "kind": "furniture",
+     "name": "Rigging lay-down table",
+     "rect": [
+      1.275,
+      0.7,
+      2.725,
+      1.7
+     ],
+     "registry": "props/registry/props.json#crib_furniture.pieces",
+     "rotation": 0,
+     "x": 2.0,
+     "y": 1.2
+    },
+    {
+     "footprint": {
+      "d": 0.4,
+      "from": "props/registry/props.json#crib_furniture.pieces[wire-sling-rail].size_m",
+      "w": 1.4
+     },
+     "i": 1,
+     "id": "wire-sling-rail",
+     "kind": "furniture",
+     "name": "Sling inspection rail",
+     "rect": [
+      1.3,
+      5.0,
+      2.7,
+      5.4
+     ],
+     "registry": "props/registry/props.json#crib_furniture.pieces",
+     "rotation": 0,
+     "x": 2.0,
+     "y": 5.2
+    },
+    {
+     "footprint": {
+      "d": 0.68,
+      "from": "props/registry/props.json#crib_furniture.pieces[wire-sling-tree].size_m",
+      "w": 0.68
+     },
+     "i": 2,
+     "id": "wire-sling-tree",
+     "kind": "furniture",
+     "name": "Sling storage tree",
+     "rect": [
+      3.66,
+      4.66,
+      4.34,
+      5.34
+     ],
+     "registry": "props/registry/props.json#crib_furniture.pieces",
+     "rotation": 0,
+     "x": 4.0,
+     "y": 5.0
+    },
+    {
+     "footprint": {
+      "d": 0.4,
+      "from": "props/registry/props.json#crib_furniture.pieces[lever-hoist-frame].size_m",
+      "w": 1.4
+     },
+     "i": 3,
+     "id": "lever-hoist-frame",
+     "kind": "furniture",
+     "name": "Hoist proof frame",
+     "rect": [
+      5.3,
+      5.0,
+      6.7,
+      5.4
+     ],
+     "registry": "props/registry/props.json#crib_furniture.pieces",
+     "rotation": 0,
+     "x": 6.0,
+     "y": 5.2
+    },
+    {
+     "footprint": {
+      "d": 0.5,
+      "from": "props/registry/props.json#crib_furniture.pieces[lever-hoist-rack].size_m",
+      "w": 1.2
+     },
+     "i": 4,
+     "id": "lever-hoist-rack",
+     "kind": "furniture",
+     "name": "Chain hoist rack",
+     "rect": [
+      7.4,
+      4.9,
+      8.6,
+      5.4
+     ],
+     "registry": "props/registry/props.json#crib_furniture.pieces",
+     "rotation": 0,
+     "x": 8.0,
+     "y": 5.15
+    },
+    {
+     "footprint": {
+      "d": 0.5,
+      "from": "props/registry/props.json#crib_furniture.pieces[beam-clamp-beam].size_m",
+      "w": 1.45
+     },
+     "i": 5,
+     "id": "beam-clamp-beam",
+     "kind": "furniture",
+     "name": "Trial flange beam",
+     "rect": [
+      4.275,
+      0.95,
+      5.725,
+      1.45
+     ],
+     "registry": "props/registry/props.json#crib_furniture.pieces",
+     "rotation": 0,
+     "x": 5.0,
+     "y": 1.2
+    },
+    {
+     "footprint": {
+      "d": 0.7,
+      "from": "props/registry/props.json#props[stock-rack].size_m",
+      "w": 1.8
+     },
+     "i": 6,
+     "id": "stock-rack",
+     "kind": "prop",
+     "name": "Stock rack",
+     "rect": [
+      9.6,
+      4.65,
+      11.4,
+      5.35
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 10.5,
+     "y": 5.0
+    },
+    {
+     "footprint": {
+      "d": 0.48,
+      "from": "props/registry/props.json#props[bar-stock-cradle].size_m",
+      "w": 1.25
+     },
+     "i": 7,
+     "id": "bar-stock-cradle",
+     "kind": "prop",
+     "name": "Bar stock cradle",
+     "rect": [
+      7.375,
+      0.96,
+      8.625,
+      1.44
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 8.0,
+     "y": 1.2
+    },
+    {
+     "footprint": {
+      "d": 1.0,
+      "from": "props/registry/props.json#props[ppe-station].size_m",
+      "w": 0.12
+     },
+     "i": 8,
+     "id": "ppe-station",
+     "kind": "prop",
+     "name": "PPE station",
+     "rect": [
+      11.44,
+      2.0,
+      11.56,
+      3.0
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 90,
+     "x": 11.5,
+     "y": 2.5
+    },
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 9,
+     "id": "rigging-signals",
+     "kind": "seat",
+     "name": "Rigging Signal Call",
+     "rect": [
+      5.0,
+      3.0,
+      5.0,
+      3.0
+     ],
+     "registry": "sims/registry/sims.json#sims",
+     "rotation": 0,
+     "x": 5.0,
+     "y": 3.0
+    },
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 10,
+     "id": "load-chart",
+     "kind": "seat",
+     "name": "Load Chart Judgment",
+     "rect": [
+      9.0,
+      3.0,
+      9.0,
+      3.0
+     ],
+     "registry": "sims/registry/sims.json#sims",
+     "rotation": 0,
+     "x": 9.0,
+     "y": 3.0
+    },
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 11,
+     "id": "structural",
+     "kind": "crib",
+     "name": "Structural tool crib",
+     "rect": [
+      11.3,
+      0.6,
+      11.3,
+      0.6
+     ],
+     "registry": "tools/registry/toolcribs.json#cribs",
+     "rotation": 0,
+     "x": 11.3,
+     "y": 0.6
+    },
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 12,
+     "id": "st005",
+     "kind": "station",
+     "name": "Rigging & Material Handling",
+     "rect": [
+      0.6,
+      1.2,
+      0.6,
+      1.2
+     ],
+     "registry": "stations/registry/stations.json#stations",
+     "rotation": 0,
+     "x": 0.6,
+     "y": 1.2
+    },
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 13,
+     "id": "placard",
+     "kind": "sign",
+     "name": "what a room requires of you, read at its door",
+     "rect": [
+      0.3,
+      3.0,
+      0.3,
+      3.0
+     ],
+     "registry": "labels/registry/labels.json#kinds",
+     "rotation": 0,
+     "x": 0.3,
+     "y": 3.0
+    },
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 14,
+     "id": "hazard",
+     "kind": "sign",
+     "name": "a condition in force in a space, off the hazards its own conditions record already holds",
+     "rect": [
+      0.3,
+      4.5,
+      0.3,
+      4.5
+     ],
+     "registry": "labels/registry/labels.json#kinds",
+     "rotation": 0,
+     "x": 0.3,
+     "y": 4.5
+    }
+   ],
+   "ppe": {
+    "base_from": "surfaces base_conditions.materials.ppe",
+    "hazard_props_placed": [
+     {
+      "admitted_by": "props hazard_props: admitted when the PPE set is non-empty",
+      "i": 8,
+      "id": "ppe-station",
+      "keyed_to": [],
+      "ppe_any": [
+       "*any*"
+      ]
+     }
+    ],
+    "hazards_from": [
+     "surfaces hazard_conditions.suspended-load.ppe"
+    ],
+    "provenance": "DERIVED",
+    "required": [
+     "gloves",
+     "hard hat",
+     "hi-vis",
+     "safety boots"
+    ]
+   },
+   "provenance": {
+    "cost": "DERIVED",
+    "declaration": "AUTHORED",
+    "fits_in": "DERIVED",
+    "footprints": "DERIVED",
+    "names": "DERIVED",
+    "ppe": "DERIVED"
+   },
+   "purpose": "A lay-down table, sling and hoist inspection rails and a trial flange beam, with the two rigging seats standing in the open floor between them.",
+   "room_label": "Materials Store",
+   "source": "spaces/authored/rigging-yard.json",
+   "status": "declared, not yet walkable",
+   "strand": "materials",
+   "title": "Rigging yard",
+   "unions": [
+    {
+     "district": "structural",
+     "name": "Riggers & Signalpersons",
+     "slug": "riggers"
+    },
+    {
+     "district": "structural",
+     "name": "Ironworkers",
+     "slug": "ironworkers"
+    }
+   ],
+   "wall": {
+    "color": "#8a8452",
+    "id": "mesh-guard",
+    "name": "Guarded mesh partition",
+    "pattern": "mesh",
+    "wainscot": "#4a4626"
+   }
+  },
+  {
+   "cost": {
+    "draw_calls": 5,
+    "estimated_items": 10,
+    "how": "tris = sum of props tri_budget.tris over prop and furniture items; draw_calls = one per distinct material among pooled items, plus one per own-mesh item and one per distinct instanced id (props page_contract); seats, stations, cribs and signs declare no figure and are not estimated",
+    "instanced": 0,
+    "not_estimated": [
+     {
+      "i": 10,
+      "id": "scaffold-bay",
+      "kind": "seat",
+      "why": "sims/registry/sims.json#sims declares no triangle figure"
+     },
+     {
+      "i": 11,
+      "id": "boom-lift",
+      "kind": "seat",
+      "why": "sims/registry/sims.json#sims declares no triangle figure"
+     },
+     {
+      "i": 12,
+      "id": "st003",
+      "kind": "station",
+      "why": "stations/registry/stations.json#stations declares no triangle figure"
+     },
+     {
+      "i": 13,
+      "id": "earthworks",
+      "kind": "crib",
+      "why": "tools/registry/toolcribs.json#cribs declares no triangle figure"
+     },
+     {
+      "i": 14,
+      "id": "placard",
+      "kind": "sign",
+      "why": "labels/registry/labels.json#kinds declares no triangle figure"
+     },
+     {
+      "i": 15,
+      "id": "hazard",
+      "kind": "sign",
+      "why": "labels/registry/labels.json#kinds declares no triangle figure"
+     },
+     {
+      "i": 16,
+      "id": "station",
+      "kind": "sign",
+      "why": "labels/registry/labels.json#kinds declares no triangle figure"
+     }
+    ],
+    "own_mesh": 0,
+    "pooled_materials": [
+     "metal",
+     "paint",
+     "part",
+     "steel",
+     "wood"
+    ],
+    "provenance": "DERIVED",
+    "tris": 912
+   },
+   "counts": {
+    "by_kind": {
+     "crib": 1,
+     "furniture": 2,
+     "prop": 8,
+     "seat": 2,
+     "sign": 3,
+     "station": 1
+    },
+    "footprint_known": 10,
+    "footprint_unknown": 7,
+    "items": 17
+   },
+   "fits_in": [
+    {
+     "d_m": 9,
+     "hall": "scaffold",
+     "label": "Practice Bays",
+     "strand": "procedure",
+     "w_m": 36
+    },
+    {
+     "d_m": 9,
+     "hall": "carpenters",
+     "label": "Practice Bays",
+     "strand": "procedure",
+     "w_m": 21
+    }
+   ],
+   "floor": {
+    "color": "#3f4e63",
+    "id": "impact-mat",
+    "name": "Impact-absorbing mat",
+    "pattern": "smooth"
+   },
+   "footprint_m": {
+    "area_m2": 112.0,
+    "d": 8.0,
+    "w": 14.0
+   },
+   "hazards": [
+    {
+     "finish": "impact-mat",
+     "from": "floor",
+     "hazard": "work-at-height",
+     "rule": "surfaces rules.hazard_rooms.work-at-height.procedure = impact-mat"
+    },
+    {
+     "finish": "impact-block",
+     "from": "wall",
+     "hazard": "work-at-height",
+     "rule": "surfaces rules.hazard_walls.work-at-height.procedure = impact-block"
+    }
+   ],
+   "id": "scaffold-court",
+   "items": [
+    {
+     "footprint": {
+      "d": 0.4,
+      "from": "props/registry/props.json#props[harness-rail].size_m",
+      "w": 1.4
+     },
+     "i": 0,
+     "id": "harness-rail",
+     "kind": "prop",
+     "name": "Harness inspection rail",
+     "rect": [
+      1.3,
+      7.5,
+      2.7,
+      7.9
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 2.0,
+     "y": 7.7
+    },
+    {
+     "footprint": {
+      "d": 0.45,
+      "from": "props/registry/props.json#props[lanyard-locker].size_m",
+      "w": 1.0
+     },
+     "i": 1,
+     "id": "lanyard-locker",
+     "kind": "prop",
+     "name": "Lanyard locker",
+     "rect": [
+      3.5,
+      7.475,
+      4.5,
+      7.925
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 4.0,
+     "y": 7.7
+    },
+    {
+     "footprint": {
+      "d": 0.3,
+      "from": "props/registry/props.json#props[helmet-shelf].size_m",
+      "w": 1.0
+     },
+     "i": 2,
+     "id": "helmet-shelf",
+     "kind": "prop",
+     "name": "Helmet shelf",
+     "rect": [
+      5.5,
+      7.65,
+      6.5,
+      7.95
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 6.0,
+     "y": 7.8
+    },
+    {
+     "footprint": {
+      "d": 0.55,
+      "from": "props/registry/props.json#props[edge-stack].size_m",
+      "w": 1.2
+     },
+     "i": 3,
+     "id": "edge-stack",
+     "kind": "prop",
+     "name": "Edge protection stack",
+     "rect": [
+      7.9,
+      7.325,
+      9.1,
+      7.875
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 8.5,
+     "y": 7.6
+    },
+    {
+     "footprint": {
+      "d": 0.4,
+      "from": "props/registry/props.json#crib_furniture.pieces[rope-grab-frame].size_m",
+      "w": 1.4
+     },
+     "i": 4,
+     "id": "rope-grab-frame",
+     "kind": "furniture",
+     "name": "Fall arrest practice frame",
+     "rect": [
+      10.3,
+      7.5,
+      11.7,
+      7.9
+     ],
+     "registry": "props/registry/props.json#crib_furniture.pieces",
+     "rotation": 0,
+     "x": 11.0,
+     "y": 7.7
+    },
+    {
+     "footprint": {
+      "d": 0.45,
+      "from": "props/registry/props.json#crib_furniture.pieces[rope-grab-rack].size_m",
+      "w": 1.1
+     },
+     "i": 5,
+     "id": "rope-grab-rack",
+     "kind": "furniture",
+     "name": "Rope and grab rack",
+     "rect": [
+      12.45,
+      7.475,
+      13.55,
+      7.925
+     ],
+     "registry": "props/registry/props.json#crib_furniture.pieces",
+     "rotation": 0,
+     "x": 13.0,
+     "y": 7.7
+    },
+    {
+     "footprint": {
+      "d": 0.5,
+      "from": "props/registry/props.json#props[work-trestle].size_m",
+      "w": 1.8
+     },
+     "i": 6,
+     "id": "work-trestle",
+     "kind": "prop",
+     "name": "Work trestle",
+     "rect": [
+      2.1,
+      2.75,
+      3.9,
+      3.25
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 3.0,
+     "y": 3.0
+    },
+    {
+     "footprint": {
+      "d": 0.5,
+      "from": "props/registry/props.json#props[work-trestle].size_m",
+      "w": 1.8
+     },
+     "i": 7,
+     "id": "work-trestle",
+     "kind": "prop",
+     "name": "Work trestle",
+     "rect": [
+      6.1,
+      2.75,
+      7.9,
+      3.25
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 7.0,
+     "y": 3.0
+    },
+    {
+     "footprint": {
+      "d": 1.3,
+      "from": "props/registry/props.json#props[task-board].size_m",
+      "w": 0.08
+     },
+     "i": 8,
+     "id": "task-board",
+     "kind": "prop",
+     "name": "Task board",
+     "rect": [
+      0.46,
+      3.35,
+      0.54,
+      4.65
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 90,
+     "x": 0.5,
+     "y": 4.0
+    },
+    {
+     "footprint": {
+      "d": 1.0,
+      "from": "props/registry/props.json#props[ppe-station].size_m",
+      "w": 0.12
+     },
+     "i": 9,
+     "id": "ppe-station",
+     "kind": "prop",
+     "name": "PPE station",
+     "rect": [
+      13.84,
+      3.5,
+      13.96,
+      4.5
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 90,
+     "x": 13.9,
+     "y": 4.0
+    },
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 10,
+     "id": "scaffold-bay",
+     "kind": "seat",
+     "name": "Scaffold Bay Build",
+     "rect": [
+      5.0,
+      5.5,
+      5.0,
+      5.5
+     ],
+     "registry": "sims/registry/sims.json#sims",
+     "rotation": 0,
+     "x": 5.0,
+     "y": 5.5
+    },
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 11,
+     "id": "boom-lift",
+     "kind": "seat",
+     "name": "Boom Lift Basket Work",
+     "rect": [
+      10.0,
+      4.0,
+      10.0,
+      4.0
+     ],
+     "registry": "sims/registry/sims.json#sims",
+     "rotation": 0,
+     "x": 10.0,
+     "y": 4.0
+    },
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 12,
+     "id": "st003",
+     "kind": "station",
+     "name": "Scaffold & Fall Protection",
+     "rect": [
+      1.5,
+      1.0,
+      1.5,
+      1.0
+     ],
+     "registry": "stations/registry/stations.json#stations",
+     "rotation": 0,
+     "x": 1.5,
+     "y": 1.0
+    },
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 13,
+     "id": "earthworks",
+     "kind": "crib",
+     "name": "Earthworks & plant tool crib",
+     "rect": [
+      12.5,
+      1.0,
+      12.5,
+      1.0
+     ],
+     "registry": "tools/registry/toolcribs.json#cribs",
+     "rotation": 0,
+     "x": 12.5,
+     "y": 1.0
+    },
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 14,
+     "id": "placard",
+     "kind": "sign",
+     "name": "what a room requires of you, read at its door",
+     "rect": [
+      0.3,
+      0.3,
+      0.3,
+      0.3
+     ],
+     "registry": "labels/registry/labels.json#kinds",
+     "rotation": 0,
+     "x": 0.3,
+     "y": 0.3
+    },
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 15,
+     "id": "hazard",
+     "kind": "sign",
+     "name": "a condition in force in a space, off the hazards its own conditions record already holds",
+     "rect": [
+      0.3,
+      7.5,
+      0.3,
+      7.5
+     ],
+     "registry": "labels/registry/labels.json#kinds",
+     "rotation": 0,
+     "x": 0.3,
+     "y": 7.5
+    },
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 16,
+     "id": "station",
+     "kind": "sign",
+     "name": "a training station",
+     "rect": [
+      1.5,
+      0.3,
+      1.5,
+      0.3
+     ],
+     "registry": "labels/registry/labels.json#kinds",
+     "rotation": 0,
+     "x": 1.5,
+     "y": 0.3
+    }
+   ],
+   "ppe": {
+    "base_from": "surfaces base_conditions.procedure.ppe",
+    "hazard_props_placed": [
+     {
+      "admitted_by": "props hazard_props: keyed to ['work-at-height'], ppe_any ['full-body harness']",
+      "i": 0,
+      "id": "harness-rail",
+      "keyed_to": [
+       "work-at-height"
+      ],
+      "ppe_any": [
+       "full-body harness"
+      ]
+     },
+     {
+      "admitted_by": "props hazard_props: keyed to ['work-at-height'], ppe_any ['full-body harness']",
+      "i": 1,
+      "id": "lanyard-locker",
+      "keyed_to": [
+       "work-at-height"
+      ],
+      "ppe_any": [
+       "full-body harness"
+      ]
+     },
+     {
+      "admitted_by": "props hazard_props: keyed to ['work-at-height'], ppe_any ['chinstrap helmet']",
+      "i": 2,
+      "id": "helmet-shelf",
+      "keyed_to": [
+       "work-at-height"
+      ],
+      "ppe_any": [
+       "chinstrap helmet"
+      ]
+     },
+     {
+      "admitted_by": "props hazard_props: keyed to ['work-at-height'], ppe_any ['chinstrap helmet']",
+      "i": 3,
+      "id": "edge-stack",
+      "keyed_to": [
+       "work-at-height"
+      ],
+      "ppe_any": [
+       "chinstrap helmet"
+      ]
+     },
+     {
+      "admitted_by": "props hazard_props: admitted when the PPE set is non-empty",
+      "i": 9,
+      "id": "ppe-station",
+      "keyed_to": [],
+      "ppe_any": [
+       "*any*"
+      ]
+     }
+    ],
+    "hazards_from": [
+     "surfaces hazard_conditions.work-at-height.ppe"
+    ],
+    "provenance": "DERIVED",
+    "required": [
+     "chinstrap helmet",
+     "full-body harness",
+     "gloves",
+     "hard hat",
+     "hi-vis",
+     "safety boots",
+     "safety glasses"
+    ]
+   },
+   "provenance": {
+    "cost": "DERIVED",
+    "declaration": "AUTHORED",
+    "fits_in": "DERIVED",
+    "footprints": "DERIVED",
+    "names": "DERIVED",
+    "ppe": "DERIVED"
+   },
+   "purpose": "An open matted floor for the scaffold and boom-lift seats, with harness, lanyard, helmet and edge-protection fixtures along the back wall and two trestles for the tie-in work.",
+   "room_label": "Practice Bays",
+   "source": "spaces/authored/scaffold-court.json",
+   "status": "declared, not yet walkable",
+   "strand": "procedure",
+   "title": "Scaffold court",
+   "unions": [
+    {
+     "district": "earthworks",
+     "name": "Scaffold Erectors",
+     "slug": "scaffold"
+    },
+    {
+     "district": "envelope",
+     "name": "Carpenters",
+     "slug": "carpenters"
+    }
+   ],
+   "wall": {
+    "color": "#948877",
+    "id": "impact-block",
+    "name": "Impact-faced block with kerb",
+    "pattern": "block",
+    "wainscot": "#584a2f"
+   }
+  },
+  {
+   "cost": {
+    "draw_calls": 6,
+    "estimated_items": 14,
+    "how": "tris = sum of props tri_budget.tris over prop and furniture items; draw_calls = one per distinct material among pooled items, plus one per own-mesh item and one per distinct instanced id (props page_contract); seats, stations, cribs and signs declare no figure and are not estimated",
+    "instanced": 0,
+    "not_estimated": [
+     {
+      "i": 14,
+      "id": "weld-bead",
+      "kind": "seat",
+      "why": "sims/registry/sims.json#sims declares no triangle figure"
+     },
+     {
+      "i": 15,
+      "id": "structural",
+      "kind": "crib",
+      "why": "tools/registry/toolcribs.json#cribs declares no triangle figure"
+     },
+     {
+      "i": 16,
+      "id": "placard",
+      "kind": "sign",
+      "why": "labels/registry/labels.json#kinds declares no triangle figure"
+     },
+     {
+      "i": 17,
+      "id": "hazard",
+      "kind": "sign",
+      "why": "labels/registry/labels.json#kinds declares no triangle figure"
+     }
+    ],
+    "own_mesh": 0,
+    "pooled_materials": [
+     "cone",
+     "metal",
+     "paint",
+     "part",
+     "post",
+     "steel"
+    ],
+    "provenance": "DERIVED",
+    "tris": 1676
+   },
+   "counts": {
+    "by_kind": {
+     "crib": 1,
+     "furniture": 1,
+     "prop": 13,
+     "seat": 1,
+     "sign": 2,
+     "station": 0
+    },
+    "footprint_known": 14,
+    "footprint_unknown": 4,
+    "items": 18
+   },
+   "fits_in": [
+    {
+     "d_m": 9,
+     "hall": "welders",
+     "label": "Practice Bays",
+     "strand": "procedure",
+     "w_m": 21
+    }
+   ],
+   "floor": {
+    "color": "#848d94",
+    "id": "bare-slab",
+    "name": "Power-floated bare slab",
+    "pattern": "slab"
+   },
+   "footprint_m": {
+    "area_m2": 96.0,
+    "d": 8.0,
+    "w": 12.0
+   },
+   "hazards": [
+    {
+     "finish": "bare-slab",
+     "from": "floor",
+     "hazard": "hot-work",
+     "rule": "surfaces rules.hazard_rooms.hot-work.procedure = bare-slab"
+    },
+    {
+     "finish": "weld-screen",
+     "from": "wall",
+     "hazard": "hot-work",
+     "rule": "surfaces rules.hazard_walls.hot-work.procedure = weld-screen"
+    }
+   ],
+   "id": "welding-bay",
+   "items": [
+    {
+     "footprint": {
+      "d": 0.22,
+      "from": "props/registry/props.json#props[weld-screen].size_m",
+      "w": 1.5
+     },
+     "i": 0,
+     "id": "weld-screen",
+     "kind": "prop",
+     "name": "Welding screen",
+     "rect": [
+      1.25,
+      3.89,
+      2.75,
+      4.11
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 2.0,
+     "y": 4.0
+    },
+    {
+     "footprint": {
+      "d": 0.22,
+      "from": "props/registry/props.json#props[weld-screen].size_m",
+      "w": 1.5
+     },
+     "i": 1,
+     "id": "weld-screen",
+     "kind": "prop",
+     "name": "Welding screen",
+     "rect": [
+      4.25,
+      3.89,
+      5.75,
+      4.11
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 5.0,
+     "y": 4.0
+    },
+    {
+     "footprint": {
+      "d": 0.22,
+      "from": "props/registry/props.json#props[weld-screen].size_m",
+      "w": 1.5
+     },
+     "i": 2,
+     "id": "weld-screen",
+     "kind": "prop",
+     "name": "Welding screen",
+     "rect": [
+      7.25,
+      3.89,
+      8.75,
+      4.11
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 8.0,
+     "y": 4.0
+    },
+    {
+     "footprint": {
+      "d": 0.7,
+      "from": "props/registry/props.json#props[practice-bench].size_m",
+      "w": 1.7
+     },
+     "i": 3,
+     "id": "practice-bench",
+     "kind": "prop",
+     "name": "Practice bench",
+     "rect": [
+      1.15,
+      2.15,
+      2.85,
+      2.85
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 2.0,
+     "y": 2.5
+    },
+    {
+     "footprint": {
+      "d": 0.7,
+      "from": "props/registry/props.json#props[practice-bench].size_m",
+      "w": 1.7
+     },
+     "i": 4,
+     "id": "practice-bench",
+     "kind": "prop",
+     "name": "Practice bench",
+     "rect": [
+      4.15,
+      2.15,
+      5.85,
+      2.85
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 5.0,
+     "y": 2.5
+    },
+    {
+     "footprint": {
+      "d": 0.7,
+      "from": "props/registry/props.json#props[practice-bench].size_m",
+      "w": 1.7
+     },
+     "i": 5,
+     "id": "practice-bench",
+     "kind": "prop",
+     "name": "Practice bench",
+     "rect": [
+      7.15,
+      2.15,
+      8.85,
+      2.85
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 8.0,
+     "y": 2.5
+    },
+    {
+     "footprint": {
+      "d": 0.46,
+      "from": "props/registry/props.json#props[rod-oven].size_m",
+      "w": 0.52
+     },
+     "i": 6,
+     "id": "rod-oven",
+     "kind": "prop",
+     "name": "Electrode rod oven",
+     "rect": [
+      10.24,
+      0.77,
+      10.76,
+      1.23
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 10.5,
+     "y": 1.0
+    },
+    {
+     "footprint": {
+      "d": 0.48,
+      "from": "props/registry/props.json#props[stub-bin].size_m",
+      "w": 0.48
+     },
+     "i": 7,
+     "id": "stub-bin",
+     "kind": "prop",
+     "name": "Electrode stub bin",
+     "rect": [
+      10.26,
+      1.96,
+      10.74,
+      2.44
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 10.5,
+     "y": 2.2
+    },
+    {
+     "footprint": {
+      "d": 0.68,
+      "from": "props/registry/props.json#props[quench-tank].size_m",
+      "w": 0.68
+     },
+     "i": 8,
+     "id": "quench-tank",
+     "kind": "prop",
+     "name": "Quench tank",
+     "rect": [
+      10.16,
+      3.26,
+      10.84,
+      3.94
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 10.5,
+     "y": 3.6
+    },
+    {
+     "footprint": {
+      "d": 0.18,
+      "from": "props/registry/props.json#props[fire-blanket-cabinet].size_m",
+      "w": 0.42
+     },
+     "i": 9,
+     "id": "fire-blanket-cabinet",
+     "kind": "prop",
+     "name": "Fire blanket cabinet",
+     "rect": [
+      11.29,
+      0.21,
+      11.71,
+      0.39
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 11.5,
+     "y": 0.3
+    },
+    {
+     "footprint": {
+      "d": 0.22,
+      "from": "props/registry/props.json#props[extinguisher-bracket].size_m",
+      "w": 0.24
+     },
+     "i": 10,
+     "id": "extinguisher-bracket",
+     "kind": "prop",
+     "name": "Extinguisher bracket",
+     "rect": [
+      0.38,
+      0.19,
+      0.62,
+      0.41
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 0.5,
+     "y": 0.3
+    },
+    {
+     "footprint": {
+      "d": 0.12,
+      "from": "props/registry/props.json#props[ppe-station].size_m",
+      "w": 1.0
+     },
+     "i": 11,
+     "id": "ppe-station",
+     "kind": "prop",
+     "name": "PPE station",
+     "rect": [
+      1.0,
+      7.84,
+      2.0,
+      7.96
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 1.5,
+     "y": 7.9
+    },
+    {
+     "footprint": {
+      "d": 0.36,
+      "from": "props/registry/props.json#props[fire-watch-post].size_m",
+      "w": 0.36
+     },
+     "i": 12,
+     "id": "fire-watch-post",
+     "kind": "prop",
+     "name": "Fire watch post",
+     "rect": [
+      5.82,
+      6.32,
+      6.18,
+      6.68
+     ],
+     "registry": "props/registry/props.json#props",
+     "rotation": 0,
+     "x": 6.0,
+     "y": 6.5
+    },
+    {
+     "footprint": {
+      "d": 0.75,
+      "from": "props/registry/props.json#crib_furniture.pieces[chipping-hammer-bench].size_m",
+      "w": 1.45
+     },
+     "i": 13,
+     "id": "chipping-hammer-bench",
+     "kind": "furniture",
+     "name": "Weld dressing bench",
+     "rect": [
+      9.775,
+      5.625,
+      11.225,
+      6.375
+     ],
+     "registry": "props/registry/props.json#crib_furniture.pieces",
+     "rotation": 0,
+     "x": 10.5,
+     "y": 6.0
+    },
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 14,
+     "id": "weld-bead",
+     "kind": "seat",
+     "name": "Weld Bead Run",
+     "rect": [
+      6.0,
+      7.2,
+      6.0,
+      7.2
+     ],
+     "registry": "sims/registry/sims.json#sims",
+     "rotation": 0,
+     "x": 6.0,
+     "y": 7.2
+    },
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 15,
+     "id": "structural",
+     "kind": "crib",
+     "name": "Structural tool crib",
+     "rect": [
+      11.3,
+      7.2,
+      11.3,
+      7.2
+     ],
+     "registry": "tools/registry/toolcribs.json#cribs",
+     "rotation": 0,
+     "x": 11.3,
+     "y": 7.2
+    },
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 16,
+     "id": "placard",
+     "kind": "sign",
+     "name": "what a room requires of you, read at its door",
+     "rect": [
+      0.3,
+      7.5,
+      0.3,
+      7.5
+     ],
+     "registry": "labels/registry/labels.json#kinds",
+     "rotation": 0,
+     "x": 0.3,
+     "y": 7.5
+    },
+    {
+     "footprint": null,
+     "footprint_note": "footprint unknown, overlap not checked",
+     "i": 17,
+     "id": "hazard",
+     "kind": "sign",
+     "name": "a condition in force in a space, off the hazards its own conditions record already holds",
+     "rect": [
+      11.7,
+      7.5,
+      11.7,
+      7.5
+     ],
+     "registry": "labels/registry/labels.json#kinds",
+     "rotation": 0,
+     "x": 11.7,
+     "y": 7.5
+    }
+   ],
+   "ppe": {
+    "base_from": "surfaces base_conditions.procedure.ppe",
+    "hazard_props_placed": [
+     {
+      "admitted_by": "props hazard_props: keyed to ['hot-work'], ppe_any ['welding hood']",
+      "i": 0,
+      "id": "weld-screen",
+      "keyed_to": [
+       "hot-work"
+      ],
+      "ppe_any": [
+       "welding hood"
+      ]
+     },
+     {
+      "admitted_by": "props hazard_props: keyed to ['hot-work'], ppe_any ['welding hood']",
+      "i": 1,
+      "id": "weld-screen",
+      "keyed_to": [
+       "hot-work"
+      ],
+      "ppe_any": [
+       "welding hood"
+      ]
+     },
+     {
+      "admitted_by": "props hazard_props: keyed to ['hot-work'], ppe_any ['welding hood']",
+      "i": 2,
+      "id": "weld-screen",
+      "keyed_to": [
+       "hot-work"
+      ],
+      "ppe_any": [
+       "welding hood"
+      ]
+     },
+     {
+      "admitted_by": "props hazard_props: keyed to ['hot-work'], ppe_any ['welding hood']",
+      "i": 6,
+      "id": "rod-oven",
+      "keyed_to": [
+       "hot-work"
+      ],
+      "ppe_any": [
+       "welding hood"
+      ]
+     },
+     {
+      "admitted_by": "props hazard_props: keyed to ['hot-work'], ppe_any ['welding hood']",
+      "i": 7,
+      "id": "stub-bin",
+      "keyed_to": [
+       "hot-work"
+      ],
+      "ppe_any": [
+       "welding hood"
+      ]
+     },
+     {
+      "admitted_by": "props hazard_props: keyed to ['hot-work', 'molten-metal'], ppe_any ['flame-resistant clothing']",
+      "i": 8,
+      "id": "quench-tank",
+      "keyed_to": [
+       "hot-work",
+       "molten-metal"
+      ],
+      "ppe_any": [
+       "flame-resistant clothing"
+      ]
+     },
+     {
+      "admitted_by": "props hazard_props: keyed to ['hot-work', 'molten-metal'], ppe_any ['flame-resistant clothing']",
+      "i": 9,
+      "id": "fire-blanket-cabinet",
+      "keyed_to": [
+       "hot-work",
+       "molten-metal"
+      ],
+      "ppe_any": [
+       "flame-resistant clothing"
+      ]
+     },
+     {
+      "admitted_by": "props hazard_props: keyed to ['explosives', 'flammable-atmosphere', 'hot-work', 'molten-metal'], ppe_any ['flame-resistant clothing', 'anti-static clothing', 'welding hood']",
+      "i": 10,
+      "id": "extinguisher-bracket",
+      "keyed_to": [
+       "explosives",
+       "flammable-atmosphere",
+       "hot-work",
+       "molten-metal"
+      ],
+      "ppe_any": [
+       "flame-resistant clothing",
+       "anti-static clothing",
+       "welding hood"
+      ]
+     },
+     {
+      "admitted_by": "props hazard_props: admitted when the PPE set is non-empty",
+      "i": 11,
+      "id": "ppe-station",
+      "keyed_to": [],
+      "ppe_any": [
+       "*any*"
+      ]
+     },
+     {
+      "admitted_by": "props hazard_props: keyed to ['hot-work', 'molten-metal'], ppe_any ['flame-resistant clothing']",
+      "i": 12,
+      "id": "fire-watch-post",
+      "keyed_to": [
+       "hot-work",
+       "molten-metal"
+      ],
+      "ppe_any": [
+       "flame-resistant clothing"
+      ]
+     }
+    ],
+    "hazards_from": [
+     "surfaces hazard_conditions.hot-work.ppe"
+    ],
+    "provenance": "DERIVED",
+    "required": [
+     "flame-resistant clothing",
+     "gloves",
+     "hard hat",
+     "hi-vis",
+     "safety boots",
+     "safety glasses",
+     "welding hood"
+    ]
+   },
+   "provenance": {
+    "cost": "DERIVED",
+    "declaration": "AUTHORED",
+    "fits_in": "DERIVED",
+    "footprints": "DERIVED",
+    "names": "DERIVED",
+    "ppe": "DERIVED"
+   },
+   "purpose": "Three screened arc positions with the rod oven, stub bin and quench tank a run of practice beads needs, and a fire watch post at the back.",
+   "room_label": "Practice Bays",
+   "source": "spaces/authored/welding-bay.json",
+   "status": "declared, not yet walkable",
+   "strand": "procedure",
+   "title": "Welding bay",
+   "unions": [
+    {
+     "district": "structural",
+     "name": "Welding Trades",
+     "slug": "welders"
+    }
+   ],
+   "wall": {
+    "color": "#566269",
+    "id": "weld-screen",
+    "name": "Non-combustible screened bay",
+    "pattern": "screen",
+    "wainscot": "#7a4326"
+   }
+  }
+ ],
+ "status": "declared, not yet walkable",
+ "unions_served": [
+  "carpenters",
+  "crane-ops",
+  "electricians",
+  "ironworkers",
+  "riggers",
+  "scaffold",
+  "welders"
+ ],
+ "units": {
+  "grid_unit_m": 3,
+  "metres": "x, y are the item centre from the space's bottom-left corner; rotation in degrees, 90/270 swap the footprint axes"
+ }
+}

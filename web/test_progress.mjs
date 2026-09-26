@@ -791,10 +791,11 @@ if (!WANT_BROWSER) {
   const manifest = readJSON('pack/manifest.json');
   const m = html.match(/<script id="completion-js">([\s\S]*?)<\/script>/);
   ok('[shipped] the page carries a <script id="completion-js"> block, and it is a classic script '
-    + 'that names buildCompletionRecord, canonicalJSON and summarizeRecord',
+    + 'that names buildCompletionRecord, canonicalJSON, summarizeRecord, digestBody, signatureMessage and attachSignature',
     m !== null && /async function buildCompletionRecord\(prog, lessons, ladder, meta, now, training\)/.test(m[1])
-    && /function canonicalJSON\(/.test(m[1]) && /function summarizeRecord\(/.test(m[1]));
-  const C = m === null ? null : new Function(m[1] + '\nreturn { buildCompletionRecord, canonicalJSON, summarizeRecord };')();
+    && /function canonicalJSON\(/.test(m[1]) && /function summarizeRecord\(/.test(m[1])
+    && /function digestBody\(/.test(m[1]) && /function signatureMessage\(/.test(m[1]) && /function attachSignature\(/.test(m[1]));
+  const C = m === null ? null : new Function(m[1] + '\nreturn { buildCompletionRecord, canonicalJSON, summarizeRecord, digestBody, signatureMessage, attachSignature };')();
   const data = JSON.parse(html.match(/<script type="application\/json" id="tcdata">([\s\S]*?)<\/script>/)[1]);
   ok(`[shipped] the page carries ${LESSONS_PATH}#lessons, #ladder and #step_kinds verbatim, and `
     + 'the product name from pack/manifest.json',
@@ -969,6 +970,80 @@ if (!WANT_BROWSER) {
       && C.summarizeRecord(noEvidence, data.step_kinds, data.episode_kinds).device_mark_steps_done === 0);
     const sample = arg('sample');
     if (sample !== null) { mkdirSync(dirname(sample), { recursive: true }); writeFileSync(sample, JSON.stringify(rec, null, 1) + '\n'); }
+
+    /* ---- the record against the bundle's verifier, unsigned and wallet-signed.
+       The verifier is completion/verify.mjs (recovery from auth/recover.mjs, the
+       sign-in page's own code); the SIGNER is completion/test.mjs's throwaway
+       key - a test routine, never the page's and never the verifier's. */
+    const V = await import(M('completion/verify.mjs'));
+    const T = await import(M('completion/test.mjs'));
+    const failsBy = (r) => { try { return Object.entries(V.verify(r).tally).filter(([, t]) => t.fails.length).map(([k]) => k); } catch (e) { return ['record.fields:' + e.message]; } };
+    ok('[shipped] the unsigned record the page builds verifies against completion/verify.mjs on every rule, is '
+      + 'reported "unsigned: this device only", and its digest recomputes with the verifier\'s own digestOf',
+      failsBy(rec).length === 0 && V.verify(rec).signature.state === 'unsigned' && V.digestOf(rec) === rec.digest.hex
+      && rec.identity.attested_by === 'this device only' && rec.identity.signature === null,
+      [failsBy(rec).join()]);
+    const key = T.throwawayKey(), other = T.throwawayKey();
+    const forWallet = await C.buildCompletionRecord(prog, L, lessonsReg.ladder, { ...meta, wallet: key.address }, NOW, training);
+    ok('[shipped] built with meta.wallet the record claims the address, is attested "wallet signature over the '
+      + 'digest", still carries signature null, and its digest (signature forced to null) recomputes in node',
+      forWallet.identity.claimed === key.address && forWallet.identity.attested_by === 'wallet signature over the digest'
+      && forWallet.identity.signature === null && V.digestOf(forWallet) === forWallet.digest.hex
+      && forWallet.honesty.proves.some((x) => x.includes(key.address) && /identity of a key, not of a person/.test(x))
+      && forWallet.honesty.does_not_prove.some((x) => /nothing is written to any chain/.test(x))
+      && rec.honesty.does_not_prove.some((x) => /nothing is written to any chain/.test(x)),
+      [JSON.stringify(forWallet.identity)]);
+    ok('[shipped] an unsigned wallet-attested record is REFUSED by the verifier (identity.signature) - the page must '
+      + 'not download it, and its download sits behind attachSignature',
+      failsBy(forWallet).join() === 'identity.signature');
+    const message = C.signatureMessage(forWallet, data.signing.statement);
+    ok('[shipped] the page\'s signatureMessage is the verifier\'s structured message for this record - auth/\'s '
+      + 'statement, then digest, then exported_at - and the statement the page carries is auth.json#siwe.statement',
+      message === V.signatureMessage(forWallet.digest.hex, forWallet.exported_at) && data.signing.statement === authReg.siwe.statement
+      && data.signing.scheme === 'eip191-personal_sign' && data.signing.wallet_method === 'siwe-ethereum' && data.keys.identity === authReg.storage.identity_key);
+    const sig = T.signPersonal(key.d, message);
+    const signed = C.attachSignature(forWallet, key.address, sig, data.signing);
+    const run = V.verify(signed);
+    ok('[shipped] signed in the test with a throwaway key, the page\'s record verifies on every rule, the verifier '
+      + 'recovers exactly that address, and the digest is unchanged by attaching the signature',
+      failsBy(signed).length === 0 && run.signature.state === 'signed' && run.signature.recovered === key.address
+      && signed.digest.hex === forWallet.digest.hex && V.digestOf(signed) === signed.digest.hex
+      && C.canonicalJSON(C.digestBody(signed)) === C.canonicalJSON(C.digestBody(forWallet))
+      && C.canonicalJSON(C.digestBody(signed)) === V.canonical(V.digestBody(signed))
+      && signed.identity.signature.scheme === 'eip191-personal_sign' && signed.identity.signature.message === message,
+      [failsBy(signed).join(), run.signature.line]);
+    const bitFlip = JSON.parse(JSON.stringify(signed));
+    { const u = Buffer.from(bitFlip.identity.signature.sig.slice(2), 'hex'); u[40] ^= 1; bitFlip.identity.signature.sig = '0x' + u.toString('hex'); }
+    const otherKey = JSON.parse(JSON.stringify(signed)); otherKey.identity.signature.sig = T.signPersonal(other.d, message);
+    const badMsg = C.attachSignature(forWallet, key.address, T.signPersonal(key.d, message + ' '), data.signing);
+    ok('[shipped] and it is rejected by name when tampered: one bit of the signature flipped, a signature by another '
+      + 'key, or a signature over any other text each fail identity.signature and nothing else',
+      failsBy(bitFlip).join() === 'identity.signature' && failsBy(otherKey).join() === 'identity.signature'
+      && failsBy(badMsg).join() === 'identity.signature',
+      [failsBy(bitFlip).join(), failsBy(otherKey).join(), failsBy(badMsg).join()]);
+    const refuses = (f) => { try { f(); return null; } catch (e) { return e.message; } };
+    ok('[shipped] attachSignature fabricates nothing: it refuses a malformed signature, a record built without the '
+      + 'wallet, a record built for another address, and a record already signed; and meta.wallet must be an address',
+      /65-byte/.test(refuses(() => C.attachSignature(forWallet, key.address, '0xdead', data.signing)))
+      && /not built for the wallet/.test(refuses(() => C.attachSignature(rec, key.address, sig, data.signing)))
+      && /not built for the wallet/.test(refuses(() => C.attachSignature(forWallet, other.address, sig, data.signing)))
+      && /already carries a signature/.test(refuses(() => C.attachSignature(signed, key.address, sig, data.signing)))
+      && await C.buildCompletionRecord(prog, L, lessonsReg.ladder, { ...meta, wallet: 'not-an-address' }, NOW, training).then(() => null, (e) => e.message).then((x) => /meta\.wallet must be an address/.test(x)));
+    const mod = html.slice(html.indexOf('<script type="module">'), html.lastIndexOf('</script>'));
+    const iSign = mod.indexOf('personal_sign'), iAttach = mod.indexOf('attachSignature(');
+    ok('[shipped] the page offers the sign button hidden and disabled until a wallet identity (method siwe-ethereum with '
+      + 'an address) is read from the identity key; the module reads window.ethereum, asks eth_requestAccounts and '
+      + 'personal_sign, and attachSignature is called only after personal_sign - there is no other path to a signature',
+      /<button id="signRecord" type="button" disabled hidden>/.test(html) && /id="signStatus" data-sign-state="unpainted"/.test(html)
+      && /id="signHonesty"/.test(html) && /typeof window\.ethereum === 'undefined'/.test(mod)
+      && /method: 'eth_requestAccounts'/.test(mod) && iSign > 0 && iAttach > iSign
+      && (mod.match(/attachSignature\(/g) || []).length === 1 && /idv\.method === D\.signing\.wallet_method/.test(mod)
+      && /typeof idv\.address === 'string'/.test(mod) && /data-sign-state/.test(mod));
+    const hon = html.slice(html.indexOf('id="signHonesty"'), html.indexOf('</p>', html.indexOf('id="signHonesty"')));
+    ok('[shipped] the page says what a wallet signature is and is not, next to the button: a key, not a person; '
+      + 'nothing on any chain; nothing anchored; not an accreditation; no wallet, no signature',
+      /identity of a key, not of a person/.test(hon) && /nothing is written to any chain/.test(hon) && /nothing is anchored/.test(hon)
+      && /not an\s+accreditation/.test(hon) && /no wallet, no signature/.test(hon) && /never fabricates a signature/.test(hon));
   }
 }
 

@@ -1,0 +1,145 @@
+{
+ "id": "welding-bay",
+ "title": "Welding bay",
+ "purpose": "Three screened arc positions with the rod oven, stub bin and quench tank a run of practice beads needs, and a fire watch post at the back.",
+ "unions": [
+  "welders"
+ ],
+ "strand": "procedure",
+ "footprint_m": {
+  "w": 12.0,
+  "d": 8.0
+ },
+ "floor": "bare-slab",
+ "wall": "weld-screen",
+ "items": [
+  {
+   "kind": "prop",
+   "id": "weld-screen",
+   "x": 2.0,
+   "y": 4.0,
+   "rotation": 0
+  },
+  {
+   "kind": "prop",
+   "id": "weld-screen",
+   "x": 5.0,
+   "y": 4.0,
+   "rotation": 0
+  },
+  {
+   "kind": "prop",
+   "id": "weld-screen",
+   "x": 8.0,
+   "y": 4.0,
+   "rotation": 0
+  },
+  {
+   "kind": "prop",
+   "id": "practice-bench",
+   "x": 2.0,
+   "y": 2.5,
+   "rotation": 0
+  },
+  {
+   "kind": "prop",
+   "id": "practice-bench",
+   "x": 5.0,
+   "y": 2.5,
+   "rotation": 0
+  },
+  {
+   "kind": "prop",
+   "id": "practice-bench",
+   "x": 8.0,
+   "y": 2.5,
+   "rotation": 0
+  },
+  {
+   "kind": "prop",
+   "id": "rod-oven",
+   "x": 10.5,
+   "y": 1.0,
+   "rotation": 0
+  },
+  {
+   "kind": "prop",
+   "id": "stub-bin",
+   "x": 10.5,
+   "y": 2.2,
+   "rotation": 0
+  },
+  {
+   "kind": "prop",
+   "id": "quench-tank",
+   "x": 10.5,
+   "y": 3.6,
+   "rotation": 0
+  },
+  {
+   "kind": "prop",
+   "id": "fire-blanket-cabinet",
+   "x": 11.5,
+   "y": 0.3,
+   "rotation": 0
+  },
+  {
+   "kind": "prop",
+   "id": "extinguisher-bracket",
+   "x": 0.5,
+   "y": 0.3,
+   "rotation": 0
+  },
+  {
+   "kind": "prop",
+   "id": "ppe-station",
+   "x": 1.5,
+   "y": 7.9,
+   "rotation": 0
+  },
+  {
+   "kind": "prop",
+   "id": "fire-watch-post",
+   "x": 6.0,
+   "y": 6.5,
+   "rotation": 0
+  },
+  {
+   "kind": "furniture",
+   "id": "chipping-hammer-bench",
+   "x": 10.5,
+   "y": 6.0,
+   "rotation": 0
+  },
+  {
+   "kind": "seat",
+   "id": "weld-bead",
+   "x": 6.0,
+   "y": 7.2,
+   "rotation": 0
+  },
+  {
+   "kind": "crib",
+   "id": "structural",
+   "x": 11.3,
+   "y": 7.2,
+   "rotation": 0
+  },
+  {
+   "kind": "sign",
+   "id": "placard",
+   "x": 0.3,
+   "y": 7.5,
+   "rotation": 0
+  },
+  {
+   "kind": "sign",
+   "id": "hazard",
+   "x": 11.7,
+   "y": 7.5,
+   "rotation": 0
+  }
+ ],
+ "provenance": "AUTHORED",
+ "note": "declared, not yet walkable: a proposal composed from this bundle's own assets, not a measurement of any venue"
+}

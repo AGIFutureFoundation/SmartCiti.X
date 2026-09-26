@@ -1111,7 +1111,8 @@
    "no lesson is marked complete with a step still undone, and none ahead of its ladder prerequisite"
   ],
   "does_not_prove": [
-   "who the learner is: identity.claimed is typed by the person, attested by this device only, and nothing checks it",
+   "who the learner is: identity.claimed is typed by the person, attested by this device only, and nothing checks it - unless a wallet signed, in which case it is the identity of a key, not of a person; a stolen key signs just as well",
+   "anything on any blockchain: a wallet signature is computed in the browser and carried in the file; nothing is written to any chain, nothing is anchored, and no one can look it up",
    "that the device was honest: a record can be written by hand and will verify if it is internally consistent",
    "that a self-reported step (walk, placard) happened at all",
    "a station or crib mark is a device-local mark, not a recorded episode",
@@ -1122,7 +1123,7 @@
  },
  "digest": {
   "alg": "SHA-256",
-  "over": "canonical JSON of every top-level field except digest: keys sorted recursively, no whitespace, UTF-8",
-  "hex": "526c8aa3c1be03c726afffec1f938f6585a06e7d5db1ab928874d5052bca41c8"
+  "over": "canonical JSON of every top-level field except digest, with identity.signature forced to null: keys sorted recursively, no whitespace, UTF-8",
+  "hex": "e1b4d2a2fc210fedb50ffaeb7bd091129675a0cf3c7658aa7845f60ac264c312"
  }
 }

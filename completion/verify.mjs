@@ -14,14 +14,23 @@
  *
  * WHAT A PASS MEANS. The record is internally consistent, its digest
  * recomputes, and every id in it exists in this bundle. It does NOT mean the
- * person named in identity.claimed did any of it: attestation is "this device
- * only" and there is no signing key, so a signature is refused as a forgery.
+ * person named in identity.claimed did any of it. Unsigned, attestation is
+ * "this device only" and nothing checks the name. Signed, identity.signature
+ * is an EIP-191 personal_sign signature by a wallet over this record's digest,
+ * and the signer is RECOVERED here - with the sign-in page's own keccak and
+ * secp256k1, imported from auth/recover.mjs, never a second copy - and must be
+ * the address claimed. That proves the holder of a key signed this digest at
+ * export: the identity of a key, not of a person. Nothing is on any chain.
  * The pass rule per seat is read from sims/registry/sims.json; that registry
  * scores per rubric axis and has no scalar threshold, so `passed` is taken
  * from the record and said so.
+ *
+ * THIS FILE ONLY RECOVERS. There is no signing routine in it and none is
+ * imported: a verifier that could sign could forge.
  */
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
+import { recoverAddress } from '../auth/recover.mjs';
 
 const url = (p) => new URL(p, import.meta.url);
 const reg = JSON.parse(readFileSync(url('./registry/completion.json')));
@@ -30,6 +39,7 @@ const simsReg = JSON.parse(readFileSync(url('../sims/registry/sims.json')));
 const cribsReg = JSON.parse(readFileSync(url('../tools/registry/toolcribs.json')));
 const stationsReg = JSON.parse(readFileSync(url('../stations/registry/stations.json')));
 const hallsReg = JSON.parse(readFileSync(url('../pack/registry/halls.json')));
+const authReg = JSON.parse(readFileSync(url('../auth/registry/auth.json')));
 
 class Missing extends Error {}
 export function need(obj, key, who) {
@@ -47,10 +57,36 @@ export function canonical(v) {
   }
   return JSON.stringify(v);
 }
-export function digestOf(record) {
+// the digest input: every top-level field except digest, with
+// identity.signature forced to null - the signature is made OVER the digest,
+// after it, so it cannot be inside it. The exporter (web/build_progress.py)
+// canonicalises the same way; completion.json#digest.over says so.
+export function digestBody(record) {
   const body = {};
   for (const k of Object.keys(record)) if (k !== 'digest') body[k] = record[k];
-  return createHash('sha256').update(Buffer.from(canonical(body), 'utf8')).digest('hex');
+  if (body.identity !== null && typeof body.identity === 'object' && 'signature' in body.identity) {
+    body.identity = { ...body.identity, signature: null };
+  }
+  return body;
+}
+export function digestOf(record) {
+  return createHash('sha256').update(Buffer.from(canonical(digestBody(record)), 'utf8')).digest('hex');
+}
+
+// the exact string a wallet signs, fixed by structure: auth/'s own statement
+// line, then this record's digest, then its export time. Rebuilt here from the
+// record, never taken from it, so a signature over any other text is refused.
+const SIG_RULE = need(reg, 'signature', 'completion.json');
+const SIWE_STATEMENT = need(need(authReg, 'siwe', 'auth.json'), 'statement', 'auth.json#siwe');
+if (need(need(SIG_RULE, 'message', 'completion.json#signature'), 'statement', 'completion.json#signature.message') !== SIWE_STATEMENT) {
+  throw new Error('completion.json#signature.message.statement is not auth.json#siwe.statement; rebuild completion/');
+}
+export const SIGNATURE_SCHEME = need(SIG_RULE, 'scheme', 'completion.json#signature');
+export const SIGNED_ATTESTATION = 'wallet signature over the digest';
+export const UNSIGNED_ATTESTATION = 'this device only';
+export function signatureMessage(digestHex, exportedAt) {
+  if (typeof digestHex !== 'string' || typeof exportedAt !== 'string') throw new Missing('signatureMessage needs digest.hex and exported_at as strings');
+  return SIWE_STATEMENT + '\ndigest: ' + digestHex + '\nexported_at: ' + exportedAt;
 }
 
 const LESSONS = need(lessonsReg, 'lessons', 'lessons.json');
@@ -80,8 +116,9 @@ export function verify(record) {
   check('record.fields', typeof need(record, 'exported_at', 'record') === 'string', 'exported_at is not a string');
   const ident = need(record, 'identity', 'record');
   need(ident, 'claimed', 'identity');
-  check('record.fields', need(ident, 'attested_by', 'identity') === 'this device only',
-    'identity.attested_by is not "this device only"');
+  const attested = need(ident, 'attested_by', 'identity');
+  check('record.fields', attested === UNSIGNED_ATTESTATION || attested === SIGNED_ATTESTATION,
+    `identity.attested_by is neither "${UNSIGNED_ATTESTATION}" nor "${SIGNED_ATTESTATION}"`);
   const dig = need(record, 'digest', 'record');
   check('record.fields', need(dig, 'alg', 'digest') === 'SHA-256', 'digest.alg is not SHA-256');
   need(dig, 'over', 'digest');
@@ -94,9 +131,58 @@ export function verify(record) {
   check('digest', /^[0-9a-f]{64}$/.test(hex), 'digest.hex is not 64 hex chars');
   check('digest', digestOf(record) === hex, 'digest does not recompute over the canonical record');
 
-  // identity.signature — this bundle cannot sign
-  check('identity.signature', need(ident, 'signature', 'identity') === null,
-    'this bundle cannot sign; a signature here would be a forgery');
+  // identity.signature — null is unsigned (this device only); an object is a
+  // wallet's EIP-191 signature over THIS digest, and the signer is recovered
+  // here rather than believed. The identity of a key, not of a person.
+  const sig = need(ident, 'signature', 'identity');
+  const signature = { state: 'unsigned', recovered: null, address: null, line: 'unsigned: ' + UNSIGNED_ATTESTATION };
+  if (sig === null) {
+    check('identity.signature', attested === UNSIGNED_ATTESTATION,
+      `unsigned, so identity.attested_by must be "${UNSIGNED_ATTESTATION}", not ${JSON.stringify(attested)}`);
+    if (attested !== UNSIGNED_ATTESTATION) { signature.state = 'invalid'; signature.line = 'unsigned, yet identity.attested_by claims a wallet signature: refused'; }
+  } else if (sig === undefined || typeof sig !== 'object' || Array.isArray(sig)) {
+    signature.state = 'invalid';
+    signature.line = 'signature is not null and not an object: refused as a forgery';
+    check('identity.signature', false, 'identity.signature is neither null nor a signature object; refused as a forgery');
+  } else {
+    signature.state = 'invalid';
+    const scheme = need(sig, 'scheme', 'identity.signature');
+    const address = need(sig, 'address', 'identity.signature');
+    const message = need(sig, 'message', 'identity.signature');
+    const sigHex = need(sig, 'sig', 'identity.signature');
+    signature.address = address;
+    check('identity.signature', scheme === SIGNATURE_SCHEME,
+      `signature.scheme ${JSON.stringify(scheme)} is not ${SIGNATURE_SCHEME}; no other scheme is verified here`);
+    check('identity.signature', attested === SIGNED_ATTESTATION,
+      `signed, so identity.attested_by must be "${SIGNED_ATTESTATION}", not ${JSON.stringify(attested)}`);
+    const wantMsg = signatureMessage(hex, need(record, 'exported_at', 'record'));
+    check('identity.signature', message === wantMsg,
+      'signature.message is not the structured message for THIS record (statement, digest.hex, exported_at); a signature over other text proves nothing about this record');
+    check('identity.signature', typeof address === 'string' && /^0x[0-9a-fA-F]{40}$/.test(address),
+      'signature.address is not 0x + 40 hex');
+    check('identity.signature', typeof sigHex === 'string' && /^0x[0-9a-fA-F]{130}$/.test(sigHex),
+      'signature.sig is not 0x + 65 bytes (r | s | v)');
+    const claimed = need(ident, 'claimed', 'identity');
+    check('identity.signature', typeof claimed === 'string' && typeof address === 'string' && claimed.toLowerCase() === address.toLowerCase(),
+      `identity.claimed ${JSON.stringify(claimed)} is not signature.address ${JSON.stringify(address)} (compared as lowercase hex)`);
+    if (scheme === SIGNATURE_SCHEME && typeof message === 'string' && typeof sigHex === 'string') {
+      let recovered = null, why = null;
+      try { recovered = recoverAddress(message, sigHex); } catch (e) { why = e.message; }
+      signature.recovered = recovered;
+      const match = recovered !== null && typeof address === 'string' && recovered.toLowerCase() === address.toLowerCase();
+      check('identity.signature', match,
+        recovered === null ? `the signature does not recover to any address: ${why}`
+          : `the signature recovers to ${recovered}, not to the address claimed ${address} (compared as lowercase hex)`);
+      if (match && tally['identity.signature'].fails.length === 0) {
+        signature.state = 'signed';
+        signature.line = `signed: ${SIGNATURE_SCHEME} by ${recovered}, recovered here from the signature over this digest - the identity of a key, not of a person; nothing is on any chain`;
+      } else {
+        signature.line = `signature refused: recovered ${recovered === null ? 'nothing' : recovered}, claimed ${address}`;
+      }
+    } else {
+      signature.line = 'signature refused: not a ' + SIGNATURE_SCHEME + ' signature object';
+    }
+  }
 
   // ids — every id resolves in the registry that owns it
   const simsBlock = need(record, 'sims', 'record');
@@ -211,7 +297,7 @@ export function verify(record) {
       `${lid} is complete but its prerequisite ${needs} is not`);
   }
 
-  return { tally, notes, summary: { nComplete, nFullyBacked, nEpisode, nDeviceMark, nSelfReported } };
+  return { tally, notes, signature, summary: { nComplete, nFullyBacked, nEpisode, nDeviceMark, nSelfReported } };
 }
 
 const isMain = process.argv[1] && new URL(`file://${process.argv[1]}`).pathname === new URL(import.meta.url).pathname;
@@ -221,18 +307,21 @@ if (isMain) {
   let failed = false;
   try {
     const record = JSON.parse(readFileSync(path, 'utf8'));
-    const { tally, notes, summary } = verify(record);
+    const { tally, notes, signature, summary } = verify(record);
     for (const [rule, t] of Object.entries(tally)) {
       const line = `${rule}: checked ${t.checked}, failing ${t.fails.length}`;
       if (t.fails.length) { failed = true; console.error(`FAIL ${line}`); for (const f of t.fails) console.error(`     ${f}`); }
       else console.log(`ok ${line}`);
     }
     for (const n of notes) console.log(`note ${n}`);
+    console.log(`signature: ${signature.line}`);
     console.log(`summary: ${summary.nComplete} lessons complete, of which ${summary.nFullyBacked} fully evidence-backed `
       + `(every step episode-backed); across them ${summary.nEpisode} episode-backed steps, `
       + `${summary.nDeviceMark} device-mark steps (station/crib: a device-local mark, not a recorded episode), `
       + `${summary.nSelfReported} self-reported steps counted as done`);
-    console.log('this verifies integrity since export and resolution against the bundle; it attests no identity and is no accreditation');
+    console.log('this verifies integrity since export and resolution against the bundle; a wallet signature, if any, proves '
+      + 'that the holder of a key signed this digest at export - a key, not a person; nothing is written to any chain, '
+      + 'nothing is anchored, and this is no accreditation');
   } catch (e) {
     failed = true;
     if (e instanceof Missing) console.error(`FAIL record.fields: ${e.message}`);

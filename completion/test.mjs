@@ -7,11 +7,69 @@
  * learner count is typed; and no default is ever taken (`??` is forbidden in
  * the verifier and the builder, spec §23.1).
  */
-import { createHash } from 'node:crypto';
-import { readFileSync } from 'node:fs';
+import { createHash, generateKeyPairSync, randomBytes } from 'node:crypto';
+import { readFileSync, writeFileSync, mkdtempSync, rmSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { verify, digestOf, need } from './verify.mjs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { spawnSync } from 'node:child_process';
+import { verify, digestOf, need, signatureMessage, SIGNATURE_SCHEME, SIGNED_ATTESTATION } from './verify.mjs';
+import { keccak256, te, ptMul, SECP_G, SECP_N, addressOfPubkey } from '../auth/recover.mjs';
 
+/* ---- SIGNING LIVES HERE, in the test, and nowhere in the verifier ----------
+   A throwaway secp256k1 key from node:crypto and an EIP-191 personal_sign
+   signer written over the sign-in page's own point arithmetic (imported from
+   auth/recover.mjs - the arithmetic auth/test.mjs holds against node's own
+   secp256k1). Exported so web/test_progress.mjs can sign the page's record
+   with the same routine; importing this file runs no checks (see isMain). */
+const beI = (u) => BigInt('0x' + Buffer.from(u).toString('hex'));
+const h32 = (v) => v.toString(16).padStart(64, '0');
+function invN(a) {
+  let o = ((a % SECP_N) + SECP_N) % SECP_N, r = SECP_N, x = 1n, y = 0n;
+  while (r !== 0n) { const q = o / r; [o, r] = [r, o - q * r]; [x, y] = [y, x - q * y]; }
+  return ((x % SECP_N) + SECP_N) % SECP_N;
+}
+export function throwawayKey() {
+  const { privateKey } = generateKeyPairSync('ec', { namedCurve: 'secp256k1' });
+  const jwk = privateKey.export({ format: 'jwk' });
+  const d = beI(Buffer.from(jwk.d, 'base64url'));
+  const Q = ptMul(d, SECP_G);
+  const fromNode = [beI(Buffer.from(jwk.x, 'base64url')), beI(Buffer.from(jwk.y, 'base64url'))];
+  if (Q[0] !== fromNode[0] || Q[1] !== fromNode[1]) throw new Error('the page\'s curve and node\'s disagree on this key\'s public point');
+  return { d, address: addressOfPubkey(Q) };
+}
+export function signPersonal(d, message) {
+  const body = Buffer.from(message, 'utf8');
+  const pre = Buffer.concat([Buffer.from('\x19Ethereum Signed Message:\n' + body.length, 'utf8'), body]);
+  const z = beI(keccak256(new Uint8Array(pre))) % SECP_N;
+  for (;;) {
+    const k = (beI(randomBytes(32)) % (SECP_N - 1n)) + 1n;
+    const R = ptMul(k, SECP_G);
+    const r = R[0] % SECP_N;
+    if (r === 0n) continue;
+    let s = (invN(k) * (z + r * d)) % SECP_N;
+    if (s === 0n) continue;
+    let rec = Number(R[1] & 1n);
+    if (s > SECP_N / 2n) { s = SECP_N - s; rec ^= 1; }
+    return '0x' + h32(r) + h32(s) + (27 + rec).toString(16).padStart(2, '0');
+  }
+}
+/* re-attest a record to a wallet and sign its digest: claimed and attested_by
+   are INSIDE the digest, so they are set first and the digest restamped; the
+   signature is made over that digest and sits outside it */
+export function signRecord(record, key) {
+  const out = JSON.parse(JSON.stringify(record));
+  out.identity.claimed = key.address;
+  out.identity.attested_by = SIGNED_ATTESTATION;
+  out.identity.signature = null;
+  out.digest = { ...out.digest, hex: digestOf(out) };
+  const message = signatureMessage(out.digest.hex, out.exported_at);
+  out.identity.signature = { scheme: SIGNATURE_SCHEME, address: key.address, message, sig: signPersonal(key.d, message) };
+  return out;
+}
+
+const isMain = process.argv[1] && new URL(`file://${process.argv[1]}`).pathname === new URL(import.meta.url).pathname;
+if (isMain) {
 let n = 0;
 const ok = (m, c) => { if (!c) { console.error('FAIL', m); process.exit(1); } n++; console.log('  ok ', m); };
 const url = (p) => new URL(p, import.meta.url);
@@ -39,8 +97,29 @@ ok('the digest rule is SHA-256 over canonical JSON of every field except digest'
 
 ok('the honesty block says a digest proves integrity since export, not identity',
   /integrity since export, not identity/.test(reg.honesty.digest));
-ok('the honesty block says signature is null because there is no signing key and no server',
-  /no signing key and no server/.test(reg.honesty.signature) && /forgery/.test(reg.honesty.signature));
+ok('the honesty block says signature is null unless a wallet signed, that this bundle has no key of its own and no server, '
+  + 'that a wallet signature is the identity of a key and not of a person, that nothing is on any chain, and that a mismatch is a forgery',
+  /null unless a wallet signed/.test(reg.honesty.signature) && /no key of its own and no server/.test(reg.honesty.signature)
+  && /identity of a key, not of a person/.test(reg.honesty.signature) && /forgery/.test(reg.honesty.signature)
+  && /Nothing is written to any chain/.test(reg.honesty.signature) && /nothing is anchored/.test(reg.honesty.signature)
+  && reg.honesty.does_not_prove.some((s) => /nothing is written to any chain/.test(s)));
+ok('the digest rule excludes identity.signature by forcing it to null, and says why (the signature is over the digest)',
+  /identity\.signature forced to null/.test(reg.digest.over) && /OVER the digest, made after it/.test(reg.digest.excludes_signature_why)
+  && digestOf({ a: 1, identity: { claimed: 'x', signature: { sig: 'y' } }, digest: {} })
+    === digestOf({ a: 1, identity: { claimed: 'x', signature: null }, digest: {} }));
+ok('the signature rule is recorded: scheme eip191-personal_sign, the message structure with auth/\'s own statement, '
+  + 'recovery through auth/recover.mjs (no second keccak), and what it proves and does not (a key, not a person; no chain)',
+  reg.signature.scheme === 'eip191-personal_sign' && reg.signature.message.statement === read('../auth/registry/auth.json').siwe.statement
+  && /digest: <digest\.hex>/.test(reg.signature.message.structure) && /exported_at: <exported_at>/.test(reg.signature.message.structure)
+  && /auth\/recover\.mjs/.test(reg.signature.recovery) && /No second keccak and no second curve/.test(reg.signature.recovery)
+  && /identity of a key, not of a person/.test(reg.signature.proves) && reg.signature.does_not_prove.some((s) => /nothing is written to any chain/.test(s))
+  && reg.signature.does_not_prove.some((s) => /accreditation/.test(s)) && reg.signature.when_signed.includes('lowercase hex')
+  && reg.signature.where_the_wallet_comes_from.includes(read('../auth/registry/auth.json').storage.identity_key)
+  && /never fabricated/.test(reg.signature.where_the_wallet_comes_from));
+ok('the verifier imports recovery from auth/recover.mjs and carries no keccak, no curve arithmetic and no signing routine of its own',
+  /from '\.\.\/auth\/recover\.mjs'/.test(verifySrc)
+  && !/function (keccak|sponge|ptMul|ptAdd|recoverPubkey|sign)\b|SECP_|randomBytes|generateKeyPair|0x1n << 256n/.test(verifySrc)
+  && !/function (keccak|sponge|ptMul|ptAdd|recoverPubkey)/.test(readFileSync(url('../auth/recover.mjs'), 'utf8')));
 ok('the honesty block says nothing here is an accreditation',
   reg.honesty.accreditation === 'nothing here is an accreditation'
   && reg.honesty.does_not_prove.some((s) => /accreditation/.test(s)));
@@ -116,6 +195,9 @@ const mutants = Object.entries(reg.fixture.mutants);
 ok('the builder wrote at least six mutants, each naming the rule it must fail', mutants.length >= 6
   && mutants.every(([, rule]) => reg.verifier.rules.includes(rule)));
 const REQUIRED = ['step.episode-evidence', 'digest', 'identity.signature', 'step.recording-evidence', 'lesson.complete-all-steps', 'ids.sim', 'ladder.prerequisite'];
+ok('the on-disk signature mutants are there: a typed-in string, a wrong scheme, and a wallet attestation with no signature',
+  ['fixture/mutant-forged-signature.json', 'fixture/mutant-signature-wrong-scheme.json', 'fixture/mutant-attested-by-wallet-unsigned.json']
+    .every((f) => reg.fixture.mutants[f] === 'identity.signature'));
 ok('the required mutations are among them, including episode-wrong-kind and episode-wrong-point',
   REQUIRED.every((r) => mutants.some(([, rule]) => rule === r))
   && ['fixture/mutant-episode-wrong-kind.json', 'fixture/mutant-episode-wrong-point.json', 'fixture/mutant-crew-done-unrecordable.json', 'fixture/mutant-episode-t-unparseable.json'].every((f) => reg.fixture.mutants[f] === 'step.episode-evidence'));
@@ -155,6 +237,68 @@ for (const [file, rule] of mutants) {
     failedRules.length === 1 && failedRules[0] === rule);
 }
 
+// ---- the signed fixture: built here with a throwaway key, never on disk ----
+{
+  const key = throwawayKey(), other = throwawayKey();
+  ok('a throwaway secp256k1 key from node:crypto yields a checksummed address through the page\'s own curve and keccak',
+    /^0x[0-9a-fA-F]{40}$/.test(key.address) && key.address !== other.address);
+  const signed = signRecord(good, key);
+  const run = verify(signed);
+  const failing = Object.entries(run.tally).filter(([, t]) => t.fails.length).map(([k]) => k);
+  ok('the fixture re-attested to the wallet and signed over its digest verifies on every rule, the digest still recomputes '
+    + 'with the signature outside it, and the verifier prints the recovered address (a key, not a person; no chain)',
+    failing.length === 0 && digestOf(signed) === signed.digest.hex && run.signature.state === 'signed'
+    && run.signature.recovered === key.address && signed.identity.claimed === key.address
+    && signed.identity.attested_by === SIGNED_ATTESTATION && run.signature.line.includes(key.address)
+    && /identity of a key, not of a person/.test(run.signature.line) && /nothing is on any chain/.test(run.signature.line));
+  ok('the signed message is the structure the registry states: statement, digest line, exported_at line, nothing else',
+    signed.identity.signature.message === reg.signature.message.statement + '\ndigest: ' + signed.digest.hex + '\nexported_at: ' + signed.exported_at
+    && signed.identity.signature.message.split('\n').length === 3);
+  ok('the good fixture, unsigned, is reported "unsigned: this device only"',
+    verify(good).signature.state === 'unsigned' && verify(good).signature.line === 'unsigned: this device only');
+  const failsBy = (m) => { try { const r = verify(m); return Object.entries(r.tally).filter(([, t]) => t.fails.length).map(([k]) => k); } catch (e) { return ['record.fields']; } };
+  const tamperSig = (h) => { const u = Buffer.from(h.slice(2), 'hex'); u[40] ^= 0x01; return '0x' + u.toString('hex'); };
+  const mutants = {
+    'signed-sig-tampered': (() => { const m = JSON.parse(JSON.stringify(signed)); m.identity.signature.sig = tamperSig(m.identity.signature.sig); return m; })(),
+    'signed-message-tampered': (() => { const m = JSON.parse(JSON.stringify(signed)); m.identity.signature.message = m.identity.signature.message.replace('digest: ', 'digest:  '); return m; })(),
+    'signed-address-swapped': (() => { const m = JSON.parse(JSON.stringify(signed)); m.identity.claimed = other.address; m.identity.signature.address = other.address; m.digest.hex = digestOf(m); m.identity.signature.message = signatureMessage(m.digest.hex, m.exported_at); return m; })(),
+    'signed-wrong-scheme': (() => { const m = JSON.parse(JSON.stringify(signed)); m.identity.signature.scheme = 'eip712-typed-data'; return m; })(),
+    /* a valid signature by the key named in signature.address, under a DIFFERENT identity.claimed */
+    'signed-claimed-not-the-signer': (() => { const m = JSON.parse(JSON.stringify(signed)); m.identity.claimed = other.address; m.digest.hex = digestOf(m); m.identity.signature.message = signatureMessage(m.digest.hex, m.exported_at); m.identity.signature.sig = signPersonal(key.d, m.identity.signature.message); return m; })(),
+  };
+  for (const [name, m] of Object.entries(mutants)) {
+    const f = failsBy(m);
+    ok(`signed mutant ${name} fails by ${reg.fixture.signed.mutants[name]} and by nothing else`,
+      f.length === 1 && f[0] === reg.fixture.signed.mutants[name]);
+  }
+  ok('a signature by another key over the same message recovers to a different address and is refused',
+    (() => { const m = JSON.parse(JSON.stringify(signed)); m.identity.signature.sig = signPersonal(other.d, m.identity.signature.message); const r = verify(m); return failsBy(m).join() === 'identity.signature' && r.signature.recovered === other.address; })());
+  ok('EIP-55 casing is not a mismatch: the same signature with the address and claimed lowercased still verifies',
+    (() => { const m = JSON.parse(JSON.stringify(signed)); m.identity.signature.address = m.identity.signature.address.toLowerCase(); m.identity.claimed = m.identity.claimed.toLowerCase(); m.digest.hex = digestOf(m); m.identity.signature.message = signatureMessage(m.digest.hex, m.exported_at); m.identity.signature.sig = signPersonal(key.d, m.identity.signature.message); return failsBy(m).length === 0; })());
+  {
+    const m = JSON.parse(JSON.stringify(signed)); m.digest.hex = '0'.repeat(64);
+    const f = failsBy(m);
+    ok('a tampered digest under a valid signature fails digest FIRST, and the signature no longer names this record',
+      f[0] === 'digest' && f.includes('identity.signature') && f.length === 2);
+  }
+  ok('the signed mutants the registry lists are the ones driven here', Object.keys(reg.fixture.signed.mutants).sort().join()
+    === [...Object.keys(mutants), 'signed-digest-tampered'].sort().join() && /throwaway/.test(reg.fixture.signed.why_not_on_disk)
+    && /ONLY in the test/.test(reg.fixture.signed.why_not_on_disk));
+  /* the CLI, on a temp file: what a union clerk would actually run */
+  const dir = mkdtempSync(join(tmpdir(), 'tc-completion-signed-'));
+  try {
+    const sp = join(dir, 'signed.json'); writeFileSync(sp, JSON.stringify(signed, null, 1));
+    const cli = spawnSync(process.execPath, [fileURLToPath(url('./verify.mjs')), sp], { encoding: 'utf8' });
+    const bp = join(dir, 'signed-bad-sig.json'); writeFileSync(bp, JSON.stringify(mutants['signed-sig-tampered'], null, 1));
+    const bad = spawnSync(process.execPath, [fileURLToPath(url('./verify.mjs')), bp], { encoding: 'utf8' });
+    ok('node completion/verify.mjs on the signed record exits 0, prints "signature: signed: eip191-personal_sign by <recovered address>" '
+      + 'and ends with the no-chain, no-accreditation line; on the sig-tampered copy it exits 1 with FAIL identity.signature',
+      cli.status === 0 && cli.stdout.includes('signature: signed: eip191-personal_sign by ' + key.address)
+      && /nothing is written to any chain/.test(cli.stdout) && /no accreditation/.test(cli.stdout)
+      && bad.status === 1 && /^FAIL identity\.signature/m.test(bad.stderr) && !/^FAIL digest/m.test(bad.stderr));
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+}
+
 // no typed learner counts, no defaults
 ok('no learner count is typed: every count in the registry is derived from the registries it reads',
   reg.counts.lessons === Object.keys(lessonsReg.lessons).length && reg.counts.sims === Object.keys(simsReg.sims).length
@@ -163,8 +307,9 @@ ok('the registry counts episode-backed steps as exactly lessons.json\'s recordin
   reg.counts.episode_backed_steps === lessonsReg.counts.recording_steps
   && reg.counts.episode_backed_steps + reg.counts.device_mark_steps + reg.counts.self_reported_steps
     === lessonsReg.counts.recording_steps + lessonsReg.counts.silent_steps);
-ok('the verifier and the builder take no defaults: no ?? and no .get(k, default)',
-  !/\?\?/.test(verifySrc) && !/\?\?/.test(buildSrc) && !/\.get\([^)]*,/.test(buildSrc));
+ok('the verifier, the builder and the recovery loader take no defaults: no ?? and no .get(k, default)',
+  !/\?\?/.test(verifySrc) && !/\?\?/.test(buildSrc) && !/\.get\([^)]*,/.test(buildSrc)
+  && !/\?\?/.test(readFileSync(url('../auth/recover.mjs'), 'utf8')));
 ok('the verifier fails closed through need()', typeof need === 'function' && (verifySrc.match(/need\(/g) || []).length > 30);
 let threw = false;
 try { need({}, 'x', 'probe'); } catch (e) { threw = /probe lacks "x"/.test(e.message); }
@@ -172,4 +317,5 @@ ok('need() names the field it could not find', threw);
 
 console.log(`completion/test: ${n} checks passed — ${reg.counts.lessons} lessons documented, `
   + `${reg.counts.recording_steps} recording / ${reg.counts.silent_steps} silent steps, `
-  + `${mutants.length} mutants each failing by name`);
+  + `${mutants.length} mutants each failing by name, ${Object.keys(reg.fixture.signed.mutants).length} signed mutants driven in memory`);
+}

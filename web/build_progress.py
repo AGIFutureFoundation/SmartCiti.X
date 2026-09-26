@@ -175,6 +175,26 @@ AUTH_HONESTY = need(auth_reg, 'honesty', AUTH_PATH)
 PROGRESS_KEY = need(AUTH_RECORDS, 'progress_key', f'{AUTH_PATH}#records_named')
 TRAINING_KEY = need(AUTH_RECORDS, 'training_key', f'{AUTH_PATH}#records_named')
 IDENTITY_KEY = need(AUTH_STORAGE, 'identity_key', f'{AUTH_PATH}#storage')
+# A wallet identity the sign-in page stored carries `address` (its
+# record_shape says so); the statement line a wallet shows the human is auth/'s
+# own. Both read, never retyped, so the verifier rebuilds the same message.
+AUTH_SIWE = need(auth_reg, 'siwe', AUTH_PATH)
+SIWE_STATEMENT = need(AUTH_SIWE, 'statement', f'{AUTH_PATH}#siwe')
+AUTH_METHODS = need(auth_reg, 'methods', AUTH_PATH)
+WALLET_METHOD = 'siwe-ethereum'
+if WALLET_METHOD not in AUTH_METHODS:
+    raise KeyError(f'{AUTH_PATH}#methods does not name {WALLET_METHOD!r}; this page cannot offer a wallet signature')
+if 'address' not in need(AUTH_STORAGE, 'record_shape', f'{AUTH_PATH}#storage'):
+    raise AssertionError(f'{AUTH_PATH}#storage.record_shape stores no address for a wallet identity; '
+                         'this page would have nothing to sign with')
+WALLET_LABEL = need(AUTH_METHODS[WALLET_METHOD], 'label', f'{AUTH_PATH}#methods.{WALLET_METHOD}')
+SIGNING = {
+    'scheme': 'eip191-personal_sign',
+    'statement': SIWE_STATEMENT,
+    'attested_signed': 'wallet signature over the digest',
+    'attested_unsigned': 'this device only',
+    'wallet_method': WALLET_METHOD,
+}
 
 TRAINING_STORAGE = need(training_reg, 'storage', TRAINING_PATH)
 if need(TRAINING_STORAGE, 'key', f'{TRAINING_PATH}#storage') != TRAINING_KEY:
@@ -530,6 +550,7 @@ DATA = {
     'tiers': TIERS,
     'keys': {'progress': PROGRESS_KEY, 'training': TRAINING_KEY,
              'training_on': TRAINING_ON_KEY, 'identity': IDENTITY_KEY},
+    'signing': SIGNING,
     'human_actor': HUMAN_ACTOR,
     'scripted_actors': SCRIPTED_ACTORS,
     'training_cap': TRAINING_CAP,
@@ -696,7 +717,8 @@ READS = ''.join(f'<li><code>{E(p)}</code> — {E(why)}</li>' for p, why in (
                 'bridge from a recorded run to a skill'),
     (HALLS_PATH, "each hall's name, focus and order"),
     (AUTH_PATH, f'the record key names {PROGRESS_KEY} and {TRAINING_KEY}, the identity key '
-                f'{IDENTITY_KEY}, and what a local identity is and is not'),
+                f'{IDENTITY_KEY}, what a local identity is and is not, and the statement line a '
+                f'wallet signs (siwe.statement), so a signed record says what the sign-in page says'),
     (TRAINING_PATH, 'the episode shape, the actor names, the rolling cap and the recorder toggle'),
     (MANIFEST_PATH, 'the product name, the pack version and the pack\'s own honesty block'),
     (LESSONS_PATH, 'every lesson, its steps and the ladder, carried verbatim: the completion '
@@ -1623,6 +1645,10 @@ async function paintCompletion() {
   }
   const idv = rec.identity.value;
   const claimed = (idv && typeof idv === 'object' && typeof idv.label === 'string') ? idv.label : null;
+  /* a wallet identity is the one the sign-in page wrote with method siwe-ethereum
+     AND an address; a label alone is not a wallet and gets no signature */
+  const walletAddress = (idv && typeof idv === 'object' && idv.method === D.signing.wallet_method
+    && typeof idv.address === 'string' && /^0x[0-9a-fA-F]{40}$/.test(idv.address)) ? idv.address : null;
   const training = rec.training.state === 'present' ? rec.training.value : null;
   const meta = { product: D.product, pack_version: D.pack_version, step_kinds: D.step_kinds,
     episode_kinds: D.episode_kinds, identity: claimed, training_state: rec.training.state, human_actor: D.human_actor };
@@ -1654,15 +1680,64 @@ async function paintCompletion() {
     + 'not evidence. Identity: '
     + (record.identity.claimed === null ? 'no label on this device' : record.identity.claimed)
     + ' — attested by this device only, unsigned. Digest ' + record.digest.hex.slice(0, 16) + '…' }));
-  btn.disabled = false;
-  btn.onclick = async () => {
-    const fresh = await buildCompletionRecord(rec.progress.value, D.lessons, D.ladder, meta, new Date(), training);
+  const download = (fresh, suffix) => {
     const blob = new Blob([JSON.stringify(fresh, null, 1)], { type: 'application/json' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = 'tc-completion-' + fresh.exported_at.slice(0, 19).replace(/[:T]/g, '-') + '.json';
+    a.download = 'tc-completion-' + fresh.exported_at.slice(0, 19).replace(/[:T]/g, '-') + suffix + '.json';
     document.body.appendChild(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  };
+  btn.disabled = false;
+  btn.onclick = async () => {
+    download(await buildCompletionRecord(rec.progress.value, D.lessons, D.ladder, meta, new Date(), training), '');
+  };
+
+  /* ---- the wallet signature. Offered ONLY when the sign-in page stored a
+     wallet identity with an address, and only a real window.ethereum can
+     produce one: the page never fabricates a signature. No wallet, no
+     signature - the unsigned export above stays exactly as it is. */
+  const sbtn = document.getElementById('signRecord');
+  const sst = document.getElementById('signStatus');
+  const wallet = (typeof window.ethereum === 'undefined') ? null : window.ethereum;
+  const sayS = (t, state) => { sst.textContent = t; sst.setAttribute('data-sign-state', state); };
+  if (walletAddress === null) {
+    sbtn.hidden = true; sbtn.disabled = true;
+    sayS('No wallet identity is stored under ' + KEYS.identity + ' on this device, so no signature is offered: '
+      + 'a record exported here stays unsigned and says so.', 'no-wallet-identity');
+    return;
+  }
+  sbtn.hidden = false;
+  if (wallet === null) {
+    sbtn.disabled = true;
+    sayS('This device names the wallet ' + walletAddress + ', but no wallet is present in this browser '
+      + '(there is no window.ethereum), so nothing can sign. The record stays unsigned.', 'no-provider');
+    return;
+  }
+  sbtn.disabled = false;
+  sayS('This device names the wallet ' + walletAddress + '. Signing asks that wallet for a personal_sign over this '
+    + 'record\'s digest. It proves the holder of that key signed this digest now - a key, not a person. Nothing is '
+    + 'written to any chain and nothing is anchored; this is not an accreditation.', 'ready');
+  sbtn.onclick = async () => {
+    try {
+      sayS('Building the record and asking the wallet…', 'asking');
+      const fresh = await buildCompletionRecord(rec.progress.value, D.lessons, D.ladder,
+        { ...meta, wallet: walletAddress }, new Date(), training);
+      const message = signatureMessage(fresh, D.signing.statement);
+      const accounts = await wallet.request({ method: 'eth_requestAccounts' });
+      const account = (Array.isArray(accounts) ? accounts : []).find((a) => typeof a === 'string' && a.toLowerCase() === walletAddress.toLowerCase());
+      if (account === undefined) {
+        throw new Error('the connected wallet does not hold ' + walletAddress + ', the address this device named; nothing was signed');
+      }
+      const sig = await wallet.request({ method: 'personal_sign', params: [message, account] });
+      const signed = attachSignature(fresh, walletAddress, sig, D.signing);
+      sayS('Signed by the wallet ' + walletAddress + ' over digest ' + signed.digest.hex.slice(0, 16) + '…. Not verified in '
+        + 'this page: run node completion/verify.mjs on the file to recover the signer. A key signed, not a person; '
+        + 'nothing is on any chain.', 'signed');
+      download(signed, '-signed');
+    } catch (e) {
+      sayS('Not signed: ' + String(e && e.message !== undefined ? e.message : e) + '. Nothing was downloaded.', 'refused');
+    }
   };
 }
 paintCompletion();
@@ -1680,7 +1755,10 @@ COMPLETION_JS = r"""
              (meta.training_state says which)
    lessons : lessons/registry/lessons.json#lessons, verbatim
    ladder  : lessons/registry/lessons.json#ladder, verbatim
-   meta    : { product, pack_version, step_kinds, episode_kinds, identity, training_state, human_actor }
+   meta    : { product, pack_version, step_kinds, episode_kinds, identity, training_state, human_actor,
+               wallet? }  - wallet: the address a wallet will sign with; then identity.claimed is that
+               address and attested_by names the wallet, and the record is NOT valid until
+               attachSignature() fills identity.signature with what the wallet returned
    now     : a Date
    Returns a Promise of the record. A step is done ONLY when tc-progress holds
    its evidence; nothing is marked done from nothing, and no number is
@@ -1720,6 +1798,41 @@ function episodeEvidence(step, hall, training, meta, skipped) {
     return ev;
   }
   return null;
+}
+
+/* the digest input: every top-level field except digest, with
+   identity.signature forced to null - the signature is made OVER the digest,
+   after it, so it cannot be inside it (completion/registry/completion.json#digest) */
+function digestBody(record) {
+  const body = {};
+  for (const k of Object.keys(record)) if (k !== 'digest') body[k] = record[k];
+  if (body.identity && typeof body.identity === 'object') body.identity = { ...body.identity, signature: null };
+  return body;
+}
+const SIGNED_ATTESTATION = 'wallet signature over the digest';
+const UNSIGNED_ATTESTATION = 'this device only';
+/* the exact string a wallet signs, fixed by structure: auth/'s statement line,
+   this record's digest, its export time. completion/verify.mjs rebuilds it. */
+function signatureMessage(record, statement) {
+  if (typeof statement !== 'string' || statement === '') throw new Error('completion: no statement to sign; auth/registry/auth.json#siwe.statement is the one');
+  if (!record || !record.digest || typeof record.digest.hex !== 'string' || typeof record.exported_at !== 'string') throw new Error('completion: a record must carry digest.hex and exported_at before it can be signed');
+  return statement + '\ndigest: ' + record.digest.hex + '\nexported_at: ' + record.exported_at;
+}
+/* fills identity.signature with what a wallet RETURNED. It checks shape and
+   that the record was built for this address; it computes nothing and it
+   never invents a signature: with no wallet there is nothing to call it with. */
+function attachSignature(record, address, sig, signing) {
+  if (!signing || typeof signing.scheme !== 'string' || typeof signing.statement !== 'string') throw new Error('completion: attachSignature needs the signing contract (scheme, statement)');
+  if (typeof address !== 'string' || !/^0x[0-9a-fA-F]{40}$/.test(address)) throw new Error('completion: not an address: ' + String(address));
+  if (typeof sig !== 'string' || !/^0x[0-9a-fA-F]{130}$/.test(sig)) throw new Error('completion: the wallet did not return a 65-byte signature; nothing attached');
+  if (!record || !record.identity || record.identity.signature !== null) throw new Error('completion: the record already carries a signature, or has no identity');
+  if (record.identity.attested_by !== SIGNED_ATTESTATION || typeof record.identity.claimed !== 'string'
+      || record.identity.claimed.toLowerCase() !== address.toLowerCase()) {
+    throw new Error('completion: the record was not built for the wallet ' + address + '; build it with meta.wallet first so the digest covers the claim');
+  }
+  const out = { ...record, identity: { ...record.identity,
+    signature: { scheme: signing.scheme, address, message: signatureMessage(record, signing.statement), sig } } };
+  return out;
 }
 
 function canonicalJSON(v) {
@@ -1819,23 +1932,31 @@ async function buildCompletionRecord(prog, lessons, ladder, meta, now, training)
   const stations = (Array.isArray(prog.stations) ? prog.stations : [])
     .filter((x) => typeof x === 'string').slice().sort();
 
+  if (meta.wallet !== undefined && meta.wallet !== null && (typeof meta.wallet !== 'string' || !/^0x[0-9a-fA-F]{40}$/.test(meta.wallet)))
+    throw new Error('completion: meta.wallet must be an address or absent; a record is never attested to a wallet it cannot name');
+  const wallet = typeof meta.wallet === 'string' ? meta.wallet : null;
   const record = {
     record: COMPLETION_RECORD,
     product: meta.product,
     pack_version: meta.pack_version,
     exported_at: now.toISOString(),
-    identity: { claimed: typeof meta.identity === 'string' ? meta.identity : null,
-      attested_by: 'this device only', signature: null },
+    identity: wallet === null
+      ? { claimed: typeof meta.identity === 'string' ? meta.identity : null, attested_by: UNSIGNED_ATTESTATION, signature: null }
+      : { claimed: wallet, attested_by: SIGNED_ATTESTATION, signature: null },
     lessons: out,
     sims, tools, stations,
     honesty: {
       proves: [
         'a step of kind sim, station or crib is marked done only where this device\'s progress record holds a pass for that seat, that station or that district crib; no step is marked done from nothing',
         'a lesson is complete only when every one of its steps is done',
-        'the digest is SHA-256 over the canonical JSON of every other top-level field, so an edit to any of them is detectable',
+        'the digest is SHA-256 over the canonical JSON of every other top-level field (identity.signature forced to null, because a signature is made over the digest), so an edit to any of them is detectable',
+        ...(wallet === null ? [] : ['identity.signature, when filled, is an EIP-191 personal_sign by the wallet ' + wallet + ' over this digest: the holder of that key signed this digest at export - the identity of a key, not of a person']),
       ],
       does_not_prove: [
-        'who did the work: the identity is a label this device stores and nobody has verified it, the signature is null, and anyone holding the device can edit the record it was built from',
+        wallet === null
+          ? 'who did the work: the identity is a label this device stores and nobody has verified it, the signature is null, and anyone holding the device can edit the record it was built from'
+          : 'who did the work: a wallet signature names a key, not a person - a key is held, lent and stolen - and anyone holding the device can edit the record it was built from',
+        'anything on any blockchain: nothing is written to any chain, nothing is anchored, no transaction exists; a signature, if any, is computed in the browser and carried in this file',
         'silent steps (' + silent.join(', ') + ') are recorded by nothing in this bundle, so they are never done here and no lesson that has one can be complete',
         training === null
           ? 'the training log was ' + meta.training_state + ' on this device, so no ' + Object.keys(REF_FIELDS).join(', ') + ' step is done here'
@@ -1847,11 +1968,11 @@ async function buildCompletionRecord(prog, lessons, ladder, meta, now, training)
       ],
     },
   };
-  const bytes = new TextEncoder().encode(canonicalJSON(record));
+  const bytes = new TextEncoder().encode(canonicalJSON(digestBody(record)));
   const buf = await globalThis.crypto.subtle.digest('SHA-256', bytes);
   const hex = [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
   record.digest = { alg: 'SHA-256',
-    over: 'canonical JSON of every top-level field except digest: keys sorted recursively, no whitespace, UTF-8',
+    over: 'canonical JSON of every top-level field except digest, with identity.signature forced to null: keys sorted recursively, no whitespace, UTF-8',
     hex };
   return record;
 }
@@ -2164,9 +2285,21 @@ footer.page a{{margin-inline-end:10px}}
      from nothing else. A step counts as done only where that record holds its evidence; a lesson is
      complete only when every step is done. The record names what it proves and what it does not,
      and carries a digest so an edit is detectable. It is attested by this device alone and signed
-     by nobody. {E(need(LESSONS_HONESTY, 'not_certification', LESSONS_PATH + '#honesty'))}</p>
+     by nobody — unless this device names an Ethereum wallet (<code>{E(WALLET_LABEL)}</code>, stored
+     under <code>{E(IDENTITY_KEY)}</code> by the sign-in page), in which case the button below asks that
+     wallet for an EIP-191 <code>personal_sign</code> over the record's digest and carries the signature
+     in the file. {E(need(LESSONS_HONESTY, 'not_certification', LESSONS_PATH + '#honesty'))}</p>
   <div class="card" id="completion-summary"></div>
-  <p><button id="expRecord" type="button" disabled>Export completion record</button></p>
+  <p><button id="expRecord" type="button" disabled>Export completion record</button>
+     <button id="signRecord" type="button" disabled hidden>Sign this record with the connected wallet</button></p>
+  <p class="why" id="signStatus" data-sign-state="unpainted"></p>
+  <p class="why" id="signHonesty" data-sign-honesty="1">What a wallet signature is: proof that the holder of that key
+     signed this digest at export — the identity of a key, not of a person; a key is held, lent and stolen.
+     What it is not: nothing is written to any chain, nothing is anchored, no transaction exists, and it is not an
+     accreditation. The page never fabricates a signature: no wallet, no signature, and the record says
+     <code>{E(SIGNING['attested_unsigned'])}</code>. Verify a signed file with
+     <code>node completion/verify.mjs &lt;record.json&gt;</code>, which recovers the signer with the sign-in page's
+     own code and prints the address.</p>
 </section>
 
 <section>

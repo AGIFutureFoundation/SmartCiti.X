@@ -5,7 +5,7 @@
  "exported_at": "2026-09-26T00:00:00Z",
  "identity": {
   "claimed": "fixture — not a learner",
-  "attested_by": "this device only",
+  "attested_by": "wallet signature over the digest",
   "signature": null
  },
  "lessons": [
@@ -1119,6 +1119,6 @@
  "digest": {
   "alg": "SHA-256",
   "over": "canonical JSON of every top-level field except digest, with identity.signature forced to null: keys sorted recursively, no whitespace, UTF-8",
-  "hex": "0000000000000000000000000000000000000000000000000000000000000000"
+  "hex": "e972061a6befe94304e2d9bc9ed37853a83ab0797b5463906af1aab05df537e4"
  }
 }

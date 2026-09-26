@@ -11,9 +11,14 @@ documents what each field proves and does not prove, and ships a verifier
 
 WHAT IT IS NOT. A digest proves the record has not changed since it was
 exported; it proves nothing about who exported it. `identity.signature` is
-null because this bundle has no signing key and no server, and the verifier
-refuses a record that carries one. Nothing here is an accreditation, a
-ticket or a certificate; no duration and no price is claimed.
+null unless the learner's connected Ethereum wallet signed the digest
+(EIP-191 personal_sign, the same path auth/ already uses): this bundle has no
+key of its own and no server. A wallet signature proves that the holder of
+that key signed THIS digest at export - the identity of a key, not of a
+person. Nothing is written to any chain, nothing is anchored, and the
+verifier recovers the signer with auth/'s own recovery code (one truth, no
+second keccak, no second curve). Nothing here is an accreditation, a ticket
+or a certificate; no duration and no price is claimed.
 
 PROVENANCE. DERIVED: every fact below is read from the registry that owns it
 (lessons, sims, tools, stations, halls, the manifest). The pass rule per
@@ -47,7 +52,14 @@ CRIBS = json.load(open(ROOT / 'tools/registry/toolcribs.json'))
 STATIONS = json.load(open(ROOT / 'stations/registry/stations.json'))
 HALLS = json.load(open(ROOT / 'pack/registry/halls.json'))
 TRAINING = json.load(open(ROOT / 'training/registry/training.json'))
+AUTH = json.load(open(ROOT / 'auth/registry/auth.json'))
 EPISODE_KINDS = req(TRAINING, 'episode_kinds', 'training.json')
+# The statement line a wallet shows the human is auth/'s own, read not retyped.
+SIWE = req(AUTH, 'siwe', 'auth.json')
+SIWE_STATEMENT = req(SIWE, 'statement', 'auth.json#siwe')
+AUTH_STORAGE = req(AUTH, 'storage', 'auth.json')
+IDENTITY_KEY = req(AUTH_STORAGE, 'identity_key', 'auth.json#storage')
+SIGNING_METHOD = req(SIWE, 'signing_method', 'auth.json#siwe')
 
 PRODUCT = req(MANIFEST, 'product', 'manifest')
 PACK_VERSION = req(MANIFEST, 'pack_version', 'manifest')
@@ -186,7 +198,8 @@ HONESTY = {
         'no lesson is marked complete with a step still undone, and none ahead of its ladder prerequisite',
     ],
     'does_not_prove': [
-        'who the learner is: identity.claimed is typed by the person, attested by this device only, and nothing checks it',
+        'who the learner is: identity.claimed is typed by the person, attested by this device only, and nothing checks it - unless a wallet signed, in which case it is the identity of a key, not of a person; a stolen key signs just as well',
+        'anything on any blockchain: a wallet signature is computed in the browser and carried in the file; nothing is written to any chain, nothing is anchored, and no one can look it up',
         'that the device was honest: a record can be written by hand and will verify if it is internally consistent',
         'that a self-reported step (walk, placard) happened at all',
         'a station or crib mark is a device-local mark, not a recorded episode',
@@ -195,14 +208,75 @@ HONESTY = {
         'any duration of training, and no price is claimed',
     ],
     'digest': 'a digest proves integrity since export, not identity',
-    'signature': 'null, always: this bundle has no signing key and no server; a non-null signature is refused as a forgery',
+    'signature': 'null unless a wallet signed: this bundle has no key of its own and no server, so an unsigned record is '
+                 'attested by this device only. A signed record carries an EIP-191 personal_sign signature by the '
+                 'connected wallet over this record\'s digest; it proves that the holder of that key signed this digest at '
+                 'export - the identity of a key, not of a person. A signature that does not recover to the address it '
+                 'claims, or that signs any other message, is refused as a forgery. Nothing is written to any chain and '
+                 'nothing is anchored.',
     'accreditation': 'nothing here is an accreditation',
 }
 
+# identity.signature is computed AFTER the digest and over it, so it cannot be
+# inside the digest input. The exporter and the verifier agree by construction:
+# both canonicalise the record with identity.signature forced to null.
 DIGEST_RULE = {
     'alg': 'SHA-256',
-    'over': 'canonical JSON of every top-level field except digest: keys sorted recursively, no whitespace, UTF-8',
+    'over': 'canonical JSON of every top-level field except digest, with identity.signature forced to null: '
+            'keys sorted recursively, no whitespace, UTF-8',
+    'excludes_signature_why': 'the signature is a signature OVER the digest, made after it; a digest that covered it '
+                              'would be circular. Every other byte of identity (claimed, attested_by) is covered.',
     'numbers': 'exporters write integers for score and attempts so Python and JavaScript canonicalise alike',
+}
+
+SIGNED_ATTESTATION = 'wallet signature over the digest'
+UNSIGNED_ATTESTATION = 'this device only'
+SIGNATURE_SCHEME = 'eip191-personal_sign'
+
+
+def signature_message(digest_hex, exported_at):
+    """The exact string a wallet signs, fixed by structure - never free text."""
+    return SIWE_STATEMENT + '\ndigest: ' + digest_hex + '\nexported_at: ' + exported_at
+
+
+SIGNATURE_RULE = {
+    'field': 'identity.signature',
+    'null_means': 'unsigned: ' + UNSIGNED_ATTESTATION + '. Then identity.attested_by must be exactly '
+                  '"' + UNSIGNED_ATTESTATION + '" and identity.claimed is whatever was typed.',
+    'object_shape': {'scheme': SIGNATURE_SCHEME, 'address': '0x + 40 hex, the signer the wallet reported',
+                     'message': 'the exact string signed (below)', 'sig': '0x + 130 hex: r | s | v, 65 bytes'},
+    'scheme': SIGNATURE_SCHEME,
+    'signing_method': SIGNING_METHOD,
+    'message': {
+        'structure': '<statement>\\n' + 'digest: <digest.hex>\\n' + 'exported_at: <exported_at>',
+        'statement': SIWE_STATEMENT,
+        'statement_from': 'auth/registry/auth.json#siwe.statement - the line auth/ already puts in front of the human',
+        'why_fixed': 'the verifier rebuilds this message from THIS record\'s digest.hex and exported_at and requires '
+                     'equality, so a signature over any other text - another record, another export, a friendly '
+                     'sentence - is refused by name',
+    },
+    'when_signed': 'identity.attested_by must be exactly "' + SIGNED_ATTESTATION + '", identity.claimed must equal '
+                   'signature.address, and the address recovered from (message, sig) must equal both - compared '
+                   'as lowercase hex, so EIP-55 casing differences are not a mismatch',
+    'order': 'digest first: a tampered digest under a valid signature fails `digest` (and the signature no longer '
+             'matches the rebuilt message, so identity.signature is listed after it); a tampered message or sig with '
+             'an intact digest fails `identity.signature` alone',
+    'recovery': 'auth/recover.mjs, which lifts the AUTH-CORE region of web/trade_craft_signin.html - the sign-in '
+                'page\'s own keccak-256, secp256k1 recovery and EIP-55 derivation, the code auth/test.mjs holds '
+                'against node\'s sha3-256, node\'s secp256k1 and the published addresses of keys 1, 2 and 3. '
+                'No second keccak and no second curve exist in this pack.',
+    'where_the_wallet_comes_from': 'the progress page reads the identity the sign-in page stored under ' + IDENTITY_KEY
+                                   + '; only a record whose method is siwe-ethereum carries an address, and only then '
+                                     'is signing offered. No wallet, no signature: the record stays unsigned and says so. '
+                                     'A signature is never fabricated by the page.',
+    'proves': 'that the holder of the private key for signature.address signed this record\'s digest at export. '
+              'The identity of a key, not of a person.',
+    'does_not_prove': [
+        'who the person is: a key is held, lent, shared and stolen',
+        'anything about any chain: nothing is written to any chain, nothing is anchored, no transaction exists',
+        'that the record is true: the digest covers what the device exported, and the device can be edited',
+        'any accreditation: no hall, employer or authority has signed anything',
+    ],
 }
 
 CONTRACT = {
@@ -210,8 +284,11 @@ CONTRACT = {
     'product': {'is': 'pack/manifest.json product', 'proves': 'which product wrote it; nothing about the learner'},
     'pack_version': {'is': 'pack/manifest.json pack_version', 'proves': 'which registries the ids resolve against'},
     'exported_at': {'is': 'ISO-8601 string, device clock', 'proves': 'nothing: a device clock is not attested'},
-    'identity': {'is': '{claimed: string|null, attested_by: "this device only", signature: null}',
-                 'proves': 'nothing about who the learner is; claimed is typed, not checked'},
+    'identity': {'is': '{claimed: string|null, attested_by: "' + UNSIGNED_ATTESTATION + '" | "' + SIGNED_ATTESTATION
+                       + '", signature: null | {scheme: "' + SIGNATURE_SCHEME + '", address, message, sig}}',
+                 'proves': 'unsigned: nothing about who the learner is; claimed is typed, not checked. Signed: that the '
+                           'holder of the key for `address` signed this digest at export - a key, not a person; see '
+                           'registry#signature'},
     'lessons': {'is': 'one entry per lesson the export covers: lesson id, hall, complete, steps[]',
                 'proves': 'per step: done and its evidence per the evidence rule of its kind'},
     'sims': {'is': '{sim id: {passed, score, attempts}} from tc-progress.sims',
@@ -229,7 +306,11 @@ def canonical(obj):
 
 
 def digest_of(record):
-    body = {k: v for k, v in record.items() if k != 'digest'}
+    """SHA-256 over every top-level field except digest, with identity.signature
+    forced to null - the signature is made over the digest, after it."""
+    body = {k: copy.deepcopy(v) for k, v in record.items() if k != 'digest'}
+    if 'identity' in body and isinstance(body['identity'], dict) and 'signature' in body['identity']:
+        body['identity']['signature'] = None
     return hashlib.sha256(canonical(body)).hexdigest()
 
 
@@ -317,6 +398,22 @@ def mutants(good):
     m = copy.deepcopy(good)
     m['identity']['signature'] = 'sig:' + '0' * 32
     out['forged-signature'] = ('identity.signature', stamp_digest(m))
+
+    # a signature object under any scheme but the one named; the digest is
+    # intact because the signature is not in it, so exactly one rule fails
+    m = copy.deepcopy(good)
+    m['identity']['claimed'] = '0x' + '0' * 40
+    m['identity']['attested_by'] = SIGNED_ATTESTATION
+    stamp_digest(m)
+    m['identity']['signature'] = {'scheme': 'eip712-typed-data', 'address': '0x' + '0' * 40,
+                                  'message': signature_message(m['digest']['hex'], m['exported_at']),
+                                  'sig': '0x' + '00' * 65}
+    out['signature-wrong-scheme'] = ('identity.signature', m)
+
+    # the wallet attestation claimed with no signature to back it
+    m = copy.deepcopy(good)
+    m['identity']['attested_by'] = SIGNED_ATTESTATION
+    out['attested-by-wallet-unsigned'] = ('identity.signature', stamp_digest(m))
 
     m = copy.deepcopy(good)
     lesson = find_lesson(m, COMPLETE[0])
@@ -409,6 +506,7 @@ registry = {
                         'fields': ['sims[id].passed', 'tools[district].passed', 'stations[]']},
     'contract': CONTRACT,
     'digest': DIGEST_RULE,
+    'signature': SIGNATURE_RULE,
     'evidence_classes': {
         'episode-backed': 'the step kind records a training episode; only this class is called evidence-backed',
         'device-mark': 'station or crib: a mark in the device-local progress record, not a recorded episode',
@@ -439,6 +537,7 @@ registry = {
         'halls': 'pack/registry/halls.json', 'stations': 'stations/registry/stations.json',
         'tools': 'tools/registry/toolcribs.json', 'manifest': 'pack/manifest.json',
         'training': 'training/registry/training.json',
+        'auth': 'auth/registry/auth.json',
     },
     'verifier': {'run': 'node completion/verify.mjs <record.json>',
                  'rules': ['record.fields', 'digest', 'identity.signature', 'ids.lesson', 'ids.hall', 'ids.step',
@@ -447,6 +546,25 @@ registry = {
     'fixture': {
         'good': 'fixture/good.json',
         'mutants': {f'fixture/mutant-{name}.json': rule for name, (rule, _m) in muts.items()},
+        'signed': {
+            'built_by': 'completion/test.mjs, in memory, from fixture/good.json',
+            'why_not_on_disk': 'python3\'s stdlib has no keccak-256 and no secp256k1, and writing a second one here '
+                               'would be a second truth; the key is a throwaway generated by node:crypto '
+                               '(generateKeyPairSync secp256k1) so it differs per run, and a build must be '
+                               'deterministic. The signing routine lives ONLY in the test; the verifier only recovers.',
+            'good': 'the fixture re-attested "' + SIGNED_ATTESTATION + '" with claimed = the throwaway address, '
+                    'digest restamped, then signed over the structured message: verifies on every rule and the '
+                    'verifier prints the recovered address',
+            'mutants': {
+                'signed-sig-tampered': 'identity.signature',
+                'signed-message-tampered': 'identity.signature',
+                'signed-address-swapped': 'identity.signature',
+                'signed-wrong-scheme': 'identity.signature',
+                'signed-claimed-not-the-signer': 'identity.signature',
+                'signed-digest-tampered': 'digest, listed first; identity.signature follows because the signed '
+                                          'message names the old digest',
+            },
+        },
     },
 }
 

@@ -4,9 +4,14 @@
  "pack_version": "3.2.0",
  "exported_at": "2026-09-26T00:00:00Z",
  "identity": {
-  "claimed": "fixture — not a learner",
-  "attested_by": "this device only",
-  "signature": null
+  "claimed": "0x0000000000000000000000000000000000000000",
+  "attested_by": "wallet signature over the digest",
+  "signature": {
+   "scheme": "eip712-typed-data",
+   "address": "0x0000000000000000000000000000000000000000",
+   "message": "I am naming this Ethereum account as the owner of the Trade Craft Academy training record kept in this browser. This signature does not log me in, does not reach any server, and protects nothing: this bundle has no backend.\ndigest: 0e21d9a2c49b730736701f18f0a0b0796f97d89aa32e5022c86a93d4b89d0ad0\nexported_at: 2026-09-26T00:00:00Z",
+   "sig": "0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+  }
  },
  "lessons": [
   {
@@ -1119,6 +1124,6 @@
  "digest": {
   "alg": "SHA-256",
   "over": "canonical JSON of every top-level field except digest, with identity.signature forced to null: keys sorted recursively, no whitespace, UTF-8",
-  "hex": "0000000000000000000000000000000000000000000000000000000000000000"
+  "hex": "0e21d9a2c49b730736701f18f0a0b0796f97d89aa32e5022c86a93d4b89d0ad0"
  }
 }
