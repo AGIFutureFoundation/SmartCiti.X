@@ -30,7 +30,128 @@ roadmap = json.load(open(ROOT / 'roadmap/registry/roadmap.json'))
 restoration = json.load(open(ROOT / 'restoration/registry/restoration.json'))
 spatial = json.load(open(ROOT / 'spatial/registry/geopose.json'))
 meta = json.load(open(ROOT / 'meta/registry/metaverse.json'))
+# the registries the per-campus rollups are computed from - never typed
+campuses_reg = json.load(open(ROOT / 'unions/registry/campuses.json'))
+halls_reg = json.load(open(ROOT / 'pack/registry/halls.json'))
+lessons_reg = json.load(open(ROOT / 'lessons/registry/lessons.json'))
+sims_reg = json.load(open(ROOT / 'sims/registry/sims.json'))
+schools_reg = json.load(open(ROOT / 'schools/registry/schools.json'))
 L = manifest['ledger']
+
+
+def need(d, k, where):
+    """Fail closed, by name: a registry field this page renders must exist.
+    No default-taking get() call anywhere below - a missing field is a build
+    failure that names the field and the registry, never a silent blank."""
+    if not isinstance(d, dict) or k not in d:
+        raise SystemExit(f'build_geomap: {where} has no field {k!r}')
+    return d[k]
+
+
+# ---------------------------------------------------------------- rollups ---
+# Per-campus figures, computed here from the registries that own them and
+# shipped inside the page's JSON only - the popup and the campus panel
+# render them from D.rollups at view time, so no count is ever typed into
+# the page's prose. (web/test_geomap.mjs recomputes every one and greps the
+# page outside the JSON for the literal figures.)
+HALL_SLUGS = {need(h, 'slug', 'pack/registry/halls.json#halls[]')
+              for h in need(halls_reg, 'halls', 'pack/registry/halls.json')}
+CAMPUSES = need(campuses_reg, 'campuses', 'unions/registry/campuses.json')
+LESSONS = need(lessons_reg, 'lessons', 'lessons/registry/lessons.json')
+HALL_BINDINGS = need(sims_reg, 'hall_bindings', 'sims/registry/sims.json')
+UNITS = need(schools_reg, 'units', 'schools/registry/schools.json')
+_halls_with_lesson = {need(l, 'hall', f'lessons.json#lessons.{lid}')
+                      for lid, l in LESSONS.items()}
+_flipped_halls = [need(u, 'hall', 'schools.json#units[]') for u in UNITS]
+ROLLUPS = {}
+for slug, c in CAMPUSES.items():
+    halls = need(c, 'halls', f'unions/registry/campuses.json#campuses.{slug}')
+    for h in halls:
+        assert h in HALL_SLUGS, f'campus {slug} lists hall {h!r} that halls.json does not carry'
+    # a hall may sit on exactly one campus, so a lesson's own campus tag
+    # must agree with the campus that lists its hall - checked, not assumed
+    for lid, l in LESSONS.items():
+        if l['hall'] in halls:
+            assert need(l, 'campus', f'lessons.json#lessons.{lid}') == slug, (
+                f'lesson {lid} says campus {l["campus"]!r} but its hall {l["hall"]!r} is on {slug}')
+    ROLLUPS[slug] = {
+        'name': need(c, 'name', f'campuses.json#campuses.{slug}'),
+        'flagship': need(c, 'flagship', f'campuses.json#campuses.{slug}'),
+        'halls': list(halls),
+        'hallsCount': len(halls),
+        'hallsWithLesson': sum(1 for h in halls if h in _halls_with_lesson),
+        'hallsBindingSeat': sum(1 for h in halls if h in HALL_BINDINGS),
+        'flippedUnits': sum(1 for h in _flipped_halls if h in halls),
+    }
+_flagships = [s for s, r in ROLLUPS.items() if r['flagship'] is True]
+assert len(_flagships) == 1, f'expected exactly one flagship campus, found {_flagships}'
+FLAGSHIP = _flagships[0]
+assert set(ROLLUPS) == {f['properties']['slug'] for f in network['features']
+                        if 'slug' in f['properties']}, \
+    'the campuses on network.geojson and unions/registry/campuses.json differ'
+
+# ---------------------------------------------------- anchor provenance ---
+# geo/registry/campuses_geo.json#anchors: every anchor carries `provenance`
+# (RECORDED from the cited Locator.X table, or AUTHORED - typed from public
+# record) and its own `source` string. Counted here from the registry, then
+# cross-checked against the network features the map draws, so the legend's
+# split and each popup's chip are the registry's own words - never upgraded,
+# never invented. The two classes are styled apart on the map itself.
+ANCHOR_PROVENANCE = {'RECORDED': 0, 'AUTHORED': 0, 'total': 0}
+_anchor_by_ref = {}
+for near, lst in need(geo, 'anchors', 'geo/registry/campuses_geo.json').items():
+    for a in lst:
+        pv = need(a, 'provenance', f'campuses_geo.json#anchors.{near}[]')
+        need(a, 'source', f'campuses_geo.json#anchors.{near}[]')
+        assert pv in ('RECORDED', 'AUTHORED'), f'anchor {a["name"]!r} near {near}: provenance {pv!r}'
+        ANCHOR_PROVENANCE[pv] += 1
+        ANCHOR_PROVENANCE['total'] += 1
+        _anchor_by_ref[f'{near}/{a["name"]}'] = a
+for f in network['features']:
+    p = f['properties']
+    if 'kind' in p and p['kind'] == 'anchor':
+        a = _anchor_by_ref[f'{p["near"]}/{p["name"]}']
+        assert p['provenance'] == a['provenance'] and p['source'] == a['source'], (
+            f'network.geojson anchor {p["name"]!r} drifted from campuses_geo.json')
+assert ANCHOR_PROVENANCE['total'] == sum(
+    1 for f in network['features'] if 'kind' in f['properties'] and f['properties']['kind'] == 'anchor')
+
+# ------------------------------------------------------- restoration walks ---
+# The eight walkable sites link into the 3D environment at the campus their
+# entry is grouped under (trade_craft_3d.html?campus=<slug> - the app's own
+# entry point; the walk itself starts from that campus's restoration panel).
+# A site with walkable=false gets its registry's own `walkable_reason`,
+# verbatim, and NEVER a walk link - the refusal is the content.
+for s in restoration['sites']:
+    for k in ('id', 'name', 'walkable', 'walkable_reason', 'pin', 'source_url', 'campus'):
+        need(s, k, f'restoration/registry/restoration.json#sites[{s["id"] if "id" in s else "?"}]')
+    if s['walkable'] is True:
+        assert s['pin'] is True and s['campus'] in ROLLUPS, \
+            f'walkable site {s["id"]} has no pinned campus to walk from'
+    else:
+        assert isinstance(s['walkable_reason'], str) and s['walkable_reason'], \
+            f'non-walkable site {s["id"]} carries no walkable_reason'
+N_NOT_WALKABLE = sum(1 for s in restoration['sites'] if s['walkable'] is not True)
+assert N_NOT_WALKABLE > 0
+
+
+def walk_href(s):
+    return f'trade_craft_3d.html?campus={s["campus"]}'
+
+
+def _site_row(s):
+    E = html.escape
+    if s['walkable'] is True:
+        walk = (f'<a class="walk" href="{E(walk_href(s))}">walk it in the 3D environment '
+                f'(from the {E(ROLLUPS[s["campus"]]["name"])} restoration panel)</a>')
+    else:
+        walk = f'<span class="refusal">not walkable: {E(s["walkable_reason"])}</span>'
+    return (f'<li data-site="{E(s["id"])}" data-walkable="{"true" if s["walkable"] is True else "false"}">'
+            f'<b>{E(s["name"])}</b> <span class="pv">{E(s["category"])}</span><br>{walk}<br>'
+            f'<a class="src" href="{E(s["source_url"])}" target="_blank" rel="noopener">{E(s["source_url"])}</a></li>')
+
+
+SITE_ROWS = ''.join(_site_row(s) for s in restoration['sites'])
 
 
 def _slug(s):
@@ -50,10 +171,10 @@ POSE_BY_REF = {p['subject']['ref']: p for p in spatial['poses']}
 _N_MATCHED = 0
 for f in network['features']:
     p = f['properties']
-    ref = (f'campus:{p["slug"]}' if p.get('slug')
-           else f'anchor:{p["near"]}/{_slug(p["name"])}' if p.get('kind') == 'anchor'
+    ref = (f'campus:{p["slug"]}' if 'slug' in p
+           else f'anchor:{p["near"]}/{_slug(p["name"])}' if 'kind' in p and p['kind'] == 'anchor'
            else None)
-    pose = POSE_BY_REF.get(ref) if ref else None
+    pose = POSE_BY_REF[ref] if ref in POSE_BY_REF else None
     if pose:
         p['geopose'] = {'ref': ref, 'h_m': pose['geopose']['position']['h'],
                          'position_provenance': pose['provenance']['position_horizontal']}
@@ -98,7 +219,19 @@ DATA = json.dumps({
     # real Bay Restoration Authority sites - AUTHORED coordinates (this
     # build reaches no network host, so nothing here is cross-checked
     # against sfbayrestore.org live), each with its own source link
-    'restorationSites': [s for s in restoration['sites'] if s['pin']],
+    # every site, verbatim - the unpinned one too, since its refusal to be
+    # pinned (walkable_reason) is content this map now shows; the marker
+    # loop below still draws only the pinned ones (s.pin)
+    'restorationSites': restoration['sites'],
+    'nNotWalkable': N_NOT_WALKABLE,
+    # the geo registry's own anchor table, verbatim, and its provenance
+    # split counted from it (see ANCHOR_PROVENANCE above)
+    'anchors': geo['anchors'],
+    'anchorProvenance': ANCHOR_PROVENANCE,
+    # per-campus rollups computed from unions/, pack/, lessons/, sims/ and
+    # schools/ registries (see ROLLUPS above) - rendered from here only
+    'rollups': ROLLUPS,
+    'flagship': FLAGSHIP,
     'restorationHonesty': {k: restoration['honesty'][k]
                            for k in ('not_affiliated', 'provenance')},
     # the spatial fabric this map's own features are described by
@@ -175,7 +308,27 @@ body{margin:0;background:var(--plate);color:var(--ink);
 .pv{display:inline-block;border:1px solid var(--rule);border-radius:999px;
   padding:0 7px;font-size:10.5px;color:var(--muted);margin:2px 4px 4px 0}
 .pv.rec{color:var(--good);border-color:var(--good)}
+.pv.auth{color:var(--mark);border-color:var(--mark)}
 .src{color:var(--muted);font-size:10.5px}
+.roll{margin:4px 0 0;padding:0;list-style:none;font-size:11.5px;color:var(--muted)}
+.roll b{color:var(--ink)}
+.panel{position:fixed;top:58px;right:14px;z-index:6;width:min(380px,calc(100vw - 28px));
+  max-height:calc(100vh - 130px);overflow:auto;display:none;
+  background:color-mix(in oklab, var(--panel) 94%, transparent);
+  border:1px solid var(--rule);border-radius:9px;padding:10px 14px;font-size:12.5px}
+.panel.open{display:block}
+.panel h2{font:600 15px "Barlow Condensed",sans-serif;margin:0 0 6px}
+.panel ul{margin:0;padding:0;list-style:none}
+.panel li{padding:7px 0;border-top:1px solid var(--rule)}
+.panel li:first-child{border-top:0}
+.panel a{color:var(--steel)}
+.panel .walk{color:var(--good)}
+.refusal{color:var(--mark);font-size:11.5px}
+.flag{background:var(--mark);color:#12181B;border-radius:4px;padding:0 5px;
+  font:600 10.5px "Barlow Condensed",sans-serif;margin-inline-start:4px}
+.anchor-swatch{display:inline-block;width:9px;height:9px;border-radius:50%;margin-inline-end:5px}
+.anchor-swatch.rec{background:var(--steel)}
+.anchor-swatch.auth{background:#12181B;border:1.5px solid var(--steel)}
 @media(pointer:coarse){.barbtn{min-height:42px}#honesty{display:none}}
 </style>
 </head>
@@ -189,12 +342,25 @@ body{margin:0;background:var(--plate);color:var(--ink);
   <button class="barbtn" data-fit="nola">New Orleans</button>
   <button class="barbtn" id="satBtn">🛰️ Imagery</button>
   <button class="barbtn" id="parBtn">▦ Footprints</button>
+  <button class="barbtn" data-panel="campuses">☰ Campuses</button>
+  <button class="barbtn" data-panel="sites">🌿 Restoration sites</button>
 </div>
 <div id="map"></div>
+<section class="panel" id="campuses" aria-label="campus rollups">
+  <h2>The campuses, rolled up from the registries</h2>
+  <ul id="campusList"></ul>
+  <p class="src">Halls per campus from unions/registry/campuses.json; a hall &ldquo;with a lesson&rdquo; has an entry in lessons/registry/lessons.json; a hall &ldquo;binding a seat&rdquo; appears in sims/registry/sims.json hall_bindings; flipped-classroom units are schools/registry/schools.json units on that campus&rsquo;s halls. Every figure is computed at build from those registries and rendered here from the page&rsquo;s own JSON.</p>
+</section>
+<section class="panel" id="sites" aria-label="Bay Restoration sites">
+  <h2>Bay Restoration sites</h2>
+  <ul id="siteList">__SITE_ROWS__</ul>
+  <p class="src">__RESTORATION_NOT_AFFILIATED__</p>
+</section>
 <div id="legend">
   <b>The geo registry, drawn</b><br>
   <span class="dot" style="background:var(--mark)"></span>campus — RECORDED/DERIVED for the __N_FLAGSHIP__ flagship campuses, AUTHORED for the __N_HUB__ hub campuses<br>
-  <span class="dot" style="background:var(--steel)"></span>anchor — RECORDED from Locator.X near the flagship campuses, AUTHORED near the hub campuses (click a dot for the one that applies)<br>
+  <span class="anchor-swatch rec"></span>anchor, <b>RECORDED</b> — <span data-anchor-count="RECORDED"></span> of <span data-anchor-count="total"></span>: the coordinate is copied from the source its popup cites<br>
+  <span class="anchor-swatch auth"></span>anchor, <b>AUTHORED</b> — <span data-anchor-count="AUTHORED"></span> of <span data-anchor-count="total"></span>: typed from public record, no source fetched; the popup states this plainly<br>
   <span class="dot" style="background:none;border:1.5px dashed var(--mark);border-radius:0"></span>great-circle route — DERIVED<br>
   <span class="dot" style="background:none;border:1px solid var(--steel);border-radius:0"></span>city frame — RECORDED for the __N_FLAGSHIP__ flagship campuses, AUTHORED for the __N_HUB__ hub campuses<br>
   <span class="dot" style="background:none;border:1.5px dashed var(--muted)"></span>roadmap candidate — AUTHORED, not built<br>
@@ -266,10 +432,16 @@ const map = new maplibregl.Map({
         filter: ['==', ['get', 'kind'], 'route'],
         paint: { 'line-color': '#E8A33D', 'line-width': 1.6,
                  'line-dasharray': [2.5, 2] } },
+      // the two provenance classes drawn apart: RECORDED solid steel,
+      // AUTHORED a hollow ring - read from each feature's own `provenance`
       { id: 'anchors', type: 'circle', source: 'net',
         filter: ['==', ['get', 'kind'], 'anchor'],
-        paint: { 'circle-radius': 4.5, 'circle-color': '#41C4D4',
-                 'circle-stroke-color': '#0C1113', 'circle-stroke-width': 1.5 } },
+        paint: { 'circle-radius': 4.5,
+                 'circle-color': ['match', ['get', 'provenance'],
+                                  'RECORDED', '#41C4D4', '#12181B'],
+                 'circle-stroke-color': ['match', ['get', 'provenance'],
+                                         'RECORDED', '#0C1113', '#41C4D4'],
+                 'circle-stroke-width': 1.5 } },
       { id: 'campuses', type: 'circle', source: 'net',
         filter: ['has', 'slug'],
         paint: { 'circle-radius': 7, 'circle-color': '#E8A33D',
@@ -378,6 +550,23 @@ document.addEventListener('click', (e) => {
       parseFloat(ab.dataset.lat), parseFloat(ab.dataset.lng));
   }
 });
+// a walkable site walks; a non-walkable one states its registry's own
+// refusal, verbatim, and gets no link - same rule as the static list
+function walkLine(s) {
+  if (s.walkable === true)
+    return `<a class="walk" href="trade_craft_3d.html?campus=${s.campus}">walk it in the 3D environment`
+      + ` (from the ${D.rollups[s.campus].name} restoration panel)</a>`;
+  return `<span class="refusal">not walkable: ${s.walkable_reason}</span>`;
+}
+function rollupList(slug) {
+  const r = D.rollups[slug];
+  return `<ul class="roll">`
+    + `<li><b>${r.hallsCount}</b> halls on this campus</li>`
+    + `<li><b>${r.hallsWithLesson}</b> halls with a lesson</li>`
+    + `<li><b>${r.hallsBindingSeat}</b> halls binding a seat</li>`
+    + `<li><b>${r.flippedUnits}</b> flipped-classroom units</li>`
+    + `<li>flagship: <b>${r.flagship ? 'yes' : 'no'}</b></li></ul>`;
+}
 function popupForRestoration(s) {
   const wf = s.workforce
     ? `<br><b>Workforce pathway:</b> ${s.workforce_note}` : '';
@@ -398,7 +587,7 @@ function popupForRestoration(s) {
     .setHTML(`<b>${s.name}</b><br><span class="pv rec">real project</span>`
       + `<span class="pv">AUTHORED coordinate</span>` + cat
       + `<br>${s.org}<br>${s.city}, ${s.county} · ${s.habitat}<br>${s.scale}`
-      + dis + wf + pt + pose
+      + dis + wf + pt + pose + `<br>` + walkLine(s)
       + `<br><a href="${s.source_url}" target="_blank" rel="noopener" class="src">${s.source_url}</a>`
       + `<br><span class="src">${D.restorationHonesty.not_affiliated}</span>`
       + groundTruthButtons(s.lat, s.lng))
@@ -416,14 +605,23 @@ function popupFor(f, lngLat) {
   // anchor - never a route (two endpoints) or a city frame (a polygon)
   const gt = (!p.kind || p.kind === 'anchor') && f.geometry.type === 'Point'
     ? groundTruthButtons(f.geometry.coordinates[1], f.geometry.coordinates[0]) : '';
+  // an anchor's coordinate class, in the registry's own word, with what
+  // that word means here - never upgraded on the way to the screen
+  const anchorPv = p.kind === 'anchor'
+    ? (p.provenance === 'RECORDED'
+        ? `<br><span class="src">coordinate RECORDED — copied from the source cited below</span>`
+        : `<br><span class="pv auth">AUTHORED coordinate</span><span class="src">typed from public record; no source was fetched</span>`)
+    : '';
+  const flag = p.slug && D.rollups[p.slug].flagship ? `<span class="flag">FLAGSHIP</span>` : '';
   new maplibregl.Popup({ closeButton: false })
     .setLngLat(at)
     .setHTML(`<b>${p.name ?? (p.kind === 'route'
-        ? p.from + ' ↔ ' + p.to : 'city frame · ' + p.campus)}</b><br>${chips}`
+        ? p.from + ' ↔ ' + p.to : 'city frame · ' + p.campus)}</b>${flag}<br>${chips}`
       + (p.halls ? `<br>${p.halls} halls · ${p.districts} districts · ${p.city}, ${p.region}` : '')
+      + (p.slug ? rollupList(p.slug) : '')
       + (p.blurb ? `<br>${p.blurb}` : '')
-      + geoposeLine(p.geopose)
-      + `<br><span class="src">${p.source}</span>` + gt)
+      + geoposeLine(p.geopose) + anchorPv
+      + `<br><span class="src">source: ${p.source}</span>` + gt)
     .addTo(map);
 }
 for (const layer of ['campuses', 'anchors', 'routes', 'frames']) {
@@ -431,6 +629,22 @@ for (const layer of ['campuses', 'anchors', 'routes', 'frames']) {
   map.on('mouseenter', layer, () => { map.getCanvas().style.cursor = 'pointer'; });
   map.on('mouseleave', layer, () => { map.getCanvas().style.cursor = ''; });
 }
+
+/* the campus panel and the legend's anchor split, rendered from D only */
+document.getElementById('campusList').innerHTML = Object.entries(D.rollups)
+  .map(([slug, r]) => `<li data-campus="${slug}"><b>${r.name}</b>`
+    + (r.flagship ? `<span class="flag">FLAGSHIP</span>` : '') + rollupList(slug) + `</li>`)
+  .join('');
+for (const el of document.querySelectorAll('[data-anchor-count]'))
+  el.textContent = D.anchorProvenance[el.dataset.anchorCount];
+let openPanel = null;
+document.querySelectorAll('[data-panel]').forEach((b) =>
+  b.addEventListener('click', () => {
+    const id = b.dataset.panel;
+    for (const s of document.querySelectorAll('.panel'))
+      s.classList.toggle('open', s.id === id && openPanel !== id);
+    openPanel = openPanel === id ? null : id;
+  }));
 
 const FITS = {
   network: [[-126, 27], [-86, 41]],
@@ -534,6 +748,9 @@ window.__geomap = () => ({
          visible: map.getLayoutProperty('sat', 'visibility') },
   parcels: { state: parcelState, count: parcelCount, campus: parcelCampus,
              authorities: Object.keys(D.sources).length },
+  rollups: D.rollups, flagship: D.flagship, anchorProvenance: D.anchorProvenance,
+  notWalkable: D.restorationSites.filter((s) => s.walkable !== true).map((s) => s.id),
+  panel: openPanel,
   geopose: { total: D.geopose.counts.total,
              claimed: D.geopose.claimedCount, notClaimed: D.geopose.notClaimedCount,
              matchedFeatures: D.network.features.filter((f) => f.properties.geopose).length },
@@ -555,8 +772,12 @@ page = (page.replace('__N_FLAGSHIP__', str(_n_flag)).replace('__N_HUB__', str(_n
         .replace('__N_CLAIMED__', str(len(_spatial_claimed)))
         .replace('__N_NOTCLAIMED__', str(len(_spatial_not)))
         .replace('__GEOPOSE_HONESTY__', html.escape(spatial['honesty']['no_heights_or_headings']))
+        .replace('__SITE_ROWS__', SITE_ROWS)
+        .replace('__RESTORATION_NOT_AFFILIATED__', html.escape(restoration['honesty']['not_affiliated']))
         .replace('__GROUND_TRUTH_JS__', GROUND_TRUTH_JS))
 assert '__N_' not in page, 'a legend count token went unreplaced'
 assert '__GEOPOSE_HONESTY__' not in page, 'the geopose honesty token went unreplaced'
+assert '__SITE_ROWS__' not in page and '__RESTORATION_NOT_AFFILIATED__' not in page, \
+    'a restoration panel token went unreplaced'
 assert '__GROUND_TRUTH_JS__' not in page, 'the ground-truth module token went unreplaced'
 emit(out, page.replace('__DATA__', DATA), f"{len(network['features'])} features on the geomap")

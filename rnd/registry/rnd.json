@@ -25,12 +25,12 @@
   "app_renderers_scanned": 16,
   "doc_renderers_scanned": 3,
   "builders_scanned": 33,
-  "suites_scanned": 52,
-  "declared_unbuilt": 8,
+  "suites_scanned": 54,
+  "declared_unbuilt": 7,
   "declared_unbuilt_by_their_own_words": 2,
-  "declared_unbuilt_not_drawn": 7,
+  "declared_unbuilt_not_drawn": 6,
   "declared_unbuilt_documented_but_not_drawn": 2,
-  "declared_unbuilt_read_by_nothing": 5,
+  "declared_unbuilt_read_by_nothing": 4,
   "gaps": 21,
   "gaps_open": 19,
   "gaps_closed": 2,
@@ -38,13 +38,13 @@
   "budget_views": 3,
   "budget_currencies": 2,
   "budget_agreements": 7,
-  "suites_run": 56,
-  "suite_checks_declared": 2544,
+  "suites_run": 58,
+  "suite_checks_declared": 2612,
   "open_questions": 12,
   "negative_findings": 9,
   "cross_checks": 2,
   "cross_checks_disagreeing": 0,
-  "files_read": 176
+  "files_read": 178
  },
  "tiers": [
   "MEASURED-IN-BROWSER",
@@ -1392,25 +1392,6 @@
    "drops_off_when": "a page generator under web/ opens this path, or the pack removes its own honesty.not_built_yet - either one, on the next build of rnd/, with no edit here"
   },
   {
-   "registry": "completion/registry/completion.json",
-   "pack": "completion",
-   "reasons": [
-    "no page generator under web/ names this path, so nothing a learner opens reads it",
-    "and nothing outside its own pack names it either - not a builder, not the wiki, not another pack's suite; inside it, completion/build.py, completion/test.mjs, completion/verify.mjs does"
-   ],
-   "says": null,
-   "read_by_app_renderers": [],
-   "read_by_doc_renderers": [],
-   "read_by_builders": [],
-   "read_by_suites": [],
-   "read_by_its_own_pack": [
-    "completion/build.py",
-    "completion/test.mjs",
-    "completion/verify.mjs"
-   ],
-   "drops_off_when": "a page generator under web/ opens this path, or the pack removes its own honesty.not_built_yet - either one, on the next build of rnd/, with no edit here"
-  },
-  {
    "registry": "evals/registry/evals.json",
    "pack": "evals",
    "reasons": [
@@ -1622,10 +1603,14 @@
    ]
   },
   "completion/registry/completion.json": {
-   "app_renderers": [],
+   "app_renderers": [
+    "web/build_interactive_map.py"
+   ],
    "doc_renderers": [],
    "builders": [],
-   "suites": [],
+   "suites": [
+    "web/test_interactive.mjs"
+   ],
    "own_pack": [
     "completion/build.py",
     "completion/test.mjs",
@@ -1685,6 +1670,7 @@
     "sky/test.mjs",
     "spatial/test.mjs",
     "terrain/test.mjs",
+    "web/test_geomap.mjs",
     "web/test_home.mjs"
    ],
    "own_pack": [
@@ -1751,7 +1737,9 @@
   "lessons/registry/lessons.json": {
    "app_renderers": [
     "web/build_3d.py",
+    "web/build_geomap.py",
     "web/build_home.py",
+    "web/build_interactive_map.py",
     "web/build_lessons.py",
     "web/build_progress.py"
    ],
@@ -1768,7 +1756,9 @@
     "completion/test.mjs",
     "completion/verify.mjs",
     "evals/test.mjs",
+    "web/test_geomap.mjs",
     "web/test_home.mjs",
+    "web/test_interactive.mjs",
     "web/test_progress.mjs"
    ],
    "own_pack": [
@@ -1818,6 +1808,7 @@
   "pack/registry/halls.json": {
    "app_renderers": [
     "web/build_3d.py",
+    "web/build_geomap.py",
     "web/build_home.py",
     "web/build_interactive_map.py",
     "web/build_ladder.py",
@@ -1849,7 +1840,9 @@
     "lessons/test.mjs",
     "respond/test.mjs",
     "unions/verify.mjs",
+    "web/test_geomap.mjs",
     "web/test_home.mjs",
+    "web/test_interactive.mjs",
     "web/test_ladder.mjs",
     "web/test_progress.mjs"
    ],
@@ -1997,7 +1990,8 @@
     "spatial/build.py"
    ],
    "suites": [
-    "spatial/test.mjs"
+    "spatial/test.mjs",
+    "web/test_geomap.mjs"
    ],
    "own_pack": [
     "restoration/build.py",
@@ -2027,6 +2021,7 @@
    "app_renderers": [
     "web/build_3d.py",
     "web/build_dashboard.py",
+    "web/build_geomap.py",
     "web/build_interactive_map.py"
    ],
    "doc_renderers": [
@@ -2039,7 +2034,8 @@
     "spatial/build.py"
    ],
    "suites": [
-    "lessons/test.mjs"
+    "lessons/test.mjs",
+    "web/test_geomap.mjs"
    ],
    "own_pack": [
     "schools/build.py",
@@ -2061,6 +2057,7 @@
    "app_renderers": [
     "web/build_3d.py",
     "web/build_dashboard.py",
+    "web/build_geomap.py",
     "web/build_home.py",
     "web/build_interactive_map.py",
     "web/build_ladder.py",
@@ -2095,6 +2092,7 @@
     "spatial/test.mjs",
     "training/test.mjs",
     "web/test_3d.mjs",
+    "web/test_geomap.mjs",
     "web/test_home.mjs",
     "web/test_ladder.mjs",
     "web/test_progress.mjs"
@@ -2151,7 +2149,8 @@
    ],
    "suites": [
     "meta/test.mjs",
-    "web/test_fabric.mjs"
+    "web/test_fabric.mjs",
+    "web/test_geomap.mjs"
    ],
    "own_pack": [
     "spatial/build.py",
@@ -2307,6 +2306,7 @@
   "unions/registry/campuses.json": {
    "app_renderers": [
     "web/build_3d.py",
+    "web/build_geomap.py",
     "web/build_home.py",
     "web/build_interactive_map.py",
     "web/build_languages.py",
@@ -2344,6 +2344,7 @@
     "schools/test.mjs",
     "sims/test.mjs",
     "spatial/test.mjs",
+    "web/test_geomap.mjs",
     "world/test.mjs"
    ],
    "own_pack": [
@@ -2599,8 +2600,10 @@
    "venue/test.mjs",
    "web/test_3d.mjs",
    "web/test_fabric.mjs",
+   "web/test_geomap.mjs",
    "web/test_gltf.mjs",
    "web/test_home.mjs",
+   "web/test_interactive.mjs",
    "web/test_ladder.mjs",
    "web/test_progress.mjs",
    "web/test_rtl.mjs",
@@ -3441,6 +3444,20 @@
     "in_readme_table": true
    },
    {
+    "suite": "web/test_interactive.mjs",
+    "pack": "web",
+    "readme_checks": 25,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "web/test_geomap.mjs",
+    "pack": "web",
+    "readme_checks": 43,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
     "suite": "web/test_home.mjs",
     "pack": "web",
     "readme_checks": 27,
@@ -3490,13 +3507,13 @@
     "in_readme_table": true
    }
   ],
-  "suites_run": 56,
-  "suites_declaring_a_count": 55,
+  "suites_run": 58,
+  "suites_declaring_a_count": 57,
   "suites_without_a_count": [
    "control/soak.mjs"
   ],
-  "declared_total": 2544,
-  "readme_headline": 2555,
+  "declared_total": 2612,
+  "readme_headline": 2623,
   "unaccounted_for": 11,
   "unaccounted_note": "the headline counts every `  ok ` line verify_all.sh sees, which includes suites the README table gives no number to and web/test_interiors.py, which the table does not list at all. The difference is that remainder and is computed, not reconciled by hand.",
   "min": 9,
@@ -3913,8 +3930,10 @@
   "web/interiors.py",
   "web/test_3d.mjs",
   "web/test_fabric.mjs",
+  "web/test_geomap.mjs",
   "web/test_gltf.mjs",
   "web/test_home.mjs",
+  "web/test_interactive.mjs",
   "web/test_ladder.mjs",
   "web/test_progress.mjs",
   "web/test_rtl.mjs",
