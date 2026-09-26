@@ -17,6 +17,9 @@ SOURCES = [
     'control/hints.mjs', 'control/sequencer.mjs', 'control/gates.mjs',
     'fabric/agent.mjs', 'fabric/stubs.mjs',
     'bus/bus.mjs', 'bus/audit.mjs', 'bus/telemetry.mjs', 'bus/safeguards.mjs', 'bus/session.mjs',
+    # the liveness contract the crew consoles run: a role that stops
+    # reporting is stale on the board, once, on the same audit log
+    'ops/heartbeat.mjs',
 ]
 
 def repo_root():

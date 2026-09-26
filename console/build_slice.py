@@ -31,6 +31,7 @@ halls = json.load(open(ROOT / 'pack/registry/halls.json'))['halls']
 skills = json.load(open(ROOT / 'pack/registry/skills.json'))['skills']
 variants = json.load(open(ROOT / 'pack/registry/variants.json'))
 library = json.load(open(ROOT / 'pack/registry/library.json'))
+crews_reg = json.load(open(ROOT / 'agents/registry/crews.json'))
 
 PICK = ['ironworkers', 'electricians', 'welders', 'crane-ops']
 picked = [h for h in halls if h['slug'] in PICK]
@@ -59,7 +60,26 @@ out = {
     'library': {'count': library['count'], 'shared': True},
     'lessons': sample,
     'shape': {'levels': LEVELS, 'slots': SLOTS},
+    # The crews, as the agents registry holds them: the roster, each role's
+    # standing and stop-work right, the run of hand-offs, and the seat and
+    # muster point. Nothing typed here; a crew console shows the registry.
+    'crews': {
+        'honesty': crews_reg['honesty']['status'],
+        'standing': crews_reg['standing'],
+        'counts': crews_reg['counts'],
+        'crews': {cid: {
+            'name': c['name'], 'job': c['job'], 'seat': c['seat'],
+            'muster': c['muster'], 'stop_work': c['stop_work'],
+            'why_a_crew': c['why_a_crew'], 'halls': len(c['halls']),
+            'roles': {rid: {'name': r['name'], 'job': r['job'],
+                            'standing': r['standing'], 'glyph': r['glyph'],
+                            'stops': r['stops']}
+                      for rid, r in c['roles'].items()},
+            'run': [dict(step) for step in c['run']],
+        } for cid, c in crews_reg['crews'].items()},
+    },
 }
 json.dump(out, open(HERE / 'app_slice.json', 'w'), separators=(',', ':'))
 print(f"slice: {len(picked)} halls, {len(slice_skills)} skills, "
-      f"{sum(h['modules'] for h in picked):,} modules addressable in-console")
+      f"{sum(h['modules'] for h in picked):,} modules addressable in-console, "
+      f"{len(crews_reg['crews'])} crews")
