@@ -102,6 +102,246 @@ for _h in halls.values():
 
 stamp = hashlib.sha256((HERE / 'surfaces.py').read_bytes()).hexdigest()[:16]
 
+# ------------------------------------------------------------- legibility ---
+# The honesty block says every colour here was chosen by eye. Nothing then
+# measured whether a sign can be read against them. This does: WCAG 2.x
+# relative luminance for every floor, wall and wainscot, and the contrast of
+# each against every colour the labels registry declares - read from that
+# registry with its roles (text / plate / accent), never typed here, and
+# stamped so a stale read fails the suite. A translucent plate is composited
+# source-over onto the finish before it is compared with that finish. Every
+# number is computed; the pack's own rule with teeth is at the foot: the
+# text the page actually draws on a plate must reach 4.5:1 with that plate
+# composited over EVERY finish, or the build refuses and names the finish.
+import colorsys
+import re
+
+
+def _rgba(c):
+    c = c.strip()
+    if c.startswith('#') and len(c) == 7:
+        return (int(c[1:3], 16), int(c[3:5], 16), int(c[5:7], 16), 1.0)
+    m = re.fullmatch(r'rgba\((\d+),(\d+),(\d+),(\d*\.?\d+)\)', c)
+    assert m, f'unreadable colour {c!r}'
+    return (int(m[1]), int(m[2]), int(m[3]), float(m[4]))
+
+
+def _lin(v8):
+    v = v8 / 255.0
+    return v / 12.92 if v <= 0.04045 else ((v + 0.055) / 1.055) ** 2.4
+
+
+def _lum(c):
+    return 0.2126 * _lin(c[0]) + 0.7152 * _lin(c[1]) + 0.0722 * _lin(c[2])
+
+
+def _ratio(a, b):
+    la, lb = _lum(a), _lum(b)
+    return (max(la, lb) + 0.05) / (min(la, lb) + 0.05)
+
+
+def _over(fg, bg):
+    a = fg[3]
+    return tuple(fg[i] * a + bg[i] * (1 - a) for i in range(3)) + (1.0,)
+
+
+def _lab(c):
+    # sRGB (D65) -> XYZ -> CIELAB, the 1976 formula
+    r, g, b = _lin(c[0]), _lin(c[1]), _lin(c[2])
+    x = (0.4124564 * r + 0.3575761 * g + 0.1804375 * b) / 0.95047
+    y = (0.2126729 * r + 0.7151522 * g + 0.0721750 * b) / 1.00000
+    z = (0.0193339 * r + 0.1191920 * g + 0.9503041 * b) / 1.08883
+
+    def f(t):
+        return t ** (1 / 3) if t > 216 / 24389 else (841 / 108) * t + 4 / 29
+    fx, fy, fz = f(x), f(y), f(z)
+    return (116 * fy - 16, 500 * (fx - fy), 200 * (fy - fz))
+
+
+def _de76(a, b):
+    la, lb = _lab(a), _lab(b)
+    return sum((la[i] - lb[i]) ** 2 for i in range(3)) ** 0.5
+
+
+def _r3(x):
+    return round(x, 3)
+
+
+labels_reg = json.load(open(ROOT / 'labels/registry/labels.json'))
+LPAL = labels_reg['palette']
+LROLES = labels_reg['palette_roles']
+LPAINT = labels_reg['paint']
+role_of = {k: role for role, keys in LROLES.items() for k in keys}
+assert sorted(role_of) == sorted(LPAL), 'the labels palette and its roles disagree'
+palette_sha = hashlib.sha256(json.dumps([LPAL, LROLES, LPAINT], sort_keys=True)
+                             .encode()).hexdigest()[:16]
+
+FAMILIES = {
+    'floor': {sid: c for sid, (n, c, *_r) in SURFACES.items()},
+    'wall': {wid: c for wid, (n, c, *_r) in WALLS.items()},
+    'wainscot': {wid: wc for wid, (n, c, r, m, pat, tile, wc, wm, why) in WALLS.items()
+                 if wm > 0},
+}
+# a text colour fails under 4.5 (normal text); a plate or an accent is a
+# non-text element and fails under 3.0
+THRESHOLD_OF = {'text': 4.5, 'plate': 3.0, 'accent': 3.0}
+luminance = {fam: {fid: round(_lum(_rgba(c)), 4) for fid, c in cols.items()}
+             for fam, cols in FAMILIES.items()}
+pairs = {}
+failing = []
+counts = {'at_or_above_4_5': 0, 'from_3_below_4_5': 0, 'below_3': 0, 'pairs': 0}
+for fam, cols in FAMILIES.items():
+    pairs[fam] = {}
+    for fid, c in cols.items():
+        bg = _rgba(c)
+        row = {}
+        for key, lc in LPAL.items():
+            fg = _rgba(lc)
+            # a translucent plate is seen composited over the finish; a text
+            # or accent colour is opaque and sits straight on it
+            r = _ratio(_over(fg, bg), bg) if fg[3] < 1 else _ratio(fg, bg)
+            row[key] = _r3(r)
+            counts['pairs'] += 1
+            if r >= 4.5:
+                counts['at_or_above_4_5'] += 1
+            elif r >= 3.0:
+                counts['from_3_below_4_5'] += 1
+            else:
+                counts['below_3'] += 1
+            thr = THRESHOLD_OF[role_of[key]]
+            if r < thr:
+                failing.append({'family': fam, 'finish': fid, 'role': key,
+                                'kind': role_of[key], 'ratio': _r3(r),
+                                'threshold': thr})
+        pairs[fam][fid] = row
+
+# The rule with teeth. The labels registry says which text role the page
+# draws on which plate role; those are the pairs a reader meets, and every
+# one of them must clear 4.5:1 with the plate composited over each finish.
+text_on_plate = {}
+refused = []
+for paint in LPAINT.values():
+    for line in ('title', 'sub'):
+        t, pl = paint[line], paint['plate']
+        if t not in LPAL or pl not in LPAL:
+            continue                     # no plate, or a page-owned plate
+        key = f'{t} on {pl}'
+        if key in text_on_plate:
+            continue
+        fg, plate = _rgba(LPAL[t]), _rgba(LPAL[pl])
+        worst = None
+        per_family = {}
+        for fam, cols in FAMILIES.items():
+            fw = None
+            for fid, c in cols.items():
+                r = _ratio(fg, _over(plate, _rgba(c)))
+                if fw is None or r < fw[0]:
+                    fw = (r, fid)
+                if r < 4.5:
+                    refused.append(f'{key} over {fam} {fid}: {_r3(r)}:1')
+            per_family[fam] = {'ratio': _r3(fw[0]), 'finish': fw[1]}
+            if worst is None or fw[0] < worst[0]:
+                worst = (fw[0], fam, fw[1])
+        text_on_plate[key] = {'worst': {'ratio': _r3(worst[0]), 'family': worst[1],
+                                        'finish': worst[2]},
+                              'per_family': per_family}
+assert not refused, 'a finish under a plate takes its text below 4.5:1: ' + '; '.join(refused)
+
+# ---------------------------------------------------------------- palette ---
+# The catalogue as a whole, measured: where its hues sit, how saturated and
+# how light each family runs, and how many colours are near enough to
+# another to be one colour from standing height.
+DE_THRESHOLD = 5.0
+DE_WHY = ('CIE76 delta-E 2.3 is the just-noticeable difference for two '
+          'patches side by side under even light; a rendered hall gives '
+          'neither the adjacency nor the light, so the bar for "two colours '
+          'a reader could tell apart" is set at about twice that, 5.0. '
+          'Pairs under it are reported, not moved: the rule in this pack '
+          'is that a colour is what the material is, and the suite already '
+          'refuses two finishes that are exactly one colour.')
+
+
+def _hsl(c):
+    h, l, s = colorsys.rgb_to_hls(c[0] / 255, c[1] / 255, c[2] / 255)
+    return h * 360.0, s * 100.0, l * 100.0
+
+
+def _bucket(h):
+    b = int(h // 30) % 12
+    return f'{b * 30:03d}-{b * 30 + 29:03d}'
+
+
+hue_buckets = {}
+ranges = {}
+for fam, cols in FAMILIES.items():
+    hb = {f'{b * 30:03d}-{b * 30 + 29:03d}': 0 for b in range(12)}
+    hb['grey'] = 0
+    ss, ls = [], []
+    for c in cols.values():
+        h, sat, lig = _hsl(_rgba(c))
+        if sat == 0:
+            hb['grey'] += 1
+        else:
+            hb[_bucket(h)] += 1
+        ss.append(sat)
+        ls.append(lig)
+    hue_buckets[fam] = hb
+    ranges[fam] = {'saturation_pct': [round(min(ss), 1), round(max(ss), 1)],
+                   'lightness_pct': [round(min(ls), 1), round(max(ls), 1)],
+                   'count': len(cols)}
+all_cols = [(f'{fam}:{fid}', _rgba(c)) for fam, cols in FAMILIES.items()
+            for fid, c in cols.items()]
+near = []
+for i in range(len(all_cols)):
+    for j in range(i + 1, len(all_cols)):
+        de = _de76(all_cols[i][1], all_cols[j][1])
+        if de < DE_THRESHOLD:
+            near.append({'a': all_cols[i][0], 'b': all_cols[j][0], 'delta_e': _r3(de)})
+near.sort(key=lambda x: (x['delta_e'], x['a'], x['b']))
+
+LEGIBILITY = {
+    'method': 'WCAG 2.x relative luminance (sRGB, D65 coefficients .2126/'
+              '.7152/.0722) and contrast (L1+.05)/(L2+.05); a translucent '
+              'plate is composited source-over onto the finish and then '
+              'compared with it; an opaque text or accent colour is compared '
+              'straight on the finish (the no-plate case)',
+    'labels_stamp': labels_reg['source_stamp'],
+    'palette_sha': palette_sha,
+    'palette_read': {k: {'color': v, 'role': role_of[k]} for k, v in LPAL.items()},
+    'thresholds': {'normal_text': 4.5, 'large_text': 3.0, 'non_text': 3.0,
+                   'fails_under': THRESHOLD_OF},
+    'families': {fam: len(cols) for fam, cols in FAMILIES.items()},
+    'luminance': luminance,
+    'pairs': pairs,
+    'counts': counts,
+    'failing': failing,
+    'failing_by_kind': {kind: sum(1 for f in failing if f['kind'] == kind)
+                        for kind in THRESHOLD_OF},
+    'text_on_plate': text_on_plate,
+    'rule': 'every text-on-plate pair the labels registry paints reaches '
+            '4.5:1 with the plate composited over every finish here, or the '
+            'build refuses and names the finish; a text colour straight on a '
+            'finish (no plate) and a plate against the finish behind it are '
+            'measured and listed, and a finish is never recoloured for them, '
+            'because a colour here is what the material is',
+    'finishes_changed': [],
+}
+PALETTE_BLOCK = {
+    'hue_buckets_deg': hue_buckets,
+    'ranges': ranges,
+    'near_duplicates': {
+        'delta_e_threshold': DE_THRESHOLD, 'why': DE_WHY,
+        'count': len(near),
+        # a floor is never mistaken for a wall, so the pairs that matter are
+        # the ones inside a family; the cross-family ones are still listed
+        'within_family': {fam: sum(1 for x in near if x['a'].startswith(fam + ':')
+                                   and x['b'].startswith(fam + ':'))
+                          for fam in FAMILIES},
+        'across_families': sum(1 for x in near
+                               if x['a'].split(':')[0] != x['b'].split(':')[0]),
+        'pairs': near},
+}
+
 doc = {
     'pack': 'smartcitix-trade-craft-academy-surface-registry',
     'product': 'SmartCiti.X : Trade Craft Academy (powered by AGI Corp)',
@@ -155,6 +395,8 @@ doc = {
         'hazard_walls': {k: dict(v) for k, v in WALL_HAZARD.items()},
         'craft_walls': {k: dict(v) for k, v in CRAFT_WALL.items()},
     },
+    'legibility': LEGIBILITY,
+    'palette': PALETTE_BLOCK,
     'hazards_in_use': sorted({h['hazard'] for h in halls.values() if h['hazard']}),
     'crafts_in_use': sorted({c for h in halls.values() for c in h['crafts']}),
     # Halls whose trade names no hazard that would CHANGE a floor finish.
@@ -218,4 +460,8 @@ print(f"surfaces registry: {len(SURFACES)} finishes and {len(WALLS)} walls over 
       f"{hazard_count} hazard-placed and {craft_count} craft-placed finishes, "
       f"{wall_hazard_count} hazard-placed and {wall_craft_count} craft-placed "
       f"walls, {n_none} halls with no finish-driving hazard, "
-      f"{n_wall_none} with no wall-driving hazard (source stamp {stamp})")
+      f"{n_wall_none} with no wall-driving hazard; legibility "
+      f"{counts['at_or_above_4_5']}/{counts['from_3_below_4_5']}/{counts['below_3']} "
+      f"pairs at 4.5+/3-4.5/under 3 of {counts['pairs']}, {len(failing)} failing, "
+      f"{len(near)} near-duplicate colours under dE {DE_THRESHOLD} "
+      f"(source stamp {stamp})")

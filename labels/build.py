@@ -166,7 +166,11 @@ ORNAMENTS = {
 }
 
 # ------------------------------------------------------------- the palette ---
-PALETTE = {
+# AUTHORED, chosen by eye. A colour here may be re-authored only where a
+# contrast rule below fails, and only through ADJUSTED, which records the
+# change beside its ratios; the suite parses this table out of the source
+# and refuses a registry palette that differs from it without an entry.
+PALETTE_AUTHORED = {
     'ink': '#E8EDEC',
     'muted': '#93A3A6',
     'plate': 'rgba(12,17,19,.84)',
@@ -179,6 +183,37 @@ PALETTE = {
     'derived': '#41C4D4',
     'schematic': '#93A3A6',       # provenance: muted, drawn dashed
 }
+# Re-authored colours: {role, from, to, why, ratio_before, ratio_after}.
+# Empty means every text-on-plate pair measured at or above 4.5:1 and no
+# colour needed moving. The ratios are recomputed below and an entry whose
+# numbers disagree with the measurement fails the build.
+ADJUSTED = []
+PALETTE = dict(PALETTE_AUTHORED)
+for _a in ADJUSTED:
+    assert PALETTE[_a['role']] == _a['from'], f"adjusted {_a['role']}: from is not the authored colour"
+    PALETTE[_a['role']] = _a['to']
+
+# What each palette key is FOR, so a pack measuring legibility against this
+# palette (surfaces reads this) can tell a text colour from a plate colour
+# from an accent without typing the palette. Closed over the whole palette.
+PALETTE_ROLES = {
+    'text': ['ink', 'muted'],
+    'plate': ['plate', 'plate_focus'],
+    'accent': ['mark', 'steel', 'good', 'crit', 'recorded', 'derived',
+               'schematic'],
+}
+assert sorted(k for v in PALETTE_ROLES.values() for k in v) == sorted(PALETTE), \
+    'palette_roles must name every palette key exactly once'
+
+# What the page PAINTS, per shape: the role the title, the sub line and the
+# plate take. This is the drawing contract the suite holds the page to (it
+# greps the fill statements), and it is what the legibility block below
+# measures. 'accent' means the kind's own accent; 'none' means no plate at
+# all (text sits on whatever finish is behind it); 'page' means the plate
+# colour is a literal the page owns, read off the page rather than typed.
+PAINT = {sk: {'title': 'ink', 'sub': 'muted', 'plate': 'plate'} for sk in SHAPES}
+PAINT['ghost'] = {'title': 'ink', 'sub': 'ink', 'plate': 'none'}
+PAINT['readout'] = {'title': 'accent', 'sub': 'muted', 'plate': 'page'}
 
 # ----------------------------------------------------------- the type scale ---
 TYPE = {
@@ -785,6 +820,190 @@ else:
 
 stamp = hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest()[:16]
 
+# ------------------------------------------------------------- legibility ---
+# Nothing above measures whether a word on a sign can be READ against the
+# plate it sits on, or whether the plate can be seen against the wall it
+# hangs on. This does, with WCAG 2.x relative luminance and contrast, in the
+# stdlib, against every finish the surfaces pack can put behind a sign -
+# read from that pack's registry, never typed here, and stamped so a stale
+# read fails the suite. A translucent plate is composited over the finish
+# (source-over) before anything is measured, because that is the colour the
+# eye gets. Every number below is computed; the one rule with teeth is that
+# a kind's title and sub line each reach 4.5:1 on its own plate over EVERY
+# finish, or the build refuses and names the kind.
+import re
+
+
+def _rgba(c):
+    c = c.strip()
+    if c.startswith('#') and len(c) == 7:
+        return (int(c[1:3], 16), int(c[3:5], 16), int(c[5:7], 16), 1.0)
+    m = re.fullmatch(r'rgba\((\d+),(\d+),(\d+),(\d*\.?\d+)\)', c)
+    assert m, f'unreadable colour {c!r}'
+    return (int(m[1]), int(m[2]), int(m[3]), float(m[4]))
+
+
+def _lin(v8):
+    v = v8 / 255.0
+    return v / 12.92 if v <= 0.04045 else ((v + 0.055) / 1.055) ** 2.4
+
+
+def _lum(c):
+    return 0.2126 * _lin(c[0]) + 0.7152 * _lin(c[1]) + 0.0722 * _lin(c[2])
+
+
+def _ratio(a, b):
+    la, lb = _lum(a), _lum(b)
+    return (max(la, lb) + 0.05) / (min(la, lb) + 0.05)
+
+
+def _over(fg, bg):
+    a = fg[3]
+    return tuple(fg[i] * a + bg[i] * (1 - a) for i in range(3)) + (1.0,)
+
+
+def _tinted_lum(c, tint):
+    # the focus tint: three.js multiplies the sprite by material.color in
+    # LINEAR light, so the tinted luminance is the channel product there
+    return (0.2126 * _lin(c[0]) * _lin(tint[0]) + 0.7152 * _lin(c[1]) * _lin(tint[1])
+            + 0.0722 * _lin(c[2]) * _lin(tint[2]))
+
+
+def _tinted_ratio(a, b, tint):
+    la, lb = _tinted_lum(a, tint), _tinted_lum(b, tint)
+    return (max(la, lb) + 0.05) / (min(la, lb) + 0.05)
+
+
+def _r3(x):
+    return round(x, 3)
+
+
+surf_reg = json.load(open(ROOT / 'surfaces/registry/finishes.json'))
+FINISHES = {
+    'floor': {fid: f['color'] for fid, f in surf_reg['catalogue'].items()},
+    'wall': {wid: w['color'] for wid, w in surf_reg['wall_catalogue'].items()},
+    'wainscot': {wid: w['wainscot'] for wid, w in surf_reg['wall_catalogue'].items()
+                 if w['wainscot_m'] > 0},
+}
+catalogue_sha = hashlib.sha256(json.dumps(FINISHES, sort_keys=True).encode()).hexdigest()[:16]
+if BOOTSTRAP:
+    # no page to read: the readout box takes the palette plate, and the real
+    # run below reads the literal the page actually fills
+    READOUT_BOX = PALETTE['plate']
+else:
+    _m = re.search(r"case 'readout':\s*g\.fillStyle = '(rgba\([^)]*\))';", page)
+    assert _m, 'the page no longer fills the readout box with a literal this build can read'
+    READOUT_BOX = _m[1]
+
+THRESHOLDS = {'normal_text': 4.5, 'large_text': 3.0, 'non_text': 3.0,
+              'focus_tint_floor': 3.0,
+              'why_focus_floor': 'the focused sign is the single nearest-centre '
+                                 'sign, grown by focus.grow and tinted for the '
+                                 'moment it is looked at; its lines are held to '
+                                 'the large-text floor under the tint and to '
+                                 'the normal-text floor untinted'}
+MARK = _rgba(PALETTE['mark'])
+
+
+def _plate_of(kind_id, kind):
+    role = PAINT[kind['shape']]['plate']
+    if role == 'none':
+        return None
+    if role == 'page':
+        return _rgba(READOUT_BOX)
+    return _rgba(PALETTE[role])
+
+
+def _text_of(role, kind):
+    if role == 'accent':
+        # the district hue is hsl(h 58% 62%); measured at the palette mark
+        # when a kind takes the district, since the page falls back to it
+        return _rgba(PALETTE['mark' if kind['accent'] == 'district' else kind['accent']])
+    return _rgba(PALETTE[role])
+
+
+def _worst(fn):
+    best = None
+    for fam, cols in FINISHES.items():
+        for fid, col in cols.items():
+            r = fn(_rgba(col))
+            if best is None or r < best[0]:
+                best = (r, fam, fid)
+    return {'ratio': _r3(best[0]), 'family': best[1], 'finish': best[2]}
+
+
+roles_out = {}
+refused = []
+for kk, k in KINDS.items():
+    paint = PAINT[k['shape']]
+    plate = _plate_of(kk, k)
+    title = _text_of(paint['title'], k)
+    sub = _text_of(paint['sub'], k)
+    entry = {'shape': k['shape'], 'title': paint['title'], 'sub': paint['sub'],
+             'plate': paint['plate']}
+    if plate is None:
+        # no plate: the words sit on the finish itself, with a shadow the
+        # measurement does not credit. Reported, and not held to the rule,
+        # because the rule is about a sign's OWN plate.
+        entry['title_on_finish'] = _worst(lambda bg: _ratio(title, bg))
+        entry['sub_on_finish'] = _worst(lambda bg: _ratio(sub, bg))
+        entry['below_4_5_finishes'] = sum(
+            1 for cols in FINISHES.values() for col in cols.values()
+            if _ratio(title, _rgba(col)) < THRESHOLDS['normal_text'])
+    else:
+        entry['title_on_plate'] = _worst(lambda bg: _ratio(title, _over(plate, bg)))
+        entry['sub_on_plate'] = _worst(lambda bg: _ratio(sub, _over(plate, bg)))
+        entry['plate_on_finish'] = _worst(lambda bg: _ratio(_over(plate, bg), bg))
+        entry['plate_below_3_finishes'] = sum(
+            1 for cols in FINISHES.values() for col in cols.values()
+            if _ratio(_over(plate, _rgba(col)), _rgba(col)) < THRESHOLDS['non_text'])
+        entry['focus_tint'] = {
+            'title_on_plate': _worst(lambda bg: _tinted_ratio(title, _over(plate, bg), MARK)),
+            'sub_on_plate': _worst(lambda bg: _tinted_ratio(sub, _over(plate, bg), MARK)),
+        }
+        for line in ('title_on_plate', 'sub_on_plate'):
+            if entry[line]['ratio'] < THRESHOLDS['normal_text']:
+                refused.append(f"{kk}: {line} {entry[line]['ratio']}:1 over "
+                               f"{entry[line]['family']} {entry[line]['finish']}")
+            if entry['focus_tint'][line]['ratio'] < THRESHOLDS['focus_tint_floor']:
+                refused.append(f"{kk}: focus-tinted {line} "
+                               f"{entry['focus_tint'][line]['ratio']}:1")
+    roles_out[kk] = entry
+assert not refused, 'text a reader cannot make out on its own plate: ' + '; '.join(refused)
+
+# every recorded adjustment carries the numbers it claims, recomputed
+for _a in ADJUSTED:
+    assert _a['to'] == PALETTE[_a['role']]
+    assert _a['ratio_after'] >= THRESHOLDS['normal_text'], _a
+    assert len(_a['why']) > 20, _a
+
+text_on_plate_pairs = sorted({(p['title'], p['plate']) for p in PAINT.values()}
+                             | {(p['sub'], p['plate']) for p in PAINT.values()})
+LEGIBILITY = {
+    'method': 'WCAG 2.x relative luminance (sRGB, D65 coefficients .2126/.7152/'
+              '.0722) and contrast (L1+.05)/(L2+.05); a translucent plate is '
+              'composited source-over onto the finish before measuring; the '
+              'focus tint is a per-channel product in linear light, as '
+              'three.js multiplies a sprite by material.color',
+    'surfaces_stamp': surf_reg['source_stamp'],
+    'catalogue_sha': catalogue_sha,
+    'finishes_measured': {fam: len(cols) for fam, cols in FINISHES.items()},
+    'thresholds': THRESHOLDS,
+    'readout_box': {'color': READOUT_BOX,
+                    'source': 'palette plate (bootstrap)' if BOOTSTRAP
+                    else 'web/trade_craft_3d.html, the readout case of labelShape()'},
+    'rule': 'every kind\'s title and sub line reach 4.5:1 on its own plate '
+            'over every finish, and 3:1 under the focus tint, or the build '
+            'refuses and names the kind and the line',
+    'roles': roles_out,
+    'worst_title_on_plate': min(
+        (e['title_on_plate']['ratio'] for e in roles_out.values() if 'title_on_plate' in e)),
+    'worst_sub_on_plate': min(
+        (e['sub_on_plate']['ratio'] for e in roles_out.values() if 'sub_on_plate' in e)),
+    'text_on_plate_pairs': [{'text': t, 'plate': pl} for t, pl in text_on_plate_pairs],
+    'adjusted': ADJUSTED,
+}
+
 doc = {
     'pack': 'smartcitix-trade-craft-academy-labels',
     'product': 'SmartCiti.X : Trade Craft Academy (powered by AGI Corp)',
@@ -800,6 +1019,9 @@ doc = {
     'shapes': SHAPES,
     'ornaments': ORNAMENTS,
     'palette': PALETTE,
+    'palette_roles': PALETTE_ROLES,
+    'paint': PAINT,
+    'legibility': LEGIBILITY,
     'type': TYPE,
     'kinds': KINDS,
     'focus': FOCUS,
@@ -811,4 +1033,8 @@ OUT.mkdir(exist_ok=True)
 (OUT / 'labels.json').write_text(json.dumps(doc, indent=1) + '\n')
 print(f"labels: {len(KINDS)} kinds over {len(SHAPES)} shapes "
       f"({len(pending)} awaiting a drawing branch), "
-      f"{FOCUS['cone_deg']}-degree focus cone (source stamp {stamp})")
+      f"{FOCUS['cone_deg']}-degree focus cone; worst title on plate "
+      f"{LEGIBILITY['worst_title_on_plate']}:1, worst sub "
+      f"{LEGIBILITY['worst_sub_on_plate']}:1 over "
+      f"{sum(LEGIBILITY['finishes_measured'].values())} finishes, "
+      f"{len(ADJUSTED)} colours re-authored (source stamp {stamp})")

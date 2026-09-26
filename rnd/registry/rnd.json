@@ -39,7 +39,7 @@
   "budget_currencies": 2,
   "budget_agreements": 7,
   "suites_run": 59,
-  "suite_checks_declared": 2647,
+  "suite_checks_declared": 2666,
   "open_questions": 12,
   "negative_findings": 9,
   "cross_checks": 2,
@@ -1724,11 +1724,13 @@
     "wiki/build_wiki.py"
    ],
    "builders": [
-    "lessons/build.py"
+    "lessons/build.py",
+    "surfaces/build.py"
    ],
    "suites": [
     "lessons/test.mjs",
     "stations/test.mjs",
+    "surfaces/test.mjs",
     "web/test_3d.mjs"
    ],
    "own_pack": [
@@ -2219,6 +2221,7 @@
    "builders": [
     "agents/build.py",
     "kit/build.py",
+    "labels/build.py",
     "lessons/build.py",
     "props/build.py",
     "respond/build.py",
@@ -2227,6 +2230,7 @@
    "suites": [
     "agents/test.mjs",
     "kit/test.mjs",
+    "labels/test.mjs",
     "lessons/test.mjs",
     "props/test.mjs",
     "respond/test.mjs",
@@ -3239,7 +3243,7 @@
    {
     "suite": "surfaces/test.mjs",
     "pack": "surfaces",
-    "readme_checks": 62,
+    "readme_checks": 74,
     "declared": true,
     "in_readme_table": true
    },
@@ -3309,7 +3313,7 @@
    {
     "suite": "labels/test.mjs",
     "pack": "labels",
-    "readme_checks": 41,
+    "readme_checks": 48,
     "declared": true,
     "in_readme_table": true
    },
@@ -3529,8 +3533,8 @@
   "suites_without_a_count": [
    "control/soak.mjs"
   ],
-  "declared_total": 2647,
-  "readme_headline": 2658,
+  "declared_total": 2666,
+  "readme_headline": 2677,
   "unaccounted_for": 11,
   "unaccounted_note": "the headline counts every `  ok ` line verify_all.sh sees, which includes suites the README table gives no number to and web/test_interiors.py, which the table does not list at all. The difference is that remainder and is computed, not reconciled by hand.",
   "min": 9,
@@ -3580,12 +3584,12 @@
     "checks": 84
    },
    {
-    "suite": "props/test.mjs",
-    "checks": 72
+    "suite": "surfaces/test.mjs",
+    "checks": 74
    },
    {
-    "suite": "sky/test.mjs",
-    "checks": 69
+    "suite": "props/test.mjs",
+    "checks": 72
    }
   ],
   "note": "a thin suite is not automatically a bad one - tools/ has 13 checks over a registry of twelve hand tools - but a thin suite over a large surface is where an unfound defect is most likely to be sitting, and this table is the only place the two are shown side by side."

@@ -235,5 +235,116 @@ const src = readFileSync(new URL('./build.py', import.meta.url));
 ok('the registry was built from the current builder source (stamp check)',
   reg.source_stamp === createHash('sha256').update(src).digest('hex').slice(0, 16));
 
+/* ------------------------------------------------------------ legibility ---
+   A sign should be READABLE, not only told apart, and until this block
+   nothing measured it. The registry's ratios are recomputed here from the
+   surfaces catalogue and this palette with an implementation written
+   independently of the builder's (WCAG 2.x, sRGB D65, source-over
+   compositing, the focus tint as a linear-light product), and must agree
+   to three decimals. The paint contract is held to the page's fills; the
+   authored palette is parsed out of the builder's source so a plate or text
+   colour cannot move without an `adjusted` entry beside it; and the
+   surfaces cross-read is stamped so a catalogue that moved after this was
+   built fails here. */
+const surf = JSON.parse(readFileSync(new URL('../surfaces/registry/finishes.json', import.meta.url)));
+const LEG = reg.legibility;
+const parseC = (c) => {
+  if (/^#[0-9a-f]{6}$/i.test(c)) return [1, 3, 5].map((i) => parseInt(c.slice(i, i + 2), 16)).concat([1]);
+  const m = /^rgba\((\d+),(\d+),(\d+),(\d*\.?\d+)\)$/.exec(c.trim());
+  if (!m) throw new Error(`unreadable colour ${c}`);
+  return [+m[1], +m[2], +m[3], +m[4]];
+};
+const chan = (v) => { const x = v / 255; return x <= 0.04045 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4; };
+const W = [0.2126, 0.7152, 0.0722];
+const Y = (c) => W.reduce((a, w, i) => a + w * chan(c[i]), 0);
+const Yt = (c, t) => W.reduce((a, w, i) => a + w * chan(c[i]) * chan(t[i]), 0);
+const cr = (p, q) => (Math.max(p, q) + 0.05) / (Math.min(p, q) + 0.05);
+const contrast = (a, b) => cr(Y(a), Y(b));
+const blend = (fg, bg) => [0, 1, 2].map((i) => fg[i] * fg[3] + bg[i] * (1 - fg[3])).concat([1]);
+const near3 = (a, b) => Math.abs(a - b) < 0.0006;
+const fam = {
+  floor: Object.fromEntries(Object.entries(surf.catalogue).map(([id, f]) => [id, f.color])),
+  wall: Object.fromEntries(Object.entries(surf.wall_catalogue).map(([id, w]) => [id, w.color])),
+  wainscot: Object.fromEntries(Object.entries(surf.wall_catalogue).filter(([, w]) => w.wainscot_m > 0)
+    .map(([id, w]) => [id, w.wainscot])),
+};
+const worstOf = (fn) => {
+  let best = null;
+  for (const [f, cols] of Object.entries(fam)) for (const [id, c] of Object.entries(cols)) {
+    const r = fn(parseC(c)); if (!best || r < best.ratio) best = { ratio: r, family: f, finish: id };
+  }
+  return best;
+};
+const same = (a, b) => near3(a.ratio, b.ratio) && a.family === b.family && a.finish === b.finish;
+const readoutBox = /case 'readout':\s*g\.fillStyle = '(rgba\([^)]*\))';/.exec(page)?.[1];
+ok('the paint contract says what the page fills: ink titles, muted sub lines, the plate; a readout in its accent on a box the page owns; a ghost with no plate',
+  Object.keys(reg.paint).sort().join() === Object.keys(reg.shapes).sort().join()
+  && /g\.fillStyle = shape === 'readout' \? accent : LPAL\.ink;/.test(page)
+  && /g\.fillStyle = shape === 'ghost' \? LPAL\.ink : LPAL\.muted;/.test(page)
+  && /g\.fillStyle = LPAL\.plate;\s*switch \(shape\)/.test(page)
+  && /case 'ghost':\s*break;/.test(page)
+  && Object.entries(reg.paint).every(([sh, p]) => sh === 'ghost' ? (p.title === 'ink' && p.sub === 'ink' && p.plate === 'none')
+    : sh === 'readout' ? (p.title === 'accent' && p.sub === 'muted' && p.plate === 'page')
+      : (p.title === 'ink' && p.sub === 'muted' && p.plate === 'plate'))
+  && readoutBox && LEG.readout_box.color === readoutBox);
+ok('every palette key has exactly one role - text, plate or accent - and the roles cover the palette',
+  Object.values(reg.palette_roles).flat().sort().join() === Object.keys(reg.palette).sort().join()
+  && reg.palette_roles.text.includes('ink') && reg.palette_roles.plate.includes('plate'));
+/* the authored palette, parsed out of the builder's source: a registry
+   colour that differs from it must carry an `adjusted` entry with its
+   numbers, or the change was silent */
+const srcText = src.toString('utf8');
+const authoredMatch = /PALETTE_AUTHORED = \{([\s\S]*?)\n\}/.exec(srcText);
+const authoredBlock = authoredMatch ? authoredMatch[1] : '';
+const authored = Object.fromEntries([...authoredBlock.matchAll(/'([a-z_]+)':\s*'([^']+)'/g)].map((m) => [m[1], m[2]]));
+const adjustedFor = Object.fromEntries(LEG.adjusted.map((a) => [a.role, a]));
+ok(`the registry palette is the authored one in the builder's source, except where an adjusted entry records the move (${LEG.adjusted.length} adjusted)`,
+  Object.keys(authored).length === Object.keys(reg.palette).length
+  && Object.entries(reg.palette).every(([k, v]) => (k in adjustedFor
+    ? adjustedFor[k].from === authored[k] && adjustedFor[k].to === v && v !== authored[k]
+    : v === authored[k])));
+ok('every adjusted entry names its role, both colours, a reason, and a ratio after that clears 4.5:1 and beats the ratio before',
+  Array.isArray(LEG.adjusted) && LEG.adjusted.every((a) => a.role in reg.palette && /^#|^rgba/.test(a.from)
+    && /^#|^rgba/.test(a.to) && a.why.length > 20 && a.ratio_after >= 4.5 && a.ratio_after > a.ratio_before));
+/* every kind, recomputed */
+const mark = parseC(reg.palette.mark);
+let allOk = true, worstTitle = Infinity, worstSub = Infinity;
+for (const [id, k] of kinds) {
+  const e = LEG.roles[id], p = reg.paint[k.shape];
+  const text = (role) => parseC(role === 'accent' ? reg.palette[k.accent === 'district' ? 'mark' : k.accent] : reg.palette[role]);
+  const title = text(p.title), sub = text(p.sub);
+  if (e.shape !== k.shape || e.title !== p.title || e.sub !== p.sub || e.plate !== p.plate) { allOk = false; break; }
+  if (p.plate === 'none') {
+    const below = Object.values(fam).flatMap((c) => Object.values(c)).filter((c) => contrast(title, parseC(c)) < 4.5).length;
+    if (!same(e.title_on_finish, worstOf((bg) => contrast(title, bg)))
+      || !same(e.sub_on_finish, worstOf((bg) => contrast(sub, bg))) || e.below_4_5_finishes !== below) { allOk = false; break; }
+    continue;
+  }
+  const plate = parseC(p.plate === 'page' ? readoutBox : reg.palette[p.plate]);
+  const tOn = worstOf((bg) => contrast(title, blend(plate, bg)));
+  const sOn = worstOf((bg) => contrast(sub, blend(plate, bg)));
+  const pOn = worstOf((bg) => contrast(blend(plate, bg), bg));
+  const pBelow = Object.values(fam).flatMap((c) => Object.values(c)).filter((c) => contrast(blend(plate, parseC(c)), parseC(c)) < 3).length;
+  const tTint = worstOf((bg) => cr(Yt(title, mark), Yt(blend(plate, bg), mark)));
+  const sTint = worstOf((bg) => cr(Yt(sub, mark), Yt(blend(plate, bg), mark)));
+  if (!same(e.title_on_plate, tOn) || !same(e.sub_on_plate, sOn) || !same(e.plate_on_finish, pOn)
+    || e.plate_below_3_finishes !== pBelow || !same(e.focus_tint.title_on_plate, tTint)
+    || !same(e.focus_tint.sub_on_plate, sTint)) { allOk = false; break; }
+  worstTitle = Math.min(worstTitle, tOn.ratio); worstSub = Math.min(worstSub, sOn.ratio);
+  if (tOn.ratio < 4.5 || sOn.ratio < 4.5 || tTint.ratio < 3 || sTint.ratio < 3) { allOk = false; break; }
+}
+ok(`every kind's text on its own plate, its plate on every finish and its focus-tinted lines recompute to 3 decimals over ${Object.values(fam).reduce((a, c) => a + Object.keys(c).length, 0)} finishes`,
+  allOk && Object.keys(LEG.roles).sort().join() === kinds.map(([id]) => id).sort().join()
+  && Object.entries(LEG.finishes_measured).every(([f, k]) => k === Object.keys(fam[f]).length));
+ok(`every title and sub line clears 4.5:1 on its own plate over every finish (worst title ${worstTitle.toFixed(3)}, worst sub ${worstSub.toFixed(3)}), and 3:1 under the focus tint`,
+  allOk && near3(LEG.worst_title_on_plate, worstTitle) && near3(LEG.worst_sub_on_plate, worstSub)
+  && worstTitle >= 4.5 && worstSub >= 4.5 && LEG.thresholds.normal_text === 4.5 && LEG.thresholds.focus_tint_floor === 3
+  && /refuses and names the kind/.test(LEG.rule));
+ok('the surfaces catalogue was read as it stands now (cross-read stamp and the colours themselves)',
+  LEG.surfaces_stamp === surf.source_stamp
+  && LEG.catalogue_sha === createHash('sha256').update(
+    `{${Object.keys(fam).sort().map((f) => `${JSON.stringify(f)}: {${Object.keys(fam[f]).sort().map((id) => `${JSON.stringify(id)}: ${JSON.stringify(fam[f][id])}`).join(', ')}}`).join(', ')}}`)
+    .digest('hex').slice(0, 16));
+
 console.log(`labels/test: ${n} checks passed — ${kinds.length} kinds, `
   + `${shapes.length} shapes, ${reg.focus.cone_deg}-degree focus cone`);

@@ -3,7 +3,7 @@
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
  "built": "2026-09-17",
- "source_stamp": "a96b0c7df33f5982",
+ "source_stamp": "74a8a80adcd1a875",
  "honesty": {
   "convention": "these shapes are a convention this bundle invented, not a standard anyone else uses; the legend is in the wiki and on the page rather than assumed.",
   "presentation_only": "focus is presentation. Looking at a label changes nothing: no label is a score, none gates anything, and no grader reads which sign a learner faced.",
@@ -179,6 +179,785 @@
   "recorded": "#5CB584",
   "derived": "#41C4D4",
   "schematic": "#93A3A6"
+ },
+ "palette_roles": {
+  "text": [
+   "ink",
+   "muted"
+  ],
+  "plate": [
+   "plate",
+   "plate_focus"
+  ],
+  "accent": [
+   "mark",
+   "steel",
+   "good",
+   "crit",
+   "recorded",
+   "derived",
+   "schematic"
+  ]
+ },
+ "paint": {
+  "speech": {
+   "title": "ink",
+   "sub": "muted",
+   "plate": "plate"
+  },
+  "tab": {
+   "title": "ink",
+   "sub": "muted",
+   "plate": "plate"
+  },
+  "chip": {
+   "title": "ink",
+   "sub": "muted",
+   "plate": "plate"
+  },
+  "plate": {
+   "title": "ink",
+   "sub": "muted",
+   "plate": "plate"
+  },
+  "pin": {
+   "title": "ink",
+   "sub": "muted",
+   "plate": "plate"
+  },
+  "banner": {
+   "title": "ink",
+   "sub": "muted",
+   "plate": "plate"
+  },
+  "marquee": {
+   "title": "ink",
+   "sub": "muted",
+   "plate": "plate"
+  },
+  "ribbon": {
+   "title": "ink",
+   "sub": "muted",
+   "plate": "plate"
+  },
+  "ghost": {
+   "title": "ink",
+   "sub": "ink",
+   "plate": "none"
+  },
+  "readout": {
+   "title": "accent",
+   "sub": "muted",
+   "plate": "page"
+  },
+  "chevron": {
+   "title": "ink",
+   "sub": "muted",
+   "plate": "plate"
+  },
+  "beacon": {
+   "title": "ink",
+   "sub": "muted",
+   "plate": "plate"
+  },
+  "stencil": {
+   "title": "ink",
+   "sub": "muted",
+   "plate": "plate"
+  },
+  "tag": {
+   "title": "ink",
+   "sub": "muted",
+   "plate": "plate"
+  },
+  "notice": {
+   "title": "ink",
+   "sub": "muted",
+   "plate": "plate"
+  },
+  "board": {
+   "title": "ink",
+   "sub": "muted",
+   "plate": "plate"
+  }
+ },
+ "legibility": {
+  "method": "WCAG 2.x relative luminance (sRGB, D65 coefficients .2126/.7152/.0722) and contrast (L1+.05)/(L2+.05); a translucent plate is composited source-over onto the finish before measuring; the focus tint is a per-channel product in linear light, as three.js multiplies a sprite by material.color",
+  "surfaces_stamp": "e60abc6d3327392d",
+  "catalogue_sha": "47456a805c10a72d",
+  "finishes_measured": {
+   "floor": 84,
+   "wall": 51,
+   "wainscot": 51
+  },
+  "thresholds": {
+   "normal_text": 4.5,
+   "large_text": 3.0,
+   "non_text": 3.0,
+   "focus_tint_floor": 3.0,
+   "why_focus_floor": "the focused sign is the single nearest-centre sign, grown by focus.grow and tinted for the moment it is looked at; its lines are held to the large-text floor under the tint and to the normal-text floor untinted"
+  },
+  "readout_box": {
+   "color": "rgba(6,10,12,.9)",
+   "source": "web/trade_craft_3d.html, the readout case of labelShape()"
+  },
+  "rule": "every kind's title and sub line reach 4.5:1 on its own plate over every finish, and 3:1 under the focus tint, or the build refuses and names the kind and the line",
+  "roles": {
+   "campus": {
+    "shape": "marquee",
+    "title": "ink",
+    "sub": "muted",
+    "plate": "plate",
+    "title_on_plate": {
+     "ratio": 10.868,
+     "family": "wall",
+     "finish": "whiteboard-panel"
+    },
+    "sub_on_plate": {
+     "ratio": 4.915,
+     "family": "wall",
+     "finish": "whiteboard-panel"
+    },
+    "plate_on_finish": {
+     "ratio": 1.423,
+     "family": "floor",
+     "finish": "rubber-dielectric"
+    },
+    "plate_below_3_finishes": 59,
+    "focus_tint": {
+     "title_on_plate": {
+      "ratio": 6.529,
+      "family": "wall",
+      "finish": "whiteboard-panel"
+     },
+     "sub_on_plate": {
+      "ratio": 3.118,
+      "family": "wall",
+      "finish": "whiteboard-panel"
+     }
+    }
+   },
+   "district": {
+    "shape": "banner",
+    "title": "ink",
+    "sub": "muted",
+    "plate": "plate",
+    "title_on_plate": {
+     "ratio": 10.868,
+     "family": "wall",
+     "finish": "whiteboard-panel"
+    },
+    "sub_on_plate": {
+     "ratio": 4.915,
+     "family": "wall",
+     "finish": "whiteboard-panel"
+    },
+    "plate_on_finish": {
+     "ratio": 1.423,
+     "family": "floor",
+     "finish": "rubber-dielectric"
+    },
+    "plate_below_3_finishes": 59,
+    "focus_tint": {
+     "title_on_plate": {
+      "ratio": 6.529,
+      "family": "wall",
+      "finish": "whiteboard-panel"
+     },
+     "sub_on_plate": {
+      "ratio": 3.118,
+      "family": "wall",
+      "finish": "whiteboard-panel"
+     }
+    }
+   },
+   "hall": {
+    "shape": "tab",
+    "title": "ink",
+    "sub": "muted",
+    "plate": "plate",
+    "title_on_plate": {
+     "ratio": 10.868,
+     "family": "wall",
+     "finish": "whiteboard-panel"
+    },
+    "sub_on_plate": {
+     "ratio": 4.915,
+     "family": "wall",
+     "finish": "whiteboard-panel"
+    },
+    "plate_on_finish": {
+     "ratio": 1.423,
+     "family": "floor",
+     "finish": "rubber-dielectric"
+    },
+    "plate_below_3_finishes": 59,
+    "focus_tint": {
+     "title_on_plate": {
+      "ratio": 6.529,
+      "family": "wall",
+      "finish": "whiteboard-panel"
+     },
+     "sub_on_plate": {
+      "ratio": 3.118,
+      "family": "wall",
+      "finish": "whiteboard-panel"
+     }
+    }
+   },
+   "room": {
+    "shape": "plate",
+    "title": "ink",
+    "sub": "muted",
+    "plate": "plate",
+    "title_on_plate": {
+     "ratio": 10.868,
+     "family": "wall",
+     "finish": "whiteboard-panel"
+    },
+    "sub_on_plate": {
+     "ratio": 4.915,
+     "family": "wall",
+     "finish": "whiteboard-panel"
+    },
+    "plate_on_finish": {
+     "ratio": 1.423,
+     "family": "floor",
+     "finish": "rubber-dielectric"
+    },
+    "plate_below_3_finishes": 59,
+    "focus_tint": {
+     "title_on_plate": {
+      "ratio": 6.529,
+      "family": "wall",
+      "finish": "whiteboard-panel"
+     },
+     "sub_on_plate": {
+      "ratio": 3.118,
+      "family": "wall",
+      "finish": "whiteboard-panel"
+     }
+    }
+   },
+   "advisor": {
+    "shape": "speech",
+    "title": "ink",
+    "sub": "muted",
+    "plate": "plate",
+    "title_on_plate": {
+     "ratio": 10.868,
+     "family": "wall",
+     "finish": "whiteboard-panel"
+    },
+    "sub_on_plate": {
+     "ratio": 4.915,
+     "family": "wall",
+     "finish": "whiteboard-panel"
+    },
+    "plate_on_finish": {
+     "ratio": 1.423,
+     "family": "floor",
+     "finish": "rubber-dielectric"
+    },
+    "plate_below_3_finishes": 59,
+    "focus_tint": {
+     "title_on_plate": {
+      "ratio": 6.529,
+      "family": "wall",
+      "finish": "whiteboard-panel"
+     },
+     "sub_on_plate": {
+      "ratio": 3.118,
+      "family": "wall",
+      "finish": "whiteboard-panel"
+     }
+    }
+   },
+   "station": {
+    "shape": "chip",
+    "title": "ink",
+    "sub": "muted",
+    "plate": "plate",
+    "title_on_plate": {
+     "ratio": 10.868,
+     "family": "wall",
+     "finish": "whiteboard-panel"
+    },
+    "sub_on_plate": {
+     "ratio": 4.915,
+     "family": "wall",
+     "finish": "whiteboard-panel"
+    },
+    "plate_on_finish": {
+     "ratio": 1.423,
+     "family": "floor",
+     "finish": "rubber-dielectric"
+    },
+    "plate_below_3_finishes": 59,
+    "focus_tint": {
+     "title_on_plate": {
+      "ratio": 6.529,
+      "family": "wall",
+      "finish": "whiteboard-panel"
+     },
+     "sub_on_plate": {
+      "ratio": 3.118,
+      "family": "wall",
+      "finish": "whiteboard-panel"
+     }
+    }
+   },
+   "crib": {
+    "shape": "chip",
+    "title": "ink",
+    "sub": "muted",
+    "plate": "plate",
+    "title_on_plate": {
+     "ratio": 10.868,
+     "family": "wall",
+     "finish": "whiteboard-panel"
+    },
+    "sub_on_plate": {
+     "ratio": 4.915,
+     "family": "wall",
+     "finish": "whiteboard-panel"
+    },
+    "plate_on_finish": {
+     "ratio": 1.423,
+     "family": "floor",
+     "finish": "rubber-dielectric"
+    },
+    "plate_below_3_finishes": 59,
+    "focus_tint": {
+     "title_on_plate": {
+      "ratio": 6.529,
+      "family": "wall",
+      "finish": "whiteboard-panel"
+     },
+     "sub_on_plate": {
+      "ratio": 3.118,
+      "family": "wall",
+      "finish": "whiteboard-panel"
+     }
+    }
+   },
+   "fixture": {
+    "shape": "ghost",
+    "title": "ink",
+    "sub": "ink",
+    "plate": "none",
+    "title_on_finish": {
+     "ratio": 1.089,
+     "family": "wall",
+     "finish": "whiteboard-panel"
+    },
+    "sub_on_finish": {
+     "ratio": 1.089,
+     "family": "wall",
+     "finish": "whiteboard-panel"
+    },
+    "below_4_5_finishes": 122
+   },
+   "anchor": {
+    "shape": "pin",
+    "title": "ink",
+    "sub": "muted",
+    "plate": "plate",
+    "title_on_plate": {
+     "ratio": 10.868,
+     "family": "wall",
+     "finish": "whiteboard-panel"
+    },
+    "sub_on_plate": {
+     "ratio": 4.915,
+     "family": "wall",
+     "finish": "whiteboard-panel"
+    },
+    "plate_on_finish": {
+     "ratio": 1.423,
+     "family": "floor",
+     "finish": "rubber-dielectric"
+    },
+    "plate_below_3_finishes": 59,
+    "focus_tint": {
+     "title_on_plate": {
+      "ratio": 6.529,
+      "family": "wall",
+      "finish": "whiteboard-panel"
+     },
+     "sub_on_plate": {
+      "ratio": 3.118,
+      "family": "wall",
+      "finish": "whiteboard-panel"
+     }
+    }
+   },
+   "schematic": {
+    "shape": "pin",
+    "title": "ink",
+    "sub": "muted",
+    "plate": "plate",
+    "title_on_plate": {
+     "ratio": 10.868,
+     "family": "wall",
+     "finish": "whiteboard-panel"
+    },
+    "sub_on_plate": {
+     "ratio": 4.915,
+     "family": "wall",
+     "finish": "whiteboard-panel"
+    },
+    "plate_on_finish": {
+     "ratio": 1.423,
+     "family": "floor",
+     "finish": "rubber-dielectric"
+    },
+    "plate_below_3_finishes": 59,
+    "focus_tint": {
+     "title_on_plate": {
+      "ratio": 6.529,
+      "family": "wall",
+      "finish": "whiteboard-panel"
+     },
+     "sub_on_plate": {
+      "ratio": 3.118,
+      "family": "wall",
+      "finish": "whiteboard-panel"
+     }
+    }
+   },
+   "route": {
+    "shape": "ribbon",
+    "title": "ink",
+    "sub": "muted",
+    "plate": "plate",
+    "title_on_plate": {
+     "ratio": 10.868,
+     "family": "wall",
+     "finish": "whiteboard-panel"
+    },
+    "sub_on_plate": {
+     "ratio": 4.915,
+     "family": "wall",
+     "finish": "whiteboard-panel"
+    },
+    "plate_on_finish": {
+     "ratio": 1.423,
+     "family": "floor",
+     "finish": "rubber-dielectric"
+    },
+    "plate_below_3_finishes": 59,
+    "focus_tint": {
+     "title_on_plate": {
+      "ratio": 6.529,
+      "family": "wall",
+      "finish": "whiteboard-panel"
+     },
+     "sub_on_plate": {
+      "ratio": 3.118,
+      "family": "wall",
+      "finish": "whiteboard-panel"
+     }
+    }
+   },
+   "readout": {
+    "shape": "readout",
+    "title": "accent",
+    "sub": "muted",
+    "plate": "page",
+    "title_on_plate": {
+     "ratio": 7.898,
+     "family": "wall",
+     "finish": "whiteboard-panel"
+    },
+    "sub_on_plate": {
+     "ratio": 6.297,
+     "family": "wall",
+     "finish": "whiteboard-panel"
+    },
+    "plate_on_finish": {
+     "ratio": 1.518,
+     "family": "floor",
+     "finish": "rubber-dielectric"
+    },
+    "plate_below_3_finishes": 46,
+    "focus_tint": {
+     "title_on_plate": {
+      "ratio": 3.695,
+      "family": "wall",
+      "finish": "whiteboard-panel"
+     },
+     "sub_on_plate": {
+      "ratio": 3.54,
+      "family": "wall",
+      "finish": "whiteboard-panel"
+     }
+    }
+   },
+   "brand": {
+    "shape": "marquee",
+    "title": "ink",
+    "sub": "muted",
+    "plate": "plate",
+    "title_on_plate": {
+     "ratio": 10.868,
+     "family": "wall",
+     "finish": "whiteboard-panel"
+    },
+    "sub_on_plate": {
+     "ratio": 4.915,
+     "family": "wall",
+     "finish": "whiteboard-panel"
+    },
+    "plate_on_finish": {
+     "ratio": 1.423,
+     "family": "floor",
+     "finish": "rubber-dielectric"
+    },
+    "plate_below_3_finishes": 59,
+    "focus_tint": {
+     "title_on_plate": {
+      "ratio": 6.529,
+      "family": "wall",
+      "finish": "whiteboard-panel"
+     },
+     "sub_on_plate": {
+      "ratio": 3.118,
+      "family": "wall",
+      "finish": "whiteboard-panel"
+     }
+    }
+   },
+   "placard": {
+    "shape": "board",
+    "title": "ink",
+    "sub": "muted",
+    "plate": "plate",
+    "title_on_plate": {
+     "ratio": 10.868,
+     "family": "wall",
+     "finish": "whiteboard-panel"
+    },
+    "sub_on_plate": {
+     "ratio": 4.915,
+     "family": "wall",
+     "finish": "whiteboard-panel"
+    },
+    "plate_on_finish": {
+     "ratio": 1.423,
+     "family": "floor",
+     "finish": "rubber-dielectric"
+    },
+    "plate_below_3_finishes": 59,
+    "focus_tint": {
+     "title_on_plate": {
+      "ratio": 6.529,
+      "family": "wall",
+      "finish": "whiteboard-panel"
+     },
+     "sub_on_plate": {
+      "ratio": 3.118,
+      "family": "wall",
+      "finish": "whiteboard-panel"
+     }
+    }
+   },
+   "egress": {
+    "shape": "chevron",
+    "title": "ink",
+    "sub": "muted",
+    "plate": "plate",
+    "title_on_plate": {
+     "ratio": 10.868,
+     "family": "wall",
+     "finish": "whiteboard-panel"
+    },
+    "sub_on_plate": {
+     "ratio": 4.915,
+     "family": "wall",
+     "finish": "whiteboard-panel"
+    },
+    "plate_on_finish": {
+     "ratio": 1.423,
+     "family": "floor",
+     "finish": "rubber-dielectric"
+    },
+    "plate_below_3_finishes": 59,
+    "focus_tint": {
+     "title_on_plate": {
+      "ratio": 6.529,
+      "family": "wall",
+      "finish": "whiteboard-panel"
+     },
+     "sub_on_plate": {
+      "ratio": 3.118,
+      "family": "wall",
+      "finish": "whiteboard-panel"
+     }
+    }
+   },
+   "muster": {
+    "shape": "beacon",
+    "title": "ink",
+    "sub": "muted",
+    "plate": "plate",
+    "title_on_plate": {
+     "ratio": 10.868,
+     "family": "wall",
+     "finish": "whiteboard-panel"
+    },
+    "sub_on_plate": {
+     "ratio": 4.915,
+     "family": "wall",
+     "finish": "whiteboard-panel"
+    },
+    "plate_on_finish": {
+     "ratio": 1.423,
+     "family": "floor",
+     "finish": "rubber-dielectric"
+    },
+    "plate_below_3_finishes": 59,
+    "focus_tint": {
+     "title_on_plate": {
+      "ratio": 6.529,
+      "family": "wall",
+      "finish": "whiteboard-panel"
+     },
+     "sub_on_plate": {
+      "ratio": 3.118,
+      "family": "wall",
+      "finish": "whiteboard-panel"
+     }
+    }
+   },
+   "door": {
+    "shape": "stencil",
+    "title": "ink",
+    "sub": "muted",
+    "plate": "plate",
+    "title_on_plate": {
+     "ratio": 10.868,
+     "family": "wall",
+     "finish": "whiteboard-panel"
+    },
+    "sub_on_plate": {
+     "ratio": 4.915,
+     "family": "wall",
+     "finish": "whiteboard-panel"
+    },
+    "plate_on_finish": {
+     "ratio": 1.423,
+     "family": "floor",
+     "finish": "rubber-dielectric"
+    },
+    "plate_below_3_finishes": 59,
+    "focus_tint": {
+     "title_on_plate": {
+      "ratio": 6.529,
+      "family": "wall",
+      "finish": "whiteboard-panel"
+     },
+     "sub_on_plate": {
+      "ratio": 3.118,
+      "family": "wall",
+      "finish": "whiteboard-panel"
+     }
+    }
+   },
+   "asset": {
+    "shape": "tag",
+    "title": "ink",
+    "sub": "muted",
+    "plate": "plate",
+    "title_on_plate": {
+     "ratio": 10.868,
+     "family": "wall",
+     "finish": "whiteboard-panel"
+    },
+    "sub_on_plate": {
+     "ratio": 4.915,
+     "family": "wall",
+     "finish": "whiteboard-panel"
+    },
+    "plate_on_finish": {
+     "ratio": 1.423,
+     "family": "floor",
+     "finish": "rubber-dielectric"
+    },
+    "plate_below_3_finishes": 59,
+    "focus_tint": {
+     "title_on_plate": {
+      "ratio": 6.529,
+      "family": "wall",
+      "finish": "whiteboard-panel"
+     },
+     "sub_on_plate": {
+      "ratio": 3.118,
+      "family": "wall",
+      "finish": "whiteboard-panel"
+     }
+    }
+   },
+   "hazard": {
+    "shape": "notice",
+    "title": "ink",
+    "sub": "muted",
+    "plate": "plate",
+    "title_on_plate": {
+     "ratio": 10.868,
+     "family": "wall",
+     "finish": "whiteboard-panel"
+    },
+    "sub_on_plate": {
+     "ratio": 4.915,
+     "family": "wall",
+     "finish": "whiteboard-panel"
+    },
+    "plate_on_finish": {
+     "ratio": 1.423,
+     "family": "floor",
+     "finish": "rubber-dielectric"
+    },
+    "plate_below_3_finishes": 59,
+    "focus_tint": {
+     "title_on_plate": {
+      "ratio": 6.529,
+      "family": "wall",
+      "finish": "whiteboard-panel"
+     },
+     "sub_on_plate": {
+      "ratio": 3.118,
+      "family": "wall",
+      "finish": "whiteboard-panel"
+     }
+    }
+   }
+  },
+  "worst_title_on_plate": 7.898,
+  "worst_sub_on_plate": 4.915,
+  "text_on_plate_pairs": [
+   {
+    "text": "accent",
+    "plate": "page"
+   },
+   {
+    "text": "ink",
+    "plate": "none"
+   },
+   {
+    "text": "ink",
+    "plate": "plate"
+   },
+   {
+    "text": "muted",
+    "plate": "page"
+   },
+   {
+    "text": "muted",
+    "plate": "plate"
+   }
+  ],
+  "adjusted": []
  },
  "type": {
   "display": "\"Barlow Condensed\", system-ui, sans-serif",
