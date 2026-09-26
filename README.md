@@ -165,6 +165,11 @@ others structurally cannot.
 
 ## What has and has not been verified
 
+The enterprise review of 2026-09-26 — what was built, what was found, and
+the order the remaining work should take for nonprofits, corporations,
+training simulators and unions — is `ENTERPRISE_REVIEW.md`.
+
+
 **Verified here:** the ledger closes at exactly 11,000,000 with every ID proved unique;
 the dial holds the ZPD ~6× better than fixed or random difficulty; the graph
 sequencer is the only strategy that certifies anyone, and roughly doubles

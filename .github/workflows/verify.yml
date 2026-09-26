@@ -1,0 +1,31 @@
+# Runs the bundle's own verification on every push and pull request. Until
+# now the only workflow deployed the site; the 1,600-odd checks ran on a
+# developer's machine or not at all, and a red check on a laptop is a check
+# nobody else sees. This makes ./verify_all.sh the gate it already is
+# locally: one exit code, every suite, every builder's --check, every lint.
+#
+# Nothing here reaches a model, a browser or the network beyond installing
+# Node, Python and the one Python package the wiki and spec renderers use.
+# The Playwright scene eval (web/eval_scene.mjs) stays opt-in and local: it
+# needs Chromium and a served page, and its ceilings are measured on one
+# machine's software rasteriser.
+name: verify
+on:
+  push:
+    branches: [main]
+  pull_request:
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: The one Python dependency (the wiki and spec renderers)
+        run: python3 -m pip install --quiet markdown
+      - name: Every suite, every builder's --check, every lint, one exit code
+        run: ./verify_all.sh
