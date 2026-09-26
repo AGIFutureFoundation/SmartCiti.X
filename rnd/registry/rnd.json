@@ -22,14 +22,14 @@
   "computed_from_registry": 12,
   "measured_source_files": 11,
   "registries_scanned": 42,
-  "app_renderers_scanned": 15,
+  "app_renderers_scanned": 16,
   "doc_renderers_scanned": 3,
   "builders_scanned": 32,
-  "suites_scanned": 48,
-  "declared_unbuilt": 8,
+  "suites_scanned": 49,
+  "declared_unbuilt": 7,
   "declared_unbuilt_by_their_own_words": 2,
-  "declared_unbuilt_not_drawn": 7,
-  "declared_unbuilt_documented_but_not_drawn": 3,
+  "declared_unbuilt_not_drawn": 6,
+  "declared_unbuilt_documented_but_not_drawn": 2,
   "declared_unbuilt_read_by_nothing": 4,
   "gaps": 20,
   "gaps_open": 19,
@@ -38,13 +38,13 @@
   "budget_views": 3,
   "budget_currencies": 2,
   "budget_agreements": 7,
-  "suites_run": 53,
-  "suite_checks_declared": 2387,
+  "suites_run": 54,
+  "suite_checks_declared": 2413,
   "open_questions": 12,
   "negative_findings": 9,
   "cross_checks": 2,
   "cross_checks_disagreeing": 0,
-  "files_read": 168
+  "files_read": 170
  },
  "tiers": [
   "MEASURED-IN-BROWSER",
@@ -1470,28 +1470,6 @@
    "drops_off_when": "a page generator under web/ opens this path, or the pack removes its own honesty.not_built_yet - either one, on the next build of rnd/, with no edit here"
   },
   {
-   "registry": "spatial/registry/som.json",
-   "pack": "spatial",
-   "reasons": [
-    "no page generator under web/ names this path, so nothing a learner opens reads it",
-    "it is DOCUMENTED but not drawn: wiki/build_wiki.py renders a description of it"
-   ],
-   "says": null,
-   "read_by_app_renderers": [],
-   "read_by_doc_renderers": [
-    "wiki/build_wiki.py"
-   ],
-   "read_by_builders": [
-    "meta/build.py"
-   ],
-   "read_by_suites": [],
-   "read_by_its_own_pack": [
-    "spatial/build.py",
-    "spatial/test.mjs"
-   ],
-   "drops_off_when": "a page generator under web/ opens this path, or the pack removes its own honesty.not_built_yet - either one, on the next build of rnd/, with no edit here"
-  },
-  {
    "registry": "venue/registry/venue.json",
    "pack": "venue",
    "reasons": [
@@ -2097,7 +2075,8 @@
   },
   "spatial/registry/fabric.json": {
    "app_renderers": [
-    "web/build_dashboard.py"
+    "web/build_dashboard.py",
+    "web/build_fabric.py"
    ],
    "doc_renderers": [
     "wiki/build_wiki.py"
@@ -2105,7 +2084,9 @@
    "builders": [
     "meta/build.py"
    ],
-   "suites": [],
+   "suites": [
+    "web/test_fabric.mjs"
+   ],
    "own_pack": [
     "spatial/build.py",
     "spatial/test.mjs"
@@ -2114,6 +2095,7 @@
   "spatial/registry/geopose.json": {
    "app_renderers": [
     "web/build_dashboard.py",
+    "web/build_fabric.py",
     "web/build_geomap.py"
    ],
    "doc_renderers": [
@@ -2123,7 +2105,8 @@
     "meta/build.py"
    ],
    "suites": [
-    "meta/test.mjs"
+    "meta/test.mjs",
+    "web/test_fabric.mjs"
    ],
    "own_pack": [
     "spatial/build.py",
@@ -2131,14 +2114,18 @@
    ]
   },
   "spatial/registry/som.json": {
-   "app_renderers": [],
+   "app_renderers": [
+    "web/build_fabric.py"
+   ],
    "doc_renderers": [
     "wiki/build_wiki.py"
    ],
    "builders": [
     "meta/build.py"
    ],
-   "suites": [],
+   "suites": [
+    "web/test_fabric.mjs"
+   ],
    "own_pack": [
     "spatial/build.py",
     "spatial/test.mjs"
@@ -2457,6 +2444,7 @@
    "web/build_3d.py",
    "web/build_auth.py",
    "web/build_dashboard.py",
+   "web/build_fabric.py",
    "web/build_geomap.py",
    "web/build_home.py",
    "web/build_interactive_map.py",
@@ -2552,6 +2540,7 @@
    "unions/verify.mjs",
    "venue/test.mjs",
    "web/test_3d.mjs",
+   "web/test_fabric.mjs",
    "web/test_home.mjs",
    "web/test_ladder.mjs",
    "web/test_progress.mjs",
@@ -3376,6 +3365,13 @@
     "in_readme_table": true
    },
    {
+    "suite": "web/test_fabric.mjs",
+    "pack": "web",
+    "readme_checks": 26,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
     "suite": "web/test_progress.mjs",
     "pack": "web",
     "readme_checks": 17,
@@ -3404,18 +3400,18 @@
     "in_readme_table": true
    }
   ],
-  "suites_run": 53,
-  "suites_declaring_a_count": 52,
+  "suites_run": 54,
+  "suites_declaring_a_count": 53,
   "suites_without_a_count": [
    "control/soak.mjs"
   ],
-  "declared_total": 2387,
-  "readme_headline": 2398,
+  "declared_total": 2413,
+  "readme_headline": 2424,
   "unaccounted_for": 11,
   "unaccounted_note": "the headline counts every `  ok ` line verify_all.sh sees, which includes suites the README table gives no number to and web/test_interiors.py, which the table does not list at all. The difference is that remainder and is computed, not reconciled by hand.",
   "min": 9,
   "max": 295,
-  "median": 34.5,
+  "median": 34,
   "thinnest": [
    {
     "suite": "ops/fuzz.mjs",
@@ -3806,6 +3802,7 @@
   "web/build_3d.py",
   "web/build_auth.py",
   "web/build_dashboard.py",
+  "web/build_fabric.py",
   "web/build_geomap.py",
   "web/build_home.py",
   "web/build_interactive_map.py",
@@ -3820,6 +3817,7 @@
   "web/groundtruth.py",
   "web/interiors.py",
   "web/test_3d.mjs",
+  "web/test_fabric.mjs",
   "web/test_home.mjs",
   "web/test_ladder.mjs",
   "web/test_progress.mjs",
