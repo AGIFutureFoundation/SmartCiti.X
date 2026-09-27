@@ -65,6 +65,17 @@ const BASE = {
   /* The same hall as the row above, from inside it. Measured 2026-09-24,
      same browser, same viewport, same rung. */
   'hall-eye': { calls: 123, tris: 12_146, meshes: 223 },
+  /* THE OTHER THREE VIEWS THE PAGE CAN SHOW. rnd/ records that every
+     budget above is an argument about three orbit views out of six: the
+     avatar locker, a running simulator seat and a restoration walk had
+     never been scored in a browser. Each is now opened through the page's
+     own `view` hook to the FIRST of its roster - the locker; crane-lift,
+     the first seat in sims/registry/sims.json, left running about two
+     seconds; and the first walkable site in restoration/registry - and
+     measured 2026-09-26, same browser, same viewport, same rung. */
+  avatar: { calls: 47, tris: 9_922, meshes: 46 },
+  sim: { calls: 135, tris: 10_890, meshes: 139 },
+  restoration: { calls: 65, tris: 946, meshes: 81 },
 };
 const CALL_HEADROOM = 1.25;     // draw calls are the scarce currency
 const TRI_HEADROOM = 4;         // triangles are not, and are meant to grow
@@ -116,6 +127,21 @@ const LEGIBLE = {
      accepting. A pair count that falls while the sign count falls with it
      is signage being taken away, and the floor below is what says so. */
   'hall-eye':   { signs: 16, pairs: 6 },
+  /* The three views added 2026-09-26, measured in the same run as their
+     BASE rows above. The locker carries no sign at all (a figure on a
+     stand, its wardrobe in the panel), so its floor is zero and only the
+     pair ceiling can ever fire. The seat carries four - the operator and
+     the signalperson's bubbles, the yard's own name, a readout - with one
+     pair, the two bubbles touching. The restoration site carries three.
+
+     That third row's first measurement was ZERO signs and ONE draw call:
+     the site's gate sign was still built as a name-plate after the
+     placard kind was restacked as a board, label() threw, and the walk
+     stood up half-way - campus hidden, ground never added. A view nobody
+     had scored was a view nobody had entered under a harness. */
+  avatar:       { signs: 0, pairs: 0 },
+  sim:          { signs: 4, pairs: 1 },
+  restoration:  { signs: 3, pairs: 0 },
 };
 const PAIR_HEADROOM = 1.25;
 const SIGN_FLOOR = 0.9;
@@ -176,6 +202,29 @@ const VIEWS = [
     why: 'standing on the floor of a hall at eye level, looking down the aisle' },
   { id: 'hall-worst', worst: true, ...ceil('hall', 'hall-worst'),
     why: 'the most expensive of the 111 hall interiors, found by measuring them all' },
+  /* THE THREE VIEWS THAT HAD NEVER BEEN SCORED. The page can show six
+     views; the rows above cover three of them (region, campus, hall), so
+     the locker a learner dresses an avatar in, the seat they run, and the
+     restoration ground they walk had no measured cost at all. Each goes
+     through the page's own `view` hook - `__tc3dDo('view', 'avatar' |
+     'sim' | 'restoration')` - which opens the FIRST of that view's roster
+     exactly as the page does when nothing is named, so no slug is typed
+     here that could go stale. */
+  { id: 'avatar', go: (p) => p.evaluate(() => window.__tc3dDo('view', 'avatar')),
+    ...ceil('avatar'),
+    why: 'the avatar locker: the learner\'s figure on its stand, with the wardrobe open' },
+  /* A RUNNING seat, not a still one: the simulator animates its load,
+     rider and gauges every frame, so it is left running about two seconds
+     before the frame is read, and what is scored is a seat in motion. */
+  { id: 'sim', go: async (p) => {
+      await p.evaluate(() => window.__tc3dDo('view', 'sim'));
+      await p.waitForTimeout(2000);
+    },
+    ...ceil('sim'),
+    why: 'the first simulator seat in the roster (crane-lift), running for two seconds' },
+  { id: 'restoration', go: (p) => p.evaluate(() => window.__tc3dDo('view', 'restoration')),
+    ...ceil('restoration'),
+    why: 'the first walkable restoration site\'s ground scene, entered through the page\'s own walk' },
 ];
 
 const pct = (v, lim) => `${((v / lim) * 100).toFixed(0)}%`;

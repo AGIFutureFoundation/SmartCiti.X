@@ -987,6 +987,21 @@
      "calls": 157,
      "tris": 3806,
      "meshes": 137
+    },
+    "avatar": {
+     "calls": 47,
+     "tris": 9922,
+     "meshes": 46
+    },
+    "sim": {
+     "calls": 135,
+     "tris": 10890,
+     "meshes": 139
+    },
+    "restoration": {
+     "calls": 65,
+     "tris": 946,
+     "meshes": 81
     }
    },
    "call_headroom": 1.25,

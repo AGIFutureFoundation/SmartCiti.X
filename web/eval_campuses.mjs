@@ -18,9 +18,29 @@
  * standing in for a different quantity, and the first run of this harness
  * did exactly that: nine of ten "failing". So the floors are applied only
  * to the campus they were measured on, and every other campus is MEASURED
- * and reported beside its own declared hall count, not judged - the reader
- * sees signs per hall and can ask why one campus shows nine signs for
- * twenty-eight halls while another shows twenty-one for thirty-two.
+ * and reported beside its own declared hall count, not judged.
+ *
+ * THE DENOMINATOR, and what the first framing got wrong. The first draft
+ * of this file printed signs beside halls and invited the reader to ask
+ * why one campus showed nine signs for twenty-eight halls while another
+ * showed twenty-one for thirty-two. Measured 2026-09-26 by KIND, through
+ * the same __tc3dLabelRects() hook: in every one of the ten campus views
+ * there were ZERO hall-kind signs. A hall was named only from inside it.
+ * What a campus view carried was its plaza marquee, its district banners,
+ * and the city's anchors and site tags - New Orleans places 3 anchors and
+ * 1 tag (9 signs), Oakland 12 and 3 (21) - so the sign count followed the
+ * anchors a city records, not the halls a campus hosts, and "signs per
+ * hall" was one quantity standing beside a different one. Halls were the
+ * wrong denominator for what was on the screen. The table now prints the
+ * signs by kind - how many are hall signs, how many anchors and site tags,
+ * how many the rest (the marquee and the banners) - beside the halls the
+ * campus declares, so a hall count and a hall-sign count sit in the same
+ * row and the reader can see whether a campus names its buildings at all,
+ * and how many of those names the declutter let stand. The kinds are read
+ * off each rectangle's `kind` field rather than re-derived from the geo
+ * and restoration registries, because the page filters both before it
+ * places anything and a second copy of that filter here would be the
+ * second budget this file already refuses to be.
  *
  *   node web/eval_campuses.mjs [--json]      needs a static server on
  *   TC_URL (default http://127.0.0.1:8811/web/trade_craft_3d.html) and the
@@ -104,8 +124,18 @@ async function main() {
         const cover = w * h / Math.min(a.w * a.h, b2.w * b2.h);
         if (cover > worstCover) { worstCover = cover; worstPair = `${a.kind}:"${a.text}" / ${b2.kind}:"${b2.text}"`; }
       }
+      // the signs BY KIND, off the rectangles the page reports: `hall` is
+      // a building's own name; `anchor` and `schematic` are the city's
+      // recorded anchors and the site tags (buildCity(), the restoration
+      // sites); what is left is the plaza marquee and the district banners
+      const byKind = {};
+      for (const r of rects) byKind[r.kind] = (byKind[r.kind] ?? 0) + 1;
+      const hallSigns = byKind.hall ?? 0;
+      const anchorTagSigns = (byKind.anchor ?? 0) + (byKind.schematic ?? 0);
       return { view: d.view, calls: d.perf.calls, tris: d.perf.tris, tex: d.perf.tex, quality: d.quality,
-        meshes, materials: mats.size, signs: rects.length, pairs, worstCover: Math.round(worstCover * 100), worstPair };
+        meshes, materials: mats.size, signs: rects.length, hallSigns, anchorTagSigns,
+        otherSigns: rects.length - hallSigns - anchorTagSigns, byKind,
+        pairs, worstCover: Math.round(worstCover * 100), worstPair };
     });
     const fails = [];
     const halls = CAMPUSES[slug].halls.length;
@@ -125,8 +155,9 @@ async function main() {
     console.log(JSON.stringify({ ceiling: CEIL, base: BASE, rows, errors: errs, failing: bad, campuses: SLUGS.length }, null, 1));
   } else {
     console.log(`\ncampus eval - every campus in unions/registry/campuses.json, measured in Chromium against eval_scene.mjs's campus ceiling\n`);
-    console.log(`${'campus'.padEnd(16)} ${'halls'.padStart(5)} ${'calls'.padStart(6)} ${'of'.padStart(5)} ${'triangles'.padStart(10)} ${'of'.padStart(5)} ${'meshes'.padStart(7)} ${'signs'.padStart(6)} ${'pairs'.padStart(6)} ${'of'.padStart(4)}  floors`);
-    for (const r of rows) console.log(`${r.campus.padEnd(16)} ${String(r.halls).padStart(5)} ${String(r.calls).padStart(6)} ${((r.calls / CEIL.maxCalls) * 100).toFixed(0).padStart(4)}% ${String(r.tris).padStart(10)} ${((r.tris / CEIL.maxTris) * 100).toFixed(0).padStart(4)}% ${String(r.meshes).padStart(7)} ${String(r.signs).padStart(6)} ${String(r.pairs).padStart(6)} ${String(CEIL.maxPairs).padStart(4)}  ${r.floors_judged ? `judged (meshes >= ${CEIL.minMeshes}, signs >= ${CEIL.minSigns})` : 'measured, not judged: floors were calibrated on the flagship'}` + (r.fails.length ? '   <<< ' + r.fails.join('; ') : ''));
+    console.log('signs are counted by kind off __tc3dLabelRects(): hall = a building\'s own name, anch+tag = the city\'s recorded anchors and site tags, other = the plaza marquee and district banners\n');
+    console.log(`${'campus'.padEnd(16)} ${'halls'.padStart(5)} ${'calls'.padStart(6)} ${'of'.padStart(5)} ${'triangles'.padStart(10)} ${'of'.padStart(5)} ${'meshes'.padStart(7)} ${'signs'.padStart(6)} ${'hall'.padStart(5)} ${'anch+tag'.padStart(8)} ${'other'.padStart(5)} ${'pairs'.padStart(6)} ${'of'.padStart(4)}  floors`);
+    for (const r of rows) console.log(`${r.campus.padEnd(16)} ${String(r.halls).padStart(5)} ${String(r.calls).padStart(6)} ${((r.calls / CEIL.maxCalls) * 100).toFixed(0).padStart(4)}% ${String(r.tris).padStart(10)} ${((r.tris / CEIL.maxTris) * 100).toFixed(0).padStart(4)}% ${String(r.meshes).padStart(7)} ${String(r.signs).padStart(6)} ${String(r.hallSigns).padStart(5)} ${String(r.anchorTagSigns).padStart(8)} ${String(r.otherSigns).padStart(5)} ${String(r.pairs).padStart(6)} ${String(CEIL.maxPairs).padStart(4)}  ${r.floors_judged ? `judged (meshes >= ${CEIL.minMeshes}, signs >= ${CEIL.minSigns})` : 'measured, not judged: floors were calibrated on the flagship'}` + (r.fails.length ? '   <<< ' + r.fails.join('; ') : ''));
     console.log(`\n${SLUGS.length} campuses scored, ${bad} over a cap or, on the flagship, under a floor` + (errs.length ? `, ${errs.length} page error(s)` : ', no page errors'));
     for (const e of errs.slice(0, 5)) console.log('  page error: ' + e);
   }

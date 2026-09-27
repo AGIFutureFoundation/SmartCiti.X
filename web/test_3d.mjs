@@ -1887,6 +1887,38 @@ ok('the view hook opens the hall the learner has selected, not a hard-coded '
    + 'falls back to `campusKey`, so the selector and the building agree',
   /what === 'hall'\) showHall\(which \?\? slug\)/.test(_view)
   && !/showHall\(which \?\? D\.halls\[0\]/.test(_view));
+/* The other three views the page can show. eval_scene.mjs had scored three
+   orbit views out of six because the locker, a running seat and a
+   restoration walk could only be reached by a click or a drag - and a
+   harness that clicks its way there scores whatever the click happened to
+   hit. Each is held to the page's OWN entry (the locker's showAvatar, the
+   seat opener the hall's chooser calls, the walk the campus marker starts)
+   and to the same default rule `hall` and `campus` use: the first of its
+   roster, read from the registry, not a slug typed into the harness. */
+ok('the view hook reaches the three views eval_scene had never scored, each '
+   + 'through the page\'s own entry and defaulting to the first of its roster: '
+   + '`avatar` opens the locker via showAvatar, `sim` starts the first seat in '
+   + 'sims/registry through the seat hook, `restoration` walks the first '
+   + 'walkable site (s.e !== undefined) through startRestorationWalk',
+  /what === 'avatar'\) showAvatar\(\)/.test(_view)
+  && /what === 'sim'\) window\.__tc3dSim\.start\(which \?\? Object\.keys\(D\.sims\.sims\)\[0\]\)/.test(_view)
+  && /what === 'restoration'\) startRestorationWalk\(which\s*\?\? D\.restoration\.sites\.find\(\(s\) => s\.e !== undefined\)\.id\)/.test(_view)
+  && /no such view: /.test(_view)
+  && !/'crane-lift'|'herons-head'/.test(_view));
+/* The gate sign of a walkable restoration site is a placard, and a placard
+   is a stacked board: label() throws when it gets no `items`. The sign was
+   still written as a name-plate after the placard was restacked, so every
+   walkable site threw on entry, half-way through standing the scene up -
+   campus hidden, ground never added, one draw call. Caught by the first
+   `restoration` row of eval_scene.mjs, never by this file: hold it here
+   now, at the source, so it cannot come back without a word. */
+ok('the restoration site\'s entry sign is built as the board the placard kind '
+   + 'is: one organisation to a line (the registry joins them with "; ") as '
+   + 'its items, the kind of work as its caption, in buildRestoGround',
+  (() => {
+    const c = fnCode('buildRestoGround');
+    return /label\(site\.org, site\.category\.replace\(\/-\/g, ' '\), \.62,\s*\{ kind: 'placard', items: site\.org\.split\(\/;\\s\*\/\) \}\)/.test(c);
+  })());
 
 /* ------------------------------------ the hall's own draw-call budget --- */
 /* Eleven of the 111 halls shipped over the draw-call ceiling with every

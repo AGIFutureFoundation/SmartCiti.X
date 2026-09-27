@@ -11,7 +11,7 @@
   "halls": "3807e54afe6abfe6",
   "completion": "158a6d9edc6d7027",
   "manifest": "169fa4e75499d00e",
-  "build_3d": "d5c2777a2b451a00",
+  "build_3d": "02d57067a694f2cb",
   "hall_signoff": "e67ba161ef70d996",
   "roadmap": "edb0a399213e9e56",
   "completion_fixture": "08cbdefd781c112a",
@@ -66,7 +66,7 @@
    "read": "const rc = condOf(h.slug, r.strand);"
   },
   "condOf": {
-   "line": 14246,
+   "line": 14256,
    "read": "return D.condOver[hallSlug]?.[strand], else D.baseCond[strand]"
   },
   "condOver": {

@@ -13752,8 +13752,18 @@ function buildRestoGround(g, site) {
      could walk a site without ever being told whose ground they were on.
      The organisation is named because it is THEIRS - none of these is our
      programme, and the honesty line in the panel says so in words. */
+  /* A placard is a BOARD - a list read one item to a line, with the
+     caption saying whose board it is - and a board with no items is a
+     broken build that throws. This sign was still written as a name-plate
+     after the placard kind was restacked, so entering any walkable site
+     threw here, half-way through standing the scene up: the campus was
+     already hidden and the ground never added, and a learner who walked
+     through the gate got a black screen at one draw call. Nothing in the
+     source suite could see it; eval_scene's first `restoration` row did.
+     The organisations are the lines (the registry joins them with "; "),
+     the kind of work is the caption. */
   const entry = label(site.org, site.category.replace(/-/g, ' '), .62,
-    { kind: 'placard' });
+    { kind: 'placard', items: site.org.split(/;\s*/) });
   entry.position.set(0, 2.4, RESTO_R - 2);
   g.add(entry);
 
@@ -14942,6 +14952,19 @@ window.__tc3dDo = (fn, arg) => {
     if (what === 'region') showRegion();
     else if (what === 'campus') showCampus(which ?? campusKey);
     else if (what === 'hall') showHall(which ?? slug);
+    /* The three views a harness could not reach without a click or a
+       drag, and so had never been scored: eval_scene.mjs measured three
+       orbit views out of the six the page can show, and every budget in
+       the bundle was an argument about those three. Each opens through
+       the page's own entry - the locker button's handler, the seat opener
+       the hall's chooser calls, the walk the campus marker starts - and
+       each defaults the way `hall` and `campus` do above: to the FIRST of
+       its roster, which is what the page itself opens when nothing is
+       named, not to a slug typed into the harness. */
+    else if (what === 'avatar') showAvatar();
+    else if (what === 'sim') window.__tc3dSim.start(which ?? Object.keys(D.sims.sims)[0]);
+    else if (what === 'restoration') startRestorationWalk(which
+      ?? D.restoration.sites.find((s) => s.e !== undefined).id);
     // `slug`, NOT D.halls[0].slug. This read D.halls[0] - ironworkers -
     // which threw away the hall the learner had actually selected: the
     // bar still said Welding Trades while the building drawn underneath

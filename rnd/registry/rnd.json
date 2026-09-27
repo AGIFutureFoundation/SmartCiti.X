@@ -16,8 +16,8 @@
   "the_backlog_computes": "a pack that gets wired up drops off declared_unbuilt on the next build of this file, because the entry is computed from whether a renderer names its registry path - not from a note here saying it is unbuilt."
  },
  "counts": {
-  "measured": 75,
-  "measured_in_browser": 12,
+  "measured": 84,
+  "measured_in_browser": 21,
   "measured_elsewhere": 51,
   "computed_from_registry": 12,
   "measured_source_files": 11,
@@ -32,14 +32,14 @@
   "declared_unbuilt_documented_but_not_drawn": 2,
   "declared_unbuilt_read_by_nothing": 5,
   "gaps": 21,
-  "gaps_open": 19,
-  "gaps_closed": 2,
+  "gaps_open": 18,
+  "gaps_closed": 3,
   "widest_gap_share": 0.0,
-  "budget_views": 3,
+  "budget_views": 6,
   "budget_currencies": 2,
   "budget_agreements": 7,
   "suites_run": 67,
-  "suite_checks_declared": 3210,
+  "suite_checks_declared": 3212,
   "open_questions": 12,
   "negative_findings": 9,
   "cross_checks": 2,
@@ -52,6 +52,60 @@
   "COMPUTED-FROM-REGISTRY"
  ],
  "measured": [
+  {
+   "id": "eval.avatar.calls",
+   "what": "the avatar view, measured draw calls",
+   "value": 47,
+   "unit": "draw calls",
+   "tier": "MEASURED-IN-BROWSER",
+   "file": "web/eval_scene.mjs",
+   "locator": {
+    "kind": "regex",
+    "pattern": "avatar:\\s*\\{ calls: ([\\d_]+)",
+    "group": 1,
+    "cast": "int"
+   },
+   "when": "2026-09-22",
+   "conditions": "Chromium/SwiftShader, 1280x800, quality rung `high`",
+   "method": "web/eval_scene.mjs drives the built page through each view in Playwright-driven Chromium, renders two frames so the counters belong to this view and not the last one, and reads renderer.info plus a walk of the visible scene graph",
+   "why": "the scarce currency on this page: one per material per merged group, so it counts pieces of state rather than geometry"
+  },
+  {
+   "id": "eval.avatar.tris",
+   "what": "the avatar view, measured triangles",
+   "value": 9922,
+   "unit": "triangles",
+   "tier": "MEASURED-IN-BROWSER",
+   "file": "web/eval_scene.mjs",
+   "locator": {
+    "kind": "regex",
+    "pattern": "avatar:\\s*\\{ calls: [\\d_]+, tris: ([\\d_]+)",
+    "group": 1,
+    "cast": "int"
+   },
+   "when": "2026-09-22",
+   "conditions": "Chromium/SwiftShader, 1280x800, quality rung `high`",
+   "method": "web/eval_scene.mjs drives the built page through each view in Playwright-driven Chromium, renders two frames so the counters belong to this view and not the last one, and reads renderer.info plus a walk of the visible scene graph",
+   "why": "the cheap currency here, and the one the kit and props packs were written to spend"
+  },
+  {
+   "id": "eval.avatar.meshes",
+   "what": "the avatar view, measured visible meshes",
+   "value": 46,
+   "unit": "visible meshes",
+   "tier": "MEASURED-IN-BROWSER",
+   "file": "web/eval_scene.mjs",
+   "locator": {
+    "kind": "regex",
+    "pattern": "avatar:\\s*\\{ calls: [\\d_]+, tris: [\\d_]+, meshes: ([\\d_]+)",
+    "group": 1,
+    "cast": "int"
+   },
+   "when": "2026-09-22",
+   "conditions": "Chromium/SwiftShader, 1280x800, quality rung `high`",
+   "method": "web/eval_scene.mjs drives the built page through each view in Playwright-driven Chromium, renders two frames so the counters belong to this view and not the last one, and reads renderer.info plus a walk of the visible scene graph",
+   "why": "a FLOOR rather than a ceiling: it asks whether enough separate things are standing in the view for it to read as a place"
+  },
   {
    "id": "eval.campus.calls",
    "what": "the campus view, measured draw calls",
@@ -206,6 +260,114 @@
    "locator": {
     "kind": "regex",
     "pattern": "region:\\s*\\{ calls: [\\d_]+, tris: [\\d_]+, meshes: ([\\d_]+)",
+    "group": 1,
+    "cast": "int"
+   },
+   "when": "2026-09-22",
+   "conditions": "Chromium/SwiftShader, 1280x800, quality rung `high`",
+   "method": "web/eval_scene.mjs drives the built page through each view in Playwright-driven Chromium, renders two frames so the counters belong to this view and not the last one, and reads renderer.info plus a walk of the visible scene graph",
+   "why": "a FLOOR rather than a ceiling: it asks whether enough separate things are standing in the view for it to read as a place"
+  },
+  {
+   "id": "eval.restoration.calls",
+   "what": "the restoration view, measured draw calls",
+   "value": 65,
+   "unit": "draw calls",
+   "tier": "MEASURED-IN-BROWSER",
+   "file": "web/eval_scene.mjs",
+   "locator": {
+    "kind": "regex",
+    "pattern": "restoration:\\s*\\{ calls: ([\\d_]+)",
+    "group": 1,
+    "cast": "int"
+   },
+   "when": "2026-09-22",
+   "conditions": "Chromium/SwiftShader, 1280x800, quality rung `high`",
+   "method": "web/eval_scene.mjs drives the built page through each view in Playwright-driven Chromium, renders two frames so the counters belong to this view and not the last one, and reads renderer.info plus a walk of the visible scene graph",
+   "why": "the scarce currency on this page: one per material per merged group, so it counts pieces of state rather than geometry"
+  },
+  {
+   "id": "eval.restoration.tris",
+   "what": "the restoration view, measured triangles",
+   "value": 946,
+   "unit": "triangles",
+   "tier": "MEASURED-IN-BROWSER",
+   "file": "web/eval_scene.mjs",
+   "locator": {
+    "kind": "regex",
+    "pattern": "restoration:\\s*\\{ calls: [\\d_]+, tris: ([\\d_]+)",
+    "group": 1,
+    "cast": "int"
+   },
+   "when": "2026-09-22",
+   "conditions": "Chromium/SwiftShader, 1280x800, quality rung `high`",
+   "method": "web/eval_scene.mjs drives the built page through each view in Playwright-driven Chromium, renders two frames so the counters belong to this view and not the last one, and reads renderer.info plus a walk of the visible scene graph",
+   "why": "the cheap currency here, and the one the kit and props packs were written to spend"
+  },
+  {
+   "id": "eval.restoration.meshes",
+   "what": "the restoration view, measured visible meshes",
+   "value": 81,
+   "unit": "visible meshes",
+   "tier": "MEASURED-IN-BROWSER",
+   "file": "web/eval_scene.mjs",
+   "locator": {
+    "kind": "regex",
+    "pattern": "restoration:\\s*\\{ calls: [\\d_]+, tris: [\\d_]+, meshes: ([\\d_]+)",
+    "group": 1,
+    "cast": "int"
+   },
+   "when": "2026-09-22",
+   "conditions": "Chromium/SwiftShader, 1280x800, quality rung `high`",
+   "method": "web/eval_scene.mjs drives the built page through each view in Playwright-driven Chromium, renders two frames so the counters belong to this view and not the last one, and reads renderer.info plus a walk of the visible scene graph",
+   "why": "a FLOOR rather than a ceiling: it asks whether enough separate things are standing in the view for it to read as a place"
+  },
+  {
+   "id": "eval.sim.calls",
+   "what": "the sim view, measured draw calls",
+   "value": 135,
+   "unit": "draw calls",
+   "tier": "MEASURED-IN-BROWSER",
+   "file": "web/eval_scene.mjs",
+   "locator": {
+    "kind": "regex",
+    "pattern": "sim:\\s*\\{ calls: ([\\d_]+)",
+    "group": 1,
+    "cast": "int"
+   },
+   "when": "2026-09-22",
+   "conditions": "Chromium/SwiftShader, 1280x800, quality rung `high`",
+   "method": "web/eval_scene.mjs drives the built page through each view in Playwright-driven Chromium, renders two frames so the counters belong to this view and not the last one, and reads renderer.info plus a walk of the visible scene graph",
+   "why": "the scarce currency on this page: one per material per merged group, so it counts pieces of state rather than geometry"
+  },
+  {
+   "id": "eval.sim.tris",
+   "what": "the sim view, measured triangles",
+   "value": 10890,
+   "unit": "triangles",
+   "tier": "MEASURED-IN-BROWSER",
+   "file": "web/eval_scene.mjs",
+   "locator": {
+    "kind": "regex",
+    "pattern": "sim:\\s*\\{ calls: [\\d_]+, tris: ([\\d_]+)",
+    "group": 1,
+    "cast": "int"
+   },
+   "when": "2026-09-22",
+   "conditions": "Chromium/SwiftShader, 1280x800, quality rung `high`",
+   "method": "web/eval_scene.mjs drives the built page through each view in Playwright-driven Chromium, renders two frames so the counters belong to this view and not the last one, and reads renderer.info plus a walk of the visible scene graph",
+   "why": "the cheap currency here, and the one the kit and props packs were written to spend"
+  },
+  {
+   "id": "eval.sim.meshes",
+   "what": "the sim view, measured visible meshes",
+   "value": 139,
+   "unit": "visible meshes",
+   "tier": "MEASURED-IN-BROWSER",
+   "file": "web/eval_scene.mjs",
+   "locator": {
+    "kind": "regex",
+    "pattern": "sim:\\s*\\{ calls: [\\d_]+, tris: [\\d_]+, meshes: ([\\d_]+)",
     "group": 1,
     "cast": "int"
    },
@@ -3005,11 +3167,11 @@
   {
    "id": "eval.views_scored",
    "question": "how many of the views the page can show have ever been scored in a browser",
-   "have": 3,
+   "have": 6,
    "of": 6,
    "unit": "views",
-   "share": 0.5,
-   "missing": 3,
+   "share": 1.0,
+   "missing": 0,
    "sources": [
     "web/build_3d.py",
     "web/eval_scene.mjs"
@@ -3139,6 +3301,17 @@
    "draw_calls": {
     "unit": "draw calls",
     "views": {
+     "avatar": {
+      "measured_baseline": 47,
+      "ceiling": 59,
+      "headroom": 12,
+      "claimed_by": {},
+      "allowance_by": {},
+      "claimed_total": 0,
+      "left": 12,
+      "left_share": 1.0,
+      "claims": {}
+     },
      "campus": {
       "measured_baseline": 273,
       "ceiling": 341,
@@ -3183,13 +3356,38 @@
       "left": 62,
       "left_share": 1.0,
       "claims": {}
+     },
+     "restoration": {
+      "measured_baseline": 65,
+      "ceiling": 81,
+      "headroom": 16,
+      "claimed_by": {},
+      "allowance_by": {},
+      "claimed_total": 0,
+      "left": 16,
+      "left_share": 1.0,
+      "claims": {}
+     },
+     "sim": {
+      "measured_baseline": 135,
+      "ceiling": 169,
+      "headroom": 34,
+      "claimed_by": {},
+      "allowance_by": {},
+      "claimed_total": 0,
+      "left": 34,
+      "left_share": 1.0,
+      "claims": {}
      }
     },
     "headroom_multiplier": 1.25,
     "baseline_share_of_ceiling": {
+     "avatar": 0.7966,
      "campus": 0.8006,
      "hall": 0.801,
-     "region": 0.8006
+     "region": 0.8006,
+     "restoration": 0.8025,
+     "sim": 0.7988
     },
     "scarce": true,
     "scarce_why": "web/eval_scene.mjs permits 1.25x the measured baseline in this currency against 4.0x in the other, so a view already stands at 80% of its own ceiling here before anything is added"
@@ -3197,6 +3395,17 @@
    "triangles": {
     "unit": "triangles",
     "views": {
+     "avatar": {
+      "measured_baseline": 9922,
+      "ceiling": 39688,
+      "headroom": 29766,
+      "claimed_by": {},
+      "allowance_by": {},
+      "claimed_total": 0,
+      "left": 29766,
+      "left_share": 1.0,
+      "claims": {}
+     },
      "campus": {
       "measured_baseline": 15850,
       "ceiling": 63400,
@@ -3241,13 +3450,38 @@
       "left": 13524,
       "left_share": 1.0,
       "claims": {}
+     },
+     "restoration": {
+      "measured_baseline": 946,
+      "ceiling": 3784,
+      "headroom": 2838,
+      "claimed_by": {},
+      "allowance_by": {},
+      "claimed_total": 0,
+      "left": 2838,
+      "left_share": 1.0,
+      "claims": {}
+     },
+     "sim": {
+      "measured_baseline": 10890,
+      "ceiling": 43560,
+      "headroom": 32670,
+      "claimed_by": {},
+      "allowance_by": {},
+      "claimed_total": 0,
+      "left": 32670,
+      "left_share": 1.0,
+      "claims": {}
      }
     },
     "headroom_multiplier": 4.0,
     "baseline_share_of_ceiling": {
+     "avatar": 0.25,
      "campus": 0.25,
      "hall": 0.25,
-     "region": 0.25
+     "region": 0.25,
+     "restoration": 0.25,
+     "sim": 0.25
     },
     "scarce": false,
     "scarce_why": "web/eval_scene.mjs permits 4.0x the measured baseline in this currency against 4.0x in the other, so a view already stands at 25% of its own ceiling here before anything is added"
@@ -3767,7 +4001,7 @@
    {
     "suite": "web/test_3d.mjs",
     "pack": "web",
-    "readme_checks": 309,
+    "readme_checks": 311,
     "declared": true,
     "in_readme_table": true
    },
@@ -3784,12 +4018,12 @@
   "suites_without_a_count": [
    "control/soak.mjs"
   ],
-  "declared_total": 3210,
-  "readme_headline": 3221,
+  "declared_total": 3212,
+  "readme_headline": 3223,
   "unaccounted_for": 11,
   "unaccounted_note": "the headline counts every `  ok ` line verify_all.sh sees, which includes suites the README table gives no number to and web/test_interiors.py, which the table does not list at all. The difference is that remainder and is computed, not reconciled by hand.",
   "min": 9,
-  "max": 309,
+  "max": 311,
   "median": 40.0,
   "thinnest": [
    {
@@ -3820,7 +4054,7 @@
   "thickest": [
    {
     "suite": "web/test_3d.mjs",
-    "checks": 309
+    "checks": 311
    },
    {
     "suite": "web/test_worksites.mjs",
