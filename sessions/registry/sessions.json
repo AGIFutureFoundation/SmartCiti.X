@@ -1,0 +1,270 @@
+{
+ "pack": "smartcitix-trade-craft-academy-sessions",
+ "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
+ "pack_version": "3.2.0",
+ "built": "2026-09-26",
+ "source_stamp": "ce6d57d59d759bcd",
+ "provenance": "DERIVED",
+ "provenance_note": "every fact here is read from the registry that owns it and re-derivable by build.py: the episode shapes from training/registry/training.json, the recording step kinds from lessons/registry/lessons.json, the fixture ids from sims/registry/sims.json. The gap is the ONE declared number. The fixture is SCRIPTED and labelled as not a learner",
+ "honesty": {
+  "reading": "a session is a reading of a device-local log: it attests time between recorded events on one browser, not attention, not presence at the keys, and nothing here is a certification",
+  "not_recorded": "a browser left open records nothing and a recorder switched off records nothing, so an idle session and an absent one look the same here: absent",
+  "seat_time": "training/registry/training.json#episode_kinds.sim.fields carries no duration (t, kind, campus, hall, sim, scenario, controls, actor, operator, outcome), so time at a seat cannot be summed; sim episodes are counted instead",
+  "no_step_done": "could_advance names step KINDS a session holds an episode for; whether any lesson step is done is completion/'s question and is decided there against the step's own reference",
+  "scripted": "a run whose actor is not human is counted as scripted_runs and credited to no seat, no pass and no streak: a SCRIPTED episode - actor scripted-reference - is a demonstration of a hand-written, deterministic control policy on a schematic single-machine simulator: driven from the seat's own gauges, no model behind it, no network reached, replayable from its own (level, seed, scenario) handle. Not a learned policy, not real equipment, and not a claim about any physical robot; not AI-SYNTHESIZED either, the word orbis/ keeps for generated video. It is kept through the same path, the same toggle and the same cap as a human episode, and it never credits the learner's own progress record.",
+  "device_local": "recorded to this browser's own storage, exactly like the progress record, and never uploaded automatically. Export and clear are both one click, both the learner's own.",
+  "schematic": "every episode comes from SCHEMATIC physics and deterministic rubrics, not a real robot or a real machine: useful for exercising a training pipeline's plumbing and export format, not for training a controller that will run on real equipment.",
+  "gap": "30 minutes is this pack's own choice, not a standard: a seat run here is a few minutes and an exchange is seconds, so half an hour of silence is long enough that a break, a re-read placard or a slow seat entry does not cut one sitting in two, and short enough that an evening and the next morning never merge. It is the ONE declared number in this pack; every other figure is computed from the log",
+  "order": "episodes are sorted by t (stable on recorded order) before splitting: the page appends in time order and its rolling cap drops only the oldest, so a log out of order was edited by hand and is sorted rather than trusted",
+  "fixture": "the fixture is SCRIPTED and labelled fixture - not a learner"
+ },
+ "gap": {
+  "ms": 1800000,
+  "minutes": 30,
+  "rule": "consecutive episodes in time order LESS than gap.ms apart belong to one session; a pair exactly gap.ms apart, or more, starts a new session",
+  "why": "30 minutes is this pack's own choice, not a standard: a seat run here is a few minutes and an exchange is seconds, so half an hour of silence is long enough that a break, a re-read placard or a slow seat entry does not cut one sitting in two, and short enough that an evening and the next morning never merge. It is the ONE declared number in this pack; every other figure is computed from the log",
+  "declared_by": "sessions/build.py, once; the progress page and the verifier READ it from this registry"
+ },
+ "definition": "a SESSION is a maximal run of episodes in time order where every consecutive pair is separated by less than gap.ms",
+ "source": {
+  "key": "tc-training",
+  "registry": "training/registry/training.json",
+  "where": "localStorage of the built 3D page",
+  "export_shape": "{ \"pack\": \"smartcitix-trade-craft-academy-training-data\", \"exported\": ISO-8601, \"episodes\": [episode, ...] }",
+  "contribution_shape": "tc-contribution/1, validated through contrib/verify.mjs first"
+ },
+ "episode_kinds": {
+  "sim": {
+   "fields": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "sim",
+    "scenario",
+    "controls",
+    "actor",
+    "operator",
+    "outcome"
+   ],
+   "what": "one completed simulator run"
+  },
+  "advisor": {
+   "fields": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "advisor",
+    "topic",
+    "answer_kind"
+   ],
+   "what": "one advisor question asked and answered"
+  },
+  "crew": {
+   "fields": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "crew",
+    "role",
+    "topic",
+    "answer_kind"
+   ],
+   "what": "one crew role asked one question while its seat was running"
+  },
+  "walkaround": {
+   "fields": [
+    "t",
+    "kind",
+    "campus",
+    "hall",
+    "sim",
+    "point"
+   ],
+   "what": "one pre-shift walkaround point checked"
+  }
+ },
+ "actors": {
+  "human": "a learner at the keys - the episode carries nothing new; consumers that ignore `actor` read it exactly as before",
+  "scripted-reference": "the scripted reference operator sims/ declares for every seat - a hand-written, deterministic control policy driven from the seat's own gauges, no model, no network; the episode also carries `operator: {level, seed, scenario}`, the handle that replays it"
+ },
+ "human_actor": "human",
+ "outcome": {
+  "keys_always": [
+   "passed",
+   "rows"
+  ],
+  "keys_optional": [
+   "trace"
+  ],
+  "row_keys": [
+   "axis",
+   "value",
+   "ok"
+  ],
+  "trace_sample_keys": [
+   "t",
+   "gauges"
+  ],
+  "trace_max_samples": 90,
+  "best_axis": "time",
+  "best_axis_from": "web/build_3d.py simResults reads rows.find((r) => r.axis === 'time') as a run's best; runs and best in tc-progress are that page's own tallies and are NOT read here - attempts, passes and best are recomputed from the episodes",
+  "from": "training/registry/training.json#episode_kinds.sim.outcome_shape"
+ },
+ "seat_time": {
+  "recordable": false,
+  "sim_fields": [
+   "t",
+   "kind",
+   "campus",
+   "hall",
+   "sim",
+   "scenario",
+   "controls",
+   "actor",
+   "operator",
+   "outcome"
+  ],
+  "why": "training/registry/training.json#episode_kinds.sim.fields carries no duration (t, kind, campus, hall, sim, scenario, controls, actor, operator, outcome), so time at a seat cannot be summed; sim episodes are counted instead"
+ },
+ "lesson_steps": {
+  "records": {
+   "walkaround": "walkaround",
+   "sim": "sim",
+   "advisor": "advisor",
+   "crew": "crew"
+  },
+  "silent": [
+   "crib",
+   "placard",
+   "station",
+   "walk"
+  ],
+  "from": "lessons/registry/lessons.json#step_kinds[kind].records",
+  "rule": "could_advance names step KINDS a session holds an episode for; whether any lesson step is done is completion/'s question and is decided there against the step's own reference"
+ },
+ "session_shape": {
+  "n": "1-based index in time order",
+  "start": "t of the first episode (the ISO string as recorded)",
+  "end": "t of the last episode",
+  "wall_ms": "end - start in ms: time between the first and last recorded event, not time at the keys",
+  "episodes": "episodes in the session",
+  "by_kind": "{kind: n} over training/registry/training.json#episode_kinds",
+  "halls": "hall slugs visited, sorted, unique",
+  "campuses": "campus ids visited, sorted, unique",
+  "seats": "{sim: {attempts, passes, best_time, scenarios: {scenario|\"(none)\": {attempts, passes, best_time}}}} over human sim episodes only; attempts = episodes, passes = outcome.passed true, best_time = the smallest numeric value of the 'time' rubric row among passed runs, or null when no passed run carries one",
+  "scripted_runs": "sim episodes whose actor is not human: counted apart, credited to no seat",
+  "walkaround_points": "distinct sim:point pairs marked",
+  "advisor_exchanges": "advisor episodes",
+  "crew_exchanges": "crew episodes",
+  "traces": "sim episodes carrying outcome.trace",
+  "samples": "trace samples across them",
+  "could_advance": "{lesson step kind: bool} for every step kind lessons.json says records an episode: true when the session holds at least one episode of that kind (a human seat run, for sim). By KIND only: nothing here matches a step's own reference, and no step is ever marked done here"
+ },
+ "rollup_shape": {
+  "sessions": "count",
+  "episodes": "count",
+  "by_kind": "{kind: n}",
+  "total_wall_ms": "sum of wall_ms over sessions",
+  "seat_time": {
+   "recordable": false,
+   "why": "training/registry/training.json#episode_kinds.sim.fields carries no duration (t, kind, campus, hall, sim, scenario, controls, actor, operator, outcome), so time at a seat cannot be summed; sim episodes are counted instead",
+   "sim_episodes": "count of sim episodes, every actor",
+   "traced_span_ms": "sum over traced episodes of last sample t minus first sample t: a LOWER bound on those runs only, at ~1 Hz, and nothing about untraced runs",
+   "scripted_sim_s": "sum of operator.steps x operator.dt over scripted-reference runs whose dt is a number: deterministic sim time of a headless reference run, never the learner's"
+  },
+  "seats": "{sim: {attempts, passes, pass_rate, best_time, longest_pass_streak, current_pass_streak}} over human sim episodes in time order across all sessions; pass_rate = passes / attempts",
+  "longest_session": "{n, wall_ms, episodes} of the session with the greatest wall_ms (the earliest on a tie), or null",
+  "traces": "count",
+  "samples": "count"
+ },
+ "function": {
+  "name": "sessionsOf",
+  "file": "sessions/verify.mjs",
+  "markers": [
+   "/* SESSIONS_OF:BEGIN",
+   "/* SESSIONS_OF:END */"
+  ],
+  "carried_into": "web/trade_craft_progress.html <script id=\"sessions-js\">, verbatim, by web/build_progress.py",
+  "signature": "sessionsOf(training, gapMs, humanActor, stepRecords, bestAxis)",
+  "page_reads_gap_from": "the embedded copy of this registry (D.sessions.gap.ms); the page JS types no gap"
+ },
+ "verifier": {
+  "file": "sessions/verify.mjs",
+  "usage": "node sessions/verify.mjs <tc-training.json | export.json | contribution.json>",
+  "rules": [
+   "input.shape",
+   "episode.t",
+   "episode.kind",
+   "episode.outcome",
+   "sessions.gap",
+   "sessions.claimed",
+   "rollups.claimed"
+  ],
+  "last_line": "sessions are a reading of a device-local log; they attest time between recorded events, not attention, and nothing here is a certification"
+ },
+ "fixture": {
+  "label": "fixture - not a learner",
+  "good": "fixture/log.json",
+  "mutants": {
+   "t-unparseable": {
+    "file": "fixture/mutant-t-unparseable.json",
+    "fails": "episode.t"
+   },
+   "unknown-kind": {
+    "file": "fixture/mutant-unknown-kind.json",
+    "fails": "episode.kind"
+   },
+   "outcome-missing-passed": {
+    "file": "fixture/mutant-outcome-missing-passed.json",
+    "fails": "episode.outcome"
+   },
+   "outcome-foreign-key": {
+    "file": "fixture/mutant-outcome-foreign-key.json",
+    "fails": "episode.outcome"
+   },
+   "trace-sample-foreign-key": {
+    "file": "fixture/mutant-trace-sample-foreign-key.json",
+    "fails": "episode.outcome"
+   },
+   "sessions-split-wrong-gap": {
+    "file": "fixture/mutant-sessions-split-wrong-gap.json",
+    "fails": "sessions.claimed"
+   },
+   "gap-not-the-registry": {
+    "file": "fixture/mutant-gap-not-the-registry.json",
+    "fails": "sessions.gap"
+   },
+   "typed-rollup": {
+    "file": "fixture/mutant-typed-rollup.json",
+    "fails": "rollups.claimed"
+   },
+   "typed-streak": {
+    "file": "fixture/mutant-typed-streak.json",
+    "fails": "rollups.claimed"
+   },
+   "wrong-pack": {
+    "file": "fixture/mutant-wrong-pack.json",
+    "fails": "input.shape"
+   }
+  },
+  "sessions": 3,
+  "episodes": 9,
+  "boundaries": {
+   "one_second_over": "session 1 -> 2: the pair is gap.ms + 1000 apart and splits",
+   "one_second_short": "inside session 2: a pair gap.ms - 1000 apart stays together",
+   "two_hours": "session 2 -> 3"
+  }
+ },
+ "counts": {
+  "episode_kinds": 4,
+  "recording_step_kinds": 4,
+  "silent_step_kinds": 4,
+  "rules": 7,
+  "mutants": 10,
+  "fixture_episodes": 9,
+  "fixture_sessions": 3
+ }
+}

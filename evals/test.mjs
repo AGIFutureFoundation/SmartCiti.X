@@ -494,9 +494,9 @@ const r4 = (x) => Math.round(x * 1e4) / 1e4;
   const n = (c) => Object.values(mine).filter((v) => v.cls === c).length;
   ok(at(r, 'fully_verifiable') === n('full') && at(r, 'partly_verifiable') === n('partial')
      && at(r, 'not_verifiable') === n('none')
-     && at(r, 'fully_verifiable') + at(r, 'partly_verifiable') + at(r, 'not_verifiable') === 32
-     && at(r, 'lessons') === 32 && at(L, 'counts.lessons') === 32,
-     `the three classes are recomputed and sum to 32 lessons (${n('full')} full, `
+     && at(r, 'fully_verifiable') + at(r, 'partly_verifiable') + at(r, 'not_verifiable') === Object.keys(at(L, 'lessons')).length
+     && at(r, 'lessons') === Object.keys(at(L, 'lessons')).length && at(L, 'counts.lessons') === Object.keys(at(L, 'lessons')).length,
+     `the three classes are recomputed and sum to the registry's ${Object.keys(at(L, 'lessons')).length} lessons (${n('full')} full, `
      + `${n('partial')} partial, ${n('none')} none)`);
   const hallsAll = J('pack/registry/halls.json').halls.map((h) => at(h, 'slug'));
   const hallsWith = new Set(Object.values(lessons).map((l) => at(l, 'hall')));

@@ -112,6 +112,49 @@ ok('[shipped] the layer legend is toggleable (checkbox per layer feeds svg.map[d
   && /\(!focus \|\| g\.dataset\[focus\] !== '0'\)/.test(js)
   && /svg\.map\[data-off~="lessons"\] \.lm\[data-layer="lessons"\]/.test(html));
 
+// ------------------------------------------------------- layer labels
+// The six training layers' prose labels come from the locale catalog
+// (map.layer.lessons .. map.layer.blocked), carried into the page as
+// I18N.layerLabels and read at render beside the registry field path -
+// never typed into the renderer, and never the bare key.
+const en = JSON.parse(readFileSync(join(ROOT, 'i18n', 'locales', 'en.json'), 'utf8')).strings;
+const LAYER_KEYS = ['lessons', 'seats', 'units', 'signoff', 'completable', 'blocked'];
+const i18nM = /const I18N = (\{[\s\S]*?\});\nconst fillTokens/.exec(js);
+let I18N = null;
+try { I18N = i18nM ? JSON.parse(i18nM[1]) : null; } catch { I18N = null; }
+ok('[shipped] I18N.layerLabels carries the six layer labels and each IS i18n/locales/en.json\'s map.layer.<k> verbatim',
+  I18N !== null && I18N.layerLabels !== undefined
+  && LAYER_KEYS.every((k) => typeof en[`map.layer.${k}`] === 'string' && en[`map.layer.${k}`].trim().length > 0
+    && I18N.layerLabels[k] === en[`map.layer.${k}`])
+  && canon(Object.keys(I18N.layerLabels).sort()) === canon([...LAYER_KEYS].sort()));
+ok('[shipped] every LAYERS entry takes its label from I18N.layerLabels.<k>, and the legend, the focus button and the hall panel row print L.label beside L.src',
+  LAYER_KEYS.every((k) => new RegExp(`\\b${k}: \\{ src: [^\\n]*label: I18N\\.layerLabels\\.${k},`).test(js))
+  && /<span class="lname">\$\{L\.label\}<code title="\$\{L\.src\}">\$\{L\.src\}<\/code><\/span>/.test(js)
+  && /<button class="lfocus" data-focus="\$\{k\}" aria-pressed="false">\$\{L\.label\}<\/button>/.test(js)
+  && /<span class="hp-k">\$\{LAYERS\[k\]\.label\}<code>\$\{LAYERS\[k\]\.src\}<\/code><\/span>/.test(js)
+  && /<span class="hp-k">\$\{I18N\.layerLabels\.signoff\}<code>\$\{DATA\.signoff\.rule\}<\/code><\/span>/.test(js));
+{
+  const jsNoI18n = i18nM ? js.replace(i18nM[1], ' ') : js;
+  const literal = LAYER_KEYS.map((k) => en[`map.layer.${k}`]).filter((v) => typeof v === 'string'
+    && (jsNoI18n.includes(`'${v}'`) || jsNoI18n.includes(`"${v}"`) || jsNoI18n.includes(`>${v}<`)));
+  ok('[shipped] no English literal stands in for a layer label: none of the six catalog values is typed in the renderer outside I18N, and no layer is labelled by its bare key any more',
+    I18N !== null && literal.length === 0 && !/aria-pressed="false">\$\{k\}<\/button>/.test(js));
+  if (literal.length) console.error('  typed: ' + literal.join(' | '));
+}
+{
+  const { readdirSync } = await import('node:fs');
+  const locDir = join(ROOT, 'i18n', 'locales');
+  const locales = readdirSync(locDir).filter((f) => f.endsWith('.json')).map((f) => f.replace(/\.json$/, ''));
+  const gaps = [];
+  for (const l of locales) {
+    const strings = JSON.parse(readFileSync(join(locDir, `${l}.json`), 'utf8')).strings;
+    for (const k of LAYER_KEYS) if (typeof strings[`map.layer.${k}`] !== 'string' || !strings[`map.layer.${k}`].trim()) gaps.push(`${l}: map.layer.${k}`);
+  }
+  ok(`[registry] every one of the ${locales.length} locale catalogs carries all six map.layer.<k> labels, non-empty`,
+    locales.length === 8 && gaps.length === 0);
+  if (gaps.length) console.error('  missing: ' + gaps.join(', '));
+}
+
 // ---------------------------------------------------- per-hall recompute
 const halls = reg(REGS.halls).halls;
 const L = reg(REGS.lessons), S = reg(REGS.sims), H = reg(REGS.schools), C = reg(REGS.completion);

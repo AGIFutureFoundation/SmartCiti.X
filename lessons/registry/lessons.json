@@ -2,8 +2,8 @@
  "pack": "smartcitix-trade-craft-academy-lessons",
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
- "built": "2026-09-20",
- "source_stamp": "55346d76c8991f31",
+ "built": "2026-09-26",
+ "source_stamp": "10bbfc7db819f370",
  "honesty": {
   "status": "AUTHORED: every lesson, every step order and every sentence in this pack was written here, by us. Nothing is generated, nothing is fetched and no model runs behind any of it. The word AI-SYNTHESIZED belongs to orbis/ and describes generated video; it would be a false label for a hand-written walk through a building.",
   "content": "unverified general practice. These lessons were written to be argued with, corrected and replaced by journey-level practitioners from the halls they name - the same standing the module pack, the recovered stations and the simulator seats already carry, and for the same reason: nobody who does this work for a living has reviewed a line of it yet.",
@@ -12,59 +12,64 @@
   "not_scored": "finishing a lesson changes no score and is read by no grader. Four of the eight step kinds write an episode to the existing device-local training log; the other four write nothing at all, and the registry says which is which rather than leaving it to be discovered.",
   "one_truth": "this pack holds no second copy of anything. Hall names, room labels, station names, seat names, scenario names, advisor names, crew role names and topic wordings are all read at build time from the registries that own them, and the test re-reads them the same way. A step that could not resolve its ids did not become a lesson with a footnote; it failed the build.",
   "no_jurisdiction": "nothing here cites a standard, a code or an authority, and nothing here speaks for one. Where a step says what a crew would do, that is unverified general practice and not an instruction from anybody with the standing to give one.",
-  "scope": "this is a small set deliberately spread thin: a couple of dozen lessons across a couple of dozen halls, out of 111 halls and 1,221 rooms. It demonstrates the shape a lesson takes in this bundle. It is not a curriculum, it does not cover a trade, and no hall is finished because one of its rooms now has a lesson standing in it."
+  "scope": "this is a set deliberately spread thin: 56 lessons across 51 halls, one in every one of the 45 halls a simulator seat is bound to, out of 111 halls and 1,221 rooms. It demonstrates the shape a lesson takes in this bundle. It is not a curriculum, it does not cover a trade, and no hall is finished because one of its rooms now has a lesson standing in it."
  },
  "counts": {
-  "lessons": 32,
-  "steps": 135,
+  "lessons": 56,
+  "steps": 256,
   "step_kinds": 8,
   "steps_by_kind": {
-   "advisor": 30,
-   "crew": 8,
-   "crib": 9,
-   "placard": 15,
-   "sim": 10,
+   "advisor": 49,
+   "crew": 23,
+   "crib": 12,
+   "placard": 29,
+   "sim": 31,
    "station": 12,
-   "walk": 34,
-   "walkaround": 17
+   "walk": 58,
+   "walkaround": 42
   },
-  "recording_steps": 65,
-  "silent_steps": 70,
+  "recording_steps": 145,
+  "silent_steps": 111,
   "episodes_by_kind": {
-   "advisor": 30,
-   "crew": 8,
-   "sim": 10,
-   "walkaround": 17
+   "advisor": 49,
+   "crew": 23,
+   "sim": 31,
+   "walkaround": 42
   },
   "episode_kinds_used": 4,
   "episode_kinds_declared": 4,
   "new_episode_kinds": 0,
-  "halls_covered": 27,
+  "halls_covered": 51,
   "halls_total": 111,
   "strands_covered": 11,
   "strands_total": 11,
-  "rooms_stood_in": 32,
+  "rooms_stood_in": 56,
   "campuses_covered": 3,
   "max_lessons_in_one_hall": 2,
   "stations_used": 12,
   "stations_total": 25,
-  "sims_used": 10,
+  "sims_used": 11,
   "sims_total": 11,
-  "scenarios_used": 10,
+  "scenarios_used": 16,
   "scenarios_total": 33,
-  "walkaround_points_used": 17,
+  "walkaround_points_used": 34,
   "walkaround_points_total": 55,
   "advisors_used": 7,
-  "advisor_topics_used": 18,
+  "advisor_topics_used": 20,
   "crews_used": 6,
-  "crew_roles_used": 8,
+  "crew_roles_used": 19,
   "cribs_used": 5,
-  "prerequisite_edges": 16,
-  "ladder_roots": 16,
-  "ladder_depth": 3,
-  "ladder_layers": 3,
+  "prerequisite_edges": 40,
+  "ladder_roots": 17,
+  "ladder_depth": 5,
+  "ladder_layers": 5,
   "edge_reasons": 3,
-  "files_read": 7
+  "files_read": 7,
+  "seat_bound_halls": 45,
+  "seat_bound_halls_with_a_lesson": 45,
+  "hazard_rooms_walked": 14,
+  "hazard_room_placard_gaps": 0,
+  "placard_steps": 29
  },
  "spread": {
   "halls": [
@@ -72,29 +77,53 @@
    "bricklayers",
    "carpenters",
    "cement-masons",
+   "cladding",
    "crane-ops",
+   "curtainwall",
+   "decking",
    "demolition",
    "electricians",
+   "fabricators",
    "fiber-splicers",
+   "firestop",
+   "foundry",
    "glaziers",
    "hazmat",
+   "heavy-equip",
    "hvacr",
+   "insulators",
    "ironworkers",
+   "laborers",
    "lathers",
    "line-workers",
+   "machinists",
+   "marine-pipe",
+   "marine-terminal",
    "masonry-restore",
    "millwrights",
    "operating-eng",
    "painters",
+   "piling",
+   "pipeline",
+   "plasterers",
+   "port-crane",
    "refractory",
    "riggers",
+   "roofers",
    "scaffold",
+   "sheetmetal",
+   "shipfitters",
+   "shoring",
    "site-safety",
+   "steel-erectors",
    "stone-carvers",
    "surveyors",
+   "tank-erectors",
+   "teamsters",
    "tilesetters",
    "waterproofers",
-   "welders"
+   "welders",
+   "window-glazing"
   ],
   "strands": [
    "coordination",
@@ -109,8 +138,55 @@
    "tools",
    "troubleshooting"
   ],
-  "max_hall_share": 0.0625,
+  "max_hall_share": 0.03571428571428571,
   "max_hall_share_ceiling": 0.1,
+  "seat_bound_halls": [
+   "boilermakers",
+   "bricklayers",
+   "carpenters",
+   "cement-masons",
+   "cladding",
+   "crane-ops",
+   "curtainwall",
+   "decking",
+   "demolition",
+   "electricians",
+   "fabricators",
+   "firestop",
+   "foundry",
+   "glaziers",
+   "hazmat",
+   "heavy-equip",
+   "insulators",
+   "ironworkers",
+   "laborers",
+   "lathers",
+   "machinists",
+   "marine-pipe",
+   "marine-terminal",
+   "masonry-restore",
+   "millwrights",
+   "operating-eng",
+   "painters",
+   "piling",
+   "pipeline",
+   "plasterers",
+   "port-crane",
+   "refractory",
+   "riggers",
+   "roofers",
+   "scaffold",
+   "sheetmetal",
+   "shipfitters",
+   "shoring",
+   "steel-erectors",
+   "stone-carvers",
+   "tank-erectors",
+   "teamsters",
+   "waterproofers",
+   "welders",
+   "window-glazing"
+  ],
   "note": "breadth over the trades rather than depth in one: the ceiling is declared, computed and failed against, and all 11 strands must be stood in or the build stops."
  },
  "step_kinds": {
@@ -226,20 +302,6 @@
     },
     {
      "n": 2,
-     "kind": "placard",
-     "records": null,
-     "stage": "class",
-     "reads": "surfaces/registry/finishes.json",
-     "note": "The sign at the door is the room own condition record; read it before you decide what you are wearing is enough.",
-     "where": "coordination",
-     "do": "Read the door placard of the Briefing Room: it states the light, air, noise and protective equipment that room is held to.",
-     "label_kind": "placard",
-     "names_read": [
-      "Briefing Room"
-     ]
-    },
-    {
-     "n": 3,
      "kind": "advisor",
      "records": "advisor",
      "stage": "class",
@@ -257,7 +319,7 @@
      ]
     },
     {
-     "n": 4,
+     "n": 3,
      "kind": "walkaround",
      "records": "walkaround",
      "stage": "floor",
@@ -273,7 +335,7 @@
      ]
     },
     {
-     "n": 5,
+     "n": 4,
      "kind": "sim",
      "records": "sim",
      "stage": "floor",
@@ -302,7 +364,6 @@
    "reads": [
     "agents/registry/advisors.json",
     "sims/registry/sims.json",
-    "surfaces/registry/finishes.json",
     "web/interiors.py"
    ],
    "provenance": {
@@ -312,7 +373,12 @@
     "why": "AUTHORED",
     "limits": "AUTHORED",
     "names": "READ"
-   }
+   },
+   "rooms_walked": [
+    "coordination"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": []
   },
   "riggers-carry-under-control": {
    "id": "riggers-carry-under-control",
@@ -435,7 +501,12 @@
     "why": "AUTHORED",
     "limits": "AUTHORED",
     "names": "READ"
-   }
+   },
+   "rooms_walked": [
+    "machines"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": []
   },
   "crane-ops-read-the-chart": {
    "id": "crane-ops-read-the-chart",
@@ -535,7 +606,12 @@
     "why": "AUTHORED",
     "limits": "AUTHORED",
     "names": "READ"
-   }
+   },
+   "rooms_walked": [
+    "machines"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": []
   },
   "ironworkers-plan-out-loud": {
    "id": "ironworkers-plan-out-loud",
@@ -565,20 +641,6 @@
     },
     {
      "n": 2,
-     "kind": "placard",
-     "records": null,
-     "stage": "class",
-     "reads": "surfaces/registry/finishes.json",
-     "note": "Read what the room is held to; it is a short sign and it is the only one that binds you.",
-     "where": "coordination",
-     "do": "Read the door placard of the Briefing Room: it states the light, air, noise and protective equipment that room is held to.",
-     "label_kind": "placard",
-     "names_read": [
-      "Briefing Room"
-     ]
-    },
-    {
-     "n": 3,
      "kind": "walkaround",
      "records": "walkaround",
      "stage": "floor",
@@ -594,7 +656,7 @@
      ]
     },
     {
-     "n": 4,
+     "n": 3,
      "kind": "crew",
      "records": "crew",
      "stage": "floor",
@@ -615,7 +677,7 @@
      ]
     },
     {
-     "n": 5,
+     "n": 4,
      "kind": "advisor",
      "records": "advisor",
      "stage": "class",
@@ -646,7 +708,6 @@
     "agents/registry/advisors.json",
     "agents/registry/crews.json",
     "sims/registry/sims.json",
-    "surfaces/registry/finishes.json",
     "web/interiors.py"
    ],
    "provenance": {
@@ -656,7 +717,12 @@
     "why": "AUTHORED",
     "limits": "AUTHORED",
     "names": "READ"
-   }
+   },
+   "rooms_walked": [
+    "coordination"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": []
   },
   "millwrights-shop-move": {
    "id": "millwrights-shop-move",
@@ -686,6 +752,20 @@
     },
     {
      "n": 2,
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Read what the bay is held to before the load moves; the sign at the door is the room condition record.",
+     "where": "machines",
+     "do": "Read the door placard of the Equipment Bay: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Equipment Bay"
+     ]
+    },
+    {
+     "n": 3,
      "kind": "walkaround",
      "records": "walkaround",
      "stage": "floor",
@@ -701,7 +781,7 @@
      ]
     },
     {
-     "n": 3,
+     "n": 4,
      "kind": "sim",
      "records": "sim",
      "stage": "floor",
@@ -718,7 +798,7 @@
      ]
     },
     {
-     "n": 4,
+     "n": 5,
      "kind": "advisor",
      "records": "advisor",
      "stage": "class",
@@ -748,6 +828,7 @@
    "reads": [
     "agents/registry/advisors.json",
     "sims/registry/sims.json",
+    "surfaces/registry/finishes.json",
     "web/interiors.py"
    ],
    "provenance": {
@@ -757,7 +838,17 @@
     "why": "AUTHORED",
     "limits": "AUTHORED",
     "names": "READ"
-   }
+   },
+   "rooms_walked": [
+    "inspection",
+    "machines"
+   ],
+   "hazard_rooms_walked": [
+    "machines"
+   ],
+   "placard_steps_in": [
+    "machines"
+   ]
   },
   "welders-the-watch": {
    "id": "welders-the-watch",
@@ -878,7 +969,14 @@
     "why": "AUTHORED",
     "limits": "AUTHORED",
     "names": "READ"
-   }
+   },
+   "rooms_walked": [
+    "safety"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": [
+    "safety"
+   ]
   },
   "boilermakers-get-them-out": {
    "id": "boilermakers-get-them-out",
@@ -908,6 +1006,20 @@
     },
     {
      "n": 2,
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Read what the floor is held to before anybody goes near the hole; the door sign binds the entrant too.",
+     "where": "procedure",
+     "do": "Read the door placard of the Practice Bays: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Practice Bays"
+     ]
+    },
+    {
+     "n": 3,
      "kind": "walkaround",
      "records": "walkaround",
      "stage": "floor",
@@ -923,7 +1035,7 @@
      ]
     },
     {
-     "n": 3,
+     "n": 4,
      "kind": "crew",
      "records": "crew",
      "stage": "floor",
@@ -944,7 +1056,7 @@
      ]
     },
     {
-     "n": 4,
+     "n": 5,
      "kind": "advisor",
      "records": "advisor",
      "stage": "class",
@@ -975,6 +1087,7 @@
     "agents/registry/advisors.json",
     "agents/registry/crews.json",
     "sims/registry/sims.json",
+    "surfaces/registry/finishes.json",
     "web/interiors.py"
    ],
    "provenance": {
@@ -984,7 +1097,17 @@
     "why": "AUTHORED",
     "limits": "AUTHORED",
     "names": "READ"
-   }
+   },
+   "rooms_walked": [
+    "procedure",
+    "safety"
+   ],
+   "hazard_rooms_walked": [
+    "procedure"
+   ],
+   "placard_steps_in": [
+    "procedure"
+   ]
   },
   "operating-eng-locate-first": {
    "id": "operating-eng-locate-first",
@@ -1108,7 +1231,12 @@
     "why": "AUTHORED",
     "limits": "AUTHORED",
     "names": "READ"
-   }
+   },
+   "rooms_walked": [
+    "layout"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": []
   },
   "demolition-stand-back": {
    "id": "demolition-stand-back",
@@ -1206,7 +1334,14 @@
     "why": "AUTHORED",
     "limits": "AUTHORED",
     "names": "READ"
-   }
+   },
+   "rooms_walked": [
+    "safety"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": [
+    "safety"
+   ]
   },
   "scaffold-read-the-tag": {
    "id": "scaffold-read-the-tag",
@@ -1236,6 +1371,20 @@
     },
     {
      "n": 2,
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Read the line at the door before the bench; the room record is the first tag you believe or do not.",
+     "where": "safety",
+     "do": "Read the door placard of the Induction & PPE: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Induction & PPE"
+     ]
+    },
+    {
+     "n": 3,
      "kind": "station",
      "records": null,
      "stage": "class",
@@ -1250,7 +1399,7 @@
      ]
     },
     {
-     "n": 3,
+     "n": 4,
      "kind": "walkaround",
      "records": "walkaround",
      "stage": "floor",
@@ -1266,7 +1415,7 @@
      ]
     },
     {
-     "n": 4,
+     "n": 5,
      "kind": "advisor",
      "records": "advisor",
      "stage": "class",
@@ -1296,6 +1445,7 @@
     "agents/registry/advisors.json",
     "sims/registry/sims.json",
     "stations/registry/stations.json",
+    "surfaces/registry/finishes.json",
     "web/interiors.py"
    ],
    "provenance": {
@@ -1305,7 +1455,16 @@
     "why": "AUTHORED",
     "limits": "AUTHORED",
     "names": "READ"
-   }
+   },
+   "rooms_walked": [
+    "safety"
+   ],
+   "hazard_rooms_walked": [
+    "safety"
+   ],
+   "placard_steps_in": [
+    "safety"
+   ]
   },
   "scaffold-build-in-order": {
    "id": "scaffold-build-in-order",
@@ -1424,7 +1583,14 @@
     "why": "AUTHORED",
     "limits": "AUTHORED",
     "names": "READ"
-   }
+   },
+   "rooms_walked": [
+    "materials"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": [
+    "materials"
+   ]
   },
   "waterproofers-flash-it-right": {
    "id": "waterproofers-flash-it-right",
@@ -1523,7 +1689,13 @@
     "why": "AUTHORED",
     "limits": "AUTHORED",
     "names": "READ"
-   }
+   },
+   "rooms_walked": [
+    "inspection",
+    "procedure"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": []
   },
   "bricklayers-gear-that-stays-on": {
    "id": "bricklayers-gear-that-stays-on",
@@ -1618,7 +1790,14 @@
     "why": "AUTHORED",
     "limits": "AUTHORED",
     "names": "READ"
-   }
+   },
+   "rooms_walked": [
+    "safety"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": [
+    "safety"
+   ]
   },
   "bricklayers-grout-the-lift": {
    "id": "bricklayers-grout-the-lift",
@@ -1648,6 +1827,20 @@
     },
     {
      "n": 2,
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Read what the floor is held to before the first course goes down; the sign is the record, not a suggestion.",
+     "where": "procedure",
+     "do": "Read the door placard of the Practice Bays: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Practice Bays"
+     ]
+    },
+    {
+     "n": 3,
      "kind": "station",
      "records": null,
      "stage": "class",
@@ -1662,7 +1855,7 @@
      ]
     },
     {
-     "n": 3,
+     "n": 4,
      "kind": "advisor",
      "records": "advisor",
      "stage": "class",
@@ -1689,6 +1882,7 @@
    "reads": [
     "agents/registry/advisors.json",
     "stations/registry/stations.json",
+    "surfaces/registry/finishes.json",
     "web/interiors.py"
    ],
    "provenance": {
@@ -1698,7 +1892,17 @@
     "why": "AUTHORED",
     "limits": "AUTHORED",
     "names": "READ"
-   }
+   },
+   "rooms_walked": [
+    "inspection",
+    "procedure"
+   ],
+   "hazard_rooms_walked": [
+    "procedure"
+   ],
+   "placard_steps_in": [
+    "procedure"
+   ]
   },
   "cement-masons-mind-the-weather": {
    "id": "cement-masons-mind-the-weather",
@@ -1823,7 +2027,16 @@
     "why": "AUTHORED",
     "limits": "AUTHORED",
     "names": "READ"
-   }
+   },
+   "rooms_walked": [
+    "inspection",
+    "materials",
+    "tools"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": [
+    "materials"
+   ]
   },
   "stone-carvers-hang-it-safely": {
    "id": "stone-carvers-hang-it-safely",
@@ -1903,7 +2116,13 @@
     "why": "AUTHORED",
     "limits": "AUTHORED",
     "names": "READ"
-   }
+   },
+   "rooms_walked": [
+    "inspection",
+    "materials"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": []
   },
   "tilesetters-start-underneath": {
    "id": "tilesetters-start-underneath",
@@ -2000,7 +2219,14 @@
     "why": "AUTHORED",
     "limits": "AUTHORED",
     "names": "READ"
-   }
+   },
+   "rooms_walked": [
+    "inspection",
+    "procedure",
+    "tools"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": []
   },
   "lathers-frame-for-the-next-trade": {
    "id": "lathers-frame-for-the-next-trade",
@@ -2097,7 +2323,13 @@
     "why": "AUTHORED",
     "limits": "AUTHORED",
     "names": "READ"
-   }
+   },
+   "rooms_walked": [
+    "procedure",
+    "tools"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": []
   },
   "restore-point-the-joint": {
    "id": "restore-point-the-joint",
@@ -2194,7 +2426,12 @@
     "why": "AUTHORED",
     "limits": "AUTHORED",
     "names": "READ"
-   }
+   },
+   "rooms_walked": [
+    "tools"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": []
   },
   "restore-write-it-down": {
    "id": "restore-write-it-down",
@@ -2274,7 +2511,12 @@
     "why": "AUTHORED",
     "limits": "AUTHORED",
     "names": "READ"
-   }
+   },
+   "rooms_walked": [
+    "documentation"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": []
   },
   "refractory-dry-it-slowly": {
    "id": "refractory-dry-it-slowly",
@@ -2304,6 +2546,20 @@
     },
     {
      "n": 2,
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Read what the floor is held to before the mock-up is lit; heat changes what the room requires of you.",
+     "where": "procedure",
+     "do": "Read the door placard of the Practice Bays: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Practice Bays"
+     ]
+    },
+    {
+     "n": 3,
      "kind": "station",
      "records": null,
      "stage": "class",
@@ -2318,7 +2574,7 @@
      ]
     },
     {
-     "n": 3,
+     "n": 4,
      "kind": "crib",
      "records": null,
      "stage": "class",
@@ -2334,7 +2590,7 @@
      ]
     },
     {
-     "n": 4,
+     "n": 5,
      "kind": "advisor",
      "records": "advisor",
      "stage": "class",
@@ -2361,6 +2617,7 @@
    "reads": [
     "agents/registry/advisors.json",
     "stations/registry/stations.json",
+    "surfaces/registry/finishes.json",
     "tools/registry/toolcribs.json",
     "web/interiors.py"
    ],
@@ -2371,7 +2628,18 @@
     "why": "AUTHORED",
     "limits": "AUTHORED",
     "names": "READ"
-   }
+   },
+   "rooms_walked": [
+    "inspection",
+    "procedure",
+    "tools"
+   ],
+   "hazard_rooms_walked": [
+    "procedure"
+   ],
+   "placard_steps_in": [
+    "procedure"
+   ]
   },
   "painters-contain-it": {
    "id": "painters-contain-it",
@@ -2487,7 +2755,14 @@
     "why": "AUTHORED",
     "limits": "AUTHORED",
     "names": "READ"
-   }
+   },
+   "rooms_walked": [
+    "safety"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": [
+    "safety"
+   ]
   },
   "painters-lay-the-coat": {
    "id": "painters-lay-the-coat",
@@ -2517,6 +2792,20 @@
     },
     {
      "n": 2,
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Read what the floor is held to before the gun is even primed; atomised coating changes what the room requires.",
+     "where": "procedure",
+     "do": "Read the door placard of the Practice Bays: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Practice Bays"
+     ]
+    },
+    {
+     "n": 3,
      "kind": "walkaround",
      "records": "walkaround",
      "stage": "floor",
@@ -2532,7 +2821,7 @@
      ]
     },
     {
-     "n": 3,
+     "n": 4,
      "kind": "sim",
      "records": "sim",
      "stage": "floor",
@@ -2559,6 +2848,7 @@
    ],
    "reads": [
     "sims/registry/sims.json",
+    "surfaces/registry/finishes.json",
     "web/interiors.py"
    ],
    "provenance": {
@@ -2568,7 +2858,16 @@
     "why": "AUTHORED",
     "limits": "AUTHORED",
     "names": "READ"
-   }
+   },
+   "rooms_walked": [
+    "procedure"
+   ],
+   "hazard_rooms_walked": [
+    "procedure"
+   ],
+   "placard_steps_in": [
+    "procedure"
+   ]
   },
   "hazmat-wash-and-decon": {
    "id": "hazmat-wash-and-decon",
@@ -2684,7 +2983,14 @@
     "why": "AUTHORED",
     "limits": "AUTHORED",
     "names": "READ"
-   }
+   },
+   "rooms_walked": [
+    "safety"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": [
+    "safety"
+   ]
   },
   "electricians-clip-in-first": {
    "id": "electricians-clip-in-first",
@@ -2788,7 +3094,12 @@
     "why": "AUTHORED",
     "limits": "AUTHORED",
     "names": "READ"
-   }
+   },
+   "rooms_walked": [
+    "machines"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": []
   },
   "glaziers-watch-the-line": {
    "id": "glaziers-watch-the-line",
@@ -2889,7 +3200,14 @@
     "why": "AUTHORED",
     "limits": "AUTHORED",
     "names": "READ"
-   }
+   },
+   "rooms_walked": [
+    "inspection"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": [
+    "inspection"
+   ]
   },
   "site-safety-make-it-normal": {
    "id": "site-safety-make-it-normal",
@@ -2969,7 +3287,13 @@
     "why": "AUTHORED",
     "limits": "AUTHORED",
     "names": "READ"
-   }
+   },
+   "rooms_walked": [
+    "coordination",
+    "leadership"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": []
   },
   "surveyors-trust-the-control": {
    "id": "surveyors-trust-the-control",
@@ -3083,7 +3407,15 @@
     "why": "AUTHORED",
     "limits": "AUTHORED",
     "names": "READ"
-   }
+   },
+   "rooms_walked": [
+    "layout",
+    "tools"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": [
+    "layout"
+   ]
   },
   "line-workers-find-the-fault": {
    "id": "line-workers-find-the-fault",
@@ -3192,7 +3524,18 @@
     "why": "AUTHORED",
     "limits": "AUTHORED",
     "names": "READ"
-   }
+   },
+   "rooms_walked": [
+    "inspection",
+    "tools",
+    "troubleshooting"
+   ],
+   "hazard_rooms_walked": [
+    "troubleshooting"
+   ],
+   "placard_steps_in": [
+    "troubleshooting"
+   ]
   },
   "hvacr-prove-the-sequence": {
    "id": "hvacr-prove-the-sequence",
@@ -3288,7 +3631,15 @@
     "why": "AUTHORED",
     "limits": "AUTHORED",
     "names": "READ"
-   }
+   },
+   "rooms_walked": [
+    "inspection",
+    "tools"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": [
+    "inspection"
+   ]
   },
   "fiber-splicers-keep-the-trace": {
    "id": "fiber-splicers-keep-the-trace",
@@ -3318,20 +3669,6 @@
     },
     {
      "n": 2,
-     "kind": "placard",
-     "records": null,
-     "stage": "class",
-     "reads": "surfaces/registry/finishes.json",
-     "note": "Read the room record; this is a clean room in spirit even when it is not one on paper.",
-     "where": "documentation",
-     "do": "Read the door placard of the Records: it states the light, air, noise and protective equipment that room is held to.",
-     "label_kind": "placard",
-     "names_read": [
-      "Records"
-     ]
-    },
-    {
-     "n": 3,
      "kind": "advisor",
      "records": "advisor",
      "stage": "class",
@@ -3349,7 +3686,7 @@
      ]
     },
     {
-     "n": 4,
+     "n": 3,
      "kind": "advisor",
      "records": "advisor",
      "stage": "class",
@@ -3375,7 +3712,6 @@
    ],
    "reads": [
     "agents/registry/advisors.json",
-    "surfaces/registry/finishes.json",
     "web/interiors.py"
    ],
    "provenance": {
@@ -3385,7 +3721,12 @@
     "why": "AUTHORED",
     "limits": "AUTHORED",
     "names": "READ"
-   }
+   },
+   "rooms_walked": [
+    "documentation"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": []
   },
   "carpenters-return-it-the-same": {
    "id": "carpenters-return-it-the-same",
@@ -3481,7 +3822,3017 @@
     "why": "AUTHORED",
     "limits": "AUTHORED",
     "names": "READ"
-   }
+   },
+   "rooms_walked": [
+    "tools"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": [
+    "tools"
+   ]
+  },
+  "steel-erectors-land-it-on-the-bolts": {
+   "id": "steel-erectors-land-it-on-the-bolts",
+   "hall": "steel-erectors",
+   "hall_name": "Steel Erectors",
+   "campus": "treasure-island",
+   "strand": "procedure",
+   "tier": "applied",
+   "skill_id": "steel-erectors.procedure.applied",
+   "room_label": "Practice Bays",
+   "title": "Land the piece where the bolts can go in",
+   "why": "A beam that arrives fast and slightly wrong costs more than one that arrives slowly and lands on its holes.",
+   "limits": "Finishing this is not connection training, not a rigging qualification and not a lift plan; the steel here is schematic, no bolt has been torqued, and no employer or hall has signed anything on the strength of it.",
+   "steps": [
+    {
+     "n": 1,
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "The floor is where the piece is landed badly a few times before it is landed once on its holes.",
+     "where": "procedure",
+     "do": "Walk to the Practice Bays \u2014 the floor the trade is actually learned on.",
+     "names_read": [
+      "Practice Bays"
+     ]
+    },
+    {
+     "n": 2,
+     "kind": "walkaround",
+     "records": "walkaround",
+     "stage": "floor",
+     "reads": "sims/registry/sims.json",
+     "note": "A trip that has never been tested is a promise, and the steel does not take promises.",
+     "where": "yard",
+     "sim": "crane-lift",
+     "point": "limits",
+     "do": "Walk the Tower Crane Lift seat and mark the point \"Limit switches\": hoist and trolley limits trip before the steel does.",
+     "names_read": [
+      "Tower Crane Lift",
+      "Limit switches"
+     ]
+    },
+    {
+     "n": 3,
+     "kind": "crew",
+     "records": "crew",
+     "stage": "floor",
+     "reads": "agents/registry/crews.json",
+     "note": "Ask for the sequence out loud, because the sequence is the part that gets improvised under a deadline.",
+     "where": "yard",
+     "crew": "crane-lift-crew",
+     "role": "signalperson",
+     "topic": "procedure",
+     "seat": "crane-lift",
+     "muster": "coordination",
+     "answer_kind": "read",
+     "do": "With the seat running, ask the Crane lift crew's Signalperson: \"What order does this lift run in?\"",
+     "names_read": [
+      "Crane lift crew",
+      "Signalperson",
+      "What order does this lift run in?"
+     ]
+    },
+    {
+     "n": 4,
+     "kind": "sim",
+     "records": "sim",
+     "stage": "floor",
+     "reads": "sims/registry/sims.json",
+     "note": "Bring it in slowly enough that the last foot is a decision rather than an event.",
+     "where": "yard",
+     "sim": "crane-lift",
+     "scenario": "bay-steel",
+     "campus": "treasure-island",
+     "do": "Run the Tower Crane Lift seat on the Bay high-steel lift scenario.",
+     "names_read": [
+      "Tower Crane Lift",
+      "Bay high-steel lift"
+     ]
+    },
+    {
+     "n": 5,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what a good hand-off looks like, because the next connection starts with this one.",
+     "where": "coordination",
+     "advisor": "foreman",
+     "topic": "handoff",
+     "answer_kind": "say",
+     "do": "Ask the Foreman in the Briefing Room: \"What makes a hand-off good?\"",
+     "names_read": [
+      "Briefing Room",
+      "Foreman",
+      "What makes a hand-off good?"
+     ]
+    }
+   ],
+   "records": [
+    "advisor",
+    "crew",
+    "sim",
+    "walkaround"
+   ],
+   "stages": [
+    "class",
+    "floor"
+   ],
+   "reads": [
+    "agents/registry/advisors.json",
+    "agents/registry/crews.json",
+    "sims/registry/sims.json",
+    "web/interiors.py"
+   ],
+   "provenance": {
+    "steps": "AUTHORED",
+    "order": "AUTHORED",
+    "title": "AUTHORED",
+    "why": "AUTHORED",
+    "limits": "AUTHORED",
+    "names": "READ"
+   },
+   "rooms_walked": [
+    "coordination",
+    "procedure"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": []
+  },
+  "port-crane-read-the-rope": {
+   "id": "port-crane-read-the-rope",
+   "hall": "port-crane",
+   "hall_name": "Port Crane Technicians",
+   "campus": "oakland",
+   "strand": "machines",
+   "tier": "applied",
+   "skill_id": "port-crane.machines.applied",
+   "room_label": "Equipment Bay",
+   "title": "Read the rope before the box goes up",
+   "why": "A quay crane lives or dies on its ropes and the person who looked at them last, and the seat is where looking becomes a habit.",
+   "limits": "Finishing this is not crane technician standing and not a rope inspection anybody may act on; the machine here is schematic, the wire is drawn rather than run, and nothing recorded is read by any authority.",
+   "steps": [
+    {
+     "n": 1,
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Plant is checked out to a training area here, so the first look at the machine is taken in this bay.",
+     "where": "machines",
+     "do": "Walk to the Equipment Bay \u2014 plant checked out to a training area.",
+     "names_read": [
+      "Equipment Bay"
+     ]
+    },
+    {
+     "n": 2,
+     "kind": "walkaround",
+     "records": "walkaround",
+     "stage": "floor",
+     "reads": "sims/registry/sims.json",
+     "note": "Broken wires are counted, not glanced at, and a kink is a reason to stop rather than a note.",
+     "where": "yard",
+     "sim": "overhead-crane",
+     "point": "rope",
+     "do": "Walk the Overhead Crane Shop Move seat and mark the point \"Wire rope and sheaves\": no broken wires, kinks or crushed strands, rope seated in every sheave groove.",
+     "names_read": [
+      "Overhead Crane Shop Move",
+      "Wire rope and sheaves"
+     ]
+    },
+    {
+     "n": 3,
+     "kind": "walkaround",
+     "records": "walkaround",
+     "stage": "floor",
+     "reads": "sims/registry/sims.json",
+     "note": "The second machine gets the same look as the first; the habit is the point, not the machine.",
+     "where": "yard",
+     "sim": "crane-lift",
+     "point": "rope",
+     "do": "Walk the Tower Crane Lift seat and mark the point \"Hoist rope and hook\": no broken wires or kinks, and the safety latch closes.",
+     "names_read": [
+      "Tower Crane Lift",
+      "Hoist rope and hook"
+     ]
+    },
+    {
+     "n": 4,
+     "kind": "crew",
+     "records": "crew",
+     "stage": "floor",
+     "reads": "agents/registry/crews.json",
+     "note": "Ask what the dash is showing, because a number you cannot explain is a number you are ignoring.",
+     "where": "yard",
+     "crew": "crane-lift-crew",
+     "role": "crane-operator",
+     "topic": "gauges",
+     "seat": "crane-lift",
+     "muster": "coordination",
+     "answer_kind": "read",
+     "do": "With the seat running, ask the Crane lift crew's Crane operator: \"What am I watching on the dash?\"",
+     "names_read": [
+      "Crane lift crew",
+      "Crane operator",
+      "What am I watching on the dash?"
+     ]
+    },
+    {
+     "n": 5,
+     "kind": "sim",
+     "records": "sim",
+     "stage": "floor",
+     "reads": "sims/registry/sims.json",
+     "note": "Run the terminal case and let the swing tell you what your inputs added up to.",
+     "where": "yard",
+     "sim": "crane-lift",
+     "scenario": "oak-terminal",
+     "campus": "oakland",
+     "do": "Run the Tower Crane Lift seat on the Oakland terminal lift scenario.",
+     "names_read": [
+      "Tower Crane Lift",
+      "Oakland terminal lift"
+     ]
+    }
+   ],
+   "records": [
+    "crew",
+    "sim",
+    "walkaround"
+   ],
+   "stages": [
+    "class",
+    "floor"
+   ],
+   "reads": [
+    "agents/registry/crews.json",
+    "sims/registry/sims.json",
+    "web/interiors.py"
+   ],
+   "provenance": {
+    "steps": "AUTHORED",
+    "order": "AUTHORED",
+    "title": "AUTHORED",
+    "why": "AUTHORED",
+    "limits": "AUTHORED",
+    "names": "READ"
+   },
+   "rooms_walked": [
+    "machines"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": []
+  },
+  "decking-walk-the-path-first": {
+   "id": "decking-walk-the-path-first",
+   "hall": "decking",
+   "hall_name": "Metal Deck Installers",
+   "campus": "treasure-island",
+   "strand": "procedure",
+   "tier": "applied",
+   "skill_id": "decking.procedure.applied",
+   "room_label": "Practice Bays",
+   "title": "Walk where the bundle will fly before it flies",
+   "why": "A deck bundle crosses a floor other people are standing on, and the walk is the only time that floor is looked at properly.",
+   "limits": "Finishing this is not signalperson standing and lifts no bundle; the floor is schematic, the call is scripted, and no hall, employer or authority has reviewed or signed a line of it.",
+   "steps": [
+    {
+     "n": 1,
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "The floor is where the bundle lands, so the floor is where the lesson starts and ends.",
+     "where": "procedure",
+     "do": "Walk to the Practice Bays \u2014 the floor the trade is actually learned on.",
+     "names_read": [
+      "Practice Bays"
+     ]
+    },
+    {
+     "n": 2,
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Read what this floor is held to before you decide what you are wearing is enough for it.",
+     "where": "procedure",
+     "do": "Read the door placard of the Practice Bays: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Practice Bays"
+     ]
+    },
+    {
+     "n": 3,
+     "kind": "walkaround",
+     "records": "walkaround",
+     "stage": "floor",
+     "reads": "sims/registry/sims.json",
+     "note": "Walk it end to end yourself; a path somebody described to you is a path nobody walked.",
+     "where": "yard",
+     "sim": "rigging-signals",
+     "point": "path",
+     "do": "Walk the Rigging Signal Call seat and mark the point \"The load path\": walked end to end, nothing and nobody under it.",
+     "names_read": [
+      "Rigging Signal Call",
+      "The load path"
+     ]
+    },
+    {
+     "n": 4,
+     "kind": "sim",
+     "records": "sim",
+     "stage": "floor",
+     "reads": "sims/registry/sims.json",
+     "note": "Make the calls in order and notice the one you wanted to make early.",
+     "where": "yard",
+     "sim": "rigging-signals",
+     "scenario": "bay-first-card",
+     "campus": "treasure-island",
+     "do": "Run the Rigging Signal Call seat on the First lift card scenario.",
+     "names_read": [
+      "Rigging Signal Call",
+      "First lift card"
+     ]
+    },
+    {
+     "n": 5,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what gets walked before a start, and compare it with what you just walked.",
+     "where": "coordination",
+     "advisor": "foreman",
+     "topic": "walk",
+     "answer_kind": "read",
+     "do": "Ask the Foreman in the Briefing Room: \"What gets walked before a start?\"",
+     "names_read": [
+      "Briefing Room",
+      "Foreman",
+      "What gets walked before a start?"
+     ]
+    }
+   ],
+   "records": [
+    "advisor",
+    "sim",
+    "walkaround"
+   ],
+   "stages": [
+    "class",
+    "floor"
+   ],
+   "reads": [
+    "agents/registry/advisors.json",
+    "sims/registry/sims.json",
+    "surfaces/registry/finishes.json",
+    "web/interiors.py"
+   ],
+   "provenance": {
+    "steps": "AUTHORED",
+    "order": "AUTHORED",
+    "title": "AUTHORED",
+    "why": "AUTHORED",
+    "limits": "AUTHORED",
+    "names": "READ"
+   },
+   "rooms_walked": [
+    "coordination",
+    "procedure"
+   ],
+   "hazard_rooms_walked": [
+    "procedure"
+   ],
+   "placard_steps_in": [
+    "procedure"
+   ]
+  },
+  "tank-erectors-isolate-before-testing": {
+   "id": "tank-erectors-isolate-before-testing",
+   "hall": "tank-erectors",
+   "hall_name": "Tank Erectors",
+   "campus": "oakland",
+   "strand": "safety",
+   "tier": "applied",
+   "skill_id": "tank-erectors.safety.applied",
+   "room_label": "Induction & PPE",
+   "title": "Isolate the shell before anybody tests the air",
+   "why": "A tank is a confined space with a weld in it, and the order of the safety steps is the whole difference between a shift and an incident.",
+   "limits": "Finishing this is not confined space entry training, not a hot work permit and not a welding qualification; nobody here may authorise an entry, and the shell you worked on has never held anything.",
+   "steps": [
+    {
+     "n": 1,
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Gowning, the atmospheric check and the permit board share a room because the order between them matters.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE \u2014 gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ]
+    },
+    {
+     "n": 2,
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Take on what the sign says before you cross the line, not after somebody points at it.",
+     "where": "safety",
+     "do": "Read the door placard of the Induction & PPE: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Induction & PPE"
+     ]
+    },
+    {
+     "n": 3,
+     "kind": "walkaround",
+     "records": "walkaround",
+     "stage": "floor",
+     "reads": "sims/registry/sims.json",
+     "note": "What is in the bottle and what is in the air are two questions, and both get asked before the arc.",
+     "where": "yard",
+     "sim": "weld-bead",
+     "point": "gas",
+     "do": "Walk the Weld Bead Run seat and mark the point \"Gas and regulator\": no leaks at the test pressure, flow set to the procedure.",
+     "names_read": [
+      "Weld Bead Run",
+      "Gas and regulator"
+     ]
+    },
+    {
+     "n": 4,
+     "kind": "crew",
+     "records": "crew",
+     "stage": "floor",
+     "reads": "agents/registry/crews.json",
+     "note": "Ask why isolation comes first, and hear the answer as an order of operations rather than a preference.",
+     "where": "yard",
+     "crew": "confined-space-crew",
+     "role": "entry-supervisor",
+     "topic": "isolate",
+     "seat": "weld-bead",
+     "muster": "procedure",
+     "answer_kind": "say",
+     "do": "With the seat running, ask the Confined space entry crew's Entry supervisor: \"Why isolate before testing?\"",
+     "names_read": [
+      "Confined space entry crew",
+      "Entry supervisor",
+      "Why isolate before testing?"
+     ]
+    },
+    {
+     "n": 5,
+     "kind": "sim",
+     "records": "sim",
+     "stage": "floor",
+     "reads": "sims/registry/sims.json",
+     "note": "Run the bead and notice how much of the score was decided before you struck it.",
+     "where": "yard",
+     "sim": "weld-bead",
+     "scenario": "oak-flange-bead",
+     "campus": "oakland",
+     "do": "Run the Weld Bead Run seat on the Pipe flange bead scenario.",
+     "names_read": [
+      "Weld Bead Run",
+      "Pipe flange bead"
+     ]
+    },
+    {
+     "n": 6,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Practise the refusal here, where it costs nothing and the habit is worth everything.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "refuse",
+     "answer_kind": "say",
+     "do": "Ask the Safety steward in the Induction & PPE: \"Can I refuse the work?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "Can I refuse the work?"
+     ]
+    }
+   ],
+   "records": [
+    "advisor",
+    "crew",
+    "sim",
+    "walkaround"
+   ],
+   "stages": [
+    "class",
+    "floor"
+   ],
+   "reads": [
+    "agents/registry/advisors.json",
+    "agents/registry/crews.json",
+    "sims/registry/sims.json",
+    "surfaces/registry/finishes.json",
+    "web/interiors.py"
+   ],
+   "provenance": {
+    "steps": "AUTHORED",
+    "order": "AUTHORED",
+    "title": "AUTHORED",
+    "why": "AUTHORED",
+    "limits": "AUTHORED",
+    "names": "READ"
+   },
+   "rooms_walked": [
+    "safety"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": [
+    "safety"
+   ]
+  },
+  "piling-stand-the-rig-on-something": {
+   "id": "piling-stand-the-rig-on-something",
+   "hall": "piling",
+   "hall_name": "Piling Crews",
+   "campus": "treasure-island",
+   "strand": "machines",
+   "tier": "applied",
+   "skill_id": "piling.machines.applied",
+   "room_label": "Equipment Bay",
+   "title": "Stand the rig on ground that will hold it",
+   "why": "A piling rig is the heaviest thing on the site standing on the ground least likely to have been looked at.",
+   "limits": "Finishing this is not rig operator standing and no ground has been assessed; the bearing here is schematic, the lift is a teaching aid, and no plan you ran is a lift plan anybody may work to.",
+   "steps": [
+    {
+     "n": 1,
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "The bay is where plant is checked out to a training area, and the ground under it is the first check.",
+     "where": "machines",
+     "do": "Walk to the Equipment Bay \u2014 plant checked out to a training area.",
+     "names_read": [
+      "Equipment Bay"
+     ]
+    },
+    {
+     "n": 2,
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Read what this bay is held to; the conditions on the door are the conditions you work in.",
+     "where": "machines",
+     "do": "Read the door placard of the Equipment Bay: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Equipment Bay"
+     ]
+    },
+    {
+     "n": 3,
+     "kind": "walkaround",
+     "records": "walkaround",
+     "stage": "floor",
+     "reads": "sims/registry/sims.json",
+     "note": "Standing water and washout are the two things that move a machine without anybody touching a lever.",
+     "where": "yard",
+     "sim": "crane-lift",
+     "point": "base",
+     "do": "Walk the Tower Crane Lift seat and mark the point \"Base and ballast\": bearing is even, no washout or standing water.",
+     "names_read": [
+      "Tower Crane Lift",
+      "Base and ballast"
+     ]
+    },
+    {
+     "n": 4,
+     "kind": "crew",
+     "records": "crew",
+     "stage": "floor",
+     "reads": "agents/registry/crews.json",
+     "note": "Ask what happens when the lift changes, because on a piling job it always does.",
+     "where": "yard",
+     "crew": "crane-lift-crew",
+     "role": "lift-director",
+     "topic": "change",
+     "seat": "crane-lift",
+     "muster": "coordination",
+     "answer_kind": "say",
+     "do": "With the seat running, ask the Crane lift crew's Lift director: \"What if the lift changes?\"",
+     "names_read": [
+      "Crane lift crew",
+      "Lift director",
+      "What if the lift changes?"
+     ]
+    },
+    {
+     "n": 5,
+     "kind": "sim",
+     "records": "sim",
+     "stage": "floor",
+     "reads": "sims/registry/sims.json",
+     "note": "Move one thing at a time and let it settle; the gauge is honest even when the seat feels fine.",
+     "where": "yard",
+     "sim": "crane-lift",
+     "scenario": "bay-steel",
+     "campus": "treasure-island",
+     "do": "Run the Tower Crane Lift seat on the Bay high-steel lift scenario.",
+     "names_read": [
+      "Tower Crane Lift",
+      "Bay high-steel lift"
+     ]
+    }
+   ],
+   "records": [
+    "crew",
+    "sim",
+    "walkaround"
+   ],
+   "stages": [
+    "class",
+    "floor"
+   ],
+   "reads": [
+    "agents/registry/crews.json",
+    "sims/registry/sims.json",
+    "surfaces/registry/finishes.json",
+    "web/interiors.py"
+   ],
+   "provenance": {
+    "steps": "AUTHORED",
+    "order": "AUTHORED",
+    "title": "AUTHORED",
+    "why": "AUTHORED",
+    "limits": "AUTHORED",
+    "names": "READ"
+   },
+   "rooms_walked": [
+    "machines"
+   ],
+   "hazard_rooms_walked": [
+    "machines"
+   ],
+   "placard_steps_in": [
+    "machines"
+   ]
+  },
+  "shoring-read-the-ground-again": {
+   "id": "shoring-read-the-ground-again",
+   "hall": "shoring",
+   "hall_name": "Shoring & Underpinning",
+   "campus": "oakland",
+   "strand": "layout",
+   "tier": "applied",
+   "skill_id": "shoring.layout.applied",
+   "room_label": "Layout Floor",
+   "title": "Read the ground again after the rain",
+   "why": "Soil that was safe yesterday is a different material after a night of rain, and the inspection cadence is the only defence.",
+   "limits": "Finishing this is not competent person standing and is not a soil classification; the cut is schematic, the ground here has never held water, and no jurisdiction has reviewed a line of it.",
+   "steps": [
+    {
+     "n": 1,
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Setting out lives here, and so does the discipline of proving a mark before trusting it.",
+     "where": "layout",
+     "do": "Walk to the Layout Floor \u2014 setting out, control points, marking.",
+     "names_read": [
+      "Layout Floor"
+     ]
+    },
+    {
+     "n": 2,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask how you would know the line is true, because a line nobody checked is a guess in paint.",
+     "where": "layout",
+     "advisor": "layout-hand",
+     "topic": "check",
+     "answer_kind": "say",
+     "do": "Ask the Layout hand in the Layout Floor: \"How do I know the line is true?\"",
+     "names_read": [
+      "Layout Floor",
+      "Layout hand",
+      "How do I know the line is true?"
+     ]
+    },
+    {
+     "n": 3,
+     "kind": "walkaround",
+     "records": "walkaround",
+     "stage": "floor",
+     "reads": "sims/registry/sims.json",
+     "note": "A house that drifts on a test swing will drift over the cut, so test it where the moment is worst.",
+     "where": "yard",
+     "sim": "excavator-trench",
+     "point": "slew-brake",
+     "do": "Walk the Excavator Trench Cut seat and mark the point \"Slew brake\": holds the house still on a test swing with the boom out, where the moment on it is worst.",
+     "names_read": [
+      "Excavator Trench Cut",
+      "Slew brake"
+     ]
+    },
+    {
+     "n": 4,
+     "kind": "crew",
+     "records": "crew",
+     "stage": "floor",
+     "reads": "agents/registry/crews.json",
+     "note": "Ask how often the cut gets looked at, and notice the answer is an interval, not a one-off.",
+     "where": "yard",
+     "crew": "trench-crew",
+     "role": "trench-competent-person",
+     "topic": "again",
+     "seat": "excavator-trench",
+     "muster": "layout",
+     "answer_kind": "say",
+     "do": "With the seat running, ask the Trench crew's Competent person: \"How often does it get inspected?\"",
+     "names_read": [
+      "Trench crew",
+      "Competent person",
+      "How often does it get inspected?"
+     ]
+    },
+    {
+     "n": 5,
+     "kind": "sim",
+     "records": "sim",
+     "stage": "floor",
+     "reads": "sims/registry/sims.json",
+     "note": "Cut over old fill and let the pace stay slow enough that the ground can surprise you safely.",
+     "where": "yard",
+     "sim": "excavator-trench",
+     "scenario": "oak-fill",
+     "campus": "oakland",
+     "do": "Run the Excavator Trench Cut seat on the Old-fill utility cut scenario.",
+     "names_read": [
+      "Excavator Trench Cut",
+      "Old-fill utility cut"
+     ]
+    }
+   ],
+   "records": [
+    "advisor",
+    "crew",
+    "sim",
+    "walkaround"
+   ],
+   "stages": [
+    "class",
+    "floor"
+   ],
+   "reads": [
+    "agents/registry/advisors.json",
+    "agents/registry/crews.json",
+    "sims/registry/sims.json",
+    "web/interiors.py"
+   ],
+   "provenance": {
+    "steps": "AUTHORED",
+    "order": "AUTHORED",
+    "title": "AUTHORED",
+    "why": "AUTHORED",
+    "limits": "AUTHORED",
+    "names": "READ"
+   },
+   "rooms_walked": [
+    "layout"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": []
+  },
+  "laborers-stand-where-the-cab-can-see": {
+   "id": "laborers-stand-where-the-cab-can-see",
+   "hall": "laborers",
+   "hall_name": "Laborers",
+   "campus": "oakland",
+   "strand": "safety",
+   "tier": "applied",
+   "skill_id": "laborers.safety.applied",
+   "room_label": "Induction & PPE",
+   "title": "Stand where the cab can see you",
+   "why": "The person on foot next to a machine is the one who decides whether the machine is dangerous, by where they choose to stand.",
+   "limits": "Finishing this is not ground worker training and grants no authority near plant; the machine here is schematic, no spoil has moved, and the habit it teaches is unverified general practice awaiting the hall.",
+   "steps": [
+    {
+     "n": 1,
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Induction is the room that decides whether you are allowed near the others, so start there.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE \u2014 gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ]
+    },
+    {
+     "n": 2,
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Read the door and add what the task needs on top of it, not instead of it.",
+     "where": "safety",
+     "do": "Read the door placard of the Induction & PPE: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Induction & PPE"
+     ]
+    },
+    {
+     "n": 3,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what the room requires rather than copying whoever walked in ahead of you.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "ppe",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What do I need on in here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What do I need on in here?"
+     ]
+    },
+    {
+     "n": 4,
+     "kind": "walkaround",
+     "records": "walkaround",
+     "stage": "floor",
+     "reads": "sims/registry/sims.json",
+     "note": "Spoil piled on the lip is weight on the wall, and the wall does not care who piled it.",
+     "where": "yard",
+     "sim": "excavator-trench",
+     "point": "edge",
+     "do": "Walk the Excavator Trench Cut seat and mark the point \"The trench edge\": spoil set back, no load surcharging the cut.",
+     "names_read": [
+      "Excavator Trench Cut",
+      "The trench edge"
+     ]
+    },
+    {
+     "n": 5,
+     "kind": "crew",
+     "records": "crew",
+     "stage": "floor",
+     "reads": "agents/registry/crews.json",
+     "note": "Ask where you stand, and notice the answer is about the cab window, not about the trench.",
+     "where": "yard",
+     "crew": "trench-crew",
+     "role": "spotter",
+     "topic": "where",
+     "seat": "excavator-trench",
+     "muster": "layout",
+     "answer_kind": "say",
+     "do": "With the seat running, ask the Trench crew's Spotter: \"Where do you stand?\"",
+     "names_read": [
+      "Trench crew",
+      "Spotter",
+      "Where do you stand?"
+     ]
+    }
+   ],
+   "records": [
+    "advisor",
+    "crew",
+    "walkaround"
+   ],
+   "stages": [
+    "class",
+    "floor"
+   ],
+   "reads": [
+    "agents/registry/advisors.json",
+    "agents/registry/crews.json",
+    "sims/registry/sims.json",
+    "surfaces/registry/finishes.json",
+    "web/interiors.py"
+   ],
+   "provenance": {
+    "steps": "AUTHORED",
+    "order": "AUTHORED",
+    "title": "AUTHORED",
+    "why": "AUTHORED",
+    "limits": "AUTHORED",
+    "names": "READ"
+   },
+   "rooms_walked": [
+    "safety"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": [
+    "safety"
+   ]
+  },
+  "teamsters-check-the-truck-before-the-load": {
+   "id": "teamsters-check-the-truck-before-the-load",
+   "hall": "teamsters",
+   "hall_name": "Teamsters",
+   "campus": "oakland",
+   "strand": "machines",
+   "tier": "applied",
+   "skill_id": "teamsters.machines.applied",
+   "room_label": "Equipment Bay",
+   "title": "Check the truck before you check the load",
+   "why": "A yard machine that fails a pre-shift check is a fault found for free, and one that skips it is a fault found the expensive way.",
+   "limits": "Finishing this is not forklift operator training and is not a licence to drive one; the yard is schematic, the loads weigh nothing, and no employer or jurisdiction issues anything on the strength of it.",
+   "steps": [
+    {
+     "n": 1,
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Plant checked out to a training area is the only plant you are near, which is why the check is taught here.",
+     "where": "machines",
+     "do": "Walk to the Equipment Bay \u2014 plant checked out to a training area.",
+     "names_read": [
+      "Equipment Bay"
+     ]
+    },
+    {
+     "n": 2,
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Read what the bay is held to before you climb on anything parked in it.",
+     "where": "machines",
+     "do": "Read the door placard of the Equipment Bay: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Equipment Bay"
+     ]
+    },
+    {
+     "n": 3,
+     "kind": "walkaround",
+     "records": "walkaround",
+     "stage": "floor",
+     "reads": "sims/registry/sims.json",
+     "note": "Chain that is uneven side to side lifts crooked, and crooked is how a load leaves the forks.",
+     "where": "yard",
+     "sim": "forklift-run",
+     "point": "mast",
+     "do": "Walk the Forklift Yard Run seat and mark the point \"Mast chains\": even tension side to side, no kinked or rusted links, and no play worn into the anchor pins.",
+     "names_read": [
+      "Forklift Yard Run",
+      "Mast chains"
+     ]
+    },
+    {
+     "n": 4,
+     "kind": "sim",
+     "records": "sim",
+     "stage": "floor",
+     "reads": "sims/registry/sims.json",
+     "note": "Run the lane and notice how much of the score is about what you did before the first pallet.",
+     "where": "yard",
+     "sim": "forklift-run",
+     "scenario": "oak-lane",
+     "campus": "oakland",
+     "do": "Run the Forklift Yard Run seat on the Terminal container lane scenario.",
+     "names_read": [
+      "Forklift Yard Run",
+      "Terminal container lane"
+     ]
+    },
+    {
+     "n": 5,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what should be walked before a start, and compare it with what you actually walked.",
+     "where": "yard",
+     "advisor": "operator",
+     "topic": "walk",
+     "answer_kind": "read",
+     "do": "Ask the Operator at the hall yard: \"What should I walk before I start?\"",
+     "names_read": [
+      "Operator",
+      "What should I walk before I start?"
+     ]
+    }
+   ],
+   "records": [
+    "advisor",
+    "sim",
+    "walkaround"
+   ],
+   "stages": [
+    "class",
+    "floor"
+   ],
+   "reads": [
+    "agents/registry/advisors.json",
+    "sims/registry/sims.json",
+    "surfaces/registry/finishes.json",
+    "web/interiors.py"
+   ],
+   "provenance": {
+    "steps": "AUTHORED",
+    "order": "AUTHORED",
+    "title": "AUTHORED",
+    "why": "AUTHORED",
+    "limits": "AUTHORED",
+    "names": "READ"
+   },
+   "rooms_walked": [
+    "machines"
+   ],
+   "hazard_rooms_walked": [
+    "machines"
+   ],
+   "placard_steps_in": [
+    "machines"
+   ]
+  },
+  "heavy-equip-listen-to-the-dash": {
+   "id": "heavy-equip-listen-to-the-dash",
+   "hall": "heavy-equip",
+   "hall_name": "Heavy Equipment Technicians",
+   "campus": "oakland",
+   "strand": "troubleshooting",
+   "tier": "applied",
+   "skill_id": "heavy-equip.troubleshooting.applied",
+   "room_label": "Diagnostic Bench",
+   "title": "Listen to the dash before you replace anything",
+   "why": "The gauges are the cheapest diagnostic on the machine and the one most technicians read last.",
+   "limits": "Finishing this is not a technician qualification and diagnoses no real machine; the readouts here are schematic, the fault is scripted, and nothing you concluded has been checked by anybody who repairs plant.",
+   "steps": [
+    {
+     "n": 1,
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Fault-finding has its own bench because it needs a different head to the practice floor.",
+     "where": "troubleshooting",
+     "do": "Walk to the Diagnostic Bench \u2014 fault-finding against live rigs.",
+     "names_read": [
+      "Diagnostic Bench"
+     ]
+    },
+    {
+     "n": 2,
+     "kind": "walkaround",
+     "records": "walkaround",
+     "stage": "floor",
+     "reads": "sims/registry/sims.json",
+     "note": "Chunking and loose nuts are found by looking, and looking costs a minute.",
+     "where": "yard",
+     "sim": "forklift-run",
+     "point": "tires",
+     "do": "Walk the Forklift Yard Run seat and mark the point \"Tires and wheel nuts\": no chunking or cords, every nut marked and tight.",
+     "names_read": [
+      "Forklift Yard Run",
+      "Tires and wheel nuts"
+     ]
+    },
+    {
+     "n": 3,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what the readouts mean before you decide one of them is wrong.",
+     "where": "yard",
+     "advisor": "operator",
+     "topic": "gauges",
+     "answer_kind": "read",
+     "do": "Ask the Operator at the hall yard: \"What are the gauges telling me?\"",
+     "names_read": [
+      "Operator",
+      "What are the gauges telling me?"
+     ]
+    },
+    {
+     "n": 4,
+     "kind": "sim",
+     "records": "sim",
+     "stage": "floor",
+     "reads": "sims/registry/sims.json",
+     "note": "Drive the lane and watch the numbers rather than the pallet; the pallet is where the numbers end up.",
+     "where": "yard",
+     "sim": "forklift-run",
+     "scenario": "oak-lane",
+     "campus": "oakland",
+     "do": "Run the Forklift Yard Run seat on the Terminal container lane scenario.",
+     "names_read": [
+      "Forklift Yard Run",
+      "Terminal container lane"
+     ]
+    }
+   ],
+   "records": [
+    "advisor",
+    "sim",
+    "walkaround"
+   ],
+   "stages": [
+    "class",
+    "floor"
+   ],
+   "reads": [
+    "agents/registry/advisors.json",
+    "sims/registry/sims.json",
+    "web/interiors.py"
+   ],
+   "provenance": {
+    "steps": "AUTHORED",
+    "order": "AUTHORED",
+    "title": "AUTHORED",
+    "why": "AUTHORED",
+    "limits": "AUTHORED",
+    "names": "READ"
+   },
+   "rooms_walked": [
+    "troubleshooting"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": []
+  },
+  "marine-terminal-brief-the-lane": {
+   "id": "marine-terminal-brief-the-lane",
+   "hall": "marine-terminal",
+   "hall_name": "Marine Terminal Operators",
+   "campus": "oakland",
+   "strand": "coordination",
+   "tier": "applied",
+   "skill_id": "marine-terminal.coordination.applied",
+   "room_label": "Briefing Room",
+   "title": "Brief the lane before the first box moves",
+   "why": "A terminal lane is shared ground, and a shift that starts without a briefing starts with everybody guessing who goes first.",
+   "limits": "Finishing this is not terminal operator standing and is not a traffic plan; the lane is schematic, the vehicles are drawn, and no port, employer or authority has reviewed a line of it.",
+   "steps": [
+    {
+     "n": 1,
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Shift start and hand-offs happen here, so the briefing is staged here and not on the quay.",
+     "where": "coordination",
+     "do": "Walk to the Briefing Room \u2014 shift start, hand-offs, cross-trade.",
+     "names_read": [
+      "Briefing Room"
+     ]
+    },
+    {
+     "n": 2,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what gets walked before a start, and notice how much of it is about other people.",
+     "where": "coordination",
+     "advisor": "foreman",
+     "topic": "walk",
+     "answer_kind": "read",
+     "do": "Ask the Foreman in the Briefing Room: \"What gets walked before a start?\"",
+     "names_read": [
+      "Briefing Room",
+      "Foreman",
+      "What gets walked before a start?"
+     ]
+    },
+    {
+     "n": 3,
+     "kind": "walkaround",
+     "records": "walkaround",
+     "stage": "floor",
+     "reads": "sims/registry/sims.json",
+     "note": "A belt that does not latch and a guard that is bent are both answers to a question nobody asked.",
+     "where": "yard",
+     "sim": "forklift-run",
+     "point": "guard",
+     "do": "Walk the Forklift Yard Run seat and mark the point \"Seatbelt and overhead guard\": belt latches, guard unbent and pinned.",
+     "names_read": [
+      "Forklift Yard Run",
+      "Seatbelt and overhead guard"
+     ]
+    },
+    {
+     "n": 4,
+     "kind": "sim",
+     "records": "sim",
+     "stage": "floor",
+     "reads": "sims/registry/sims.json",
+     "note": "Run the lane and treat every other vehicle as somebody who did not hear the briefing.",
+     "where": "yard",
+     "sim": "forklift-run",
+     "scenario": "oak-lane",
+     "campus": "oakland",
+     "do": "Run the Forklift Yard Run seat on the Terminal container lane scenario.",
+     "names_read": [
+      "Forklift Yard Run",
+      "Terminal container lane"
+     ]
+    }
+   ],
+   "records": [
+    "advisor",
+    "sim",
+    "walkaround"
+   ],
+   "stages": [
+    "class",
+    "floor"
+   ],
+   "reads": [
+    "agents/registry/advisors.json",
+    "sims/registry/sims.json",
+    "web/interiors.py"
+   ],
+   "provenance": {
+    "steps": "AUTHORED",
+    "order": "AUTHORED",
+    "title": "AUTHORED",
+    "why": "AUTHORED",
+    "limits": "AUTHORED",
+    "names": "READ"
+   },
+   "rooms_walked": [
+    "coordination"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": []
+  },
+  "shipfitters-say-what-you-cannot-see": {
+   "id": "shipfitters-say-what-you-cannot-see",
+   "hall": "shipfitters",
+   "hall_name": "Shipfitters",
+   "campus": "treasure-island",
+   "strand": "procedure",
+   "tier": "applied",
+   "skill_id": "shipfitters.procedure.applied",
+   "room_label": "Practice Bays",
+   "title": "Say what you cannot see from the hood",
+   "why": "Behind a welding hood the world is one bright spot, and the fitter who admits that is the one who gets the screens up.",
+   "limits": "Finishing this is not a welding qualification and not fit-up training; the seam is schematic, no hull has been tacked, and the practice here is unverified general practice awaiting journey-level review.",
+   "steps": [
+    {
+     "n": 1,
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "The floor is where the seam is fitted badly a few times, which is the only cheap place to do that.",
+     "where": "procedure",
+     "do": "Walk to the Practice Bays \u2014 the floor the trade is actually learned on.",
+     "names_read": [
+      "Practice Bays"
+     ]
+    },
+    {
+     "n": 2,
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Read what the floor is held to before the hood comes down and you stop being able to read anything.",
+     "where": "procedure",
+     "do": "Read the door placard of the Practice Bays: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Practice Bays"
+     ]
+    },
+    {
+     "n": 3,
+     "kind": "walkaround",
+     "records": "walkaround",
+     "stage": "floor",
+     "reads": "sims/registry/sims.json",
+     "note": "Screens protect the people who are not welding, which is everybody else in the room.",
+     "where": "yard",
+     "sim": "weld-bead",
+     "point": "screens",
+     "do": "Walk the Weld Bead Run seat and mark the point \"Welding screens\": standing and closed - nobody flashes off your arc.",
+     "names_read": [
+      "Weld Bead Run",
+      "Welding screens"
+     ]
+    },
+    {
+     "n": 4,
+     "kind": "crew",
+     "records": "crew",
+     "stage": "floor",
+     "reads": "agents/registry/crews.json",
+     "note": "Ask what cannot be seen from behind the hood, and hear it as a list of jobs for somebody else.",
+     "where": "yard",
+     "crew": "hot-work-crew",
+     "role": "welder",
+     "topic": "blind",
+     "seat": "weld-bead",
+     "muster": "safety",
+     "answer_kind": "say",
+     "do": "With the seat running, ask the Hot work crew's Welder: \"What can you not see from there?\"",
+     "names_read": [
+      "Hot work crew",
+      "Welder",
+      "What can you not see from there?"
+     ]
+    },
+    {
+     "n": 5,
+     "kind": "sim",
+     "records": "sim",
+     "stage": "floor",
+     "reads": "sims/registry/sims.json",
+     "note": "Run the seam and notice how much of the score was about what was set up before the arc.",
+     "where": "yard",
+     "sim": "weld-bead",
+     "scenario": "bay-deck-seam",
+     "campus": "treasure-island",
+     "do": "Run the Weld Bead Run seat on the Deck plate seam scenario.",
+     "names_read": [
+      "Weld Bead Run",
+      "Deck plate seam"
+     ]
+    }
+   ],
+   "records": [
+    "crew",
+    "sim",
+    "walkaround"
+   ],
+   "stages": [
+    "class",
+    "floor"
+   ],
+   "reads": [
+    "agents/registry/crews.json",
+    "sims/registry/sims.json",
+    "surfaces/registry/finishes.json",
+    "web/interiors.py"
+   ],
+   "provenance": {
+    "steps": "AUTHORED",
+    "order": "AUTHORED",
+    "title": "AUTHORED",
+    "why": "AUTHORED",
+    "limits": "AUTHORED",
+    "names": "READ"
+   },
+   "rooms_walked": [
+    "procedure"
+   ],
+   "hazard_rooms_walked": [
+    "procedure"
+   ],
+   "placard_steps_in": [
+    "procedure"
+   ]
+  },
+  "fabricators-lay-it-out-then-prove-it": {
+   "id": "fabricators-lay-it-out-then-prove-it",
+   "hall": "fabricators",
+   "hall_name": "Structural Fabricators",
+   "campus": "treasure-island",
+   "strand": "layout",
+   "tier": "applied",
+   "skill_id": "fabricators.layout.applied",
+   "room_label": "Layout Floor",
+   "title": "Lay it out, then prove the line before you cut",
+   "why": "Shop steel is cut once, and a layout line nobody checked is a piece of scrap with a drawing number on it.",
+   "limits": "Finishing this is not a fabrication qualification and cuts nothing; the layout is schematic, the seam is a teaching aid, and no shop or inspector has accepted anything on the strength of it.",
+   "steps": [
+    {
+     "n": 1,
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Setting out and marking live here, and the habit of checking a line before trusting it lives with them.",
+     "where": "layout",
+     "do": "Walk to the Layout Floor \u2014 setting out, control points, marking.",
+     "names_read": [
+      "Layout Floor"
+     ]
+    },
+    {
+     "n": 2,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask how you know the line is true, because the answer is a method and not a feeling.",
+     "where": "layout",
+     "advisor": "layout-hand",
+     "topic": "check",
+     "answer_kind": "say",
+     "do": "Ask the Layout hand in the Layout Floor: \"How do I know the line is true?\"",
+     "names_read": [
+      "Layout Floor",
+      "Layout hand",
+      "How do I know the line is true?"
+     ]
+    },
+    {
+     "n": 3,
+     "kind": "walkaround",
+     "records": "walkaround",
+     "stage": "floor",
+     "reads": "sims/registry/sims.json",
+     "note": "A ground clamp on paint is a bead that will not run right, and the cable jacket is checked end to end.",
+     "where": "yard",
+     "sim": "weld-bead",
+     "point": "leads",
+     "do": "Walk the Weld Bead Run seat and mark the point \"Leads and clamps\": insulation whole end to end, ground clamp bites clean metal.",
+     "names_read": [
+      "Weld Bead Run",
+      "Leads and clamps"
+     ]
+    },
+    {
+     "n": 4,
+     "kind": "sim",
+     "records": "sim",
+     "stage": "floor",
+     "reads": "sims/registry/sims.json",
+     "note": "Run the seam and let the width and the travel argue; the layout was supposed to settle that argument.",
+     "where": "yard",
+     "sim": "weld-bead",
+     "scenario": "bay-deck-seam",
+     "campus": "treasure-island",
+     "do": "Run the Weld Bead Run seat on the Deck plate seam scenario.",
+     "names_read": [
+      "Weld Bead Run",
+      "Deck plate seam"
+     ]
+    },
+    {
+     "n": 5,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what the seat measures, so that what you think you did and what was measured are the same thing.",
+     "where": "inspection",
+     "advisor": "inspector",
+     "topic": "measures",
+     "answer_kind": "read",
+     "do": "Ask the Inspector in the Inspection Bench: \"What does the seat here measure?\"",
+     "names_read": [
+      "Inspection Bench",
+      "Inspector",
+      "What does the seat here measure?"
+     ]
+    }
+   ],
+   "records": [
+    "advisor",
+    "sim",
+    "walkaround"
+   ],
+   "stages": [
+    "class",
+    "floor"
+   ],
+   "reads": [
+    "agents/registry/advisors.json",
+    "sims/registry/sims.json",
+    "web/interiors.py"
+   ],
+   "provenance": {
+    "steps": "AUTHORED",
+    "order": "AUTHORED",
+    "title": "AUTHORED",
+    "why": "AUTHORED",
+    "limits": "AUTHORED",
+    "names": "READ"
+   },
+   "rooms_walked": [
+    "inspection",
+    "layout"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": []
+  },
+  "pipeline-close-the-permit-properly": {
+   "id": "pipeline-close-the-permit-properly",
+   "hall": "pipeline",
+   "hall_name": "Pipeline Trades",
+   "campus": "oakland",
+   "strand": "inspection",
+   "tier": "applied",
+   "skill_id": "pipeline.inspection.applied",
+   "room_label": "Inspection Bench",
+   "title": "Close the permit the way it was opened",
+   "why": "A hot work permit that was opened carefully and closed carelessly protected nobody for the hour that mattered most.",
+   "limits": "Finishing this is not a hot work permit, not pipeline welder standing and not a coating or integrity qualification; the permit here is a teaching prop, and your jurisdiction owns the rules that make one binding.",
+   "steps": [
+    {
+     "n": 1,
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Acceptance criteria live here, and a permit closed properly is an acceptance step like any other.",
+     "where": "inspection",
+     "do": "Walk to the Inspection Bench \u2014 acceptance criteria and sign-off.",
+     "names_read": [
+      "Inspection Bench"
+     ]
+    },
+    {
+     "n": 2,
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Read what the bench is held to before you start deciding what a pass looks like.",
+     "where": "inspection",
+     "do": "Read the door placard of the Inspection Bench: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Inspection Bench"
+     ]
+    },
+    {
+     "n": 3,
+     "kind": "walkaround",
+     "records": "walkaround",
+     "stage": "floor",
+     "reads": "sims/registry/sims.json",
+     "note": "Fume that is pulled past your face is fume you are breathing, whatever the fan sounds like.",
+     "where": "yard",
+     "sim": "weld-bead",
+     "point": "extraction",
+     "do": "Walk the Weld Bead Run seat and mark the point \"Fume extraction\": running and pulling at the work, not past your face.",
+     "names_read": [
+      "Weld Bead Run",
+      "Fume extraction"
+     ]
+    },
+    {
+     "n": 4,
+     "kind": "crew",
+     "records": "crew",
+     "stage": "floor",
+     "reads": "agents/registry/crews.json",
+     "note": "Ask what closes the permit, and notice it is a condition of the room and not a time on a clock.",
+     "where": "yard",
+     "crew": "hot-work-crew",
+     "role": "permit-holder",
+     "topic": "close",
+     "seat": "weld-bead",
+     "muster": "safety",
+     "answer_kind": "say",
+     "do": "With the seat running, ask the Hot work crew's Permit holder: \"What closes it?\"",
+     "names_read": [
+      "Hot work crew",
+      "Permit holder",
+      "What closes it?"
+     ]
+    },
+    {
+     "n": 5,
+     "kind": "sim",
+     "records": "sim",
+     "stage": "floor",
+     "reads": "sims/registry/sims.json",
+     "note": "Run the bead and remember that the last part of the job is the part after the arc stops.",
+     "where": "yard",
+     "sim": "weld-bead",
+     "scenario": "oak-flange-bead",
+     "campus": "oakland",
+     "do": "Run the Weld Bead Run seat on the Pipe flange bead scenario.",
+     "names_read": [
+      "Weld Bead Run",
+      "Pipe flange bead"
+     ]
+    }
+   ],
+   "records": [
+    "crew",
+    "sim",
+    "walkaround"
+   ],
+   "stages": [
+    "class",
+    "floor"
+   ],
+   "reads": [
+    "agents/registry/crews.json",
+    "sims/registry/sims.json",
+    "surfaces/registry/finishes.json",
+    "web/interiors.py"
+   ],
+   "provenance": {
+    "steps": "AUTHORED",
+    "order": "AUTHORED",
+    "title": "AUTHORED",
+    "why": "AUTHORED",
+    "limits": "AUTHORED",
+    "names": "READ"
+   },
+   "rooms_walked": [
+    "inspection"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": [
+    "inspection"
+   ]
+  },
+  "marine-pipe-know-when-to-come-out": {
+   "id": "marine-pipe-know-when-to-come-out",
+   "hall": "marine-pipe",
+   "hall_name": "Marine Pipefitters",
+   "campus": "oakland",
+   "strand": "procedure",
+   "tier": "applied",
+   "skill_id": "marine-pipe.procedure.applied",
+   "room_label": "Practice Bays",
+   "title": "Know when to come out of the compartment",
+   "why": "Shipboard pipework is welded inside steel boxes, and the person inside is the last one to notice the air has changed.",
+   "limits": "Finishing this is not confined space entry training, not a welding qualification and not an entry permit; the compartment is schematic, and nobody here may authorise anybody to enter a real one.",
+   "steps": [
+    {
+     "n": 1,
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "The floor is where the compartment is rehearsed, which is the only cheap place to rehearse it.",
+     "where": "procedure",
+     "do": "Walk to the Practice Bays \u2014 the floor the trade is actually learned on.",
+     "names_read": [
+      "Practice Bays"
+     ]
+    },
+    {
+     "n": 2,
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Read what the floor is held to before the hatch is even a thought.",
+     "where": "procedure",
+     "do": "Read the door placard of the Practice Bays: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Practice Bays"
+     ]
+    },
+    {
+     "n": 3,
+     "kind": "walkaround",
+     "records": "walkaround",
+     "stage": "floor",
+     "reads": "sims/registry/sims.json",
+     "note": "A charged extinguisher within reach is the difference between a scorch mark and a shift lost.",
+     "where": "yard",
+     "sim": "weld-bead",
+     "point": "firewatch",
+     "do": "Walk the Weld Bead Run seat and mark the point \"Fire watch kit\": extinguisher charged and in reach, combustibles cleared.",
+     "names_read": [
+      "Weld Bead Run",
+      "Fire watch kit"
+     ]
+    },
+    {
+     "n": 4,
+     "kind": "crew",
+     "records": "crew",
+     "stage": "floor",
+     "reads": "agents/registry/crews.json",
+     "note": "Ask what changes the air in there, and hear the answer as a list of reasons to leave.",
+     "where": "yard",
+     "crew": "confined-space-crew",
+     "role": "entrant",
+     "topic": "air",
+     "seat": "weld-bead",
+     "muster": "procedure",
+     "answer_kind": "say",
+     "do": "With the seat running, ask the Confined space entry crew's Entrant: \"What changes the air in here?\"",
+     "names_read": [
+      "Confined space entry crew",
+      "Entrant",
+      "What changes the air in here?"
+     ]
+    },
+    {
+     "n": 5,
+     "kind": "sim",
+     "records": "sim",
+     "stage": "floor",
+     "reads": "sims/registry/sims.json",
+     "note": "Run the bead and notice how much of the score was decided by the checks before it.",
+     "where": "yard",
+     "sim": "weld-bead",
+     "scenario": "oak-flange-bead",
+     "campus": "oakland",
+     "do": "Run the Weld Bead Run seat on the Pipe flange bead scenario.",
+     "names_read": [
+      "Weld Bead Run",
+      "Pipe flange bead"
+     ]
+    }
+   ],
+   "records": [
+    "crew",
+    "sim",
+    "walkaround"
+   ],
+   "stages": [
+    "class",
+    "floor"
+   ],
+   "reads": [
+    "agents/registry/crews.json",
+    "sims/registry/sims.json",
+    "surfaces/registry/finishes.json",
+    "web/interiors.py"
+   ],
+   "provenance": {
+    "steps": "AUTHORED",
+    "order": "AUTHORED",
+    "title": "AUTHORED",
+    "why": "AUTHORED",
+    "limits": "AUTHORED",
+    "names": "READ"
+   },
+   "rooms_walked": [
+    "procedure"
+   ],
+   "hazard_rooms_walked": [
+    "procedure"
+   ],
+   "placard_steps_in": [
+    "procedure"
+   ]
+  },
+  "roofers-mind-the-edge-and-the-skylight": {
+   "id": "roofers-mind-the-edge-and-the-skylight",
+   "hall": "roofers",
+   "hall_name": "Roofers & Waterproofers",
+   "campus": "treasure-island",
+   "strand": "safety",
+   "tier": "applied",
+   "skill_id": "roofers.safety.applied",
+   "room_label": "Induction & PPE",
+   "title": "Mind the edge, and the skylight nobody mentioned",
+   "why": "Roofing falls happen at the edge everybody sees and through the opening nobody briefed, and the room is where both get named.",
+   "limits": "Finishing this is not fall protection training, not competent person standing and not a roof inspection; the bay is schematic, no membrane has been laid, and no authority has reviewed a line of it.",
+   "steps": [
+    {
+     "n": 1,
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Induction is where the edge and the opening both get named out loud before anybody goes up.",
+     "where": "safety",
+     "do": "Walk to the Induction & PPE \u2014 gowning, atmospheric checks, permit board.",
+     "names_read": [
+      "Induction & PPE"
+     ]
+    },
+    {
+     "n": 2,
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Read the line on the door and add the fall protection the task needs on top of it.",
+     "where": "safety",
+     "do": "Read the door placard of the Induction & PPE: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Induction & PPE"
+     ]
+    },
+    {
+     "n": 3,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what the hazard actually is here, rather than the one you were expecting to hear about.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "hazard",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What is the hazard here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What is the hazard here?"
+     ]
+    },
+    {
+     "n": 4,
+     "kind": "walkaround",
+     "records": "walkaround",
+     "stage": "floor",
+     "reads": "sims/registry/sims.json",
+     "note": "A frame that leans by a little at the bottom leans by a lot at the working height.",
+     "where": "yard",
+     "sim": "scaffold-bay",
+     "point": "plumb",
+     "do": "Walk the Scaffold Bay Build seat and mark the point \"Frames plumb and level\": plumb both ways, level across the bay.",
+     "names_read": [
+      "Scaffold Bay Build",
+      "Frames plumb and level"
+     ]
+    },
+    {
+     "n": 5,
+     "kind": "crew",
+     "records": "crew",
+     "stage": "floor",
+     "reads": "agents/registry/crews.json",
+     "note": "Ask what a drop zone is, and notice it is a decision made on the ground, not on the roof.",
+     "where": "yard",
+     "crew": "scaffold-crew",
+     "role": "ground-tender",
+     "topic": "zone",
+     "seat": "scaffold-bay",
+     "muster": "materials",
+     "answer_kind": "say",
+     "do": "With the seat running, ask the Scaffold crew's Ground tender: \"What is a drop zone?\"",
+     "names_read": [
+      "Scaffold crew",
+      "Ground tender",
+      "What is a drop zone?"
+     ]
+    },
+    {
+     "n": 6,
+     "kind": "sim",
+     "records": "sim",
+     "stage": "floor",
+     "reads": "sims/registry/sims.json",
+     "note": "Build the bay in order and let the sequence score show where the shortcut would have been.",
+     "where": "yard",
+     "sim": "scaffold-bay",
+     "scenario": "bay-training-bay",
+     "campus": "treasure-island",
+     "do": "Run the Scaffold Bay Build seat on the Yard training bay scenario.",
+     "names_read": [
+      "Scaffold Bay Build",
+      "Yard training bay"
+     ]
+    }
+   ],
+   "records": [
+    "advisor",
+    "crew",
+    "sim",
+    "walkaround"
+   ],
+   "stages": [
+    "class",
+    "floor"
+   ],
+   "reads": [
+    "agents/registry/advisors.json",
+    "agents/registry/crews.json",
+    "sims/registry/sims.json",
+    "surfaces/registry/finishes.json",
+    "web/interiors.py"
+   ],
+   "provenance": {
+    "steps": "AUTHORED",
+    "order": "AUTHORED",
+    "title": "AUTHORED",
+    "why": "AUTHORED",
+    "limits": "AUTHORED",
+    "names": "READ"
+   },
+   "rooms_walked": [
+    "safety"
+   ],
+   "hazard_rooms_walked": [
+    "safety"
+   ],
+   "placard_steps_in": [
+    "safety"
+   ]
+  },
+  "insulators-stay-inside-the-rails": {
+   "id": "insulators-stay-inside-the-rails",
+   "hall": "insulators",
+   "hall_name": "Heat & Frost Insulators",
+   "campus": "treasure-island",
+   "strand": "materials",
+   "tier": "applied",
+   "skill_id": "insulators.materials.applied",
+   "room_label": "Materials Store",
+   "title": "Stay inside the rails while you reach",
+   "why": "Insulation work is reaching work, and reaching from a basket is where a guardrail stops being furniture.",
+   "limits": "Finishing this is not aerial lift operator training and no lift has been inspected; the basket is schematic, the material here weighs nothing, and no employer or jurisdiction issues anything from it.",
+   "steps": [
+    {
+     "n": 1,
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Stock and consumables are staged here, and what is staged badly is what gets reached for badly.",
+     "where": "materials",
+     "do": "Walk to the Materials Store \u2014 stock, offcuts and consumables.",
+     "names_read": [
+      "Materials Store"
+     ]
+    },
+    {
+     "n": 2,
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Read what the store is held to; a material room has conditions like any other.",
+     "where": "materials",
+     "do": "Read the door placard of the Materials Store: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Materials Store"
+     ]
+    },
+    {
+     "n": 3,
+     "kind": "crib",
+     "records": null,
+     "stage": "class",
+     "reads": "tools/registry/toolcribs.json",
+     "note": "Five picks against the district record, and the point is naming the kit rather than recognising it.",
+     "where": "tools",
+     "crib": "envelope",
+     "do": "Run the Crib check at the Envelope & finish tool crib pegboard \u2014 5 picks.",
+     "names_read": [
+      "Envelope & finish tool crib",
+      "Crib check",
+      "Tool Crib"
+     ]
+    },
+    {
+     "n": 4,
+     "kind": "walkaround",
+     "records": "walkaround",
+     "stage": "floor",
+     "reads": "sims/registry/sims.json",
+     "note": "A gate that does not latch behind you is an opening at working height, whatever it looks like.",
+     "where": "yard",
+     "sim": "boom-lift",
+     "point": "guardrails",
+     "do": "Walk the Boom Lift Basket Work seat and mark the point \"Guardrails and gate\": rails tight, the gate self-closes and latches behind you.",
+     "names_read": [
+      "Boom Lift Basket Work",
+      "Guardrails and gate"
+     ]
+    },
+    {
+     "n": 5,
+     "kind": "crew",
+     "records": "crew",
+     "stage": "floor",
+     "reads": "agents/registry/crews.json",
+     "note": "Ask why the person on the ground stays within sight and sound, and hear it as a rescue plan.",
+     "where": "yard",
+     "crew": "aerial-lift-crew",
+     "role": "ground-attendant",
+     "topic": "sight",
+     "seat": "boom-lift",
+     "muster": "inspection",
+     "answer_kind": "say",
+     "do": "With the seat running, ask the Aerial lift crew's Ground attendant: \"Why stay within sight and sound?\"",
+     "names_read": [
+      "Aerial lift crew",
+      "Ground attendant",
+      "Why stay within sight and sound?"
+     ]
+    },
+    {
+     "n": 6,
+     "kind": "sim",
+     "records": "sim",
+     "stage": "floor",
+     "reads": "sims/registry/sims.json",
+     "note": "Work the points in order and let the envelope warnings teach you where the reach ends.",
+     "where": "yard",
+     "sim": "boom-lift",
+     "scenario": "bay-curtainwall-run",
+     "campus": "treasure-island",
+     "do": "Run the Boom Lift Basket Work seat on the Curtain-wall panel run scenario.",
+     "names_read": [
+      "Boom Lift Basket Work",
+      "Curtain-wall panel run"
+     ]
+    }
+   ],
+   "records": [
+    "crew",
+    "sim",
+    "walkaround"
+   ],
+   "stages": [
+    "class",
+    "floor"
+   ],
+   "reads": [
+    "agents/registry/crews.json",
+    "sims/registry/sims.json",
+    "surfaces/registry/finishes.json",
+    "tools/registry/toolcribs.json",
+    "web/interiors.py"
+   ],
+   "provenance": {
+    "steps": "AUTHORED",
+    "order": "AUTHORED",
+    "title": "AUTHORED",
+    "why": "AUTHORED",
+    "limits": "AUTHORED",
+    "names": "READ"
+   },
+   "rooms_walked": [
+    "materials",
+    "tools"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": [
+    "materials"
+   ]
+  },
+  "plasterers-pin-every-brace": {
+   "id": "plasterers-pin-every-brace",
+   "hall": "plasterers",
+   "hall_name": "Plasterers",
+   "campus": "treasure-island",
+   "strand": "procedure",
+   "tier": "applied",
+   "skill_id": "plasterers.procedure.applied",
+   "room_label": "Practice Bays",
+   "title": "Pin every brace before the first hawk goes up",
+   "why": "Plastering is done off a platform, and a platform is only as good as the brace somebody did not quite pin.",
+   "limits": "Finishing this is not scaffold erector standing and not a plastering qualification; the bay is schematic, no coat has been applied, and the sequence here is unverified general practice awaiting the hall.",
+   "steps": [
+    {
+     "n": 1,
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "The floor is where the platform gets built wrong a few times first, which is why the lesson stands here.",
+     "where": "procedure",
+     "do": "Walk to the Practice Bays \u2014 the floor the trade is actually learned on.",
+     "names_read": [
+      "Practice Bays"
+     ]
+    },
+    {
+     "n": 2,
+     "kind": "walkaround",
+     "records": "walkaround",
+     "stage": "floor",
+     "reads": "sims/registry/sims.json",
+     "note": "A brace that is sprung rather than pinned is a brace that is not there when the load comes.",
+     "where": "yard",
+     "sim": "scaffold-bay",
+     "point": "brace-pins",
+     "do": "Walk the Scaffold Bay Build seat and mark the point \"Brace pins\": every brace pinned home, none sprung.",
+     "names_read": [
+      "Scaffold Bay Build",
+      "Brace pins"
+     ]
+    },
+    {
+     "n": 3,
+     "kind": "crew",
+     "records": "crew",
+     "stage": "floor",
+     "reads": "agents/registry/crews.json",
+     "note": "Ask why the order matters that much, and hear the answer as a description of who is exposed when.",
+     "where": "yard",
+     "crew": "scaffold-crew",
+     "role": "erector",
+     "topic": "why",
+     "seat": "scaffold-bay",
+     "muster": "materials",
+     "answer_kind": "say",
+     "do": "With the seat running, ask the Scaffold crew's Erector: \"Why does the order matter that much?\"",
+     "names_read": [
+      "Scaffold crew",
+      "Erector",
+      "Why does the order matter that much?"
+     ]
+    },
+    {
+     "n": 4,
+     "kind": "sim",
+     "records": "sim",
+     "stage": "floor",
+     "reads": "sims/registry/sims.json",
+     "note": "Build it in order and notice the step you wanted to skip because it looked finished already.",
+     "where": "yard",
+     "sim": "scaffold-bay",
+     "scenario": "bay-training-bay",
+     "campus": "treasure-island",
+     "do": "Run the Scaffold Bay Build seat on the Yard training bay scenario.",
+     "names_read": [
+      "Scaffold Bay Build",
+      "Yard training bay"
+     ]
+    },
+    {
+     "n": 5,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask whether a good explanation can stand in for a measurement, and note how short the answer is.",
+     "where": "inspection",
+     "advisor": "inspector",
+     "topic": "score",
+     "answer_kind": "say",
+     "do": "Ask the Inspector in the Inspection Bench: \"Can I talk my way to a pass?\"",
+     "names_read": [
+      "Inspection Bench",
+      "Inspector",
+      "Can I talk my way to a pass?"
+     ]
+    }
+   ],
+   "records": [
+    "advisor",
+    "crew",
+    "sim",
+    "walkaround"
+   ],
+   "stages": [
+    "class",
+    "floor"
+   ],
+   "reads": [
+    "agents/registry/advisors.json",
+    "agents/registry/crews.json",
+    "sims/registry/sims.json",
+    "web/interiors.py"
+   ],
+   "provenance": {
+    "steps": "AUTHORED",
+    "order": "AUTHORED",
+    "title": "AUTHORED",
+    "why": "AUTHORED",
+    "limits": "AUTHORED",
+    "names": "READ"
+   },
+   "rooms_walked": [
+    "inspection",
+    "procedure"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": []
+  },
+  "firestop-write-down-what-you-sealed": {
+   "id": "firestop-write-down-what-you-sealed",
+   "hall": "firestop",
+   "hall_name": "Firestop Installers",
+   "campus": "treasure-island",
+   "strand": "documentation",
+   "tier": "fundamentals",
+   "skill_id": "firestop.documentation.fundamentals",
+   "room_label": "Records",
+   "title": "Write down what you sealed and with what",
+   "why": "A firestop seal is judged years later by somebody reading a record, and a seal with no record is a hole with a good story.",
+   "limits": "Finishing this is not a firestop qualification and no listed system has been installed; the record here is a teaching prop, and no inspector or authority has accepted anything on the strength of it.",
+   "steps": [
+    {
+     "n": 1,
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Permits, certificates and as-builts live together here, and a seal record is an as-built in miniature.",
+     "where": "documentation",
+     "do": "Walk to the Records \u2014 permits, certificates, as-builts.",
+     "names_read": [
+      "Records"
+     ]
+    },
+    {
+     "n": 2,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask where what you did is actually kept, and who can read it after you have gone.",
+     "where": "documentation",
+     "advisor": "records-clerk",
+     "topic": "where",
+     "answer_kind": "say",
+     "do": "Ask the Records clerk in the Records: \"Where does my progress go?\"",
+     "names_read": [
+      "Records",
+      "Records clerk",
+      "Where does my progress go?"
+     ]
+    },
+    {
+     "n": 3,
+     "kind": "walkaround",
+     "records": "walkaround",
+     "stage": "floor",
+     "reads": "sims/registry/sims.json",
+     "note": "A tag that does not match what is built is a record that lies, and a lying record is worse than none.",
+     "where": "yard",
+     "sim": "scaffold-bay",
+     "point": "tag",
+     "do": "Walk the Scaffold Bay Build seat and mark the point \"The scaffold tag\": current, signed, and matching what is built.",
+     "names_read": [
+      "Scaffold Bay Build",
+      "The scaffold tag"
+     ]
+    },
+    {
+     "n": 4,
+     "kind": "crew",
+     "records": "crew",
+     "stage": "floor",
+     "reads": "agents/registry/crews.json",
+     "note": "Ask what the tag actually says, and notice how little of it is about the platform being finished.",
+     "where": "yard",
+     "crew": "scaffold-crew",
+     "role": "scaffold-competent-person",
+     "topic": "tag",
+     "seat": "scaffold-bay",
+     "muster": "materials",
+     "answer_kind": "say",
+     "do": "With the seat running, ask the Scaffold crew's Competent person: \"What does the tag actually say?\"",
+     "names_read": [
+      "Scaffold crew",
+      "Competent person",
+      "What does the tag actually say?"
+     ]
+    }
+   ],
+   "records": [
+    "advisor",
+    "crew",
+    "walkaround"
+   ],
+   "stages": [
+    "class",
+    "floor"
+   ],
+   "reads": [
+    "agents/registry/advisors.json",
+    "agents/registry/crews.json",
+    "sims/registry/sims.json",
+    "web/interiors.py"
+   ],
+   "provenance": {
+    "steps": "AUTHORED",
+    "order": "AUTHORED",
+    "title": "AUTHORED",
+    "why": "AUTHORED",
+    "limits": "AUTHORED",
+    "names": "READ"
+   },
+   "rooms_walked": [
+    "documentation"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": []
+  },
+  "cladding-check-the-plank-you-stand-on": {
+   "id": "cladding-check-the-plank-you-stand-on",
+   "hall": "cladding",
+   "hall_name": "Rainscreen Cladding Fitters",
+   "campus": "treasure-island",
+   "strand": "inspection",
+   "tier": "applied",
+   "skill_id": "cladding.inspection.applied",
+   "room_label": "Inspection Bench",
+   "title": "Check the plank you are about to stand on",
+   "why": "Rainscreen panels are hung from a platform, and the panel gets more attention than the plank it is being hung from.",
+   "limits": "Finishing this is not a cladding qualification and not a scaffold inspection; the bay is schematic, no panel has been hung, and the acceptance criteria here are unverified general practice.",
+   "steps": [
+    {
+     "n": 1,
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Acceptance criteria and sign-off live here, and a plank is accepted before it is stood on.",
+     "where": "inspection",
+     "do": "Walk to the Inspection Bench \u2014 acceptance criteria and sign-off.",
+     "names_read": [
+      "Inspection Bench"
+     ]
+    },
+    {
+     "n": 2,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what the seat measures, so what you look for on the bay is what the bay is scored on.",
+     "where": "inspection",
+     "advisor": "inspector",
+     "topic": "measures",
+     "answer_kind": "read",
+     "do": "Ask the Inspector in the Inspection Bench: \"What does the seat here measure?\"",
+     "names_read": [
+      "Inspection Bench",
+      "Inspector",
+      "What does the seat here measure?"
+     ]
+    },
+    {
+     "n": 3,
+     "kind": "walkaround",
+     "records": "walkaround",
+     "stage": "floor",
+     "reads": "sims/registry/sims.json",
+     "note": "A crack is a reason to change the plank, not a reason to stand on the other end of it.",
+     "where": "yard",
+     "sim": "scaffold-bay",
+     "point": "planks",
+     "do": "Walk the Scaffold Bay Build seat and mark the point \"Plank condition\": no cracks, full bearing, cleats where the spec asks.",
+     "names_read": [
+      "Scaffold Bay Build",
+      "Plank condition"
+     ]
+    },
+    {
+     "n": 4,
+     "kind": "sim",
+     "records": "sim",
+     "stage": "floor",
+     "reads": "sims/registry/sims.json",
+     "note": "Build the bay and let the sequence score tell you where you would have been standing on nothing.",
+     "where": "yard",
+     "sim": "scaffold-bay",
+     "scenario": "bay-training-bay",
+     "campus": "treasure-island",
+     "do": "Run the Scaffold Bay Build seat on the Yard training bay scenario.",
+     "names_read": [
+      "Scaffold Bay Build",
+      "Yard training bay"
+     ]
+    }
+   ],
+   "records": [
+    "advisor",
+    "sim",
+    "walkaround"
+   ],
+   "stages": [
+    "class",
+    "floor"
+   ],
+   "reads": [
+    "agents/registry/advisors.json",
+    "sims/registry/sims.json",
+    "web/interiors.py"
+   ],
+   "provenance": {
+    "steps": "AUTHORED",
+    "order": "AUTHORED",
+    "title": "AUTHORED",
+    "why": "AUTHORED",
+    "limits": "AUTHORED",
+    "names": "READ"
+   },
+   "rooms_walked": [
+    "inspection"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": []
+  },
+  "curtainwall-fuss-about-the-sills": {
+   "id": "curtainwall-fuss-about-the-sills",
+   "hall": "curtainwall",
+   "hall_name": "Curtain Wall Erectors",
+   "campus": "treasure-island",
+   "strand": "coordination",
+   "tier": "applied",
+   "skill_id": "curtainwall.coordination.applied",
+   "room_label": "Briefing Room",
+   "title": "Make the fuss about the sills early",
+   "why": "A unitised panel run is sequenced days ahead, and the bay that carries it stands on whatever was put under it on the first morning.",
+   "limits": "Finishing this is not curtain wall erector standing and not a sequencing plan; the bay is schematic, no anchor has been set, and no employer or hall has reviewed or signed any of it.",
+   "steps": [
+    {
+     "n": 1,
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Hand-offs are made here, and the sequence of a panel run is a hand-off written down in advance.",
+     "where": "coordination",
+     "do": "Walk to the Briefing Room \u2014 shift start, hand-offs, cross-trade.",
+     "names_read": [
+      "Briefing Room"
+     ]
+    },
+    {
+     "n": 2,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what makes a hand-off good, then compare it with what usually gets said at the door.",
+     "where": "coordination",
+     "advisor": "foreman",
+     "topic": "handoff",
+     "answer_kind": "say",
+     "do": "Ask the Foreman in the Briefing Room: \"What makes a hand-off good?\"",
+     "names_read": [
+      "Briefing Room",
+      "Foreman",
+      "What makes a hand-off good?"
+     ]
+    },
+    {
+     "n": 3,
+     "kind": "walkaround",
+     "records": "walkaround",
+     "stage": "floor",
+     "reads": "sims/registry/sims.json",
+     "note": "Blocks and debris under a standard are a base that will move, and everything above it moves with it.",
+     "where": "yard",
+     "sim": "scaffold-bay",
+     "point": "sills",
+     "do": "Walk the Scaffold Bay Build seat and mark the point \"Sills and bearing\": full bearing on grade, no blocks or debris packing.",
+     "names_read": [
+      "Scaffold Bay Build",
+      "Sills and bearing"
+     ]
+    },
+    {
+     "n": 4,
+     "kind": "crew",
+     "records": "crew",
+     "stage": "floor",
+     "reads": "agents/registry/crews.json",
+     "note": "Ask why so much fuss is made at the bottom, and hear the answer as the rest of the bay explained.",
+     "where": "yard",
+     "crew": "scaffold-crew",
+     "role": "erector",
+     "topic": "base",
+     "seat": "scaffold-bay",
+     "muster": "materials",
+     "answer_kind": "say",
+     "do": "With the seat running, ask the Scaffold crew's Erector: \"Why so much fuss about the sills?\"",
+     "names_read": [
+      "Scaffold crew",
+      "Erector",
+      "Why so much fuss about the sills?"
+     ]
+    },
+    {
+     "n": 5,
+     "kind": "sim",
+     "records": "sim",
+     "stage": "floor",
+     "reads": "sims/registry/sims.json",
+     "note": "Build it in order and notice that the first step is the one the score remembers longest.",
+     "where": "yard",
+     "sim": "scaffold-bay",
+     "scenario": "bay-training-bay",
+     "campus": "treasure-island",
+     "do": "Run the Scaffold Bay Build seat on the Yard training bay scenario.",
+     "names_read": [
+      "Scaffold Bay Build",
+      "Yard training bay"
+     ]
+    }
+   ],
+   "records": [
+    "advisor",
+    "crew",
+    "sim",
+    "walkaround"
+   ],
+   "stages": [
+    "class",
+    "floor"
+   ],
+   "reads": [
+    "agents/registry/advisors.json",
+    "agents/registry/crews.json",
+    "sims/registry/sims.json",
+    "web/interiors.py"
+   ],
+   "provenance": {
+    "steps": "AUTHORED",
+    "order": "AUTHORED",
+    "title": "AUTHORED",
+    "why": "AUTHORED",
+    "limits": "AUTHORED",
+    "names": "READ"
+   },
+   "rooms_walked": [
+    "coordination"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": []
+  },
+  "window-glazing-let-the-ground-judge-it": {
+   "id": "window-glazing-let-the-ground-judge-it",
+   "hall": "window-glazing",
+   "hall_name": "Architectural Glaziers",
+   "campus": "treasure-island",
+   "strand": "machines",
+   "tier": "applied",
+   "skill_id": "window-glazing.machines.applied",
+   "room_label": "Equipment Bay",
+   "title": "Let the ground judge the clearance, not the basket",
+   "why": "From a basket every overhead line looks further away than it is, and the person who can actually judge it is standing on the ground.",
+   "limits": "Finishing this is not aerial lift operator training and no clearance has been measured; the machine here is schematic, the lines are drawn, and nothing recorded is read by any employer or authority.",
+   "steps": [
+    {
+     "n": 1,
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "The bay is where a machine gets checked out to a training area rather than borrowed, so the run starts here.",
+     "where": "machines",
+     "do": "Walk to the Equipment Bay \u2014 plant checked out to a training area.",
+     "names_read": [
+      "Equipment Bay"
+     ]
+    },
+    {
+     "n": 2,
+     "kind": "walkaround",
+     "records": "walkaround",
+     "stage": "floor",
+     "reads": "sims/registry/sims.json",
+     "note": "Every function is tried from both stations before you trust either, and the manual lowering is tried too.",
+     "where": "yard",
+     "sim": "boom-lift",
+     "point": "controls",
+     "do": "Walk the Boom Lift Basket Work seat and mark the point \"Controls and emergency lowering\": every function answers at the basket and the ground station, and the manual lowering valve works.",
+     "names_read": [
+      "Boom Lift Basket Work",
+      "Controls and emergency lowering"
+     ]
+    },
+    {
+     "n": 3,
+     "kind": "crew",
+     "records": "crew",
+     "stage": "floor",
+     "reads": "agents/registry/crews.json",
+     "note": "Ask why the basket cannot judge it, and hear the answer as a reason to keep somebody on the ground.",
+     "where": "yard",
+     "crew": "aerial-lift-crew",
+     "role": "line-observer",
+     "topic": "judge",
+     "seat": "boom-lift",
+     "muster": "inspection",
+     "answer_kind": "say",
+     "do": "With the seat running, ask the Aerial lift crew's Line observer: \"Why can the basket not judge it?\"",
+     "names_read": [
+      "Aerial lift crew",
+      "Line observer",
+      "Why can the basket not judge it?"
+     ]
+    },
+    {
+     "n": 4,
+     "kind": "sim",
+     "records": "sim",
+     "stage": "floor",
+     "reads": "sims/registry/sims.json",
+     "note": "Work the points in order and let the envelope warnings teach you the shape of the machine.",
+     "where": "yard",
+     "sim": "boom-lift",
+     "scenario": "bay-curtainwall-run",
+     "campus": "treasure-island",
+     "do": "Run the Boom Lift Basket Work seat on the Curtain-wall panel run scenario.",
+     "names_read": [
+      "Boom Lift Basket Work",
+      "Curtain-wall panel run"
+     ]
+    }
+   ],
+   "records": [
+    "crew",
+    "sim",
+    "walkaround"
+   ],
+   "stages": [
+    "class",
+    "floor"
+   ],
+   "reads": [
+    "agents/registry/crews.json",
+    "sims/registry/sims.json",
+    "web/interiors.py"
+   ],
+   "provenance": {
+    "steps": "AUTHORED",
+    "order": "AUTHORED",
+    "title": "AUTHORED",
+    "why": "AUTHORED",
+    "limits": "AUTHORED",
+    "names": "READ"
+   },
+   "rooms_walked": [
+    "machines"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": []
+  },
+  "sheetmetal-name-the-kit-before-you-climb": {
+   "id": "sheetmetal-name-the-kit-before-you-climb",
+   "hall": "sheetmetal",
+   "hall_name": "Sheet Metal Workers",
+   "campus": "treasure-island",
+   "strand": "tools",
+   "tier": "fundamentals",
+   "skill_id": "sheetmetal.tools.fundamentals",
+   "room_label": "Tool Crib",
+   "title": "Name the kit before you take it up",
+   "why": "Duct is hung from a basket with tools that were issued on the ground, and what you cannot name you cannot ask for.",
+   "limits": "Finishing this is not a sheet metal qualification and issues nothing real; the crib is a teaching prop, the basket is schematic, and no employer or hall has signed anything on the strength of it.",
+   "steps": [
+    {
+     "n": 1,
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Issue, calibration and return are one loop, and this room is the whole loop.",
+     "where": "tools",
+     "do": "Walk to the Tool Crib \u2014 issue, calibration and return.",
+     "names_read": [
+      "Tool Crib"
+     ]
+    },
+    {
+     "n": 2,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask how the check is scored before you run it, so you are not guessing at the rules.",
+     "where": "tools",
+     "advisor": "crib-keeper",
+     "topic": "drill",
+     "answer_kind": "read",
+     "do": "Ask the Crib keeper in the Tool Crib: \"How is the crib check scored?\"",
+     "names_read": [
+      "Tool Crib",
+      "Crib keeper",
+      "How is the crib check scored?"
+     ]
+    },
+    {
+     "n": 3,
+     "kind": "crib",
+     "records": null,
+     "stage": "class",
+     "reads": "tools/registry/toolcribs.json",
+     "note": "Five picks against the district record, graded deterministically and unforgiving about near-misses.",
+     "where": "tools",
+     "crib": "systems",
+     "do": "Run the Crib check at the Building-systems tool crib pegboard \u2014 5 picks.",
+     "names_read": [
+      "Building-systems tool crib",
+      "Crib check",
+      "Tool Crib"
+     ]
+    },
+    {
+     "n": 4,
+     "kind": "walkaround",
+     "records": "walkaround",
+     "stage": "floor",
+     "reads": "sims/registry/sims.json",
+     "note": "A pad that is not level under every foot is a machine that will tell you so at full height.",
+     "where": "yard",
+     "sim": "boom-lift",
+     "point": "tires-level",
+     "do": "Walk the Boom Lift Basket Work seat and mark the point \"Tires, outriggers and the pad\": tires sound, outrigger pads whole, the pad level and firm under every foot.",
+     "names_read": [
+      "Boom Lift Basket Work",
+      "Tires, outriggers and the pad"
+     ]
+    },
+    {
+     "n": 5,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what the seat is for before you go up, so the run has a purpose rather than a route.",
+     "where": "yard",
+     "advisor": "operator",
+     "topic": "task",
+     "answer_kind": "read",
+     "do": "Ask the Operator at the hall yard: \"What am I trying to do here?\"",
+     "names_read": [
+      "Operator",
+      "What am I trying to do here?"
+     ]
+    }
+   ],
+   "records": [
+    "advisor",
+    "walkaround"
+   ],
+   "stages": [
+    "class",
+    "floor"
+   ],
+   "reads": [
+    "agents/registry/advisors.json",
+    "sims/registry/sims.json",
+    "tools/registry/toolcribs.json",
+    "web/interiors.py"
+   ],
+   "provenance": {
+    "steps": "AUTHORED",
+    "order": "AUTHORED",
+    "title": "AUTHORED",
+    "why": "AUTHORED",
+    "limits": "AUTHORED",
+    "names": "READ"
+   },
+   "rooms_walked": [
+    "tools"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": []
+  },
+  "machinists-move-the-job-without-marking-it": {
+   "id": "machinists-move-the-job-without-marking-it",
+   "hall": "machinists",
+   "hall_name": "Machinists",
+   "campus": "oakland",
+   "strand": "inspection",
+   "tier": "applied",
+   "skill_id": "machinists.inspection.applied",
+   "room_label": "Inspection Bench",
+   "title": "Move the job across the shop without marking it",
+   "why": "A machined face is ruined in the handling more often than at the machine, and the shop move is where that happens.",
+   "limits": "Finishing this is not overhead crane authorisation and no fit has been measured; the load here is schematic, the tolerances are drawn, and no shop or inspector has accepted anything from it.",
+   "steps": [
+    {
+     "n": 1,
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Acceptance lives here, and a part that arrives marked has already failed it.",
+     "where": "inspection",
+     "do": "Walk to the Inspection Bench \u2014 acceptance criteria and sign-off.",
+     "names_read": [
+      "Inspection Bench"
+     ]
+    },
+    {
+     "n": 2,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what the seat measures, because placement is the number and sway is the reason behind it.",
+     "where": "inspection",
+     "advisor": "inspector",
+     "topic": "measures",
+     "answer_kind": "read",
+     "do": "Ask the Inspector in the Inspection Bench: \"What does the seat here measure?\"",
+     "names_read": [
+      "Inspection Bench",
+      "Inspector",
+      "What does the seat here measure?"
+     ]
+    },
+    {
+     "n": 3,
+     "kind": "walkaround",
+     "records": "walkaround",
+     "stage": "floor",
+     "reads": "sims/registry/sims.json",
+     "note": "A latch that does not spring back is an open hook, and an open hook is a part on the floor.",
+     "where": "yard",
+     "sim": "overhead-crane",
+     "point": "hook",
+     "do": "Walk the Overhead Crane Shop Move seat and mark the point \"Hook latch and block\": latch closes and springs back, no throat stretch or twist, sheaves turning free.",
+     "names_read": [
+      "Overhead Crane Shop Move",
+      "Hook latch and block"
+     ]
+    },
+    {
+     "n": 4,
+     "kind": "sim",
+     "records": "sim",
+     "stage": "floor",
+     "reads": "sims/registry/sims.json",
+     "note": "Move it slowly enough that the sway settles before the part meets anything.",
+     "where": "yard",
+     "sim": "overhead-crane",
+     "scenario": "oak-foundry-ladle",
+     "campus": "oakland",
+     "do": "Run the Overhead Crane Shop Move seat on the Foundry ladle-frame move scenario.",
+     "names_read": [
+      "Overhead Crane Shop Move",
+      "Foundry ladle-frame move"
+     ]
+    }
+   ],
+   "records": [
+    "advisor",
+    "sim",
+    "walkaround"
+   ],
+   "stages": [
+    "class",
+    "floor"
+   ],
+   "reads": [
+    "agents/registry/advisors.json",
+    "sims/registry/sims.json",
+    "web/interiors.py"
+   ],
+   "provenance": {
+    "steps": "AUTHORED",
+    "order": "AUTHORED",
+    "title": "AUTHORED",
+    "why": "AUTHORED",
+    "limits": "AUTHORED",
+    "names": "READ"
+   },
+   "rooms_walked": [
+    "inspection"
+   ],
+   "hazard_rooms_walked": [],
+   "placard_steps_in": []
+  },
+  "foundry-clear-the-runway-first": {
+   "id": "foundry-clear-the-runway-first",
+   "hall": "foundry",
+   "hall_name": "Foundry Workers",
+   "campus": "oakland",
+   "strand": "materials",
+   "tier": "applied",
+   "skill_id": "foundry.materials.applied",
+   "room_label": "Materials Store",
+   "title": "Clear the runway before the ladle moves",
+   "why": "A ladle frame crosses a floor full of people and sand, and the move is safe or not before the hook ever takes weight.",
+   "limits": "Finishing this is not overhead crane authorisation and not foundry floor standing; nothing here is molten, the frame weighs nothing, and no employer or jurisdiction issues anything on the strength of it.",
+   "steps": [
+    {
+     "n": 1,
+     "kind": "walk",
+     "records": null,
+     "stage": "class",
+     "reads": "web/interiors.py",
+     "note": "Sand, stock and consumables are staged here, and how they are staged decides what is in the way later.",
+     "where": "materials",
+     "do": "Walk to the Materials Store \u2014 stock, offcuts and consumables.",
+     "names_read": [
+      "Materials Store"
+     ]
+    },
+    {
+     "n": 2,
+     "kind": "placard",
+     "records": null,
+     "stage": "class",
+     "reads": "surfaces/registry/finishes.json",
+     "note": "Read what the store is held to; conditions matter here more than almost anywhere in the hall.",
+     "where": "materials",
+     "do": "Read the door placard of the Materials Store: it states the light, air, noise and protective equipment that room is held to.",
+     "label_kind": "placard",
+     "names_read": [
+      "Materials Store"
+     ]
+    },
+    {
+     "n": 3,
+     "kind": "crib",
+     "records": null,
+     "stage": "class",
+     "reads": "tools/registry/toolcribs.json",
+     "note": "Five picks against the district record; industry kit is unforgiving about improvisation.",
+     "where": "tools",
+     "crib": "industry",
+     "do": "Run the Crib check at the Heavy-industry tool crib pegboard \u2014 5 picks.",
+     "names_read": [
+      "Heavy-industry tool crib",
+      "Crib check",
+      "Tool Crib"
+     ]
+    },
+    {
+     "n": 4,
+     "kind": "walkaround",
+     "records": "walkaround",
+     "stage": "floor",
+     "reads": "sims/registry/sims.json",
+     "note": "A route with somebody standing under it is not a route, whatever the drawing says.",
+     "where": "yard",
+     "sim": "overhead-crane",
+     "point": "runway",
+     "do": "Walk the Overhead Crane Shop Move seat and mark the point \"Runway and aisle\": runway clear end to end, the pedestrian aisle marked and nobody standing under the route.",
+     "names_read": [
+      "Overhead Crane Shop Move",
+      "Runway and aisle"
+     ]
+    },
+    {
+     "n": 5,
+     "kind": "sim",
+     "records": "sim",
+     "stage": "floor",
+     "reads": "sims/registry/sims.json",
+     "note": "Run the frame move and notice how much of the score was the floor you cleared first.",
+     "where": "yard",
+     "sim": "overhead-crane",
+     "scenario": "oak-foundry-ladle",
+     "campus": "oakland",
+     "do": "Run the Overhead Crane Shop Move seat on the Foundry ladle-frame move scenario.",
+     "names_read": [
+      "Overhead Crane Shop Move",
+      "Foundry ladle-frame move"
+     ]
+    },
+    {
+     "n": 6,
+     "kind": "advisor",
+     "records": "advisor",
+     "stage": "class",
+     "reads": "agents/registry/advisors.json",
+     "note": "Ask what the hazard in this hall actually is, and hear the answer as the reason for the whole lesson.",
+     "where": "safety",
+     "advisor": "safety-steward",
+     "topic": "hazard",
+     "answer_kind": "read",
+     "do": "Ask the Safety steward in the Induction & PPE: \"What is the hazard here?\"",
+     "names_read": [
+      "Induction & PPE",
+      "Safety steward",
+      "What is the hazard here?"
+     ]
+    }
+   ],
+   "records": [
+    "advisor",
+    "sim",
+    "walkaround"
+   ],
+   "stages": [
+    "class",
+    "floor"
+   ],
+   "reads": [
+    "agents/registry/advisors.json",
+    "sims/registry/sims.json",
+    "surfaces/registry/finishes.json",
+    "tools/registry/toolcribs.json",
+    "web/interiors.py"
+   ],
+   "provenance": {
+    "steps": "AUTHORED",
+    "order": "AUTHORED",
+    "title": "AUTHORED",
+    "why": "AUTHORED",
+    "limits": "AUTHORED",
+    "names": "READ"
+   },
+   "rooms_walked": [
+    "materials",
+    "safety",
+    "tools"
+   ],
+   "hazard_rooms_walked": [
+    "materials"
+   ],
+   "placard_steps_in": [
+    "materials"
+   ]
   }
  },
  "ladder": {
@@ -3564,6 +6915,126 @@
    {
     "lesson": "glaziers-watch-the-line",
     "needs": "electricians-clip-in-first",
+    "because": "same-seat"
+   },
+   {
+    "lesson": "steel-erectors-land-it-on-the-bolts",
+    "needs": "riggers-first-card",
+    "because": "same-district-crib"
+   },
+   {
+    "lesson": "steel-erectors-land-it-on-the-bolts",
+    "needs": "riggers-carry-under-control",
+    "because": "same-seat"
+   },
+   {
+    "lesson": "port-crane-read-the-rope",
+    "needs": "riggers-carry-under-control",
+    "because": "same-seat"
+   },
+   {
+    "lesson": "decking-walk-the-path-first",
+    "needs": "riggers-first-card",
+    "because": "same-seat"
+   },
+   {
+    "lesson": "tank-erectors-isolate-before-testing",
+    "needs": "boilermakers-get-them-out",
+    "because": "same-seat"
+   },
+   {
+    "lesson": "piling-stand-the-rig-on-something",
+    "needs": "riggers-carry-under-control",
+    "because": "same-seat"
+   },
+   {
+    "lesson": "shoring-read-the-ground-again",
+    "needs": "operating-eng-locate-first",
+    "because": "same-seat"
+   },
+   {
+    "lesson": "laborers-stand-where-the-cab-can-see",
+    "needs": "demolition-stand-back",
+    "because": "same-seat"
+   },
+   {
+    "lesson": "heavy-equip-listen-to-the-dash",
+    "needs": "teamsters-check-the-truck-before-the-load",
+    "because": "same-seat"
+   },
+   {
+    "lesson": "marine-terminal-brief-the-lane",
+    "needs": "teamsters-check-the-truck-before-the-load",
+    "because": "same-seat"
+   },
+   {
+    "lesson": "shipfitters-say-what-you-cannot-see",
+    "needs": "welders-the-watch",
+    "because": "same-seat"
+   },
+   {
+    "lesson": "fabricators-lay-it-out-then-prove-it",
+    "needs": "shipfitters-say-what-you-cannot-see",
+    "because": "same-seat"
+   },
+   {
+    "lesson": "pipeline-close-the-permit-properly",
+    "needs": "tank-erectors-isolate-before-testing",
+    "because": "same-district-crib"
+   },
+   {
+    "lesson": "marine-pipe-know-when-to-come-out",
+    "needs": "pipeline-close-the-permit-properly",
+    "because": "same-seat"
+   },
+   {
+    "lesson": "roofers-mind-the-edge-and-the-skylight",
+    "needs": "scaffold-read-the-tag",
+    "because": "same-seat"
+   },
+   {
+    "lesson": "insulators-stay-inside-the-rails",
+    "needs": "electricians-clip-in-first",
+    "because": "same-seat"
+   },
+   {
+    "lesson": "plasterers-pin-every-brace",
+    "needs": "scaffold-build-in-order",
+    "because": "same-seat"
+   },
+   {
+    "lesson": "firestop-write-down-what-you-sealed",
+    "needs": "tilesetters-start-underneath",
+    "because": "same-district-crib"
+   },
+   {
+    "lesson": "cladding-check-the-plank-you-stand-on",
+    "needs": "firestop-write-down-what-you-sealed",
+    "because": "same-seat"
+   },
+   {
+    "lesson": "curtainwall-fuss-about-the-sills",
+    "needs": "cladding-check-the-plank-you-stand-on",
+    "because": "same-district-crib"
+   },
+   {
+    "lesson": "window-glazing-let-the-ground-judge-it",
+    "needs": "glaziers-watch-the-line",
+    "because": "same-seat"
+   },
+   {
+    "lesson": "sheetmetal-name-the-kit-before-you-climb",
+    "needs": "fiber-splicers-keep-the-trace",
+    "because": "same-district-crib"
+   },
+   {
+    "lesson": "machinists-move-the-job-without-marking-it",
+    "needs": "millwrights-shop-move",
+    "because": "same-seat"
+   },
+   {
+    "lesson": "foundry-clear-the-runway-first",
+    "needs": "machinists-move-the-job-without-marking-it",
     "because": "same-seat"
    }
   ],
@@ -3700,7 +7171,174 @@
    "line-workers-find-the-fault": [],
    "hvacr-prove-the-sequence": [],
    "fiber-splicers-keep-the-trace": [],
-   "carpenters-return-it-the-same": []
+   "carpenters-return-it-the-same": [],
+   "steel-erectors-land-it-on-the-bolts": [
+    {
+     "needs": "riggers-first-card",
+     "because": "same-district-crib",
+     "reason": "both halls draw from the same district tool crib, so the kit and the vocabulary carry across"
+    },
+    {
+     "needs": "riggers-carry-under-control",
+     "because": "same-seat",
+     "reason": "both lessons run or walk the same simulator seat, so the first is seat familiarity the second assumes"
+    }
+   ],
+   "port-crane-read-the-rope": [
+    {
+     "needs": "riggers-carry-under-control",
+     "because": "same-seat",
+     "reason": "both lessons run or walk the same simulator seat, so the first is seat familiarity the second assumes"
+    }
+   ],
+   "decking-walk-the-path-first": [
+    {
+     "needs": "riggers-first-card",
+     "because": "same-seat",
+     "reason": "both lessons run or walk the same simulator seat, so the first is seat familiarity the second assumes"
+    }
+   ],
+   "tank-erectors-isolate-before-testing": [
+    {
+     "needs": "boilermakers-get-them-out",
+     "because": "same-seat",
+     "reason": "both lessons run or walk the same simulator seat, so the first is seat familiarity the second assumes"
+    }
+   ],
+   "piling-stand-the-rig-on-something": [
+    {
+     "needs": "riggers-carry-under-control",
+     "because": "same-seat",
+     "reason": "both lessons run or walk the same simulator seat, so the first is seat familiarity the second assumes"
+    }
+   ],
+   "shoring-read-the-ground-again": [
+    {
+     "needs": "operating-eng-locate-first",
+     "because": "same-seat",
+     "reason": "both lessons run or walk the same simulator seat, so the first is seat familiarity the second assumes"
+    }
+   ],
+   "laborers-stand-where-the-cab-can-see": [
+    {
+     "needs": "demolition-stand-back",
+     "because": "same-seat",
+     "reason": "both lessons run or walk the same simulator seat, so the first is seat familiarity the second assumes"
+    }
+   ],
+   "teamsters-check-the-truck-before-the-load": [],
+   "heavy-equip-listen-to-the-dash": [
+    {
+     "needs": "teamsters-check-the-truck-before-the-load",
+     "because": "same-seat",
+     "reason": "both lessons run or walk the same simulator seat, so the first is seat familiarity the second assumes"
+    }
+   ],
+   "marine-terminal-brief-the-lane": [
+    {
+     "needs": "teamsters-check-the-truck-before-the-load",
+     "because": "same-seat",
+     "reason": "both lessons run or walk the same simulator seat, so the first is seat familiarity the second assumes"
+    }
+   ],
+   "shipfitters-say-what-you-cannot-see": [
+    {
+     "needs": "welders-the-watch",
+     "because": "same-seat",
+     "reason": "both lessons run or walk the same simulator seat, so the first is seat familiarity the second assumes"
+    }
+   ],
+   "fabricators-lay-it-out-then-prove-it": [
+    {
+     "needs": "shipfitters-say-what-you-cannot-see",
+     "because": "same-seat",
+     "reason": "both lessons run or walk the same simulator seat, so the first is seat familiarity the second assumes"
+    }
+   ],
+   "pipeline-close-the-permit-properly": [
+    {
+     "needs": "tank-erectors-isolate-before-testing",
+     "because": "same-district-crib",
+     "reason": "both halls draw from the same district tool crib, so the kit and the vocabulary carry across"
+    }
+   ],
+   "marine-pipe-know-when-to-come-out": [
+    {
+     "needs": "pipeline-close-the-permit-properly",
+     "because": "same-seat",
+     "reason": "both lessons run or walk the same simulator seat, so the first is seat familiarity the second assumes"
+    }
+   ],
+   "roofers-mind-the-edge-and-the-skylight": [
+    {
+     "needs": "scaffold-read-the-tag",
+     "because": "same-seat",
+     "reason": "both lessons run or walk the same simulator seat, so the first is seat familiarity the second assumes"
+    }
+   ],
+   "insulators-stay-inside-the-rails": [
+    {
+     "needs": "electricians-clip-in-first",
+     "because": "same-seat",
+     "reason": "both lessons run or walk the same simulator seat, so the first is seat familiarity the second assumes"
+    }
+   ],
+   "plasterers-pin-every-brace": [
+    {
+     "needs": "scaffold-build-in-order",
+     "because": "same-seat",
+     "reason": "both lessons run or walk the same simulator seat, so the first is seat familiarity the second assumes"
+    }
+   ],
+   "firestop-write-down-what-you-sealed": [
+    {
+     "needs": "tilesetters-start-underneath",
+     "because": "same-district-crib",
+     "reason": "both halls draw from the same district tool crib, so the kit and the vocabulary carry across"
+    }
+   ],
+   "cladding-check-the-plank-you-stand-on": [
+    {
+     "needs": "firestop-write-down-what-you-sealed",
+     "because": "same-seat",
+     "reason": "both lessons run or walk the same simulator seat, so the first is seat familiarity the second assumes"
+    }
+   ],
+   "curtainwall-fuss-about-the-sills": [
+    {
+     "needs": "cladding-check-the-plank-you-stand-on",
+     "because": "same-district-crib",
+     "reason": "both halls draw from the same district tool crib, so the kit and the vocabulary carry across"
+    }
+   ],
+   "window-glazing-let-the-ground-judge-it": [
+    {
+     "needs": "glaziers-watch-the-line",
+     "because": "same-seat",
+     "reason": "both lessons run or walk the same simulator seat, so the first is seat familiarity the second assumes"
+    }
+   ],
+   "sheetmetal-name-the-kit-before-you-climb": [
+    {
+     "needs": "fiber-splicers-keep-the-trace",
+     "because": "same-district-crib",
+     "reason": "both halls draw from the same district tool crib, so the kit and the vocabulary carry across"
+    }
+   ],
+   "machinists-move-the-job-without-marking-it": [
+    {
+     "needs": "millwrights-shop-move",
+     "because": "same-seat",
+     "reason": "both lessons run or walk the same simulator seat, so the first is seat familiarity the second assumes"
+    }
+   ],
+   "foundry-clear-the-runway-first": [
+    {
+     "needs": "machinists-move-the-job-without-marking-it",
+     "because": "same-seat",
+     "reason": "both lessons run or walk the same simulator seat, so the first is seat familiarity the second assumes"
+    }
+   ]
   },
   "roots": [
    "bricklayers-gear-that-stays-on",
@@ -3718,6 +7356,7 @@
    "scaffold-read-the-tag",
    "site-safety-make-it-normal",
    "surveyors-trust-the-control",
+   "teamsters-check-the-truck-before-the-load",
    "welders-the-watch"
   ],
   "depth": {
@@ -3752,7 +7391,31 @@
    "line-workers-find-the-fault": 1,
    "hvacr-prove-the-sequence": 1,
    "fiber-splicers-keep-the-trace": 1,
-   "carpenters-return-it-the-same": 1
+   "carpenters-return-it-the-same": 1,
+   "steel-erectors-land-it-on-the-bolts": 3,
+   "port-crane-read-the-rope": 3,
+   "decking-walk-the-path-first": 2,
+   "tank-erectors-isolate-before-testing": 3,
+   "piling-stand-the-rig-on-something": 3,
+   "shoring-read-the-ground-again": 2,
+   "laborers-stand-where-the-cab-can-see": 3,
+   "teamsters-check-the-truck-before-the-load": 1,
+   "heavy-equip-listen-to-the-dash": 2,
+   "marine-terminal-brief-the-lane": 2,
+   "shipfitters-say-what-you-cannot-see": 2,
+   "fabricators-lay-it-out-then-prove-it": 3,
+   "pipeline-close-the-permit-properly": 4,
+   "marine-pipe-know-when-to-come-out": 5,
+   "roofers-mind-the-edge-and-the-skylight": 2,
+   "insulators-stay-inside-the-rails": 2,
+   "plasterers-pin-every-brace": 3,
+   "firestop-write-down-what-you-sealed": 3,
+   "cladding-check-the-plank-you-stand-on": 4,
+   "curtainwall-fuss-about-the-sills": 5,
+   "window-glazing-let-the-ground-judge-it": 3,
+   "sheetmetal-name-the-kit-before-you-climb": 2,
+   "machinists-move-the-job-without-marking-it": 4,
+   "foundry-clear-the-runway-first": 5
   },
   "layers": {
    "1": [
@@ -3771,6 +7434,7 @@
     "scaffold-read-the-tag",
     "site-safety-make-it-normal",
     "surveyors-trust-the-control",
+    "teamsters-check-the-truck-before-the-load",
     "welders-the-watch"
    ],
    "2": [
@@ -3778,20 +7442,47 @@
     "bricklayers-grout-the-lift",
     "cement-masons-mind-the-weather",
     "crane-ops-read-the-chart",
+    "decking-walk-the-path-first",
     "demolition-stand-back",
     "glaziers-watch-the-line",
     "hazmat-wash-and-decon",
+    "heavy-equip-listen-to-the-dash",
+    "insulators-stay-inside-the-rails",
+    "marine-terminal-brief-the-lane",
     "painters-lay-the-coat",
     "restore-write-it-down",
     "riggers-carry-under-control",
+    "roofers-mind-the-edge-and-the-skylight",
     "scaffold-build-in-order",
+    "sheetmetal-name-the-kit-before-you-climb",
+    "shipfitters-say-what-you-cannot-see",
+    "shoring-read-the-ground-again",
     "stone-carvers-hang-it-safely",
     "tilesetters-start-underneath"
    ],
    "3": [
+    "fabricators-lay-it-out-then-prove-it",
+    "firestop-write-down-what-you-sealed",
     "ironworkers-plan-out-loud",
+    "laborers-stand-where-the-cab-can-see",
     "millwrights-shop-move",
-    "waterproofers-flash-it-right"
+    "piling-stand-the-rig-on-something",
+    "plasterers-pin-every-brace",
+    "port-crane-read-the-rope",
+    "steel-erectors-land-it-on-the-bolts",
+    "tank-erectors-isolate-before-testing",
+    "waterproofers-flash-it-right",
+    "window-glazing-let-the-ground-judge-it"
+   ],
+   "4": [
+    "cladding-check-the-plank-you-stand-on",
+    "machinists-move-the-job-without-marking-it",
+    "pipeline-close-the-permit-properly"
+   ],
+   "5": [
+    "curtainwall-fuss-about-the-sills",
+    "foundry-clear-the-runway-first",
+    "marine-pipe-know-when-to-come-out"
    ]
   },
   "acyclic": true,

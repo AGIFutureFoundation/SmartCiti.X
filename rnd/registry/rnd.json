@@ -21,30 +21,30 @@
   "measured_elsewhere": 51,
   "computed_from_registry": 12,
   "measured_source_files": 11,
-  "registries_scanned": 48,
+  "registries_scanned": 49,
   "app_renderers_scanned": 19,
   "doc_renderers_scanned": 3,
-  "builders_scanned": 38,
-  "suites_scanned": 66,
+  "builders_scanned": 39,
+  "suites_scanned": 68,
   "declared_unbuilt": 8,
   "declared_unbuilt_by_their_own_words": 2,
   "declared_unbuilt_not_drawn": 7,
   "declared_unbuilt_documented_but_not_drawn": 2,
   "declared_unbuilt_read_by_nothing": 5,
   "gaps": 21,
-  "gaps_open": 18,
-  "gaps_closed": 3,
+  "gaps_open": 17,
+  "gaps_closed": 4,
   "widest_gap_share": 0.0,
   "budget_views": 6,
   "budget_currencies": 2,
   "budget_agreements": 7,
-  "suites_run": 67,
-  "suite_checks_declared": 3212,
+  "suites_run": 68,
+  "suite_checks_declared": 3265,
   "open_questions": 12,
   "negative_findings": 9,
   "cross_checks": 2,
   "cross_checks_disagreeing": 0,
-  "files_read": 204
+  "files_read": 208
  },
  "tiers": [
   "MEASURED-IN-BROWSER",
@@ -1519,7 +1519,7 @@
   {
    "id": "lessons.steps",
    "what": "lesson steps, every one resolving to a real id in another registry",
-   "value": 135,
+   "value": 256,
    "unit": "steps",
    "tier": "COMPUTED-FROM-REGISTRY",
    "file": "lessons/registry/lessons.json",
@@ -1527,7 +1527,7 @@
     "kind": "json",
     "path": "counts.steps"
    },
-   "when": "2026-09-20",
+   "when": "2026-09-26",
    "conditions": "computed by lessons/build.py from the registries it reads; re-computed on every build of that pack",
    "method": "derived arithmetic over another pack's registry, not an observation of anything rendered",
    "why": "a step that could not resolve its ids failed the build rather than becoming a lesson with a footnote"
@@ -1830,7 +1830,8 @@
   },
   "contrib/registry/contrib.json": {
    "app_renderers": [
-    "web/build_contribute.py"
+    "web/build_contribute.py",
+    "web/build_home.py"
    ],
    "doc_renderers": [],
    "builders": [
@@ -1839,7 +1840,8 @@
    ],
    "suites": [
     "protocols/test.mjs",
-    "web/test_contribute.mjs"
+    "web/test_contribute.mjs",
+    "web/test_home.mjs"
    ],
    "own_pack": [
     "contrib/build.py",
@@ -1986,6 +1988,7 @@
     "completion/build.py",
     "compliance/build.py",
     "evals/build.py",
+    "sessions/build.py",
     "worksites/build.py"
    ],
    "suites": [
@@ -1993,6 +1996,7 @@
     "completion/test.mjs",
     "completion/verify.mjs",
     "evals/test.mjs",
+    "sessions/test.mjs",
     "web/test_geomap.mjs",
     "web/test_home.mjs",
     "web/test_interactive.mjs",
@@ -2328,6 +2332,21 @@
     "security/test_sbom.mjs"
    ]
   },
+  "sessions/registry/sessions.json": {
+   "app_renderers": [
+    "web/build_progress.py"
+   ],
+   "doc_renderers": [],
+   "builders": [],
+   "suites": [
+    "web/test_progress.mjs"
+   ],
+   "own_pack": [
+    "sessions/build.py",
+    "sessions/test.mjs",
+    "sessions/verify.mjs"
+   ]
+  },
   "sims/registry/sims.json": {
    "app_renderers": [
     "web/build_3d.py",
@@ -2354,6 +2373,7 @@
     "lessons/build.py",
     "meta/build.py",
     "schools/build.py",
+    "sessions/build.py",
     "spaces/build.py",
     "spatial/build.py",
     "training/build.py",
@@ -2404,6 +2424,7 @@
   },
   "spaces/registry/spaces.json": {
    "app_renderers": [
+    "web/build_home.py",
     "web/build_spaces.py"
    ],
    "doc_renderers": [],
@@ -2411,6 +2432,7 @@
     "worksites/build.py"
    ],
    "suites": [
+    "web/test_home.mjs",
     "web/test_spaces.mjs",
     "worksites/test.mjs"
    ],
@@ -2609,6 +2631,7 @@
     "evals/build.py",
     "guide/build.py",
     "lessons/build.py",
+    "sessions/build.py",
     "spatial/build.py",
     "worksites/build.py"
    ],
@@ -2620,6 +2643,8 @@
     "evals/test.mjs",
     "guide/test.mjs",
     "lessons/test.mjs",
+    "sessions/test.mjs",
+    "sessions/verify.mjs",
     "web/test_contribute.mjs",
     "web/test_progress.mjs",
     "worksites/test.mjs"
@@ -2796,11 +2821,13 @@
   },
   "worksites/registry/worksites.json": {
    "app_renderers": [
+    "web/build_home.py",
     "web/build_worksites.py"
    ],
    "doc_renderers": [],
    "builders": [],
    "suites": [
+    "web/test_home.mjs",
     "web/test_worksites.mjs"
    ],
    "own_pack": [
@@ -2898,6 +2925,7 @@
    "restoration/build.py",
    "roadmap/build.py",
    "schools/build.py",
+   "sessions/build.py",
    "sims/build.py",
    "sky/build.py",
    "spaces/build.py",
@@ -2952,6 +2980,8 @@
    "schools/test.mjs",
    "security/test.mjs",
    "security/test_sbom.mjs",
+   "sessions/test.mjs",
+   "sessions/verify.mjs",
    "sims/test.mjs",
    "sky/test.mjs",
    "spaces/test.mjs",
@@ -2987,11 +3017,11 @@
   {
    "id": "lessons.halls",
    "question": "how many of the halls have a walkable lesson standing in them",
-   "have": 27,
+   "have": 51,
    "of": 111,
    "unit": "halls",
-   "share": 0.2432,
-   "missing": 84,
+   "share": 0.4595,
+   "missing": 60,
    "sources": [
     "lessons/registry/lessons.json",
     "pack/registry/halls.json"
@@ -3031,11 +3061,11 @@
   {
    "id": "lessons.sims",
    "question": "how many simulator seats a lesson sits a learner in",
-   "have": 10,
+   "have": 11,
    "of": 11,
    "unit": "seats",
-   "share": 0.9091,
-   "missing": 1,
+   "share": 1.0,
+   "missing": 0,
    "sources": [
     "lessons/registry/lessons.json"
    ],
@@ -3045,11 +3075,11 @@
   {
    "id": "lessons.scenarios",
    "question": "how many simulator scenarios a lesson reaches",
-   "have": 10,
+   "have": 16,
    "of": 33,
    "unit": "scenarios",
-   "share": 0.303,
-   "missing": 23,
+   "share": 0.4848,
+   "missing": 17,
    "sources": [
     "lessons/registry/lessons.json"
    ],
@@ -3059,11 +3089,11 @@
   {
    "id": "lessons.walkaround_points",
    "question": "how many walkaround check points a lesson asks for",
-   "have": 17,
+   "have": 34,
    "of": 55,
    "unit": "points",
-   "share": 0.3091,
-   "missing": 38,
+   "share": 0.6182,
+   "missing": 21,
    "sources": [
     "lessons/registry/lessons.json"
    ],
@@ -3791,7 +3821,7 @@
    {
     "suite": "lessons/test.mjs",
     "pack": "lessons",
-    "readme_checks": 63,
+    "readme_checks": 69,
     "declared": true,
     "in_readme_table": true
    },
@@ -3887,6 +3917,13 @@
     "in_readme_table": true
    },
    {
+    "suite": "sessions/test.mjs",
+    "pack": "sessions",
+    "readme_checks": 33,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
     "suite": "compliance/test.mjs",
     "pack": "compliance",
     "readme_checks": 65,
@@ -3945,7 +3982,7 @@
    {
     "suite": "web/test_interactive.mjs",
     "pack": "web",
-    "readme_checks": 25,
+    "readme_checks": 27,
     "declared": true,
     "in_readme_table": true
    },
@@ -3959,14 +3996,14 @@
    {
     "suite": "web/test_map.mjs",
     "pack": "web",
-    "readme_checks": 35,
+    "readme_checks": 39,
     "declared": true,
     "in_readme_table": true
    },
    {
     "suite": "web/test_home.mjs",
     "pack": "web",
-    "readme_checks": 27,
+    "readme_checks": 30,
     "declared": true,
     "in_readme_table": true
    },
@@ -3987,7 +4024,7 @@
    {
     "suite": "web/test_progress.mjs",
     "pack": "web",
-    "readme_checks": 40,
+    "readme_checks": 45,
     "declared": true,
     "in_readme_table": true
    },
@@ -4013,18 +4050,18 @@
     "in_readme_table": true
    }
   ],
-  "suites_run": 67,
-  "suites_declaring_a_count": 66,
+  "suites_run": 68,
+  "suites_declaring_a_count": 67,
   "suites_without_a_count": [
    "control/soak.mjs"
   ],
-  "declared_total": 3212,
-  "readme_headline": 3223,
+  "declared_total": 3265,
+  "readme_headline": 3276,
   "unaccounted_for": 11,
   "unaccounted_note": "the headline counts every `  ok ` line verify_all.sh sees, which includes suites the README table gives no number to and web/test_interiors.py, which the table does not list at all. The difference is that remainder and is computed, not reconciled by hand.",
   "min": 9,
   "max": 311,
-  "median": 40.0,
+  "median": 40,
   "thinnest": [
    {
     "suite": "ops/fuzz.mjs",
@@ -4389,6 +4426,10 @@
   "security/registry/sbom.cdx.json",
   "security/test.mjs",
   "security/test_sbom.mjs",
+  "sessions/build.py",
+  "sessions/registry/sessions.json",
+  "sessions/test.mjs",
+  "sessions/verify.mjs",
   "sims/build.py",
   "sims/registry/sims.json",
   "sims/test.mjs",

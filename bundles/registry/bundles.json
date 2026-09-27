@@ -146,6 +146,7 @@
     "lessons": [
      "crane-ops-read-the-chart",
      "ironworkers-plan-out-loud",
+     "port-crane-read-the-rope",
      "riggers-carry-under-control",
      "riggers-first-card"
     ]
@@ -155,8 +156,8 @@
     "ladder_cells": 30,
     "seats": 4,
     "seat_scenarios": 12,
-    "lessons": 4,
-    "lesson_steps": 19,
+    "lessons": 5,
+    "lesson_steps": 22,
     "contact_hours": null
    },
    "coverage": {
@@ -264,7 +265,8 @@
      "Excavator Trench Cut"
     ],
     "lessons": [
-     "demolition-stand-back"
+     "demolition-stand-back",
+     "laborers-stand-where-the-cab-can-see"
     ]
    },
    "size": {
@@ -272,8 +274,8 @@
     "ladder_cells": 24,
     "seats": 1,
     "seat_scenarios": 3,
-    "lessons": 1,
-    "lesson_steps": 4,
+    "lessons": 2,
+    "lesson_steps": 9,
     "contact_hours": null
    },
    "coverage": {
@@ -409,6 +411,8 @@
      "Weld Bead Run"
     ],
     "lessons": [
+     "pipeline-close-the-permit-properly",
+     "tank-erectors-isolate-before-testing",
      "welders-the-watch"
     ]
    },
@@ -417,8 +421,8 @@
     "ladder_cells": 42,
     "seats": 1,
     "seat_scenarios": 3,
-    "lessons": 1,
-    "lesson_steps": 5,
+    "lessons": 3,
+    "lesson_steps": 16,
     "contact_hours": null
    },
    "coverage": {
@@ -579,7 +583,9 @@
      "electricians-clip-in-first",
      "painters-contain-it",
      "painters-lay-the-coat",
-     "scaffold-read-the-tag"
+     "roofers-mind-the-edge-and-the-skylight",
+     "scaffold-read-the-tag",
+     "window-glazing-let-the-ground-judge-it"
     ]
    },
    "size": {
@@ -587,8 +593,8 @@
     "ladder_cells": 54,
     "seats": 2,
     "seat_scenarios": 6,
-    "lessons": 4,
-    "lesson_steps": 16,
+    "lessons": 6,
+    "lesson_steps": 28,
     "contact_hours": null
    },
    "coverage": {
@@ -699,6 +705,7 @@
     ],
     "lessons": [
      "hazmat-wash-and-decon",
+     "laborers-stand-where-the-cab-can-see",
      "painters-contain-it"
     ]
    },
@@ -707,8 +714,8 @@
     "ladder_cells": 18,
     "seats": 2,
     "seat_scenarios": 6,
-    "lessons": 2,
-    "lesson_steps": 10,
+    "lessons": 3,
+    "lesson_steps": 15,
     "contact_hours": null
    },
    "coverage": {
@@ -825,15 +832,19 @@
     "seat_names": [
      "Forklift Yard Run"
     ],
-    "lessons": []
+    "lessons": [
+     "laborers-stand-where-the-cab-can-see",
+     "marine-terminal-brief-the-lane",
+     "teamsters-check-the-truck-before-the-load"
+    ]
    },
    "size": {
     "trades": 5,
     "ladder_cells": 30,
     "seats": 1,
     "seat_scenarios": 3,
-    "lessons": 0,
-    "lesson_steps": 0,
+    "lessons": 3,
+    "lesson_steps": 14,
     "contact_hours": null
    },
    "coverage": {
@@ -973,7 +984,7 @@
     "seats": 1,
     "seat_scenarios": 3,
     "lessons": 3,
-    "lesson_steps": 13,
+    "lesson_steps": 14,
     "contact_hours": null
    },
    "coverage": {
@@ -1114,7 +1125,7 @@
     "seats": 1,
     "seat_scenarios": 3,
     "lessons": 2,
-    "lesson_steps": 9,
+    "lesson_steps": 10,
     "contact_hours": null
    },
    "coverage": {
@@ -1590,7 +1601,7 @@
   "trades_offered": 111,
   "seats_offered": 11,
   "cells_offered": 366,
-  "lessons_offered": 14,
+  "lessons_offered": 22,
   "packages_with_no_seat": 2
  },
  "reads": [

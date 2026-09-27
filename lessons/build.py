@@ -77,7 +77,7 @@ ROOT = HERE.parent
 
 # One bundle version, read from the manifest rather than typed here.
 PACK_VERSION = json.load(open(ROOT / 'pack/manifest.json'))['pack_version']
-BUILT = "2026-09-20"
+BUILT = "2026-09-26"
 
 
 def req(mapping, key, who):
@@ -228,7 +228,6 @@ LESSONS_SRC = [
   'limits': 'Finishing this does not make you a signalperson and does not qualify you to direct a lift; it is one scripted exchange and one schematic seat, and no hall, employer or authority has signed anything on the strength of it.',
   'steps': [
    ('walk', 'coordination', 'Start where the shift starts, at the table the plan gets read out at rather than the place the load hangs.'),
-   ('placard', 'coordination', 'The sign at the door is the room own condition record; read it before you decide what you are wearing is enough.'),
    ('advisor', 'foreman', 'walk', 'Ask before you walk anything, because the answer tells you what the walk is for.'),
    ('walkaround', 'rigging-signals', 'sightline', 'If you cannot see the load and the hook at once, the call you are about to make is guesswork wearing a radio.'),
    ('sim', 'rigging-signals', 'Now make the calls in order, and notice which one you wanted to skip.'),
@@ -269,7 +268,6 @@ LESSONS_SRC = [
   'limits': 'Finishing this does not make you a lift director and is not a lift plan anybody can work to; it is a scripted exchange about how planning fails, not an authority to plan.',
   'steps': [
    ('walk', 'coordination', 'Hand-offs happen here, which is why the exchange is staged here and not at the hook.'),
-   ('placard', 'coordination', 'Read what the room is held to; it is a short sign and it is the only one that binds you.'),
    ('walkaround', 'crane-lift', 'limits', 'A device that stops the machine is only a device until somebody has proved it still stops the machine.'),
    ('crew', 'crane-lift-crew', 'lift-director', 'plan', 'Ask what has to be in one, then compare it with what usually gets said.'),
    ('advisor', 'foreman', 'handoff', 'The hand-off is where the plan either survives or quietly dies.'),
@@ -283,6 +281,7 @@ LESSONS_SRC = [
   'limits': 'Finishing this is not overhead crane authorisation and no employer grants one from here; the seat is schematic, the loads are not real and no alignment has been proved by anything you did.',
   'steps': [
    ('walk', 'machines', 'The bay is where plant is checked out to a training area, so this is where the move starts.'),
+   ('placard', 'machines', 'Read what the bay is held to before the load moves; the sign at the door is the room condition record.'),
    ('walkaround', 'overhead-crane', 'limit', 'A stop that has never been tested is a story about a stop.'),
    ('sim', 'overhead-crane', 'Sway is the whole exercise; the placement number is just where the sway finally showed up.'),
    ('advisor', 'inspector', 'measures', 'Ask what acceptance actually means here before you decide you met it.'),
@@ -310,6 +309,7 @@ LESSONS_SRC = [
   'limits': 'Finishing this is not confined space entry training, not an entry permit and not a rescue qualification; it is a scripted exchange about roles, and nobody here may authorise an entry.',
   'steps': [
    ('walk', 'procedure', 'This is the floor the trade is actually learned on, so the rehearsal belongs here.'),
+   ('placard', 'procedure', 'Read what the floor is held to before anybody goes near the hole; the door sign binds the entrant too.'),
    ('walkaround', 'weld-bead', 'gas', 'What is in the air is the first question inside a vessel and the last one too.'),
    ('crew', 'confined-space-crew', 'attendant', 'never', 'Ask what the person at the hole may never do, because that is the whole role.'),
    ('advisor', 'safety-steward', 'refuse', 'Practising the refusal is the part people skip, so practise it here where it costs nothing.'),
@@ -350,6 +350,7 @@ LESSONS_SRC = [
   'limits': 'Finishing this is not competent person status and is not a scaffold inspection; a tag in this bundle is a teaching prop, and no structure anywhere has been released by it.',
   'steps': [
    ('walk', 'safety', 'Start at induction, because the tag is a safety instrument before it is a piece of paperwork.'),
+   ('placard', 'safety', 'Read the line at the door before the bench; the room record is the first tag you believe or do not.'),
    ('station', 'st003', 'Work the bench first; the checklist is the shape of the habit.'),
    ('walkaround', 'scaffold-bay', 'tag', 'Read what it says and what it does not say, which is usually the more useful half.'),
    ('advisor', 'safety-steward', 'ppe', 'Ask what this room requires of you, and note that the task adds to it rather than replacing it.'),
@@ -403,6 +404,7 @@ LESSONS_SRC = [
   'limits': 'Finishing this is not a masonry qualification and no wall has been built; the technique here is unverified general practice awaiting review by journey-level practitioners from this hall.',
   'steps': [
    ('walk', 'procedure', 'Practice bays are where the mistake is cheap, which is the only reason to make it here.'),
+   ('placard', 'procedure', 'Read what the floor is held to before the first course goes down; the sign is the record, not a suggestion.'),
    ('station', 'st010', 'Work the bench; the checklist is the order the work actually has to happen in.'),
    ('advisor', 'inspector', 'cert', 'Ask the blunt question straight out, because the honest answer is shorter than people hope.'),
   ],
@@ -493,6 +495,7 @@ LESSONS_SRC = [
   'limits': 'Finishing this lines no furnace and is no dryout schedule; a real schedule belongs to the refractory supplier and the vessel, and nothing here replaces it.',
   'steps': [
    ('walk', 'procedure', 'The practice floor is where the mock-up stands, which is the only place to learn this cheaply.'),
+   ('placard', 'procedure', 'Read what the floor is held to before the mock-up is lit; heat changes what the room requires of you.'),
    ('station', 'st015', 'Work the bench and read the doctrine line as the thing you will be tempted to ignore.'),
    ('crib', 'Five picks against the district record; industry kit is unforgiving about improvisation.'),
    ('advisor', 'inspector', 'cert', 'Ask what a pass here is worth before you let it make you confident.'),
@@ -520,6 +523,7 @@ LESSONS_SRC = [
   'limits': 'Finishing this coats nothing and is no coating specification; film thickness, recoat windows and compatibility on a real job come from the product data sheet.',
   'steps': [
    ('walk', 'procedure', 'The practice floor is where overlap becomes a habit instead of an intention.'),
+   ('placard', 'procedure', 'Read what the floor is held to before the gun is even primed; atomised coating changes what the room requires.'),
    ('walkaround', 'airless-sprayer', 'respirator', 'Atomised coating is a respiratory problem before it is a finish problem.'),
    ('sim', 'airless-sprayer', 'Watch the thin spots and the runs argue with each other; the middle of that argument is the technique.'),
   ],
@@ -625,7 +629,6 @@ LESSONS_SRC = [
   'limits': 'Finishing this splices nothing and certifies no link; a real loss budget is measured against a standard and this bundle names and speaks for no standard.',
   'steps': [
    ('walk', 'documentation', 'As-builts live here, and an as-built is the only proof a buried route ever gets.'),
-   ('placard', 'documentation', 'Read the room record; this is a clean room in spirit even when it is not one on paper.'),
    ('advisor', 'records-clerk', 'where', 'Ask where the record goes and who is able to read it after you have gone.'),
    ('advisor', 'records-clerk', 'cert', 'Ask plainly whether anything here is a certificate, and take the answer seriously.'),
   ],
@@ -641,6 +644,344 @@ LESSONS_SRC = [
    ('placard', 'tools', 'Read what the room is held to; calibration cares about conditions.'),
    ('advisor', 'crib-keeper', 'tools', 'Ask what is actually issued here, which is a shorter list than most people expect.'),
    ('crib', 'Five picks against the district record, scored deterministically and with nothing narrative able to change it.'),
+  ],
+ },
+ # -- the seat-bound halls. sims/registry/sims.json#hall_bindings binds a
+ # -- seat to a hall; a hall with a seat and no lesson had a floor and no
+ # -- reason to walk onto it. One lesson per such hall, authored like the
+ # -- rest, and the build below refuses a seat-bound hall with none.
+ {
+  'id': 'steel-erectors-land-it-on-the-bolts',
+  'hall': 'steel-erectors', 'strand': 'procedure', 'tier': 'applied',
+  'title': 'Land the piece where the bolts can go in',
+  'why': 'A beam that arrives fast and slightly wrong costs more than one that arrives slowly and lands on its holes.',
+  'limits': 'Finishing this is not connection training, not a rigging qualification and not a lift plan; the steel here is schematic, no bolt has been torqued, and no employer or hall has signed anything on the strength of it.',
+  'steps': [
+   ('walk', 'procedure', 'The floor is where the piece is landed badly a few times before it is landed once on its holes.'),
+   ('walkaround', 'crane-lift', 'limits', 'A trip that has never been tested is a promise, and the steel does not take promises.'),
+   ('crew', 'crane-lift-crew', 'signalperson', 'procedure', 'Ask for the sequence out loud, because the sequence is the part that gets improvised under a deadline.'),
+   ('sim', 'crane-lift', 'Bring it in slowly enough that the last foot is a decision rather than an event.'),
+   ('advisor', 'foreman', 'handoff', 'Ask what a good hand-off looks like, because the next connection starts with this one.'),
+  ],
+ },
+ {
+  'id': 'port-crane-read-the-rope',
+  'hall': 'port-crane', 'strand': 'machines', 'tier': 'applied',
+  'title': 'Read the rope before the box goes up',
+  'why': 'A quay crane lives or dies on its ropes and the person who looked at them last, and the seat is where looking becomes a habit.',
+  'limits': 'Finishing this is not crane technician standing and not a rope inspection anybody may act on; the machine here is schematic, the wire is drawn rather than run, and nothing recorded is read by any authority.',
+  'steps': [
+   ('walk', 'machines', 'Plant is checked out to a training area here, so the first look at the machine is taken in this bay.'),
+   ('walkaround', 'overhead-crane', 'rope', 'Broken wires are counted, not glanced at, and a kink is a reason to stop rather than a note.'),
+   ('walkaround', 'crane-lift', 'rope', 'The second machine gets the same look as the first; the habit is the point, not the machine.'),
+   ('crew', 'crane-lift-crew', 'crane-operator', 'gauges', 'Ask what the dash is showing, because a number you cannot explain is a number you are ignoring.'),
+   ('sim', 'crane-lift', 'Run the terminal case and let the swing tell you what your inputs added up to.'),
+  ],
+ },
+ {
+  'id': 'decking-walk-the-path-first',
+  'hall': 'decking', 'strand': 'procedure', 'tier': 'applied',
+  'title': 'Walk where the bundle will fly before it flies',
+  'why': 'A deck bundle crosses a floor other people are standing on, and the walk is the only time that floor is looked at properly.',
+  'limits': 'Finishing this is not signalperson standing and lifts no bundle; the floor is schematic, the call is scripted, and no hall, employer or authority has reviewed or signed a line of it.',
+  'steps': [
+   ('walk', 'procedure', 'The floor is where the bundle lands, so the floor is where the lesson starts and ends.'),
+   ('placard', 'procedure', 'Read what this floor is held to before you decide what you are wearing is enough for it.'),
+   ('walkaround', 'rigging-signals', 'path', 'Walk it end to end yourself; a path somebody described to you is a path nobody walked.'),
+   ('sim', 'rigging-signals', 'Make the calls in order and notice the one you wanted to make early.'),
+   ('advisor', 'foreman', 'walk', 'Ask what gets walked before a start, and compare it with what you just walked.'),
+  ],
+ },
+ {
+  'id': 'tank-erectors-isolate-before-testing',
+  'hall': 'tank-erectors', 'strand': 'safety', 'tier': 'applied',
+  'title': 'Isolate the shell before anybody tests the air',
+  'why': 'A tank is a confined space with a weld in it, and the order of the safety steps is the whole difference between a shift and an incident.',
+  'limits': 'Finishing this is not confined space entry training, not a hot work permit and not a welding qualification; nobody here may authorise an entry, and the shell you worked on has never held anything.',
+  'steps': [
+   ('walk', 'safety', 'Gowning, the atmospheric check and the permit board share a room because the order between them matters.'),
+   ('placard', 'safety', 'Take on what the sign says before you cross the line, not after somebody points at it.'),
+   ('walkaround', 'weld-bead', 'gas', 'What is in the bottle and what is in the air are two questions, and both get asked before the arc.'),
+   ('crew', 'confined-space-crew', 'entry-supervisor', 'isolate', 'Ask why isolation comes first, and hear the answer as an order of operations rather than a preference.'),
+   ('sim', 'weld-bead', 'Run the bead and notice how much of the score was decided before you struck it.'),
+   ('advisor', 'safety-steward', 'refuse', 'Practise the refusal here, where it costs nothing and the habit is worth everything.'),
+  ],
+ },
+ {
+  'id': 'piling-stand-the-rig-on-something',
+  'hall': 'piling', 'strand': 'machines', 'tier': 'applied',
+  'title': 'Stand the rig on ground that will hold it',
+  'why': 'A piling rig is the heaviest thing on the site standing on the ground least likely to have been looked at.',
+  'limits': 'Finishing this is not rig operator standing and no ground has been assessed; the bearing here is schematic, the lift is a teaching aid, and no plan you ran is a lift plan anybody may work to.',
+  'steps': [
+   ('walk', 'machines', 'The bay is where plant is checked out to a training area, and the ground under it is the first check.'),
+   ('placard', 'machines', 'Read what this bay is held to; the conditions on the door are the conditions you work in.'),
+   ('walkaround', 'crane-lift', 'base', 'Standing water and washout are the two things that move a machine without anybody touching a lever.'),
+   ('crew', 'crane-lift-crew', 'lift-director', 'change', 'Ask what happens when the lift changes, because on a piling job it always does.'),
+   ('sim', 'crane-lift', 'Move one thing at a time and let it settle; the gauge is honest even when the seat feels fine.'),
+  ],
+ },
+ {
+  'id': 'shoring-read-the-ground-again',
+  'hall': 'shoring', 'strand': 'layout', 'tier': 'applied',
+  'title': 'Read the ground again after the rain',
+  'why': 'Soil that was safe yesterday is a different material after a night of rain, and the inspection cadence is the only defence.',
+  'limits': 'Finishing this is not competent person standing and is not a soil classification; the cut is schematic, the ground here has never held water, and no jurisdiction has reviewed a line of it.',
+  'steps': [
+   ('walk', 'layout', 'Setting out lives here, and so does the discipline of proving a mark before trusting it.'),
+   ('advisor', 'layout-hand', 'check', 'Ask how you would know the line is true, because a line nobody checked is a guess in paint.'),
+   ('walkaround', 'excavator-trench', 'slew-brake', 'A house that drifts on a test swing will drift over the cut, so test it where the moment is worst.'),
+   ('crew', 'trench-crew', 'trench-competent-person', 'again', 'Ask how often the cut gets looked at, and notice the answer is an interval, not a one-off.'),
+   ('sim', 'excavator-trench', 'Cut over old fill and let the pace stay slow enough that the ground can surprise you safely.'),
+  ],
+ },
+ {
+  'id': 'laborers-stand-where-the-cab-can-see',
+  'hall': 'laborers', 'strand': 'safety', 'tier': 'applied',
+  'title': 'Stand where the cab can see you',
+  'why': 'The person on foot next to a machine is the one who decides whether the machine is dangerous, by where they choose to stand.',
+  'limits': 'Finishing this is not ground worker training and grants no authority near plant; the machine here is schematic, no spoil has moved, and the habit it teaches is unverified general practice awaiting the hall.',
+  'steps': [
+   ('walk', 'safety', 'Induction is the room that decides whether you are allowed near the others, so start there.'),
+   ('placard', 'safety', 'Read the door and add what the task needs on top of it, not instead of it.'),
+   ('advisor', 'safety-steward', 'ppe', 'Ask what the room requires rather than copying whoever walked in ahead of you.'),
+   ('walkaround', 'excavator-trench', 'edge', 'Spoil piled on the lip is weight on the wall, and the wall does not care who piled it.'),
+   ('crew', 'trench-crew', 'spotter', 'where', 'Ask where you stand, and notice the answer is about the cab window, not about the trench.'),
+  ],
+ },
+ {
+  'id': 'teamsters-check-the-truck-before-the-load',
+  'hall': 'teamsters', 'strand': 'machines', 'tier': 'applied',
+  'title': 'Check the truck before you check the load',
+  'why': 'A yard machine that fails a pre-shift check is a fault found for free, and one that skips it is a fault found the expensive way.',
+  'limits': 'Finishing this is not forklift operator training and is not a licence to drive one; the yard is schematic, the loads weigh nothing, and no employer or jurisdiction issues anything on the strength of it.',
+  'steps': [
+   ('walk', 'machines', 'Plant checked out to a training area is the only plant you are near, which is why the check is taught here.'),
+   ('placard', 'machines', 'Read what the bay is held to before you climb on anything parked in it.'),
+   ('walkaround', 'forklift-run', 'mast', 'Chain that is uneven side to side lifts crooked, and crooked is how a load leaves the forks.'),
+   ('sim', 'forklift-run', 'Run the lane and notice how much of the score is about what you did before the first pallet.'),
+   ('advisor', 'operator', 'walk', 'Ask what should be walked before a start, and compare it with what you actually walked.'),
+  ],
+ },
+ {
+  'id': 'heavy-equip-listen-to-the-dash',
+  'hall': 'heavy-equip', 'strand': 'troubleshooting', 'tier': 'applied',
+  'title': 'Listen to the dash before you replace anything',
+  'why': 'The gauges are the cheapest diagnostic on the machine and the one most technicians read last.',
+  'limits': 'Finishing this is not a technician qualification and diagnoses no real machine; the readouts here are schematic, the fault is scripted, and nothing you concluded has been checked by anybody who repairs plant.',
+  'steps': [
+   ('walk', 'troubleshooting', 'Fault-finding has its own bench because it needs a different head to the practice floor.'),
+   ('walkaround', 'forklift-run', 'tires', 'Chunking and loose nuts are found by looking, and looking costs a minute.'),
+   ('advisor', 'operator', 'gauges', 'Ask what the readouts mean before you decide one of them is wrong.'),
+   ('sim', 'forklift-run', 'Drive the lane and watch the numbers rather than the pallet; the pallet is where the numbers end up.'),
+  ],
+ },
+ {
+  'id': 'marine-terminal-brief-the-lane',
+  'hall': 'marine-terminal', 'strand': 'coordination', 'tier': 'applied',
+  'title': 'Brief the lane before the first box moves',
+  'why': 'A terminal lane is shared ground, and a shift that starts without a briefing starts with everybody guessing who goes first.',
+  'limits': 'Finishing this is not terminal operator standing and is not a traffic plan; the lane is schematic, the vehicles are drawn, and no port, employer or authority has reviewed a line of it.',
+  'steps': [
+   ('walk', 'coordination', 'Shift start and hand-offs happen here, so the briefing is staged here and not on the quay.'),
+   ('advisor', 'foreman', 'walk', 'Ask what gets walked before a start, and notice how much of it is about other people.'),
+   ('walkaround', 'forklift-run', 'guard', 'A belt that does not latch and a guard that is bent are both answers to a question nobody asked.'),
+   ('sim', 'forklift-run', 'Run the lane and treat every other vehicle as somebody who did not hear the briefing.'),
+  ],
+ },
+ {
+  'id': 'shipfitters-say-what-you-cannot-see',
+  'hall': 'shipfitters', 'strand': 'procedure', 'tier': 'applied',
+  'title': 'Say what you cannot see from the hood',
+  'why': 'Behind a welding hood the world is one bright spot, and the fitter who admits that is the one who gets the screens up.',
+  'limits': 'Finishing this is not a welding qualification and not fit-up training; the seam is schematic, no hull has been tacked, and the practice here is unverified general practice awaiting journey-level review.',
+  'steps': [
+   ('walk', 'procedure', 'The floor is where the seam is fitted badly a few times, which is the only cheap place to do that.'),
+   ('placard', 'procedure', 'Read what the floor is held to before the hood comes down and you stop being able to read anything.'),
+   ('walkaround', 'weld-bead', 'screens', 'Screens protect the people who are not welding, which is everybody else in the room.'),
+   ('crew', 'hot-work-crew', 'welder', 'blind', 'Ask what cannot be seen from behind the hood, and hear it as a list of jobs for somebody else.'),
+   ('sim', 'weld-bead', 'Run the seam and notice how much of the score was about what was set up before the arc.'),
+  ],
+ },
+ {
+  'id': 'fabricators-lay-it-out-then-prove-it',
+  'hall': 'fabricators', 'strand': 'layout', 'tier': 'applied',
+  'title': 'Lay it out, then prove the line before you cut',
+  'why': 'Shop steel is cut once, and a layout line nobody checked is a piece of scrap with a drawing number on it.',
+  'limits': 'Finishing this is not a fabrication qualification and cuts nothing; the layout is schematic, the seam is a teaching aid, and no shop or inspector has accepted anything on the strength of it.',
+  'steps': [
+   ('walk', 'layout', 'Setting out and marking live here, and the habit of checking a line before trusting it lives with them.'),
+   ('advisor', 'layout-hand', 'check', 'Ask how you know the line is true, because the answer is a method and not a feeling.'),
+   ('walkaround', 'weld-bead', 'leads', 'A ground clamp on paint is a bead that will not run right, and the cable jacket is checked end to end.'),
+   ('sim', 'weld-bead', 'Run the seam and let the width and the travel argue; the layout was supposed to settle that argument.'),
+   ('advisor', 'inspector', 'measures', 'Ask what the seat measures, so that what you think you did and what was measured are the same thing.'),
+  ],
+ },
+ {
+  'id': 'pipeline-close-the-permit-properly',
+  'hall': 'pipeline', 'strand': 'inspection', 'tier': 'applied',
+  'title': 'Close the permit the way it was opened',
+  'why': 'A hot work permit that was opened carefully and closed carelessly protected nobody for the hour that mattered most.',
+  'limits': 'Finishing this is not a hot work permit, not pipeline welder standing and not a coating or integrity qualification; the permit here is a teaching prop, and your jurisdiction owns the rules that make one binding.',
+  'steps': [
+   ('walk', 'inspection', 'Acceptance criteria live here, and a permit closed properly is an acceptance step like any other.'),
+   ('placard', 'inspection', 'Read what the bench is held to before you start deciding what a pass looks like.'),
+   ('walkaround', 'weld-bead', 'extraction', 'Fume that is pulled past your face is fume you are breathing, whatever the fan sounds like.'),
+   ('crew', 'hot-work-crew', 'permit-holder', 'close', 'Ask what closes the permit, and notice it is a condition of the room and not a time on a clock.'),
+   ('sim', 'weld-bead', 'Run the bead and remember that the last part of the job is the part after the arc stops.'),
+  ],
+ },
+ {
+  'id': 'marine-pipe-know-when-to-come-out',
+  'hall': 'marine-pipe', 'strand': 'procedure', 'tier': 'applied',
+  'title': 'Know when to come out of the compartment',
+  'why': 'Shipboard pipework is welded inside steel boxes, and the person inside is the last one to notice the air has changed.',
+  'limits': 'Finishing this is not confined space entry training, not a welding qualification and not an entry permit; the compartment is schematic, and nobody here may authorise anybody to enter a real one.',
+  'steps': [
+   ('walk', 'procedure', 'The floor is where the compartment is rehearsed, which is the only cheap place to rehearse it.'),
+   ('placard', 'procedure', 'Read what the floor is held to before the hatch is even a thought.'),
+   ('walkaround', 'weld-bead', 'firewatch', 'A charged extinguisher within reach is the difference between a scorch mark and a shift lost.'),
+   ('crew', 'confined-space-crew', 'entrant', 'air', 'Ask what changes the air in there, and hear the answer as a list of reasons to leave.'),
+   ('sim', 'weld-bead', 'Run the bead and notice how much of the score was decided by the checks before it.'),
+  ],
+ },
+ {
+  'id': 'roofers-mind-the-edge-and-the-skylight',
+  'hall': 'roofers', 'strand': 'safety', 'tier': 'applied',
+  'title': 'Mind the edge, and the skylight nobody mentioned',
+  'why': 'Roofing falls happen at the edge everybody sees and through the opening nobody briefed, and the room is where both get named.',
+  'limits': 'Finishing this is not fall protection training, not competent person standing and not a roof inspection; the bay is schematic, no membrane has been laid, and no authority has reviewed a line of it.',
+  'steps': [
+   ('walk', 'safety', 'Induction is where the edge and the opening both get named out loud before anybody goes up.'),
+   ('placard', 'safety', 'Read the line on the door and add the fall protection the task needs on top of it.'),
+   ('advisor', 'safety-steward', 'hazard', 'Ask what the hazard actually is here, rather than the one you were expecting to hear about.'),
+   ('walkaround', 'scaffold-bay', 'plumb', 'A frame that leans by a little at the bottom leans by a lot at the working height.'),
+   ('crew', 'scaffold-crew', 'ground-tender', 'zone', 'Ask what a drop zone is, and notice it is a decision made on the ground, not on the roof.'),
+   ('sim', 'scaffold-bay', 'Build the bay in order and let the sequence score show where the shortcut would have been.'),
+  ],
+ },
+ {
+  'id': 'insulators-stay-inside-the-rails',
+  'hall': 'insulators', 'strand': 'materials', 'tier': 'applied',
+  'title': 'Stay inside the rails while you reach',
+  'why': 'Insulation work is reaching work, and reaching from a basket is where a guardrail stops being furniture.',
+  'limits': 'Finishing this is not aerial lift operator training and no lift has been inspected; the basket is schematic, the material here weighs nothing, and no employer or jurisdiction issues anything from it.',
+  'steps': [
+   ('walk', 'materials', 'Stock and consumables are staged here, and what is staged badly is what gets reached for badly.'),
+   ('placard', 'materials', 'Read what the store is held to; a material room has conditions like any other.'),
+   ('crib', 'Five picks against the district record, and the point is naming the kit rather than recognising it.'),
+   ('walkaround', 'boom-lift', 'guardrails', 'A gate that does not latch behind you is an opening at working height, whatever it looks like.'),
+   ('crew', 'aerial-lift-crew', 'ground-attendant', 'sight', 'Ask why the person on the ground stays within sight and sound, and hear it as a rescue plan.'),
+   ('sim', 'boom-lift', 'Work the points in order and let the envelope warnings teach you where the reach ends.'),
+  ],
+ },
+ {
+  'id': 'plasterers-pin-every-brace',
+  'hall': 'plasterers', 'strand': 'procedure', 'tier': 'applied',
+  'title': 'Pin every brace before the first hawk goes up',
+  'why': 'Plastering is done off a platform, and a platform is only as good as the brace somebody did not quite pin.',
+  'limits': 'Finishing this is not scaffold erector standing and not a plastering qualification; the bay is schematic, no coat has been applied, and the sequence here is unverified general practice awaiting the hall.',
+  'steps': [
+   ('walk', 'procedure', 'The floor is where the platform gets built wrong a few times first, which is why the lesson stands here.'),
+   ('walkaround', 'scaffold-bay', 'brace-pins', 'A brace that is sprung rather than pinned is a brace that is not there when the load comes.'),
+   ('crew', 'scaffold-crew', 'erector', 'why', 'Ask why the order matters that much, and hear the answer as a description of who is exposed when.'),
+   ('sim', 'scaffold-bay', 'Build it in order and notice the step you wanted to skip because it looked finished already.'),
+   ('advisor', 'inspector', 'score', 'Ask whether a good explanation can stand in for a measurement, and note how short the answer is.'),
+  ],
+ },
+ {
+  'id': 'firestop-write-down-what-you-sealed',
+  'hall': 'firestop', 'strand': 'documentation', 'tier': 'fundamentals',
+  'title': 'Write down what you sealed and with what',
+  'why': 'A firestop seal is judged years later by somebody reading a record, and a seal with no record is a hole with a good story.',
+  'limits': 'Finishing this is not a firestop qualification and no listed system has been installed; the record here is a teaching prop, and no inspector or authority has accepted anything on the strength of it.',
+  'steps': [
+   ('walk', 'documentation', 'Permits, certificates and as-builts live together here, and a seal record is an as-built in miniature.'),
+   ('advisor', 'records-clerk', 'where', 'Ask where what you did is actually kept, and who can read it after you have gone.'),
+   ('walkaround', 'scaffold-bay', 'tag', 'A tag that does not match what is built is a record that lies, and a lying record is worse than none.'),
+   ('crew', 'scaffold-crew', 'scaffold-competent-person', 'tag', 'Ask what the tag actually says, and notice how little of it is about the platform being finished.'),
+  ],
+ },
+ {
+  'id': 'cladding-check-the-plank-you-stand-on',
+  'hall': 'cladding', 'strand': 'inspection', 'tier': 'applied',
+  'title': 'Check the plank you are about to stand on',
+  'why': 'Rainscreen panels are hung from a platform, and the panel gets more attention than the plank it is being hung from.',
+  'limits': 'Finishing this is not a cladding qualification and not a scaffold inspection; the bay is schematic, no panel has been hung, and the acceptance criteria here are unverified general practice.',
+  'steps': [
+   ('walk', 'inspection', 'Acceptance criteria and sign-off live here, and a plank is accepted before it is stood on.'),
+   ('advisor', 'inspector', 'measures', 'Ask what the seat measures, so what you look for on the bay is what the bay is scored on.'),
+   ('walkaround', 'scaffold-bay', 'planks', 'A crack is a reason to change the plank, not a reason to stand on the other end of it.'),
+   ('sim', 'scaffold-bay', 'Build the bay and let the sequence score tell you where you would have been standing on nothing.'),
+  ],
+ },
+ {
+  'id': 'curtainwall-fuss-about-the-sills',
+  'hall': 'curtainwall', 'strand': 'coordination', 'tier': 'applied',
+  'title': 'Make the fuss about the sills early',
+  'why': 'A unitised panel run is sequenced days ahead, and the bay that carries it stands on whatever was put under it on the first morning.',
+  'limits': 'Finishing this is not curtain wall erector standing and not a sequencing plan; the bay is schematic, no anchor has been set, and no employer or hall has reviewed or signed any of it.',
+  'steps': [
+   ('walk', 'coordination', 'Hand-offs are made here, and the sequence of a panel run is a hand-off written down in advance.'),
+   ('advisor', 'foreman', 'handoff', 'Ask what makes a hand-off good, then compare it with what usually gets said at the door.'),
+   ('walkaround', 'scaffold-bay', 'sills', 'Blocks and debris under a standard are a base that will move, and everything above it moves with it.'),
+   ('crew', 'scaffold-crew', 'erector', 'base', 'Ask why so much fuss is made at the bottom, and hear the answer as the rest of the bay explained.'),
+   ('sim', 'scaffold-bay', 'Build it in order and notice that the first step is the one the score remembers longest.'),
+  ],
+ },
+ {
+  'id': 'window-glazing-let-the-ground-judge-it',
+  'hall': 'window-glazing', 'strand': 'machines', 'tier': 'applied',
+  'title': 'Let the ground judge the clearance, not the basket',
+  'why': 'From a basket every overhead line looks further away than it is, and the person who can actually judge it is standing on the ground.',
+  'limits': 'Finishing this is not aerial lift operator training and no clearance has been measured; the machine here is schematic, the lines are drawn, and nothing recorded is read by any employer or authority.',
+  'steps': [
+   ('walk', 'machines', 'The bay is where a machine gets checked out to a training area rather than borrowed, so the run starts here.'),
+   ('walkaround', 'boom-lift', 'controls', 'Every function is tried from both stations before you trust either, and the manual lowering is tried too.'),
+   ('crew', 'aerial-lift-crew', 'line-observer', 'judge', 'Ask why the basket cannot judge it, and hear the answer as a reason to keep somebody on the ground.'),
+   ('sim', 'boom-lift', 'Work the points in order and let the envelope warnings teach you the shape of the machine.'),
+  ],
+ },
+ {
+  'id': 'sheetmetal-name-the-kit-before-you-climb',
+  'hall': 'sheetmetal', 'strand': 'tools', 'tier': 'fundamentals',
+  'title': 'Name the kit before you take it up',
+  'why': 'Duct is hung from a basket with tools that were issued on the ground, and what you cannot name you cannot ask for.',
+  'limits': 'Finishing this is not a sheet metal qualification and issues nothing real; the crib is a teaching prop, the basket is schematic, and no employer or hall has signed anything on the strength of it.',
+  'steps': [
+   ('walk', 'tools', 'Issue, calibration and return are one loop, and this room is the whole loop.'),
+   ('advisor', 'crib-keeper', 'drill', 'Ask how the check is scored before you run it, so you are not guessing at the rules.'),
+   ('crib', 'Five picks against the district record, graded deterministically and unforgiving about near-misses.'),
+   ('walkaround', 'boom-lift', 'tires-level', 'A pad that is not level under every foot is a machine that will tell you so at full height.'),
+   ('advisor', 'operator', 'task', 'Ask what the seat is for before you go up, so the run has a purpose rather than a route.'),
+  ],
+ },
+ {
+  'id': 'machinists-move-the-job-without-marking-it',
+  'hall': 'machinists', 'strand': 'inspection', 'tier': 'applied',
+  'title': 'Move the job across the shop without marking it',
+  'why': 'A machined face is ruined in the handling more often than at the machine, and the shop move is where that happens.',
+  'limits': 'Finishing this is not overhead crane authorisation and no fit has been measured; the load here is schematic, the tolerances are drawn, and no shop or inspector has accepted anything from it.',
+  'steps': [
+   ('walk', 'inspection', 'Acceptance lives here, and a part that arrives marked has already failed it.'),
+   ('advisor', 'inspector', 'measures', 'Ask what the seat measures, because placement is the number and sway is the reason behind it.'),
+   ('walkaround', 'overhead-crane', 'hook', 'A latch that does not spring back is an open hook, and an open hook is a part on the floor.'),
+   ('sim', 'overhead-crane', 'Move it slowly enough that the sway settles before the part meets anything.'),
+  ],
+ },
+ {
+  'id': 'foundry-clear-the-runway-first',
+  'hall': 'foundry', 'strand': 'materials', 'tier': 'applied',
+  'title': 'Clear the runway before the ladle moves',
+  'why': 'A ladle frame crosses a floor full of people and sand, and the move is safe or not before the hook ever takes weight.',
+  'limits': 'Finishing this is not overhead crane authorisation and not foundry floor standing; nothing here is molten, the frame weighs nothing, and no employer or jurisdiction issues anything on the strength of it.',
+  'steps': [
+   ('walk', 'materials', 'Sand, stock and consumables are staged here, and how they are staged decides what is in the way later.'),
+   ('placard', 'materials', 'Read what the store is held to; conditions matter here more than almost anywhere in the hall.'),
+   ('crib', 'Five picks against the district record; industry kit is unforgiving about improvisation.'),
+   ('walkaround', 'overhead-crane', 'runway', 'A route with somebody standing under it is not a route, whatever the drawing says.'),
+   ('sim', 'overhead-crane', 'Run the frame move and notice how much of the score was the floor you cleared first.'),
+   ('advisor', 'safety-steward', 'hazard', 'Ask what the hazard in this hall actually is, and hear the answer as the reason for the whole lesson.'),
   ],
  },
 ]
@@ -671,6 +1012,32 @@ LADDER_SRC = {
     'painters-lay-the-coat': [('painters-contain-it', 'same-hall')],
     'hazmat-wash-and-decon': [('painters-contain-it', 'same-seat')],
     'glaziers-watch-the-line': [('electricians-clip-in-first', 'same-seat')],
+    # the seat-bound halls, sequenced off the lesson that already runs the
+    # same seat, or off a sibling on the same district crib
+    'steel-erectors-land-it-on-the-bolts': [('riggers-first-card', 'same-district-crib'),
+                                           ('riggers-carry-under-control', 'same-seat')],
+    'port-crane-read-the-rope': [('riggers-carry-under-control', 'same-seat')],
+    'decking-walk-the-path-first': [('riggers-first-card', 'same-seat')],
+    'tank-erectors-isolate-before-testing': [('boilermakers-get-them-out', 'same-seat')],
+    'piling-stand-the-rig-on-something': [('riggers-carry-under-control', 'same-seat')],
+    'shoring-read-the-ground-again': [('operating-eng-locate-first', 'same-seat')],
+    'laborers-stand-where-the-cab-can-see': [('demolition-stand-back', 'same-seat')],
+    'heavy-equip-listen-to-the-dash': [('teamsters-check-the-truck-before-the-load', 'same-seat')],
+    'marine-terminal-brief-the-lane': [('teamsters-check-the-truck-before-the-load', 'same-seat')],
+    'shipfitters-say-what-you-cannot-see': [('welders-the-watch', 'same-seat')],
+    'fabricators-lay-it-out-then-prove-it': [('shipfitters-say-what-you-cannot-see', 'same-seat')],
+    'pipeline-close-the-permit-properly': [('tank-erectors-isolate-before-testing', 'same-district-crib')],
+    'marine-pipe-know-when-to-come-out': [('pipeline-close-the-permit-properly', 'same-seat')],
+    'roofers-mind-the-edge-and-the-skylight': [('scaffold-read-the-tag', 'same-seat')],
+    'insulators-stay-inside-the-rails': [('electricians-clip-in-first', 'same-seat')],
+    'plasterers-pin-every-brace': [('scaffold-build-in-order', 'same-seat')],
+    'firestop-write-down-what-you-sealed': [('tilesetters-start-underneath', 'same-district-crib')],
+    'cladding-check-the-plank-you-stand-on': [('firestop-write-down-what-you-sealed', 'same-seat')],
+    'curtainwall-fuss-about-the-sills': [('cladding-check-the-plank-you-stand-on', 'same-district-crib')],
+    'window-glazing-let-the-ground-judge-it': [('glaziers-watch-the-line', 'same-seat')],
+    'sheetmetal-name-the-kit-before-you-climb': [('fiber-splicers-keep-the-trace', 'same-district-crib')],
+    'machinists-move-the-job-without-marking-it': [('millwrights-shop-move', 'same-seat')],
+    'foundry-clear-the-runway-first': [('machinists-move-the-job-without-marking-it', 'same-seat')],
 }
 
 # The ceiling on concentration. Breadth over the trades is the claim, so
@@ -686,7 +1053,9 @@ HONESTY = {
     'not_scored': 'finishing a lesson changes no score and is read by no grader. Four of the eight step kinds write an episode to the existing device-local training log; the other four write nothing at all, and the registry says which is which rather than leaving it to be discovered.',
     'one_truth': 'this pack holds no second copy of anything. Hall names, room labels, station names, seat names, scenario names, advisor names, crew role names and topic wordings are all read at build time from the registries that own them, and the test re-reads them the same way. A step that could not resolve its ids did not become a lesson with a footnote; it failed the build.',
     'no_jurisdiction': 'nothing here cites a standard, a code or an authority, and nothing here speaks for one. Where a step says what a crew would do, that is unverified general practice and not an instruction from anybody with the standing to give one.',
-    'scope': 'this is a small set deliberately spread thin: a couple of dozen lessons across a couple of dozen halls, out of 111 halls and 1,221 rooms. It demonstrates the shape a lesson takes in this bundle. It is not a curriculum, it does not cover a trade, and no hall is finished because one of its rooms now has a lesson standing in it.',
+    # {lessons}, {halls} and {seat_bound} are filled in below from the counts
+    # the build computes; a typed figure here would be a second copy.
+    'scope': 'this is a set deliberately spread thin: {lessons} lessons across {halls} halls, one in every one of the {seat_bound} halls a simulator seat is bound to, out of 111 halls and 1,221 rooms. It demonstrates the shape a lesson takes in this bundle. It is not a curriculum, it does not cover a trade, and no hall is finished because one of its rooms now has a lesson standing in it.',
 }
 
 PAGE_CONTRACT = {
@@ -733,6 +1102,15 @@ def build_step(lesson, idx, raw):
         if kind == 'walk':
             step['do'] = f'Walk to the {label} — {ROOM_PURPOSE[strand].lower()}.'
         else:
+            # web/build_3d.py hangs the PPE board only where the merged
+            # condition record requires something (`if (rc.ppe.length)`):
+            # a room that requires nothing gets no sign rather than a sign
+            # saying "nothing". A placard step in such a room would read a
+            # board that is not there, so it is refused by name.
+            cond = req(req(FINISHES['halls'], hall, f'{lesson["id"]} step {idx}')['conditions'],
+                       strand, f'{lesson["id"]} step {idx}')
+            assert cond['ppe'], \
+                f'{lesson["id"]} step {idx}: the {label} of {hall} requires no PPE, so the builder hangs no placard there to read'
             step['do'] = (f'Read the door placard of the {label}: it states the '
                           f'light, air, noise and protective equipment that room is held to.')
             step['label_kind'] = 'placard'
@@ -954,7 +1332,7 @@ HALLS_COVERED = sorted({L['hall'] for L in LESSONS.values()})
 STRANDS_COVERED = sorted({L['strand'] for L in LESSONS.values()})
 _per_hall = {}
 for L in LESSONS.values():
-    _per_hall[L['hall']] = _per_hall.get(L['hall'], 0) + 1
+    _per_hall[L['hall']] = (_per_hall[L['hall']] if L['hall'] in _per_hall else 0) + 1
 MAX_IN_A_HALL = max(_per_hall.values())
 TOP_SHARE = MAX_IN_A_HALL / len(LESSONS)
 assert TOP_SHARE <= MAX_HALL_SHARE, \
@@ -963,6 +1341,46 @@ assert len(STRANDS_COVERED) == len(ROOM_LABEL), \
     f'{len(STRANDS_COVERED)} of {len(ROOM_LABEL)} strands are covered; breadth means all of them'
 assert len(HALLS_COVERED) >= 20, \
     f'{len(HALLS_COVERED)} halls is depth in a corner, not breadth over the trades'
+
+# -- every seat-bound hall has a lesson. sims/registry/sims.json#hall_bindings
+# -- is the list of halls with an operable seat; a hall with a floor and no
+# -- reason to walk onto it is the gap this set exists to close, so the set
+# -- is held to it. The list is READ, never typed.
+SEAT_BOUND_HALLS = sorted(SIMS['hall_bindings'])
+for slug in SEAT_BOUND_HALLS:
+    assert slug in HALL_NAME, f'sims binds a seat to {slug}, which is not a hall'
+_seat_bound_without = [h for h in SEAT_BOUND_HALLS if h not in _per_hall]
+assert not _seat_bound_without, \
+    'seat-bound halls with no lesson: ' + ', '.join(_seat_bound_without)
+
+# -- a hazard room is walked with its placard read. compliance/build.py
+# -- derives a hall's hazard rooms from surfaces/registry/finishes.json: a
+# -- room whose condition record names a governing hazard. That reading is
+# -- reused here, not restated: a lesson that stands in, or sends its
+# -- learner through, a hazard room carries a placard step in that room.
+# -- Any step with a room `where` counts as walking it - a station bench, the
+# -- crib pegboard and an advisor's post included - exactly as compliance
+# -- counts them.
+def hazard_rooms_of(hall):
+    conds = req(FINISHES['halls'], hall, 'finishes')['conditions']
+    return sorted(s for s in conds if req(conds[s], 'hazards', f'{hall}.{s}'))
+
+
+HAZARD_GAPS = []
+for lid, L in LESSONS.items():
+    walked = sorted({st['where'] for st in L['steps'] if st['where'] not in OFF_ROOM_PLACES})
+    placarded = {st['where'] for st in L['steps'] if st['kind'] == 'placard'}
+    gaps = [s for s in hazard_rooms_of(L['hall']) if s in walked and s not in placarded]
+    L['rooms_walked'] = walked
+    L['hazard_rooms_walked'] = [s for s in hazard_rooms_of(L['hall']) if s in walked]
+    L['placard_steps_in'] = sorted(placarded)
+    for s in gaps:
+        HAZARD_GAPS.append(f'{lid} walks the {ROOM_LABEL[s]} ({s}), a hazard room of {L["hall"]}, and never reads its placard')
+assert not HAZARD_GAPS, 'hazard rooms walked without a placard step: ' + ' | '.join(HAZARD_GAPS)
+
+# the scope sentence carries the figures the build just computed, and nothing typed
+HONESTY['scope'] = HONESTY['scope'].format(
+    lessons=len(LESSONS), halls=len(HALLS_COVERED), seat_bound=len(SEAT_BOUND_HALLS))
 # and every episode kind training/ declares is actually exercised
 _kinds_used = sorted({k for L in LESSONS.values() for k in L['records']})
 assert _kinds_used == sorted(EPISODE_KINDS), \
@@ -1004,7 +1422,7 @@ _state = {}
 
 
 def _visit(node, path):
-    st = _state.get(node, 'new')
+    st = _state[node] if node in _state else 'new'
     if st == 'done':
         return
     if st == 'open':
@@ -1051,17 +1469,23 @@ _reads = sorted({st['reads'] for L in LESSONS.values() for st in L['steps']})
 for f in _reads:
     assert (ROOT / f).exists(), f'{f} is read by a step kind and does not exist'
 
-# the placard step kind leans on a sign this bundle already draws
+# the placard step kind leans on a sign this bundle already draws, hung only
+# where the room requires something: both facts are located in the page
 assert 'placard' in LABELS['kinds'], \
     'the placard step reads a sign kind the labels pack no longer declares'
+assert 'if (rc.ppe.length)' in PAGE_SRC and "kind: 'placard', items: rc.ppe" in PAGE_SRC, \
+    'web/build_3d.py no longer hangs the PPE placard on rc.ppe.length: the placard step rule above no longer reads the page'
 
 # the page this contract is written for still behaves the way it describes
 for token in ('curRoom', 'hfocus', 'hint', "view = 'hall'", 'condLine', 'condOf'):
     assert token in PAGE_SRC, \
         f'the page contract names {token!r}, which the page no longer has'
-# and it has not been wired yet, which is a fact rather than an omission
-assert 'D.lessons' not in PAGE_SRC, \
-    'the page now reads D.lessons: update this contract to describe what it actually does'
+# and the return path the contract describes is wired: the hall view reads
+# D.lessons, whole, the way page_contract.data asks. This used to assert the
+# absence, back when nothing had built it; lessons/test.mjs holds the page
+# to the same fact from the bytes that ship.
+assert 'D.lessons' in PAGE_SRC, \
+    'the page no longer reads D.lessons: the contract describes a return path nothing builds'
 
 # no network, no URL, nothing fetched at view time
 _payload_text = json.dumps([LESSONS, LADDER, HONESTY, PAGE_CONTRACT, STEP_KINDS])
@@ -1084,11 +1508,11 @@ stamp = hashlib.sha256(pathlib.Path(__file__).read_bytes()).hexdigest()[:16]
 ALL_STEPS = [st for L in LESSONS.values() for st in L['steps']]
 by_kind = {}
 for st in ALL_STEPS:
-    by_kind[st['kind']] = by_kind.get(st['kind'], 0) + 1
+    by_kind[st['kind']] = (by_kind[st['kind']] if st['kind'] in by_kind else 0) + 1
 by_episode = {}
 for st in ALL_STEPS:
     if st['records'] is not None:
-        by_episode[st['records']] = by_episode.get(st['records'], 0) + 1
+        by_episode[st['records']] = (by_episode[st['records']] if st['records'] in by_episode else 0) + 1
 
 doc = {
     'pack': 'smartcitix-trade-craft-academy-lessons',
@@ -1138,12 +1562,18 @@ doc = {
         'ladder_layers': len(LADDER_LAYERS),
         'edge_reasons': len(EDGE_REASONS),
         'files_read': len(_reads),
+        'seat_bound_halls': len(SEAT_BOUND_HALLS),
+        'seat_bound_halls_with_a_lesson': sum(1 for h in SEAT_BOUND_HALLS if h in _per_hall),
+        'hazard_rooms_walked': sum(len(L['hazard_rooms_walked']) for L in LESSONS.values()),
+        'hazard_room_placard_gaps': len(HAZARD_GAPS),
+        'placard_steps': by_kind['placard'],
     },
     'spread': {
         'halls': HALLS_COVERED,
         'strands': STRANDS_COVERED,
-        'max_hall_share': round(TOP_SHARE, 4),
+        'max_hall_share': TOP_SHARE,
         'max_hall_share_ceiling': MAX_HALL_SHARE,
+        'seat_bound_halls': SEAT_BOUND_HALLS,
         'note': 'breadth over the trades rather than depth in one: the ceiling is declared, computed and failed against, and all 11 strands must be stood in or the build stops.',
     },
     'step_kinds': STEP_KINDS,
@@ -1176,6 +1606,12 @@ assert doc['counts']['episode_kinds_used'] == doc['counts']['episode_kinds_decla
 assert sum(doc['counts']['steps_by_kind'].values()) == doc['counts']['steps']
 assert sum(doc['counts']['episodes_by_kind'].values()) == doc['counts']['recording_steps']
 assert doc['counts']['ladder_roots'] + len({a for a, _b, _c in EDGES}) == doc['counts']['lessons']
+assert doc['counts']['seat_bound_halls_with_a_lesson'] == doc['counts']['seat_bound_halls'], \
+    'a seat-bound hall has no lesson'
+assert doc['counts']['hazard_room_placard_gaps'] == 0, 'a hazard room is walked without its placard'
+assert doc['counts']['hazard_rooms_walked'] == sum(
+    1 for L in LESSONS.values() for r in L['hazard_rooms_walked'] if r in L['placard_steps_in']), \
+    'a hazard room walked is a hazard room placarded, or the gap count above lied'
 
 OUT = HERE / 'registry'
 OUT.mkdir(exist_ok=True)
@@ -1189,5 +1625,7 @@ print(f"lessons: {c['lessons']} walkable lessons, {c['steps']} steps in "
       f"{c['recording_steps']} steps write one of the {c['episode_kinds_declared']} "
       f"episode kinds training/ already has and {c['silent_steps']} write nothing; "
       f"ladder {c['prerequisite_edges']} edges, {c['ladder_roots']} roots, "
-      f"depth {c['ladder_depth']}, acyclic; certifies nobody "
+      f"depth {c['ladder_depth']}, acyclic; every one of the {c['seat_bound_halls']} "
+      f"seat-bound halls has a lesson, {c['hazard_rooms_walked']} hazard rooms walked and "
+      f"{c['hazard_room_placard_gaps']} without a placard step; certifies nobody "
       f"(source stamp {stamp})")

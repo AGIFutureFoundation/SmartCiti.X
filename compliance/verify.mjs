@@ -276,7 +276,7 @@ if (isMain) {
   try {
     const tally = checkLedger(REG, null);
     for (const [rule, t] of Object.entries(tally)) {
-      if (t.fails.length) { failed = true; console.error(`FAIL ${rule}: checked ${t.checked}, failing ${t.fails.length}`); for (const f of t.fails.slice(0, 5)) console.error(`     ${f}`); }
+      if (t.fails.length) { failed = true; console.error(`FAIL ${rule}: checked ${t.checked}, failing ${t.fails.length}`); for (const f of t.fails) console.error(`     ${f}`); }
     }
     if (failed) { console.error('the ledger itself fails; no report is printed over a ledger that does not re-derive'); process.exit(1); }
     const record = JSON.parse(readFileSync(path, 'utf8'));

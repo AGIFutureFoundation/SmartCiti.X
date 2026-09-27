@@ -84,7 +84,8 @@ const HALL_STRANDS = {};
 const SKILL_IDS = new Set();
 for (const s of skills) {
   SKILL_IDS.add(s.skill_id);
-  (HALL_STRANDS[s.union] ??= new Set()).add(s.strand);
+  if (!(s.union in HALL_STRANDS)) HALL_STRANDS[s.union] = new Set();
+  HALL_STRANDS[s.union].add(s.strand);
 }
 const HALL_CAMPUS = {};
 for (const [k, c] of Object.entries(campuses)) for (const h of c.halls) HALL_CAMPUS[h] = k;
@@ -254,12 +255,96 @@ ok('the spread is over the trades, not down one: every strand is stood in and no
 ok('the top hall\'s share is computed from the set, not typed, and is under the declared ceiling',
   (() => {
     const per = {};
-    for (const [, L] of lessons) per[L.hall] = (per[L.hall] ?? 0) + 1;
+    for (const [, L] of lessons) per[L.hall] = (L.hall in per ? per[L.hall] : 0) + 1;
     const top = Math.max(...Object.values(per));
     return top === reg.counts.max_lessons_in_one_hall
       && Math.abs(reg.spread.max_hall_share - top / lessons.length) < 1e-9
       && reg.spread.max_hall_share <= reg.spread.max_hall_share_ceiling;
   })());
+
+/* ------------------------------------------------- the seat-bound halls --- */
+/* sims/registry/sims.json#hall_bindings is the list of halls with an operable
+   seat. Re-read here, and every one of them must have a lesson standing in it:
+   the registry's own list and count are held to that reading, not trusted. */
+const SEAT_BOUND = Object.keys(sims.hall_bindings).sort();
+const HALLS_WITH_LESSON = new Set(lessons.map(([, L]) => L.hall));
+const seatBoundWithout = SEAT_BOUND.filter((h) => !HALLS_WITH_LESSON.has(h));
+ok('every seat-bound hall (recomputed from sims.json#hall_bindings) has a lesson'
+  + (seatBoundWithout.length ? ` — none in: ${seatBoundWithout.join(', ')}` : ''),
+  SEAT_BOUND.length > 0 && seatBoundWithout.length === 0
+  && JSON.stringify(reg.spread.seat_bound_halls) === JSON.stringify(SEAT_BOUND)
+  && reg.counts.seat_bound_halls === SEAT_BOUND.length
+  && reg.counts.seat_bound_halls_with_a_lesson === SEAT_BOUND.length
+  && SEAT_BOUND.every((h) => h in HALL_NAME));
+
+/* --------------------------------------- hazard rooms and their placards --- */
+/* compliance/build.py derives a hall's hazard rooms from
+   surfaces/registry/finishes.json - a room whose condition record names a
+   governing hazard - and counts a room as walked when any step's `where` is
+   that room (a bench, the pegboard, an advisor's post included). The same
+   reading, done again here: a hazard room a lesson walks carries a placard
+   step in that lesson, and the registry's per-lesson lists say so. */
+const hazardRoomsOf = (hall) => Object.keys(finishes.halls[hall].conditions)
+  .filter((s) => finishes.halls[hall].conditions[s].hazards.length > 0).sort();
+const placardGaps = [];
+let hazardWalked = 0;
+for (const [lid, L] of lessons) {
+  const walked = [...new Set(L.steps.filter((s) => !(s.where in reg.off_room_places))
+    .map((s) => s.where))].sort();
+  const placarded = [...new Set(L.steps.filter((s) => s.kind === 'placard').map((s) => s.where))].sort();
+  const hz = hazardRoomsOf(L.hall).filter((s) => walked.includes(s));
+  hazardWalked += hz.length;
+  for (const s of hz) if (!placarded.includes(s)) placardGaps.push(`${lid}: ${s}`);
+  if (JSON.stringify(L.rooms_walked) !== JSON.stringify(walked)
+    || JSON.stringify(L.placard_steps_in) !== JSON.stringify(placarded)
+    || JSON.stringify(L.hazard_rooms_walked) !== JSON.stringify(hz)) placardGaps.push(`${lid}: lists drifted`);
+}
+ok('every hazard room a lesson walks (recomputed from surfaces the way compliance does) has a placard step in that lesson'
+  + (placardGaps.length ? ` — ${placardGaps.join(', ')}` : ''),
+  placardGaps.length === 0 && reg.counts.hazard_room_placard_gaps === 0
+  && reg.counts.hazard_rooms_walked === hazardWalked && hazardWalked > 0
+  && reg.counts.placard_steps === stepsOf('placard').length);
+ok('the placard step a hazard room gets is the sign the 3D builder hangs: a `placard` label kind, on a room whose merged PPE list is non-empty',
+  lessons.every(([, L]) => L.steps.filter((s) => s.kind === 'placard').every((s) =>
+    s.label_kind === 'placard' && finishes.halls[L.hall].conditions[s.where].ppe.length > 0)));
+
+/* -------------------------------------- every id resolves, said by name --- */
+const unresolved = [];
+for (const [lid, L] of lessons) for (const s of L.steps) {
+  const who = `${lid} step ${s.n}`;
+  if (!(s.where in ROOM_LABEL) && !(s.where in reg.off_room_places)) unresolved.push(`${who}: where=${s.where}`);
+  if (s.where in ROOM_LABEL && !(s.where in finishes.halls[L.hall].rooms)) unresolved.push(`${who}: ${L.hall} has no ${s.where} room`);
+  if ('station' in s && !(s.station in STATION)) unresolved.push(`${who}: station ${s.station}`);
+  if ('sim' in s && !(s.sim in sims.sims)) unresolved.push(`${who}: sim ${s.sim}`);
+  if ('sim' in s && s.sim in sims.sims && !sims.sims[s.sim].halls.includes(L.hall)) unresolved.push(`${who}: ${L.hall} does not train on ${s.sim}`);
+  if ('point' in s && !(sims.sims[s.sim].walkaround.some((p) => p.id === s.point))) unresolved.push(`${who}: point ${s.point}`);
+  if ('scenario' in s && !(sims.sims[s.sim].scenarios.some((x) => x.id === s.scenario))) unresolved.push(`${who}: scenario ${s.scenario}`);
+  if ('advisor' in s && !(s.advisor in advisors)) unresolved.push(`${who}: advisor ${s.advisor}`);
+  if ('advisor' in s && s.advisor in advisors && !advisors[s.advisor].topics.some((t) => t.id === s.topic)) unresolved.push(`${who}: topic ${s.topic}`);
+  if ('crew' in s && !(s.crew in crews)) unresolved.push(`${who}: crew ${s.crew}`);
+  if ('crew' in s && s.crew in crews && !(s.role in crews[s.crew].roles)) unresolved.push(`${who}: role ${s.role}`);
+  if ('crew' in s && s.crew in crews && s.role in crews[s.crew].roles
+    && !crews[s.crew].roles[s.role].topics.some((t) => t.id === s.topic)) unresolved.push(`${who}: crew topic ${s.topic}`);
+  if ('crib' in s && !(s.crib in cribs.cribs)) unresolved.push(`${who}: crib ${s.crib}`);
+}
+ok('no lesson step names an id that does not resolve in the registry that owns it'
+  + (unresolved.length ? ` — ${unresolved.slice(0, 4).join('; ')}` : ''), unresolved.length === 0);
+
+/* ------------------------------------------- the recording rule, honestly --- */
+/* A crew stands only for the halls its registry entry names and only while
+   its own seat runs; a crew step anywhere else would record a crew episode
+   for a conversation that cannot happen. And a step records what its kind
+   records: the four silent kinds are null, the four episode kinds are the
+   training/ kind, with no lesson reclassifying either. */
+const crewWrong = stepsOf('crew').filter(([lid, L, s]) =>
+  !(s.crew in crews) || !crews[s.crew].halls.includes(L.hall)
+  || !L.steps.some((x) => 'sim' in x && x.sim === crews[s.crew].seat)).map(([lid, , s]) => `${lid} step ${s.n}`);
+ok('a crew step stands only in a hall its crew reaches, in a lesson that goes to that crew\'s seat'
+  + (crewWrong.length ? ` — ${crewWrong.join(', ')}` : ''), crewWrong.length === 0);
+ok('every step records exactly what its kind records: null for walk, placard, station and crib; a training/ episode kind for the rest',
+  ['walk', 'placard', 'station', 'crib'].every((k) => reg.step_kinds[k].records === null)
+  && ['walkaround', 'sim', 'advisor', 'crew'].every((k) => reg.step_kinds[k].records in training.episode_kinds)
+  && steps.every(([, , s]) => s.records === reg.step_kinds[s.kind].records));
 
 /* ----------------------------------------------------------- the ladder --- */
 ok('every prerequisite names a lesson that exists, and nothing is its own prerequisite',
@@ -300,11 +385,14 @@ ok('the graph is acyclic, walked here rather than taken on trust',
 ok('the roots, depths and layers are re-derived from the edges, not published from memory',
   (() => {
     const pre = reg.ladder.prerequisites, d = {};
-    const depth = (x) => d[x] ??= 1 + Math.max(0, ...pre[x].map((e) => depth(e.needs)));
+    const depth = (x) => {
+      if (!(x in d)) d[x] = 1 + Math.max(0, ...pre[x].map((e) => depth(e.needs)));
+      return d[x];
+    };
     for (const k of Object.keys(pre)) depth(k);
     const roots = Object.keys(pre).filter((k) => pre[k].length === 0).sort();
     const layers = {};
-    for (const [k, v] of Object.entries(d)) (layers[v] ??= []).push(k);
+    for (const [k, v] of Object.entries(d)) { if (!(v in layers)) layers[v] = []; layers[v].push(k); }
     for (const k of Object.keys(layers)) layers[k].sort();
     return JSON.stringify(roots) === JSON.stringify(reg.ladder.roots)
       && JSON.stringify(d) === JSON.stringify(reg.ladder.depth)
@@ -614,13 +702,24 @@ const TYPED = (() => {
   /* Every number a reader can see on the page, against every number the
      registry holds or that follows from it. A typed count is the defect
      this bundle lints 238 files for; the page must not be the 239th. */
+  /* entities are encoding, not figures: `&#x27;` is an apostrophe, and a
+     scan that read the 27 out of it was passing only while some count in
+     the registry happened to be 27 */
   const text = learnerPage.replace(/<script[\s\S]*?<\/script>/g, ' ')
-    .replace(/<style[\s\S]*?<\/style>/g, ' ').replace(/<[^>]*>/g, ' ');
+    .replace(/<style[\s\S]*?<\/style>/g, ' ').replace(/<[^>]*>/g, ' ')
+    .replace(/&#x[0-9a-f]+;|&#[0-9]+;|&[a-z]+;/gi, ' ');
   const shown = [...new Set([...text.matchAll(/[0-9][0-9,]*/g)].map((m) => m[0].replace(/,/g, '')))];
   const allowed = new Set([...readFileSync(url('./registry/lessons.json'), 'utf8')
     .matchAll(/[0-9][0-9,]*/g)].map((m) => m[0].replace(/,/g, '')));
   for (const ids of Object.values(reg.ladder.layers)) allowed.add(String(ids.length));
   for (const [, L] of lessons) allowed.add(String(L.steps.length));
+  /* a COURSE on the page is the lessons of one hall in ladder order, with
+     its steps numbered straight through: the course total and every index
+     up to it follow from the registry */
+  const courseSteps = {};
+  for (const [, L] of lessons) courseSteps[L.hall] = (L.hall in courseSteps ? courseSteps[L.hall] : 0) + L.steps.length;
+  for (const total of Object.values(courseSteps)) for (let i = 1; i <= total; i++) allowed.add(String(i));
+  allowed.add(String(Object.keys(courseSteps).length));
   return shown.filter((x) => !allowed.has(x));
 })();
 ok('every number a reader can see on the page is one the registry holds or one derived from it'
@@ -640,13 +739,16 @@ ok('the counts the registry publishes are the counts it actually holds',
   && reg.counts.silent_steps === steps.filter(([, , s]) => s.records === null).length
   && reg.counts.recording_steps + reg.counts.silent_steps === reg.counts.steps
   && reg.counts.episode_kinds_declared === Object.keys(training.episode_kinds).length
-  && reg.counts.files_read === reg.reads.length);
+  && reg.counts.files_read === reg.reads.length
+  && reg.counts.seat_bound_halls === Object.keys(sims.hall_bindings).length
+  && reg.counts.placard_steps === steps.filter(([, , s]) => s.kind === 'placard').length
+  && reg.counts.hazard_room_placard_gaps === 0);
 ok('the per-kind tallies are re-derived from the steps themselves, not typed beside them',
   (() => {
     const byKind = {}, byEp = {};
     for (const [, , s] of steps) {
-      byKind[s.kind] = (byKind[s.kind] ?? 0) + 1;
-      if (s.records !== null) byEp[s.records] = (byEp[s.records] ?? 0) + 1;
+      byKind[s.kind] = (s.kind in byKind ? byKind[s.kind] : 0) + 1;
+      if (s.records !== null) byEp[s.records] = (s.records in byEp ? byEp[s.records] : 0) + 1;
     }
     const sorted = (o) => Object.fromEntries(Object.entries(o).sort(([a], [b]) => a < b ? -1 : 1));
     return JSON.stringify(reg.counts.steps_by_kind) === JSON.stringify(sorted(byKind))
@@ -692,4 +794,7 @@ console.log(`lessons/test: ${n} checks passed — ${reg.counts.lessons} walkable
   + `${reg.counts.episode_kinds_declared} episode kinds training/ already has, `
   + `${reg.counts.silent_steps} write nothing and say why; ladder `
   + `${reg.counts.prerequisite_edges} edges over ${reg.counts.ladder_roots} roots, `
-  + `depth ${reg.counts.ladder_depth}, acyclic; certifies nobody`);
+  + `depth ${reg.counts.ladder_depth}, acyclic; every one of the `
+  + `${reg.counts.seat_bound_halls} seat-bound halls has a lesson, `
+  + `${reg.counts.hazard_rooms_walked} hazard rooms walked and `
+  + `${reg.counts.hazard_room_placard_gaps} without a placard step; certifies nobody`);

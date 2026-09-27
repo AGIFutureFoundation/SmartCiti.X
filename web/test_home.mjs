@@ -366,6 +366,9 @@ ok(`[shipped] trade_craft_lessons.html: one course section per hall a lesson sta
 {
   const wrong = [];
   for (const c of COURSES) {
+    // A hall the registry gives a course but the built page has no block for
+    // is a named failure, not a crash - the page is stale against the registry.
+    if (!blocks.has(c.hall)) { wrong.push(`${c.hall}: no course block on the page`); continue; }
     const got = [...blocks.get(c.hall).matchAll(/<article class="lesson" id="lesson-([^"]+)"/g)]
       .map((m) => m[1]);
     if (JSON.stringify(got) !== JSON.stringify(c.ids)) wrong.push(`${c.hall}: [${got}] != [${c.ids}]`);
@@ -486,6 +489,80 @@ ok('[shipped] trade_craft_lessons.html: the course page invents no deep-link sch
     && (hs.match(/need\(/g) || []).length > 20 && (ls.match(/need\(/g) || []).length > 20,
     [`need() calls: home ${(hs.match(/need\(/g) || []).length}, `
      + `lessons ${(ls.match(/need\(/g) || []).length}`]);
+}
+
+/* ================================================== [declared surfaces] === */
+/* The floor plans, the contribution page and the site plans. Each card on the
+   front door is READ from that surface's own registry: the body, the limit and
+   the badge name the field they came from in `data-from`, and this block opens
+   that registry and holds the shipped text to the field verbatim - so a
+   description typed into the generator, however plausible, fails here. */
+{
+  const DECLARED = {
+    'web/trade_craft_spaces.html': 'spaces/registry/spaces.json',
+    'web/trade_craft_contribute.html': 'contrib/registry/contrib.json',
+    'web/trade_craft_worksites.html': 'worksites/registry/worksites.json',
+  };
+  const escLike = (t) => String(t).split(/\s+/).join(' ').trim()
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const resolveField = (reg, path) => {
+    let node = reg;
+    for (const part of path.split('.')) {
+      const m = /^([^[]+)((?:\[\d+\])*)$/.exec(part);
+      if (!m || node === null || typeof node !== 'object' || !(m[1] in node)) return undefined;
+      node = node[m[1]];
+      for (const [, i] of m[2].matchAll(/\[(\d+)\]/g)) node = Array.isArray(node) ? node[Number(i)] : undefined;
+    }
+    return node;
+  };
+  const cardRe = /<a class="card(?: lead)?" href="([^"]*)"(?: data-declared="([^"]*)")?>([\s\S]*?)<\/a>/g;
+  const cards = new Map([...home.matchAll(cardRe)].map((m) => [m[1], { declared: m[2], inner: m[3] }]));
+  const { existsSync } = await import('node:fs');
+  const missing = Object.keys(DECLARED).filter((h) => !cards.has(h));
+  const dangling = Object.keys(DECLARED).filter((h) => !existsSync(join(ROOT, h)));
+  ok('[shipped] index.html: the front door links the floor plans, the contribution page and the site '
+    + 'plans as cards, and each href resolves to a built page under the bundle root',
+    missing.length === 0 && dangling.length === 0,
+    [...missing.map((h) => `no card for ${h}`), ...dangling.map((h) => `${h} does not exist under ${ROOT}`)]);
+
+  const wrong = [];
+  const slots = [];
+  for (const [href, regPath] of Object.entries(DECLARED)) {
+    const c = cards.get(href);
+    if (!c) { wrong.push(`${href}: no card`); continue; }
+    if (c.declared !== regPath) wrong.push(`${href}: data-declared=${c.declared}, want ${regPath}`);
+    let reg;
+    try { reg = readJSON(regPath); } catch (e) { wrong.push(`${href}: cannot read ${regPath}`); continue; }
+    const found = [...c.inner.matchAll(/<(span|p)( class="[^"]*")?( data-badge)? data-from="([^"]*)"[^>]*>([\s\S]*?)<\/\1>/g)];
+    const byKind = { badge: null, body: null, limit: null };
+    for (const m of found) {
+      const kind = m[3] ? 'badge' : /class="limit"/.test(m[2] || '') ? 'limit' : 'body';
+      byKind[kind] = { from: m[4], text: m[5].replace(/<span class="limit-tag">[^<]*<\/span>/, '') };
+    }
+    for (const kind of ['badge', 'body', 'limit']) {
+      const s = byKind[kind];
+      if (!s) { wrong.push(`${href}: no ${kind} slot with data-from`); continue; }
+      const [file, field] = s.from.split('#');
+      if (file !== regPath || !field) { wrong.push(`${href} ${kind}: data-from=${s.from} is not a field of ${regPath}`); continue; }
+      const value = resolveField(reg, field);
+      if (typeof value !== 'string' || !value.trim()) { wrong.push(`${href} ${kind}: ${s.from} is not a non-empty string in the registry`); continue; }
+      const want = escLike(kind === 'badge' ? value.split(':')[0] : value);
+      if (s.text !== want) wrong.push(`${href} ${kind}: shipped "${s.text.slice(0, 60)}..." != ${s.from} "${want.slice(0, 60)}..."`);
+      slots.push({ href, kind, value });
+    }
+  }
+  ok('[shipped] index.html: each of the three cards\' badge, body and limit names the registry field it '
+    + 'was read from (data-from="<registry>#<field>") and the shipped text IS that field verbatim - the '
+    + 'badge its head clause before the first colon, the body and limit the whole sentence',
+    wrong.length === 0 && slots.length === 9, wrong);
+
+  const strip = (src) => src.replace(/"""[\s\S]*?"""/g, ' ').replace(/^\s*#.*$/gm, ' ');
+  const hs = strip(readFileSync(HOME_GEN, 'utf8'));
+  const typed = slots.filter((s) => hs.includes(s.value.slice(0, 48)));
+  ok('[generator] build_home.py names the three registries as literal paths and types none of the nine '
+    + 'sentences it ships for them - the registry, not the generator, is where every one lives',
+    Object.values(DECLARED).every((p) => hs.includes(p)) && typed.length === 0 && slots.length === 9,
+    typed.map((s) => `${s.href} ${s.kind} appears verbatim in build_home.py`));
 }
 
 /* ============================================================ [browser] === */

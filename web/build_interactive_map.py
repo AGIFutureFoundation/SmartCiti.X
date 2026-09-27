@@ -435,14 +435,14 @@ function render(){
     `<span><b>${F(D.ledger.halls)}</b> ${fmt(t('figures.halls'),{n:''}).trim()}</span>`+
     `<span><b>${F(D.ledger.total_modules)}</b> ${fmt(t('figures.modules'),{n:''}).trim()}</span>`+
     `<span><b>${D.ledger.districts}</b> ${fmt(t('figures.districts'),{n:''}).trim()}</span>`+
-    `<span data-fig="lessons"><b>${Object.keys(LESSONS).length}</b> lessons standing in rooms</span>`+
-    `<span data-fig="steps"><b>${allSteps().length}</b> steps</span>`+
-    `<span data-fig="completable"><b>${nCompletable()}</b> / ${Object.keys(LESSONS).length} completable</span>`;
+    `<span data-fig="lessons"><b>${Object.keys(LESSONS).length}</b> ${t('interactive.lessonsInRooms')}</span>`+
+    `<span data-fig="steps"><b>${allSteps().length}</b> ${t('interactive.steps')}</span>`+
+    `<span data-fig="completable"><b>${nCompletable()}</b> / ${Object.keys(LESSONS).length} ${t('interactive.completable')}</span>`;
   const LAYERS = [['districts','map.layer.districts'],['pipeline','map.layer.pipeline'],
-                  ['modules','map.layer.modules'],['stations','map.layer.stations'],['lessons',null]];
+                  ['modules','map.layer.modules'],['stations','map.layer.stations'],['lessons','interactive.lessons']];
   document.getElementById('layers').innerHTML =
     `<span class="lbl">${t('map.layers')}:</span>` +
-    LAYERS.map(([k,lk]) => `<label class="tgl"><input type="checkbox" data-l="${k}" ${document.body.classList.contains('L-'+k)?'checked':''}>${lk === null ? 'Lessons' : t(lk)}</label>`).join('') +
+    LAYERS.map(([k,lk]) => `<label class="tgl"><input type="checkbox" data-l="${k}" ${document.body.classList.contains('L-'+k)?'checked':''}>${t(lk)}</label>`).join('') +
     `<select id="lang" aria-label="${t('language.select')}">` +
     Object.entries(D.i18n).map(([c,v]) => `<option value="${c}" ${c===loc?'selected':''}>${v.language}</option>`).join('') + `</select>` +
     `<input id="q" type="search" value="${query.replace(/"/g,'&quot;')}" placeholder="${t('ui.search')}" aria-label="${t('ui.search')}"
@@ -508,6 +508,7 @@ function applyFilter(){
   });
 }
 
+const EDGE_LIFT = 40; // px the ladder curve lifts above the two hall tiles - a layout constant, not a count
 function ladderEdges(){
   // one edge per D.lessons.ladder.edges, drawn between the tiles of the halls
   // the two lessons stand in; a same-hall edge loops on its own tile. The
@@ -525,7 +526,7 @@ function ladderEdges(){
     const a = at(e.needs), b = at(e.lesson);
     const d = a.x === b.x && a.y === b.y
       ? `M${a.x-14} ${a.y} a14 14 0 1 1 28 0`
-      : `M${a.x} ${a.y} Q${(a.x+b.x)/2} ${Math.min(a.y,b.y)-40} ${b.x} ${b.y}`;
+      : `M${a.x} ${a.y} Q${(a.x+b.x)/2} ${Math.min(a.y,b.y)-EDGE_LIFT} ${b.x} ${b.y}`;
     return `<path data-edge="${e.lesson}>${e.needs}" data-because="${e.because}" d="${d}"><title>${LESSONS[e.lesson].title} needs ${LESSONS[e.needs].title} · ${e.because}</title></path>`;
   }).join('');
 }
@@ -595,7 +596,7 @@ function lessonCards(h){
       : `needed by <a href="trade_craft_lessons.html#lesson-${e.lesson}">${LESSONS[e.lesson].title}</a> (${e.because})`).join(' · ');
     return `<div class="lesson" id="lesson-${lid}" data-lesson="${lid}" data-completable="${c.completable}">
       <h4>${les.title}</h4><p class="why">${les.room_label} · ${les.why}</p>
-      ${c.completable ? '' : `<p class="nc">not completable: ${c.not_completable_why}</p>`}
+      ${c.completable ? '' : `<p class="nc">${t('interactive.notCompletable')}: ${c.not_completable_why}</p>`}
       <ol>${steps}</ol>
       <div class="links"><a href="trade_craft_lessons.html#lesson-${lid}">lesson page</a><a href="trade_craft_3d.html?hall=${les.hall}&lang=${loc}">3D hall</a></div>
       ${needs ? `<div class="needs">${needs}</div>` : ''}</div>`;
@@ -655,7 +656,7 @@ function openHall(slug){
       `<span class="chip" title="${tl.use}">${tl.glyph} ${tl.name}</span>`).join(' ')}</div>
     <p style="color:var(--muted);font-size:11.5px;margin-top:6px">${D.tools.drill} · ${D.tools.honesty}</p>
     ${stns ? `<h3>${t('hall.stations')} (${h.stations.length})</h3>${stns}` : ''}
-    ${h.lessonIds.length ? `<h3>Lessons standing here (${h.lessonIds.length})</h3>${lessonCards(h)}` : ''}
+    ${h.lessonIds.length ? `<h3>${t('interactive.lessonsHere')} (${h.lessonIds.length})</h3>${lessonCards(h)}` : ''}
     <h3>${t('hall.skills')}</h3>${lat}
     <h3>${t('map.layer.modules')}</h3>${modTable(h)}`;
   document.body.classList.add('open');

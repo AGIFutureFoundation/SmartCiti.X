@@ -1,0 +1,507 @@
+{
+ "pack": "smartcitix-trade-craft-academy-training-data",
+ "exported": "2026-09-26T00:00:00Z",
+ "label": "fixture - not a learner",
+ "fixture": "this log is SCRIPTED by sessions/build.py from synthetic episodes shaped by training/registry/training.json; it is not a learner, its gauges are not a machine, and its sessions block is a CLAIM the verifier recomputes rather than believes",
+ "episodes": [
+  {
+   "t": "2026-09-26T03:00:00.000Z",
+   "kind": "walkaround",
+   "campus": "treasure-island",
+   "hall": "painters",
+   "sim": "airless-sprayer",
+   "point": "respirator"
+  },
+  {
+   "t": "2026-09-26T03:01:00.000Z",
+   "kind": "sim",
+   "campus": "treasure-island",
+   "hall": "painters",
+   "sim": "airless-sprayer",
+   "scenario": "bay-terminal-finish",
+   "controls": [
+    "sweep the gun left / right across the panel",
+    "sweep the gun up / down across the panel",
+    "stand off farther / move closer to the surface",
+    "pull / release the spray trigger"
+   ],
+   "actor": "human",
+   "outcome": {
+    "passed": false,
+    "rows": [
+     {
+      "axis": "coverage",
+      "value": 1,
+      "ok": false
+     },
+     {
+      "axis": "runs",
+      "value": 1,
+      "ok": false
+     },
+     {
+      "axis": "holidays",
+      "value": 1,
+      "ok": false
+     },
+     {
+      "axis": "overspray",
+      "value": 1,
+      "ok": false
+     },
+     {
+      "axis": "time",
+      "value": 80,
+      "ok": false
+     }
+    ]
+   }
+  },
+  {
+   "t": "2026-09-26T03:03:00.000Z",
+   "kind": "sim",
+   "campus": "treasure-island",
+   "hall": "painters",
+   "sim": "airless-sprayer",
+   "scenario": "bay-terminal-finish",
+   "controls": [
+    "sweep the gun left / right across the panel",
+    "sweep the gun up / down across the panel",
+    "stand off farther / move closer to the surface",
+    "pull / release the spray trigger"
+   ],
+   "actor": "human",
+   "outcome": {
+    "passed": true,
+    "rows": [
+     {
+      "axis": "coverage",
+      "value": 1,
+      "ok": true
+     },
+     {
+      "axis": "runs",
+      "value": 1,
+      "ok": true
+     },
+     {
+      "axis": "holidays",
+      "value": 1,
+      "ok": true
+     },
+     {
+      "axis": "overspray",
+      "value": 1,
+      "ok": true
+     },
+     {
+      "axis": "time",
+      "value": 61.5,
+      "ok": true
+     }
+    ],
+    "trace": [
+     {
+      "t": 0,
+      "gauges": {
+       "load_pct": 30,
+       "hook_cm": 150,
+       "wind": "calm",
+       "note": "fixture gauges - not a machine"
+      }
+     },
+     {
+      "t": 1000,
+      "gauges": {
+       "load_pct": 35,
+       "hook_cm": 175,
+       "wind": "calm",
+       "note": "fixture gauges - not a machine"
+      }
+     },
+     {
+      "t": 2000,
+      "gauges": {
+       "load_pct": 40,
+       "hook_cm": 200,
+       "wind": "calm",
+       "note": "fixture gauges - not a machine"
+      }
+     },
+     {
+      "t": 3000,
+      "gauges": {
+       "load_pct": 45,
+       "hook_cm": 225,
+       "wind": "calm",
+       "note": "fixture gauges - not a machine"
+      }
+     }
+    ]
+   }
+  },
+  {
+   "t": "2026-09-26T03:04:00.000Z",
+   "kind": "advisor",
+   "campus": "treasure-island",
+   "hall": "painters",
+   "advisor": "fixture-advisor",
+   "topic": "fixture-topic",
+   "answer_kind": "record"
+  },
+  {
+   "t": "2026-09-26T03:34:01.000Z",
+   "kind": "sim",
+   "campus": "treasure-island",
+   "hall": "painters",
+   "sim": "airless-sprayer",
+   "scenario": "bay-terminal-finish",
+   "controls": [
+    "sweep the gun left / right across the panel",
+    "sweep the gun up / down across the panel",
+    "stand off farther / move closer to the surface",
+    "pull / release the spray trigger"
+   ],
+   "actor": "human",
+   "outcome": {
+    "passed": true,
+    "rows": [
+     {
+      "axis": "coverage",
+      "value": 1,
+      "ok": true
+     },
+     {
+      "axis": "runs",
+      "value": 1,
+      "ok": true
+     },
+     {
+      "axis": "holidays",
+      "value": 1,
+      "ok": true
+     },
+     {
+      "axis": "overspray",
+      "value": 1,
+      "ok": true
+     },
+     {
+      "axis": "time",
+      "value": 55,
+      "ok": true
+     }
+    ]
+   }
+  },
+  {
+   "t": "2026-09-26T04:04:00.000Z",
+   "kind": "crew",
+   "campus": "treasure-island",
+   "hall": "painters",
+   "crew": "fixture-crew",
+   "role": "fixture-role",
+   "topic": "fixture-topic",
+   "answer_kind": "registry"
+  },
+  {
+   "t": "2026-09-26T04:04:30.000Z",
+   "kind": "sim",
+   "campus": "treasure-island",
+   "hall": "painters",
+   "sim": "airless-sprayer",
+   "scenario": "bay-terminal-finish",
+   "controls": [
+    "sweep the gun left / right across the panel",
+    "sweep the gun up / down across the panel",
+    "stand off farther / move closer to the surface",
+    "pull / release the spray trigger"
+   ],
+   "actor": "scripted-reference",
+   "operator": {
+    "level": "fixture-level",
+    "seed": 7,
+    "scenario": "bay-terminal-finish",
+    "steps": 120,
+    "dt": 0.05
+   },
+   "outcome": {
+    "passed": true,
+    "rows": [
+     {
+      "axis": "coverage",
+      "value": 1,
+      "ok": true
+     },
+     {
+      "axis": "runs",
+      "value": 1,
+      "ok": true
+     },
+     {
+      "axis": "holidays",
+      "value": 1,
+      "ok": true
+     },
+     {
+      "axis": "overspray",
+      "value": 1,
+      "ok": true
+     },
+     {
+      "axis": "time",
+      "value": 40,
+      "ok": true
+     }
+    ]
+   }
+  },
+  {
+   "t": "2026-09-26T06:04:30.000Z",
+   "kind": "sim",
+   "campus": "treasure-island",
+   "hall": "electricians",
+   "sim": "boom-lift",
+   "scenario": null,
+   "controls": [
+    "swing the turret",
+    "extend / retract the boom",
+    "raise / lower the boom",
+    "clip the harness (on the ground) / do the task at the work point",
+    "set the stabilizers on the pad"
+   ],
+   "actor": "human",
+   "outcome": {
+    "passed": false,
+    "rows": []
+   }
+  },
+  {
+   "t": "2026-09-26T06:06:30.000Z",
+   "kind": "sim",
+   "campus": "treasure-island",
+   "hall": "electricians",
+   "sim": "boom-lift",
+   "scenario": null,
+   "controls": [
+    "swing the turret",
+    "extend / retract the boom",
+    "raise / lower the boom",
+    "clip the harness (on the ground) / do the task at the work point",
+    "set the stabilizers on the pad"
+   ],
+   "actor": "human",
+   "outcome": {
+    "passed": true,
+    "rows": [
+     {
+      "axis": "reach",
+      "value": 1,
+      "ok": true
+     },
+     {
+      "axis": "envelope",
+      "value": 1,
+      "ok": true
+     },
+     {
+      "axis": "tie-off",
+      "value": 1,
+      "ok": true
+     },
+     {
+      "axis": "slope",
+      "value": 1,
+      "ok": true
+     },
+     {
+      "axis": "strikes",
+      "value": 1,
+      "ok": true
+     },
+     {
+      "axis": "time",
+      "value": 90,
+      "ok": true
+     }
+    ]
+   }
+  }
+ ],
+ "sessions": {
+  "gap_ms": 1800000,
+  "sessions": [
+   {
+    "n": 1,
+    "start": "2026-09-26T03:00:00.000Z",
+    "end": "2026-09-26T03:04:00.000Z",
+    "wall_ms": 240000,
+    "episodes": 4,
+    "by_kind": {
+     "walkaround": 1,
+     "sim": 2,
+     "advisor": 1
+    },
+    "halls": [
+     "painters"
+    ],
+    "campuses": [
+     "treasure-island"
+    ],
+    "seats": {
+     "airless-sprayer": {
+      "attempts": 2,
+      "passes": 1,
+      "best_time": 61.5,
+      "scenarios": {
+       "bay-terminal-finish": {
+        "attempts": 2,
+        "passes": 1,
+        "best_time": 61.5
+       }
+      }
+     }
+    },
+    "scripted_runs": 0,
+    "walkaround_points": 1,
+    "advisor_exchanges": 1,
+    "crew_exchanges": 0,
+    "traces": 1,
+    "samples": 4,
+    "could_advance": {
+     "walkaround": true,
+     "sim": true,
+     "advisor": true,
+     "crew": false
+    }
+   },
+   {
+    "n": 2,
+    "start": "2026-09-26T03:34:01.000Z",
+    "end": "2026-09-26T04:04:30.000Z",
+    "wall_ms": 1829000,
+    "episodes": 3,
+    "by_kind": {
+     "sim": 2,
+     "crew": 1
+    },
+    "halls": [
+     "painters"
+    ],
+    "campuses": [
+     "treasure-island"
+    ],
+    "seats": {
+     "airless-sprayer": {
+      "attempts": 1,
+      "passes": 1,
+      "best_time": 55,
+      "scenarios": {
+       "bay-terminal-finish": {
+        "attempts": 1,
+        "passes": 1,
+        "best_time": 55
+       }
+      }
+     }
+    },
+    "scripted_runs": 1,
+    "walkaround_points": 0,
+    "advisor_exchanges": 0,
+    "crew_exchanges": 1,
+    "traces": 0,
+    "samples": 0,
+    "could_advance": {
+     "walkaround": false,
+     "sim": true,
+     "advisor": false,
+     "crew": true
+    }
+   },
+   {
+    "n": 3,
+    "start": "2026-09-26T06:04:30.000Z",
+    "end": "2026-09-26T06:06:30.000Z",
+    "wall_ms": 120000,
+    "episodes": 2,
+    "by_kind": {
+     "sim": 2
+    },
+    "halls": [
+     "electricians"
+    ],
+    "campuses": [
+     "treasure-island"
+    ],
+    "seats": {
+     "boom-lift": {
+      "attempts": 2,
+      "passes": 1,
+      "best_time": 90,
+      "scenarios": {
+       "(none)": {
+        "attempts": 2,
+        "passes": 1,
+        "best_time": 90
+       }
+      }
+     }
+    },
+    "scripted_runs": 0,
+    "walkaround_points": 0,
+    "advisor_exchanges": 0,
+    "crew_exchanges": 0,
+    "traces": 0,
+    "samples": 0,
+    "could_advance": {
+     "walkaround": false,
+     "sim": true,
+     "advisor": false,
+     "crew": false
+    }
+   }
+  ],
+  "rollups": {
+   "sessions": 9,
+   "episodes": 9,
+   "by_kind": {
+    "walkaround": 1,
+    "sim": 6,
+    "advisor": 1,
+    "crew": 1
+   },
+   "total_wall_ms": 12345678,
+   "seat_time": {
+    "recordable": false,
+    "sim_episodes": 6,
+    "traced_span_ms": 3000,
+    "scripted_sim_s": 6.0
+   },
+   "seats": {
+    "airless-sprayer": {
+     "attempts": 3,
+     "passes": 2,
+     "pass_rate": 0.6666666666666666,
+     "best_time": 55,
+     "longest_pass_streak": 2,
+     "current_pass_streak": 2
+    },
+    "boom-lift": {
+     "attempts": 2,
+     "passes": 1,
+     "pass_rate": 0.5,
+     "best_time": 90,
+     "longest_pass_streak": 1,
+     "current_pass_streak": 1
+    }
+   },
+   "longest_session": {
+    "n": 2,
+    "wall_ms": 1829000,
+    "episodes": 3
+   },
+   "traces": 1,
+   "samples": 4
+  }
+ }
+}

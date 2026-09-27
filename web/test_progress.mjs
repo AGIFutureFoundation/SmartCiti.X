@@ -1047,5 +1047,98 @@ if (!WANT_BROWSER) {
   }
 }
 
+/* ------------------------------------------------- sessions, in node */
+/* [shipped] sessionsOf is lifted out of the built page's own
+   <script id="sessions-js"> block and run here over the sessions pack's
+   synthetic log; what is asserted is the function the page ships, held to
+   the verifier it was carried from and to a splitter written here. */
+{
+  const SESSIONS_PATH = 'sessions/registry/sessions.json';
+  const SESSIONS_VERIFY = 'sessions/verify.mjs';
+  const sessionsReg = readJSON(SESSIONS_PATH);
+  const verifySrc = readText(SESSIONS_VERIFY);
+  const [B, Eend] = sessionsReg.function.markers;
+  const carried = verifySrc.slice(verifySrc.indexOf(B), verifySrc.indexOf(Eend) + Eend.length);
+  const m = html.match(/<script id="sessions-js">([\s\S]*?)<\/script>/);
+  const block = m === null ? '' : m[1].trim();
+  ok(`[shipped] the page carries a <script id="sessions-js"> block that is ${SESSIONS_VERIFY}'s marked sessionsOf `
+    + 'byte for byte - the verifier\'s own splitter, not a second implementation - and it is a classic script',
+    m !== null && block === carried.trim() && /function sessionsOf\(training, gapMs, humanActor, stepRecords, bestAxis\)/.test(block)
+    && !/<script id="sessions-js"[^>]*type=/.test(html),
+    [`block ${block.length} chars, carried ${carried.trim().length} chars`]);
+  const data = JSON.parse(html.match(/<script type="application\/json" id="tcdata">([\s\S]*?)<\/script>/)[1]);
+  const gapMs = sessionsReg.gap.ms;
+  const strippedBlock = block.replace(/\/\*[\s\S]*?\*\//g, '').replace(/(^|[^:])\/\/[^\n]*/g, '$1');
+  const strippedRenderer = RENDERER.replace(/\/\*[\s\S]*?\*\//g, '').replace(/(^|[^:])\/\/[^\n]*/g, '$1');
+  ok(`[shipped] the gap is READ, never typed: the payload carries ${SESSIONS_PATH}#gap verbatim (${gapMs} ms with its why), `
+    + 'the renderer hands sessionsOf D.sessions.gap.ms, and neither the carried block nor the renderer contains the literal '
+    + `${gapMs}, ${gapMs / 60000} * 60 or a 30-minute constant of its own`,
+    JSON.stringify(data.sessions.gap) === JSON.stringify(sessionsReg.gap) && Number.isInteger(gapMs) && gapMs > 0
+    && /sessionsOf\(rec\.training\.value, D\.sessions\.gap\.ms, D\.human_actor, D\.sessions\.records, D\.sessions\.best_axis\)/.test(RENDERER)
+    && !strippedBlock.includes(String(gapMs)) && !strippedRenderer.includes(String(gapMs))
+    && !/\b30\s*\*\s*60/.test(strippedBlock) && !/\b30\s*\*\s*60/.test(strippedRenderer)
+    && !/\?\?/.test(strippedBlock) && !/localStorage|document\./.test(strippedBlock),
+    [`payload gap=${JSON.stringify(data.sessions.gap)}`]);
+  const S = m === null ? null : new Function(block + '\nreturn { sessionsOf };')();
+  const fixture = readJSON(sessionsReg.fixture.good.startsWith('fixture/') ? 'sessions/' + sessionsReg.fixture.good : sessionsReg.fixture.good);
+  const V = await import(M(SESSIONS_VERIFY));
+  const pageRead = S === null ? null : S.sessionsOf(fixture.episodes, data.sessions.gap.ms, data.human_actor, data.sessions.records, data.sessions.best_axis);
+  const verRead = V.sessionsOf(fixture.episodes, V.GAP_MS, V.HUMAN_ACTOR, V.RECORDING_STEP_KINDS, sessionsReg.outcome.best_axis);
+  ok(`[shipped] run over the sessions pack's synthetic log (${fixture.label}), the page's function returns exactly what `
+    + `${SESSIONS_VERIFY} returns and what the fixture claims: ${verRead.sessions.length} sessions, `
+    + 'one boundary one second over the gap, one pair one second short of it kept together',
+    pageRead !== null && V.canonical(pageRead) === V.canonical(verRead) && V.canonical(pageRead) === V.canonical(fixture.sessions)
+    && pageRead.sessions.length === 3 && fixture.label === 'fixture - not a learner'
+    && Date.parse(pageRead.sessions[1].start) - Date.parse(pageRead.sessions[0].end) === gapMs + 1000
+    && (() => { const eps = fixture.episodes.map((e) => Date.parse(e.t)).sort((a, b) => a - b);
+      return eps.some((t, i) => i > 0 && t - eps[i - 1] === gapMs - 1000); })(),
+    [`page=${V.canonical(pageRead).slice(0, 120)}`, `verifier=${V.canonical(verRead).slice(0, 120)}`]);
+  /* a splitter of this suite's own: boundaries where the delta is >= gap, and nothing else */
+  const own = (() => {
+    const ts = fixture.episodes.map((e, i) => ({ i, ms: Date.parse(e.t) })).sort((a, b) => a.ms - b.ms || a.i - b.i);
+    const out = []; let cur = null;
+    for (const x of ts) {
+      if (cur === null || x.ms - cur.last >= gapMs) { cur = { first: x.ms, last: x.ms, n: 0 }; out.push(cur); }
+      cur.last = x.ms; cur.n += 1;
+    }
+    return out.map((s) => [s.n, s.last - s.first]);
+  })();
+  const refuses = (log) => { try { S.sessionsOf(log, gapMs, data.human_actor, data.sessions.records, data.sessions.best_axis); return null; } catch (e) { return e.message; } };
+  ok('[shipped] a splitter written in this suite cuts the same sessions (episodes and wall time per session), the '
+    + 'roll-ups recompute (total wall = sum of walls, the longest is the max, pass streaks from the outcomes in order), '
+    + 'and the function REFUSES rather than skips: an unparseable t, an unknown kind, an outcome without passed each throw by name',
+    JSON.stringify(own) === JSON.stringify(pageRead.sessions.map((s) => [s.episodes, s.wall_ms]))
+    && pageRead.rollups.total_wall_ms === pageRead.sessions.reduce((a, s) => a + s.wall_ms, 0)
+    && pageRead.rollups.longest_session.wall_ms === Math.max(...pageRead.sessions.map((s) => s.wall_ms))
+    && pageRead.rollups.sessions === pageRead.sessions.length && pageRead.rollups.episodes === fixture.episodes.length
+    && Object.keys(pageRead.rollups.seats).every((id) => {
+      const runs = fixture.episodes.filter((e) => e.kind === 'sim' && e.sim === id && e.actor === data.human_actor)
+        .sort((a, b) => Date.parse(a.t) - Date.parse(b.t)).map((e) => e.outcome.passed);
+      let best = 0, cur = 0; for (const p of runs) { cur = p ? cur + 1 : 0; if (cur > best) best = cur; }
+      const q = pageRead.rollups.seats[id];
+      return q.attempts === runs.length && q.passes === runs.filter(Boolean).length && q.longest_pass_streak === best && q.current_pass_streak === cur
+        && q.pass_rate === runs.filter(Boolean).length / runs.length;
+    })
+    && pageRead.rollups.seat_time.recordable === false
+    && /parseable ISO-8601 t/.test(refuses([{ ...fixture.episodes[0], t: 'yesterday' }]))
+    && /kind this reading does not know/.test(refuses([{ ...fixture.episodes[0], kind: 'joystick' }]))
+    && /boolean passed/.test(refuses([{ ...fixture.episodes[1], outcome: { rows: [] } }])),
+    [JSON.stringify(own), JSON.stringify(pageRead.sessions.map((s) => [s.episodes, s.wall_ms]))]);
+  const hon = textOf('data-sessions-honesty', '1');
+  const figLines = RENDERER.slice(RENDERER.indexOf('const pairs = [', RENDERER.indexOf('function paintSessions')), RENDERER.indexOf('];', RENDERER.indexOf('const pairs = [', RENDERER.indexOf('function paintSessions')))).split('\n').filter((l) => /^\s+\['[a-z-]+', /.test(l));
+  const figKeys = figLines.filter((l) => /^\s+\['[a-z-]+', (String\(r\.|fmtWall\(r\.|longest, )/.test(l)).map((l) => /\['([a-z-]+)'/.exec(l)[1]);
+  ok(`[shipped] the sessions figures are rendered from the result (data-session-fig, every value a String()/fmtWall() of `
+    + 'R.rollups or the longest session, none a literal), the table rows carry data-session with the episode count and wall '
+    + `time, the section reports absent/blocked/refused/empty/read in data-sessions, and the honesty line is ${SESSIONS_PATH}#verifier.last_line verbatim`,
+    /'data-session-fig': key/.test(RENDERER) && figLines.length >= 5 && figKeys.length === figLines.length && !/'data-session-fig'[^\n]*\d/.test(RENDERER.split('\n').find((l) => /'data-session-fig': key/.test(l)))
+    && /'data-session': String\(s\.n\), 'data-session-episodes': String\(s\.episodes\), 'data-session-wall-ms': String\(s\.wall_ms\)/.test(RENDERER)
+    && /setAttribute\('data-sessions', 'refused'\)/.test(RENDERER) && /setAttribute\('data-sessions', rec\.training\.state\)/.test(RENDERER)
+    && /setAttribute\('data-sessions', R\.sessions\.length \? 'read' : 'empty'\)/.test(RENDERER)
+    && hon !== null && decode(hon).trim() === sessionsReg.verifier.last_line && data.sessions.last_line === sessionsReg.verifier.last_line
+    && /not attention/.test(sessionsReg.verifier.last_line) && /nothing here is a certification/.test(sessionsReg.verifier.last_line)
+    && /<section id="sessions">/.test(html) && html.indexOf('<section id="sessions">') < html.indexOf('<section id="completion">'),
+    [`figs=${figKeys.join(',')}`, `honesty=${hon}`]);
+}
+
 console.log(`\nprogress: ${n} checks, ${bad} failure${bad === 1 ? '' : 's'}`);
 process.exit(bad ? 1 : 0);

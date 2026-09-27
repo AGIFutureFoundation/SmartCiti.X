@@ -558,6 +558,73 @@ def n(x):
     return f'{x:,}'
 
 
+# --------------------------------------- the three declared surfaces ------
+# The floor plans, the contribution page and the site plans each carry a
+# registry that says, in its own words, what the page is and what it is not.
+# The front door's card for each is READ from that registry - the body, the
+# limit and the badge - never typed here, and each rendered slot names the
+# field it was read from in a `data-from` attribute so web/test_home.mjs can
+# open the registry and hold the shipped text to the field verbatim. The
+# badge is the field's own head clause: everything before its first colon,
+# a rule the suite recomputes rather than a word chosen here.
+SPACES_PATH = 'spaces/registry/spaces.json'
+CONTRIB_PATH = 'contrib/registry/contrib.json'
+WORKSITES_PATH = 'worksites/registry/worksites.json'
+spaces_reg = R(SPACES_PATH)
+contrib_reg = R(CONTRIB_PATH)
+worksites_reg = R(WORKSITES_PATH)
+
+
+def field(reg, path, where):
+    """Read `a.b[2].c` off a registry through need(), naming the path."""
+    node = reg
+    for part in path.split('.'):
+        m = re.fullmatch(r'([^\[]+)((?:\[\d+\])*)', part)
+        node = need(node, m.group(1), where + '#' + path)
+        for idx in re.findall(r'\[(\d+)\]', m.group(2)):
+            if not isinstance(node, list) or int(idx) >= len(node):
+                raise KeyError(f'{where}#{path}: index [{idx}] is out of range')
+            node = node[int(idx)]
+    if not isinstance(node, str) or not node.strip():
+        raise KeyError(f'{where}#{path} is not a non-empty string')
+    return node
+
+
+def badge_of(text):
+    return text.split(':', 1)[0].strip()
+
+
+DECLARED = {
+    'spaces': {
+        'href': 'web/trade_craft_spaces.html', 'reg': spaces_reg, 'path': SPACES_PATH,
+        'badge': 'honesty.status', 'body': 'honesty.status', 'limit': 'honesty.not_stated',
+        'counts': ('counts.spaces', 'counts.items')},
+    'contribute': {
+        'href': 'web/trade_craft_contribute.html', 'reg': contrib_reg, 'path': CONTRIB_PATH,
+        'badge': 'honesty.nothing_sent', 'body': 'honesty.nothing_sent',
+        'limit': 'honesty.does_not_prove[1]', 'counts': ('counts.scopes', 'counts.rules')},
+    'worksites': {
+        'href': 'web/trade_craft_worksites.html', 'reg': worksites_reg, 'path': WORKSITES_PATH,
+        'badge': 'honesty.no_multi_user', 'body': 'contract', 'limit': 'honesty.no_multi_user',
+        'counts': ('counts.sites', 'counts.roles')},
+}
+for _k, _d in DECLARED.items():
+    for slot in ('badge', 'body', 'limit'):
+        _d[slot + '_text'] = field(_d['reg'], _d[slot], _d['path'])
+    _d['badge_text'] = badge_of(_d['badge_text'])
+    _d['count_values'] = []
+    for cp in _d['counts']:
+        node = _d['reg']
+        for part in cp.split('.'):
+            node = need(node, part, _d['path'] + '#' + cp)
+        if not isinstance(node, int):
+            raise KeyError(f"{_d['path']}#{cp} is not an integer")
+        _d['count_values'].append(node)
+SPACES_N, SPACES_ITEMS = DECLARED['spaces']['count_values']
+CONTRIB_SCOPES, CONTRIB_RULES = DECLARED['contribute']['count_values']
+SITES_N, SITE_ROLES = DECLARED['worksites']['count_values']
+
+
 # ------------------------------------------------------------------ copy ---
 # AUTHORED prose. Each card says what the surface IS, what a reader can do
 # with it, and what it does not claim - the limits in the same breath as the
@@ -686,6 +753,24 @@ CARDS = [
         privately - the findings against it are part of it.""",
      'limit': """A specification is a design, not a proof that the design
         works on people."""},
+    # The three declared surfaces. Body, limit and badge are the registry's
+    # own sentences (see DECLARED above); only the title and the counts'
+    # words are this script's.
+    {'href': DECLARED['spaces']['href'], 'from': DECLARED['spaces'],
+     'title': 'The floor plans',
+     'kicker': f'{n(SPACES_N)} spaces \u00b7 {n(SPACES_ITEMS)} items drawn to scale',
+     'body': DECLARED['spaces']['body_text'],
+     'limit': DECLARED['spaces']['limit_text']},
+    {'href': DECLARED['contribute']['href'], 'from': DECLARED['contribute'],
+     'title': 'The page that builds a contribution',
+     'kicker': f'{n(CONTRIB_SCOPES)} consent scopes \u00b7 {n(CONTRIB_RULES)} verifier rules',
+     'body': DECLARED['contribute']['body_text'],
+     'limit': DECLARED['contribute']['limit_text']},
+    {'href': DECLARED['worksites']['href'], 'from': DECLARED['worksites'],
+     'title': 'The site plans',
+     'kicker': f'{n(SITES_N)} sites \u00b7 {n(SITE_ROLES)} crew roles',
+     'body': DECLARED['worksites']['body_text'],
+     'limit': DECLARED['worksites']['limit_text']},
 ]
 
 
@@ -841,6 +926,9 @@ a.card .limit{margin-top:12px;padding-top:10px;border-top:1px dashed var(--rule)
 a.card .limit b2{display:none}
 .limit-tag{color:var(--dim);font:600 11px "IBM Plex Mono",monospace;
   letter-spacing:1px;text-transform:uppercase;display:block;margin-bottom:3px}
+a.card .badge{display:inline-block;align-self:start;margin:0 0 8px;padding:2px 8px;
+  border:1px solid var(--rule);border-radius:999px;color:var(--dim);
+  font:600 11px "IBM Plex Mono",monospace;letter-spacing:.6px;text-transform:uppercase}
 /* the seat index: one card per operable seat, its task, its controls and
    the axes it is scored on. Two columns where there is room, one where
    there is not - a phone gets the whole of every entry, not a truncated
@@ -965,12 +1053,17 @@ footer p{color:var(--dim);font-size:13px;max-width:82ch;margin:0 0 10px}
 
 
 def card(c):
+    d = c['from'] if 'from' in c else None
+    src = (lambda slot: f' data-from="{esc(d["path"])}#{esc(d[slot])}"') if d else (lambda slot: '')
+    badge = (f'<span class="badge" data-badge{src("badge")}>{esc(d["badge_text"])}</span>'
+             if d else '')
     return (
-        f'<a class="card{" lead" if c.get("lead") else ""}" href="{c["href"]}">'
+        f'<a class="card{" lead" if c.get("lead") else ""}" href="{c["href"]}"'
+        f'{" data-declared=" + chr(34) + esc(d["path"]) + chr(34) if d else ""}>'
         f'<span class="kicker">{esc(c["kicker"])}</span>'
-        f'<b>{esc(c["title"])}</b>'
-        f'<p>{esc(c["body"])}</p>'
-        f'<p class="limit"><span class="limit-tag">What it does not claim</span>'
+        f'<b>{esc(c["title"])}</b>{badge}'
+        f'<p{src("body")}>{esc(c["body"])}</p>'
+        f'<p class="limit"{src("limit")}><span class="limit-tag">What it does not claim</span>'
         f'{esc(c["limit"])}</p></a>')
 
 
@@ -1191,6 +1284,9 @@ _DERIVED = {
     *(c['lessons'] for c in COURSES),
     *(c['steps'] for c in COURSES),
     *(c['seat_steps'] for c in COURSES),
+    # The three declared surfaces' kicker counts, each read off its own
+    # registry's `counts` block through need() (see DECLARED above).
+    SPACES_N, SPACES_ITEMS, CONTRIB_SCOPES, CONTRIB_RULES, SITES_N, SITE_ROLES,
 }
 
 
@@ -1228,6 +1324,13 @@ _DERIVED |= {f for r in SEAT_ROWS
                          + [x for a in r['rubric'] for x in a])
              for f in _figures_in(txt)}
 _DERIVED |= _figures_in(SEAT_HONESTY)
+
+# The declared surfaces' cards print their registries' own sentences, so any
+# figure inside those is admitted by READING IT BACK from the field the card
+# was rendered from - the same rule the start card holds for its lesson.
+_DERIVED |= {f for d in DECLARED.values()
+             for slot in ('badge_text', 'body_text', 'limit_text')
+             for f in _figures_in(d[slot])}
 
 # The start card prints the chosen lesson's own title, `why` and `limits`,
 # and those sentences are the registry's, not this script's. Any figure

@@ -605,7 +605,9 @@
     "handoffs_unverifiable": 0,
     "roles": 4,
     "lessons_with_this_crew": [
-     "operating-eng-locate-first"
+     "laborers-stand-where-the-cab-can-see",
+     "operating-eng-locate-first",
+     "shoring-read-the-ground-again"
     ]
    }
   },
@@ -1031,7 +1033,9 @@
     "handoffs_unverifiable": 0,
     "roles": 3,
     "lessons_with_this_crew": [
-     "boilermakers-get-them-out"
+     "boilermakers-get-them-out",
+     "marine-pipe-know-when-to-come-out",
+     "tank-erectors-isolate-before-testing"
     ]
    }
   },
@@ -1603,7 +1607,10 @@
     "roles": 4,
     "lessons_with_this_crew": [
      "ironworkers-plan-out-loud",
-     "riggers-carry-under-control"
+     "piling-stand-the-rig-on-something",
+     "port-crane-read-the-rope",
+     "riggers-carry-under-control",
+     "steel-erectors-land-it-on-the-bolts"
     ]
    }
   },
@@ -2078,7 +2085,9 @@
     "handoffs_unverifiable": 0,
     "roles": 4,
     "lessons_with_this_crew": [
-     "operating-eng-locate-first"
+     "laborers-stand-where-the-cab-can-see",
+     "operating-eng-locate-first",
+     "shoring-read-the-ground-again"
     ]
    }
   },
@@ -2568,7 +2577,9 @@
     "roles": 3,
     "lessons_with_this_crew": [
      "electricians-clip-in-first",
-     "glaziers-watch-the-line"
+     "glaziers-watch-the-line",
+     "insulators-stay-inside-the-rails",
+     "window-glazing-let-the-ground-judge-it"
     ]
    }
   },
@@ -3257,6 +3268,10 @@
     "handoffs_unverifiable": 1,
     "roles": 3,
     "lessons_with_this_crew": [
+     "curtainwall-fuss-about-the-sills",
+     "firestop-write-down-what-you-sealed",
+     "plasterers-pin-every-brace",
+     "roofers-mind-the-edge-and-the-skylight",
      "scaffold-build-in-order"
     ]
    }
@@ -4095,7 +4110,10 @@
     "roles": 4,
     "lessons_with_this_crew": [
      "ironworkers-plan-out-loud",
-     "riggers-carry-under-control"
+     "piling-stand-the-rig-on-something",
+     "port-crane-read-the-rope",
+     "riggers-carry-under-control",
+     "steel-erectors-land-it-on-the-bolts"
     ]
    }
   },
@@ -4775,6 +4793,8 @@
     "handoffs_unverifiable": 0,
     "roles": 3,
     "lessons_with_this_crew": [
+     "pipeline-close-the-permit-properly",
+     "shipfitters-say-what-you-cannot-see",
      "welders-the-watch"
     ]
    }

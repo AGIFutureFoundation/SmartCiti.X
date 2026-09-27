@@ -311,17 +311,17 @@
   "walk"
  ],
  "counts": {
-  "lessons": 32,
-  "recording_steps": 65,
-  "silent_steps": 70,
-  "episode_backed_steps": 65,
-  "device_mark_steps": 21,
-  "self_reported_steps": 49,
+  "lessons": 56,
+  "recording_steps": 145,
+  "silent_steps": 111,
+  "episode_backed_steps": 145,
+  "device_mark_steps": 24,
+  "self_reported_steps": 87,
   "sims": 11,
   "sims_with_threshold": 0,
-  "ladder_edges": 16,
-  "lessons_completable": 24,
-  "lessons_not_completable": 8,
+  "ladder_edges": 40,
+  "lessons_completable": 33,
+  "lessons_not_completable": 23,
   "fixture_mutants": 16
  },
  "lessons": {
@@ -329,12 +329,12 @@
    "hall": "riggers",
    "completable": true,
    "not_completable_why": null,
-   "steps": 5,
+   "steps": 4,
    "recording_steps": 3,
-   "silent_steps": 2,
+   "silent_steps": 1,
    "episode_backed_steps": 3,
    "device_mark_steps": 0,
-   "self_reported_steps": 2,
+   "self_reported_steps": 1,
    "needs": []
   },
   "riggers-carry-under-control": {
@@ -369,12 +369,12 @@
    "hall": "ironworkers",
    "completable": false,
    "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
-   "steps": 5,
+   "steps": 4,
    "recording_steps": 3,
-   "silent_steps": 2,
+   "silent_steps": 1,
    "episode_backed_steps": 3,
    "device_mark_steps": 0,
-   "self_reported_steps": 2,
+   "self_reported_steps": 1,
    "needs": [
     "riggers-carry-under-control"
    ]
@@ -383,12 +383,12 @@
    "hall": "millwrights",
    "completable": true,
    "not_completable_why": null,
-   "steps": 4,
+   "steps": 5,
    "recording_steps": 3,
-   "silent_steps": 1,
+   "silent_steps": 2,
    "episode_backed_steps": 3,
    "device_mark_steps": 0,
-   "self_reported_steps": 1,
+   "self_reported_steps": 2,
    "needs": [
     "crane-ops-read-the-chart"
    ]
@@ -409,12 +409,12 @@
    "hall": "boilermakers",
    "completable": false,
    "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
-   "steps": 4,
+   "steps": 5,
    "recording_steps": 3,
-   "silent_steps": 1,
+   "silent_steps": 2,
    "episode_backed_steps": 3,
    "device_mark_steps": 0,
-   "self_reported_steps": 1,
+   "self_reported_steps": 2,
    "needs": [
     "welders-the-watch"
    ]
@@ -449,12 +449,12 @@
    "hall": "scaffold",
    "completable": true,
    "not_completable_why": null,
-   "steps": 4,
+   "steps": 5,
    "recording_steps": 2,
-   "silent_steps": 2,
+   "silent_steps": 3,
    "episode_backed_steps": 2,
    "device_mark_steps": 1,
-   "self_reported_steps": 1,
+   "self_reported_steps": 2,
    "needs": []
   },
   "scaffold-build-in-order": {
@@ -501,12 +501,12 @@
    "hall": "bricklayers",
    "completable": true,
    "not_completable_why": null,
-   "steps": 3,
+   "steps": 4,
    "recording_steps": 1,
-   "silent_steps": 2,
+   "silent_steps": 3,
    "episode_backed_steps": 1,
    "device_mark_steps": 1,
-   "self_reported_steps": 1,
+   "self_reported_steps": 2,
    "needs": [
     "bricklayers-gear-that-stays-on"
    ]
@@ -595,12 +595,12 @@
    "hall": "refractory",
    "completable": true,
    "not_completable_why": null,
-   "steps": 4,
+   "steps": 5,
    "recording_steps": 1,
-   "silent_steps": 3,
+   "silent_steps": 4,
    "episode_backed_steps": 1,
    "device_mark_steps": 2,
-   "self_reported_steps": 1,
+   "self_reported_steps": 2,
    "needs": []
   },
   "painters-contain-it": {
@@ -619,12 +619,12 @@
    "hall": "painters",
    "completable": true,
    "not_completable_why": null,
-   "steps": 3,
+   "steps": 4,
    "recording_steps": 2,
-   "silent_steps": 1,
+   "silent_steps": 2,
    "episode_backed_steps": 2,
    "device_mark_steps": 0,
-   "self_reported_steps": 1,
+   "self_reported_steps": 2,
    "needs": [
     "painters-contain-it"
    ]
@@ -721,12 +721,12 @@
    "hall": "fiber-splicers",
    "completable": true,
    "not_completable_why": null,
-   "steps": 4,
+   "steps": 3,
    "recording_steps": 2,
-   "silent_steps": 2,
+   "silent_steps": 1,
    "episode_backed_steps": 2,
    "device_mark_steps": 0,
-   "self_reported_steps": 2,
+   "self_reported_steps": 1,
    "needs": []
   },
   "carpenters-return-it-the-same": {
@@ -740,6 +740,341 @@
    "device_mark_steps": 1,
    "self_reported_steps": 2,
    "needs": []
+  },
+  "steel-erectors-land-it-on-the-bolts": {
+   "hall": "steel-erectors",
+   "completable": false,
+   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "steps": 5,
+   "recording_steps": 4,
+   "silent_steps": 1,
+   "episode_backed_steps": 4,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": [
+    "riggers-carry-under-control",
+    "riggers-first-card"
+   ]
+  },
+  "port-crane-read-the-rope": {
+   "hall": "port-crane",
+   "completable": false,
+   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "steps": 5,
+   "recording_steps": 4,
+   "silent_steps": 1,
+   "episode_backed_steps": 4,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": [
+    "riggers-carry-under-control"
+   ]
+  },
+  "decking-walk-the-path-first": {
+   "hall": "decking",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 5,
+   "recording_steps": 3,
+   "silent_steps": 2,
+   "episode_backed_steps": 3,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": [
+    "riggers-first-card"
+   ]
+  },
+  "tank-erectors-isolate-before-testing": {
+   "hall": "tank-erectors",
+   "completable": false,
+   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "steps": 6,
+   "recording_steps": 4,
+   "silent_steps": 2,
+   "episode_backed_steps": 4,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": [
+    "boilermakers-get-them-out"
+   ]
+  },
+  "piling-stand-the-rig-on-something": {
+   "hall": "piling",
+   "completable": false,
+   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "steps": 5,
+   "recording_steps": 3,
+   "silent_steps": 2,
+   "episode_backed_steps": 3,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": [
+    "riggers-carry-under-control"
+   ]
+  },
+  "shoring-read-the-ground-again": {
+   "hall": "shoring",
+   "completable": false,
+   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "steps": 5,
+   "recording_steps": 4,
+   "silent_steps": 1,
+   "episode_backed_steps": 4,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": [
+    "operating-eng-locate-first"
+   ]
+  },
+  "laborers-stand-where-the-cab-can-see": {
+   "hall": "laborers",
+   "completable": false,
+   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "steps": 5,
+   "recording_steps": 3,
+   "silent_steps": 2,
+   "episode_backed_steps": 3,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": [
+    "demolition-stand-back"
+   ]
+  },
+  "teamsters-check-the-truck-before-the-load": {
+   "hall": "teamsters",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 5,
+   "recording_steps": 3,
+   "silent_steps": 2,
+   "episode_backed_steps": 3,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": []
+  },
+  "heavy-equip-listen-to-the-dash": {
+   "hall": "heavy-equip",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 3,
+   "silent_steps": 1,
+   "episode_backed_steps": 3,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": [
+    "teamsters-check-the-truck-before-the-load"
+   ]
+  },
+  "marine-terminal-brief-the-lane": {
+   "hall": "marine-terminal",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 3,
+   "silent_steps": 1,
+   "episode_backed_steps": 3,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": [
+    "teamsters-check-the-truck-before-the-load"
+   ]
+  },
+  "shipfitters-say-what-you-cannot-see": {
+   "hall": "shipfitters",
+   "completable": false,
+   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "steps": 5,
+   "recording_steps": 3,
+   "silent_steps": 2,
+   "episode_backed_steps": 3,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": [
+    "welders-the-watch"
+   ]
+  },
+  "fabricators-lay-it-out-then-prove-it": {
+   "hall": "fabricators",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 5,
+   "recording_steps": 4,
+   "silent_steps": 1,
+   "episode_backed_steps": 4,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": [
+    "shipfitters-say-what-you-cannot-see"
+   ]
+  },
+  "pipeline-close-the-permit-properly": {
+   "hall": "pipeline",
+   "completable": false,
+   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "steps": 5,
+   "recording_steps": 3,
+   "silent_steps": 2,
+   "episode_backed_steps": 3,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": [
+    "tank-erectors-isolate-before-testing"
+   ]
+  },
+  "marine-pipe-know-when-to-come-out": {
+   "hall": "marine-pipe",
+   "completable": false,
+   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "steps": 5,
+   "recording_steps": 3,
+   "silent_steps": 2,
+   "episode_backed_steps": 3,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": [
+    "pipeline-close-the-permit-properly"
+   ]
+  },
+  "roofers-mind-the-edge-and-the-skylight": {
+   "hall": "roofers",
+   "completable": false,
+   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "steps": 6,
+   "recording_steps": 4,
+   "silent_steps": 2,
+   "episode_backed_steps": 4,
+   "device_mark_steps": 0,
+   "self_reported_steps": 2,
+   "needs": [
+    "scaffold-read-the-tag"
+   ]
+  },
+  "insulators-stay-inside-the-rails": {
+   "hall": "insulators",
+   "completable": false,
+   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "steps": 6,
+   "recording_steps": 3,
+   "silent_steps": 3,
+   "episode_backed_steps": 3,
+   "device_mark_steps": 1,
+   "self_reported_steps": 2,
+   "needs": [
+    "electricians-clip-in-first"
+   ]
+  },
+  "plasterers-pin-every-brace": {
+   "hall": "plasterers",
+   "completable": false,
+   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "steps": 5,
+   "recording_steps": 4,
+   "silent_steps": 1,
+   "episode_backed_steps": 4,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": [
+    "scaffold-build-in-order"
+   ]
+  },
+  "firestop-write-down-what-you-sealed": {
+   "hall": "firestop",
+   "completable": false,
+   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "steps": 4,
+   "recording_steps": 3,
+   "silent_steps": 1,
+   "episode_backed_steps": 3,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": [
+    "tilesetters-start-underneath"
+   ]
+  },
+  "cladding-check-the-plank-you-stand-on": {
+   "hall": "cladding",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 3,
+   "silent_steps": 1,
+   "episode_backed_steps": 3,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": [
+    "firestop-write-down-what-you-sealed"
+   ]
+  },
+  "curtainwall-fuss-about-the-sills": {
+   "hall": "curtainwall",
+   "completable": false,
+   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "steps": 5,
+   "recording_steps": 4,
+   "silent_steps": 1,
+   "episode_backed_steps": 4,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": [
+    "cladding-check-the-plank-you-stand-on"
+   ]
+  },
+  "window-glazing-let-the-ground-judge-it": {
+   "hall": "window-glazing",
+   "completable": false,
+   "not_completable_why": "carries a step of a kind this bundle cannot evidence: crew",
+   "steps": 4,
+   "recording_steps": 3,
+   "silent_steps": 1,
+   "episode_backed_steps": 3,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": [
+    "glaziers-watch-the-line"
+   ]
+  },
+  "sheetmetal-name-the-kit-before-you-climb": {
+   "hall": "sheetmetal",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 5,
+   "recording_steps": 3,
+   "silent_steps": 2,
+   "episode_backed_steps": 3,
+   "device_mark_steps": 1,
+   "self_reported_steps": 1,
+   "needs": [
+    "fiber-splicers-keep-the-trace"
+   ]
+  },
+  "machinists-move-the-job-without-marking-it": {
+   "hall": "machinists",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 4,
+   "recording_steps": 3,
+   "silent_steps": 1,
+   "episode_backed_steps": 3,
+   "device_mark_steps": 0,
+   "self_reported_steps": 1,
+   "needs": [
+    "millwrights-shop-move"
+   ]
+  },
+  "foundry-clear-the-runway-first": {
+   "hall": "foundry",
+   "completable": true,
+   "not_completable_why": null,
+   "steps": 6,
+   "recording_steps": 3,
+   "silent_steps": 3,
+   "episode_backed_steps": 3,
+   "device_mark_steps": 1,
+   "self_reported_steps": 2,
+   "needs": [
+    "machinists-move-the-job-without-marking-it"
+   ]
   }
  },
  "sims": {
@@ -1150,6 +1485,126 @@
   {
    "lesson": "glaziers-watch-the-line",
    "needs": "electricians-clip-in-first",
+   "because": "same-seat"
+  },
+  {
+   "lesson": "steel-erectors-land-it-on-the-bolts",
+   "needs": "riggers-first-card",
+   "because": "same-district-crib"
+  },
+  {
+   "lesson": "steel-erectors-land-it-on-the-bolts",
+   "needs": "riggers-carry-under-control",
+   "because": "same-seat"
+  },
+  {
+   "lesson": "port-crane-read-the-rope",
+   "needs": "riggers-carry-under-control",
+   "because": "same-seat"
+  },
+  {
+   "lesson": "decking-walk-the-path-first",
+   "needs": "riggers-first-card",
+   "because": "same-seat"
+  },
+  {
+   "lesson": "tank-erectors-isolate-before-testing",
+   "needs": "boilermakers-get-them-out",
+   "because": "same-seat"
+  },
+  {
+   "lesson": "piling-stand-the-rig-on-something",
+   "needs": "riggers-carry-under-control",
+   "because": "same-seat"
+  },
+  {
+   "lesson": "shoring-read-the-ground-again",
+   "needs": "operating-eng-locate-first",
+   "because": "same-seat"
+  },
+  {
+   "lesson": "laborers-stand-where-the-cab-can-see",
+   "needs": "demolition-stand-back",
+   "because": "same-seat"
+  },
+  {
+   "lesson": "heavy-equip-listen-to-the-dash",
+   "needs": "teamsters-check-the-truck-before-the-load",
+   "because": "same-seat"
+  },
+  {
+   "lesson": "marine-terminal-brief-the-lane",
+   "needs": "teamsters-check-the-truck-before-the-load",
+   "because": "same-seat"
+  },
+  {
+   "lesson": "shipfitters-say-what-you-cannot-see",
+   "needs": "welders-the-watch",
+   "because": "same-seat"
+  },
+  {
+   "lesson": "fabricators-lay-it-out-then-prove-it",
+   "needs": "shipfitters-say-what-you-cannot-see",
+   "because": "same-seat"
+  },
+  {
+   "lesson": "pipeline-close-the-permit-properly",
+   "needs": "tank-erectors-isolate-before-testing",
+   "because": "same-district-crib"
+  },
+  {
+   "lesson": "marine-pipe-know-when-to-come-out",
+   "needs": "pipeline-close-the-permit-properly",
+   "because": "same-seat"
+  },
+  {
+   "lesson": "roofers-mind-the-edge-and-the-skylight",
+   "needs": "scaffold-read-the-tag",
+   "because": "same-seat"
+  },
+  {
+   "lesson": "insulators-stay-inside-the-rails",
+   "needs": "electricians-clip-in-first",
+   "because": "same-seat"
+  },
+  {
+   "lesson": "plasterers-pin-every-brace",
+   "needs": "scaffold-build-in-order",
+   "because": "same-seat"
+  },
+  {
+   "lesson": "firestop-write-down-what-you-sealed",
+   "needs": "tilesetters-start-underneath",
+   "because": "same-district-crib"
+  },
+  {
+   "lesson": "cladding-check-the-plank-you-stand-on",
+   "needs": "firestop-write-down-what-you-sealed",
+   "because": "same-seat"
+  },
+  {
+   "lesson": "curtainwall-fuss-about-the-sills",
+   "needs": "cladding-check-the-plank-you-stand-on",
+   "because": "same-district-crib"
+  },
+  {
+   "lesson": "window-glazing-let-the-ground-judge-it",
+   "needs": "glaziers-watch-the-line",
+   "because": "same-seat"
+  },
+  {
+   "lesson": "sheetmetal-name-the-kit-before-you-climb",
+   "needs": "fiber-splicers-keep-the-trace",
+   "because": "same-district-crib"
+  },
+  {
+   "lesson": "machinists-move-the-job-without-marking-it",
+   "needs": "millwrights-shop-move",
+   "because": "same-seat"
+  },
+  {
+   "lesson": "foundry-clear-the-runway-first",
+   "needs": "machinists-move-the-job-without-marking-it",
    "because": "same-seat"
   }
  ],

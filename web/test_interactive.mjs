@@ -232,8 +232,43 @@ ok(`[registry] lessons/steps counts recompute (${Object.keys(LESSONS).length} le
   ok(`[renderer] the evidence class of a step kind is read from D.completion.evidence_rule, never typed`,
     /const evClass = \(kind\) => must\(must\(EV_RULE, kind/.test(JS) && /const EV_RULE = D\.completion\.evidence_rule;/.test(JS));
   ok(`[renderer] the lessons layer is a toggle and the legend lists the evidence classes from D.completion.evidence_classes`,
-    /\['lessons',null\]/.test(JS) && /const EV_CLASSES = Object\.keys\(D\.completion\.evidence_classes\);/.test(JS)
+    /\['lessons','interactive\.lessons'\]/.test(JS) && /const EV_CLASSES = Object\.keys\(D\.completion\.evidence_classes\);/.test(JS)
     && /body\.L-lessons #ladder\{display:block\}/.test(html));
+}
+
+/* 9. the lesson layer's labels come from the catalog, not from English literals */
+{
+  const KEYS = ['interactive.lessons', 'interactive.lessonsInRooms', 'interactive.lessonsHere',
+    'interactive.steps', 'interactive.completable', 'interactive.notCompletable'];
+  const { readdirSync } = await import('node:fs');
+  const locDir = join(ROOT, 'i18n', 'locales');
+  const locales = readdirSync(locDir).filter((f) => f.endsWith('.json')).map((f) => f.replace(/\.json$/, ''));
+  const gaps = [];
+  for (const l of locales) {
+    const disk = JSON.parse(readFileSync(join(locDir, `${l}.json`), 'utf8')).strings;
+    const shipped = D.i18n !== undefined && D.i18n[l] !== undefined ? D.i18n[l].strings : {};
+    for (const k of KEYS) {
+      if (typeof disk[k] !== 'string' || !disk[k].trim()) gaps.push(`${l}: ${k} missing on disk`);
+      else if (shipped[k] !== disk[k]) gaps.push(`${l}: ${k} embedded != disk`);
+    }
+  }
+  ok(`[shipped] every one of the ${locales.length} locales carries the six interactive.* labels on disk and embedded in D.i18n, equal`,
+    locales.length === 8 && gaps.length === 0, gaps);
+  const lookups = {
+    'interactive.lessons': /\['lessons','interactive\.lessons'\]/.test(JS) && /\$\{t\(lk\)\}<\/label>/.test(JS),
+    'interactive.lessonsInRooms': /data-fig="lessons"><b>\$\{Object\.keys\(LESSONS\)\.length\}<\/b> \$\{t\('interactive\.lessonsInRooms'\)\}<\/span>/.test(JS),
+    'interactive.steps': /data-fig="steps"><b>\$\{allSteps\(\)\.length\}<\/b> \$\{t\('interactive\.steps'\)\}<\/span>/.test(JS),
+    'interactive.completable': /data-fig="completable"><b>\$\{nCompletable\(\)\}<\/b> \/ \$\{Object\.keys\(LESSONS\)\.length\} \$\{t\('interactive\.completable'\)\}<\/span>/.test(JS),
+    'interactive.lessonsHere': /<h3>\$\{t\('interactive\.lessonsHere'\)\} \(\$\{h\.lessonIds\.length\}\)<\/h3>/.test(JS),
+    'interactive.notCompletable': /<p class="nc">\$\{t\('interactive\.notCompletable'\)\}: \$\{c\.not_completable_why\}<\/p>/.test(JS),
+  };
+  const notLooked = Object.entries(lookups).filter(([, v]) => !v).map(([k]) => k);
+  const LITERALS = ["'Lessons'", '"Lessons"', 'Lessons standing here', '</b> steps</span>', '} completable</span>',
+    'not completable:', 'lessons standing in rooms', "lk === null ? 'Lessons'"];
+  const remain = LITERALS.filter((s) => JS.includes(s));
+  ok(`[renderer] the lesson layer's six labels are t('interactive.*') lookups through the page's own t(), and no English literal remains for them`,
+    notLooked.length === 0 && remain.length === 0,
+    [...notLooked.map((k) => `no lookup for ${k}`), ...remain.map((s) => `literal remains: ${s}`)]);
 }
 function fnSlice(name) {
   const i = JS.indexOf(`function ${name}(`);

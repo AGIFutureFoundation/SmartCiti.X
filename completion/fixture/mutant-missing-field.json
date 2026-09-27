@@ -21,17 +21,11 @@
     },
     {
      "step": 2,
-     "kind": "placard",
-     "done": true,
-     "evidence": null
-    },
-    {
-     "step": 3,
      "kind": "advisor",
      "done": true,
      "evidence": {
       "episode": "advisor",
-      "t": "2026-09-26T03:00:03.000Z",
+      "t": "2026-09-26T03:00:02.000Z",
       "advisor": "foreman",
       "answer_kind": "read",
       "hall": "riggers",
@@ -39,19 +33,19 @@
      }
     },
     {
-     "step": 4,
+     "step": 3,
      "kind": "walkaround",
      "done": true,
      "evidence": {
       "episode": "walkaround",
-      "t": "2026-09-26T03:00:04.000Z",
+      "t": "2026-09-26T03:00:03.000Z",
       "hall": "riggers",
       "point": "sightline",
       "sim": "rigging-signals"
      }
     },
     {
-     "step": 5,
+     "step": 4,
      "kind": "sim",
      "done": true,
      "evidence": {
@@ -162,24 +156,18 @@
     },
     {
      "step": 2,
-     "kind": "placard",
-     "done": false,
-     "evidence": null
-    },
-    {
-     "step": 3,
      "kind": "walkaround",
      "done": false,
      "evidence": null
     },
     {
-     "step": 4,
+     "step": 3,
      "kind": "crew",
      "done": false,
      "evidence": null
     },
     {
-     "step": 5,
+     "step": 4,
      "kind": "advisor",
      "done": false,
      "evidence": null
@@ -199,18 +187,24 @@
     },
     {
      "step": 2,
-     "kind": "walkaround",
+     "kind": "placard",
      "done": false,
      "evidence": null
     },
     {
      "step": 3,
-     "kind": "sim",
+     "kind": "walkaround",
      "done": false,
      "evidence": null
     },
     {
      "step": 4,
+     "kind": "sim",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 5,
      "kind": "advisor",
      "done": false,
      "evidence": null
@@ -267,18 +261,24 @@
     },
     {
      "step": 2,
-     "kind": "walkaround",
+     "kind": "placard",
      "done": false,
      "evidence": null
     },
     {
      "step": 3,
-     "kind": "crew",
+     "kind": "walkaround",
      "done": false,
      "evidence": null
     },
     {
      "step": 4,
+     "kind": "crew",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 5,
      "kind": "advisor",
      "done": false,
      "evidence": null
@@ -366,20 +366,24 @@
     },
     {
      "step": 2,
-     "kind": "station",
+     "kind": "placard",
      "done": true,
-     "evidence": {
-      "station": "st003"
-     }
+     "evidence": null
     },
     {
      "step": 3,
-     "kind": "walkaround",
+     "kind": "station",
      "done": false,
      "evidence": null
     },
     {
      "step": 4,
+     "kind": "walkaround",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 5,
      "kind": "advisor",
      "done": false,
      "evidence": null
@@ -498,12 +502,18 @@
     },
     {
      "step": 2,
-     "kind": "station",
+     "kind": "placard",
      "done": false,
      "evidence": null
     },
     {
      "step": 3,
+     "kind": "station",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
      "kind": "advisor",
      "done": false,
      "evidence": null
@@ -709,18 +719,24 @@
     },
     {
      "step": 2,
-     "kind": "station",
+     "kind": "placard",
      "done": false,
      "evidence": null
     },
     {
      "step": 3,
-     "kind": "crib",
+     "kind": "station",
      "done": false,
      "evidence": null
     },
     {
      "step": 4,
+     "kind": "crib",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 5,
      "kind": "advisor",
      "done": false,
      "evidence": null
@@ -777,12 +793,18 @@
     },
     {
      "step": 2,
-     "kind": "walkaround",
+     "kind": "placard",
      "done": false,
      "evidence": null
     },
     {
      "step": 3,
+     "kind": "walkaround",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
      "kind": "sim",
      "done": false,
      "evidence": null
@@ -1031,18 +1053,12 @@
     },
     {
      "step": 2,
-     "kind": "placard",
-     "done": false,
-     "evidence": null
-    },
-    {
-     "step": 3,
      "kind": "advisor",
      "done": false,
      "evidence": null
     },
     {
-     "step": 4,
+     "step": 3,
      "kind": "advisor",
      "done": false,
      "evidence": null
@@ -1079,6 +1095,882 @@
      "evidence": null
     }
    ]
+  },
+  {
+   "lesson": "steel-erectors-land-it-on-the-bolts",
+   "hall": "steel-erectors",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "walkaround",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "crew",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "sim",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 5,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "port-crane-read-the-rope",
+   "hall": "port-crane",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "walkaround",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "walkaround",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "crew",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 5,
+     "kind": "sim",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "decking-walk-the-path-first",
+   "hall": "decking",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "walkaround",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "sim",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 5,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "tank-erectors-isolate-before-testing",
+   "hall": "tank-erectors",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "walkaround",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "crew",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 5,
+     "kind": "sim",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 6,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "piling-stand-the-rig-on-something",
+   "hall": "piling",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "walkaround",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "crew",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 5,
+     "kind": "sim",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "shoring-read-the-ground-again",
+   "hall": "shoring",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "walkaround",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "crew",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 5,
+     "kind": "sim",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "laborers-stand-where-the-cab-can-see",
+   "hall": "laborers",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "walkaround",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 5,
+     "kind": "crew",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "teamsters-check-the-truck-before-the-load",
+   "hall": "teamsters",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "walkaround",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "sim",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 5,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "heavy-equip-listen-to-the-dash",
+   "hall": "heavy-equip",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "walkaround",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "sim",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "marine-terminal-brief-the-lane",
+   "hall": "marine-terminal",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "walkaround",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "sim",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "shipfitters-say-what-you-cannot-see",
+   "hall": "shipfitters",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "walkaround",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "crew",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 5,
+     "kind": "sim",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "fabricators-lay-it-out-then-prove-it",
+   "hall": "fabricators",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "walkaround",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "sim",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 5,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "pipeline-close-the-permit-properly",
+   "hall": "pipeline",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "walkaround",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "crew",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 5,
+     "kind": "sim",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "marine-pipe-know-when-to-come-out",
+   "hall": "marine-pipe",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "walkaround",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "crew",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 5,
+     "kind": "sim",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "roofers-mind-the-edge-and-the-skylight",
+   "hall": "roofers",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "walkaround",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 5,
+     "kind": "crew",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 6,
+     "kind": "sim",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "insulators-stay-inside-the-rails",
+   "hall": "insulators",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "crib",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "walkaround",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 5,
+     "kind": "crew",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 6,
+     "kind": "sim",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "plasterers-pin-every-brace",
+   "hall": "plasterers",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "walkaround",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "crew",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "sim",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 5,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "firestop-write-down-what-you-sealed",
+   "hall": "firestop",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "walkaround",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "crew",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "cladding-check-the-plank-you-stand-on",
+   "hall": "cladding",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "walkaround",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "sim",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "curtainwall-fuss-about-the-sills",
+   "hall": "curtainwall",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "walkaround",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "crew",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 5,
+     "kind": "sim",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "window-glazing-let-the-ground-judge-it",
+   "hall": "window-glazing",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "walkaround",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "crew",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "sim",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "sheetmetal-name-the-kit-before-you-climb",
+   "hall": "sheetmetal",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "crib",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "walkaround",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 5,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "machinists-move-the-job-without-marking-it",
+   "hall": "machinists",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "walkaround",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "sim",
+     "done": false,
+     "evidence": null
+    }
+   ]
+  },
+  {
+   "lesson": "foundry-clear-the-runway-first",
+   "hall": "foundry",
+   "complete": false,
+   "steps": [
+    {
+     "step": 1,
+     "kind": "walk",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 2,
+     "kind": "placard",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 3,
+     "kind": "crib",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 4,
+     "kind": "walkaround",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 5,
+     "kind": "sim",
+     "done": false,
+     "evidence": null
+    },
+    {
+     "step": 6,
+     "kind": "advisor",
+     "done": false,
+     "evidence": null
+    }
+   ]
   }
  ],
  "sims": {
@@ -1094,9 +1986,7 @@
   }
  },
  "tools": {},
- "stations": [
-  "st003"
- ],
+ "stations": [],
  "honesty": {
   "proves": [
    "the record has not changed since it was exported: its SHA-256 digest recomputes over the canonical form",
@@ -1118,6 +2008,6 @@
  "digest": {
   "alg": "SHA-256",
   "over": "canonical JSON of every top-level field except digest, with identity.signature forced to null: keys sorted recursively, no whitespace, UTF-8",
-  "hex": "faab2c8ce97473bb1cfd3205b0dcfdb59c5b113dcb472a4ac72ffe2acb36ddad"
+  "hex": "95a52b48be160f61250fcc901bae498ccad3b1215a9abd8ae59ae70b50a81999"
  }
 }

@@ -93,6 +93,8 @@ SEQUENCER_PATH = 'control/sequencer.mjs'
 CONTROL_README = 'control/README.md'
 APP_PATH = 'web/build_3d.py'
 LESSONS_PATH = 'lessons/registry/lessons.json'
+SESSIONS_PATH = 'sessions/registry/sessions.json'
+SESSIONS_VERIFY = 'sessions/verify.mjs'
 
 # Dependency order: a module's names must already be declared when the next
 # one's top-level code is evaluated.
@@ -227,6 +229,47 @@ if HUMAN_ACTOR not in ACTORS:
 SCRIPTED_ACTORS = [a for a in ACTORS if a != HUMAN_ACTOR]
 if not SCRIPTED_ACTORS:
     raise AssertionError(f'{TRAINING_PATH}#actors names no actor other than {HUMAN_ACTOR!r}')
+
+# ------------------------------------------------- sessions: the one gap, read
+# A session is a maximal run of episodes separated by less than an idle gap.
+# The gap is the ONE declared number in sessions/ and it is READ here from
+# that registry and embedded in the payload; the page's own JS never types
+# it. The splitter itself, sessionsOf, is lifted out of sessions/verify.mjs
+# between its markers and carried into the page verbatim, so the page and the
+# verifier cannot disagree about what a session is.
+sessions_reg = load(SESSIONS_PATH)
+if need(sessions_reg, 'pack_version', SESSIONS_PATH) != PACK_VERSION:
+    raise AssertionError(f'{SESSIONS_PATH}: pack_version disagrees with {MANIFEST_PATH}')
+SESSIONS_GAP = need(sessions_reg, 'gap', SESSIONS_PATH)
+SESSIONS_GAP_MS = need(SESSIONS_GAP, 'ms', f'{SESSIONS_PATH}#gap')
+if not isinstance(SESSIONS_GAP_MS, int) or isinstance(SESSIONS_GAP_MS, bool) or SESSIONS_GAP_MS <= 0:
+    raise AssertionError(f'{SESSIONS_PATH}#gap.ms is not a positive integer')
+if need(sessions_reg, 'human_actor', SESSIONS_PATH) != HUMAN_ACTOR:
+    raise AssertionError(f'{SESSIONS_PATH}#human_actor is not {HUMAN_ACTOR!r}')
+SESSIONS_FN = need(sessions_reg, 'function', SESSIONS_PATH)
+if need(SESSIONS_FN, 'file', f'{SESSIONS_PATH}#function') != SESSIONS_VERIFY:
+    raise AssertionError(f'{SESSIONS_PATH}#function.file is not {SESSIONS_VERIFY}')
+_MARK_BEGIN, _MARK_END = need(SESSIONS_FN, 'markers', f'{SESSIONS_PATH}#function')
+_verify_src = (ROOT / SESSIONS_VERIFY).read_text(encoding='utf-8')
+_i0, _i1 = _verify_src.find(_MARK_BEGIN), _verify_src.find(_MARK_END)
+if _i0 < 0 or _i1 < 0 or _i1 < _i0:
+    raise AssertionError(f'{SESSIONS_VERIFY} does not carry the sessionsOf markers {SESSIONS_PATH}#function names')
+SESSIONS_JS = _verify_src[_i0:_i1 + len(_MARK_END)]
+if 'function sessionsOf(' not in SESSIONS_JS:
+    raise AssertionError(f'{SESSIONS_VERIFY}: the marked block does not declare sessionsOf')
+for banned in ('??', 'localStorage', 'document.', 'Date.now', 'import ', 'export '):
+    if banned in SESSIONS_JS:
+        raise AssertionError(f'{SESSIONS_VERIFY}: the carried block contains {banned!r}; it must stay pure')
+if str(SESSIONS_GAP_MS) in SESSIONS_JS:
+    raise AssertionError(f'{SESSIONS_VERIFY}: the carried block types the gap ({SESSIONS_GAP_MS}); it must be passed in')
+SESSIONS_LESSON_STEPS = need(sessions_reg, 'lesson_steps', SESSIONS_PATH)
+SESSIONS_RECORDS = need(SESSIONS_LESSON_STEPS, 'records', f'{SESSIONS_PATH}#lesson_steps')
+for _sk, _ek in SESSIONS_RECORDS.items():
+    if _sk not in STEP_KINDS or need(STEP_KINDS[_sk], 'records', f'{LESSONS_PATH}#step_kinds.{_sk}') != _ek:
+        raise AssertionError(f'{SESSIONS_PATH}#lesson_steps.records.{_sk} disagrees with {LESSONS_PATH}#step_kinds')
+SESSIONS_BEST_AXIS = need(need(sessions_reg, 'outcome', SESSIONS_PATH), 'best_axis', f'{SESSIONS_PATH}#outcome')
+SESSIONS_LAST_LINE = need(need(sessions_reg, 'verifier', SESSIONS_PATH), 'last_line', f'{SESSIONS_PATH}#verifier')
+SESSIONS_HONESTY = need(sessions_reg, 'honesty', SESSIONS_PATH)
 
 
 # ----------------------------------- the control plane, carried in verbatim
@@ -554,6 +597,16 @@ DATA = {
     'human_actor': HUMAN_ACTOR,
     'scripted_actors': SCRIPTED_ACTORS,
     'training_cap': TRAINING_CAP,
+    # the sessions contract, embedded: the gap with its reason (the one
+    # declared number), which lesson step kinds record which episode kind,
+    # the rubric axis a best time is read from, and the verifier's last line
+    'sessions': {
+        'gap': SESSIONS_GAP,
+        'records': SESSIONS_RECORDS,
+        'best_axis': SESSIONS_BEST_AXIS,
+        'last_line': SESSIONS_LAST_LINE,
+        'seat_time_why': need(need(sessions_reg, 'seat_time', SESSIONS_PATH), 'why', f'{SESSIONS_PATH}#seat_time'),
+    },
     'halls': [
         {
             'slug': slug,
@@ -723,6 +776,10 @@ READS = ''.join(f'<li><code>{E(p)}</code> — {E(why)}</li>' for p, why in (
     (MANIFEST_PATH, 'the product name, the pack version and the pack\'s own honesty block'),
     (LESSONS_PATH, 'every lesson, its steps and the ladder, carried verbatim: the completion '
                    'record is built from them and this device\'s progress record'),
+    (SESSIONS_PATH, f'the idle gap ({F(SESSIONS_GAP_MS)} ms) that cuts the training log into sessions - '
+                    'the one declared number in that pack - and which lesson step kinds record an episode'),
+    (SESSIONS_VERIFY, 'sessionsOf, the splitter itself, lifted from between its markers and carried '
+                      'into this page verbatim, so the page and the verifier read the same sessions'),
     (LPA_PATH, 'LearnerProfile and pSuccess — carried into the page and run, not quoted'),
     (HINTS_PATH, 'HintEngine, RUNGS and the fading policy — carried in and run'),
     (GRAPH_PATH, 'SkillGraph — carried in and run'),
@@ -1625,6 +1682,75 @@ sel.addEventListener('change', (e) => {
 });
 renderAll(start);
 
+/* ---- sessions: the training log read in time order and cut at the idle gap
+   the sessions registry declares. sessionsOf is the verifier's own function,
+   carried into this page in <script id="sessions-js">; the gap is read from
+   the embedded registry (D.sessions.gap.ms) and typed nowhere in this page.
+   Every figure below comes out of that one call. A log the function refuses
+   (an unparseable t, an unknown kind, an outcome with no passed) is reported
+   as refused, in its own words, rather than read around. */
+const fmtWall = (ms) => {
+  const s = Math.round(ms / 1000);
+  return Math.floor(s / 3600) + 'h' + String(Math.floor((s % 3600) / 60)).padStart(2, '0') + 'm'
+    + String(s % 60).padStart(2, '0') + 's';
+};
+function paintSessions(rec) {
+  const figs = document.getElementById('sessions-figs');
+  const tb = document.getElementById('sessions-tbl');
+  const note = document.getElementById('sessions-note');
+  clear(figs); clear(tb); clear(note);
+  const sec = document.getElementById('sessions');
+  if (rec.training.state !== 'present') {
+    sec.setAttribute('data-sessions', rec.training.state);
+    note.textContent = 'No sessions: the record under ' + KEYS.training + ' is ' + rec.training.state + '.';
+    return;
+  }
+  let R;
+  try { R = sessionsOf(rec.training.value, D.sessions.gap.ms, D.human_actor, D.sessions.records, D.sessions.best_axis); }
+  catch (e) {
+    sec.setAttribute('data-sessions', 'refused');
+    note.textContent = 'This log could not be read as sessions, and nothing was read around it: ' + String((e && e.message) || e);
+    return;
+  }
+  sec.setAttribute('data-sessions', R.sessions.length ? 'read' : 'empty');
+  const r = R.rollups;
+  const longest = r.longest_session === null ? '—' : '#' + r.longest_session.n + ' at ' + fmtWall(r.longest_session.wall_ms);
+  const pairs = [
+    ['sessions', String(r.sessions), 'sessions in this record, cut at the declared gap'],
+    ['total-wall', fmtWall(r.total_wall_ms), 'time between first and last recorded event, summed over sessions'],
+    ['longest-session', longest, 'the longest session'],
+    ['sim-episodes', String(r.seat_time.sim_episodes), 'seat runs counted, because the record holds no seat time'],
+    ['traced-span', fmtWall(r.seat_time.traced_span_ms), 'a lower bound on traced runs only, from ~1 Hz samples'],
+    ['traces', String(r.traces) + ' / ' + String(r.samples), 'traces attached / samples they hold'],
+  ];
+  for (const [key, v, lab] of pairs) {
+    figs.appendChild(elem('div', { class: 'fig', 'data-session-fig': key }, [elem('b', { text: v }), elem('span', { text: lab })]));
+  }
+  tb.appendChild(row(['#', 'start', 'end', 'wall', 'episodes', 'sim', 'advisor', 'crew', 'walkaround points', 'halls', 'seats (passes / attempts, best ' + D.sessions.best_axis + ')', 'traces', 'could advance (step kinds)']
+    .map((h) => elem('th', { text: h }))));
+  for (const s of R.sessions) {
+    const k = (x) => (x in s.by_kind ? s.by_kind[x] : 0);
+    const seats = Object.keys(s.seats).sort().map((id) => id + ' ' + s.seats[id].passes + '/' + s.seats[id].attempts
+      + (s.seats[id].best_time === null ? '' : ' best ' + s.seats[id].best_time)).join(', ')
+      + (s.scripted_runs ? ' (+' + s.scripted_runs + ' scripted, credited to nobody)' : '');
+    const adv = Object.keys(s.could_advance).filter((x) => s.could_advance[x]).join(', ');
+    tb.appendChild(row([td(s.n, 'num'), td(s.start), td(s.end), td(fmtWall(s.wall_ms), 'num'), td(s.episodes, 'num'),
+      td(k('sim'), 'num'), td(k('advisor'), 'num'), td(k('crew'), 'num'), td(s.walkaround_points, 'num'),
+      td(s.halls.join(', ')), td(seats === '' ? '—' : seats), td(s.traces, 'num'), td(adv === '' ? '—' : adv)],
+      { 'data-session': String(s.n), 'data-session-episodes': String(s.episodes), 'data-session-wall-ms': String(s.wall_ms) }));
+  }
+  const seatLines = Object.keys(r.seats).sort().map((id) => {
+    const q = r.seats[id];
+    return id + ': ' + q.passes + '/' + q.attempts + ' passed' + (q.pass_rate === null ? '' : ' (' + Math.round(q.pass_rate * 100) + '%)')
+      + ', longest pass streak ' + q.longest_pass_streak + ', current ' + q.current_pass_streak
+      + ', best ' + D.sessions.best_axis + ' ' + (q.best_time === null ? 'none' : q.best_time);
+  });
+  note.textContent = (R.sessions.length ? 'Per seat, across every session, your own runs only — ' + seatLines.join('; ') + '. '
+    : 'No episode in the record, so no session. ')
+    + 'Scripted reference runs are counted and credited to nobody.';
+}
+paintSessions(readRecord());
+
 /* ---- the completion record: built from the progress record and the lesson
    definitions the page carries, summarised on the page from the record itself,
    and downloaded on request. No figure below is typed. */
@@ -2278,6 +2404,23 @@ footer.page a{{margin-inline-end:10px}}
 
 </div>
 
+<section id="sessions">
+  <h2>Sessions</h2>
+  <p class="why">Every episode under <code>{E(TRAINING_KEY)}</code> carries the moment it was written.
+     Read in time order, the log falls into sessions: a session is a maximal run of episodes where
+     consecutive episodes are less than <b data-session-gap="{E(str(SESSIONS_GAP_MS))}">{E(F(SESSIONS_GAP_MS))} ms</b>
+     apart ({E(F(need(SESSIONS_GAP, 'minutes', SESSIONS_PATH + '#gap')))} minutes). {E(SESSIONS_GAP['why'])}</p>
+  <div class="figs" id="sessions-figs"></div>
+  <div class="tscroll"><table><tbody id="sessions-tbl"></tbody></table></div>
+  <p class="muted" id="sessions-note"></p>
+  <p class="muted">Seat time is not on this page because it is not in the record:
+     {E(need(need(sessions_reg, 'seat_time', SESSIONS_PATH), 'why', SESSIONS_PATH + '#seat_time'))}
+     The last column says which lesson step <i>kinds</i> a session holds an episode for
+     ({E(', '.join(sorted(SESSIONS_RECORDS)))}); it marks no step done — that is the completion
+     record's question, below, and it is answered there against each step's own reference.</p>
+  <p class="why" id="sessions-honesty" data-sessions-honesty="1">{E(SESSIONS_LAST_LINE)}</p>
+</section>
+
 <section id="completion">
   <h2>Carry your record off this device</h2>
   <p class="why">A completion record is built here from the progress record under
@@ -2338,6 +2481,8 @@ footer.page a{{margin-inline-end:10px}}
 </footer>
 </div>
 <script type="application/json" id="tcdata">{PAYLOAD}</script>
+<script id="sessions-js">
+{SESSIONS_JS}</script>
 <script id="completion-js">
 {COMPLETION_JS}</script>
 <script type="module">

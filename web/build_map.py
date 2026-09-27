@@ -592,6 +592,7 @@ svg.floor{{display:block;width:100%;height:auto;background:var(--sunk);
 .layers label i{{width:11px;height:11px;border-radius:50%;flex:0 0 auto}}
 .layers label code{{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:10px;color:var(--muted);
   overflow:hidden;text-overflow:ellipsis;white-space:nowrap}}
+.layers label .lname{{display:grid;gap:1px;line-height:1.2}}
 .layers label .lc{{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11px;white-space:nowrap}}
 .layers label[data-focus="true"] code{{color:var(--mark)}}
 .layers .lfocus{{border:1px solid var(--rule);background:none;color:var(--muted);font:inherit;font-size:10px;
@@ -606,7 +607,8 @@ svg.map[data-off~="completable"] .lm[data-layer="completable"],svg.map[data-off~
 .hallpanel a{{color:var(--steel);text-decoration:none;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11.5px}}
 .hallpanel a:hover{{text-decoration:underline}}
 .hallpanel .hp-row{{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;align-items:baseline;font-size:12.5px}}
-.hallpanel .hp-row>code{{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:10px;color:var(--muted);white-space:nowrap}}
+.hallpanel .hp-row>.hp-k{{display:grid;gap:2px;line-height:1.2}}
+.hallpanel .hp-row code{{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:10px;color:var(--muted);white-space:nowrap}}
 .hallpanel .hp-row>div{{display:grid;gap:5px}}
 .hallpanel .hp-row .lc{{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:11px}}
 .hallpanel .hp-row em{{font-style:normal;color:var(--muted);font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:10.5px;display:block}}
@@ -723,6 +725,8 @@ const DATA = JSON.parse(document.getElementById('data').textContent);
 const REG = DATA.reg;
 const hasOwn = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
 // The i18n catalog's own strings, carried in as data rather than retyped:
+// layerLabels: the six training layers' prose labels, shown beside (never
+// instead of) the registry field path each layer is read from.
 // the {{token}} placeholders are filled below, the same contract i18n/test.mjs
 // enforces server-side (placeholder survival) for every locale of this key.
 const I18N = {json.dumps({
@@ -730,6 +734,11 @@ const I18N = {json.dumps({
     'noAddress': S('map.detail.no_address'), 'of': S('map.detail.of'),
     'modulesWord': S('map.detail.modules_word'), 'fixture': S('map.detail.fixture'),
     'layers': S('map.layers'), 'nav3d': S('map.nav.3d'), 'hallsWord': S('map.meta.halls'),
+    'layerLabels': {
+        'lessons': S('map.layer.lessons'), 'seats': S('map.layer.seats'),
+        'units': S('map.layer.units'), 'signoff': S('map.layer.signoff'),
+        'completable': S('map.layer.completable'), 'blocked': S('map.layer.blocked'),
+    },
     'states': {
         'live': STATE('live'), 'calibrating': STATE('calibrating'),
         'schema_ok': STATE('schema_ok'), 'draft': STATE('draft'),
@@ -744,22 +753,22 @@ let filter = null, selected = DATA.halls[0].slug;
 // payload above - nothing is typed - and each is held to the owning
 // the published count of the owning registry; a disagreement throws rather than draws.
 const LAYERS = {{
-  lessons: {{ src: DATA.sources.lessons + '#lessons', sw: 'var(--mark)', by: 'halls',
+  lessons: {{ src: DATA.sources.lessons + '#lessons', sw: 'var(--mark)', by: 'halls', label: I18N.layerLabels.lessons,
     of: (h) => Object.values(REG.lessons.lessons).filter((l) => l.hall === h.slug).map((l) => l.id),
     published: () => REG.lessons.counts.halls_covered }},
-  seats: {{ src: DATA.sources.sims + '#hall_bindings', sw: 'var(--steel)', by: 'halls',
+  seats: {{ src: DATA.sources.sims + '#hall_bindings', sw: 'var(--steel)', by: 'halls', label: I18N.layerLabels.seats,
     of: (h) => hasOwn(REG.sims.hall_bindings, h.slug) ? REG.sims.hall_bindings[h.slug].map((b) => b.sim) : [],
     published: () => REG.sims.coverage.halls.with_a_seat }},
-  units: {{ src: DATA.sources.schools + '#units', sw: 'var(--good)', by: 'halls',
+  units: {{ src: DATA.sources.schools + '#units', sw: 'var(--good)', by: 'halls', label: I18N.layerLabels.units,
     of: (h) => REG.schools.units.filter((u) => u.hall === h.slug).map((u) => u.class_drill),
     published: () => REG.schools.units.length }},
-  signoff: {{ src: DATA.signoff.rule, sw: 'var(--crit)', by: 'halls',
+  signoff: {{ src: DATA.signoff.rule, sw: 'var(--crit)', by: 'halls', label: I18N.layerLabels.signoff,
     of: (h) => DATA.signoff.halls[h.slug] === true ? [DATA.signoff.claiming] : [],
     published: () => DATA.signoff.signed }},
-  completable: {{ src: DATA.sources.completion + '#lessons.completable', sw: 'var(--steel-ink)', by: 'items',
+  completable: {{ src: DATA.sources.completion + '#lessons.completable', sw: 'var(--steel-ink)', by: 'items', label: I18N.layerLabels.completable,
     of: (h) => Object.entries(REG.completion.lessons).filter(([, c]) => c.hall === h.slug && c.completable === true).map(([id]) => id),
     published: () => REG.completion.counts.lessons_completable }},
-  blocked: {{ src: DATA.sources.completion + '#lessons.not_completable_why', sw: 'var(--warn)', by: 'items',
+  blocked: {{ src: DATA.sources.completion + '#lessons.not_completable_why', sw: 'var(--warn)', by: 'items', label: I18N.layerLabels.blocked,
     of: (h) => Object.entries(REG.completion.lessons).filter(([, c]) => c.hall === h.slug && c.completable === false).map(([id]) => id),
     published: () => REG.completion.counts.lessons_not_completable }},
 }};
@@ -779,9 +788,9 @@ const layersEl = document.getElementById('layers');
 layersEl.innerHTML = Object.entries(LAYERS).map(([k, L]) => `<label data-layer="${{k}}">
     <input type="checkbox" data-toggle="${{k}}" checked>
     <i style="background:${{L.sw}}"></i>
-    <code title="${{L.src}}">${{L.src}}</code>
+    <span class="lname">${{L.label}}<code title="${{L.src}}">${{L.src}}</code></span>
     <span class="lc" data-count="${{k}}">${{F(COUNTS[k].halls)}} ${{I18N.of}} ${{F(DATA.halls.length)}}${{L.by === 'items' ? ' · ' + F(COUNTS[k].items) : ''}}</span>
-    <button class="lfocus" data-focus="${{k}}" aria-pressed="false">${{k}}</button>
+    <button class="lfocus" data-focus="${{k}}" aria-pressed="false">${{L.label}}</button>
   </label>`).join('');
 
 const dlist = document.getElementById('dlist');
@@ -899,7 +908,7 @@ function hallPanel(h) {{
       class_drill: ${{esc(u.class_drill)}} · floor_sims: ${{u.floor_sims.join(', ')}} · class_stations: ${{u.class_stations.length}}
       <em>gate: ${{esc(u.gate)}}</em><em>home: ${{esc(u.home)}}</em></span>`);
   const signed = DATA.signoff.halls[h.slug] === true;
-  const row = (k, body) => `<div class="hp-row" data-panel="${{k}}"><code>${{LAYERS[k].src}}</code>
+  const row = (k, body) => `<div class="hp-row" data-panel="${{k}}"><span class="hp-k">${{LAYERS[k].label}}<code>${{LAYERS[k].src}}</code></span>
       <div>${{body.length ? body.join('') : `<span class="none">0</span>`}}</div></div>`;
   return `<section class="hallpanel" data-hall-panel="${{h.slug}}">
     <p class="kicker">${{I18N.layers}} &#183; ${{h.name}}</p>
@@ -912,7 +921,7 @@ function hallPanel(h) {{
     ${{row('lessons', lessons)}}
     ${{row('seats', seats)}}
     ${{row('units', units)}}
-    <div class="hp-row" data-panel="signoff" data-signed="${{signed}}"><code>${{DATA.signoff.rule}}</code>
+    <div class="hp-row" data-panel="signoff" data-signed="${{signed}}"><span class="hp-k">${{I18N.layerLabels.signoff}}<code>${{DATA.signoff.rule}}</code></span>
       <div><span class="lc ${{signed ? 'yes' : 'no'}}">${{signed ? DATA.signoff.claiming : DATA.signoff.statuses[0]}}
         <em>${{F(DATA.signoff.signed)}} ${{I18N.of}} ${{F(DATA.signoff.of)}} ${{I18N.hallsWord}}</em></span></div></div>
     <p class="caveat">${{esc(DATA.signoff.caveat)}}</p>
