@@ -3,6 +3,7 @@ import markdown, re, pathlib, sys
 HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from staleness import emit  # noqa: E402
+from sitenav import nav_html, labels as nav_labels, NAV_CSS  # noqa: E402
 
 
 def _spec_path():
@@ -104,6 +105,8 @@ gauge = """<svg viewBox="0 0 220 130" class="gauge" role="img" aria-label="Dial 
 <text x="176" y="46" font-size="10" fill="var(--band)" font-weight="600">.70–.85</text>
 </svg>"""
 
+NAV = nav_html('web/smartcitix_trade_craft_academy.html', nav_labels('en'))
+
 page = f"""<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Adaptive Stack Protocol</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230C1113'/%3E%3Cpath d='M7 21 L16 7 L25 21 Z' fill='none' stroke='%23E8A33D' stroke-width='2.6' stroke-linejoin='round'/%3E%3Cpath d='M11 21 h10' stroke='%2341C4D4' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E">
 <!-- Self-hosted: nothing on this page is fetched from another origin at run time. See web/fetch_fonts.py. -->
@@ -182,7 +185,8 @@ blockquote {{ margin:0 0 16px; padding:2px 0 2px 16px; border-left:3px solid var
 @media (prefers-reduced-motion: no-preference) {{ html {{ scroll-behavior:smooth; }} }}
 @media (max-width:560px) {{ header.hero {{ padding-top:36px; }} .gauge {{ width:160px; }} }}
 </style>
-<div class="wrap">
+<style>{NAV_CSS}</style>
+{NAV}<div class="wrap">
 <header class="hero">
   <div class="hero-text">
     <p class="eyebrow">Protocol Specification · ACP Suite · v{SPEC_VERSION}</p>

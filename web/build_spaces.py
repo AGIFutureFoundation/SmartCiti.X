@@ -11,12 +11,14 @@ the 3D hall of each union it serves and to the lessons page. The page says
 what the registry says: these spaces are declared, not yet walkable.
 """
 import json
+import math
 import pathlib
 import sys
 
 HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from staleness import emit  # noqa: E402
+from sitenav import nav_html, labels as nav_labels, NAV_CSS  # noqa: E402
 
 ROOT = HERE.parent
 REG_PATH = ROOT / 'spaces/registry/spaces.json'
@@ -42,18 +44,134 @@ KIND_FILL = {
     'station': 'var(--crit)', 'crib': 'var(--mark)', 'sign': 'var(--muted)',
 }
 
+# Item labels. Placed at build, deterministically: each label's box is
+# estimated from its character count at the label font (a monospace advance
+# is 0.6 em; LABEL_EM pads it), and a greedy pass sets each label at the first
+# candidate spot, nearest its item first, that stays inside the floor and
+# overlaps no label already placed (and, where it can, no other item). A label
+# set away from its item gets a leader line back to it.
+LABEL_FONT_PX = 9
+LABEL_EM = 0.62              # estimated advance per character, in em (Plex Mono is 0.60)
+LABEL_LH = 11                # line pitch of a wrapped label
+LABEL_ASC, LABEL_DESC = 8, 3 # box above the first baseline / below the last
+LABEL_WRAP = 26              # characters per label line before it wraps
+LABEL_GAP = 2                # clear space kept between label boxes
+FLOOR_INSET = 4              # labels stay clear of the wall stroke
+MIN_CONTRAST = 4.5           # WCAG AA for text
+INKS = ('#0C1113', '#E8EDEC')  # the page's --sunk and --ink
+
+
+def _lum(hexc):
+    h = hexc.lstrip('#')
+    ch = [int(h[i:i + 2], 16) / 255 for i in (0, 2, 4)]
+    ch = [c / 12.92 if c <= 0.04045 else ((c + 0.055) / 1.055) ** 2.4 for c in ch]
+    return 0.2126 * ch[0] + 0.7152 * ch[1] + 0.0722 * ch[2]
+
+
+def contrast(a, b):
+    la, lb = sorted((_lum(a), _lum(b)), reverse=True)
+    return (la + 0.05) / (lb + 0.05)
+
+
+def label_ink(floor_hex):
+    """The page ink with the most contrast on this floor; it must reach 4.5:1."""
+    ink = max(INKS, key=lambda c: (contrast(c, floor_hex), c))
+    if contrast(ink, floor_hex) < MIN_CONTRAST:
+        raise SystemExit(f'build_spaces: no page ink reaches {MIN_CONTRAST}:1 on floor {floor_hex}')
+    return ink
+
+
+def wrap(name):
+    lines, cur = [], ''
+    for w in name.split(' '):
+        if cur and len(cur) + 1 + len(w) > LABEL_WRAP:
+            lines.append(cur)
+            cur = w
+        else:
+            cur = f'{cur} {w}' if cur else w
+    lines.append(cur)
+    return lines
+
+
+def _hit(a, b, gap=0):
+    return not (a[2] + gap <= b[0] or b[2] + gap <= a[0] or a[3] + gap <= b[1] or b[3] + gap <= a[1])
+
+
+def place_labels(entries, area):
+    """entries: [(key, own_box, (cx, cy), lines)] -> {key: box}. Greedy, in a
+    fixed order (the largest label first, then registry order)."""
+    ax0, ay0, ax1, ay1 = area
+    placed = {}
+    order = sorted(entries, key=lambda e: (-len(e[3]) * max(len(t) for t in e[3]), e[0]))
+    for key, own, (cx, cy), lines in order:
+        bw = round(max(len(t) for t in lines) * LABEL_FONT_PX * LABEL_EM + 2, 2)
+        bh = LABEL_ASC + (len(lines) - 1) * LABEL_LH + LABEL_DESC
+        if bw > ax1 - ax0 or bh > ay1 - ay0:
+            raise SystemExit(f'build_spaces: label {lines!r} does not fit the floor')
+
+        def box_at(mx, my):
+            x0 = min(max(mx - bw / 2, ax0), ax1 - bw)
+            y0 = min(max(my - bh / 2, ay0), ay1 - bh)
+            return (round(x0, 2), round(y0, 2), round(x0 + bw, 2), round(y0 + bh, 2))
+        cands = [box_at(cx, cy),
+                 box_at(cx, own[3] + 2 + bh / 2), box_at(cx, own[1] - 2 - bh / 2),
+                 box_at(own[2] + 3 + bw / 2, cy), box_at(own[0] - 3 - bw / 2, cy)]
+        r = 12
+        while r < 2 * max(ax1 - ax0, ay1 - ay0):
+            for k in range(16):
+                a = math.radians(90 + k * 22.5)
+                cands.append(box_at(cx + r * math.cos(a), cy + r * math.sin(a)))
+            r += 8
+        others = [e[1] for e in entries if e[0] != key]
+        pick = None
+        for strict in (True, False):
+            for b in cands:
+                if any(_hit(b, q, LABEL_GAP) for q in placed.values()):
+                    continue
+                if strict and any(_hit(b, o) for o in others):
+                    continue
+                pick = b
+                break
+            if pick:
+                break
+        if pick is None:
+            raise SystemExit(f'build_spaces: no free spot for label {lines!r}')
+        placed[key] = pick
+    return placed
+
+
+def label_svg(it, box, lines, side, own, centre, ink, floor_hex):
+    x0, y0, x1, y1 = box
+    tx = {'start': x0 + 1, 'end': x1 - 1, 'middle': (x0 + x1) / 2}[side]
+    tx = round(tx, 2)
+    ty = round(y0 + LABEL_ASC, 2)
+    spans = ''.join(f'<tspan x="{tx}" dy="{0 if i == 0 else LABEL_LH}">{esc(t)}</tspan>'
+                    for i, t in enumerate(lines))
+    leader = ''
+    near = (own[0] - 4, own[1] - 4, own[2] + 4, own[3] + 4)
+    if not _hit(box, near):
+        cx, cy = centre
+        lx, ly = min(max(cx, x0), x1), min(max(cy, y0), y1)
+        leader = (f'<line class="leader" x1="{round(cx, 2)}" y1="{round(cy, 2)}" '
+                  f'x2="{round(lx, 2)}" y2="{round(ly, 2)}" stroke="{ink}" stroke-width="0.75"/>')
+    return (leader + f'<text class="lbl" data-label-for="{it["i"]}" x="{tx}" y="{ty}" '
+            f'text-anchor="{side}" font-size="{LABEL_FONT_PX}" fill="{ink}" stroke="{esc(floor_hex)}" '
+            f'stroke-width="3" paint-order="stroke">{spans}</text>')
+
 
 def plan_svg(s):
     W, D = s['footprint_m']['w'], s['footprint_m']['d']
     w_px, d_px = px(W), px(D)
     vw, vh = w_px + 2 * PLAN_PAD_PX, d_px + 2 * PLAN_PAD_PX
+    floor_hex = s['floor']['color']
+    ink = label_ink(floor_hex)
     parts = [
         f'<svg class="plan" viewBox="0 0 {vw} {vh}" width="{vw}" height="{vh}" '
         f'role="img" aria-label="{esc(s["title"])} floor plan" data-plan="{esc(s["id"])}" '
         f'data-px-per-m="{PX_PER_M}">',
         # the floor, in its catalogue colour; the wall as a stroke in its colour
         f'<rect class="floor" x="{PLAN_PAD_PX}" y="{PLAN_PAD_PX}" width="{w_px}" height="{d_px}" '
-        f'fill="{esc(s["floor"]["color"])}" stroke="{esc(s["wall"]["color"])}" stroke-width="6" '
+        f'fill="{esc(floor_hex)}" stroke="{esc(s["wall"]["color"])}" stroke-width="6" '
         f'data-floor="{esc(s["floor"]["id"])}" data-wall="{esc(s["wall"]["id"])}"/>',
         # dimension ticks
         f'<text class="dim" x="{PLAN_PAD_PX + w_px / 2}" y="{PLAN_PAD_PX - 8}" '
@@ -63,28 +181,51 @@ def plan_svg(s):
         f'data-dim="d">{D} m</text>',
     ]
     # y grows upward in the declaration (bottom-left origin); SVG y grows down
+    geo = {}
     for it in s['items']:
-        fill = KIND_FILL[it['kind']]
         if it['footprint'] is None:
             cx, cy = PLAN_PAD_PX + px(it['x']), PLAN_PAD_PX + d_px - px(it['y'])
+            geo[it['i']] = ((cx - 9, cy - 9, cx + 9, cy + 9), (cx, cy))
+        else:
+            x0, y0, x1, y1 = it['rect']
+            rx, ry = PLAN_PAD_PX + px(x0), PLAN_PAD_PX + d_px - px(y1)
+            rw, rh = px(x1 - x0), px(y1 - y0)
+            geo[it['i']] = ((rx, ry, rx + rw, ry + rh), (rx + rw / 2, ry + rh / 2))
+    lines_of = {it['i']: wrap(it['name']) for it in s['items']}
+    area = (PLAN_PAD_PX + FLOOR_INSET, PLAN_PAD_PX + FLOOR_INSET,
+            PLAN_PAD_PX + w_px - FLOOR_INSET, PLAN_PAD_PX + d_px - FLOOR_INSET)
+    boxes = place_labels([(i, g[0], g[1], lines_of[i]) for i, g in geo.items()], area)
+
+    def side_of(cx):
+        # the anchor faces into the plan: a label near a wall reads away from it
+        if cx < PLAN_PAD_PX + w_px / 3:
+            return 'start'
+        if cx > PLAN_PAD_PX + 2 * w_px / 3:
+            return 'end'
+        return 'middle'
+
+    for it in s['items']:
+        fill = KIND_FILL[it['kind']]
+        own, (cx, cy) = geo[it['i']]
+        lbl = label_svg(it, boxes[it['i']], lines_of[it['i']], side_of(cx), own, (cx, cy), ink, floor_hex)
+        if it['footprint'] is None:
             parts.append(
                 f'<g class="item unknown" data-item="{it["i"]}" data-kind="{esc(it["kind"])}" '
                 f'data-id="{esc(it["id"])}">'
                 f'<circle cx="{cx}" cy="{cy}" r="9" fill="none" stroke="{fill}" '
                 f'stroke-width="1.5" stroke-dasharray="3 2"/>'
-                f'<text x="{cx}" y="{cy + 20}" text-anchor="middle">{esc(it["name"])}</text>'
+                f'{lbl}'
                 f'<title>{esc(it["name"])} ({esc(it["kind"])} {esc(it["id"])}) - '
                 f'{esc(it["footprint_note"])}</title></g>')
             continue
-        x0, y0, x1, y1 = it['rect']
-        rx, ry = PLAN_PAD_PX + px(x0), PLAN_PAD_PX + d_px - px(y1)
-        rw, rh = px(x1 - x0), px(y1 - y0)
+        rx, ry, rx1, ry1 = own
+        rw, rh = px(it['rect'][2] - it['rect'][0]), px(it['rect'][3] - it['rect'][1])
         parts.append(
             f'<g class="item" data-item="{it["i"]}" data-kind="{esc(it["kind"])}" '
             f'data-id="{esc(it["id"])}">'
             f'<rect x="{rx}" y="{ry}" width="{rw}" height="{rh}" fill="{fill}" '
             f'fill-opacity="0.55" stroke="{fill}" stroke-width="1"/>'
-            f'<text x="{rx + rw / 2}" y="{ry + rh / 2 + 3}" text-anchor="middle">{esc(it["name"])}</text>'
+            f'{lbl}'
             f'<title>{esc(it["name"])} ({esc(it["kind"])} {esc(it["id"])}) - '
             f'{it["footprint"]["w"]} x {it["footprint"]["d"]} m</title></g>')
     parts.append('</svg>')
@@ -159,6 +300,8 @@ kind_legend = ''.join(
 toc = ''.join(f'<a href="#space-{esc(s["id"])}">{esc(s["title"])}</a>' for s in reg['spaces'])
 embedded = json.dumps(reg, indent=1, sort_keys=True).replace('</', '<\\/')
 
+NAV = nav_html('web/trade_craft_spaces.html', nav_labels('en'))
+
 page = f'''<!doctype html>
 <html lang="en">
 <head>
@@ -196,8 +339,8 @@ a{{color:var(--steel)}}
 .cols{{display:flex;flex-wrap:wrap;gap:24px;align-items:flex-start}}
 .planwrap{{overflow-x:auto;max-width:100%;background:var(--sunk);border:1px solid var(--rule);border-radius:8px;padding:8px}}
 .plan .dim{{fill:var(--muted);font:11px "IBM Plex Mono",monospace}}
-.plan .item text{{fill:var(--ink);font:9px "IBM Plex Mono",monospace;pointer-events:none}}
-.plan .item.unknown text{{fill:var(--muted)}}
+.plan .item text.lbl{{font-family:"IBM Plex Mono",monospace;pointer-events:none}}
+.plan .item .leader{{stroke-opacity:.8}}
 .facts{{flex:1 1 340px;min-width:0}}
 .facts h3{{font:600 16px/1.2 "Barlow Condensed",system-ui,sans-serif;margin:16px 0 6px;text-transform:uppercase;letter-spacing:.04em}}
 .facts h3 small{{color:var(--muted);text-transform:none;letter-spacing:0;font-weight:400}}
@@ -218,8 +361,10 @@ summary{{cursor:pointer;color:var(--steel)}}
 code{{font:13px "IBM Plex Mono",monospace;color:var(--steel)}}
 .legend{{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}}
 </style>
+<style>{NAV_CSS}</style>
 </head>
-<body><div class="wrap">
+<body>
+{NAV}<div class="wrap">
 <header>
   <h1>SmartCiti<span class="x">.X</span> : Trade Craft Academy</h1>
   <p>powered by AGI Corp · custom spaces</p>

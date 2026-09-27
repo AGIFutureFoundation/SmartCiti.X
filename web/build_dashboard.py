@@ -38,6 +38,7 @@ ROOT = _pack_root()
 sys.path.insert(0, str(ROOT / 'web'))
 from mapdata import HUES  # noqa: E402
 from staleness import emit  # noqa: E402
+from sitenav import nav_html, labels as nav_labels, NAV_CSS  # noqa: E402
 manifest = json.load(open(ROOT / 'pack/manifest.json'))
 L = manifest['ledger']
 districts = json.load(open(ROOT / 'unions/registry/districts.json'))['districts']
@@ -169,6 +170,8 @@ stat_tiles = ''.join(
 spatial_tiles = ''.join(
     f'<div class="fig"><b>{v}</b><span>{lbl}</span></div>' for v, lbl in SPATIAL_STATS)
 
+NAV = nav_html('web/trade_craft_dashboard.html', nav_labels('en'))
+
 page = f'''<!doctype html>
 <html lang="en">
 <head>
@@ -231,8 +234,10 @@ h2{{font:600 22px "Barlow Condensed",system-ui,sans-serif;letter-spacing:.02em;
 footer{{color:var(--muted);font-size:12px;margin-top:30px;padding-top:14px;border-top:1px solid var(--rule)}}
 a{{color:var(--steel)}}
 </style>
+<style>{NAV_CSS}</style>
 </head>
-<body><div class="wrap">
+<body>
+{NAV}<div class="wrap">
 <header>
   <h1>SmartCiti<span class="x">.X</span> : Trade Craft Academy</h1>
   <p>Network dashboard — powered by AGI Corp</p>

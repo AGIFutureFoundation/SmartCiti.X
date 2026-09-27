@@ -63,6 +63,7 @@ import sys
 HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from staleness import emit  # noqa: E402
+from sitenav import nav_html, labels as nav_labels, NAV_CSS  # noqa: E402
 
 
 def _root():
@@ -109,6 +110,14 @@ def need(d, k, where):
     if k not in d:
         raise KeyError(f'{where}: required field {k!r} is missing')
     return d[k]
+
+
+def closed(s):
+    """A registry clause set into the builder's own copy, closed with a full
+    stop when the registry leaves it open, so the next sentence the builder
+    writes never runs on from it. The registry's words are kept verbatim."""
+    s = str(s).rstrip()
+    return s if s.endswith(('.', '!', '?')) else s + '.'
 
 
 def load(rel):
@@ -2145,6 +2154,8 @@ SCRIPT = CONTROL_BUNDLE + '\n\n/* ---- web/build_progress.py: the page ---- */\n
 
 # ------------------------------------------------------------------------ page
 TITLE = PRODUCT.split('(')[0].strip()
+NAV = nav_html('web/trade_craft_progress.html', nav_labels('en'))
+
 page = f'''<!doctype html>
 <html lang="en">
 <head>
@@ -2247,9 +2258,10 @@ footer.page{{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30p
   color:var(--muted);font-size:14px}}
 footer.page a{{margin-inline-end:10px}}
 </style>
+<style>{NAV_CSS}</style>
 </head>
 <body>
-<div class="wrap">
+{NAV}<div class="wrap">
 
 <header class="page">
   <h1>{E(TITLE)} — <span class="x">learner progression</span></h1>
@@ -2414,7 +2426,7 @@ footer.page a{{margin-inline-end:10px}}
   <div class="tscroll"><table><tbody id="sessions-tbl"></tbody></table></div>
   <p class="muted" id="sessions-note"></p>
   <p class="muted">Seat time is not on this page because it is not in the record:
-     {E(need(need(sessions_reg, 'seat_time', SESSIONS_PATH), 'why', SESSIONS_PATH + '#seat_time'))}
+     {E(closed(need(need(sessions_reg, 'seat_time', SESSIONS_PATH), 'why', SESSIONS_PATH + '#seat_time')))}
      The last column says which lesson step <i>kinds</i> a session holds an episode for
      ({E(', '.join(sorted(SESSIONS_RECORDS)))}); it marks no step done — that is the completion
      record's question, below, and it is answered there against each step's own reference.</p>
@@ -2431,7 +2443,7 @@ footer.page a{{margin-inline-end:10px}}
      by nobody — unless this device names an Ethereum wallet (<code>{E(WALLET_LABEL)}</code>, stored
      under <code>{E(IDENTITY_KEY)}</code> by the sign-in page), in which case the button below asks that
      wallet for an EIP-191 <code>personal_sign</code> over the record's digest and carries the signature
-     in the file. {E(need(LESSONS_HONESTY, 'not_certification', LESSONS_PATH + '#honesty'))}</p>
+     in the file. In the lessons registry's words: {E(closed(need(LESSONS_HONESTY, 'not_certification', LESSONS_PATH + '#honesty')))}</p>
   <div class="card" id="completion-summary"></div>
   <p><button id="expRecord" type="button" disabled>Export completion record</button>
      <button id="signRecord" type="button" disabled hidden>Sign this record with the connected wallet</button></p>

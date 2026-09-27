@@ -15,6 +15,7 @@ import sys
 HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from staleness import emit  # noqa: E402
+from sitenav import nav_html, labels as nav_labels, NAV_CSS  # noqa: E402
 
 
 def _pack_root():
@@ -98,6 +99,8 @@ tabs = ''.join(
     for code in ORDER)
 sections = '\n'.join(section(code) for code in ORDER)
 
+NAV = nav_html('web/trade_craft_languages.html', nav_labels('en'))
+
 page = f'''<!doctype html>
 <html lang="en">
 <head>
@@ -139,8 +142,10 @@ header p{{color:var(--muted);margin:6px 0 14px}}
 .status{{color:var(--muted);font-size:13px;font-style:italic}}
 [hidden]{{display:none!important}}
 </style>
+<style>{NAV_CSS}</style>
 </head>
-<body><div class="wrap">
+<body>
+{NAV}<div class="wrap">
 <header>
   <h1>SmartCiti<span class="x">.X</span> : Trade Craft Academy</h1>
   <p>powered by AGI Corp</p>

@@ -29,21 +29,46 @@
  *
  * THIS FILE ONLY RECOVERS. There is no signing routine in it and none is
  * imported: a verifier that could sign could forge.
+ *
+ * ONE CORE, TWO SHELLS. Every rule lives in contribCore(), between the
+ * CONTRIB_CORE markers below: pure, handed the parsed registries
+ * (REGISTRY_FILES names them), a synchronous sha256 and recoverAddress. This
+ * file is the node shell (node's createHash, auth/recover.mjs's recovery,
+ * console output). web/build_verify.py carries the marked block byte-for-byte
+ * into web/trade_craft_verify.html, which passes crypto.subtle to the core's
+ * verifyAsync() - it computes the one digest the rules ask for first, then
+ * runs the same synchronous verify() - so the page and this CLI run the same
+ * rules and print the same lines.
  */
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { recoverAddress } from '../auth/recover.mjs';
 
 const url = (p) => new URL(p, import.meta.url);
-const reg = JSON.parse(readFileSync(url('./registry/contrib.json')));
-const trainingReg = JSON.parse(readFileSync(url('../training/registry/training.json')));
-const simsReg = JSON.parse(readFileSync(url('../sims/registry/sims.json')));
-const hallsReg = JSON.parse(readFileSync(url('../pack/registry/halls.json')));
-const campusesReg = JSON.parse(readFileSync(url('../unions/registry/campuses.json')));
-const authReg = JSON.parse(readFileSync(url('../auth/registry/auth.json')));
+/* the registries the core reads, by the name the core asks for them */
+export const REGISTRY_FILES = {
+  contrib: 'contrib/registry/contrib.json',
+  training: 'training/registry/training.json',
+  sims: 'sims/registry/sims.json',
+  halls: 'pack/registry/halls.json',
+  campuses: 'unions/registry/campuses.json',
+  auth: 'auth/registry/auth.json',
+};
+const REGS = {};
+for (const [k, rel] of Object.entries(REGISTRY_FILES)) REGS[k] = JSON.parse(readFileSync(url('../' + rel)));
 
+/* CONTRIB_CORE:BEGIN - contribCore(regs) -> the verifier's rules, pure.
+   regs: { contrib, training, sims, halls, campuses, auth } parsed from the
+   files REGISTRY_FILES names. Throws at once if contrib.json has drifted from
+   training.json or auth.json. Returns { verify(record, sha256hex, recover),
+   verifyAsync(record, subtle, recover), report(result), errorLine(e), ... }.
+   sha256hex: (utf-8 string) -> 64 lowercase hex chars, synchronous.
+   recover  : (message, 0x-hex sig) -> the signer's address; throws on a
+              malformed signature. This block recovers; it never signs.
+   No file, clock, storage, DOM or network is touched in here. */
+function contribCore(regs) {
 class Missing extends Error {}
-export function need(obj, key, who) {
+function need(obj, key, who) {
   if (obj === null || typeof obj !== 'object' || !Object.prototype.hasOwnProperty.call(obj, key)) {
     throw new Missing(`${who} lacks ${JSON.stringify(key)}`);
   }
@@ -51,7 +76,7 @@ export function need(obj, key, who) {
 }
 
 // canonical JSON: keys sorted recursively, no whitespace, UTF-8
-export function canonical(v) {
+function canonical(v) {
   if (Array.isArray(v)) return '[' + v.map(canonical).join(',') + ']';
   if (v !== null && typeof v === 'object') {
     return '{' + Object.keys(v).sort().map((k) => JSON.stringify(k) + ':' + canonical(v[k])).join(',') + '}';
@@ -61,7 +86,7 @@ export function canonical(v) {
 // the digest input: every top-level field except digest, with
 // contributor.signature forced to null - the signature is made OVER the
 // digest, after it, so it cannot be inside it (contrib.json#digest.over)
-export function digestBody(record) {
+function digestBody(record) {
   const body = {};
   for (const k of Object.keys(record)) if (k !== 'digest') body[k] = record[k];
   if (body.contributor !== null && typeof body.contributor === 'object' && 'signature' in body.contributor) {
@@ -69,22 +94,25 @@ export function digestBody(record) {
   }
   return body;
 }
-export function digestOf(record) {
-  return createHash('sha256').update(Buffer.from(canonical(digestBody(record)), 'utf8')).digest('hex');
-}
 
 // the exact string a wallet signs, fixed by structure: auth/'s own statement
 // line, this package's digest, its export time, its consent scope. Rebuilt
 // here from the package, never taken from it.
+const reg = need(regs, 'contrib', 'registries');
+const trainingReg = need(regs, 'training', 'registries');
+const simsReg = need(regs, 'sims', 'registries');
+const hallsReg = need(regs, 'halls', 'registries');
+const campusesReg = need(regs, 'campuses', 'registries');
+const authReg = need(regs, 'auth', 'registries');
 const SIG_RULE = need(reg, 'signature', 'contrib.json');
 const SIWE_STATEMENT = need(need(authReg, 'siwe', 'auth.json'), 'statement', 'auth.json#siwe');
 if (need(need(SIG_RULE, 'message', 'contrib.json#signature'), 'statement', 'contrib.json#signature.message') !== SIWE_STATEMENT) {
   throw new Error('contrib.json#signature.message.statement is not auth.json#siwe.statement; rebuild contrib/');
 }
-export const SIGNATURE_SCHEME = need(SIG_RULE, 'scheme', 'contrib.json#signature');
-export const SIGNED_ATTESTATION = 'wallet signature over the digest';
-export const UNSIGNED_ATTESTATION = 'this device only';
-export function signatureMessage(digestHex, exportedAt, scope) {
+const SIGNATURE_SCHEME = need(SIG_RULE, 'scheme', 'contrib.json#signature');
+const SIGNED_ATTESTATION = 'wallet signature over the digest';
+const UNSIGNED_ATTESTATION = 'this device only';
+function signatureMessage(digestHex, exportedAt, scope) {
   if (typeof digestHex !== 'string' || typeof exportedAt !== 'string' || !Array.isArray(scope)) {
     throw new Missing('signatureMessage needs digest.hex and exported_at as strings and consent.scope as a list');
   }
@@ -116,9 +144,9 @@ const SIMS = need(simsReg, 'sims', 'sims.json');
 const HALL_SLUGS = new Set(need(hallsReg, 'halls', 'halls.json').map((h) => need(h, 'slug', 'hall')));
 const CAMPUS_IDS = new Set(Object.keys(need(campusesReg, 'campuses', 'campuses.json')));
 const RULES = need(need(reg, 'verifier', 'contrib.json'), 'rules', 'contrib.json#verifier');
-export const LAST_LINE = need(need(reg, 'verifier', 'contrib.json'), 'last_line', 'contrib.json#verifier');
+const LAST_LINE = need(need(reg, 'verifier', 'contrib.json'), 'last_line', 'contrib.json#verifier');
 
-export function verify(record) {
+function verify(record, sha256hex, recoverAddress) {
   const tally = {};
   for (const r of RULES) tally[r] = { checked: 0, fails: [] };
   const check = (rule, cond, msg) => { tally[rule].checked++; if (!cond) tally[rule].fails.push(msg); };
@@ -150,7 +178,7 @@ export function verify(record) {
   // digest - integrity since export, not identity
   const hex = need(dig, 'hex', 'digest');
   check('digest', /^[0-9a-f]{64}$/.test(hex), 'digest.hex is not 64 hex chars');
-  check('digest', digestOf(record) === hex, 'digest does not recompute over the canonical package');
+  check('digest', sha256hex(canonical(digestBody(record))) === hex, 'digest does not recompute over the canonical package');
 
   // consent - the fixed text, the one licence, a real subset of the scopes
   const consent = need(record, 'consent', 'package');
@@ -298,6 +326,62 @@ export function verify(record) {
   return { tally, notes, signature, summary: { byKind, traces, sims: [...sims].sort(), samples, episodes: Array.isArray(episodes) ? episodes.length : 0 } };
 }
 
+// the browser's sha256 is async: compute the one digest verify() asks for
+// with subtle.digest first, then run the same synchronous rules over it
+async function verifyAsync(record, subtle, recoverAddress) {
+  let body = null, digestHex = null;
+  if (record !== null && typeof record === 'object') {
+    body = canonical(digestBody(record));
+    const bytes = new Uint8Array(await subtle.digest('SHA-256', new TextEncoder().encode(body)));
+    digestHex = Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
+  }
+  return verify(record, (s) => {
+    if (s !== body) throw new Error('verifyAsync: a digest was asked of a body it did not compute');
+    return digestHex;
+  }, recoverAddress);
+}
+
+// the lines the CLI prints for one result, in order; err marks stderr
+function report(result) {
+  const { tally, notes, signature, summary } = result;
+  const lines = [];
+  for (const [rule, t] of Object.entries(tally)) {
+    const line = `${rule}: checked ${t.checked}, failing ${t.fails.length}`;
+    if (t.fails.length) { lines.push({ err: true, text: `FAIL ${line}` }); for (const f of t.fails) lines.push({ err: true, text: `     ${f}` }); }
+    else lines.push({ err: false, text: `ok ${line}` });
+  }
+  for (const n of notes) lines.push({ err: false, text: `note ${n}` });
+  lines.push({ err: false, text: `signature: ${signature.line}` });
+  const kinds = Object.keys(summary.byKind).sort().map((k) => `${k} ${summary.byKind[k]}`).join(', ');
+  lines.push({ err: false, text: `summary: ${summary.episodes} episodes (${kinds === '' ? 'none' : kinds}), ${summary.traces} trace(s) attached `
+    + `holding ${summary.samples} samples, ${summary.sims.length} sim(s) covered${summary.sims.length ? ' (' + summary.sims.join(', ') + ')' : ''}` });
+  lines.push({ err: false, text: LAST_LINE });
+  return lines;
+}
+function failed(result) { return Object.values(result.tally).some((t) => t.fails.length > 0); }
+// a thrown error, as the CLI names it: a missing field is record.fields
+function errorLine(e) { return e instanceof Missing ? `FAIL record.fields: ${e.message}` : `FAIL verify: ${e.message}`; }
+
+return { Missing, need, canonical, digestBody, signatureMessage, SIGNATURE_SCHEME, SIGNED_ATTESTATION, UNSIGNED_ATTESTATION,
+  RULES, LAST_LINE, verify, verifyAsync, report, failed, errorLine };
+}
+/* CONTRIB_CORE:END */
+
+const CORE = contribCore(REGS);
+const sha256hex = (s) => createHash('sha256').update(Buffer.from(s, 'utf8')).digest('hex');
+export const need = CORE.need;
+export const canonical = CORE.canonical;
+export const digestBody = CORE.digestBody;
+export function digestOf(record) { return sha256hex(canonical(digestBody(record))); }
+export const SIGNATURE_SCHEME = CORE.SIGNATURE_SCHEME;
+export const SIGNED_ATTESTATION = CORE.SIGNED_ATTESTATION;
+export const UNSIGNED_ATTESTATION = CORE.UNSIGNED_ATTESTATION;
+export const signatureMessage = CORE.signatureMessage;
+export const LAST_LINE = CORE.LAST_LINE;
+export { contribCore };
+/** the rules over one package, synchronous, with node's sha256 and the sign-in page's recovery */
+export function verify(record) { return CORE.verify(record, sha256hex, recoverAddress); }
+
 const isMain = process.argv[1] && new URL(`file://${process.argv[1]}`).pathname === new URL(import.meta.url).pathname;
 if (isMain) {
   const path = process.argv[2];
@@ -305,22 +389,12 @@ if (isMain) {
   let failed = false;
   try {
     const record = JSON.parse(readFileSync(path, 'utf8'));
-    const { tally, notes, signature, summary } = verify(record);
-    for (const [rule, t] of Object.entries(tally)) {
-      const line = `${rule}: checked ${t.checked}, failing ${t.fails.length}`;
-      if (t.fails.length) { failed = true; console.error(`FAIL ${line}`); for (const f of t.fails) console.error(`     ${f}`); }
-      else console.log(`ok ${line}`);
-    }
-    for (const n of notes) console.log(`note ${n}`);
-    console.log(`signature: ${signature.line}`);
-    const kinds = Object.keys(summary.byKind).sort().map((k) => `${k} ${summary.byKind[k]}`).join(', ');
-    console.log(`summary: ${summary.episodes} episodes (${kinds === '' ? 'none' : kinds}), ${summary.traces} trace(s) attached `
-      + `holding ${summary.samples} samples, ${summary.sims.length} sim(s) covered${summary.sims.length ? ' (' + summary.sims.join(', ') + ')' : ''}`);
-    console.log(LAST_LINE);
+    const result = verify(record);
+    failed = CORE.failed(result);
+    for (const l of CORE.report(result)) (l.err ? console.error : console.log)(l.text);
   } catch (e) {
     failed = true;
-    if (e instanceof Missing) console.error(`FAIL record.fields: ${e.message}`);
-    else console.error(`FAIL verify: ${e.message}`);
+    console.error(CORE.errorLine(e));
   }
   process.exit(failed ? 1 : 0);
 }

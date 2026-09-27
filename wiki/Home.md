@@ -49,6 +49,26 @@ content graph and details:
 | **Sign-in** (`web/trade_craft_signin.html`) | 5 sign-in methods, 2 that work here and 3 issuer adapters that are off because an authorization-code exchange needs a server holding a client secret — and 0 of the 5 authenticate anybody or gate anything | [Sign-In](Sign-In.md) |
 | **The emotional-intelligence layer** (`ei/registry/ei.json`) | 59 records binding 9 of the advisors to what they may do when a learner is struggling — 12 responses each with a stop condition, 11 red lines, a 5-rung ladder that names resource TYPES and no contact detail at all, and 0 of 59 records read by a clinician | [Emotional-Intelligence](Emotional-Intelligence.md) |
 
+## The processes
+
+What a learner or a union rep *does* with the bundle, step by step, each page
+with its screenshots, the command that checks it offline and that command's
+real output, captured when the page was built:
+
+| Process | Page |
+|---|---|
+| export a `tc-completion/1` record from the progress page | [Completion-Record](Completion-Record.md) |
+| a union rep checks a record offline | [Verify-A-Record](Verify-A-Record.md) |
+| share recorded episodes under consent, as a file | [Contribute](Contribute.md) |
+| the agent networks a contribution could go to - none integrated | [Protocols](Protocols.md) |
+| a crew from several unions, checked from each member's own record | [Work-Sites](Work-Sites.md) |
+| what a record evidences against the bundle's own rules | [Compliance-Ledger](Compliance-Ledger.md) |
+| the episode log read back as sessions | [Sessions](Sessions.md) |
+| training rooms composed from what the bundle holds | [Custom-Spaces](Custom-Spaces.md) |
+| the front door, and where each card leads | [Site-Navigation](Site-Navigation.md) |
+
+**The loop.** [Completion-Record](Completion-Record.md) (export your progress) -> [Verify-A-Record](Verify-A-Record.md) (a rep checks it) -> [Contribute](Contribute.md) (share the episodes behind it, if you choose). [Work-Sites](Work-Sites.md) -> [Verify-A-Record](Verify-A-Record.md) for a crew. [Sessions](Sessions.md) and [Compliance-Ledger](Compliance-Ledger.md) read the same files.
+
 ## The districts at a glance
 
 ```mermaid

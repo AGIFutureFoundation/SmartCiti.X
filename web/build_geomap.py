@@ -20,6 +20,7 @@ HERE = pathlib.Path(__file__).resolve().parent
 ROOT = HERE.parent
 sys.path.insert(0, str(HERE))
 from staleness import emit  # noqa: E402
+from sitenav import nav_html, labels as nav_labels, NAV_CSS  # noqa: E402
 from groundtruth import GROUND_TRUTH_JS  # noqa: E402
 
 network = json.load(open(ROOT / 'geo/registry/network.geojson'))
@@ -253,6 +254,8 @@ DATA = json.dumps({
     },
 }, ensure_ascii=False, separators=(',', ':'))
 
+NAV = nav_html('web/trade_craft_geomap.html', nav_labels('en'))
+
 page = '''<!doctype html>
 <html lang="en">
 <head>
@@ -268,13 +271,18 @@ page = '''<!doctype html>
 }
 *{box-sizing:border-box}
 html,body{height:100%}
+/* the site nav sits in flow above the map; #stage holds everything the
+   map page positions, and its transform makes it the containing block
+   for the bar, panels and legend, so they anchor below the nav */
+body{display:flex;flex-direction:column}
+#stage{position:relative;flex:1 1 auto;min-height:0;transform:translateZ(0)}
 body{margin:0;background:var(--plate);color:var(--ink);
   font:14px/1.5 "IBM Plex Sans",system-ui,sans-serif;overflow:hidden}
 #bar{position:fixed;top:0;left:0;right:0;z-index:5;display:flex;flex-wrap:wrap;
   gap:8px 14px;align-items:center;padding:10px 16px;
   background:color-mix(in oklab, var(--plate) 88%, transparent);
   border-bottom:2px solid var(--mark);backdrop-filter:blur(6px)}
-#bar .brand{font:700 19px/1 "Barlow Condensed",system-ui,sans-serif;white-space:nowrap}
+#bar .brand{margin:0;font:700 19px/1 "Barlow Condensed",system-ui,sans-serif;white-space:nowrap}
 #bar .brand .x{color:var(--mark)}
 #bar a{color:var(--steel);text-decoration:none;font-size:13px}
 .barbtn{background:var(--panel);color:var(--ink);border:1px solid var(--rule);
@@ -292,13 +300,13 @@ body{margin:0;background:var(--plate);color:var(--ink);
 .dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-inline-end:5px}
 .campus-marker{background:var(--mark);color:#12181B;border-radius:999px;
   padding:2px 9px;font:600 12px "Barlow Condensed",sans-serif;white-space:nowrap;
-  border:1.5px solid #12181B;cursor:pointer}
+  border:1.5px solid #12181B;cursor:pointer;z-index:3}
 .candidate-marker{background:transparent;color:var(--muted);border-radius:999px;
   padding:1px 8px;font:600 11px "Barlow Condensed",sans-serif;white-space:nowrap;
   border:1.5px dashed var(--muted);cursor:pointer}
 .restoration-marker{background:var(--good);color:#0C1113;border-radius:999px;
   padding:2px 9px;font:600 12px "Barlow Condensed",sans-serif;white-space:nowrap;
-  border:1.5px solid #0C1113;cursor:pointer}
+  border:1.5px solid #0C1113;cursor:pointer;z-index:2}
 .restoration-marker.env-monitoring{background:var(--steel)}
 .maplibregl-popup-content{background:var(--panel)!important;color:var(--ink)!important;
   border:1px solid var(--rule);border-radius:9px;font:12.5px/1.45 "IBM Plex Sans",sans-serif;
@@ -313,7 +321,7 @@ body{margin:0;background:var(--plate);color:var(--ink);
 .roll{margin:4px 0 0;padding:0;list-style:none;font-size:11.5px;color:var(--muted)}
 .roll b{color:var(--ink)}
 .panel{position:fixed;top:58px;right:14px;z-index:6;width:min(380px,calc(100vw - 28px));
-  max-height:calc(100vh - 130px);overflow:auto;display:none;
+  max-height:calc(100% - 130px);overflow:auto;display:none;
   background:color-mix(in oklab, var(--panel) 94%, transparent);
   border:1px solid var(--rule);border-radius:9px;padding:10px 14px;font-size:12.5px}
 .panel.open{display:block}
@@ -331,10 +339,12 @@ body{margin:0;background:var(--plate);color:var(--ink);
 .anchor-swatch.auth{background:#12181B;border:1.5px solid var(--steel)}
 @media(pointer:coarse){.barbtn{min-height:42px}#honesty{display:none}}
 </style>
+<style>__SITENAV_CSS__</style>
 </head>
 <body>
+__SITENAV__<div id="stage">
 <div id="bar">
-  <span class="brand">SmartCiti<span class="x">.X</span> : Trade Craft Academy</span>
+  <h1 class="brand">SmartCiti<span class="x">.X</span> : Trade Craft Academy</h1>
   <a href="trade_craft_3d.html">⬡ 3D environment</a>
   <a href="trade_craft_interactive.html">▦ interactive map</a>
   <button class="barbtn" data-fit="network">⌂ Network</button>
@@ -369,6 +379,7 @@ body{margin:0;background:var(--plate);color:var(--ink);
   <span style="display:inline-block;width:9px;height:9px;border:1px solid var(--muted);border-radius:2px;margin-inline-end:5px;vertical-align:-1px"></span><span title="__GEOPOSE_HONESTY__">every campus, anchor and pinned restoration marker on this map also holds a <b>GeoPose 1.0</b> pose (__N_POSES__ total — __N_CLAIMED__ claimed standard / __N_NOTCLAIMED__ not-claimed OMBI shapes; click a marker for its own pose line; hover for the height/heading honesty line)</span>
 </div>
 <div id="honesty"></div>
+</div>
 <script id="data" type="application/json">__DATA__</script>
 <script src="vendor/maplibre/maplibre-gl.js"></script>
 <script>
@@ -454,13 +465,14 @@ map.addControl(new maplibregl.NavigationControl({ showCompass: false }));
 
 /* campus labels as DOM markers - no glyph server needed */
 let markers = 0;
+const campusLabels = [];
 for (const f of D.network.features.filter((x) => x.properties.slug)) {
   const el = document.createElement('div');
   el.className = 'campus-marker';
   el.textContent = f.properties.name;
   el.addEventListener('click', (ev) => { ev.stopPropagation(); popupFor(f); });
-  new maplibregl.Marker({ element: el, anchor: 'bottom', offset: [0, -10] })
-    .setLngLat(f.geometry.coordinates).addTo(map);
+  campusLabels.push({ el, m: new maplibregl.Marker({ element: el, anchor: 'bottom', offset: [0, -10] })
+    .setLngLat(f.geometry.coordinates).addTo(map) });
   markers++;
 }
 
@@ -499,10 +511,48 @@ for (const s of D.restorationSites) {
   el.className = 'restoration-marker' + (s.category === 'environmental-monitoring' ? ' env-monitoring' : '');
   el.textContent = s.name;
   el.addEventListener('click', (ev) => { ev.stopPropagation(); popupForRestoration(s); });
-  new maplibregl.Marker({ element: el, anchor: 'bottom', offset: [0, -10] })
+  /* hung BELOW its point: a site that shares a campus's coordinates (Treasure
+     Island) would otherwise sit on the campus label and swallow its clicks */
+  new maplibregl.Marker({ element: el, anchor: 'top', offset: [0, 10] })
     .setLngLat([s.lng, s.lat]).addTo(map);
   restMarkers++;
 }
+
+/* campus labels that collide at the current zoom (Treasure Island and Oakland
+   Waterfront sit a few kilometres apart, one pixel apart at the opening zoom)
+   would leave one campus unclickable. Each label tries above its dot, then
+   below, right and left, and takes the first slot that overlaps no label
+   already placed and no restoration marker. When restoration markers fill
+   every slot (the Bay at the opening zoom), it takes the first slot clear of
+   other campus labels: campus labels stack above restoration markers, so only
+   another campus label can take a campus's clicks. Only the label moves: the
+   dot in the campuses layer stays on the campus's own coordinates. A label
+   with no slot clear of other campus labels keeps its first slot, and the
+   browser smoke reports it. */
+function placeCampusLabels() {
+  const hit = (r, q) => r.left < q.right && q.left < r.right && r.top < q.bottom && q.top < r.bottom;
+  const rest = [...document.querySelectorAll('.restoration-marker')].map((e) => e.getBoundingClientRect());
+  const placed = [];
+  for (const c of campusLabels) {
+    c.m.setOffset([0, -10]);
+  }
+  for (const c of campusLabels) {
+    const w = c.el.offsetWidth, h = c.el.offsetHeight;
+    const slots = [[0, -10], [0, 10 + h], [w / 2 + 12, h / 2], [-(w / 2 + 12), h / 2]];
+    let clearOfAll = null, clearOfCampus = null;
+    for (const o of slots) {
+      c.m.setOffset(o);
+      const r = c.el.getBoundingClientRect();
+      if (placed.some((q) => hit(r, q))) continue;
+      if (clearOfCampus === null) clearOfCampus = o;
+      if (!rest.some((q) => hit(r, q))) { clearOfAll = o; break; }
+    }
+    c.m.setOffset(clearOfAll !== null ? clearOfAll : clearOfCampus !== null ? clearOfCampus : slots[0]);
+    placed.push(c.el.getBoundingClientRect());
+  }
+}
+map.on('load', placeCampusLabels);
+map.on('zoomend', placeCampusLabels);
 // the spatial fabric's own pose for this exact point, when one exists —
 // campus/anchor features carry it inline (properties.geopose, joined at
 // build time); a restoration site's is looked up by ref, computed the
@@ -767,6 +817,7 @@ out = HERE / 'trade_craft_geomap.html'
 _n_hub = sum(1 for c in geo['campuses'].values() if c['provenance'] == 'AUTHORED')
 _n_flag = len(geo['campuses']) - _n_hub
 assert _n_hub > 0 and _n_flag > 0
+page = page.replace('__SITENAV_CSS__', NAV_CSS).replace('__SITENAV__', NAV)
 page = (page.replace('__N_FLAGSHIP__', str(_n_flag)).replace('__N_HUB__', str(_n_hub))
         .replace('__N_POSES__', str(spatial['counts']['total']))
         .replace('__N_CLAIMED__', str(len(_spatial_claimed)))

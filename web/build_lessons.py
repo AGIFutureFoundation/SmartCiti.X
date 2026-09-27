@@ -43,6 +43,7 @@ import sys
 HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from staleness import emit  # noqa: E402
+from sitenav import nav_html, labels as nav_labels, NAV_CSS  # noqa: E402
 
 
 def _pack_root():
@@ -713,6 +714,8 @@ const asked = new URLSearchParams(location.search).get('hall');
 setCourse(asked === null ? '' : asked);
 '''
 
+NAV = nav_html('web/trade_craft_lessons.html', nav_labels('en'))
+
 page = f'''<!doctype html>
 <html lang="en">
 <head>
@@ -849,9 +852,10 @@ footer.page{{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0;
   color:var(--muted);font-size:14px}}
 footer.page a{{margin-inline-end:10px}}
 </style>
+<style>{NAV_CSS}</style>
 </head>
 <body>
-<div class="wrap">
+{NAV}<div class="wrap">
 
 <header class="page">
   <h1>{E(PRODUCT.split("(")[0].strip())} — <span class="x">lessons</span></h1>

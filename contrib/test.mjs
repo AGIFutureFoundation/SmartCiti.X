@@ -205,4 +205,30 @@ const restamped = JSON.parse(JSON.stringify(edited)); restamped.digest.hex = dig
 ok('an episode edited under a valid signature fails digest (the bytes moved); restamping the digest to hide it moves the failure to contributor.signature (the signed message names the old digest)',
   failsBy(edited).join() === 'digest' && failsBy(restamped).join() === 'contributor.signature', [failsBy(edited).join(), failsBy(restamped).join()]);
 
+
+/* ---- one core, two shells: the rules the verify page carries ---- */
+{
+  const V = await import('./verify.mjs');
+  const { webcrypto } = await import('node:crypto');
+  const { recoverAddress } = await import('../auth/recover.mjs');
+  const src = readFileSync(url('./verify.mjs'), 'utf8');
+  const a = src.indexOf('/* CONTRIB_CORE:BEGIN'), b = src.indexOf('/* CONTRIB_CORE:END */');
+  const block = a >= 0 && b > a ? src.slice(a, b) : '';
+  const pure = block.includes('function contribCore(regs) {') && !/\bfetch\b|XMLHttpRequest|sendBeacon|WebSocket|localStorage|sessionStorage|indexedDB|readFileSync|createHash|\bimport\s*\(|^\s*(import|export)\b|\?\?/m.test(block);
+  const regs = Object.fromEntries(Object.entries(V.REGISTRY_FILES).map(([k, p]) => [k, JSON.parse(readFileSync(url('../' + p), 'utf8'))]));
+  const core = V.contribCore(regs);
+  const failsOf = async (rec, useAsync) => {
+    try {
+      const r = useAsync ? await core.verifyAsync(rec, webcrypto.subtle, recoverAddress) : V.verify(rec);
+      return Object.keys(r.tally).filter((k) => r.tally[k].fails.length).join();
+    } catch (e) { return 'threw: ' + e.message; }
+  };
+  const inputs = ['fixture/good.json', ...Object.values(reg.fixture.mutants).map((m) => m.file)];
+  const diverge = [];
+  for (const f of inputs) { const rec = read('./' + f); const s = await failsOf(rec, false), x = await failsOf(rec, true); if (s !== x) diverge.push(f + ': ' + s + ' vs ' + x); }
+  ok('the rules live in one pure core between the CONTRIB_CORE markers (no file, network, storage, module statement or ??) that web/build_verify.py carries into the verify page, '
+    + 'and its verifyAsync over webcrypto.subtle - the browser path - fails the fixture and every mutant exactly as verify() does (' + inputs.length + ' files)',
+    pure && diverge.length === 0 && core.LAST_LINE === V.LAST_LINE, diverge);
+}
+
 console.log(`\ncontrib: ${n} checks, 0 failures`);

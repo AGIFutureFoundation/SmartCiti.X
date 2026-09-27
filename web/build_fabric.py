@@ -58,6 +58,7 @@ import urllib.parse
 HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from staleness import emit  # noqa: E402
+from sitenav import nav_html, labels as nav_labels, NAV_CSS  # noqa: E402
 
 
 def _root():
@@ -988,6 +989,8 @@ const som = document.getElementById('som');
 }
 '''
 
+NAV = nav_html('web/trade_craft_fabric.html', nav_labels('en'))
+
 page = f'''<!doctype html>
 <html lang="en">
 <head>
@@ -996,9 +999,10 @@ page = f'''<!doctype html>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230C1113'/%3E%3Cpath d='M7 21 L16 7 L25 21 Z' fill='none' stroke='%23E8A33D' stroke-width='2.6' stroke-linejoin='round'/%3E%3Cpath d='M11 21 h10' stroke='%2341C4D4' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E">
 <title>{E(PRODUCT.split("(")[0].strip())} — spatial fabric</title>
 <style>{CSS}</style>
+<style>{NAV_CSS}</style>
 </head>
 <body>
-<div class="wrap">
+{NAV}<div class="wrap">
 
 <header class="page">
   <h1>{E(PRODUCT.split("(")[0].strip())} — <span class="x">spatial fabric, loaded</span></h1>

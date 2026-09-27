@@ -14,6 +14,8 @@ guard: a generated page that nobody regenerates is a page that lies.
 """
 import json
 import pathlib
+import re
+import subprocess
 import sys
 
 HERE = pathlib.Path(__file__).resolve().parent
@@ -122,6 +124,8 @@ def page_home():
         f'| [{d["name"]}](District-{k}.md) | {d["tagline"]} | {len(d["halls"])} |'
         for k, d in districts.items())
     langs = ' · '.join(c['language'] for c in LOCALES.values())
+    process_rows = '\n'.join(
+        f'| {PROCESS_BLURB[k]} | [{k[:-3]}]({k}) |' for k in PROCESS_PAGES)
     graph_edges = '\n'.join(
         f'  campus --> {mermaid_id(k)}["{d["name"]}<br/>{len(d["halls"])} halls"]'
         f'\n  click {mermaid_id(k)} "District-{k}.md"'
@@ -176,6 +180,18 @@ content graph and details:
 | **The lessons page** (`web/trade_craft_lessons.html`) | the {lessons['counts']['lessons']} walkable lessons and {lessons['counts']['steps']} steps finally drawn for a learner to work from, limits above the first lesson and the ladder rendered as advice that locks nothing — the page that took `lessons/registry/lessons.json` off the declared-and-unbuilt list | [Lessons-Page](Lessons-Page.md) |
 | **Sign-in** (`web/trade_craft_signin.html`) | {auth['counts']['methods']} sign-in methods, {auth['counts']['configured_true']} that work here and {auth['counts']['configured_false']} issuer adapters that are off because an authorization-code exchange needs a server holding a client secret — and {auth['counts']['methods_that_authenticate']} of the {auth['counts']['methods']} authenticate anybody or gate anything | [Sign-In](Sign-In.md) |
 | **The emotional-intelligence layer** (`ei/registry/ei.json`) | {ei['counts']['records']} records binding {ei['counts']['agent_bindings']} of the advisors to what they may do when a learner is struggling — {ei['counts']['responses']} responses each with a stop condition, {ei['counts']['red_lines']} red lines, a {ei['counts']['handoff_rungs']}-rung ladder that names resource TYPES and no contact detail at all, and {ei['counts']['clinician_reviewed_records']} of {ei['counts']['records']} records read by a clinician | [Emotional-Intelligence](Emotional-Intelligence.md) |
+
+## The processes
+
+What a learner or a union rep *does* with the bundle, step by step, each page
+with its screenshots, the command that checks it offline and that command's
+real output, captured when the page was built:
+
+| Process | Page |
+|---|---|
+{process_rows}
+
+{LOOP}
 
 ## The districts at a glance
 
@@ -3502,6 +3518,844 @@ it. {up_first(hon['the_clusters_depend_on_a_threshold'])}
 {FOOTER}"""
 
 
+# =========================================================== the processes ===
+# Nine pages for the processes the bundle gained: exporting a record, checking
+# one offline, contributing, the protocol roster, work sites, the compliance
+# ledger, sessions, custom spaces and the way around the site. Three rules
+# hold them to the tree:
+#
+#   * every command's output on these pages is CAPTURED here, by running the
+#     pack's own verifier on the pack's own fixture - never pasted. A run that
+#     exits non-zero, prints FAIL, differs between two runs, or prints a date
+#     that is not in its own inputs (a clock leaking in) is refused by name;
+#   * every limit is QUOTED from the registry's own honesty block at build
+#     time; check_process_pages() fails if one is missing from its page or if
+#     a honesty sentence is typed into this file;
+#   * every image a page names must exist under wiki/img/, or main() refuses
+#     by name before writing a page (fail closed).
+completion_reg = json.load(open(ROOT / 'completion/registry/completion.json'))
+contrib_reg = json.load(open(ROOT / 'contrib/registry/contrib.json'))
+worksites_reg = json.load(open(ROOT / 'worksites/registry/worksites.json'))
+compliance_reg = json.load(open(ROOT / 'compliance/registry/compliance.json'))
+sessions_reg = json.load(open(ROOT / 'sessions/registry/sessions.json'))
+protocols_reg = json.load(open(ROOT / 'protocols/registry/protocols.json'))
+spaces_reg = json.load(open(ROOT / 'spaces/registry/spaces.json'))
+PROC_REGS = {
+    'completion': ('completion/registry/completion.json', completion_reg),
+    'contrib': ('contrib/registry/contrib.json', contrib_reg),
+    'worksites': ('worksites/registry/worksites.json', worksites_reg),
+    'compliance': ('compliance/registry/compliance.json', compliance_reg),
+    'sessions': ('sessions/registry/sessions.json', sessions_reg),
+    'protocols': ('protocols/registry/protocols.json', protocols_reg),
+    'spaces': ('spaces/registry/spaces.json', spaces_reg),
+}
+
+
+class Refused(Exception):
+    """The builder will not write a page it cannot stand behind."""
+
+
+def dig(node, path, where):
+    """Read `a.b[2].c` out of a registry; a missing key refuses by name."""
+    for part in re.findall(r'[^.\[\]]+|\[\d+\]', path):
+        if part.startswith('['):
+            i = int(part[1:-1])
+            if not isinstance(node, list) or i >= len(node):
+                raise Refused(f'{where}#{path}: index {part} is not there')
+            node = node[i]
+        else:
+            if not isinstance(node, dict) or part not in node:
+                raise Refused(f'{where}#{path}: key {part!r} is not there')
+            node = node[part]
+    return node
+
+
+# The honest limits each page quotes, as (registry, path under honesty). The
+# page renders every one verbatim; the check reads them back off the page.
+HONESTY = {
+    'Completion-Record.md': [('completion', p) for p in (
+        'does_not_prove', 'digest', 'signature', 'accreditation')],
+    'Verify-A-Record.md': [('completion', 'digest'), ('completion', 'accreditation'),
+                           ('contrib', 'does_not_prove'),
+                           ('worksites', 'not_a_certification'),
+                           ('sessions', 'reading')],
+    'Contribute.md': [('contrib', p) for p in (
+        'does_not_prove', 'nothing_sent', 'no_agent_trained', 'anonymous',
+        'digest', 'signature')],
+    'Protocols.md': [('protocols', p) for p in (
+        'status', 'no_backend', 'nothing_integrates', 'descriptions_may_be_wrong',
+        'unidentified_are_unidentified', 'wallets', 'what_would_make_one_real')],
+    'Work-Sites.md': [('worksites', p) for p in (
+        'authored', 'no_multi_user', 'not_a_certification', 'unverified',
+        'not_a_permit', 'not_stated', 'ppe')],
+    'Compliance-Ledger.md': [('compliance', p) for p in (
+        'is', 'is_not', 'signoff', 'signature', 'self_reported')],
+    'Sessions.md': [('sessions', p) for p in (
+        'reading', 'not_recorded', 'seat_time', 'no_step_done', 'scripted',
+        'device_local', 'schematic', 'gap', 'order', 'fixture')],
+    'Custom-Spaces.md': [('spaces', p) for p in (
+        'status', 'composed_only_from', 'cost', 'envelope', 'footprints',
+        'not_stated', 'ppe')],
+    'Site-Navigation.md': [('contrib', 'nothing_sent'),
+                           ('worksites', 'no_multi_user'),
+                           ('spaces', 'status')],
+}
+
+
+def honesty_texts(reg, path):
+    """The sentence(s) at honesty.<path>, as a list of strings."""
+    rel, doc = PROC_REGS[reg]
+    v = dig(dig(doc, 'honesty', rel), path, rel + '#honesty')
+    vals = v if isinstance(v, list) else [v]
+    if not vals or not all(isinstance(x, str) and x.strip() for x in vals):
+        raise Refused(f'{rel}#honesty.{path} is not a non-empty sentence or list of them')
+    return vals
+
+
+def limits(page):
+    """The page's honest limits, each quoted verbatim with where it is read."""
+    out = []
+    for reg, path in HONESTY[page]:
+        rel = PROC_REGS[reg][0]
+        body = '\n'.join(f'> - {t}' if len(honesty_texts(reg, path)) > 1 else f'> {t}'
+                         for t in honesty_texts(reg, path))
+        out.append(f'`{rel}#honesty.{path}`:\n\n{body}')
+    return ('## The honest limits\n\nQuoted from the registry at build time, '
+            'never retyped:\n\n' + '\n\n'.join(out))
+
+
+# ---- the images ------------------------------------------------------------
+# Screenshots are captured in a real browser by the smoke harness. `synthetic`
+# marks a capture that shows learner state: the harness injects that state,
+# so the caption says so rather than let it pass for a learner's.
+SHOTS = {
+    'process-front-door.png': ('The front door, `index.html`: the cards a visitor starts from', False),
+    'process-progress-completion.png': ('The progress page, at *Carry your record off this device*', True),
+    'process-progress-sessions.png': ('The progress page, at *Sessions*', True),
+    'process-contribute.png': ('The contribute page, `web/trade_craft_contribute.html`', True),
+    'process-spaces.png': ('The custom spaces page, `web/trade_craft_spaces.html`', False),
+    'process-worksites.png': ('The work sites page, `web/trade_craft_worksites.html`', False),
+    'process-map-layers.png': ('The layered campus map, with a hall opened on its training panel', False),
+    'process-interactive-lessons.png': ('The interactive map, with the lessons layer on', False),
+    'process-geomap-rollups.png': ('The network geomap, with a pin opened on what it holds', False),
+    'process-3d-restoration.png': ('The walkable world, at a Bay Restoration site', False),
+    'process-3d-sim.png': ('The walkable world, in a training seat', False),
+    'process-verify.png': ('The verify page', True),
+}
+SYNTHETIC_NOTE = ('The learner data in this capture is synthetic, injected by '
+                  'the smoke harness - not a learner\'s record.')
+
+
+def shot(name):
+    if name not in SHOTS:
+        raise Refused(f'img/{name} is not declared in SHOTS')
+    alt, synthetic = SHOTS[name]
+    cap = alt + ('. ' + SYNTHETIC_NOTE if synthetic else '.')
+    return f'![{alt}](img/{name})\n\n*{cap}*'
+
+
+def missing_images(pages):
+    """Every `](img/...)` a page names that is not a file under wiki/img/."""
+    miss = []
+    for name, text in pages.items():
+        for ref in re.findall(r'\]\((img/[^)\s]+)\)', text):
+            if not (HERE / ref).is_file():
+                miss.append((ref, name))
+    return miss
+
+
+# ---- the commands ------------------------------------------------------------
+_RUNS = {}
+_DATE = re.compile(r'\d{4}-\d{2}-\d{2}(?:T\d{2}:\d{2}:\d{2}(?:\.\d+)?Z)?')
+
+
+def run(shown, argv, inputs, expect_fail=None):
+    """Run a verifier from the pack root and return its captured output.
+
+    `shown` is the command as a reader types it; `argv` what is executed (a
+    shell glob in `shown` is expanded here, sorted, as a shell would). The
+    output is refused by name if it varies between two runs, if it prints a
+    date that none of `inputs` contains (a clock leaking in), or if a good
+    fixture does not pass. `expect_fail` names the rule a mutant must fail.
+    """
+    if shown in _RUNS:
+        return _RUNS[shown]
+    outs = []
+    for _ in range(2):
+        p = subprocess.run(['node', *argv], cwd=ROOT, stdout=subprocess.PIPE,
+                           stderr=subprocess.STDOUT, text=True, timeout=120)
+        outs.append((p.returncode, p.stdout))
+    if outs[0] != outs[1]:
+        raise Refused(f'`{shown}` printed different output on two runs - time-varying, not embedded')
+    code, out = outs[0]
+    corpus = ''.join((ROOT / f).read_text() for f in inputs)
+    leaked = sorted({d for d in _DATE.findall(out) if d not in corpus})
+    if leaked:
+        raise Refused(f'`{shown}` printed {", ".join(leaked)}, which is in none of its '
+                      f'inputs ({", ".join(inputs)}) - a clock, not a fixture')
+    if expect_fail is None:
+        if code != 0 or re.search(r'^FAIL', out, re.M):
+            raise Refused(f'`{shown}` did not pass on the pack\'s own good fixture (exit {code})')
+    else:
+        if code != 1 or not re.search(rf'^FAIL {re.escape(expect_fail)}', out, re.M):
+            raise Refused(f'`{shown}` did not fail {expect_fail} by name (exit {code})')
+    _RUNS[shown] = (code, out.rstrip('\n'))
+    return _RUNS[shown]
+
+
+def rundoc(shown, argv, inputs, expect_fail=None):
+    code, out = run(shown, argv, inputs, expect_fail)
+    return (f'```text\n$ {shown}\n{out}\n```\n\nExit status **{code}**, '
+            'captured when this page was built.')
+
+
+def cmd_completion():
+    f = 'completion/' + completion_reg['fixture']['good']
+    return ('node completion/verify.mjs ' + f, ['completion/verify.mjs', f],
+            [f, 'completion/registry/completion.json'])
+
+
+def cmd_completion_mutant():
+    rel, rule = next(iter(completion_reg['fixture']['mutants'].items()))
+    f = 'completion/' + rel
+    return ('node completion/verify.mjs ' + f, ['completion/verify.mjs', f],
+            [f, 'completion/registry/completion.json'], rule)
+
+
+def cmd_contrib():
+    f = 'contrib/' + contrib_reg['fixture']['good']
+    return ('node contrib/verify.mjs ' + f, ['contrib/verify.mjs', f],
+            [f, 'contrib/registry/contrib.json'])
+
+
+def cmd_worksites():
+    site = worksites_reg['fixture']['site']
+    d = 'worksites/' + worksites_reg['fixture']['good']
+    files = sorted(str(p.relative_to(ROOT)) for p in (ROOT / d).glob('*.json'))
+    if not files:
+        raise Refused(f'{d} holds no records')
+    return (f'node worksites/verify.mjs {site} {d}*.json',
+            ['worksites/verify.mjs', site, *files],
+            [*files, 'worksites/registry/worksites.json'])
+
+
+def cmd_compliance():
+    f = compliance_reg['fixture']['good_from']
+    return ('node compliance/verify.mjs ' + f, ['compliance/verify.mjs', f],
+            [f, 'compliance/registry/compliance.json'])
+
+
+def cmd_sessions():
+    f = 'sessions/' + sessions_reg['fixture']['good']
+    return ('node sessions/verify.mjs ' + f, ['sessions/verify.mjs', f],
+            [f, 'sessions/registry/sessions.json'])
+
+
+def page_ui_label(page, el_id):
+    """A control's own label, read out of the built page by its id."""
+    html = (ROOT / page).read_text()
+    m = re.search(rf'<button id="{re.escape(el_id)}"[^>]*>([^<]+)</button>', html)
+    if not m:
+        raise Refused(f'{page} has no button #{el_id}; the steps on this page name it')
+    return m.group(1).strip()
+
+
+def page_heading(page, text):
+    html = (ROOT / page).read_text()
+    if f'<h2>{text}</h2>' not in html:
+        raise Refused(f'{page} has no section headed {text!r}; the steps on this page send a reader there')
+    return text
+
+
+VERIFY_PAGE = 'web/trade_craft_verify.html'
+
+
+def verify_page_line():
+    """The verify page is named only if the tree holds it."""
+    p = ROOT / VERIFY_PAGE
+    if not p.is_file():
+        return ('The verify page is not in this tree at this build; the commands '
+                'below are the whole check, and they need no page.')
+    m = re.search(r'<title>([^<]+)</title>', p.read_text())
+    t = m.group(1).strip() if m else VERIFY_PAGE
+    return (f'The same checks run in the browser on [`{VERIFY_PAGE}`](../{VERIFY_PAGE}) '
+            f'(*{t}*): give it the file and read what it reports. The '
+            'commands below are the reference, and they need no page.')
+
+
+LOOP = ('**The loop.** [Completion-Record](Completion-Record.md) (export your '
+        'progress) -> [Verify-A-Record](Verify-A-Record.md) (a rep checks it) -> '
+        '[Contribute](Contribute.md) (share the episodes behind it, if you '
+        'choose). [Work-Sites](Work-Sites.md) -> [Verify-A-Record](Verify-A-Record.md) '
+        'for a crew. [Sessions](Sessions.md) and '
+        '[Compliance-Ledger](Compliance-Ledger.md) read the same files.')
+
+
+# ------------------------------------------------------ completion record ---
+def page_completion_record():
+    R = completion_reg
+    ps = R['progress_source']
+    prog = 'web/trade_craft_progress.html'
+    carry = page_heading(prog, 'Carry your record off this device')
+    exp = page_ui_label(prog, 'expRecord')
+    sign = page_ui_label(prog, 'signRecord')
+    shown, argv, inputs = cmd_completion()
+    rules = ' · '.join(f'`{r}`' for r in R['verifier']['rules'])
+    c = R['counts']
+    return f'''# The completion record
+
+A completion record is a `{R["record_tag"]}` file a learner exports from the
+progress page: what they did in the walkable world, with the recorded
+episodes behind it, in a form a union rep can check offline without trusting
+the learner's device.
+
+{LOOP}
+
+## The process, for a learner
+
+1. **Train in the walkable world.** Pass a seat, clear a tool crib, mark a
+   station, work a lesson's steps. The world keeps this in `{ps["key"]}`, in the
+   {ps["where"]} - on this device only.
+2. **Open the progress page**, [`{prog}`](../{prog}), and go to
+   *{carry}*.
+3. **Press *{exp}*.** The page writes one `{R["record_tag"]}` file to your own
+   downloads, with a SHA-256 digest over its canonical form. Nothing is sent.
+4. **Optionally, *{sign}*.** This appears only with a connected wallet (see
+   [Sign-In](Sign-In.md)); the wallet signs the record's digest. Unsigned, the
+   record is attested by this device only.
+5. **Hand the file to your rep.** They check it offline:
+   [Verify-A-Record](Verify-A-Record.md).
+
+{shot("process-progress-completion.png")}
+
+## What the verifier checks
+
+`{R["verifier"]["run"]}` applies {len(R["verifier"]["rules"])} rules: {rules}.
+Of the registry's {c["lessons"]} lessons, {c["lessons_completable"]} can be
+completed from recorded evidence and {c["lessons_not_completable"]} cannot (a
+crew step no single device can record).
+
+## Check it offline
+
+On the pack's own fixture record (SCRIPTED, labelled not a learner):
+
+{rundoc(shown, argv, inputs)}
+
+{limits("Completion-Record.md")}
+{FOOTER}'''
+
+
+# --------------------------------------------------------- verify a record ---
+def page_verify_record():
+    rows = []
+    for tag, shown, argv, inputs, page in (
+            (completion_reg['record_tag'], *cmd_completion(), 'Completion-Record'),
+            (contrib_reg['record_tag'], *cmd_contrib(), 'Contribute'),
+            (completion_reg['record_tag'] + ', against the ledger', *cmd_compliance(), 'Compliance-Ledger'),
+            ('a training log or ' + contrib_reg['record_tag'], *cmd_sessions(), 'Sessions'),
+            ('N members\' records, one site', *cmd_worksites(), 'Work-Sites')):
+        code, out = run(shown, argv, inputs)
+        last = out.splitlines()[-1]
+        rows.append(f'| {tag} | `{shown}` | {code} | {last} | [{page}]({page}.md) |')
+    table = '\n'.join(rows)
+    shown, argv, inputs = cmd_completion()
+    mshown, margv, minputs, mrule = cmd_completion_mutant()
+    return f'''# Verifying a record
+
+A union rep checks a learner's exported record on their own machine, offline,
+with the verifier this bundle ships beside the registries the record names -
+no server, no account, and no trust in the learner's device.
+
+{LOOP}
+
+{verify_page_line()}
+
+{shot("process-verify.png")}
+
+## The process, for a union rep
+
+1. **Get the file from the learner** - a `{completion_reg["record_tag"]}`
+   record ([Completion-Record](Completion-Record.md)), a
+   `{contrib_reg["record_tag"]}` package ([Contribute](Contribute.md)), or one
+   of each from every member of a crew ([Work-Sites](Work-Sites.md)).
+2. **Use this bundle at the pack version the record names.** The ids resolve
+   against these registries; a different pack version is a different check.
+3. **Run the verifier for that file** (the table below), from the bundle's
+   root, with `node`. Nothing is fetched.
+4. **Read every line.** Each rule prints `ok` or `FAIL` at the start of its
+   line; any `FAIL` exits 1. A signed record prints the address the signature
+   recovers to - a key, not a person.
+5. **Read the last line.** It is the registry's own statement of what the
+   check does not prove, printed by the verifier itself.
+
+## Which verifier, for which file
+
+Each command below was run on the pack's own fixture when this page was built;
+the exit status and last line are what it printed.
+
+| File | Command | Exit | Last line | Page |
+|---|---|---|---|---|
+{table}
+
+## A record that passes
+
+{rundoc(shown, argv, inputs)}
+
+## A record that does not
+
+The pack's first declared mutant, `{mshown.split()[-1]}`, must fail
+`{mrule}` by name:
+
+{rundoc(mshown, margv, minputs, mrule)}
+
+{limits("Verify-A-Record.md")}
+{FOOTER}'''
+
+
+# ------------------------------------------------------------- contribute ---
+def page_contribute():
+    R = contrib_reg
+    con = R['consent']
+    page = 'web/trade_craft_contribute.html'
+    h_consent = page_heading(page, 'Consent')
+    h_build = page_heading(page, 'Build the package')
+    h_where = page_heading(page, 'Where this could go')
+    exp = page_ui_label(page, 'expPackage')
+    sign = page_ui_label(page, 'signPackage')
+    scopes = '\n'.join(f'   - `{k}` - {v}' for k, v in con['scopes'].items())
+    shown, argv, inputs = cmd_contrib()
+    return f'''# Contributing training data
+
+A contribution is a `{R["record_tag"]}` package a learner builds from the
+episodes their own device recorded, under a consent statement and a licence
+they read first, and keeps as a file: this bundle sends it nowhere.
+
+{LOOP}
+
+## The process, for a learner
+
+1. **Train.** Seat runs, advisor exchanges, crew questions and walkarounds are
+   recorded to `{sessions_reg["source"]["key"]}`, {sessions_reg["source"]["where"]}.
+2. **Open [`{page}`](../{page})** and read *{h_consent}*. The statement, verbatim:
+
+   > {con["statement"]}
+
+3. **Choose the scopes** you share for - {len(con["scopes"])} of them:
+
+{scopes}
+
+4. **Accept the licence**: {con["license"]["name"]} (`{con["license"]["spdx"]}`),
+   one licence for every package.
+5. **Under *{h_build}*, press *{exp}*.** The file lands in your downloads.
+   With a connected wallet, *{sign}* signs its digest and consent scope.
+6. **Look at *{h_where}*.** It lists the destinations
+   [Protocols](Protocols.md) names - each marked not integrated. Giving the
+   file to anyone is your act, not the bundle's.
+7. **Anyone can check it offline**: [Verify-A-Record](Verify-A-Record.md).
+
+{shot("process-contribute.png")}
+
+## Check it offline
+
+On the pack's own fixture package (labelled *{R["fixture"]["label"]}*):
+
+{rundoc(shown, argv, inputs)}
+
+{limits("Contribute.md")}
+{FOOTER}'''
+
+
+# -------------------------------------------------------------- protocols ---
+def page_protocols():
+    R = protocols_reg
+    c = R['counts']
+    P = R['protocols']
+    rows = '\n'.join(
+        f'| **{p["name"]}** | `{pid}` | {p["provenance"]} '
+        f'| {"yes" if p["configured"] else "no"} | {"yes" if p["integrated"] else "no"} |'
+        for pid, p in P.items())
+    probe = R['reachability_probe']
+    return f'''# The agent protocols
+
+The protocol roster (`protocols/registry/protocols.json`) is the list of agent
+and data networks a contribution *could* be taken to by its owner -
+{c["protocols"]} entries, {c["configured"]} configured, {c["integrated"]}
+integrated - and the checklist any one of them would have to clear first.
+
+It feeds the *Where this could go* section of [Contribute](Contribute.md); it
+sends nothing, and no page reads it as a destination that works.
+
+## The process, for a rep or a learner
+
+1. **Open [Contribute](Contribute.md)'s page** and read *Where this could go*:
+   every row there comes from this roster and says it is not integrated.
+2. **Read the entry's flags** in the table below. `configured`, `integrated`
+   and `validated_against_spec` are false on every entry today.
+3. **Take the file yourself**, if you choose, to whichever network you judge
+   fit. That is your act; the bundle holds no key, no SDK and no address.
+4. **To make an entry real**, follow the registry's own checklist, quoted
+   under the honest limits below (`what_would_make_one_real`).
+
+## The {c["protocols"]} entries
+
+| Protocol | id | Provenance | Configured | Integrated |
+|---|---|---|---|---|
+{rows}
+
+The reachability probe of {probe["date"]} tried {c["probe_urls_tried"]} URLs
+and {probe["answered_2xx"]} answered 2xx; {c["specs_fetched"]} specs were
+fetched. {len(R["wallets"]["candidates"])} further wallet rails are listed as
+candidates, all off.
+
+## Check it offline
+
+This registry is a roster, not a record: there is no verifier to run on a
+learner's file here, and this page does not invent one. Its own suite is
+`node protocols/test.mjs`.
+
+{limits("Protocols.md")}
+{FOOTER}'''
+
+
+# ------------------------------------------------------------- work sites ---
+def page_work_sites():
+    R = worksites_reg
+    c = R['counts']
+    page = 'web/trade_craft_worksites.html'
+    site_rows = '\n'.join(
+        f'| **{s["title"]}** | `{s["id"]}` | {s["place"]["kind"]} | {len(s["roles"])} '
+        f'| {len(s["handoffs"])} | {", ".join(sorted({r["union_name"] for r in s["roles"].values()}))} |'
+        for s in R['sites'])
+    fx = next(s for s in R['sites'] if s['id'] == R['fixture']['site'])
+    role_rows = '\n'.join(f'| `{k}` | {r["name"]} | {r["union_name"]} | {r["job"]} |'
+                          for k, r in fx['roles'].items())
+    shown, argv, inputs = cmd_worksites()
+    return f'''# Work sites
+
+A work site is a declared job where a crew drawn from at least two unions
+works with hand-offs, and its completion is checked offline from each
+member's own exported records - {c["sites"]} sites, {c["roles"]} roles,
+{c["handoffs"]} hand-offs, {c["unions_covered"]} unions.
+
+{LOOP}
+
+## The process, for a crew and its rep
+
+1. **Open [`{page}`](../{page})** and pick a site. Each names its job, its
+   place, its roles and the hand-offs in order, with the evidence at each end.
+2. **Each member takes one role** and works it alone, on their own device:
+   the seat, walkaround, crew question or station that role's evidence names.
+3. **Each member exports their own file** -
+   [Completion-Record](Completion-Record.md) and/or
+   [Contribute](Contribute.md) - and gives it to the rep.
+4. **The rep runs the site verifier** with the site id and every member's
+   file (below; see also [Verify-A-Record](Verify-A-Record.md)). Each file
+   must first verify under its own pack's verifier.
+5. **Read the tallies**: roles covered, hand-offs in order (by the episodes'
+   own timestamps), and identities attested - an unsigned file is a label,
+   and the verifier says so on every line.
+
+{shot("process-worksites.png")}
+
+## The {c["sites"]} sites
+
+| Site | id | Place | Roles | Hand-offs | Unions |
+|---|---|---|---|---|---|
+{site_rows}
+
+### The fixture's site: {fx["title"]}
+
+| Role | Name | Union | Job |
+|---|---|---|---|
+{role_rows}
+
+## Check it offline
+
+On the pack's own fixture crew (*{R["fixture"]["label"]}*):
+
+{rundoc(shown, argv, inputs)}
+
+{limits("Work-Sites.md")}
+{FOOTER}'''
+
+
+# ------------------------------------------------------- compliance ledger ---
+def page_compliance():
+    R = compliance_reg
+    ro = R['rollups']
+    shown, argv, inputs = cmd_compliance()
+    classes = R['evidence_classes']
+    cls = (', '.join(f'`{k}`' for k in classes) if isinstance(classes, dict)
+           else ', '.join(f'`{k}`' for k in classes))
+    return f'''# The compliance ledger
+
+The compliance ledger (`compliance/registry/compliance.json`) sets what the
+bundle's own registries require of a hall and its rooms beside what a
+`{completion_reg["record_tag"]}` record can evidence of them. {R["what_this_is"]}
+
+{LOOP}
+
+## The process, for a union rep
+
+1. **Take the learner's completion record** ([Completion-Record](Completion-Record.md)).
+2. **Run `{R["verifier"]["run"]}`.** The record is verified by the completion
+   verifier first; one that fails stops there.
+3. **Read each hall the record touches**: its hazards, every room's required
+   protective equipment and placard, the record's lessons step by step, the
+   seats, and the hall's sign-off status.
+4. **Read the class on every line** - {cls}. A walk or placard step is the
+   learner's word and is reported as such.
+5. **Read the totals line and the last line.** The ledger names no
+   jurisdiction; a real deployment brings its own.
+
+## The ledger at this build
+
+{ro["halls"]} halls, {ro["halls_with_hazards"]} with hazards;
+{ro["hazard_rooms_with_placard"]} of {ro["hazard_rooms"]} hazard rooms carry a
+placard; {ro["halls_signed_off"]} halls signed off by a practitioner;
+{ro["halls_with_a_lesson_covering_every_hazard_room"]} halls have a lesson
+that walks every hazard room.
+
+## Check it offline
+
+On the completion pack's own fixture record:
+
+{rundoc(shown, argv, inputs)}
+
+{limits("Compliance-Ledger.md")}
+{FOOTER}'''
+
+
+# --------------------------------------------------------------- sessions ---
+def page_sessions():
+    R = sessions_reg
+    prog = 'web/trade_craft_progress.html'
+    h = page_heading(prog, 'Sessions')
+    shown, argv, inputs = cmd_sessions()
+    return f'''# Sessions
+
+A session is a stretch of training read back from the device's own episode
+log. In the registry's words: {R["definition"]}, with
+`gap.ms` = {R["gap"]["ms"]:,} - the one number this pack declares.
+
+{LOOP}
+
+## The process, for a learner
+
+1. **Train.** Every recorded episode lands in `{R["source"]["key"]}`,
+   {R["source"]["where"]}.
+2. **Open [`{prog}`](../{prog})** and go to *{h}*: the log split into
+   sessions, each with its seats, attempts, passes and the step kinds it could
+   have advanced.
+3. **Export the log**, or a contribution package built from it
+   ([Contribute](Contribute.md)).
+4. **Anyone can recompute the table offline** (below): a claimed session
+   table or rollup that the log does not reproduce fails by name. See
+   [Verify-A-Record](Verify-A-Record.md).
+
+{shot("process-progress-sessions.png")}
+
+## Check it offline
+
+On the pack's own fixture log (*{R["fixture"]["label"]}*):
+
+{rundoc(shown, argv, inputs)}
+
+{limits("Sessions.md")}
+{FOOTER}'''
+
+
+# ----------------------------------------------------------- custom spaces ---
+def page_spaces():
+    R = spaces_reg
+    c = R['counts']
+    page = 'web/trade_craft_spaces.html'
+    rows = '\n'.join(
+        f'| **{s["title"]}** | `{s["id"]}` | {s["room_label"]} | `{s["strand"]}` '
+        f'| {len(s["items"])} | {s["status"]} |'
+        for s in R['spaces'])
+    kinds = ', '.join(f'{k} ({c["items_by_kind"][k]})' for k in R['kinds'])
+    return f'''# Custom spaces
+
+A custom space is a training room composed only from what the bundle already
+holds - seats, stations, tool cribs, props, furniture and signs - fitted to
+the room of its strand and priced in declared figures:
+{c["spaces"]} spaces, {c["items"]} items.
+
+## The process, for a rep planning a room
+
+1. **Open [`{page}`](../{page})** and pick a space.
+2. **Read its purpose and the room it fits** - the room of its strand in every
+   hall that would serve it.
+3. **Open the item schedule.** Every item is one of: {kinds}, each read from
+   its own registry. An item with no size says *footprint unknown* and its
+   overlap is not checked.
+4. **Read the protective equipment** - derived from the floor and wall the
+   space stands on, never typed - and the predicted draw cost.
+5. **Treat it as a proposal.** Its status is on every space and is quoted
+   below.
+
+{shot("process-spaces.png")}
+
+## The {c["spaces"]} spaces
+
+| Space | id | Room | Strand | Items | Status |
+|---|---|---|---|---|---|
+{rows}
+
+## Check it offline
+
+A space is a proposal, not a record: there is no verifier to run on a
+learner's file here, and this page does not invent one. Its own suite is
+`node spaces/test.mjs`.
+
+{limits("Custom-Spaces.md")}
+{FOOTER}'''
+
+
+# --------------------------------------------------------- site navigation ---
+# Which wiki page describes each front-door surface. The hrefs are read off
+# the built index.html; one named here that the front door no longer carries
+# is refused rather than documented.
+NAV_WIKI = {
+    'web/trade_craft_ladder.html': 'Skill-Graph',
+    'web/trade_craft_lessons.html': 'Lessons-Page',
+    'web/trade_craft_signin.html': 'Sign-In',
+    'web/trade_craft_3d.html': 'Simulators',
+    'web/trade_craft_interactive.html': 'Campus-Map',
+    'web/trade_craft_geomap.html': 'Campus-Map',
+    'web/trade_craft_map.html': 'Interiors-Map',
+    'web/trade_craft_languages.html': 'Languages',
+    'web/trade_craft_spaces.html': 'Custom-Spaces',
+    'web/trade_craft_contribute.html': 'Contribute',
+    'web/trade_craft_worksites.html': 'Work-Sites',
+}
+
+
+def front_door_cards():
+    html = (ROOT / 'index.html').read_text()
+    cards = re.findall(r'<a class="card(?: lead)?" href="([^"]+)"[^>]*>'
+                       r'<span class="kicker">[^<]*</span><b>([^<]+)</b>', html)
+    if not cards:
+        raise Refused('index.html carries no front-door cards this page can read')
+    hrefs = {h for h, _ in cards}
+    gone = sorted(set(NAV_WIKI) - hrefs)
+    if gone:
+        raise Refused('the front door no longer links ' + ', '.join(gone))
+    return cards
+
+
+def page_site_navigation():
+    cards = front_door_cards()
+    rows = '\n'.join(
+        f'| {i + 1} | **{t.replace("&amp;", "&")}** | [`{h}`](../{h}) '
+        f'| {"[" + NAV_WIKI[h] + "](" + NAV_WIKI[h] + ".md)" if h in NAV_WIKI else "-"} |'
+        for i, (h, t) in enumerate(cards))
+    tour = '\n\n'.join(shot(n) for n in (
+        'process-map-layers.png', 'process-interactive-lessons.png',
+        'process-geomap-rollups.png', 'process-3d-restoration.png',
+        'process-3d-sim.png'))
+    return f'''# Getting around the site
+
+The front door, `index.html`, is the one place every surface is linked from:
+{len(cards)} cards, each saying what the surface is and what it does not
+claim, read off the built page when this wiki was built.
+
+## The process, for a first visit
+
+1. **Open `index.html`.** The course at the top is the way in if you do not
+   know where to start.
+2. **Pick a card.** Each links one surface; the table below says which wiki
+   page describes it.
+3. **Walk the world** from the lead card: region, campus, hall, seat.
+   A seat can be opened directly - see [Simulator-Index](Simulator-Index.md).
+4. **Take your record with you** when you are done:
+   [Completion-Record](Completion-Record.md), then
+   [Verify-A-Record](Verify-A-Record.md) and, if you choose,
+   [Contribute](Contribute.md).
+
+{shot("process-front-door.png")}
+
+## The front door's cards
+
+| # | Card | Opens | Wiki page |
+|---|---|---|---|
+{rows}
+
+## A tour of the surfaces
+
+{tour}
+
+## Check it offline
+
+Navigation is not a record: there is no verifier for it, and this page does
+not invent one. The cards above are read from the built `index.html`, so
+this page goes stale when the front door changes.
+
+{limits("Site-Navigation.md")}
+{FOOTER}'''
+
+
+PROCESS_PAGES = {
+    'Completion-Record.md': page_completion_record,
+    'Verify-A-Record.md': page_verify_record,
+    'Contribute.md': page_contribute,
+    'Protocols.md': page_protocols,
+    'Work-Sites.md': page_work_sites,
+    'Compliance-Ledger.md': page_compliance,
+    'Sessions.md': page_sessions,
+    'Custom-Spaces.md': page_spaces,
+    'Site-Navigation.md': page_site_navigation,
+}
+PROCESS_BLURB = {
+    'Completion-Record.md': 'export a `tc-completion/1` record from the progress page',
+    'Verify-A-Record.md': 'a union rep checks a record offline',
+    'Contribute.md': 'share recorded episodes under consent, as a file',
+    'Protocols.md': 'the agent networks a contribution could go to - none integrated',
+    'Work-Sites.md': 'a crew from several unions, checked from each member\'s own record',
+    'Compliance-Ledger.md': 'what a record evidences against the bundle\'s own rules',
+    'Sessions.md': 'the episode log read back as sessions',
+    'Custom-Spaces.md': 'training rooms composed from what the bundle holds',
+    'Site-Navigation.md': 'the front door, and where each card leads',
+}
+
+
+def check_process_pages(pages):
+    """The checks --check and a build both run over the process pages.
+
+    Returns FAIL lines: a honesty quote missing from its page, a honesty
+    sentence typed into this file, or a page that Home.md does not link.
+    """
+    fails = []
+    for page, pairs in HONESTY.items():
+        text = pages[page]
+        for reg, path in pairs:
+            for t in honesty_texts(reg, path):
+                if t not in text:
+                    fails.append(f'FAIL honesty: {page} does not quote '
+                                 f'{PROC_REGS[reg][0]}#honesty.{path} verbatim')
+    src = pathlib.Path(__file__).read_text()
+    for reg, (rel, doc) in PROC_REGS.items():
+        def leaves(v):
+            if isinstance(v, str):
+                yield v
+            elif isinstance(v, list):
+                for x in v:
+                    yield from leaves(x)
+            elif isinstance(v, dict):
+                for x in v.values():
+                    yield from leaves(x)
+        for t in leaves(doc['honesty']):
+            if len(t) >= 40 and t[:40] in src:
+                fails.append(f'FAIL honesty: wiki/build_wiki.py types {rel}#honesty '
+                             f'text ({t[:40]!r}...) instead of reading it')
+    home = pages['Home.md']
+    for name in pages:
+        if name != 'Home.md' and f']({name}' not in home:
+            fails.append(f'FAIL home: Home.md does not link {name}')
+    return fails
+
+
 PAGES = {
     'Home.md': page_home,
     'Campus-Map.md': page_campus,
@@ -3534,6 +4388,7 @@ PAGES = {
     'Simulator-Index.md': page_sim_index,
     'Lessons-Page.md': page_lessons_page,
     'Sign-In.md': page_signin,
+    **PROCESS_PAGES,
     'Provenance.md': page_provenance,
     **{f'District-{k}.md': (lambda k=k, d=d: page_district(k, d))
        for k, d in districts.items()},
@@ -3543,8 +4398,24 @@ PAGES = {
 def main():
     check = '--check' in sys.argv
     stale = []
-    for name, fn in PAGES.items():
-        want = fn()
+    try:
+        rendered = {name: fn() for name, fn in PAGES.items()}
+    except Refused as e:
+        print(f'REFUSED: {e}')
+        sys.exit(1)
+    # Fail closed on images: a page that names a screenshot not on disk is
+    # not written (and fails --check), and every missing file is named.
+    missing = missing_images(rendered)
+    if missing:
+        for ref, name in missing:
+            print(f'REFUSED: wiki/{ref} is referenced by {name} and does not exist')
+        print(f'       {len(missing)} image(s) missing; no page written')
+        sys.exit(1)
+    fails = check_process_pages(rendered)
+    if fails:
+        print('\n'.join(fails))
+        sys.exit(1)
+    for name, want in rendered.items():
         path = HERE / name
         if check:
             if not path.exists() or path.read_text() != want:

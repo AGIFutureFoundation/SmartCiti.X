@@ -24,6 +24,7 @@ import sys
 HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from staleness import emit  # noqa: E402
+from sitenav import nav_html, labels as nav_labels, NAV_CSS  # noqa: E402
 # The eight district hues. web/mapdata.py owns them and the campus
 # map, the 3D world and the crew marks all read from there; a second set of
 # numbers here would be eight facts with two owners.
@@ -1131,8 +1132,10 @@ GUIDE_JS = """<script>
 }());
 </script>"""
 
+NAV = nav_html('index.html', nav_labels('en'))
+
 BODY = f"""<body>
-<header class="top"><div class="wrap">
+{NAV}<header class="top"><div class="wrap">
   <div class="brandline">
     <h1>SmartCiti<span class="x">.X</span> : Trade Craft Academy</h1>
     <span class="by">powered by AGI Corp</span>
@@ -1364,7 +1367,7 @@ page = ('<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n'
         '<!-- Self-hosted: nothing on this page is fetched from another '
         'origin at run time. See web/fetch_fonts.py. -->\n'
         '<link rel="stylesheet" href="web/vendor/fonts/fonts.css">\n'
-        f'<style>{CSS}</style>\n</head>\n{BODY}\n</html>\n')
+        f'<style>{CSS}</style>\n<style>{NAV_CSS}</style>\n</head>\n{BODY}\n</html>\n')
 
 emit(ROOT / 'index.html', page,
      f'{len(CARDS)} cards | {HALLS} halls, {CAMPUSES} campuses, {SEATS} seats')

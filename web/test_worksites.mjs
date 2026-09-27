@@ -100,6 +100,59 @@ for (const s of sites) {
   if (s.place.kind === 'space') ok(`${s.id}: a space place draws the space plan and links the spaces page anchor`, /data-plan="space"/.test(body) && body.includes(`href="${s.place.href}" data-place-href`));
   else ok(`${s.id}: a ${s.place.kind} draws a tile, not a plan with a typed footprint`, new RegExp(`data-plan="${s.place.plan.kind}"`).test(body) && !/data-plan="space"/.test(body));
 }
+// plan geometry, recomputed from the built SVG: text boxes are estimated from
+// character count x font size (monospace advance 0.6 em), posts and badges
+// from their radii. No hand-off badge sits on a role label, a post or another
+// badge; and the drawing fills its viewBox - the content's bounding box sits
+// inside it and leaves no side emptier than the margin allows.
+const MARGIN_MAX = 32; // the 12 px margin, plus the builder's 0.02 em pad on a long tile name
+const tbox = (x, y, str, size, anchor) => {
+  const w = unesc(str).length * size * 0.6;
+  const x0 = anchor === 'middle' ? x - w / 2 : anchor === 'end' ? x - w : x;
+  return [x0, y - 0.75 * size, x0 + w, y + 0.25 * size];
+};
+const overlap = (a, b) => a[0] < b[2] && b[0] < a[2] && a[1] < b[3] && b[1] < a[3];
+const geoBad = [];
+for (const s of sites) {
+  const at = html.indexOf(`data-site="${s.id}"`);
+  const st = html.indexOf('<svg class="plan"', at);
+  const svg = html.slice(st, html.indexOf('</svg>', st));
+  const vb = (svg.match(/viewBox="(-?[\d.]+) (-?[\d.]+) ([\d.]+) ([\d.]+)"/) || []).slice(1).map(Number);
+  if (vb.length !== 4) { geoBad.push(`${s.id}: no viewBox`); continue; }
+  const labels = [], postBoxes = [], badges = [], all = [];
+  for (const g of svg.matchAll(/<g class="post"[^>]*transform="translate\((-?[\d.]+),(-?[\d.]+)\)">([\s\S]*?)<\/g>/g)) {
+    const x = Number(g[1]), y = Number(g[2]);
+    const r = Number((g[3].match(/<circle r="([\d.]+)"/) || [0, 0])[1]);
+    postBoxes.push([x - r, y - r, x + r, y + r]);
+    for (const t of g[3].matchAll(/<text class="lbl[^"]*" y="(-?[\d.]+)" text-anchor="(\w+)">([^<]*)<\/text>/g)) {
+      labels.push([...tbox(x, y + Number(t[1]), t[3], 10, t[2]), `${s.id} label "${unesc(t[3])}"`]);
+    }
+  }
+  for (const c of svg.matchAll(/<circle class="num" cx="(-?[\d.]+)" cy="(-?[\d.]+)" r="([\d.]+)" data-badge="(\d+)"/g)) {
+    const [x, y, r] = [Number(c[1]), Number(c[2]), Number(c[3])];
+    badges.push([x - r, y - r, x + r, y + r, `${s.id} badge ${c[4]}`]);
+  }
+  if (badges.length !== s.handoffs.length) geoBad.push(`${s.id}: ${badges.length} badges for ${s.handoffs.length} hand-offs`);
+  badges.forEach((b, i) => {
+    for (const l of labels) if (overlap(b, l)) geoBad.push(`${b[4]} sits on ${l[4]}`);
+    for (const pb of postBoxes) if (overlap(b, pb)) geoBad.push(`${b[4]} sits on a post`);
+    for (const o of badges.slice(i + 1)) if (overlap(b, o)) geoBad.push(`${b[4]} sits on ${o[4]}`);
+  });
+  all.push(...labels, ...postBoxes, ...badges);
+  for (const r of svg.matchAll(/<rect [^>]*?x="(-?[\d.]+)" y="(-?[\d.]+)" width="([\d.]+)" height="([\d.]+)"[^>]*data-(?:plan|item)=/g)) {
+    const [x, y, w, h] = r.slice(1, 5).map(Number); all.push([x, y, x + w, y + h]);
+  }
+  for (const l of svg.matchAll(/<line class="arrow[^"]*" x1="(-?[\d.]+)" y1="(-?[\d.]+)" x2="(-?[\d.]+)" y2="(-?[\d.]+)"/g)) {
+    const [a, b, c, d] = l.slice(1, 5).map(Number); all.push([Math.min(a, c), Math.min(b, d), Math.max(a, c), Math.max(b, d)]);
+  }
+  for (const t of svg.matchAll(/<text class="dim" x="(-?[\d.]+)" y="(-?[\d.]+)">([^<]*)<\/text>/g)) all.push(tbox(Number(t[1]), Number(t[2]), t[3], 11, 'start'));
+  const bb = [Math.min(...all.map((b) => b[0])), Math.min(...all.map((b) => b[1])), Math.max(...all.map((b) => b[2])), Math.max(...all.map((b) => b[3]))];
+  const gaps = [bb[0] - vb[0], bb[1] - vb[1], vb[0] + vb[2] - bb[2], vb[1] + vb[3] - bb[3]];
+  if (gaps.some((g) => g < 0)) geoBad.push(`${s.id}: drawing leaves the viewBox (gaps l,t,r,b ${gaps.map((g) => g.toFixed(1)).join(',')})`);
+  if (gaps.some((g) => g > MARGIN_MAX)) geoBad.push(`${s.id}: viewBox ${vb.join(' ')} leaves empty field around the drawing ${bb.map((v) => v.toFixed(0)).join(',')} (gaps l,t,r,b ${gaps.map((g) => g.toFixed(1)).join(',')}; at most ${MARGIN_MAX})`);
+}
+ok('every plan keeps its hand-off badges off role labels, posts and each other, and its viewBox is the drawing\'s bounds plus a margin',
+  geoBad.length === 0, geoBad.slice(0, 12));
 // honesty lines are the registry's
 for (const k of ['authored', 'no_multi_user', 'not_a_certification', 'not_stated', 'ppe']) {
   const x = html.match(new RegExp(`data-honesty="${k}">([^<]*)<`));

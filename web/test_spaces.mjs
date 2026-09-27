@@ -125,7 +125,9 @@ for (const s of spaces) {
   for (const m of items) {
     const it = s.items[Number(m[2])];
     if (!it || it.kind !== m[3] || it.id !== m[4]) { planBad.push(`${s.id}#${m[2]} kind/id`); continue; }
-    if (!svg.includes(`>${it.name.replace(/&/g, '&amp;')}</text>`)) planBad.push(`${s.id}#${m[2]} label ${it.name}`);
+    const lm = svg.match(new RegExp(`<text class="lbl" data-label-for="${m[2]}"[^>]*>([\\s\\S]*?)</text>`));
+    const shown = lm ? [...lm[1].matchAll(/<tspan[^>]*>([^<]*)<\/tspan>/g)].map((t) => t[1]).join(' ') : null;
+    if (shown !== it.name.replace(/&/g, '&amp;').replace(/</g, '&lt;')) planBad.push(`${s.id}#${m[2]} label ${it.name} shown as ${shown}`);
     const dpx = s.footprint_m.d * PX;
     if (it.footprint === null) {
       if (m[1] !== ' unknown') planBad.push(`${s.id}#${m[2]} should be dashed unknown`);
@@ -142,6 +144,54 @@ for (const s of spaces) {
 }
 ok('[shipped] every plan is the footprint at the declared scale, every item is its registry rect at that scale (unknown footprints dashed), labelled with its registry name',
   planBad.length === 0, planBad);
+
+/* ------------------------------------------------------- plan labels -- */
+// Recomputed from the built SVG, never from the builder: each label's box is
+// estimated from its text (a monospace advance of 0.6 em per character, the
+// ascent and descent of its font size, one tspan per line), anchored as the
+// text says. No two label boxes overlap, every box lies inside the viewBox and
+// on the floor, and the label ink reaches 4.5:1 against the floor colour it
+// sits on (the halo stroke is that floor colour).
+const lum = (hex) => {
+  const c = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255)
+    .map((v) => (v <= 0.04045 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4));
+  return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+};
+const contrast = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p); return (x + 0.05) / (y + 0.05); };
+const lblBad = [];
+let lblCount = 0;
+for (const s of spaces) {
+  const start = page.indexOf(`<svg class="plan" viewBox=`, page.indexOf(`id="space-${s.id}"`));
+  const svg = page.slice(start, page.indexOf('</svg>', start));
+  const vb = svg.match(/viewBox="([\d.]+) ([\d.]+) ([\d.]+) ([\d.]+)"/).slice(1).map(Number);
+  const fl = svg.match(/<rect class="floor" x="([\d.]+)" y="([\d.]+)" width="([\d.]+)" height="([\d.]+)" fill="([^"]+)"/);
+  const [fx, fy, fw, fh] = fl.slice(1, 5).map(Number); const floorHex = fl[5];
+  const boxes = [];
+  for (const t of svg.matchAll(/<text class="lbl" data-label-for="(\d+)" x="(-?[\d.]+)" y="(-?[\d.]+)" text-anchor="(start|middle|end)" font-size="([\d.]+)" fill="(#[0-9A-Fa-f]{6})" stroke="(#[0-9A-Fa-f]{6})"[^>]*>([\s\S]*?)<\/text>/g)) {
+    lblCount++;
+    const [, i, xs, ys, anchor, fss, fill, halo, inner] = t;
+    const x = Number(xs), y = Number(ys), fs = Number(fss);
+    const spans = [...inner.matchAll(/<tspan x="(-?[\d.]+)" dy="([\d.]+)">([^<]*)<\/tspan>/g)];
+    const lines = spans.map((sp) => sp[3].replace(/&amp;/g, '&').replace(/&lt;/g, '<'));
+    const lastY = y + spans.reduce((a, sp) => a + Number(sp[2]), 0);
+    if (spans.some((sp) => Number(sp[1]) !== x)) lblBad.push(`${s.id}#${i}: a tspan leaves the label's x`);
+    const w = Math.max(...lines.map((l) => l.length)) * fs * 0.6;
+    const x0 = anchor === 'start' ? x : anchor === 'end' ? x - w : x - w / 2;
+    const box = [x0, y - 0.8 * fs, x0 + w, lastY + 0.25 * fs, `${s.id}#${i} "${lines.join(' ')}"`];
+    if (box[0] < vb[0] || box[1] < vb[1] || box[2] > vb[0] + vb[2] || box[3] > vb[1] + vb[3]) lblBad.push(`${box[4]} leaves the viewBox ${vb.join(' ')}: ${box.slice(0, 4).map(r2).join(',')}`);
+    if (box[0] < fx || box[1] < fy || box[2] > fx + fw || box[3] > fy + fh) lblBad.push(`${box[4]} leaves the floor`);
+    if (halo !== floorHex) lblBad.push(`${box[4]} halo ${halo} is not the floor ${floorHex}`);
+    const cr = contrast(fill, floorHex);
+    if (!(cr >= 4.5)) lblBad.push(`${box[4]} ink ${fill} on floor ${floorHex} is ${cr.toFixed(2)}:1`);
+    for (const o of boxes) {
+      if (box[0] < o[2] && o[0] < box[2] && box[1] < o[3] && o[1] < box[3]) lblBad.push(`${box[4]} overlaps ${o[4]}`);
+    }
+    boxes.push(box);
+  }
+  if (boxes.length !== s.items.length) lblBad.push(`${s.id}: ${boxes.length} labels for ${s.items.length} items`);
+}
+ok(`[shipped] no two plan labels overlap, every label lies inside its viewBox and on its floor, and reaches 4.5:1 on that floor (${lblCount} labels)`,
+  lblBad.length === 0, lblBad.slice(0, 12));
 
 /* ------------------------------------------------------------- swatches -- */
 const swBad = [];

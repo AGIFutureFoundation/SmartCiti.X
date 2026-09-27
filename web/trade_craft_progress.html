@@ -100,8 +100,27 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
   color:var(--muted);font-size:14px}
 footer.page a{margin-inline-end:10px}
 </style>
+<style>.sitenav{font:13px/1.45 system-ui,sans-serif;color:var(--ink,inherit);background:var(--panel,var(--surface,transparent));border-block-end:1px solid var(--rule,var(--line,currentColor));padding-block:6px;padding-inline:16px;box-sizing:border-box;max-width:100%;overflow-wrap:anywhere}.sitenav a{color:inherit;text-decoration:none}.sitenav a:hover,.sitenav a:focus-visible{text-decoration:underline}.sitenav-row{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 16px}.sitenav-home{font-weight:700;color:var(--mark,var(--accent,inherit))!important}.sitenav-group{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 8px;min-width:0}.sitenav-g{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted,inherit)}.sitenav ul,.sitenav ol{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:2px 10px}.sitenav [aria-current="page"]{font-weight:700;text-decoration:underline;text-underline-offset:3px;color:var(--mark,var(--accent,inherit))}.sitenav-loop{margin-block-start:6px!important;padding-block-start:6px!important;border-block-start:1px dashed var(--rule,var(--line,currentColor));counter-reset:step;align-items:baseline}.sitenav-loop li{counter-increment:step;color:var(--muted,inherit)}.sitenav-loop li::before{content:counter(step) ". ";color:var(--muted,inherit)}.sitenav-loop [aria-current="step"]{font-weight:700;color:var(--mark,var(--accent,inherit));text-decoration:underline;text-underline-offset:3px}@media(max-width:480px){.sitenav{padding-inline:10px}.sitenav-row{gap:4px 12px}}</style>
 </head>
 <body>
+<nav class="sitenav" data-sitenav aria-label="Site pages">
+<div class="sitenav-row">
+<a class="sitenav-home" href="../index.html">Front door</a>
+<div class="sitenav-group"><span class="sitenav-g">Learn</span><ul><li><a href="trade_craft_lessons.html">Lessons</a></li><li><a href="trade_craft_ladder.html">Ladder</a></li><li><a href="trade_craft_3d.html">Walk the campus</a></li></ul></div>
+<div class="sitenav-group"><span class="sitenav-g">Maps</span><ul><li><a href="trade_craft_map.html">Layered map</a></li><li><a href="trade_craft_interactive.html">Interactive map</a></li><li><a href="trade_craft_geomap.html">Geomap</a></li><li><a href="trade_craft_fabric.html">Spatial fabric</a></li></ul></div>
+<div class="sitenav-group"><span class="sitenav-g">Records</span><ul><li><a href="trade_craft_progress.html" aria-current="page">Progress</a></li><li><a href="trade_craft_verify.html">Verify a record</a></li><li><a href="trade_craft_contribute.html">Contribute</a></li></ul></div>
+<div class="sitenav-group"><span class="sitenav-g">Sites</span><ul><li><a href="trade_craft_spaces.html">Spaces</a></li><li><a href="trade_craft_worksites.html">Work sites</a></li></ul></div>
+<div class="sitenav-group"><span class="sitenav-g">About</span><ul><li><a href="trade_craft_landing.html">Overview</a></li><li><a href="trade_craft_dashboard.html">Dashboard</a></li><li><a href="trade_craft_languages.html">Languages</a></li><li><a href="trade_craft_signin.html">Sign in</a></li><li><a href="smartcitix_trade_craft_academy.html">Academy spec</a></li></ul></div>
+</div>
+<ol class="sitenav-loop" data-sitenav-loop aria-label="Training loop">
+<li><a href="trade_craft_signin.html">Sign in</a></li>
+<li><a href="trade_craft_lessons.html">Choose a lesson</a></li>
+<li><a href="trade_craft_3d.html">Walk it on campus</a></li>
+<li><a href="trade_craft_progress.html" aria-current="step">Export your record</a></li>
+<li><a href="trade_craft_verify.html">Verify it</a></li>
+<li><a href="trade_craft_contribute.html">Share it</a></li>
+</ol>
+</nav>
 <div class="wrap">
 
 <header class="page">
@@ -267,7 +286,7 @@ footer.page a{margin-inline-end:10px}
   <div class="tscroll"><table><tbody id="sessions-tbl"></tbody></table></div>
   <p class="muted" id="sessions-note"></p>
   <p class="muted">Seat time is not on this page because it is not in the record:
-     training/registry/training.json#episode_kinds.sim.fields carries no duration (t, kind, campus, hall, sim, scenario, controls, actor, operator, outcome), so time at a seat cannot be summed; sim episodes are counted instead
+     training/registry/training.json#episode_kinds.sim.fields carries no duration (t, kind, campus, hall, sim, scenario, controls, actor, operator, outcome), so time at a seat cannot be summed; sim episodes are counted instead.
      The last column says which lesson step <i>kinds</i> a session holds an episode for
      (advisor, crew, sim, walkaround); it marks no step done — that is the completion
      record's question, below, and it is answered there against each step's own reference.</p>
@@ -284,7 +303,7 @@ footer.page a{margin-inline-end:10px}
      by nobody — unless this device names an Ethereum wallet (<code>Sign in with an Ethereum wallet (EIP-4361)</code>, stored
      under <code>tc-identity</code> by the sign-in page), in which case the button below asks that
      wallet for an EIP-191 <code>personal_sign</code> over the record's digest and carries the signature
-     in the file. no lesson here certifies anybody, qualifies anybody or permits anybody to do anything. Completing every lesson in this registry would leave a learner with exactly the standing they started with. Where a trade has a real ticket, that ticket is issued by a jurisdiction, an employer or a hall, and this bundle is none of those and speaks for none of them.</p>
+     in the file. In the lessons registry's words: no lesson here certifies anybody, qualifies anybody or permits anybody to do anything. Completing every lesson in this registry would leave a learner with exactly the standing they started with. Where a trade has a real ticket, that ticket is issued by a jurisdiction, an employer or a hall, and this bundle is none of those and speaks for none of them.</p>
   <div class="card" id="completion-summary"></div>
   <p><button id="expRecord" type="button" disabled>Export completion record</button>
      <button id="signRecord" type="button" disabled hidden>Sign this record with the connected wallet</button></p>

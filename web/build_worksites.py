@@ -21,6 +21,7 @@ import sys
 HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from staleness import emit  # noqa: E402
+from sitenav import nav_html, labels as nav_labels, NAV_CSS  # noqa: E402
 
 ROOT = HERE.parent
 REG_PATH = ROOT / 'worksites/registry/worksites.json'
@@ -49,47 +50,110 @@ def posts(site, cx, cy):
     return out
 
 
+# Text boxes are estimated at build from character count x font size (a
+# monospace advance is 0.6 em; TEXT_EM pads it), so the builder can keep the
+# hand-off badges off the role labels and fit the viewBox to what it drew.
+TEXT_EM = 0.62
+LABEL_PX = 10          # role name and union under each post
+DIM_PX = 11            # the place name and districts on a tile
+BADGE_R = 9            # a hand-off's numbered badge
+POST_R = 14            # a role's post
+VIEW_MARGIN = 12       # the viewBox is the drawing's bounds plus this, each side
+
+
+def text_box(x, y, s, size, anchor='start'):
+    w = len(s) * size * TEXT_EM
+    x0 = x - w / 2 if anchor == 'middle' else (x - w if anchor == 'end' else x)
+    return (x0, y - 0.8 * size, x0 + w, y + 0.3 * size)
+
+
+def _hit(a, b, gap=0):
+    return not (a[2] + gap <= b[0] or b[2] + gap <= a[0] or a[3] + gap <= b[1] or b[3] + gap <= a[1])
+
+
 def plan_svg(site):
     place = site['place']
     plan = place['plan']
     parts = []
+    bounds = []                         # every box drawn, for the viewBox
+    pad = 8 * POST_SCALE_PX             # room for the posts around the place
     if plan['kind'] == 'space-plan':
         W, D = plan['footprint_m']['w'], plan['footprint_m']['d']
         vw, vh = round(W * PX_PER_M), round(D * PX_PER_M)
-        pad = 8 * POST_SCALE_PX
-        vw2, vh2 = vw + 2 * pad, vh + 2 * pad
         parts.append(f'<rect x="{pad}" y="{pad}" width="{vw}" height="{vh}" fill="var(--sunk)" stroke="var(--rule)" data-plan="space" data-w-m="{W}" data-d-m="{D}"/>')
+        bounds.append((pad, pad, pad + vw, pad + vh))
         for it in plan['items']:
-            x, y, w, h = it['rect']
-            parts.append(f'<rect class="item" x="{pad + round(x * PX_PER_M, 1)}" y="{pad + round(y * PX_PER_M, 1)}" width="{round(w * PX_PER_M, 1)}" height="{round(h * PX_PER_M, 1)}" data-item="{it["i"]}"><title>{esc(it["kind"])}: {esc(it["id"])}</title></rect>')
+            # the spaces registry's rect: [x0, y0, x1, y1] in metres, origin bottom-left
+            x0, y0, x1, y1 = it['rect']
+            rx, ry = round(pad + x0 * PX_PER_M, 1), round(pad + (D - y1) * PX_PER_M, 1)
+            rw, rh = round((x1 - x0) * PX_PER_M, 1), round((y1 - y0) * PX_PER_M, 1)
+            tip = f'<title>{esc(it["kind"])}: {esc(it["id"])}</title>'
+            if rw == 0 and rh == 0:     # a point: the registry declares no footprint
+                parts.append(f'<circle class="item" cx="{rx}" cy="{ry}" r="4" data-item="{it["i"]}">{tip}</circle>')
+            else:
+                parts.append(f'<rect class="item" x="{rx}" y="{ry}" width="{rw}" height="{rh}" data-item="{it["i"]}">{tip}</rect>')
         cx, cy = pad + vw / 2, pad + vh / 2
     else:
-        vw2 = vh2 = TILE_PX + 2 * 8 * POST_SCALE_PX
-        pad = 8 * POST_SCALE_PX
         label = ' · '.join(plan['districts']) if plan['kind'] == 'campus-tile' else plan['habitat']
         parts.append(f'<rect x="{pad}" y="{pad}" width="{TILE_PX}" height="{TILE_PX}" rx="12" fill="var(--sunk)" stroke="var(--rule)" data-plan="{esc(plan["kind"])}"/>')
         parts.append(f'<text class="dim" x="{pad + 10}" y="{pad + 20}">{esc(place["name"])}</text><text class="dim" x="{pad + 10}" y="{pad + 38}">{esc(label)}</text>')
+        bounds += [(pad, pad, pad + TILE_PX, pad + TILE_PX),
+                   text_box(pad + 10, pad + 20, place['name'], DIM_PX), text_box(pad + 10, pad + 38, label, DIM_PX)]
         cx = cy = pad + TILE_PX / 2
     P = posts(site, cx, cy)
+    # what a badge must keep off: every post and every role label
+    keep_off = []
+    for rid, (x, y) in P.items():
+        r = site['roles'][rid]
+        keep_off += [(x - POST_R, y - POST_R, x + POST_R, y + POST_R),
+                     text_box(x, y + 30, r['name'], LABEL_PX, 'middle'),
+                     text_box(x, y + 42, r['union'], LABEL_PX, 'middle')]
+    bounds += keep_off
     parts.append('<defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--mark)"/></marker></defs>')
+    badges = []
     for h in site['handoffs']:
         (x1, y1), (x2, y2) = P[h['by']], P[h['to']]
         dx, dy = x2 - x1, y2 - y1
         L = math.hypot(dx, dy) or 1
-        ox, oy = -dy / L * 6 * (1 if h['n'] % 2 else -1), dx / L * 6 * (1 if h['n'] % 2 else -1)
+        side = 1 if h['n'] % 2 else -1
+        nx, ny = -dy / L, dx / L
+        ox, oy = nx * 6 * side, ny * 6 * side
         sx, sy = round(x1 + dx / L * 16 + ox, 1), round(y1 + dy / L * 16 + oy, 1)
         ex, ey = round(x2 - dx / L * 16 + ox, 1), round(y2 - dy / L * 16 + oy, 1)
         cls = 'arrow' if h['verifiable'] else 'arrow unverifiable'
         parts.append(f'<line class="{cls}" x1="{sx}" y1="{sy}" x2="{ex}" y2="{ey}" marker-end="url(#arr)" data-handoff="{h["n"]}" data-by="{esc(h["by"])}" data-to="{esc(h["to"])}"><title>{h["n"]}. {esc(h["step"])}</title></line>')
-        mx, my = round((sx + ex) / 2 + ox * 2, 1), round((sy + ey) / 2 + oy * 2, 1)
-        parts.append(f'<circle class="num" cx="{mx}" cy="{my}" r="9"/><text class="numt" x="{mx}" y="{my + 3.5}" text-anchor="middle">{h["n"]}</text>')
+        bounds.append((min(sx, ex) - 4, min(sy, ey) - 4, max(sx, ex) + 4, max(sy, ey) + 4))
+        # the badge: first spot along its own arrow, nearest the middle and
+        # on the arrow's own side, clear of every post, role label and badge
+        pick = None
+        for t in (0.5, 0.42, 0.58, 0.34, 0.66, 0.26, 0.74, 0.18, 0.82):
+            for off in (12, 20, 28, -12, -20, 36, 44):
+                mx = round(sx + (ex - sx) * t + nx * off * side, 1)
+                my = round(sy + (ey - sy) * t + ny * off * side, 1)
+                b = (mx - BADGE_R, my - BADGE_R, mx + BADGE_R, my + BADGE_R)
+                if not any(_hit(b, o, 2) for o in keep_off + badges):
+                    pick = (mx, my, b)
+                    break
+            if pick:
+                break
+        if pick is None:
+            raise SystemExit(f'build_worksites: no clear spot for hand-off {h["n"]} badge on {site["id"]}')
+        mx, my, b = pick
+        badges.append(b)
+        bounds.append(b)
+        parts.append(f'<circle class="num" cx="{mx}" cy="{my}" r="{BADGE_R}" data-badge="{h["n"]}"/><text class="numt" x="{mx}" y="{round(my + 3.5, 1)}" text-anchor="middle">{h["n"]}</text>')
     for rid, (x, y) in P.items():
         r = site['roles'][rid]
         parts.append(f'<g class="post" data-role="{esc(rid)}" data-union="{esc(r["union"])}" transform="translate({x},{y})">'
-                     f'<circle r="14"/><text y="5" text-anchor="middle">{esc(r["glyph"])}</text>'
+                     f'<circle r="{POST_R}"/><text y="5" text-anchor="middle">{esc(r["glyph"])}</text>'
                      f'<text class="lbl" y="30" text-anchor="middle">{esc(r["name"])}</text>'
                      f'<text class="lbl u" y="42" text-anchor="middle">{esc(r["union"])}</text></g>')
-    return (f'<svg class="plan" viewBox="0 0 {round(vw2)} {round(vh2)}" width="{round(vw2)}" height="{round(vh2)}" role="img" '
+    # the viewBox is the drawing's own bounds plus a margin: no empty field
+    bx0 = math.floor(min(b[0] for b in bounds) - VIEW_MARGIN)
+    by0 = math.floor(min(b[1] for b in bounds) - VIEW_MARGIN)
+    bw = math.ceil(max(b[2] for b in bounds) + VIEW_MARGIN) - bx0
+    bh = math.ceil(max(b[3] for b in bounds) + VIEW_MARGIN) - by0
+    return (f'<svg class="plan" viewBox="{bx0} {by0} {bw} {bh}" width="{bw}" height="{bh}" role="img" '
             f'aria-label="plan of {esc(site["title"])}">{"".join(parts)}</svg>')
 
 
@@ -157,6 +221,8 @@ toc = ''.join(f'<a href="#site-{esc(s["id"])}">{esc(s["title"])}</a>' for s in r
 embedded = json.dumps(reg, indent=1, sort_keys=True).replace('</', '<\\/')
 places = ' · '.join(f'{k}: <b data-fig-place="{esc(k)}">{v}</b>' for k, v in c['places_by_kind'].items())
 
+NAV = nav_html('web/trade_craft_worksites.html', nav_labels('en'))
+
 page = f'''<!doctype html>
 <html lang="en">
 <head>
@@ -218,8 +284,10 @@ summary{{cursor:pointer;color:var(--steel)}}
 .num{{font-variant-numeric:tabular-nums;white-space:nowrap}}
 code{{font:13px "IBM Plex Mono",monospace;color:var(--steel)}}
 </style>
+<style>{NAV_CSS}</style>
 </head>
-<body><div class="wrap">
+<body>
+{NAV}<div class="wrap">
 <header>
   <h1>SmartCiti<span class="x">.X</span> : Trade Craft Academy</h1>
   <p>powered by AGI Corp · work sites</p>

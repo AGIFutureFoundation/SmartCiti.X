@@ -300,6 +300,19 @@ ok('[shipped] the district map is intact: every hall pad, district band and the 
   && /<g id="halls"><\/g>/.test(html) && /<div class="detail" id="detail"><\/div>/.test(html));
 
 // ---------------------------------------------------------------- report
+// a hall click must SHOW what it opened: the panel lies far below the plan on most
+// screens, so the handler that fills it must also bring it into view and focus it
+{
+  const js = html.replace(/\/\*[\s\S]*?\*\//g, '');
+  const click = js.match(/hallsG\.addEventListener\('click'[\s\S]*?\}\);/);
+  const key = js.match(/hallsG\.addEventListener\('keydown'[\s\S]*?\}\);/);
+  ok('[shipped] a hall opened by click or by key is brought into view and focused: both handlers call showDetail(), which scrolls #detail to the top of the view and moves focus to it',
+    !!click && !!key && /showDetail\(\)/.test(click[0]) && /showDetail\(\)/.test(key[0])
+    && /function showDetail\(\)\s*\{[^}]*scrollIntoView\([^)]*\)[^}]*\.focus\(/.test(js)
+    && /detailEl\.setAttribute\('tabindex', '-1'\)/.test(js));
+  ok('[shipped] the page has exactly one <h1>, and it names the page',
+    (html.match(/<h1[\s>]/g) || []).length === 1 && /<h1 class="vh">[^<]+<\/h1>/.test(html));
+}
 if (failures.length) {
   for (const f of failures) console.error(`FAIL ${f}`);
   console.error(`web/test_map: ${failures.length} of ${passed + failures.length} checks FAILED`);

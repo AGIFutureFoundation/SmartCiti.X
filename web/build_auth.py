@@ -26,6 +26,7 @@ import sys
 HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from staleness import emit  # noqa: E402
+from sitenav import nav_html, labels as nav_labels, NAV_CSS  # noqa: E402
 
 
 def _pack_root():
@@ -593,6 +594,8 @@ ICON = ("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' "
         "%3Cpath d='M11 21 h10' stroke='%2341C4D4' stroke-width='2.6' "
         "stroke-linecap='round'/%3E%3C/svg%3E")
 
+NAV = nav_html('web/trade_craft_signin.html', nav_labels('en'))
+
 page = '''<!doctype html>
 <html lang="en">
 <head>
@@ -601,8 +604,10 @@ page = '''<!doctype html>
 <link rel="icon" href="''' + ICON + '''">
 <title>SmartCiti.X : Trade Craft Academy &mdash; sign in</title>
 <style>''' + CSS + '''</style>
+<style>''' + NAV_CSS + '''</style>
 </head>
-<body><div class="wrap">
+<body>
+''' + NAV + '''<div class="wrap">
 <header>
   <h1>SmartCiti<span class="x">.X</span> : Trade Craft Academy</h1>
   <p>powered by AGI Corp &mdash; sign in</p>

@@ -71,6 +71,7 @@ sys.path.insert(0, str(ROOT))
 from interiors import build as build_interiors, ROOMS as ROOM_PROGRAMME  # noqa: E402
 from mapdata import make_codes, HUES as SHARED_HUES  # noqa: E402
 from staleness import emit  # noqa: E402
+from sitenav import nav_html, labels as nav_labels, NAV_CSS  # noqa: E402
 
 _districts_json = json.load(open(PACKS / 'unions/registry/districts.json'))['districts']
 DISTRICT_MAP = {k: (d['name'], d['tagline'], d['halls'])
@@ -425,11 +426,14 @@ GRID = ''.join(
     f'<text class="gref" x="{BAND_X - 30}" y="{b["y"] + 27}">{i+1}</text>'
     for i, b in enumerate(bands))
 
+NAV = nav_html('web/trade_craft_map.html', nav_labels('en'))
+
 PAGE = f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Trade Craft {S('map.page_title')}</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230C1113'/%3E%3Cpath d='M7 21 L16 7 L25 21 Z' fill='none' stroke='%23E8A33D' stroke-width='2.6' stroke-linejoin='round'/%3E%3Cpath d='M11 21 h10' stroke='%2341C4D4' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E">
 <!-- Self-hosted: nothing on this page is fetched from another origin at run time. See web/fetch_fonts.py. -->
 <link rel="stylesheet" href="vendor/fonts/fonts.css">
 <style>
+.vh{{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}}
 :root{{
   --plate:#12181B; --panel:#182023; --sunk:#0C1113; --ink:#E8EDEC; --muted:#93A3A6;
   --rule:#28353A; --mark:#E8A33D; --mark-ink:#12181B; --steel:#41C4D4; --steel-ink:#7FDCE8;
@@ -624,7 +628,9 @@ footer p{{max-width:78ch;margin:0 0 8px}}
 .sheetnav a:hover{{text-decoration:underline}}
 :focus-visible{{outline:2px solid var(--mark);outline-offset:2px}}
 </style>
-
+<style>{NAV_CSS}</style>
+{NAV}
+<h1 class="vh">{S('map.page_title')}</h1>
 <header class="sheet">
   <a class="bx-lockup" href="#">
     <svg class="bx-mark" width="34" height="34" viewBox="0 0 48 48" role="img" aria-label="SmartCiti.X">
@@ -938,14 +944,23 @@ function apply() {{
   for (const b of dlist.children) b.setAttribute('aria-pressed', b.dataset.d === filter ? 'true' : 'false');
 }}
 
+/* the panel a hall opens lies far below the plan on most screens: a click that
+   only fills it looks like a click that did nothing, so bring it into view and
+   put focus on it (a keyboard or screen-reader user lands where the content is) */
+const detailEl = document.getElementById('detail');
+detailEl.setAttribute('tabindex', '-1');
+function showDetail() {{
+  detailEl.scrollIntoView({{ block: 'start' }});
+  detailEl.focus({{ preventScroll: true }});
+}}
 hallsG.addEventListener('click', (e) => {{
   const g = e.target.closest('.hall'); if (!g) return;
-  selected = g.dataset.s; renderDetail(selected); apply();
+  selected = g.dataset.s; renderDetail(selected); apply(); showDetail();
 }});
 hallsG.addEventListener('keydown', (e) => {{
   if (e.key !== 'Enter' && e.key !== ' ') return;
   const g = e.target.closest('.hall'); if (!g) return;
-  e.preventDefault(); selected = g.dataset.s; renderDetail(selected); apply();
+  e.preventDefault(); selected = g.dataset.s; renderDetail(selected); apply(); showDetail();
 }});
 layersEl.addEventListener('change', (e) => {{
   const t = e.target.closest('[data-toggle]'); if (!t) return;

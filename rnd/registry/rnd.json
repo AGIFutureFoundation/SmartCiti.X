@@ -22,15 +22,15 @@
   "computed_from_registry": 12,
   "measured_source_files": 11,
   "registries_scanned": 49,
-  "app_renderers_scanned": 19,
+  "app_renderers_scanned": 20,
   "doc_renderers_scanned": 3,
   "builders_scanned": 39,
-  "suites_scanned": 68,
+  "suites_scanned": 70,
   "declared_unbuilt": 8,
   "declared_unbuilt_by_their_own_words": 2,
   "declared_unbuilt_not_drawn": 7,
-  "declared_unbuilt_documented_but_not_drawn": 2,
-  "declared_unbuilt_read_by_nothing": 5,
+  "declared_unbuilt_documented_but_not_drawn": 3,
+  "declared_unbuilt_read_by_nothing": 4,
   "gaps": 21,
   "gaps_open": 17,
   "gaps_closed": 4,
@@ -38,13 +38,13 @@
   "budget_views": 6,
   "budget_currencies": 2,
   "budget_agreements": 7,
-  "suites_run": 68,
-  "suite_checks_declared": 3265,
+  "suites_run": 70,
+  "suite_checks_declared": 3357,
   "open_questions": 12,
   "negative_findings": 9,
   "cross_checks": 2,
   "cross_checks_disagreeing": 0,
-  "files_read": 208
+  "files_read": 211
  },
  "tiers": [
   "MEASURED-IN-BROWSER",
@@ -1558,11 +1558,13 @@
    "pack": "compliance",
    "reasons": [
     "no page generator under web/ names this path, so nothing a learner opens reads it",
-    "and nothing outside its own pack names it either - not a builder, not the wiki, not another pack's suite; inside it, compliance/build.py, compliance/test.mjs, compliance/verify.mjs does"
+    "it is DOCUMENTED but not drawn: wiki/build_wiki.py renders a description of it"
    ],
    "says": null,
    "read_by_app_renderers": [],
-   "read_by_doc_renderers": [],
+   "read_by_doc_renderers": [
+    "wiki/build_wiki.py"
+   ],
    "read_by_builders": [],
    "read_by_suites": [],
    "read_by_its_own_pack": [
@@ -1802,14 +1804,17 @@
     "web/build_map.py",
     "web/build_progress.py"
    ],
-   "doc_renderers": [],
+   "doc_renderers": [
+    "wiki/build_wiki.py"
+   ],
    "builders": [
     "compliance/build.py",
     "worksites/build.py"
    ],
    "suites": [
     "web/test_interactive.mjs",
-    "web/test_map.mjs"
+    "web/test_map.mjs",
+    "web/test_verify.mjs"
    ],
    "own_pack": [
     "completion/build.py",
@@ -1819,7 +1824,9 @@
   },
   "compliance/registry/compliance.json": {
    "app_renderers": [],
-   "doc_renderers": [],
+   "doc_renderers": [
+    "wiki/build_wiki.py"
+   ],
    "builders": [],
    "suites": [],
    "own_pack": [
@@ -1833,7 +1840,9 @@
     "web/build_contribute.py",
     "web/build_home.py"
    ],
-   "doc_renderers": [],
+   "doc_renderers": [
+    "wiki/build_wiki.py"
+   ],
    "builders": [
     "protocols/build.py",
     "worksites/build.py"
@@ -1841,7 +1850,8 @@
    "suites": [
     "protocols/test.mjs",
     "web/test_contribute.mjs",
-    "web/test_home.mjs"
+    "web/test_home.mjs",
+    "web/test_verify.mjs"
    ],
    "own_pack": [
     "contrib/build.py",
@@ -2221,7 +2231,9 @@
    "app_renderers": [
     "web/build_contribute.py"
    ],
-   "doc_renderers": [],
+   "doc_renderers": [
+    "wiki/build_wiki.py"
+   ],
    "builders": [
     "contrib/build.py"
    ],
@@ -2336,7 +2348,9 @@
    "app_renderers": [
     "web/build_progress.py"
    ],
-   "doc_renderers": [],
+   "doc_renderers": [
+    "wiki/build_wiki.py"
+   ],
    "builders": [],
    "suites": [
     "web/test_progress.mjs"
@@ -2427,7 +2441,9 @@
     "web/build_home.py",
     "web/build_spaces.py"
    ],
-   "doc_renderers": [],
+   "doc_renderers": [
+    "wiki/build_wiki.py"
+   ],
    "builders": [
     "worksites/build.py"
    ],
@@ -2824,7 +2840,9 @@
     "web/build_home.py",
     "web/build_worksites.py"
    ],
-   "doc_renderers": [],
+   "doc_renderers": [
+    "wiki/build_wiki.py"
+   ],
    "builders": [],
    "suites": [
     "web/test_home.mjs",
@@ -2891,6 +2909,7 @@
    "web/build_page.py",
    "web/build_progress.py",
    "web/build_spaces.py",
+   "web/build_verify.py",
    "web/build_worksites.py",
    "web/groundtruth.py",
    "web/interiors.py"
@@ -3002,9 +3021,11 @@
    "web/test_interactive.mjs",
    "web/test_ladder.mjs",
    "web/test_map.mjs",
+   "web/test_nav.mjs",
    "web/test_progress.mjs",
    "web/test_rtl.mjs",
    "web/test_spaces.mjs",
+   "web/test_verify.mjs",
    "web/test_worksites.mjs",
    "worksites/test.mjs",
    "worksites/verify.mjs",
@@ -3912,7 +3933,7 @@
    {
     "suite": "completion/test.mjs",
     "pack": "completion",
-    "readme_checks": 74,
+    "readme_checks": 75,
     "declared": true,
     "in_readme_table": true
    },
@@ -3933,14 +3954,14 @@
    {
     "suite": "contrib/test.mjs",
     "pack": "contrib",
-    "readme_checks": 53,
+    "readme_checks": 54,
     "declared": true,
     "in_readme_table": true
    },
    {
     "suite": "web/test_contribute.mjs",
     "pack": "web",
-    "readme_checks": 27,
+    "readme_checks": 28,
     "declared": true,
     "in_readme_table": true
    },
@@ -3961,7 +3982,7 @@
    {
     "suite": "web/test_spaces.mjs",
     "pack": "web",
-    "readme_checks": 17,
+    "readme_checks": 18,
     "declared": true,
     "in_readme_table": true
    },
@@ -3975,7 +3996,7 @@
    {
     "suite": "web/test_worksites.mjs",
     "pack": "web",
-    "readme_checks": 140,
+    "readme_checks": 141,
     "declared": true,
     "in_readme_table": true
    },
@@ -3989,14 +4010,14 @@
    {
     "suite": "web/test_geomap.mjs",
     "pack": "web",
-    "readme_checks": 43,
+    "readme_checks": 46,
     "declared": true,
     "in_readme_table": true
    },
    {
     "suite": "web/test_map.mjs",
     "pack": "web",
-    "readme_checks": 39,
+    "readme_checks": 41,
     "declared": true,
     "in_readme_table": true
    },
@@ -4004,6 +4025,20 @@
     "suite": "web/test_home.mjs",
     "pack": "web",
     "readme_checks": 30,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "web/test_nav.mjs",
+    "pack": "web",
+    "readme_checks": 17,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "web/test_verify.mjs",
+    "pack": "web",
+    "readme_checks": 64,
     "declared": true,
     "in_readme_table": true
    },
@@ -4024,7 +4059,7 @@
    {
     "suite": "web/test_progress.mjs",
     "pack": "web",
-    "readme_checks": 45,
+    "readme_checks": 46,
     "declared": true,
     "in_readme_table": true
    },
@@ -4050,18 +4085,18 @@
     "in_readme_table": true
    }
   ],
-  "suites_run": 68,
-  "suites_declaring_a_count": 67,
+  "suites_run": 70,
+  "suites_declaring_a_count": 69,
   "suites_without_a_count": [
    "control/soak.mjs"
   ],
-  "declared_total": 3265,
-  "readme_headline": 3276,
+  "declared_total": 3357,
+  "readme_headline": 3368,
   "unaccounted_for": 11,
   "unaccounted_note": "the headline counts every `  ok ` line verify_all.sh sees, which includes suites the README table gives no number to and web/test_interiors.py, which the table does not list at all. The difference is that remainder and is computed, not reconciled by hand.",
   "min": 9,
   "max": 311,
-  "median": 40,
+  "median": 41,
   "thinnest": [
    {
     "suite": "ops/fuzz.mjs",
@@ -4095,7 +4130,7 @@
    },
    {
     "suite": "web/test_worksites.mjs",
-    "checks": 140
+    "checks": 141
    },
    {
     "suite": "respond/test.mjs",
@@ -4488,6 +4523,7 @@
   "web/build_page.py",
   "web/build_progress.py",
   "web/build_spaces.py",
+  "web/build_verify.py",
   "web/build_worksites.py",
   "web/eval_campuses.mjs",
   "web/eval_scene.mjs",
@@ -4502,9 +4538,11 @@
   "web/test_interactive.mjs",
   "web/test_ladder.mjs",
   "web/test_map.mjs",
+  "web/test_nav.mjs",
   "web/test_progress.mjs",
   "web/test_rtl.mjs",
   "web/test_spaces.mjs",
+  "web/test_verify.mjs",
   "web/test_worksites.mjs",
   "wiki/build_wiki.py",
   "worksites/build.py",

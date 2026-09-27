@@ -82,6 +82,7 @@ h1,h2,h3{font-family:"Archivo",system-ui,sans-serif;text-wrap:balance;margin:0}
 /* ---------- shell ---------- */
 .shell{max-width:1180px;margin:0 auto;padding:0 20px 64px}
 header.top{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;padding:22px 0 14px}
+h1.title{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin:0;font:inherit}
 .brand{font:700 21px/1.1 "Archivo",sans-serif;letter-spacing:-.01em}
 .brand .x{color:var(--accent)}
 .brand .colon{color:var(--band);padding:0 .12em;font-weight:500}
@@ -224,8 +225,8 @@ HTML_HEAD = """<!doctype html><html lang="en"><head><meta charset="utf-8"><title
 BODY = """
 <div class="shell">
   <header class="top">
-    <div class="brand">SmartCiti<span class="x">.X</span><span class="colon">:</span>Trade Craft Academy</div>
-    <div class="tagline">Adaptive Console &middot; powered by AGI&nbsp;Corp</div>
+    <h1 class="title"><span class="brand">SmartCiti<span class="x">.X</span><span class="colon">:</span>Trade Craft Academy</span>
+      <span class="tagline">Adaptive Console &middot; powered by AGI&nbsp;Corp</span></h1>
     <div style="flex:1"></div>
     <div class="pill" id="packpill">pack v2.0</div>
   </header>

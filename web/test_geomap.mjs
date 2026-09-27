@@ -254,6 +254,33 @@ const gen = readFileSync(join(HERE, 'build_geomap.py'), 'utf8').replace(/#.*$/gm
 ok('[generator] build_geomap.py fails closed by name (need()) and takes no `.get(k, default)` on a registry field',
   gen.includes('def need(d, k, where):') && !/\.get\([^)]*,[^)]*\)/.test(gen));
 
+// a campus label must never be covered: restoration labels hang below their point,
+// campus labels stand above theirs and stack on top (Treasure Island's campus and
+// its naval-station site share coordinates; the site's label swallowed the clicks)
+{
+  const css = (sel) => { const m = page.match(new RegExp('\\.' + sel + '\\{[^}]*\\}')); return m ? m[0] : ''; };
+  const z = (rule) => { const m = rule.match(/z-index:(\d+)/); return m ? Number(m[1]) : null; };
+  const zc = z(css('campus-marker')), zr = z(css('restoration-marker'));
+  const restAnchor = page.match(/popupForRestoration\(s\); \}\);[\s\S]*?anchor: '(\w+)'/);
+  const campAnchor = page.match(/popupFor\(f\); \}\);[\s\S]*?anchor: '(\w+)'/);
+  ok('[shipped] campus labels stack above restoration labels and stand on the other side of their point, so a site that shares a campus\'s coordinates cannot cover it',
+    zc !== null && zr !== null && zc > zr && !!restAnchor && !!campAnchor
+    && restAnchor[1] === 'top' && campAnchor[1] === 'bottom',
+    `campus z ${zc}, restoration z ${zr}, anchors ${campAnchor && campAnchor[1]}/${restAnchor && restAnchor[1]}`);
+  ok('[shipped] the page has exactly one <h1>, and it is the brand line the bar already shows',
+    (page.match(/<h1[\s>]/g) || []).length === 1 && /<h1 class="brand">/.test(page));
+}
+{
+  // campus labels that collide at the opening zoom must be re-placed, at load and after every zoom,
+  // and the pass must try a slot below its dot before giving up (the browser smoke measures the result)
+  const body = page.slice(page.indexOf('function placeCampusLabels'), page.indexOf("map.on('zoomend', placeCampusLabels)"));
+  ok('[shipped] colliding campus labels are re-placed at load and after every zoom, trying below, right and left of the dot',
+    page.includes("map.on('load', placeCampusLabels)") && page.includes("map.on('zoomend', placeCampusLabels)")
+    && body.includes('[0, 10 + h]') && body.includes("querySelectorAll('.restoration-marker')")
+    && page.includes('campusLabels.push('),
+    'placeCampusLabels is missing, not hooked to load and zoomend, or no longer avoids restoration markers');
+}
+
 if (failed) {
   console.error(`FAIL  web/test_geomap: ${failed} of ${n + failed} checks failed`);
   process.exit(1);

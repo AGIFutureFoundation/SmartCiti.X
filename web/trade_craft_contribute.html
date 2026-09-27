@@ -57,8 +57,27 @@ footer.page{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px
   color:var(--muted);font-size:14px}
 footer.page a{margin-inline-end:10px}
 </style>
+<style>.sitenav{font:13px/1.45 system-ui,sans-serif;color:var(--ink,inherit);background:var(--panel,var(--surface,transparent));border-block-end:1px solid var(--rule,var(--line,currentColor));padding-block:6px;padding-inline:16px;box-sizing:border-box;max-width:100%;overflow-wrap:anywhere}.sitenav a{color:inherit;text-decoration:none}.sitenav a:hover,.sitenav a:focus-visible{text-decoration:underline}.sitenav-row{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 16px}.sitenav-home{font-weight:700;color:var(--mark,var(--accent,inherit))!important}.sitenav-group{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 8px;min-width:0}.sitenav-g{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted,inherit)}.sitenav ul,.sitenav ol{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:2px 10px}.sitenav [aria-current="page"]{font-weight:700;text-decoration:underline;text-underline-offset:3px;color:var(--mark,var(--accent,inherit))}.sitenav-loop{margin-block-start:6px!important;padding-block-start:6px!important;border-block-start:1px dashed var(--rule,var(--line,currentColor));counter-reset:step;align-items:baseline}.sitenav-loop li{counter-increment:step;color:var(--muted,inherit)}.sitenav-loop li::before{content:counter(step) ". ";color:var(--muted,inherit)}.sitenav-loop [aria-current="step"]{font-weight:700;color:var(--mark,var(--accent,inherit));text-decoration:underline;text-underline-offset:3px}@media(max-width:480px){.sitenav{padding-inline:10px}.sitenav-row{gap:4px 12px}}</style>
 </head>
 <body>
+<nav class="sitenav" data-sitenav aria-label="Site pages">
+<div class="sitenav-row">
+<a class="sitenav-home" href="../index.html">Front door</a>
+<div class="sitenav-group"><span class="sitenav-g">Learn</span><ul><li><a href="trade_craft_lessons.html">Lessons</a></li><li><a href="trade_craft_ladder.html">Ladder</a></li><li><a href="trade_craft_3d.html">Walk the campus</a></li></ul></div>
+<div class="sitenav-group"><span class="sitenav-g">Maps</span><ul><li><a href="trade_craft_map.html">Layered map</a></li><li><a href="trade_craft_interactive.html">Interactive map</a></li><li><a href="trade_craft_geomap.html">Geomap</a></li><li><a href="trade_craft_fabric.html">Spatial fabric</a></li></ul></div>
+<div class="sitenav-group"><span class="sitenav-g">Records</span><ul><li><a href="trade_craft_progress.html">Progress</a></li><li><a href="trade_craft_verify.html">Verify a record</a></li><li><a href="trade_craft_contribute.html" aria-current="page">Contribute</a></li></ul></div>
+<div class="sitenav-group"><span class="sitenav-g">Sites</span><ul><li><a href="trade_craft_spaces.html">Spaces</a></li><li><a href="trade_craft_worksites.html">Work sites</a></li></ul></div>
+<div class="sitenav-group"><span class="sitenav-g">About</span><ul><li><a href="trade_craft_landing.html">Overview</a></li><li><a href="trade_craft_dashboard.html">Dashboard</a></li><li><a href="trade_craft_languages.html">Languages</a></li><li><a href="trade_craft_signin.html">Sign in</a></li><li><a href="smartcitix_trade_craft_academy.html">Academy spec</a></li></ul></div>
+</div>
+<ol class="sitenav-loop" data-sitenav-loop aria-label="Training loop">
+<li><a href="trade_craft_signin.html">Sign in</a></li>
+<li><a href="trade_craft_lessons.html">Choose a lesson</a></li>
+<li><a href="trade_craft_3d.html">Walk it on campus</a></li>
+<li><a href="trade_craft_progress.html">Export your record</a></li>
+<li><a href="trade_craft_verify.html">Verify it</a></li>
+<li><a href="trade_craft_contribute.html" aria-current="step">Share it</a></li>
+</ol>
+</nav>
 <div class="wrap">
 
 <header class="page">
@@ -87,14 +106,14 @@ footer.page a{margin-inline-end:10px}
   <h2>Consent</h2>
   <p class="why">Tick what you are sharing this for. The statement and the licence are fixed by
      <code>contrib/registry/contrib.json</code>, once, and never chosen per file; a package under any other text or licence is
-     refused by the verifier. the recorder ships on, with a visible toggle: turning it off stops new episodes without touching ones already kept, and clearing them is a separate, deliberate action.</p>
+     refused by the verifier. On recording, in the registry's words: the recorder ships on, with a visible toggle: turning it off stops new episodes without touching ones already kept, and clearing them is a separate, deliberate action.</p>
   <div class="card" id="consent-panel">
     <label class="scope"><input type="checkbox" data-scope="agent-training"> <b>agent-training</b> — the episodes may be used to train, evaluate or benchmark a software agent (for example the ml-agents conversion the training pack describes); this bundle has trained none</label>
 <label class="scope"><input type="checkbox" data-scope="robot-training"> <b>robot-training</b> — the episodes may be used to train, evaluate or benchmark a controller for a physical robot; training/ says these are schematic single-machine simulators and no such controller should be trained on them for real equipment, and this bundle has trained none</label>
 
     <p class="muted">Statement carried in the file, verbatim:</p>
     <p class="statement" id="consent-statement">I share the training episodes in this package, recorded by this device, for the scopes named in consent.scope under the licence named in consent.license. I can withdraw by not sharing the file again; copies already given away are governed by that licence. Nothing in this package names me: it carries scenario ids, control schemes and measured outcomes, and the label or wallet address I chose to attach.</p>
-    <p class="muted" id="consent-license" data-license="CC-BY-4.0">Licence: <b>CC-BY-4.0</b> (Creative Commons Attribution 4.0 International). one licence for every package, chosen here and never per record: attribution keeps the contributor named (by the label or key they attached) when a package is passed on, and a permissive data licence is the only one under which the ml-agents-shaped export training/ describes could actually be used by anyone. A share-alike or non-commercial clause would need a party to enforce it and this bundle has no server and no party. A package under any other SPDX id fails consent.license by name.</p>
+    <p class="muted" id="consent-license" data-license="CC-BY-4.0">Licence: <b>CC-BY-4.0</b> (Creative Commons Attribution 4.0 International): one licence for every package, chosen here and never per record: attribution keeps the contributor named (by the label or key they attached) when a package is passed on, and a permissive data licence is the only one under which the ml-agents-shaped export training/ describes could actually be used by anyone. A share-alike or non-commercial clause would need a party to enforce it and this bundle has no server and no party. A package under any other SPDX id fails consent.license by name.</p>
     <p class="muted" id="consent-revocable" data-revocable="true">Revocable: you keep the file; nothing is uploaded by this page.</p>
   </div>
 </section>

@@ -74,5 +74,15 @@ m2 = re.search(r'^const SLICE = (.*);$', html, re.M)
 if not m2 or json.loads(m2.group(1)) != slice_doc:
     print('STALE: the console embeds a different slice than console/app_slice.json')
     print('       run: python3 console/build_app.py'); sys.exit(1)
+# Screen-reader navigation: the page has exactly one visible <h1>, and it
+# states the page's <title> (every word of the title is in the heading).
+h1s = re.findall(r'<h1\b([^>]*)>([\s\S]*?)</h1>', html)
+title = re.search(r'<title>([^<]*)</title>', html).group(1)
+h1_text = re.sub(r'<[^>]+>', '', h1s[0][1]) if len(h1s) == 1 else ''
+if len(h1s) != 1 or re.search(r'hidden|sr-only|visually-hidden', h1s[0][0]) \
+        or any(w not in re.findall(r'[A-Za-z]+', h1_text) for w in re.findall(r'[A-Za-z]+', title)):
+    print(f'BROKEN: the console must carry one visible <h1> stating its title {title!r}; found {len(h1s)}:',
+          [re.sub(r'<[^>]+>', '', t).strip() for _, t in h1s])
+    sys.exit(1)
 print(f'console is current (source stamp {have}; {len(paths)} slice paths read, all present; '
       f'{len(slice_doc["lessons"])} sample rows; slice embedded as built)')

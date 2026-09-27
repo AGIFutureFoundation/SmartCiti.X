@@ -37,6 +37,7 @@ import sys
 HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from staleness import emit  # noqa: E402
+from sitenav import nav_html, labels as nav_labels, NAV_CSS  # noqa: E402
 
 
 def _root():
@@ -62,6 +63,14 @@ def need(d, k, where):
     if k not in d:
         raise KeyError(f'{where}: required field {k!r} is missing')
     return d[k]
+
+
+def closed(s):
+    """A registry clause set into the builder's own copy, closed with a full
+    stop when the registry leaves it open, so the next sentence the builder
+    writes never runs on from it. The registry's words are kept verbatim."""
+    s = str(s).rstrip()
+    return s if s.endswith(('.', '!', '?')) else s + '.'
 
 
 def load(rel):
@@ -541,6 +550,8 @@ else:
 READS = ''.join(f'<li><code>{E(p)}</code></li>' for p in (CONTRIB_PATH, TRAINING_PATH, AUTH_PATH, MANIFEST_PATH))
 READS += f'<li><code>{E(PROTOCOLS_PATH)}</code> — {E(PROTOCOLS_STATE)}</li>'
 
+NAV = nav_html('web/trade_craft_contribute.html', nav_labels('en'))
+
 page = f'''<!doctype html>
 <html lang="en">
 <head>
@@ -600,9 +611,10 @@ footer.page{{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30p
   color:var(--muted);font-size:14px}}
 footer.page a{{margin-inline-end:10px}}
 </style>
+<style>{NAV_CSS}</style>
 </head>
 <body>
-<div class="wrap">
+{NAV}<div class="wrap">
 
 <header class="page">
   <h1>{E(TITLE)} — <span class="x">contribute training data</span></h1>
@@ -630,12 +642,12 @@ footer.page a{{margin-inline-end:10px}}
   <h2>Consent</h2>
   <p class="why">Tick what you are sharing this for. The statement and the licence are fixed by
      <code>{E(CONTRIB_PATH)}</code>, once, and never chosen per file; a package under any other text or licence is
-     refused by the verifier. {E(need(CONSENT, 'recorder_consent', CONTRIB_PATH + '#consent'))}</p>
+     refused by the verifier. On recording, in the registry's words: {E(closed(need(CONSENT, 'recorder_consent', CONTRIB_PATH + '#consent')))}</p>
   <div class="card" id="consent-panel">
     {SCOPE_ROWS}
     <p class="muted">Statement carried in the file, verbatim:</p>
     <p class="statement" id="consent-statement">{E(CONSENT_STATEMENT)}</p>
-    <p class="muted" id="consent-license" data-license="{E(LICENSE_SPDX)}">Licence: <b>{E(LICENSE_SPDX)}</b> ({E(LICENSE_NAME)}). {E(LICENSE_WHY)}</p>
+    <p class="muted" id="consent-license" data-license="{E(LICENSE_SPDX)}">Licence: <b>{E(LICENSE_SPDX)}</b> ({E(LICENSE_NAME)}): {E(closed(LICENSE_WHY))}</p>
     <p class="muted" id="consent-revocable" data-revocable="true">Revocable: you keep the file; nothing is uploaded by this page.</p>
   </div>
 </section>

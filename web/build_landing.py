@@ -6,6 +6,7 @@ import sys
 HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from staleness import emit  # noqa: E402
+from sitenav import nav_html, labels as nav_labels, NAV_CSS  # noqa: E402
 
 
 def _pack_root():
@@ -174,8 +175,10 @@ footer .frow{display:flex;gap:26px;flex-wrap:wrap;align-items:baseline}
 :focus-visible{outline:2px solid var(--steel);outline-offset:3px}
 """
 
+NAV = nav_html('web/trade_craft_landing.html', nav_labels('en'))
+
 BODY = f"""
-<div class="wrap">
+{NAV}<div class="wrap">
   <nav class="top">
     <div class="logo">SmartCiti<span class="x">.X</span><span class="sep">:</span>Trade Craft Academy</div>
     <div class="links">
@@ -383,7 +386,7 @@ page = ('<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Trade
         '<!-- Self-hosted: nothing on this page is fetched from another '
         'origin at run time. See web/fetch_fonts.py. -->\n'
         '<link rel="stylesheet" href="vendor/fonts/fonts.css">\n'
-        f'<style>{CSS}</style>\n{BODY}')
+        f'<style>{CSS}</style>\n<style>{NAV_CSS}</style>\n{BODY}')
 # Written beside this script, not into the working directory: run from the
 # tree root it left a second, identical copy of the page there (defect 13's shape).
 emit(HERE / 'trade_craft_landing.html', page)

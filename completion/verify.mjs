@@ -27,22 +27,53 @@
  *
  * THIS FILE ONLY RECOVERS. There is no signing routine in it and none is
  * imported: a verifier that could sign could forge.
+ *
+ * ONE CORE, TWO SHELLS. Every rule lives in completionCore(), between the
+ * COMPLETION_CORE markers below. It is pure: it reads no file, no clock, no
+ * storage and no network, and it is handed everything it needs - the parsed
+ * registries (REGISTRY_FILES names them), a sha256 function and the
+ * recoverAddress function. This file is the node shell: it reads the files,
+ * supplies node's createHash and auth/recover.mjs's recoverAddress, and
+ * prints. web/build_verify.py carries the marked block byte-for-byte into
+ * web/trade_craft_verify.html, which supplies the same recovery (lifted from
+ * the sign-in page) and the browser's crypto.subtle, so the page and this CLI
+ * run the same rules. SHA-256 in a browser is async (crypto.subtle), so the
+ * core's verify() takes a SYNCHRONOUS sha256 (string -> lowercase hex) and the
+ * core also carries verifyAsync(record, subtle, recover), which computes the
+ * one digest the rules ask for with subtle.digest first and then runs the
+ * same synchronous verify(). node keeps a synchronous verify() for every
+ * module that imports it.
  */
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { recoverAddress } from '../auth/recover.mjs';
 
 const url = (p) => new URL(p, import.meta.url);
-const reg = JSON.parse(readFileSync(url('./registry/completion.json')));
-const lessonsReg = JSON.parse(readFileSync(url('../lessons/registry/lessons.json')));
-const simsReg = JSON.parse(readFileSync(url('../sims/registry/sims.json')));
-const cribsReg = JSON.parse(readFileSync(url('../tools/registry/toolcribs.json')));
-const stationsReg = JSON.parse(readFileSync(url('../stations/registry/stations.json')));
-const hallsReg = JSON.parse(readFileSync(url('../pack/registry/halls.json')));
-const authReg = JSON.parse(readFileSync(url('../auth/registry/auth.json')));
+/* the registries the core reads, by the name the core asks for them */
+export const REGISTRY_FILES = {
+  completion: 'completion/registry/completion.json',
+  lessons: 'lessons/registry/lessons.json',
+  sims: 'sims/registry/sims.json',
+  toolcribs: 'tools/registry/toolcribs.json',
+  stations: 'stations/registry/stations.json',
+  halls: 'pack/registry/halls.json',
+  auth: 'auth/registry/auth.json',
+};
+const REGS = {};
+for (const [k, rel] of Object.entries(REGISTRY_FILES)) REGS[k] = JSON.parse(readFileSync(url('../' + rel)));
 
+/* COMPLETION_CORE:BEGIN - completionCore(regs) -> the verifier's rules, pure.
+   regs: { completion, lessons, sims, toolcribs, stations, halls, auth } parsed
+   from the files REGISTRY_FILES names. Throws at once if the registries
+   disagree with each other. Returns { verify(record, sha256hex, recover),
+   verifyAsync(record, subtle, recover), report(result), errorLine(e), ... }.
+   sha256hex: (utf-8 string) -> 64 lowercase hex chars, synchronous.
+   recover  : (message, 0x-hex sig) -> the signer's address; throws on a
+              malformed signature. This block recovers; it never signs.
+   No file, clock, storage, DOM or network is touched in here. */
+function completionCore(regs) {
 class Missing extends Error {}
-export function need(obj, key, who) {
+function need(obj, key, who) {
   if (obj === null || typeof obj !== 'object' || !Object.prototype.hasOwnProperty.call(obj, key)) {
     throw new Missing(`${who} lacks ${JSON.stringify(key)}`);
   }
@@ -50,7 +81,7 @@ export function need(obj, key, who) {
 }
 
 // canonical JSON: keys sorted recursively, no whitespace, UTF-8
-export function canonical(v) {
+function canonical(v) {
   if (Array.isArray(v)) return '[' + v.map(canonical).join(',') + ']';
   if (v !== null && typeof v === 'object') {
     return '{' + Object.keys(v).sort().map((k) => JSON.stringify(k) + ':' + canonical(v[k])).join(',') + '}';
@@ -61,7 +92,7 @@ export function canonical(v) {
 // identity.signature forced to null - the signature is made OVER the digest,
 // after it, so it cannot be inside it. The exporter (web/build_progress.py)
 // canonicalises the same way; completion.json#digest.over says so.
-export function digestBody(record) {
+function digestBody(record) {
   const body = {};
   for (const k of Object.keys(record)) if (k !== 'digest') body[k] = record[k];
   if (body.identity !== null && typeof body.identity === 'object' && 'signature' in body.identity) {
@@ -69,22 +100,26 @@ export function digestBody(record) {
   }
   return body;
 }
-export function digestOf(record) {
-  return createHash('sha256').update(Buffer.from(canonical(digestBody(record)), 'utf8')).digest('hex');
-}
 
 // the exact string a wallet signs, fixed by structure: auth/'s own statement
 // line, then this record's digest, then its export time. Rebuilt here from the
 // record, never taken from it, so a signature over any other text is refused.
+const reg = need(regs, 'completion', 'registries');
+const lessonsReg = need(regs, 'lessons', 'registries');
+const simsReg = need(regs, 'sims', 'registries');
+const cribsReg = need(regs, 'toolcribs', 'registries');
+const stationsReg = need(regs, 'stations', 'registries');
+const hallsReg = need(regs, 'halls', 'registries');
+const authReg = need(regs, 'auth', 'registries');
 const SIG_RULE = need(reg, 'signature', 'completion.json');
 const SIWE_STATEMENT = need(need(authReg, 'siwe', 'auth.json'), 'statement', 'auth.json#siwe');
 if (need(need(SIG_RULE, 'message', 'completion.json#signature'), 'statement', 'completion.json#signature.message') !== SIWE_STATEMENT) {
   throw new Error('completion.json#signature.message.statement is not auth.json#siwe.statement; rebuild completion/');
 }
-export const SIGNATURE_SCHEME = need(SIG_RULE, 'scheme', 'completion.json#signature');
-export const SIGNED_ATTESTATION = 'wallet signature over the digest';
-export const UNSIGNED_ATTESTATION = 'this device only';
-export function signatureMessage(digestHex, exportedAt) {
+const SIGNATURE_SCHEME = need(SIG_RULE, 'scheme', 'completion.json#signature');
+const SIGNED_ATTESTATION = 'wallet signature over the digest';
+const UNSIGNED_ATTESTATION = 'this device only';
+function signatureMessage(digestHex, exportedAt) {
   if (typeof digestHex !== 'string' || typeof exportedAt !== 'string') throw new Missing('signatureMessage needs digest.hex and exported_at as strings');
   return SIWE_STATEMENT + '\ndigest: ' + digestHex + '\nexported_at: ' + exportedAt;
 }
@@ -99,7 +134,7 @@ const EVIDENCE_RULE = need(reg, 'evidence_rule', 'completion.json');
 const SIM_RULES = need(reg, 'sims', 'completion.json');
 const RULES = need(need(reg, 'verifier', 'completion.json'), 'rules', 'completion.json#verifier');
 
-export function verify(record) {
+function verify(record, sha256hex, recoverAddress) {
   const tally = {};
   for (const r of RULES) tally[r] = { checked: 0, fails: [] };
   const check = (rule, cond, msg) => { tally[rule].checked++; if (!cond) tally[rule].fails.push(msg); };
@@ -129,7 +164,7 @@ export function verify(record) {
   // digest — integrity since export, not identity
   const hex = need(dig, 'hex', 'digest');
   check('digest', /^[0-9a-f]{64}$/.test(hex), 'digest.hex is not 64 hex chars');
-  check('digest', digestOf(record) === hex, 'digest does not recompute over the canonical record');
+  check('digest', sha256hex(canonical(digestBody(record))) === hex, 'digest does not recompute over the canonical record');
 
   // identity.signature — null is unsigned (this device only); an object is a
   // wallet's EIP-191 signature over THIS digest, and the signer is recovered
@@ -300,6 +335,67 @@ export function verify(record) {
   return { tally, notes, signature, summary: { nComplete, nFullyBacked, nEpisode, nDeviceMark, nSelfReported } };
 }
 
+// the browser's sha256 is async: compute the one digest verify() asks for
+// with subtle.digest first, then run the same synchronous rules over it
+async function verifyAsync(record, subtle, recoverAddress) {
+  let body = null, digestHex = null;
+  if (record !== null && typeof record === 'object') {
+    body = canonical(digestBody(record));
+    const bytes = new Uint8Array(await subtle.digest('SHA-256', new TextEncoder().encode(body)));
+    digestHex = Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('');
+  }
+  return verify(record, (s) => {
+    if (s !== body) throw new Error('verifyAsync: a digest was asked of a body it did not compute');
+    return digestHex;
+  }, recoverAddress);
+}
+
+const LAST_LINE = 'this verifies integrity since export and resolution against the bundle; a wallet signature, if any, proves '
+  + 'that the holder of a key signed this digest at export - a key, not a person; nothing is written to any chain, '
+  + 'nothing is anchored, and this is no accreditation';
+
+// the lines the CLI prints for one result, in order; err marks stderr
+function report(result) {
+  const { tally, notes, signature, summary } = result;
+  const lines = [];
+  for (const [rule, t] of Object.entries(tally)) {
+    const line = `${rule}: checked ${t.checked}, failing ${t.fails.length}`;
+    if (t.fails.length) { lines.push({ err: true, text: `FAIL ${line}` }); for (const f of t.fails) lines.push({ err: true, text: `     ${f}` }); }
+    else lines.push({ err: false, text: `ok ${line}` });
+  }
+  for (const n of notes) lines.push({ err: false, text: `note ${n}` });
+  lines.push({ err: false, text: `signature: ${signature.line}` });
+  lines.push({ err: false, text: `summary: ${summary.nComplete} lessons complete, of which ${summary.nFullyBacked} fully evidence-backed `
+    + `(every step episode-backed); across them ${summary.nEpisode} episode-backed steps, `
+    + `${summary.nDeviceMark} device-mark steps (station/crib: a device-local mark, not a recorded episode), `
+    + `${summary.nSelfReported} self-reported steps counted as done` });
+  lines.push({ err: false, text: LAST_LINE });
+  return lines;
+}
+function failed(result) { return Object.values(result.tally).some((t) => t.fails.length > 0); }
+// a thrown error, as the CLI names it: a missing field is record.fields
+function errorLine(e) { return e instanceof Missing ? `FAIL record.fields: ${e.message}` : `FAIL verify: ${e.message}`; }
+
+return { Missing, need, canonical, digestBody, signatureMessage, SIGNATURE_SCHEME, SIGNED_ATTESTATION, UNSIGNED_ATTESTATION,
+  RULES, LAST_LINE, verify, verifyAsync, report, failed, errorLine };
+}
+/* COMPLETION_CORE:END */
+
+const CORE = completionCore(REGS);
+const sha256hex = (s) => createHash('sha256').update(Buffer.from(s, 'utf8')).digest('hex');
+export const need = CORE.need;
+export const canonical = CORE.canonical;
+export const digestBody = CORE.digestBody;
+export function digestOf(record) { return sha256hex(canonical(digestBody(record))); }
+export const SIGNATURE_SCHEME = CORE.SIGNATURE_SCHEME;
+export const SIGNED_ATTESTATION = CORE.SIGNED_ATTESTATION;
+export const UNSIGNED_ATTESTATION = CORE.UNSIGNED_ATTESTATION;
+export const signatureMessage = CORE.signatureMessage;
+export const LAST_LINE = CORE.LAST_LINE;
+export { completionCore };
+/** the rules over one record, synchronous, with node's sha256 and the sign-in page's recovery */
+export function verify(record) { return CORE.verify(record, sha256hex, recoverAddress); }
+
 const isMain = process.argv[1] && new URL(`file://${process.argv[1]}`).pathname === new URL(import.meta.url).pathname;
 if (isMain) {
   const path = process.argv[2];
@@ -307,25 +403,12 @@ if (isMain) {
   let failed = false;
   try {
     const record = JSON.parse(readFileSync(path, 'utf8'));
-    const { tally, notes, signature, summary } = verify(record);
-    for (const [rule, t] of Object.entries(tally)) {
-      const line = `${rule}: checked ${t.checked}, failing ${t.fails.length}`;
-      if (t.fails.length) { failed = true; console.error(`FAIL ${line}`); for (const f of t.fails) console.error(`     ${f}`); }
-      else console.log(`ok ${line}`);
-    }
-    for (const n of notes) console.log(`note ${n}`);
-    console.log(`signature: ${signature.line}`);
-    console.log(`summary: ${summary.nComplete} lessons complete, of which ${summary.nFullyBacked} fully evidence-backed `
-      + `(every step episode-backed); across them ${summary.nEpisode} episode-backed steps, `
-      + `${summary.nDeviceMark} device-mark steps (station/crib: a device-local mark, not a recorded episode), `
-      + `${summary.nSelfReported} self-reported steps counted as done`);
-    console.log('this verifies integrity since export and resolution against the bundle; a wallet signature, if any, proves '
-      + 'that the holder of a key signed this digest at export - a key, not a person; nothing is written to any chain, '
-      + 'nothing is anchored, and this is no accreditation');
+    const result = verify(record);
+    failed = CORE.failed(result);
+    for (const l of CORE.report(result)) (l.err ? console.error : console.log)(l.text);
   } catch (e) {
     failed = true;
-    if (e instanceof Missing) console.error(`FAIL record.fields: ${e.message}`);
-    else console.error(`FAIL verify: ${e.message}`);
+    console.error(CORE.errorLine(e));
   }
   process.exit(failed ? 1 : 0);
 }

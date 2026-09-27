@@ -1140,5 +1140,30 @@ if (!WANT_BROWSER) {
     [`figs=${figKeys.join(',')}`, `honesty=${hon}`]);
 }
 
+
+/* ---------------------------------------------------------- copy joins -- */
+// Registry sentences are set into the builder's own copy. A join must never
+// start a sentence lowercase ("...the file. no lesson here...") nor run two
+// sentences together with no terminal punctuation ("...counted instead The
+// last column..."). Read every rendered paragraph of the sections that join.
+{
+  const JOIN_SECTIONS = ['sessions', 'completion'];
+  const START = /[a-z0-9)\]]\s+(The|This|That|These|It|Its|A|An|Every|Each|Nothing|No|Read|Tick|What|When|Where|Seat|Sim)\s/;
+  const joinBad = [];
+  for (const id of JOIN_SECTIONS) {
+    const at = html.indexOf(`<section id="${id}"`);
+    if (at < 0) { joinBad.push(`#${id}: no such section`); continue; }
+    const sec = html.slice(at, html.indexOf('</section>', at));
+    for (const pm of sec.matchAll(/<p\b[^>]*>([\s\S]*?)<\/p>/g)) {
+      const text = pm[1].replace(/<[^>]+>/g, '').replace(/&[a-z]+;|&#\d+;/g, (e) => ({ '&amp;': '&', '&lt;': '<', '&gt;': '>', '&quot;': '"', '&mdash;': '—' }[e] || ' ')).replace(/\s+/g, ' ').trim();
+      const low = text.match(/[.!?]\s+[a-z][a-z]/);
+      const run = text.match(START);
+      if (low) joinBad.push(`#${id}: lowercase sentence start: ...${text.slice(Math.max(0, low.index - 40), low.index + 40)}...`);
+      if (run) joinBad.push(`#${id}: sentences joined with no terminal punctuation: ...${text.slice(Math.max(0, run.index - 40), run.index + 40)}...`);
+    }
+  }
+  ok(`[shipped] every paragraph in ${JOIN_SECTIONS.map((s) => '#' + s).join(', ')} starts each sentence uppercase and closes each before the next`, joinBad.length === 0, joinBad);
+}
+
 console.log(`\nprogress: ${n} checks, ${bad} failure${bad === 1 ? '' : 's'}`);
 process.exit(bad ? 1 : 0);

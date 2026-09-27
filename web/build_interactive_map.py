@@ -36,6 +36,7 @@ sys.path.insert(0, str(ROOT / 'web'))
 from interiors import build as build_interiors  # noqa: E402
 from mapdata import strand_modules, PIPELINE_JS, HUES, make_codes  # noqa: E402
 from staleness import emit  # noqa: E402
+from sitenav import nav_html, labels as nav_labels, NAV_CSS  # noqa: E402
 
 manifest = json.load(open(ROOT / 'pack/manifest.json'))
 L = manifest['ledger']
@@ -247,6 +248,8 @@ DATA = json.dumps({
     'i18n': I18N,
 }, ensure_ascii=False, separators=(',', ':'))
 
+NAV = nav_html('web/trade_craft_interactive.html', nav_labels('en'))
+
 page = '''<!doctype html>
 <html lang="en">
 <head>
@@ -373,9 +376,10 @@ body.L-lessons #ladder{display:block}
 .lesson .needs{color:var(--muted);font-size:12px;margin-top:6px}
 footer{color:var(--muted);font-size:12.5px;margin-top:26px;border-top:1px solid var(--rule);padding-top:12px}
 </style>
+<style>__SITENAV_CSS__</style>
 </head>
 <body class="L-districts L-modules L-stations">
-<div class="wrap">
+__SITENAV__<div class="wrap">
 <header>
   <h1>SmartCiti<span class="x">.X</span> : Trade Craft Academy</h1>
   <span class="attr">powered by AGI Corp</span>
@@ -690,6 +694,7 @@ if (params.get('hall') && D.halls.some(h => h.slug === params.get('hall')))
 </html>
 '''
 
+page = page.replace('__SITENAV_CSS__', NAV_CSS).replace('__SITENAV__', NAV)
 page = page.replace('__DATA__', DATA).replace('__PIPELINE_JS__', PIPELINE_JS)
 out = HERE / 'trade_craft_interactive.html'
 n_st = stations_reg['count']
