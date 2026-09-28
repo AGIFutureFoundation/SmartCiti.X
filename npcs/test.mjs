@@ -258,11 +258,53 @@ const npcs = reg.npcs;
   }
   ok(`looks: every appearance cfg is ${Object.keys(opts).length} valid avatars/ locker options`, badCfg.length === 0, badCfg);
   const badProxy = [];
-  for (const x of npcs) for (const p of ['torso', 'legs', 'head', 'hat']) {
+  for (const x of npcs) for (const p of ['torso', 'legs', 'head', 'hat', 'vest']) {
+    if (!(p in x.appearance.proxy)) { badProxy.push(`${x.id}: ${p} key missing`); continue; }
     const pr = x.appearance.proxy[p];
+    if (pr === null && (p === 'hat' || p === 'vest')) continue;
     if (!pr || resolvePath(pr.source) !== pr.hex) badProxy.push(`${x.id}: ${p}`);
   }
   ok('looks: every proxy colour is read verbatim from avatars/ options', badProxy.length === 0, badProxy);
+  // wave 6: wardrobe variety, deterministic per NPC id, registry items only
+  const W = reg.wardrobe, badW = [], badPick = [], badHat = [], badScale = [];
+  const pickOf = (id, sec, pool) => pool[parseInt(createHash('sha256').update(`${id}:${sec}`).digest('hex').slice(0, 8), 16) % pool.length];
+  for (const [nm, gear] of [...Object.entries(W.family_gear), ...Object.entries(W.roles), ['mentor_colours', W.mentor_colours]])
+    for (const [sec, pool] of Object.entries(gear)) for (const v of pool) if (!opts[sec] || !opts[sec].has(v)) badW.push(`${nm}.${sec}=${v}`);
+  for (const v of [...W.hard_hats]) if (!opts.headwear.has(v)) badW.push('hard_hats ' + v);
+  for (const v of [...W.facialhair]) if (!opts.facialhair.has(v)) badW.push('facialhair ' + v);
+  for (const [v, t] of Object.entries(W.vest_tint)) if (!opts.vest.has(v) || !opts.topcolor.has(t)) badW.push(`vest_tint ${v}->${t}`);
+  ok('looks: every wardrobe item is an existing avatars/ locker option (no invented gear)', badW.length === 0, badW);
+  const secOpts = Object.fromEntries(av.sections.map((s) => [s.id, s.options.map((o) => o.id)]));
+  for (const x of npcs) {
+    const cfg = x.appearance.cfg;
+    const gear = x.role === 'mentor' ? { ...W.family_gear[x.family], ...W.mentor_colours } : W.roles[x.role];
+    if (!gear) { badPick.push(`${x.id}: no wardrobe for ${x.role}/${x.family}`); continue; }
+    for (const [sec, pool] of Object.entries(gear)) if (cfg[sec] !== pickOf(x.id, sec, pool)) badPick.push(`${x.id}: ${sec}=${cfg[sec]}`);
+    for (const sec of W.vary) {
+      const pool = sec === 'facialhair' ? W.facialhair : secOpts[sec];
+      if (cfg[sec] !== pickOf(x.id, sec, pool)) badPick.push(`${x.id}: ${sec}=${cfg[sec]}`);
+    }
+    if ((x.role === 'mentor' || x.role === 'host') && (!W.hard_hats.includes(cfg.headwear) || cfg.vest === 'none'))
+      badHat.push(`${x.id}: ${cfg.headwear}/${cfg.vest}`);
+    if (x.role === 'mentor' && !secOpts.crew.includes(cfg.crew)) badHat.push(`${x.id}: crew ${cfg.crew}`);
+    if ((cfg.headwear === 'none') !== (x.appearance.proxy.hat === null)) badHat.push(`${x.id}: hat proxy vs ${cfg.headwear}`);
+    if ((cfg.vest in W.vest_tint) === (x.appearance.proxy.vest === null)) badHat.push(`${x.id}: vest proxy vs ${cfg.vest}`);
+    const sc = x.appearance.scale;
+    if (!sc || JSON.stringify(resolvePath(sc.source)) !== JSON.stringify(sc.xyz) || !sc.source.includes(`options[${secOpts.build.indexOf(cfg.build)}]`)) badScale.push(x.id);
+  }
+  ok('looks: every outfit + body pick = sha256("<id>:<section>") into its AUTHORED pool (deterministic per NPC id)', badPick.length === 0, badPick);
+  ok('looks: mentors + hosts wear a registry hard hat and a vest/harness; mentors wear their hall crew; hat/vest proxies match', badHat.length === 0, badHat);
+  ok('looks: body scale is the build option\'s registry scale (rig range)', badScale.length === 0, badScale);
+  const distinct = (f) => new Set(npcs.map(f)).size;
+  const nb = distinct((x) => x.appearance.cfg.build), ns = distinct((x) => x.appearance.cfg.skin);
+  const nh = distinct((x) => x.appearance.scale.xyz[1]);
+  const whole = distinct((x) => JSON.stringify(x.appearance.cfg));
+  ok(`looks: variety - ${nb} builds, ${nh} heights, ${ns} skin tones, ${whole}/${npcs.length} distinct outfits`,
+    nb >= 12 && nh === 4 && ns >= 12 && whole === npcs.length, [nb, nh, ns, whole]);
+  const fams = new Set(npcs.filter((x) => x.role === 'mentor').map((x) => x.family));
+  const famTools = [...fams].filter((f) => new Set(npcs.filter((x) => x.family === f).map((x) => x.appearance.cfg.tools)).size >= 1
+    && npcs.filter((x) => x.family === f).every((x) => W.family_gear[f].tools.includes(x.appearance.cfg.tools)));
+  ok('looks: each mentor carries a tool belt from its own trade family gear', famTools.length === fams.size, [[...fams].join(',')]);
 }
 
 // ------------------------------------------------------------ npc_data ---
@@ -442,8 +484,8 @@ const LBL = K.labelsFrom(trOf('en'));
     honesty: reg.honesty, panelRoot: root, onTakeMeThere: (p) => { went = p; }, onTalk: (x) => { talked = x.id; },
     makeBody: () => { bodies++; return new THREE.Group(); }, now: () => (clock += 0.3), budgetMs: 1.0 });
   const inst = scene.children.filter((c) => c.isInstancedMesh);
-  ok(`spawn: ${here.length} NPCs on 4 InstancedMesh parts (one draw per part)`,
-     inst.length === 4 && inst.every((m) => m.count === here.length) && kit.agents.length === here.length);
+  ok(`spawn: ${here.length} NPCs on 5 InstancedMesh parts (torso, legs, head, hat, vest) (one draw per part)`,
+     inst.length === 5 && inst.every((m) => m.count === here.length) && kit.agents.length === here.length);
   ok('spawn: per-instance colours set from the registry proxy', inst.every((m) => m.instanceColor));
   const panel = root.children[0];
   ok('a11y: panel is role=dialog, aria-labelledby, hidden until talk',
@@ -554,7 +596,119 @@ const LBL = K.labelsFrom(trOf('en'));
   ok('routine: the NPC walks between places (walk state used) and idles at night', walked.has('walk') && walked.has('idle'), [[...walked].join(',')]);
   const c = K.makeClock(23, 1);
   ok('routine: makeClock wraps past midnight', Math.abs(c.tick(2) - 1) < 1e-9 && c.set(-1) === 23);
+  // wave 6 midnight wrap: out-of-range hours map to the same slot as their wrapped hour
+  const wrongSlot = [];
+  for (const n of npcs) for (const [raw, w] of [[30, 6], [24, 0], [-0.5, 23.5], [47.9, 23.9], [-18, 6], [33.5, 9.5], [-11, 13]]) {
+    if (K.scheduledAt(n.schedule, raw) !== K.scheduledAt(n.schedule, w)) wrongSlot.push(`${n.id} ${raw}h`);
+  }
+  ok('routine: scheduledAt wraps any hour at midnight (30 h = 06 h, -0.5 h = 23.5 h) for every NPC', wrongSlot.length === 0, wrongSlot.slice(0, 5));
+  const back = K.makeClock(0.25, -1);
+  const hs = [back.tick(0.5), back.tick(0.5), back.tick(30)];
+  ok('routine: a clock running backwards across midnight stays in [0, 24)', hs.every((v) => v >= 0 && v < 24)
+    && Math.abs(hs[0] - 23.75) < 1e-9 && Math.abs(hs[1] - 23.25) < 1e-9, [hs.join(',')]);
+  const nf = []; for (const f of [() => K.scheduledAt(npcs[0].schedule, NaN), () => K.makeClock(0, 1).tick(NaN), () => K.makeClock(Infinity, 1)])
+    { try { f(); nf.push('no throw'); } catch (e) { if (!/non-finite hour/.test(e.message)) nf.push(e.message); } }
+  ok('routine: a non-finite hour fails closed by name', nf.length === 0, nf);
   kit.dispose();
+}
+
+// ------------------------------------------ idle animation timing (wave 6) ----
+{
+  const I = K.IDLE, ids = npcs.map((x) => x.id);
+  const hash = (s) => { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); } return h >>> 0; };
+  const tms = npcs.map((x) => K.idleTiming(hash(x.id)));
+  const tm0 = tms[0], tm0b = K.idleTiming(hash(ids[0]));
+  ok('idle: timing is deterministic per NPC id and differs between NPCs',
+    JSON.stringify(tm0) === JSON.stringify(tm0b) && new Set(tms.map((t) => t.breath.toFixed(4))).size > npcs.length * 0.9);
+  const badB = [];
+  for (const tm of tms) {
+    if (!(tm.breath >= 3.2 && tm.breath <= 4.4)) badB.push('period ' + tm.breath);
+    for (const t of [0.3, 1.7, 5.1]) {
+      const p1 = K.idlePose(tm, t, 'idle', 0).breath, p2 = K.idlePose(tm, t + tm.breath, 'idle', 0).breath;
+      if (Math.abs(p1 - p2) > 1e-9) badB.push('not periodic');
+    }
+    let mx = 0; for (let t = 0; t < 10; t += 0.05) mx = Math.max(mx, Math.abs(K.idlePose(tm, t, 'idle', 0).breath - 1));
+    if (mx > 0.015 + 1e-12 || mx < 0.01) badB.push('amp ' + mx);
+  }
+  ok('idle: breathing period 3.2..4.4 s, periodic, amplitude <= 1.5 %', badB.length === 0, badB);
+  const badG = [];
+  for (const tm of tms.slice(0, 30)) {   // glance windows sampled at 60 fps over 120 s
+    const starts = [], lens = []; let on = null, prevYaw = K.idlePose(tm, 0, 'wander', 0).yaw, maxStep = 0, prevSign = 0, alt = true;
+    for (let f = 0; f <= 120 * 60; f++) {
+      const t = f / 60, y = K.idlePose(tm, t, 'wander', 0).yaw;
+      maxStep = Math.max(maxStep, Math.abs(y - prevYaw)); prevYaw = y;
+      if (Math.abs(y) > 1e-9 && on === null) { on = t; const sg = Math.sign(y); if (prevSign && sg === prevSign) alt = false; prevSign = sg; }
+      if (Math.abs(y) <= 1e-9 && on !== null) { starts.push(on); lens.push(t - on); on = null; }
+      if (Math.abs(y) > 0.45 + 1e-9) badG.push('yaw ' + y);
+    }
+    if (starts[0] === 0) { starts.shift(); lens.shift(); }   // a glance already under way at t=0
+    const gaps = starts.slice(1).map((v, i) => v - starts[i]);
+    if (starts.length < 10) badG.push('few glances ' + starts.length);
+    if (lens.some((l) => l > 1.4 + 1 / 30)) badG.push('long ' + Math.max(...lens));
+    if (gaps.some((g) => Math.abs(g - tm.every) > 1 / 30)) badG.push('gap ' + gaps.join(','));
+    if (!(tm.every >= 7 && tm.every <= 11)) badG.push('every ' + tm.every);
+    if (maxStep > 0.02) badG.push('jump ' + maxStep);
+    if (!alt) badG.push('sides do not alternate');
+  }
+  ok('idle: a glance every 7..11 s lasting <= 1.4 s, <= 0.45 rad, smooth (< 0.02 rad per frame), alternating sides', badG.length === 0, badG.slice(0, 5));
+  const quiet = tms.every((tm) => [0, 0.5, 1, 2, 5, 9].every((t) => K.idlePose(tm, t, 'talk', 1).yaw === 0 && K.idlePose(tm, t, 'greet', 0).yaw === 0
+    && K.idlePose(tm, t, 'idle', 3).gesture === 0 && K.idlePose(tm, t, 'wander', 3).gesture === 0));
+  ok('idle: no glance while greeting/talking; no gesture unless talking', quiet);
+  const g = (tt) => K.idlePose(tm0, 3, 'talk', tt).gesture;
+  ok('idle: talk gesture starts at rest, peaks at half its 2.4 s cycle, repeats every 2.4 s',
+    g(0) === 0 && Math.abs(g(I.gesturePeriod / 2) - I.gestureAmp) < 1e-12 && Math.abs(g(0.7) - g(0.7 + I.gesturePeriod)) < 1e-12
+    && I.gesturePeriod === 2.4 && I.gestureAmp <= 0.5, [g(0), g(1.2)]);
+  const THREE = await import(pathToFileURL(join(ROOT, 'web/vendor/three.module.min.js')).href);
+  const root = globalThis.document.createElement('body');
+  const here = npcs.slice(0, 40);
+  const pl = {}; for (const x of here) { pl[x.home.place] = { x: 0, z: 0 }; for (const sl of x.schedule) pl[sl.at] = { x: 0, z: 0 }; }
+  const rig = () => { const g0 = new THREE.Group(); const mk = (nm, par) => { const b = new THREE.Group(); b.name = nm; par.add(b); return b; };
+    const chest = mk('chest', g0); mk('head', chest); mk('rightLowerArm', mk('rightUpperArm', chest)); return g0; };
+  const kit = K.createNPCKit({ THREE, scene: new THREE.Scene(), npcs: here, panelRoot: root, honesty: reg.honesty,
+    placeOf: (id) => pl[id], labels: LBL, makeBody: rig, now: () => 0, animMax: 12, detailMax: 1, detailDist: 50 });
+  let st = null;
+  for (let f = 0; f < 120; f++) st = kit.update(1 / 60, { x: 0.5, z: 0.5 }, 12);
+  ok('idle: kit animates at most animMax (12) agents per frame', st.animated === 12, [JSON.stringify(st)]);
+  const far = kit.update(1 / 60, { x: 1e4, z: 1e4 }, 12);
+  ok('idle: nobody beyond animDist is animated', far.animated === 0, [JSON.stringify(far)]);
+  let t2 = 0;
+  const kit2 = K.createNPCKit({ THREE, scene: new THREE.Scene(), npcs: here, panelRoot: root, honesty: reg.honesty,
+    placeOf: (id) => pl[id], labels: LBL, now: () => (t2 += 0.1), animBudgetMs: 0.3, budgetMs: 1.0 });
+  const sb = kit2.update(1 / 60, { x: 0.5, z: 0.5 }, 12);
+  ok('idle: the animation pass stops when its per-frame budget (0.3 ms) is spent', sb.animated >= 1 && sb.animated <= 3, [JSON.stringify(sb)]);
+  kit2.dispose();
+  kit.update(1 / 60, { x: 0.5, z: 0.5 }, 12);
+  const a0 = kit.agents.find((a) => a.body);
+  kit.talkTo(a0.id);
+  let maxArm = 0, maxChest = 0;
+  for (let f = 0; f < 150; f++) { kit.update(1 / 60, { x: a0.x, z: a0.z }, 12);
+    maxArm = Math.max(maxArm, Math.abs(a0.bones.rightUpperArm.rotation.x)); maxChest = Math.max(maxChest, Math.abs(a0.bones.chest.scale.y - 1)); }
+  ok('idle: a detailed body gestures with the rig\'s right arm while talking and breathes with its chest',
+    a0.state === 'talk' && maxArm > 0.4 && maxArm <= 0.5 + 1e-9 && maxChest > 0.005 && maxChest <= 0.015 + 1e-9, [a0.state, maxArm, maxChest]);
+  kit.closeDialogue(); kit.dispose();
+  // proxies: each instance carries the build scale; the torso breathes; a bare head draws no hat, no vest draws none
+  const bare = npcs.find((x) => x.appearance.proxy.hat === null), tall = npcs.find((x) => x.appearance.scale.xyz[1] > 1.1 && x.appearance.proxy.hat);
+  const novest = npcs.find((x) => x.appearance.proxy.vest === null);
+  const trio = [bare, tall, novest].filter(Boolean);
+  const pl3 = {}; for (const x of trio) { pl3[x.home.place] = { x: 0, z: 0 }; for (const sl of x.schedule) pl3[sl.at] = { x: 0, z: 0 }; }
+  const sc3 = new THREE.Scene();
+  const kit3 = K.createNPCKit({ THREE, scene: sc3, npcs: trio, panelRoot: root, honesty: reg.honesty, placeOf: (id) => pl3[id], labels: LBL, now: () => 0 });
+  const mesh = (k) => sc3.children.find((c) => c.isInstancedMesh && c.userData.npcPart === k);
+  const M4 = new THREE.Matrix4(), P = new THREE.Vector3(), Q = new THREE.Quaternion(), S3 = new THREE.Vector3();
+  const at = (k, i) => { mesh(k).getMatrixAt(i, M4); M4.decompose(P, Q, S3); return { y: P.y, s: S3.clone() }; };
+  let tsy = [];
+  for (let f = 0; f < 300; f++) { kit3.update(1 / 60, { x: 1, z: 1 }, 12); tsy.push(at('torso', 1).s.y); }
+  const ti = trio.indexOf(tall), sxyz = tall.appearance.scale.xyz;
+  const head = at('head', ti), legs = at('legs', ti);
+  const pbad = [];
+  if (Math.abs(legs.s.x - sxyz[0]) > 1e-6 || Math.abs(legs.s.y - sxyz[1]) > 1e-6 || Math.abs(legs.s.z - sxyz[2]) > 1e-6) pbad.push('legs scale ' + JSON.stringify(legs.s));
+  if (Math.abs(head.y - 1.66 * sxyz[1]) > 1e-6) pbad.push('head y ' + head.y);
+  const bre = Math.max(...tsy) / Math.min(...tsy);
+  if (!(bre > 1.01 && bre < 1.031)) pbad.push('torso breath ratio ' + bre);
+  if (bare && at('hat', trio.indexOf(bare)).s.length() > 1e-9) pbad.push('bare head draws a hat');
+  if (novest && at('vest', trio.indexOf(novest)).s.length() > 1e-9) pbad.push('no vest draws a vest');
+  ok('idle: proxy instances carry the build scale, the torso breathes, a bare head / no vest draws nothing', pbad.length === 0 && trio.length === 3, pbad);
+  kit3.dispose();
 }
 
 if (bad) {

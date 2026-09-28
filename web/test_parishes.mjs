@@ -133,6 +133,41 @@ check('[npcs] guides follow their routines on the kit clock, never in the overvi
 check('[perf] overview renders at the declared 0.6 pixel scale and skips the parish check', /const OVERVIEW_PR = 0\.6;/.test(main) && /applyPR\(m === 'overview' \? OVERVIEW_PR : 1\);/.test(main) && /if \(mode !== 'overview'\) checkParish\(\);/.test(main));
 check('[detail] water shimmer is a uniform, not a mesh', /matWater\.emissiveIntensity = /.test(main));
 
+// [kit] wave 6: the AUTHORED building kit, ground tiles, atmosphere (browser measures: web/eval_parishes.mjs kit/ground/atmosphere rows)
+check('[kit] two building families (house, midrise incl. industrial shells), each ONE InstancedMesh with per-instance colour',
+  /new THREE\.InstancedMesh\(houseGeo, kitMat\('house'\), CAP\.block\)/.test(main) && /new THREE\.InstancedMesh\(blockGeo, kitMat\('midrise'\), CAP\.block\)/.test(main)
+  && /const KIT = \{ house: houses, midrise: blocks \};/.test(main) && /m\.setColorAt\(0, KC\.set\(0xffffff\)\)/.test(main)
+  && /if \(nb >= CAP\.block\) break;/.test(main));
+check('[kit] style and height by an AUTHORED land-use district; park lots build no building',
+  /function landUse\(x, z\) \{ const h = wildsHash\(Math\.floor\(x \/ DISTRICT_M\), Math\.floor\(z \/ DISTRICT_M\), SEED, 7\);/.test(main)
+  && /if \(use === 'park'\) \{ if \(h < 0\.8\) out\.tree\.push/.test(main) && /out\.block\.push\(kitLot\(use, /.test(main));
+check('[kit] gable roofs and a porch/gallery hint are geometry; windows are a shader pattern, not triangles',
+  /const houseGeo = mergeGeometries\(\[walls\(\), gable\(0\.42, 0\.04, 0\.08\), porch\(\)\]\);/.test(main)
+  && /float win = step\(0\.3, f\.x\)/.test(main) && /smoothstep\(160\.0, 480\.0, vKitD\)/.test(main));
+check('[kit] trees are open-ended (14 triangles, pays for the roofs)', /CylinderGeometry\(0\.25, 0\.3, 2, 4, 1, true\)/.test(main) && /ConeGeometry\(2\.2, 6, 6, 1, true\)/.test(main) && /side: THREE\.DoubleSide/.test(main));
+{
+  const regP = Object.values(REG.parishes);
+  const tilesOk = D && D.parishes.every((p) => { const r = REG.parishes[p.id]; const g = r && r.map.ground_tiles; return g && p.ground.tiles.length === g.tiles.length && g.tiles.length === g.grid * g.grid && p.ground.tiles.every(([src]) => existsSync(ROOT + src)); });
+  check('[ground] every parish carries its PARISH v1.3 ground tiles and each file exists', !!tilesOk && regP.length === D.parishes.length);
+  const lbl = regP[0].map.ground_tiles.label;
+  const esc = (t) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  check('[ground] the ground_tiles label is shown verbatim next to the 3D view', html.includes(`<p class="help" data-ground-label lang="en">${esc(lbl)}</p>`) && html.indexOf('data-ground-label') > html.indexOf('id="stage"'));
+}
+check('[ground] tiles drape as ONE composed texture per parish on the flat land (no extra mesh, still y = 0)',
+  /const GROUND_PX = 2048;/.test(main) && /cx\.drawImage\(im, col \* cell, row \* cell, cell, cell\)/.test(main) && /new THREE\.Mesh\(g, streetMat\(LAND\[p\.idx % LAND\.length\], p\)\)/.test(main) && /pa\[i\] = 0/.test(main));
+check('[ground] the AUTHORED street grid is painted in the land shader, near field only', /float road = max\(step\(5\.0, q\.x\)/.test(main) && /float far = 1\.0 - smoothstep\(220\.0, 420\.0, vGroundDist\);/.test(main));
+check('[atmos] sky is a gradient on a transparent canvas (no sky mesh); fog = horizon colour; declared sun',
+  /alpha: true, powerPreference/.test(main) && /renderer\.setClearColor\(HORIZON, 0\);/.test(main) && /canvas\.style\.backgroundImage = 'linear-gradient\(180deg,'/.test(main)
+  && /scene\.fog = new THREE\.Fog\(HORIZON, /.test(main) && /sun\.position\.copy\(SUN\)/.test(main));
+check('[atmos] water: fresnel sky reflection + ripple on its one material', /matWater\.onBeforeCompile = /.test(main) && /float fr = pow\(1\.0 - clamp\(v\.y, 0\.0, 1\.0\), 4\.0\)/.test(main) && /waterU\.uTime\.value = now \/ 1000;/.test(main));
+check('[review] satellite toggle: one shared config read and superseded calls stop (REVIEW wave 6)',
+  /if \(tokenP\) return tokenP;/.test(main) && /const gen = \+\+satGen;/.test(main) && /if \(gen !== satGen\) return satState\(\);/.test(main));
+check('[review] E/T keys ignore key-repeat, modifier chords and typing (REVIEW wave 6)',
+  /const plainKey = \(e\) => !e\.repeat && !e\.ctrlKey && !e\.metaKey && !e\.altKey/.test(main) && /\(e\.key === 'e' \|\| e\.key === 'E'\) && plainKey\(e\)/.test(main) && /\(e\.key === 't' \|\| e\.key === 'T'\) && plainKey\(e\)/.test(main));
+check('[review] riding + overview: every mode change goes through applyMode; a mode button returns to the ride (REVIEW wave 6)',
+  /riding = null; applyMode\('walk'\);/.test(main) && /riding\.snap = true; applyMode\(/.test(main) && /if \(mode !== 'overview'\) return false;\s*applyMode\(riding\.medium === 'water' \? 'boat' : 'drive'\); return true;/.test(main)
+  && !/(?<!let |\.)\bmode = (?!m;)/.test(main));
+
 // [contracts] stubs are named
 for (const k of ['fleet', 'npcs', 'layers']) {
   const m = html.match(new RegExp(`<li data-contract="${k}" data-state="(wired|stub)">([\\s\\S]*?)</li>`));

@@ -64,6 +64,9 @@ ok('seat links on the page are only the registry\'s', (() => {
   return want.size === 3 && [...want].every((s) => page.includes(`sim=${s}`));
 })());
 
+ok('phone driving: the page builds the kit\'s touch controls with all six translated labels and toggles them with enter/exit',
+  /fleetTouchControls\(document, \$\('\.fl-stage'\)/.test(page) && ['group', 'stick', 'throttle', 'brake', 'enter', 'exit'].every((k) => page.includes(`${k}: tr('touch.${k}')`))
+  && /touch\.setAboard\(true\)/.test(page) && /touch\.setAboard\(false\)/.test(page) && /const t = touch\.input\(\)/.test(page));
 // ---------------------------------------------------------------- browser ---
 const base = arg('browser');
 if (base) {
@@ -110,6 +113,46 @@ if (base) {
   ok(`browser: ambient traffic ${tr.agents} agents, ${tr.drawCalls} draw calls, ${tr.avgMs.toFixed(2)} ms/update; land never wet (${tr.wet}), boats never ashore (${tr.dry})`,
     tr.agents > 10 && tr.wet === 0 && tr.dry === 0 && tr.drawCalls <= 11 && tr.avgMs < 1.5, [JSON.stringify(tr)]);
   await F(() => window.__fleet.traffic(false, 0));
+  const shots = arg('shots');
+  if (shots) {   // driver view with the cab interior, then braking lamps in the chase view
+    await F(() => { window.__fleet.select('pickup.crew-cab-pickup'); window.__fleet.drive(); window.__fleet.steps(40, { throttle: 1, steer: 0, brake: 0 }); window.__fleet.cam('driver'); });
+    await p.waitForTimeout(300); await p.screenshot({ path: `${shots}/FLEET-w6-cab.png` });
+    await F(() => window.__fleet.cam('chase')); await p.focus('#fleet-canvas'); await p.keyboard.down('Space'); await p.waitForTimeout(500);
+    await p.screenshot({ path: `${shots}/FLEET-w6-brake.png` }); await p.keyboard.up('Space'); await F(() => window.__fleet.exit());
+  }
+  // phone: a coarse pointer shows the touch controls; the stick, throttle, brake and get in/out drive the test pad
+  const ctx = await b.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true, deviceScaleFactor: 2 });
+  const q = await ctx.newPage();
+  q.on('pageerror', (e) => errs.push('phone: ' + e.message));
+  await q.goto(`${base}/web/trade_craft_fleet.html#pickup.crew-cab-pickup`);
+  await q.waitForFunction(() => document.documentElement.dataset.fleetReady === '1', null, { timeout: 30000 });
+  const G = (fn, a) => q.evaluate(fn, a);
+  const vis = await G(() => { const el = document.querySelector('.fleet-touch'), t = document.querySelector('.fleet-toggle');
+    return { shown: getComputedStyle(el).display === 'flex', label: el.getAttribute('aria-label'), toggle: t.textContent, h: t.getBoundingClientRect().height, role: el.getAttribute('role') }; });
+  ok(`browser phone: touch controls show on a coarse pointer as a labelled group (${vis.label}); get-in button ${vis.h.toFixed(0)} px`, vis.shown && vis.role === 'group' && vis.label === 'Touch driving controls' && vis.toggle === 'Get in' && vis.h >= 48, [JSON.stringify(vis)]);
+  await q.tap('.fleet-toggle');
+  const box = async (sel) => q.locator(sel).boundingBox();
+  const inDrive = await G(() => ({ mode: window.__fleet.mode(), label: document.querySelector('.fleet-toggle').textContent, stick: !document.querySelector('.fleet-stick').hidden }));
+  const x0 = await G(() => window.__fleet.steps(0, {}));
+  const tb = await box('.fleet-throttle');
+  await q.mouse.move(tb.x + tb.width / 2, tb.y + tb.height / 2); await q.mouse.down(); await q.waitForTimeout(900);
+  const held = await G(() => ({ inp: window.__fleet.input(), st: window.__fleet.steps(0, {}) })); await q.mouse.up();
+  ok(`browser phone: get in, then holding Throttle drives forward (${Math.hypot(held.st.x - x0.x, held.st.z - x0.z).toFixed(1)} m)`,
+    inDrive.mode === 'drive' && inDrive.label === 'Get out' && inDrive.stick && held.inp.throttle === 1 && held.st.v > 0.5 && Math.hypot(held.st.x - x0.x, held.st.z - x0.z) > 0.1, [JSON.stringify({ inDrive, held })]);
+  const sb = await box('.fleet-stick');
+  await q.mouse.move(sb.x + sb.width / 2, sb.y + sb.height / 2); await q.mouse.down(); await q.mouse.move(sb.x + 4, sb.y + sb.height / 2 - 20, { steps: 4 });
+  const stick = await G(() => window.__fleet.input());
+  if (shots) await q.screenshot({ path: `${shots}/FLEET-w6-phone.png` });
+  await q.mouse.up();
+  const rel = await G(() => window.__fleet.input());
+  ok(`browser phone: dragging the stick left steers left (steer ${stick.steer.toFixed(2)}, throttle ${stick.throttle.toFixed(2)}); release centres it`, stick.steer > 0.8 && stick.throttle > 0 && rel.steer === 0 && rel.throttle === 0, [JSON.stringify({ stick, rel })]);
+  const bb = await box('.fleet-brake');
+  await q.mouse.move(bb.x + bb.width / 2, bb.y + bb.height / 2); await q.mouse.down(); await q.waitForTimeout(300);
+  const brk = await G(() => ({ lamp: window.__fleet.brake(), pressed: document.querySelector('.fleet-brake').getAttribute('aria-pressed') })); await q.mouse.up();
+  ok('browser phone: holding Brake lights this vehicle\'s brake lamps (per instance) and reports aria-pressed', brk.lamp === 1 && brk.pressed === 'true', [JSON.stringify(brk)]);
+  await q.tap('.fleet-toggle');
+  ok('browser phone: Get out returns to the turntable and hides the stick', await G(() => window.__fleet.mode() === 'turntable' && document.querySelector('.fleet-stick').hidden && document.querySelector('.fleet-toggle').textContent === 'Get in'));
+  await ctx.close();
   await p.goto(`${base}/web/trade_craft_fleet.html?lang=ar#ferry.vehicle-ferry`);
   await p.waitForFunction(() => document.documentElement.dataset.fleetReady === '1', null, { timeout: 30000 });
   ok('browser: ?lang=ar renders rtl Arabic chrome and the #id deep link selects', await F(() => document.documentElement.dir === 'rtl'

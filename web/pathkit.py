@@ -155,6 +155,11 @@ PATH_JS = r"""
   'use strict';
   var QSTORE = 'tc-quests', PSTORE = 'tc-path';
   var S = { data: null, root: null, opts: {}, path: null, opener: null };
+  /* mount() is idempotent: a page may re-mount the same (or another) element on every parish change. The
+     previous mount's DOM listeners are removed through its AbortController, and the TCQuests 'found' listener
+     (the engine has no off()) is bound once per page and always renders the CURRENT mount. */
+  var AC = null, FOUND_BOUND = false;
+  function unmount() { if (AC) { AC.abort(); AC = null; } }
   var EN = {
     choose: 'Choose a path', note: 'Paths are suggestions: every station is open from every path, and you can switch at any time.',
     launch: 'Launch', close: 'Close', suggested: 'Suggested first (never a lock):', source: 'Source:',
@@ -283,7 +288,10 @@ PATH_JS = r"""
     if (typeof S.opts.onPath === 'function') S.opts.onPath(pid);
   }
   function mount(root, data, opts) {
-    S.root = root; S.data = data; S.opts = opts || {};
+    unmount();
+    AC = new AbortController();
+    var sig = { signal: AC.signal };
+    S.root = root; S.data = data; S.opts = opts || {}; S.opener = null;
     root.classList.add('pk');
     var saved = null;
     try { saved = window.localStorage.getItem(PSTORE); } catch (e) { saved = null; }
@@ -295,7 +303,7 @@ PATH_JS = r"""
       if (t.hasAttribute('data-pk-path')) select(t.getAttribute('data-pk-path'), true);
       else if (t.hasAttribute('data-pk-open')) open(t.getAttribute('data-pk-open'));
       else close();
-    });
+    }, sig);
     root.addEventListener('keydown', function (e) {
       if (e.key === 'Escape' && !root.querySelector('.pk-panel').hidden) { e.preventDefault(); close(); return; }
       var t = e.target.closest('[data-pk-path]');
@@ -307,12 +315,17 @@ PATH_JS = r"""
       if (k === undefined) return;
       e.preventDefault();
       select(ids[(i + k + ids.length) % ids.length], true);
-    });
-    if (window.TCQuests && typeof window.TCQuests.on === 'function') window.TCQuests.on('found', function () {
-      var p = root.querySelector('.pk-panel'); if (p && p.hidden) render();
-    });
+    }, sig);
+    if (!FOUND_BOUND && window.TCQuests && typeof window.TCQuests.on === 'function') {
+      FOUND_BOUND = true;
+      window.TCQuests.on('found', function () {
+        if (!S.root) return;
+        var p = S.root.querySelector('.pk-panel'); if (p && p.hidden) render();
+      });
+    }
     return window.TCPaths;
   }
-  window.TCPaths = { mount: mount, select: function (p) { select(p, false); }, open: open, close: close, progress: progress, region: region };
+  window.TCPaths = { mount: mount, select: function (p) { select(p, false); }, open: open, close: close, progress: progress, region: region,
+    unmount: function () { unmount(); S.root = null; } };
 })();
 """

@@ -553,7 +553,13 @@
   "fleet.cam": "驾驶员视角",
   "fleet.chase": "追随视角",
   "fleet.traffic": "环境交通",
-  "fleet.trafficnote": "交通沿试驾场上的 AUTHORED 车道和池塘上的环形航道行驶：这些是虚构的车道，不是真实街道。"
+  "fleet.trafficnote": "交通沿试驾场上的 AUTHORED 车道和池塘上的环形航道行驶：这些是虚构的车道，不是真实街道。",
+  "fleet.touch.group": "触控驾驶控制",
+  "fleet.touch.stick": "转向摇杆：左右拖动转向，上下拖动前进或倒车",
+  "fleet.touch.throttle": "油门（按住）",
+  "fleet.touch.brake": "刹车（按住）",
+  "fleet.touch.enter": "上车",
+  "fleet.touch.exit": "下车"
  },
  "districts": {
   "structural": {

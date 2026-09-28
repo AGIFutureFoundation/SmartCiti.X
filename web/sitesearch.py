@@ -85,10 +85,13 @@ HALLS_PATH = 'pack/registry/halls.json'
 SIMS_PATH = 'sims/registry/sims.json'
 QUESTS_PATH = 'quests/registry/quests.json'
 QUEST_KINDS_LISTED = ('main', 'side', 'game')
+PARISHES_PATH = 'parishes/registry/parishes.json'
+NPCS_PATH = 'npcs/registry/npcs.json'
+PARISH_PAGE = 'web/trade_craft_parishes.html'
 
 # The type words the palette shows beside a result, in one place.
 TYPES = {'page': 'Page', 'lesson': 'Lesson', 'hall': 'Hall', 'seat': 'Simulator seat',
-         'quest': 'Quest'}
+         'quest': 'Quest', 'parish': 'Parish', 'landmark': 'Landmark', 'guide': 'Guide role'}
 
 
 def need(node, key, where):
@@ -103,7 +106,9 @@ def _read(rel):
 
 def search_index():
     """[{t: type, n: name, d: detail, u: url from the bundle root}] in a
-    stable order: pages, lessons, halls, seats, quests."""
+    stable order: pages, lessons, halls, seats, quests, parishes, landmarks,
+    guide roles. Parishes, landmarks and guide roles open the parish world
+    page (it honours no deep link, so none is invented)."""
     nav = nav_labels('en')
     out = []
     for path, (group, key) in PAGES.items():
@@ -140,6 +145,32 @@ def search_index():
             if need(q, 'kind', w) in QUEST_KINDS_LISTED:
                 out.append({'t': 'quest', 'n': need(q, 'title', w), 'd': need(q, 'hint', w),
                             'u': 'web/trade_craft_quests.html'})
+    parishes = need(_read(PARISHES_PATH), 'parishes', PARISHES_PATH)
+    lms = []
+    for fips, p in parishes.items():
+        w = f'{PARISHES_PATH}#parishes.{fips}'
+        full = need(p, 'full_name', w)
+        out.append({'t': 'parish', 'n': full, 'd': 'New Orleans parishes', 'u': PARISH_PAGE})
+        for lm in need(p, 'landmarks', w):
+            lw = f'{w}.landmarks[]'
+            lms.append({'t': 'landmark', 'n': need(lm, 'name', lw),
+                        'd': f'{full} · {need(lm, "kind", lw)} · {need(lm, "provenance", lw)}',
+                        'u': PARISH_PAGE})
+    out.extend(lms)
+    # A guide role, once per role: its title is the part of every guide's
+    # AUTHORED name before the one nature word, and must agree across the role.
+    titles, counts = {}, {}
+    for g in need(_read(NPCS_PATH), 'npcs', NPCS_PATH):
+        w = f'{NPCS_PATH}#npcs[]'
+        role = need(g, 'role', w)
+        title = need(g, 'name', w).rsplit(' ', 1)[0]
+        if titles.setdefault(role, title) != title:
+            raise ValueError(f'sitesearch: role {role} has two titles, {titles[role]!r} and {title!r}')
+        counts[role] = counts.setdefault(role, 0) + 1
+    for role in sorted(titles):
+        out.append({'t': 'guide', 'n': titles[role],
+                    'd': f'{role} · {counts[role]} scripted guides across the parishes',
+                    'u': PARISH_PAGE})
     for e in out:
         assert e['u'].split('?')[0] in PAGES, f'sitesearch: {e["u"]} is not a page'
     return out

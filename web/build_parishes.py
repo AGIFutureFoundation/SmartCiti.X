@@ -116,6 +116,20 @@ def family(kind):
     raise BuildError(f'build_parishes: landmark kind {kind!r} has no asset family (add it to FAMILY_OF)')
 
 
+def ground_of(mp, w):
+    """PARISH v1.3 label-free ground tiles: 4x4 tiles whose union is map.extent_local_m (row 0 north, col 0 west)."""
+    gt = need(mp, 'ground_tiles', w + '.map')
+    grid = need(gt, 'grid', w + '.map.ground_tiles')
+    tiles = need(gt, 'tiles', w + '.map.ground_tiles')
+    if len(tiles) != grid * grid:
+        raise BuildError(f'build_parishes: {w}.map.ground_tiles holds {len(tiles)} tiles, not grid^2 = {grid * grid}')
+    cells = sorted((need(t, 'row', w + '.ground_tiles[]'), need(t, 'col', w + '.ground_tiles[]')) for t in tiles)
+    if cells != [(r, c) for r in range(grid) for c in range(grid)]:
+        raise BuildError(f'build_parishes: {w}.map.ground_tiles does not cover the {grid}x{grid} grid exactly once')
+    return {'label': need(gt, 'label', w + '.map.ground_tiles'), 'grid': grid,
+            'tiles': [[need(t, 'path', w + '.ground_tiles[]'), t['row'], t['col']] for t in tiles]}
+
+
 def normalise(reg):
     """The one place the PARISH contract ($SP/PARISH_CONTRACT.md v1) is read.
     Output: the shape the page script uses, in the contract's WORLD frame
@@ -168,6 +182,7 @@ def normalise(reg):
             'map_preview': need(mp, 'preview', w + '.map'), 'map_4k': need(mp, 'path', w + '.map'),
             'map_label': need(mp, 'label', w + '.map'), 'map_fabric': need(mp, 'fabric', w + '.map'),
             'map_world': [ox + ext['left'], -(on + ext['top']), ox + ext['right'], -(on + ext['bottom'])],
+            'ground': ground_of(mp, w),
             'landmarks': lms, 'neighbours': nbs, 'area_km2': need(p, 'area_km2', w)})
     ids = {p['id'] for p in out['parishes']}
     for p in out['parishes']:
@@ -188,6 +203,10 @@ def normalise(reg):
                       'elevation': need(reg, 'elevation', 'registry'),
                       'landmarks': need(reg, 'landmarks_method', 'registry'),
                       'satellite': out['satellite']['rule']}
+    labels = {p['ground']['label'] for p in out['parishes']}
+    if len(labels) != 1:
+        raise BuildError(f'build_parishes: parishes carry {len(labels)} different ground_tiles labels; the page shows one')
+    out['honesty']['ground'] = labels.pop()
     out['source_stamp'] = need(reg, 'source_stamp', 'registry')
     return out
 
@@ -385,24 +404,33 @@ const SEED = 20260928;
 
 const stage = document.getElementById('stage');
 const canvas = document.getElementById('view');
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, powerPreference: 'high-performance' });
+/* alpha: the sky is the canvas's CSS gradient (#view), so the sky costs no draw call (wave 6) */
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: true, powerPreference: 'high-performance' });
 const BASE_PR = Math.min(window.devicePixelRatio, 1.25);
-/* the overview is fill-bound (a dozen draws, ~10k triangles, one full-screen land pass): it renders at
-   OVERVIEW_PR of the walk resolution, where a pixel is already tens of metres of flat ground
-   (declared in web/eval_parishes.mjs; the target is unchanged) */
+/* OVERVIEW_PR: the overview renders at 0.6 of the walk resolution. DIAG (scale 1 vs 0.6, Orleans overview median):
+   5b 33.3 vs 33.3 ms; wave 6 run 1 49.9 vs 50.0 ms; wave 6 run 2 (with the draped ground texture) 49.9 vs 33.3 ms.
+   Scale 1 WAS slower once the ground is textured, so 0.6 stays (declared in web/eval_parishes.mjs). */
 const OVERVIEW_PR = 0.6;
 let prScale = 1;
 function applyPR(k) { prScale = k; renderer.setPixelRatio(BASE_PR * k); resize(); }
 renderer.setPixelRatio(BASE_PR);
 const scene = new THREE.Scene();
-const SKY_BG = new THREE.Color(0xBFD3DE), WATER_BG = new THREE.Color(0x3E6E8E);
+/* atmosphere (wave 6, AUTHORED): the sky gradient is CSS behind a transparent canvas (no draw call); the fog is the
+   gradient's horizon colour, so far ground melts into the sky; the overview keeps its water-coloured clear */
+const HORIZON = 0xD3DFE3;
+const SKY_BG = null, WATER_BG = new THREE.Color(0x3E6E8E);
+renderer.setClearColor(HORIZON, 0);
+const SKY = [[0x6E9BC3, 0], [0x9DBDD6, 30], [0xC4D6E0, 46], [HORIZON, 52], [HORIZON, 100]];   // zenith -> horizon, % of the view height
+canvas.style.backgroundImage = 'linear-gradient(180deg,' + SKY.map(([c, p]) => '#' + c.toString(16).padStart(6, '0') + ' ' + p + '%').join(',') + ')';
 scene.background = SKY_BG;
-scene.fog = new THREE.Fog(0xBFD3DE, 900, 4200);
+scene.fog = new THREE.Fog(HORIZON, 700, 4200);
 const camera = new THREE.PerspectiveCamera(62, 1, 0.3, 60000);
-scene.add(new THREE.HemisphereLight(0xe8f0ff, 0x5a5040, 1.1));
-const sun = new THREE.DirectionalLight(0xfff2dc, 1.5); sun.position.set(-0.5, 0.8, 0.35); scene.add(sun);
+scene.add(new THREE.HemisphereLight(0xdde9f7, 0x5a5040, 0.95));
+/* sun direction: an AUTHORED mid-afternoon sun from the south-west, low enough that facades read as planes */
+const SUN = new THREE.Vector3(-0.55, 0.62, 0.56).normalize();
+const sun = new THREE.DirectionalLight(0xfff0d6, 1.75); sun.position.copy(SUN); scene.add(sun);
 const lam = (c) => new THREE.MeshLambertMaterial({ color: c });
-const matWater = new THREE.MeshLambertMaterial({ color: 0x3E6E8E, emissive: 0x9FC4DC, emissiveIntensity: 0.06 }), matBlock = lam(0xB9AE9C), matTree = lam(0x3F6B3A), matMark = lam(0xE8A33D), matLm = lam(0xD8D2C4);
+const matWater = new THREE.MeshLambertMaterial({ color: 0x3E6E8E, emissive: 0x9FC4DC, emissiveIntensity: 0.06 }), matBlock = lam(0xB9AE9C), matTree = new THREE.MeshLambertMaterial({ color: 0x3F6B3A, side: THREE.DoubleSide }), matMark = lam(0xE8A33D), matLm = lam(0xD8D2C4);
 const LAND = [0xA7B58C, 0x9FB08F, 0xB1B790, 0x98A987];
 
 const PAR = new Map(D.parishes.map((p, i) => {
@@ -432,6 +460,52 @@ function segDist(px, pz, [ax, az], [bx, bz]) {
 function longest(segs) { let b = segs[0], bl = -1; for (const sg of segs) { let l = 0; for (let i = 1; i < sg.length; i++) l += Math.hypot(sg[i][0] - sg[i - 1][0], sg[i][1] - sg[i - 1][1]); if (l > bl) { bl = l; b = sg; } } return b; }
 function lineDist(x, z, pts) { let d = Infinity; for (let i = 1; i < pts.length; i++) d = Math.min(d, segDist(x, z, pts[i - 1], pts[i])); return d; }
 
+/* ---- ground (wave 6): the AUTHORED street grid that buildChunk leaves open (every 4th 25 m cell) is painted on
+   the flat land in the fragment shader - carriageway, walkways and a dashed centre line - at no extra draw call or
+   triangle; it fades out with distance so the overview does not shimmer. NOT the real street grid. ---- */
+const STREET_GLSL = `
+{ vec2 q = mod(vGroundXZ, 100.0);
+  float road = max(step(5.0, q.x) * step(q.x, 20.0), step(5.0, q.y) * step(q.y, 20.0));
+  float walk = max(step(1.5, q.x) * step(q.x, 23.5), step(1.5, q.y) * step(q.y, 23.5)) * (1.0 - road);
+  float cross = step(q.x, 25.0) * step(q.y, 25.0);
+  float dash = (step(abs(q.x - 12.5), 0.15) * step(0.5, fract(vGroundXZ.y / 6.0)) + step(abs(q.y - 12.5), 0.15) * step(0.5, fract(vGroundXZ.x / 6.0))) * road * (1.0 - cross);
+  float far = 1.0 - smoothstep(220.0, 420.0, vGroundDist);
+  diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.70, 0.68, 0.63), walk * far);
+  diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.34, 0.35, 0.36), road * far);
+  diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.86, 0.82, 0.62), min(dash, 1.0) * far * (1.0 - smoothstep(120.0, 260.0, vGroundDist))); }
+`;
+/* PARISH v1.3 ground tiles (label-free, the same pixels as the 4k map's ground) are draped on the flat land: the
+   grid x grid tiles are drawn into ONE GROUND_PX canvas per parish, sampled by world x/z over map_world, so the
+   parks, water and land use under your feet match the 4k map; the ground stays at exactly 0 m. Near the eye the
+   painted AUTHORED grid (the one the buildings stand on) takes over from the tile's streets. */
+const GROUND_PX = 2048;
+function groundTexture(p, onReady) {
+  const cv = document.createElement('canvas'); cv.width = cv.height = GROUND_PX;
+  const cx = cv.getContext('2d'), g = p.ground, cell = GROUND_PX / g.grid; let left = g.tiles.length;
+  const tex = new THREE.CanvasTexture(cv); tex.flipY = false; tex.colorSpace = THREE.SRGBColorSpace;   // no anisotropy: SwiftShader pays per tap (w6 run 1: walk frames rose)
+  for (const [src, row, col] of g.tiles) {
+    const im = new Image();
+    im.onload = () => { cx.drawImage(im, col * cell, row * cell, cell, cell); if (--left === 0) { tex.needsUpdate = true; onReady(); } };
+    im.onerror = () => { groundFailed.push(src); };
+    im.src = '../' + src;
+  }
+  return tex;
+}
+const groundFailed = [], groundReady = new Set();
+function streetMat(c, p) {
+  const m = lam(c);
+  const u = { uGround: { value: groundTexture(p, () => { u.uOn.value = 1; groundReady.add(p.id); }) }, uOn: { value: 0 },
+    uBox: { value: new THREE.Vector4(p.map_world[0], p.map_world[1], p.map_world[2] - p.map_world[0], p.map_world[3] - p.map_world[1]) } };
+  m.onBeforeCompile = (sh) => {
+    Object.assign(sh.uniforms, u);
+    sh.vertexShader = 'varying vec2 vGroundXZ; varying float vGroundDist;\n' + sh.vertexShader.replace('#include <project_vertex>', '#include <project_vertex>\n  vGroundXZ = position.xz; vGroundDist = -mvPosition.z;');
+    sh.fragmentShader = 'uniform sampler2D uGround; uniform float uOn; uniform vec4 uBox; varying vec2 vGroundXZ; varying float vGroundDist;\n' + sh.fragmentShader.replace('#include <color_fragment>', '#include <color_fragment>\n' +
+      '{ vec2 guv = (vGroundXZ - uBox.xy) / uBox.zw; diffuseColor.rgb = mix(diffuseColor.rgb, texture2D(uGround, guv).rgb, uOn); }\n' + STREET_GLSL);
+  };
+  m.customProgramCacheKey = () => 'parish-ground';
+  return m;
+}
+
 /* ---- parish streaming: land meshes (flat, 0 m) for the loaded parishes ---- */
 const landMesh = new Map();
 function makeLand(p) {
@@ -439,7 +513,7 @@ function makeLand(p) {
   const g = new THREE.ShapeGeometry(shapes); g.rotateX(-Math.PI / 2);
   // flat AUTHORED ground: exactly 0 m (the rotation leaves ~1e-13 m of float noise)
   const pa = g.attributes.position.array; for (let i = 1; i < pa.length; i += 3) pa[i] = 0;
-  const m = new THREE.Mesh(g, lam(LAND[p.idx % LAND.length])); m.userData.parish = p.id; return m;
+  const m = new THREE.Mesh(g, streetMat(LAND[p.idx % LAND.length], p)); m.userData.parish = p.id; return m;
 }
 let current = null;
 const loaded = new Set();
@@ -466,13 +540,129 @@ function streamParishes(x, z) {
 /* ---- water: one plane that follows the eye, below the flat ground ---- */
 const water = new THREE.Mesh(new THREE.PlaneGeometry(40000, 40000), matWater);
 water.rotation.x = -Math.PI / 2; water.position.y = -0.4; scene.add(water);
+/* water (wave 6): a grazing-angle sky reflection (Schlick-style fresnel toward the horizon colour) and a moving
+   ripple on the same material - still one plane, one draw call */
+const waterU = { uTime: { value: 0 } };
+matWater.onBeforeCompile = (sh) => {
+  sh.uniforms.uTime = waterU.uTime;
+  sh.vertexShader = 'varying vec3 vWaterW;\n' + sh.vertexShader.replace('#include <project_vertex>', '#include <project_vertex>\n  vWaterW = (modelMatrix * vec4(transformed, 1.0)).xyz;');
+  sh.fragmentShader = 'uniform float uTime; varying vec3 vWaterW;\n' + sh.fragmentShader.replace('#include <color_fragment>',
+    '#include <color_fragment>\n{ vec3 v = normalize(cameraPosition - vWaterW); float fr = pow(1.0 - clamp(v.y, 0.0, 1.0), 4.0);\n' +
+    '  float rip = 0.5 + 0.5 * sin(vWaterW.x * 0.09 + uTime * 1.3) * sin(vWaterW.z * 0.07 - uTime * 0.9);\n' +
+    '  diffuseColor.rgb = mix(diffuseColor.rgb * (0.92 + 0.12 * rip), vec3(0.83, 0.87, 0.89), fr * 0.75); }');
+};
+matWater.customProgramCacheKey = () => 'parish-water';
 
 /* ---- AUTHORED fabric: blocks and trees, chunk-streamed, one InstancedMesh each ---- */
-const blockGeo = new THREE.BoxGeometry(1, 1, 1); blockGeo.translate(0, 0.5, 0);
-const treeGeo = mergeGeometries([new THREE.CylinderGeometry(0.25, 0.3, 2, 5).translate(0, 1, 0), new THREE.ConeGeometry(2.2, 6, 6).translate(0, 5, 0)]);
-const blocks = new THREE.InstancedMesh(blockGeo, matBlock, CAP.block);
+/* trees: open-ended trunk (4 sides) and crown (6 sides), drawn double-sided: 14 triangles, was 32 (wave 6) -
+   the caps were never seen from eye height; the saving pays for the building kit's roofs and porches */
+const treeGeo = mergeGeometries([new THREE.CylinderGeometry(0.25, 0.3, 2, 4, 1, true).translate(0, 1, 0), new THREE.ConeGeometry(2.2, 6, 6, 1, true).translate(0, 5, 0)]);
+
+/* ---- AUTHORED building kit (wave 6): two families, each ONE InstancedMesh (one draw call per family), style
+   and height by an AUTHORED land-use district (DISTRICT_M squares hashed by wildsHash: residential, commercial,
+   industrial, park) - generic forms only, no replica of any real building, NOT the real land use.
+   house   : walls + gable roof + a front porch/gallery hint (canopy and two posts) - 24 triangles
+   midrise : walls with a flat roof (blockGeo) - 10 triangles; the ground-floor band is painted. Industrial lots
+             are low, wide flat-roofed shells in this same family with cladding colours (a separate shed family
+             cost one more draw call per view, and NPC's wave-6 kit adds one: no call target may rise)
+   Windows are not geometry: one shared fragment-shader pattern (bays x storeys in world metres) on every family,
+   faded with distance so far facades do not shimmer. Per-instance colour (instanceColor) costs no draw call. ---- */
+const DISTRICT_M = 400;
+const LAND_USE = ['residential', 'commercial', 'industrial', 'park'];
+function landUse(x, z) { const h = wildsHash(Math.floor(x / DISTRICT_M), Math.floor(z / DISTRICT_M), SEED, 7); return h < 0.5 ? 'residential' : h < 0.76 ? 'commercial' : h < 0.88 ? 'industrial' : 'park'; }
+function triGeo(tris) {
+  const pos = [], nor = [], uv = [], a = new THREE.Vector3(), b = new THREE.Vector3(), c = new THREE.Vector3(), n = new THREE.Vector3();
+  for (const [p, q, r] of tris) {
+    a.fromArray(p); b.fromArray(q); c.fromArray(r); n.subVectors(c, b).cross(new THREE.Vector3().subVectors(a, b)).normalize();
+    for (const v of [p, q, r]) { pos.push(...v); nor.push(n.x, n.y, n.z); uv.push(0, 0); }
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3)); g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
+  return g;
+}
+const quad = (p, q, r, t) => [[p, q, r], [p, r, t]];
+/* unit walls 0..1 high, footprint -0.5..0.5, no floor (never seen): 10 triangles */
+function walls() { const g = new THREE.BoxGeometry(1, 1, 1).translate(0, 0.5, 0).toNonIndexed(); return keepTris(g, (ny) => ny > -0.9); }
+function keepTris(g, keep) {
+  const p = g.attributes.position.array, n = g.attributes.normal.array, u = g.attributes.uv.array, P = [], N = [], U = [];
+  for (let t = 0; t < p.length / 9; t++) if (keep(n[t * 9 + 1])) { P.push(...p.slice(t * 9, t * 9 + 9)); N.push(...n.slice(t * 9, t * 9 + 9)); U.push(...u.slice(t * 6, t * 6 + 6)); }
+  const o = new THREE.BufferGeometry(); o.setAttribute('position', new THREE.Float32BufferAttribute(P, 3)); o.setAttribute('normal', new THREE.Float32BufferAttribute(N, 3)); o.setAttribute('uv', new THREE.Float32BufferAttribute(U, 2)); return o;
+}
+/* a gable roof over the unit walls, ridge along x, eaves overhanging: 4 slope + 2 gable triangles */
+function gable(rise, ox, oz) {
+  const e = 0.97, r = 1 + rise, X = 0.5 + ox, Z = 0.5 + oz;
+  return triGeo([
+    ...quad([-X, e, Z], [X, e, Z], [X, r, 0], [-X, r, 0]),
+    ...quad([X, e, -Z], [-X, e, -Z], [-X, r, 0], [X, r, 0]),
+    [[0.5, 1, 0.5], [0.5, 1, -0.5], [0.5, r, 0]], [[-0.5, 1, -0.5], [-0.5, 1, 0.5], [-0.5, r, 0]],
+  ]);
+}
+/* porch / gallery hint on the front (+z): canopy underside + fascia + two post faces (8 triangles) */
+function porch() {
+  const y = 0.48, t = 0.52, f = 0.74, w = 0.46, pw = 0.035;
+  return triGeo([
+    ...quad([-w, y, t], [w, y, t], [w, y, f], [-w, y, f]),
+    ...quad([-w, y, f], [-w, y + 0.05, f], [w, y + 0.05, f], [w, y, f]).map((tr) => tr.slice().reverse()),
+    ...quad([-w, 0, f - 0.01], [-w + pw, 0, f - 0.01], [-w + pw, y, f - 0.01], [-w, y, f - 0.01]),
+    ...quad([w - pw, 0, f - 0.01], [w, 0, f - 0.01], [w, y, f - 0.01], [w - pw, y, f - 0.01]),
+  ]);
+}
+const houseGeo = mergeGeometries([walls(), gable(0.42, 0.04, 0.08), porch()]);
+const blockGeo = walls();
+const KIT_KIND = { house: 0, midrise: 1 };
+function kitMat(kind) {
+  const m = new THREE.MeshLambertMaterial({ color: 0xffffff });
+  m.defines = { KIT_KIND: KIT_KIND[kind] };
+  m.onBeforeCompile = (sh) => {
+    const V = 'varying vec3 vKitL; varying vec3 vKitW; varying vec3 vKitN; varying float vKitD;\n';
+    sh.vertexShader = V + sh.vertexShader.replace('#include <project_vertex>', `#include <project_vertex>
+  vKitL = position; vKitW = (modelMatrix * instanceMatrix * vec4(transformed, 1.0)).xyz;
+  vKitN = normalize(mat3(modelMatrix) * mat3(instanceMatrix) * objectNormal); vKitD = -mvPosition.z;`);
+    sh.fragmentShader = V + sh.fragmentShader.replace('#include <color_fragment>', `#include <color_fragment>
+{ vec3 n = normalize(vKitN);
+  float wall = (1.0 - step(0.3, abs(n.y))) * (1.0 - step(0.985, vKitL.y)) * step(abs(vKitL.z), 0.505) * step(abs(vKitL.x), 0.505);
+  float u = abs(n.x) > abs(n.z) ? vKitW.z : vKitW.x;
+  vec2 f = fract(vec2(u / 3.1, vKitW.y / 3.2));
+  float near = 1.0 - smoothstep(160.0, 480.0, vKitD);
+  float win = step(0.3, f.x) * step(f.x, 0.7) * step(0.3, f.y) * step(f.y, 0.82) * step(1.0, vKitW.y) * wall;
+  #if KIT_KIND == 1
+  win = max(win * step(3.6, vKitW.y), step(0.4, vKitW.y) * step(vKitW.y, 3.3) * step(0.08, f.x) * step(f.x, 0.92) * wall);
+  vec3 roofC = vec3(0.40, 0.40, 0.41);
+  #else
+  vec3 roofC = vec3(0.31, 0.29, 0.30);
+  #endif
+  diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.15, 0.19, 0.24), win * near * 0.85);
+  diffuseColor.rgb = mix(diffuseColor.rgb, roofC, step(0.4, n.y));
+  diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.93, 0.92, 0.88), step(0.505, vKitL.z) * (1.0 - step(0.4, n.y)));
+  diffuseColor.rgb *= 0.82 + 0.18 * smoothstep(0.0, 0.8, vKitW.y); }`);
+  };
+  m.customProgramCacheKey = () => 'parish-kit-' + kind;
+  return m;
+}
+/* generic facade palettes (AUTHORED): painted timber for houses, brick/stone/render for midrises, cladding for sheds */
+const PALETTE = {
+  house: [0xEDE3CC, 0xE9D8A6, 0xB9C9B0, 0xB7CBD8, 0xE3B7A0, 0xF2EEE6, 0xD7C3DD, 0xC9D8C2],
+  midrise: [0xB08A74, 0x9E7A68, 0xC9BFAE, 0xD6CFC2, 0x8F8D88, 0xBDB3A0],
+  shed: [0xA9B0B5, 0x8E9AA3, 0xB8B2A2, 0x9AA59A],
+};
+const blocks = new THREE.InstancedMesh(blockGeo, kitMat('midrise'), CAP.block);
+const houses = new THREE.InstancedMesh(houseGeo, kitMat('house'), CAP.block);
+const KIT = { house: houses, midrise: blocks };
+const KC = new THREE.Color();
+for (const m of Object.values(KIT)) { m.setColorAt(0, KC.set(0xffffff)); m.count = 0; m.frustumCulled = false; scene.add(m); }
+/* a lot: [x, z, w, h, d, family, yaw, colour]; houses face their nearest street (porch to the kerb) */
+function kitLot(use, ix, iz, x, z, jx, jz, hh) {
+  const c = wildsHash(ix, iz, SEED, 5);
+  if (use === 'residential') {
+    const ax = ((ix % 4) + 4) % 4, az = ((iz % 4) + 4) % 4;
+    const yaw = az === 1 ? Math.PI : az === 3 ? 0 : ax === 1 ? -Math.PI / 2 : ax === 3 ? Math.PI / 2 : 0;
+    return [x, z, 8 + 4 * jx, 4.2 + 3.6 * hh, 11 + 6 * jz, 'house', yaw, PALETTE.house[Math.floor(c * PALETTE.house.length)]];
+  }
+  if (use === 'industrial') return [x, z, 15 + 8 * jx, 6 + 5 * hh, 15 + 8 * jz, 'midrise', 0, PALETTE.shed[Math.floor(c * PALETTE.shed.length)]];
+  return [x, z, 10 + 9 * jx, 7 + 42 * Math.pow(hh, 3), 10 + 9 * jz, 'midrise', 0, PALETTE.midrise[Math.floor(c * PALETTE.midrise.length)]];
+}
 const trees = new THREE.InstancedMesh(treeGeo, matTree, CAP.tree);
-for (const m of [blocks, trees]) { m.count = 0; m.frustumCulled = false; scene.add(m); }
+trees.count = 0; trees.frustumCulled = false; scene.add(trees);
 const chunkData = new Map(); let queue = [], dirty = false;
 function lmNear(x, z) { for (const id of loaded) for (const l of PAR.get(id).landmarks) if (Math.hypot(l.x - x, l.z - z) < 45) return true; return false; }
 function buildChunk(ci, cj) {
@@ -485,12 +675,15 @@ function buildChunk(ci, cj) {
     // streets: every fourth cell row/column stays open (AUTHORED grid, not the real street grid)
     const sx = ((ix % 4) + 4) % 4 === 0, sz = ((iz % 4) + 4) % 4 === 0;
     if (sx || sz) {
-      if (h < 0.18) out.tree.push([x, z, 0.8 + jx * 0.5, 0]);
+      // street trees stand on the walkway verge, not in the painted carriageway (wave 6)
+      if (h < 0.18) out.tree.push([sx ? (ix + (jx < 0.5 ? 0.1 : 0.9)) * CELL : x, sz ? (iz + (jz < 0.5 ? 0.1 : 0.9)) * CELL : z, 0.8 + jx * 0.5, 0]);
       // a lamp every fourth cell along each street (one per block side), at the kerb (AUTHORED furniture on AUTHORED streets)
       if (!(sx && sz) && (((sx ? iz : ix) % 4) + 4) % 4 === 2 && ((sx ? ix : iz) & 4) === 0) out.lamp.push(sx ? [(ix + 0.08) * CELL, (iz + 0.5) * CELL, 0] : [(ix + 0.5) * CELL, (iz + 0.08) * CELL, Math.PI / 2]);
       continue;
     }
-    if (h < 0.55) out.block.push([x, z, 9 + 10 * jx, 4 + 22 * Math.pow(wildsHash(ix, iz, SEED, 4), 3), 9 + 10 * jz]);
+    const use = landUse(x, z);
+    if (use === 'park') { if (h < 0.8) out.tree.push([x, z, 0.8 + jz * 0.6, 0]); continue; }   // a park lot: trees, no building
+    if (h < 0.55) out.block.push(kitLot(use, ix, iz, x, z, jx, jz, wildsHash(ix, iz, SEED, 4)));
     else if (h < 0.8) out.tree.push([x, z, 0.8 + jz * 0.6, 0]);
   }
   return out;
@@ -512,12 +705,18 @@ const M4 = new THREE.Matrix4(), Q = new THREE.Quaternion(), V = new THREE.Vector
 const UP = new THREE.Vector3(0, 1, 0);
 function refillFabric() {
   let nb = 0, nt = 0, nl = 0;
+  const kn = { house: 0, midrise: 0 };
   for (const c of chunkData.values()) {
-    for (const [x, z, w, h, d] of c.block) { if (nb >= CAP.block) break; M4.compose(V.set(x, 0, z), Q.identity(), S.set(w, h, d)); blocks.setMatrixAt(nb++, M4); }
+    for (const [x, z, w, h, d, fam, yaw, col] of c.block) {
+      if (nb >= CAP.block) break;   // CAP.block bounds the buildings of all kit families together
+      const m = KIT[fam]; if (!m) throw new Error('parishes: unknown building family ' + fam);
+      M4.compose(V.set(x, 0, z), Q.setFromAxisAngle(UP, yaw), S.set(w, h, d)); m.setMatrixAt(kn[fam], M4); m.setColorAt(kn[fam]++, KC.set(col)); nb++;
+    }
     for (const [x, z, s] of c.tree) { if (nt >= CAP.tree) break; M4.compose(V.set(x, 0, z), Q.identity(), S.set(s, s, s)); trees.setMatrixAt(nt++, M4); }
     for (const [x, z, r] of c.lamp) { if (nl >= CAP.lamp) break; M4.compose(V.set(x, 0, z), Q.setFromAxisAngle(UP, r), S.set(1, 1, 1)); lamps.setMatrixAt(nl++, M4); }
   }
-  blocks.count = nb; trees.count = nt; lamps.count = nl; Q.identity();
+  for (const [f, m] of Object.entries(KIT)) { m.count = kn[f]; m.instanceMatrix.needsUpdate = true; m.instanceColor.needsUpdate = true; }
+  trees.count = nt; lamps.count = nl; Q.identity();
   blocks.instanceMatrix.needsUpdate = true; trees.instanceMatrix.needsUpdate = true; lamps.instanceMatrix.needsUpdate = true; dirty = false;
 }
 
@@ -646,8 +845,21 @@ function nearest(x, z, wantWater) {
   }
   return null;
 }
+/* one place applies a mode to the view (REVIEW wave 6: enterExit used to set mode directly, so leaving a ride from
+   the overview kept the overview's render scale, hidden fabric and pressed Overview button) */
+function applyMode(m) {
+  mode = m;
+  for (const b of document.querySelectorAll('[data-mode]')) b.setAttribute('aria-pressed', String(b.dataset.mode === m));
+  stage.dataset.mode = m;
+  applyPR(m === 'overview' ? OVERVIEW_PR : 1);
+  blocks.visible = houses.visible = trees.visible = lamps.visible = m !== 'overview';
+}
 function setMode(m) {
-  if (riding && m !== 'overview') return false;
+  if (riding && m !== 'overview') {
+    // riding: only the overview is another view; from the overview any mode button returns to the ride
+    if (mode !== 'overview') return false;
+    applyMode(riding.medium === 'water' ? 'boat' : 'drive'); return true;
+  }
   if (m === 'boat' && mode !== 'boat') {
     const w = nearest(eye.x, eye.z, true); if (!w) { toast(tr('parishes.boat.nowater')); return false; }
     eye.x = w[0]; eye.z = w[1];
@@ -655,11 +867,7 @@ function setMode(m) {
     const l = nearest(eye.x, eye.z, false); if (!l) { toast(tr('parishes.boat.noland')); return false; }
     eye.x = l[0]; eye.z = l[1];
   }
-  mode = m;
-  for (const b of document.querySelectorAll('[data-mode]')) b.setAttribute('aria-pressed', String(b.dataset.mode === m));
-  stage.dataset.mode = m;
-  applyPR(m === 'overview' ? OVERVIEW_PR : 1);
-  blocks.visible = trees.visible = lamps.visible = m !== 'overview';
+  applyMode(m);
   if (m === 'drive' || m === 'boat') toast(tr('parishes.stub_vehicle'));
   return true;
 }
@@ -723,7 +931,7 @@ function hud() {
 }
 function teleport(x, z, yaw) {
   // a jump is not a crossing: step out of any vehicle, adopt the parish under the new spot silently
-  if (riding) { riding = null; mode = 'walk'; stage.dataset.mode = mode; enterBtn.setAttribute('aria-pressed', 'false'); }
+  if (riding) { riding = null; applyMode('walk'); enterBtn.setAttribute('aria-pressed', 'false'); }
   eye.x = x; eye.z = z; if (yaw !== undefined) eye.yaw = yaw;
   const was = current; current = parishAt(x, z) || current;
   if (current && current !== was) qfind(FINDS.arrive[current.id]);
@@ -769,19 +977,27 @@ const satBtn = document.getElementById('sat'), satBox = document.getElementById(
    layer on, never at load. Absent, unreadable or not a public pk. token: OFF. */
 const SAT = D.satellite;
 let mapboxToken = null, tokenRead = false;
-async function readToken() {
-  if (tokenRead) return mapboxToken; tokenRead = true;
-  try {
-    const r = await fetch('./config/runtime.json', { cache: 'no-store' });
-    if (r.ok) { const j = await r.json(); if (j && typeof j.mapbox_token === 'string' && j.mapbox_token.startsWith('pk.')) mapboxToken = j.mapbox_token; }
-  } catch (e) { mapboxToken = null; }
-  return mapboxToken;
+/* one shared read of the operator config (REVIEW wave 6: a second toggle during the fetch used to see "no token"
+   and a stale first call then appended a second <img>); every toggle bumps satGen and a superseded call stops */
+let tokenP = null, satGen = 0;
+function readToken() {
+  if (tokenP) return tokenP; tokenRead = true;
+  tokenP = (async () => {
+    try {
+      const r = await fetch('./config/runtime.json', { cache: 'no-store' });
+      if (r.ok) { const j = await r.json(); if (j && typeof j.mapbox_token === 'string' && j.mapbox_token.startsWith('pk.')) mapboxToken = j.mapbox_token; }
+    } catch (e) { mapboxToken = null; }
+    return mapboxToken;
+  })();
+  return tokenP;
 }
 async function showSatellite(on) {
+  const gen = ++satGen;
   satBtn.setAttribute('aria-pressed', String(on)); satBox.hidden = !on;
   satBox.replaceChildren();
   if (!on) { satMsg.textContent = ''; return satState(); }
   const tokenNow = await readToken();
+  if (gen !== satGen) return satState();   // superseded by a later toggle
   const [lon, lat] = lonlat(eye.x, eye.z), zm = 16, [tx, ty] = tileOf(lon, lat, zm);
   const img = new Image(); img.alt = SAT.usgs.attribution; img.referrerPolicy = 'no-referrer';
   img.onerror = () => { satMsg.textContent = `${tr('parishes.sat.failed')} · ${tokenNow ? SAT.mapbox.attribution : SAT.mapbox.refusal_text}`; satBox.dataset.failed = '1'; };
@@ -831,18 +1047,20 @@ function enterExit() {
   if (riding) {
     const p = fleetExitPoint(riding.st, riding.spec, fground);
     if (!p) { toast(tr('parishes.boat.noland')); return false; }
-    eye.x = p.x; eye.z = p.z; eye.yaw = riding.st.yaw + Math.PI; riding = null; mode = 'walk';
+    eye.x = p.x; eye.z = p.z; eye.yaw = riding.st.yaw + Math.PI; riding = null; applyMode('walk');
   } else {
     const v = fleetNearest({ x: eye.x, z: eye.z }, parked, 2.5);
     if (!v) return false;
-    riding = v; riding.snap = true; mode = v.medium === 'water' ? 'boat' : 'drive';
+    riding = v; riding.snap = true; applyMode(v.medium === 'water' ? 'boat' : 'drive');
     qfind(FINDS.ride[v.medium]);
   }
   stage.dataset.mode = mode; enterBtn.setAttribute('aria-pressed', String(!!riding));
   return true;
 }
 enterBtn.addEventListener('click', () => { if (!enterExit()) toast(tr('parishes.boat.nowater')); });
-addEventListener('keydown', (e) => { if (e.key === 'e' || e.key === 'E') enterExit(); });
+/* E / T: no key-repeat, no modifier chords, not while typing (REVIEW wave 6) */
+const plainKey = (e) => !e.repeat && !e.ctrlKey && !e.metaKey && !e.altKey && !(e.target.closest && e.target.closest('input,textarea,select'));
+addEventListener('keydown', (e) => { if ((e.key === 'e' || e.key === 'E') && plainKey(e)) enterExit(); });
 function drive(dt) {
   const f = (keys.has('w') || keys.has('arrowup') ? 1 : 0) - (keys.has('s') || keys.has('arrowdown') ? 1 : 0);
   const t = (keys.has('a') || keys.has('arrowleft') ? 1 : 0) - (keys.has('d') || keys.has('arrowright') ? 1 : 0);
@@ -865,7 +1083,7 @@ if (NPCD) {
 }
 function talk() { if (!npcKit) { toast(tr('parishes.stub_vehicle')); return null; } return npcKit.talkNearest(); }
 document.getElementById('talk').addEventListener('click', () => talk());
-addEventListener('keydown', (e) => { if ((e.key === 't' || e.key === 'T') && !(e.target.closest && e.target.closest('input,textarea,select'))) talk(); });
+addEventListener('keydown', (e) => { if ((e.key === 't' || e.key === 'T') && plainKey(e)) talk(); });
 
 function resize() { const w = stage.clientWidth, h = stage.clientHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); }
 addEventListener('resize', resize);
@@ -885,6 +1103,7 @@ function frame(now) {
   const c = Math.floor(eye.x / CHUNK_M) + ',' + Math.floor(eye.z / CHUNK_M);
   if (!over) { if (c !== cell) { cell = c; updateChunks(eye.x, eye.z); } pump(BUILD_PER_FRAME); if (dirty) refillFabric(); }
   matWater.emissiveIntensity = 0.06 + 0.05 * Math.sin(now / 900);   // water shimmer: one uniform, no extra draw
+  waterU.uTime.value = now / 1000;
   placeCamera();
   const t0 = performance.now(); renderer.render(scene, camera); frameMs = performance.now() - t0;
   info = { calls: renderer.info.render.calls, triangles: renderer.info.render.triangles };
@@ -954,10 +1173,14 @@ window.__parishes = {
   stats: () => ({
     mode, current: current && current.id, loaded: [...loaded].sort(), calls: info.calls, triangles: info.triangles,
     chunks: chunkData.size, pending: queue.length, frameMs,
-    instances: { block: blocks.visible ? blocks.count : 0, tree: trees.visible ? trees.count : 0, lamp: lamps.visible ? lamps.count : 0, marker: markers.count,
+    instances: { block: blocks.visible ? houses.count + blocks.count : 0, tree: trees.visible ? trees.count : 0, lamp: lamps.visible ? lamps.count : 0, marker: markers.count,
       ...Object.fromEntries(Object.entries(lmMeshes).map(([k, m]) => ['lm_' + k, m.count])) },
+    kit: Object.fromEntries(Object.entries(KIT).map(([k, m]) => [k, m.visible ? m.count : 0])),
+    kitTris: { house: houseGeo.attributes.position.count / 3, midrise: blockGeo.attributes.position.count / 3, tree: treeGeo.index ? treeGeo.index.count / 3 : treeGeo.attributes.position.count / 3 },
+    ground: { ready: [...groundReady].sort(), failed: groundFailed.slice(), px: GROUND_PX },
+    atmosphere: { skyCss: getComputedStyle(canvas).backgroundImage.startsWith('linear-gradient'), clearAlpha: renderer.getClearAlpha(), fog: scene.fog.color.getHex(), horizon: HORIZON, sun: SUN.toArray().map((v) => +v.toFixed(3)) },
     fleetVisible: fl ? fl.group.visible : null, finds: [...found],
-    instancedFamilies: [blocks, trees, lamps, markers, stations, ...Object.values(lmMeshes)].every((m) => m.isInstancedMesh),
+    instancedFamilies: [blocks, houses, trees, lamps, markers, stations, ...Object.values(lmMeshes)].every((m) => m.isInstancedMesh),
     stations: stations.count, pathsFor, pathChooser: !!pathsEl.querySelector('[role="radiogroup"], [role="radio"]'),
     fabricMeshes: scene.children.filter((o) => o.geometry === blockGeo || o.geometry === treeGeo).length,
     landMeshes: scene.children.filter((o) => o.userData.parish).length,
@@ -967,6 +1190,13 @@ window.__parishes = {
   frameTimes(n) { return new Promise((res) => { const t = []; const f = (now) => { t.push(now); if (t.length > n) res(t.slice(1).map((v, i) => v - t[i])); else requestAnimationFrame(f); }; requestAnimationFrame(f); }); },
   satellite: (on) => showSatellite(on), satState,
   /* diagnosis only (eval): render scale in the current view */
+  /* eval only: draw calls per fabric family, measured as (calls with everything) - (calls with that family hidden) */
+  familyCalls() {
+    const fam = { house: houses, midrise: blocks, tree: trees, lamp: lamps }, out = {};
+    renderer.render(scene, camera); const all = renderer.info.render.calls;
+    for (const [k, m] of Object.entries(fam)) { const v = m.visible; m.visible = false; renderer.render(scene, camera); out[k] = all - renderer.info.render.calls; m.visible = v; }
+    return out;
+  },
   renderScale: (k) => { if (k !== undefined) applyPR(k); return { prScale, pixelRatio: renderer.getPixelRatio() }; },
 };
 resize();
@@ -1052,6 +1282,7 @@ kbd{{font:12px "IBM Plex Mono",monospace;border:1px solid var(--rule);border-rad
   <div id="toast" hidden role="status"></div>
 </div>
 <p class="help" id="maplabel" data-map-label></p>
+<p class="help" data-ground-label lang="en">{esc(DATA["honesty"]["ground"])}</p>
 <p class="help" id="satmsg" data-sat-msg aria-live="polite"></p>
 <p class="help">{TS("parishes.help")}</p>
 <h2>{TS("parishes.h.landmarks")}</h2>

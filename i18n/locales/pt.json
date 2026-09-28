@@ -553,7 +553,13 @@
   "fleet.cam": "Vista do condutor",
   "fleet.chase": "Vista de perseguição",
   "fleet.traffic": "Tráfego ambiente",
-  "fleet.trafficnote": "O tráfego segue faixas AUTHORED na pista de teste e anéis no lago: faixas inventadas, não ruas reais."
+  "fleet.trafficnote": "O tráfego segue faixas AUTHORED na pista de teste e anéis no lago: faixas inventadas, não ruas reais.",
+  "fleet.touch.group": "Controlos táteis de condução",
+  "fleet.touch.stick": "Manípulo de direção: arraste para a esquerda ou direita para virar, para cima ou para baixo para avançar ou recuar",
+  "fleet.touch.throttle": "Acelerador (manter)",
+  "fleet.touch.brake": "Travão (manter)",
+  "fleet.touch.enter": "Entrar",
+  "fleet.touch.exit": "Sair"
  },
  "districts": {
   "structural": {

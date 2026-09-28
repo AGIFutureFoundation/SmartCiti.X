@@ -39,7 +39,7 @@
   "budget_currencies": 2,
   "budget_agreements": 7,
   "suites_run": 89,
-  "suite_checks_declared": 4478,
+  "suite_checks_declared": 4557,
   "open_questions": 12,
   "negative_findings": 9,
   "cross_checks": 2,
@@ -1853,6 +1853,8 @@
   "fleet/registry/fleet.json": {
    "app_renderers": [
     "web/build_fleet.py",
+    "web/build_home.py",
+    "web/build_landing.py",
     "web/build_parishes.py"
    ],
    "doc_renderers": [],
@@ -1862,6 +1864,7 @@
    "suites": [
     "quests/test.mjs",
     "web/test_fleet.mjs",
+    "web/test_home.mjs",
     "web/test_parishes.mjs"
    ],
    "own_pack": [
@@ -1987,6 +1990,8 @@
   },
   "layers/registry/layers.json": {
    "app_renderers": [
+    "web/build_home.py",
+    "web/build_landing.py",
     "web/build_parishes.py"
    ],
    "doc_renderers": [],
@@ -1997,6 +2002,7 @@
    "suites": [
     "npcs/test.mjs",
     "quests/test.mjs",
+    "web/test_home.mjs",
     "web/test_parishes.mjs"
    ],
    "own_pack": [
@@ -2100,11 +2106,13 @@
   },
   "npcs/registry/npcs.json": {
    "app_renderers": [
+    "web/build_home.py",
     "web/build_parishes.py"
    ],
    "doc_renderers": [],
    "builders": [],
    "suites": [
+    "web/test_home.mjs",
     "web/test_parishes.mjs"
    ],
    "own_pack": [
@@ -2295,6 +2303,8 @@
   },
   "parishes/registry/parishes.json": {
    "app_renderers": [
+    "web/build_home.py",
+    "web/build_landing.py",
     "web/build_parishes.py"
    ],
    "doc_renderers": [],
@@ -2303,9 +2313,11 @@
     "npcs/build.py"
    ],
    "suites": [
+    "fleet/test.mjs",
     "layers/test.mjs",
     "npcs/test.mjs",
     "quests/test.mjs",
+    "web/test_home.mjs",
     "web/test_parishes.mjs"
    ],
    "own_pack": [
@@ -2315,6 +2327,8 @@
   },
   "payments/registry/catalog.json": {
    "app_renderers": [
+    "web/build_home.py",
+    "web/build_landing.py",
     "web/build_plans.py"
    ],
    "doc_renderers": [],
@@ -2322,6 +2336,7 @@
     "cloudflare/build.py"
    ],
    "suites": [
+    "web/test_home.mjs",
     "web/test_plans.mjs"
    ],
    "own_pack": [
@@ -2460,6 +2475,7 @@
     "web/build_3d.py",
     "web/build_dashboard.py",
     "web/build_geomap.py",
+    "web/build_home.py",
     "web/build_interactive_map.py",
     "web/build_map.py",
     "web/build_schools.py"
@@ -2480,6 +2496,7 @@
     "lessons/test.mjs",
     "npcs/test.mjs",
     "web/test_geomap.mjs",
+    "web/test_home.mjs",
     "web/test_map.mjs",
     "web/test_schools.mjs"
    ],
@@ -4348,7 +4365,7 @@
    {
     "suite": "web/test_home.mjs",
     "pack": "web",
-    "readme_checks": 63,
+    "readme_checks": 72,
     "declared": true,
     "in_readme_table": true
    },
@@ -4453,42 +4470,42 @@
    {
     "suite": "parishes/test.mjs",
     "pack": "parishes",
-    "readme_checks": 37,
+    "readme_checks": 45,
     "declared": true,
     "in_readme_table": true
    },
    {
     "suite": "fleet/test.mjs",
     "pack": "fleet",
-    "readme_checks": 58,
+    "readme_checks": 75,
     "declared": true,
     "in_readme_table": true
    },
    {
     "suite": "web/test_fleet.mjs",
     "pack": "web",
-    "readme_checks": 19,
+    "readme_checks": 20,
     "declared": true,
     "in_readme_table": true
    },
    {
     "suite": "npcs/test.mjs",
     "pack": "npcs",
-    "readme_checks": 125,
+    "readme_checks": 144,
     "declared": true,
     "in_readme_table": true
    },
    {
     "suite": "layers/test.mjs",
     "pack": "layers",
-    "readme_checks": 27,
+    "readme_checks": 28,
     "declared": true,
     "in_readme_table": true
    },
    {
     "suite": "payments/test.mjs",
     "pack": "payments",
-    "readme_checks": 82,
+    "readme_checks": 93,
     "declared": true,
     "in_readme_table": true
    },
@@ -4509,7 +4526,7 @@
    {
     "suite": "web/test_parishes.mjs",
     "pack": "web",
-    "readme_checks": 69,
+    "readme_checks": 82,
     "declared": true,
     "in_readme_table": true
    }
@@ -4519,13 +4536,13 @@
   "suites_without_a_count": [
    "control/soak.mjs"
   ],
-  "declared_total": 4478,
-  "readme_headline": 4489,
+  "declared_total": 4557,
+  "readme_headline": 4568,
   "unaccounted_for": 11,
   "unaccounted_note": "the headline counts every `  ok ` line verify_all.sh sees, which includes suites the README table gives no number to and web/test_interiors.py, which the table does not list at all. The difference is that remainder and is computed, not reconciled by hand.",
   "min": 9,
   "max": 350,
-  "median": 42.0,
+  "median": 43.0,
   "thinnest": [
    {
     "suite": "ops/fuzz.mjs",
@@ -4563,7 +4580,7 @@
    },
    {
     "suite": "npcs/test.mjs",
-    "checks": 125
+    "checks": 144
    },
    {
     "suite": "respond/test.mjs",

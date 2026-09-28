@@ -65,7 +65,16 @@ def build():
         for k in COMMERCIAL + ('price_id',):
             if r[k] is not None:
                 raise CatalogError(f'payments: {r["id"]}.{k} carries a value - never invent commercial terms')
-    src = (HERE / 'build.py').read_bytes()
+    src = (HERE / 'build.py').read_bytes() + (HERE.parent / 'security' / 'headers.json').read_bytes()
+    pol = json.loads((HERE.parent / 'security' / 'headers.json').read_text())
+    if 'api' not in pol or not pol['api']:
+        raise CatalogError('payments: security/headers.json has no api headers')
+    api_headers = []
+    for h in pol['api']:
+        for k in ('key', 'value'):
+            if k not in h or not h[k]:
+                raise CatalogError(f'payments: security/headers.json api[].{k} is missing')
+        api_headers.append({'key': h['key'], 'value': h['value']})
     return {
         'pack': 'payments',
         'provenance': 'AUTHORED',
@@ -100,6 +109,8 @@ def build():
             'handled': ['checkout.session.completed'],
             'stored_fields': ['plan', 'payment_status', 'mode', 'livemode', 'at'],
         },
+        'api_headers_from': 'security/headers.json',
+        'api_headers': api_headers,
         'plans': recs,
         'source_stamp': 'sha256:' + hashlib.sha256(src).hexdigest(),
     }

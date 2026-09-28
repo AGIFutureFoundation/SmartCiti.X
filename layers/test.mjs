@@ -237,5 +237,26 @@ let labFail = false;
 try { execFileSync('python3', ['-c', 'import sys;sys.path.insert(0,"web");import pathkit;pathkit.path_labels({})'], { cwd: ROOT, stdio: 'pipe' }); } catch (e) { labFail = /no path\.choose/.test(String(e.stderr)); }
 ok('pathkit.path_labels fails by name on a catalog without path.* keys', labFail);
 
+// ---- re-mount is idempotent (REVIEW finding 7): mount the same element 6 times (6 parish changes), one handler fires
+let remount = null;
+try {
+  const two = JSON.parse(execFileSync('python3', ['-c', 'import json,sys;sys.path.insert(0,"web");import pathkit as k;print(json.dumps([k.path_data(f) for f in sys.argv[1:]]))', P[0].fips, P[1].fips], { cwd: ROOT, encoding: 'utf8' }));
+  const live = { click: new Set(), keydown: new Set() }; const found = []; const finds = [];
+  const node = () => ({ hidden: true, innerHTML: '', setAttribute() {}, focus() {}, querySelector: () => node(), classList: { add() {} } });
+  const root = Object.assign(node(), {
+    addEventListener(t, f, o) { live[t].add(f); if (o && o.signal) o.signal.addEventListener('abort', () => live[t].delete(f)); },
+    querySelector: () => node(), querySelectorAll: () => [] });
+  const win = { localStorage: { getItem: () => null, setItem() {} },
+    TCQuests: { state: () => ({ found: {}, done: {} }), find: (id) => finds.push(id), on: (ev, f) => found.push(f) } };
+  new Function('window', 'document', kit.js)(win, { dir: 'ltr', activeElement: null });
+  for (let i = 0; i < 6; i++) win.TCPaths.mount(root, two[i % 2], { hrefPrefix: '' });
+  const st = two[1].stations[0].id;
+  const btn = { closest: (sel) => (sel.includes('data-pk-open') ? { hasAttribute: (x) => x === 'data-pk-open', getAttribute: () => st } : null) };
+  for (const f of live.click) f({ target: btn });
+  remount = { click: live.click.size, keydown: live.keydown.size, found: found.length, finds: finds.length, unmount: typeof win.TCPaths.unmount };
+} catch (e) { remount = { error: String(e) }; }
+ok('mounting the same element 6 times leaves one click, one keydown and one found listener; one click = one find',
+  remount && remount.click === 1 && remount.keydown === 1 && remount.found === 1 && remount.finds === 1 && remount.unmount === 'function', JSON.stringify(remount));
+
 console.log(fails ? `layers/test: ${fails} FAILED` : 'layers/test: all passed');
 process.exit(fails ? 1 : 0);

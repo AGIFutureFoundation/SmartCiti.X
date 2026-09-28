@@ -3565,10 +3565,10 @@
   "metrics": 9,
   "runs": 36,
   "seeds": 12,
-  "sim_elapsed_ms": 695,
+  "sim_elapsed_ms": 713,
   "strategies": 3,
   "total_attempts_simulated": 15120,
-  "wall_ms": 741
+  "wall_ms": 768
  },
  "hall_independence": {
   "contrast": {
@@ -3621,7 +3621,7 @@
    4242
   ],
   "strategy": "graph",
-  "sweep_ms": 2757,
+  "sweep_ms": 2875,
   "why": "every union carries the same eleven strands by three tiers wired by the same requires edges, so the graph handed to the sequencer is isomorphic across halls and the seeded generator is the only source of variation. Nothing in control/ reads the simulator registry, so no seat, no piece of equipment and no difference in available evidence reaches this simulation."
  },
  "honesty": {
@@ -3629,7 +3629,7 @@
   "determinism": "The subject seeds mulberry32 per run and touches no clock and no network. The 12 seeds are recorded, and evals/test.mjs re-runs every one of the 36 runs and compares field by field against what is written here. A result that cannot be reproduced is not a result.",
   "no_cohort_claim": "Nothing in this registry licenses a statement about real learners, real halls, real apprentices or real outcomes. \"The sequencer beats blocked practice by X\" is not a sentence this pack supports in any form; the supported sentence names the simulation and its assumptions in the same breath as the number.",
   "one_union": "Every run is the subject's default union, 'welders' - 33 skills. This pack does not sweep unions and says nothing about the other ladders in pack/registry/skills.json.",
-  "runtime": "The full 36-run sweep took 695 ms of simulation time inside node (741 ms wall including process start) on the machine that built this. Nothing was shortened to make it quick: attempts, per-day and session length are the subject's own constants, read out of the file rather than typed here.",
+  "runtime": "The full 36-run sweep took 713 ms of simulation time inside node (768 ms wall including process start) on the machine that built this. Nothing was shortened to make it quick: attempts, per-day and session length are the subject's own constants, read out of the file rather than typed here.",
   "status": "SCRIPTED: every number in this registry came out of running control/sim_curriculum.mjs, a hand-written deterministic simulation over an authored skill ladder and an authored learner model. Nothing here was observed of a person. Not one number is RECORDED, and the summary statistics are not promoted to DERIVED - see tier_is_not_derived.",
   "the_limit_is_the_sources_own": "The limit is not this pack's summary of the subject. It is quoted verbatim from the header of control/sim_curriculum.mjs into limit.sentence, and evals/test.mjs re-extracts it from that file and fails if the two stop matching or if the quotation is softened.",
   "the_one_field_that_is_not_reproducible": "counts.sim_elapsed_ms and counts.wall_ms are wall-clock timings of the machine that ran the build. They change on every build and no check holds them to a value; they are here so a reader knows the sweep is seconds rather than hours. Every other number in this registry is reproduced exactly by evals/test.mjs.",

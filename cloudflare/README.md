@@ -9,7 +9,7 @@ pack is configuration and tests only; an operator with the accounts runs the ste
 | Piece | File | What it does |
 |---|---|---|
 | Pages project `smartcitix` | `wrangler.toml` | serves `_site/` (the same bundle `.github/assemble_site.sh` builds for GitHub Pages) |
-| Headers | `_headers` | generated from `security/headers.json`, the canonical policy: its `site` headers on `/*` (including the baseline CSP `frame-ancestors 'none'; base-uri 'self'; object-src 'none'; form-action 'self'`), its `api` headers (deny-all CSP, `no-store`) on `/api/*`. `security/test.mjs` holds `vercel.json` to the same file |
+| Headers | `_headers` | generated from `security/headers.json`, the canonical policy: its `site` headers on `/*` (including the baseline CSP `frame-ancestors 'none'; base-uri 'self'; object-src 'none'; form-action 'self'`), its `api` headers (deny-all CSP, `no-store`) on `/api/*` - but Pages does not apply `_headers` to Pages Functions responses, so the Worker sets those same `api` headers on every reply itself (copied from the policy by `payments/build.py`). `security/test.mjs` holds `vercel.json` to the same file |
 | Redirects | `_redirects` | `/plans` to the Plans page; nothing under `/api/` |
 | Routing | `_routes.json` | Functions run for `/api/*` only; everything else is a static file |
 | Pages Function | `functions/api/[[path]].js` | forwards `/api/*` unchanged to the Worker via the `PAYMENTS` service binding (503 without it) |

@@ -31,6 +31,7 @@ const FLEET_SLOTS = ['body', 'trim', 'accent'];
 const FLEET_MIN_WET_M = 0.15;      // water shallower than this is dry ground for a land vehicle
 const FLEET_KEEL_CLEAR_M = 0.1;    // a boat needs its draft plus this under the keel
 const FLEET_STEER_VIS = 0.5;       // front-wheel angle (rad) at full steer, drawn only
+const FLEET_BRAKE_GAIN = 3.0;      // extra tail-lamp glow at full brake, per instance (drawn only)
 
 function fleetNeed(o, k, where) {
   if (o === null || typeof o !== 'object' || !(k in o) || o[k] === undefined)
@@ -66,6 +67,10 @@ function fleetGeoBuilder(THREE) {
     wheel(cx, cy, cz, r, w, slot) {   // axis along x
       const m = M().makeTranslation(cx, cy, cz).multiply(M().makeRotationZ(Math.PI / 2));
       add(new THREE.CylinderGeometry(r, r, w, 10), slot, m);
+    },
+    disc(cx, cy, cz, r, slot, tilt) {   // a thin disc facing +z (the driver looks along +z), tilted back by tilt
+      const m = M().makeTranslation(cx, cy, cz).multiply(M().makeRotationX(Math.PI / 2 - tilt));
+      add(new THREE.CylinderGeometry(r, r, 0.04, 10), slot, m);
     },
     rod(cx, cy, cz, r, len, slot, rx) {   // a cylinder in the y-z plane, tilted rx from vertical
       const m = M().makeTranslation(cx, cy, cz).multiply(M().makeRotationX(rx));
@@ -122,6 +127,53 @@ function fleetLamps(b, recipe, L, W, H, y) {   // head lamps at the front, tail 
   for (const sx of [-1, 1]) { b.lamp(sx * W * 0.36, y, L / 2 + 0.02, s * 1.4, s, 0.06, 1); b.lamp(sx * W * 0.38, y, -L / 2 - 0.02, s * 1.2, s, 0.06, 2); }
 }
 
+/* The simple cab interior seen from the driver view, placed from the driver's
+   eye: a dashboard ahead, a steering wheel between eye and dashboard, the
+   driver's seat (and a passenger seat when the eye sits off-centre). Built into
+   the FAMILY geometry, so it is shared by the family and costs no extra draw
+   call. Cycles have none; paddle craft and open boats get a seat only.
+   -> [{part: 'dash'|'wheel'|'seat'|'seatback', x, y, z, sx, sy, sz}] (own metres) */
+function fleetCabParts(recipe, L, W, H) {
+  const a = recipe.archetype;
+  if (a === 'cycle') return [];
+  const e = fleetDriverEye({ recipe, L, W, H }), out = [];
+  const inZ = (z) => Math.max(-L / 2 + 0.15, Math.min(L / 2 - 0.15, z));
+  const low = a === 'paddle';   // a paddler sits on the floor: a low seat and a short back
+  const seat = (x) => {
+    const sy = low ? H * 0.6 : Math.max(0.15, e.y - 0.8), sw = Math.min(0.5, W * 0.4), bh = low ? 0.25 : 0.55;
+    out.push({ part: 'seat', x, y: sy, z: inZ(e.z - 0.1), sx: sw, sy: 0.12, sz: 0.48 });
+    out.push({ part: 'seatback', x, y: sy + 0.06 + bh / 2, z: inZ(e.z - 0.38), sx: sw, sy: bh, sz: 0.1 });
+  };
+  const cab = a === 'car' || a === 'bus' || a === 'truck' || a === 'machine' || (a === 'hull' && recipe.cab_len > 0);
+  if (cab) {
+    const dz = inZ(e.z + Math.min(0.8, L * 0.2)), wz = e.z + (dz - e.z) * 0.55;
+    // inside the driver view's field: the dashboard ~20 deg and the wheel ~25 deg below the eye line
+    out.push({ part: 'dash', x: 0, y: e.y - 0.3, z: dz, sx: Math.min(W * 0.8, 2.2), sy: 0.16, sz: 0.28 });
+    out.push({ part: 'wheel', x: e.x, y: e.y - 0.26, z: wz, sx: 0.38, sy: 0.38, sz: 0.04 });
+  }
+  seat(e.x);
+  if (cab && Math.abs(e.x) > 0.3 && a !== 'bus') seat(-e.x);
+  return out;
+}
+function fleetCabBuild(b, recipe, L, W, H) {
+  const parts = fleetCabParts(recipe, L, W, H);
+  for (const q of parts) {
+    if (q.part === 'wheel') b.disc(q.x, q.y, q.z, q.sx / 2, 'trim', 0.45);
+    else b.box(q.x, q.y, q.z, q.sx, q.sy, q.sz, q.part === 'dash' ? 'trim' : 'accent');
+  }
+  return parts.length;
+}
+/* Five families were the least detailed (a box and a box): they get a better
+   silhouette. Keyed by recipe shape, so a family's shape is still shared. */
+const FLEET_DETAIL = { sedan: 'compact-car', van: 'van', coach: 'bus', frame: 'bicycle', outboard: 'skiff' };
+function fleetDetailOf(r) {
+  if (r.archetype === 'car' && r.body === 'none') return r.cab_h < 0.6 ? 'sedan' : 'van';
+  if (r.archetype === 'bus') return 'coach';
+  if (r.archetype === 'cycle' && r.body === 'none') return 'frame';
+  if (r.archetype === 'hull' && r.hull === 'v' && r.cab_len === 0 && r.extra === 'none' && r.body === 'none') return 'outboard';
+  return null;
+}
+
 /* The family's shared geometry, in metres, built at `ref` = {length, width,
    height}; an entry's instance is scaled by its own dims / ref. */
 function fleetFamilyGeometry(THREE, recipe, ref) {
@@ -142,6 +194,22 @@ function fleetFamilyGeometry(THREE, recipe, ref) {
       b.box(0, H * 0.62, L / 2, W * 0.9, H * 0.5, 0.06, 'accent');
     }
     b.box(0, y0 + 0.1, L / 2, W * 0.95, 0.18, 0.1, 'trim');
+    const det = fleetDetailOf(recipe);
+    if (det === 'sedan' || det === 'van') {
+      const cl = recipe.cab_len * L, cz = -0.04 * L, gh = H - y1;
+      b.box(0, y1 + gh * 0.5, cz + cl / 2 + gh * 0.18, W * 0.84, gh * 0.95, 0.05, 'accent', -0.55);   // raked windscreen
+      if (det === 'sedan') b.box(0, y1 + gh * 0.5, cz - cl / 2 - gh * 0.15, W * 0.84, gh * 0.9, 0.05, 'accent', 0.5);   // raked rear glass
+      else b.box(0, y1 - 0.02, L / 2 - (L / 2 - cz - cl / 2) / 2, W * 0.9, 0.06, L / 2 - cz - cl / 2, 'body', 0.12);   // sloped nose
+      for (const sx of [-1, 1]) b.box(sx * (W / 2 + 0.06), y1 + 0.08, cz + cl / 2 - 0.1, 0.12, 0.1, 0.16, 'trim');   // mirrors
+      b.box(0, y0 + (y1 - y0) * 0.45, L / 2 + 0.02, W * 0.4, (y1 - y0) * 0.35, 0.04, 'trim');   // grille
+      if (det === 'van') for (const sx of [-1, 1]) b.box(sx * W * 0.38, H + 0.04, cz, 0.05, 0.06, cl * 0.8, 'trim');   // roof rails
+    }
+    if (det === 'coach') {
+      b.box(0, H * 0.62, L / 2 + 0.05, W * 0.88, H * 0.5, 0.05, 'accent', -0.12);        // raked windscreen
+      b.box(0, H * 0.93, L / 2 + 0.02, W * 0.6, H * 0.08, 0.06, 'trim');                 // destination sign
+      b.box(0, H + 0.12, -0.1 * L, W * 0.55, 0.24, L * 0.22, 'trim');                    // roof pod
+      for (const sx of [-1, 1]) { b.box(sx * (W / 2 + 0.12), H * 0.75, L / 2 - 0.1, 0.24, 0.05, 0.05, 'trim'); b.box(sx * (W / 2 + 0.24), H * 0.66, L / 2 - 0.1, 0.06, 0.24, 0.12, 'trim'); }
+    }
     fleetLamps(b, recipe, L, W, H, y0 + (y1 - y0) * 0.6);
     b.box(0, y0 + 0.1, -L / 2, W * 0.95, 0.18, 0.1, 'trim');
   } else if (a === 'truck') {
@@ -222,6 +290,13 @@ function fleetFamilyGeometry(THREE, recipe, ref) {
       b.box(0, r * 1.55, L * 0.24, 0.07, r * 1.0, 0.07, 'body');
       b.box(0, H * 0.9, -L * 0.14, 0.14, 0.05, 0.24, 'accent');
       b.box(0, H * 0.95, L * 0.25, W, 0.04, 0.04, 'trim');
+      if (fleetDetailOf(recipe) === 'frame') {
+        b.rod(0, r * 1.05, L * 0.08, 0.035, L * 0.36, 'body', Math.PI / 2 - 0.55);         // down tube
+        b.rod(0, r * 0.95, -L * 0.24, 0.03, L * 0.28, 'body', Math.PI / 2 + 0.25);         // chain stay
+        b.rod(0, r * 1.25, L / 2 - r * 1.05, 0.03, r * 1.1, 'trim', -0.3);                // fork
+        b.box(0, H * 0.88, L * 0.25, 0.05, 0.14, 0.05, 'trim');                           // stem
+        b.box(0.05, r, -L * 0.02, 0.02, r * 0.4, r * 0.4, 'accent');                      // chainring
+      }
     }
   } else if (a === 'hull' || a === 'paddle') {
     const paddle = a === 'paddle';
@@ -245,6 +320,11 @@ function fleetFamilyGeometry(THREE, recipe, ref) {
       b.box(0, deck + 0.45, -L * 0.05, W * 0.3, 0.9, 0.7, 'trim');                  // console / seat
     }
     if (recipe.body === 'rail') for (const sx of [-1, 1]) b.box(sx * W * 0.48, deck + 0.8, 0, 0.05, 0.7, L * 0.85, 'accent');
+    if (fleetDetailOf(recipe) === 'outboard') {
+      b.box(0, deck + 0.25, -L / 2 - 0.12, 0.34, 0.5, 0.3, 'accent');                      // outboard cowl
+      b.box(0, deck * 0.3, -L / 2 - 0.1, 0.1, deck * 0.9, 0.1, 'trim');                     // shaft
+      b.box(0, deck + 0.02, L * 0.25, W * 0.8, 0.05, 0.25, 'trim');                         // bow thwart
+    }
     const top = deck + (recipe.cab_len > 0 ? recipe.cab_h * H : 0.9);
     if (!paddle) { b.lamp(0, top + 0.12, -L * 0.08, 0.14, 0.14, 0.14, 1); b.lamp(0, deck + 0.1, -L / 2 + 0.05, 0.14, 0.12, 0.08, 2); }
     if (recipe.extra === 'fan') { b.wheel(0, deck + H * 0.45, -L / 2 + 0.6, H * 0.35, 0.3, 'trim'); b.box(0, deck + 1.0, -L * 0.1, 0.5, 1.0, 0.5, 'accent'); }
@@ -256,7 +336,10 @@ function fleetFamilyGeometry(THREE, recipe, ref) {
   } else {
     throw new Error('fleetkit: unknown archetype ' + a);
   }
-  return b.done();
+  const cabN = fleetCabBuild(b, recipe, L, W, H);
+  const g = b.done();
+  g.userData.fleetCab = cabN; g.userData.fleetDetail = fleetDetailOf(recipe);
+  return g;
 }
 
 /* One material for every family: vertex colour picks the slot, per-instance
@@ -267,14 +350,14 @@ function fleetMaterial(THREE) {
   m.userData.fleetLampOn = { value: 1 };
   m.onBeforeCompile = (sh) => {
     sh.uniforms.fleetLampOn = m.userData.fleetLampOn;
-    sh.vertexShader = 'attribute vec3 fleetBody;\nattribute vec3 fleetTrim;\nattribute vec3 fleetAccent;\nattribute float fleetLamp;\nvarying float vFleetLamp;\n' +
+    sh.vertexShader = 'attribute vec3 fleetBody;\nattribute vec3 fleetTrim;\nattribute vec3 fleetAccent;\nattribute float fleetLamp;\nattribute float fleetBrake;\nvarying float vFleetLamp;\nvarying float vFleetBrake;\n' +
       sh.vertexShader.replace('#include <color_vertex>',
-        '#include <color_vertex>\n  vColor.rgb = color.r * fleetBody + color.g * fleetTrim + color.b * fleetAccent;\n  vFleetLamp = fleetLamp;');
-    sh.fragmentShader = 'varying float vFleetLamp;\nuniform float fleetLampOn;\n' +
+        '#include <color_vertex>\n  vColor.rgb = color.r * fleetBody + color.g * fleetTrim + color.b * fleetAccent;\n  vFleetLamp = fleetLamp;\n  vFleetBrake = fleetBrake;');
+    sh.fragmentShader = 'varying float vFleetLamp;\nvarying float vFleetBrake;\nuniform float fleetLampOn;\n' +
       sh.fragmentShader.replace('#include <emissivemap_fragment>',
-        '#include <emissivemap_fragment>\n  if (vFleetLamp > 0.5) totalEmissiveRadiance += (vFleetLamp < 1.5 ? vec3(1.0, 0.94, 0.78) : vec3(1.0, 0.08, 0.04)) * (0.25 + 1.75 * fleetLampOn);');
+        '#include <emissivemap_fragment>\n#define FLEET_BRAKE_GAIN ' + FLEET_BRAKE_GAIN.toFixed(2) + '\n  if (vFleetLamp > 0.5) totalEmissiveRadiance += (vFleetLamp < 1.5 ? vec3(1.0, 0.94, 0.78) : vec3(1.0, 0.08, 0.04)) * (0.25 + 1.75 * fleetLampOn + (vFleetLamp > 1.5 ? FLEET_BRAKE_GAIN * vFleetBrake : 0.0));');
   };
-  m.customProgramCacheKey = () => 'fleet-palette-v2';
+  m.customProgramCacheKey = () => 'fleet-palette-v3';
   return m;
 }
 
@@ -309,6 +392,8 @@ function fleetCreate(THREE, reg, capacity) {
       attrs[s] = new THREE.InstancedBufferAttribute(new Float32Array(cap * 3), 3);
       geo.setAttribute(key, attrs[s]);
     }
+    attrs.brake = new THREE.InstancedBufferAttribute(new Float32Array(cap), 1);
+    geo.setAttribute('fleetBrake', attrs.brake);
     const mesh = new THREE.InstancedMesh(geo, mat, cap);
     mesh.name = 'fleet:' + f.id; mesh.frustumCulled = false;
     for (let i = 0; i < cap; i++) mesh.setMatrixAt(i, zero);
@@ -338,6 +423,7 @@ function fleetCreate(THREE, reg, capacity) {
       tmpC.set(fleetHex(reg, e.palette[s])).convertSRGBToLinear();
       F.attrs[s].setXYZ(slot, tmpC.r, tmpC.g, tmpC.b); F.attrs[s].needsUpdate = true;
     }
+    F.attrs.brake.setX(slot, 0); F.attrs.brake.needsUpdate = true;
     const layout = fleetWheelLayout(e.recipe, e.dims_m.length, e.dims_m.width, e.dims_m.height);
     if (wheelFree.length < layout.length) throw new Error('fleetkit: wheel pool is at capacity');
     const wslots = layout.map(() => wheelFree.pop());
@@ -351,6 +437,7 @@ function fleetCreate(THREE, reg, capacity) {
         e3.set('pitch' in p ? p.pitch : 0, p.yaw, 'roll' in p ? p.roll : 0, 'YXZ'); q.setFromEuler(e3);
         m4.compose(v3.set(p.x, p.y, p.z), q, s3.set(scale[0] * k, scale[1] * k, scale[2] * k));
         F.mesh.setMatrixAt(slot, m4); F.mesh.instanceMatrix.needsUpdate = true;
+        if ('brake' in p) h.brake(p.brake);
         if (!wslots.length) return;
         mv.compose(v3.set(p.x, p.y, p.z), q, s3.set(k, k, k));
         const steer = ('steer' in p ? p.steer : 0) * FLEET_STEER_VIS, spin = 'spin' in p ? p.spin : 0;
@@ -361,9 +448,14 @@ function fleetCreate(THREE, reg, capacity) {
         });
         wheels.instanceMatrix.needsUpdate = true;
       },
+      brake(level) {   // this instance's brake-lamp intensity 0..1 (drawn only)
+        const b = Math.max(0, Math.min(1, level));
+        if (F.attrs.brake.getX(slot) !== b) { F.attrs.brake.setX(slot, b); F.attrs.brake.needsUpdate = true; }
+      },
+      brakeLevel: () => F.attrs.brake.getX(slot),
       despawn() {
         if (!h.alive) return;
-        h.alive = false; F.mesh.setMatrixAt(slot, zero); F.mesh.instanceMatrix.needsUpdate = true; F.free.push(slot); F.used--; F.mesh.visible = F.used > 0;
+        h.alive = false; F.attrs.brake.setX(slot, 0); F.attrs.brake.needsUpdate = true; F.mesh.setMatrixAt(slot, zero); F.mesh.instanceMatrix.needsUpdate = true; F.free.push(slot); F.used--; F.mesh.visible = F.used > 0;
         for (const ws of wslots) { wheels.setMatrixAt(ws, zero); wheelFree.push(ws); }
         wheelsUsed -= wslots.length; wheels.visible = wheelsUsed > 0; wheels.instanceMatrix.needsUpdate = true;
       },
@@ -404,15 +496,25 @@ function fleetSpec(e) {
     recipe: fleetNeed(e, 'recipe', e.id), wheelR: e.medium === 'land' ? e.recipe.wheel_r * d.height : 0,
   };
 }
-function fleetCanSpawn(spec, ground, x, z) {
+function fleetMediumOk(spec, ground, x, z) {
   const depth = fleetDepth(ground, x, z);
-  if (spec.medium === 'land') return depth > FLEET_MIN_WET_M ? { ok: false, reason: 'water: a land vehicle stays on ground' } : { ok: true, reason: '' };
-  return depth < spec.draft + FLEET_KEEL_CLEAR_M ? { ok: false, reason: 'land: a boat needs water under its keel' } : { ok: true, reason: '' };
+  return spec.medium === 'land' ? depth <= FLEET_MIN_WET_M : depth >= spec.draft + FLEET_KEEL_CLEAR_M;
+}
+/* the two ends (bow/stern or front/back) of a vehicle at (x, z, yaw) */
+function fleetEnds(spec, x, z, yaw) {
+  const s = Math.sin(yaw), c = Math.cos(yaw), h = spec.L / 2;
+  return [[x + s * h, z + c * h], [x - s * h, z - c * h]];
+}
+/* with a yaw (5th argument) both ends are checked too, not only the centre */
+function fleetCanSpawn(spec, ground, x, z, yaw) {
+  const pts = typeof yaw === 'number' ? [[x, z], ...fleetEnds(spec, x, z, yaw)] : [[x, z]];
+  if (pts.every(([px, pz]) => fleetMediumOk(spec, ground, px, pz))) return { ok: true, reason: '' };
+  return spec.medium === 'land' ? { ok: false, reason: 'water: a land vehicle stays on ground' } : { ok: false, reason: 'land: a boat needs water under its keel' };
 }
 function fleetState(spec, ground, x, z, yaw) {
   const c = fleetCanSpawn(spec, ground, x, z);
   if (!c.ok) throw new Error('fleetkit: cannot place ' + spec.id + ' here - ' + c.reason);
-  const st = { x, z, yaw, y: 0, v: 0, steer: 0, pitch: 0, roll: 0, t: 0, refused: 0, wake: 0, spin: 0, phase: (x * 0.37 + z * 0.11) % 6.283 };
+  const st = { x, z, yaw, y: 0, v: 0, steer: 0, brake: 0, pitch: 0, roll: 0, t: 0, refused: 0, wake: 0, spin: 0, phase: (x * 0.37 + z * 0.11) % 6.283 };
   st.y = spec.medium === 'land' ? ground.height(x, z) : ground.waterLevel(x, z) - spec.draft;
   return st;
 }
@@ -424,14 +526,18 @@ function fleetSpeed(st, spec, input, dt, drag) {
   else if (thr < 0) st.v += (st.v > 0 ? spec.accel * 2.5 : spec.accel * 0.6) * thr * dt;
   else st.v -= st.v * drag * dt;
   st.v = Math.max(-spec.top * 0.3, Math.min(spec.top, st.v));
+  // brake lamps: full on the brake, most of the way when throttle opposes motion (drawn only)
+  st.brake = input.brake ? 1 : (thr !== 0 && Math.sign(thr) !== Math.sign(st.v) && Math.abs(st.v) > 0.3 ? 0.7 : 0);
   st.steer += (Math.max(-1, Math.min(1, input.steer)) - st.steer) * Math.min(1, 8 * dt);
 }
 function fleetMove(st, spec, yawRate, dt, ok) {
   const yaw = st.yaw + yawRate * dt;
   const sx = Math.sin(yaw), sz = Math.cos(yaw);
   const nx = st.x + sx * st.v * dt, nz = st.z + sz * st.v * dt;
-  const lead = Math.sign(st.v) * spec.L / 2;
-  if (!ok(nx, nz) || !ok(nx + sx * lead, nz + sz * lead)) {   // the centre and the leading end
+  // the centre, and BOTH ends whatever the speed (a boat turning at rest swings its bow too):
+  // an end may not newly cross onto the wrong medium (one that starts there may move off it)
+  const was = fleetEnds(spec, st.x, st.z, st.yaw), now = fleetEnds(spec, nx, nz, yaw);
+  if (!ok(nx, nz) || now.some((q, i) => !ok(q[0], q[1]) && ok(was[i][0], was[i][1]))) {
     st.refused++; st.v = -st.v * 0.15; return false;
   }
   st.x = nx; st.z = nz; st.yaw = yaw; return true;
@@ -600,6 +706,54 @@ function fleetRingLane(id, cx, cz, r, n) {
   for (let i = 0; i < n; i++) { const a = (i / n) * Math.PI * 2; points.push([cx + Math.cos(a) * r, cz + Math.sin(a) * r]); }
   return { id, medium: 'water', points, loop: true, provenance: 'AUTHORED' };
 }
+/* AUTHORED street polylines (PARISH_CONTRACT v1.3) as land traffic routes,
+   MEDIUM-CHECKED: each polyline is resampled every `step` m and a sample counts
+   only where the ground is dry at the centre line and at +-`halfWidth` m either
+   side (lane offset + half a vehicle); dry runs shorter than minLen are dropped,
+   so a street that crosses water is split, never driven through it.
+   streets: [{id, points: [[x, z], ...] in the world's metres, provenance: 'AUTHORED'}]
+   o (all required): {step, minLen, halfWidth, map: null | ([a, b]) -> [x, z]}
+   Anything but provenance 'AUTHORED' throws: these are never the real street grid. */
+function fleetStreetRoutes(streets, ground, o) {
+  for (const k of ['step', 'minLen', 'halfWidth', 'map']) fleetNeed(o, k, 'fleetStreetRoutes');
+  if (!Array.isArray(streets)) throw new Error('fleetkit: fleetStreetRoutes needs an array of street polylines');
+  const dry = (x, z) => fleetDepth(ground, x, z) <= FLEET_MIN_WET_M;
+  const out = [];
+  for (const st of streets) {
+    const id = fleetNeed(st, 'id', 'street'), pts = fleetNeed(st, 'points', 'street ' + id);
+    if (fleetNeed(st, 'provenance', 'street ' + id) !== 'AUTHORED') throw new Error('fleetkit: street ' + id + ' is not AUTHORED (' + st.provenance + ')');
+    if (!Array.isArray(pts) || pts.length < 2) throw new Error('fleetkit: street ' + id + ' has fewer than 2 points');
+    const P = pts.map((q) => { const m = o.map ? o.map(q) : q; if (!Number.isFinite(m[0]) || !Number.isFinite(m[1])) throw new Error('fleetkit: street ' + id + ' has a non-numeric point'); return m; });
+    let cur = [], piece = 0;
+    const flush = () => {
+      let len = 0; for (let i = 1; i < cur.length; i++) len += Math.hypot(cur[i][0] - cur[i - 1][0], cur[i][1] - cur[i - 1][1]);
+      if (cur.length >= 2 && len >= o.minLen) out.push({ id: 'street:' + id + ':' + piece++, source: id, medium: 'land', points: cur, loop: false, provenance: 'AUTHORED' });
+      cur = [];
+    };
+    for (let i = 1; i < P.length; i++) {
+      const [ax, az] = P[i - 1], [bx, bz] = P[i], seg = Math.hypot(bx - ax, bz - az);
+      if (seg === 0) continue;
+      const nx = -(bz - az) / seg, nz = (bx - ax) / seg, n = Math.max(1, Math.ceil(seg / o.step));
+      for (let j = i === 1 ? 0 : 1; j <= n; j++) {
+        const t = j / n, x = ax + (bx - ax) * t, z = az + (bz - az) * t;
+        if (dry(x, z) && dry(x + nx * o.halfWidth, z + nz * o.halfWidth) && dry(x - nx * o.halfWidth, z - nz * o.halfWidth)) cur.push([x, z]);
+        else flush();
+      }
+    }
+    flush();
+  }
+  return out;
+}
+/* PARISH_CONTRACT v1.3 streets file (parishes/maps/streets/<fips>.json) -> the street list
+   fleetStreetRoutes takes: [{id: '<fips>:<class>:<i>', cls, points: [[east_m, north_m], ...], provenance}].
+   Points stay in the PARISH LOCAL frame: pass fleetStreetRoutes a map() into your scene
+   (e.g. ([e, n]) => [e + origin_e, -(n + origin_n)] for x = east, z = -north). Fail closed. */
+function fleetParishStreets(file, classes) {
+  if (fleetNeed(file, 'provenance', 'streets file') !== 'AUTHORED') throw new Error('fleetkit: streets file ' + file.fips + ' is not AUTHORED');
+  const C = fleetNeed(file, 'classes', 'streets file'), fips = fleetNeed(file, 'fips', 'streets file'), out = [];
+  for (const cls of classes) fleetNeed(C, cls, 'streets file ' + fips + ' classes').forEach((points, i) => out.push({ id: fips + ':' + cls + ':' + i, cls, points, provenance: 'AUTHORED' }));
+  return out;
+}
 function fleetRouteGeom(route) {
   const P = route.points.slice(); if (route.loop) P.push(P[0]);
   const cum = [0];
@@ -661,7 +815,7 @@ function fleetTraffic(THREE, reg, routes, ground, opts) {
       }
       if (!e) continue;
       const dir = r.loop ? 1 : (rnd() < 0.5 ? 1 : -1);
-      agents.push({ e, spec, ri, s: rnd() * g.len, dir, cruise: Math.min(spec.top * opts.speedFactor, 14), v: 0, h: null,
+      agents.push({ e, spec, ri, s: rnd() * g.len, dir, cruise: Math.min(spec.top * opts.speedFactor, 14), v: 0, brake: 0, h: null,
         x: 0, y: 0, z: 0, yaw: 0, steer: 0, spin: 0, pitch: 0, roll: 0, t: rnd() * 10, phase: rnd() * 6.28 });
     }
   });
@@ -690,7 +844,9 @@ function fleetTraffic(THREE, reg, routes, ground, opts) {
         const a = list[i], ahead = list[i + 1] || (routes[a.ri].loop && list.length > 1 ? list[0] : null);
         let gap = Infinity;
         if (ahead) { gap = (ahead.s - a.s) * a.dir; if (gap < 0) gap += g.len; gap -= (a.spec.L + ahead.spec.L) / 2; }
-        const want = gap < 6 ? 0 : gap < 20 ? a.cruise * (gap - 6) / 14 : a.cruise;
+        let want = gap < 6 ? 0 : gap < 20 ? a.cruise * (gap - 6) / 14 : a.cruise;
+        if (!routes[a.ri].loop) { const toEnd = a.dir > 0 ? g.len - a.s : a.s; if (toEnd < 30) want = Math.min(want, Math.max(1.5, a.cruise * toEnd / 30)); }   // slow for the turn-around
+        a.brake = want < a.v - 0.2 ? 1 : 0;
         a.v += Math.max(-a.spec.accel * 3 * dt, Math.min(a.spec.accel * dt, want - a.v));
         a.v = Math.max(0, a.v);
       }
@@ -715,11 +871,90 @@ function fleetTraffic(THREE, reg, routes, ground, opts) {
       lastMs, avgMs: frames ? sumMs / frames : 0, budget: FLEET_TRAFFIC_BUDGET }),
   };
 }
+/* ----------------------------------------------- touch (phone) driving --- */
+/* The stick's pure mapping (tested in node): drag (dx right, dy down, px) inside
+   a stick of radius r -> input. Steer + = left (drag left), stick up = forward,
+   down = reverse; the throttle button is full forward, the brake button brakes. */
+function fleetStickInput(dx, dy, r, throttleHeld, brakeHeld) {
+  const d = Math.hypot(dx, dy), k = d > r && d > 0 ? r / d : 1;
+  const sx = r > 0 ? Math.max(-1, Math.min(1, (dx * k) / r)) : 0, sy = r > 0 ? Math.max(-1, Math.min(1, (dy * k) / r)) : 0;
+  const dead = (v) => (Math.abs(v) < 0.12 ? 0 : v);
+  return { throttle: throttleHeld ? 1 : dead(-sy), steer: dead(-sx), brake: brakeHeld ? 1 : 0 };
+}
+/* the controls' CSS: colours ONLY from the page's theme tokens (--tc-*) */
+const FLEET_TOUCH_CSS = `.fleet-touch{position:absolute;inset:auto 0 0 0;display:none;justify-content:space-between;align-items:flex-end;padding:10px 12px;gap:10px;pointer-events:none;z-index:3}
+.fleet-touch[data-on="1"]{display:flex}
+.fleet-touch>*{pointer-events:auto}
+.fleet-stick{position:relative;width:132px;height:132px;border-radius:50%;background:var(--tc-panel);border:2px solid var(--tc-line);touch-action:none;opacity:.92}
+.fleet-stick:focus-visible,.fleet-tbtn:focus-visible{outline:3px solid var(--tc-steel);outline-offset:2px}
+.fleet-knob{position:absolute;left:50%;top:50%;width:56px;height:56px;margin:-28px 0 0 -28px;border-radius:50%;background:var(--tc-steel);border:2px solid var(--tc-ink)}
+.fleet-tpad{display:flex;flex-direction:column;gap:8px;align-items:stretch}
+.fleet-tbtn{min-width:88px;min-height:48px;border-radius:12px;border:2px solid var(--tc-line);background:var(--tc-panel);color:var(--tc-ink);font:600 15px/1.2 system-ui,sans-serif;touch-action:none;padding:6px 10px}
+.fleet-tbtn[aria-pressed="true"]{background:var(--tc-steel);color:var(--tc-plate)}
+.fleet-tbtn.fleet-brake[aria-pressed="true"]{background:var(--tc-amber);color:var(--tc-plate)}
+.fleet-touch [hidden]{display:none}
+@media (pointer:coarse){.fleet-touch[data-auto="1"]{display:flex}}`;
+/* Build the touch controls into `host` (a positioned element over the canvas).
+   labels (all required, translated by the page): {group, stick, throttle, brake, enter, exit}.
+   onToggle() is called by the enter/exit button (the page decides enter vs exit).
+   Accessible: a labelled group; the stick is focusable and its arrow keys also
+   steer/drive; every button is a real <button> >= 48 px with aria-pressed while
+   held. Shown on a coarse pointer (phones) or when show(true) is called.
+   -> {el, input() -> {throttle, steer, brake}, setAboard(bool), show(bool), state()} */
+function fleetTouchControls(doc, host, labels, onToggle) {
+  for (const k of ['group', 'stick', 'throttle', 'brake', 'enter', 'exit']) {
+    const v = fleetNeed(labels, k, 'touch labels');
+    if (typeof v !== 'string' || !v.trim()) throw new Error('fleetkit: touch label ' + k + ' is empty');
+  }
+  if (typeof onToggle !== 'function') throw new Error('fleetkit: fleetTouchControls needs an onToggle function');
+  if (!doc.getElementById('fleet-touch-css')) { const cs = doc.createElement('style'); cs.id = 'fleet-touch-css'; cs.textContent = FLEET_TOUCH_CSS; doc.head.appendChild(cs); }
+  const mk = (tag, cls, attrs) => { const e = doc.createElement(tag); e.className = cls; for (const [a, v] of Object.entries(attrs)) e.setAttribute(a, v); return e; };
+  const el = mk('div', 'fleet-touch', { role: 'group', 'aria-label': labels.group, 'data-auto': '1', 'data-on': '0' });
+  const stick = mk('div', 'fleet-stick', { role: 'application', tabindex: '0', 'aria-label': labels.stick, 'aria-roledescription': 'joystick' });
+  const knob = mk('div', 'fleet-knob', { 'aria-hidden': 'true' });
+  stick.appendChild(knob);
+  const pad = mk('div', 'fleet-tpad', {});
+  const bThr = mk('button', 'fleet-tbtn fleet-throttle', { type: 'button', 'aria-pressed': 'false' }); bThr.textContent = labels.throttle;
+  const bBrk = mk('button', 'fleet-tbtn fleet-brake', { type: 'button', 'aria-pressed': 'false' }); bBrk.textContent = labels.brake;
+  const bTog = mk('button', 'fleet-tbtn fleet-toggle', { type: 'button' }); bTog.textContent = labels.enter;
+  pad.append(bTog, bThr, bBrk); el.append(stick, pad); host.appendChild(el);
+  const S = { dx: 0, dy: 0, thr: false, brk: false, id: null, keys: {} };
+  const R = () => stick.getBoundingClientRect().width / 2 || 66;
+  const drawKnob = () => { const k = fleetStickInput(S.dx, S.dy, R(), false, false); knob.style.transform = 'translate(' + (-k.steer * R() * 0.6) + 'px,' + (-k.throttle * R() * 0.6) + 'px)'; };
+  const fromEv = (ev) => { const b = stick.getBoundingClientRect(); S.dx = ev.clientX - (b.left + b.width / 2); S.dy = ev.clientY - (b.top + b.height / 2); drawKnob(); };
+  stick.addEventListener('pointerdown', (ev) => { S.id = ev.pointerId; if (stick.setPointerCapture) try { stick.setPointerCapture(ev.pointerId); } catch (_) { /* synthetic events */ } fromEv(ev); ev.preventDefault(); });
+  stick.addEventListener('pointermove', (ev) => { if (S.id === ev.pointerId) fromEv(ev); });
+  const release = (ev) => { if (S.id === ev.pointerId) { S.id = null; S.dx = 0; S.dy = 0; drawKnob(); } };
+  stick.addEventListener('pointerup', release); stick.addEventListener('pointercancel', release);
+  const KEYS = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] };
+  const fromKeys = () => { let x = 0, y = 0; for (const [k, v] of Object.entries(KEYS)) if (S.keys[k]) { x += v[0]; y += v[1]; } S.dx = x * R(); S.dy = y * R(); drawKnob(); };
+  stick.addEventListener('keydown', (ev) => { if (ev.code in KEYS) { S.keys[ev.code] = true; fromKeys(); ev.preventDefault(); ev.stopPropagation(); } });
+  stick.addEventListener('keyup', (ev) => { if (ev.code in KEYS) { S.keys[ev.code] = false; fromKeys(); ev.stopPropagation(); } });
+  const hold = (btn, key) => {
+    const on = (v) => (ev) => { S[key] = v; btn.setAttribute('aria-pressed', String(v)); if (ev && ev.type === 'pointerdown') ev.preventDefault(); };
+    btn.addEventListener('pointerdown', on(true)); btn.addEventListener('pointerup', on(false)); btn.addEventListener('pointercancel', on(false)); btn.addEventListener('pointerleave', on(false));
+    btn.addEventListener('keydown', (ev) => { if (ev.code === 'Space' || ev.code === 'Enter') { on(true)(); ev.preventDefault(); ev.stopPropagation(); } });
+    btn.addEventListener('keyup', (ev) => { if (ev.code === 'Space' || ev.code === 'Enter') { on(false)(); ev.stopPropagation(); } });
+  };
+  hold(bThr, 'thr'); hold(bBrk, 'brk');
+  bTog.addEventListener('click', () => onToggle());
+  let aboard = false;
+  const api = {
+    el,
+    input: () => fleetStickInput(S.dx, S.dy, R(), S.thr, S.brk),
+    setAboard(v) { aboard = !!v; bTog.textContent = aboard ? labels.exit : labels.enter; bThr.hidden = !aboard; bBrk.hidden = !aboard; stick.hidden = !aboard; if (!aboard) { S.thr = S.brk = false; S.dx = S.dy = 0; drawKnob(); } },
+    show(v) { el.dataset.on = v ? '1' : '0'; },
+    state: () => ({ aboard, shown: el.dataset.on === '1', dx: S.dx, dy: S.dy, throttle: S.thr, brake: S.brk }),
+  };
+  api.setAboard(false);
+  return api;
+}
 /* FLEET_KIT:END */
 export { FLEET_API, FLEET_SLOTS, FLEET_MIN_WET_M, FLEET_KEEL_CLEAR_M, fleetFamilyGeometry, fleetMaterial, fleetCreate,
   fleetGroundFromWilds, fleetFlatGround, fleetDepth, fleetSpec, fleetCanSpawn, fleetState, fleetLandStep, fleetBoatStep,
   fleetStep, fleetNearest, fleetExitPoint, fleetChaseCamera, fleetWake, fleetWheelLayout, fleetLights, fleetDriverEye,
-  fleetDriverCamera, FLEET_TRAFFIC_BUDGET, FLEET_STEER_VIS, fleetGridLanes, fleetRingLane, fleetTraffic };
+  fleetDriverCamera, FLEET_TRAFFIC_BUDGET, FLEET_STEER_VIS, fleetGridLanes, fleetRingLane, fleetTraffic,
+  FLEET_BRAKE_GAIN, fleetCabParts, FLEET_DETAIL, fleetDetailOf, fleetStreetRoutes, fleetParishStreets, fleetStickInput, FLEET_TOUCH_CSS, fleetTouchControls };
 '''
 
 EXPORTS = re.findall(r'export \{([^}]*)\}', FLEET_JS)[0].replace('\n', ' ').split(',')

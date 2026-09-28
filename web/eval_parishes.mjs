@@ -25,9 +25,22 @@
  * it is fill-bound under SwiftShader, and at overview altitude one pixel is already tens of metres of flat
  * ground. The DIAG row measures the Orleans overview at full and at 0.6 scale in the same run to show the cost
  * is per-pixel; it is a diagnosis, not a target. No target was changed.
+ * Wave 6: DIAG 5b 33.3 vs 33.3 ms, w6 run 1 49.9 vs 50.0 ms, w6 run 2 (draped ground texture) 49.9 vs 33.3 ms:
+ * scale 1 was slower once the ground is textured, so OVERVIEW_PR stays 0.6.
  * Chunks are held exactly: 49 is (2*RADIUS+1)^2 with RADIUS 3 - any other number in a walk view is a streaming bug.
  * Fabric instances are held to a FLOOR of 0.9x in the walk views - a city bought cheap by building nothing is not
  * a city. Fleet draw calls are held to <= the number of families (one InstancedMesh per family, FLEET contract).
+ *
+ * Wave 6 (realism) adds MEASURED rows with reasons; no existing target changed:
+ *   kit        the AUTHORED building kit - house (gable + porch), midrise (flat roof; also industrial shells) - each ONE
+ *              InstancedMesh: every walk view measures the draw calls per fabric family as (calls with all) minus
+ *              (calls with that family hidden) and holds each to <= 1. Windows are a shader pattern (0 triangles);
+ *              the kit's roofs and porches are paid for by open-ended trees (14 triangles, was 32).
+ *   ground     PARISH v1.3 label-free ground tiles, 16 per parish composed into ONE texture per loaded parish (the
+ *              land stays one mesh, one draw call, exactly y = 0): every loaded parish's tiles load, none fails.
+ *   atmosphere the sky is a CSS gradient behind a transparent canvas (0 draw calls), the fog is its horizon colour,
+ *              a declared sun direction; water gets a fresnel sky reflection + ripple on its one material.
+ *   satrace    REVIEW wave 6: toggling satellite on -> off -> on during the config fetch leaves exactly one image.
  */
 import { chromium } from '/opt/node22/lib/node_modules/playwright/index.mjs';
 import { mkdirSync } from 'node:fs';
@@ -104,6 +117,12 @@ for (const pid of PROBE) {
     if (v === 'overview' && st.fleetVisible !== false) fail(row, 'the fleet is drawn in the overview');
     if (v !== 'overview' && st.fleetVisible === false) fail(row, 'the fleet is hidden in a walk view');
     row.lamps = st.instances.lamp;
+    if (v !== 'overview') {
+      const fc = await page.evaluate(() => window.__parishes.familyCalls());
+      row.kit = st.kit; row.familyCalls = fc;
+      for (const [k, c] of Object.entries(fc)) if (c > 1) fail(row, `fabric family ${k} costs ${c} draw calls (one InstancedMesh = 1)`);
+      if (!(st.kit.house > 0 && st.kit.midrise > 0)) fail(row, `building kit families empty: ${JSON.stringify(st.kit)}`);
+    }
     const base = BASE[pid] && BASE[pid][v];
     if (!MEASURE_ONLY && !base) fail(row, `no declared target for ${pid} ${v}`);
     if (!MEASURE_ONLY && base) {
@@ -112,7 +131,7 @@ for (const pid of PROBE) {
       if (ms > base.ms * MS_HEADROOM) fail(row, `frame ${ms} ms > ${(base.ms * MS_HEADROOM).toFixed(1)}`);
       if (base.fabric !== null && fabric < base.fabric * FABRIC_FLOOR) fail(row, `fabric ${fabric} < floor ${Math.round(base.fabric * FABRIC_FLOOR)}`);
     }
-    if (SHOTS && v !== 'border') await page.screenshot({ path: `${SHOTS}/WILDS-w5b-${pid}-${v}.png` });
+    if (SHOTS && v !== 'border') await page.screenshot({ path: `${SHOTS}/WILDS-w6-${pid}-${v}.png` });
     if (row.fails.length) bad++;
     rows.push(row);
   }
@@ -130,6 +149,25 @@ for (const k of [1, 0.6]) {
 await page.evaluate(() => window.__parishes.renderScale(0.6));
 const prOk = await page.evaluate(() => window.__parishes.renderScale().prScale);
 if (prOk !== 0.6) { bad++; errors.push('overview render scale is ' + prOk + ', expected 0.6'); }
+
+/* ground + atmosphere (wave 6) */
+await page.evaluate(() => window.__parishes.view('origin', '22071'));
+const gOk = await page.waitForFunction(() => { const s = window.__parishes.stats(); return s.loaded.every((id) => s.ground.ready.includes(id)) || s.ground.failed.length; }, null, { timeout: 20000 }).then(() => true, () => false);
+const gst = await page.evaluate(() => window.__parishes.stats());
+const groundRow = { probe: 'ground', ready: gst.ground.ready, loaded: gst.loaded, failed: gst.ground.failed, px: gst.ground.px, fails: [] };
+if (!gOk) fail(groundRow, 'ground tiles did not finish loading within 20 s');
+if (gst.ground.failed.length) fail(groundRow, `ground tiles failed: ${gst.ground.failed.join(', ')}`);
+if (!gst.loaded.every((id) => gst.ground.ready.includes(id))) fail(groundRow, `loaded ${gst.loaded} but draped ${gst.ground.ready}`);
+if (!gst.groundY) fail(groundRow, 'draped ground is not at y = 0');
+const label = await page.evaluate(() => (document.querySelector('[data-ground-label]') || {}).textContent || '');
+if (!/carries no text/.test(label)) fail(groundRow, `ground label next to the view is ${JSON.stringify(label)}`);
+if (groundRow.fails.length) bad++;
+const atm = gst.atmosphere;
+const atmRow = { probe: 'atmosphere', ...atm, fails: [] };
+if (!atm.skyCss) fail(atmRow, 'the sky gradient is not on the canvas');
+if (atm.clearAlpha !== 0) fail(atmRow, `walk clear alpha ${atm.clearAlpha}; the CSS sky would be hidden`);
+if (atm.fog !== atm.horizon) fail(atmRow, 'fog colour is not the horizon colour');
+if (atmRow.fails.length) bad++;
 
 /* cross: every shared border touching a probed parish, walked from 40 m inside */
 const pairs = await page.evaluate(() => window.__parishes.pairs());
@@ -159,7 +197,7 @@ const rideRows = [];
   for (const medium of ['land', 'water']) {
     const r = await page.evaluate((m) => { const o = window.__parishes.ride(m, 4); return o; }, medium);
     await page.waitForTimeout(250);
-    if (SHOTS) await page.screenshot({ path: `${SHOTS}/WILDS-w5b-ride-${medium}.png` });
+    if (SHOTS) await page.screenshot({ path: `${SHOTS}/WILDS-w6-ride-${medium}.png` });
     const out = await page.evaluate(() => window.__parishes.exit());
     const fnd = await page.evaluate(() => window.__parishes.stats().finds);
     const rr = { probe: 'ride', medium, id: r.id, moved: +r.moved.toFixed(1), wrongMediumSteps: r.wrongMediumSteps, exited: out.ok, fails: [] };
@@ -187,7 +225,7 @@ else {
   const scripted = await page.evaluate(() => JSON.parse(document.getElementById('parish-npcs').textContent).honesty.scripted);
   npcRow.footer = foot.slice(0, 60);
   if (!foot.includes(scripted) || /undefined/.test(foot)) fail(npcRow, `dialogue footer is ${JSON.stringify(foot)}`);
-  if (SHOTS) await page.screenshot({ path: `${SHOTS}/WILDS-w5b-npc.png` });
+  if (SHOTS) await page.screenshot({ path: `${SHOTS}/WILDS-w6-npc.png` });
   await page.keyboard.press('Escape');
 }
 if (npcRow.fails.length) bad++;
@@ -200,21 +238,44 @@ const sat2 = await page.evaluate(() => window.__parishes.satState());
 const satRow = { probe: 'satellite', src: sat.src, token: sat.token, msg: sat2.msg, fails: [] };
 if (!/^https:\/\/basemap\.nationalmap\.gov\//.test(sat.src || '')) fail(satRow, `satellite requested ${sat.src}, not USGS`);
 if (!sat.token && !sat2.msg.includes('Mapbox satellite: off - no token configured')) fail(satRow, 'the Mapbox refusal text is missing');
-if (SHOTS) await page.screenshot({ path: `${SHOTS}/WILDS-w5b-satellite.png` });
+if (SHOTS) await page.screenshot({ path: `${SHOTS}/WILDS-w6-satellite.png` });
 await page.evaluate(() => window.__parishes.satellite(false));
 if (satRow.fails.length) bad++;
+/* satrace (REVIEW wave 6): on -> off -> on without waiting leaves exactly one image and the box shown */
+const race = await page.evaluate(async () => { const P = window.__parishes; const a = P.satellite(true); P.satellite(false); const c = P.satellite(true); await Promise.all([a, c]); return { imgs: document.querySelectorAll('#satbox img').length, box: !document.getElementById('satbox').hidden }; });
+const raceRow = { probe: 'satrace', ...race, fails: [] };
+if (race.imgs !== 1 || !race.box) fail(raceRow, `after on/off/on: ${race.imgs} images, box shown ${race.box}`);
+await page.evaluate(() => window.__parishes.satellite(false));
+if (raceRow.fails.length) bad++;
+/* ridemode + keys (REVIEW wave 6): ride, go to the overview, a mode button returns to the ride, exiting from the
+   overview leaves a normal walk view (full scale, fabric drawn, Overview not pressed); E with repeat/Ctrl does nothing */
+const rm = await page.evaluate(async () => {
+  const P = window.__parishes; P.view('origin', '22071'); P.ride('land', 1);
+  P.setMode('overview'); const back = P.setMode('walk'); const m1 = P.stats().mode;
+  P.setMode('overview'); P.exit(); await new Promise((r) => setTimeout(r, 400));
+  const s = P.stats();
+  const out = { back, m1, mode: s.mode, pr: P.renderScale().prScale, block: s.instances.block, ovPressed: document.querySelector('[data-mode="overview"]').getAttribute('aria-pressed') };
+  P.ride('land', 0.1); P.exit();
+  for (const o of [{ repeat: true }, { ctrlKey: true }]) dispatchEvent(new KeyboardEvent('keydown', { key: 'e', ...o }));
+  out.afterChordMode = P.stats().mode; return out;
+});
+const rmRow = { probe: 'ridemode', ...rm, fails: [] };
+if (!rm.back || rm.m1 !== 'drive') fail(rmRow, `from the overview while riding, Walk gave ${rm.back}/${rm.m1}, not the ride`);
+if (rm.mode !== 'walk' || rm.pr !== 1 || !(rm.block > 0) || rm.ovPressed !== 'false') fail(rmRow, `after exiting from the overview: ${JSON.stringify(rm)}`);
+if (rm.afterChordMode !== 'walk') fail(rmRow, `E with repeat/Ctrl changed the mode to ${rm.afterChordMode}`);
+if (rmRow.fails.length) bad++;
 
 /* styles: the panels follow the Style switcher (tokens only) */
 if (SHOTS) {
   for (const s of ['hivis', 'enterprise']) {
     await page.evaluate((id) => document.documentElement.setAttribute('data-style', id), s);
     await page.waitForTimeout(300);
-    await page.screenshot({ path: `${SHOTS}/WILDS-w5b-style-${s}.png` });
+    await page.screenshot({ path: `${SHOTS}/WILDS-w6-style-${s}.png` });
   }
 }
 await browser.close();
 
-const out = { rows, cross, ride: rideRows, npcs: npcRow, satellite: satRow, errors, bad: bad + errors.length };
+const out = { rows, cross, ride: rideRows, npcs: npcRow, satellite: satRow, ground: groundRow, atmosphere: atmRow, satrace: raceRow, ridemode: rmRow, errors, bad: bad + errors.length };
 if (JSON_OUT) console.log(JSON.stringify(out, null, 1));
 else {
   for (const r of rows) console.log(`${r.fails.length ? 'FAIL' : '  ok'} ${r.parish} ${r.view.padEnd(8)} calls ${r.calls} tris ${r.tris} ms ${r.ms} chunks ${r.chunks} fabric ${r.fabric} lamps ${r.lamps} loaded ${r.loaded}${r.fails.length ? ' :: ' + r.fails.join('; ') : ''}`);
@@ -222,6 +283,8 @@ else {
   for (const r of rideRows) console.log(`${r.fails.length ? 'FAIL' : '  ok'} ${r.probe} ${JSON.stringify(Object.fromEntries(Object.entries(r).filter(([k]) => k !== 'fails' && k !== 'probe')))}${r.fails.length ? ' :: ' + r.fails.join('; ') : ''}`);
   console.log(`${npcRow.fails.length ? 'FAIL' : '  ok'} npcs ${npcRow.count} ${npcRow.id} ${npcRow.source}${npcRow.fails.length ? ' :: ' + npcRow.fails.join('; ') : ''}`);
   console.log(`${satRow.fails.length ? 'FAIL' : '  ok'} satellite ${satRow.src} :: ${satRow.msg}${satRow.fails.length ? ' :: ' + satRow.fails.join('; ') : ''}`);
+  for (const r of rows.filter((x) => x.kit)) console.log(`${r.fails.length ? 'FAIL' : '  ok'} kit ${r.parish} ${r.view.padEnd(8)} buildings ${JSON.stringify(r.kit)} calls/family ${JSON.stringify(r.familyCalls)}`);
+  for (const r of [groundRow, atmRow, raceRow, rmRow]) console.log(`${r.fails.length ? 'FAIL' : '  ok'} ${r.probe} ${JSON.stringify(Object.fromEntries(Object.entries(r).filter(([k]) => k !== 'fails' && k !== 'probe')))}${r.fails.length ? ' :: ' + r.fails.join('; ') : ''}`);
   console.log(`  -- DIAG 22071 overview median frame: scale 1 ${diag[1]} ms, scale 0.6 ${diag[0.6]} ms (diagnosis, not a target)`);
   for (const e of errors) console.log('FAIL page error: ' + e);
   console.log(bad + errors.length ? `eval_parishes: ${bad + errors.length} FAIL` : 'eval_parishes: all rows within target');

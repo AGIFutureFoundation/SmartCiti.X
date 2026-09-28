@@ -553,7 +553,13 @@
   "fleet.cam": "Vista del conductor",
   "fleet.chase": "Vista de persecución",
   "fleet.traffic": "Tráfico ambiental",
-  "fleet.trafficnote": "El tráfico sigue carriles AUTHORED en la pista de prueba y anillos en el estanque: carriles inventados, no calles reales."
+  "fleet.trafficnote": "El tráfico sigue carriles AUTHORED en la pista de prueba y anillos en el estanque: carriles inventados, no calles reales.",
+  "fleet.touch.group": "Controles táctiles de conducción",
+  "fleet.touch.stick": "Palanca de dirección: arrastra a izquierda o derecha para girar, arriba o abajo para avanzar o retroceder",
+  "fleet.touch.throttle": "Acelerador (mantener)",
+  "fleet.touch.brake": "Freno (mantener)",
+  "fleet.touch.enter": "Subir",
+  "fleet.touch.exit": "Bajar"
  },
  "districts": {
   "structural": {

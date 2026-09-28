@@ -1522,6 +1522,168 @@ em.accent{font-style:normal;color:var(--mark);background:linear-gradient(90deg,v
 from questkit import QUEST_CSS, quest_js, page_hooks  # noqa: E402  quests: egg hooks only
 QUEST_TAIL = '<style>' + QUEST_CSS + '</style>\n' + page_hooks('index.html') + quest_js('page:index.html')
 
+# ------------------------------------------- the New Orleans parishes -------
+# Wave 5's parish world, fleet, guides and plans, on the front door. Every
+# figure is COUNTED from the list it names (never typed, never a `counts`
+# field read on trust: the count field is held to the list and a mismatch
+# stops the build). The one-liners are the registries' own provenance words.
+PARISHES_PATH = 'parishes/registry/parishes.json'
+FLEET_PATH = 'fleet/registry/fleet.json'
+NPCS_PATH = 'npcs/registry/npcs.json'
+LAYERS_PATH = 'layers/registry/layers.json'
+PAY_PATH = 'payments/registry/catalog.json'
+SCHOOLS_PATH = 'schools/registry/schools.json'
+ORLEANS_FIPS = '22071'
+_par = R(PARISHES_PATH)
+_par_rows = need(_par, 'parishes', PARISHES_PATH)
+PW_PARISHES = len(_par_rows)
+assert PW_PARISHES == need(need(_par, 'counts', PARISHES_PATH), 'parishes', f'{PARISHES_PATH}#counts'), \
+    'build_home: parishes counts.parishes disagrees with the parishes list'
+PW_LANDMARKS = sum(len(need(p, 'landmarks', f'{PARISHES_PATH}#parishes.{f}')) for f, p in _par_rows.items())
+_orl = need(_par_rows, ORLEANS_FIPS, f'{PARISHES_PATH}#parishes')
+_orl_w = f'{PARISHES_PATH}#parishes.{ORLEANS_FIPS}'
+PW_ORLEANS = need(_orl, 'full_name', _orl_w)
+_orl_map = need(_orl, 'map', _orl_w)
+PW_PREVIEW = need(_orl_map, 'preview', f'{_orl_w}.map')
+PW_PREVIEW_PX = need(_orl_map, 'preview_px', f'{_orl_w}.map')
+PW_MAP_PX = need(_orl_map, 'px', f'{_orl_w}.map')
+PW_MAP_LABEL = need(_orl_map, 'label', f'{_orl_w}.map')
+if not (ROOT / PW_PREVIEW).is_file():
+    raise FileNotFoundError(f'build_home: {PW_PREVIEW} (the committed Orleans preview) is missing')
+PW_OUTLINE = need(need(_par, 'provenance', PARISHES_PATH), 'outline', f'{PARISHES_PATH}#provenance')
+assert PW_OUTLINE.startswith('RECORDED'), 'build_home: parish outlines are no longer RECORDED - reword the band'
+PW_FABRIC = need(_orl_map, 'fabric', f'{_orl_w}.map')
+assert PW_FABRIC.startswith('AUTHORED'), 'build_home: parish fabric is no longer AUTHORED - reword the band'
+_sat = need(_par, 'satellite', PARISHES_PATH)
+assert need(_sat, 'fetched_at_build', f'{PARISHES_PATH}#satellite') is False \
+    and need(_sat, 'stored', f'{PARISHES_PATH}#satellite') is False, \
+    'build_home: satellite is no longer view-time only - reword the band'
+assert need(_par, 'elevation', PARISHES_PATH).startswith('no real elevation'), \
+    'build_home: parish elevation changed - reword the band'
+
+_fleet = R(FLEET_PATH)
+_fleet_rows = need(_fleet, 'fleet', FLEET_PATH)
+PW_VEHICLES = len(_fleet_rows)
+PW_LAND = len([v for v in _fleet_rows if need(v, 'medium', f'{FLEET_PATH}#fleet[]') == 'land'])
+PW_WATER = len([v for v in _fleet_rows if need(v, 'medium', f'{FLEET_PATH}#fleet[]') == 'water'])
+assert PW_LAND + PW_WATER == PW_VEHICLES, 'build_home: a fleet entry is neither land nor water'
+assert PW_VEHICLES == need(need(_fleet, 'counts', FLEET_PATH), 'total', f'{FLEET_PATH}#counts'), \
+    'build_home: fleet counts.total disagrees with the fleet list'
+
+_npcs = R(NPCS_PATH)
+_npc_rows = need(_npcs, 'npcs', NPCS_PATH)
+PW_GUIDES = len(_npc_rows)
+assert PW_GUIDES == need(need(_npcs, 'counts', NPCS_PATH), 'npcs', f'{NPCS_PATH}#counts'), \
+    'build_home: npcs counts.npcs disagrees with the npcs list'
+PW_ROLES = len({need(g, 'role', f'{NPCS_PATH}#npcs[]') for g in _npc_rows})
+
+_layers = R(LAYERS_PATH)
+_lay_par = need(_layers, 'parishes', LAYERS_PATH)
+
+
+def _stations(fips, row):
+    return need(row, 'stations', f'{LAYERS_PATH}#parishes.{fips}')
+
+
+_lay_items = list(_lay_par.items()) if isinstance(_lay_par, dict) else \
+    [(need(r, 'fips', f'{LAYERS_PATH}#parishes[]'), r) for r in _lay_par]
+_all_st = [s for f, r in _lay_items for s in _stations(f, r)]
+PW_STATIONS = len(_all_st)
+assert PW_STATIONS == need(need(_layers, 'counts', LAYERS_PATH), 'stations', f'{LAYERS_PATH}#counts'), \
+    'build_home: layers counts.stations disagrees with the station lists'
+_k12_layer = need(need(_layers, 'layers', LAYERS_PATH), 'k12-unit', f'{LAYERS_PATH}#layers')
+PW_K12_NAME = need(_k12_layer, 'label', f'{LAYERS_PATH}#layers.k12-unit')
+assert PW_K12_NAME == 'Cognition.X K-12', 'build_home: the K-12 layer must keep the name the user gave it'
+PW_K12_FROM = need(_k12_layer, 'content_from', f'{LAYERS_PATH}#layers.k12-unit')
+PW_K12_STATIONS = len([s for s in _all_st if need(s, 'layer', f'{LAYERS_PATH}#stations[]') == 'k12-unit'])
+PW_K12_UNITS = len(need(R(SCHOOLS_PATH), 'units', SCHOOLS_PATH))
+PW_K12_HONESTY = need(need(_layers, 'honesty', LAYERS_PATH), 'k12', f'{LAYERS_PATH}#honesty')
+
+_pay = R(PAY_PATH)
+assert need(_pay, 'live', PAY_PATH) is False, 'build_home: payments went live - the Plans card must be rewritten'
+PW_PAY_STATUS = need(_pay, 'status', PAY_PATH)
+PW_PLANS = len(need(_pay, 'plans', PAY_PATH))
+assert all(need(p, 'price', f'{PAY_PATH}#plans[]') is None for p in need(_pay, 'plans', PAY_PATH)), \
+    'build_home: a plan now carries a price - the Plans card must be rewritten'
+
+PW_STATS = [
+    ('parishes', PW_PARISHES, 'parishes', f'{PARISHES_PATH}#parishes'),
+    ('vehicles', PW_VEHICLES, 'vehicles and watercraft', f'{FLEET_PATH}#fleet'),
+    ('guides', PW_GUIDES, 'guides', f'{NPCS_PATH}#npcs'),
+    ('stations', PW_STATIONS, 'stations', f'{LAYERS_PATH}#parishes[].stations'),
+]
+PW_STATS_HTML = ''.join(
+    f'<div class="stat" data-pw-stat="{k}" data-src="{esc(src)}"><dt>{esc(label)}</dt>'
+    f'<dd>{n(v)}</dd></div>' for k, v, label, src in PW_STATS)
+# (key, icon, eyebrow, title, body, [(href, label)])
+PW_CARDS = [
+    ('fleet', 'route', 'Showroom', f'{n(PW_LAND)} vehicles and {n(PW_WATER)} watercraft',
+     'Generic types only: no makes, models or brands. Every dimension and handling '
+     'figure is AUTHORED for play, and driving here is play, not training.',
+     ['web/trade_craft_fleet.html']),
+    ('k12', 'graduation-cap', 'Path', PW_K12_NAME,
+     f'The {PW_K12_NAME} path stands {n(PW_K12_STATIONS)} stations across the parishes; its content is '
+     f'the schools/ pack ({n(PW_K12_UNITS)} units). Every school district named is a PROPOSED partner: '
+     'no agreement exists.',
+     ['web/trade_craft_parishes.html', 'web/trade_craft_schools.html']),
+    ('guides', 'users', 'Guides', f'{n(PW_GUIDES)} guides in {n(PW_ROLES)} roles',
+     'Scripted figures, not people and not an AI: each line a guide says is quoted word for '
+     'word from a registry, with its source beside it.',
+     ['web/trade_craft_parishes.html']),
+    ('plans', 'shield-check', 'Plans', f'{n(PW_PLANS)} plans, no prices',
+     f'{PW_PAY_STATUS}. No price is shown until an operator sets one.',
+     ['web/trade_craft_plans.html']),
+]
+
+
+def parishes_html():
+    cards = ''.join(
+        f'<article class="path pw-card" data-pw="{k}">'
+        f'<span class="path-ico" aria-hidden="true">{icon(ic, "pi")}</span>'
+        f'<span class="eyebrow">{esc(eb)}</span><h3>{esc(title)}</h3><p>{esc(body)}</p><ul>'
+        + ''.join(f'<li><a href="{p}">{_nl(p)}<span aria-hidden="true"> →</span></a></li>' for p in links)
+        + '</ul></article>' for k, ic, eb, title, body, links in PW_CARDS)
+    return f'''<section id="parishes" class="pw-band" aria-labelledby="pw-h">
+  <div class="sec-head"><span class="eyebrow">New Orleans parishes</span>
+    <h2 id="pw-h">{n(PW_PARISHES)} parishes to walk, drive and learn in</h2>
+    <p class="lede">A connected world of the parishes whose outlines touch the New Orleans region,
+      with the fleet, the guides and the training and {esc(PW_K12_NAME)} paths standing in it.</p></div>
+  <div class="showcase pw-show">
+    <div class="sv-row" data-teaser="parishes">
+      <figure class="sv-media pw-media"><div class="sv-frame pw-frame">
+        <img class="pw-img" src="{esc(PW_PREVIEW)}" width="{PW_PREVIEW_PX}" height="{PW_PREVIEW_PX}"
+          loading="lazy" decoding="async" alt="{esc(PW_ORLEANS)}: the {PW_PREVIEW_PX} pixel preview of its {PW_MAP_PX} pixel map"></div>
+        <figcaption class="sv-cap pw-cap">{esc(PW_ORLEANS)} &middot; {esc(PW_MAP_LABEL)}</figcaption></figure>
+      <div class="sv-text"><span class="eyebrow">Parish world</span>
+        <h3>Each parish has its own {PW_MAP_PX} pixel map, and the maps connect</h3>
+        <dl class="stats pw-stats">{PW_STATS_HTML}</dl>
+        <ul class="pw-honest">
+          <li data-honest="outline"><b>Outlines RECORDED</b>: U.S. Census cartographic boundaries, coarse (1:10m).</li>
+          <li data-honest="fabric"><b>Street fabric AUTHORED</b>: procedural, not the real street grid.</li>
+          <li data-honest="satellite"><b>Satellite view-time only</b>: in your browser; never fetched, stored or baked by a build.</li>
+          <li data-honest="elevation"><b>No real elevation</b>: the ground is flat at 0 m.</li>
+        </ul>
+        <p><a class="btn btn-primary" href="web/trade_craft_parishes.html">{_nl('web/trade_craft_parishes.html')}<span aria-hidden="true"> →</span></a></p>
+      </div></div>
+  </div>
+  <div class="paths pw-cards">{cards}</div>
+</section>'''
+
+
+PW_CSS = """
+.pw-band{background:var(--panel);border:1px solid var(--rule);border-radius:var(--r-lg);padding:var(--s5);color:var(--ink)}
+.pw-band .lede,.pw-band .sv-text p,.pw-honest{color:var(--muted)}
+.pw-frame{display:flex;align-items:center;justify-content:center;background:var(--sunk);aspect-ratio:1/1}
+.pw-img{display:block;inline-size:100%;block-size:auto;max-inline-size:512px}
+.pw-cap{padding:var(--s2) var(--s3);font-size:var(--fs-sm);color:var(--muted);background:var(--panel)}
+.pw-stats{margin:var(--s3) 0}
+.pw-honest{margin:var(--s3) 0;padding-inline-start:1.1rem;font-size:var(--fs-sm)}
+.pw-honest b{color:var(--ink)}
+.pw-cards{margin-block-start:var(--s5)}
+.pw-card .eyebrow{margin:0}
+"""
+
+
 STATS_HTML = ''.join(
     f'<div class="stat" data-stat="{k}" data-src="{esc(src)}"><dt>{esc(label)}</dt>'
     f'<dd>{n(v)}</dd></div>' for k, v, label, src in STATS)
@@ -1602,6 +1764,8 @@ BODY = f"""<body>
       </div></div>
   </div>
 </section>
+
+{parishes_html()}
 
 <section id="loop">
   <div class="sec-head"><span class="eyebrow">How it works</span>
@@ -1831,6 +1995,9 @@ _DERIVED |= {f for s in (need(START_L, 'title', START_W),
                          need(START_L, 'hall_name', START_W))
              for f in _figures_in(s)}
 
+# The parish band's figures: each counted from its list above.
+_DERIVED |= {v for v in (PW_PARISHES, PW_VEHICLES, PW_LAND, PW_WATER, PW_GUIDES, PW_ROLES,
+    PW_STATIONS, PW_K12_STATIONS, PW_K12_UNITS, PW_PLANS, PW_MAP_PX, PW_PREVIEW_PX)}
 _loose = _figures_in(BODY) - _DERIVED
 BODY_Q = BODY.replace('</body>', QUEST_TAIL + '</body>')  # quests: engine carried after the prose lint
 assert not _loose, (
@@ -1857,7 +2024,7 @@ page = ('<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n'
         '<link rel="stylesheet" href="web/vendor/fonts/fonts.css">\n'
         f'<style>{CSS}</style>\n<style>{NAV_CSS}</style>\n'
         f'<style>{HERO_VIDEO_CSS}{SEARCH_CSS}{UX_CSS}</style>\n'
-        f'<style>{SECTION_VIDEO_CSS}{MOTION_CSS}{POLISH_CSS}{STYLE_BRIDGE_CSS}</style>\n</head>\n{BODY_Q}\n</html>\n')
+        f'<style>{SECTION_VIDEO_CSS}{MOTION_CSS}{POLISH_CSS}{PW_CSS}{STYLE_BRIDGE_CSS}</style>\n</head>\n{BODY_Q}\n</html>\n')
 # The palette's index (registry titles, which may hold figures of their own)
 # and the two small scripts join the page after the prose gate above, like
 # the quest engine: the gate is about typed prose, and these are data.

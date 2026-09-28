@@ -68,7 +68,7 @@ def TA(k):
 # the runtime needs these keys even where no static element carries them
 for _k in ('cam', 'chase', 'trafficnote', 'spec.family', 'spec.medium', 'spec.dims', 'spec.mass', 'spec.top', 'spec.accel', 'spec.turn', 'spec.seats',
            'spec.seat', 'spec.trades', 'noseat', 'openseat', 'refused', 'drive', 'float', 'medium.land', 'medium.water',
-           'shown', 'authored', 'allfam'):
+           'shown', 'authored', 'allfam', 'touch.group', 'touch.stick', 'touch.throttle', 'touch.brake', 'touch.enter', 'touch.exit'):
     T(_k)
 
 # nav: the page must be declared in web/sitenav.py PAGES (lead-owned). Fail
@@ -264,7 +264,7 @@ const keys = {};
 function startDrive() {
   const e = BY.get(sel), spec = fleetSpec(e);
   const at = e.medium === 'land' ? { x: PAD.x - PAD.half + 20, z: PAD.z, yaw: 0 } : { x: POND.x, z: POND.z, yaw: Math.PI / 2 };
-  const ok = fleetCanSpawn(spec, GROUND, at.x, at.z);
+  const ok = fleetCanSpawn(spec, GROUND, at.x, at.z, at.yaw);
   if (!ok.ok) throw new Error('fleet: ' + ok.reason);
   const st = fleetState(spec, GROUND, at.x, at.z, at.yaw);
   drv = { e, spec, st, h: FL.spawn(e.id, st), refusedShown: 0 };
@@ -273,6 +273,7 @@ function startDrive() {
   fleetChaseCamera(camera, st, spec, 0, { snap: true });
   document.body.dataset.fleetMode = mode;
   $('#btn-exit').hidden = false; $('#drive-help').hidden = false; $('#btn-cam').hidden = false;
+  touch.setAboard(true);
   canvas.focus();
 }
 function exitDrive() {
@@ -280,11 +281,18 @@ function exitDrive() {
   drv.h.despawn(); drv = null; mode = 'turntable';
   orbit.enabled = true; document.body.dataset.fleetMode = mode;
   $('#btn-exit').hidden = true; $('#drive-help').hidden = true; $('#btn-cam').hidden = true; $('#toast').textContent = '';
+  touch.setAboard(false);
   frameHero(true);
 }
+/* phone driving: the kit's touch controls on the test pad (a stick, throttle, brake, get in / out) */
+const touch = fleetTouchControls(document, $('.fl-stage'),
+  { group: tr('touch.group'), stick: tr('touch.stick'), throttle: tr('touch.throttle'), brake: tr('touch.brake'), enter: tr('touch.enter'), exit: tr('touch.exit') },
+  () => (drv ? exitDrive() : startDrive()));
 function input() {
   const k = (a, b) => (keys[a] || keys[b] ? 1 : 0);
-  return { throttle: k('KeyW', 'ArrowUp') - k('KeyS', 'ArrowDown'), steer: k('KeyA', 'ArrowLeft') - k('KeyD', 'ArrowRight'), brake: keys.Space ? 1 : 0 };
+  const kb = { throttle: k('KeyW', 'ArrowUp') - k('KeyS', 'ArrowDown'), steer: k('KeyA', 'ArrowLeft') - k('KeyD', 'ArrowRight'), brake: keys.Space ? 1 : 0 };
+  const t = touch.input(), big = (a, b) => (Math.abs(a) >= Math.abs(b) ? a : b);
+  return { throttle: big(kb.throttle, t.throttle), steer: big(kb.steer, t.steer), brake: Math.max(kb.brake, t.brake) };
 }
 function driveTick(dt, inp) {
   fleetStep(drv.st, drv.spec, inp, GROUND, dt);
@@ -368,6 +376,9 @@ window.__fleet = {
     return { ...traffic.stats(), wet, dry, budget: undefined };
   },
   wheels: () => FL.wheels.visible,
+  touch: (show) => { touch.show(show); return touch.state(); },
+  input: () => input(),
+  brake: () => (drv ? drv.h.brakeLevel() : null),
 };
 const h0 = decodeURIComponent(location.hash.slice(1));
 if (BY.has(h0)) sel = h0;
@@ -416,6 +427,7 @@ body.tc-theme-canvas{{margin:0;background:var(--tc-plate);color:var(--tc-ink);fo
 .fl-spec dt{{color:var(--tc-muted)}} .fl-spec dd{{margin:0;color:var(--tc-ink)}}
 .fl-spec .trades{{color:var(--tc-muted);font-size:.85em}}
 #drive-help,#toast,#traffic-note{{position:absolute;inset-inline-start:8px;bottom:8px;max-width:min(520px,60%);background:var(--tc-panel);color:var(--tc-ink);border:1px solid var(--tc-line);border-radius:8px;padding:6px 10px;font-size:.9em}}
+@media (pointer:coarse){{#drive-help{{display:none}}}}
 #traffic-note{{bottom:64px}} #toast:empty{{display:none}} #toast{{bottom:auto;top:52px;color:var(--tc-ink);border-color:var(--tc-amber)}}
 body[data-fleet-mode="drive"] .fl-spec,body[data-fleet-mode="float"] .fl-spec{{display:none}}
 .fl-honesty{{max-width:1400px;margin:0 auto;padding:0 16px 20px;color:var(--tc-muted);font-size:.9em}}

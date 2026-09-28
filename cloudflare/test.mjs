@@ -62,7 +62,7 @@ const site = blocks['/*'] || [];
 const api = blocks['/api/*'] || [];
 ok(JSON.stringify(Object.keys(blocks)) === '["/*","/api/*"]', '_headers has exactly the /* and /api/* blocks');
 ok(pol('site').length > 0 && JSON.stringify(site) === JSON.stringify(pol('site')), `/* equals headers.json site (${pol('site').length} headers, same order and values)`);
-ok(pol('api').length > 0 && JSON.stringify(api) === JSON.stringify(pol('api')), `/api/* equals headers.json api (${pol('api').length} headers)`);
+ok(pol('api').length > 0 && JSON.stringify(api) === JSON.stringify(pol('api')), `_headers /api/* block equals headers.json api (${pol('api').length}; Pages does not apply it to Functions replies - the Worker sets them, payments/test.mjs)`);
 const V = JSON.parse(readFileSync(join(ROOT, 'vercel.json'), 'utf8'));
 const want = V.headers.flatMap((r) => r.headers.map((h) => [h.key, h.value]));
 ok(want.length > 0 && want.every(([k, v]) => site.some(([a, b]) => a === k && b === v)), `every vercel.json header (${want.length}) is on /* with the same value`);
@@ -73,7 +73,7 @@ const pages = readdirSync(join(ROOT, 'web')).filter((f) => f.endsWith('.html')).
 pages.push(readFileSync(join(ROOT, 'index.html'), 'utf8'));
 ok(!pages.some((p) => /<iframe|<object|<embed|<base\s/i.test(p)), 'no page uses iframe/object/embed/base (baseline CSP breaks nothing)');
 ok(!pages.some((p) => /<form\b(?![^>]*method="dialog")[^>]*action="https?:/i.test(p)), 'no page posts a form off-site (form-action self holds)');
-ok(api.some(([k, v]) => k === 'Content-Security-Policy' && v === "default-src 'none'; frame-ancestors 'none'") && api.some(([k, v]) => k === 'Cache-Control' && v === 'no-store'), '/api/* is deny-all CSP and no-store');
+ok(api.some(([k, v]) => k === 'Content-Security-Policy' && v === "default-src 'none'; frame-ancestors 'none'") && api.some(([k, v]) => k === 'Cache-Control' && v === 'no-store'), '_headers /api/* block is deny-all CSP and no-store (the Worker sends the same on its replies)');
 ok(REG.headers_from === 'security/headers.json' && JSON.stringify(REG.site_headers.map((h) => [h.key, h.value])) === JSON.stringify(pol('site')) && JSON.stringify(REG.api_headers.map((h) => [h.key, h.value])) === JSON.stringify(pol('api')), 'registry records the headers it derived and where from');
 for (const v of ['RATE_LIMIT_CHECKOUT_MAX', 'RATE_LIMIT_CHECKOUT_WINDOW_S', 'RATE_LIMIT_SALT'])
   ok(REG.vars.includes(v) && read('README.md').includes(v), `rate-limit setting ${v} named in the registry and README`);

@@ -21,8 +21,10 @@ const W = await import('./worker.mjs');
 
 /* ---- catalogue honesty ---- */
 ok(JSON.stringify(MOD) === JSON.stringify(CAT), 'catalog.mjs is the same object as registry/catalog.json');
-ok(CAT.source_stamp === 'sha256:' + createHash('sha256').update(readFileSync(join(HERE, 'build.py'))).digest('hex'),
-  'source_stamp is the sha256 of payments/build.py');
+ok(CAT.source_stamp === 'sha256:' + createHash('sha256').update(Buffer.concat([readFileSync(join(HERE, 'build.py')), readFileSync(join(ROOT, 'security/headers.json'))])).digest('hex'),
+  'source_stamp is the sha256 of payments/build.py + security/headers.json');
+const POLICY = JSON.parse(readFileSync(join(ROOT, 'security/headers.json'), 'utf8'));
+ok(JSON.stringify(CAT.api_headers) === JSON.stringify(POLICY.api.map((h) => ({ key: h.key, value: h.value }))), 'catalogue api_headers = security/headers.json api (derived, not retyped)');
 ok(CAT.live === false && /not live: no Stripe account is connected/.test(CAT.status), 'catalogue says payments are not live');
 const IDS = CAT.plans.map((p) => p.id);
 for (const want of ['individual-learner', 'union-hall', 'school-district'])
@@ -162,6 +164,45 @@ await refusal('no client IP', baseEnv(), new Request(SITE + '/api/checkout', { m
   calls = [];
   const r1 = await worker().fetch(co({ plan: 'individual-learner' }), env);
   ok(r1.status === 429 && calls.length === 0, 'a refused KV write is a 429, never a free pass to Stripe');
+}
+
+/* ---- review wave 6 (REVIEW_FINDINGS 2, 3): the bucket fails closed and ignores future stamps ---- */
+{
+  const cfg = { max: 5, win: 60, salt: 'x'.repeat(16) };
+  const kvThrowGet = { m: new Map(), get: async () => { throw new Error('KV unavailable'); }, put: async (k, v) => { kvThrowGet.m.set(k, v); } };
+  let oks = 0;
+  for (let i = 0; i < 50; i++) if ((await W.takeToken(kvThrowGet, 'b', cfg, NOW + i)).ok) oks++;
+  ok(oks === 0, `a failing kv.get grants no token (${oks}/50; was 50/50 fail-open)`);
+  const env = baseEnv();
+  env.PAYMENTS_KV = { get: async () => { throw new Error('KV unavailable'); }, put: async () => {} };
+  calls = [];
+  const r1 = await worker().fetch(co({ plan: 'individual-learner' }), env);
+  ok(r1.status === 429 && calls.length === 0, 'checkout with a failing kv.get is refused and Stripe is not called');
+  const kv = kvMock();
+  kv.m.set('b', JSON.stringify({ t: 0, at: NOW / 1000 + 0.5 }));
+  const f = await W.takeToken(kv, 'b', cfg, NOW);
+  ok(f.ok === false && JSON.parse(kv.m.get('b')).t === 0, 'an empty bucket stamped in the future stays empty (no refill to max)');
+  kv.m.set('c', JSON.stringify({ t: 2, at: NOW / 1000 + 30 }));
+  const g = await W.takeToken(kv, 'c', cfg, NOW);
+  ok(g.ok === true && JSON.parse(kv.m.get('c')).t === 1, 'a future-stamped bucket keeps its own count (2 -> 1), not max');
+  kv.m.set('d', '{not json');
+  ok((await W.takeToken(kv, 'd', cfg, NOW)).ok === true && JSON.parse(kv.m.get('d')).t === cfg.max - 1, 'a corrupt bucket value starts a fresh bucket');
+}
+
+/* ---- review wave 6 (REVIEW_FINDINGS 1): every Worker reply carries the policy's api headers ---- */
+{
+  const want = POLICY.api.map((h) => [h.key.toLowerCase(), h.value]);
+  const cases = [
+    ['GET checkout', worker().fetch(new Request(SITE + '/api/checkout', { method: 'GET' }), {})],
+    ['checkout happy path', worker().fetch(co({ plan: 'individual-learner' }), baseEnv())],
+    ['checkout not configured', worker().fetch(co({ plan: 'individual-learner' }), {})],
+    ['webhook not configured', worker().fetch(new Request(SITE + '/api/stripe-webhook', { method: 'POST', body: '{}' }), {})],
+    ['unknown route', worker().fetch(new Request(SITE + '/api/nope'), {})],
+  ];
+  for (const [name, p] of cases) {
+    const r = await p;
+    ok(want.length > 0 && want.every(([k, v]) => r.headers.get(k) === v), `${name} (${r.status}) carries every headers.json api header`);
+  }
 }
 
 /* ---- webhook ---- */

@@ -110,50 +110,131 @@ ROLE_TITLE = {'mentor': 'Mentor', 'k12-guide': 'Guide', 'ranger': 'Ranger',
 AV = REG['avatars']
 SECTION = {s['id']: s for s in AV['sections']}
 OPTS = {sid: {o['id']: o for o in s['options']} for sid, s in SECTION.items()}
-ROLE_OUTFIT = {   # AUTHORED outfits, locker option ids only
-    'mentor': {'headwear': 'hard-cap', 'vest': 'hi-vis-2', 'top': 'long-sleeve',
-               'tools': 'basic', 'extras': 'safety-glasses'},
-    'k12-guide': {'headwear': 'none', 'top': 'polo', 'topcolor': 'royal',
-                  'vest': 'none', 'tools': 'none', 'extras': 'id-badge',
-                  'pants': 'khaki-work', 'pantscolor': 'sand',
-                  'shoes': 'sneaker-black'},
-    'ranger': {'headwear': 'bucket', 'headcolor': 'olive', 'top': 'long-sleeve',
-               'topcolor': 'forest', 'vest': 'hi-vis-1', 'pants': 'cargo',
-               'pantscolor': 'duck-brown', 'shoes': 'wellington',
-               'tools': 'none', 'extras': 'radio'},
-    'pilot': {'headwear': 'ball-cap', 'headcolor': 'navy', 'top': 'polo',
-              'topcolor': 'navy', 'vest': 'none', 'outer': 'rain-slicker',
-              'pants': 'rain-pants', 'pantscolor': 'slate',
-              'shoes': 'rubber-yellow', 'tools': 'none', 'extras': 'radio'},
-    'host': {'headwear': 'none', 'top': 'polo', 'topcolor': 'teal',
-             'vest': 'hi-vis-2', 'tools': 'none', 'extras': 'id-badge'},
+HARD_HATS = ('hard-cap', 'full-brim', 'climbing', 'vintage', 'carbon', 'vented-cap',
+             'hard-cap-liner', 'sun-shade')          # avatars/ headwear ids that are hard hats
+# AUTHORED wardrobes: every value is an avatars/ locker option id (checked below).
+# Mentors dress in the crew gear of their trade family (unions district); every
+# mentor wears a hard hat and a vest or harness. Other roles: role outfits.
+FAMILY_GEAR = {
+    'structural': {'headwear': ['climbing', 'full-brim', 'hard-cap'], 'vest': ['harness', 'harness-position', 'hi-vis-2'],
+                   'tools': ['rigger', 'welder', 'framing'], 'top': ['long-sleeve', 'work-shirt', 'fr-shirt'],
+                   'extras': ['tool-lanyard', 'safety-glasses', 'gloves'], 'shoes': ['lineman', 'steel-toe-black', 'met-guard'],
+                   'pants': ['duck-canvas', 'carpenter', 'fr-pants']},
+    'envelope': {'headwear': ['hard-cap', 'vented-cap', 'sun-shade'], 'vest': ['hi-vis-2', 'tool-vest', 'mesh'],
+                 'tools': ['framing', 'drywall', 'mason', 'roofer', 'glazier', 'finisher'], 'top': ['henley', 'work-shirt', 'flannel'],
+                 'extras': ['safety-glasses', 'knee-pads', 'dust-mask'], 'shoes': ['steel-toe-brown', 'steel-toe-tan', 'hiker'],
+                 'pants': ['carpenter', 'knee-pad-pants', 'duck-canvas']},
+    'systems': {'headwear': ['hard-cap', 'vented-cap', 'carbon'], 'vest': ['hi-vis-2', 'tool-vest', 'mesh'],
+                'tools': ['electric', 'plumber', 'hvac', 'low-voltage', 'sheet-metal'], 'top': ['work-shirt', 'fr-shirt', 'polo'],
+                'extras': ['safety-glasses', 'rx-safety-glasses', 'headlamp'], 'shoes': ['eh-rated', 'comp-toe-grey', 'steel-toe-black'],
+                'pants': ['cargo', 'khaki-work', 'grey-work']},
+    'energy': {'headwear': ['full-brim', 'hard-cap', 'sun-shade'], 'vest': ['fire-resist', 'hi-vis-3', 'harness-ladder'],
+               'tools': ['lineman', 'electric'], 'top': ['fr-shirt', 'hi-vis-long-sleeve'],
+               'extras': ['safety-glasses', 'gloves', 'face-shield'], 'shoes': ['lineman', 'eh-rated'],
+               'pants': ['fr-pants', 'jeans']},
+    'earthworks': {'headwear': ['hard-cap', 'full-brim', 'hard-cap-liner'], 'vest': ['hi-vis-3', 'hi-vis-2'],
+                   'tools': ['basic', 'concrete'], 'top': ['hi-vis-tee', 'hi-vis-long-sleeve', 'tee'],
+                   'extras': ['ear-muffs', 'safety-glasses', 'dust-mask'], 'shoes': ['steel-toe-brown', 'logger', 'wellington'],
+                   'pants': ['duck-canvas', 'jeans', 'hi-vis']},
+    'industry': {'headwear': ['hard-cap', 'full-brim', 'vintage'], 'vest': ['fire-resist', 'tool-vest'],
+                 'tools': ['welder', 'millwright', 'basic'], 'top': ['fr-shirt', 'coveralls', 'work-shirt'],
+                 'extras': ['respirator', 'ear-plugs', 'face-shield'], 'shoes': ['met-guard', 'steel-toe-black'],
+                 'pants': ['fr-pants', 'duck-canvas']},
+    'transport': {'headwear': ['hard-cap', 'full-brim', 'vented-cap'], 'vest': ['hi-vis-3', 'hi-vis-2', 'surveyor'],
+                  'tools': ['basic', 'rigger'], 'top': ['hi-vis-long-sleeve', 'work-shirt', 'polo'],
+                  'extras': ['radio', 'ear-muffs', 'safety-glasses'], 'shoes': ['steel-toe-black', 'comp-toe-grey'],
+                  'pants': ['cargo', 'hi-vis', 'grey-work']},
+    'control': {'headwear': ['hard-cap', 'full-brim', 'vented-cap'], 'vest': ['surveyor', 'hi-vis-2', 'mesh'],
+                'tools': ['surveyor', 'basic'], 'top': ['work-shirt', 'long-sleeve', 'hi-vis-tee'],
+                'extras': ['respirator', 'radio', 'rx-safety-glasses'], 'shoes': ['hiker', 'steel-toe-tan', 'rubber-yellow'],
+                'pants': ['cargo', 'khaki-work', 'rain-pants']},
 }
-VARY = ('build', 'skin', 'hair', 'haircolor', 'eyes')
+MENTOR_COLOURS = {'headcolor': ['white', 'hi-vis-yellow', 'hi-vis-orange', 'royal', 'safety-green', 'grey'],
+                  'topcolor': ['slate', 'navy', 'charcoal', 'steel-blue', 'duck-brown', 'grey', 'forest', 'rust'],
+                  'pantscolor': ['duck-brown', 'navy', 'charcoal', 'slate', 'sand', 'grey'],
+                  'outer': ['none', 'none', 'none', 'varsity', 'chore-canvas']}
+ROLE_WARDROBE = {
+    'k12-guide': {'headwear': ['none', 'none', 'ball-cap', 'visor'], 'headcolor': ['navy', 'royal', 'teal'],
+                  'top': ['polo', 'henley', 'fleece', 'long-sleeve'], 'topcolor': ['royal', 'teal', 'navy', 'forest', 'crimson'],
+                  'vest': ['none'], 'tools': ['none'], 'extras': ['id-badge'], 'outer': ['none', 'none', 'softshell'],
+                  'pants': ['khaki-work', 'chinos', 'jeans'], 'pantscolor': ['sand', 'navy', 'charcoal', 'stone'],
+                  'shoes': ['sneaker-black', 'sneaker-white', 'sneaker-blue', 'slip-on']},
+    'ranger': {'headwear': ['bucket', 'ball-cap', 'bucket'], 'headcolor': ['olive', 'forest', 'sand', 'duck-brown'],
+               'top': ['long-sleeve', 'sun-hoodie', 'work-shirt'], 'topcolor': ['forest', 'olive', 'sand', 'duck-brown'],
+               'vest': ['hi-vis-1', 'rain-vest', 'surveyor'], 'tools': ['none'], 'extras': ['radio', 'sunglasses'],
+               'outer': ['none', 'rain-slicker', 'anorak'], 'pants': ['cargo', 'olive-work', 'hip-waders'],
+               'pantscolor': ['duck-brown', 'olive', 'sand', 'forest'], 'shoes': ['wellington', 'hiker', 'rubber-green']},
+    'pilot': {'headwear': ['ball-cap', 'ball-cap-back', 'bucket'], 'headcolor': ['navy', 'slate', 'white', 'steel-blue'],
+              'top': ['polo', 'long-sleeve', 'sun-hoodie', 'rain-shell'], 'topcolor': ['navy', 'white', 'steel-blue', 'slate'],
+              'vest': ['life-vest'], 'tools': ['none'], 'extras': ['radio', 'sunglasses'],
+              'outer': ['none', 'rain-slicker', 'windbreaker'], 'pants': ['rain-pants', 'cargo', 'khaki-work'],
+              'pantscolor': ['slate', 'navy', 'charcoal'], 'shoes': ['rubber-yellow', 'rubber-green', 'wellington']},
+    'host': {'headwear': ['hard-cap', 'vented-cap', 'full-brim'], 'headcolor': ['white', 'hi-vis-yellow', 'royal'],
+             'top': ['polo', 'work-shirt', 'hi-vis-tee'], 'topcolor': ['teal', 'navy', 'royal', 'slate'],
+             'vest': ['hi-vis-2', 'hi-vis-1', 'surveyor'], 'tools': ['none'], 'extras': ['id-badge', 'radio'],
+             'outer': ['none'], 'pants': ['cargo', 'khaki-work', 'jeans'], 'pantscolor': ['navy', 'charcoal', 'sand'],
+             'shoes': ['steel-toe-black', 'comp-toe-grey', 'hiker']},
+}
+# body / face variety: the whole registry range of each section (the rig reads
+# build.scale); facial hair is 'none' for about half (listed twice)
+VARY = ('build', 'skin', 'hair', 'haircolor', 'eyes', 'facialhair')
+FACIAL = ('none', 'none', 'none', 'stubble', 'mustache', 'goatee', 'short-beard', 'full-beard', 'circle-beard')
 PROXY_PARTS = {'torso': 'topcolor', 'legs': 'pantscolor', 'head': 'skin',
                'hat': 'headcolor'}
+# proxy tint of a worn vest: a topcolor option (registry hex); vests not listed get no proxy
+VEST_TINT = {'hi-vis-1': 'hi-vis-yellow', 'hi-vis-2': 'hi-vis-yellow', 'hi-vis-3': 'hi-vis-orange',
+             'surveyor': 'hi-vis-orange', 'life-vest': 'hi-vis-orange', 'mesh': 'safety-green',
+             'harness': 'charcoal', 'harness-position': 'charcoal', 'harness-ladder': 'charcoal',
+             'tool-vest': 'duck-brown', 'fire-resist': 'navy', 'rain-vest': 'hi-vis-yellow'}
 
 
-def appearance(role, i, crew):
+def pick(npc_id, sec, pool):
+    """Deterministic per NPC id: sha256('<id>:<section>')[:8] mod len(pool)."""
+    h = int(hashlib.sha256(f'{npc_id}:{sec}'.encode()).hexdigest()[:8], 16)
+    return pool[h % len(pool)]
+
+
+def wardrobe_of(role, family):
+    if role == 'mentor':
+        if family not in FAMILY_GEAR:
+            raise NPCBuildError(f'appearance: trade family {family} has no crew gear')
+        return {**FAMILY_GEAR[family], **MENTOR_COLOURS}
+    return ROLE_WARDROBE[role]
+
+
+def appearance(role, npc_id, crew, family):
     cfg = dict(AV['defaults'])
-    for k in VARY:                     # deterministic variety, locker ids only
-        ids = list(OPTS[k])
-        cfg[k] = ids[(i * 5 + len(k) * 3) % len(ids)]
-    cfg.update(ROLE_OUTFIT[role])
+    for k in VARY:                     # deterministic variety per NPC id, locker ids only
+        pool = list(FACIAL) if k == 'facialhair' else [o['id'] for o in SECTION[k]['options']]
+        cfg[k] = pick(npc_id, k, pool)
+    for k, pool in wardrobe_of(role, family).items():
+        cfg[k] = pick(npc_id, k, pool)
     cfg['crew'] = crew
     for k, v in cfg.items():
         if k not in OPTS:
             raise NPCBuildError(f'appearance {role}: unknown locker section {k}')
         if v not in OPTS[k]:
             raise NPCBuildError(f'appearance {role}: {k}={v} is not an avatars/ option')
+    si_of = {s['id']: i for i, s in enumerate(AV['sections'])}
+
+    def src(sec, oid, field):
+        idx = [o['id'] for o in SECTION[sec]['options']].index(oid)
+        return f"{SOURCES['avatars']}#sections[{si_of[sec]}].options[{idx}].{field}"
     proxy = {}
     for part, sec in PROXY_PARTS.items():
         oid = cfg[sec]
-        idx = [o['id'] for o in SECTION[sec]['options']].index(oid)
-        si = [s['id'] for s in AV['sections']].index(sec)
-        proxy[part] = {'hex': OPTS[sec][oid]['value'],
-                       'source': f"{SOURCES['avatars']}#sections[{si}].options[{idx}].value"}
+        proxy[part] = {'hex': OPTS[sec][oid]['value'], 'source': src(sec, oid, 'value')}
+    if cfg['headwear'] == 'none':
+        proxy['hat'] = None            # bare head: no hat drawn
+    tint = VEST_TINT[cfg['vest']] if cfg['vest'] in VEST_TINT else None
+    proxy['vest'] = None if tint is None else {'hex': OPTS['topcolor'][tint]['value'],
+                                               'source': src('topcolor', tint, 'value')}
+    bo = OPTS['build'][cfg['build']]
+    if 'scale' not in bo:
+        raise NPCBuildError(f'appearance: build {cfg["build"]} has no scale')
     return {'rig': 'avatars locker cfg -> buildAvatarMesh(cfg) (web/build_3d.py)',
-            'cfg': cfg, 'proxy': proxy}
+            'cfg': cfg, 'proxy': proxy,
+            'scale': {'xyz': bo['scale'], 'source': src('build', cfg['build'], 'scale')}}
 
 
 # ------------------------------------------------------------------ places --
@@ -450,7 +531,8 @@ def build():
             word += 1
             rec = {'id': f'npc-{fips}-{role}-{key}', 'parish': fips, 'role': role,
                    'name': name, 'name_provenance': 'AUTHORED',
-                   'appearance': appearance(role, i, k['crew']),
+                   'appearance': appearance(role, f'npc-{fips}-{role}-{key}', k['crew'],
+                                            k['family'] if role == 'mentor' else None),
                    'home': {'place': home, 'offset_index': i},
                    'guide_to': go,
                    'schedule': routine(role, home, go, lm),
@@ -508,6 +590,11 @@ def build():
                         'RECORDED parish outline) and PARISH landmarks (AUTHORED from public '
                         'record, not surveyed); coordinates are copied from those registries.'),
         'name_words': list(NAME_WORDS),
+        'wardrobe': {'provenance': 'AUTHORED outfits; every value is an avatars/ locker option id; '
+                                   'pick = sha256("<npc id>:<section>")[:8] mod len(pool)',
+                     'hard_hats': list(HARD_HATS), 'family_gear': FAMILY_GEAR,
+                     'mentor_colours': MENTOR_COLOURS, 'roles': ROLE_WARDROBE,
+                     'vary': list(VARY), 'facialhair': list(FACIAL), 'vest_tint': VEST_TINT},
         'parishes': parishes,
         'places': places,
         'counts': {'npcs': len(npcs), 'parishes': len(parishes),

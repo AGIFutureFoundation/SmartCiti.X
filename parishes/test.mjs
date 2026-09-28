@@ -261,5 +261,85 @@ const webpSize = (b) => {
     '[honesty] every outline is labelled RECORDED, 1:10m and coarse');
 }
 
+
+/* ---- wave 6: label-free ground tiles ---------------------------------- */
+{
+  const GL = 'Ground drawn from Census outline + AUTHORED fabric - not satellite, not a survey; carries no text';
+  const cover = [], files = [], dims = [];
+  for (const f of IDS) {
+    const m = P[f].map, G = m.ground_tiles, X = m.extent_local_m;
+    if (!G || G.grid !== 4 || G.tile_px !== 1024 || G.tiles.length !== 16) { cover.push(`${f} grid`); continue; }
+    const at = (r, c) => G.tiles.filter((t) => t.row === r && t.col === c);
+    for (let r = 0; r < 4; r++) for (let c = 0; c < 4; c++) {
+      const t = at(r, c);
+      if (t.length !== 1) { cover.push(`${f} r${r}c${c} x${t.length}`); continue; }
+      const b = t[0].bounds_local_m, T = t[0];
+      if (c === 0 && b.left !== X.left) cover.push(`${f} r${r}c0 west edge ${b.left} != ${X.left}`);
+      if (c === 3 && b.right !== X.right) cover.push(`${f} r${r}c3 east edge`);
+      if (r === 0 && b.top !== X.top) cover.push(`${f} r0c${c} north edge`);
+      if (r === 3 && b.bottom !== X.bottom) cover.push(`${f} r3c${c} south edge`);
+      if (c < 3 && at(r, c + 1).length === 1 && at(r, c + 1)[0].bounds_local_m.left !== b.right) cover.push(`${f} r${r}c${c} gap/overlap east`);
+      if (r < 3 && at(r + 1, c).length === 1 && at(r + 1, c)[0].bounds_local_m.top !== b.bottom) cover.push(`${f} r${r}c${c} gap/overlap south`);
+      if (!(b.left < b.right && b.bottom < b.top) || Math.abs((b.right - b.left) - (X.right - X.left) / 4) > 0.02
+          || Math.abs((b.top - b.bottom) - (X.top - X.bottom) / 4) > 0.02) cover.push(`${f} r${r}c${c} size`);
+      if (JSON.stringify(T.px_bounds) !== JSON.stringify([c * 1024, r * 1024, c * 1024 + 1024, r * 1024 + 1024])) cover.push(`${f} r${r}c${c} px`);
+      if (T.path !== `parishes/maps/tiles/${f}-r${r}c${c}.webp`) cover.push(`${f} r${r}c${c} path`);
+      if (!existsSync(join(ROOT, T.path))) { files.push(`${T.path} missing`); continue; }
+      const B = buf(T.path);
+      if (sha(B) !== T.sha256 || B.length !== T.bytes) files.push(`${T.path} sha/bytes`);
+      if (T.bytes > 400000 || G.max_bytes !== 400000) files.push(`${T.path} ${T.bytes} B over 400,000`);
+      const d = webpSize(B);
+      if (!d || d[0] !== 1024 || d[1] !== 1024) dims.push(`${T.path} is ${d}`);
+    }
+  }
+  ok(cover.length === 0, `[tiles] every parish's 4x4 ground tiles cover map.extent_local_m exactly: outer edges equal the extent, shared edges are equal numbers (no gaps, no overlaps), one tile per cell${cover.length ? ' [' + cover.slice(0, 4).join('; ') + ']' : ''}`);
+  ok(files.length === 0 && dims.length === 0, `[tiles] every ground tile file exists at 1024x1024 (WebP header), matches its recorded sha256 and bytes, and is at most 400,000 bytes (largest ${Math.max(...IDS.flatMap((f) => P[f].map.ground_tiles ? P[f].map.ground_tiles.tiles.map((t) => t.bytes) : [0]))})${files.concat(dims).length ? ' [' + files.concat(dims).slice(0, 4).join('; ') + ']' : ''}`);
+  ok(IDS.every((f) => P[f].map.ground_tiles && P[f].map.ground_tiles.label === GL && /no text/.test(P[f].map.ground_tiles.provenance)),
+    '[tiles] every tile set records the AUTHORED ground label ("... carries no text") for the page to show beside the 3D ground');
+  const rs = buf('parishes/render.py').toString();
+  const snap = rs.indexOf('ground = img.copy()'), firstText = rs.indexOf('d.text(', rs.indexOf('def render_all('));
+  const firstLine = rs.indexOf("fill=COL['ink'], width=7", rs.indexOf('def render_all('));
+  ok(snap > 0 && firstText > snap && firstLine > snap && /save_ground_tiles\(ground,/.test(rs)
+     && rs.includes("GROUND_LABEL = '" + GL + "'"),
+    '[tiles] the renderer snapshots the ground layer before ANY text, pin, outline, border, banner or legend is drawn and cuts tiles only from that snapshot (no labels draped on the ground)');
+}
+
+/* ---- wave 6: AUTHORED street polylines -------------------------------- */
+{
+  const bad = [], out = [], size = [], cls = [];
+  let nPl = 0, nV = 0, total = 0;
+  for (const f of IDS) {
+    const S = P[f].map.streets;
+    if (!S || S.path !== `parishes/maps/streets/${f}.json` || !existsSync(join(ROOT, S.path))) { bad.push(`${f} missing`); continue; }
+    const B = buf(S.path);
+    total += B.length;
+    if (sha(B) !== S.sha256 || B.length !== S.bytes) bad.push(`${f} sha/bytes`);
+    if (B.length > 1500000 || S.max_bytes !== 1500000) size.push(`${f} ${B.length} B`);
+    const D = JSON.parse(B.toString());
+    if (D.source_stamp !== R.source_stamp || D.fips !== f || D.pack !== 'parishes') bad.push(`${f} stamp ${D.source_stamp}`);
+    if (D.provenance !== 'AUTHORED' || !/NOT the real street grid/.test(D.note) || !/INLAND water is NOT cut out/.test(D.inside_rule)) cls.push(`${f} label`);
+    if (JSON.stringify(Object.keys(D.classes)) !== '["arterial","collector","local"]') cls.push(`${f} classes`);
+    for (const k of ['arterial', 'collector', 'local']) {
+      const L = D.classes[k] || [];
+      if (L.length !== D.counts[k] || L.length !== S.counts[k]) cls.push(`${f} ${k} count`);
+      if (k !== 'local' && L.length === 0) cls.push(`${f} no ${k}`);
+      for (const pl of L) {
+        nPl++;
+        if (!Array.isArray(pl) || pl.length < 2) { cls.push(`${f} ${k} short`); continue; }
+        for (const q of pl) {
+          nV++;
+          if (!Number.isInteger(q[0]) || !Number.isInteger(q[1])) { cls.push(`${f} ${k} non-integer`); break; }
+          if (!inPolys(q, P[f].outline_local_m)) { out.push(`${f} ${k} [${q}]`); break; }
+        }
+      }
+    }
+    if (D.vertices !== S.vertices) cls.push(`${f} vertices`);
+  }
+  ok(bad.length === 0, `[streets] every parish has parishes/maps/streets/<fips>.json matching the registry's sha256 and bytes, stamped with the registry source_stamp${bad.length ? ' [' + bad.slice(0, 4).join('; ') + ']' : ''}`);
+  ok(size.length === 0 && total <= 13 * 1500000, `[streets] byte budget: each streets file <= 1,500,000 bytes (total ${total})${size.length ? ' [' + size.join('; ') + ']' : ''}`);
+  ok(cls.length === 0, `[streets] ${nPl} polylines / ${nV} vertices: classes arterial|collector|local with matching counts, integer metres, every parish has arterials and collectors, labelled AUTHORED / NOT the real street grid${cls.length ? ' [' + cls.slice(0, 4).join('; ') + ']' : ''}`);
+  ok(out.length === 0, `[streets] every polyline vertex lies inside its parish's RECORDED outline (local metres, holes honoured); inland water not cut out is recorded in inside_rule${out.length ? ' [outside: ' + out.slice(0, 4).join('; ') + ']' : ''}`);
+}
+
 console.log(`\n${pass} ok, ${fail} FAIL`);
 process.exit(fail ? 1 : 0);

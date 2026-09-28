@@ -704,6 +704,58 @@ const escLikeHome = (t) => String(t).split(/\s+/).join(' ').trim()
     + 'or a placeholder labelled as one',
     loopWrong.length === 0, loopWrong);
 
+  /* -- wave 6: the New Orleans parishes band ----------------------------- */
+  {
+    const J = (p) => JSON.parse(rf(join(ROOT, p), 'utf8'));
+    const par = J('parishes/registry/parishes.json');
+    const fleet = J('fleet/registry/fleet.json').fleet;
+    const npcs = J('npcs/registry/npcs.json').npcs;
+    const lay = J('layers/registry/layers.json');
+    const pay = J('payments/registry/catalog.json');
+    const units = J('schools/registry/schools.json').units;
+    const band = (home.match(/<section id="parishes" class="pw-band"[\s\S]*?<\/section>/) || [''])[0];
+    const stations = lay.parishes.reduce((a, p) => a + p.stations.length, 0);
+    const want = { parishes: Object.keys(par.parishes).length, vehicles: fleet.length, guides: npcs.length, stations };
+    const got = Object.fromEntries([...band.matchAll(/data-pw-stat="([^"]+)"[^>]*><dt>[^<]*<\/dt><dd>([^<]*)<\/dd>/g)]
+      .map((m) => [m[1], Number(m[2].replace(/,/g, ''))]));
+    ok(`[shipped] index.html: the parishes band's figures are recounted from the registries' lists (${JSON.stringify(want)}), never typed`,
+      band !== '' && JSON.stringify(got) === JSON.stringify(want), [JSON.stringify(got)]);
+    const prev = par.parishes['22071'].map.preview;
+    ok('[shipped] index.html: the band shows the committed Orleans preview named by the parish registry, and a file in the bundle',
+      band.includes(`src="${prev}"`) && existsSync(join(ROOT, prev)) && /parishes\/maps\/22071-512\.webp/.test(prev), [prev]);
+    ok('[shipped] index.html: the band says outlines RECORDED, fabric AUTHORED, satellite view-time only and no real elevation, '
+      + 'and the registry still backs each word',
+      /data-honest="outline"><b>Outlines RECORDED<\/b>/.test(band) && /data-honest="fabric"><b>Street fabric AUTHORED<\/b>/.test(band)
+        && /data-honest="satellite"><b>Satellite view-time only<\/b>/.test(band) && /data-honest="elevation">/.test(band)
+        && par.provenance.outline.startsWith('RECORDED') && par.parishes['22071'].map.fabric.startsWith('AUTHORED')
+        && par.satellite.fetched_at_build === false && par.satellite.stored === false);
+    const card = (k) => (band.match(new RegExp(`<article class="path pw-card" data-pw="${k}">([\\s\\S]*?)</article>`)) || ['', ''])[1];
+    ok('[shipped] index.html: the Plans card says payments are not live in the catalog\'s own words, shows no price, and links the plans page',
+      pay.live === false && card('plans').includes(pay.status) && card('plans').includes('href="web/trade_craft_plans.html"')
+        && !/[$€£]\s*\d/.test(card('plans')) && pay.plans.every((p) => p.price === null));
+    const land = fleet.filter((v) => v.medium === 'land').length;
+    ok('[shipped] index.html: the fleet showroom card counts land and water from the fleet registry and links the showroom',
+      card('fleet').includes(`${land} vehicles and ${fleet.length - land} watercraft`) && card('fleet').includes('href="web/trade_craft_fleet.html"'));
+    const k12st = lay.parishes.reduce((a, p) => a + p.stations.filter((s) => s.layer === 'k12-unit').length, 0);
+    ok('[shipped] index.html: the K-12 path is named "Cognition.X K-12" as the user asked, its content is the schools/ pack '
+      + `(${units.length} units, ${k12st} stations), and districts are PROPOSED partners`,
+      lay.layers['k12-unit'].label === 'Cognition.X K-12' && /<h3>Cognition\.X K-12<\/h3>/.test(card('k12'))
+        && card('k12').includes(`the schools/ pack (${units.length} units)`) && card('k12').includes(`${k12st} stations`)
+        && /PROPOSED partner/.test(card('k12')) && card('k12').includes('href="web/trade_craft_schools.html"'));
+  }
+
+  {
+    const land6 = rf(join(ROOT, 'web/trade_craft_landing.html'), 'utf8');
+    const sec = (land6.match(/<section id="parishes">[\s\S]*?<\/section>/) || [''])[0];
+    const pay6 = JSON.parse(rf(join(ROOT, 'payments/registry/catalog.json'), 'utf8'));
+    const keys = [...sec.matchAll(/data-pw="([^"]+)"/g)].map((m) => m[1]).join(',');
+    ok('[shipped] web/trade_craft_landing.html: a parishes section links the parish world, fleet showroom, Cognition.X K-12 path and plans, '
+      + 'and the Plans card quotes the catalog: payments are not live',
+      keys === 'parishes,fleet,k12,plans' && sec.includes('href="trade_craft_parishes.html"') && sec.includes('href="trade_craft_fleet.html"')
+        && sec.includes('href="trade_craft_plans.html"') && /<h3>Cognition\.X K-12<\/h3>/.test(sec)
+        && pay6.live === false && sec.includes(pay6.status), [keys]);
+  }
+
   /* -- every picture: alt text, a file that ships, its real size ---------- */
   const imgs = [...bare.matchAll(/<img\b([^>]*)>/g)].map((m) => m[1]);
   const imgWrong = [];
@@ -715,12 +767,22 @@ const escLikeHome = (t) => String(t).split(/\s+/).join(' ').trim()
     if (!alt || !alt.trim()) imgWrong.push(`${src}: no alt text`);
     if (!src || !existsSync(join(ROOT, src))) { imgWrong.push(`${src}: not a file under the bundle root`); continue; }
     const buf = rf(join(ROOT, src));
-    if (buf.readUInt32BE(16) !== w || buf.readUInt32BE(20) !== h) {
-      imgWrong.push(`${src}: width/height ${w}x${h}, file is ${buf.readUInt32BE(16)}x${buf.readUInt32BE(20)}`);
+    // PNG: IHDR width/height at 16/20. WebP (RIFF....WEBP): VP8X 24-bit
+    // canvas-1 at 24/27, VP8L 14-bit packed at 21, VP8 16-bit at 26/28.
+    let fw = buf.readUInt32BE(16), fh = buf.readUInt32BE(20);
+    if (buf.toString('ascii', 0, 4) === 'RIFF' && buf.toString('ascii', 8, 12) === 'WEBP') {
+      const ch = buf.toString('ascii', 12, 16);
+      if (ch === 'VP8X') { fw = buf.readUIntLE(24, 3) + 1; fh = buf.readUIntLE(27, 3) + 1; }
+      else if (ch === 'VP8L') { const b = buf.readUInt32LE(21); fw = (b & 0x3fff) + 1; fh = ((b >> 14) & 0x3fff) + 1; }
+      else if (ch === 'VP8 ') { fw = buf.readUInt16LE(26) & 0x3fff; fh = buf.readUInt16LE(28) & 0x3fff; }
+      else { fw = NaN; fh = NaN; }
+    }
+    if (fw !== w || fh !== h) {
+      imgWrong.push(`${src}: width/height ${w}x${h}, file is ${fw}x${fh}`);
     }
   }
   ok(`[shipped] index.html: every <img> (${imgs.length}) has alt text, a src that is a file in the bundle, `
-    + 'and width/height equal to that file\'s own PNG header, so the page does not jump as it loads',
+    + 'and width/height equal to that file\'s own PNG or WebP header, so the page does not jump as it loads',
     imgs.length > 0 && imgWrong.length === 0, imgWrong);
 
   /* -- no dead link: every local href and src lands on a file or an id ---- */
@@ -1018,6 +1080,33 @@ const escLikeHome = (t) => String(t).split(/\s+/).join(' ').trim()
   const qPath = join(ROOT, 'quests/registry/quests.json');
   const hidden = existsSync(qPath) ? JSON.parse(readFileSync(qPath, 'utf8')).quests
     .filter((q) => q.kind === 'egg' || q.kind === 'treasure').map((q) => q.title) : [];
+  /* Wave 6: the parish world in the search - every parish, every landmark
+     and every guide role, recounted from the registries, each resolving to
+     the parish world page (a file in the bundle, and a nav page). */
+  {
+    const parReg = JSON.parse(readFileSync(join(ROOT, 'parishes/registry/parishes.json'), 'utf8')).parishes;
+    const npcReg = JSON.parse(readFileSync(join(ROOT, 'npcs/registry/npcs.json'), 'utf8')).npcs;
+    const PP = 'web/trade_craft_parishes.html';
+    const miss = [];
+    for (const p of Object.values(parReg)) {
+      if (!by('parish').some((e) => e.n === p.full_name && e.u === PP)) miss.push(`parish ${p.full_name}`);
+      for (const lm of p.landmarks) {
+        if (!by('landmark').some((e) => e.n === lm.name && e.u === PP && e.d.startsWith(p.full_name))) miss.push(`landmark ${lm.name}`);
+      }
+    }
+    const roles = [...new Set(npcReg.map((g) => g.role))];
+    for (const r of roles) if (!by('guide').some((e) => e.d.startsWith(`${r} · `) && e.u === PP)) miss.push(`guide role ${r}`);
+    const nLm = Object.values(parReg).reduce((a, p) => a + p.landmarks.length, 0);
+    ok(`[shipped] index.html: the search holds every parish (${Object.keys(parReg).length}), every landmark (${nLm}) and `
+      + `every guide role (${roles.length}) from the registries, each resolving to the parish world page`,
+      idx !== null && miss.length === 0 && by('parish').length === Object.keys(parReg).length
+        && by('landmark').length === nLm && by('guide').length === roles.length
+        && existsSync(join(ROOT, PP)), miss.slice(0, 5));
+    const w5 = ['web/trade_craft_parishes.html', 'web/trade_craft_fleet.html', 'web/trade_craft_plans.html'];
+    const w5miss = w5.filter((u) => !by('page').some((e) => e.u === u) || !existsSync(join(ROOT, u)));
+    ok('[shipped] index.html: the search indexes the parishes, fleet and plans pages, and each resolves to a file',
+      idx !== null && w5miss.length === 0, w5miss);
+  }
   ok('[shipped] index.html: the search lists no treasure or easter egg - those are for finding',
     idx !== null && by('quest').every((e) => !hidden.includes(e.n)), by('quest').filter((e) => hidden.includes(e.n)).map((e) => e.n));
   const openBtn = home.match(/<button\b[^>]*data-search-open[^>]*>/);

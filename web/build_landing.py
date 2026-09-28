@@ -48,7 +48,47 @@ def S(key):
     return _EN[key]
 
 
+
+# Wave 6: the New Orleans parishes, fleet, Cognition.X K-12 path and plans.
+# Titles are the catalog's own nav labels; each note is the owning registry's
+# own sentence, quoted (no new prose, so nothing here needs a translation the
+# catalog does not already hold). Fail closed on every field.
+def _reg(rel):
+    return json.loads((ROOT / rel).read_text(encoding='utf-8'))
+
+
+def _need(node, key, where):
+    if not isinstance(node, dict) or key not in node:
+        raise KeyError(f'build_landing: {where} has no `{key}`')
+    return node[key]
+
+
+_PAR = _reg('parishes/registry/parishes.json')
+_ORL_MAP = _need(_need(_need(_PAR, 'parishes', 'parishes'), '22071', 'parishes.parishes'), 'map', 'parishes.22071')
+_LAY = _reg('layers/registry/layers.json')
+_K12 = _need(_need(_LAY, 'layers', 'layers'), 'k12-unit', 'layers.layers')
+assert _need(_K12, 'label', 'layers.k12-unit') == 'Cognition.X K-12', 'build_landing: the K-12 layer name changed'
+_PAY = _reg('payments/registry/catalog.json')
+assert _need(_PAY, 'live', 'payments') is False, 'build_landing: payments went live - rewrite the Plans card'
+_FLEET_H = _need(_reg('fleet/registry/fleet.json'), 'honesty', 'fleet')
+PW_FEATS = [
+    ('map', S('nav.page.parishes'), _need(_ORL_MAP, 'label', 'parishes.22071.map'), 'web/trade_craft_parishes.html'),
+    ('route', S('nav.page.fleet'), _FLEET_H.split('.')[0] + '.', 'web/trade_craft_fleet.html'),
+    ('graduation-cap', _K12['label'], _need(_need(_LAY, 'honesty', 'layers'), 'k12', 'layers.honesty'),
+     'web/trade_craft_parishes.html'),
+    ('shield-check', S('nav.page.plans'), _need(_PAY, 'status', 'payments') + '.', 'web/trade_craft_plans.html'),
+]
+PW_SECTION = (
+    '<section id="parishes"><h2>' + S('nav.page.parishes') + '</h2><div class="cols feats">'
+    + ''.join(f'<div class="feat" data-pw="{h.split("/")[-1][12:-5] if k != "graduation-cap" else "k12"}">'
+              f'<span class="feat-ico" aria-hidden="true">{icon(k, "fi")}</span><h3>{t}</h3>'
+              f'<p class="note">{d.replace("&", "&amp;").replace("<", "&lt;")}</p>'
+              f'<p><a class="pw-go" href="{h.split("/")[-1]}">{t}<span aria-hidden="true"> →</span></a></p></div>'
+              for k, t, d, h in PW_FEATS)
+    + '</div></section>')
+
 CSS = """
+.pw-go{display:inline-flex;align-items:center;min-block-size:44px}
 /* dark-first: the bare :root carries the dark plate, light is the counterpart */
 :root{
   --plate:#12181B; --panel:#182023; --sunk:#0C1113; --ink:#E8EDEC; --muted:#93A3A6;
@@ -306,6 +346,8 @@ BODY = f"""
   </section>
     {band_caption('hall-orbit', {'pause': S('landing.video.pause'), 'play': S('landing.video.play')})}
   {BAND_CLOSE}
+
+  {PW_SECTION}
 
   <section id="investors">
     <p class="kicker">{S('landing.investors.kicker')}</p>

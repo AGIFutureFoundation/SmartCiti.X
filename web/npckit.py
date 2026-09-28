@@ -111,7 +111,15 @@ function nextState(state, inp) {
   return inp.scheduled;
 }
 
-function scheduledAt(schedule, h) {
+/* hours wrap at midnight: any finite hour is taken modulo 24 into [0, 24) first
+   (30 h = 06:00 next day, -0.5 h = 23:30) - never matched raw against the
+   overnight slot, which would otherwise swallow every out-of-range hour */
+function wrapH(h, where) {
+  if (typeof h !== 'number' || !Number.isFinite(h)) throw new Error('TCNPC: non-finite hour in ' + where + ': ' + h);
+  return ((h % 24) + 24) % 24;
+}
+function scheduledAt(schedule, h0) {
+  const h = wrapH(h0, 'scheduledAt');
   for (const s of schedule) {
     const inside = s.from_h <= s.to_h ? (h >= s.from_h && h < s.to_h)
                                       : (h >= s.from_h || h < s.to_h);
@@ -122,9 +130,10 @@ function scheduledAt(schedule, h) {
 
 /* simulated day clock: hoursPerSecond game hours pass per real second */
 function makeClock(startH, hoursPerSecond) {
-  let h = ((startH % 24) + 24) % 24;
-  return { tick(dt) { h = (h + dt * hoursPerSecond) % 24; return h; },
-    get h() { return h; }, set(v) { h = ((v % 24) + 24) % 24; return h; } };
+  let h = wrapH(startH, 'makeClock start');
+  wrapH(hoursPerSecond, 'makeClock rate');
+  return { tick(dt) { h = wrapH(h + dt * hoursPerSecond, 'makeClock tick'); return h; },
+    get h() { return h; }, set(v) { h = wrapH(v, 'makeClock set'); return h; } };
 }
 
 /* ---- steering: arrive + separation + obstacle avoidance (pure) ----
@@ -160,6 +169,31 @@ function steer(a, target, others, obstacles, o) {
   const s = Math.hypot(vx, vz);
   if (s > maxSpeed) { vx = vx / s * maxSpeed; vz = vz / s * maxSpeed; }
   return { vx, vz };
+}
+
+/* ---- idle animation on the existing rig (pure, unit-tested) ----
+   Timing per NPC is deterministic from hash32(id): breathing period 3.2..4.4 s
+   (chest / proxy torso scale-y 1 +- 1.5 %); a glance every 7..11 s turns the
+   head to one side and back over 1.4 s (sin ease, max 0.45 rad, alternating
+   sides, never while greeting or talking); while talking the right arm gestures
+   on a 2.4 s cycle that starts from rest when the talk starts. */
+const IDLE = { breathMin: 3.2, breathSpan: 1.2, breathAmp: 0.015, glanceMin: 7, glanceSpan: 4,
+  glanceDur: 1.4, glanceYaw: 0.45, gesturePeriod: 2.4, gestureAmp: 0.5 };
+function idleTiming(seed) {
+  const r = rng(seed);
+  return { breath: IDLE.breathMin + r() * IDLE.breathSpan, every: IDLE.glanceMin + r() * IDLE.glanceSpan,
+    phase: r(), side: r() < 0.5 ? -1 : 1 };
+}
+function idlePose(tm, t, state, talkT) {
+  const breath = 1 + IDLE.breathAmp * Math.sin(2 * Math.PI * t / tm.breath);
+  const u = t + tm.phase * tm.every, k = Math.floor(u / tm.every), local = u - k * tm.every;
+  let yaw = 0;
+  if (local < IDLE.glanceDur && state !== 'talk' && state !== 'greet') {
+    yaw = (k % 2 ? -tm.side : tm.side) * IDLE.glanceYaw * Math.sin(Math.PI * local / IDLE.glanceDur);
+  }
+  const gesture = state === 'talk'
+    ? IDLE.gestureAmp * 0.5 * (1 - Math.cos(2 * Math.PI * talkT / IDLE.gesturePeriod)) : 0;
+  return { breath, yaw, gesture };
 }
 
 /* ---- per-frame budget: round-robin until the budget is spent ---- */
@@ -253,6 +287,7 @@ function createNPCKit(opt) {
   const budgetMs = num('budgetMs', 1.0), detailMax = num('detailMax', 2);
   const detailDist = num('detailDist', 18), greetR = num('greetRadius', 4);
   const talkR = num('talkRadius', 2.5);
+  const animDist = num('animDist', 30), animMax = num('animMax', 16), animBudgetMs = num('animBudgetMs', 0.3);
   const groundY = 'groundY' in opt ? opt.groundY : () => 0;
   const obstacles = 'obstacles' in opt ? opt.obstacles : [];
   const now = 'now' in opt ? opt.now : () => performance.now();
@@ -273,7 +308,9 @@ function createNPCKit(opt) {
     }
     agents.push({ npc: n, id: n.id, x: hx, z: hz, vx: 0, vz: 0, heading: 0, anchors,
       home: { x: hx, z: hz }, state: 'idle', target: null, follow: null,
-      rand: rng(hash32(n.id)), body: null, idx: agents.length, acc: 0 });
+      rand: rng(hash32(n.id)), body: null, bones: null, idx: agents.length, acc: 0,
+      scale: need(need(n.appearance, 'scale', n.id + '.appearance'), 'xyz', n.id + '.appearance.scale'),
+      idle: idleTiming(hash32(n.id)), pose: { breath: 1, yaw: 0, gesture: 0 }, talkT: 0 });
   }
 
   // four instanced parts; per-instance colour from the registry proxy hexes
@@ -281,8 +318,14 @@ function createNPCKit(opt) {
     torso: { geo: new THREE.BoxGeometry(0.44, 0.62, 0.26), y: 1.22 },
     legs: { geo: new THREE.BoxGeometry(0.38, 0.82, 0.24), y: 0.5 },
     head: { geo: new THREE.BoxGeometry(0.22, 0.24, 0.22), y: 1.66 },
-    hat: { geo: new THREE.BoxGeometry(0.26, 0.08, 0.26), y: 1.82 },
+    hat: { geo: new THREE.BoxGeometry(0.26, 0.08, 0.26), y: 1.82, optional: true },
+    vest: { geo: new THREE.BoxGeometry(0.47, 0.5, 0.29), y: 1.24, optional: true },
   };
+  // hat / vest: proxy value null = not worn (bare head, no vest) - the key itself is required
+  for (const a of agents) for (const [k, p] of Object.entries(parts)) {
+    if (!(k in need(a.npc.appearance, 'proxy', a.id + '.appearance'))) throw new Error('TCNPC: missing ' + a.id + '.proxy.' + k);
+    if (!p.optional) need(a.npc.appearance.proxy, k, a.id + '.proxy');
+  }
   const meshes = {};
   const col = new THREE.Color();
   for (const [k, p] of Object.entries(parts)) {
@@ -291,23 +334,36 @@ function createNPCKit(opt) {
     m.count = agents.length;
     m.userData.npcPart = k;
     for (const a of agents) {
-      col.set(need(a.npc.appearance.proxy, k, a.id + '.proxy').hex);
+      const pr = a.npc.appearance.proxy[k];
+      col.set(pr ? str(pr.hex, a.id + '.proxy.' + k + '.hex') : '#000000');
       m.setColorAt(a.idx, col);
     }
     if (m.instanceColor) m.instanceColor.needsUpdate = true;
     scene.add(m); meshes[k] = m;
   }
   const mtx = new THREE.Matrix4(), q = new THREE.Quaternion(), pos = new THREE.Vector3();
-  const one = new THREE.Vector3(1, 1, 1), zero = new THREE.Vector3(0, 0, 0), up = new THREE.Vector3(0, 1, 0);
+  const sc = new THREE.Vector3(), zero = new THREE.Vector3(0, 0, 0), up = new THREE.Vector3(0, 1, 0);
+  const qh = new THREE.Quaternion(), qp = new THREE.Quaternion(), side = new THREE.Vector3(1, 0, 0);
   function writeInstance(a) {
-    const y = groundY(a.x, a.z);
+    const y = groundY(a.x, a.z), [sx, sy, sz] = a.scale, P = a.pose;
     q.setFromAxisAngle(up, a.heading);
+    qh.setFromAxisAngle(up, a.heading + P.yaw).multiply(qp.setFromAxisAngle(side, 0.3 * P.gesture));
     for (const [k, p] of Object.entries(parts)) {
-      pos.set(a.x, y + p.y, a.z);
-      mtx.compose(pos, q, a.body ? zero : one);
+      const hidden = a.body || (p.optional && !a.npc.appearance.proxy[k]);
+      const torso = k === 'torso' || k === 'vest';
+      pos.set(a.x, y + p.y * sy, a.z);
+      sc.set(sx, sy * (torso ? P.breath : 1), sz);
+      mtx.compose(pos, k === 'head' || k === 'hat' ? qh : q, hidden ? zero : sc);
       meshes[k].setMatrixAt(a.idx, mtx);
     }
-    if (a.body) { a.body.position.set(a.x, y, a.z); a.body.rotation.y = a.heading; }
+    if (a.body) {
+      a.body.position.set(a.x, y, a.z); a.body.rotation.y = a.heading;
+      const B = a.bones;
+      if (B.chest) B.chest.scale.y = P.breath;
+      if (B.head) B.head.rotation.y = P.yaw;
+      if (B.rightUpperArm) B.rightUpperArm.rotation.x = -P.gesture;
+      if (B.rightLowerArm) B.rightLowerArm.rotation.x = -0.8 * P.gesture;
+    }
   }
   agents.forEach(writeInstance);
   for (const m of Object.values(meshes)) m.instanceMatrix.needsUpdate = true;
@@ -412,10 +468,35 @@ function createNPCKit(opt) {
       .filter(([d]) => d <= detailDist).sort((p, r) => p[0] - r[0]).slice(0, detailMax).map(([, a]) => a);
     for (const a of agents) {
       const want = ranked.includes(a);
-      if (want && !a.body) { a.body = opt.makeBody(a.npc.appearance.cfg); scene.add(a.body); writeInstance(a); }
-      if (!want && a.body) { scene.remove(a.body); a.body = null; writeInstance(a); }
+      if (want && !a.body) {
+        a.body = opt.makeBody(a.npc.appearance.cfg);
+        a.bones = {};   // the rig's own named bones (buildAvatarMesh); a body without them just is not animated
+        for (const nm of ['chest', 'head', 'rightUpperArm', 'rightLowerArm']) a.bones[nm] = a.body.getObjectByName(nm) || null;
+        scene.add(a.body); writeInstance(a);
+      }
+      if (!want && a.body) { scene.remove(a.body); a.body = null; a.bones = null; writeInstance(a); }
     }
     return ranked.length;
+  }
+  /* idle animation pass: the animMax nearest within animDist, stopped when animBudgetMs is spent */
+  let animT = 0;
+  function animate(dt) {
+    animT += dt;
+    const t0 = now();
+    const near = [];
+    for (const a of agents) {
+      if (a.state === 'talk') a.talkT += dt; else a.talkT = 0;
+      const d = Math.hypot(player.x - a.x, player.z - a.z);
+      if (d <= animDist) near.push([d, a]);
+    }
+    near.sort((p, r) => p[0] - r[0]);
+    let n = 0;
+    for (const [, a] of near.slice(0, animMax)) {
+      if (n > 0 && now() - t0 >= animBudgetMs) break;
+      a.pose = idlePose(a.idle, animT, a.state, a.talkT);
+      writeInstance(a); n++;
+    }
+    return n;
   }
   return {
     agents,
@@ -424,8 +505,9 @@ function createNPCKit(opt) {
       player = p; clockH = h;
       const r = run(agents, think);
       const d = detail();
+      const an = animate(Math.min(dt, 0.1));
       for (const m of Object.values(meshes)) m.instanceMatrix.needsUpdate = true;
-      lastStats = { ...r, detail: d };
+      lastStats = { ...r, detail: d, animated: an };
       return lastStats;
     },
     talkTo, closeDialogue, nearest,
@@ -440,13 +522,13 @@ function createNPCKit(opt) {
 }
 
 const TCNPC = { createNPCKit, nextState, steer, makeBudget, dialogueModel, dialogueHTML,
-  dialogueKey, homeOffset, scheduledAt, makeClock, labelsFrom, STATES, LABEL_KEYS };
+  dialogueKey, homeOffset, scheduledAt, wrapH, makeClock, labelsFrom, idleTiming, idlePose, IDLE, STATES, LABEL_KEYS };
 globalThis.TCNPC = TCNPC;
 """
 
 NPC_JS_INLINE = NPC_CORE
 NPC_JS = NPC_CORE + ("export { createNPCKit, nextState, steer, makeBudget, dialogueModel, "
-                     "dialogueHTML, dialogueKey, homeOffset, scheduledAt, makeClock, labelsFrom, "
+                     "dialogueHTML, dialogueKey, homeOffset, scheduledAt, wrapH, makeClock, labelsFrom, idleTiming, idlePose, IDLE, "
                      "STATES, LABEL_KEYS };\n")
 
 # every catalogue key the kit reads via TCNPC.labelsFrom(tr): embed these in your page's i18n

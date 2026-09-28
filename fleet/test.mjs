@@ -299,6 +299,132 @@ let over = '';
 try { F.fleetTraffic(THREE, reg, routes, G, { ...TOPTS, maxAgents: 500 }); } catch (err) { over = err.message; }
 ok('traffic fails closed over budget', /over the budget/.test(over), [over]);
 
+// ------------------------------------------------ wave 6: detail, streets, touch ---
+ok('brake lamps are per instance: braking one vehicle lights only its own tail lamps; despawn clears it', (() => {
+  const f3 = F.fleetCreate(THREE, reg, Object.fromEntries(reg.families.map((f) => [f.id, 2])));
+  const h1 = f3.spawn('pickup.crew-cab-pickup', { x: 0, y: 0, z: 0, yaw: 0 }), h2 = f3.spawn('pickup.crew-cab-pickup', { x: 9, y: 0, z: 0, yaw: 0 });
+  h1.set({ x: 0, y: 0, z: 0, yaw: 0, brake: 1 }); h2.set({ x: 9, y: 0, z: 0, yaw: 0, brake: 0 });
+  const a = f3.families.get('pickup').attrs.brake, one = h1.brakeLevel() === 1 && h2.brakeLevel() === 0 && a.getX(h1.slot) === 1 && a.getX(h2.slot) === 0;
+  h1.set({ x: 0, y: 0, z: 0, yaw: 0, brake: 5 }); const clamped = h1.brakeLevel() === 1;
+  const slot = h1.slot; h1.despawn();
+  return one && clamped && a.getX(slot) === 0 && f3.drawCalls() === 2;
+})());
+ok('brake lamps: the shader reads the per-instance fleetBrake and only tail lamps (kind 2) gain FLEET_BRAKE_GAIN', (() => {
+  const m = F.fleetMaterial(THREE), sh = { uniforms: {}, vertexShader: '#include <color_vertex>', fragmentShader: '#include <emissivemap_fragment>' };
+  m.onBeforeCompile(sh);
+  return /attribute float fleetBrake/.test(sh.vertexShader) && /vFleetBrake = fleetBrake/.test(sh.vertexShader)
+    && /vFleetLamp > 1\.5 \? FLEET_BRAKE_GAIN \* vFleetBrake/.test(sh.fragmentShader) && F.FLEET_BRAKE_GAIN > 0;
+})());
+ok('brake lamps from physics: brake input = 1, throttle against motion = 0.7, coasting = 0', (() => {
+  const s1 = F.fleetState(car, G, 0, -60, 0);
+  for (let i = 0; i < 60; i++) F.fleetStep(s1, car, { throttle: 1, steer: 0, brake: 0 }, G, 1 / 60);
+  const cruising = s1.brake;
+  F.fleetStep(s1, car, { throttle: 0, steer: 0, brake: 1 }, G, 1 / 60); const braking = s1.brake;
+  F.fleetStep(s1, car, { throttle: -1, steer: 0, brake: 0 }, G, 1 / 60); const opposing = s1.brake;
+  F.fleetStep(s1, car, { throttle: 0, steer: 0, brake: 0 }, G, 1 / 60);
+  return cruising === 0 && braking === 1 && opposing === 0.7 && s1.brake === 0;
+})());
+ok('brake lamps in traffic: agents that slow behind another light their own lamps, drawn from the agent state', (() => {
+  let lit = 0, mism = 0;
+  for (let i = 0; i < 600; i++) {
+    T1.update(1 / 60, { x: 0, z: 0 });
+    for (const a of T1.agents) { if (a.brake === 1) lit++; if (a.h && a.h.brakeLevel() !== a.brake) mism++; }
+  }
+  return lit > 0 && mism === 0;
+})());
+const cabBad = [];
+for (const f of reg.families) {
+  const mem = reg.fleet.filter((e) => e.family === f.id);
+  const ref = { length: 0, width: 0, height: 0 };
+  for (const e of mem) for (const k of Object.keys(ref)) ref[k] += e.dims_m[k] / mem.length;
+  const parts = F.fleetCabParts(f.recipe, ref.length, ref.width, ref.height), g = F.fleetFamilyGeometry(THREE, f.recipe, ref);
+  const eye = F.fleetDriverEye({ recipe: f.recipe, L: ref.length, W: ref.width, H: ref.height });
+  const has = (k) => parts.filter((q) => q.part === k);
+  const a = f.recipe.archetype, cab = ['car', 'bus', 'truck', 'machine'].includes(a) || (a === 'hull' && f.recipe.cab_len > 0);
+  if (g.userData.fleetCab !== parts.length) cabBad.push(`${f.id}: geometry holds ${g.userData.fleetCab} cab parts, fleetCabParts says ${parts.length}`);
+  if (a === 'cycle') { if (parts.length) cabBad.push(`${f.id}: a cycle has no cab`); continue; }
+  if (!has('seat').length || !has('seatback').length) cabBad.push(`${f.id}: no driver seat`);
+  if (cab && (has('dash').length !== 1 || has('wheel').length !== 1)) cabBad.push(`${f.id}: cab without one dashboard and one wheel`);
+  for (const q of has('dash')) if (!(q.z > eye.z && q.y < eye.y)) cabBad.push(`${f.id}: dashboard not ahead of and below the eye`);
+  for (const q of has('wheel')) { const d = has('dash')[0]; if (!(q.z > eye.z && q.z < d.z && q.y < eye.y)) cabBad.push(`${f.id}: wheel not between eye and dashboard`); }
+  for (const q of has('seat')) if (!(q.y < eye.y && q.y > 0)) cabBad.push(`${f.id}: seat not under the eye`);
+  for (const q of parts) if (Math.abs(q.x) + q.sx / 2 > ref.width / 2 + 1e-6 || Math.abs(q.z) > ref.length / 2) cabBad.push(`${f.id}: ${q.part} outside the footprint`);
+}
+ok('cab interior: every non-cycle family has a driver seat; every cab has one dashboard ahead and one wheel between eye and dashboard, inside the footprint, built into the SHARED family geometry', cabBad.length === 0, cabBad);
+const detail = reg.families.map((f) => [f.id, F.fleetFamilyGeometry(THREE, f.recipe, { length: 4, width: 2, height: 1.6 }).userData.fleetDetail]).filter(([, d]) => d);
+ok(`better silhouettes: exactly the five chosen families (${detail.map(([f, d]) => f + '=' + d).join(', ')})`, detail.length === 5
+  && detail.every(([f, d]) => F.FLEET_DETAIL[d] === f) && Object.keys(F.FLEET_DETAIL).length === 5);
+// AUTHORED street polylines (PARISH_CONTRACT v1.3 shape) as traffic routes, medium-checked
+const STREETS = [
+  { id: 'across', points: [[-300, 60], [300, 60]], provenance: 'AUTHORED' },          // crosses the pond: split in two
+  { id: 'bend', points: [[-200, -40], [0, -40], [0, -240]], provenance: 'AUTHORED' },
+  { id: 'stub', points: [[31, 60], [40, 60]], provenance: 'AUTHORED' },               // shorter than minLen after the check
+  { id: 'skirt', points: [[-200, 91.5], [200, 91.5]], provenance: 'AUTHORED' },       // centre dry, kerb side wet near x = 0: split
+];
+const SOPTS = { step: 5, minLen: 40, halfWidth: 3, map: null };
+const SR = F.fleetStreetRoutes(STREETS, G, SOPTS);
+const srWet = SR.flatMap((r) => r.points).filter(([x, z]) => F.fleetDepth(G, x, z) > F.FLEET_MIN_WET_M || F.fleetDepth(G, x, z + 3) > F.FLEET_MIN_WET_M || F.fleetDepth(G, x, z - 3) > F.FLEET_MIN_WET_M);
+ok(`streets: a polyline across the pond is split at the water (${SR.filter((r) => r.source === 'across').length} pieces), a short dry stub dropped, every point dry at +-halfWidth`,
+  SR.filter((r) => r.source === 'across').length === 2 && SR.filter((r) => r.source === 'skirt').length === 2 && !SR.some((r) => r.source === 'stub') && SR.some((r) => r.source === 'bend') && srWet.length === 0
+  && SR.every((r) => r.medium === 'land' && r.provenance === 'AUTHORED' && r.loop === false));
+ok('streets: map() converts the caller\'s coordinates (a +1000 m shift lands the same pieces)', (() => {
+  const shifted = STREETS.map((s0) => ({ ...s0, points: s0.points.map(([x, z]) => [x + 1000, z]) }));
+  const R2 = F.fleetStreetRoutes(shifted, G, { ...SOPTS, map: ([x, z]) => [x - 1000, z] });
+  return JSON.stringify(R2.map((r) => r.points)) === JSON.stringify(SR.map((r) => r.points));
+})());
+const serr = (streets, o) => { try { F.fleetStreetRoutes(streets, G, o); return ''; } catch (err) { return err.message; } };
+ok('streets fail closed: a non-AUTHORED polyline, a missing option or a 1-point street throws by name',
+  /not AUTHORED/.test(serr([{ id: 'x', points: [[0, 0], [90, 0]], provenance: 'RECORDED' }], SOPTS))
+  && /fleetStreetRoutes has no halfWidth/.test(serr(STREETS, { step: 5, minLen: 40, map: null }))
+  && /fewer than 2 points/.test(serr([{ id: 'y', points: [[0, 0]], provenance: 'AUTHORED' }], SOPTS)));
+ok('streets carry traffic: 30 s on the street routes, no land agent wet', (() => {
+  const T3 = F.fleetTraffic(THREE, reg, SR, G, { ...TOPTS, landPerKm: 20 });
+  let wet = 0;
+  for (let i = 0; i < 1800; i++) { T3.update(1 / 60, { x: 0, z: 0 }); for (const a of T3.agents) if (F.fleetDepth(G, a.x, a.z) > F.FLEET_MIN_WET_M) wet++; }
+  return T3.agents.length > 3 && wet === 0;
+})());
+// REVIEW finding 4 (wave 6): a boat turning at rest swung its bow over land (only the centre was checked at v = 0)
+ok('REVIEW#4: a 60 m ferry 2 m off the shore, steering at rest for 10 s, never swings bow or stern onto land (refused instead)', (() => {
+  const shore = (x) => x > 0, GS = F.fleetFlatGround(0, 0, (x, z) => !shore(x, z)), fs = F.fleetSpec(reg.fleet.find((e) => e.id === 'ferry.vehicle-ferry'));
+  const s1 = F.fleetState(fs, GS, -2 - fs.W / 2, 0, 0);
+  let over = 0;
+  for (let i = 0; i < 600; i++) {
+    F.fleetStep(s1, fs, { throttle: 0, steer: 1, brake: 0 }, GS, 1 / 60);
+    for (const d of [-1, 1]) if (shore(s1.x + Math.sin(s1.yaw) * fs.L / 2 * d)) over++;
+  }
+  return over === 0 && s1.refused > 0;
+})());
+ok('REVIEW#4: fleetCanSpawn with a yaw checks both ends (a ferry whose bow reaches land is refused); without a yaw it stays centre-only', (() => {
+  const GS = F.fleetFlatGround(0, 0, (x) => x <= 0), fs = F.fleetSpec(reg.fleet.find((e) => e.id === 'ferry.vehicle-ferry'));
+  return F.fleetCanSpawn(fs, GS, -10, 0, Math.PI / 2).ok === false && F.fleetCanSpawn(fs, GS, -10, 0, 0).ok === true && F.fleetCanSpawn(fs, GS, -10, 0).ok === true;
+})());
+// real PARISH v1.3 data: Orleans (22071) arterial + collector polylines, dry = inside the RECORDED coarse outline
+ok('streets on real PARISH v1.3 data: Orleans arterials + collectors become medium-checked routes, every point inside the parish (dry) at +-halfWidth', (() => {
+  const preg = J('parishes/registry/parishes.json'), par = preg.parishes['22071'], file = J(par.map.streets.path);
+  const rings = par.outline_local_m.flat();
+  const inside = (x, y) => { let c = false; for (const R of rings) for (let i = 0, j = R.length - 1; i < R.length; j = i++) {
+    const [xi, yi] = R[i], [xj, yj] = R[j]; if ((yi > y) !== (yj > y) && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) c = !c; } return c; };
+  const PG = F.fleetFlatGround(0, 0, (x, z) => !inside(x, -z));                       // scene x = east, z = -north
+  const streets = F.fleetParishStreets(file, ['arterial', 'collector']);
+  const R3 = F.fleetStreetRoutes(streets, PG, { step: 20, minLen: 200, halfWidth: 3.5, map: ([e, n]) => [e, -n] });
+  const bad = R3.flatMap((r) => r.points).filter(([x, z]) => !inside(x, -z));
+  let refused = ''; try { F.fleetParishStreets({ ...file, provenance: 'RECORDED' }, ['arterial']); } catch (err) { refused = err.message; }
+  return streets.length === file.counts.arterial + file.counts.collector && R3.length > 50 && bad.length === 0 && /not AUTHORED/.test(refused);
+})());
+const SI = F.fleetStickInput;
+ok('touch stick: centre = idle; drag left = steer left (+1); up = forward; down = reverse; clamped at the rim; small drags dead',
+  JSON.stringify(SI(0, 0, 60, false, false)) === JSON.stringify({ throttle: 0, steer: 0, brake: 0 })
+  && SI(-60, 0, 60, false, false).steer === 1 && SI(60, 0, 60, false, false).steer === -1
+  && SI(0, -60, 60, false, false).throttle === 1 && SI(0, 60, 60, false, false).throttle === -1
+  && SI(-600, 0, 60, false, false).steer === 1 && Math.abs(SI(-300, -300, 60, false, false).steer - Math.SQRT1_2) < 1e-9
+  && SI(4, 3, 60, false, false).steer === 0 && SI(4, 3, 60, false, false).throttle === 0);
+ok('touch buttons: throttle held = full forward, brake held = brake 1', SI(0, 0, 60, true, false).throttle === 1 && SI(0, 60, 60, true, true).brake === 1 && SI(0, 0, 60, false, true).throttle === 0);
+const tcss = F.FLEET_TOUCH_CSS;
+ok('touch CSS colours only from theme tokens (no hex, rgb or named colour) and >= 48 px targets', !/#[0-9a-f]{3,8}\b|rgba?\(|hsla?\(|\b(white|black|red|gray|grey)\b/i.test(tcss)
+  && /var\(--tc-panel\)/.test(tcss) && /min-height:48px/.test(tcss) && /width:132px/.test(tcss) && /pointer:coarse/.test(tcss));
+const terr0 = (() => { try { F.fleetTouchControls(null, null, { group: 'g', stick: 's', throttle: 't', brake: 'b', enter: 'e' }, () => {}); return ''; } catch (err) { return err.message; } })();
+ok('touch controls fail closed without every translated label', /touch labels has no exit/.test(terr0), [terr0]);
+
 // on a wilds/core.mjs world: land rides the terrain, and water there refuses it
 const W = await import(pathToFileURL(join(ROOT, 'wilds/core.mjs')).href);
 const wreg = J('wilds/registry/wilds.json');

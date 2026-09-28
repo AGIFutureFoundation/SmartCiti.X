@@ -553,7 +553,13 @@
   "fleet.cam": "Fahrersicht",
   "fleet.chase": "Verfolgersicht",
   "fleet.traffic": "Umgebungsverkehr",
-  "fleet.trafficnote": "Der Verkehr folgt AUTHORED Spuren auf der Testfläche und Ringen auf dem Teich: erfundene Spuren, keine echten Straßen."
+  "fleet.trafficnote": "Der Verkehr folgt AUTHORED Spuren auf der Testfläche und Ringen auf dem Teich: erfundene Spuren, keine echten Straßen.",
+  "fleet.touch.group": "Touch-Fahrsteuerung",
+  "fleet.touch.stick": "Lenkstick: nach links oder rechts ziehen zum Lenken, nach oben oder unten für vorwärts oder rückwärts",
+  "fleet.touch.throttle": "Gas (halten)",
+  "fleet.touch.brake": "Bremse (halten)",
+  "fleet.touch.enter": "Einsteigen",
+  "fleet.touch.exit": "Aussteigen"
  },
  "districts": {
   "structural": {

@@ -553,7 +553,13 @@
   "fleet.cam": "Driver view",
   "fleet.chase": "Chase view",
   "fleet.traffic": "Ambient traffic",
-  "fleet.trafficnote": "Traffic follows AUTHORED lanes on the test pad and rings on the pond: invented lanes, not real streets."
+  "fleet.trafficnote": "Traffic follows AUTHORED lanes on the test pad and rings on the pond: invented lanes, not real streets.",
+  "fleet.touch.group": "Touch driving controls",
+  "fleet.touch.stick": "Steering stick: drag left or right to steer, up or down for forward or reverse",
+  "fleet.touch.throttle": "Throttle (hold)",
+  "fleet.touch.brake": "Brake (hold)",
+  "fleet.touch.enter": "Get in",
+  "fleet.touch.exit": "Get out"
  },
  "districts": {
   "structural": {

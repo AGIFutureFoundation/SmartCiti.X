@@ -1,8 +1,8 @@
 {
  "pack": "parishes",
  "pack_version": "3.2.0",
- "source_stamp": "ed1c0d7382ecbd24",
- "source_stamp_sha256": "ed1c0d7382ecbd242505140508652125072a35a37b356913e7d1e301f1dede32",
+ "source_stamp": "d51bb450837b78d7",
+ "source_stamp_sha256": "d51bb450837b78d7c9d89a88d7f8e61a8aefb7b7a5356e9036fc2191b0d00941",
  "inputs": [
   "parishes/build.py",
   "parishes/render.py",
@@ -738,6 +738,360 @@
      "provenance": "AUTHORED procedural, seeded by FIPS; NOT the real street grid, land use or buildings"
     },
     "provenance": "DERIVED outline + AUTHORED fabric; not imagery",
+    "ground_tiles": {
+     "label": "Ground drawn from Census outline + AUTHORED fabric - not satellite, not a survey; carries no text",
+     "provenance": "DERIVED outline + AUTHORED fabric; not imagery; no text, pins, borders, banner or legend (those live only on the 4k map)",
+     "layers": [
+      "open water",
+      "neighbouring land",
+      "land use",
+      "building hints",
+      "local streets",
+      "collectors",
+      "arterials"
+     ],
+     "grid": 4,
+     "tile_px": 1024,
+     "max_bytes": 400000,
+     "crs": "parish LOCAL metres",
+     "rule": "tile (row, col) covers bounds_local_m; row 0 is north, col 0 is west; tiles abut exactly (shared edges are equal numbers) and their union is extent_local_m",
+     "tiles": [
+      {
+       "path": "parishes/maps/tiles/22005-r0c0.webp",
+       "row": 0,
+       "col": 0,
+       "px_bounds": [
+        0,
+        0,
+        1024,
+        1024
+       ],
+       "bounds_local_m": {
+        "left": -22190.98,
+        "right": -8986.98,
+        "bottom": 14909.18,
+        "top": 28113.18
+       },
+       "bytes": 1938,
+       "webp_quality": 80,
+       "sha256": "9ef396200ceefe14745188e35ba5667d127940d8e5c4c144effe44fe316df874"
+      },
+      {
+       "path": "parishes/maps/tiles/22005-r0c1.webp",
+       "row": 0,
+       "col": 1,
+       "px_bounds": [
+        1024,
+        0,
+        2048,
+        1024
+       ],
+       "bounds_local_m": {
+        "left": -8986.98,
+        "right": 4217.02,
+        "bottom": 14909.18,
+        "top": 28113.18
+       },
+       "bytes": 20910,
+       "webp_quality": 80,
+       "sha256": "4efefafab665d4e97948b2d442e0e13e768fae1fb63718a67e5799e6eced378b"
+      },
+      {
+       "path": "parishes/maps/tiles/22005-r0c2.webp",
+       "row": 0,
+       "col": 2,
+       "px_bounds": [
+        2048,
+        0,
+        3072,
+        1024
+       ],
+       "bounds_local_m": {
+        "left": 4217.02,
+        "right": 17421.02,
+        "bottom": 14909.18,
+        "top": 28113.18
+       },
+       "bytes": 1938,
+       "webp_quality": 80,
+       "sha256": "9ef396200ceefe14745188e35ba5667d127940d8e5c4c144effe44fe316df874"
+      },
+      {
+       "path": "parishes/maps/tiles/22005-r0c3.webp",
+       "row": 0,
+       "col": 3,
+       "px_bounds": [
+        3072,
+        0,
+        4096,
+        1024
+       ],
+       "bounds_local_m": {
+        "left": 17421.02,
+        "right": 30625.02,
+        "bottom": 14909.18,
+        "top": 28113.18
+       },
+       "bytes": 1938,
+       "webp_quality": 80,
+       "sha256": "9ef396200ceefe14745188e35ba5667d127940d8e5c4c144effe44fe316df874"
+      },
+      {
+       "path": "parishes/maps/tiles/22005-r1c0.webp",
+       "row": 1,
+       "col": 0,
+       "px_bounds": [
+        0,
+        1024,
+        1024,
+        2048
+       ],
+       "bounds_local_m": {
+        "left": -22190.98,
+        "right": -8986.98,
+        "bottom": 1705.18,
+        "top": 14909.18
+       },
+       "bytes": 60552,
+       "webp_quality": 80,
+       "sha256": "df3a6d68a28ebdd686e7858c577ced1feabf3b146ba1e80b6b6d1e195341bb66"
+      },
+      {
+       "path": "parishes/maps/tiles/22005-r1c1.webp",
+       "row": 1,
+       "col": 1,
+       "px_bounds": [
+        1024,
+        1024,
+        2048,
+        2048
+       ],
+       "bounds_local_m": {
+        "left": -8986.98,
+        "right": 4217.02,
+        "bottom": 1705.18,
+        "top": 14909.18
+       },
+       "bytes": 333848,
+       "webp_quality": 80,
+       "sha256": "d936adc25ff1be9397982750115ec0543980fbdd09e3941afa084b14fd1ced93"
+      },
+      {
+       "path": "parishes/maps/tiles/22005-r1c2.webp",
+       "row": 1,
+       "col": 2,
+       "px_bounds": [
+        2048,
+        1024,
+        3072,
+        2048
+       ],
+       "bounds_local_m": {
+        "left": 4217.02,
+        "right": 17421.02,
+        "bottom": 1705.18,
+        "top": 14909.18
+       },
+       "bytes": 132508,
+       "webp_quality": 80,
+       "sha256": "3cd91b28f39f63bcad8597502db8036464d6d0996aff167e3cf2e5f78de85168"
+      },
+      {
+       "path": "parishes/maps/tiles/22005-r1c3.webp",
+       "row": 1,
+       "col": 3,
+       "px_bounds": [
+        3072,
+        1024,
+        4096,
+        2048
+       ],
+       "bounds_local_m": {
+        "left": 17421.02,
+        "right": 30625.02,
+        "bottom": 1705.18,
+        "top": 14909.18
+       },
+       "bytes": 6662,
+       "webp_quality": 80,
+       "sha256": "9572717d02f11496867a2191eb1f9735025567c757b92f2e3e0d62db6e106ac9"
+      },
+      {
+       "path": "parishes/maps/tiles/22005-r2c0.webp",
+       "row": 2,
+       "col": 0,
+       "px_bounds": [
+        0,
+        2048,
+        1024,
+        3072
+       ],
+       "bounds_local_m": {
+        "left": -22190.98,
+        "right": -8986.98,
+        "bottom": -11498.82,
+        "top": 1705.18
+       },
+       "bytes": 157274,
+       "webp_quality": 80,
+       "sha256": "3b01d0cd0da0e8ba7206bbae3101caeee0f0045dda53ae9b764ae66b7fdc4d99"
+      },
+      {
+       "path": "parishes/maps/tiles/22005-r2c1.webp",
+       "row": 2,
+       "col": 1,
+       "px_bounds": [
+        1024,
+        2048,
+        2048,
+        3072
+       ],
+       "bounds_local_m": {
+        "left": -8986.98,
+        "right": 4217.02,
+        "bottom": -11498.82,
+        "top": 1705.18
+       },
+       "bytes": 306858,
+       "webp_quality": 80,
+       "sha256": "a29836e0ad56e0125036a9af00f9a23e68f7cb4c2702566e52be122fa167527f"
+      },
+      {
+       "path": "parishes/maps/tiles/22005-r2c2.webp",
+       "row": 2,
+       "col": 2,
+       "px_bounds": [
+        2048,
+        2048,
+        3072,
+        3072
+       ],
+       "bounds_local_m": {
+        "left": 4217.02,
+        "right": 17421.02,
+        "bottom": -11498.82,
+        "top": 1705.18
+       },
+       "bytes": 188080,
+       "webp_quality": 80,
+       "sha256": "0b5b64c30bc363ac7c904f68f99aa4abdf5b64527978f6413d7348cd153fe3e2"
+      },
+      {
+       "path": "parishes/maps/tiles/22005-r2c3.webp",
+       "row": 2,
+       "col": 3,
+       "px_bounds": [
+        3072,
+        2048,
+        4096,
+        3072
+       ],
+       "bounds_local_m": {
+        "left": 17421.02,
+        "right": 30625.02,
+        "bottom": -11498.82,
+        "top": 1705.18
+       },
+       "bytes": 66216,
+       "webp_quality": 80,
+       "sha256": "8cee1658db93302611700d60c0384f15199dd716d88c4f7d972205ce2bd1b2a1"
+      },
+      {
+       "path": "parishes/maps/tiles/22005-r3c0.webp",
+       "row": 3,
+       "col": 0,
+       "px_bounds": [
+        0,
+        3072,
+        1024,
+        4096
+       ],
+       "bounds_local_m": {
+        "left": -22190.98,
+        "right": -8986.98,
+        "bottom": -24702.82,
+        "top": -11498.82
+       },
+       "bytes": 45872,
+       "webp_quality": 80,
+       "sha256": "5e419fa39c0820bcdf3b89d6d25273055cdffbe5222cfbcc10100a34f75e7f4b"
+      },
+      {
+       "path": "parishes/maps/tiles/22005-r3c1.webp",
+       "row": 3,
+       "col": 1,
+       "px_bounds": [
+        1024,
+        3072,
+        2048,
+        4096
+       ],
+       "bounds_local_m": {
+        "left": -8986.98,
+        "right": 4217.02,
+        "bottom": -24702.82,
+        "top": -11498.82
+       },
+       "bytes": 33472,
+       "webp_quality": 80,
+       "sha256": "9256feaa1c42d14b9104ed26e978450ee65b2e4d79ca7ff747c0cd5c9e27451f"
+      },
+      {
+       "path": "parishes/maps/tiles/22005-r3c2.webp",
+       "row": 3,
+       "col": 2,
+       "px_bounds": [
+        2048,
+        3072,
+        3072,
+        4096
+       ],
+       "bounds_local_m": {
+        "left": 4217.02,
+        "right": 17421.02,
+        "bottom": -24702.82,
+        "top": -11498.82
+       },
+       "bytes": 1938,
+       "webp_quality": 80,
+       "sha256": "9ef396200ceefe14745188e35ba5667d127940d8e5c4c144effe44fe316df874"
+      },
+      {
+       "path": "parishes/maps/tiles/22005-r3c3.webp",
+       "row": 3,
+       "col": 3,
+       "px_bounds": [
+        3072,
+        3072,
+        4096,
+        4096
+       ],
+       "bounds_local_m": {
+        "left": 17421.02,
+        "right": 30625.02,
+        "bottom": -24702.82,
+        "top": -11498.82
+       },
+       "bytes": 5344,
+       "webp_quality": 80,
+       "sha256": "20c8670542ea4881cfb06a2ce0584a437351df4f66e7b2d57fdb0a00c4542da5"
+      }
+     ]
+    },
+    "streets": {
+     "path": "parishes/maps/streets/22005.json",
+     "bytes": 177083,
+     "max_bytes": 1500000,
+     "sha256": "b653563be59161f4e822c121695c135d6a8e6de7d548e432e798e770514f44f6",
+     "counts": {
+      "arterial": 9,
+      "collector": 366,
+      "local": 5650
+     },
+     "vertices": 12125,
+     "note": "AUTHORED street polylines - the same procedural fabric the maps draw, NOT the real street grid; local metres [east_m, north_m] in the parish frame, rounded to 1 m",
+     "inside_rule": "every vertex lies inside the RECORDED coarse outline (checked, even-odd); INLAND water is NOT cut out at 1:10m, so some polylines lie over Lake Pontchartrain / Lake Maurepas / the river exactly where the maps draw fabric over them - treat water.labels areas as water, not road"
+    },
     "corners_world_m": {
      "nw": [
       -101470.52,
@@ -2005,6 +2359,360 @@
      "provenance": "AUTHORED procedural, seeded by FIPS; NOT the real street grid, land use or buildings"
     },
     "provenance": "DERIVED outline + AUTHORED fabric; not imagery",
+    "ground_tiles": {
+     "label": "Ground drawn from Census outline + AUTHORED fabric - not satellite, not a survey; carries no text",
+     "provenance": "DERIVED outline + AUTHORED fabric; not imagery; no text, pins, borders, banner or legend (those live only on the 4k map)",
+     "layers": [
+      "open water",
+      "neighbouring land",
+      "land use",
+      "building hints",
+      "local streets",
+      "collectors",
+      "arterials"
+     ],
+     "grid": 4,
+     "tile_px": 1024,
+     "max_bytes": 400000,
+     "crs": "parish LOCAL metres",
+     "rule": "tile (row, col) covers bounds_local_m; row 0 is north, col 0 is west; tiles abut exactly (shared edges are equal numbers) and their union is extent_local_m",
+     "tiles": [
+      {
+       "path": "parishes/maps/tiles/22051-r0c0.webp",
+       "row": 0,
+       "col": 0,
+       "px_bounds": [
+        0,
+        0,
+        1024,
+        1024
+       ],
+       "bounds_local_m": {
+        "left": -64089.17,
+        "right": -31013.32,
+        "bottom": 29830.68,
+        "top": 62906.54
+       },
+       "bytes": 9536,
+       "webp_quality": 80,
+       "sha256": "0df298b5ecbcc2eb6d4758b7dee46fa6c335ec45f2aa96a24144e7f48a4804ef"
+      },
+      {
+       "path": "parishes/maps/tiles/22051-r0c1.webp",
+       "row": 0,
+       "col": 1,
+       "px_bounds": [
+        1024,
+        0,
+        2048,
+        1024
+       ],
+       "bounds_local_m": {
+        "left": -31013.32,
+        "right": 2062.54,
+        "bottom": 29830.68,
+        "top": 62906.54
+       },
+       "bytes": 71264,
+       "webp_quality": 80,
+       "sha256": "c90d03a86ca2f77c08503d887d426fe1ddd38c5eefba5615cb2aab7dbf67f665"
+      },
+      {
+       "path": "parishes/maps/tiles/22051-r0c2.webp",
+       "row": 0,
+       "col": 2,
+       "px_bounds": [
+        2048,
+        0,
+        3072,
+        1024
+       ],
+       "bounds_local_m": {
+        "left": 2062.54,
+        "right": 35138.4,
+        "bottom": 29830.68,
+        "top": 62906.54
+       },
+       "bytes": 5806,
+       "webp_quality": 80,
+       "sha256": "f9aa688b56d6b3cd71518c57b19daed14e2cf4ba8a5c885954533f9d8c2a0c14"
+      },
+      {
+       "path": "parishes/maps/tiles/22051-r0c3.webp",
+       "row": 0,
+       "col": 3,
+       "px_bounds": [
+        3072,
+        0,
+        4096,
+        1024
+       ],
+       "bounds_local_m": {
+        "left": 35138.4,
+        "right": 68214.25,
+        "bottom": 29830.68,
+        "top": 62906.54
+       },
+       "bytes": 10612,
+       "webp_quality": 80,
+       "sha256": "b1763571a0a9a36ad5a423dd884527ac9fffd5643237c4ea9e931451dfcdf0e2"
+      },
+      {
+       "path": "parishes/maps/tiles/22051-r1c0.webp",
+       "row": 1,
+       "col": 0,
+       "px_bounds": [
+        0,
+        1024,
+        1024,
+        2048
+       ],
+       "bounds_local_m": {
+        "left": -64089.17,
+        "right": -31013.32,
+        "bottom": -3245.18,
+        "top": 29830.68
+       },
+       "bytes": 5794,
+       "webp_quality": 80,
+       "sha256": "f944b33bab859cf0fd350ce19c41bd490609aabca54eea8949d5ec03dd2e4c91"
+      },
+      {
+       "path": "parishes/maps/tiles/22051-r1c1.webp",
+       "row": 1,
+       "col": 1,
+       "px_bounds": [
+        1024,
+        1024,
+        2048,
+        2048
+       ],
+       "bounds_local_m": {
+        "left": -31013.32,
+        "right": 2062.54,
+        "bottom": -3245.18,
+        "top": 29830.68
+       },
+       "bytes": 109158,
+       "webp_quality": 80,
+       "sha256": "dae4284e2603bcb0c98c3845ec4843607a4b127d7e223d6eea90e15845e3d2e2"
+      },
+      {
+       "path": "parishes/maps/tiles/22051-r1c2.webp",
+       "row": 1,
+       "col": 2,
+       "px_bounds": [
+        2048,
+        1024,
+        3072,
+        2048
+       ],
+       "bounds_local_m": {
+        "left": 2062.54,
+        "right": 35138.4,
+        "bottom": -3245.18,
+        "top": 29830.68
+       },
+       "bytes": 37666,
+       "webp_quality": 80,
+       "sha256": "42710b1de10989a9b7bffebedff90c30fca1351149a76e379832611682a1174b"
+      },
+      {
+       "path": "parishes/maps/tiles/22051-r1c3.webp",
+       "row": 1,
+       "col": 3,
+       "px_bounds": [
+        3072,
+        1024,
+        4096,
+        2048
+       ],
+       "bounds_local_m": {
+        "left": 35138.4,
+        "right": 68214.25,
+        "bottom": -3245.18,
+        "top": 29830.68
+       },
+       "bytes": 7380,
+       "webp_quality": 80,
+       "sha256": "82dd239989304bb3dcaf2a8ae0c8c8314f3d6f9337f9c85a558c19366b00bf7c"
+      },
+      {
+       "path": "parishes/maps/tiles/22051-r2c0.webp",
+       "row": 2,
+       "col": 0,
+       "px_bounds": [
+        0,
+        2048,
+        1024,
+        3072
+       ],
+       "bounds_local_m": {
+        "left": -64089.17,
+        "right": -31013.32,
+        "bottom": -36321.03,
+        "top": -3245.18
+       },
+       "bytes": 5734,
+       "webp_quality": 80,
+       "sha256": "c5e007a3f9b87a596fa11251466575478e68222930ad415e022f5f7fe439b8c9"
+      },
+      {
+       "path": "parishes/maps/tiles/22051-r2c1.webp",
+       "row": 2,
+       "col": 1,
+       "px_bounds": [
+        1024,
+        2048,
+        2048,
+        3072
+       ],
+       "bounds_local_m": {
+        "left": -31013.32,
+        "right": 2062.54,
+        "bottom": -36321.03,
+        "top": -3245.18
+       },
+       "bytes": 52614,
+       "webp_quality": 80,
+       "sha256": "9239e8fdda728906e99e25feb3ac064bb09a4ed6efe799e6dd871aa0d0f0e74f"
+      },
+      {
+       "path": "parishes/maps/tiles/22051-r2c2.webp",
+       "row": 2,
+       "col": 2,
+       "px_bounds": [
+        2048,
+        2048,
+        3072,
+        3072
+       ],
+       "bounds_local_m": {
+        "left": 2062.54,
+        "right": 35138.4,
+        "bottom": -36321.03,
+        "top": -3245.18
+       },
+       "bytes": 79732,
+       "webp_quality": 80,
+       "sha256": "7fa345908195be344f88c45d49d229bca5ba64797f65fbac22d305e4f026dcd7"
+      },
+      {
+       "path": "parishes/maps/tiles/22051-r2c3.webp",
+       "row": 2,
+       "col": 3,
+       "px_bounds": [
+        3072,
+        2048,
+        4096,
+        3072
+       ],
+       "bounds_local_m": {
+        "left": 35138.4,
+        "right": 68214.25,
+        "bottom": -36321.03,
+        "top": -3245.18
+       },
+       "bytes": 12194,
+       "webp_quality": 80,
+       "sha256": "0c8179ed1bc8196102bb39bb63a6976b851ccf39d1959b8bdff68cfd31c21d81"
+      },
+      {
+       "path": "parishes/maps/tiles/22051-r3c0.webp",
+       "row": 3,
+       "col": 0,
+       "px_bounds": [
+        0,
+        3072,
+        1024,
+        4096
+       ],
+       "bounds_local_m": {
+        "left": -64089.17,
+        "right": -31013.32,
+        "bottom": -69396.89,
+        "top": -36321.03
+       },
+       "bytes": 7378,
+       "webp_quality": 80,
+       "sha256": "6bcc5d641f7cceea29e606fa5617ae993c0d4b90e521b61d637a1a00d43ec6cf"
+      },
+      {
+       "path": "parishes/maps/tiles/22051-r3c1.webp",
+       "row": 3,
+       "col": 1,
+       "px_bounds": [
+        1024,
+        3072,
+        2048,
+        4096
+       ],
+       "bounds_local_m": {
+        "left": -31013.32,
+        "right": 2062.54,
+        "bottom": -69396.89,
+        "top": -36321.03
+       },
+       "bytes": 7976,
+       "webp_quality": 80,
+       "sha256": "48f04851dbc35f5ca6bab32653c30c3399017daf315c1ca94c8e5b6beb0e8de3"
+      },
+      {
+       "path": "parishes/maps/tiles/22051-r3c2.webp",
+       "row": 3,
+       "col": 2,
+       "px_bounds": [
+        2048,
+        3072,
+        3072,
+        4096
+       ],
+       "bounds_local_m": {
+        "left": 2062.54,
+        "right": 35138.4,
+        "bottom": -69396.89,
+        "top": -36321.03
+       },
+       "bytes": 60446,
+       "webp_quality": 80,
+       "sha256": "e2c85c14b0754e58f11f88fbc142c3c173753a4e34c7b61d059b39d8edda2e4d"
+      },
+      {
+       "path": "parishes/maps/tiles/22051-r3c3.webp",
+       "row": 3,
+       "col": 3,
+       "px_bounds": [
+        3072,
+        3072,
+        4096,
+        4096
+       ],
+       "bounds_local_m": {
+        "left": 35138.4,
+        "right": 68214.25,
+        "bottom": -69396.89,
+        "top": -36321.03
+       },
+       "bytes": 6446,
+       "webp_quality": 80,
+       "sha256": "1373e830ba2cbbb3fb372fb13b97411d4214478a9405b252f650b51dbb02a0bc"
+      }
+     ]
+    },
+    "streets": {
+     "path": "parishes/maps/streets/22051.json",
+     "bytes": 73307,
+     "max_bytes": 1500000,
+     "sha256": "c173c8c5bddda0d2359f595b509e70407996f3f2d8aa475badd65cee42900f2f",
+     "counts": {
+      "arterial": 24,
+      "collector": 169,
+      "local": 2157
+     },
+     "vertices": 4835,
+     "note": "AUTHORED street polylines - the same procedural fabric the maps draw, NOT the real street grid; local metres [east_m, north_m] in the parish frame, rounded to 1 m",
+     "inside_rule": "every vertex lies inside the RECORDED coarse outline (checked, even-odd); INLAND water is NOT cut out at 1:10m, so some polylines lie over Lake Pontchartrain / Lake Maurepas / the river exactly where the maps draw fabric over them - treat water.labels areas as water, not road"
+    },
     "corners_world_m": {
      "nw": [
       -66148.76,
@@ -3516,6 +4224,360 @@
      "provenance": "AUTHORED procedural, seeded by FIPS; NOT the real street grid, land use or buildings"
     },
     "provenance": "DERIVED outline + AUTHORED fabric; not imagery",
+    "ground_tiles": {
+     "label": "Ground drawn from Census outline + AUTHORED fabric - not satellite, not a survey; carries no text",
+     "provenance": "DERIVED outline + AUTHORED fabric; not imagery; no text, pins, borders, banner or legend (those live only on the 4k map)",
+     "layers": [
+      "open water",
+      "neighbouring land",
+      "land use",
+      "building hints",
+      "local streets",
+      "collectors",
+      "arterials"
+     ],
+     "grid": 4,
+     "tile_px": 1024,
+     "max_bytes": 400000,
+     "crs": "parish LOCAL metres",
+     "rule": "tile (row, col) covers bounds_local_m; row 0 is north, col 0 is west; tiles abut exactly (shared edges are equal numbers) and their union is extent_local_m",
+     "tiles": [
+      {
+       "path": "parishes/maps/tiles/22057-r0c0.webp",
+       "row": 0,
+       "col": 0,
+       "px_bounds": [
+        0,
+        0,
+        1024,
+        1024
+       ],
+       "bounds_local_m": {
+        "left": -64477.39,
+        "right": -36287.25,
+        "bottom": 24287.34,
+        "top": 52477.48
+       },
+       "bytes": 69024,
+       "webp_quality": 80,
+       "sha256": "6985b261cb3c65deb9f84bbf1b5ff30e9f9112d326866cb5f111ea7a0623a9b4"
+      },
+      {
+       "path": "parishes/maps/tiles/22057-r0c1.webp",
+       "row": 0,
+       "col": 1,
+       "px_bounds": [
+        1024,
+        0,
+        2048,
+        1024
+       ],
+       "bounds_local_m": {
+        "left": -36287.25,
+        "right": -8097.11,
+        "bottom": 24287.34,
+        "top": 52477.48
+       },
+       "bytes": 134212,
+       "webp_quality": 80,
+       "sha256": "18f553583b7bcbf0c5329d7f954212aa31aee963333d5f874efd1f14d6127c43"
+      },
+      {
+       "path": "parishes/maps/tiles/22057-r0c2.webp",
+       "row": 0,
+       "col": 2,
+       "px_bounds": [
+        2048,
+        0,
+        3072,
+        1024
+       ],
+       "bounds_local_m": {
+        "left": -8097.11,
+        "right": 20093.02,
+        "bottom": 24287.34,
+        "top": 52477.48
+       },
+       "bytes": 15594,
+       "webp_quality": 80,
+       "sha256": "f6869eb684598ff702d0f2dcbe6cf4bafc486f2e79bb6e722006a871508649c7"
+      },
+      {
+       "path": "parishes/maps/tiles/22057-r0c3.webp",
+       "row": 0,
+       "col": 3,
+       "px_bounds": [
+        3072,
+        0,
+        4096,
+        1024
+       ],
+       "bounds_local_m": {
+        "left": 20093.02,
+        "right": 48283.16,
+        "bottom": 24287.34,
+        "top": 52477.48
+       },
+       "bytes": 9330,
+       "webp_quality": 80,
+       "sha256": "5e87bc1d926ceed9c65042755f35152289758c219329f4711f7e4a3258c25bd3"
+      },
+      {
+       "path": "parishes/maps/tiles/22057-r1c0.webp",
+       "row": 1,
+       "col": 0,
+       "px_bounds": [
+        0,
+        1024,
+        1024,
+        2048
+       ],
+       "bounds_local_m": {
+        "left": -64477.39,
+        "right": -36287.25,
+        "bottom": -3902.79,
+        "top": 24287.34
+       },
+       "bytes": 29290,
+       "webp_quality": 80,
+       "sha256": "16bfc2588ee7fd6bf404edd7157168f1d2c8fb5505847a6e11606ba9f975af79"
+      },
+      {
+       "path": "parishes/maps/tiles/22057-r1c1.webp",
+       "row": 1,
+       "col": 1,
+       "px_bounds": [
+        1024,
+        1024,
+        2048,
+        2048
+       ],
+       "bounds_local_m": {
+        "left": -36287.25,
+        "right": -8097.11,
+        "bottom": -3902.79,
+        "top": 24287.34
+       },
+       "bytes": 170530,
+       "webp_quality": 80,
+       "sha256": "195ea5596453b6b1ec4f50cd2743ea8253b5d258bbdf762f2ed14b64fd07a7a3"
+      },
+      {
+       "path": "parishes/maps/tiles/22057-r1c2.webp",
+       "row": 1,
+       "col": 2,
+       "px_bounds": [
+        2048,
+        1024,
+        3072,
+        2048
+       ],
+       "bounds_local_m": {
+        "left": -8097.11,
+        "right": 20093.02,
+        "bottom": -3902.79,
+        "top": 24287.34
+       },
+       "bytes": 248922,
+       "webp_quality": 80,
+       "sha256": "b8ac610cb2743a46bafaa798d37ef026e124b88d44296ca086054ad45810bb84"
+      },
+      {
+       "path": "parishes/maps/tiles/22057-r1c3.webp",
+       "row": 1,
+       "col": 3,
+       "px_bounds": [
+        3072,
+        1024,
+        4096,
+        2048
+       ],
+       "bounds_local_m": {
+        "left": 20093.02,
+        "right": 48283.16,
+        "bottom": -3902.79,
+        "top": 24287.34
+       },
+       "bytes": 31134,
+       "webp_quality": 80,
+       "sha256": "cdf588163b23759522fdc1968ecbf754fb77cafe667a8129c4f7fd81af70402e"
+      },
+      {
+       "path": "parishes/maps/tiles/22057-r2c0.webp",
+       "row": 2,
+       "col": 0,
+       "px_bounds": [
+        0,
+        2048,
+        1024,
+        3072
+       ],
+       "bounds_local_m": {
+        "left": -64477.39,
+        "right": -36287.25,
+        "bottom": -32092.93,
+        "top": -3902.79
+       },
+       "bytes": 1938,
+       "webp_quality": 80,
+       "sha256": "9ef396200ceefe14745188e35ba5667d127940d8e5c4c144effe44fe316df874"
+      },
+      {
+       "path": "parishes/maps/tiles/22057-r2c1.webp",
+       "row": 2,
+       "col": 1,
+       "px_bounds": [
+        1024,
+        2048,
+        2048,
+        3072
+       ],
+       "bounds_local_m": {
+        "left": -36287.25,
+        "right": -8097.11,
+        "bottom": -32092.93,
+        "top": -3902.79
+       },
+       "bytes": 6352,
+       "webp_quality": 80,
+       "sha256": "3b864c7c22b0f41639fcb6b241d6e7e7a7ac195523bb6188202eb96a7f0f0c6e"
+      },
+      {
+       "path": "parishes/maps/tiles/22057-r2c2.webp",
+       "row": 2,
+       "col": 2,
+       "px_bounds": [
+        2048,
+        2048,
+        3072,
+        3072
+       ],
+       "bounds_local_m": {
+        "left": -8097.11,
+        "right": 20093.02,
+        "bottom": -32092.93,
+        "top": -3902.79
+       },
+       "bytes": 226466,
+       "webp_quality": 80,
+       "sha256": "32af13de2cc53a7fc90a64e5142ce94bf6f3712238fa40b93cf029bd0a567931"
+      },
+      {
+       "path": "parishes/maps/tiles/22057-r2c3.webp",
+       "row": 2,
+       "col": 3,
+       "px_bounds": [
+        3072,
+        2048,
+        4096,
+        3072
+       ],
+       "bounds_local_m": {
+        "left": 20093.02,
+        "right": 48283.16,
+        "bottom": -32092.93,
+        "top": -3902.79
+       },
+       "bytes": 151880,
+       "webp_quality": 80,
+       "sha256": "73753b853eadae15223c83cf97f9c51e95a6ec5376b64116d803312cf8be4e2b"
+      },
+      {
+       "path": "parishes/maps/tiles/22057-r3c0.webp",
+       "row": 3,
+       "col": 0,
+       "px_bounds": [
+        0,
+        3072,
+        1024,
+        4096
+       ],
+       "bounds_local_m": {
+        "left": -64477.39,
+        "right": -36287.25,
+        "bottom": -60283.07,
+        "top": -32092.93
+       },
+       "bytes": 6412,
+       "webp_quality": 80,
+       "sha256": "0b06eda4e320af6891fba58c227b44b63526c715bf089d7d50bd0c56ca243b13"
+      },
+      {
+       "path": "parishes/maps/tiles/22057-r3c1.webp",
+       "row": 3,
+       "col": 1,
+       "px_bounds": [
+        1024,
+        3072,
+        2048,
+        4096
+       ],
+       "bounds_local_m": {
+        "left": -36287.25,
+        "right": -8097.11,
+        "bottom": -60283.07,
+        "top": -32092.93
+       },
+       "bytes": 9226,
+       "webp_quality": 80,
+       "sha256": "43da3e9d0d2d7d4d5030a42c76cb30ba8807e3d914a33ac9dc481a4466fd2e95"
+      },
+      {
+       "path": "parishes/maps/tiles/22057-r3c2.webp",
+       "row": 3,
+       "col": 2,
+       "px_bounds": [
+        2048,
+        3072,
+        3072,
+        4096
+       ],
+       "bounds_local_m": {
+        "left": -8097.11,
+        "right": 20093.02,
+        "bottom": -60283.07,
+        "top": -32092.93
+       },
+       "bytes": 57206,
+       "webp_quality": 80,
+       "sha256": "0466420416ab7cd20497a2d94e2378995568370a25c9dd3577c8ce17109ec34d"
+      },
+      {
+       "path": "parishes/maps/tiles/22057-r3c3.webp",
+       "row": 3,
+       "col": 3,
+       "px_bounds": [
+        3072,
+        3072,
+        4096,
+        4096
+       ],
+       "bounds_local_m": {
+        "left": 20093.02,
+        "right": 48283.16,
+        "bottom": -60283.07,
+        "top": -32092.93
+       },
+       "bytes": 81834,
+       "webp_quality": 80,
+       "sha256": "9ebcdfbdcfa9ac3c6caaa38f102adbbaa7c6fdbb2322cc279f7a485eefe56e9a"
+      }
+     ]
+    },
+    "streets": {
+     "path": "parishes/maps/streets/22057.json",
+     "bytes": 196506,
+     "max_bytes": 1500000,
+     "sha256": "145c0a408c04fefe57a1739515cd071d76fa9ab1754dfb80e7e9d2a5c9473e96",
+     "counts": {
+      "arterial": 19,
+      "collector": 490,
+      "local": 5799
+     },
+     "vertices": 12757,
+     "note": "AUTHORED street polylines - the same procedural fabric the maps draw, NOT the real street grid; local metres [east_m, north_m] in the parish frame, rounded to 1 m",
+     "inside_rule": "every vertex lies inside the RECORDED coarse outline (checked, even-odd); INLAND water is NOT cut out at 1:10m, so some polylines lie over Lake Pontchartrain / Lake Maurepas / the river exactly where the maps draw fabric over them - treat water.labels areas as water, not road"
+    },
     "corners_world_m": {
      "nw": [
       -95883.46,
@@ -4256,6 +5318,360 @@
      "provenance": "AUTHORED procedural, seeded by FIPS; NOT the real street grid, land use or buildings"
     },
     "provenance": "DERIVED outline + AUTHORED fabric; not imagery",
+    "ground_tiles": {
+     "label": "Ground drawn from Census outline + AUTHORED fabric - not satellite, not a survey; carries no text",
+     "provenance": "DERIVED outline + AUTHORED fabric; not imagery; no text, pins, borders, banner or legend (those live only on the 4k map)",
+     "layers": [
+      "open water",
+      "neighbouring land",
+      "land use",
+      "building hints",
+      "local streets",
+      "collectors",
+      "arterials"
+     ],
+     "grid": 4,
+     "tile_px": 1024,
+     "max_bytes": 400000,
+     "crs": "parish LOCAL metres",
+     "rule": "tile (row, col) covers bounds_local_m; row 0 is north, col 0 is west; tiles abut exactly (shared edges are equal numbers) and their union is extent_local_m",
+     "tiles": [
+      {
+       "path": "parishes/maps/tiles/22063-r0c0.webp",
+       "row": 0,
+       "col": 0,
+       "px_bounds": [
+        0,
+        0,
+        1024,
+        1024
+       ],
+       "bounds_local_m": {
+        "left": -31499.78,
+        "right": -16180.73,
+        "bottom": 14184.21,
+        "top": 29503.26
+       },
+       "bytes": 57238,
+       "webp_quality": 80,
+       "sha256": "36ade14ea6379383b2567ad2fd49cff7f833aa9ff622ee1bc873c2224c14ce2a"
+      },
+      {
+       "path": "parishes/maps/tiles/22063-r0c1.webp",
+       "row": 0,
+       "col": 1,
+       "px_bounds": [
+        1024,
+        0,
+        2048,
+        1024
+       ],
+       "bounds_local_m": {
+        "left": -16180.73,
+        "right": -861.67,
+        "bottom": 14184.21,
+        "top": 29503.26
+       },
+       "bytes": 166186,
+       "webp_quality": 80,
+       "sha256": "5be88d74a0b37355f14bfc0ce74cfc18e8be28b04265b03906b093db70a092d9"
+      },
+      {
+       "path": "parishes/maps/tiles/22063-r0c2.webp",
+       "row": 0,
+       "col": 2,
+       "px_bounds": [
+        2048,
+        0,
+        3072,
+        1024
+       ],
+       "bounds_local_m": {
+        "left": -861.67,
+        "right": 14457.39,
+        "bottom": 14184.21,
+        "top": 29503.26
+       },
+       "bytes": 164384,
+       "webp_quality": 80,
+       "sha256": "c280723d314b06b7fa8ecbe66d7eea2fd3def76f8f0bb3fda32cc837251db931"
+      },
+      {
+       "path": "parishes/maps/tiles/22063-r0c3.webp",
+       "row": 0,
+       "col": 3,
+       "px_bounds": [
+        3072,
+        0,
+        4096,
+        1024
+       ],
+       "bounds_local_m": {
+        "left": 14457.39,
+        "right": 29776.44,
+        "bottom": 14184.21,
+        "top": 29503.26
+       },
+       "bytes": 14532,
+       "webp_quality": 80,
+       "sha256": "1e0bad204ad9ef86be358bee2a8e29fa8ee8522fad3be89acff967bcba296592"
+      },
+      {
+       "path": "parishes/maps/tiles/22063-r1c0.webp",
+       "row": 1,
+       "col": 0,
+       "px_bounds": [
+        0,
+        1024,
+        1024,
+        2048
+       ],
+       "bounds_local_m": {
+        "left": -31499.78,
+        "right": -16180.73,
+        "bottom": -1134.85,
+        "top": 14184.21
+       },
+       "bytes": 137112,
+       "webp_quality": 80,
+       "sha256": "539b95e2218b0093978089f31d27dc35cb0ed68dbf7cf06dbd9225c1a5dda62a"
+      },
+      {
+       "path": "parishes/maps/tiles/22063-r1c1.webp",
+       "row": 1,
+       "col": 1,
+       "px_bounds": [
+        1024,
+        1024,
+        2048,
+        2048
+       ],
+       "bounds_local_m": {
+        "left": -16180.73,
+        "right": -861.67,
+        "bottom": -1134.85,
+        "top": 14184.21
+       },
+       "bytes": 318122,
+       "webp_quality": 80,
+       "sha256": "ae3e6860e5006b5a0c910d6d9d2a9549451a76a29635589d8c370330a4ffd3f3"
+      },
+      {
+       "path": "parishes/maps/tiles/22063-r1c2.webp",
+       "row": 1,
+       "col": 2,
+       "px_bounds": [
+        2048,
+        1024,
+        3072,
+        2048
+       ],
+       "bounds_local_m": {
+        "left": -861.67,
+        "right": 14457.39,
+        "bottom": -1134.85,
+        "top": 14184.21
+       },
+       "bytes": 319514,
+       "webp_quality": 80,
+       "sha256": "5c31d36f5eebf3503d752882487af6e9a4cdf9a7360dec92113d1a90633d9d0e"
+      },
+      {
+       "path": "parishes/maps/tiles/22063-r1c3.webp",
+       "row": 1,
+       "col": 3,
+       "px_bounds": [
+        3072,
+        1024,
+        4096,
+        2048
+       ],
+       "bounds_local_m": {
+        "left": 14457.39,
+        "right": 29776.44,
+        "bottom": -1134.85,
+        "top": 14184.21
+       },
+       "bytes": 27564,
+       "webp_quality": 80,
+       "sha256": "52192eea0a5bee01d05451d9a60e8638004306121924f1e4827742d099061b50"
+      },
+      {
+       "path": "parishes/maps/tiles/22063-r2c0.webp",
+       "row": 2,
+       "col": 0,
+       "px_bounds": [
+        0,
+        2048,
+        1024,
+        3072
+       ],
+       "bounds_local_m": {
+        "left": -31499.78,
+        "right": -16180.73,
+        "bottom": -16453.9,
+        "top": -1134.85
+       },
+       "bytes": 54316,
+       "webp_quality": 80,
+       "sha256": "3be622144ebd1b016d51f6ed5e1ffc5e8fe815dbb1d35d0e96ab85e18dfa6106"
+      },
+      {
+       "path": "parishes/maps/tiles/22063-r2c1.webp",
+       "row": 2,
+       "col": 1,
+       "px_bounds": [
+        1024,
+        2048,
+        2048,
+        3072
+       ],
+       "bounds_local_m": {
+        "left": -16180.73,
+        "right": -861.67,
+        "bottom": -16453.9,
+        "top": -1134.85
+       },
+       "bytes": 261374,
+       "webp_quality": 80,
+       "sha256": "78230e56fdba03da537173ac99b675aa5cc7713ec06a55f6dd1ced00ee3ac716"
+      },
+      {
+       "path": "parishes/maps/tiles/22063-r2c2.webp",
+       "row": 2,
+       "col": 2,
+       "px_bounds": [
+        2048,
+        2048,
+        3072,
+        3072
+       ],
+       "bounds_local_m": {
+        "left": -861.67,
+        "right": 14457.39,
+        "bottom": -16453.9,
+        "top": -1134.85
+       },
+       "bytes": 323746,
+       "webp_quality": 80,
+       "sha256": "252b347a4c43328f60e0b3b60dee0a3d15e3251d35896a57868027a266b4b17b"
+      },
+      {
+       "path": "parishes/maps/tiles/22063-r2c3.webp",
+       "row": 2,
+       "col": 3,
+       "px_bounds": [
+        3072,
+        2048,
+        4096,
+        3072
+       ],
+       "bounds_local_m": {
+        "left": 14457.39,
+        "right": 29776.44,
+        "bottom": -16453.9,
+        "top": -1134.85
+       },
+       "bytes": 144646,
+       "webp_quality": 80,
+       "sha256": "53086792931710f75ab81928ab2b9ed35ede4851a1a4a38e5112c59690b764ae"
+      },
+      {
+       "path": "parishes/maps/tiles/22063-r3c0.webp",
+       "row": 3,
+       "col": 0,
+       "px_bounds": [
+        0,
+        3072,
+        1024,
+        4096
+       ],
+       "bounds_local_m": {
+        "left": -31499.78,
+        "right": -16180.73,
+        "bottom": -31772.96,
+        "top": -16453.9
+       },
+       "bytes": 3732,
+       "webp_quality": 80,
+       "sha256": "4b888f35fe88b4bd7830796bccb3ab793afbc8d14327906353f34670229c3bef"
+      },
+      {
+       "path": "parishes/maps/tiles/22063-r3c1.webp",
+       "row": 3,
+       "col": 1,
+       "px_bounds": [
+        1024,
+        3072,
+        2048,
+        4096
+       ],
+       "bounds_local_m": {
+        "left": -16180.73,
+        "right": -861.67,
+        "bottom": -31772.96,
+        "top": -16453.9
+       },
+       "bytes": 37188,
+       "webp_quality": 80,
+       "sha256": "ae5bfc02f01ccdaa23693ee37098b4c6eb4952292cd00b8a6475cbf8df30bdda"
+      },
+      {
+       "path": "parishes/maps/tiles/22063-r3c2.webp",
+       "row": 3,
+       "col": 2,
+       "px_bounds": [
+        2048,
+        3072,
+        3072,
+        4096
+       ],
+       "bounds_local_m": {
+        "left": -861.67,
+        "right": 14457.39,
+        "bottom": -31772.96,
+        "top": -16453.9
+       },
+       "bytes": 182496,
+       "webp_quality": 80,
+       "sha256": "d5e753785c8c861133cf8a5b6951aa5d7b0091541e9b35d27fca240f9a2cf55d"
+      },
+      {
+       "path": "parishes/maps/tiles/22063-r3c3.webp",
+       "row": 3,
+       "col": 3,
+       "px_bounds": [
+        3072,
+        3072,
+        4096,
+        4096
+       ],
+       "bounds_local_m": {
+        "left": 14457.39,
+        "right": 29776.44,
+        "bottom": -31772.96,
+        "top": -16453.9
+       },
+       "bytes": 84940,
+       "webp_quality": 80,
+       "sha256": "023a85efea7666c73b395236b77366964db1dc9c73582c872f7dc73205ce74bc"
+      }
+     ]
+    },
+    "streets": {
+     "path": "parishes/maps/streets/22063.json",
+     "bytes": 345934,
+     "max_bytes": 1500000,
+     "sha256": "cef28f11d12528668a94bc4eb834bced601997658ff3cd1eb57e0230f29fcd48",
+     "counts": {
+      "arterial": 10,
+      "collector": 811,
+      "local": 10689
+     },
+     "vertices": 23152,
+     "note": "AUTHORED street polylines - the same procedural fabric the maps draw, NOT the real street grid; local metres [east_m, north_m] in the parish frame, rounded to 1 m",
+     "inside_rule": "every vertex lies inside the RECORDED coarse outline (checked, even-odd); INLAND water is NOT cut out at 1:10m, so some polylines lie over Lake Pontchartrain / Lake Maurepas / the river exactly where the maps draw fabric over them - treat water.labels areas as water, not road"
+    },
     "corners_world_m": {
      "nw": [
       -93165.54,
@@ -5368,6 +6784,360 @@
      "provenance": "AUTHORED procedural, seeded by FIPS; NOT the real street grid, land use or buildings"
     },
     "provenance": "DERIVED outline + AUTHORED fabric; not imagery",
+    "ground_tiles": {
+     "label": "Ground drawn from Census outline + AUTHORED fabric - not satellite, not a survey; carries no text",
+     "provenance": "DERIVED outline + AUTHORED fabric; not imagery; no text, pins, borders, banner or legend (those live only on the 4k map)",
+     "layers": [
+      "open water",
+      "neighbouring land",
+      "land use",
+      "building hints",
+      "local streets",
+      "collectors",
+      "arterials"
+     ],
+     "grid": 4,
+     "tile_px": 1024,
+     "max_bytes": 400000,
+     "crs": "parish LOCAL metres",
+     "rule": "tile (row, col) covers bounds_local_m; row 0 is north, col 0 is west; tiles abut exactly (shared edges are equal numbers) and their union is extent_local_m",
+     "tiles": [
+      {
+       "path": "parishes/maps/tiles/22071-r0c0.webp",
+       "row": 0,
+       "col": 0,
+       "px_bounds": [
+        0,
+        0,
+        1024,
+        1024
+       ],
+       "bounds_local_m": {
+        "left": -24457.03,
+        "right": -10033.25,
+        "bottom": 12038.19,
+        "top": 26461.97
+       },
+       "bytes": 4760,
+       "webp_quality": 80,
+       "sha256": "1a1020ea18a5a715e278105f8dd654dcb0160687edb8453ae9a0d1174d6f26ef"
+      },
+      {
+       "path": "parishes/maps/tiles/22071-r0c1.webp",
+       "row": 0,
+       "col": 1,
+       "px_bounds": [
+        1024,
+        0,
+        2048,
+        1024
+       ],
+       "bounds_local_m": {
+        "left": -10033.25,
+        "right": 4390.53,
+        "bottom": 12038.19,
+        "top": 26461.97
+       },
+       "bytes": 17712,
+       "webp_quality": 80,
+       "sha256": "fa31de2e26cc7f2848f930c05e5d89e26d03255f535fa9e2193a65bb176c07fd"
+      },
+      {
+       "path": "parishes/maps/tiles/22071-r0c2.webp",
+       "row": 0,
+       "col": 2,
+       "px_bounds": [
+        2048,
+        0,
+        3072,
+        1024
+       ],
+       "bounds_local_m": {
+        "left": 4390.53,
+        "right": 18814.3,
+        "bottom": 12038.19,
+        "top": 26461.97
+       },
+       "bytes": 10448,
+       "webp_quality": 80,
+       "sha256": "acd6ee96a08b499205dd188ddb7e6703fd21cb02de1f24b584bad2d16a00fc4e"
+      },
+      {
+       "path": "parishes/maps/tiles/22071-r0c3.webp",
+       "row": 0,
+       "col": 3,
+       "px_bounds": [
+        3072,
+        0,
+        4096,
+        1024
+       ],
+       "bounds_local_m": {
+        "left": 18814.3,
+        "right": 33238.08,
+        "bottom": 12038.19,
+        "top": 26461.97
+       },
+       "bytes": 3746,
+       "webp_quality": 80,
+       "sha256": "d4ec0f32448c22095b4983ea98c3c82f7c179c6aa3db1c4e1c6d2ebc07528fce"
+      },
+      {
+       "path": "parishes/maps/tiles/22071-r1c0.webp",
+       "row": 1,
+       "col": 0,
+       "px_bounds": [
+        0,
+        1024,
+        1024,
+        2048
+       ],
+       "bounds_local_m": {
+        "left": -24457.03,
+        "right": -10033.25,
+        "bottom": -2385.59,
+        "top": 12038.19
+       },
+       "bytes": 129290,
+       "webp_quality": 80,
+       "sha256": "2ccdc10e8d86a49d0de65fcf3f2ebe0bbca5f5b7aebd392af390753dca5717ae"
+      },
+      {
+       "path": "parishes/maps/tiles/22071-r1c1.webp",
+       "row": 1,
+       "col": 1,
+       "px_bounds": [
+        1024,
+        1024,
+        2048,
+        2048
+       ],
+       "bounds_local_m": {
+        "left": -10033.25,
+        "right": 4390.53,
+        "bottom": -2385.59,
+        "top": 12038.19
+       },
+       "bytes": 319360,
+       "webp_quality": 80,
+       "sha256": "61365efa760d848797b6f4629c5d5328c98cb62f07dcb70bef207cff6f96be54"
+      },
+      {
+       "path": "parishes/maps/tiles/22071-r1c2.webp",
+       "row": 1,
+       "col": 2,
+       "px_bounds": [
+        2048,
+        1024,
+        3072,
+        2048
+       ],
+       "bounds_local_m": {
+        "left": 4390.53,
+        "right": 18814.3,
+        "bottom": -2385.59,
+        "top": 12038.19
+       },
+       "bytes": 290424,
+       "webp_quality": 80,
+       "sha256": "c03f3921191e61d0c329d18fdbeff1e17de8a97142f4bbbcee8da36747253316"
+      },
+      {
+       "path": "parishes/maps/tiles/22071-r1c3.webp",
+       "row": 1,
+       "col": 3,
+       "px_bounds": [
+        3072,
+        1024,
+        4096,
+        2048
+       ],
+       "bounds_local_m": {
+        "left": 18814.3,
+        "right": 33238.08,
+        "bottom": -2385.59,
+        "top": 12038.19
+       },
+       "bytes": 98288,
+       "webp_quality": 80,
+       "sha256": "c4edf643b5b3588bbcdf45644788bc7d129c9cbfe019547f6ffde17bfec414b1"
+      },
+      {
+       "path": "parishes/maps/tiles/22071-r2c0.webp",
+       "row": 2,
+       "col": 0,
+       "px_bounds": [
+        0,
+        2048,
+        1024,
+        3072
+       ],
+       "bounds_local_m": {
+        "left": -24457.03,
+        "right": -10033.25,
+        "bottom": -16809.37,
+        "top": -2385.59
+       },
+       "bytes": 166802,
+       "webp_quality": 80,
+       "sha256": "bcf6db4e12c1313c54f8c6d5c024757f9199efe3f441cdee367fe9ee5f785e27"
+      },
+      {
+       "path": "parishes/maps/tiles/22071-r2c1.webp",
+       "row": 2,
+       "col": 1,
+       "px_bounds": [
+        1024,
+        2048,
+        2048,
+        3072
+       ],
+       "bounds_local_m": {
+        "left": -10033.25,
+        "right": 4390.53,
+        "bottom": -16809.37,
+        "top": -2385.59
+       },
+       "bytes": 150540,
+       "webp_quality": 80,
+       "sha256": "6c64dff19ced471a56c258208617d51c3b99fb883c67c42f39cad6de8f0c60db"
+      },
+      {
+       "path": "parishes/maps/tiles/22071-r2c2.webp",
+       "row": 2,
+       "col": 2,
+       "px_bounds": [
+        2048,
+        2048,
+        3072,
+        3072
+       ],
+       "bounds_local_m": {
+        "left": 4390.53,
+        "right": 18814.3,
+        "bottom": -16809.37,
+        "top": -2385.59
+       },
+       "bytes": 50774,
+       "webp_quality": 80,
+       "sha256": "dc0e5d39b03bc2a73695de4d4862ea96b7db518fda587db5b85fdb2f8a6d17cf"
+      },
+      {
+       "path": "parishes/maps/tiles/22071-r2c3.webp",
+       "row": 2,
+       "col": 3,
+       "px_bounds": [
+        3072,
+        2048,
+        4096,
+        3072
+       ],
+       "bounds_local_m": {
+        "left": 18814.3,
+        "right": 33238.08,
+        "bottom": -16809.37,
+        "top": -2385.59
+       },
+       "bytes": 6310,
+       "webp_quality": 80,
+       "sha256": "5c1692c4e02f535d7b48eda18f252e3fae5d6ea3d0830d1c79776a41ae7ace3a"
+      },
+      {
+       "path": "parishes/maps/tiles/22071-r3c0.webp",
+       "row": 3,
+       "col": 0,
+       "px_bounds": [
+        0,
+        3072,
+        1024,
+        4096
+       ],
+       "bounds_local_m": {
+        "left": -24457.03,
+        "right": -10033.25,
+        "bottom": -31233.15,
+        "top": -16809.37
+       },
+       "bytes": 8604,
+       "webp_quality": 80,
+       "sha256": "a7a2409ab830fbb583eb3e1a7517e42a5cb7a761a958e02892a46dbaee6b869b"
+      },
+      {
+       "path": "parishes/maps/tiles/22071-r3c1.webp",
+       "row": 3,
+       "col": 1,
+       "px_bounds": [
+        1024,
+        3072,
+        2048,
+        4096
+       ],
+       "bounds_local_m": {
+        "left": -10033.25,
+        "right": 4390.53,
+        "bottom": -31233.15,
+        "top": -16809.37
+       },
+       "bytes": 41990,
+       "webp_quality": 80,
+       "sha256": "321e4cf1ead7b10b42a490481c6230c5ac84cf006b53618fd736a668395e56db"
+      },
+      {
+       "path": "parishes/maps/tiles/22071-r3c2.webp",
+       "row": 3,
+       "col": 2,
+       "px_bounds": [
+        2048,
+        3072,
+        3072,
+        4096
+       ],
+       "bounds_local_m": {
+        "left": 4390.53,
+        "right": 18814.3,
+        "bottom": -31233.15,
+        "top": -16809.37
+       },
+       "bytes": 4400,
+       "webp_quality": 80,
+       "sha256": "b3ceff6a0202c62a8cffe8a902080b37adacaa56de9fd37dd2b32a2992fe1fc5"
+      },
+      {
+       "path": "parishes/maps/tiles/22071-r3c3.webp",
+       "row": 3,
+       "col": 3,
+       "px_bounds": [
+        3072,
+        3072,
+        4096,
+        4096
+       ],
+       "bounds_local_m": {
+        "left": 18814.3,
+        "right": 33238.08,
+        "bottom": -31233.15,
+        "top": -16809.37
+       },
+       "bytes": 5898,
+       "webp_quality": 80,
+       "sha256": "4f79f1fe3527f69bb98b2fa984a2f7ad85ec2d4c10b69cca7aaebe7e0faaffda"
+      }
+     ]
+    },
+    "streets": {
+     "path": "parishes/maps/streets/22071.json",
+     "bytes": 188452,
+     "max_bytes": 1500000,
+     "sha256": "f76560bcdb0ecb5a8a7411f54ac4d537e9f11a37cf63838da9a1e326d491af36",
+     "counts": {
+      "arterial": 12,
+      "collector": 424,
+      "local": 5982
+     },
+     "vertices": 12906,
+     "note": "AUTHORED street polylines - the same procedural fabric the maps draw, NOT the real street grid; local metres [east_m, north_m] in the parish frame, rounded to 1 m",
+     "inside_rule": "every vertex lies inside the RECORDED coarse outline (checked, even-odd); INLAND water is NOT cut out at 1:10m, so some polylines lie over Lake Pontchartrain / Lake Maurepas / the river exactly where the maps draw fabric over them - treat water.labels areas as water, not road"
+    },
     "corners_world_m": {
      "nw": [
       -8801.62,
@@ -6887,6 +8657,360 @@
      "provenance": "AUTHORED procedural, seeded by FIPS; NOT the real street grid, land use or buildings"
     },
     "provenance": "DERIVED outline + AUTHORED fabric; not imagery",
+    "ground_tiles": {
+     "label": "Ground drawn from Census outline + AUTHORED fabric - not satellite, not a survey; carries no text",
+     "provenance": "DERIVED outline + AUTHORED fabric; not imagery; no text, pins, borders, banner or legend (those live only on the 4k map)",
+     "layers": [
+      "open water",
+      "neighbouring land",
+      "land use",
+      "building hints",
+      "local streets",
+      "collectors",
+      "arterials"
+     ],
+     "grid": 4,
+     "tile_px": 1024,
+     "max_bytes": 400000,
+     "crs": "parish LOCAL metres",
+     "rule": "tile (row, col) covers bounds_local_m; row 0 is north, col 0 is west; tiles abut exactly (shared edges are equal numbers) and their union is extent_local_m",
+     "tiles": [
+      {
+       "path": "parishes/maps/tiles/22075-r0c0.webp",
+       "row": 0,
+       "col": 0,
+       "px_bounds": [
+        0,
+        0,
+        1024,
+        1024
+       ],
+       "bounds_local_m": {
+        "left": -53765.52,
+        "right": -22628.77,
+        "bottom": 32519.65,
+        "top": 63656.4
+       },
+       "bytes": 103034,
+       "webp_quality": 80,
+       "sha256": "a56b4497a36bdb307b7290cc5705e701f1aa554f1017f5dba574f7c822c6a2ac"
+      },
+      {
+       "path": "parishes/maps/tiles/22075-r0c1.webp",
+       "row": 0,
+       "col": 1,
+       "px_bounds": [
+        1024,
+        0,
+        2048,
+        1024
+       ],
+       "bounds_local_m": {
+        "left": -22628.77,
+        "right": 8507.97,
+        "bottom": 32519.65,
+        "top": 63656.4
+       },
+       "bytes": 25428,
+       "webp_quality": 80,
+       "sha256": "35ad1889b63ec769dc6c110452699a4fbdb572cfcdadc92b970e81f91984ecd0"
+      },
+      {
+       "path": "parishes/maps/tiles/22075-r0c2.webp",
+       "row": 0,
+       "col": 2,
+       "px_bounds": [
+        2048,
+        0,
+        3072,
+        1024
+       ],
+       "bounds_local_m": {
+        "left": 8507.97,
+        "right": 39644.71,
+        "bottom": 32519.65,
+        "top": 63656.4
+       },
+       "bytes": 11178,
+       "webp_quality": 80,
+       "sha256": "4b21b3b796862b3cbbb88ebafe9b6c1be7b6779de078ff9f49e41bdedda16d1b"
+      },
+      {
+       "path": "parishes/maps/tiles/22075-r0c3.webp",
+       "row": 0,
+       "col": 3,
+       "px_bounds": [
+        3072,
+        0,
+        4096,
+        1024
+       ],
+       "bounds_local_m": {
+        "left": 39644.71,
+        "right": 70781.46,
+        "bottom": 32519.65,
+        "top": 63656.4
+       },
+       "bytes": 1940,
+       "webp_quality": 80,
+       "sha256": "a48e77951a8aef6f66daa8baf41eee4fd394f896a355ff2fb39469fd823a9aae"
+      },
+      {
+       "path": "parishes/maps/tiles/22075-r1c0.webp",
+       "row": 1,
+       "col": 0,
+       "px_bounds": [
+        0,
+        1024,
+        1024,
+        2048
+       ],
+       "bounds_local_m": {
+        "left": -53765.52,
+        "right": -22628.77,
+        "bottom": 1382.91,
+        "top": 32519.65
+       },
+       "bytes": 126328,
+       "webp_quality": 80,
+       "sha256": "048ab3eb486670912b71c20c4608ad287417313c4c075611d943593e7d9aec54"
+      },
+      {
+       "path": "parishes/maps/tiles/22075-r1c1.webp",
+       "row": 1,
+       "col": 1,
+       "px_bounds": [
+        1024,
+        1024,
+        2048,
+        2048
+       ],
+       "bounds_local_m": {
+        "left": -22628.77,
+        "right": 8507.97,
+        "bottom": 1382.91,
+        "top": 32519.65
+       },
+       "bytes": 218108,
+       "webp_quality": 80,
+       "sha256": "ff9b1bec835b7cb424cf99f461b5427626171781b82538320244e565ea67fe40"
+      },
+      {
+       "path": "parishes/maps/tiles/22075-r1c2.webp",
+       "row": 1,
+       "col": 2,
+       "px_bounds": [
+        2048,
+        1024,
+        3072,
+        2048
+       ],
+       "bounds_local_m": {
+        "left": 8507.97,
+        "right": 39644.71,
+        "bottom": 1382.91,
+        "top": 32519.65
+       },
+       "bytes": 6460,
+       "webp_quality": 80,
+       "sha256": "111382ece00b595591670c533620290005b03890633e4a3388bb2989aef5fd2e"
+      },
+      {
+       "path": "parishes/maps/tiles/22075-r1c3.webp",
+       "row": 1,
+       "col": 3,
+       "px_bounds": [
+        3072,
+        1024,
+        4096,
+        2048
+       ],
+       "bounds_local_m": {
+        "left": 39644.71,
+        "right": 70781.46,
+        "bottom": 1382.91,
+        "top": 32519.65
+       },
+       "bytes": 1940,
+       "webp_quality": 80,
+       "sha256": "a48e77951a8aef6f66daa8baf41eee4fd394f896a355ff2fb39469fd823a9aae"
+      },
+      {
+       "path": "parishes/maps/tiles/22075-r2c0.webp",
+       "row": 2,
+       "col": 0,
+       "px_bounds": [
+        0,
+        2048,
+        1024,
+        3072
+       ],
+       "bounds_local_m": {
+        "left": -53765.52,
+        "right": -22628.77,
+        "bottom": -29753.83,
+        "top": 1382.91
+       },
+       "bytes": 48374,
+       "webp_quality": 80,
+       "sha256": "637e83127ff66eb5b0296ca2768cd3da8671fd15e3315552b83cf209da8ba892"
+      },
+      {
+       "path": "parishes/maps/tiles/22075-r2c1.webp",
+       "row": 2,
+       "col": 1,
+       "px_bounds": [
+        1024,
+        2048,
+        2048,
+        3072
+       ],
+       "bounds_local_m": {
+        "left": -22628.77,
+        "right": 8507.97,
+        "bottom": -29753.83,
+        "top": 1382.91
+       },
+       "bytes": 160100,
+       "webp_quality": 80,
+       "sha256": "ad8dba3a34f9a3dd0da583f3fd3b24cbbcaef513332f17bfec50ca8babc3f7c5"
+      },
+      {
+       "path": "parishes/maps/tiles/22075-r2c2.webp",
+       "row": 2,
+       "col": 2,
+       "px_bounds": [
+        2048,
+        2048,
+        3072,
+        3072
+       ],
+       "bounds_local_m": {
+        "left": 8507.97,
+        "right": 39644.71,
+        "bottom": -29753.83,
+        "top": 1382.91
+       },
+       "bytes": 201972,
+       "webp_quality": 80,
+       "sha256": "d94be0eb422d4566b5fdd29f8c69157b8914f55f01a3de776c13e105cb2dc5d6"
+      },
+      {
+       "path": "parishes/maps/tiles/22075-r2c3.webp",
+       "row": 2,
+       "col": 3,
+       "px_bounds": [
+        3072,
+        2048,
+        4096,
+        3072
+       ],
+       "bounds_local_m": {
+        "left": 39644.71,
+        "right": 70781.46,
+        "bottom": -29753.83,
+        "top": 1382.91
+       },
+       "bytes": 57350,
+       "webp_quality": 80,
+       "sha256": "c9270ce0781bbba656dae13cfb8c4c7cd0dbb243c59c1217df6ce195dc2445f6"
+      },
+      {
+       "path": "parishes/maps/tiles/22075-r3c0.webp",
+       "row": 3,
+       "col": 0,
+       "px_bounds": [
+        0,
+        3072,
+        1024,
+        4096
+       ],
+       "bounds_local_m": {
+        "left": -53765.52,
+        "right": -22628.77,
+        "bottom": -60890.58,
+        "top": -29753.83
+       },
+       "bytes": 3208,
+       "webp_quality": 80,
+       "sha256": "1ae17c6e53f17d44d96b122bba28812ba39af69a182eff42d6e1f259947c2be7"
+      },
+      {
+       "path": "parishes/maps/tiles/22075-r3c1.webp",
+       "row": 3,
+       "col": 1,
+       "px_bounds": [
+        1024,
+        3072,
+        2048,
+        4096
+       ],
+       "bounds_local_m": {
+        "left": -22628.77,
+        "right": 8507.97,
+        "bottom": -60890.58,
+        "top": -29753.83
+       },
+       "bytes": 1940,
+       "webp_quality": 80,
+       "sha256": "a48e77951a8aef6f66daa8baf41eee4fd394f896a355ff2fb39469fd823a9aae"
+      },
+      {
+       "path": "parishes/maps/tiles/22075-r3c2.webp",
+       "row": 3,
+       "col": 2,
+       "px_bounds": [
+        2048,
+        3072,
+        3072,
+        4096
+       ],
+       "bounds_local_m": {
+        "left": 8507.97,
+        "right": 39644.71,
+        "bottom": -60890.58,
+        "top": -29753.83
+       },
+       "bytes": 57342,
+       "webp_quality": 80,
+       "sha256": "38fd75db2992f59c4cf81985cb522ecf7d80ba95d063ea439278e5563486f25f"
+      },
+      {
+       "path": "parishes/maps/tiles/22075-r3c3.webp",
+       "row": 3,
+       "col": 3,
+       "px_bounds": [
+        3072,
+        3072,
+        4096,
+        4096
+       ],
+       "bounds_local_m": {
+        "left": 39644.71,
+        "right": 70781.46,
+        "bottom": -60890.58,
+        "top": -29753.83
+       },
+       "bytes": 49730,
+       "webp_quality": 80,
+       "sha256": "d417a5f5fe826ab21898309d58c0a4cf4aa16d258b7f20ef443d7db053b37a48"
+      }
+     ]
+    },
+    "streets": {
+     "path": "parishes/maps/streets/22075.json",
+     "bytes": 185035,
+     "max_bytes": 1500000,
+     "sha256": "cb27caa8930744f3d35ff78ae02317eb3e084399dc900f3647fefe53d2e1ada1",
+     "counts": {
+      "arterial": 28,
+      "collector": 421,
+      "local": 5393
+     },
+     "vertices": 11829,
+     "note": "AUTHORED street polylines - the same procedural fabric the maps draw, NOT the real street grid; local metres [east_m, north_m] in the parish frame, rounded to 1 m",
+     "inside_rule": "every vertex lies inside the RECORDED coarse outline (checked, even-odd); INLAND water is NOT cut out at 1:10m, so some polylines lie over Lake Pontchartrain / Lake Maurepas / the river exactly where the maps draw fabric over them - treat water.labels areas as water, not road"
+    },
     "corners_world_m": {
      "nw": [
       -8502.25,
@@ -8222,6 +10346,360 @@
      "provenance": "AUTHORED procedural, seeded by FIPS; NOT the real street grid, land use or buildings"
     },
     "provenance": "DERIVED outline + AUTHORED fabric; not imagery",
+    "ground_tiles": {
+     "label": "Ground drawn from Census outline + AUTHORED fabric - not satellite, not a survey; carries no text",
+     "provenance": "DERIVED outline + AUTHORED fabric; not imagery; no text, pins, borders, banner or legend (those live only on the 4k map)",
+     "layers": [
+      "open water",
+      "neighbouring land",
+      "land use",
+      "building hints",
+      "local streets",
+      "collectors",
+      "arterials"
+     ],
+     "grid": 4,
+     "tile_px": 1024,
+     "max_bytes": 400000,
+     "crs": "parish LOCAL metres",
+     "rule": "tile (row, col) covers bounds_local_m; row 0 is north, col 0 is west; tiles abut exactly (shared edges are equal numbers) and their union is extent_local_m",
+     "tiles": [
+      {
+       "path": "parishes/maps/tiles/22087-r0c0.webp",
+       "row": 0,
+       "col": 0,
+       "px_bounds": [
+        0,
+        0,
+        1024,
+        1024
+       ],
+       "bounds_local_m": {
+        "left": -54472.99,
+        "right": -21052.75,
+        "bottom": 40875.21,
+        "top": 74295.46
+       },
+       "bytes": 2346,
+       "webp_quality": 80,
+       "sha256": "9d7623ba87f545b0a419e3bfed984a58868d0bc16d2450c0a9f6a2dd7b3739aa"
+      },
+      {
+       "path": "parishes/maps/tiles/22087-r0c1.webp",
+       "row": 0,
+       "col": 1,
+       "px_bounds": [
+        1024,
+        0,
+        2048,
+        1024
+       ],
+       "bounds_local_m": {
+        "left": -21052.75,
+        "right": 12367.5,
+        "bottom": 40875.21,
+        "top": 74295.46
+       },
+       "bytes": 5024,
+       "webp_quality": 80,
+       "sha256": "6d5d0e4eac5935c6ca201da13cbf6cc0e0a91ea1366d010e45c4c2bb0c1c607e"
+      },
+      {
+       "path": "parishes/maps/tiles/22087-r0c2.webp",
+       "row": 0,
+       "col": 2,
+       "px_bounds": [
+        2048,
+        0,
+        3072,
+        1024
+       ],
+       "bounds_local_m": {
+        "left": 12367.5,
+        "right": 45787.74,
+        "bottom": 40875.21,
+        "top": 74295.46
+       },
+       "bytes": 7300,
+       "webp_quality": 80,
+       "sha256": "89ce054a4d7e4fff87374042b488a73c7b589ef9233f12aece3e24d8f0462527"
+      },
+      {
+       "path": "parishes/maps/tiles/22087-r0c3.webp",
+       "row": 0,
+       "col": 3,
+       "px_bounds": [
+        3072,
+        0,
+        4096,
+        1024
+       ],
+       "bounds_local_m": {
+        "left": 45787.74,
+        "right": 79207.98,
+        "bottom": 40875.21,
+        "top": 74295.46
+       },
+       "bytes": 6320,
+       "webp_quality": 80,
+       "sha256": "aa69f92c917c2a7b295087898fc489c0c1261235d8b2d7782192b9f1e719cbc5"
+      },
+      {
+       "path": "parishes/maps/tiles/22087-r1c0.webp",
+       "row": 1,
+       "col": 0,
+       "px_bounds": [
+        0,
+        1024,
+        1024,
+        2048
+       ],
+       "bounds_local_m": {
+        "left": -54472.99,
+        "right": -21052.75,
+        "bottom": 7454.97,
+        "top": 40875.21
+       },
+       "bytes": 28992,
+       "webp_quality": 80,
+       "sha256": "643b615cfb034b6eb124d9fd5649f0a23595363acc7cf87b36e9f58dda51d9dd"
+      },
+      {
+       "path": "parishes/maps/tiles/22087-r1c1.webp",
+       "row": 1,
+       "col": 1,
+       "px_bounds": [
+        1024,
+        1024,
+        2048,
+        2048
+       ],
+       "bounds_local_m": {
+        "left": -21052.75,
+        "right": 12367.5,
+        "bottom": 7454.97,
+        "top": 40875.21
+       },
+       "bytes": 51442,
+       "webp_quality": 80,
+       "sha256": "bf062668bc97a625d50910388c91543ca046c79c566b943da72c71ed46a57ad2"
+      },
+      {
+       "path": "parishes/maps/tiles/22087-r1c2.webp",
+       "row": 1,
+       "col": 2,
+       "px_bounds": [
+        2048,
+        1024,
+        3072,
+        2048
+       ],
+       "bounds_local_m": {
+        "left": 12367.5,
+        "right": 45787.74,
+        "bottom": 7454.97,
+        "top": 40875.21
+       },
+       "bytes": 49130,
+       "webp_quality": 80,
+       "sha256": "e587db95ac3fddf4fd102936ddd2b372b3f4a8ed52e46556b56dde44922960eb"
+      },
+      {
+       "path": "parishes/maps/tiles/22087-r1c3.webp",
+       "row": 1,
+       "col": 3,
+       "px_bounds": [
+        3072,
+        1024,
+        4096,
+        2048
+       ],
+       "bounds_local_m": {
+        "left": 45787.74,
+        "right": 79207.98,
+        "bottom": 7454.97,
+        "top": 40875.21
+       },
+       "bytes": 9966,
+       "webp_quality": 80,
+       "sha256": "2be25d8fbcaed27dc4bdaf7fc467d8183f0ac4ca9575f399bff8ca7076c8c7e5"
+      },
+      {
+       "path": "parishes/maps/tiles/22087-r2c0.webp",
+       "row": 2,
+       "col": 0,
+       "px_bounds": [
+        0,
+        2048,
+        1024,
+        3072
+       ],
+       "bounds_local_m": {
+        "left": -54472.99,
+        "right": -21052.75,
+        "bottom": -25965.27,
+        "top": 7454.97
+       },
+       "bytes": 66852,
+       "webp_quality": 80,
+       "sha256": "7002adf4b9d78b79666055e20960e2e1d43b8543b671f415cd8bb228100cb19a"
+      },
+      {
+       "path": "parishes/maps/tiles/22087-r2c1.webp",
+       "row": 2,
+       "col": 1,
+       "px_bounds": [
+        1024,
+        2048,
+        2048,
+        3072
+       ],
+       "bounds_local_m": {
+        "left": -21052.75,
+        "right": 12367.5,
+        "bottom": -25965.27,
+        "top": 7454.97
+       },
+       "bytes": 189536,
+       "webp_quality": 80,
+       "sha256": "d20a8fd0f5417c5e4a7be08e319adc0c38aedad36058575707e94c1466803a55"
+      },
+      {
+       "path": "parishes/maps/tiles/22087-r2c2.webp",
+       "row": 2,
+       "col": 2,
+       "px_bounds": [
+        2048,
+        2048,
+        3072,
+        3072
+       ],
+       "bounds_local_m": {
+        "left": 12367.5,
+        "right": 45787.74,
+        "bottom": -25965.27,
+        "top": 7454.97
+       },
+       "bytes": 43778,
+       "webp_quality": 80,
+       "sha256": "dbdad76a37f13bec88fa2e081d148b686c86e0e8b0e528bc5cb45016340622a6"
+      },
+      {
+       "path": "parishes/maps/tiles/22087-r2c3.webp",
+       "row": 2,
+       "col": 3,
+       "px_bounds": [
+        3072,
+        2048,
+        4096,
+        3072
+       ],
+       "bounds_local_m": {
+        "left": 45787.74,
+        "right": 79207.98,
+        "bottom": -25965.27,
+        "top": 7454.97
+       },
+       "bytes": 12026,
+       "webp_quality": 80,
+       "sha256": "ca47dd9c80013d6e363fd92b38a4c5619df65fd121bc8fda60c08b4f3a970d01"
+      },
+      {
+       "path": "parishes/maps/tiles/22087-r3c0.webp",
+       "row": 3,
+       "col": 0,
+       "px_bounds": [
+        0,
+        3072,
+        1024,
+        4096
+       ],
+       "bounds_local_m": {
+        "left": -54472.99,
+        "right": -21052.75,
+        "bottom": -59385.51,
+        "top": -25965.27
+       },
+       "bytes": 5060,
+       "webp_quality": 80,
+       "sha256": "d32e083ce07ef8a06f8e48e43940f4414d15afbd00876bc65dab4f21be703daf"
+      },
+      {
+       "path": "parishes/maps/tiles/22087-r3c1.webp",
+       "row": 3,
+       "col": 1,
+       "px_bounds": [
+        1024,
+        3072,
+        2048,
+        4096
+       ],
+       "bounds_local_m": {
+        "left": -21052.75,
+        "right": 12367.5,
+        "bottom": -59385.51,
+        "top": -25965.27
+       },
+       "bytes": 9388,
+       "webp_quality": 80,
+       "sha256": "ea4fb3c77d3b9ab34e67ed3abd221921be89cd8980c94ae15d8af4fe2dbaca46"
+      },
+      {
+       "path": "parishes/maps/tiles/22087-r3c2.webp",
+       "row": 3,
+       "col": 2,
+       "px_bounds": [
+        2048,
+        3072,
+        3072,
+        4096
+       ],
+       "bounds_local_m": {
+        "left": 12367.5,
+        "right": 45787.74,
+        "bottom": -59385.51,
+        "top": -25965.27
+       },
+       "bytes": 3662,
+       "webp_quality": 80,
+       "sha256": "55c6fd0eaf8cac46a4d8f446bbd1339a3e02c302a509914ba76cfd714b1cb540"
+      },
+      {
+       "path": "parishes/maps/tiles/22087-r3c3.webp",
+       "row": 3,
+       "col": 3,
+       "px_bounds": [
+        3072,
+        3072,
+        4096,
+        4096
+       ],
+       "bounds_local_m": {
+        "left": 45787.74,
+        "right": 79207.98,
+        "bottom": -59385.51,
+        "top": -25965.27
+       },
+       "bytes": 1940,
+       "webp_quality": 80,
+       "sha256": "a48e77951a8aef6f66daa8baf41eee4fd394f896a355ff2fb39469fd823a9aae"
+      }
+     ]
+    },
+    "streets": {
+     "path": "parishes/maps/streets/22087.json",
+     "bytes": 81850,
+     "max_bytes": 1500000,
+     "sha256": "95caef6de33bc6dda8d2df06d1374dc73931f442c019f2223e312b24aac0d50c",
+     "counts": {
+      "arterial": 25,
+      "collector": 200,
+      "local": 2457
+     },
+     "vertices": 5433,
+     "note": "AUTHORED street polylines - the same procedural fabric the maps draw, NOT the real street grid; local metres [east_m, north_m] in the parish frame, rounded to 1 m",
+     "inside_rule": "every vertex lies inside the RECORDED coarse outline (checked, even-odd); INLAND water is NOT cut out at 1:10m, so some polylines lie over Lake Pontchartrain / Lake Maurepas / the river exactly where the maps draw fabric over them - treat water.labels areas as water, not road"
+    },
     "corners_world_m": {
      "nw": [
       -1582.76,
@@ -8985,6 +11463,360 @@
      "provenance": "AUTHORED procedural, seeded by FIPS; NOT the real street grid, land use or buildings"
     },
     "provenance": "DERIVED outline + AUTHORED fabric; not imagery",
+    "ground_tiles": {
+     "label": "Ground drawn from Census outline + AUTHORED fabric - not satellite, not a survey; carries no text",
+     "provenance": "DERIVED outline + AUTHORED fabric; not imagery; no text, pins, borders, banner or legend (those live only on the 4k map)",
+     "layers": [
+      "open water",
+      "neighbouring land",
+      "land use",
+      "building hints",
+      "local streets",
+      "collectors",
+      "arterials"
+     ],
+     "grid": 4,
+     "tile_px": 1024,
+     "max_bytes": 400000,
+     "crs": "parish LOCAL metres",
+     "rule": "tile (row, col) covers bounds_local_m; row 0 is north, col 0 is west; tiles abut exactly (shared edges are equal numbers) and their union is extent_local_m",
+     "tiles": [
+      {
+       "path": "parishes/maps/tiles/22089-r0c0.webp",
+       "row": 0,
+       "col": 0,
+       "px_bounds": [
+        0,
+        0,
+        1024,
+        1024
+       ],
+       "bounds_local_m": {
+        "left": -30477.87,
+        "right": -15269.61,
+        "bottom": 19480.54,
+        "top": 34688.8
+       },
+       "bytes": 7028,
+       "webp_quality": 80,
+       "sha256": "2c8a89b478f8799e5d5825914a526167d0d9410578db64fd2f21bd0651001237"
+      },
+      {
+       "path": "parishes/maps/tiles/22089-r0c1.webp",
+       "row": 0,
+       "col": 1,
+       "px_bounds": [
+        1024,
+        0,
+        2048,
+        1024
+       ],
+       "bounds_local_m": {
+        "left": -15269.61,
+        "right": -61.35,
+        "bottom": 19480.54,
+        "top": 34688.8
+       },
+       "bytes": 13578,
+       "webp_quality": 80,
+       "sha256": "952e760288157657aad6bbf91212d69381f2e88f26c9314c5a959c0c44186bcc"
+      },
+      {
+       "path": "parishes/maps/tiles/22089-r0c2.webp",
+       "row": 0,
+       "col": 2,
+       "px_bounds": [
+        2048,
+        0,
+        3072,
+        1024
+       ],
+       "bounds_local_m": {
+        "left": -61.35,
+        "right": 15146.91,
+        "bottom": 19480.54,
+        "top": 34688.8
+       },
+       "bytes": 82116,
+       "webp_quality": 80,
+       "sha256": "288700aef5c14fbb4c5b60833afc6d187000d689dca010545301e304bc91ba2b"
+      },
+      {
+       "path": "parishes/maps/tiles/22089-r0c3.webp",
+       "row": 0,
+       "col": 3,
+       "px_bounds": [
+        3072,
+        0,
+        4096,
+        1024
+       ],
+       "bounds_local_m": {
+        "left": 15146.91,
+        "right": 30355.17,
+        "bottom": 19480.54,
+        "top": 34688.8
+       },
+       "bytes": 5556,
+       "webp_quality": 80,
+       "sha256": "3f1d8b7e185d259e1da664339229b26c973aaa898a6c19f884497e4ce4202162"
+      },
+      {
+       "path": "parishes/maps/tiles/22089-r1c0.webp",
+       "row": 1,
+       "col": 0,
+       "px_bounds": [
+        0,
+        1024,
+        1024,
+        2048
+       ],
+       "bounds_local_m": {
+        "left": -30477.87,
+        "right": -15269.61,
+        "bottom": 4272.29,
+        "top": 19480.54
+       },
+       "bytes": 25514,
+       "webp_quality": 80,
+       "sha256": "a89f79550aa65c7c306eb418bed66e376379589b56f6032e487813559acbf4b2"
+      },
+      {
+       "path": "parishes/maps/tiles/22089-r1c1.webp",
+       "row": 1,
+       "col": 1,
+       "px_bounds": [
+        1024,
+        1024,
+        2048,
+        2048
+       ],
+       "bounds_local_m": {
+        "left": -15269.61,
+        "right": -61.35,
+        "bottom": 4272.29,
+        "top": 19480.54
+       },
+       "bytes": 232126,
+       "webp_quality": 80,
+       "sha256": "f1e183f1d469b5a04249af810fc289f75865c00561043b7bdbd3903757d5ccaf"
+      },
+      {
+       "path": "parishes/maps/tiles/22089-r1c2.webp",
+       "row": 1,
+       "col": 2,
+       "px_bounds": [
+        2048,
+        1024,
+        3072,
+        2048
+       ],
+       "bounds_local_m": {
+        "left": -61.35,
+        "right": 15146.91,
+        "bottom": 4272.29,
+        "top": 19480.54
+       },
+       "bytes": 134132,
+       "webp_quality": 80,
+       "sha256": "51fdd59cb12da9dc1eeba3cc5324838e5ae78a780540b23f125bbdf711c863ce"
+      },
+      {
+       "path": "parishes/maps/tiles/22089-r1c3.webp",
+       "row": 1,
+       "col": 3,
+       "px_bounds": [
+        3072,
+        1024,
+        4096,
+        2048
+       ],
+       "bounds_local_m": {
+        "left": 15146.91,
+        "right": 30355.17,
+        "bottom": 4272.29,
+        "top": 19480.54
+       },
+       "bytes": 3504,
+       "webp_quality": 80,
+       "sha256": "ef36501116d18b5d87313182c12591f4fda19c912d25a6a8e33142a60fb33ed0"
+      },
+      {
+       "path": "parishes/maps/tiles/22089-r2c0.webp",
+       "row": 2,
+       "col": 0,
+       "px_bounds": [
+        0,
+        2048,
+        1024,
+        3072
+       ],
+       "bounds_local_m": {
+        "left": -30477.87,
+        "right": -15269.61,
+        "bottom": -10935.97,
+        "top": 4272.29
+       },
+       "bytes": 17668,
+       "webp_quality": 80,
+       "sha256": "eea5a960bed159f2ad8089216cf33c613a24fb619ee491a981c2c485bc999cdc"
+      },
+      {
+       "path": "parishes/maps/tiles/22089-r2c1.webp",
+       "row": 2,
+       "col": 1,
+       "px_bounds": [
+        1024,
+        2048,
+        2048,
+        3072
+       ],
+       "bounds_local_m": {
+        "left": -15269.61,
+        "right": -61.35,
+        "bottom": -10935.97,
+        "top": 4272.29
+       },
+       "bytes": 261094,
+       "webp_quality": 80,
+       "sha256": "a13180b63588204de2168d491456a7ada53f382d3d8d7cf12744a8b6a42aa26e"
+      },
+      {
+       "path": "parishes/maps/tiles/22089-r2c2.webp",
+       "row": 2,
+       "col": 2,
+       "px_bounds": [
+        2048,
+        2048,
+        3072,
+        3072
+       ],
+       "bounds_local_m": {
+        "left": -61.35,
+        "right": 15146.91,
+        "bottom": -10935.97,
+        "top": 4272.29
+       },
+       "bytes": 201114,
+       "webp_quality": 80,
+       "sha256": "3966b3546c427230338d0772a33d1f36d9df562881a33873683a34839ad1ac23"
+      },
+      {
+       "path": "parishes/maps/tiles/22089-r2c3.webp",
+       "row": 2,
+       "col": 3,
+       "px_bounds": [
+        3072,
+        2048,
+        4096,
+        3072
+       ],
+       "bounds_local_m": {
+        "left": 15146.91,
+        "right": 30355.17,
+        "bottom": -10935.97,
+        "top": 4272.29
+       },
+       "bytes": 13862,
+       "webp_quality": 80,
+       "sha256": "e1dd3a9fccc3cc1b3eb8b4acdb60cf21832e890c264a951f7311936cf2134823"
+      },
+      {
+       "path": "parishes/maps/tiles/22089-r3c0.webp",
+       "row": 3,
+       "col": 0,
+       "px_bounds": [
+        0,
+        3072,
+        1024,
+        4096
+       ],
+       "bounds_local_m": {
+        "left": -30477.87,
+        "right": -15269.61,
+        "bottom": -26144.23,
+        "top": -10935.97
+       },
+       "bytes": 1938,
+       "webp_quality": 80,
+       "sha256": "9ef396200ceefe14745188e35ba5667d127940d8e5c4c144effe44fe316df874"
+      },
+      {
+       "path": "parishes/maps/tiles/22089-r3c1.webp",
+       "row": 3,
+       "col": 1,
+       "px_bounds": [
+        1024,
+        3072,
+        2048,
+        4096
+       ],
+       "bounds_local_m": {
+        "left": -15269.61,
+        "right": -61.35,
+        "bottom": -26144.23,
+        "top": -10935.97
+       },
+       "bytes": 53848,
+       "webp_quality": 80,
+       "sha256": "b71aed0cc7ac548242fa2185eee46db491d21b7e78eecdb190df8c11ee28e3f4"
+      },
+      {
+       "path": "parishes/maps/tiles/22089-r3c2.webp",
+       "row": 3,
+       "col": 2,
+       "px_bounds": [
+        2048,
+        3072,
+        3072,
+        4096
+       ],
+       "bounds_local_m": {
+        "left": -61.35,
+        "right": 15146.91,
+        "bottom": -26144.23,
+        "top": -10935.97
+       },
+       "bytes": 215096,
+       "webp_quality": 80,
+       "sha256": "28c60a278ca850cecc64ac158711f88790ad9513bab9b0ed430cc4e22bb14841"
+      },
+      {
+       "path": "parishes/maps/tiles/22089-r3c3.webp",
+       "row": 3,
+       "col": 3,
+       "px_bounds": [
+        3072,
+        3072,
+        4096,
+        4096
+       ],
+       "bounds_local_m": {
+        "left": 15146.91,
+        "right": 30355.17,
+        "bottom": -26144.23,
+        "top": -10935.97
+       },
+       "bytes": 13488,
+       "webp_quality": 80,
+       "sha256": "d0c546ee9f9d6d2945aaa18285addf3e7a9dbd47c121fe6672b25db756e08c10"
+      }
+     ]
+    },
+    "streets": {
+     "path": "parishes/maps/streets/22089.json",
+     "bytes": 197691,
+     "max_bytes": 1500000,
+     "sha256": "c3936b8868df0dc2622d1fa95010937e02224d38092c484522f52462edb3ec5d",
+     "counts": {
+      "arterial": 9,
+      "collector": 473,
+      "local": 6224
+     },
+     "vertices": 13488,
+     "note": "AUTHORED street polylines - the same procedural fabric the maps draw, NOT the real street grid; local metres [east_m, north_m] in the parish frame, rounded to 1 m",
+     "inside_rule": "every vertex lies inside the RECORDED coarse outline (checked, even-odd); INLAND water is NOT cut out at 1:10m, so some polylines lie over Lake Pontchartrain / Lake Maurepas / the river exactly where the maps draw fabric over them - treat water.labels areas as water, not road"
+    },
     "corners_world_m": {
      "nw": [
       -56303.4,
@@ -9558,6 +12390,360 @@
      "provenance": "AUTHORED procedural, seeded by FIPS; NOT the real street grid, land use or buildings"
     },
     "provenance": "DERIVED outline + AUTHORED fabric; not imagery",
+    "ground_tiles": {
+     "label": "Ground drawn from Census outline + AUTHORED fabric - not satellite, not a survey; carries no text",
+     "provenance": "DERIVED outline + AUTHORED fabric; not imagery; no text, pins, borders, banner or legend (those live only on the 4k map)",
+     "layers": [
+      "open water",
+      "neighbouring land",
+      "land use",
+      "building hints",
+      "local streets",
+      "collectors",
+      "arterials"
+     ],
+     "grid": 4,
+     "tile_px": 1024,
+     "max_bytes": 400000,
+     "crs": "parish LOCAL metres",
+     "rule": "tile (row, col) covers bounds_local_m; row 0 is north, col 0 is west; tiles abut exactly (shared edges are equal numbers) and their union is extent_local_m",
+     "tiles": [
+      {
+       "path": "parishes/maps/tiles/22093-r0c0.webp",
+       "row": 0,
+       "col": 0,
+       "px_bounds": [
+        0,
+        0,
+        1024,
+        1024
+       ],
+       "bounds_local_m": {
+        "left": -18482.12,
+        "right": -9534.47,
+        "bottom": 10137.57,
+        "top": 19085.21
+       },
+       "bytes": 1938,
+       "webp_quality": 80,
+       "sha256": "9ef396200ceefe14745188e35ba5667d127940d8e5c4c144effe44fe316df874"
+      },
+      {
+       "path": "parishes/maps/tiles/22093-r0c1.webp",
+       "row": 0,
+       "col": 1,
+       "px_bounds": [
+        1024,
+        0,
+        2048,
+        1024
+       ],
+       "bounds_local_m": {
+        "left": -9534.47,
+        "right": -586.83,
+        "bottom": 10137.57,
+        "top": 19085.21
+       },
+       "bytes": 26352,
+       "webp_quality": 80,
+       "sha256": "120f74ef2bf5e1396a2d941df300808a90aa2bb08efb50de1ffe38f183699a11"
+      },
+      {
+       "path": "parishes/maps/tiles/22093-r0c2.webp",
+       "row": 0,
+       "col": 2,
+       "px_bounds": [
+        2048,
+        0,
+        3072,
+        1024
+       ],
+       "bounds_local_m": {
+        "left": -586.83,
+        "right": 8360.82,
+        "bottom": 10137.57,
+        "top": 19085.21
+       },
+       "bytes": 76878,
+       "webp_quality": 80,
+       "sha256": "3652a9412588c26859f8f491825b387a6ddcf144c59657035eb2163cd5fca8c5"
+      },
+      {
+       "path": "parishes/maps/tiles/22093-r0c3.webp",
+       "row": 0,
+       "col": 3,
+       "px_bounds": [
+        3072,
+        0,
+        4096,
+        1024
+       ],
+       "bounds_local_m": {
+        "left": 8360.82,
+        "right": 17308.47,
+        "bottom": 10137.57,
+        "top": 19085.21
+       },
+       "bytes": 94162,
+       "webp_quality": 80,
+       "sha256": "a41a3a5f01a9dbc32e66ef9fd703a9463d2aa37886c0f012d2af387ea346797a"
+      },
+      {
+       "path": "parishes/maps/tiles/22093-r1c0.webp",
+       "row": 1,
+       "col": 0,
+       "px_bounds": [
+        0,
+        1024,
+        1024,
+        2048
+       ],
+       "bounds_local_m": {
+        "left": -18482.12,
+        "right": -9534.47,
+        "bottom": 1189.92,
+        "top": 10137.57
+       },
+       "bytes": 141190,
+       "webp_quality": 80,
+       "sha256": "8a5d543da4a2e5d493549d3755360d081417e6bfbbb07ad2aaf1355bd8f3faa3"
+      },
+      {
+       "path": "parishes/maps/tiles/22093-r1c1.webp",
+       "row": 1,
+       "col": 1,
+       "px_bounds": [
+        1024,
+        1024,
+        2048,
+        2048
+       ],
+       "bounds_local_m": {
+        "left": -9534.47,
+        "right": -586.83,
+        "bottom": 1189.92,
+        "top": 10137.57
+       },
+       "bytes": 234572,
+       "webp_quality": 80,
+       "sha256": "d39cff3b6a594caff35892d8f13e8ab04a49928062a310a72eeb48f9f9f88d48"
+      },
+      {
+       "path": "parishes/maps/tiles/22093-r1c2.webp",
+       "row": 1,
+       "col": 2,
+       "px_bounds": [
+        2048,
+        1024,
+        3072,
+        2048
+       ],
+       "bounds_local_m": {
+        "left": -586.83,
+        "right": 8360.82,
+        "bottom": 1189.92,
+        "top": 10137.57
+       },
+       "bytes": 292738,
+       "webp_quality": 80,
+       "sha256": "f208fe579f74b321b119346a2037cdfabdb51391b70dac4fda6a8b732c342da9"
+      },
+      {
+       "path": "parishes/maps/tiles/22093-r1c3.webp",
+       "row": 1,
+       "col": 3,
+       "px_bounds": [
+        3072,
+        1024,
+        4096,
+        2048
+       ],
+       "bounds_local_m": {
+        "left": 8360.82,
+        "right": 17308.47,
+        "bottom": 1189.92,
+        "top": 10137.57
+       },
+       "bytes": 132262,
+       "webp_quality": 80,
+       "sha256": "05aeff8c1628a7fa09a0ee06d683967ea4e0cb03dcebce98c8222b9114e7dc3e"
+      },
+      {
+       "path": "parishes/maps/tiles/22093-r2c0.webp",
+       "row": 2,
+       "col": 0,
+       "px_bounds": [
+        0,
+        2048,
+        1024,
+        3072
+       ],
+       "bounds_local_m": {
+        "left": -18482.12,
+        "right": -9534.47,
+        "bottom": -7757.73,
+        "top": 1189.92
+       },
+       "bytes": 153682,
+       "webp_quality": 80,
+       "sha256": "e227431b2937a7c8bc3313b529b44b647975530c54056682ea6827fbe4e88d19"
+      },
+      {
+       "path": "parishes/maps/tiles/22093-r2c1.webp",
+       "row": 2,
+       "col": 1,
+       "px_bounds": [
+        1024,
+        2048,
+        2048,
+        3072
+       ],
+       "bounds_local_m": {
+        "left": -9534.47,
+        "right": -586.83,
+        "bottom": -7757.73,
+        "top": 1189.92
+       },
+       "bytes": 263226,
+       "webp_quality": 80,
+       "sha256": "f6c649520b2287adf7d3e31c585a127a9a1ba4d9e7f658b3e075e41bea5f1d6c"
+      },
+      {
+       "path": "parishes/maps/tiles/22093-r2c2.webp",
+       "row": 2,
+       "col": 2,
+       "px_bounds": [
+        2048,
+        2048,
+        3072,
+        3072
+       ],
+       "bounds_local_m": {
+        "left": -586.83,
+        "right": 8360.82,
+        "bottom": -7757.73,
+        "top": 1189.92
+       },
+       "bytes": 224242,
+       "webp_quality": 80,
+       "sha256": "b0e645f10e324fb1200b61865e2c35ee547b0cea30a19a44cd63a41651e7eb8b"
+      },
+      {
+       "path": "parishes/maps/tiles/22093-r2c3.webp",
+       "row": 2,
+       "col": 3,
+       "px_bounds": [
+        3072,
+        2048,
+        4096,
+        3072
+       ],
+       "bounds_local_m": {
+        "left": 8360.82,
+        "right": 17308.47,
+        "bottom": -7757.73,
+        "top": 1189.92
+       },
+       "bytes": 85604,
+       "webp_quality": 80,
+       "sha256": "9a4b7fefbc12572c15c6a592d717fba27019350e5d2cd7cf343987800df8defd"
+      },
+      {
+       "path": "parishes/maps/tiles/22093-r3c0.webp",
+       "row": 3,
+       "col": 0,
+       "px_bounds": [
+        0,
+        3072,
+        1024,
+        4096
+       ],
+       "bounds_local_m": {
+        "left": -18482.12,
+        "right": -9534.47,
+        "bottom": -16705.38,
+        "top": -7757.73
+       },
+       "bytes": 27876,
+       "webp_quality": 80,
+       "sha256": "776089fbea248d149ea84cc207527de20a60dd8b6ca3f6f61ae6344e762b76a3"
+      },
+      {
+       "path": "parishes/maps/tiles/22093-r3c1.webp",
+       "row": 3,
+       "col": 1,
+       "px_bounds": [
+        1024,
+        3072,
+        2048,
+        4096
+       ],
+       "bounds_local_m": {
+        "left": -9534.47,
+        "right": -586.83,
+        "bottom": -16705.38,
+        "top": -7757.73
+       },
+       "bytes": 148312,
+       "webp_quality": 80,
+       "sha256": "ac9697e4f754707d8dd8d595d998b2f91454c3e58e10e02c0a69a1ca3e9b62d7"
+      },
+      {
+       "path": "parishes/maps/tiles/22093-r3c2.webp",
+       "row": 3,
+       "col": 2,
+       "px_bounds": [
+        2048,
+        3072,
+        3072,
+        4096
+       ],
+       "bounds_local_m": {
+        "left": -586.83,
+        "right": 8360.82,
+        "bottom": -16705.38,
+        "top": -7757.73
+       },
+       "bytes": 121628,
+       "webp_quality": 80,
+       "sha256": "0dd287f20505dbdb377dec4279a5d344b1609ae80497df9b18d556faaf8a1bc5"
+      },
+      {
+       "path": "parishes/maps/tiles/22093-r3c3.webp",
+       "row": 3,
+       "col": 3,
+       "px_bounds": [
+        3072,
+        3072,
+        4096,
+        4096
+       ],
+       "bounds_local_m": {
+        "left": 8360.82,
+        "right": 17308.47,
+        "bottom": -16705.38,
+        "top": -7757.73
+       },
+       "bytes": 70282,
+       "webp_quality": 80,
+       "sha256": "e94c85fca8d7641eeb51f898c9d6fe024eca944df0f4ff9d1fd8a5e9e35d992f"
+      }
+     ]
+    },
+    "streets": {
+     "path": "parishes/maps/streets/22093.json",
+     "bytes": 141995,
+     "max_bytes": 1500000,
+     "sha256": "b25a60e96171e9461caf0bb75df45d7bd7758c3dbaa7a4c860ea5155bb318aa6",
+     "counts": {
+      "arterial": 6,
+      "collector": 313,
+      "local": 4569
+     },
+     "vertices": 9868,
+     "note": "AUTHORED street polylines - the same procedural fabric the maps draw, NOT the real street grid; local metres [east_m, north_m] in the parish frame, rounded to 1 m",
+     "inside_rule": "every vertex lies inside the RECORDED coarse outline (checked, even-odd); INLAND water is NOT cut out at 1:10m, so some polylines lie over Lake Pontchartrain / Lake Maurepas / the river exactly where the maps draw fabric over them - treat water.labels areas as water, not road"
+    },
     "corners_world_m": {
      "nw": [
       -86510.27,
@@ -10516,6 +13702,360 @@
      "provenance": "AUTHORED procedural, seeded by FIPS; NOT the real street grid, land use or buildings"
     },
     "provenance": "DERIVED outline + AUTHORED fabric; not imagery",
+    "ground_tiles": {
+     "label": "Ground drawn from Census outline + AUTHORED fabric - not satellite, not a survey; carries no text",
+     "provenance": "DERIVED outline + AUTHORED fabric; not imagery; no text, pins, borders, banner or legend (those live only on the 4k map)",
+     "layers": [
+      "open water",
+      "neighbouring land",
+      "land use",
+      "building hints",
+      "local streets",
+      "collectors",
+      "arterials"
+     ],
+     "grid": 4,
+     "tile_px": 1024,
+     "max_bytes": 400000,
+     "crs": "parish LOCAL metres",
+     "rule": "tile (row, col) covers bounds_local_m; row 0 is north, col 0 is west; tiles abut exactly (shared edges are equal numbers) and their union is extent_local_m",
+     "tiles": [
+      {
+       "path": "parishes/maps/tiles/22095-r0c0.webp",
+       "row": 0,
+       "col": 0,
+       "px_bounds": [
+        0,
+        0,
+        1024,
+        1024
+       ],
+       "bounds_local_m": {
+        "left": -25089.25,
+        "right": -10273.26,
+        "bottom": 12513.76,
+        "top": 27329.75
+       },
+       "bytes": 1938,
+       "webp_quality": 80,
+       "sha256": "9ef396200ceefe14745188e35ba5667d127940d8e5c4c144effe44fe316df874"
+      },
+      {
+       "path": "parishes/maps/tiles/22095-r0c1.webp",
+       "row": 0,
+       "col": 1,
+       "px_bounds": [
+        1024,
+        0,
+        2048,
+        1024
+       ],
+       "bounds_local_m": {
+        "left": -10273.26,
+        "right": 4542.72,
+        "bottom": 12513.76,
+        "top": 27329.75
+       },
+       "bytes": 36448,
+       "webp_quality": 80,
+       "sha256": "db9d2f41ddfc586463a056fe015661fd2fdd678a3ac484d311997c08ff314d8f"
+      },
+      {
+       "path": "parishes/maps/tiles/22095-r0c2.webp",
+       "row": 0,
+       "col": 2,
+       "px_bounds": [
+        2048,
+        0,
+        3072,
+        1024
+       ],
+       "bounds_local_m": {
+        "left": 4542.72,
+        "right": 19358.7,
+        "bottom": 12513.76,
+        "top": 27329.75
+       },
+       "bytes": 97682,
+       "webp_quality": 80,
+       "sha256": "624a6526c06a0d893fe8cf736653afed58396474310918337041e7b368eae771"
+      },
+      {
+       "path": "parishes/maps/tiles/22095-r0c3.webp",
+       "row": 0,
+       "col": 3,
+       "px_bounds": [
+        3072,
+        0,
+        4096,
+        1024
+       ],
+       "bounds_local_m": {
+        "left": 19358.7,
+        "right": 34174.69,
+        "bottom": 12513.76,
+        "top": 27329.75
+       },
+       "bytes": 33114,
+       "webp_quality": 80,
+       "sha256": "cf25bbb110e588b59e1145f1939d7ac5aefc0112a177876d2b769ada69261ca1"
+      },
+      {
+       "path": "parishes/maps/tiles/22095-r1c0.webp",
+       "row": 1,
+       "col": 0,
+       "px_bounds": [
+        0,
+        1024,
+        1024,
+        2048
+       ],
+       "bounds_local_m": {
+        "left": -25089.25,
+        "right": -10273.26,
+        "bottom": -2302.22,
+        "top": 12513.76
+       },
+       "bytes": 105060,
+       "webp_quality": 80,
+       "sha256": "a614e216210c5548599848f530e1fec7cb9a5d737cf7e13fe89ba6ddaa43eccf"
+      },
+      {
+       "path": "parishes/maps/tiles/22095-r1c1.webp",
+       "row": 1,
+       "col": 1,
+       "px_bounds": [
+        1024,
+        1024,
+        2048,
+        2048
+       ],
+       "bounds_local_m": {
+        "left": -10273.26,
+        "right": 4542.72,
+        "bottom": -2302.22,
+        "top": 12513.76
+       },
+       "bytes": 239570,
+       "webp_quality": 80,
+       "sha256": "7f349a57b225b2fffe6b988fbfa71371cbc83b6f6b1204cfd455c80ec65c73b5"
+      },
+      {
+       "path": "parishes/maps/tiles/22095-r1c2.webp",
+       "row": 1,
+       "col": 2,
+       "px_bounds": [
+        2048,
+        1024,
+        3072,
+        2048
+       ],
+       "bounds_local_m": {
+        "left": 4542.72,
+        "right": 19358.7,
+        "bottom": -2302.22,
+        "top": 12513.76
+       },
+       "bytes": 257556,
+       "webp_quality": 80,
+       "sha256": "a02f82130d6907fe0e78ff9e65d33d9c8c8ac8cdfddbd03ac41d710c7cab5dfe"
+      },
+      {
+       "path": "parishes/maps/tiles/22095-r1c3.webp",
+       "row": 1,
+       "col": 3,
+       "px_bounds": [
+        3072,
+        1024,
+        4096,
+        2048
+       ],
+       "bounds_local_m": {
+        "left": 19358.7,
+        "right": 34174.69,
+        "bottom": -2302.22,
+        "top": 12513.76
+       },
+       "bytes": 94400,
+       "webp_quality": 80,
+       "sha256": "b90e4eecf73ac887bc22e026c414bce3250dd2daf73be35cc77f878e174372a5"
+      },
+      {
+       "path": "parishes/maps/tiles/22095-r2c0.webp",
+       "row": 2,
+       "col": 0,
+       "px_bounds": [
+        0,
+        2048,
+        1024,
+        3072
+       ],
+       "bounds_local_m": {
+        "left": -25089.25,
+        "right": -10273.26,
+        "bottom": -17118.21,
+        "top": -2302.22
+       },
+       "bytes": 166008,
+       "webp_quality": 80,
+       "sha256": "cf88737e7751a85bbd1a588065ff6723b546bfae0520a89e4a38b5f8d8d4a4b6"
+      },
+      {
+       "path": "parishes/maps/tiles/22095-r2c1.webp",
+       "row": 2,
+       "col": 1,
+       "px_bounds": [
+        1024,
+        2048,
+        2048,
+        3072
+       ],
+       "bounds_local_m": {
+        "left": -10273.26,
+        "right": 4542.72,
+        "bottom": -17118.21,
+        "top": -2302.22
+       },
+       "bytes": 192980,
+       "webp_quality": 80,
+       "sha256": "cf48b0e7727df83b018c409c08acd267f5db0a1cc8d692b6cb0afe046df2fd42"
+      },
+      {
+       "path": "parishes/maps/tiles/22095-r2c2.webp",
+       "row": 2,
+       "col": 2,
+       "px_bounds": [
+        2048,
+        2048,
+        3072,
+        3072
+       ],
+       "bounds_local_m": {
+        "left": 4542.72,
+        "right": 19358.7,
+        "bottom": -17118.21,
+        "top": -2302.22
+       },
+       "bytes": 16902,
+       "webp_quality": 80,
+       "sha256": "d6ca3f0f243b0716ed3b48c0df09dee661e0b19476689f089609a84c89a647b7"
+      },
+      {
+       "path": "parishes/maps/tiles/22095-r2c3.webp",
+       "row": 2,
+       "col": 3,
+       "px_bounds": [
+        3072,
+        2048,
+        4096,
+        3072
+       ],
+       "bounds_local_m": {
+        "left": 19358.7,
+        "right": 34174.69,
+        "bottom": -17118.21,
+        "top": -2302.22
+       },
+       "bytes": 2976,
+       "webp_quality": 80,
+       "sha256": "5abefda458683932a0b8defdb55d90f1f022bb13ad56879d6f3f1c34bad36bd5"
+      },
+      {
+       "path": "parishes/maps/tiles/22095-r3c0.webp",
+       "row": 3,
+       "col": 0,
+       "px_bounds": [
+        0,
+        3072,
+        1024,
+        4096
+       ],
+       "bounds_local_m": {
+        "left": -25089.25,
+        "right": -10273.26,
+        "bottom": -31934.19,
+        "top": -17118.21
+       },
+       "bytes": 83894,
+       "webp_quality": 80,
+       "sha256": "5419ad90e995d47cbb1071d69d0ae688deb86ec55e9b46e9dc73ad50e6dfe4c9"
+      },
+      {
+       "path": "parishes/maps/tiles/22095-r3c1.webp",
+       "row": 3,
+       "col": 1,
+       "px_bounds": [
+        1024,
+        3072,
+        2048,
+        4096
+       ],
+       "bounds_local_m": {
+        "left": -10273.26,
+        "right": 4542.72,
+        "bottom": -31934.19,
+        "top": -17118.21
+       },
+       "bytes": 50944,
+       "webp_quality": 80,
+       "sha256": "69f273fdb02e41524c9f26484687ab15336be7b53cd2d206fc3a987f7bc477e8"
+      },
+      {
+       "path": "parishes/maps/tiles/22095-r3c2.webp",
+       "row": 3,
+       "col": 2,
+       "px_bounds": [
+        2048,
+        3072,
+        3072,
+        4096
+       ],
+       "bounds_local_m": {
+        "left": 4542.72,
+        "right": 19358.7,
+        "bottom": -31934.19,
+        "top": -17118.21
+       },
+       "bytes": 2858,
+       "webp_quality": 80,
+       "sha256": "4a6bf46a5fce478d07708af8ebbeab86b0c3f11f167cb2b5e2f48a3f06ec5627"
+      },
+      {
+       "path": "parishes/maps/tiles/22095-r3c3.webp",
+       "row": 3,
+       "col": 3,
+       "px_bounds": [
+        3072,
+        3072,
+        4096,
+        4096
+       ],
+       "bounds_local_m": {
+        "left": 19358.7,
+        "right": 34174.69,
+        "bottom": -31934.19,
+        "top": -17118.21
+       },
+       "bytes": 5242,
+       "webp_quality": 80,
+       "sha256": "d18f0900758c0b45f1ebd772acf7988165fc096d0ee997a20696d8d2bf855a21"
+      }
+     ]
+    },
+    "streets": {
+     "path": "parishes/maps/streets/22095.json",
+     "bytes": 214484,
+     "max_bytes": 1500000,
+     "sha256": "2eccfdbc5b6c1e8c6ba70de40b241d1a206927c37bd5f95a5dbd677d88d19e08",
+     "counts": {
+      "arterial": 11,
+      "collector": 499,
+      "local": 6650
+     },
+     "vertices": 14404,
+     "note": "AUTHORED street polylines - the same procedural fabric the maps draw, NOT the real street grid; local metres [east_m, north_m] in the parish frame, rounded to 1 m",
+     "inside_rule": "every vertex lies inside the RECORDED coarse outline (checked, even-odd); INLAND water is NOT cut out at 1:10m, so some polylines lie over Lake Pontchartrain / Lake Maurepas / the river exactly where the maps draw fabric over them - treat water.labels areas as water, not road"
+    },
     "corners_world_m": {
      "nw": [
       -61808.58,
@@ -11330,6 +14870,360 @@
      "provenance": "AUTHORED procedural, seeded by FIPS; NOT the real street grid, land use or buildings"
     },
     "provenance": "DERIVED outline + AUTHORED fabric; not imagery",
+    "ground_tiles": {
+     "label": "Ground drawn from Census outline + AUTHORED fabric - not satellite, not a survey; carries no text",
+     "provenance": "DERIVED outline + AUTHORED fabric; not imagery; no text, pins, borders, banner or legend (those live only on the 4k map)",
+     "layers": [
+      "open water",
+      "neighbouring land",
+      "land use",
+      "building hints",
+      "local streets",
+      "collectors",
+      "arterials"
+     ],
+     "grid": 4,
+     "tile_px": 1024,
+     "max_bytes": 400000,
+     "crs": "parish LOCAL metres",
+     "rule": "tile (row, col) covers bounds_local_m; row 0 is north, col 0 is west; tiles abut exactly (shared edges are equal numbers) and their union is extent_local_m",
+     "tiles": [
+      {
+       "path": "parishes/maps/tiles/22103-r0c0.webp",
+       "row": 0,
+       "col": 0,
+       "px_bounds": [
+        0,
+        0,
+        1024,
+        1024
+       ],
+       "bounds_local_m": {
+        "left": -34118.99,
+        "right": -13855.74,
+        "bottom": 25029.77,
+        "top": 45293.03
+       },
+       "bytes": 69004,
+       "webp_quality": 80,
+       "sha256": "2cf42cce06b8df77dc6124d389336d0e4ee2a01ad35b0778ad677725f8ee7e4c"
+      },
+      {
+       "path": "parishes/maps/tiles/22103-r0c1.webp",
+       "row": 0,
+       "col": 1,
+       "px_bounds": [
+        1024,
+        0,
+        2048,
+        1024
+       ],
+       "bounds_local_m": {
+        "left": -13855.74,
+        "right": 6407.51,
+        "bottom": 25029.77,
+        "top": 45293.03
+       },
+       "bytes": 52502,
+       "webp_quality": 80,
+       "sha256": "e26d6717537f041eb3ab7b4bfd96f71118d4e57e7bfaed0c287aabbc67a7490c"
+      },
+      {
+       "path": "parishes/maps/tiles/22103-r0c2.webp",
+       "row": 0,
+       "col": 2,
+       "px_bounds": [
+        2048,
+        0,
+        3072,
+        1024
+       ],
+       "bounds_local_m": {
+        "left": 6407.51,
+        "right": 26670.77,
+        "bottom": 25029.77,
+        "top": 45293.03
+       },
+       "bytes": 18406,
+       "webp_quality": 80,
+       "sha256": "271b22fb0d8e9a36f4ea55453b8a372a4882a507f2e9dd5e4bb78f945a53627f"
+      },
+      {
+       "path": "parishes/maps/tiles/22103-r0c3.webp",
+       "row": 0,
+       "col": 3,
+       "px_bounds": [
+        3072,
+        0,
+        4096,
+        1024
+       ],
+       "bounds_local_m": {
+        "left": 26670.77,
+        "right": 46934.02,
+        "bottom": 25029.77,
+        "top": 45293.03
+       },
+       "bytes": 2040,
+       "webp_quality": 80,
+       "sha256": "fa75bc7e467b9c51cf25e58b2d7d25e36588726ddacc130c47531cf2f964e86a"
+      },
+      {
+       "path": "parishes/maps/tiles/22103-r1c0.webp",
+       "row": 1,
+       "col": 0,
+       "px_bounds": [
+        0,
+        1024,
+        1024,
+        2048
+       ],
+       "bounds_local_m": {
+        "left": -34118.99,
+        "right": -13855.74,
+        "bottom": 4766.52,
+        "top": 25029.77
+       },
+       "bytes": 189256,
+       "webp_quality": 80,
+       "sha256": "8882b74d0e0901cc276796c5e4adcc5d38b5046d43f883d74cab64aecccdc695"
+      },
+      {
+       "path": "parishes/maps/tiles/22103-r1c1.webp",
+       "row": 1,
+       "col": 1,
+       "px_bounds": [
+        1024,
+        1024,
+        2048,
+        2048
+       ],
+       "bounds_local_m": {
+        "left": -13855.74,
+        "right": 6407.51,
+        "bottom": 4766.52,
+        "top": 25029.77
+       },
+       "bytes": 302288,
+       "webp_quality": 80,
+       "sha256": "db354aa715262e9e56da8af355cdafbfbd2ca6fbc8c41763517b9914b9ef5fdd"
+      },
+      {
+       "path": "parishes/maps/tiles/22103-r1c2.webp",
+       "row": 1,
+       "col": 2,
+       "px_bounds": [
+        2048,
+        1024,
+        3072,
+        2048
+       ],
+       "bounds_local_m": {
+        "left": 6407.51,
+        "right": 26670.77,
+        "bottom": 4766.52,
+        "top": 25029.77
+       },
+       "bytes": 155678,
+       "webp_quality": 80,
+       "sha256": "39437b89b2b7aee3aad3eb8cd4d3b3c7ba7f71319c8f66f2946e3c2ee6ad3ac9"
+      },
+      {
+       "path": "parishes/maps/tiles/22103-r1c3.webp",
+       "row": 1,
+       "col": 3,
+       "px_bounds": [
+        3072,
+        1024,
+        4096,
+        2048
+       ],
+       "bounds_local_m": {
+        "left": 26670.77,
+        "right": 46934.02,
+        "bottom": 4766.52,
+        "top": 25029.77
+       },
+       "bytes": 3288,
+       "webp_quality": 80,
+       "sha256": "c9fbe237fb9f0516faa74b9ded1cf821b178728182a42a0ae492314970d7dce1"
+      },
+      {
+       "path": "parishes/maps/tiles/22103-r2c0.webp",
+       "row": 2,
+       "col": 0,
+       "px_bounds": [
+        0,
+        2048,
+        1024,
+        3072
+       ],
+       "bounds_local_m": {
+        "left": -34118.99,
+        "right": -13855.74,
+        "bottom": -15496.73,
+        "top": 4766.52
+       },
+       "bytes": 165070,
+       "webp_quality": 80,
+       "sha256": "c724cc6ad97916232a4d7b76c4f6f5c94c841c2eca755df36e5e7039bc33ad30"
+      },
+      {
+       "path": "parishes/maps/tiles/22103-r2c1.webp",
+       "row": 2,
+       "col": 1,
+       "px_bounds": [
+        1024,
+        2048,
+        2048,
+        3072
+       ],
+       "bounds_local_m": {
+        "left": -13855.74,
+        "right": 6407.51,
+        "bottom": -15496.73,
+        "top": 4766.52
+       },
+       "bytes": 327804,
+       "webp_quality": 80,
+       "sha256": "f1cde0d8cc52effe35574b034842b1eaa8cc11d6e118db28e291de43b5e68896"
+      },
+      {
+       "path": "parishes/maps/tiles/22103-r2c2.webp",
+       "row": 2,
+       "col": 2,
+       "px_bounds": [
+        2048,
+        2048,
+        3072,
+        3072
+       ],
+       "bounds_local_m": {
+        "left": 6407.51,
+        "right": 26670.77,
+        "bottom": -15496.73,
+        "top": 4766.52
+       },
+       "bytes": 306796,
+       "webp_quality": 80,
+       "sha256": "7ef784b423b47bc32e3127e45cdcc944fd69c217b3f867f843ef401b916af24d"
+      },
+      {
+       "path": "parishes/maps/tiles/22103-r2c3.webp",
+       "row": 2,
+       "col": 3,
+       "px_bounds": [
+        3072,
+        2048,
+        4096,
+        3072
+       ],
+       "bounds_local_m": {
+        "left": 26670.77,
+        "right": 46934.02,
+        "bottom": -15496.73,
+        "top": 4766.52
+       },
+       "bytes": 38206,
+       "webp_quality": 80,
+       "sha256": "f9d917482be25f662cbe8537af8c33dde1cb62be8c51a34c47f89a9bcf54628f"
+      },
+      {
+       "path": "parishes/maps/tiles/22103-r3c0.webp",
+       "row": 3,
+       "col": 0,
+       "px_bounds": [
+        0,
+        3072,
+        1024,
+        4096
+       ],
+       "bounds_local_m": {
+        "left": -34118.99,
+        "right": -13855.74,
+        "bottom": -35759.99,
+        "top": -15496.73
+       },
+       "bytes": 42516,
+       "webp_quality": 80,
+       "sha256": "7d78134c4573c8821133ebe361e8260eb006a27a2d4663036f42d08d85775f19"
+      },
+      {
+       "path": "parishes/maps/tiles/22103-r3c1.webp",
+       "row": 3,
+       "col": 1,
+       "px_bounds": [
+        1024,
+        3072,
+        2048,
+        4096
+       ],
+       "bounds_local_m": {
+        "left": -13855.74,
+        "right": 6407.51,
+        "bottom": -35759.99,
+        "top": -15496.73
+       },
+       "bytes": 158230,
+       "webp_quality": 80,
+       "sha256": "360ce9eeda5e6d56873d51c76dca081d8afd7c1f3577b256cbe071d1b1efdc5f"
+      },
+      {
+       "path": "parishes/maps/tiles/22103-r3c2.webp",
+       "row": 3,
+       "col": 2,
+       "px_bounds": [
+        2048,
+        3072,
+        3072,
+        4096
+       ],
+       "bounds_local_m": {
+        "left": 6407.51,
+        "right": 26670.77,
+        "bottom": -35759.99,
+        "top": -15496.73
+       },
+       "bytes": 149028,
+       "webp_quality": 80,
+       "sha256": "34b3d1e788c234955c2fa0e9d59a0e47561b32515274f1158be0a16490048419"
+      },
+      {
+       "path": "parishes/maps/tiles/22103-r3c3.webp",
+       "row": 3,
+       "col": 3,
+       "px_bounds": [
+        3072,
+        3072,
+        4096,
+        4096
+       ],
+       "bounds_local_m": {
+        "left": 26670.77,
+        "right": 46934.02,
+        "bottom": -35759.99,
+        "top": -15496.73
+       },
+       "bytes": 70862,
+       "webp_quality": 80,
+       "sha256": "6f5e8e75675858a61d1482236c062a70b8aa80fc5921991ca66e94e67947738b"
+      }
+     ]
+    },
+    "streets": {
+     "path": "parishes/maps/streets/22103.json",
+     "bytes": 325202,
+     "max_bytes": 1500000,
+     "sha256": "70030652566eea993fecb1ffbf1f88883b25c8cbacb6e819e60f70c78ce84b18",
+     "counts": {
+      "arterial": 13,
+      "collector": 772,
+      "local": 9816
+     },
+     "vertices": 21334,
+     "note": "AUTHORED street polylines - the same procedural fabric the maps draw, NOT the real street grid; local metres [east_m, north_m] in the parish frame, rounded to 1 m",
+     "inside_rule": "every vertex lies inside the RECORDED coarse outline (checked, even-odd); INLAND water is NOT cut out at 1:10m, so some polylines lie over Lake Pontchartrain / Lake Maurepas / the river exactly where the maps draw fabric over them - treat water.labels areas as water, not road"
+    },
     "corners_world_m": {
      "nw": [
       -21496.67,
@@ -11938,6 +15832,360 @@
      "provenance": "AUTHORED procedural, seeded by FIPS; NOT the real street grid, land use or buildings"
     },
     "provenance": "DERIVED outline + AUTHORED fabric; not imagery",
+    "ground_tiles": {
+     "label": "Ground drawn from Census outline + AUTHORED fabric - not satellite, not a survey; carries no text",
+     "provenance": "DERIVED outline + AUTHORED fabric; not imagery; no text, pins, borders, banner or legend (those live only on the 4k map)",
+     "layers": [
+      "open water",
+      "neighbouring land",
+      "land use",
+      "building hints",
+      "local streets",
+      "collectors",
+      "arterials"
+     ],
+     "grid": 4,
+     "tile_px": 1024,
+     "max_bytes": 400000,
+     "crs": "parish LOCAL metres",
+     "rule": "tile (row, col) covers bounds_local_m; row 0 is north, col 0 is west; tiles abut exactly (shared edges are equal numbers) and their union is extent_local_m",
+     "tiles": [
+      {
+       "path": "parishes/maps/tiles/22105-r0c0.webp",
+       "row": 0,
+       "col": 0,
+       "px_bounds": [
+        0,
+        0,
+        1024,
+        1024
+       ],
+       "bounds_local_m": {
+        "left": -45478.01,
+        "right": -20795.78,
+        "bottom": 26639.79,
+        "top": 51322.03
+       },
+       "bytes": 3876,
+       "webp_quality": 80,
+       "sha256": "f902958ca88edcab297ae3ad7191c074e588b3e6bd5eceea20188485b535719b"
+      },
+      {
+       "path": "parishes/maps/tiles/22105-r0c1.webp",
+       "row": 0,
+       "col": 1,
+       "px_bounds": [
+        1024,
+        0,
+        2048,
+        1024
+       ],
+       "bounds_local_m": {
+        "left": -20795.78,
+        "right": 3886.46,
+        "bottom": 26639.79,
+        "top": 51322.03
+       },
+       "bytes": 143864,
+       "webp_quality": 80,
+       "sha256": "a1086fde018daa52890bc365f86448ea915b744a22dbe154ead430d11cef5dda"
+      },
+      {
+       "path": "parishes/maps/tiles/22105-r0c2.webp",
+       "row": 0,
+       "col": 2,
+       "px_bounds": [
+        2048,
+        0,
+        3072,
+        1024
+       ],
+       "bounds_local_m": {
+        "left": 3886.46,
+        "right": 28568.7,
+        "bottom": 26639.79,
+        "top": 51322.03
+       },
+       "bytes": 20916,
+       "webp_quality": 80,
+       "sha256": "3e59d7bba82cf34cbb9f674d2ecd8a389c34af98a7e5c4543fd3e4f978d30e37"
+      },
+      {
+       "path": "parishes/maps/tiles/22105-r0c3.webp",
+       "row": 0,
+       "col": 3,
+       "px_bounds": [
+        3072,
+        0,
+        4096,
+        1024
+       ],
+       "bounds_local_m": {
+        "left": 28568.7,
+        "right": 53250.93,
+        "bottom": 26639.79,
+        "top": 51322.03
+       },
+       "bytes": 2406,
+       "webp_quality": 80,
+       "sha256": "27860fe90d11c7f5d56c68f5a21ebc801f697c3ae0356b490f3698e41e677064"
+      },
+      {
+       "path": "parishes/maps/tiles/22105-r1c0.webp",
+       "row": 1,
+       "col": 0,
+       "px_bounds": [
+        0,
+        1024,
+        1024,
+        2048
+       ],
+       "bounds_local_m": {
+        "left": -45478.01,
+        "right": -20795.78,
+        "bottom": 1957.56,
+        "top": 26639.79
+       },
+       "bytes": 4214,
+       "webp_quality": 80,
+       "sha256": "31d19c86dc732f5939c65ee3b8071f1c086129404a3e93f687bd6a510998fd71"
+      },
+      {
+       "path": "parishes/maps/tiles/22105-r1c1.webp",
+       "row": 1,
+       "col": 1,
+       "px_bounds": [
+        1024,
+        1024,
+        2048,
+        2048
+       ],
+       "bounds_local_m": {
+        "left": -20795.78,
+        "right": 3886.46,
+        "bottom": 1957.56,
+        "top": 26639.79
+       },
+       "bytes": 240188,
+       "webp_quality": 80,
+       "sha256": "2d82773d1d5d8bc5e1a238fa3b786c9f61b3c6f7b060c83b27aebc6306688de1"
+      },
+      {
+       "path": "parishes/maps/tiles/22105-r1c2.webp",
+       "row": 1,
+       "col": 2,
+       "px_bounds": [
+        2048,
+        1024,
+        3072,
+        2048
+       ],
+       "bounds_local_m": {
+        "left": 3886.46,
+        "right": 28568.7,
+        "bottom": 1957.56,
+        "top": 26639.79
+       },
+       "bytes": 116844,
+       "webp_quality": 80,
+       "sha256": "30b9cd34b188f2a96f5f23f970230b5ffc40f0c082e97c4043e63d1f887e4108"
+      },
+      {
+       "path": "parishes/maps/tiles/22105-r1c3.webp",
+       "row": 1,
+       "col": 3,
+       "px_bounds": [
+        3072,
+        1024,
+        4096,
+        2048
+       ],
+       "bounds_local_m": {
+        "left": 28568.7,
+        "right": 53250.93,
+        "bottom": 1957.56,
+        "top": 26639.79
+       },
+       "bytes": 3162,
+       "webp_quality": 80,
+       "sha256": "95f68b077f8d74490a6b3a157fe49c29b621ba4cbfc349c53073e93af5c4e23b"
+      },
+      {
+       "path": "parishes/maps/tiles/22105-r2c0.webp",
+       "row": 2,
+       "col": 0,
+       "px_bounds": [
+        0,
+        2048,
+        1024,
+        3072
+       ],
+       "bounds_local_m": {
+        "left": -45478.01,
+        "right": -20795.78,
+        "bottom": -22724.68,
+        "top": 1957.56
+       },
+       "bytes": 1938,
+       "webp_quality": 80,
+       "sha256": "9ef396200ceefe14745188e35ba5667d127940d8e5c4c144effe44fe316df874"
+      },
+      {
+       "path": "parishes/maps/tiles/22105-r2c1.webp",
+       "row": 2,
+       "col": 1,
+       "px_bounds": [
+        1024,
+        2048,
+        2048,
+        3072
+       ],
+       "bounds_local_m": {
+        "left": -20795.78,
+        "right": 3886.46,
+        "bottom": -22724.68,
+        "top": 1957.56
+       },
+       "bytes": 231836,
+       "webp_quality": 80,
+       "sha256": "023be74bee1a239febb532ceb946a2e1c273b87a15e5cf7e3713e39ff4425786"
+      },
+      {
+       "path": "parishes/maps/tiles/22105-r2c2.webp",
+       "row": 2,
+       "col": 2,
+       "px_bounds": [
+        2048,
+        2048,
+        3072,
+        3072
+       ],
+       "bounds_local_m": {
+        "left": 3886.46,
+        "right": 28568.7,
+        "bottom": -22724.68,
+        "top": 1957.56
+       },
+       "bytes": 122878,
+       "webp_quality": 80,
+       "sha256": "4b733062102203f80eb8e414ce9d47d27ae42def81b4f70a4cb3da027702c2f7"
+      },
+      {
+       "path": "parishes/maps/tiles/22105-r2c3.webp",
+       "row": 2,
+       "col": 3,
+       "px_bounds": [
+        3072,
+        2048,
+        4096,
+        3072
+       ],
+       "bounds_local_m": {
+        "left": 28568.7,
+        "right": 53250.93,
+        "bottom": -22724.68,
+        "top": 1957.56
+       },
+       "bytes": 1938,
+       "webp_quality": 80,
+       "sha256": "9ef396200ceefe14745188e35ba5667d127940d8e5c4c144effe44fe316df874"
+      },
+      {
+       "path": "parishes/maps/tiles/22105-r3c0.webp",
+       "row": 3,
+       "col": 0,
+       "px_bounds": [
+        0,
+        3072,
+        1024,
+        4096
+       ],
+       "bounds_local_m": {
+        "left": -45478.01,
+        "right": -20795.78,
+        "bottom": -47406.91,
+        "top": -22724.68
+       },
+       "bytes": 5080,
+       "webp_quality": 80,
+       "sha256": "55ebbec255c4e47e741112ac0276c99cf4329908b0215649cb1e3c71ca559f4b"
+      },
+      {
+       "path": "parishes/maps/tiles/22105-r3c1.webp",
+       "row": 3,
+       "col": 1,
+       "px_bounds": [
+        1024,
+        3072,
+        2048,
+        4096
+       ],
+       "bounds_local_m": {
+        "left": -20795.78,
+        "right": 3886.46,
+        "bottom": -47406.91,
+        "top": -22724.68
+       },
+       "bytes": 97754,
+       "webp_quality": 80,
+       "sha256": "20159e0796051b775f9932da20832f30c022c136f02e465c798ebf49fef4d1d7"
+      },
+      {
+       "path": "parishes/maps/tiles/22105-r3c2.webp",
+       "row": 3,
+       "col": 2,
+       "px_bounds": [
+        2048,
+        3072,
+        3072,
+        4096
+       ],
+       "bounds_local_m": {
+        "left": 3886.46,
+        "right": 28568.7,
+        "bottom": -47406.91,
+        "top": -22724.68
+       },
+       "bytes": 112238,
+       "webp_quality": 80,
+       "sha256": "4e882f5f976993530caf840fe92118893bb5dec1c77ee5dc49af81900741c53b"
+      },
+      {
+       "path": "parishes/maps/tiles/22105-r3c3.webp",
+       "row": 3,
+       "col": 3,
+       "px_bounds": [
+        3072,
+        3072,
+        4096,
+        4096
+       ],
+       "bounds_local_m": {
+        "left": 28568.7,
+        "right": 53250.93,
+        "bottom": -47406.91,
+        "top": -22724.68
+       },
+       "bytes": 1938,
+       "webp_quality": 80,
+       "sha256": "9ef396200ceefe14745188e35ba5667d127940d8e5c4c144effe44fe316df874"
+      }
+     ]
+    },
+    "streets": {
+     "path": "parishes/maps/streets/22105.json",
+     "bytes": 174828,
+     "max_bytes": 1500000,
+     "sha256": "8261ba057704f6695a6f5d83bae465939a67aa1a9ff6e1e60221d2f8d836cb93",
+     "counts": {
+      "arterial": 12,
+      "collector": 407,
+      "local": 5350
+     },
+     "vertices": 11672,
+     "note": "AUTHORED street polylines - the same procedural fabric the maps draw, NOT the real street grid; local metres [east_m, north_m] in the parish frame, rounded to 1 m",
+     "inside_rule": "every vertex lies inside the RECORDED coarse outline (checked, even-odd); INLAND water is NOT cut out at 1:10m, so some polylines lie over Lake Pontchartrain / Lake Maurepas / the river exactly where the maps draw fabric over them - treat water.labels areas as water, not road"
+    },
     "corners_world_m": {
      "nw": [
       -76120.21,
@@ -13178,6 +17426,360 @@
      "provenance": "AUTHORED procedural, seeded by FIPS; NOT the real street grid, land use or buildings"
     },
     "provenance": "DERIVED outline + AUTHORED fabric; not imagery",
+    "ground_tiles": {
+     "label": "Ground drawn from Census outline + AUTHORED fabric - not satellite, not a survey; carries no text",
+     "provenance": "DERIVED outline + AUTHORED fabric; not imagery; no text, pins, borders, banner or legend (those live only on the 4k map)",
+     "layers": [
+      "open water",
+      "neighbouring land",
+      "land use",
+      "building hints",
+      "local streets",
+      "collectors",
+      "arterials"
+     ],
+     "grid": 4,
+     "tile_px": 1024,
+     "max_bytes": 400000,
+     "crs": "parish LOCAL metres",
+     "rule": "tile (row, col) covers bounds_local_m; row 0 is north, col 0 is west; tiles abut exactly (shared edges are equal numbers) and their union is extent_local_m",
+     "tiles": [
+      {
+       "path": "parishes/maps/tiles/22109-r0c0.webp",
+       "row": 0,
+       "col": 0,
+       "px_bounds": [
+        0,
+        0,
+        1024,
+        1024
+       ],
+       "bounds_local_m": {
+        "left": -52994.88,
+        "right": -26074.26,
+        "bottom": 29924.53,
+        "top": 56845.15
+       },
+       "bytes": 6444,
+       "webp_quality": 80,
+       "sha256": "b8da932bc7519bcfc397134a382948203a9aff631bd28a0b27fe7504419bd3de"
+      },
+      {
+       "path": "parishes/maps/tiles/22109-r0c1.webp",
+       "row": 0,
+       "col": 1,
+       "px_bounds": [
+        1024,
+        0,
+        2048,
+        1024
+       ],
+       "bounds_local_m": {
+        "left": -26074.26,
+        "right": 846.36,
+        "bottom": 29924.53,
+        "top": 56845.15
+       },
+       "bytes": 30866,
+       "webp_quality": 80,
+       "sha256": "8e864a2cb506f5380d8e7294cbf31db99977e39466e9561120070242a2f77cef"
+      },
+      {
+       "path": "parishes/maps/tiles/22109-r0c2.webp",
+       "row": 0,
+       "col": 2,
+       "px_bounds": [
+        2048,
+        0,
+        3072,
+        1024
+       ],
+       "bounds_local_m": {
+        "left": 846.36,
+        "right": 27766.98,
+        "bottom": 29924.53,
+        "top": 56845.15
+       },
+       "bytes": 28768,
+       "webp_quality": 80,
+       "sha256": "9726b703be5bcfdb3bd2bf8632ed870db41cd8ca666161aa855a458b6f237cb0"
+      },
+      {
+       "path": "parishes/maps/tiles/22109-r0c3.webp",
+       "row": 0,
+       "col": 3,
+       "px_bounds": [
+        3072,
+        0,
+        4096,
+        1024
+       ],
+       "bounds_local_m": {
+        "left": 27766.98,
+        "right": 54687.6,
+        "bottom": 29924.53,
+        "top": 56845.15
+       },
+       "bytes": 4944,
+       "webp_quality": 80,
+       "sha256": "09a8d198bffdf31c8b352e873960a3f7fb7560b6047d597df88745ded9cc4f21"
+      },
+      {
+       "path": "parishes/maps/tiles/22109-r1c0.webp",
+       "row": 1,
+       "col": 0,
+       "px_bounds": [
+        0,
+        1024,
+        1024,
+        2048
+       ],
+       "bounds_local_m": {
+        "left": -52994.88,
+        "right": -26074.26,
+        "bottom": 3003.91,
+        "top": 29924.53
+       },
+       "bytes": 76176,
+       "webp_quality": 80,
+       "sha256": "566f11c56d8efa8e07b856febe8038993aa64149229ea31812c38f77883104b5"
+      },
+      {
+       "path": "parishes/maps/tiles/22109-r1c1.webp",
+       "row": 1,
+       "col": 1,
+       "px_bounds": [
+        1024,
+        1024,
+        2048,
+        2048
+       ],
+       "bounds_local_m": {
+        "left": -26074.26,
+        "right": 846.36,
+        "bottom": 3003.91,
+        "top": 29924.53
+       },
+       "bytes": 279418,
+       "webp_quality": 80,
+       "sha256": "61771ef1d8875f2d0bbc8f5a8d70a0ef889c81dbbda9012ea1da6ba1a3c2609d"
+      },
+      {
+       "path": "parishes/maps/tiles/22109-r1c2.webp",
+       "row": 1,
+       "col": 2,
+       "px_bounds": [
+        2048,
+        1024,
+        3072,
+        2048
+       ],
+       "bounds_local_m": {
+        "left": 846.36,
+        "right": 27766.98,
+        "bottom": 3003.91,
+        "top": 29924.53
+       },
+       "bytes": 260692,
+       "webp_quality": 80,
+       "sha256": "2ab4c0c68b5fef04b9739904e753035af679743229541e1d3758d46f79534280"
+      },
+      {
+       "path": "parishes/maps/tiles/22109-r1c3.webp",
+       "row": 1,
+       "col": 3,
+       "px_bounds": [
+        3072,
+        1024,
+        4096,
+        2048
+       ],
+       "bounds_local_m": {
+        "left": 27766.98,
+        "right": 54687.6,
+        "bottom": 3003.91,
+        "top": 29924.53
+       },
+       "bytes": 32188,
+       "webp_quality": 80,
+       "sha256": "f8c367da3f716912d5b79ff456de5fd20fb8958eab7087246fc6d54907ea1c91"
+      },
+      {
+       "path": "parishes/maps/tiles/22109-r2c0.webp",
+       "row": 2,
+       "col": 0,
+       "px_bounds": [
+        0,
+        2048,
+        1024,
+        3072
+       ],
+       "bounds_local_m": {
+        "left": -52994.88,
+        "right": -26074.26,
+        "bottom": -23916.7,
+        "top": 3003.91
+       },
+       "bytes": 87388,
+       "webp_quality": 80,
+       "sha256": "f2efae3742efe21545588cd6a9a7581685fdb959961abee9bb84c05dff6a339c"
+      },
+      {
+       "path": "parishes/maps/tiles/22109-r2c1.webp",
+       "row": 2,
+       "col": 1,
+       "px_bounds": [
+        1024,
+        2048,
+        2048,
+        3072
+       ],
+       "bounds_local_m": {
+        "left": -26074.26,
+        "right": 846.36,
+        "bottom": -23916.7,
+        "top": 3003.91
+       },
+       "bytes": 284966,
+       "webp_quality": 80,
+       "sha256": "0e10eda2e17d6a63311028da765331fc871de96baaf96ed67adcf97d9715c353"
+      },
+      {
+       "path": "parishes/maps/tiles/22109-r2c2.webp",
+       "row": 2,
+       "col": 2,
+       "px_bounds": [
+        2048,
+        2048,
+        3072,
+        3072
+       ],
+       "bounds_local_m": {
+        "left": 846.36,
+        "right": 27766.98,
+        "bottom": -23916.7,
+        "top": 3003.91
+       },
+       "bytes": 293512,
+       "webp_quality": 80,
+       "sha256": "5f1c40af9beb435f9812ec80f8e0aab2f1dba659e3903735bd17e33b5f1f617e"
+      },
+      {
+       "path": "parishes/maps/tiles/22109-r2c3.webp",
+       "row": 2,
+       "col": 3,
+       "px_bounds": [
+        3072,
+        2048,
+        4096,
+        3072
+       ],
+       "bounds_local_m": {
+        "left": 27766.98,
+        "right": 54687.6,
+        "bottom": -23916.7,
+        "top": 3003.91
+       },
+       "bytes": 92810,
+       "webp_quality": 80,
+       "sha256": "a8fe5ccbbb7f6eeea56308d721c563b79b80377b5ab7bb235c7f48a8187fc5fb"
+      },
+      {
+       "path": "parishes/maps/tiles/22109-r3c0.webp",
+       "row": 3,
+       "col": 0,
+       "px_bounds": [
+        0,
+        3072,
+        1024,
+        4096
+       ],
+       "bounds_local_m": {
+        "left": -52994.88,
+        "right": -26074.26,
+        "bottom": -50837.32,
+        "top": -23916.7
+       },
+       "bytes": 1940,
+       "webp_quality": 80,
+       "sha256": "a48e77951a8aef6f66daa8baf41eee4fd394f896a355ff2fb39469fd823a9aae"
+      },
+      {
+       "path": "parishes/maps/tiles/22109-r3c1.webp",
+       "row": 3,
+       "col": 1,
+       "px_bounds": [
+        1024,
+        3072,
+        2048,
+        4096
+       ],
+       "bounds_local_m": {
+        "left": -26074.26,
+        "right": 846.36,
+        "bottom": -50837.32,
+        "top": -23916.7
+       },
+       "bytes": 37638,
+       "webp_quality": 80,
+       "sha256": "e71199400318226a015ee73758c3c73f143246329744d5101406240a050c89a3"
+      },
+      {
+       "path": "parishes/maps/tiles/22109-r3c2.webp",
+       "row": 3,
+       "col": 2,
+       "px_bounds": [
+        2048,
+        3072,
+        3072,
+        4096
+       ],
+       "bounds_local_m": {
+        "left": 846.36,
+        "right": 27766.98,
+        "bottom": -50837.32,
+        "top": -23916.7
+       },
+       "bytes": 81044,
+       "webp_quality": 80,
+       "sha256": "f170fe69f371317dcef8f7c86be5a0f6364f03fe399822228034582e5a8cf969"
+      },
+      {
+       "path": "parishes/maps/tiles/22109-r3c3.webp",
+       "row": 3,
+       "col": 3,
+       "px_bounds": [
+        3072,
+        3072,
+        4096,
+        4096
+       ],
+       "bounds_local_m": {
+        "left": 27766.98,
+        "right": 54687.6,
+        "bottom": -50837.32,
+        "top": -23916.7
+       },
+       "bytes": 11236,
+       "webp_quality": 80,
+       "sha256": "f7856b798a3b1b1a69b54f962cddffa6f7abb61820ffa354ce4c54f8c6214689"
+      }
+     ]
+    },
+    "streets": {
+     "path": "parishes/maps/streets/22109.json",
+     "bytes": 246841,
+     "max_bytes": 1500000,
+     "sha256": "771d203748b14868f76f5933bbbcf136a4588f8fa600db01ad063d7e0cf586e8",
+     "counts": {
+      "arterial": 20,
+      "collector": 611,
+      "local": 7393
+     },
+     "vertices": 16166,
+     "note": "AUTHORED street polylines - the same procedural fabric the maps draw, NOT the real street grid; local metres [east_m, north_m] in the parish frame, rounded to 1 m",
+     "inside_rule": "every vertex lies inside the RECORDED coarse outline (checked, even-odd); INLAND water is NOT cut out at 1:10m, so some polylines lie over Lake Pontchartrain / Lake Maurepas / the river exactly where the maps draw fabric over them - treat water.labels areas as water, not road"
+    },
     "corners_world_m": {
      "nw": [
       -127330.86,

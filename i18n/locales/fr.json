@@ -553,7 +553,13 @@
   "fleet.cam": "Vue conducteur",
   "fleet.chase": "Vue de poursuite",
   "fleet.traffic": "Circulation ambiante",
-  "fleet.trafficnote": "La circulation suit des voies AUTHORED sur la piste d’essai et des anneaux sur le bassin : des voies inventées, pas de vraies rues."
+  "fleet.trafficnote": "La circulation suit des voies AUTHORED sur la piste d’essai et des anneaux sur le bassin : des voies inventées, pas de vraies rues.",
+  "fleet.touch.group": "Commandes tactiles de conduite",
+  "fleet.touch.stick": "Manette de direction : glissez à gauche ou à droite pour tourner, vers le haut ou le bas pour avancer ou reculer",
+  "fleet.touch.throttle": "Accélérateur (maintenir)",
+  "fleet.touch.brake": "Frein (maintenir)",
+  "fleet.touch.enter": "Monter",
+  "fleet.touch.exit": "Descendre"
  },
  "districts": {
   "structural": {

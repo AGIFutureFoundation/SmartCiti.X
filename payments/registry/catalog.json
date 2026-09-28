@@ -40,6 +40,17 @@
    "at"
   ]
  },
+ "api_headers_from": "security/headers.json",
+ "api_headers": [
+  {
+   "key": "Content-Security-Policy",
+   "value": "default-src 'none'; frame-ancestors 'none'"
+  },
+  {
+   "key": "Cache-Control",
+   "value": "no-store"
+  }
+ ],
  "plans": [
   {
    "id": "individual-learner",
@@ -90,5 +101,5 @@
    "commercial_terms": "set by the operator in Stripe"
   }
  ],
- "source_stamp": "sha256:0cdbb9e1b995ba5d2ff49d7cc37aafd57ad7964f2d0fad67e54ae9bab895078e"
+ "source_stamp": "sha256:003f8c3fb66af81a26b67caa7f50e1f0be48625c218880793e00c8581d74bc79"
 }

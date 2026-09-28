@@ -25,10 +25,16 @@
  */
 import CATALOG from './catalog.mjs';
 
+// Every reply carries security/headers.json's `api` headers (copied into the catalogue by
+// payments/build.py): Cloudflare Pages does not apply _headers to Pages Functions responses,
+// so the Worker is the only place they can be set for /api/*.
+const API_HEADERS = {};
+for (const h of CATALOG.api_headers) API_HEADERS[h.key.toLowerCase()] = h.value;
 const JSON_HEADERS = {
   'content-type': 'application/json; charset=utf-8',
   'cache-control': 'no-store',
   'x-content-type-options': 'nosniff',
+  ...API_HEADERS,
 };
 const CHECKOUT_MAX = 2048;
 const WEBHOOK_MAX = 1 << 20;
@@ -74,17 +80,23 @@ export async function clientKey(ip, salt, subtle) {
    {ok:true} after taking one token, or {ok:false, retry} in whole seconds. */
 export async function takeToken(kv, key, cfg, nowMs) {
   const rate = cfg.max / cfg.win;
+  // A failed read is a refusal (fail closed), never "no bucket yet".
+  let raw;
+  try { raw = await kv.get(key); } catch { return { ok: false, retry: 1 }; }
   let st = null;
-  try { st = JSON.parse(await kv.get(key)); } catch { st = null; }
+  if (raw !== null) {
+    try { st = JSON.parse(raw); } catch { st = null; }   // corrupt value: start a fresh bucket
+  }
   const now = nowMs / 1000;
   let tokens = cfg.max;
-  if (st && Number.isFinite(st.t) && Number.isFinite(st.at) && st.at <= now)
-    tokens = Math.min(cfg.max, st.t + (now - st.at) * rate);
+  // A stamp from the future (clock skew between locations) refills nothing: elapsed time clamps at 0.
+  if (st && Number.isFinite(st.t) && Number.isFinite(st.at))
+    tokens = Math.max(0, Math.min(cfg.max, st.t + Math.max(0, now - st.at) * rate));
   if (tokens < 1) return { ok: false, retry: Math.max(1, Math.ceil((1 - tokens) / rate)) };
   // KV refuses more than about one write per second to a key; a refused write is a refusal here
   // too (fail closed), never a free pass.
   try {
-    await kv.put(key, JSON.stringify({ t: tokens - 1, at: now }), { expirationTtl: Math.max(60, Math.ceil(cfg.win * 2)) });
+    await kv.put(key, JSON.stringify({ t: tokens - 1, at: Math.max(now, st && Number.isFinite(st.at) ? st.at : now) }), { expirationTtl: Math.max(60, Math.ceil(cfg.win * 2)) });
   } catch {
     return { ok: false, retry: 1 };
   }

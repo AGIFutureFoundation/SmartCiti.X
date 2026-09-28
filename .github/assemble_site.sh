@@ -27,10 +27,12 @@ python3 - <<'PY'
 import json, pathlib, sys
 reg = json.load(open('parishes/registry/parishes.json'))
 named = [p['map'][k] for p in reg['parishes'].values() for k in ('path', 'preview')]
+named += [t['path'] for p in reg['parishes'].values() for t in p['map']['ground_tiles']['tiles']]
+named += [p['map']['streets']['path'] for p in reg['parishes'].values()]
 missing = [m for m in named if not (pathlib.Path('_site') / m).is_file()]
 if missing:
     sys.exit('assemble: parish maps named in parishes/registry are missing from _site: ' + ', '.join(missing))
-print(f"parish maps: all {len(named)} registry-named maps present in _site")
+print(f"parish maps: all {len(named)} registry-named maps, ground tiles and street files present in _site")
 PY
 
 python3 - <<'PY'

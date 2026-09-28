@@ -12,6 +12,7 @@ parish local tangent plane; pixel (px, py) centre is at
   north_m = top_m  - (py + 0.5) * m_per_px
 """
 import hashlib
+import json
 import math
 import random
 
@@ -160,7 +161,9 @@ def city_fabric(outline_local, left, top, mpp, seed, near_water):
         px_ = np.where((gap < wc * 1.35)[..., None], np.array(STREET['collector_edge'], dtype=np.uint8), px_)
         px_ = np.where((gap < wc)[..., None], np.array(STREET['collector'], dtype=np.uint8), px_)
         out[r0:r0 + 256] = px_
-    return Image.fromarray(out, 'RGB'), theta0, ctr
+    fab = {'SX': SX, 'SY': SY, 'ANG': ANG, 'SU': SU, 'SV': SV, 'TY': TY, 'x0': x0, 'y0': y0, 'D': D,
+           'ni': ni, 'nj': nj, 'wl': wl}
+    return Image.fromarray(out, 'RGB'), theta0, ctr, fab
 
 
 def arterials(draw, theta0, ctr, outline_local, left, top, mpp, seed):
@@ -183,6 +186,7 @@ def arterials(draw, theta0, ctr, outline_local, left, top, mpp, seed):
         amp, ph = rnd.uniform(0.01, 0.03) * span_u, rnd.uniform(0, 6.28)
         lines.append([(uu0 + amp * math.sin(vv / span_v * 6.28 + ph), vv)
                       for vv in np.linspace(V.min() - 500, V.max() + 500, 60)])
+    lines_en = [[(ctr[0] + uu * ca - vv * sa, ctr[1] + uu * sa + vv * ca) for uu, vv in ln] for ln in lines]
     wpx = max(4, int(round(34 / mpp)))
     for pass_, colr, extra in (('edge', STREET['arterial_edge'], 4), ('fill', STREET['arterial'], 0)):
         for ln in lines:
@@ -191,10 +195,221 @@ def arterials(draw, theta0, ctr, outline_local, left, top, mpp, seed):
                 e = ctr[0] + uu * ca - vv * sa; n = ctr[1] + uu * sa + vv * ca
                 xy.append(((e - left) / mpp, (top - n) / mpp))
             draw.line(xy, fill=colr, width=wpx + extra, joint='curve')
-    return len(lines)
+    return len(lines), lines_en
 
 
-def render_all(ROOT, parishes, by_id, arcs, polygons_of, ltp, frame, water_labels):
+# ---- wave 6: label-free ground tiles + AUTHORED street polylines ----------------
+GROUND_LABEL = 'Ground drawn from Census outline + AUTHORED fabric - not satellite, not a survey; carries no text'
+TILE_GRID = 4                     # 4 x 4 tiles per parish
+TILE_PX = SIZE // TILE_GRID       # 1024 px
+TILE_QUALITY = 80
+TILE_MAX_BYTES = 400_000
+STREETS_MAX_BYTES = 1_500_000     # per-parish streets JSON budget (declared, tested)
+STREETS_NOTE = ('AUTHORED street polylines - the same procedural fabric the maps draw, NOT the real street grid; '
+                'local metres [east_m, north_m] in the parish frame, rounded to 1 m')
+STREETS_INSIDE = ('every vertex lies inside the RECORDED coarse outline (checked, even-odd); INLAND water is NOT cut '
+                  'out at 1:10m, so some polylines lie over Lake Pontchartrain / Lake Maurepas / the river exactly '
+                  'where the maps draw fabric over them - treat water.labels areas as water, not road')
+
+
+def _pip(outline_local, E, N):
+    """even-odd point in polygon (holes honoured) for numpy arrays E, N."""
+    res = np.zeros(E.shape, dtype=bool)
+    with np.errstate(divide='ignore', invalid='ignore'):
+        for poly in outline_local:
+            acc = None
+            for ring in poly:
+                r = np.array(ring, dtype=np.float64)
+                c = np.zeros(E.shape, dtype=bool)
+                for k in range(len(r)):
+                    x1, y1 = r[k]; x2, y2 = r[(k + 1) % len(r)]
+                    c ^= ((y1 > N) != (y2 > N)) & (E < (x2 - x1) * (N - y1) / (y2 - y1) + x1)
+                acc = c if acc is None else acc & ~c
+            res |= acc
+    return res
+
+
+def _nearest(fab, E, N):
+    """the district rule the fabric uses (3x3 grid neighbourhood): best and second site ids."""
+    ni, nj, D = fab['ni'], fab['nj'], fab['D']
+    ci = np.floor((E - fab['x0']) / D).astype(np.int32); cj = np.floor((N - fab['y0']) / D).astype(np.int32)
+    best = np.full(E.shape, np.inf); second = np.full(E.shape, np.inf)
+    bid = np.zeros(E.shape, dtype=np.int64); sid = np.full(E.shape, -1, dtype=np.int64)
+    for di in (-1, 0, 1):
+        for dj in (-1, 0, 1):
+            ii = np.clip(ci + di, 0, ni - 1); jj = np.clip(cj + dj, 0, nj - 1)
+            dd = np.hypot(E - fab['SX'][ii, jj], N - fab['SY'][ii, jj])
+            cid = ii.astype(np.int64) * nj + jj
+            closer = dd < best
+            sec = (~closer) & (dd < second) & (cid != bid)
+            second = np.where(closer, best, np.where(sec, dd, second))
+            sid = np.where(closer, bid, np.where(sec, cid, sid))
+            best = np.where(closer, dd, best)
+            bid = np.where(closer, cid, bid)
+    return bid, sid
+
+
+def _runs(keep):
+    """(start, end) index pairs of consecutive True runs of length >= 2."""
+    out, st = [], None
+    for k, v in enumerate(list(keep) + [False]):
+        if v and st is None:
+            st = k
+        elif not v and st is not None:
+            if k - st >= 2:
+                out.append((st, k - 1))
+            st = None
+    return out
+
+
+def _dp(pts, tol):
+    """Douglas-Peucker simplification."""
+    if len(pts) < 3:
+        return pts
+    a, b = np.array(pts[0]), np.array(pts[-1])
+    ab = b - a; L = math.hypot(*ab)
+    P = np.array(pts[1:-1])
+    d = np.abs(ab[0] * (P[:, 1] - a[1]) - ab[1] * (P[:, 0] - a[0])) / L if L > 0 else np.hypot(*(P - a).T)
+    k = int(np.argmax(d))
+    if d[k] <= tol:
+        return [pts[0], pts[-1]]
+    return _dp(pts[:k + 2], tol)[:-1] + _dp(pts[k + 1:], tol)
+
+
+def _finish(outline_local, polys):
+    """round to 1 m, re-check every rounded vertex inside the outline, split at any that is not."""
+    out = []
+    for pl in polys:
+        r = [[int(round(e)), int(round(n))] for e, n in pl]
+        r = [q for i, q in enumerate(r) if i == 0 or q != r[i - 1]]
+        if len(r) < 2:
+            continue
+        a = np.array(r, dtype=np.float64)
+        ins = _pip(outline_local, a[:, 0], a[:, 1])
+        for s0, s1 in _runs(ins):
+            out.append(r[s0:s1 + 1])
+    return out
+
+
+def street_polylines(outline_local, fab, art_lines, mpp):
+    """AUTHORED street centre-lines matching what city_fabric/arterials draw, clipped to the outline."""
+    tol = max(2.0, mpp)
+    # arterials: densify x4, keep inside runs, simplify
+    art = []
+    for ln in art_lines:
+        a = np.array(ln, dtype=np.float64)
+        t = np.linspace(0, len(a) - 1, (len(a) - 1) * 4 + 1)
+        k = np.minimum(np.floor(t).astype(int), len(a) - 2); f = (t - k)[:, None]
+        d = a[k] * (1 - f) + a[k + 1] * f
+        ins = _pip(outline_local, d[:, 0], d[:, 1])
+        for s0, s1 in _runs(ins):
+            art.append(_dp([tuple(q) for q in d[s0:s1 + 1]], tol))
+    # collectors: Voronoi ridges between neighbouring districts (sampled on the bisector, straight runs)
+    ni, nj, D = fab['ni'], fab['nj'], fab['D']
+    SX, SY = fab['SX'], fab['SY']
+    col = []
+    ts = np.linspace(-1.6 * D, 1.6 * D, 129)
+    for i in range(ni):
+        for j in range(nj):
+            for di, dj in ((1, 0), (0, 1), (1, 1), (1, -1)):
+                i2, j2 = i + di, j + dj
+                if not (0 <= i2 < ni and 0 <= j2 < nj):
+                    continue
+                ax_, ay_, bx_, by_ = SX[i, j], SY[i, j], SX[i2, j2], SY[i2, j2]
+                mx, my = (ax_ + bx_) / 2, (ay_ + by_) / 2
+                L = math.hypot(bx_ - ax_, by_ - ay_)
+                px_, py_ = -(by_ - ay_) / L, (bx_ - ax_) / L
+                E = mx + ts * px_; N = my + ts * py_
+                bid, sid = _nearest(fab, E, N)
+                ida, idb = i * nj + j, i2 * nj + j2
+                keep = ((bid == ida) & (sid == idb)) | ((bid == idb) & (sid == ida))
+                if keep.sum() < 2:
+                    continue
+                keep &= _pip(outline_local, E, N)
+                for s0, s1 in _runs(keep):
+                    col.append([(E[s0], N[s0]), (E[s1], N[s1])])
+    # local streets: each district's grid lines through block corners inside that district and the outline
+    loc = []
+    wl = fab['wl']
+    for i in range(ni):
+        for j in range(nj):
+            if fab['TY'][i, j] == 2:                 # a park district: the map draws no local streets there
+                continue
+            a = fab['ANG'][i, j]; ca, sa = math.cos(a), math.sin(a)
+            su, sv = fab['SU'][i, j], fab['SV'][i, j]
+            sx, sy = SX[i, j], SY[i, j]
+            ks = np.arange(math.floor(-1.6 * D / su), math.ceil(1.6 * D / su) + 1)
+            ms = np.arange(math.floor(-1.6 * D / sv), math.ceil(1.6 * D / sv) + 1)
+            U, V = np.meshgrid(ks * su + wl / 2, ms * sv + wl / 2, indexing='ij')
+            E = sx + U * ca - V * sa; N = sy + U * sa + V * ca
+            bid, _ = _nearest(fab, E, N)
+            keep = bid == i * nj + j
+            if keep.sum() < 2:
+                continue
+            keep &= _pip(outline_local, E, N)
+            for r_ in range(keep.shape[0]):                 # lines of constant u
+                for s0, s1 in _runs(keep[r_]):
+                    loc.append([(E[r_, s0], N[r_, s0]), (E[r_, s1], N[r_, s1])])
+            for c_ in range(keep.shape[1]):                 # lines of constant v
+                for s0, s1 in _runs(keep[:, c_]):
+                    loc.append([(E[s0, c_], N[s0, c_]), (E[s1, c_], N[s1, c_])])
+    return {'arterial': _finish(outline_local, art), 'collector': _finish(outline_local, col),
+            'local': _finish(outline_local, loc)}
+
+
+def save_ground_tiles(ground, out_dir, gid, left, top, right, bottom, mpp):
+    tdir = out_dir / 'tiles'
+    tdir.mkdir(parents=True, exist_ok=True)
+    ex = [round(left + k * TILE_PX * mpp, 2) for k in range(TILE_GRID)] + [round(right, 2)]
+    ny = [round(top - k * TILE_PX * mpp, 2) for k in range(TILE_GRID)] + [round(bottom, 2)]
+    tiles = []
+    for row in range(TILE_GRID):
+        for c in range(TILE_GRID):
+            t = ground.crop((c * TILE_PX, row * TILE_PX, (c + 1) * TILE_PX, (row + 1) * TILE_PX))
+            f = tdir / f'{gid}-r{row}c{c}.webp'
+            q = TILE_QUALITY
+            t.save(f, 'WEBP', quality=q, method=6)
+            while f.stat().st_size > TILE_MAX_BYTES and q > 40:
+                q -= 6
+                t.save(f, 'WEBP', quality=q, method=6)
+            tiles.append({'path': f'parishes/maps/tiles/{gid}-r{row}c{c}.webp', 'row': row, 'col': c,
+                          'px_bounds': [c * TILE_PX, row * TILE_PX, (c + 1) * TILE_PX, (row + 1) * TILE_PX],
+                          'bounds_local_m': {'left': ex[c], 'right': ex[c + 1], 'bottom': ny[row + 1], 'top': ny[row]},
+                          'bytes': f.stat().st_size, 'webp_quality': q, 'sha256': sha256(f)})
+    return {'label': GROUND_LABEL, 'provenance': 'DERIVED outline + AUTHORED fabric; not imagery; no text, pins, '
+                                                 'borders, banner or legend (those live only on the 4k map)',
+            'layers': ['open water', 'neighbouring land', 'land use', 'building hints', 'local streets',
+                       'collectors', 'arterials'],
+            'grid': TILE_GRID, 'tile_px': TILE_PX, 'max_bytes': TILE_MAX_BYTES, 'crs': 'parish LOCAL metres',
+            'rule': 'tile (row, col) covers bounds_local_m; row 0 is north, col 0 is west; tiles abut exactly '
+                    '(shared edges are equal numbers) and their union is extent_local_m',
+            'tiles': tiles}
+
+
+def save_streets(out_dir, gid, P, fab, art_lines, mpp, stamp):
+    sdir = out_dir / 'streets'
+    sdir.mkdir(parents=True, exist_ok=True)
+    cls = street_polylines(P['outline_local_m'], fab, art_lines, mpp)
+    doc = {'pack': 'parishes', 'fips': gid, 'source_stamp': stamp[:16], 'provenance': 'AUTHORED',
+           'note': STREETS_NOTE, 'inside_rule': STREETS_INSIDE,
+           'crs': 'parish LOCAL metres [east_m, north_m]; frame origin = registry parishes[fips].frame.origin',
+           'frame_origin': P['frame']['origin'],
+           'class_rule': 'the class of each polyline is its key in classes: arterial | collector | local',
+           'widths_m': {'arterial': round(max(4, int(round(34 / mpp))) * mpp, 1),
+                        'collector': round(max(22.0, 2.6 * mpp), 1), 'local': round(fab['wl'], 1)},
+           'counts': {k: len(v) for k, v in cls.items()},
+           'vertices': sum(len(pl) for v in cls.values() for pl in v),
+           'classes': cls}
+    f = sdir / f'{gid}.json'
+    f.write_text(json.dumps(doc, separators=(',', ':')) + '\n')
+    if f.stat().st_size > STREETS_MAX_BYTES:
+        raise SystemExit(f'streets {gid}: {f.stat().st_size} bytes over the declared budget {STREETS_MAX_BYTES}')
+    return {'path': f'parishes/maps/streets/{gid}.json', 'bytes': f.stat().st_size, 'max_bytes': STREETS_MAX_BYTES,
+            'sha256': sha256(f), 'counts': doc['counts'], 'vertices': doc['vertices'], 'note': STREETS_NOTE,
+            'inside_rule': STREETS_INSIDE}
+
+
+def render_all(ROOT, parishes, by_id, arcs, polygons_of, ltp, frame, water_labels, stamp):
     out_dir = ROOT / 'parishes' / 'maps'
     out_dir.mkdir(parents=True, exist_ok=True)
     # candidate neighbours drawn for context: every county of LA (22) and MS (28)
@@ -253,9 +468,14 @@ def render_all(ROOT, parishes, by_id, arcs, polygons_of, ltp, frame, water_label
                 md.polygon([px(*q) for q in h], fill=0)
         eroded = allland.filter(ImageFilter.MinFilter(9)).filter(ImageFilter.MinFilter(9))
         near_water = (np.array(allland) > 0) & (np.array(eroded) == 0)
-        land, theta0, ctr = city_fabric(P['outline_local_m'], left, top, mpp, int(gid), near_water)
-        n_art = arterials(ImageDraw.Draw(land), theta0, ctr, P['outline_local_m'], left, top, mpp, int(gid))
+        land, theta0, ctr, fab = city_fabric(P['outline_local_m'], left, top, mpp, int(gid), near_water)
+        n_art, art_lines = arterials(ImageDraw.Draw(land), theta0, ctr, P['outline_local_m'], left, top, mpp, int(gid))
         img.paste(land, (0, 0), mask)
+        # the GROUND layer: water, neighbouring land, parish land use + streets - snapshot BEFORE any text,
+        # pins, borders, banner or legend is drawn, so no label is ever draped on the 3D ground
+        ground = img.copy()
+        ground_tiles = save_ground_tiles(ground, out_dir, gid, left, top, right, bottom, mpp)
+        streets = save_streets(out_dir, gid, P, fab, art_lines, mpp, stamp)
         d = ImageDraw.Draw(img)
         for poly in P['outline']['polygons']:
             for ring in poly:
@@ -381,6 +601,7 @@ def render_all(ROOT, parishes, by_id, arcs, polygons_of, ltp, frame, water_label
             'fabric_layers': {'arterials': n_art, 'collectors': 'district edges', 'local_grid': 'one orientation per district',
                               'land_use': USE_ORDER, 'building_hints': True, 'hillshade': False,
                               'provenance': 'AUTHORED procedural, seeded by FIPS; NOT the real street grid, land use or buildings'}, 'provenance': 'DERIVED outline + AUTHORED fabric; not imagery',
+            'ground_tiles': ground_tiles, 'streets': streets,
         }
         print(f'  map {gid}: {f4.stat().st_size} bytes, {mpp:.2f} m/px')
     return maps

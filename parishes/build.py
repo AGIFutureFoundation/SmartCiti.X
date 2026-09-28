@@ -403,7 +403,7 @@ def main():
                              'provenance': 'AUTHORED', 'note': need(W, 'note', nm)})
 
     stamp = source_stamp()
-    maps = render.render_all(ROOT, parishes, by_id, arcs, polygons_of, ltp, frame, water_labels)
+    maps = render.render_all(ROOT, parishes, by_id, arcs, polygons_of, ltp, frame, water_labels, stamp)
     for gid in parishes:
         mp = maps[gid]
         ex = mp['extent_wgs84']
