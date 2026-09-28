@@ -1156,5 +1156,9 @@ footer.page a{{margin-inline-end:10px}}
 out = HERE / 'trade_craft_lessons.html'
 page = apply_seo(page, 'web/trade_craft_lessons.html', 'Lessons \u2014 SmartCiti.X : Trade Craft Academy',
     'Walkable lessons through schematic trade halls and outdoor sites, written by hand or composed by rule; unverified general practice that certifies nobody.', 'page')
+# wave 3 (HOMEUX): MEDIA's pagehero band + the theme layer, head/hero region only;
+# every word from the catalog (hero.lessons.*), see web/herovideo.py doc_hero().
+from herovideo import adopt_doc_hero  # noqa: E402
+page = adopt_doc_hero('lessons', page)
 emit(out, page, f"{len(LESSONS)} lessons, {TOTAL_STEPS} steps, "
                 f"{COUNTS['halls_covered']} halls, certifies nobody")

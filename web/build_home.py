@@ -25,6 +25,7 @@ HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from staleness import emit  # noqa: E402
 from sitenav import nav_html, labels as nav_labels, NAV_CSS, LOOP, PAGES, GROUPS  # noqa: E402
+from sitenav import STYLE_JS  # noqa: E402  MEDIA's style menu: remembers the reader's choice
 # The eight district hues. web/mapdata.py owns them and the campus
 # map, the 3D world and the crew marks all read from there; a second set of
 # numbers here would be eight facts with two owners.
@@ -34,7 +35,10 @@ from mapdata import HUES  # noqa: E402
 # implementation: web/seo.py, web/herovideo.py, web/sitesearch.py.
 from seo import seo_head, seo_tail  # noqa: E402
 from herovideo import (hero_video_html, hero_video_control, HERO_VIDEO_CSS,  # noqa: E402
-                       HERO_VIDEO_JS)
+                       HERO_VIDEO_JS, showcase_media, band_open, band_caption, BAND_CLOSE,
+                       SECTION_VIDEO_CSS, SECTION_VIDEO_JS, MOTION_CSS, COUNTUP_JS,
+                       STYLE_BRIDGE_CSS)
+from design_kit import icon, STYLE_HEAD_JS  # noqa: E402  vendored Lucide glyphs (ISC), inlined
 from sitesearch import search_button, search_dialog, SEARCH_JS, SEARCH_CSS  # noqa: E402
 
 
@@ -1018,12 +1022,20 @@ for _k, _t, _b, _links in PATHS:
             raise FileNotFoundError(f'audience path {_k}: {_p} is not a built, declared page')
 
 
+# One vendored glyph per reader (web/vendor/icons, ISC), decoration only.
+PATH_ICONS = {'learners': 'graduation-cap', 'instructors': 'layers', 'schools': 'building-2',
+              'employers': 'shield-check', 'partners': 'users'}
+assert set(PATH_ICONS) == {k for k, *_ in PATHS}, 'every audience path needs exactly one icon'
+
+
 def paths_html():
     out = []
     for k, title, body, links in PATHS:
         lis = ''.join(f'<li><a href="{p}">{_nl(p)}<span aria-hidden="true"> →</span></a></li>'
                       for p in links)
-        out.append(f'<article class="path" data-path="{k}"><h3>{esc(title)}</h3>'
+        out.append(f'<article class="path" data-path="{k}">'
+                   f'<span class="path-ico" aria-hidden="true">{icon(PATH_ICONS[k], "pi")}</span>'
+                   f'<h3>{esc(title)}</h3>'
                    f'<p>{esc(body)}</p><ul>{lis}</ul></article>')
     return f'<div class="paths">{"".join(out)}</div>'
 
@@ -1461,6 +1473,52 @@ UX_CSS = """
 .sitenav-skip:focus,.skip:focus{inset-block-start:12px;outline:none;box-shadow:var(--focus)}
 main:focus{outline:none}
 """
+# The enterprise layer (wave 3): stylized display type, hover cards, stat
+# tiles and the section footage. Layout patterns are borrowed - re-expressed
+# in this page's own tokens, no CSS copied - from MIT kits: Start Bootstrap
+# "Landing Page" (showcase rows, call-to-action band over media) and Tabler
+# (stat tiles with an accent rule). Every colour reads a token.
+POLISH_CSS = """
+.kicker-pill{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border:1px solid var(--rule-2);
+  border-radius:999px;background:var(--panel);color:var(--mark)}
+.kicker-pill::before{content:"";inline-size:8px;block-size:8px;border-radius:50%;background:var(--steel);
+  box-shadow:0 0 0 4px color-mix(in srgb,var(--steel) 22%,transparent)}
+.hero-copy h1{display:flex;flex-direction:column;gap:.12em;margin-top:var(--s3)}
+.hero-copy h1 + .by{margin-top:var(--s5)}
+.d-brand{font:600 clamp(18px,2vw,24px)/1 var(--mono);letter-spacing:.06em;color:var(--muted)}
+.d-brand .x{color:var(--mark)}
+.d-sep{position:absolute;inline-size:1px;block-size:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.d-main{font:700 clamp(44px,7vw,88px)/.92 var(--display);letter-spacing:-.01em;text-transform:uppercase}
+em.accent{font-style:normal;color:var(--mark);background:linear-gradient(90deg,var(--mark),var(--steel))
+  no-repeat 0 100%/100% .09em;padding-bottom:.06em}
+.stats .stat{position:relative;transition:background .18s}
+.stats .stat::after{content:"";position:absolute;inset-inline-start:0;inset-block-start:0;block-size:3px;
+  inline-size:28px;background:var(--mark);transition:inline-size .3s}
+.stats .stat:hover::after{inline-size:100%}
+.stat dd[data-counting]{color:var(--mark)}
+.paths{counter-reset:path}
+.path{position:relative;transition:transform .18s,box-shadow .18s,border-color .18s}
+.path:hover,.path:focus-within{transform:translateY(-4px);box-shadow:var(--shadow);border-color:var(--rule-2);
+  border-top-color:var(--steel)}
+.path-ico{display:inline-grid;place-items:center;inline-size:44px;block-size:44px;border-radius:12px;
+  background:var(--sunk);color:var(--mark);border:1px solid var(--rule)}
+.path-ico .pi{inline-size:22px;block-size:22px}
+.path::after{counter-increment:path;content:counter(path);position:absolute;inset-inline-end:var(--s4);
+  inset-block-start:var(--s4);font:700 28px/1 var(--display);color:var(--rule-2)}
+.path:hover .path-ico{color:var(--steel)}
+.sv-text h3{font:700 var(--fs-2xl)/1.05 var(--display)}
+.sv-text p{margin:0;color:var(--muted)}
+.sv-links{display:flex;flex-wrap:wrap;gap:var(--s3)}
+.cta-band .vb-inner{max-inline-size:900px}
+.band-h{font:700 clamp(34px,5vw,60px)/1 var(--display);text-transform:uppercase}
+.band-p{color:var(--muted);max-inline-size:60ch;margin:0}
+.cta-band .btn-row{justify-content:center}
+@supports (animation-timeline: view()){@media (prefers-reduced-motion:no-preference){
+  .path,.sv-row,.step{animation:rv-in linear both;animation-timeline:view();animation-range:entry 0% entry 55%}
+}}
+@media (prefers-reduced-motion:reduce){.path:hover,.path:focus-within{transform:none}}
+"""
+
 from questkit import QUEST_CSS, quest_js, page_hooks  # noqa: E402  quests: egg hooks only
 QUEST_TAIL = '<style>' + QUEST_CSS + '</style>\n' + page_hooks('index.html') + quest_js('page:index.html')
 
@@ -1478,8 +1536,8 @@ BODY = f"""<body>
 <header class="top" data-hero-host>{hero_video_html()}<div class="wrap">
   <div class="hero-grid">
     <div class="hero-copy">
-      <span class="eyebrow">Union trade training &middot; walkable campus &middot; verifiable records</span>
-      <h1>SmartCiti<span class="x">.X</span> : Trade Craft Academy</h1>
+      <span class="eyebrow kicker-pill">Union trade training &middot; walkable campus &middot; verifiable records</span>
+      <h1><span class="d-brand">SmartCiti<span class="x">.X</span></span><span class="d-sep"> : </span><span class="d-main">Trade Craft <em class="accent">Academy</em></span></h1>
       <span class="by">powered by AGI Corp</span>
       <p class="tagline">A walkable training world for the skilled trades &mdash;
         {n(HALLS)} union halls across {n(CAMPUSES)} campuses, with
@@ -1502,7 +1560,7 @@ BODY = f"""<body>
     <aside class="figs" aria-labelledby="figs-h">
       <div class="figs-title"><h2 id="figs-h">Key figures</h2>
         <span>counted from the registries when this page was built</span></div>
-      <dl class="stats">{STATS_HTML}</dl>
+      <dl class="stats" data-countup>{STATS_HTML}</dl>
       <p class="figs-note">These count what this bundle contains. A figure being
         consistent is not a figure being verified.</p>
     </aside>
@@ -1516,6 +1574,33 @@ BODY = f"""<body>
   <div class="sec-head"><span class="eyebrow">Who it is for</span>
     <h2>{n(len(PATHS))} ways in, depending on why you are here</h2></div>
   {paths_html()}
+</section>
+
+<section id="explore" class="rv">
+  <div class="sec-head"><span class="eyebrow">See it in place</span>
+    <h2>The campuses on the map, and the tasks on the campus</h2>
+    <p class="lede">Two ways to look before you walk. The footage beside each
+      is this build, recorded from its own pages.</p></div>
+  <div class="showcase">
+    <div class="sv-row" data-teaser="globe">{showcase_media('globe-flyover', 'index.html')}
+      <div class="sv-text"><span class="eyebrow">Geolocation</span>
+        <h3>{n(CAMPUSES)} campuses at their real coordinates</h3>
+        <p>Every campus on one map, at the coordinates its registry records.
+          Anything drawn inside a campus there is SCHEMATIC: no heading or
+          survey is recorded for it.</p>
+        <p><a class="btn btn-secondary" href="web/trade_craft_geomap.html">{_nl('web/trade_craft_geomap.html')}<span aria-hidden="true"> →</span></a></p>
+      </div></div>
+    <div class="sv-row" data-teaser="tasks">{showcase_media('hall-orbit', 'index.html')}
+      <div class="sv-text"><span class="eyebrow">Simulated tasks</span>
+        <h3>Find a task on the campus maps</h3>
+        <p>The maps lay out every hall by district, with the training
+          stations and each hall&rsquo;s tool crib, and the {n(SEATS)} operable
+          machine seats stand in the campus yard. A simulated run is practice,
+          scored by a rubric you can read; it is not a certification.</p>
+        <p class="sv-links"><a class="btn btn-secondary" href="web/trade_craft_map.html">{_nl('web/trade_craft_map.html')}<span aria-hidden="true"> →</span></a>
+          <a class="btn btn-secondary" href="web/trade_craft_interactive.html">{_nl('web/trade_craft_interactive.html')}<span aria-hidden="true"> →</span></a></p>
+      </div></div>
+  </div>
 </section>
 
 <section id="loop">
@@ -1547,6 +1632,16 @@ BODY = f"""<body>
   <nav class="trades" aria-label="courses by trade">{TRADE_LINKS}</nav>
 </section>
 </div>
+
+{band_open('campus-green-crane-up', 'index.html', 'cta-band')}
+  <span class="eyebrow">Start in a minute</span>
+  <h2 class="band-h">One lesson, then <em class="accent">walk it</em> on campus</h2>
+  <p class="band-p">Start with one lesson in your own trade, then walk it on
+    the campus it belongs to. The record comes later, and only if you want it.</p>
+  <div class="btn-row"><a class="btn btn-primary" href="#start-here">Take the first lesson</a>
+    <a class="btn btn-secondary" href="web/trade_craft_3d.html">{_nl('web/trade_craft_3d.html')}</a></div>
+  {band_caption('campus-green-crane-up')}
+{BAND_CLOSE}
 
 <div class="trust"><div class="wrap">
 <section id="trust">
@@ -1749,6 +1844,7 @@ _SEO = ('SmartCiti.X : Trade Craft Academy',
         'from its own registry.', 'home')
 page = ('<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n'
         '<meta name="viewport" content="width=device-width, initial-scale=1">\n'
+        f'<script id="style-head-js">{STYLE_HEAD_JS}</script>\n'
         + seo_head('index.html', *_SEO) +
         '<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 '
         'viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%226%22 '
@@ -1760,11 +1856,14 @@ page = ('<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n'
         'origin at run time. See web/fetch_fonts.py. -->\n'
         '<link rel="stylesheet" href="web/vendor/fonts/fonts.css">\n'
         f'<style>{CSS}</style>\n<style>{NAV_CSS}</style>\n'
-        f'<style>{HERO_VIDEO_CSS}{SEARCH_CSS}{UX_CSS}</style>\n</head>\n{BODY_Q}\n</html>\n')
+        f'<style>{HERO_VIDEO_CSS}{SEARCH_CSS}{UX_CSS}</style>\n'
+        f'<style>{SECTION_VIDEO_CSS}{MOTION_CSS}{POLISH_CSS}{STYLE_BRIDGE_CSS}</style>\n</head>\n{BODY_Q}\n</html>\n')
 # The palette's index (registry titles, which may hold figures of their own)
 # and the two small scripts join the page after the prose gate above, like
 # the quest engine: the gate is about typed prose, and these are data.
 _tail = (search_dialog('index.html') + SEARCH_JS + '\n' + HERO_VIDEO_JS + '\n'
+         + SECTION_VIDEO_JS + '\n' + COUNTUP_JS + '\n'
+         + '<script id="style-js">' + STYLE_JS + '</script>\n'
          + seo_tail('index.html', *_SEO))
 assert page.count('</body>') == 1, 'build_home: expected exactly one </body>'
 page = page.replace('</body>', _tail + '</body>')

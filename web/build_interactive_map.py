@@ -217,7 +217,29 @@ for f in sorted((ROOT / 'i18n/locales').glob('*.json')):
         'strands': c['strands'], 'tiers': c['tiers'], 'states': c['states'],
     }
 
+# Simulated tasks per hall: rows from web/taskkit.py (tasks/registry/tasks.json
+# only), rendered in the viewer's locale by taskkit's own TASK_RENDER_JS. Every
+# hall has at least its tool-crib drill, so an empty hall is a broken join.
+from taskkit import (tasks_for, tasks_json, TASKS_CSS, TASK_FILTER_SRC,  # noqa: E402
+                     TASK_RENDER_JS)
+TASKS_BY_HALL = {}
+for _h in HALLS:
+    _ts = tasks_for('hall', _h['slug'])
+    if not _ts:
+        raise KeyError(f'tasks: hall {_h["slug"]} has no simulated task in tasks/registry/tasks.json')
+    TASKS_BY_HALL[_h['slug']] = json.loads(tasks_json(_ts))
+
+# and per campus, every task that is NOT at a hall (restoration walks, crew
+# hand-offs, wilds site walks, scenarios no link reaches): the campus-level
+# board under each campus's halls. Tasks at a space (no campus) are listed on
+# the worksites page instead.
+from taskkit import tasks_at_campus  # noqa: E402
+CAMPUS_TASKS = {ck: json.loads(tasks_json([t for t in tasks_at_campus(ck) if t['place']['kind'] != 'hall']))
+                for ck in campuses_reg}
+
 DATA = json.dumps({
+    'tasks': TASKS_BY_HALL,
+    'campusTasks': CAMPUS_TASKS,
     'ledger': {'halls': L['halls'], 'total_modules': L['total_modules'],
                'districts': len(DISTRICTS)},
     'per_level': per_level,
@@ -379,6 +401,8 @@ body.L-lessons #ladder{display:block}
 .lesson .needs{color:var(--muted);font-size:12px;margin-top:6px}
 footer{color:var(--muted);font-size:12.5px;margin-top:26px;border-top:1px solid var(--rule);padding-top:12px}
 </style>
+<style>__TASKS_CSS__
+.tkcamp{margin:14px 0 4px}.tkcamp>summary{cursor:pointer;color:var(--steel);font-weight:600;min-height:32px}</style>
 <style>__SITENAV_CSS__</style>
 </head>
 <body class="L-districts L-modules L-stations">
@@ -398,6 +422,7 @@ __SITENAV__<div class="wrap">
 <script id="data" type="application/json">__DATA__</script>
 <script>
 const D = JSON.parse(document.getElementById('data').textContent);
+__TASK_JS__
 for (const h of D.halls) h.rooms = D.layouts[h.lay].map((r) => ({
   ...r, label: D.roomDefs[r.strand].label,
   purpose: D.roomDefs[r.strand].purpose }));
@@ -481,7 +506,9 @@ function render(){
         const lbadge = h.lessonIds.length ? `<span class="lbadge">${h.lessonIds.length}</span>` : '';
         return `<button class="hall${h.lessonIds.length?' haslesson':''}" data-slug="${slug}" style="${bg};${bd}">${badge}${lbadge}<span class="nm">${h.name}</span><span class="stbar">${bar}</span></button>`;
       }).join('') + `</div></section>`; }).join('') +
-    `</div></div>`).join('');
+    `</div>` + (D.campusTasks[ck].length ? `<details class="tkcamp" data-campus-tasks="${ck}"><summary>${t('tasks.title')} · ${camp.name} · <b>${D.campusTasks[ck].length}</b></summary>` +
+      tcTaskBoard(D.campusTasks[ck], t('tasks.title') + ' · ' + camp.name, (k) => t('tasks.' + k), 'trade_craft_lessons.html', 'tasks-campus-' + ck) + `</details>` : '') +
+    `</div>`).join('');
   applyFilter();
   ladderEdges();
   document.getElementById('honesty').textContent =
@@ -664,6 +691,7 @@ function openHall(slug){
     <p style="color:var(--muted);font-size:11.5px;margin-top:6px">${D.tools.drill} · ${D.tools.honesty}</p>
     ${stns ? `<h3>${t('hall.stations')} (${h.stations.length})</h3>${stns}` : ''}
     ${h.lessonIds.length ? `<h3>${t('interactive.lessonsHere')} (${h.lessonIds.length})</h3>${lessonCards(h)}` : ''}
+    ${tcTaskBoard(D.tasks[h.slug], t('tasks.here'), (k) => t('tasks.' + k), 'trade_craft_lessons.html', 'tasks-' + h.slug)}
     <h3>${t('hall.skills')}</h3>${lat}
     <h3>${t('map.layer.modules')}</h3>${modTable(h)}`;
   document.body.classList.add('open');
@@ -697,6 +725,7 @@ __QUEST_TAIL__</body>
 </html>
 '''
 
+page = page.replace('__TASK_JS__', TASK_RENDER_JS + TASK_FILTER_SRC).replace('__TASKS_CSS__', TASKS_CSS)
 page = page.replace('__SITENAV_CSS__', NAV_CSS).replace('__SITENAV__', NAV)
 page = page.replace('__QUEST_TAIL__', QUEST_TAIL)
 page = page.replace('__DATA__', DATA).replace('__PIPELINE_JS__', PIPELINE_JS)

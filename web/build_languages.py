@@ -180,4 +180,8 @@ show((navigator.language || 'en').slice(0, 2).match(/^({"|".join(ORDER)})$/) ? (
 out = HERE / 'trade_craft_languages.html'
 page = apply_seo(page, 'web/trade_craft_languages.html', 'SmartCiti.X : Trade Craft Academy \u2014 languages',
     locales['en']['strings']['seo.desc.languages'], 'page')
+# wave 3 (HOMEUX): MEDIA's pagehero band + the theme layer, head/hero region only;
+# every word from the catalog (hero.languages.*), see web/herovideo.py doc_hero().
+from herovideo import adopt_doc_hero  # noqa: E402
+page = adopt_doc_hero('languages', page)
 emit(out, page, f"{len(ORDER)} locales | {L['halls']} halls")

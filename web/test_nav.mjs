@@ -246,6 +246,80 @@ ok('every page\'s header bar ends with the one search link to the front door\'s 
 ok('every nav opens with a skip link to #tc-main, labelled nav.skip, and NAV_CSS hides it until it has focus',
   perPage.skip.length === 0 && /\.sitenav a\.skip\{[^}]*clip-path:inset\(50%\)/.test(navSrc.replace(/'\s*\n\s*'/g, ''))
   && /\.sitenav a\.skip:focus[^{]*\{[^}]*clip-path:none/.test(navSrc.replace(/'\s*\n\s*'/g, '')), perPage.skip);
+// The premium layer (MEDIA, wave 3): glass with a solid fallback, one vendored Lucide icon per group plus home and
+// search, drawn as CSS masks - and it never touches the skip link, its target or the search link's place.
+{
+  const css = execFileSync('python3', ['-c', 'import sys;sys.path.insert(0,"web");import sitenav;print(sitenav.NAV_CSS)'],
+    { cwd: ROOT, encoding: 'utf8' });
+  const gi = JSON.parse(execFileSync('python3', ['-c',
+    'import sys,json;sys.path.insert(0,"web");import sitenav as s;print(json.dumps({"g":s.GROUP_ICONS,"n":[g for g,_ in s.GROUPS],"h":s.HOME_ICON,"q":s.SEARCH_ICON}))'],
+    { cwd: ROOT, encoding: 'utf8' }));
+  const vendored = JSON.parse(readFileSync(join(HERE, 'vendor/icons/manifest.json'), 'utf8')).icons;
+  const layerAt = css.indexOf('body.tc-theme>.sitenav{box-shadow');
+  const layer = layerAt < 0 ? '' : css.slice(layerAt);
+  const solid = /^\.sitenav\{[^}]*background:var\(--sn-bg\)/.test(css);
+  ok('nav bar: one SOLID page panel behind every label - no translucent color-mix/backdrop on the bar or the current-page mark (tools read color(srgb) mixes as black)',
+    solid && layerAt > 0 && !/\.sitenav\{[^}]*background:color-mix/.test(css) && !/backdrop-filter/.test(css)
+    && /\.sitenav \[aria-current="page"\]\{background:transparent/.test(layer) && /\.sitenav-loop \[aria-current="step"\]\{background:transparent\}/.test(layer));
+  // nav label contrast, computed from the SHIPPED CSS: every page's own palette (dark default and its light-scheme
+  // block; the nav reads --ink / --muted on --panel|--surface) and every one of the five styles
+  {
+    const lum = (h) => { const c = [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16) / 255).map((x) => (x <= 0.03928 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4)); return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; };
+    const ratio = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p); return (x + 0.05) / (y + 0.05); };
+    const vars = (b) => Object.fromEntries([...b.matchAll(/--([a-z-]+)\s*:\s*(#[0-9A-Fa-f]{6})\b/g)].map((m) => [m[1], m[2]]));
+    const low = [];
+    const judge = (where, v) => {
+      const bg = v.panel || v.surface; if (!v.ink || !bg) return;
+      const ri = ratio(v.ink, bg), rm = ratio(v.muted || v.ink, bg);
+      if (ri < 4.5) low.push(`${where}: ink ${v.ink} on ${bg} ${ri.toFixed(2)}`);
+      if (rm < 4.5) low.push(`${where}: muted ${v.muted} on ${bg} ${rm.toFixed(2)}`);
+    };
+    for (const m of css.matchAll(/\/\*style:([a-z]+)\*\/[^{]*\{([^}]*)\}/g)) judge(`style ${m[1]}`, vars(m[2]));
+    for (const f of onDisk) {
+      const page = readFileSync(join(ROOT, f), 'utf8');
+      const sheet = [...page.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)].map((m) => m[1]).join('');
+      const dark = {};
+      for (const m of sheet.matchAll(/(?<![\w-]):root\s*\{([^}]*)\}/g)) Object.assign(dark, vars(m[1]));
+      const light = { ...dark };
+      for (const m of sheet.matchAll(/@media\s*\(prefers-color-scheme:\s*light\)\s*\{([\s\S]*?\})\s*\}/g))
+        for (const r of m[1].matchAll(/:root[^{]*\{([^}]*)\}/g)) Object.assign(light, vars(r[1]));
+      judge(`${f} dark`, dark); judge(`${f} light`, light);
+    }
+    ok(`nav label contrast >= 4.5 from the shipped CSS: every page's palette in both schemes and all five styles (${onDisk.length} pages)`,
+      low.length === 0, low);
+  }
+  const masks = [...css.matchAll(/\.sitenav-group:nth-child\((\d+)\) \.sitenav-g::before\{--sn-i:url\("data:image\/svg\+xml,/g)].map((m) => +m[1]);
+  ok(`nav icons: every group (${gi.n.length}) has exactly one Lucide mask, in GROUPS order, plus home and search`,
+    masks.length === gi.n.length && masks.every((v, i) => v === i + 1)
+    && /\.sitenav-home::before\{--sn-i:url\("data:image\/svg\+xml,/.test(css) && /\.sitenav \.ss-go::before\{--sn-i:url\("data:image\/svg\+xml,/.test(css),
+    { masks, groups: gi.n });
+  const named = [...Object.values(gi.g), gi.h, gi.q];
+  ok('nav icons: every icon the nav draws is a vendored one (web/vendor/icons/manifest.json)',
+    named.every((n) => vendored.includes(n)), named.filter((n) => !vendored.includes(n)));
+  ok('nav premium layer never restyles the skip link, its #tc-main target, or the search link\'s order',
+    layer.length > 0 && !/skip|tc-main|[{;]order:|\.sitenav a\{[^}]*(?:display|clip-path|position)/.test(layer));
+  ok('nav icons: under forced colours the masks step aside and the search link shows its own svg',
+    /@media \(forced-colors:active\)\{[^@]*::before\{display:none\}\.sitenav \.ss-go>svg\{display:inline\}\}/.test(css));
+  ok('nav current page: bold, an accent bar and an outline - not colour alone',
+    /\.sitenav \[aria-current="page"\]\{background:transparent;box-shadow:inset 0 -3px 0 var\(--sn-mark\),inset 0 0 0 1px var\(--sn-rule\)\}/.test(layer)
+    && /\.sitenav \[aria-current="page"\]\{font-weight:700/.test(css));
+}
+// The Style menu (MEDIA, wave 3): five styles from design_kit.STYLES, a legend-labelled radio group in a
+// disclosure, every word from the catalog, placed before the search link (which stays the bar's last child).
+{
+  const out = JSON.parse(execFileSync('python3', ['-c',
+    'import sys,json;sys.path.insert(0,"web");import sitenav as s,design_kit as k;'
+    + 'print(json.dumps({"nav":s.nav_html("web/trade_craft_lessons.html",s.labels("en")),"ids":[x["id"] for x in k.STYLES],"keys":[x["label_key"] for x in k.STYLES],"key":k.STYLE_KEY,"js":s.STYLE_JS}))'],
+    { cwd: ROOT, encoding: 'utf8' }));
+  const m = out.nav.match(/<details class="sitenav-style" data-sitenav-style><summary><span class="sn-lbl">([^<]+)<\/span>[\s\S]*?<fieldset class="sn-styles"><legend>([^<]+)<\/legend>([\s\S]*?)<\/fieldset><\/details>\n<a class="ss-go"/);
+  const opts = m ? [...m[3].matchAll(/<input type="radio" name="([a-z-]+)" value="([a-z]+)"><span[^>]*><\/span>([^<]+)<\/label>/g)] : [];
+  ok('nav Style menu: a disclosure with a legend-labelled radio group of the five styles, right before the search link',
+    !!m && m[1] === en['nav.style'] && m[2] === en['nav.style'] && opts.length === 5
+    && opts.every((o, i) => o[1] === out.key && o[2] === out.ids[i] && o[3] === en[out.keys[i]]), { found: opts.map((o) => o[2]) });
+  ok('nav Style menu: storage is read and written only inside try/catch',
+    /try\{v=localStorage\.getItem\(K\)\}catch\(e\)\{v=null\}/.test(out.js) && /try\{localStorage\.setItem\(K,t\.value\)\}catch\(e\)\{\}/.test(out.js)
+    && (out.js.match(/localStorage/g) || []).length === 2);
+}
 ok('every skip link lands: each page carries exactly one id="tc-main", the element right after the nav',
   perPage.target.length === 0, perPage.target);
 

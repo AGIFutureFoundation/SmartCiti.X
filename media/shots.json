@@ -163,8 +163,8 @@
     },
     {
       "id": "hall-interior-dolly",
-      "title": "Hall interior, eye-level dolly",
-      "shows": "Standing inside a trade hall, the camera moving forward at eye height along the floor",
+      "title": "Hall interior, dolly over the bays",
+      "shows": "Inside a trade hall, the camera moving forward just above head height over the training bays",
       "page": "web/trade_craft_3d.html",
       "view": "hall",
       "move": "dolly-in",
@@ -184,26 +184,26 @@
         "kind": "lerp",
         "eye0": [
           0,
-          1.7,
-          16
+          3.2,
+          14
         ],
         "eye1": [
           0,
-          1.7,
-          8
+          2.9,
+          6
         ],
         "at0": [
           0,
-          1.6,
-          0
+          1.4,
+          -2
         ],
         "at1": [
           0,
-          1.5,
-          -4
+          1.2,
+          -8
         ]
       },
-      "known_issue": null
+      "known_issue": "shadow striping on some bay walls in the foreground; not used as a hero"
     },
     {
       "id": "avatar-locker-orbit",
@@ -267,7 +267,7 @@
     {
       "id": "globe-flyover",
       "title": "Globe, slow flyover",
-      "shows": "The globe geomap turning toward the campus network and easing in",
+      "shows": "The globe map (graticule and the campus network, placed SCHEMATIC at registry coordinates) turning toward the network and easing in",
       "page": "web/trade_craft_geomap.html",
       "view": "globe",
       "move": "flyover",
@@ -286,6 +286,41 @@
         "bearing1": 0,
         "pitch0": 0,
         "pitch1": 0
+      },
+      "known_issue": "the globe has no basemap offline, so it reads as a dark sphere with a graticule, and the network starts small in frame; not used as a hero"
+    },
+    {
+      "id": "wilds-mountain-flyover",
+      "title": "High Country, mountain flyover",
+      "shows": "The AUTHORED High Country wild world (terrain inspired by the general geography of a high mountain range, not real elevation), the camera gliding across the ridges from high over the valley",
+      "page": "web/trade_craft_wilds.html#mountain",
+      "view": "wilds:mountain overview",
+      "move": "flyover (lateral, descending)",
+      "seconds": 6,
+      "hero": true,
+      "setup": [],
+      "path": {
+        "kind": "lerp",
+        "eye0": [
+          -3600,
+          2300,
+          5200
+        ],
+        "eye1": [
+          2400,
+          1900,
+          4600
+        ],
+        "at0": [
+          -600,
+          500,
+          0
+        ],
+        "at1": [
+          600,
+          450,
+          0
+        ]
       },
       "known_issue": null
     }

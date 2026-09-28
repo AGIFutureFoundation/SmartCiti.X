@@ -189,7 +189,10 @@ def site_section(s):
                       f'hazards {esc(", ".join(ppe["derived_from"]["hazards"]) or "none")}, finishes {esc(ppe["derived_from"]["finishes"]["floor"])} / {esc(ppe["derived_from"]["finishes"]["wall"])}</p>')
     wa = ''.join(f'<li data-gate-point="{esc(g["sim"])}#{esc(g["point"])}"><b>{esc(g["label"])}</b> on <code>{esc(g["sim"])}</code>: {esc(g["check"])}</li>' for g in s['gates']['walkaround_before_first_move'])
     place_link = (f' · <a href="{s["place"]["href"]}" data-place-href>{esc(s["place"]["name"])} on the spaces page</a>' if s['place']['href'] else '')
-    lessons = ', '.join(f'<a href="{LESSONS_HREF}#{esc(l)}" data-lesson="{esc(l)}">{esc(l)}</a>' for l in d['lessons_with_this_crew']) or 'none name this crew'
+    # #lesson-<id> is the anchor build_lessons.py writes and its fromHash() reads;
+    # a bare #<id> landed on the top of the lessons page (fixed wave 3)
+    lessons = ', '.join(f'<a href="{LESSONS_HREF}#lesson-{esc(l)}" data-lesson="{esc(l)}">{esc(l)}</a>' for l in d['lessons_with_this_crew']) or 'none name this crew'
+    board = task_board(site_tasks(s), S('tasks.here'), TASK_LABELS, board_id=f'tasks-{s["id"]}')
     return f'''<section class="site" id="site-{esc(s["id"])}" data-site="{esc(s["id"])}">
 <h2>{esc(s["title"])} <span class="status">authored scenario</span></h2>
 <p class="purpose">{esc(s["job"])}</p>
@@ -211,18 +214,58 @@ def site_section(s):
 <ul class="gates">{wa}</ul>
 <h3>Lessons that name this crew</h3><p class="serves">{lessons}</p>
 </div></div>
+{board}
 <details><summary>Hand-offs, in order, with the evidence at each end</summary>
 <div class="tablewrap"><table class="sched"><thead><tr><th>#</th><th>hand-off</th><th>step</th><th>from-evidence</th><th>to-evidence</th><th>verifiable?</th></tr></thead><tbody>{hand}</tbody></table></div></details>
 </section>'''
 
 
+# Simulated tasks for each site, from web/taskkit.py (tasks/registry/tasks.json
+# only): the site's own crew hand-off, plus every task on the crew's seat -
+# its walkaround and the scenarios on the site's campus (all of them when the
+# site is a space with no campus). Counts are taskkit's, never typed here.
+from taskkit import (task_by_id, tasks_for_seat, task_board, labels_from,  # noqa: E402
+                     TASKS_CSS, TASK_FILTER_JS, TASKS as TASK_REG)
+_EN_STRINGS = json.loads((ROOT / 'i18n/locales/en.json').read_text(encoding='utf-8'))['strings']
+TASK_LABELS = labels_from(_EN_STRINGS)
+
+
+def S(key):
+    if key not in _EN_STRINGS:
+        raise KeyError(f'i18n: no en value for {key}')
+    return _EN_STRINGS[key]
+
+
+def site_tasks(s):
+    own = task_by_id(f'crew-{s["id"]}')
+    camp = s['place']['campus']
+    seat = [t for t in tasks_for_seat(s['crew']['seat']) if t['kind'] != 'crew-handoff'
+            and (camp is None or t['kind'] != 'sim-scenario' or t['place']['campus'] == camp)]
+    return [own] + seat
+
+
 c = reg['counts']
+TASKS_ON_SITES = sorted({t['id'] for s in reg['sites'] for t in site_tasks(s)})
 sections = '\n'.join(site_section(s) for s in reg['sites'])
 toc = ''.join(f'<a href="#site-{esc(s["id"])}">{esc(s["title"])}</a>' for s in reg['sites'])
 embedded = json.dumps(reg, indent=1, sort_keys=True).replace('</', '<\\/')
 places = ' · '.join(f'{k}: <b data-fig-place="{esc(k)}">{v}</b>' for k, v in c['places_by_kind'].items())
 
 NAV = nav_html('web/trade_craft_worksites.html', nav_labels('en'))
+# The page's hero band (MEDIA's web/pagehero.py,
+# THEME_CONTRACT); every word is a tasks.ws.* catalog string. The band's title
+# is the page's one <h1>.
+from pagehero import pagehero  # noqa: E402
+HERO_CSS, HERO_HTML, HERO_JS = pagehero('web/trade_craft_worksites.html', {
+    'clip': 'hall-orbit', 'kicker': S('tasks.ws.kicker'), 'title': S('tasks.ws.title'),
+    'accent': S('tasks.ws.accent'), 'accent_style': 'gradient', 'lede': S('tasks.ws.lede'),
+    'actions': [{'text': S('tasks.ws.cta'), 'href': f'#site-{reg["sites"][0]["id"]}', 'kind': 'primary'}],
+    'as_h1': True, 'labels': {'pause': S('tasks.ws.pause'), 'play': S('tasks.ws.play')},
+    'credit': S('tasks.ws.credit'),
+})
+# theme('doc') is NOT taken: its light palette under prefers-color-scheme
+# fought this page's own dark tokens (dark panels on a light page); the nav's
+# Style switcher re-declares the page tokens instead, so every style applies.
 from questkit import QUEST_CSS, quest_js, page_hooks  # noqa: E402  quests: egg hooks only
 QUEST_TAIL = '<style>' + QUEST_CSS + '</style>\n' + page_hooks('web/trade_craft_worksites.html') + quest_js('page:web/trade_craft_worksites.html')
 
@@ -242,8 +285,8 @@ page = f'''<!doctype html>
 body{{margin:0;background:var(--plate);color:var(--ink);font:16px/1.6 "IBM Plex Sans",system-ui,sans-serif;padding:0 16px 48px}}
 .wrap{{max-width:1180px;margin:0 auto}}
 header{{padding:40px 0 8px;border-bottom:3px solid var(--mark)}}
-header h1{{font:700 34px/1.1 "Barlow Condensed",system-ui,sans-serif;margin:0}}
-header h1 .x{{color:var(--mark)}}
+header .brandline{{font:700 22px/1.1 "Barlow Condensed",system-ui,sans-serif;margin:0;color:var(--ink)}}
+header .brandline .x{{color:var(--mark)}}
 header p{{color:var(--muted);margin:6px 0 14px}}
 a{{color:var(--steel)}}
 .toc{{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0}}
@@ -289,11 +332,13 @@ summary{{cursor:pointer;color:var(--steel)}}
 code{{font:13px "IBM Plex Mono",monospace;color:var(--steel)}}
 </style>
 <style>{NAV_CSS}</style>
+<style>{TASKS_CSS}</style>
+<style>{HERO_CSS}</style>
 </head>
 <body>
-{NAV}<div class="wrap">
+{NAV}{HERO_HTML}<div class="wrap">
 <header>
-  <h1>SmartCiti<span class="x">.X</span> : Trade Craft Academy</h1>
+  <p class="brandline">SmartCiti<span class="x">.X</span> : Trade Craft Academy</p>
   <p>powered by AGI Corp · work sites</p>
 </header>
 <p class="intro">A work site is a scenario where a crew drawn from at least two unions works one job with hand-offs, and whose completion can be checked offline from the members' own exported records with <code>node worksites/verify.mjs &lt;site-id&gt; &lt;record.json&gt;...</code>. Every site here is an <b data-pack-status>authored scenario</b>.</p>
@@ -306,7 +351,9 @@ code{{font:13px "IBM Plex Mono",monospace;color:var(--steel)}}
  <div class="fig"><b data-fig="handoffs_verifiable">{c["handoffs_verifiable"]}</b><span>verifiable from records</span></div>
  <div class="fig"><b data-fig="handoffs_unverifiable">{c["handoffs_unverifiable"]}</b><span>unverifiable, said so</span></div>
  <div class="fig"><b data-fig="seats_involved">{c["seats_involved"]}</b><span>seats involved</span></div>
+ <div class="fig"><b data-tasks-fig="tasks">{len(TASKS_ON_SITES)}</b><span>{esc(S('tasks.title').lower())}</span></div>
 </div>
+<p class="serves" data-tasks-honesty>{esc(TASK_REG['honesty']['practice'])}</p>
 <p class="serves">Places by kind: {places}</p>
 <nav class="toc">{toc}</nav>
 <ul class="honesty">
@@ -321,7 +368,7 @@ code{{font:13px "IBM Plex Mono",monospace;color:var(--steel)}}
 {sections}
 <footer class="serves">Registry: <code>worksites/registry/worksites.json</code> · stamp <code data-stamp>{esc(reg["source_stamp"])}</code> · authored <code data-authored-stamp>{esc(reg["authored_stamp"])}</code> · embedded verbatim below.</footer>
 <script type="application/json" id="worksites-registry">{embedded}</script>
-</div>{QUEST_TAIL}</body>
+</div>{TASK_FILTER_JS}<script>{HERO_JS}</script>{QUEST_TAIL}</body>
 </html>
 '''
 

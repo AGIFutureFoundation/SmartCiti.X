@@ -397,7 +397,21 @@ for k, f in LINKS.items():
     if not (ROOT / f).is_file():
         raise FileNotFoundError(f'hall panel link {k} -> web/{f} does not exist')
 
+# Simulated tasks: one board per hall, rendered by web/taskkit.py from
+# tasks/registry/tasks.json and nothing else (TASK_CONTRACT). Every hall has
+# at least its tool-crib drill, so a hall with no board is a broken join.
+from taskkit import (tasks_for, task_board, labels_from, TASKS_CSS,  # noqa: E402
+                     TASK_FILTER_JS)
+TASK_LABELS = labels_from(_EN)
+TASK_BOARDS = {}
+for _slug in unions:
+    _ts = tasks_for('hall', _slug)
+    if not _ts:
+        raise KeyError(f'tasks: hall {_slug} has no simulated task in tasks/registry/tasks.json')
+    TASK_BOARDS[_slug] = task_board(_ts, S('tasks.here'), TASK_LABELS, board_id=f'tasks-{_slug}')
+
 DATA = {    'halls': halls,
+    'taskBoards': TASK_BOARDS,
     'districts': [{'key': b['key'], 'name': b['name'], 'blurb': b['blurb'],
                    'n': b['n'], 'campus': b['campus']} for b in bands],
     'totals': TOTALS,
@@ -940,6 +954,7 @@ function hallPanel(h) {{
       <div><span class="lc ${{signed ? 'yes' : 'no'}}">${{signed ? DATA.signoff.claiming : DATA.signoff.statuses[0]}}
         <em>${{F(DATA.signoff.signed)}} ${{I18N.of}} ${{F(DATA.signoff.of)}} ${{I18N.hallsWord}}</em></span></div></div>
     <p class="caveat">${{esc(DATA.signoff.caveat)}}</p>
+    ${{DATA.taskBoards[h.slug]}}
   </section>`;
 }}
 
@@ -988,7 +1003,7 @@ dlist.addEventListener('click', (e) => {{
 
 renderDetail(selected); apply();
 </script>
-''' + QUEST_TAIL
+''' + '<style>' + TASKS_CSS + '</style>\n' + TASK_FILTER_JS + '\n' + QUEST_TAIL
 
 out = ROOT / 'trade_craft_map.html'
 PAGE = apply_seo(PAGE, 'web/trade_craft_map.html', 'Network plan \u2014 SmartCiti.X : Trade Craft Academy',

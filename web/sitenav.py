@@ -94,7 +94,11 @@ LOOP = [
 for _p, _k in LOOP:
     assert _p in PAGES, f'sitenav: loop step {_p} is not a declared page'
 
-KEYS = (['nav.site', 'nav.loop', 'nav.home', 'nav.group.home', 'nav.skip', 'nav.search']
+# the five site styles (web/design_kit.py STYLES) the nav's Style menu offers
+from design_kit import STYLES, STYLE_KEY, STYLE_HEAD_JS, style_css  # noqa: E402
+STYLE_KEYS = ['nav.style', 'nav.style.default'] + [st['label_key'] for st in STYLES]
+
+KEYS = (['nav.site', 'nav.loop', 'nav.home', 'nav.group.home', 'nav.skip', 'nav.search'] + STYLE_KEYS
         + [g for g, _ in GROUPS] + [k for _, items in GROUPS for _, k in items]
         + [k for _, k in LOOP])
 
@@ -150,6 +154,7 @@ def nav_html(current_path, labels):
     out.append('</div></details>')
     # The site search: a script-free link to the front door's palette
     # (index.html#search), the header bar's last child on every page.
+    out.append(style_menu(labels))
     out.append(search_trigger(current_path, labels['nav.search']))
     out.append('</div>')
     steps = [p for p, _ in LOOP]
@@ -164,6 +169,34 @@ def nav_html(current_path, labels):
     out.append('<span id="tc-main" class="sitenav-skip-target" tabindex="-1"></span>')
     return '\n'.join(out) + '\n'
 
+
+def style_menu(labels):
+    """The Style menu: a native disclosure (the summary is the button) holding
+    a labelled radio group - arrow keys move between the five styles, and
+    screen readers hear the group's legend and each style's name. The
+    summary shows the current choice (CSS :has picks which name shows). No
+    script is needed to switch (style_css applies on :checked); STYLE_JS,
+    when a page includes it, remembers the choice in localStorage."""
+    E = lambda k: html.escape(labels[k])
+    cur = ''.join(f'<span class="sn-cur" data-s="{st["id"]}">{E(st["label_key"])}</span>' for st in STYLES)
+    opts = ''.join(f'<label class="sn-opt"><input type="radio" name="{STYLE_KEY}" value="{st["id"]}">'
+                   f'<span class="sn-sw" data-s="{st["id"]}" aria-hidden="true"></span>{E(st["label_key"])}</label>'
+                   for st in STYLES)
+    return (f'<details class="sitenav-style" data-sitenav-style><summary><span class="sn-lbl">{E("nav.style")}</span>'
+            f'<span class="sn-cur sn-cur-default">{E("nav.style.default")}</span>{cur}</summary>'
+            f'<fieldset class="sn-styles"><legend>{E("nav.style")}</legend>{opts}</fieldset></details>')
+
+
+# The page script that remembers the style (optional; after the page's own
+# scripts): checks the stored style's radio, and on every change sets
+# <html data-style> and stores it. Storage may throw (private mode,
+# blocked): every access is in try/catch and the page keeps its default.
+STYLE_JS = ("(()=>{var K='" + STYLE_KEY + "',h=document.documentElement,v=h.getAttribute('data-style');"
+            "if(!v){try{v=localStorage.getItem(K)}catch(e){v=null}}"
+            "var r=v&&document.querySelector('input[name=\"'+K+'\"][value=\"'+v+'\"]');"
+            "if(r){r.checked=true;h.setAttribute('data-style',v)}"
+            "document.addEventListener('change',function(e){var t=e.target;if(!t||t.name!==K)return;"
+            "h.setAttribute('data-style',t.value);try{localStorage.setItem(K,t.value)}catch(e){}});})();")
 
 NAV_CSS = (
     '.sitenav{--sn-ink:var(--ink,CanvasText);--sn-bg:var(--panel,var(--surface,Canvas));'
@@ -245,6 +278,110 @@ NAV_CSS = (
     '.sitenav-g{flex:0 0 100%;margin-block-end:2px}'
     '.sitenav-loop{font-size:12.5px}}'
     '@media (prefers-reduced-motion:reduce){.sitenav *{transition:none!important}}'
+)
+
+
+# ------------------------------------------------------------ premium layer
+# Glass header (blur where the browser supports backdrop-filter; the solid
+# panel above stays as the fallback), a gradient hairline, a tinted pill with
+# an accent bar for the current page, and one vendored Lucide icon per group,
+# on the home link and on the search link - drawn as CSS masks in
+# currentColor, so the markup (and every page suite that reads it) is
+# untouched and the icons take each page's own ink. The icons come from
+# web/vendor/icons/ (lucide-static, ISC; media/fetch_icons.py verifies them);
+# a group without an icon, or an icon not vendored, stops the build by name.
+# A page that opts into the theme layer (<body class="tc-theme">, see
+# web/pagehero.py) also gets a sticky header.
+GROUP_ICONS = {
+    'nav.group.learn': 'graduation-cap', 'nav.group.play': 'gamepad-2',
+    'nav.group.maps': 'map', 'nav.group.records': 'clipboard-check',
+    'nav.group.sites': 'hard-hat', 'nav.group.about': 'info',
+}
+HOME_ICON, SEARCH_ICON = 'house', 'search'
+
+
+def _icon_mask(name):
+    import re
+    import urllib.parse
+    icon_dir = ROOT / 'web' / 'vendor' / 'icons'
+    vendored = json.loads((icon_dir / 'manifest.json').read_text(encoding='utf-8'))['icons']
+    assert name in vendored, f'sitenav: icon {name!r} is not vendored (media/fetch_icons.py ICONS)'
+    svg = (icon_dir / f'{name}.svg').read_text(encoding='utf-8')
+    svg = re.sub(r'<!--.*?-->', '', svg, flags=re.S)
+    svg = re.sub(r'\s*class="[^"]*"', '', svg)
+    svg = re.sub(r'\s+', ' ', svg).replace('> <', '><').replace(' />', '/>').strip()
+    svg = svg.replace('currentColor', 'black').replace('"', "'")
+    return 'url("data:image/svg+xml,' + urllib.parse.quote(svg, safe="/:=' ,.-") + '")'
+
+
+assert set(GROUP_ICONS) == {g for g, _ in GROUPS}, \
+    f'sitenav: GROUP_ICONS must name exactly the nav groups, differs by {set(GROUP_ICONS) ^ {g for g, _ in GROUPS}}'
+
+_ICO = ('content:"";display:inline-block;flex:none;inline-size:1.05em;block-size:1.05em;'
+        'background:currentColor;-webkit-mask:var(--sn-i) center/contain no-repeat;'
+        'mask:var(--sn-i) center/contain no-repeat;opacity:.85')
+NAV_CSS += (
+    # The bar stays the page's SOLID panel: an earlier translucent glass mix
+    # serialised as color(srgb ...) and contrast tools read it as black (HOMEUX
+    # measured 1.00:1 in light). Depth comes from the hairline and, when
+    # sticky, a shadow - so nav text contrast is exactly the page's ink/panel.
+    'body.tc-theme>.sitenav{box-shadow:0 6px 18px -12px rgba(0,0,0,.55)}'
+    '.sitenav::after{content:"";position:absolute;inset-inline:0;inset-block-end:-1px;block-size:1px;'
+    'pointer-events:none;background:linear-gradient(90deg,transparent,var(--sn-mark),transparent);opacity:.6}'
+    '.sitenav a{transition:background-color .15s,color .15s}'
+    '.sitenav-g{display:inline-flex;align-items:center;gap:5px}'
+    '.sitenav-g::before,.sitenav-home::before,.sitenav .ss-go::before{' + _ICO + '}'
+    '.sitenav a.sitenav-home{display:inline-flex;align-items:center;gap:6px}'
+    '.sitenav-home::before{--sn-i:' + _icon_mask(HOME_ICON) + '}'
+    '.sitenav .ss-go>svg{display:none}'
+    '.sitenav .ss-go{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--sn-rule);border-radius:999px;padding-inline:12px}'
+    '.sitenav .ss-go::before{--sn-i:' + _icon_mask(SEARCH_ICON) + '}'
+    '.sitenav [aria-current="page"]{background:transparent;box-shadow:inset 0 -3px 0 var(--sn-mark),'
+    'inset 0 0 0 1px var(--sn-rule)}'
+    '.sitenav-loop [aria-current="step"]{background:transparent}'
+    + ''.join(f'.sitenav-group:nth-child({i + 1}) .sitenav-g::before{{--sn-i:{_icon_mask(GROUP_ICONS[g])}}}'
+              for i, (g, _) in enumerate(GROUPS))
+    + 'body.tc-theme>.sitenav{position:sticky;inset-block-start:0}'
+    'html:has(body.tc-theme){scroll-padding-block-start:72px}'
+    '@media (forced-colors:active){.sitenav-g::before,.sitenav-home::before,.sitenav .ss-go::before{display:none}'
+    '.sitenav .ss-go>svg{display:inline}}'
+    '@media (prefers-reduced-motion:reduce){.sitenav a{transition:none}}'
+)
+
+
+_SW = ''.join(f'.sn-sw[data-s="{st["id"]}"]{{background:linear-gradient(135deg,{st["tokens"]["plate"]} 50%,'
+              f'{st["tokens"]["accent"]} 50%)}}' for st in STYLES)
+NAV_CSS += (
+    '.sitenav-style{position:relative;flex:none}'
+    '.sitenav-style>summary{display:inline-flex;align-items:center;gap:6px;min-block-size:44px;padding-inline:10px;'
+    'cursor:pointer;list-style:none;border-radius:999px;white-space:nowrap}'
+    '.sitenav-style>summary::-webkit-details-marker{display:none}'
+    '.sitenav-style>summary:hover{background:color-mix(in srgb,currentColor 11%,transparent)}'
+    '.sitenav-style>summary:focus-visible{outline:2px solid var(--sn-mark);outline-offset:2px}'
+    '.sitenav-style .sn-lbl{color:var(--sn-mute)}'
+    '.sitenav-style .sn-cur{display:none;font-weight:700}'
+    '.sitenav-style:not(:has(input:checked)) .sn-cur-default{display:inline}'
+    + ''.join(f'.sitenav-style:has(input[value="{st["id"]}"]:checked) .sn-cur[data-s="{st["id"]}"]{{display:inline}}'
+              for st in STYLES)
+    + '.sn-styles{position:absolute;inset-inline-end:0;inset-block-start:calc(100% + 6px);z-index:70;margin:0;'
+    'min-inline-size:220px;padding-block:8px;padding-inline:8px;display:grid;gap:2px;background:var(--sn-bg);'
+    'color:var(--sn-ink);border:1px solid var(--sn-rule);border-radius:10px;box-shadow:0 16px 32px -12px rgba(0,0,0,.45)}'
+    '.sn-styles legend{padding-block:2px 6px;padding-inline:6px;font-size:11px;'
+    'font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--sn-mute)}'
+    '.sn-opt{display:flex;align-items:center;gap:8px;min-block-size:40px;padding-inline:6px;border-radius:6px;cursor:pointer}'
+    '.sn-opt:hover{background:color-mix(in srgb,currentColor 10%,transparent)}'
+    '.sn-opt:has(input:checked){box-shadow:inset 3px 0 0 var(--sn-mark);font-weight:700}'
+    '.sn-opt input{accent-color:var(--sn-mark);margin:0}'
+    '.sn-opt input:focus-visible{outline:2px solid var(--sn-mark);outline-offset:2px}'
+    '.sn-sw{inline-size:18px;block-size:18px;border-radius:50%;border:1px solid var(--sn-rule);flex:none}'
+    + _SW
+    + '.sitenav-style>summary::before{' + _ICO + ';--sn-i:' + _icon_mask('layers') + '}'
+    # on a phone the bar keeps its four controls on one row: the style name and
+    # the search word stay in the accessibility tree but are visually hidden
+    + '@media(max-width:720px){.sitenav-style .sn-lbl{display:none}'
+    '.sitenav-style .sn-cur,.sitenav .ss-go>span{position:absolute;inline-size:1px;block-size:1px;overflow:hidden;'
+    'clip-path:inset(50%);white-space:nowrap}.sitenav .ss-go,.sitenav-style>summary{padding-inline:12px}}'
+    + style_css().replace('\n', '')
 )
 
 

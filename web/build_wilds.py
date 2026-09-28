@@ -31,6 +31,12 @@ from staleness import emit  # noqa: E402
 import sitenav  # noqa: E402
 from sitenav import nav_html, labels as nav_labels, NAV_CSS  # noqa: E402
 from seo import apply_seo  # noqa: E402  head tags only
+# the enterprise theme (MEDIA, web/pagehero.py): a full-screen canvas page takes
+# the panel/button/badge/focus layer only - no hero band over the world
+from pagehero import theme  # noqa: E402
+THEME_CSS, THEME_JS = theme('canvas')
+if THEME_JS:
+    raise SystemExit('build_wilds: the canvas theme is CSS only; pagehero.theme("canvas") returned script')
 
 PAGE = 'web/trade_craft_wilds.html'
 REG = json.loads((ROOT / 'wilds/registry/wilds.json').read_text())
@@ -40,6 +46,21 @@ if CORE_SRC.count(B) != 1 or CORE_SRC.count(E) != 1:
     raise SystemExit('build_wilds: wilds/core.mjs must hold exactly one WILDS_CORE block')
 CORE = CORE_SRC[CORE_SRC.index(B):CORE_SRC.index(E) + len(E)]
 LESSONS_HREF = 'trade_craft_lessons.html#lesson-'
+# Page chrome comes from the catalog (wilds.* keys, all 8 locales); strict like
+# sitenav.labels(): a missing or empty key stops the build.
+_CAT = json.loads((ROOT / 'i18n/locales/en.json').read_text(encoding='utf-8'))['strings']
+
+
+def T(k):
+    if k not in _CAT or not isinstance(_CAT[k], str) or not _CAT[k].strip():
+        raise SystemExit(f'build_wilds: i18n/locales/en.json has no wilds chrome key {k!r}')
+    return html.escape(_CAT[k], quote=True)
+
+
+def TRAW(k):
+    T(k)
+    return _CAT[k]
+
 HALL_HREF = 'trade_craft_3d.html?hall='
 
 
@@ -84,12 +105,77 @@ if qreg_path.exists() and (HERE / 'questkit.py').exists():
                 raise SystemExit(f'build_wilds: quest {q["id"]} place {q["place"]!r} is not a site, cache or the trailhead of {wid}')
             attr = egg_attr(q['id']) if q['kind'] in ('treasure', 'egg') else quest_attr(q['id'])
             QUEST_ROWS.append(
-                f'<li><button type="button" class="qhook" data-wilds-world="{esc(wid)}" '
+                f'<li><button type="button" class="qhook tc-btn tc-btn-ghost" data-wilds-world="{esc(wid)}" '
                 f'data-wilds-place="{esc(q["place"])}" data-wilds-kind="{esc(q["kind"])}" {attr}>'
                 f'{esc(q["title"])}</button> <span class="hint">{esc(q["hint"])}</span></li>')
         QUEST_SCRIPT = quest_js('wilds')
         QUEST_CSS_BLOCK = f'<style>{QUEST_CSS}</style>'
         QUEST_STATE = 'wired'
+
+# ---------------------------------------------------------------- tasks --
+# INTEGRATION POINT (tasks): the simulated tasks TASKS registers at each wilds
+# site (tasks/registry/tasks.json, place.kind "wilds-site"), read only through
+# web/taskkit.py. Each site card and the in-world site panel list them with
+# their launch link and the lessons linked to them; the minimap rings a site
+# that has any. Until the task registry exists the page says so plainly.
+TASK_STATE = 'pending'
+TASKS_BY_SITE = {}
+TASK_CSS_BLOCK = ''
+TASK_HONESTY = ''
+if (ROOT / 'tasks/registry/tasks.json').exists() and (HERE / 'taskkit.py').exists():
+    import taskkit  # noqa: E402
+    LESSON_TITLES = json.loads((ROOT / 'lessons/registry/lessons.json').read_text())['lessons']
+    for w in REG['worlds']:
+        for s in w['sites']:
+            ts = taskkit.tasks_for('wilds-site', s['id'])
+            for t in ts:
+                if t['place']['world'] != w['id']:
+                    raise SystemExit(f'build_wilds: task {t["id"]} names world {t["place"]["world"]!r} for site {s["id"]} of {w["id"]}')
+                for lid in t['requires']:
+                    if lid not in LESSON_TITLES:
+                        raise SystemExit(f'build_wilds: task {t["id"]} requires lesson {lid!r}, not in lessons/registry')
+            TASKS_BY_SITE[s['id']] = ts
+    TASK_STATE = 'wired'
+    TASK_CSS_BLOCK = f'<style>{taskkit.TASKS_CSS}</style>'
+    TASK_HONESTY = taskkit.TASKS['honesty']['practice']
+
+
+def task_href(t):
+    return taskkit.rel_href(t['launch']['href'], 'web')
+
+
+def site_tasks(s):
+    if TASK_STATE != 'wired':
+        return ''
+    ts = TASKS_BY_SITE[s['id']]
+    if not ts:
+        return f'<p class="k">{T("wilds.site.tasks")}</p><p class="none">{T("wilds.site.no_task")}</p>'
+    rows = []
+    for t in ts:
+        href = task_href(t)
+        launch = (f'<a class="tlaunch tc-btn tc-btn-primary" href="{esc(href)}" data-task-launch="{esc(t["id"])}">{T("wilds.task.launch")}</a>' if href
+                  else f'<span class="none">{esc(t["launch"]["why"])}</span>')
+        if t['requires']:
+            req = ', '.join(f'<a href="{LESSONS_HREF}{esc(l)}">{esc(LESSON_TITLES[l]["title"])}</a>' for l in t['requires'])
+            req = f'<span class="treq">{T("wilds.task.requires")}: {req}</span>'
+        else:
+            req = f'<span class="treq">{T("wilds.task.open")}</span>'
+        rows.append(f'<li data-task="{esc(t["id"])}" data-kind="{esc(t["kind"])}"><b>{esc(t["title"])}</b> '
+                    f'<span class="prov tc-badge tc-badge-muted">{esc(t["provenance"])}</span> {launch}<br>{req}</li>')
+    # the halls working here: their tasks (seats, drills, walkarounds) launch on
+    # the campus; listed through taskkit's own compact list
+    ht = [t for h in s['halls'] for t in taskkit.tasks_for('hall', h['id'])]
+    hall_block = (f'<p class="k">{T("wilds.site.hall_tasks")}</p><div class="halltasks" data-hall-tasks="{esc(s["id"])}">'
+                  f'{taskkit.task_list(ht, None, "web")}</div>' if ht else '')
+    return f'<p class="k">{T("wilds.site.tasks")}</p><ul class="tasks">{"".join(rows)}</ul>{hall_block}'
+
+
+def world_task_fig(w):
+    if TASK_STATE != 'wired':
+        return ''
+    n = sum(len(TASKS_BY_SITE[s['id']]) for s in w['sites'])
+    return f'<div class="fig"><b data-fig-tasks="{esc(w["id"])}">{n}</b><span>{T("wilds.fig.tasks")}</span></div>'
+
 
 # --------------------------------------------------------------- cards --
 def site_card(w, s):
@@ -97,14 +183,14 @@ def site_card(w, s):
     if s['lessons']:
         lessons = ''.join(f'<li><a href="{LESSONS_HREF}{esc(l["id"])}">{esc(l["title"])}</a></li>'
                           for l in s['lessons'])
-        lessons = f'<p class="k">Lessons at this site</p><ul class="links">{lessons}</ul>'
+        lessons = f'<p class="k">{T("wilds.site.lessons")}</p><ul class="links">{lessons}</ul>'
     else:
-        lessons = '<p class="k">Lessons at this site</p><p class="none">No lesson in this bundle is written for this work yet.</p>'
+        lessons = f'<p class="k">{T("wilds.site.lessons")}</p><p class="none">{T("wilds.site.no_lesson")}</p>'
     return (f'<article class="site" id="site-{esc(s["id"])}" data-site="{esc(s["id"])}" data-world="{esc(w["id"])}">'
-            f'<h3>{esc(s["title"])} <span class="prov">SCHEMATIC</span></h3>'
+            f'<h3>{esc(s["title"])} <span class="prov tc-badge tc-badge-muted">SCHEMATIC</span></h3>'
             f'<p>{esc(s["work"])}</p>'
-            f'<p class="k">Union halls</p><ul class="links">{halls}</ul>{lessons}'
-            f'<button type="button" class="go" data-goto="{esc(s["id"])}">Go to this site</button>'
+            f'<p class="k">{T("wilds.site.halls")}</p><ul class="links">{halls}</ul>{lessons}{site_tasks(s)}'
+            f'<button type="button" class="go tc-btn tc-btn-primary" data-goto="{esc(s["id"])}">{T("wilds.site.go")}</button>'
             '</article>')
 
 
@@ -115,20 +201,29 @@ def world_section(w):
             f'<h2>{esc(w["name"])}</h2>'
             f'<p class="evokes">Evokes {esc(w["inspiration"]["evokes"])} - nearest campus in spirit: '
             f'{esc(w["inspiration"]["campus_city"])}. <b>{esc(w["inspiration"]["standing"])}.</b></p>'
-            f'<div class="figs"><div class="fig"><b>{w["area_km2"]}</b><span>km² authored</span></div>'
-            f'<div class="fig"><b>{len(w["sites"])}</b><span>work sites</span></div>'
-            f'<div class="fig"><b>{w["trail_length_m"]}</b><span>m of trail</span></div>'
-            f'<div class="fig"><b>{len(w["caches"])}</b><span>hidden treasures</span></div></div>'
+            f'<p class="geo" data-geolocation="{esc(w["id"])}"><span class="prov tc-badge tc-badge-muted">AUTHORED</span> {esc(w["geolocation"]["label"])}</p>'
+            f'<div class="figs"><div class="fig"><b>{w["area_km2"]}</b><span>{T("wilds.fig.area")}</span></div>'
+            f'<div class="fig"><b>{len(w["sites"])}</b><span>{T("wilds.fig.sites")}</span></div>'
+            f'<div class="fig"><b>{w["trail_length_m"]}</b><span>{T("wilds.fig.trail")}</span></div>'
+            f'<div class="fig"><b>{len(w["caches"])}</b><span>{T("wilds.fig.treasures")}</span></div>{world_task_fig(w)}</div>'
             f'<div class="sites">{sites}</div>'
-            f'<h3>Treasure riddles</h3><ul class="riddles">{caches}</ul>'
+            f'<h3>{T("wilds.h.riddles")}</h3><ul class="riddles">{caches}</ul>'
             '</section>')
 
 
 worlds_html = ''.join(world_section(w) for w in REG['worlds'])
-switch = ''.join(f'<button type="button" data-world="{esc(w["id"])}" aria-pressed="false">{esc(w["name"])}</button>'
+switch = ''.join(f'<button type="button" class="tc-btn tc-btn-ghost" data-world="{esc(w["id"])}" aria-pressed="false">{esc(w["name"])}</button>'
                  for w in REG['worlds'])
 embedded = json.dumps(REG, sort_keys=True).replace('</', '<\\/')
+JS_LABELS = {k: TRAW('wilds.' + k) for k in ('mode.overview', 'mode.walk', 'pace', 'pace.walk', 'pace.run', 'pace.fast',
+                                             'toast.cache', 'toast.trailhead', 'side_quest', 'flyover')}
+labels_json = json.dumps(JS_LABELS, ensure_ascii=False, sort_keys=True).replace('</', '<\\/')
+site_task_counts = json.dumps({s['id']: len(TASKS_BY_SITE[s['id']]) for w in REG['worlds'] for s in w['sites']}
+                              if TASK_STATE == 'wired' else {}, sort_keys=True)
 c = REG['counts']
+task_note = (f'<p class="help" data-tasks-honesty>{esc(TASK_HONESTY)}</p>' if TASK_STATE == 'wired'
+             else '<p class="none" data-tasks-pending>Simulated tasks are not wired to this page yet: tasks/registry/tasks.json '
+                  'is not built. INTEGRATION POINT for the task contract.</p>')
 quest_block = (f'<ul class="quests">{"".join(QUEST_ROWS)}</ul><div data-tc-questlog></div>' if QUEST_STATE == 'wired'
                else '<p class="none" data-quests-pending>The quest log is not wired to this page yet: caches can be found, '
                     'but nothing is recorded. INTEGRATION POINT for the quest contract.</p>')
@@ -139,6 +234,9 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 ''' + CORE + r'''
 const REG = JSON.parse(document.getElementById('wilds-registry').textContent);
+const L = JSON.parse(document.getElementById('wilds-labels').textContent);
+/* simulated tasks per site (tasks/registry via web/taskkit.py); {} until wired */
+const SITE_TASKS = JSON.parse(document.getElementById('wilds-tasks').textContent);
 const WORLDS = new Map(REG.worlds.map((w) => [w.id, w]));
 /* Declared once. The eval (web/eval_wilds.mjs) holds these views to targets. */
 const RING_SEGS = [40, 40, 20, 10];   // grid segments per chunk by ring distance from the eye
@@ -146,6 +244,12 @@ const RADIUS = 3;                      // chunk rings streamed around the eye
 const VEG_R = 420, VEG_CELL = 9;       // vegetation radius and scatter cell, metres
 const VEG_REFILL = 50;                 // refill vegetation after the eye moves this far
 const CAP = { conifer: 5200, deciduous: 2600, rock: 1600 };
+/* Tree billboards: past VEG_R, out to BB_R, each tree species is drawn as a
+   crossed card (a conifer is two crossed triangles, a broadleaf two crossed
+   diamonds) on a coarser BB_CELL scatter, ONE InstancedMesh per species. A
+   card never stands inside VEG_R, where the full trees are. */
+const BB_R = 900, BB_CELL = 18;
+const BB_CAP = { conifer: 9000, deciduous: 4500 };
 const SKIRT = 40, EYE_H = 1.7, WALK_MS = 1.7, RUN_MS = 5.0, FAST_MS = 24;
 const BUILD_PER_FRAME = 2;
 
@@ -348,6 +452,58 @@ for (const [k, g] of Object.entries(SPECIES)) {
   m.count = 0; m.frustumCulled = false;
   scene.add(m); veg[k] = m;
 }
+/* the billboard cards: vertex-coloured, normals straight up so a card is lit
+   like the canopy it stands for whichever way it faces */
+function card(pts, hexc) {
+  const g = new THREE.BufferGeometry(), n = pts.length / 3, c = new THREE.Color(hexc);
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
+  g.setAttribute('normal', new THREE.Float32BufferAttribute(new Array(n).fill([0, 1, 0]).flat(), 3));
+  g.setAttribute('color', new THREE.Float32BufferAttribute(new Array(n).fill([c.r, c.g, c.b]).flat(), 3));
+  return g;
+}
+const BB_SHAPES = {
+  conifer: card([-2.4, 0, 0, 2.4, 0, 0, 0, 9.4, 0, 0, 0, -2.4, 0, 0, 2.4, 0, 9.4, 0], 0x2E4D2C),
+  deciduous: card([0, 1.8, 0, 2.7, 5, 0, 0, 8, 0, 0, 1.8, 0, 0, 8, 0, -2.7, 5, 0,
+    0, 1.8, 0, 0, 5, 2.7, 0, 8, 0, 0, 1.8, 0, 0, 8, 0, 0, 5, -2.7], 0x6E8F3E),
+};
+const matBB = new THREE.MeshLambertMaterial({ vertexColors: true, side: THREE.DoubleSide });
+const bb = {};
+for (const [k, g] of Object.entries(BB_SHAPES)) {
+  const m = new THREE.InstancedMesh(g, matBB, BB_CAP[k]);
+  m.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+  m.count = 0; m.frustumCulled = false;
+  scene.add(m); bb[k] = m;
+}
+let bbMinR = Infinity;
+function refillBillboards() {
+  const cand = { conifer: [], deciduous: [] };
+  const c0 = Math.floor((eye.x - BB_R) / BB_CELL), c1 = Math.floor((eye.x + BB_R) / BB_CELL);
+  const r0 = Math.floor((eye.z - BB_R) / BB_CELL), r1 = Math.floor((eye.z + BB_R) / BB_CELL);
+  const lim = W.extent_m / 2 - 10;
+  for (let ci = c0; ci <= c1; ci++) for (let ri = r0; ri <= r1; ri++) {
+    const x = (ci + wildsHash(ci, ri, W.seed, 11)) * BB_CELL, z = (ri + wildsHash(ci, ri, W.seed, 12)) * BB_CELL;
+    const dx = x - eye.x, dz = z - eye.z, d2 = dx * dx + dz * dz;
+    if (d2 <= VEG_R * VEG_R || d2 > BB_R * BB_R || Math.abs(x) > lim || Math.abs(z) > lim) continue;
+    const roll = wildsHash(ci, ri, W.seed, 13);
+    const h = T.height(x, z), g = T.growth(x, z, h, T.slope(x, z));
+    const kind = roll < g.conifer ? 'conifer' : roll < g.conifer + g.deciduous ? 'deciduous' : null;
+    if (kind === null || nearTrail(x, z, 4)) continue;
+    cand[kind].push([d2, x, h, z, wildsHash(ci, ri, W.seed, 14)]);
+  }
+  bbMinR = Infinity;
+  for (const k of Object.keys(cand)) {
+    const list = cand[k], m = bb[k];
+    if (list.length > BB_CAP[k]) { list.sort((a, b) => a[0] - b[0]); list.length = BB_CAP[k]; }
+    for (let n = 0; n < list.length; n++) {
+      const [d2, x, h, z, r] = list[n];
+      if (d2 < bbMinR * bbMinR) bbMinR = Math.sqrt(d2);
+      const sc = 0.85 + r * 0.8;
+      _e.set(0, r * 6.28, 0); _q.setFromEuler(_e); _s.set(sc, sc * (0.9 + r * 0.4), sc); _p.set(x, h - 0.2, z);
+      _m.compose(_p, _q, _s); m.setMatrixAt(n, _m);
+    }
+    m.count = list.length; m.instanceMatrix.needsUpdate = true;
+  }
+}
 let vegAt = null;
 const _m = new THREE.Matrix4(), _q = new THREE.Quaternion(), _s = new THREE.Vector3(), _p = new THREE.Vector3(), _e = new THREE.Euler();
 let trailSegs = [], clearings = [];
@@ -402,6 +558,7 @@ function refillVeg() {
     m.count = list.length; m.instanceMatrix.needsUpdate = true;
     if (m.instanceColor) m.instanceColor.needsUpdate = true;
   }
+  refillBillboards();
 }
 
 /* ------------------------------------------------ trails, props, water -- */
@@ -498,17 +655,21 @@ function buildMinimap() {
   miniBase = off;
 }
 function toMini(x, z) { const S = mini.width; return [(x / W.extent_m + 0.5) * S, (z / W.extent_m + 0.5) * S]; }
+const tok = (n) => getComputedStyle(document.body).getPropertyValue(n).trim();
 function drawMinimap() {
-  const S = mini.width;
+  const S = mini.width, amber = tok('--tc-amber'), steel = tok('--tc-steel'), ink = tok('--tc-ink'), plate = tok('--tc-plate');
   mctx.imageSmoothingEnabled = true; mctx.drawImage(miniBase, 0, 0, S, S);
-  mctx.strokeStyle = '#F3E3B5'; mctx.lineWidth = 1.5; mctx.beginPath();
+  mctx.strokeStyle = ink; mctx.lineWidth = 1.5; mctx.beginPath();
   for (const s of trailSegs) { const a = toMini(s[0], s[1]), b = toMini(s[2], s[3]); mctx.moveTo(a[0], a[1]); mctx.lineTo(b[0], b[1]); }
   mctx.stroke();
-  mctx.fillStyle = '#E8A33D';
+  mctx.fillStyle = amber;
   for (const s of W.sites) { const p = toMini(s.x, s.z); mctx.fillRect(p[0] - 3, p[1] - 3, 6, 6); }
+  /* a ring marks a site with simulated tasks */
+  mctx.strokeStyle = steel; mctx.lineWidth = 2;
+  for (const s of W.sites) if (SITE_TASKS[s.id] > 0) { const p = toMini(s.x, s.z); mctx.beginPath(); mctx.arc(p[0], p[1], 7, 0, 6.2832); mctx.stroke(); }
   const p = toMini(eye.x, eye.z);
   mctx.save(); mctx.translate(p[0], p[1]); mctx.rotate(-eye.yaw);
-  mctx.fillStyle = '#FFFFFF'; mctx.strokeStyle = '#0C1113'; mctx.beginPath();
+  mctx.fillStyle = ink; mctx.strokeStyle = plate; mctx.beginPath();
   mctx.moveTo(0, -7); mctx.lineTo(5, 5); mctx.lineTo(-5, 5); mctx.closePath(); mctx.fill(); mctx.stroke(); mctx.restore();
 }
 mini.addEventListener('click', (ev) => {
@@ -526,6 +687,7 @@ function buildLabels() {
   labelEls = W.sites.map((s) => {
     const b = document.createElement('button');
     b.type = 'button'; b.className = 'lbl'; b.textContent = s.title; b.dataset.site = s.id;
+    if (SITE_TASKS[s.id] > 0) { b.classList.add('has-tasks'); const n = document.createElement('span'); n.className = 'tcount'; n.textContent = String(SITE_TASKS[s.id]); b.prepend(n); }
     b.addEventListener('click', () => openSite(s.id));
     labelLayer.appendChild(b);
     return { el: b, x: s.x, z: s.z, y: T.height(s.x, s.z) + 9 };
@@ -557,7 +719,7 @@ function openSite(id) {
   const go = clone.querySelector('.go'); if (go) go.remove();
   panelBody.appendChild(clone);
   for (const q of document.querySelectorAll(`.qhook[data-wilds-place="${id}"][data-tc-quest]`)) {
-    const b = document.createElement('button'); b.type = 'button'; b.className = 'qmark'; b.textContent = 'Side quest: ' + q.textContent;
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'qmark tc-btn tc-btn-ghost'; b.textContent = L['side_quest'] + ': ' + q.textContent;
     b.addEventListener('click', () => q.click()); panelBody.appendChild(b);
   }
   panel.hidden = false; openId = id;
@@ -577,7 +739,7 @@ function checkNear() {
     thSigned = true;
     const hooks = document.querySelectorAll(`.qhook[data-wilds-world="${W.id}"][data-wilds-place="trailhead"][data-tc-egg]`);
     if (hooks.length) for (const hk of hooks) hk.click();
-    else toast('You signed the trailhead book. The quest log is not wired to this page yet, so nothing is recorded.');
+    else toast(L['toast.trailhead']);
   }
   for (const c of cachePos) {
     if (c.found) continue;
@@ -585,7 +747,7 @@ function checkNear() {
       c.found = true;
       const hooks = document.querySelectorAll(`.qhook[data-wilds-world="${W.id}"][data-wilds-place="${c.id}"][data-tc-egg]`);
       if (hooks.length) for (const hk of hooks) hk.click();
-      else toast('You found a hidden cache. The quest log is not wired to this page yet, so nothing is recorded.');
+      else toast(L['toast.cache']);
     }
   }
 }
@@ -595,7 +757,7 @@ const keys = {};
 addEventListener('keydown', (e) => {
   if (e.target.closest && e.target.closest('input,textarea,select')) return;
   keys[e.code] = true;
-  if (e.code === 'KeyO') setMode(mode === 'walk' ? 'overview' : 'walk');
+  if (e.code === 'KeyO') { if (flying !== null) stopFlyover(); setMode(mode === 'walk' ? 'overview' : 'walk'); }
   if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.code) && e.target === canvas) e.preventDefault();
 });
 addEventListener('keyup', (e) => { keys[e.code] = false; });
@@ -622,9 +784,9 @@ function moveStick(e) {
   stickIn.f = -dy; stickIn.s = dx; knob.style.transform = `translate(${dx * R * 0.6}px,${dy * R * 0.6}px)`;
 }
 const speedBtn = document.getElementById('speed');
-const SPEEDS = [['Walk', WALK_MS], ['Run', RUN_MS], ['Fast travel', FAST_MS]];
-speedBtn.addEventListener('click', () => { speedMode = (speedMode + 1) % 3; speedBtn.textContent = 'Pace: ' + SPEEDS[speedMode][0]; });
-document.getElementById('mode').addEventListener('click', () => setMode(mode === 'walk' ? 'overview' : 'walk'));
+const SPEEDS = [[L['pace.walk'], WALK_MS], [L['pace.run'], RUN_MS], [L['pace.fast'], FAST_MS]];
+speedBtn.addEventListener('click', () => { speedMode = (speedMode + 1) % 3; speedBtn.textContent = L.pace + ': ' + SPEEDS[speedMode][0]; });
+document.getElementById('mode').addEventListener('click', () => { if (flying !== null) stopFlyover(); setMode(mode === 'walk' ? 'overview' : 'walk'); });
 function walk(dt) {
   let f = (keys.KeyW || keys.ArrowUp ? 1 : 0) - (keys.KeyS || keys.ArrowDown ? 1 : 0) + stickIn.f;
   let s = (keys.KeyD ? 1 : 0) - (keys.KeyA ? 1 : 0) + stickIn.s;
@@ -661,6 +823,50 @@ function teleport(x, z, yaw) {
   updateChunks(true); refillVeg(); openId = null;
 }
 
+/* ------------------------------------------------------------ flyover -- */
+/* A deterministic camera path over the world, for the Flyover button and for
+   filming (MEDIA steps it frame by frame through __wilds.flyover(t)). Its
+   keyframes are DERIVED from the registry: the trailhead, then every site in
+   trail order; the eye stands FLY_BACK_M out from each stop (away from the
+   next one, so the path sweeps) and FLY_UP_M above the ground, looking at the
+   stop; between keyframes it never drops below FLY_CLEAR_M over the ground. */
+const FLY_BACK_M = 700, FLY_UP_M = 380, FLY_CLEAR_M = 120, FLY_S = 60;
+let flying = null, fly = null;
+function flyKeys() {
+  const order = ['trailhead', ...W.trails.map((l) => l.to)], lim = W.extent_m / 2 - 50;
+  const stops = order.map((id) => nodePos.get(id)), eyes = [], ats = [];
+  stops.forEach((p, k) => {
+    const q = stops[(k + 1) % stops.length], h = T.height(p.x, p.z);
+    let dx = p.x - q.x, dz = p.z - q.z; const n = Math.hypot(dx, dz);
+    if (n === 0) throw new Error('wilds flyover: two stops at one point');
+    dx /= n; dz /= n;
+    const ex = Math.max(-lim, Math.min(lim, p.x + dx * FLY_BACK_M)), ez = Math.max(-lim, Math.min(lim, p.z + dz * FLY_BACK_M));
+    eyes.push(new THREE.Vector3(ex, Math.max(h, T.height(ex, ez)) + FLY_UP_M, ez));
+    ats.push(new THREE.Vector3(p.x, h, p.z));
+  });
+  return { world: W.id, stops: order, eye: new THREE.CatmullRomCurve3(eyes, true, 'centripetal'), at: new THREE.CatmullRomCurve3(ats, true, 'centripetal'), eyes, ats };
+}
+const _fe = new THREE.Vector3(), _fa = new THREE.Vector3();
+function flyTo(t) {
+  if (!(t >= 0 && t <= 1)) throw new Error('wilds flyover: t must be in [0, 1], got ' + t);
+  if (fly === null || fly.world !== W.id) fly = flyKeys();
+  fly.eye.getPoint(t, _fe); fly.at.getPoint(t, _fa);
+  _fe.y = Math.max(_fe.y, T.height(_fe.x, _fe.z) + FLY_CLEAR_M);
+  if (mode !== 'overview') setMode('overview');
+  orbit.enabled = false;
+  camera.position.copy(_fe); orbit.target.copy(_fa); camera.lookAt(_fa);
+  return { eye: [_fe.x, _fe.y, _fe.z], at: [_fa.x, _fa.y, _fa.z] };
+}
+function stopFlyover() {
+  flying = null;
+  const b = document.getElementById('fly'); b.setAttribute('aria-pressed', 'false');
+  orbit.enabled = mode === 'overview';
+}
+document.getElementById('fly').addEventListener('click', () => {
+  if (flying !== null) { stopFlyover(); return; }
+  flying = performance.now(); document.getElementById('fly').setAttribute('aria-pressed', 'true');
+});
+
 /* --------------------------------------------------------------- modes -- */
 function fogFor(m) {
   scene.fog = m === 'overview' ? new THREE.Fog(W.fog, W.extent_m * 0.9, W.extent_m * 2.2)
@@ -668,7 +874,7 @@ function fogFor(m) {
 }
 function setMode(m) {
   mode = m;
-  document.getElementById('mode').textContent = m === 'walk' ? 'Overview' : 'Walk';
+  document.getElementById('mode').textContent = m === 'walk' ? L['mode.overview'] : L['mode.walk'];
   document.getElementById('mode').setAttribute('aria-pressed', String(m === 'overview'));
   stage.dataset.mode = m;
   fogFor(m);
@@ -677,6 +883,7 @@ function setMode(m) {
   overviewMesh.visible = !walkOn;
   horizonMesh.visible = walkOn;
   for (const k in veg) veg[k].visible = walkOn;
+  for (const k in bb) bb[k].visible = walkOn;
   cacheMesh.visible = walkOn;
   orbit.enabled = !walkOn;
   if (!walkOn) {
@@ -691,9 +898,10 @@ async function loadWorld(id) {
   if (w === undefined) throw new Error('wilds: unknown world ' + id);
   for (const ch of chunks.values()) ch.mesh.geometry.dispose();
   chunks.clear(); worldGroup.clear(); queue = [];
-  W = w; T = wildsTerrain(W);
+  if (flying !== null) stopFlyover();
+  W = w; T = wildsTerrain(W); fly = null;
   pal = Object.fromEntries(Object.entries(W.biome.palette).map(([k, v]) => [k, hex(v)]));
-  scene.background = new THREE.Color(W.sky);
+  scene.background = new THREE.Color(W.sky); stage.style.setProperty('--wilds-sky', W.sky);
   nodePos.clear(); nodePos.set('trailhead', W.trailhead);
   for (const s of W.sites) nodePos.set(s.id, s);
   clearings = W.sites.map((s) => ({ x: s.x, z: s.z, r: s.pad_m * 1.2 }));
@@ -708,13 +916,29 @@ async function loadWorld(id) {
   document.getElementById('where').textContent = W.name;
   updateChunks(true); refillVeg();
   setMode('walk');
-  try { history.replaceState(null, '', '#' + id); } catch (e) { /* a sandboxed frame may refuse */ }
+  const cur = decodeURIComponent((location.hash || '').slice(1)).split('/')[0];
+  if (cur !== id) try { history.replaceState(null, '', '#' + id); } catch (e) { /* a sandboxed frame may refuse */ }
 }
 for (const b of document.querySelectorAll('#switch button')) b.addEventListener('click', () => loadWorld(b.dataset.world));
-for (const b of document.querySelectorAll('.site .go')) b.addEventListener('click', () => {
-  const s = W.sites.find((x) => x.id === b.dataset.goto);
+/* Deep links: #<world id> opens a world at its trailhead; #<world id>/<site id>
+   opens it standing at that site with its panel (and its tasks) open. */
+function goSite(id) {
+  const s = W.sites.find((x) => x.id === id);
+  if (s === undefined) throw new Error('wilds: no site ' + id + ' in ' + W.id);
   if (mode !== 'walk') setMode('walk');
   teleport(s.x, s.z + s.pad_m + 12, 0);
+  openSite(s.id);
+}
+async function fromHash() {
+  const [wid, sid] = decodeURIComponent((location.hash || '').slice(1)).split('/');
+  if (!WORLDS.has(wid)) return false;
+  if (W === null || W.id !== wid) await loadWorld(wid);
+  if (sid) goSite(sid);
+  return true;
+}
+addEventListener('hashchange', () => { fromHash(); });
+for (const b of document.querySelectorAll('.site .go')) b.addEventListener('click', () => {
+  goSite(b.dataset.goto);
   stage.scrollIntoView({ block: 'start' });
 });
 
@@ -728,7 +952,8 @@ const hud = document.getElementById('hud-alt');
 let last = performance.now(), lastInfo = { calls: 0, triangles: 0 }, miniT = 0, frameMs = 0;
 function frame(now) {
   const dt = Math.min(0.1, (now - last) / 1000); last = now;
-  if (mode === 'walk') {
+  if (flying !== null) flyTo(((now - flying) / 1000 / FLY_S) % 1);
+  else if (mode === 'walk') {
     walk(dt); placeEye();
     const ci = Math.floor(eye.x / W.chunk_m) + ',' + Math.floor(eye.z / W.chunk_m);
     if (ci !== frame.cell) { frame.cell = ci; updateChunks(false); } else pump(BUILD_PER_FRAME);
@@ -770,6 +995,9 @@ window.__wilds = {
     instances: Object.fromEntries(Object.entries(veg).map(([k, m]) => [k, m.visible ? m.count : 0])),
     instanced: Object.values(veg).every((m) => m.isInstancedMesh), frameMs,
     horizon: horizonMesh.visible,
+    billboards: Object.fromEntries(Object.entries(bb).map(([k, m]) => [k, m.visible ? m.count : 0])),
+    billboardsInstanced: Object.values(bb).every((m) => m.isInstancedMesh),
+    billboardMinR: bbMinR, vegR: VEG_R, billboardR: BB_R,
   }),
   frameTimes(n) {
     const gl = renderer.getContext(), out = [];
@@ -780,6 +1008,15 @@ window.__wilds = {
     return out;
   },
   caches: () => cachePos.map((c) => ({ ...c })),
+  /* Flyover for filming: flyoverPath() gives the DERIVED keyframes of the
+     current world; flyover(t) with t in [0,1] places the camera on the closed
+     path and returns {eye, at}; flyover(null) hands the view back. */
+  flyoverPath() {
+    if (fly === null || fly.world !== W.id) fly = flyKeys();
+    return { world: W.id, seconds: FLY_S, stops: fly.stops,
+      keyframes: fly.eyes.map((e, k) => ({ eye: [e.x, e.y, e.z], at: [fly.ats[k].x, fly.ats[k].y, fly.ats[k].z] })) };
+  },
+  flyover(t) { if (t === null) { stopFlyover(); return null; } flying = null; return flyTo(t); },
   eye: () => ({ ...eye }),
   teleport: (x, z, yaw) => teleport(x, z, yaw),
   /* Camera hook for filming flyovers (same shape as the 3D page's
@@ -800,8 +1037,7 @@ window.__wilds = {
   },
 };
 resize();
-const start = (location.hash || '').slice(1);
-await loadWorld(WORLDS.has(start) ? start : REG.worlds[0].id);
+if (!(await fromHash())) await loadWorld(REG.worlds[0].id);
 requestAnimationFrame(frame);
 document.documentElement.dataset.wildsReady = '1';
 '''
@@ -814,9 +1050,14 @@ page = f'''<!doctype html>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230C1113'/%3E%3Cpath d='M7 21 L16 7 L25 21 Z' fill='none' stroke='%23E8A33D' stroke-width='2.6' stroke-linejoin='round'/%3E%3Cpath d='M11 21 h10' stroke='%2341C4D4' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E">
 <title>SmartCiti.X : Trade Craft Academy — the wilds</title>
 <style>
-:root{{
-  --plate:#12181B; --panel:#182023; --sunk:#0C1113; --ink:#E8EDEC; --muted:#93A3A6;
-  --rule:#28353A; --mark:#E8A33D; --mark-ink:#12181B; --steel:#41C4D4; --good:#5FBF7A;
+/* UI colours come ONLY from the site theme's tokens (--tc-*, set by the canvas
+   theme layer and by the Style switcher's data-style on <html>), so every
+   style applies here; the world's own sky and ground colours are the world's. */
+body.tc-theme-canvas{{
+  --plate:var(--tc-plate); --panel:var(--tc-panel); --sunk:color-mix(in srgb,var(--tc-plate) 78%,black);
+  --ink:var(--tc-ink); --muted:var(--tc-muted); --rule:var(--tc-line); --mark:var(--tc-amber);
+  --mark-ink:var(--tc-amber-ink); --steel:var(--tc-steel); --good:var(--tc-ok);
+  --scrim:color-mix(in srgb,var(--tc-plate) 84%,transparent);
 }}
 *{{box-sizing:border-box}}
 body{{margin:0;background:var(--plate);color:var(--ink);font:16px/1.6 "IBM Plex Sans",system-ui,sans-serif}}
@@ -827,21 +1068,32 @@ header h1 .x{{color:var(--mark)}}
 header p{{color:var(--muted);margin:6px 0 12px}}
 a{{color:var(--steel)}}
 #switch{{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}}
-#switch button,.ctl button,.go,.qmark,.qhook{{font:600 14px/1 "IBM Plex Sans",system-ui,sans-serif;background:var(--panel);color:var(--ink);border:1px solid var(--rule);border-radius:6px;padding:9px 14px;cursor:pointer;min-height:40px}}
-#switch button[aria-pressed="true"]{{background:var(--mark);color:var(--mark-ink);border-color:var(--mark)}}
-#stage{{position:relative;height:min(72vh,720px);min-height:380px;border:1px solid var(--rule);border-radius:10px;overflow:hidden;background:#9CC3E4;touch-action:none}}
+#switch .tc-btn[aria-pressed="true"]{{background:var(--mark);color:var(--mark-ink);border-color:var(--mark)}}
+#stage .ctl .tc-btn{{background:var(--scrim);color:var(--ink);min-block-size:40px;padding:8px 14px}}
+#stage .ctl .tc-btn[aria-pressed="true"]{{background:var(--steel);color:var(--sunk);border-color:var(--steel)}}
+#panel .site{{background:none;border:0;padding:0}}
+.go,.qmark{{margin-top:8px}}
+#stage{{position:relative;height:min(72vh,720px);min-height:380px;border:1px solid var(--rule);border-radius:10px;overflow:hidden;background:var(--wilds-sky);touch-action:none}}
 #view{{display:block;width:100%;height:100%;outline:none}}
 #view:focus-visible,#view:focus{{outline:3px solid var(--mark);outline-offset:-3px}}
 #labels{{position:absolute;inset:0;pointer-events:none;overflow:hidden}}
-.lbl{{position:absolute;left:0;top:0;pointer-events:auto;font:600 12px/1.2 "IBM Plex Sans",system-ui,sans-serif;background:rgba(12,17,19,.82);color:var(--ink);border:1px solid var(--mark);border-radius:5px;padding:4px 7px;white-space:nowrap;cursor:pointer;max-width:220px;overflow:hidden;text-overflow:ellipsis}}
+.lbl{{position:absolute;left:0;top:0;pointer-events:auto;font:600 12px/1.2 "IBM Plex Sans",system-ui,sans-serif;background:var(--scrim);color:var(--ink);border:1px solid var(--mark);border-radius:5px;padding:4px 7px;white-space:nowrap;cursor:pointer;max-width:220px;overflow:hidden;text-overflow:ellipsis}}
 .lbl.th{{border-color:var(--steel);cursor:default}}
+.lbl .tcount{{display:inline-block;margin-inline-end:6px;min-width:18px;border-radius:9px;background:var(--steel);color:var(--sunk);text-align:center;font-size:11px;padding:1px 5px}}
+.lbl.has-tasks{{border-color:var(--steel)}}
+.geo{{color:var(--muted);font-size:14px;margin:2px 0}}
+.tasks{{margin:0;padding-inline-start:18px}}
+.tasks li{{margin:4px 0}}
+.tlaunch{{min-block-size:32px;padding:4px 12px;font-size:13px;margin-inline-start:4px}}
+.treq{{color:var(--muted);font-size:13px}}
+.halltasks .tk-list{{margin:0;padding-inline-start:18px;font-size:14px}}
 .ctl{{position:absolute;top:10px;inset-inline-start:10px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;max-width:calc(100% - 200px)}}
-.ctl .where{{background:rgba(12,17,19,.82);border-radius:6px;padding:8px 10px;font-size:13px}}
+.ctl .where{{background:var(--scrim);color:var(--ink);border-radius:6px;padding:8px 10px;font-size:13px}}
 #minimap{{position:absolute;bottom:10px;inset-inline-end:10px;width:170px;height:170px;border:2px solid var(--sunk);border-radius:8px;cursor:crosshair;background:var(--sunk)}}
-#stick{{position:absolute;bottom:14px;inset-inline-start:14px;width:120px;height:120px;border-radius:50%;background:rgba(12,17,19,.35);border:2px solid rgba(232,237,236,.5);touch-action:none}}
-#stick i{{position:absolute;left:50%;top:50%;width:46px;height:46px;margin:-23px;border-radius:50%;background:rgba(232,237,236,.75)}}
+#stick{{position:absolute;bottom:14px;inset-inline-start:14px;width:120px;height:120px;border-radius:50%;background:color-mix(in srgb,var(--tc-plate) 35%,transparent);border:2px solid color-mix(in srgb,var(--tc-ink) 50%,transparent);touch-action:none}}
+#stick i{{position:absolute;left:50%;top:50%;width:46px;height:46px;margin:-23px;border-radius:50%;background:color-mix(in srgb,var(--tc-ink) 75%,transparent)}}
 #stage[data-mode="overview"] #stick{{display:none}}
-#panel{{position:absolute;top:60px;inset-inline-end:10px;width:min(340px,calc(100% - 20px));max-height:calc(100% - 250px);overflow:auto;background:rgba(18,24,27,.95);border:1px solid var(--mark);border-radius:8px;padding:10px 14px}}
+#panel{{position:absolute;top:66px;inset-inline-end:10px;width:min(360px,calc(100% - 20px));max-height:calc(100% - 256px);overflow:auto;padding:10px 14px;border-color:var(--mark)}}
 #panel-close{{float:inline-end;background:none;border:1px solid var(--rule);color:var(--ink);border-radius:5px;cursor:pointer;min-width:36px;min-height:36px}}
 #toast{{position:absolute;bottom:150px;left:50%;transform:translateX(-50%);background:var(--mark);color:var(--mark-ink);border-radius:6px;padding:8px 14px;font-weight:600;max-width:90%}}
 .help{{color:var(--muted);font-size:14px}}
@@ -874,28 +1126,32 @@ code{{font:13px "IBM Plex Mono",monospace;color:var(--steel)}}
 }}
 </style>
 <style>{NAV_CSS}</style>
+<style data-tc-theme="canvas">{THEME_CSS}</style>
 {QUEST_CSS_BLOCK}
+{TASK_CSS_BLOCK}
 </head>
-<body>
+<body class="tc-theme-canvas">
 {NAV}<div class="wrap">
 <header>
   <h1>SmartCiti<span class="x">.X</span> : Trade Craft Academy</h1>
-  <p>powered by AGI Corp · the wilds: large exterior worlds with trade work sites, trails and hidden caches</p>
+  <p>powered by AGI Corp · {T("wilds.lede")}</p>
 </header>
 <p class="intro">Walk <b data-fig="worlds">{c["worlds"]}</b> authored worlds, <b data-fig="area">{c["area_km2"]}</b> km² in all, with <b data-fig="sites">{c["sites"]}</b> trade work sites tied to <b data-fig="halls">{c["halls_linked"]}</b> union halls and <b data-fig="lessons">{c["lessons_linked"]}</b> lessons. Every landscape is generated from a seed: an <b>authored landscape, not a survey</b>.</p>
-<div id="switch" role="group" aria-label="Choose a world">{switch}</div>
+<div id="switch" role="group" aria-label="{T("wilds.switch_label")}">{switch}</div>
 <div id="stage" data-mode="walk">
-  <canvas id="view" tabindex="0" aria-label="Three-dimensional view of the chosen world. Use W A S D or the arrow keys to walk, drag to look, O for the overview."></canvas>
+  <canvas id="view" tabindex="0" aria-label="{T("wilds.canvas_label")}"></canvas>
   <div id="labels"></div>
-  <div class="ctl"><span class="where" id="where"></span><button type="button" id="mode" aria-pressed="false">Overview</button><button type="button" id="speed">Pace: Walk</button><span class="where" id="hud-alt"></span></div>
-  <canvas id="minimap" width="170" height="170" aria-label="Minimap: click to travel there"></canvas>
+  <div class="ctl"><span class="where" id="where"></span><button type="button" class="tc-btn tc-btn-ghost" id="mode" aria-pressed="false">{T("wilds.mode.overview")}</button><button type="button" class="tc-btn tc-btn-ghost" id="speed">{T("wilds.pace")}: {T("wilds.pace.walk")}</button><button type="button" class="tc-btn tc-btn-ghost" id="fly" aria-pressed="false">{T("wilds.flyover")}</button><span class="where" id="hud-alt"></span></div>
+  <canvas id="minimap" width="170" height="170" aria-label="{T("wilds.minimap_label")}"></canvas>
   <div id="stick" aria-hidden="true"><i></i></div>
-  <aside id="panel" hidden aria-live="polite"><button type="button" id="panel-close" aria-label="Close">×</button><div id="panel-body"></div></aside>
+  <aside id="panel" class="tc-panel" hidden aria-live="polite"><button type="button" id="panel-close" aria-label="{T("wilds.close")}">×</button><div id="panel-body"></div></aside>
   <div id="toast" hidden role="status"></div>
 </div>
-<p class="help"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or arrows walk · drag to look · <kbd>Q</kbd>/<kbd>E</kbd> turn · <kbd>Shift</kbd> run · <kbd>O</kbd> overview · on a touch screen, the stick walks and a drag looks · click the minimap to travel · walk onto a site to read about the work there.</p>
+<p class="help">{T("wilds.help")}</p>
+<p class="help" data-legend>{T("wilds.legend")}</p>
+{task_note}
 {worlds_html}
-<h2>Side quests and treasures</h2>
+<h2>{T("wilds.h.quests")}</h2>
 <p class="help">Caches, side quests and badges are play: they never enter a completion record and never certify anything.</p>
 {quest_block}
 <ul class="honesty">
@@ -906,6 +1162,8 @@ code{{font:13px "IBM Plex Mono",monospace;color:var(--steel)}}
 </ul>
 <footer data-honesty>Authored landscape, not a survey: every world here is generated from a seed and no height is a real elevation. Registry <code>wilds/registry/wilds.json</code> · stamp <code data-stamp>{esc(REG["source_stamp"])}</code> · terrain core <code data-core-stamp>{esc(REG["core_stamp"])}</code> · embedded verbatim below.</footer>
 <script type="application/json" id="wilds-registry">{embedded}</script>
+<script type="application/json" id="wilds-labels">{labels_json}</script>
+<script type="application/json" id="wilds-tasks">{site_task_counts}</script>
 <script type="importmap">
 {{"imports":{{
   "three":"./vendor/three.module.min.js",
@@ -923,4 +1181,4 @@ page = apply_seo(page, PAGE, 'The wilds \u2014 SmartCiti.X : Trade Craft Academy
                  f'Walk {c["worlds"]} authored exterior worlds, {c["area_km2"]} km\u00b2 in all, with trade work sites '
                  'tied to union halls and lessons. Authored landscapes, not surveys.', 'page')
 out = HERE / 'trade_craft_wilds.html'
-emit(out, page, f'{c["worlds"]} worlds | {c["sites"]} sites | quests {QUEST_STATE} | nav wired')
+emit(out, page, f'{c["worlds"]} worlds | {c["sites"]} sites | quests {QUEST_STATE} | tasks {TASK_STATE} | nav wired')

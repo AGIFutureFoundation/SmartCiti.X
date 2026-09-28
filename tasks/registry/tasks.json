@@ -1,0 +1,4632 @@
+{
+ "pack": "smartcitix-trade-craft-academy-tasks",
+ "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
+ "built": "2026-09-16",
+ "source_stamp": "5f40c14530a49e00",
+ "builder_stamp": "add365ea052839de",
+ "sources": {
+  "sims/registry/sims.json": "987a9d4812b4c73b",
+  "tools/registry/toolcribs.json": "653ef0fedb1caa9e",
+  "worksites/registry/worksites.json": "20425c273e9eb137",
+  "restoration/registry/restoration.json": "55f41bf50df7d918",
+  "wilds/registry/wilds.json": "52696e6eab718377",
+  "lessons/registry/lessons.json": "e905659b0a718ab6",
+  "spaces/registry/spaces.json": "9cbb827c54bc4a6a",
+  "pack/registry/halls.json": "3807e54afe6abfe6",
+  "unions/registry/campuses.json": "80eef152a4cb9d76"
+ },
+ "honesty": {
+  "practice": "Tasks are practice. A task list certifies nothing, qualifies nobody and enters no completion record; only the completion contract in completion/ decides what a record says, and it is unchanged by this pack.",
+  "not_certification": "Every seat, drill and walk named here keeps its own registry's standing: schematic, unverified general practice, not equipment certification and not an inspection record.",
+  "requires": "Linked lessons are the lessons an existing registry already ties to a task. They are a sensible order, never a lock: nothing is gated behind them.",
+  "launch": "A launch link is written only when the target page is seen reading that parameter; \"lands\" says honestly where it puts you (a seat, a hall, a campus, a wilds site or a page section), and a task no link reaches says why."
+ },
+ "kinds": {
+  "sim-scenario": {
+   "label": "Simulator scenario",
+   "provenance": "SCRIPTED",
+   "lands": "seat"
+  },
+  "walkaround": {
+   "label": "Seat walkaround",
+   "provenance": "DERIVED",
+   "lands": "seat"
+  },
+  "crib-drill": {
+   "label": "Tool crib drill",
+   "provenance": "DERIVED",
+   "lands": "hall"
+  },
+  "crew-handoff": {
+   "label": "Crew hand-off",
+   "provenance": "DERIVED",
+   "lands": "section"
+  },
+  "restoration-walk": {
+   "label": "Restoration walk",
+   "provenance": "DERIVED",
+   "lands": "campus"
+  },
+  "wilds-site-walk": {
+   "label": "Wilds site walk",
+   "provenance": "DERIVED",
+   "lands": "site"
+  }
+ },
+ "counts": {
+  "tasks": 194,
+  "by_kind": {
+   "crew-handoff": 8,
+   "crib-drill": 111,
+   "restoration-walk": 8,
+   "sim-scenario": 33,
+   "walkaround": 11,
+   "wilds-site-walk": 23
+  },
+  "by_place_kind": {
+   "campus": 16,
+   "hall": 142,
+   "restoration-site": 10,
+   "space": 3,
+   "wilds-site": 23
+  },
+  "by_campus": {
+   "denver": 11,
+   "new-orleans": 46,
+   "none": 3,
+   "oakland": 54,
+   "seattle": 6,
+   "treasure-island": 74
+  },
+  "launchable": 181,
+  "not_launchable": 13,
+  "with_linked_lessons": 80
+ },
+ "tasks": [
+  {
+   "id": "sim-crane-lift-bay-steel",
+   "title": "Tower Crane Lift: Bay high-steel lift",
+   "kind": "sim-scenario",
+   "place": {
+    "kind": "hall",
+    "id": "crane-ops",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=crane-ops&sim=crane-lift",
+    "lands": "seat",
+    "param": [
+     "hall",
+     "sim"
+    ]
+   },
+   "requires": [
+    "piling-stand-the-rig-on-something",
+    "riggers-carry-under-control",
+    "steel-erectors-land-it-on-the-bolts"
+   ],
+   "provenance": "SCRIPTED",
+   "source": "sims/registry/sims.json#sims.crane-lift.scenarios[0]",
+   "seat": "crane-lift",
+   "brief": "Tower steel over the bay on a still morning - a clean yard, nothing between you and your own swing."
+  },
+  {
+   "id": "sim-crane-lift-oak-terminal",
+   "title": "Tower Crane Lift: Oakland terminal lift",
+   "kind": "sim-scenario",
+   "place": {
+    "kind": "hall",
+    "id": "port-crane",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=port-crane&sim=crane-lift",
+    "lands": "seat",
+    "param": [
+     "hall",
+     "sim"
+    ]
+   },
+   "requires": [
+    "port-crane-read-the-rope"
+   ],
+   "provenance": "SCRIPTED",
+   "source": "sims/registry/sims.json#sims.crane-lift.scenarios[1]",
+   "seat": "crane-lift",
+   "brief": "Container stacks crowd the swing path - carry high and slow, the corridors are tight."
+  },
+  {
+   "id": "sim-crane-lift-nola-wharf",
+   "title": "Tower Crane Lift: Crescent wharf lift",
+   "kind": "sim-scenario",
+   "place": {
+    "kind": "campus",
+    "id": "new-orleans",
+    "campus": "new-orleans"
+   },
+   "launch": {
+    "href": null,
+    "why": "no hall on the new-orleans campus teaches the Tower Crane Lift seat, and the 3D page picks a scenario only by the campus of the hall it opens"
+   },
+   "requires": [],
+   "provenance": "SCRIPTED",
+   "source": "sims/registry/sims.json#sims.crane-lift.scenarios[2]",
+   "seat": "crane-lift",
+   "brief": "A steady river breeze leans on the load the whole carry - trim your swing against it."
+  },
+  {
+   "id": "walkaround-crane-lift",
+   "title": "Tower Crane Lift: walkaround",
+   "kind": "walkaround",
+   "place": {
+    "kind": "hall",
+    "id": "crane-ops",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=crane-ops&sim=crane-lift",
+    "lands": "seat",
+    "param": [
+     "hall",
+     "sim"
+    ]
+   },
+   "requires": [
+    "ironworkers-plan-out-loud",
+    "piling-stand-the-rig-on-something",
+    "port-crane-read-the-rope",
+    "riggers-carry-under-control",
+    "steel-erectors-land-it-on-the-bolts"
+   ],
+   "provenance": "DERIVED",
+   "source": "sims/registry/sims.json#sims.crane-lift.walkaround",
+   "seat": "crane-lift",
+   "brief": "5 points: Hoist rope and hook; Slew ring and bolts; Counterweight; Limit switches; Base and ballast"
+  },
+  {
+   "id": "sim-excavator-trench-bay-retrofit",
+   "title": "Excavator Trench Cut: Seismic retrofit cut",
+   "kind": "sim-scenario",
+   "place": {
+    "kind": "campus",
+    "id": "treasure-island",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": null,
+    "why": "no hall on the treasure-island campus teaches the Excavator Trench Cut seat, and the 3D page picks a scenario only by the campus of the hall it opens"
+   },
+   "requires": [],
+   "provenance": "SCRIPTED",
+   "source": "sims/registry/sims.json#sims.excavator-trench.scenarios[0]",
+   "seat": "excavator-trench",
+   "brief": "Deep footing cells beside a braced frame - long careful digs, one flagged conduit crossing."
+  },
+  {
+   "id": "sim-excavator-trench-oak-fill",
+   "title": "Excavator Trench Cut: Old-fill utility cut",
+   "kind": "sim-scenario",
+   "place": {
+    "kind": "hall",
+    "id": "operating-eng",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=operating-eng&sim=excavator-trench",
+    "lands": "seat",
+    "param": [
+     "hall",
+     "sim"
+    ]
+   },
+   "requires": [
+    "operating-eng-locate-first",
+    "shoring-read-the-ground-again"
+   ],
+   "provenance": "SCRIPTED",
+   "source": "sims/registry/sims.json#sims.excavator-trench.scenarios[1]",
+   "seat": "excavator-trench",
+   "brief": "Waterfront fill ground, crowded with legacy lines - two flagged cells stop shallow."
+  },
+  {
+   "id": "sim-excavator-trench-nola-below-sea",
+   "title": "Excavator Trench Cut: Below-sea trench",
+   "kind": "sim-scenario",
+   "place": {
+    "kind": "campus",
+    "id": "new-orleans",
+    "campus": "new-orleans"
+   },
+   "launch": {
+    "href": null,
+    "why": "no hall on the new-orleans campus teaches the Excavator Trench Cut seat, and the 3D page picks a scenario only by the campus of the hall it opens"
+   },
+   "requires": [],
+   "provenance": "SCRIPTED",
+   "source": "sims/registry/sims.json#sims.excavator-trench.scenarios[2]",
+   "seat": "excavator-trench",
+   "brief": "High water table, one live utility at half depth - the flagged cell stops shallow."
+  },
+  {
+   "id": "walkaround-excavator-trench",
+   "title": "Excavator Trench Cut: walkaround",
+   "kind": "walkaround",
+   "place": {
+    "kind": "hall",
+    "id": "operating-eng",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=operating-eng&sim=excavator-trench",
+    "lands": "seat",
+    "param": [
+     "hall",
+     "sim"
+    ]
+   },
+   "requires": [
+    "demolition-stand-back",
+    "laborers-stand-where-the-cab-can-see",
+    "operating-eng-locate-first",
+    "shoring-read-the-ground-again"
+   ],
+   "provenance": "DERIVED",
+   "source": "sims/registry/sims.json#sims.excavator-trench.walkaround",
+   "seat": "excavator-trench",
+   "brief": "5 points: Tracks and rollers; Bucket teeth and pins; Boom hydraulics; Slew brake; The trench edge"
+  },
+  {
+   "id": "sim-forklift-run-bay-yard",
+   "title": "Forklift Yard Run: Island yard run",
+   "kind": "sim-scenario",
+   "place": {
+    "kind": "campus",
+    "id": "treasure-island",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": null,
+    "why": "no hall on the treasure-island campus teaches the Forklift Yard Run seat, and the 3D page picks a scenario only by the campus of the hall it opens"
+   },
+   "requires": [],
+   "provenance": "SCRIPTED",
+   "source": "sims/registry/sims.json#sims.forklift-run.scenarios[0]",
+   "seat": "forklift-run",
+   "brief": "The training yard lane - four gates and a full-width dock bay to land the pallet in."
+  },
+  {
+   "id": "sim-forklift-run-oak-lane",
+   "title": "Forklift Yard Run: Terminal container lane",
+   "kind": "sim-scenario",
+   "place": {
+    "kind": "hall",
+    "id": "teamsters",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=teamsters&sim=forklift-run",
+    "lands": "seat",
+    "param": [
+     "hall",
+     "sim"
+    ]
+   },
+   "requires": [
+    "heavy-equip-listen-to-the-dash",
+    "marine-terminal-brief-the-lane",
+    "teamsters-check-the-truck-before-the-load"
+   ],
+   "provenance": "SCRIPTED",
+   "source": "sims/registry/sims.json#sims.forklift-run.scenarios[1]",
+   "seat": "forklift-run",
+   "brief": "A fifth gate threads the container rows - longer lane, same clean-run law."
+  },
+  {
+   "id": "sim-forklift-run-nola-dock",
+   "title": "Forklift Yard Run: Wharf dock set",
+   "kind": "sim-scenario",
+   "place": {
+    "kind": "campus",
+    "id": "new-orleans",
+    "campus": "new-orleans"
+   },
+   "launch": {
+    "href": null,
+    "why": "no hall on the new-orleans campus teaches the Forklift Yard Run seat, and the 3D page picks a scenario only by the campus of the hall it opens"
+   },
+   "requires": [],
+   "provenance": "SCRIPTED",
+   "source": "sims/registry/sims.json#sims.forklift-run.scenarios[2]",
+   "seat": "forklift-run",
+   "brief": "The wharf dock is narrow - four gates, then a set-down with little room to be wrong."
+  },
+  {
+   "id": "walkaround-forklift-run",
+   "title": "Forklift Yard Run: walkaround",
+   "kind": "walkaround",
+   "place": {
+    "kind": "hall",
+    "id": "teamsters",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=teamsters&sim=forklift-run",
+    "lands": "seat",
+    "param": [
+     "hall",
+     "sim"
+    ]
+   },
+   "requires": [
+    "heavy-equip-listen-to-the-dash",
+    "marine-terminal-brief-the-lane",
+    "teamsters-check-the-truck-before-the-load"
+   ],
+   "provenance": "DERIVED",
+   "source": "sims/registry/sims.json#sims.forklift-run.walkaround",
+   "seat": "forklift-run",
+   "brief": "5 points: Tires and wheel nuts; Fork heels and locks; Mast chains; Horn and beeper; Seatbelt and overhead guard"
+  },
+  {
+   "id": "sim-weld-bead-bay-deck-seam",
+   "title": "Weld Bead Run: Deck plate seam",
+   "kind": "sim-scenario",
+   "place": {
+    "kind": "hall",
+    "id": "welders",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=welders&sim=weld-bead",
+    "lands": "seat",
+    "param": [
+     "hall",
+     "sim"
+    ]
+   },
+   "requires": [
+    "fabricators-lay-it-out-then-prove-it",
+    "shipfitters-say-what-you-cannot-see"
+   ],
+   "provenance": "SCRIPTED",
+   "source": "sims/registry/sims.json#sims.weld-bead.scenarios[0]",
+   "seat": "weld-bead",
+   "brief": "A flat deck seam on the fabrication floor - the forgiving band to learn the rhythm in."
+  },
+  {
+   "id": "sim-weld-bead-oak-flange-bead",
+   "title": "Weld Bead Run: Pipe flange bead",
+   "kind": "sim-scenario",
+   "place": {
+    "kind": "hall",
+    "id": "pipeline",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=pipeline&sim=weld-bead",
+    "lands": "seat",
+    "param": [
+     "hall",
+     "sim"
+    ]
+   },
+   "requires": [
+    "marine-pipe-know-when-to-come-out",
+    "pipeline-close-the-permit-properly",
+    "tank-erectors-isolate-before-testing"
+   ],
+   "provenance": "SCRIPTED",
+   "source": "sims/registry/sims.json#sims.weld-bead.scenarios[1]",
+   "seat": "weld-bead",
+   "brief": "A longer run at a tighter gap - the plant inspector reads every millimetre of it."
+  },
+  {
+   "id": "sim-weld-bead-nola-tank-seam",
+   "title": "Weld Bead Run: Tank shell seam",
+   "kind": "sim-scenario",
+   "place": {
+    "kind": "campus",
+    "id": "new-orleans",
+    "campus": "new-orleans"
+   },
+   "launch": {
+    "href": null,
+    "why": "no hall on the new-orleans campus teaches the Weld Bead Run seat, and the 3D page picks a scenario only by the campus of the hall it opens"
+   },
+   "requires": [],
+   "provenance": "SCRIPTED",
+   "source": "sims/registry/sims.json#sims.weld-bead.scenarios[2]",
+   "seat": "weld-bead",
+   "brief": "Storage-tank shell plate in Gulf humidity - a slightly higher band, the same clean-bead law."
+  },
+  {
+   "id": "walkaround-weld-bead",
+   "title": "Weld Bead Run: walkaround",
+   "kind": "walkaround",
+   "place": {
+    "kind": "hall",
+    "id": "welders",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=welders&sim=weld-bead",
+    "lands": "seat",
+    "param": [
+     "hall",
+     "sim"
+    ]
+   },
+   "requires": [
+    "boilermakers-get-them-out",
+    "fabricators-lay-it-out-then-prove-it",
+    "marine-pipe-know-when-to-come-out",
+    "pipeline-close-the-permit-properly",
+    "shipfitters-say-what-you-cannot-see",
+    "tank-erectors-isolate-before-testing",
+    "welders-the-watch"
+   ],
+   "provenance": "DERIVED",
+   "source": "sims/registry/sims.json#sims.weld-bead.walkaround",
+   "seat": "weld-bead",
+   "brief": "5 points: Leads and clamps; Gas and regulator; Welding screens; Fume extraction; Fire watch kit"
+  },
+  {
+   "id": "sim-scaffold-bay-bay-training-bay",
+   "title": "Scaffold Bay Build: Yard training bay",
+   "kind": "sim-scenario",
+   "place": {
+    "kind": "hall",
+    "id": "carpenters",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=carpenters&sim=scaffold-bay",
+    "lands": "seat",
+    "param": [
+     "hall",
+     "sim"
+    ]
+   },
+   "requires": [
+    "cladding-check-the-plank-you-stand-on",
+    "curtainwall-fuss-about-the-sills",
+    "plasterers-pin-every-brace",
+    "roofers-mind-the-edge-and-the-skylight"
+   ],
+   "provenance": "SCRIPTED",
+   "source": "sims/registry/sims.json#sims.scaffold-bay.scenarios[0]",
+   "seat": "scaffold-bay",
+   "brief": "One lift in the training yard - three planks, two rails, the order to learn by heart."
+  },
+  {
+   "id": "sim-scaffold-bay-oak-plant-bay",
+   "title": "Scaffold Bay Build: Plant maintenance bay",
+   "kind": "sim-scenario",
+   "place": {
+    "kind": "hall",
+    "id": "scaffold",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=scaffold&sim=scaffold-bay",
+    "lands": "seat",
+    "param": [
+     "hall",
+     "sim"
+    ]
+   },
+   "requires": [
+    "scaffold-build-in-order"
+   ],
+   "provenance": "SCRIPTED",
+   "source": "sims/registry/sims.json#sims.scaffold-bay.scenarios[1]",
+   "seat": "scaffold-bay",
+   "brief": "A wider bay against the plant wall - four planks to deck before anyone stands the lift."
+  },
+  {
+   "id": "sim-scaffold-bay-nola-storm-bay",
+   "title": "Scaffold Bay Build: Storm-hardening bay",
+   "kind": "sim-scenario",
+   "place": {
+    "kind": "campus",
+    "id": "new-orleans",
+    "campus": "new-orleans"
+   },
+   "launch": {
+    "href": null,
+    "why": "no hall on the new-orleans campus teaches the Scaffold Bay Build seat, and the 3D page picks a scenario only by the campus of the hall it opens"
+   },
+   "requires": [],
+   "provenance": "SCRIPTED",
+   "source": "sims/registry/sims.json#sims.scaffold-bay.scenarios[2]",
+   "seat": "scaffold-bay",
+   "brief": "Hurricane-season work - a third rail goes on, and the same legal order holds in the wind."
+  },
+  {
+   "id": "walkaround-scaffold-bay",
+   "title": "Scaffold Bay Build: walkaround",
+   "kind": "walkaround",
+   "place": {
+    "kind": "hall",
+    "id": "scaffold",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=scaffold&sim=scaffold-bay",
+    "lands": "seat",
+    "param": [
+     "hall",
+     "sim"
+    ]
+   },
+   "requires": [
+    "cladding-check-the-plank-you-stand-on",
+    "curtainwall-fuss-about-the-sills",
+    "firestop-write-down-what-you-sealed",
+    "plasterers-pin-every-brace",
+    "roofers-mind-the-edge-and-the-skylight",
+    "scaffold-build-in-order",
+    "scaffold-read-the-tag",
+    "waterproofers-flash-it-right"
+   ],
+   "provenance": "DERIVED",
+   "source": "sims/registry/sims.json#sims.scaffold-bay.walkaround",
+   "seat": "scaffold-bay",
+   "brief": "5 points: Sills and bearing; Frames plumb and level; Brace pins; Plank condition; The scaffold tag"
+  },
+  {
+   "id": "sim-rigging-signals-bay-first-card",
+   "title": "Rigging Signal Call: First lift card",
+   "kind": "sim-scenario",
+   "place": {
+    "kind": "hall",
+    "id": "riggers",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=riggers&sim=rigging-signals",
+    "lands": "seat",
+    "param": [
+     "hall",
+     "sim"
+    ]
+   },
+   "requires": [
+    "decking-walk-the-path-first",
+    "riggers-first-card"
+   ],
+   "provenance": "SCRIPTED",
+   "source": "sims/registry/sims.json#sims.rigging-signals.scenarios[0]",
+   "seat": "rigging-signals",
+   "brief": "The training card: five calls, one direction change, the stop to finish - learn the hands."
+  },
+  {
+   "id": "sim-rigging-signals-oak-blind-pick",
+   "title": "Rigging Signal Call: Blind terminal pick",
+   "kind": "sim-scenario",
+   "place": {
+    "kind": "hall",
+    "id": "port-crane",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=port-crane&sim=rigging-signals",
+    "lands": "seat",
+    "param": [
+     "hall",
+     "sim"
+    ]
+   },
+   "requires": [],
+   "provenance": "SCRIPTED",
+   "source": "sims/registry/sims.json#sims.rigging-signals.scenarios[1]",
+   "seat": "rigging-signals",
+   "brief": "The operator cannot see this load - six calls thread it out of the container shadow."
+  },
+  {
+   "id": "sim-rigging-signals-nola-wind-card",
+   "title": "Rigging Signal Call: River-wind card",
+   "kind": "sim-scenario",
+   "place": {
+    "kind": "campus",
+    "id": "new-orleans",
+    "campus": "new-orleans"
+   },
+   "launch": {
+    "href": null,
+    "why": "no hall on the new-orleans campus teaches the Rigging Signal Call seat, and the 3D page picks a scenario only by the campus of the hall it opens"
+   },
+   "requires": [],
+   "provenance": "SCRIPTED",
+   "source": "sims/registry/sims.json#sims.rigging-signals.scenarios[2]",
+   "seat": "rigging-signals",
+   "brief": "The river breeze wants the load moving - six calls with two swings hold the line to the set."
+  },
+  {
+   "id": "walkaround-rigging-signals",
+   "title": "Rigging Signal Call: walkaround",
+   "kind": "walkaround",
+   "place": {
+    "kind": "hall",
+    "id": "riggers",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=riggers&sim=rigging-signals",
+    "lands": "seat",
+    "param": [
+     "hall",
+     "sim"
+    ]
+   },
+   "requires": [
+    "decking-walk-the-path-first",
+    "riggers-first-card"
+   ],
+   "provenance": "DERIVED",
+   "source": "sims/registry/sims.json#sims.rigging-signals.walkaround",
+   "seat": "rigging-signals",
+   "brief": "5 points: Line of sight; Radio and whistle; Slings and shackles; The load path; Exclusion zone"
+  },
+  {
+   "id": "sim-load-chart-bay-pick-list",
+   "title": "Load Chart Judgment: Yard pick list",
+   "kind": "sim-scenario",
+   "place": {
+    "kind": "hall",
+    "id": "crane-ops",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=crane-ops&sim=load-chart",
+    "lands": "seat",
+    "param": [
+     "hall",
+     "sim"
+    ]
+   },
+   "requires": [
+    "crane-ops-read-the-chart"
+   ],
+   "provenance": "SCRIPTED",
+   "source": "sims/registry/sims.json#sims.load-chart.scenarios[0]",
+   "seat": "load-chart",
+   "brief": "Five picks off the training pad - one of them is over the chart, and the chart wins."
+  },
+  {
+   "id": "sim-load-chart-oak-heavy-list",
+   "title": "Load Chart Judgment: Terminal heavy list",
+   "kind": "sim-scenario",
+   "place": {
+    "kind": "hall",
+    "id": "port-crane",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=port-crane&sim=load-chart",
+    "lands": "seat",
+    "param": [
+     "hall",
+     "sim"
+    ]
+   },
+   "requires": [],
+   "provenance": "SCRIPTED",
+   "source": "sims/registry/sims.json#sims.load-chart.scenarios[1]",
+   "seat": "load-chart",
+   "brief": "Six terminal picks, two of them over - the foreman will push, the chart will not."
+  },
+  {
+   "id": "sim-load-chart-nola-barge-list",
+   "title": "Load Chart Judgment: Barge transfer list",
+   "kind": "sim-scenario",
+   "place": {
+    "kind": "campus",
+    "id": "new-orleans",
+    "campus": "new-orleans"
+   },
+   "launch": {
+    "href": null,
+    "why": "no hall on the new-orleans campus teaches the Load Chart Judgment seat, and the 3D page picks a scenario only by the campus of the hall it opens"
+   },
+   "requires": [],
+   "provenance": "SCRIPTED",
+   "source": "sims/registry/sims.json#sims.load-chart.scenarios[2]",
+   "seat": "load-chart",
+   "brief": "Five barge picks with two over the chart - the river will not forgive the one you talk into."
+  },
+  {
+   "id": "walkaround-load-chart",
+   "title": "Load Chart Judgment: walkaround",
+   "kind": "walkaround",
+   "place": {
+    "kind": "hall",
+    "id": "crane-ops",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=crane-ops&sim=load-chart",
+    "lands": "seat",
+    "param": [
+     "hall",
+     "sim"
+    ]
+   },
+   "requires": [
+    "crane-ops-read-the-chart"
+   ],
+   "provenance": "DERIVED",
+   "source": "sims/registry/sims.json#sims.load-chart.walkaround",
+   "seat": "load-chart",
+   "brief": "5 points: The chart itself; Radius markers; Ground bearing; Wind check; Hook block"
+  },
+  {
+   "id": "sim-pressure-washer-bay-seawall-clean",
+   "title": "Pressure Washer Surface Clean: Ferry terminal seawall",
+   "kind": "sim-scenario",
+   "place": {
+    "kind": "hall",
+    "id": "painters",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=painters&sim=pressure-washer",
+    "lands": "seat",
+    "param": [
+     "hall",
+     "sim"
+    ]
+   },
+   "requires": [
+    "painters-contain-it"
+   ],
+   "provenance": "SCRIPTED",
+   "source": "sims/registry/sims.json#sims.pressure-washer.scenarios[0]",
+   "seat": "pressure-washer",
+   "brief": "Graffiti on the ferry terminal seawall panel - a forgiving concrete face to learn the sweep on."
+  },
+  {
+   "id": "sim-pressure-washer-oak-bulkhead-clean",
+   "title": "Pressure Washer Surface Clean: Terminal bulkhead fouling",
+   "kind": "sim-scenario",
+   "place": {
+    "kind": "hall",
+    "id": "laborers",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=laborers&sim=pressure-washer",
+    "lands": "seat",
+    "param": [
+     "hall",
+     "sim"
+    ]
+   },
+   "requires": [],
+   "provenance": "SCRIPTED",
+   "source": "sims/registry/sims.json#sims.pressure-washer.scenarios[1]",
+   "seat": "pressure-washer",
+   "brief": "Rust bloom on a steel bulkhead panel at the marine terminal - a wider panel, the same clean-cell law."
+  },
+  {
+   "id": "sim-pressure-washer-nola-floodwall-clean",
+   "title": "Pressure Washer Surface Clean: Levee floodwall mildew",
+   "kind": "sim-scenario",
+   "place": {
+    "kind": "hall",
+    "id": "hazmat",
+    "campus": "new-orleans"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=hazmat&sim=pressure-washer",
+    "lands": "seat",
+    "param": [
+     "hall",
+     "sim"
+    ]
+   },
+   "requires": [
+    "hazmat-wash-and-decon"
+   ],
+   "provenance": "SCRIPTED",
+   "source": "sims/registry/sims.json#sims.pressure-washer.scenarios[2]",
+   "seat": "pressure-washer",
+   "brief": "Gulf humidity grows mildew fast on the floodwall panel - a taller face, containment matters more here."
+  },
+  {
+   "id": "walkaround-pressure-washer",
+   "title": "Pressure Washer Surface Clean: walkaround",
+   "kind": "walkaround",
+   "place": {
+    "kind": "hall",
+    "id": "painters",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=painters&sim=pressure-washer",
+    "lands": "seat",
+    "param": [
+     "hall",
+     "sim"
+    ]
+   },
+   "requires": [
+    "hazmat-wash-and-decon",
+    "painters-contain-it"
+   ],
+   "provenance": "DERIVED",
+   "source": "sims/registry/sims.json#sims.pressure-washer.walkaround",
+   "seat": "pressure-washer",
+   "brief": "5 points: Eye and face protection; GFCI-protected power source; Wand trigger lock; Hose condition; Work-area containment"
+  },
+  {
+   "id": "sim-airless-sprayer-bay-terminal-finish",
+   "title": "Airless Paint Sprayer Finish: Ferry terminal finish coat",
+   "kind": "sim-scenario",
+   "place": {
+    "kind": "hall",
+    "id": "painters",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=painters&sim=airless-sprayer",
+    "lands": "seat",
+    "param": [
+     "hall",
+     "sim"
+    ]
+   },
+   "requires": [
+    "painters-lay-the-coat"
+   ],
+   "provenance": "SCRIPTED",
+   "source": "sims/registry/sims.json#sims.airless-sprayer.scenarios[0]",
+   "seat": "airless-sprayer",
+   "brief": "A fresh finish coat on the terminal exterior wall - the forgiving panel to learn the pass rhythm on."
+  },
+  {
+   "id": "sim-airless-sprayer-oak-warehouse-finish",
+   "title": "Airless Paint Sprayer Finish: Dockside warehouse finish",
+   "kind": "sim-scenario",
+   "place": {
+    "kind": "hall",
+    "id": "laborers",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=laborers&sim=airless-sprayer",
+    "lands": "seat",
+    "param": [
+     "hall",
+     "sim"
+    ]
+   },
+   "requires": [],
+   "provenance": "SCRIPTED",
+   "source": "sims/registry/sims.json#sims.airless-sprayer.scenarios[1]",
+   "seat": "airless-sprayer",
+   "brief": "A wider warehouse wall panel at the terminal - more travel, the same even-coat law."
+  },
+  {
+   "id": "sim-airless-sprayer-nola-shotgun-finish",
+   "title": "Airless Paint Sprayer Finish: Shotgun house finish coat",
+   "kind": "sim-scenario",
+   "place": {
+    "kind": "campus",
+    "id": "new-orleans",
+    "campus": "new-orleans"
+   },
+   "launch": {
+    "href": null,
+    "why": "no hall on the new-orleans campus teaches the Airless Paint Sprayer Finish seat, and the 3D page picks a scenario only by the campus of the hall it opens"
+   },
+   "requires": [],
+   "provenance": "SCRIPTED",
+   "source": "sims/registry/sims.json#sims.airless-sprayer.scenarios[2]",
+   "seat": "airless-sprayer",
+   "brief": "A taller shotgun-house exterior wall panel - humidity punishes a slow pass, hold the rhythm."
+  },
+  {
+   "id": "walkaround-airless-sprayer",
+   "title": "Airless Paint Sprayer Finish: walkaround",
+   "kind": "walkaround",
+   "place": {
+    "kind": "hall",
+    "id": "painters",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=painters&sim=airless-sprayer",
+    "lands": "seat",
+    "param": [
+     "hall",
+     "sim"
+    ]
+   },
+   "requires": [
+    "painters-lay-the-coat"
+   ],
+   "provenance": "DERIVED",
+   "source": "sims/registry/sims.json#sims.airless-sprayer.walkaround",
+   "seat": "airless-sprayer",
+   "brief": "5 points: Respirator and ventilation; Spray-tip guard; Pressure-relief procedure; Drop-cloth and masking; Fire and ignition sources"
+  },
+  {
+   "id": "sim-boom-lift-bay-curtainwall-run",
+   "title": "Boom Lift Basket Work: Curtain-wall panel run",
+   "kind": "sim-scenario",
+   "place": {
+    "kind": "hall",
+    "id": "electricians",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=electricians&sim=boom-lift",
+    "lands": "seat",
+    "param": [
+     "hall",
+     "sim"
+    ]
+   },
+   "requires": [
+    "electricians-clip-in-first",
+    "insulators-stay-inside-the-rails",
+    "window-glazing-let-the-ground-judge-it"
+   ],
+   "provenance": "SCRIPTED",
+   "source": "sims/registry/sims.json#sims.boom-lift.scenarios[0]",
+   "seat": "boom-lift",
+   "brief": "Six anchor points up a curtain-wall bay on the island campus, with the site power drop strung across in front of them - the run to learn the basket on, and the first thing to learn is that it is not clear overhead."
+  },
+  {
+   "id": "sim-boom-lift-oak-terminal-fixtures",
+   "title": "Boom Lift Basket Work: Terminal light-fixture run",
+   "kind": "sim-scenario",
+   "place": {
+    "kind": "campus",
+    "id": "oakland",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": null,
+    "why": "no hall on the oakland campus teaches the Boom Lift Basket Work seat, and the 3D page picks a scenario only by the campus of the hall it opens"
+   },
+   "requires": [],
+   "provenance": "SCRIPTED",
+   "source": "sims/registry/sims.json#sims.boom-lift.scenarios[1]",
+   "seat": "boom-lift",
+   "brief": "Four fixture points along a terminal canopy with a live feeder running overhead between the pad and the work - go up before you go out."
+  },
+  {
+   "id": "sim-boom-lift-nola-storm-shutters",
+   "title": "Boom Lift Basket Work: Storm-shutter run",
+   "kind": "sim-scenario",
+   "place": {
+    "kind": "campus",
+    "id": "new-orleans",
+    "campus": "new-orleans"
+   },
+   "launch": {
+    "href": null,
+    "why": "no hall on the new-orleans campus teaches the Boom Lift Basket Work seat, and the 3D page picks a scenario only by the campus of the hall it opens"
+   },
+   "requires": [],
+   "provenance": "SCRIPTED",
+   "source": "sims/registry/sims.json#sims.boom-lift.scenarios[2]",
+   "seat": "boom-lift",
+   "brief": "Five shutter anchors low on a warehouse wall before the season turns, with a service drop overhead - short reaches, the same tie-off law."
+  },
+  {
+   "id": "walkaround-boom-lift",
+   "title": "Boom Lift Basket Work: walkaround",
+   "kind": "walkaround",
+   "place": {
+    "kind": "hall",
+    "id": "electricians",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=electricians&sim=boom-lift",
+    "lands": "seat",
+    "param": [
+     "hall",
+     "sim"
+    ]
+   },
+   "requires": [
+    "electricians-clip-in-first",
+    "glaziers-watch-the-line",
+    "insulators-stay-inside-the-rails",
+    "sheetmetal-name-the-kit-before-you-climb",
+    "window-glazing-let-the-ground-judge-it"
+   ],
+   "provenance": "DERIVED",
+   "source": "sims/registry/sims.json#sims.boom-lift.walkaround",
+   "seat": "boom-lift",
+   "brief": "5 points: Tires, outriggers and the pad; Controls and emergency lowering; Guardrails and gate; Harness and anchor point; Overhead-hazard scan"
+  },
+  {
+   "id": "sim-overhead-crane-bay-fab-coil",
+   "title": "Overhead Crane Shop Move: Fabrication-shop coil move",
+   "kind": "sim-scenario",
+   "place": {
+    "kind": "hall",
+    "id": "crane-ops",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=crane-ops&sim=overhead-crane",
+    "lands": "seat",
+    "param": [
+     "hall",
+     "sim"
+    ]
+   },
+   "requires": [
+    "millwrights-shop-move"
+   ],
+   "provenance": "SCRIPTED",
+   "source": "sims/registry/sims.json#sims.overhead-crane.scenarios[0]",
+   "seat": "overhead-crane",
+   "brief": "A steel coil from the receiving pad to the slitter stand across the island fab shop - one bench to clear, the aisle to stay off."
+  },
+  {
+   "id": "sim-overhead-crane-oak-foundry-ladle",
+   "title": "Overhead Crane Shop Move: Foundry ladle-frame move",
+   "kind": "sim-scenario",
+   "place": {
+    "kind": "hall",
+    "id": "machinists",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=machinists&sim=overhead-crane",
+    "lands": "seat",
+    "param": [
+     "hall",
+     "sim"
+    ]
+   },
+   "requires": [
+    "foundry-clear-the-runway-first",
+    "machinists-move-the-job-without-marking-it"
+   ],
+   "provenance": "SCRIPTED",
+   "source": "sims/registry/sims.json#sims.overhead-crane.scenarios[1]",
+   "seat": "overhead-crane",
+   "brief": "A ladle frame from the pour line to the maintenance bay at the Oakland foundry - two mould stacks under the route, carry high."
+  },
+  {
+   "id": "sim-overhead-crane-nola-boatshed-engine",
+   "title": "Overhead Crane Shop Move: Boat-shed engine move",
+   "kind": "sim-scenario",
+   "place": {
+    "kind": "campus",
+    "id": "new-orleans",
+    "campus": "new-orleans"
+   },
+   "launch": {
+    "href": null,
+    "why": "no hall on the new-orleans campus teaches the Overhead Crane Shop Move seat, and the 3D page picks a scenario only by the campus of the hall it opens"
+   },
+   "requires": [],
+   "provenance": "SCRIPTED",
+   "source": "sims/registry/sims.json#sims.overhead-crane.scenarios[2]",
+   "seat": "overhead-crane",
+   "brief": "A marine engine from the crate to the test stand in a Gulf boat shed - a narrow bay, a tight square, the crew aisle right through the middle."
+  },
+  {
+   "id": "walkaround-overhead-crane",
+   "title": "Overhead Crane Shop Move: walkaround",
+   "kind": "walkaround",
+   "place": {
+    "kind": "hall",
+    "id": "crane-ops",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=crane-ops&sim=overhead-crane",
+    "lands": "seat",
+    "param": [
+     "hall",
+     "sim"
+    ]
+   },
+   "requires": [
+    "foundry-clear-the-runway-first",
+    "machinists-move-the-job-without-marking-it",
+    "millwrights-shop-move",
+    "port-crane-read-the-rope"
+   ],
+   "provenance": "DERIVED",
+   "source": "sims/registry/sims.json#sims.overhead-crane.walkaround",
+   "seat": "overhead-crane",
+   "brief": "5 points: Hook latch and block; Wire rope and sheaves; Upper-limit switch test; Pendant and e-stop; Runway and aisle"
+  },
+  {
+   "id": "crib-ironworkers",
+   "title": "Structural tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "ironworkers",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=ironworkers",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.ironworkers",
+   "seat": null,
+   "brief": "5 picks at the Structural tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-electricians",
+   "title": "Building-systems tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "electricians",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=electricians",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.electricians",
+   "seat": null,
+   "brief": "5 picks at the Building-systems tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-pipefitters",
+   "title": "Building-systems tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "pipefitters",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=pipefitters",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.pipefitters",
+   "seat": null,
+   "brief": "5 picks at the Building-systems tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-carpenters",
+   "title": "Envelope & finish tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "carpenters",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=carpenters",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [
+    "carpenters-return-it-the-same"
+   ],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.carpenters",
+   "seat": null,
+   "brief": "5 picks at the Envelope & finish tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-operating-eng",
+   "title": "Earthworks & plant tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "operating-eng",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=operating-eng",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.operating-eng",
+   "seat": null,
+   "brief": "5 picks at the Earthworks & plant tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-laborers",
+   "title": "Earthworks & plant tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "laborers",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=laborers",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.laborers",
+   "seat": null,
+   "brief": "5 picks at the Earthworks & plant tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-sheetmetal",
+   "title": "Building-systems tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "sheetmetal",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=sheetmetal",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [
+    "sheetmetal-name-the-kit-before-you-climb"
+   ],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.sheetmetal",
+   "seat": null,
+   "brief": "5 picks at the Building-systems tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-bricklayers",
+   "title": "Envelope & finish tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "bricklayers",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=bricklayers",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.bricklayers",
+   "seat": null,
+   "brief": "5 picks at the Envelope & finish tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-cement-masons",
+   "title": "Envelope & finish tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "cement-masons",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=cement-masons",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [
+    "cement-masons-mind-the-weather"
+   ],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.cement-masons",
+   "seat": null,
+   "brief": "5 picks at the Envelope & finish tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-roofers",
+   "title": "Envelope & finish tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "roofers",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=roofers",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.roofers",
+   "seat": null,
+   "brief": "5 picks at the Envelope & finish tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-painters",
+   "title": "Envelope & finish tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "painters",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=painters",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.painters",
+   "seat": null,
+   "brief": "5 picks at the Envelope & finish tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-glaziers",
+   "title": "Envelope & finish tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "glaziers",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=glaziers",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.glaziers",
+   "seat": null,
+   "brief": "5 picks at the Envelope & finish tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-insulators",
+   "title": "Envelope & finish tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "insulators",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=insulators",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [
+    "insulators-stay-inside-the-rails"
+   ],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.insulators",
+   "seat": null,
+   "brief": "5 picks at the Envelope & finish tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-millwrights",
+   "title": "Structural tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "millwrights",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=millwrights",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.millwrights",
+   "seat": null,
+   "brief": "5 picks at the Structural tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-boilermakers",
+   "title": "Structural tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "boilermakers",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=boilermakers",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.boilermakers",
+   "seat": null,
+   "brief": "5 picks at the Structural tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-elevator",
+   "title": "Building-systems tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "elevator",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=elevator",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [
+    "elevator-tools-first-walk"
+   ],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.elevator",
+   "seat": null,
+   "brief": "5 picks at the Building-systems tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-teamsters",
+   "title": "Earthworks & plant tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "teamsters",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=teamsters",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.teamsters",
+   "seat": null,
+   "brief": "5 picks at the Earthworks & plant tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-welders",
+   "title": "Structural tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "welders",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=welders",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.welders",
+   "seat": null,
+   "brief": "5 picks at the Structural tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-hvacr",
+   "title": "Building-systems tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "hvacr",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=hvacr",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [
+    "hvacr-prove-the-sequence"
+   ],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.hvacr",
+   "seat": null,
+   "brief": "5 picks at the Building-systems tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-crane-ops",
+   "title": "Structural tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "crane-ops",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=crane-ops",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.crane-ops",
+   "seat": null,
+   "brief": "5 picks at the Structural tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-riggers",
+   "title": "Structural tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "riggers",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=riggers",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.riggers",
+   "seat": null,
+   "brief": "5 picks at the Structural tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-heavy-equip",
+   "title": "Earthworks & plant tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "heavy-equip",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=heavy-equip",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.heavy-equip",
+   "seat": null,
+   "brief": "5 picks at the Earthworks & plant tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-drywall",
+   "title": "Envelope & finish tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "drywall",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=drywall",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.drywall",
+   "seat": null,
+   "brief": "5 picks at the Envelope & finish tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-flooring",
+   "title": "Envelope & finish tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "flooring",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=flooring",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.flooring",
+   "seat": null,
+   "brief": "5 picks at the Envelope & finish tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-grounds",
+   "title": "Earthworks & plant tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "grounds",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=grounds",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.grounds",
+   "seat": null,
+   "brief": "5 picks at the Earthworks & plant tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-line-workers",
+   "title": "Energy & utilities tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "line-workers",
+    "campus": "new-orleans"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=line-workers",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [
+    "line-workers-find-the-fault"
+   ],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.line-workers",
+   "seat": null,
+   "brief": "5 picks at the Energy & utilities tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-solar",
+   "title": "Energy & utilities tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "solar",
+    "campus": "new-orleans"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=solar",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.solar",
+   "seat": null,
+   "brief": "5 picks at the Energy & utilities tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-wind",
+   "title": "Energy & utilities tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "wind",
+    "campus": "new-orleans"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=wind",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.wind",
+   "seat": null,
+   "brief": "5 picks at the Energy & utilities tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-demolition",
+   "title": "Earthworks & plant tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "demolition",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=demolition",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.demolition",
+   "seat": null,
+   "brief": "5 picks at the Earthworks & plant tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-scaffold",
+   "title": "Earthworks & plant tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "scaffold",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=scaffold",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.scaffold",
+   "seat": null,
+   "brief": "5 picks at the Earthworks & plant tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-surveyors",
+   "title": "Survey, safety & environment tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "surveyors",
+    "campus": "new-orleans"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=surveyors",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [
+    "surveyors-trust-the-control"
+   ],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.surveyors",
+   "seat": null,
+   "brief": "5 picks at the Survey, safety & environment tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-fire-sprinkler",
+   "title": "Building-systems tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "fire-sprinkler",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=fire-sprinkler",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [
+    "fire-sprinkler-tools-first-walk"
+   ],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.fire-sprinkler",
+   "seat": null,
+   "brief": "5 picks at the Building-systems tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-hazmat",
+   "title": "Survey, safety & environment tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "hazmat",
+    "campus": "new-orleans"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=hazmat",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.hazmat",
+   "seat": null,
+   "brief": "5 picks at the Survey, safety & environment tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-refractory",
+   "title": "Heavy-industry tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "refractory",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=refractory",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [
+    "refractory-dry-it-slowly"
+   ],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.refractory",
+   "seat": null,
+   "brief": "5 picks at the Heavy-industry tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-pipeline",
+   "title": "Heavy-industry tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "pipeline",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=pipeline",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.pipeline",
+   "seat": null,
+   "brief": "5 picks at the Heavy-industry tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-tank-erectors",
+   "title": "Heavy-industry tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "tank-erectors",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=tank-erectors",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.tank-erectors",
+   "seat": null,
+   "brief": "5 picks at the Heavy-industry tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-shipfitters",
+   "title": "Structural tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "shipfitters",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=shipfitters",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.shipfitters",
+   "seat": null,
+   "brief": "5 picks at the Structural tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-marine-pipe",
+   "title": "Heavy-industry tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "marine-pipe",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=marine-pipe",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.marine-pipe",
+   "seat": null,
+   "brief": "5 picks at the Heavy-industry tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-divers",
+   "title": "Heavy-industry tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "divers",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=divers",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.divers",
+   "seat": null,
+   "brief": "5 picks at the Heavy-industry tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-blasters",
+   "title": "Earthworks & plant tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "blasters",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=blasters",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.blasters",
+   "seat": null,
+   "brief": "5 picks at the Earthworks & plant tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-miners",
+   "title": "Earthworks & plant tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "miners",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=miners",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.miners",
+   "seat": null,
+   "brief": "5 picks at the Earthworks & plant tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-smelter",
+   "title": "Heavy-industry tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "smelter",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=smelter",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.smelter",
+   "seat": null,
+   "brief": "5 picks at the Heavy-industry tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-foundry",
+   "title": "Heavy-industry tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "foundry",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=foundry",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [
+    "foundry-clear-the-runway-first"
+   ],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.foundry",
+   "seat": null,
+   "brief": "5 picks at the Heavy-industry tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-machinists",
+   "title": "Heavy-industry tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "machinists",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=machinists",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.machinists",
+   "seat": null,
+   "brief": "5 picks at the Heavy-industry tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-toolmakers",
+   "title": "Heavy-industry tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "toolmakers",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=toolmakers",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.toolmakers",
+   "seat": null,
+   "brief": "5 picks at the Heavy-industry tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-fabricators",
+   "title": "Structural tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "fabricators",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=fabricators",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.fabricators",
+   "seat": null,
+   "brief": "5 picks at the Structural tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-platers",
+   "title": "Heavy-industry tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "platers",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=platers",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [
+    "platers-tools-first-walk"
+   ],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.platers",
+   "seat": null,
+   "brief": "5 picks at the Heavy-industry tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-substation",
+   "title": "Energy & utilities tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "substation",
+    "campus": "new-orleans"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=substation",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.substation",
+   "seat": null,
+   "brief": "5 picks at the Energy & utilities tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-cable-splicers",
+   "title": "Energy & utilities tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "cable-splicers",
+    "campus": "new-orleans"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=cable-splicers",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.cable-splicers",
+   "seat": null,
+   "brief": "5 picks at the Energy & utilities tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-meter-techs",
+   "title": "Energy & utilities tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "meter-techs",
+    "campus": "new-orleans"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=meter-techs",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.meter-techs",
+   "seat": null,
+   "brief": "5 picks at the Energy & utilities tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-gas-distrib",
+   "title": "Energy & utilities tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "gas-distrib",
+    "campus": "new-orleans"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=gas-distrib",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.gas-distrib",
+   "seat": null,
+   "brief": "5 picks at the Energy & utilities tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-water-distrib",
+   "title": "Energy & utilities tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "water-distrib",
+    "campus": "new-orleans"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=water-distrib",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.water-distrib",
+   "seat": null,
+   "brief": "5 picks at the Energy & utilities tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-wastewater",
+   "title": "Energy & utilities tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "wastewater",
+    "campus": "new-orleans"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=wastewater",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [
+    "wastewater-tools-first-walk"
+   ],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.wastewater",
+   "seat": null,
+   "brief": "5 picks at the Energy & utilities tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-nuclear",
+   "title": "Energy & utilities tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "nuclear",
+    "campus": "new-orleans"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=nuclear",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.nuclear",
+   "seat": null,
+   "brief": "5 picks at the Energy & utilities tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-hydro",
+   "title": "Energy & utilities tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "hydro",
+    "campus": "new-orleans"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=hydro",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.hydro",
+   "seat": null,
+   "brief": "5 picks at the Energy & utilities tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-geothermal",
+   "title": "Energy & utilities tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "geothermal",
+    "campus": "new-orleans"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=geothermal",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.geothermal",
+   "seat": null,
+   "brief": "5 picks at the Energy & utilities tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-battery-storage",
+   "title": "Energy & utilities tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "battery-storage",
+    "campus": "new-orleans"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=battery-storage",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.battery-storage",
+   "seat": null,
+   "brief": "5 picks at the Energy & utilities tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-ev-charging",
+   "title": "Energy & utilities tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "ev-charging",
+    "campus": "new-orleans"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=ev-charging",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.ev-charging",
+   "seat": null,
+   "brief": "5 picks at the Energy & utilities tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-hydrogen",
+   "title": "Energy & utilities tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "hydrogen",
+    "campus": "new-orleans"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=hydrogen",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [
+    "hydrogen-tools-first-walk"
+   ],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.hydrogen",
+   "seat": null,
+   "brief": "5 picks at the Energy & utilities tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-transmission",
+   "title": "Energy & utilities tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "transmission",
+    "campus": "new-orleans"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=transmission",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.transmission",
+   "seat": null,
+   "brief": "5 picks at the Energy & utilities tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-district-energy",
+   "title": "Energy & utilities tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "district-energy",
+    "campus": "new-orleans"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=district-energy",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.district-energy",
+   "seat": null,
+   "brief": "5 picks at the Energy & utilities tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-masonry-restore",
+   "title": "Envelope & finish tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "masonry-restore",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=masonry-restore",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [
+    "restore-point-the-joint"
+   ],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.masonry-restore",
+   "seat": null,
+   "brief": "5 picks at the Envelope & finish tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-stone-carvers",
+   "title": "Envelope & finish tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "stone-carvers",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=stone-carvers",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.stone-carvers",
+   "seat": null,
+   "brief": "5 picks at the Envelope & finish tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-plasterers",
+   "title": "Envelope & finish tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "plasterers",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=plasterers",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.plasterers",
+   "seat": null,
+   "brief": "5 picks at the Envelope & finish tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-terrazzo",
+   "title": "Envelope & finish tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "terrazzo",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=terrazzo",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.terrazzo",
+   "seat": null,
+   "brief": "5 picks at the Envelope & finish tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-tilesetters",
+   "title": "Envelope & finish tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "tilesetters",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=tilesetters",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [
+    "tilesetters-start-underneath"
+   ],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.tilesetters",
+   "seat": null,
+   "brief": "5 picks at the Envelope & finish tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-lathers",
+   "title": "Envelope & finish tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "lathers",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=lathers",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [
+    "lathers-frame-for-the-next-trade"
+   ],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.lathers",
+   "seat": null,
+   "brief": "5 picks at the Envelope & finish tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-curtainwall",
+   "title": "Envelope & finish tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "curtainwall",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=curtainwall",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.curtainwall",
+   "seat": null,
+   "brief": "5 picks at the Envelope & finish tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-waterproofers",
+   "title": "Envelope & finish tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "waterproofers",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=waterproofers",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.waterproofers",
+   "seat": null,
+   "brief": "5 picks at the Envelope & finish tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-firestop",
+   "title": "Envelope & finish tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "firestop",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=firestop",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.firestop",
+   "seat": null,
+   "brief": "5 picks at the Envelope & finish tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-acoustic",
+   "title": "Envelope & finish tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "acoustic",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=acoustic",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.acoustic",
+   "seat": null,
+   "brief": "5 picks at the Envelope & finish tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-cladding",
+   "title": "Envelope & finish tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "cladding",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=cladding",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.cladding",
+   "seat": null,
+   "brief": "5 picks at the Envelope & finish tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-shoring",
+   "title": "Earthworks & plant tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "shoring",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=shoring",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.shoring",
+   "seat": null,
+   "brief": "5 picks at the Earthworks & plant tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-piling",
+   "title": "Structural tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "piling",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=piling",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.piling",
+   "seat": null,
+   "brief": "5 picks at the Structural tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-concrete-pump",
+   "title": "Earthworks & plant tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "concrete-pump",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=concrete-pump",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.concrete-pump",
+   "seat": null,
+   "brief": "5 picks at the Earthworks & plant tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-post-tension",
+   "title": "Earthworks & plant tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "post-tension",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=post-tension",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [
+    "post-tension-tools-first-walk"
+   ],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.post-tension",
+   "seat": null,
+   "brief": "5 picks at the Earthworks & plant tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-precast",
+   "title": "Structural tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "precast",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=precast",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.precast",
+   "seat": null,
+   "brief": "5 picks at the Structural tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-steel-erectors",
+   "title": "Structural tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "steel-erectors",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=steel-erectors",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.steel-erectors",
+   "seat": null,
+   "brief": "5 picks at the Structural tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-decking",
+   "title": "Structural tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "decking",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=decking",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.decking",
+   "seat": null,
+   "brief": "5 picks at the Structural tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-window-glazing",
+   "title": "Envelope & finish tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "window-glazing",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=window-glazing",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.window-glazing",
+   "seat": null,
+   "brief": "5 picks at the Envelope & finish tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-bas-controls",
+   "title": "Building-systems tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "bas-controls",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=bas-controls",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.bas-controls",
+   "seat": null,
+   "brief": "5 picks at the Building-systems tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-fire-alarm",
+   "title": "Building-systems tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "fire-alarm",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=fire-alarm",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.fire-alarm",
+   "seat": null,
+   "brief": "5 picks at the Building-systems tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-security-sys",
+   "title": "Building-systems tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "security-sys",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=security-sys",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.security-sys",
+   "seat": null,
+   "brief": "5 picks at the Building-systems tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-network-cabling",
+   "title": "Building-systems tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "network-cabling",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=network-cabling",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.network-cabling",
+   "seat": null,
+   "brief": "5 picks at the Building-systems tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-fiber-splicers",
+   "title": "Building-systems tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "fiber-splicers",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=fiber-splicers",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.fiber-splicers",
+   "seat": null,
+   "brief": "5 picks at the Building-systems tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-data-center",
+   "title": "Building-systems tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "data-center",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=data-center",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [
+    "data-center-tools-first-walk"
+   ],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.data-center",
+   "seat": null,
+   "brief": "5 picks at the Building-systems tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-instrumentation",
+   "title": "Building-systems tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "instrumentation",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=instrumentation",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.instrumentation",
+   "seat": null,
+   "brief": "5 picks at the Building-systems tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-plc-techs",
+   "title": "Building-systems tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "plc-techs",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=plc-techs",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.plc-techs",
+   "seat": null,
+   "brief": "5 picks at the Building-systems tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-robotics",
+   "title": "Building-systems tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "robotics",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=robotics",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.robotics",
+   "seat": null,
+   "brief": "5 picks at the Building-systems tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-automation-int",
+   "title": "Building-systems tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "automation-int",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=automation-int",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.automation-int",
+   "seat": null,
+   "brief": "5 picks at the Building-systems tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-cleanroom",
+   "title": "Building-systems tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "cleanroom",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=cleanroom",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.cleanroom",
+   "seat": null,
+   "brief": "5 picks at the Building-systems tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-medical-gas",
+   "title": "Building-systems tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "medical-gas",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=medical-gas",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [
+    "medical-gas-tools-first-walk"
+   ],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.medical-gas",
+   "seat": null,
+   "brief": "5 picks at the Building-systems tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-rail-track",
+   "title": "Transport & mobility tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "rail-track",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=rail-track",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.rail-track",
+   "seat": null,
+   "brief": "5 picks at the Transport & mobility tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-rail-signals",
+   "title": "Transport & mobility tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "rail-signals",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=rail-signals",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.rail-signals",
+   "seat": null,
+   "brief": "5 picks at the Transport & mobility tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-catenary",
+   "title": "Transport & mobility tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "catenary",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=catenary",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.catenary",
+   "seat": null,
+   "brief": "5 picks at the Transport & mobility tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-transit-vehicle",
+   "title": "Transport & mobility tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "transit-vehicle",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=transit-vehicle",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.transit-vehicle",
+   "seat": null,
+   "brief": "5 picks at the Transport & mobility tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-aviation-ground",
+   "title": "Transport & mobility tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "aviation-ground",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=aviation-ground",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.aviation-ground",
+   "seat": null,
+   "brief": "5 picks at the Transport & mobility tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-airfield",
+   "title": "Transport & mobility tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "airfield",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=airfield",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [
+    "airfield-tools-first-walk"
+   ],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.airfield",
+   "seat": null,
+   "brief": "5 picks at the Transport & mobility tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-port-crane",
+   "title": "Transport & mobility tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "port-crane",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=port-crane",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.port-crane",
+   "seat": null,
+   "brief": "5 picks at the Transport & mobility tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-marine-terminal",
+   "title": "Transport & mobility tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "marine-terminal",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=marine-terminal",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.marine-terminal",
+   "seat": null,
+   "brief": "5 picks at the Transport & mobility tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-fleet-diesel",
+   "title": "Transport & mobility tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "fleet-diesel",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=fleet-diesel",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.fleet-diesel",
+   "seat": null,
+   "brief": "5 picks at the Transport & mobility tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-bridge-inspect",
+   "title": "Transport & mobility tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "bridge-inspect",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=bridge-inspect",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.bridge-inspect",
+   "seat": null,
+   "brief": "5 picks at the Transport & mobility tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-asbestos",
+   "title": "Survey, safety & environment tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "asbestos",
+    "campus": "new-orleans"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=asbestos",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.asbestos",
+   "seat": null,
+   "brief": "5 picks at the Survey, safety & environment tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-lead-abatement",
+   "title": "Survey, safety & environment tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "lead-abatement",
+    "campus": "new-orleans"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=lead-abatement",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.lead-abatement",
+   "seat": null,
+   "brief": "5 picks at the Survey, safety & environment tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-mold-remediation",
+   "title": "Survey, safety & environment tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "mold-remediation",
+    "campus": "new-orleans"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=mold-remediation",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.mold-remediation",
+   "seat": null,
+   "brief": "5 picks at the Survey, safety & environment tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-spill-response",
+   "title": "Survey, safety & environment tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "spill-response",
+    "campus": "new-orleans"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=spill-response",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [
+    "spill-response-tools-first-walk"
+   ],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.spill-response",
+   "seat": null,
+   "brief": "5 picks at the Survey, safety & environment tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-confined-space",
+   "title": "Survey, safety & environment tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "confined-space",
+    "campus": "new-orleans"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=confined-space",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.confined-space",
+   "seat": null,
+   "brief": "5 picks at the Survey, safety & environment tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-high-angle",
+   "title": "Survey, safety & environment tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "high-angle",
+    "campus": "new-orleans"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=high-angle",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.high-angle",
+   "seat": null,
+   "brief": "5 picks at the Survey, safety & environment tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-site-safety",
+   "title": "Survey, safety & environment tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "site-safety",
+    "campus": "new-orleans"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=site-safety",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.site-safety",
+   "seat": null,
+   "brief": "5 picks at the Survey, safety & environment tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-industrial-clean",
+   "title": "Survey, safety & environment tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "industrial-clean",
+    "campus": "new-orleans"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=industrial-clean",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.industrial-clean",
+   "seat": null,
+   "brief": "5 picks at the Survey, safety & environment tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crib-survey-drone",
+   "title": "Survey, safety & environment tool crib: Crib check",
+   "kind": "crib-drill",
+   "place": {
+    "kind": "hall",
+    "id": "survey-drone",
+    "campus": "new-orleans"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?hall=survey-drone",
+    "lands": "hall",
+    "param": [
+     "hall"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "tools/registry/toolcribs.json#hall_bindings.survey-drone",
+   "seat": null,
+   "brief": "5 picks at the Survey, safety & environment tool crib pegboard, in the hall's Tools room"
+  },
+  {
+   "id": "crew-herons-head-shoreline-cut",
+   "title": "Shoreline drainage cut, Heron's Head",
+   "kind": "crew-handoff",
+   "place": {
+    "kind": "restoration-site",
+    "id": "herons-head",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_worksites.html#site-herons-head-shoreline-cut",
+    "lands": "section",
+    "param": [
+     "#site-"
+    ]
+   },
+   "requires": [
+    "laborers-stand-where-the-cab-can-see",
+    "operating-eng-locate-first",
+    "shoring-read-the-ground-again"
+   ],
+   "provenance": "DERIVED",
+   "source": "worksites/registry/worksites.json#sites[0]",
+   "seat": "excavator-trench",
+   "brief": "Trench crew: 4 roles, 6 hand-offs"
+  },
+  {
+   "id": "crew-nola-tank-entry",
+   "title": "Tank seam entry, New Orleans",
+   "kind": "crew-handoff",
+   "place": {
+    "kind": "campus",
+    "id": "new-orleans",
+    "campus": "new-orleans"
+   },
+   "launch": {
+    "href": "web/trade_craft_worksites.html#site-nola-tank-entry",
+    "lands": "section",
+    "param": [
+     "#site-"
+    ]
+   },
+   "requires": [
+    "boilermakers-get-them-out",
+    "marine-pipe-know-when-to-come-out",
+    "tank-erectors-isolate-before-testing"
+   ],
+   "provenance": "DERIVED",
+   "source": "worksites/registry/worksites.json#sites[1]",
+   "seat": "weld-bead",
+   "brief": "Confined space entry crew: 3 roles, 5 hand-offs"
+  },
+  {
+   "id": "crew-oak-terminal-blind-pick",
+   "title": "Blind pick between the container stacks, Oakland",
+   "kind": "crew-handoff",
+   "place": {
+    "kind": "campus",
+    "id": "oakland",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_worksites.html#site-oak-terminal-blind-pick",
+    "lands": "section",
+    "param": [
+     "#site-"
+    ]
+   },
+   "requires": [
+    "ironworkers-plan-out-loud",
+    "piling-stand-the-rig-on-something",
+    "port-crane-read-the-rope",
+    "riggers-carry-under-control",
+    "steel-erectors-land-it-on-the-bolts"
+   ],
+   "provenance": "DERIVED",
+   "source": "worksites/registry/worksites.json#sites[2]",
+   "seat": "crane-lift",
+   "brief": "Crane lift crew: 4 roles, 6 hand-offs"
+  },
+  {
+   "id": "crew-salt-ponds-levee-trench",
+   "title": "Levee toe trench, South Bay salt ponds",
+   "kind": "crew-handoff",
+   "place": {
+    "kind": "restoration-site",
+    "id": "south-bay-salt-ponds",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_worksites.html#site-salt-ponds-levee-trench",
+    "lands": "section",
+    "param": [
+     "#site-"
+    ]
+   },
+   "requires": [
+    "laborers-stand-where-the-cab-can-see",
+    "operating-eng-locate-first",
+    "shoring-read-the-ground-again"
+   ],
+   "provenance": "DERIVED",
+   "source": "worksites/registry/worksites.json#sites[3]",
+   "seat": "excavator-trench",
+   "brief": "Trench crew: 4 roles, 6 hand-offs"
+  },
+  {
+   "id": "crew-ti-curtainwall-boom-run",
+   "title": "Curtainwall run under the line, Treasure Island",
+   "kind": "crew-handoff",
+   "place": {
+    "kind": "campus",
+    "id": "treasure-island",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_worksites.html#site-ti-curtainwall-boom-run",
+    "lands": "section",
+    "param": [
+     "#site-"
+    ]
+   },
+   "requires": [
+    "electricians-clip-in-first",
+    "glaziers-watch-the-line",
+    "insulators-stay-inside-the-rails",
+    "window-glazing-let-the-ground-judge-it"
+   ],
+   "provenance": "DERIVED",
+   "source": "worksites/registry/worksites.json#sites[4]",
+   "seat": "boom-lift",
+   "brief": "Aerial lift crew: 3 roles, 5 hand-offs"
+  },
+  {
+   "id": "crew-ti-scaffold-court-bay",
+   "title": "One bay up and tagged, scaffold court",
+   "kind": "crew-handoff",
+   "place": {
+    "kind": "space",
+    "id": "scaffold-court",
+    "campus": null
+   },
+   "launch": {
+    "href": "web/trade_craft_worksites.html#site-ti-scaffold-court-bay",
+    "lands": "section",
+    "param": [
+     "#site-"
+    ]
+   },
+   "requires": [
+    "curtainwall-fuss-about-the-sills",
+    "firestop-write-down-what-you-sealed",
+    "plasterers-pin-every-brace",
+    "roofers-mind-the-edge-and-the-skylight",
+    "scaffold-build-in-order"
+   ],
+   "provenance": "DERIVED",
+   "source": "worksites/registry/worksites.json#sites[5]",
+   "seat": "scaffold-bay",
+   "brief": "Scaffold crew: 3 roles, 5 hand-offs"
+  },
+  {
+   "id": "crew-ti-tower-steel-pick",
+   "title": "Tower steel pick, crane simulator bay",
+   "kind": "crew-handoff",
+   "place": {
+    "kind": "space",
+    "id": "crane-sim-bay",
+    "campus": null
+   },
+   "launch": {
+    "href": "web/trade_craft_worksites.html#site-ti-tower-steel-pick",
+    "lands": "section",
+    "param": [
+     "#site-"
+    ]
+   },
+   "requires": [
+    "ironworkers-plan-out-loud",
+    "piling-stand-the-rig-on-something",
+    "port-crane-read-the-rope",
+    "riggers-carry-under-control",
+    "steel-erectors-land-it-on-the-bolts"
+   ],
+   "provenance": "DERIVED",
+   "source": "worksites/registry/worksites.json#sites[6]",
+   "seat": "crane-lift",
+   "brief": "Crane lift crew: 4 roles, 6 hand-offs"
+  },
+  {
+   "id": "crew-ti-welding-bay-hot-work",
+   "title": "Deck seam under permit, welding bay",
+   "kind": "crew-handoff",
+   "place": {
+    "kind": "space",
+    "id": "welding-bay",
+    "campus": null
+   },
+   "launch": {
+    "href": "web/trade_craft_worksites.html#site-ti-welding-bay-hot-work",
+    "lands": "section",
+    "param": [
+     "#site-"
+    ]
+   },
+   "requires": [
+    "pipeline-close-the-permit-properly",
+    "shipfitters-say-what-you-cannot-see",
+    "welders-the-watch"
+   ],
+   "provenance": "DERIVED",
+   "source": "worksites/registry/worksites.json#sites[7]",
+   "seat": "weld-bead",
+   "brief": "Hot work crew: 3 roles, 5 hand-offs"
+  },
+  {
+   "id": "resto-herons-head",
+   "title": "Heron's Head Park Shoreline Resilience Project (Phases 1 and 2)",
+   "kind": "restoration-walk",
+   "place": {
+    "kind": "restoration-site",
+    "id": "herons-head",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?campus=treasure-island",
+    "lands": "campus",
+    "param": [
+     "campus"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "restoration/registry/restoration.json#sites[0]",
+   "seat": null,
+   "brief": "shoreline & green infrastructure; walk it from the campus view"
+  },
+  {
+   "id": "resto-candlestick-point",
+   "title": "Candlestick Point Stewardship Project (Phases 1 and 2)",
+   "kind": "restoration-walk",
+   "place": {
+    "kind": "restoration-site",
+    "id": "candlestick-point",
+    "campus": "treasure-island"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?campus=treasure-island",
+    "lands": "campus",
+    "param": [
+     "campus"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "restoration/registry/restoration.json#sites[1]",
+   "seat": null,
+   "brief": "shoreline stewardship; walk it from the campus view"
+  },
+  {
+   "id": "resto-east-oakland-youth",
+   "title": "Bay Restoration: Youth Engagement and Service Learning in East Oakland",
+   "kind": "restoration-walk",
+   "place": {
+    "kind": "restoration-site",
+    "id": "east-oakland-youth",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?campus=oakland",
+    "lands": "campus",
+    "param": [
+     "campus"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "restoration/registry/restoration.json#sites[2]",
+   "seat": null,
+   "brief": "shoreline & upland restoration; walk it from the campus view"
+  },
+  {
+   "id": "resto-alviso-shoreline",
+   "title": "Alviso Shoreline Habitat Restoration",
+   "kind": "restoration-walk",
+   "place": {
+    "kind": "restoration-site",
+    "id": "alviso-shoreline",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?campus=oakland",
+    "lands": "campus",
+    "param": [
+     "campus"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "restoration/registry/restoration.json#sites[3]",
+   "seat": null,
+   "brief": "marsh-adjacent upland; walk it from the campus view"
+  },
+  {
+   "id": "resto-south-bay-salt-ponds",
+   "title": "South Bay Salt Pond Restoration — ecotone levee (Phase 1)",
+   "kind": "restoration-walk",
+   "place": {
+    "kind": "restoration-site",
+    "id": "south-bay-salt-ponds",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?campus=oakland",
+    "lands": "campus",
+    "param": [
+     "campus"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "restoration/registry/restoration.json#sites[4]",
+   "seat": null,
+   "brief": "managed pond to tidal marsh; walk it from the campus view"
+  },
+  {
+   "id": "resto-montezuma-wetlands",
+   "title": "Montezuma Tidal and Seasonal Wetlands Restoration Project",
+   "kind": "restoration-walk",
+   "place": {
+    "kind": "restoration-site",
+    "id": "montezuma-wetlands",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?campus=oakland",
+    "lands": "campus",
+    "param": [
+     "campus"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "restoration/registry/restoration.json#sites[5]",
+   "seat": null,
+   "brief": "tidal & seasonal wetland, adjacent upland; walk it from the campus view"
+  },
+  {
+   "id": "resto-american-canyon",
+   "title": "American Canyon Wetlands Restoration Plan",
+   "kind": "restoration-walk",
+   "place": {
+    "kind": "restoration-site",
+    "id": "american-canyon",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?campus=oakland",
+    "lands": "campus",
+    "param": [
+     "campus"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "restoration/registry/restoration.json#sites[6]",
+   "seat": null,
+   "brief": "wetland & upland shoreline; walk it from the campus view"
+  },
+  {
+   "id": "resto-straw-north-bay",
+   "title": "Restoring Wetland-Upland Transition Zone Habitat in the North Bay with STRAW",
+   "kind": "restoration-walk",
+   "place": {
+    "kind": "restoration-site",
+    "id": "straw-north-bay",
+    "campus": "oakland"
+   },
+   "launch": {
+    "href": "web/trade_craft_3d.html?campus=oakland",
+    "lands": "campus",
+    "param": [
+     "campus"
+    ]
+   },
+   "requires": [],
+   "provenance": "DERIVED",
+   "source": "restoration/registry/restoration.json#sites[7]",
+   "seat": null,
+   "brief": "wetland-upland transition zone; walk it from the campus view"
+  },
+  {
+   "id": "wilds-m-adit-portal",
+   "title": "Adit portal and ground support",
+   "kind": "wilds-site-walk",
+   "place": {
+    "kind": "wilds-site",
+    "id": "m-adit-portal",
+    "world": "mountain",
+    "campus": "denver"
+   },
+   "launch": {
+    "href": "web/trade_craft_wilds.html#mountain/m-adit-portal",
+    "lands": "site",
+    "param": [
+     "#world/site"
+    ]
+   },
+   "requires": [
+    "m-adit-portal-site-walk",
+    "shoring-read-the-ground-again"
+   ],
+   "provenance": "DERIVED",
+   "source": "wilds/registry/wilds.json#worlds[0].sites[0]",
+   "seat": null,
+   "brief": "High Country: A mine adit driven into the hillside: ground support, ventilation and a portal that has to stay open."
+  },
+  {
+   "id": "wilds-m-hv-corridor",
+   "title": "High-voltage line corridor",
+   "kind": "wilds-site-walk",
+   "place": {
+    "kind": "wilds-site",
+    "id": "m-hv-corridor",
+    "world": "mountain",
+    "campus": "denver"
+   },
+   "launch": {
+    "href": "web/trade_craft_wilds.html#mountain/m-hv-corridor",
+    "lands": "site",
+    "param": [
+     "#world/site"
+    ]
+   },
+   "requires": [
+    "line-workers-find-the-fault",
+    "m-hv-corridor-site-walk"
+   ],
+   "provenance": "DERIVED",
+   "source": "wilds/registry/wilds.json#worlds[0].sites[1]",
+   "seat": null,
+   "brief": "High Country: A transmission line crossing the valley on lattice towers; stringing, clearances and fault finding."
+  },
+  {
+   "id": "wilds-m-rockfall-netting",
+   "title": "Rockfall netting on a road cut",
+   "kind": "wilds-site-walk",
+   "place": {
+    "kind": "wilds-site",
+    "id": "m-rockfall-netting",
+    "world": "mountain",
+    "campus": "denver"
+   },
+   "launch": {
+    "href": "web/trade_craft_wilds.html#mountain/m-rockfall-netting",
+    "lands": "site",
+    "param": [
+     "#world/site"
+    ]
+   },
+   "requires": [
+    "m-rockfall-netting-site-walk",
+    "riggers-first-card"
+   ],
+   "provenance": "DERIVED",
+   "source": "wilds/registry/wilds.json#worlds[0].sites[2]",
+   "seat": null,
+   "brief": "High Country: Mesh and anchors hung on a cut slope above the road; rope access and lifted panels."
+  },
+  {
+   "id": "wilds-m-snow-road",
+   "title": "Snow-road grading on the pass",
+   "kind": "wilds-site-walk",
+   "place": {
+    "kind": "wilds-site",
+    "id": "m-snow-road",
+    "world": "mountain",
+    "campus": "denver"
+   },
+   "launch": {
+    "href": "web/trade_craft_wilds.html#mountain/m-snow-road",
+    "lands": "site",
+    "param": [
+     "#world/site"
+    ]
+   },
+   "requires": [
+    "heavy-equip-listen-to-the-dash",
+    "m-snow-road-site-walk",
+    "teamsters-check-the-truck-before-the-load"
+   ],
+   "provenance": "DERIVED",
+   "source": "wilds/registry/wilds.json#worlds[0].sites[3]",
+   "seat": null,
+   "brief": "High Country: Graders and plough trucks keeping a mountain road open; machines checked before they climb."
+  },
+  {
+   "id": "wilds-m-wind-ridge",
+   "title": "Ridge-top turbine pad",
+   "kind": "wilds-site-walk",
+   "place": {
+    "kind": "wilds-site",
+    "id": "m-wind-ridge",
+    "world": "mountain",
+    "campus": "denver"
+   },
+   "launch": {
+    "href": "web/trade_craft_wilds.html#mountain/m-wind-ridge",
+    "lands": "site",
+    "param": [
+     "#world/site"
+    ]
+   },
+   "requires": [
+    "crane-ops-read-the-chart",
+    "m-wind-ridge-site-walk"
+   ],
+   "provenance": "DERIVED",
+   "source": "wilds/registry/wilds.json#worlds[0].sites[4]",
+   "seat": null,
+   "brief": "High Country: A crane pad on a ridge for a wind turbine; the lift chart decides what goes up in the wind."
+  },
+  {
+   "id": "wilds-m-survey-control",
+   "title": "Survey control on the high ground",
+   "kind": "wilds-site-walk",
+   "place": {
+    "kind": "wilds-site",
+    "id": "m-survey-control",
+    "world": "mountain",
+    "campus": "denver"
+   },
+   "launch": {
+    "href": "web/trade_craft_wilds.html#mountain/m-survey-control",
+    "lands": "site",
+    "param": [
+     "#world/site"
+    ]
+   },
+   "requires": [
+    "m-survey-control-site-walk",
+    "surveyors-trust-the-control"
+   ],
+   "provenance": "DERIVED",
+   "source": "wilds/registry/wilds.json#worlds[0].sites[5]",
+   "seat": null,
+   "brief": "High Country: A control point and a drone landing square; everything below is laid out from here."
+  },
+  {
+   "id": "wilds-f-line-clearance",
+   "title": "Utility line clearance",
+   "kind": "wilds-site-walk",
+   "place": {
+    "kind": "wilds-site",
+    "id": "f-line-clearance",
+    "world": "forest",
+    "campus": "seattle"
+   },
+   "launch": {
+    "href": "web/trade_craft_wilds.html#forest/f-line-clearance",
+    "lands": "site",
+    "param": [
+     "#world/site"
+    ]
+   },
+   "requires": [
+    "f-line-clearance-site-walk",
+    "line-workers-find-the-fault"
+   ],
+   "provenance": "DERIVED",
+   "source": "wilds/registry/wilds.json#worlds[1].sites[0]",
+   "seat": null,
+   "brief": "Deep Timber: A distribution line through the timber: the right-of-way cut back and the line walked for faults."
+  },
+  {
+   "id": "wilds-f-trail-bridge",
+   "title": "Trail bridge crew",
+   "kind": "wilds-site-walk",
+   "place": {
+    "kind": "wilds-site",
+    "id": "f-trail-bridge",
+    "world": "forest",
+    "campus": "seattle"
+   },
+   "launch": {
+    "href": "web/trade_craft_wilds.html#forest/f-trail-bridge",
+    "lands": "site",
+    "param": [
+     "#world/site"
+    ]
+   },
+   "requires": [
+    "carpenters-return-it-the-same",
+    "f-trail-bridge-site-walk"
+   ],
+   "provenance": "DERIVED",
+   "source": "wilds/registry/wilds.json#worlds[1].sites[1]",
+   "seat": null,
+   "brief": "Deep Timber: A timber footbridge over a creek; carpenters framing, labourers packing material in."
+  },
+  {
+   "id": "wilds-f-fuel-break",
+   "title": "Wildfire fuel break",
+   "kind": "wilds-site-walk",
+   "place": {
+    "kind": "wilds-site",
+    "id": "f-fuel-break",
+    "world": "forest",
+    "campus": "seattle"
+   },
+   "launch": {
+    "href": "web/trade_craft_wilds.html#forest/f-fuel-break",
+    "lands": "site",
+    "param": [
+     "#world/site"
+    ]
+   },
+   "requires": [
+    "f-fuel-break-site-walk",
+    "laborers-stand-where-the-cab-can-see"
+   ],
+   "provenance": "DERIVED",
+   "source": "wilds/registry/wilds.json#worlds[1].sites[2]",
+   "seat": null,
+   "brief": "Deep Timber: A strip thinned and cleared along a ridge; machines and hand crews working the same ground."
+  },
+  {
+   "id": "wilds-f-timber-frame",
+   "title": "Timber-frame shelter raising",
+   "kind": "wilds-site-walk",
+   "place": {
+    "kind": "wilds-site",
+    "id": "f-timber-frame",
+    "world": "forest",
+    "campus": "seattle"
+   },
+   "launch": {
+    "href": "web/trade_craft_wilds.html#forest/f-timber-frame",
+    "lands": "site",
+    "param": [
+     "#world/site"
+    ]
+   },
+   "requires": [
+    "f-timber-frame-site-walk",
+    "riggers-first-card"
+   ],
+   "provenance": "DERIVED",
+   "source": "wilds/registry/wilds.json#worlds[1].sites[3]",
+   "seat": null,
+   "brief": "Deep Timber: A post-and-beam shelter raised in a clearing; bents lifted and pinned."
+  },
+  {
+   "id": "wilds-f-water-intake",
+   "title": "Lake intake and main",
+   "kind": "wilds-site-walk",
+   "place": {
+    "kind": "wilds-site",
+    "id": "f-water-intake",
+    "world": "forest",
+    "campus": "seattle"
+   },
+   "launch": {
+    "href": "web/trade_craft_wilds.html#forest/f-water-intake",
+    "lands": "site",
+    "param": [
+     "#world/site"
+    ]
+   },
+   "requires": [
+    "f-water-intake-site-walk",
+    "water-distrib-safety-first-walk"
+   ],
+   "provenance": "DERIVED",
+   "source": "wilds/registry/wilds.json#worlds[1].sites[4]",
+   "seat": null,
+   "brief": "Deep Timber: A raw-water intake at the lake edge feeding a main down the valley."
+  },
+  {
+   "id": "wilds-f-fire-lookout",
+   "title": "Fire lookout tower",
+   "kind": "wilds-site-walk",
+   "place": {
+    "kind": "wilds-site",
+    "id": "f-fire-lookout",
+    "world": "forest",
+    "campus": "seattle"
+   },
+   "launch": {
+    "href": "web/trade_craft_wilds.html#forest/f-fire-lookout",
+    "lands": "site",
+    "param": [
+     "#world/site"
+    ]
+   },
+   "requires": [
+    "f-fire-lookout-site-walk",
+    "scaffold-read-the-tag",
+    "steel-erectors-land-it-on-the-bolts"
+   ],
+   "provenance": "DERIVED",
+   "source": "wilds/registry/wilds.json#worlds[1].sites[5]",
+   "seat": null,
+   "brief": "Deep Timber: A steel lookout on the highest knoll; the frame erected and the access scaffold tagged."
+  },
+  {
+   "id": "wilds-c-river-intake",
+   "title": "Run-of-river intake and penstock",
+   "kind": "wilds-site-walk",
+   "place": {
+    "kind": "wilds-site",
+    "id": "c-river-intake",
+    "world": "canyon",
+    "campus": "denver"
+   },
+   "launch": {
+    "href": "web/trade_craft_wilds.html#canyon/c-river-intake",
+    "lands": "site",
+    "param": [
+     "#world/site"
+    ]
+   },
+   "requires": [
+    "c-river-intake-site-walk",
+    "divers-layout-first-walk",
+    "hydro-inspection-first-walk"
+   ],
+   "provenance": "DERIVED",
+   "source": "wilds/registry/wilds.json#worlds[2].sites[0]",
+   "seat": null,
+   "brief": "Red Rock Canyon: A low weir and an intake feeding a penstock down to a small powerhouse; divers work the screens."
+  },
+  {
+   "id": "wilds-c-pipeline-crossing",
+   "title": "Pipeline river crossing",
+   "kind": "wilds-site-walk",
+   "place": {
+    "kind": "wilds-site",
+    "id": "c-pipeline-crossing",
+    "world": "canyon",
+    "campus": "denver"
+   },
+   "launch": {
+    "href": "web/trade_craft_wilds.html#canyon/c-pipeline-crossing",
+    "lands": "site",
+    "param": [
+     "#world/site"
+    ]
+   },
+   "requires": [
+    "c-pipeline-crossing-site-walk",
+    "pipeline-close-the-permit-properly"
+   ],
+   "provenance": "DERIVED",
+   "source": "wilds/registry/wilds.json#worlds[2].sites[1]",
+   "seat": null,
+   "brief": "Red Rock Canyon: A pipeline crossing the canyon; tie-in digs on each side and a permit closed the way it opened."
+  },
+  {
+   "id": "wilds-c-valve-vault",
+   "title": "Valve vault rescue drill",
+   "kind": "wilds-site-walk",
+   "place": {
+    "kind": "wilds-site",
+    "id": "c-valve-vault",
+    "world": "canyon",
+    "campus": "denver"
+   },
+   "launch": {
+    "href": "web/trade_craft_wilds.html#canyon/c-valve-vault",
+    "lands": "site",
+    "param": [
+     "#world/site"
+    ]
+   },
+   "requires": [
+    "boilermakers-get-them-out",
+    "c-valve-vault-site-walk"
+   ],
+   "provenance": "DERIVED",
+   "source": "wilds/registry/wilds.json#worlds[2].sites[2]",
+   "seat": null,
+   "brief": "Red Rock Canyon: A buried valve vault on the mesa used for a confined-space entry and retrieval drill."
+  },
+  {
+   "id": "wilds-c-mesa-solar",
+   "title": "Mesa-top solar array",
+   "kind": "wilds-site-walk",
+   "place": {
+    "kind": "wilds-site",
+    "id": "c-mesa-solar",
+    "world": "canyon",
+    "campus": "denver"
+   },
+   "launch": {
+    "href": "web/trade_craft_wilds.html#canyon/c-mesa-solar",
+    "lands": "site",
+    "param": [
+     "#world/site"
+    ]
+   },
+   "requires": [
+    "c-mesa-solar-site-walk",
+    "electricians-clip-in-first",
+    "solar-documentation-first-walk"
+   ],
+   "provenance": "DERIVED",
+   "source": "wilds/registry/wilds.json#worlds[2].sites[3]",
+   "seat": null,
+   "brief": "Red Rock Canyon: Racking and strings laid out across a flat mesa top."
+  },
+  {
+   "id": "wilds-c-quarry-bench",
+   "title": "Quarry bench and blast pattern",
+   "kind": "wilds-site-walk",
+   "place": {
+    "kind": "wilds-site",
+    "id": "c-quarry-bench",
+    "world": "canyon",
+    "campus": "denver"
+   },
+   "launch": {
+    "href": "web/trade_craft_wilds.html#canyon/c-quarry-bench",
+    "lands": "site",
+    "param": [
+     "#world/site"
+    ]
+   },
+   "requires": [
+    "c-quarry-bench-site-walk",
+    "demolition-stand-back"
+   ],
+   "provenance": "DERIVED",
+   "source": "wilds/registry/wilds.json#worlds[2].sites[4]",
+   "seat": null,
+   "brief": "Red Rock Canyon: A stepped quarry face with a drill pattern marked out; everybody knows where not to stand."
+  },
+  {
+   "id": "wilds-d-levee-pump",
+   "title": "Levee pump station",
+   "kind": "wilds-site-walk",
+   "place": {
+    "kind": "wilds-site",
+    "id": "d-levee-pump",
+    "world": "delta",
+    "campus": "new-orleans"
+   },
+   "launch": {
+    "href": "web/trade_craft_wilds.html#delta/d-levee-pump",
+    "lands": "site",
+    "param": [
+     "#world/site"
+    ]
+   },
+   "requires": [
+    "d-levee-pump-site-walk",
+    "electricians-clip-in-first",
+    "wastewater-tools-first-walk"
+   ],
+   "provenance": "DERIVED",
+   "source": "wilds/registry/wilds.json#worlds[3].sites[0]",
+   "seat": null,
+   "brief": "Salt Marsh Delta: A drainage pump station set into the levee; wastewater crews keep the pumps, screens and wet well working."
+  },
+  {
+   "id": "wilds-d-terminal-berth",
+   "title": "River terminal berth",
+   "kind": "wilds-site-walk",
+   "place": {
+    "kind": "wilds-site",
+    "id": "d-terminal-berth",
+    "world": "delta",
+    "campus": "new-orleans"
+   },
+   "launch": {
+    "href": "web/trade_craft_wilds.html#delta/d-terminal-berth",
+    "lands": "site",
+    "param": [
+     "#world/site"
+    ]
+   },
+   "requires": [
+    "d-terminal-berth-site-walk",
+    "marine-terminal-brief-the-lane",
+    "port-crane-read-the-rope"
+   ],
+   "provenance": "DERIVED",
+   "source": "wilds/registry/wilds.json#worlds[3].sites[1]",
+   "seat": null,
+   "brief": "Salt Marsh Delta: A barge berth with a crane working cargo; the lane is briefed before anything swings."
+  },
+  {
+   "id": "wilds-d-pile-trestle",
+   "title": "Timber pile trestle over a bayou",
+   "kind": "wilds-site-walk",
+   "place": {
+    "kind": "wilds-site",
+    "id": "d-pile-trestle",
+    "world": "delta",
+    "campus": "new-orleans"
+   },
+   "launch": {
+    "href": "web/trade_craft_wilds.html#delta/d-pile-trestle",
+    "lands": "site",
+    "param": [
+     "#world/site"
+    ]
+   },
+   "requires": [
+    "bridge-inspect-inspection-first-walk",
+    "d-pile-trestle-site-walk",
+    "piling-stand-the-rig-on-something"
+   ],
+   "provenance": "DERIVED",
+   "source": "wilds/registry/wilds.json#worlds[3].sites[2]",
+   "seat": null,
+   "brief": "Salt Marsh Delta: A pile-supported trestle across a channel: new piles driven from a rig on firm footing, old bents inspected."
+  },
+  {
+   "id": "wilds-d-outfall-dive",
+   "title": "Outfall line and dive station",
+   "kind": "wilds-site-walk",
+   "place": {
+    "kind": "wilds-site",
+    "id": "d-outfall-dive",
+    "world": "delta",
+    "campus": "new-orleans"
+   },
+   "launch": {
+    "href": "web/trade_craft_wilds.html#delta/d-outfall-dive",
+    "lands": "site",
+    "param": [
+     "#world/site"
+    ]
+   },
+   "requires": [
+    "d-outfall-dive-site-walk",
+    "divers-layout-first-walk",
+    "marine-pipe-know-when-to-come-out"
+   ],
+   "provenance": "DERIVED",
+   "source": "wilds/registry/wilds.json#worlds[3].sites[3]",
+   "seat": null,
+   "brief": "Salt Marsh Delta: An outfall pipe running into the channel; a dive team inspects it from a station on the bank."
+  },
+  {
+   "id": "wilds-d-spill-boom",
+   "title": "Spill boom staging",
+   "kind": "wilds-site-walk",
+   "place": {
+    "kind": "wilds-site",
+    "id": "d-spill-boom",
+    "world": "delta",
+    "campus": "new-orleans"
+   },
+   "launch": {
+    "href": "web/trade_craft_wilds.html#delta/d-spill-boom",
+    "lands": "site",
+    "param": [
+     "#world/site"
+    ]
+   },
+   "requires": [
+    "d-spill-boom-site-walk",
+    "hazmat-wash-and-decon",
+    "spill-response-tools-first-walk"
+   ],
+   "provenance": "DERIVED",
+   "source": "wilds/registry/wilds.json#worlds[3].sites[4]",
+   "seat": null,
+   "brief": "Salt Marsh Delta: Containment boom and a skimmer staged on the bank, ready to deploy across a channel mouth."
+  },
+  {
+   "id": "wilds-d-wind-staging",
+   "title": "Wind turbine staging yard",
+   "kind": "wilds-site-walk",
+   "place": {
+    "kind": "wilds-site",
+    "id": "d-wind-staging",
+    "world": "delta",
+    "campus": "new-orleans"
+   },
+   "launch": {
+    "href": "web/trade_craft_wilds.html#delta/d-wind-staging",
+    "lands": "site",
+    "param": [
+     "#world/site"
+    ]
+   },
+   "requires": [
+    "crane-ops-read-the-chart",
+    "d-wind-staging-site-walk",
+    "wind-safety-first-walk"
+   ],
+   "provenance": "DERIVED",
+   "source": "wilds/registry/wilds.json#worlds[3].sites[5]",
+   "seat": null,
+   "brief": "Salt Marsh Delta: A turbine erected on the ridge beside a laydown yard where blades and tower sections wait for the crane."
+  }
+ ]
+}

@@ -406,4 +406,8 @@ code{{font:13px "IBM Plex Mono",monospace;color:var(--steel)}}
 out = HERE / 'trade_craft_spaces.html'
 page = apply_seo(page, 'web/trade_craft_spaces.html', 'SmartCiti.X : Trade Craft Academy \u2014 custom spaces',
     'Custom spaces drawn to scale from the spaces registry: every item labelled, finishes swatched, PPE derived and the serving halls linked.', 'page')
+# wave 3 (HOMEUX): MEDIA's pagehero band + the theme layer, head/hero region only;
+# every word from the catalog (hero.spaces.*), see web/herovideo.py doc_hero().
+from herovideo import adopt_doc_hero  # noqa: E402
+page = adopt_doc_hero('spaces', page)
 emit(out, page, f'{c["spaces"]} spaces | {c["items"]} items | stamp {reg["source_stamp"]}')

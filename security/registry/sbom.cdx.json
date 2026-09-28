@@ -2521,6 +2521,128 @@
   },
   {
    "type": "library",
+   "bom-ref": "web/vendor/icons/clipboard-check.svg",
+   "name": "lucide-static",
+   "version": "1.48.0",
+   "purl": "pkg:npm/lucide-static@1.48.0#icons/clipboard-check.svg",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "f44b5d4a7a6035e44a78bd3e6e5f3fd458559c6697ed512147c66091e8892bd4"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "ISC",
+      "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/lucide-icons/lucide"
+    },
+    {
+     "type": "website",
+     "url": "https://lucide.dev/"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/icons/clipboard-check.svg"
+     }
+    ],
+    "copyright": [
+     {
+      "text": "<!-- @license lucide-static v1.48.0 - ISC -->"
+     }
+    ]
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/icons/clipboard-check.svg"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "lucide-static v1.48.0"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "banner in file (evidence.copyright)"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/icons/gamepad-2.svg",
+   "name": "lucide-static",
+   "version": "1.48.0",
+   "purl": "pkg:npm/lucide-static@1.48.0#icons/gamepad-2.svg",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "a7ee3d0f49d304c3915287fabfeccced6caf1437d8927d4553d6fa57d6cabbf7"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "ISC",
+      "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/lucide-icons/lucide"
+    },
+    {
+     "type": "website",
+     "url": "https://lucide.dev/"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/icons/gamepad-2.svg"
+     }
+    ],
+    "copyright": [
+     {
+      "text": "<!-- @license lucide-static v1.48.0 - ISC -->"
+     }
+    ]
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/icons/gamepad-2.svg"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "lucide-static v1.48.0"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "banner in file (evidence.copyright)"
+    }
+   ]
+  },
+  {
+   "type": "library",
    "bom-ref": "web/vendor/icons/globe.svg",
    "name": "lucide-static",
    "version": "1.48.0",
@@ -2704,6 +2826,67 @@
   },
   {
    "type": "library",
+   "bom-ref": "web/vendor/icons/house.svg",
+   "name": "lucide-static",
+   "version": "1.48.0",
+   "purl": "pkg:npm/lucide-static@1.48.0#icons/house.svg",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "67dc27a57a07b1cb9f2adff2a926c500248dad533896ebd05674a1268078f445"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "ISC",
+      "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/lucide-icons/lucide"
+    },
+    {
+     "type": "website",
+     "url": "https://lucide.dev/"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/icons/house.svg"
+     }
+    ],
+    "copyright": [
+     {
+      "text": "<!-- @license lucide-static v1.48.0 - ISC -->"
+     }
+    ]
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/icons/house.svg"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "lucide-static v1.48.0"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "banner in file (evidence.copyright)"
+    }
+   ]
+  },
+  {
+   "type": "library",
    "bom-ref": "web/vendor/icons/info.svg",
    "name": "lucide-static",
    "version": "1.48.0",
@@ -2832,7 +3015,7 @@
    "hashes": [
     {
      "alg": "SHA-256",
-     "content": "a0b9cd866c3141928a9ffc1ec49a4ecd17a42b59baeeb39df743b70c1e2a3ffe"
+     "content": "5c1f21d4e084c42b9c98e91239f95f7fcdff3db117a8ec8071decc97479b087d"
     }
    ],
    "evidence": {
@@ -3086,6 +3269,67 @@
     {
      "name": "smartcitix:vendored_path",
      "value": "web/vendor/icons/route.svg"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "lucide-static v1.48.0"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "banner in file (evidence.copyright)"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "web/vendor/icons/search.svg",
+   "name": "lucide-static",
+   "version": "1.48.0",
+   "purl": "pkg:npm/lucide-static@1.48.0#icons/search.svg",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "4c9a79296cd8835fd7ec8a33083f9f8f3166b27754ef65a9edbbc0eaa4e2d76a"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "ISC",
+      "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/lucide-icons/lucide"
+    },
+    {
+     "type": "website",
+     "url": "https://lucide.dev/"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/lucide-icons/lucide/blob/main/LICENSE"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "web/vendor/icons/search.svg"
+     }
+    ],
+    "copyright": [
+     {
+      "text": "<!-- @license lucide-static v1.48.0 - ISC -->"
+     }
+    ]
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "web/vendor/icons/search.svg"
     },
     {
      "name": "smartcitix:version_evidence",

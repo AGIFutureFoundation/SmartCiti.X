@@ -15,6 +15,12 @@
  * page script runs) and driven with jumpTo(); each frame waits for the
  * map to be idle.
  *
+ * The wilds page is driven the same way through its own hook,
+ * window.__wilds.cam('eye|at') (overview free camera), once
+ * document.documentElement.dataset.wildsReady is '1'. Its picture sits in
+ * a framed box (#stage), as the globe's does (#mapwrap); for filming that
+ * box is made to fill the viewport and the page is told it resized.
+ *
  * Run (from the repo root, against a served git-archive of HEAD):
  *   flock $SP/chromium.lock node media/record.mjs <clip-id> <frames-dir> [from] [to]
  * env MEDIA_BASE = http://127.0.0.1:<port>/  (the served tree)
@@ -93,11 +99,18 @@ const page = await ctx.newPage();
 const errors = [];
 page.on('pageerror', (e) => errors.push(e.message.slice(0, 200)));
 const isGlobe = clip.path.kind === 'globe';
+const isWilds = clip.page.includes('trade_craft_wilds.html');
+// pages whose picture sits in a framed box: that box is made to fill the viewport
+const FILL = { 'trade_craft_wilds.html': '#stage', 'trade_craft_geomap.html': '#mapwrap' };
+const fillSel = Object.entries(FILL).find(([k]) => clip.page.includes(k));
 if (!isGlobe) await page.addInitScript(CLOCK);
 else await page.addInitScript(CLOCK.replace('performance.now = ', 'void 0; const _x = '));
 const t0 = Date.now();
 await page.goto(BASE + clip.page, { waitUntil: 'load' });
-if (isGlobe) {
+if (isWilds) {
+  await page.waitForFunction(() => document.documentElement.dataset.wildsReady === '1' && window.__wilds,
+    null, { timeout: 90000 });
+} else if (isGlobe) {
   await page.waitForFunction(() => window.__mediaMap && window.__geomap && window.__geomap().loaded,
     null, { timeout: 60000 });
 } else {
@@ -112,6 +125,11 @@ await page.evaluate(() => {
   const cs = [...document.querySelectorAll('canvas')].sort((a, b) => b.width * b.height - a.width * a.height);
   cs.slice(1).forEach((c) => { c.style.setProperty('visibility', 'hidden', 'important'); });
 });
+if (fillSel) {
+  await page.addStyleTag({ content: `${fillSel[1]}{position:fixed!important;inset:0!important;width:100vw!important;`
+    + 'height:100vh!important;max-height:none!important;border:0!important;border-radius:0!important;z-index:9999!important}' });
+  await page.evaluate(() => { dispatchEvent(new Event('resize')); if (window.__mediaMap) window.__mediaMap.resize(); });
+}
 for (const [fn, arg] of clip.setup) {
   if (fn === 'simStart') {
     const [simId, level] = String(arg).split(':');
@@ -139,6 +157,9 @@ async function place(i) {
       const done = setTimeout(res, 4000);
       m.once('idle', () => { clearTimeout(done); res(); });
     }), c);
+  } else if (isWilds) {
+    const arg = c.eye.map((v) => v.toFixed(3)).join(',') + '|' + c.at.map((v) => v.toFixed(3)).join(',');
+    await page.evaluate(([a, ms]) => { window.__wilds.cam(a); window.__vt.step(ms); }, [arg, 1000 / FPS]);
   } else if (c === null) {
     await page.evaluate((ms) => window.__vt.step(ms), 1000 / FPS);
   } else {
@@ -150,7 +171,10 @@ async function place(i) {
 if (!isGlobe) {
   await page.evaluate(() => window.__vt.start());
   // settle at the first frame's pose: damping, fades and labels come to rest
-  for (let k = 0; k < 36; k++) { if (k % 12 === 0) await unsign(); await place(from); }
+  // (a resumed run settles for fewer frames: the pose is absolute, so the long
+  // settle is only needed once; keeps each locked run short)
+  const settle = from > 0 ? 12 : 36;
+  for (let k = 0; k < settle; k++) { if (k % 12 === 0) await unsign(); await place(from); }
 }
 const DEADLINE = t0 + 1000 * +(process.env.MEDIA_DEADLINE ?? 200);
 const tf = Date.now();
@@ -164,7 +188,8 @@ for (let i = from; i < to; i++) {
   await page.screenshot({ path: f, type: 'png' });
   wrote++;
 }
-const state = await page.evaluate(() => (window.__tc3d ? window.__tc3d().view : 'globe'));
+const state = await page.evaluate(() => (window.__tc3d ? window.__tc3d().view
+  : window.__wilds ? 'wilds:' + window.__wilds.stats().world : 'globe'));
 console.log(JSON.stringify({ id, from, to, wrote, frames: N, view: state,
   secs: Math.round((Date.now() - t0) / 1000),
   msPerFrame: wrote ? Math.round((Date.now() - tf) / wrote) : null, errors }));

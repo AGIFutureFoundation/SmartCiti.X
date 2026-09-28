@@ -30,6 +30,8 @@ ICONS = sorted([
     'arrow-right', 'check', 'chevron-right', 'circle-alert', 'info', 'pause', 'play',
     'hard-hat', 'graduation-cap', 'map', 'globe', 'route', 'shield-check', 'users',
     'wrench', 'building-2', 'video', 'layers',
+    # wave 3: the site nav's group, home and search marks (web/sitenav.py NAV_CSS)
+    'search', 'gamepad-2', 'clipboard-check', 'house',
 ])
 
 

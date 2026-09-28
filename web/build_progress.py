@@ -2580,6 +2580,10 @@ footer.page a{{margin-inline-end:10px}}
 out = HERE / 'trade_craft_progress.html'
 page = apply_seo(page, 'web/trade_craft_progress.html', 'Learner progress \u2014 SmartCiti.X : Trade Craft Academy',
     'Your lesson progress, kept on this device only: what you have walked, what is left, and why none of it is a credential.', 'page')
+# wave 3 (HOMEUX): MEDIA's pagehero band + the theme layer, head/hero region only;
+# every word from the catalog (hero.progress.*), see web/herovideo.py doc_hero().
+from herovideo import adopt_doc_hero  # noqa: E402
+page = adopt_doc_hero('progress', page)
 emit(out, page,
      f'{F(N_CONTROL_LINES)} lines of control plane over {F(N_CELLS_PER_HALL)} cells, '
      f'{F(N_CONTROL_CHECKS)} control checks, certifies nobody')

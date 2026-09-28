@@ -728,5 +728,9 @@ footer.page a{{margin-inline-end:10px}}
 out = HERE / 'trade_craft_contribute.html'
 page = apply_seo(page, 'web/trade_craft_contribute.html', 'SmartCiti.X : Trade Craft Academy \u2014 contribute training data',
     'How to contribute training data: the scopes, episode kinds and rules a contribution is held to, read from the contribution registry.', 'page')
+# wave 3 (HOMEUX): MEDIA's pagehero band + the theme layer, head/hero region only;
+# every word from the catalog (hero.contribute.*), see web/herovideo.py doc_hero().
+from herovideo import adopt_doc_hero  # noqa: E402
+page = adopt_doc_hero('contribute', page)
 emit(out, page, f'{len(SCOPES)} scopes, {len(FIELDS_BY_KIND)} episode kinds, {len(DESTINATIONS)} destinations '
                 f'({PROTOCOLS_STATE}), uploads nothing')

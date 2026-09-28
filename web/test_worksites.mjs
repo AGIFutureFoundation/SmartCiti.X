@@ -173,5 +173,47 @@ ok(`every href on the page resolves to a file on disk (${hrefs.join(', ')})`, hr
     && /\.tablewrap\{overflow-x:auto/.test(html), []);
 }
 
+
+/* ---- simulated tasks (TASKS, wave 3): boards come from tasks/registry/tasks.json only ---- */
+const TK = JSON.parse(readFileSync(new URL('../tasks/registry/tasks.json', import.meta.url), 'utf8'));
+const tkRel = (h) => h === null ? null : (h.startsWith('web/') ? h.slice(4) : '../' + h);
+const tkEsc = (h) => h.replace(/&/g, "&amp;");
+const tkCards = (s) => s.split('<article class="tk-card" data-task="').slice(1).map((c) => {
+  const id = c.slice(0, c.indexOf('"')); const m = c.match(/<a class="tk-go" href="([^"]+)"/);
+  return [id, m && c.indexOf(m[0]) < c.indexOf('</article>') ? m[1] : null]; });
+const tkWant = (ts) => ts.map((t) => [t.id, t.launch.href === null ? null : tkEsc(tkRel(t.launch.href))]);
+const tkHall = (slug) => TK.tasks.filter((t) => t.place.kind === 'hall' && t.place.id === slug);
+{
+  const siteTasks = (s) => [TK.tasks.find((t) => t.id === `crew-${s.id}`)].concat(TK.tasks.filter((t) => t.seat === s.crew.seat
+    && t.kind !== 'crew-handoff' && (s.place.campus === null || t.kind !== 'sim-scenario' || t.place.campus === s.place.campus)));
+  const tkBad = [];
+  const all = new Set();
+  for (const s of D.sites) {
+    const sec = html.match(new RegExp(`<section class="site" id="site-${s.id}" data-site="${s.id}">([\\s\\S]*?)</section>`));
+    const want = siteTasks(s); want.forEach((t) => all.add(t.id));
+    const body = sec ? sec[1] : '';
+    const got = [...body.matchAll(/<article class="tk-card" data-task="([^"]+)"/g)].map((m) => m[1]);
+    if (got.join() !== want.map((t) => t.id).join()) tkBad.push(`${s.id}: cards ${got.join(',')} want ${want.map((t) => t.id).join(',')}`);
+    if (!new RegExp(`data-tk-board data-total="${want.length}"`).test(body)) tkBad.push(`${s.id}: board total is not ${want.length}`);
+    if (JSON.stringify(tkCards(body)) !== JSON.stringify(tkWant(want))) tkBad.push(`${s.id}: card launch hrefs differ from the registry`);
+  }
+  ok('[tasks] every site carries a Simulated tasks board: its crew hand-off plus its seat\'s walkaround and campus scenarios, hrefs verbatim from tasks/registry', tkBad.length === 0, tkBad);
+  const fig = html.match(/data-tasks-fig="tasks">(\d+)</);
+  ok('[tasks] the page\'s task figure is the count of distinct tasks on its boards (recomputed)', fig !== null && Number(fig[1]) === all.size);
+  const hon = html.match(/data-tasks-honesty>([^<]*)</);
+  ok('[tasks] the tasks honesty line is the registry\'s verbatim, once', hon !== null && unesc(hon[1]) === TK.honesty.practice
+    && (html.match(/data-tasks-honesty/g) || []).length === 1);
+  const lessonLinks = [...html.matchAll(/href="trade_craft_lessons\.html#([^"]+)"/g)].map((m) => m[1]);
+  ok('[tasks] every lesson link lands on the anchor the lessons page reads (#lesson-<id>)', lessonLinks.length > 0 && lessonLinks.every((a) => a.startsWith('lesson-')), lessonLinks.filter((a) => !a.startsWith('lesson-')));
+  ok('[tasks] the filter chips are wired by one delegated listener', (html.match(/\[data-tk-board\]/g) || []).length >= 1 && /data-tk-filter="all"/.test(html));
+}
+
+ok('[theme] the page opens on MEDIA\'s pagehero band whose title is its one <h1>, and no second palette (body.tc-theme) fights its own tokens',
+  (html.match(/<h1\b/g) || []).length === 1 && /<section class="ph[^"]*"[^>]*data-ph[\s\S]*?<h1\b/.test(html) && !/<body class="tc-theme">/.test(html));
+ok('[theme] every hero word is a tasks.ws.* catalog string (en)', (() => {
+  const en = JSON.parse(readFileSync(new URL('../i18n/locales/en.json', import.meta.url), 'utf8')).strings;
+  return ['tasks.ws.kicker', 'tasks.ws.lede', 'tasks.ws.credit'].every((k) => html.includes(en[k].replace(/&/g, '&amp;').replace(/'/g, '&#x27;')) || html.includes(en[k]));
+})());
+
 console.log(`web/test_worksites: ${n} checks passed${bad ? `, ${bad} FAILED` : ''}`);
 process.exit(bad ? 1 : 0);

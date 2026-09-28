@@ -77,6 +77,17 @@ ok('[hooks] a camera hook for filming (window.__wilds.cam) that refuses malforme
 ok('[view] distance fog and an overview camera', /new THREE\.Fog\(/.test(main) && /new OrbitControls\(/.test(main) && /function buildOverview/.test(main));
 ok('[view] water where the world has it, and a minimap', /function buildWater/.test(main) && /id="minimap"/.test(html) && /function drawMinimap/.test(main));
 
+ok('[draw calls] tree billboards past VEG_R: one InstancedMesh per species (crossed cards), never inside VEG_R, hidden in the overview',
+  /const BB_R = \d+, BB_CELL = \d+;/.test(main) && /for \(const \[k, g\] of Object\.entries\(BB_SHAPES\)\) \{\s*const m = new THREE\.InstancedMesh\(/.test(main)
+  && /if \(d2 <= VEG_R \* VEG_R \|\| d2 > BB_R \* BB_R/.test(main) && /refillBillboards\(\);\s*\}/.test(main)
+  && /for \(const k in bb\) bb\[k\]\.visible = walkOn;/.test(main) && Number((main.match(/const BB_R = (\d+)/) || [, 0])[1]) > Number((main.match(/const VEG_R = (\d+)/) || [, 1e9])[1]));
+ok('[hooks] a flyover path for filming: DERIVED keyframes (trailhead + sites in trail order), flyover(t) refuses t outside [0,1], a Flyover button',
+  /flyoverPath\(\) \{/.test(main) && /flyover\(t\) \{/.test(main) && /const order = \['trailhead', \.\.\.W\.trails\.map\(\(l\) => l\.to\)\]/.test(main)
+  && /throw new Error\('wilds flyover: t must be in \[0, 1\]/.test(main) && /<button type="button" class="tc-btn tc-btn-ghost" id="fly" aria-pressed="false">/.test(html)
+  && /_fe\.y = Math\.max\(_fe\.y, T\.height\(_fe\.x, _fe\.z\) \+ FLY_CLEAR_M\)/.test(main));
+ok('[hooks] deep links: #<world> and #<world>/<site> open the world (and stand at the site), also on hashchange',
+  /async function fromHash\(\)/.test(main) && /addEventListener\('hashchange'/.test(main) && /if \(sid\) goSite\(sid\);/.test(main));
+
 /* ---------------------------------------------------------- controls -- */
 const keysNeeded = ['KeyW', 'KeyA', 'KeyS', 'KeyD', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ShiftLeft', 'KeyO'];
 ok('[controls] keyboard: WASD, arrows, Shift run, O overview', keysNeeded.every((k) => main.includes(k)), keysNeeded.filter((k) => !main.includes(k)));
@@ -105,6 +116,82 @@ ok('[rules] no model identifiers in the page or builder', !/\b(gpt-|claude-|opus
 ok('[rules] fail closed: no ?? defaults in the page script, no .get(k, default) in the builders',
   !/\?\?/.test(main) && !/\.get\([^)]*,[^)]*\)/.test(builder + read('wilds/build.py')));
 
+/* ------------------------------------------------------------- theme -- */
+ok('[theme] the canvas theme layer (MEDIA pagehero.theme("canvas")) is adopted: body class, its CSS in the head, panel/buttons/badges use it, and NO hero band over the world',
+  /<body class="tc-theme-canvas">/.test(html) && /<style data-tc-theme="canvas">body\.tc-theme-canvas\{/.test(html)
+  && /<aside id="panel" class="tc-panel"/.test(html) && /class="tc-btn tc-btn-ghost" id="mode"/.test(html) && /class="go tc-btn tc-btn-primary"/.test(html)
+  && !/data-ph[\s>=]|class="ph"/.test(html) && /from pagehero import theme/.test(builder) && /theme\('canvas'\)/.test(builder));
+
+{
+  const own = (html.match(/<style>\s*(\/\* UI colours come ONLY[\s\S]*?)<\/style>/) || [, ''])[1];
+  const hexes = own.match(/#[0-9A-Fa-f]{3,8}\b|rgba?\(/g) || [];
+  const miniHex = (main.slice(main.indexOf('function drawMinimap'), main.indexOf('function drawMinimap') + 1400).match(/'#[0-9A-Fa-f]{3,8}'/g) || []);
+  ok('[theme] the page\'s UI colours come only from the theme tokens (--tc-*): no hex or rgba in its own style, minimap marks read the tokens (Style switcher applies)',
+    own.length > 0 && hexes.length === 0 && miniHex.length === 0 && /--plate:var\(--tc-plate\)/.test(own) && /tok\('--tc-amber'\)/.test(main),
+    [...hexes, ...miniHex]);
+}
+
+/* ------------------------------------------------------------- globe -- */
+ok('[geo] every world card states its geolocation label verbatim from the registry (not on the globe, AUTHORED)',
+  reg.worlds.every((w) => w.geolocation.on_globe === false
+    && new RegExp(`data-world-card="${w.id}"[\\s\\S]*?<p class="geo" data-geolocation="${w.id}"><span class="prov tc-badge tc-badge-muted">AUTHORED</span> ${w.geolocation.label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}</p>`).test(html)),
+  reg.worlds.map((w) => w.geolocation.label));
+
+/* -------------------------------------------------------------- i18n -- */
+const en = JSON.parse(read('i18n/locales/en.json')).strings;
+const usedKeys = [...new Set([...builder.matchAll(/T(?:RAW)?\("(wilds\.[a-z_.]+)"\)|TRAW\('wilds\.' \+ k\)/g)].map((m) => m[1]).filter(Boolean))];
+const locs = ['es', 'fr', 'de', 'pt', 'zh', 'hi', 'ar'].map((l) => JSON.parse(read(`i18n/locales/${l}.json`)).strings);
+const i18nBad = [];
+for (const k of usedKeys) {
+  if (typeof en[k] !== 'string' || !en[k].trim()) i18nBad.push(`${k}: not in en`);
+  for (const [i, L] of locs.entries()) if (typeof L[k] !== 'string' || !L[k].trim()) i18nBad.push(`${k}: missing in locale #${i}`);
+}
+const esc = (t) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;');
+for (const k of ['wilds.lede', 'wilds.help', 'wilds.site.go', 'wilds.site.halls', 'wilds.h.quests', 'wilds.flyover', 'wilds.legend']) if (!html.includes(esc(en[k]))) i18nBad.push(`${k}: English text not on the page`);
+for (const lit of ['>Go to this site<', '>Union halls<', 'Side quest: ', '>Treasure riddles<', "'Fast travel'", '>Overview<']) if (builder.includes(lit)) i18nBad.push(`builder still hard-codes ${lit}`);
+ok(`[i18n] page chrome comes from ${usedKeys.length} wilds.* keys present in all 8 locales; no hard-coded chrome left in the builder`,
+  usedKeys.length >= 20 && i18nBad.length === 0, i18nBad);
+
+/* ------------------------------------------------------------- tasks -- */
+const tpath = join(ROOT, 'tasks/registry/tasks.json');
+if (!existsSync(tpath) || !existsSync(join(ROOT, 'web/taskkit.py'))) {
+  ok('[tasks] no task registry yet, and the page says simulated tasks are not wired (integration point)',
+    /data-tasks-pending/.test(html) && !/data-task-launch=/.test(html));
+} else {
+  const treg = JSON.parse(readFileSync(tpath, 'utf8'));
+  const siteWorld = new Map(reg.worlds.flatMap((w) => w.sites.map((s) => [s.id, w.id])));
+  const taskBad = [];
+  let shown = 0;
+  for (const w of reg.worlds) for (const s of w.sites) {
+    const card = (html.match(new RegExp(`<article class="site" id="site-${s.id}"[\\s\\S]*?</article>`)) || [''])[0];
+    const want = treg.tasks.filter((t) => t.place.kind === 'wilds-site' && t.place.id === s.id);
+    const own = (card.match(/<ul class="tasks">([\s\S]*?)<\/ul>/) || [, ''])[1];
+    const have = [...own.matchAll(/<li data-task="([^"]+)"/g)].map((m) => m[1]);
+    if (JSON.stringify(have) !== JSON.stringify(want.map((t) => t.id))) taskBad.push(`${s.id}: card lists ${JSON.stringify(have)}, registry ${JSON.stringify(want.map((t) => t.id))}`);
+    for (const t of want) {
+      shown++;
+      if (t.place.world !== w.id) taskBad.push(`${t.id}: world ${t.place.world} != ${w.id}`);
+      const href = t.launch.href === null ? null : (t.launch.href.startsWith('web/') ? t.launch.href.slice(4) : '../' + t.launch.href);
+      if (href !== null && !card.includes(`href="${esc(href)}" data-task-launch="${t.id}"`)) taskBad.push(`${t.id}: no launch link ${href}`);
+      for (const l of t.requires) if (!card.includes(`href="trade_craft_lessons.html#lesson-${l}"`) || !lessons[l]) taskBad.push(`${t.id}: lesson ${l} not linked`);
+    }
+    const hallWant = s.halls.flatMap((h) => treg.tasks.filter((t) => t.place.kind === 'hall' && t.place.id === h.id)).map((t) => t.id);
+    const hb = (card.match(new RegExp(`<div class="halltasks" data-hall-tasks="${s.id}">([\\s\\S]*?)</div>`)) || [, ''])[1];
+    const hallHave = [...hb.matchAll(/<li data-task="([^"]+)"/g)].map((m) => m[1]);
+    if (JSON.stringify(hallHave) !== JSON.stringify(hallWant)) taskBad.push(`${s.id}: hall tasks ${JSON.stringify(hallHave)} != ${JSON.stringify(hallWant)}`);
+    shown += hallHave.length;
+  }
+  const strays = treg.tasks.filter((t) => t.place.kind === 'wilds-site' && !siteWorld.has(t.place.id)).map((t) => t.id);
+  if (strays.length) taskBad.push(`tasks name wilds sites that do not exist: ${strays.join(', ')}`);
+  const counts = JSON.parse((html.match(/<script type="application\/json" id="wilds-tasks">([\s\S]*?)<\/script>/) || [, '{}'])[1]);
+  for (const [sid] of siteWorld) if (counts[sid] !== treg.tasks.filter((t) => t.place.kind === 'wilds-site' && t.place.id === sid).length) taskBad.push(`${sid}: in-page count ${counts[sid]}`);
+  ok(`[tasks] every site card lists exactly its registry tasks (${shown}) with launch link and linked lessons, plus the tasks of every hall working there; in-page counts match; no stray site`,
+    taskBad.length === 0, taskBad);
+  ok('[tasks] sites with tasks are marked on the minimap (ring) and in their labels; the practice honesty line is the registry\'s',
+    /if \(SITE_TASKS\[s\.id\] > 0\) \{ const p = toMini/.test(main) && /b\.classList\.add\('has-tasks'\)/.test(main)
+    && html.includes(`<p class="help" data-tasks-honesty>${esc(treg.honesty.practice)}</p>`));
+}
+
 /* ------------------------------------------------------------ quests -- */
 const qpath = join(ROOT, 'quests/registry/quests.json');
 const wq = existsSync(qpath) ? JSON.parse(readFileSync(qpath, 'utf8')).quests.filter((q) => q.world.startsWith('wilds:')) : [];
@@ -127,6 +214,16 @@ if (wq.length === 0) {
 }
 
 /* -------------------------------------------------------------- eval -- */
+{
+  const evs = readFileSync(join(ROOT, 'web/eval_wilds.mjs'), 'utf8');
+  const bl = evs.slice(evs.indexOf('const BASE = {'), evs.indexOf('const CALL_HEADROOM'));
+  const rows = [...bl.matchAll(/(overview|trail|dense|summit): \{([^}]*)\}/g)];
+  const noBB = rows.filter((m) => !/\bbb: (null|\d+)/.test(m[2])).map((m) => m[1]);
+  const woodedNull = rows.filter((m) => /veg: [\d_]+/.test(m[2]) && /\bbb: null/.test(m[2])).map((m) => m[1]);
+  ok('[eval] every declared view carries a billboard floor (bb), measured for every view meant to be wooded; the eval checks cards stay past VEG_R and out of the overview',
+    rows.length === reg.worlds.length * 4 && noBB.length === 0 && woodedNull.length === 0
+    && /inside VEG_R/.test(evs) && /billboards drawn in the overview/.test(evs), [...noBB, ...woodedNull]);
+}
 const ev = read('web/eval_wilds.mjs');
 const baseBlock = ev.slice(ev.indexOf('const BASE = {'), ev.indexOf('const CALL_HEADROOM'));
 ok('[eval] web/eval_wilds.mjs declares a target for every world and all four views',

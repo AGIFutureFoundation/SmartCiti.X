@@ -440,6 +440,11 @@ round clock and the pick sizes are AUTHORED game rules; the signals, keys, chart
 page = apply_seo(page, PATH, _CAT['quests.title'] + ' \u2014 SmartCiti.X : Trade Craft Academy',
                  _CAT['quests.seo_desc'], 'page')
 
+# wave 3 (HOMEUX): MEDIA's pagehero band + the theme layer, head/hero region only;
+# every word from the catalog (hero.quests.*), see web/herovideo.py doc_hero().
+from herovideo import adopt_doc_hero  # noqa: E402
+page = adopt_doc_hero('quests', page)
+
 if '--check' in sys.argv:
     if not OUT.exists() or OUT.read_text(encoding='utf-8') != page:
         sys.exit(f'{PATH} is stale: run python3 web/build_quests.py')

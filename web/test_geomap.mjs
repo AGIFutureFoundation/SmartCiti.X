@@ -315,19 +315,23 @@ ok('[generator] build_geomap.py fails closed by name (need()) and takes no `.get
     /#bar\{position:relative;/.test(page) && !/#bar\{position:fixed/.test(page)
     && /NavigationControl\(\{ showCompass: false \}\), 'top-left'\)/.test(page) && /<div id="mapwrap">/.test(page));
   ok('[shipped] the legend is a <details> (folded on a phone) with a row for the counted cluster it draws',
-    /<details id="legend" open>/.test(page) && /class="sw-cluster"/.test(page)
+    /<details id="legend" class="tc-panel">/.test(page) && /class="sw-cluster"/.test(page)
     && /document\.getElementById\('legend'\)\.open = false/.test(page));
 }
 
 /* --- 10. the globe (MapLibre 5) ------------------------------------------------- */
 {
   const body = page.slice(page.indexOf('function placeCampusLabels'), page.indexOf("map.on('zoomend', placeCampusLabels)"));
+  ok('[shipped] the legend is collapsed on load (no `open` on the <details>, nothing opens it by script) and its summary keeps the provenance hint one click away',
+    /<details id="legend"[^>]*>/.test(page) && !/<details id="legend"[^>]*\bopen\b[^>]*>/.test(page)
+    && !/getElementById\('legend'\)\.open = true/.test(page) && !/getElementById\('legend'\)\.setAttribute\('open'/.test(page)
+    && /<summary><b>Legend: the geo registry, drawn<\/b> <span class="lg-hint">what is RECORDED, DERIVED, AUTHORED, SCHEMATIC<\/span><\/summary>/.test(page));
   ok('[shipped] the style renders on a globe, and the opening view is framed on the campuses\' own coordinates (computed, not typed)',
     /projection: \{ type: 'globe' \}/.test(page) && /bounds: NETWORK_BOUNDS, fitBoundsOptions: \{ padding: fitPadding\(\) \}/.test(page)
     && /const CAMPUS_LL = D\.network\.features\.filter\(\(x\) => x\.properties\.slug\)/.test(page)
     && /network: NETWORK_BOUNDS,/.test(page) && !/center: \[-106, 34\]/.test(page));
   ok('[shipped] a pressed-state button switches globe <-> flat (mercator) with map.setProjection, and re-places the labels',
-    /<button class="barbtn" id="projBtn" aria-pressed="true"/.test(page)
+    /<button class="barbtn tc-btn tc-btn-ghost" id="projBtn" aria-pressed="true"/.test(page)
     && /map\.setProjection\(\{ type: projection \}\)/.test(page) && /projection === 'globe' \? 'mercator' : 'globe'/.test(page)
     && /projBtn\.setAttribute\('aria-pressed'/.test(page) && /map\.once\('idle', placeCampusLabels\)/.test(page));
   ok('[shipped] a marker on the far side of the globe is invisible and takes no click or Tab stop',
@@ -338,6 +342,144 @@ ok('[generator] build_geomap.py fails closed by name (need()) and takes no `.get
     body.includes("document.getElementById('legend'), document.querySelector('.maplibregl-ctrl-top-left')")
     && body.includes('obstacles.some((q) => hit(r, q))') && body.includes('r.right > VW - 2')
     && body.includes("c.el.classList.add('compact')") && /el\.dataset\.short = f\.properties\.name/.test(page));
+}
+
+/* --- 11. the 3D globe: geo3d halls, camera, tour, environments ------------------- */
+{
+  const g3 = reg('geo3d/registry/geo3d.json');
+  const G3 = need(D, 'geo3d', 'page D');
+  const regHalls = Object.entries(g3.campuses).flatMap(([k, c]) => c.halls.map((h) => ({ ...h, campus: k })));
+  const pageHalls = G3.halls.features;
+  const byDist = Object.fromEntries(Object.values(g3.campuses).flatMap((c) => c.districts).map((d) => [d.key, d]));
+  ok(`[shipped] D.geo3d.halls is geo3d/registry/geo3d.json's halls, one feature each (${regHalls.length}), same ring, wall height, roofline, district hue`,
+    pageHalls.length === regHalls.length && regHalls.every((h) => {
+      const f = pageHalls.find((x) => x.properties.slug === h.slug);
+      return f && same(f.geometry.coordinates[0], h.polygon) && f.properties.h === h.h && f.properties.top === h.top
+        && f.properties.roof === h.roof && f.properties.campus === h.campus && f.properties.district === h.district
+        && f.properties.color === `hsl(${byDist[h.district].hue}, 50%, 45%)` && f.properties.name === h.name;
+    }));
+  ok('[shipped] D.geo3d.districts is one outline per registry district, the registry\'s own ring',
+    G3.districts.features.length === Object.keys(byDist).length
+    && G3.districts.features.every((f) => same(f.geometry.coordinates[0], byDist[f.properties.district].polygon)));
+  const lessonsPer = {};
+  for (const l of Object.values(lessons)) lessonsPer[l.hall] = (lessonsPer[l.hall] || 0) + 1;
+  ok('[shipped] each hall\'s lesson count is recomputed from lessons/registry/lessons.json',
+    pageHalls.every((f) => f.properties.lessons === (lessonsPer[f.properties.slug] || 0)));
+  ok('[shipped] the geo3d stamp, placement sentence and projection formula are the registry\'s own, verbatim',
+    G3.sourceStamp === g3.source_stamp && G3.placement === g3.placement && G3.projection === g3.projection
+    && same(G3.counts, g3.counts));
+  const hubs = Object.keys(g3.campuses).filter((k) => g3.campuses[k].halls.length === 0);
+  ok(`[shipped] the ${hubs.length} campuses with no halls carry the registry's no-invention note, and no hall feature stands on any of them`,
+    same(Object.keys(G3.noHalls).sort(), hubs.sort()) && hubs.every((k) => G3.noHalls[k] === g3.campuses[k].note)
+    && !pageHalls.some((f) => hubs.includes(f.properties.campus)));
+  ok('[shipped] the halls draw as a fill-extrusion, height and colour read from each feature (the registry\'s h and district hue)',
+    /id: 'halls3d', type: 'fill-extrusion', source: 'halls3d'/.test(page)
+    && /'fill-extrusion-color': \['get', 'color'\],\s*'fill-extrusion-height': \['get', 'h'\]/.test(page));
+  ok('[shipped] a hall popup says SCHEMATIC, prints its lesson and task counts from the feature, and quotes the placement sentence',
+    /popupForHall\(p, lngLat\)/.test(page) && /SCHEMATIC placement/.test(page) && /\$\{p\.lessons\}<\/b> lessons for this hall/.test(page)
+    && /\$\{p\.tasks\}<\/b> simulated tasks at this hall/.test(page) && /\$\{ESC\(D\.geo3d\.placement\)\}/.test(page));
+  // a door is only a door if the page behind it reads the parameter
+  const b3d = readFileSync(join(ROOT, 'web/build_3d.py'), 'utf8');
+  const bim = readFileSync(join(ROOT, 'web/build_interactive_map.py'), 'utf8');
+  ok('[shipped] the hall door walks into the 3D page at ?hall=<slug>, and web/build_3d.py reads params.get(\'hall\')',
+    /href="trade_craft_3d\.html\?hall=\$\{ESC\(p\.slug\)\}"/.test(page) && /params\.get\('hall'\)/.test(b3d));
+  ok('[shipped] the interactive-map door uses ?hall=<slug>, which web/build_interactive_map.py reads',
+    /href="trade_craft_interactive\.html\?hall=\$\{ESC\(p\.slug\)\}"/.test(page) && /params\.get\('hall'\)/.test(bim));
+  ok('[shipped] a campus popup gains doors to the 3D page (?campus=, which build_3d.py reads), the 2D map and the interactive map, all under web/',
+    /popupFor[\s\S]*rollupList\(p\.slug\) \+ campusDoors\(p\.slug\)/.test(page)
+    && /href="trade_craft_3d\.html\?campus=\$\{slug\}"/.test(page) && /params\.get\('campus'\)/.test(b3d)
+    && /href="trade_craft_map\.html"/.test(page) && /href="trade_craft_interactive\.html"/.test(page)
+    && ['trade_craft_3d.html', 'trade_craft_map.html', 'trade_craft_interactive.html'].every((f) => existsSync(join(WEB, f))));
+  ok('[shipped] the campus camera is pitched (58) and turned, and under prefers-reduced-motion it jumps instead of flying',
+    /matchMedia\('\(prefers-reduced-motion: reduce\)'\)/.test(page) && /pitch: 58/.test(page)
+    && /if \(REDUCED\) map\.jumpTo\(v\);\s*else map\.flyTo/.test(page));
+  ok('[shipped] the tour visits every campus in unions/registry/campuses.json order',
+    same(G3.tour, Object.keys(campuses)) && /tour\.campus = D\.geo3d\.tour\[tour\.idx\]/.test(page));
+  ok('[shipped] the tour is a pressed-state <button>; pressing it again, Escape, or dragging the map stops it',
+    /<button class="barbtn tc-btn tc-btn-ghost" id="tourBtn" aria-pressed="false"/.test(page)
+    && /tourBtn\.addEventListener\('click', \(\) => \(tour\.on \? stopTour\(\) : startTour\(\)\)\)/.test(page)
+    && /if \(tour\.on\) \{ stopTour\(\);/.test(page) && /map\.on\('dragstart', \(\) => stopTour\(\)\)/.test(page));
+  ok('[shipped] the fly-to control is a labelled <select> whose options are generated from D.geo3d.tour (no typed campus)',
+    /<select class="flysel" id="flySel" aria-label="[^"]+">/.test(page) && /flySel\.insertAdjacentHTML\('beforeend', D\.geo3d\.tour\.map/.test(page));
+  const styleIds = [...page.matchAll(/\{ id: '([a-z0-9-]+)', type:/g)].map((m) => m[1]);
+  const toggled = [...page.matchAll(/map: \[([^\]]*)\], (?:cls|sw)/g)].flatMap((m) => [...m[1].matchAll(/'([a-z0-9-]+)'/g)].map((x) => x[1]));
+  ok(`[shipped] every layer the Layers panel toggles exists in the style (${toggled.length} layer ids), each toggle a labelled checkbox`,
+    toggled.length >= 10 && toggled.every((id) => styleIds.includes(id))
+    && /<label><input type="checkbox" checked data-layer="\$\{l\.key\}">/.test(page));
+  ok('[shipped] a hall is hit-tested from D.geo3d footprints projected to the screen (MapLibre\'s globe answers no extrusion query)',
+    /function hallAt\(pt\)/.test(page) && /for \(const f of D\.geo3d\.halls\.features\)/.test(page) && /const f = hallAt\(e\.point\)/.test(page));
+
+  // worksites: at their place's own point, or off the globe - never invented
+  const ws = need(reg('worksites/registry/worksites.json'), 'sites', 'worksites.json');
+  const env = need(D, 'env', 'page D');
+  const wsWant = ws.map((w) => {
+    const p = w.place;
+    if (p.kind === 'campus') return { id: w.id, ll: [geo.campuses[p.id].lng, geo.campuses[p.id].lat] };
+    if (p.kind === 'restoration-site') { const r = restoration.sites.find((x) => x.id === p.id); return { id: w.id, ll: [r.lng, r.lat] }; }
+    if (p.kind === 'space' && p.campus === null) return { id: w.id, ll: null };
+    return { id: w.id, ll: [geo.campuses[p.campus].lng, geo.campuses[p.campus].lat] };
+  });
+  ok(`[shipped] every worksite (${ws.length}) stands at its own place's registry point, or - a space with no campus - is listed off the globe`,
+    env.worksitesOn.length + env.worksitesOff.length === ws.length
+    && wsWant.every((w) => w.ll === null
+      ? env.worksitesOff.some((x) => x.id === w.id && !('lngLat' in x))
+      : env.worksitesOn.some((x) => x.id === w.id && same(x.lngLat, w.ll))));
+  ok('[shipped] every worksite links to its own section of the worksites page, which carries that id',
+    [...env.worksitesOn, ...env.worksitesOff].every((w) => w.href === `trade_craft_worksites.html#site-${w.id}`
+      && readFileSync(join(WEB, 'trade_craft_worksites.html'), 'utf8').includes(`id="site-${w.id}"`)));
+  const k12 = need(reg('schools/registry/schools.json'), 'districts', 'schools.json');
+  ok(`[shipped] the ${k12.length} K-12 districts stand at their campus's own point (no address), status and provenance verbatim, marked PROPOSED`,
+    env.k12.length === k12.length && k12.every((d, i) => env.k12[i].district === d.district && env.k12[i].status === d.status
+      && env.k12[i].provenance === d.provenance && same(env.k12[i].lngLat, [geo.campuses[d.campus].lng, geo.campuses[d.campus].lat]))
+    && /<span class="pv prop">PROPOSED<\/span>/.test(page));
+  const wl = need(reg('wilds/registry/wilds.json'), 'worlds', 'wilds.json');
+  ok(`[shipped] the ${wl.length} wild worlds are listed NOT on the globe: AUTHORED, "only inspired by" their region in the registry's words, linked to the wilds page, with no coordinate`,
+    env.wildsOff.length === wl.length && wl.every((w, i) => env.wildsOff[i].id === w.id && env.wildsOff[i].evokes === w.inspiration.evokes
+      && env.wildsOff[i].standing === w.inspiration.standing && env.wildsOff[i].provenance === 'AUTHORED'
+      && env.wildsOff[i].href === `trade_craft_wilds.html#${w.id}` && !('lngLat' in env.wildsOff[i]))
+    && /only <i>inspired by<\/i>/.test(page) && !/envAdd\('wild/.test(page));
+  const tasksPath = join(ROOT, 'tasks/registry/tasks.json');
+  if (existsSync(tasksPath)) {
+    const T = JSON.parse(readFileSync(tasksPath, 'utf8'));
+    const onKinds = ['hall', 'campus', 'restoration-site'];
+    const on = T.tasks.filter((t) => onKinds.includes(t.place.kind) && t.place.campus in campuses);
+    ok(`[shipped] tasks: ${on.length} stand at their campus, ${T.tasks.length - on.length} are listed off the globe (spaces with no campus, AUTHORED wilds), ${T.tasks.length} in all`,
+      env.tasks.state.state === 'built' && env.tasks.on.length === on.length && env.tasks.off.length === T.tasks.length - on.length
+      && on.every((t) => env.tasks.on.some((x) => x.id === t.id && x.place.campus === t.place.campus))
+      && !env.tasks.on.some((x) => x.place.kind === 'wilds-site'));
+    ok('[shipped] every task keeps its registry launch: web/ stripped from the href for this page, or null with the registry\'s own why',
+      T.tasks.every((t) => {
+        const x = [...env.tasks.on, ...env.tasks.off].find((y) => y.id === t.id);
+        return x && (t.launch.href === null ? x.href === null && x.why === t.launch.why
+          : x.href === (t.launch.href.startsWith('web/') ? t.launch.href.slice(4) : '../' + t.launch.href));
+      }));
+    const tPerHall = {};
+    for (const t of T.tasks) if (t.place.kind === 'hall') tPerHall[t.place.id] = (tPerHall[t.place.id] || 0) + 1;
+    ok('[shipped] each hall\'s task count is recomputed from tasks/registry/tasks.json',
+      pageHalls.every((f) => f.properties.tasks === (tPerHall[f.properties.slug] || 0)));
+    ok('[shipped] the task honesty line is the registry\'s own practice sentence',
+      env.tasks.state.honesty === T.honesty.practice && env.tasks.state.source_stamp === T.source_stamp);
+  } else {
+    ok('[shipped] with no tasks registry built, the page says so and lists no task', env.tasks.state.state === 'absent'
+      && env.tasks.on.length === 0 && env.tasks.off.length === 0);
+  }
+  // no typed count for the new layers either
+  const typed3 = [];
+  for (const [v, noun] of [[g3.counts.halls, 'halls on'], [env.k12.length, 'K-12'], [wl.length, 'wild worlds']])
+    if (new RegExp(`(?:>|\\b)${v}(?:</b>)?\\s+${noun}`).test(outside)) typed3.push(`${v} ${noun}`);
+  ok('[shipped] no geo3d, K-12 or wilds count is typed outside the JSON' + (typed3.length ? ' - typed: ' + typed3.join(', ') : ''), typed3.length === 0);
+  ok('[shipped] the canvas theme: body.tc-theme-canvas, tc-panel panels, tc-btn bar buttons, page tokens aliased to --tc-*, and no hero band',
+    /<body class="tc-theme-canvas">/.test(page) && /<section class="panel tc-panel" id="layers"/.test(page)
+    && /body\.tc-theme-canvas\{--plate:var\(--tc-plate\);--panel:var\(--tc-panel\);--ink:var\(--tc-ink\)/.test(page)
+    && /body\.tc-theme-canvas \.tc-panel\{/.test(page) && !/class="ph"/.test(page));
+  const genRaw = readFileSync(join(HERE, 'build_geomap.py'), 'utf8');
+  const g3gen = genRaw.slice(genRaw.indexOf('# ------------------------------------------------------------ the 3D globe ---'),
+    genRaw.indexOf("DATA = json.dumps({"));
+  ok('[shipped] the site Style menu (5 styles, MEDIA) is in the nav and its remember-my-choice script runs after the page\'s own',
+    /data-sitenav-style/.test(page) && /<script>\(\(\)=>\{var K='tc-style'/.test(page.slice(page.lastIndexOf('__geomap'))));
+  ok('[generator] the geo3d / worksites / K-12 / wilds / tasks readers in build_geomap.py fail closed: need() on every field, no default-taking get',
+    g3gen.length > 2000 && /need\(pl, 'kind'/.test(g3gen) && /need\(ins, 'evokes'/.test(g3gen) && /need\(d, 'status'/.test(g3gen)
+    && !/\.get\(/.test(g3gen.replace(/#.*$/gm, '')));
 }
 
 if (failed) {

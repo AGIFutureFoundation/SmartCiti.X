@@ -1804,7 +1804,7 @@ ok('neither panel puts anything in the scene: a panel is DOM, and this one '
     + 'way into a seat',
     // deliberately silent about HOW the block is scheduled - that is the
     // next check's question, and one mutation must not fail two checks
-    /const simDef = D\.sims\.sims\[simDeep\];\s*if \(!simDef\.halls\.includes\(slug\)\) showHall\(simDef\.halls\[0\]\);\s*startSim\(simDeep, null\);/
+    /const simDef = D\.sims\.sims\[simDeep\];\s*if \(!simDef\.halls\.includes\(slug\)\) showHall\(simDef\.halls\[0\]\);\s*startSim\(simDeep, scenarioDeep\);/
       .test(code)
     // the same opener the hall's own seat chooser calls
     && /if \(b\.length === 1\) return startSim\(b\[0\]\.sim\);/.test(code));
@@ -2724,7 +2724,10 @@ ok('a person\'s hand is palm, four-finger mitt and thumb - with a gauntlet cuff 
     && /QPOOL\.castShadow = false; QPOOL\.receiveShadow = false;/.test(qjs)
     && (qjs.match(/new THREE\.\w+Geometry\(/g) ?? []).length === 1
     && (qjs.match(/new THREE\.Mesh\w*Material\(/g) ?? []).length === 1
-    && /const QCAP = 64;/.test(qjs) && /Math\.min\(QCAP, all\.length\)/.test(qjs)
+    && /const QCAP = 128;/.test(qjs) && /Math\.min\(QCAP, all\.length\)/.test(qjs)
+    // the capacity is held at build to every gem one view can stand
+    && /assert f'const QCAP = \{QCAP3D\};' in QUEST3D_JS/.test(src)
+    && /assert len\(_q_seat\) \+ 1 \+ _task_places \+ 16 <= QCAP3D/.test(src)
     && /scene\.add\(QPOOL\);/.test(qjs) && !/hallGroup\.add\(QPOOL\)/.test(qjs));
   // treasures read real compliance placards; greens quote modules verbatim
   const comp = JSON.parse(readFileSync(new URL('../compliance/registry/compliance.json', import.meta.url), 'utf8'));
@@ -2800,6 +2803,146 @@ ok('a person\'s hand is palm, four-finger mitt and thumb - with a gauntlet cuff 
     && /never enter a completion record/.test(locs[2]['campus3d.play'])
     && /if \(\(view === 'hall' \|\| view === 'campus'\) && questPick\(ray\)\) return;/.test(fnCode('pickWith'))
     && /questStep\(dt\);/.test(code));
+}
+
+/* ------------------------------------------------------------ wave 3 --- */
+{
+  const q3at = src.indexOf('QUEST3D_JS = r"' + '""');
+  const qjs3 = strip(src.slice(q3at, src.indexOf('"' + '""', q3at + 20)));
+  const at = '<script id="data" type="application/json">';
+  const data3 = JSON.parse(built.slice(built.indexOf(at) + at.length, built.indexOf('</script>', built.indexOf(at))));
+
+  // the layout hook the geo 3D globe mirrors: read back, never recomputed
+  const lay = (() => { const i = code.indexOf('window.__tc3dLayout = '); return i < 0 ? '' : code.slice(i, code.indexOf('\n};', i)); })();
+  ok('window.__tc3dLayout() reads the campus layout back off the objects buildCampus() made (district groups, hall wall boxes) - never recomputed - in scene metres with north = -Z',
+    lay.length > 0
+    && /cx: cg\.position\.x,\s*cz: cg\.position\.z, psi: cg\.rotation\.y/.test(lay)
+    && /campusGroup\.worldToLocal\(b\.getWorldPosition\(p\)\)/.test(lay)
+    && /w: g\.width, d: g\.depth, h: g\.height/.test(lay) && /top: b\.userData\.top/.test(lay)
+    && /frame: \{ north: '-Z', east: '\+X', units: 'm' \}/.test(lay)
+    && !/Math\.(cos|sin|atan2|ceil|sqrt)|\* 16|pitch|\b168\b|\b124\b/.test(lay)
+    && /cg\.userData\.district = k;/.test(fnCode('buildCampus'))
+    && /ge\.computeBoundingBox\(\);\s*if \(ge\.boundingBox\.max\.y > top\) top = ge\.boundingBox\.max\.y;/.test(fnCode('building'))
+    && /bld\.userData\.top = top;/.test(fnCode('building')));
+
+  // terrain/ writes [east, north]; north is -Z here. Run the page's own
+  // functions on a mask and a line that only have a SOUTH edge.
+  const runs = new Function(fnCode('terrainRuns') + '\nreturn terrainRuns;')();
+  const south = runs({ n: 4, rows: ['1', '0', '0', '0'] }, 100, 0);   // row 0 = the southmost band
+  ok('terrainRuns() puts the mask\'s south row at +Z (north is -Z): a land cell 75 m south of the anchor is drawn south of it, not mirrored north',
+    south.length === 1 && south[0][0] === -100 && south[0][1] === -50 && south[0][2] === 50 && south[0][3] === 100);
+  const pos = [];
+  const lines = new Function('THREE', 'TERRAIN_LINE_Y', fnCode('terrainLines') + '\nreturn terrainLines;')({
+    BufferGeometry: class { setAttribute() {} },
+    Float32BufferAttribute: class { constructor(a) { pos.push(...a); } },
+    LineSegments: class {}, LineBasicMaterial: class {} }, .9);
+  lines([[[3, 10], [4, -20]]], 0, 1);
+  ok('terrainLines() draws a coastline point [east, north] at (x = east, z = -north), the same frame as the sun, the city anchors and terrainRuns',
+    pos.join(',') === '3,0.9,-10,4,0.9,20');
+
+  // the panel opens below the HUD bar, whose bottom edge is measured
+  const lastPanelTop = [...built.matchAll(/#panel\{[^}]*?\btop:([^;}]+)/g)].map((m) => m[1]).pop();
+  ok('#panel opens below the HUD bar (top: var(--hudtop), the bar\'s measured bottom, re-read on resize and on the bar\'s own resize) - no panel heading sits under the bar',
+    lastPanelTop === 'var(--hudtop)'
+    && /const fit = \(\) => document\.documentElement\.style\.setProperty\('--hudtop',\s*Math\.ceil\(bar\.getBoundingClientRect\(\)\.bottom\) \+ 'px'\);/.test(built)
+    && /new ResizeObserver\(fit\)\.observe\(bar\);/.test(built)
+    && built.indexOf("setProperty('--hudtop'") < built.indexOf('<script type="module"'));
+
+  // a gem behind a wall is not clickable: run questOccluded on stub rays
+  const embed = Number((qjs3.match(/const GEM_EMBED = (\.\d+);/) ?? [])[1]);
+  const occ = (view, hallGroup, campusGroup, QPOOL) => new Function('view', 'hallGroup', 'campusGroup', 'QPOOL', 'GEM_EMBED',
+    fnCode('questOccluded') + '\nreturn questOccluded;')(view, hallGroup, campusGroup, QPOOL, embed);
+  const mesh = (d, transparent = false, opacity = 1) => ({ isMesh: true, d, material: { transparent, opacity } });
+  const root = (objs) => ({ traverseVisible: (f) => objs.forEach(f) });
+  const ray = { intersectObjects: (list) => list.map((o) => ({ distance: o.d, object: o })).sort((a, b) => a.distance - b.distance) };
+  const pool = mesh(4);
+  ok('questPick() refuses a gem with something solid in front of it: an opaque wall nearer than the gem stops the click; glass, the pool itself and a wall behind the gem do not',
+    /if \(questOccluded\(ray, hit\.distance\)\) return false;\s*questActivate/.test(fnCode('questPick'))
+    && occ('hall', root([mesh(2), pool]), null, pool)(ray, 4) === true
+    && occ('hall', root([mesh(2, true, .4), pool]), null, pool)(ray, 4) === false
+    && occ('campus', null, root([mesh(6), pool]), pool)(ray, 4) === false
+    && occ('campus', null, root([pool]), pool)(ray, 4) === false
+    && occ('hall', root([mesh(3.9), pool]), null, pool)(ray, 4) === false       // the floor slab a half-sunk gem rests in
+    && /const GEM_EMBED = \.35;/.test(qjs3)
+    && /root\.traverseVisible\(/.test(fnCode('questOccluded')));
+  ok('__tc3dQuestAim walks round the gem for a clear side and reports `occluded` when none is, so a probe never clicks through a wall',
+    /for \(let k = 0; k < 8 && occluded; k\+\+\)/.test(qjs3)
+    && /occluded = questOccluded\(aimRay, camera\.position\.distanceTo\(tgt\) - it\.s\[1\]\);/.test(qjs3)
+    && /return \{ id: it\.id, occluded,/.test(qjs3));
+  ok('konami meteors are big enough to see from the ground: 1.1 m thick, 12 m long at 120-200 m out',
+    /s: \[1\.1, 12, 1\.1\] \}\);/.test(fnCode('questMeteorShower')));
+
+  // simulated tasks: the page's share of tasks/registry, counted by it
+  const treg = JSON.parse(readFileSync(new URL('../tasks/registry/tasks.json', import.meta.url), 'utf8'));
+  const T3 = data3.tasks3d;
+  const onCampus = treg.tasks.filter((x) => x.place.kind !== 'space');
+  const pageRows = Object.values(T3.campuses).flat();
+  const byId3 = Object.fromEntries(pageRows.map((r) => [r.id, r]));
+  ok(`the page carries every campus task in tasks/registry (${pageRows.length}) under its own campus, counts equal to the registry's by_campus, hrefs page-relative, lessons real`,
+    pageRows.length === onCampus.length
+    && Object.entries(treg.counts.by_campus).every(([ck, n]) => ck === 'none' || T3.campuses[ck].length === n)
+    && onCampus.every((x) => byId3[x.id] && T3.campuses[x.place.campus].includes(byId3[x.id])
+      && byId3[x.id].href === (x.launch.href === null ? null : x.launch.href.replace(/^web\//, ''))
+      && (x.launch.href === null ? byId3[x.id].why === x.launch.why : byId3[x.id].lands === x.launch.lands)
+      && JSON.stringify(byId3[x.id].requires) === JSON.stringify(x.requires))
+    && T3.practice === treg.honesty.practice
+    && Object.keys(data3.campuses).every((ck) => Array.isArray(T3.campuses[ck])));
+  ok('one blue gem per place with tasks (hall roof, restoration post, the green), in the SAME pooled InstancedMesh - no mesh, no label; the tool crib holds the hall\'s gem; walking past a task gem never opens it',
+    /for \(const pl of taskPlaces\(\)\)/.test(fnCode('questLayout'))
+    && /kind: 'task', x, y, z,/.test(fnCode('questLayout'))
+    && /y = b\.userData\.top \+ 3\.2;/.test(fnCode('questLayout'))
+    && /roomRects\.find\(\(x\) => x\.strand === 'tools'\)/.test(fnCode('questLayout'))
+    && /if \(it\.kind === 'task'\) return openTasks\(it\.place\);/.test(fnCode('questActivate'))
+    && /if \(it\.kind === 'marker' \|\| it\.kind === 'task' \|\| qSeen\.has\(it\.id\)\) continue;/.test(fnCode('questStep'))
+    && /if \(tk\.place\.kind === 'wilds-site'\) continue;/.test(fnCode('taskPlaces')));
+  ok('the Tasks panel: kind filter chips (aria-pressed), a launch link from the registry\'s href or its reason why not, the linked lessons, and the registry\'s practice sentence - never the quest layer\'s play line',
+    /aria-pressed="'\s*\+ \(k === tFilter\)/.test(fnCode('openTasks'))
+    && /'<p><a class="tc-btn tc-btn-primary t3-go" href="' \+ qEsc\(tk\.href\)/.test(fnCode('taskCard'))
+    && /qEsc\(t\('tasks\.nolink'\)\) \+ ': ' \+ qEsc\(tk\.why\)/.test(fnCode('taskCard'))
+    && /lessonList\(tk\.requires\)/.test(fnCode('taskCard'))
+    && /qEsc\(T3\.practice\)/.test(fnCode('openTasks'))
+    && !/campus3d\.play/.test(fnCode('openTasks'))
+    && /if \(!list\) throw new Error\('task layer: no task list built for campus ' \+ campusKey\);/.test(fnCode('tasksHere')));
+  ok('the canvas theme (THEME_CONTRACT v1) is adopted panel/button/badge-only: theme(\'canvas\') CSS in the head, body.tc-theme-canvas set before the scene, no hero band on this full-screen canvas',
+    /^THEME_CSS, _theme_js = theme\('canvas'\)$/m.test(src)
+    && (built.match(/body\.tc-theme-canvas \.tc-btn-primary\{/g) ?? []).length === 1
+    && built.indexOf("document.body.classList.add('tc-theme-canvas');") > 0
+    && built.indexOf("document.body.classList.add('tc-theme-canvas');") < built.indexOf('<script type="module"')
+    && /body\.tc-theme-canvas #panel\{background:var\(--tc-panel\)/.test(built)
+    && !/class="ph"|data-ph\b|pagehero\(/.test(built) && !/\bpagehero\(/.test(code));
+  // the site's five Styles reach the panels: the stored style applies in the head before first paint, the nav's
+  // radios are remembered, and the panel/Tasks CSS colours only through tokens the styles re-declare (no hex)
+  const t3css = (() => { const i = built.indexOf('/* the Tasks panel (simulated tasks)'); return i < 0 ? '' : built.slice(i, built.indexOf('.asks{', i)); })();
+  const themeCss = (() => { const i = built.indexOf('/* The canvas theme (web/pagehero.py'); return i < 0 ? '' : built.slice(i, built.indexOf('</style>', i)); })();
+  ok('the reader\'s Style (5 site styles, data-style on <html>) reaches this canvas page: head script before the first stylesheet, the nav radios remembered, and the panel/Tasks CSS coloured only by var(--...) tokens',
+    /^from sitenav import STYLE_JS/m.test(src) && /^from design_kit import STYLE_HEAD_JS/m.test(src)
+    && built.indexOf("localStorage.getItem('tc-style')") > 0
+    && built.indexOf("localStorage.getItem('tc-style')") < built.indexOf('<style>')
+    && built.indexOf("document.addEventListener('change'") > built.indexOf('<nav class="sitenav"')
+    && t3css.length > 200 && themeCss.length > 200
+    && !/#[0-9a-fA-F]{3,8}\b|rgb\(/.test(t3css + themeCss) && /var\(--/.test(t3css) && /var\(--tc-panel\)/.test(themeCss));
+  // ?scenario=<id> (TASKS' NEEDS): only one of the named seat's own scenarios, else null and the campus picks
+  const sdSrc = code.slice(code.indexOf('const scenarioDeep = '), code.indexOf("? params.get('scenario') : null;") + "? params.get('scenario') : null;".length);
+  const sd = (sim, sc) => new Function('D', 'simDeep', 'params', sdSrc + '\nreturn scenarioDeep;')(
+    { sims: { sims: { 'crane-lift': { scenarios: [{ id: 'bay-steel' }, { id: 'nola-wharf' }] }, 'forklift': {} } } },
+    sim, new URLSearchParams(sc === null ? '' : 'scenario=' + sc));
+  ok('?scenario=<id> opens one of the named seat\'s own scenarios through startSim(simDeep, scenarioDeep); an unknown id, another seat\'s id or a seat with no scenarios falls back to null (the campus picks)',
+    sdSrc.length > 40
+    && sd('crane-lift', 'nola-wharf') === 'nola-wharf' && sd('crane-lift', 'nope') === null
+    && sd('crane-lift', null) === null && !sd('forklift', 'nola-wharf') && !sd(null, 'nola-wharf')
+    && /startSim\(simDeep, scenarioDeep\);/.test(code)
+    && /const sc = def\.scenarios\?\.find\(\(s\) => s\.id === scenarioId\)/.test(fnCode('startSim')));
+  const locs3 = ['ar', 'de', 'en', 'es', 'fr', 'hi', 'pt', 'zh'].map((l) =>
+    JSON.parse(readFileSync(new URL(`../i18n/locales/${l}.json`, import.meta.url), 'utf8')).strings);
+  const tb = built.match(/<button id="tasksBtn" class="barbtn" aria-label="([^"]+)">/);
+  ok('the HUD Tasks button has an accessible name from the catalog, re-read per locale; the campus3d.tasks* keys are real translations in all 8 locales',
+    tb && tb[1] === locs3[2]['campus3d.tasks']
+    && /getElementById\('tasksBtn'\)\.setAttribute\('aria-label', t\('campus3d\.tasks'\)\)/.test(qjs3)
+    && /getElementById\('tasksBtn'\)\.addEventListener\('click', \(\) => openTasks\(null\)\)/.test(qjs3)
+    && ['campus3d.tasks', 'campus3d.tasks.all', 'campus3d.tasks.launch', 'campus3d.tasks.lessons',
+        'campus3d.tasks.here', 'campus3d.tasks.showall', 'campus3d.tasks.none']
+      .every((k) => locs3.every((L) => typeof L[k] === 'string' && L[k].length)
+        && locs3.filter((L) => L[k] === locs3[2][k]).length === 1));
 }
 
 console.log(`web/test_3d: ${n} checks passed - teardown, draw-call and per-frame contracts held at the source`);

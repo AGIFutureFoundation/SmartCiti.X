@@ -1,7 +1,7 @@
 {
  "pack": "wilds",
  "product": "SmartCiti.X : Trade Craft Academy",
- "source_stamp": "4d3051d7efbf7cce",
+ "source_stamp": "95b85e2b2dcfe35d",
  "core_stamp": "07ffb9a376815025",
  "provenance": {
   "terrain": "AUTHORED",
@@ -11,7 +11,8 @@
   "hall_names": "DERIVED",
   "lesson_titles": "DERIVED",
   "site_walks": "DERIVED",
-  "summit_register": "DERIVED"
+  "summit_register": "DERIVED",
+  "geolocation": "AUTHORED"
  },
  "honesty": {
   "landscape": "Every world is an authored landscape generated from a seed. It is not a survey, no height is a real elevation, and the region named is inspiration for its general geography only.",
@@ -37,6 +38,18 @@
     "campus": "denver",
     "campus_city": "Denver",
     "standing": "inspiration only; the terrain is AUTHORED, not real elevation"
+   },
+   "geolocation": {
+    "on_globe": false,
+    "provenance": "AUTHORED",
+    "basis": "inspiration only",
+    "coordinates": "none: an authored world has no latitude or longitude; its x/z metres are local to the world",
+    "inspired_by": {
+     "campus": "denver",
+     "city": "Denver",
+     "region": "Colorado"
+    },
+    "label": "Not on the globe: AUTHORED, inspired by Denver, Colorado"
    },
    "seed": 81321,
    "extent_m": 12288,
@@ -368,6 +381,18 @@
     "campus_city": "Seattle",
     "standing": "inspiration only; the terrain is AUTHORED, not real elevation"
    },
+   "geolocation": {
+    "on_globe": false,
+    "provenance": "AUTHORED",
+    "basis": "inspiration only",
+    "coordinates": "none: an authored world has no latitude or longitude; its x/z metres are local to the world",
+    "inspired_by": {
+     "campus": "seattle",
+     "city": "Seattle",
+     "region": "Washington"
+    },
+    "label": "Not on the globe: AUTHORED, inspired by Seattle, Washington"
+   },
    "seed": 44017,
    "extent_m": 10240,
    "chunk_m": 512,
@@ -690,6 +715,18 @@
     "campus_city": "Denver",
     "standing": "inspiration only; the terrain is AUTHORED, not real elevation"
    },
+   "geolocation": {
+    "on_globe": false,
+    "provenance": "AUTHORED",
+    "basis": "inspiration only",
+    "coordinates": "none: an authored world has no latitude or longitude; its x/z metres are local to the world",
+    "inspired_by": {
+     "campus": "denver",
+     "city": "Denver",
+     "region": "Colorado"
+    },
+    "label": "Not on the globe: AUTHORED, inspired by Denver, Colorado"
+   },
    "seed": 70913,
    "extent_m": 8192,
    "chunk_m": 512,
@@ -971,6 +1008,18 @@
     "campus": "new-orleans",
     "campus_city": "New Orleans",
     "standing": "inspiration only; the terrain is AUTHORED, not real elevation"
+   },
+   "geolocation": {
+    "on_globe": false,
+    "provenance": "AUTHORED",
+    "basis": "inspiration only",
+    "coordinates": "none: an authored world has no latitude or longitude; its x/z metres are local to the world",
+    "inspired_by": {
+     "campus": "new-orleans",
+     "city": "New Orleans",
+     "region": "Louisiana"
+    },
+    "label": "Not on the globe: AUTHORED, inspired by New Orleans, Louisiana"
    },
    "seed": 40427,
    "extent_m": 10240,

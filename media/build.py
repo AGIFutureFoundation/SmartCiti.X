@@ -40,6 +40,27 @@ def sha(p):
     return hashlib.sha256(p.read_bytes()).hexdigest()
 
 
+MEASURE_W = 400
+
+
+def brightest(webm):
+    """The channel-wise maximum over EVERY pixel of EVERY frame of the clip
+    (decoded at MEASURE_W px wide) - an upper bound on any colour a scrim
+    will ever sit over. web/pagehero.py composites its scrim over this and
+    asserts the text contrast against the result, so the check is measured
+    from the footage itself, not assumed."""
+    r = subprocess.run(['ffmpeg', '-loglevel', 'error', '-i', str(webm), '-vf', f'scale={MEASURE_W}:-2',
+                        '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-'], capture_output=True)
+    if r.returncode != 0 or not r.stdout:
+        raise SystemExit(f'media/build.py: cannot decode {webm.name} to measure it')
+    mx = [0, 0, 0]
+    data = r.stdout
+    for ch in range(3):
+        mx[ch] = max(data[ch::3])
+    frames = len(data) // 3
+    return '#%02X%02X%02X' % tuple(mx), frames
+
+
 def build():
     clips, pending = [], []
     for c in SHOTS['clips']:
@@ -62,6 +83,7 @@ def build():
         if 'source' not in r or r['source'] not in ('archive', 'worktree'):
             raise SystemExit(f"media/renders.json: {c['id']} lacks source (archive|worktree)")
         wip = r['source'] == 'worktree'
+        bright, px = brightest(BROLL / f"{c['id']}.webm")
         prov = f"RECORDED from this build (commit {r['commit'][:12]})"
         if wip:
             prov = f"RECORDED from the working tree, work in progress (page not committed; base commit {r['commit'][:12]})"
@@ -74,6 +96,8 @@ def build():
             'files': files, 'provenance': prov, 'licence': 'first-party',
             'grade': 'soft S-curve, saturation 1.07, contrast 1.03, vignette PI/6 (media/encode.py GRADE)',
             'encoded': r['encoded'],
+            'measured': {'brightest_rgb': bright, 'pixels': px,
+                         'how': f'channel-wise max over every pixel of every frame of the webm, decoded at {MEASURE_W} px wide'},
         })
     stamp_src = b''.join((HERE / f).read_bytes() for f in ('shots.json', 'record.mjs', 'encode.py', 'build.py'))
     doc = {

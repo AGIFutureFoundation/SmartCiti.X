@@ -328,6 +328,32 @@ ok('[shipped] the district map is intact: every hall pad, district band and the 
     !/style="color:\$\{h\.chip\}"/.test(html) && !/[";\s`']color:\$\{[^}]*h\.chip/.test(html) && /<h2 class="dname" style="border-inline-start-color:\$\{h\.chip\}">/.test(html)
     && /<i class="dsw" style="background:\$\{h\.chip\}"><\/i>/.test(html) && /\.detail h2\.dname\{color:var\(--ink\)/.test(html));
 }
+
+/* ---- simulated tasks (TASKS, wave 3): boards come from tasks/registry/tasks.json only ---- */
+const TK = JSON.parse(readFileSync(new URL('../tasks/registry/tasks.json', import.meta.url), 'utf8'));
+const tkRel = (h) => h === null ? null : (h.startsWith('web/') ? h.slice(4) : '../' + h);
+const tkEsc = (h) => h.replace(/&/g, "&amp;");
+const tkCards = (s) => s.split('<article class="tk-card" data-task="').slice(1).map((c) => {
+  const id = c.slice(0, c.indexOf('"')); const m = c.match(/<a class="tk-go" href="([^"]+)"/);
+  return [id, m && c.indexOf(m[0]) < c.indexOf('</article>') ? m[1] : null]; });
+const tkWant = (ts) => ts.map((t) => [t.id, t.launch.href === null ? null : tkEsc(tkRel(t.launch.href))]);
+const tkHall = (slug) => TK.tasks.filter((t) => t.place.kind === 'hall' && t.place.id === slug);
+{
+  const miss = [];
+  for (const h of D.halls) {
+    const b = D.taskBoards[h.slug], want = tkHall(h.slug);
+    if (typeof b !== 'string') { miss.push(`${h.slug}: no board`); continue; }
+    const got = [...b.matchAll(/data-task="([^"]+)"/g)].map((m) => m[1]);
+    if (got.join() !== want.map((t) => t.id).join() || !b.includes(`data-total="${want.length}"`)) miss.push(`${h.slug}: ${got.join(',')}`);
+    if (JSON.stringify(tkCards(b)) !== JSON.stringify(tkWant(want))) miss.push(`${h.slug}: card launch hrefs differ from the registry`);
+    if (/trade_craft_lessons\.html#(?!lesson-)/.test(b)) miss.push(`${h.slug}: a lesson link misses #lesson-`);
+  }
+  ok('[tasks] every hall panel carries its Simulated tasks board, cards and totals exactly the registry\'s tasks at that hall, hrefs verbatim', miss.length === 0 && D.halls.length === 111);
+  if (miss.length) console.error(miss.slice(0, 6).join('\n'));
+  ok('[tasks] the hall panel renders the board and the chip filter is one delegated listener',
+    html.includes('${DATA.taskBoards[h.slug]}') && /data-tk-filter/.test(html) && /closest\('\[data-tk-board\]'\)/.test(html));
+}
+
 if (failures.length) {
   for (const f of failures) console.error(`FAIL ${f}`);
   console.error(`web/test_map: ${failures.length} of ${passed + failures.length} checks FAILED`);

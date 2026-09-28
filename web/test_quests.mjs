@@ -17,7 +17,8 @@ const reg = JSON.parse(readFileSync(join(ROOT, 'quests/registry/quests.json'), '
 let fresh = true; try { execFileSync('python3', [join(HERE, 'build_quests.py'), '--check'], { stdio: 'pipe' }); } catch (e) { fresh = false; }
 ok('the committed page is what web/build_quests.py builds', fresh);
 ok('one <h1>', (html.match(/<h1[\s>]/g) || []).length === 1);
-ok('the site nav is the first thing in the body', /<body>\s*<nav class="sitenav"/.test(html));
+// wave 3 (lead ruling): the body may carry MEDIA's theme('doc') class, and nothing else; the nav is still first
+ok('the site nav is the first thing in the body', /<body(?: class="tc-theme")?>\s*<nav class="sitenav"/.test(html));
 ok('a quest log hook (data-tc-questlog) and a badge shelf', html.includes('data-tc-questlog') && html.includes('id="shelf"'));
 const games = [...html.matchAll(/<article class="game" id="([a-z0-9-]+)" data-game="[a-z]+"/g)].map((m) => m[1]);
 ok(`at least three arcade games (${games.length}), each a registry game`, games.length >= 3 && games.every((g) => reg.quests.some((q) => q.id === g && q.kind === 'game')));

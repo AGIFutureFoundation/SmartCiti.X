@@ -8,7 +8,10 @@ sys.path.insert(0, str(HERE))
 from staleness import emit  # noqa: E402
 from seo import apply_seo  # noqa: E402  head tags only
 from herovideo import hero_video_html, hero_video_control, HERO_VIDEO_CSS, HERO_VIDEO_JS  # noqa: E402
+from herovideo import band_open, band_caption, BAND_CLOSE, SECTION_VIDEO_CSS, SECTION_VIDEO_JS, MOTION_CSS, STYLE_BRIDGE_CSS  # noqa: E402
+from design_kit import icon, STYLE_HEAD_JS  # noqa: E402  vendored Lucide glyphs (ISC), decoration only
 from sitenav import nav_html, labels as nav_labels, NAV_CSS  # noqa: E402
+from sitenav import STYLE_JS  # noqa: E402  MEDIA's style menu: remembers the reader's choice
 from sitesearch import SEARCH_TRIGGER_JS  # noqa: E402  Ctrl/Cmd+K follows the header's search link
 
 
@@ -185,6 +188,35 @@ NAV = nav_html('web/trade_craft_landing.html', nav_labels('en'))
 
 # The landing hero sits inside the page's column, so its footage is a framed
 # panel rather than full-bleed; the padding keeps text off the panel's edge.
+# The enterprise layer (wave 3): the "how" section sits over a registered
+# clip as a band, its four points become icon feature cards (a layout borrowed,
+# re-expressed in this page's tokens, from the MIT Start Bootstrap "Landing
+# Page" kit's features-icons row), cards lift on hover, and the headline's
+# accent word carries a two-tone rule. No CSS is copied from the kit.
+POLISH_CSS = """
+.eyebrow{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border:1px solid var(--rule);
+  border-radius:999px;background:var(--panel)}
+.eyebrow::before{content:"";inline-size:8px;block-size:8px;border-radius:50%;background:var(--steel)}
+h1 em{background:linear-gradient(90deg,var(--mark),var(--steel)) no-repeat 0 100%/100% .08em;padding-bottom:.05em}
+.how-band{margin-block:32px 0;border-radius:16px;border:1px solid var(--rule)}
+.how-band > .vb-inner{text-align:start;align-items:stretch;padding:0 clamp(16px,4vw,40px) 28px}
+.how-band section{border-bottom:0}
+.how-band .vb-bar{justify-content:flex-start}
+.feats{gap:16px}
+.feat{background:var(--panel);border:1px solid var(--rule);border-radius:12px;padding:20px;
+  transition:transform .18s,box-shadow .18s,border-color .18s}
+.feat:hover{transform:translateY(-4px);border-color:var(--steel);box-shadow:0 14px 30px -18px rgb(0 0 0 / .6)}
+.feat-ico{display:inline-grid;place-items:center;inline-size:44px;block-size:44px;border-radius:12px;
+  background:var(--sunk);color:var(--mark);border:1px solid var(--rule);margin-block-end:12px}
+.feat-ico .fi{inline-size:22px;block-size:22px}
+.panel{transition:border-color .18s,box-shadow .18s}
+.panel:hover{border-color:var(--steel);box-shadow:0 14px 30px -18px rgb(0 0 0 / .5)}
+@supports (animation-timeline: view()){@media (prefers-reduced-motion:no-preference){
+  .feat,.panel{animation:rv-in linear both;animation-timeline:view();animation-range:entry 0% entry 55%}
+}}
+@media (prefers-reduced-motion:reduce){.feat,.panel{transition:none}.feat:hover{transform:none}}
+"""
+
 HERO_LANDING_CSS = (
     'header.hero[data-hero-host]{padding-inline:clamp(16px,4vw,40px);border-radius:16px;'
     'margin-block-start:16px;border:1px solid var(--rule)}'
@@ -243,29 +275,36 @@ BODY = f"""
     </div>
   </section>
 
+  {band_open('hall-orbit', 'web/trade_craft_landing.html', 'how-band')}
   <section id="how">
     <p class="kicker">{S('landing.how.kicker')}</p>
     <h2>{S('landing.how.h2')}</h2>
     <p>{S('landing.how.p')}</p>
-    <div class="cols" style="margin-top:30px">
-      <div>
+    <div class="cols feats" style="margin-top:30px">
+      <div class="feat">
+        <span class="feat-ico" aria-hidden="true">{icon('layers', 'fi')}</span>
         <h3>{S('landing.how.dial.h3')}</h3>
         <p class="note">{S('landing.how.dial.p')}</p>
       </div>
-      <div>
+      <div class="feat">
+        <span class="feat-ico" aria-hidden="true">{icon('route', 'fi')}</span>
         <h3>{S('landing.how.graph.h3')}</h3>
         <p class="note">{S('landing.how.graph.p')}</p>
       </div>
-      <div>
+      <div class="feat">
+        <span class="feat-ico" aria-hidden="true">{icon('shield-check', 'fi')}</span>
         <h3>{S('landing.how.gate.h3')}</h3>
         <p class="note">{S('landing.how.gate.p')}</p>
       </div>
-      <div>
+      <div class="feat">
+        <span class="feat-ico" aria-hidden="true">{icon('users', 'fi')}</span>
         <h3>{S('landing.how.coaches.h3')}</h3>
         <p class="note">{S('landing.how.coaches.p')}</p>
       </div>
     </div>
   </section>
+    {band_caption('hall-orbit', {'pause': S('landing.video.pause'), 'play': S('landing.video.play')})}
+  {BAND_CLOSE}
 
   <section id="investors">
     <p class="kicker">{S('landing.investors.kicker')}</p>
@@ -400,12 +439,16 @@ BODY = f"""
 
 page = ('<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Trade Craft Academy</title>\n'
         '<meta name="viewport" content="width=device-width, initial-scale=1">\n'
+        f'<script id="style-head-js">{STYLE_HEAD_JS}</script>\n'
         '<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%226%22 fill=%22%230C1113%22/%3E%3Cpath d=%22M7 21 L16 7 L25 21 Z%22 fill=%22none%22 stroke=%22%23E8A33D%22 stroke-width=%222.6%22 stroke-linejoin=%22round%22/%3E%3Cpath d=%22M11 21 h10%22 stroke=%22%2341C4D4%22 stroke-width=%222.6%22 stroke-linecap=%22round%22/%3E%3C/svg%3E">\n'
         '<!-- Self-hosted: nothing on this page is fetched from another '
         'origin at run time. See web/fetch_fonts.py. -->\n'
         '<link rel="stylesheet" href="vendor/fonts/fonts.css">\n'
         f'<style>{CSS}</style>\n<style>{NAV_CSS}</style>\n'
-        f'<style>{HERO_VIDEO_CSS}{HERO_LANDING_CSS}</style>\n{BODY}{HERO_VIDEO_JS}\n{SEARCH_TRIGGER_JS}\n')
+        f'<style>{HERO_VIDEO_CSS}{HERO_LANDING_CSS}</style>\n'
+        f'<style>{SECTION_VIDEO_CSS}{MOTION_CSS}{POLISH_CSS}{STYLE_BRIDGE_CSS}</style>\n'
+        f'{BODY}{HERO_VIDEO_JS}\n{SECTION_VIDEO_JS}\n{SEARCH_TRIGGER_JS}\n'
+        f'<script id="style-js">{STYLE_JS}</script>\n')
 # Written beside this script, not into the working directory: run from the
 # tree root it left a second, identical copy of the page there (defect 13's shape).
 page = apply_seo(page, 'web/trade_craft_landing.html', 'Why the trades \u2014 SmartCiti.X : Trade Craft Academy',

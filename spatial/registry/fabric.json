@@ -2905,77 +2905,77 @@
      "anchored_at": "restoration-site:herons-head",
      "walkable": true,
      "door": null,
-     "why_no_door": "no page in this bundle reads a site parameter from its URL (the 3D page reads: campus, hall, hour, imagery, lang, sim, wx)"
+     "why_no_door": "no page in this bundle reads a site parameter from its URL (the 3D page reads: campus, hall, hour, imagery, lang, scenario, sim, wx)"
     },
     {
      "site": "candlestick-point",
      "anchored_at": "restoration-site:candlestick-point",
      "walkable": true,
      "door": null,
-     "why_no_door": "no page in this bundle reads a site parameter from its URL (the 3D page reads: campus, hall, hour, imagery, lang, sim, wx)"
+     "why_no_door": "no page in this bundle reads a site parameter from its URL (the 3D page reads: campus, hall, hour, imagery, lang, scenario, sim, wx)"
     },
     {
      "site": "east-oakland-youth",
      "anchored_at": "restoration-site:east-oakland-youth",
      "walkable": true,
      "door": null,
-     "why_no_door": "no page in this bundle reads a site parameter from its URL (the 3D page reads: campus, hall, hour, imagery, lang, sim, wx)"
+     "why_no_door": "no page in this bundle reads a site parameter from its URL (the 3D page reads: campus, hall, hour, imagery, lang, scenario, sim, wx)"
     },
     {
      "site": "alviso-shoreline",
      "anchored_at": "restoration-site:alviso-shoreline",
      "walkable": true,
      "door": null,
-     "why_no_door": "no page in this bundle reads a site parameter from its URL (the 3D page reads: campus, hall, hour, imagery, lang, sim, wx)"
+     "why_no_door": "no page in this bundle reads a site parameter from its URL (the 3D page reads: campus, hall, hour, imagery, lang, scenario, sim, wx)"
     },
     {
      "site": "south-bay-salt-ponds",
      "anchored_at": "restoration-site:south-bay-salt-ponds",
      "walkable": true,
      "door": null,
-     "why_no_door": "no page in this bundle reads a site parameter from its URL (the 3D page reads: campus, hall, hour, imagery, lang, sim, wx)"
+     "why_no_door": "no page in this bundle reads a site parameter from its URL (the 3D page reads: campus, hall, hour, imagery, lang, scenario, sim, wx)"
     },
     {
      "site": "montezuma-wetlands",
      "anchored_at": "restoration-site:montezuma-wetlands",
      "walkable": true,
      "door": null,
-     "why_no_door": "no page in this bundle reads a site parameter from its URL (the 3D page reads: campus, hall, hour, imagery, lang, sim, wx)"
+     "why_no_door": "no page in this bundle reads a site parameter from its URL (the 3D page reads: campus, hall, hour, imagery, lang, scenario, sim, wx)"
     },
     {
      "site": "american-canyon",
      "anchored_at": "restoration-site:american-canyon",
      "walkable": true,
      "door": null,
-     "why_no_door": "no page in this bundle reads a site parameter from its URL (the 3D page reads: campus, hall, hour, imagery, lang, sim, wx)"
+     "why_no_door": "no page in this bundle reads a site parameter from its URL (the 3D page reads: campus, hall, hour, imagery, lang, scenario, sim, wx)"
     },
     {
      "site": "straw-north-bay",
      "anchored_at": "restoration-site:straw-north-bay",
      "walkable": true,
      "door": null,
-     "why_no_door": "no page in this bundle reads a site parameter from its URL (the 3D page reads: campus, hall, hour, imagery, lang, sim, wx)"
+     "why_no_door": "no page in this bundle reads a site parameter from its URL (the 3D page reads: campus, hall, hour, imagery, lang, scenario, sim, wx)"
     },
     {
      "site": "spartina-removal",
      "anchored_at": null,
      "walkable": false,
      "door": null,
-     "why_no_door": "no page in this bundle reads a site parameter from its URL (the 3D page reads: campus, hall, hour, imagery, lang, sim, wx)"
+     "why_no_door": "no page in this bundle reads a site parameter from its URL (the 3D page reads: campus, hall, hour, imagery, lang, scenario, sim, wx)"
     },
     {
      "site": "hunters-point-shipyard",
      "anchored_at": "restoration-site:hunters-point-shipyard",
      "walkable": false,
      "door": null,
-     "why_no_door": "no page in this bundle reads a site parameter from its URL (the 3D page reads: campus, hall, hour, imagery, lang, sim, wx)"
+     "why_no_door": "no page in this bundle reads a site parameter from its URL (the 3D page reads: campus, hall, hour, imagery, lang, scenario, sim, wx)"
     },
     {
      "site": "treasure-island-nsti",
      "anchored_at": "restoration-site:treasure-island-nsti",
      "walkable": false,
      "door": null,
-     "why_no_door": "no page in this bundle reads a site parameter from its URL (the 3D page reads: campus, hall, hour, imagery, lang, sim, wx)"
+     "why_no_door": "no page in this bundle reads a site parameter from its URL (the 3D page reads: campus, hall, hour, imagery, lang, scenario, sim, wx)"
     }
    ],
    "provenance": "AUTHORED"

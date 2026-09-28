@@ -66,7 +66,7 @@ for (const c of REG.clips) {
   check(wip ? /^RECORDED from the working tree, work in progress/.test(c.provenance)
             : /^RECORDED from this build \(commit [0-9a-f]{12}\)$/.test(c.provenance),
     `${c.id}: provenance names the commit it was recorded from${wip ? ' and says work in progress' : ''}`);
-  check(existsSync(join(ROOT, c.source.page)), `${c.id}: source page ${c.source.page} exists`);
+  check(existsSync(join(ROOT, c.source.page.split('#')[0])), `${c.id}: source page ${c.source.page} exists`);
 }
 
 console.log(`${oks} checks passed${fails ? `, ${fails} FAILED` : ''}.`);

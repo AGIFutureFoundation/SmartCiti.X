@@ -11,15 +11,19 @@
   "check",
   "chevron-right",
   "circle-alert",
+  "clipboard-check",
+  "gamepad-2",
   "globe",
   "graduation-cap",
   "hard-hat",
+  "house",
   "info",
   "layers",
   "map",
   "pause",
   "play",
   "route",
+  "search",
   "shield-check",
   "users",
   "video",
@@ -46,6 +50,14 @@
    "sha256": "ce9ed8492ca96c8ec007c56263a5fbea7b668aaa82e1aa5576c3cd11ea704c16",
    "from": "https://registry.npmjs.org/lucide-static/-/lucide-static-1.48.0.tgz#icons/circle-alert.svg"
   },
+  "clipboard-check.svg": {
+   "sha256": "f44b5d4a7a6035e44a78bd3e6e5f3fd458559c6697ed512147c66091e8892bd4",
+   "from": "https://registry.npmjs.org/lucide-static/-/lucide-static-1.48.0.tgz#icons/clipboard-check.svg"
+  },
+  "gamepad-2.svg": {
+   "sha256": "a7ee3d0f49d304c3915287fabfeccced6caf1437d8927d4553d6fa57d6cabbf7",
+   "from": "https://registry.npmjs.org/lucide-static/-/lucide-static-1.48.0.tgz#icons/gamepad-2.svg"
+  },
   "globe.svg": {
    "sha256": "897bddddae3e96090a90ef5f68bfc634f8e8c6c5d4a4999d1587420e3252034f",
    "from": "https://registry.npmjs.org/lucide-static/-/lucide-static-1.48.0.tgz#icons/globe.svg"
@@ -57,6 +69,10 @@
   "hard-hat.svg": {
    "sha256": "f9f760bc154e12093af0f9426039823ee1f37eb3c713c5c0e8412f067e4045d6",
    "from": "https://registry.npmjs.org/lucide-static/-/lucide-static-1.48.0.tgz#icons/hard-hat.svg"
+  },
+  "house.svg": {
+   "sha256": "67dc27a57a07b1cb9f2adff2a926c500248dad533896ebd05674a1268078f445",
+   "from": "https://registry.npmjs.org/lucide-static/-/lucide-static-1.48.0.tgz#icons/house.svg"
   },
   "info.svg": {
    "sha256": "af880f5f1040830c149e539600fa62aee9d78ea231b03f9fb2eef78eaddb1d74",
@@ -81,6 +97,10 @@
   "route.svg": {
    "sha256": "001a83f065730db84c941f23c5ffabc3f8a7647c61bb89f92d162cd141dc0e39",
    "from": "https://registry.npmjs.org/lucide-static/-/lucide-static-1.48.0.tgz#icons/route.svg"
+  },
+  "search.svg": {
+   "sha256": "4c9a79296cd8835fd7ec8a33083f9f8f3166b27754ef65a9edbbc0eaa4e2d76a",
+   "from": "https://registry.npmjs.org/lucide-static/-/lucide-static-1.48.0.tgz#icons/search.svg"
   },
   "shield-check.svg": {
    "sha256": "99825a1716dbd3d0ade2d31749b46fccae12439c19ecddeac0077b6bf22f636c",

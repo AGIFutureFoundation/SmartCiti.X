@@ -797,11 +797,13 @@ const escLikeHome = (t) => String(t).split(/\s+/).join(' ').trim()
      that exists, a visible Pause/Play control, and one line saying where
      the footage came from. */
   const hdr = home.slice(home.indexOf('<header class="top"'), home.indexOf('</header>'));
-  const vids = [...home.matchAll(/<video\b([^>]*)>([\s\S]*?)<\/video>/g)];
+  // wave 3: the hero holds exactly one <video>; every other <video> on the
+  // page is section footage, held to the same rules by its own check below
+  const vids = [...hdr.matchAll(/<video\b([^>]*)>([\s\S]*?)<\/video>/g)];
   const v = vids.length === 1 ? vids[0] : null;
   const attrs = v ? v[1] : '';
   const need = ['autoplay', 'muted', 'loop', 'playsinline', 'preload="metadata"', 'aria-hidden="true"'];
-  ok('[shipped] index.html: exactly one <video>, inside the hero, muted, looping, inline, preload=metadata, '
+  ok('[shipped] index.html: exactly one <video> inside the hero, muted, looping, inline, preload=metadata, '
     + 'aria-hidden, with a poster',
     v !== null && hdr.includes('<video') && need.every((a) => new RegExp(`(^|\\s)${a}(\\s|$)`).test(attrs))
       && /\sposter="[^"]+"/.test(attrs),
@@ -859,6 +861,126 @@ const escLikeHome = (t) => String(t).split(/\s+/).join(' ').trim()
     /\.hv\{position:absolute;inset:0;z-index:-1/.test(home) && /\.hv-scrim\{position:absolute;inset:0;background:rgba\(/.test(home));
   ok('[shipped] index.html: a <main id="main"> holds the page\'s one <h1>, the target for skip links',
     /<main id="main" tabindex="-1">[\s\S]*<h1>[\s\S]*<\/main>/.test(home) && (home.match(/<main\b/g) || []).length === 1);
+}
+
+{
+  /* Wave 3: the enterprise layer. Section footage (showcase rows and bands
+     over MEDIA's registered clips), the count-up over the hero figures, the
+     globe and simulated-task teasers, and MEDIA's pagehero band on the ten
+     document pages HOMEUX adopted it on. Every clip is held to the hero's
+     rules; every figure stays the registry's own text in the DOM. */
+  const { createHash } = await import('node:crypto');
+  const { execFileSync } = await import('node:child_process');
+  const esc3 = (t) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#x27;');
+  const reg = JSON.parse(readFileSync(join(ROOT, 'media/registry/media.json'), 'utf8'));
+  const CLIP = Object.fromEntries(reg.clips.map((c) => [c.id, c]));
+  const landingW3 = readFileSync(join(HERE, 'trade_craft_landing.html'), 'utf8');
+  const sha = (p) => createHash('sha256').update(readFileSync(join(ROOT, p))).digest('hex');
+  const clipWrong = [];
+  let clipCount = 0;
+  for (const [name, page, base] of [['index.html', home, ''], ['trade_craft_landing.html', landingW3, 'web/']]) {
+    const heroEnd = page.indexOf('</header>');
+    const blocks = [...page.matchAll(/<(figure|div) class="(sv-media|vband[^"]*)"[^>]*data-clip="([^"]+)">([\s\S]*?)(?=<(?:figure|div) class="(?:sv-media|vband)|<\/main>)/g)];
+    const allVids = [...page.matchAll(/<video\b([^>]*)>([\s\S]*?)<\/video>/g)];
+    const outside = allVids.filter((m) => m.index > heroEnd);
+    if (outside.length !== blocks.length) clipWrong.push(`${name}: ${outside.length} videos past the hero, ${blocks.length} [data-clip] blocks`);
+    for (const [, , kind, id, inner] of blocks) {
+      clipCount++;
+      const c = CLIP[id];
+      if (!c) { clipWrong.push(`${name}: ${id} is not a registered clip`); continue; }
+      const v = inner.match(/<video\b([^>]*)>([\s\S]*?)<\/video>/);
+      if (!v) { clipWrong.push(`${name} ${id}: no <video>`); continue; }
+      const a = v[1];
+      for (const need of ['muted', 'loop', 'playsinline', 'preload="none"', 'aria-hidden="true"'])
+        if (!new RegExp(`(^|\\s)${need}(\\s|$)`).test(a)) clipWrong.push(`${name} ${id}: <video> lacks ${need}`);
+      if (/(^|\s)autoplay(\s|$|=)/.test(a)) clipWrong.push(`${name} ${id}: section footage must never carry autoplay`);
+      if (!/class="(sv-video|vb-video)"/.test(a)) clipWrong.push(`${name} ${id}: not a section-footage class`);
+      const poster = (a.match(/\sposter="([^"]+)"/) || [])[1];
+      const srcs = [...v[2].matchAll(/<source\b([^>]*)>/g)].map((m) => m[1]);
+      const ds = srcs.map((s) => (s.match(/data-src="([^"]+)"/) || [])[1]);
+      const types = srcs.map((s) => (s.match(/type="([^"]+)"/) || [])[1]);
+      if (srcs.some((s) => /(^|\s)src="/.test(s))) clipWrong.push(`${name} ${id}: a source is attached before script runs`);
+      if (JSON.stringify(types) !== '["video/webm","video/mp4"]') clipWrong.push(`${name} ${id}: sources ${types}`);
+      const shipped = [poster, ...ds].map((p) => (p ? join(base, p).replace(/\\/g, '/') : p));
+      const want = [c.files.poster.path, c.files.webm.path, c.files.mp4.path];
+      if (JSON.stringify(shipped) !== JSON.stringify(want)) clipWrong.push(`${name} ${id}: shipped ${shipped} != registry ${want}`);
+      for (const k of ['poster', 'webm', 'mp4']) if (!existsSync(join(ROOT, c.files[k].path)) || sha(c.files[k].path) !== c.files[k].sha256) clipWrong.push(`${name} ${id}: ${k} sha256 differs from the registry`);
+      const btn = inner.match(/<button\b[^>]*data-clip-toggle[^>]*>/);
+      if (!btn || !/aria-pressed="(true|false)"/.test(btn[0]) || !/data-label-pause="[^"]+"/.test(btn[0])) clipWrong.push(`${name} ${id}: no Pause/Play button of its own`);
+      if (!inner.includes(`${c.title}. ${c.provenance}.`)) clipWrong.push(`${name} ${id}: no caption naming its registry title and provenance`);
+    }
+  }
+  ok(`[shipped] index.html and trade_craft_landing.html: every <video> past the hero (${clipCount}) is section footage - a registered `
+    + 'clip byte for byte (sha256), muted, looping, inline, preload=none, aria-hidden, never autoplay, sources attached only by script, '
+    + 'with its own Pause/Play button and a caption naming the clip and its provenance', clipCount >= 3 && clipWrong.length === 0, clipWrong);
+
+  const sv = (home.match(/<script id="sv-js">([\s\S]*?)<\/script>/) || [])[1] || '';
+  ok('[shipped] index.html: the section-footage script declines under prefers-reduced-motion, Save-Data and a small screen, '
+    + 'starts a clip only while it is in view, and honours a stored pause',
+    /matchMedia\('\(prefers-reduced-motion: reduce\)'\)/.test(sv) && /navigator\.connection\.saveData/.test(sv)
+      && /matchMedia\('\(max-width: \d+px\)'\)/.test(sv) && /IntersectionObserver/.test(sv)
+      && /if \(reduce \|\| saveData \|\| small/.test(sv) && /pref\(\) !== 'paused'/.test(sv)
+      && landingW3.includes('<script id="sv-js">'));
+
+  const cu = (home.match(/<script id="countup-js">([\s\S]*?)<\/script>/) || [])[1] || '';
+  const cuBody = cu.slice(cu.indexOf('(function'));
+  ok('[shipped] index.html: the count-up animates only the registry figures already in the hero (<dl class="stats" data-countup>), '
+    + 'returns before touching the DOM under prefers-reduced-motion, and writes the built text back at the end',
+    /<dl class="stats" data-countup>/.test(home) && (home.replace(/<script\b[\s\S]*?<\/script>/g, '').match(/data-countup/g) || []).length === 1
+      && /^\(function \(\) \{\s*if \(window\.matchMedia\('\(prefers-reduced-motion: reduce\)'\)\.matches\) return;/.test(cuBody)
+      && /var fin = el\.textContent;/.test(cu) && /el\.textContent = fin;/.test(cu)
+      && /querySelectorAll\('\[data-countup\] dd'\)/.test(cu));
+
+  const teaser = (k) => (home.match(new RegExp(`<div class="sv-row" data-teaser="${k}">([\\s\\S]*?)</div></div>`)) || [])[1] || '';
+  const tWrong = [];
+  const g = teaser('globe'); const t = teaser('tasks');
+  if (!g.includes('href="web/trade_craft_geomap.html"')) tWrong.push('globe teaser does not link the geomap');
+  if (!/SCHEMATIC/.test(g)) tWrong.push('globe teaser does not say what is SCHEMATIC');
+  for (const h of ['web/trade_craft_map.html', 'web/trade_craft_interactive.html']) if (!t.includes(`href="${h}"`)) tWrong.push(`tasks teaser does not link ${h}`);
+  if (!/not a certification/.test(t)) tWrong.push('tasks teaser does not say a simulated run is not a certification');
+  for (const h of [...g.matchAll(/href="([^"]+)"/g), ...t.matchAll(/href="([^"]+)"/g)].map((m) => m[1])) if (!existsSync(join(ROOT, h))) tWrong.push(`${h} is not built`);
+  ok('[shipped] index.html: a globe teaser linking the geomap (saying what is SCHEMATIC) and a simulated-tasks teaser linking both maps '
+    + '(saying a run is practice, not a certification), every link a built page', tWrong.length === 0, tWrong);
+
+  // MEDIA's pagehero band on the ten document pages (herovideo.DOC_HERO_PAGES)
+  const DOC = JSON.parse(execFileSync('python3', ['-c', [
+    'import json, sys', `sys.path.insert(0, ${JSON.stringify(HERE)})`, 'import sitenav', 'import herovideo as h',
+    'print(json.dumps({k: [v[0], v[1], h.STYLE_MEMORY[k]] for k, v in h.DOC_HERO_PAGES.items()}))'].join('\n')], { encoding: 'utf8' }));
+  const enS = readJSON('i18n/locales/en.json').strings;
+  const ANCHOR = '<span id="tc-main" class="sitenav-skip-target" tabindex="-1"></span>';
+  const dWrong = [];
+  const clipsUsed = new Set();
+  for (const [k, [path, clip, mem]] of Object.entries(DOC)) {
+    const h = readFileSync(join(ROOT, path), 'utf8');
+    // the style switcher's memory, per page contract (herovideo.STYLE_MEMORY)
+    const headPart = h.slice(0, h.indexOf('</head>'));
+    const headJs = headPart.indexOf('<script id="style-head-js">'); const firstStyle = headPart.indexOf('<style');
+    const tailJs = h.includes('<script id="style-js">');
+    if (mem === 'full' && !(headJs > 0 && headJs < firstStyle && tailJs)) dWrong.push(`${k}: style memory 'full' but head/tail scripts are not in place`);
+    if (mem === 'tail' && (headJs >= 0 || !tailJs)) dWrong.push(`${k}: style memory 'tail' must carry only the tail script`);
+    if (mem === 'none' && (headJs >= 0 || tailJs)) dWrong.push(`${k}: style memory 'none' but a style script ships`);
+    if (!['full', 'tail', 'none'].includes(mem)) dWrong.push(`${k}: unknown style memory ${mem}`);
+    const bands = h.match(/<section class="ph" data-ph data-ph-clip="([^"]+)"[^>]*data-ph-contrast-min="([\d.]+)"/g) || [];
+    if (bands.length !== 1) { dWrong.push(`${k}: ${bands.length} pagehero bands`); continue; }
+    const [, id, min] = bands[0].match(/data-ph-clip="([^"]+)"[^>]*data-ph-contrast-min="([\d.]+)"/);
+    clipsUsed.add(id);
+    if (id !== clip || !CLIP[id]) dWrong.push(`${k}: band clip ${id}, declared ${clip}`);
+    if (!(Number(min) >= 4.5)) dWrong.push(`${k}: measured contrast min ${min} < 4.5`);
+    if (!h.includes(ANCHOR + '<section class="ph" data-ph')) dWrong.push(`${k}: the band is not right after the nav's skip target`);
+    if ((h.match(/<h1[\s>]/g) || []).length !== 1) dWrong.push(`${k}: not exactly one <h1>`);
+    for (const part of ['kicker', 'lede']) if (!h.includes(esc3(enS[`hero.${k}.${part}`]))) dWrong.push(`${k}: hero.${k}.${part} not on the page`);
+    if (!/^<!doctype html>\s*<html lang="en" data-theme="dark">/i.test(h)) dWrong.push(`${k}: <html> does not declare the dark palette`);
+    if (!/<body class="tc-theme[" ]/.test(h)) dWrong.push(`${k}: <body> lacks tc-theme`);
+    const scripts = [...h.matchAll(/<script\b[^>]*>/g)].map((m) => m[0]);
+    const iPh = scripts.findIndex((s) => /id="ph-js"/.test(s)); const iLd = scripts.findIndex((s) => /ld\+json/.test(s));
+    if (iPh < 0 || (iLd >= 0 && iPh > iLd)) dWrong.push(`${k}: the band script is missing or after the JSON-LD`);
+    if (/<section class="ph"[\s\S]*?<\/section>/.exec(h)[0].match(/https?:\/\//)) dWrong.push(`${k}: the band names an http(s) URL`);
+  }
+  ok(`[shipped] the ${Object.keys(DOC).length} document pages each carry one pagehero band right after the nav, on a registered clip `
+    + 'whose measured contrast is at least 4.5, with the catalog\'s hero.<page>.* words, still one <h1>, the dark palette, '
+    + 'the theme body class, and the band script ahead of the JSON-LD', Object.keys(DOC).length === 10 && dWrong.length === 0, dWrong);
+  ok(`[shipped] the document pages share out the registered clips rather than all taking one (${clipsUsed.size} in use)`,
+    clipsUsed.size >= 3, [...clipsUsed]);
 }
 
 {
@@ -1176,11 +1298,12 @@ if (WANT_BROWSER) {
          that has no background of its own, and the element's text colour
          must reach WCAG AA against the worst of those pixels. */
       const hv = [];
-      const measure = async (scheme, page = 'index.html', sel = '.hero-copy *') => {
+      const measure = async (scheme, page = 'index.html', sel = '.hero-copy *', style = null) => {
         const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, colorScheme: scheme });
         const pg = await ctx.newPage();
         pg.on('pageerror', (e) => errs.push('pageerror: ' + e.message));
         await pg.goto(`${ORIGIN}/${page}`, { waitUntil: 'load' });
+        if (style) await pg.evaluate((s) => document.documentElement.setAttribute('data-style', s), style);
         await pg.waitForFunction(() => { const v = document.querySelector('.hv-video'); return v && v.readyState >= 2 && v.currentTime > 0.3; }, null, { timeout: 20000 }).catch(() => {});
         const r = await pg.evaluate(async (sel) => {
           const v = document.querySelector('.hv-video');
@@ -1249,6 +1372,25 @@ if (WANT_BROWSER) {
         + `background holds WCAG AA against the worst scrimmed pixel under it (lowest: dark ${minOf(ldark)}, light ${minOf(llight)})`,
         ldark.frames >= 5 && llight.frames >= 5 && ldark.worst.length >= 3 && lfails.length === 0,
         lfails.slice(0, 6).map((f) => `${f.s} ${f.k} ${f.ratio} < ${f.need}`));
+      // the five site-wide styles (design_kit.STYLES, MEDIA's nav Style menu): the hero is measured in each
+      {
+        const { execFileSync: ef } = await import('node:child_process');
+        const STY = JSON.parse(ef('python3', ['-c', ['import json, sys', `sys.path.insert(0, ${JSON.stringify(HERE)})`,
+          'import design_kit as K', 'print(json.dumps([s["id"] for s in K.STYLES]))'].join('\n')], { encoding: 'utf8' }));
+        const per = []; const sfails = [];
+        for (const st of STY) {
+          const hi = await measure('dark', 'index.html', '.hero-copy *', st);
+          const hl = await measure('dark', 'web/trade_craft_landing.html', ':scope > :not(.hv) , :scope > :not(.hv) *', st);
+          per.push(`${st}: index ${minOf(hi)}, landing ${minOf(hl)}`);
+          for (const [nm, r] of [['index', hi], ['landing', hl]]) {
+            if (r.frames < 5 || r.worst.length < 3) sfails.push(`${st} ${nm}: ${r.frames} frames, ${r.worst.length} texts`);
+            for (const w of r.worst) if (w.ratio < w.need) sfails.push(`${st} ${nm} ${w.k} ${w.ratio} < ${w.need}`);
+          }
+        }
+        console.log('      hero contrast per style:', per.join(' | '));
+        ok(`[browser] in each of the ${STY.length} site styles, the hero text on index.html and trade_craft_landing.html holds WCAG AA `
+          + `against the worst scrimmed pixel over 5 sampled frames (${per.join('; ')})`, STY.length === 5 && sfails.length === 0, sfails.slice(0, 6));
+      }
       ok('[browser] at 1440 px with motion welcome the footage plays after load, from the WebM source',
         dark.playing && /\.webm$/.test(dark.src), [JSON.stringify({ playing: dark.playing, src: dark.src })]);
 
@@ -1312,6 +1454,110 @@ if (WANT_BROWSER) {
       ok('[browser] at 390 px the footage does not autoplay (poster only) and the page does not scroll sideways',
         small.paused && small.src === '' && small.sw <= 390, [JSON.stringify(small)]);
       await c3.close();
+    }
+
+    {
+      /* Wave 3: the section footage and the count-up, driven in the browser.
+         A band's words sit over its clip, so they are MEASURED like the
+         hero's: the band is scrolled into view, its clip starts, frames are
+         sampled, the band's scrim is composited over every pixel under each
+         text element with no background of its own, and the text must reach
+         WCAG AA against the worst of them. */
+      const measureBand = async (scheme, page) => {
+        const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, colorScheme: scheme });
+        const pg = await ctx.newPage();
+        pg.on('pageerror', (e) => errs.push('pageerror: ' + e.message));
+        await pg.goto(`${ORIGIN}/${page}`, { waitUntil: 'load' });
+        await pg.$eval('[data-band-host]', (e) => e.scrollIntoView({ block: 'center' }));
+        await pg.waitForFunction(() => { const v = document.querySelector('[data-band-host] .vb-video'); return v && v.readyState >= 2 && v.currentTime > 0.3; }, null, { timeout: 20000 }).catch(() => {});
+        const r = await pg.evaluate(async () => {
+          const host = document.querySelector('[data-band-host]');
+          const v = host.querySelector('.vb-video');
+          const out = { playing: !v.paused && v.currentTime > 0.3, src: v.currentSrc, worst: [], frames: 0 };
+          v.pause();
+          const rgb = (c) => c.match(/[\d.]+/g).map(Number);
+          const lin = (x) => { x /= 255; return x <= 0.04045 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4; };
+          const L = (r, g, b) => 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
+          const scrim = rgb(getComputedStyle(host.querySelector('.vb-scrim')).backgroundColor);
+          const a = scrim.length > 3 ? scrim[3] : 1;
+          const hr = host.getBoundingClientRect();
+          const cv = document.createElement('canvas'); cv.width = Math.round(hr.width); cv.height = Math.round(hr.height);
+          const g = cv.getContext('2d', { willReadFrequently: true });
+          const scale = Math.max(hr.width / v.videoWidth, hr.height / v.videoHeight);
+          const dw = v.videoWidth * scale; const dh = v.videoHeight * scale;
+          const opaque = (el) => { for (let e = el; e && e !== host; e = e.parentElement) { const b = getComputedStyle(e).backgroundColor; if (b !== 'rgba(0, 0, 0, 0)' && b !== 'transparent') return true; } return false; };
+          const els = [...host.querySelectorAll('.vb-inner *')].filter((e) => [...e.childNodes].some((n) => n.nodeType === 3 && n.textContent.trim())
+            && !opaque(e) && e.getBoundingClientRect().width > 0);
+          const worst = new Map();
+          for (const f of [0.05, 0.25, 0.45, 0.65, 0.85]) {
+            v.currentTime = f * v.duration;
+            await new Promise((res) => v.addEventListener('seeked', res, { once: true }));
+            const hr2 = host.getBoundingClientRect();
+            g.drawImage(v, (hr2.width - dw) / 2, (hr2.height - dh) / 2, dw, dh);
+            out.frames++;
+            for (const el of els) {
+              const er = el.getBoundingClientRect();
+              const x = Math.max(0, Math.floor(er.left - hr2.left)); const y = Math.max(0, Math.floor(er.top - hr2.top));
+              const w = Math.min(cv.width - x, Math.ceil(er.width)); const h = Math.min(cv.height - y, Math.ceil(er.height));
+              if (w <= 0 || h <= 0) continue;
+              const d = g.getImageData(x, y, w, h).data;
+              let lo = 1; let hi = 0;
+              for (let i = 0; i < d.length; i += 4) {
+                const l = L(a * scrim[0] + (1 - a) * d[i], a * scrim[1] + (1 - a) * d[i + 1], a * scrim[2] + (1 - a) * d[i + 2]);
+                if (l < lo) lo = l; if (l > hi) hi = l;
+              }
+              const tc = rgb(getComputedStyle(el).color); const lt = L(tc[0], tc[1], tc[2]);
+              const cr = (p, q) => (Math.max(p, q) + 0.05) / (Math.min(p, q) + 0.05);
+              const ratio = Math.min(cr(lt, lo), cr(lt, hi));
+              const cs = getComputedStyle(el); const px = parseFloat(cs.fontSize); const bold = +cs.fontWeight >= 700;
+              const need = px >= 24 || (bold && px >= 18.66) ? 3 : 4.5;
+              const key = el.tagName.toLowerCase() + '.' + (el.className && el.className.baseVal === undefined ? el.className : '') + ' "' + el.textContent.trim().slice(0, 24) + '"';
+              const prev = worst.get(key);
+              if (!prev || ratio < prev.ratio) worst.set(key, { ratio: +ratio.toFixed(2), need });
+            }
+          }
+          out.worst = [...worst].map(([k, w]) => ({ k, ...w }));
+          return out;
+        });
+        await ctx.close();
+        return r;
+      };
+      const minOf = (r) => (r.worst.length ? Math.min(...r.worst.map((w) => w.ratio)) : NaN);
+      const bandRes = {};
+      for (const page of ['index.html', 'web/trade_craft_landing.html']) {
+        const d = await measureBand('dark', page); const l = await measureBand('light', page);
+        bandRes[page] = { d, l };
+        const f = [...d.worst.map((w) => ({ ...w, s: 'dark' })), ...l.worst.map((w) => ({ ...w, s: 'light' }))].filter((w) => w.ratio < w.need);
+        ok(`[browser] ${page}: the band's clip plays once scrolled into view, and over ${d.frames} sampled frames, light and dark, every band `
+          + `text without its own background holds WCAG AA against the worst scrimmed pixel (lowest: dark ${minOf(d)}, light ${minOf(l)})`,
+          d.playing && /\.webm$/.test(d.src) && d.frames >= 5 && l.frames >= 5 && d.worst.length >= 3 && f.length === 0,
+          [JSON.stringify({ playing: d.playing, src: d.src }), ...f.slice(0, 6).map((x) => `${x.s} ${x.k} ${x.ratio} < ${x.need}`)]);
+      }
+      console.log('      band contrast:', JSON.stringify(Object.fromEntries(Object.entries(bandRes).map(([k, v]) => [k, { dark: minOf(v.d), light: minOf(v.l) }]))));
+
+      // count-up: the built text is the final text; with motion it animates and lands on it, under reduced motion it never changes
+      const built = [...home.matchAll(/<div class="stat" data-stat="([^"]*)"[^>]*><dt>[^<]*<\/dt><dd>([^<]*)<\/dd><\/div>/g)].map((m) => m[2]);
+      const cuRun = async (reduced) => {
+        const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, reducedMotion: reduced ? 'reduce' : 'no-preference' });
+        const pg = await ctx.newPage();
+        pg.on('pageerror', (e) => errs.push('pageerror: ' + e.message));
+        await pg.goto(`${ORIGIN}/index.html`, { waitUntil: 'load' });
+        const seen = await pg.evaluate(() => new Promise((res) => {
+          const dds = [...document.querySelectorAll('[data-countup] dd')];
+          const samples = []; const t0 = performance.now();
+          (function tick() { samples.push(dds.map((d) => d.textContent)); if (performance.now() - t0 < 1600) requestAnimationFrame(tick); else res(samples); }());
+        }));
+        await ctx.close();
+        return seen;
+      };
+      const moving = await cuRun(false); const still = await cuRun(true);
+      const last = moving[moving.length - 1];
+      const animated = moving.some((s) => s.some((t, i) => t !== built[i]));
+      const stillChanged = still.filter((s) => JSON.stringify(s) !== JSON.stringify(built)).length;
+      ok(`[browser] index.html: the hero figures count up with motion welcome and land on exactly the built registry text (${built.length} figures); `
+        + `under prefers-reduced-motion not one of ${still.length} sampled frames shows anything but the built text`,
+        built.length >= 6 && animated && JSON.stringify(last) === JSON.stringify(built) && stillChanged === 0,
+        [`animated=${animated}`, `last=${JSON.stringify(last)}`, `built=${JSON.stringify(built)}`, `reduced frames changed=${stillChanged}`]);
     }
 
     ok('[browser] neither page raised an uncaught error nor logged a console error while every '

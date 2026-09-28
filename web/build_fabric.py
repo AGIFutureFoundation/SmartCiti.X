@@ -1172,6 +1172,10 @@ const DATA = {PAYLOAD};
 out = HERE / PAGE_NAME
 page = apply_seo(page, 'web/trade_craft_fabric.html', 'SmartCiti.X : Trade Craft Academy \u2014 spatial fabric',
     'The spatial fabric: how the academy\'s places are anchored and addressed, drawn from its spatial registries.', 'page')
+# wave 3 (HOMEUX): MEDIA's pagehero band + the theme layer, head/hero region only;
+# every word from the catalog (hero.fabric.*), see web/herovideo.py doc_hero().
+from herovideo import adopt_doc_hero  # noqa: E402
+page = adopt_doc_hero('fabric', page)
 emit(out, page,
      f'{F(N_POSES)} poses, {F(N_BRANCHES)} SOM branches with {F(N_NODES)} nodes, '
      f'{F(N_SERVICES)} services, {F(N_DOORS_DECLARED)} doors declared; loads in this page, '

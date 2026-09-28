@@ -102,6 +102,9 @@ def icon(name, cls='dk-icon'):
     svg = re.sub(r'<!--.*?-->', '', svg, flags=re.S).strip()
     svg = re.sub(r'\s*\n\s*', ' ', svg)
     svg = svg.replace('class="lucide ', f'class="{cls} lucide ', 1)
+    # inline HTML <svg> needs no namespace; dropping it keeps every page free
+    # of http(s) text (test_schools and friends scan for it)
+    svg = svg.replace(' xmlns="http://www.w3.org/2000/svg"', '', 1)
     return svg.replace('<svg ', '<svg aria-hidden="true" focusable="false" ', 1)
 
 
@@ -264,7 +267,9 @@ def hero(d):
     v = d['video']
     if v is not None:
         _need(v, ['webm', 'mp4', 'poster', 'credit', 'pause_label', 'play_label'], 'hero.video')
-        media = (f'<div class="dk-hero-media"><video muted loop playsinline autoplay preload="metadata" '
+        # no autoplay attribute: KIT_JS starts it only without reduced motion,
+        # so a reduced-motion reader's browser never begins fetching it
+        media = (f'<div class="dk-hero-media"><video muted loop playsinline preload="none" '
                  f'poster="{E(v["poster"])}" aria-hidden="true">'
                  f'<source src="{E(v["webm"])}" type="video/webm">'
                  f'<source src="{E(v["mp4"])}" type="video/mp4"></video></div>'
@@ -391,3 +396,133 @@ def contrast(fg, bg):
         return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]
     a, b = sorted((lum(fg), lum(bg)), reverse=True)
     return (a + 0.05) / (b + 0.05)
+
+
+# ------------------------------------------------------------------ styles
+# Five site-wide STYLES a reader can switch between from the nav (web/sitenav.py
+# "Style" menu). Each is a full token set - surfaces, text, accent, link,
+# radii, shadow, display face and the hero scrim - applied as custom
+# properties on <html data-style="<id>"> (or, before a page's script runs,
+# by the checked radio in the nav, via :has()). Every token name a page can
+# read is in STYLE_VARS; pages that colour themselves from these properties
+# change with the style. Patterns come from the MIT template kits the lead
+# downloaded (Tabler 1.6.0; Start Bootstrap Creative 7.0.7 / Agency 7.0.12):
+# colour values are ours, chosen for contrast. Only vendored OFL faces are
+# used (Barlow Condensed, Archivo, IBM Plex) - no serif is vendored, so
+# Studio pairs Archivo display with Plex Sans rather than a serif.
+STYLE_KEY = 'tc-style'          # localStorage key and radio group name
+STYLES = [
+    {'id': 'enterprise', 'label_key': 'nav.style.enterprise', 'kit': 'Tabler 1.6.0 (light dashboard)',
+     'tokens': {'plate': '#F6F8FB', 'panel': '#FFFFFF', 'raised': '#EEF2F7', 'line': '#D5DCE4', 'ink': '#182433',
+                'muted': '#556274', 'accent': '#0B63C4', 'accent-ink': '#FFFFFF', 'link': '#0B5CB5', 'scrim': '#182433', 'ok': '#1E7A45', 'warn': '#8F5500'},
+     'scrim_alpha': 0.74, 'display': "'Archivo', system-ui, sans-serif", 'radius': ['4px', '6px', '10px'],
+     'shadow': '0 1px 2px rgb(24 36 51 / .06), 0 4px 12px rgb(24 36 51 / .08)', 'texture': None},
+    {'id': 'midnight', 'label_key': 'nav.style.midnight', 'kit': 'house brand (refined dark)',
+     'tokens': {'plate': '#12181B', 'panel': '#182023', 'raised': '#1F292D', 'line': '#2B383C', 'ink': '#E8EDEC',
+                'muted': '#93A3A6', 'accent': '#E8A33D', 'accent-ink': '#12181B', 'link': '#41C4D4', 'scrim': '#12181B', 'ok': '#6FCF97', 'warn': '#E8A33D'},
+     'scrim_alpha': 0.72, 'display': "'Barlow Condensed', 'Archivo', system-ui, sans-serif", 'radius': ['4px', '8px', '14px'],
+     'shadow': '0 4px 12px rgb(0 0 0 / .18), 0 2px 4px rgb(0 0 0 / .12)', 'texture': None},
+    {'id': 'blueprint', 'label_key': 'nav.style.blueprint', 'kit': 'Tabler 1.6.0 (dark) + drafting grid',
+     'tokens': {'plate': '#0B1E3A', 'panel': '#0F2749', 'raised': '#15315A', 'line': '#28497A', 'ink': '#E6F1FF',
+                'muted': '#A3BEDD', 'accent': '#3FD0F0', 'accent-ink': '#06162B', 'link': '#7FE3F7', 'scrim': '#081A33', 'ok': '#6FCF97', 'warn': '#F2C14E'},
+     'scrim_alpha': 0.74, 'display': "'IBM Plex Mono', ui-monospace, monospace", 'radius': ['2px', '4px', '6px'],
+     'shadow': '0 0 0 1px rgb(127 227 247 / .10), 0 6px 18px rgb(0 0 0 / .30)',
+     'texture': 'linear-gradient(rgb(127 227 247 / .06) 1px,transparent 1px),linear-gradient(90deg,rgb(127 227 247 / .06) 1px,transparent 1px)'},
+    {'id': 'hivis', 'label_key': 'nav.style.hivis', 'kit': 'Start Bootstrap Agency 7.0.12 (bold masthead type)',
+     'tokens': {'plate': '#161616', 'panel': '#202020', 'raised': '#2A2A2A', 'line': '#454545', 'ink': '#F5F5F0',
+                'muted': '#BDBDB3', 'accent': '#FF7A00', 'accent-ink': '#111111', 'link': '#FFD400', 'scrim': '#141414', 'ok': '#6FCF97', 'warn': '#FFD400'},
+     'scrim_alpha': 0.74, 'display': "'Barlow Condensed', system-ui, sans-serif", 'radius': ['0px', '2px', '4px'],
+     'shadow': '0 0 0 2px rgb(255 212 0 / .12), 0 8px 20px rgb(0 0 0 / .35)', 'texture': None},
+    {'id': 'studio', 'label_key': 'nav.style.studio', 'kit': 'Start Bootstrap Creative 7.0.7 (marketing)',
+     'tokens': {'plate': '#FFFAF3', 'panel': '#FFFFFF', 'raised': '#FDEEDC', 'line': '#EAD7C0', 'ink': '#1E1B18',
+                'muted': '#5E554B', 'accent': '#B93A0B', 'accent-ink': '#FFFFFF', 'link': '#9A3412', 'scrim': '#1E140C', 'ok': '#1E7A45', 'warn': '#8F5500'},
+     'scrim_alpha': 0.70, 'display': "'Archivo', system-ui, sans-serif", 'radius': ['8px', '14px', '22px'],
+     'shadow': '0 10px 30px rgb(80 40 10 / .10), 0 2px 6px rgb(80 40 10 / .08)', 'texture': None},
+]
+# pairs held per style (fg, bg, minimum); the hero pairs are checked separately
+STYLE_PAIRS = [('ink', 'plate', 7.0), ('ink', 'panel', 7.0), ('ink', 'raised', 4.5), ('muted', 'plate', 4.5),
+               ('muted', 'panel', 4.5), ('ok', 'panel', 4.5), ('warn', 'panel', 4.5), ('accent-ink', 'accent', 4.5), ('link', 'plate', 4.5), ('link', 'panel', 4.5)]
+# the hero band's text colours (web/pagehero.py HERO_TEXT mirrors these) over each style's scrim
+STYLE_HERO_TEXT = {'title': '#F4F7F6', 'lede': '#D3DCDB', 'kicker': '#FAD08C', 'accent-from': '#FFD58F', 'accent-to': '#8FE9F2'}
+# a scrim is measured against the worst frame any clip can show: pure white
+STYLE_WORST_FRAME = '#FFFFFF'
+
+
+def _mix(top, alpha, under):
+    t = [int(top[i:i + 2], 16) for i in (1, 3, 5)]
+    u = [int(under[i:i + 2], 16) for i in (1, 3, 5)]
+    return '#%02X%02X%02X' % tuple(round(alpha * a + (1 - alpha) * b) for a, b in zip(t, u))
+
+
+def style_ratios(s):
+    """Every pair a style is held to, measured: {name: (ratio, minimum)}."""
+    t = s['tokens']
+    out = {f'{f}/{b}': (round(contrast(t[f], t[b]), 2), m) for f, b, m in STYLE_PAIRS}
+    under = _mix(t['scrim'], s['scrim_alpha'], STYLE_WORST_FRAME)
+    for k, v in STYLE_HERO_TEXT.items():
+        out[f'hero {k}/scrim'] = (round(contrast(v, under), 2), 4.5)
+    return out
+
+
+for _s in STYLES:
+    _low = {k: r for k, (r, m) in style_ratios(_s).items() if r < m}
+    if _low:
+        raise ValueError(f"design_kit.STYLES: style {_s['id']!r} fails contrast {_low}")
+assert len(STYLES) == 5 and len({s['id'] for s in STYLES}) == 5, 'design_kit.STYLES: exactly five distinct styles'
+
+
+def _rgbtriple(h):
+    return ' '.join(str(int(h[i:i + 2], 16)) for i in (1, 3, 5))
+
+
+def style_css():
+    """The five styles as CSS. Each applies when <html data-style="id">, when
+    the nav's radio for it is checked (:has, so it works before any script),
+    or inside a [data-style-preview="id"] block (the design page's gallery).
+    Values are !important on the elements that re-declare page tokens
+    (html, body, kit frames, the hero band), so a page's own :root / body /
+    light-mode palette cannot shadow the reader's choice."""
+    out = []
+    for s in STYLES:
+        t, i = s['tokens'], s['id']
+        scopes = [f'html[data-style="{i}"]', f'html:has(input[name="{STYLE_KEY}"][value="{i}"]:checked)',
+                  f'[data-style-preview="{i}"]']
+        re_decl = ':is(body,.dk,[data-theme],.tc-theme,.tc-theme-canvas,.ph)'
+        sel = ','.join(scopes + [f'{sc} {re_decl}' for sc in scopes])
+        a, ai = t['accent'], t['accent-ink']
+        v = {  # page tokens (every page's own names), kit tokens, theme tokens
+            'plate': t['plate'], 'panel': t['panel'], 'surface': t['panel'], 'sunk': t['plate'], 'raised': t['raised'],
+            'line': t['line'], 'rule': t['line'], 'ink': t['ink'], 'muted': t['muted'], 'mark': a, 'mark-ink': ai,
+            'accent': a, 'steel': t['link'], 'link': t['link'],
+        }
+        decl = ''.join(f'--{k}:{x}!important;' for k, x in v.items())
+        for k, x in t.items():
+            if k == 'scrim':
+                continue
+            kk = 'amber' if k == 'accent' else 'amber-ink' if k == 'accent-ink' else k
+            decl += f'--dk-{kk}:{x}!important;--tc-{kk}:{x}!important;'
+        decl += (f'--dk-steel:{t["link"]}!important;--tc-steel:{t["link"]}!important;'
+                 f'--dk-f-display:{s["display"]}!important;'
+                 f'--dk-r-sm:{s["radius"][0]}!important;--dk-r-md:{s["radius"][1]}!important;--dk-r-lg:{s["radius"][2]}!important;'
+                 f'--tc-r-sm:{s["radius"][0]}!important;--tc-r-md:{s["radius"][1]}!important;--tc-r-lg:{s["radius"][2]}!important;'
+                 f'--dk-e-1:{s["shadow"]}!important;--dk-e-2:{s["shadow"]}!important;--tc-e-1:{s["shadow"]}!important;'
+                 f'--tc-e-2:{s["shadow"]}!important;--ph-plate:{t["scrim"]}!important;'
+                 f'--st-scrim:{t["scrim"]};--st-scrim-a:{s["scrim_alpha"]};color-scheme:{"light" if contrast(t["plate"], "#FFFFFF") < 2 else "dark"}')
+        out.append(f'/*style:{i}*/{sel}{{{decl}}}')
+        body = ','.join([f'{scopes[0]} body', f'{scopes[1]} body', scopes[2]])
+        tex = f'background-image:{s["texture"]};background-size:24px 24px;' if s['texture'] else ''
+        out.append(f'{body}{{background-color:{t["plate"]}!important;color:{t["ink"]};{tex}}}')
+        ph = ','.join(f'{sc} .ph-scrim' for sc in scopes)
+        r = _rgbtriple(t['scrim'])
+        al = s['scrim_alpha']
+        out.append(f'{ph}{{background:linear-gradient(0deg,rgb({r} / .9) 0%,rgb({r} / {al}) 45%,rgb({r} / {al}) 100%)!important}}')
+        out.append(f'@media (min-width:900px){{{ph}{{background:linear-gradient(90deg,rgb({r} / .9) 0%,'
+                   f'rgb({r} / {al}) 58%,rgb({r} / .3) 100%)!important}}}}')
+        out.append(','.join(f'{sc} :is(.ph-title,.dk-hero-title,h1,h2)' for sc in scopes) + f'{{font-family:{s["display"]}}}')
+        out.append(','.join(f'{sc} :is(.dk-btn-primary,.tc-btn-primary)' for sc in scopes)
+                   + f'{{background:{a}!important;color:{ai}!important}}')
+    return '\n'.join(out) + '\n'
+
+
+STYLE_HEAD_JS = ("(()=>{try{var s=localStorage.getItem('" + STYLE_KEY + "');if(" + '/^(' + '|'.join(s['id'] for s in STYLES)
+                 + ")$/.test(s||''))document.documentElement.setAttribute('data-style',s)}catch(e){}})();")

@@ -3,7 +3,7 @@
  "how": "media/record.mjs (virtual clock, camera driven through the page hook, one screenshot per frame) -> media/encode.py (grade, VP9 + H.264, poster, 480 px preview) -> media/build.py",
  "budget_bytes": 3145728,
  "fps": 24,
- "source_stamp": "4f8db1444ea30f8c319f1888c606e6141b95f4e17e0170ff5d7dd3684e50593f",
+ "source_stamp": "72c67cb639417e7958c8e21cdaf2e8da559e39487ce6eb6bc40ab91ea493d0b6",
  "clips": [
   {
    "id": "campus-green-crane-up",
@@ -54,7 +54,12 @@
    "provenance": "RECORDED from this build (commit 57f497245b0d)",
    "licence": "first-party",
    "grade": "soft S-curve, saturation 1.07, contrast 1.03, vignette PI/6 (media/encode.py GRADE)",
-   "encoded": "2026-09-28T06:15Z"
+   "encoded": "2026-09-28T06:15Z",
+   "measured": {
+    "brightest_rgb": "#ECEDE2",
+    "pixels": 15187200,
+    "how": "channel-wise max over every pixel of every frame of the webm, decoded at 400 px wide"
+   }
   },
   {
    "id": "campus-green-low-dolly",
@@ -105,7 +110,12 @@
    "provenance": "RECORDED from this build (commit 57f497245b0d)",
    "licence": "first-party",
    "grade": "soft S-curve, saturation 1.07, contrast 1.03, vignette PI/6 (media/encode.py GRADE)",
-   "encoded": "2026-09-28T06:48Z"
+   "encoded": "2026-09-28T06:48Z",
+   "measured": {
+    "brightest_rgb": "#E8E4DB",
+    "pixels": 13017600,
+    "how": "channel-wise max over every pixel of every frame of the webm, decoded at 400 px wide"
+   }
   },
   {
    "id": "region-board-orbit",
@@ -156,7 +166,12 @@
    "provenance": "RECORDED from this build (commit 57f497245b0d)",
    "licence": "first-party",
    "grade": "soft S-curve, saturation 1.07, contrast 1.03, vignette PI/6 (media/encode.py GRADE)",
-   "encoded": "2026-09-28T06:49Z"
+   "encoded": "2026-09-28T06:49Z",
+   "measured": {
+    "brightest_rgb": "#FBE5EC",
+    "pixels": 13017600,
+    "how": "channel-wise max over every pixel of every frame of the webm, decoded at 400 px wide"
+   }
   },
   {
    "id": "hall-orbit",
@@ -207,14 +222,183 @@
    "provenance": "RECORDED from this build (commit 57f497245b0d)",
    "licence": "first-party",
    "grade": "soft S-curve, saturation 1.07, contrast 1.03, vignette PI/6 (media/encode.py GRADE)",
-   "encoded": "2026-09-28T06:49Z"
+   "encoded": "2026-09-28T06:49Z",
+   "measured": {
+    "brightest_rgb": "#FFFFFF",
+    "pixels": 13017600,
+    "how": "channel-wise max over every pixel of every frame of the webm, decoded at 400 px wide"
+   }
+  },
+  {
+   "id": "hall-interior-dolly",
+   "title": "Hall interior, dolly over the bays",
+   "shows": "Inside a trade hall, the camera moving forward just above head height over the training bays",
+   "source": {
+    "page": "web/trade_craft_3d.html",
+    "view": "hall"
+   },
+   "camera_move": "dolly-in",
+   "duration_s": 6,
+   "fps": 24,
+   "frames": 144,
+   "resolution": [
+    1600,
+    900
+   ],
+   "preview_width": 480,
+   "hero": false,
+   "known_issue": "shadow striping on some bay walls in the foreground; not used as a hero",
+   "status": "committed source",
+   "files": {
+    "webm": {
+     "path": "web/media/broll/hall-interior-dolly.webm",
+     "bytes": 1441636,
+     "sha256": "f15d26507cbc5c3f1e9e6d3a15af5647078d7c093b875c83aae871ae6fa6d50f",
+     "type": "video/webm; codecs=vp9"
+    },
+    "mp4": {
+     "path": "web/media/broll/hall-interior-dolly.mp4",
+     "bytes": 1572900,
+     "sha256": "1da4ba2e8a6ebe2297ca9ca6ed3c95bbb173d91b40cc69b54a7fa22bda064ce5",
+     "type": "video/mp4; codecs=avc1"
+    },
+    "poster": {
+     "path": "web/media/broll/hall-interior-dolly-poster.jpg",
+     "bytes": 136847,
+     "sha256": "141e3b59d90f7bd4200a301bafe442ba59169278ab9c45993f48af9f880e3b01",
+     "type": "image/jpeg"
+    },
+    "preview": {
+     "path": "web/media/broll/hall-interior-dolly-480.webm",
+     "bytes": 199223,
+     "sha256": "c50ab5b30d892c46d2286af8b8b9593702d2b51e285ccb4fb29dea0c6544a112",
+     "type": "video/webm; codecs=vp9"
+    }
+   },
+   "provenance": "RECORDED from this build (commit a721981f0991)",
+   "licence": "first-party",
+   "grade": "soft S-curve, saturation 1.07, contrast 1.03, vignette PI/6 (media/encode.py GRADE)",
+   "encoded": "2026-09-28T09:03Z",
+   "measured": {
+    "brightest_rgb": "#FFF4F0",
+    "pixels": 13017600,
+    "how": "channel-wise max over every pixel of every frame of the webm, decoded at 400 px wide"
+   }
+  },
+  {
+   "id": "globe-flyover",
+   "title": "Globe, slow flyover",
+   "shows": "The globe map (graticule and the campus network, placed SCHEMATIC at registry coordinates) turning toward the network and easing in",
+   "source": {
+    "page": "web/trade_craft_geomap.html",
+    "view": "globe"
+   },
+   "camera_move": "flyover",
+   "duration_s": 6,
+   "fps": 24,
+   "frames": 144,
+   "resolution": [
+    1600,
+    900
+   ],
+   "preview_width": 480,
+   "hero": false,
+   "known_issue": "the globe has no basemap offline, so it reads as a dark sphere with a graticule, and the network starts small in frame; not used as a hero",
+   "status": "committed source",
+   "files": {
+    "webm": {
+     "path": "web/media/broll/globe-flyover.webm",
+     "bytes": 625075,
+     "sha256": "13d74456651ea01eecae3626549b093c5c3d313a4da3dc4e5aa5a390e4159a19",
+     "type": "video/webm; codecs=vp9"
+    },
+    "mp4": {
+     "path": "web/media/broll/globe-flyover.mp4",
+     "bytes": 734659,
+     "sha256": "a0fc51d45c75c3c2145f2014364a55ea0db0a6d307d3d8d833b9e981c2192eb5",
+     "type": "video/mp4; codecs=avc1"
+    },
+    "poster": {
+     "path": "web/media/broll/globe-flyover-poster.jpg",
+     "bytes": 94023,
+     "sha256": "ec6e24124da99a385c99de3617c012c9837077ec27fb57cd208bb0a73281a7f9",
+     "type": "image/jpeg"
+    },
+    "preview": {
+     "path": "web/media/broll/globe-flyover-480.webm",
+     "bytes": 45367,
+     "sha256": "9a1f11fb89431302b17676b1749543b198e8bffcd5c1349797e76a9ffaa35945",
+     "type": "video/webm; codecs=vp9"
+    }
+   },
+   "provenance": "RECORDED from this build (commit a721981f0991)",
+   "licence": "first-party",
+   "grade": "soft S-curve, saturation 1.07, contrast 1.03, vignette PI/6 (media/encode.py GRADE)",
+   "encoded": "2026-09-28T08:27Z",
+   "measured": {
+    "brightest_rgb": "#FFE7EF",
+    "pixels": 13017600,
+    "how": "channel-wise max over every pixel of every frame of the webm, decoded at 400 px wide"
+   }
+  },
+  {
+   "id": "wilds-mountain-flyover",
+   "title": "High Country, mountain flyover",
+   "shows": "The AUTHORED High Country wild world (terrain inspired by the general geography of a high mountain range, not real elevation), the camera gliding across the ridges from high over the valley",
+   "source": {
+    "page": "web/trade_craft_wilds.html#mountain",
+    "view": "wilds:mountain overview"
+   },
+   "camera_move": "flyover (lateral, descending)",
+   "duration_s": 6,
+   "fps": 24,
+   "frames": 144,
+   "resolution": [
+    1600,
+    900
+   ],
+   "preview_width": 480,
+   "hero": true,
+   "known_issue": null,
+   "status": "committed source",
+   "files": {
+    "webm": {
+     "path": "web/media/broll/wilds-mountain-flyover.webm",
+     "bytes": 567581,
+     "sha256": "d9552bde50480d594464a765014e967f5474e255c6ea85e0494ff536ee03f9ba",
+     "type": "video/webm; codecs=vp9"
+    },
+    "mp4": {
+     "path": "web/media/broll/wilds-mountain-flyover.mp4",
+     "bytes": 756355,
+     "sha256": "d74682b5ded8dde96c3d6fe4c50ad52c86e70fd443393a7288f43cd0bf8c6260",
+     "type": "video/mp4; codecs=avc1"
+    },
+    "poster": {
+     "path": "web/media/broll/wilds-mountain-flyover-poster.jpg",
+     "bytes": 77846,
+     "sha256": "aa5cb47d0111153e74fa4f79e52cc7ba5215132e4504f1560398f90685d3a2df",
+     "type": "image/jpeg"
+    },
+    "preview": {
+     "path": "web/media/broll/wilds-mountain-flyover-480.webm",
+     "bytes": 78520,
+     "sha256": "bd2d35a31e5119342c3b7a215317bbfe252e5fc77ce1a6144c97df5b57d52a1b",
+     "type": "video/webm; codecs=vp9"
+    }
+   },
+   "provenance": "RECORDED from this build (commit a721981f0991)",
+   "licence": "first-party",
+   "grade": "soft S-curve, saturation 1.07, contrast 1.03, vignette PI/6 (media/encode.py GRADE)",
+   "encoded": "2026-09-28T08:23Z",
+   "measured": {
+    "brightest_rgb": "#E4E9FA",
+    "pixels": 13017600,
+    "how": "channel-wise max over every pixel of every frame of the webm, decoded at 400 px wide"
+   }
   }
  ],
  "pending": [
-  {
-   "id": "hall-interior-dolly",
-   "why": "not rendered yet: hall-interior-dolly.webm, hall-interior-dolly.mp4, hall-interior-dolly-poster.jpg, hall-interior-dolly-480.webm"
-  },
   {
    "id": "avatar-locker-orbit",
    "why": "not rendered yet: avatar-locker-orbit.webm, avatar-locker-orbit.mp4, avatar-locker-orbit-poster.jpg, avatar-locker-orbit-480.webm"
@@ -222,10 +406,6 @@
   {
    "id": "sim-crane-seat",
    "why": "not rendered yet: sim-crane-seat.webm, sim-crane-seat.mp4, sim-crane-seat-poster.jpg, sim-crane-seat-480.webm"
-  },
-  {
-   "id": "globe-flyover",
-   "why": "not rendered yet: globe-flyover.webm, globe-flyover.mp4, globe-flyover-poster.jpg, globe-flyover-480.webm"
   }
  ]
 }

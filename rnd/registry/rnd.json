@@ -21,11 +21,11 @@
   "measured_elsewhere": 51,
   "computed_from_registry": 12,
   "measured_source_files": 11,
-  "registries_scanned": 52,
+  "registries_scanned": 54,
   "app_renderers_scanned": 25,
   "doc_renderers_scanned": 3,
-  "builders_scanned": 42,
-  "suites_scanned": 78,
+  "builders_scanned": 44,
+  "suites_scanned": 80,
   "declared_unbuilt": 4,
   "declared_unbuilt_by_their_own_words": 2,
   "declared_unbuilt_not_drawn": 3,
@@ -38,13 +38,13 @@
   "budget_views": 6,
   "budget_currencies": 2,
   "budget_agreements": 7,
-  "suites_run": 78,
-  "suite_checks_declared": 3721,
+  "suites_run": 80,
+  "suite_checks_declared": 3932,
   "open_questions": 12,
   "negative_findings": 9,
   "cross_checks": 2,
   "cross_checks_disagreeing": 0,
-  "files_read": 235
+  "files_read": 242
  },
  "tiers": [
   "MEASURED-IN-BROWSER",
@@ -1735,6 +1735,7 @@
     "worksites/build.py"
    ],
    "suites": [
+    "tasks/test.mjs",
     "web/test_home.mjs",
     "web/test_interactive.mjs",
     "web/test_map.mjs",
@@ -1830,6 +1831,7 @@
    ],
    "builders": [
     "agents/build.py",
+    "geo3d/build.py",
     "guide/build.py",
     "parcels/build.py",
     "restoration/build.py",
@@ -1841,6 +1843,7 @@
    ],
    "suites": [
     "agents/test.mjs",
+    "geo3d/test.mjs",
     "parcels/test.mjs",
     "restoration/test.mjs",
     "roadmap/test.mjs",
@@ -1854,6 +1857,21 @@
    "own_pack": [
     "geo/build.py",
     "geo/test.mjs"
+   ]
+  },
+  "geo3d/registry/geo3d.json": {
+   "app_renderers": [
+    "web/build_geomap.py"
+   ],
+   "doc_renderers": [],
+   "builders": [],
+   "suites": [
+    "web/test_geomap.mjs"
+   ],
+   "own_pack": [
+    "geo3d/browser.mjs",
+    "geo3d/build.py",
+    "geo3d/test.mjs"
    ]
   },
   "guide/registry/guide.json": {
@@ -1925,7 +1943,8 @@
     "web/build_lessons.py",
     "web/build_map.py",
     "web/build_progress.py",
-    "web/build_schools.py"
+    "web/build_schools.py",
+    "web/build_wilds.py"
    ],
    "doc_renderers": [
     "wiki/build_wiki.py"
@@ -1937,6 +1956,7 @@
     "evals/build.py",
     "quests/build.py",
     "sessions/build.py",
+    "tasks/build.py",
     "wilds/build.py",
     "worksites/build.py"
    ],
@@ -1948,6 +1968,7 @@
     "quests/test.mjs",
     "schools/test.mjs",
     "sessions/test.mjs",
+    "tasks/test.mjs",
     "web/test_3d.mjs",
     "web/test_geomap.mjs",
     "web/test_home.mjs",
@@ -2047,12 +2068,14 @@
     "contrib/build.py",
     "ei/build.py",
     "evals/build.py",
+    "geo3d/build.py",
     "lessons/build.py",
     "props/build.py",
     "quests/build.py",
     "respond/build.py",
     "roadmap/build.py",
     "spaces/build.py",
+    "tasks/build.py",
     "wilds/build.py",
     "worksites/build.py"
    ],
@@ -2063,10 +2086,12 @@
     "contrib/verify.mjs",
     "ei/test.mjs",
     "evals/test.mjs",
+    "geo3d/test.mjs",
     "i18n/test.mjs",
     "lessons/test.mjs",
     "quests/test.mjs",
     "respond/test.mjs",
+    "tasks/test.mjs",
     "unions/verify.mjs",
     "web/test_geomap.mjs",
     "web/test_home.mjs",
@@ -2263,10 +2288,12 @@
    "builders": [
     "guide/build.py",
     "spatial/build.py",
+    "tasks/build.py",
     "worksites/build.py"
    ],
    "suites": [
     "spatial/test.mjs",
+    "tasks/test.mjs",
     "web/test_geomap.mjs",
     "worksites/test.mjs"
    ],
@@ -2385,6 +2412,7 @@
     "sessions/build.py",
     "spaces/build.py",
     "spatial/build.py",
+    "tasks/build.py",
     "training/build.py",
     "worksites/build.py"
    ],
@@ -2402,6 +2430,7 @@
     "schools/test.mjs",
     "spaces/test.mjs",
     "spatial/test.mjs",
+    "tasks/test.mjs",
     "training/test.mjs",
     "web/test_3d.mjs",
     "web/test_contribute.mjs",
@@ -2441,9 +2470,11 @@
     "wiki/build_wiki.py"
    ],
    "builders": [
+    "tasks/build.py",
     "worksites/build.py"
    ],
    "suites": [
+    "tasks/test.mjs",
     "web/test_home.mjs",
     "web/test_spaces.mjs",
     "worksites/test.mjs"
@@ -2581,6 +2612,30 @@
     "surfaces/test.mjs"
    ]
   },
+  "tasks/registry/tasks.json": {
+   "app_renderers": [
+    "web/build_3d.py",
+    "web/build_geomap.py",
+    "web/build_interactive_map.py",
+    "web/build_map.py",
+    "web/build_wilds.py",
+    "web/build_worksites.py"
+   ],
+   "doc_renderers": [],
+   "builders": [],
+   "suites": [
+    "web/test_3d.mjs",
+    "web/test_geomap.mjs",
+    "web/test_interactive.mjs",
+    "web/test_map.mjs",
+    "web/test_wilds.mjs",
+    "web/test_worksites.mjs"
+   ],
+   "own_pack": [
+    "tasks/build.py",
+    "tasks/test.mjs"
+   ]
+  },
   "terrain/registry/terrain.json": {
    "app_renderers": [
     "web/build_3d.py"
@@ -2617,7 +2672,8 @@
     "quests/build.py",
     "schools/build.py",
     "spaces/build.py",
-    "spatial/build.py"
+    "spatial/build.py",
+    "tasks/build.py"
    ],
    "suites": [
     "completion/verify.mjs",
@@ -2626,6 +2682,7 @@
     "schools/test.mjs",
     "spaces/test.mjs",
     "spatial/test.mjs",
+    "tasks/test.mjs",
     "web/test_3d.mjs"
    ],
    "own_pack": [
@@ -2691,6 +2748,7 @@
     "contrib/build.py",
     "evals/build.py",
     "geo/build.py",
+    "geo3d/build.py",
     "guide/build.py",
     "kit/build.py",
     "lessons/build.py",
@@ -2701,6 +2759,7 @@
     "roadmap/build.py",
     "schools/build.py",
     "spatial/build.py",
+    "tasks/build.py",
     "worksites/build.py",
     "world/build.py"
    ],
@@ -2709,6 +2768,7 @@
     "contrib/verify.mjs",
     "evals/test.mjs",
     "geo/test.mjs",
+    "geo3d/test.mjs",
     "kit/test.mjs",
     "lessons/test.mjs",
     "parcels/test.mjs",
@@ -2718,6 +2778,7 @@
     "schools/test.mjs",
     "sims/test.mjs",
     "spatial/test.mjs",
+    "tasks/test.mjs",
     "web/test_geomap.mjs",
     "worksites/test.mjs",
     "world/test.mjs"
@@ -2757,6 +2818,7 @@
     "wiki/build_wiki.py"
    ],
    "builders": [
+    "geo3d/build.py",
     "kit/build.py",
     "labels/build.py",
     "orbis/build.py",
@@ -2764,6 +2826,7 @@
     "tools/build.py"
    ],
    "suites": [
+    "geo3d/test.mjs",
     "i18n/test.mjs",
     "kit/test.mjs",
     "labels/test.mjs",
@@ -2845,17 +2908,21 @@
   },
   "wilds/registry/wilds.json": {
    "app_renderers": [
+    "web/build_geomap.py",
     "web/build_schools.py",
     "web/build_wilds.py"
    ],
    "doc_renderers": [],
    "builders": [
     "lessons/build.py",
-    "quests/build.py"
+    "quests/build.py",
+    "tasks/build.py"
    ],
    "suites": [
     "lessons/test.mjs",
     "quests/test.mjs",
+    "tasks/test.mjs",
+    "web/test_geomap.mjs",
     "web/test_schools.mjs",
     "web/test_wilds.mjs"
    ],
@@ -2866,14 +2933,19 @@
   },
   "worksites/registry/worksites.json": {
    "app_renderers": [
+    "web/build_geomap.py",
     "web/build_home.py",
     "web/build_worksites.py"
    ],
    "doc_renderers": [
     "wiki/build_wiki.py"
    ],
-   "builders": [],
+   "builders": [
+    "tasks/build.py"
+   ],
    "suites": [
+    "tasks/test.mjs",
+    "web/test_geomap.mjs",
     "web/test_home.mjs",
     "web/test_worksites.mjs"
    ],
@@ -2964,6 +3036,7 @@
    "ei/build.py",
    "evals/build.py",
    "geo/build.py",
+   "geo3d/build.py",
    "guide/build.py",
    "kit/build.py",
    "labels/build.py",
@@ -2987,6 +3060,7 @@
    "spatial/build.py",
    "stations/build.py",
    "surfaces/build.py",
+   "tasks/build.py",
    "terrain/build.py",
    "tools/build.py",
    "training/build.py",
@@ -3018,6 +3092,7 @@
    "evals/test.mjs",
    "fabric/test.mjs",
    "geo/test.mjs",
+   "geo3d/test.mjs",
    "guide/test.mjs",
    "i18n/test.mjs",
    "kit/test.mjs",
@@ -3046,6 +3121,7 @@
    "spatial/test.mjs",
    "stations/test.mjs",
    "surfaces/test.mjs",
+   "tasks/test.mjs",
    "terrain/test.mjs",
    "tools/test.mjs",
    "training/test.mjs",
@@ -3887,7 +3963,7 @@
    {
     "suite": "lessons/test.mjs",
     "pack": "lessons",
-    "readme_checks": 90,
+    "readme_checks": 91,
     "declared": true,
     "in_readme_table": true
    },
@@ -3950,21 +4026,21 @@
    {
     "suite": "wilds/test.mjs",
     "pack": "wilds",
-    "readme_checks": 34,
+    "readme_checks": 35,
     "declared": true,
     "in_readme_table": true
    },
    {
     "suite": "web/test_wilds.mjs",
     "pack": "web",
-    "readme_checks": 32,
+    "readme_checks": 42,
     "declared": true,
     "in_readme_table": true
    },
    {
     "suite": "web/test_schools.mjs",
     "pack": "web",
-    "readme_checks": 28,
+    "readme_checks": 29,
     "declared": true,
     "in_readme_table": true
    },
@@ -4069,42 +4145,42 @@
    {
     "suite": "web/test_worksites.mjs",
     "pack": "web",
-    "readme_checks": 143,
+    "readme_checks": 150,
     "declared": true,
     "in_readme_table": true
    },
    {
     "suite": "web/test_interactive.mjs",
     "pack": "web",
-    "readme_checks": 28,
+    "readme_checks": 34,
     "declared": true,
     "in_readme_table": true
    },
    {
     "suite": "web/test_geomap.mjs",
     "pack": "web",
-    "readme_checks": 59,
+    "readme_checks": 88,
     "declared": true,
     "in_readme_table": true
    },
    {
     "suite": "web/test_map.mjs",
     "pack": "web",
-    "readme_checks": 45,
+    "readme_checks": 47,
     "declared": true,
     "in_readme_table": true
    },
    {
     "suite": "web/test_home.mjs",
     "pack": "web",
-    "readme_checks": 57,
+    "readme_checks": 63,
     "declared": true,
     "in_readme_table": true
    },
    {
     "suite": "web/test_nav.mjs",
     "pack": "web",
-    "readme_checks": 21,
+    "readme_checks": 30,
     "declared": true,
     "in_readme_table": true
    },
@@ -4146,7 +4222,7 @@
    {
     "suite": "web/test_3d.mjs",
     "pack": "web",
-    "readme_checks": 334,
+    "readme_checks": 348,
     "declared": true,
     "in_readme_table": true
    },
@@ -4174,29 +4250,43 @@
    {
     "suite": "media/test.mjs",
     "pack": "media",
-    "readme_checks": 62,
+    "readme_checks": 104,
     "declared": true,
     "in_readme_table": true
    },
    {
     "suite": "web/test_design.mjs",
     "pack": "web",
-    "readme_checks": 47,
+    "readme_checks": 80,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "tasks/test.mjs",
+    "pack": "tasks",
+    "readme_checks": 21,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "geo3d/test.mjs",
+    "pack": "geo3d",
+    "readme_checks": 29,
     "declared": true,
     "in_readme_table": true
    }
   ],
-  "suites_run": 78,
-  "suites_declaring_a_count": 77,
+  "suites_run": 80,
+  "suites_declaring_a_count": 79,
   "suites_without_a_count": [
    "control/soak.mjs"
   ],
-  "declared_total": 3721,
-  "readme_headline": 3732,
+  "declared_total": 3932,
+  "readme_headline": 3943,
   "unaccounted_for": 11,
   "unaccounted_note": "the headline counts every `  ok ` line verify_all.sh sees, which includes suites the README table gives no number to and web/test_interiors.py, which the table does not list at all. The difference is that remainder and is computed, not reconciled by hand.",
   "min": 9,
-  "max": 334,
+  "max": 348,
   "median": 40,
   "thinnest": [
    {
@@ -4227,11 +4317,11 @@
   "thickest": [
    {
     "suite": "web/test_3d.mjs",
-    "checks": 334
+    "checks": 348
    },
    {
     "suite": "web/test_worksites.mjs",
-    "checks": 143
+    "checks": 150
    },
    {
     "suite": "respond/test.mjs",
@@ -4246,8 +4336,8 @@
     "checks": 112
    },
    {
-    "suite": "lessons/test.mjs",
-    "checks": 90
+    "suite": "media/test.mjs",
+    "checks": 104
    }
   ],
   "note": "a thin suite is not automatically a bad one - tools/ has 13 checks over a registry of twelve hand tools - but a thin suite over a large surface is where an unfound defect is most likely to be sitting, and this table is the only place the two are shown side by side."
@@ -4492,6 +4582,10 @@
   "geo/build.py",
   "geo/registry/campuses_geo.json",
   "geo/test.mjs",
+  "geo3d/browser.mjs",
+  "geo3d/build.py",
+  "geo3d/registry/geo3d.json",
+  "geo3d/test.mjs",
   "guide/build.py",
   "guide/registry/guide.json",
   "guide/test.mjs",
@@ -4597,6 +4691,9 @@
   "surfaces/registry/finishes.json",
   "surfaces/surfaces.py",
   "surfaces/test.mjs",
+  "tasks/build.py",
+  "tasks/registry/tasks.json",
+  "tasks/test.mjs",
   "terrain/build.py",
   "terrain/fetch_terrain.py",
   "terrain/registry/terrain.json",

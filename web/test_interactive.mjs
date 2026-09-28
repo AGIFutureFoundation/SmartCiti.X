@@ -281,5 +281,26 @@ function fnSlice(name) {
 ok('[shipped] the campus grid tracks shrink to the screen (min(430px,100%)), so a 390px screen does not scroll sideways',
   /\.campusbody\{[^}]*minmax\(min\(430px,100%\),1fr\)/.test(html));
 
+
+/* ---- simulated tasks (TASKS, wave 3): boards come from tasks/registry/tasks.json only ---- */
+const TK = JSON.parse(readFileSync(new URL('../tasks/registry/tasks.json', import.meta.url), 'utf8'));
+const tkRel = (h) => h === null ? null : (h.startsWith('web/') ? h.slice(4) : '../' + h);
+const tkHall = (slug) => TK.tasks.filter((t) => t.place.kind === 'hall' && t.place.id === slug);
+{
+  const miss = D.halls.filter((h) => JSON.stringify((D.tasks[h.slug] || []).map((t) => [t.id, t.href]))
+    !== JSON.stringify(tkHall(h.slug).map((t) => [t.id, tkRel(t.launch.href)]))).map((h) => h.slug);
+  ok('[tasks] D.tasks holds, per hall, exactly the registry\'s tasks at that hall with hrefs made relative to web/', miss.length === 0, miss);
+  ok('[tasks] linked lessons carry the registry\'s lesson titles', D.halls.every((h) => D.tasks[h.slug].every((t) =>
+    t.requires.every((l) => D.lessons.lessons[l.id] && D.lessons.lessons[l.id].title === l.title))));
+  ok('[tasks] the hall panel renders the board through taskkit\'s tcTaskBoard in the viewer\'s locale (t(\'tasks.*\'))',
+    scripts.length === 1 && scripts[0].includes('function tcTaskBoard(') && scripts[0].includes("tcTaskBoard(D.tasks[h.slug], t('tasks.here'), (k) => t('tasks.' + k)"));
+  const campMiss = Object.keys(D.campuses).filter((ck) => JSON.stringify((D.campusTasks[ck] || []).map((t) => t.id))
+    !== JSON.stringify(TK.tasks.filter((t) => t.place.campus === ck && t.place.kind !== 'hall').map((t) => t.id)));
+  ok('[tasks] D.campusTasks holds, per campus, exactly the registry\'s non-hall tasks there (restoration walks, crew hand-offs, wilds site walks, unlinked scenarios)', campMiss.length === 0, campMiss);
+  ok('[tasks] every campus with such tasks renders a collapsible campus board through tcTaskBoard', scripts[0].includes("tcTaskBoard(D.campusTasks[ck]"));
+  const keys = ['tasks.here', 'tasks.launch', 'tasks.linked', 'tasks.summary', 'tasks.honesty', 'tasks.lands.seat', 'tasks.kind.crib-drill'];
+  ok('[tasks] every locale embedded carries the tasks.* labels the board reads', Object.values(D.i18n).every((c) => keys.every((k) => typeof c.strings[k] === 'string')));
+}
+
 if (bad) { console.error(`web/test_interactive: ${bad} FAILED, ${n} passed`); process.exit(1); }
 console.log(`web/test_interactive: ${n} checks passed`);

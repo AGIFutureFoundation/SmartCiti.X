@@ -354,5 +354,9 @@ assert page.count('<h1') == 1, 'one h1'
 out = HERE / 'trade_craft_schools.html'
 page = apply_seo(page, 'web/trade_craft_schools.html', 'K-12 pathways \u2014 SmartCiti.X : Trade Craft Academy',
     'K-12 pathways by grade band, computed from the lesson, unit, quest and outdoor-site registries; every district is a proposed partner with no agreement.', 'page')
+# wave 3 (HOMEUX): MEDIA's pagehero band + the theme layer, head/hero region only;
+# every word from the catalog (hero.schools.*), see web/herovideo.py doc_hero().
+from herovideo import adopt_doc_hero  # noqa: E402
+page = adopt_doc_hero('schools', page)
 emit(out, page, ' | '.join(f'{b}: {len(PATHS[b]["lessons"])} lessons, {len(PATHS[b]["units"])} units, '
                            f'{len(PATHS[b]["quests"])} quests' for b in BAND_IDS))

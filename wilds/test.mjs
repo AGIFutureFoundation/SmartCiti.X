@@ -57,6 +57,25 @@ ok('[worlds] inspiration campus resolves in geo/registry/campuses_geo.json and i
   W.every((w) => campuses[w.inspiration.campus] && campuses[w.inspiration.campus].city === w.inspiration.campus_city),
   W.map((w) => `${w.id} -> ${w.inspiration.campus}`));
 
+/* The globe (GLOBE) reads each world's geolocation instead of composing its
+   own words: an authored world is never placed on the Earth. The label is
+   re-derived from the campus registry, and no world carries a coordinate. */
+const geoBad = [];
+for (const w of W) {
+  const g = w.geolocation, c = campuses[w.inspiration.campus];
+  if (!g) { geoBad.push(`${w.id}: no geolocation`); continue; }
+  if (g.on_globe !== false) geoBad.push(`${w.id}: on_globe is ${g.on_globe}`);
+  if (g.provenance !== 'AUTHORED' || g.basis !== 'inspiration only') geoBad.push(`${w.id}: provenance ${g.provenance} basis ${g.basis}`);
+  if (!/^none: /.test(g.coordinates)) geoBad.push(`${w.id}: coordinates ${g.coordinates}`);
+  if (!g.inspired_by || g.inspired_by.campus !== w.inspiration.campus || !c
+      || g.inspired_by.city !== c.city || g.inspired_by.region !== c.region) geoBad.push(`${w.id}: inspired_by ${JSON.stringify(g.inspired_by)}`);
+  else if (g.label !== `Not on the globe: AUTHORED, inspired by ${c.city}, ${c.region}`) geoBad.push(`${w.id}: label "${g.label}"`);
+  const coordKeys = JSON.stringify(w).match(/"(lat|lng|lon|latitude|longitude)"\s*:/g);
+  if (coordKeys) geoBad.push(`${w.id}: carries coordinate keys ${coordKeys.join(' ')}`);
+}
+ok('[geo] every world states it has no geolocation (not on the globe, AUTHORED, inspiration campus copied from geo registry, no coordinate)',
+  geoBad.length === 0 && reg.provenance.geolocation === 'AUTHORED', geoBad);
+
 /* ------------------------------------------------------- id resolution -- */
 const hallMiss = [], lessonMiss = [], borrowed = [];
 for (const w of W) for (const s of w.sites) {

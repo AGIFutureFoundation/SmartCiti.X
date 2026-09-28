@@ -64,7 +64,9 @@ for (const [name, p] of [['dark', dark], ['light', light]]) {
 }
 
 // the hero: a muted looping video with a poster, both codecs, a real pause control
-const vid = html.match(/<video([^>]*)>([\s\S]*?)<\/video>/);
+// (the design_kit hero template's own video: the first one inside a data-dk-hero section)
+const kitHeroAt = html.indexOf('<section class="dk-hero" data-dk-hero');
+const vid = kitHeroAt < 0 ? null : html.slice(kitHeroAt).match(/<video([^>]*)>([\s\S]*?)<\/video>/);
 check(vid && /\bmuted\b/.test(vid[1]) && /\bplaysinline\b/.test(vid[1]) && /\bloop\b/.test(vid[1]) && /poster="/.test(vid[1]),
   'hero video is muted, inline, looping and has a poster');
 const srcs = vid ? [...vid[2].matchAll(/<source src="([^"]+)" type="([^"]+)">/g)] : [];
@@ -108,5 +110,157 @@ check(/:root\{[^}]*color-scheme:dark/.test(html) && /prefers-color-scheme: light
 check((html.match(/\bid="main"/g) || []).length === 1 && /<main id="main">/.test(html),
   'skip link: <main id="main"> is the one #main target');
 
+
+// ------------------------------------------------------------ wave 3: pagehero band, theme layer, clip gallery
+const PH = JSON.parse(execFileSync('python3', ['-c',
+  'import sys,json;sys.path.insert(0,"web");import pagehero as p;'
+  + 'print(json.dumps({"ids":p.clip_ids(),"text":p.HERO_TEXT,"alpha":p.SCRIM_TEXT_ALPHA,"min":p.MIN_RATIO,"patterns":p.PATTERNS}))'],
+  { cwd: ROOT, encoding: 'utf8' }));
+const bands = [...html.matchAll(/<section class="ph" data-ph data-ph-clip="([^"]+)"[^>]*>([\s\S]*?)<\/section>/g)];
+check(bands.length >= 1 && /<body class="[^"]*\btc-theme\b/.test(html), `pagehero: the page opens on a hero band and opts into the theme (${bands.length} bands)`);
+const top = bands[0];
+check(!!top && html.indexOf(top[0]) > html.indexOf('id="tc-main"') && html.indexOf(top[0]) < html.indexOf('<main id="main">'),
+  'pagehero: the first band sits right after the nav skip target, before <main>');
+check(!!top && /<h1 class="ph-title">/.test(top[2]), 'pagehero: the first band carries the page\'s one <h1>');
+const clipIds = new Set(MEDIA.clips.map((c) => c.id));
+check(bands.every((b) => clipIds.has(b[1])), 'pagehero: every band\'s clip id resolves in media/registry/media.json');
+check(bands.every((b) => {
+  const c = MEDIA.clips.find((x) => x.id === b[1]);
+  const poster = (b[2].match(/<img src="([^"]+)" alt="" width="(\d+)" height="(\d+)"/) || []);
+  const v = b[2].match(/<video([^>]*)>/);
+  return c && poster[1] && 'web/' + poster[1] === c.files.poster.path && existsSync(join(HERE, poster[1]))
+    && v && !/\ssrc=/.test(v[1]) && /\bmuted\b/.test(v[1]) && /\bloop\b/.test(v[1]) && /\bplaysinline\b/.test(v[1])
+    && /aria-hidden="true"/.test(v[1]) && /tabindex="-1"/.test(v[1])
+    && 'web/' + v[1].match(/data-webm="([^"]+)"/)[1] === c.files.webm.path
+    && 'web/' + v[1].match(/data-webm480="([^"]+)"/)[1] === c.files.preview.path
+    && 'web/' + v[1].match(/data-mp4="([^"]+)"/)[1] === c.files.mp4.path;
+}), 'pagehero: poster <img alt=""> sized, video muted/loop/inline/aria-hidden with NO src in markup, sources are the clip\'s registered files');
+check(bands.every((b) => /<button type="button" class="ph-toggle" aria-pressed="false" hidden data-pause="[^"]+" data-play="[^"]+">/.test(b[2])),
+  'pagehero: every band has a pause/play <button> with a pressed state and both labels (WCAG 2.2.2)');
+// the band's script: reduced motion and Save-Data leave the poster; the source is only set after that gate
+{
+  const js = (html.match(/<script>(\(\(\) => \{\n  const reduce = matchMedia\('\(prefers-reduced-motion: reduce\)'\);[\s\S]*?)<\/script>/) || [])[1] || '';
+  const gate = js.indexOf("if (reduce.matches || saveData) { state('poster'); continue; }");
+  const src = js.indexOf('v.src =');
+  check(gate > 0 && src > gate && /saveData = !!\(conn && conn\.saveData\)/.test(js),
+    'pagehero reduced-motion path: reduced motion or Save-Data -> poster only, video src is set only after that gate');
+  check(/max-width: 640px[\s\S]*v\.dataset\.webm480/.test(js) && /aria-pressed', String\(s === 'paused'\)/.test(js),
+    'pagehero: small screens take the 480 px preview; the toggle\'s aria-pressed follows the state');
+  check(/@media \(prefers-reduced-motion:reduce\)\{\.ph-media video\{display:none\}/.test(html),
+    'pagehero reduced-motion path: CSS also hides the video under reduced motion');
+}
+// contrast, recomputed HERE from the page's CSS and the registry's measured brightest colour
+{
+  const css = html.match(/\.ph-scrim\{[^}]*background:linear-gradient\(0deg,([^}]*)\)\}/);
+  const alphas = css ? [...css[1].matchAll(/rgb\(18 24 27 \/ ([0-9.]+)\)/g)].map((m) => +m[1]) : [];
+  const a = alphas.length ? Math.min(...alphas) : NaN;
+  const desk = html.match(/@media \(min-width:900px\)\{\.ph-scrim\{background:\s*linear-gradient\(90deg,([^)]*\)[^)]*\)[^)]*\))/);
+  const deskA = desk ? [...desk[1].matchAll(/\/ ([0-9.]+)\) (\d+)%/g)].filter((m) => +m[2] <= 58).map((m) => +m[1]) : [];
+  check(a === PH.alpha && deskA.length >= 2 && Math.min(...deskA) >= PH.alpha,
+    `pagehero contrast: the scrim is plate at >= ${PH.alpha} wherever text sits (phone ${a}, desktop text zone ${deskA})`);
+  const colorOf = (sel, prop = 'color') => { const m = html.match(new RegExp(`${sel}\\{[^}]*?\\b${prop}:(#[0-9A-Fa-f]{6})`)); return m ? m[1] : null; };
+  const grad = html.match(/\.ph-accent-gradient\{background:linear-gradient\(95deg,(#[0-9A-Fa-f]{6}),(#[0-9A-Fa-f]{6})\)/);
+  const cols = { title: colorOf('\\.ph-title'), lede: colorOf('\\.ph-lede'), kicker: colorOf('\\.ph-kicker'),
+    'accent-from': grad && grad[1], 'accent-to': grad && grad[2] };
+  const hex = (c) => '#' + c.map((x) => Math.max(0, Math.min(255, Math.round(x))).toString(16).padStart(2, '0')).join('').toUpperCase();
+  const rgb = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+  const low = [];
+  for (const b of bands) {
+    const c = MEDIA.clips.find((x) => x.id === b[1]);
+    if (!c || !c.measured || !/^#[0-9A-Fa-f]{6}$/.test(c.measured.brightest_rgb || '')) { low.push(`${b[1]}: no measured brightest colour`); continue; }
+    const under = hex(rgb('#12181B').map((p, i) => a * p + (1 - a) * rgb(c.measured.brightest_rgb)[i]));
+    for (const [k, v] of Object.entries(cols)) {
+      const r = v ? ratio(v, under) : 0;
+      if (!(r >= 4.5)) low.push(`${b[1]} ${k} ${v} on ${under} = ${r.toFixed(2)}`);
+    }
+    const shown = +(b[0].match(/data-ph-contrast-min="([0-9.]+)"/) || [])[1];
+    if (!(shown >= 4.5)) low.push(`${b[1]}: data-ph-contrast-min ${shown}`);
+  }
+  check(Object.values(cols).every(Boolean) && !low.length,
+    'pagehero contrast asserted: every hero text colour >= 4.5:1 over the scrim composited on the clip\'s measured brightest colour'
+    + (low.length ? ' - ' + low.join('; ') : ''));
+}
+check(MEDIA.clips.every((c) => c.measured && /^#[0-9A-F]{6}$/.test(c.measured.brightest_rgb) && c.measured.pixels > 0),
+  'every registered clip carries its measured brightest colour (media/build.py)');
+check(PH.ids.length === MEDIA.clips.length && PH.ids.every((i) => clipIds.has(i)),
+  `every clip id resolves: pagehero.clip_ids() is exactly the registry's clips (${PH.ids.length})`);
+// the clip gallery shows every registered clip, and each plays only on request
+{
+  const cards = [...html.matchAll(/<article class="tc-card g-clip" data-clip="([^"]+)"[^>]*><video([^>]*)><source src="([^"]+)"/g)];
+  const ids = cards.map((m) => m[1]);
+  check(ids.length === MEDIA.clips.length && MEDIA.clips.every((c) => ids.includes(c.id)),
+    `clip gallery: every registered clip is shown once (${ids.length})`);
+  check(cards.every((m) => /\bcontrols\b/.test(m[2]) && /preload="none"/.test(m[2]) && !/\bautoplay\b/.test(m[2])
+    && existsSync(join(HERE, m[3])) && MEDIA.clips.find((c) => c.id === m[1]).files.preview.path === 'web/' + m[3]),
+    'clip gallery: previews have controls, preload none, never autoplay, and play the registered 480 px file');
+  check(MEDIA.clips.every((c) => ['webm', 'mp4'].every((k) => c.files[k].bytes <= MEDIA.budget_bytes)),
+    'every clip is within the per-codec budget');
+}
+// the theme layer
+check(/body\.tc-theme\{[^}]*--tc-plate:#12181B/.test(html) && /body\.tc-theme \[data-theme="light"\]\{[^}]*--tc-plate:#F4F6F6/.test(html),
+  'theme: tc tokens come from design_kit (dark default, light override)');
+check(/body\.tc-theme :focus-visible\{outline:3px solid var\(--tc-steel\)/.test(html), 'theme: a visible focus ring');
+check(/html\.tc-reveal-on body\.tc-theme \[data-tc-reveal\]\{opacity:0/.test(html)
+  && /prefers-reduced-motion:reduce\)\{[^@]*html\.tc-reveal-on body\.tc-theme \[data-tc-reveal\]\{opacity:1;transform:none;transition:none\}/.test(html)
+  && /if \(matchMedia\('\(prefers-reduced-motion: reduce\)'\)\.matches \|\| !\('IntersectionObserver' in window\)\) return;/.test(html),
+  'theme: scroll reveal hides nothing without JS, IntersectionObserver or motion');
+check(/@supports \(\(-webkit-backdrop-filter:blur\(1px\)\) or \(backdrop-filter:blur\(1px\)\)\)\{body\.tc-theme \.tc-panel/.test(html)
+  && /body\.tc-theme \.tc-panel\{background:var\(--tc-panel\)/.test(html), 'theme: glass panel with a solid fallback');
+// kit provenance
+check(PH.patterns.length >= 5 && PH.patterns.every((p) => html.includes(`<td>${p.kit.replace(/&/g, '&amp;')}</td><td>${p.license}</td>`)),
+  `kit provenance: every re-expressed template-kit pattern is named with its kit and licence (${PH.patterns.length})`);
+
+// ------------------------------------------------------------ wave 3: the five site styles (nav Style menu)
+{
+  const ST = JSON.parse(execFileSync('python3', ['-c',
+    'import sys,json;sys.path.insert(0,"web");import design_kit as k;'
+    + 'print(json.dumps({"ids":[s["id"] for s in k.STYLES],"key":k.STYLE_KEY,"pairs":k.STYLE_PAIRS,"hero":k.STYLE_HERO_TEXT}))'],
+    { cwd: ROOT, encoding: 'utf8' }));
+  check(ST.ids.length === 5 && new Set(ST.ids).size === 5, `styles: exactly five distinct styles (${ST.ids})`);
+  const blocks = {};
+  for (const m of html.matchAll(/\/\*style:([a-z]+)\*\/[^{]*\{([^}]*)\}/g)) {
+    const tok = {};
+    for (const [, k, v] of m[2].matchAll(/--(dk-[a-z-]+|st-scrim|st-scrim-a):([#0-9A-Za-z.]+)/g)) tok[k] = v;
+    blocks[m[1]] = tok;
+  }
+  check(ST.ids.every((i) => blocks[i]) && Object.keys(blocks).length === 5, 'styles: the page CSS carries one token block per style');
+  const T = (i, k) => blocks[i] && blocks[i][{ 'accent': 'dk-amber', 'accent-ink': 'dk-amber-ink', 'scrim': 'st-scrim' }[k] || 'dk-' + k];
+  const hex2 = (c) => '#' + c.map((x) => Math.round(x).toString(16).padStart(2, '0')).join('').toUpperCase();
+  const rgb2 = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+  for (const i of ST.ids) {
+    const low = [];
+    for (const [f, b, min] of ST.pairs) {
+      const r = T(i, f) && T(i, b) ? ratio(T(i, f), T(i, b)) : 0;
+      if (!(r >= min)) low.push(`${f}/${b} ${r.toFixed(2)} < ${min}`);
+    }
+    const a = blocks[i] ? +blocks[i]['st-scrim-a'] : NaN;
+    const under = T(i, 'scrim') ? hex2(rgb2(T(i, 'scrim')).map((p) => a * p + (1 - a) * 255)) : null;
+    for (const [k, v] of Object.entries(ST.hero)) {
+      const r = under ? ratio(v, under) : 0;
+      if (!(r >= 4.5)) low.push(`hero ${k} over scrim ${r.toFixed(2)} < 4.5`);
+    }
+    // the page's own hero rule for this style must use that same scrim alpha
+    const ph = new RegExp(`html\\[data-style="${i}"\\] \\.ph-scrim[^{]*\\{background:linear-gradient\\(0deg,rgb\\(([0-9 ]+) \\/ [.0-9]+\\) 0%,rgb\\([0-9 ]+ \\/ ([.0-9]+)\\) 45%`).exec(html);
+    if (!ph || +ph[2] !== a || ph[1] !== rgb2(T(i, 'scrim')).join(' ')) low.push('hero scrim rule does not use the style scrim');
+    check(!low.length, `style ${i}: text/bg, muted/bg, accent button, links and the hero scrim all meet contrast`
+      + (low.length ? ' - ' + low.join('; ') : ''));
+  }
+  const radios = [...html.matchAll(new RegExp(`<input type="radio" name="${ST.key}" value="([a-z]+)">`, 'g'))].map((m) => m[1]);
+  check(JSON.stringify(radios) === JSON.stringify(ST.ids) && /<details class="sitenav-style" data-sitenav-style><summary>/.test(html)
+    && /<fieldset class="sn-styles"><legend>[^<]+<\/legend>/.test(html),
+    'switcher: the nav Style menu is a disclosure with a legend-labelled radio group of the five styles');
+  const head = html.slice(0, html.indexOf('</head>'));
+  const hs = head.indexOf(`localStorage.getItem('${ST.key}')`);
+  check(hs > 0 && hs < head.indexOf('<style>') && /\(\(\)=>\{try\{var s=localStorage\.getItem/.test(head)
+    && /catch\(e\)\{\}\}\)\(\);/.test(head),
+    'switcher: a head snippet sets <html data-style> from storage before the first stylesheet, inside try/catch');
+  check(/try\{v=localStorage\.getItem\(K\)\}catch\(e\)\{v=null\}/.test(html) && /try\{localStorage\.setItem\(K,t\.value\)\}catch\(e\)\{\}/.test(html),
+    'switcher: the page script reads and writes storage only inside try/catch');
+  check(ST.ids.every((i) => html.includes(`html:has(input[name="${ST.key}"][value="${i}"]:checked)`)),
+    'switcher: each style also applies from the checked radio alone (works with storage or script blocked)');
+  const cards = [...html.matchAll(/<article class="g-style" data-style-preview="([a-z]+)" data-style-min="([0-9.]+)">[\s\S]*?<ul class="g-ratios">([\s\S]*?)<\/ul>/g)];
+  check(cards.length === 5 && cards.every((c) => ST.ids.includes(c[1]) && +c[2] >= 4.5 && (c[3].match(/<li>/g) || []).length === ST.pairs.length + Object.keys(ST.hero).length),
+    'design page: a side-by-side preview of all five styles, each card listing its measured ratios');
+}
 console.log(`${oks} checks passed${fails ? `, ${fails} FAILED` : ''}.`);
 process.exit(fails ? 1 : 0);

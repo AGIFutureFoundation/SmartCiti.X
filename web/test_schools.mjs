@@ -117,8 +117,36 @@ ok('every hall named in a unit row is the roster\'s own name',
 ok('a composed lesson is labelled composed wherever it is listed, never passed off as hand-written',
   BANDS.every((b) => [...section(b).matchAll(/#lesson-([^"]+)">[^<]*<\/a> <span class="meta">[^]*?<span class="auth">([^<]+)</g)]
     .every((m) => (L[m[1]].authoring === 'rule') === (m[2] === 'composed'))));
+
+/* Carve-out (lead ruling, wave 3). MEDIA's site-wide style switcher remembers
+   one DISPLAY preference - which of the five colour styles the reader picked -
+   under localStorage['tc-style']. It is not learner data: it holds no course,
+   lesson, step, progress, identity or record, only a style name. So the two
+   style scripts (by id) may read and write exactly that key, each access inside
+   try/catch; nothing else on the page may touch any browser storage. */
+const STYLE_SCRIPTS = /<script id="style-(?:head-)?js">[\s\S]*?<\/script>/g;
+const styleStorageWrong = (html) => {
+  const bad = [];
+  for (const [s] of html.matchAll(STYLE_SCRIPTS)) {
+    if (/sessionStorage|indexedDB|document\.cookie|removeItem|localStorage\.clear|localStorage\[|localStorage\.key\(/.test(s)) bad.push('a storage API other than localStorage get/set');
+    const calls = [...s.matchAll(/localStorage\.(getItem|setItem)\(([^,)]+)/g)];
+    for (const c of calls) {
+      const k = c[2].trim();
+      if (k !== "'tc-style'" && !(k === 'K' && /var K='tc-style'[,;]/.test(s))) bad.push(`storage key ${k} is not 'tc-style'`);
+    }
+    const guarded = (s.match(/try\{(?:var \w+=|\w+=)?localStorage\.(?:getItem|setItem)\(/g) || []).length;
+    if (guarded !== calls.length) bad.push(`${calls.length - guarded} storage access(es) outside try/catch`);
+  }
+  return bad;
+};
 ok('the page carries no badge, score or completion field: pathways are guidance, not a record',
-  !/localStorage|sessionStorage|indexedDB/.test(page) && !/data-tc-quest=|data-tc-egg=/.test(page));
+  !/localStorage|sessionStorage|indexedDB/.test(page.replace(STYLE_SCRIPTS, '')) && !/data-tc-quest=|data-tc-egg=/.test(page));
+{
+  const sw = styleStorageWrong(page);
+  ok('the only browser storage on the schools page is the style switcher\'s display preference: its scripts read and '
+    + 'write localStorage[\'tc-style\'] and no other key or storage API, every access inside try/catch'
+    + (sw.length ? ' - ' + sw.join('; ') : ''), sw.length === 0);
+}
 
 const stamp = createHash('sha256').update(page).digest('hex').slice(0, 16);
 console.log(`schools page: ${n} checks, 0 failures - `

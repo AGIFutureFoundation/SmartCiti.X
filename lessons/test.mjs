@@ -832,6 +832,28 @@ ok('every lesson carries a step navigator (step n of m, previous, next) whose m 
       && m[2].includes(`<b class="sat">1</b> of ${L.steps.length}`);
   }));
 
+
+/* Carve-out (lead ruling, wave 3). MEDIA's site-wide style switcher remembers
+   one DISPLAY preference - which of the five colour styles the reader picked -
+   under localStorage['tc-style']. It is not learner data: it holds no course,
+   lesson, step, progress, identity or record, only a style name. So the two
+   style scripts (by id) may read and write exactly that key, each access inside
+   try/catch; nothing else on the page may touch any browser storage. */
+const STYLE_SCRIPTS = /<script id="style-(?:head-)?js">[\s\S]*?<\/script>/g;
+const styleStorageWrong = (html) => {
+  const bad = [];
+  for (const [s] of html.matchAll(STYLE_SCRIPTS)) {
+    if (/sessionStorage|indexedDB|document\.cookie|removeItem|localStorage\.clear|localStorage\[|localStorage\.key\(/.test(s)) bad.push('a storage API other than localStorage get/set');
+    const calls = [...s.matchAll(/localStorage\.(getItem|setItem)\(([^,)]+)/g)];
+    for (const c of calls) {
+      const k = c[2].trim();
+      if (k !== "'tc-style'" && !(k === 'K' && /var K='tc-style'[,;]/.test(s))) bad.push(`storage key ${k} is not 'tc-style'`);
+    }
+    const guarded = (s.match(/try\{(?:var \w+=|\w+=)?localStorage\.(?:getItem|setItem)\(/g) || []).length;
+    if (guarded !== calls.length) bad.push(`${calls.length - guarded} storage access(es) outside try/catch`);
+  }
+  return bad;
+};
 {
   const js = (learnerPage.match(/<script>([\s\S]*?)<\/script>\s*<\/body>/) || [, ''])[1];
   ok('the learner\'s place (course, filter, lesson, step) is kept in the ADDRESS - ?hall, ?q, ?step and '
@@ -839,7 +861,11 @@ ok('every lesson carries a step navigator (step n of m, previous, next) whose m 
     /u\.set\('hall'/.test(js) && /u\.set\('q'/.test(js) && /u\.set\('step'/.test(js)
     && /history\.replaceState\(/.test(js) && /params\.get\('q'\)/.test(js) && /params\.get\('step'\)/.test(js)
     && /'#' \+ place\.a\.id/.test(js)
-    && !/localStorage|sessionStorage|indexedDB|document\.cookie/.test(learnerPage));
+    && !/localStorage|sessionStorage|indexedDB|document\.cookie/.test(learnerPage.replace(STYLE_SCRIPTS, '')));
+  const sw = styleStorageWrong(learnerPage);
+  ok('the only browser storage on the lessons page is the style switcher\'s display preference: its scripts read and '
+    + 'write localStorage[\'tc-style\'] and no other key or storage API, every access inside try/catch'
+    + (sw.length ? ' - ' + sw.join('; ') : ''), sw.length === 0);
 }
 
 ok('no table on the lessons page stands outside a horizontal-scroll box, so a 390px screen never scrolls sideways',

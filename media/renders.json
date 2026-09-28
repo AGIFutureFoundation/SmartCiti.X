@@ -15,6 +15,22 @@
   "source": "archive",
   "vp9_crf": 34
  },
+ "globe-flyover": {
+  "commit": "a721981f09917e5057ac5a76dbc0dc214fa6d786",
+  "encoded": "2026-09-28T08:27Z",
+  "frames": 144,
+  "h264_crf": 24,
+  "source": "archive",
+  "vp9_crf": 34
+ },
+ "hall-interior-dolly": {
+  "commit": "a721981f09917e5057ac5a76dbc0dc214fa6d786",
+  "encoded": "2026-09-28T09:03Z",
+  "frames": 144,
+  "h264_crf": 24,
+  "source": "archive",
+  "vp9_crf": 34
+ },
  "hall-orbit": {
   "commit": "57f497245b0dbc9cf88504d4988fb2779b4469db",
   "encoded": "2026-09-28T06:49Z",
@@ -26,6 +42,14 @@
  "region-board-orbit": {
   "commit": "57f497245b0dbc9cf88504d4988fb2779b4469db",
   "encoded": "2026-09-28T06:49Z",
+  "frames": 144,
+  "h264_crf": 24,
+  "source": "archive",
+  "vp9_crf": 34
+ },
+ "wilds-mountain-flyover": {
+  "commit": "a721981f09917e5057ac5a76dbc0dc214fa6d786",
+  "encoded": "2026-09-28T08:23Z",
   "frames": 144,
   "h264_crf": 24,
   "source": "archive",

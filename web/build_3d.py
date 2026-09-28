@@ -47,6 +47,16 @@ from seo import apply_seo  # noqa: E402  head tags only
 from mapdata import strand_modules, PIPELINE_JS, HUES, make_codes  # noqa: E402
 from groundtruth import GROUND_TRUTH_JS  # noqa: E402
 from sitenav import nav_html, labels as nav_labels, NAV_CSS  # noqa: E402
+# THEME_CONTRACT v1: a full-screen canvas page takes the theme's panel,
+# button, badge and focus styling only - never the hero band
+from pagehero import theme  # noqa: E402
+# the site-wide Style switcher (5 styles, data-style on <html>): the stored
+# choice is applied in the head before first paint, and remembered from the
+# nav's radios; both are the nav's own scripts, carried verbatim
+from sitenav import STYLE_JS  # noqa: E402
+from design_kit import STYLE_HEAD_JS  # noqa: E402
+THEME_CSS, _theme_js = theme('canvas')
+assert _theme_js == '', 'the canvas theme is CSS only; a script from it would be new behaviour here'
 
 # The shared site header (web/sitenav.py). It is fixed over the top of the
 # viewport and folds to one row until hovered or focused, so the canvas keeps
@@ -262,7 +272,10 @@ for f in sorted((ROOT / 'i18n/locales').glob('*.json')):
             'xr.operator', 'xr.operatorDone', 'xr.operatorWatching',
             'xr.perf', 'xr.perfNextSession', 'xr.notWalkable', 'xr.walkableCity',
             'campus3d.questlog', 'campus3d.play', 'campus3d.locked', 'campus3d.open',
-            'campus3d.treasure', 'campus3d.egg', 'campus3d.hooks')},
+            'campus3d.treasure', 'campus3d.egg', 'campus3d.hooks',
+            'campus3d.tasks', 'campus3d.tasks.all', 'campus3d.tasks.launch',
+            'campus3d.tasks.lessons', 'campus3d.tasks.here', 'campus3d.tasks.showall',
+            'campus3d.tasks.none', 'tasks.nolink')},
         'districts': {k: v['name'] for k, v in c['districts'].items()},
         'strands': c['strands'], 'tiers': c['tiers'], 'states': c['states'],
     }
@@ -535,8 +548,95 @@ for _id, _w in _want_world.items():
         assert _qreg[_id]['kind'] in ('treasure', 'egg'), f'quest layer: {_id} is not findable in the registry'
 QUEST3D['pending'] = sorted(i for i in _want_world if i not in _qreg)
 
+# --------------------------------------------------- simulated tasks -------
+# TASK_CONTRACT v1: tasks/registry/tasks.json is the one list of simulated
+# tasks the app can launch. The 3D page renders the current campus's share:
+# a gem in the quest pool over every place that has tasks, and a Tasks panel
+# (kind filter, launch links, linked lessons). Every count is the length of
+# a list read out of the registry, and the per-campus totals are held to the
+# registry's own `counts.by_campus` here, so the page cannot drift from it.
+TASKS_REG_PATH = ROOT / 'tasks/registry/tasks.json'
+assert TASKS_REG_PATH.exists(), 'task layer: tasks/registry/tasks.json (TASK_CONTRACT v1) is missing'
+_treg = json.load(open(TASKS_REG_PATH))
+_resto_reg = json.load(open(ROOT / 'restoration/registry/restoration.json'))
+_resto_campus = {s_['id']: s_['campus'] for s_ in _resto_reg['sites']}
+_TASK_PLACE_KINDS = ('hall', 'campus', 'restoration-site', 'wilds-site')
+
+
+def _task_href(h):
+    # repo-root-relative in the registry; this page lives in web/
+    if h is None:
+        return None
+    assert not h.startswith(('/', 'http:', 'https:')), f'task layer: launch href {h} is not repo-relative'
+    return h[4:] if h.startswith('web/') else '../' + h
+
+
+TASK3D = {'practice': _treg['honesty']['practice'],
+          'requires': _treg['honesty']['requires'],
+          'kinds': sorted(_treg['kinds']),
+          # every campus the page can open has a list, empty when the
+          # registry puts nothing there - so the page never guesses one
+          'campuses': {ck: [] for ck in campuses_reg}}
+for _t in _treg['tasks']:
+    _pl = _t['place']
+    _ck = _pl['campus']
+    if _pl['kind'] == 'space':
+        assert _ck is None, f'task layer: space task {_t["id"]} names a campus'
+        continue                       # a space belongs to no campus this page draws
+    assert _pl['kind'] in _TASK_PLACE_KINDS, f'task layer: {_t["id"]} stands at a {_pl["kind"]}, which this page does not place'
+    assert _ck in campuses_reg, f'task layer: {_t["id"]} names campus {_ck}, which this page cannot open'
+    assert _t['kind'] in _treg['kinds'], f'task layer: {_t["id"]} is of undeclared kind {_t["kind"]}'
+    if _pl['kind'] == 'hall':
+        assert _pl['id'] in campuses_reg[_ck]['halls'], f'task layer: hall {_pl["id"]} is not on campus {_ck}'
+    elif _pl['kind'] == 'campus':
+        assert _pl['id'] == _ck, f'task layer: campus task {_t["id"]} names {_pl["id"]} but campus {_ck}'
+    elif _pl['kind'] == 'restoration-site':
+        assert _resto_campus[_pl['id']] == _ck, f'task layer: restoration site {_pl["id"]} is not on campus {_ck}'
+    for _lid in _t['requires']:
+        assert _lid in lessons_reg['lessons'], f'task layer: {_t["id"]} links lesson {_lid}, which the lessons registry lacks'
+    _ln = _t['launch']
+    _row = {'id': _t['id'], 'title': _t['title'], 'kind': _t['kind'],
+            'place': {'kind': _pl['kind'], 'id': _pl['id']},
+            'href': _task_href(_ln['href']), 'requires': _t['requires'],
+            'provenance': _t['provenance'], 'source': _t['source']}
+    if _ln['href'] is None:
+        _row['why'] = _ln['why']
+    else:
+        _row['lands'] = _ln['lands']
+    TASK3D['campuses'][_ck].append(_row)
+for _ck, _rows in TASK3D['campuses'].items():
+    if not _rows:
+        assert _ck not in _treg['counts']['by_campus'], f'task layer: the registry counts tasks on {_ck} but none were read'
+        continue
+    assert len(_rows) == _treg['counts']['by_campus'][_ck], (
+        f'task layer: {len(_rows)} tasks read for {_ck}, the registry counts {_treg["counts"]["by_campus"][_ck]}')
+assert sum(len(v) for v in TASK3D['campuses'].values()) + _treg['counts']['by_place_kind']['space'] == _treg['counts']['tasks'], (
+    'task layer: tasks read do not add up to the registry total')
+# the kind and "lands" labels are the tasks pack's own catalog keys
+# (tasks.kind.<kind>, tasks.lands.<lands>), taken for exactly the values
+# the registry uses - a value with no key in a locale stops the build
+_task_keys = ([f'tasks.kind.{k}' for k in TASK3D['kinds']]
+              + sorted({f'tasks.lands.{r["lands"]}' for v in TASK3D['campuses'].values()
+                        for r in v if 'lands' in r}))
+for _f in sorted((ROOT / 'i18n/locales').glob('*.json')):
+    _c = json.load(open(_f))
+    for _k in _task_keys:
+        assert _k in _c['strings'], f'task layer: locale {_c["locale"]} has no {_k}'
+        I18N[_c['locale']]['strings'][_k] = _c['strings'][_k]
+# the pool holds every gem one view can stand: seat markers + the green
+# treasure + one task gem per place + the sixteen meteors. Checked here,
+# because questWrite() silently stops at QCAP and a cut gem would be a
+# place whose tasks cannot be clicked.
+QCAP3D = 128
+_task_places = max(len({(r['place']['kind'], r['place']['id']) for r in v
+                        if r['place']['kind'] != 'wilds-site'})
+                   for v in TASK3D['campuses'].values())
+assert len(_q_seat) + 1 + _task_places + 16 <= QCAP3D, (
+    f'task layer: {len(_q_seat)} seats + 1 green + {_task_places} task places + 16 meteors overflow the pool of {QCAP3D}')
+
 DATA = json.dumps({
     'quest3d': QUEST3D,
+    'tasks3d': TASK3D,
     'districts': {k: {'name': d['name'], 'halls': d['halls'], 'hue': HUES[k]}
                   for k, d in districts_reg.items()},
     'campuses': campuses_reg,
@@ -7002,6 +7102,7 @@ page = '''<!doctype html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230C1113'/%3E%3Cpath d='M7 21 L16 7 L25 21 Z' fill='none' stroke='%23E8A33D' stroke-width='2.6' stroke-linejoin='round'/%3E%3Cpath d='M11 21 h10' stroke='%2341C4D4' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E">
 <title>SmartCiti.X : Trade Craft Academy — 3D hall environment</title>
+<script>__STYLE_HEAD_JS__</script>
 <style>
 :root{
   --plate:#12181B; --panel:#182023; --sunk:#0C1113; --ink:#E8EDEC; --muted:#93A3A6;
@@ -7140,6 +7241,14 @@ body.open #bar > *:not(#guideBtn){pointer-events:none;opacity:.3}
 .q .opt.ok{border-color:var(--good);color:var(--good)}
 .q .opt.bad{border-color:var(--crit);color:var(--crit)}
 #panel p.src{color:var(--muted);font-size:11px;margin:6px 0 0}
+/* the Tasks panel (simulated tasks): filter chips and cards */
+.t3-chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 10px}
+.t3-chip{background:var(--sunk);color:var(--ink);border:1px solid var(--rule);border-radius:999px;
+  padding:4px 11px;font:inherit;font-size:12.5px;cursor:pointer;min-height:32px}
+.t3-chip span{color:var(--muted);font-family:"IBM Plex Mono",monospace;font-size:11.5px}
+.t3-chip[aria-pressed="true"]{border-color:var(--mark);color:var(--mark)}
+#panel ul.t3-list{list-style:none;padding:0;margin:0;color:var(--ink)}
+.t3-card{background:var(--sunk);border:1px solid var(--rule);border-radius:8px;padding:10px 12px;margin:8px 0}
 .asks{display:flex;flex-direction:column;gap:4px}
 .asks .opt{background:var(--sunk);border:1px solid var(--rule);color:var(--ink);border-radius:6px;padding:8px 10px;cursor:pointer;font:inherit;text-align:start;min-height:40px}
 .asks .opt:hover{border-color:var(--mark)}
@@ -7160,6 +7269,7 @@ body.open #bar > *:not(#guideBtn){pointer-events:none;opacity:.3}
 @media(prefers-reduced-motion:reduce){#panel{transition:none}}
 </style>
 <style>__NAV_CSS__</style>
+<style>__THEME_CSS__</style>
 <style>__QUEST_CSS__</style>
 <style>
 /* The site nav on a full-window canvas. It is fixed, so it takes no flow
@@ -7203,6 +7313,26 @@ nav.sitenav .sitenav-menu[open]>summary{position:absolute;top:4px;inset-inline-e
 nav.sitenav .sitenav-menu[open]>.sitenav-groups,nav.sitenav .sitenav-menu[open] .sitenav-group{min-width:0;max-width:100%}
 #bar{top:var(--navh)}
 #mm{top:calc(62px + var(--navh))}
+/* The panel opens BELOW the HUD bar. It used to start at top:0, and while
+   a panel is open the bar is lifted over its scrim (z 12, see #guideBtn),
+   so the bar sat on the panel's heading and first lines: every panel
+   opened with its title hidden. --hudtop is the bar's measured bottom edge
+   (nav row + the bar's own wrapped rows), re-read whenever the bar resizes;
+   the value here is only the first paint's. */
+:root{--hudtop:96px}
+#panel{top:var(--hudtop)}
+/* The canvas theme (web/pagehero.py theme('canvas'), body.tc-theme-canvas):
+   the panel wears its glass, line and elevation over the world; the task
+   launch links are its primary buttons, the task chips its badges. The
+   bar's own buttons keep their size - the theme's 44 px button would
+   double the bar's rows over the scene. */
+body.tc-theme-canvas #panel{background:var(--tc-panel);color:var(--tc-ink);border:0;
+  border-inline-start:1px solid var(--tc-line);border-start-start-radius:var(--tc-r-lg);
+  border-end-start-radius:var(--tc-r-lg);box-shadow:var(--tc-e-3)}
+@supports (backdrop-filter:blur(1px)){body.tc-theme-canvas #panel{
+  background:color-mix(in srgb,var(--tc-panel) 90%,transparent);backdrop-filter:blur(12px) saturate(1.2)}}
+body.tc-theme-canvas #panel .tc-badge{margin:6px 4px 4px 0}
+body.tc-theme-canvas #panel a.tc-btn{min-block-size:40px;padding:8px 16px}
 </style>
 </head>
 <body>
@@ -7243,6 +7373,7 @@ __NAV__<main id="main">
   <select id="hour" aria-label="hour of the day"></select>
   <button id="guideBtn" class="barbtn" aria-label="open the guide: what this place is and how to move in it">❓ Guide</button>
   <button id="questBtn" class="barbtn" aria-label="__QUESTLOG_LABEL__">🧭</button>
+  <button id="tasksBtn" class="barbtn" aria-label="__TASKS_LABEL__">📋</button>
 
   <button id="vrBtn" class="barbtn" style="display:none">🥽 VR</button>
   <button id="arBtn" class="barbtn" style="display:none">📱 AR</button>
@@ -7252,6 +7383,23 @@ __NAV__<main id="main">
   <input id="glbFile" type="file" accept=".glb,.gltf" style="display:none">
   <select id="lang"></select>
 </div>
+<script>
+// the canvas theme's scope (THEME_CONTRACT v1), set before the scene paints;
+// the class rides on <body> by script because the nav must stay the first
+// thing after a bare <body> tag
+document.body.classList.add('tc-theme-canvas');
+// the reader's Style (the nav's radios; stored choice re-checked)
+__STYLE_JS__
+// the bar's bottom edge, measured (see --hudtop in the stylesheet)
+(function () {
+  const bar = document.getElementById('bar');
+  if (!bar) throw new Error('the HUD bar is missing, so the panel has no edge to open below');
+  const fit = () => document.documentElement.style.setProperty('--hudtop',
+    Math.ceil(bar.getBoundingClientRect().bottom) + 'px');
+  fit(); addEventListener('resize', fit);
+  new ResizeObserver(fit).observe(bar);
+}());
+</script>
 <div id="wheelWrap" style="display:none">
   <div id="wheelTabs"></div>
   <svg id="wheel" viewBox="0 0 200 200" role="listbox" aria-label="options"></svg>
@@ -7320,6 +7468,12 @@ let slug = D.halls.some(h => h.slug === params.get('hall')) ? params.get('hall')
    nothing. */
 const simDeep = Object.keys(D.sims.sims).includes(params.get('sim'))
   ? params.get('sim') : null;
+// ?scenario=<id> names one of that seat's OWN scenarios outright - the task
+// registry links the scenarios whose campus has no hall teaching the seat
+// this way. Any other value is ignored and the campus picks, as before.
+const scenarioDeep = simDeep && D.sims.sims[simDeep].scenarios
+  && D.sims.sims[simDeep].scenarios.some((s) => s.id === params.get('scenario'))
+  ? params.get('scenario') : null;
 let view = 'region';
 const t = (k) => D.i18n[loc].strings[k] ?? D.i18n.en.strings[k] ?? k;
 const U = 3;                       // metres per grid unit
@@ -8612,12 +8766,19 @@ let skyHorizonHex = 0x8fa6b8;
 
 /* Greedy horizontal run-length over the mask. Returns [x0, x1, z0, z1] in
    metres for each run of land cells, skipping any run that lies wholly
-   inside the apron - see rule ONE. */
+   inside the apron - see rule ONE.
+
+   terrain/ writes the mask in metres EAST/NORTH of the anchor, row j
+   spanning north = -half + j*step .. +step (row 0 is the SOUTH edge). North
+   is -Z in this scene (see the sun note: z = -cos(az)), so the row's z band
+   is the NEGATED north band. Reading north straight in as +z drew every
+   coastline mirrored north-south - a bay to the south of a campus stood
+   to its north, while the sun and the city anchors (both -n) stood right. */
 function terrainRuns(mask, half, inner) {
   const n = mask.n, step = 2 * half / n, out = [];
   for (let j = 0; j < n; j++) {
     const bits = BigInt('0x' + mask.rows[j]);
-    const z0 = -half + j * step, z1 = z0 + step;
+    const z0 = half - (j + 1) * step, z1 = z0 + step;
     let run = -1;
     for (let i = 0; i <= n; i++) {
       const land = i < n && ((bits >> BigInt(i)) & 1n) === 1n;
@@ -8640,8 +8801,9 @@ function terrainLines(lines, colour, opacity) {
   const pos = [];
   for (const line of lines) {
     for (let i = 1; i < line.length; i++) {
-      pos.push(line[i - 1][0], TERRAIN_LINE_Y, line[i - 1][1],
-               line[i][0], TERRAIN_LINE_Y, line[i][1]);
+      // [east, north] metres -> scene (x = east, z = -north), as terrainRuns
+      pos.push(line[i - 1][0], TERRAIN_LINE_Y, -line[i - 1][1],
+               line[i][0], TERRAIN_LINE_Y, -line[i][1]);
     }
   }
   if (!pos.length) return null;
@@ -11418,10 +11580,16 @@ function building(h, style, g, pool, ox = 0, oz = 0) {   // built at the local o
   const bld = box(wid, hgt, dep, fab.wall, 0, hgt / 2, 0, g);
   bld.userData.slug = h.slug;
   const parts = pool;                // material -> [transformed geometries], district-wide
+  // the highest point this hall's own envelope pieces reach (roofline,
+  // rooftop unit, hue band), read off the transformed geometry itself so
+  // window.__tc3dLayout() reports what was drawn, not a restated formula
+  let top = hgt;
   const add = (m2, w, hh, d2, x, y, z, rz = 0) => {
     const ge = new THREE.BoxGeometry(w, hh, d2);
     const mx = new THREE.Matrix4().makeRotationZ(rz).setPosition(x + ox, y, z + oz);
     ge.applyMatrix4(mx);
+    ge.computeBoundingBox();
+    if (ge.boundingBox.max.y > top) top = ge.boundingBox.max.y;
     (parts.get(m2) ?? parts.set(m2, []).get(m2)).push(ge);
   };
   const hueMat = hueMatOf(D.districts[h.district].hue);
@@ -11447,6 +11615,7 @@ function building(h, style, g, pool, ox = 0, oz = 0) {   // built at the local o
   // the kit hangs on this envelope: the same pool, the same materials, the
   // wall and roofline just drawn rather than a restated copy of them
   kitDress(h, style, fab, pool, ox, oz, wid, dep, hgt, g);
+  bld.userData.top = top; bld.userData.style = style;
   if (h.stations.length) beaconAt.push(new THREE.Vector3(0, hgt + 2, 0));
   else beaconAt.push(null);
   return { mesh: bld, w: wid, d: dep };
@@ -11700,6 +11869,34 @@ function flushKit(g) {
   for (const ge of kitGeoCache.values()) ge.dispose();   // the clones are merged already
   kitGeoCache.clear();
 }
+/* The campus layout as the scene built it, for the geo 3D globe (geo3d/
+   mirrors it in Python and checks the two agree). Read back off the SAME
+   objects buildCampus() made - each district's group, each hall's wall box
+   - never recomputed here, so a change to the layout cannot leave this
+   answering for the old one. Scene metres: north = -Z, east = +X, about
+   the plaza centre. psi is the district group's rotation.y (local +z points
+   outward, doors face the plaza). h is the wall box; top is the highest
+   point of the hall's own envelope pieces (roofline, rooftop unit). */
+window.__tc3dLayout = () => {
+  const k = campusGroup && campusGroup.userData.key;
+  if (!k) return null;
+  campusGroup.updateMatrixWorld(true);
+  const districts = campusGroup.children.filter((o) => o.userData.district)
+    .map((cg) => ({ key: cg.userData.district, cx: cg.position.x,
+                    cz: cg.position.z, psi: cg.rotation.y }));
+  const p = new THREE.Vector3();
+  const halls = buildings.map((b) => {
+    const cg = b.parent.parent;
+    if (!cg.userData.district) throw new Error('hall ' + b.userData.slug + ' is not inside a district group');
+    campusGroup.worldToLocal(b.getWorldPosition(p));
+    const g = b.geometry.parameters;
+    return { slug: b.userData.slug, district: cg.userData.district,
+             x: p.x, z: p.z, w: g.width, d: g.depth, h: g.height,
+             top: b.userData.top, roof: b.userData.style, psi: cg.rotation.y };
+  });
+  return { campus: k, frame: { north: '-Z', east: '+X', units: 'm' },
+           districts, halls };
+};
 window.__tc3dKit = () => {
   const k = campusGroup && campusGroup.userData.key;
   if (!k || !kitStat) return null;
@@ -12603,6 +12800,7 @@ function buildCampus(key) {
     const cg = new THREE.Group();
     cg.position.set(rad.x * R, 0, rad.y * R);
     cg.rotation.y = psi;               // local +z = outward, doors face the plaza
+    cg.userData.district = k;          // read back by window.__tc3dLayout()
     campusGroup.add(cg);
     const cols = Math.ceil(Math.sqrt(d.halls.length * 1.7));
     // The district decides the roofline it has an opinion about (an
@@ -15276,7 +15474,7 @@ if (simDeep) queueMicrotask(() => {
      AND the seat's own dependencies exist. */
   const simDef = D.sims.sims[simDeep];
   if (!simDef.halls.includes(slug)) showHall(simDef.halls[0]);
-  startSim(simDeep, null);
+  startSim(simDeep, scenarioDeep);
 });
 // test hooks: state for assertions, and the two panel openers the toolroom
 // harness drives (module scope hides them from the page's own globals)
@@ -15677,9 +15875,10 @@ QUEST3D_JS = r"""/* ------------------------------------------ side quests, trea
    from storage this page does not own - and a find is listed for the
    visit only. */
 const Q3 = D.quest3d;
-const QCAP = 64;
+const T3 = D.tasks3d;                 // TASK_CONTRACT v1, this page's share of tasks/registry
+const QCAP = 128;                     // held to seats + green + task places + meteors at build
 const QCOL = { locked: 0x8a8f98, open: 0x4cd964, treasure: 0xffc83d,
-               found: 0x6b5a2a, egg: 0xb07cff, meteor: 0xfff3c4 };
+               found: 0x6b5a2a, egg: 0xb07cff, meteor: 0xfff3c4, task: 0x3fa9f5 };
 const qGeo = new THREE.OctahedronGeometry(1, 0);
 const qMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: .35,
   metalness: .25, emissive: 0x2a2410 });
@@ -15781,6 +15980,38 @@ function questLayout() {
     const gr = Q3.green[campusKey];
     if (!gr) throw new Error('quest layer: no green treasure for campus ' + campusKey);
     items.push({ id: gr.id, kind: 'treasure', x: 9, y: .5, z: 41, s: [.3, .38, .3], tr: gr });
+    // a blue gem over every place on this campus that has simulated tasks:
+    // above a hall's own roofline (read off the wall box it stands on), at
+    // a restoration site's post, and on the green for the campus itself
+    const p = new THREE.Vector3();
+    for (const pl of taskPlaces()) {
+      let x, y, z;
+      if (pl.kind === 'hall') {
+        const b = buildings.find((o) => o.userData.slug === pl.id);
+        if (!b) throw new Error('task layer: hall ' + pl.id + ' has tasks on ' + campusKey + ' but no building here');
+        b.getWorldPosition(p); x = p.x; y = b.userData.top + 3.2; z = p.z;
+      } else if (pl.kind === 'campus') {
+        x = -9; y = 1.6; z = 41;
+      } else if (pl.kind === 'restoration-site') {
+        const post = restorationHits.find((o) => o.userData.restorationSite === pl.id
+          && o.geometry.parameters.height > 1);
+        if (!post) continue;         // a site this campus does not pin is listed in the panel only
+        post.getWorldPosition(p); x = p.x; y = 4.2; z = p.z;
+      } else throw new Error('task layer: no place of kind ' + pl.kind + ' is drawn in the campus');
+      items.push({ id: 'tasks:' + pl.kind + ':' + pl.id, kind: 'task', x, y, z, s: [.55, .9, .55], place: pl });
+    }
+  }
+  if (view === 'hall') {
+    const n = tasksHere().filter((tk) => tk.place.kind === 'hall' && tk.place.id === slug).length;
+    if (n) {
+      // in the tool crib when the hall lays one out (the crib drills live
+      // there), beside the lesson room's marker if they share the room
+      const crib = roomRects.find((x) => x.strand === 'tools');
+      const r = crib ? crib : roomRects[0];
+      const shared = Q3.hall[slug] && Q3.hall[slug].strand === r.strand;
+      items.push({ id: 'tasks:hall:' + slug, kind: 'task', x: (r.x0 + r.x1) / 2 + (shared ? 1.4 : 0),
+        y: 2.2, z: (r.z0 + r.z1) / 2, s: [.3, .5, .3], place: { kind: 'hall', id: slug, n } });
+    }
   }
   return items;
 }
@@ -15788,6 +16019,7 @@ function questTint(it) {
   if (it.kind === 'marker') return questCheck(it.id).ok ? QCOL.open : QCOL.locked;
   if (it.kind === 'treasure') return qSeen.has(it.id) ? QCOL.found : QCOL.treasure;
   if (it.kind === 'meteor') return QCOL.meteor;
+  if (it.kind === 'task') return QCOL.task;
   return QCOL.egg;
 }
 function questWrite(time) {
@@ -15829,6 +16061,7 @@ function questStep(dt) {
     if (loc !== qLoc) {
       qLoc = loc;
       document.getElementById('questBtn').setAttribute('aria-label', t('campus3d.questlog'));
+      document.getElementById('tasksBtn').setAttribute('aria-label', t('campus3d.tasks'));
     }
   }
   // the shower runs on the wall clock, not the loop's dt: a slow or
@@ -15840,13 +16073,14 @@ function questStep(dt) {
   if (walkActive && !document.body.classList.contains('open')) {
     const e = eyePos();
     for (const it of qItems) {
-      if (it.kind === 'marker' || qSeen.has(it.id)) continue;
+      if (it.kind === 'marker' || it.kind === 'task' || qSeen.has(it.id)) continue;
       if (Math.hypot(e.x - it.x, e.z - it.z) < 1.8) { questActivate(it); break; }
     }
   }
 }
 function questActivate(it) {
   if (it.kind === 'marker') return questMarker(it.q, it.title);
+  if (it.kind === 'task') return openTasks(it.place);
   if (it.kind === 'treasure') return questFind(it.id, 'treasure', it.tr.items ? placardBody(it.tr) : treasureBody(it.tr));
   if (it.kind === 'egg') return questFind(it.id, 'egg',
     '<p class="focus">A room behind the partition that no lesson sends you to.</p>'
@@ -15859,8 +16093,36 @@ function questPick(ray) {
   QPOOL.computeBoundingSphere(); QPOOL.computeBoundingBox?.();
   const hit = ray.intersectObject(QPOOL, false)[0];
   if (!hit || hit.instanceId === undefined || hit.instanceId >= qItems.length) return false;
+  // a gem behind a wall is not in reach: the click belongs to the wall
+  if (questOccluded(ray, hit.distance)) return false;
   questActivate(qItems[hit.instanceId]);
   return true;
+}
+/* Is anything solid between the ray's origin and `dist`? The pool used to
+   be raycast on its own, so a gem answered a click THROUGH a partition -
+   the wave-2 probe clicked a treasure it could not see. The solid is what
+   the view built (the hall's group in a hall, the campus group outside):
+   visible, opaque meshes only. Sprites (labels), lines, transparent sheets
+   (glass, water, fog) and anything under a hidden parent do not stop a
+   ray. The list is gathered and tested flat, so no sprite is raycast (a
+   controller ray carries no camera to raycast one with). A surface within
+   GEM_EMBED of the gem's own face is what the gem stands in, not a wall
+   in front of it: the hall treasures sit half-sunk in the room floor, and
+   the first cut, with a 5 cm margin, refused every one of them on the
+   floor slab they rest on. */
+const GEM_EMBED = .35;
+function questOccluded(ray, dist) {
+  const root = view === 'hall' ? hallGroup : campusGroup;
+  if (!root) return false;
+  const solid = [];
+  root.traverseVisible((o) => {
+    if (!o.isMesh || o === QPOOL) return;
+    const m = Array.isArray(o.material) ? o.material[0] : o.material;
+    if (m.transparent && m.opacity < .98) return;
+    solid.push(o);
+  });
+  const first = ray.intersectObjects(solid, false)[0];
+  return !!first && first.distance < dist - GEM_EMBED;
 }
 /* ---- the eggs that are not gems ---- */
 function questEgg(name, body) {
@@ -15876,7 +16138,7 @@ function questMeteorShower() {
   const rnd = seeded(1337);
   for (let i = 0; i < 16; i++)
     qMeteors.push({ kind: 'meteor', x: (rnd() - .5) * 260, y: 90 + rnd() * 60,
-      z: -120 - rnd() * 80, vx: 60 + rnd() * 40, vy: -30 - rnd() * 20, s: [.35, 4, .35] });
+      z: -120 - rnd() * 80, vx: 60 + rnd() * 40, vy: -30 - rnd() * 20, s: [1.1, 12, 1.1] });
   qMeteorEnd = performance.now() + 5000;
   qMeteorT = 5;
 }
@@ -15940,6 +16202,85 @@ function openQuestLog() {
     : '<p class="focus">—</p>';
 }
 document.getElementById('questBtn').addEventListener('click', openQuestLog);
+
+/* ---- simulated tasks (TASK_CONTRACT v1) ----
+   Practice, not play: the panel says so once in the registry's own words
+   and carries none of the quest layer's play line. Every number shown is
+   the length of a list read out of D.tasks3d, which the build held to the
+   registry's counts. */
+let tFilter = 'all', tPlace = null;
+function tasksHere() {
+  const list = T3.campuses[campusKey];
+  if (!list) throw new Error('task layer: no task list built for campus ' + campusKey);
+  return list;
+}
+function taskPlaces() {             // the places a gem stands at; a wilds site is the wilds page's
+  const m = new Map();
+  for (const tk of tasksHere()) {
+    if (tk.place.kind === 'wilds-site') continue;
+    const k = tk.place.kind + ':' + tk.place.id;
+    if (!m.has(k)) m.set(k, { kind: tk.place.kind, id: tk.place.id, n: 0 });
+    m.get(k).n++;
+  }
+  return [...m.values()];
+}
+function taskPlaceName(pl) {
+  if (pl.kind === 'hall') return D.halls.find((h) => h.slug === pl.id).name;
+  if (pl.kind === 'campus') return D.campuses[pl.id].name;
+  if (pl.kind === 'restoration-site') return D.restoration.sites.find((x) => x.id === pl.id).name;
+  return pl.kind + ' · ' + pl.id;
+}
+function taskCard(tk) {
+  return '<li class="t3-card" data-task="' + qEsc(tk.id) + '" data-kind="' + qEsc(tk.kind) + '">'
+    + '<b>' + qEsc(tk.title) + '</b>'
+    + '<div><span class="tc-badge tc-badge-info">' + qEsc(t('tasks.kind.' + tk.kind)) + '</span>'
+    + '<span class="tc-badge tc-badge-muted">' + qEsc(tk.provenance) + '</span>'
+    + (tPlace ? '' : '<span class="tc-badge tc-badge-muted">' + qEsc(taskPlaceName(tk.place)) + '</span>') + '</div>'
+    + (tk.href
+      ? '<p><a class="tc-btn tc-btn-primary t3-go" href="' + qEsc(tk.href) + '">▶ ' + qEsc(t('campus3d.tasks.launch'))
+        + '</a> <span class="src">' + qEsc(t('tasks.lands.' + tk.lands)) + '</span></p>'
+      : '<p class="src">' + qEsc(t('tasks.nolink')) + ': ' + qEsc(tk.why) + '</p>')
+    + (tk.requires.length ? '<p class="src">' + qEsc(t('campus3d.tasks.lessons')) + '</p>' + lessonList(tk.requires) : '')
+    + '<p class="src">' + qEsc(tk.source) + '</p></li>';
+}
+function openTasks(place, keepFilter = false) {
+  tPlace = place;
+  if (!keepFilter) tFilter = 'all';    // a new place opens on every kind
+  const all = tasksHere();
+  const list = place ? all.filter((tk) => tk.place.kind === place.kind && tk.place.id === place.id) : all;
+  const kinds = T3.kinds.filter((k) => list.some((tk) => tk.kind === k));
+  if (tFilter !== 'all' && !kinds.includes(tFilter)) tFilter = 'all';
+  const shown = tFilter === 'all' ? list : list.filter((tk) => tk.kind === tFilter);
+  const chip = (k, n) => '<button type="button" class="t3-chip" data-t3kind="' + qEsc(k) + '" aria-pressed="'
+    + (k === tFilter) + '">' + qEsc(k === 'all' ? t('campus3d.tasks.all') : t('tasks.kind.' + k))
+    + ' <span>' + n + '</span></button>';
+  if (walkActive && plc.isLocked) plc.unlock();
+  document.getElementById('pbody').innerHTML =
+    '<h2>' + qEsc(place ? t('campus3d.tasks.here') : t('campus3d.tasks')) + '</h2>'
+    + '<p class="focus">' + qEsc(place ? taskPlaceName(place) : D.campuses[campusKey].name)
+    + ' · ' + list.length + '</p>'
+    + (place ? '<p><button type="button" class="tc-btn tc-btn-ghost" id="t3All">' + qEsc(t('campus3d.tasks.showall')) + '</button></p>' : '')
+    + (list.length
+      ? '<div class="t3-chips" role="group">' + chip('all', list.length)
+        + kinds.map((k) => chip(k, list.filter((tk) => tk.kind === k).length)).join('') + '</div>'
+        + '<ul class="t3-list">' + shown.map(taskCard).join('') + '</ul>'
+      : '<p class="focus">' + qEsc(t('campus3d.tasks.none')) + '</p>')
+    + '<p class="src">' + qEsc(T3.practice) + ' ' + qEsc(T3.requires) + '</p>';
+  document.getElementById('panel').scrollTop = 0;
+  document.body.classList.add('open');
+  for (const b of document.querySelectorAll('#pbody .t3-chip'))
+    b.addEventListener('click', () => { tFilter = b.dataset.t3kind; openTasks(tPlace, true); });
+  const ab = document.getElementById('t3All');
+  if (ab) ab.addEventListener('click', () => openTasks(null));
+}
+document.getElementById('tasksBtn').addEventListener('click', () => openTasks(null));
+window.__tc3dTasks = () => ({
+  campus: campusKey, total: tasksHere().length, filter: tFilter, place: tPlace,
+  places: qItems.filter((it) => it.kind === 'task')
+    .map((it) => ({ kind: it.place.kind, id: it.place.id, n: it.place.n, i: qItems.indexOf(it),
+                    at: [+it.x.toFixed(2), +it.y.toFixed(2), +it.z.toFixed(2)] })),
+  cards: document.querySelectorAll('#pbody .t3-card').length,
+});
 window.__tc3dQuest = () => ({
   wired: !!qApi(), view, slug, campus: campusKey,
   pool: { count: QPOOL.count, visible: QPOOL.visible, capacity: QCAP,
@@ -15959,13 +16300,23 @@ window.__tc3dQuestAim = (i, dist = 4) => {
   const it = qItems[i];
   if (!it) throw new Error('no quest item ' + i);
   const tgt = new THREE.Vector3(it.x, it.y, it.z);
-  camera.position.set(it.x, it.y + dist * .3, it.z + dist);
-  controls.target.copy(tgt);
-  camera.lookAt(tgt);
-  controls.update();
-  camera.updateMatrixWorld(true);
+  // walk round the gem for a side nothing solid stands in front of: a click
+  // through a wall is refused now (questOccluded), so aiming through one
+  // would prove nothing. `occluded` says when no side was clear.
+  const aimRay = new THREE.Raycaster();
+  let occluded = true;
+  for (let k = 0; k < 8 && occluded; k++) {
+    const a = k / 8 * Math.PI * 2;
+    camera.position.set(it.x + Math.sin(a) * dist, it.y + dist * .3, it.z + Math.cos(a) * dist);
+    controls.target.copy(tgt);
+    camera.lookAt(tgt);
+    controls.update();
+    camera.updateMatrixWorld(true);
+    aimRay.set(camera.position, tgt.clone().sub(camera.position).normalize());
+    occluded = questOccluded(aimRay, camera.position.distanceTo(tgt) - it.s[1]);
+  }
   const p = tgt.clone().project(camera), r = renderer.domElement.getBoundingClientRect();
-  return { id: it.id, x: r.left + (p.x + 1) / 2 * r.width, y: r.top + (1 - p.y) / 2 * r.height };
+  return { id: it.id, occluded, x: r.left + (p.x + 1) / 2 * r.width, y: r.top + (1 - p.y) / 2 * r.height };
 };
 """
 
@@ -15975,12 +16326,16 @@ page = page.replace('__SIM_JS__', SIM_JS).replace('__XR_JS__', XR_JS)
 page = page.replace('__GUIDE_JS__', GUIDE_JS)
 page = page.replace('__QUEST3D_JS__', QUEST3D_JS)
 page = page.replace('__QUESTLOG_LABEL__', I18N['en']['strings']['campus3d.questlog'])
+page = page.replace('__TASKS_LABEL__', I18N['en']['strings']['campus3d.tasks'])
+assert f'const QCAP = {QCAP3D};' in QUEST3D_JS, 'task layer: the pool capacity in QUEST3D_JS is not the one the build checked'
 page = page.replace('__RESPOND_JS__', RESPOND_JS)
 page = page.replace('__AVATAR_JS__', AVATAR_JS)
 page = page.replace('__ADVISOR_JS__', ADVISOR_JS)
 page = page.replace('__GROUND_TRUTH_JS__', GROUND_TRUTH_JS)
 page = page.replace('__QUEST_CSS__', QUEST_CSS)
 page = page.replace('__NAV_CSS__', NAV_CSS).replace('__NAV__', NAV)
+page = page.replace('__THEME_CSS__', THEME_CSS)
+page = page.replace('__STYLE_HEAD_JS__', STYLE_HEAD_JS).replace('__STYLE_JS__', STYLE_JS)
 page = page.replace('__H1_TEXT__', I18N['en']['strings']['nav.page.campus'])
 # the bar's controls carry their English names in the markup, so every link
 # and button has an accessible name before the script runs; renderChrome()

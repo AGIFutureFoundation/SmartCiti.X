@@ -59,6 +59,7 @@ PROVENANCE = {
     'lesson_titles': 'DERIVED',
     'site_walks': 'DERIVED',
     'summit_register': 'DERIVED',
+    'geolocation': 'AUTHORED',
 }
 HONESTY = {
     'landscape': ('Every world is an authored landscape generated from a seed. '
@@ -427,11 +428,25 @@ def build_world(w):
         if k not in kinds:
             die(f'world {wid} has no {k} treasure')
     area_km2 = round((w['extent_m'] / 1000) ** 2, 1)
+    campus = CAMPUSES[w['campus']]
+    need(campus, ('city', 'region'), f'campus {w["campus"]} in geo/registry/campuses_geo.json')
+    # Geolocation, stated once here so the globe reads it rather than composing
+    # its own words: an authored world has no place on the Earth. Its x/z are
+    # metres local to the world; the campus is inspiration, not a location.
+    geolocation = {
+        'on_globe': False,
+        'provenance': 'AUTHORED',
+        'basis': 'inspiration only',
+        'coordinates': 'none: an authored world has no latitude or longitude; its x/z metres are local to the world',
+        'inspired_by': {'campus': w['campus'], 'city': campus['city'], 'region': campus['region']},
+        'label': f'Not on the globe: AUTHORED, inspired by {campus["city"]}, {campus["region"]}',
+    }
     return {
         'id': wid, 'name': w['name'],
         'inspiration': {'evokes': w['evokes'], 'campus': w['campus'],
                         'campus_city': CAMPUSES[w['campus']]['city'],
                         'standing': 'inspiration only; the terrain is AUTHORED, not real elevation'},
+        'geolocation': geolocation,
         'seed': w['seed'], 'extent_m': w['extent_m'], 'chunk_m': w['chunk_m'],
         'area_km2': area_km2, 'chunks_across': w['extent_m'] // w['chunk_m'],
         'sky': w['sky'], 'fog': w['fog'], 'biome': w['biome'],

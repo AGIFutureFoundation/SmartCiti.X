@@ -40,25 +40,34 @@ if (SHOTS) mkdirSync(SHOTS, { recursive: true });
    wooded (the overview hides vegetation by design: at that scale a tree is
    under a pixel, and the whole-world mesh's colours carry the forest). */
 const BASE = {
+  /* `bb` (wave 3): the tree-billboard floor, a NEW row measured 2026-09-28
+     08:25 UTC on a frozen copy (scratchpad wilds_w3_measure2.log), held like
+     `veg` to 0.9x: the cards past VEG_R are what make a wooded view read as
+     a forest to the horizon. null where a view is not meant to be wooded
+     (overview: cards are hidden there by design; summit: not a wooded view,
+     as for veg).
+     The calls/tris/ms rows were NOT re-declared: billboards cost +2 calls and
+     at most ~22k triangles per walk view, measured inside the existing
+     headroom (forest dense: 12 calls against a 12-call limit). */
   /* measured 2026-09-28 06:1x UTC, Chromium/SwiftShader 1280x800, with other
      agents' browsers sharing the machine (frame times are the noisy row) */
   mountain: {
-    overview: { calls: 4, tris: 38_376, ms: 33.6, chunks: 1, veg: null },
-    trail: { calls: 25, tris: 108_800, ms: 127.1, chunks: 49, veg: 2_041 },
-    dense: { calls: 21, tris: 138_914, ms: 190.8, chunks: 49, veg: 3_081 },
-    summit: { calls: 24, tris: 76_046, ms: 97.4, chunks: 49, veg: null },
+    overview: { calls: 4, tris: 38_376, ms: 33.6, chunks: 1, veg: null, bb: null },
+    trail: { calls: 25, tris: 108_800, ms: 127.1, chunks: 49, veg: 2_041, bb: 587 },
+    dense: { calls: 21, tris: 138_914, ms: 190.8, chunks: 49, veg: 3_081, bb: 1734 },
+    summit: { calls: 24, tris: 76_046, ms: 97.4, chunks: 49, veg: null, bb: null },
   },
   forest: {
-    overview: { calls: 4, tris: 38_076, ms: 70.2, chunks: 1, veg: null },
-    trail: { calls: 33, tris: 277_976, ms: 197.3, chunks: 49, veg: 6_137 },
-    dense: { calls: 9, tris: 241_360, ms: 252.4, chunks: 25, veg: 6_018 },
-    summit: { calls: 26, tris: 256_458, ms: 251.7, chunks: 49, veg: null },
+    overview: { calls: 4, tris: 38_076, ms: 70.2, chunks: 1, veg: null, bb: null },
+    trail: { calls: 33, tris: 277_976, ms: 197.3, chunks: 49, veg: 6_137, bb: 5615 },
+    dense: { calls: 9, tris: 241_360, ms: 252.4, chunks: 25, veg: 6_018, bb: 5320 },
+    summit: { calls: 26, tris: 256_458, ms: 251.7, chunks: 49, veg: null, bb: null },
   },
   canyon: {
-    overview: { calls: 4, tris: 36_992, ms: 71.5, chunks: 1, veg: null },
-    trail: { calls: 27, tris: 51_848, ms: 124.2, chunks: 49, veg: 485 },
-    dense: { calls: 26, tris: 54_668, ms: 105.3, chunks: 49, veg: 594 },
-    summit: { calls: 24, tris: 45_800, ms: 79.4, chunks: 42, veg: null },
+    overview: { calls: 4, tris: 36_992, ms: 71.5, chunks: 1, veg: null, bb: null },
+    trail: { calls: 27, tris: 51_848, ms: 124.2, chunks: 49, veg: 485, bb: 120 },
+    dense: { calls: 26, tris: 54_668, ms: 105.3, chunks: 49, veg: 594, bb: 154 },
+    summit: { calls: 24, tris: 45_800, ms: 79.4, chunks: 42, veg: null, bb: null },
   },
   /* delta (wave 2): measured 2026-09-28 07:03 UTC, same machine and settings,
      in the verification run that checked the three rows above (log:
@@ -66,10 +75,10 @@ const BASE = {
      design, so its veg floors are low; the summit view is not meant to be
      wooded, as elsewhere. */
   delta: {
-    overview: { calls: 4, tris: 39_224, ms: 49.5, chunks: 1, veg: null },
-    trail: { calls: 26, tris: 51_390, ms: 55, chunks: 49, veg: 468 },
-    dense: { calls: 17, tris: 53_222, ms: 52.3, chunks: 35, veg: 666 },
-    summit: { calls: 23, tris: 56_030, ms: 75.3, chunks: 49, veg: null },
+    overview: { calls: 4, tris: 39_224, ms: 49.5, chunks: 1, veg: null, bb: null },
+    trail: { calls: 26, tris: 51_390, ms: 55, chunks: 49, veg: 468, bb: 89 },
+    dense: { calls: 17, tris: 53_222, ms: 52.3, chunks: 35, veg: 666, bb: 321 },
+    summit: { calls: 23, tris: 56_030, ms: 75.3, chunks: 49, veg: null, bb: null },
   },
 };
 const CALL_HEADROOM = 1.25, TRI_HEADROOM = 1.5, MS_HEADROOM = 2, VEG_FLOOR = 0.9;
@@ -96,11 +105,17 @@ for (const w of worlds) {
     times.sort((a, b) => a - b);
     const ms = +times[Math.floor(times.length / 2)].toFixed(1);
     const vegN = st.instances.conifer + st.instances.deciduous + st.instances.rock;
-    const row = { world: w, view: v, calls: st.calls, tris: st.triangles, ms, chunks: st.chunks, pending: st.pending, veg: vegN, instanced: st.instanced };
+    const bbN = st.billboards.conifer + st.billboards.deciduous;
+    const row = { world: w, view: v, calls: st.calls, tris: st.triangles, ms, chunks: st.chunks, pending: st.pending, veg: vegN, bb: bbN, instanced: st.instanced };
     const base = BASE[w] && BASE[w][v];
     row.fails = [];
     if (st.pending !== 0) row.fails.push(`${st.pending} chunks still pending`);
     if (!st.instanced) row.fails.push('vegetation is not InstancedMesh');
+    /* tree billboards (wave 3): one InstancedMesh per species, only past the
+       full-tree radius, never drawn in the overview */
+    if (!st.billboardsInstanced) row.fails.push('billboards are not InstancedMesh');
+    if (bbN > 0 && !(st.billboardMinR >= st.vegR)) row.fails.push(`a billboard stands ${st.billboardMinR} m out, inside VEG_R ${st.vegR}`);
+    if (v === 'overview' && bbN !== 0) row.fails.push(`${bbN} billboards drawn in the overview`);
     if (!MEASURE_ONLY) {
       if (!base) row.fails.push('no declared target for this view');
       else {
@@ -109,12 +124,14 @@ for (const w of worlds) {
         if (ms > base.ms * MS_HEADROOM) row.fails.push(`frame ${ms} ms > ${base.ms * MS_HEADROOM}`);
         if (st.chunks !== base.chunks) row.fails.push(`chunks ${st.chunks} != ${base.chunks}`);
         if (base.veg !== null && vegN < Math.floor(base.veg * VEG_FLOOR)) row.fails.push(`visible instances ${vegN} < ${Math.floor(base.veg * VEG_FLOOR)}`);
+        if (!('bb' in base)) row.fails.push('no declared billboard floor (bb) for this view');
+        else if (base.bb !== null && bbN < Math.floor(base.bb * VEG_FLOOR)) row.fails.push(`billboards ${bbN} < ${Math.floor(base.bb * VEG_FLOOR)}`);
       }
     }
     if (row.fails.length) bad++;
     rows.push(row);
     if (SHOTS) await page.locator('#stage').screenshot({ path: `${SHOTS}/WILDS-${w}-${v}.png` });
-    if (!JSON_OUT) console.log(`${row.fails.length ? 'FAIL' : '  ok'}  ${w.padEnd(9)} ${v.padEnd(9)} calls ${String(st.calls).padStart(4)}  tris ${String(st.triangles).padStart(7)}  inst ${String(vegN).padStart(5)}  chunks ${String(st.chunks).padStart(3)}  frame ${String(ms).padStart(6)} ms${row.fails.length ? '  ' + row.fails.join('; ') : ''}`);
+    if (!JSON_OUT) console.log(`${row.fails.length ? 'FAIL' : '  ok'}  ${w.padEnd(9)} ${v.padEnd(9)} calls ${String(st.calls).padStart(4)}  tris ${String(st.triangles).padStart(7)}  inst ${String(vegN).padStart(5)}  bb ${String(bbN).padStart(5)}  chunks ${String(st.chunks).padStart(3)}  frame ${String(ms).padStart(6)} ms${row.fails.length ? '  ' + row.fails.join('; ') : ''}`);
   }
 }
 if (errors.length) { bad++; console.log('FAIL  page errors: ' + errors.join(' | ')); }
