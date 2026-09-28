@@ -12,6 +12,10 @@
  *     - plan must be in the catalogue; price id from the catalogue or env[plan.price_env]
  *     - success/cancel URLs are SITE_ORIGIN + fixed catalogue paths (never from the request)
  *     - Idempotency-Key sent to Stripe (client key validated, else a random UUID)
+ *     - rate limited per (HMAC-SHA256(RATE_LIMIT_SALT, client IP), plan): a token bucket in KV
+ *       holding RATE_LIMIT_CHECKOUT_MAX tokens refilled over RATE_LIMIT_CHECKOUT_WINDOW_S; any of
+ *       the three missing -> 503. The raw IP is never stored. KV is eventually consistent, so
+ *       the limit is approximate across Cloudflare locations (a brake, not an exact quota).
  *   POST /api/stripe-webhook  Stripe-Signature: t=..,v1=..
  *     - HMAC-SHA256 over `${t}.${rawBody}` with STRIPE_WEBHOOK_SECRET (WebCrypto),
  *       constant-time compare, |now - t| <= tolerance, event id de-duplicated in KV
@@ -33,7 +37,7 @@ const EVENT_TTL_S = 60 * 60 * 24 * 30;
 function reply(status, body, extra) {
   return new Response(JSON.stringify(body), { status, headers: { ...JSON_HEADERS, ...(extra || {}) } });
 }
-const refuse = (status, code, detail) => reply(status, { ok: false, error: code, detail });
+const refuse = (status, code, detail, extra) => reply(status, { ok: false, error: code, detail }, extra);
 
 async function readCapped(request, max) {
   const len = request.headers.get('content-length');
@@ -47,6 +51,44 @@ function planById(catalog, id) {
   if (typeof id !== 'string') return null;
   for (const p of catalog.plans) if (p.id === id) return p;
   return null;
+}
+
+/* ---------------------------------------------------------- rate limit */
+const hex = (buf) => [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
+
+export function rateLimitConfig(env, rl) {
+  const max = Number(env[rl.max_env]), win = Number(env[rl.window_env]), salt = env[rl.salt_env];
+  if (!Number.isInteger(max) || max < 1 || max > 1000000) return null;
+  if (!Number.isInteger(win) || win < 1 || win > 86400 * 30) return null;
+  if (typeof salt !== 'string' || salt.length < 16) return null;
+  return { max, win, salt };
+}
+
+export async function clientKey(ip, salt, subtle) {
+  const enc = new TextEncoder();
+  const key = await subtle.importKey('raw', enc.encode(salt), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+  return hex(await subtle.sign('HMAC', key, enc.encode(ip))).slice(0, 32);
+}
+
+/* A token bucket: capacity max, refilled at max/win tokens per second. Returns
+   {ok:true} after taking one token, or {ok:false, retry} in whole seconds. */
+export async function takeToken(kv, key, cfg, nowMs) {
+  const rate = cfg.max / cfg.win;
+  let st = null;
+  try { st = JSON.parse(await kv.get(key)); } catch { st = null; }
+  const now = nowMs / 1000;
+  let tokens = cfg.max;
+  if (st && Number.isFinite(st.t) && Number.isFinite(st.at) && st.at <= now)
+    tokens = Math.min(cfg.max, st.t + (now - st.at) * rate);
+  if (tokens < 1) return { ok: false, retry: Math.max(1, Math.ceil((1 - tokens) / rate)) };
+  // KV refuses more than about one write per second to a key; a refused write is a refusal here
+  // too (fail closed), never a free pass.
+  try {
+    await kv.put(key, JSON.stringify({ t: tokens - 1, at: now }), { expirationTtl: Math.max(60, Math.ceil(cfg.win * 2)) });
+  } catch {
+    return { ok: false, retry: 1 };
+  }
+  return { ok: true };
 }
 
 /* ------------------------------------------------------------ checkout */
@@ -78,10 +120,22 @@ export async function handleCheckout(request, env, deps) {
   const mode = env[plan.mode_env];
   if (mode !== 'payment' && mode !== 'subscription')
     return refuse(503, 'not_configured', `${plan.mode_env} must be payment or subscription`);
+  const rlc = rateLimitConfig(env, cat.rate_limit);
+  if (!rlc) return refuse(503, 'not_configured', 'rate limit is not configured (' + cat.rate_limit.max_env + ', '
+    + cat.rate_limit.window_env + ', ' + cat.rate_limit.salt_env + ')');
+  const kv = env[cat.rate_limit.kv_binding];
+  if (!kv || typeof kv.get !== 'function' || typeof kv.put !== 'function')
+    return refuse(503, 'not_configured', cat.rate_limit.kv_binding + ' binding is missing - cannot rate-limit');
+  const ip = request.headers.get(cat.rate_limit.ip_header);
+  if (typeof ip !== 'string' || ip.length < 2 || ip.length > 64) return refuse(400, 'client_ip', 'no client address');
   let key = body.idempotency_key;
   if (key === undefined) key = deps.uuid();
   if (typeof key !== 'string' || !/^[A-Za-z0-9-]{16,64}$/.test(key))
     return refuse(400, 'idempotency_key', 'idempotency_key must be 16-64 of [A-Za-z0-9-]');
+
+  const bucket = 'rl:checkout:' + plan.id + ':' + await clientKey(ip, rlc.salt, deps.subtle);
+  const tk = await takeToken(kv, bucket, rlc, deps.now());
+  if (!tk.ok) return refuse(429, 'rate_limited', 'too many checkout attempts', { 'retry-after': String(tk.retry) });
 
   const form = new URLSearchParams();
   form.set('mode', mode);
@@ -114,7 +168,6 @@ export async function handleCheckout(request, env, deps) {
 }
 
 /* ------------------------------------------------------------- webhook */
-const hex = (buf) => [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
 
 export function timingSafeEqualHex(a, b) {
   if (typeof a !== 'string' || typeof b !== 'string' || a.length !== b.length) return false;

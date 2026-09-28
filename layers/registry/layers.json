@@ -1,8 +1,8 @@
 {
  "pack": "layers",
- "source_stamp": "a2f0c3878cff7704",
+ "source_stamp": "7c6e37d937e9665c",
  "sources": {
-  "parishes/registry/parishes.json": "4f702284d0ed01ba",
+  "parishes/registry/parishes.json": "84036aaa5638b2de",
   "sims/registry/sims.json": "987a9d4812b4c73b",
   "tasks/registry/tasks.json": "a24bf254c0336ca4",
   "lessons/registry/lessons.json": "e905659b0a718ab6",

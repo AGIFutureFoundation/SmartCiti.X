@@ -18,6 +18,20 @@ cp -r wiki _site/wiki
 # search-engine files web/build_seo.py writes at the root.
 cp -r web/media _site/web/media
 cp sitemap.xml robots.txt _site/
+# The parish world loads each parish's drawn map at run time ('../' + map path
+# from parishes/registry), so the link check below cannot see them: copy the
+# maps and require every map the registry names to be present.
+mkdir -p _site/parishes
+cp -r parishes/maps _site/parishes/maps
+python3 - <<'PY'
+import json, pathlib, sys
+reg = json.load(open('parishes/registry/parishes.json'))
+named = [p['map'][k] for p in reg['parishes'].values() for k in ('path', 'preview')]
+missing = [m for m in named if not (pathlib.Path('_site') / m).is_file()]
+if missing:
+    sys.exit('assemble: parish maps named in parishes/registry are missing from _site: ' + ', '.join(missing))
+print(f"parish maps: all {len(named)} registry-named maps present in _site")
+PY
 
 python3 - <<'PY'
 import pathlib, re, sys, urllib.parse

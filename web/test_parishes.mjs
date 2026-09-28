@@ -22,6 +22,7 @@ const CAT = json('parishes-i18n');
 const REG = JSON.parse(read('parishes/registry/parishes.json'));
 const main = (html.match(/<script type="module" id="parishes-main">([\s\S]*?)<\/script>/) || [, ''])[1];
 
+const locs = ['ar', 'de', 'en', 'es', 'fr', 'hi', 'pt', 'zh'];
 // [page] chrome the team rules require
 check('[page] exactly one <h1>', (html.match(/<h1[\s>]/g) || []).length === 1);
 check('[page] brand icon link', /<link rel="icon" href="data:image\/svg\+xml,/.test(html));
@@ -76,7 +77,7 @@ check('[honesty] fleet honesty shown', html.includes('data-fleet-honesty>') && !
 // [perf] one InstancedMesh per asset family; chunk budgets declared once
 check('[perf] fabric families are InstancedMesh (blocks, trees)', /new THREE\.InstancedMesh\(blockGeo/.test(main) && /new THREE\.InstancedMesh\(treeGeo/.test(main));
 check('[perf] landmark families and border markers are InstancedMesh', /new THREE\.InstancedMesh\(f\(\), matLm, CAP\.lm\)/.test(main) && /new THREE\.InstancedMesh\(markerGeo/.test(main));
-check('[perf] chunk budget declared once', (main.match(/const CHUNK_M = 250, RADIUS = 3, CELL = 25, BUILD_PER_FRAME = 3;/g) || []).length === 1 && /const CAP = \{ block: 6000, tree: 4000, marker: 64, lm: 64 \}/.test(main));
+check('[perf] chunk budget declared once', (main.match(/const CHUNK_M = 250, RADIUS = 3, CELL = 25, BUILD_PER_FRAME = 3;/g) || []).length === 1 && /const CAP = \{ block: 6000, tree: 4000, lamp: 2500, marker: 64, lm: 64 \}/.test(main));
 
 // [fleet] FLEET contract
 const FL = json('fleet-registry');
@@ -106,8 +107,31 @@ if (NR && NR.places_status === 'PARISH+LAYERS') {
     N && N.npcs.every((n) => { const m = NR.npcs.find((q) => q.id === n.id); return n.knowledge.length === m.knowledge.length && n.knowledge.every((k, i) => k.text === m.knowledge[i].text && k.source === m.knowledge[i].source && k.text && k.source); }));
   check('[npcs] honesty passed as the registry object (the kit renders honesty.scripted)', N && typeof N.honesty === 'object' && N.honesty.scripted === NR.honesty.scripted);
   check('[npcs] every NPC home resolves to a placed coordinate', N && N.npcs.every((n) => Object.hasOwn(N.places, n.home.place)));
-  check('[npcs] kit inlined and dialogue labels all from parishes.npc.* keys', main.includes('function createNPCKit') && /takeMeThere: tr\('parishes\.npc\.take'\)/.test(main));
+  check('[npcs] kit inlined; dialogue labels from the kit\'s npc.* keys via the page catalogue (strict tr)', main.includes('function createNPCKit') && /labels: labelsFrom\(tr\),/.test(main) && CAT && ['npc.talk', 'npc.quotelang', 'npc.role.pilot'].every((k) => locs.every((l) => CAT[l].strings[k])));
 }
+
+// [wave 5b] fail closed on an undeclared page; pathkit localised; quest finds; overview headroom; detail
+const bsrc = read('web/build_parishes.py');
+check('[nav] an undeclared page stops the build (no sibling-nav fallback)', /if PAGE not in sitenav\.PAGES:\n    raise BuildError/.test(bsrc) && (bsrc.match(/nav_html\(/g) || []).length === 1 && !bsrc.includes("nav_html('web/trade_craft_wilds.html'"));
+const PL = json('parish-path-labels');
+check('[layers] pathkit labels from pathkit.path_labels in all 8 locales, picked by the page locale', /labels: PATH_L/.test(main) && /const PATH_L = JSON\.parse\(document\.getElementById\('parish-path-labels'\)\.textContent\)\[LOC\];/.test(main) && PL && ['ar', 'de', 'en', 'es', 'fr', 'hi', 'pt', 'zh'].every((l) => PL[l] && Object.keys(PL[l]).length === 18 && Object.values(PL[l]).every((v) => typeof v === 'string' && v.trim())));
+check('[quests] no click-to-find button for finds the world fires by play', !/data-tc-egg="treasure-(parish-\d+-(arrive|lm-)|guide-|station-)/.test(html));
+const FI = json('parish-finds');
+if (FI) {
+  const QR = JSON.parse(read('quests/registry/quests.json')).quests.map((q) => q.id);
+  const all = [...Object.values(FI.arrive), ...Object.values(FI.border), ...Object.values(FI.landmark), ...Object.values(FI.ride)];
+  check('[quests] every wired find is a quest registry id', all.length > 0 && all.every((id) => QR.includes(id)));
+  check('[quests] every border and landmark treasure in the registry is wired', QR.filter((q) => /^treasure-border-|^treasure-parish-\d+-lm-/.test(q)).every((q) => all.includes(q)));
+  check('[quests] finds fire on border crossing, arrival, landmark reach and boarding', /qfind\(FINDS\.border\[/.test(main) && /qfind\(FINDS\.arrive\[/.test(main) && /qfind\(FINDS\.landmark\[l\.id\]\)/.test(main) && /qfind\(FINDS\.ride\[v\.medium\]\)/.test(main));
+  check('[quests] a teleport is not a border crossing', /jumping = true; checkParish\(\); jumping = false;/.test(main) && /if \(current && !jumping\)/.test(main));
+}
+check('[perf] overview hides fleet, skips NPC updates and chunk streaming', /if \(fl\) fl\.group\.visible = !over;/.test(main) && /if \(npcKit && !over\)/.test(main) && /if \(!over\) \{ if \(c !== cell\)/.test(main));
+check('[detail] street lamps are one InstancedMesh on AUTHORED street cells', /new THREE\.InstancedMesh\(lampGeo, matLamp, CAP\.lamp\)/.test(main) && /out\.lamp\.push/.test(main));
+check('[perf] overview replaces the water pass with a water-coloured clear', /water\.visible = !over; scene\.background = over \? WATER_BG : SKY_BG;/.test(main));
+check('[theme] quest toast text token defined from the theme (--paper)', /--paper:var\(--tc-plate\)/.test(ownStyle));
+check('[npcs] guides follow their routines on the kit clock, never in the overview', /npcClock\.tick\(dt\)/.test(main) && /const npcClock = makeClock\(8, 1 \/ 60\);/.test(main));
+check('[perf] overview renders at the declared 0.6 pixel scale and skips the parish check', /const OVERVIEW_PR = 0\.6;/.test(main) && /applyPR\(m === 'overview' \? OVERVIEW_PR : 1\);/.test(main) && /if \(mode !== 'overview'\) checkParish\(\);/.test(main));
+check('[detail] water shimmer is a uniform, not a mesh', /matWater\.emissiveIntensity = /.test(main));
 
 // [contracts] stubs are named
 for (const k of ['fleet', 'npcs', 'layers']) {
@@ -116,10 +140,12 @@ for (const k of ['fleet', 'npcs', 'layers']) {
 }
 
 // [i18n] the run-time catalogue: 8 locales, exactly the used keys, real translations
-const locs = ['ar', 'de', 'en', 'es', 'fr', 'hi', 'pt', 'zh'];
 check('[i18n] catalogue carries the 8 locales', CAT && JSON.stringify(Object.keys(CAT).sort()) === JSON.stringify(locs));
 const used = new Set([...html.matchAll(/data-i18n(?:-aria)?="(parishes\.[a-z0-9_.]+)"/g)].map((m) => m[1]));
 for (const m of main.matchAll(/tr\('(parishes\.[a-z0-9_.]+)'\)/g)) used.add(m[1]);
+if (/labels: labelsFrom\(tr\)/.test(main)) for (const m of main.matchAll(/'(npc\.[a-z0-9.]+)'/g)) used.add(m[1]);
+{ const pl = main.match(/const PATH_L = Object\.fromEntries\(\[([^\]]+)\]\.map\(\(k\) => \[k, tr\('parishes\.path\.' \+ k\.toLowerCase\(\)\)\]\)\);/);
+  if (pl) for (const m of pl[1].matchAll(/'([a-zA-Z]+)'/g)) used.add('parishes.path.' + m[1].toLowerCase()); }
 check('[i18n] every key the page uses is in the catalogue, and only those', CAT && JSON.stringify([...used].sort()) === JSON.stringify(Object.keys(CAT.en.strings).sort()),
   CAT ? [...used].filter((k) => !(k in CAT.en.strings)).concat(Object.keys(CAT.en.strings).filter((k) => !used.has(k))).join(',') : '');
 let same = [];

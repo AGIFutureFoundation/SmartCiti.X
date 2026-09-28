@@ -11,6 +11,9 @@ import { fileURLToPath } from 'node:url';
 const HERE = fileURLToPath(new URL('.', import.meta.url));
 const ROOT = join(HERE, '..');
 const VENDOR = join(ROOT, 'web', 'vendor');
+// the second vendor root (data): us-atlas, vendored by parishes/fetch_usatlas.py
+const PARISH_VENDOR = join(ROOT, 'parishes', 'vendor');
+const USATLAS = JSON.parse(readFileSync(join(PARISH_VENDOR, 'us-atlas', 'manifest.json'), 'utf8'));
 let n = 0; const ok = (m) => { n++; console.log(`  ok  ${m}`); };
 const sha = (buf) => createHash('sha256').update(buf).digest('hex');
 const prop = (o, name) => (o.properties ?? []).find((p) => p.name === name)?.value;
@@ -38,14 +41,15 @@ const walk = (dir) => readdirSync(dir).flatMap((f) => {
   const p = join(dir, f);
   return statSync(p).isDirectory() ? walk(p) : [p];
 });
-const vendored = walk(VENDOR).map((p) => 'web/vendor/' + relative(VENDOR, p).split('\\').join('/')).sort();
+const vendored = walk(VENDOR).map((p) => 'web/vendor/' + relative(VENDOR, p).split('\\').join('/'))
+  .concat(walk(PARISH_VENDOR).map((p) => 'parishes/vendor/' + relative(PARISH_VENDOR, p).split('\\').join('/'))).sort();
 const listed = doc.components.map((c) => c['bom-ref']).sort();
 
 {
   assert.deepEqual(listed, vendored,
-    'the SBOM must list every file under web/vendor/ and nothing else');
+    'the SBOM must list every file under web/vendor/ and parishes/vendor/ and nothing else');
   assert.ok(vendored.length >= 2, 'the vendor tree is not empty');
-  ok(`the SBOM lists exactly the ${vendored.length} files under web/vendor/ — no more, no fewer`);
+  ok(`the SBOM lists exactly the ${vendored.length} files under web/vendor/ and parishes/vendor/ — no more, no fewer`);
 }
 
 const SPDX = new Set(['MIT', 'BSD-3-Clause', 'OFL-1.1', 'ISC']);
@@ -61,6 +65,8 @@ const PURLS = {
   archivo: 'pkg:generic/archivo@v25',
   // the design kit's icons: only the SVGs web/design_kit.py draws
   'lucide-static': 'pkg:npm/lucide-static@1.48.0',
+  // the parish outlines: Census cartographic boundaries as packaged by us-atlas (data)
+  'us-atlas': 'pkg:npm/us-atlas@3.0.1',
 };
 const ICONS = JSON.parse(readFileSync(join(ROOT, 'web/vendor/icons/manifest.json'), 'utf8'));
 // A font is a binary; decoding one as UTF-8 produces mojibake that the
@@ -125,6 +131,23 @@ for (const c of doc.components) {
     assert.ok(/SIL OPEN FONT LICENSE/i.test(licBytes.toString('utf8')),
       `${lic[1].file}: does not read as an OFL`);
     assert.ok(c.externalReferences.some((r) => r.type === 'license'));
+    continue;
+  }
+
+  if (c.name === 'us-atlas') {
+    // data, not code: the version and the bytes rest on the manifest written
+    // when the npm tarball's sha512 matched the registry integrity
+    const base = c['bom-ref'].split('/').pop();
+    assert.ok(c['bom-ref'].startsWith('parishes/vendor/us-atlas/'), `${c['bom-ref']}: us-atlas outside its root`);
+    assert.ok(USATLAS.files[base], `${c['bom-ref']}: not in the us-atlas manifest`);
+    assert.equal(USATLAS.files[base].sha256, sha(bytes), `${c['bom-ref']}: bytes differ from the us-atlas manifest`);
+    assert.ok(/^sha512-/.test(USATLAS.integrity) && ev.includes(USATLAS.integrity) && USATLAS.version === c.version,
+      `${c['bom-ref']}: version evidence does not cite the verified sha512 integrity`);
+    assert.ok(/^no licence banner in this file/.test(prop(c, 'smartcitix:licence_evidence')));
+    const licText = readFileSync(join(PARISH_VENDOR, 'us-atlas', 'LICENSE'), 'utf8');
+    assert.ok(/Michael Bostock/.test(licText) && /Permission to use, copy, modify/.test(licText),
+      'parishes/vendor/us-atlas/LICENSE: does not read as the us-atlas ISC licence');
+    assert.ok(c.externalReferences.some((r) => r.type === 'vcs') && c.externalReferences.some((r) => r.type === 'license'));
     continue;
   }
 
@@ -193,6 +216,12 @@ ok('every licence claim is backed by the banner in the file — or says plainly 
       const rec = ICONS.files[base];
       assert.ok(rec || base === 'manifest.json', `${f} is in web/vendor/icons/ but the icon manifest does not account for it`);
       if (rec) assert.equal(sha(readFileSync(join(ROOT, f))), rec.sha256, `${f}: bytes differ from the icon manifest`);
+      continue;
+    }
+    if (f.startsWith('parishes/vendor/')) {
+      assert.ok(third.includes('parishes/vendor/us-atlas/manifest.json') && third.includes(`us-atlas ${USATLAS.version}`),
+        'THIRD_PARTY.md must name us-atlas and point at its manifest');
+      assert.ok(USATLAS.files[base] || base === 'manifest.json', `${f} is in parishes/vendor/ but the us-atlas manifest does not account for it`);
       continue;
     }
     const stem = base.replace(/\.(module\.min\.js|min\.js|js|css)$/, '');
@@ -285,7 +314,7 @@ for (const rel of registries) {
   // In metadata, where a statement about the bundle belongs — never in
   // components, where a statement about shipped bytes belongs.
   assert.ok(Array.isArray(doc.metadata.properties), 'the SBOM metadata carries properties');
-  assert.ok(doc.components.every((c) => c['bom-ref'].startsWith('web/vendor/')),
+  assert.ok(doc.components.every((c) => c['bom-ref'].startsWith('web/vendor/') || c['bom-ref'].startsWith('parishes/vendor/')),
     'a measured work is not a component: nothing of it ships, so nothing of it is listed');
   const named = doc.metadata.properties
     .filter((p) => p.name === 'smartcitix:measurement_sources').map((p) => p.value);

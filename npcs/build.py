@@ -188,12 +188,21 @@ TIDX = {t['id']: i for i, t in enumerate(TASKS)}
 SCH = REG['schools']
 RES = REG['restoration']
 
-SCHEDULE = {   # AUTHORED game-clock hours; not real opening hours
-    'default': [{'from_h': 6, 'to_h': 19, 'state': 'wander', 'radius_m': 8},
-                {'from_h': 19, 'to_h': 6, 'state': 'idle', 'radius_m': 0}],
-    'pilot': [{'from_h': 5, 'to_h': 21, 'state': 'wander', 'radius_m': 5},
-              {'from_h': 21, 'to_h': 5, 'state': 'idle', 'radius_m': 0}],
+ROUTINE = {   # AUTHORED game-clock day: (from_h, to_h, state, radius_m, where)
+    'default': ((6, 9, 'wander', 6, 'home'), (9, 13, 'wander', 4, 'station'),
+                (13, 15, 'wander', 6, 'landmark'), (15, 19, 'wander', 6, 'home'),
+                (19, 6, 'idle', 0, 'home')),
+    'pilot': ((5, 9, 'wander', 5, 'home'), (9, 12, 'wander', 4, 'station'),
+              (12, 14, 'wander', 5, 'landmark'), (14, 21, 'wander', 5, 'home'),
+              (21, 5, 'idle', 0, 'home')),
 }
+
+
+def routine(role, home, station, landmark):
+    """A daily walk home -> station (guide_to) -> landmark -> home on simulated time."""
+    at = {'home': home, 'station': station, 'landmark': landmark}
+    return [{'from_h': f, 'to_h': t, 'state': st, 'radius_m': r, 'at': at[w], 'where': w}
+            for f, t, st, r, w in ROUTINE['pilot' if role == 'pilot' else 'default']]
 
 
 def lesson_for_halls(halls):
@@ -432,7 +441,9 @@ def build():
             specs, pplaces, info = real_parish(fips, *real)
             places += pplaces
             p.update(info)
+        lm_here = [q['id'] for q in places if q['parish'] == fips and q['kind'] == 'landmark']
         for i, (role, key, k, home, go) in enumerate(specs):
+            lm = lm_here[i % len(lm_here)] if lm_here else go   # no landmark: the station again
             if not 3 <= len(k['lines']) <= 8:
                 raise NPCBuildError(f'{role}:{key} has {len(k["lines"])} lines (3..8)')
             name = f'{ROLE_TITLE[role]} {NAME_WORDS[word % len(NAME_WORDS)]}'
@@ -442,7 +453,7 @@ def build():
                    'appearance': appearance(role, i, k['crew']),
                    'home': {'place': home, 'offset_index': i},
                    'guide_to': go,
-                   'schedule': SCHEDULE['pilot' if role == 'pilot' else 'default'],
+                   'schedule': routine(role, home, go, lm),
                    'knowledge': k['lines'], 'points_to': k['points_to'],
                    'not_certification': k['not_certification']}
             if role == 'mentor':
@@ -485,8 +496,8 @@ def build():
             'k12': 'The Cognition.X K-12 layer quotes only schools/registry/'
                    'schools.json and lessons/registry/lessons.json; K-12 districts '
                    'stay PROPOSED partners with no agreement.',
-            'schedule': 'Schedules are AUTHORED game-clock hours, not real hours of '
-                        'any place.',
+            'schedule': 'Schedules are AUTHORED game-clock hours on simulated time '
+                        '(home, station, landmark, home), not real hours of any place.',
         },
         'places_status': places_status,
         'places_note': ('STUB: home places are placeholders in the Orleans (FIPS '

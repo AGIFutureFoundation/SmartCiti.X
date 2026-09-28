@@ -82,6 +82,16 @@ def build():
             'stripe_api': 'https://api.stripe.com/v1/checkout/sessions',
             'hosted_prefix': 'https://checkout.stripe.com/',
         },
+        'rate_limit': {
+            'applies_to': '/api/checkout',
+            'kind': 'token bucket in KV per (hashed client IP, plan)',
+            'max_env': 'RATE_LIMIT_CHECKOUT_MAX',
+            'window_env': 'RATE_LIMIT_CHECKOUT_WINDOW_S',
+            'salt_env': 'RATE_LIMIT_SALT',
+            'ip_header': 'cf-connecting-ip',
+            'kv_binding': 'PAYMENTS_KV',
+            'limits': 'set by the operator in env; no limit is policy in this repo',
+        },
         'webhook': {
             'endpoint': '/api/stripe-webhook',
             'secret_env': 'STRIPE_WEBHOOK_SECRET',

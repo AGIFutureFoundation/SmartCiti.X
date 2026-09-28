@@ -127,6 +127,7 @@ const npcs = reg.npcs;
   for (const x of npcs) {
     for (const q of [...x.knowledge, x.not_certification]) {
       checked++;
+      if (typeof q.source !== 'string' || typeof q.text !== 'string') { miss.push(`${x.id}: source/text missing`); continue; }
       if (!allowed.has(q.source.split('#')[0])) foreign.push(`${x.id}: ${q.source}`);
       const v = resolvePath(q.source);
       if (typeof v !== 'string' || v !== q.text) miss.push(`${x.id}: ${q.source}`);
@@ -221,6 +222,18 @@ const npcs = reg.npcs;
   ok('places: every place is in the NPC\'s own parish', wrongParish.length === 0, wrongParish);
   const parishFips = new Set(reg.parishes.map((p) => p.fips));
   ok('places: every NPC parish is a listed parish', npcs.every((x) => parishFips.has(x.parish)));
+  const badAt = [], badDay = [];
+  for (const x of npcs) {
+    for (const sl of x.schedule) { const p = ids.get(sl.at); if (!p || p.parish !== x.parish) badAt.push(`${x.id}: ${sl.at}`); }
+    const lmHere = reg.places.some((p) => p.parish === x.parish && p.kind === 'landmark');
+    const wh = x.schedule.map((sl) => sl.where).join(',');
+    const right = x.schedule.every((sl) => (sl.where === 'home' ? sl.at === x.home.place
+      : sl.where === 'station' ? sl.at === x.guide_to
+      : sl.where === 'landmark' ? (lmHere ? ids.get(sl.at) && ids.get(sl.at).kind === 'landmark' : sl.at === x.guide_to) : false));
+    if (wh !== 'home,station,landmark,home,home' || !right) badDay.push(x.id);
+  }
+  ok('routine: every schedule place exists in the NPC\'s own parish', badAt.length === 0, badAt);
+  ok('routine: every day walks home -> station (guide_to) -> landmark (when the parish has one)', badDay.length === 0, badDay);
   if (reg.places_status === 'STUB') {
     ok('places: STUB mode is Orleans 22071 and says STUB on its face',
        reg.parishes.length === 1 && reg.parishes[0].fips === '22071' && reg.parishes[0].status === 'STUB'
@@ -291,13 +304,17 @@ const K = await import(pathToFileURL(join(tmp, 'kit.mjs')).href);
     ['follow', { following: true, dist: 1 }, 'follow', 'follow ignores greet until arrival'],
     ['follow', { following: true, arrived: true }, 'greet', 'arrival -> greet'],
     ['talk', { dist: 2 }, 'greet', 'closed near -> greet'],
+    ['wander', { away: true }, 'walk', 'routine place changed -> walk'],
+    ['walk', { away: false }, 'wander', 'arrived at routine place -> schedule'],
+    ['walk', { away: true, dist: 2 }, 'greet', 'greet interrupts a walk'],
+    ['walk', { away: true, following: true }, 'follow', 'take me there beats the routine'],
   ];
   const wrong = T.filter(([s, d, want]) => K.nextState(s, { ...base, ...d }) !== want).map((t) => t[3]);
-  ok(`state: ${T.length} transitions of idle/wander/greet/talk/follow`, wrong.length === 0, wrong);
+  ok(`state: ${T.length} transitions of idle/wander/walk/greet/talk/follow`, wrong.length === 0, wrong);
   let threw = false; try { K.nextState('dance', base); } catch (e) { threw = /unknown state/.test(e.message); }
   ok('state: unknown state throws by name', threw);
   const S = K.STATES.join(',');
-  ok('state: STATES = idle,wander,greet,talk,follow', S === 'idle,wander,greet,talk,follow');
+  ok('state: STATES = idle,wander,walk,greet,talk,follow', S === 'idle,wander,walk,greet,talk,follow');
   const sched = npcs[0].schedule;
   let cover = true; try { for (let h = 0; h < 24; h++) K.scheduledAt(sched, h); } catch { cover = false; }
   ok('state: every NPC schedule covers all 24 game hours', cover && npcs.every((x) => {
@@ -334,16 +351,38 @@ const K = await import(pathToFileURL(join(tmp, 'kit.mjs')).href);
 }
 
 // dialogue (pure) + kit integration with real three and a fake DOM
-const LBL = { talk: 'Talk', next: 'Next', prev: 'Back', close: 'Close', takeMeThere: 'Take me there',
-  source: 'Source:', notCert: 'Not a certification:', pointsTo: 'Try next:', of: 'of', honesty: 'Note:',
-  roles: { mentor: 'Trade mentor', 'k12-guide': 'Cognition.X K-12 guide', ranger: 'Restoration ranger', pilot: 'Boat pilot', host: 'Station host' } };
+// labels come from the site catalogue (npc.* keys), exactly as a page passes them
+const LOC = ['en', 'ar', 'de', 'es', 'fr', 'hi', 'pt', 'zh'];
+const cat = Object.fromEntries(LOC.map((l) => [l, readJSON(`i18n/locales/${l}.json`).strings]));
+const trOf = (l) => (k) => { if (!(k in cat[l])) throw new Error('i18n missing ' + l + ':' + k); return cat[l][k]; };
+const LBL = K.labelsFrom(trOf('en'));
+{
+  const bad = [];
+  for (const l of LOC) { try { K.labelsFrom(trOf(l)); } catch (e) { bad.push(e.message); } }
+  ok('i18n: labelsFrom(tr) builds every dialogue label + 5 role titles in all 8 locales', bad.length === 0, bad);
+  const keys = execFileSync('python3', ['-c', `import sys; sys.path.insert(0, ${JSON.stringify(join(ROOT, 'web'))}); from npckit import NPC_I18N_KEYS; print('\\n'.join(NPC_I18N_KEYS))`], { encoding: 'utf8' }).trim().split('\n');
+  const same = [];
+  for (const l of LOC.slice(1)) for (const k of keys) if (cat[l][k] === cat.en[k] && !/^(\/|Source :)$/.test(cat[l][k])) same.push(`${l}:${k}`);
+  ok(`i18n: the ${keys.length} npc.* keys are real translations (no English copies)`, keys.length === 16 && same.length === 0, same);
+  const lang = LOC.filter((l) => !/[(（]/.test(cat[l]['npc.quotelang']));
+  ok('i18n: every locale says quoted lines stay verbatim in their source language', lang.length === 0 && /verbatim/.test(cat.en['npc.quotelang']), lang);
+  let t = ''; try { K.labelsFrom((k) => (k === 'npc.role.pilot' ? '' : cat.en[k])); } catch (e) { t = e.message; }
+  ok('i18n: an empty catalogue string fails by key name', /npc\.role\.pilot/.test(t), [t]);
+}
 {
   const x = npcs[0];
   const m = K.dialogueModel(x, 0);
   const h = K.dialogueHTML(m, LBL, reg.honesty.scripted);
   ok('dialogue: line shown in an aria-live="polite" region', /class="npc-line" aria-live="polite"/.test(h));
   ok('dialogue: heading id matches aria-labelledby target', h.includes('<h2 id="npc-dlg-title">'));
-  ok('dialogue: role shown by the caller\'s label, not the raw id', h.includes('<p class="npc-role">Trade mentor</p>'));
+  ok('dialogue: role shown by the catalogue label, not the raw id', h.includes('<p class="npc-role">Trade mentor</p>'));
+  ok('dialogue: panel says quotes stay verbatim in their source language', h.includes('<p class="npc-lang">' + cat.en['npc.quotelang']));
+  let ms = ''; try { K.dialogueModel({ ...x, knowledge: [{ text: 'a line' }] }, 0); } catch (e) { ms = e.message; }
+  ok('dialogue: a line with no source fails by name (never "undefined")', /line\.source/.test(ms), [ms]);
+  let es = ''; try { K.dialogueModel({ ...x, knowledge: [{ text: 'a line', source: '' }] }, 0); } catch (e) { es = e.message; }
+  ok('dialogue: an empty source fails by name', /line\.source/.test(es), [es]);
+  let hs = ''; try { K.dialogueHTML(m, LBL, undefined); } catch (e) { hs = e.message; }
+  ok('dialogue: footer honesty text missing fails by name', /honesty\.scripted/.test(hs), [hs]);
   let rthrew = ''; try { K.dialogueHTML(m, { ...LBL, roles: {} }, 'h'); } catch (e) { rthrew = e.message; }
   ok('dialogue: a missing role label fails by name', /labels\.roles\.mentor/.test(rthrew), [rthrew]);
   ok('dialogue: every line is shown with its source path', h.includes(x.knowledge[0].source));
@@ -397,7 +436,7 @@ const LBL = { talk: 'Talk', next: 'Next', prev: 'Back', close: 'Close', takeMeTh
   // lead NPC 0 somewhere other than its home, so "take me there" must walk
   const here = [{ ...here0[0], guide_to: here0[here0.length - 1].home.place }, ...here0.slice(1)];
   const places = {}; let k = 0;
-  for (const x of here) for (const p of [x.home.place, x.guide_to]) if (!(p in places)) places[p] = { x: (k++) * 20, z: 0 };
+  for (const x of here) for (const p of [x.home.place, x.guide_to, ...x.schedule.map((sl) => sl.at)]) if (!(p in places)) places[p] = { x: (k++) * 20, z: 0 };
   let went = null, talked = null, clock = 0, bodies = 0;
   const kit = K.createNPCKit({ THREE, scene, npcs: here, placeOf: (id) => places[id], labels: LBL,
     honesty: reg.honesty, panelRoot: root, onTakeMeThere: (p) => { went = p; }, onTalk: (x) => { talked = x.id; },
@@ -437,12 +476,85 @@ const LBL = { talk: 'Talk', next: 'Next', prev: 'Back', close: 'Close', takeMeTh
   for (let i = 0; i < 30; i++) kit.update(0.05, { x: kit.agents[1].x + 1, z: kit.agents[1].z }, 12);
   ok('greet: NPC near the player greets', kit.agents[1].state === 'greet', [kit.agents[1].state]);
   const far = kit.agents.filter((a) => a.state === 'wander');
-  const outside = far.filter((a) => Math.hypot(a.x - a.home.x, a.z - a.home.z) > 8 + 1.5);
-  ok('wander: wanderers stay inside their schedule radius', outside.length === 0, outside.map((a) => a.id));
+  const outside = far.filter((a) => Math.hypot(a.x - a.anchor.x, a.z - a.anchor.z) > K.scheduledAt(a.npc.schedule, 12).radius_m + 2);
+  ok('wander: wanderers stay inside this hour\'s routine radius', far.length > 0 && outside.length === 0, outside.map((a) => a.id));
   kit.dispose();
   ok('dispose: removes instanced parts and panel', !scene.children.some((c) => c.isInstancedMesh) && !panel.isConnected);
   let threw = ''; try { K.createNPCKit({ THREE, scene, npcs: here, placeOf: () => null, labels: { talk: 'x' }, honesty: reg.honesty, panelRoot: root }); } catch (e) { threw = e.message; }
   ok('kit: missing labels fail by name', /labels\.next/.test(threw), [threw]);
+}
+
+// ---------------------------------------- WILDS data shape (5a bug) -----
+{
+  // exactly what web/build_parishes.py embeds: places {id: [x, z]} (x = e, z = -n), honesty = the object
+  const all = { npcs: [], places: {}, honesty: null };
+  for (const p of reg.parishes) {
+    const py = `import sys, json; sys.path.insert(0, ${JSON.stringify(join(ROOT, 'web'))}); from npckit import npc_data; print(json.dumps(npc_data(${JSON.stringify(p.fips)})))`;
+    const d = JSON.parse(execFileSync('python3', ['-c', py], { encoding: 'utf8' }));
+    all.honesty = d.honesty;
+    for (const [id, pl] of Object.entries(d.places)) all.places[id] = pl.world_m ? [pl.world_m[0], -pl.world_m[1]] : [0, 0];
+    all.npcs.push(...d.npcs);
+  }
+  const THREE = await import(pathToFileURL(join(ROOT, 'web/vendor/three.module.min.js')).href);
+  const root = globalThis.document.createElement('body');
+  const kit = K.createNPCKit({ THREE, scene: new THREE.Scene(), npcs: all.npcs, panelRoot: root, honesty: all.honesty,
+    placeOf: (id) => (Object.hasOwn(all.places, id) ? { x: all.places[id][0], z: all.places[id][1] } : null),
+    labels: LBL, now: () => 0 });
+  const panel = root.children[0];
+  const shown = [], undef = [];
+  for (const a of kit.agents) {
+    kit.talkTo(a.id);
+    for (let i = 0; i < a.npc.knowledge.length; i++) {
+      if (!panel.innerHTML.includes('<code>' + a.npc.knowledge[i].source + '</code>')) shown.push(`${a.id} line ${i + 1}`);
+      if (/undefined|null/.test(panel.innerHTML)) undef.push(`${a.id} line ${i + 1}`);
+      panel.fire('keydown', { key: 'ArrowRight', preventDefault() {} });
+    }
+    kit.closeDialogue();
+  }
+  ok(`wilds shape: all ${kit.agents.length} NPCs placed from {id: [x, z]} places`, kit.agents.length === npcs.length);
+  ok('wilds shape: every line renders its own source path in the panel', shown.length === 0, shown);
+  ok('wilds shape: no "undefined"/"null" anywhere in any rendered panel (5a footer bug)', undef.length === 0, undef);
+  let hs = ''; try { K.createNPCKit({ THREE, scene: new THREE.Scene(), npcs: all.npcs, panelRoot: root,
+    honesty: all.honesty.scripted, placeOf: () => null, labels: LBL }); } catch (e) { hs = e.message; }
+  ok('wilds shape: passing honesty as a string (not the object) fails by name', /honesty\.scripted/.test(hs), [hs]);
+  kit.dispose();
+}
+
+// ------------------------------------------ daily routine on sim time ----
+{
+  const THREE = await import(pathToFileURL(join(ROOT, 'web/vendor/three.module.min.js')).href);
+  const x = npcs.find((n) => n.role === 'mentor' && n.schedule.some((sl) => sl.where === 'landmark'
+    && reg.places.find((p) => p.id === sl.at).kind === 'landmark'));
+  const spots = {};
+  const at = (w) => x.schedule.find((sl) => sl.where === w).at;
+  spots[at('home')] = { x: 0, z: 0 }; spots[at('station')] = { x: 60, z: 0 }; spots[at('landmark')] = { x: 0, z: 60 };
+  const root = globalThis.document.createElement('body');
+  const kit = K.createNPCKit({ THREE, scene: new THREE.Scene(), npcs: [x], panelRoot: root, honesty: reg.honesty,
+    placeOf: (id) => spots[id], labels: LBL, now: () => 0 });
+  const a = kit.agents[0];
+  const clock = K.makeClock(5, 1 / 60);            // one game hour per simulated minute
+  const seen = {}, walked = new Set();
+  let prev = null;
+  for (let step = 0; step < 24 * 60 * 10; step++) {  // 24 game hours at dt 0.1 s
+    const h = clock.tick(0.1);
+    kit.update(0.1, { x: 1e4, z: 1e4 }, h);
+    walked.add(a.state);
+    const slot = K.scheduledAt(x.schedule, h);
+    const hr = Math.floor(h);
+    if ([8, 12, 14, 18, 23].includes(hr) && prev !== hr && h - hr > 0.9) {
+      const anc = a.anchors[slot.at];
+      seen[hr] = { where: slot.where, d: Math.hypot(a.x - anc.x, a.z - anc.z), r: slot.radius_m };
+      prev = hr;
+    }
+  }
+  const want = { 8: 'home', 12: 'station', 14: 'landmark', 18: 'home', 23: 'home' };
+  const miss = Object.entries(want).filter(([hr, w]) => !seen[hr] || seen[hr].where !== w || seen[hr].d > seen[hr].r + 2)
+    .map(([hr]) => `${hr}h ${JSON.stringify(seen[hr])}`);
+  ok('routine: over one simulated day the NPC is at home 8h, station 12h, landmark 14h, home 18h and 23h', miss.length === 0, miss);
+  ok('routine: the NPC walks between places (walk state used) and idles at night', walked.has('walk') && walked.has('idle'), [[...walked].join(',')]);
+  const c = K.makeClock(23, 1);
+  ok('routine: makeClock wraps past midnight', Math.abs(c.tick(2) - 1) < 1e-9 && c.set(-1) === 23);
+  kit.dispose();
 }
 
 if (bad) {

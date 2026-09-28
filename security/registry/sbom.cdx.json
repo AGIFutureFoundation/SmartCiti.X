@@ -8,7 +8,7 @@
    "bom-ref": "smartcitix-trade-craft-academy",
    "name": "SmartCiti.X : Trade Craft Academy",
    "version": "3.2.0",
-   "description": "the implementation bundle; every pack outside web/vendor is first-party with zero runtime dependencies"
+   "description": "the implementation bundle; every pack outside web/vendor and parishes/vendor is first-party with zero runtime dependencies"
   },
   "tools": {
    "components": [
@@ -22,15 +22,15 @@
   "properties": [
    {
     "name": "smartcitix:source_stamp",
-    "value": "6ca7d319483f25ee"
+    "value": "210085a4952dbe20"
    },
    {
     "name": "smartcitix:scope",
-    "value": "every file under web/vendor/, and nothing else \u2014 the test walks the tree and holds the list to it"
+    "value": "every file under web/vendor/ and parishes/vendor/, and nothing else \u2014 the test walks the tree and holds the list to it"
    },
    {
     "name": "smartcitix:first_party",
-    "value": "everything outside web/vendor/ is original to the bundle; orbis/runner-*/ carry their own LICENSE files and are first-party. One exception, and it is measurement rather than code: the packs named in smartcitix:measurement_sources publish figures DERIVED from somebody else's licensed work while redistributing no part of that work"
+    "value": "everything outside web/vendor/ and parishes/vendor/ is original to the bundle; orbis/runner-*/ carry their own LICENSE files and are first-party. One exception, and it is measurement rather than code: the packs named in smartcitix:measurement_sources publish figures DERIVED from somebody else's licensed work while redistributing no part of that work"
    },
    {
     "name": "smartcitix:ci_scanning",
@@ -3769,6 +3769,165 @@
     {
      "name": "smartcitix:licence_evidence",
      "value": "banner in file (evidence.copyright)"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "parishes/vendor/us-atlas/LICENSE",
+   "name": "us-atlas",
+   "version": "3.0.1",
+   "purl": "pkg:npm/us-atlas@3.0.1#LICENSE",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "8048290dfdb6e83fbed17e8985c8cfc4ce9da9b842642f3d3e497280790cfa31"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "ISC",
+      "url": "https://github.com/topojson/us-atlas/blob/master/LICENSE"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/topojson/us-atlas"
+    },
+    {
+     "type": "website",
+     "url": "https://www.npmjs.com/package/us-atlas"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/topojson/us-atlas/blob/master/LICENSE"
+    },
+    {
+     "type": "distribution",
+     "url": "https://registry.npmjs.org/us-atlas/-/us-atlas-3.0.1.tgz"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "parishes/vendor/us-atlas/LICENSE"
+     }
+    ],
+    "copyright": []
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "parishes/vendor/us-atlas/LICENSE"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "no version string in this file; version attributed from parishes/vendor/us-atlas/manifest.json, which parishes/fetch_usatlas.py wrote after the tarball sha512 matched the npm registry dist.integrity (sha512-wEIZCq0ImPvGblTd8gZMqNNCPkQshugMUG/8nkSWXb02+XqNFREg9atHOKP9w6prLZTpqcLhSvdBW81MkV3/0Q==)"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "no licence banner in this file; it IS the full ISC licence text of the us-atlas package, taken from the same verified tarball"
+    },
+    {
+     "name": "smartcitix:data_origin",
+     "value": "U.S. Census Bureau cartographic boundary files, 2017, 1:10,000,000 (public domain, work of the U.S. federal government), as packaged by us-atlas"
+    }
+   ]
+  },
+  {
+   "type": "library",
+   "bom-ref": "parishes/vendor/us-atlas/counties-10m.json",
+   "name": "us-atlas",
+   "version": "3.0.1",
+   "purl": "pkg:npm/us-atlas@3.0.1#counties-10m.json",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "145aaf5d1433352a6a1d8e86b5f149c7c653f9171baf14aaf75ee66575def1b0"
+    }
+   ],
+   "licenses": [
+    {
+     "license": {
+      "id": "ISC",
+      "url": "https://github.com/topojson/us-atlas/blob/master/LICENSE"
+     }
+    }
+   ],
+   "externalReferences": [
+    {
+     "type": "vcs",
+     "url": "https://github.com/topojson/us-atlas"
+    },
+    {
+     "type": "website",
+     "url": "https://www.npmjs.com/package/us-atlas"
+    },
+    {
+     "type": "license",
+     "url": "https://github.com/topojson/us-atlas/blob/master/LICENSE"
+    },
+    {
+     "type": "distribution",
+     "url": "https://registry.npmjs.org/us-atlas/-/us-atlas-3.0.1.tgz"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "parishes/vendor/us-atlas/counties-10m.json"
+     }
+    ],
+    "copyright": []
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "parishes/vendor/us-atlas/counties-10m.json"
+    },
+    {
+     "name": "smartcitix:version_evidence",
+     "value": "no version string in this file; version attributed from parishes/vendor/us-atlas/manifest.json, which parishes/fetch_usatlas.py wrote after the tarball sha512 matched the npm registry dist.integrity (sha512-wEIZCq0ImPvGblTd8gZMqNNCPkQshugMUG/8nkSWXb02+XqNFREg9atHOKP9w6prLZTpqcLhSvdBW81MkV3/0Q==)"
+    },
+    {
+     "name": "smartcitix:licence_evidence",
+     "value": "no licence banner in this file; the full ISC text of the us-atlas package is committed beside it at parishes/vendor/us-atlas/LICENSE; the Census outlines it packages are public domain"
+    },
+    {
+     "name": "smartcitix:data_origin",
+     "value": "U.S. Census Bureau cartographic boundary files, 2017, 1:10,000,000 (public domain, work of the U.S. federal government), as packaged by us-atlas"
+    }
+   ]
+  },
+  {
+   "type": "file",
+   "bom-ref": "parishes/vendor/us-atlas/manifest.json",
+   "name": "smartcitix/parishes/vendor/us-atlas/manifest.json",
+   "version": "3.2.0",
+   "hashes": [
+    {
+     "alg": "SHA-256",
+     "content": "2e8668797d26507e5adc7e89b0be5549358fb31a1f37d1ff9b5aa2a0059e1534"
+    }
+   ],
+   "evidence": {
+    "occurrences": [
+     {
+      "location": "parishes/vendor/us-atlas/manifest.json"
+     }
+    ]
+   },
+   "properties": [
+    {
+     "name": "smartcitix:vendored_path",
+     "value": "parishes/vendor/us-atlas/manifest.json"
+    },
+    {
+     "name": "smartcitix:first_party",
+     "value": "generated by parishes/fetch_usatlas.py; it records where each vendored us-atlas file came from, the verified tarball integrity and each hash"
     }
    ]
   }

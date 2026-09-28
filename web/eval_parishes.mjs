@@ -21,6 +21,10 @@
  *
  * Targets are DECLARED with reasons, MEASURED-HERE like eval_wilds: draw calls get 25% headroom (the scarce
  * currency), triangles 1.5x (instance caps bound them), frame time 2x (software GL on a shared machine).
+ * The overview renders at OVERVIEW_PR 0.6 of the walk pixel ratio (wave 5b): with 12 draws and ~10k triangles
+ * it is fill-bound under SwiftShader, and at overview altitude one pixel is already tens of metres of flat
+ * ground. The DIAG row measures the Orleans overview at full and at 0.6 scale in the same run to show the cost
+ * is per-pixel; it is a diagnosis, not a target. No target was changed.
  * Chunks are held exactly: 49 is (2*RADIUS+1)^2 with RADIUS 3 - any other number in a walk view is a streaming bug.
  * Fabric instances are held to a FLOOR of 0.9x in the walk views - a city bought cheap by building nothing is not
  * a city. Fleet draw calls are held to <= the number of families (one InstancedMesh per family, FLEET contract).
@@ -96,6 +100,10 @@ for (const pid of PROBE) {
     if (st.landMeshes !== st.loaded.length) fail(row, `${st.landMeshes} land meshes for ${st.loaded.length} loaded parishes`);
     if (v !== 'overview' && st.chunks !== (2 * st.radius + 1) ** 2) fail(row, `${st.chunks} chunks, expected ${(2 * st.radius + 1) ** 2}`);
     if (v === 'overview' && fabric !== 0) fail(row, `${fabric} fabric instances drawn in the overview`);
+    /* wave 5b headroom: vehicles and guides are sub-pixel from overview altitude and are not drawn there */
+    if (v === 'overview' && st.fleetVisible !== false) fail(row, 'the fleet is drawn in the overview');
+    if (v !== 'overview' && st.fleetVisible === false) fail(row, 'the fleet is hidden in a walk view');
+    row.lamps = st.instances.lamp;
     const base = BASE[pid] && BASE[pid][v];
     if (!MEASURE_ONLY && !base) fail(row, `no declared target for ${pid} ${v}`);
     if (!MEASURE_ONLY && base) {
@@ -104,14 +112,28 @@ for (const pid of PROBE) {
       if (ms > base.ms * MS_HEADROOM) fail(row, `frame ${ms} ms > ${(base.ms * MS_HEADROOM).toFixed(1)}`);
       if (base.fabric !== null && fabric < base.fabric * FABRIC_FLOOR) fail(row, `fabric ${fabric} < floor ${Math.round(base.fabric * FABRIC_FLOOR)}`);
     }
-    if (SHOTS && v !== 'border') await page.screenshot({ path: `${SHOTS}/WILDS-w5-${pid}-${v}.png` });
+    if (SHOTS && v !== 'border') await page.screenshot({ path: `${SHOTS}/WILDS-w5b-${pid}-${v}.png` });
     if (row.fails.length) bad++;
     rows.push(row);
   }
 }
 
+/* DIAG: Orleans overview at full vs overview render scale (per-pixel cost), median of 9 frames each */
+const diag = {};
+await page.evaluate(() => window.__parishes.view('overview', '22071'));
+for (const k of [1, 0.6]) {
+  await page.evaluate((s) => window.__parishes.renderScale(s), k);
+  await page.waitForTimeout(300);
+  const t = (await page.evaluate(() => window.__parishes.frameTimes(9))).sort((a, b) => a - b);
+  diag[k] = +t[4].toFixed(1);
+}
+await page.evaluate(() => window.__parishes.renderScale(0.6));
+const prOk = await page.evaluate(() => window.__parishes.renderScale().prScale);
+if (prOk !== 0.6) { bad++; errors.push('overview render scale is ' + prOk + ', expected 0.6'); }
+
 /* cross: every shared border touching a probed parish, walked from 40 m inside */
 const pairs = await page.evaluate(() => window.__parishes.pairs());
+const FINDS = await page.evaluate(() => JSON.parse(document.getElementById('parish-finds').textContent));
 const cross = [];
 for (const [a, b] of pairs.filter(([a, b]) => PROBE.includes(a) || PROBE.includes(b))) {
   const r = await page.evaluate(([x, y]) => window.__parishes.cross(x, y), [a, b]);
@@ -119,6 +141,8 @@ for (const [a, b] of pairs.filter(([a, b]) => PROBE.includes(a) || PROBE.include
   if (r.after.current !== b) fail(row, `after walking ${r.steps} steps the current parish is ${r.after.current}, not ${b}`);
   if (!r.before.loaded.includes(b)) fail(row, `neighbour ${b} was not streamed in before the border`);
   if (!r.marker.includes([a, b].sort().join('|'))) fail(row, `no border marker names ${a}|${b}`);
+  const want = FINDS.border[[a, b].sort().join('|')];
+  if (want && !(await page.evaluate(() => window.__parishes.stats().finds)).includes(want)) fail(row, `crossing did not find ${want}`);
   if (row.fails.length) bad++;
   cross.push(row);
 }
@@ -135,10 +159,12 @@ const rideRows = [];
   for (const medium of ['land', 'water']) {
     const r = await page.evaluate((m) => { const o = window.__parishes.ride(m, 4); return o; }, medium);
     await page.waitForTimeout(250);
-    if (SHOTS) await page.screenshot({ path: `${SHOTS}/WILDS-w5-ride-${medium}.png` });
+    if (SHOTS) await page.screenshot({ path: `${SHOTS}/WILDS-w5b-ride-${medium}.png` });
     const out = await page.evaluate(() => window.__parishes.exit());
+    const fnd = await page.evaluate(() => window.__parishes.stats().finds);
     const rr = { probe: 'ride', medium, id: r.id, moved: +r.moved.toFixed(1), wrongMediumSteps: r.wrongMediumSteps, exited: out.ok, fails: [] };
     if (r.moved < 1) fail(rr, `${r.id} moved ${r.moved.toFixed(2)} m under full throttle`);
+    if (FINDS.ride[medium] && !fnd.includes(FINDS.ride[medium])) fail(rr, `boarding did not find ${FINDS.ride[medium]}`);
     if (r.wrongMediumSteps) fail(rr, `${r.id} spent ${r.wrongMediumSteps} steps on the wrong medium`);
     if (rr.fails.length) bad++;
     rideRows.push(rr);
@@ -156,7 +182,12 @@ else {
   npcRow.id = t.id; npcRow.source = t.source;
   if (!t.open) fail(npcRow, 'the dialogue panel did not open');
   if (!me || !me.knowledge.some((k) => k.text === t.line && k.source === t.source)) fail(npcRow, `line ${JSON.stringify(t.line)} is not a verbatim registry quote with its source`);
-  if (SHOTS) await page.screenshot({ path: `${SHOTS}/WILDS-w5-npc.png` });
+  /* the dialogue footer carries the registry's honesty.scripted line (5a shipped 'undefined' here) */
+  const foot = await page.evaluate(() => { const e = document.querySelector('#npcpanel .npc-honesty'); return e ? e.textContent : ''; });
+  const scripted = await page.evaluate(() => JSON.parse(document.getElementById('parish-npcs').textContent).honesty.scripted);
+  npcRow.footer = foot.slice(0, 60);
+  if (!foot.includes(scripted) || /undefined/.test(foot)) fail(npcRow, `dialogue footer is ${JSON.stringify(foot)}`);
+  if (SHOTS) await page.screenshot({ path: `${SHOTS}/WILDS-w5b-npc.png` });
   await page.keyboard.press('Escape');
 }
 if (npcRow.fails.length) bad++;
@@ -169,7 +200,7 @@ const sat2 = await page.evaluate(() => window.__parishes.satState());
 const satRow = { probe: 'satellite', src: sat.src, token: sat.token, msg: sat2.msg, fails: [] };
 if (!/^https:\/\/basemap\.nationalmap\.gov\//.test(sat.src || '')) fail(satRow, `satellite requested ${sat.src}, not USGS`);
 if (!sat.token && !sat2.msg.includes('Mapbox satellite: off - no token configured')) fail(satRow, 'the Mapbox refusal text is missing');
-if (SHOTS) await page.screenshot({ path: `${SHOTS}/WILDS-w5-satellite.png` });
+if (SHOTS) await page.screenshot({ path: `${SHOTS}/WILDS-w5b-satellite.png` });
 await page.evaluate(() => window.__parishes.satellite(false));
 if (satRow.fails.length) bad++;
 
@@ -178,7 +209,7 @@ if (SHOTS) {
   for (const s of ['hivis', 'enterprise']) {
     await page.evaluate((id) => document.documentElement.setAttribute('data-style', id), s);
     await page.waitForTimeout(300);
-    await page.screenshot({ path: `${SHOTS}/WILDS-w5-style-${s}.png` });
+    await page.screenshot({ path: `${SHOTS}/WILDS-w5b-style-${s}.png` });
   }
 }
 await browser.close();
@@ -186,11 +217,12 @@ await browser.close();
 const out = { rows, cross, ride: rideRows, npcs: npcRow, satellite: satRow, errors, bad: bad + errors.length };
 if (JSON_OUT) console.log(JSON.stringify(out, null, 1));
 else {
-  for (const r of rows) console.log(`${r.fails.length ? 'FAIL' : '  ok'} ${r.parish} ${r.view.padEnd(8)} calls ${r.calls} tris ${r.tris} ms ${r.ms} chunks ${r.chunks} fabric ${r.fabric} loaded ${r.loaded}${r.fails.length ? ' :: ' + r.fails.join('; ') : ''}`);
+  for (const r of rows) console.log(`${r.fails.length ? 'FAIL' : '  ok'} ${r.parish} ${r.view.padEnd(8)} calls ${r.calls} tris ${r.tris} ms ${r.ms} chunks ${r.chunks} fabric ${r.fabric} lamps ${r.lamps} loaded ${r.loaded}${r.fails.length ? ' :: ' + r.fails.join('; ') : ''}`);
   for (const r of cross) console.log(`${r.fails.length ? 'FAIL' : '  ok'} cross ${r.pair} steps ${r.steps}${r.fails.length ? ' :: ' + r.fails.join('; ') : ''}`);
   for (const r of rideRows) console.log(`${r.fails.length ? 'FAIL' : '  ok'} ${r.probe} ${JSON.stringify(Object.fromEntries(Object.entries(r).filter(([k]) => k !== 'fails' && k !== 'probe')))}${r.fails.length ? ' :: ' + r.fails.join('; ') : ''}`);
   console.log(`${npcRow.fails.length ? 'FAIL' : '  ok'} npcs ${npcRow.count} ${npcRow.id} ${npcRow.source}${npcRow.fails.length ? ' :: ' + npcRow.fails.join('; ') : ''}`);
   console.log(`${satRow.fails.length ? 'FAIL' : '  ok'} satellite ${satRow.src} :: ${satRow.msg}${satRow.fails.length ? ' :: ' + satRow.fails.join('; ') : ''}`);
+  console.log(`  -- DIAG 22071 overview median frame: scale 1 ${diag[1]} ms, scale 0.6 ${diag[0.6]} ms (diagnosis, not a target)`);
   for (const e of errors) console.log('FAIL page error: ' + e);
   console.log(bad + errors.length ? `eval_parishes: ${bad + errors.length} FAIL` : 'eval_parishes: all rows within target');
 }

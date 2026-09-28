@@ -7,8 +7,9 @@ quest_js(scope, page=None)
     from quests/engine.mjs (between the QUEST_CORE markers), the registry
     entries whose world matches `scope`, the lesson data lessonsDone() needs,
     and the glue that exposes window.TCQuests and binds the hooks. Scopes:
-    "all", "campus" (campus and every hall:<id>), "wilds" (every wilds:<id>)
-    or "page:<repo-relative path>". Place it AFTER the page's own main script.
+    "all", "campus" (campus and every hall:<id>), "wilds" (every wilds:<id>),
+    "parishes" (the parish world "parishes" and every parish:<fips>) or
+    "page:<repo-relative path>". Place it AFTER the page's own main script.
 egg_attr(id) / quest_attr(id)
     The attribute string for a hook. The id must be in the registry (and be a
     treasure/egg, or not, respectively). Every id handed out is remembered and
@@ -36,7 +37,8 @@ BEGIN = '/* QUEST_CORE:BEGIN'
 END = '/* QUEST_CORE:END */'
 LESSONS_PAGE = 'web/trade_craft_lessons.html'
 QUESTS_PAGE = 'web/trade_craft_quests.html'
-SCOPE_PAGE = {'campus': 'web/trade_craft_3d.html', 'wilds': 'web/trade_craft_wilds.html', 'all': QUESTS_PAGE}
+SCOPE_PAGE = {'campus': 'web/trade_craft_3d.html', 'wilds': 'web/trade_craft_wilds.html',
+              'parishes': 'web/trade_craft_parishes.html', 'all': QUESTS_PAGE}
 
 
 def _need(d, k, where):
@@ -86,6 +88,8 @@ def in_scope(q, scope):
         return w == 'campus' or w.startswith('hall:')
     if scope == 'wilds':
         return w.startswith('wilds:')
+    if scope == 'parishes':
+        return w == 'parishes' or w.startswith('parish:')
     if scope.startswith('page:'):
         return w == scope
     raise ValueError(f'questkit: unknown scope {scope!r}')

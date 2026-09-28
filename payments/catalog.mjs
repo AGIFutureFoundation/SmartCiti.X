@@ -15,6 +15,16 @@ export default {
   "stripe_api": "https://api.stripe.com/v1/checkout/sessions",
   "hosted_prefix": "https://checkout.stripe.com/"
  },
+ "rate_limit": {
+  "applies_to": "/api/checkout",
+  "kind": "token bucket in KV per (hashed client IP, plan)",
+  "max_env": "RATE_LIMIT_CHECKOUT_MAX",
+  "window_env": "RATE_LIMIT_CHECKOUT_WINDOW_S",
+  "salt_env": "RATE_LIMIT_SALT",
+  "ip_header": "cf-connecting-ip",
+  "kv_binding": "PAYMENTS_KV",
+  "limits": "set by the operator in env; no limit is policy in this repo"
+ },
  "webhook": {
   "endpoint": "/api/stripe-webhook",
   "secret_env": "STRIPE_WEBHOOK_SECRET",
@@ -81,5 +91,5 @@ export default {
    "commercial_terms": "set by the operator in Stripe"
   }
  ],
- "source_stamp": "sha256:8943de1851ac165c23c5b03f7c8e75ad89de9158329cf453af5c6f1c70dbd286"
+ "source_stamp": "sha256:0cdbb9e1b995ba5d2ff49d7cc37aafd57ad7964f2d0fad67e54ae9bab895078e"
 };

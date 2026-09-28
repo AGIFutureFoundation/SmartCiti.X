@@ -1,7 +1,7 @@
 {
  "pack": "smartcitix-trade-craft-academy-npcs",
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
- "source_stamp": "9af6d54306200e3c",
+ "source_stamp": "06cabc0ae873dc70",
  "sources": {
   "unions": "unions/registry/unions.json",
   "districts": "unions/registry/districts.json",
@@ -19,7 +19,7 @@
   "not_a_person": "Names are AUTHORED: a role title and one nature word. No NPC represents a real worker, teacher, ranger, pilot, union officer or public figure.",
   "play": "Talking to an NPC is play: it certifies nothing, unlocks nothing and enters no completion record.",
   "k12": "The Cognition.X K-12 layer quotes only schools/registry/schools.json and lessons/registry/lessons.json; K-12 districts stay PROPOSED partners with no agreement.",
-  "schedule": "Schedules are AUTHORED game-clock hours, not real hours of any place."
+  "schedule": "Schedules are AUTHORED game-clock hours on simulated time (home, station, landmark, home), not real hours of any place."
  },
  "places_status": "PARISH+LAYERS",
  "places_note": "Home places are LAYERS station ids (AUTHORED placement inside the RECORDED parish outline) and PARISH landmarks (AUTHORED from public record, not surveyed); coordinates are copied from those registries.",
@@ -2436,15 +2436,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22005-sim-boom-lift",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22005-sim-boom-lift",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22005-sim-boom-lift",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22005-sim-boom-lift",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22005-sim-boom-lift",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -2539,15 +2567,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22005-sim-airless-sprayer",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22005-sim-airless-sprayer",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22005-sim-airless-sprayer",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22005-sim-airless-sprayer",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22005-sim-airless-sprayer",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -2642,15 +2698,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22005-sim-boom-lift",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22005-lesson-electricians-clip-in-first",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22005-lesson-electricians-clip-in-first",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22005-sim-boom-lift",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22005-sim-boom-lift",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -2745,15 +2829,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22005-sim-airless-sprayer",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22005-sim-airless-sprayer",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22005-sim-airless-sprayer",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22005-sim-airless-sprayer",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22005-sim-airless-sprayer",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -2848,15 +2960,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22005-unit-laborers",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22005-lesson-painters-lay-the-coat",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22005-lesson-painters-lay-the-coat",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22005-unit-laborers",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22005-unit-laborers",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -2951,15 +3091,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22005-unit-electricians",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22005-lesson-electricians-clip-in-first",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22005-lesson-electricians-clip-in-first",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22005-unit-electricians",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22005-unit-electricians",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -3054,15 +3222,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22005-task-sim-airless-sprayer-nola-shotgun-finish",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22005-task-sim-airless-sprayer-nola-shotgun-finish",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22005-task-sim-airless-sprayer-nola-shotgun-finish",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22005-task-sim-airless-sprayer-nola-shotgun-finish",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22005-task-sim-airless-sprayer-nola-shotgun-finish",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -3148,15 +3344,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22005-task-sim-boom-lift-nola-storm-shutters",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22005-task-sim-boom-lift-nola-storm-shutters",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22005-task-sim-boom-lift-nola-storm-shutters",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22005-task-sim-boom-lift-nola-storm-shutters",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22005-task-sim-boom-lift-nola-storm-shutters",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -3242,15 +3466,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22051-sim-crane-lift",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22051-sim-crane-lift",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22051-lm-louis-armstrong-new-orleans-international-airport",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22051-sim-crane-lift",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22051-sim-crane-lift",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -3345,15 +3597,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22051-sim-excavator-trench",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22051-lesson-operating-eng-locate-first",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22051-lm-lafreniere-park",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22051-sim-excavator-trench",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22051-sim-excavator-trench",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -3448,15 +3728,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22051-sim-crane-lift",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22051-sim-crane-lift",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22051-lm-jean-lafitte-national-historical-park-barataria-preserve",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22051-sim-crane-lift",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22051-sim-crane-lift",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -3551,15 +3859,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22051-sim-crane-lift",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22051-sim-crane-lift",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22051-lm-grand-isle-state-park",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22051-sim-crane-lift",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22051-sim-crane-lift",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -3654,15 +3990,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22051-unit-crane-ops",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22051-lesson-riggers-carry-under-control",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22051-lm-louis-armstrong-new-orleans-international-airport",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22051-unit-crane-ops",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22051-unit-crane-ops",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -3757,15 +4121,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22051-unit-demolition",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22051-lesson-operating-eng-locate-first",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22051-lm-lafreniere-park",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22051-unit-demolition",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22051-unit-demolition",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -3860,15 +4252,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22051-task-sim-crane-lift-nola-wharf",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22051-task-sim-crane-lift-nola-wharf",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22051-lm-jean-lafitte-national-historical-park-barataria-preserve",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22051-task-sim-crane-lift-nola-wharf",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22051-task-sim-crane-lift-nola-wharf",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -3954,15 +4374,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22051-task-sim-excavator-trench-nola-below-sea",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22051-task-sim-excavator-trench-nola-below-sea",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22051-lm-grand-isle-state-park",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22051-task-sim-excavator-trench-nola-below-sea",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22051-task-sim-excavator-trench-nola-below-sea",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -4048,15 +4496,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22051-lm-lafreniere-park",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "22051-lm-lafreniere-park",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22051-lm-louis-armstrong-new-orleans-international-airport",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "22051-lm-lafreniere-park",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "22051-lm-lafreniere-park",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -4142,15 +4618,43 @@
    "schedule": [
     {
      "from_h": 5,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 5,
+     "at": "22051-lm-louis-armstrong-new-orleans-international-airport",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 12,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "22051-lm-louis-armstrong-new-orleans-international-airport",
+     "where": "station"
+    },
+    {
+     "from_h": 12,
+     "to_h": 14,
+     "state": "wander",
+     "radius_m": 5,
+     "at": "22051-lm-lafreniere-park",
+     "where": "landmark"
+    },
+    {
+     "from_h": 14,
      "to_h": 21,
      "state": "wander",
-     "radius_m": 5
+     "radius_m": 5,
+     "at": "22051-lm-louis-armstrong-new-orleans-international-airport",
+     "where": "home"
     },
     {
      "from_h": 21,
      "to_h": 5,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "22051-lm-louis-armstrong-new-orleans-international-airport",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -4240,15 +4744,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22057-sim-load-chart",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22057-sim-load-chart",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22057-lm-nicholls-state-university",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22057-sim-load-chart",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22057-sim-load-chart",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -4343,15 +4875,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22057-sim-forklift-run",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22057-sim-forklift-run",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22057-lm-port-fourchon",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22057-sim-forklift-run",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22057-sim-forklift-run",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -4446,15 +5006,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22057-sim-load-chart",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22057-sim-load-chart",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22057-lm-nicholls-state-university",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22057-sim-load-chart",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22057-sim-load-chart",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -4549,15 +5137,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22057-sim-forklift-run",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22057-sim-forklift-run",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22057-lm-port-fourchon",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22057-sim-forklift-run",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22057-sim-forklift-run",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -4652,15 +5268,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22057-unit-heavy-equip",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22057-lesson-teamsters-check-the-truck-before-the-load",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22057-lm-nicholls-state-university",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22057-unit-heavy-equip",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22057-unit-heavy-equip",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -4755,15 +5399,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22057-unit-crane-ops",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22057-lesson-crane-ops-read-the-chart",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22057-lm-port-fourchon",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22057-unit-crane-ops",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22057-unit-crane-ops",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -4858,15 +5530,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22057-task-sim-forklift-run-nola-dock",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22057-task-sim-forklift-run-nola-dock",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22057-lm-nicholls-state-university",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22057-task-sim-forklift-run-nola-dock",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22057-task-sim-forklift-run-nola-dock",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -4952,15 +5652,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22057-task-sim-load-chart-nola-barge-list",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22057-task-sim-load-chart-nola-barge-list",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22057-lm-port-fourchon",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22057-task-sim-load-chart-nola-barge-list",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22057-task-sim-load-chart-nola-barge-list",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -5046,15 +5774,43 @@
    "schedule": [
     {
      "from_h": 5,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 5,
+     "at": "22057-lm-port-fourchon",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 12,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "22057-lm-port-fourchon",
+     "where": "station"
+    },
+    {
+     "from_h": 12,
+     "to_h": 14,
+     "state": "wander",
+     "radius_m": 5,
+     "at": "22057-lm-nicholls-state-university",
+     "where": "landmark"
+    },
+    {
+     "from_h": 14,
      "to_h": 21,
      "state": "wander",
-     "radius_m": 5
+     "radius_m": 5,
+     "at": "22057-lm-port-fourchon",
+     "where": "home"
     },
     {
      "from_h": 21,
      "to_h": 5,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "22057-lm-port-fourchon",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -5144,15 +5900,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22063-sim-overhead-crane",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22063-sim-overhead-crane",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22063-lm-ligo-livingston-observatory",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22063-sim-overhead-crane",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22063-sim-overhead-crane",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -5247,15 +6031,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22063-sim-pressure-washer",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22063-lesson-painters-contain-it",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22063-lm-ligo-livingston-observatory",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22063-sim-pressure-washer",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22063-sim-pressure-washer",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -5350,15 +6162,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22063-sim-pressure-washer",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22063-sim-pressure-washer",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22063-lm-ligo-livingston-observatory",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22063-sim-pressure-washer",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22063-sim-pressure-washer",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -5453,15 +6293,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22063-sim-overhead-crane",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22063-sim-overhead-crane",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22063-lm-ligo-livingston-observatory",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22063-sim-overhead-crane",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22063-sim-overhead-crane",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -5556,15 +6424,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22063-sim-overhead-crane",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22063-sim-overhead-crane",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22063-lm-ligo-livingston-observatory",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22063-sim-overhead-crane",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22063-sim-overhead-crane",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -5659,15 +6555,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22063-sim-pressure-washer",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22063-sim-pressure-washer",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22063-lm-ligo-livingston-observatory",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22063-sim-pressure-washer",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22063-sim-pressure-washer",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -5762,15 +6686,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22063-unit-boilermakers",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22063-lesson-millwrights-shop-move",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22063-lm-ligo-livingston-observatory",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22063-unit-boilermakers",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22063-unit-boilermakers",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -5865,15 +6817,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22063-unit-hazmat",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22063-lesson-painters-contain-it",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22063-lm-ligo-livingston-observatory",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22063-unit-hazmat",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22063-unit-hazmat",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -5968,15 +6948,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22063-task-sim-overhead-crane-nola-boatshed-engine",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22063-task-sim-overhead-crane-nola-boatshed-engine",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22063-lm-ligo-livingston-observatory",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22063-task-sim-overhead-crane-nola-boatshed-engine",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22063-task-sim-overhead-crane-nola-boatshed-engine",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -6062,15 +7070,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22063-task-sim-pressure-washer-nola-floodwall-clean",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22063-task-sim-pressure-washer-nola-floodwall-clean",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22063-lm-ligo-livingston-observatory",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22063-task-sim-pressure-washer-nola-floodwall-clean",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22063-task-sim-pressure-washer-nola-floodwall-clean",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -6156,15 +7192,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22071-sim-rigging-signals",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22071-lesson-riggers-first-card",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22071-lm-jackson-square",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22071-sim-rigging-signals",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22071-sim-rigging-signals",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -6259,15 +7323,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22071-sim-scaffold-bay",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22071-sim-scaffold-bay",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22071-lm-louisiana-superdome",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22071-sim-scaffold-bay",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22071-sim-scaffold-bay",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -6362,15 +7454,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22071-sim-scaffold-bay",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22071-sim-scaffold-bay",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22071-lm-new-orleans-city-hall",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22071-sim-scaffold-bay",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22071-sim-scaffold-bay",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -6465,15 +7585,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22071-sim-rigging-signals",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22071-sim-rigging-signals",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22071-lm-city-park",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22071-sim-rigging-signals",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22071-sim-rigging-signals",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -6568,15 +7716,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22071-sim-rigging-signals",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22071-sim-rigging-signals",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22071-lm-audubon-park",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22071-sim-rigging-signals",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22071-sim-rigging-signals",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -6671,15 +7847,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22071-unit-crane-ops",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22071-lesson-riggers-first-card",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22071-lm-louis-armstrong-park",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22071-unit-crane-ops",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22071-unit-crane-ops",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -6774,15 +7978,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22071-unit-bricklayers",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22071-lesson-scaffold-build-in-order",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22071-lm-new-orleans-lakefront-airport",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22071-unit-bricklayers",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22071-unit-bricklayers",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -6877,15 +8109,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22071-task-sim-rigging-signals-nola-wind-card",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22071-task-sim-rigging-signals-nola-wind-card",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22071-lm-bayou-sauvage-national-wildlife-refuge",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22071-task-sim-rigging-signals-nola-wind-card",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22071-task-sim-rigging-signals-nola-wind-card",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -6971,15 +8231,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22071-task-sim-scaffold-bay-nola-storm-bay",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22071-task-sim-scaffold-bay-nola-storm-bay",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22071-lm-jackson-square",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22071-task-sim-scaffold-bay-nola-storm-bay",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22071-task-sim-scaffold-bay-nola-storm-bay",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -7065,15 +8353,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22071-lm-city-park",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "22071-lm-city-park",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22071-lm-louisiana-superdome",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "22071-lm-city-park",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "22071-lm-city-park",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -7159,15 +8475,43 @@
    "schedule": [
     {
      "from_h": 5,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 5,
+     "at": "22071-lm-new-orleans-lakefront-airport",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 12,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "22071-lm-new-orleans-lakefront-airport",
+     "where": "station"
+    },
+    {
+     "from_h": 12,
+     "to_h": 14,
+     "state": "wander",
+     "radius_m": 5,
+     "at": "22071-lm-new-orleans-city-hall",
+     "where": "landmark"
+    },
+    {
+     "from_h": 14,
      "to_h": 21,
      "state": "wander",
-     "radius_m": 5
+     "radius_m": 5,
+     "at": "22071-lm-new-orleans-lakefront-airport",
+     "where": "home"
     },
     {
      "from_h": 21,
      "to_h": 5,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "22071-lm-new-orleans-lakefront-airport",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -7257,15 +8601,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22075-sim-weld-bead",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22075-sim-weld-bead",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22075-lm-fort-jackson",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22075-sim-weld-bead",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22075-sim-weld-bead",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -7360,15 +8732,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22075-sim-airless-sprayer",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22075-sim-airless-sprayer",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22075-lm-fort-jackson",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22075-sim-airless-sprayer",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22075-sim-airless-sprayer",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -7463,15 +8863,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22075-sim-airless-sprayer",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22075-sim-airless-sprayer",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22075-lm-fort-jackson",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22075-sim-airless-sprayer",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22075-sim-airless-sprayer",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -7566,15 +8994,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22075-sim-weld-bead",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22075-sim-weld-bead",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22075-lm-fort-jackson",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22075-sim-weld-bead",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22075-sim-weld-bead",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -7669,15 +9125,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22075-unit-painters",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22075-lesson-painters-lay-the-coat",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22075-lm-fort-jackson",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22075-unit-painters",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22075-unit-painters",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -7772,15 +9256,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22075-unit-boilermakers",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22075-lesson-shipfitters-say-what-you-cannot-see",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22075-lm-fort-jackson",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22075-unit-boilermakers",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22075-unit-boilermakers",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -7875,15 +9387,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22075-task-sim-airless-sprayer-bay-terminal-finish",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22075-task-sim-airless-sprayer-bay-terminal-finish",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22075-lm-fort-jackson",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22075-task-sim-airless-sprayer-bay-terminal-finish",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22075-task-sim-airless-sprayer-bay-terminal-finish",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -7969,15 +9509,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22075-task-sim-weld-bead-nola-tank-seam",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22075-task-sim-weld-bead-nola-tank-seam",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22075-lm-fort-jackson",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22075-task-sim-weld-bead-nola-tank-seam",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22075-task-sim-weld-bead-nola-tank-seam",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -8063,15 +9631,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22087-sim-boom-lift",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22087-sim-boom-lift",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22087-lm-chalmette-battlefield",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22087-sim-boom-lift",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22087-sim-boom-lift",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -8166,15 +9762,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22087-sim-boom-lift",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22087-sim-boom-lift",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22087-lm-chalmette-battlefield",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22087-sim-boom-lift",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22087-sim-boom-lift",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -8269,15 +9893,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22087-sim-boom-lift",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22087-sim-boom-lift",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22087-lm-chalmette-battlefield",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22087-sim-boom-lift",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22087-sim-boom-lift",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -8372,15 +10024,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22087-sim-crane-lift",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22087-sim-crane-lift",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22087-lm-chalmette-battlefield",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22087-sim-crane-lift",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22087-sim-crane-lift",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -8475,15 +10155,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22087-sim-crane-lift",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22087-sim-crane-lift",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22087-lm-chalmette-battlefield",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22087-sim-crane-lift",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22087-sim-crane-lift",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -8578,15 +10286,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22087-unit-glaziers",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22087-lesson-insulators-stay-inside-the-rails",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22087-lm-chalmette-battlefield",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22087-unit-glaziers",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22087-unit-glaziers",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -8681,15 +10417,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22087-unit-decking",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22087-lesson-steel-erectors-land-it-on-the-bolts",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22087-lm-chalmette-battlefield",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22087-unit-decking",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22087-unit-decking",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -8784,15 +10548,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22087-task-sim-boom-lift-bay-curtainwall-run",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22087-task-sim-boom-lift-bay-curtainwall-run",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22087-lm-chalmette-battlefield",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22087-task-sim-boom-lift-bay-curtainwall-run",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22087-task-sim-boom-lift-bay-curtainwall-run",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -8878,15 +10670,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22087-task-sim-crane-lift-bay-steel",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22087-task-sim-crane-lift-bay-steel",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22087-lm-chalmette-battlefield",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22087-task-sim-crane-lift-bay-steel",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22087-task-sim-crane-lift-bay-steel",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -8972,15 +10792,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22087-lm-chalmette-battlefield",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "22087-lm-chalmette-battlefield",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22087-lm-chalmette-battlefield",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "22087-lm-chalmette-battlefield",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "22087-lm-chalmette-battlefield",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -9066,15 +10914,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22089-sim-excavator-trench",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22089-sim-excavator-trench",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22089-lm-bonnet-carre-spillway",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22089-sim-excavator-trench",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22089-sim-excavator-trench",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -9169,15 +11045,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22089-sim-forklift-run",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22089-sim-forklift-run",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22089-lm-bonnet-carre-spillway",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22089-sim-forklift-run",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22089-sim-forklift-run",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -9272,15 +11176,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22089-unit-laborers",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22089-lesson-shoring-read-the-ground-again",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22089-lm-bonnet-carre-spillway",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22089-unit-laborers",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22089-unit-laborers",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -9375,15 +11307,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22089-unit-marine-terminal",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22089-lesson-heavy-equip-listen-to-the-dash",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22089-lm-bonnet-carre-spillway",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22089-unit-marine-terminal",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22089-unit-marine-terminal",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -9478,15 +11438,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22089-task-sim-excavator-trench-bay-retrofit",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22089-task-sim-excavator-trench-bay-retrofit",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22089-lm-bonnet-carre-spillway",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22089-task-sim-excavator-trench-bay-retrofit",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22089-task-sim-excavator-trench-bay-retrofit",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -9572,15 +11560,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22089-task-sim-forklift-run-bay-yard",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22089-task-sim-forklift-run-bay-yard",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22089-lm-bonnet-carre-spillway",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22089-task-sim-forklift-run-bay-yard",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22089-task-sim-forklift-run-bay-yard",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -9666,15 +11682,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22093-sim-load-chart",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22093-sim-load-chart",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22093-sim-load-chart",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22093-sim-load-chart",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22093-sim-load-chart",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -9769,15 +11813,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22093-sim-load-chart",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22093-sim-load-chart",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22093-sim-load-chart",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22093-sim-load-chart",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22093-sim-load-chart",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -9872,15 +11944,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22093-sim-load-chart",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22093-sim-load-chart",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22093-sim-load-chart",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22093-sim-load-chart",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22093-sim-load-chart",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -9975,15 +12075,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22093-sim-load-chart",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22093-sim-load-chart",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22093-sim-load-chart",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22093-sim-load-chart",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22093-sim-load-chart",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -10078,15 +12206,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22093-unit-heavy-equip",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22093-lesson-crane-ops-read-the-chart",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22093-lesson-crane-ops-read-the-chart",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22093-unit-heavy-equip",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22093-unit-heavy-equip",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -10181,15 +12337,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22093-unit-crane-ops",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22093-lesson-machinists-move-the-job-without-marking-it",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22093-lesson-machinists-move-the-job-without-marking-it",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22093-unit-crane-ops",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22093-unit-crane-ops",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -10284,15 +12468,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22093-task-sim-load-chart-bay-pick-list",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22093-task-sim-load-chart-bay-pick-list",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22093-task-sim-load-chart-bay-pick-list",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22093-task-sim-load-chart-bay-pick-list",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22093-task-sim-load-chart-bay-pick-list",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -10378,15 +12590,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22093-task-sim-overhead-crane-bay-fab-coil",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22093-task-sim-overhead-crane-bay-fab-coil",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22093-task-sim-overhead-crane-bay-fab-coil",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22093-task-sim-overhead-crane-bay-fab-coil",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22093-task-sim-overhead-crane-bay-fab-coil",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -10472,15 +12712,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22095-sim-rigging-signals",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22095-sim-rigging-signals",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22095-sim-rigging-signals",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22095-sim-rigging-signals",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22095-sim-rigging-signals",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -10575,15 +12843,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22095-sim-pressure-washer",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22095-sim-pressure-washer",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22095-sim-pressure-washer",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22095-sim-pressure-washer",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22095-sim-pressure-washer",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -10678,15 +12974,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22095-sim-pressure-washer",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22095-sim-pressure-washer",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22095-sim-pressure-washer",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22095-sim-pressure-washer",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22095-sim-pressure-washer",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -10781,15 +13105,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22095-sim-rigging-signals",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22095-sim-rigging-signals",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22095-sim-rigging-signals",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22095-sim-rigging-signals",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22095-sim-rigging-signals",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -10884,15 +13236,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22095-sim-rigging-signals",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22095-sim-rigging-signals",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22095-sim-rigging-signals",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22095-sim-rigging-signals",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22095-sim-rigging-signals",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -10987,15 +13367,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22095-sim-pressure-washer",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22095-lesson-hazmat-wash-and-decon",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22095-lesson-hazmat-wash-and-decon",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22095-sim-pressure-washer",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22095-sim-pressure-washer",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -11090,15 +13498,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22095-unit-laborers",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22095-lesson-hazmat-wash-and-decon",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22095-lesson-hazmat-wash-and-decon",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22095-unit-laborers",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22095-unit-laborers",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -11193,15 +13629,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22095-unit-decking",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22095-lesson-decking-walk-the-path-first",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22095-lesson-decking-walk-the-path-first",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22095-unit-decking",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22095-unit-decking",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -11296,15 +13760,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22095-task-sim-pressure-washer-bay-seawall-clean",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22095-task-sim-pressure-washer-bay-seawall-clean",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22095-task-sim-pressure-washer-bay-seawall-clean",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22095-task-sim-pressure-washer-bay-seawall-clean",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22095-task-sim-pressure-washer-bay-seawall-clean",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -11390,15 +13882,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22095-task-sim-rigging-signals-bay-first-card",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22095-task-sim-rigging-signals-bay-first-card",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22095-task-sim-rigging-signals-bay-first-card",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22095-task-sim-rigging-signals-bay-first-card",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22095-task-sim-rigging-signals-bay-first-card",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -11484,15 +14004,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22103-sim-weld-bead",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22103-sim-weld-bead",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22103-lm-fontainebleau-state-park",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22103-sim-weld-bead",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22103-sim-weld-bead",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -11587,15 +14135,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22103-sim-scaffold-bay",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22103-sim-scaffold-bay",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22103-lm-lake-pontchartrain-causeway-north-shore-end",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22103-sim-scaffold-bay",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22103-sim-scaffold-bay",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -11690,15 +14266,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22103-sim-scaffold-bay",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22103-sim-scaffold-bay",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22103-lm-fontainebleau-state-park",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22103-sim-scaffold-bay",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22103-sim-scaffold-bay",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -11793,15 +14397,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22103-sim-scaffold-bay",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22103-sim-scaffold-bay",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22103-lm-lake-pontchartrain-causeway-north-shore-end",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22103-sim-scaffold-bay",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22103-sim-scaffold-bay",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -11896,15 +14528,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22103-unit-carpenters",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22103-lesson-roofers-mind-the-edge-and-the-skylight",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22103-lm-fontainebleau-state-park",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22103-unit-carpenters",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22103-unit-carpenters",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -11999,15 +14659,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22103-unit-fabricators",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22103-lesson-tank-erectors-isolate-before-testing",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22103-lm-lake-pontchartrain-causeway-north-shore-end",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22103-unit-fabricators",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22103-unit-fabricators",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -12102,15 +14790,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22103-task-sim-scaffold-bay-bay-training-bay",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22103-task-sim-scaffold-bay-bay-training-bay",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22103-lm-fontainebleau-state-park",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22103-task-sim-scaffold-bay-bay-training-bay",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22103-task-sim-scaffold-bay-bay-training-bay",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -12196,15 +14912,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22103-task-crew-nola-tank-entry",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22103-task-crew-nola-tank-entry",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22103-lm-lake-pontchartrain-causeway-north-shore-end",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22103-task-crew-nola-tank-entry",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22103-task-crew-nola-tank-entry",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -12290,15 +15034,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22103-lm-fontainebleau-state-park",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "22103-lm-fontainebleau-state-park",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22103-lm-fontainebleau-state-park",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "22103-lm-fontainebleau-state-park",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "22103-lm-fontainebleau-state-park",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -12384,15 +15156,43 @@
    "schedule": [
     {
      "from_h": 5,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 5,
+     "at": "22103-lm-lake-pontchartrain-causeway-north-shore-end",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 12,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "22103-lm-lake-pontchartrain-causeway-north-shore-end",
+     "where": "station"
+    },
+    {
+     "from_h": 12,
+     "to_h": 14,
+     "state": "wander",
+     "radius_m": 5,
+     "at": "22103-lm-lake-pontchartrain-causeway-north-shore-end",
+     "where": "landmark"
+    },
+    {
+     "from_h": 14,
      "to_h": 21,
      "state": "wander",
-     "radius_m": 5
+     "radius_m": 5,
+     "at": "22103-lm-lake-pontchartrain-causeway-north-shore-end",
+     "where": "home"
     },
     {
      "from_h": 21,
      "to_h": 5,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "22103-lm-lake-pontchartrain-causeway-north-shore-end",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -12482,15 +15282,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22105-sim-boom-lift",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22105-sim-boom-lift",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22105-lm-southeastern-louisiana-university",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22105-sim-boom-lift",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22105-sim-boom-lift",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -12585,15 +15413,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22105-sim-airless-sprayer",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22105-sim-airless-sprayer",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22105-lm-southeastern-louisiana-university",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22105-sim-airless-sprayer",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22105-sim-airless-sprayer",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -12688,15 +15544,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22105-sim-boom-lift",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22105-sim-boom-lift",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22105-lm-southeastern-louisiana-university",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22105-sim-boom-lift",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22105-sim-boom-lift",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -12791,15 +15675,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22105-sim-airless-sprayer",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22105-sim-airless-sprayer",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22105-lm-southeastern-louisiana-university",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22105-sim-airless-sprayer",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22105-sim-airless-sprayer",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -12894,15 +15806,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22105-unit-laborers",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22105-lesson-painters-lay-the-coat",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22105-lm-southeastern-louisiana-university",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22105-unit-laborers",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22105-unit-laborers",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -12997,15 +15937,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22105-unit-insulators",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22105-lesson-window-glazing-let-the-ground-judge-it",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22105-lm-southeastern-louisiana-university",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22105-unit-insulators",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22105-unit-insulators",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -13100,15 +16068,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22105-task-sim-airless-sprayer-oak-warehouse-finish",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22105-task-sim-airless-sprayer-oak-warehouse-finish",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22105-lm-southeastern-louisiana-university",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22105-task-sim-airless-sprayer-oak-warehouse-finish",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22105-task-sim-airless-sprayer-oak-warehouse-finish",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -13194,15 +16190,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22105-task-sim-boom-lift-oak-terminal-fixtures",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22105-task-sim-boom-lift-oak-terminal-fixtures",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "22105-lm-southeastern-louisiana-university",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22105-task-sim-boom-lift-oak-terminal-fixtures",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22105-task-sim-boom-lift-oak-terminal-fixtures",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -13288,15 +16312,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22109-sim-crane-lift",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22109-sim-crane-lift",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22109-sim-crane-lift",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22109-sim-crane-lift",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22109-sim-crane-lift",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -13391,15 +16443,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22109-sim-excavator-trench",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22109-lesson-operating-eng-locate-first",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22109-lesson-operating-eng-locate-first",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22109-sim-excavator-trench",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22109-sim-excavator-trench",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -13494,15 +16574,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22109-sim-crane-lift",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22109-sim-crane-lift",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22109-sim-crane-lift",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22109-sim-crane-lift",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22109-sim-crane-lift",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -13597,15 +16705,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22109-sim-crane-lift",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22109-lesson-port-crane-read-the-rope",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22109-lesson-port-crane-read-the-rope",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22109-sim-crane-lift",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22109-sim-crane-lift",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -13700,15 +16836,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22109-unit-ironworkers",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22109-lesson-port-crane-read-the-rope",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22109-lesson-port-crane-read-the-rope",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22109-unit-ironworkers",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22109-unit-ironworkers",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -13803,15 +16967,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22109-unit-operating-eng",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22109-lesson-operating-eng-locate-first",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22109-lesson-operating-eng-locate-first",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22109-unit-operating-eng",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22109-unit-operating-eng",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -13906,15 +17098,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22109-task-sim-crane-lift-oak-terminal",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22109-task-sim-crane-lift-oak-terminal",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22109-task-sim-crane-lift-oak-terminal",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22109-task-sim-crane-lift-oak-terminal",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22109-task-sim-crane-lift-oak-terminal",
+     "where": "home"
     }
    ],
    "knowledge": [
@@ -14000,15 +17220,43 @@
    "schedule": [
     {
      "from_h": 6,
+     "to_h": 9,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22109-task-sim-excavator-trench-oak-fill",
+     "where": "home"
+    },
+    {
+     "from_h": 9,
+     "to_h": 13,
+     "state": "wander",
+     "radius_m": 4,
+     "at": "st-22109-task-sim-excavator-trench-oak-fill",
+     "where": "station"
+    },
+    {
+     "from_h": 13,
+     "to_h": 15,
+     "state": "wander",
+     "radius_m": 6,
+     "at": "st-22109-task-sim-excavator-trench-oak-fill",
+     "where": "landmark"
+    },
+    {
+     "from_h": 15,
      "to_h": 19,
      "state": "wander",
-     "radius_m": 8
+     "radius_m": 6,
+     "at": "st-22109-task-sim-excavator-trench-oak-fill",
+     "where": "home"
     },
     {
      "from_h": 19,
      "to_h": 6,
      "state": "idle",
-     "radius_m": 0
+     "radius_m": 0,
+     "at": "st-22109-task-sim-excavator-trench-oak-fill",
+     "where": "home"
     }
    ],
    "knowledge": [

@@ -29,6 +29,7 @@ token supplied at deploy time). Nothing fetched is stored or baked.
 import html
 import json
 import math
+import re
 import pathlib
 import sys
 
@@ -92,6 +93,8 @@ def TA(k):
 # ------------------------------------------------------------------- nav --
 # the site nav, declared once in web/sitenav.py (Play group, nav.page.parishes);
 # no fallback: an undeclared page stops the build (nav_html asserts)
+if PAGE not in sitenav.PAGES:
+    raise BuildError(f'build_parishes: web/sitenav.py does not declare {PAGE} (NEEDS nav: lead)')
 NAV = nav_html(PAGE, nav_labels('en'))
 
 # --------------------------------------------------------------- parishes --
@@ -260,7 +263,9 @@ else:
 QUEST_SCRIPT, QUEST_CSS_BLOCK, QUEST_STATE, QUEST_ROWS = '', '', 'pending', []
 qreg_path = ROOT / 'quests/registry/quests.json'
 if qreg_path.exists() and (HERE / 'questkit.py').exists():
-    pq = [q for q in json.loads(qreg_path.read_text())['quests'] if q['world'].startswith('parish:')]
+    _allq = json.loads(qreg_path.read_text())['quests']
+    QIDS = {q['id'] for q in _allq}
+    pq = [q for q in _allq if q['world'].startswith('parish:')]
     if pq:
         from questkit import QUEST_CSS, quest_js, egg_attr, quest_attr  # noqa: E402
         pids = {p['id'] for p in DATA['parishes']}
@@ -268,13 +273,44 @@ if qreg_path.exists() and (HERE / 'questkit.py').exists():
             pid = q['world'].split(':', 1)[1]
             if pid not in pids:
                 raise BuildError(f'build_parishes: quest {q["id"]} names parish {pid!r}, not in the parish registry')
+            # finds the world fires by play (arrive, landmark, guide, station) get no click-to-find button
+            if re.match(r'treasure-(parish-\d+-(arrive|lm-.+)|guide-\d+|station-.+)$', q['id']):
+                continue
             attr = egg_attr(q['id']) if q['kind'] in ('treasure', 'egg') else quest_attr(q['id'])
             QUEST_ROWS.append(f'<li><button type="button" class="tc-btn tc-btn-ghost" data-parish="{esc(pid)}" {attr}>'
                               f'{esc(q["title"])}</button> <span class="help">{esc(q["hint"])}</span></li>')
-        # NEEDS web/questkit.py (QUESTS): a 'parish' scope; until then the 'all' scope bound to this page
-        QUEST_SCRIPT = quest_js('all', PAGE)
+        QUEST_SCRIPT = quest_js('parishes')
         QUEST_CSS_BLOCK = f'<style>{QUEST_CSS}</style>'
         QUEST_STATE = 'wired'
+
+# the quest finds the world triggers (LAYERS_CONTRACT): only ids the quest
+# registry holds are wired; every landmark treasure must name a landmark here
+def slug(name):
+    return '-'.join(''.join(c.lower() if c.isalnum() else ' ' for c in name).split())
+
+
+FINDS = {'arrive': {}, 'border': {}, 'landmark': {}, 'ride': {}}
+if QUEST_STATE == 'wired':
+    for p in DATA['parishes']:
+        k = f'treasure-parish-{p["id"]}-arrive'
+        if k in QIDS:
+            FINDS['arrive'][p['id']] = k
+        for lm in p['landmarks']:
+            k = f'treasure-parish-{p["id"]}-lm-{slug(lm["name"])}'
+            if k in QIDS:
+                FINDS['landmark'][lm['id']] = k
+        for n in p['neighbours']:
+            a, b = sorted((p['id'], n['id']))
+            k = f'treasure-border-{a}-{b}'
+            if k in QIDS:
+                FINDS['border'][f'{a}|{b}'] = k
+    for m in ('land', 'water'):
+        if f'treasure-ride-{m}' in QIDS:
+            FINDS['ride'][m] = f'treasure-ride-{m}'
+    _lmq = {q for q in QIDS if q.startswith('treasure-parish-') and '-lm-' in q}
+    _orph = sorted(_lmq - set(FINDS['landmark'].values()))
+    if _orph:
+        raise BuildError(f'build_parishes: landmark treasures with no landmark in the parish registry: {_orph}')
 
 # ------------------------------------------------------------------- html --
 n_par = len(DATA['parishes'])
@@ -294,15 +330,25 @@ quest_block = (f'<ul class="quests">{"".join(QUEST_ROWS)}</ul><div data-tc-quest
                else f'<p class="none" data-quests-pending>{TS("parishes.quests_pending")}</p>')
 honesty_rows = ''.join(f'<li data-honesty-key="{esc(k)}">{esc(v)}</li>' for k, v in sorted(DATA['honesty'].items()))
 embedded = json.dumps(DATA, sort_keys=True, ensure_ascii=False).replace('</', '<\\/')
+finds_embedded = json.dumps(FINDS, sort_keys=True)
 npcs_embedded = json.dumps(NPC_DATA, sort_keys=True, ensure_ascii=False).replace('</', '<\\/')
+# pathkit's labels in every locale (pathkit.path_labels, QUESTS-owned path.* keys; fails closed)
+PATH_LABELS_BY_LOC = {}
+if PATHS:
+    for _f in sorted((ROOT / 'i18n/locales').glob('*.json')):
+        _c = json.loads(_f.read_text(encoding='utf-8'))
+        PATH_LABELS_BY_LOC[_c['locale']] = pathkit.path_labels(_c['strings'])
+pathlabels_embedded = json.dumps(PATH_LABELS_BY_LOC, sort_keys=True, ensure_ascii=False).replace('</', '<\\/')
 paths_embedded = json.dumps(PATHS, sort_keys=True, ensure_ascii=False).replace('</', '<\\/')
 fleet_embedded = json.dumps(FLEET_REG, sort_keys=True, ensure_ascii=False).replace('</', '<\\/') if FLEET_REG else 'null'
 FLEET_HONESTY = esc(FLEET_REG['honesty']) if FLEET_REG else ''
 JS_KEYS = ['parishes.mode.walk', 'parishes.mode.drive', 'parishes.mode.boat', 'parishes.mode.overview',
            'parishes.border', 'parishes.ground', 'parishes.sat.usgs', 'parishes.sat.failed',
            'parishes.boat.nowater', 'parishes.boat.noland', 'parishes.stub_vehicle']
-JS_KEYS += ['parishes.npc.' + k for k in ('next', 'prev', 'close', 'take', 'source', 'notcert', 'points', 'of', 'honesty',
-                                          'role.mentor', 'role.k12', 'role.ranger', 'role.pilot', 'role.host')]
+# the NPC kit's own dialogue keys (npc.*, NPC-owned, all 8 locales) travel in this page's run-time catalogue
+if NPC_DATA is not None:
+    from npckit import NPC_I18N_KEYS  # noqa: E402
+    JS_KEYS += list(NPC_I18N_KEYS)
 _USED.update(JS_KEYS)
 
 JS = r'''
@@ -332,7 +378,7 @@ for (const el of document.querySelectorAll('[data-i18n-aria]')) el.setAttribute(
 /* Declared once; web/eval_parishes.mjs holds the views to targets. */
 const CHUNK_M = 250, RADIUS = 3, CELL = 25, BUILD_PER_FRAME = 3;
 const STREAM_M = 1500;                 // a neighbour streams in when its shared border is this close
-const CAP = { block: 6000, tree: 4000, marker: 64, lm: 64 };
+const CAP = { block: 6000, tree: 4000, lamp: 2500, marker: 64, lm: 64 };
 const PACE = { walk: 1.6, run: 6, drive: 14, boat: 8 };   // m/s, AUTHORED
 const EYE = { walk: 1.7, drive: 1.4, boat: 1.2, overview: 0 };
 const SEED = 20260928;
@@ -340,15 +386,23 @@ const SEED = 20260928;
 const stage = document.getElementById('stage');
 const canvas = document.getElementById('view');
 const renderer = new THREE.WebGLRenderer({ canvas, antialias: false, powerPreference: 'high-performance' });
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.25));
+const BASE_PR = Math.min(window.devicePixelRatio, 1.25);
+/* the overview is fill-bound (a dozen draws, ~10k triangles, one full-screen land pass): it renders at
+   OVERVIEW_PR of the walk resolution, where a pixel is already tens of metres of flat ground
+   (declared in web/eval_parishes.mjs; the target is unchanged) */
+const OVERVIEW_PR = 0.6;
+let prScale = 1;
+function applyPR(k) { prScale = k; renderer.setPixelRatio(BASE_PR * k); resize(); }
+renderer.setPixelRatio(BASE_PR);
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0xBFD3DE);
+const SKY_BG = new THREE.Color(0xBFD3DE), WATER_BG = new THREE.Color(0x3E6E8E);
+scene.background = SKY_BG;
 scene.fog = new THREE.Fog(0xBFD3DE, 900, 4200);
 const camera = new THREE.PerspectiveCamera(62, 1, 0.3, 60000);
 scene.add(new THREE.HemisphereLight(0xe8f0ff, 0x5a5040, 1.1));
 const sun = new THREE.DirectionalLight(0xfff2dc, 1.5); sun.position.set(-0.5, 0.8, 0.35); scene.add(sun);
 const lam = (c) => new THREE.MeshLambertMaterial({ color: c });
-const matWater = lam(0x3E6E8E), matBlock = lam(0xB9AE9C), matTree = lam(0x3F6B3A), matMark = lam(0xE8A33D), matLm = lam(0xD8D2C4);
+const matWater = new THREE.MeshLambertMaterial({ color: 0x3E6E8E, emissive: 0x9FC4DC, emissiveIntensity: 0.06 }), matBlock = lam(0xB9AE9C), matTree = lam(0x3F6B3A), matMark = lam(0xE8A33D), matLm = lam(0xD8D2C4);
 const LAND = [0xA7B58C, 0x9FB08F, 0xB1B790, 0x98A987];
 
 const PAR = new Map(D.parishes.map((p, i) => {
@@ -422,14 +476,20 @@ for (const m of [blocks, trees]) { m.count = 0; m.frustumCulled = false; scene.a
 const chunkData = new Map(); let queue = [], dirty = false;
 function lmNear(x, z) { for (const id of loaded) for (const l of PAR.get(id).landmarks) if (Math.hypot(l.x - x, l.z - z) < 45) return true; return false; }
 function buildChunk(ci, cj) {
-  const out = { block: [], tree: [] }, n = CHUNK_M / CELL;
+  const out = { block: [], tree: [], lamp: [] }, n = CHUNK_M / CELL;
   for (let a = 0; a < n; a++) for (let b = 0; b < n; b++) {
     const ix = ci * n + a, iz = cj * n + b;
     const h = wildsHash(ix, iz, SEED, 1), jx = wildsHash(ix, iz, SEED, 2), jz = wildsHash(ix, iz, SEED, 3);
     const x = (ix + 0.2 + 0.6 * jx) * CELL, z = (iz + 0.2 + 0.6 * jz) * CELL;
     if (!parishAt(x, z) || lmNear(x, z)) continue;
     // streets: every fourth cell row/column stays open (AUTHORED grid, not the real street grid)
-    if (((ix % 4) + 4) % 4 === 0 || ((iz % 4) + 4) % 4 === 0) { if (h < 0.18) out.tree.push([x, z, 0.8 + jx * 0.5, 0]); continue; }
+    const sx = ((ix % 4) + 4) % 4 === 0, sz = ((iz % 4) + 4) % 4 === 0;
+    if (sx || sz) {
+      if (h < 0.18) out.tree.push([x, z, 0.8 + jx * 0.5, 0]);
+      // a lamp every fourth cell along each street (one per block side), at the kerb (AUTHORED furniture on AUTHORED streets)
+      if (!(sx && sz) && (((sx ? iz : ix) % 4) + 4) % 4 === 2 && ((sx ? ix : iz) & 4) === 0) out.lamp.push(sx ? [(ix + 0.08) * CELL, (iz + 0.5) * CELL, 0] : [(ix + 0.5) * CELL, (iz + 0.08) * CELL, Math.PI / 2]);
+      continue;
+    }
     if (h < 0.55) out.block.push([x, z, 9 + 10 * jx, 4 + 22 * Math.pow(wildsHash(ix, iz, SEED, 4), 3), 9 + 10 * jz]);
     else if (h < 0.8) out.tree.push([x, z, 0.8 + jz * 0.6, 0]);
   }
@@ -449,27 +509,52 @@ function pump(budget) {
   for (let i = 0; i < budget && queue.length; i++) { const k = queue.shift(); const [a, b] = k.split(',').map(Number); chunkData.set(k, buildChunk(a, b)); dirty = true; }
 }
 const M4 = new THREE.Matrix4(), Q = new THREE.Quaternion(), V = new THREE.Vector3(), S = new THREE.Vector3();
+const UP = new THREE.Vector3(0, 1, 0);
 function refillFabric() {
-  let nb = 0, nt = 0;
+  let nb = 0, nt = 0, nl = 0;
   for (const c of chunkData.values()) {
     for (const [x, z, w, h, d] of c.block) { if (nb >= CAP.block) break; M4.compose(V.set(x, 0, z), Q.identity(), S.set(w, h, d)); blocks.setMatrixAt(nb++, M4); }
     for (const [x, z, s] of c.tree) { if (nt >= CAP.tree) break; M4.compose(V.set(x, 0, z), Q.identity(), S.set(s, s, s)); trees.setMatrixAt(nt++, M4); }
+    for (const [x, z, r] of c.lamp) { if (nl >= CAP.lamp) break; M4.compose(V.set(x, 0, z), Q.setFromAxisAngle(UP, r), S.set(1, 1, 1)); lamps.setMatrixAt(nl++, M4); }
   }
-  blocks.count = nb; trees.count = nt;
-  blocks.instanceMatrix.needsUpdate = true; trees.instanceMatrix.needsUpdate = true; dirty = false;
+  blocks.count = nb; trees.count = nt; lamps.count = nl; Q.identity();
+  blocks.instanceMatrix.needsUpdate = true; trees.instanceMatrix.needsUpdate = true; lamps.instanceMatrix.needsUpdate = true; dirty = false;
 }
 
 /* ---- border markers and landmarks: one InstancedMesh per asset family ---- */
 const markerGeo = mergeGeometries([new THREE.CylinderGeometry(0.4, 0.5, 9, 6).translate(0, 4.5, 0), new THREE.BoxGeometry(5, 1.4, 0.3).translate(0, 8, 0)]);
 const markers = new THREE.InstancedMesh(markerGeo, matMark, CAP.marker); markers.count = 0; markers.frustumCulled = false; scene.add(markers);
 /* generic silhouettes by kind: never a replica of the real building */
+/* generic silhouettes by kind, never a replica of the real building (wave 5b: more parts, same one
+   InstancedMesh per family, so detail costs triangles, not draw calls) */
+const G = THREE;
+const box = (w, h, d, x = 0, y = 0, z = 0) => new G.BoxGeometry(w, h, d).translate(x, y + h / 2, z);
+const cyl = (r0, r1, h, x = 0, y = 0, z = 0, seg = 8) => new G.CylinderGeometry(r0, r1, h, seg).translate(x, y + h / 2, z);
+const ring = (n, r, f) => Array.from({ length: n }, (_, i) => f(r * Math.cos(i * 2 * Math.PI / n), r * Math.sin(i * 2 * Math.PI / n)));
 const FAMILY = {
-  tower: () => mergeGeometries([new THREE.BoxGeometry(6, 26, 6).translate(0, 13, 0), new THREE.ConeGeometry(4.6, 10, 4).rotateY(Math.PI / 4).translate(0, 31, 0)]),
-  dome: () => mergeGeometries([new THREE.CylinderGeometry(14, 14, 10, 16).translate(0, 5, 0), new THREE.SphereGeometry(12, 16, 8, 0, Math.PI * 2, 0, Math.PI / 2).translate(0, 10, 0)]),
-  hall: () => mergeGeometries([new THREE.BoxGeometry(30, 12, 18).translate(0, 6, 0), new THREE.ConeGeometry(18, 5, 4).rotateY(Math.PI / 4).scale(1, 1, 0.62).translate(0, 14.5, 0)]),
-  bridge: () => mergeGeometries([new THREE.BoxGeometry(60, 2, 10).translate(0, 12, 0), new THREE.BoxGeometry(3, 24, 3).translate(-20, 12, 0), new THREE.BoxGeometry(3, 24, 3).translate(20, 12, 0)]),
-  other: () => mergeGeometries([new THREE.CylinderGeometry(1.2, 2.2, 18, 4).translate(0, 9, 0)]),
+  // a bell tower: plinth, shaft, open belfry of four corner posts, cornice, spire
+  tower: () => mergeGeometries([box(9, 3, 9), box(6.5, 21, 6.5, 0, 3), ...[[-2.6, -2.6], [2.6, -2.6], [-2.6, 2.6], [2.6, 2.6]].map(([x, z]) => box(1.2, 6, 1.2, x, 24, z)),
+    box(7.4, 1.2, 7.4, 0, 30), new G.ConeGeometry(4.4, 12, 4).rotateY(Math.PI / 4).translate(0, 37.2, 0)]),
+  // a domed arena: stepped base, drum, dome, lantern
+  dome: () => mergeGeometries([cyl(22, 22, 3, 0, 0, 0, 16), cyl(19, 19, 12, 0, 3, 0, 16), new G.SphereGeometry(19, 16, 6, 0, Math.PI * 2, 0, Math.PI / 2).scale(1, 0.55, 1).translate(0, 15, 0),
+    cyl(2.2, 2.2, 3, 0, 25.4, 0, 8)]),
+  // a civic hall: podium, block, six-column portico, pediment
+  hall: () => mergeGeometries([box(36, 2, 24), box(30, 12, 16, 0, 2, -2), ...[-10, -6, -2, 2, 6, 10].map((x) => cyl(0.8, 0.8, 10, x, 2, 8.5)),
+    box(24, 1, 5, 0, 12, 8.5), new G.ConeGeometry(14, 4, 4).rotateY(Math.PI / 4).scale(1, 1, 0.3).translate(0, 15, 8.5), box(30, 1, 16, 0, 14, -2)]),
+  // a span: deck, two towers, stay cables as thin bars
+  bridge: () => mergeGeometries([box(70, 1.6, 10, 0, 11), box(3, 26, 3, -18), box(3, 26, 3, 18),
+    ...[-1, 1].flatMap((s) => [8, 14, 20].map((d) => box(d * 1.1, 0.3, 0.3, s * (18 - d / 2), 18 + d * 0.2, 0).rotateZ(0)))]),
+  // a park or refuge pavilion: four posts, hipped roof, and a marker post
+  other: () => mergeGeometries([...[[-4, -4], [4, -4], [-4, 4], [4, 4]].map(([x, z]) => cyl(0.35, 0.35, 4, x, 0, z, 6)),
+    new G.ConeGeometry(7.5, 3, 4).rotateY(Math.PI / 4).translate(0, 5.5, 0), cyl(0.5, 0.9, 9, 9, 0, 0, 6)]),
 };
+/* AUTHORED street furniture: a lamp standard (pole, arm, lit head) on street cells, one InstancedMesh */
+const lampGeo = (() => {
+  const paint = (g, c) => { const col = new G.Color(c), n = g.attributes.position.count, a = new Float32Array(n * 3); for (let i = 0; i < n; i++) col.toArray(a, i * 3); g.setAttribute('color', new G.BufferAttribute(a, 3)); return g; };
+  return mergeGeometries([paint(box(0.2, 6.2, 0.2), 0x3a3f44), paint(box(1.4, 0.12, 0.12, 0.7, 6.1), 0x3a3f44), paint(box(0.5, 0.22, 0.34, 1.35, 5.85), 0xfff0c2)]);
+})();
+const matLamp = new THREE.MeshLambertMaterial({ vertexColors: true, emissive: 0x2a2410 });
+const lamps = new THREE.InstancedMesh(lampGeo, matLamp, CAP.lamp); lamps.count = 0; lamps.frustumCulled = false; scene.add(lamps);
 const lmMeshes = {};
 /* LAYERS stations (sims, tasks, lessons, Cognition.X K-12): one InstancedMesh, a generic kiosk */
 const PATHS = JSON.parse(document.getElementById('parish-paths').textContent);
@@ -508,10 +593,12 @@ function refillStations() {
   stations.instanceMatrix.needsUpdate = true;
 }
 const pathsEl = document.getElementById('paths');
+/* pathkit's labels in the reader's locale (parishes.path.*): the kit's English defaults are never used */
+const PATH_L = JSON.parse(document.getElementById('parish-path-labels').textContent)[LOC];
 let pathsFor = null;
 function mountPaths(id) {
   if (pathsFor === id || !window.TCPaths || !PATHS[id]) return;
-  pathsFor = id; pathsEl.replaceChildren(); window.TCPaths.mount(pathsEl, PATHS[id], { hrefPrefix: '' });
+  pathsFor = id; pathsEl.replaceChildren(); window.TCPaths.mount(pathsEl, PATHS[id], { hrefPrefix: '', labels: PATH_L });
 }
 function refillLandmarks() {
   for (const m of Object.values(lmMeshes)) m.count = 0;
@@ -535,6 +622,7 @@ function placeLabels() {
   const w = stage.clientWidth, h = stage.clientHeight;
   for (const it of labelItems) {
     PV.set(it.x, it.y, it.z);
+    if (mode === 'overview' && it.kind === 'st') { it.el.hidden = true; continue; }
     const far = PV.distanceTo(camera.position) > (mode === 'overview' ? 1e9 : 2500);
     PV.project(camera);
     const vis = !far && PV.z < 1 && Math.abs(PV.x) < 1.05 && Math.abs(PV.y) < 1.05;
@@ -570,7 +658,8 @@ function setMode(m) {
   mode = m;
   for (const b of document.querySelectorAll('[data-mode]')) b.setAttribute('aria-pressed', String(b.dataset.mode === m));
   stage.dataset.mode = m;
-  blocks.visible = trees.visible = m !== 'overview';
+  applyPR(m === 'overview' ? OVERVIEW_PR : 1);
+  blocks.visible = trees.visible = lamps.visible = m !== 'overview';
   if (m === 'drive' || m === 'boat') toast(tr('parishes.stub_vehicle'));
   return true;
 }
@@ -610,12 +699,19 @@ function placeCamera() {
   water.position.x = eye.x; water.position.z = eye.z;
 }
 const mapLabel = document.getElementById('maplabel'), whereEl = document.getElementById('where'), hudEl = document.getElementById('hud');
+/* quest finds (play only, device-only; the quest engine records them): arrive, border, landmark, ride */
+const FINDS = JSON.parse(document.getElementById('parish-finds').textContent);
+const found = [];
+function qfind(id) { if (!id) return; found.push(id); if (window.TCQuests) window.TCQuests.find(id); }
+let jumping = false;
 function checkParish() {
   const p = parishAt(eye.x, eye.z);
   if (p && (!current || p.id !== current.id)) {
-    if (current) toast(`${tr('parishes.border')}: ${current.name} → ${p.name}`);
+    if (current && !jumping) { toast(`${tr('parishes.border')}: ${current.name} → ${p.name}`); qfind(FINDS.border[[current.id, p.id].sort().join('|')]); }
     current = p;
+    qfind(FINDS.arrive[p.id]);
   }
+  if (current && !jumping) for (const l of current.landmarks) if (FINDS.landmark[l.id] && !found.includes(FINDS.landmark[l.id]) && Math.hypot(l.x - eye.x, l.z - eye.z) < 60) qfind(FINDS.landmark[l.id]);
   if (current) mountPaths(current.id);
   streamParishes(eye.x, eye.z);
 }
@@ -629,8 +725,9 @@ function teleport(x, z, yaw) {
   // a jump is not a crossing: step out of any vehicle, adopt the parish under the new spot silently
   if (riding) { riding = null; mode = 'walk'; stage.dataset.mode = mode; enterBtn.setAttribute('aria-pressed', 'false'); }
   eye.x = x; eye.z = z; if (yaw !== undefined) eye.yaw = yaw;
-  current = parishAt(x, z) || current;
-  checkParish(); updateChunks(eye.x, eye.z); pump(1e9); refillFabric();
+  const was = current; current = parishAt(x, z) || current;
+  if (current && current !== was) qfind(FINDS.arrive[current.id]);
+  jumping = true; checkParish(); jumping = false; updateChunks(eye.x, eye.z); pump(1e9); refillFabric();
 }
 
 /* ---- minimap: the parish's own map image when the registry has one; else the outlines ---- */
@@ -739,6 +836,7 @@ function enterExit() {
     const v = fleetNearest({ x: eye.x, z: eye.z }, parked, 2.5);
     if (!v) return false;
     riding = v; riding.snap = true; mode = v.medium === 'water' ? 'boat' : 'drive';
+    qfind(FINDS.ride[v.medium]);
   }
   stage.dataset.mode = mode; enterBtn.setAttribute('aria-pressed', String(!!riding));
   return true;
@@ -756,15 +854,12 @@ function drive(dt) {
 const NPCD = JSON.parse(document.getElementById('parish-npcs').textContent);
 const npcPanel = document.getElementById('npcpanel');
 let npcKit = null;
+const npcClock = makeClock(8, 1 / 60);
 if (NPCD) {
   npcKit = TCNPC.createNPCKit({
     THREE, scene, npcs: NPCD.npcs, panelRoot: npcPanel, honesty: NPCD.honesty,
     placeOf: (id) => (Object.hasOwn(NPCD.places, id) ? { x: NPCD.places[id][0], z: NPCD.places[id][1] } : null),
-    labels: { talk: tr('parishes.npc.talk'), next: tr('parishes.npc.next'), prev: tr('parishes.npc.prev'), close: tr('parishes.npc.close'),
-      takeMeThere: tr('parishes.npc.take'), source: tr('parishes.npc.source'), notCert: tr('parishes.npc.notcert'),
-      pointsTo: tr('parishes.npc.points'), of: tr('parishes.npc.of'), honesty: tr('parishes.npc.honesty'),
-      roles: { mentor: tr('parishes.npc.role.mentor'), 'k12-guide': tr('parishes.npc.role.k12'), ranger: tr('parishes.npc.role.ranger'),
-        pilot: tr('parishes.npc.role.pilot'), host: tr('parishes.npc.role.host') } },
+    labels: labelsFrom(tr),
     onTalk: (npc) => { if (window.TCQuests) window.TCQuests.find('treasure-guide-' + npc.parish); },
   });
 }
@@ -774,18 +869,26 @@ addEventListener('keydown', (e) => { if ((e.key === 't' || e.key === 'T') && !(e
 
 function resize() { const w = stage.clientWidth, h = stage.clientHeight; renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); }
 addEventListener('resize', resize);
+let labelT = 0;
 let last = performance.now(), info = { calls: 0, triangles: 0 }, frameMs = 0, miniT = 0, cell = '';
 function frame(now) {
   const dt = Math.min(0.1, (now - last) / 1000); last = now;
-  control(dt); checkParish();
-  if (npcKit) npcKit.update(dt, { x: eye.x, z: eye.z }, (8 + now / 60000) % 24);   // AUTHORED game clock: one game hour per real minute
+  /* the overview does not move the player: no parish check there (it would also pull the camera back to
+     the player's parish and fire a false border find after view('overview', other)) */
+  control(dt); if (mode !== 'overview') checkParish();
+  const over = mode === 'overview';
+  /* the overview (km above ground): vehicles and guides are sub-pixel, fabric is hidden, so none of them is
+     updated, streamed or drawn there (headroom: web/eval_parishes.mjs overview rows) */
+  if (fl) fl.group.visible = !over;
+  water.visible = !over; scene.background = over ? WATER_BG : SKY_BG;   // overview: one clear instead of a full-screen water pass
+  if (npcKit && !over) npcKit.update(dt, { x: eye.x, z: eye.z }, npcClock.tick(dt));   // AUTHORED game clock (npckit makeClock): one game hour per real minute
   const c = Math.floor(eye.x / CHUNK_M) + ',' + Math.floor(eye.z / CHUNK_M);
-  if (c !== cell) { cell = c; updateChunks(eye.x, eye.z); }
-  pump(BUILD_PER_FRAME); if (dirty) refillFabric();
+  if (!over) { if (c !== cell) { cell = c; updateChunks(eye.x, eye.z); } pump(BUILD_PER_FRAME); if (dirty) refillFabric(); }
+  matWater.emissiveIntensity = 0.06 + 0.05 * Math.sin(now / 900);   // water shimmer: one uniform, no extra draw
   placeCamera();
   const t0 = performance.now(); renderer.render(scene, camera); frameMs = performance.now() - t0;
   info = { calls: renderer.info.render.calls, triangles: renderer.info.render.triangles };
-  placeLabels();
+  if (!over || now - labelT > 250) { labelT = now; placeLabels(); }
   if (now - miniT > 200) { miniT = now; drawMinimap(); hud(); }
   if (!toastEl.hidden && now > toastT) toastEl.hidden = true;
   requestAnimationFrame(frame);
@@ -851,9 +954,10 @@ window.__parishes = {
   stats: () => ({
     mode, current: current && current.id, loaded: [...loaded].sort(), calls: info.calls, triangles: info.triangles,
     chunks: chunkData.size, pending: queue.length, frameMs,
-    instances: { block: blocks.visible ? blocks.count : 0, tree: trees.visible ? trees.count : 0, marker: markers.count,
+    instances: { block: blocks.visible ? blocks.count : 0, tree: trees.visible ? trees.count : 0, lamp: lamps.visible ? lamps.count : 0, marker: markers.count,
       ...Object.fromEntries(Object.entries(lmMeshes).map(([k, m]) => ['lm_' + k, m.count])) },
-    instancedFamilies: [blocks, trees, markers, stations, ...Object.values(lmMeshes)].every((m) => m.isInstancedMesh),
+    fleetVisible: fl ? fl.group.visible : null, finds: [...found],
+    instancedFamilies: [blocks, trees, lamps, markers, stations, ...Object.values(lmMeshes)].every((m) => m.isInstancedMesh),
     stations: stations.count, pathsFor, pathChooser: !!pathsEl.querySelector('[role="radiogroup"], [role="radio"]'),
     fabricMeshes: scene.children.filter((o) => o.geometry === blockGeo || o.geometry === treeGeo).length,
     landMeshes: scene.children.filter((o) => o.userData.parish).length,
@@ -862,6 +966,8 @@ window.__parishes = {
   }),
   frameTimes(n) { return new Promise((res) => { const t = []; const f = (now) => { t.push(now); if (t.length > n) res(t.slice(1).map((v, i) => v - t[i])); else requestAnimationFrame(f); }; requestAnimationFrame(f); }); },
   satellite: (on) => showSatellite(on), satState,
+  /* diagnosis only (eval): render scale in the current view */
+  renderScale: (k) => { if (k !== undefined) applyPR(k); return { prScale, pixelRatio: renderer.getPixelRatio() }; },
 };
 resize();
 { const p = PAR.get('22071') || PAR.get(D.parishes[0].id); const o = startSpot(p); teleport(o[0], o[1], 0); }
@@ -882,7 +988,8 @@ page = f'''<!doctype html>
    styles reach this page; the world's sky, land and water are the world's. */
 body.tc-theme-canvas{{--plate:var(--tc-plate);--panel:var(--tc-panel);--ink:var(--tc-ink);--muted:var(--tc-muted);
   --rule:var(--tc-line);--mark:var(--tc-amber);--mark-ink:var(--tc-amber-ink);--steel:var(--tc-steel);
-  --scrim:color-mix(in srgb,var(--tc-plate) 84%,transparent);--sunk:color-mix(in srgb,var(--tc-plate) 78%,black)}}
+  --scrim:color-mix(in srgb,var(--tc-plate) 84%,transparent);--sunk:color-mix(in srgb,var(--tc-plate) 78%,black);
+  --paper:var(--tc-plate)}}
 *{{box-sizing:border-box}}
 body{{margin:0;background:var(--plate);color:var(--ink);font:16px/1.6 "IBM Plex Sans",system-ui,sans-serif}}
 .wrap{{max-width:1280px;margin:0 auto;padding:0 16px 48px}}
@@ -968,7 +1075,9 @@ kbd{{font:12px "IBM Plex Mono",monospace;border:1px solid var(--rule);border-rad
 <script type="application/json" id="parishes-data">{embedded}</script>
 <script type="application/json" id="fleet-registry">{fleet_embedded}</script>
 <script type="application/json" id="parish-paths">{paths_embedded}</script>
+<script type="application/json" id="parish-path-labels">{pathlabels_embedded}</script>
 <script type="application/json" id="parish-npcs">{npcs_embedded}</script>
+<script type="application/json" id="parish-finds">{finds_embedded}</script>
 <script type="application/json" id="parishes-i18n">__PARISHES_I18N__</script>
 <script type="importmap">
 {{"imports":{{

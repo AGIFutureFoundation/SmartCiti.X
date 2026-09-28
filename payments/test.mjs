@@ -45,6 +45,8 @@ const WHSEC = 'whsec_' + 'dGVzdHNlY3JldA==';
 const SITE = 'https://academy.example';
 const baseEnv = () => ({ STRIPE_SECRET_KEY: SECRET, SITE_ORIGIN: SITE, STRIPE_WEBHOOK_SECRET: WHSEC,
   STRIPE_PRICE_INDIVIDUAL_LEARNER: 'price_' + 'TESTONLY', STRIPE_MODE_INDIVIDUAL_LEARNER: 'subscription',
+  STRIPE_PRICE_UNION_HALL: 'price_' + 'TESTHALL', STRIPE_MODE_UNION_HALL: 'payment',
+  RATE_LIMIT_CHECKOUT_MAX: '1000', RATE_LIMIT_CHECKOUT_WINDOW_S: '60', RATE_LIMIT_SALT: 'test-salt-0123456789',
   PAYMENTS_KV: kvMock() });
 function kvMock() { const m = new Map(); return { m, get: async (k) => (m.has(k) ? m.get(k) : null), put: async (k, v) => { m.set(k, v); } }; }
 let calls = [];
@@ -55,7 +57,7 @@ const NOW = 1_800_000_000_000;
 const deps = (over) => ({ catalog: CAT, fetch: stripeMock, subtle, uuid: () => 'uuid-0000-0000-0000-0001', now: () => NOW, ...(over || {}) });
 const worker = (over) => W.makeWorker(deps(over));
 const co = (body, headers) => new Request(SITE + '/api/checkout', { method: 'POST',
-  headers: { origin: SITE, 'content-type': 'application/json', ...(headers || {}) }, body: JSON.stringify(body) });
+  headers: { origin: SITE, 'content-type': 'application/json', 'cf-connecting-ip': '203.0.113.7', ...(headers || {}) }, body: JSON.stringify(body) });
 const J = async (r) => ({ s: r.status, b: await r.json() });
 
 /* ---- checkout ---- */
@@ -114,6 +116,53 @@ r = await J(await worker({ fetch: async () => new Response('{}', { status: 402 }
 ok(r.s === 502 && r.b.error === 'stripe_refused' && !JSON.stringify(r.b).includes(SECRET), 'a Stripe error is a 502 that never echoes the secret');
 r = await worker().fetch(co({ plan: 'individual-learner' }), baseEnv());
 ok(r.headers.get('cache-control') === 'no-store' && r.headers.get('x-content-type-options') === 'nosniff', 'API replies are no-store, nosniff');
+
+/* ---- rate limit (checkout) ---- */
+ok(CAT.rate_limit && CAT.rate_limit.limits === 'set by the operator in env; no limit is policy in this repo', 'catalogue: limits are set by the operator, none is policy here');
+ok(!/RATE_LIMIT_[A-Z_]+\s*\]?\s*(\?\?|\|\|)/.test(SRC) && !/\b(max|win)\s*=\s*\d/.test(SRC), 'no default limit hard-coded in the worker');
+for (const k of ['RATE_LIMIT_CHECKOUT_MAX', 'RATE_LIMIT_CHECKOUT_WINDOW_S', 'RATE_LIMIT_SALT']) {
+  e = baseEnv(); delete e[k];
+  await refusal(`missing ${k}`, e, co({ plan: 'individual-learner' }), 503, 'not_configured');
+}
+e = baseEnv(); e.RATE_LIMIT_CHECKOUT_MAX = '0';
+await refusal('limit 0', e, co({ plan: 'individual-learner' }), 503, 'not_configured');
+e = baseEnv(); e.RATE_LIMIT_CHECKOUT_MAX = 'lots';
+await refusal('non-numeric limit', e, co({ plan: 'individual-learner' }), 503, 'not_configured');
+e = baseEnv(); e.RATE_LIMIT_SALT = 'short';
+await refusal('short salt', e, co({ plan: 'individual-learner' }), 503, 'not_configured');
+e = baseEnv(); delete e.PAYMENTS_KV;
+await refusal('checkout without KV', e, co({ plan: 'individual-learner' }), 503, 'not_configured');
+await refusal('no client IP', baseEnv(), new Request(SITE + '/api/checkout', { method: 'POST', headers: { origin: SITE, 'content-type': 'application/json' }, body: '{"plan":"individual-learner"}' }), 400, 'client_ip');
+{
+  const env = baseEnv(); env.RATE_LIMIT_CHECKOUT_MAX = '2'; env.RATE_LIMIT_CHECKOUT_WINDOW_S = '60';
+  let now = NOW;
+  const w = () => worker({ now: () => now });
+  calls = [];
+  const a1 = await w().fetch(co({ plan: 'individual-learner' }), env);
+  const a2 = await w().fetch(co({ plan: 'individual-learner' }), env);
+  const a3 = await w().fetch(co({ plan: 'individual-learner' }), env);
+  ok(a1.status === 200 && a2.status === 200 && a3.status === 429 && calls.length === 2, 'limit 2: third attempt in the window is 429 and Stripe is not called');
+  const b3 = await a3.json();
+  ok(b3.error === 'rate_limited' && a3.headers.get('retry-after') === '30', '429 carries Retry-After computed from the refill rate');
+  ok((await w().fetch(co({ plan: 'union-hall' }), env)).status === 200, 'another plan has its own bucket');
+  ok((await w().fetch(co({ plan: 'individual-learner' }, { 'cf-connecting-ip': '198.51.100.9' }), env)).status === 200, 'another client address has its own bucket');
+  now += 29_000;
+  ok((await w().fetch(co({ plan: 'individual-learner' }), env)).status === 429, 'still limited before a token refills');
+  now += 2_000;
+  ok((await w().fetch(co({ plan: 'individual-learner' }), env)).status === 200, 'a token refills after window/max seconds');
+  const keys = [...env.PAYMENTS_KV.m.keys()], vals = [...env.PAYMENTS_KV.m.values()].join(' ');
+  const h = createHmac('sha256', env.RATE_LIMIT_SALT).update('203.0.113.7').digest('hex').slice(0, 32);
+  ok(keys.includes('rl:checkout:individual-learner:' + h), 'bucket key = plan + HMAC-SHA256(salt, IP) (node oracle)');
+  ok(!(keys.join(' ') + vals).includes('203.0.113.7') && !(keys.join(' ') + vals).includes('198.51.100.9'), 'the raw client IP is never stored');
+}
+
+{
+  const env = baseEnv();
+  env.PAYMENTS_KV = { get: async () => null, put: async () => { throw new Error('KV PUT failed: 429 Too Many Requests'); } };
+  calls = [];
+  const r1 = await worker().fetch(co({ plan: 'individual-learner' }), env);
+  ok(r1.status === 429 && calls.length === 0, 'a refused KV write is a 429, never a free pass to Stripe');
+}
 
 /* ---- webhook ---- */
 const sign = (payload, t, secret) => `t=${t},v1=${createHmac('sha256', secret || WHSEC).update(`${t}.${payload}`).digest('hex')}`;

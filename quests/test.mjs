@@ -189,5 +189,12 @@ let qcheck = '';
 try { qcheck = execFileSync('python3', ['quests/build.py', '--check'], { cwd: ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }); } catch (e) { qcheck = String(e.stdout) + String(e.stderr); }
 ok('python3 quests/build.py --check: the registry is current (stamp over lessons, sims, campus, wilds, layers, fleet)', /is current/.test(qcheck), qcheck.trim());
 
+let scope = null;
+try {
+  scope = JSON.parse(execFileSync('python3', ['-c', 'import json,sys;sys.path.insert(0,"web");import questkit as k;print(json.dumps({"ids":sorted(q["id"] for q in k.QUESTS if k.in_scope(q,"parishes")),"page":k.SCOPE_PAGE["parishes"],"js":"parish:" in k.quest_js("parishes")}))'], { cwd: ROOT, encoding: 'utf8' }));
+} catch (e) { scope = null; }
+ok(`questkit scope 'parishes' holds exactly the parish-world entries (${pq.length}) and binds to web/trade_craft_parishes.html`,
+  scope && JSON.stringify(scope.ids) === JSON.stringify(pq.map((q) => q.id).sort()) && scope.page === 'web/trade_craft_parishes.html' && scope.js);
+
 console.log(fails ? `quests/test: ${fails} FAILED` : 'quests/test: all passed');
 process.exit(fails ? 1 : 0);

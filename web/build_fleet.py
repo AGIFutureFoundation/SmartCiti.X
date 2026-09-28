@@ -66,23 +66,17 @@ def TA(k):
 
 
 # the runtime needs these keys even where no static element carries them
-for _k in ('spec.family', 'spec.medium', 'spec.dims', 'spec.mass', 'spec.top', 'spec.accel', 'spec.turn', 'spec.seats',
+for _k in ('cam', 'chase', 'trafficnote', 'spec.family', 'spec.medium', 'spec.dims', 'spec.mass', 'spec.top', 'spec.accel', 'spec.turn', 'spec.seats',
            'spec.seat', 'spec.trades', 'noseat', 'openseat', 'refused', 'drive', 'float', 'medium.land', 'medium.water',
            'shown', 'authored', 'allfam'):
     T(_k)
 
-# nav: the lead owns web/sitenav.py this wave. Until the fleet page is in its
-# PAGES (NEEDS nav: group play, key nav.page.fleet), the header is rendered as
-# for its sibling in the same directory (same relative links) with no page
-# marked current - an honest header, not a claim to be the wilds page.
-if PAGE in sitenav.PAGES:
-    NAV_STATE = 'wired'
-else:
-    # in THIS build process only (web/sitenav.py is not edited): declare the
-    # page so nav_html/apply_seo accept it; no nav link targets it yet, so the
-    # header marks no page current. The lead adds it to GROUPS at landing.
-    sitenav.PAGES[PAGE] = ('nav.group.play', 'nav.page.fleet')
-    NAV_STATE = 'pending (NEEDS nav: group play, key nav.page.fleet)'
+# nav: the page must be declared in web/sitenav.py PAGES (lead-owned). Fail
+# closed: an undeclared page stops the build by name; nothing is registered
+# here and no sibling's header is borrowed.
+if PAGE not in sitenav.PAGES:
+    raise SystemExit(f'build_fleet: {PAGE} is not declared in web/sitenav.py PAGES (NEEDS nav: group play, key nav.page.fleet)')
+NAV_STATE = 'wired'
 NAV = nav_html(PAGE, nav_labels('en'))
 
 FAMILY_OPTS = ''.join(f'<option value="{html.escape(f["id"])}" data-medium="{f["medium"]}" lang="en">'
@@ -156,7 +150,17 @@ plinth.position.y = 0.55; lot.add(plinth);
 const cap = Object.fromEntries(REG.families.map((f) => [f.id, f.count + 1]));
 const FL = fleetCreate(THREE, REG, cap);
 scene.add(FL.group);
-const wake = fleetWake(THREE, 64); scene.add(wake.mesh);
+const wake = fleetWake(THREE, 96); scene.add(wake.mesh);
+fleetLights(FL, 1);
+/* ambient traffic demo: AUTHORED lanes on the pad (a cell grid) and rings on the pond - not real streets */
+let traffic = null, trafficOn = false, camMode = 'chase';
+function makeTraffic() {
+  const routes = [...fleetGridLanes({ cell: 12, every: 4, x0: PAD.x - PAD.half + 6, x1: PAD.x + PAD.half - 6, z0: PAD.z - PAD.half + 6, z1: PAD.z + PAD.half - 6,
+    step: 4, minLen: 60, ok: (x, z) => Math.abs(x - PAD.x) < PAD.half - 6 && Math.abs(z - PAD.z) < PAD.half - 6 && !inPond(x, z) }),
+    fleetRingLane('pond-inner', POND.x, POND.z, POND.r * 0.45, 32), fleetRingLane('pond-outer', POND.x, POND.z, POND.r * 0.72, 48)];
+  const t = fleetTraffic(THREE, REG, routes, GROUND, { seed: 11, landPerKm: 8, waterPerKm: 5, maxAgents: 90, maxFamilies: 10, radius: 700, speedFactor: 0.35, laneOffset: 2.2 });
+  scene.add(t.group); fleetLights(t.fleet, 1); return t;
+}
 const BY = new Map(REG.fleet.map((e) => [e.id, e]));
 const FAM = new Map(REG.families.map((f) => [f.id, f]));
 
@@ -241,6 +245,7 @@ function renderSpec() {
     seat.replaceChildren(a, p);
   }
   $('#btn-drive').textContent = e.medium === 'land' ? tr('drive') : tr('float');
+  $('#btn-cam').textContent = camMode === 'chase' ? tr('cam') : tr('chase');
   $('#spec-badge').textContent = tr('authored');
   if (location.hash.slice(1) !== sel) history.replaceState(null, '', '#' + sel);
 }
@@ -267,14 +272,14 @@ function startDrive() {
   orbit.enabled = false;
   fleetChaseCamera(camera, st, spec, 0, { snap: true });
   document.body.dataset.fleetMode = mode;
-  $('#btn-exit').hidden = false; $('#drive-help').hidden = false;
+  $('#btn-exit').hidden = false; $('#drive-help').hidden = false; $('#btn-cam').hidden = false;
   canvas.focus();
 }
 function exitDrive() {
   if (!drv) return;
   drv.h.despawn(); drv = null; mode = 'turntable';
   orbit.enabled = true; document.body.dataset.fleetMode = mode;
-  $('#btn-exit').hidden = true; $('#drive-help').hidden = true; $('#toast').textContent = '';
+  $('#btn-exit').hidden = true; $('#drive-help').hidden = true; $('#btn-cam').hidden = true; $('#toast').textContent = '';
   frameHero(true);
 }
 function input() {
@@ -286,11 +291,25 @@ function driveTick(dt, inp) {
   drv.h.set(drv.st);
   if (drv.spec.medium === 'water') { wake.emit(drv.st, drv.spec, dt); }
   if (drv.st.refused > drv.refusedShown) { drv.refusedShown = drv.st.refused; $('#toast').textContent = tr('refused'); }
-  fleetChaseCamera(camera, drv.st, drv.spec, dt);
+  if (camMode === 'driver') fleetDriverCamera(camera, drv.st, drv.spec); else fleetChaseCamera(camera, drv.st, drv.spec, dt);
+}
+function toggleCam() {
+  camMode = camMode === 'chase' ? 'driver' : 'chase';
+  $('#btn-cam').textContent = camMode === 'chase' ? tr('cam') : tr('chase');
+  $('#btn-cam').setAttribute('aria-pressed', String(camMode === 'driver'));
+  if (drv && camMode === 'chase') fleetChaseCamera(camera, drv.st, drv.spec, 0, { snap: true });
+}
+function toggleTraffic() {
+  trafficOn = !trafficOn;
+  if (trafficOn && !traffic) traffic = makeTraffic();
+  if (traffic) traffic.group.visible = trafficOn;
+  $('#btn-traffic').setAttribute('aria-pressed', String(trafficOn));
+  $('#traffic-note').hidden = !trafficOn;
 }
 addEventListener('keydown', (ev) => {
   if (mode === 'turntable') return;
   if (ev.code === 'Escape') { exitDrive(); return; }
+  if (ev.code === 'KeyC') { toggleCam(); return; }
   if (['KeyW', 'KeyA', 'KeyS', 'KeyD', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(ev.code)) { keys[ev.code] = true; ev.preventDefault(); }
 });
 addEventListener('keyup', (ev) => { keys[ev.code] = false; });
@@ -307,6 +326,8 @@ $('#btn-next').addEventListener('click', () => step(1));
 $('#btn-spin').addEventListener('click', (ev) => { spin = !spin; ev.currentTarget.setAttribute('aria-pressed', String(spin)); });
 $('#btn-drive').addEventListener('click', startDrive);
 $('#btn-exit').addEventListener('click', exitDrive);
+$('#btn-cam').addEventListener('click', toggleCam);
+$('#btn-traffic').addEventListener('click', toggleTraffic);
 
 function resize() {
   const r = canvas.getBoundingClientRect();
@@ -319,6 +340,7 @@ function frame(t) {
   const dt = Math.min(0.05, (t - last) / 1000); last = t;
   if (mode === 'turntable') { placeTable(dt); orbit.update(); }
   else driveTick(dt, input());
+  if (traffic && trafficOn) traffic.update(dt, drv ? drv.st : { x: camera.position.x, z: camera.position.z });
   wake.update(dt);
   renderer.info.reset();
   renderer.render(scene, camera);
@@ -333,6 +355,19 @@ window.__fleet = {
   steps(n, inp) { for (let i = 0; i < n; i++) driveTick(1 / 60, inp); const s = drv.st; return { x: s.x, y: s.y, z: s.z, v: s.v, refused: s.refused, wet: inPond(s.x, s.z) }; },
   stats: () => ({ drawCalls: calls, familyMeshes: FL.drawCalls(), familiesShown: new Set(shown.map((e) => e.family)).size, instances: lineup.length + (hero ? 1 : 0) + (drv ? 1 : 0) }),
   pond: POND, pad: PAD,
+  cam: (m) => { if (m !== camMode) toggleCam(); return camMode; },
+  eye: () => ({ x: camera.position.x, y: camera.position.y, z: camera.position.z }),
+  traffic(on, n) {
+    if (on !== trafficOn) toggleTraffic();
+    if (!traffic) return null;
+    let wet = 0, dry = 0;
+    for (let i = 0; i < n; i++) {
+      traffic.update(1 / 60, { x: PAD.x, z: PAD.z + 120 });
+      for (const a of traffic.agents) { const d = fleetDepth(GROUND, a.x, a.z); if (a.spec.medium === 'land' && d > FLEET_MIN_WET_M) wet++; if (a.spec.medium === 'water' && d < a.spec.draft + FLEET_KEEL_CLEAR_M) dry++; }
+    }
+    return { ...traffic.stats(), wet, dry, budget: undefined };
+  },
+  wheels: () => FL.wheels.visible,
 };
 const h0 = decodeURIComponent(location.hash.slice(1));
 if (BY.has(h0)) sel = h0;
@@ -380,8 +415,8 @@ body.tc-theme-canvas{{margin:0;background:var(--tc-plate);color:var(--tc-ink);fo
 .fl-spec dl{{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;margin:8px 0}}
 .fl-spec dt{{color:var(--tc-muted)}} .fl-spec dd{{margin:0;color:var(--tc-ink)}}
 .fl-spec .trades{{color:var(--tc-muted);font-size:.85em}}
-#drive-help,#toast{{position:absolute;inset-inline-start:8px;bottom:8px;max-width:min(520px,60%);background:var(--tc-panel);color:var(--tc-ink);border:1px solid var(--tc-line);border-radius:8px;padding:6px 10px;font-size:.9em}}
-#toast:empty{{display:none}} #toast{{bottom:auto;top:52px;color:var(--tc-ink);border-color:var(--tc-amber)}}
+#drive-help,#toast,#traffic-note{{position:absolute;inset-inline-start:8px;bottom:8px;max-width:min(520px,60%);background:var(--tc-panel);color:var(--tc-ink);border:1px solid var(--tc-line);border-radius:8px;padding:6px 10px;font-size:.9em}}
+#traffic-note{{bottom:64px}} #toast:empty{{display:none}} #toast{{bottom:auto;top:52px;color:var(--tc-ink);border-color:var(--tc-amber)}}
 body[data-fleet-mode="drive"] .fl-spec,body[data-fleet-mode="float"] .fl-spec{{display:none}}
 .fl-honesty{{max-width:1400px;margin:0 auto;padding:0 16px 20px;color:var(--tc-muted);font-size:.9em}}
 @media (max-width:760px){{.fl-main{{grid-template-columns:1fr}} #fleet-list{{max-height:30vh}} .fl-spec{{position:static;width:auto;max-height:none;margin-top:8px}} .fl-stage{{min-height:420px}} #fleet-canvas{{min-height:420px}}}}
@@ -416,9 +451,12 @@ body[data-fleet-mode="drive"] .fl-spec,body[data-fleet-mode="float"] .fl-spec{{d
       <button type="button" class="tc-btn tc-btn-ghost" id="btn-spin" aria-pressed="true">{TS("spin")}</button>
       <button type="button" class="tc-btn tc-btn-primary" id="btn-drive">{TS("drive")}</button>
       <button type="button" class="tc-btn tc-btn-primary" id="btn-exit" hidden>{TS("exit")}</button>
+      <button type="button" class="tc-btn tc-btn-ghost" id="btn-cam" aria-pressed="false" hidden>{TS("cam")}</button>
+      <button type="button" class="tc-btn tc-btn-ghost" id="btn-traffic" aria-pressed="false">{TS("traffic")}</button>
     </div>
     <p id="toast" role="status"></p>
     <p id="drive-help" hidden>{TS("controls")}</p>
+    <p id="traffic-note" hidden>{TS("trafficnote")}</p>
     <div class="fl-spec">
       <span class="tc-badge tc-badge-info" id="spec-badge">{T("authored")}</span>
       <h2 id="spec-name" lang="en"></h2>

@@ -1,8 +1,8 @@
 {
  "pack": "parishes",
  "pack_version": "3.2.0",
- "source_stamp": "4133d1d6db19345c",
- "source_stamp_sha256": "4133d1d6db19345c3557de5373ba6373d7f0161d6b650e490e5047575bf396b7",
+ "source_stamp": "ed1c0d7382ecbd24",
+ "source_stamp_sha256": "ed1c0d7382ecbd242505140508652125072a35a37b356913e7d1e301f1dede32",
  "inputs": [
   "parishes/build.py",
   "parishes/render.py",
@@ -715,14 +715,28 @@
      30.455774
     ],
     "pixel_to_local_m": "east_m = left + (px + 0.5) * m_per_px; north_m = top - (py + 0.5) * m_per_px",
-    "bytes": 1418868,
+    "bytes": 1337608,
     "webp_quality": 78,
     "max_bytes": 2000000,
-    "preview_bytes": 36536,
-    "sha256": "cee880632ced13ced8db707fc25516f1042484b9556b0b674d46f1ff31a8fc38",
-    "preview_sha256": "ef9eab02cb89c57b0afae7813af830772c04725012d306dd6cda9b3e10022771",
+    "preview_bytes": 22568,
+    "sha256": "b67a97cc65755149bccd775b2b0d9d680603a058d7aaf9e3d620cbc62c9384f4",
+    "preview_sha256": "81ba7b8d472c4b611db2635127d57371f4c756e705a69ddc3ba1ae7b957d28f3",
     "label": "Map drawn from Census outline + AUTHORED fabric - not satellite, not a survey",
     "fabric": "AUTHORED street fabric - procedural, NOT the real street grid",
+    "fabric_layers": {
+     "arterials": 8,
+     "collectors": "district edges",
+     "local_grid": "one orientation per district",
+     "land_use": [
+      "residential",
+      "commercial",
+      "park",
+      "industrial"
+     ],
+     "building_hints": true,
+     "hillshade": false,
+     "provenance": "AUTHORED procedural, seeded by FIPS; NOT the real street grid, land use or buildings"
+    },
     "provenance": "DERIVED outline + AUTHORED fabric; not imagery",
     "corners_world_m": {
      "nw": [
@@ -1968,14 +1982,28 @@
      30.307609
     ],
     "pixel_to_local_m": "east_m = left + (px + 0.5) * m_per_px; north_m = top - (py + 0.5) * m_per_px",
-    "bytes": 764490,
+    "bytes": 617246,
     "webp_quality": 78,
     "max_bytes": 2000000,
-    "preview_bytes": 25944,
-    "sha256": "9ffa1449981a8f909761b65384b50b03898f90a67226e3b679f12859c02c8fcb",
-    "preview_sha256": "6e676e4feeff52a51413f5a4341ae5341a7850408e3dc48ac84e1deb1d153cb1",
+    "preview_bytes": 22690,
+    "sha256": "0ee14468d6aefefc0c8ab4904158d063385f2b5aa8649bc65fcdd0d56cecf52b",
+    "preview_sha256": "af5e77297f010a00e659c138bad68ff46bf79cdf81626c8b2cd73385ebfa1f28",
     "label": "Map drawn from Census outline + AUTHORED fabric - not satellite, not a survey",
     "fabric": "AUTHORED street fabric - procedural, NOT the real street grid",
+    "fabric_layers": {
+     "arterials": 15,
+     "collectors": "district edges",
+     "local_grid": "one orientation per district",
+     "land_use": [
+      "residential",
+      "commercial",
+      "park",
+      "industrial"
+     ],
+     "building_hints": true,
+     "hillshade": false,
+     "provenance": "AUTHORED procedural, seeded by FIPS; NOT the real street grid, land use or buildings"
+    },
     "provenance": "DERIVED outline + AUTHORED fabric; not imagery",
     "corners_world_m": {
      "nw": [
@@ -3465,14 +3493,28 @@
      30.030192
     ],
     "pixel_to_local_m": "east_m = left + (px + 0.5) * m_per_px; north_m = top - (py + 0.5) * m_per_px",
-    "bytes": 1789120,
+    "bytes": 1289456,
     "webp_quality": 78,
     "max_bytes": 2000000,
-    "preview_bytes": 40410,
-    "sha256": "0093cc59e01c4babbc0ab40a8904d80cd429f90b405ea7da9ba628090720b3d5",
-    "preview_sha256": "84cb292f3520e2d346d66bfb05b1048c22eebe02f19707c85d4b9a43eef559a5",
+    "preview_bytes": 27160,
+    "sha256": "f09e54167a7c21a29e4187efc5ddcfeb336d157e75bfebb0f1d34053d785c731",
+    "preview_sha256": "41cf9d4e0c28f1c692b918e4e89ab35d60c960f0e1580dbe81db5a024b5128e9",
     "label": "Map drawn from Census outline + AUTHORED fabric - not satellite, not a survey",
     "fabric": "AUTHORED street fabric - procedural, NOT the real street grid",
+    "fabric_layers": {
+     "arterials": 15,
+     "collectors": "district edges",
+     "local_grid": "one orientation per district",
+     "land_use": [
+      "residential",
+      "commercial",
+      "park",
+      "industrial"
+     ],
+     "building_hints": true,
+     "hillshade": false,
+     "provenance": "AUTHORED procedural, seeded by FIPS; NOT the real street grid, land use or buildings"
+    },
     "provenance": "DERIVED outline + AUTHORED fabric; not imagery",
     "corners_world_m": {
      "nw": [
@@ -4191,14 +4233,28 @@
      30.70485
     ],
     "pixel_to_local_m": "east_m = left + (px + 0.5) * m_per_px; north_m = top - (py + 0.5) * m_per_px",
-    "bytes": 1995060,
-    "webp_quality": 60,
+    "bytes": 1869372,
+    "webp_quality": 72,
     "max_bytes": 2000000,
-    "preview_bytes": 55882,
-    "sha256": "bd1605f93c202516b5b35cbfe93bb5a99391ef0fec2893b516ba5fee367a93b6",
-    "preview_sha256": "8c72d1917d6dd2527d4d8318dd3b03e73deec24e51d2aa1723e0b7225a16be66",
+    "preview_bytes": 30718,
+    "sha256": "dd3ad8f0f5bae060245195a661230c1a54f004c444f5498f303e59f0752ab6e8",
+    "preview_sha256": "def48807a1492b41fb24678fb21a847d7582495dbecd7688caa808f6ce484eed",
     "label": "Map drawn from Census outline + AUTHORED fabric - not satellite, not a survey",
     "fabric": "AUTHORED street fabric - procedural, NOT the real street grid",
+    "fabric_layers": {
+     "arterials": 9,
+     "collectors": "district edges",
+     "local_grid": "one orientation per district",
+     "land_use": [
+      "residential",
+      "commercial",
+      "park",
+      "industrial"
+     ],
+     "building_hints": true,
+     "hillshade": false,
+     "provenance": "AUTHORED procedural, seeded by FIPS; NOT the real street grid, land use or buildings"
+    },
     "provenance": "DERIVED outline + AUTHORED fabric; not imagery",
     "corners_world_m": {
      "nw": [
@@ -5289,14 +5345,28 @@
      30.308076
     ],
     "pixel_to_local_m": "east_m = left + (px + 0.5) * m_per_px; north_m = top - (py + 0.5) * m_per_px",
-    "bytes": 1468232,
+    "bytes": 1325428,
     "webp_quality": 78,
     "max_bytes": 2000000,
-    "preview_bytes": 39712,
-    "sha256": "9484ab51bb78bf1d367bc882ae259cc987dfee42efb6364f5e267345575d1ebd",
-    "preview_sha256": "c6fa950f03403b33323d5114fb1a4dba5faac1894099c829c8536a34138ec55c",
+    "preview_bytes": 26910,
+    "sha256": "67d1d34225de17fd8ebc01981fef930b7a565dc7c952c0be45bf0abc84b1e85f",
+    "preview_sha256": "c37dcc16bc4aab1c146217884f3d4e20bdc5d36f0e6acc4a340ba54d76bc118c",
     "label": "Map drawn from Census outline + AUTHORED fabric - not satellite, not a survey",
     "fabric": "AUTHORED street fabric - procedural, NOT the real street grid",
+    "fabric_layers": {
+     "arterials": 9,
+     "collectors": "district edges",
+     "local_grid": "one orientation per district",
+     "land_use": [
+      "residential",
+      "commercial",
+      "park",
+      "industrial"
+     ],
+     "building_hints": true,
+     "hillshade": false,
+     "provenance": "AUTHORED procedural, seeded by FIPS; NOT the real street grid, land use or buildings"
+    },
     "provenance": "DERIVED outline + AUTHORED fabric; not imagery",
     "corners_world_m": {
      "nw": [
@@ -6794,14 +6864,28 @@
      30.006048
     ],
     "pixel_to_local_m": "east_m = left + (px + 0.5) * m_per_px; north_m = top - (py + 0.5) * m_per_px",
-    "bytes": 1568028,
+    "bytes": 1143840,
     "webp_quality": 78,
     "max_bytes": 2000000,
-    "preview_bytes": 36750,
-    "sha256": "7e61555b37f7d433c8d50273c3fe23cc56fdfa8ce319ee78abca7d1c73df2d9a",
-    "preview_sha256": "e721926f4e15e2f913c6ebe1f20c675e33bfeea3e960321fdf2feaba6014744b",
+    "preview_bytes": 26150,
+    "sha256": "6ef2c130c569d3f368840a654b8cf2736a7ab4891208f20d30462744abc3d5fa",
+    "preview_sha256": "dd4288f3afef06830fbdb527ae4a97c2fa2287768eeb93f8062eeaf0b85bc489",
     "label": "Map drawn from Census outline + AUTHORED fabric - not satellite, not a survey",
     "fabric": "AUTHORED street fabric - procedural, NOT the real street grid",
+    "fabric_layers": {
+     "arterials": 17,
+     "collectors": "district edges",
+     "local_grid": "one orientation per district",
+     "land_use": [
+      "residential",
+      "commercial",
+      "park",
+      "industrial"
+     ],
+     "building_hints": true,
+     "hillshade": false,
+     "provenance": "AUTHORED procedural, seeded by FIPS; NOT the real street grid, land use or buildings"
+    },
     "provenance": "DERIVED outline + AUTHORED fabric; not imagery",
     "corners_world_m": {
      "nw": [
@@ -8115,14 +8199,28 @@
      30.543973
     ],
     "pixel_to_local_m": "east_m = left + (px + 0.5) * m_per_px; north_m = top - (py + 0.5) * m_per_px",
-    "bytes": 800708,
+    "bytes": 607886,
     "webp_quality": 78,
     "max_bytes": 2000000,
-    "preview_bytes": 24792,
-    "sha256": "500544920b290e4fb9c5bc4b6f0cd8161d89df401c16d71fbf5f38968d663abe",
-    "preview_sha256": "71baa39f9d6bc9cfa2a3f36ec36c145aee9ee3b30ede3d4107d2d3b3d865d778",
+    "preview_bytes": 20724,
+    "sha256": "29396624d741476b3d5f2f920829f14d589c73a2935fe31a6a65d033704ae9f2",
+    "preview_sha256": "cede053b12d169162c4bfbd8dafc8be902aa3b1cb5ca50c703e2e081edae68b9",
     "label": "Map drawn from Census outline + AUTHORED fabric - not satellite, not a survey",
     "fabric": "AUTHORED street fabric - procedural, NOT the real street grid",
+    "fabric_layers": {
+     "arterials": 15,
+     "collectors": "district edges",
+     "local_grid": "one orientation per district",
+     "land_use": [
+      "residential",
+      "commercial",
+      "park",
+      "industrial"
+     ],
+     "building_hints": true,
+     "hillshade": false,
+     "provenance": "AUTHORED procedural, seeded by FIPS; NOT the real street grid, land use or buildings"
+    },
     "provenance": "DERIVED outline + AUTHORED fabric; not imagery",
     "corners_world_m": {
      "nw": [
@@ -8864,14 +8962,28 @@
      30.217368
     ],
     "pixel_to_local_m": "east_m = left + (px + 0.5) * m_per_px; north_m = top - (py + 0.5) * m_per_px",
-    "bytes": 1470914,
+    "bytes": 1262696,
     "webp_quality": 78,
     "max_bytes": 2000000,
-    "preview_bytes": 36946,
-    "sha256": "3b64a95d6ce600ed41bbb6f2e9f936878937632e8a7468ce5f2c40253b6b3582",
-    "preview_sha256": "eeac6e51e55b0d3afdcdc0c5b8201a1adaacadfb6d76252eea741916cb209089",
+    "preview_bytes": 22682,
+    "sha256": "e898bf9f8900ec7b2449bbb736e4e4b4b678f0fabbd298c1d077dda2cd91ef41",
+    "preview_sha256": "71b12a5f17dbff55feb8a647e4ec593c2028ee53d4a0a0ba9cea189ef8da5e63",
     "label": "Map drawn from Census outline + AUTHORED fabric - not satellite, not a survey",
     "fabric": "AUTHORED street fabric - procedural, NOT the real street grid",
+    "fabric_layers": {
+     "arterials": 8,
+     "collectors": "district edges",
+     "local_grid": "one orientation per district",
+     "land_use": [
+      "residential",
+      "commercial",
+      "park",
+      "industrial"
+     ],
+     "building_hints": true,
+     "hillshade": false,
+     "provenance": "AUTHORED procedural, seeded by FIPS; NOT the real street grid, land use or buildings"
+    },
     "provenance": "DERIVED outline + AUTHORED fabric; not imagery",
     "corners_world_m": {
      "nw": [
@@ -9423,14 +9535,28 @@
      30.198516
     ],
     "pixel_to_local_m": "east_m = left + (px + 0.5) * m_per_px; north_m = top - (py + 0.5) * m_per_px",
-    "bytes": 1843582,
+    "bytes": 1945950,
     "webp_quality": 78,
     "max_bytes": 2000000,
-    "preview_bytes": 52890,
-    "sha256": "034391f4c1d576a3fdbd16d8e75a5ddd6e4c80935447490241f0269cfe958236",
-    "preview_sha256": "803f22903705c15cadb40d28e9ef58897e6c825e74effe70794dc06093dcc196",
+    "preview_bytes": 28288,
+    "sha256": "7500846e1b9686b2a7d0d8b97105ea9982093dbc08a55247dc9b915bdb3adf3e",
+    "preview_sha256": "b250e5363889e08b99b5aa6e69ecbde8cfd9cf9ffb45c8cf5e58081c69415fbd",
     "label": "Map drawn from Census outline + AUTHORED fabric - not satellite, not a survey",
     "fabric": "AUTHORED street fabric - procedural, NOT the real street grid",
+    "fabric_layers": {
+     "arterials": 6,
+     "collectors": "district edges",
+     "local_grid": "one orientation per district",
+     "land_use": [
+      "residential",
+      "commercial",
+      "park",
+      "industrial"
+     ],
+     "building_hints": true,
+     "hillshade": false,
+     "provenance": "AUTHORED procedural, seeded by FIPS; NOT the real street grid, land use or buildings"
+    },
     "provenance": "DERIVED outline + AUTHORED fabric; not imagery",
     "corners_world_m": {
      "nw": [
@@ -10367,14 +10493,28 @@
      30.372252
     ],
     "pixel_to_local_m": "east_m = left + (px + 0.5) * m_per_px; north_m = top - (py + 0.5) * m_per_px",
-    "bytes": 1517778,
+    "bytes": 1348540,
     "webp_quality": 78,
     "max_bytes": 2000000,
-    "preview_bytes": 39620,
-    "sha256": "e8f739dcb6588aa708c82d63973ea8375eea87fb6c16210d728658a4e441c99f",
-    "preview_sha256": "f1da46cbead61549853814d0cc5a7302e37b177211d0c5c963b48de56445d0fc",
+    "preview_bytes": 25544,
+    "sha256": "dd3270021a844a36b160179617d232b65f234a355697ed289071d8f10546068d",
+    "preview_sha256": "e189f3cd78987b044a97904f3ff349edeb120d5ed0dddc1db158a5bc147e94cd",
     "label": "Map drawn from Census outline + AUTHORED fabric - not satellite, not a survey",
     "fabric": "AUTHORED street fabric - procedural, NOT the real street grid",
+    "fabric_layers": {
+     "arterials": 9,
+     "collectors": "district edges",
+     "local_grid": "one orientation per district",
+     "land_use": [
+      "residential",
+      "commercial",
+      "park",
+      "industrial"
+     ],
+     "building_hints": true,
+     "hillshade": false,
+     "provenance": "AUTHORED procedural, seeded by FIPS; NOT the real street grid, land use or buildings"
+    },
     "provenance": "DERIVED outline + AUTHORED fabric; not imagery",
     "corners_world_m": {
      "nw": [
@@ -11167,14 +11307,28 @@
      30.817583
     ],
     "pixel_to_local_m": "east_m = left + (px + 0.5) * m_per_px; north_m = top - (py + 0.5) * m_per_px",
-    "bytes": 1909538,
-    "webp_quality": 60,
+    "bytes": 1877380,
+    "webp_quality": 78,
     "max_bytes": 2000000,
-    "preview_bytes": 50154,
-    "sha256": "6d84598cfa58c24ed52d6d98e0b2c9b48a5b3ac97c86e3ec017846043f3814f5",
-    "preview_sha256": "1708d9efa595f42498cd53bed6882675d257c80ed88e4bea2f6a7e6ed937d5f7",
+    "preview_bytes": 28574,
+    "sha256": "15c8e0efd09d52108b1c1af5c3d82e86583bea457f9964e0a709d103f4458b5b",
+    "preview_sha256": "9518b850f075d3ae090a0edf46fc809f6d4bf1a5b52a62ca57b6b851108a2ac3",
     "label": "Map drawn from Census outline + AUTHORED fabric - not satellite, not a survey",
     "fabric": "AUTHORED street fabric - procedural, NOT the real street grid",
+    "fabric_layers": {
+     "arterials": 13,
+     "collectors": "district edges",
+     "local_grid": "one orientation per district",
+     "land_use": [
+      "residential",
+      "commercial",
+      "park",
+      "industrial"
+     ],
+     "building_hints": true,
+     "hillshade": false,
+     "provenance": "AUTHORED procedural, seeded by FIPS; NOT the real street grid, land use or buildings"
+    },
     "provenance": "DERIVED outline + AUTHORED fabric; not imagery",
     "corners_world_m": {
      "nw": [
@@ -11761,14 +11915,28 @@
      31.08782
     ],
     "pixel_to_local_m": "east_m = left + (px + 0.5) * m_per_px; north_m = top - (py + 0.5) * m_per_px",
-    "bytes": 1467388,
+    "bytes": 1110060,
     "webp_quality": 78,
     "max_bytes": 2000000,
-    "preview_bytes": 32402,
-    "sha256": "eace973492f4bb13a7dc82933af83e4400ebb1b7011c03ed49126d551e59ee39",
-    "preview_sha256": "d36e5786c5b72a0412ad6b3c1f692d317d1b58cac666f056cd57af18ab2d4602",
+    "preview_bytes": 20442,
+    "sha256": "bc29f4cf9ce5f242cfd9bac0bb657efc8a826fdc68f0726722cd8f3c53832512",
+    "preview_sha256": "580287caf3b1bd79aa8f750998f4c0e8dfc9a51b4bf65c12b1b6e412ca803dc2",
     "label": "Map drawn from Census outline + AUTHORED fabric - not satellite, not a survey",
     "fabric": "AUTHORED street fabric - procedural, NOT the real street grid",
+    "fabric_layers": {
+     "arterials": 12,
+     "collectors": "district edges",
+     "local_grid": "one orientation per district",
+     "land_use": [
+      "residential",
+      "commercial",
+      "park",
+      "industrial"
+     ],
+     "building_hints": true,
+     "hillshade": false,
+     "provenance": "AUTHORED procedural, seeded by FIPS; NOT the real street grid, land use or buildings"
+    },
     "provenance": "DERIVED outline + AUTHORED fabric; not imagery",
     "corners_world_m": {
      "nw": [
@@ -12987,14 +13155,28 @@
      29.92137
     ],
     "pixel_to_local_m": "east_m = left + (px + 0.5) * m_per_px; north_m = top - (py + 0.5) * m_per_px",
-    "bytes": 1978894,
-    "webp_quality": 72,
+    "bytes": 1565952,
+    "webp_quality": 78,
     "max_bytes": 2000000,
-    "preview_bytes": 47134,
-    "sha256": "e785894308ba27887987b872f24401b5b3c76a77641c8fd1f57335b18fac9aa0",
-    "preview_sha256": "424f3732a491c1eb5bd7c5cfa2e951047088455ab075c941f5ac3338d0f0426d",
+    "preview_bytes": 28940,
+    "sha256": "363571848cd0106cfaea8b9a70d192cac6d9d5da6ccd90e3ca40d121591284e7",
+    "preview_sha256": "b3456b106ad71b8932cc4ddab635e1d68a2a0a54e812b249a1b1dfb6ebe2aa0e",
     "label": "Map drawn from Census outline + AUTHORED fabric - not satellite, not a survey",
     "fabric": "AUTHORED street fabric - procedural, NOT the real street grid",
+    "fabric_layers": {
+     "arterials": 13,
+     "collectors": "district edges",
+     "local_grid": "one orientation per district",
+     "land_use": [
+      "residential",
+      "commercial",
+      "park",
+      "industrial"
+     ],
+     "building_hints": true,
+     "hillshade": false,
+     "provenance": "AUTHORED procedural, seeded by FIPS; NOT the real street grid, land use or buildings"
+    },
     "provenance": "DERIVED outline + AUTHORED fabric; not imagery",
     "corners_world_m": {
      "nw": [

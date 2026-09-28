@@ -201,5 +201,41 @@ ok('PATH_JS: rings come from local play state only ("tc-quests", read-only; neve
 ok('PATH_JS never gates: no lock/disabled on stations, suggestions labelled "never a lock"',
   kit && !/disabled|locked/.test(kit.js) && kit.js.includes('never a lock'));
 
+// ---- region card (local play only, no leaderboard) and path.* labels in 8 locales
+let reg2 = null;
+try {
+  reg2 = JSON.parse(execFileSync('python3', ['-c', 'import json,sys;sys.path.insert(0,"web");import pathkit as k;print(json.dumps({f:k.path_data(f)["region"] for f in sys.argv[1:]}|{"_keys":list(k.PATH_LABEL_KEYS)}))', ...P.map((p) => p.fips)], { cwd: ROOT, encoding: 'utf8' }));
+} catch (e) { reg2 = null; }
+const badRegion = [];
+for (const p of reg2 ? P : []) {
+  const r = reg2[p.fips];
+  const wantB = p.adjacent.map((o) => `treasure-border-${[p.fips, o].sort().join('-')}`).sort();
+  if (JSON.stringify(r.borders.map((b) => b.id).sort()) !== JSON.stringify(wantB) || !r.borders.every((b) => qById.has(b.id))) badRegion.push(`${p.fips}: borders`);
+  const wantBadges = quests.quests.filter((q) => q.world === `parish:${p.fips}`).map((q) => q.id).sort();
+  if (JSON.stringify(r.badges) !== JSON.stringify(wantBadges)) badRegion.push(`${p.fips}: badges ${r.badges.length} vs ${wantBadges.length}`);
+  if (JSON.stringify(r.rides) !== '["treasure-ride-land","treasure-ride-water"]' || r.guide !== `treasure-guide-${p.fips}` || r.arrive !== `treasure-parish-${p.fips}-arrive`) badRegion.push(`${p.fips}: rides/guide/arrive`);
+}
+ok(`region card data per parish: badges = the parish's quests, borders = its adjacency, both rides, its guide (${P.length})`, reg2 && badRegion.length === 0, badRegion);
+ok('region card counts local play only and says there is no leaderboard (no server, no accounts)',
+  kit && kit.js.includes('No region leaderboard') && kit.js.includes('function region()') && kit.js.includes('card()')
+  && /no leaderboard: no server, no accounts/i.test(kit.js) && !/fetch\(|XMLHttpRequest|WebSocket|sendBeacon/.test(kit.js));
+const LOCS = ['en', 'ar', 'de', 'es', 'fr', 'hi', 'pt', 'zh'];
+const cat = Object.fromEntries(LOCS.map((l) => [l, json(`i18n/locales/${l}.json`).strings]));
+const keys = reg2 ? reg2._keys : [];
+const badL = [];
+for (const k of keys) {
+  for (const l of LOCS) if (typeof cat[l]['path.' + k] !== 'string' || !cat[l]['path.' + k].trim()) badL.push(`${l}: path.${k} missing`);
+  const en = cat.en['path.' + k];
+  const copies = LOCS.filter((l) => l !== 'en' && cat[l]['path.' + k] === en);
+  if (copies.length) badL.push(`path.${k} is an English copy in ${copies}`);
+  const m = new RegExp(k + ": '([^']*)'").exec(kit ? kit.js : '');
+  if (!m || m[1] !== en) badL.push(`PATH_JS English default for ${k} differs from en.json`);
+}
+for (const p of P) for (const path of p.paths) if (cat.en['path.' + path.id] !== path.label) badL.push(`en path.${path.id} differs from the registry label ${path.label}`);
+ok(`path.* labels: ${keys.length} keys in 8 locales, real translations, English defaults = en.json = registry path labels`, keys.length >= 18 && badL.length === 0, badL);
+let labFail = false;
+try { execFileSync('python3', ['-c', 'import sys;sys.path.insert(0,"web");import pathkit;pathkit.path_labels({})'], { cwd: ROOT, stdio: 'pipe' }); } catch (e) { labFail = /no path\.choose/.test(String(e.stderr)); }
+ok('pathkit.path_labels fails by name on a catalog without path.* keys', labFail);
+
 console.log(fails ? `layers/test: ${fails} FAILED` : 'layers/test: all passed');
 process.exit(fails ? 1 : 0);

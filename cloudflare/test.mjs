@@ -1,5 +1,5 @@
 /* cloudflare/test.mjs - the Cloudflare deploy config, checked. Network-free; nothing is deployed.
- * Recompute, never re-read: headers are held to vercel.json, routes to the payments Worker's
+ * Recompute, never re-read: headers are held to security/headers.json (and vercel.json), routes to the payments Worker's
  * own ROUTES, file hashes to the bytes on disk. Prints `  ok ` per check, FAIL at column 0. */
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
@@ -46,9 +46,9 @@ ok(!/^\s*\[vars\]/m.test(allText) && !/api_token|CLOUDFLARE_API_TOKEN\s*=/.test(
 ok(!/\bzone_name\b|\bpattern\s*=/.test(allText), 'no route pattern tied to a domain');
 for (const s of REG.secrets) ok(read('worker/wrangler.toml').includes(s) && read('README.md').includes('wrangler secret put ' + s), `secret ${s} named, set by wrangler secret put (README)`);
 
-/* ---- headers equal the committed deploy's ---- */
-const V = JSON.parse(readFileSync(join(ROOT, 'vercel.json'), 'utf8'));
-const want = V.headers.flatMap((r) => r.headers.map((h) => [h.key, h.value]));
+/* ---- headers equal security/headers.json (the canonical policy) ---- */
+const POL = JSON.parse(readFileSync(join(ROOT, 'security/headers.json'), 'utf8'));
+const pol = (sec) => POL[sec].map((h) => [h.key, h.value]);
 const H = read('_headers');
 const blocks = {};
 let cur = null;
@@ -59,18 +59,24 @@ for (const line of H.split('\n')) {
   blocks[cur].push([line.slice(0, i).trim(), line.slice(i + 1).trim()]);
 }
 const site = blocks['/*'] || [];
+const api = blocks['/api/*'] || [];
+ok(JSON.stringify(Object.keys(blocks)) === '["/*","/api/*"]', '_headers has exactly the /* and /api/* blocks');
+ok(pol('site').length > 0 && JSON.stringify(site) === JSON.stringify(pol('site')), `/* equals headers.json site (${pol('site').length} headers, same order and values)`);
+ok(pol('api').length > 0 && JSON.stringify(api) === JSON.stringify(pol('api')), `/api/* equals headers.json api (${pol('api').length} headers)`);
+const V = JSON.parse(readFileSync(join(ROOT, 'vercel.json'), 'utf8'));
+const want = V.headers.flatMap((r) => r.headers.map((h) => [h.key, h.value]));
 ok(want.length > 0 && want.every(([k, v]) => site.some(([a, b]) => a === k && b === v)), `every vercel.json header (${want.length}) is on /* with the same value`);
-ok(site.filter(([k]) => k !== 'Content-Security-Policy').length === want.length, '/* carries no header beyond vercel.json\'s except the CSP');
-ok(site.some(([k, v]) => k === 'Content-Security-Policy' && v === REG.baseline_csp), 'baseline CSP on /* equals the registry');
-const csp = (REG.baseline_csp || '').split(';').map((s) => s.trim().split(/\s+/)[0]);
-ok(JSON.stringify(csp) === JSON.stringify(['frame-ancestors', 'base-uri', 'object-src', 'form-action']), 'baseline CSP restricts only framing, base, plugins and form targets (cannot break inline page scripts)');
+const cspv = (site.find(([k]) => k === 'Content-Security-Policy') || ['', ''])[1];
+const csp = cspv.split(';').map((s) => s.trim().split(/\s+/)[0]);
+ok(JSON.stringify(csp) === JSON.stringify(['frame-ancestors', 'base-uri', 'object-src', 'form-action']), 'site CSP restricts only framing, base, plugins and form targets (cannot break inline page scripts)');
 const pages = readdirSync(join(ROOT, 'web')).filter((f) => f.endsWith('.html')).map((f) => readFileSync(join(ROOT, 'web', f), 'utf8'));
 pages.push(readFileSync(join(ROOT, 'index.html'), 'utf8'));
 ok(!pages.some((p) => /<iframe|<object|<embed|<base\s/i.test(p)), 'no page uses iframe/object/embed/base (baseline CSP breaks nothing)');
 ok(!pages.some((p) => /<form\b(?![^>]*method="dialog")[^>]*action="https?:/i.test(p)), 'no page posts a form off-site (form-action self holds)');
-const api = blocks['/api/*'] || [];
 ok(api.some(([k, v]) => k === 'Content-Security-Policy' && v === "default-src 'none'; frame-ancestors 'none'") && api.some(([k, v]) => k === 'Cache-Control' && v === 'no-store'), '/api/* is deny-all CSP and no-store');
-ok(JSON.stringify(REG.site_headers.map((h) => [h.key, h.value])) === JSON.stringify(want), 'registry records the derived headers');
+ok(REG.headers_from === 'security/headers.json' && JSON.stringify(REG.site_headers.map((h) => [h.key, h.value])) === JSON.stringify(pol('site')) && JSON.stringify(REG.api_headers.map((h) => [h.key, h.value])) === JSON.stringify(pol('api')), 'registry records the headers it derived and where from');
+for (const v of ['RATE_LIMIT_CHECKOUT_MAX', 'RATE_LIMIT_CHECKOUT_WINDOW_S', 'RATE_LIMIT_SALT'])
+  ok(REG.vars.includes(v) && read('README.md').includes(v), `rate-limit setting ${v} named in the registry and README`);
 
 /* ---- routes map to the Worker ---- */
 const R = JSON.parse(read('_routes.json'));

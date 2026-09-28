@@ -52,7 +52,7 @@ NPC_CSS = """
 .npc-role{margin:0 0 10px;color:var(--muted);font-size:.85rem}
 .npc-line blockquote{margin:0;padding:8px 10px;border-left:3px solid var(--mark);background:var(--surface)}
 .npc-line blockquote p{margin:0;color:var(--ink)}
-.npc-src,.npc-cert,.npc-count,.npc-honesty{margin:6px 0 0;font-size:.78rem;color:var(--muted)}
+.npc-src,.npc-cert,.npc-count,.npc-honesty,.npc-lang{margin:6px 0 0;font-size:.78rem;color:var(--muted)}
 .npc-src code,.npc-cert code{color:var(--ink);word-break:break-all}
 .npc-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
 .npc-actions button{min-height:44px;min-width:44px;padding:6px 12px;border-radius:8px;cursor:pointer;
@@ -65,9 +65,27 @@ NPC_CSS = """
 NPC_CORE = r"""/* ---------------------------------------------------------- TCNPC kit ---
    Scripted guides. Every line shown is a verbatim registry quote carried with
    its source path; labels come from the caller. No model, no network. */
-const STATES = Object.freeze(['idle', 'wander', 'greet', 'talk', 'follow']);
+const STATES = Object.freeze(['idle', 'wander', 'walk', 'greet', 'talk', 'follow']);
 const LABEL_KEYS = ['talk', 'next', 'prev', 'close', 'takeMeThere', 'source',
-  'notCert', 'pointsTo', 'of', 'honesty', 'roles'];
+  'notCert', 'pointsTo', 'of', 'honesty', 'quoteLang', 'roles'];
+const ROLE_KEYS = { mentor: 'npc.role.mentor', 'k12-guide': 'npc.role.k12', ranger: 'npc.role.ranger',
+  pilot: 'npc.role.pilot', host: 'npc.role.host' };
+const LABEL_I18N = { talk: 'npc.talk', next: 'npc.next', prev: 'npc.prev', close: 'npc.close',
+  takeMeThere: 'npc.take', source: 'npc.source', notCert: 'npc.notcert', pointsTo: 'npc.points',
+  of: 'npc.of', honesty: 'npc.honesty', quoteLang: 'npc.quotelang' };
+/* labels from the site catalogue: labelsFrom(tr) with tr(key) -> string (strict) */
+function labelsFrom(tr) {
+  const L = {};
+  for (const [k, key] of Object.entries(LABEL_I18N)) L[k] = str(tr(key), 'i18n ' + key);
+  L.roles = {};
+  for (const [r, key] of Object.entries(ROLE_KEYS)) L.roles[r] = str(tr(key), 'i18n ' + key);
+  return L;
+}
+/* a required, non-empty string - never render "undefined" */
+function str(v, where) {
+  if (typeof v !== 'string' || v.length === 0) throw new Error('TCNPC: missing ' + where);
+  return v;
+}
 
 function need(obj, key, where) {
   if (obj === null || obj === undefined || !(key in obj) ||
@@ -86,6 +104,7 @@ function nextState(state, inp) {
   if (inp.following && !inp.arrived) return 'follow';
   if (state === 'follow' && inp.arrived) return 'greet';
   if (inp.dist <= inp.greetRadius) return 'greet';
+  if (inp.away) return 'walk';                    // routine: walk to this hour's place
   if (inp.scheduled !== 'idle' && inp.scheduled !== 'wander') {
     throw new Error('TCNPC: bad scheduled state ' + inp.scheduled);
   }
@@ -99,6 +118,13 @@ function scheduledAt(schedule, h) {
     if (inside) return s;
   }
   throw new Error('TCNPC: schedule has no slot for hour ' + h);
+}
+
+/* simulated day clock: hoursPerSecond game hours pass per real second */
+function makeClock(startH, hoursPerSecond) {
+  let h = ((startH % 24) + 24) % 24;
+  return { tick(dt) { h = (h + dt * hoursPerSecond) % 24; return h; },
+    get h() { return h; }, set(v) { h = ((v % 24) + 24) % 24; return h; } };
 }
 
 /* ---- steering: arrive + separation + obstacle avoidance (pure) ----
@@ -175,20 +201,24 @@ function dialogueModel(npc, idx) {
   const lines = need(npc, 'knowledge', 'npc');
   const i = Math.max(0, Math.min(lines.length - 1, idx));
   return { id: npc.id, title: need(npc, 'name', 'npc'), role: need(npc, 'role', 'npc'),
-    line: need(lines[i], 'text', 'line'), source: need(lines[i], 'source', 'line'),
+    line: str(need(lines[i], 'text', 'line'), 'line.text'),
+    source: str(need(lines[i], 'source', 'line'), 'line.source (' + npc.id + ' line ' + (i + 1) + ')'),
     pos: i + 1, total: lines.length,
-    notCert: need(npc, 'not_certification', 'npc'),
+    notCert: { text: str(need(npc, 'not_certification', 'npc').text, 'not_certification.text'),
+      source: str(npc.not_certification.source, 'not_certification.source') },
     pointsTo: need(npc, 'points_to', 'npc'), guideTo: need(npc, 'guide_to', 'npc') };
 }
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;',
   '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 function dialogueHTML(m, L, honesty) {
   for (const k of LABEL_KEYS) need(L, k, 'labels');
+  str(honesty, 'honesty.scripted');
   return '<h2 id="npc-dlg-title">' + esc(m.title) + '</h2>' +
     '<p class="npc-role">' + esc(need(L.roles, m.role, 'labels.roles')) + '</p>' +
     '<div class="npc-line" aria-live="polite" aria-atomic="true">' +
       '<blockquote><p>' + esc(m.line) + '</p></blockquote>' +
       '<p class="npc-src">' + esc(L.source) + ' <code>' + esc(m.source) + '</code></p>' +
+      '<p class="npc-lang">' + esc(L.quoteLang) + '</p>' +
       '<p class="npc-count">' + m.pos + ' ' + esc(L.of) + ' ' + m.total + '</p>' +
     '</div>' +
     '<p class="npc-cert">' + esc(L.notCert) + ' ' + esc(m.notCert.text) +
@@ -217,6 +247,7 @@ function createNPCKit(opt) {
   const L = need(opt, 'labels', 'opts');
   for (const k of LABEL_KEYS) need(L, k, 'labels');
   const honesty = need(opt, 'honesty', 'opts');
+  str(honesty.scripted, 'honesty.scripted (pass npc_data(fips).honesty, the object)');
   const panelRoot = need(opt, 'panelRoot', 'opts');
   const num = (k, d) => (k in opt ? opt[k] : d);   // tuning knobs, not registry data
   const budgetMs = num('budgetMs', 1.0), detailMax = num('detailMax', 2);
@@ -233,7 +264,14 @@ function createNPCKit(opt) {
     if (!home) continue;                 // host could not place it: not drawn
     const off = homeOffset(need(n.home, 'offset_index', n.id + '.home'));
     const hx = home.x + off.x, hz = home.z + off.z;
-    agents.push({ npc: n, id: n.id, x: hx, z: hz, vx: 0, vz: 0, heading: 0,
+    const anchors = {};              // every place this NPC's routine visits
+    for (const sl of need(n, 'schedule', n.id)) {
+      const at = need(sl, 'at', n.id + '.schedule');
+      const p = placeOf(at);
+      if (!p) throw new Error('TCNPC: ' + n.id + ' routine place ' + at + ' cannot be placed');
+      anchors[at] = { x: p.x + off.x, z: p.z + off.z };
+    }
+    agents.push({ npc: n, id: n.id, x: hx, z: hz, vx: 0, vz: 0, heading: 0, anchors,
       home: { x: hx, z: hz }, state: 'idle', target: null, follow: null,
       rand: rng(hash32(n.id)), body: null, idx: agents.length, acc: 0 });
   }
@@ -332,17 +370,21 @@ function createNPCKit(opt) {
     const dist = Math.hypot(player.x - a.x, player.z - a.z);
     const slot = scheduledAt(a.npc.schedule, clockH);
     const arrived = a.follow ? Math.hypot(a.follow.x - a.x, a.follow.z - a.z) < 1.2 : false;
+    const anc = a.anchors[slot.at];
+    a.anchor = anc;
+    const away = Math.hypot(a.x - anc.x, a.z - anc.z) > slot.radius_m + 1.5;
     a.state = nextState(a.state, { dist, talking: talking === a, following: !!a.follow,
-      arrived, scheduled: slot.state, greetRadius: greetR });
+      arrived, away, scheduled: slot.state, greetRadius: greetR });
     if (arrived) { a.follow = null; }
     let target = null;
     if (a.state === 'follow') target = a.follow;
+    else if (a.state === 'walk') target = anc;
     else if (a.state === 'wander') {
       const r = slot.radius_m;
       if (!a.target || Math.hypot(a.target.x - a.x, a.target.z - a.z) < 0.6 ||
-          Math.hypot(a.x - a.home.x, a.z - a.home.z) > r) {
+          Math.hypot(a.target.x - anc.x, a.target.z - anc.z) > r) {
         const ang = a.rand() * Math.PI * 2, rr = Math.sqrt(a.rand()) * r;
-        a.target = { x: a.home.x + Math.cos(ang) * rr, z: a.home.z + Math.sin(ang) * rr };
+        a.target = { x: anc.x + Math.cos(ang) * rr, z: anc.z + Math.sin(ang) * rr };
       }
       target = a.target;
     }
@@ -398,13 +440,20 @@ function createNPCKit(opt) {
 }
 
 const TCNPC = { createNPCKit, nextState, steer, makeBudget, dialogueModel, dialogueHTML,
-  dialogueKey, homeOffset, scheduledAt, STATES, LABEL_KEYS };
+  dialogueKey, homeOffset, scheduledAt, makeClock, labelsFrom, STATES, LABEL_KEYS };
 globalThis.TCNPC = TCNPC;
 """
 
 NPC_JS_INLINE = NPC_CORE
 NPC_JS = NPC_CORE + ("export { createNPCKit, nextState, steer, makeBudget, dialogueModel, "
-                     "dialogueHTML, dialogueKey, homeOffset, scheduledAt, STATES, LABEL_KEYS };\n")
+                     "dialogueHTML, dialogueKey, homeOffset, scheduledAt, makeClock, labelsFrom, "
+                     "STATES, LABEL_KEYS };\n")
+
+# every catalogue key the kit reads via TCNPC.labelsFrom(tr): embed these in your page's i18n
+NPC_I18N_KEYS = ('npc.talk', 'npc.next', 'npc.prev', 'npc.close', 'npc.take', 'npc.source',
+                 'npc.notcert', 'npc.points', 'npc.of', 'npc.honesty', 'npc.quotelang',
+                 'npc.role.mentor', 'npc.role.k12', 'npc.role.ranger', 'npc.role.pilot',
+                 'npc.role.host')
 
 if __name__ == '__main__':
     if '--emit' in sys.argv:

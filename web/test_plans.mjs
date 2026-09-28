@@ -27,9 +27,14 @@ ok(P.includes('id="style-js"') && /name="tc-style"/.test(P), 'STYLE_JS + nav Sty
 ok(P.includes('data-sitenav') && P.includes('id="tc-main"'), 'site nav and #tc-main skip target');
 ok(/<meta name="description" content="[^"]+">/.test(P) && (P.match(/<title>/g) || []).length === 1, 'one <title> and a description');
 const SITENAV = read('web/sitenav.py');
-const declared = SITENAV.includes("'web/trade_craft_plans.html'");
-if (declared) ok(/<a[^>]*aria-current="page"/.test(P) && P.includes('rel="canonical"'), 'declared in sitenav: current-page mark + apply_seo head');
-else ok(!/<a[^>]*aria-current="page"/.test(P) && !P.includes('rel="canonical"'), 'not yet declared in sitenav (NEEDS nav): no false current-page mark, seo pending');
+ok(/\('web\/trade_craft_plans\.html', 'nav\.page\.plans'\)/.test(SITENAV), "sitenav declares web/trade_craft_plans.html as nav.page.plans");
+const cur = P.match(/<a[^>]*href="([^"]+)"[^>]*aria-current="page"/);
+ok(cur && cur[1] === 'trade_craft_plans.html', 'nav marks this page (and only this page) as current');
+ok((P.match(/<a[^>]*aria-current="page"/g) || []).length === 1, 'exactly one current-page mark');
+ok(/<link rel="canonical" href="trade_craft_plans\.html">/.test(P), 'canonical link to this page (apply_seo head)');
+ok(/<meta property="og:url" content="https:\/\/[^"]+\/web\/trade_craft_plans\.html">/.test(P), 'og:url names the canonical URL');
+const BUILD = read('web/build_plans.py');
+ok(/if PAGE not in sitenav\.PAGES:\s*\n\s*raise /.test(BUILD) && !/replace\(' aria-current="page"', ''\)/.test(BUILD), 'builder fails closed on an undeclared page (no sibling-nav fallback)');
 const own = P.slice(P.lastIndexOf('<style>'), P.indexOf('</style>', P.lastIndexOf('<style>')));
 ok(own.length > 50 && !/#[0-9a-fA-F]{3,8}\b/.test(own), 'page CSS colours only from theme var(--...) (no hex)');
 

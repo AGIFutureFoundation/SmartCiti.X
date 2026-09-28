@@ -140,18 +140,19 @@ ok(`every family (${reg.families.length}) builds a low-poly geometry within its 
 const cap = Object.fromEntries(reg.families.map((f) => [f.id, f.count * 2]));
 const fl = F.fleetCreate(THREE, reg, cap);
 for (const e of reg.fleet) { fl.spawn(e.id, { x: 0, y: 0, z: 0, yaw: 0 }); fl.spawn(e.id, { x: 5, y: 0, z: 5, yaw: 1 }); }
-const meshes = fl.group.children.filter((c) => c.isInstancedMesh);
-ok(`140 spawned vehicles are ${meshes.length} InstancedMeshes: one draw call per family, not per vehicle`,
-  meshes.length === reg.families.length && fl.drawCalls() === reg.families.length && fl.group.children.length === reg.families.length);
+const meshes = fl.group.children.filter((c) => c.isInstancedMesh && c.visible);
+ok(`140 spawned vehicles are ${meshes.length} InstancedMeshes: one draw call per family + one for every wheel, not per vehicle`,
+  meshes.length === reg.families.length + 1 && fl.drawCalls() === reg.families.length + 1 && fl.group.children.length === reg.families.length + 1
+  && fl.wheels.count === [...fl.families.values()].reduce((t, x) => t + x.mesh.count * F.fleetWheelLayout(x.family.recipe, 1, 1, 1).length, 0));
 ok('each family mesh holds exactly its capacity, all in use', [...fl.families.values()].every((x) => x.mesh.count === cap[x.family.id] && x.used === cap[x.family.id]));
 ok('an empty family mesh is hidden (no draw call) and shows again on spawn', (() => {
   const f2 = F.fleetCreate(THREE, reg, Object.fromEntries(reg.families.map((f) => [f.id, 1])));
-  const vis0 = [...f2.families.values()].filter((x) => x.mesh.visible).length;
+  const vis0 = [...f2.families.values()].filter((x) => x.mesh.visible).length + (f2.wheels.visible ? 1 : 0);
   const h = f2.spawn('bus.school-bus', { x: 0, y: 0, z: 0, yaw: 0 });
   const vis1 = [...f2.families.values()].filter((x) => x.mesh.visible).map((x) => x.family.id);
   h.despawn();
-  const vis2 = [...f2.families.values()].filter((x) => x.mesh.visible).length;
-  return vis0 === 0 && vis1.length === 1 && vis1[0] === 'bus' && vis2 === 0;
+  const vis2 = [...f2.families.values()].filter((x) => x.mesh.visible).length + (f2.wheels.visible ? 1 : 0);
+  return vis0 === 0 && vis1.length === 1 && vis1[0] === 'bus' && f2.drawCalls() === 0 && vis2 === 0;
 })());
 let capErr = '';
 try { fl.spawn(reg.fleet[0].id, { x: 0, y: 0, z: 0, yaw: 0 }); } catch (err) { capErr = err.message; }
@@ -209,6 +210,94 @@ ok('steer + turns left (anticlockwise from above: yaw grows)', (() => {
 ok('a land vehicle never exceeds its top speed', (() => {
   const s = F.fleetState(car, G, -200, -400, 0); let m = 0; for (let i = 0; i < 3000; i++) { F.fleetStep(s, car, { throttle: 1, steer: 0, brake: 0 }, G, 1 / 60); m = Math.max(m, s.v); } return m <= car.top + 1e-9 && m > car.top * 0.9;
 })());
+
+// ------------------------------------------------ detail: wheels, lamps, wake, driver seat ---
+ok('wheels: every land family has a wheel layout (cycles 2), no watercraft has one', reg.families.every((f) => {
+  const n = F.fleetWheelLayout(f.recipe, 4, 2, 2).length;
+  return f.medium === 'water' ? n === 0 : f.recipe.archetype === 'cycle' ? n === 2 : n >= 4 && n % 2 === 0;
+}));
+ok('wheels turn and steer: front wheels yaw with the steer, all wheels spin by distance / radius', (() => {
+  const f3 = F.fleetCreate(THREE, reg, Object.fromEntries(reg.families.map((f) => [f.id, 1])));
+  const s0 = F.fleetState(car, G, -150, -150, 0);
+  for (let i = 0; i < 30; i++) F.fleetStep(s0, car, { throttle: 1, steer: 1, brake: 0 }, G, 1 / 60);
+  const h = f3.spawn(car.id, s0), m = new THREE.Matrix4(), q = new THREE.Quaternion(), p = new THREE.Vector3(), sc = new THREE.Vector3();
+  const yawOf = (slot) => { f3.wheels.getMatrixAt(slot, m); m.decompose(p, q, sc); return new THREE.Euler().setFromQuaternion(q, 'YXZ').y; };
+  const lay = F.fleetWheelLayout(car.recipe, car.L, car.W, car.H);
+  const front = yawOf(h.wheelSlots[lay.findIndex((w) => w.front)]), rear = yawOf(h.wheelSlots[lay.findIndex((w) => !w.front)]);
+  return Math.abs(front - rear - s0.steer * F.FLEET_STEER_VIS) < 1e-3 && s0.steer > 0.5 && Math.abs(s0.spin) > 0.1;
+})());
+ok('lamps: every family but paddle craft has head (1) and tail (2) lamp faces, drawn unlit-black and emissive', reg.families.every((f) => {
+  const mem = reg.fleet.filter((e) => e.family === f.id)[0];
+  const g = F.fleetFamilyGeometry(THREE, f.recipe, mem.dims_m), L = g.attributes.fleetLamp.array, C = g.attributes.color.array;
+  const kinds = new Set(L);
+  const black = [...L].every((k, i) => k === 0 || (C[i * 3] === 0 && C[i * 3 + 1] === 0 && C[i * 3 + 2] === 0));
+  return f.recipe.archetype === 'paddle' ? kinds.size === 1 && kinds.has(0) : kinds.has(1) && kinds.has(2) && black;
+}));
+ok('lamps: fleetLights sets the shared lamp level, clamped 0..1', (() => { fleetLightsProbe(0.4); return fl.material.userData.fleetLampOn.value === 0.4 && (fleetLightsProbe(7), fl.material.userData.fleetLampOn.value === 1); })());
+function fleetLightsProbe(v) { F.fleetLights(fl, v); }
+ok('wake scales with speed: a fast boat drops more, wider, faster-spreading, brighter rings', (() => {
+  const run = (thr) => {
+    const w = F.fleetWake(THREE, 256), s1 = F.fleetState(boat, G, -12, 60, Math.PI / 2);
+    for (let i = 0; i < 180; i++) { F.fleetStep(s1, boat, { throttle: thr, steer: 0, brake: 0 }, G, 1 / 60); w.emit(s1, boat, 1 / 60); w.update(1 / 60); }
+    const live = w.rings.map((r, i) => [r, i]).filter(([r]) => r);
+    return { n: live.length, size: Math.max(...live.map(([, i]) => w.size(i))), bright: Math.max(...live.map(([r]) => r.bright)) };
+  };
+  const slow = run(0.15), fast = run(1);
+  return fast.n > slow.n * 2 && fast.size > slow.size && fast.bright > slow.bright;
+})());
+const eyeBad = [];
+for (const e of reg.fleet) {
+  const sp = F.fleetSpec(e), eye = F.fleetDriverEye(sp);
+  if (Math.abs(eye.x) > sp.W / 2 || Math.abs(eye.z) > sp.L / 2 || eye.y <= 0 || eye.y > sp.H * 1.5 + 0.7) eyeBad.push(`${e.id} ${JSON.stringify(eye)}`);
+}
+ok('driver camera: every one of the 70 has a driver eye inside its own footprint, above the floor', eyeBad.length === 0, eyeBad);
+ok('driver camera follows the heading (yaw pi/2 looks along +x) and sits at the eye', (() => {
+  const cam = { position: new THREE.Vector3(), lookAt(x, y, z) { this.look = [x, y, z]; } };
+  const s2 = F.fleetState(car, G, 10, 10, Math.PI / 2), w = F.fleetDriverCamera(cam, s2, car);
+  return cam.look[0] - w.x > 29 && Math.abs(cam.look[2] - w.z) < 1e-6 && Math.abs(w.y - (s2.y + F.fleetDriverEye(car).y)) < 1e-9;
+})());
+
+// ------------------------------------------------------ ambient traffic ---
+const lanes = F.fleetGridLanes({ cell: 12, every: 4, x0: -600, x1: 600, z0: -600, z1: 600, step: 6, minLen: 60,
+  ok: (x, z) => !pond(x, z) && Math.hypot(x, z - 60) > 42 });
+const routes = [...lanes, F.fleetRingLane('pond-ring', 0, 60, 18, 24),
+  { id: 'across-the-pond', medium: 'land', points: [[-400, 60], [400, 60]], loop: false, provenance: 'AUTHORED' }];
+const TOPTS = { seed: 7, landPerKm: 6, waterPerKm: 30, maxAgents: 140, maxFamilies: 10, radius: 400, speedFactor: 0.4, laneOffset: 1.8 };
+const T1 = F.fleetTraffic(THREE, reg, routes, G, TOPTS);
+ok(`traffic: AUTHORED grid lanes (${lanes.length}) + a pond ring plan ${T1.agents.length} agents within the budget (${F.FLEET_TRAFFIC_BUDGET.maxAgents})`,
+  T1.agents.length > 40 && T1.agents.length <= TOPTS.maxAgents && T1.agents.some((a) => a.spec.medium === 'water') && routes.every((r) => r.provenance === 'AUTHORED'));
+ok('traffic: a land route across the pond (density asks for agents) carries none: refused by medium', Math.floor(800 / 1000 * TOPTS.landPerKm) > 0 && !T1.agents.some((a) => routes[a.ri].id === 'across-the-pond'));
+let tWet = 0, tDry = 0, tFast = 0, tMaxDraw = 0, tMaxDrawn = 0, tOverlap = 0;
+function laneOverlaps(agents) {
+  let bad = 0; const by = new Map();
+  for (const a of agents) { const k = a.ri + ':' + a.dir; if (!by.has(k)) by.set(k, []); by.get(k).push(a); }
+  for (const list of by.values()) for (let i = 0; i < list.length; i++) for (let j = i + 1; j < list.length; j++)
+    if (Math.hypot(list[i].x - list[j].x, list[i].z - list[j].z) < (list[i].spec.L + list[j].spec.L) / 2 - 0.5) bad++;
+  return bad;
+}
+for (let i = 0; i < 1800; i++) {
+  const eye = { x: Math.sin(i / 300) * 300, z: Math.cos(i / 300) * 300 };
+  T1.update(1 / 60, eye);
+  for (const a of T1.agents) {
+    const d = F.fleetDepth(G, a.x, a.z);
+    if (a.spec.medium === 'land' && d > F.FLEET_MIN_WET_M) tWet++;
+    if (a.spec.medium === 'water' && d < a.spec.draft + F.FLEET_KEEL_CLEAR_M) tDry++;
+    if (a.v > a.spec.top + 1e-9) tFast++;
+  }
+  if (i >= 600 && i % 30 === 0) tOverlap += laneOverlaps(T1.agents);
+  const st2 = T1.stats(); tMaxDraw = Math.max(tMaxDraw, st2.drawCalls); tMaxDrawn = Math.max(tMaxDrawn, st2.drawn);
+}
+const TS = T1.stats();
+ok(`traffic: over 30 s no land agent touches water (${tWet}) and no boat touches land (${tDry})`, tWet === 0 && tDry === 0);
+ok('traffic: no agent exceeds its top speed, and they do move', tFast === 0 && T1.agents.filter((a) => a.v > 1).length > T1.agents.length / 3);
+ok(`traffic budget: draw calls ${tMaxDraw} <= maxFamilies + 1 wheel mesh (${TOPTS.maxFamilies + 1}); only agents within radius drawn (max ${tMaxDrawn} of ${TS.agents})`,
+  tMaxDraw <= TOPTS.maxFamilies + 1 && tMaxDrawn < TS.agents && TS.families <= TOPTS.maxFamilies);
+ok(`traffic budget: update ${TS.avgMs.toFixed(3)} ms/frame on average for ${TS.agents} agents (budget ${F.FLEET_TRAFFIC_BUDGET.updateMs} ms)`, TS.avgMs < F.FLEET_TRAFFIC_BUDGET.updateMs);
+ok(`traffic: agents on one lane keep their distance (overlapping pairs sampled from 10 s to 30 s: ${tOverlap})`, tOverlap === 0);
+ok('traffic is deterministic for a seed', JSON.stringify(F.fleetTraffic(THREE, reg, routes, G, TOPTS).agents.map((a) => a.e.id)) === JSON.stringify(T1.agents.map((a) => a.e.id)));
+let over = '';
+try { F.fleetTraffic(THREE, reg, routes, G, { ...TOPTS, maxAgents: 500 }); } catch (err) { over = err.message; }
+ok('traffic fails closed over budget', /over the budget/.test(over), [over]);
 
 // on a wilds/core.mjs world: land rides the terrain, and water there refuses it
 const W = await import(pathToFileURL(join(ROOT, 'wilds/core.mjs')).href);

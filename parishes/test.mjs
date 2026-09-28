@@ -219,10 +219,15 @@ const webpSize = (b) => {
   ok(IDS.every((f) => P[f].map.label === 'Map drawn from Census outline + AUTHORED fabric - not satellite, not a survey'
      && /AUTHORED street fabric - procedural, NOT the real street grid/.test(P[f].map.fabric)),
     '[maps] every map records the on-image label and the AUTHORED fabric legend line');
+  ok(IDS.every((f) => { const L = P[f].map.fabric_layers; return L && /AUTHORED procedural/.test(L.provenance)
+       && /NOT the real street grid, land use or buildings/.test(L.provenance) && L.hillshade === false && L.arterials >= 3
+       && JSON.stringify(L.land_use) === JSON.stringify(['residential', 'commercial', 'park', 'industrial']); }),
+    '[fabric] every map records its AUTHORED city fabric layers (arterials, collectors, district grids, land use, building hints; no hillshade) as NOT the real city');
   const rsrc = buf('parishes/render.py').toString();
   ok(rsrc.includes("LABEL = 'Map drawn from Census outline + AUTHORED fabric - not satellite, not a survey'")
-     && /d\.text\(\(48, 75\), LABEL/.test(rsrc) && /FABRIC_NOTE\)/.test(rsrc),
-    '[maps] the renderer draws the label and the AUTHORED fabric legend onto the image itself');
+     && /d\.text\(\(48, 75\), LABEL/.test(rsrc) && /FABRIC_NOTE\)/.test(rsrc)
+     && rsrc.includes("('landuse', 'AUTHORED land use: residential, commercial, park, industrial + building hints')"),
+    '[maps] the renderer draws the label, the AUTHORED street-fabric and AUTHORED land-use legend lines onto the image itself');
 }
 
 /* ---- satellite ------------------------------------------------------ */

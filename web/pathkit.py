@@ -1,6 +1,6 @@
 """Path chooser + station panel for the parish world (LAYERS_CONTRACT).
 
-  from pathkit import PATH_JS, PATH_CSS, path_data
+  from pathkit import PATH_JS, PATH_CSS, path_data, path_labels, PATH_LABEL_KEYS
 
   path_data(fips)  one parish of layers/registry/layers.json, JSON-safe, with
                    the titles of explorer steps and suggested lessons read from
@@ -9,7 +9,15 @@
                    five styles apply
   PATH_JS          plain JS (inline in a <script>, after quest_js if the page
                    carries quests): window.TCPaths = {mount, select, open,
-                   close, progress}
+                   close, progress, region}
+  path_labels(strings)  the path.* strings of one locale catalog (i18n
+                   locales[].strings), keyed without the prefix, for
+                   mount(..., {labels}); fails by name on a missing key
+
+The region card (badges earned, borders crossed, rides, guides talked to) is
+counted from the same local play state. There is deliberately no region
+leaderboard: there is no server and there are no accounts, so nothing about
+one player's play ever leaves the device or is compared with anyone's.
 
 Paths are suggestions. Nothing here gates anything: every station opens from
 every path, and the player can switch path at any time. Progress rings are
@@ -24,6 +32,16 @@ LAYERS_PATH = 'layers/registry/layers.json'
 QUESTS_PATH = 'quests/registry/quests.json'
 LESSONS_PATH = 'lessons/registry/lessons.json'
 PATH_STORE = 'tc-path'
+PATH_LABEL_KEYS = ('choose', 'note', 'launch', 'close', 'suggested', 'source', 'found', 'of', 'noLaunch',
+                   'region', 'badges', 'borders', 'rides', 'guides', 'local', 'trade', 'k12', 'explorer')
+
+
+def path_labels(strings):
+    """The path.* strings of one locale catalog, keyed without the prefix."""
+    missing = [k for k in PATH_LABEL_KEYS if 'path.' + k not in strings]
+    if missing:
+        raise KeyError(f'pathkit: locale catalog has no path.{missing[0]} (missing {len(missing)} path.* keys)')
+    return {k: strings['path.' + k] for k in PATH_LABEL_KEYS}
 QUEST_STORE = 'tc-quests'
 
 
@@ -65,8 +83,26 @@ def path_data(fips):
             if lid not in lessons:
                 raise KeyError(f'pathkit: {s["id"]} suggests {lid!r}, not in {LESSONS_PATH}')
             lesson_titles[lid] = _need(lessons[lid], 'title', lid)
+    names = {f: _need(q, 'name', f) for f, q in parishes.items()}
+    borders = []
+    for o in sorted(_need(p, 'adjacent', f'{LAYERS_PATH}#{fips}')):
+        bid = 'treasure-border-' + '-'.join(sorted((fips, o)))
+        if o not in names or bid not in quests:
+            raise KeyError(f'pathkit: {fips} border with {o!r} has no parish or no {bid} in {QUESTS_PATH}')
+        borders.append({'id': bid, 'with': o, 'name': names[o]})
+    region = {
+        'arrive': f'treasure-parish-{fips}-arrive', 'guide': f'treasure-guide-{fips}',
+        'badges': sorted(q['id'] for q in quests.values() if q['world'] == f'parish:{fips}'),
+        'borders': borders,
+        'rides': sorted(q['id'] for q in quests.values() if q['id'].startswith('treasure-ride-')),
+    }
+    for k in ('arrive', 'guide'):
+        if region[k] not in quests:
+            raise KeyError(f'pathkit: {region[k]!r} is not in {QUESTS_PATH}; rebuild quests')
+    if not region['rides']:
+        raise KeyError(f'pathkit: {QUESTS_PATH} has no treasure-ride-* entries')
     return {
-        'fips': fips, 'name': _need(p, 'name', fips), 'stations': stations,
+        'fips': fips, 'name': _need(p, 'name', fips), 'stations': stations, 'region': region,
         'paths': p['paths'], 'steps': steps, 'lessons': lesson_titles,
         'layers': {k: _need(v, 'label', k) for k, v in _need(layers, 'layers', LAYERS_PATH).items()},
         'honesty': _need(layers, 'honesty', LAYERS_PATH),
@@ -107,6 +143,11 @@ PATH_CSS = """
 .pk-close{float:inline-end;min-height:36px;min-width:36px;border:1px solid var(--rule);background:var(--surface);
   color:var(--ink);border-radius:8px;cursor:pointer}
 .pk-suggest a{color:var(--link)}
+.pk-card{margin:10px 0;padding:8px 10px;border:1px solid var(--rule);border-radius:8px;background:var(--surface)}
+.pk-card h3{font-size:14px;margin:0 0 6px}
+.pk-card dl{display:grid;grid-template-columns:1fr auto;gap:2px 12px;margin:0}
+.pk-card dt{color:var(--muted)}
+.pk-card dd{margin:0;font-weight:600;font-variant-numeric:tabular-nums}
 """
 
 PATH_JS = r"""
@@ -116,9 +157,13 @@ PATH_JS = r"""
   var S = { data: null, root: null, opts: {}, path: null, opener: null };
   var EN = {
     choose: 'Choose a path', note: 'Paths are suggestions: every station is open from every path, and you can switch at any time.',
-    open: 'Open', launch: 'Launch', close: 'Close', suggested: 'Suggested first (never a lock):', source: 'Source:',
-    found: 'visited', of: 'of', noLaunch: 'No launch link:', station: 'Station'
+    launch: 'Launch', close: 'Close', suggested: 'Suggested first (never a lock):', source: 'Source:',
+    found: 'visited', of: 'of', noLaunch: 'No launch link:',
+    region: 'Region card', badges: 'Badges earned', borders: 'Borders crossed', rides: 'Rides (land, water)',
+    guides: 'Guide talked to', trade: 'Trade path', k12: 'K-12 path', explorer: 'Explorer / free play', local: 'Counted on this device only, from your own play. There is no leaderboard: no server, no accounts.'
   };
+  /* No region leaderboard, by design: there is no server and there are no accounts, so play is never sent
+     anywhere or ranked against anyone. The region card below counts this device's own play state only. */
   function L(k) { return (S.opts.labels && Object.prototype.hasOwnProperty.call(S.opts.labels, k)) ? S.opts.labels[k] : EN[k]; }
   function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function href(h) { return (S.opts.hrefPrefix || '') + String(h).replace(/^web\//, ''); }
@@ -141,6 +186,25 @@ PATH_JS = r"""
     });
     return out;
   }
+  function region() {
+    var st = playState(), got = Object.assign({}, st.found || {}, st.done || {}), R = S.data.region;
+    var n = function (ids) { return ids.filter(function (i) { return i in got; }).length; };
+    return {
+      badges: { got: n(R.badges), total: R.badges.length },
+      borders: { got: n(R.borders.map(function (b) { return b.id; })), total: R.borders.length },
+      rides: { got: n(R.rides), total: R.rides.length },
+      guides: { got: n([R.guide]), total: 1 },
+      arrived: R.arrive in got
+    };
+  }
+  function card() {
+    var r = region(), row = function (k) {
+      return '<dt>' + esc(L(k)) + '</dt><dd>' + r[k].got + ' ' + esc(L('of')) + ' ' + r[k].total + '</dd>';
+    };
+    return '<section class="pk-card" aria-labelledby="pk-card-h"><h3 id="pk-card-h">' + esc(L('region')) + ': ' +
+      esc(S.data.name) + '</h3><dl>' + row('badges') + row('borders') + row('rides') + row('guides') +
+      '</dl><p class="pk-note">' + esc(L('local')) + '</p></section>';
+  }
   function ring(f, t) {
     var r = 14, c = 2 * Math.PI * r, frac = t ? f / t : 0;
     return '<svg class="pk-ring" viewBox="0 0 34 34" aria-hidden="true"><circle class="pk-track" cx="17" cy="17" r="' + r +
@@ -156,10 +220,11 @@ PATH_JS = r"""
     d.paths.forEach(function (p) {
       var on = p.id === S.path;
       h += '<button type="button" role="radio" data-pk-path="' + esc(p.id) + '" aria-checked="' + on + '" tabindex="' + (on ? 0 : -1) +
-        '">' + ring(pr[p.id].found, pr[p.id].total) + '<span>' + esc(p.label) + ' <span class="pk-count">' + pr[p.id].found +
+        '">' + ring(pr[p.id].found, pr[p.id].total) + '<span>' + esc(L(p.id)) + ' <span class="pk-count">' + pr[p.id].found +
         ' ' + esc(L('of')) + ' ' + pr[p.id].total + '</span></span></button>';
     });
-    h += '</div><p class="pk-note">' + esc(L('note')) + ' ' + esc(d.honesty.play) + '</p><ol class="pk-steps" aria-label="' + esc(cur.label) + '">';
+    h += '</div><p class="pk-note">' + esc(L('note')) + ' ' + esc(d.honesty.play) + '</p>' + card() +
+      '<ol class="pk-steps" aria-label="' + esc(L(cur.id)) + '">';
     cur.steps.forEach(function (s) {
       var q = stepQuest(cur.id, s), mark = q in got ? '<span class="pk-got" aria-label="' + esc(L('found')) + '">&#10003;</span>' : '';
       if (cur.id === 'explorer') {
@@ -248,6 +313,6 @@ PATH_JS = r"""
     });
     return window.TCPaths;
   }
-  window.TCPaths = { mount: mount, select: function (p) { select(p, false); }, open: open, close: close, progress: progress };
+  window.TCPaths = { mount: mount, select: function (p) { select(p, false); }, open: open, close: close, progress: progress, region: region };
 })();
 """

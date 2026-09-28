@@ -39,7 +39,7 @@
   "budget_currencies": 2,
   "budget_agreements": 7,
   "suites_run": 89,
-  "suite_checks_declared": 4395,
+  "suite_checks_declared": 4478,
   "open_questions": 12,
   "negative_findings": 9,
   "cross_checks": 2,
@@ -2381,6 +2381,7 @@
     "layers/test.mjs",
     "web/test_3d.mjs",
     "web/test_home.mjs",
+    "web/test_parishes.mjs",
     "web/test_quests.mjs",
     "web/test_schools.mjs",
     "web/test_wilds.mjs"
@@ -3948,7 +3949,7 @@
    {
     "suite": "security/test.mjs",
     "pack": "security",
-    "readme_checks": 29,
+    "readme_checks": 30,
     "declared": true,
     "in_readme_table": true
    },
@@ -4410,7 +4411,7 @@
    {
     "suite": "quests/test.mjs",
     "pack": "quests",
-    "readme_checks": 31,
+    "readme_checks": 32,
     "declared": true,
     "in_readme_table": true
    },
@@ -4452,63 +4453,63 @@
    {
     "suite": "parishes/test.mjs",
     "pack": "parishes",
-    "readme_checks": 36,
+    "readme_checks": 37,
     "declared": true,
     "in_readme_table": true
    },
    {
     "suite": "fleet/test.mjs",
     "pack": "fleet",
-    "readme_checks": 42,
+    "readme_checks": 58,
     "declared": true,
     "in_readme_table": true
    },
    {
     "suite": "web/test_fleet.mjs",
     "pack": "web",
-    "readme_checks": 18,
+    "readme_checks": 19,
     "declared": true,
     "in_readme_table": true
    },
    {
     "suite": "npcs/test.mjs",
     "pack": "npcs",
-    "readme_checks": 108,
+    "readme_checks": 125,
     "declared": true,
     "in_readme_table": true
    },
    {
     "suite": "layers/test.mjs",
     "pack": "layers",
-    "readme_checks": 23,
+    "readme_checks": 27,
     "declared": true,
     "in_readme_table": true
    },
    {
     "suite": "payments/test.mjs",
     "pack": "payments",
-    "readme_checks": 63,
+    "readme_checks": 82,
     "declared": true,
     "in_readme_table": true
    },
    {
     "suite": "cloudflare/test.mjs",
     "pack": "cloudflare",
-    "readme_checks": 39,
+    "readme_checks": 43,
     "declared": true,
     "in_readme_table": true
    },
    {
     "suite": "web/test_plans.mjs",
     "pack": "web",
-    "readme_checks": 47,
+    "readme_checks": 52,
     "declared": true,
     "in_readme_table": true
    },
    {
     "suite": "web/test_parishes.mjs",
     "pack": "web",
-    "readme_checks": 55,
+    "readme_checks": 69,
     "declared": true,
     "in_readme_table": true
    }
@@ -4518,13 +4519,13 @@
   "suites_without_a_count": [
    "control/soak.mjs"
   ],
-  "declared_total": 4395,
-  "readme_headline": 4406,
+  "declared_total": 4478,
+  "readme_headline": 4489,
   "unaccounted_for": 11,
   "unaccounted_note": "the headline counts every `  ok ` line verify_all.sh sees, which includes suites the README table gives no number to and web/test_interiors.py, which the table does not list at all. The difference is that remainder and is computed, not reconciled by hand.",
   "min": 9,
   "max": 350,
-  "median": 40.5,
+  "median": 42.0,
   "thinnest": [
    {
     "suite": "ops/fuzz.mjs",
@@ -4561,6 +4562,10 @@
     "checks": 151
    },
    {
+    "suite": "npcs/test.mjs",
+    "checks": 125
+   },
+   {
     "suite": "respond/test.mjs",
     "checks": 118
    },
@@ -4571,10 +4576,6 @@
    {
     "suite": "ei/test.mjs",
     "checks": 112
-   },
-   {
-    "suite": "npcs/test.mjs",
-    "checks": 108
    }
   ],
   "note": "a thin suite is not automatically a bad one - tools/ has 13 checks over a registry of twelve hand tools - but a thin suite over a large surface is where an unfound defect is most likely to be sitting, and this table is the only place the two are shown side by side."

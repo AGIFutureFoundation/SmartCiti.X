@@ -26,6 +26,10 @@ const block = (id) => { const m = page.match(new RegExp(`<script type="applicati
 let fresh = true, why = '';
 try { execFileSync('python3', [join(ROOT, 'web/build_fleet.py'), '--check'], { stdio: 'pipe' }); } catch (e) { fresh = false; why = String(e.stdout || '') + String(e.stderr || ''); }
 ok('the page is what web/build_fleet.py builds now (not hand-edited, not stale)', fresh, [why.slice(0, 300)]);
+const bsrc = readFileSync(join(ROOT, 'web/build_fleet.py'), 'utf8');
+ok('the builder fails closed when the page is undeclared in sitenav.PAGES (no in-process registration, no borrowed header)',
+  /if PAGE not in sitenav\.PAGES:\n\s+raise SystemExit/.test(bsrc) && !/sitenav\.PAGES\[/.test(bsrc) && !/nav_html\('web\/trade_craft_(?!fleet)/.test(bsrc)
+  && page.includes('href="trade_craft_fleet.html" aria-current="page"'));
 const emb = block('fleet-registry');
 ok('the registry is embedded verbatim', emb && JSON.stringify(emb) === JSON.stringify(reg));
 ok('the page embeds exactly 50 land + 20 water', emb && emb.fleet.filter((e) => e.medium === 'land').length === 50 && emb.fleet.filter((e) => e.medium === 'water').length === 20);
@@ -98,6 +102,14 @@ if (base) {
   ok('browser: an unlinked entry offers no seat', noSeat);
   const spec = await F(() => { window.__fleet.select('tug.harbor-tug'); return document.querySelector('#spec-list').textContent; });
   ok('browser: specs are read from the registry', spec.includes('26') && spec.includes('450'));
+  const cam = await F(() => { window.__fleet.select('pickup.crew-cab-pickup'); window.__fleet.drive(); window.__fleet.steps(60, { throttle: 1, steer: 0.5, brake: 0 });
+    window.__fleet.cam('driver'); const s = window.__fleet.steps(1, { throttle: 0, steer: 0, brake: 0 }); const e = window.__fleet.eye();
+    const r = { d: Math.hypot(e.x - s.x, e.z - s.z), up: e.y - s.y, wheels: window.__fleet.wheels() }; window.__fleet.cam('chase'); window.__fleet.exit(); return r; });
+  ok(`browser: driver view puts the eye inside the cab (${cam.d.toFixed(2)} m from centre, ${cam.up.toFixed(2)} m up); wheels drawn`, cam.d < 3 && cam.up > 1 && cam.up < 2.2 && cam.wheels);
+  const tr = await F(() => window.__fleet.traffic(true, 900));
+  ok(`browser: ambient traffic ${tr.agents} agents, ${tr.drawCalls} draw calls, ${tr.avgMs.toFixed(2)} ms/update; land never wet (${tr.wet}), boats never ashore (${tr.dry})`,
+    tr.agents > 10 && tr.wet === 0 && tr.dry === 0 && tr.drawCalls <= 11 && tr.avgMs < 1.5, [JSON.stringify(tr)]);
+  await F(() => window.__fleet.traffic(false, 0));
   await p.goto(`${base}/web/trade_craft_fleet.html?lang=ar#ferry.vehicle-ferry`);
   await p.waitForFunction(() => document.documentElement.dataset.fleetReady === '1', null, { timeout: 30000 });
   ok('browser: ?lang=ar renders rtl Arabic chrome and the #id deep link selects', await F(() => document.documentElement.dir === 'rtl'
