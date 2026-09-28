@@ -1,0 +1,845 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>(()=>{try{var s=localStorage.getItem('tc-style');if(/^(enterprise|midnight|blueprint|hivis|studio)$/.test(s||''))document.documentElement.setAttribute('data-style',s)}catch(e){}})();</script>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230C1113'/%3E%3Cpath d='M7 21 L16 7 L25 21 Z' fill='none' stroke='%23E8A33D' stroke-width='2.6' stroke-linejoin='round'/%3E%3Cpath d='M11 21 h10' stroke='%2341C4D4' stroke-width='2.6' stroke-linecap='round'/%3E%3C/svg%3E">
+<title>The fleet showroom — SmartCiti.X : Trade Craft Academy</title>
+<meta name="description" content="50 generic land vehicles and 20 watercraft on one turntable, with a test-drive pad and a test-float pond. Generic types, authored figures; driving here is play.">
+<link rel="canonical" href="trade_craft_fleet.html">
+<meta name="theme-color" content="#0D1316" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#F4F6F5" media="(prefers-color-scheme: light)">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SmartCiti.X : Trade Craft Academy">
+<meta property="og:title" content="The fleet showroom — SmartCiti.X : Trade Craft Academy">
+<meta property="og:description" content="50 generic land vehicles and 20 watercraft on one turntable, with a test-drive pad and a test-float pond. Generic types, authored figures; driving here is play.">
+<meta property="og:url" content="https://agifuturefoundation.github.io/SmartCiti.X/web/trade_craft_fleet.html">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://agifuturefoundation.github.io/SmartCiti.X/wiki/img/process-front-door.png">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="800">
+<meta property="og:image:alt" content="The SmartCiti.X Trade Craft Academy front door: the site header, the hero with its two calls to action and the key figures panel.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The fleet showroom — SmartCiti.X : Trade Craft Academy">
+<meta name="twitter:description" content="50 generic land vehicles and 20 watercraft on one turntable, with a test-drive pad and a test-float pond. Generic types, authored figures; driving here is play.">
+<meta name="twitter:image" content="https://agifuturefoundation.github.io/SmartCiti.X/wiki/img/process-front-door.png">
+<meta name="twitter:image:alt" content="The SmartCiti.X Trade Craft Academy front door: the site header, the hero with its two calls to action and the key figures panel.">
+<style>
+/* UI colours come ONLY from the site theme's tokens (--tc-*, the canvas theme
+   layer and the Style switcher's data-style on <html>): all five styles apply. */
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body[data-fleet-mode="drive"] #btn-drive,body[data-fleet-mode="float"] #btn-drive{display:none}
+body.tc-theme-canvas{margin:0;background:var(--tc-plate);color:var(--tc-ink);font:15px/1.45 system-ui,sans-serif}
+.fl-head{padding:14px 16px 6px;max-width:1400px;margin:0 auto}
+.fl-head h1{margin:0 0 4px;font-size:clamp(1.4rem,3vw,2rem)}
+.fl-head p{margin:2px 0;color:var(--tc-muted);max-width:80ch}
+.fl-head .play{color:var(--tc-ink)}
+.fl-main{display:grid;grid-template-columns:minmax(240px,300px) 1fr;gap:12px;padding:8px 16px 16px;max-width:1400px;margin:0 auto}
+.fl-side,.fl-spec{background:var(--tc-panel);border:1px solid var(--tc-line);border-radius:10px;padding:12px}
+.fl-side fieldset{border:0;margin:0 0 8px;padding:0}
+.fl-side legend,.fl-side label.lb{font-weight:600;color:var(--tc-ink)}
+.fl-side select{width:100%;margin-top:4px;background:var(--tc-plate);color:var(--tc-ink);border:1px solid var(--tc-line);border-radius:6px;padding:6px}
+.fl-radios label{margin-inline-end:10px;color:var(--tc-ink)}
+#fleet-count{color:var(--tc-muted);font-size:.9em;margin:6px 0}
+#fleet-list{list-style:none;margin:0;padding:0;max-height:52vh;overflow:auto}
+#fleet-list li{margin:2px 0}
+.fl-item{width:100%;text-align:start;justify-content:flex-start}
+.fl-item[aria-pressed="true"]{outline:2px solid var(--tc-steel);outline-offset:-2px}
+.fl-stage{position:relative;min-height:520px;border-radius:10px;overflow:hidden;border:1px solid var(--tc-line)}
+#fleet-canvas{display:block;width:100%;height:100%;min-height:520px;touch-action:none}
+.fl-bar{position:absolute;inset-inline:8px;top:8px;display:flex;flex-wrap:wrap;gap:6px}
+.fl-spec{position:absolute;inset-inline-end:8px;top:60px;width:min(340px,calc(100% - 16px));max-height:calc(100% - 68px);overflow:auto}
+.fl-spec h2{margin:0;font-size:1.15rem}
+.fl-spec .id{color:var(--tc-muted);font-size:.8em;font-family:ui-monospace,monospace}
+.fl-spec dl{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;margin:8px 0}
+.fl-spec dt{color:var(--tc-muted)} .fl-spec dd{margin:0;color:var(--tc-ink)}
+.fl-spec .trades{color:var(--tc-muted);font-size:.85em}
+#drive-help,#toast{position:absolute;inset-inline-start:8px;bottom:8px;max-width:min(520px,60%);background:var(--tc-panel);color:var(--tc-ink);border:1px solid var(--tc-line);border-radius:8px;padding:6px 10px;font-size:.9em}
+#toast:empty{display:none} #toast{bottom:auto;top:52px;color:var(--tc-ink);border-color:var(--tc-amber)}
+body[data-fleet-mode="drive"] .fl-spec,body[data-fleet-mode="float"] .fl-spec{display:none}
+.fl-honesty{max-width:1400px;margin:0 auto;padding:0 16px 20px;color:var(--tc-muted);font-size:.9em}
+@media (max-width:760px){.fl-main{grid-template-columns:1fr} #fleet-list{max-height:30vh} .fl-spec{position:static;width:auto;max-height:none;margin-top:8px} .fl-stage{min-height:420px} #fleet-canvas{min-height:420px}}
+</style>
+<style>.sitenav{--sn-ink:var(--ink,CanvasText);--sn-bg:var(--panel,var(--surface,Canvas));--sn-rule:var(--rule,var(--line,GrayText));--sn-mute:var(--muted,var(--ink,CanvasText));--sn-mark:var(--mark,var(--accent,LinkText));position:relative;z-index:40;font:500 13.5px/1.35 "IBM Plex Sans",system-ui,sans-serif;color:var(--sn-ink);background:var(--sn-bg);border-block-end:1px solid var(--sn-rule);padding-block:6px;padding-inline:16px;box-sizing:border-box;max-width:100%;overflow-wrap:anywhere}.sitenav *{box-sizing:border-box}.sitenav a{color:inherit;text-decoration:none;border-radius:6px;padding-block:4px;padding-inline:7px;display:inline-block}.sitenav a:hover{background:color-mix(in srgb,currentColor 11%,transparent)}.sitenav a:focus-visible,.sitenav summary:focus-visible{outline:2px solid var(--sn-mark);outline-offset:2px}.sitenav a.skip{position:absolute;inset-inline-start:8px;inset-block-start:4px;z-index:60;padding-block:6px;padding-inline:12px;font-weight:700;color:var(--sn-ink);background:var(--sn-bg);border:2px solid var(--sn-mark);clip-path:inset(50%);overflow:hidden;white-space:nowrap;display:inline-flex;align-items:center;min-block-size:24px;box-sizing:border-box}.sitenav a.skip:focus,.sitenav a.skip:focus-visible{clip-path:none;overflow:visible}.sitenav-row{display:flex;align-items:center;gap:6px 12px;min-width:0}.sitenav-home{font-weight:700;color:var(--sn-ink)!important;white-space:nowrap;border:1px solid var(--sn-rule);border-inline-start:3px solid var(--sn-mark)}.sitenav-menu{flex:1 1 auto;min-width:0}.sitenav-menu>summary{display:none}.sitenav-menu::details-content{content-visibility:visible;display:contents}@supports not selector(::details-content){.sitenav-menu>summary{display:inline-flex}}.sitenav-groups{display:flex;flex-wrap:wrap;align-items:center;gap:2px 0}.sitenav-group{display:flex;flex-wrap:wrap;align-items:center;gap:0 1px;min-width:0;padding-inline:8px;border-inline-start:1px solid var(--sn-rule)}.sitenav-group:first-child{border-inline-start:0}.sitenav-g{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--sn-mute);margin-inline-end:3px}.sitenav ul,.sitenav ol{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:0 1px}.sitenav [aria-current="page"]{font-weight:700;color:var(--sn-ink);background:color-mix(in srgb,currentColor 10%,transparent);box-shadow:inset 0 -3px 0 var(--sn-mark)}.sitenav-loop{margin-block-start:6px!important;padding-block-start:6px!important;border-block-start:1px solid var(--sn-rule);counter-reset:step;align-items:center;gap:4px 6px!important}.sitenav-loop li{counter-increment:step;color:var(--sn-mute);display:flex;align-items:center}.sitenav-loop li::before{content:counter(step);display:inline-grid;place-items:center;inline-size:1.5em;block-size:1.5em;border-radius:50%;font-size:11px;font-weight:700;border:1px solid var(--sn-rule);margin-inline-end:2px}.sitenav-loop a{color:var(--sn-ink)}.sitenav-loop [aria-current="step"]{font-weight:700;color:var(--sn-ink);background:color-mix(in srgb,currentColor 10%,transparent);box-shadow:inset 0 -3px 0 var(--sn-mark)}@media(max-width:720px){.sitenav{padding-inline:12px}.sitenav-row{justify-content:space-between}.sitenav-menu{flex:0 1 auto}.sitenav-menu::details-content{display:block;content-visibility:hidden}.sitenav-menu[open]::details-content{content-visibility:visible}.sitenav-menu>summary{display:inline-flex;align-items:center;gap:6px;cursor:pointer;list-style:none;padding-block:5px;padding-inline:10px;border:1px solid var(--sn-rule);border-radius:6px;font-weight:600;white-space:nowrap}.sitenav-menu>summary::-webkit-details-marker{display:none}.sitenav-menu>summary::after{content:"";inline-size:.45em;block-size:.45em;border-inline-end:2px solid currentColor;border-block-end:2px solid currentColor;transform:translateY(-2px) rotate(45deg);transition:transform .15s}.sitenav-menu[open]>summary::after{transform:translateY(2px) rotate(-135deg)}.sitenav-menu[open]>.sitenav-groups{position:absolute;inset-inline:0;top:100%;display:grid;gap:0;background:var(--sn-bg);border-block-end:1px solid var(--sn-rule);box-shadow:0 12px 24px -12px rgba(0,0,0,.45);padding-block:4px 10px;padding-inline:12px}.sitenav-group{padding-inline:0;padding-block:6px;border-inline-start:0;border-block-start:1px solid var(--sn-rule)}.sitenav-group:first-child{border-block-start:0}.sitenav-g{flex:0 0 100%;margin-block-end:2px}.sitenav-loop{font-size:12.5px}}@media (prefers-reduced-motion:reduce){.sitenav *{transition:none!important}}body.tc-theme>.sitenav{box-shadow:0 6px 18px -12px rgba(0,0,0,.55)}.sitenav::after{content:"";position:absolute;inset-inline:0;inset-block-end:-1px;block-size:1px;pointer-events:none;background:linear-gradient(90deg,transparent,var(--sn-mark),transparent);opacity:.6}.sitenav a{transition:background-color .15s,color .15s}.sitenav-g{display:inline-flex;align-items:center;gap:5px}.sitenav-g::before,.sitenav-home::before,.sitenav .ss-go::before{content:"";display:inline-block;flex:none;inline-size:1.05em;block-size:1.05em;background:currentColor;-webkit-mask:var(--sn-i) center/contain no-repeat;mask:var(--sn-i) center/contain no-repeat;opacity:.85}.sitenav a.sitenav-home{display:inline-flex;align-items:center;gap:6px}.sitenav-home::before{--sn-i:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpath d='M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8'/%3E%3Cpath d='M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'/%3E%3C/svg%3E")}.sitenav .ss-go>svg{display:none}.sitenav .ss-go{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--sn-rule);border-radius:999px;padding-inline:12px}.sitenav .ss-go::before{--sn-i:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpath d='m21 21-4.34-4.34'/%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3C/svg%3E")}.sitenav [aria-current="page"]{background:transparent;box-shadow:inset 0 -3px 0 var(--sn-mark),inset 0 0 0 1px var(--sn-rule)}.sitenav-loop [aria-current="step"]{background:transparent}.sitenav-group:nth-child(1) .sitenav-g::before{--sn-i:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpath d='M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z'/%3E%3Cpath d='M22 10v6'/%3E%3Cpath d='M6 12.5V16a6 3 0 0 0 12 0v-3.5'/%3E%3C/svg%3E")}.sitenav-group:nth-child(2) .sitenav-g::before{--sn-i:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Cline x1='6' x2='10' y1='11' y2='11'/%3E%3Cline x1='8' x2='8' y1='9' y2='13'/%3E%3Cline x1='15' x2='15.01' y1='12' y2='12'/%3E%3Cline x1='18' x2='18.01' y1='10' y2='10'/%3E%3Cpath d='M17.32 5H6.68a4 4 0 0 0-3.978 3.59c-.006.052-.01.101-.017.152C2.604 9.416 2 14.456 2 16a3 3 0 0 0 3 3c1 0 1.5-.5 2-1l1.414-1.414A2 2 0 0 1 9.828 16h4.344a2 2 0 0 1 1.414.586L17 18c.5.5 1 1 2 1a3 3 0 0 0 3-3c0-1.545-.604-6.584-.685-7.258-.007-.05-.011-.1-.017-.151A4 4 0 0 0 17.32 5z'/%3E%3C/svg%3E")}.sitenav-group:nth-child(3) .sitenav-g::before{--sn-i:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpath d='M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z'/%3E%3Cpath d='M15 5.764v15'/%3E%3Cpath d='M9 3.236v15'/%3E%3C/svg%3E")}.sitenav-group:nth-child(4) .sitenav-g::before{--sn-i:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Crect width='8' height='4' x='8' y='2' rx='1' ry='1'/%3E%3Cpath d='M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2'/%3E%3Cpath d='m9 14 2 2 4-4'/%3E%3C/svg%3E")}.sitenav-group:nth-child(5) .sitenav-g::before{--sn-i:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpath d='M10 10V5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v5'/%3E%3Cpath d='M14 6a6 6 0 0 1 6 6v3'/%3E%3Cpath d='M4 15v-3a6 6 0 0 1 6-6'/%3E%3Crect x='2' y='15' width='20' height='4' rx='1'/%3E%3C/svg%3E")}.sitenav-group:nth-child(6) .sitenav-g::before{--sn-i:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpath d='M12 16v-4'/%3E%3Cpath d='M12 8h.01'/%3E%3C/svg%3E")}body.tc-theme>.sitenav{position:sticky;inset-block-start:0}html:has(body.tc-theme){scroll-padding-block-start:72px}@media (forced-colors:active){.sitenav-g::before,.sitenav-home::before,.sitenav .ss-go::before{display:none}.sitenav .ss-go>svg{display:inline}}@media (prefers-reduced-motion:reduce){.sitenav a{transition:none}}.sitenav-style{position:relative;flex:none}.sitenav-style>summary{display:inline-flex;align-items:center;gap:6px;min-block-size:44px;padding-inline:10px;cursor:pointer;list-style:none;border-radius:999px;white-space:nowrap}.sitenav-style>summary::-webkit-details-marker{display:none}.sitenav-style>summary:hover{background:color-mix(in srgb,currentColor 11%,transparent)}.sitenav-style>summary:focus-visible{outline:2px solid var(--sn-mark);outline-offset:2px}.sitenav-style .sn-lbl{color:var(--sn-mute)}.sitenav-style .sn-cur{display:none;font-weight:700}.sitenav-style:not(:has(input:checked)) .sn-cur-default{display:inline}.sitenav-style:has(input[value="enterprise"]:checked) .sn-cur[data-s="enterprise"]{display:inline}.sitenav-style:has(input[value="midnight"]:checked) .sn-cur[data-s="midnight"]{display:inline}.sitenav-style:has(input[value="blueprint"]:checked) .sn-cur[data-s="blueprint"]{display:inline}.sitenav-style:has(input[value="hivis"]:checked) .sn-cur[data-s="hivis"]{display:inline}.sitenav-style:has(input[value="studio"]:checked) .sn-cur[data-s="studio"]{display:inline}.sn-styles{position:absolute;inset-inline-end:0;inset-block-start:calc(100% + 6px);z-index:70;margin:0;min-inline-size:220px;padding-block:8px;padding-inline:8px;display:grid;gap:2px;background:var(--sn-bg);color:var(--sn-ink);border:1px solid var(--sn-rule);border-radius:10px;box-shadow:0 16px 32px -12px rgba(0,0,0,.45)}.sn-styles legend{padding-block:2px 6px;padding-inline:6px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--sn-mute)}.sn-opt{display:flex;align-items:center;gap:8px;min-block-size:40px;padding-inline:6px;border-radius:6px;cursor:pointer}.sn-opt:hover{background:color-mix(in srgb,currentColor 10%,transparent)}.sn-opt:has(input:checked){box-shadow:inset 3px 0 0 var(--sn-mark);font-weight:700}.sn-opt input{accent-color:var(--sn-mark);margin:0}.sn-opt input:focus-visible{outline:2px solid var(--sn-mark);outline-offset:2px}.sn-sw{inline-size:18px;block-size:18px;border-radius:50%;border:1px solid var(--sn-rule);flex:none}.sn-sw[data-s="enterprise"]{background:linear-gradient(135deg,#F6F8FB 50%,#0B63C4 50%)}.sn-sw[data-s="midnight"]{background:linear-gradient(135deg,#12181B 50%,#E8A33D 50%)}.sn-sw[data-s="blueprint"]{background:linear-gradient(135deg,#0B1E3A 50%,#3FD0F0 50%)}.sn-sw[data-s="hivis"]{background:linear-gradient(135deg,#161616 50%,#FF7A00 50%)}.sn-sw[data-s="studio"]{background:linear-gradient(135deg,#FFFAF3 50%,#B93A0B 50%)}.sitenav-style>summary::before{content:"";display:inline-block;flex:none;inline-size:1.05em;block-size:1.05em;background:currentColor;-webkit-mask:var(--sn-i) center/contain no-repeat;mask:var(--sn-i) center/contain no-repeat;opacity:.85;--sn-i:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpath d='M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z'/%3E%3Cpath d='M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12'/%3E%3Cpath d='M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17'/%3E%3C/svg%3E")}@media(max-width:720px){.sitenav-style .sn-lbl{display:none}.sitenav-style .sn-cur,.sitenav .ss-go>span{position:absolute;inline-size:1px;block-size:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}.sitenav .ss-go,.sitenav-style>summary{padding-inline:12px}}/*style:enterprise*/html[data-style="enterprise"],html:has(input[name="tc-style"][value="enterprise"]:checked),[data-style-preview="enterprise"],html[data-style="enterprise"] :is(body,.dk,[data-theme],.tc-theme,.tc-theme-canvas,.ph),html:has(input[name="tc-style"][value="enterprise"]:checked) :is(body,.dk,[data-theme],.tc-theme,.tc-theme-canvas,.ph),[data-style-preview="enterprise"] :is(body,.dk,[data-theme],.tc-theme,.tc-theme-canvas,.ph){--plate:#F6F8FB!important;--panel:#FFFFFF!important;--surface:#FFFFFF!important;--sunk:#F6F8FB!important;--raised:#EEF2F7!important;--line:#D5DCE4!important;--rule:#D5DCE4!important;--ink:#182433!important;--muted:#556274!important;--mark:#0B63C4!important;--mark-ink:#FFFFFF!important;--accent:#0B63C4!important;--steel:#0B5CB5!important;--link:#0B5CB5!important;--dk-plate:#F6F8FB!important;--tc-plate:#F6F8FB!important;--dk-panel:#FFFFFF!important;--tc-panel:#FFFFFF!important;--dk-raised:#EEF2F7!important;--tc-raised:#EEF2F7!important;--dk-line:#D5DCE4!important;--tc-line:#D5DCE4!important;--dk-ink:#182433!important;--tc-ink:#182433!important;--dk-muted:#556274!important;--tc-muted:#556274!important;--dk-amber:#0B63C4!important;--tc-amber:#0B63C4!important;--dk-amber-ink:#FFFFFF!important;--tc-amber-ink:#FFFFFF!important;--dk-link:#0B5CB5!important;--tc-link:#0B5CB5!important;--dk-ok:#1E7A45!important;--tc-ok:#1E7A45!important;--dk-warn:#8F5500!important;--tc-warn:#8F5500!important;--dk-steel:#0B5CB5!important;--tc-steel:#0B5CB5!important;--dk-f-display:'Archivo', system-ui, sans-serif!important;--dk-r-sm:4px!important;--dk-r-md:6px!important;--dk-r-lg:10px!important;--tc-r-sm:4px!important;--tc-r-md:6px!important;--tc-r-lg:10px!important;--dk-e-1:0 1px 2px rgb(24 36 51 / .06), 0 4px 12px rgb(24 36 51 / .08)!important;--dk-e-2:0 1px 2px rgb(24 36 51 / .06), 0 4px 12px rgb(24 36 51 / .08)!important;--tc-e-1:0 1px 2px rgb(24 36 51 / .06), 0 4px 12px rgb(24 36 51 / .08)!important;--tc-e-2:0 1px 2px rgb(24 36 51 / .06), 0 4px 12px rgb(24 36 51 / .08)!important;--ph-plate:#182433!important;--st-scrim:#182433;--st-scrim-a:0.74;color-scheme:light}html[data-style="enterprise"] body,html:has(input[name="tc-style"][value="enterprise"]:checked) body,[data-style-preview="enterprise"]{background-color:#F6F8FB!important;color:#182433;}html[data-style="enterprise"] .ph-scrim,html:has(input[name="tc-style"][value="enterprise"]:checked) .ph-scrim,[data-style-preview="enterprise"] .ph-scrim{background:linear-gradient(0deg,rgb(24 36 51 / .9) 0%,rgb(24 36 51 / 0.74) 45%,rgb(24 36 51 / 0.74) 100%)!important}@media (min-width:900px){html[data-style="enterprise"] .ph-scrim,html:has(input[name="tc-style"][value="enterprise"]:checked) .ph-scrim,[data-style-preview="enterprise"] .ph-scrim{background:linear-gradient(90deg,rgb(24 36 51 / .9) 0%,rgb(24 36 51 / 0.74) 58%,rgb(24 36 51 / .3) 100%)!important}}html[data-style="enterprise"] :is(.ph-title,.dk-hero-title,h1,h2),html:has(input[name="tc-style"][value="enterprise"]:checked) :is(.ph-title,.dk-hero-title,h1,h2),[data-style-preview="enterprise"] :is(.ph-title,.dk-hero-title,h1,h2){font-family:'Archivo', system-ui, sans-serif}html[data-style="enterprise"] :is(.dk-btn-primary,.tc-btn-primary),html:has(input[name="tc-style"][value="enterprise"]:checked) :is(.dk-btn-primary,.tc-btn-primary),[data-style-preview="enterprise"] :is(.dk-btn-primary,.tc-btn-primary){background:#0B63C4!important;color:#FFFFFF!important}/*style:midnight*/html[data-style="midnight"],html:has(input[name="tc-style"][value="midnight"]:checked),[data-style-preview="midnight"],html[data-style="midnight"] :is(body,.dk,[data-theme],.tc-theme,.tc-theme-canvas,.ph),html:has(input[name="tc-style"][value="midnight"]:checked) :is(body,.dk,[data-theme],.tc-theme,.tc-theme-canvas,.ph),[data-style-preview="midnight"] :is(body,.dk,[data-theme],.tc-theme,.tc-theme-canvas,.ph){--plate:#12181B!important;--panel:#182023!important;--surface:#182023!important;--sunk:#12181B!important;--raised:#1F292D!important;--line:#2B383C!important;--rule:#2B383C!important;--ink:#E8EDEC!important;--muted:#93A3A6!important;--mark:#E8A33D!important;--mark-ink:#12181B!important;--accent:#E8A33D!important;--steel:#41C4D4!important;--link:#41C4D4!important;--dk-plate:#12181B!important;--tc-plate:#12181B!important;--dk-panel:#182023!important;--tc-panel:#182023!important;--dk-raised:#1F292D!important;--tc-raised:#1F292D!important;--dk-line:#2B383C!important;--tc-line:#2B383C!important;--dk-ink:#E8EDEC!important;--tc-ink:#E8EDEC!important;--dk-muted:#93A3A6!important;--tc-muted:#93A3A6!important;--dk-amber:#E8A33D!important;--tc-amber:#E8A33D!important;--dk-amber-ink:#12181B!important;--tc-amber-ink:#12181B!important;--dk-link:#41C4D4!important;--tc-link:#41C4D4!important;--dk-ok:#6FCF97!important;--tc-ok:#6FCF97!important;--dk-warn:#E8A33D!important;--tc-warn:#E8A33D!important;--dk-steel:#41C4D4!important;--tc-steel:#41C4D4!important;--dk-f-display:'Barlow Condensed', 'Archivo', system-ui, sans-serif!important;--dk-r-sm:4px!important;--dk-r-md:8px!important;--dk-r-lg:14px!important;--tc-r-sm:4px!important;--tc-r-md:8px!important;--tc-r-lg:14px!important;--dk-e-1:0 4px 12px rgb(0 0 0 / .18), 0 2px 4px rgb(0 0 0 / .12)!important;--dk-e-2:0 4px 12px rgb(0 0 0 / .18), 0 2px 4px rgb(0 0 0 / .12)!important;--tc-e-1:0 4px 12px rgb(0 0 0 / .18), 0 2px 4px rgb(0 0 0 / .12)!important;--tc-e-2:0 4px 12px rgb(0 0 0 / .18), 0 2px 4px rgb(0 0 0 / .12)!important;--ph-plate:#12181B!important;--st-scrim:#12181B;--st-scrim-a:0.72;color-scheme:dark}html[data-style="midnight"] body,html:has(input[name="tc-style"][value="midnight"]:checked) body,[data-style-preview="midnight"]{background-color:#12181B!important;color:#E8EDEC;}html[data-style="midnight"] .ph-scrim,html:has(input[name="tc-style"][value="midnight"]:checked) .ph-scrim,[data-style-preview="midnight"] .ph-scrim{background:linear-gradient(0deg,rgb(18 24 27 / .9) 0%,rgb(18 24 27 / 0.72) 45%,rgb(18 24 27 / 0.72) 100%)!important}@media (min-width:900px){html[data-style="midnight"] .ph-scrim,html:has(input[name="tc-style"][value="midnight"]:checked) .ph-scrim,[data-style-preview="midnight"] .ph-scrim{background:linear-gradient(90deg,rgb(18 24 27 / .9) 0%,rgb(18 24 27 / 0.72) 58%,rgb(18 24 27 / .3) 100%)!important}}html[data-style="midnight"] :is(.ph-title,.dk-hero-title,h1,h2),html:has(input[name="tc-style"][value="midnight"]:checked) :is(.ph-title,.dk-hero-title,h1,h2),[data-style-preview="midnight"] :is(.ph-title,.dk-hero-title,h1,h2){font-family:'Barlow Condensed', 'Archivo', system-ui, sans-serif}html[data-style="midnight"] :is(.dk-btn-primary,.tc-btn-primary),html:has(input[name="tc-style"][value="midnight"]:checked) :is(.dk-btn-primary,.tc-btn-primary),[data-style-preview="midnight"] :is(.dk-btn-primary,.tc-btn-primary){background:#E8A33D!important;color:#12181B!important}/*style:blueprint*/html[data-style="blueprint"],html:has(input[name="tc-style"][value="blueprint"]:checked),[data-style-preview="blueprint"],html[data-style="blueprint"] :is(body,.dk,[data-theme],.tc-theme,.tc-theme-canvas,.ph),html:has(input[name="tc-style"][value="blueprint"]:checked) :is(body,.dk,[data-theme],.tc-theme,.tc-theme-canvas,.ph),[data-style-preview="blueprint"] :is(body,.dk,[data-theme],.tc-theme,.tc-theme-canvas,.ph){--plate:#0B1E3A!important;--panel:#0F2749!important;--surface:#0F2749!important;--sunk:#0B1E3A!important;--raised:#15315A!important;--line:#28497A!important;--rule:#28497A!important;--ink:#E6F1FF!important;--muted:#A3BEDD!important;--mark:#3FD0F0!important;--mark-ink:#06162B!important;--accent:#3FD0F0!important;--steel:#7FE3F7!important;--link:#7FE3F7!important;--dk-plate:#0B1E3A!important;--tc-plate:#0B1E3A!important;--dk-panel:#0F2749!important;--tc-panel:#0F2749!important;--dk-raised:#15315A!important;--tc-raised:#15315A!important;--dk-line:#28497A!important;--tc-line:#28497A!important;--dk-ink:#E6F1FF!important;--tc-ink:#E6F1FF!important;--dk-muted:#A3BEDD!important;--tc-muted:#A3BEDD!important;--dk-amber:#3FD0F0!important;--tc-amber:#3FD0F0!important;--dk-amber-ink:#06162B!important;--tc-amber-ink:#06162B!important;--dk-link:#7FE3F7!important;--tc-link:#7FE3F7!important;--dk-ok:#6FCF97!important;--tc-ok:#6FCF97!important;--dk-warn:#F2C14E!important;--tc-warn:#F2C14E!important;--dk-steel:#7FE3F7!important;--tc-steel:#7FE3F7!important;--dk-f-display:'IBM Plex Mono', ui-monospace, monospace!important;--dk-r-sm:2px!important;--dk-r-md:4px!important;--dk-r-lg:6px!important;--tc-r-sm:2px!important;--tc-r-md:4px!important;--tc-r-lg:6px!important;--dk-e-1:0 0 0 1px rgb(127 227 247 / .10), 0 6px 18px rgb(0 0 0 / .30)!important;--dk-e-2:0 0 0 1px rgb(127 227 247 / .10), 0 6px 18px rgb(0 0 0 / .30)!important;--tc-e-1:0 0 0 1px rgb(127 227 247 / .10), 0 6px 18px rgb(0 0 0 / .30)!important;--tc-e-2:0 0 0 1px rgb(127 227 247 / .10), 0 6px 18px rgb(0 0 0 / .30)!important;--ph-plate:#081A33!important;--st-scrim:#081A33;--st-scrim-a:0.74;color-scheme:dark}html[data-style="blueprint"] body,html:has(input[name="tc-style"][value="blueprint"]:checked) body,[data-style-preview="blueprint"]{background-color:#0B1E3A!important;color:#E6F1FF;background-image:linear-gradient(rgb(127 227 247 / .06) 1px,transparent 1px),linear-gradient(90deg,rgb(127 227 247 / .06) 1px,transparent 1px);background-size:24px 24px;}html[data-style="blueprint"] .ph-scrim,html:has(input[name="tc-style"][value="blueprint"]:checked) .ph-scrim,[data-style-preview="blueprint"] .ph-scrim{background:linear-gradient(0deg,rgb(8 26 51 / .9) 0%,rgb(8 26 51 / 0.74) 45%,rgb(8 26 51 / 0.74) 100%)!important}@media (min-width:900px){html[data-style="blueprint"] .ph-scrim,html:has(input[name="tc-style"][value="blueprint"]:checked) .ph-scrim,[data-style-preview="blueprint"] .ph-scrim{background:linear-gradient(90deg,rgb(8 26 51 / .9) 0%,rgb(8 26 51 / 0.74) 58%,rgb(8 26 51 / .3) 100%)!important}}html[data-style="blueprint"] :is(.ph-title,.dk-hero-title,h1,h2),html:has(input[name="tc-style"][value="blueprint"]:checked) :is(.ph-title,.dk-hero-title,h1,h2),[data-style-preview="blueprint"] :is(.ph-title,.dk-hero-title,h1,h2){font-family:'IBM Plex Mono', ui-monospace, monospace}html[data-style="blueprint"] :is(.dk-btn-primary,.tc-btn-primary),html:has(input[name="tc-style"][value="blueprint"]:checked) :is(.dk-btn-primary,.tc-btn-primary),[data-style-preview="blueprint"] :is(.dk-btn-primary,.tc-btn-primary){background:#3FD0F0!important;color:#06162B!important}/*style:hivis*/html[data-style="hivis"],html:has(input[name="tc-style"][value="hivis"]:checked),[data-style-preview="hivis"],html[data-style="hivis"] :is(body,.dk,[data-theme],.tc-theme,.tc-theme-canvas,.ph),html:has(input[name="tc-style"][value="hivis"]:checked) :is(body,.dk,[data-theme],.tc-theme,.tc-theme-canvas,.ph),[data-style-preview="hivis"] :is(body,.dk,[data-theme],.tc-theme,.tc-theme-canvas,.ph){--plate:#161616!important;--panel:#202020!important;--surface:#202020!important;--sunk:#161616!important;--raised:#2A2A2A!important;--line:#454545!important;--rule:#454545!important;--ink:#F5F5F0!important;--muted:#BDBDB3!important;--mark:#FF7A00!important;--mark-ink:#111111!important;--accent:#FF7A00!important;--steel:#FFD400!important;--link:#FFD400!important;--dk-plate:#161616!important;--tc-plate:#161616!important;--dk-panel:#202020!important;--tc-panel:#202020!important;--dk-raised:#2A2A2A!important;--tc-raised:#2A2A2A!important;--dk-line:#454545!important;--tc-line:#454545!important;--dk-ink:#F5F5F0!important;--tc-ink:#F5F5F0!important;--dk-muted:#BDBDB3!important;--tc-muted:#BDBDB3!important;--dk-amber:#FF7A00!important;--tc-amber:#FF7A00!important;--dk-amber-ink:#111111!important;--tc-amber-ink:#111111!important;--dk-link:#FFD400!important;--tc-link:#FFD400!important;--dk-ok:#6FCF97!important;--tc-ok:#6FCF97!important;--dk-warn:#FFD400!important;--tc-warn:#FFD400!important;--dk-steel:#FFD400!important;--tc-steel:#FFD400!important;--dk-f-display:'Barlow Condensed', system-ui, sans-serif!important;--dk-r-sm:0px!important;--dk-r-md:2px!important;--dk-r-lg:4px!important;--tc-r-sm:0px!important;--tc-r-md:2px!important;--tc-r-lg:4px!important;--dk-e-1:0 0 0 2px rgb(255 212 0 / .12), 0 8px 20px rgb(0 0 0 / .35)!important;--dk-e-2:0 0 0 2px rgb(255 212 0 / .12), 0 8px 20px rgb(0 0 0 / .35)!important;--tc-e-1:0 0 0 2px rgb(255 212 0 / .12), 0 8px 20px rgb(0 0 0 / .35)!important;--tc-e-2:0 0 0 2px rgb(255 212 0 / .12), 0 8px 20px rgb(0 0 0 / .35)!important;--ph-plate:#141414!important;--st-scrim:#141414;--st-scrim-a:0.74;color-scheme:dark}html[data-style="hivis"] body,html:has(input[name="tc-style"][value="hivis"]:checked) body,[data-style-preview="hivis"]{background-color:#161616!important;color:#F5F5F0;}html[data-style="hivis"] .ph-scrim,html:has(input[name="tc-style"][value="hivis"]:checked) .ph-scrim,[data-style-preview="hivis"] .ph-scrim{background:linear-gradient(0deg,rgb(20 20 20 / .9) 0%,rgb(20 20 20 / 0.74) 45%,rgb(20 20 20 / 0.74) 100%)!important}@media (min-width:900px){html[data-style="hivis"] .ph-scrim,html:has(input[name="tc-style"][value="hivis"]:checked) .ph-scrim,[data-style-preview="hivis"] .ph-scrim{background:linear-gradient(90deg,rgb(20 20 20 / .9) 0%,rgb(20 20 20 / 0.74) 58%,rgb(20 20 20 / .3) 100%)!important}}html[data-style="hivis"] :is(.ph-title,.dk-hero-title,h1,h2),html:has(input[name="tc-style"][value="hivis"]:checked) :is(.ph-title,.dk-hero-title,h1,h2),[data-style-preview="hivis"] :is(.ph-title,.dk-hero-title,h1,h2){font-family:'Barlow Condensed', system-ui, sans-serif}html[data-style="hivis"] :is(.dk-btn-primary,.tc-btn-primary),html:has(input[name="tc-style"][value="hivis"]:checked) :is(.dk-btn-primary,.tc-btn-primary),[data-style-preview="hivis"] :is(.dk-btn-primary,.tc-btn-primary){background:#FF7A00!important;color:#111111!important}/*style:studio*/html[data-style="studio"],html:has(input[name="tc-style"][value="studio"]:checked),[data-style-preview="studio"],html[data-style="studio"] :is(body,.dk,[data-theme],.tc-theme,.tc-theme-canvas,.ph),html:has(input[name="tc-style"][value="studio"]:checked) :is(body,.dk,[data-theme],.tc-theme,.tc-theme-canvas,.ph),[data-style-preview="studio"] :is(body,.dk,[data-theme],.tc-theme,.tc-theme-canvas,.ph){--plate:#FFFAF3!important;--panel:#FFFFFF!important;--surface:#FFFFFF!important;--sunk:#FFFAF3!important;--raised:#FDEEDC!important;--line:#EAD7C0!important;--rule:#EAD7C0!important;--ink:#1E1B18!important;--muted:#5E554B!important;--mark:#B93A0B!important;--mark-ink:#FFFFFF!important;--accent:#B93A0B!important;--steel:#9A3412!important;--link:#9A3412!important;--dk-plate:#FFFAF3!important;--tc-plate:#FFFAF3!important;--dk-panel:#FFFFFF!important;--tc-panel:#FFFFFF!important;--dk-raised:#FDEEDC!important;--tc-raised:#FDEEDC!important;--dk-line:#EAD7C0!important;--tc-line:#EAD7C0!important;--dk-ink:#1E1B18!important;--tc-ink:#1E1B18!important;--dk-muted:#5E554B!important;--tc-muted:#5E554B!important;--dk-amber:#B93A0B!important;--tc-amber:#B93A0B!important;--dk-amber-ink:#FFFFFF!important;--tc-amber-ink:#FFFFFF!important;--dk-link:#9A3412!important;--tc-link:#9A3412!important;--dk-ok:#1E7A45!important;--tc-ok:#1E7A45!important;--dk-warn:#8F5500!important;--tc-warn:#8F5500!important;--dk-steel:#9A3412!important;--tc-steel:#9A3412!important;--dk-f-display:'Archivo', system-ui, sans-serif!important;--dk-r-sm:8px!important;--dk-r-md:14px!important;--dk-r-lg:22px!important;--tc-r-sm:8px!important;--tc-r-md:14px!important;--tc-r-lg:22px!important;--dk-e-1:0 10px 30px rgb(80 40 10 / .10), 0 2px 6px rgb(80 40 10 / .08)!important;--dk-e-2:0 10px 30px rgb(80 40 10 / .10), 0 2px 6px rgb(80 40 10 / .08)!important;--tc-e-1:0 10px 30px rgb(80 40 10 / .10), 0 2px 6px rgb(80 40 10 / .08)!important;--tc-e-2:0 10px 30px rgb(80 40 10 / .10), 0 2px 6px rgb(80 40 10 / .08)!important;--ph-plate:#1E140C!important;--st-scrim:#1E140C;--st-scrim-a:0.7;color-scheme:light}html[data-style="studio"] body,html:has(input[name="tc-style"][value="studio"]:checked) body,[data-style-preview="studio"]{background-color:#FFFAF3!important;color:#1E1B18;}html[data-style="studio"] .ph-scrim,html:has(input[name="tc-style"][value="studio"]:checked) .ph-scrim,[data-style-preview="studio"] .ph-scrim{background:linear-gradient(0deg,rgb(30 20 12 / .9) 0%,rgb(30 20 12 / 0.7) 45%,rgb(30 20 12 / 0.7) 100%)!important}@media (min-width:900px){html[data-style="studio"] .ph-scrim,html:has(input[name="tc-style"][value="studio"]:checked) .ph-scrim,[data-style-preview="studio"] .ph-scrim{background:linear-gradient(90deg,rgb(30 20 12 / .9) 0%,rgb(30 20 12 / 0.7) 58%,rgb(30 20 12 / .3) 100%)!important}}html[data-style="studio"] :is(.ph-title,.dk-hero-title,h1,h2),html:has(input[name="tc-style"][value="studio"]:checked) :is(.ph-title,.dk-hero-title,h1,h2),[data-style-preview="studio"] :is(.ph-title,.dk-hero-title,h1,h2){font-family:'Archivo', system-ui, sans-serif}html[data-style="studio"] :is(.dk-btn-primary,.tc-btn-primary),html:has(input[name="tc-style"][value="studio"]:checked) :is(.dk-btn-primary,.tc-btn-primary),[data-style-preview="studio"] :is(.dk-btn-primary,.tc-btn-primary){background:#B93A0B!important;color:#FFFFFF!important}.ss-go{display:inline-flex;align-items:center;gap:6px;min-block-size:44px;padding-inline:10px;white-space:nowrap;flex:none;  color:inherit;text-decoration:none;border-radius:8px}.ss-go:hover{text-decoration:underline}.ss-go:focus-visible{outline:none;box-shadow:var(--focus)}</style>
+<style data-tc-theme="canvas">body.tc-theme-canvas{--tc-r-sm:4px;--tc-r-md:8px;--tc-r-lg:14px;--tc-r-pill:999px;--tc-e-1:0 1px 2px rgb(0 0 0 / .18), 0 1px 1px rgb(0 0 0 / .12);--tc-e-2:0 4px 12px rgb(0 0 0 / .18), 0 2px 4px rgb(0 0 0 / .12);--tc-e-3:0 16px 40px rgb(0 0 0 / .28), 0 4px 10px rgb(0 0 0 / .14);--tc-plate:#12181B;--tc-panel:#182023;--tc-raised:#1F292D;--tc-line:#2B383C;--tc-ink:#E8EDEC;--tc-muted:#93A3A6;--tc-amber:#E8A33D;--tc-steel:#41C4D4;--tc-amber-ink:#12181B;--tc-link:#41C4D4;--tc-warn:#E8A33D;--tc-ok:#6FCF97;}
+body.tc-theme-canvas .tc-panel{background:var(--tc-panel);color:var(--tc-ink);border:1px solid var(--tc-line);border-radius:var(--tc-r-lg);box-shadow:var(--tc-e-2)}
+@supports ((-webkit-backdrop-filter:blur(1px)) or (backdrop-filter:blur(1px))){body.tc-theme-canvas .tc-panel{background:color-mix(in srgb,var(--tc-panel) 86%,transparent);-webkit-backdrop-filter:blur(12px) saturate(1.2);backdrop-filter:blur(12px) saturate(1.2)}}
+body.tc-theme-canvas .tc-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-block-size:44px;padding:10px 18px;border-radius:10px;font:600 .95rem/1.1 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;text-decoration:none;border:1px solid transparent;cursor:pointer;transition:transform .15s,box-shadow .15s,border-color .15s}
+body.tc-theme-canvas .tc-btn-primary{background:var(--tc-amber);color:var(--tc-amber-ink)}
+body.tc-theme-canvas .tc-btn-primary:hover{box-shadow:0 8px 22px -10px var(--tc-amber);transform:translateY(-1px)}
+body.tc-theme-canvas .tc-btn-ghost{background:transparent;color:var(--tc-ink);border-color:var(--tc-line)}
+body.tc-theme-canvas .tc-btn-ghost:hover{border-color:var(--tc-steel)}
+body.tc-theme-canvas .tc-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:999px;font:600 .72rem/1.5 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', monospace;letter-spacing:.05em;text-transform:uppercase;color:var(--tc-ink);background:transparent;border:1px solid color-mix(in srgb,var(--tc-muted) 40%,transparent)}
+body.tc-theme-canvas .tc-badge-ok{color:var(--tc-ok);background:transparent;border-color:color-mix(in srgb,var(--tc-ok) 45%,transparent)}
+body.tc-theme-canvas .tc-badge-warn{color:var(--tc-warn);background:transparent;border-color:color-mix(in srgb,var(--tc-warn) 45%,transparent)}
+body.tc-theme-canvas .tc-badge-info{color:var(--tc-steel);background:transparent;border-color:color-mix(in srgb,var(--tc-steel) 45%,transparent)}
+body.tc-theme-canvas .tc-badge-muted{color:var(--tc-muted)}
+body.tc-theme-canvas :focus-visible{outline:3px solid var(--tc-steel);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){body.tc-theme-canvas .tc-btn{transition:none}body.tc-theme-canvas .tc-btn:hover{transform:none}}
+</style>
+</head>
+<body class="tc-theme-canvas" data-fleet-mode="turntable">
+<nav class="sitenav" data-sitenav aria-label="Site pages">
+<a class="skip" href="#tc-main">Skip to main content</a>
+<div class="sitenav-row">
+<a class="sitenav-home" href="../index.html">Front door</a>
+<details class="sitenav-menu" data-sitenav-menu><summary>Site pages</summary>
+<div class="sitenav-groups">
+<div class="sitenav-group"><span class="sitenav-g">Learn</span><ul><li><a href="trade_craft_lessons.html">Lessons</a></li><li><a href="trade_craft_ladder.html">Ladder</a></li><li><a href="trade_craft_3d.html">Walk the campus</a></li><li><a href="trade_craft_schools.html">School pathways</a></li></ul></div>
+<div class="sitenav-group"><span class="sitenav-g">Play</span><ul><li><a href="trade_craft_quests.html">Quests and arcade</a></li><li><a href="trade_craft_wilds.html">The wilds</a></li><li><a href="trade_craft_parishes.html">New Orleans parishes</a></li><li><a href="trade_craft_fleet.html" aria-current="page">Fleet showroom</a></li></ul></div>
+<div class="sitenav-group"><span class="sitenav-g">Maps</span><ul><li><a href="trade_craft_map.html">Layered map</a></li><li><a href="trade_craft_interactive.html">Interactive map</a></li><li><a href="trade_craft_geomap.html">Geomap</a></li><li><a href="trade_craft_fabric.html">Spatial fabric</a></li></ul></div>
+<div class="sitenav-group"><span class="sitenav-g">Records</span><ul><li><a href="trade_craft_progress.html">Progress</a></li><li><a href="trade_craft_verify.html">Verify a record</a></li><li><a href="trade_craft_contribute.html">Contribute</a></li></ul></div>
+<div class="sitenav-group"><span class="sitenav-g">Sites</span><ul><li><a href="trade_craft_spaces.html">Spaces</a></li><li><a href="trade_craft_worksites.html">Work sites</a></li></ul></div>
+<div class="sitenav-group"><span class="sitenav-g">About</span><ul><li><a href="trade_craft_landing.html">Overview</a></li><li><a href="trade_craft_dashboard.html">Dashboard</a></li><li><a href="trade_craft_languages.html">Languages</a></li><li><a href="trade_craft_signin.html">Sign in</a></li><li><a href="smartcitix_trade_craft_academy.html">Academy spec</a></li><li><a href="trade_craft_design.html">Design kit</a></li><li><a href="trade_craft_plans.html">Plans</a></li></ul></div>
+</div></details>
+<details class="sitenav-style" data-sitenav-style><summary><span class="sn-lbl">Style</span><span class="sn-cur sn-cur-default">Page default</span><span class="sn-cur" data-s="enterprise">Enterprise</span><span class="sn-cur" data-s="midnight">Midnight</span><span class="sn-cur" data-s="blueprint">Blueprint</span><span class="sn-cur" data-s="hivis">Hi-Vis Safety</span><span class="sn-cur" data-s="studio">Studio</span></summary><fieldset class="sn-styles"><legend>Style</legend><label class="sn-opt"><input type="radio" name="tc-style" value="enterprise"><span class="sn-sw" data-s="enterprise" aria-hidden="true"></span>Enterprise</label><label class="sn-opt"><input type="radio" name="tc-style" value="midnight"><span class="sn-sw" data-s="midnight" aria-hidden="true"></span>Midnight</label><label class="sn-opt"><input type="radio" name="tc-style" value="blueprint"><span class="sn-sw" data-s="blueprint" aria-hidden="true"></span>Blueprint</label><label class="sn-opt"><input type="radio" name="tc-style" value="hivis"><span class="sn-sw" data-s="hivis" aria-hidden="true"></span>Hi-Vis Safety</label><label class="sn-opt"><input type="radio" name="tc-style" value="studio"><span class="sn-sw" data-s="studio" aria-hidden="true"></span>Studio</label></fieldset></details>
+<a class="ss-go" href="../index.html#search" data-search-go aria-keyshortcuts="Control+K Meta+K"><svg aria-hidden="true" viewBox="0 0 20 20" width="16" height="16"><circle cx="8.5" cy="8.5" r="5.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M13 13l4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Search</span></a>
+</div>
+</nav>
+<span id="tc-main" class="sitenav-skip-target" tabindex="-1"></span>
+<header class="fl-head">
+  <h1><span data-i18n="fleet.title">The fleet showroom</span></h1>
+  <p><span data-i18n="fleet.lede">Vehicles and watercraft: a showroom and test track</span></p>
+  <p><span data-i18n="fleet.intro">Every generic land vehicle and watercraft in the fleet registry, on one turntable. Pick one, read its specs, then take it to the test-drive pad or the test-float pond.</span></p>
+  <p class="play"><span data-i18n="fleet.play">Driving here is play, not training: it never enters a completion record and certifies nothing.</span></p>
+</header>
+<main class="fl-main">
+  <aside class="fl-side" aria-label="Fleet list" data-i18n-aria="fleet.list">
+    <fieldset class="fl-radios"><legend><span data-i18n="fleet.filter">Filter</span></legend>
+      <label><input type="radio" name="f-medium" id="f-medium-all" value="all" checked> <span data-i18n="fleet.all">All</span></label>
+      <label><input type="radio" name="f-medium" value="land"> <span data-i18n="fleet.land">Land</span></label>
+      <label><input type="radio" name="f-medium" value="water"> <span data-i18n="fleet.water">Water</span></label>
+    </fieldset>
+    <label class="lb" for="f-family"><span data-i18n="fleet.family">Family</span></label>
+    <select id="f-family"><option value="all" data-i18n="fleet.allfam">All families</option><option value="compact-car" data-medium="land" lang="en">Compact car (3)</option><option value="van" data-medium="land" lang="en">Van (3)</option><option value="pickup" data-medium="land" lang="en">Pickup (3)</option><option value="box-truck" data-medium="land" lang="en">Box truck (3)</option><option value="dump-truck" data-medium="land" lang="en">Dump truck (3)</option><option value="flatbed" data-medium="land" lang="en">Flatbed (3)</option><option value="bus" data-medium="land" lang="en">Bus (3)</option><option value="bucket-truck" data-medium="land" lang="en">Utility bucket truck (2)</option><option value="tow-truck" data-medium="land" lang="en">Tow truck (2)</option><option value="fire-engine" data-medium="land" lang="en">Fire engine (2)</option><option value="ambulance" data-medium="land" lang="en">Ambulance (2)</option><option value="forklift" data-medium="land" lang="en">Forklift (3)</option><option value="skid-steer" data-medium="land" lang="en">Skid steer (2)</option><option value="excavator" data-medium="land" lang="en">Excavator (2)</option><option value="excavator-transport" data-medium="land" lang="en">Excavator transport (2)</option><option value="street-sweeper" data-medium="land" lang="en">Street sweeper (2)</option><option value="boom-lift" data-medium="land" lang="en">Self-propelled boom lift (1)</option><option value="utility-cart" data-medium="land" lang="en">Utility cart (2)</option><option value="tractor" data-medium="land" lang="en">Utility tractor (1)</option><option value="bicycle" data-medium="land" lang="en">Bicycle (3)</option><option value="scooter" data-medium="land" lang="en">Scooter (3)</option><option value="skiff" data-medium="water" lang="en">Skiff (2)</option><option value="jon-boat" data-medium="water" lang="en">Jon boat (2)</option><option value="airboat" data-medium="water" lang="en">Airboat (1)</option><option value="pontoon" data-medium="water" lang="en">Pontoon boat (2)</option><option value="tug" data-medium="water" lang="en">Tugboat (2)</option><option value="push-boat" data-medium="water" lang="en">Push boat (1)</option><option value="ferry" data-medium="water" lang="en">Ferry (2)</option><option value="fireboat" data-medium="water" lang="en">Fireboat (1)</option><option value="patrol-boat" data-medium="water" lang="en">Patrol boat (2)</option><option value="work-barge" data-medium="water" lang="en">Work barge (2)</option><option value="dredge-tender" data-medium="water" lang="en">Dredge tender (1)</option><option value="kayak" data-medium="water" lang="en">Kayak (1)</option><option value="canoe" data-medium="water" lang="en">Canoe (1)</option></select>
+    <p id="fleet-count" aria-live="polite"></p>
+    <ul id="fleet-list"></ul>
+  </aside>
+  <section class="fl-stage" aria-label="The fleet showroom" data-i18n-aria="fleet.title">
+    <canvas id="fleet-canvas" tabindex="0" aria-label="The fleet showroom" data-i18n-aria="fleet.title"></canvas>
+    <div class="fl-bar">
+      <button type="button" class="tc-btn tc-btn-ghost" id="btn-prev"><span data-i18n="fleet.prev">Previous</span></button>
+      <button type="button" class="tc-btn tc-btn-ghost" id="btn-next"><span data-i18n="fleet.next">Next</span></button>
+      <button type="button" class="tc-btn tc-btn-ghost" id="btn-spin" aria-pressed="true"><span data-i18n="fleet.spin">Spin turntable</span></button>
+      <button type="button" class="tc-btn tc-btn-primary" id="btn-drive"><span data-i18n="fleet.drive">Test drive</span></button>
+      <button type="button" class="tc-btn tc-btn-primary" id="btn-exit" hidden><span data-i18n="fleet.exit">Back to the turntable</span></button>
+    </div>
+    <p id="toast" role="status"></p>
+    <p id="drive-help" hidden><span data-i18n="fleet.controls">W/S or arrow keys: throttle and reverse · A/D: steer · Space: brake · Esc: back to the turntable</span></p>
+    <div class="fl-spec">
+      <span class="tc-badge tc-badge-info" id="spec-badge">AUTHORED</span>
+      <h2 id="spec-name" lang="en"></h2>
+      <div class="id" id="spec-id"></div>
+      <dl id="spec-list"></dl>
+      <div id="spec-seat"></div>
+    </div>
+  </section>
+</main>
+<p class="fl-honesty"><span data-i18n="fleet.honesty">Generic types only: no makes, models, brands or logos. Every figure is AUTHORED for a generic type, not measured and not the specification of any real machine.</span> <span lang="en" dir="ltr">Registry: fleet/registry/fleet.json (stamp fd6a0d9f7fa0c263): 50 land vehicles, 20 watercraft, 34 families, 6 linked to an existing training seat.</span></p>
+<script type="application/json" id="fleet-registry">{"colours": {"glass.tint": "#40545f", "hull.black": "#2a2d2f", "hull.green": "#4f6b4a", "hull.grey": "#7c858a", "hull.red": "#9e3a2e", "hull.white": "#eef0ee", "mark.hivis": "#e8d23a", "mark.stripe": "#d8dde0", "paint.black": "#23282c", "paint.blue": "#2f5f9e", "paint.green": "#3d7a4a", "paint.grey": "#6f7a82", "paint.navy": "#1f3350", "paint.orange": "#d9702a", "paint.red": "#b8322c", "paint.silver": "#b9c0c6", "paint.tan": "#b89a6a", "paint.teal": "#2d8a8a", "paint.white": "#e9ecee", "paint.yellow": "#e3b52a", "trim.dark": "#2b3034", "trim.steel": "#8d969c"}, "counts": {"families": 34, "land": 50, "linked_to_seat": 6, "total": 70, "water": 20}, "families": [{"count": 3, "id": "compact-car", "medium": "land", "name": "Compact car", "recipe": {"archetype": "car", "axles": 2, "body": "none", "cab_h": 0.45, "cab_len": 0.5, "extra": "none", "hull": null, "wheel_r": 0.2}, "sim_seat": null}, {"count": 3, "id": "van", "medium": "land", "name": "Van", "recipe": {"archetype": "car", "axles": 2, "body": "none", "cab_h": 0.9, "cab_len": 0.8, "extra": "none", "hull": null, "wheel_r": 0.17}, "sim_seat": null}, {"count": 3, "id": "pickup", "medium": "land", "name": "Pickup", "recipe": {"archetype": "truck", "axles": 2, "body": "bed", "cab_h": 1.0, "cab_len": 0.55, "extra": "none", "hull": null, "wheel_r": 0.22}, "sim_seat": null}, {"count": 3, "id": "box-truck", "medium": "land", "name": "Box truck", "recipe": {"archetype": "truck", "axles": 2, "body": "box", "cab_h": 0.72, "cab_len": 0.28, "extra": "none", "hull": null, "wheel_r": 0.14}, "sim_seat": null}, {"count": 3, "id": "dump-truck", "medium": "land", "name": "Dump truck", "recipe": {"archetype": "truck", "axles": 3, "body": "dump", "cab_h": 0.8, "cab_len": 0.3, "extra": "none", "hull": null, "wheel_r": 0.17}, "sim_seat": null}, {"count": 3, "id": "flatbed", "medium": "land", "name": "Flatbed", "recipe": {"archetype": "truck", "axles": 2, "body": "flat", "cab_h": 0.85, "cab_len": 0.3, "extra": "none", "hull": null, "wheel_r": 0.16}, "sim_seat": null}, {"count": 3, "id": "bus", "medium": "land", "name": "Bus", "recipe": {"archetype": "bus", "axles": 2, "body": "box", "cab_h": 0.35, "cab_len": 0.12, "extra": "none", "hull": null, "wheel_r": 0.14}, "sim_seat": null}, {"count": 2, "id": "bucket-truck", "medium": "land", "name": "Utility bucket truck", "recipe": {"archetype": "truck", "axles": 2, "body": "boom", "cab_h": 0.75, "cab_len": 0.3, "extra": "lightbar", "hull": null, "wheel_r": 0.15}, "sim_seat": null}, {"count": 2, "id": "tow-truck", "medium": "land", "name": "Tow truck", "recipe": {"archetype": "truck", "axles": 2, "body": "boom", "cab_h": 0.8, "cab_len": 0.4, "extra": "lightbar", "hull": null, "wheel_r": 0.17}, "sim_seat": null}, {"count": 2, "id": "fire-engine", "medium": "land", "name": "Fire engine", "recipe": {"archetype": "truck", "axles": 2, "body": "ladder", "cab_h": 0.85, "cab_len": 0.35, "extra": "lightbar", "hull": null, "wheel_r": 0.14}, "sim_seat": null}, {"count": 2, "id": "ambulance", "medium": "land", "name": "Ambulance", "recipe": {"archetype": "truck", "axles": 2, "body": "box", "cab_h": 0.8, "cab_len": 0.3, "extra": "lightbar", "hull": null, "wheel_r": 0.15}, "sim_seat": null}, {"count": 3, "id": "forklift", "medium": "land", "name": "Forklift", "recipe": {"archetype": "machine", "axles": 2, "body": "forks", "cab_h": 1.0, "cab_len": 0.55, "extra": "none", "hull": null, "wheel_r": 0.2}, "sim_seat": "forklift-run"}, {"count": 2, "id": "skid-steer", "medium": "land", "name": "Skid steer", "recipe": {"archetype": "machine", "axles": 2, "body": "bucket", "cab_h": 1.0, "cab_len": 0.6, "extra": "none", "hull": null, "wheel_r": 0.25}, "sim_seat": null}, {"count": 2, "id": "excavator", "medium": "land", "name": "Excavator", "recipe": {"archetype": "machine", "axles": 2, "body": "arm", "cab_h": 0.55, "cab_len": 0.4, "extra": "none", "hull": null, "wheel_r": 0.12}, "sim_seat": "excavator-trench"}, {"count": 2, "id": "excavator-transport", "medium": "land", "name": "Excavator transport", "recipe": {"archetype": "truck", "axles": 4, "body": "lowboy", "cab_h": 0.9, "cab_len": 0.2, "extra": "none", "hull": null, "wheel_r": 0.13}, "sim_seat": null}, {"count": 2, "id": "street-sweeper", "medium": "land", "name": "Street sweeper", "recipe": {"archetype": "truck", "axles": 2, "body": "broom", "cab_h": 0.85, "cab_len": 0.35, "extra": "lightbar", "hull": null, "wheel_r": 0.16}, "sim_seat": null}, {"count": 1, "id": "boom-lift", "medium": "land", "name": "Self-propelled boom lift", "recipe": {"archetype": "machine", "axles": 2, "body": "boom", "cab_h": 0.45, "cab_len": 0.3, "extra": "none", "hull": null, "wheel_r": 0.18}, "sim_seat": "boom-lift"}, {"count": 2, "id": "utility-cart", "medium": "land", "name": "Utility cart", "recipe": {"archetype": "car", "axles": 2, "body": "bed", "cab_h": 0.9, "cab_len": 0.45, "extra": "none", "hull": null, "wheel_r": 0.16}, "sim_seat": null}, {"count": 1, "id": "tractor", "medium": "land", "name": "Utility tractor", "recipe": {"archetype": "machine", "axles": 2, "body": "none", "cab_h": 1.0, "cab_len": 0.35, "extra": "none", "hull": null, "wheel_r": 0.38}, "sim_seat": null}, {"count": 3, "id": "bicycle", "medium": "land", "name": "Bicycle", "recipe": {"archetype": "cycle", "axles": 2, "body": "none", "cab_h": 0.0, "cab_len": 0.0, "extra": "none", "hull": null, "wheel_r": 0.33}, "sim_seat": null}, {"count": 3, "id": "scooter", "medium": "land", "name": "Scooter", "recipe": {"archetype": "cycle", "axles": 2, "body": "rail", "cab_h": 0.0, "cab_len": 0.0, "extra": "none", "hull": null, "wheel_r": 0.22}, "sim_seat": null}, {"count": 2, "id": "skiff", "medium": "water", "name": "Skiff", "recipe": {"archetype": "hull", "axles": null, "body": "none", "cab_h": 0.0, "cab_len": 0.0, "extra": "none", "hull": "v", "wheel_r": null}, "sim_seat": null}, {"count": 2, "id": "jon-boat", "medium": "water", "name": "Jon boat", "recipe": {"archetype": "hull", "axles": null, "body": "none", "cab_h": 0.0, "cab_len": 0.0, "extra": "none", "hull": "flat", "wheel_r": null}, "sim_seat": null}, {"count": 1, "id": "airboat", "medium": "water", "name": "Airboat", "recipe": {"archetype": "hull", "axles": null, "body": "deck", "cab_h": 0.0, "cab_len": 0.0, "extra": "fan", "hull": "flat", "wheel_r": null}, "sim_seat": null}, {"count": 2, "id": "pontoon", "medium": "water", "name": "Pontoon boat", "recipe": {"archetype": "hull", "axles": null, "body": "rail", "cab_h": 0.0, "cab_len": 0.0, "extra": "none", "hull": "pontoon", "wheel_r": null}, "sim_seat": null}, {"count": 2, "id": "tug", "medium": "water", "name": "Tugboat", "recipe": {"archetype": "hull", "axles": null, "body": "deck", "cab_h": 0.55, "cab_len": 0.4, "extra": "mast", "hull": "v", "wheel_r": null}, "sim_seat": null}, {"count": 1, "id": "push-boat", "medium": "water", "name": "Push boat", "recipe": {"archetype": "hull", "axles": null, "body": "deck", "cab_h": 0.7, "cab_len": 0.45, "extra": "knees", "hull": "barge", "wheel_r": null}, "sim_seat": null}, {"count": 2, "id": "ferry", "medium": "water", "name": "Ferry", "recipe": {"archetype": "hull", "axles": null, "body": "deck", "cab_h": 0.55, "cab_len": 0.55, "extra": "none", "hull": "barge", "wheel_r": null}, "sim_seat": null}, {"count": 1, "id": "fireboat", "medium": "water", "name": "Fireboat", "recipe": {"archetype": "hull", "axles": null, "body": "deck", "cab_h": 0.6, "cab_len": 0.4, "extra": "monitor", "hull": "v", "wheel_r": null}, "sim_seat": null}, {"count": 2, "id": "patrol-boat", "medium": "water", "name": "Patrol boat", "recipe": {"archetype": "hull", "axles": null, "body": "deck", "cab_h": 0.6, "cab_len": 0.35, "extra": "lightbar", "hull": "v", "wheel_r": null}, "sim_seat": null}, {"count": 2, "id": "work-barge", "medium": "water", "name": "Work barge", "recipe": {"archetype": "hull", "axles": null, "body": "deck", "cab_h": 0.4, "cab_len": 0.15, "extra": "crane", "hull": "barge", "wheel_r": null}, "sim_seat": null}, {"count": 1, "id": "dredge-tender", "medium": "water", "name": "Dredge tender", "recipe": {"archetype": "hull", "axles": null, "body": "deck", "cab_h": 0.6, "cab_len": 0.35, "extra": "crane", "hull": "v", "wheel_r": null}, "sim_seat": null}, {"count": 1, "id": "kayak", "medium": "water", "name": "Kayak", "recipe": {"archetype": "paddle", "axles": null, "body": "none", "cab_h": 0.0, "cab_len": 0.0, "extra": "none", "hull": "tub", "wheel_r": null}, "sim_seat": null}, {"count": 1, "id": "canoe", "medium": "water", "name": "Canoe", "recipe": {"archetype": "paddle", "axles": null, "body": "none", "cab_h": 0.0, "cab_len": 0.0, "extra": "none", "hull": "tub", "wheel_r": null}, "sim_seat": null}], "fleet": [{"accel_ms2": 3.4, "dims_m": {"height": 1.48, "length": 4.0, "width": 1.75}, "family": "compact-car", "id": "compact-car.hatchback", "mass_kg": 1200, "medium": "land", "name": "Compact hatchback", "palette": {"accent": "glass.tint", "body": "paint.blue", "trim": "trim.dark"}, "provenance": "AUTHORED", "recipe": {"archetype": "car", "axles": 2, "body": "none", "cab_h": 0.45, "cab_len": 0.5, "extra": "none", "hull": null, "wheel_r": 0.2}, "seats": 5, "sim_seat": null, "top_speed_kmh": 150, "top_speed_ms": 41.667, "trades": null, "turn_radius_m": 5.2}, {"accel_ms2": 3.2, "dims_m": {"height": 1.45, "length": 4.5, "width": 1.8}, "family": "compact-car", "id": "compact-car.sedan", "mass_kg": 1350, "medium": "land", "name": "Compact sedan", "palette": {"accent": "glass.tint", "body": "paint.silver", "trim": "trim.dark"}, "provenance": "AUTHORED", "recipe": {"archetype": "car", "axles": 2, "body": "none", "cab_h": 0.45, "cab_len": 0.5, "extra": "none", "hull": null, "wheel_r": 0.2}, "seats": 5, "sim_seat": null, "top_speed_kmh": 160, "top_speed_ms": 44.444, "trades": null, "turn_radius_m": 5.5}, {"accel_ms2": 3.0, "dims_m": {"height": 1.5, "length": 4.6, "width": 1.8}, "family": "compact-car", "id": "compact-car.wagon", "mass_kg": 1450, "medium": "land", "name": "Compact wagon", "palette": {"accent": "glass.tint", "body": "paint.green", "trim": "trim.dark"}, "provenance": "AUTHORED", "recipe": {"archetype": "car", "axles": 2, "body": "none", "cab_h": 0.45, "cab_len": 0.5, "extra": "none", "hull": null, "wheel_r": 0.2}, "seats": 5, "sim_seat": null, "top_speed_kmh": 150, "top_speed_ms": 41.667, "trades": null, "turn_radius_m": 5.6}, {"accel_ms2": 2.4, "dims_m": {"height": 2.3, "length": 5.4, "width": 2.0}, "family": "van", "id": "van.cargo-van", "mass_kg": 2100, "medium": "land", "name": "Cargo van", "palette": {"accent": "glass.tint", "body": "paint.white", "trim": "trim.dark"}, "provenance": "AUTHORED", "recipe": {"archetype": "car", "axles": 2, "body": "none", "cab_h": 0.9, "cab_len": 0.8, "extra": "none", "hull": null, "wheel_r": 0.17}, "seats": 2, "sim_seat": null, "top_speed_kmh": 130, "top_speed_ms": 36.111, "trades": null, "turn_radius_m": 6.4}, {"accel_ms2": 2.3, "dims_m": {"height": 2.2, "length": 5.6, "width": 2.0}, "family": "van", "id": "van.passenger-van", "mass_kg": 2300, "medium": "land", "name": "Passenger van", "palette": {"accent": "glass.tint", "body": "paint.silver", "trim": "trim.dark"}, "provenance": "AUTHORED", "recipe": {"archetype": "car", "axles": 2, "body": "none", "cab_h": 0.9, "cab_len": 0.8, "extra": "none", "hull": null, "wheel_r": 0.17}, "seats": 12, "sim_seat": null, "top_speed_kmh": 130, "top_speed_ms": 36.111, "trades": null, "turn_radius_m": 6.6}, {"accel_ms2": 1.6, "dims_m": {"height": 2.9, "length": 6.2, "width": 2.3}, "family": "van", "id": "van.step-van", "mass_kg": 4200, "medium": "land", "name": "Step van", "palette": {"accent": "glass.tint", "body": "paint.white", "trim": "trim.steel"}, "provenance": "AUTHORED", "recipe": {"archetype": "car", "axles": 2, "body": "none", "cab_h": 0.9, "cab_len": 0.8, "extra": "none", "hull": null, "wheel_r": 0.17}, "seats": 2, "sim_seat": null, "top_speed_kmh": 105, "top_speed_ms": 29.167, "trades": null, "turn_radius_m": 7.4}, {"accel_ms2": 2.8, "dims_m": {"height": 1.9, "length": 5.9, "width": 2.0}, "family": "pickup", "id": "pickup.crew-cab-pickup", "mass_kg": 2400, "medium": "land", "name": "Crew-cab pickup", "palette": {"accent": "glass.tint", "body": "paint.red", "trim": "trim.dark"}, "provenance": "AUTHORED", "recipe": {"archetype": "truck", "axles": 2, "body": "bed", "cab_h": 1.0, "cab_len": 0.55, "extra": "none", "hull": null, "wheel_r": 0.22}, "seats": 5, "sim_seat": null, "top_speed_kmh": 150, "top_speed_ms": 41.667, "trades": null, "turn_radius_m": 7.0}, {"accel_ms2": 3.0, "dims_m": {"height": 1.85, "length": 5.3, "width": 2.0}, "family": "pickup", "id": "pickup.single-cab-pickup", "mass_kg": 2100, "medium": "land", "name": "Single-cab pickup", "palette": {"accent": "glass.tint", "body": "paint.white", "trim": "trim.dark"}, "provenance": "AUTHORED", "recipe": {"archetype": "truck", "axles": 2, "body": "bed", "cab_h": 1.0, "cab_len": 0.55, "extra": "none", "hull": null, "wheel_r": 0.22}, "seats": 3, "sim_seat": null, "top_speed_kmh": 150, "top_speed_ms": 41.667, "trades": null, "turn_radius_m": 6.6}, {"accel_ms2": 2.4, "dims_m": {"height": 2.0, "length": 6.2, "width": 2.1}, "family": "pickup", "id": "pickup.utility-body-pickup", "mass_kg": 3000, "medium": "land", "name": "Utility-body pickup", "palette": {"accent": "mark.hivis", "body": "paint.white", "trim": "trim.steel"}, "provenance": "AUTHORED", "recipe": {"archetype": "truck", "axles": 2, "body": "bed", "cab_h": 1.0, "cab_len": 0.55, "extra": "none", "hull": null, "wheel_r": 0.22}, "seats": 3, "sim_seat": null, "top_speed_kmh": 130, "top_speed_ms": 36.111, "trades": null, "turn_radius_m": 7.4}, {"accel_ms2": 1.6, "dims_m": {"height": 3.2, "length": 7.0, "width": 2.3}, "family": "box-truck", "id": "box-truck.small-box-truck", "mass_kg": 5500, "medium": "land", "name": "Small box truck", "palette": {"accent": "glass.tint", "body": "paint.white", "trim": "trim.dark"}, "provenance": "AUTHORED", "recipe": {"archetype": "truck", "axles": 2, "body": "box", "cab_h": 0.72, "cab_len": 0.28, "extra": "none", "hull": null, "wheel_r": 0.14}, "seats": 3, "sim_seat": null, "top_speed_kmh": 110, "top_speed_ms": 30.556, "trades": null, "turn_radius_m": 8.0}, {"accel_ms2": 1.3, "dims_m": {"height": 3.6, "length": 8.5, "width": 2.5}, "family": "box-truck", "id": "box-truck.medium-box-truck", "mass_kg": 8000, "medium": "land", "name": "Medium box truck", "palette": {"accent": "glass.tint", "body": "paint.white", "trim": "trim.steel"}, "provenance": "AUTHORED", "recipe": {"archetype": "truck", "axles": 2, "body": "box", "cab_h": 0.72, "cab_len": 0.28, "extra": "none", "hull": null, "wheel_r": 0.14}, "seats": 3, "sim_seat": null, "top_speed_kmh": 105, "top_speed_ms": 29.167, "trades": null, "turn_radius_m": 9.0}, {"accel_ms2": 1.2, "dims_m": {"height": 3.7, "length": 9.0, "width": 2.5}, "family": "box-truck", "id": "box-truck.liftgate-box-truck", "mass_kg": 9000, "medium": "land", "name": "Box truck with liftgate", "palette": {"accent": "glass.tint", "body": "paint.silver", "trim": "trim.dark"}, "provenance": "AUTHORED", "recipe": {"archetype": "truck", "axles": 2, "body": "box", "cab_h": 0.72, "cab_len": 0.28, "extra": "none", "hull": null, "wheel_r": 0.14}, "seats": 2, "sim_seat": null, "top_speed_kmh": 100, "top_speed_ms": 27.778, "trades": null, "turn_radius_m": 9.4}, {"accel_ms2": 1.2, "dims_m": {"height": 3.0, "length": 7.2, "width": 2.5}, "family": "dump-truck", "id": "dump-truck.single-axle-dump", "mass_kg": 11000, "medium": "land", "name": "Single-axle dump truck", "palette": {"accent": "glass.tint", "body": "paint.orange", "trim": "trim.dark"}, "provenance": "AUTHORED", "recipe": {"archetype": "truck", "axles": 3, "body": "dump", "cab_h": 0.8, "cab_len": 0.3, "extra": "none", "hull": null, "wheel_r": 0.17}, "seats": 2, "sim_seat": null, "top_speed_kmh": 95, "top_speed_ms": 26.389, "trades": null, "turn_radius_m": 8.2}, {"accel_ms2": 1.0, "dims_m": {"height": 3.3, "length": 9.0, "width": 2.5}, "family": "dump-truck", "id": "dump-truck.tandem-dump", "mass_kg": 16000, "medium": "land", "name": "Tandem dump truck", "palette": {"accent": "glass.tint", "body": "paint.yellow", "trim": "trim.dark"}, "provenance": "AUTHORED", "recipe": {"archetype": "truck", "axles": 3, "body": "dump", "cab_h": 0.8, "cab_len": 0.3, "extra": "none", "hull": null, "wheel_r": 0.17}, "seats": 2, "sim_seat": null, "top_speed_kmh": 90, "top_speed_ms": 25.0, "trades": null, "turn_radius_m": 9.6}, {"accel_ms2": 0.8, "dims_m": {"height": 3.5, "length": 10.0, "width": 2.9}, "family": "dump-truck", "id": "dump-truck.site-dumper", "mass_kg": 22000, "medium": "land", "name": "Articulated site dumper", "palette": {"accent": "glass.tint", "body": "paint.yellow", "trim": "trim.dark"}, "provenance": "AUTHORED", "recipe": {"archetype": "truck", "axles": 3, "body": "dump", "cab_h": 0.8, "cab_len": 0.3, "extra": "none", "hull": null, "wheel_r": 0.17}, "seats": 1, "sim_seat": null, "top_speed_kmh": 55, "top_speed_ms": 15.278, "trades": null, "turn_radius_m": 8.0}, {"accel_ms2": 1.4, "dims_m": {"height": 2.8, "length": 7.5, "width": 2.4}, "family": "flatbed", "id": "flatbed.stake-bed", "mass_kg": 6500, "medium": "land", "name": "Stake-bed truck", "palette": {"accent": "glass.tint", "body": "paint.white", "trim": "trim.steel"}, "provenance": "AUTHORED", "recipe": {"archetype": "truck", "axles": 2, "body": "flat", "cab_h": 0.85, "cab_len": 0.3, "extra": "none", "hull": null, "wheel_r": 0.16}, "seats": 3, "sim_seat": null, "top_speed_kmh": 105, "top_speed_ms": 29.167, "trades": null, "turn_radius_m": 8.4}, {"accel_ms2": 1.3, "dims_m": {"height": 2.9, "length": 8.5, "width": 2.5}, "family": "flatbed", "id": "flatbed.flatbed-truck", "mass_kg": 8000, "medium": "land", "name": "Flatbed truck", "palette": {"accent": "glass.tint", "body": "paint.blue", "trim": "trim.steel"}, "provenance": "AUTHORED", "recipe": {"archetype": "truck", "axles": 2, "body": "flat", "cab_h": 0.85, "cab_len": 0.3, "extra": "none", "hull": null, "wheel_r": 0.16}, "seats": 3, "sim_seat": null, "top_speed_kmh": 100, "top_speed_ms": 27.778, "trades": null, "turn_radius_m": 9.0}, {"accel_ms2": 1.2, "dims_m": {"height": 3.0, "length": 9.0, "width": 2.5}, "family": "flatbed", "id": "flatbed.rollback-flatbed", "mass_kg": 9500, "medium": "land", "name": "Rollback flatbed", "palette": {"accent": "mark.hivis", "body": "paint.red", "trim": "trim.steel"}, "provenance": "AUTHORED", "recipe": {"archetype": "truck", "axles": 2, "body": "flat", "cab_h": 0.85, "cab_len": 0.3, "extra": "none", "hull": null, "wheel_r": 0.16}, "seats": 2, "sim_seat": null, "top_speed_kmh": 100, "top_speed_ms": 27.778, "trades": null, "turn_radius_m": 9.4}, {"accel_ms2": 1.1, "dims_m": {"height": 3.2, "length": 12.2, "width": 2.6}, "family": "bus", "id": "bus.transit-bus", "mass_kg": 12500, "medium": "land", "name": "Transit bus", "palette": {"accent": "glass.tint", "body": "paint.blue", "trim": "trim.dark"}, "provenance": "AUTHORED", "recipe": {"archetype": "bus", "axles": 2, "body": "box", "cab_h": 0.35, "cab_len": 0.12, "extra": "none", "hull": null, "wheel_r": 0.14}, "seats": 40, "sim_seat": null, "top_speed_kmh": 90, "top_speed_ms": 25.0, "trades": null, "turn_radius_m": 12.0}, {"accel_ms2": 1.1, "dims_m": {"height": 3.1, "length": 11.0, "width": 2.4}, "family": "bus", "id": "bus.school-bus", "mass_kg": 11000, "medium": "land", "name": "School bus", "palette": {"accent": "glass.tint", "body": "paint.yellow", "trim": "trim.dark"}, "provenance": "AUTHORED", "recipe": {"archetype": "bus", "axles": 2, "body": "box", "cab_h": 0.35, "cab_len": 0.12, "extra": "none", "hull": null, "wheel_r": 0.14}, "seats": 48, "sim_seat": null, "top_speed_kmh": 90, "top_speed_ms": 25.0, "trades": null, "turn_radius_m": 11.5}, {"accel_ms2": 1.5, "dims_m": {"height": 2.9, "length": 7.5, "width": 2.3}, "family": "bus", "id": "bus.shuttle-bus", "mass_kg": 6000, "medium": "land", "name": "Shuttle bus", "palette": {"accent": "glass.tint", "body": "paint.white", "trim": "trim.dark"}, "provenance": "AUTHORED", "recipe": {"archetype": "bus", "axles": 2, "body": "box", "cab_h": 0.35, "cab_len": 0.12, "extra": "none", "hull": null, "wheel_r": 0.14}, "seats": 16, "sim_seat": null, "top_speed_kmh": 100, "top_speed_ms": 27.778, "trades": null, "turn_radius_m": 8.5}, {"accel_ms2": 1.2, "dims_m": {"height": 3.6, "length": 8.5, "width": 2.5}, "family": "bucket-truck", "id": "bucket-truck.bucket-truck", "mass_kg": 12000, "medium": "land", "name": "Utility bucket truck", "palette": {"accent": "mark.hivis", "body": "paint.white", "trim": "trim.steel"}, "provenance": "AUTHORED", "recipe": {"archetype": "truck", "axles": 2, "body": "boom", "cab_h": 0.75, "cab_len": 0.3, "extra": "lightbar", "hull": null, "wheel_r": 0.15}, "seats": 2, "sim_seat": null, "top_speed_kmh": 100, "top_speed_ms": 27.778, "trades": null, "turn_radius_m": 9.5}, {"accel_ms2": 1.6, "dims_m": {"height": 3.2, "length": 6.8, "width": 2.2}, "family": "bucket-truck", "id": "bucket-truck.bucket-van", "mass_kg": 5500, "medium": "land", "name": "Bucket van", "palette": {"accent": "mark.hivis", "body": "paint.white", "trim": "trim.dark"}, "provenance": "AUTHORED", "recipe": {"archetype": "truck", "axles": 2, "body": "boom", "cab_h": 0.75, "cab_len": 0.3, "extra": "lightbar", "hull": null, "wheel_r": 0.15}, "seats": 2, "sim_seat": null, "top_speed_kmh": 110, "top_speed_ms": 30.556, "trades": null, "turn_radius_m": 7.6}, {"accel_ms2": 1.8, "dims_m": {"height": 2.6, "length": 6.5, "width": 2.3}, "family": "tow-truck", "id": "tow-truck.wheel-lift-tow", "mass_kg": 5000, "medium": "land", "name": "Wheel-lift tow truck", "palette": {"accent": "mark.hivis", "body": "paint.red", "trim": "trim.steel"}, "provenance": "AUTHORED", "recipe": {"archetype": "truck", "axles": 2, "body": "boom", "cab_h": 0.8, "cab_len": 0.4, "extra": "lightbar", "hull": null, "wheel_r": 0.17}, "seats": 2, "sim_seat": null, "top_speed_kmh": 110, "top_speed_ms": 30.556, "trades": null, "turn_radius_m": 7.4}, {"accel_ms2": 1.0, "dims_m": {"height": 3.4, "length": 10.0, "width": 2.6}, "family": "tow-truck", "id": "tow-truck.heavy-wrecker", "mass_kg": 20000, "medium": "land", "name": "Heavy wrecker", "palette": {"accent": "mark.hivis", "body": "paint.black", "trim": "trim.steel"}, "provenance": "AUTHORED", "recipe": {"archetype": "truck", "axles": 2, "body": "boom", "cab_h": 0.8, "cab_len": 0.4, "extra": "lightbar", "hull": null, "wheel_r": 0.17}, "seats": 2, "sim_seat": null, "top_speed_kmh": 90, "top_speed_ms": 25.0, "trades": null, "turn_radius_m": 10.6}, {"accel_ms2": 1.3, "dims_m": {"height": 3.2, "length": 10.0, "width": 2.5}, "family": "fire-engine", "id": "fire-engine.pumper", "mass_kg": 17000, "medium": "land", "name": "Pumper engine", "palette": {"accent": "mark.stripe", "body": "paint.red", "trim": "trim.steel"}, "provenance": "AUTHORED", "recipe": {"archetype": "truck", "axles": 2, "body": "ladder", "cab_h": 0.85, "cab_len": 0.35, "extra": "lightbar", "hull": null, "wheel_r": 0.14}, "seats": 6, "sim_seat": null, "top_speed_kmh": 105, "top_speed_ms": 29.167, "trades": null, "turn_radius_m": 11.0}, {"accel_ms2": 1.0, "dims_m": {"height": 3.5, "length": 12.5, "width": 2.5}, "family": "fire-engine", "id": "fire-engine.aerial-ladder", "mass_kg": 30000, "medium": "land", "name": "Aerial ladder truck", "palette": {"accent": "mark.stripe", "body": "paint.red", "trim": "trim.steel"}, "provenance": "AUTHORED", "recipe": {"archetype": "truck", "axles": 2, "body": "ladder", "cab_h": 0.85, "cab_len": 0.35, "extra": "lightbar", "hull": null, "wheel_r": 0.14}, "seats": 4, "sim_seat": null, "top_speed_kmh": 95, "top_speed_ms": 26.389, "trades": null, "turn_radius_m": 13.0}, {"accel_ms2": 1.9, "dims_m": {"height": 3.0, "length": 7.0, "width": 2.4}, "family": "ambulance", "id": "ambulance.box-ambulance", "mass_kg": 6000, "medium": "land", "name": "Box ambulance", "palette": {"accent": "mark.stripe", "body": "paint.white", "trim": "paint.red"}, "provenance": "AUTHORED", "recipe": {"archetype": "truck", "axles": 2, "body": "box", "cab_h": 0.8, "cab_len": 0.3, "extra": "lightbar", "hull": null, "wheel_r": 0.15}, "seats": 4, "sim_seat": null, "top_speed_kmh": 120, "top_speed_ms": 33.333, "trades": null, "turn_radius_m": 7.8}, {"accel_ms2": 2.2, "dims_m": {"height": 2.7, "length": 6.0, "width": 2.1}, "family": "ambulance", "id": "ambulance.van-ambulance", "mass_kg": 4000, "medium": "land", "name": "Van ambulance", "palette": {"accent": "mark.stripe", "body": "paint.white", "trim": "paint.orange"}, "provenance": "AUTHORED", "recipe": {"archetype": "truck", "axles": 2, "body": "box", "cab_h": 0.8, "cab_len": 0.3, "extra": "lightbar", "hull": null, "wheel_r": 0.15}, "seats": 4, "sim_seat": null, "top_speed_kmh": 130, "top_speed_ms": 36.111, "trades": null, "turn_radius_m": 7.0}, {"accel_ms2": 1.6, "dims_m": {"height": 2.2, "length": 3.4, "width": 1.2}, "family": "forklift", "id": "forklift.counterbalance-forklift", "mass_kg": 4000, "medium": "land", "name": "Counterbalance forklift", "palette": {"accent": "trim.steel", "body": "paint.yellow", "trim": "trim.dark"}, "provenance": "AUTHORED", "recipe": {"archetype": "machine", "axles": 2, "body": "forks", "cab_h": 1.0, "cab_len": 0.55, "extra": "none", "hull": null, "wheel_r": 0.2}, "seats": 1, "sim_seat": {"href": "web/trade_craft_3d.html?hall=teamsters&sim=forklift-run", "id": "forklift-run", "kind": "driving", "name": "Forklift Yard Run", "source": "tasks/registry/tasks.json#walkaround-forklift-run.launch.href"}, "top_speed_kmh": 20, "top_speed_ms": 5.556, "trades": {"halls": ["teamsters", "heavy-equip", "operating-eng", "laborers", "marine-terminal"], "source": "sims/registry/sims.json#sims.forklift-run.halls"}, "turn_radius_m": 2.2}, {"accel_ms2": 1.4, "dims_m": {"height": 2.7, "length": 4.8, "width": 2.1}, "family": "forklift", "id": "forklift.rough-terrain-forklift", "mass_kg": 7500, "medium": "land", "name": "Rough-terrain forklift", "palette": {"accent": "trim.steel", "body": "paint.orange", "trim": "trim.dark"}, "provenance": "AUTHORED", "recipe": {"archetype": "machine", "axles": 2, "body": "forks", "cab_h": 1.0, "cab_len": 0.55, "extra": "none", "hull": null, "wheel_r": 0.2}, "seats": 1, "sim_seat": {"href": "web/trade_craft_3d.html?hall=teamsters&sim=forklift-run", "id": "forklift-run", "kind": "driving", "name": "Forklift Yard Run", "source": "tasks/registry/tasks.json#walkaround-forklift-run.launch.href"}, "top_speed_kmh": 25, "top_speed_ms": 6.944, "trades": {"halls": ["teamsters", "heavy-equip", "operating-eng", "laborers", "marine-terminal"], "source": "sims/registry/sims.json#sims.forklift-run.halls"}, "turn_radius_m": 3.6}, {"accel_ms2": 1.4, "dims_m": {"height": 2.3, "length": 2.6, "width": 1.1}, "family": "forklift", "id": "forklift.reach-forklift", "mass_kg": 3000, "medium": "land", "name": "Warehouse reach forklift", "palette": {"accent": "trim.steel", "body": "paint.blue", "trim": "trim.dark"}, "provenance": "AUTHORED", "recipe": {"archetype": "machine", "axles": 2, "body": "forks", "cab_h": 1.0, "cab_len": 0.55, "extra": "none", "hull": null, "wheel_r": 0.2}, "seats": 1, "sim_seat": {"href": "web/trade_craft_3d.html?hall=teamsters&sim=forklift-run", "id": "forklift-run", "kind": "driving", "name": "Forklift Yard Run", "source": "tasks/registry/tasks.json#walkaround-forklift-run.launch.href"}, "top_speed_kmh": 12, "top_speed_ms": 3.333, "trades": {"halls": ["teamsters", "heavy-equip", "operating-eng", "laborers", "marine-terminal"], "source": "sims/registry/sims.json#sims.forklift-run.halls"}, "turn_radius_m": 1.8}, {"accel_ms2": 1.6, "dims_m": {"height": 2.0, "length": 3.4, "width": 1.8}, "family": "skid-steer", "id": "skid-steer.wheeled-skid-steer", "mass_kg": 3000, "medium": "land", "name": "Wheeled skid steer", "palette": {"accent": "trim.steel", "body": "paint.yellow", "trim": "trim.dark"}, "provenance": "AUTHORED", "recipe": {"archetype": "machine", "axles": 2, "body": "bucket", "cab_h": 1.0, "cab_len": 0.6, "extra": "none", "hull": null, "wheel_r": 0.25}, "seats": 1, "sim_seat": null, "top_speed_kmh": 15, "top_speed_ms": 4.167, "trades": null, "turn_radius_m": 1.4}, {"accel_ms2": 1.3, "dims_m": {"height": 2.1, "length": 3.6, "width": 1.9}, "family": "skid-steer", "id": "skid-steer.tracked-loader", "mass_kg": 4200, "medium": "land", "name": "Compact tracked loader", "palette": {"accent": "trim.steel", "body": "paint.orange", "trim": "trim.dark"}, "provenance": "AUTHORED", "recipe": {"archetype": "machine", "axles": 2, "body": "bucket", "cab_h": 1.0, "cab_len": 0.6, "extra": "none", "hull": null, "wheel_r": 0.25}, "seats": 1, "sim_seat": null, "top_speed_kmh": 12, "top_speed_ms": 3.333, "trades": null, "turn_radius_m": 1.4}, {"accel_ms2": 0.6, "dims_m": {"height": 3.0, "length": 9.5, "width": 3.0}, "family": "excavator", "id": "excavator.crawler-excavator", "mass_kg": 21000, "medium": "land", "name": "Crawler excavator", "palette": {"accent": "trim.steel", "body": "paint.yellow", "trim": "trim.dark"}, "provenance": "AUTHORED", "recipe": {"archetype": "machine", "axles": 2, "body": "arm", "cab_h": 0.55, "cab_len": 0.4, "extra": "none", "hull": null, "wheel_r": 0.12}, "seats": 1, "sim_seat": {"href": "web/trade_craft_3d.html?hall=operating-eng&sim=excavator-trench", "id": "excavator-trench", "kind": "machine", "name": "Excavator Trench Cut", "source": "tasks/registry/tasks.json#walkaround-excavator-trench.launch.href"}, "top_speed_kmh": 5, "top_speed_ms": 1.389, "trades": {"halls": ["operating-eng", "shoring", "laborers", "demolition"], "source": "sims/registry/sims.json#sims.excavator-trench.halls"}, "turn_radius_m": 3.0}, {"accel_ms2": 0.7, "dims_m": {"height": 2.5, "length": 4.6, "width": 1.8}, "family": "excavator", "id": "excavator.mini-excavator", "mass_kg": 3500, "medium": "land", "name": "Mini excavator", "palette": {"accent": "trim.steel", "body": "paint.orange", "trim": "trim.dark"}, "provenance": "AUTHORED", "recipe": {"archetype": "machine", "axles": 2, "body": "arm", "cab_h": 0.55, "cab_len": 0.4, "extra": "none", "hull": null, "wheel_r": 0.12}, "seats": 1, "sim_seat": {"href": "web/trade_craft_3d.html?hall=operating-eng&sim=excavator-trench", "id": "excavator-trench", "kind": "machine", "name": "Excavator Trench Cut", "source": "tasks/registry/tasks.json#walkaround-excavator-trench.launch.href"}, "top_speed_kmh": 4, "top_speed_ms": 1.111, "trades": {"halls": ["operating-eng", "shoring", "laborers", "demolition"], "source": "sims/registry/sims.json#sims.excavator-trench.halls"}, "turn_radius_m": 1.6}, {"accel_ms2": 0.7, "dims_m": {"height": 3.4, "length": 18.0, "width": 2.6}, "family": "excavator-transport", "id": "excavator-transport.lowboy-tractor", "mass_kg": 30000, "medium": "land", "name": "Lowboy tractor-trailer", "palette": {"accent": "mark.hivis", "body": "paint.navy", "trim": "trim.steel"}, "provenance": "AUTHORED", "recipe": {"archetype": "truck", "axles": 4, "body": "lowboy", "cab_h": 0.9, "cab_len": 0.2, "extra": "none", "hull": null, "wheel_r": 0.13}, "seats": 2, "sim_seat": null, "top_speed_kmh": 85, "top_speed_ms": 23.611, "trades": null, "turn_radius_m": 14.0}, {"accel_ms2": 0.9, "dims_m": {"height": 3.2, "length": 13.0, "width": 2.5}, "family": "excavator-transport", "id": "excavator-transport.tag-trailer-rig", "mass_kg": 18000, "medium": "land", "name": "Tag-trailer equipment rig", "palette": {"accent": "mark.hivis", "body": "paint.grey", "trim": "trim.steel"}, "provenance": "AUTHORED", "recipe": {"archetype": "truck", "axles": 4, "body": "lowboy", "cab_h": 0.9, "cab_len": 0.2, "extra": "none", "hull": null, "wheel_r": 0.13}, "seats": 2, "sim_seat": null, "top_speed_kmh": 90, "top_speed_ms": 25.0, "trades": null, "turn_radius_m": 12.0}, {"accel_ms2": 1.0, "dims_m": {"height": 3.1, "length": 7.5, "width": 2.4}, "family": "street-sweeper", "id": "street-sweeper.mechanical-sweeper", "mass_kg": 11000, "medium": "land", "name": "Mechanical broom sweeper", "palette": {"accent": "mark.hivis", "body": "paint.white", "trim": "trim.dark"}, "provenance": "AUTHORED", "recipe": {"archetype": "truck", "axles": 2, "body": "broom", "cab_h": 0.85, "cab_len": 0.35, "extra": "lightbar", "hull": null, "wheel_r": 0.16}, "seats": 1, "sim_seat": null, "top_speed_kmh": 60, "top_speed_ms": 16.667, "trades": null, "turn_radius_m": 7.0}, {"accel_ms2": 1.2, "dims_m": {"height": 2.1, "length": 4.5, "width": 1.3}, "family": "street-sweeper", "id": "street-sweeper.compact-sweeper", "mass_kg": 3000, "medium": "land", "name": "Compact sweeper", "palette": {"accent": "mark.hivis", "body": "paint.green", "trim": "trim.dark"}, "provenance": "AUTHORED", "recipe": {"archetype": "truck", "axles": 2, "body": "broom", "cab_h": 0.85, "cab_len": 0.35, "extra": "lightbar", "hull": null, "wheel_r": 0.16}, "seats": 1, "sim_seat": null, "top_speed_kmh": 40, "top_speed_ms": 11.111, "trades": null, "turn_radius_m": 3.8}, {"accel_ms2": 0.5, "dims_m": {"height": 2.6, "length": 8.5, "width": 2.4}, "family": "boom-lift", "id": "boom-lift.telescopic-boom-lift", "mass_kg": 13000, "medium": "land", "name": "Telescopic boom lift", "palette": {"accent": "trim.steel", "body": "paint.orange", "trim": "trim.dark"}, "provenance": "AUTHORED", "recipe": {"archetype": "machine", "axles": 2, "body": "boom", "cab_h": 0.45, "cab_len": 0.3, "extra": "none", "hull": null, "wheel_r": 0.18}, "seats": 2, "sim_seat": {"href": "web/trade_craft_3d.html?hall=electricians&sim=boom-lift", "id": "boom-lift", "kind": "machine", "name": "Boom Lift Basket Work", "source": "tasks/registry/tasks.json#walkaround-boom-lift.launch.href"}, "top_speed_kmh": 6, "top_speed_ms": 1.667, "trades": {"halls": ["electricians", "glaziers", "window-glazing", "painters", "ironworkers", "steel-erectors", "sheetmetal", "insulators"], "source": "sims/registry/sims.json#sims.boom-lift.halls"}, "turn_radius_m": 4.5}, {"accel_ms2": 2.0, "dims_m": {"height": 1.9, "length": 3.0, "width": 1.4}, "family": "utility-cart", "id": "utility-cart.site-utility-cart", "mass_kg": 700, "medium": "land", "name": "Site utility cart", "palette": {"accent": "paint.tan", "body": "paint.green", "trim": "trim.dark"}, "provenance": "AUTHORED", "recipe": {"archetype": "car", "axles": 2, "body": "bed", "cab_h": 0.9, "cab_len": 0.45, "extra": "none", "hull": null, "wheel_r": 0.16}, "seats": 2, "sim_seat": null, "top_speed_kmh": 30, "top_speed_ms": 8.333, "trades": null, "turn_radius_m": 3.4}, {"accel_ms2": 2.2, "dims_m": {"height": 1.8, "length": 2.6, "width": 1.2}, "family": "utility-cart", "id": "utility-cart.campus-cart", "mass_kg": 450, "medium": "land", "name": "Campus cart", "palette": {"accent": "paint.tan", "body": "paint.white", "trim": "trim.dark"}, "provenance": "AUTHORED", "recipe": {"archetype": "car", "axles": 2, "body": "bed", "cab_h": 0.9, "cab_len": 0.45, "extra": "none", "hull": null, "wheel_r": 0.16}, "seats": 2, "sim_seat": null, "top_speed_kmh": 25, "top_speed_ms": 6.944, "trades": null, "turn_radius_m": 3.0}, {"accel_ms2": 1.2, "dims_m": {"height": 2.6, "length": 3.8, "width": 1.9}, "family": "tractor", "id": "tractor.utility-tractor", "mass_kg": 3200, "medium": "land", "name": "Utility tractor", "palette": {"accent": "paint.yellow", "body": "paint.green", "trim": "trim.dark"}, "provenance": "AUTHORED", "recipe": {"archetype": "machine", "axles": 2, "body": "none", "cab_h": 1.0, "cab_len": 0.35, "extra": "none", "hull": null, "wheel_r": 0.38}, "seats": 1, "sim_seat": null, "top_speed_kmh": 35, "top_speed_ms": 9.722, "trades": null, "turn_radius_m": 3.8}, {"accel_ms2": 1.6, "dims_m": {"height": 1.1, "length": 1.8, "width": 0.6}, "family": "bicycle", "id": "bicycle.city-bicycle", "mass_kg": 16, "medium": "land", "name": "City bicycle", "palette": {"accent": "trim.steel", "body": "paint.teal", "trim": "trim.dark"}, "provenance": "AUTHORED", "recipe": {"archetype": "cycle", "axles": 2, "body": "none", "cab_h": 0.0, "cab_len": 0.0, "extra": "none", "hull": null, "wheel_r": 0.33}, "seats": 1, "sim_seat": null, "top_speed_kmh": 25, "top_speed_ms": 6.944, "trades": null, "turn_radius_m": 2.6}, {"accel_ms2": 1.2, "dims_m": {"height": 1.1, "length": 2.5, "width": 0.7}, "family": "bicycle", "id": "bicycle.cargo-bicycle", "mass_kg": 35, "medium": "land", "name": "Cargo bicycle", "palette": {"accent": "trim.steel", "body": "paint.orange", "trim": "trim.dark"}, "provenance": "AUTHORED", "recipe": {"archetype": "cycle", "axles": 2, "body": "none", "cab_h": 0.0, "cab_len": 0.0, "extra": "none", "hull": null, "wheel_r": 0.33}, "seats": 1, "sim_seat": null, "top_speed_kmh": 20, "top_speed_ms": 5.556, "trades": null, "turn_radius_m": 3.2}, {"accel_ms2": 2.0, "dims_m": {"height": 1.0, "length": 1.7, "width": 0.45}, "family": "bicycle", "id": "bicycle.road-bicycle", "mass_kg": 9, "medium": "land", "name": "Road bicycle", "palette": {"accent": "trim.steel", "body": "paint.red", "trim": "trim.dark"}, "provenance": "AUTHORED", "recipe": {"archetype": "cycle", "axles": 2, "body": "none", "cab_h": 0.0, "cab_len": 0.0, "extra": "none", "hull": null, "wheel_r": 0.33}, "seats": 1, "sim_seat": null, "top_speed_kmh": 35, "top_speed_ms": 9.722, "trades": null, "turn_radius_m": 3.0}, {"accel_ms2": 1.4, "dims_m": {"height": 1.15, "length": 1.1, "width": 0.45}, "family": "scooter", "id": "scooter.kick-scooter", "mass_kg": 8, "medium": "land", "name": "Kick scooter", "palette": {"accent": "trim.dark", "body": "paint.black", "trim": "trim.steel"}, "provenance": "AUTHORED", "recipe": {"archetype": "cycle", "axles": 2, "body": "rail", "cab_h": 0.0, "cab_len": 0.0, "extra": "none", "hull": null, "wheel_r": 0.22}, "seats": 1, "sim_seat": null, "top_speed_kmh": 15, "top_speed_ms": 4.167, "trades": null, "turn_radius_m": 1.8}, {"accel_ms2": 1.8, "dims_m": {"height": 1.2, "length": 1.15, "width": 0.5}, "family": "scooter", "id": "scooter.electric-scooter", "mass_kg": 14, "medium": "land", "name": "Stand-up electric scooter", "palette": {"accent": "trim.steel", "body": "paint.grey", "trim": "trim.dark"}, "provenance": "AUTHORED", "recipe": {"archetype": "cycle", "axles": 2, "body": "rail", "cab_h": 0.0, "cab_len": 0.0, "extra": "none", "hull": null, "wheel_r": 0.22}, "seats": 1, "sim_seat": null, "top_speed_kmh": 25, "top_speed_ms": 6.944, "trades": null, "turn_radius_m": 2.0}, {"accel_ms2": 2.2, "dims_m": {"height": 1.15, "length": 1.8, "width": 0.7}, "family": "scooter", "id": "scooter.moped", "mass_kg": 90, "medium": "land", "name": "Step-through moped", "palette": {"accent": "trim.steel", "body": "paint.blue", "trim": "trim.dark"}, "provenance": "AUTHORED", "recipe": {"archetype": "cycle", "axles": 2, "body": "rail", "cab_h": 0.0, "cab_len": 0.0, "extra": "none", "hull": null, "wheel_r": 0.22}, "seats": 2, "sim_seat": null, "top_speed_kmh": 45, "top_speed_ms": 12.5, "trades": null, "turn_radius_m": 2.6}, {"accel_ms2": 2.4, "dims_m": {"height": 1.4, "length": 5.5, "width": 2.1}, "family": "skiff", "id": "skiff.center-console-skiff", "mass_kg": 700, "medium": "water", "name": "Center-console skiff", "palette": {"accent": "paint.teal", "body": "hull.white", "trim": "trim.dark"}, "provenance": "AUTHORED", "recipe": {"archetype": "hull", "axles": null, "body": "none", "cab_h": 0.0, "cab_len": 0.0, "extra": "none", "hull": "v", "wheel_r": null}, "seats": 4, "sim_seat": null, "top_speed_kmh": 55, "top_speed_ms": 15.278, "trades": null, "turn_radius_m": 9.0}, {"accel_ms2": 2.4, "dims_m": {"height": 1.2, "length": 5.0, "width": 1.9}, "family": "skiff", "id": "skiff.flats-skiff", "mass_kg": 550, "medium": "water", "name": "Shallow-water skiff", "palette": {"accent": "paint.tan", "body": "hull.grey", "trim": "trim.dark"}, "provenance": "AUTHORED", "recipe": {"archetype": "hull", "axles": null, "body": "none", "cab_h": 0.0, "cab_len": 0.0, "extra": "none", "hull": "v", "wheel_r": null}, "seats": 3, "sim_seat": null, "top_speed_kmh": 50, "top_speed_ms": 13.889, "trades": null, "turn_radius_m": 8.0}, {"accel_ms2": 1.8, "dims_m": {"height": 0.9, "length": 3.7, "width": 1.4}, "family": "jon-boat", "id": "jon-boat.jon-boat-small", "mass_kg": 150, "medium": "water", "name": "Small jon boat", "palette": {"accent": "trim.dark", "body": "hull.green", "trim": "trim.steel"}, "provenance": "AUTHORED", "recipe": {"archetype": "hull", "axles": null, "body": "none", "cab_h": 0.0, "cab_len": 0.0, "extra": "none", "hull": "flat", "wheel_r": null}, "seats": 2, "sim_seat": null, "top_speed_kmh": 25, "top_speed_ms": 6.944, "trades": null, "turn_radius_m": 6.0}, {"accel_ms2": 1.8, "dims_m": {"height": 1.0, "length": 5.5, "width": 1.9}, "family": "jon-boat", "id": "jon-boat.jon-boat-large", "mass_kg": 350, "medium": "water", "name": "Large jon boat", "palette": {"accent": "trim.dark", "body": "hull.grey", "trim": "trim.steel"}, "provenance": "AUTHORED", "recipe": {"archetype": "hull", "axles": null, "body": "none", "cab_h": 0.0, "cab_len": 0.0, "extra": "none", "hull": "flat", "wheel_r": null}, "seats": 4, "sim_seat": null, "top_speed_kmh": 35, "top_speed_ms": 9.722, "trades": null, "turn_radius_m": 8.0}, {"accel_ms2": 2.6, "dims_m": {"height": 2.8, "length": 5.5, "width": 2.4}, "family": "airboat", "id": "airboat.airboat", "mass_kg": 900, "medium": "water", "name": "Airboat", "palette": {"accent": "trim.steel", "body": "hull.white", "trim": "trim.dark"}, "provenance": "AUTHORED", "recipe": {"archetype": "hull", "axles": null, "body": "deck", "cab_h": 0.0, "cab_len": 0.0, "extra": "fan", "hull": "flat", "wheel_r": null}, "seats": 6, "sim_seat": null, "top_speed_kmh": 55, "top_speed_ms": 15.278, "trades": null, "turn_radius_m": 12.0}, {"accel_ms2": 1.4, "dims_m": {"height": 1.9, "length": 6.5, "width": 2.5}, "family": "pontoon", "id": "pontoon.pontoon-small", "mass_kg": 1100, "medium": "water", "name": "Small pontoon boat", "palette": {"accent": "paint.navy", "body": "hull.white", "trim": "trim.steel"}, "provenance": "AUTHORED", "recipe": {"archetype": "hull", "axles": null, "body": "rail", "cab_h": 0.0, "cab_len": 0.0, "extra": "none", "hull": "pontoon", "wheel_r": null}, "seats": 8, "sim_seat": null, "top_speed_kmh": 35, "top_speed_ms": 9.722, "trades": null, "turn_radius_m": 11.0}, {"accel_ms2": 1.3, "dims_m": {"height": 2.0, "length": 8.2, "width": 2.6}, "family": "pontoon", "id": "pontoon.pontoon-large", "mass_kg": 1500, "medium": "water", "name": "Large pontoon boat", "palette": {"accent": "paint.tan", "body": "hull.white", "trim": "trim.steel"}, "provenance": "AUTHORED", "recipe": {"archetype": "hull", "axles": null, "body": "rail", "cab_h": 0.0, "cab_len": 0.0, "extra": "none", "hull": "pontoon", "wheel_r": null}, "seats": 12, "sim_seat": null, "top_speed_kmh": 40, "top_speed_ms": 11.111, "trades": null, "turn_radius_m": 13.0}, {"accel_ms2": 0.35, "dims_m": {"height": 11.0, "length": 26.0, "width": 10.0}, "family": "tug", "id": "tug.harbor-tug", "mass_kg": 450000, "medium": "water", "name": "Harbor tug", "palette": {"accent": "hull.white", "body": "hull.red", "trim": "hull.black"}, "provenance": "AUTHORED", "recipe": {"archetype": "hull", "axles": null, "body": "deck", "cab_h": 0.55, "cab_len": 0.4, "extra": "mast", "hull": "v", "wheel_r": null}, "seats": 6, "sim_seat": null, "top_speed_kmh": 22, "top_speed_ms": 6.111, "trades": null, "turn_radius_m": 45.0}, {"accel_ms2": 0.4, "dims_m": {"height": 8.0, "length": 16.0, "width": 6.0}, "family": "tug", "id": "tug.small-tug", "mass_kg": 150000, "medium": "water", "name": "Small tug", "palette": {"accent": "hull.white", "body": "hull.black", "trim": "hull.red"}, "provenance": "AUTHORED", "recipe": {"archetype": "hull", "axles": null, "body": "deck", "cab_h": 0.55, "cab_len": 0.4, "extra": "mast", "hull": "v", "wheel_r": null}, "seats": 4, "sim_seat": null, "top_speed_kmh": 20, "top_speed_ms": 5.556, "trades": null, "turn_radius_m": 32.0}, {"accel_ms2": 0.3, "dims_m": {"height": 12.0, "length": 22.0, "width": 9.0}, "family": "push-boat", "id": "push-boat.river-push-boat", "mass_kg": 400000, "medium": "water", "name": "River push boat", "palette": {"accent": "hull.red", "body": "hull.white", "trim": "hull.black"}, "provenance": "AUTHORED", "recipe": {"archetype": "hull", "axles": null, "body": "deck", "cab_h": 0.7, "cab_len": 0.45, "extra": "knees", "hull": "barge", "wheel_r": null}, "seats": 6, "sim_seat": null, "top_speed_kmh": 18, "top_speed_ms": 5.0, "trades": null, "turn_radius_m": 50.0}, {"accel_ms2": 0.3, "dims_m": {"height": 8.0, "length": 30.0, "width": 9.0}, "family": "ferry", "id": "ferry.passenger-ferry", "mass_kg": 180000, "medium": "water", "name": "Passenger ferry", "palette": {"accent": "glass.tint", "body": "hull.white", "trim": "paint.navy"}, "provenance": "AUTHORED", "recipe": {"archetype": "hull", "axles": null, "body": "deck", "cab_h": 0.55, "cab_len": 0.55, "extra": "none", "hull": "barge", "wheel_r": null}, "seats": 150, "sim_seat": null, "top_speed_kmh": 30, "top_speed_ms": 8.333, "trades": null, "turn_radius_m": 70.0}, {"accel_ms2": 0.15, "dims_m": {"height": 11.0, "length": 60.0, "width": 16.0}, "family": "ferry", "id": "ferry.vehicle-ferry", "mass_kg": 1200000, "medium": "water", "name": "Vehicle ferry", "palette": {"accent": "glass.tint", "body": "hull.white", "trim": "paint.green"}, "provenance": "AUTHORED", "recipe": {"archetype": "hull", "axles": null, "body": "deck", "cab_h": 0.55, "cab_len": 0.55, "extra": "none", "hull": "barge", "wheel_r": null}, "seats": 300, "sim_seat": null, "top_speed_kmh": 22, "top_speed_ms": 6.111, "trades": null, "turn_radius_m": 140.0}, {"accel_ms2": 0.5, "dims_m": {"height": 7.0, "length": 20.0, "width": 6.0}, "family": "fireboat", "id": "fireboat.fireboat", "mass_kg": 120000, "medium": "water", "name": "Harbor fireboat", "palette": {"accent": "trim.steel", "body": "paint.red", "trim": "hull.white"}, "provenance": "AUTHORED", "recipe": {"archetype": "hull", "axles": null, "body": "deck", "cab_h": 0.6, "cab_len": 0.4, "extra": "monitor", "hull": "v", "wheel_r": null}, "seats": 8, "sim_seat": null, "top_speed_kmh": 35, "top_speed_ms": 9.722, "trades": null, "turn_radius_m": 38.0}, {"accel_ms2": 2.0, "dims_m": {"height": 2.8, "length": 8.5, "width": 2.8}, "family": "patrol-boat", "id": "patrol-boat.patrol-boat-small", "mass_kg": 4000, "medium": "water", "name": "Small patrol boat", "palette": {"accent": "mark.stripe", "body": "hull.grey", "trim": "paint.navy"}, "provenance": "AUTHORED", "recipe": {"archetype": "hull", "axles": null, "body": "deck", "cab_h": 0.6, "cab_len": 0.35, "extra": "lightbar", "hull": "v", "wheel_r": null}, "seats": 4, "sim_seat": null, "top_speed_kmh": 60, "top_speed_ms": 16.667, "trades": null, "turn_radius_m": 16.0}, {"accel_ms2": 1.4, "dims_m": {"height": 4.0, "length": 13.0, "width": 4.0}, "family": "patrol-boat", "id": "patrol-boat.patrol-boat-large", "mass_kg": 12000, "medium": "water", "name": "Harbor patrol boat", "palette": {"accent": "mark.stripe", "body": "hull.white", "trim": "paint.navy"}, "provenance": "AUTHORED", "recipe": {"archetype": "hull", "axles": null, "body": "deck", "cab_h": 0.6, "cab_len": 0.35, "extra": "lightbar", "hull": "v", "wheel_r": null}, "seats": 6, "sim_seat": null, "top_speed_kmh": 55, "top_speed_ms": 15.278, "trades": null, "turn_radius_m": 24.0}, {"accel_ms2": 0.1, "dims_m": {"height": 3.0, "length": 30.0, "width": 10.0}, "family": "work-barge", "id": "work-barge.deck-barge", "mass_kg": 250000, "medium": "water", "name": "Deck barge", "palette": {"accent": "paint.yellow", "body": "hull.grey", "trim": "hull.black"}, "provenance": "AUTHORED", "recipe": {"archetype": "hull", "axles": null, "body": "deck", "cab_h": 0.4, "cab_len": 0.15, "extra": "crane", "hull": "barge", "wheel_r": null}, "seats": 2, "sim_seat": null, "top_speed_kmh": 6, "top_speed_ms": 1.667, "trades": null, "turn_radius_m": 80.0}, {"accel_ms2": 0.08, "dims_m": {"height": 12.0, "length": 36.0, "width": 14.0}, "family": "work-barge", "id": "work-barge.crane-barge", "mass_kg": 450000, "medium": "water", "name": "Crane work barge", "palette": {"accent": "paint.yellow", "body": "hull.grey", "trim": "hull.black"}, "provenance": "AUTHORED", "recipe": {"archetype": "hull", "axles": null, "body": "deck", "cab_h": 0.4, "cab_len": 0.15, "extra": "crane", "hull": "barge", "wheel_r": null}, "seats": 4, "sim_seat": null, "top_speed_kmh": 5, "top_speed_ms": 1.389, "trades": null, "turn_radius_m": 100.0}, {"accel_ms2": 0.8, "dims_m": {"height": 4.5, "length": 12.0, "width": 4.0}, "family": "dredge-tender", "id": "dredge-tender.dredge-tender", "mass_kg": 15000, "medium": "water", "name": "Dredge tender", "palette": {"accent": "paint.yellow", "body": "hull.white", "trim": "paint.orange"}, "provenance": "AUTHORED", "recipe": {"archetype": "hull", "axles": null, "body": "deck", "cab_h": 0.6, "cab_len": 0.35, "extra": "crane", "hull": "v", "wheel_r": null}, "seats": 4, "sim_seat": null, "top_speed_kmh": 25, "top_speed_ms": 6.944, "trades": null, "turn_radius_m": 24.0}, {"accel_ms2": 0.9, "dims_m": {"height": 0.4, "length": 3.6, "width": 0.8}, "family": "kayak", "id": "kayak.sit-on-kayak", "mass_kg": 25, "medium": "water", "name": "Sit-on-top kayak", "palette": {"accent": "paint.orange", "body": "paint.yellow", "trim": "trim.dark"}, "provenance": "AUTHORED", "recipe": {"archetype": "paddle", "axles": null, "body": "none", "cab_h": 0.0, "cab_len": 0.0, "extra": "none", "hull": "tub", "wheel_r": null}, "seats": 1, "sim_seat": null, "top_speed_kmh": 8, "top_speed_ms": 2.222, "trades": null, "turn_radius_m": 3.0}, {"accel_ms2": 0.7, "dims_m": {"height": 0.45, "length": 5.0, "width": 0.9}, "family": "canoe", "id": "canoe.touring-canoe", "mass_kg": 30, "medium": "water", "name": "Touring canoe", "palette": {"accent": "paint.tan", "body": "paint.green", "trim": "trim.dark"}, "provenance": "AUTHORED", "recipe": {"archetype": "paddle", "axles": null, "body": "none", "cab_h": 0.0, "cab_len": 0.0, "extra": "none", "hull": "tub", "wheel_r": null}, "seats": 2, "sim_seat": null, "top_speed_kmh": 7, "top_speed_ms": 1.944, "trades": null, "turn_radius_m": 4.0}], "honesty": "Generic vehicle and watercraft types only: no makes, models, brands or logos. Every dimension, mass, speed, acceleration, turning and seat figure is AUTHORED - a plausible arcade figure typed for a generic type, not measured and not the specification of any real machine. Driving here is play, not training: only the entries linked to an existing training seat open that seat, and no drive in the fleet enters a completion record.", "pack": "smartcitix-fleet", "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)", "provenance": "AUTHORED", "source_stamp": "fd6a0d9f7fa0c263", "units": {"accel_ms2": "m/s^2", "dims_m": "metres", "mass_kg": "kilograms", "top_speed_kmh": "km/h (AUTHORED)", "top_speed_ms": "m/s, DERIVED = top_speed_kmh / 3.6", "turn_radius_m": "metres at low speed"}}</script>
+<script type="application/json" id="fleet-i18n">{"ar": {"dir": "rtl", "language": "العربية", "strings": {"fleet.all": "الكل", "fleet.allfam": "كل الفئات", "fleet.authored": "AUTHORED", "fleet.controls": "W/S أو الأسهم: تسارع ورجوع · A/D: توجيه · المسافة: فرملة · Esc: العودة إلى المنصة", "fleet.drive": "قيادة تجريبية", "fleet.exit": "العودة إلى المنصة", "fleet.family": "الفئة", "fleet.filter": "تصفية", "fleet.float": "طفو تجريبي", "fleet.honesty": "أنواع عامة فقط: لا صانعين ولا طرازات ولا علامات تجارية ولا شعارات. كل رقم AUTHORED لنوع عام، غير مقيس وليس مواصفات أي آلة حقيقية.", "fleet.intro": "كل مركبة برية وقارب عام في سجل الأسطول على منصة دوّارة واحدة. اختر واحدًا، واقرأ مواصفاته، ثم جرّبه على منصة القيادة التجريبية أو في بركة الطفو.", "fleet.land": "بر", "fleet.lede": "المركبات والقوارب: صالة عرض ومضمار تجربة", "fleet.list": "قائمة الأسطول", "fleet.medium.land": "بر", "fleet.medium.water": "ماء", "fleet.next": "التالي", "fleet.noseat": "لا يوجد مقعد تدريب لهذا النوع", "fleet.openseat": "افتح مقعد التدريب", "fleet.play": "القيادة هنا لعب وليست تدريبًا: لا تدخل أبدًا في سجل إتمام ولا تشهد بشيء.", "fleet.prev": "السابق", "fleet.refused": "مرفوض: أرض غير مناسبة لهذه المركبة", "fleet.shown": "معروضة", "fleet.spec.accel": "التسارع", "fleet.spec.dims": "الطول × العرض × الارتفاع", "fleet.spec.family": "الفئة", "fleet.spec.mass": "الكتلة", "fleet.spec.medium": "الوسط", "fleet.spec.seat": "مقعد التدريب", "fleet.spec.seats": "المقاعد", "fleet.spec.top": "السرعة القصوى", "fleet.spec.trades": "المهن التي يخدمها هذا المقعد", "fleet.spec.turn": "نصف قطر الدوران", "fleet.spin": "تدوير المنصة", "fleet.title": "صالة عرض الأسطول", "fleet.water": "ماء"}}, "de": {"dir": "ltr", "language": "Deutsch", "strings": {"fleet.all": "Alle", "fleet.allfam": "Alle Familien", "fleet.authored": "AUTHORED", "fleet.controls": "W/S oder Pfeiltasten: Gas und Rückwärts · A/D: lenken · Leertaste: bremsen · Esc: zurück zur Drehscheibe", "fleet.drive": "Probefahrt", "fleet.exit": "Zurück zur Drehscheibe", "fleet.family": "Familie", "fleet.filter": "Filter", "fleet.float": "Probe schwimmen", "fleet.honesty": "Nur generische Typen: keine Hersteller, Modelle, Marken oder Logos. Jede Zahl ist für einen generischen Typ AUTHORED, nicht gemessen und keine Spezifikation einer echten Maschine.", "fleet.intro": "Jedes generische Land- und Wasserfahrzeug aus dem Fuhrpark-Register auf einer Drehscheibe. Wähle eines aus, lies die Daten und fahre es auf der Testfläche oder lass es im Testteich schwimmen.", "fleet.land": "Land", "fleet.lede": "Fahrzeuge und Wasserfahrzeuge: Ausstellungsraum und Teststrecke", "fleet.list": "Fuhrpark-Liste", "fleet.medium.land": "Land", "fleet.medium.water": "Wasser", "fleet.next": "Weiter", "fleet.noseat": "Kein Trainingsplatz für diesen Typ", "fleet.openseat": "Trainingsplatz öffnen", "fleet.play": "Fahren ist hier Spiel, kein Training: Es gelangt nie in einen Abschlussnachweis und bescheinigt nichts.", "fleet.prev": "Zurück", "fleet.refused": "Abgelehnt: falscher Untergrund für dieses Fahrzeug", "fleet.shown": "angezeigt", "fleet.spec.accel": "Beschleunigung", "fleet.spec.dims": "Länge × Breite × Höhe", "fleet.spec.family": "Familie", "fleet.spec.mass": "Masse", "fleet.spec.medium": "Medium", "fleet.spec.seat": "Trainingsplatz", "fleet.spec.seats": "Sitze", "fleet.spec.top": "Höchstgeschwindigkeit", "fleet.spec.trades": "Gewerke, denen dieser Platz dient", "fleet.spec.turn": "Wendekreisradius", "fleet.spin": "Drehscheibe drehen", "fleet.title": "Der Fuhrpark-Ausstellungsraum", "fleet.water": "Wasser"}}, "en": {"dir": "ltr", "language": "English", "strings": {"fleet.all": "All", "fleet.allfam": "All families", "fleet.authored": "AUTHORED", "fleet.controls": "W/S or arrow keys: throttle and reverse · A/D: steer · Space: brake · Esc: back to the turntable", "fleet.drive": "Test drive", "fleet.exit": "Back to the turntable", "fleet.family": "Family", "fleet.filter": "Filter", "fleet.float": "Test float", "fleet.honesty": "Generic types only: no makes, models, brands or logos. Every figure is AUTHORED for a generic type, not measured and not the specification of any real machine.", "fleet.intro": "Every generic land vehicle and watercraft in the fleet registry, on one turntable. Pick one, read its specs, then take it to the test-drive pad or the test-float pond.", "fleet.land": "Land", "fleet.lede": "Vehicles and watercraft: a showroom and test track", "fleet.list": "Fleet list", "fleet.medium.land": "land", "fleet.medium.water": "water", "fleet.next": "Next", "fleet.noseat": "No training seat for this type", "fleet.openseat": "Open the training seat", "fleet.play": "Driving here is play, not training: it never enters a completion record and certifies nothing.", "fleet.prev": "Previous", "fleet.refused": "Refused: wrong ground for this vehicle", "fleet.shown": "shown", "fleet.spec.accel": "Acceleration", "fleet.spec.dims": "Length × width × height", "fleet.spec.family": "Family", "fleet.spec.mass": "Mass", "fleet.spec.medium": "Medium", "fleet.spec.seat": "Training seat", "fleet.spec.seats": "Seats", "fleet.spec.top": "Top speed", "fleet.spec.trades": "Trades that seat serves", "fleet.spec.turn": "Turning radius", "fleet.spin": "Spin turntable", "fleet.title": "The fleet showroom", "fleet.water": "Water"}}, "es": {"dir": "ltr", "language": "Español", "strings": {"fleet.all": "Todos", "fleet.allfam": "Todas las familias", "fleet.authored": "AUTHORED", "fleet.controls": "W/S o flechas: acelerar y marcha atrás · A/D: girar · Espacio: frenar · Esc: volver a la plataforma", "fleet.drive": "Prueba de conducción", "fleet.exit": "Volver a la plataforma", "fleet.family": "Familia", "fleet.filter": "Filtrar", "fleet.float": "Prueba de flotación", "fleet.honesty": "Solo tipos genéricos: sin fabricantes, modelos, marcas ni logotipos. Cada cifra es AUTHORED para un tipo genérico, no medida ni la especificación de ninguna máquina real.", "fleet.intro": "Todos los vehículos terrestres y embarcaciones genéricos del registro de la flota, en una plataforma giratoria. Elige uno, lee sus datos y llévalo a la pista de prueba o al estanque de flotación.", "fleet.land": "Tierra", "fleet.lede": "Vehículos y embarcaciones: sala de exposición y pista de pruebas", "fleet.list": "Lista de la flota", "fleet.medium.land": "tierra", "fleet.medium.water": "agua", "fleet.next": "Siguiente", "fleet.noseat": "No hay puesto de entrenamiento para este tipo", "fleet.openseat": "Abrir el puesto de entrenamiento", "fleet.play": "Conducir aquí es juego, no formación: nunca entra en un registro de finalización y no certifica nada.", "fleet.prev": "Anterior", "fleet.refused": "Rechazado: terreno equivocado para este vehículo", "fleet.shown": "mostrados", "fleet.spec.accel": "Aceleración", "fleet.spec.dims": "Largo × ancho × alto", "fleet.spec.family": "Familia", "fleet.spec.mass": "Masa", "fleet.spec.medium": "Medio", "fleet.spec.seat": "Puesto de entrenamiento", "fleet.spec.seats": "Asientos", "fleet.spec.top": "Velocidad máxima", "fleet.spec.trades": "Oficios a los que sirve ese puesto", "fleet.spec.turn": "Radio de giro", "fleet.spin": "Girar la plataforma", "fleet.title": "La sala de exposición de la flota", "fleet.water": "Agua"}}, "fr": {"dir": "ltr", "language": "Français", "strings": {"fleet.all": "Tous", "fleet.allfam": "Toutes les familles", "fleet.authored": "AUTHORED", "fleet.controls": "W/S ou flèches : accélérer et reculer · A/D : braquer · Espace : freiner · Échap : retour au plateau", "fleet.drive": "Essai sur piste", "fleet.exit": "Retour au plateau", "fleet.family": "Famille", "fleet.filter": "Filtrer", "fleet.float": "Essai de flottaison", "fleet.honesty": "Types génériques uniquement : aucun constructeur, modèle, marque ni logo. Chaque valeur est AUTHORED pour un type générique, non mesurée et non la fiche technique d’une machine réelle.", "fleet.intro": "Chaque véhicule terrestre et embarcation générique du registre de la flotte, sur un plateau tournant. Choisissez-en un, lisez ses caractéristiques, puis essayez-le sur la piste ou dans le bassin.", "fleet.land": "Terre", "fleet.lede": "Véhicules et embarcations : salle d’exposition et piste d’essai", "fleet.list": "Liste de la flotte", "fleet.medium.land": "terre", "fleet.medium.water": "eau", "fleet.next": "Suivant", "fleet.noseat": "Aucun poste d’entraînement pour ce type", "fleet.openseat": "Ouvrir le poste d’entraînement", "fleet.play": "Conduire ici est un jeu, pas une formation : cela n’entre jamais dans un relevé d’achèvement et ne certifie rien.", "fleet.prev": "Précédent", "fleet.refused": "Refusé : mauvais terrain pour ce véhicule", "fleet.shown": "affichés", "fleet.spec.accel": "Accélération", "fleet.spec.dims": "Longueur × largeur × hauteur", "fleet.spec.family": "Famille", "fleet.spec.mass": "Masse", "fleet.spec.medium": "Milieu", "fleet.spec.seat": "Poste d’entraînement", "fleet.spec.seats": "Places", "fleet.spec.top": "Vitesse maximale", "fleet.spec.trades": "Métiers servis par ce poste", "fleet.spec.turn": "Rayon de braquage", "fleet.spin": "Faire tourner le plateau", "fleet.title": "La salle d’exposition de la flotte", "fleet.water": "Eau"}}, "hi": {"dir": "ltr", "language": "हिन्दी", "strings": {"fleet.all": "सभी", "fleet.allfam": "सभी परिवार", "fleet.authored": "AUTHORED", "fleet.controls": "W/S या तीर कुंजियाँ: गति और पीछे · A/D: मोड़ें · स्पेस: ब्रेक · Esc: मंच पर वापस", "fleet.drive": "टेस्ट ड्राइव", "fleet.exit": "घूमते मंच पर वापस", "fleet.family": "परिवार", "fleet.filter": "छाँटें", "fleet.float": "टेस्ट फ़्लोट", "fleet.honesty": "केवल सामान्य प्रकार: कोई निर्माता, मॉडल, ब्रांड या लोगो नहीं। हर आँकड़ा एक सामान्य प्रकार के लिए AUTHORED है, मापा हुआ नहीं और किसी असली मशीन का विनिर्देश नहीं।", "fleet.intro": "फ़्लीट रजिस्टर का हर सामान्य स्थल वाहन और जलयान एक घूमते मंच पर। एक चुनें, उसके विवरण पढ़ें, फिर उसे टेस्ट-ड्राइव पैड या टेस्ट-फ़्लोट तालाब में ले जाएँ।", "fleet.land": "स्थल", "fleet.lede": "वाहन और जलयान: शोरूम और परीक्षण ट्रैक", "fleet.list": "फ़्लीट सूची", "fleet.medium.land": "स्थल", "fleet.medium.water": "जल", "fleet.next": "अगला", "fleet.noseat": "इस प्रकार के लिए कोई प्रशिक्षण सीट नहीं", "fleet.openseat": "प्रशिक्षण सीट खोलें", "fleet.play": "यहाँ ड्राइव करना खेल है, प्रशिक्षण नहीं: यह कभी किसी पूर्णता रिकॉर्ड में नहीं जाता और कुछ भी प्रमाणित नहीं करता।", "fleet.prev": "पिछला", "fleet.refused": "अस्वीकृत: इस वाहन के लिए गलत ज़मीन", "fleet.shown": "दिखाए गए", "fleet.spec.accel": "त्वरण", "fleet.spec.dims": "लंबाई × चौड़ाई × ऊँचाई", "fleet.spec.family": "परिवार", "fleet.spec.mass": "द्रव्यमान", "fleet.spec.medium": "माध्यम", "fleet.spec.seat": "प्रशिक्षण सीट", "fleet.spec.seats": "सीटें", "fleet.spec.top": "अधिकतम गति", "fleet.spec.trades": "यह सीट जिन व्यवसायों के काम आती है", "fleet.spec.turn": "मोड़ त्रिज्या", "fleet.spin": "मंच घुमाएँ", "fleet.title": "फ़्लीट शोरूम", "fleet.water": "जल"}}, "pt": {"dir": "ltr", "language": "Português", "strings": {"fleet.all": "Todos", "fleet.allfam": "Todas as famílias", "fleet.authored": "AUTHORED", "fleet.controls": "W/S ou setas: acelerar e marcha-atrás · A/D: virar · Espaço: travar · Esc: voltar à plataforma", "fleet.drive": "Condução de teste", "fleet.exit": "Voltar à plataforma", "fleet.family": "Família", "fleet.filter": "Filtrar", "fleet.float": "Teste de flutuação", "fleet.honesty": "Apenas tipos genéricos: sem fabricantes, modelos, marcas ou logótipos. Cada valor é AUTHORED para um tipo genérico, não medido e não a especificação de nenhuma máquina real.", "fleet.intro": "Todos os veículos terrestres e embarcações genéricos do registo da frota, numa plataforma giratória. Escolha um, leia as especificações e leve-o à pista de teste ou ao lago de flutuação.", "fleet.land": "Terra", "fleet.lede": "Veículos e embarcações: salão de exposição e pista de teste", "fleet.list": "Lista da frota", "fleet.medium.land": "terra", "fleet.medium.water": "água", "fleet.next": "Seguinte", "fleet.noseat": "Nenhum posto de treino para este tipo", "fleet.openseat": "Abrir o posto de treino", "fleet.play": "Conduzir aqui é jogo, não formação: nunca entra num registo de conclusão e não certifica nada.", "fleet.prev": "Anterior", "fleet.refused": "Recusado: terreno errado para este veículo", "fleet.shown": "exibidos", "fleet.spec.accel": "Aceleração", "fleet.spec.dims": "Comprimento × largura × altura", "fleet.spec.family": "Família", "fleet.spec.mass": "Massa", "fleet.spec.medium": "Meio", "fleet.spec.seat": "Posto de treino", "fleet.spec.seats": "Lugares", "fleet.spec.top": "Velocidade máxima", "fleet.spec.trades": "Ofícios que esse posto serve", "fleet.spec.turn": "Raio de viragem", "fleet.spin": "Girar a plataforma", "fleet.title": "O salão da frota", "fleet.water": "Água"}}, "zh": {"dir": "ltr", "language": "中文（简体）", "strings": {"fleet.all": "全部", "fleet.allfam": "全部类别", "fleet.authored": "AUTHORED", "fleet.controls": "W/S 或方向键：油门与倒车 · A/D：转向 · 空格：刹车 · Esc：返回转台", "fleet.drive": "试驾", "fleet.exit": "返回转台", "fleet.family": "类别", "fleet.filter": "筛选", "fleet.float": "试航", "fleet.honesty": "仅限通用类型：没有厂商、型号、品牌或标志。每个数值都是为通用类型 AUTHORED 的，并非测量所得，也不是任何真实机器的规格。", "fleet.intro": "车队登记表中的每一种通用陆地车辆和船只都在同一个转台上。选择一辆，查看参数，然后到试驾场试驾或到试航池试航。", "fleet.land": "陆地", "fleet.lede": "车辆与船只：展厅与试驾场", "fleet.list": "车队列表", "fleet.medium.land": "陆地", "fleet.medium.water": "水上", "fleet.next": "下一个", "fleet.noseat": "此类型没有训练座席", "fleet.openseat": "打开训练座席", "fleet.play": "这里的驾驶是游戏，不是培训：它不会进入任何结业记录，也不证明任何资格。", "fleet.prev": "上一个", "fleet.refused": "已拒绝：此车辆不能在这种地面上行驶", "fleet.shown": "已显示", "fleet.spec.accel": "加速度", "fleet.spec.dims": "长 × 宽 × 高", "fleet.spec.family": "类别", "fleet.spec.mass": "质量", "fleet.spec.medium": "介质", "fleet.spec.seat": "训练座席", "fleet.spec.seats": "座位", "fleet.spec.top": "最高速度", "fleet.spec.trades": "该座席服务的工种", "fleet.spec.turn": "转弯半径", "fleet.spin": "旋转转台", "fleet.title": "车队展厅", "fleet.water": "水上"}}}</script>
+<script type="importmap">
+{"imports":{
+  "three":"./vendor/three.module.min.js",
+  "three/addons/":"./vendor/addons/"
+}}
+</script>
+<script type="module">
+
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+/* FLEET_KIT:BEGIN - fleet/registry/fleet.json driver (web/fleetkit.py). SCHEMATIC arcade physics. */
+const FLEET_API = 1;
+const FLEET_SLOTS = ['body', 'trim', 'accent'];
+const FLEET_MIN_WET_M = 0.15;      // water shallower than this is dry ground for a land vehicle
+const FLEET_KEEL_CLEAR_M = 0.1;    // a boat needs its draft plus this under the keel
+
+function fleetNeed(o, k, where) {
+  if (o === null || typeof o !== 'object' || !(k in o) || o[k] === undefined)
+    throw new Error('fleetkit: ' + where + ' has no ' + k);
+  return o[k];
+}
+
+/* ----------------------------------------------------------- geometry --- */
+function fleetGeoBuilder(THREE) {
+  const pos = [], nor = [], col = [];
+  const slotRGB = { body: [1, 0, 0], trim: [0, 1, 0], accent: [0, 0, 1] };
+  function add(g, slot, m) {
+    const s = slotRGB[slot];
+    if (!s) throw new Error('fleetkit: unknown palette slot ' + slot);
+    const ng = g.index ? g.toNonIndexed() : g;
+    if (m) ng.applyMatrix4(m);
+    ng.computeVertexNormals();
+    const p = ng.attributes.position.array, n = ng.attributes.normal.array;
+    for (let i = 0; i < p.length; i++) { pos.push(p[i]); nor.push(n[i]); }
+    for (let i = 0; i < p.length / 3; i++) col.push(s[0], s[1], s[2]);
+    ng.dispose(); if (ng !== g) g.dispose();
+  }
+  const M = () => new THREE.Matrix4();
+  const api = {
+    box(cx, cy, cz, sx, sy, sz, slot, rx = 0) {
+      const m = M().makeTranslation(cx, cy, cz);
+      if (rx) m.multiply(M().makeRotationX(rx));
+      add(new THREE.BoxGeometry(Math.max(sx, 1e-3), Math.max(sy, 1e-3), Math.max(sz, 1e-3)), slot, m);
+    },
+    wheel(cx, cy, cz, r, w, slot) {   // axis along x
+      const m = M().makeTranslation(cx, cy, cz).multiply(M().makeRotationZ(Math.PI / 2));
+      add(new THREE.CylinderGeometry(r, r, w, 10), slot, m);
+    },
+    rod(cx, cy, cz, r, len, slot, rx) {   // a cylinder in the y-z plane, tilted rx from vertical
+      const m = M().makeTranslation(cx, cy, cz).multiply(M().makeRotationX(rx));
+      add(new THREE.CylinderGeometry(r, r, len, 6), slot, m);
+    },
+    hull(L, W, depth, bow, stern, slot) {   // plan-view outline extruded upward 0..depth; +z is the bow
+      const s = new THREE.Shape();
+      const hw = W / 2, zb = L / 2, zs = -L / 2;
+      const taper = (k) => k * L;
+      // shape y = -world z
+      s.moveTo(-hw * stern, -zs);
+      s.lineTo(hw * stern, -zs);
+      s.lineTo(hw, -(zs + taper(0.12)));
+      s.lineTo(hw, -(zb - taper(bow)));
+      s.lineTo(hw * 0.12, -zb);
+      s.lineTo(-hw * 0.12, -zb);
+      s.lineTo(-hw, -(zb - taper(bow)));
+      s.lineTo(-hw, -(zs + taper(0.12)));
+      s.closePath();
+      const g = new THREE.ExtrudeGeometry(s, { depth, bevelEnabled: false });
+      add(g, slot, M().makeRotationX(-Math.PI / 2));
+    },
+    done() {
+      const g = new THREE.BufferGeometry();
+      g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+      g.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3));
+      g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
+      g.computeBoundingBox(); g.computeBoundingSphere();
+      return g;
+    },
+  };
+  return api;
+}
+
+function fleetWheels(b, recipe, L, W, H) {
+  const r = recipe.wheel_r * H, tw = Math.min(0.4, W * 0.16);
+  const n = recipe.axles, inset = Math.max(r * 1.25, L * 0.14);
+  const zs = [];
+  if (n === 2) zs.push(L / 2 - inset, -L / 2 + inset);
+  else { zs.push(L / 2 - inset); for (let i = 0; i < n - 1; i++) zs.push(-L / 2 + inset + i * r * 2.3); }
+  for (const z of zs) for (const sx of [-1, 1]) b.wheel(sx * (W / 2 - tw / 2), r, z, r, tw, 'trim');
+  return r;
+}
+
+/* The family's shared geometry, in metres, built at `ref` = {length, width,
+   height}; an entry's instance is scaled by its own dims / ref. */
+function fleetFamilyGeometry(THREE, recipe, ref) {
+  const L = fleetNeed(ref, 'length', 'ref'), W = fleetNeed(ref, 'width', 'ref'), H = fleetNeed(ref, 'height', 'ref');
+  for (const k of ['archetype', 'cab_len', 'cab_h', 'body', 'wheel_r', 'axles', 'hull', 'extra']) fleetNeed(recipe, k, 'recipe');
+  const b = fleetGeoBuilder(THREE), a = recipe.archetype;
+  if (a === 'car' || a === 'bus') {
+    const r = fleetWheels(b, recipe, L, W, H);
+    const y0 = r * 0.55, y1 = a === 'bus' ? H : H * (1 - recipe.cab_h);
+    b.box(0, (y0 + y1) / 2, 0, W, y1 - y0, L, 'body');
+    if (a === 'car') {
+      const cl = recipe.cab_len * L, cz = -0.04 * L;
+      b.box(0, (y1 + H) / 2, cz, W * 0.88, H - y1, cl, 'body');
+      b.box(0, y1 + (H - y1) * 0.5, cz, W * 0.9, (H - y1) * 0.55, cl * 0.92, 'accent');
+      if (recipe.body === 'bed') b.box(0, y1 + 0.12, -L * 0.33, W * 0.95, 0.24, L * 0.3, 'trim');
+    } else {
+      b.box(0, H * 0.7, -0.02 * L, W * 1.01, H * 0.28, L * 0.9, 'accent');
+      b.box(0, H * 0.62, L / 2, W * 0.9, H * 0.5, 0.06, 'accent');
+    }
+    b.box(0, y0 + 0.1, L / 2, W * 0.95, 0.18, 0.1, 'trim');
+    b.box(0, y0 + 0.1, -L / 2, W * 0.95, 0.18, 0.1, 'trim');
+  } else if (a === 'truck') {
+    const r = fleetWheels(b, recipe, L, W, H);
+    const cl = recipe.cab_len * L, ch = recipe.cab_h * H, yb = r * 1.05;
+    b.box(0, r, 0, W * 0.7, r * 0.5, L * 0.98, 'trim');                         // frame rails
+    b.box(0, yb + (ch - yb) / 2, L / 2 - cl / 2, W, ch - yb, cl, 'body');          // cab
+    b.box(0, yb + (ch - yb) * 0.72, L / 2 - cl * 0.3, W * 1.01, (ch - yb) * 0.32, cl * 0.5, 'accent');
+    const bl = L - cl - 0.15, bz = -L / 2 + bl / 2, top = recipe.body === 'box' ? H : H * 0.62;
+    const body = recipe.body;
+    if (body === 'box' || body === 'broom') b.box(0, (yb + top) / 2, bz, W, top - yb, bl, 'body');
+    if (body === 'broom') b.wheel(0, r * 0.6, L / 2 - cl - 0.4, r * 0.55, W * 0.8, 'accent');
+    if (body === 'bed') {
+      b.box(0, yb + 0.06, bz, W, 0.12, bl, 'trim');
+      for (const sx of [-1, 1]) b.box(sx * (W / 2 - 0.05), yb + 0.3, bz, 0.1, 0.5, bl, 'body');
+      b.box(0, yb + 0.3, -L / 2 + 0.05, W, 0.5, 0.1, 'body');
+    }
+    if (body === 'dump') {
+      b.box(0, (yb + H * 0.85) / 2 + 0.1, bz, W, H * 0.85 - yb, bl, 'body');
+      b.box(0, H * 0.85 + 0.12, bz, W * 1.02, 0.1, bl, 'trim');
+    }
+    if (body === 'flat' || body === 'boom' || body === 'lowboy') {
+      const dy = body === 'lowboy' ? r * 0.9 : yb + 0.08;
+      b.box(0, dy, bz, W, 0.16, bl, 'trim');
+      b.box(0, dy + 0.5, L / 2 - cl - 0.2, W * 0.95, 1.0, 0.1, 'trim');       // headboard
+    }
+    if (body === 'lowboy') b.box(0, r * 0.9 + 0.5, -L / 2 + 0.6, W * 0.9, 0.2, 1.2, 'accent', 0.5);
+    if (body === 'boom') {
+      const len = bl * 0.9, rx = Math.PI / 2 - 0.35;
+      b.rod(0, yb + 0.6 + Math.cos(rx) * len / 2, bz + Math.sin(rx) * len / 2 * 0.2 - bl * 0.1, 0.14, len, 'accent', rx);
+      b.box(0, yb + 0.5, -L / 2 + 0.6, 0.8, 0.8, 0.8, 'accent');
+    }
+    if (body === 'ladder') {
+      b.box(0, (yb + H * 0.72) / 2, bz, W, H * 0.72 - yb, bl, 'body');
+      b.box(0, H * 0.85, bz + 0.3, W * 0.5, H * 0.14, bl * 1.1, 'trim');
+    }
+    if (recipe.extra === 'lightbar') b.box(0, ch + 0.08, L / 2 - cl / 2, W * 0.7, 0.14, 0.3, 'accent');
+  } else if (a === 'machine') {
+    const r = fleetWheels(b, recipe, L, W, H);
+    const cl = recipe.cab_len * L, ch = recipe.cab_h * H, yb = r * 0.9;
+    const tracked = recipe.body === 'arm';
+    if (tracked) for (const sx of [-1, 1]) b.box(sx * (W / 2 - W * 0.12), r * 1.2, 0, W * 0.24, r * 2.4, L * 0.55, 'trim');
+    b.box(0, yb + r * 0.6, -L * 0.05, W * 0.9, r * 1.2, L * (tracked ? 0.55 : 0.8), 'body');   // chassis / counterweight
+    const cz = recipe.body === 'none' ? -L * 0.2 : -L * 0.05;
+    b.box(0, yb + r * 1.2 + (ch - yb - r * 1.2) / 2, cz, W * 0.7, ch - yb - r * 1.2, cl, 'body');
+    b.box(0, yb + r * 1.2 + (ch - yb - r * 1.2) * 0.6, cz, W * 0.72, (ch - yb - r * 1.2) * 0.45, cl * 0.8, 'accent');
+    const fz = L / 2 - L * 0.12;
+    if (recipe.body === 'forks') {
+      for (const sx of [-1, 1]) b.box(sx * W * 0.25, H * 0.5, fz, 0.1, H, 0.12, 'trim');
+      for (const sx of [-1, 1]) b.box(sx * W * 0.2, 0.08, L / 2 - 0.05, 0.1, 0.06, L * 0.3, 'accent');
+    } else if (recipe.body === 'bucket') {
+      for (const sx of [-1, 1]) b.box(sx * W * 0.45, H * 0.45, 0, 0.12, 0.2, L * 0.8, 'trim', -0.35);
+      b.box(0, 0.35, L / 2 - 0.2, W * 1.02, 0.6, 0.5, 'accent');
+    } else if (recipe.body === 'arm') {
+      b.rod(0, H * 0.72, L * 0.18, 0.22, L * 0.42, 'accent', Math.PI / 2 - 0.55);
+      b.rod(0, H * 0.55, L * 0.4, 0.16, H * 0.8, 'accent', 0.35);
+      b.box(0, 0.4, L / 2 - 0.35, W * 0.4, 0.6, 0.6, 'trim');
+    } else if (recipe.body === 'boom') {
+      b.rod(0, H * 0.75, L * 0.1, 0.2, L * 0.78, 'accent', Math.PI / 2 - 0.12);
+      b.box(0, H * 0.95, L / 2 - 0.3, W * 0.7, 0.5, 0.8, 'trim');
+    } else if (recipe.body === 'none') {
+      b.box(0, yb + r * 0.9, L * 0.25, W * 0.45, r * 1.1, L * 0.45, 'body');   // hood
+    }
+  } else if (a === 'cycle') {
+    const r = recipe.wheel_r * H;
+    for (const z of [L / 2 - r, -L / 2 + r]) b.wheel(0, r, z, r, 0.06, 'trim');
+    if (recipe.body === 'rail') {
+      b.box(0, r * 0.7, 0, W * 0.4, 0.08, L * 0.7, 'body');
+      b.box(0, H * 0.55, L / 2 - r, 0.06, H * 0.9, 0.06, 'body');
+      b.box(0, H * 0.98, L / 2 - r, W, 0.05, 0.05, 'accent');
+    } else {
+      b.box(0, r * 1.2, 0, 0.07, 0.07, L * 0.62, 'body');
+      b.box(0, r * 1.55, -L * 0.12, 0.07, r * 0.9, 0.07, 'body');
+      b.box(0, r * 1.55, L * 0.24, 0.07, r * 1.0, 0.07, 'body');
+      b.box(0, H * 0.9, -L * 0.14, 0.14, 0.05, 0.24, 'accent');
+      b.box(0, H * 0.95, L * 0.25, W, 0.04, 0.04, 'trim');
+    }
+  } else if (a === 'hull' || a === 'paddle') {
+    const paddle = a === 'paddle';
+    const shape = { v: [0.3, 0.85], flat: [0.08, 0.95], pontoon: [0.06, 1.0], barge: [0.04, 1.0], tub: [0.45, 0.25] }[recipe.hull];
+    if (!shape) throw new Error('fleetkit: unknown hull ' + recipe.hull);
+    const deck = paddle ? H : (recipe.cab_len > 0 ? H * 0.32 : H * 0.55);
+    if (recipe.hull === 'pontoon') {
+      for (const sx of [-1, 1]) b.rod(sx * W * 0.32, deck * 0.3, 0, deck * 0.28, L * 0.95, 'trim', Math.PI / 2);
+      b.box(0, deck * 0.7, 0, W, deck * 0.18, L * 0.92, 'body');
+    } else {
+      b.hull(L, W, deck, shape[0], shape[1], 'body');
+      b.box(0, deck * 0.35, 0, W * 1.005, deck * 0.08, L * 0.7, 'accent');         // boot stripe
+    }
+    if (paddle) {
+      b.box(0, deck + 0.02, -L * 0.05, W * 0.45, 0.04, L * 0.18, 'trim');           // cockpit / thwart
+    } else if (recipe.cab_len > 0) {
+      const cl = recipe.cab_len * L, ch = recipe.cab_h * H, cz = -L * 0.08;
+      b.box(0, deck + ch / 2, cz, W * 0.78, ch, cl, 'trim');
+      b.box(0, deck + ch * 0.7, cz, W * 0.8, ch * 0.3, cl * 0.85, 'accent');
+    } else {
+      b.box(0, deck + 0.45, -L * 0.05, W * 0.3, 0.9, 0.7, 'trim');                  // console / seat
+    }
+    if (recipe.body === 'rail') for (const sx of [-1, 1]) b.box(sx * W * 0.48, deck + 0.8, 0, 0.05, 0.7, L * 0.85, 'accent');
+    const top = deck + (recipe.cab_len > 0 ? recipe.cab_h * H : 0.9);
+    if (recipe.extra === 'fan') { b.wheel(0, deck + H * 0.45, -L / 2 + 0.6, H * 0.35, 0.3, 'trim'); b.box(0, deck + 1.0, -L * 0.1, 0.5, 1.0, 0.5, 'accent'); }
+    if (recipe.extra === 'monitor') b.rod(0, top + 0.5, 0, 0.18, 1.0, 'accent', 0.3);
+    if (recipe.extra === 'mast') b.rod(0, top + H * 0.15, -L * 0.1, 0.12, H * 0.3, 'accent', 0);
+    if (recipe.extra === 'lightbar') b.box(0, top + 0.08, -L * 0.08, W * 0.4, 0.14, 0.3, 'accent');
+    if (recipe.extra === 'knees') for (const sx of [-1, 1]) b.box(sx * W * 0.3, deck + 1.2, L / 2 - 0.3, 0.4, 2.4, 0.4, 'accent');
+    if (recipe.extra === 'crane') b.rod(W * 0.2, deck + L * 0.14, L * 0.2, 0.25, L * 0.4, 'accent', 0.7);
+  } else {
+    throw new Error('fleetkit: unknown archetype ' + a);
+  }
+  return b.done();
+}
+
+/* One material per family: vertex colour picks the slot, per-instance
+   attributes carry that instance's three palette colours. */
+function fleetMaterial(THREE) {
+  const m = new THREE.MeshStandardMaterial({ color: 0xffffff, vertexColors: true, roughness: 0.62, metalness: 0.08, flatShading: true });
+  m.onBeforeCompile = (sh) => {
+    sh.vertexShader = 'attribute vec3 fleetBody;\nattribute vec3 fleetTrim;\nattribute vec3 fleetAccent;\n' +
+      sh.vertexShader.replace('#include <color_vertex>',
+        '#include <color_vertex>\n  vColor.rgb = color.r * fleetBody + color.g * fleetTrim + color.b * fleetAccent;');
+  };
+  m.customProgramCacheKey = () => 'fleet-palette-v1';
+  return m;
+}
+
+function fleetHex(reg, token) {
+  const c = fleetNeed(reg, 'colours', 'registry');
+  if (!(token in c)) throw new Error('fleetkit: colour token ' + token + ' is not in the registry');
+  return c[token];
+}
+
+/* ONE InstancedMesh per family. capacity: {familyId: n} - how many of that
+   family may stand at once (every family in the registry must be named).
+   Returns { group, families, spawn(id, pose) -> handle, drawCalls() }. */
+function fleetCreate(THREE, reg, capacity) {
+  const group = new THREE.Group(); group.name = 'fleet';
+  const byId = new Map(reg.fleet.map((e) => [e.id, e]));
+  const families = new Map();
+  const mat = fleetMaterial(THREE);
+  const zero = new THREE.Matrix4().makeScale(0, 0, 0);
+  for (const f of reg.families) {
+    const cap = fleetNeed(capacity, f.id, 'capacity');
+    const members = reg.fleet.filter((e) => e.family === f.id);
+    const ref = { length: 0, width: 0, height: 0 };
+    for (const e of members) for (const k of ['length', 'width', 'height']) ref[k] += e.dims_m[k] / members.length;
+    const geo = fleetFamilyGeometry(THREE, f.recipe, ref);
+    const attrs = {};
+    for (const s of FLEET_SLOTS) {
+      const key = 'fleet' + s[0].toUpperCase() + s.slice(1);
+      attrs[s] = new THREE.InstancedBufferAttribute(new Float32Array(cap * 3), 3);
+      geo.setAttribute(key, attrs[s]);
+    }
+    const mesh = new THREE.InstancedMesh(geo, mat, cap);
+    mesh.name = 'fleet:' + f.id; mesh.frustumCulled = false;
+    for (let i = 0; i < cap; i++) mesh.setMatrixAt(i, zero);
+    mesh.visible = false;   // an empty family costs no draw call
+    group.add(mesh);
+    families.set(f.id, { family: f, mesh, ref, attrs, free: Array.from({ length: cap }, (_, i) => cap - 1 - i), used: 0 });
+  }
+  const tmpC = new THREE.Color(), q = new THREE.Quaternion(), e3 = new THREE.Euler(), m4 = new THREE.Matrix4();
+  const v3 = new THREE.Vector3(), s3 = new THREE.Vector3();
+  function spawn(id, pose) {
+    const e = byId.get(id);
+    if (!e) throw new Error('fleetkit: no fleet entry ' + id);
+    const F = families.get(e.family);
+    if (!F.free.length) throw new Error('fleetkit: family ' + e.family + ' is at capacity');
+    const slot = F.free.pop(); F.used++; F.mesh.visible = true;
+    for (const s of FLEET_SLOTS) {
+      tmpC.set(fleetHex(reg, e.palette[s])).convertSRGBToLinear();
+      F.attrs[s].setXYZ(slot, tmpC.r, tmpC.g, tmpC.b); F.attrs[s].needsUpdate = true;
+    }
+    const scale = [e.dims_m.width / F.ref.width, e.dims_m.height / F.ref.height, e.dims_m.length / F.ref.length];
+    const h = {
+      id, entry: e, family: e.family, slot, alive: true,
+      set(p) {
+        if (!h.alive) throw new Error('fleetkit: set on a despawned ' + id);
+        e3.set(p.pitch || 0, p.yaw, p.roll || 0, 'YXZ'); q.setFromEuler(e3);
+        const k = 'scale' in p ? p.scale : 1;   // display-only multiplier (a showroom lineup); physics never sets it
+        m4.compose(v3.set(p.x, p.y, p.z), q, s3.set(scale[0] * k, scale[1] * k, scale[2] * k));
+        F.mesh.setMatrixAt(slot, m4); F.mesh.instanceMatrix.needsUpdate = true;
+      },
+      despawn() { if (!h.alive) return; h.alive = false; F.mesh.setMatrixAt(slot, zero); F.mesh.instanceMatrix.needsUpdate = true; F.free.push(slot); F.used--; F.mesh.visible = F.used > 0; },
+    };
+    h.set(pose);
+    return h;
+  }
+  return { group, families, spawn, drawCalls: () => families.size };
+}
+
+/* --------------------------------------------------------- the ground --- */
+/* A ground adapter is { height(x, z) -> m, waterLevel(x, z) -> m | null }.
+   Wet = water surface above the ground by more than FLEET_MIN_WET_M. */
+function fleetDepth(ground, x, z) {
+  const wl = ground.waterLevel(x, z);
+  return wl === null ? 0 : wl - ground.height(x, z);
+}
+function fleetGroundFromWilds(terrain, waterLevelM) {
+  if (typeof terrain.height !== 'function' || typeof waterLevelM !== 'number')
+    throw new Error('fleetkit: fleetGroundFromWilds(terrain from wildsTerrain(world), world.biome.water_level_m)');
+  return { height: (x, z) => terrain.height(x, z), waterLevel: () => waterLevelM };
+}
+/* flat AUTHORED ground at groundY with water at waterY wherever isWater(x, z) */
+function fleetFlatGround(groundY, waterY, isWater) {
+  return { height: (x, z) => (isWater(x, z) ? groundY - 3 : groundY), waterLevel: (x, z) => (isWater(x, z) ? waterY : null) };
+}
+
+function fleetSpec(e) {
+  const d = fleetNeed(e, 'dims_m', e.id);
+  return {
+    id: e.id, medium: fleetNeed(e, 'medium', e.id), L: d.length, W: d.width, H: d.height,
+    top: fleetNeed(e, 'top_speed_ms', e.id), accel: fleetNeed(e, 'accel_ms2', e.id),
+    turnR: fleetNeed(e, 'turn_radius_m', e.id), mass: fleetNeed(e, 'mass_kg', e.id),
+    draft: e.medium === 'water' ? Math.max(0.1, d.height * (e.recipe.cab_len > 0 ? 0.1 : 0.18)) : 0,
+  };
+}
+function fleetCanSpawn(spec, ground, x, z) {
+  const depth = fleetDepth(ground, x, z);
+  if (spec.medium === 'land') return depth > FLEET_MIN_WET_M ? { ok: false, reason: 'water: a land vehicle stays on ground' } : { ok: true, reason: '' };
+  return depth < spec.draft + FLEET_KEEL_CLEAR_M ? { ok: false, reason: 'land: a boat needs water under its keel' } : { ok: true, reason: '' };
+}
+function fleetState(spec, ground, x, z, yaw) {
+  const c = fleetCanSpawn(spec, ground, x, z);
+  if (!c.ok) throw new Error('fleetkit: cannot place ' + spec.id + ' here - ' + c.reason);
+  const st = { x, z, yaw, y: 0, v: 0, steer: 0, pitch: 0, roll: 0, t: 0, refused: 0, wake: 0, phase: (x * 0.37 + z * 0.11) % 6.283 };
+  st.y = spec.medium === 'land' ? ground.height(x, z) : ground.waterLevel(x, z) - spec.draft;
+  return st;
+}
+/* input: { throttle -1..1, steer -1..1 (+ = left), brake 0|1 } */
+function fleetSpeed(st, spec, input, dt, drag) {
+  const thr = Math.max(-1, Math.min(1, input.throttle));
+  if (input.brake) st.v -= Math.sign(st.v) * Math.min(Math.abs(st.v), spec.accel * 2.5 * dt);
+  else if (thr > 0) st.v += (st.v < 0 ? spec.accel * 2.5 : spec.accel) * thr * dt;
+  else if (thr < 0) st.v += (st.v > 0 ? spec.accel * 2.5 : spec.accel * 0.6) * thr * dt;
+  else st.v -= st.v * drag * dt;
+  st.v = Math.max(-spec.top * 0.3, Math.min(spec.top, st.v));
+  st.steer += (Math.max(-1, Math.min(1, input.steer)) - st.steer) * Math.min(1, 8 * dt);
+}
+function fleetMove(st, spec, yawRate, dt, ok) {
+  const yaw = st.yaw + yawRate * dt;
+  const sx = Math.sin(yaw), sz = Math.cos(yaw);
+  const nx = st.x + sx * st.v * dt, nz = st.z + sz * st.v * dt;
+  const lead = Math.sign(st.v) * spec.L / 2;
+  if (!ok(nx, nz) || !ok(nx + sx * lead, nz + sz * lead)) {   // the centre and the leading end
+    st.refused++; st.v = -st.v * 0.15; return false;
+  }
+  st.x = nx; st.z = nz; st.yaw = yaw; return true;
+}
+function fleetLandStep(st, spec, input, ground, dt) {
+  if (spec.medium !== 'land') throw new Error('fleetkit: fleetLandStep on watercraft ' + spec.id);
+  st.t += dt;
+  fleetSpeed(st, spec, input, dt, 0.5);
+  const R = spec.turnR * (1 + 1.5 * Math.abs(st.v) / spec.top);
+  const moved = fleetMove(st, spec, st.v / R * st.steer, dt, (x, z) => fleetDepth(ground, x, z) <= FLEET_MIN_WET_M);
+  const fx = Math.sin(st.yaw) * spec.L / 2, fz = Math.cos(st.yaw) * spec.L / 2;
+  st.y = ground.height(st.x, st.z);
+  st.pitch = -Math.atan2(ground.height(st.x + fx, st.z + fz) - ground.height(st.x - fx, st.z - fz), spec.L);
+  st.roll = -st.steer * Math.min(0.08, Math.abs(st.v) / spec.top * 0.08);
+  return moved;
+}
+function fleetBoatStep(st, spec, input, ground, dt) {
+  if (spec.medium !== 'water') throw new Error('fleetkit: fleetBoatStep on land vehicle ' + spec.id);
+  st.t += dt;
+  fleetSpeed(st, spec, input, dt, 0.35);
+  const rate = st.v / spec.turnR * st.steer + 0.12 * st.steer * (1 - Math.min(1, Math.abs(st.v) / 2));
+  const moved = fleetMove(st, spec, rate, dt, (x, z) => fleetDepth(ground, x, z) >= spec.draft + FLEET_KEEL_CLEAR_M);
+  const amp = Math.min(0.2, Math.max(0.02, 0.3 / Math.sqrt(spec.L))) * (1 + 0.5 * Math.abs(st.v) / spec.top);
+  const w = 1.6 / Math.sqrt(Math.max(1, spec.L) / 4);
+  st.y = ground.waterLevel(st.x, st.z) - spec.draft + amp * Math.sin(st.t * w + st.phase);
+  st.pitch = amp * 0.25 * Math.cos(st.t * w * 0.8 + st.phase) - 0.04 * Math.abs(st.v) / spec.top;
+  st.roll = amp * 0.3 * Math.sin(st.t * w * 0.6 + st.phase * 2) - st.steer * 0.05 * Math.abs(st.v) / spec.top;
+  st.wake = Math.abs(st.v) / spec.top;
+  return moved;
+}
+function fleetStep(st, spec, input, ground, dt) {
+  return spec.medium === 'land' ? fleetLandStep(st, spec, input, ground, dt) : fleetBoatStep(st, spec, input, ground, dt);
+}
+
+/* ------------------------------------------------ enter / exit / camera --- */
+/* nearest vehicle whose hull is within reach metres of p = {x, z};
+   vehicles = [{ st, spec, ... }] */
+function fleetNearest(p, vehicles, reach) {
+  let best = null, bd = Infinity;
+  for (const v of vehicles) {
+    const c = Math.cos(v.st.yaw), s = Math.sin(v.st.yaw), dx = p.x - v.st.x, dz = p.z - v.st.z;
+    const lx = Math.abs(dx * c - dz * s) - v.spec.W / 2, lz = Math.abs(dx * s + dz * c) - v.spec.L / 2;
+    const d = Math.hypot(Math.max(0, lx), Math.max(0, lz));
+    if (d <= reach && d < bd) { bd = d; best = v; }
+  }
+  return best;
+}
+/* a dry spot beside the vehicle to step out onto, or null (stay aboard) */
+function fleetExitPoint(st, spec, ground) {
+  const c = Math.cos(st.yaw), s = Math.sin(st.yaw);
+  const cands = [];
+  for (const k of [1, 1.8, 3, 5, 8, 12]) {
+    const off = spec.W / 2 + k * 0.8;
+    cands.push([c * off, -s * off], [-c * off, s * off], [-s * (spec.L / 2 + k), -c * (spec.L / 2 + k)], [s * (spec.L / 2 + k), c * (spec.L / 2 + k)]);
+  }
+  for (const [dx, dz] of cands) {
+    const x = st.x + dx, z = st.z + dz;
+    if (fleetDepth(ground, x, z) <= FLEET_MIN_WET_M) return { x, y: ground.height(x, z), z };
+  }
+  return null;
+}
+/* chase camera: behind and above, eased; camera needs position.set/lookAt */
+function fleetChaseCamera(camera, st, spec, dt, eye) {
+  const back = spec.L * 1.2 + 4, up = spec.H * 1.3 + 1.6;
+  const tx = st.x - Math.sin(st.yaw) * back, tz = st.z - Math.cos(st.yaw) * back, ty = st.y + up;
+  const k = eye && eye.snap ? 1 : Math.min(1, 4 * dt);
+  const p = camera.position;
+  p.set(p.x + (tx - p.x) * k, p.y + (ty - p.y) * k, p.z + (tz - p.z) * k);
+  camera.lookAt(st.x, st.y + spec.H * 0.6, st.z);
+}
+
+/* a boat wake: flat rings dropped behind moving boats, ONE draw call */
+function fleetWake(THREE, cap) {
+  const geo = new THREE.RingGeometry(0.7, 1, 20).rotateX(-Math.PI / 2);
+  const mat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.35, depthWrite: false });
+  const mesh = new THREE.InstancedMesh(geo, mat, cap); mesh.name = 'fleet:wake'; mesh.frustumCulled = false;
+  const rings = [], m4 = new THREE.Matrix4(), zero = new THREE.Matrix4().makeScale(0, 0, 0);
+  for (let i = 0; i < cap; i++) mesh.setMatrixAt(i, zero);
+  let next = 0, acc = 0;
+  return {
+    mesh,
+    emit(st, spec, dt) {
+      acc += dt * st.wake * 12;
+      while (acc >= 1) {
+        acc -= 1;
+        rings[next] = { x: st.x - Math.sin(st.yaw) * spec.L * 0.5, y: st.y + spec.draft + 0.03, z: st.z - Math.cos(st.yaw) * spec.L * 0.5, age: 0, w: spec.W * 0.5 };
+        next = (next + 1) % cap;
+      }
+    },
+    update(dt) {
+      for (let i = 0; i < cap; i++) {
+        const r = rings[i];
+        if (!r) continue;
+        r.age += dt;
+        if (r.age > 3) { rings[i] = null; mesh.setMatrixAt(i, zero); continue; }
+        const sc = r.w + r.age * 2.2;
+        m4.makeScale(sc, 1, sc).setPosition(r.x, r.y, r.z); mesh.setMatrixAt(i, m4);
+      }
+      mesh.instanceMatrix.needsUpdate = true;
+    },
+  };
+}
+/* FLEET_KIT:END */
+const REG = JSON.parse(document.getElementById('fleet-registry').textContent);
+const I18N = JSON.parse(document.getElementById('fleet-i18n').textContent);
+function pickLocale() {
+  const q = new URLSearchParams(location.search).get('lang');
+  if (q && Object.hasOwn(I18N, q)) return q;
+  const prefs = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || 'en'];
+  for (const n of prefs) { const c = String(n).slice(0, 2).toLowerCase(); if (Object.hasOwn(I18N, c)) return c; }
+  return 'en';
+}
+const LOC = pickLocale();
+function tr(k) {
+  const s = I18N[LOC].strings['fleet.' + k];
+  if (typeof s !== 'string') throw new Error(`fleet i18n: locale ${LOC} has no fleet.${k}`);
+  return s;
+}
+document.documentElement.lang = LOC;
+document.documentElement.dir = I18N[LOC].dir;
+for (const el of document.querySelectorAll('[data-i18n]')) el.textContent = I18N[LOC].strings[el.dataset.i18n];
+for (const el of document.querySelectorAll('[data-i18n-aria]')) el.setAttribute('aria-label', I18N[LOC].strings[el.dataset.i18nAria]);
+const NF1 = new Intl.NumberFormat(LOC, { maximumFractionDigits: 1 });
+const NF0 = new Intl.NumberFormat(LOC, { maximumFractionDigits: 0 });
+const $ = (s) => document.querySelector(s);
+
+/* ---------------------------------------------------------- the scene --- */
+const canvas = $('#fleet-canvas');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(Math.min(2, devicePixelRatio));
+renderer.info.autoReset = false;
+const scene = new THREE.Scene();
+// world colours (sky, ground, water) are the scene's own, not UI chrome
+scene.background = new THREE.Color(0x9fb4c2);
+scene.fog = new THREE.Fog(0x9fb4c2, 400, 1400);
+const camera = new THREE.PerspectiveCamera(45, 1, 0.1, 3000);
+camera.position.set(22, 12, 26);
+const orbit = new OrbitControls(camera, canvas);
+orbit.target.set(0, 2, 0); orbit.enableDamping = true; orbit.maxPolarAngle = Math.PI * 0.48;
+scene.add(new THREE.HemisphereLight(0xeaf2ff, 0x55504a, 1.1));
+const sun = new THREE.DirectionalLight(0xffffff, 1.6); sun.position.set(60, 120, 40); scene.add(sun);
+
+/* the lot: turntable at the origin, the test-drive pad east, the pond north-east */
+const PAD = { x: 360, z: 0, half: 140 };
+const POND = { x: 360, z: 330, r: 170 };
+const inPond = (x, z) => Math.hypot(x - POND.x, z - POND.z) < POND.r;
+const GROUND = fleetFlatGround(0, 0, inPond);
+const lot = new THREE.Group(); scene.add(lot);
+const flat = (w, d, col, x, y, z) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(w, d).rotateX(-Math.PI / 2), new THREE.MeshStandardMaterial({ color: col, roughness: 1 })); m.position.set(x, y, z); lot.add(m); return m; };
+flat(2400, 2400, 0x7d8a6a, 300, -0.02, 150);                                 // grass
+flat(PAD.half * 2, PAD.half * 2, 0x5d6166, PAD.x, 0, PAD.z);                // asphalt pad
+const water = new THREE.Mesh(new THREE.CircleGeometry(POND.r, 64).rotateX(-Math.PI / 2), new THREE.MeshStandardMaterial({ color: 0x3f6f86, roughness: 0.25, metalness: 0.1 }));
+water.position.set(POND.x, 0.01, POND.z); lot.add(water);
+const table = new THREE.Mesh(new THREE.CylinderGeometry(40, 40, 0.4, 72), new THREE.MeshStandardMaterial({ color: 0x4a4f55, roughness: 0.7 }));
+table.position.y = 0.2; lot.add(table);
+const plinth = new THREE.Mesh(new THREE.CylinderGeometry(8, 8, 0.3, 48), new THREE.MeshStandardMaterial({ color: 0x6b7178, roughness: 0.5 }));
+plinth.position.y = 0.55; lot.add(plinth);
+
+const cap = Object.fromEntries(REG.families.map((f) => [f.id, f.count + 1]));
+const FL = fleetCreate(THREE, REG, cap);
+scene.add(FL.group);
+const wake = fleetWake(THREE, 64); scene.add(wake.mesh);
+const BY = new Map(REG.fleet.map((e) => [e.id, e]));
+const FAM = new Map(REG.families.map((f) => [f.id, f]));
+
+/* ------------------------------------------------------- the turntable --- */
+let filter = { medium: 'all', family: 'all' };
+let shown = [], sel = REG.fleet[0].id, lineup = [], hero = null, spin = true, mode = 'turntable';
+const LINE_R = 30, SLOT_M = 5.2;   // lineup ring radius; every lineup model is scaled to fit SLOT_M (not to scale)
+function visible(e) {
+  return (filter.medium === 'all' || e.medium === filter.medium) && (filter.family === 'all' || e.family === filter.family);
+}
+function layout() {
+  for (const h of lineup) h.despawn();
+  lineup = [];
+  if (hero) { hero.despawn(); hero = null; }
+  shown = REG.fleet.filter(visible);
+  if (!shown.some((e) => e.id === sel) && shown.length) sel = shown[0].id;
+  const others = shown.filter((e) => e.id !== sel);
+  others.forEach((e, i) => {
+    const a = (i / Math.max(1, others.length)) * Math.PI * 2;
+    const k = SLOT_M / Math.max(e.dims_m.length, e.dims_m.height * 1.4);
+    lineup.push(Object.assign(FL.spawn(e.id, { x: 0, y: 0.4, z: 0, yaw: 0, scale: k }), { a, k }));
+  });
+  if (shown.length) hero = FL.spawn(sel, { x: 0, y: 0.7, z: 0, yaw: 0 });
+  $('#fleet-count').textContent = `${NF0.format(shown.length)} / ${NF0.format(REG.fleet.length)} ${tr('shown')}`;
+  renderList(); renderSpec(); frameHero(true); placeTable(0);
+}
+let tableYaw = 0;
+function placeTable(dt) {
+  if (spin && !matchMedia('(prefers-reduced-motion: reduce)').matches) tableYaw += dt * 0.18;
+  for (const h of lineup) {
+    const a = h.a + tableYaw;
+    h.set({ x: Math.sin(a) * LINE_R, y: 0.4, z: Math.cos(a) * LINE_R, yaw: a + Math.PI / 2, scale: h.k });
+  }
+  if (hero) hero.set({ x: 0, y: 0.7, z: 0, yaw: -tableYaw * 1.5 });
+}
+function frameHero(snap) {
+  const e = BY.get(sel), d = Math.max(e.dims_m.length, e.dims_m.height * 2, 6);
+  orbit.target.set(0, 0.7 + e.dims_m.height * 0.45, 0);
+  if (snap) camera.position.set(d * 1.1, d * 0.55 + 2, d * 1.3);
+}
+function renderList() {
+  const ul = $('#fleet-list');
+  ul.replaceChildren(...shown.map((e) => {
+    const li = document.createElement('li');
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'tc-btn tc-btn-ghost fl-item'; b.dataset.id = e.id; b.lang = 'en';
+    b.setAttribute('aria-pressed', String(e.id === sel));
+    b.textContent = e.name;
+    b.addEventListener('click', () => select(e.id));
+    li.append(b); return li;
+  }));
+}
+function row(k, v, lang) {
+  const dt = document.createElement('dt'); dt.textContent = tr(k);
+  const dd = document.createElement('dd'); dd.textContent = v; if (lang) dd.lang = lang;
+  return [dt, dd];
+}
+function renderSpec() {
+  const e = BY.get(sel), d = e.dims_m, f = FAM.get(e.family);
+  $('#spec-name').textContent = e.name;
+  $('#spec-id').textContent = e.id;
+  const dl = $('#spec-list');
+  dl.replaceChildren(
+    ...row('spec.family', f.name, 'en'),
+    ...row('spec.medium', tr('medium.' + e.medium)),
+    ...row('spec.dims', `${NF1.format(d.length)} × ${NF1.format(d.width)} × ${NF1.format(d.height)} m`),
+    ...row('spec.mass', `${NF0.format(e.mass_kg)} kg`),
+    ...row('spec.top', `${NF0.format(e.top_speed_kmh)} km/h`),
+    ...row('spec.accel', `${NF1.format(e.accel_ms2)} m/s²`),
+    ...row('spec.turn', `${NF1.format(e.turn_radius_m)} m`),
+    ...row('spec.seats', NF0.format(e.seats)),
+  );
+  const seat = $('#spec-seat');
+  if (e.sim_seat === null) {
+    seat.replaceChildren(Object.assign(document.createElement('span'), { textContent: tr('noseat'), className: 'tc-badge tc-badge-muted' }));
+  } else {
+    const a = document.createElement('a');
+    a.className = 'tc-btn tc-btn-primary'; a.href = e.sim_seat.href.replace(/^web\//, '');
+    a.textContent = `${tr('openseat')}: ${e.sim_seat.name}`; a.dataset.seat = e.sim_seat.id;
+    const p = document.createElement('p'); p.className = 'trades';
+    p.textContent = `${tr('spec.trades')}: ${e.trades.halls.join(', ')}`; p.lang = 'en';
+    seat.replaceChildren(a, p);
+  }
+  $('#btn-drive').textContent = e.medium === 'land' ? tr('drive') : tr('float');
+  $('#spec-badge').textContent = tr('authored');
+  if (location.hash.slice(1) !== sel) history.replaceState(null, '', '#' + sel);
+}
+function select(id) {
+  if (!BY.has(id)) throw new Error('fleet: no entry ' + id);
+  if (mode !== 'turntable') exitDrive();
+  sel = id;
+  if (!visible(BY.get(id))) { filter = { medium: 'all', family: 'all' }; $('#f-medium-all').checked = true; $('#f-family').value = 'all'; }
+  layout();
+}
+function step(n) { const i = shown.findIndex((e) => e.id === sel); select(shown[(i + n + shown.length) % shown.length].id); }
+
+/* ----------------------------------------------------- drive and float --- */
+let drv = null;
+const keys = {};
+function startDrive() {
+  const e = BY.get(sel), spec = fleetSpec(e);
+  const at = e.medium === 'land' ? { x: PAD.x - PAD.half + 20, z: PAD.z, yaw: 0 } : { x: POND.x, z: POND.z, yaw: Math.PI / 2 };
+  const ok = fleetCanSpawn(spec, GROUND, at.x, at.z);
+  if (!ok.ok) throw new Error('fleet: ' + ok.reason);
+  const st = fleetState(spec, GROUND, at.x, at.z, at.yaw);
+  drv = { e, spec, st, h: FL.spawn(e.id, st), refusedShown: 0 };
+  mode = e.medium === 'land' ? 'drive' : 'float';
+  orbit.enabled = false;
+  fleetChaseCamera(camera, st, spec, 0, { snap: true });
+  document.body.dataset.fleetMode = mode;
+  $('#btn-exit').hidden = false; $('#drive-help').hidden = false;
+  canvas.focus();
+}
+function exitDrive() {
+  if (!drv) return;
+  drv.h.despawn(); drv = null; mode = 'turntable';
+  orbit.enabled = true; document.body.dataset.fleetMode = mode;
+  $('#btn-exit').hidden = true; $('#drive-help').hidden = true; $('#toast').textContent = '';
+  frameHero(true);
+}
+function input() {
+  const k = (a, b) => (keys[a] || keys[b] ? 1 : 0);
+  return { throttle: k('KeyW', 'ArrowUp') - k('KeyS', 'ArrowDown'), steer: k('KeyA', 'ArrowLeft') - k('KeyD', 'ArrowRight'), brake: keys.Space ? 1 : 0 };
+}
+function driveTick(dt, inp) {
+  fleetStep(drv.st, drv.spec, inp, GROUND, dt);
+  drv.h.set(drv.st);
+  if (drv.spec.medium === 'water') { wake.emit(drv.st, drv.spec, dt); }
+  if (drv.st.refused > drv.refusedShown) { drv.refusedShown = drv.st.refused; $('#toast').textContent = tr('refused'); }
+  fleetChaseCamera(camera, drv.st, drv.spec, dt);
+}
+addEventListener('keydown', (ev) => {
+  if (mode === 'turntable') return;
+  if (ev.code === 'Escape') { exitDrive(); return; }
+  if (['KeyW', 'KeyA', 'KeyS', 'KeyD', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(ev.code)) { keys[ev.code] = true; ev.preventDefault(); }
+});
+addEventListener('keyup', (ev) => { keys[ev.code] = false; });
+
+/* ------------------------------------------------------------ controls --- */
+for (const r of document.querySelectorAll('input[name="f-medium"]')) r.addEventListener('change', () => {
+  filter.medium = r.value; filter.family = 'all'; $('#f-family').value = 'all';
+  for (const o of $('#f-family').options) o.hidden = o.value !== 'all' && filter.medium !== 'all' && o.dataset.medium !== filter.medium;
+  layout();
+});
+$('#f-family').addEventListener('change', (ev) => { filter.family = ev.target.value; layout(); });
+$('#btn-prev').addEventListener('click', () => step(-1));
+$('#btn-next').addEventListener('click', () => step(1));
+$('#btn-spin').addEventListener('click', (ev) => { spin = !spin; ev.currentTarget.setAttribute('aria-pressed', String(spin)); });
+$('#btn-drive').addEventListener('click', startDrive);
+$('#btn-exit').addEventListener('click', exitDrive);
+
+function resize() {
+  const r = canvas.getBoundingClientRect();
+  renderer.setSize(r.width, r.height, false);
+  camera.aspect = r.width / Math.max(1, r.height); camera.updateProjectionMatrix();
+}
+addEventListener('resize', resize);
+let last = performance.now(), calls = 0;
+function frame(t) {
+  const dt = Math.min(0.05, (t - last) / 1000); last = t;
+  if (mode === 'turntable') { placeTable(dt); orbit.update(); }
+  else driveTick(dt, input());
+  wake.update(dt);
+  renderer.info.reset();
+  renderer.render(scene, camera);
+  calls = renderer.info.render.calls;
+  requestAnimationFrame(frame);
+}
+/* test hook (web/test_fleet.mjs, web/smoke.mjs): state and deterministic steps */
+window.__fleet = {
+  select, filter: (medium, family) => { filter = { medium, family }; layout(); return shown.length; },
+  shown: () => shown.map((e) => e.id), selected: () => sel, mode: () => mode,
+  drive: () => { startDrive(); return mode; }, exit: () => { exitDrive(); return mode; },
+  steps(n, inp) { for (let i = 0; i < n; i++) driveTick(1 / 60, inp); const s = drv.st; return { x: s.x, y: s.y, z: s.z, v: s.v, refused: s.refused, wet: inPond(s.x, s.z) }; },
+  stats: () => ({ drawCalls: calls, familyMeshes: FL.drawCalls(), familiesShown: new Set(shown.map((e) => e.family)).size, instances: lineup.length + (hero ? 1 : 0) + (drv ? 1 : 0) }),
+  pond: POND, pad: PAD,
+};
+const h0 = decodeURIComponent(location.hash.slice(1));
+if (BY.has(h0)) sel = h0;
+resize(); layout();
+requestAnimationFrame(frame);
+document.documentElement.dataset.fleetReady = '1';
+
+</script>
+<script>(()=>{var K='tc-style',h=document.documentElement,v=h.getAttribute('data-style');if(!v){try{v=localStorage.getItem(K)}catch(e){v=null}}var r=v&&document.querySelector('input[name="'+K+'"][value="'+v+'"]');if(r){r.checked=true;h.setAttribute('data-style',v)}document.addEventListener('change',function(e){var t=e.target;if(!t||t.name!==K)return;h.setAttribute('data-style',t.value);try{localStorage.setItem(K,t.value)}catch(e){}});})();</script>
+<script type="application/ld+json" data-seo-jsonld>{"@context":"https://schema.org","@graph":[{"@type":"WebPage","@id":"https://agifuturefoundation.github.io/SmartCiti.X/web/trade_craft_fleet.html","url":"https://agifuturefoundation.github.io/SmartCiti.X/web/trade_craft_fleet.html","name":"The fleet showroom — SmartCiti.X : Trade Craft Academy","description":"50 generic land vehicles and 20 watercraft on one turntable, with a test-drive pad and a test-float pond. Generic types, authored figures; driving here is play.","inLanguage":"en","isPartOf":{"@id":"https://agifuturefoundation.github.io/SmartCiti.X/#website"}},{"@type":"WebSite","@id":"https://agifuturefoundation.github.io/SmartCiti.X/#website","url":"https://agifuturefoundation.github.io/SmartCiti.X/","name":"SmartCiti.X : Trade Craft Academy","inLanguage":"en"}]}</script>
+</body>
+</html>

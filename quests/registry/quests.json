@@ -2,22 +2,39 @@
  "pack": "quests",
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "pack_version": "3.2.0",
- "source_stamp": "51186ffd51d9962a",
+ "source_stamp": "74ff4cd2709fde17",
  "reads": [
   "lessons/registry/lessons.json",
   "pack/registry/halls.json",
   "sims/registry/sims.json",
   "tools/registry/toolcribs.json",
   "wilds/registry/wilds.json",
-  "quests/source/campus.json"
+  "quests/source/campus.json",
+  "layers/registry/layers.json",
+  "fleet/registry/fleet.json"
+ ],
+ "parishes": [
+  "22005",
+  "22051",
+  "22057",
+  "22063",
+  "22071",
+  "22075",
+  "22087",
+  "22089",
+  "22093",
+  "22095",
+  "22103",
+  "22105",
+  "22109"
  ],
  "honesty": "Quests, games, treasures, easter eggs and badges are play: they are kept on this device only, they are never evidence of anything, and they never enter a completion record.",
  "counts": {
-  "main": 7,
-  "side": 153,
+  "main": 11,
+  "side": 192,
   "game": 4,
-  "treasure": 156,
-  "egg": 37
+  "treasure": 333,
+  "egg": 50
  },
  "halls_with_side_quests": [
   "acoustic",
@@ -6728,6 +6745,4761 @@
    "band": "11-12",
    "riddle": "Count the parts before you trust the machine.",
    "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-parish-22005-arrive",
+   "kind": "treasure",
+   "title": "Set foot in Ascension Parish",
+   "world": "parish:22005",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Walk, drive or sail into Ascension Parish.",
+   "reward": {
+    "badge": "badge-treasure-parish-22005-arrive",
+    "label": "Ascension Parish explorer"
+   },
+   "provenance": "AUTHORED",
+   "place": "arrive",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-parish-22005-word",
+   "kind": "egg",
+   "title": "The parish word",
+   "world": "parish:22005",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Type a word the delta is made of.",
+   "reward": {
+    "badge": "badge-egg-parish-22005-word",
+    "label": "Word finder: Ascension Parish"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "trigger": "typed:levee",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-guide-22005",
+   "kind": "treasure",
+   "title": "Talk to a guide in Ascension Parish",
+   "world": "parish:22005",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A guide in Ascension Parish quotes the registries word for word. Say hello.",
+   "reward": {
+    "badge": "badge-treasure-guide-22005",
+    "label": "Guide listener: Ascension Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "guide",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22005-sim-airless-sprayer",
+   "kind": "treasure",
+   "title": "Union training simulators: Airless Paint Sprayer Finish",
+   "world": "parish:22005",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Union training simulators station in Ascension Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22005-sim-airless-sprayer",
+    "label": "Station visitor: Airless Paint Sprayer Finish"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22005-sim-airless-sprayer",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22005-task-sim-airless-sprayer-nola-shotgun-finish",
+   "kind": "treasure",
+   "title": "Simulated tasks: Airless Paint Sprayer Finish: Shotgun house finish coat",
+   "world": "parish:22005",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Simulated tasks station in Ascension Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22005-task-sim-airless-sprayer-nola-shotgun-finish",
+    "label": "Station visitor: Airless Paint Sprayer Finish: Shotgun house finish coat"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22005-task-sim-airless-sprayer-nola-shotgun-finish",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22005-sim-boom-lift",
+   "kind": "treasure",
+   "title": "Union training simulators: Boom Lift Basket Work",
+   "world": "parish:22005",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Union training simulators station in Ascension Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22005-sim-boom-lift",
+    "label": "Station visitor: Boom Lift Basket Work"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22005-sim-boom-lift",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22005-task-sim-boom-lift-nola-storm-shutters",
+   "kind": "treasure",
+   "title": "Simulated tasks: Boom Lift Basket Work: Storm-shutter run",
+   "world": "parish:22005",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Simulated tasks station in Ascension Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22005-task-sim-boom-lift-nola-storm-shutters",
+    "label": "Station visitor: Boom Lift Basket Work: Storm-shutter run"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22005-task-sim-boom-lift-nola-storm-shutters",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22005-unit-laborers",
+   "kind": "treasure",
+   "title": "Cognition.X K-12: Laborers: flipped unit",
+   "world": "parish:22005",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Cognition.X K-12 station in Ascension Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22005-unit-laborers",
+    "label": "Station visitor: Laborers: flipped unit"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22005-unit-laborers",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22005-lesson-painters-lay-the-coat",
+   "kind": "treasure",
+   "title": "Lessons: Lay a coat that is actually there",
+   "world": "parish:22005",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Lessons station in Ascension Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22005-lesson-painters-lay-the-coat",
+    "label": "Station visitor: Lay a coat that is actually there"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22005-lesson-painters-lay-the-coat",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22005-unit-electricians",
+   "kind": "treasure",
+   "title": "Cognition.X K-12: Electrical Workers: flipped unit",
+   "world": "parish:22005",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Cognition.X K-12 station in Ascension Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22005-unit-electricians",
+    "label": "Station visitor: Electrical Workers: flipped unit"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22005-unit-electricians",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22005-lesson-electricians-clip-in-first",
+   "kind": "treasure",
+   "title": "Lessons: Clip in before the basket moves",
+   "world": "parish:22005",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Lessons station in Ascension Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22005-lesson-electricians-clip-in-first",
+    "label": "Station visitor: Clip in before the basket moves"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22005-lesson-electricians-clip-in-first",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "side-parish-22005-trade",
+   "kind": "side",
+   "title": "Trade path in Ascension Parish",
+   "world": "parish:22005",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "treasure-station-st-22005-sim-airless-sprayer",
+     "treasure-station-st-22005-task-sim-airless-sprayer-nola-shotgun-finish",
+     "treasure-station-st-22005-sim-boom-lift",
+     "treasure-station-st-22005-task-sim-boom-lift-nola-storm-shutters"
+    ]
+   },
+   "hint": "Every stop on the Trade path in Ascension Parish, in any order.",
+   "reward": {
+    "badge": "badge-side-parish-22005-trade",
+    "label": "Trade path: Ascension Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "path-trade",
+   "unlock_text": "To unlock: finish \"Union training simulators: Airless Paint Sprayer Finish\", \"Simulated tasks: Airless Paint Sprayer Finish: Shotgun house finish coat\", \"Union training simulators: Boom Lift Basket Work\", \"Simulated tasks: Boom Lift Basket Work: Storm-shutter run\"."
+  },
+  {
+   "id": "side-parish-22005-k12",
+   "kind": "side",
+   "title": "K-12 path in Ascension Parish",
+   "world": "parish:22005",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "treasure-station-st-22005-unit-electricians",
+     "treasure-station-st-22005-unit-laborers",
+     "treasure-station-st-22005-lesson-electricians-clip-in-first",
+     "treasure-station-st-22005-lesson-painters-lay-the-coat"
+    ]
+   },
+   "hint": "Every stop on the K-12 path in Ascension Parish, in any order.",
+   "reward": {
+    "badge": "badge-side-parish-22005-k12",
+    "label": "K-12 path: Ascension Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "path-k12",
+   "unlock_text": "To unlock: finish \"Cognition.X K-12: Electrical Workers: flipped unit\", \"Cognition.X K-12: Laborers: flipped unit\", \"Lessons: Clip in before the basket moves\", \"Lessons: Lay a coat that is actually there\"."
+  },
+  {
+   "id": "side-parish-22005-explorer",
+   "kind": "side",
+   "title": "Explorer / free play in Ascension Parish",
+   "world": "parish:22005",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "treasure-parish-22005-arrive",
+     "egg-parish-22005-word"
+    ]
+   },
+   "hint": "Every stop on the Explorer / free play in Ascension Parish, in any order.",
+   "reward": {
+    "badge": "badge-side-parish-22005-explorer",
+    "label": "Explorer / free play: Ascension Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "path-explorer",
+   "unlock_text": "To unlock: finish \"Set foot in Ascension Parish\", \"The parish word\"."
+  },
+  {
+   "id": "treasure-parish-22051-arrive",
+   "kind": "treasure",
+   "title": "Set foot in Jefferson Parish",
+   "world": "parish:22051",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Walk, drive or sail into Jefferson Parish.",
+   "reward": {
+    "badge": "badge-treasure-parish-22051-arrive",
+    "label": "Jefferson Parish explorer"
+   },
+   "provenance": "AUTHORED",
+   "place": "arrive",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-parish-22051-lm-louis-armstrong-new-orleans-international-airport",
+   "kind": "treasure",
+   "title": "Reach Louis Armstrong New Orleans International Airport",
+   "world": "parish:22051",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Find Louis Armstrong New Orleans International Airport in Jefferson Parish.",
+   "reward": {
+    "badge": "badge-treasure-parish-22051-lm-louis-armstrong-new-orleans-international-airport",
+    "label": "Louis Armstrong New Orleans International Airport visitor"
+   },
+   "provenance": "AUTHORED",
+   "place": "louis-armstrong-new-orleans-international-airport",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-parish-22051-lm-lafreniere-park",
+   "kind": "treasure",
+   "title": "Reach Lafreniere Park",
+   "world": "parish:22051",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Find Lafreniere Park in Jefferson Parish.",
+   "reward": {
+    "badge": "badge-treasure-parish-22051-lm-lafreniere-park",
+    "label": "Lafreniere Park visitor"
+   },
+   "provenance": "AUTHORED",
+   "place": "lafreniere-park",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-parish-22051-lm-jean-lafitte-national-historical-park-barataria-preserve",
+   "kind": "treasure",
+   "title": "Reach Jean Lafitte National Historical Park - Barataria Preserve",
+   "world": "parish:22051",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Find Jean Lafitte National Historical Park - Barataria Preserve in Jefferson Parish.",
+   "reward": {
+    "badge": "badge-treasure-parish-22051-lm-jean-lafitte-national-historical-park-barataria-preserve",
+    "label": "Jean Lafitte National Historical Park - Barataria Preserve visitor"
+   },
+   "provenance": "AUTHORED",
+   "place": "jean-lafitte-national-historical-park-barataria-preserve",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-parish-22051-lm-grand-isle-state-park",
+   "kind": "treasure",
+   "title": "Reach Grand Isle State Park",
+   "world": "parish:22051",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Find Grand Isle State Park in Jefferson Parish.",
+   "reward": {
+    "badge": "badge-treasure-parish-22051-lm-grand-isle-state-park",
+    "label": "Grand Isle State Park visitor"
+   },
+   "provenance": "AUTHORED",
+   "place": "grand-isle-state-park",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-parish-22051-word",
+   "kind": "egg",
+   "title": "The parish word",
+   "world": "parish:22051",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Type a word the delta is made of.",
+   "reward": {
+    "badge": "badge-egg-parish-22051-word",
+    "label": "Word finder: Jefferson Parish"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "trigger": "typed:bayou",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-guide-22051",
+   "kind": "treasure",
+   "title": "Talk to a guide in Jefferson Parish",
+   "world": "parish:22051",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A guide in Jefferson Parish quotes the registries word for word. Say hello.",
+   "reward": {
+    "badge": "badge-treasure-guide-22051",
+    "label": "Guide listener: Jefferson Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "guide",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22051-sim-crane-lift",
+   "kind": "treasure",
+   "title": "Union training simulators: Tower Crane Lift",
+   "world": "parish:22051",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Union training simulators station in Jefferson Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22051-sim-crane-lift",
+    "label": "Station visitor: Tower Crane Lift"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22051-sim-crane-lift",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22051-task-sim-crane-lift-nola-wharf",
+   "kind": "treasure",
+   "title": "Simulated tasks: Tower Crane Lift: Crescent wharf lift",
+   "world": "parish:22051",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Simulated tasks station in Jefferson Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22051-task-sim-crane-lift-nola-wharf",
+    "label": "Station visitor: Tower Crane Lift: Crescent wharf lift"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22051-task-sim-crane-lift-nola-wharf",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22051-sim-excavator-trench",
+   "kind": "treasure",
+   "title": "Union training simulators: Excavator Trench Cut",
+   "world": "parish:22051",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Union training simulators station in Jefferson Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22051-sim-excavator-trench",
+    "label": "Station visitor: Excavator Trench Cut"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22051-sim-excavator-trench",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22051-task-sim-excavator-trench-nola-below-sea",
+   "kind": "treasure",
+   "title": "Simulated tasks: Excavator Trench Cut: Below-sea trench",
+   "world": "parish:22051",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Simulated tasks station in Jefferson Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22051-task-sim-excavator-trench-nola-below-sea",
+    "label": "Station visitor: Excavator Trench Cut: Below-sea trench"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22051-task-sim-excavator-trench-nola-below-sea",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22051-unit-crane-ops",
+   "kind": "treasure",
+   "title": "Cognition.X K-12: Crane Operators: flipped unit",
+   "world": "parish:22051",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Cognition.X K-12 station in Jefferson Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22051-unit-crane-ops",
+    "label": "Station visitor: Crane Operators: flipped unit"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22051-unit-crane-ops",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22051-lesson-riggers-carry-under-control",
+   "kind": "treasure",
+   "title": "Lessons: Carry a load that is not fighting you",
+   "world": "parish:22051",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Lessons station in Jefferson Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22051-lesson-riggers-carry-under-control",
+    "label": "Station visitor: Carry a load that is not fighting you"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22051-lesson-riggers-carry-under-control",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22051-unit-demolition",
+   "kind": "treasure",
+   "title": "Cognition.X K-12: Demolition Workers: flipped unit",
+   "world": "parish:22051",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Cognition.X K-12 station in Jefferson Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22051-unit-demolition",
+    "label": "Station visitor: Demolition Workers: flipped unit"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22051-unit-demolition",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22051-lesson-operating-eng-locate-first",
+   "kind": "treasure",
+   "title": "Lessons: Prove what is under the ground before the bucket moves",
+   "world": "parish:22051",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Lessons station in Jefferson Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22051-lesson-operating-eng-locate-first",
+    "label": "Station visitor: Prove what is under the ground before the bucket moves"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22051-lesson-operating-eng-locate-first",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "side-parish-22051-trade",
+   "kind": "side",
+   "title": "Trade path in Jefferson Parish",
+   "world": "parish:22051",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "treasure-station-st-22051-sim-crane-lift",
+     "treasure-station-st-22051-task-sim-crane-lift-nola-wharf",
+     "treasure-station-st-22051-sim-excavator-trench",
+     "treasure-station-st-22051-task-sim-excavator-trench-nola-below-sea"
+    ]
+   },
+   "hint": "Every stop on the Trade path in Jefferson Parish, in any order.",
+   "reward": {
+    "badge": "badge-side-parish-22051-trade",
+    "label": "Trade path: Jefferson Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "path-trade",
+   "unlock_text": "To unlock: finish \"Union training simulators: Tower Crane Lift\", \"Simulated tasks: Tower Crane Lift: Crescent wharf lift\", \"Union training simulators: Excavator Trench Cut\", \"Simulated tasks: Excavator Trench Cut: Below-sea trench\"."
+  },
+  {
+   "id": "side-parish-22051-k12",
+   "kind": "side",
+   "title": "K-12 path in Jefferson Parish",
+   "world": "parish:22051",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "treasure-station-st-22051-unit-crane-ops",
+     "treasure-station-st-22051-unit-demolition",
+     "treasure-station-st-22051-lesson-operating-eng-locate-first",
+     "treasure-station-st-22051-lesson-riggers-carry-under-control"
+    ]
+   },
+   "hint": "Every stop on the K-12 path in Jefferson Parish, in any order.",
+   "reward": {
+    "badge": "badge-side-parish-22051-k12",
+    "label": "K-12 path: Jefferson Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "path-k12",
+   "unlock_text": "To unlock: finish \"Cognition.X K-12: Crane Operators: flipped unit\", \"Cognition.X K-12: Demolition Workers: flipped unit\", \"Lessons: Prove what is under the ground before the bucket moves\", \"Lessons: Carry a load that is not fighting you\"."
+  },
+  {
+   "id": "side-parish-22051-explorer",
+   "kind": "side",
+   "title": "Explorer / free play in Jefferson Parish",
+   "world": "parish:22051",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "treasure-parish-22051-arrive",
+     "treasure-parish-22051-lm-louis-armstrong-new-orleans-international-airport",
+     "treasure-parish-22051-lm-lafreniere-park",
+     "treasure-parish-22051-lm-jean-lafitte-national-historical-park-barataria-preserve",
+     "treasure-parish-22051-lm-grand-isle-state-park",
+     "egg-parish-22051-word"
+    ]
+   },
+   "hint": "Every stop on the Explorer / free play in Jefferson Parish, in any order.",
+   "reward": {
+    "badge": "badge-side-parish-22051-explorer",
+    "label": "Explorer / free play: Jefferson Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "path-explorer",
+   "unlock_text": "To unlock: finish \"Set foot in Jefferson Parish\", \"Reach Louis Armstrong New Orleans International Airport\", \"Reach Lafreniere Park\", \"Reach Jean Lafitte National Historical Park - Barataria Preserve\", \"Reach Grand Isle State Park\", \"The parish word\"."
+  },
+  {
+   "id": "treasure-parish-22057-arrive",
+   "kind": "treasure",
+   "title": "Set foot in Lafourche Parish",
+   "world": "parish:22057",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Walk, drive or sail into Lafourche Parish.",
+   "reward": {
+    "badge": "badge-treasure-parish-22057-arrive",
+    "label": "Lafourche Parish explorer"
+   },
+   "provenance": "AUTHORED",
+   "place": "arrive",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-parish-22057-lm-nicholls-state-university",
+   "kind": "treasure",
+   "title": "Reach Nicholls State University",
+   "world": "parish:22057",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Find Nicholls State University in Lafourche Parish.",
+   "reward": {
+    "badge": "badge-treasure-parish-22057-lm-nicholls-state-university",
+    "label": "Nicholls State University visitor"
+   },
+   "provenance": "AUTHORED",
+   "place": "nicholls-state-university",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-parish-22057-lm-port-fourchon",
+   "kind": "treasure",
+   "title": "Reach Port Fourchon",
+   "world": "parish:22057",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Find Port Fourchon in Lafourche Parish.",
+   "reward": {
+    "badge": "badge-treasure-parish-22057-lm-port-fourchon",
+    "label": "Port Fourchon visitor"
+   },
+   "provenance": "AUTHORED",
+   "place": "port-fourchon",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-parish-22057-word",
+   "kind": "egg",
+   "title": "The parish word",
+   "world": "parish:22057",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Type a word the delta is made of.",
+   "reward": {
+    "badge": "badge-egg-parish-22057-word",
+    "label": "Word finder: Lafourche Parish"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "trigger": "typed:ferry",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-guide-22057",
+   "kind": "treasure",
+   "title": "Talk to a guide in Lafourche Parish",
+   "world": "parish:22057",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A guide in Lafourche Parish quotes the registries word for word. Say hello.",
+   "reward": {
+    "badge": "badge-treasure-guide-22057",
+    "label": "Guide listener: Lafourche Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "guide",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22057-sim-forklift-run",
+   "kind": "treasure",
+   "title": "Union training simulators: Forklift Yard Run",
+   "world": "parish:22057",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Union training simulators station in Lafourche Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22057-sim-forklift-run",
+    "label": "Station visitor: Forklift Yard Run"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22057-sim-forklift-run",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22057-task-sim-forklift-run-nola-dock",
+   "kind": "treasure",
+   "title": "Simulated tasks: Forklift Yard Run: Wharf dock set",
+   "world": "parish:22057",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Simulated tasks station in Lafourche Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22057-task-sim-forklift-run-nola-dock",
+    "label": "Station visitor: Forklift Yard Run: Wharf dock set"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22057-task-sim-forklift-run-nola-dock",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22057-sim-load-chart",
+   "kind": "treasure",
+   "title": "Union training simulators: Load Chart Judgment",
+   "world": "parish:22057",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Union training simulators station in Lafourche Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22057-sim-load-chart",
+    "label": "Station visitor: Load Chart Judgment"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22057-sim-load-chart",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22057-task-sim-load-chart-nola-barge-list",
+   "kind": "treasure",
+   "title": "Simulated tasks: Load Chart Judgment: Barge transfer list",
+   "world": "parish:22057",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Simulated tasks station in Lafourche Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22057-task-sim-load-chart-nola-barge-list",
+    "label": "Station visitor: Load Chart Judgment: Barge transfer list"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22057-task-sim-load-chart-nola-barge-list",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22057-unit-heavy-equip",
+   "kind": "treasure",
+   "title": "Cognition.X K-12: Heavy Equipment Technicians: flipped unit",
+   "world": "parish:22057",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Cognition.X K-12 station in Lafourche Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22057-unit-heavy-equip",
+    "label": "Station visitor: Heavy Equipment Technicians: flipped unit"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22057-unit-heavy-equip",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22057-lesson-teamsters-check-the-truck-before-the-load",
+   "kind": "treasure",
+   "title": "Lessons: Check the truck before you check the load",
+   "world": "parish:22057",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Lessons station in Lafourche Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22057-lesson-teamsters-check-the-truck-before-the-load",
+    "label": "Station visitor: Check the truck before you check the load"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22057-lesson-teamsters-check-the-truck-before-the-load",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22057-unit-crane-ops",
+   "kind": "treasure",
+   "title": "Cognition.X K-12: Crane Operators: flipped unit",
+   "world": "parish:22057",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Cognition.X K-12 station in Lafourche Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22057-unit-crane-ops",
+    "label": "Station visitor: Crane Operators: flipped unit"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22057-unit-crane-ops",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22057-lesson-crane-ops-read-the-chart",
+   "kind": "treasure",
+   "title": "Lessons: Refuse the pick the chart refuses",
+   "world": "parish:22057",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Lessons station in Lafourche Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22057-lesson-crane-ops-read-the-chart",
+    "label": "Station visitor: Refuse the pick the chart refuses"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22057-lesson-crane-ops-read-the-chart",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "side-parish-22057-trade",
+   "kind": "side",
+   "title": "Trade path in Lafourche Parish",
+   "world": "parish:22057",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "treasure-station-st-22057-sim-forklift-run",
+     "treasure-station-st-22057-task-sim-forklift-run-nola-dock",
+     "treasure-station-st-22057-sim-load-chart",
+     "treasure-station-st-22057-task-sim-load-chart-nola-barge-list"
+    ]
+   },
+   "hint": "Every stop on the Trade path in Lafourche Parish, in any order.",
+   "reward": {
+    "badge": "badge-side-parish-22057-trade",
+    "label": "Trade path: Lafourche Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "path-trade",
+   "unlock_text": "To unlock: finish \"Union training simulators: Forklift Yard Run\", \"Simulated tasks: Forklift Yard Run: Wharf dock set\", \"Union training simulators: Load Chart Judgment\", \"Simulated tasks: Load Chart Judgment: Barge transfer list\"."
+  },
+  {
+   "id": "side-parish-22057-k12",
+   "kind": "side",
+   "title": "K-12 path in Lafourche Parish",
+   "world": "parish:22057",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "treasure-station-st-22057-unit-crane-ops",
+     "treasure-station-st-22057-unit-heavy-equip",
+     "treasure-station-st-22057-lesson-teamsters-check-the-truck-before-the-load",
+     "treasure-station-st-22057-lesson-crane-ops-read-the-chart"
+    ]
+   },
+   "hint": "Every stop on the K-12 path in Lafourche Parish, in any order.",
+   "reward": {
+    "badge": "badge-side-parish-22057-k12",
+    "label": "K-12 path: Lafourche Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "path-k12",
+   "unlock_text": "To unlock: finish \"Cognition.X K-12: Crane Operators: flipped unit\", \"Cognition.X K-12: Heavy Equipment Technicians: flipped unit\", \"Lessons: Check the truck before you check the load\", \"Lessons: Refuse the pick the chart refuses\"."
+  },
+  {
+   "id": "side-parish-22057-explorer",
+   "kind": "side",
+   "title": "Explorer / free play in Lafourche Parish",
+   "world": "parish:22057",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "treasure-parish-22057-arrive",
+     "treasure-parish-22057-lm-nicholls-state-university",
+     "treasure-parish-22057-lm-port-fourchon",
+     "egg-parish-22057-word"
+    ]
+   },
+   "hint": "Every stop on the Explorer / free play in Lafourche Parish, in any order.",
+   "reward": {
+    "badge": "badge-side-parish-22057-explorer",
+    "label": "Explorer / free play: Lafourche Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "path-explorer",
+   "unlock_text": "To unlock: finish \"Set foot in Lafourche Parish\", \"Reach Nicholls State University\", \"Reach Port Fourchon\", \"The parish word\"."
+  },
+  {
+   "id": "treasure-parish-22063-arrive",
+   "kind": "treasure",
+   "title": "Set foot in Livingston Parish",
+   "world": "parish:22063",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Walk, drive or sail into Livingston Parish.",
+   "reward": {
+    "badge": "badge-treasure-parish-22063-arrive",
+    "label": "Livingston Parish explorer"
+   },
+   "provenance": "AUTHORED",
+   "place": "arrive",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-parish-22063-lm-ligo-livingston-observatory",
+   "kind": "treasure",
+   "title": "Reach LIGO Livingston Observatory",
+   "world": "parish:22063",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Find LIGO Livingston Observatory in Livingston Parish.",
+   "reward": {
+    "badge": "badge-treasure-parish-22063-lm-ligo-livingston-observatory",
+    "label": "LIGO Livingston Observatory visitor"
+   },
+   "provenance": "AUTHORED",
+   "place": "ligo-livingston-observatory",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-parish-22063-word",
+   "kind": "egg",
+   "title": "The parish word",
+   "world": "parish:22063",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Type a word the delta is made of.",
+   "reward": {
+    "badge": "badge-egg-parish-22063-word",
+    "label": "Word finder: Livingston Parish"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "trigger": "typed:marsh",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-guide-22063",
+   "kind": "treasure",
+   "title": "Talk to a guide in Livingston Parish",
+   "world": "parish:22063",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A guide in Livingston Parish quotes the registries word for word. Say hello.",
+   "reward": {
+    "badge": "badge-treasure-guide-22063",
+    "label": "Guide listener: Livingston Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "guide",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22063-sim-overhead-crane",
+   "kind": "treasure",
+   "title": "Union training simulators: Overhead Crane Shop Move",
+   "world": "parish:22063",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Union training simulators station in Livingston Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22063-sim-overhead-crane",
+    "label": "Station visitor: Overhead Crane Shop Move"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22063-sim-overhead-crane",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22063-task-sim-overhead-crane-nola-boatshed-engine",
+   "kind": "treasure",
+   "title": "Simulated tasks: Overhead Crane Shop Move: Boat-shed engine move",
+   "world": "parish:22063",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Simulated tasks station in Livingston Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22063-task-sim-overhead-crane-nola-boatshed-engine",
+    "label": "Station visitor: Overhead Crane Shop Move: Boat-shed engine move"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22063-task-sim-overhead-crane-nola-boatshed-engine",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22063-sim-pressure-washer",
+   "kind": "treasure",
+   "title": "Union training simulators: Pressure Washer Surface Clean",
+   "world": "parish:22063",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Union training simulators station in Livingston Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22063-sim-pressure-washer",
+    "label": "Station visitor: Pressure Washer Surface Clean"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22063-sim-pressure-washer",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22063-task-sim-pressure-washer-nola-floodwall-clean",
+   "kind": "treasure",
+   "title": "Simulated tasks: Pressure Washer Surface Clean: Levee floodwall mildew",
+   "world": "parish:22063",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Simulated tasks station in Livingston Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22063-task-sim-pressure-washer-nola-floodwall-clean",
+    "label": "Station visitor: Pressure Washer Surface Clean: Levee floodwall mildew"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22063-task-sim-pressure-washer-nola-floodwall-clean",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22063-unit-boilermakers",
+   "kind": "treasure",
+   "title": "Cognition.X K-12: Boilermakers: flipped unit",
+   "world": "parish:22063",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Cognition.X K-12 station in Livingston Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22063-unit-boilermakers",
+    "label": "Station visitor: Boilermakers: flipped unit"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22063-unit-boilermakers",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22063-lesson-millwrights-shop-move",
+   "kind": "treasure",
+   "title": "Lessons: Move something precise across a shop floor",
+   "world": "parish:22063",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Lessons station in Livingston Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22063-lesson-millwrights-shop-move",
+    "label": "Station visitor: Move something precise across a shop floor"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22063-lesson-millwrights-shop-move",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22063-unit-hazmat",
+   "kind": "treasure",
+   "title": "Cognition.X K-12: Hazmat & Environmental: flipped unit",
+   "world": "parish:22063",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Cognition.X K-12 station in Livingston Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22063-unit-hazmat",
+    "label": "Station visitor: Hazmat & Environmental: flipped unit"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22063-unit-hazmat",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22063-lesson-painters-contain-it",
+   "kind": "treasure",
+   "title": "Lessons: Catch what you wash off",
+   "world": "parish:22063",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Lessons station in Livingston Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22063-lesson-painters-contain-it",
+    "label": "Station visitor: Catch what you wash off"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22063-lesson-painters-contain-it",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "side-parish-22063-trade",
+   "kind": "side",
+   "title": "Trade path in Livingston Parish",
+   "world": "parish:22063",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "treasure-station-st-22063-sim-overhead-crane",
+     "treasure-station-st-22063-task-sim-overhead-crane-nola-boatshed-engine",
+     "treasure-station-st-22063-sim-pressure-washer",
+     "treasure-station-st-22063-task-sim-pressure-washer-nola-floodwall-clean"
+    ]
+   },
+   "hint": "Every stop on the Trade path in Livingston Parish, in any order.",
+   "reward": {
+    "badge": "badge-side-parish-22063-trade",
+    "label": "Trade path: Livingston Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "path-trade",
+   "unlock_text": "To unlock: finish \"Union training simulators: Overhead Crane Shop Move\", \"Simulated tasks: Overhead Crane Shop Move: Boat-shed engine move\", \"Union training simulators: Pressure Washer Surface Clean\", \"Simulated tasks: Pressure Washer Surface Clean: Levee floodwall mildew\"."
+  },
+  {
+   "id": "side-parish-22063-k12",
+   "kind": "side",
+   "title": "K-12 path in Livingston Parish",
+   "world": "parish:22063",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "treasure-station-st-22063-unit-boilermakers",
+     "treasure-station-st-22063-unit-hazmat",
+     "treasure-station-st-22063-lesson-painters-contain-it",
+     "treasure-station-st-22063-lesson-millwrights-shop-move"
+    ]
+   },
+   "hint": "Every stop on the K-12 path in Livingston Parish, in any order.",
+   "reward": {
+    "badge": "badge-side-parish-22063-k12",
+    "label": "K-12 path: Livingston Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "path-k12",
+   "unlock_text": "To unlock: finish \"Cognition.X K-12: Boilermakers: flipped unit\", \"Cognition.X K-12: Hazmat & Environmental: flipped unit\", \"Lessons: Catch what you wash off\", \"Lessons: Move something precise across a shop floor\"."
+  },
+  {
+   "id": "side-parish-22063-explorer",
+   "kind": "side",
+   "title": "Explorer / free play in Livingston Parish",
+   "world": "parish:22063",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "treasure-parish-22063-arrive",
+     "treasure-parish-22063-lm-ligo-livingston-observatory",
+     "egg-parish-22063-word"
+    ]
+   },
+   "hint": "Every stop on the Explorer / free play in Livingston Parish, in any order.",
+   "reward": {
+    "badge": "badge-side-parish-22063-explorer",
+    "label": "Explorer / free play: Livingston Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "path-explorer",
+   "unlock_text": "To unlock: finish \"Set foot in Livingston Parish\", \"Reach LIGO Livingston Observatory\", \"The parish word\"."
+  },
+  {
+   "id": "treasure-parish-22071-arrive",
+   "kind": "treasure",
+   "title": "Set foot in Orleans Parish",
+   "world": "parish:22071",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Walk, drive or sail into Orleans Parish.",
+   "reward": {
+    "badge": "badge-treasure-parish-22071-arrive",
+    "label": "Orleans Parish explorer"
+   },
+   "provenance": "AUTHORED",
+   "place": "arrive",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-parish-22071-lm-jackson-square",
+   "kind": "treasure",
+   "title": "Reach Jackson Square",
+   "world": "parish:22071",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Find Jackson Square in Orleans Parish.",
+   "reward": {
+    "badge": "badge-treasure-parish-22071-lm-jackson-square",
+    "label": "Jackson Square visitor"
+   },
+   "provenance": "AUTHORED",
+   "place": "jackson-square",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-parish-22071-lm-louisiana-superdome",
+   "kind": "treasure",
+   "title": "Reach Louisiana Superdome",
+   "world": "parish:22071",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Find Louisiana Superdome in Orleans Parish.",
+   "reward": {
+    "badge": "badge-treasure-parish-22071-lm-louisiana-superdome",
+    "label": "Louisiana Superdome visitor"
+   },
+   "provenance": "AUTHORED",
+   "place": "louisiana-superdome",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-parish-22071-lm-new-orleans-city-hall",
+   "kind": "treasure",
+   "title": "Reach New Orleans City Hall",
+   "world": "parish:22071",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Find New Orleans City Hall in Orleans Parish.",
+   "reward": {
+    "badge": "badge-treasure-parish-22071-lm-new-orleans-city-hall",
+    "label": "New Orleans City Hall visitor"
+   },
+   "provenance": "AUTHORED",
+   "place": "new-orleans-city-hall",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-parish-22071-lm-city-park",
+   "kind": "treasure",
+   "title": "Reach City Park",
+   "world": "parish:22071",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Find City Park in Orleans Parish.",
+   "reward": {
+    "badge": "badge-treasure-parish-22071-lm-city-park",
+    "label": "City Park visitor"
+   },
+   "provenance": "AUTHORED",
+   "place": "city-park",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-parish-22071-lm-audubon-park",
+   "kind": "treasure",
+   "title": "Reach Audubon Park",
+   "world": "parish:22071",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Find Audubon Park in Orleans Parish.",
+   "reward": {
+    "badge": "badge-treasure-parish-22071-lm-audubon-park",
+    "label": "Audubon Park visitor"
+   },
+   "provenance": "AUTHORED",
+   "place": "audubon-park",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-parish-22071-lm-louis-armstrong-park",
+   "kind": "treasure",
+   "title": "Reach Louis Armstrong Park",
+   "world": "parish:22071",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Find Louis Armstrong Park in Orleans Parish.",
+   "reward": {
+    "badge": "badge-treasure-parish-22071-lm-louis-armstrong-park",
+    "label": "Louis Armstrong Park visitor"
+   },
+   "provenance": "AUTHORED",
+   "place": "louis-armstrong-park",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-parish-22071-lm-new-orleans-lakefront-airport",
+   "kind": "treasure",
+   "title": "Reach New Orleans Lakefront Airport",
+   "world": "parish:22071",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Find New Orleans Lakefront Airport in Orleans Parish.",
+   "reward": {
+    "badge": "badge-treasure-parish-22071-lm-new-orleans-lakefront-airport",
+    "label": "New Orleans Lakefront Airport visitor"
+   },
+   "provenance": "AUTHORED",
+   "place": "new-orleans-lakefront-airport",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-parish-22071-lm-bayou-sauvage-national-wildlife-refuge",
+   "kind": "treasure",
+   "title": "Reach Bayou Sauvage National Wildlife Refuge",
+   "world": "parish:22071",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Find Bayou Sauvage National Wildlife Refuge in Orleans Parish.",
+   "reward": {
+    "badge": "badge-treasure-parish-22071-lm-bayou-sauvage-national-wildlife-refuge",
+    "label": "Bayou Sauvage National Wildlife Refuge visitor"
+   },
+   "provenance": "AUTHORED",
+   "place": "bayou-sauvage-national-wildlife-refuge",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-parish-22071-word",
+   "kind": "egg",
+   "title": "The parish word",
+   "world": "parish:22071",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Type a word the delta is made of.",
+   "reward": {
+    "badge": "badge-egg-parish-22071-word",
+    "label": "Word finder: Orleans Parish"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "trigger": "typed:delta",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-guide-22071",
+   "kind": "treasure",
+   "title": "Talk to a guide in Orleans Parish",
+   "world": "parish:22071",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A guide in Orleans Parish quotes the registries word for word. Say hello.",
+   "reward": {
+    "badge": "badge-treasure-guide-22071",
+    "label": "Guide listener: Orleans Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "guide",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22071-sim-rigging-signals",
+   "kind": "treasure",
+   "title": "Union training simulators: Rigging Signal Call",
+   "world": "parish:22071",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Union training simulators station in Orleans Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22071-sim-rigging-signals",
+    "label": "Station visitor: Rigging Signal Call"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22071-sim-rigging-signals",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22071-task-sim-rigging-signals-nola-wind-card",
+   "kind": "treasure",
+   "title": "Simulated tasks: Rigging Signal Call: River-wind card",
+   "world": "parish:22071",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Simulated tasks station in Orleans Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22071-task-sim-rigging-signals-nola-wind-card",
+    "label": "Station visitor: Rigging Signal Call: River-wind card"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22071-task-sim-rigging-signals-nola-wind-card",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22071-sim-scaffold-bay",
+   "kind": "treasure",
+   "title": "Union training simulators: Scaffold Bay Build",
+   "world": "parish:22071",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Union training simulators station in Orleans Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22071-sim-scaffold-bay",
+    "label": "Station visitor: Scaffold Bay Build"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22071-sim-scaffold-bay",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22071-task-sim-scaffold-bay-nola-storm-bay",
+   "kind": "treasure",
+   "title": "Simulated tasks: Scaffold Bay Build: Storm-hardening bay",
+   "world": "parish:22071",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Simulated tasks station in Orleans Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22071-task-sim-scaffold-bay-nola-storm-bay",
+    "label": "Station visitor: Scaffold Bay Build: Storm-hardening bay"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22071-task-sim-scaffold-bay-nola-storm-bay",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22071-unit-crane-ops",
+   "kind": "treasure",
+   "title": "Cognition.X K-12: Crane Operators: flipped unit",
+   "world": "parish:22071",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Cognition.X K-12 station in Orleans Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22071-unit-crane-ops",
+    "label": "Station visitor: Crane Operators: flipped unit"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22071-unit-crane-ops",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22071-lesson-riggers-first-card",
+   "kind": "treasure",
+   "title": "Lessons: Call the first lift before anybody touches the hook",
+   "world": "parish:22071",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Lessons station in Orleans Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22071-lesson-riggers-first-card",
+    "label": "Station visitor: Call the first lift before anybody touches the hook"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22071-lesson-riggers-first-card",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22071-unit-bricklayers",
+   "kind": "treasure",
+   "title": "Cognition.X K-12: Bricklayers & Allied Craft: flipped unit",
+   "world": "parish:22071",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Cognition.X K-12 station in Orleans Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22071-unit-bricklayers",
+    "label": "Station visitor: Bricklayers & Allied Craft: flipped unit"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22071-unit-bricklayers",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22071-lesson-scaffold-build-in-order",
+   "kind": "treasure",
+   "title": "Lessons: Build the bay in the order that keeps you off the ground",
+   "world": "parish:22071",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Lessons station in Orleans Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22071-lesson-scaffold-build-in-order",
+    "label": "Station visitor: Build the bay in the order that keeps you off the ground"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22071-lesson-scaffold-build-in-order",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "side-parish-22071-trade",
+   "kind": "side",
+   "title": "Trade path in Orleans Parish",
+   "world": "parish:22071",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "treasure-station-st-22071-sim-rigging-signals",
+     "treasure-station-st-22071-task-sim-rigging-signals-nola-wind-card",
+     "treasure-station-st-22071-sim-scaffold-bay",
+     "treasure-station-st-22071-task-sim-scaffold-bay-nola-storm-bay"
+    ]
+   },
+   "hint": "Every stop on the Trade path in Orleans Parish, in any order.",
+   "reward": {
+    "badge": "badge-side-parish-22071-trade",
+    "label": "Trade path: Orleans Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "path-trade",
+   "unlock_text": "To unlock: finish \"Union training simulators: Rigging Signal Call\", \"Simulated tasks: Rigging Signal Call: River-wind card\", \"Union training simulators: Scaffold Bay Build\", \"Simulated tasks: Scaffold Bay Build: Storm-hardening bay\"."
+  },
+  {
+   "id": "side-parish-22071-k12",
+   "kind": "side",
+   "title": "K-12 path in Orleans Parish",
+   "world": "parish:22071",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "treasure-station-st-22071-unit-bricklayers",
+     "treasure-station-st-22071-unit-crane-ops",
+     "treasure-station-st-22071-lesson-riggers-first-card",
+     "treasure-station-st-22071-lesson-scaffold-build-in-order"
+    ]
+   },
+   "hint": "Every stop on the K-12 path in Orleans Parish, in any order.",
+   "reward": {
+    "badge": "badge-side-parish-22071-k12",
+    "label": "K-12 path: Orleans Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "path-k12",
+   "unlock_text": "To unlock: finish \"Cognition.X K-12: Bricklayers & Allied Craft: flipped unit\", \"Cognition.X K-12: Crane Operators: flipped unit\", \"Lessons: Call the first lift before anybody touches the hook\", \"Lessons: Build the bay in the order that keeps you off the ground\"."
+  },
+  {
+   "id": "side-parish-22071-explorer",
+   "kind": "side",
+   "title": "Explorer / free play in Orleans Parish",
+   "world": "parish:22071",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "treasure-parish-22071-arrive",
+     "treasure-parish-22071-lm-jackson-square",
+     "treasure-parish-22071-lm-louisiana-superdome",
+     "treasure-parish-22071-lm-new-orleans-city-hall",
+     "treasure-parish-22071-lm-city-park",
+     "treasure-parish-22071-lm-audubon-park",
+     "treasure-parish-22071-lm-louis-armstrong-park",
+     "treasure-parish-22071-lm-new-orleans-lakefront-airport",
+     "treasure-parish-22071-lm-bayou-sauvage-national-wildlife-refuge",
+     "egg-parish-22071-word"
+    ]
+   },
+   "hint": "Every stop on the Explorer / free play in Orleans Parish, in any order.",
+   "reward": {
+    "badge": "badge-side-parish-22071-explorer",
+    "label": "Explorer / free play: Orleans Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "path-explorer",
+   "unlock_text": "To unlock: finish \"Set foot in Orleans Parish\", \"Reach Jackson Square\", \"Reach Louisiana Superdome\", \"Reach New Orleans City Hall\", \"Reach City Park\", \"Reach Audubon Park\", \"Reach Louis Armstrong Park\", \"Reach New Orleans Lakefront Airport\", \"Reach Bayou Sauvage National Wildlife Refuge\", \"The parish word\"."
+  },
+  {
+   "id": "treasure-parish-22075-arrive",
+   "kind": "treasure",
+   "title": "Set foot in Plaquemines Parish",
+   "world": "parish:22075",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Walk, drive or sail into Plaquemines Parish.",
+   "reward": {
+    "badge": "badge-treasure-parish-22075-arrive",
+    "label": "Plaquemines Parish explorer"
+   },
+   "provenance": "AUTHORED",
+   "place": "arrive",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-parish-22075-lm-fort-jackson",
+   "kind": "treasure",
+   "title": "Reach Fort Jackson",
+   "world": "parish:22075",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Find Fort Jackson in Plaquemines Parish.",
+   "reward": {
+    "badge": "badge-treasure-parish-22075-lm-fort-jackson",
+    "label": "Fort Jackson visitor"
+   },
+   "provenance": "AUTHORED",
+   "place": "fort-jackson",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-parish-22075-word",
+   "kind": "egg",
+   "title": "The parish word",
+   "world": "parish:22075",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Type a word the delta is made of.",
+   "reward": {
+    "badge": "badge-egg-parish-22075-word",
+    "label": "Word finder: Plaquemines Parish"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "trigger": "typed:batture",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-guide-22075",
+   "kind": "treasure",
+   "title": "Talk to a guide in Plaquemines Parish",
+   "world": "parish:22075",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A guide in Plaquemines Parish quotes the registries word for word. Say hello.",
+   "reward": {
+    "badge": "badge-treasure-guide-22075",
+    "label": "Guide listener: Plaquemines Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "guide",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22075-sim-airless-sprayer",
+   "kind": "treasure",
+   "title": "Union training simulators: Airless Paint Sprayer Finish",
+   "world": "parish:22075",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Union training simulators station in Plaquemines Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22075-sim-airless-sprayer",
+    "label": "Station visitor: Airless Paint Sprayer Finish"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22075-sim-airless-sprayer",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22075-task-sim-airless-sprayer-bay-terminal-finish",
+   "kind": "treasure",
+   "title": "Simulated tasks: Airless Paint Sprayer Finish: Ferry terminal finish coat",
+   "world": "parish:22075",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Simulated tasks station in Plaquemines Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22075-task-sim-airless-sprayer-bay-terminal-finish",
+    "label": "Station visitor: Airless Paint Sprayer Finish: Ferry terminal finish coat"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22075-task-sim-airless-sprayer-bay-terminal-finish",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22075-sim-weld-bead",
+   "kind": "treasure",
+   "title": "Union training simulators: Weld Bead Run",
+   "world": "parish:22075",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Union training simulators station in Plaquemines Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22075-sim-weld-bead",
+    "label": "Station visitor: Weld Bead Run"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22075-sim-weld-bead",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22075-task-sim-weld-bead-nola-tank-seam",
+   "kind": "treasure",
+   "title": "Simulated tasks: Weld Bead Run: Tank shell seam",
+   "world": "parish:22075",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Simulated tasks station in Plaquemines Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22075-task-sim-weld-bead-nola-tank-seam",
+    "label": "Station visitor: Weld Bead Run: Tank shell seam"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22075-task-sim-weld-bead-nola-tank-seam",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22075-unit-painters",
+   "kind": "treasure",
+   "title": "Cognition.X K-12: Painters & Allied Trades: flipped unit",
+   "world": "parish:22075",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Cognition.X K-12 station in Plaquemines Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22075-unit-painters",
+    "label": "Station visitor: Painters & Allied Trades: flipped unit"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22075-unit-painters",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22075-lesson-painters-lay-the-coat",
+   "kind": "treasure",
+   "title": "Lessons: Lay a coat that is actually there",
+   "world": "parish:22075",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Lessons station in Plaquemines Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22075-lesson-painters-lay-the-coat",
+    "label": "Station visitor: Lay a coat that is actually there"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22075-lesson-painters-lay-the-coat",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22075-unit-boilermakers",
+   "kind": "treasure",
+   "title": "Cognition.X K-12: Boilermakers: flipped unit",
+   "world": "parish:22075",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Cognition.X K-12 station in Plaquemines Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22075-unit-boilermakers",
+    "label": "Station visitor: Boilermakers: flipped unit"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22075-unit-boilermakers",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22075-lesson-shipfitters-say-what-you-cannot-see",
+   "kind": "treasure",
+   "title": "Lessons: Say what you cannot see from the hood",
+   "world": "parish:22075",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Lessons station in Plaquemines Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22075-lesson-shipfitters-say-what-you-cannot-see",
+    "label": "Station visitor: Say what you cannot see from the hood"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22075-lesson-shipfitters-say-what-you-cannot-see",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "side-parish-22075-trade",
+   "kind": "side",
+   "title": "Trade path in Plaquemines Parish",
+   "world": "parish:22075",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "treasure-station-st-22075-sim-airless-sprayer",
+     "treasure-station-st-22075-task-sim-airless-sprayer-bay-terminal-finish",
+     "treasure-station-st-22075-sim-weld-bead",
+     "treasure-station-st-22075-task-sim-weld-bead-nola-tank-seam"
+    ]
+   },
+   "hint": "Every stop on the Trade path in Plaquemines Parish, in any order.",
+   "reward": {
+    "badge": "badge-side-parish-22075-trade",
+    "label": "Trade path: Plaquemines Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "path-trade",
+   "unlock_text": "To unlock: finish \"Union training simulators: Airless Paint Sprayer Finish\", \"Simulated tasks: Airless Paint Sprayer Finish: Ferry terminal finish coat\", \"Union training simulators: Weld Bead Run\", \"Simulated tasks: Weld Bead Run: Tank shell seam\"."
+  },
+  {
+   "id": "side-parish-22075-k12",
+   "kind": "side",
+   "title": "K-12 path in Plaquemines Parish",
+   "world": "parish:22075",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "treasure-station-st-22075-unit-boilermakers",
+     "treasure-station-st-22075-unit-painters",
+     "treasure-station-st-22075-lesson-painters-lay-the-coat",
+     "treasure-station-st-22075-lesson-shipfitters-say-what-you-cannot-see"
+    ]
+   },
+   "hint": "Every stop on the K-12 path in Plaquemines Parish, in any order.",
+   "reward": {
+    "badge": "badge-side-parish-22075-k12",
+    "label": "K-12 path: Plaquemines Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "path-k12",
+   "unlock_text": "To unlock: finish \"Cognition.X K-12: Boilermakers: flipped unit\", \"Cognition.X K-12: Painters & Allied Trades: flipped unit\", \"Lessons: Lay a coat that is actually there\", \"Lessons: Say what you cannot see from the hood\"."
+  },
+  {
+   "id": "side-parish-22075-explorer",
+   "kind": "side",
+   "title": "Explorer / free play in Plaquemines Parish",
+   "world": "parish:22075",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "treasure-parish-22075-arrive",
+     "treasure-parish-22075-lm-fort-jackson",
+     "egg-parish-22075-word"
+    ]
+   },
+   "hint": "Every stop on the Explorer / free play in Plaquemines Parish, in any order.",
+   "reward": {
+    "badge": "badge-side-parish-22075-explorer",
+    "label": "Explorer / free play: Plaquemines Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "path-explorer",
+   "unlock_text": "To unlock: finish \"Set foot in Plaquemines Parish\", \"Reach Fort Jackson\", \"The parish word\"."
+  },
+  {
+   "id": "treasure-parish-22087-arrive",
+   "kind": "treasure",
+   "title": "Set foot in St. Bernard Parish",
+   "world": "parish:22087",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Walk, drive or sail into St. Bernard Parish.",
+   "reward": {
+    "badge": "badge-treasure-parish-22087-arrive",
+    "label": "St. Bernard Parish explorer"
+   },
+   "provenance": "AUTHORED",
+   "place": "arrive",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-parish-22087-lm-chalmette-battlefield",
+   "kind": "treasure",
+   "title": "Reach Chalmette Battlefield",
+   "world": "parish:22087",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Find Chalmette Battlefield in St. Bernard Parish.",
+   "reward": {
+    "badge": "badge-treasure-parish-22087-lm-chalmette-battlefield",
+    "label": "Chalmette Battlefield visitor"
+   },
+   "provenance": "AUTHORED",
+   "place": "chalmette-battlefield",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-parish-22087-word",
+   "kind": "egg",
+   "title": "The parish word",
+   "world": "parish:22087",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Type a word the delta is made of.",
+   "reward": {
+    "badge": "badge-egg-parish-22087-word",
+    "label": "Word finder: St. Bernard Parish"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "trigger": "typed:cypress",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-guide-22087",
+   "kind": "treasure",
+   "title": "Talk to a guide in St. Bernard Parish",
+   "world": "parish:22087",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A guide in St. Bernard Parish quotes the registries word for word. Say hello.",
+   "reward": {
+    "badge": "badge-treasure-guide-22087",
+    "label": "Guide listener: St. Bernard Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "guide",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22087-sim-boom-lift",
+   "kind": "treasure",
+   "title": "Union training simulators: Boom Lift Basket Work",
+   "world": "parish:22087",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Union training simulators station in St. Bernard Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22087-sim-boom-lift",
+    "label": "Station visitor: Boom Lift Basket Work"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22087-sim-boom-lift",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22087-task-sim-boom-lift-bay-curtainwall-run",
+   "kind": "treasure",
+   "title": "Simulated tasks: Boom Lift Basket Work: Curtain-wall panel run",
+   "world": "parish:22087",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Simulated tasks station in St. Bernard Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22087-task-sim-boom-lift-bay-curtainwall-run",
+    "label": "Station visitor: Boom Lift Basket Work: Curtain-wall panel run"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22087-task-sim-boom-lift-bay-curtainwall-run",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22087-sim-crane-lift",
+   "kind": "treasure",
+   "title": "Union training simulators: Tower Crane Lift",
+   "world": "parish:22087",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Union training simulators station in St. Bernard Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22087-sim-crane-lift",
+    "label": "Station visitor: Tower Crane Lift"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22087-sim-crane-lift",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22087-task-sim-crane-lift-bay-steel",
+   "kind": "treasure",
+   "title": "Simulated tasks: Tower Crane Lift: Bay high-steel lift",
+   "world": "parish:22087",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Simulated tasks station in St. Bernard Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22087-task-sim-crane-lift-bay-steel",
+    "label": "Station visitor: Tower Crane Lift: Bay high-steel lift"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22087-task-sim-crane-lift-bay-steel",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22087-unit-glaziers",
+   "kind": "treasure",
+   "title": "Cognition.X K-12: Glaziers: flipped unit",
+   "world": "parish:22087",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Cognition.X K-12 station in St. Bernard Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22087-unit-glaziers",
+    "label": "Station visitor: Glaziers: flipped unit"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22087-unit-glaziers",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22087-lesson-insulators-stay-inside-the-rails",
+   "kind": "treasure",
+   "title": "Lessons: Stay inside the rails while you reach",
+   "world": "parish:22087",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Lessons station in St. Bernard Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22087-lesson-insulators-stay-inside-the-rails",
+    "label": "Station visitor: Stay inside the rails while you reach"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22087-lesson-insulators-stay-inside-the-rails",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22087-unit-decking",
+   "kind": "treasure",
+   "title": "Cognition.X K-12: Metal Deck Installers: flipped unit",
+   "world": "parish:22087",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Cognition.X K-12 station in St. Bernard Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22087-unit-decking",
+    "label": "Station visitor: Metal Deck Installers: flipped unit"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22087-unit-decking",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22087-lesson-steel-erectors-land-it-on-the-bolts",
+   "kind": "treasure",
+   "title": "Lessons: Land the piece where the bolts can go in",
+   "world": "parish:22087",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Lessons station in St. Bernard Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22087-lesson-steel-erectors-land-it-on-the-bolts",
+    "label": "Station visitor: Land the piece where the bolts can go in"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22087-lesson-steel-erectors-land-it-on-the-bolts",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "side-parish-22087-trade",
+   "kind": "side",
+   "title": "Trade path in St. Bernard Parish",
+   "world": "parish:22087",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "treasure-station-st-22087-sim-boom-lift",
+     "treasure-station-st-22087-task-sim-boom-lift-bay-curtainwall-run",
+     "treasure-station-st-22087-sim-crane-lift",
+     "treasure-station-st-22087-task-sim-crane-lift-bay-steel"
+    ]
+   },
+   "hint": "Every stop on the Trade path in St. Bernard Parish, in any order.",
+   "reward": {
+    "badge": "badge-side-parish-22087-trade",
+    "label": "Trade path: St. Bernard Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "path-trade",
+   "unlock_text": "To unlock: finish \"Union training simulators: Boom Lift Basket Work\", \"Simulated tasks: Boom Lift Basket Work: Curtain-wall panel run\", \"Union training simulators: Tower Crane Lift\", \"Simulated tasks: Tower Crane Lift: Bay high-steel lift\"."
+  },
+  {
+   "id": "side-parish-22087-k12",
+   "kind": "side",
+   "title": "K-12 path in St. Bernard Parish",
+   "world": "parish:22087",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "treasure-station-st-22087-unit-decking",
+     "treasure-station-st-22087-unit-glaziers",
+     "treasure-station-st-22087-lesson-insulators-stay-inside-the-rails",
+     "treasure-station-st-22087-lesson-steel-erectors-land-it-on-the-bolts"
+    ]
+   },
+   "hint": "Every stop on the K-12 path in St. Bernard Parish, in any order.",
+   "reward": {
+    "badge": "badge-side-parish-22087-k12",
+    "label": "K-12 path: St. Bernard Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "path-k12",
+   "unlock_text": "To unlock: finish \"Cognition.X K-12: Metal Deck Installers: flipped unit\", \"Cognition.X K-12: Glaziers: flipped unit\", \"Lessons: Stay inside the rails while you reach\", \"Lessons: Land the piece where the bolts can go in\"."
+  },
+  {
+   "id": "side-parish-22087-explorer",
+   "kind": "side",
+   "title": "Explorer / free play in St. Bernard Parish",
+   "world": "parish:22087",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "treasure-parish-22087-arrive",
+     "treasure-parish-22087-lm-chalmette-battlefield",
+     "egg-parish-22087-word"
+    ]
+   },
+   "hint": "Every stop on the Explorer / free play in St. Bernard Parish, in any order.",
+   "reward": {
+    "badge": "badge-side-parish-22087-explorer",
+    "label": "Explorer / free play: St. Bernard Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "path-explorer",
+   "unlock_text": "To unlock: finish \"Set foot in St. Bernard Parish\", \"Reach Chalmette Battlefield\", \"The parish word\"."
+  },
+  {
+   "id": "treasure-parish-22089-arrive",
+   "kind": "treasure",
+   "title": "Set foot in St. Charles Parish",
+   "world": "parish:22089",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Walk, drive or sail into St. Charles Parish.",
+   "reward": {
+    "badge": "badge-treasure-parish-22089-arrive",
+    "label": "St. Charles Parish explorer"
+   },
+   "provenance": "AUTHORED",
+   "place": "arrive",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-parish-22089-lm-bonnet-carre-spillway",
+   "kind": "treasure",
+   "title": "Reach Bonnet Carre Spillway",
+   "world": "parish:22089",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Find Bonnet Carre Spillway in St. Charles Parish.",
+   "reward": {
+    "badge": "badge-treasure-parish-22089-lm-bonnet-carre-spillway",
+    "label": "Bonnet Carre Spillway visitor"
+   },
+   "provenance": "AUTHORED",
+   "place": "bonnet-carre-spillway",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-parish-22089-word",
+   "kind": "egg",
+   "title": "The parish word",
+   "world": "parish:22089",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Type a word the delta is made of.",
+   "reward": {
+    "badge": "badge-egg-parish-22089-word",
+    "label": "Word finder: St. Charles Parish"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "trigger": "typed:pirogue",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-guide-22089",
+   "kind": "treasure",
+   "title": "Talk to a guide in St. Charles Parish",
+   "world": "parish:22089",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A guide in St. Charles Parish quotes the registries word for word. Say hello.",
+   "reward": {
+    "badge": "badge-treasure-guide-22089",
+    "label": "Guide listener: St. Charles Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "guide",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22089-sim-excavator-trench",
+   "kind": "treasure",
+   "title": "Union training simulators: Excavator Trench Cut",
+   "world": "parish:22089",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Union training simulators station in St. Charles Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22089-sim-excavator-trench",
+    "label": "Station visitor: Excavator Trench Cut"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22089-sim-excavator-trench",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22089-task-sim-excavator-trench-bay-retrofit",
+   "kind": "treasure",
+   "title": "Simulated tasks: Excavator Trench Cut: Seismic retrofit cut",
+   "world": "parish:22089",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Simulated tasks station in St. Charles Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22089-task-sim-excavator-trench-bay-retrofit",
+    "label": "Station visitor: Excavator Trench Cut: Seismic retrofit cut"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22089-task-sim-excavator-trench-bay-retrofit",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22089-sim-forklift-run",
+   "kind": "treasure",
+   "title": "Union training simulators: Forklift Yard Run",
+   "world": "parish:22089",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Union training simulators station in St. Charles Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22089-sim-forklift-run",
+    "label": "Station visitor: Forklift Yard Run"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22089-sim-forklift-run",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22089-task-sim-forklift-run-bay-yard",
+   "kind": "treasure",
+   "title": "Simulated tasks: Forklift Yard Run: Island yard run",
+   "world": "parish:22089",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Simulated tasks station in St. Charles Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22089-task-sim-forklift-run-bay-yard",
+    "label": "Station visitor: Forklift Yard Run: Island yard run"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22089-task-sim-forklift-run-bay-yard",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22089-unit-laborers",
+   "kind": "treasure",
+   "title": "Cognition.X K-12: Laborers: flipped unit",
+   "world": "parish:22089",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Cognition.X K-12 station in St. Charles Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22089-unit-laborers",
+    "label": "Station visitor: Laborers: flipped unit"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22089-unit-laborers",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22089-lesson-shoring-read-the-ground-again",
+   "kind": "treasure",
+   "title": "Lessons: Read the ground again after the rain",
+   "world": "parish:22089",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Lessons station in St. Charles Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22089-lesson-shoring-read-the-ground-again",
+    "label": "Station visitor: Read the ground again after the rain"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22089-lesson-shoring-read-the-ground-again",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22089-unit-marine-terminal",
+   "kind": "treasure",
+   "title": "Cognition.X K-12: Marine Terminal Operators: flipped unit",
+   "world": "parish:22089",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Cognition.X K-12 station in St. Charles Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22089-unit-marine-terminal",
+    "label": "Station visitor: Marine Terminal Operators: flipped unit"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22089-unit-marine-terminal",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22089-lesson-heavy-equip-listen-to-the-dash",
+   "kind": "treasure",
+   "title": "Lessons: Listen to the dash before you replace anything",
+   "world": "parish:22089",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Lessons station in St. Charles Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22089-lesson-heavy-equip-listen-to-the-dash",
+    "label": "Station visitor: Listen to the dash before you replace anything"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22089-lesson-heavy-equip-listen-to-the-dash",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "side-parish-22089-trade",
+   "kind": "side",
+   "title": "Trade path in St. Charles Parish",
+   "world": "parish:22089",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "treasure-station-st-22089-sim-excavator-trench",
+     "treasure-station-st-22089-task-sim-excavator-trench-bay-retrofit",
+     "treasure-station-st-22089-sim-forklift-run",
+     "treasure-station-st-22089-task-sim-forklift-run-bay-yard"
+    ]
+   },
+   "hint": "Every stop on the Trade path in St. Charles Parish, in any order.",
+   "reward": {
+    "badge": "badge-side-parish-22089-trade",
+    "label": "Trade path: St. Charles Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "path-trade",
+   "unlock_text": "To unlock: finish \"Union training simulators: Excavator Trench Cut\", \"Simulated tasks: Excavator Trench Cut: Seismic retrofit cut\", \"Union training simulators: Forklift Yard Run\", \"Simulated tasks: Forklift Yard Run: Island yard run\"."
+  },
+  {
+   "id": "side-parish-22089-k12",
+   "kind": "side",
+   "title": "K-12 path in St. Charles Parish",
+   "world": "parish:22089",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "treasure-station-st-22089-unit-laborers",
+     "treasure-station-st-22089-unit-marine-terminal",
+     "treasure-station-st-22089-lesson-shoring-read-the-ground-again",
+     "treasure-station-st-22089-lesson-heavy-equip-listen-to-the-dash"
+    ]
+   },
+   "hint": "Every stop on the K-12 path in St. Charles Parish, in any order.",
+   "reward": {
+    "badge": "badge-side-parish-22089-k12",
+    "label": "K-12 path: St. Charles Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "path-k12",
+   "unlock_text": "To unlock: finish \"Cognition.X K-12: Laborers: flipped unit\", \"Cognition.X K-12: Marine Terminal Operators: flipped unit\", \"Lessons: Read the ground again after the rain\", \"Lessons: Listen to the dash before you replace anything\"."
+  },
+  {
+   "id": "side-parish-22089-explorer",
+   "kind": "side",
+   "title": "Explorer / free play in St. Charles Parish",
+   "world": "parish:22089",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "treasure-parish-22089-arrive",
+     "treasure-parish-22089-lm-bonnet-carre-spillway",
+     "egg-parish-22089-word"
+    ]
+   },
+   "hint": "Every stop on the Explorer / free play in St. Charles Parish, in any order.",
+   "reward": {
+    "badge": "badge-side-parish-22089-explorer",
+    "label": "Explorer / free play: St. Charles Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "path-explorer",
+   "unlock_text": "To unlock: finish \"Set foot in St. Charles Parish\", \"Reach Bonnet Carre Spillway\", \"The parish word\"."
+  },
+  {
+   "id": "treasure-parish-22093-arrive",
+   "kind": "treasure",
+   "title": "Set foot in St. James Parish",
+   "world": "parish:22093",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Walk, drive or sail into St. James Parish.",
+   "reward": {
+    "badge": "badge-treasure-parish-22093-arrive",
+    "label": "St. James Parish explorer"
+   },
+   "provenance": "AUTHORED",
+   "place": "arrive",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-parish-22093-word",
+   "kind": "egg",
+   "title": "The parish word",
+   "world": "parish:22093",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Type a word the delta is made of.",
+   "reward": {
+    "badge": "badge-egg-parish-22093-word",
+    "label": "Word finder: St. James Parish"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "trigger": "typed:spillway",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-guide-22093",
+   "kind": "treasure",
+   "title": "Talk to a guide in St. James Parish",
+   "world": "parish:22093",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A guide in St. James Parish quotes the registries word for word. Say hello.",
+   "reward": {
+    "badge": "badge-treasure-guide-22093",
+    "label": "Guide listener: St. James Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "guide",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22093-sim-load-chart",
+   "kind": "treasure",
+   "title": "Union training simulators: Load Chart Judgment",
+   "world": "parish:22093",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Union training simulators station in St. James Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22093-sim-load-chart",
+    "label": "Station visitor: Load Chart Judgment"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22093-sim-load-chart",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22093-task-sim-load-chart-bay-pick-list",
+   "kind": "treasure",
+   "title": "Simulated tasks: Load Chart Judgment: Yard pick list",
+   "world": "parish:22093",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Simulated tasks station in St. James Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22093-task-sim-load-chart-bay-pick-list",
+    "label": "Station visitor: Load Chart Judgment: Yard pick list"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22093-task-sim-load-chart-bay-pick-list",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22093-sim-overhead-crane",
+   "kind": "treasure",
+   "title": "Union training simulators: Overhead Crane Shop Move",
+   "world": "parish:22093",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Union training simulators station in St. James Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22093-sim-overhead-crane",
+    "label": "Station visitor: Overhead Crane Shop Move"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22093-sim-overhead-crane",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22093-task-sim-overhead-crane-bay-fab-coil",
+   "kind": "treasure",
+   "title": "Simulated tasks: Overhead Crane Shop Move: Fabrication-shop coil move",
+   "world": "parish:22093",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Simulated tasks station in St. James Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22093-task-sim-overhead-crane-bay-fab-coil",
+    "label": "Station visitor: Overhead Crane Shop Move: Fabrication-shop coil move"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22093-task-sim-overhead-crane-bay-fab-coil",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22093-unit-heavy-equip",
+   "kind": "treasure",
+   "title": "Cognition.X K-12: Heavy Equipment Technicians: flipped unit",
+   "world": "parish:22093",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Cognition.X K-12 station in St. James Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22093-unit-heavy-equip",
+    "label": "Station visitor: Heavy Equipment Technicians: flipped unit"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22093-unit-heavy-equip",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22093-lesson-crane-ops-read-the-chart",
+   "kind": "treasure",
+   "title": "Lessons: Refuse the pick the chart refuses",
+   "world": "parish:22093",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Lessons station in St. James Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22093-lesson-crane-ops-read-the-chart",
+    "label": "Station visitor: Refuse the pick the chart refuses"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22093-lesson-crane-ops-read-the-chart",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22093-unit-crane-ops",
+   "kind": "treasure",
+   "title": "Cognition.X K-12: Crane Operators: flipped unit",
+   "world": "parish:22093",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Cognition.X K-12 station in St. James Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22093-unit-crane-ops",
+    "label": "Station visitor: Crane Operators: flipped unit"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22093-unit-crane-ops",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22093-lesson-machinists-move-the-job-without-marking-it",
+   "kind": "treasure",
+   "title": "Lessons: Move the job across the shop without marking it",
+   "world": "parish:22093",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Lessons station in St. James Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22093-lesson-machinists-move-the-job-without-marking-it",
+    "label": "Station visitor: Move the job across the shop without marking it"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22093-lesson-machinists-move-the-job-without-marking-it",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "side-parish-22093-trade",
+   "kind": "side",
+   "title": "Trade path in St. James Parish",
+   "world": "parish:22093",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "treasure-station-st-22093-sim-load-chart",
+     "treasure-station-st-22093-task-sim-load-chart-bay-pick-list",
+     "treasure-station-st-22093-sim-overhead-crane",
+     "treasure-station-st-22093-task-sim-overhead-crane-bay-fab-coil"
+    ]
+   },
+   "hint": "Every stop on the Trade path in St. James Parish, in any order.",
+   "reward": {
+    "badge": "badge-side-parish-22093-trade",
+    "label": "Trade path: St. James Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "path-trade",
+   "unlock_text": "To unlock: finish \"Union training simulators: Load Chart Judgment\", \"Simulated tasks: Load Chart Judgment: Yard pick list\", \"Union training simulators: Overhead Crane Shop Move\", \"Simulated tasks: Overhead Crane Shop Move: Fabrication-shop coil move\"."
+  },
+  {
+   "id": "side-parish-22093-k12",
+   "kind": "side",
+   "title": "K-12 path in St. James Parish",
+   "world": "parish:22093",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "treasure-station-st-22093-unit-crane-ops",
+     "treasure-station-st-22093-unit-heavy-equip",
+     "treasure-station-st-22093-lesson-crane-ops-read-the-chart",
+     "treasure-station-st-22093-lesson-machinists-move-the-job-without-marking-it"
+    ]
+   },
+   "hint": "Every stop on the K-12 path in St. James Parish, in any order.",
+   "reward": {
+    "badge": "badge-side-parish-22093-k12",
+    "label": "K-12 path: St. James Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "path-k12",
+   "unlock_text": "To unlock: finish \"Cognition.X K-12: Crane Operators: flipped unit\", \"Cognition.X K-12: Heavy Equipment Technicians: flipped unit\", \"Lessons: Refuse the pick the chart refuses\", \"Lessons: Move the job across the shop without marking it\"."
+  },
+  {
+   "id": "side-parish-22093-explorer",
+   "kind": "side",
+   "title": "Explorer / free play in St. James Parish",
+   "world": "parish:22093",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "treasure-parish-22093-arrive",
+     "egg-parish-22093-word"
+    ]
+   },
+   "hint": "Every stop on the Explorer / free play in St. James Parish, in any order.",
+   "reward": {
+    "badge": "badge-side-parish-22093-explorer",
+    "label": "Explorer / free play: St. James Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "path-explorer",
+   "unlock_text": "To unlock: finish \"Set foot in St. James Parish\", \"The parish word\"."
+  },
+  {
+   "id": "treasure-parish-22095-arrive",
+   "kind": "treasure",
+   "title": "Set foot in St. John the Baptist Parish",
+   "world": "parish:22095",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Walk, drive or sail into St. John the Baptist Parish.",
+   "reward": {
+    "badge": "badge-treasure-parish-22095-arrive",
+    "label": "St. John the Baptist Parish explorer"
+   },
+   "provenance": "AUTHORED",
+   "place": "arrive",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-parish-22095-word",
+   "kind": "egg",
+   "title": "The parish word",
+   "world": "parish:22095",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Type a word the delta is made of.",
+   "reward": {
+    "badge": "badge-egg-parish-22095-word",
+    "label": "Word finder: St. John the Baptist Parish"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "trigger": "typed:crawfish",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-guide-22095",
+   "kind": "treasure",
+   "title": "Talk to a guide in St. John the Baptist Parish",
+   "world": "parish:22095",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A guide in St. John the Baptist Parish quotes the registries word for word. Say hello.",
+   "reward": {
+    "badge": "badge-treasure-guide-22095",
+    "label": "Guide listener: St. John the Baptist Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "guide",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22095-sim-pressure-washer",
+   "kind": "treasure",
+   "title": "Union training simulators: Pressure Washer Surface Clean",
+   "world": "parish:22095",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Union training simulators station in St. John the Baptist Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22095-sim-pressure-washer",
+    "label": "Station visitor: Pressure Washer Surface Clean"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22095-sim-pressure-washer",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22095-task-sim-pressure-washer-bay-seawall-clean",
+   "kind": "treasure",
+   "title": "Simulated tasks: Pressure Washer Surface Clean: Ferry terminal seawall",
+   "world": "parish:22095",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Simulated tasks station in St. John the Baptist Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22095-task-sim-pressure-washer-bay-seawall-clean",
+    "label": "Station visitor: Pressure Washer Surface Clean: Ferry terminal seawall"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22095-task-sim-pressure-washer-bay-seawall-clean",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22095-sim-rigging-signals",
+   "kind": "treasure",
+   "title": "Union training simulators: Rigging Signal Call",
+   "world": "parish:22095",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Union training simulators station in St. John the Baptist Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22095-sim-rigging-signals",
+    "label": "Station visitor: Rigging Signal Call"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22095-sim-rigging-signals",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22095-task-sim-rigging-signals-bay-first-card",
+   "kind": "treasure",
+   "title": "Simulated tasks: Rigging Signal Call: First lift card",
+   "world": "parish:22095",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Simulated tasks station in St. John the Baptist Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22095-task-sim-rigging-signals-bay-first-card",
+    "label": "Station visitor: Rigging Signal Call: First lift card"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22095-task-sim-rigging-signals-bay-first-card",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22095-unit-laborers",
+   "kind": "treasure",
+   "title": "Cognition.X K-12: Laborers: flipped unit",
+   "world": "parish:22095",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Cognition.X K-12 station in St. John the Baptist Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22095-unit-laborers",
+    "label": "Station visitor: Laborers: flipped unit"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22095-unit-laborers",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22095-lesson-hazmat-wash-and-decon",
+   "kind": "treasure",
+   "title": "Lessons: Come out cleaner than what you washed",
+   "world": "parish:22095",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Lessons station in St. John the Baptist Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22095-lesson-hazmat-wash-and-decon",
+    "label": "Station visitor: Come out cleaner than what you washed"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22095-lesson-hazmat-wash-and-decon",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22095-unit-decking",
+   "kind": "treasure",
+   "title": "Cognition.X K-12: Metal Deck Installers: flipped unit",
+   "world": "parish:22095",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Cognition.X K-12 station in St. John the Baptist Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22095-unit-decking",
+    "label": "Station visitor: Metal Deck Installers: flipped unit"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22095-unit-decking",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22095-lesson-decking-walk-the-path-first",
+   "kind": "treasure",
+   "title": "Lessons: Walk where the bundle will fly before it flies",
+   "world": "parish:22095",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Lessons station in St. John the Baptist Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22095-lesson-decking-walk-the-path-first",
+    "label": "Station visitor: Walk where the bundle will fly before it flies"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22095-lesson-decking-walk-the-path-first",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "side-parish-22095-trade",
+   "kind": "side",
+   "title": "Trade path in St. John the Baptist Parish",
+   "world": "parish:22095",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "treasure-station-st-22095-sim-pressure-washer",
+     "treasure-station-st-22095-task-sim-pressure-washer-bay-seawall-clean",
+     "treasure-station-st-22095-sim-rigging-signals",
+     "treasure-station-st-22095-task-sim-rigging-signals-bay-first-card"
+    ]
+   },
+   "hint": "Every stop on the Trade path in St. John the Baptist Parish, in any order.",
+   "reward": {
+    "badge": "badge-side-parish-22095-trade",
+    "label": "Trade path: St. John the Baptist Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "path-trade",
+   "unlock_text": "To unlock: finish \"Union training simulators: Pressure Washer Surface Clean\", \"Simulated tasks: Pressure Washer Surface Clean: Ferry terminal seawall\", \"Union training simulators: Rigging Signal Call\", \"Simulated tasks: Rigging Signal Call: First lift card\"."
+  },
+  {
+   "id": "side-parish-22095-k12",
+   "kind": "side",
+   "title": "K-12 path in St. John the Baptist Parish",
+   "world": "parish:22095",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "treasure-station-st-22095-unit-decking",
+     "treasure-station-st-22095-unit-laborers",
+     "treasure-station-st-22095-lesson-hazmat-wash-and-decon",
+     "treasure-station-st-22095-lesson-decking-walk-the-path-first"
+    ]
+   },
+   "hint": "Every stop on the K-12 path in St. John the Baptist Parish, in any order.",
+   "reward": {
+    "badge": "badge-side-parish-22095-k12",
+    "label": "K-12 path: St. John the Baptist Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "path-k12",
+   "unlock_text": "To unlock: finish \"Cognition.X K-12: Metal Deck Installers: flipped unit\", \"Cognition.X K-12: Laborers: flipped unit\", \"Lessons: Come out cleaner than what you washed\", \"Lessons: Walk where the bundle will fly before it flies\"."
+  },
+  {
+   "id": "side-parish-22095-explorer",
+   "kind": "side",
+   "title": "Explorer / free play in St. John the Baptist Parish",
+   "world": "parish:22095",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "treasure-parish-22095-arrive",
+     "egg-parish-22095-word"
+    ]
+   },
+   "hint": "Every stop on the Explorer / free play in St. John the Baptist Parish, in any order.",
+   "reward": {
+    "badge": "badge-side-parish-22095-explorer",
+    "label": "Explorer / free play: St. John the Baptist Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "path-explorer",
+   "unlock_text": "To unlock: finish \"Set foot in St. John the Baptist Parish\", \"The parish word\"."
+  },
+  {
+   "id": "treasure-parish-22103-arrive",
+   "kind": "treasure",
+   "title": "Set foot in St. Tammany Parish",
+   "world": "parish:22103",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Walk, drive or sail into St. Tammany Parish.",
+   "reward": {
+    "badge": "badge-treasure-parish-22103-arrive",
+    "label": "St. Tammany Parish explorer"
+   },
+   "provenance": "AUTHORED",
+   "place": "arrive",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-parish-22103-lm-fontainebleau-state-park",
+   "kind": "treasure",
+   "title": "Reach Fontainebleau State Park",
+   "world": "parish:22103",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Find Fontainebleau State Park in St. Tammany Parish.",
+   "reward": {
+    "badge": "badge-treasure-parish-22103-lm-fontainebleau-state-park",
+    "label": "Fontainebleau State Park visitor"
+   },
+   "provenance": "AUTHORED",
+   "place": "fontainebleau-state-park",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-parish-22103-lm-lake-pontchartrain-causeway-north-shore-end",
+   "kind": "treasure",
+   "title": "Reach Lake Pontchartrain Causeway (north-shore end)",
+   "world": "parish:22103",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Find Lake Pontchartrain Causeway (north-shore end) in St. Tammany Parish.",
+   "reward": {
+    "badge": "badge-treasure-parish-22103-lm-lake-pontchartrain-causeway-north-shore-end",
+    "label": "Lake Pontchartrain Causeway (north-shore end) visitor"
+   },
+   "provenance": "AUTHORED",
+   "place": "lake-pontchartrain-causeway-north-shore-end",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-parish-22103-word",
+   "kind": "egg",
+   "title": "The parish word",
+   "world": "parish:22103",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Type a word the delta is made of.",
+   "reward": {
+    "badge": "badge-egg-parish-22103-word",
+    "label": "Word finder: St. Tammany Parish"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "trigger": "typed:heron",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-guide-22103",
+   "kind": "treasure",
+   "title": "Talk to a guide in St. Tammany Parish",
+   "world": "parish:22103",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A guide in St. Tammany Parish quotes the registries word for word. Say hello.",
+   "reward": {
+    "badge": "badge-treasure-guide-22103",
+    "label": "Guide listener: St. Tammany Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "guide",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22103-sim-scaffold-bay",
+   "kind": "treasure",
+   "title": "Union training simulators: Scaffold Bay Build",
+   "world": "parish:22103",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Union training simulators station in St. Tammany Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22103-sim-scaffold-bay",
+    "label": "Station visitor: Scaffold Bay Build"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22103-sim-scaffold-bay",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22103-task-sim-scaffold-bay-bay-training-bay",
+   "kind": "treasure",
+   "title": "Simulated tasks: Scaffold Bay Build: Yard training bay",
+   "world": "parish:22103",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Simulated tasks station in St. Tammany Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22103-task-sim-scaffold-bay-bay-training-bay",
+    "label": "Station visitor: Scaffold Bay Build: Yard training bay"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22103-task-sim-scaffold-bay-bay-training-bay",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22103-sim-weld-bead",
+   "kind": "treasure",
+   "title": "Union training simulators: Weld Bead Run",
+   "world": "parish:22103",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Union training simulators station in St. Tammany Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22103-sim-weld-bead",
+    "label": "Station visitor: Weld Bead Run"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22103-sim-weld-bead",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22103-task-crew-nola-tank-entry",
+   "kind": "treasure",
+   "title": "Simulated tasks: Tank seam entry, New Orleans",
+   "world": "parish:22103",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Simulated tasks station in St. Tammany Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22103-task-crew-nola-tank-entry",
+    "label": "Station visitor: Tank seam entry, New Orleans"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22103-task-crew-nola-tank-entry",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22103-unit-carpenters",
+   "kind": "treasure",
+   "title": "Cognition.X K-12: Carpenters: flipped unit",
+   "world": "parish:22103",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Cognition.X K-12 station in St. Tammany Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22103-unit-carpenters",
+    "label": "Station visitor: Carpenters: flipped unit"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22103-unit-carpenters",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22103-lesson-roofers-mind-the-edge-and-the-skylight",
+   "kind": "treasure",
+   "title": "Lessons: Mind the edge, and the skylight nobody mentioned",
+   "world": "parish:22103",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Lessons station in St. Tammany Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22103-lesson-roofers-mind-the-edge-and-the-skylight",
+    "label": "Station visitor: Mind the edge, and the skylight nobody mentioned"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22103-lesson-roofers-mind-the-edge-and-the-skylight",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22103-unit-fabricators",
+   "kind": "treasure",
+   "title": "Cognition.X K-12: Structural Fabricators: flipped unit",
+   "world": "parish:22103",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Cognition.X K-12 station in St. Tammany Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22103-unit-fabricators",
+    "label": "Station visitor: Structural Fabricators: flipped unit"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22103-unit-fabricators",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22103-lesson-tank-erectors-isolate-before-testing",
+   "kind": "treasure",
+   "title": "Lessons: Isolate the shell before anybody tests the air",
+   "world": "parish:22103",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Lessons station in St. Tammany Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22103-lesson-tank-erectors-isolate-before-testing",
+    "label": "Station visitor: Isolate the shell before anybody tests the air"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22103-lesson-tank-erectors-isolate-before-testing",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "side-parish-22103-trade",
+   "kind": "side",
+   "title": "Trade path in St. Tammany Parish",
+   "world": "parish:22103",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "treasure-station-st-22103-sim-scaffold-bay",
+     "treasure-station-st-22103-task-sim-scaffold-bay-bay-training-bay",
+     "treasure-station-st-22103-sim-weld-bead",
+     "treasure-station-st-22103-task-crew-nola-tank-entry"
+    ]
+   },
+   "hint": "Every stop on the Trade path in St. Tammany Parish, in any order.",
+   "reward": {
+    "badge": "badge-side-parish-22103-trade",
+    "label": "Trade path: St. Tammany Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "path-trade",
+   "unlock_text": "To unlock: finish \"Union training simulators: Scaffold Bay Build\", \"Simulated tasks: Scaffold Bay Build: Yard training bay\", \"Union training simulators: Weld Bead Run\", \"Simulated tasks: Tank seam entry, New Orleans\"."
+  },
+  {
+   "id": "side-parish-22103-k12",
+   "kind": "side",
+   "title": "K-12 path in St. Tammany Parish",
+   "world": "parish:22103",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "treasure-station-st-22103-unit-carpenters",
+     "treasure-station-st-22103-unit-fabricators",
+     "treasure-station-st-22103-lesson-roofers-mind-the-edge-and-the-skylight",
+     "treasure-station-st-22103-lesson-tank-erectors-isolate-before-testing"
+    ]
+   },
+   "hint": "Every stop on the K-12 path in St. Tammany Parish, in any order.",
+   "reward": {
+    "badge": "badge-side-parish-22103-k12",
+    "label": "K-12 path: St. Tammany Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "path-k12",
+   "unlock_text": "To unlock: finish \"Cognition.X K-12: Carpenters: flipped unit\", \"Cognition.X K-12: Structural Fabricators: flipped unit\", \"Lessons: Mind the edge, and the skylight nobody mentioned\", \"Lessons: Isolate the shell before anybody tests the air\"."
+  },
+  {
+   "id": "side-parish-22103-explorer",
+   "kind": "side",
+   "title": "Explorer / free play in St. Tammany Parish",
+   "world": "parish:22103",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "treasure-parish-22103-arrive",
+     "treasure-parish-22103-lm-fontainebleau-state-park",
+     "treasure-parish-22103-lm-lake-pontchartrain-causeway-north-shore-end",
+     "egg-parish-22103-word"
+    ]
+   },
+   "hint": "Every stop on the Explorer / free play in St. Tammany Parish, in any order.",
+   "reward": {
+    "badge": "badge-side-parish-22103-explorer",
+    "label": "Explorer / free play: St. Tammany Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "path-explorer",
+   "unlock_text": "To unlock: finish \"Set foot in St. Tammany Parish\", \"Reach Fontainebleau State Park\", \"Reach Lake Pontchartrain Causeway (north-shore end)\", \"The parish word\"."
+  },
+  {
+   "id": "treasure-parish-22105-arrive",
+   "kind": "treasure",
+   "title": "Set foot in Tangipahoa Parish",
+   "world": "parish:22105",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Walk, drive or sail into Tangipahoa Parish.",
+   "reward": {
+    "badge": "badge-treasure-parish-22105-arrive",
+    "label": "Tangipahoa Parish explorer"
+   },
+   "provenance": "AUTHORED",
+   "place": "arrive",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-parish-22105-lm-southeastern-louisiana-university",
+   "kind": "treasure",
+   "title": "Reach Southeastern Louisiana University",
+   "world": "parish:22105",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Find Southeastern Louisiana University in Tangipahoa Parish.",
+   "reward": {
+    "badge": "badge-treasure-parish-22105-lm-southeastern-louisiana-university",
+    "label": "Southeastern Louisiana University visitor"
+   },
+   "provenance": "AUTHORED",
+   "place": "southeastern-louisiana-university",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-parish-22105-word",
+   "kind": "egg",
+   "title": "The parish word",
+   "world": "parish:22105",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Type a word the delta is made of.",
+   "reward": {
+    "badge": "badge-egg-parish-22105-word",
+    "label": "Word finder: Tangipahoa Parish"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "trigger": "typed:lagoon",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-guide-22105",
+   "kind": "treasure",
+   "title": "Talk to a guide in Tangipahoa Parish",
+   "world": "parish:22105",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A guide in Tangipahoa Parish quotes the registries word for word. Say hello.",
+   "reward": {
+    "badge": "badge-treasure-guide-22105",
+    "label": "Guide listener: Tangipahoa Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "guide",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22105-sim-airless-sprayer",
+   "kind": "treasure",
+   "title": "Union training simulators: Airless Paint Sprayer Finish",
+   "world": "parish:22105",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Union training simulators station in Tangipahoa Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22105-sim-airless-sprayer",
+    "label": "Station visitor: Airless Paint Sprayer Finish"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22105-sim-airless-sprayer",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22105-task-sim-airless-sprayer-oak-warehouse-finish",
+   "kind": "treasure",
+   "title": "Simulated tasks: Airless Paint Sprayer Finish: Dockside warehouse finish",
+   "world": "parish:22105",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Simulated tasks station in Tangipahoa Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22105-task-sim-airless-sprayer-oak-warehouse-finish",
+    "label": "Station visitor: Airless Paint Sprayer Finish: Dockside warehouse finish"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22105-task-sim-airless-sprayer-oak-warehouse-finish",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22105-sim-boom-lift",
+   "kind": "treasure",
+   "title": "Union training simulators: Boom Lift Basket Work",
+   "world": "parish:22105",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Union training simulators station in Tangipahoa Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22105-sim-boom-lift",
+    "label": "Station visitor: Boom Lift Basket Work"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22105-sim-boom-lift",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22105-task-sim-boom-lift-oak-terminal-fixtures",
+   "kind": "treasure",
+   "title": "Simulated tasks: Boom Lift Basket Work: Terminal light-fixture run",
+   "world": "parish:22105",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Simulated tasks station in Tangipahoa Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22105-task-sim-boom-lift-oak-terminal-fixtures",
+    "label": "Station visitor: Boom Lift Basket Work: Terminal light-fixture run"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22105-task-sim-boom-lift-oak-terminal-fixtures",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22105-unit-laborers",
+   "kind": "treasure",
+   "title": "Cognition.X K-12: Laborers: flipped unit",
+   "world": "parish:22105",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Cognition.X K-12 station in Tangipahoa Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22105-unit-laborers",
+    "label": "Station visitor: Laborers: flipped unit"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22105-unit-laborers",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22105-lesson-painters-lay-the-coat",
+   "kind": "treasure",
+   "title": "Lessons: Lay a coat that is actually there",
+   "world": "parish:22105",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Lessons station in Tangipahoa Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22105-lesson-painters-lay-the-coat",
+    "label": "Station visitor: Lay a coat that is actually there"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22105-lesson-painters-lay-the-coat",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22105-unit-insulators",
+   "kind": "treasure",
+   "title": "Cognition.X K-12: Heat & Frost Insulators: flipped unit",
+   "world": "parish:22105",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Cognition.X K-12 station in Tangipahoa Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22105-unit-insulators",
+    "label": "Station visitor: Heat & Frost Insulators: flipped unit"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22105-unit-insulators",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22105-lesson-window-glazing-let-the-ground-judge-it",
+   "kind": "treasure",
+   "title": "Lessons: Let the ground judge the clearance, not the basket",
+   "world": "parish:22105",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Lessons station in Tangipahoa Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22105-lesson-window-glazing-let-the-ground-judge-it",
+    "label": "Station visitor: Let the ground judge the clearance, not the basket"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22105-lesson-window-glazing-let-the-ground-judge-it",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "side-parish-22105-trade",
+   "kind": "side",
+   "title": "Trade path in Tangipahoa Parish",
+   "world": "parish:22105",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "treasure-station-st-22105-sim-airless-sprayer",
+     "treasure-station-st-22105-task-sim-airless-sprayer-oak-warehouse-finish",
+     "treasure-station-st-22105-sim-boom-lift",
+     "treasure-station-st-22105-task-sim-boom-lift-oak-terminal-fixtures"
+    ]
+   },
+   "hint": "Every stop on the Trade path in Tangipahoa Parish, in any order.",
+   "reward": {
+    "badge": "badge-side-parish-22105-trade",
+    "label": "Trade path: Tangipahoa Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "path-trade",
+   "unlock_text": "To unlock: finish \"Union training simulators: Airless Paint Sprayer Finish\", \"Simulated tasks: Airless Paint Sprayer Finish: Dockside warehouse finish\", \"Union training simulators: Boom Lift Basket Work\", \"Simulated tasks: Boom Lift Basket Work: Terminal light-fixture run\"."
+  },
+  {
+   "id": "side-parish-22105-k12",
+   "kind": "side",
+   "title": "K-12 path in Tangipahoa Parish",
+   "world": "parish:22105",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "treasure-station-st-22105-unit-insulators",
+     "treasure-station-st-22105-unit-laborers",
+     "treasure-station-st-22105-lesson-painters-lay-the-coat",
+     "treasure-station-st-22105-lesson-window-glazing-let-the-ground-judge-it"
+    ]
+   },
+   "hint": "Every stop on the K-12 path in Tangipahoa Parish, in any order.",
+   "reward": {
+    "badge": "badge-side-parish-22105-k12",
+    "label": "K-12 path: Tangipahoa Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "path-k12",
+   "unlock_text": "To unlock: finish \"Cognition.X K-12: Heat & Frost Insulators: flipped unit\", \"Cognition.X K-12: Laborers: flipped unit\", \"Lessons: Lay a coat that is actually there\", \"Lessons: Let the ground judge the clearance, not the basket\"."
+  },
+  {
+   "id": "side-parish-22105-explorer",
+   "kind": "side",
+   "title": "Explorer / free play in Tangipahoa Parish",
+   "world": "parish:22105",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "treasure-parish-22105-arrive",
+     "treasure-parish-22105-lm-southeastern-louisiana-university",
+     "egg-parish-22105-word"
+    ]
+   },
+   "hint": "Every stop on the Explorer / free play in Tangipahoa Parish, in any order.",
+   "reward": {
+    "badge": "badge-side-parish-22105-explorer",
+    "label": "Explorer / free play: Tangipahoa Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "path-explorer",
+   "unlock_text": "To unlock: finish \"Set foot in Tangipahoa Parish\", \"Reach Southeastern Louisiana University\", \"The parish word\"."
+  },
+  {
+   "id": "treasure-parish-22109-arrive",
+   "kind": "treasure",
+   "title": "Set foot in Terrebonne Parish",
+   "world": "parish:22109",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Walk, drive or sail into Terrebonne Parish.",
+   "reward": {
+    "badge": "badge-treasure-parish-22109-arrive",
+    "label": "Terrebonne Parish explorer"
+   },
+   "provenance": "AUTHORED",
+   "place": "arrive",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "egg-parish-22109-word",
+   "kind": "egg",
+   "title": "The parish word",
+   "world": "parish:22109",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Type a word the delta is made of.",
+   "reward": {
+    "badge": "badge-egg-parish-22109-word",
+    "label": "Word finder: Terrebonne Parish"
+   },
+   "provenance": "AUTHORED",
+   "band": "K-5",
+   "trigger": "typed:egret",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-guide-22109",
+   "kind": "treasure",
+   "title": "Talk to a guide in Terrebonne Parish",
+   "world": "parish:22109",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "A guide in Terrebonne Parish quotes the registries word for word. Say hello.",
+   "reward": {
+    "badge": "badge-treasure-guide-22109",
+    "label": "Guide listener: Terrebonne Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "guide",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22109-sim-crane-lift",
+   "kind": "treasure",
+   "title": "Union training simulators: Tower Crane Lift",
+   "world": "parish:22109",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Union training simulators station in Terrebonne Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22109-sim-crane-lift",
+    "label": "Station visitor: Tower Crane Lift"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22109-sim-crane-lift",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22109-task-sim-crane-lift-oak-terminal",
+   "kind": "treasure",
+   "title": "Simulated tasks: Tower Crane Lift: Oakland terminal lift",
+   "world": "parish:22109",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Simulated tasks station in Terrebonne Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22109-task-sim-crane-lift-oak-terminal",
+    "label": "Station visitor: Tower Crane Lift: Oakland terminal lift"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22109-task-sim-crane-lift-oak-terminal",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22109-sim-excavator-trench",
+   "kind": "treasure",
+   "title": "Union training simulators: Excavator Trench Cut",
+   "world": "parish:22109",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Union training simulators station in Terrebonne Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22109-sim-excavator-trench",
+    "label": "Station visitor: Excavator Trench Cut"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22109-sim-excavator-trench",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22109-task-sim-excavator-trench-oak-fill",
+   "kind": "treasure",
+   "title": "Simulated tasks: Excavator Trench Cut: Old-fill utility cut",
+   "world": "parish:22109",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Simulated tasks station in Terrebonne Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22109-task-sim-excavator-trench-oak-fill",
+    "label": "Station visitor: Excavator Trench Cut: Old-fill utility cut"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22109-task-sim-excavator-trench-oak-fill",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22109-unit-ironworkers",
+   "kind": "treasure",
+   "title": "Cognition.X K-12: Ironworkers: flipped unit",
+   "world": "parish:22109",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Cognition.X K-12 station in Terrebonne Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22109-unit-ironworkers",
+    "label": "Station visitor: Ironworkers: flipped unit"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22109-unit-ironworkers",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22109-lesson-port-crane-read-the-rope",
+   "kind": "treasure",
+   "title": "Lessons: Read the rope before the box goes up",
+   "world": "parish:22109",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Lessons station in Terrebonne Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22109-lesson-port-crane-read-the-rope",
+    "label": "Station visitor: Read the rope before the box goes up"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22109-lesson-port-crane-read-the-rope",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22109-unit-operating-eng",
+   "kind": "treasure",
+   "title": "Cognition.X K-12: Operating Engineers: flipped unit",
+   "world": "parish:22109",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Cognition.X K-12 station in Terrebonne Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22109-unit-operating-eng",
+    "label": "Station visitor: Operating Engineers: flipped unit"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22109-unit-operating-eng",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-station-st-22109-lesson-operating-eng-locate-first",
+   "kind": "treasure",
+   "title": "Lessons: Prove what is under the ground before the bucket moves",
+   "world": "parish:22109",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Stand at the Lessons station in Terrebonne Parish and open it.",
+   "reward": {
+    "badge": "badge-treasure-station-st-22109-lesson-operating-eng-locate-first",
+    "label": "Station visitor: Prove what is under the ground before the bucket moves"
+   },
+   "provenance": "AUTHORED",
+   "place": "st-22109-lesson-operating-eng-locate-first",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "side-parish-22109-trade",
+   "kind": "side",
+   "title": "Trade path in Terrebonne Parish",
+   "world": "parish:22109",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "treasure-station-st-22109-sim-crane-lift",
+     "treasure-station-st-22109-task-sim-crane-lift-oak-terminal",
+     "treasure-station-st-22109-sim-excavator-trench",
+     "treasure-station-st-22109-task-sim-excavator-trench-oak-fill"
+    ]
+   },
+   "hint": "Every stop on the Trade path in Terrebonne Parish, in any order.",
+   "reward": {
+    "badge": "badge-side-parish-22109-trade",
+    "label": "Trade path: Terrebonne Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "path-trade",
+   "unlock_text": "To unlock: finish \"Union training simulators: Tower Crane Lift\", \"Simulated tasks: Tower Crane Lift: Oakland terminal lift\", \"Union training simulators: Excavator Trench Cut\", \"Simulated tasks: Excavator Trench Cut: Old-fill utility cut\"."
+  },
+  {
+   "id": "side-parish-22109-k12",
+   "kind": "side",
+   "title": "K-12 path in Terrebonne Parish",
+   "world": "parish:22109",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "treasure-station-st-22109-unit-ironworkers",
+     "treasure-station-st-22109-unit-operating-eng",
+     "treasure-station-st-22109-lesson-operating-eng-locate-first",
+     "treasure-station-st-22109-lesson-port-crane-read-the-rope"
+    ]
+   },
+   "hint": "Every stop on the K-12 path in Terrebonne Parish, in any order.",
+   "reward": {
+    "badge": "badge-side-parish-22109-k12",
+    "label": "K-12 path: Terrebonne Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "path-k12",
+   "unlock_text": "To unlock: finish \"Cognition.X K-12: Ironworkers: flipped unit\", \"Cognition.X K-12: Operating Engineers: flipped unit\", \"Lessons: Prove what is under the ground before the bucket moves\", \"Lessons: Read the rope before the box goes up\"."
+  },
+  {
+   "id": "side-parish-22109-explorer",
+   "kind": "side",
+   "title": "Explorer / free play in Terrebonne Parish",
+   "world": "parish:22109",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "treasure-parish-22109-arrive",
+     "egg-parish-22109-word"
+    ]
+   },
+   "hint": "Every stop on the Explorer / free play in Terrebonne Parish, in any order.",
+   "reward": {
+    "badge": "badge-side-parish-22109-explorer",
+    "label": "Explorer / free play: Terrebonne Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "path-explorer",
+   "unlock_text": "To unlock: finish \"Set foot in Terrebonne Parish\", \"The parish word\"."
+  },
+  {
+   "id": "treasure-border-22005-22063",
+   "kind": "treasure",
+   "title": "Cross from Ascension Parish to Livingston Parish",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "The border between Ascension Parish and Livingston Parish is shared. Cross it, either way.",
+   "reward": {
+    "badge": "badge-treasure-border-22005-22063",
+    "label": "Border crosser: Ascension Parish / Livingston Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "border-22005-22063",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-border-22005-22093",
+   "kind": "treasure",
+   "title": "Cross from Ascension Parish to St. James Parish",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "The border between Ascension Parish and St. James Parish is shared. Cross it, either way.",
+   "reward": {
+    "badge": "badge-treasure-border-22005-22093",
+    "label": "Border crosser: Ascension Parish / St. James Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "border-22005-22093",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-border-22005-22095",
+   "kind": "treasure",
+   "title": "Cross from Ascension Parish to St. John the Baptist Parish",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "The border between Ascension Parish and St. John the Baptist Parish is shared. Cross it, either way.",
+   "reward": {
+    "badge": "badge-treasure-border-22005-22095",
+    "label": "Border crosser: Ascension Parish / St. John the Baptist Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "border-22005-22095",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-border-22051-22057",
+   "kind": "treasure",
+   "title": "Cross from Jefferson Parish to Lafourche Parish",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "The border between Jefferson Parish and Lafourche Parish is shared. Cross it, either way.",
+   "reward": {
+    "badge": "badge-treasure-border-22051-22057",
+    "label": "Border crosser: Jefferson Parish / Lafourche Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "border-22051-22057",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-border-22051-22071",
+   "kind": "treasure",
+   "title": "Cross from Jefferson Parish to Orleans Parish",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "The border between Jefferson Parish and Orleans Parish is shared. Cross it, either way.",
+   "reward": {
+    "badge": "badge-treasure-border-22051-22071",
+    "label": "Border crosser: Jefferson Parish / Orleans Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "border-22051-22071",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-border-22051-22075",
+   "kind": "treasure",
+   "title": "Cross from Jefferson Parish to Plaquemines Parish",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "The border between Jefferson Parish and Plaquemines Parish is shared. Cross it, either way.",
+   "reward": {
+    "badge": "badge-treasure-border-22051-22075",
+    "label": "Border crosser: Jefferson Parish / Plaquemines Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "border-22051-22075",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-border-22051-22089",
+   "kind": "treasure",
+   "title": "Cross from Jefferson Parish to St. Charles Parish",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "The border between Jefferson Parish and St. Charles Parish is shared. Cross it, either way.",
+   "reward": {
+    "badge": "badge-treasure-border-22051-22089",
+    "label": "Border crosser: Jefferson Parish / St. Charles Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "border-22051-22089",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-border-22051-22095",
+   "kind": "treasure",
+   "title": "Cross from Jefferson Parish to St. John the Baptist Parish",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "The border between Jefferson Parish and St. John the Baptist Parish is shared. Cross it, either way.",
+   "reward": {
+    "badge": "badge-treasure-border-22051-22095",
+    "label": "Border crosser: Jefferson Parish / St. John the Baptist Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "border-22051-22095",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-border-22051-22103",
+   "kind": "treasure",
+   "title": "Cross from Jefferson Parish to St. Tammany Parish",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "The border between Jefferson Parish and St. Tammany Parish is shared. Cross it, either way.",
+   "reward": {
+    "badge": "badge-treasure-border-22051-22103",
+    "label": "Border crosser: Jefferson Parish / St. Tammany Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "border-22051-22103",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-border-22057-22089",
+   "kind": "treasure",
+   "title": "Cross from Lafourche Parish to St. Charles Parish",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "The border between Lafourche Parish and St. Charles Parish is shared. Cross it, either way.",
+   "reward": {
+    "badge": "badge-treasure-border-22057-22089",
+    "label": "Border crosser: Lafourche Parish / St. Charles Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "border-22057-22089",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-border-22057-22093",
+   "kind": "treasure",
+   "title": "Cross from Lafourche Parish to St. James Parish",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "The border between Lafourche Parish and St. James Parish is shared. Cross it, either way.",
+   "reward": {
+    "badge": "badge-treasure-border-22057-22093",
+    "label": "Border crosser: Lafourche Parish / St. James Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "border-22057-22093",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-border-22057-22095",
+   "kind": "treasure",
+   "title": "Cross from Lafourche Parish to St. John the Baptist Parish",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "The border between Lafourche Parish and St. John the Baptist Parish is shared. Cross it, either way.",
+   "reward": {
+    "badge": "badge-treasure-border-22057-22095",
+    "label": "Border crosser: Lafourche Parish / St. John the Baptist Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "border-22057-22095",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-border-22057-22109",
+   "kind": "treasure",
+   "title": "Cross from Lafourche Parish to Terrebonne Parish",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "The border between Lafourche Parish and Terrebonne Parish is shared. Cross it, either way.",
+   "reward": {
+    "badge": "badge-treasure-border-22057-22109",
+    "label": "Border crosser: Lafourche Parish / Terrebonne Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "border-22057-22109",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-border-22063-22095",
+   "kind": "treasure",
+   "title": "Cross from Livingston Parish to St. John the Baptist Parish",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "The border between Livingston Parish and St. John the Baptist Parish is shared. Cross it, either way.",
+   "reward": {
+    "badge": "badge-treasure-border-22063-22095",
+    "label": "Border crosser: Livingston Parish / St. John the Baptist Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "border-22063-22095",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-border-22063-22105",
+   "kind": "treasure",
+   "title": "Cross from Livingston Parish to Tangipahoa Parish",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "The border between Livingston Parish and Tangipahoa Parish is shared. Cross it, either way.",
+   "reward": {
+    "badge": "badge-treasure-border-22063-22105",
+    "label": "Border crosser: Livingston Parish / Tangipahoa Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "border-22063-22105",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-border-22071-22075",
+   "kind": "treasure",
+   "title": "Cross from Orleans Parish to Plaquemines Parish",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "The border between Orleans Parish and Plaquemines Parish is shared. Cross it, either way.",
+   "reward": {
+    "badge": "badge-treasure-border-22071-22075",
+    "label": "Border crosser: Orleans Parish / Plaquemines Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "border-22071-22075",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-border-22071-22087",
+   "kind": "treasure",
+   "title": "Cross from Orleans Parish to St. Bernard Parish",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "The border between Orleans Parish and St. Bernard Parish is shared. Cross it, either way.",
+   "reward": {
+    "badge": "badge-treasure-border-22071-22087",
+    "label": "Border crosser: Orleans Parish / St. Bernard Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "border-22071-22087",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-border-22071-22103",
+   "kind": "treasure",
+   "title": "Cross from Orleans Parish to St. Tammany Parish",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "The border between Orleans Parish and St. Tammany Parish is shared. Cross it, either way.",
+   "reward": {
+    "badge": "badge-treasure-border-22071-22103",
+    "label": "Border crosser: Orleans Parish / St. Tammany Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "border-22071-22103",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-border-22075-22087",
+   "kind": "treasure",
+   "title": "Cross from Plaquemines Parish to St. Bernard Parish",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "The border between Plaquemines Parish and St. Bernard Parish is shared. Cross it, either way.",
+   "reward": {
+    "badge": "badge-treasure-border-22075-22087",
+    "label": "Border crosser: Plaquemines Parish / St. Bernard Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "border-22075-22087",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-border-22089-22095",
+   "kind": "treasure",
+   "title": "Cross from St. Charles Parish to St. John the Baptist Parish",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "The border between St. Charles Parish and St. John the Baptist Parish is shared. Cross it, either way.",
+   "reward": {
+    "badge": "badge-treasure-border-22089-22095",
+    "label": "Border crosser: St. Charles Parish / St. John the Baptist Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "border-22089-22095",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-border-22093-22095",
+   "kind": "treasure",
+   "title": "Cross from St. James Parish to St. John the Baptist Parish",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "The border between St. James Parish and St. John the Baptist Parish is shared. Cross it, either way.",
+   "reward": {
+    "badge": "badge-treasure-border-22093-22095",
+    "label": "Border crosser: St. James Parish / St. John the Baptist Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "border-22093-22095",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-border-22095-22103",
+   "kind": "treasure",
+   "title": "Cross from St. John the Baptist Parish to St. Tammany Parish",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "The border between St. John the Baptist Parish and St. Tammany Parish is shared. Cross it, either way.",
+   "reward": {
+    "badge": "badge-treasure-border-22095-22103",
+    "label": "Border crosser: St. John the Baptist Parish / St. Tammany Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "border-22095-22103",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-border-22095-22105",
+   "kind": "treasure",
+   "title": "Cross from St. John the Baptist Parish to Tangipahoa Parish",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "The border between St. John the Baptist Parish and Tangipahoa Parish is shared. Cross it, either way.",
+   "reward": {
+    "badge": "badge-treasure-border-22095-22105",
+    "label": "Border crosser: St. John the Baptist Parish / Tangipahoa Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "border-22095-22105",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-border-22103-22105",
+   "kind": "treasure",
+   "title": "Cross from St. Tammany Parish to Tangipahoa Parish",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "The border between St. Tammany Parish and Tangipahoa Parish is shared. Cross it, either way.",
+   "reward": {
+    "badge": "badge-treasure-border-22103-22105",
+    "label": "Border crosser: St. Tammany Parish / Tangipahoa Parish"
+   },
+   "provenance": "AUTHORED",
+   "place": "border-22103-22105",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-ride-land",
+   "kind": "treasure",
+   "title": "Drive a land vehicle",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Climb into any land vehicle and drive it.",
+   "reward": {
+    "badge": "badge-treasure-ride-land",
+    "label": "Land driver"
+   },
+   "provenance": "AUTHORED",
+   "place": "ride-land",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "treasure-ride-water",
+   "kind": "treasure",
+   "title": "Take a boat out",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": []
+   },
+   "hint": "Board any watercraft and take it onto the water.",
+   "reward": {
+    "badge": "badge-treasure-ride-water",
+    "label": "Water pilot"
+   },
+   "provenance": "AUTHORED",
+   "place": "ride-water",
+   "band": "K-5",
+   "unlock_text": "Open to everyone."
+  },
+  {
+   "id": "main-parishes-media",
+   "kind": "main",
+   "title": "Ride one of each medium",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "treasure-ride-land",
+     "treasure-ride-water"
+    ]
+   },
+   "hint": "Drive on land and take a boat on the water.",
+   "reward": {
+    "badge": "badge-main-parishes-media",
+    "label": "Every medium"
+   },
+   "provenance": "AUTHORED",
+   "unlock_text": "To unlock: finish \"Drive a land vehicle\", \"Take a boat out\"."
+  },
+  {
+   "id": "main-parishes-regions",
+   "kind": "main",
+   "title": "Set foot in all 13 parishes",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "treasure-parish-22005-arrive",
+     "treasure-parish-22051-arrive",
+     "treasure-parish-22057-arrive",
+     "treasure-parish-22063-arrive",
+     "treasure-parish-22071-arrive",
+     "treasure-parish-22075-arrive",
+     "treasure-parish-22087-arrive",
+     "treasure-parish-22089-arrive",
+     "treasure-parish-22093-arrive",
+     "treasure-parish-22095-arrive",
+     "treasure-parish-22103-arrive",
+     "treasure-parish-22105-arrive",
+     "treasure-parish-22109-arrive"
+    ]
+   },
+   "hint": "Enter every parish of the world.",
+   "reward": {
+    "badge": "badge-main-parishes-regions",
+    "label": "Every parish"
+   },
+   "provenance": "AUTHORED",
+   "unlock_text": "To unlock: finish \"Set foot in Ascension Parish\", \"Set foot in Jefferson Parish\", \"Set foot in Lafourche Parish\", \"Set foot in Livingston Parish\", \"Set foot in Orleans Parish\", \"Set foot in Plaquemines Parish\", \"Set foot in St. Bernard Parish\", \"Set foot in St. Charles Parish\", \"Set foot in St. James Parish\", \"Set foot in St. John the Baptist Parish\", \"Set foot in St. Tammany Parish\", \"Set foot in Tangipahoa Parish\", \"Set foot in Terrebonne Parish\"."
+  },
+  {
+   "id": "main-parishes-guides",
+   "kind": "main",
+   "title": "Talk to 13 guides",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "treasure-guide-22005",
+     "treasure-guide-22051",
+     "treasure-guide-22057",
+     "treasure-guide-22063",
+     "treasure-guide-22071",
+     "treasure-guide-22075",
+     "treasure-guide-22087",
+     "treasure-guide-22089",
+     "treasure-guide-22093",
+     "treasure-guide-22095",
+     "treasure-guide-22103",
+     "treasure-guide-22105",
+     "treasure-guide-22109"
+    ]
+   },
+   "hint": "Talk to a guide in every parish.",
+   "reward": {
+    "badge": "badge-main-parishes-guides",
+    "label": "Guide listener"
+   },
+   "provenance": "AUTHORED",
+   "unlock_text": "To unlock: finish \"Talk to a guide in Ascension Parish\", \"Talk to a guide in Jefferson Parish\", \"Talk to a guide in Lafourche Parish\", \"Talk to a guide in Livingston Parish\", \"Talk to a guide in Orleans Parish\", \"Talk to a guide in Plaquemines Parish\", \"Talk to a guide in St. Bernard Parish\", \"Talk to a guide in St. Charles Parish\", \"Talk to a guide in St. James Parish\", \"Talk to a guide in St. John the Baptist Parish\", \"Talk to a guide in St. Tammany Parish\", \"Talk to a guide in Tangipahoa Parish\", \"Talk to a guide in Terrebonne Parish\"."
+  },
+  {
+   "id": "main-parishes-borders",
+   "kind": "main",
+   "title": "Cross every connected border",
+   "world": "parishes",
+   "requires": {
+    "lessons": [],
+    "halls": [],
+    "quests": [
+     "treasure-border-22005-22063",
+     "treasure-border-22005-22093",
+     "treasure-border-22005-22095",
+     "treasure-border-22051-22057",
+     "treasure-border-22051-22071",
+     "treasure-border-22051-22075",
+     "treasure-border-22051-22089",
+     "treasure-border-22051-22095",
+     "treasure-border-22051-22103",
+     "treasure-border-22057-22089",
+     "treasure-border-22057-22093",
+     "treasure-border-22057-22095",
+     "treasure-border-22057-22109",
+     "treasure-border-22063-22095",
+     "treasure-border-22063-22105",
+     "treasure-border-22071-22075",
+     "treasure-border-22071-22087",
+     "treasure-border-22071-22103",
+     "treasure-border-22075-22087",
+     "treasure-border-22089-22095",
+     "treasure-border-22093-22095",
+     "treasure-border-22095-22103",
+     "treasure-border-22095-22105",
+     "treasure-border-22103-22105"
+    ]
+   },
+   "hint": "Cross each of the 24 shared borders at least once.",
+   "reward": {
+    "badge": "badge-main-parishes-borders",
+    "label": "Border walker"
+   },
+   "provenance": "AUTHORED",
+   "unlock_text": "To unlock: finish \"Cross from Ascension Parish to Livingston Parish\", \"Cross from Ascension Parish to St. James Parish\", \"Cross from Ascension Parish to St. John the Baptist Parish\", \"Cross from Jefferson Parish to Lafourche Parish\", \"Cross from Jefferson Parish to Orleans Parish\", \"Cross from Jefferson Parish to Plaquemines Parish\", \"Cross from Jefferson Parish to St. Charles Parish\", \"Cross from Jefferson Parish to St. John the Baptist Parish\", \"Cross from Jefferson Parish to St. Tammany Parish\", \"Cross from Lafourche Parish to St. Charles Parish\", \"Cross from Lafourche Parish to St. James Parish\", \"Cross from Lafourche Parish to St. John the Baptist Parish\", \"Cross from Lafourche Parish to Terrebonne Parish\", \"Cross from Livingston Parish to St. John the Baptist Parish\", \"Cross from Livingston Parish to Tangipahoa Parish\", \"Cross from Orleans Parish to Plaquemines Parish\", \"Cross from Orleans Parish to St. Bernard Parish\", \"Cross from Orleans Parish to St. Tammany Parish\", \"Cross from Plaquemines Parish to St. Bernard Parish\", \"Cross from St. Charles Parish to St. John the Baptist Parish\", \"Cross from St. James Parish to St. John the Baptist Parish\", \"Cross from St. John the Baptist Parish to St. Tammany Parish\", \"Cross from St. John the Baptist Parish to Tangipahoa Parish\", \"Cross from St. Tammany Parish to Tangipahoa Parish\"."
   },
   {
    "id": "egg-quests-konami",

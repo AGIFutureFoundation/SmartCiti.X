@@ -1,0 +1,24 @@
+{
+ "package": "us-atlas",
+ "version": "3.0.1",
+ "license": "ISC",
+ "copyright": "Copyright 2013-2019 Michael Bostock",
+ "data_origin": "U.S. Census Bureau cartographic boundary files, 2017, 1:10,000,000 (public domain, work of the U.S. federal government), as packaged by us-atlas",
+ "tarball": "https://registry.npmjs.org/us-atlas/-/us-atlas-3.0.1.tgz",
+ "integrity": "sha512-wEIZCq0ImPvGblTd8gZMqNNCPkQshugMUG/8nkSWXb02+XqNFREg9atHOKP9w6prLZTpqcLhSvdBW81MkV3/0Q==",
+ "tarball_sha512_b64": "wEIZCq0ImPvGblTd8gZMqNNCPkQshugMUG/8nkSWXb02+XqNFREg9atHOKP9w6prLZTpqcLhSvdBW81MkV3/0Q==",
+ "integrity_verified": "sha512 of the downloaded tarball matched the registry dist.integrity",
+ "purl": "pkg:npm/us-atlas@3.0.1",
+ "files": {
+  "counties-10m.json": {
+   "sha256": "145aaf5d1433352a6a1d8e86b5f149c7c653f9171baf14aaf75ee66575def1b0",
+   "bytes": 842143,
+   "from": "https://registry.npmjs.org/us-atlas/-/us-atlas-3.0.1.tgz#counties-10m.json"
+  },
+  "LICENSE": {
+   "sha256": "8048290dfdb6e83fbed17e8985c8cfc4ce9da9b842642f3d3e497280790cfa31",
+   "bytes": 734,
+   "from": "https://registry.npmjs.org/us-atlas/-/us-atlas-3.0.1.tgz#LICENSE"
+  }
+ }
+}

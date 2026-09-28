@@ -260,6 +260,92 @@ add('treasure-sbom-manifest', 'treasure', 'The parts manifest', QUEST_PAGE, req(
     'Every piece this bundle ships is on a list. Find the list.', 'Manifest reader',
     place='sbom-manifest', band='11-12', riddle='Count the parts before you trust the machine.')
 
+# ----------------------------------------------------------------- parishes
+# The walkable parish world (layers/registry/layers.json, this pack's sibling;
+# its parishes come from parishes/ or, until that lands, its Orleans stub).
+# Every entry is play and explore-only; the parish page calls TCQuests.find(id)
+# for treasures (a station opened, a parish entered, a border crossed, a first
+# ride of a medium, a first talk with a guide) and the log completes quests
+# whose requires are met. Stations and paths are never gated.
+LAYERS_PATH = 'layers/registry/layers.json'
+_layers = load(LAYERS_PATH)
+PARISHES = need(_layers, 'parishes', LAYERS_PATH)
+LAYER_LABEL = {k: need(v, 'label', f'{LAYERS_PATH}#layers.{k}') for k, v in need(_layers, 'layers', LAYERS_PATH).items()}
+# AUTHORED typed words for each parish's egg, dealt in FIPS order (plain delta words, no place facts)
+PARISH_WORDS = ['levee', 'bayou', 'ferry', 'marsh', 'delta', 'batture', 'cypress', 'pirogue', 'spillway',
+                'crawfish', 'heron', 'lagoon', 'egret', 'barge', 'oyster', 'tugboat']
+# the travel media the fleet offers (FLEET: land vehicles + watercraft); checked against fleet/ when it exists
+MEDIA = ('land', 'water')
+FLEET_PATH = 'fleet/registry/fleet.json'
+if (ROOT / FLEET_PATH).exists():
+    _fleet = load(FLEET_PATH)
+    _fleet_media = sorted({need(v, 'medium', f'{FLEET_PATH}#fleet[]') for v in need(_fleet, 'fleet', FLEET_PATH)})
+    if _fleet_media != sorted(MEDIA):
+        raise ValueError(f'{FLEET_PATH} media {_fleet_media} are not exactly {sorted(MEDIA)}')
+if len(PARISHES) > len(PARISH_WORDS):
+    raise AssertionError(f'{len(PARISHES)} parishes but only {len(PARISH_WORDS)} AUTHORED egg words; add words')
+_fips_all = [need(p, 'fips', LAYERS_PATH) for p in PARISHES]
+_edges = set()
+for pi, p in enumerate(PARISHES):
+    fips = p['fips']
+    pname = need(p, 'name', f'{LAYERS_PATH}#{fips}')
+    pw = f'parish:{fips}'
+    add(f'treasure-parish-{fips}-arrive', 'treasure', f'Set foot in {pname}', pw, req(),
+        f'Walk, drive or sail into {pname}.', f'{pname} explorer', place='arrive', band='K-5')
+    for lm in need(p, 'landmarks', f'{LAYERS_PATH}#{fips}'):
+        lid = need(lm, 'id', f'{LAYERS_PATH}#{fips}.landmarks')
+        lname = need(lm, 'name', f'{LAYERS_PATH}#{fips}.landmarks.{lid}')
+        add(f'treasure-parish-{fips}-lm-{lid}', 'treasure', f'Reach {lname}', pw, req(),
+            f'Find {lname} in {pname}.', f'{lname} visitor', place=lid, band='K-5')
+    add(f'egg-parish-{fips}-word', 'egg', 'The parish word', pw, req(),
+        'Type a word the delta is made of.', f'Word finder: {pname}', trigger=f'typed:{PARISH_WORDS[pi]}', band='K-5')
+    add(f'treasure-guide-{fips}', 'treasure', f'Talk to a guide in {pname}', pw, req(),
+        f'A guide in {pname} quotes the registries word for word. Say hello.', f'Guide listener: {pname}',
+        place='guide', band='K-5')
+    for st in need(p, 'stations', f'{LAYERS_PATH}#{fips}'):
+        sid = need(st, 'id', f'{LAYERS_PATH}#{fips}.stations')
+        if need(st, 'treasure', sid) != f'treasure-station-{sid}':
+            raise ValueError(f'{LAYERS_PATH}#{sid}: treasure must be treasure-station-{sid}')
+        lab = LAYER_LABEL[need(st, 'layer', sid)]
+        add(f'treasure-station-{sid}', 'treasure', f'{lab}: {need(st, "title", sid)}', pw, req(),
+            f'Stand at the {lab} station in {pname} and open it.', f'Station visitor: {need(st, "title", sid)}',
+            place=sid)
+    for path in need(p, 'paths', f'{LAYERS_PATH}#{fips}'):
+        pid = need(path, 'id', f'{LAYERS_PATH}#{fips}.paths')
+        if need(path, 'gated', f'{LAYERS_PATH}#{fips}.paths.{pid}') is not False:
+            raise ValueError(f'{LAYERS_PATH}#{fips}.paths.{pid}: a path is a suggestion, never gated')
+        steps = need(path, 'steps', f'{LAYERS_PATH}#{fips}.paths.{pid}')
+        step_q = [s if pid == 'explorer' else f'treasure-station-{s}' for s in steps]
+        add(f'side-parish-{fips}-{pid}', 'side', f'{need(path, "label", pid)} in {pname}', pw, req(quests=step_q),
+            f'Every stop on the {need(path, "label", pid)} in {pname}, in any order.',
+            f'{need(path, "label", pid)}: {pname}', place=f'path-{pid}')
+    for other in need(p, 'adjacent', f'{LAYERS_PATH}#{fips}'):
+        if other in _fips_all:
+            _edges.add(tuple(sorted((fips, other))))
+for a, b in sorted(_edges):
+    na = next(p['name'] for p in PARISHES if p['fips'] == a)
+    nb = next(p['name'] for p in PARISHES if p['fips'] == b)
+    add(f'treasure-border-{a}-{b}', 'treasure', f'Cross from {na} to {nb}', 'parishes', req(),
+        f'The border between {na} and {nb} is shared. Cross it, either way.', f'Border crosser: {na} / {nb}',
+        place=f'border-{a}-{b}', band='K-5')
+for med in MEDIA:
+    add(f'treasure-ride-{med}', 'treasure', {'land': 'Drive a land vehicle', 'water': 'Take a boat out'}[med],
+        'parishes', req(), {'land': 'Climb into any land vehicle and drive it.',
+                            'water': 'Board any watercraft and take it onto the water.'}[med],
+        {'land': 'Land driver', 'water': 'Water pilot'}[med], place=f'ride-{med}', band='K-5')
+add('main-parishes-media', 'main', 'Ride one of each medium', 'parishes',
+    req(quests=[f'treasure-ride-{m}' for m in MEDIA]), 'Drive on land and take a boat on the water.',
+    'Every medium')
+add('main-parishes-regions', 'main', f'Set foot in all {len(PARISHES)} parishes', 'parishes',
+    req(quests=[f'treasure-parish-{f}-arrive' for f in _fips_all]), 'Enter every parish of the world.',
+    'Every parish')
+add('main-parishes-guides', 'main', f'Talk to {len(PARISHES)} guides', 'parishes',
+    req(quests=[f'treasure-guide-{f}' for f in _fips_all]), 'Talk to a guide in every parish.', 'Guide listener')
+if _edges:
+    add('main-parishes-borders', 'main', 'Cross every connected border', 'parishes',
+        req(quests=[f'treasure-border-{a}-{b}' for a, b in sorted(_edges)]),
+        f'Cross each of the {len(_edges)} shared borders at least once.', 'Border walker')
+
 # ----------------------------------------------------------------- quest page eggs
 add('egg-quests-konami', 'egg', 'The old code', QUEST_PAGE, req(), 'Some keys remember an older arcade.',
     'Old-code keeper', trigger='konami', band='K-5', riddle='Up, up, down, down, left, right, left, right, B, A.')
@@ -318,8 +404,11 @@ for q in Q:
     if 'band' in q and q['band'] not in BANDS:
         raise ValueError(f'{q["id"]}: band {q["band"]!r} is not one of {BANDS}')
     w = q['world']
-    if not (w == 'campus' or w.startswith('hall:') or w.startswith('wilds:') or w.startswith('page:')):
-        raise ValueError(f'{q["id"]}: world {w!r} is not campus | hall:<id> | wilds:<id> | page:<path>')
+    if not (w == 'campus' or w.startswith('hall:') or w.startswith('wilds:') or w.startswith('page:')
+            or w == 'parishes' or w.startswith('parish:')):
+        raise ValueError(f'{q["id"]}: world {w!r} is not campus | hall:<id> | wilds:<id> | page:<path> | parishes | parish:<fips>')
+    if w.startswith('parish:') and w[7:] not in _fips_all:
+        raise KeyError(f'{q["id"]}: world names parish {w[7:]!r}, which {LAYERS_PATH} does not hold')
     if w.startswith('hall:') and w[5:] not in HALLS:
         raise KeyError(f'{q["id"]}: world names hall {w[5:]!r}, which {HALLS_PATH} does not hold')
     r = q['requires']
@@ -374,14 +463,16 @@ for i in by_id:
 counts = {k: sum(1 for q in Q if q['kind'] == k) for k in KINDS}
 stamp = hashlib.sha256(pathlib.Path(__file__).read_bytes()
                        + (ROOT / LESSONS_PATH).read_bytes() + (ROOT / SIMS_PATH).read_bytes()
-                       + (ROOT / CAMPUS_SRC).read_bytes()
+                       + (ROOT / CAMPUS_SRC).read_bytes() + (ROOT / LAYERS_PATH).read_bytes()
+                       + ((ROOT / FLEET_PATH).read_bytes() if (ROOT / FLEET_PATH).exists() else b'')
                        + ((ROOT / WILDS_PATH).read_bytes() if (ROOT / WILDS_PATH).exists() else b'')).hexdigest()[:16]
 doc = {
     'pack': 'quests',
     'product': need(lessons_reg, 'product', LESSONS_PATH),
     'pack_version': need(lessons_reg, 'pack_version', LESSONS_PATH),
     'source_stamp': stamp,
-    'reads': [LESSONS_PATH, HALLS_PATH, SIMS_PATH, CRIBS_PATH, WILDS_PATH, CAMPUS_SRC],
+    'reads': [LESSONS_PATH, HALLS_PATH, SIMS_PATH, CRIBS_PATH, WILDS_PATH, CAMPUS_SRC, LAYERS_PATH, FLEET_PATH],
+    'parishes': _fips_all,
     'honesty': HONESTY,
     'counts': counts,
     'halls_with_side_quests': sorted(by_hall),

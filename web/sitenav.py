@@ -47,6 +47,8 @@ GROUPS = [
     ('nav.group.play', [
         ('web/trade_craft_quests.html', 'nav.page.quests'),
         ('web/trade_craft_wilds.html', 'nav.page.wilds'),
+        ('web/trade_craft_parishes.html', 'nav.page.parishes'),
+        ('web/trade_craft_fleet.html', 'nav.page.fleet'),
     ]),
     ('nav.group.maps', [
         ('web/trade_craft_map.html', 'nav.page.map'),
@@ -70,6 +72,7 @@ GROUPS = [
         ('web/trade_craft_signin.html', 'nav.page.signin'),
         ('web/smartcitix_trade_craft_academy.html', 'nav.page.spec'),
         ('web/trade_craft_design.html', 'nav.page.design'),
+        ('web/trade_craft_plans.html', 'nav.page.plans'),
     ]),
 ]
 

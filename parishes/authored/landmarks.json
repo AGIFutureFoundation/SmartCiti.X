@@ -1,0 +1,33 @@
+{
+ "provenance": "AUTHORED",
+ "method": "typed from general public record by the parishes pack author; no source was fetched; coordinates are approximate (about 100-500 m) and were never surveyed",
+ "note": "public record, not surveyed; verify before relying",
+ "rules": "civic and public places only (parks, public buildings, public universities and research sites, public infrastructure, historic public sites); no businesses, no street addresses; a landmark whose point falls outside its parish's coarse 1:10m outline is DROPPED by the build and listed, never moved",
+ "landmarks": [
+  {"parish": "22071", "name": "Jackson Square", "kind": "historic public square", "lat": 29.9574, "lng": -90.0630},
+  {"parish": "22071", "name": "Louisiana Superdome", "kind": "state-owned stadium", "lat": 29.9511, "lng": -90.0812},
+  {"parish": "22071", "name": "New Orleans City Hall", "kind": "city government building", "lat": 29.9526, "lng": -90.0770},
+  {"parish": "22071", "name": "City Park", "kind": "public park", "lat": 29.9930, "lng": -90.0980},
+  {"parish": "22071", "name": "Audubon Park", "kind": "public park", "lat": 29.9290, "lng": -90.1300},
+  {"parish": "22071", "name": "Louis Armstrong Park", "kind": "public park", "lat": 29.9625, "lng": -90.0680},
+  {"parish": "22071", "name": "New Orleans Lakefront Airport", "kind": "public airport", "lat": 30.0424, "lng": -90.0283},
+  {"parish": "22071", "name": "Bayou Sauvage National Wildlife Refuge", "kind": "federal wildlife refuge", "lat": 30.0700, "lng": -89.8800},
+  {"parish": "22051", "name": "Louis Armstrong New Orleans International Airport", "kind": "public airport", "lat": 29.9934, "lng": -90.2580},
+  {"parish": "22051", "name": "Lafreniere Park", "kind": "public park", "lat": 30.0010, "lng": -90.1970},
+  {"parish": "22051", "name": "Jean Lafitte National Historical Park - Barataria Preserve", "kind": "national park unit", "lat": 29.7890, "lng": -90.1150},
+  {"parish": "22051", "name": "Grand Isle State Park", "kind": "state park", "lat": 29.2585, "lng": -89.9566},
+  {"parish": "22087", "name": "Chalmette Battlefield", "kind": "national park unit (historic battlefield)", "lat": 29.9426, "lng": -89.9905},
+  {"parish": "22075", "name": "Fort Jackson", "kind": "historic fort", "lat": 29.3577, "lng": -89.4553},
+  {"parish": "22089", "name": "Bonnet Carre Spillway", "kind": "federal flood-control structure", "lat": 30.0200, "lng": -90.4400},
+  {"parish": "22103", "name": "Fontainebleau State Park", "kind": "state park", "lat": 30.3380, "lng": -90.0395},
+  {"parish": "22103", "name": "Lake Pontchartrain Causeway (north-shore end)", "kind": "public bridge", "lat": 30.3620, "lng": -90.0910},
+  {"parish": "22105", "name": "Southeastern Louisiana University", "kind": "public university", "lat": 30.5155, "lng": -90.4690},
+  {"parish": "22057", "name": "Nicholls State University", "kind": "public university", "lat": 29.7905, "lng": -90.8010},
+  {"parish": "22057", "name": "Port Fourchon", "kind": "public port", "lat": 29.1140, "lng": -90.1960},
+  {"parish": "22063", "name": "LIGO Livingston Observatory", "kind": "federally funded research site", "lat": 30.5629, "lng": -90.7742}
+ ],
+ "water_labels": [
+  {"name": "Lake Pontchartrain", "lat": 30.18, "lng": -90.10, "note": "open water NOT cut out of the 1:10m outline; label point approximate, from general public record"},
+  {"name": "Lake Maurepas", "lat": 30.25, "lng": -90.50, "note": "open water NOT cut out of the 1:10m outline; label point approximate, from general public record"}
+ ]
+}

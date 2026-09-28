@@ -4,6 +4,7 @@
 import { readFileSync, existsSync, readdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { execFileSync } from 'node:child_process';
 import * as Q from './engine.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -139,6 +140,54 @@ for (const w of wreg.worlds) {
   }
 }
 ok('every wilds cache has a K-5 treasure on it, and every gateable wilds site a side quest', wmiss.length === 0, wmiss);
+
+// ---- the parish world (layers/registry/layers.json + parishes/ + fleet/): all play, never gated on lessons
+const layers = JSON.parse(read('layers/registry/layers.json'));
+const preg = JSON.parse(read('parishes/registry/parishes.json'));
+const fips = layers.parishes.map((p) => p.fips);
+const pq = reg.quests.filter((q) => q.world === 'parishes' || q.world.startsWith('parish:'));
+const pbad = [];
+const words = new Set();
+for (const p of layers.parishes) {
+  const w = `parish:${p.fips}`;
+  const a = byId.get(`treasure-parish-${p.fips}-arrive`);
+  if (!a || a.kind !== 'treasure' || a.world !== w || a.band !== 'K-5' || !a.reward.label.includes(p.name)) pbad.push(`${p.fips}: region badge`);
+  const e = byId.get(`egg-parish-${p.fips}-word`);
+  if (!e || e.kind !== 'egg' || e.world !== w || !/^typed:[a-z]+$/.test(e.trigger || '')) pbad.push(`${p.fips}: egg`); else words.add(e.trigger);
+  const g = byId.get(`treasure-guide-${p.fips}`);
+  if (!g || g.kind !== 'treasure' || g.world !== w) pbad.push(`${p.fips}: guide treasure`);
+  for (const l of p.landmarks) if (!byId.has(`treasure-parish-${p.fips}-lm-${l.id}`)) pbad.push(`${p.fips}: landmark ${l.id}`);
+  for (const path of p.paths) {
+    const sq = byId.get(`side-parish-${p.fips}-${path.id}`);
+    const want = path.steps.map((s) => (path.id === 'explorer' ? s : `treasure-station-${s}`));
+    if (!sq || sq.kind !== 'side' || JSON.stringify(sq.requires.quests) !== JSON.stringify(want)) pbad.push(`${p.fips}: ${path.id} path side quest`);
+  }
+}
+ok(`every parish has a region badge, a typed egg (distinct words), a guide treasure, landmark treasures and one side quest per path (${fips.length} parishes)`,
+  pbad.length === 0 && words.size === fips.length, pbad);
+const edges = new Set();
+for (const [f, p] of Object.entries(preg.parishes)) for (const o of p.adjacent) if (fips.includes(o)) edges.add([f, o].sort().join('-'));
+const borderIds = [...edges].sort().map((e) => `treasure-border-${e}`);
+const haveBorders = pq.filter((q) => q.id.startsWith('treasure-border-')).map((q) => q.id).sort();
+const mb = byId.get('main-parishes-borders');
+ok(`"Cross every connected border": one treasure per shared border (${edges.size}) and the main quest requires exactly them`,
+  edges.size > 0 && JSON.stringify(haveBorders) === JSON.stringify(borderIds) && mb && mb.kind === 'main'
+  && JSON.stringify([...mb.requires.quests].sort()) === JSON.stringify(borderIds), [`have ${haveBorders.length}`, `want ${borderIds.length}`]);
+const media = [...new Set(JSON.parse(read('fleet/registry/fleet.json')).fleet.map((v) => v.medium))].sort();
+const mm = byId.get('main-parishes-media');
+ok(`"Ride one of each medium": ${media.join(' + ')} (from fleet/), one ride treasure each, required by the main quest`,
+  media.length === 2 && mm && JSON.stringify([...mm.requires.quests].sort()) === JSON.stringify(media.map((m) => `treasure-ride-${m}`))
+  && media.every((m) => byId.has(`treasure-ride-${m}`)));
+const mg = byId.get('main-parishes-guides'); const mr = byId.get('main-parishes-regions');
+ok(`"Talk to N guides" and "every parish": N = ${fips.length}, computed, requiring one guide / one arrival per parish`,
+  mg && mg.title === `Talk to ${fips.length} guides` && JSON.stringify(mg.requires.quests) === JSON.stringify(fips.map((f) => `treasure-guide-${f}`))
+  && mr && JSON.stringify(mr.requires.quests) === JSON.stringify(fips.map((f) => `treasure-parish-${f}-arrive`)));
+ok(`parish-world entries (${pq.length}) are AUTHORED play: never gated on lessons or halls, every parish world is a layers parish`,
+  pq.length > 0 && pq.every((q) => q.provenance === 'AUTHORED' && !q.requires.lessons.length && !q.requires.halls.length
+    && (q.world === 'parishes' || fips.includes(q.world.slice(7)))));
+let qcheck = '';
+try { qcheck = execFileSync('python3', ['quests/build.py', '--check'], { cwd: ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }); } catch (e) { qcheck = String(e.stdout) + String(e.stderr); }
+ok('python3 quests/build.py --check: the registry is current (stamp over lessons, sims, campus, wilds, layers, fleet)', /is current/.test(qcheck), qcheck.trim());
 
 console.log(fails ? `quests/test: ${fails} FAILED` : 'quests/test: all passed');
 process.exit(fails ? 1 : 0);

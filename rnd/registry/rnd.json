@@ -21,16 +21,16 @@
   "measured_elsewhere": 51,
   "computed_from_registry": 12,
   "measured_source_files": 11,
-  "registries_scanned": 54,
-  "app_renderers_scanned": 25,
+  "registries_scanned": 60,
+  "app_renderers_scanned": 28,
   "doc_renderers_scanned": 3,
-  "builders_scanned": 44,
-  "suites_scanned": 80,
-  "declared_unbuilt": 4,
+  "builders_scanned": 50,
+  "suites_scanned": 89,
+  "declared_unbuilt": 5,
   "declared_unbuilt_by_their_own_words": 2,
-  "declared_unbuilt_not_drawn": 3,
+  "declared_unbuilt_not_drawn": 4,
   "declared_unbuilt_documented_but_not_drawn": 1,
-  "declared_unbuilt_read_by_nothing": 2,
+  "declared_unbuilt_read_by_nothing": 3,
   "gaps": 21,
   "gaps_open": 16,
   "gaps_closed": 5,
@@ -38,13 +38,13 @@
   "budget_views": 6,
   "budget_currencies": 2,
   "budget_agreements": 7,
-  "suites_run": 80,
-  "suite_checks_declared": 3958,
+  "suites_run": 89,
+  "suite_checks_declared": 4395,
   "open_questions": 12,
   "negative_findings": 9,
   "cross_checks": 2,
   "cross_checks_disagreeing": 0,
-  "files_read": 242
+  "files_read": 271
  },
  "tiers": [
   "MEASURED-IN-BROWSER",
@@ -1554,6 +1554,24 @@
    "drops_off_when": "a page generator under web/ opens this path, or the pack removes its own honesty.not_built_yet - either one, on the next build of rnd/, with no edit here"
   },
   {
+   "registry": "cloudflare/registry/cloudflare.json",
+   "pack": "cloudflare",
+   "reasons": [
+    "no page generator under web/ names this path, so nothing a learner opens reads it",
+    "and nothing outside its own pack names it either - not a builder, not the wiki, not another pack's suite; inside it, cloudflare/build.py, cloudflare/test.mjs does"
+   ],
+   "says": null,
+   "read_by_app_renderers": [],
+   "read_by_doc_renderers": [],
+   "read_by_builders": [],
+   "read_by_suites": [],
+   "read_by_its_own_pack": [
+    "cloudflare/build.py",
+    "cloudflare/test.mjs"
+   ],
+   "drops_off_when": "a page generator under web/ opens this path, or the pack removes its own honesty.not_built_yet - either one, on the next build of rnd/, with no edit here"
+  },
+  {
    "registry": "pack/registry/library.json",
    "pack": "pack",
    "reasons": [
@@ -1700,10 +1718,12 @@
    "doc_renderers": [],
    "builders": [
     "agents/build.py",
-    "guide/build.py"
+    "guide/build.py",
+    "npcs/build.py"
    ],
    "suites": [
-    "agents/test.mjs"
+    "agents/test.mjs",
+    "npcs/test.mjs"
    ],
    "own_pack": [
     "avatars/build.py",
@@ -1718,6 +1738,16 @@
    "own_pack": [
     "bundles/build.py",
     "bundles/test.mjs"
+   ]
+  },
+  "cloudflare/registry/cloudflare.json": {
+   "app_renderers": [],
+   "doc_renderers": [],
+   "builders": [],
+   "suites": [],
+   "own_pack": [
+    "cloudflare/build.py",
+    "cloudflare/test.mjs"
    ]
   },
   "completion/registry/completion.json": {
@@ -1820,6 +1850,25 @@
     "evals/test.mjs"
    ]
   },
+  "fleet/registry/fleet.json": {
+   "app_renderers": [
+    "web/build_fleet.py",
+    "web/build_parishes.py"
+   ],
+   "doc_renderers": [],
+   "builders": [
+    "quests/build.py"
+   ],
+   "suites": [
+    "quests/test.mjs",
+    "web/test_fleet.mjs",
+    "web/test_parishes.mjs"
+   ],
+   "own_pack": [
+    "fleet/build.py",
+    "fleet/test.mjs"
+   ]
+  },
   "geo/registry/campuses_geo.json": {
    "app_renderers": [
     "web/build_3d.py",
@@ -1834,6 +1883,7 @@
     "geo3d/build.py",
     "guide/build.py",
     "parcels/build.py",
+    "parishes/build.py",
     "restoration/build.py",
     "roadmap/build.py",
     "sky/build.py",
@@ -1845,6 +1895,7 @@
     "agents/test.mjs",
     "geo3d/test.mjs",
     "parcels/test.mjs",
+    "parishes/test.mjs",
     "restoration/test.mjs",
     "roadmap/test.mjs",
     "sky/test.mjs",
@@ -1934,6 +1985,25 @@
     "labels/test.mjs"
    ]
   },
+  "layers/registry/layers.json": {
+   "app_renderers": [
+    "web/build_parishes.py"
+   ],
+   "doc_renderers": [],
+   "builders": [
+    "npcs/build.py",
+    "quests/build.py"
+   ],
+   "suites": [
+    "npcs/test.mjs",
+    "quests/test.mjs",
+    "web/test_parishes.mjs"
+   ],
+   "own_pack": [
+    "layers/build.py",
+    "layers/test.mjs"
+   ]
+  },
   "lessons/registry/lessons.json": {
    "app_renderers": [
     "web/build_3d.py",
@@ -1954,6 +2024,8 @@
     "completion/build.py",
     "compliance/build.py",
     "evals/build.py",
+    "layers/build.py",
+    "npcs/build.py",
     "quests/build.py",
     "sessions/build.py",
     "tasks/build.py",
@@ -1965,6 +2037,8 @@
     "completion/test.mjs",
     "completion/verify.mjs",
     "evals/test.mjs",
+    "layers/test.mjs",
+    "npcs/test.mjs",
     "quests/test.mjs",
     "schools/test.mjs",
     "sessions/test.mjs",
@@ -2024,6 +2098,20 @@
     "meta/test.mjs"
    ]
   },
+  "npcs/registry/npcs.json": {
+   "app_renderers": [
+    "web/build_parishes.py"
+   ],
+   "doc_renderers": [],
+   "builders": [],
+   "suites": [
+    "web/test_parishes.mjs"
+   ],
+   "own_pack": [
+    "npcs/build.py",
+    "npcs/test.mjs"
+   ]
+  },
   "orbis/registry/orbis.json": {
    "app_renderers": [
     "web/build_3d.py",
@@ -2069,6 +2157,7 @@
     "ei/build.py",
     "evals/build.py",
     "geo3d/build.py",
+    "layers/build.py",
     "lessons/build.py",
     "props/build.py",
     "quests/build.py",
@@ -2088,6 +2177,7 @@
     "evals/test.mjs",
     "geo3d/test.mjs",
     "i18n/test.mjs",
+    "layers/test.mjs",
     "lessons/test.mjs",
     "quests/test.mjs",
     "respond/test.mjs",
@@ -2190,15 +2280,54 @@
     "wiki/build_wiki.py"
    ],
    "builders": [
+    "parishes/build.py",
     "spatial/build.py"
    ],
    "suites": [
+    "parishes/test.mjs",
     "roadmap/test.mjs",
     "spatial/test.mjs"
    ],
    "own_pack": [
     "parcels/build.py",
     "parcels/test.mjs"
+   ]
+  },
+  "parishes/registry/parishes.json": {
+   "app_renderers": [
+    "web/build_parishes.py"
+   ],
+   "doc_renderers": [],
+   "builders": [
+    "layers/build.py",
+    "npcs/build.py"
+   ],
+   "suites": [
+    "layers/test.mjs",
+    "npcs/test.mjs",
+    "quests/test.mjs",
+    "web/test_parishes.mjs"
+   ],
+   "own_pack": [
+    "parishes/build.py",
+    "parishes/test.mjs"
+   ]
+  },
+  "payments/registry/catalog.json": {
+   "app_renderers": [
+    "web/build_plans.py"
+   ],
+   "doc_renderers": [],
+   "builders": [
+    "cloudflare/build.py"
+   ],
+   "suites": [
+    "web/test_plans.mjs"
+   ],
+   "own_pack": [
+    "payments/build.py",
+    "payments/catalog.mjs",
+    "payments/test.mjs"
    ]
   },
   "props/registry/props.json": {
@@ -2242,12 +2371,14 @@
   "quests/registry/quests.json": {
    "app_renderers": [
     "web/build_3d.py",
+    "web/build_parishes.py",
     "web/build_schools.py",
     "web/build_wilds.py"
    ],
    "doc_renderers": [],
    "builders": [],
    "suites": [
+    "layers/test.mjs",
     "web/test_3d.mjs",
     "web/test_home.mjs",
     "web/test_quests.mjs",
@@ -2287,11 +2418,13 @@
    ],
    "builders": [
     "guide/build.py",
+    "npcs/build.py",
     "spatial/build.py",
     "tasks/build.py",
     "worksites/build.py"
    ],
    "suites": [
+    "npcs/test.mjs",
     "spatial/test.mjs",
     "tasks/test.mjs",
     "web/test_geomap.mjs",
@@ -2336,11 +2469,15 @@
    "builders": [
     "agents/build.py",
     "guide/build.py",
+    "layers/build.py",
     "lessons/build.py",
+    "npcs/build.py",
     "spatial/build.py"
    ],
    "suites": [
+    "layers/test.mjs",
     "lessons/test.mjs",
+    "npcs/test.mjs",
     "web/test_geomap.mjs",
     "web/test_map.mjs",
     "web/test_schools.mjs"
@@ -2404,9 +2541,12 @@
     "compliance/build.py",
     "contrib/build.py",
     "evals/build.py",
+    "fleet/build.py",
     "guide/build.py",
+    "layers/build.py",
     "lessons/build.py",
     "meta/build.py",
+    "npcs/build.py",
     "quests/build.py",
     "schools/build.py",
     "sessions/build.py",
@@ -2424,9 +2564,12 @@
     "contrib/test.mjs",
     "contrib/verify.mjs",
     "evals/test.mjs",
+    "fleet/test.mjs",
     "guide/test.mjs",
+    "layers/test.mjs",
     "lessons/test.mjs",
     "meta/test.mjs",
+    "npcs/test.mjs",
     "schools/test.mjs",
     "spaces/test.mjs",
     "spatial/test.mjs",
@@ -2622,8 +2765,15 @@
     "web/build_worksites.py"
    ],
    "doc_renderers": [],
-   "builders": [],
+   "builders": [
+    "fleet/build.py",
+    "layers/build.py",
+    "npcs/build.py"
+   ],
    "suites": [
+    "fleet/test.mjs",
+    "layers/test.mjs",
+    "npcs/test.mjs",
     "web/test_3d.mjs",
     "web/test_geomap.mjs",
     "web/test_interactive.mjs",
@@ -2751,6 +2901,7 @@
     "geo3d/build.py",
     "guide/build.py",
     "kit/build.py",
+    "layers/build.py",
     "lessons/build.py",
     "orbis/build.py",
     "parcels/build.py",
@@ -2821,6 +2972,7 @@
     "geo3d/build.py",
     "kit/build.py",
     "labels/build.py",
+    "npcs/build.py",
     "orbis/build.py",
     "roadmap/build.py",
     "tools/build.py"
@@ -2830,6 +2982,7 @@
     "i18n/test.mjs",
     "kit/test.mjs",
     "labels/test.mjs",
+    "npcs/test.mjs",
     "roadmap/test.mjs",
     "tools/test.mjs"
    ],
@@ -2853,6 +3006,7 @@
     "evals/build.py",
     "guide/build.py",
     "kit/build.py",
+    "npcs/build.py",
     "orbis/build.py",
     "props/build.py",
     "restoration/build.py",
@@ -2870,6 +3024,7 @@
     "bundles/test.mjs",
     "evals/test.mjs",
     "kit/test.mjs",
+    "npcs/test.mjs",
     "orbis/test.mjs",
     "props/test.mjs",
     "restoration/test.mjs",
@@ -2919,6 +3074,7 @@
     "tasks/build.py"
    ],
    "suites": [
+    "fleet/test.mjs",
     "lessons/test.mjs",
     "quests/test.mjs",
     "tasks/test.mjs",
@@ -3000,6 +3156,7 @@
    "web/build_dashboard.py",
    "web/build_design.py",
    "web/build_fabric.py",
+   "web/build_fleet.py",
    "web/build_geomap.py",
    "web/build_home.py",
    "web/build_interactive_map.py",
@@ -3009,6 +3166,8 @@
    "web/build_lessons.py",
    "web/build_map.py",
    "web/build_page.py",
+   "web/build_parishes.py",
+   "web/build_plans.py",
    "web/build_progress.py",
    "web/build_quests.py",
    "web/build_schools.py",
@@ -3030,22 +3189,28 @@
    "auth/build.py",
    "avatars/build.py",
    "bundles/build.py",
+   "cloudflare/build.py",
    "completion/build.py",
    "compliance/build.py",
    "contrib/build.py",
    "ei/build.py",
    "evals/build.py",
+   "fleet/build.py",
    "geo/build.py",
    "geo3d/build.py",
    "guide/build.py",
    "kit/build.py",
    "labels/build.py",
+   "layers/build.py",
    "lessons/build.py",
    "media/build.py",
    "meta/build.py",
+   "npcs/build.py",
    "orbis/build.py",
    "pack/build.py",
    "parcels/build.py",
+   "parishes/build.py",
+   "payments/build.py",
    "props/build.py",
    "protocols/build.py",
    "quests/build.py",
@@ -3079,6 +3244,7 @@
    "bundles/test.mjs",
    "bus/test.mjs",
    "bus/test_safeguards.mjs",
+   "cloudflare/test.mjs",
    "completion/test.mjs",
    "completion/verify.mjs",
    "compliance/test.mjs",
@@ -3091,19 +3257,24 @@
    "ei/test.mjs",
    "evals/test.mjs",
    "fabric/test.mjs",
+   "fleet/test.mjs",
    "geo/test.mjs",
    "geo3d/test.mjs",
    "guide/test.mjs",
    "i18n/test.mjs",
    "kit/test.mjs",
    "labels/test.mjs",
+   "layers/test.mjs",
    "lessons/test.mjs",
    "media/test.mjs",
    "meta/test.mjs",
+   "npcs/test.mjs",
    "ops/test.mjs",
    "orbis/test.mjs",
    "pack/verify.mjs",
    "parcels/test.mjs",
+   "parishes/test.mjs",
+   "payments/test.mjs",
    "props/test.mjs",
    "protocols/test.mjs",
    "quests/test.mjs",
@@ -3131,6 +3302,7 @@
    "web/test_contribute.mjs",
    "web/test_design.mjs",
    "web/test_fabric.mjs",
+   "web/test_fleet.mjs",
    "web/test_geomap.mjs",
    "web/test_gltf.mjs",
    "web/test_home.mjs",
@@ -3138,6 +3310,8 @@
    "web/test_ladder.mjs",
    "web/test_map.mjs",
    "web/test_nav.mjs",
+   "web/test_parishes.mjs",
+   "web/test_plans.mjs",
    "web/test_progress.mjs",
    "web/test_quests.mjs",
    "web/test_rtl.mjs",
@@ -4236,7 +4410,7 @@
    {
     "suite": "quests/test.mjs",
     "pack": "quests",
-    "readme_checks": 25,
+    "readme_checks": 31,
     "declared": true,
     "in_readme_table": true
    },
@@ -4274,20 +4448,83 @@
     "readme_checks": 29,
     "declared": true,
     "in_readme_table": true
+   },
+   {
+    "suite": "parishes/test.mjs",
+    "pack": "parishes",
+    "readme_checks": 36,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "fleet/test.mjs",
+    "pack": "fleet",
+    "readme_checks": 42,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "web/test_fleet.mjs",
+    "pack": "web",
+    "readme_checks": 18,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "npcs/test.mjs",
+    "pack": "npcs",
+    "readme_checks": 108,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "layers/test.mjs",
+    "pack": "layers",
+    "readme_checks": 23,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "payments/test.mjs",
+    "pack": "payments",
+    "readme_checks": 63,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "cloudflare/test.mjs",
+    "pack": "cloudflare",
+    "readme_checks": 39,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "web/test_plans.mjs",
+    "pack": "web",
+    "readme_checks": 47,
+    "declared": true,
+    "in_readme_table": true
+   },
+   {
+    "suite": "web/test_parishes.mjs",
+    "pack": "web",
+    "readme_checks": 55,
+    "declared": true,
+    "in_readme_table": true
    }
   ],
-  "suites_run": 80,
-  "suites_declaring_a_count": 79,
+  "suites_run": 89,
+  "suites_declaring_a_count": 88,
   "suites_without_a_count": [
    "control/soak.mjs"
   ],
-  "declared_total": 3958,
-  "readme_headline": 3969,
+  "declared_total": 4395,
+  "readme_headline": 4406,
   "unaccounted_for": 11,
   "unaccounted_note": "the headline counts every `  ok ` line verify_all.sh sees, which includes suites the README table gives no number to and web/test_interiors.py, which the table does not list at all. The difference is that remainder and is computed, not reconciled by hand.",
   "min": 9,
   "max": 350,
-  "median": 40,
+  "median": 40.5,
   "thinnest": [
    {
     "suite": "ops/fuzz.mjs",
@@ -4336,8 +4573,8 @@
     "checks": 112
    },
    {
-    "suite": "media/test.mjs",
-    "checks": 104
+    "suite": "npcs/test.mjs",
+    "checks": 108
    }
   ],
   "note": "a thin suite is not automatically a bad one - tools/ has 13 checks over a registry of twelve hand tools - but a thin suite over a large surface is where an unfound defect is most likely to be sitting, and this table is the only place the two are shown side by side."
@@ -4555,6 +4792,10 @@
   "bundles/test.mjs",
   "bus/test.mjs",
   "bus/test_safeguards.mjs",
+  "cloudflare/build.py",
+  "cloudflare/functions/api/[[path]].js",
+  "cloudflare/registry/cloudflare.json",
+  "cloudflare/test.mjs",
   "completion/build.py",
   "completion/registry/completion.json",
   "completion/test.mjs",
@@ -4579,6 +4820,9 @@
   "evals/registry/evals.json",
   "evals/test.mjs",
   "fabric/test.mjs",
+  "fleet/build.py",
+  "fleet/registry/fleet.json",
+  "fleet/test.mjs",
   "geo/build.py",
   "geo/registry/campuses_geo.json",
   "geo/test.mjs",
@@ -4604,6 +4848,9 @@
   "labels/build.py",
   "labels/registry/labels.json",
   "labels/test.mjs",
+  "layers/build.py",
+  "layers/registry/layers.json",
+  "layers/test.mjs",
   "lessons/build.py",
   "lessons/registry/lessons.json",
   "lessons/test.mjs",
@@ -4616,6 +4863,9 @@
   "meta/build.py",
   "meta/registry/metaverse.json",
   "meta/test.mjs",
+  "npcs/build.py",
+  "npcs/registry/npcs.json",
+  "npcs/test.mjs",
   "ops/test.mjs",
   "orbis/build.py",
   "orbis/registry/orbis.json",
@@ -4636,6 +4886,16 @@
   "parcels/build.py",
   "parcels/registry/parcels.json",
   "parcels/test.mjs",
+  "parishes/build.py",
+  "parishes/fetch_usatlas.py",
+  "parishes/registry/parishes.json",
+  "parishes/render.py",
+  "parishes/test.mjs",
+  "payments/build.py",
+  "payments/catalog.mjs",
+  "payments/registry/catalog.json",
+  "payments/test.mjs",
+  "payments/worker.mjs",
   "props/build.py",
   "props/registry/props.json",
   "props/test.mjs",
@@ -4721,6 +4981,7 @@
   "web/build_dashboard.py",
   "web/build_design.py",
   "web/build_fabric.py",
+  "web/build_fleet.py",
   "web/build_geomap.py",
   "web/build_home.py",
   "web/build_interactive_map.py",
@@ -4730,6 +4991,8 @@
   "web/build_lessons.py",
   "web/build_map.py",
   "web/build_page.py",
+  "web/build_parishes.py",
+  "web/build_plans.py",
   "web/build_progress.py",
   "web/build_quests.py",
   "web/build_schools.py",
@@ -4746,6 +5009,7 @@
   "web/test_contribute.mjs",
   "web/test_design.mjs",
   "web/test_fabric.mjs",
+  "web/test_fleet.mjs",
   "web/test_geomap.mjs",
   "web/test_gltf.mjs",
   "web/test_home.mjs",
@@ -4753,6 +5017,8 @@
   "web/test_ladder.mjs",
   "web/test_map.mjs",
   "web/test_nav.mjs",
+  "web/test_parishes.mjs",
+  "web/test_plans.mjs",
   "web/test_progress.mjs",
   "web/test_quests.mjs",
   "web/test_rtl.mjs",

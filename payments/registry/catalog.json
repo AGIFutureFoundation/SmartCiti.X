@@ -1,0 +1,84 @@
+{
+ "pack": "payments",
+ "provenance": "AUTHORED",
+ "live": false,
+ "status": "Payments are not live: no Stripe account is connected to this deployment",
+ "commercial_terms": "set by the operator in Stripe",
+ "card_data": "never handled by this code: Stripe-hosted Checkout only",
+ "checkout": {
+  "endpoint": "/api/checkout",
+  "success_path": "/web/trade_craft_plans.html?checkout=success",
+  "cancel_path": "/web/trade_craft_plans.html?checkout=cancelled",
+  "secret_env": "STRIPE_SECRET_KEY",
+  "origin_env": "SITE_ORIGIN",
+  "stripe_api": "https://api.stripe.com/v1/checkout/sessions",
+  "hosted_prefix": "https://checkout.stripe.com/"
+ },
+ "webhook": {
+  "endpoint": "/api/stripe-webhook",
+  "secret_env": "STRIPE_WEBHOOK_SECRET",
+  "kv_binding": "PAYMENTS_KV",
+  "tolerance_s": 300,
+  "handled": [
+   "checkout.session.completed"
+  ],
+  "stored_fields": [
+   "plan",
+   "payment_status",
+   "mode",
+   "livemode",
+   "at"
+  ]
+ },
+ "plans": [
+  {
+   "id": "individual-learner",
+   "audience": "one learner",
+   "price_id": null,
+   "price_env": "STRIPE_PRICE_INDIVIDUAL_LEARNER",
+   "mode_env": "STRIPE_MODE_INDIVIDUAL_LEARNER",
+   "label_key": "plans.plan.individual-learner.title",
+   "desc_key": "plans.plan.individual-learner.desc",
+   "price": null,
+   "currency": null,
+   "interval": null,
+   "trial": null,
+   "discount": null,
+   "tax": null,
+   "commercial_terms": "set by the operator in Stripe"
+  },
+  {
+   "id": "union-hall",
+   "audience": "a union training hall and its apprentices",
+   "price_id": null,
+   "price_env": "STRIPE_PRICE_UNION_HALL",
+   "mode_env": "STRIPE_MODE_UNION_HALL",
+   "label_key": "plans.plan.union-hall.title",
+   "desc_key": "plans.plan.union-hall.desc",
+   "price": null,
+   "currency": null,
+   "interval": null,
+   "trial": null,
+   "discount": null,
+   "tax": null,
+   "commercial_terms": "set by the operator in Stripe"
+  },
+  {
+   "id": "school-district",
+   "audience": "a K-12 school or district (PROPOSED partner, no agreement)",
+   "price_id": null,
+   "price_env": "STRIPE_PRICE_SCHOOL_DISTRICT",
+   "mode_env": "STRIPE_MODE_SCHOOL_DISTRICT",
+   "label_key": "plans.plan.school-district.title",
+   "desc_key": "plans.plan.school-district.desc",
+   "price": null,
+   "currency": null,
+   "interval": null,
+   "trial": null,
+   "discount": null,
+   "tax": null,
+   "commercial_terms": "set by the operator in Stripe"
+  }
+ ],
+ "source_stamp": "sha256:8943de1851ac165c23c5b03f7c8e75ad89de9158329cf453af5c6f1c70dbd286"
+}

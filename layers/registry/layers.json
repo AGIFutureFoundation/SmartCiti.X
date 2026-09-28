@@ -1,0 +1,4479 @@
+{
+ "pack": "layers",
+ "source_stamp": "a2f0c3878cff7704",
+ "sources": {
+  "parishes/registry/parishes.json": "4f702284d0ed01ba",
+  "sims/registry/sims.json": "987a9d4812b4c73b",
+  "tasks/registry/tasks.json": "a24bf254c0336ca4",
+  "lessons/registry/lessons.json": "e905659b0a718ab6",
+  "schools/registry/schools.json": "f16f95c0a1c639c5",
+  "pack/registry/halls.json": "3807e54afe6abfe6",
+  "tasks/build.py": "95f904c9ac7c4689",
+  "web/build_3d.py": "5f40778c7fb8308f",
+  "web/build_lessons.py": "fa758b5beb245fde",
+  "web/build_schools.py": "37826064907a1643",
+  "layers/build.py": "0ffabb2e6aad5a89"
+ },
+ "parish_source": "parishes/registry/parishes.json",
+ "honesty": {
+  "play": "Stations, paths, rings and badges are play. They are kept on this device only, they certify nothing and they never enter a completion record.",
+  "placement": "Where a station stands is AUTHORED by a rule inside the parish's RECORDED coarse (1:10m) outline. It is not the site of any real training facility, school or employer, and no address is implied.",
+  "k12": "\"Cognition.X K-12\" is the name of this layer; its content is the schools/ pack's flipped units. Every school district named there is a PROPOSED partner: no district has reviewed or agreed, and no agreement exists.",
+  "lessons": "Lessons are unverified general practice, exactly as the lessons pack states.",
+  "launch": "A launch link is written only where the target page reads it; a station no link reaches says why. Suggested lessons are an order worth trying, never a lock: every path is open, and you can switch path at any time."
+ },
+ "k12_districts": "district names are public-record identities only; every record is a PROPOSED partner - no district has reviewed or agreed, and no agreement exists",
+ "layers": {
+  "trade-sim": {
+   "label": "Union training simulators",
+   "content_from": "sims/registry/sims.json"
+  },
+  "task": {
+   "label": "Simulated tasks",
+   "content_from": "tasks/registry/tasks.json"
+  },
+  "lesson": {
+   "label": "Lessons",
+   "content_from": "lessons/registry/lessons.json"
+  },
+  "k12-unit": {
+   "label": "Cognition.X K-12",
+   "content_from": "schools/registry/schools.json units (the schools/ pack)"
+  }
+ },
+ "counts": {
+  "parishes": 13,
+  "stations": 104,
+  "by_layer": {
+   "trade-sim": 26,
+   "task": 26,
+   "lesson": 26,
+   "k12-unit": 26
+  },
+  "launchable": 104
+ },
+ "parishes": [
+  {
+   "fips": "22005",
+   "name": "Ascension Parish",
+   "landmarks": [],
+   "adjacent": [
+    "22063",
+    "22093",
+    "22095"
+   ],
+   "stations": [
+    {
+     "id": "st-22005-sim-airless-sprayer",
+     "layer": "trade-sim",
+     "ref": {
+      "registry": "sims/registry/sims.json",
+      "id": "airless-sprayer",
+      "source": "sims/registry/sims.json#sims.airless-sprayer"
+     },
+     "title": "Airless Paint Sprayer Finish",
+     "at": {
+      "lon": -90.913072,
+      "lat": 30.201087
+     },
+     "world_m": [
+      -79279.95,
+      25139.76
+     ],
+     "local_m": [
+      -51.51,
+      -206.71
+     ],
+     "near": null,
+     "launch": {
+      "href": "web/trade_craft_3d.html?hall=painters&sim=airless-sprayer",
+      "lands": "seat",
+      "param": [
+       "hall",
+       "sim"
+      ]
+     },
+     "suggests": [
+      "painters-lay-the-coat"
+     ],
+     "treasure": "treasure-station-st-22005-sim-airless-sprayer",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22005-task-sim-airless-sprayer-nola-shotgun-finish",
+     "layer": "task",
+     "ref": {
+      "registry": "tasks/registry/tasks.json",
+      "id": "sim-airless-sprayer-nola-shotgun-finish",
+      "source": "tasks/registry/tasks.json#tasks[34]"
+     },
+     "title": "Airless Paint Sprayer Finish: Shotgun house finish coat",
+     "at": {
+      "lon": -90.636696,
+      "lat": 30.218752
+     },
+     "world_m": [
+      -52658.86,
+      27104.02
+     ],
+     "local_m": [
+      26508.29,
+      1757.55
+     ],
+     "near": null,
+     "launch": {
+      "href": "web/trade_craft_3d.html?hall=painters&sim=airless-sprayer&scenario=nola-shotgun-finish",
+      "lands": "seat",
+      "param": [
+       "hall",
+       "sim",
+       "scenario"
+      ]
+     },
+     "suggests": [],
+     "treasure": "treasure-station-st-22005-task-sim-airless-sprayer-nola-shotgun-finish",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22005-sim-boom-lift",
+     "layer": "trade-sim",
+     "ref": {
+      "registry": "sims/registry/sims.json",
+      "id": "boom-lift",
+      "source": "sims/registry/sims.json#sims.boom-lift"
+     },
+     "title": "Boom Lift Basket Work",
+     "at": {
+      "lon": -91.100613,
+      "lat": 30.06566
+     },
+     "world_m": [
+      -97344.28,
+      10080.95
+     ],
+     "local_m": [
+      -18074.24,
+      -15265.53
+     ],
+     "near": null,
+     "launch": {
+      "href": "web/trade_craft_3d.html?hall=electricians&sim=boom-lift",
+      "lands": "seat",
+      "param": [
+       "hall",
+       "sim"
+      ]
+     },
+     "suggests": [
+      "electricians-clip-in-first",
+      "insulators-stay-inside-the-rails"
+     ],
+     "treasure": "treasure-station-st-22005-sim-boom-lift",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22005-task-sim-boom-lift-nola-storm-shutters",
+     "layer": "task",
+     "ref": {
+      "registry": "tasks/registry/tasks.json",
+      "id": "sim-boom-lift-nola-storm-shutters",
+      "source": "tasks/registry/tasks.json#tasks[38]"
+     },
+     "title": "Boom Lift Basket Work: Storm-shutter run",
+     "at": {
+      "lon": -90.982166,
+      "lat": 30.342403
+     },
+     "world_m": [
+      -85935.23,
+      40853.41
+     ],
+     "local_m": [
+      -6691.46,
+      15506.93
+     ],
+     "near": null,
+     "launch": {
+      "href": "web/trade_craft_3d.html?hall=electricians&sim=boom-lift&scenario=nola-storm-shutters",
+      "lands": "seat",
+      "param": [
+       "hall",
+       "sim",
+       "scenario"
+      ]
+     },
+     "suggests": [],
+     "treasure": "treasure-station-st-22005-task-sim-boom-lift-nola-storm-shutters",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22005-unit-laborers",
+     "layer": "k12-unit",
+     "ref": {
+      "registry": "schools/registry/schools.json",
+      "id": "laborers",
+      "source": "schools/registry/schools.json#units[18]"
+     },
+     "title": "Laborers: flipped unit",
+     "at": {
+      "lon": -90.774884,
+      "lat": 30.142206
+     },
+     "world_m": [
+      -65969.41,
+      18592.48
+     ],
+     "local_m": [
+      13228.39,
+      -6753.99
+     ],
+     "near": null,
+     "launch": {
+      "href": "web/trade_craft_schools.html#band-9-10",
+      "lands": "section",
+      "param": [
+       "#band-"
+      ]
+     },
+     "suggests": [
+      "laborers-stand-where-the-cab-can-see"
+     ],
+     "treasure": "treasure-station-st-22005-unit-laborers",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22005-lesson-painters-lay-the-coat",
+     "layer": "lesson",
+     "ref": {
+      "registry": "lessons/registry/lessons.json",
+      "id": "painters-lay-the-coat",
+      "source": "lessons/registry/lessons.json#lessons.painters-lay-the-coat"
+     },
+     "title": "Lay a coat that is actually there",
+     "at": {
+      "lon": -90.834108,
+      "lat": 30.312962
+     },
+     "world_m": [
+      -71673.98,
+      37579.71
+     ],
+     "local_m": [
+      7536.95,
+      12233.24
+     ],
+     "near": null,
+     "launch": {
+      "href": "web/trade_craft_lessons.html#lesson-painters-lay-the-coat",
+      "lands": "section",
+      "param": [
+       "#lesson-"
+      ]
+     },
+     "suggests": [],
+     "treasure": "treasure-station-st-22005-lesson-painters-lay-the-coat",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22005-unit-electricians",
+     "layer": "k12-unit",
+     "ref": {
+      "registry": "schools/registry/schools.json",
+      "id": "electricians",
+      "source": "schools/registry/schools.json#units[9]"
+     },
+     "title": "Electrical Workers: flipped unit",
+     "at": {
+      "lon": -91.06113,
+      "lat": 30.189311
+     },
+     "world_m": [
+      -93541.2,
+      23830.33
+     ],
+     "local_m": [
+      -14279.92,
+      -1516.14
+     ],
+     "near": null,
+     "launch": {
+      "href": "web/trade_craft_schools.html#band-9-10",
+      "lands": "section",
+      "param": [
+       "#band-"
+      ]
+     },
+     "suggests": [
+      "electricians-clip-in-first"
+     ],
+     "treasure": "treasure-station-st-22005-unit-electricians",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22005-lesson-electricians-clip-in-first",
+     "layer": "lesson",
+     "ref": {
+      "registry": "lessons/registry/lessons.json",
+      "id": "electricians-clip-in-first",
+      "source": "lessons/registry/lessons.json#lessons.electricians-clip-in-first"
+     },
+     "title": "Clip in before the basket moves",
+     "at": {
+      "lon": -90.952554,
+      "lat": 30.077436
+     },
+     "world_m": [
+      -83082.94,
+      11390.38
+     ],
+     "local_m": [
+      -3845.74,
+      -13956.09
+     ],
+     "near": null,
+     "launch": {
+      "href": "web/trade_craft_lessons.html#lesson-electricians-clip-in-first",
+      "lands": "section",
+      "param": [
+       "#lesson-"
+      ]
+     },
+     "suggests": [],
+     "treasure": "treasure-station-st-22005-lesson-electricians-clip-in-first",
+     "provenance": "AUTHORED"
+    }
+   ],
+   "paths": [
+    {
+     "id": "trade",
+     "label": "Trade path",
+     "steps": [
+      "st-22005-sim-airless-sprayer",
+      "st-22005-task-sim-airless-sprayer-nola-shotgun-finish",
+      "st-22005-sim-boom-lift",
+      "st-22005-task-sim-boom-lift-nola-storm-shutters"
+     ],
+     "gated": false
+    },
+    {
+     "id": "k12",
+     "label": "K-12 path",
+     "steps": [
+      "st-22005-unit-electricians",
+      "st-22005-unit-laborers",
+      "st-22005-lesson-electricians-clip-in-first",
+      "st-22005-lesson-painters-lay-the-coat"
+     ],
+     "gated": false
+    },
+    {
+     "id": "explorer",
+     "label": "Explorer / free play",
+     "steps": [
+      "treasure-parish-22005-arrive",
+      "egg-parish-22005-word"
+     ],
+     "gated": false
+    }
+   ]
+  },
+  {
+   "fips": "22051",
+   "name": "Jefferson Parish",
+   "landmarks": [
+    {
+     "id": "louis-armstrong-new-orleans-international-airport",
+     "name": "Louis Armstrong New Orleans International Airport",
+     "kind": "public airport"
+    },
+    {
+     "id": "lafreniere-park",
+     "name": "Lafreniere Park",
+     "kind": "public park"
+    },
+    {
+     "id": "jean-lafitte-national-historical-park-barataria-preserve",
+     "name": "Jean Lafitte National Historical Park - Barataria Preserve",
+     "kind": "national park unit"
+    },
+    {
+     "id": "grand-isle-state-park",
+     "name": "Grand Isle State Park",
+     "kind": "state park"
+    }
+   ],
+   "adjacent": [
+    "22057",
+    "22071",
+    "22075",
+    "22089",
+    "22095",
+    "22103"
+   ],
+   "stations": [
+    {
+     "id": "st-22051-sim-crane-lift",
+     "layer": "trade-sim",
+     "ref": {
+      "registry": "sims/registry/sims.json",
+      "id": "crane-lift",
+      "source": "sims/registry/sims.json#sims.crane-lift"
+     },
+     "title": "Tower Crane Lift",
+     "at": {
+      "lon": -90.260381,
+      "lat": 29.986851
+     },
+     "world_m": [
+      -16411.44,
+      1317.77
+     ],
+     "local_m": [
+      -14235.51,
+      27239.79
+     ],
+     "near": "louis-armstrong-new-orleans-international-airport",
+     "launch": {
+      "href": "web/trade_craft_3d.html?hall=crane-ops&sim=crane-lift",
+      "lands": "seat",
+      "param": [
+       "hall",
+       "sim"
+      ]
+     },
+     "suggests": [
+      "riggers-carry-under-control",
+      "steel-erectors-land-it-on-the-bolts"
+     ],
+     "treasure": "treasure-station-st-22051-sim-crane-lift",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22051-task-sim-crane-lift-nola-wharf",
+     "layer": "task",
+     "ref": {
+      "registry": "tasks/registry/tasks.json",
+      "id": "sim-crane-lift-nola-wharf",
+      "source": "tasks/registry/tasks.json#tasks[2]"
+     },
+     "title": "Tower Crane Lift: Crescent wharf lift",
+     "at": {
+      "lon": -90.197568,
+      "lat": 30.00822
+     },
+     "world_m": [
+      -10361.17,
+      3693.9
+     ],
+     "local_m": [
+      -8171.08,
+      29615.92
+     ],
+     "near": "lafreniere-park",
+     "launch": {
+      "href": "web/trade_craft_3d.html?hall=crane-ops&sim=crane-lift&scenario=nola-wharf",
+      "lands": "seat",
+      "param": [
+       "hall",
+       "sim",
+       "scenario"
+      ]
+     },
+     "suggests": [],
+     "treasure": "treasure-station-st-22051-task-sim-crane-lift-nola-wharf",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22051-sim-excavator-trench",
+     "layer": "trade-sim",
+     "ref": {
+      "registry": "sims/registry/sims.json",
+      "id": "excavator-trench",
+      "source": "sims/registry/sims.json#sims.excavator-trench"
+     },
+     "title": "Excavator Trench Cut",
+     "at": {
+      "lon": -90.111201,
+      "lat": 29.794529
+     },
+     "world_m": [
+      -2042.12,
+      -20067.49
+     ],
+     "local_m": [
+      167.41,
+      5854.53
+     ],
+     "near": "jean-lafitte-national-historical-park-barataria-preserve",
+     "launch": {
+      "href": "web/trade_craft_3d.html?hall=operating-eng&sim=excavator-trench",
+      "lands": "seat",
+      "param": [
+       "hall",
+       "sim"
+      ]
+     },
+     "suggests": [
+      "operating-eng-locate-first",
+      "shoring-read-the-ground-again"
+     ],
+     "treasure": "treasure-station-st-22051-sim-excavator-trench",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22051-task-sim-excavator-trench-nola-below-sea",
+     "layer": "task",
+     "ref": {
+      "registry": "tasks/registry/tasks.json",
+      "id": "sim-excavator-trench-nola-below-sea",
+      "source": "tasks/registry/tasks.json#tasks[6]"
+     },
+     "title": "Excavator Trench Cut: Below-sea trench",
+     "at": {
+      "lon": -89.954169,
+      "lat": 29.260301
+     },
+     "world_m": [
+      13083.52,
+      -79471.01
+     ],
+     "local_m": [
+      15328.42,
+      -53548.99
+     ],
+     "near": "grand-isle-state-park",
+     "launch": {
+      "href": "web/trade_craft_3d.html?hall=operating-eng&sim=excavator-trench&scenario=nola-below-sea",
+      "lands": "seat",
+      "param": [
+       "hall",
+       "sim",
+       "scenario"
+      ]
+     },
+     "suggests": [],
+     "treasure": "treasure-station-st-22051-task-sim-excavator-trench-nola-below-sea",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22051-unit-crane-ops",
+     "layer": "k12-unit",
+     "ref": {
+      "registry": "schools/registry/schools.json",
+      "id": "crane-ops",
+      "source": "schools/registry/schools.json#units[5]"
+     },
+     "title": "Crane Operators: flipped unit",
+     "at": {
+      "lon": -90.244678,
+      "lat": 30.00822
+     },
+     "world_m": [
+      -14898.9,
+      3693.9
+     ],
+     "local_m": [
+      -12719.43,
+      29615.92
+     ],
+     "near": "louis-armstrong-new-orleans-international-airport",
+     "launch": {
+      "href": "web/trade_craft_schools.html#band-9-10",
+      "lands": "section",
+      "param": [
+       "#band-"
+      ]
+     },
+     "suggests": [
+      "d-wind-staging-site-walk",
+      "crane-ops-read-the-chart"
+     ],
+     "treasure": "treasure-station-st-22051-unit-crane-ops",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22051-lesson-riggers-carry-under-control",
+     "layer": "lesson",
+     "ref": {
+      "registry": "lessons/registry/lessons.json",
+      "id": "riggers-carry-under-control",
+      "source": "lessons/registry/lessons.json#lessons.riggers-carry-under-control"
+     },
+     "title": "Carry a load that is not fighting you",
+     "at": {
+      "lon": -90.181865,
+      "lat": 29.986851
+     },
+     "world_m": [
+      -8848.62,
+      1317.77
+     ],
+     "local_m": [
+      -6655.0,
+      27239.79
+     ],
+     "near": "lafreniere-park",
+     "launch": {
+      "href": "web/trade_craft_lessons.html#lesson-riggers-carry-under-control",
+      "lands": "section",
+      "param": [
+       "#lesson-"
+      ]
+     },
+     "suggests": [],
+     "treasure": "treasure-station-st-22051-lesson-riggers-carry-under-control",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22051-unit-demolition",
+     "layer": "k12-unit",
+     "ref": {
+      "registry": "schools/registry/schools.json",
+      "id": "demolition",
+      "source": "schools/registry/schools.json#units[8]"
+     },
+     "title": "Demolition Workers: flipped unit",
+     "at": {
+      "lon": -90.126904,
+      "lat": 29.773159
+     },
+     "world_m": [
+      -3554.67,
+      -22443.73
+     ],
+     "local_m": [
+      -1348.67,
+      3478.29
+     ],
+     "near": "jean-lafitte-national-historical-park-barataria-preserve",
+     "launch": {
+      "href": "web/trade_craft_schools.html#band-9-10",
+      "lands": "section",
+      "param": [
+       "#band-"
+      ]
+     },
+     "suggests": [
+      "demolition-stand-back"
+     ],
+     "treasure": "treasure-station-st-22051-unit-demolition",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22051-lesson-operating-eng-locate-first",
+     "layer": "lesson",
+     "ref": {
+      "registry": "lessons/registry/lessons.json",
+      "id": "operating-eng-locate-first",
+      "source": "lessons/registry/lessons.json#lessons.operating-eng-locate-first"
+     },
+     "title": "Prove what is under the ground before the bucket moves",
+     "at": {
+      "lon": -89.985576,
+      "lat": 29.260301
+     },
+     "world_m": [
+      10058.33,
+      -79471.01
+     ],
+     "local_m": [
+      12296.16,
+      -53548.99
+     ],
+     "near": "grand-isle-state-park",
+     "launch": {
+      "href": "web/trade_craft_lessons.html#lesson-operating-eng-locate-first",
+      "lands": "section",
+      "param": [
+       "#lesson-"
+      ]
+     },
+     "suggests": [],
+     "treasure": "treasure-station-st-22051-lesson-operating-eng-locate-first",
+     "provenance": "AUTHORED"
+    }
+   ],
+   "paths": [
+    {
+     "id": "trade",
+     "label": "Trade path",
+     "steps": [
+      "st-22051-sim-crane-lift",
+      "st-22051-task-sim-crane-lift-nola-wharf",
+      "st-22051-sim-excavator-trench",
+      "st-22051-task-sim-excavator-trench-nola-below-sea"
+     ],
+     "gated": false
+    },
+    {
+     "id": "k12",
+     "label": "K-12 path",
+     "steps": [
+      "st-22051-unit-crane-ops",
+      "st-22051-unit-demolition",
+      "st-22051-lesson-operating-eng-locate-first",
+      "st-22051-lesson-riggers-carry-under-control"
+     ],
+     "gated": false
+    },
+    {
+     "id": "explorer",
+     "label": "Explorer / free play",
+     "steps": [
+      "treasure-parish-22051-arrive",
+      "treasure-parish-22051-lm-louis-armstrong-new-orleans-international-airport",
+      "treasure-parish-22051-lm-lafreniere-park",
+      "treasure-parish-22051-lm-jean-lafitte-national-historical-park-barataria-preserve",
+      "treasure-parish-22051-lm-grand-isle-state-park",
+      "egg-parish-22051-word"
+     ],
+     "gated": false
+    }
+   ]
+  },
+  {
+   "fips": "22057",
+   "name": "Lafourche Parish",
+   "landmarks": [
+    {
+     "id": "nicholls-state-university",
+     "name": "Nicholls State University",
+     "kind": "public university"
+    },
+    {
+     "id": "port-fourchon",
+     "name": "Port Fourchon",
+     "kind": "public port"
+    }
+   ],
+   "adjacent": [
+    "22051",
+    "22089",
+    "22093",
+    "22095",
+    "22109"
+   ],
+   "stations": [
+    {
+     "id": "st-22057-sim-forklift-run",
+     "layer": "trade-sim",
+     "ref": {
+      "registry": "sims/registry/sims.json",
+      "id": "forklift-run",
+      "source": "sims/registry/sims.json#sims.forklift-run"
+     },
+     "title": "Forklift Yard Run",
+     "at": {
+      "lon": -90.80614,
+      "lat": 29.787736
+     },
+     "world_m": [
+      -68980.05,
+      -20822.84
+     ],
+     "local_m": [
+      -37461.81,
+      25517.6
+     ],
+     "near": "nicholls-state-university",
+     "launch": {
+      "href": "web/trade_craft_3d.html?hall=teamsters&sim=forklift-run",
+      "lands": "seat",
+      "param": [
+       "hall",
+       "sim"
+      ]
+     },
+     "suggests": [
+      "teamsters-check-the-truck-before-the-load",
+      "heavy-equip-listen-to-the-dash"
+     ],
+     "treasure": "treasure-station-st-22057-sim-forklift-run",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22057-task-sim-forklift-run-nola-dock",
+     "layer": "task",
+     "ref": {
+      "registry": "tasks/registry/tasks.json",
+      "id": "sim-forklift-run-nola-dock",
+      "source": "tasks/registry/tasks.json#tasks[10]"
+     },
+     "title": "Forklift Yard Run: Wharf dock set",
+     "at": {
+      "lon": -90.198952,
+      "lat": 29.108328
+     },
+     "world_m": [
+      -10494.48,
+      -96369.66
+     ],
+     "local_m": [
+      21267.57,
+      -50029.22
+     ],
+     "near": "port-fourchon",
+     "launch": {
+      "href": "web/trade_craft_3d.html?hall=teamsters&sim=forklift-run&scenario=nola-dock",
+      "lands": "seat",
+      "param": [
+       "hall",
+       "sim",
+       "scenario"
+      ]
+     },
+     "suggests": [],
+     "treasure": "treasure-station-st-22057-task-sim-forklift-run-nola-dock",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22057-sim-load-chart",
+     "layer": "trade-sim",
+     "ref": {
+      "registry": "sims/registry/sims.json",
+      "id": "load-chart",
+      "source": "sims/registry/sims.json#sims.load-chart"
+     },
+     "title": "Load Chart Judgment",
+     "at": {
+      "lon": -90.764265,
+      "lat": 29.787736
+     },
+     "world_m": [
+      -64946.56,
+      -20822.84
+     ],
+     "local_m": [
+      -33411.51,
+      25517.6
+     ],
+     "near": "nicholls-state-university",
+     "launch": {
+      "href": "web/trade_craft_3d.html?hall=crane-ops&sim=load-chart",
+      "lands": "seat",
+      "param": [
+       "hall",
+       "sim"
+      ]
+     },
+     "suggests": [
+      "crane-ops-read-the-chart"
+     ],
+     "treasure": "treasure-station-st-22057-sim-load-chart",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22057-task-sim-load-chart-nola-barge-list",
+     "layer": "task",
+     "ref": {
+      "registry": "tasks/registry/tasks.json",
+      "id": "sim-load-chart-nola-barge-list",
+      "source": "tasks/registry/tasks.json#tasks[26]"
+     },
+     "title": "Load Chart Judgment: Barge transfer list",
+     "at": {
+      "lon": -90.198952,
+      "lat": 29.144086
+     },
+     "world_m": [
+      -10494.48,
+      -92393.55
+     ],
+     "local_m": [
+      21267.57,
+      -46053.11
+     ],
+     "near": "port-fourchon",
+     "launch": {
+      "href": "web/trade_craft_3d.html?hall=crane-ops&sim=load-chart&scenario=nola-barge-list",
+      "lands": "seat",
+      "param": [
+       "hall",
+       "sim",
+       "scenario"
+      ]
+     },
+     "suggests": [],
+     "treasure": "treasure-station-st-22057-task-sim-load-chart-nola-barge-list",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22057-unit-heavy-equip",
+     "layer": "k12-unit",
+     "ref": {
+      "registry": "schools/registry/schools.json",
+      "id": "heavy-equip",
+      "source": "schools/registry/schools.json#units[15]"
+     },
+     "title": "Heavy Equipment Technicians: flipped unit",
+     "at": {
+      "lon": -90.80614,
+      "lat": 29.823495
+     },
+     "world_m": [
+      -68980.05,
+      -16846.61
+     ],
+     "local_m": [
+      -37461.81,
+      29493.83
+     ],
+     "near": "nicholls-state-university",
+     "launch": {
+      "href": "web/trade_craft_schools.html#band-9-10",
+      "lands": "section",
+      "param": [
+       "#band-"
+      ]
+     },
+     "suggests": [
+      "heavy-equip-listen-to-the-dash"
+     ],
+     "treasure": "treasure-station-st-22057-unit-heavy-equip",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22057-lesson-teamsters-check-the-truck-before-the-load",
+     "layer": "lesson",
+     "ref": {
+      "registry": "lessons/registry/lessons.json",
+      "id": "teamsters-check-the-truck-before-the-load",
+      "source": "lessons/registry/lessons.json#lessons.teamsters-check-the-truck-before-the-load"
+     },
+     "title": "Check the truck before you check the load",
+     "at": {
+      "lon": -90.157077,
+      "lat": 29.126207
+     },
+     "world_m": [
+      -6460.99,
+      -94381.61
+     ],
+     "local_m": [
+      25317.87,
+      -48041.17
+     ],
+     "near": "port-fourchon",
+     "launch": {
+      "href": "web/trade_craft_lessons.html#lesson-teamsters-check-the-truck-before-the-load",
+      "lands": "section",
+      "param": [
+       "#lesson-"
+      ]
+     },
+     "suggests": [],
+     "treasure": "treasure-station-st-22057-lesson-teamsters-check-the-truck-before-the-load",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22057-unit-crane-ops",
+     "layer": "k12-unit",
+     "ref": {
+      "registry": "schools/registry/schools.json",
+      "id": "crane-ops",
+      "source": "schools/registry/schools.json#units[5]"
+     },
+     "title": "Crane Operators: flipped unit",
+     "at": {
+      "lon": -90.785203,
+      "lat": 29.751978
+     },
+     "world_m": [
+      -66963.35,
+      -24798.95
+     ],
+     "local_m": [
+      -35436.71,
+      21541.49
+     ],
+     "near": "nicholls-state-university",
+     "launch": {
+      "href": "web/trade_craft_schools.html#band-9-10",
+      "lands": "section",
+      "param": [
+       "#band-"
+      ]
+     },
+     "suggests": [
+      "d-wind-staging-site-walk",
+      "crane-ops-read-the-chart"
+     ],
+     "treasure": "treasure-station-st-22057-unit-crane-ops",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22057-lesson-crane-ops-read-the-chart",
+     "layer": "lesson",
+     "ref": {
+      "registry": "lessons/registry/lessons.json",
+      "id": "crane-ops-read-the-chart",
+      "source": "lessons/registry/lessons.json#lessons.crane-ops-read-the-chart"
+     },
+     "title": "Refuse the pick the chart refuses",
+     "at": {
+      "lon": -90.240827,
+      "lat": 29.108328
+     },
+     "world_m": [
+      -14527.96,
+      -96369.66
+     ],
+     "local_m": [
+      17217.28,
+      -50029.22
+     ],
+     "near": "port-fourchon",
+     "launch": {
+      "href": "web/trade_craft_lessons.html#lesson-crane-ops-read-the-chart",
+      "lands": "section",
+      "param": [
+       "#lesson-"
+      ]
+     },
+     "suggests": [],
+     "treasure": "treasure-station-st-22057-lesson-crane-ops-read-the-chart",
+     "provenance": "AUTHORED"
+    }
+   ],
+   "paths": [
+    {
+     "id": "trade",
+     "label": "Trade path",
+     "steps": [
+      "st-22057-sim-forklift-run",
+      "st-22057-task-sim-forklift-run-nola-dock",
+      "st-22057-sim-load-chart",
+      "st-22057-task-sim-load-chart-nola-barge-list"
+     ],
+     "gated": false
+    },
+    {
+     "id": "k12",
+     "label": "K-12 path",
+     "steps": [
+      "st-22057-unit-crane-ops",
+      "st-22057-unit-heavy-equip",
+      "st-22057-lesson-teamsters-check-the-truck-before-the-load",
+      "st-22057-lesson-crane-ops-read-the-chart"
+     ],
+     "gated": false
+    },
+    {
+     "id": "explorer",
+     "label": "Explorer / free play",
+     "steps": [
+      "treasure-parish-22057-arrive",
+      "treasure-parish-22057-lm-nicholls-state-university",
+      "treasure-parish-22057-lm-port-fourchon",
+      "egg-parish-22057-word"
+     ],
+     "gated": false
+    }
+   ]
+  },
+  {
+   "fips": "22063",
+   "name": "Livingston Parish",
+   "landmarks": [
+    {
+     "id": "ligo-livingston-observatory",
+     "name": "LIGO Livingston Observatory",
+     "kind": "federally funded research site"
+    }
+   ],
+   "adjacent": [
+    "22005",
+    "22095",
+    "22105"
+   ],
+   "stations": [
+    {
+     "id": "st-22063-sim-overhead-crane",
+     "layer": "trade-sim",
+     "ref": {
+      "registry": "sims/registry/sims.json",
+      "id": "overhead-crane",
+      "source": "sims/registry/sims.json#sims.overhead-crane"
+     },
+     "title": "Overhead Crane Shop Move",
+     "at": {
+      "lon": -90.774547,
+      "lat": 30.566188
+     },
+     "world_m": [
+      -65936.95,
+      65737.2
+     ],
+     "local_m": [
+      -4399.4,
+      14084.75
+     ],
+     "near": "ligo-livingston-observatory",
+     "launch": {
+      "href": "web/trade_craft_3d.html?hall=crane-ops&sim=overhead-crane",
+      "lands": "seat",
+      "param": [
+       "hall",
+       "sim"
+      ]
+     },
+     "suggests": [
+      "millwrights-shop-move",
+      "machinists-move-the-job-without-marking-it"
+     ],
+     "treasure": "treasure-station-st-22063-sim-overhead-crane",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22063-task-sim-overhead-crane-nola-boatshed-engine",
+     "layer": "task",
+     "ref": {
+      "registry": "tasks/registry/tasks.json",
+      "id": "sim-overhead-crane-nola-boatshed-engine",
+      "source": "tasks/registry/tasks.json#tasks[42]"
+     },
+     "title": "Overhead Crane Shop Move: Boat-shed engine move",
+     "at": {
+      "lon": -90.774547,
+      "lat": 30.546394
+     },
+     "world_m": [
+      -65936.95,
+      63536.2
+     ],
+     "local_m": [
+      -4399.4,
+      11883.75
+     ],
+     "near": "ligo-livingston-observatory",
+     "launch": {
+      "href": "web/trade_craft_3d.html?hall=crane-ops&sim=overhead-crane&scenario=nola-boatshed-engine",
+      "lands": "seat",
+      "param": [
+       "hall",
+       "sim",
+       "scenario"
+      ]
+     },
+     "suggests": [],
+     "treasure": "treasure-station-st-22063-task-sim-overhead-crane-nola-boatshed-engine",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22063-sim-pressure-washer",
+     "layer": "trade-sim",
+     "ref": {
+      "registry": "sims/registry/sims.json",
+      "id": "pressure-washer",
+      "source": "sims/registry/sims.json#sims.pressure-washer"
+     },
+     "title": "Pressure Washer Surface Clean",
+     "at": {
+      "lon": -90.75346,
+      "lat": 30.566188
+     },
+     "world_m": [
+      -63905.8,
+      65737.2
+     ],
+     "local_m": [
+      -2377.82,
+      14084.75
+     ],
+     "near": "ligo-livingston-observatory",
+     "launch": {
+      "href": "web/trade_craft_3d.html?hall=painters&sim=pressure-washer",
+      "lands": "seat",
+      "param": [
+       "hall",
+       "sim"
+      ]
+     },
+     "suggests": [
+      "painters-contain-it",
+      "hazmat-wash-and-decon"
+     ],
+     "treasure": "treasure-station-st-22063-sim-pressure-washer",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22063-task-sim-pressure-washer-nola-floodwall-clean",
+     "layer": "task",
+     "ref": {
+      "registry": "tasks/registry/tasks.json",
+      "id": "sim-pressure-washer-nola-floodwall-clean",
+      "source": "tasks/registry/tasks.json#tasks[30]"
+     },
+     "title": "Pressure Washer Surface Clean: Levee floodwall mildew",
+     "at": {
+      "lon": -90.795634,
+      "lat": 30.566188
+     },
+     "world_m": [
+      -67968.09,
+      65737.2
+     ],
+     "local_m": [
+      -6420.98,
+      14084.75
+     ],
+     "near": "ligo-livingston-observatory",
+     "launch": {
+      "href": "web/trade_craft_3d.html?hall=hazmat&sim=pressure-washer&scenario=nola-floodwall-clean",
+      "lands": "seat",
+      "param": [
+       "hall",
+       "sim",
+       "scenario"
+      ]
+     },
+     "suggests": [
+      "hazmat-wash-and-decon"
+     ],
+     "treasure": "treasure-station-st-22063-task-sim-pressure-washer-nola-floodwall-clean",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22063-unit-boilermakers",
+     "layer": "k12-unit",
+     "ref": {
+      "registry": "schools/registry/schools.json",
+      "id": "boilermakers",
+      "source": "schools/registry/schools.json#units[0]"
+     },
+     "title": "Boilermakers: flipped unit",
+     "at": {
+      "lon": -90.774547,
+      "lat": 30.585982
+     },
+     "world_m": [
+      -65936.95,
+      67938.19
+     ],
+     "local_m": [
+      -4399.4,
+      16285.74
+     ],
+     "near": "ligo-livingston-observatory",
+     "launch": {
+      "href": "web/trade_craft_schools.html#band-9-10",
+      "lands": "section",
+      "param": [
+       "#band-"
+      ]
+     },
+     "suggests": [
+      "boilermakers-get-them-out"
+     ],
+     "treasure": "treasure-station-st-22063-unit-boilermakers",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22063-lesson-millwrights-shop-move",
+     "layer": "lesson",
+     "ref": {
+      "registry": "lessons/registry/lessons.json",
+      "id": "millwrights-shop-move",
+      "source": "lessons/registry/lessons.json#lessons.millwrights-shop-move"
+     },
+     "title": "Move something precise across a shop floor",
+     "at": {
+      "lon": -90.75346,
+      "lat": 30.546394
+     },
+     "world_m": [
+      -63905.8,
+      63536.2
+     ],
+     "local_m": [
+      -2377.82,
+      11883.75
+     ],
+     "near": "ligo-livingston-observatory",
+     "launch": {
+      "href": "web/trade_craft_lessons.html#lesson-millwrights-shop-move",
+      "lands": "section",
+      "param": [
+       "#lesson-"
+      ]
+     },
+     "suggests": [],
+     "treasure": "treasure-station-st-22063-lesson-millwrights-shop-move",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22063-unit-hazmat",
+     "layer": "k12-unit",
+     "ref": {
+      "registry": "schools/registry/schools.json",
+      "id": "hazmat",
+      "source": "schools/registry/schools.json#units[14]"
+     },
+     "title": "Hazmat & Environmental: flipped unit",
+     "at": {
+      "lon": -90.795634,
+      "lat": 30.546394
+     },
+     "world_m": [
+      -67968.09,
+      63536.2
+     ],
+     "local_m": [
+      -6420.98,
+      11883.75
+     ],
+     "near": "ligo-livingston-observatory",
+     "launch": {
+      "href": "web/trade_craft_schools.html#band-9-10",
+      "lands": "section",
+      "param": [
+       "#band-"
+      ]
+     },
+     "suggests": [
+      "hazmat-wash-and-decon"
+     ],
+     "treasure": "treasure-station-st-22063-unit-hazmat",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22063-lesson-painters-contain-it",
+     "layer": "lesson",
+     "ref": {
+      "registry": "lessons/registry/lessons.json",
+      "id": "painters-contain-it",
+      "source": "lessons/registry/lessons.json#lessons.painters-contain-it"
+     },
+     "title": "Catch what you wash off",
+     "at": {
+      "lon": -90.75346,
+      "lat": 30.585982
+     },
+     "world_m": [
+      -63905.8,
+      67938.19
+     ],
+     "local_m": [
+      -2377.82,
+      16285.74
+     ],
+     "near": "ligo-livingston-observatory",
+     "launch": {
+      "href": "web/trade_craft_lessons.html#lesson-painters-contain-it",
+      "lands": "section",
+      "param": [
+       "#lesson-"
+      ]
+     },
+     "suggests": [],
+     "treasure": "treasure-station-st-22063-lesson-painters-contain-it",
+     "provenance": "AUTHORED"
+    }
+   ],
+   "paths": [
+    {
+     "id": "trade",
+     "label": "Trade path",
+     "steps": [
+      "st-22063-sim-overhead-crane",
+      "st-22063-task-sim-overhead-crane-nola-boatshed-engine",
+      "st-22063-sim-pressure-washer",
+      "st-22063-task-sim-pressure-washer-nola-floodwall-clean"
+     ],
+     "gated": false
+    },
+    {
+     "id": "k12",
+     "label": "K-12 path",
+     "steps": [
+      "st-22063-unit-boilermakers",
+      "st-22063-unit-hazmat",
+      "st-22063-lesson-painters-contain-it",
+      "st-22063-lesson-millwrights-shop-move"
+     ],
+     "gated": false
+    },
+    {
+     "id": "explorer",
+     "label": "Explorer / free play",
+     "steps": [
+      "treasure-parish-22063-arrive",
+      "treasure-parish-22063-lm-ligo-livingston-observatory",
+      "egg-parish-22063-word"
+     ],
+     "gated": false
+    }
+   ]
+  },
+  {
+   "fips": "22071",
+   "name": "Orleans Parish",
+   "landmarks": [
+    {
+     "id": "jackson-square",
+     "name": "Jackson Square",
+     "kind": "historic public square"
+    },
+    {
+     "id": "louisiana-superdome",
+     "name": "Louisiana Superdome",
+     "kind": "state-owned stadium"
+    },
+    {
+     "id": "new-orleans-city-hall",
+     "name": "New Orleans City Hall",
+     "kind": "city government building"
+    },
+    {
+     "id": "city-park",
+     "name": "City Park",
+     "kind": "public park"
+    },
+    {
+     "id": "audubon-park",
+     "name": "Audubon Park",
+     "kind": "public park"
+    },
+    {
+     "id": "louis-armstrong-park",
+     "name": "Louis Armstrong Park",
+     "kind": "public park"
+    },
+    {
+     "id": "new-orleans-lakefront-airport",
+     "name": "New Orleans Lakefront Airport",
+     "kind": "public airport"
+    },
+    {
+     "id": "bayou-sauvage-national-wildlife-refuge",
+     "name": "Bayou Sauvage National Wildlife Refuge",
+     "kind": "federal wildlife refuge"
+    }
+   ],
+   "adjacent": [
+    "22051",
+    "22075",
+    "22087",
+    "22103"
+   ],
+   "stations": [
+    {
+     "id": "st-22071-sim-rigging-signals",
+     "layer": "trade-sim",
+     "ref": {
+      "registry": "sims/registry/sims.json",
+      "id": "rigging-signals",
+      "source": "sims/registry/sims.json#sims.rigging-signals"
+     },
+     "title": "Rigging Signal Call",
+     "at": {
+      "lon": -90.059269,
+      "lat": 29.960729
+     },
+     "world_m": [
+      2960.07,
+      -1586.86
+     ],
+     "local_m": [
+      -12706.65,
+      -12161.29
+     ],
+     "near": "jackson-square",
+     "launch": {
+      "href": "web/trade_craft_3d.html?hall=riggers&sim=rigging-signals",
+      "lands": "seat",
+      "param": [
+       "hall",
+       "sim"
+      ]
+     },
+     "suggests": [
+      "riggers-first-card",
+      "decking-walk-the-path-first"
+     ],
+     "treasure": "treasure-station-st-22071-sim-rigging-signals",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22071-task-sim-rigging-signals-nola-wind-card",
+     "layer": "task",
+     "ref": {
+      "registry": "tasks/registry/tasks.json",
+      "id": "sim-rigging-signals-nola-wind-card",
+      "source": "tasks/registry/tasks.json#tasks[22]"
+     },
+     "title": "Rigging Signal Call: River-wind card",
+     "at": {
+      "lon": -90.080805,
+      "lat": 29.953839
+     },
+     "world_m": [
+      885.68,
+      -2353.0
+     ],
+     "local_m": [
+      -14779.05,
+      -12927.43
+     ],
+     "near": "louisiana-superdome",
+     "launch": {
+      "href": "web/trade_craft_3d.html?hall=riggers&sim=rigging-signals&scenario=nola-wind-card",
+      "lands": "seat",
+      "param": [
+       "hall",
+       "sim",
+       "scenario"
+      ]
+     },
+     "suggests": [],
+     "treasure": "treasure-station-st-22071-task-sim-rigging-signals-nola-wind-card",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22071-sim-scaffold-bay",
+     "layer": "trade-sim",
+     "ref": {
+      "registry": "sims/registry/sims.json",
+      "id": "scaffold-bay",
+      "source": "sims/registry/sims.json#sims.scaffold-bay"
+     },
+     "title": "Scaffold Bay Build",
+     "at": {
+      "lon": -90.080805,
+      "lat": 29.940058
+     },
+     "world_m": [
+      885.68,
+      -3885.38
+     ],
+     "local_m": [
+      -14779.05,
+      -14459.81
+     ],
+     "near": "new-orleans-city-hall",
+     "launch": {
+      "href": "web/trade_craft_3d.html?hall=scaffold&sim=scaffold-bay",
+      "lands": "seat",
+      "param": [
+       "hall",
+       "sim"
+      ]
+     },
+     "suggests": [
+      "scaffold-build-in-order",
+      "roofers-mind-the-edge-and-the-skylight"
+     ],
+     "treasure": "treasure-station-st-22071-sim-scaffold-bay",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22071-task-sim-scaffold-bay-nola-storm-bay",
+     "layer": "task",
+     "ref": {
+      "registry": "tasks/registry/tasks.json",
+      "id": "sim-scaffold-bay-nola-storm-bay",
+      "source": "tasks/registry/tasks.json#tasks[18]"
+     },
+     "title": "Scaffold Bay Build: Storm-hardening bay",
+     "at": {
+      "lon": -90.10234,
+      "lat": 29.995181
+     },
+     "world_m": [
+      -1188.61,
+      2244.03
+     ],
+     "local_m": [
+      -16851.36,
+      -8330.4
+     ],
+     "near": "city-park",
+     "launch": {
+      "href": "web/trade_craft_3d.html?hall=scaffold&sim=scaffold-bay&scenario=nola-storm-bay",
+      "lands": "seat",
+      "param": [
+       "hall",
+       "sim",
+       "scenario"
+      ]
+     },
+     "suggests": [],
+     "treasure": "treasure-station-st-22071-task-sim-scaffold-bay-nola-storm-bay",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22071-unit-crane-ops",
+     "layer": "k12-unit",
+     "ref": {
+      "registry": "schools/registry/schools.json",
+      "id": "crane-ops",
+      "source": "schools/registry/schools.json#units[5]"
+     },
+     "title": "Crane Operators: flipped unit",
+     "at": {
+      "lon": -90.134644,
+      "lat": 29.926277
+     },
+     "world_m": [
+      -4300.2,
+      -5417.76
+     ],
+     "local_m": [
+      -19959.96,
+      -15992.19
+     ],
+     "near": "audubon-park",
+     "launch": {
+      "href": "web/trade_craft_schools.html#band-9-10",
+      "lands": "section",
+      "param": [
+       "#band-"
+      ]
+     },
+     "suggests": [
+      "d-wind-staging-site-walk",
+      "crane-ops-read-the-chart"
+     ],
+     "treasure": "treasure-station-st-22071-unit-crane-ops",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22071-lesson-riggers-first-card",
+     "layer": "lesson",
+     "ref": {
+      "registry": "lessons/registry/lessons.json",
+      "id": "riggers-first-card",
+      "source": "lessons/registry/lessons.json#lessons.riggers-first-card"
+     },
+     "title": "Call the first lift before anybody touches the hook",
+     "at": {
+      "lon": -90.070037,
+      "lat": 29.97451
+     },
+     "world_m": [
+      1922.88,
+      -54.49
+     ],
+     "local_m": [
+      -13742.85,
+      -10628.92
+     ],
+     "near": "louis-armstrong-park",
+     "launch": {
+      "href": "web/trade_craft_lessons.html#lesson-riggers-first-card",
+      "lands": "section",
+      "param": [
+       "#lesson-"
+      ]
+     },
+     "suggests": [],
+     "treasure": "treasure-station-st-22071-lesson-riggers-first-card",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22071-unit-bricklayers",
+     "layer": "k12-unit",
+     "ref": {
+      "registry": "schools/registry/schools.json",
+      "id": "bricklayers",
+      "source": "schools/registry/schools.json#units[1]"
+     },
+     "title": "Bricklayers & Allied Craft: flipped unit",
+     "at": {
+      "lon": -90.026965,
+      "lat": 30.043414
+     },
+     "world_m": [
+      6071.66,
+      7607.3
+     ],
+     "local_m": [
+      -9598.04,
+      -2967.13
+     ],
+     "near": "new-orleans-lakefront-airport",
+     "launch": {
+      "href": "web/trade_craft_schools.html#band-9-10",
+      "lands": "section",
+      "param": [
+       "#band-"
+      ]
+     },
+     "suggests": [
+      "bricklayers-gear-that-stays-on",
+      "bricklayers-grout-the-lift"
+     ],
+     "treasure": "treasure-station-st-22071-unit-bricklayers",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22071-lesson-scaffold-build-in-order",
+     "layer": "lesson",
+     "ref": {
+      "registry": "lessons/registry/lessons.json",
+      "id": "scaffold-build-in-order",
+      "source": "lessons/registry/lessons.json#lessons.scaffold-build-in-order"
+     },
+     "title": "Build the bay in the order that keeps you off the ground",
+     "at": {
+      "lon": -89.876215,
+      "lat": 30.070975
+     },
+     "world_m": [
+      20592.2,
+      10671.95
+     ],
+     "local_m": [
+      4908.58,
+      97.52
+     ],
+     "near": "bayou-sauvage-national-wildlife-refuge",
+     "launch": {
+      "href": "web/trade_craft_lessons.html#lesson-scaffold-build-in-order",
+      "lands": "section",
+      "param": [
+       "#lesson-"
+      ]
+     },
+     "suggests": [],
+     "treasure": "treasure-station-st-22071-lesson-scaffold-build-in-order",
+     "provenance": "AUTHORED"
+    }
+   ],
+   "paths": [
+    {
+     "id": "trade",
+     "label": "Trade path",
+     "steps": [
+      "st-22071-sim-rigging-signals",
+      "st-22071-task-sim-rigging-signals-nola-wind-card",
+      "st-22071-sim-scaffold-bay",
+      "st-22071-task-sim-scaffold-bay-nola-storm-bay"
+     ],
+     "gated": false
+    },
+    {
+     "id": "k12",
+     "label": "K-12 path",
+     "steps": [
+      "st-22071-unit-bricklayers",
+      "st-22071-unit-crane-ops",
+      "st-22071-lesson-riggers-first-card",
+      "st-22071-lesson-scaffold-build-in-order"
+     ],
+     "gated": false
+    },
+    {
+     "id": "explorer",
+     "label": "Explorer / free play",
+     "steps": [
+      "treasure-parish-22071-arrive",
+      "treasure-parish-22071-lm-jackson-square",
+      "treasure-parish-22071-lm-louisiana-superdome",
+      "treasure-parish-22071-lm-new-orleans-city-hall",
+      "treasure-parish-22071-lm-city-park",
+      "treasure-parish-22071-lm-audubon-park",
+      "treasure-parish-22071-lm-louis-armstrong-park",
+      "treasure-parish-22071-lm-new-orleans-lakefront-airport",
+      "treasure-parish-22071-lm-bayou-sauvage-national-wildlife-refuge",
+      "egg-parish-22071-word"
+     ],
+     "gated": false
+    }
+   ]
+  },
+  {
+   "fips": "22075",
+   "name": "Plaquemines Parish",
+   "landmarks": [
+    {
+     "id": "fort-jackson",
+     "name": "Fort Jackson",
+     "kind": "historic fort"
+    }
+   ],
+   "adjacent": [
+    "22051",
+    "22071",
+    "22087"
+   ],
+   "stations": [
+    {
+     "id": "st-22075-sim-airless-sprayer",
+     "layer": "trade-sim",
+     "ref": {
+      "registry": "sims/registry/sims.json",
+      "id": "airless-sprayer",
+      "source": "sims/registry/sims.json#sims.airless-sprayer"
+     },
+     "title": "Airless Paint Sprayer Finish",
+     "at": {
+      "lon": -89.457501,
+      "lat": 29.362117
+     },
+     "world_m": [
+      60923.58,
+      -68149.57
+     ],
+     "local_m": [
+      16035.6,
+      -7945.56
+     ],
+     "near": "fort-jackson",
+     "launch": {
+      "href": "web/trade_craft_3d.html?hall=painters&sim=airless-sprayer",
+      "lands": "seat",
+      "param": [
+       "hall",
+       "sim"
+      ]
+     },
+     "suggests": [
+      "painters-lay-the-coat"
+     ],
+     "treasure": "treasure-station-st-22075-sim-airless-sprayer",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22075-task-sim-airless-sprayer-bay-terminal-finish",
+     "layer": "task",
+     "ref": {
+      "registry": "tasks/registry/tasks.json",
+      "id": "sim-airless-sprayer-bay-terminal-finish",
+      "source": "tasks/registry/tasks.json#tasks[32]"
+     },
+     "title": "Airless Paint Sprayer Finish: Ferry terminal finish coat",
+     "at": {
+      "lon": -89.457501,
+      "lat": 29.321884
+     },
+     "world_m": [
+      60923.58,
+      -72623.29
+     ],
+     "local_m": [
+      16035.6,
+      -12419.27
+     ],
+     "near": "fort-jackson",
+     "launch": {
+      "href": "web/trade_craft_3d.html?hall=painters&sim=airless-sprayer&scenario=bay-terminal-finish",
+      "lands": "seat",
+      "param": [
+       "hall",
+       "sim",
+       "scenario"
+      ]
+     },
+     "suggests": [
+      "painters-lay-the-coat"
+     ],
+     "treasure": "treasure-station-st-22075-task-sim-airless-sprayer-bay-terminal-finish",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22075-sim-weld-bead",
+     "layer": "trade-sim",
+     "ref": {
+      "registry": "sims/registry/sims.json",
+      "id": "weld-bead",
+      "source": "sims/registry/sims.json#sims.weld-bead"
+     },
+     "title": "Weld Bead Run",
+     "at": {
+      "lon": -89.413083,
+      "lat": 29.362117
+     },
+     "world_m": [
+      65202.01,
+      -68149.57
+     ],
+     "local_m": [
+      20337.16,
+      -7945.56
+     ],
+     "near": "fort-jackson",
+     "launch": {
+      "href": "web/trade_craft_3d.html?hall=welders&sim=weld-bead",
+      "lands": "seat",
+      "param": [
+       "hall",
+       "sim"
+      ]
+     },
+     "suggests": [
+      "shipfitters-say-what-you-cannot-see",
+      "tank-erectors-isolate-before-testing"
+     ],
+     "treasure": "treasure-station-st-22075-sim-weld-bead",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22075-task-sim-weld-bead-nola-tank-seam",
+     "layer": "task",
+     "ref": {
+      "registry": "tasks/registry/tasks.json",
+      "id": "sim-weld-bead-nola-tank-seam",
+      "source": "tasks/registry/tasks.json#tasks[14]"
+     },
+     "title": "Weld Bead Run: Tank shell seam",
+     "at": {
+      "lon": -89.501918,
+      "lat": 29.362117
+     },
+     "world_m": [
+      56645.24,
+      -68149.57
+     ],
+     "local_m": [
+      11734.14,
+      -7945.56
+     ],
+     "near": "fort-jackson",
+     "launch": {
+      "href": "web/trade_craft_3d.html?hall=welders&sim=weld-bead&scenario=nola-tank-seam",
+      "lands": "seat",
+      "param": [
+       "hall",
+       "sim",
+       "scenario"
+      ]
+     },
+     "suggests": [],
+     "treasure": "treasure-station-st-22075-task-sim-weld-bead-nola-tank-seam",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22075-unit-painters",
+     "layer": "k12-unit",
+     "ref": {
+      "registry": "schools/registry/schools.json",
+      "id": "painters",
+      "source": "schools/registry/schools.json#units[26]"
+     },
+     "title": "Painters & Allied Trades: flipped unit",
+     "at": {
+      "lon": -89.47971,
+      "lat": 29.402349
+     },
+     "world_m": [
+      58784.36,
+      -63675.97
+     ],
+     "local_m": [
+      13884.82,
+      -3471.96
+     ],
+     "near": "fort-jackson",
+     "launch": {
+      "href": "web/trade_craft_schools.html#band-9-10",
+      "lands": "section",
+      "param": [
+       "#band-"
+      ]
+     },
+     "suggests": [
+      "painters-contain-it",
+      "painters-lay-the-coat"
+     ],
+     "treasure": "treasure-station-st-22075-unit-painters",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22075-lesson-painters-lay-the-coat",
+     "layer": "lesson",
+     "ref": {
+      "registry": "lessons/registry/lessons.json",
+      "id": "painters-lay-the-coat",
+      "source": "lessons/registry/lessons.json#lessons.painters-lay-the-coat"
+     },
+     "title": "Lay a coat that is actually there",
+     "at": {
+      "lon": -89.413083,
+      "lat": 29.321884
+     },
+     "world_m": [
+      65202.01,
+      -72623.29
+     ],
+     "local_m": [
+      20337.16,
+      -12419.27
+     ],
+     "near": "fort-jackson",
+     "launch": {
+      "href": "web/trade_craft_lessons.html#lesson-painters-lay-the-coat",
+      "lands": "section",
+      "param": [
+       "#lesson-"
+      ]
+     },
+     "suggests": [],
+     "treasure": "treasure-station-st-22075-lesson-painters-lay-the-coat",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22075-unit-boilermakers",
+     "layer": "k12-unit",
+     "ref": {
+      "registry": "schools/registry/schools.json",
+      "id": "boilermakers",
+      "source": "schools/registry/schools.json#units[0]"
+     },
+     "title": "Boilermakers: flipped unit",
+     "at": {
+      "lon": -89.501918,
+      "lat": 29.321884
+     },
+     "world_m": [
+      56645.24,
+      -72623.29
+     ],
+     "local_m": [
+      11734.14,
+      -12419.27
+     ],
+     "near": "fort-jackson",
+     "launch": {
+      "href": "web/trade_craft_schools.html#band-9-10",
+      "lands": "section",
+      "param": [
+       "#band-"
+      ]
+     },
+     "suggests": [
+      "boilermakers-get-them-out"
+     ],
+     "treasure": "treasure-station-st-22075-unit-boilermakers",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22075-lesson-shipfitters-say-what-you-cannot-see",
+     "layer": "lesson",
+     "ref": {
+      "registry": "lessons/registry/lessons.json",
+      "id": "shipfitters-say-what-you-cannot-see",
+      "source": "lessons/registry/lessons.json#lessons.shipfitters-say-what-you-cannot-see"
+     },
+     "title": "Say what you cannot see from the hood",
+     "at": {
+      "lon": -89.524127,
+      "lat": 29.402349
+     },
+     "world_m": [
+      54506.03,
+      -63675.97
+     ],
+     "local_m": [
+      9583.36,
+      -3471.96
+     ],
+     "near": "fort-jackson",
+     "launch": {
+      "href": "web/trade_craft_lessons.html#lesson-shipfitters-say-what-you-cannot-see",
+      "lands": "section",
+      "param": [
+       "#lesson-"
+      ]
+     },
+     "suggests": [],
+     "treasure": "treasure-station-st-22075-lesson-shipfitters-say-what-you-cannot-see",
+     "provenance": "AUTHORED"
+    }
+   ],
+   "paths": [
+    {
+     "id": "trade",
+     "label": "Trade path",
+     "steps": [
+      "st-22075-sim-airless-sprayer",
+      "st-22075-task-sim-airless-sprayer-bay-terminal-finish",
+      "st-22075-sim-weld-bead",
+      "st-22075-task-sim-weld-bead-nola-tank-seam"
+     ],
+     "gated": false
+    },
+    {
+     "id": "k12",
+     "label": "K-12 path",
+     "steps": [
+      "st-22075-unit-boilermakers",
+      "st-22075-unit-painters",
+      "st-22075-lesson-painters-lay-the-coat",
+      "st-22075-lesson-shipfitters-say-what-you-cannot-see"
+     ],
+     "gated": false
+    },
+    {
+     "id": "explorer",
+     "label": "Explorer / free play",
+     "steps": [
+      "treasure-parish-22075-arrive",
+      "treasure-parish-22075-lm-fort-jackson",
+      "egg-parish-22075-word"
+     ],
+     "gated": false
+    }
+   ]
+  },
+  {
+   "fips": "22087",
+   "name": "St. Bernard Parish",
+   "landmarks": [
+    {
+     "id": "chalmette-battlefield",
+     "name": "Chalmette Battlefield",
+     "kind": "national park unit (historic battlefield)"
+    }
+   ],
+   "adjacent": [
+    "22071",
+    "22075"
+   ],
+   "stations": [
+    {
+     "id": "st-22087-sim-boom-lift",
+     "layer": "trade-sim",
+     "ref": {
+      "registry": "sims/registry/sims.json",
+      "id": "boom-lift",
+      "source": "sims/registry/sims.json#sims.boom-lift"
+     },
+     "title": "Boom Lift Basket Work",
+     "at": {
+      "lon": -89.998363,
+      "lat": 29.943942
+     },
+     "world_m": [
+      8826.66,
+      -3453.5
+     ],
+     "local_m": [
+      -44053.21,
+      7574.94
+     ],
+     "near": "chalmette-battlefield",
+     "launch": {
+      "href": "web/trade_craft_3d.html?hall=electricians&sim=boom-lift",
+      "lands": "seat",
+      "param": [
+       "hall",
+       "sim"
+      ]
+     },
+     "suggests": [
+      "electricians-clip-in-first",
+      "insulators-stay-inside-the-rails"
+     ],
+     "treasure": "treasure-station-st-22087-sim-boom-lift",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22087-task-sim-boom-lift-bay-curtainwall-run",
+     "layer": "task",
+     "ref": {
+      "registry": "tasks/registry/tasks.json",
+      "id": "sim-boom-lift-bay-curtainwall-run",
+      "source": "tasks/registry/tasks.json#tasks[36]"
+     },
+     "title": "Boom Lift Basket Work: Curtain-wall panel run",
+     "at": {
+      "lon": -89.973462,
+      "lat": 29.965168
+     },
+     "world_m": [
+      11225.17,
+      -1093.27
+     ],
+     "local_m": [
+      -41652.3,
+      9935.17
+     ],
+     "near": "chalmette-battlefield",
+     "launch": {
+      "href": "web/trade_craft_3d.html?hall=electricians&sim=boom-lift&scenario=bay-curtainwall-run",
+      "lands": "seat",
+      "param": [
+       "hall",
+       "sim",
+       "scenario"
+      ]
+     },
+     "suggests": [
+      "electricians-clip-in-first",
+      "insulators-stay-inside-the-rails"
+     ],
+     "treasure": "treasure-station-st-22087-task-sim-boom-lift-bay-curtainwall-run",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22087-sim-crane-lift",
+     "layer": "trade-sim",
+     "ref": {
+      "registry": "sims/registry/sims.json",
+      "id": "crane-lift",
+      "source": "sims/registry/sims.json#sims.crane-lift"
+     },
+     "title": "Tower Crane Lift",
+     "at": {
+      "lon": -89.948561,
+      "lat": 29.943942
+     },
+     "world_m": [
+      13623.69,
+      -3453.5
+     ],
+     "local_m": [
+      -39251.4,
+      7574.94
+     ],
+     "near": "chalmette-battlefield",
+     "launch": {
+      "href": "web/trade_craft_3d.html?hall=crane-ops&sim=crane-lift",
+      "lands": "seat",
+      "param": [
+       "hall",
+       "sim"
+      ]
+     },
+     "suggests": [
+      "riggers-carry-under-control",
+      "steel-erectors-land-it-on-the-bolts"
+     ],
+     "treasure": "treasure-station-st-22087-sim-crane-lift",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22087-task-sim-crane-lift-bay-steel",
+     "layer": "task",
+     "ref": {
+      "registry": "tasks/registry/tasks.json",
+      "id": "sim-crane-lift-bay-steel",
+      "source": "tasks/registry/tasks.json#tasks[0]"
+     },
+     "title": "Tower Crane Lift: Bay high-steel lift",
+     "at": {
+      "lon": -89.92366,
+      "lat": 29.922716
+     },
+     "world_m": [
+      16022.2,
+      -5813.72
+     ],
+     "local_m": [
+      -36850.49,
+      5214.72
+     ],
+     "near": "chalmette-battlefield",
+     "launch": {
+      "href": "web/trade_craft_3d.html?hall=crane-ops&sim=crane-lift&scenario=bay-steel",
+      "lands": "seat",
+      "param": [
+       "hall",
+       "sim",
+       "scenario"
+      ]
+     },
+     "suggests": [
+      "riggers-carry-under-control",
+      "steel-erectors-land-it-on-the-bolts"
+     ],
+     "treasure": "treasure-station-st-22087-task-sim-crane-lift-bay-steel",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22087-unit-glaziers",
+     "layer": "k12-unit",
+     "ref": {
+      "registry": "schools/registry/schools.json",
+      "id": "glaziers",
+      "source": "schools/registry/schools.json#units[13]"
+     },
+     "title": "Glaziers: flipped unit",
+     "at": {
+      "lon": -89.92366,
+      "lat": 29.965168
+     },
+     "world_m": [
+      16022.2,
+      -1093.27
+     ],
+     "local_m": [
+      -36850.49,
+      9935.17
+     ],
+     "near": "chalmette-battlefield",
+     "launch": {
+      "href": "web/trade_craft_schools.html#band-9-10",
+      "lands": "section",
+      "param": [
+       "#band-"
+      ]
+     },
+     "suggests": [
+      "glaziers-watch-the-line"
+     ],
+     "treasure": "treasure-station-st-22087-unit-glaziers",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22087-lesson-insulators-stay-inside-the-rails",
+     "layer": "lesson",
+     "ref": {
+      "registry": "lessons/registry/lessons.json",
+      "id": "insulators-stay-inside-the-rails",
+      "source": "lessons/registry/lessons.json#lessons.insulators-stay-inside-the-rails"
+     },
+     "title": "Stay inside the rails while you reach",
+     "at": {
+      "lon": -89.89876,
+      "lat": 29.943942
+     },
+     "world_m": [
+      18420.62,
+      -3453.5
+     ],
+     "local_m": [
+      -34449.68,
+      7574.94
+     ],
+     "near": "chalmette-battlefield",
+     "launch": {
+      "href": "web/trade_craft_lessons.html#lesson-insulators-stay-inside-the-rails",
+      "lands": "section",
+      "param": [
+       "#lesson-"
+      ]
+     },
+     "suggests": [
+      "electricians-clip-in-first"
+     ],
+     "treasure": "treasure-station-st-22087-lesson-insulators-stay-inside-the-rails",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22087-unit-decking",
+     "layer": "k12-unit",
+     "ref": {
+      "registry": "schools/registry/schools.json",
+      "id": "decking",
+      "source": "schools/registry/schools.json#units[7]"
+     },
+     "title": "Metal Deck Installers: flipped unit",
+     "at": {
+      "lon": -89.89876,
+      "lat": 29.90149
+     },
+     "world_m": [
+      18420.62,
+      -8173.95
+     ],
+     "local_m": [
+      -34449.68,
+      2854.49
+     ],
+     "near": "chalmette-battlefield",
+     "launch": {
+      "href": "web/trade_craft_schools.html#band-9-10",
+      "lands": "section",
+      "param": [
+       "#band-"
+      ]
+     },
+     "suggests": [
+      "decking-walk-the-path-first"
+     ],
+     "treasure": "treasure-station-st-22087-unit-decking",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22087-lesson-steel-erectors-land-it-on-the-bolts",
+     "layer": "lesson",
+     "ref": {
+      "registry": "lessons/registry/lessons.json",
+      "id": "steel-erectors-land-it-on-the-bolts",
+      "source": "lessons/registry/lessons.json#lessons.steel-erectors-land-it-on-the-bolts"
+     },
+     "title": "Land the piece where the bolts can go in",
+     "at": {
+      "lon": -89.89876,
+      "lat": 29.986394
+     },
+     "world_m": [
+      18420.62,
+      1266.96
+     ],
+     "local_m": [
+      -34449.68,
+      12295.4
+     ],
+     "near": "chalmette-battlefield",
+     "launch": {
+      "href": "web/trade_craft_lessons.html#lesson-steel-erectors-land-it-on-the-bolts",
+      "lands": "section",
+      "param": [
+       "#lesson-"
+      ]
+     },
+     "suggests": [
+      "riggers-carry-under-control"
+     ],
+     "treasure": "treasure-station-st-22087-lesson-steel-erectors-land-it-on-the-bolts",
+     "provenance": "AUTHORED"
+    }
+   ],
+   "paths": [
+    {
+     "id": "trade",
+     "label": "Trade path",
+     "steps": [
+      "st-22087-sim-boom-lift",
+      "st-22087-task-sim-boom-lift-bay-curtainwall-run",
+      "st-22087-sim-crane-lift",
+      "st-22087-task-sim-crane-lift-bay-steel"
+     ],
+     "gated": false
+    },
+    {
+     "id": "k12",
+     "label": "K-12 path",
+     "steps": [
+      "st-22087-unit-decking",
+      "st-22087-unit-glaziers",
+      "st-22087-lesson-insulators-stay-inside-the-rails",
+      "st-22087-lesson-steel-erectors-land-it-on-the-bolts"
+     ],
+     "gated": false
+    },
+    {
+     "id": "explorer",
+     "label": "Explorer / free play",
+     "steps": [
+      "treasure-parish-22087-arrive",
+      "treasure-parish-22087-lm-chalmette-battlefield",
+      "egg-parish-22087-word"
+     ],
+     "gated": false
+    }
+   ]
+  },
+  {
+   "fips": "22089",
+   "name": "St. Charles Parish",
+   "landmarks": [
+    {
+     "id": "bonnet-carre-spillway",
+     "name": "Bonnet Carre Spillway",
+     "kind": "federal flood-control structure"
+    }
+   ],
+   "adjacent": [
+    "22051",
+    "22057",
+    "22095"
+   ],
+   "stations": [
+    {
+     "id": "st-22089-sim-excavator-trench",
+     "layer": "trade-sim",
+     "ref": {
+      "registry": "sims/registry/sims.json",
+      "id": "excavator-trench",
+      "source": "sims/registry/sims.json#sims.excavator-trench"
+     },
+     "title": "Excavator Trench Cut",
+     "at": {
+      "lon": -90.442201,
+      "lat": 30.020756
+     },
+     "world_m": [
+      -33924.71,
+      5087.84
+     ],
+     "local_m": [
+      -8083.51,
+      12826.46
+     ],
+     "near": "bonnet-carre-spillway",
+     "launch": {
+      "href": "web/trade_craft_3d.html?hall=operating-eng&sim=excavator-trench",
+      "lands": "seat",
+      "param": [
+       "hall",
+       "sim"
+      ]
+     },
+     "suggests": [
+      "operating-eng-locate-first",
+      "shoring-read-the-ground-again"
+     ],
+     "treasure": "treasure-station-st-22089-sim-excavator-trench",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22089-task-sim-excavator-trench-bay-retrofit",
+     "layer": "task",
+     "ref": {
+      "registry": "tasks/registry/tasks.json",
+      "id": "sim-excavator-trench-bay-retrofit",
+      "source": "tasks/registry/tasks.json#tasks[4]"
+     },
+     "title": "Excavator Trench Cut: Seismic retrofit cut",
+     "at": {
+      "lon": -90.426349,
+      "lat": 30.020756
+     },
+     "world_m": [
+      -32397.81,
+      5087.84
+     ],
+     "local_m": [
+      -6555.54,
+      12826.46
+     ],
+     "near": "bonnet-carre-spillway",
+     "launch": {
+      "href": "web/trade_craft_3d.html?hall=operating-eng&sim=excavator-trench&scenario=bay-retrofit",
+      "lands": "seat",
+      "param": [
+       "hall",
+       "sim",
+       "scenario"
+      ]
+     },
+     "suggests": [],
+     "treasure": "treasure-station-st-22089-task-sim-excavator-trench-bay-retrofit",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22089-sim-forklift-run",
+     "layer": "trade-sim",
+     "ref": {
+      "registry": "sims/registry/sims.json",
+      "id": "forklift-run",
+      "source": "sims/registry/sims.json#sims.forklift-run"
+     },
+     "title": "Forklift Yard Run",
+     "at": {
+      "lon": -90.458054,
+      "lat": 30.020756
+     },
+     "world_m": [
+      -35451.7,
+      5087.84
+     ],
+     "local_m": [
+      -9611.57,
+      12826.46
+     ],
+     "near": "bonnet-carre-spillway",
+     "launch": {
+      "href": "web/trade_craft_3d.html?hall=teamsters&sim=forklift-run",
+      "lands": "seat",
+      "param": [
+       "hall",
+       "sim"
+      ]
+     },
+     "suggests": [
+      "teamsters-check-the-truck-before-the-load",
+      "heavy-equip-listen-to-the-dash"
+     ],
+     "treasure": "treasure-station-st-22089-sim-forklift-run",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22089-task-sim-forklift-run-bay-yard",
+     "layer": "task",
+     "ref": {
+      "registry": "tasks/registry/tasks.json",
+      "id": "sim-forklift-run-bay-yard",
+      "source": "tasks/registry/tasks.json#tasks[8]"
+     },
+     "title": "Forklift Yard Run: Island yard run",
+     "at": {
+      "lon": -90.442201,
+      "lat": 30.001105
+     },
+     "world_m": [
+      -33924.71,
+      2902.75
+     ],
+     "local_m": [
+      -8083.51,
+      10641.37
+     ],
+     "near": "bonnet-carre-spillway",
+     "launch": {
+      "href": "web/trade_craft_3d.html?hall=teamsters&sim=forklift-run&scenario=bay-yard",
+      "lands": "seat",
+      "param": [
+       "hall",
+       "sim",
+       "scenario"
+      ]
+     },
+     "suggests": [],
+     "treasure": "treasure-station-st-22089-task-sim-forklift-run-bay-yard",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22089-unit-laborers",
+     "layer": "k12-unit",
+     "ref": {
+      "registry": "schools/registry/schools.json",
+      "id": "laborers",
+      "source": "schools/registry/schools.json#units[18]"
+     },
+     "title": "Laborers: flipped unit",
+     "at": {
+      "lon": -90.442201,
+      "lat": 30.040407
+     },
+     "world_m": [
+      -33924.71,
+      7272.94
+     ],
+     "local_m": [
+      -8083.51,
+      15011.56
+     ],
+     "near": "bonnet-carre-spillway",
+     "launch": {
+      "href": "web/trade_craft_schools.html#band-9-10",
+      "lands": "section",
+      "param": [
+       "#band-"
+      ]
+     },
+     "suggests": [
+      "laborers-stand-where-the-cab-can-see"
+     ],
+     "treasure": "treasure-station-st-22089-unit-laborers",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22089-lesson-shoring-read-the-ground-again",
+     "layer": "lesson",
+     "ref": {
+      "registry": "lessons/registry/lessons.json",
+      "id": "shoring-read-the-ground-again",
+      "source": "lessons/registry/lessons.json#lessons.shoring-read-the-ground-again"
+     },
+     "title": "Read the ground again after the rain",
+     "at": {
+      "lon": -90.426349,
+      "lat": 30.001105
+     },
+     "world_m": [
+      -32397.81,
+      2902.75
+     ],
+     "local_m": [
+      -6555.54,
+      10641.37
+     ],
+     "near": "bonnet-carre-spillway",
+     "launch": {
+      "href": "web/trade_craft_lessons.html#lesson-shoring-read-the-ground-again",
+      "lands": "section",
+      "param": [
+       "#lesson-"
+      ]
+     },
+     "suggests": [
+      "operating-eng-locate-first"
+     ],
+     "treasure": "treasure-station-st-22089-lesson-shoring-read-the-ground-again",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22089-unit-marine-terminal",
+     "layer": "k12-unit",
+     "ref": {
+      "registry": "schools/registry/schools.json",
+      "id": "marine-terminal",
+      "source": "schools/registry/schools.json#units[22]"
+     },
+     "title": "Marine Terminal Operators: flipped unit",
+     "at": {
+      "lon": -90.426349,
+      "lat": 30.040407
+     },
+     "world_m": [
+      -32397.81,
+      7272.94
+     ],
+     "local_m": [
+      -6555.54,
+      15011.56
+     ],
+     "near": "bonnet-carre-spillway",
+     "launch": {
+      "href": "web/trade_craft_schools.html#band-9-10",
+      "lands": "section",
+      "param": [
+       "#band-"
+      ]
+     },
+     "suggests": [
+      "d-terminal-berth-site-walk",
+      "marine-terminal-brief-the-lane"
+     ],
+     "treasure": "treasure-station-st-22089-unit-marine-terminal",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22089-lesson-heavy-equip-listen-to-the-dash",
+     "layer": "lesson",
+     "ref": {
+      "registry": "lessons/registry/lessons.json",
+      "id": "heavy-equip-listen-to-the-dash",
+      "source": "lessons/registry/lessons.json#lessons.heavy-equip-listen-to-the-dash"
+     },
+     "title": "Listen to the dash before you replace anything",
+     "at": {
+      "lon": -90.458054,
+      "lat": 30.001105
+     },
+     "world_m": [
+      -35451.7,
+      2902.75
+     ],
+     "local_m": [
+      -9611.57,
+      10641.37
+     ],
+     "near": "bonnet-carre-spillway",
+     "launch": {
+      "href": "web/trade_craft_lessons.html#lesson-heavy-equip-listen-to-the-dash",
+      "lands": "section",
+      "param": [
+       "#lesson-"
+      ]
+     },
+     "suggests": [
+      "teamsters-check-the-truck-before-the-load"
+     ],
+     "treasure": "treasure-station-st-22089-lesson-heavy-equip-listen-to-the-dash",
+     "provenance": "AUTHORED"
+    }
+   ],
+   "paths": [
+    {
+     "id": "trade",
+     "label": "Trade path",
+     "steps": [
+      "st-22089-sim-excavator-trench",
+      "st-22089-task-sim-excavator-trench-bay-retrofit",
+      "st-22089-sim-forklift-run",
+      "st-22089-task-sim-forklift-run-bay-yard"
+     ],
+     "gated": false
+    },
+    {
+     "id": "k12",
+     "label": "K-12 path",
+     "steps": [
+      "st-22089-unit-laborers",
+      "st-22089-unit-marine-terminal",
+      "st-22089-lesson-shoring-read-the-ground-again",
+      "st-22089-lesson-heavy-equip-listen-to-the-dash"
+     ],
+     "gated": false
+    },
+    {
+     "id": "explorer",
+     "label": "Explorer / free play",
+     "steps": [
+      "treasure-parish-22089-arrive",
+      "treasure-parish-22089-lm-bonnet-carre-spillway",
+      "egg-parish-22089-word"
+     ],
+     "gated": false
+    }
+   ]
+  },
+  {
+   "fips": "22093",
+   "name": "St. James Parish",
+   "landmarks": [],
+   "adjacent": [
+    "22005",
+    "22057",
+    "22095"
+   ],
+   "stations": [
+    {
+     "id": "st-22093-sim-load-chart",
+     "layer": "trade-sim",
+     "ref": {
+      "registry": "sims/registry/sims.json",
+      "id": "load-chart",
+      "source": "sims/registry/sims.json#sims.load-chart"
+     },
+     "title": "Load Chart Judgment",
+     "at": {
+      "lon": -90.798925,
+      "lat": 30.025034
+     },
+     "world_m": [
+      -68285.08,
+      5563.53
+     ],
+     "local_m": [
+      -266.48,
+      -205.15
+     ],
+     "near": null,
+     "launch": {
+      "href": "web/trade_craft_3d.html?hall=crane-ops&sim=load-chart",
+      "lands": "seat",
+      "param": [
+       "hall",
+       "sim"
+      ]
+     },
+     "suggests": [
+      "crane-ops-read-the-chart"
+     ],
+     "treasure": "treasure-station-st-22093-sim-load-chart",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22093-task-sim-load-chart-bay-pick-list",
+     "layer": "task",
+     "ref": {
+      "registry": "tasks/registry/tasks.json",
+      "id": "sim-load-chart-bay-pick-list",
+      "source": "tasks/registry/tasks.json#tasks[24]"
+     },
+     "title": "Load Chart Judgment: Yard pick list",
+     "at": {
+      "lon": -90.645857,
+      "lat": 30.163772
+     },
+     "world_m": [
+      -53541.27,
+      20990.52
+     ],
+     "local_m": [
+      14469.63,
+      15221.83
+     ],
+     "near": null,
+     "launch": {
+      "href": "web/trade_craft_3d.html?hall=crane-ops&sim=load-chart&scenario=bay-pick-list",
+      "lands": "seat",
+      "param": [
+       "hall",
+       "sim",
+       "scenario"
+      ]
+     },
+     "suggests": [
+      "crane-ops-read-the-chart"
+     ],
+     "treasure": "treasure-station-st-22093-task-sim-load-chart-bay-pick-list",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22093-sim-overhead-crane",
+     "layer": "trade-sim",
+     "ref": {
+      "registry": "sims/registry/sims.json",
+      "id": "overhead-crane",
+      "source": "sims/registry/sims.json#sims.overhead-crane"
+     },
+     "title": "Overhead Crane Shop Move",
+     "at": {
+      "lon": -90.659167,
+      "lat": 29.892076
+     },
+     "world_m": [
+      -54823.31,
+      -9220.74
+     ],
+     "local_m": [
+      13188.26,
+      -14989.43
+     ],
+     "near": null,
+     "launch": {
+      "href": "web/trade_craft_3d.html?hall=crane-ops&sim=overhead-crane",
+      "lands": "seat",
+      "param": [
+       "hall",
+       "sim"
+      ]
+     },
+     "suggests": [
+      "millwrights-shop-move",
+      "machinists-move-the-job-without-marking-it"
+     ],
+     "treasure": "treasure-station-st-22093-sim-overhead-crane",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22093-task-sim-overhead-crane-bay-fab-coil",
+     "layer": "task",
+     "ref": {
+      "registry": "tasks/registry/tasks.json",
+      "id": "sim-overhead-crane-bay-fab-coil",
+      "source": "tasks/registry/tasks.json#tasks[40]"
+     },
+     "title": "Overhead Crane Shop Move: Fabrication-shop coil move",
+     "at": {
+      "lon": -90.958648,
+      "lat": 29.984568
+     },
+     "world_m": [
+      -83669.92,
+      1063.91
+     ],
+     "local_m": [
+      -15643.28,
+      -4704.78
+     ],
+     "near": null,
+     "launch": {
+      "href": "web/trade_craft_3d.html?hall=crane-ops&sim=overhead-crane&scenario=bay-fab-coil",
+      "lands": "seat",
+      "param": [
+       "hall",
+       "sim",
+       "scenario"
+      ]
+     },
+     "suggests": [
+      "millwrights-shop-move"
+     ],
+     "treasure": "treasure-station-st-22093-task-sim-overhead-crane-bay-fab-coil",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22093-unit-heavy-equip",
+     "layer": "k12-unit",
+     "ref": {
+      "registry": "schools/registry/schools.json",
+      "id": "heavy-equip",
+      "source": "schools/registry/schools.json#units[15]"
+     },
+     "title": "Heavy Equipment Technicians: flipped unit",
+     "at": {
+      "lon": -90.912062,
+      "lat": 30.111745
+     },
+     "world_m": [
+      -79182.67,
+      15205.37
+     ],
+     "local_m": [
+      -11158.37,
+      9436.68
+     ],
+     "near": null,
+     "launch": {
+      "href": "web/trade_craft_schools.html#band-9-10",
+      "lands": "section",
+      "param": [
+       "#band-"
+      ]
+     },
+     "suggests": [
+      "heavy-equip-listen-to-the-dash"
+     ],
+     "treasure": "treasure-station-st-22093-unit-heavy-equip",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22093-lesson-crane-ops-read-the-chart",
+     "layer": "lesson",
+     "ref": {
+      "registry": "lessons/registry/lessons.json",
+      "id": "crane-ops-read-the-chart",
+      "source": "lessons/registry/lessons.json#lessons.crane-ops-read-the-chart"
+     },
+     "title": "Refuse the pick the chart refuses",
+     "at": {
+      "lon": -90.845511,
+      "lat": 29.909419
+     },
+     "world_m": [
+      -72772.34,
+      -7292.28
+     ],
+     "local_m": [
+      -4751.39,
+      -13060.97
+     ],
+     "near": null,
+     "launch": {
+      "href": "web/trade_craft_lessons.html#lesson-crane-ops-read-the-chart",
+      "lands": "section",
+      "param": [
+       "#lesson-"
+      ]
+     },
+     "suggests": [],
+     "treasure": "treasure-station-st-22093-lesson-crane-ops-read-the-chart",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22093-unit-crane-ops",
+     "layer": "k12-unit",
+     "ref": {
+      "registry": "schools/registry/schools.json",
+      "id": "crane-ops",
+      "source": "schools/registry/schools.json#units[5]"
+     },
+     "title": "Crane Operators: flipped unit",
+     "at": {
+      "lon": -90.665822,
+      "lat": 30.048157
+     },
+     "world_m": [
+      -55464.33,
+      8134.7
+     ],
+     "local_m": [
+      12547.57,
+      2366.01
+     ],
+     "near": null,
+     "launch": {
+      "href": "web/trade_craft_schools.html#band-9-10",
+      "lands": "section",
+      "param": [
+       "#band-"
+      ]
+     },
+     "suggests": [
+      "d-wind-staging-site-walk",
+      "crane-ops-read-the-chart"
+     ],
+     "treasure": "treasure-station-st-22093-unit-crane-ops",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22093-lesson-machinists-move-the-job-without-marking-it",
+     "layer": "lesson",
+     "ref": {
+      "registry": "lessons/registry/lessons.json",
+      "id": "machinists-move-the-job-without-marking-it",
+      "source": "lessons/registry/lessons.json#lessons.machinists-move-the-job-without-marking-it"
+     },
+     "title": "Move the job across the shop without marking it",
+     "at": {
+      "lon": -90.772304,
+      "lat": 30.134868
+     },
+     "world_m": [
+      -65720.9,
+      17776.54
+     ],
+     "local_m": [
+      2296.37,
+      12007.85
+     ],
+     "near": null,
+     "launch": {
+      "href": "web/trade_craft_lessons.html#lesson-machinists-move-the-job-without-marking-it",
+      "lands": "section",
+      "param": [
+       "#lesson-"
+      ]
+     },
+     "suggests": [
+      "millwrights-shop-move"
+     ],
+     "treasure": "treasure-station-st-22093-lesson-machinists-move-the-job-without-marking-it",
+     "provenance": "AUTHORED"
+    }
+   ],
+   "paths": [
+    {
+     "id": "trade",
+     "label": "Trade path",
+     "steps": [
+      "st-22093-sim-load-chart",
+      "st-22093-task-sim-load-chart-bay-pick-list",
+      "st-22093-sim-overhead-crane",
+      "st-22093-task-sim-overhead-crane-bay-fab-coil"
+     ],
+     "gated": false
+    },
+    {
+     "id": "k12",
+     "label": "K-12 path",
+     "steps": [
+      "st-22093-unit-crane-ops",
+      "st-22093-unit-heavy-equip",
+      "st-22093-lesson-crane-ops-read-the-chart",
+      "st-22093-lesson-machinists-move-the-job-without-marking-it"
+     ],
+     "gated": false
+    },
+    {
+     "id": "explorer",
+     "label": "Explorer / free play",
+     "steps": [
+      "treasure-parish-22093-arrive",
+      "egg-parish-22093-word"
+     ],
+     "gated": false
+    }
+   ]
+  },
+  {
+   "fips": "22095",
+   "name": "St. John the Baptist Parish",
+   "landmarks": [],
+   "adjacent": [
+    "22005",
+    "22051",
+    "22057",
+    "22063",
+    "22089",
+    "22093",
+    "22103",
+    "22105"
+   ],
+   "stations": [
+    {
+     "id": "st-22095-sim-pressure-washer",
+     "layer": "trade-sim",
+     "ref": {
+      "registry": "sims/registry/sims.json",
+      "id": "pressure-washer",
+      "source": "sims/registry/sims.json#sims.pressure-washer"
+     },
+     "title": "Pressure Washer Surface Clean",
+     "at": {
+      "lon": -90.473383,
+      "lat": 30.128193
+     },
+     "world_m": [
+      -36928.22,
+      17034.31
+     ],
+     "local_m": [
+      -246.88,
+      191.59
+     ],
+     "near": null,
+     "launch": {
+      "href": "web/trade_craft_3d.html?hall=painters&sim=pressure-washer",
+      "lands": "seat",
+      "param": [
+       "hall",
+       "sim"
+      ]
+     },
+     "suggests": [
+      "painters-contain-it",
+      "hazmat-wash-and-decon"
+     ],
+     "treasure": "treasure-station-st-22095-sim-pressure-washer",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22095-task-sim-pressure-washer-bay-seawall-clean",
+     "layer": "task",
+     "ref": {
+      "registry": "tasks/registry/tasks.json",
+      "id": "sim-pressure-washer-bay-seawall-clean",
+      "source": "tasks/registry/tasks.json#tasks[28]"
+     },
+     "title": "Pressure Washer Surface Clean: Ferry terminal seawall",
+     "at": {
+      "lon": -90.163507,
+      "lat": 30.230635
+     },
+     "world_m": [
+      -7080.34,
+      28425.35
+     ],
+     "local_m": [
+      29555.38,
+      11582.64
+     ],
+     "near": null,
+     "launch": {
+      "href": "web/trade_craft_3d.html?hall=painters&sim=pressure-washer&scenario=bay-seawall-clean",
+      "lands": "seat",
+      "param": [
+       "hall",
+       "sim",
+       "scenario"
+      ]
+     },
+     "suggests": [
+      "painters-contain-it"
+     ],
+     "treasure": "treasure-station-st-22095-task-sim-pressure-washer-bay-seawall-clean",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22095-sim-rigging-signals",
+     "layer": "trade-sim",
+     "ref": {
+      "registry": "sims/registry/sims.json",
+      "id": "rigging-signals",
+      "source": "sims/registry/sims.json#sims.rigging-signals"
+     },
+     "title": "Rigging Signal Call",
+     "at": {
+      "lon": -90.650455,
+      "lat": 29.897696
+     },
+     "world_m": [
+      -53984.15,
+      -8595.82
+     ],
+     "local_m": [
+      -17276.75,
+      -25438.54
+     ],
+     "near": null,
+     "launch": {
+      "href": "web/trade_craft_3d.html?hall=riggers&sim=rigging-signals",
+      "lands": "seat",
+      "param": [
+       "hall",
+       "sim"
+      ]
+     },
+     "suggests": [
+      "riggers-first-card",
+      "decking-walk-the-path-first"
+     ],
+     "treasure": "treasure-station-st-22095-sim-rigging-signals",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22095-task-sim-rigging-signals-bay-first-card",
+     "layer": "task",
+     "ref": {
+      "registry": "tasks/registry/tasks.json",
+      "id": "sim-rigging-signals-bay-first-card",
+      "source": "tasks/registry/tasks.json#tasks[20]"
+     },
+     "title": "Rigging Signal Call: First lift card",
+     "at": {
+      "lon": -90.362713,
+      "lat": 30.281857
+     },
+     "world_m": [
+      -26268.27,
+      34120.99
+     ],
+     "local_m": [
+      10396.79,
+      17278.27
+     ],
+     "near": null,
+     "launch": {
+      "href": "web/trade_craft_3d.html?hall=riggers&sim=rigging-signals&scenario=bay-first-card",
+      "lands": "seat",
+      "param": [
+       "hall",
+       "sim",
+       "scenario"
+      ]
+     },
+     "suggests": [
+      "riggers-first-card",
+      "decking-walk-the-path-first"
+     ],
+     "treasure": "treasure-station-st-22095-task-sim-rigging-signals-bay-first-card",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22095-unit-laborers",
+     "layer": "k12-unit",
+     "ref": {
+      "registry": "schools/registry/schools.json",
+      "id": "laborers",
+      "source": "schools/registry/schools.json#units[18]"
+     },
+     "title": "Laborers: flipped unit",
+     "at": {
+      "lon": -90.661522,
+      "lat": 30.068434
+     },
+     "world_m": [
+      -55050.15,
+      10389.4
+     ],
+     "local_m": [
+      -18341.11,
+      -6453.32
+     ],
+     "near": null,
+     "launch": {
+      "href": "web/trade_craft_schools.html#band-9-10",
+      "lands": "section",
+      "param": [
+       "#band-"
+      ]
+     },
+     "suggests": [
+      "laborers-stand-where-the-cab-can-see"
+     ],
+     "treasure": "treasure-station-st-22095-unit-laborers",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22095-lesson-hazmat-wash-and-decon",
+     "layer": "lesson",
+     "ref": {
+      "registry": "lessons/registry/lessons.json",
+      "id": "hazmat-wash-and-decon",
+      "source": "lessons/registry/lessons.json#lessons.hazmat-wash-and-decon"
+     },
+     "title": "Come out cleaner than what you washed",
+     "at": {
+      "lon": -90.617255,
+      "lat": 30.213561
+     },
+     "world_m": [
+      -50786.26,
+      26526.81
+     ],
+     "local_m": [
+      -14083.74,
+      9684.09
+     ],
+     "near": null,
+     "launch": {
+      "href": "web/trade_craft_lessons.html#lesson-hazmat-wash-and-decon",
+      "lands": "section",
+      "param": [
+       "#lesson-"
+      ]
+     },
+     "suggests": [
+      "painters-contain-it"
+     ],
+     "treasure": "treasure-station-st-22095-lesson-hazmat-wash-and-decon",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22095-unit-decking",
+     "layer": "k12-unit",
+     "ref": {
+      "registry": "schools/registry/schools.json",
+      "id": "decking",
+      "source": "schools/registry/schools.json#units[7]"
+     },
+     "title": "Metal Deck Installers: flipped unit",
+     "at": {
+      "lon": -90.318445,
+      "lat": 30.153803
+     },
+     "world_m": [
+      -22004.28,
+      19882.01
+     ],
+     "local_m": [
+      14654.25,
+      3039.3
+     ],
+     "near": null,
+     "launch": {
+      "href": "web/trade_craft_schools.html#band-9-10",
+      "lands": "section",
+      "param": [
+       "#band-"
+      ]
+     },
+     "suggests": [
+      "decking-walk-the-path-first"
+     ],
+     "treasure": "treasure-station-st-22095-unit-decking",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22095-lesson-decking-walk-the-path-first",
+     "layer": "lesson",
+     "ref": {
+      "registry": "lessons/registry/lessons.json",
+      "id": "decking-walk-the-path-first",
+      "source": "lessons/registry/lessons.json#lessons.decking-walk-the-path-first"
+     },
+     "title": "Walk where the bundle will fly before it flies",
+     "at": {
+      "lon": -90.550852,
+      "lat": 29.991602
+     },
+     "world_m": [
+      -44390.19,
+      1846.06
+     ],
+     "local_m": [
+      -7697.45,
+      -14996.66
+     ],
+     "near": null,
+     "launch": {
+      "href": "web/trade_craft_lessons.html#lesson-decking-walk-the-path-first",
+      "lands": "section",
+      "param": [
+       "#lesson-"
+      ]
+     },
+     "suggests": [
+      "riggers-first-card"
+     ],
+     "treasure": "treasure-station-st-22095-lesson-decking-walk-the-path-first",
+     "provenance": "AUTHORED"
+    }
+   ],
+   "paths": [
+    {
+     "id": "trade",
+     "label": "Trade path",
+     "steps": [
+      "st-22095-sim-pressure-washer",
+      "st-22095-task-sim-pressure-washer-bay-seawall-clean",
+      "st-22095-sim-rigging-signals",
+      "st-22095-task-sim-rigging-signals-bay-first-card"
+     ],
+     "gated": false
+    },
+    {
+     "id": "k12",
+     "label": "K-12 path",
+     "steps": [
+      "st-22095-unit-decking",
+      "st-22095-unit-laborers",
+      "st-22095-lesson-hazmat-wash-and-decon",
+      "st-22095-lesson-decking-walk-the-path-first"
+     ],
+     "gated": false
+    },
+    {
+     "id": "explorer",
+     "label": "Explorer / free play",
+     "steps": [
+      "treasure-parish-22095-arrive",
+      "egg-parish-22095-word"
+     ],
+     "gated": false
+    }
+   ]
+  },
+  {
+   "fips": "22103",
+   "name": "St. Tammany Parish",
+   "landmarks": [
+    {
+     "id": "fontainebleau-state-park",
+     "name": "Fontainebleau State Park",
+     "kind": "state park"
+    },
+    {
+     "id": "lake-pontchartrain-causeway-north-shore-end",
+     "name": "Lake Pontchartrain Causeway (north-shore end)",
+     "kind": "public bridge"
+    }
+   ],
+   "adjacent": [
+    "22051",
+    "22071",
+    "22095",
+    "22105"
+   ],
+   "stations": [
+    {
+     "id": "st-22103-sim-scaffold-bay",
+     "layer": "trade-sim",
+     "ref": {
+      "registry": "sims/registry/sims.json",
+      "id": "scaffold-bay",
+      "source": "sims/registry/sims.json#sims.scaffold-bay"
+     },
+     "title": "Scaffold Bay Build",
+     "at": {
+      "lon": -90.034779,
+      "lat": 30.343467
+     },
+     "world_m": [
+      5319.0,
+      40971.72
+     ],
+     "local_m": [
+      -7421.58,
+      -7426.39
+     ],
+     "near": "fontainebleau-state-park",
+     "launch": {
+      "href": "web/trade_craft_3d.html?hall=scaffold&sim=scaffold-bay",
+      "lands": "seat",
+      "param": [
+       "hall",
+       "sim"
+      ]
+     },
+     "suggests": [
+      "scaffold-build-in-order",
+      "roofers-mind-the-edge-and-the-skylight"
+     ],
+     "treasure": "treasure-station-st-22103-sim-scaffold-bay",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22103-task-sim-scaffold-bay-bay-training-bay",
+     "layer": "task",
+     "ref": {
+      "registry": "tasks/registry/tasks.json",
+      "id": "sim-scaffold-bay-bay-training-bay",
+      "source": "tasks/registry/tasks.json#tasks[16]"
+     },
+     "title": "Scaffold Bay Build: Yard training bay",
+     "at": {
+      "lon": -90.095498,
+      "lat": 30.366877
+     },
+     "world_m": [
+      -529.58,
+      43574.79
+     ],
+     "local_m": [
+      -13244.36,
+      -4823.31
+     ],
+     "near": "lake-pontchartrain-causeway-north-shore-end",
+     "launch": {
+      "href": "web/trade_craft_3d.html?hall=carpenters&sim=scaffold-bay&scenario=bay-training-bay",
+      "lands": "seat",
+      "param": [
+       "hall",
+       "sim",
+       "scenario"
+      ]
+     },
+     "suggests": [
+      "roofers-mind-the-edge-and-the-skylight",
+      "plasterers-pin-every-brace"
+     ],
+     "treasure": "treasure-station-st-22103-task-sim-scaffold-bay-bay-training-bay",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22103-sim-weld-bead",
+     "layer": "trade-sim",
+     "ref": {
+      "registry": "sims/registry/sims.json",
+      "id": "weld-bead",
+      "source": "sims/registry/sims.json#sims.weld-bead"
+     },
+     "title": "Weld Bead Run",
+     "at": {
+      "lon": -90.034779,
+      "lat": 30.320058
+     },
+     "world_m": [
+      5319.0,
+      38368.75
+     ],
+     "local_m": [
+      -7421.58,
+      -10029.35
+     ],
+     "near": "fontainebleau-state-park",
+     "launch": {
+      "href": "web/trade_craft_3d.html?hall=welders&sim=weld-bead",
+      "lands": "seat",
+      "param": [
+       "hall",
+       "sim"
+      ]
+     },
+     "suggests": [
+      "shipfitters-say-what-you-cannot-see",
+      "tank-erectors-isolate-before-testing"
+     ],
+     "treasure": "treasure-station-st-22103-sim-weld-bead",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22103-task-crew-nola-tank-entry",
+     "layer": "task",
+     "ref": {
+      "registry": "tasks/registry/tasks.json",
+      "id": "crew-nola-tank-entry",
+      "source": "tasks/registry/tasks.json#tasks[156]"
+     },
+     "title": "Tank seam entry, New Orleans",
+     "at": {
+      "lon": -90.095498,
+      "lat": 30.343467
+     },
+     "world_m": [
+      -529.58,
+      40971.72
+     ],
+     "local_m": [
+      -13244.36,
+      -7426.39
+     ],
+     "near": "lake-pontchartrain-causeway-north-shore-end",
+     "launch": {
+      "href": "web/trade_craft_worksites.html#site-nola-tank-entry",
+      "lands": "section",
+      "param": [
+       "#site-"
+      ]
+     },
+     "suggests": [
+      "boilermakers-get-them-out",
+      "tank-erectors-isolate-before-testing"
+     ],
+     "treasure": "treasure-station-st-22103-task-crew-nola-tank-entry",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22103-unit-carpenters",
+     "layer": "k12-unit",
+     "ref": {
+      "registry": "schools/registry/schools.json",
+      "id": "carpenters",
+      "source": "schools/registry/schools.json#units[2]"
+     },
+     "title": "Carpenters: flipped unit",
+     "at": {
+      "lon": -90.065138,
+      "lat": 30.343467
+     },
+     "world_m": [
+      2394.76,
+      40971.72
+     ],
+     "local_m": [
+      -10332.92,
+      -7426.39
+     ],
+     "near": "fontainebleau-state-park",
+     "launch": {
+      "href": "web/trade_craft_schools.html#band-9-10",
+      "lands": "section",
+      "param": [
+       "#band-"
+      ]
+     },
+     "suggests": [
+      "carpenters-return-it-the-same",
+      "f-trail-bridge-site-walk"
+     ],
+     "treasure": "treasure-station-st-22103-unit-carpenters",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22103-lesson-roofers-mind-the-edge-and-the-skylight",
+     "layer": "lesson",
+     "ref": {
+      "registry": "lessons/registry/lessons.json",
+      "id": "roofers-mind-the-edge-and-the-skylight",
+      "source": "lessons/registry/lessons.json#lessons.roofers-mind-the-edge-and-the-skylight"
+     },
+     "title": "Mind the edge, and the skylight nobody mentioned",
+     "at": {
+      "lon": -90.065138,
+      "lat": 30.366877
+     },
+     "world_m": [
+      2394.76,
+      43574.79
+     ],
+     "local_m": [
+      -10332.92,
+      -4823.31
+     ],
+     "near": "lake-pontchartrain-causeway-north-shore-end",
+     "launch": {
+      "href": "web/trade_craft_lessons.html#lesson-roofers-mind-the-edge-and-the-skylight",
+      "lands": "section",
+      "param": [
+       "#lesson-"
+      ]
+     },
+     "suggests": [],
+     "treasure": "treasure-station-st-22103-lesson-roofers-mind-the-edge-and-the-skylight",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22103-unit-fabricators",
+     "layer": "k12-unit",
+     "ref": {
+      "registry": "schools/registry/schools.json",
+      "id": "fabricators",
+      "source": "schools/registry/schools.json#units[10]"
+     },
+     "title": "Structural Fabricators: flipped unit",
+     "at": {
+      "lon": -90.065138,
+      "lat": 30.320058
+     },
+     "world_m": [
+      2394.76,
+      38368.75
+     ],
+     "local_m": [
+      -10332.92,
+      -10029.35
+     ],
+     "near": "fontainebleau-state-park",
+     "launch": {
+      "href": "web/trade_craft_schools.html#band-9-10",
+      "lands": "section",
+      "param": [
+       "#band-"
+      ]
+     },
+     "suggests": [
+      "fabricators-lay-it-out-then-prove-it"
+     ],
+     "treasure": "treasure-station-st-22103-unit-fabricators",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22103-lesson-tank-erectors-isolate-before-testing",
+     "layer": "lesson",
+     "ref": {
+      "registry": "lessons/registry/lessons.json",
+      "id": "tank-erectors-isolate-before-testing",
+      "source": "lessons/registry/lessons.json#lessons.tank-erectors-isolate-before-testing"
+     },
+     "title": "Isolate the shell before anybody tests the air",
+     "at": {
+      "lon": -90.095498,
+      "lat": 30.390286
+     },
+     "world_m": [
+      -529.58,
+      46177.76
+     ],
+     "local_m": [
+      -13244.36,
+      -2220.34
+     ],
+     "near": "lake-pontchartrain-causeway-north-shore-end",
+     "launch": {
+      "href": "web/trade_craft_lessons.html#lesson-tank-erectors-isolate-before-testing",
+      "lands": "section",
+      "param": [
+       "#lesson-"
+      ]
+     },
+     "suggests": [
+      "shipfitters-say-what-you-cannot-see"
+     ],
+     "treasure": "treasure-station-st-22103-lesson-tank-erectors-isolate-before-testing",
+     "provenance": "AUTHORED"
+    }
+   ],
+   "paths": [
+    {
+     "id": "trade",
+     "label": "Trade path",
+     "steps": [
+      "st-22103-sim-scaffold-bay",
+      "st-22103-task-sim-scaffold-bay-bay-training-bay",
+      "st-22103-sim-weld-bead",
+      "st-22103-task-crew-nola-tank-entry"
+     ],
+     "gated": false
+    },
+    {
+     "id": "k12",
+     "label": "K-12 path",
+     "steps": [
+      "st-22103-unit-carpenters",
+      "st-22103-unit-fabricators",
+      "st-22103-lesson-roofers-mind-the-edge-and-the-skylight",
+      "st-22103-lesson-tank-erectors-isolate-before-testing"
+     ],
+     "gated": false
+    },
+    {
+     "id": "explorer",
+     "label": "Explorer / free play",
+     "steps": [
+      "treasure-parish-22103-arrive",
+      "treasure-parish-22103-lm-fontainebleau-state-park",
+      "treasure-parish-22103-lm-lake-pontchartrain-causeway-north-shore-end",
+      "egg-parish-22103-word"
+     ],
+     "gated": false
+    }
+   ]
+  },
+  {
+   "fips": "22105",
+   "name": "Tangipahoa Parish",
+   "landmarks": [
+    {
+     "id": "southeastern-louisiana-university",
+     "name": "Southeastern Louisiana University",
+     "kind": "public university"
+    }
+   ],
+   "adjacent": [
+    "22063",
+    "22095",
+    "22103"
+   ],
+   "stations": [
+    {
+     "id": "st-22105-sim-airless-sprayer",
+     "layer": "trade-sim",
+     "ref": {
+      "registry": "sims/registry/sims.json",
+      "id": "airless-sprayer",
+      "source": "sims/registry/sims.json#sims.airless-sprayer"
+     },
+     "title": "Airless Paint Sprayer Finish",
+     "at": {
+      "lon": -90.469981,
+      "lat": 30.513588
+     },
+     "world_m": [
+      -36600.54,
+      59888.34
+     ],
+     "local_m": [
+      -6219.96,
+      -12529.8
+     ],
+     "near": "southeastern-louisiana-university",
+     "launch": {
+      "href": "web/trade_craft_3d.html?hall=painters&sim=airless-sprayer",
+      "lands": "seat",
+      "param": [
+       "hall",
+       "sim"
+      ]
+     },
+     "suggests": [
+      "painters-lay-the-coat"
+     ],
+     "treasure": "treasure-station-st-22105-sim-airless-sprayer",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22105-task-sim-airless-sprayer-oak-warehouse-finish",
+     "layer": "task",
+     "ref": {
+      "registry": "tasks/registry/tasks.json",
+      "id": "sim-airless-sprayer-oak-warehouse-finish",
+      "source": "tasks/registry/tasks.json#tasks[33]"
+     },
+     "title": "Airless Paint Sprayer Finish: Dockside warehouse finish",
+     "at": {
+      "lon": -90.453082,
+      "lat": 30.529534
+     },
+     "world_m": [
+      -34972.79,
+      61661.45
+     ],
+     "local_m": [
+      -4602.99,
+      -10756.68
+     ],
+     "near": "southeastern-louisiana-university",
+     "launch": {
+      "href": "web/trade_craft_3d.html?hall=laborers&sim=airless-sprayer&scenario=oak-warehouse-finish",
+      "lands": "seat",
+      "param": [
+       "hall",
+       "sim",
+       "scenario"
+      ]
+     },
+     "suggests": [],
+     "treasure": "treasure-station-st-22105-task-sim-airless-sprayer-oak-warehouse-finish",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22105-sim-boom-lift",
+     "layer": "trade-sim",
+     "ref": {
+      "registry": "sims/registry/sims.json",
+      "id": "boom-lift",
+      "source": "sims/registry/sims.json#sims.boom-lift"
+     },
+     "title": "Boom Lift Basket Work",
+     "at": {
+      "lon": -90.486881,
+      "lat": 30.529534
+     },
+     "world_m": [
+      -38228.38,
+      61661.45
+     ],
+     "local_m": [
+      -7837.02,
+      -10756.68
+     ],
+     "near": "southeastern-louisiana-university",
+     "launch": {
+      "href": "web/trade_craft_3d.html?hall=electricians&sim=boom-lift",
+      "lands": "seat",
+      "param": [
+       "hall",
+       "sim"
+      ]
+     },
+     "suggests": [
+      "electricians-clip-in-first",
+      "insulators-stay-inside-the-rails"
+     ],
+     "treasure": "treasure-station-st-22105-sim-boom-lift",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22105-task-sim-boom-lift-oak-terminal-fixtures",
+     "layer": "task",
+     "ref": {
+      "registry": "tasks/registry/tasks.json",
+      "id": "sim-boom-lift-oak-terminal-fixtures",
+      "source": "tasks/registry/tasks.json#tasks[37]"
+     },
+     "title": "Boom Lift Basket Work: Terminal light-fixture run",
+     "at": {
+      "lon": -90.453082,
+      "lat": 30.497642
+     },
+     "world_m": [
+      -34972.79,
+      58115.22
+     ],
+     "local_m": [
+      -4602.99,
+      -14302.91
+     ],
+     "near": "southeastern-louisiana-university",
+     "launch": {
+      "href": "web/trade_craft_3d.html?hall=electricians&sim=boom-lift&scenario=oak-terminal-fixtures",
+      "lands": "seat",
+      "param": [
+       "hall",
+       "sim",
+       "scenario"
+      ]
+     },
+     "suggests": [],
+     "treasure": "treasure-station-st-22105-task-sim-boom-lift-oak-terminal-fixtures",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22105-unit-laborers",
+     "layer": "k12-unit",
+     "ref": {
+      "registry": "schools/registry/schools.json",
+      "id": "laborers",
+      "source": "schools/registry/schools.json#units[18]"
+     },
+     "title": "Laborers: flipped unit",
+     "at": {
+      "lon": -90.486881,
+      "lat": 30.497642
+     },
+     "world_m": [
+      -38228.38,
+      58115.22
+     ],
+     "local_m": [
+      -7837.02,
+      -14302.91
+     ],
+     "near": "southeastern-louisiana-university",
+     "launch": {
+      "href": "web/trade_craft_schools.html#band-9-10",
+      "lands": "section",
+      "param": [
+       "#band-"
+      ]
+     },
+     "suggests": [
+      "laborers-stand-where-the-cab-can-see"
+     ],
+     "treasure": "treasure-station-st-22105-unit-laborers",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22105-lesson-painters-lay-the-coat",
+     "layer": "lesson",
+     "ref": {
+      "registry": "lessons/registry/lessons.json",
+      "id": "painters-lay-the-coat",
+      "source": "lessons/registry/lessons.json#lessons.painters-lay-the-coat"
+     },
+     "title": "Lay a coat that is actually there",
+     "at": {
+      "lon": -90.436182,
+      "lat": 30.513588
+     },
+     "world_m": [
+      -33344.95,
+      59888.34
+     ],
+     "local_m": [
+      -2985.92,
+      -12529.8
+     ],
+     "near": "southeastern-louisiana-university",
+     "launch": {
+      "href": "web/trade_craft_lessons.html#lesson-painters-lay-the-coat",
+      "lands": "section",
+      "param": [
+       "#lesson-"
+      ]
+     },
+     "suggests": [],
+     "treasure": "treasure-station-st-22105-lesson-painters-lay-the-coat",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22105-unit-insulators",
+     "layer": "k12-unit",
+     "ref": {
+      "registry": "schools/registry/schools.json",
+      "id": "insulators",
+      "source": "schools/registry/schools.json#units[16]"
+     },
+     "title": "Heat & Frost Insulators: flipped unit",
+     "at": {
+      "lon": -90.469981,
+      "lat": 30.545481
+     },
+     "world_m": [
+      -36600.54,
+      63434.68
+     ],
+     "local_m": [
+      -6219.96,
+      -8983.45
+     ],
+     "near": "southeastern-louisiana-university",
+     "launch": {
+      "href": "web/trade_craft_schools.html#band-9-10",
+      "lands": "section",
+      "param": [
+       "#band-"
+      ]
+     },
+     "suggests": [
+      "insulators-stay-inside-the-rails"
+     ],
+     "treasure": "treasure-station-st-22105-unit-insulators",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22105-lesson-window-glazing-let-the-ground-judge-it",
+     "layer": "lesson",
+     "ref": {
+      "registry": "lessons/registry/lessons.json",
+      "id": "window-glazing-let-the-ground-judge-it",
+      "source": "lessons/registry/lessons.json#lessons.window-glazing-let-the-ground-judge-it"
+     },
+     "title": "Let the ground judge the clearance, not the basket",
+     "at": {
+      "lon": -90.50378,
+      "lat": 30.513588
+     },
+     "world_m": [
+      -39856.12,
+      59888.34
+     ],
+     "local_m": [
+      -9453.99,
+      -12529.8
+     ],
+     "near": "southeastern-louisiana-university",
+     "launch": {
+      "href": "web/trade_craft_lessons.html#lesson-window-glazing-let-the-ground-judge-it",
+      "lands": "section",
+      "param": [
+       "#lesson-"
+      ]
+     },
+     "suggests": [
+      "electricians-clip-in-first",
+      "insulators-stay-inside-the-rails"
+     ],
+     "treasure": "treasure-station-st-22105-lesson-window-glazing-let-the-ground-judge-it",
+     "provenance": "AUTHORED"
+    }
+   ],
+   "paths": [
+    {
+     "id": "trade",
+     "label": "Trade path",
+     "steps": [
+      "st-22105-sim-airless-sprayer",
+      "st-22105-task-sim-airless-sprayer-oak-warehouse-finish",
+      "st-22105-sim-boom-lift",
+      "st-22105-task-sim-boom-lift-oak-terminal-fixtures"
+     ],
+     "gated": false
+    },
+    {
+     "id": "k12",
+     "label": "K-12 path",
+     "steps": [
+      "st-22105-unit-insulators",
+      "st-22105-unit-laborers",
+      "st-22105-lesson-painters-lay-the-coat",
+      "st-22105-lesson-window-glazing-let-the-ground-judge-it"
+     ],
+     "gated": false
+    },
+    {
+     "id": "explorer",
+     "label": "Explorer / free play",
+     "steps": [
+      "treasure-parish-22105-arrive",
+      "treasure-parish-22105-lm-southeastern-louisiana-university",
+      "egg-parish-22105-word"
+     ],
+     "gated": false
+    }
+   ]
+  },
+  {
+   "fips": "22109",
+   "name": "Terrebonne Parish",
+   "landmarks": [],
+   "adjacent": [
+    "22057"
+   ],
+   "stations": [
+    {
+     "id": "st-22109-sim-crane-lift",
+     "layer": "trade-sim",
+     "ref": {
+      "registry": "sims/registry/sims.json",
+      "id": "crane-lift",
+      "source": "sims/registry/sims.json#sims.crane-lift"
+     },
+     "title": "Tower Crane Lift",
+     "at": {
+      "lon": -90.866074,
+      "lat": 29.415772
+     },
+     "world_m": [
+      -74753.01,
+      -62183.4
+     ],
+     "local_m": [
+      -120.6,
+      625.14
+     ],
+     "near": null,
+     "launch": {
+      "href": "web/trade_craft_3d.html?hall=crane-ops&sim=crane-lift",
+      "lands": "seat",
+      "param": [
+       "hall",
+       "sim"
+      ]
+     },
+     "suggests": [
+      "riggers-carry-under-control",
+      "steel-erectors-land-it-on-the-bolts"
+     ],
+     "treasure": "treasure-station-st-22109-sim-crane-lift",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22109-task-sim-crane-lift-oak-terminal",
+     "layer": "task",
+     "ref": {
+      "registry": "tasks/registry/tasks.json",
+      "id": "sim-crane-lift-oak-terminal",
+      "source": "tasks/registry/tasks.json#tasks[1]"
+     },
+     "title": "Tower Crane Lift: Oakland terminal lift",
+     "at": {
+      "lon": -90.4468,
+      "lat": 29.063415
+     },
+     "world_m": [
+      -34367.69,
+      -101363.77
+     ],
+     "local_m": [
+      40492.39,
+      -38555.23
+     ],
+     "near": null,
+     "launch": {
+      "href": "web/trade_craft_3d.html?hall=port-crane&sim=crane-lift&scenario=oak-terminal",
+      "lands": "seat",
+      "param": [
+       "hall",
+       "sim",
+       "scenario"
+      ]
+     },
+     "suggests": [
+      "port-crane-read-the-rope"
+     ],
+     "treasure": "treasure-station-st-22109-task-sim-crane-lift-oak-terminal",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22109-sim-excavator-trench",
+     "layer": "trade-sim",
+     "ref": {
+      "registry": "sims/registry/sims.json",
+      "id": "excavator-trench",
+      "source": "sims/registry/sims.json#sims.excavator-trench"
+     },
+     "title": "Excavator Trench Cut",
+     "at": {
+      "lon": -91.325279,
+      "lat": 29.293213
+     },
+     "world_m": [
+      -118984.56,
+      -75811.36
+     ],
+     "local_m": [
+      -44601.5,
+      -13002.82
+     ],
+     "near": null,
+     "launch": {
+      "href": "web/trade_craft_3d.html?hall=operating-eng&sim=excavator-trench",
+      "lands": "seat",
+      "param": [
+       "hall",
+       "sim"
+      ]
+     },
+     "suggests": [
+      "operating-eng-locate-first",
+      "shoring-read-the-ground-again"
+     ],
+     "treasure": "treasure-station-st-22109-sim-excavator-trench",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22109-task-sim-excavator-trench-oak-fill",
+     "layer": "task",
+     "ref": {
+      "registry": "tasks/registry/tasks.json",
+      "id": "sim-excavator-trench-oak-fill",
+      "source": "tasks/registry/tasks.json#tasks[5]"
+     },
+     "title": "Excavator Trench Cut: Old-fill utility cut",
+     "at": {
+      "lon": -90.4468,
+      "lat": 29.415772
+     },
+     "world_m": [
+      -34367.69,
+      -62183.4
+     ],
+     "local_m": [
+      40492.39,
+      625.14
+     ],
+     "near": null,
+     "launch": {
+      "href": "web/trade_craft_3d.html?hall=operating-eng&sim=excavator-trench&scenario=oak-fill",
+      "lands": "seat",
+      "param": [
+       "hall",
+       "sim",
+       "scenario"
+      ]
+     },
+     "suggests": [
+      "operating-eng-locate-first",
+      "shoring-read-the-ground-again"
+     ],
+     "treasure": "treasure-station-st-22109-task-sim-excavator-trench-oak-fill",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22109-unit-ironworkers",
+     "layer": "k12-unit",
+     "ref": {
+      "registry": "schools/registry/schools.json",
+      "id": "ironworkers",
+      "source": "schools/registry/schools.json#units[17]"
+     },
+     "title": "Ironworkers: flipped unit",
+     "at": {
+      "lon": -90.846109,
+      "lat": 29.063415
+     },
+     "world_m": [
+      -72829.94,
+      -101363.77
+     ],
+     "local_m": [
+      1813.31,
+      -38555.23
+     ],
+     "near": null,
+     "launch": {
+      "href": "web/trade_craft_schools.html#band-9-10",
+      "lands": "section",
+      "param": [
+       "#band-"
+      ]
+     },
+     "suggests": [
+      "ironworkers-plan-out-loud"
+     ],
+     "treasure": "treasure-station-st-22109-unit-ironworkers",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22109-lesson-port-crane-read-the-rope",
+     "layer": "lesson",
+     "ref": {
+      "registry": "lessons/registry/lessons.json",
+      "id": "port-crane-read-the-rope",
+      "source": "lessons/registry/lessons.json#lessons.port-crane-read-the-rope"
+     },
+     "title": "Read the rope before the box goes up",
+     "at": {
+      "lon": -90.806178,
+      "lat": 29.75281
+     },
+     "world_m": [
+      -68983.71,
+      -24706.43
+     ],
+     "local_m": [
+      5681.23,
+      38102.11
+     ],
+     "near": null,
+     "launch": {
+      "href": "web/trade_craft_lessons.html#lesson-port-crane-read-the-rope",
+      "lands": "section",
+      "param": [
+       "#lesson-"
+      ]
+     },
+     "suggests": [
+      "riggers-carry-under-control"
+     ],
+     "treasure": "treasure-station-st-22109-lesson-port-crane-read-the-rope",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22109-unit-operating-eng",
+     "layer": "k12-unit",
+     "ref": {
+      "registry": "schools/registry/schools.json",
+      "id": "operating-eng",
+      "source": "schools/registry/schools.json#units[25]"
+     },
+     "title": "Operating Engineers: flipped unit",
+     "at": {
+      "lon": -91.185521,
+      "lat": 29.599611
+     },
+     "world_m": [
+      -105522.79,
+      -41741.41
+     ],
+     "local_m": [
+      -31063.84,
+      21067.13
+     ],
+     "near": null,
+     "launch": {
+      "href": "web/trade_craft_schools.html#band-9-10",
+      "lands": "section",
+      "param": [
+       "#band-"
+      ]
+     },
+     "suggests": [
+      "operating-eng-locate-first",
+      "m-snow-road-site-walk"
+     ],
+     "treasure": "treasure-station-st-22109-unit-operating-eng",
+     "provenance": "AUTHORED"
+    },
+    {
+     "id": "st-22109-lesson-operating-eng-locate-first",
+     "layer": "lesson",
+     "ref": {
+      "registry": "lessons/registry/lessons.json",
+      "id": "operating-eng-locate-first",
+      "source": "lessons/registry/lessons.json#lessons.operating-eng-locate-first"
+     },
+     "title": "Prove what is under the ground before the bucket moves",
+     "at": {
+      "lon": -90.646454,
+      "lat": 29.231934
+     },
+     "world_m": [
+      -53598.77,
+      -82625.28
+     ],
+     "local_m": [
+      21152.9,
+      -19816.74
+     ],
+     "near": null,
+     "launch": {
+      "href": "web/trade_craft_lessons.html#lesson-operating-eng-locate-first",
+      "lands": "section",
+      "param": [
+       "#lesson-"
+      ]
+     },
+     "suggests": [],
+     "treasure": "treasure-station-st-22109-lesson-operating-eng-locate-first",
+     "provenance": "AUTHORED"
+    }
+   ],
+   "paths": [
+    {
+     "id": "trade",
+     "label": "Trade path",
+     "steps": [
+      "st-22109-sim-crane-lift",
+      "st-22109-task-sim-crane-lift-oak-terminal",
+      "st-22109-sim-excavator-trench",
+      "st-22109-task-sim-excavator-trench-oak-fill"
+     ],
+     "gated": false
+    },
+    {
+     "id": "k12",
+     "label": "K-12 path",
+     "steps": [
+      "st-22109-unit-ironworkers",
+      "st-22109-unit-operating-eng",
+      "st-22109-lesson-operating-eng-locate-first",
+      "st-22109-lesson-port-crane-read-the-rope"
+     ],
+     "gated": false
+    },
+    {
+     "id": "explorer",
+     "label": "Explorer / free play",
+     "steps": [
+      "treasure-parish-22109-arrive",
+      "egg-parish-22109-word"
+     ],
+     "gated": false
+    }
+   ]
+  }
+ ]
+}
