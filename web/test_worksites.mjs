@@ -215,5 +215,12 @@ ok('[theme] every hero word is a tasks.ws.* catalog string (en)', (() => {
   return ['tasks.ws.kicker', 'tasks.ws.lede', 'tasks.ws.credit'].every((k) => html.includes(en[k].replace(/&/g, '&amp;').replace(/'/g, '&#x27;')) || html.includes(en[k]));
 })());
 
+// QA wave 4: a site style re-declares plate/panel, so status colours must follow it
+// (--tc-ok/--tc-warn on body while a style is on, else the page's own values)
+ok('[style] status colours (--good/--warn/--crit) follow the active site style via --tc-ok/--tc-warn on body, falling back to the page\'s own',
+  html.includes(':root{--pg-good:var(--good);--pg-warn:var(--warn);--pg-crit:var(--crit)}')
+  && html.includes('body{--good:var(--tc-ok,var(--pg-good));--warn:var(--tc-warn,var(--pg-warn));--crit:var(--tc-warn,var(--pg-crit))}')
+  && html.includes('--tc-warn:') && html.includes('--tc-ok:'));
+
 console.log(`web/test_worksites: ${n} checks passed${bad ? `, ${bad} FAILED` : ''}`);
 process.exit(bad ? 1 : 0);

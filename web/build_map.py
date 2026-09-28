@@ -467,6 +467,11 @@ PAGE = f'''<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name
   --rule:#CBD6D6; --mark:#9F680B; --mark-ink:#FFFFFF; --steel:#0A7E8C; --steel-ink:#065A66;
   --land:#E7EDEB; --good:#2C7A50; --warn:#9A6408; --crit:#A8432F;
 }}
+/* a site style (data-style, design_kit.style_css) re-declares the plate and panel, so the status
+   colours must follow it too: its own --tc-ok/--tc-warn (set on body only while a style is on),
+   else the page's own scheme-aware values (QA wave 4) */
+:root{{--pg-good:var(--good);--pg-warn:var(--warn);--pg-crit:var(--crit)}}
+body{{--good:var(--tc-ok,var(--pg-good));--warn:var(--tc-warn,var(--pg-warn));--crit:var(--tc-warn,var(--pg-crit))}}
 *{{box-sizing:border-box}}
 body{{margin:0;background:var(--plate);color:var(--ink);
   font:15px/1.6 "IBM Plex Sans",system-ui,sans-serif;-webkit-font-smoothing:antialiased}}

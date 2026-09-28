@@ -415,7 +415,9 @@
   "tasks.ws.cta": "See the first site",
   "tasks.ws.pause": "Pause background video",
   "tasks.ws.play": "Play background video",
-  "tasks.ws.credit": "Footage recorded from this app’s 3D campus"
+  "tasks.ws.credit": "Footage recorded from this app’s 3D campus",
+  "hero.credit.hall_interior_dolly": "Footage: inside one trade hall, over the training bays, recorded from this app’s own 3D scenes.",
+  "tasks.via": "Opens at the {hall} hall, {campus}"
  },
  "districts": {
   "structural": {

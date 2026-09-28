@@ -3,7 +3,7 @@
  "how": "media/record.mjs (virtual clock, camera driven through the page hook, one screenshot per frame) -> media/encode.py (grade, VP9 + H.264, poster, 480 px preview) -> media/build.py",
  "budget_bytes": 3145728,
  "fps": 24,
- "source_stamp": "72c67cb639417e7958c8e21cdaf2e8da559e39487ce6eb6bc40ab91ea493d0b6",
+ "source_stamp": "ab25fa3ea0c004f513d03ee5222c5dfca348eee896113d897d26ae69c3c65507",
  "clips": [
   {
    "id": "campus-green-crane-up",

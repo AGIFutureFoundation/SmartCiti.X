@@ -101,6 +101,9 @@ def counts_for(tasks):
             'launchable': sum(1 for t in tasks if t['launch']['href'])}
 
 
+VIA_EN = 'Opens at the {hall} hall, {campus}'
+
+
 def _kind_label(kind, labels):
     return labels['kind.' + kind] if labels and ('kind.' + kind) in labels else TASKS['kinds'][kind]['label']
 
@@ -124,6 +127,12 @@ def task_card(t, labels=None, from_dir='web'):
               f'<small>{e(_lbl(labels, "lands." + t["launch"]["lands"], t["launch"]["lands"]))}</small></a>')
     else:
         go = f'<p class="tk-why"><b>{e(_lbl(labels, "nolink", "No launch link"))}:</b> {e(t["launch"]["why"])}</p>'
+    if href and 'via' in t['launch']:
+        # the seat opens at a hall on ANOTHER campus than the task's place: say so
+        v = t['launch']['via']
+        go = (f'<p class="tk-via" data-via-hall="{e(v["hall"])}" data-via-campus="{e(v["campus"])}">'
+              + e(_lbl(labels, 'via', VIA_EN).replace('{hall}', v['hall_name']).replace('{campus}', v['campus_name']))
+              + '</p>' + go)
     return (f'<article class="tk-card" data-task="{e(t["id"])}" data-kind="{e(t["kind"])}">'
             f'<div class="tk-head"><span class="tk-kind">{KIND_GLYPH[t["kind"]]} {e(_kind_label(t["kind"], labels))}</span>'
             f'<span class="tk-prov">{e(t["provenance"])}</span></div>'
@@ -163,6 +172,7 @@ def tasks_json(tasks, from_dir='web'):
                         'href': rel_href(t['launch']['href'], from_dir),
                         'lands': t['launch']['lands'] if t['launch']['href'] else None,
                         'why': None if t['launch']['href'] else t['launch']['why'],
+                        'via': t['launch']['via'] if 'via' in t['launch'] else None,
                         'requires': [{'id': l, 'title': LESSON_TITLES[l]} for l in t['requires']],
                         'brief': t['brief'], 'provenance': t['provenance']}
                        for t in tasks], ensure_ascii=False, separators=(',', ':')).replace('</', '<\\/')
@@ -193,6 +203,8 @@ TASKS_CSS = '''
 .tk-board a.tk-go{font-family:inherit;margin-top:auto;align-self:flex-start;display:inline-flex;gap:6px;align-items:center;min-height:36px;padding:7px 12px;border-radius:6px;background:var(--mark);color:var(--mark-ink);font-weight:600;text-decoration:none;font-size:14px}
 .tk-board a.tk-go small{font-family:inherit;font-weight:400;opacity:.85}
 .tk-why{margin:auto 0 0;font-size:12px;color:var(--muted)}
+.tk-via{margin:auto 0 6px;font-size:12px;color:var(--ink);border-left:3px solid var(--mark);padding-left:6px}
+.tk-board .tk-via+a.tk-go{margin-top:0}
 .tk-list{list-style:none;padding:0;margin:4px 0;font-size:13px}
 .tk-list li{padding:2px 0}
 '''
@@ -236,8 +248,12 @@ function tcTaskCard(t, L, lessonHref) {
   const go = t.href
     ? `<a class="tk-go" href="${E(t.href)}" data-lands="${E(t.lands)}">${E(L('launch', 'Launch'))} \u2192 <small>${E(L('lands.' + t.lands, t.lands))}</small></a>`
     : `<p class="tk-why"><b>${E(L('nolink', 'No launch link'))}:</b> ${E(t.why)}</p>`;
+  // the seat opens at a hall on ANOTHER campus than the task's place: say so
+  const via = t.href && t.via
+    ? `<p class="tk-via" data-via-hall="${E(t.via.hall)}" data-via-campus="${E(t.via.campus)}">${E(L('via', 'Opens at the {hall} hall, {campus}').replace('{hall}', t.via.hall_name).replace('{campus}', t.via.campus_name))}</p>`
+    : '';
   return `<article class="tk-card" data-task="${E(t.id)}" data-kind="${E(t.kind)}"><div class="tk-head"><span class="tk-kind">${TC_TASK_GLYPH[t.kind]} ${E(L('kind.' + t.kind, TC_TASK_KIND_EN[t.kind]))}</span>` +
-    `<span class="tk-prov">${E(t.provenance)}</span></div><h4>${E(t.title)}</h4><p class="tk-brief">${E(t.brief)}</p>${req}${go}</article>`;
+    `<span class="tk-prov">${E(t.provenance)}</span></div><h4>${E(t.title)}</h4><p class="tk-brief">${E(t.brief)}</p>${req}${via}${go}</article>`;
 }
 function tcTaskBoard(tasks, title, L, lessonHref, boardId) {
   const E = tcTaskEsc;

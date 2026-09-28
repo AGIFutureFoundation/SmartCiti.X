@@ -41,6 +41,11 @@
   --code-bg:#1A2327; --head:#EDF3F1;
   --c1:#00A2B5; --c2:#C08325; --c3:#8A82CE; --grid:#2A3739;
 }
+/* 5-style switcher: map this page's own palette onto the tokens every style re-declares */
+html:is([data-style],:has(input[name="tc-style"]:is([value="enterprise"],[value="midnight"],[value="blueprint"],[value="hivis"],[value="studio"]):checked)) {
+  --paper:var(--plate); --code-bg:var(--raised); --head:var(--ink); --accent-ink:var(--link);
+  --band:var(--accent); --grid:var(--line); --c1:var(--link); --c2:var(--accent); --c3:var(--muted);
+}
 * { box-sizing:border-box; }
 body { background:var(--paper); color:var(--ink); margin:0;
   font:16px/1.65 "IBM Plex Sans", system-ui, sans-serif; }

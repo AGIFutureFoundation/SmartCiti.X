@@ -77,10 +77,12 @@ ok('[hooks] a camera hook for filming (window.__wilds.cam) that refuses malforme
 ok('[view] distance fog and an overview camera', /new THREE\.Fog\(/.test(main) && /new OrbitControls\(/.test(main) && /function buildOverview/.test(main));
 ok('[view] water where the world has it, and a minimap', /function buildWater/.test(main) && /id="minimap"/.test(html) && /function drawMinimap/.test(main));
 
-ok('[draw calls] tree billboards past VEG_R: one InstancedMesh per species (crossed cards), never inside VEG_R, hidden in the overview',
-  /const BB_R = \d+, BB_CELL = \d+;/.test(main) && /for \(const \[k, g\] of Object\.entries\(BB_SHAPES\)\) \{\s*const m = new THREE\.InstancedMesh\(/.test(main)
+ok('[draw calls] tree billboards past VEG_R: ONE InstancedMesh for every species (w4: merged cards, per-instance bbKind, the other card collapsed in the vertex shader), never inside VEG_R, hidden in the overview',
+  /const BB_R = \d+, BB_CELL = \d+;/.test(main) && (main.match(/new THREE\.InstancedMesh\(bbGeo, matBB, BB_TOTAL\)/g) || []).length === 1
+  && !/Object\.entries\(BB_SHAPES\)\) \{\s*const m = new THREE\.InstancedMesh/.test(main)
+  && /transformed \*= step\(abs\(bbPart - bbKind\), 0\.5\);/.test(main) && /bbKind\.setX\(at \+ n, kind\)/.test(main)
   && /if \(d2 <= VEG_R \* VEG_R \|\| d2 > BB_R \* BB_R/.test(main) && /refillBillboards\(\);\s*\}/.test(main)
-  && /for \(const k in bb\) bb\[k\]\.visible = walkOn;/.test(main) && Number((main.match(/const BB_R = (\d+)/) || [, 0])[1]) > Number((main.match(/const VEG_R = (\d+)/) || [, 1e9])[1]));
+  && /bbMesh\.visible = walkOn;/.test(main) && Number((main.match(/const BB_R = (\d+)/) || [, 0])[1]) > Number((main.match(/const VEG_R = (\d+)/) || [, 1e9])[1]));
 ok('[hooks] a flyover path for filming: DERIVED keyframes (trailhead + sites in trail order), flyover(t) refuses t outside [0,1], a Flyover button',
   /flyoverPath\(\) \{/.test(main) && /flyover\(t\) \{/.test(main) && /const order = \['trailhead', \.\.\.W\.trails\.map\(\(l\) => l\.to\)\]/.test(main)
   && /throw new Error\('wilds flyover: t must be in \[0, 1\]/.test(main) && /<button type="button" class="tc-btn tc-btn-ghost" id="fly" aria-pressed="false">/.test(html)
@@ -139,7 +141,7 @@ ok('[geo] every world card states its geolocation label verbatim from the regist
 
 /* -------------------------------------------------------------- i18n -- */
 const en = JSON.parse(read('i18n/locales/en.json')).strings;
-const usedKeys = [...new Set([...builder.matchAll(/T(?:RAW)?\("(wilds\.[a-z_.]+)"\)|TRAW\('wilds\.' \+ k\)/g)].map((m) => m[1]).filter(Boolean))];
+const usedKeys = [...new Set([...builder.matchAll(/T(?:RAW|S|A)?\("(wilds\.[a-z_.]+)"\)|TRAW\('wilds\.' \+ k\)/g)].map((m) => m[1]).filter(Boolean))];
 const locs = ['es', 'fr', 'de', 'pt', 'zh', 'hi', 'ar'].map((l) => JSON.parse(read(`i18n/locales/${l}.json`)).strings);
 const i18nBad = [];
 for (const k of usedKeys) {
@@ -151,6 +153,72 @@ for (const k of ['wilds.lede', 'wilds.help', 'wilds.site.go', 'wilds.site.halls'
 for (const lit of ['>Go to this site<', '>Union halls<', 'Side quest: ', '>Treasure riddles<', "'Fast travel'", '>Overview<']) if (builder.includes(lit)) i18nBad.push(`builder still hard-codes ${lit}`);
 ok(`[i18n] page chrome comes from ${usedKeys.length} wilds.* keys present in all 8 locales; no hard-coded chrome left in the builder`,
   usedKeys.length >= 20 && i18nBad.length === 0, i18nBad);
+
+/* ------------------------------------------------ run-time locale (w4) -- */
+// the chrome renders in the reader's locale at run time: ?lang=<code> first
+// (as the campus page does), then navigator.languages, then en; the catalogue
+// embedded in the page carries every key the page marks, for all 8 locales,
+// and a missing key throws by name rather than falling back to English
+const cat = JSON.parse((html.match(/<script type="application\/json" id="wilds-i18n">([\s\S]*?)<\/script>/) || [, '{}'])[1]);
+const localeFiles = ['en', 'es', 'fr', 'de', 'pt', 'zh', 'hi', 'ar'].map((l) => JSON.parse(read(`i18n/locales/${l}.json`)));
+const marked = [...new Set([...html.matchAll(/data-i18n(?:-aria)?="(wilds\.[a-z_.]+)"/g)].map((m) => m[1]))];
+const jsKeys = Object.keys(JSON.parse((html.match(/<script type="application\/json" id="wilds-labels">([\s\S]*?)<\/script>/) || [, '{}'])[1])).map((k) => 'wilds.' + k);
+const rtBad = [];
+for (const f of localeFiles) {
+  const c = cat[f.locale];
+  if (!c) { rtBad.push(`${f.locale}: not in the page catalogue`); continue; }
+  if (c.dir !== f.dir) rtBad.push(`${f.locale}: dir ${c.dir} != catalog ${f.dir}`);
+  for (const k of [...marked, ...jsKeys]) if (c.strings[k] !== f.strings[k]) rtBad.push(`${f.locale}: ${k} differs from i18n/locales or missing`);
+}
+if (Object.keys(cat).length !== 8) rtBad.push(`catalogue has ${Object.keys(cat).length} locales`);
+if (marked.length < 25) rtBad.push(`only ${marked.length} marked chrome keys`);
+ok(`[i18n-rt] the page embeds a run-time catalogue: ${Object.keys(cat).length} locales x ${marked.length + jsKeys.length} chrome keys (marked + JS), each equal to i18n/locales and carrying the locale's own dir`,
+  rtBad.length === 0, rtBad);
+const pick = main.slice(main.indexOf('function pickLocale()'), main.indexOf('const LOC = pickLocale();'));
+ok('[i18n-rt] the locale is picked from ?lang= (when the catalogue has it), then navigator.languages, then en; renderChrome sets <html lang> and dir from the catalogue and re-renders every [data-i18n] and [data-i18n-aria]',
+  /searchParams|new URLSearchParams\(location\.search\)\.get\('lang'\)/.test(pick) && /Object\.hasOwn\(I18N, q\)/.test(pick)
+  && /navigator\.languages/.test(pick) && /return 'en';\s*\}$/.test(pick.trim() + '}'.slice(1))
+  && /document\.documentElement\.lang = LOC;/.test(main) && /document\.documentElement\.dir = I18N\[LOC\]\.dir;/.test(main)
+  && /querySelectorAll\('\[data-i18n\]'\)/.test(main) && /querySelectorAll\('\[data-i18n-aria\]'\)/.test(main)
+  && main.indexOf('renderChrome();') > -1 && main.indexOf('renderChrome();') < main.indexOf('await fromHash()'));
+// behaviour, not just text: pickLocale() run with a stand-in location/navigator
+const pickRun = (search, languages, language) => {
+  try { return new Function('I18N', 'location', 'navigator', pick + '\nreturn pickLocale();')(cat, { search }, { languages, language }); }
+  catch (e) { return 'threw ' + e.message; }
+};
+const pickCases = [['?lang=ar', ['en-US'], 'en-US', 'ar'], ['?lang=xx', ['fr-CA'], 'fr-CA', 'fr'], ['', ['ja', 'de-DE'], 'ja', 'de'],
+  ['', [], 'pt-BR', 'pt'], ['', ['ja'], 'ja', 'en'], ['?lang=toString', ['ko'], 'ko', 'en']];
+const pickBad = pickCases.map(([q, ls, l, want]) => [q, ls, pickRun(q, ls, l), want]).filter(([, , got, want]) => got !== want).map((r) => JSON.stringify(r));
+ok('[i18n-rt] pickLocale() behaves: ?lang=ar -> ar; an unknown ?lang falls through to navigator.languages (fr-CA -> fr, [ja, de-DE] -> de, navigator.language pt-BR -> pt); nothing known -> en; a prototype key is not a locale',
+  pickBad.length === 0, pickBad);
+const trFn = main.slice(main.indexOf('function tr(k)'), main.indexOf('function renderChrome()'));
+ok('[i18n-rt] no silent English fallback: tr() throws by name on a missing key (no ?? / || default), JS labels come from tr(), and the build fails naming locale + key',
+  /throw new Error\(`wilds i18n: locale \$\{LOC\} has no \$\{k\}`\)/.test(trFn) && !/\?\?|\|\|/.test(trFn)
+  && /const L = Object\.fromEntries\(Object\.keys\(L_EN\)\.map\(\(k\) => \[k, tr\('wilds\.' \+ k\)\]\)\);/.test(main)
+  && /raise SystemExit\(f'build_wilds: locale \{_c\["locale"\]\} has no wilds chrome key \{_k!r\}'\)/.test(builder));
+// RTL: the page's own CSS mirrors under dir="rtl" - no physical-direction
+// declaration outside the three rules positioned by projection/centring
+const css = (html.match(/<style>\n\/\* UI colours[\s\S]*?<\/style>/) || [''])[0];
+const ALLOWED_PHYS = ['.lbl{', '#stick i{', '#toast{'];
+const physBad = css.split('\n').filter((l) => /(margin|padding|border)-(left|right)\s*:|text-align\s*:\s*(left|right)|(^|[{;])\s*(left|right)\s*:|float\s*:\s*(left|right)/.test(l)
+  && !ALLOWED_PHYS.some((a) => l.startsWith(a)));
+ok('[rtl] the wilds CSS uses logical properties (inset-inline-*, padding-inline-*, float:inline-end); physical left/right only in the projection-placed label, the centred stick knob and the centred toast',
+  css.length > 1000 && physBad.length === 0 && /inset-inline-start:10px/.test(css) && /inset-inline-end:10px/.test(css), physBad);
+
+// deep links (w4): a task's #world/site link must land ON the site's pad; the
+// page teleports inside pad_m and the browser eval holds every site-walk link to it
+const goS = main.slice(main.indexOf('function goSite(id)'), main.indexOf('async function fromHash()'));
+const padK = +((goS.match(/teleport\(s\.x, s\.z \+ s\.pad_m \* ([\d.]+), 0\)/) || [, NaN])[1]);
+const evSrc = read('web/eval_wilds.mjs');
+ok(`[deep link] goSite lands ${padK} x pad_m from the site centre (inside the pad), and eval_wilds follows every wilds-site-walk task link and fails unless the eye is within pad_m with the panel open`,
+  padK > 0 && padK < 1 && /t\.kind === 'wilds-site-walk'/.test(evSrc) && /if \(!\(d <= site\.pad_m\) \|\| !got\.open\) linkBad\.push/.test(evSrc)
+  && /\?lang=ar/.test(evSrc) && /billboardMeshes !== 1/.test(evSrc));
+
+// prose that has no catalogue key yet stays English on purpose and says so
+// (lang="en" dir="ltr"), so an RTL reader gets it laid out and voiced as English
+ok('[rtl] untranslated English prose (intro, play line, honesty list) is marked lang="en" dir="ltr" so it does not flip under dir="rtl"',
+  /<p class="intro" lang="en" dir="ltr">Walk/.test(html) && /<p class="help" lang="en" dir="ltr">Caches, side quests/.test(html)
+  && /<ul class="honesty" lang="en" dir="ltr">/.test(html));
 
 /* ------------------------------------------------------------- tasks -- */
 const tpath = join(ROOT, 'tasks/registry/tasks.json');

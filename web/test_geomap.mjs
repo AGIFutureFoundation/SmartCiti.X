@@ -407,7 +407,7 @@ ok('[generator] build_geomap.py fails closed by name (need()) and takes no `.get
     toggled.length >= 10 && toggled.every((id) => styleIds.includes(id))
     && /<label><input type="checkbox" checked data-layer="\$\{l\.key\}">/.test(page));
   ok('[shipped] a hall is hit-tested from D.geo3d footprints projected to the screen (MapLibre\'s globe answers no extrusion query)',
-    /function hallAt\(pt\)/.test(page) && /for \(const f of D\.geo3d\.halls\.features\)/.test(page) && /const f = hallAt\(e\.point\)/.test(page));
+    /function hallAt\(pt\)/.test(page) && /return D\.geo3d\.halls\.features\.map\(\(f, i\) =>/.test(page) && /const f = hallAt\(e\.point\)/.test(page));
 
   // worksites: at their place's own point, or off the globe - never invented
   const ws = need(reg('worksites/registry/worksites.json'), 'sites', 'worksites.json');
@@ -480,6 +480,67 @@ ok('[generator] build_geomap.py fails closed by name (need()) and takes no `.get
   ok('[generator] the geo3d / worksites / K-12 / wilds / tasks readers in build_geomap.py fail closed: need() on every field, no default-taking get',
     g3gen.length > 2000 && /need\(pl, 'kind'/.test(g3gen) && /need\(ins, 'evokes'/.test(g3gen) && /need\(d, 'status'/.test(g3gen)
     && !/\.get\(/.test(g3gen.replace(/#.*$/gm, '')));
+}
+
+// ---------------------------------------------------------------- wave 4
+// (1) the map's paint follows the five Styles, and provenance stays legible
+{
+  const lum = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16) / 255)
+    .map((c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4))
+    .reduce((a, c, i) => a + c * [0.2126, 0.7152, 0.0722][i], 0);
+  const ratio = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p); return (x + 0.05) / (y + 0.05); };
+  const SP = D.stylePaint;
+  const TOK = ['plate', 'raised', 'line', 'ink', 'amber', 'amber-ink', 'steel', 'ok'];
+  const shippedTokens = {};
+  for (const m of page.matchAll(/\/\*style:([a-z]+)\*\/[^{]*\{([^}]*)\}/g))
+    shippedTokens[m[1]] = Object.fromEntries(TOK.map((t) => [t, (m[2].match(new RegExp(`--tc-${t}:(#[0-9A-Fa-f]{6})!important`)) || [])[1]]));
+  const canvasBlock = (page.match(/body\.tc-theme-canvas\{([^}]*--tc-plate:[^}]*)\}/) || [])[1] || '';
+  shippedTokens.default = Object.fromEntries(TOK.map((t) => [t, (canvasBlock.match(new RegExp(`--tc-${t}:(#[0-9A-Fa-f]{6})[;}]`)) || [])[1]]));
+  const ids = Object.keys(SP.styles).sort();
+  const drift = ids.filter((id) => JSON.stringify(shippedTokens[id]) !== JSON.stringify(SP.styles[id].tokens));
+  ok(`[shipped] the map paint table covers the canvas default and all 5 Styles, each token equal to the --tc-* the page's CSS ships${drift.length ? ' - drift: ' + drift.join(', ') : ''}`,
+    ids.join() === 'blueprint,default,enterprise,hivis,midnight,studio' && drift.length === 0);
+  const low = [];
+  for (const id of ids) for (const [fg, bg, min, what] of SP.pairs) {
+    const tk = shippedTokens[id];
+    const r = ratio(tk[SP.roles[fg]], tk[SP.roles[bg]]);
+    if (!(r >= min)) low.push(`${id}: ${what} ${r.toFixed(2)} < ${min}`);
+  }
+  const need8 = ['label/labelPill', 'labelPill/bg', 'recorded/authored', 'ring/bg', 'recorded/bg', 'hallEdge/bg', 'restText/restPill', 'restText/monitorPill'];
+  ok(`[shipped] campus label text and halo, RECORDED vs AUTHORED anchors and the SCHEMATIC hall outline measure their contrast minimum against every Style's background${low.length ? ' - low: ' + low.join('; ') : ''}`,
+    low.length === 0 && need8.every((k) => SP.pairs.some(([f, b]) => `${f}/${b}` === k))
+    && SP.roles.recorded !== SP.roles.authored && SP.roles.ring !== SP.roles.bg);
+  const styleBlock = page.slice(page.indexOf('    layers: ['), page.indexOf('  bounds: NETWORK_BOUNDS'));
+  const painted = ['bg', 'grat', 'parcels', 'halls3d-edge', 'frames-fill', 'frames', 'routes', 'anchors', 'campuses'];
+  const typedHex = painted.filter((id) => {
+    const i = styleBlock.indexOf(`{ id: '${id}',`);
+    const rest = styleBlock.slice(i + 5); const j = rest.indexOf('{ id: ');
+    return i < 0 || /#[0-9A-Fa-f]{6}/.test(j < 0 ? rest : rest.slice(0, j));
+  });
+  ok(`[shipped] no typed colour in the map paint: each themed layer reads a token role (PC.*) and is repainted on a Style change${typedHex.length ? ' - typed/missing: ' + typedHex.join(', ') : ''}`,
+    typedHex.length === 0 && painted.every((id) => page.includes(`['${id}', '`))
+    && /getPropertyValue\('--tc-' \+ t\)/.test(page)
+    && /new MutationObserver\(\(\) => \{ if \(styleLoaded\) applyStylePaint\(\); \}\)\s*\.observe\(document\.documentElement, \{ attributes: true, attributeFilter: \['data-style'\] \}\)/.test(page)
+    && /map\.setSky\(skyOf\(PC\)\)/.test(page) && /sky: skyOf\(PC\)/.test(page)
+    && /\.campus-marker\{background:var\(--mark\);color:var\(--mark-ink\)/.test(page)
+    && /\.rest-cluster\{[^}]*background:var\(--good\);color:var\(--plate\)/.test(page) && /\.restoration-marker\{[^}]*color:var\(--plate\)/.test(page));
+}
+// (2) hall picking: ground footprint, top face (wall height) and walls
+{
+  const src = page.slice(page.indexOf('/*hit:begin'), page.indexOf('/*hit:end*/'));
+  let H = null;
+  try { H = new Function(src + '\nreturn { pickHall, inPoly, hull };')(); } catch (e) { H = null; }
+  const sq = (x0, y0, s) => [{ x: x0, y: y0 }, { x: x0 + s, y: y0 }, { x: x0 + s, y: y0 + s }, { x: x0, y: y0 + s }];
+  const A = { id: 'A', ground: sq(100, 200, 40), top: sq(100, 80, 40) };      // tall hall, pitched: roof 120 px above
+  const B = { id: 'B', ground: sq(100, 300, 40), top: sq(100, 140, 40) };     // a taller hall in front of it
+  const got = (x, y, boxes) => { const r = H.pickHall({ x, y }, boxes); return r ? `${r.id}:${r.via}` : 'none'; };
+  const cases = H ? [
+    [120, 100, [A], 'A:roof'], [120, 220, [A], 'A:ground'], [120, 160, [A], 'A:wall'], [300, 100, [A], 'none'],
+    [120, 150, [A, B], 'B:roof'], [120, 100, [B, A], 'A:roof']] : [];
+  const bad = cases.filter(([x, y, b, want]) => got(x, y, b) !== want).map(([x, y, b, want]) => `(${x},${y}) ${got(x, y, b)} != ${want}`);
+  ok(`[shipped] hall picking hits a pitched tall hall on its top face and walls, not only its ground footprint; the nearer hall wins${bad.length ? ' - ' + bad.join('; ') : ''}`,
+    H !== null && cases.length === 6 && bad.length === 0
+    && /top: cs\.map\(\(c\) => screenAt\(c, f\.properties\.h\)\)/.test(page));
 }
 
 if (failed) {

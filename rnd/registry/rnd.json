@@ -39,7 +39,7 @@
   "budget_currencies": 2,
   "budget_agreements": 7,
   "suites_run": 80,
-  "suite_checks_declared": 3932,
+  "suite_checks_declared": 3958,
   "open_questions": 12,
   "negative_findings": 9,
   "cross_checks": 2,
@@ -4033,7 +4033,7 @@
    {
     "suite": "web/test_wilds.mjs",
     "pack": "web",
-    "readme_checks": 42,
+    "readme_checks": 49,
     "declared": true,
     "in_readme_table": true
    },
@@ -4145,7 +4145,7 @@
    {
     "suite": "web/test_worksites.mjs",
     "pack": "web",
-    "readme_checks": 150,
+    "readme_checks": 151,
     "declared": true,
     "in_readme_table": true
    },
@@ -4159,14 +4159,14 @@
    {
     "suite": "web/test_geomap.mjs",
     "pack": "web",
-    "readme_checks": 88,
+    "readme_checks": 92,
     "declared": true,
     "in_readme_table": true
    },
    {
     "suite": "web/test_map.mjs",
     "pack": "web",
-    "readme_checks": 47,
+    "readme_checks": 48,
     "declared": true,
     "in_readme_table": true
    },
@@ -4222,7 +4222,7 @@
    {
     "suite": "web/test_3d.mjs",
     "pack": "web",
-    "readme_checks": 348,
+    "readme_checks": 350,
     "declared": true,
     "in_readme_table": true
    },
@@ -4257,14 +4257,14 @@
    {
     "suite": "web/test_design.mjs",
     "pack": "web",
-    "readme_checks": 80,
+    "readme_checks": 83,
     "declared": true,
     "in_readme_table": true
    },
    {
     "suite": "tasks/test.mjs",
     "pack": "tasks",
-    "readme_checks": 21,
+    "readme_checks": 29,
     "declared": true,
     "in_readme_table": true
    },
@@ -4281,12 +4281,12 @@
   "suites_without_a_count": [
    "control/soak.mjs"
   ],
-  "declared_total": 3932,
-  "readme_headline": 3943,
+  "declared_total": 3958,
+  "readme_headline": 3969,
   "unaccounted_for": 11,
   "unaccounted_note": "the headline counts every `  ok ` line verify_all.sh sees, which includes suites the README table gives no number to and web/test_interiors.py, which the table does not list at all. The difference is that remainder and is computed, not reconciled by hand.",
   "min": 9,
-  "max": 348,
+  "max": 350,
   "median": 40,
   "thinnest": [
    {
@@ -4317,11 +4317,11 @@
   "thickest": [
    {
     "suite": "web/test_3d.mjs",
-    "checks": 348
+    "checks": 350
    },
    {
     "suite": "web/test_worksites.mjs",
-    "checks": 150
+    "checks": 151
    },
    {
     "suite": "respond/test.mjs",

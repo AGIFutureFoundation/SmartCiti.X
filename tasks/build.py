@@ -6,8 +6,11 @@ exist, and every field is read from the registry that owns it:
 
   - sim-scenario     sims/registry/sims.json scenarios (SCRIPTED params). The
                      3D page picks a seat's scenario by the campus of the hall
-                     it opens (web/build_3d.py startSim), so the link opens the
-                     first hall in sim.halls on that scenario's campus.
+                     it opens (web/build_3d.py startSim) unless ?scenario= names
+                     one of the seat's own scenarios outright. The link opens the
+                     first hall in sim.halls on that scenario's campus, or, when
+                     no hall there teaches the seat, the seat's first hall, and
+                     always names the scenario.
   - walkaround       sims/registry/sims.json walkaround points; they stand in
                      the seat's own yard, so the link opens the seat.
   - crib-drill       tools/registry/toolcribs.json hall_bindings; the crib is in
@@ -57,7 +60,17 @@ PARAM_READS = {
     ('web/build_3d.py', 'sim'): "params.get('sim')",
     ('web/build_3d.py', 'campus'): "params.get('campus')",
     ('web/build_3d.py', 'scenario-by-campus'): "def.scenarios?.find((s) => s.campus === campusKey)",
+    # ?scenario= is honoured only when it is one of THAT seat's own scenarios
+    # (else ignored), and it wins over the campus pick inside startSim
+    ('web/build_3d.py', 'scenario'): ("D.sims.sims[simDeep].scenarios.some((s) => s.id === params.get('scenario'))"),
+    ('web/build_3d.py', 'scenario-wins'): "def.scenarios?.find((s) => s.id === scenarioId)\n    ?? def.scenarios?.find((s) => s.campus === campusKey)",
+    ('web/build_3d.py', 'scenario-deep'): "startSim(simDeep, scenarioDeep);",
     ('web/build_wilds.py', '#world/site'): "const [wid, sid] = decodeURIComponent((location.hash || '').slice(1)).split('/');",
+    # the hash's site part stands you AT the site (goSite teleports to its pad
+    # and opens its card), and fromHash runs on boot, not only on hashchange
+    ('web/build_wilds.py', '#world/site-goes'): "if (sid) goSite(sid);",
+    ('web/build_wilds.py', '#world/site-boot'): "if (!(await fromHash())) await loadWorld(",
+    ('web/build_wilds.py', '#world/site-find'): "const s = W.sites.find((x) => x.id === id);\n  if (s === undefined) throw new Error('wilds: no site ' + id + ' in ' + W.id);",
     ('web/build_worksites.py', '#site-'): 'id="site-{esc(s["id"])}"',
 }
 PAGE_3D = 'web/trade_craft_3d.html'
@@ -125,6 +138,7 @@ def main():
     campuses = need(load('unions/registry/campuses.json'), 'campuses', 'unions/registry/campuses.json')
 
     hall_ids = {need(h, 'slug', 'pack/registry/halls.json#halls[]') for h in need(halls, 'halls', 'halls.json')}
+    hall_name = {h['slug']: need(h, 'name', f'pack/registry/halls.json#halls.{h["slug"]}') for h in halls['halls']}
     campus_of = {}
     for ck, c in campuses.items():
         for h in need(c, 'halls', f'campuses.json#{ck}'):
@@ -166,15 +180,33 @@ def main():
             here = [h for h in seat_halls if h in campus_of and campus_of[h] == sc_campus]
             req = sorted({lesson_ok(lid, src) for lid, _, st in steps_of_kind('sim')
                           if need(st, 'sim', lid) == sid and need(st, 'scenario', lid) == sc_id})
+            # the 3D page takes ?scenario= only if it is one of this seat's own
+            # scenarios; check that here too so a link it would ignore is never
+            # written (a campus-picked fallback would be a different yard)
+            own = [need(x, 'id', f'sims.json#sims.{sid}.scenarios[]') for x in need(sim, 'scenarios', src)]
+            if own.count(sc_id) != 1:
+                fail(f'{src}: scenario id "{sc_id}" is not exactly one of the {sid} seat\'s own scenarios')
             if here:
+                # a hall on the scenario's own campus: the campus would pick it
+                # anyway, and ?scenario= names it outright
                 place = hall_place(here[0], src)
-                launch = {'href': f'{PAGE_3D}?hall={here[0]}&sim={sid}', 'lands': 'seat',
-                          'param': ['hall', 'sim']}
+                launch = {'href': f'{PAGE_3D}?hall={here[0]}&sim={sid}&scenario={sc_id}', 'lands': 'seat',
+                          'param': ['hall', 'sim', 'scenario']}
             else:
+                # no hall on that campus teaches the seat: open the seat in its
+                # first hall and name the scenario outright. The place stays the
+                # scenario's campus (its params are that campus's); the seat
+                # itself stands in a hall of another campus, said in `via`.
+                if not seat_halls:
+                    fail(f'{src}: seat {sid} lists no halls, so no link can open it')
+                h0 = seat_halls[0]
+                hall_place(h0, src)
                 place = {'kind': 'campus', 'id': sc_campus, 'campus': sc_campus}
-                launch = {'href': None,
-                          'why': (f'no hall on the {sc_campus} campus teaches the {name} seat, and the '
-                                  '3D page picks a scenario only by the campus of the hall it opens')}
+                launch = {'href': f'{PAGE_3D}?hall={h0}&sim={sid}&scenario={sc_id}', 'lands': 'seat',
+                          'param': ['hall', 'sim', 'scenario'],
+                          'via': {'hall': h0, 'campus': campus_of[h0], 'hall_name': hall_name[h0],
+                                  'campus_name': need(campuses[campus_of[h0]], 'name',
+                                                      f'unions/registry/campuses.json#{campus_of[h0]}')}}
             tasks.append({
                 'id': f'sim-{sid}-{sc_id}', 'title': f'{name}: {need(sc, "name", src)}',
                 'kind': 'sim-scenario', 'place': place, 'launch': launch, 'requires': req,

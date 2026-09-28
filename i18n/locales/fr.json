@@ -415,7 +415,9 @@
   "tasks.ws.cta": "Voir le premier chantier",
   "tasks.ws.pause": "Mettre en pause la vidéo de fond",
   "tasks.ws.play": "Lire la vidéo de fond",
-  "tasks.ws.credit": "Images enregistrées dans le campus 3D de cette application"
+  "tasks.ws.credit": "Images enregistrées dans le campus 3D de cette application",
+  "hero.credit.hall_interior_dolly": "Images : l’intérieur d’une salle de métier, au-dessus des postes d’entraînement, enregistrées dans les propres scènes 3D de cette application.",
+  "tasks.via": "S’ouvre dans la salle {hall}, {campus}"
  },
  "districts": {
   "structural": {

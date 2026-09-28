@@ -11,6 +11,7 @@ from herovideo import hero_video_html, hero_video_control, HERO_VIDEO_CSS, HERO_
 from herovideo import band_open, band_caption, BAND_CLOSE, SECTION_VIDEO_CSS, SECTION_VIDEO_JS, MOTION_CSS, STYLE_BRIDGE_CSS  # noqa: E402
 from design_kit import icon, STYLE_HEAD_JS  # noqa: E402  vendored Lucide glyphs (ISC), decoration only
 from sitenav import nav_html, labels as nav_labels, NAV_CSS  # noqa: E402
+from style_bridge import bridge_css  # noqa: E402  HOMEUX w4: page palette -> the 5 switcher styles
 from sitenav import STYLE_JS  # noqa: E402  MEDIA's style menu: remembers the reader's choice
 from sitesearch import SEARCH_TRIGGER_JS  # noqa: E402  Ctrl/Cmd+K follows the header's search link
 
@@ -446,7 +447,7 @@ page = ('<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Trade
         '<link rel="stylesheet" href="vendor/fonts/fonts.css">\n'
         f'<style>{CSS}</style>\n<style>{NAV_CSS}</style>\n'
         f'<style>{HERO_VIDEO_CSS}{HERO_LANDING_CSS}</style>\n'
-        f'<style>{SECTION_VIDEO_CSS}{MOTION_CSS}{POLISH_CSS}{STYLE_BRIDGE_CSS}</style>\n'
+        f'<style>{SECTION_VIDEO_CSS}{MOTION_CSS}{POLISH_CSS}{STYLE_BRIDGE_CSS}{bridge_css()}</style>\n'
         f'{BODY}{HERO_VIDEO_JS}\n{SECTION_VIDEO_JS}\n{SEARCH_TRIGGER_JS}\n'
         f'<script id="style-js">{STYLE_JS}</script>\n')
 # Written beside this script, not into the working directory: run from the

@@ -415,7 +415,9 @@
   "tasks.ws.cta": "查看第一个工地",
   "tasks.ws.pause": "暂停背景视频",
   "tasks.ws.play": "播放背景视频",
-  "tasks.ws.credit": "画面录自本应用的 3D 园区"
+  "tasks.ws.credit": "画面录自本应用的 3D 园区",
+  "hero.credit.hall_interior_dolly": "影像：一座工种场馆内部，掠过各个训练工位，录制自本应用自身的 3D 场景。",
+  "tasks.via": "在{campus}的{hall}馆打开"
  },
  "districts": {
   "structural": {

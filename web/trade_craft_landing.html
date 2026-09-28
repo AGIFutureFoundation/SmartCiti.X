@@ -240,7 +240,12 @@ html[data-style="hivis"],html:has(input[name="tc-style"][value="hivis"]:checked)
 html[data-style="hivis"] :is(.hv-scrim,.vb-scrim),html:has(input[name="tc-style"][value="hivis"]:checked) :is(.hv-scrim,.vb-scrim){background:rgba(22,22,22,0.88)!important}
 html[data-style="studio"],html:has(input[name="tc-style"][value="studio"]:checked){--raise:var(--raised)!important;--dim:var(--muted)!important;--rule-2:var(--line)!important;--btn:var(--mark)!important;--btn-ink:var(--mark-ink)!important;--btn2:var(--panel)!important;--btn2-ink:var(--ink)!important;--hero:var(--plate)!important;--steel-ink:var(--link)!important;--focus:0 0 0 3px var(--plate),0 0 0 5px var(--link)!important;color-scheme:light}
 html[data-style="studio"] :is(.hv-scrim,.vb-scrim),html:has(input[name="tc-style"][value="studio"]:checked) :is(.hv-scrim,.vb-scrim){background:rgba(255,250,243,0.93)!important}
-</style>
+/* style_bridge: page palette -> 5-style tokens (HOMEUX) */
+html:is([data-style="enterprise"],:has(input[name="tc-style"][value="enterprise"]:checked)){--good:#1E7A45!important;--warn:#8F5500!important;--crit:#B42318!important;--steel-ink:#0B5CB5!important}
+html:is([data-style="midnight"],:has(input[name="tc-style"][value="midnight"]:checked)){--good:#6FCF97!important;--warn:#E8A33D!important;--crit:#FF9B8A!important;--steel-ink:#41C4D4!important}
+html:is([data-style="blueprint"],:has(input[name="tc-style"][value="blueprint"]:checked)){--good:#6FCF97!important;--warn:#F2C14E!important;--crit:#FF9B8A!important;--steel-ink:#7FE3F7!important}
+html:is([data-style="hivis"],:has(input[name="tc-style"][value="hivis"]:checked)){--good:#6FCF97!important;--warn:#FFD400!important;--crit:#FF9B8A!important;--steel-ink:#FFD400!important}
+html:is([data-style="studio"],:has(input[name="tc-style"][value="studio"]:checked)){--good:#1E7A45!important;--warn:#8F5500!important;--crit:#B42318!important;--steel-ink:#9A3412!important}</style>
 
 <nav class="sitenav" data-sitenav aria-label="Site pages">
 <a class="skip" href="#tc-main">Skip to main content</a>

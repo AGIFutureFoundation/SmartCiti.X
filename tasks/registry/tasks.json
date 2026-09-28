@@ -2,8 +2,8 @@
  "pack": "smartcitix-trade-craft-academy-tasks",
  "product": "SmartCiti.X : Trade Craft Academy (powered by AGI Corp)",
  "built": "2026-09-16",
- "source_stamp": "5f40c14530a49e00",
- "builder_stamp": "add365ea052839de",
+ "source_stamp": "e3d7fde668d2374d",
+ "builder_stamp": "95f904c9ac7c4689",
  "sources": {
   "sims/registry/sims.json": "987a9d4812b4c73b",
   "tools/registry/toolcribs.json": "653ef0fedb1caa9e",
@@ -78,8 +78,8 @@
    "seattle": 6,
    "treasure-island": 74
   },
-  "launchable": 181,
-  "not_launchable": 13,
+  "launchable": 194,
+  "not_launchable": 0,
   "with_linked_lessons": 80
  },
  "tasks": [
@@ -93,11 +93,12 @@
     "campus": "treasure-island"
    },
    "launch": {
-    "href": "web/trade_craft_3d.html?hall=crane-ops&sim=crane-lift",
+    "href": "web/trade_craft_3d.html?hall=crane-ops&sim=crane-lift&scenario=bay-steel",
     "lands": "seat",
     "param": [
      "hall",
-     "sim"
+     "sim",
+     "scenario"
     ]
    },
    "requires": [
@@ -120,11 +121,12 @@
     "campus": "oakland"
    },
    "launch": {
-    "href": "web/trade_craft_3d.html?hall=port-crane&sim=crane-lift",
+    "href": "web/trade_craft_3d.html?hall=port-crane&sim=crane-lift&scenario=oak-terminal",
     "lands": "seat",
     "param": [
      "hall",
-     "sim"
+     "sim",
+     "scenario"
     ]
    },
    "requires": [
@@ -145,8 +147,19 @@
     "campus": "new-orleans"
    },
    "launch": {
-    "href": null,
-    "why": "no hall on the new-orleans campus teaches the Tower Crane Lift seat, and the 3D page picks a scenario only by the campus of the hall it opens"
+    "href": "web/trade_craft_3d.html?hall=crane-ops&sim=crane-lift&scenario=nola-wharf",
+    "lands": "seat",
+    "param": [
+     "hall",
+     "sim",
+     "scenario"
+    ],
+    "via": {
+     "hall": "crane-ops",
+     "campus": "treasure-island",
+     "hall_name": "Crane Operators",
+     "campus_name": "Treasure Island Campus"
+    }
    },
    "requires": [],
    "provenance": "SCRIPTED",
@@ -193,8 +206,19 @@
     "campus": "treasure-island"
    },
    "launch": {
-    "href": null,
-    "why": "no hall on the treasure-island campus teaches the Excavator Trench Cut seat, and the 3D page picks a scenario only by the campus of the hall it opens"
+    "href": "web/trade_craft_3d.html?hall=operating-eng&sim=excavator-trench&scenario=bay-retrofit",
+    "lands": "seat",
+    "param": [
+     "hall",
+     "sim",
+     "scenario"
+    ],
+    "via": {
+     "hall": "operating-eng",
+     "campus": "oakland",
+     "hall_name": "Operating Engineers",
+     "campus_name": "Oakland Waterfront Campus"
+    }
    },
    "requires": [],
    "provenance": "SCRIPTED",
@@ -212,11 +236,12 @@
     "campus": "oakland"
    },
    "launch": {
-    "href": "web/trade_craft_3d.html?hall=operating-eng&sim=excavator-trench",
+    "href": "web/trade_craft_3d.html?hall=operating-eng&sim=excavator-trench&scenario=oak-fill",
     "lands": "seat",
     "param": [
      "hall",
-     "sim"
+     "sim",
+     "scenario"
     ]
    },
    "requires": [
@@ -238,8 +263,19 @@
     "campus": "new-orleans"
    },
    "launch": {
-    "href": null,
-    "why": "no hall on the new-orleans campus teaches the Excavator Trench Cut seat, and the 3D page picks a scenario only by the campus of the hall it opens"
+    "href": "web/trade_craft_3d.html?hall=operating-eng&sim=excavator-trench&scenario=nola-below-sea",
+    "lands": "seat",
+    "param": [
+     "hall",
+     "sim",
+     "scenario"
+    ],
+    "via": {
+     "hall": "operating-eng",
+     "campus": "oakland",
+     "hall_name": "Operating Engineers",
+     "campus_name": "Oakland Waterfront Campus"
+    }
    },
    "requires": [],
    "provenance": "SCRIPTED",
@@ -285,8 +321,19 @@
     "campus": "treasure-island"
    },
    "launch": {
-    "href": null,
-    "why": "no hall on the treasure-island campus teaches the Forklift Yard Run seat, and the 3D page picks a scenario only by the campus of the hall it opens"
+    "href": "web/trade_craft_3d.html?hall=teamsters&sim=forklift-run&scenario=bay-yard",
+    "lands": "seat",
+    "param": [
+     "hall",
+     "sim",
+     "scenario"
+    ],
+    "via": {
+     "hall": "teamsters",
+     "campus": "oakland",
+     "hall_name": "Teamsters",
+     "campus_name": "Oakland Waterfront Campus"
+    }
    },
    "requires": [],
    "provenance": "SCRIPTED",
@@ -304,11 +351,12 @@
     "campus": "oakland"
    },
    "launch": {
-    "href": "web/trade_craft_3d.html?hall=teamsters&sim=forklift-run",
+    "href": "web/trade_craft_3d.html?hall=teamsters&sim=forklift-run&scenario=oak-lane",
     "lands": "seat",
     "param": [
      "hall",
-     "sim"
+     "sim",
+     "scenario"
     ]
    },
    "requires": [
@@ -331,8 +379,19 @@
     "campus": "new-orleans"
    },
    "launch": {
-    "href": null,
-    "why": "no hall on the new-orleans campus teaches the Forklift Yard Run seat, and the 3D page picks a scenario only by the campus of the hall it opens"
+    "href": "web/trade_craft_3d.html?hall=teamsters&sim=forklift-run&scenario=nola-dock",
+    "lands": "seat",
+    "param": [
+     "hall",
+     "sim",
+     "scenario"
+    ],
+    "via": {
+     "hall": "teamsters",
+     "campus": "oakland",
+     "hall_name": "Teamsters",
+     "campus_name": "Oakland Waterfront Campus"
+    }
    },
    "requires": [],
    "provenance": "SCRIPTED",
@@ -377,11 +436,12 @@
     "campus": "treasure-island"
    },
    "launch": {
-    "href": "web/trade_craft_3d.html?hall=welders&sim=weld-bead",
+    "href": "web/trade_craft_3d.html?hall=welders&sim=weld-bead&scenario=bay-deck-seam",
     "lands": "seat",
     "param": [
      "hall",
-     "sim"
+     "sim",
+     "scenario"
     ]
    },
    "requires": [
@@ -403,11 +463,12 @@
     "campus": "oakland"
    },
    "launch": {
-    "href": "web/trade_craft_3d.html?hall=pipeline&sim=weld-bead",
+    "href": "web/trade_craft_3d.html?hall=pipeline&sim=weld-bead&scenario=oak-flange-bead",
     "lands": "seat",
     "param": [
      "hall",
-     "sim"
+     "sim",
+     "scenario"
     ]
    },
    "requires": [
@@ -430,8 +491,19 @@
     "campus": "new-orleans"
    },
    "launch": {
-    "href": null,
-    "why": "no hall on the new-orleans campus teaches the Weld Bead Run seat, and the 3D page picks a scenario only by the campus of the hall it opens"
+    "href": "web/trade_craft_3d.html?hall=welders&sim=weld-bead&scenario=nola-tank-seam",
+    "lands": "seat",
+    "param": [
+     "hall",
+     "sim",
+     "scenario"
+    ],
+    "via": {
+     "hall": "welders",
+     "campus": "treasure-island",
+     "hall_name": "Welding Trades",
+     "campus_name": "Treasure Island Campus"
+    }
    },
    "requires": [],
    "provenance": "SCRIPTED",
@@ -480,11 +552,12 @@
     "campus": "treasure-island"
    },
    "launch": {
-    "href": "web/trade_craft_3d.html?hall=carpenters&sim=scaffold-bay",
+    "href": "web/trade_craft_3d.html?hall=carpenters&sim=scaffold-bay&scenario=bay-training-bay",
     "lands": "seat",
     "param": [
      "hall",
-     "sim"
+     "sim",
+     "scenario"
     ]
    },
    "requires": [
@@ -508,11 +581,12 @@
     "campus": "oakland"
    },
    "launch": {
-    "href": "web/trade_craft_3d.html?hall=scaffold&sim=scaffold-bay",
+    "href": "web/trade_craft_3d.html?hall=scaffold&sim=scaffold-bay&scenario=oak-plant-bay",
     "lands": "seat",
     "param": [
      "hall",
-     "sim"
+     "sim",
+     "scenario"
     ]
    },
    "requires": [
@@ -533,8 +607,19 @@
     "campus": "new-orleans"
    },
    "launch": {
-    "href": null,
-    "why": "no hall on the new-orleans campus teaches the Scaffold Bay Build seat, and the 3D page picks a scenario only by the campus of the hall it opens"
+    "href": "web/trade_craft_3d.html?hall=scaffold&sim=scaffold-bay&scenario=nola-storm-bay",
+    "lands": "seat",
+    "param": [
+     "hall",
+     "sim",
+     "scenario"
+    ],
+    "via": {
+     "hall": "scaffold",
+     "campus": "oakland",
+     "hall_name": "Scaffold Erectors",
+     "campus_name": "Oakland Waterfront Campus"
+    }
    },
    "requires": [],
    "provenance": "SCRIPTED",
@@ -584,11 +669,12 @@
     "campus": "treasure-island"
    },
    "launch": {
-    "href": "web/trade_craft_3d.html?hall=riggers&sim=rigging-signals",
+    "href": "web/trade_craft_3d.html?hall=riggers&sim=rigging-signals&scenario=bay-first-card",
     "lands": "seat",
     "param": [
      "hall",
-     "sim"
+     "sim",
+     "scenario"
     ]
    },
    "requires": [
@@ -610,11 +696,12 @@
     "campus": "oakland"
    },
    "launch": {
-    "href": "web/trade_craft_3d.html?hall=port-crane&sim=rigging-signals",
+    "href": "web/trade_craft_3d.html?hall=port-crane&sim=rigging-signals&scenario=oak-blind-pick",
     "lands": "seat",
     "param": [
      "hall",
-     "sim"
+     "sim",
+     "scenario"
     ]
    },
    "requires": [],
@@ -633,8 +720,19 @@
     "campus": "new-orleans"
    },
    "launch": {
-    "href": null,
-    "why": "no hall on the new-orleans campus teaches the Rigging Signal Call seat, and the 3D page picks a scenario only by the campus of the hall it opens"
+    "href": "web/trade_craft_3d.html?hall=riggers&sim=rigging-signals&scenario=nola-wind-card",
+    "lands": "seat",
+    "param": [
+     "hall",
+     "sim",
+     "scenario"
+    ],
+    "via": {
+     "hall": "riggers",
+     "campus": "treasure-island",
+     "hall_name": "Riggers & Signalpersons",
+     "campus_name": "Treasure Island Campus"
+    }
    },
    "requires": [],
    "provenance": "SCRIPTED",
@@ -678,11 +776,12 @@
     "campus": "treasure-island"
    },
    "launch": {
-    "href": "web/trade_craft_3d.html?hall=crane-ops&sim=load-chart",
+    "href": "web/trade_craft_3d.html?hall=crane-ops&sim=load-chart&scenario=bay-pick-list",
     "lands": "seat",
     "param": [
      "hall",
-     "sim"
+     "sim",
+     "scenario"
     ]
    },
    "requires": [
@@ -703,11 +802,12 @@
     "campus": "oakland"
    },
    "launch": {
-    "href": "web/trade_craft_3d.html?hall=port-crane&sim=load-chart",
+    "href": "web/trade_craft_3d.html?hall=port-crane&sim=load-chart&scenario=oak-heavy-list",
     "lands": "seat",
     "param": [
      "hall",
-     "sim"
+     "sim",
+     "scenario"
     ]
    },
    "requires": [],
@@ -726,8 +826,19 @@
     "campus": "new-orleans"
    },
    "launch": {
-    "href": null,
-    "why": "no hall on the new-orleans campus teaches the Load Chart Judgment seat, and the 3D page picks a scenario only by the campus of the hall it opens"
+    "href": "web/trade_craft_3d.html?hall=crane-ops&sim=load-chart&scenario=nola-barge-list",
+    "lands": "seat",
+    "param": [
+     "hall",
+     "sim",
+     "scenario"
+    ],
+    "via": {
+     "hall": "crane-ops",
+     "campus": "treasure-island",
+     "hall_name": "Crane Operators",
+     "campus_name": "Treasure Island Campus"
+    }
    },
    "requires": [],
    "provenance": "SCRIPTED",
@@ -770,11 +881,12 @@
     "campus": "treasure-island"
    },
    "launch": {
-    "href": "web/trade_craft_3d.html?hall=painters&sim=pressure-washer",
+    "href": "web/trade_craft_3d.html?hall=painters&sim=pressure-washer&scenario=bay-seawall-clean",
     "lands": "seat",
     "param": [
      "hall",
-     "sim"
+     "sim",
+     "scenario"
     ]
    },
    "requires": [
@@ -795,11 +907,12 @@
     "campus": "oakland"
    },
    "launch": {
-    "href": "web/trade_craft_3d.html?hall=laborers&sim=pressure-washer",
+    "href": "web/trade_craft_3d.html?hall=laborers&sim=pressure-washer&scenario=oak-bulkhead-clean",
     "lands": "seat",
     "param": [
      "hall",
-     "sim"
+     "sim",
+     "scenario"
     ]
    },
    "requires": [],
@@ -818,11 +931,12 @@
     "campus": "new-orleans"
    },
    "launch": {
-    "href": "web/trade_craft_3d.html?hall=hazmat&sim=pressure-washer",
+    "href": "web/trade_craft_3d.html?hall=hazmat&sim=pressure-washer&scenario=nola-floodwall-clean",
     "lands": "seat",
     "param": [
      "hall",
-     "sim"
+     "sim",
+     "scenario"
     ]
    },
    "requires": [
@@ -869,11 +983,12 @@
     "campus": "treasure-island"
    },
    "launch": {
-    "href": "web/trade_craft_3d.html?hall=painters&sim=airless-sprayer",
+    "href": "web/trade_craft_3d.html?hall=painters&sim=airless-sprayer&scenario=bay-terminal-finish",
     "lands": "seat",
     "param": [
      "hall",
-     "sim"
+     "sim",
+     "scenario"
     ]
    },
    "requires": [
@@ -894,11 +1009,12 @@
     "campus": "oakland"
    },
    "launch": {
-    "href": "web/trade_craft_3d.html?hall=laborers&sim=airless-sprayer",
+    "href": "web/trade_craft_3d.html?hall=laborers&sim=airless-sprayer&scenario=oak-warehouse-finish",
     "lands": "seat",
     "param": [
      "hall",
-     "sim"
+     "sim",
+     "scenario"
     ]
    },
    "requires": [],
@@ -917,8 +1033,19 @@
     "campus": "new-orleans"
    },
    "launch": {
-    "href": null,
-    "why": "no hall on the new-orleans campus teaches the Airless Paint Sprayer Finish seat, and the 3D page picks a scenario only by the campus of the hall it opens"
+    "href": "web/trade_craft_3d.html?hall=painters&sim=airless-sprayer&scenario=nola-shotgun-finish",
+    "lands": "seat",
+    "param": [
+     "hall",
+     "sim",
+     "scenario"
+    ],
+    "via": {
+     "hall": "painters",
+     "campus": "treasure-island",
+     "hall_name": "Painters & Allied Trades",
+     "campus_name": "Treasure Island Campus"
+    }
    },
    "requires": [],
    "provenance": "SCRIPTED",
@@ -961,11 +1088,12 @@
     "campus": "treasure-island"
    },
    "launch": {
-    "href": "web/trade_craft_3d.html?hall=electricians&sim=boom-lift",
+    "href": "web/trade_craft_3d.html?hall=electricians&sim=boom-lift&scenario=bay-curtainwall-run",
     "lands": "seat",
     "param": [
      "hall",
-     "sim"
+     "sim",
+     "scenario"
     ]
    },
    "requires": [
@@ -988,8 +1116,19 @@
     "campus": "oakland"
    },
    "launch": {
-    "href": null,
-    "why": "no hall on the oakland campus teaches the Boom Lift Basket Work seat, and the 3D page picks a scenario only by the campus of the hall it opens"
+    "href": "web/trade_craft_3d.html?hall=electricians&sim=boom-lift&scenario=oak-terminal-fixtures",
+    "lands": "seat",
+    "param": [
+     "hall",
+     "sim",
+     "scenario"
+    ],
+    "via": {
+     "hall": "electricians",
+     "campus": "treasure-island",
+     "hall_name": "Electrical Workers",
+     "campus_name": "Treasure Island Campus"
+    }
    },
    "requires": [],
    "provenance": "SCRIPTED",
@@ -1007,8 +1146,19 @@
     "campus": "new-orleans"
    },
    "launch": {
-    "href": null,
-    "why": "no hall on the new-orleans campus teaches the Boom Lift Basket Work seat, and the 3D page picks a scenario only by the campus of the hall it opens"
+    "href": "web/trade_craft_3d.html?hall=electricians&sim=boom-lift&scenario=nola-storm-shutters",
+    "lands": "seat",
+    "param": [
+     "hall",
+     "sim",
+     "scenario"
+    ],
+    "via": {
+     "hall": "electricians",
+     "campus": "treasure-island",
+     "hall_name": "Electrical Workers",
+     "campus_name": "Treasure Island Campus"
+    }
    },
    "requires": [],
    "provenance": "SCRIPTED",
@@ -1055,11 +1205,12 @@
     "campus": "treasure-island"
    },
    "launch": {
-    "href": "web/trade_craft_3d.html?hall=crane-ops&sim=overhead-crane",
+    "href": "web/trade_craft_3d.html?hall=crane-ops&sim=overhead-crane&scenario=bay-fab-coil",
     "lands": "seat",
     "param": [
      "hall",
-     "sim"
+     "sim",
+     "scenario"
     ]
    },
    "requires": [
@@ -1080,11 +1231,12 @@
     "campus": "oakland"
    },
    "launch": {
-    "href": "web/trade_craft_3d.html?hall=machinists&sim=overhead-crane",
+    "href": "web/trade_craft_3d.html?hall=machinists&sim=overhead-crane&scenario=oak-foundry-ladle",
     "lands": "seat",
     "param": [
      "hall",
-     "sim"
+     "sim",
+     "scenario"
     ]
    },
    "requires": [
@@ -1106,8 +1258,19 @@
     "campus": "new-orleans"
    },
    "launch": {
-    "href": null,
-    "why": "no hall on the new-orleans campus teaches the Overhead Crane Shop Move seat, and the 3D page picks a scenario only by the campus of the hall it opens"
+    "href": "web/trade_craft_3d.html?hall=crane-ops&sim=overhead-crane&scenario=nola-boatshed-engine",
+    "lands": "seat",
+    "param": [
+     "hall",
+     "sim",
+     "scenario"
+    ],
+    "via": {
+     "hall": "crane-ops",
+     "campus": "treasure-island",
+     "hall_name": "Crane Operators",
+     "campus_name": "Treasure Island Campus"
+    }
    },
    "requires": [],
    "provenance": "SCRIPTED",

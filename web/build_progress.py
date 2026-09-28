@@ -64,6 +64,7 @@ HERE = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 from staleness import emit  # noqa: E402
 from sitenav import nav_html, labels as nav_labels, NAV_CSS  # noqa: E402
+from style_bridge import bridge_css  # noqa: E402  HOMEUX w4: page palette -> the 5 switcher styles
 from seo import apply_seo  # noqa: E402  head tags only
 
 
@@ -2290,7 +2291,7 @@ pre{{background:var(--sunk);border:1px solid var(--rule);border-radius:6px;paddi
 .toolbar{{position:sticky;top:0;background:var(--plate);padding:10px 0;z-index:2;
   border-bottom:1px solid var(--rule);display:flex;gap:10px;flex-wrap:wrap;align-items:center}}
 #expRecord{{background:var(--mark);color:var(--mark-ink);border:0;border-radius:7px;padding:8px 14px;font:inherit;font-weight:600;cursor:pointer}}
-#expRecord:disabled{{background:var(--rule);color:var(--muted);cursor:not-allowed}}
+#expRecord:disabled{{background:var(--sunk);color:var(--muted);box-shadow:inset 0 0 0 1px var(--rule);cursor:not-allowed}}
 .toolbar select{{background:var(--sunk);border:1px solid var(--rule);color:var(--ink);
   border-radius:6px;padding:8px 12px;font:inherit;flex:1 1 280px}}
 .toolbar label{{color:var(--muted);font-size:13px}}
@@ -2326,6 +2327,7 @@ footer.page{{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30p
 footer.page a{{margin-inline-end:10px}}
 </style>
 <style>{NAV_CSS}</style>
+<style>{bridge_css()}</style>
 </head>
 <body>
 {NAV}<div class="wrap" id="main">

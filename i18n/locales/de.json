@@ -415,7 +415,9 @@
   "tasks.ws.cta": "Erste Baustelle ansehen",
   "tasks.ws.pause": "Hintergrundvideo anhalten",
   "tasks.ws.play": "Hintergrundvideo abspielen",
-  "tasks.ws.credit": "Aufnahmen aus dem 3D-Campus dieser App"
+  "tasks.ws.credit": "Aufnahmen aus dem 3D-Campus dieser App",
+  "hero.credit.hall_interior_dolly": "Aufnahmen: im Inneren einer Gewerkehalle, über den Trainingsbuchten, aufgenommen in den eigenen 3D-Szenen dieser App.",
+  "tasks.via": "Öffnet in der Halle {hall}, {campus}"
  },
  "districts": {
   "structural": {

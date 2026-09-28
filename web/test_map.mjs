@@ -354,6 +354,12 @@ const tkHall = (slug) => TK.tasks.filter((t) => t.place.kind === 'hall' && t.pla
     html.includes('${DATA.taskBoards[h.slug]}') && /data-tk-filter/.test(html) && /closest\('\[data-tk-board\]'\)/.test(html));
 }
 
+// QA wave 4: a site style re-declares plate/panel, so status colours must follow it
+// (--tc-ok/--tc-warn on body while a style is on, else the page's own values)
+ok('[style] status colours (--good/--warn/--crit) follow the active site style via --tc-ok/--tc-warn on body, falling back to the page\'s own',
+  html.includes(':root{--pg-good:var(--good);--pg-warn:var(--warn);--pg-crit:var(--crit)}')
+  && html.includes('body{--good:var(--tc-ok,var(--pg-good));--warn:var(--tc-warn,var(--pg-warn));--crit:var(--tc-warn,var(--pg-crit))}')
+  && html.includes('--tc-warn:') && html.includes('--tc-ok:'));
 if (failures.length) {
   for (const f of failures) console.error(`FAIL ${f}`);
   console.error(`web/test_map: ${failures.length} of ${passed + failures.length} checks FAILED`);

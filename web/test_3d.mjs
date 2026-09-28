@@ -2887,6 +2887,17 @@ ok('a person\'s hand is palm, four-finger mitt and thumb - with a gauntlet cuff 
       && JSON.stringify(byId3[x.id].requires) === JSON.stringify(x.requires))
     && T3.practice === treg.honesty.practice
     && Object.keys(data3.campuses).every((ck) => Array.isArray(T3.campuses[ck])));
+  ok('the top bar is a SOLID plate and its links use the style\'s link token, so "← Campus map" keeps >= 4.5 over any canvas pixel in every Style (eval_styles measured 4.45 on the translucent bar)',
+    /#bar\{position:fixed;[^}]*background:var\(--plate\);[^}]*\}/.test(built) && !/#bar\{[^}]*color-mix\(/.test(built)
+    && /#bar a\{color:var\(--tc-link\);/.test(built));
+  const viaTasks = onCampus.filter((x) => 'via' in x.launch);
+  ok(`a task whose seat opens on ANOTHER campus (${viaTasks.length} in tasks/registry) carries launch.via verbatim and its card says where it opens (tasks.via), before the launch link`,
+    viaTasks.length > 0
+    && viaTasks.every((x) => byId3[x.id].via && JSON.stringify(byId3[x.id].via) === JSON.stringify({
+      hall: x.launch.via.hall, campus: x.launch.via.campus, hall_name: x.launch.via.hall_name, campus_name: x.launch.via.campus_name })
+      && byId3[x.id].via.campus !== x.place.campus)
+    && pageRows.filter((r) => r.via).length === viaTasks.length
+    && /\(tk\.via\s*\? '<p class="src t3-via"[\s\S]*?t\('tasks\.via'\)\.replace\('\{hall\}', tk\.via\.hall_name\)\.replace\('\{campus\}', tk\.via\.campus_name\)[\s\S]*?\+ \(tk\.href/.test(fnCode('taskCard')));
   ok('one blue gem per place with tasks (hall roof, restoration post, the green), in the SAME pooled InstancedMesh - no mesh, no label; the tool crib holds the hall\'s gem; walking past a task gem never opens it',
     /for \(const pl of taskPlaces\(\)\)/.test(fnCode('questLayout'))
     && /kind: 'task', x, y, z,/.test(fnCode('questLayout'))

@@ -114,6 +114,7 @@ for (const w of worlds) {
     /* tree billboards (wave 3): one InstancedMesh per species, only past the
        full-tree radius, never drawn in the overview */
     if (!st.billboardsInstanced) row.fails.push('billboards are not InstancedMesh');
+    if (st.billboardMeshes !== 1) row.fails.push(`${st.billboardMeshes} billboard meshes; wave 4 draws every species in ONE InstancedMesh`);
     if (bbN > 0 && !(st.billboardMinR >= st.vegR)) row.fails.push(`a billboard stands ${st.billboardMinR} m out, inside VEG_R ${st.vegR}`);
     if (v === 'overview' && bbN !== 0) row.fails.push(`${bbN} billboards drawn in the overview`);
     if (!MEASURE_ONLY) {
@@ -134,6 +135,42 @@ for (const w of worlds) {
     if (!JSON_OUT) console.log(`${row.fails.length ? 'FAIL' : '  ok'}  ${w.padEnd(9)} ${v.padEnd(9)} calls ${String(st.calls).padStart(4)}  tris ${String(st.triangles).padStart(7)}  inst ${String(vegN).padStart(5)}  bb ${String(bbN).padStart(5)}  chunks ${String(st.chunks).padStart(3)}  frame ${String(ms).padStart(6)} ms${row.fails.length ? '  ' + row.fails.join('; ') : ''}`);
   }
 }
+/* deep links (wave 4): every wilds-site-walk task in tasks/registry/tasks.json
+   launches at web/trade_craft_wilds.html#<world>/<site>; following the link must
+   put the eye within that site's pad_m (horizontal) with its panel open. */
+const { readFileSync } = await import('node:fs');
+const TASKS = JSON.parse(readFileSync(new URL('../tasks/registry/tasks.json', import.meta.url), 'utf8'));
+const REGW = JSON.parse(readFileSync(new URL('../wilds/registry/wilds.json', import.meta.url), 'utf8'));
+const walks = TASKS.tasks.filter((t) => t.kind === 'wilds-site-walk');
+const linkBad = [];
+if (walks.length === 0) linkBad.push('no wilds-site-walk task in tasks/registry');
+for (const t of walks) {
+  const href = t.launch.href;
+  const m = href && href.match(/^web\/trade_craft_wilds\.html#([a-z0-9-]+)\/([a-z0-9-]+)$/);
+  if (!m) { linkBad.push(`${t.id}: launch ${href} is not #world/site`); continue; }
+  const site = REGW.worlds.find((w) => w.id === m[1]).sites.find((s) => s.id === m[2]);
+  await page.goto(new URL(href.slice(4), URL_BASE).href, { waitUntil: 'load' });
+  await page.waitForFunction((sid) => { const p = document.getElementById('panel'); return p && !p.hidden && !!p.querySelector(`[data-site="${sid}"]`); }, m[2], { timeout: 8000 }).catch(() => {});
+  const got = await page.evaluate((sid) => ({ eye: window.__wilds.eye(), open: !document.getElementById('panel').hidden && !!document.getElementById('panel').querySelector(`[data-site="${sid}"]`) }), m[2]);
+  const d = Math.hypot(got.eye.x - site.x, got.eye.z - site.z);
+  if (!(d <= site.pad_m) || !got.open) linkBad.push(`${t.id}: eye ${d.toFixed(1)} m from ${m[2]} (pad_m ${site.pad_m}), panel ${got.open ? 'open' : 'closed'}`);
+}
+if (linkBad.length) bad++;
+console.log(`${linkBad.length ? 'FAIL' : '  ok'}  deep links: ${walks.length} site-walk task links land within the site's pad_m with its panel open${linkBad.length ? '  ' + linkBad.slice(0, 4).join('; ') : ''}`);
+/* run-time locale (wave 4): ?lang=ar renders the chrome in Arabic, right to left */
+const pa = await browser.newPage({ viewport: { width: 1280, height: 800 } });
+pa.on('pageerror', (e) => errors.push('ar: ' + String(e)));
+await pa.goto(URL_BASE + '?lang=ar', { waitUntil: 'load' });
+await pa.waitForFunction(() => document.documentElement.dataset.wildsReady === '1', null, { timeout: 60000 });
+const AR = JSON.parse(readFileSync(new URL('../i18n/locales/ar.json', import.meta.url), 'utf8')).strings;
+const ar = await pa.evaluate(() => ({ dir: document.dir, lang: document.documentElement.lang, help: document.querySelector('[data-i18n="wilds.help"]').textContent,
+  ctl: (() => { const c = document.querySelector('#stage .ctl').getBoundingClientRect(), s = document.getElementById('stage').getBoundingClientRect(); return { right: s.right - c.right, left: c.left - s.left }; })(),
+  mini: (() => { const c = document.getElementById('minimap').getBoundingClientRect(), s = document.getElementById('stage').getBoundingClientRect(); return c.left - s.left; })(),
+  overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth }));
+const arOk = ar.dir === 'rtl' && ar.lang === 'ar' && ar.help === AR['wilds.help'] && ar.ctl.right < 20 && ar.mini < 20 && !ar.overflow;
+if (!arOk) bad++;
+console.log(`${arOk ? '  ok' : 'FAIL'}  locale: ?lang=ar renders the chrome in ar, dir rtl, controls mirrored to the inline start (right), minimap to the inline end (left), no page overflow  ${JSON.stringify(ar.ctl)} mini ${ar.mini}`);
+await pa.close();
 if (errors.length) { bad++; console.log('FAIL  page errors: ' + errors.join(' | ')); }
 await browser.close();
 if (JSON_OUT) console.log(JSON.stringify({ rows, errors }, null, 1));

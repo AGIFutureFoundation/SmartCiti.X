@@ -273,6 +273,50 @@ for slug, c in G3.items():
             'geometry': {'type': 'Polygon', 'coordinates': [h['polygon']]}})
 assert len(HALLS3D['features']) == need(need(geo3d, 'counts', 'geo3d.json'), 'halls', 'geo3d.json#counts')
 
+# ------------------------------------------------------------ style paint
+# The map's own paint follows the reader's Style (nav menu, 5 styles): each
+# paint ROLE names one --tc-* token, read off the page at load and whenever
+# html[data-style] changes. The table below is the whole mapping; the pairs
+# are the contrasts each style is held to, MEASURED here for every style
+# (and the canvas default) from design_kit, and again by web/test_geomap.mjs
+# from the CSS the page ships. RECORDED vs AUTHORED anchors and the SCHEMATIC
+# hall outline must stay distinguishable in every style.
+import design_kit as _K  # noqa: E402
+PAINT_ROLES = {'bg': 'plate', 'grat': 'line', 'horizon': 'raised', 'frame': 'steel', 'route': 'amber',
+               'recorded': 'steel', 'authored': 'plate', 'ring': 'steel', 'campus': 'amber',
+               'label': 'amber-ink', 'labelPill': 'amber', 'selectedPill': 'ink', 'hallEdge': 'ink',
+               'restText': 'plate', 'restPill': 'ok', 'monitorPill': 'steel'}
+PAINT_PAIRS = [  # (fg role, bg role, minimum, what)
+    ('label', 'labelPill', 4.5, 'campus label text on its pill'),
+    ('label', 'selectedPill', 4.5, 'selected campus label text on its pill'),
+    ('labelPill', 'bg', 3.0, 'campus label pill (halo) on the map background'),
+    ('campus', 'bg', 3.0, 'campus dot on the map background'),
+    ('recorded', 'bg', 3.0, 'RECORDED anchor fill on the map background'),
+    ('ring', 'bg', 3.0, 'AUTHORED anchor ring on the map background'),
+    ('recorded', 'authored', 3.0, 'RECORDED fill vs AUTHORED hollow fill'),
+    ('hallEdge', 'bg', 4.5, 'SCHEMATIC hall outline on the map background'),
+    ('restText', 'restPill', 4.5, 'restoration label and cluster count on their pill'),
+    ('restText', 'monitorPill', 4.5, 'monitoring-site label on its pill'),
+    ('route', 'bg', 3.0, 'DERIVED route on the map background'),
+    ('frame', 'bg', 3.0, 'city frame on the map background'),
+]
+assert PAINT_ROLES['recorded'] != PAINT_ROLES['authored'], 'geomap paint: RECORDED and AUTHORED share a token'
+_PAL = _K.TOKENS['palette']['dark']
+_STYLE_TOKENS = {'default': {k: _PAL[k] for k in ('plate', 'raised', 'line', 'ink', 'amber', 'amber-ink', 'steel', 'ok')}}
+for _s in _K.STYLES:
+    _t = _s['tokens']
+    _STYLE_TOKENS[_s['id']] = {'plate': _t['plate'], 'raised': _t['raised'], 'line': _t['line'], 'ink': _t['ink'],
+                               'amber': _t['accent'], 'amber-ink': _t['accent-ink'], 'steel': _t['link'], 'ok': _t['ok']}
+STYLE_PAINT = {'roles': PAINT_ROLES, 'pairs': [list(x) for x in PAINT_PAIRS], 'styles': {}}
+for _id, _tk in _STYLE_TOKENS.items():
+    _ratios = {}
+    for _fg, _bg, _min, _what in PAINT_PAIRS:
+        _r = round(_K.contrast(_tk[PAINT_ROLES[_fg]], _tk[PAINT_ROLES[_bg]]), 2)
+        if _r < _min:
+            raise ValueError(f'geomap paint: style {_id!r} {_what} measures {_r} < {_min}')
+        _ratios[f'{_fg}/{_bg}'] = _r
+    STYLE_PAINT['styles'][_id] = {'tokens': _tk, 'ratios': _ratios}
+
 # ------------------------------------------------ environments on the globe ---
 # worksites: a worksite stands where its place stands, and only there - a
 # campus place at the campus's own centroid, a restoration site at that
@@ -383,6 +427,7 @@ DATA = json.dumps({
     # per-campus rollups computed from unions/, pack/, lessons/, sims/ and
     # schools/ registries (see ROLLUPS above) - rendered from here only
     'rollups': ROLLUPS,
+    'stylePaint': STYLE_PAINT,
     'flagship': FLAGSHIP,
     'restorationHonesty': {k: restoration['honesty'][k]
                            for k in ('not_affiliated', 'provenance')},
@@ -476,16 +521,16 @@ body{margin:0;background:var(--plate);color:var(--ink);
 #legend .lg-row{margin:3px 0;padding-inline-start:15px;text-indent:-15px}
 #legend .lg-row > :first-child{text-indent:0}
 .sw-cluster{display:inline-block;min-width:18px;height:14px;border-radius:999px;background:var(--good);
-  color:#0C1113;font:700 9.5px/14px "IBM Plex Sans",sans-serif;text-align:center;margin-inline-end:5px;
+  color:var(--plate);font:700 9.5px/14px "IBM Plex Sans",sans-serif;text-align:center;margin-inline-end:5px;
   text-indent:0}
 .dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-inline-end:5px}
-.campus-marker{background:var(--mark);color:#12181B;border-radius:999px;
+.campus-marker{background:var(--mark);color:var(--mark-ink);border-radius:999px;
   padding:2px 9px;font:600 12px "Barlow Condensed",sans-serif;white-space:nowrap;
-  border:1.5px solid #12181B;cursor:pointer;z-index:3;min-height:24px;line-height:18px}
+  border:1.5px solid var(--plate);cursor:pointer;z-index:3;min-height:24px;line-height:18px}
 .campus-marker.compact{font-size:0;padding:2px 6px;min-width:24px}
 .campus-marker.compact::after{content:attr(data-short);font-size:11px}
-.campus-marker:hover{box-shadow:0 0 0 2px #12181B,0 0 0 4px var(--mark)}
-.campus-marker.is-selected{background:var(--ink);box-shadow:0 0 0 2px #12181B,0 0 0 4px var(--mark);z-index:4}
+.campus-marker:hover{box-shadow:0 0 0 2px var(--plate),0 0 0 4px var(--mark)}
+.campus-marker.is-selected{background:var(--ink);box-shadow:0 0 0 2px var(--plate),0 0 0 4px var(--mark);z-index:4}
 .candidate-marker{background:transparent;color:var(--muted);border-radius:999px;
   padding:1px 8px;font:600 11px "Barlow Condensed",sans-serif;white-space:nowrap;
   border:1.5px dashed var(--muted);cursor:pointer}
@@ -494,13 +539,13 @@ body{margin:0;background:var(--plate);color:var(--ink);
    on hover or keyboard focus. Sites closer than a target's width at the
    current zoom fold into one counted cluster that zooms in on click. */
 .restoration-marker{background:none;border:0;padding:0;width:24px;height:24px;
-  display:grid;place-items:center;cursor:pointer;z-index:2;color:#0C1113;
+  display:grid;place-items:center;cursor:pointer;z-index:2;color:var(--plate);
   font:600 12px "Barlow Condensed",sans-serif}
 .restoration-marker .rm-dot{width:12px;height:12px;border-radius:50%;background:var(--good);
-  border:1.5px solid #0C1113;box-shadow:0 0 0 1px var(--good)}
+  border:1.5px solid var(--plate);box-shadow:0 0 0 1px var(--good)}
 .restoration-marker.env-monitoring .rm-dot{background:var(--steel);box-shadow:0 0 0 1px var(--steel)}
 .restoration-marker .rm-label{position:absolute;top:22px;left:50%;transform:translateX(-50%);
-  display:none;background:var(--good);border:1.5px solid #0C1113;border-radius:999px;
+  display:none;background:var(--good);border:1.5px solid var(--plate);border-radius:999px;
   padding:1px 8px;white-space:nowrap}
 .restoration-marker.env-monitoring .rm-label{background:var(--steel)}
 .restoration-marker.show-label .rm-label,.restoration-marker:hover .rm-label,
@@ -508,8 +553,8 @@ body{margin:0;background:var(--plate);color:var(--ink);
 .restoration-marker:hover,.restoration-marker:focus-visible{z-index:5}
 .restoration-marker.is-selected .rm-dot{box-shadow:0 0 0 3px var(--ink)}
 .restoration-marker.folded{display:none}
-.rest-cluster{min-width:26px;height:26px;border-radius:999px;background:var(--good);color:#0C1113;
-  border:1.5px solid #0C1113;box-shadow:0 0 0 3px color-mix(in oklab, var(--good) 35%, transparent);
+.rest-cluster{min-width:26px;height:26px;border-radius:999px;background:var(--good);color:var(--plate);
+  border:1.5px solid var(--plate);box-shadow:0 0 0 3px color-mix(in oklab, var(--good) 35%, transparent);
   font:700 12px "IBM Plex Sans",sans-serif;cursor:pointer;padding:0 7px;z-index:2}
 .rest-cluster:hover{box-shadow:0 0 0 4px var(--good)}
 .maplibregl-popup-close-button{min-width:24px;min-height:24px;color:var(--ink);font-size:18px}
@@ -541,11 +586,11 @@ body{margin:0;background:var(--plate);color:var(--ink);
 .panel a{color:var(--steel)}
 .panel .walk{color:var(--good)}
 .refusal{color:var(--mark);font-size:11.5px}
-.flag{background:var(--mark);color:#12181B;border-radius:4px;padding:0 5px;
+.flag{background:var(--mark);color:var(--mark-ink);border-radius:4px;padding:0 5px;
   font:600 10.5px "Barlow Condensed",sans-serif;margin-inline-start:4px}
 .anchor-swatch{display:inline-block;width:9px;height:9px;border-radius:50%;margin-inline-end:5px}
 .anchor-swatch.rec{background:var(--steel)}
-.anchor-swatch.auth{background:#12181B;border:1.5px solid var(--steel)}
+.anchor-swatch.auth{background:var(--plate);border:1.5px solid var(--steel)}
 .flysel{background:var(--panel);color:var(--ink);border:1px solid var(--rule);border-radius:6px;
   padding:6px 8px;font:inherit;min-height:32px;cursor:pointer}
 .panel h3{font:600 13px "Barlow Condensed",sans-serif;margin:10px 0 4px;color:var(--ink);letter-spacing:.02em}
@@ -579,7 +624,7 @@ body{margin:0;background:var(--plate);color:var(--ink);
    picks sets the --tc-* palette, and every panel, button and chip here is
    coloured through these names only */
 body.tc-theme-canvas{--plate:var(--tc-plate);--panel:var(--tc-panel);--ink:var(--tc-ink);--muted:var(--tc-muted);
-  --rule:var(--tc-line);--mark:var(--tc-amber);--steel:var(--tc-steel);--good:var(--tc-ok)}
+  --rule:var(--tc-line);--mark:var(--tc-amber);--mark-ink:var(--tc-amber-ink);--steel:var(--tc-steel);--good:var(--tc-ok)}
 /* the theme's panel and button styling, kept compact for a full-screen map bar */
 body.tc-theme-canvas #bar .tc-btn{min-block-size:32px;padding:6px 11px;font-size:13.5px;border-radius:8px}
 body.tc-theme-canvas .barbtn[aria-pressed="true"]{border-color:var(--mark);color:var(--mark)}
@@ -715,6 +760,37 @@ const CAMPUS_FEATURE = Object.fromEntries(D.network.features.filter((x) => x.pro
   .map((x) => [x.properties.slug, x]));
 for (const t of D.env.tasks.on)
   envAdd('tasks', t.place.campus, CAMPUS_FEATURE[t.place.campus].geometry.coordinates, t);
+/* the map's paint follows the reader's Style: each role in D.stylePaint.roles
+   names a --tc-* token, read off the page here (at load) and again whenever
+   html[data-style] changes - no paint colour below is typed */
+function paintColours() {
+  const cs = getComputedStyle(document.body), c = {};
+  for (const [role, t] of Object.entries(D.stylePaint.roles)) {
+    const v = cs.getPropertyValue('--tc-' + t).trim();
+    if (!/^#[0-9a-fA-F]{6}$/.test(v)) throw new Error('geomap paint: --tc-' + t + ' reads ' + JSON.stringify(v));
+    c[role] = v;
+  }
+  return c;
+}
+let PC = paintColours();
+const SKY_BLEND = ['interpolate', ['linear'], ['zoom'], 0, 1, 5, 1, 7, 0];
+const skyOf = (c) => ({ 'sky-color': c.bg, 'horizon-color': c.horizon, 'fog-color': c.bg, 'atmosphere-blend': SKY_BLEND });
+const PAINT_OF = (c) => [
+  ['bg', 'background-color', c.bg], ['grat', 'line-color', c.grat],
+  ['parcels', 'fill-extrusion-color', c.recorded], ['halls3d-edge', 'line-color', c.hallEdge],
+  ['frames-fill', 'fill-color', c.frame], ['frames', 'line-color', c.frame], ['routes', 'line-color', c.route],
+  ['anchors', 'circle-color', ['match', ['get', 'provenance'], 'RECORDED', c.recorded, c.authored]],
+  ['anchors', 'circle-stroke-color', ['match', ['get', 'provenance'], 'RECORDED', c.bg, c.ring]],
+  ['campuses', 'circle-color', c.campus], ['campuses', 'circle-stroke-color', c.bg],
+  ['env-worksites', 'circle-stroke-color', c.bg], ['env-k12', 'circle-stroke-color', c.bg],
+  ['env-tasks', 'circle-stroke-color', c.bg]];
+function applyStylePaint() {
+  PC = paintColours();
+  for (const [layer, prop, v] of PAINT_OF(PC)) map.setPaintProperty(layer, prop, v);
+  map.setSky(skyOf(PC));
+  window.__geoPaint = { style: document.documentElement.getAttribute('data-style'), colours: PC };
+}
+window.__geoPaint = { style: document.documentElement.getAttribute('data-style'), colours: PC };
 const map = new maplibregl.Map({
   container: 'map',
   attributionControl: false,
@@ -724,7 +800,7 @@ const map = new maplibregl.Map({
     // registry lat/lng - the projection changes, the coordinates never do
     projection: { type: 'globe' },
     // a thin atmosphere at the globe's rim, fading out as you zoom in
-    sky: { 'atmosphere-blend': ['interpolate', ['linear'], ['zoom'], 0, 1, 5, 1, 7, 0] },
+    sky: skyOf(PC),
     sources: {
       // the public-domain federal orthoimagery, straight from its authority
       sat: { type: 'raster', tiles: [D.imagery.tiles],
@@ -741,15 +817,15 @@ const map = new maplibregl.Map({
       env: { type: 'geojson', data: ENV },
     },
     layers: [
-      { id: 'bg', type: 'background', paint: { 'background-color': '#0C1113' } },
+      { id: 'bg', type: 'background', paint: { 'background-color': PC.bg } },
       { id: 'sat', type: 'raster', source: 'sat',
         layout: { visibility: 'none' },
         paint: { 'raster-opacity': .85 } },
       { id: 'grat', type: 'line', source: 'grat',
-        paint: { 'line-color': '#1c262b', 'line-width': 1 } },
+        paint: { 'line-color': PC.grat, 'line-width': 1 } },
       // RECORDED footprints, extruded as they arrive from the authority
       { id: 'parcels', type: 'fill-extrusion', source: 'parcels',
-        paint: { 'fill-extrusion-color': '#41C4D4',
+        paint: { 'fill-extrusion-color': PC.recorded,
                  'fill-extrusion-opacity': .55,
                  'fill-extrusion-height': 9 } },
       // the 3D campus, stood up on the Earth (geo3d/registry, SCHEMATIC)
@@ -761,16 +837,20 @@ const map = new maplibregl.Map({
         paint: { 'fill-extrusion-color': ['get', 'color'],
                  'fill-extrusion-height': ['get', 'h'], 'fill-extrusion-base': 0,
                  'fill-extrusion-opacity': .92 } },
+      // each SCHEMATIC hall's ground outline in the style's ink, so a hall
+      // reads against every style's background whatever its district hue
+      { id: 'halls3d-edge', type: 'line', source: 'halls3d', minzoom: 12,
+        paint: { 'line-color': PC.hallEdge, 'line-width': 1.2 } },
       { id: 'frames-fill', type: 'fill', source: 'net',
         filter: ['==', ['get', 'kind'], 'frame'],
-        paint: { 'fill-color': '#41C4D4', 'fill-opacity': .05 } },
+        paint: { 'fill-color': PC.frame, 'fill-opacity': .05 } },
       { id: 'frames', type: 'line', source: 'net',
         filter: ['==', ['get', 'kind'], 'frame'],
-        paint: { 'line-color': '#41C4D4', 'line-width': 1.2,
+        paint: { 'line-color': PC.frame, 'line-width': 1.2,
                  'line-opacity': .7 } },
       { id: 'routes', type: 'line', source: 'net',
         filter: ['==', ['get', 'kind'], 'route'],
-        paint: { 'line-color': '#E8A33D', 'line-width': 1.6,
+        paint: { 'line-color': PC.route, 'line-width': 1.6,
                  'line-dasharray': [2.5, 2] } },
       // the two provenance classes drawn apart: RECORDED solid steel,
       // AUTHORED a hollow ring - read from each feature's own `provenance`
@@ -778,25 +858,25 @@ const map = new maplibregl.Map({
         filter: ['==', ['get', 'kind'], 'anchor'],
         paint: { 'circle-radius': 4.5,
                  'circle-color': ['match', ['get', 'provenance'],
-                                  'RECORDED', '#41C4D4', '#12181B'],
+                                  'RECORDED', PC.recorded, PC.authored],
                  'circle-stroke-color': ['match', ['get', 'provenance'],
-                                         'RECORDED', '#0C1113', '#41C4D4'],
+                                         'RECORDED', PC.bg, PC.ring],
                  'circle-stroke-width': 1.5 } },
       { id: 'campuses', type: 'circle', source: 'net',
         filter: ['has', 'slug'],
-        paint: { 'circle-radius': 7, 'circle-color': '#E8A33D',
-                 'circle-stroke-color': '#0C1113', 'circle-stroke-width': 2 } },
+        paint: { 'circle-radius': 7, 'circle-color': PC.campus,
+                 'circle-stroke-color': PC.bg, 'circle-stroke-width': 2 } },
       // the environments at their own points, fanned off the campus dot by a
       // fixed pixel offset so none covers it (the coordinate is unchanged)
       { id: 'env-worksites', type: 'circle', source: 'env', filter: ['==', ['get', 'kind'], 'worksite'],
-        paint: { 'circle-radius': 5.5, 'circle-color': '#C98BE0', 'circle-stroke-color': '#0C1113',
+        paint: { 'circle-radius': 5.5, 'circle-color': '#C98BE0', 'circle-stroke-color': PC.bg,
                  'circle-stroke-width': 1.5, 'circle-translate': [14, 10] } },
       { id: 'env-k12', type: 'circle', source: 'env', filter: ['==', ['get', 'kind'], 'k12'],
-        paint: { 'circle-radius': 5.5, 'circle-color': '#F2D16B', 'circle-stroke-color': '#0C1113',
+        paint: { 'circle-radius': 5.5, 'circle-color': '#F2D16B', 'circle-stroke-color': PC.bg,
                  'circle-stroke-width': 1.5, 'circle-translate': [-14, 10] } },
       { id: 'env-tasks', type: 'circle', source: 'env', filter: ['==', ['get', 'kind'], 'tasks'],
         paint: { 'circle-radius': ['interpolate', ['linear'], ['get', 'n'], 1, 5, 40, 11],
-                 'circle-color': '#5CB584', 'circle-stroke-color': '#0C1113',
+                 'circle-color': '#5CB584', 'circle-stroke-color': PC.bg,
                  'circle-stroke-width': 2, 'circle-translate': [0, 18] } },
     ],
   },
@@ -807,6 +887,11 @@ const map = new maplibregl.Map({
 // zoom in / out, top-left: the panels open on the right and the legend and
 // honesty line sit along the bottom, so the control is never under either
 map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-left');
+// the Style menu sets html[data-style]; repaint the map from the tokens then
+let styleLoaded = false;
+map.once('load', () => { styleLoaded = true; applyStylePaint(); });
+new MutationObserver(() => { if (styleLoaded) applyStylePaint(); })
+  .observe(document.documentElement, { attributes: true, attributeFilter: ['data-style'] });
 
 /* one popup at a time, owned by the marker that opened it: that marker shows
    a selected state while the popup is up, a keyboard open moves focus into
@@ -1381,20 +1466,58 @@ function popupForHall(p, lngLat) {
    fill-extrusion (it does on the flat map), so a hall is hit-tested here:
    its footprint projected to the screen, point-in-polygon, nearest first.
    The footprints come from D.geo3d only - the same rings the layer draws. */
+/*hit:begin - pure screen-space picking, unit-tested by web/test_geomap.mjs.
+   A hall is hit on its ground footprint, on its top face (the footprint
+   raised by the drawn wall height) or on a wall between them - the convex
+   hull of the eight screen corners - so a tall hall seen at a pitch answers
+   where it is drawn, not only where it stands. The hall drawn nearest the
+   viewer (its ground centroid lowest on screen) wins an overlap. */
+function inPoly(pt, ring) {
+  let inside = false;
+  for (let i = 0, j = ring.length - 1; i < ring.length; j = i++)
+    if ((ring[i].y > pt.y) !== (ring[j].y > pt.y)
+        && pt.x < (ring[j].x - ring[i].x) * (pt.y - ring[i].y) / (ring[j].y - ring[i].y) + ring[i].x) inside = !inside;
+  return inside;
+}
+function hull(ps) {
+  const p = ps.slice().sort((a, b) => a.x - b.x || a.y - b.y);
+  const cross = (o, a, b) => (a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x);
+  const lo = [], up = [];
+  for (const q of p) { while (lo.length >= 2 && cross(lo[lo.length - 2], lo[lo.length - 1], q) <= 0) lo.pop(); lo.push(q); }
+  for (const q of p.reverse()) { while (up.length >= 2 && cross(up[up.length - 2], up[up.length - 1], q) <= 0) up.pop(); up.push(q); }
+  return lo.slice(0, -1).concat(up.slice(0, -1));
+}
+function pickHall(pt, boxes) {
+  let best = null;
+  for (const b of boxes) {
+    const via = inPoly(pt, b.top) ? 'roof' : inPoly(pt, b.ground) ? 'ground'
+      : inPoly(pt, hull(b.ground.concat(b.top))) ? 'wall' : null;
+    if (via === null) continue;
+    const cy = b.ground.reduce((a, q) => a + q.y, 0) / b.ground.length;
+    if (best === null || cy > best.cy) best = { id: b.id, via, cy };
+  }
+  return best;
+}
+/*hit:end*/
+/* MapLibre's globe projection answers no rendered-feature query for a
+   fill-extrusion (it does on the flat map), so a hall is hit-tested here
+   from D.geo3d only - the same rings and wall height the layer draws. The
+   top face is projected by the map's own transform with the wall height as
+   the elevation (globe and flat alike). */
+const AT_HEIGHT = (h) => ({ getElevationForLngLat: () => h, getElevationForLngLatZoom: () => h });
+function screenAt(c, h) { return map.transform.locationToScreenPoint(maplibregl.LngLat.convert(c), AT_HEIGHT(h)); }
+function hallBoxes() {
+  return D.geo3d.halls.features.map((f, i) => {
+    const cs = f.geometry.coordinates[0].slice(0, 4);
+    return { id: i, ground: cs.map((c) => map.project(c)), top: cs.map((c) => screenAt(c, f.properties.h)) };
+  });
+}
+let lastHallVia = null;
 function hallAt(pt) {
   if (!layerOn.halls3d || map.getZoom() < 12) return null;
-  let best = null;
-  for (const f of D.geo3d.halls.features) {
-    const ring = f.geometry.coordinates[0].slice(0, 4).map((c) => map.project(c));
-    let inside = false;
-    for (let i = 0, j = 3; i < 4; j = i++)
-      if ((ring[i].y > pt.y) !== (ring[j].y > pt.y)
-          && pt.x < (ring[j].x - ring[i].x) * (pt.y - ring[i].y) / (ring[j].y - ring[i].y) + ring[i].x) inside = !inside;
-    if (!inside) continue;
-    const cy = ring.reduce((a, q) => a + q.y, 0) / 4;
-    if (best === null || cy > best.cy) best = { f, cy };   // the nearer footprint (lower on screen) wins
-  }
-  return best ? best.f : null;
+  const hit = pickHall(pt, hallBoxes());
+  lastHallVia = hit ? hit.via : null;
+  return hit ? D.geo3d.halls.features[hit.id] : null;
 }
 function hallsInView() {
   if (!layerOn.halls3d || map.getZoom() < 12) return 0;
@@ -1495,7 +1618,7 @@ map.on('dragstart', () => stopTour());
 /* the layers panel: every toggle is a real checkbox with a label */
 const LAYERS = [
   { key: 'campuses', label: 'Campuses', map: ['campuses'], cls: 'hide-campus', sw: '#E8A33D' },
-  { key: 'halls3d', label: '3D halls and district outlines (SCHEMATIC)', map: ['halls3d', 'districts3d-fill', 'districts3d-line'], sw: 'hsl(210,50%,45%)' },
+  { key: 'halls3d', label: '3D halls and district outlines (SCHEMATIC)', map: ['halls3d', 'halls3d-edge', 'districts3d-fill', 'districts3d-line'], sw: 'hsl(210,50%,45%)' },
   { key: 'anchors', label: 'Anchors', map: ['anchors'], sw: '#41C4D4' },
   { key: 'routes', label: 'Great-circle routes and city frames', map: ['routes', 'frames', 'frames-fill'], sw: '#E8A33D' },
   { key: 'restoration', label: 'Bay Restoration sites', map: [], cls: 'hide-rest', sw: '#5CB584' },

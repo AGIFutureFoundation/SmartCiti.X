@@ -28,6 +28,7 @@ sys.path.insert(0, str(HERE))
 from staleness import emit  # noqa: E402
 from seo import apply_seo  # noqa: E402  head tags only
 from sitenav import nav_html, labels as nav_labels, NAV_CSS  # noqa: E402
+from style_bridge import bridge_css  # noqa: E402  HOMEUX w4: page palette -> the 5 switcher styles (CSS only, no refs)
 
 
 def _pack_root():
@@ -609,6 +610,7 @@ page = '''<!doctype html>
 <title>SmartCiti.X : Trade Craft Academy &mdash; sign in</title>
 <style>''' + CSS + '''</style>
 <style>''' + NAV_CSS + '''</style>
+<style>''' + bridge_css({'stop': 'crit'}) + '''</style>
 </head>
 <body>
 ''' + NAV + '''<div class="wrap">

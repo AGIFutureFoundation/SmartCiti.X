@@ -408,7 +408,7 @@ DOC_HERO_PAGES = {
     'progress': ('web/trade_craft_progress.html', 'region-board-orbit', ('nav.page.lessons', 'trade_craft_lessons.html', 'ghost')),
     'schools': ('web/trade_craft_schools.html', 'campus-green-low-dolly', ('nav.page.lessons', 'trade_craft_lessons.html', 'ghost')),
     'quests': ('web/trade_craft_quests.html', 'wilds-mountain-flyover', ('nav.page.wilds', 'trade_craft_wilds.html', 'primary')),
-    'spaces': ('web/trade_craft_spaces.html', 'hall-orbit', ('nav.page.worksites', 'trade_craft_worksites.html', 'ghost')),
+    'spaces': ('web/trade_craft_spaces.html', 'hall-interior-dolly', ('nav.page.worksites', 'trade_craft_worksites.html', 'ghost')),
     'contribute': ('web/trade_craft_contribute.html', 'campus-green-low-dolly', ('nav.page.landing', 'trade_craft_landing.html', 'ghost')),
     'dashboard': ('web/trade_craft_dashboard.html', 'region-board-orbit', ('nav.page.map', 'trade_craft_map.html', 'ghost')),
     'fabric': ('web/trade_craft_fabric.html', 'globe-flyover', ('nav.page.geomap', 'trade_craft_geomap.html', 'ghost')),

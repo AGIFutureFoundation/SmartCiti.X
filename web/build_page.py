@@ -5,6 +5,9 @@ sys.path.insert(0, str(HERE))
 from staleness import emit  # noqa: E402
 from seo import apply_seo  # noqa: E402  head tags only
 from sitenav import nav_html, labels as nav_labels, NAV_CSS  # noqa: E402
+from design_kit import STYLES as _STYLES  # noqa: E402
+STYLED = ('html:is([data-style],:has(input[name="tc-style"]:is('
+          + ','.join(f'[value="{x["id"]}"]' for x in _STYLES) + '):checked))')
 
 
 def _spec_path():
@@ -133,6 +136,11 @@ page = f"""<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name
   --accent:#4FB8C0; --accent-ink:#7FD0D6; --band:#E09A3E; --line:#31403F;
   --code-bg:#1A2327; --head:#EDF3F1;
   --c1:#00A2B5; --c2:#C08325; --c3:#8A82CE; --grid:#2A3739;
+}}
+/* 5-style switcher: map this page's own palette onto the tokens every style re-declares */
+{STYLED} {{
+  --paper:var(--plate); --code-bg:var(--raised); --head:var(--ink); --accent-ink:var(--link);
+  --band:var(--accent); --grid:var(--line); --c1:var(--link); --c2:var(--accent); --c3:var(--muted);
 }}
 * {{ box-sizing:border-box; }}
 body {{ background:var(--paper); color:var(--ink); margin:0;

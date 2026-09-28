@@ -39,6 +39,7 @@ sys.path.insert(0, str(HERE))
 from staleness import emit  # noqa: E402
 from seo import apply_seo  # noqa: E402  head tags only
 from sitenav import nav_html, labels as nav_labels, NAV_CSS  # noqa: E402
+from style_bridge import bridge_css  # noqa: E402  HOMEUX w4: page palette -> the 5 switcher styles
 
 
 def _root():
@@ -609,12 +610,13 @@ label.scope{{display:block;margin:8px 0;color:var(--muted)}}
 label.scope b{{color:var(--ink)}}
 label.scope input{{margin-inline-end:8px;accent-color:var(--mark)}}
 button{{background:var(--mark);color:var(--mark-ink);border:0;border-radius:7px;padding:8px 14px;font:inherit;font-weight:600;cursor:pointer}}
-button:disabled{{background:var(--rule);color:var(--muted);cursor:not-allowed}}
+button:disabled{{background:var(--sunk);color:var(--muted);box-shadow:inset 0 0 0 1px var(--rule);cursor:not-allowed}}
 footer.page{{margin-top:34px;border-top:1px solid var(--rule);padding:14px 0 30px;
   color:var(--muted);font-size:14px}}
 footer.page a{{margin-inline-end:10px}}
 </style>
 <style>{NAV_CSS}</style>
+<style>{bridge_css()}</style>
 </head>
 <body>
 {NAV}<div class="wrap">

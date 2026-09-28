@@ -275,7 +275,7 @@ for f in sorted((ROOT / 'i18n/locales').glob('*.json')):
             'campus3d.treasure', 'campus3d.egg', 'campus3d.hooks',
             'campus3d.tasks', 'campus3d.tasks.all', 'campus3d.tasks.launch',
             'campus3d.tasks.lessons', 'campus3d.tasks.here', 'campus3d.tasks.showall',
-            'campus3d.tasks.none', 'tasks.nolink')},
+            'campus3d.tasks.none', 'tasks.nolink', 'tasks.via')},
         'districts': {k: v['name'] for k, v in c['districts'].items()},
         'strands': c['strands'], 'tiers': c['tiers'], 'states': c['states'],
     }
@@ -603,6 +603,13 @@ for _t in _treg['tasks']:
         _row['why'] = _ln['why']
     else:
         _row['lands'] = _ln['lands']
+    # a seat that opens at a hall on ANOTHER campus says so on the card
+    # (tasks/registry launch.via) - the learner is never moved silently
+    if 'via' in _ln:
+        _v = _ln['via']
+        assert _v['campus'] != _ck, f'task layer: {_t["id"]} via names its own campus {_ck}'
+        _row['via'] = {'hall': _v['hall'], 'campus': _v['campus'],
+                       'hall_name': _v['hall_name'], 'campus_name': _v['campus_name']}
     TASK3D['campuses'][_ck].append(_row)
 for _ck, _rows in TASK3D['campuses'].items():
     if not _rows:
@@ -7115,11 +7122,11 @@ body{margin:0;background:var(--plate);color:var(--ink);
   font:14px/1.5 "IBM Plex Sans",system-ui,sans-serif;overflow:hidden}
 #bar{position:fixed;top:0;left:0;right:0;z-index:5;display:flex;flex-wrap:wrap;
   gap:8px 14px;align-items:center;padding:10px 16px;
-  background:color-mix(in oklab, var(--plate) 86%, transparent);
-  border-bottom:2px solid var(--mark);backdrop-filter:blur(6px)}
+  background:var(--plate);
+  border-bottom:2px solid var(--mark)}
 #bar .brand{font:700 19px/1 "Barlow Condensed",system-ui,sans-serif;white-space:nowrap}
 #bar .brand .x{color:var(--mark)}
-#bar a{color:var(--steel);text-decoration:none;font-size:13px;white-space:nowrap}
+#bar a{color:var(--tc-link);text-decoration:none;font-size:13px;white-space:nowrap}
 select{background:var(--panel);color:var(--ink);border:1px solid var(--rule);
   border-radius:6px;padding:6px 9px;font:inherit;max-width:46vw}
 #lang{margin-inline-start:auto}
@@ -16236,6 +16243,10 @@ function taskCard(tk) {
     + '<div><span class="tc-badge tc-badge-info">' + qEsc(t('tasks.kind.' + tk.kind)) + '</span>'
     + '<span class="tc-badge tc-badge-muted">' + qEsc(tk.provenance) + '</span>'
     + (tPlace ? '' : '<span class="tc-badge tc-badge-muted">' + qEsc(taskPlaceName(tk.place)) + '</span>') + '</div>'
+    + (tk.via
+      ? '<p class="src t3-via" data-via-hall="' + qEsc(tk.via.hall) + '" data-via-campus="' + qEsc(tk.via.campus) + '">'
+        + qEsc(t('tasks.via').replace('{hall}', tk.via.hall_name).replace('{campus}', tk.via.campus_name)) + '</p>'
+      : '')
     + (tk.href
       ? '<p><a class="tc-btn tc-btn-primary t3-go" href="' + qEsc(tk.href) + '">▶ ' + qEsc(t('campus3d.tasks.launch'))
         + '</a> <span class="src">' + qEsc(t('tasks.lands.' + tk.lands)) + '</span></p>'

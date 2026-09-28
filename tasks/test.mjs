@@ -94,6 +94,7 @@ const READS = {
   hall: [src3d, page3d, "params.get('hall')"],
   sim: [src3d, page3d, "params.get('sim')"],
   campus: [src3d, page3d, "params.get('campus')"],
+  scenario: [src3d, page3d, "D.sims.sims[simDeep].scenarios.some((s) => s.id === params.get('scenario'))"],
 };
 const hrefBad = [];
 for (const t of T) {
@@ -110,11 +111,13 @@ for (const t of T) {
     if (q.has('sim') && !(q.get('sim') in D3.sims.sims)) hrefBad.push(`${t.id}: 3D page data has no seat ${q.get('sim')}`);
     if (q.has('sim') && !D3.sims.sims[q.get('sim')].halls.includes(q.get('hall'))) hrefBad.push(`${t.id}: hall ${q.get('hall')} does not teach ${q.get('sim')}`);
     if (q.has('campus') && !(q.get('campus') in D3.campuses)) hrefBad.push(`${t.id}: 3D page has no campus ${q.get('campus')}`);
+    if (q.has('scenario') && !(q.has('sim') && D3.sims.sims[q.get('sim')].scenarios.some((s) => s.id === q.get('scenario')))) hrefBad.push(`${t.id}: ?scenario=${q.get('scenario')} is not one of seat ${q.get('sim')}'s own scenarios in the 3D page data (the page would ignore it)`);
   } else if (path === 'web/trade_craft_wilds.html') {
     const [wid, sid] = L.href.split('#')[1].split('/');
     const w = wilds.worlds.find((x) => x.id === wid);
     if (!srcWilds.includes(".slice(1)).split('/')") || !pageWilds.includes(".slice(1)).split('/')")) hrefBad.push(`${t.id}: wilds page does not read #world/site`);
     if (!w || !w.sites.some((s) => s.id === sid) || !pageWilds.includes(`"${sid}"`)) hrefBad.push(`${t.id}: wilds has no ${wid}/${sid}`);
+    if (!sid || t.launch.lands !== 'site') hrefBad.push(`${t.id}: a wilds walk must name the site itself (#world/site) and land at it`);
   } else if (path === 'web/trade_craft_worksites.html') {
     const anchor = L.href.split('#')[1];
     if (!pageWorks.includes(`id="${anchor}"`)) hrefBad.push(`${t.id}: worksites page has no id="${anchor}"`);
@@ -129,12 +132,72 @@ for (const [sid, sim] of Object.entries(sims.sims)) sim.scenarios.forEach((sc, i
   const t = T.find((x) => x.id === `sim-${sid}-${sc.id}`);
   if (!t) { scBad.push(`missing sim-${sid}-${sc.id}`); return; }
   const h = sim.halls.find((x) => campusOf[x] === sc.campus);
-  const want = h ? `web/trade_craft_3d.html?hall=${h}&sim=${sid}` : null;
+  const want = `web/trade_craft_3d.html?hall=${h || sim.halls[0]}&sim=${sid}&scenario=${sc.id}`;
   if (t.launch.href !== want) scBad.push(`${t.id}: href ${t.launch.href}, want ${want}`);
+  if (!h && !(t.place.kind === 'campus' && t.place.id === sc.campus && t.launch.via && t.launch.via.hall === sim.halls[0]
+    && t.launch.via.campus === campusOf[sim.halls[0]])) scBad.push(`${t.id}: an off-campus seat must keep the scenario's campus as its place and say the hall it opens in (via)`);
   if (t.source !== `sims/registry/sims.json#sims.${sid}.scenarios[${i}]`) scBad.push(`${t.id}: source ${t.source}`);
 });
-ok('[scenario] one task per sims scenario, launched through a hall on the scenario\'s campus (the 3D page picks the scenario by that campus)', scBad.length === 0, scBad);
+ok('[scenario] one task per sims scenario, launched through a hall on the scenario\'s campus (else the seat\'s first hall) and named outright with ?scenario=', scBad.length === 0, scBad);
 ok('[scenario] the 3D builder still picks a scenario by campusKey', src3d.includes('def.scenarios?.find((s) => s.campus === campusKey)'));
+// ?scenario= must be validated against THAT seat's own scenarios, must reach
+// startSim, and must win over the campus pick - in the builder AND the page
+const SCN = ["D.sims.sims[simDeep].scenarios.some((s) => s.id === params.get('scenario'))",
+  'startSim(simDeep, scenarioDeep);',
+  'def.scenarios?.find((s) => s.id === scenarioId)\n    ?? def.scenarios?.find((s) => s.campus === campusKey)'];
+ok('[scenario] the 3D page validates ?scenario= against the seat\'s own scenarios, hands it to startSim, and it wins over the campus pick (builder and page)',
+  SCN.every((f) => src3d.includes(f) && page3d.includes(f)), SCN.filter((f) => !(src3d.includes(f) && page3d.includes(f))));
+ok('[scenario] every sims scenario is launchable (194/194 needs no null scenario)', T.filter((t) => t.kind === 'sim-scenario').every((t) => t.launch.href !== null));
+// wilds: the hash's site part stands you AT the site, and the hash is read on boot
+const WLD = ["if (sid) goSite(sid);", "if (!(await fromHash())) await loadWorld(", "const s = W.sites.find((x) => x.id === id);"];
+ok('[wilds] the wilds page reads #<world>/<site> on boot and goes to that site (builder and page)',
+  WLD.every((f) => srcWilds.includes(f) && pageWilds.includes(f)), WLD.filter((f) => !(srcWilds.includes(f) && pageWilds.includes(f))));
+ok('[wilds] every wilds-site-walk href is web/trade_craft_wilds.html#<its world>/<its site>',
+  T.filter((t) => t.kind === 'wilds-site-walk').every((t) => t.launch.href === `web/trade_craft_wilds.html#${t.place.world}/${t.place.id}` && t.launch.lands === 'site'));
+
+// launch.via: a seat that opens at a hall on ANOTHER campus than the task's
+// place must say so on every board that carries the task (names from registries)
+const hallNames = Object.fromEntries(J('pack/registry/halls.json').halls.map((h) => [h.slug, h.name]));
+const VIA = T.filter((t) => t.launch.via);
+const viaBad = [];
+for (const t of VIA) {
+  const v = t.launch.via;
+  if (v.campus !== campusOf[v.hall] || v.campus === t.place.campus || v.hall_name !== hallNames[v.hall]
+    || v.campus_name !== campuses[v.campus].name) viaBad.push(`${t.id}: via ${JSON.stringify(v)} does not match the registries or is not another campus`);
+}
+for (const t of T) if (!t.launch.via && t.launch.href && t.kind === 'sim-scenario' && t.place.kind === 'campus') viaBad.push(`${t.id}: campus-placed seat link without via`);
+ok('[via] every off-campus seat link carries via {hall, campus} with names read from pack/halls and unions/campuses (13 formerly-null scenarios)', viaBad.length === 0 && VIA.length === 13, viaBad.concat([`via tasks: ${VIA.length}`]));
+const viaNote = (v) => `<p class="tk-via" data-via-hall="${v.hall}" data-via-campus="${v.campus}">Opens at the ${v.hall_name} hall, ${v.campus_name}</p>`;
+const viaPages = {};
+const notePage = [];
+for (const [name, html] of [['map', read('web/trade_craft_map.html').toString('utf8')], ['interactive', read('web/trade_craft_interactive.html').toString('utf8')], ['worksites', pageWorks]]) {
+  let carried = 0;
+  for (const t of VIA) {
+    // server-rendered cards (taskkit.task_card)
+    const cards = html.match(new RegExp(`<article class="tk-card" data-task="${t.id}"[\\s\\S]*?</article>`, 'g')) || [];
+    for (const c of cards) { carried++; if (!c.includes(viaNote(t.launch.via))) notePage.push(`${name}: card ${t.id} has no via note`); }
+    // browser-rendered rows (taskkit.tasks_json + TASK_RENDER_JS)
+    const rows = html.match(new RegExp(`\\{"id":"${t.id}","title":[\\s\\S]*?"via":(\\{[^}]*\\}|null)`, 'g')) || [];
+    for (const r of rows) {
+      carried++;
+      const got = JSON.parse(r.match(/"via":(\{[^}]*\}|null)$/)[1]);
+      if (JSON.stringify(got) !== JSON.stringify(t.launch.via)) notePage.push(`${name}: row ${t.id} via ${JSON.stringify(got)}`);
+      if (!html.includes('${req}${via}${go}</article>') || !html.includes(`<p class="tk-via" data-via-hall="\${E(t.via.hall)}"`)
+        || !html.includes(".replace('{hall}', t.via.hall_name).replace('{campus}', t.via.campus_name)")) notePage.push(`${name}: row ${t.id} but the renderer draws no via note`);
+    }
+  }
+  viaPages[name] = carried;
+}
+ok('[via] every board card or row carrying a via task shows "opens at <hall> on <campus>" on the map, interactive and worksites pages',
+  notePage.length === 0, notePage.concat([JSON.stringify(viaPages)]));
+ok('[via] the interactive page carries all 13 via tasks (campus boards) and worksites at least one; the map carries only hall-placed tasks, so none',
+  viaPages.interactive >= VIA.length && viaPages.worksites >= 1 && viaPages.map === 0, [JSON.stringify(viaPages)]);
+const locBad = [];
+for (const loc of ['en', 'es', 'fr', 'de', 'pt', 'zh', 'hi', 'ar']) {
+  const v = J(`i18n/locales/${loc}.json`).strings['tasks.via'];
+  if (!(typeof v === 'string' && v.includes('{hall}') && v.includes('{campus}')) || (loc !== 'en' && v === J('i18n/locales/en.json').strings['tasks.via'])) locBad.push(`${loc}: ${v}`);
+}
+ok('[via] tasks.via is in all 8 locales with {hall} and {campus}, translated (no English copy)', locBad.length === 0, locBad);
 
 /* ------------------------------------------------------ coverage -- */
 const cov = [];
@@ -207,6 +270,10 @@ const DRILL = [
   ['a lesson prerequisite invented', '[requires] ... none invented'],
   ['a source registry edited without a rebuild', '[stamp] every source registry is unchanged'],
   ['the builder edited without a rebuild', '[stamp] builder_stamp'],
+  ['?scenario= validation dropped from the 3D page', '[scenario] the 3D page validates ?scenario='],
+  ['a scenario href naming another seat\'s scenario', '[launch] every href resolves'],
+  ['a wilds href pointing at the world only', '[wilds] every wilds-site-walk href'],
+  ['a board card that drops its via note', '[via] every board card or row carrying a via task'],
 ];
 ok(`[drill] ${DRILL.length} mutations each name the check that catches them`, DRILL.every(([, c]) => c.length > 0));
 

@@ -61,6 +61,24 @@ def TRAW(k):
     T(k)
     return _CAT[k]
 
+
+# every chrome key the page uses is recorded, and the runtime catalogue below
+# carries exactly those keys for all 8 locales; a key missing from any locale
+# stops the build (no silent English fallback at run time)
+_USED = set()
+
+
+def TS(k):
+    """chrome text the runtime re-renders in the reader's locale"""
+    _USED.add(k)
+    return f'<span data-i18n="{k}">{T(k)}</span>'
+
+
+def TA(k):
+    """chrome text in an attribute (aria-label): marked data-i18n-aria"""
+    _USED.add(k)
+    return T(k)
+
 HALL_HREF = 'trade_craft_3d.html?hall='
 
 
@@ -149,32 +167,32 @@ def site_tasks(s):
         return ''
     ts = TASKS_BY_SITE[s['id']]
     if not ts:
-        return f'<p class="k">{T("wilds.site.tasks")}</p><p class="none">{T("wilds.site.no_task")}</p>'
+        return f'<p class="k">{TS("wilds.site.tasks")}</p><p class="none">{TS("wilds.site.no_task")}</p>'
     rows = []
     for t in ts:
         href = task_href(t)
-        launch = (f'<a class="tlaunch tc-btn tc-btn-primary" href="{esc(href)}" data-task-launch="{esc(t["id"])}">{T("wilds.task.launch")}</a>' if href
+        launch = (f'<a class="tlaunch tc-btn tc-btn-primary" href="{esc(href)}" data-task-launch="{esc(t["id"])}">{TS("wilds.task.launch")}</a>' if href
                   else f'<span class="none">{esc(t["launch"]["why"])}</span>')
         if t['requires']:
             req = ', '.join(f'<a href="{LESSONS_HREF}{esc(l)}">{esc(LESSON_TITLES[l]["title"])}</a>' for l in t['requires'])
-            req = f'<span class="treq">{T("wilds.task.requires")}: {req}</span>'
+            req = f'<span class="treq">{TS("wilds.task.requires")}: {req}</span>'
         else:
-            req = f'<span class="treq">{T("wilds.task.open")}</span>'
+            req = f'<span class="treq">{TS("wilds.task.open")}</span>'
         rows.append(f'<li data-task="{esc(t["id"])}" data-kind="{esc(t["kind"])}"><b>{esc(t["title"])}</b> '
                     f'<span class="prov tc-badge tc-badge-muted">{esc(t["provenance"])}</span> {launch}<br>{req}</li>')
     # the halls working here: their tasks (seats, drills, walkarounds) launch on
     # the campus; listed through taskkit's own compact list
     ht = [t for h in s['halls'] for t in taskkit.tasks_for('hall', h['id'])]
-    hall_block = (f'<p class="k">{T("wilds.site.hall_tasks")}</p><div class="halltasks" data-hall-tasks="{esc(s["id"])}">'
+    hall_block = (f'<p class="k">{TS("wilds.site.hall_tasks")}</p><div class="halltasks" data-hall-tasks="{esc(s["id"])}">'
                   f'{taskkit.task_list(ht, None, "web")}</div>' if ht else '')
-    return f'<p class="k">{T("wilds.site.tasks")}</p><ul class="tasks">{"".join(rows)}</ul>{hall_block}'
+    return f'<p class="k">{TS("wilds.site.tasks")}</p><ul class="tasks">{"".join(rows)}</ul>{hall_block}'
 
 
 def world_task_fig(w):
     if TASK_STATE != 'wired':
         return ''
     n = sum(len(TASKS_BY_SITE[s['id']]) for s in w['sites'])
-    return f'<div class="fig"><b data-fig-tasks="{esc(w["id"])}">{n}</b><span>{T("wilds.fig.tasks")}</span></div>'
+    return f'<div class="fig"><b data-fig-tasks="{esc(w["id"])}">{n}</b><span>{TS("wilds.fig.tasks")}</span></div>'
 
 
 # --------------------------------------------------------------- cards --
@@ -183,14 +201,14 @@ def site_card(w, s):
     if s['lessons']:
         lessons = ''.join(f'<li><a href="{LESSONS_HREF}{esc(l["id"])}">{esc(l["title"])}</a></li>'
                           for l in s['lessons'])
-        lessons = f'<p class="k">{T("wilds.site.lessons")}</p><ul class="links">{lessons}</ul>'
+        lessons = f'<p class="k">{TS("wilds.site.lessons")}</p><ul class="links">{lessons}</ul>'
     else:
-        lessons = f'<p class="k">{T("wilds.site.lessons")}</p><p class="none">{T("wilds.site.no_lesson")}</p>'
+        lessons = f'<p class="k">{TS("wilds.site.lessons")}</p><p class="none">{TS("wilds.site.no_lesson")}</p>'
     return (f'<article class="site" id="site-{esc(s["id"])}" data-site="{esc(s["id"])}" data-world="{esc(w["id"])}">'
             f'<h3>{esc(s["title"])} <span class="prov tc-badge tc-badge-muted">SCHEMATIC</span></h3>'
             f'<p>{esc(s["work"])}</p>'
-            f'<p class="k">{T("wilds.site.halls")}</p><ul class="links">{halls}</ul>{lessons}{site_tasks(s)}'
-            f'<button type="button" class="go tc-btn tc-btn-primary" data-goto="{esc(s["id"])}">{T("wilds.site.go")}</button>'
+            f'<p class="k">{TS("wilds.site.halls")}</p><ul class="links">{halls}</ul>{lessons}{site_tasks(s)}'
+            f'<button type="button" class="go tc-btn tc-btn-primary" data-goto="{esc(s["id"])}">{TS("wilds.site.go")}</button>'
             '</article>')
 
 
@@ -202,12 +220,12 @@ def world_section(w):
             f'<p class="evokes">Evokes {esc(w["inspiration"]["evokes"])} - nearest campus in spirit: '
             f'{esc(w["inspiration"]["campus_city"])}. <b>{esc(w["inspiration"]["standing"])}.</b></p>'
             f'<p class="geo" data-geolocation="{esc(w["id"])}"><span class="prov tc-badge tc-badge-muted">AUTHORED</span> {esc(w["geolocation"]["label"])}</p>'
-            f'<div class="figs"><div class="fig"><b>{w["area_km2"]}</b><span>{T("wilds.fig.area")}</span></div>'
-            f'<div class="fig"><b>{len(w["sites"])}</b><span>{T("wilds.fig.sites")}</span></div>'
-            f'<div class="fig"><b>{w["trail_length_m"]}</b><span>{T("wilds.fig.trail")}</span></div>'
-            f'<div class="fig"><b>{len(w["caches"])}</b><span>{T("wilds.fig.treasures")}</span></div>{world_task_fig(w)}</div>'
+            f'<div class="figs"><div class="fig"><b>{w["area_km2"]}</b><span>{TS("wilds.fig.area")}</span></div>'
+            f'<div class="fig"><b>{len(w["sites"])}</b><span>{TS("wilds.fig.sites")}</span></div>'
+            f'<div class="fig"><b>{w["trail_length_m"]}</b><span>{TS("wilds.fig.trail")}</span></div>'
+            f'<div class="fig"><b>{len(w["caches"])}</b><span>{TS("wilds.fig.treasures")}</span></div>{world_task_fig(w)}</div>'
             f'<div class="sites">{sites}</div>'
-            f'<h3>{T("wilds.h.riddles")}</h3><ul class="riddles">{caches}</ul>'
+            f'<h3>{TS("wilds.h.riddles")}</h3><ul class="riddles">{caches}</ul>'
             '</section>')
 
 
@@ -217,6 +235,7 @@ switch = ''.join(f'<button type="button" class="tc-btn tc-btn-ghost" data-world=
 embedded = json.dumps(REG, sort_keys=True).replace('</', '<\\/')
 JS_LABELS = {k: TRAW('wilds.' + k) for k in ('mode.overview', 'mode.walk', 'pace', 'pace.walk', 'pace.run', 'pace.fast',
                                              'toast.cache', 'toast.trailhead', 'side_quest', 'flyover')}
+_USED.update('wilds.' + k for k in JS_LABELS)
 labels_json = json.dumps(JS_LABELS, ensure_ascii=False, sort_keys=True).replace('</', '<\\/')
 site_task_counts = json.dumps({s['id']: len(TASKS_BY_SITE[s['id']]) for w in REG['worlds'] for s in w['sites']}
                               if TASK_STATE == 'wired' else {}, sort_keys=True)
@@ -234,7 +253,33 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 ''' + CORE + r'''
 const REG = JSON.parse(document.getElementById('wilds-registry').textContent);
-const L = JSON.parse(document.getElementById('wilds-labels').textContent);
+/* run-time locale, chosen the way the campus page does (?lang=<code> when the
+   catalogue has it), then the reader's browser languages, then en. Every key
+   the page uses is in every locale (the build fails otherwise), so a missing
+   string here is a bug and throws by name: never a silent English fallback. */
+const I18N = JSON.parse(document.getElementById('wilds-i18n').textContent);
+function pickLocale() {
+  const q = new URLSearchParams(location.search).get('lang');
+  if (q && Object.hasOwn(I18N, q)) return q;
+  const prefs = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || 'en'];
+  for (const n of prefs) { const c = String(n).slice(0, 2).toLowerCase(); if (Object.hasOwn(I18N, c)) return c; }
+  return 'en';
+}
+const LOC = pickLocale();
+function tr(k) {
+  const s = I18N[LOC].strings[k];
+  if (typeof s !== 'string') throw new Error(`wilds i18n: locale ${LOC} has no ${k}`);
+  return s;
+}
+function renderChrome() {
+  document.documentElement.lang = LOC;
+  document.documentElement.dir = I18N[LOC].dir;
+  for (const el of document.querySelectorAll('[data-i18n]')) el.textContent = tr(el.dataset.i18n);
+  for (const el of document.querySelectorAll('[data-i18n-aria]')) el.setAttribute('aria-label', tr(el.dataset.i18nAria));
+}
+renderChrome();
+const L_EN = JSON.parse(document.getElementById('wilds-labels').textContent);
+const L = Object.fromEntries(Object.keys(L_EN).map((k) => [k, tr('wilds.' + k)]));
 /* simulated tasks per site (tasks/registry via web/taskkit.py); {} until wired */
 const SITE_TASKS = JSON.parse(document.getElementById('wilds-tasks').textContent);
 const WORLDS = new Map(REG.worlds.map((w) => [w.id, w]));
@@ -466,14 +511,33 @@ const BB_SHAPES = {
   deciduous: card([0, 1.8, 0, 2.7, 5, 0, 0, 8, 0, 0, 1.8, 0, 0, 8, 0, -2.7, 5, 0,
     0, 1.8, 0, 0, 5, 2.7, 0, 8, 0, 0, 1.8, 0, 0, 8, 0, 0, 5, -2.7], 0x6E8F3E),
 };
+/* wave 4: BOTH species share ONE InstancedMesh (one draw call, was one per
+   species). The merged geometry carries both cards, each vertex tagged with
+   its species (bbPart); each instance carries the species it stands for
+   (bbKind), and the vertex shader collapses the other card's vertices to a
+   point, so it rasterises nothing. The eval counts both cards' triangles
+   per instance; that growth is inside the declared triangle headroom. */
+const BB_KINDS = Object.keys(BB_SHAPES);
+const BB_TOTAL = BB_KINDS.reduce((a, k) => a + BB_CAP[k], 0);
+const bbGeo = mergeGeometries(BB_KINDS.map((k, i) => {
+  const g = BB_SHAPES[k].clone();
+  g.setAttribute('bbPart', new THREE.Float32BufferAttribute(new Array(g.attributes.position.count).fill(i), 1));
+  return g;
+}));
+const bbKind = new THREE.InstancedBufferAttribute(new Float32Array(BB_TOTAL), 1);
+bbKind.setUsage(THREE.DynamicDrawUsage);
+bbGeo.setAttribute('bbKind', bbKind);
 const matBB = new THREE.MeshLambertMaterial({ vertexColors: true, side: THREE.DoubleSide });
-const bb = {};
-for (const [k, g] of Object.entries(BB_SHAPES)) {
-  const m = new THREE.InstancedMesh(g, matBB, BB_CAP[k]);
-  m.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
-  m.count = 0; m.frustumCulled = false;
-  scene.add(m); bb[k] = m;
-}
+matBB.onBeforeCompile = (sh) => {
+  sh.vertexShader = sh.vertexShader
+    .replace('#include <common>', '#include <common>\nattribute float bbPart;\nattribute float bbKind;')
+    .replace('#include <begin_vertex>', '#include <begin_vertex>\ntransformed *= step(abs(bbPart - bbKind), 0.5);');
+};
+const bbMesh = new THREE.InstancedMesh(bbGeo, matBB, BB_TOTAL);
+bbMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+bbMesh.count = 0; bbMesh.frustumCulled = false;
+scene.add(bbMesh);
+const bbCount = Object.fromEntries(BB_KINDS.map((k) => [k, 0]));
 let bbMinR = Infinity;
 function refillBillboards() {
   const cand = { conifer: [], deciduous: [] };
@@ -491,18 +555,20 @@ function refillBillboards() {
     cand[kind].push([d2, x, h, z, wildsHash(ci, ri, W.seed, 14)]);
   }
   bbMinR = Infinity;
-  for (const k of Object.keys(cand)) {
-    const list = cand[k], m = bb[k];
+  let at = 0;
+  for (const k of BB_KINDS) {
+    const list = cand[k], kind = BB_KINDS.indexOf(k);
     if (list.length > BB_CAP[k]) { list.sort((a, b) => a[0] - b[0]); list.length = BB_CAP[k]; }
     for (let n = 0; n < list.length; n++) {
       const [d2, x, h, z, r] = list[n];
       if (d2 < bbMinR * bbMinR) bbMinR = Math.sqrt(d2);
       const sc = 0.85 + r * 0.8;
       _e.set(0, r * 6.28, 0); _q.setFromEuler(_e); _s.set(sc, sc * (0.9 + r * 0.4), sc); _p.set(x, h - 0.2, z);
-      _m.compose(_p, _q, _s); m.setMatrixAt(n, _m);
+      _m.compose(_p, _q, _s); bbMesh.setMatrixAt(at + n, _m); bbKind.setX(at + n, kind);
     }
-    m.count = list.length; m.instanceMatrix.needsUpdate = true;
+    bbCount[k] = list.length; at += list.length;
   }
+  bbMesh.count = at; bbMesh.instanceMatrix.needsUpdate = true; bbKind.needsUpdate = true;
 }
 let vegAt = null;
 const _m = new THREE.Matrix4(), _q = new THREE.Quaternion(), _s = new THREE.Vector3(), _p = new THREE.Vector3(), _e = new THREE.Euler();
@@ -883,7 +949,7 @@ function setMode(m) {
   overviewMesh.visible = !walkOn;
   horizonMesh.visible = walkOn;
   for (const k in veg) veg[k].visible = walkOn;
-  for (const k in bb) bb[k].visible = walkOn;
+  bbMesh.visible = walkOn;
   cacheMesh.visible = walkOn;
   orbit.enabled = !walkOn;
   if (!walkOn) {
@@ -926,7 +992,9 @@ function goSite(id) {
   const s = W.sites.find((x) => x.id === id);
   if (s === undefined) throw new Error('wilds: no site ' + id + ' in ' + W.id);
   if (mode !== 'walk') setMode('walk');
-  teleport(s.x, s.z + s.pad_m + 12, 0);
+  // stand on the pad, three quarters of pad_m south of its centre, facing it:
+  // a task's deep link lands at the site (eval_wilds holds it within pad_m)
+  teleport(s.x, s.z + s.pad_m * 0.75, 0);
   openSite(s.id);
 }
 async function fromHash() {
@@ -995,8 +1063,8 @@ window.__wilds = {
     instances: Object.fromEntries(Object.entries(veg).map(([k, m]) => [k, m.visible ? m.count : 0])),
     instanced: Object.values(veg).every((m) => m.isInstancedMesh), frameMs,
     horizon: horizonMesh.visible,
-    billboards: Object.fromEntries(Object.entries(bb).map(([k, m]) => [k, m.visible ? m.count : 0])),
-    billboardsInstanced: Object.values(bb).every((m) => m.isInstancedMesh),
+    billboards: Object.fromEntries(BB_KINDS.map((k) => [k, bbMesh.visible ? bbCount[k] : 0])),
+    billboardsInstanced: bbMesh.isInstancedMesh, billboardMeshes: scene.children.filter((o) => o.geometry === bbGeo).length,
     billboardMinR: bbMinR, vegR: VEG_R, billboardR: BB_R,
   }),
   frameTimes(n) {
@@ -1134,27 +1202,27 @@ code{{font:13px "IBM Plex Mono",monospace;color:var(--steel)}}
 {NAV}<div class="wrap">
 <header>
   <h1>SmartCiti<span class="x">.X</span> : Trade Craft Academy</h1>
-  <p>powered by AGI Corp · {T("wilds.lede")}</p>
+  <p>powered by AGI Corp · {TS("wilds.lede")}</p>
 </header>
-<p class="intro">Walk <b data-fig="worlds">{c["worlds"]}</b> authored worlds, <b data-fig="area">{c["area_km2"]}</b> km² in all, with <b data-fig="sites">{c["sites"]}</b> trade work sites tied to <b data-fig="halls">{c["halls_linked"]}</b> union halls and <b data-fig="lessons">{c["lessons_linked"]}</b> lessons. Every landscape is generated from a seed: an <b>authored landscape, not a survey</b>.</p>
-<div id="switch" role="group" aria-label="{T("wilds.switch_label")}">{switch}</div>
+<p class="intro" lang="en" dir="ltr">Walk <b data-fig="worlds">{c["worlds"]}</b> authored worlds, <b data-fig="area">{c["area_km2"]}</b> km² in all, with <b data-fig="sites">{c["sites"]}</b> trade work sites tied to <b data-fig="halls">{c["halls_linked"]}</b> union halls and <b data-fig="lessons">{c["lessons_linked"]}</b> lessons. Every landscape is generated from a seed: an <b>authored landscape, not a survey</b>.</p>
+<div id="switch" role="group" data-i18n-aria="wilds.switch_label" aria-label="{TA("wilds.switch_label")}">{switch}</div>
 <div id="stage" data-mode="walk">
-  <canvas id="view" tabindex="0" aria-label="{T("wilds.canvas_label")}"></canvas>
+  <canvas id="view" tabindex="0" aria-label="{TA("wilds.canvas_label")}" data-i18n-aria="wilds.canvas_label"></canvas>
   <div id="labels"></div>
-  <div class="ctl"><span class="where" id="where"></span><button type="button" class="tc-btn tc-btn-ghost" id="mode" aria-pressed="false">{T("wilds.mode.overview")}</button><button type="button" class="tc-btn tc-btn-ghost" id="speed">{T("wilds.pace")}: {T("wilds.pace.walk")}</button><button type="button" class="tc-btn tc-btn-ghost" id="fly" aria-pressed="false">{T("wilds.flyover")}</button><span class="where" id="hud-alt"></span></div>
-  <canvas id="minimap" width="170" height="170" aria-label="{T("wilds.minimap_label")}"></canvas>
+  <div class="ctl"><span class="where" id="where"></span><button type="button" class="tc-btn tc-btn-ghost" id="mode" aria-pressed="false">{TS("wilds.mode.overview")}</button><button type="button" class="tc-btn tc-btn-ghost" id="speed">{TS("wilds.pace")}: {TS("wilds.pace.walk")}</button><button type="button" class="tc-btn tc-btn-ghost" id="fly" aria-pressed="false">{TS("wilds.flyover")}</button><span class="where" id="hud-alt"></span></div>
+  <canvas id="minimap" width="170" height="170" data-i18n-aria="wilds.minimap_label" aria-label="{TA("wilds.minimap_label")}"></canvas>
   <div id="stick" aria-hidden="true"><i></i></div>
-  <aside id="panel" class="tc-panel" hidden aria-live="polite"><button type="button" id="panel-close" aria-label="{T("wilds.close")}">×</button><div id="panel-body"></div></aside>
+  <aside id="panel" class="tc-panel" hidden aria-live="polite"><button type="button" id="panel-close" data-i18n-aria="wilds.close" aria-label="{TA("wilds.close")}">×</button><div id="panel-body"></div></aside>
   <div id="toast" hidden role="status"></div>
 </div>
-<p class="help">{T("wilds.help")}</p>
-<p class="help" data-legend>{T("wilds.legend")}</p>
+<p class="help">{TS("wilds.help")}</p>
+<p class="help" data-legend>{TS("wilds.legend")}</p>
 {task_note}
 {worlds_html}
-<h2>{T("wilds.h.quests")}</h2>
-<p class="help">Caches, side quests and badges are play: they never enter a completion record and never certify anything.</p>
+<h2>{TS("wilds.h.quests")}</h2>
+<p class="help" lang="en" dir="ltr">Caches, side quests and badges are play: they never enter a completion record and never certify anything.</p>
 {quest_block}
-<ul class="honesty">
+<ul class="honesty" lang="en" dir="ltr">
 <li>{esc(REG["honesty"]["landscape"])}</li>
 <li>{esc(REG["honesty"]["sites"])}</li>
 <li>{esc(REG["honesty"]["play"])}</li>
@@ -1163,6 +1231,7 @@ code{{font:13px "IBM Plex Mono",monospace;color:var(--steel)}}
 <footer data-honesty>Authored landscape, not a survey: every world here is generated from a seed and no height is a real elevation. Registry <code>wilds/registry/wilds.json</code> · stamp <code data-stamp>{esc(REG["source_stamp"])}</code> · terrain core <code data-core-stamp>{esc(REG["core_stamp"])}</code> · embedded verbatim below.</footer>
 <script type="application/json" id="wilds-registry">{embedded}</script>
 <script type="application/json" id="wilds-labels">{labels_json}</script>
+<script type="application/json" id="wilds-i18n">__WILDS_I18N__</script>
 <script type="application/json" id="wilds-tasks">{site_task_counts}</script>
 <script type="importmap">
 {{"imports":{{
@@ -1175,6 +1244,29 @@ code{{font:13px "IBM Plex Mono",monospace;color:var(--steel)}}
 </div></body>
 </html>
 '''
+
+# ------------------------------------------------ run-time i18n catalogue --
+# exactly the chrome keys this page used, for every locale in i18n/locales;
+# a key missing (or empty) in any locale stops the build by name
+I18N_CAT = {}
+for _f in sorted((ROOT / 'i18n/locales').glob('*.json')):
+    _c = json.loads(_f.read_text(encoding='utf-8'))
+    for _need in ('locale', 'dir', 'language', 'strings'):
+        if _need not in _c:
+            raise SystemExit(f'build_wilds: {_f.name} has no {_need!r}')
+    if _c['dir'] not in ('ltr', 'rtl'):
+        raise SystemExit(f'build_wilds: {_f.name} dir {_c["dir"]!r} is not ltr/rtl')
+    _s = {}
+    for _k in sorted(_USED):
+        if _k not in _c['strings'] or not isinstance(_c['strings'][_k], str) or not _c['strings'][_k].strip():
+            raise SystemExit(f'build_wilds: locale {_c["locale"]} has no wilds chrome key {_k!r}')
+        _s[_k] = _c['strings'][_k]
+    I18N_CAT[_c['locale']] = {'dir': _c['dir'], 'language': _c['language'], 'strings': _s}
+if len(I18N_CAT) != 8 or 'en' not in I18N_CAT or not any(v['dir'] == 'rtl' for v in I18N_CAT.values()):
+    raise SystemExit(f'build_wilds: expected 8 locales incl. en and an rtl one, found {sorted(I18N_CAT)}')
+if page.count('__WILDS_I18N__') != 1:
+    raise SystemExit('build_wilds: the i18n catalogue placeholder must appear exactly once')
+page = page.replace('__WILDS_I18N__', json.dumps(I18N_CAT, ensure_ascii=False, sort_keys=True).replace('</', '<\\/'))
 
 # search and link-preview head tags (web/seo.py): head region only
 page = apply_seo(page, PAGE, 'The wilds \u2014 SmartCiti.X : Trade Craft Academy',

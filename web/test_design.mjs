@@ -245,6 +245,75 @@ check(PH.patterns.length >= 5 && PH.patterns.every((p) => html.includes(`<td>${p
     check(!low.length, `style ${i}: text/bg, muted/bg, accent button, links and the hero scrim all meet contrast`
       + (low.length ? ' - ' + low.join('; ') : ''));
   }
+  // every document page's hero clip (web/herovideo.py DOC_HERO_PAGES), in every style: the style's own scrim
+  // composited over THAT clip's measured brightest colour (media.json), each hero text colour >= 4.5
+  const DOC = JSON.parse(execFileSync('python3', ['-c',
+    'import sys,json;sys.path.insert(0,"web");import herovideo as h;'
+    + 'print(json.dumps({k:v[1] for k,v in h.DOC_HERO_PAGES.items()}))'], { cwd: ROOT, encoding: 'utf8' }));
+  const lowDoc = [];
+  let measuredDoc = 0;
+  for (const [pg, cid] of Object.entries(DOC)) {
+    const c = MEDIA.clips.find((x) => x.id === cid);
+    if (!c || !c.measured || !/^#[0-9A-Fa-f]{6}$/.test(c.measured.brightest_rgb || '')) { lowDoc.push(`${pg}: clip ${cid} has no measured brightest colour`); continue; }
+    for (const i of ST.ids) {
+      const a = blocks[i] ? +blocks[i]['st-scrim-a'] : NaN;
+      const under = T(i, 'scrim') ? hex2(rgb2(T(i, 'scrim')).map((p, j) => a * p + (1 - a) * rgb2(c.measured.brightest_rgb)[j])) : null;
+      for (const [k, v] of Object.entries(ST.hero)) {
+        const r = under ? ratio(v, under) : 0;
+        measuredDoc++;
+        if (!(r >= 4.5)) lowDoc.push(`${pg}/${cid}/${i} hero ${k} ${r.toFixed(2)} < 4.5`);
+      }
+    }
+  }
+  check(!lowDoc.length && measuredDoc === Object.keys(DOC).length * ST.ids.length * Object.keys(ST.hero).length,
+    `document-page heroes: every page's clip, measured under each of the five styles' scrims, keeps all hero text >= 4.5 (${measuredDoc} pairs)`
+    + (lowDoc.length ? ' - ' + lowDoc.join('; ') : ''));
+  // every style in BOTH colour schemes: the style block's tokens win (!important); any token a style leaves unset
+  // falls back to that scheme's palette, so the nav, badge and button pairs are resolved per scheme and measured
+  const schemePal = (scheme) => {
+    const dkB = html.match(new RegExp(`\\n\\[data-theme="${scheme}"\\]\\{([^{}]*--dk-plate:[^{}]*)\\}`));
+    const tcB = html.match(new RegExp(`\\n\\[data-theme="${scheme}"\\] body\\.tc-theme,body\\.tc-theme\\[data-theme="${scheme}"\\]\\{([^{}]*)\\}`));
+    const p = {};
+    for (const b of [dkB, tcB]) if (b) for (const [, k, v] of b[1].matchAll(/--((?:dk|tc)-[a-z-]+):(#[0-9A-Fa-f]{6})/g)) p[k] = v;
+    return dkB && tcB ? p : null;
+  };
+  const SCHEME_PAIRS = [
+    ['nav ink/panel', 'ink', 'panel', 'dk-ink', 'dk-panel', 7], ['nav muted/panel', 'muted', 'panel', 'dk-muted', 'dk-panel', 4.5],
+    ['badge ink/panel', 'tc-ink', 'tc-panel', 'tc-ink', 'tc-panel', 4.5], ['badge ok/panel', 'tc-ok', 'tc-panel', 'tc-ok', 'tc-panel', 4.5],
+    ['badge warn/panel', 'tc-warn', 'tc-panel', 'tc-warn', 'tc-panel', 4.5], ['badge info/panel', 'tc-steel', 'tc-panel', 'tc-steel', 'tc-panel', 4.5],
+    ['badge muted/panel', 'tc-muted', 'tc-panel', 'tc-muted', 'tc-panel', 4.5],
+    ['button tc primary', 'tc-amber-ink', 'tc-amber', 'tc-amber-ink', 'tc-amber', 4.5], ['button kit primary', 'dk-amber-ink', 'dk-amber', 'dk-amber-ink', 'dk-amber', 4.5],
+    ['button kit ghost', 'dk-ink', 'dk-panel', 'dk-ink', 'dk-panel', 4.5]];
+  const lowScheme = [];
+  let schemeN = 0;
+  for (const scheme of ['dark', 'light']) {
+    const P = schemePal(scheme);
+    if (!P) { lowScheme.push(`no ${scheme} palette found in the page CSS`); continue; }
+    for (const i of ST.ids) {
+      const full = [...html.matchAll(new RegExp(`/\\*style:${i}\\*/[^{]*\\{([^}]*)\\}`, 'g'))].map((m) => m[1]).join(';');
+      const S = {};
+      for (const [, k, v] of full.matchAll(/--([a-z-]+):(#[0-9A-Fa-f]{6})!important/g)) S[k] = v;
+      for (const [name, sf, sb, pf, pb, min] of SCHEME_PAIRS) {
+        const f = S[sf] || P[pf], b = S[sb] || P[pb];
+        const r = f && b ? ratio(f, b) : 0;
+        schemeN++;
+        if (!(r >= min)) lowScheme.push(`${i}/${scheme} ${name} ${r.toFixed(2)} < ${min}`);
+      }
+    }
+  }
+  check(!lowScheme.length && schemeN === 2 * ST.ids.length * SCHEME_PAIRS.length,
+    `styles x schemes: every style's nav, badge and button pairs pass in BOTH light and dark schemes (${schemeN} pairs)`
+    + (lowScheme.length ? ' - ' + lowScheme.join('; ') : ''));
+  // the kit-hero preview's text sits on a SOLID plate from tokens (QA eval_styles: a weak scrim stop over a
+  // white pixel measured 1.10-1.58), so it reads ink/panel and muted/panel, asserted per style above
+  const kp = html.match(/\.g-frame \.dk-hero \.dk-hero-body\{([^}]*)\}/);
+  const kc = html.match(/\.g-frame \.dk-hero \.dk-hero-credit\{([^}]*)\}/);
+  const kr = (sel) => (html.match(new RegExp(`\\.g-frame \\.dk-hero ${sel.replace(/\./g, '\\.')}\\{color:(var\\(--dk-[a-z]+\\))`)) || [])[1];
+  check(kp && /background:var\(--dk-panel\)/.test(kp[1]) && /(^|;)color:var\(--dk-ink\)/.test(kp[1]) && !/#[0-9A-Fa-f]{3,6}/.test(kp[1])
+    && kc && /background:var\(--dk-panel\)/.test(kc[1]) && /color:var\(--dk-muted\)/.test(kc[1])
+    && kr('.dk-hero-body .dk-eyebrow') === 'var(--dk-muted)' && kr('.dk-hero-body .dk-hero-lede') === 'var(--dk-muted)'
+    && kr('.dk-hero-body .dk-btn-ghost') === 'var(--dk-ink)',
+    'kit-hero preview: body text, eyebrow, lede, ghost button and credit sit on a solid --dk-panel plate in token colours (no hex)');
   const radios = [...html.matchAll(new RegExp(`<input type="radio" name="${ST.key}" value="([a-z]+)">`, 'g'))].map((m) => m[1]);
   check(JSON.stringify(radios) === JSON.stringify(ST.ids) && /<details class="sitenav-style" data-sitenav-style><summary>/.test(html)
     && /<fieldset class="sn-styles"><legend>[^<]+<\/legend>/.test(html),

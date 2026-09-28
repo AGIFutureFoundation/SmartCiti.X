@@ -321,6 +321,11 @@ a{{color:var(--steel)}}
 .stop{{margin:0;font-size:14px;border-inline-start:3px solid var(--crit);padding-inline-start:10px}}
 .ppe{{margin:0;padding-inline-start:20px;columns:2;font-size:14px}}
 .hz{{color:var(--muted);font-size:13px}}
+/* a site style (data-style, design_kit.style_css) re-declares the plate and panel, so the status
+   colours must follow it too: its own --tc-ok/--tc-warn (set on body only while a style is on),
+   else the page's own scheme-aware values (QA wave 4) */
+:root{{--pg-good:var(--good);--pg-warn:var(--warn);--pg-crit:var(--crit)}}
+body{{--good:var(--tc-ok,var(--pg-good));--warn:var(--tc-warn,var(--pg-warn));--crit:var(--tc-warn,var(--pg-crit))}}
 .warn{{color:var(--crit)}}
 details{{margin-top:14px}}
 summary{{cursor:pointer;color:var(--steel)}}

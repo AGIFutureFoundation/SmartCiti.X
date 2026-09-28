@@ -415,7 +415,9 @@
   "tasks.ws.cta": "Ver o primeiro canteiro",
   "tasks.ws.pause": "Pausar o vídeo de fundo",
   "tasks.ws.play": "Reproduzir o vídeo de fundo",
-  "tasks.ws.credit": "Imagens gravadas no campus 3D deste aplicativo"
+  "tasks.ws.credit": "Imagens gravadas no campus 3D deste aplicativo",
+  "hero.credit.hall_interior_dolly": "Imagens: o interior de uma sala de ofício, sobre os postos de treino, gravadas nas próprias cenas 3D deste aplicativo.",
+  "tasks.via": "Abre na sede de {hall}, {campus}"
  },
  "districts": {
   "structural": {
